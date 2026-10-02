@@ -132,6 +132,42 @@ final class PetAnimationTests: XCTestCase {
         XCTAssertTrue(hanging.pixels.contains(.costumeBase), "the cap shows while peeking")
     }
 
+    func testWalkCycleLoopsStepsAndStaysInsideTheFrame() throws {
+        for breed in PetBreed.allCases {
+            let clip = PetComposer.clip(.walk, for: breed, outfit: .whiteCoat, accessories: [.scarf, .graduationCap])
+            XCTAssertTrue(clip.loops)
+            XCTAssertEqual(clip.frames.count, 4, "\(breed)")
+            let canvases = clip.frames.map(\.canvas)
+            XCTAssertNotEqual(canvases[0], canvases[1], "contact and passing steps differ: \(breed)")
+            XCTAssertNotEqual(canvases[0], canvases[2], "the legs swap on the second contact: \(breed)")
+            let last = PetComposer.frameSize - 1
+            for canvas in canvases {
+                let bounds = try XCTUnwrap(canvas.opaqueBounds)
+                XCTAssertEqual(bounds.maxY, baseline, "paws stay on the baseline: \(breed)")
+                // Only the outline may touch the frame edges; anything else was clipped.
+                let edges = (0...last).flatMap { [canvas[0, $0], canvas[last, $0], canvas[$0, 0]] }
+                XCTAssertTrue(edges.allSatisfy { $0 == nil || $0 == .outline }, "nothing clipped: \(breed)")
+                XCTAssertTrue(canvas.pixels.contains(.coat), "the coat follows the walk: \(breed)")
+            }
+            // Walking is side-on: clearly wider than tall.
+            let walk = try XCTUnwrap(PetComposer.clip(.walk, for: breed).frames[0].canvas.opaqueBounds)
+            XCTAssertGreaterThan(walk.maxX - walk.minX, walk.maxY - walk.minY + 4, "\(breed)")
+        }
+    }
+
+    func testWalkingCostumesNeverCoverTheFace() {
+        for breed in PetBreed.allCases {
+            let plain = PetComposer.clip(.walk, for: breed)
+            let dressed = PetComposer.clip(.walk, for: breed, outfit: .scrubs,
+                                           accessories: [.stethoscope, .roundGlasses, .surgicalCap])
+            for (a, b) in zip(plain.frames, dressed.frames) {
+                XCTAssertEqual(eyePixels(a.canvas), eyePixels(b.canvas), "\(breed)")
+                XCTAssertEqual(a.canvas.pixels.filter { $0 == .nose }.count,
+                               b.canvas.pixels.filter { $0 == .nose }.count, "\(breed)")
+            }
+        }
+    }
+
     func testCanvasShiftAndFlip() {
         var canvas = PetCanvas(width: 3, height: 3)
         canvas[0, 0] = .eye

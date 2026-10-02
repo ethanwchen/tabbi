@@ -48,6 +48,9 @@ public enum PetAnimation: String, CaseIterable, Codable, Sendable {
     case sit
     /// Dozing with drifting "z"s. Loops.
     case sleep
+    /// Trotting toward the left, side-on with the face to the viewer. Loops;
+    /// mirror the frames to walk right.
+    case walk
     /// Hanging head first out of the notch's top edge.
     case peekIn
     /// The reverse of `peekIn`: pulling back up into the notch.
@@ -60,7 +63,7 @@ public enum PetAnimation: String, CaseIterable, Codable, Sendable {
     /// Whether the clip repeats forever or stops on its last frame.
     public var loops: Bool {
         switch self {
-        case .idle, .sit, .sleep: true
+        case .idle, .sit, .sleep, .walk: true
         case .blink, .peekIn, .peekOut, .alert, .celebrate: false
         }
     }
@@ -196,6 +199,13 @@ extension PetComposer {
                 PetFrame(canvas: breathing.canvas.adding(EffectArt.zLarge, at: large), duration: 0.8),
             ]
 
+        case .walk:
+            frames = WalkArt.cycle.indices.map { step in
+                let composed = compose(breed, pose: PetPose(), outfit: outfit, accessories: accessories,
+                                       stance: .walking(step: step))
+                return PetFrame(canvas: composed.canvas, duration: 0.15)
+            }
+
         case .alert:
             // Two hops, the second smaller, then hold so the bubble can be read.
             frames = [(0, 0.06), (2, 0.1), (0, 0.08), (1, 0.08), (0, 0.6)].map { lift, duration in
@@ -224,7 +234,7 @@ extension PetComposer {
             // Dangling from the notch by the front paws: the head lowers into
             // view from beyond the top edge and settles with a tiny bounce,
             // chin on `hangingChinRow`.
-            let hanging = compose(breed, pose: PetPose(), outfit: outfit, accessories: accessories, hanging: true)
+            let hanging = compose(breed, pose: PetPose(), outfit: outfit, accessories: accessories, stance: .hanging)
             let hidden = -(hangingChinRow + 2)
             let steps: [(Int, TimeInterval)] = [(hidden, 0.08), (-14, 0.08), (-8, 0.08), (-3, 0.1), (1, 0.1), (0, 0.5)]
             let sliding = steps.map { offset, duration in

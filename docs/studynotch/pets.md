@@ -3,8 +3,8 @@
 A study-buddy cat or dog lives in the notch.
 This document explains how pet sprites are drawn, composed, and rendered, and how to add a breed.
 
-Status: the sprite format, palettes, pattern zones, renderer, all eight cat breeds, all six dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate), the animation state machine, and the app's `PetView` exist.
-The side-view walk and stretch are in progress.
+Status: the sprite format, palettes, pattern zones, renderer, all eight cat breeds, all six dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate), the walk cycle, the animation state machine, and the app's `PetView` exist.
+The stretch animation is in progress.
 
 ![All cat breeds sitting, on black at 4x](images/cats-sitting.png)
 
@@ -117,6 +117,7 @@ Each accessory has a slot (neck, face, or head); a pet wears at most one per slo
 Costume art lives in `Art/CostumeArt.swift` and is anchored to the pose layout instead of per-breed positions:
 
 - Body items (outfits, stethoscope, scarf) have one grid per body family (cat, dog, long dog), the same size as that family's body and stamped at the same origin.
+  They also have two walking grids: `walk` over the shared cat and dog walking torso, and `walkLong` over the dachshund's.
 - Glasses have a cat and a dog grid, stamped one row above each head's eye row.
   Dog eyes sit close together, so the dog lenses are wider than the eyes; frames touching the pupils blur into them.
 - Hats are 20 wide like every head.
@@ -130,14 +131,14 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 ### Adding a costume item
 
 1. Add a case to `PetOutfit` or `PetAccessory` (with its `slot` and `displayName`).
-2. Draw it in `CostumeArt` using costume roles only: a `BodyItem` for each body family, or a `HeadItem` with its `sitRow`.
+2. Draw it in `CostumeArt` using costume roles only: a `BodyItem` for each body family plus its two walking torsos, or a `HeadItem` with its `sitRow`.
 3. Map the case to its art in `PetComposer`.
 4. Run `swift test` (the costume tests check every breed for clipping and covered eyes) and review `costumes-*.png` and `fit-*.png` from `PetGallery`.
 
 ## Animations
 
 `PetComposer.clip(_:for:outfit:accessories:)` builds a `PetClip`: a list of `PetFrame`s, each with its own `duration` in seconds.
-`clip.frame(at: elapsed)` picks the frame to show; looping clips (idle, sit, sleep) wrap around, one-shot clips (blink, peek, alert, celebrate) hold their last frame, and `isFinished(at:)` tells the player when to move on.
+`clip.frame(at: elapsed)` picks the frame to show; looping clips (idle, sit, sleep, walk) wrap around, one-shot clips (blink, peek, alert, celebrate) hold their last frame, and `isFinished(at:)` tells the player when to move on.
 
 Front-facing animations are not drawn frame by frame.
 Each frame is the sitting composition in a `PetPose`, so every breed and costume animates without extra art:
@@ -160,11 +161,34 @@ The composer finds the open eyes on the face's eye row, clears them so the head'
 | peekIn / peekOut | The pet dangles from the notch by its front paws: the head lowers into view from beyond the top edge, bounces 1 px, and rests with its chin on row 20; peekOut is the same frames reversed |
 | alert | Two hops (2 px, then 1 px) and a hold; every frame has a `bubbleAnchor` at the top-right of the head for the app's speech bubble |
 | celebrate | Happy eyes, a 3 px hop, a heart floating up beside the head, and sparkles |
+| walk | Four 150 ms steps of a trot, side-on (see below) |
 
 Effects (the "z", heart, and sparkles) use the `effect` and `heart` roles and are painted after outlining and only into transparent pixels, so they float free of the pet and never hide part of a hat.
 The peek legs come from `EffectArt.hangingLeg`, drawn behind the head with the breed's paw zone.
 
 ![Every animation frame for the orange tabby](images/animations-cat.png)
+
+### Walking
+
+The walk is the one animation that is not a sitting pose.
+It is drawn chibi-style: the usual front-facing head sits in front of a side-on torso, so the face, glasses, and hats need no walking art and stay readable at notch size.
+Pets walk toward the left; mirror the frames to walk right.
+
+`Art/WalkArt.swift` holds the walking pieces:
+
+- Torsos: `catTorso` and `dogTorso` share one size (22x7, so torso costumes fit both), and `longTorso` (23x6) sits lower on shorter legs for the dachshund.
+  The cat torso carries stripe and calico patch zones; the dog torso carries the beagle saddle.
+- Tails: two sway positions per family; the tail swings once per half cycle so it never flickers.
+  Stubby-tailed breeds (`hasTail == false`) skip it.
+- Legs: `WalkArt.leg(height:lean:far:)` generates every leg, with the paw zone on the bottom row.
+  Far legs use `furShade`, which keeps them apart from the near legs without an outline between them.
+- `WalkArt.cycle`: the gait, four steps where diagonal leg pairs move together (contact, passing, mirrored contact, passing).
+  On contact steps the torso and head sink one pixel onto the bent legs, which gives the walk its bounce.
+
+Torso costumes are stamped right after the torso, before the head, because the head is in front of the body when walking.
+`PetComposer.WalkLayout` holds the per-family positions (torso origin, hips, tail, and the chin row the head rests on).
+
+![The walk cycle for every breed and four looks](images/walk.png)
 
 ### Playing animations
 

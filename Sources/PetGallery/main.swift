@@ -137,3 +137,23 @@ for (breed, outfit, accessories, suffix) in strips {
     try writeSheet(cells, columns: 8, title: "Animations: \(breed.displayName)\(suffix.isEmpty ? "" : ", dressed")",
                    to: outputDirectory.appendingPathComponent("animations-\(breed.rawValue)\(suffix).png"))
 }
+
+// Walk check: every breed through the full step cycle, then a few looks.
+var walkCells: [Cell] = []
+for breed in PetBreed.allCases {
+    let clip = PetComposer.clip(.walk, for: breed)
+    for (index, frame) in clip.frames.enumerated() {
+        walkCells.append(Cell(label: "\(breed.displayName) \(index + 1)", canvas: frame.canvas,
+                              palette: breed.palette.withVisibleRim()))
+    }
+}
+for (breed, look) in [(PetBreed.orangeTabby, looks[looks.count - 4]), (.goldenRetriever, looks[looks.count - 3]),
+                      (.dachshund, looks[looks.count - 2]), (.tuxedo, looks[looks.count - 1])] {
+    let clip = PetComposer.clip(.walk, for: breed, outfit: look.1, accessories: look.2)
+    for (index, frame) in clip.frames.enumerated() {
+        walkCells.append(Cell(label: "\(look.0) \(index + 1)", canvas: frame.canvas,
+                              palette: breed.palette.withVisibleRim()))
+    }
+}
+try writeSheet(walkCells, columns: 8, title: "Walk cycle (150ms per step)",
+               to: outputDirectory.appendingPathComponent("walk.png"))

@@ -31,50 +31,98 @@ public enum PetComposer {
         var headTopRight: PetPoint
     }
 
-    /// `hanging` swaps the body for two front legs reaching straight up to
-    /// the top edge, for the pet dangling from the notch in the peek animation.
+    /// How the body under the head is drawn.
+    enum Stance: Equatable {
+        case sitting
+        /// Two front legs reaching straight up to the top edge, for the pet
+        /// dangling from the notch in the peek animation.
+        case hanging
+        /// Side-on torso mid-stride; `step` indexes `WalkArt.cycle`.
+        case walking(step: Int)
+    }
+
     static func compose(
-        _ breed: PetBreed, pose: PetPose, outfit: PetOutfit, accessories: [PetAccessory], hanging: Bool = false
+        _ breed: PetBreed, pose: PetPose, outfit: PetOutfit, accessories: [PetAccessory], stance: Stance = .sitting
     ) -> Composed {
         let layout = SitLayout(breed.bodyShape)
         let pattern = breed.pattern
-        // A hanging pet's chin always rests on the same row, whatever the head.
-        let headY = hanging ? hangingChinRow + 1 - layout.head.height : layout.headY + pose.headDrop
         var canvas = PetCanvas(width: frameSize, height: frameSize)
+        var headX = layout.headX
+        var headY = layout.headY + pose.headDrop
         // Layer order: body (pattern applied while stamping), head, face,
         // outfit, accessories. Later layers paint over earlier ones.
-        if !hanging {
+        var bodyItem: (CostumeArt.BodyItem) -> (SpriteGrid, Int, Int)? = { item in
+            (layout.pick(item), layout.bodyX, layout.bodyY)
+        }
+        switch stance {
+        case .sitting:
             canvas.stamp(layout.body, x: layout.bodyX, y: layout.bodyY, pattern: pattern)
-        }
-        if !hanging, breed.hasTail, let tail = layout.tail {
-            canvas.stamp(tail.grid, x: tail.x, y: tail.y, pattern: pattern)
-        }
-        if hanging {
+            if breed.hasTail, let tail = layout.tail {
+                canvas.stamp(tail.grid, x: tail.x, y: tail.y, pattern: pattern)
+            }
+        case .hanging:
+            // A hanging pet's chin always rests on the same row, whatever the head.
+            headY = hangingChinRow + 1 - layout.head.height
             let leg = EffectArt.hangingLeg(length: headY + 3)
             canvas.stamp(leg, x: layout.headX + 4, y: 0, pattern: pattern)
             canvas.stamp(leg, x: layout.headX + layout.head.width - 4 - leg.width, y: 0, pattern: pattern)
+            bodyItem = { _ in nil }
+        case .walking(let index):
+            let walk = WalkLayout(layout.family)
+            let step = WalkArt.cycle[index % WalkArt.cycle.count]
+            // Contact steps sink a pixel onto bent legs; the head rides along.
+            let sink = step.isContact ? 1 : 0
+            let legY = walk.torsoY + walk.torso.height
+            let legs: [(Int, WalkArt.Lean, Bool)] = [
+                (walk.frontHip + 3, step.farFront, true), (walk.backHip + 3, step.farBack, true),
+                (walk.frontHip, step.nearFront, false), (walk.backHip, step.nearBack, false),
+            ]
+            for (x, lean, far) in legs {
+                canvas.stamp(WalkArt.leg(height: walk.legHeight, lean: lean, far: far), x: x, y: legY, pattern: pattern)
+            }
+            canvas.stamp(walk.torso, x: walk.torsoX, y: walk.torsoY + sink, pattern: pattern)
+            if breed.hasTail {
+                // The tail sways once per half cycle, not every step, so it doesn't flicker.
+                let tail = walk.tails[(index / 2) % walk.tails.count]
+                canvas.stamp(tail, x: walk.tailX, y: walk.torsoY + sink - tail.height, pattern: pattern)
+            }
+            // The torso is behind the head, so torso costumes go on now.
+            for item in bodyItems(outfit: outfit, accessories: accessories) {
+                canvas.stamp(walk.pick(item), x: walk.torsoX, y: walk.torsoY + sink)
+            }
+            bodyItem = { _ in nil }
+            headX = walk.headX
+            headY = walk.chinRow + 1 - layout.head.height + sink + pose.headDrop
         }
-        canvas.stamp(layout.head, x: layout.headX, y: headY, pattern: pattern)
+        canvas.stamp(layout.head, x: headX, y: headY, pattern: pattern)
         let face = EffectArt.face(layout.face, eyeRow: layout.eyeRow - layout.faceRow, eyes: pose.eyes)
-        canvas.stamp(face, x: layout.headX, y: headY + layout.faceRow, pattern: pattern)
+        canvas.stamp(face, x: headX, y: headY + layout.faceRow, pattern: pattern)
 
-        if !hanging, let item = outfitArt(outfit) {
-            canvas.stamp(layout.pick(item), x: layout.bodyX, y: layout.bodyY)
+        if let item = outfitArt(outfit), let (grid, x, y) = bodyItem(item) {
+            canvas.stamp(grid, x: x, y: y)
         }
         for accessory in PetAccessory.wearable(accessories) {
             switch accessoryArt(accessory) {
             case .body(let item):
-                guard !hanging else { continue }
-                canvas.stamp(layout.pick(item), x: layout.bodyX, y: layout.bodyY)
+                guard let (grid, x, y) = bodyItem(item) else { continue }
+                canvas.stamp(grid, x: x, y: y)
             case .glasses:
                 let glasses = layout.family == .cat ? CostumeArt.glassesCat : CostumeArt.glassesDog
-                canvas.stamp(glasses, x: layout.headX, y: headY + layout.eyeRow - 1)
+                canvas.stamp(glasses, x: headX, y: headY + layout.eyeRow - 1)
             case .head(let item):
-                canvas.stamp(item.grid, x: layout.headX, y: headY + layout.skullTop - item.sitRow)
+                canvas.stamp(item.grid, x: headX, y: headY + layout.skullTop - item.sitRow)
             }
         }
-        let anchor = PetPoint(x: layout.headX + layout.head.width - 1, y: headY + layout.skullTop - pose.lift)
+        let anchor = PetPoint(x: headX + layout.head.width - 1, y: headY + layout.skullTop - pose.lift)
         return Composed(canvas: canvas.outlined().shifted(x: 0, y: -pose.lift), headTopRight: anchor)
+    }
+
+    /// The outfit and neck items worn, in drawing order.
+    private static func bodyItems(outfit: PetOutfit, accessories: [PetAccessory]) -> [CostumeArt.BodyItem] {
+        let neck = PetAccessory.wearable(accessories).compactMap { accessory -> CostumeArt.BodyItem? in
+            if case .body(let item) = accessoryArt(accessory) { item } else { nil }
+        }
+        return (outfitArt(outfit).map { [$0] } ?? []) + neck
     }
 
     private static func outfitArt(_ outfit: PetOutfit) -> CostumeArt.BodyItem? {
@@ -105,8 +153,9 @@ public enum PetComposer {
 
     /// Where every part of a sitting pet goes for one body shape. Costumes
     /// anchor to these numbers instead of hard-coding positions per breed.
+    private enum Family { case cat, dog, longDog }
+
     private struct SitLayout {
-        enum Family { case cat, dog, longDog }
 
         let family: Family
         let body: SpriteGrid
@@ -159,6 +208,44 @@ public enum PetComposer {
             case .dog: item.dog
             case .longDog: item.longDog
             }
+        }
+    }
+
+    /// Where every part of a walking pet goes for one body family. The head
+    /// is the sitting head, so faces, glasses, and hats need no walking art.
+    private struct WalkLayout {
+        let family: Family
+        let torso: SpriteGrid
+        let torsoX = 7
+        let torsoY: Int
+        let tails: [SpriteGrid]
+        let tailX: Int
+        let legHeight: Int
+        /// Left edge of the near front and near back leg; far legs stand 3
+        /// pixels further back.
+        let frontHip = 9
+        let backHip: Int
+        let headX = 1
+        /// Frame row of the head's last pixel on a passing step.
+        let chinRow: Int
+
+        init(_ family: Family) {
+            self.family = family
+            switch family {
+            case .cat:
+                (torso, torsoY, tails, tailX) = (WalkArt.catTorso, 20, WalkArt.catTail, 26)
+                (legHeight, backHip, chinRow) = (4, 22, 24)
+            case .dog:
+                (torso, torsoY, tails, tailX) = (WalkArt.dogTorso, 20, WalkArt.dogTail, 26)
+                (legHeight, backHip, chinRow) = (4, 22, 24)
+            case .longDog:
+                (torso, torsoY, tails, tailX) = (WalkArt.longTorso, 22, WalkArt.longTail, 27)
+                (legHeight, backHip, chinRow) = (3, 23, 26)
+            }
+        }
+
+        func pick(_ item: CostumeArt.BodyItem) -> SpriteGrid {
+            family == .longDog ? item.walkLong : item.walk
         }
     }
 }
