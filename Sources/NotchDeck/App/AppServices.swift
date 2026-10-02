@@ -19,6 +19,9 @@ final class AppServices: ObservableObject {
     let focus = FocusStore()
     let planner: PlannerStore
     let claudeAsk = ClaudeAskSession()
+    /// The study pet's look and points, shared by the Closet tab and the pet
+    /// in the notch.
+    let closet = ClosetStore()
     /// The rotating live preview beside the closed notch.
     let ticker: TickerStore
     /// Every tab this build can show. Register new modules here.
@@ -43,7 +46,7 @@ final class AppServices: ObservableObject {
             StudyModule(),
             AnkiModule(),
             PartyModule(),
-            ClosetModule(),
+            ClosetModule(store: closet),
         ])
         providers = ProviderHub(registry: modules)
         planner.followSharedWork(from: providers.$snapshot, excluding: .planner)

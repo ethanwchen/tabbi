@@ -244,3 +244,19 @@ Rules:
 `PetCoachMessages.all` holds 4 to 6 lines per kind, each with a stable `id`.
 Lines are short enough for a notch bubble (`maxLength`, 64 characters), warm, lightly med-school flavored ("The Krebs cycle is saving your seat."), and never shaming: no counting slip-ups, no guilt, no "you should".
 `pick(_:avoiding:using:)` skips recently used ids while others remain and never repeats the most recent line; the coach remembers its last 8 lines in `recentMessageIDs`.
+
+## Closet (`Sources/NotchKitCore/Closet`)
+
+`PetCloset` holds the Closet tab's editing rules over one `PetSave`, so every edit leaves a save that is valid to persist.
+
+- `wardrobe` lists every paid item, cheapest first; "no outfit" is not a tile, because tapping the worn outfit takes it off.
+- `state(of:)` is `wearing`, `owned`, `affordable`, or `locked(missing:)`.
+- `tap(_:)` toggles owned items, buys and wears affordable ones, and changes nothing for locked ones.
+- `wearing(_:on:)` dresses a profile without checking ownership, for hover "try it on" previews.
+- `setSpecies(_:)` picks the species' first breed; a default name (the starter or breed name) follows the species, a chosen name is kept.
+- `cycleBreed(by:)` wraps within the species, and `setBreed(_:)` re-derives the fur tint from the new breed's shading.
+- `furSwatches` are the offered fur colors; `furTint` reads the picked one back from the `furBase` override.
+- `PetCloset.demo` is the `NOTCHDECK_DEMO=1` closet, with every tile state on show.
+
+In the app, `ClosetStore` (owned by `AppServices`) saves to `~/Library/Application Support/<edition>/Pet/pet.json` after each edit.
+It never writes in demo mode, and never overwrites a save it could not read.

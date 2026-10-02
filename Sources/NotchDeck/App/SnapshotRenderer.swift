@@ -58,7 +58,18 @@ enum SnapshotRenderer {
             shots.append(("open-\(module.rawValue)", model))
         }
 
+        // The Closet's second section, rendered after the others because
+        // the open section is store state.
+        if layout.order.contains(.closet) {
+            var withCloset = layout
+            _ = withCloset.setEnabled(.closet, true)
+            let model = NotchViewModel(geometry: geometry, layout: withCloset)
+            model.open(.closet)
+            shots.append(("open-closet-look", model))
+        }
+
         for (name, model) in shots {
+            if name == "open-closet-look" { services.closet.section = .look }
             let view = NotchView(content: ModuleViews.notchContent(services: services))
                 .environmentObject(model)
                 .frame(width: Theme.Layout.expandedSize.width + 40,
