@@ -14,5 +14,7 @@
     <key>NSHighResolutionCapable</key><true/>
     <key>NSAppleEventsUsageDescription</key>
     <string>NotchDeck controls Spotify playback and shows what's playing.</string>
+    <key>NSCalendarsFullAccessUsageDescription</key>
+    <string>NotchDeck shows your next events today and lets you join video calls from the notch.</string>
 </dict>
 </plist>

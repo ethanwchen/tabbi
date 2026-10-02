@@ -1,26 +1,39 @@
 import SwiftUI
 import NotchDeckCore
 
-/// The Today panel: a header with the date and progress, today's checklist,
-/// and an add field. Keeps the notch pinned open while any field is focused
+/// The Today panel: the checklist (date and progress header, items, add
+/// field) on the left and an "Up next" calendar card on the right. Keeps the notch pinned open while any field is focused
 /// so it doesn't close under the cursor mid-typing.
 struct PlannerPanel: View {
     @ObservedObject var store: PlannerStore
     @EnvironmentObject private var notch: NotchViewModel
     @FocusState private var focus: PlannerField?
 
+    /// Width of the right column; the checklist keeps the remaining ~60%.
+    static let sideColumnWidth: CGFloat = 200
+
     var body: some View {
-        VStack(spacing: Theme.Spacing.s) {
-            PlannerHeader(store: store)
-            content
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            if store.canEdit {
-                PlannerAddField(store: store, focus: $focus)
+        HStack(alignment: .top, spacing: Theme.Spacing.m) {
+            VStack(spacing: Theme.Spacing.s) {
+                PlannerHeader(store: store)
+                content
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                if store.canEdit {
+                    PlannerAddField(store: store, focus: $focus)
+                }
             }
+            UpNextCard(store: store.upNext)
+                .frame(width: Self.sideColumnWidth)
         }
-        .onAppear { store.refreshDay() }
+        .onAppear {
+            store.refreshDay()
+            store.upNext.setVisible(true)
+        }
         .onChange(of: focus) { _, field in notch.isPinned = field != nil }
-        .onDisappear { notch.isPinned = false }
+        .onDisappear {
+            notch.isPinned = false
+            store.upNext.setVisible(false)
+        }
     }
 
     @ViewBuilder
