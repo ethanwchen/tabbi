@@ -97,8 +97,11 @@ private struct PlannerRow: View {
     var isLifted = false
     @State private var hovering = false
     @State private var draft = ""
+    /// Shows the rename field. Kept apart from focus because `FocusState`
+    /// ignores a value until a field bound to it exists.
+    @State private var isRenaming = false
 
-    private var isRenaming: Bool { focus.wrappedValue == .rename(item.id) }
+    private var hasRenameFocus: Bool { focus.wrappedValue == .rename(item.id) }
 
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
@@ -113,8 +116,10 @@ private struct PlannerRow: View {
                     .font(Theme.Typography.body)
                     .foregroundStyle(Theme.Palette.primaryText)
                     .focused(focus, equals: .rename(item.id))
-                    .onSubmit { commitRename() }
-                    .onExitCommand { draft = ""; focus.wrappedValue = nil }
+                    .onAppear { focus.wrappedValue = .rename(item.id) }
+                    .onSubmit { focus.wrappedValue = nil }
+                    // Esc restores the title; the store ignores unchanged titles.
+                    .onExitCommand { draft = item.title; focus.wrappedValue = nil }
             } else {
                 Text(item.title)
                     .font(Theme.Typography.body)
@@ -146,23 +151,25 @@ private struct PlannerRow: View {
         .contentShape(Rectangle())
         .onHover { hovering = $0 }
         .animation(Theme.Motion.snappy, value: hovering)
-        .onChange(of: isRenaming) { _, renaming in
-            // Losing focus (click elsewhere) saves the edit, like Finder.
-            if !renaming { commitRename() }
+        .onChange(of: hasRenameFocus) { hadFocus, hasFocus in
+            // Every way out of the field (Return, Esc, clicking elsewhere) ends
+            // here, so focus is cleared while the field still exists.
+            if hadFocus, !hasFocus, isRenaming { commitRename() }
         }
     }
 
     private func beginRename() {
         guard store.canEdit else { return }
         draft = item.title
-        focus.wrappedValue = .rename(item.id)
+        isRenaming = true
     }
 
+    /// Saves the draft once the field has lost focus. The store ignores blank
+    /// or unchanged titles.
     private func commitRename() {
-        guard !draft.isEmpty else { return }
+        isRenaming = false
         store.rename(item.id, to: draft)
         draft = ""
-        if isRenaming { focus.wrappedValue = nil }
     }
 }
 
