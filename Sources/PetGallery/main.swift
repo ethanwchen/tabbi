@@ -118,3 +118,22 @@ for (name, outfit, accessories) in [looks[looks.count - 4], looks[looks.count - 
     try writeSheet(cells, columns: 7, title: "Fit check: \(name)",
                    to: outputDirectory.appendingPathComponent("fit-\(slug).png"))
 }
+
+// Animation strips: every frame of every animation, with its duration.
+// The last strip is dressed, to check that costumes follow every pose.
+let strips: [(PetBreed, PetOutfit, [PetAccessory], String)] = [
+    (.orangeTabby, .none, [], ""), (.tuxedo, .none, [], ""), (.corgi, .none, [], ""), (.dachshund, .none, [], ""),
+    (.goldenRetriever, .scrubs, [.stethoscope, .surgicalCap], "-dressed"),
+]
+for (breed, outfit, accessories, suffix) in strips {
+    var cells: [Cell] = []
+    for animation in PetAnimation.allCases {
+        let clip = PetComposer.clip(animation, for: breed, outfit: outfit, accessories: accessories)
+        for (index, frame) in clip.frames.enumerated() {
+            let label = "\(animation.rawValue) \(index + 1) · \(Int(frame.duration * 1000))ms"
+            cells.append(Cell(label: label, canvas: frame.canvas, palette: breed.palette.withVisibleRim()))
+        }
+    }
+    try writeSheet(cells, columns: 8, title: "Animations: \(breed.displayName)\(suffix.isEmpty ? "" : ", dressed")",
+                   to: outputDirectory.appendingPathComponent("animations-\(breed.rawValue)\(suffix).png"))
+}

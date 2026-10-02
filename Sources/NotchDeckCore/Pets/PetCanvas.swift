@@ -77,6 +77,26 @@ public struct PetCanvas: Hashable, Sendable {
         return result
     }
 
+    /// A copy moved by (`x`, `y`) pixels; whatever leaves the canvas is
+    /// clipped. Used for hops and for sliding out of the top edge.
+    public func shifted(x dx: Int, y dy: Int) -> PetCanvas {
+        guard dx != 0 || dy != 0 else { return self }
+        var result = PetCanvas(width: width, height: height)
+        for y in 0..<height {
+            for x in 0..<width { result[x + dx, y + dy] = self[x, y] }
+        }
+        return result
+    }
+
+    /// Upside-down copy, for a pet hanging out of the notch head first.
+    public func flippedVertically() -> PetCanvas {
+        var result = PetCanvas(width: width, height: height)
+        for y in 0..<height {
+            for x in 0..<width { result[x, height - 1 - y] = self[x, y] }
+        }
+        return result
+    }
+
     /// The smallest rectangle containing every opaque pixel, or nil if empty.
     public var opaqueBounds: (minX: Int, minY: Int, maxX: Int, maxY: Int)? {
         var minX = width, minY = height, maxX = -1, maxY = -1

@@ -12,33 +12,69 @@ public enum PetComposer {
     public static func sitting(
         _ breed: PetBreed, outfit: PetOutfit = .none, accessories: [PetAccessory] = []
     ) -> PetCanvas {
+        compose(breed, pose: PetPose(), outfit: outfit, accessories: accessories).canvas
+    }
+
+    /// The sitting pet in `pose`: an eye state, a head nod, and a hop, all
+    /// relative to the plain sitting frame so costumes stay anchored.
+    public static func sitting(
+        _ breed: PetBreed, pose: PetPose, outfit: PetOutfit = .none, accessories: [PetAccessory] = []
+    ) -> PetCanvas {
+        compose(breed, pose: pose, outfit: outfit, accessories: accessories).canvas
+    }
+
+    /// A composed, outlined frame plus where the head ended up, so effects
+    /// and the speech-bubble anchor can be placed relative to it.
+    struct Composed {
+        var canvas: PetCanvas
+        /// Top-right corner of the head's skull, in frame pixels.
+        var headTopRight: PetPoint
+    }
+
+    /// `hanging` swaps the body for two front legs reaching straight up to
+    /// the top edge, for the pet dangling from the notch in the peek animation.
+    static func compose(
+        _ breed: PetBreed, pose: PetPose, outfit: PetOutfit, accessories: [PetAccessory], hanging: Bool = false
+    ) -> Composed {
         let layout = SitLayout(breed.bodyShape)
         let pattern = breed.pattern
+        // A hanging pet's chin always rests on the same row, whatever the head.
+        let headY = hanging ? hangingChinRow + 1 - layout.head.height : layout.headY + pose.headDrop
         var canvas = PetCanvas(width: frameSize, height: frameSize)
         // Layer order: body (pattern applied while stamping), head, face,
         // outfit, accessories. Later layers paint over earlier ones.
-        canvas.stamp(layout.body, x: layout.bodyX, y: layout.bodyY, pattern: pattern)
-        if breed.hasTail, let tail = layout.tail {
+        if !hanging {
+            canvas.stamp(layout.body, x: layout.bodyX, y: layout.bodyY, pattern: pattern)
+        }
+        if !hanging, breed.hasTail, let tail = layout.tail {
             canvas.stamp(tail.grid, x: tail.x, y: tail.y, pattern: pattern)
         }
-        canvas.stamp(layout.head, x: layout.headX, y: layout.headY, pattern: pattern)
-        canvas.stamp(layout.face, x: layout.headX, y: layout.headY + layout.faceRow, pattern: pattern)
+        if hanging {
+            let leg = EffectArt.hangingLeg(length: headY + 3)
+            canvas.stamp(leg, x: layout.headX + 4, y: 0, pattern: pattern)
+            canvas.stamp(leg, x: layout.headX + layout.head.width - 4 - leg.width, y: 0, pattern: pattern)
+        }
+        canvas.stamp(layout.head, x: layout.headX, y: headY, pattern: pattern)
+        let face = EffectArt.face(layout.face, eyeRow: layout.eyeRow - layout.faceRow, eyes: pose.eyes)
+        canvas.stamp(face, x: layout.headX, y: headY + layout.faceRow, pattern: pattern)
 
-        if let item = outfitArt(outfit) {
+        if !hanging, let item = outfitArt(outfit) {
             canvas.stamp(layout.pick(item), x: layout.bodyX, y: layout.bodyY)
         }
         for accessory in PetAccessory.wearable(accessories) {
             switch accessoryArt(accessory) {
             case .body(let item):
+                guard !hanging else { continue }
                 canvas.stamp(layout.pick(item), x: layout.bodyX, y: layout.bodyY)
             case .glasses:
                 let glasses = layout.family == .cat ? CostumeArt.glassesCat : CostumeArt.glassesDog
-                canvas.stamp(glasses, x: layout.headX, y: layout.headY + layout.eyeRow - 1)
+                canvas.stamp(glasses, x: layout.headX, y: headY + layout.eyeRow - 1)
             case .head(let item):
-                canvas.stamp(item.grid, x: layout.headX, y: layout.headY + layout.skullTop - item.sitRow)
+                canvas.stamp(item.grid, x: layout.headX, y: headY + layout.skullTop - item.sitRow)
             }
         }
-        return canvas.outlined()
+        let anchor = PetPoint(x: layout.headX + layout.head.width - 1, y: headY + layout.skullTop - pose.lift)
+        return Composed(canvas: canvas.outlined().shifted(x: 0, y: -pose.lift), headTopRight: anchor)
     }
 
     private static func outfitArt(_ outfit: PetOutfit) -> CostumeArt.BodyItem? {

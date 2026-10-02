@@ -3,8 +3,8 @@
 A study-buddy cat or dog lives in the notch.
 This document explains how pet sprites are drawn, composed, and rendered, and how to add a breed.
 
-Status: the sprite format, palettes, pattern zones, renderer, all eight cat breeds, all six dog breeds, and every costume (sitting pose) exist.
-Animations are in progress.
+Status: the sprite format, palettes, pattern zones, renderer, all eight cat breeds, all six dog breeds, every costume, and the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate) exist.
+The side-view walk and stretch, the animation state machine, and the app's `PetView` are in progress.
 
 ![All cat breeds sitting, on black at 4x](images/cats-sitting.png)
 
@@ -133,6 +133,38 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 2. Draw it in `CostumeArt` using costume roles only: a `BodyItem` for each body family, or a `HeadItem` with its `sitRow`.
 3. Map the case to its art in `PetComposer`.
 4. Run `swift test` (the costume tests check every breed for clipping and covered eyes) and review `costumes-*.png` and `fit-*.png` from `PetGallery`.
+
+## Animations
+
+`PetComposer.clip(_:for:outfit:accessories:)` builds a `PetClip`: a list of `PetFrame`s, each with its own `duration` in seconds.
+`clip.frame(at: elapsed)` picks the frame to show; looping clips (idle, sit, sleep) wrap around, one-shot clips (blink, peek, alert, celebrate) hold their last frame, and `isFinished(at:)` tells the player when to move on.
+
+Front-facing animations are not drawn frame by frame.
+Each frame is the sitting composition in a `PetPose`, so every breed and costume animates without extra art:
+
+| Pose field | Effect |
+| --- | --- |
+| `eyes` | `.open`, `.closed` (blink), `.sleepy` (soft curves), `.happy` ("^" arches) |
+| `headDrop` | Sinks the head (and its hat and glasses) into the shoulders, for breathing and dozing |
+| `lift` | Raises the whole pet off the baseline, for hops |
+
+Eye states live in `EffectArt` as 4x3 grids centered on the 2x3 open eye.
+The composer finds the open eyes on the face's eye row, clears them so the head's fur shows through, and stamps the new state, so a new face only needs its open-eyed version.
+
+| Animation | Frames |
+| --- | --- |
+| idle | Head nods down 1 px and back, 1.1 s + 0.9 s, so the pet breathes slowly |
+| blink | One closed-eye frame, 140 ms, played now and then over idle |
+| sit | The plain sitting frame, held |
+| sleep | Sleepy eyes, head sinking 1-2 px, a small "z" by the ear and a larger one drifting up |
+| peekIn / peekOut | The pet dangles from the notch by its front paws: the head lowers into view from beyond the top edge, bounces 1 px, and rests with its chin on row 20; peekOut is the same frames reversed |
+| alert | Two hops (2 px, then 1 px) and a hold; every frame has a `bubbleAnchor` at the top-right of the head for the app's speech bubble |
+| celebrate | Happy eyes, a 3 px hop, a heart floating up beside the head, and sparkles |
+
+Effects (the "z", heart, and sparkles) use the `effect` and `heart` roles and are painted after outlining and only into transparent pixels, so they float free of the pet and never hide part of a hat.
+The peek legs come from `EffectArt.hangingLeg`, drawn behind the head with the breed's paw zone.
+
+![Every animation frame for the orange tabby](images/animations-cat.png)
 
 ## Profile, points, and unlocks
 
