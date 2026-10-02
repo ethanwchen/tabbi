@@ -225,7 +225,7 @@ The pet is always in one `Place`, and each place has a resting animation:
 | --- | --- |
 | `nudge` | Beside: wakes and plays `alert`, except during a celebration. Hidden: peeks out |
 | `celebrate` | Beside only: wakes and plays `celebrate`, overriding an alert |
-| `sleep` / `wake` | Beside only; a running alert or celebration finishes first |
+| `sleep` / `wake` | Beside only; a running alert, celebration, or stretch finishes first. Waking plays `stretch`, then idles; a nudge still interrupts it |
 | `peekIn` / `peekOut` | Hidden to hanging and back |
 | `appear` / `disappear` | Cut straight to beside (awake) or hidden |
 

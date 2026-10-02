@@ -76,7 +76,7 @@ public struct PetAnimator: Hashable, Sendable {
         case celebrate
         /// Doze off (beside the notch only).
         case sleep
-        /// Wake from dozing back to idle.
+        /// Wake from dozing: the pet stretches, then idles.
         case wake
         /// Come out of the notch and hang from its edge.
         case peekIn
@@ -196,7 +196,8 @@ public struct PetAnimator: Hashable, Sendable {
         case .wake:
             guard place == .beside, isAsleep else { return false }
             isAsleep = false
-            if !isPlayingOneShot(at: time) { rest(at: time) }
+            // Waking on its own (not by a nudge) earns a slow stretch first.
+            if !isPlayingOneShot(at: time) { play(.stretch, at: time) }
         case .nudge:
             switch place {
             case .beside:
@@ -225,9 +226,10 @@ public struct PetAnimator: Hashable, Sendable {
         return true
     }
 
-    /// Alert or celebrate still running (blinks don't count: they yield).
+    /// Alert, celebrate or the wake-up stretch still running (blinks don't
+    /// count: they yield).
     private func isPlayingOneShot(at time: TimeInterval) -> Bool {
-        guard let playback, playback.animation == .alert || playback.animation == .celebrate else { return false }
+        guard let playback, [.alert, .celebrate, .stretch].contains(playback.animation) else { return false }
         return playback.elapsed(at: time) < duration(playback.animation)
     }
 

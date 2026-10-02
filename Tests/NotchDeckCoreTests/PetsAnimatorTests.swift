@@ -101,8 +101,25 @@ final class PetAnimatorTests: XCTestCase {
         XCTAssertNil(pet.nextBlinkAt, "no blinking while asleep")
         XCTAssertEqual(animation(&pet, at: 120), .sleep, "sleep loops")
         XCTAssertTrue(pet.send(.wake, at: 121))
-        XCTAssertEqual(pet.playback?.animation, .idle)
+        XCTAssertEqual(pet.playback, .init(animation: .stretch, startedAt: 121), "waking stretches first")
+        XCTAssertNil(pet.nextBlinkAt, "no blink mid-stretch")
+        let stretchEnd = 121 + (try XCTUnwrap(durations[.stretch]))
+        XCTAssertEqual(animation(&pet, at: stretchEnd - 0.01), .stretch)
+        XCTAssertEqual(animation(&pet, at: stretchEnd), .idle)
+        XCTAssertEqual(pet.playback?.startedAt, stretchEnd, "idle starts exactly when the stretch ends")
         XCTAssertNotNil(pet.nextBlinkAt)
+
+        // Dozing off again mid-stretch waits for the stretch to finish.
+        pet.send(.sleep, at: 150)
+        pet.send(.wake, at: 151)
+        pet.send(.sleep, at: 151.2)
+        XCTAssertEqual(pet.playback?.animation, .stretch)
+        XCTAssertEqual(animation(&pet, at: 151 + (try XCTUnwrap(durations[.stretch]))), .sleep)
+
+        // A nudge interrupts the stretch: it's the user's attention that matters.
+        pet.send(.wake, at: 160)
+        XCTAssertTrue(pet.send(.nudge, at: 160.2))
+        XCTAssertEqual(pet.playback, .init(animation: .alert, startedAt: 160.2))
 
         // Dozing off mid-celebration lets the celebration finish first.
         pet.send(.celebrate, at: 200)
