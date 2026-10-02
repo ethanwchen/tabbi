@@ -112,6 +112,12 @@ final class SpotifyController: NSObject, ObservableObject {
         NSWorkspace.shared.openApplication(at: url, configuration: configuration)
     }
 
+    /// The app's Finder icon for launch buttons; nil if it isn't installed.
+    func appIcon(for source: MediaSource) -> NSImage? {
+        NSWorkspace.shared.urlForApplication(withBundleIdentifier: source.bundleIdentifier)
+            .map { NSWorkspace.shared.icon(forFile: $0.path) }
+    }
+
     func openAutomationSettings() {
         NSWorkspace.shared.open(Self.automationSettings)
     }

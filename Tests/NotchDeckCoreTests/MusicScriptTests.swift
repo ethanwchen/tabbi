@@ -180,4 +180,10 @@ final class MediaSourceTrackerTests: XCTestCase {
         tracker.update(.spotify, status: playback(.playing), at: t0 + 1)
         XCTAssertEqual(tracker.selected, .spotify)
     }
+
+    func testNamesReadAsASentence() {
+        XCTAssertEqual(MediaSource.names([.music]), "Music")
+        XCTAssertEqual(MediaSource.names([.spotify, .music]), "Spotify or Music")
+        XCTAssertEqual(MediaSource.names([]), "Spotify or Music", "no installed app falls back to every app")
+    }
 }

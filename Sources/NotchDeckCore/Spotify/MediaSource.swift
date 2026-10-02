@@ -20,6 +20,14 @@ public enum MediaSource: String, CaseIterable, Equatable, Hashable, Sendable {
         }
     }
 
+    /// Display names joined for a sentence: "Spotify", "Spotify or Music".
+    /// Falls back to every known app when `sources` is empty.
+    public static func names(_ sources: [MediaSource]) -> String {
+        let names = (sources.isEmpty ? allCases : sources).map(\.displayName)
+        guard let last = names.last, names.count > 1 else { return names.first ?? "" }
+        return names.dropLast().joined(separator: ", ") + " or " + last
+    }
+
     /// The script that returns the app's state as one separated record.
     public var readStateScript: String {
         switch self {

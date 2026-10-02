@@ -16,32 +16,35 @@ struct SpotifyPanel: View {
                     SpotifyEmptyState(
                         symbol: "music.note.list", title: "Nothing playing",
                         message: "Start something in \(sourceName) and it shows up here.",
-                        action: .init(title: "Show \(sourceName)", help: "Bring \(sourceName) to the front",
-                                      perform: { controller.open(controller.source ?? .spotify) })
+                        actions: [.init(title: "Show \(sourceName)", help: "Bring \(sourceName) to the front",
+                                        perform: { controller.open(controller.source ?? .spotify) })]
                     )
                 }
             case .notRunning:
                 SpotifyEmptyState(
-                    symbol: "music.note", title: "Spotify isn't running",
-                    message: "Open Spotify to see and control what's playing.",
-                    action: .init(title: "Open Spotify", help: "Launch Spotify",
-                                  perform: { controller.open(.spotify) })
+                    symbol: "music.note", title: "No music app is open",
+                    message: "Open \(MediaSource.names(controller.installedSources)) to see and control what's playing.",
+                    actions: controller.installedSources.map { source in
+                        .init(title: "Open \(source.displayName)", help: "Launch \(source.displayName)",
+                              icon: controller.appIcon(for: source),
+                              perform: { controller.open(source) })
+                    }
                 )
             case .notInstalled:
                 SpotifyEmptyState(
-                    symbol: "arrow.down.app", title: "Spotify isn't installed",
-                    message: "Install the Spotify app to control music from the notch.",
-                    action: nil
+                    symbol: "arrow.down.app", title: "No music app found",
+                    message: "Install Spotify or Music to control playback from the notch.",
+                    actions: []
                 )
             case .connecting:
                 SpotifyEmptyState(symbol: nil, title: "Connecting to \(sourceName)…",
-                                  message: "Reading what's playing.", action: nil)
+                                  message: "Reading what's playing.", actions: [])
             case .permissionDenied:
                 SpotifyEmptyState(
                     symbol: "lock.fill", title: "NotchDeck can't control \(sourceName)",
                     message: "Allow access in Privacy & Security › Automation.",
-                    action: .init(title: "Open Settings", help: "Open Automation settings",
-                                  perform: controller.openAutomationSettings)
+                    actions: [.init(title: "Open Settings", help: "Open Automation settings",
+                                    perform: controller.openAutomationSettings)]
                 )
             }
         }
@@ -304,6 +307,8 @@ private struct SpotifyEmptyState: View {
     struct Action {
         let title: String
         let help: String
+        /// The app's own icon, shown on launch buttons.
+        var icon: NSImage? = nil
         let perform: () -> Void
     }
 
@@ -311,7 +316,7 @@ private struct SpotifyEmptyState: View {
     let symbol: String?
     let title: String
     let message: String
-    let action: Action?
+    let actions: [Action]
 
     var body: some View {
         VStack(spacing: Theme.Spacing.s) {
@@ -338,9 +343,13 @@ private struct SpotifyEmptyState: View {
             }
             .lineLimit(2)
 
-            if let action {
-                SpotifyActionButton(action: action)
-                    .padding(.top, Theme.Spacing.xs)
+            if !actions.isEmpty {
+                HStack(spacing: Theme.Spacing.s) {
+                    ForEach(actions.indices, id: \.self) { index in
+                        SpotifyActionButton(action: actions[index])
+                    }
+                }
+                .padding(.top, Theme.Spacing.xs)
             }
         }
         .frame(maxWidth: 360)
@@ -371,20 +380,41 @@ private struct SpotifyActionButton: View {
 
     var body: some View {
         Button(action: action.perform) {
-            Text(action.title)
-                .font(Theme.Typography.bodyEmphasis)
-                .foregroundStyle(Theme.Palette.background)
-                .padding(.horizontal, Theme.Spacing.m)
-                .frame(height: 24)
-                .background(Capsule().fill(Theme.Palette.accent(for: .spotify)
-                    .opacity(hovering ? 1 : 0.9)))
-                .scaleEffect(hovering ? 1.03 : 1)
-                .contentShape(Capsule())
+            HStack(spacing: Theme.Spacing.xs + Theme.Spacing.xxs) {
+                if let icon = action.icon {
+                    Image(nsImage: icon)
+                        .resizable()
+                        .interpolation(.high)
+                        .frame(width: 16, height: 16)
+                }
+                Text(action.title)
+                    .font(Theme.Typography.bodyEmphasis)
+            }
+            .foregroundStyle(isAppLauncher ? Theme.Palette.primaryText : Theme.Palette.background)
+            .padding(.leading, isAppLauncher ? Theme.Spacing.xs + Theme.Spacing.xxs : Theme.Spacing.m)
+            .padding(.trailing, Theme.Spacing.m)
+            .frame(height: 28)
+            .background(Capsule().fill(fill))
+            .overlay {
+                if isAppLauncher { Capsule().strokeBorder(Theme.Palette.stroke, lineWidth: 0.5) }
+            }
+            .scaleEffect(hovering ? 1.03 : 1)
+            .contentShape(Capsule())
         }
         .buttonStyle(.plain)
         .help(action.help)
         .onHover { hovering = $0 }
         .animation(Theme.Motion.snappy, value: hovering)
+    }
+
+    /// App launch buttons sit on a neutral surface so each app's own icon
+    /// carries the color; other actions use the module accent.
+    private var isAppLauncher: Bool { action.icon != nil }
+
+    private var fill: Color {
+        isAppLauncher
+            ? (hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface)
+            : Theme.Palette.accent(for: .spotify).opacity(hovering ? 1 : 0.9)
     }
 }
 
