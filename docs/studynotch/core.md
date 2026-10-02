@@ -92,3 +92,34 @@ summary.retention      // 0.91, or nil below 20 graded reviews
 - `AnkiSummary.demo(now:)` is the `NOTCHDECK_DEMO=1` sample: about 320 due, 112 reviewed today, a 12-day streak, about 91% retention.
   It is built through the real aggregation.
 - `AnkiSummary` is `Codable`, so the UI can cache the last good value for its error state.
+
+## Study methods (`Sources/NotchDeckCore/StudyMethods`)
+
+### Methods
+
+`StudyMethod` holds the parameters of one timer rhythm.
+Every preset is the same struct, so the session engine runs presets and custom methods through identical code.
+It is `Codable`, so a running session persists the exact method it started with.
+
+| Preset | Focus | Break | Extra |
+|---|---|---|---|
+| `.pomodoro` | 25 min | 5 min | 15 min long break after every 4th focus |
+| `.fiftyTwoSeventeen` | 52 min | 17 min | |
+| `.ultradian` | 90 min | 20 min | |
+| `.flowtime` / `.flowtime(scheme:)` | Open-ended | Proportional | `.tiered`: 5 min after up to 25, 8 after up to 50, else 10; `.fifth`: work / 5 |
+| `.ankiSprint(cards:)` | Card goal (default 100) | 5 min | Suggest a break every `sprintBreakCards` (200) or `sprintBreakInterval` (30 min) |
+| `.questionBlock` | 60 min, 40 questions | 10 min | 60 min `review` phase after each block |
+| `.custom(focus:breakLength:longBreak:)` | User | User | Lengths clamped to 1 min...4 h |
+
+- `StudyMethod.presets` lists every kind once, in picker order; `preset(_:)` looks one up.
+- `nextPhase(after:completedFocusCount:)` gives the next `StudyPhaseKind`: focus, then `review` when the method has one, then `shortBreak` or `longBreak`, then focus.
+- `duration(of:workedBeforeBreak:)` is the wall-clock length of a phase, or `nil` for open-ended and card-goal focus.
+  Proportional breaks use `workedBeforeBreak`.
+- `sprintGoal(reviewDue:learnDue:)` defaults a sprint to today's reviews plus learning cards, the work that should come before new cards.
+- `rhythmLabel` is a short label: "25/5", "60+60/10", "Open", "100 cards".
+
+### Info popover copy
+
+`StudyMethodInfo.info(for:)` (or `method.info`) returns `name`, `tagline`, a 2 to 3 sentence `howTo`, a 1 to 2 sentence `evidence` note, and an `evidenceLevel` badge (`strong`, `mixed`, `weak`).
+`StudyMethodInfo.footnote` goes under every popover.
+The copy follows the research notes and never claims an interval is proven: what research supports is regular breaks, self-testing, and spacing, so only the Anki sprint and question block (retrieval practice) are rated `strong`.
