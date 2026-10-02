@@ -15,8 +15,16 @@ final class NotchViewModel: ObservableObject {
         didSet {
             UserDefaults.standard.set(selected.rawValue, forKey: Self.selectedKey)
             // Direction drives the slide transition between modules.
-            let all = ModuleID.allCases
-            movingForward = all.firstIndex(of: selected)! >= all.firstIndex(of: oldValue)!
+            let order = layout.order
+            movingForward = (order.firstIndex(of: selected) ?? 0) >= (order.firstIndex(of: oldValue) ?? 0)
+        }
+    }
+    /// The user's tab order and enabled modules. When the selected module gets
+    /// disabled, selection moves to the first enabled one.
+    @Published var layout: ModuleLayout {
+        didSet {
+            let resolved = layout.resolvedSelection(selected)
+            if resolved != selected { selected = resolved }
         }
     }
     @Published private(set) var movingForward = true
@@ -30,10 +38,11 @@ final class NotchViewModel: ObservableObject {
 
     private static let selectedKey = "selectedModule"
 
-    init(geometry: NotchGeometry) {
+    init(geometry: NotchGeometry, layout: ModuleLayout = .default) {
         self.geometry = geometry
+        self.layout = layout
         let saved = UserDefaults.standard.string(forKey: Self.selectedKey).flatMap(ModuleID.init(rawValue:))
-        self.selected = saved ?? .spotify
+        self.selected = layout.resolvedSelection(saved ?? layout.enabled[0])
     }
 
     var isOpen: Bool { phase == .open }
@@ -67,7 +76,7 @@ final class NotchViewModel: ObservableObject {
     }
 
     func open(_ module: ModuleID? = nil) {
-        if let module { selected = module }
+        if let module { selected = layout.resolvedSelection(module) }
         phase = .open
     }
 
@@ -85,6 +94,6 @@ final class NotchViewModel: ObservableObject {
         isOpen ? close() : open()
     }
 
-    func selectNext() { selected = selected.next }
-    func selectPrevious() { selected = selected.previous }
+    func selectNext() { selected = layout.module(after: selected) }
+    func selectPrevious() { selected = layout.module(before: selected) }
 }

@@ -6,6 +6,9 @@ import SwiftUI
 /// inside `Modules/<Module>/`; add new stores here.
 @MainActor
 final class AppServices: ObservableObject {
+    /// Passed in (not created here) so the saved settings, e.g. the `claude`
+    /// path override, are applied before any module store starts up.
+    let settings: SettingsStore
     let spotify = SpotifyController()
     let system = SystemMonitor()
     let claudeUsage = ClaudeUsageStore()
@@ -16,10 +19,20 @@ final class AppServices: ObservableObject {
     @Published private(set) var hasCompactActivity = false
 
     private var cancellables: Set<AnyCancellable> = []
+    /// Created on first use so launching never builds a window nobody opens.
+    private var settingsWindow: SettingsWindowController?
 
-    init() {
+    init(settings: SettingsStore) {
+        self.settings = settings
         spotify.$showsCompactActivity
             .removeDuplicates()
             .assign(to: &$hasCompactActivity)
+    }
+
+    /// Shows the Settings window (from the notch's gear button or context menu).
+    func openSettings() {
+        let controller = settingsWindow ?? SettingsWindowController(settings: settings)
+        settingsWindow = controller
+        controller.present()
     }
 }

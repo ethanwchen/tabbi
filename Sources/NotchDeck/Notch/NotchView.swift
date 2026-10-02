@@ -27,10 +27,14 @@ struct NotchView: View {
         .contentShape(shape)
         .onTapGesture { if !model.isOpen { model.open() } }
         .contextMenu {
-            ForEach(ModuleID.allCases) { module in
+            ForEach(model.layout.enabled) { module in
                 Button(module.title) { model.open(module) }
             }
             Divider()
+            Button("Settings…") {
+                model.close()
+                services.openSettings()
+            }
             Button("Quit NotchDeck") { NSApp.terminate(nil) }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -52,14 +56,20 @@ private struct OpenNotchContent: View {
                 TabBar()
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Color.clear.frame(width: notch.width)
-                Text(model.selected.title)
-                    .font(Theme.Typography.title)
-                    .foregroundStyle(Theme.Palette.secondaryText)
-                    .lineLimit(1)
-                    .contentTransition(.opacity)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
+                HStack(spacing: Theme.Spacing.s) {
+                    Text(model.selected.title)
+                        .font(Theme.Typography.title)
+                        .foregroundStyle(Theme.Palette.secondaryText)
+                        .lineLimit(1)
+                        .contentTransition(.opacity)
+                    IconButton(symbol: "gearshape.fill", size: 22, help: "NotchDeck Settings") {
+                        model.close()
+                        services.openSettings()
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .trailing)
             }
-            .padding(.horizontal, Theme.Layout.openTopRadius + Theme.Spacing.m)
+            .padding(.horizontal, Theme.Layout.openTopRadius + Theme.Layout.contentInset)
             .frame(height: max(notch.height, 32))
 
             ZStack {
@@ -86,13 +96,14 @@ private struct TabBar: View {
 
     var body: some View {
         HStack(spacing: Theme.Spacing.xxs) {
-            ForEach(ModuleID.allCases) { module in
+            ForEach(model.layout.enabled) { module in
                 TabButton(module: module, isSelected: model.selected == module, namespace: selection) {
                     model.selected = module
                 }
             }
         }
         .animation(Theme.Motion.snappy, value: model.selected)
+        .animation(Theme.Motion.snappy, value: model.layout)
     }
 }
 
