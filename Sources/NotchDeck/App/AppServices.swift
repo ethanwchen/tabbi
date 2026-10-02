@@ -18,6 +18,8 @@ final class AppServices: ObservableObject {
     /// it keeps running while the notch is closed or either tab is off.
     let focus = FocusStore()
     let planner: PlannerStore
+    /// The Study tab's timer, kept running while the notch is closed.
+    let study = StudyStore()
     let claudeAsk = ClaudeAskSession()
     /// The rotating live preview beside the closed notch.
     let ticker: TickerStore
@@ -40,7 +42,7 @@ final class AppServices: ObservableObject {
             TodayModule(store: planner),
             AskClaudeModule(session: claudeAsk),
             FocusModule(store: focus),
-            StudyModule(),
+            StudyModule(store: study),
             AnkiModule(),
             PartyModule(),
             ClosetModule(),
