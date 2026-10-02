@@ -1,0 +1,137 @@
+import Foundation
+import NotchDeckCore
+
+/// Drives the End-of-Day Review: shows today's numbers at once, asks the
+/// local `claude` CLI for a short encouraging summary (falling back to a
+/// local line), and saves the review when the user taps Done. The review
+/// card replaces the checklist inline.
+///
+/// With `NOTCHDECK_DEMO=1` it shows `DayReview.sample` and never runs the
+/// CLI or touches disk.
+@MainActor
+final class DayReviewStore: ObservableObject {
+    /// The open review, or nil while the checklist shows.
+    @Published private(set) var review: DayReview?
+    /// True when Done couldn't write the file; the card stays open.
+    @Published private(set) var saveFailed = false
+
+    var isActive: Bool { review != nil }
+    /// Waiting for the summary; the card shows a shimmer in its place.
+    var isSummarizing: Bool { review != nil && review?.summary == nil }
+
+    private let isDemo: Bool
+    private let repository: DayReviewRepository?
+    private var task: Task<Void, Never>?
+    /// Bumped on every open and close so a superseded run can't publish.
+    private var generation = 0
+
+    /// Longest wait for Claude before using the local summary.
+    private static let timeout: Duration = .seconds(30)
+
+    init() {
+        let environment = ProcessInfo.processInfo.environment
+        isDemo = environment["NOTCHDECK_DEMO"] == "1"
+        repository = isDemo ? nil : DayReviewRepository()
+        // Lets snapshots render each state: `NOTCHDECK_PLANNER_PREVIEW=review`.
+        let today = PlannerDayKey(date: Date())
+        switch environment["NOTCHDECK_PLANNER_PREVIEW"] {
+        case "review": review = .sample(on: today)
+        case "review-loading":
+            var sample = DayReview.sample(on: today)
+            sample.summary = nil
+            review = sample
+        default: break
+        }
+    }
+
+    /// Opens the review of `day` and starts writing its summary.
+    func wrapUp(day: PlannerDay, focusLog: FocusSessionLog) {
+        invalidateRun()
+        saveFailed = false
+        let generation = generation
+
+        if isDemo {
+            var sample = DayReview.sample(on: day.date)
+            let summary = sample.summary
+            sample.summary = nil
+            review = sample
+            task = Task { [weak self] in
+                try? await Task.sleep(for: .seconds(1.2))
+                self?.publish(generation, summary: summary)
+            }
+            return
+        }
+
+        let review = DayReviewer.review(of: day, focusLog: focusLog)
+        self.review = review
+        task = Task { [weak self] in
+            let summary = await Self.summary(for: review)
+            self?.publish(generation, summary: summary ?? DayReviewer.fallbackSummary(for: review))
+        }
+    }
+
+    /// Saves the review and closes the card. Stays open if the file can't be written.
+    func done() {
+        guard var review else { return }
+        // Done before Claude answered: keep the local line rather than nothing.
+        if review.summary == nil { review.summary = DayReviewer.fallbackSummary(for: review) }
+        do {
+            try repository?.save(review)
+        } catch {
+            self.review = review
+            saveFailed = true
+            return
+        }
+        close()
+    }
+
+    /// Closes the card without saving.
+    func close() {
+        invalidateRun()
+        saveFailed = false
+        review = nil
+    }
+
+    // MARK: - Private
+
+    private func invalidateRun() {
+        generation += 1
+        task?.cancel()
+        task = nil
+    }
+
+    private func publish(_ generation: Int, summary: String?) {
+        guard generation == self.generation, review != nil else { return }
+        review?.summary = summary
+    }
+
+    /// Claude's cleaned-up summary, or nil when the CLI is missing, fails, or times out.
+    private static func summary(for review: DayReview) async -> String? {
+        guard let executable = await Task.detached(priority: .userInitiated, operation: { ClaudeCLI.locate() }).value else {
+            return nil
+        }
+        let prompt = DayReviewer.prompt(for: review)
+        return await withTaskGroup(of: String?.self) { group in
+            group.addTask {
+                var text: String?
+                do {
+                    let events = ClaudeCLI.stream(executable: executable, prompt: prompt,
+                                                  extraArguments: DayReviewer.extraArguments())
+                    for try await event in events {
+                        if case .result(let result) = event, !result.isError { text = result.text }
+                    }
+                } catch {
+                    // A successful result followed by a non-zero exit still counts.
+                }
+                return text.flatMap(DayReviewer.summary(from:))
+            }
+            group.addTask {
+                try? await Task.sleep(for: timeout)
+                return nil
+            }
+            let first = await group.next() ?? nil
+            group.cancelAll()
+            return first
+        }
+    }
+}

@@ -20,6 +20,8 @@ final class FocusStore: ObservableObject {
     @Published private(set) var timer: FocusTimer
     /// The moment the view measures against; advances every second while visible.
     @Published private(set) var now = Date()
+    /// Focus phases completed in the last few days, for the End-of-Day Review.
+    private(set) var sessionLog = FocusSessionLog()
 
     private let isDemo: Bool
     private let defaults = UserDefaults.standard
@@ -29,6 +31,7 @@ final class FocusStore: ObservableObject {
     private let notifications: FocusNotifications?
 
     private static let timerKey = "planner.focusTimer"
+    private static let sessionLogKey = "planner.focusSessions"
 
     init() {
         isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
@@ -40,8 +43,10 @@ final class FocusStore: ObservableObject {
         notifications = FocusNotifications.make()
         timer = defaults.data(forKey: Self.timerKey)
             .flatMap { try? JSONDecoder().decode(FocusTimer.self, from: $0) } ?? FocusTimer()
+        sessionLog = defaults.data(forKey: Self.sessionLogKey)
+            .flatMap { try? JSONDecoder().decode(FocusSessionLog.self, from: $0) } ?? FocusSessionLog()
         // A phase may have ended while the app wasn't running; catch up quietly.
-        timer.advance(to: Date())
+        record(timer.advance(to: Date()))
         scheduleSideEffects(withdrawingPending: false)
     }
 
@@ -115,12 +120,20 @@ final class FocusStore: ObservableObject {
         now = Date()
         let completions = timer.advance(to: now)
         guard !completions.isEmpty else { return }
+        record(completions)
         // Stale ends (the Mac was asleep) already got their notification; stay quiet.
         if let last = completions.last, now.timeIntervalSince(last.endedAt) < 60 {
             Self.playChime()
         }
         scheduleSideEffects(withdrawingPending: false)
         updateTicker()
+    }
+
+    /// Adds finished focus phases to the session log and saves it.
+    private func record(_ completions: [FocusPhaseCompletion]) {
+        guard !isDemo, !completions.isEmpty else { return }
+        sessionLog.record(completions, config: timer.config, now: Date())
+        if let data = try? JSONEncoder().encode(sessionLog) { defaults.set(data, forKey: Self.sessionLogKey) }
     }
 
     /// Saves the timer and arms the phase-end timer and notification. A user
