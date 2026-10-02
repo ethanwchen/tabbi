@@ -3,8 +3,8 @@
 Turn your MacBook's notch into a tiny command deck. Hover to peek, click to
 open, swipe or use ← → to flip between:
 
-- **Now Playing:** Spotify artwork, track, scrubber, and controls; a live
-  equalizer beside the closed notch while music plays
+- **Now Playing:** Spotify or Apple Music artwork, track, scrubber, controls,
+  and volume; a live equalizer beside the closed notch while music plays
 - **System:** CPU, GPU, and memory at a glance
 - **Claude Usage:** your 5-hour and weekly Claude limits, read from your own
   `claude` CLI, plus today's token and message totals from your local Claude
@@ -17,7 +17,7 @@ open, swipe or use ← → to flip between:
 ## Requirements
 
 - macOS 14+ (works best on a notched MacBook; other displays get a virtual pill)
-- Spotify desktop app for Now Playing
+- Spotify or Apple Music desktop app for Now Playing
 - [Claude Code](https://claude.com/claude-code) signed in, for the Claude modules
 
 ## Build and run
@@ -28,7 +28,8 @@ scripts/run.sh            # builds build/NotchDeck.app and launches it
 ```
 
 The first time you open Now Playing, macOS asks permission for NotchDeck to
-control Spotify.
+control Spotify or Music. NotchDeck never launches either app just to check
+what's playing.
 
 ## Privacy
 

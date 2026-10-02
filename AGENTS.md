@@ -1,7 +1,7 @@
 # NotchDeck — guide for contributors and coding agents
 
 NotchDeck is a macOS menu-bar-less app that turns the MacBook notch into a small,
-clickable panel with five modules: Now Playing (Spotify), System (CPU/GPU),
+clickable panel with five modules: Now Playing (Spotify, Apple Music), System (CPU/GPU),
 Claude Usage, Today (daily checklist), and Ask Claude.
 
 ## Build, test, look

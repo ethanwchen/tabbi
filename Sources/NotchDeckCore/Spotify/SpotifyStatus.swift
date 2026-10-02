@@ -1,7 +1,8 @@
 import Foundation
 
-/// Everything the Now Playing panel can be showing, derived from whether
-/// Spotify is installed and running plus the result of the last state read.
+/// Everything the Now Playing panel can be showing for one player app,
+/// derived from whether it is installed and running plus the result of the
+/// last state read.
 public enum SpotifyStatus: Equatable, Sendable {
     /// Spotify isn't installed on this Mac.
     case notInstalled
@@ -28,9 +29,11 @@ public enum SpotifyStatus: Equatable, Sendable {
     /// - Parameters:
     ///   - isRunning: Spotify's process was found (checked before every read).
     ///   - isInstalled: Only consulted when Spotify isn't running.
-    ///   - read: The `SpotifyScript.readState` result, or nil if no read was made.
+    ///   - read: The `source.readStateScript` result, or nil if no read was made.
     ///   - previous: The current status, kept when a read is inconclusive.
+    ///   - source: Which app's output format `read` is in.
     public static func resolve(
+        source: MediaSource = .spotify,
         isRunning: Bool,
         isInstalled: Bool,
         read: Result<String, SpotifyScriptError>?,
@@ -44,7 +47,7 @@ public enum SpotifyStatus: Equatable, Sendable {
             case .notInstalled, .notRunning: return .connecting
             }
         case .success(let output):
-            if let playback = SpotifyScript.parse(output) { return .connected(playback) }
+            if let playback = source.parse(output) { return .connected(playback) }
             // Garbled output (e.g. mid track change): keep what we had.
             return previous.playback.map(SpotifyStatus.connected) ?? .connected(.nothingPlaying)
         case .failure(.permissionDenied):
@@ -52,8 +55,8 @@ public enum SpotifyStatus: Equatable, Sendable {
         case .failure(.notRunning):
             return isInstalled ? .notRunning : .notInstalled
         case .failure(.other):
-            // Spotify errors on `current track` right after launch, before
-            // anything is loaded. Treat it as nothing playing, not a failure.
+            // Spotify and Music error on `current track` right after launch,
+            // before anything is loaded. Treat it as nothing playing, not a failure.
             return previous.playback.map(SpotifyStatus.connected) ?? .connected(.nothingPlaying)
         }
     }
