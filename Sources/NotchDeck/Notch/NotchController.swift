@@ -175,6 +175,14 @@ final class NotchController {
             }
             .store(in: &cancellables)
 
+        model.$isPinned
+            .removeDuplicates()
+            .sink { [weak self] pinned in
+                guard let self, !pinned, self.model.isOpen, !self.pointerInside else { return }
+                self.scheduleClose()
+            }
+            .store(in: &cancellables)
+
         services.$hasCompactActivity
             .removeDuplicates()
             .sink { [weak self] active in self?.model.hasCompactActivity = active }
