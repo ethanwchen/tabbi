@@ -27,7 +27,8 @@ final class SystemMonitor: ObservableObject {
     private var previousTicks: [CPUTicks] = []
     /// When `previousTicks` was taken. A baseline older than a couple of
     /// ticks (e.g. from before the panel was last hidden) would report the
-    /// average over that whole gap, so it is replaced instead of used.
+    /// average over that whole gap, so it is replaced instead of used, and
+    /// the histories restart so each sparkline covers one contiguous window.
     private var previousTicksTime: ContinuousClock.Instant?
     private var demoStep = 0
     private var samplingTask: Task<Void, Never>?
@@ -82,6 +83,11 @@ final class SystemMonitor: ObservableObject {
             let usage = CPUUsageCalculator.usage(from: previousTicks, to: ticks)
             cpu = usage
             if let usage { cpuHistory.append(usage.total) }
+        } else {
+            cpu = nil
+            cpuHistory.removeAll()
+            gpuHistory.removeAll()
+            memoryHistory.removeAll()
         }
         previousTicks = ticks
         previousTicksTime = now
