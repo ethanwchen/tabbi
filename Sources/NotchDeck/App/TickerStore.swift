@@ -41,7 +41,7 @@ final class TickerStore: ObservableObject {
             .combineLatest(spotify.$showsCompactActivity, claudeUsage.$limits.map { $0?.snapshot })
             .map { shared, isMusicPlaying, usage in
                 TickerSources(events: shared.events, isMusicPlaying: isMusicPlaying, focus: shared.focus,
-                              tasksRemaining: shared.openTasks.count, usage: usage)
+                              focusSource: shared.focusSource, tasksRemaining: shared.openTasks.count, usage: usage)
             }
             .removeDuplicates()
             .sink { [weak self] sources in
@@ -91,7 +91,7 @@ final class TickerStore: ObservableObject {
         if rotates, let shownSince = rotation.shownSince {
             wakes.append(shownSince.addingTimeInterval(rotation.interval))
         }
-        if case .focus(_, _, isRunning: true) = item {
+        if case .focus(_, _, isRunning: true, _) = item {
             wakes.append(now.addingTimeInterval(1))
         }
         guard let fireDate = wakes.compactMap({ $0 }).min() else { return }

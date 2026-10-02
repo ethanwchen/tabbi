@@ -91,7 +91,7 @@ public struct StudySession: Codable, Hashable, Sendable {
     /// First start of the current phase; nil while idle.
     private var phaseStartedAt: Date?
     /// Active time of the last focus phase, which sizes Flowtime breaks.
-    private var lastFocusWorked: TimeInterval
+    public private(set) var lastFocusWorked: TimeInterval
     /// Whether the last focus phase counted, so a skipped one never earns a long break.
     private var lastFocusCounted: Bool
     /// Last reviewed-today count seen from AnkiConnect; cards are its deltas.

@@ -246,6 +246,16 @@ final class StudyStore: ObservableObject {
             .eraseToAnyPublisher()
     }
 
+    /// The session as the shared focus timer, republished only when the
+    /// session changes: a running block carries its end date, so the
+    /// closed notch counts down without a per-second feed.
+    var sharedFocus: AnyPublisher<FocusTimer?, Never> {
+        $session
+            .map { $0.sharedFocusTimer(at: Date()) }
+            .removeDuplicates()
+            .eraseToAnyPublisher()
+    }
+
     /// Counts an Anki sprint's cards from the shared progress goals, so the
     /// timer never depends on the Anki module itself. The demo keeps its
     /// fixed sample sprint.

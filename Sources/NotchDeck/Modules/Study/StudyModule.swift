@@ -19,10 +19,13 @@ final class StudyModule: NotchModule {
     }
 
     /// Today's study minutes against the kit's daily goal, so Today lists
-    /// study time and Plan my day can schedule what is left.
+    /// study time and Plan my day can schedule what is left, and the block
+    /// under way as the shared focus timer, so the closed notch counts it
+    /// down and a click there opens Study.
     var provision: AnyPublisher<ModuleProvision, Never>? {
         store.goalProgress
-            .map { ModuleProvision(progress: [$0]) }
+            .combineLatest(store.sharedFocus)
+            .map { ModuleProvision(progress: [$0], focus: $1) }
             .eraseToAnyPublisher()
     }
 

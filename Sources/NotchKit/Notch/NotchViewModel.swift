@@ -99,7 +99,7 @@ public final class NotchViewModel: ObservableObject {
     /// Clicking the closed notch opens the module its preview belongs to,
     /// e.g. Today for a meeting countdown.
     public func openFromClosedClick() {
-        open(preview?.kind.module)
+        open(preview?.module)
     }
 
     public func toggle() {

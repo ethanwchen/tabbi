@@ -56,7 +56,8 @@ public enum TickerItem: Hashable, Sendable {
     case meeting(TickerMeeting)
     /// Music is playing; the app renders artwork and the equalizer itself.
     case nowPlaying
-    case focus(phase: FocusPhase, remaining: TimeInterval, isRunning: Bool)
+    /// A focus clock under way; `source` is the module running it.
+    case focus(phase: FocusPhase, remaining: TimeInterval, isRunning: Bool, source: ModuleID = .planner)
     case tasks(remaining: Int)
     case claudeUsage(window: TickerUsageWindow, utilization: Double)
 
@@ -68,6 +69,13 @@ public enum TickerItem: Hashable, Sendable {
         case .tasks: .tasks
         case .claudeUsage: .claudeUsage
         }
+    }
+
+    /// The panel a click on this item opens: the module running a focus
+    /// clock, otherwise the kind's module.
+    public var module: ModuleID {
+        if case .focus(_, _, _, let source) = self { return source }
+        return kind.module
     }
 
     /// Whether this item should hold the notch instead of rotating away.
@@ -98,6 +106,8 @@ public struct TickerSources: Equatable, Sendable {
     public var events: [UpcomingEvent]
     public var isMusicPlaying: Bool
     public var focus: FocusTimer?
+    /// The module running `focus`; nil means the Today panel's timer.
+    public var focusSource: ModuleID?
     public var tasksRemaining: Int
     public var usage: ClaudeRateLimitSnapshot?
 
@@ -105,12 +115,14 @@ public struct TickerSources: Equatable, Sendable {
         events: [UpcomingEvent] = [],
         isMusicPlaying: Bool = false,
         focus: FocusTimer? = nil,
+        focusSource: ModuleID? = nil,
         tasksRemaining: Int = 0,
         usage: ClaudeRateLimitSnapshot? = nil
     ) {
         self.events = events
         self.isMusicPlaying = isMusicPlaying
         self.focus = focus
+        self.focusSource = focusSource
         self.tasksRemaining = tasksRemaining
         self.usage = usage
     }
@@ -177,7 +189,8 @@ public struct TickerSources: Equatable, Sendable {
             // An idle timer isn't an activity; paused still is, since the
             // user is mid-session.
             guard let focus, focus.isRunning || focus.isPaused else { return nil }
-            return .focus(phase: focus.phase, remaining: focus.remaining(at: now), isRunning: focus.isRunning)
+            return .focus(phase: focus.phase, remaining: focus.remaining(at: now), isRunning: focus.isRunning,
+                          source: focusSource ?? .planner)
         case .tasks:
             return tasksRemaining > 0 ? .tasks(remaining: tasksRemaining) : nil
         case .claudeUsage:

@@ -97,6 +97,9 @@ public struct ProviderSnapshot: Equatable, Sendable {
     public private(set) var progress: [ProgressItem] = []
     /// A running or paused timer beats an idle one; ties go to tab order.
     public private(set) var focus: FocusTimer?
+    /// The module running `focus`, so a click on its preview opens that
+    /// module and consumers can tell one module's timer from another's.
+    public private(set) var focusSource: ModuleID?
 
     public init() {}
 
@@ -107,7 +110,7 @@ public struct ProviderSnapshot: Equatable, Sendable {
         var taskKeys = Set<[String]>()
         var progressKeys = Set<[String]>()
         var eventIDs = Set<String>()
-        var activeFocus: FocusTimer?
+        var activeFocus: (timer: FocusTimer, module: ModuleID)?
         for (module, provision) in provisions {
             for var task in provision.tasks where taskKeys.insert([module.rawValue, task.id]).inserted {
                 task.source = module
@@ -119,11 +122,11 @@ public struct ProviderSnapshot: Equatable, Sendable {
             }
             events += provision.events.filter { eventIDs.insert($0.id).inserted }
             if let timer = provision.focus {
-                if focus == nil { focus = timer }
-                if activeFocus == nil, timer.isRunning || timer.isPaused { activeFocus = timer }
+                if focus == nil { (focus, focusSource) = (timer, module) }
+                if activeFocus == nil, timer.isRunning || timer.isPaused { activeFocus = (timer, module) }
             }
         }
-        focus = activeFocus ?? focus
+        if let activeFocus { (focus, focusSource) = activeFocus }
         // Stable, so events with equal starts keep their tab order.
         events = events.enumerated()
             .sorted { ($0.element.start, $0.offset) < ($1.element.start, $1.offset) }

@@ -72,6 +72,16 @@ public struct FocusTimer: Codable, Hashable, Sendable {
         completedFocusCount = 0
     }
 
+    /// A timer in a given state, for modules that run their own clock (such
+    /// as Study) and share it through `ModuleProvision.focus`.
+    public init(phase: FocusPhase, runState: FocusRunState, config: FocusTimerConfig, completedFocusCount: Int = 0) {
+        self.phase = phase
+        self.runState = runState
+        self.config = config
+        linkedItemID = nil
+        self.completedFocusCount = max(completedFocusCount, 0)
+    }
+
     public var isRunning: Bool {
         if case .running = runState { return true }
         return false

@@ -33,7 +33,7 @@ struct NotchPreview: View {
         .help(NotchPreviewLayout.summary(for: item))
     }
 
-    private var accent: Color { Theme.Palette.accent(for: item.kind.module) }
+    private var accent: Color { Theme.Palette.accent(for: item.module) }
 
     @ViewBuilder private var leading: some View {
         switch item {
@@ -61,7 +61,7 @@ struct NotchPreview: View {
                     .fixedSize()
             }
             .previewText()
-        case .focus(_, let remaining, let isRunning):
+        case .focus(_, let remaining, let isRunning, _):
             Text(TickerFormat.focusClock(remaining))
                 .foregroundStyle(isRunning ? accent : Theme.Palette.secondaryText)
                 .previewText()
