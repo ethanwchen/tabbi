@@ -14,36 +14,13 @@ final class FocusDSPTests: XCTestCase {
         return Array(buffer.dropFirst(Int(sampleRate / 2)))
     }
 
-    private func rms(_ x: [Float]) -> Float {
-        (x.reduce(0) { $0 + $1 * $1 } / Float(x.count)).squareRoot()
-    }
+    private func rms(_ x: [Float]) -> Float { FocusSignalAnalysis.rms(x) }
 
-    /// Average spectral power near `frequency`, via Hann-windowed Goertzel
-    /// over consecutive blocks and a few neighbouring bins.
     private func power(of x: [Float], near frequency: Double) -> Double {
-        let n = 2048
-        let window = (0..<n).map { 0.5 - 0.5 * cos(2 * Double.pi * Double($0) / Double(n - 1)) }
-        let centerBin = Int((frequency * Double(n) / sampleRate).rounded())
-        var total = 0.0
-        var count = 0
-        var start = 0
-        while start + n <= x.count {
-            for bin in (centerBin - 2)...(centerBin + 2) {
-                let coefficient = 2 * cos(2 * Double.pi * Double(bin) / Double(n))
-                var s1 = 0.0, s2 = 0.0
-                for i in 0..<n {
-                    let s0 = Double(x[start + i]) * window[i] + coefficient * s1 - s2
-                    s2 = s1; s1 = s0
-                }
-                total += s1 * s1 + s2 * s2 - coefficient * s1 * s2
-                count += 1
-            }
-            start += n
-        }
-        return total / Double(count)
+        FocusSignalAnalysis.power(of: x, near: frequency)
     }
 
-    private func decibels(_ ratio: Double) -> Double { 10 * log10(ratio) }
+    private func decibels(_ ratio: Double) -> Double { FocusSignalAnalysis.decibels(ratio) }
 
     // MARK: - Noise spectra
 
