@@ -61,7 +61,7 @@ public struct FocusTimer: Codable, Hashable, Sendable {
     public var config: FocusTimerConfig
     /// Checklist item the user is focusing on, shown as "Focusing on: ...".
     public var linkedItemID: UUID?
-    /// Focus phases finished today by running out (skips don't count).
+    /// Focus phases finished by running out (skips don't count), across sessions.
     public private(set) var completedFocusCount: Int
 
     public init(config: FocusTimerConfig = FocusTimerConfig(), linkedItemID: UUID? = nil) {

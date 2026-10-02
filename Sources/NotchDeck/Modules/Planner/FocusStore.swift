@@ -62,7 +62,11 @@ final class FocusStore: ObservableObject {
 
     func start() {
         catchUp()
-        if !isDemo, !timer.isRunning { notifications?.requestAuthorizationIfNeeded() }
+        if !isDemo, !timer.isRunning {
+            // The phase-end request scheduled below is rejected while permission
+            // is still undecided, so schedule it again once the user allows it.
+            notifications?.requestAuthorizationIfNeeded { [weak self] in self?.rescheduleNotification() }
+        }
         change { $0.start(at: now) }
     }
 
@@ -138,6 +142,12 @@ final class FocusStore: ObservableObject {
         phaseEndTimer = fire
     }
 
+    /// Re-adds the pending phase-end notification, e.g. after permission was granted.
+    private func rescheduleNotification() {
+        guard !isDemo, let endsAt = timer.endsAt else { return }
+        notifications?.schedule(phaseEndingAt: endsAt, timer: timer)
+    }
+
     /// Ticks once a second, only while the panel is visible and the clock runs.
     private func updateTicker() {
         guard isVisible, timer.isRunning, !isDemo else {
@@ -188,11 +198,16 @@ private final class FocusNotifications: NSObject, UNUserNotificationCenterDelega
         center.delegate = self
     }
 
-    func requestAuthorizationIfNeeded() {
+    /// Asks for permission if the user hasn't decided yet, and calls
+    /// `onGranted` on the main actor when they allow it.
+    func requestAuthorizationIfNeeded(onGranted: @escaping @MainActor @Sendable () -> Void) {
         let center = center
         center.getNotificationSettings { settings in
             guard settings.authorizationStatus == .notDetermined else { return }
-            center.requestAuthorization(options: [.alert, .sound]) { _, _ in }
+            center.requestAuthorization(options: [.alert, .sound]) { granted, _ in
+                guard granted else { return }
+                Task { @MainActor in onGranted() }
+            }
         }
     }
 
