@@ -113,7 +113,8 @@ final class PetCoachController: ObservableObject {
     func start() {
         // Developer hook: `NOTCHDECK_COACH_PREVIEW=1` plays one nudge right
         // away, to check the real overlay window without waiting minutes.
-        // `=celebrate` plays a level-up celebration instead.
+        // `=celebrate` plays a level-up celebration and `=glance` the
+        // silent look instead.
         switch ProcessInfo.processInfo.environment["NOTCHDECK_COACH_PREVIEW"] {
         case "1":
             present(PetCoachNudge(kind: .distraction, message: PetCoachMessages.messages(for: .distraction, in: lines).last!),
@@ -121,6 +122,8 @@ final class PetCoachController: ObservableObject {
         case "celebrate":
             present(.celebration(PetStudyAward(completedSessions: 1, minutes: 25, points: 35, unlocked: [.accessory(.beanie)])),
                     stroll: PetCoachStroll(startedAt: Date().addingTimeInterval(1), talkDuration: PetCoach.celebrationDuration))
+        case "glance":
+            glance(at: Date().addingTimeInterval(1))
         default:
             break
         }
@@ -205,9 +208,15 @@ final class PetCoachController: ObservableObject {
         let before = save.coach
         let decision = save.coach.evaluate(input, lines: lines)
         if save.coach != before { persist() }
-        guard let nudge = decision.nudge else { return }
-        if nudge.pausesTimer { pauseTimer() }
-        present(nudge, at: input.now)
+        switch decision {
+        case .none:
+            break
+        case .lookOver:
+            glance(at: input.now)
+        case .nudge(let nudge):
+            if nudge.pausesTimer { pauseTimer() }
+            present(nudge, at: input.now)
+        }
     }
 
     // MARK: Overlay
@@ -220,15 +229,26 @@ final class PetCoachController: ObservableObject {
         present(.celebration(award), stroll: PetCoachStroll(startedAt: Date(), talkDuration: PetCoach.celebrationDuration))
     }
 
+    /// The silent look: the pet peeks out of the notch's edge and back.
+    /// Never over a bubble that's still up.
+    private func glance(at now: Date) {
+        guard overlay == nil else { return }
+        present(PetCoachScene(profile: profile(), glanceAt: now))
+    }
+
     private func present(_ nudge: PetCoachNudge, at now: Date) {
         present(.nudge(nudge), stroll: PetCoachStroll(startedAt: now))
     }
 
     private func present(_ line: PetCoachLine, stroll: PetCoachStroll) {
+        present(PetCoachScene(profile: profile(), stroll: stroll, line: line))
+    }
+
+    private func present(_ scene: PetCoachScene) {
         // One pet on screen at a time; a newer line replaces an old one.
         closeOverlay()
         guard let screen = screen() else { return }
-        let scene = PetCoachScene(profile: profile(), stroll: stroll, line: line)
+        let stroll = scene.stroll
         let overlay = PetCoachOverlayWindow(scene: scene, geometry: .measure(screen)) { [weak self] reply in
             self?.answer(reply)
         }

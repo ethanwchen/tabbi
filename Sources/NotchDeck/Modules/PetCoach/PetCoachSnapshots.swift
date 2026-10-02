@@ -15,6 +15,12 @@ enum PetCoachSnapshots {
         let stroll = PetCoachStroll(startedAt: start)
         var shots: [(String, AnyView)] = []
         // Mid-trot on the way out, before the bubble.
+        // The silent look: halfway down, then hanging and looking.
+        let glance = PetCoachScene(profile: profile, glanceAt: start)
+        if case .glance(let timing) = glance.line {
+            shots.append(("coach-glance-lowering", scene(glance, at: start.addingTimeInterval(timing.enter * 0.12))))
+            shots.append(("coach-glance", scene(glance, at: start.addingTimeInterval(timing.enter + 1))))
+        }
         let walking = PetCoachScene(profile: profile, stroll: stroll, nudge: nudge(.distraction, lines))
         shots.append(("coach-walking", scene(walking, at: start.addingTimeInterval(stroll.walkDuration * 0.6))))
         // One talking shot per bubble kind, after the arrival hop.
@@ -53,8 +59,10 @@ enum PetCoachSnapshots {
     private static let notchShown: CGFloat = 92
 
     private static func scene(_ scene: PetCoachScene, at date: Date) -> AnyView {
-        let overlay = PetCoachOverlayView.size(for: scene.stroll)
-        let width = notchShown + overlay.width + Theme.Spacing.xl
+        let overhang = PetCoachOverlayView.leadingOverhang(for: scene)
+        // Every shot gets a walk's backdrop, so tiny glances match the rest.
+        let backdrop = PetCoachOverlayView.size(for: PetCoachStroll(startedAt: date))
+        let width = notchShown + backdrop.width + Theme.Spacing.xl
         return AnyView(
             ZStack(alignment: .topLeading) {
                 // A stand-in desktop: a mid-gray wallpaper with a light
@@ -72,9 +80,9 @@ enum PetCoachSnapshots {
                     .fill(Theme.Palette.background)
                     .frame(width: notchShown, height: menuBarHeight)
                 PetCoachOverlayView(scene: scene, date: date) { _ in }
-                    .offset(x: notchShown, y: menuBarHeight)
+                    .offset(x: notchShown - overhang, y: menuBarHeight)
             }
-            .frame(width: width, height: menuBarHeight + overlay.height + Theme.Spacing.s, alignment: .topLeading)
+            .frame(width: width, height: menuBarHeight + backdrop.height + Theme.Spacing.s, alignment: .topLeading)
             .clipped()
         )
     }

@@ -51,11 +51,11 @@ final class PetCoachOverlayWindow {
 
     init(scene: PetCoachScene, geometry: NotchGeometry, onReply: @escaping (PetCoachReply) -> Void) {
         model = PetCoachOverlayModel(scene: scene)
-        let size = PetCoachOverlayView.size(for: scene.stroll)
+        let size = PetCoachOverlayView.size(for: scene)
         // AppKit's origin is bottom-left: hang the overlay from the bottom
         // of the menu bar, i.e. the notch's bottom edge.
         let frame = CGRect(
-            x: geometry.centerX + geometry.notchSize.width / 2,
+            x: geometry.centerX + geometry.notchSize.width / 2 - PetCoachOverlayView.leadingOverhang(for: scene),
             y: geometry.screenFrame.maxY - geometry.notchSize.height - size.height,
             width: size.width,
             height: size.height

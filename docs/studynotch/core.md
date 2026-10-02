@@ -260,8 +260,12 @@ Blank lines, lines over `maxLength` and unknown kinds are skipped.
 Ask it for `phase(at:)`, `offset(at:)`, `heading(at:)`, and `showsBubble(at:)`, so every frame (and every snapshot) follows from a date.
 `dismiss(at:)` (any reply) turns the pet around at once, mid-walk included; only the first dismissal counts.
 
-In the app, `PetCoachOverlayView` (`Modules/PetCoach`) draws a stroll.
-`--snapshot` renders `coach-walking.png` and one `coach-<kind>.png` per bubble kind.
+`PetCoachGlance` times the silent `.lookOver`: the pet lowers its head out of the notch (`peekIn`), hangs there looking for `hold` (2.5 s by default), then pulls back up (`peekOut`).
+`init(startedAt:clips:)` takes the clip lengths from the pet's own peek clips, `pose(at:)` gives the clip and the time into it (nil while tucked away), and `stroll` is a zero-distance stroll of the same length, so the overlay closes a glance the same way it closes a walk.
+
+In the app, `PetCoachOverlayView` (`Modules/PetCoach`) draws a stroll or a glance.
+A glance hangs from the notch's own bottom edge, just inside its rounded corner, has no bubble, takes no clicks, and never replaces a bubble that is still up.
+`--snapshot` renders `coach-walking.png`, one `coach-<kind>.png` per bubble kind, and `coach-glance-lowering.png` and `coach-glance.png`.
 
 ### Running the coach
 
@@ -275,7 +279,7 @@ Saves without `nudgesOn` read as on.
 In the app, `PetCoachController` (`Modules/PetCoach`) runs while the Closet module is on.
 It plays each nudge in `PetCoachOverlayWindow`, a transparent, non-activating panel hung below the menu bar at the notch's right edge.
 The window ignores the mouse except while the pointer is over the bubble.
-Run the app with `NOTCHDECK_COACH_PREVIEW=1` to play one nudge at launch, or `NOTCHDECK_COACH_PREVIEW=celebrate` to play a level-up celebration.
+Run the app with `NOTCHDECK_COACH_PREVIEW=1` to play one nudge at launch, `NOTCHDECK_COACH_PREVIEW=celebrate` to play a level-up celebration, or `NOTCHDECK_COACH_PREVIEW=glance` to play the silent glance.
 Settings › Pet Coach (shown with the Closet module) turns nudges on or off and edits the distracting apps: suggestion chips plus any app picked from the Applications folder.
 Turning nudges off stops sampling and ends any open episode, so turning them back on starts fresh.
 

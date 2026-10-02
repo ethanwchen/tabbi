@@ -2,16 +2,18 @@ import SwiftUI
 import NotchKitCore
 import NotchKit
 
-/// What the pet comes out to say: a coach nudge, or a celebration of
-/// points just earned.
+/// What the pet comes out to say: a coach nudge, a celebration of points
+/// just earned, or nothing at all (a silent glance from the notch's edge).
 enum PetCoachLine {
     case nudge(PetCoachNudge)
     case celebration(PetStudyAward)
+    case glance(PetCoachGlance)
 
     var replies: [PetCoachReply] {
         switch self {
         case .nudge(let nudge): nudge.kind.replies
         case .celebration: [.thanks]
+        case .glance: []
         }
     }
 
@@ -20,7 +22,13 @@ enum PetCoachLine {
         switch self {
         case .nudge: .alert
         case .celebration: .celebrate
+        case .glance: .peekIn
         }
+    }
+
+    var hasBubble: Bool {
+        if case .glance = self { return false }
+        return true
     }
 }
 
@@ -40,6 +48,16 @@ struct PetCoachScene {
 
     init(profile: PetProfile, stroll: PetCoachStroll, nudge: PetCoachNudge) {
         self.init(profile: profile, stroll: stroll, line: .nudge(nudge))
+    }
+
+    /// A silent glance timed by the pet's own peek clips.
+    init(profile: PetProfile, glanceAt start: Date) {
+        let clips = PetClipSet(profile: profile)
+        let glance = PetCoachGlance(startedAt: start, clips: clips)
+        self.profile = profile
+        self.clips = clips
+        stroll = glance.stroll
+        line = .glance(glance)
     }
 }
 
@@ -76,10 +94,24 @@ struct PetCoachOverlayView: View {
         CGPoint(x: CGFloat(stroll.distance) + bubbleGap, y: bubbleTop)
     }
 
-    /// Size of the overlay window for `stroll`: room for the walk plus the
-    /// bubble beside the pet's stopping spot.
+    /// Size of the overlay window for `scene`: room for the walk plus the
+    /// bubble beside the pet's stopping spot, or just the pet for a glance.
+    static func size(for scene: PetCoachScene) -> CGSize {
+        if case .glance = scene.line { return CGSize(width: petSide, height: petSide) }
+        return size(for: scene.stroll)
+    }
+
     static func size(for stroll: PetCoachStroll) -> CGSize {
         CGSize(width: CGFloat(stroll.distance) + bubbleGap + bubbleWidth + Theme.Spacing.l, height: 120)
+    }
+
+    /// How far left of the notch's right edge the overlay starts. A glance
+    /// hangs from the notch's own bottom edge, just inside its rounded
+    /// corner, so it reads as peeking out of the notch; walks start at the
+    /// edge.
+    static func leadingOverhang(for scene: PetCoachScene) -> CGFloat {
+        if case .glance = scene.line { return petSide + Theme.Layout.closedBottomRadius + Theme.Spacing.xs }
+        return 0
     }
 
     var body: some View {
@@ -92,7 +124,7 @@ struct PetCoachOverlayView: View {
                 }
             }
         }
-        .frame(width: Self.size(for: scene.stroll).width, height: Self.size(for: scene.stroll).height,
+        .frame(width: Self.size(for: scene).width, height: Self.size(for: scene).height,
                alignment: .topLeading)
         // The window clips in the app; clip here too so the pet is hidden
         // under the notch in snapshots as well.
@@ -106,9 +138,13 @@ struct PetCoachOverlayView: View {
         let offset = reduceMotion && stroll.phase(at: date) != .finished
             ? stroll.distance : stroll.offset(at: date)
         ZStack(alignment: .topLeading) {
-            pet(at: date)
-                .offset(x: CGFloat(offset) - Self.petSide, y: Self.petTop)
-            if stroll.showsBubble(at: date) {
+            if case .glance(let glance) = scene.line {
+                glancingPet(glance, at: date)
+            } else {
+                pet(at: date)
+                    .offset(x: CGFloat(offset) - Self.petSide, y: Self.petTop)
+            }
+            if scene.line.hasBubble, stroll.showsBubble(at: date) {
                 PetCoachBubble(line: scene.line, onReply: onReply)
                     .frame(width: Self.bubbleWidth, alignment: .leading)
                     .background(GeometryReader { proxy in
@@ -122,6 +158,21 @@ struct PetCoachOverlayView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .animation(Theme.Motion.snappy, value: stroll.showsBubble(at: date))
+    }
+
+    /// Hanging from the top edge by its front paws: the head lowers into
+    /// view, looks at the user, and pulls back up. Nothing once it's gone.
+    @ViewBuilder
+    private func glancingPet(_ glance: PetCoachGlance, at date: Date) -> some View {
+        // Reduce Motion: no lowering, the pet just hangs there for the look.
+        let pose = reduceMotion
+            ? glance.pose(at: date).map { _ in (PetAnimation.peekIn, glance.enter) }
+            : glance.pose(at: date)
+        if let pose {
+            PetSpriteView(canvas: scene.clips[pose.animation].frame(at: pose.elapsed).canvas,
+                          palette: scene.profile.palette, pixelSize: Self.pixelSize)
+                .accessibilityLabel(scene.profile.name)
+        }
     }
 
     /// Walking frames while moving (the clip faces left, so walking away
@@ -179,6 +230,8 @@ private struct PetCoachBubble: View {
                     .lineLimit(2)
             case .celebration(let award):
                 PetCelebrationText(award: award, accent: Self.accent)
+            case .glance:
+                EmptyView()
             }
             HStack(spacing: Theme.Spacing.xs) {
                 ForEach(line.replies, id: \.self) { reply in
