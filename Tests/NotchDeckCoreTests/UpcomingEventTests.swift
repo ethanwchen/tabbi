@@ -84,6 +84,21 @@ final class UpcomingEventTests: XCTestCase {
         XCTAssertTrue(upNext.contains { $0.meetingLink != nil })
         XCTAssertTrue(upNext.contains { $0.meetingLink == nil })
     }
+
+    func testSamplesStartOnFiveMinuteMarksAtAnyMoment() {
+        // Every second across a five-minute window: the first event is always
+        // live, the next is still ahead, and all starts are on clean times.
+        for offset in stride(from: 0.0, to: 300, by: 1) {
+            let moment = now.addingTimeInterval(offset)
+            let upNext = UpcomingEvent.upNext(from: UpcomingEvent.samples(now: moment), at: moment)
+            XCTAssertEqual(upNext.count, 3)
+            XCTAssertEqual(upNext.first?.timing(at: moment), .now)
+            XCTAssertNotEqual(upNext[1].timing(at: moment), .now)
+            for event in upNext {
+                XCTAssertEqual(event.start.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: 300), 0)
+            }
+        }
+    }
 }
 
 final class MeetingLinkTests: XCTestCase {

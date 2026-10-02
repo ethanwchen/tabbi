@@ -166,7 +166,10 @@ private struct UpNextMessage<Action: View>: View {
                 .padding(.top, Theme.Spacing.xxs)
         }
         .padding(.horizontal, Theme.Spacing.xs)
-        .padding(.top, Theme.Spacing.xxs)
+        // Centered in the space under the caption, nudged up so it sits
+        // near the card's optical middle instead of hanging off the top.
+        .padding(.bottom, Theme.Spacing.m)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
     }
 }
 
