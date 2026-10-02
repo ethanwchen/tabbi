@@ -4,7 +4,8 @@ import NotchDeckCore
 
 /// Ask Claude: a small chat with the local `claude` CLI. Messages fill the
 /// panel and a text field sits at the bottom. The notch stays pinned open
-/// while the field is focused or an answer is streaming.
+/// while the focused field holds a draft or an answer is streaming, so an
+/// idle Ask tab still closes when the pointer leaves.
 struct ClaudeAskPanel: View {
     @ObservedObject var session: ClaudeAskSession
     @EnvironmentObject private var notch: NotchViewModel
@@ -45,7 +46,7 @@ struct ClaudeAskPanel: View {
             try? await Task.sleep(for: .milliseconds(80))
             fieldFocused = true
         }
-        .onChange(of: fieldFocused || session.isStreaming, initial: true) { _, pinned in
+        .onChange(of: (fieldFocused && !draft.isEmpty) || session.isStreaming, initial: true) { _, pinned in
             notch.isPinned = pinned
         }
         .onDisappear { notch.isPinned = false }
