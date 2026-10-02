@@ -85,6 +85,7 @@ public extension KitManifest {
             }
         }
         let answerModules = onboarding.flatMap(\.options).flatMap { $0.enables + $0.disables }
+            + [accent].compactMap { $0 }
         for id in answerModules where !catalog.contains(id) && seen.insert(id).inserted {
             issues.append(.unknownModule(id))
         }

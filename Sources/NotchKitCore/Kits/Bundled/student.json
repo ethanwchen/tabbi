@@ -4,6 +4,7 @@
   "name": "Student",
   "summary": "A study timer, today's classes and homework, and music to focus.",
   "symbol": "graduationcap.fill",
+  "accent": "planner",
   "modules": ["study", "planner", "spotify", "claudeAsk", { "id": "anki", "enabled": false }, "closet"],
   "defaults": {
     "studyMethods": ["pomodoro", "fiftyTwoSeventeen", "flowtime", "custom"],

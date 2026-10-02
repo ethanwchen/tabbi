@@ -22,6 +22,10 @@ public struct KitManifest: Codable, Equatable, Sendable, Identifiable {
     public var summary: String
     /// SF Symbol shown in the kit picker.
     public var symbol: String
+    /// The module whose accent color tints the kit's symbol, so kits that
+    /// open on the same tab still look different in the picker. Nil uses
+    /// the first tab.
+    public var accent: ModuleID?
     /// The tabs, in order. Entries may be switched off by default.
     public var modules: [KitModuleEntry]
     public var defaults: KitDefaults
@@ -36,6 +40,7 @@ public struct KitManifest: Codable, Equatable, Sendable, Identifiable {
         name: String,
         summary: String,
         symbol: String,
+        accent: ModuleID? = nil,
         modules: [KitModuleEntry],
         defaults: KitDefaults = KitDefaults(),
         onboarding: [KitQuestion] = [],
@@ -46,6 +51,7 @@ public struct KitManifest: Codable, Equatable, Sendable, Identifiable {
         self.name = name
         self.summary = summary
         self.symbol = symbol
+        self.accent = accent
         self.modules = modules
         self.defaults = defaults
         self.onboarding = onboarding
@@ -53,7 +59,7 @@ public struct KitManifest: Codable, Equatable, Sendable, Identifiable {
     }
 
     private enum CodingKeys: String, CodingKey {
-        case formatVersion, id, name, summary, symbol, modules, defaults, onboarding, starterTasks
+        case formatVersion, id, name, summary, symbol, accent, modules, defaults, onboarding, starterTasks
     }
 
     public init(from decoder: Decoder) throws {
@@ -63,10 +69,18 @@ public struct KitManifest: Codable, Equatable, Sendable, Identifiable {
         name = try container.decode(String.self, forKey: .name)
         summary = try container.decodeIfPresent(String.self, forKey: .summary) ?? ""
         symbol = try container.decodeIfPresent(String.self, forKey: .symbol) ?? "square.grid.2x2"
+        accent = try container.decodeIfPresent(ModuleID.self, forKey: .accent)
         modules = try container.decode([KitModuleEntry].self, forKey: .modules)
         defaults = try container.decodeIfPresent(KitDefaults.self, forKey: .defaults) ?? KitDefaults()
         onboarding = try container.decodeIfPresent([KitQuestion].self, forKey: .onboarding) ?? []
         starterTasks = try container.decodeIfPresent([String].self, forKey: .starterTasks) ?? []
+    }
+
+    /// The module whose accent tints the kit: `accent` if `catalog` knows
+    /// it, otherwise the first tab the kit turns on.
+    public func accentModule(catalog: ModuleCatalog = .builtIn) -> ModuleID? {
+        if let accent, catalog.contains(accent) { return accent }
+        return layout(catalog: catalog).enabled.first
     }
 
     /// Module ids in kit order, duplicates dropped.

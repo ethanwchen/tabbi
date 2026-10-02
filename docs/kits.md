@@ -60,6 +60,7 @@ A kit file is a JSON object with these fields.
 | `name` | yes | string | Name shown in the kit picker. |
 | `summary` | no | string | One line shown under the name. |
 | `symbol` | no | string | [SF Symbol](https://developer.apple.com/sf-symbols/) name shown beside the name. Defaults to `square.grid.2x2`. |
+| `accent` | no | string | Module id whose accent color tints the symbol, such as `planner`. Defaults to the first tab, so set it when your kit opens on the same tab as another kit. |
 | `modules` | yes | array | The tabs, in order. At least one. See [Modules](#modules). |
 | `defaults` | no | object | Settings the kit starts with. See [Defaults](#defaults). |
 | `onboarding` | no | array | Questions first-run setup and Settings ask to tailor the kit. See [Onboarding](#onboarding). |

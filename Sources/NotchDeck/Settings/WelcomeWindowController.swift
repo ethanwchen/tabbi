@@ -172,7 +172,7 @@ private struct KitCard: View {
 
     var body: some View {
         let tabs = kit.layout().enabled
-        let tint = tabs.first.map { Theme.Palette.accent(for: $0) } ?? .accentColor
+        let tint = kit.accentModule().map { Theme.Palette.accent(for: $0) } ?? .accentColor
         Button(action: action) {
             HStack(spacing: 12) {
                 Image(systemName: kit.symbol)
@@ -251,7 +251,7 @@ struct KitQuestionsView: View {
 
     var body: some View {
         let tabs = kit.layout(answers: answers).enabled
-        let tint = kit.layout().enabled.first.map { Theme.Palette.accent(for: $0) } ?? .accentColor
+        let tint = kit.accentModule().map { Theme.Palette.accent(for: $0) } ?? .accentColor
         VStack(spacing: 0) {
             VStack(spacing: 8) {
                 Image(systemName: kit.symbol)

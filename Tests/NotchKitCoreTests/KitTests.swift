@@ -26,7 +26,7 @@ final class KitManifestDecodingTests: XCTestCase {
 
     func testRoundTripsThroughJSON() throws {
         let kit = KitManifest(
-            id: "round-trip", name: "Round trip", summary: "s", symbol: "star",
+            id: "round-trip", name: "Round trip", summary: "s", symbol: "star", accent: .planner,
             modules: [KitModuleEntry(.planner), KitModuleEntry("anki", enabled: false)],
             defaults: KitDefaults(studyMethods: ["pomodoro"], focusSounds: [KitFocusSound(sound: "rain", level: 0.5)],
                                   pet: KitPetDefaults(breed: "corgi", name: "Biscuit"),
@@ -183,6 +183,16 @@ final class KitApplicationTests: XCTestCase {
         XCTAssertEqual(kit.layout(catalog: catalog).order, [.planner, "leetcode"])
     }
 
+    func testAccentFallsBackToTheFirstEnabledTab() {
+        var kit = kit
+        XCTAssertEqual(kit.accentModule(), .planner)
+        kit.accent = .spotify
+        XCTAssertEqual(kit.accentModule(), .spotify)
+        kit.accent = "chess"
+        XCTAssertEqual(kit.accentModule(), .planner)
+        XCTAssertEqual(kit.issues(), [.unknownModule("leetcode"), .unknownModule("chess")])
+    }
+
     func testIssuesListUnknownValuesOnce() {
         var kit = kit
         kit.modules.append(KitModuleEntry(.planner))
@@ -208,6 +218,11 @@ final class KitLibraryTests: XCTestCase {
             XCTAssertFalse(kit.summary.isEmpty, id)
         }
         XCTAssertEqual(KitLibrary.bundled.kits.map(\.id), KitLibrary.bundledIDs)
+    }
+
+    func testBundledKitsHaveDistinctAccents() {
+        let accents = KitLibrary.bundled.kits.compactMap { $0.accentModule() }
+        XCTAssertEqual(Set(accents).count, KitLibrary.bundledIDs.count)
     }
 
     func testProductivityKitReproducesTheOriginalTabs() throws {
