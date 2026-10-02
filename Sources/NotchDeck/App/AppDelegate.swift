@@ -10,4 +10,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         self.services = services
         notch = NotchController(services: services)
     }
+
+    /// With no Dock icon or menu bar item, opening the app again (from Finder,
+    /// Spotlight, or `open`) is the natural way back into Settings.
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        services?.openSettings()
+        return false
+    }
 }

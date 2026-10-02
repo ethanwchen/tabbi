@@ -2,7 +2,7 @@ import AppKit
 import SwiftUI
 import NotchDeckCore
 
-/// Renders every notch state to PNG without showing a window:
+/// Renders every notch state and Settings pane to PNG without showing a window:
 ///
 ///     swift run NotchDeck --snapshot ./snapshots
 ///
@@ -45,6 +45,14 @@ enum SnapshotRenderer {
                   let png = NSBitmapImageRep(data: tiff)?.representation(using: .png, properties: [:])
             else { continue }
             let url = outputDirectory.appendingPathComponent("\(name).png")
+            try? png.write(to: url)
+            print(url.path)
+        }
+
+        let settingsWindow = SettingsWindowController(settings: services.settings)
+        for pane in SettingsWindowController.Pane.allCases {
+            guard let png = await settingsWindow.snapshot(of: pane) else { continue }
+            let url = outputDirectory.appendingPathComponent("settings-\(pane.rawValue).png")
             try? png.write(to: url)
             print(url.path)
         }

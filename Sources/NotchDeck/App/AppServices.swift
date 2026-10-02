@@ -19,11 +19,20 @@ final class AppServices: ObservableObject {
     @Published private(set) var hasCompactActivity = false
 
     private var cancellables: Set<AnyCancellable> = []
+    /// Created on first use so launching never builds a window nobody opens.
+    private var settingsWindow: SettingsWindowController?
 
     init(settings: SettingsStore) {
         self.settings = settings
         spotify.$showsCompactActivity
             .removeDuplicates()
             .assign(to: &$hasCompactActivity)
+    }
+
+    /// Shows the Settings window (from the notch's gear button or context menu).
+    func openSettings() {
+        let controller = settingsWindow ?? SettingsWindowController(settings: settings)
+        settingsWindow = controller
+        controller.present()
     }
 }

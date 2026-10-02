@@ -23,7 +23,7 @@ final class SettingsStore: ObservableObject {
 
     private let repository: SettingsRepository
     /// False for snapshot stores, which must never touch the real login item.
-    private let integratesWithSystem: Bool
+    let integratesWithSystem: Bool
 
     init(repository: SettingsRepository = SettingsRepository(), integratesWithSystem: Bool = true) {
         self.repository = repository
