@@ -154,6 +154,9 @@ final class SettingsRepositoryTests: XCTestCase {
         XCTAssertTrue(settings.hapticsEnabled)
         XCTAssertEqual(settings.hotkey, .default)
         XCTAssertEqual(settings.preferredDisplay, .builtIn)
+        XCTAssertTrue(settings.notchPreview.isEnabled)
+        XCTAssertEqual(settings.notchPreview.enabledKinds, Set(TickerKind.allCases))
+        XCTAssertEqual(settings.notchPreview.interval, .medium)
     }
 
     func testRoundTripsEveryField() {
@@ -166,7 +169,8 @@ final class SettingsRepositoryTests: XCTestCase {
             launchAtLogin: true,
             hotkey: Hotkey(keyCode: 40, modifiers: [.command, .shift]),
             claudePathOverride: "/opt/claude",
-            preferredDisplay: .specific(5)
+            preferredDisplay: .specific(5),
+            notchPreview: NotchPreviewSettings(isEnabled: false, disabledKinds: [.tasks, .claudeUsage], interval: .long)
         )
         let repository = SettingsRepository(defaults: defaults)
         repository.save(settings)
@@ -205,5 +209,40 @@ final class SettingsRepositoryTests: XCTestCase {
         defaults.set(["system"], forKey: "settings.modules.disabled")
         let layout = SettingsRepository(defaults: defaults).load().modules
         XCTAssertEqual(layout.enabled, [.claudeAsk, .spotify, .claudeUsage, .planner])
+    }
+
+    func testMalformedPreviewValuesFallBack() {
+        defaults.set(7, forKey: "settings.preview.interval")
+        defaults.set(["focus", "hologram"], forKey: "settings.preview.disabledKinds")
+        defaults.set("on", forKey: "settings.preview.enabled")
+        let preview = SettingsRepository(defaults: defaults).load().notchPreview
+        XCTAssertEqual(preview.interval, .medium)
+        XCTAssertEqual(preview.disabledKinds, [.focus])
+        XCTAssertTrue(preview.isEnabled)
+    }
+}
+
+final class NotchPreviewSettingsTests: XCTestCase {
+    func testTogglingAKindOnlyAffectsThatKind() {
+        var preview = NotchPreviewSettings.default
+        preview.setEnabled(.nowPlaying, false)
+        XCTAssertFalse(preview.isEnabled(.nowPlaying))
+        XCTAssertEqual(preview.enabledKinds, [.meeting, .focus, .tasks, .claudeUsage])
+        preview.setEnabled(.nowPlaying, true)
+        XCTAssertEqual(preview.enabledKinds, Set(TickerKind.allCases))
+    }
+
+    func testMasterSwitchHidesEveryKindButKeepsChoices() {
+        var preview = NotchPreviewSettings(disabledKinds: [.tasks])
+        preview.isEnabled = false
+        XCTAssertTrue(preview.enabledKinds.isEmpty)
+        XCTAssertFalse(preview.isEnabled(.tasks))
+        preview.isEnabled = true
+        XCTAssertEqual(preview.enabledKinds, Set(TickerKind.allCases).subtracting([.tasks]))
+    }
+
+    func testIntervalsMatchTheOfferedChoices() {
+        XCTAssertEqual(TickerInterval.allCases.map(\.seconds), [5, 8, 12])
+        XCTAssertEqual(TickerInterval.medium.title, "8 seconds")
     }
 }

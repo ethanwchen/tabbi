@@ -14,6 +14,7 @@ public struct AppSettings: Equatable, Sendable {
         didSet { claudePathOverride = Self.normalizedPath(claudePathOverride) }
     }
     public var preferredDisplay: DisplayPreference
+    public var notchPreview: NotchPreviewSettings
 
     /// How long the pointer must rest on the closed notch before hover-to-open fires.
     public static let hoverOpenDelay: Duration = .milliseconds(250)
@@ -27,7 +28,8 @@ public struct AppSettings: Equatable, Sendable {
         launchAtLogin: Bool = false,
         hotkey: Hotkey = .default,
         claudePathOverride: String? = nil,
-        preferredDisplay: DisplayPreference = .builtIn
+        preferredDisplay: DisplayPreference = .builtIn,
+        notchPreview: NotchPreviewSettings = .default
     ) {
         self.modules = modules
         self.openOnHover = openOnHover
@@ -36,6 +38,7 @@ public struct AppSettings: Equatable, Sendable {
         self.hotkey = hotkey
         self.claudePathOverride = Self.normalizedPath(claudePathOverride)
         self.preferredDisplay = preferredDisplay
+        self.notchPreview = notchPreview
     }
 
     /// Trims whitespace and expands `~`; blank means "no override".
@@ -62,6 +65,9 @@ public struct SettingsRepository {
         static let hotkey = "settings.hotkey"
         static let claudePathOverride = "settings.claudePathOverride"
         static let preferredDisplay = "settings.preferredDisplay"
+        static let previewEnabled = "settings.preview.enabled"
+        static let previewDisabledKinds = "settings.preview.disabledKinds"
+        static let previewInterval = "settings.preview.interval"
     }
 
     private let defaults: UserDefaults
@@ -86,7 +92,15 @@ public struct SettingsRepository {
             hotkey: hotkey ?? fallback.hotkey,
             claudePathOverride: defaults.string(forKey: Key.claudePathOverride),
             preferredDisplay: defaults.string(forKey: Key.preferredDisplay)
-                .flatMap(DisplayPreference.init(storageValue:)) ?? fallback.preferredDisplay
+                .flatMap(DisplayPreference.init(storageValue:)) ?? fallback.preferredDisplay,
+            notchPreview: NotchPreviewSettings(
+                isEnabled: bool(Key.previewEnabled) ?? fallback.notchPreview.isEnabled,
+                // Unknown raw values (a kind removed in a later version) are dropped.
+                disabledKinds: Set((defaults.stringArray(forKey: Key.previewDisabledKinds) ?? [])
+                    .compactMap(TickerKind.init(rawValue:))),
+                interval: (defaults.object(forKey: Key.previewInterval) as? Int)
+                    .flatMap(TickerInterval.init(rawValue:)) ?? fallback.notchPreview.interval
+            )
         )
     }
 
@@ -104,6 +118,10 @@ public struct SettingsRepository {
             defaults.removeObject(forKey: Key.claudePathOverride)
         }
         defaults.set(settings.preferredDisplay.storageValue, forKey: Key.preferredDisplay)
+        defaults.set(settings.notchPreview.isEnabled, forKey: Key.previewEnabled)
+        // Sorted so the stored value is stable across saves.
+        defaults.set(settings.notchPreview.disabledKinds.map(\.rawValue).sorted(), forKey: Key.previewDisabledKinds)
+        defaults.set(settings.notchPreview.interval.rawValue, forKey: Key.previewInterval)
     }
 
     /// `nil` when the key is absent or not a boolean, so defaults apply.
