@@ -15,7 +15,6 @@ final class ClaudeAskSession: ObservableObject {
     /// True with `NOTCHDECK_DEMO=1`: shows a sample chat and never runs the CLI.
     let isDemo: Bool
 
-    private var executable: URL?
     private var task: Task<Void, Never>?
     /// Bumped on every ask, stop, and New chat so a superseded run can't
     /// write into the conversation after it was cancelled.
@@ -80,18 +79,20 @@ final class ClaudeAskSession: ObservableObject {
     /// Sends the failed question again.
     func retry() {
         guard let prompt = conversation.takeRetryPrompt() else { return }
-        // Re-locate in case the user just installed `claude` or set the override.
-        executable = nil
         ask(prompt)
     }
 
     /// Looks up `claude` ahead of the first question (the panel calls this
-    /// when it appears). Pass `force` to look again after a failed lookup.
-    func prepare(force: Bool = false) {
+    /// when it appears, and again from the "not found" view). Cheap once
+    /// found; misses are looked up afresh.
+    func prepare() {
         guard !isDemo else { return }
-        if force { executable = nil }
-        guard executable == nil else { return }
         Task { _ = await resolveExecutable() }
+    }
+
+    /// Called when the user changes the `claude` path in Settings.
+    func claudePathDidChange() {
+        prepare()
     }
 
     /// Clears the chat; the next question starts a fresh CLI session.
@@ -113,11 +114,10 @@ final class ClaudeAskSession: ObservableObject {
         change(&conversation)
     }
 
-    /// Locates `claude` once, off the main thread (the login-shell fallback blocks).
+    /// Locates `claude` off the main thread (the login-shell fallback blocks).
+    /// The shared resolver caches hits and follows the Settings override.
     private func resolveExecutable() async -> URL? {
-        if let executable { return executable }
-        let found = await Task.detached(priority: .userInitiated) { ClaudeCLI.locate() }.value
-        executable = found
+        let found = await Task.detached(priority: .userInitiated) { ClaudeExecutableResolver.shared.resolve() }.value
         isClaudeMissing = found == nil
         return found
     }

@@ -27,6 +27,15 @@ final class AppServices: ObservableObject {
         spotify.$showsCompactActivity
             .removeDuplicates()
             .assign(to: &$hasCompactActivity)
+        // A new `claude` path in Settings must reach both Claude modules
+        // live, not on the next launch.
+        settings.$appliedClaudePathOverride
+            .dropFirst()
+            .sink { [claudeUsage, claudeAsk] _ in
+                claudeUsage.claudePathDidChange()
+                claudeAsk.claudePathDidChange()
+            }
+            .store(in: &cancellables)
     }
 
     /// Shows the Settings window (from the notch's gear button or context menu).
