@@ -9,7 +9,8 @@ open, swipe or use ← → to flip between:
 - **Claude Usage:** your 5-hour and weekly Claude limits, read from your own
   `claude` CLI, plus today's token and message totals from your local Claude
   Code transcripts
-- **Today:** a daily checklist that lives one click away
+- **Today:** a daily checklist, your next calendar events with one-click
+  Zoom/Meet/Teams join buttons, and a Pomodoro focus timer
 - **Ask Claude:** a quick question box that streams answers from your `claude` CLI
 
 > Status: early development.
@@ -29,6 +30,8 @@ scripts/run.sh            # builds build/NotchDeck.app and launches it
 
 The first time you open Now Playing, macOS asks permission for NotchDeck to
 control Spotify.
+In Today, click "Show calendar" to grant calendar access; the first time you
+start the focus timer, NotchDeck asks permission to send notifications.
 
 ## Privacy
 
@@ -38,6 +41,7 @@ Claude Usage reads token counts from the transcripts in `~/.claude/projects`
 read-only and never writes there. Each limits refresh sends a tiny `claude`
 request, so it only runs when you open the panel after 10+ minutes or press
 refresh.
+Today reads your calendar events on your Mac only to show what's up next.
 
 ## Contributing
 
