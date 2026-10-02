@@ -39,7 +39,7 @@ describe("presence", () => {
       ok: true,
       presence: {
         status: "studying", method: "pomodoro", phaseEndsAt, sessionMinutes: 5, todayMinutes: 90, streakDays: 3,
-        lastSeen: expect.any(Number),
+        day: new Date().toISOString().slice(0, 10), lastSeen: expect.any(Number),
       },
       heartbeatSeconds: catalog.heartbeatSeconds.studying,
     });
@@ -148,6 +148,11 @@ describe("presence", () => {
       { status: "studying", todayMinutes: 1.5 },
       { status: "studying", todayMinutes: "10" },
       { status: "studying", streakDays: 36501 },
+      { status: "studying", day: "2026-02-30" },
+      { status: "studying", day: "20261001" },
+      { status: "studying", day: 20261001 },
+      { status: "studying", day: new Date(Date.now() - 2 * 86400_000).toISOString().slice(0, 10) },
+      { status: "studying", day: new Date(Date.now() + 2 * 86400_000).toISOString().slice(0, 10) },
     ];
     for (const body of bad) expectError(await call("POST", "/v1/presence", body, a.token), 400, "invalid_field");
     expectError(await call("POST", "/v1/presence", { status: "idle", deck: "Cardio" }, a.token), 400, "unknown_field");

@@ -51,6 +51,9 @@ app ──HTTPS──> Worker (studynotch-friends) ──> Durable Object "Hub" 
 - Parties are a `parties` row (host, last activity, optional shared session) plus one `party_members` row per member, keyed by user so a user is in at most one party.
   Creating or joining a party leaves the previous one; a leaving host hands over to the longest-standing member, and the last member leaving deletes the party.
   A party expires 12 h after its last activity (create, join, leave, session change, or a member's poll); expired parties are deleted when touched and swept when a new party is created.
+- The weekly leaderboard sums a `study_days` row per user per local calendar day (the last `todayMinutes` the app reported for that day, written with the presence flushes and only when it changed).
+  The app sends its local `day` with each heartbeat, so minutes count toward the day the student actually studied in their time zone.
+  The week is the current ISO week (Monday to Sunday) of the UTC calendar; live, not yet flushed counts are included, and rows are kept for 28 days.
 - Rate limits (60 requests per minute per token, 10 registrations per minute per IP) are counted in the Hub's memory.
   With a single instance they are exact while it is alive, and they cost no storage writes.
 
@@ -96,19 +99,22 @@ Budget for a heavy user who studies 4 hours in 25+5 minute pomodoros and has the
 
 | Per user per day | Requests | Row writes |
 | --- | --- | --- |
-| Heartbeats while studying (4 h / 120 s) | 120 | 16 phase changes + 24 periodic flushes = 40 |
+| Heartbeats while studying (4 h / 120 s) | 120 | 16 phase changes + 24 periodic flushes = 40, plus 40 study-day rows |
 | Heartbeats while idle (4 h / 300 s) | 48 | 24 periodic flushes |
 | Friend list polls (every 60 s while the panel is open, about 30 min) | 30 | 0 |
 | Party polls (every 30 s while in a party, about 1 h) | 120 | 6 activity bumps |
+| Leaderboard loads (when its view opens, about 6 times) | 6 | 0 |
 | Start, quit, profile edits | about 5 | about 5 |
 | Joining and leaving a party | 2 | about 4 |
-| **Total** | **about 320** | **about 80** |
+| **Total** | **about 330** | **about 120** |
 
-So 100,000 requests per day cover about 300 heavy users, and 100,000 row writes cover about 1,250.
+So 100,000 requests per day cover about 300 heavy users, and 100,000 row writes cover about 830.
 Requests are the binding limit; typical users study less than 4 hours and spend less time in a party, so the free plan serves several hundred daily users.
 A party poll does not write: `lastActive` is persisted at most once per 10 minutes per party, which is precise enough for a 12-hour expiry.
-Rows read stay well under 5M: a friend list poll reads at most about 150 rows (50 friendships, 50 profiles, 50 presence rows), so even 500 users who all have 50 friends and poll 30 times a day read 2.25M rows.
+Rows read are the next limit: a friend list poll reads at most about 150 rows (50 friendships, 50 profiles, 50 presence rows), so even 500 users who all have 50 friends and poll 30 times a day read 2.25M rows.
 A party poll reads at most about 30 rows (the party, 8 members, 8 profiles, 8 presence rows), so 300 users polling 120 times a day read about 1.1M rows.
+A leaderboard load reads at most about 460 rows (51 profiles, 50 friendships, up to 357 study days), so 300 users loading it 6 times a day read about 0.8M rows.
+Together a heavy user reads at most about 11,000 rows a day, so 5M rows read cover about 450 heavy users even if every one of them has 50 friends.
 
 ## Attribution
 

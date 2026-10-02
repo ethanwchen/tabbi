@@ -1,12 +1,15 @@
 // Presence: what a user is doing right now, as reported by heartbeats.
-import { HEARTBEAT_SECONDS, HttpError, Obj, STATUSES, STUDY_METHODS, int, oneOf } from "./lib";
+import { HEARTBEAT_SECONDS, HttpError, Obj, STATUSES, STUDY_METHODS, int, oneOf, parseDay, utcDay } from "./lib";
 
 /** Body fields accepted by `POST /v1/presence`. */
 export const PRESENCE_FIELDS = [
-  "status", "method", "phaseEndsAt", "sessionMinutes", "todayMinutes", "streakDays",
+  "status", "method", "phaseEndsAt", "sessionMinutes", "todayMinutes", "streakDays", "day",
 ] as const;
 
-/** The last heartbeat of a user. `lastSeen` is server time (unix seconds). */
+/**
+ * The last heartbeat of a user. `lastSeen` is server time (unix seconds). `day` is the client's local
+ * calendar day that `todayMinutes` counts; the weekly leaderboard sums `todayMinutes` per day.
+ */
 export interface Presence {
   status: string;
   method: string | null;
@@ -14,6 +17,7 @@ export interface Presence {
   sessionMinutes: number;
   todayMinutes: number;
   streakDays: number;
+  day: string;
   lastSeen: number;
 }
 
@@ -38,8 +42,9 @@ export function isOnline(p: Presence | null, now: number): boolean {
 
 /**
  * Validates a heartbeat body and merges it over the previous presence. `status` is required; omitted
- * counters keep their previous value (0 for a first heartbeat). `method` and `phaseEndsAt` describe the
- * current session, so they are cleared when the status is `idle` or `offline`.
+ * counters keep their previous value (0 for a first heartbeat, and `todayMinutes` restarts at 0 on a new
+ * `day`). `day` defaults to the UTC day. `method` and `phaseEndsAt` describe the current session, so
+ * they are cleared when the status is `idle` or `offline`.
  */
 export function parseHeartbeat(body: Obj, prev: Presence | null, now: number): Presence {
   if (body.status === undefined) throw new HttpError(400, "invalid_field", "status is required");
@@ -48,9 +53,12 @@ export function parseHeartbeat(body: Obj, prev: Presence | null, now: number): P
   const phaseEndsAt = body.phaseEndsAt === undefined || body.phaseEndsAt === null
     ? null
     : int(body.phaseEndsAt, "phaseEndsAt", now - PHASE_WINDOW_S, now + PHASE_WINDOW_S);
+  const day = body.day === undefined ? utcDay(now) : parseDay(body.day, now);
   const inSession = status === "studying" || status === "break";
   const counter = (field: "sessionMinutes" | "todayMinutes" | "streakDays", max: number) =>
-    body[field] === undefined ? (prev?.[field] ?? 0) : int(body[field], field, 0, max);
+    body[field] !== undefined ? int(body[field], field, 0, max)
+      : field === "todayMinutes" && prev?.day !== day ? 0
+      : (prev?.[field] ?? 0);
   return {
     status,
     method: inSession ? method : null,
@@ -58,6 +66,7 @@ export function parseHeartbeat(body: Obj, prev: Presence | null, now: number): P
     sessionMinutes: inSession ? counter("sessionMinutes", MINUTES_PER_DAY) : 0,
     todayMinutes: counter("todayMinutes", MINUTES_PER_DAY),
     streakDays: counter("streakDays", 36_500),
+    day,
     lastSeen: now,
   };
 }

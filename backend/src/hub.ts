@@ -1,5 +1,6 @@
 /**
- * The Hub: one SQLite-backed Durable Object that owns all state (users, friends, presence, parties).
+ * The Hub: one SQLite-backed Durable Object that owns all state (users, friends, presence, parties,
+ * daily study minutes).
  *
  * Why a single object: it gives strongly consistent, transactional state (symmetric friendships and
  * party capacity cannot race), and on the Workers Free plan one always-warm object costs at most
@@ -12,11 +13,12 @@
 import { DurableObject } from "cloudflare:workers";
 import {
   HttpError, MAX_FRIENDS, MAX_PARTY_MEMBERS, PARTY_IDLE_EXPIRY_S, RATE_LIMIT_PER_MIN, REGISTER_PER_MIN, FRIEND_CODE_RE, TOKEN_RE,
-  newCode, newToken, nowS, parseFriendCode, readBody, sha256Hex,
+  isoWeekDays, isoWeekKeyOfDay, newCode, newToken, nowS, parseFriendCode, readBody, sha256Hex, utcDay,
 } from "./lib";
 import { PROFILE_FIELDS, Profile, applyProfilePatch, defaultProfile, parseProfilePatch, sameProfile } from "./profile";
 import { json } from "./http";
 import { PRESENCE_FIELDS, Presence, heartbeatSeconds, isOnline, parseHeartbeat, presenceChanged, publicPresence } from "./presence";
+import { STUDY_DAY_RETENTION_DAYS, rankEntries } from "./leaderboard";
 import { JOIN_FIELDS, PARTY_TOUCH_S, PartySession, SESSION_FIELDS, parseJoin, parseSession, partyExpired } from "./party";
 
 export interface Env {
@@ -54,7 +56,16 @@ CREATE TABLE IF NOT EXISTS presence (
   session_minutes INTEGER NOT NULL,
   today_minutes   INTEGER NOT NULL,
   streak_days     INTEGER NOT NULL,
+  day             TEXT NOT NULL,
   last_seen       INTEGER NOT NULL
+) WITHOUT ROWID;
+-- Study minutes per user per local calendar day (the last todayMinutes reported for that day), kept
+-- for STUDY_DAY_RETENTION_DAYS. The weekly leaderboard sums one ISO week of these.
+CREATE TABLE IF NOT EXISTS study_days (
+  code    TEXT NOT NULL,
+  day     TEXT NOT NULL,
+  minutes INTEGER NOT NULL,
+  PRIMARY KEY (code, day)
 ) WITHOUT ROWID;
 -- A party and its optional shared session (all three session columns are set together or all null).
 CREATE TABLE IF NOT EXISTS parties (
@@ -117,6 +128,7 @@ interface PresenceRow extends Record<string, SqlStorageValue> {
   session_minutes: number;
   today_minutes: number;
   streak_days: number;
+  day: string;
   last_seen: number;
 }
 
@@ -130,6 +142,7 @@ function rowToPresence(r: Partial<PresenceRow>): Presence | null {
     sessionMinutes: r.session_minutes ?? 0,
     todayMinutes: r.today_minutes ?? 0,
     streakDays: r.streak_days ?? 0,
+    day: r.day ?? "",
     lastSeen: r.last_seen ?? 0,
   };
 }
@@ -138,6 +151,17 @@ function bearer(req: Request): string | null {
   const m = /^Bearer\s+(\S+)$/i.exec((req.headers.get("Authorization") ?? "").trim());
   return m ? m[1] : null;
 }
+
+/** In-memory presence of a user and what of it is already persisted. */
+interface LivePresence {
+  presence: Presence;
+  /** When the presence row was last written. */
+  flushedAt: number;
+  /** The `day:minutes` last written to `study_days`, so unchanged minutes are not rewritten. */
+  savedDay: string | null;
+}
+
+const dayKey = (p: Presence) => `${p.day}:${p.todayMinutes}`;
 
 interface Caller {
   code: string;
@@ -153,12 +177,19 @@ export class Hub extends DurableObject<Env> {
    * this map every time but write a row only on a visible change or every PRESENCE_FLUSH_S, which keeps
    * row writes far below the free-tier allowance. Entries missing here are read from SQLite.
    */
-  private live = new Map<string, { presence: Presence; flushedAt: number }>();
+  private live = new Map<string, LivePresence>();
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
     this.sql = ctx.storage.sql;
     this.sql.exec(SCHEMA);
+    this.migrate();
+  }
+
+  /** Upgrades storage created by an earlier schema; `CREATE TABLE IF NOT EXISTS` never adds columns. */
+  private migrate(): void {
+    const hasDay = this.sql.exec("SELECT 1 FROM pragma_table_info('presence') WHERE name = 'day'").toArray().length > 0;
+    if (!hasDay) this.sql.exec("ALTER TABLE presence ADD COLUMN day TEXT NOT NULL DEFAULT ''");
   }
 
   async fetch(req: Request): Promise<Response> {
@@ -199,6 +230,7 @@ export class Hub extends DurableObject<Env> {
     if (friendPath && method === "DELETE") return this.removeFriend(caller, friendPath[1]);
 
     if (path === "/v1/presence" && method === "POST") return this.heartbeat(req, caller, now);
+    if (path === "/v1/leaderboard" && method === "GET") return this.leaderboard(caller, now);
 
     if (path === "/v1/party" && method === "GET") return this.getParty(caller, now);
     if (path === "/v1/party" && method === "POST") return this.createParty(req, caller, now);
@@ -285,6 +317,7 @@ export class Hub extends DurableObject<Env> {
       this.sql.exec("DELETE FROM friends WHERE b = ? AND a IN (SELECT b FROM friends WHERE a = ?)", caller.code, caller.code);
       this.sql.exec("DELETE FROM friends WHERE a = ?", caller.code);
       this.sql.exec("DELETE FROM presence WHERE code = ?", caller.code);
+      this.sql.exec("DELETE FROM study_days WHERE code = ?", caller.code);
     });
     this.live.delete(caller.code);
     return json({ ok: true });
@@ -299,7 +332,7 @@ export class Hub extends DurableObject<Env> {
   private listFriends(caller: Caller, now: number): Response {
     const rows = this.sql.exec<UserRow & Partial<PresenceRow> & { since: number; party_code: string | null; party_size: number | null }>(
       `SELECT u.*, f.created_at AS since, p.status, p.method, p.phase_ends_at, p.session_minutes,
-         p.today_minutes, p.streak_days, p.last_seen, pa.code AS party_code,
+         p.today_minutes, p.streak_days, p.day, p.last_seen, pa.code AS party_code,
          (SELECT COUNT(*) FROM party_members m2 WHERE m2.party = pa.code) AS party_size
        FROM friends f JOIN users u ON u.code = f.b LEFT JOIN presence p ON p.code = f.b
          LEFT JOIN party_members m ON m.code = f.b
@@ -369,7 +402,8 @@ export class Hub extends DurableObject<Env> {
 
   /**
    * POST /v1/presence. Always updates the live copy; writes the row only when friends would see a
-   * different status, method, phase or streak, or when the last write is PRESENCE_FLUSH_S old.
+   * different status, method, phase or streak, on a new day, or when the last write is PRESENCE_FLUSH_S
+   * old. The day's study minutes are written with the same flushes, and only when they changed.
    */
   private async heartbeat(req: Request, caller: Caller, now: number): Promise<Response> {
     const body = await readBody(req, PRESENCE_FIELDS);
@@ -377,18 +411,74 @@ export class Hub extends DurableObject<Env> {
     const prev = live?.presence ?? this.presenceOf(caller.code);
     const next = parseHeartbeat(body, prev, now);
     let flushedAt = live?.flushedAt ?? 0;
-    if (!live || !prev || presenceChanged(prev, next) || now - flushedAt >= PRESENCE_FLUSH_S) {
-      this.sql.exec(
-        `INSERT OR REPLACE INTO presence
-           (code, status, method, phase_ends_at, session_minutes, today_minutes, streak_days, last_seen)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        caller.code, next.status, next.method, next.phaseEndsAt, next.sessionMinutes, next.todayMinutes,
-        next.streakDays, next.lastSeen,
-      );
+    let savedDay = live?.savedDay ?? null;
+    const newDay = prev !== null && prev.day !== next.day;
+    if (!live || !prev || newDay || presenceChanged(prev, next) || now - flushedAt >= PRESENCE_FLUSH_S) {
+      this.ctx.storage.transactionSync(() => {
+        this.sql.exec(
+          `INSERT OR REPLACE INTO presence
+             (code, status, method, phase_ends_at, session_minutes, today_minutes, streak_days, day, last_seen)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          caller.code, next.status, next.method, next.phaseEndsAt, next.sessionMinutes, next.todayMinutes,
+          next.streakDays, next.day, next.lastSeen,
+        );
+        if (newDay) {
+          // Close out the previous day with its final count (it may not have been flushed yet).
+          if (prev.todayMinutes > 0 && savedDay !== dayKey(prev)) this.saveStudyDay(caller.code, prev);
+          this.sql.exec("DELETE FROM study_days WHERE code = ? AND day < ?",
+            caller.code, utcDay(now - STUDY_DAY_RETENTION_DAYS * 86_400));
+        }
+        // A zero count is skipped unless it corrects a count already saved for the same day.
+        if (savedDay !== dayKey(next) && (next.todayMinutes > 0 || savedDay?.startsWith(next.day + ":"))) {
+          this.saveStudyDay(caller.code, next);
+          savedDay = dayKey(next);
+        }
+      });
       flushedAt = now;
     }
-    this.live.set(caller.code, { presence: next, flushedAt });
+    this.live.set(caller.code, { presence: next, flushedAt, savedDay });
     return json({ ok: true, presence: next, heartbeatSeconds: heartbeatSeconds(next.status) });
+  }
+
+  private saveStudyDay(code: string, p: Presence): void {
+    this.sql.exec(
+      `INSERT INTO study_days (code, day, minutes) VALUES (?, ?, ?)
+       ON CONFLICT (code, day) DO UPDATE SET minutes = excluded.minutes`,
+      code, p.day, p.todayMinutes,
+    );
+  }
+
+  // ---------- leaderboard ----------
+
+  /**
+   * GET /v1/leaderboard: study minutes of the caller and their friends in the current ISO week (by the
+   * UTC calendar), summed over each user's local days. Live, not yet flushed counts are included.
+   */
+  private leaderboard(caller: Caller, now: number): Response {
+    const today = utcDay(now);
+    const days = isoWeekDays(today);
+    const from = days[0];
+    const to = days[6];
+    const users = this.sql.exec<UserRow>(
+      "SELECT * FROM users WHERE code = ? OR code IN (SELECT b FROM friends WHERE a = ?)", caller.code, caller.code,
+    ).toArray();
+    const perDay = new Map<string, Map<string, number>>(users.map((u) => [u.code, new Map()]));
+    const rows = this.sql.exec<{ code: string; day: string; minutes: number }>(
+      `SELECT code, day, minutes FROM study_days
+       WHERE (code = ? OR code IN (SELECT b FROM friends WHERE a = ?)) AND day BETWEEN ? AND ?`,
+      caller.code, caller.code, from, to,
+    ).toArray();
+    for (const r of rows) perDay.get(r.code)?.set(r.day, r.minutes);
+    for (const [code, daysOfUser] of perDay) {
+      const p = this.live.get(code)?.presence;
+      if (p && p.day >= from && p.day <= to) daysOfUser.set(p.day, p.todayMinutes);
+    }
+    const entries = rankEntries(users.map((u) => ({
+      minutes: [...(perDay.get(u.code)?.values() ?? [])].reduce((a, b) => a + b, 0),
+      me: u.code === caller.code,
+      profile: rowToProfile(u),
+    })));
+    return json({ ok: true, week: isoWeekKeyOfDay(today), from, to, entries });
   }
 
   // ---------- parties ----------

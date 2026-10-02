@@ -85,6 +85,29 @@ export function utcDay(unixS: number): string {
   return new Date(unixS * 1000).toISOString().slice(0, 10);
 }
 
+/** The seven `YYYY-MM-DD` days (Monday to Sunday) of the ISO week that contains `day`. */
+export function isoWeekDays(day: string): string[] {
+  const start = Date.parse(day + "T00:00:00Z") / 1000;
+  const weekday = new Date(start * 1000).getUTCDay() || 7; // Mon=1 .. Sun=7
+  return Array.from({ length: 7 }, (_, i) => utcDay(start + (i + 1 - weekday) * 86_400));
+}
+
+/** Earliest and latest UTC offsets in use (UTC-12 to UTC+14), in seconds. */
+const MIN_UTC_OFFSET_S = -12 * 3600;
+const MAX_UTC_OFFSET_S = 14 * 3600;
+
+/**
+ * A client's local calendar day (`YYYY-MM-DD`). It must be a real date that is "today" somewhere on
+ * Earth right now, which rejects bad clocks and backdating while allowing every time zone.
+ */
+export function parseDay(v: unknown, now: number): string {
+  if (typeof v !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(v)) throw invalid("day");
+  const start = Date.parse(v + "T00:00:00Z") / 1000;
+  if (!Number.isFinite(start) || utcDay(start) !== v) throw invalid("day");
+  if (start > now + MAX_UTC_OFFSET_S || start + 86_400 <= now + MIN_UTC_OFFSET_S) throw invalid("day");
+  return v;
+}
+
 // ---------- validation ----------
 
 export type Obj = Record<string, unknown>;
