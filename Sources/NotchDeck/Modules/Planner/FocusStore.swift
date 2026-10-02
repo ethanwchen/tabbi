@@ -17,7 +17,9 @@ import NotchDeckCore
 /// touches notifications, sounds, or disk.
 @MainActor
 final class FocusStore: ObservableObject {
-    @Published private(set) var timer: FocusTimer
+    @Published private(set) var timer: FocusTimer {
+        didSet { FocusController.shared.timerChanged(timer) }
+    }
     /// The moment the view measures against; advances every second while visible.
     @Published private(set) var now = Date()
     /// Focus phases completed in the last few days, for the End-of-Day Review.
