@@ -37,4 +37,9 @@ public extension ModuleID {
     static let claudeUsage: ModuleID = "claudeUsage"
     static let planner: ModuleID = "planner"
     static let claudeAsk: ModuleID = "claudeAsk"
+    // StudyNotch modules (Medicine and Student kits).
+    static let study: ModuleID = "study"
+    static let anki: ModuleID = "anki"
+    static let party: ModuleID = "party"
+    static let closet: ModuleID = "closet"
 }

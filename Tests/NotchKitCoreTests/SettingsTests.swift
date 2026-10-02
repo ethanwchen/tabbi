@@ -2,17 +2,22 @@ import XCTest
 import NotchKitCore
 
 final class ModuleLayoutTests: XCTestCase {
-    func testDefaultEnablesEveryModuleInCanonicalOrder() {
-        XCTAssertEqual(ModuleLayout.default.enabled, ModuleCatalog.builtIn.ids)
+    private let classic: [ModuleID] = [.spotify, .system, .claudeUsage, .planner, .claudeAsk]
+    private let studyNotch: [ModuleID] = [.study, .anki, .party, .closet]
+
+    func testDefaultShowsTheOriginalTabsAndParksTheRest() {
+        XCTAssertEqual(ModuleLayout.default.enabled, classic)
+        XCTAssertEqual(ModuleLayout.default.order, ModuleCatalog.builtIn.ids)
+        XCTAssertFalse(studyNotch.contains(where: ModuleLayout.default.isEnabled))
     }
 
-    func testMissingModulesAreAppendedEnabledAndUnknownOnesDropped() {
+    func testMissingModulesAreAppendedSwitchedOffAndUnknownOnesDropped() {
         let layout = ModuleLayout(
-            orderRawValues: ["planner", "futureThing", "spotify", "planner"],
+            orderRawValues: ["planner", "futureThing", "spotify", "system", "planner"],
             disabledRawValues: ["spotify", "alsoUnknown"]
         )
-        XCTAssertEqual(layout.order, [.planner, .spotify, .system, .claudeUsage, .claudeAsk])
-        XCTAssertEqual(layout.enabled, [.planner, .system, .claudeUsage, .claudeAsk])
+        XCTAssertEqual(layout.order, [.planner, .spotify, .system, .claudeUsage, .claudeAsk] + studyNotch)
+        XCTAssertEqual(layout.enabled, [.planner, .system])
     }
 
     func testAllDisabledDataReenablesFirstModule() {
@@ -22,7 +27,7 @@ final class ModuleLayoutTests: XCTestCase {
 
     func testCannotDisableLastEnabledModule() {
         var layout = ModuleLayout.default
-        for module in ModuleCatalog.builtIn.ids.dropLast() {
+        for module in classic.dropLast() {
             XCTAssertTrue(layout.setEnabled(module, false))
         }
         XCTAssertFalse(layout.canDisable(.claudeAsk))
@@ -35,11 +40,11 @@ final class ModuleLayoutTests: XCTestCase {
     func testMoveMatchesOnMoveSemantics() {
         var layout = ModuleLayout.default
         layout.move(fromOffsets: [0], toOffset: 3)
-        XCTAssertEqual(layout.order, [.system, .claudeUsage, .spotify, .planner, .claudeAsk])
+        XCTAssertEqual(layout.order, [.system, .claudeUsage, .spotify, .planner, .claudeAsk] + studyNotch)
         layout.move(fromOffsets: [4], toOffset: 0)
-        XCTAssertEqual(layout.order, [.claudeAsk, .system, .claudeUsage, .spotify, .planner])
+        XCTAssertEqual(layout.order, [.claudeAsk, .system, .claudeUsage, .spotify, .planner] + studyNotch)
         layout.move(fromOffsets: [1, 3], toOffset: 5)
-        XCTAssertEqual(layout.order, [.claudeAsk, .claudeUsage, .planner, .system, .spotify])
+        XCTAssertEqual(layout.order, [.claudeAsk, .claudeUsage, .planner, .system, .spotify] + studyNotch)
     }
 
     func testCyclingSkipsDisabledModulesAndWraps() {
@@ -163,6 +168,7 @@ final class SettingsRepositoryTests: XCTestCase {
         var modules = ModuleLayout(order: [.claudeAsk, .planner], disabled: [])
         modules.setEnabled(.spotify, false)
         let settings = AppSettings(
+            kitID: "student",
             modules: modules,
             openOnHover: true,
             hapticsEnabled: false,
@@ -204,11 +210,48 @@ final class SettingsRepositoryTests: XCTestCase {
         XCTAssertFalse(settings.hapticsEnabled)
     }
 
-    func testFutureModuleIsEnabledAtEndOfSavedOrder() {
+    func testModulesMissingFromSavedOrderStartSwitchedOff() {
         defaults.set(["claudeAsk", "system", "spotify", "claudeUsage"], forKey: "settings.modules.order")
         defaults.set(["system"], forKey: "settings.modules.disabled")
         let layout = SettingsRepository(defaults: defaults).load().modules
-        XCTAssertEqual(layout.enabled, [.claudeAsk, .spotify, .claudeUsage, .planner])
+        XCTAssertEqual(layout.enabled, [.claudeAsk, .spotify, .claudeUsage])
+        XCTAssertEqual(layout.order.suffix(5), [.planner, .study, .anki, .party, .closet])
+    }
+
+    func testFirstRunUsesTheDefaultKitsLayout() throws {
+        let medicine = try XCTUnwrap(KitLibrary.bundled["medicine"])
+        let settings = SettingsRepository(defaults: defaults, defaultKitID: "medicine").load()
+        XCTAssertEqual(settings.kitID, "medicine")
+        XCTAssertEqual(settings.modules, medicine.layout())
+        XCTAssertEqual(settings.modules.enabled.first, .study)
+    }
+
+    func testSavedLayoutWinsOverTheKitsLayout() {
+        let repository = SettingsRepository(defaults: defaults, defaultKitID: "medicine")
+        var settings = repository.load()
+        settings.modules.setEnabled(.system, true)
+        repository.save(settings)
+        let reloaded = repository.load()
+        XCTAssertEqual(reloaded.kitID, "medicine")
+        XCTAssertTrue(reloaded.modules.isEnabled(.system))
+    }
+
+    func testUnknownSavedKitFallsBackToTheDefaultKit() {
+        defaults.set("removed-import", forKey: "settings.kit")
+        let settings = SettingsRepository(defaults: defaults).load()
+        XCTAssertEqual(settings.kitID, KitLibrary.defaultKitID)
+        XCTAssertEqual(settings.modules, .default)
+    }
+
+    func testApplyingAKitReplacesTheLayoutAndKeepsOtherPreferences() throws {
+        let student = try XCTUnwrap(KitLibrary.bundled["student"])
+        var settings = AppSettings(openOnHover: true)
+        settings.modules.setEnabled(.spotify, false)
+        settings.apply(student, answers: ["flashcards": ["anki"]])
+        XCTAssertEqual(settings.kitID, "student")
+        XCTAssertEqual(settings.modules, student.layout(answers: ["flashcards": ["anki"]]))
+        XCTAssertTrue(settings.modules.isEnabled(.anki))
+        XCTAssertTrue(settings.openOnHover)
     }
 
     func testMalformedPreviewValuesFallBack() {

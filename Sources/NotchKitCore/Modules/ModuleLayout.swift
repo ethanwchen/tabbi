@@ -4,25 +4,31 @@ import Foundation
 ///
 /// Every module in the catalog always has a slot in `order`, so a module that
 /// ships in a future version (and is missing from saved data) is appended at
-/// the end and starts enabled. At least one module always stays enabled so the notch never
-/// opens onto an empty panel.
+/// the end, switched off: users choose their tabs (usually through a kit),
+/// and an update must not add tabs they never asked for. At least one module
+/// always stays enabled so the notch never opens onto an empty panel.
 public struct ModuleLayout: Equatable, Sendable {
     /// Every known module, in the user's order.
     public private(set) var order: [ModuleID]
     /// Modules the user turned off.
     public private(set) var disabled: Set<ModuleID>
 
-    public static let `default` = ModuleLayout(order: ModuleCatalog.builtIn.ids, disabled: [])
+    /// NotchDeck's original five tabs, with every other module parked
+    /// switched off. Matches the Productivity kit (a test keeps them in step).
+    public static let `default` = ModuleLayout(
+        order: [.spotify, .system, .claudeUsage, .planner, .claudeAsk], disabled: []
+    )
 
     /// Builds a layout from possibly stale or partial data: ids not in
     /// `catalog` and duplicates are dropped, missing modules are appended
-    /// (enabled), and if that would leave nothing enabled the first module is
+    /// switched off, and if that would leave nothing enabled the first module is
     /// re-enabled.
     public init(order: [ModuleID], disabled: Set<ModuleID>, catalog: ModuleCatalog = .builtIn) {
         var seen = Set<ModuleID>()
         var normalized = order.filter { catalog.contains($0) && seen.insert($0).inserted }
-        normalized += catalog.ids.filter { !seen.contains($0) }
-        var disabled = disabled.intersection(normalized)
+        let missing = catalog.ids.filter { !seen.contains($0) }
+        normalized += missing
+        var disabled = disabled.intersection(normalized).union(missing)
         if normalized.allSatisfy(disabled.contains), let first = normalized.first {
             disabled.remove(first)
         }

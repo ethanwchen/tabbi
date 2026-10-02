@@ -37,7 +37,8 @@ public struct ModuleCatalog: Equatable, Sendable {
 }
 
 public extension ModuleCatalog {
-    /// The modules that ship with NotchDeck, in default tab order.
+    /// The modules that ship with NotchDeck, in canonical order: the original
+    /// five tabs, then the StudyNotch modules (off unless a kit lists them).
     static let builtIn = ModuleCatalog([
         ModuleDescriptor(id: .spotify, title: "Now Playing", symbol: "music.note", category: .media,
                          accent: ModuleAccent(red: 0.12, green: 0.84, blue: 0.38), permissions: [.automation]),
@@ -50,6 +51,15 @@ public extension ModuleCatalog {
                          permissions: [.calendars, .notifications]),
         ModuleDescriptor(id: .claudeAsk, title: "Ask Claude", symbol: "sparkles", category: .ai,
                          accent: .claude, permissions: [.claudeCLI]),
+        ModuleDescriptor(id: .study, title: "Study", symbol: "timer", category: .study,
+                         accent: ModuleAccent(red: 1.00, green: 0.62, blue: 0.26)),
+        // AnkiConnect is a localhost HTTP add-on, so no macOS permission is involved.
+        ModuleDescriptor(id: .anki, title: "Anki", symbol: "rectangle.stack.fill", category: .study,
+                         accent: ModuleAccent(red: 0.36, green: 0.62, blue: 1.00)),
+        ModuleDescriptor(id: .party, title: "Party", symbol: "person.3.fill", category: .study,
+                         accent: ModuleAccent(red: 1.00, green: 0.42, blue: 0.62)),
+        ModuleDescriptor(id: .closet, title: "Closet", symbol: "pawprint.fill", category: .fun,
+                         accent: ModuleAccent(red: 0.98, green: 0.80, blue: 0.30)),
     ])
 }
 

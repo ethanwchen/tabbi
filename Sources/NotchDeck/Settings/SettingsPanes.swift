@@ -142,8 +142,8 @@ struct ModulesSettingsPane: View {
             }
         }
         .formStyle(.grouped)
-        .scrollDisabled(true)
-        .frame(width: paneWidth, height: 336)
+        // Scrolls: the module list grows with every module NotchDeck ships.
+        .frame(width: paneWidth, height: 444)
     }
 }
 

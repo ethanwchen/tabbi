@@ -138,7 +138,8 @@ final class KitApplicationTests: XCTestCase {
 
     func testLayoutFollowsKitOrderAndParksOtherModulesSwitchedOff() {
         let layout = kit.layout()
-        XCTAssertEqual(layout.order, [.planner, .spotify, .system, .claudeUsage, .claudeAsk])
+        XCTAssertEqual(layout.order, [.planner, .spotify, .system, .claudeUsage, .claudeAsk,
+                                      .study, .anki, .party, .closet])
         XCTAssertEqual(layout.enabled, [.planner, .spotify])
     }
 
@@ -200,14 +201,8 @@ final class KitLibraryTests: XCTestCase {
     }
 
     func testBundledKitsOnlyUseKnownValues() throws {
-        // Modules that aren't built yet are the only allowed gap.
-        let planned: Set<ModuleID> = ["study", "anki", "party", "closet"]
         for kit in KitLibrary.bundled.kits {
-            let unexpected = kit.issues().filter {
-                if case .unknownModule(let id) = $0 { return !planned.contains(id) }
-                return true
-            }
-            XCTAssertEqual(unexpected, [], kit.id)
+            XCTAssertEqual(kit.issues(), [], kit.id)
             XCTAssertNotNil(kit.defaults.resolvedFocusMix, kit.id)
         }
     }
@@ -219,6 +214,15 @@ final class KitLibraryTests: XCTestCase {
         XCTAssertEqual(kit.defaults.resolvedStudyMethods?.contains(.ankiSprint), true)
         XCTAssertEqual(kit.defaults.pet?.resolvedBreed, .orangeTabby)
         XCTAssertEqual(kit.starterTasks(answers: ["stage": ["preclinical"]]).first, "Clear today's Anki reviews")
+    }
+
+    func testStudyKitsShowOnlyTheirOwnTabs() throws {
+        let medicine = try XCTUnwrap(KitLibrary.bundled["medicine"])
+        XCTAssertEqual(medicine.layout().enabled, [.study, .planner, .anki, .party, .spotify, .claudeAsk, .closet])
+        XCTAssertEqual(medicine.layout(answers: ["anki": ["no"]]).enabled,
+                       [.study, .planner, .party, .spotify, .claudeAsk, .closet])
+        let student = try XCTUnwrap(KitLibrary.bundled["student"])
+        XCTAssertEqual(student.layout().enabled, [.study, .planner, .spotify, .claudeAsk, .closet])
     }
 
     func testMissingKitFallsBackToTheDefault() {

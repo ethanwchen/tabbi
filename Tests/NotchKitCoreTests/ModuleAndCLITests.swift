@@ -25,7 +25,8 @@ final class ModuleCatalogTests: XCTestCase {
     private let accent = ModuleAccent(red: 0, green: 0, blue: 0)
 
     func testBuiltInKeepsTheShippedTabOrder() {
-        XCTAssertEqual(ModuleCatalog.builtIn.ids, [.spotify, .system, .claudeUsage, .planner, .claudeAsk])
+        XCTAssertEqual(ModuleCatalog.builtIn.ids, [.spotify, .system, .claudeUsage, .planner, .claudeAsk,
+                                                   .study, .anki, .party, .closet])
     }
 
     func testBuiltInIdsAreUniqueAndDescribed() {
@@ -60,9 +61,9 @@ final class ModuleCatalogTests: XCTestCase {
             ModuleDescriptor(id: "study", title: "Study", symbol: "book", category: .study, accent: accent),
             ModuleDescriptor(id: "anki", title: "Anki", symbol: "rectangle.stack", category: .study, accent: accent),
         ])
-        let layout = ModuleLayout(order: ["anki", .spotify], disabled: [.spotify, "anki"], catalog: catalog)
+        let layout = ModuleLayout(order: ["anki", .spotify], disabled: [], catalog: catalog)
         XCTAssertEqual(layout.order, ["anki", "study"])
-        XCTAssertEqual(layout.enabled, ["study"])
+        XCTAssertEqual(layout.enabled, ["anki"])
     }
 }
 

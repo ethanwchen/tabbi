@@ -2,6 +2,9 @@ import Foundation
 
 /// Every user preference NotchDeck has, as one value.
 public struct AppSettings: Equatable, Sendable {
+    /// The kit the user (or edition) picked. Its layout seeds `modules`, and
+    /// "reset to kit defaults" goes back to it.
+    public var kitID: String
     public var modules: ModuleLayout
     /// When on, resting the pointer on the closed notch for `hoverOpenDelay` opens it.
     public var openOnHover: Bool
@@ -22,6 +25,7 @@ public struct AppSettings: Equatable, Sendable {
     public static let `default` = AppSettings()
 
     public init(
+        kitID: String = KitLibrary.defaultKitID,
         modules: ModuleLayout = .default,
         openOnHover: Bool = false,
         hapticsEnabled: Bool = true,
@@ -31,6 +35,7 @@ public struct AppSettings: Equatable, Sendable {
         preferredDisplay: DisplayPreference = .builtIn,
         notchPreview: NotchPreviewSettings = .default
     ) {
+        self.kitID = kitID
         self.modules = modules
         self.openOnHover = openOnHover
         self.hapticsEnabled = hapticsEnabled
@@ -48,6 +53,14 @@ public struct AppSettings: Equatable, Sendable {
         notchPreview.enabledKinds.filter { modules.isEnabled($0.module) }
     }
 
+    /// Switches to `kit` and replaces the tab layout with the one it
+    /// produces for `answers`. Used both to switch kits and to reset to the
+    /// current kit's defaults; other preferences are kept.
+    public mutating func apply(_ kit: KitManifest, answers: KitAnswers = [:], catalog: ModuleCatalog = .builtIn) {
+        kitID = kit.id
+        modules = kit.layout(catalog: catalog, answers: answers)
+    }
+
     /// Trims whitespace and expands `~`; blank means "no override".
     static func normalizedPath(_ path: String?) -> String? {
         guard let trimmed = path?.trimmingCharacters(in: .whitespacesAndNewlines), !trimmed.isEmpty else {
@@ -62,8 +75,12 @@ public struct AppSettings: Equatable, Sendable {
 /// Each preference lives under its own key so a single malformed value falls
 /// back to its default instead of resetting everything. Pass a dedicated suite
 /// in tests.
+///
+/// With no saved tab layout (first run), the layout comes from the saved or
+/// default kit, so a branded edition opens on its own kit's tabs.
 public struct SettingsRepository {
     enum Key {
+        static let kitID = "settings.kit"
         static let moduleOrder = "settings.modules.order"
         static let disabledModules = "settings.modules.disabled"
         static let openOnHover = "settings.openOnHover"
@@ -78,9 +95,21 @@ public struct SettingsRepository {
     }
 
     private let defaults: UserDefaults
+    private let kits: KitLibrary
+    private let defaultKitID: String
 
-    public init(defaults: UserDefaults = .standard) {
+    /// - Parameters:
+    ///   - kits: the kits a saved kit id is resolved against.
+    ///   - defaultKitID: the kit used before the user picks one, e.g. the
+    ///     edition's kit.
+    public init(
+        defaults: UserDefaults = .standard,
+        kits: KitLibrary = .bundled,
+        defaultKitID: String = KitLibrary.defaultKitID
+    ) {
         self.defaults = defaults
+        self.kits = kits
+        self.defaultKitID = defaultKitID
     }
 
     public func load() -> AppSettings {
@@ -88,11 +117,15 @@ public struct SettingsRepository {
         let hotkey = defaults.data(forKey: Key.hotkey)
             .flatMap { try? JSONDecoder().decode(Hotkey.self, from: $0) }
             .flatMap { $0.isValid ? $0 : nil }
+        // An unknown saved id (an imported kit that was removed) falls back
+        // to the default kit.
+        let kit = kits.kit(defaults.string(forKey: Key.kitID) ?? defaultKitID)
+        let modules = defaults.stringArray(forKey: Key.moduleOrder).map {
+            ModuleLayout(orderRawValues: $0, disabledRawValues: defaults.stringArray(forKey: Key.disabledModules) ?? [])
+        }
         return AppSettings(
-            modules: ModuleLayout(
-                orderRawValues: defaults.stringArray(forKey: Key.moduleOrder) ?? [],
-                disabledRawValues: defaults.stringArray(forKey: Key.disabledModules) ?? []
-            ),
+            kitID: kit?.id ?? defaultKitID,
+            modules: modules ?? kit?.layout() ?? .default,
             openOnHover: bool(Key.openOnHover) ?? fallback.openOnHover,
             hapticsEnabled: bool(Key.hapticsEnabled) ?? fallback.hapticsEnabled,
             launchAtLogin: bool(Key.launchAtLogin) ?? fallback.launchAtLogin,
@@ -112,6 +145,7 @@ public struct SettingsRepository {
     }
 
     public func save(_ settings: AppSettings) {
+        defaults.set(settings.kitID, forKey: Key.kitID)
         defaults.set(settings.modules.order.map(\.rawValue), forKey: Key.moduleOrder)
         defaults.set(settings.modules.order.filter { !settings.modules.isEnabled($0) }.map(\.rawValue),
                      forKey: Key.disabledModules)

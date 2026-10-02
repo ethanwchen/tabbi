@@ -21,8 +21,10 @@ enum SnapshotRenderer {
         )
         try? await Task.sleep(for: .seconds(settle))
 
+        // Every shot uses the active kit's tab layout.
+        let layout = services.settings.settings.modules
         var shots: [(String, NotchViewModel)] = []
-        let closed = NotchViewModel(geometry: geometry)
+        let closed = NotchViewModel(geometry: geometry, layout: layout)
         closed.preview = services.ticker.item
         shots.append(("closed", closed))
         // One closed shot per preview kind that has data. Demo usage sits
@@ -34,12 +36,13 @@ enum SnapshotRenderer {
             let demoUsage: TickerItem? = isDemo && kind == .claudeUsage
                 ? .claudeUsage(window: .fiveHour, utilization: 0.86) : nil
             guard let item = live ?? demoUsage else { continue }
-            let model = NotchViewModel(geometry: geometry)
+            let model = NotchViewModel(geometry: geometry, layout: layout)
             model.preview = item
             shots.append(("closed-\(snapshotName(kind))", model))
         }
-        for module in ModuleCatalog.builtIn.ids {
-            let model = NotchViewModel(geometry: geometry)
+        // One open shot per tab of the active kit.
+        for module in layout.enabled {
+            let model = NotchViewModel(geometry: geometry, layout: layout)
             model.open(module)
             shots.append(("open-\(module.rawValue)", model))
         }
