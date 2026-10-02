@@ -9,7 +9,7 @@ final class AnkiModule: NotchModule {
     let store = AnkiStore()
 
     func makePanel() -> AnyView {
-        AnyView(AnkiPanel())
+        AnyView(AnkiPanel(store: store))
     }
 
     func start() { store.start() }

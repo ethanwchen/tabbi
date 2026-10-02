@@ -259,7 +259,8 @@ final class AnkiSummaryTests: XCTestCase {
 
     func testDemoLooksLikeAStudyingMedStudent() {
         let demo = AnkiSummary.demo(now: now, calendar: utc)
-        XCTAssertEqual(demo.dueTotal, 320, "child deck rolled into its parent")
+        XCTAssertEqual(demo.dueTotal, 425, "child deck rolled into its parent")
+        XCTAssertEqual(demo.topDecks.map(\.name), ["AnKing Step 1", "Pharm Sketchy", "Sketchy Micro", "Pathoma", "Boards and Beyond Biochem"])
         XCTAssertEqual(demo.reviewedToday, 112)
         XCTAssertEqual(demo.streak, 12)
         XCTAssertEqual(demo.history.count, 14)

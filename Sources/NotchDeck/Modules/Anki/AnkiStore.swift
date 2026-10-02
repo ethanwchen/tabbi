@@ -17,10 +17,17 @@ final class AnkiStore: ObservableObject {
     @Published private(set) var updatedAt: Date?
     @Published private(set) var isRefreshing = false
     @Published private(set) var isSyncing = false
+    @Published private(set) var isRestarting = false
     /// The last Sync or Start reviews failure, shown briefly in the panel.
     @Published private(set) var actionError: AnkiConnectError?
 
     let isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
+    /// A screen pinned by `NOTCHDECK_ANKI_STATE` for snapshots; nothing
+    /// refreshes while it is set.
+    private let pinnedState = ProcessInfo.processInfo.environment["NOTCHDECK_ANKI_STATE"]
+        .flatMap(AnkiConnectionState.init(previewName:))
+    /// Demo or pinned: sample data only, no AnkiConnect calls.
+    private var isStatic: Bool { isDemo || pinnedState != nil }
     private let client: AnkiConnectClient
     private var refreshTask: Task<Void, Never>?
     private var pollTask: Task<Void, Never>?
@@ -29,11 +36,24 @@ final class AnkiStore: ObservableObject {
 
     init() {
         client = AnkiConnectClient(isAnkiRunning: { await MainActor.run { AnkiStore.runningAnki() != nil } })
-        if isDemo {
+        if let pinnedState {
+            state = pinnedState
+            if pinnedState.keepsLastSummary && pinnedState != .checking {
+                summary = .demo()
+                updatedAt = Date().addingTimeInterval(pinnedState == .ready ? 0 : -9 * 60)
+            }
+        } else if isDemo {
             summary = .demo()
             updatedAt = Date()
             state = .ready
         }
+    }
+
+    /// Why the shown numbers may be stale: a failed refresh, or else the
+    /// last failed Sync or Start reviews.
+    var problem: AnkiConnectError? {
+        if case .problem(let error) = state { return error }
+        return actionError
     }
 
     // MARK: Lifecycle
@@ -41,7 +61,7 @@ final class AnkiStore: ObservableObject {
     /// The module was enabled: fetch once so Today and the ticker have
     /// numbers, then follow Anki's launches and quits.
     func start() {
-        guard !isDemo, workspaceObservers.isEmpty else { return }
+        guard !isStatic, workspaceObservers.isEmpty else { return }
         let center = NSWorkspace.shared.notificationCenter
         let names: [Notification.Name] = [
             NSWorkspace.didLaunchApplicationNotification,
@@ -69,7 +89,7 @@ final class AnkiStore: ObservableObject {
 
     func panelDidAppear() {
         isPanelVisible = true
-        guard !isDemo else { return }
+        guard !isStatic else { return }
         refresh()
         schedulePoll()
     }
@@ -84,7 +104,7 @@ final class AnkiStore: ObservableObject {
     /// Fetches the summary. A refresh already in flight is replaced, so the
     /// newest request always wins.
     func refresh() {
-        guard !isDemo else { return }
+        guard !isStatic else { return }
         refreshTask?.cancel()
         isRefreshing = true
         refreshTask = Task { [weak self, client] in
@@ -136,10 +156,38 @@ final class AnkiStore: ObservableObject {
 
     // MARK: Actions
 
-    /// Opens Anki, which starts AnkiConnect along with it.
+    /// Opens Anki, which starts AnkiConnect along with it, and brings it
+    /// forward if it is already running.
     func openAnki() {
-        guard let url = Self.ankiURL else { return }
+        guard let url = Self.ankiURL else {
+            Self.runningAnki()?.activate()
+            return
+        }
         NSWorkspace.shared.openApplication(at: url, configuration: NSWorkspace.OpenConfiguration()) { _, _ in }
+    }
+
+
+    /// Quits Anki and opens it again, the last step after installing or
+    /// updating AnkiConnect (add-ons load only at launch). Anki saves and
+    /// may sync on quit, so wait up to a minute for it to exit.
+    func restartAnki() {
+        guard !isStatic, !isRestarting, let anki = Self.runningAnki() else { return }
+        isRestarting = true
+        anki.terminate()
+        Task { [weak self] in
+            for _ in 0..<120 where !anki.isTerminated {
+                try? await Task.sleep(for: .milliseconds(500))
+            }
+            guard let self else { return }
+            isRestarting = false
+            if anki.isTerminated { openAnki() } else { anki.activate() }
+        }
+    }
+
+    /// Opens the Anki download page in the browser.
+    func getAnki() {
+        guard let url = URL(string: "https://apps.ankiweb.net") else { return }
+        NSWorkspace.shared.open(url)
     }
 
     /// Opens `deck` (or the deck with the most due) for review and brings
@@ -149,7 +197,7 @@ final class AnkiStore: ObservableObject {
             Self.runningAnki()?.activate()
             return
         }
-        guard !isDemo else { return }
+        guard !isStatic else { return }
         Task { [weak self, client] in
             do {
                 try await client.guiDeckReview(name: name)
@@ -163,7 +211,7 @@ final class AnkiStore: ObservableObject {
 
     /// Syncs with AnkiWeb, then refreshes the counts.
     func sync() {
-        guard !isDemo, !isSyncing else { return }
+        guard !isStatic, !isSyncing else { return }
         isSyncing = true
         Task { [weak self, client] in
             var failure: AnkiConnectError?

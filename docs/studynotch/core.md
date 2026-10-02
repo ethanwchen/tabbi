@@ -113,6 +113,11 @@ summary.retention      // 0.91, or nil below 20 graded reviews
 - `keepsLastSummary` is true for `ready`, `checking` and `problem`, so a transient error shows the last numbers instead of an empty panel.
 - `refreshInterval` is the poll interval while the panel is visible: 2 s while starting, 5 s for setup steps, 30 s for problems, 3 min when ready.
 - `AnkiSummary.topDecks` lists top-level decks with cards due, most due first; `completionFraction` drives the progress ring; `isCurrent(now:)` stops yesterday's numbers from being shared after the rollover.
+- `AnkiConnectionState(previewName:)` parses `NOTCHDECK_ANKI_STATE` (for example `addOnMissing`, `notRunning`, `apiKey`, `problem`), which pins the Anki tab to one screen so every state can be snapshotted: `NOTCHDECK_ANKI_STATE=addOnMissing swift run NotchDeck --snapshot snapshots-anki`.
+
+### Formatting
+
+`AnkiFormat` holds the Anki tab's wording and scales: `heatLevels(for:)` shades the two-week heatmap (0 to 4, scaled to the busiest day, any reviews at least 1), `streak(_:)`, `dayHelp(_:today:)` for heatmap tooltips, `progressHelp(_:)` for the ring, and `age(_:now:)` for how stale the numbers are.
 
 ## Study methods (`Sources/NotchKitCore/StudyMethods`)
 

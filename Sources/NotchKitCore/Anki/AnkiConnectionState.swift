@@ -116,3 +116,24 @@ extension AnkiSummary {
         return target > 0 ? Double(reviewedToday) / Double(target) : 1
     }
 }
+
+extension AnkiConnectionState {
+    /// Parses a state name for `NOTCHDECK_ANKI_STATE`, which pins the Anki
+    /// tab to one screen so every setup state can be snapshotted without
+    /// uninstalling Anki or its add-on. Nil for an unknown name.
+    public init?(previewName: String) {
+        switch previewName.lowercased() {
+        case "checking": self = .checking
+        case "notinstalled": self = .notInstalled
+        case "notrunning": self = .notRunning
+        case "starting": self = .starting
+        case "addonmissing": self = .addOnMissing
+        case "permission", "permissiondenied": self = .needsPermission(.permissionDenied)
+        case "apikey", "apikeyrequired": self = .needsPermission(.apiKeyRequired)
+        case "addonoutdated": self = .addOnOutdated
+        case "problem": self = .problem(.timeout)
+        case "ready": self = .ready
+        default: return nil
+        }
+    }
+}
