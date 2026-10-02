@@ -1,5 +1,6 @@
 import AppKit
 import NotchKitCore
+import NotchKit
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
@@ -12,7 +13,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let settings = SettingsStore(defaultKitID: edition.defaultKitID, kitStore: .standard(for: edition))
         let services = AppServices(settings: settings)
         self.services = services
-        notch = NotchController(services: services)
+        notch = NotchController(content: ModuleViews.notchContent(services: services),
+                                inputs: ModuleViews.notchInputs(services: services))
         if !settings.settings.hasChosenKit {
             let welcome = WelcomeWindowController(settings: settings)
             self.welcome = welcome

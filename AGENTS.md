@@ -29,15 +29,19 @@ Judge them against the design rules below before you call the work done.
   `IconButton`), `Components/` (`ModulePreview`, `ModulePlaceholder`),
   `Notch/` (the panel window, notch shape, screen geometry, the
   open/close and tab state `NotchViewModel`, the `NotchTabBar`, the
-  closed-notch wing sizes `NotchPreviewLayout`, and the root `NotchView`,
-  which the app fills through `NotchContent` closures), `Pets/`
+  closed-notch wing sizes `NotchPreviewLayout`, the root `NotchView`,
+  which the app fills through `NotchContent` closures, and the
+  `NotchController` with its `GlobalHotkey`, which places the panel and
+  handles pointer, keyboard, swipe and hotkey input while following the
+  app state passed in as `NotchInputs`), `Pets/`
   (`PetPlayer`, `PetView`) and `Audio/` (`FocusSoundEngine`, which plays a
   `FocusMix` through AVAudioEngine; Study can reuse it). Everything here is `public`. Reuse it; add new
   shared components here, not inside a module.
-- `Sources/NotchDeck/Notch` — the notch controller (panel placement,
-  pointer, keyboard, swipe and hotkey input), which shows `NotchView` with
-  the `NotchContent` built from `AppServices` in `ModuleViews.notchContent`. Shared; change only when your task
-  requires it.
+- `Sources/NotchDeck/Modules/ModuleViews.swift` — hooks the shared notch up
+  to the app: the closed notch's live-activity wings, `notchContent`
+  (module panels, music wings, Settings) and
+  `notchInputs` (settings, hotkey recorder, ticker) built from `AppServices`.
+  Shared; change only when your task requires it.
 - `Sources/NotchDeck/Modules/<Module>/` — one folder per module: a store
   (`ObservableObject`, owned by `AppServices`), SwiftUI views, and a
   `NotchModule` class (descriptor, panel, an optional Settings toolbar pane
@@ -56,8 +60,6 @@ Judge them against the design rules below before you call the work done.
   hands their unfinished work to Plan my day (`plannableWork`), so e.g.
   Anki reviews show up there with no Today code. Never reach into
   another module's store; publish what you have and consume the snapshot.
-- `Sources/NotchDeck/Modules/ModuleViews.swift` — the closed notch's
-  live-activity wings.
 - `Sources/NotchKitCore/Claude` — `ClaudeCLI` (locate + stream `claude -p`) and
   `ClaudeStreamEvent` (stream-json parser). Both Claude modules use these.
 

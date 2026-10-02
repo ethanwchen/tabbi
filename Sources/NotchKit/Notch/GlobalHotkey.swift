@@ -6,7 +6,7 @@ import NotchKitCore
 /// Accessibility permission, and the shortcut is consumed so it never reaches
 /// the frontmost app.
 @MainActor
-final class GlobalHotkey {
+public final class GlobalHotkey {
     private let action: () -> Void
     private var hotKeyRef: EventHotKeyRef?
     private var handlerRef: EventHandlerRef?
@@ -15,7 +15,7 @@ final class GlobalHotkey {
     private static let signature: OSType = 0x4E_44_43_4B // 'NDCK'
     private static let identifier: UInt32 = 1
 
-    init(action: @escaping () -> Void) {
+    public init(action: @escaping () -> Void) {
         self.action = action
         installHandler()
     }
@@ -23,7 +23,7 @@ final class GlobalHotkey {
     /// Replaces the current shortcut. Returns false when the shortcut is invalid
     /// or already taken by another app, leaving no shortcut registered.
     @discardableResult
-    func register(_ hotkey: Hotkey) -> Bool {
+    public func register(_ hotkey: Hotkey) -> Bool {
         unregister()
         guard hotkey.isValid else { return false }
         var ref: EventHotKeyRef?
@@ -42,7 +42,7 @@ final class GlobalHotkey {
         return true
     }
 
-    func unregister() {
+    public func unregister() {
         if let hotKeyRef { UnregisterEventHotKey(hotKeyRef) }
         hotKeyRef = nil
     }

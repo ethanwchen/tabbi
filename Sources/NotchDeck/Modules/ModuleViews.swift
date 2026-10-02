@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 import NotchKitCore
 import NotchKit
@@ -23,10 +24,26 @@ enum ModuleViews {
     static func notchContent(services: AppServices) -> NotchContent {
         NotchContent(
             appName: Edition.current.name,
-            panel: { services.modules.panel(for: $0) },
+            // Panels such as Today's read AppServices from the environment.
+            panel: { AnyView(services.modules.panel(for: $0).environmentObject(services)) },
             nowPlayingLeading: { AnyView(compactLeading(services: services)) },
             nowPlayingTrailing: { AnyView(compactTrailing(services: services)) },
             openSettings: { services.openSettings() }
+        )
+    }
+
+    /// Feeds `NotchController` the settings, hotkey recorder and ticker
+    /// state it follows.
+    @MainActor
+    static func notchInputs(services: AppServices) -> NotchInputs {
+        let store = services.settings
+        return NotchInputs(
+            settings: store.$settings.eraseToAnyPublisher(),
+            currentSettings: { store.settings },
+            isRecordingHotkey: store.$isRecordingHotkey.eraseToAnyPublisher(),
+            hotkeyRegistered: { store.hotkeyIsRegistered = $0 },
+            preview: services.ticker.$item.eraseToAnyPublisher(),
+            previewVisible: { services.ticker.setActive($0) }
         )
     }
 }

@@ -2,14 +2,15 @@ import AppKit
 import Combine
 import SwiftUI
 import NotchKitCore
-import NotchKit
 
 /// Owns the notch panel: positions it, tracks the pointer, and translates
-/// mouse/keyboard input into NotchViewModel state changes.
+/// mouse/keyboard input into NotchViewModel state changes. The app supplies
+/// what the notch shows (`NotchContent`) and the state it follows
+/// (`NotchInputs`), so this works for any edition or kit.
 @MainActor
-final class NotchController {
-    let model: NotchViewModel
-    let services: AppServices
+public final class NotchController {
+    public let model: NotchViewModel
+    private let inputs: NotchInputs
     private let panel: NotchPanel
     private var monitors: [Any] = []
     private var cancellables: Set<AnyCancellable> = []
@@ -22,9 +23,9 @@ final class NotchController {
     /// Extra room around the open notch for its shadow.
     private static let canvasMargin = CGSize(width: 48, height: 40)
 
-    init(services: AppServices) {
-        self.services = services
-        let settings = services.settings.settings
+    public init(content: NotchContent, inputs: NotchInputs) {
+        self.inputs = inputs
+        let settings = inputs.currentSettings()
         let screen = NotchGeometry.screen(for: settings.preferredDisplay)
         let geometry = screen.map(NotchGeometry.measure) ?? NotchGeometry(
             notchSize: CGSize(width: 190, height: 32), hasHardwareNotch: false,
@@ -33,9 +34,8 @@ final class NotchController {
         model = NotchViewModel(geometry: geometry, layout: settings.modules)
         panel = NotchPanel(contentRect: .zero)
 
-        let root = NotchView(content: ModuleViews.notchContent(services: services))
+        let root = NotchView(content: content)
             .environmentObject(model)
-            .environmentObject(services)
         panel.contentView = NotchHostingView(rootView: root)
         layoutPanel()
         panel.orderFrontRegardless()
@@ -138,7 +138,7 @@ final class NotchController {
         }
     }
 
-    private var settings: AppSettings { services.settings.settings }
+    private var settings: AppSettings { inputs.currentSettings() }
 
     /// Opens the notch once the pointer has rested on it for `hoverOpenDelay`,
     /// so merely passing over the menu bar doesn't pop it open.
@@ -225,20 +225,20 @@ final class NotchController {
             }
             .store(in: &cancellables)
 
-        services.settings.$settings
+        inputs.settings
             .map(\.modules)
             .removeDuplicates()
             .sink { [weak self] layout in self?.model.layout = layout }
             .store(in: &cancellables)
 
-        services.settings.$settings
+        inputs.settings
             .map(\.preferredDisplay)
             .removeDuplicates()
             .dropFirst()
             .sink { [weak self] preference in self?.reposition(on: preference) }
             .store(in: &cancellables)
 
-        services.ticker.$item
+        inputs.preview
             .removeDuplicates()
             .sink { [weak self] item in self?.model.preview = item }
             .store(in: &cancellables)
@@ -246,7 +246,7 @@ final class NotchController {
         // The preview only ticks while it can be seen.
         model.$phase
             .removeDuplicates()
-            .sink { [weak self] phase in self?.services.ticker.setActive(phase != .open) }
+            .sink { [weak self] phase in self?.inputs.previewVisible(phase != .open) }
             .store(in: &cancellables)
     }
 
@@ -255,15 +255,15 @@ final class NotchController {
     private func observeHotkey() {
         let hotkey = GlobalHotkey { [weak self] in self?.model.toggle() }
         self.hotkey = hotkey
-        services.settings.$settings
+        inputs.settings
             .map(\.hotkey)
             .removeDuplicates()
-            .combineLatest(services.settings.$isRecordingHotkey.removeDuplicates())
+            .combineLatest(inputs.isRecordingHotkey.removeDuplicates())
             .sink { [weak self] shortcut, recording in
                 if recording {
                     hotkey.unregister()
                 } else {
-                    self?.services.settings.hotkeyIsRegistered = hotkey.register(shortcut)
+                    self?.inputs.hotkeyRegistered(hotkey.register(shortcut))
                 }
             }
             .store(in: &cancellables)

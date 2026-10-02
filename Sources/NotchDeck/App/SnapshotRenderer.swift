@@ -52,7 +52,6 @@ enum SnapshotRenderer {
         for (name, model) in shots {
             let view = NotchView(content: ModuleViews.notchContent(services: services))
                 .environmentObject(model)
-                .environmentObject(services)
                 .frame(width: Theme.Layout.expandedSize.width + 40,
                        height: Theme.Layout.expandedSize.height + 24, alignment: .top)
                 .background(Color(white: 0.16)) // stand-in for a desktop
