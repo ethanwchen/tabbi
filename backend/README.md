@@ -48,6 +48,9 @@ app ──HTTPS──> Worker (studynotch-friends) ──> Durable Object "Hub" 
   Listing my friends is one primary-key range scan, and adding a friend costs 2 row writes.
 - Presence lives in Hub memory and is flushed to a `presence` row only when it matters (see below).
   A restart loses at most 10 minutes of minute counters and `lastSeen`, and the next heartbeat restores them.
+- Parties are a `parties` row (host, last activity, optional shared session) plus one `party_members` row per member, keyed by user so a user is in at most one party.
+  Creating or joining a party leaves the previous one; a leaving host hands over to the longest-standing member, and the last member leaving deletes the party.
+  A party expires 12 h after its last activity (create, join, leave, session change, or a member's poll); expired parties are deleted when touched and swept when a new party is created.
 - Rate limits (60 requests per minute per token, 10 registrations per minute per IP) are counted in the Hub's memory.
   With a single instance they are exact while it is alive, and they cost no storage writes.
 
@@ -96,12 +99,16 @@ Budget for a heavy user who studies 4 hours in 25+5 minute pomodoros and has the
 | Heartbeats while studying (4 h / 120 s) | 120 | 16 phase changes + 24 periodic flushes = 40 |
 | Heartbeats while idle (4 h / 300 s) | 48 | 24 periodic flushes |
 | Friend list polls (every 60 s while the panel is open, about 30 min) | 30 | 0 |
+| Party polls (every 30 s while in a party, about 1 h) | 120 | 6 activity bumps |
 | Start, quit, profile edits | about 5 | about 5 |
-| **Total** | **about 200** | **about 70** |
+| Joining and leaving a party | 2 | about 4 |
+| **Total** | **about 320** | **about 80** |
 
-So 100,000 requests per day cover about 500 heavy users, and 100,000 row writes cover about 1,400.
-Requests are the binding limit; typical users study less than 4 hours, so the free plan serves several hundred daily users.
+So 100,000 requests per day cover about 300 heavy users, and 100,000 row writes cover about 1,250.
+Requests are the binding limit; typical users study less than 4 hours and spend less time in a party, so the free plan serves several hundred daily users.
+A party poll does not write: `lastActive` is persisted at most once per 10 minutes per party, which is precise enough for a 12-hour expiry.
 Rows read stay well under 5M: a friend list poll reads at most about 150 rows (50 friendships, 50 profiles, 50 presence rows), so even 500 users who all have 50 friends and poll 30 times a day read 2.25M rows.
+A party poll reads at most about 30 rows (the party, 8 members, 8 profiles, 8 presence rows), so 300 users polling 120 times a day read about 1.1M rows.
 
 ## Attribution
 
