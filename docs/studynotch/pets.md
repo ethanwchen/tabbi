@@ -166,6 +166,31 @@ The peek legs come from `EffectArt.hangingLeg`, drawn behind the head with the b
 
 ![Every animation frame for the orange tabby](images/animations-cat.png)
 
+### Playing animations
+
+`PetClipSet` builds every clip for one dressed pet up front, so a player never composes frames while animating.
+`PetAnimator` decides what plays: a pure value driven by timestamps in seconds and a seeded random generator, so it is deterministic and fully unit-tested.
+
+The pet is always in one `Place`, and each place has a resting animation:
+
+| Place | Rests in |
+| --- | --- |
+| `beside` | `idle` with a `blink` every 2.5-6 s (random), or `sleep` while asleep |
+| `hanging` | The held last frame of `peekIn` |
+| `hidden` | Nothing; `playback` is nil |
+
+| Event | Effect |
+| --- | --- |
+| `nudge` | Beside: wakes and plays `alert`, except during a celebration. Hidden: peeks out |
+| `celebrate` | Beside only: wakes and plays `celebrate`, overriding an alert |
+| `sleep` / `wake` | Beside only; a running alert or celebration finishes first |
+| `peekIn` / `peekOut` | Hidden to hanging and back |
+| `appear` / `disappear` | Cut straight to beside (awake) or hidden |
+
+When a one-shot clip ends, the next animation starts at the exact moment the clip ended, not at the next tick, so timing never drifts with the frame rate and jumping ahead lands in the same state as ticking.
+Peek transitions can't be interrupted: an event that arrives mid-climb is kept (latest wins) and applied as the transition ends.
+To draw, call `animator.advance(to: now)` and then `clipSet.frame(for: animator.playback, at: now)`.
+
 ## Profile, points, and unlocks
 
 `PetProfile` is what the user chose: a name, a breed (the species is derived from it), palette overrides, an outfit, and accessories.
