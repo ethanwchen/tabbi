@@ -27,7 +27,7 @@ final class TodayPlanSettingsTests: XCTestCase {
         let settings = TodayPlanSettings(kit: kit([
             "planMode": .string("study"), "reviewsFirst": .bool(false), "eventBufferMinutes": .number(15),
             "studyBlockTitle": .string("  Shelf prep  "), "secondsPerCard": .number(6),
-            "upNextEvents": .string("lectures and labs"),
+            "upNextEvents": .string("lectures and labs"), "dayEndHour": .number(21),
         ], studyMethod: "fiftyTwoSeventeen"))
         XCTAssertEqual(settings.planMode, .study)
         XCTAssertEqual(settings.studyMethod, .fiftyTwoSeventeen)
@@ -36,13 +36,14 @@ final class TodayPlanSettingsTests: XCTestCase {
         XCTAssertEqual(settings.studyBlockTitle, "Shelf prep")
         XCTAssertEqual(settings.secondsPerCard, 6)
         XCTAssertEqual(settings.upNextEvents, "lectures and labs")
+        XCTAssertEqual(settings.dayEndHour, 21)
     }
 
     func testBadValuesFallBackToDefaults() {
         let settings = TodayPlanSettings(kit: kit([
             "planMode": .string("astrology"), "reviewsFirst": .string("yes"), "eventBufferMinutes": .number(-5),
             "studyBlockTitle": .string("   "), "secondsPerCard": .number(0),
-            "upNextEvents": .string(" "),
+            "upNextEvents": .string(" "), "dayEndHour": .number(30),
         ], studyMethod: "nope"))
         let defaults = TodayPlanSettings()
         XCTAssertEqual(settings.planMode, .claude)
@@ -52,6 +53,8 @@ final class TodayPlanSettingsTests: XCTestCase {
         XCTAssertEqual(settings.studyBlockTitle, "Study block")
         XCTAssertEqual(settings.secondsPerCard, 1)
         XCTAssertEqual(settings.upNextEvents, "meetings and calls")
+        XCTAssertEqual(settings.dayEndHour, 22, "past 10 pm clamps to the latest end")
+        XCTAssertEqual(TodayPlanSettings(kit: kit(["dayEndHour": .string("late")])).dayEndHour, 18)
     }
 
     func testMedicineKitPlansStudyDays() throws {
@@ -60,6 +63,7 @@ final class TodayPlanSettingsTests: XCTestCase {
         XCTAssertEqual(settings.planMode, .study)
         XCTAssertEqual(settings.studyMethod.kind, medicine.defaults.resolvedStudyMethod)
         XCTAssertTrue(settings.reviewsFirst)
+        XCTAssertEqual(settings.dayEndHour, 21, "study days run into the evening")
     }
 
     // MARK: - Planning

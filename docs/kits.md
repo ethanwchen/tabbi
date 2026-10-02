@@ -135,6 +135,7 @@ Today (`planner`) reads these `moduleSettings.planner` keys, all optional:
 | `studyBlockTitle` | string | Title for study blocks once every open task has one (default "Study block"). |
 | `secondsPerCard` | number | Typical time per review card, for sizing review blocks (default 10). |
 | `upNextEvents` | string | What the calendar holds, lowercase, for the Up next card's empty states, such as "lectures, labs, and shifts" (default "meetings and calls"). |
+| `dayEndHour` | number | Hour (0-22) when Plan My Day stops planning, such as 21 for evening study (default 18). Planning late still leaves at least two hours, up to 10 pm. |
 
 Switching kits, picking one on first run, and resetting apply the tabs, `ticker` and `focusSounds`.
 A field the kit leaves out keeps the user's current setting, and only the sound mix changes: the user's volume, playlist and Do Not Disturb shortcuts stay.

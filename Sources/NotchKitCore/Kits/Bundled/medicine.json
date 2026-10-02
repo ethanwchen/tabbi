@@ -18,7 +18,8 @@
         "reviewsFirst": true,
         "eventBufferMinutes": 10,
         "studyBlockTitle": "Study block",
-        "upNextEvents": "lectures, labs, and shifts"
+        "upNextEvents": "lectures, labs, and shifts",
+        "dayEndHour": 21
       }
     }
   },

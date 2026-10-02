@@ -53,14 +53,15 @@ public struct DayPlanContext: Sendable {
     /// Free time between `now` and `dayEnd`, never overlapping a timed event.
     public let gaps: [DateInterval]
 
+    /// `dayEndHour` is when planned work usually stops (see `DayPlanner.dayEnd`).
     public init(now: Date, events: [UpcomingEvent], tasks: [PlannerItem], sharedWork: [String] = [],
-                calendar: Calendar = .current) {
+                calendar: Calendar = .current, dayEndHour: Int = DayPlanner.defaultDayEndHour) {
         self.now = now
         self.events = events
         self.tasks = tasks.filter { !$0.isDone }
         self.sharedWork = sharedWork.compactMap(PlannerDay.normalized)
         self.calendar = calendar
-        let dayEnd = DayPlanner.dayEnd(now: now, calendar: calendar)
+        let dayEnd = DayPlanner.dayEnd(now: now, calendar: calendar, endHour: dayEndHour)
         self.dayEnd = dayEnd
         self.gaps = DayPlanner.freeGaps(events: events, from: now, until: dayEnd)
     }
@@ -119,13 +120,20 @@ public enum DayPlanner {
         ["--model", model, "--tools", "", "--strict-mcp-config", "--json-schema", jsonSchema]
     }
 
-    /// A sensible stop time: 6 pm, or two hours from now when planning
-    /// later, but never past 10 pm. After 10 pm there is nothing to plan.
-    public static func dayEnd(now: Date, calendar: Calendar = .current) -> Date {
+    /// Usual end of the planned day; kits can move it (study days run later).
+    public static let defaultDayEndHour = 18
+    /// The latest a planned day can end.
+    public static let latestDayEndHour = 22
+
+    /// A sensible stop time: `endHour` (6 pm by default), or two hours from
+    /// now when planning later, but never past 10 pm. After 10 pm there is
+    /// nothing to plan.
+    public static func dayEnd(now: Date, calendar: Calendar = .current, endHour: Int = defaultDayEndHour) -> Date {
         let midnight = calendar.startOfDay(for: now)
-        let sixPM = calendar.date(bySettingHour: 18, minute: 0, second: 0, of: midnight)!
-        let tenPM = calendar.date(bySettingHour: 22, minute: 0, second: 0, of: midnight)!
-        return min(max(sixPM, now.addingTimeInterval(2 * 3600)), tenPM)
+        let usualEnd = calendar.date(bySettingHour: min(max(endHour, 0), latestDayEndHour),
+                                     minute: 0, second: 0, of: midnight)!
+        let latest = calendar.date(bySettingHour: latestDayEndHour, minute: 0, second: 0, of: midnight)!
+        return min(max(usualEnd, now.addingTimeInterval(2 * 3600)), latest)
     }
 
     /// Free intervals between `start` and `end` that no timed event touches.

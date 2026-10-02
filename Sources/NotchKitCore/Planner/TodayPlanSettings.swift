@@ -7,7 +7,7 @@ import Foundation
 /// "moduleSettings": {
 ///   "planner": { "planMode": "study", "reviewsFirst": true, "eventBufferMinutes": 10,
 ///                "studyBlockTitle": "Study block", "secondsPerCard": 10,
-///                "upNextEvents": "lectures, labs, and shifts" }
+///                "upNextEvents": "lectures, labs, and shifts", "dayEndHour": 21 }
 /// }
 /// ```
 ///
@@ -34,6 +34,9 @@ public struct TodayPlanSettings: Hashable, Sendable {
     /// What the user's calendar holds, lowercase, for the Up next card's
     /// empty states: "meetings and calls", or "lectures, labs, and shifts".
     public var upNextEvents: String
+    /// When planned work usually stops, 0-22 (6 pm by default); see
+    /// `DayPlanner.dayEnd`.
+    public var dayEndHour: Int
 
     public init(
         planMode: PlanMode = .claude,
@@ -42,7 +45,8 @@ public struct TodayPlanSettings: Hashable, Sendable {
         eventBufferMinutes: Int = 10,
         studyBlockTitle: String = "Study block",
         secondsPerCard: TimeInterval = StudyDayPreferences.defaultSecondsPerCard,
-        upNextEvents: String = "meetings and calls"
+        upNextEvents: String = "meetings and calls",
+        dayEndHour: Int = DayPlanner.defaultDayEndHour
     ) {
         self.planMode = planMode
         self.studyMethod = studyMethod
@@ -51,6 +55,7 @@ public struct TodayPlanSettings: Hashable, Sendable {
         self.studyBlockTitle = PlannerDay.normalized(studyBlockTitle) ?? "Study block"
         self.secondsPerCard = max(secondsPerCard, 1)
         self.upNextEvents = PlannerDay.normalized(upNextEvents) ?? "meetings and calls"
+        self.dayEndHour = min(max(dayEndHour, 0), DayPlanner.latestDayEndHour)
     }
 
     /// The kit's settings; values of the wrong type or unknown modes fall
@@ -67,7 +72,8 @@ public struct TodayPlanSettings: Hashable, Sendable {
                 ?? defaults.eventBufferMinutes,
             studyBlockTitle: section?["studyBlockTitle"]?.stringValue ?? defaults.studyBlockTitle,
             secondsPerCard: section?["secondsPerCard"]?.numberValue ?? defaults.secondsPerCard,
-            upNextEvents: section?["upNextEvents"]?.stringValue ?? defaults.upNextEvents
+            upNextEvents: section?["upNextEvents"]?.stringValue ?? defaults.upNextEvents,
+            dayEndHour: section?["dayEndHour"]?.numberValue.map { Int($0.rounded()) } ?? defaults.dayEndHour
         )
     }
 
