@@ -27,9 +27,9 @@ We will keep you updated while we work on a fix, and credit you in the release n
 
 NotchDeck runs locally and has a small attack surface, but these areas deserve particular care:
 
-- **The `claude` CLI integration.** Ask Claude and Claude Usage start the user's local `claude` command.
+- **The `claude` CLI integration.** Ask Claude, Claude Usage and Today's Plan my day and Wrap up start the user's local `claude` command.
   Issues such as running an unexpected binary, passing untrusted input to it in an unsafe way, or exposing its output to other processes are in scope.
-- **Local data.** NotchDeck reads Claude Code transcripts under `~/.claude` (read-only) and stores the Today checklist in `~/Library/Application Support/NotchDeck`.
+- **Local data.** NotchDeck reads Claude Code transcripts under `~/.claude` (read-only) and stores the Today checklist and daily reviews in `~/Library/Application Support/NotchDeck`.
   Leaking that data outside the Mac is in scope.
 - **Apple Events.** NotchDeck controls Spotify and Apple Music through Automation.
   Anything that lets another app abuse that permission through NotchDeck is in scope.

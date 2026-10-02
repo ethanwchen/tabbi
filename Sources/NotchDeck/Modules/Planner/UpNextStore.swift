@@ -69,14 +69,44 @@ final class UpNextStore: ObservableObject {
     /// Asks for full calendar access (shows the system prompt the first time).
     func requestAccess() {
         guard !isDemo, access == .notDetermined else { return }
-        Task {
-            // The result is re-read from EventKit, which is the source of truth.
-            _ = try? await eventStore.requestFullAccessToEvents()
-            access = Self.currentAccess()
-            reload()
-            if isVisible { startUpdates() }
-        }
+        Task { _ = await ensureAccess() }
     }
+
+    /// Every event today (not just the next few), for Plan My Day. Empty
+    /// without calendar access.
+    func todayEvents() -> [UpcomingEvent] {
+        if isDemo { return demoEvents }
+        guard access == .granted else { return [] }
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: Date())
+        guard let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) else { return [] }
+        let predicate = eventStore.predicateForEvents(withStart: startOfDay, end: endOfDay, calendars: nil)
+        return eventStore.events(matching: predicate).map(Self.upcomingEvent)
+    }
+
+    /// Asks for calendar access when it was never requested, then reports
+    /// the result. Plan My Day needs it to see meetings and add blocks.
+    func ensureAccess() async -> Access {
+        if !isDemo { access = Self.currentAccess() }
+        guard !isDemo, access == .notDetermined else { return access }
+        // The result is re-read from EventKit, which is the source of truth.
+        _ = try? await eventStore.requestFullAccessToEvents()
+        access = Self.currentAccess()
+        reload()
+        if isVisible { startUpdates() }
+        return access
+    }
+
+    /// The writer for accepted plan blocks: EventKit on the shared store,
+    /// or one that never touches the calendar in demo mode and dry runs.
+    func makePlanWriter() -> PlanCalendarWriting {
+        if isDemo { return DryRunPlanWriter(logs: false) }
+        if isPlanDryRun { return DryRunPlanWriter(logs: true) }
+        return EventKitPlanWriter(store: eventStore)
+    }
+
+    /// `NOTCHDECK_PLAN_DRY_RUN=1`: plan blocks are printed, never written.
+    var isPlanDryRun: Bool { ProcessInfo.processInfo.environment["NOTCHDECK_PLAN_DRY_RUN"] == "1" }
 
     func openPrivacySettings() {
         NSWorkspace.shared.open(Self.privacySettingsURL)

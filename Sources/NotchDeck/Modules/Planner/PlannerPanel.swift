@@ -2,9 +2,10 @@ import SwiftUI
 import NotchDeckCore
 
 /// The Today panel: the checklist (date and progress header, items, add
-/// field) on the left; an "Up next" calendar card above a compact focus
-/// timer on the right. Keeps the notch pinned open while any field is focused
-/// so it doesn't close under the cursor mid-typing.
+/// field) on the left, swapped for the Plan My Day proposal or the
+/// End-of-Day Review while one is open; an "Up next" calendar card above a
+/// compact focus timer on the right. Keeps the notch pinned open while any
+/// field is focused so it doesn't close under the cursor mid-typing.
 struct PlannerPanel: View {
     @ObservedObject var store: PlannerStore
     @EnvironmentObject private var notch: NotchViewModel
@@ -13,14 +14,50 @@ struct PlannerPanel: View {
     /// Width of the right column; the checklist keeps the remaining ~60%.
     static let sideColumnWidth: CGFloat = 200
 
+    /// From 5 pm "Wrap up" is the panel's call to action and "Plan my day"
+    /// moves to a small header button; during the day it's the other way round.
+    /// `NOTCHDECK_PLANNER_PREVIEW=daytime|evening` pins either for demo snapshots.
+    static func isWrapUpTime(_ date: Date) -> Bool {
+        let environment = ProcessInfo.processInfo.environment
+        guard environment["NOTCHDECK_DEMO"] == "1" else { return DayReviewer.isWrapUpTime(date) }
+        return switch environment["NOTCHDECK_PLANNER_PREVIEW"] {
+        case "daytime": false
+        case "evening": true
+        default: DayReviewer.isWrapUpTime(date)
+        }
+    }
+
     var body: some View {
         HStack(alignment: .top, spacing: Theme.Spacing.m) {
-            VStack(spacing: Theme.Spacing.s) {
-                PlannerHeader(store: store)
-                content
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                if store.canEdit {
-                    PlannerAddField(store: store, focus: $focus)
+            PlannerMainColumn(plan: store.plan, review: store.review) {
+                // Re-checks the hour each minute so "Wrap up" takes the lead at 5 pm on its own.
+                TimelineView(.everyMinute) { context in
+                    let isEvening = Self.isWrapUpTime(context.date)
+                    let hasOpenTasks = store.items.contains { !$0.isDone }
+                    VStack(spacing: Theme.Spacing.s) {
+                        PlannerHeader(store: store, isEvening: isEvening, hasOpenTasks: hasOpenTasks)
+                        content
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        if store.canEdit {
+                            HStack(spacing: Theme.Spacing.s) {
+                                PlannerAddField(store: store, focus: $focus)
+                                if isEvening {
+                                    PlannerPillButton(title: "Wrap up", symbol: "moon.stars.fill", isProminent: true,
+                                                      height: 28, help: "Review today and see what carries over to tomorrow") {
+                                        store.wrapUp()
+                                    }
+                                    .transition(.opacity.combined(with: .scale(scale: 0.9)))
+                                } else if hasOpenTasks {
+                                    // Nothing to schedule until there's an open task.
+                                    PlannerPillButton(title: "Plan my day", symbol: "sparkles", height: 28,
+                                                      help: "Let Claude fit your open tasks around today's calendar") {
+                                        store.planMyDay()
+                                    }
+                                    .transition(.opacity.combined(with: .scale(scale: 0.9)))
+                                }
+                            }
+                        }
+                    }
                 }
             }
             VStack(spacing: Theme.Spacing.s) {
@@ -64,6 +101,33 @@ struct PlannerPanel: View {
     }
 }
 
+/// The left column: the checklist, or the Plan My Day view or End-of-Day
+/// Review while one is active. Observes both on its own so they don't
+/// re-render the panel.
+private struct PlannerMainColumn<Checklist: View>: View {
+    @ObservedObject var plan: DayPlanStore
+    @ObservedObject var review: DayReviewStore
+    @ViewBuilder var checklist: Checklist
+
+    var body: some View {
+        ZStack {
+            if review.isActive {
+                DayReviewView(store: review)
+                    .transition(.opacity.combined(with: .scale(scale: 0.98, anchor: .top)))
+            } else if plan.isActive {
+                DayPlanView(plan: plan)
+                    .transition(.opacity.combined(with: .scale(scale: 0.98, anchor: .top)))
+            } else {
+                checklist
+                    .transition(.opacity.combined(with: .scale(scale: 0.98, anchor: .top)))
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .animation(Theme.Motion.content, value: plan.isActive)
+        .animation(Theme.Motion.content, value: review.isActive)
+    }
+}
+
 /// Which text field has keyboard focus.
 enum PlannerField: Hashable {
     case add
@@ -74,6 +138,8 @@ enum PlannerField: Hashable {
 
 private struct PlannerHeader: View {
     @ObservedObject var store: PlannerStore
+    let isEvening: Bool
+    let hasOpenTasks: Bool
 
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
@@ -99,6 +165,22 @@ private struct PlannerHeader: View {
                     withAnimation(Theme.Motion.snappy) { store.clearCompleted() }
                 }
                 .transition(.opacity.combined(with: .scale(scale: 0.8)))
+            }
+            if store.canEdit {
+                // The action that isn't the bottom row's pill right now.
+                if isEvening {
+                    if hasOpenTasks {
+                        IconButton(symbol: "sparkles", size: 20,
+                                   help: "Plan my day: fit your open tasks around today's calendar") {
+                            store.planMyDay()
+                        }
+                    }
+                } else {
+                    IconButton(symbol: "moon.stars", size: 20,
+                               help: "Wrap up: review today and see what carries over") {
+                        store.wrapUp()
+                    }
+                }
             }
         }
         .frame(height: 20)
@@ -126,26 +208,43 @@ struct PlannerProgressRing: View {
 
 // MARK: Empty and error states
 
-private struct PlannerMessage: View {
+/// Icon, title, and detail centered in the checklist area, with an optional action below.
+struct PlannerMessage<Action: View>: View {
     let symbol: String
     let tint: Color
     let title: String
     let detail: String
+    @ViewBuilder var action: Action
+
+    private var iconWidth: CGFloat { 24 }
 
     var body: some View {
-        HStack(spacing: Theme.Spacing.m) {
-            Image(systemName: symbol)
-                .font(.system(size: 20, weight: .semibold))
-                .foregroundStyle(tint)
-            VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-                Text(title)
-                    .font(Theme.Typography.bodyEmphasis)
-                    .foregroundStyle(Theme.Palette.primaryText)
-                Text(detail)
-                    .font(Theme.Typography.caption)
-                    .foregroundStyle(Theme.Palette.secondaryText)
+        VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+            HStack(spacing: Theme.Spacing.m) {
+                Image(systemName: symbol)
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundStyle(tint)
+                    .frame(width: iconWidth)
+                VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+                    Text(title)
+                        .font(Theme.Typography.bodyEmphasis)
+                        .foregroundStyle(Theme.Palette.primaryText)
+                    Text(detail)
+                        .font(Theme.Typography.caption)
+                        .foregroundStyle(Theme.Palette.secondaryText)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
+            action
+                .padding(.leading, iconWidth + Theme.Spacing.m)
         }
+        .padding(.horizontal, Theme.Spacing.s)
+    }
+}
+
+extension PlannerMessage where Action == EmptyView {
+    init(symbol: String, tint: Color, title: String, detail: String) {
+        self.init(symbol: symbol, tint: tint, title: title, detail: detail) { EmptyView() }
     }
 }
 

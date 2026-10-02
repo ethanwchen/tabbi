@@ -24,6 +24,10 @@ final class PlannerStore: ObservableObject {
     let upNext = UpNextStore()
     /// The Pomodoro timer; lives here so it keeps running while the notch is closed.
     let focus = FocusStore()
+    /// Plan My Day; its proposal replaces the checklist while active.
+    private(set) lazy var plan = DayPlanStore(upNext: upNext)
+    /// The End-of-Day Review; its card replaces the checklist while open.
+    let review = DayReviewStore()
 
     var items: [PlannerItem] { day.items }
     /// False while today's file is unreadable, so a bad file is never overwritten.
@@ -58,6 +62,20 @@ final class PlannerStore: ObservableObject {
         let today = PlannerDayKey(date: Date())
         guard repository != nil, today != day.date || isUnreadable else { return }
         load(today)
+    }
+
+    /// Asks Claude to schedule today's unfinished items around the calendar.
+    func planMyDay() {
+        review.close()
+        refreshDay()
+        plan.plan(tasks: items)
+    }
+
+    /// Opens the End-of-Day Review of today's list and focus sessions.
+    func wrapUp() {
+        plan.cancel()
+        refreshDay()
+        review.wrapUp(day: day, focusLog: focus.sessionLog)
     }
 
     // MARK: Edits
