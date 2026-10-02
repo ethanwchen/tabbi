@@ -78,13 +78,24 @@ public enum PetCoachMessages {
 
     /// Only the kit's valid lines, ids `kit.<kind>.<index>`.
     public static func kitLines(_ kitSettings: KitValue?) -> [PetCoachMessage] {
-        guard let byKind = try? kitSettings?["coachLines"]?.decode([String: [String]].self) else { return [] }
+        guard let byKind = kitSettings?["coachLines"] else { return [] }
         return PetCoachNudgeKind.allCases.flatMap { kind in
-            (byKind[kind.rawValue] ?? []).enumerated().compactMap { index, raw -> PetCoachMessage? in
-                let text = raw.trimmingCharacters(in: .whitespacesAndNewlines)
-                guard !text.isEmpty, text.count <= maxLength else { return nil }
+            entries(byKind[kind.rawValue]).enumerated().compactMap { index, raw -> PetCoachMessage? in
+                guard let text = raw?.trimmingCharacters(in: .whitespacesAndNewlines),
+                      !text.isEmpty, text.count <= maxLength else { return nil }
                 return m("kit.\(kind.rawValue).\(index)", kind, text)
             }
+        }
+    }
+
+    /// One kind's entries, read leniently so one badly shaped entry can't
+    /// drop the kit's other lines: a single string counts as a one-line
+    /// list, and non-string items stay as nil so later ids don't shift.
+    private static func entries(_ value: KitValue?) -> [String?] {
+        switch value {
+        case .string(let text): [text]
+        case .array(let items): items.map(\.stringValue)
+        default: []
         }
     }
 

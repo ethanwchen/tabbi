@@ -122,7 +122,8 @@ Module settings sections:
 
 - **`closet`:** `coachLines`, extra lines the study pet's coach can say, keyed by bubble kind: `distraction` (a while in a distracting app), `offerPause` (offering to pause the timer), `idleCheck` (no input for a while) and `autoPause` (the timer was paused while the user was away).
   They join the built-in lines, which name no subject, so a few lines give the coach your kit's flavor.
-  Keep them kind and at most 64 characters; longer or blank lines are skipped.
+  Each kind takes a list of lines or a single line.
+  Keep them kind and at most 64 characters; longer, blank or non-text entries are skipped without dropping the others.
 
 ```json
 "moduleSettings": {

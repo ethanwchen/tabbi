@@ -274,11 +274,37 @@ final class PetCoachTests: XCTestCase {
         _ = run(&coach, from: 0, to: 130) { self.input($0, app: .distracting) }
         coach.snooze(until: at(200))
         let restored = try JSONDecoder().decode(PetCoach.self, from: JSONEncoder().encode(coach))
-        XCTAssertEqual(restored, coach)
+        var ended = coach
+        ended.endEpisodes()
+        XCTAssertEqual(restored, ended)
+        XCTAssertTrue(restored.isSnoozed(at: at(150)))
         var resumed = restored
         // Cooldown remembered: a fresh episode right after relaunch only glances.
         _ = eval(&resumed, input(300, app: .neutral))
         let events = run(&resumed, from: 305, to: 600) { self.input($0, app: .distracting) }
+        XCTAssertEqual(kinds(events), ["lookOver"])
+    }
+
+    func testAnEpisodeOpenAtRelaunchDoesNotCarryIntoTheNextPhase() throws {
+        var coach = PetCoach()
+        // Quit 20 s into a distracting app, then start a new phase much later
+        // with the same app still in front.
+        _ = run(&coach, from: 0, to: 20) { self.input($0, app: .distracting) }
+        var resumed = try JSONDecoder().decode(PetCoach.self, from: JSONEncoder().encode(coach))
+        XCTAssertNil(resumed.distractionStartedAt)
+        let events = run(&resumed, from: 3600, to: 3625) { self.input($0, app: .distracting) }
+        XCTAssertTrue(events.isEmpty, "the new phase keeps its 30 s grace period")
+    }
+
+    func testEndingEpisodesKeepsCooldownsAndStartsFresh() {
+        var coach = PetCoach()
+        _ = run(&coach, from: 0, to: 130) { self.input($0, app: .distracting) }
+        XCTAssertEqual(coach.distractionStep, .nudged)
+        coach.endEpisodes()
+        XCTAssertNil(coach.distractionStartedAt)
+        XCTAssertEqual(coach.distractionStep, .none)
+        // The next episode starts over with a glance, and the bubble waits for the cooldown.
+        let events = run(&coach, from: 135, to: 300) { self.input($0, app: .distracting) }
         XCTAssertEqual(kinds(events), ["lookOver"])
     }
 
@@ -370,6 +396,19 @@ final class PetCoachTests: XCTestCase {
         XCTAssertEqual(PetCoachMessages.lines(kitSettings: nil), PetCoachMessages.standard)
         XCTAssertEqual(PetCoachMessages.lines(kitSettings: .object(["deck": .string("AnKing")])),
                        PetCoachMessages.standard)
+    }
+
+    func testOneBadlyShapedKitEntryKeepsTheOtherLines() throws {
+        let json = """
+        { "coachLines": {
+            "distraction": ["Back to the essay?", 3, "Thesis still waiting."],
+            "idleCheck": "Still outlining?",
+            "offerPause": { "oops": true }
+        } }
+        """
+        let kit = PetCoachMessages.kitLines(try JSONDecoder().decode(KitValue.self, from: Data(json.utf8)))
+        XCTAssertEqual(kit.map(\.text), ["Back to the essay?", "Thesis still waiting.", "Still outlining?"])
+        XCTAssertEqual(kit.map(\.id), ["kit.distraction.0", "kit.distraction.2", "kit.idleCheck.0"])
     }
 
     func testMedicineKitFlavorsTheCoachButOtherKitsStayNeutral() throws {

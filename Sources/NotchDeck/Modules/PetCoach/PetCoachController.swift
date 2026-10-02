@@ -174,8 +174,8 @@ final class PetCoachController: ObservableObject {
 
     /// Samples every few seconds during a focus phase with nudges on, and
     /// not at all otherwise. Leaving focus takes one last sample, which ends
-    /// any distraction or idle episode in the coach; switching nudges off
-    /// ends them without one, so switching back on starts fresh.
+    /// any distraction or idle episode in the coach; switching nudges or the
+    /// coach off ends them without one, so switching back on starts fresh.
     private func updateSampling() {
         let focusing = isRunning && save.nudgesOn && PetCoachStudyState(timer) == .focusing
         if focusing, sampler == nil {
@@ -188,11 +188,10 @@ final class PetCoachController: ObservableObject {
         } else if !focusing, let sampler {
             sampler.invalidate()
             self.sampler = nil
-            guard isRunning else { return }
-            if save.nudgesOn {
+            if isRunning, save.nudgesOn {
                 sample()
             } else {
-                _ = save.coach.evaluate(PetCoachInput(now: Date(), idleSeconds: 0, frontmost: .neutral, study: .notStudying))
+                save.coach.endEpisodes()
             }
         }
     }

@@ -77,7 +77,11 @@ final class PetCoachSessionTests: XCTestCase {
         let save = PetCoachSave(coach: coach, apps: apps)
 
         let restored = try PetCoachSave.decode(save.encoded())
-        XCTAssertEqual(restored, save)
+        // The open idle episode belongs to the phase that was running, so it isn't kept.
+        var expected = save
+        expected.coach.endEpisodes()
+        XCTAssertEqual(restored, expected)
+        XCTAssertEqual(restored.coach.idleStep, .none)
         XCTAssertTrue(restored.coach.isSnoozed(at: t0.addingTimeInterval(60)))
         XCTAssertEqual(restored.coach.lastNudgeAt, t0)
         XCTAssertEqual(restored.apps.category(of: "com.hnc.discord"), .distracting)

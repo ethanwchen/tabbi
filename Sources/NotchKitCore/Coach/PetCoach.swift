@@ -125,7 +125,9 @@ public enum PetCoachDecision: Hashable, Sendable {
 /// per-session "don't nudge" switch silence it completely.
 ///
 /// Idle never means distracted; it only triggers a question. Codable so
-/// cooldowns and snooze survive relaunch.
+/// cooldowns and snooze survive relaunch. Open episodes are not saved: they
+/// describe the focus phase that was running, and carrying them into the
+/// next one would skip its grace period (a glance and a bubble right away).
 public struct PetCoach: Codable, Hashable, Sendable {
     public var rules: PetCoachRules
     /// The per-session "Do not nudge" switch.
@@ -137,9 +139,13 @@ public struct PetCoach: Codable, Hashable, Sendable {
     /// Ids of recently used lines, oldest first, so lines don't repeat.
     public private(set) var recentMessageIDs: [String]
     /// When the current distracting-app episode began, if one is going.
-    public private(set) var distractionStartedAt: Date?
-    public private(set) var distractionStep: DistractionStep
-    public private(set) var idleStep: IdleStep
+    public private(set) var distractionStartedAt: Date? = nil
+    public private(set) var distractionStep: DistractionStep = .none
+    public private(set) var idleStep: IdleStep = .none
+
+    private enum CodingKeys: String, CodingKey {
+        case rules, nudgesEnabled, snoozedUntil, lastNudgeAt, recentNudges, recentMessageIDs
+    }
 
     /// How far a distracting-app episode has gone.
     public enum DistractionStep: Int, Codable, Comparable, Sendable {
@@ -163,9 +169,6 @@ public struct PetCoach: Codable, Hashable, Sendable {
         self.lastNudgeAt = nil
         self.recentNudges = []
         self.recentMessageIDs = []
-        self.distractionStartedAt = nil
-        self.distractionStep = .none
-        self.idleStep = .none
     }
 
     // MARK: Snooze
@@ -315,7 +318,10 @@ public struct PetCoach: Codable, Hashable, Sendable {
         return PetCoachNudge(kind: kind, message: message)
     }
 
-    private mutating func endEpisodes() {
+    /// Forgets any open distraction or idle episode, e.g. when the app stops
+    /// watching mid-phase, so the next focus phase starts with its full
+    /// grace period. Cooldowns and snooze are kept.
+    public mutating func endEpisodes() {
         distractionStartedAt = nil
         distractionStep = .none
         idleStep = .none

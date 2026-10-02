@@ -239,6 +239,12 @@ private struct ClosetWardrobe: View {
             }
             footer
         }
+        // Closing the notch or switching to Look mid-hover sends no hover
+        // exit, so drop the try-on here or it would greet the next visit.
+        .onDisappear {
+            hovered = nil
+            store.tryOn(nil)
+        }
     }
 
     /// Thumbnails show each item alone on the pet, so the item reads clearly.
