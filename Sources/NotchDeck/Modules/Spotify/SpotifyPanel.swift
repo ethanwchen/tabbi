@@ -370,12 +370,46 @@ private struct SpotifyActionButton: View {
 
 // MARK: - Compact live activity
 
+/// Left wing of the closed notch: the current cover at 20pt, centered.
 struct SpotifyCompactLeading: View {
     @ObservedObject var controller: SpotifyController
-    var body: some View { Color.clear }
+    @StateObject private var artwork = SpotifyArtworkLoader()
+
+    var body: some View {
+        let track = controller.status.playback?.track
+        SpotifyArtworkView(track: track, artwork: artwork.artwork, isLoading: artwork.isLoading,
+                           size: 20, cornerRadius: 5)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .task(id: track?.artworkURL) { await artwork.load(track?.artworkURL) }
+            .help(track.map { "\($0.title) · \($0.artist)" } ?? "Spotify")
+    }
 }
 
+/// Right wing of the closed notch: four equalizer bars in the module accent.
+/// The timeline pauses with playback, so a paused track costs no redraws.
 struct SpotifyCompactTrailing: View {
     @ObservedObject var controller: SpotifyController
-    var body: some View { Color.clear }
+
+    private static let barWidth: CGFloat = 3
+    private static let maxHeight: CGFloat = 14
+
+    var body: some View {
+        let isPlaying = controller.status.isPlaying
+        TimelineView(.animation(minimumInterval: 1.0 / 30, paused: !isPlaying)) { context in
+            let levels = isPlaying
+                ? SpotifyEqualizer.levels(at: context.date.timeIntervalSinceReferenceDate)
+                : SpotifyEqualizer.restingLevels()
+            HStack(alignment: .bottom, spacing: Theme.Spacing.xxs) {
+                ForEach(levels.indices, id: \.self) { index in
+                    Capsule(style: .continuous)
+                        .fill(Theme.Palette.accent(for: .spotify))
+                        .frame(width: Self.barWidth, height: Self.maxHeight * levels[index])
+                }
+            }
+            .frame(height: Self.maxHeight, alignment: .bottom)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .animation(Theme.Motion.snappy, value: isPlaying)
+        .help(isPlaying ? "Playing in Spotify" : "Paused")
+    }
 }
