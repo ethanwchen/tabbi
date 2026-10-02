@@ -45,6 +45,8 @@ final class FocusController: ObservableObject {
     private var requestedActivity: FocusActivity = .idle
     /// Transitions run one at a time, in order.
     private var transitions: Task<Void, Never>?
+    /// Shortcut runs finish in order, so an Off never lands before its On.
+    private var shortcutRuns: Task<Void, Never>?
     private var observers: [NSObjectProtocol] = []
 
     init(repository: FocusSettingsRepository = FocusSettingsRepository()) {
@@ -114,7 +116,9 @@ final class FocusController: ObservableObject {
         case .stopSound:
             if !isPreviewing { engine?.stop() }
         case .runShortcut(let name):
-            Task {
+            let previous = shortcutRuns
+            shortcutRuns = Task { [shortcuts] in
+                await previous?.value
                 let result = await shortcuts.run(name)
                 if !result.succeeded {
                     Self.log.error("Focus shortcut \"\(name, privacy: .public)\": \(result.message, privacy: .public)")

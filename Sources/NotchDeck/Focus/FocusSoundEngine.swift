@@ -139,12 +139,17 @@ final class FocusSoundEngine {
     }
 
     /// Polls a few times a second until the fade-out lands, then stops the
-    /// engine. Cancelled when playback resumes before then.
+    /// engine. Cancelled when playback resumes before then, and ends early
+    /// if the engine stops by itself (for example on a device change).
     private func scheduleShutdownWhenSilent() {
         guard shutdownTask == nil, engine.isRunning else { return }
         shutdownTask = Task { [weak self] in
             while !Task.isCancelled {
                 guard let self else { return }
+                if !self.engine.isRunning {
+                    self.shutdownTask = nil
+                    return
+                }
                 if self.isSilent {
                     self.engine.stop()
                     self.shutdownTask = nil
