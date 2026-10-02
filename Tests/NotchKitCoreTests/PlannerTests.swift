@@ -222,3 +222,16 @@ final class PlannerSampleDataTests: XCTestCase {
         XCTAssertEqual(day.progressSummary, "All 2 done")
     }
 }
+
+final class PlannerStarterTaskTests: XCTestCase {
+    func testAddsStarterTasksOnceSkippingBlanksAndExistingTitles() {
+        var day = PlannerDay(date: PlannerDayKey(date: Date()))
+        day.add("Review lecture notes")
+        let added = day.addStarterTasks(["review  LECTURE notes", "  ", "Plan the week", "Plan the week"])
+        XCTAssertEqual(added.map(\.title), ["Plan the week"])
+        XCTAssertEqual(day.items.map(\.title), ["Review lecture notes", "Plan the week"])
+
+        XCTAssertTrue(day.addStarterTasks(["Plan the week"]).isEmpty, "applying a kit again adds nothing")
+        XCTAssertEqual(day.items.count, 2)
+    }
+}

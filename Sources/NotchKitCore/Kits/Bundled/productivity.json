@@ -6,7 +6,6 @@
   "symbol": "briefcase.fill",
   "modules": ["spotify", "system", "claudeUsage", "planner", "claudeAsk"],
   "defaults": {
-    "focusSounds": [{ "sound": "brown", "level": 1 }],
     "theme": "notch"
   },
   "onboarding": [

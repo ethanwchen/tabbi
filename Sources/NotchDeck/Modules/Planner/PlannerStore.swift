@@ -86,6 +86,11 @@ final class PlannerStore: ObservableObject {
         edit { $0.add(title) != nil }
     }
 
+    /// Adds a kit's starter tasks that aren't on today's list yet.
+    func addStarterTasks(_ titles: [String]) {
+        edit { !$0.addStarterTasks(titles).isEmpty }
+    }
+
     func toggle(_ id: PlannerItem.ID) {
         edit { $0.toggle(id); return true }
     }

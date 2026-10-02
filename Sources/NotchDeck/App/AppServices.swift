@@ -52,6 +52,18 @@ final class AppServices: ObservableObject {
                 providers.update(enabled: enabled)
             }
             .store(in: &cancellables)
+        // Kit defaults that live outside `AppSettings`.
+        settings.kitApplied
+            .sink { [planner] application in
+                MainActor.assumeIsolated {
+                    let focus = FocusController.shared
+                    focus.settings = focus.settings.applying(application.kit.defaults)
+                    if application.addsStarterTasks {
+                        planner.addStarterTasks(application.kit.starterTasks())
+                    }
+                }
+            }
+            .store(in: &cancellables)
         // A new `claude` path in Settings must reach both Claude modules
         // live, not on the next launch.
         settings.$appliedClaudePathOverride

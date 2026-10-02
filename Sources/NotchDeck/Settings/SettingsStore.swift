@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import NotchKitCore
 
@@ -33,6 +34,19 @@ final class SettingsStore: ObservableObject {
 
     /// The kits Settings offers: bundled ones, then the user's imports.
     @Published private(set) var kits: KitLibrary
+
+    /// A kit the user just applied. Defaults that live outside
+    /// `AppSettings` (the focus sound, starter tasks) are applied by
+    /// whoever owns them.
+    struct KitApplication {
+        let kit: KitManifest
+        /// True when the user picked or switched to the kit (not a reset), so
+        /// its starter tasks belong on Today.
+        let addsStarterTasks: Bool
+    }
+
+    /// Emits after `settings` holds the applied kit.
+    let kitApplied = PassthroughSubject<KitApplication, Never>()
 
     private let repository: SettingsRepository
     /// Where imported kits live; nil for snapshot stores, which only show
@@ -90,20 +104,20 @@ final class SettingsStore: ObservableObject {
     /// Switches to another kit, replacing the tab layout with its defaults.
     func switchKit(to id: String) {
         guard id != settings.kitID, let kit = kits[id] else { return }
-        settings.apply(kit)
+        apply(kit, addsStarterTasks: true)
     }
 
     /// The first-run pick: applies `id`'s tabs even when it is already the
     /// default kit, and records that the user has chosen.
     func chooseKit(_ id: String) {
         guard let kit = kits[id] ?? activeKit else { return }
-        settings.apply(kit)
+        apply(kit, addsStarterTasks: true)
     }
 
     /// Puts the active kit's tabs back the way the kit ships them.
     func resetToKitDefaults() {
         guard let kit = activeKit else { return }
-        settings.apply(kit)
+        apply(kit, addsStarterTasks: false)
     }
 
     /// Copies a kit file into the user's kits and switches to it. Returns
@@ -112,7 +126,7 @@ final class SettingsStore: ObservableObject {
         guard let kitStore else { throw KitError.malformed("importing is off in this mode") }
         let kit = try kitStore.install(from: url)
         kits = KitLibrary.installed(imported: kitStore.load())
-        settings.apply(kit)
+        apply(kit, addsStarterTasks: true)
         return (kit, kit.issues())
     }
 
@@ -127,8 +141,13 @@ final class SettingsStore: ObservableObject {
         try kitStore.remove(id: settings.kitID)
         kits = KitLibrary.installed(imported: kitStore.load())
         if let fallback = kits.kit(defaultKitID) {
-            settings.apply(fallback)
+            apply(fallback, addsStarterTasks: true)
         }
+    }
+
+    private func apply(_ kit: KitManifest, addsStarterTasks: Bool) {
+        settings.apply(kit)
+        kitApplied.send(KitApplication(kit: kit, addsStarterTasks: addsStarterTasks))
     }
 
     /// Registers or removes the login item first and only records the

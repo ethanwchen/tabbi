@@ -58,20 +58,27 @@ public struct AppSettings: Equatable, Sendable {
         notchPreview.enabledKinds.filter { modules.isEnabled($0.module) }
     }
 
-    /// Switches to `kit` and replaces the tab layout with the one it
-    /// produces for `answers`. Used both to switch kits and to reset to the
-    /// current kit's defaults; other preferences are kept. Either way the
-    /// user has now picked a kit.
+    /// Switches to `kit`: replaces the tab layout with the one it produces
+    /// for `answers`, and the closed-notch previews with the kit's when it
+    /// lists any. Used both to switch kits and to reset to the current kit's
+    /// defaults; other preferences are kept. Either way the user has now
+    /// picked a kit.
     public mutating func apply(_ kit: KitManifest, answers: KitAnswers = [:], catalog: ModuleCatalog = .builtIn) {
         kitID = kit.id
         hasChosenKit = true
         modules = kit.layout(catalog: catalog, answers: answers)
+        if let kinds = kit.defaults.resolvedTicker {
+            notchPreview.disabledKinds = Set(TickerKind.allCases).subtracting(kinds)
+        }
     }
 
-    /// True when `kit` is the active kit and the tabs are still exactly the
-    /// ones it ships with, so "Reset to kit defaults" would change nothing.
+    /// True when `kit` is the active kit and the tabs (and previews, if the
+    /// kit sets them) are still exactly the ones it ships with, so "Reset to
+    /// kit defaults" would change nothing here.
     public func usesDefaults(of kit: KitManifest, catalog: ModuleCatalog = .builtIn) -> Bool {
-        kitID == kit.id && modules == kit.layout(catalog: catalog)
+        var reset = self
+        reset.apply(kit, catalog: catalog)
+        return kitID == kit.id && reset.modules == modules && reset.notchPreview == notchPreview
     }
 
     /// Trims whitespace and expands `~`; blank means "no override".

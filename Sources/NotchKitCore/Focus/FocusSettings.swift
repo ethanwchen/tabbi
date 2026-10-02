@@ -58,6 +58,19 @@ public struct FocusSettings: Codable, Equatable, Sendable {
         !mix.isOff || playlist != nil || activeOnShortcut != nil || activeOffShortcut != nil
     }
 
+    /// These settings with a kit's focus sound applied. A kit without one
+    /// keeps the current mix; volume, playlist and shortcuts are the user's.
+    public func applying(_ kit: KitDefaults) -> FocusSettings {
+        var settings = self
+        if let mix = kit.resolvedFocusMix { settings.mix = mix }
+        return settings
+    }
+
+    /// True when applying `kit` would leave these settings unchanged.
+    public func usesDefaults(of kit: KitDefaults) -> Bool {
+        applying(kit) == self
+    }
+
     private func activeShortcut(_ name: String) -> String? {
         guard doNotDisturb else { return nil }
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)

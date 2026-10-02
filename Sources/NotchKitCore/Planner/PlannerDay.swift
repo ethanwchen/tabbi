@@ -97,6 +97,18 @@ public struct PlannerDay: Hashable, Codable, Sendable {
         return item
     }
 
+    /// Appends a kit's starter tasks, skipping blanks and any title already
+    /// on the list (ignoring case), so applying a kit twice never duplicates
+    /// them. Returns the items added.
+    @discardableResult
+    public mutating func addStarterTasks(_ titles: [String], now: Date = Date()) -> [PlannerItem] {
+        var seen = Set(items.map { $0.title.lowercased() })
+        return titles.compactMap(Self.normalized).compactMap { title in
+            guard seen.insert(title.lowercased()).inserted else { return nil }
+            return add(title, now: now)
+        }
+    }
+
     /// Flips an item's done state, stamping or clearing `completedAt`.
     public mutating func toggle(_ id: PlannerItem.ID, now: Date = Date()) {
         guard let index = index(of: id) else { return }

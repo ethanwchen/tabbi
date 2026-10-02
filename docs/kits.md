@@ -22,8 +22,8 @@ The kit's onboarding questions aren't asked yet; that comes with full onboarding
 To change kits later, open **Settings > Modules**.
 The **Kit** section lets you:
 
-- **Switch kit.** Your tabs change to the new kit's tabs. Every other preference stays as it is.
-- **Reset to Kit Defaults.** Puts the tabs back the way the kit ships them. The button is disabled when nothing would change.
+- **Switch kit.** Your tabs change to the new kit's tabs, and its notch previews and focus sound replace yours if the kit sets them. The kit's starter tasks are added to Today, skipping any already on the list. Every other preference stays as it is.
+- **Reset to Kit Defaults.** Puts the tabs, notch previews and focus sound back the way the kit ships them, without adding starter tasks again. The button is disabled when nothing would change.
 - **Import Kit…** Pick a `.json` kit file. NotchDeck checks it, saves a copy, and switches to it. If the kit mentions things this version doesn't know, such as a module from a newer release, you see a warning listing them, and they are skipped.
 - **Remove Kit.** Shown for imported kits only. NotchDeck switches back to the default kit.
 
@@ -60,7 +60,7 @@ A kit file is a JSON object with these fields.
 | `modules` | yes | array | The tabs, in order. At least one. See [Modules](#modules). |
 | `defaults` | no | object | Settings the kit starts with. See [Defaults](#defaults). |
 | `onboarding` | no | array | Questions first-run setup asks to tailor the kit. See [Onboarding](#onboarding). |
-| `starterTasks` | no | array of strings | Tasks added to Today the first time the kit is set up. |
+| `starterTasks` | no | array of strings | Tasks added to Today when the user picks or switches to the kit. Titles already on the list are skipped. |
 
 Unknown top-level fields are ignored, so a kit written for a newer version still loads.
 
@@ -120,8 +120,9 @@ Accepted values:
 - **Ticker previews:** `meeting`, `nowPlaying`, `focus`, `tasks`, `claudeUsage`.
 - **Pet breeds:** `orangeTabby`, `grayTabby`, `blackCat`, `whiteCat`, `tuxedo`, `calico`, `siamese`, `britishShorthair`, `goldenRetriever`, `labrador`, `frenchBulldog`, `corgi`, `dachshund`, `beagle`.
 
-Today, switching kits applies the tabs.
-The other defaults are read and checked, and will be applied as the modules that use them (Study, focus sounds, Closet) land.
+Switching kits, picking one on first run, and resetting apply the tabs, `ticker` and `focusSounds`.
+A field the kit leaves out keeps the user's current setting, and only the sound mix changes: the user's volume, playlist and Do Not Disturb shortcuts stay.
+The other defaults are read and checked, and will be applied as the modules that use them (Study, Closet) land.
 
 ### Onboarding
 

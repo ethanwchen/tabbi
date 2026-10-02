@@ -166,4 +166,22 @@ final class FocusShortcutRunnerTests: XCTestCase {
         let result = await FocusShortcutRunner().run(name)
         XCTAssertEqual(result, .notFound(name: name))
     }
+
+    func testApplyingAKitReplacesOnlyTheMix() {
+        let user = FocusSettings(mix: FocusMix([.init(sound: .fireplace)]), volume: 0.3, playlistText: "lofi", doNotDisturb: true)
+        let kit = KitDefaults(focusSounds: [KitFocusSound(sound: "rain", level: 0.8), KitFocusSound(sound: "hologram", level: 1)])
+        let applied = user.applying(kit)
+        XCTAssertEqual(applied.mix, FocusMix([.init(sound: .rain, level: 0.8)]))
+        XCTAssertEqual(applied.volume, 0.3)
+        XCTAssertEqual(applied.playlistText, "lofi")
+        XCTAssertTrue(applied.doNotDisturb)
+        XCTAssertTrue(applied.usesDefaults(of: kit))
+        XCTAssertFalse(user.usesDefaults(of: kit))
+    }
+
+    func testAKitWithoutFocusSoundsKeepsTheMix() {
+        let user = FocusSettings(mix: FocusMix([.init(sound: .fireplace)]))
+        XCTAssertEqual(user.applying(KitDefaults()), user)
+        XCTAssertTrue(user.usesDefaults(of: KitDefaults()))
+    }
 }

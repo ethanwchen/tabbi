@@ -155,8 +155,14 @@ struct ModulesSettingsPane: View {
 /// imports kits shared as JSON files (see docs/kits.md).
 private struct KitSection: View {
     @EnvironmentObject private var store: SettingsStore
+    /// Reset also restores the kit's focus sound, so it counts toward "already at defaults".
+    @ObservedObject private var focus = FocusController.shared
     /// The outcome of the last import or removal, shown under the buttons.
     @State private var message: (text: String, isWarning: Bool)?
+
+    private var usesKitDefaults: Bool {
+        store.usesKitDefaults && (store.activeKit.map { focus.settings.usesDefaults(of: $0.defaults) } ?? true)
+    }
 
     var body: some View {
         Section {
@@ -181,10 +187,10 @@ private struct KitSection: View {
                 }
                 Spacer()
                 Button("Reset to Kit Defaults", action: store.resetToKitDefaults)
-                    .disabled(store.usesKitDefaults)
-                    .help(store.usesKitDefaults
-                          ? "Your tabs already match \(store.activeKit?.name ?? "the kit")"
-                          : "Restore the tabs and order \(store.activeKit?.name ?? "the kit") ships with")
+                    .disabled(usesKitDefaults)
+                    .help(usesKitDefaults
+                          ? "Your setup already matches \(store.activeKit?.name ?? "the kit")"
+                          : "Restore the tabs, previews and focus sound \(store.activeKit?.name ?? "the kit") ships with")
             }
 
             if let message {
@@ -196,7 +202,7 @@ private struct KitSection: View {
         } header: {
             Text("Kit")
         } footer: {
-            SectionFooter("A kit is a premade set of tabs. Switching kits or resetting replaces your tabs; other settings stay.")
+            SectionFooter("A kit is a premade set of tabs and defaults. Switching kits or resetting replaces your tabs, notch previews and focus sound with the kit's, and switching adds its starter tasks to Today. Other settings stay.")
         }
     }
 

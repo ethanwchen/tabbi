@@ -305,6 +305,29 @@ final class SettingsRepositoryTests: XCTestCase {
         XCTAssertTrue(settings.hasChosenKit)
     }
 
+    func testApplyingAKitWithTickerDefaultsReplacesThePreviews() throws {
+        let medicine = try XCTUnwrap(KitLibrary.bundled["medicine"])
+        var settings = AppSettings()
+        settings.notchPreview.setEnabled(.focus, false)
+        settings.notchPreview.interval = .long
+        settings.apply(medicine)
+        XCTAssertEqual(settings.notchPreview.disabledKinds, [.claudeUsage])
+        XCTAssertEqual(settings.notchPreview.interval, .long)
+        XCTAssertTrue(settings.usesDefaults(of: medicine))
+
+        settings.notchPreview.setEnabled(.claudeUsage, true)
+        XCTAssertFalse(settings.usesDefaults(of: medicine), "a changed preview means reset has work to do")
+    }
+
+    func testApplyingAKitWithoutTickerDefaultsKeepsThePreviews() throws {
+        let productivity = try XCTUnwrap(KitLibrary.bundled["productivity"])
+        var settings = AppSettings()
+        settings.notchPreview.setEnabled(.meeting, false)
+        settings.apply(productivity)
+        XCTAssertEqual(settings.notchPreview.disabledKinds, [.meeting])
+        XCTAssertTrue(settings.usesDefaults(of: productivity))
+    }
+
     func testMalformedPreviewValuesFallBack() {
         defaults.set(7, forKey: "settings.preview.interval")
         defaults.set(["focus", "hologram"], forKey: "settings.preview.disabledKinds")

@@ -201,12 +201,12 @@ final class KitLibraryTests: XCTestCase {
         XCTAssertEqual(kit.layout(), ModuleLayout.default)
         XCTAssertEqual(kit.issues(), [])
         XCTAssertNil(kit.defaults.resolvedTicker, "Productivity keeps every preview kind on")
+        XCTAssertNil(kit.defaults.resolvedFocusMix, "Productivity keeps the user's focus sound (Off by default)")
     }
 
     func testBundledKitsOnlyUseKnownValues() throws {
         for kit in KitLibrary.bundled.kits {
             XCTAssertEqual(kit.issues(), [], kit.id)
-            XCTAssertNotNil(kit.defaults.resolvedFocusMix, kit.id)
         }
     }
 
