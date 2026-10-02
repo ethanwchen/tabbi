@@ -245,6 +245,19 @@ Rules:
 Lines are short enough for a notch bubble (`maxLength`, 64 characters), warm, lightly med-school flavored ("The Krebs cycle is saving your seat."), and never shaming: no counting slip-ups, no guilt, no "you should".
 `pick(_:avoiding:using:)` skips recently used ids while others remain and never repeats the most recent line; the coach remembers its last 8 lines in `recentMessageIDs`.
 
+### Replies and the stroll
+
+`PetCoachNudgeKind.replies` lists a bubble's buttons as `PetCoachReply` values, the kind's default first and `snooze` always last.
+`PetCoach.handle(_:at:)` applies the coach's part of a reply: `snooze` silences it for `PetCoachReply.snoozeDuration` (15 minutes).
+`pausesTimer` and `resumesTimer` tell the app when to change the study timer.
+
+`PetCoachStroll` times the overlay: the pet walks `distance` points out from the notch at `speed`, talks for `talkDuration`, then walks back.
+Ask it for `phase(at:)`, `offset(at:)`, `heading(at:)`, and `showsBubble(at:)`, so every frame (and every snapshot) follows from a date.
+`dismiss(at:)` (any reply) turns the pet around at once, mid-walk included; only the first dismissal counts.
+
+In the app, `PetCoachOverlayView` (`Modules/PetCoach`) draws a stroll.
+`--snapshot` renders `coach-walking.png` and one `coach-<kind>.png` per bubble kind.
+
 ## Closet (`Sources/NotchKitCore/Closet`)
 
 `PetCloset` holds the Closet tab's editing rules over one `PetSave`, so every edit leaves a save that is valid to persist.
