@@ -88,4 +88,18 @@ final class StudyTimerFormatTests: XCTestCase {
 
         XCTAssertEqual(StudyTimerFormat.primaryAction(StudySession(method: .ankiSprint())), "Start sprint")
     }
+
+    func testStudiedMinutesLabel() {
+        XCTAssertEqual(StudyTimerFormat.studied(minutes: -3), "0 min")
+        XCTAssertEqual(StudyTimerFormat.studied(minutes: 45), "45 min")
+        XCTAssertEqual(StudyTimerFormat.studied(minutes: 60), "1h")
+        XCTAssertEqual(StudyTimerFormat.studied(minutes: 125), "2h 5m")
+    }
+
+    func testPointsLabel() {
+        XCTAssertEqual(StudyTimerFormat.points(0), "0 pts")
+        XCTAssertEqual(StudyTimerFormat.points(-5), "0 pts")
+        XCTAssertEqual(StudyTimerFormat.points(1), "+1 pt")
+        XCTAssertEqual(StudyTimerFormat.points(79), "+79 pts")
+    }
 }

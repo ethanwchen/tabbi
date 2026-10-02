@@ -28,7 +28,7 @@ struct StudyPanel: View {
                     StudyDial(store: store)
                         .frame(width: 176)
                     VStack(spacing: Theme.Spacing.s) {
-                        StudyMethodCard(session: store.session, choose: { show(.picker) },
+                        StudyMethodCard(session: store.session, today: store.today, choose: { show(.picker) },
                                         info: { show(.info(store.session.method.kind, from: nil)) })
                         StudyControls(store: store)
                     }
@@ -102,10 +102,11 @@ private struct StudyDial: View {
     }
 }
 
-/// The method in use, its rhythm and round. The name opens the picker and
-/// the (i) the method's info popover.
+/// The method in use, its rhythm and round, with today's tally at the
+/// bottom. The name opens the picker and the (i) the method's info popover.
 private struct StudyMethodCard: View {
     let session: StudySession
+    let today: StudyDaySummary
     let choose: () -> Void
     let info: () -> Void
     @State private var hovering = false
@@ -149,14 +150,54 @@ private struct StudyMethodCard: View {
                 .buttonStyle(.plain)
                 .help("Change the study method")
                 .onHover { hovering = $0 }
+                Spacer(minLength: Theme.Spacing.xs)
+                StudyTodayRow(today: today)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
         .overlay(
             RoundedRectangle(cornerRadius: Theme.Radius.m, style: .continuous)
                 .strokeBorder(Theme.Palette.stroke.opacity(hovering ? 2 : 0), lineWidth: 1)
         )
         .animation(Theme.Motion.snappy, value: hovering)
+    }
+}
+
+/// Today's study minutes, finished stretches and the points they earned
+/// for the pet.
+private struct StudyTodayRow: View {
+    let today: StudyDaySummary
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.s) {
+            Text("Today")
+                .foregroundStyle(Theme.Palette.tertiaryText)
+            Label(StudyTimerFormat.studied(minutes: today.minutes), systemImage: "clock")
+                .help("Time studied today")
+            Label("\(today.completedSessions) done", systemImage: "checkmark.circle")
+                .help("Study stretches finished today")
+            Spacer(minLength: 0)
+            Label(StudyTimerFormat.points(today.points), systemImage: "star.fill")
+                .foregroundStyle(today.points > 0 ? accent : Theme.Palette.tertiaryText)
+                .help("Study points earned today; spend them on your pet's wardrobe")
+        }
+        .labelStyle(StudyTodayLabelStyle())
+        .font(Theme.Typography.caption)
+        .foregroundStyle(Theme.Palette.secondaryText)
+        .monospacedDigit()
+        .lineLimit(1)
+        .contentTransition(.numericText())
+        .animation(Theme.Motion.content, value: today)
+    }
+}
+
+/// A small icon tucked close to its count.
+private struct StudyTodayLabelStyle: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: Theme.Spacing.xxs) {
+            configuration.icon.font(.system(size: 9, weight: .semibold))
+            configuration.title
+        }
     }
 }
 

@@ -90,4 +90,19 @@ public enum StudyTimerFormat {
             }
         }
     }
+
+    /// Time studied as a short label: "0 min", "45 min", "1h 5m".
+    public static func studied(minutes: Int) -> String {
+        let minutes = max(minutes, 0)
+        guard minutes >= 60 else { return "\(minutes) min" }
+        let rest = minutes % 60
+        return rest == 0 ? "\(minutes / 60)h" : "\(minutes / 60)h \(rest)m"
+    }
+
+    /// Points as a signed label for a day's tally: "+79 pts", "+1 pt", "0 pts".
+    public static func points(_ points: Int) -> String {
+        let points = max(points, 0)
+        let unit = points == 1 ? "pt" : "pts"
+        return points == 0 ? "0 pts" : "+\(points.formatted()) \(unit)"
+    }
 }

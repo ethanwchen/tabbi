@@ -9,38 +9,66 @@ import NotchKitCore
 /// fires at the running phase's end to chime and roll into the next phase,
 /// and the view only ticks once a second while the panel is visible. The
 /// session is saved on every change so a relaunch picks up where it was.
-/// With `NOTCHDECK_DEMO=1` it shows a sample Pomodoro round and never
-/// touches sounds or disk.
+/// Finished stretches move from the session into the persisted `StudyLog`,
+/// which totals the day and holds earned points for the pet ledger.
+/// With `NOTCHDECK_DEMO=1` it shows a sample Pomodoro round and a sample
+/// day, and never touches sounds or disk.
 @MainActor
 final class StudyStore: ObservableObject {
     @Published private(set) var session: StudySession
     /// The moment the view measures against; advances every second while visible.
     @Published private(set) var now = Date()
+    /// Every logged study stretch and the points not yet credited to the pet.
+    @Published private(set) var log: StudyLog
 
     private let isDemo: Bool
     private let defaults = UserDefaults.standard
     private var isVisible = false
     private var ticker: Timer?
     private var phaseEndTimer: Timer?
+    private let logURL: URL?
+    /// Set when the log on disk could not be read: new stretches are still
+    /// logged in memory, but the file is never overwritten, so nothing is lost.
+    private let logIsUnreadable: Bool
 
     private static let sessionKey = "study.session"
 
-    init() {
+    init(edition: Edition = .current) {
         isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
         if isDemo {
-            session = Self.demoSession(StudySnapshotState.current?.demoMethod ?? .pomodoro, now: Date())
+            let now = Date()
+            session = Self.demoSession(StudySnapshotState.current?.demoMethod ?? .pomodoro, now: now)
+            log = Self.demoLog(now: now)
+            logURL = nil
+            logIsUnreadable = false
             return
         }
         session = defaults.data(forKey: Self.sessionKey)
             .flatMap { try? JSONDecoder().decode(StudySession.self, from: $0) }
             ?? StudySession(method: .pomodoro)
+        logURL = Self.logURL(for: edition)
+        do {
+            log = try logURL.flatMap { try StudyLog.load(from: $0) } ?? StudyLog()
+            logIsUnreadable = false
+        } catch {
+            log = StudyLog()
+            logIsUnreadable = true
+        }
         // A phase may have ended while the app wasn't running; catch up quietly.
         session.advance(to: Date())
         scheduleSideEffects()
     }
 
+    /// `~/Library/Application Support/<edition>/Study/log.json`.
+    static func logURL(for edition: Edition) -> URL? {
+        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
+            .appendingPathComponent("\(edition.name)/Study/log.json")
+    }
+
     var readout: StudyDialReadout { StudyTimerFormat.readout(session, at: now) }
     var progress: Double? { session.progress(at: now) }
+    /// Minutes, finished stretches and points logged today.
+    var today: StudyDaySummary { log.summary(on: now) }
 
     /// Call from the panel's `onAppear` / `onDisappear`; the clock ticks
     /// only while it's visible.
@@ -111,9 +139,11 @@ final class StudyStore: ObservableObject {
         updateTicker()
     }
 
-    /// Saves the session and arms a one-shot timer for the running phase's end.
+    /// Moves finished stretches into the log, saves the session and the log,
+    /// and arms a one-shot timer for the running phase's end.
     private func scheduleSideEffects() {
         guard !isDemo else { return }
+        collectLog()
         if let data = try? JSONEncoder().encode(session) { defaults.set(data, forKey: Self.sessionKey) }
 
         phaseEndTimer?.invalidate()
@@ -141,6 +171,17 @@ final class StudyStore: ObservableObject {
         tick.tolerance = 0.1
         RunLoop.main.add(tick, forMode: .common)
         ticker = tick
+    }
+
+    /// Drains the session's phase records into the persisted log.
+    private func collectLog() {
+        guard !session.log.isEmpty else { return }
+        var updated = log
+        updated.record(session.takeLog())
+        if updated != log {
+            log = updated
+            if let logURL, !logIsUnreadable { try? log.write(to: logURL) }
+        }
     }
 
     private static func playChime() {
@@ -174,5 +215,19 @@ final class StudyStore: ObservableObject {
         }
         _ = session.takeLog()
         return session
+    }
+
+    /// A morning's work: two finished Pomodoros and a short sprint.
+    private static func demoLog(now: Date) -> StudyLog {
+        let start = Calendar.current.startOfDay(for: now).addingTimeInterval(9 * 3600)
+        func stretch(_ method: StudyMethodKind, from minute: Double, minutes: Double, cards: Int? = nil) -> StudyPhaseRecord {
+            StudyPhaseRecord(method: method, phase: .focus, startedAt: start.addingTimeInterval(minute * 60),
+                             endedAt: start.addingTimeInterval((minute + minutes) * 60),
+                             activeDuration: minutes * 60, outcome: .completed, cards: cards)
+        }
+        var log = StudyLog()
+        log.record([stretch(.pomodoro, from: 0, minutes: 25), stretch(.pomodoro, from: 30, minutes: 25),
+                    stretch(.ankiSprint, from: 70, minutes: 14, cards: 100)])
+        return log
     }
 }
