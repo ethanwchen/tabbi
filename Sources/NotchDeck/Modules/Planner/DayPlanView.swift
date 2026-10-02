@@ -23,7 +23,9 @@ struct DayPlanView: View {
         case .idle:
             EmptyView()
         case .planning:
-            DayPlanShimmer()
+            DayPlanShimmer(help: plan.settings.planMode == .study
+                           ? "Fitting reviews and study blocks around today's events"
+                           : "Claude is fitting your tasks around today's events")
                 .transition(.opacity)
         case .proposal(let proposal):
             VStack(alignment: .leading, spacing: 0) {
@@ -192,6 +194,7 @@ private struct DayPlanRowButton: View {
 
 /// Placeholder rows with a soft highlight sweeping across while Claude plans.
 private struct DayPlanShimmer: View {
+    let help: String
     @State private var phase: CGFloat = -1
 
     private static let widths: [CGFloat] = [0.72, 0.54, 0.64]
@@ -232,7 +235,7 @@ private struct DayPlanShimmer: View {
         .onAppear {
             withAnimation(.easeInOut(duration: 1.4).repeatForever(autoreverses: false)) { phase = 1.5 }
         }
-        .help("Claude is fitting your tasks around today's events")
+        .help(help)
     }
 }
 

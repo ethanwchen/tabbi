@@ -148,30 +148,36 @@ public enum StudyDayPlanner {
             }
         }
 
-        // Reviews: one block each, whole if any gap fits it, else the
-        // biggest piece of time available. Early ones take the earliest
-        // fit; late ones the latest, ending at that gap's end.
+        // Reviews: one block each when a gap fits it whole: the earliest
+        // such gap, or the latest when reviews go last. Otherwise the
+        // review is split over consecutive gaps from that end of the day,
+        // so a long queue still starts early instead of waiting for the
+        // one big gap at night. No piece is shorter than a block.
         let reviewRest = TimeInterval(preferences.breakMinutes) * minute
-        for work in reviews.prefix(DayPlanner.maximumBlocks) {
-            let wanted = TimeInterval(min(max(work.minutes, DayPlanner.minimumBlockMinutes),
-                                          StudyDayPreferences.maximumReviewMinutes)) * minute
-            guard let title = PlannerDay.normalized(work.title), !free.isEmpty else { continue }
-            let fitting = free.filter { $0.duration >= wanted }
-            let interval: DateInterval
-            if preferences.reviewsFirst {
-                let gap = fitting.first ?? free.max { $0.duration < $1.duration }!
-                interval = DateInterval(start: gap.start, duration: min(wanted, gap.duration))
-            } else {
-                let gap = fitting.last ?? free.max { $0.duration < $1.duration }!
-                let length = min(wanted, gap.duration)
-                interval = DateInterval(start: gap.end.addingTimeInterval(-length), duration: length)
-            }
-            placed.append((PlanBlock(start: interval.start, end: interval.end, title: title, kind: .reviews), reviewRest))
-            // A late review block still needs its rest before it, not after.
-            if preferences.reviewsFirst {
-                reserve(interval, rest: reviewRest)
-            } else {
-                reserve(DateInterval(start: interval.start.addingTimeInterval(-reviewRest), end: interval.end), rest: 0)
+        for work in reviews {
+            guard let title = PlannerDay.normalized(work.title) else { continue }
+            var remaining = TimeInterval(min(max(work.minutes, DayPlanner.minimumBlockMinutes),
+                                             StudyDayPreferences.maximumReviewMinutes)) * minute
+            let whole = preferences.reviewsFirst
+                ? free.first { $0.duration >= remaining }
+                : free.last { $0.duration >= remaining }
+            while remaining > 0, placed.count < DayPlanner.maximumBlocks,
+                  let gap = whole ?? (preferences.reviewsFirst ? free.first : free.last) {
+                let length = max(min(remaining, gap.duration), minimum)
+                let interval = preferences.reviewsFirst
+                    ? DateInterval(start: gap.start, duration: length)
+                    : DateInterval(start: gap.end.addingTimeInterval(-length), duration: length)
+                placed.append((PlanBlock(start: interval.start, end: interval.end, title: title, kind: .reviews),
+                               reviewRest))
+                // A late review block still needs its rest before it, not after.
+                if preferences.reviewsFirst {
+                    reserve(interval, rest: reviewRest)
+                } else {
+                    reserve(DateInterval(start: interval.start.addingTimeInterval(-reviewRest), end: interval.end),
+                            rest: 0)
+                }
+                remaining -= length
+                if whole != nil { break }
             }
         }
 

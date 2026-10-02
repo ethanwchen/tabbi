@@ -11,7 +11,10 @@
     "focusSounds": [{ "sound": "rain", "level": 0.8 }, { "sound": "brown", "level": 0.4 }],
     "ticker": ["focus", "tasks", "progress", "meeting", "nowPlaying"],
     "pet": { "breed": "orangeTabby" },
-    "theme": "notch"
+    "theme": "notch",
+    "moduleSettings": {
+      "planner": { "planMode": "study", "reviewsFirst": true, "eventBufferMinutes": 10, "studyBlockTitle": "Study block" }
+    }
   },
   "onboarding": [
     {

@@ -84,6 +84,31 @@ final class StudyDayPlannerTests: XCTestCase {
         assertConstraints(plan, context)
     }
 
+    func testReviewsTooLongForAnyGapSplitAcrossTheEarliestGaps() {
+        // Free: 8:00-8:40 and 10:10-10:50 (buffered), then a shift until 18:00.
+        let context = context(now: at(8), events: [event("Lecture", at(8, 50), at(10)),
+                                                   event("Shift", at(11), at(18))])
+        let plan = StudyDayPlanner.plan(context: context, reviews: [StudyReviewWork(title: "Anki reviews", minutes: 60)],
+                                        preferences: StudyDayPreferences(eventBufferMinutes: 10))
+        let reviews = plan.blocks.filter { $0.kind == .reviews }
+        XCTAssertEqual(reviews.map(\.start), [at(8), at(10, 10)])
+        XCTAssertEqual(reviews.map(\.end), [at(8, 40), at(10, 30)])
+        assertConstraints(plan, context)
+    }
+
+    func testLateReviewsSplitFromTheEndOfTheDay() {
+        // Free: 8:00-8:40, 10:10-11:00 and 16:10-18:00; 150 min capped to 120:
+        // 110 min at the end, and the last 10 grows to a 15-min block.
+        let context = context(now: at(8), events: [event("Lecture", at(8, 50), at(10)),
+                                                   event("Clinic", at(11, 10), at(16))])
+        let plan = StudyDayPlanner.plan(context: context, reviews: [StudyReviewWork(title: "Anki reviews", minutes: 150)],
+                                        preferences: StudyDayPreferences(reviewsFirst: false, eventBufferMinutes: 10))
+        let reviews = plan.blocks.filter { $0.kind == .reviews }
+        XCTAssertEqual(reviews.map(\.start), [at(10, 45), at(16, 10)])
+        XCTAssertEqual(reviews.map(\.end), [at(11), at(18)])
+        assertConstraints(plan, context)
+    }
+
     func testLongReviewQueueIsCappedAndShrinksToTheBiggestGap() {
         let context = context(now: at(16), events: [])
         let plan = StudyDayPlanner.plan(context: context, reviews: [StudyReviewWork(title: "Anki reviews", minutes: 400)])

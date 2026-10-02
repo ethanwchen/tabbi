@@ -52,7 +52,9 @@ struct PlannerPanel: View {
                                 } else if hasPlannableWork {
                                     // Nothing to schedule until there's an open task.
                                     PlannerPillButton(title: "Plan my day", symbol: "sparkles", height: 28,
-                                                      help: "Let Claude fit your open tasks around today's calendar") {
+                                                      help: store.planSettings.planMode == .study
+                                                          ? "Fit reviews, study blocks and breaks around today's calendar"
+                                                          : "Let Claude fit your open tasks around today's calendar") {
                                         store.planMyDay()
                                     }
                                     .transition(.opacity.combined(with: .scale(scale: 0.9)))
@@ -189,7 +191,9 @@ private struct PlannerHeader: View {
                 if isEvening {
                     if hasPlannableWork {
                         IconButton(symbol: "sparkles", size: 20,
-                                   help: "Plan my day: fit your open tasks around today's calendar") {
+                                   help: store.planSettings.planMode == .study
+                                       ? "Plan my day: fit reviews, study blocks and breaks around today's calendar"
+                                       : "Plan my day: fit your open tasks around today's calendar") {
                             store.planMyDay()
                         }
                     }
