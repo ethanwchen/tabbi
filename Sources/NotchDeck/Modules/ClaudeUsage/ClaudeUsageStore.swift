@@ -34,6 +34,8 @@ final class ClaudeUsageStore: ObservableObject {
     private var locateTask: Task<URL?, Never>?
     private var probeTask: Task<Void, Never>?
     private var scanTask: Task<Void, Never>?
+    /// A scan was requested while one was running; run another when it ends.
+    private var rescanPending = false
 
     init() {
         if isDemo {
@@ -92,11 +94,19 @@ final class ClaudeUsageStore: ObservableObject {
     }
 
     private func scanLocalStats() {
-        guard scanTask == nil else { return }
+        guard scanTask == nil else {
+            rescanPending = true
+            return
+        }
         scanTask = Task(priority: .utility) { [weak self, scanner] in
             let result = await scanner.scan()
-            self?.stats = result
-            self?.scanTask = nil
+            guard let self else { return }
+            stats = result
+            scanTask = nil
+            if rescanPending {
+                rescanPending = false
+                scanLocalStats()
+            }
         }
     }
 
