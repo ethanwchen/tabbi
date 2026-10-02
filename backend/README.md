@@ -46,6 +46,8 @@ app ──HTTPS──> Worker (studynotch-friends) ──> Durable Object "Hub" 
 - Tokens are stored only as SHA-256 hashes.
 - Friendships are symmetric and stored as two rows (`a -> b` and `b -> a`) keyed by `(a, b)`.
   Listing my friends is one primary-key range scan, and adding a friend costs 2 row writes.
+- Presence lives in Hub memory and is flushed to a `presence` row only when it matters (see below).
+  A restart loses at most 10 minutes of minute counters and `lastSeen`, and the next heartbeat restores them.
 - Rate limits (60 requests per minute per token, 10 registrations per minute per IP) are counted in the Hub's memory.
   With a single instance they are exact while it is alive, and they cost no storage writes.
 
@@ -78,7 +80,28 @@ One object that stays warm all day costs 86,400 s x 0.128 GB = 11,059 GB-s, unde
 Two always-warm objects would need 22,118 GB-s and exceed it, so per-user or per-party objects are ruled out on the free plan.
 A single object handles hundreds of requests per second, far above the roughly 1.2 requests per second that 100,000 requests per day average out to, so throughput is not the bottleneck.
 
-The per-user request and row-write budget (heartbeat interval, write-on-change) is added with the presence routes.
+### Presence: adaptive heartbeats, write on change
+
+The app sends `POST /v1/presence` every 120 s while studying or on a break, every 300 s while idle, and once with `offline` when it quits (intervals come from `heartbeatSeconds` in the catalog, and every reply repeats the recommended interval).
+A friend counts as online until 2.5 intervals pass without a heartbeat.
+Countdowns do not need fast heartbeats: the client sends `phaseEndsAt` and friends count down locally.
+
+The Hub keeps the live presence in memory and writes the SQLite row (1 row write) only when friends would see a change (status, study method, phase end or streak) or when the last write is 10 minutes old.
+Ticking minute counters alone never force a write.
+
+Budget for a heavy user who studies 4 hours in 25+5 minute pomodoros and has the app idle for another 4 hours:
+
+| Per user per day | Requests | Row writes |
+| --- | --- | --- |
+| Heartbeats while studying (4 h / 120 s) | 120 | 16 phase changes + 24 periodic flushes = 40 |
+| Heartbeats while idle (4 h / 300 s) | 48 | 24 periodic flushes |
+| Friend list polls (every 60 s while the panel is open, about 30 min) | 30 | 0 |
+| Start, quit, profile edits | about 5 | about 5 |
+| **Total** | **about 200** | **about 70** |
+
+So 100,000 requests per day cover about 500 heavy users, and 100,000 row writes cover about 1,400.
+Requests are the binding limit; typical users study less than 4 hours, so the free plan serves several hundred daily users.
+Rows read stay well under 5M: a friend list poll reads at most about 150 rows (50 friendships, 50 profiles, 50 presence rows), so even 500 users who all have 50 friends and poll 30 times a day read 2.25M rows.
 
 ## Attribution
 

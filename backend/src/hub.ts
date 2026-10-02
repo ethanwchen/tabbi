@@ -16,6 +16,7 @@ import {
 } from "./lib";
 import { PROFILE_FIELDS, Profile, applyProfilePatch, defaultProfile, parseProfilePatch, sameProfile } from "./profile";
 import { json } from "./http";
+import { PRESENCE_FIELDS, Presence, heartbeatSeconds, isOnline, parseHeartbeat, presenceChanged, publicPresence } from "./presence";
 
 export interface Env {
   HUB: DurableObjectNamespace<Hub>;
@@ -43,7 +44,21 @@ CREATE TABLE IF NOT EXISTS friends (
   created_at INTEGER NOT NULL,
   PRIMARY KEY (a, b)
 ) WITHOUT ROWID;
+-- Last persisted heartbeat per user. The live copy is in Hub memory; see Hub.heartbeat for when it is flushed.
+CREATE TABLE IF NOT EXISTS presence (
+  code            TEXT PRIMARY KEY,
+  status          TEXT NOT NULL,
+  method          TEXT,
+  phase_ends_at   INTEGER,
+  session_minutes INTEGER NOT NULL,
+  today_minutes   INTEGER NOT NULL,
+  streak_days     INTEGER NOT NULL,
+  last_seen       INTEGER NOT NULL
+) WITHOUT ROWID;
 `;
+
+/** Unchanged heartbeats are flushed to SQLite at most this often, so a restart loses little. */
+const PRESENCE_FLUSH_S = 600;
 
 interface UserRow extends Record<string, SqlStorageValue> {
   code: string;
@@ -75,6 +90,30 @@ function rowToProfile(r: UserRow): Profile {
   };
 }
 
+interface PresenceRow extends Record<string, SqlStorageValue> {
+  status: string;
+  method: string | null;
+  phase_ends_at: number | null;
+  session_minutes: number;
+  today_minutes: number;
+  streak_days: number;
+  last_seen: number;
+}
+
+/** Reads the presence columns of a row (which may come from a LEFT JOIN, so `status` can be null). */
+function rowToPresence(r: Partial<PresenceRow>): Presence | null {
+  if (r.status == null) return null;
+  return {
+    status: r.status,
+    method: r.method ?? null,
+    phaseEndsAt: r.phase_ends_at ?? null,
+    sessionMinutes: r.session_minutes ?? 0,
+    todayMinutes: r.today_minutes ?? 0,
+    streakDays: r.streak_days ?? 0,
+    lastSeen: r.last_seen ?? 0,
+  };
+}
+
 function bearer(req: Request): string | null {
   const m = /^Bearer\s+(\S+)$/i.exec((req.headers.get("Authorization") ?? "").trim());
   return m ? m[1] : null;
@@ -89,6 +128,12 @@ interface Caller {
 export class Hub extends DurableObject<Env> {
   private sql: SqlStorage;
   private windows = new Map<string, { minute: number; count: number }>();
+  /**
+   * Live presence by friend code, plus when each entry was last written to SQLite. Heartbeats update
+   * this map every time but write a row only on a visible change or every PRESENCE_FLUSH_S, which keeps
+   * row writes far below the free-tier allowance. Entries missing here are read from SQLite.
+   */
+  private live = new Map<string, { presence: Presence; flushedAt: number }>();
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
@@ -128,10 +173,12 @@ export class Hub extends DurableObject<Env> {
     if (path === "/v1/me" && method === "PATCH") return this.updateProfile(req, caller, false);
     if (path === "/v1/me" && method === "DELETE") return this.deleteMe(caller);
 
-    if (path === "/v1/friends" && method === "GET") return this.listFriends(caller);
+    if (path === "/v1/friends" && method === "GET") return this.listFriends(caller, now);
     if (path === "/v1/friends" && method === "POST") return this.addFriend(req, caller, now);
     const friendPath = /^\/v1\/friends\/([^/]+)$/.exec(path);
     if (friendPath && method === "DELETE") return this.removeFriend(caller, friendPath[1]);
+
+    if (path === "/v1/presence" && method === "POST") return this.heartbeat(req, caller, now);
 
     throw new HttpError(404, "not_found", "not found");
   }
@@ -208,7 +255,9 @@ export class Hub extends DurableObject<Env> {
       // Both directions via the primary key: the reverse rows are found through my own friend list.
       this.sql.exec("DELETE FROM friends WHERE b = ? AND a IN (SELECT b FROM friends WHERE a = ?)", caller.code, caller.code);
       this.sql.exec("DELETE FROM friends WHERE a = ?", caller.code);
+      this.sql.exec("DELETE FROM presence WHERE code = ?", caller.code);
     });
+    this.live.delete(caller.code);
     return json({ ok: true });
   }
 
@@ -218,13 +267,19 @@ export class Hub extends DurableObject<Env> {
 
   // ---------- friends ----------
 
-  private listFriends(caller: Caller): Response {
-    const rows = this.sql.exec<UserRow & { since: number }>(
-      `SELECT u.*, f.created_at AS since FROM friends f JOIN users u ON u.code = f.b
+  private listFriends(caller: Caller, now: number): Response {
+    const rows = this.sql.exec<UserRow & Partial<PresenceRow> & { since: number }>(
+      `SELECT u.*, f.created_at AS since, p.status, p.method, p.phase_ends_at, p.session_minutes,
+         p.today_minutes, p.streak_days, p.last_seen
+       FROM friends f JOIN users u ON u.code = f.b LEFT JOIN presence p ON p.code = f.b
        WHERE f.a = ? ORDER BY u.name COLLATE NOCASE, u.code`,
       caller.code,
     ).toArray();
-    return json({ ok: true, friends: rows.map((r) => ({ profile: rowToProfile(r), since: r.since })) });
+    const friends = rows.map((r) => {
+      const presence = this.live.get(r.code)?.presence ?? rowToPresence(r);
+      return { profile: rowToProfile(r), since: r.since, presence: publicPresence(presence, now), online: isOnline(presence, now) };
+    });
+    return json({ ok: true, friends });
   }
 
   /** Symmetric add by friend code. Adding someone who is already a friend is a no-op success. */
@@ -263,5 +318,38 @@ export class Hub extends DurableObject<Env> {
 
   private friendCount(code: string): number {
     return this.sql.exec<{ n: number }>("SELECT COUNT(*) AS n FROM friends WHERE a = ?", code).one().n;
+  }
+
+  // ---------- presence ----------
+
+  private presenceOf(code: string): Presence | null {
+    const live = this.live.get(code);
+    if (live) return live.presence;
+    const row = this.sql.exec<PresenceRow>("SELECT * FROM presence WHERE code = ?", code).toArray()[0];
+    return row ? rowToPresence(row) : null;
+  }
+
+  /**
+   * POST /v1/presence. Always updates the live copy; writes the row only when friends would see a
+   * different status, method, phase or streak, or when the last write is PRESENCE_FLUSH_S old.
+   */
+  private async heartbeat(req: Request, caller: Caller, now: number): Promise<Response> {
+    const body = await readBody(req, PRESENCE_FIELDS);
+    const live = this.live.get(caller.code);
+    const prev = live?.presence ?? this.presenceOf(caller.code);
+    const next = parseHeartbeat(body, prev, now);
+    let flushedAt = live?.flushedAt ?? 0;
+    if (!live || !prev || presenceChanged(prev, next) || now - flushedAt >= PRESENCE_FLUSH_S) {
+      this.sql.exec(
+        `INSERT OR REPLACE INTO presence
+           (code, status, method, phase_ends_at, session_minutes, today_minutes, streak_days, last_seen)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        caller.code, next.status, next.method, next.phaseEndsAt, next.sessionMinutes, next.todayMinutes,
+        next.streakDays, next.lastSeen,
+      );
+      flushedAt = now;
+    }
+    this.live.set(caller.code, { presence: next, flushedAt });
+    return json({ ok: true, presence: next, heartbeatSeconds: heartbeatSeconds(next.status) });
   }
 }

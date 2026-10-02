@@ -31,6 +31,8 @@ export const MAX_ACCESSORIES = catalog.limits.maxAccessories;
 export const MAX_FRIENDS = catalog.limits.maxFriends;
 export const MAX_PARTY_MEMBERS = catalog.limits.maxPartyMembers;
 export const PARTY_IDLE_EXPIRY_S = catalog.limits.partyIdleExpirySeconds;
+/** Recommended heartbeat interval per status; statuses without one (offline) send no heartbeats. */
+export const HEARTBEAT_SECONDS = catalog.heartbeatSeconds as Record<string, number | undefined>;
 
 /** Requests per minute per token. */
 export const RATE_LIMIT_PER_MIN = 60;

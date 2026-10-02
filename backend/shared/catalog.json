@@ -25,6 +25,7 @@
   ],
   "statuses": ["studying", "break", "idle", "offline"],
   "studyMethods": ["pomodoro", "52-17", "flowtime", "timeblock", "anki", "qbank", "lecture", "free"],
+  "heartbeatSeconds": { "studying": 120, "break": 120, "idle": 300 },
   "limits": {
     "nameMaxLength": 24,
     "petNameMaxLength": 24,
