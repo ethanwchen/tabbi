@@ -8,7 +8,7 @@ Claude Usage, Today (daily checklist), and Ask Claude.
 
 ```sh
 swift build                                  # must stay warning-free
-swift test                                   # NotchDeckCore unit tests
+swift test                                   # NotchKitCore unit tests
 swift run NotchDeck --snapshot snapshots     # render every notch state to PNG
 scripts/run.sh                               # bundle + launch the real app
 ```
@@ -19,8 +19,8 @@ Judge them against the design rules below before you call the work done.
 
 ## Architecture
 
-- `Sources/NotchDeckCore` — pure Swift, no AppKit/SwiftUI. Parsers, models,
-  stores, formatting. Everything here gets unit tests in `Tests/NotchDeckCoreTests`.
+- `Sources/NotchKitCore` — pure Swift, no AppKit/SwiftUI. Parsers, models,
+  stores, formatting. Everything here gets unit tests in `Tests/NotchKitCoreTests`.
 - `Sources/NotchDeck/Notch` — the window, shape, open/close state, input. Shared;
   change only when your task requires it.
 - `Sources/NotchDeck/Design/Theme.swift` — design tokens and shared controls
@@ -28,11 +28,11 @@ Judge them against the design rules below before you call the work done.
 - `Sources/NotchDeck/Modules/<Module>/` — one folder per module: a store
   (`ObservableObject`, owned by `AppServices`) and SwiftUI views.
 - `Sources/NotchDeck/Modules/ModuleViews.swift` — module → view registry.
-- `Sources/NotchDeckCore/Claude` — `ClaudeCLI` (locate + stream `claude -p`) and
+- `Sources/NotchKitCore/Claude` — `ClaudeCLI` (locate + stream `claude -p`) and
   `ClaudeStreamEvent` (stream-json parser). Both Claude modules use these.
 
 Module ownership: when working on one module, keep changes inside its
-`Modules/<Module>/` folder and a matching `NotchDeckCore/<Module>/` folder plus
+`Modules/<Module>/` folder and a matching `NotchKitCore/<Module>/` folder plus
 tests. Touch shared files only when unavoidable, and keep those edits minimal.
 
 ## Design rules

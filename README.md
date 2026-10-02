@@ -123,7 +123,7 @@ Other useful commands:
 
 ```sh
 swift build                     # compile; must stay warning-free
-swift test                      # unit tests for NotchDeckCore
+swift test                      # unit tests for NotchKitCore
 NOTCHDECK_DEMO=1 swift run NotchDeck --snapshot snapshots   # render every notch state to PNG with sample data
 scripts/release.sh              # universal, ad-hoc signed release zip in build/release/
 ```

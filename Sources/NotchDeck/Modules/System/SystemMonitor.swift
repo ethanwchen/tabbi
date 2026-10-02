@@ -1,6 +1,6 @@
 import Foundation
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
 
 /// Live CPU, GPU, memory and thermal readings for the System panel.
 ///

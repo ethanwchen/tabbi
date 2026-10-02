@@ -1,6 +1,6 @@
 import AppKit
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
 
 /// The live preview in the two wings beside the closed notch: an icon or
 /// artwork on the leading side, short text or the equalizer on the trailing

@@ -1,5 +1,5 @@
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
 
 /// State of the notch: closed, hovered, or open on a module.
 @MainActor

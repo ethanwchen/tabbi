@@ -1,6 +1,6 @@
 import AppKit
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
 
 /// Renders every notch state and Settings pane to PNG without showing a window:
 ///

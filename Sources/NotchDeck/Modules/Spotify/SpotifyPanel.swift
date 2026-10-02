@@ -1,5 +1,5 @@
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
 
 /// Now Playing: album art on the left; title, scrubber, and transport on the
 /// right. Every non-playing `SpotifyStatus` gets its own designed state.

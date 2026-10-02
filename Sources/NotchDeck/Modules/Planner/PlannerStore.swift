@@ -1,6 +1,6 @@
 import Combine
 import Foundation
-import NotchDeckCore
+import NotchKitCore
 import SwiftUI
 
 /// Today's checklist for the Today panel. Wraps `PlannerRepository` on the

@@ -20,7 +20,7 @@ Do not commit the output folder; curated sheets live in `docs/studynotch/images/
 
 ## Sprite format
 
-Art is plain text inside Swift string literals (`Sources/NotchDeckCore/Pets/Art/`).
+Art is plain text inside Swift string literals (`Sources/NotchKitCore/Pets/Art/`).
 Each character is one pixel.
 A grid never stores a color, only what the pixel *means*; palettes turn meanings into colors.
 That is what lets one drawing serve every breed, user recolor, and costume color.

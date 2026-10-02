@@ -1,5 +1,5 @@
 import AVFoundation
-import NotchDeckCore
+import NotchKitCore
 import os
 
 /// Plays a `FocusMix` through AVAudioEngine, generated live by `FocusMixer`.

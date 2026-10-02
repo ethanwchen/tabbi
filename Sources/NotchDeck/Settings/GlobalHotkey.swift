@@ -1,5 +1,5 @@
 import Carbon.HIToolbox
-import NotchDeckCore
+import NotchKitCore
 
 /// A system-wide keyboard shortcut registered with Carbon's
 /// `RegisterEventHotKey`. Unlike a global `NSEvent` key monitor it needs no

@@ -1,5 +1,5 @@
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
 
 /// Maps each module to its views. Every panel is laid out inside the same
 /// fixed canvas (see `Theme.Layout.expandedSize`), already inset by the notch.

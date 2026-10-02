@@ -1,6 +1,6 @@
 import AppKit
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
 
 /// Captures the next key combination typed into the Settings window.
 ///

@@ -1,6 +1,6 @@
 import AppKit
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
 
 /// Settings › Focus: what plays and whether Do Not Disturb turns on while
 /// the Today panel's focus timer runs. Edits go straight to

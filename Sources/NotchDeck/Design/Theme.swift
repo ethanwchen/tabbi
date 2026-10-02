@@ -1,5 +1,5 @@
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
 
 /// The NotchDeck design system. Use these tokens instead of literals so every
 /// module feels like part of one product.

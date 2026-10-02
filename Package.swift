@@ -13,22 +13,22 @@ let package = Package(
     ],
     targets: [
         // Pure, testable logic: parsers, models, stores. No AppKit/SwiftUI.
-        .target(name: "NotchDeckCore", swiftSettings: swiftSettings),
+        .target(name: "NotchKitCore", swiftSettings: swiftSettings),
         // The app: notch window, SwiftUI views, system integrations.
         .executableTarget(
             name: "NotchDeck",
-            dependencies: ["NotchDeckCore"],
+            dependencies: ["NotchKitCore"],
             swiftSettings: swiftSettings
         ),
         // Renders pet sprite contact sheets for art review: `swift run PetGallery out/`.
         .executableTarget(
             name: "PetGallery",
-            dependencies: ["NotchDeckCore"],
+            dependencies: ["NotchKitCore"],
             swiftSettings: swiftSettings
         ),
         .testTarget(
-            name: "NotchDeckCoreTests",
-            dependencies: ["NotchDeckCore"],
+            name: "NotchKitCoreTests",
+            dependencies: ["NotchKitCore"],
             swiftSettings: swiftSettings
         ),
     ]

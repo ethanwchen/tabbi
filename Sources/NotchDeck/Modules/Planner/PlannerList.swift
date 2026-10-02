@@ -1,5 +1,5 @@
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
 
 /// Today's items. Scrolls only once they outgrow the canvas. Rows reorder by
 /// dragging: the others slide aside live and the move is saved on release.

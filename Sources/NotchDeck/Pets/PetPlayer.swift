@@ -1,5 +1,5 @@
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
 
 /// Plays one pet: owns its prebuilt clips and the `PetAnimator` deciding
 /// what is on screen. Views draw it with `PetView`; study features drive

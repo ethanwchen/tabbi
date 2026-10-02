@@ -1,6 +1,6 @@
 import AppKit
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
 
 /// Ask Claude: a small chat with the local `claude` CLI. Messages fill the
 /// panel and a text field sits at the bottom. The notch stays pinned open

@@ -1,7 +1,7 @@
 import Darwin
 import Foundation
 import IOKit
-import NotchDeckCore
+import NotchKitCore
 
 /// Reads raw system metrics from the kernel and IOKit. Every call works on
 /// Apple Silicon without root or entitlements; anything the OS refuses to

@@ -1,5 +1,5 @@
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
 
 /// The Today panel's "Up next" card: the next few events today with a timing
 /// badge and a Join button for video calls, or a compact state explaining why

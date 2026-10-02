@@ -15,7 +15,7 @@ A MacBook with a notch is nice to have but not required: other displays get a vi
 git clone https://github.com/ethanwchen/notchdeck.git
 cd notchdeck
 swift build                     # compile; must stay warning-free
-swift test                      # unit tests for NotchDeckCore
+swift test                      # unit tests for NotchKitCore
 scripts/run.sh                  # bundle build/NotchDeck.app (debug) and launch it
 ```
 
@@ -64,13 +64,13 @@ In short:
 
 | Path | What lives there |
 | --- | --- |
-| `Sources/NotchDeckCore` | Pure Swift with no AppKit or SwiftUI: parsers, models, stores, formatting. Everything here has unit tests in `Tests/NotchDeckCoreTests`. |
+| `Sources/NotchKitCore` | Pure Swift with no AppKit or SwiftUI: parsers, models, stores, formatting. Everything here has unit tests in `Tests/NotchKitCoreTests`. |
 | `Sources/NotchDeck/Notch` | The notch window, shape, open and close state, and input handling. Shared by all modules. |
 | `Sources/NotchDeck/Design/Theme.swift` | Design tokens (palette, type, spacing, radius, motion) and shared controls such as `Card` and `IconButton`. |
 | `Sources/NotchDeck/Modules/<Module>/` | One folder per module: an `ObservableObject` store owned by `AppServices`, and its SwiftUI views. |
-| `Sources/NotchDeckCore/Claude` | `ClaudeCLI` and the stream-json parser used by both Claude modules. |
+| `Sources/NotchKitCore/Claude` | `ClaudeCLI` and the stream-json parser used by both Claude modules. |
 
-Put logic you can test without a UI in `NotchDeckCore`, and test it through its public API.
+Put logic you can test without a UI in `NotchKitCore`, and test it through its public API.
 When you work on one module, keep your changes inside that module's folders and their tests.
 Touch the shared files only when you have to, and keep those edits small.
 
@@ -81,7 +81,7 @@ Touch the shared files only when you have to, and keep those edits small.
 - **Keep the build clean:** `swift build` with zero warnings and `swift test` green.
   CI builds with warnings treated as errors and runs the tests.
   While the repository is private, a maintainer starts CI by hand from the Actions tab.
-- **Add tests** for new logic in `NotchDeckCore`.
+- **Add tests** for new logic in `NotchKitCore`.
 - **Show the UI:** for any visual change, attach the relevant snapshot PNGs (demo and live), before and after.
 - **Follow the design rules:** `Theme` tokens only, one accent color per module, spring animations, a hover state and a `.help(...)` tooltip on every control.
 - **Respect privacy:** no telemetry and no network calls beyond what a module inherently needs.

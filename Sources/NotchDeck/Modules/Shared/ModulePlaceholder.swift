@@ -1,5 +1,5 @@
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
 
 /// Temporary content for a module that hasn't been built yet.
 struct ModulePlaceholder: View {

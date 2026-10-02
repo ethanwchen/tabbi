@@ -1,6 +1,6 @@
 import AppKit
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
 
 /// Now Playing state and controls for Spotify and Apple Music.
 ///

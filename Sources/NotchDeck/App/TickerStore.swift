@@ -1,6 +1,6 @@
 import Combine
 import Foundation
-import NotchDeckCore
+import NotchKitCore
 
 /// Drives the live preview beside the closed notch.
 ///

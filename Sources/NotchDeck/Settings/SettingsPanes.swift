@@ -1,6 +1,6 @@
 import AppKit
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
 
 /// Width shared by every pane so the window only animates its height.
 private let paneWidth: CGFloat = 500

@@ -1,5 +1,5 @@
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
 
 /// The Today panel's compact Pomodoro card: a progress ring that doubles as
 /// the start/pause button, the countdown with its phase, and the linked task.

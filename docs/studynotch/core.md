@@ -1,10 +1,10 @@
 # StudyNotch core
 
-Pure Swift logic behind StudyNotch, living in `Sources/NotchDeckCore`.
+Pure Swift logic behind StudyNotch, living in `Sources/NotchKitCore`.
 No AppKit or SwiftUI, so every type here is unit tested and can later move into a shared `NotchKitCore` library unchanged.
 Each folder is self-contained: `Anki/`, `StudyMethods/`, `Coach/`.
 
-## Anki (`Sources/NotchDeckCore/Anki`)
+## Anki (`Sources/NotchKitCore/Anki`)
 
 A typed async client for the [AnkiConnect](https://ankiweb.net/shared/info/2055492159) add-on, API version 6.
 
@@ -93,7 +93,7 @@ summary.retention      // 0.91, or nil below 20 graded reviews
   It is built through the real aggregation.
 - `AnkiSummary` is `Codable`, so the UI can cache the last good value for its error state.
 
-## Study methods (`Sources/NotchDeckCore/StudyMethods`)
+## Study methods (`Sources/NotchKitCore/StudyMethods`)
 
 ### Methods
 
@@ -161,7 +161,7 @@ Rules:
 `StudyPhaseRecord` holds `method`, `phase`, `startedAt`, `endedAt`, `activeDuration` (pauses excluded), `outcome` (`completed`, `stopped`, `skipped`, `abandoned`), and `cards` for sprint focus.
 Records are only logged for phases that actually started.
 
-## Pet coach (`Sources/NotchDeckCore/Coach`)
+## Pet coach (`Sources/NotchKitCore/Coach`)
 
 `PetCoach` decides when the study pet nudges and what it says.
 It sees only idle seconds and the category of the frontmost app's bundle id, never window titles, URLs, or keystrokes, so it needs no permission prompt.

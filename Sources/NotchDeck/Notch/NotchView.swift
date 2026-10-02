@@ -1,5 +1,5 @@
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
 
 /// Root view: the black notch shape, morphing between closed and open, with
 /// the tab bar and the selected module inside.

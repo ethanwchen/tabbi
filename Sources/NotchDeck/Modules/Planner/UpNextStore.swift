@@ -1,7 +1,7 @@
 import AppKit
 import Combine
 import EventKit
-import NotchDeckCore
+import NotchKitCore
 
 /// Today's remaining calendar events for the Today panel's "Up next" card.
 ///

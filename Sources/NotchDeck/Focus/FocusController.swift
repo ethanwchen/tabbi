@@ -1,5 +1,5 @@
 import AppKit
-import NotchDeckCore
+import NotchKitCore
 import os
 
 /// Runs focus mode: follows the Today panel's focus timer and performs what

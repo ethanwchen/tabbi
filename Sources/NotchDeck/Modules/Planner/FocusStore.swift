@@ -1,6 +1,6 @@
 import AppKit
 import Combine
-import NotchDeckCore
+import NotchKitCore
 @preconcurrency import UserNotifications
 
 /// The Today panel's Pomodoro timer.

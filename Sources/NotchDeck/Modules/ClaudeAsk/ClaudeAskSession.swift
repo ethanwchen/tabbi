@@ -1,6 +1,6 @@
 import Foundation
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
 
 /// Drives the Ask Claude panel: sends questions to the local `claude` CLI,
 /// folds its stream into a `ClaudeAskConversation`, and supports stop,

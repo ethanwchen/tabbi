@@ -1,6 +1,6 @@
 import Charts
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
 
 /// Three equal cards (CPU, GPU, Memory), each with a headline figure, a
 /// 60-second sparkline and a one-line footer. Sampling only runs while the

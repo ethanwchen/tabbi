@@ -1,5 +1,5 @@
 import Foundation
-import NotchDeckCore
+import NotchKitCore
 
 /// The app's live preferences. Views and controllers observe `settings`;
 /// every change is persisted immediately and applied to process-wide state

@@ -1,5 +1,5 @@
 import Foundation
-import NotchDeckCore
+import NotchKitCore
 import SwiftUI
 
 /// State for the Claude Usage panel: live subscription limits from the

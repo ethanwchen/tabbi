@@ -1,5 +1,5 @@
 import Foundation
-import NotchDeckCore
+import NotchKitCore
 
 /// Drives Plan My Day: gathers today's events and open tasks, asks the local
 /// `claude` CLI for time blocks, validates them, and writes the ones the

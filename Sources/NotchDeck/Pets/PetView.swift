@@ -1,5 +1,5 @@
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
 
 /// Draws a `PetPlayer`'s pet as crisp pixel art, redrawing only when the
 /// frame changes.

@@ -1,5 +1,5 @@
 import AppKit
-import NotchDeckCore
+import NotchKitCore
 
 /// Where the hardware notch is (or where a virtual one should go).
 struct NotchGeometry: Equatable {
