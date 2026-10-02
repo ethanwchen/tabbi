@@ -24,6 +24,7 @@ import NotchKit
 @MainActor
 final class PetCoachController: ObservableObject {
     private let profile: () -> PetProfile
+    private let kitLines: () -> [PetCoachMessage]
     private let screen: () -> NSScreen?
     private let pauseTimer: () -> Void
     private let resumeTimer: () -> Void
@@ -51,11 +52,13 @@ final class PetCoachController: ObservableObject {
     init(
         edition: Edition = .current,
         profile: @escaping () -> PetProfile,
+        lines: @escaping () -> [PetCoachMessage] = { PetCoachMessages.standard },
         screen: @escaping () -> NSScreen?,
         pauseTimer: @escaping () -> Void,
         resumeTimer: @escaping () -> Void
     ) {
         self.profile = profile
+        kitLines = lines
         self.screen = screen
         self.pauseTimer = pauseTimer
         self.resumeTimer = resumeTimer
@@ -79,6 +82,10 @@ final class PetCoachController: ObservableObject {
         self.save = save
         saveIsUnreadable = unreadable
     }
+
+    /// What the pet can say: the standard lines plus the active kit's.
+    /// Read on every nudge, so switching kits changes the flavor at once.
+    var lines: [PetCoachMessage] { kitLines() }
 
     /// `~/Library/Application Support/<edition>/Pet/coach.json`.
     static func saveURL(for edition: Edition) -> URL? {
@@ -109,7 +116,7 @@ final class PetCoachController: ObservableObject {
         // `=celebrate` plays a level-up celebration instead.
         switch ProcessInfo.processInfo.environment["NOTCHDECK_COACH_PREVIEW"] {
         case "1":
-            present(PetCoachNudge(kind: .distraction, message: PetCoachMessages.messages(for: .distraction)[0]),
+            present(PetCoachNudge(kind: .distraction, message: PetCoachMessages.messages(for: .distraction, in: lines).last!),
                     at: Date().addingTimeInterval(1))
         case "celebrate":
             present(.celebration(PetStudyAward(completedSessions: 1, minutes: 25, points: 35, unlocked: [.accessory(.beanie)])),
@@ -196,7 +203,7 @@ final class PetCoachController: ObservableObject {
             timer: timer
         )
         let before = save.coach
-        let decision = save.coach.evaluate(input)
+        let decision = save.coach.evaluate(input, lines: lines)
         if save.coach != before { persist() }
         guard let nudge = decision.nudge else { return }
         if nudge.pausesTimer { pauseTimer() }

@@ -288,14 +288,18 @@ final class PetCoachTests: XCTestCase {
         for kind in PetCoachNudgeKind.allCases {
             XCTAssertGreaterThanOrEqual(PetCoachMessages.messages(for: kind).count, 4, "\(kind)")
         }
-        let ids = PetCoachMessages.all.map(\.id)
+        let ids = PetCoachMessages.standard.map(\.id)
         XCTAssertEqual(Set(ids).count, ids.count)
     }
 
     func testLinesFitTheBubbleAndNeverShame() {
         let banned = ["lazy", "fail", "distracted", "again", "procrastinat", "wasted", "waste", "should",
                       "disappoint", "shame", "guilt", "slack off", "!"]
-        for message in PetCoachMessages.all {
+        // The bundled kits' own lines follow the same copy rules.
+        let kitLines = KitLibrary.bundled.kits.flatMap {
+            PetCoachMessages.kitLines($0.defaults.settings(for: .closet))
+        }
+        for message in PetCoachMessages.standard + kitLines {
             XCTAssertLessThanOrEqual(message.text.count, PetCoachMessages.maxLength, message.id)
             XCTAssertFalse(message.text.isEmpty)
             let lower = message.text.lowercased()
@@ -334,6 +338,63 @@ final class PetCoachTests: XCTestCase {
         // Six distraction lines exist and memory covers the last eight picks: no repeats.
         XCTAssertEqual(Set(texts).count, 6)
         XCTAssertLessThanOrEqual(coach.recentMessageIDs.count, 8)
+    }
+
+    func testStandardLinesNameNoSubject() {
+        let subjects = ["krebs", "card", "exam", "resident", "ward", "first aid", "vignette", "anki", "step 1"]
+        for message in PetCoachMessages.standard {
+            for subject in subjects {
+                XCTAssertFalse(message.text.lowercased().contains(subject), "\(message.id) mentions \(subject)")
+            }
+        }
+    }
+
+    func testKitLinesJoinTheStandardOnesAndSkipBadEntries() throws {
+        let json = """
+        { "coachLines": {
+            "distraction": ["  Back to cardiology?  ", "", "\(String(repeating: "x", count: 65))"],
+            "idleCheck": ["Deep in First Aid?"],
+            "scolding": ["Unknown kinds are ignored."]
+        } }
+        """
+        let settings = try JSONDecoder().decode(KitValue.self, from: Data(json.utf8))
+        let kit = PetCoachMessages.kitLines(settings)
+        XCTAssertEqual(kit.map(\.text), ["Back to cardiology?", "Deep in First Aid?"])
+        XCTAssertEqual(kit.map(\.id), ["kit.distraction.0", "kit.idleCheck.0"])
+
+        let lines = PetCoachMessages.lines(kitSettings: settings)
+        XCTAssertEqual(lines.count, PetCoachMessages.standard.count + 2)
+        XCTAssertEqual(PetCoachMessages.messages(for: .distraction, in: lines).count,
+                       PetCoachMessages.messages(for: .distraction).count + 1)
+        // No settings, or a section without lines, means the standard lines.
+        XCTAssertEqual(PetCoachMessages.lines(kitSettings: nil), PetCoachMessages.standard)
+        XCTAssertEqual(PetCoachMessages.lines(kitSettings: .object(["deck": .string("AnKing")])),
+                       PetCoachMessages.standard)
+    }
+
+    func testMedicineKitFlavorsTheCoachButOtherKitsStayNeutral() throws {
+        let medicine = try KitLibrary.loadBundled("medicine")
+        let productivity = try KitLibrary.loadBundled("productivity")
+        let medLines = PetCoachMessages.kitLines(medicine.defaults.settings(for: .closet))
+        XCTAssertTrue(medLines.contains { $0.text.contains("Krebs") })
+        XCTAssertTrue(PetCoachMessages.kitLines(productivity.defaults.settings(for: .closet)).isEmpty)
+    }
+
+    func testCoachPicksKitLinesItIsGiven() {
+        let only = [PetCoachMessage(id: "kit.distraction.0", kind: .distraction, text: "Back to torts?")]
+        var coach = PetCoach()
+        _ = coach.evaluate(input(0, app: .neutral), lines: only, using: &rng)
+        var said: [String] = []
+        var t: TimeInterval = 5
+        while t <= 300 {
+            if let nudge = coach.evaluate(input(t, app: .distracting), lines: only, using: &rng).nudge {
+                said.append(nudge.message.text)
+            }
+            t += 5
+        }
+        XCTAssertEqual(said.first, "Back to torts?")
+        // A kind the kit has no lines for falls back to the standard ones.
+        XCTAssertEqual(PetCoachMessages.pick(.autoPause, from: only, using: &rng).kind, .autoPause)
     }
 
     func testSeededGeneratorMakesPicksReproducible() {

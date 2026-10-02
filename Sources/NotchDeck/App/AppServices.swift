@@ -40,6 +40,7 @@ final class AppServices: ObservableObject {
         planner = PlannerStore(focus: focus, planSettings: TodayPlanSettings(kit: settings.activeKit?.defaults))
         coach = PetCoachController(
             profile: { [closet] in closet.profile },
+            lines: { [settings] in PetCoachMessages.lines(kitSettings: settings.activeKit?.defaults.settings(for: .closet)) },
             screen: { [settings] in NotchGeometry.screen(for: settings.settings.preferredDisplay) },
             pauseTimer: { [focus] in focus.pause() },
             resumeTimer: { [focus] in focus.start() }

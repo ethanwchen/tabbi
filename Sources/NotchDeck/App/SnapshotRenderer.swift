@@ -94,7 +94,7 @@ enum SnapshotRenderer {
         }
 
         // The pet coach's overlay: walking out, then each kind of bubble.
-        for (name, view) in PetCoachSnapshots.shots(profile: services.closet.profile) {
+        for (name, view) in PetCoachSnapshots.shots(profile: services.closet.profile, lines: services.coach.lines) {
             let renderer = ImageRenderer(content: view)
             renderer.scale = 2
             guard let image = renderer.nsImage,

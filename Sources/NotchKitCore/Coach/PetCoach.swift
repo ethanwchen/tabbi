@@ -190,14 +190,20 @@ public struct PetCoach: Codable, Hashable, Sendable {
     // MARK: Evaluation
 
     /// Updates episodes from `input` and returns what the pet should do now.
-    public mutating func evaluate(_ input: PetCoachInput) -> PetCoachDecision {
+    /// Bubbles pick from `lines`, e.g. `PetCoachMessages.lines(kitSettings:)`
+    /// for the active kit's flavor.
+    public mutating func evaluate(
+        _ input: PetCoachInput,
+        lines: [PetCoachMessage] = PetCoachMessages.standard
+    ) -> PetCoachDecision {
         var generator = SystemRandomNumberGenerator()
-        return evaluate(input, using: &generator)
+        return evaluate(input, lines: lines, using: &generator)
     }
 
-    /// Same as `evaluate(_:)` with an injected generator for line picking.
+    /// Same as `evaluate(_:lines:)` with an injected generator for line picking.
     public mutating func evaluate<G: RandomNumberGenerator>(
         _ input: PetCoachInput,
+        lines: [PetCoachMessage] = PetCoachMessages.standard,
         using generator: inout G
     ) -> PetCoachDecision {
         let now = input.now
@@ -220,14 +226,15 @@ public struct PetCoach: Codable, Hashable, Sendable {
 
         guard nudgesEnabled, !isSnoozed(at: now) else { return .none }
 
-        if let decision = distractionDecision(at: now, using: &generator) {
+        if let decision = distractionDecision(at: now, lines: lines, using: &generator) {
             return decision
         }
-        return idleDecision(input.idleSeconds, thresholds: idle, at: now, using: &generator)
+        return idleDecision(input.idleSeconds, thresholds: idle, at: now, lines: lines, using: &generator)
     }
 
     private mutating func distractionDecision<G: RandomNumberGenerator>(
         at now: Date,
+        lines: [PetCoachMessage],
         using generator: inout G
     ) -> PetCoachDecision? {
         guard let start = distractionStartedAt else { return nil }
@@ -251,11 +258,11 @@ public struct PetCoach: Codable, Hashable, Sendable {
         case .nudged:
             guard canNudge(at: now, gap: rules.minimumNudgeInterval) else { return nil }
             distractionStep = .nudged
-            return .nudge(makeNudge(.distraction, at: now, using: &generator))
+            return .nudge(makeNudge(.distraction, at: now, lines: lines, using: &generator))
         case .offeredPause:
             guard canNudge(at: now, gap: rules.escalationGap) else { return nil }
             distractionStep = .offeredPause
-            return .nudge(makeNudge(.offerPause, at: now, using: &generator))
+            return .nudge(makeNudge(.offerPause, at: now, lines: lines, using: &generator))
         }
     }
 
@@ -263,18 +270,19 @@ public struct PetCoach: Codable, Hashable, Sendable {
         _ idleSeconds: TimeInterval,
         thresholds: (check: TimeInterval, pause: TimeInterval),
         at now: Date,
+        lines: [PetCoachMessage],
         using generator: inout G
     ) -> PetCoachDecision {
         if idleSeconds >= thresholds.pause, idleStep < .paused {
             // Not rate limited: pausing keeps the user's stats honest, and
             // any input (including answering) ends the idle episode anyway.
             idleStep = .paused
-            return .nudge(makeNudge(.autoPause, at: now, using: &generator))
+            return .nudge(makeNudge(.autoPause, at: now, lines: lines, using: &generator))
         }
         if idleSeconds >= thresholds.check, idleStep < .asked,
            canNudge(at: now, gap: rules.minimumNudgeInterval) {
             idleStep = .asked
-            return .nudge(makeNudge(.idleCheck, at: now, using: &generator))
+            return .nudge(makeNudge(.idleCheck, at: now, lines: lines, using: &generator))
         }
         return .none
     }
@@ -294,9 +302,10 @@ public struct PetCoach: Codable, Hashable, Sendable {
     private mutating func makeNudge<G: RandomNumberGenerator>(
         _ kind: PetCoachNudgeKind,
         at now: Date,
+        lines: [PetCoachMessage],
         using generator: inout G
     ) -> PetCoachNudge {
-        let message = PetCoachMessages.pick(kind, avoiding: recentMessageIDs, using: &generator)
+        let message = PetCoachMessages.pick(kind, from: lines, avoiding: recentMessageIDs, using: &generator)
         recentMessageIDs.append(message.id)
         if recentMessageIDs.count > Self.messageMemory {
             recentMessageIDs.removeFirst(recentMessageIDs.count - Self.messageMemory)

@@ -8,17 +8,19 @@ import NotchKit
 @MainActor
 enum PetCoachSnapshots {
     /// (file name, view) for every overlay state worth reviewing.
-    static func shots(profile: PetProfile) -> [(String, AnyView)] {
+    /// Bubbles use the last line of each kind in `lines`, which is the
+    /// active kit's own line when it has one.
+    static func shots(profile: PetProfile, lines: [PetCoachMessage]) -> [(String, AnyView)] {
         let start = Date(timeIntervalSinceReferenceDate: 800_000_000)
         let stroll = PetCoachStroll(startedAt: start)
         var shots: [(String, AnyView)] = []
         // Mid-trot on the way out, before the bubble.
-        let walking = PetCoachScene(profile: profile, stroll: stroll, nudge: nudge(.distraction))
+        let walking = PetCoachScene(profile: profile, stroll: stroll, nudge: nudge(.distraction, lines))
         shots.append(("coach-walking", scene(walking, at: start.addingTimeInterval(stroll.walkDuration * 0.6))))
         // One talking shot per bubble kind, after the arrival hop.
         let talking = stroll.arrivesAt.addingTimeInterval(3)
         for kind in PetCoachNudgeKind.allCases {
-            let scene = PetCoachScene(profile: profile, stroll: stroll, nudge: nudge(kind))
+            let scene = PetCoachScene(profile: profile, stroll: stroll, nudge: nudge(kind, lines))
             shots.append(("coach-\(name(kind))", self.scene(scene, at: talking)))
         }
         // Celebrations: mid-hop with the heart up, then a level-up bubble.
@@ -32,11 +34,9 @@ enum PetCoachSnapshots {
         return shots
     }
 
-    /// The first line of `kind`, so snapshots are stable run to run.
-    private static func nudge(_ kind: PetCoachNudgeKind) -> PetCoachNudge {
-        let message = PetCoachMessages.all.first { $0.kind == kind }
-            ?? PetCoachMessage(id: "snapshot", kind: kind, text: "Back to it?")
-        return PetCoachNudge(kind: kind, message: message)
+    /// A fixed line of `kind`, so snapshots are stable run to run.
+    private static func nudge(_ kind: PetCoachNudgeKind, _ lines: [PetCoachMessage]) -> PetCoachNudge {
+        PetCoachNudge(kind: kind, message: PetCoachMessages.messages(for: kind, in: lines).last!)
     }
 
     private static func name(_ kind: PetCoachNudgeKind) -> String {
