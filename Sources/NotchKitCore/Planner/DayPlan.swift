@@ -1,20 +1,34 @@
 import Foundation
 
+/// What a Plan My Day block is for, so the proposal can mark review and
+/// study blocks differently from general focus time.
+public enum PlanBlockKind: String, Hashable, Sendable {
+    /// General focus time, as Claude plans it.
+    case focus
+    /// Clearing a shared review goal, such as today's Anki cards.
+    case reviews
+    /// One study-method-length block, from `StudyDayPlanner`.
+    case study
+}
+
 /// One proposed focus block from Plan My Day.
 public struct PlanBlock: Identifiable, Hashable, Sendable {
     public let id: UUID
     public var start: Date
     public var end: Date
     public var title: String
-    /// The checklist item this block works on, when Claude linked one.
+    /// The checklist item this block works on, when one is linked.
     public var linkedTaskID: UUID?
+    public var kind: PlanBlockKind
 
-    public init(id: UUID = UUID(), start: Date, end: Date, title: String, linkedTaskID: UUID? = nil) {
+    public init(id: UUID = UUID(), start: Date, end: Date, title: String, linkedTaskID: UUID? = nil,
+                kind: PlanBlockKind = .focus) {
         self.id = id
         self.start = start
         self.end = end
         self.title = title
         self.linkedTaskID = linkedTaskID
+        self.kind = kind
     }
 
     public var interval: DateInterval { DateInterval(start: start, end: end) }
