@@ -168,8 +168,13 @@ final class FocusDSPTests: XCTestCase {
     }
 
     func testSoftClipIsTransparentWhenQuietAndBoundedWhenLoud() {
-        XCTAssertEqual(focusSoftClip(0.1), 0.1, accuracy: 0.001)
-        XCTAssertLessThan(focusSoftClip(5), 1)
-        XCTAssertGreaterThan(focusSoftClip(-5), -1)
+        XCTAssertEqual(focusSoftClip(0.1), 0.1)
+        XCTAssertEqual(focusSoftClip(-0.5), -0.5)
+        // Same slope on both sides of the knee: no corner.
+        XCTAssertEqual(focusSoftClip(0.501) - focusSoftClip(0.5), 0.001, accuracy: 1e-5)
+        XCTAssertGreaterThan(focusSoftClip(0.9), focusSoftClip(0.8))
+        XCTAssertLessThan(focusSoftClip(1.5), 1)
+        XCTAssertLessThanOrEqual(focusSoftClip(50), 1)
+        XCTAssertGreaterThanOrEqual(focusSoftClip(-50), -1)
     }
 }

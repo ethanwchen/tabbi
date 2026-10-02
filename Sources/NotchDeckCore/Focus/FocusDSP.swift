@@ -137,8 +137,16 @@ public struct GainRamp: Sendable {
 }
 
 /// Soft clipper that keeps summed layers inside -1 ... 1 without a hard
-/// edge; nearly linear for normal levels.
+/// edge.
+///
+/// Exactly linear up to the knee at ±0.5, so normal levels (0.2 RMS) pass
+/// untouched; only rare transient peaks bend, along a tanh curve that meets
+/// the line with the same slope so the knee itself adds no distortion.
 @inlinable
 public func focusSoftClip(_ x: Float) -> Float {
-    tanh(x)
+    let knee: Float = 0.5
+    let magnitude = abs(x)
+    guard magnitude > knee else { return x }
+    let bent = knee + (1 - knee) * tanh((magnitude - knee) / (1 - knee))
+    return x < 0 ? -bent : bent
 }
