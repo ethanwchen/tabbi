@@ -20,7 +20,7 @@ struct StudyMethodInfoView: View {
                 Text(info.name)
                     .font(Theme.Typography.title)
                     .foregroundStyle(Theme.Palette.primaryText)
-                if !StudyMethodInfoView.nameIsRhythm(method) {
+                if !method.nameIsRhythm {
                     Text(method.rhythmLabel)
                         .font(Theme.Typography.title)
                         .foregroundStyle(studyAccent)
@@ -60,11 +60,6 @@ struct StudyMethodInfoView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
-    }
-
-    /// "52 / 17" already says its rhythm, so it shouldn't repeat it.
-    static func nameIsRhythm(_ method: StudyMethod) -> Bool {
-        method.info.name.replacingOccurrences(of: " ", with: "") == method.rhythmLabel
     }
 }
 

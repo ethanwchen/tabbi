@@ -61,4 +61,10 @@ final class StudyMethodMenuTests: XCTestCase {
         XCTAssertEqual(onBreak.phase, .shortBreak)
         XCTAssertNil(menu.replacement(for: onBreak, kitApplied: true))
     }
+
+    func testOnlyAMethodNamedForItsRhythmHidesTheRhythm() {
+        let named = StudyMethodKind.allCases.filter { StudyMethod.preset($0).nameIsRhythm }
+        XCTAssertEqual(named, [.fiftyTwoSeventeen])
+        XCTAssertEqual(StudyMethod.preset(.fiftyTwoSeventeen).rhythmLabel, "52/17")
+    }
 }

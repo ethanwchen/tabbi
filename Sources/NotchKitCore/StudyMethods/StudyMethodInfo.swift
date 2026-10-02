@@ -116,4 +116,10 @@ public struct StudyMethodInfo: Hashable, Sendable {
 public extension StudyMethod {
     /// Popover copy for this method's kind.
     var info: StudyMethodInfo { StudyMethodInfo.info(for: kind) }
+
+    /// Whether the method's name already spells out its rhythm ("52 / 17"),
+    /// so views show the name alone instead of "52 / 17 52/17".
+    var nameIsRhythm: Bool {
+        info.name.replacingOccurrences(of: " ", with: "") == rhythmLabel
+    }
 }

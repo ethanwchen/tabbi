@@ -173,9 +173,11 @@ private struct StudyMethodCard: View {
                         HStack(spacing: Theme.Spacing.xs) {
                             Text(methodInfo.name)
                                 .foregroundStyle(Theme.Palette.primaryText)
-                            Text(session.method.rhythmLabel)
-                                .foregroundStyle(accent)
-                                .monospacedDigit()
+                            if !session.method.nameIsRhythm {
+                                Text(session.method.rhythmLabel)
+                                    .foregroundStyle(accent)
+                                    .monospacedDigit()
+                            }
                             Image(systemName: "chevron.up.chevron.down")
                                 .font(.system(size: 9, weight: .bold))
                                 .foregroundStyle(hovering ? Theme.Palette.secondaryText : Theme.Palette.tertiaryText)
@@ -342,7 +344,7 @@ private struct StudyMethodTile: View {
                     .foregroundStyle(isCurrent ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
                     .lineLimit(1)
                 Spacer(minLength: Theme.Spacing.xs)
-                if !StudyMethodInfoView.nameIsRhythm(method) {
+                if !method.nameIsRhythm {
                     Text(method.rhythmLabel)
                         .foregroundStyle(isCurrent ? accent : Theme.Palette.tertiaryText)
                         .monospacedDigit()
