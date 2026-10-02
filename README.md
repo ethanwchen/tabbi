@@ -56,6 +56,8 @@ Your 5-hour and weekly Claude limits, read through your own `claude` CLI, plus t
 ### Today
 
 A daily checklist that lives one click away, with progress for the day and quick add.
+**Plan my day** asks your local `claude` CLI to fit your unfinished tasks into today's free calendar gaps, and adds the blocks you accept to your default calendar.
+**Wrap up** shows what you finished, what carries over to tomorrow, and your focus sessions, with a short summary from Claude.
 
 <img src="docs/images/today.png" alt="Today panel" width="680">
 
@@ -131,7 +133,7 @@ You can change any of them later in **System Settings > Privacy & Security**.
 | --- | --- | --- |
 | **Automation: Spotify** | Now Playing | Read the current track and send play, pause, skip, seek, shuffle and repeat commands to Spotify through Apple Events. |
 | **Automation: Music** | Now Playing | The same for Apple Music. |
-| **Calendars** | Today | Show your next events and their video call links. Events are read on your Mac and never leave it. |
+| **Calendars** | Today | Show your next events and their video call links, and add the Plan my day blocks you accept to your default calendar. Events are read on your Mac and never leave it. |
 | **Notifications** | Today | Tell you when a focus timer ends while the notch is closed. |
 
 Claude Usage and Ask Claude need no system permission.
@@ -143,10 +145,11 @@ They run the `claude` command that is already installed and signed in on your Ma
 - **The only network requests it makes itself** are for album artwork URLs that Spotify provides.
 - **Claude features go only through your local `claude` CLI.** NotchDeck never reads your Claude credentials or the keychain.
   Ask Claude sends your question to Claude through that CLI, exactly as if you had typed `claude -p` in a terminal.
+  Plan my day sends today's remaining events and unfinished task titles the same way, and Wrap up sends your task titles, only when you press them.
 - **Claude Usage** reads token counts from the transcripts in `~/.claude/projects`, read-only, and never writes there.
   Checking your limits sends a tiny request with the cheapest model, so it never runs until you press refresh once.
   After that, it runs when you press refresh or open the panel 10 or more minutes after the last check.
-- **Your checklist** is stored locally in your user Library and nowhere else.
+- **Your checklist and daily reviews** are stored locally in your user Library and nowhere else.
 
 ## FAQ
 
@@ -164,6 +167,7 @@ It also means there is no API key to paste into a third-party app and no extra b
 No.
 Now Playing, System and Today work without it.
 The two Claude panels show a short setup hint until the `claude` command is found.
+In Today, Plan my day needs it, and Wrap up falls back to a local summary line without it.
 
 **Why is the app not notarized?**
 Notarization requires a paid Apple Developer account.
