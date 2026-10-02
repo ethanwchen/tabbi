@@ -130,13 +130,19 @@ private struct InputField: View {
                 .focused(focused)
                 .onKeyPress(.return, phases: .down) { press in
                     if press.modifiers.contains(.shift) {
-                        text += "\n"
+                        // Insert at the caret through the field editor; it
+                        // syncs the binding itself.
+                        guard let editor = NSApp.keyWindow?.firstResponder as? NSTextView else { return .ignored }
+                        editor.insertNewlineIgnoringFieldEditor(nil)
                     } else {
-                        onSubmit()
+                        // Deferred: the field editor ignores binding changes made
+                        // while it handles the key, so clearing the draft here
+                        // would leave the sent text in the field.
+                        DispatchQueue.main.async(execute: onSubmit)
                     }
                     return .handled
                 }
-                .onSubmit(onSubmit)
+                .onSubmit { DispatchQueue.main.async(execute: onSubmit) }
         }
     }
 
@@ -188,8 +194,20 @@ private struct MessageList: View {
             }
             .scrollIndicators(.never)
             .defaultScrollAnchor(.bottom)
+            // Older messages fade out under the header instead of being cut off.
+            .mask(
+                VStack(spacing: 0) {
+                    LinearGradient(colors: [.clear, .black], startPoint: .top, endPoint: .bottom)
+                        .frame(height: Theme.Spacing.m)
+                    Color.black
+                }
+            )
+            // Follows streamed text and the taller stopped/failed rows that replace it.
             .onChange(of: conversation.messages.last?.text) {
                 proxy.scrollTo(Self.bottomID, anchor: .bottom)
+            }
+            .onChange(of: conversation.messages.last?.status) {
+                withAnimation(Theme.Motion.snappy) { proxy.scrollTo(Self.bottomID, anchor: .bottom) }
             }
             .onChange(of: conversation.messages.count) {
                 withAnimation(Theme.Motion.snappy) { proxy.scrollTo(Self.bottomID, anchor: .bottom) }
@@ -245,12 +263,15 @@ private struct AssistantBubble: View {
         HStack(alignment: .top, spacing: Theme.Spacing.xs) {
             Card(padding: 0) {
                 VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-                    content
-                        .font(Theme.Typography.body)
-                        .foregroundStyle(Theme.Palette.primaryText)
-                        .lineSpacing(Theme.Spacing.xxs)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .textSelection(.enabled)
+                    // Stopped before any text arrived: the "Stopped" note says it all.
+                    if !(message.status == .stopped && message.text.isEmpty) {
+                        content
+                            .font(Theme.Typography.body)
+                            .foregroundStyle(Theme.Palette.primaryText)
+                            .lineSpacing(Theme.Spacing.xxs)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .textSelection(.enabled)
+                    }
                     if message.status == .stopped {
                         Label("Stopped", systemImage: "stop.circle")
                             .font(Theme.Typography.caption)
