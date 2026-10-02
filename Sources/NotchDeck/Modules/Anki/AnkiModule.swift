@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 import NotchKitCore
 
@@ -8,5 +9,13 @@ final class AnkiModule: NotchModule {
 
     func makePanel() -> AnyView {
         AnyView(AnkiPanel())
+    }
+
+    /// Today's reviews as a progress goal for Today. Only the demo sample for
+    /// now; the live AnkiConnect summary replaces it when the deck view lands.
+    var provision: AnyPublisher<ModuleProvision, Never>? {
+        guard ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1" else { return nil }
+        return Just(ModuleProvision(progress: [AnkiSummary.demo().progressItem(source: descriptor.id)]))
+            .eraseToAnyPublisher()
     }
 }

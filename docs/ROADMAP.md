@@ -94,9 +94,9 @@ Constraints to keep in mind:
 ## Near-term engineering
 
 - Full onboarding: ask the kit's questions after the first-run kit picker.
-- Apply kit defaults beyond tabs: study methods, focus sounds, ticker previews, pet and starter tasks.
+- Apply the kit's study methods and pet defaults once the Study and Closet modules read them (tabs, ticker previews, focus sounds and starter tasks already apply).
 - Move each module's Settings pane into its `NotchModule` settings section.
-- Show tasks and progress other modules provide in Today and Plan my day (the ticker already reads them).
+- Offer tasks other modules provide to Plan my day (Today and the ticker already show them).
 - Focus as its own module.
 - Finish the `NotchKit` split: move the notch controller and view, settings infrastructure and focus audio out of the app target.
 - Real Study, Anki, Party and Closet modules replacing today's previews.

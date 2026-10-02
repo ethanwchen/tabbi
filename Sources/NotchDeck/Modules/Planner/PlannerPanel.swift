@@ -10,6 +10,7 @@ import NotchKit
 struct PlannerPanel: View {
     @ObservedObject var store: PlannerStore
     @EnvironmentObject private var notch: NotchViewModel
+    @EnvironmentObject private var services: AppServices
     @FocusState private var focus: PlannerField?
 
     /// Width of the right column; the checklist keeps the remaining ~60%.
@@ -89,7 +90,23 @@ struct PlannerPanel: View {
                 title: "Couldn't read today's list",
                 detail: "\(fileName) is damaged, so it's left untouched."
             )
-        } else if store.items.isEmpty {
+        } else {
+            PlannerChecklist(store: store, providers: services.providers, focus: $focus)
+        }
+    }
+}
+
+/// The checklist with what other modules share for today (say, Anki
+/// reviews) above it, or the fresh-day message while both are empty.
+/// Observes `ProviderHub` here so its updates don't re-render the panel.
+private struct PlannerChecklist: View {
+    @ObservedObject var store: PlannerStore
+    @ObservedObject var providers: ProviderHub
+    var focus: FocusState<PlannerField?>.Binding
+
+    var body: some View {
+        let shared = providers.snapshot.sharedTodayItems(excluding: .planner)
+        if store.items.isEmpty, shared.isEmpty {
             PlannerMessage(
                 symbol: "checklist",
                 tint: Theme.Palette.accent(for: .planner),
@@ -97,7 +114,7 @@ struct PlannerPanel: View {
                 detail: "Add a few things you want to get done today."
             )
         } else {
-            PlannerList(store: store, focus: $focus)
+            PlannerList(store: store, shared: shared, focus: focus)
         }
     }
 }

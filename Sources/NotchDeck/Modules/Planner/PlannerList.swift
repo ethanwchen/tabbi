@@ -2,13 +2,16 @@ import SwiftUI
 import NotchKitCore
 import NotchKit
 
-/// Today's items. Scrolls only once they outgrow the canvas. Rows reorder by
-/// dragging: the others slide aside live and the move is saved on release.
+/// Today's items, after any rows other modules share. Scrolls only once they
+/// outgrow the canvas. Checklist rows reorder by dragging: the others slide
+/// aside live and the move is saved on release.
 struct PlannerList: View {
     static let rowHeight: CGFloat = 22
     private static let fadeHeight = Theme.Spacing.m
 
     @ObservedObject var store: PlannerStore
+    /// Other modules' goals and tasks, shown first and not editable here.
+    var shared: [SharedTodayItem] = []
     var focus: FocusState<PlannerField?>.Binding
     @State private var drag: RowDrag?
 
@@ -27,12 +30,8 @@ struct PlannerList: View {
         // Plain stack while the rows fit, so nothing scrolls without need.
         ViewThatFits(in: .vertical) {
             rows
-            ScrollView(.vertical) { rows }
-                .scrollIndicators(.automatic)
-                .scrollBounceBehavior(.basedOnSize)
-                // Fade the bottom edge so a cut-off row reads as "more below",
-                // with a matching margin so the last row can scroll clear of it.
-                .contentMargins(.bottom, Self.fadeHeight, for: .scrollContent)
+            scrollingRows
+                // Fade the bottom edge so a cut-off row reads as "more below".
                 .mask {
                     VStack(spacing: 0) {
                         Rectangle()
@@ -44,8 +43,31 @@ struct PlannerList: View {
         .frame(maxHeight: .infinity, alignment: .top)
     }
 
+    /// `ImageRenderer` draws a `ScrollView` blank, so snapshots show the
+    /// top of an overflowing list clipped instead.
+    private static let isSnapshot = CommandLine.arguments.contains("--snapshot")
+
+    @ViewBuilder
+    private var scrollingRows: some View {
+        if Self.isSnapshot {
+            // Takes the space offered rather than the rows' full height.
+            Color.clear
+                .overlay(alignment: .top) { rows }
+                .clipped()
+        } else {
+            ScrollView(.vertical) { rows }
+                .scrollIndicators(.automatic)
+                .scrollBounceBehavior(.basedOnSize)
+                // A margin as tall as the fade, so the last row can scroll clear of it.
+                .contentMargins(.bottom, Self.fadeHeight, for: .scrollContent)
+        }
+    }
+
     private var rows: some View {
         VStack(spacing: 0) {
+            ForEach(shared) { item in
+                PlannerSharedRow(item: item)
+            }
             ForEach(Array(store.items.enumerated()), id: \.element.id) { index, item in
                 let isDragged = drag?.id == item.id
                 PlannerRow(item: item, store: store, focus: focus, isLifted: isDragged)
@@ -56,6 +78,7 @@ struct PlannerList: View {
             }
         }
         .animation(Theme.Motion.snappy, value: store.items.map(\.id))
+        .animation(Theme.Motion.snappy, value: shared)
     }
 
     /// The dragged row follows the pointer; rows between its old and new slot
@@ -177,6 +200,80 @@ private struct PlannerRow: View {
         isRenaming = false
         store.rename(item.id, to: draft)
         draft = ""
+    }
+}
+
+/// A goal or task another module shares, e.g. "Anki reviews 112/432 cards":
+/// the module's symbol in its accent where a checkbox would be, the count,
+/// and a small progress bar. Clicking opens that module's tab, where the
+/// work actually happens.
+private struct PlannerSharedRow: View {
+    let item: SharedTodayItem
+    @EnvironmentObject private var notch: NotchViewModel
+    @State private var hovering = false
+
+    var body: some View {
+        let accent = Theme.Palette.accent(for: item.source)
+        Button {
+            notch.selected = item.source
+        } label: {
+            HStack(spacing: Theme.Spacing.s) {
+                Image(systemName: item.isDone ? "checkmark.circle.fill" : item.source.symbol)
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(accent)
+                    .frame(width: 20, height: 20)
+                Text(item.title)
+                    .font(Theme.Typography.body)
+                    .foregroundStyle(item.isDone ? Theme.Palette.secondaryText : Theme.Palette.primaryText)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                if let detail = item.detail {
+                    Text(detail)
+                        .font(Theme.Typography.caption.monospacedDigit())
+                        .foregroundStyle(Theme.Palette.tertiaryText)
+                        .lineLimit(1)
+                        .contentTransition(.numericText())
+                }
+                if let fraction = item.fraction {
+                    PlannerSharedBar(fraction: fraction, accent: accent)
+                }
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundStyle(hovering ? Theme.Palette.secondaryText : Theme.Palette.tertiaryText)
+                    .frame(width: 12)
+                    .opacity(hovering ? 1 : 0)
+            }
+            .padding(.horizontal, Theme.Spacing.s)
+            .frame(height: PlannerList.rowHeight)
+            .background(
+                RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
+                    .fill(hovering ? Theme.Palette.surface : .clear)
+            )
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .help("Open \(item.source.title)")
+        .onHover { hovering = $0 }
+        .animation(Theme.Motion.snappy, value: hovering)
+    }
+}
+
+/// A short capsule that fills with the source module's accent.
+private struct PlannerSharedBar: View {
+    let fraction: Double
+    let accent: Color
+
+    var body: some View {
+        Capsule()
+            .fill(accent.opacity(0.22))
+            .overlay(alignment: .leading) {
+                Capsule()
+                    .fill(accent)
+                    .frame(width: 32 * max(fraction, 0.08))
+            }
+            .frame(width: 32, height: 4)
+            .animation(Theme.Motion.content, value: fraction)
     }
 }
 

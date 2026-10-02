@@ -183,3 +183,13 @@ extension AnkiConnectClient {
         )
     }
 }
+
+extension AnkiSummary {
+    /// Today's reviews as a shared progress goal: cards reviewed so far out
+    /// of those plus the cards still due. Today and the ticker show it
+    /// without knowing it came from Anki.
+    public func progressItem(source: ModuleID = .anki) -> ProgressItem {
+        ProgressItem(id: "reviews", source: source, title: "Anki reviews",
+                     completed: reviewedToday, target: reviewedToday + dueTotal, unit: "cards")
+    }
+}
