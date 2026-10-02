@@ -2,8 +2,8 @@ import SwiftUI
 import NotchDeckCore
 
 /// The Today panel: the checklist (date and progress header, items, add
-/// field) on the left; an "Up next" calendar card above a compact focus
-/// timer on the right. Keeps the notch pinned open while any field is focused
+/// field) on the left, swapped for the Plan My Day proposal while planning;
+/// an "Up next" calendar card above a compact focus timer on the right. Keeps the notch pinned open while any field is focused
 /// so it doesn't close under the cursor mid-typing.
 struct PlannerPanel: View {
     @ObservedObject var store: PlannerStore
@@ -15,12 +15,24 @@ struct PlannerPanel: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: Theme.Spacing.m) {
-            VStack(spacing: Theme.Spacing.s) {
-                PlannerHeader(store: store)
-                content
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                if store.canEdit {
-                    PlannerAddField(store: store, focus: $focus)
+            PlannerMainColumn(plan: store.plan) {
+                VStack(spacing: Theme.Spacing.s) {
+                    PlannerHeader(store: store)
+                    content
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    if store.canEdit {
+                        HStack(spacing: Theme.Spacing.s) {
+                            PlannerAddField(store: store, focus: $focus)
+                            // Nothing to schedule until there's an open task.
+                            if store.items.contains(where: { !$0.isDone }) {
+                                PlannerPillButton(title: "Plan my day", symbol: "sparkles", height: 28,
+                                                  help: "Let Claude fit your open tasks around today's calendar") {
+                                    store.planMyDay()
+                                }
+                                .transition(.opacity.combined(with: .scale(scale: 0.9)))
+                            }
+                        }
+                    }
                 }
             }
             VStack(spacing: Theme.Spacing.s) {
@@ -61,6 +73,27 @@ struct PlannerPanel: View {
         } else {
             PlannerList(store: store, focus: $focus)
         }
+    }
+}
+
+/// The left column: the checklist, or the Plan My Day view while it's active.
+/// Observes the plan on its own so planning doesn't re-render the panel.
+private struct PlannerMainColumn<Checklist: View>: View {
+    @ObservedObject var plan: DayPlanStore
+    @ViewBuilder var checklist: Checklist
+
+    var body: some View {
+        ZStack {
+            if plan.isActive {
+                DayPlanView(plan: plan)
+                    .transition(.opacity.combined(with: .scale(scale: 0.98, anchor: .top)))
+            } else {
+                checklist
+                    .transition(.opacity.combined(with: .scale(scale: 0.98, anchor: .top)))
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .animation(Theme.Motion.content, value: plan.isActive)
     }
 }
 
@@ -126,26 +159,43 @@ struct PlannerProgressRing: View {
 
 // MARK: Empty and error states
 
-private struct PlannerMessage: View {
+/// Icon, title, and detail centered in the checklist area, with an optional action below.
+struct PlannerMessage<Action: View>: View {
     let symbol: String
     let tint: Color
     let title: String
     let detail: String
+    @ViewBuilder var action: Action
+
+    private var iconWidth: CGFloat { 24 }
 
     var body: some View {
-        HStack(spacing: Theme.Spacing.m) {
-            Image(systemName: symbol)
-                .font(.system(size: 20, weight: .semibold))
-                .foregroundStyle(tint)
-            VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-                Text(title)
-                    .font(Theme.Typography.bodyEmphasis)
-                    .foregroundStyle(Theme.Palette.primaryText)
-                Text(detail)
-                    .font(Theme.Typography.caption)
-                    .foregroundStyle(Theme.Palette.secondaryText)
+        VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+            HStack(spacing: Theme.Spacing.m) {
+                Image(systemName: symbol)
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundStyle(tint)
+                    .frame(width: iconWidth)
+                VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+                    Text(title)
+                        .font(Theme.Typography.bodyEmphasis)
+                        .foregroundStyle(Theme.Palette.primaryText)
+                    Text(detail)
+                        .font(Theme.Typography.caption)
+                        .foregroundStyle(Theme.Palette.secondaryText)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
+            action
+                .padding(.leading, iconWidth + Theme.Spacing.m)
         }
+        .padding(.horizontal, Theme.Spacing.s)
+    }
+}
+
+extension PlannerMessage where Action == EmptyView {
+    init(symbol: String, tint: Color, title: String, detail: String) {
+        self.init(symbol: symbol, tint: tint, title: title, detail: detail) { EmptyView() }
     }
 }
 

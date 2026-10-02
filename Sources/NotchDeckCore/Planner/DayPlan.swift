@@ -63,7 +63,7 @@ public enum DayPlanner {
     /// Gaps shorter than this aren't worth a block.
     public static let minimumBlockMinutes = 15
     /// Proposal rows the panel can show without scrolling.
-    public static let maximumBlocks = 6
+    public static let maximumBlocks = 5
     /// Planned blocks start on these minute marks.
     static let slotMinutes = 5
 

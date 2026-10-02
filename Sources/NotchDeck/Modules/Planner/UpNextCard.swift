@@ -29,14 +29,14 @@ struct UpNextCard: View {
         case .notDetermined:
             UpNextMessage(symbol: "calendar", title: "See your next meetings",
                           detail: "Today's events and call links, right here.") {
-                UpNextPillButton(title: "Show calendar", help: "Allow NotchDeck to read your calendars") {
+                PlannerPillButton(title: "Show calendar", help: "Allow NotchDeck to read your calendars") {
                     store.requestAccess()
                 }
             }
         case .denied:
             UpNextMessage(symbol: "calendar.badge.exclamationmark", title: "Calendar access is off",
                           detail: "Allow NotchDeck in Privacy & Security.") {
-                UpNextPillButton(title: "Open Settings", help: "Open Calendars privacy settings") {
+                PlannerPillButton(title: "Open Settings", help: "Open Calendars privacy settings") {
                     store.openPrivacySettings()
                 }
             }
@@ -170,30 +170,5 @@ private struct UpNextMessage<Action: View>: View {
         // near the card's optical middle instead of hanging off the top.
         .padding(.bottom, Theme.Spacing.m)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-    }
-}
-
-/// Small accent capsule button for the card's call to action.
-private struct UpNextPillButton: View {
-    let title: String
-    let help: String
-    let action: () -> Void
-    @State private var hovering = false
-
-    var body: some View {
-        let accent = Theme.Palette.accent(for: .planner)
-        Button(action: action) {
-            Text(title)
-                .font(Theme.Typography.caption)
-                .foregroundStyle(accent)
-                .padding(.horizontal, Theme.Spacing.m)
-                .frame(height: 22)
-                .background(Capsule().fill(accent.opacity(hovering ? 0.28 : 0.16)))
-                .contentShape(Capsule())
-        }
-        .buttonStyle(.plain)
-        .help(help)
-        .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
     }
 }
