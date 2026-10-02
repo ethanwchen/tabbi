@@ -31,6 +31,19 @@ public struct PetClipSet: Hashable, Sendable {
         guard let playback else { return nil }
         return self[playback.animation].frame(at: playback.elapsed(at: time))
     }
+
+    /// The next moment after `time` when the drawn frame can change: a frame
+    /// boundary in the current clip or the next idle blink. Nil when the
+    /// picture holds until an event arrives (hidden, or hanging from the
+    /// notch). `animator` must already be advanced to `time`.
+    public func nextChange(for animator: PetAnimator, after time: TimeInterval) -> TimeInterval? {
+        guard let playback = animator.playback else { return nil }
+        let boundary = self[playback.animation]
+            .nextFrameBoundary(after: playback.elapsed(at: time))
+            .map { playback.startedAt + $0 }
+        let blink = animator.nextBlinkAt.flatMap { $0 > time ? $0 : nil }
+        return [boundary, blink].compactMap { $0 }.min()
+    }
 }
 
 /// Decides which animation the pet plays and since when.

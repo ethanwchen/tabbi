@@ -3,8 +3,8 @@
 A study-buddy cat or dog lives in the notch.
 This document explains how pet sprites are drawn, composed, and rendered, and how to add a breed.
 
-Status: the sprite format, palettes, pattern zones, renderer, all eight cat breeds, all six dog breeds, every costume, and the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate) exist.
-The side-view walk and stretch, the animation state machine, and the app's `PetView` are in progress.
+Status: the sprite format, palettes, pattern zones, renderer, all eight cat breeds, all six dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate), the animation state machine, and the app's `PetView` exist.
+The side-view walk and stretch are in progress.
 
 ![All cat breeds sitting, on black at 4x](images/cats-sitting.png)
 
@@ -190,6 +190,21 @@ The pet is always in one `Place`, and each place has a resting animation:
 When a one-shot clip ends, the next animation starts at the exact moment the clip ended, not at the next tick, so timing never drifts with the frame rate and jumping ahead lands in the same state as ticking.
 Peek transitions can't be interrupted: an event that arrives mid-climb is kept (latest wins) and applied as the transition ends.
 To draw, call `animator.advance(to: now)` and then `clipSet.frame(for: animator.playback, at: now)`.
+`clipSet.nextChange(for: animator, after: now)` says when the drawn frame next changes (a frame boundary or the next blink), or nil when the picture holds (hidden, or hanging), so a player redraws only on real changes instead of polling.
+
+### In the app
+
+`Sources/NotchDeck/Pets` plays a pet in SwiftUI:
+
+- `PetPlayer` (an `ObservableObject`) owns the clip set and the animator.
+  Features drive it with `send(.nudge)`, `send(.celebrate)`, and so on, and `update(profile:)` swaps the look in place.
+- `PetView(player:pixelSize:)` is a fixed square of 32 sprite pixels (32 pt at the default `pixelSize` of 1, 24 pt at 0.75).
+  A `TimelineView` with `PetFrameSchedule` redraws exactly at each `nextChange`, so an idle pet redraws a few times a second and a hidden or hanging pet not at all.
+- Frames are rendered at a whole number of device pixels per sprite pixel and drawn without interpolation; they are pixel-perfect whenever `pixelSize` times the display scale is a whole number.
+- Alert frames show a pixel-art "!" bubble on the same pixel grid, with its tail one pixel up and right of the frame's `bubbleAnchor`.
+  The bubble can rise up to a few pixels above the view's top edge, so leave room above the pet.
+
+![PetView on black: idle, alert, celebrate in scrubs, asleep, hanging, and a 24 pt alert](images/petview.png)
 
 ## Profile, points, and unlocks
 

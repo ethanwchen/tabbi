@@ -156,4 +156,60 @@ final class PetAnimatorTests: XCTestCase {
         XCTAssertEqual(pet.playback, .init(animation: .idle, startedAt: 2))
         XCTAssertNil(clips.frame(for: nil, at: 2))
     }
+
+    func testNextFrameBoundaryForLoopingAndOneShotClips() {
+        let canvas = PetCanvas(width: 1, height: 1)
+        let frames = [PetFrame(canvas: canvas, duration: 0.5), PetFrame(canvas: canvas, duration: 0.25)]
+        let loop = PetClip(animation: .idle, frames: frames)
+        XCTAssertEqual(loop.nextFrameBoundary(after: 0), 0.5)
+        XCTAssertEqual(loop.nextFrameBoundary(after: 0.5), 0.75, "a boundary itself is not 'after'")
+        XCTAssertEqual(loop.nextFrameBoundary(after: 0.8), 1.25, "wraps into the next cycle")
+        XCTAssertNil(PetClip(animation: .sit, frames: [frames[0]]).nextFrameBoundary(after: 3),
+                     "a single-frame loop never changes")
+
+        let once = PetClip(animation: .alert, frames: frames)
+        XCTAssertEqual(once.nextFrameBoundary(after: 0.6), 0.75, "the last boundary is the clip's end")
+        XCTAssertNil(once.nextFrameBoundary(after: 0.75), "a finished one-shot holds its last frame")
+    }
+
+    /// Redrawing only at `nextChange` must never miss a frame: sampling every
+    /// millisecond through blinks, an alert, sleep, and a peek finds each
+    /// change exactly at a scheduled time, and nothing is scheduled while
+    /// the picture holds.
+    func testNextChangePredictsEveryFrameChange() throws {
+        var pet = animator(seed: 3)
+        let events: [Int: PetAnimator.Event] = [4_000: .nudge, 9_000: .sleep, 13_000: .disappear, 14_000: .peekIn]
+        struct Shown: Equatable { let animation: PetAnimation?; let index: Int? }
+        func shown(_ pet: PetAnimator, _ time: TimeInterval) -> Shown {
+            guard let playback = pet.playback else { return Shown(animation: nil, index: nil) }
+            return Shown(animation: playback.animation,
+                         index: clips[playback.animation].frameIndex(at: playback.elapsed(at: time)))
+        }
+
+        var previous = shown(pet, 0)
+        var scheduled = clips.nextChange(for: pet, after: 0)
+        var changes = 0
+        for millisecond in 1...20_000 {
+            let time = Double(millisecond) / 1000
+            if let event = events[millisecond] {
+                pet.send(event, at: time)
+            } else {
+                pet.advance(to: time)
+            }
+            let now = shown(pet, time)
+            if now != previous, events[millisecond] == nil {
+                let due = try XCTUnwrap(scheduled, "frame changed at \(time) with nothing scheduled")
+                XCTAssertEqual(due, time, accuracy: 0.001, "frame changed at \(time), scheduled for \(due)")
+                changes += 1
+            }
+            previous = now
+            scheduled = clips.nextChange(for: pet, after: time)
+            if let scheduled { XCTAssertGreaterThan(scheduled, time) }
+        }
+        XCTAssertGreaterThan(changes, 20)
+        XCTAssertEqual(pet.place, .hanging)
+        XCTAssertNil(scheduled, "hanging holds its frame until the next event")
+        pet.send(.disappear, at: 20.5)
+        XCTAssertNil(clips.nextChange(for: pet, after: 20.5), "nothing to redraw while hidden")
+    }
 }

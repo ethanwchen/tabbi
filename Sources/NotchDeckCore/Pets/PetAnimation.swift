@@ -95,6 +95,12 @@ public struct PetClip: Hashable, Sendable {
 
     public var loops: Bool { animation.loops }
 
+    /// Timestamps arrive as `start + boundary` and are turned back into
+    /// elapsed time by subtraction, which can land a hair before the
+    /// boundary. Treating anything this close as past it keeps
+    /// `frameIndex` and `nextFrameBoundary` in agreement.
+    private static let rounding: TimeInterval = 1e-9
+
     /// Length of one pass through every frame, in seconds.
     public var duration: TimeInterval { frames.reduce(0) { $0 + $1.duration } }
 
@@ -111,14 +117,40 @@ public struct PetClip: Hashable, Sendable {
         let total = duration
         var time = loops && total > 0 ? elapsed.truncatingRemainder(dividingBy: total) : elapsed
         for (index, frame) in frames.enumerated() {
-            if time < frame.duration { return index }
+            if time < frame.duration - Self.rounding { return index }
             time -= frame.duration
         }
-        return frames.count - 1
+        // Past the end: a loop has wrapped (rounding left `time` on its end).
+        return loops ? 0 : frames.count - 1
     }
 
     public func frame(at elapsed: TimeInterval) -> PetFrame {
         frames[frameIndex(at: elapsed)]
+    }
+
+    /// When the shown frame next changes, in seconds since the clip started,
+    /// strictly after `elapsed`. A one-shot clip's last boundary is its end;
+    /// after that (and for single-frame loops) nothing changes, so nil. Lets
+    /// a player redraw exactly on frame changes instead of polling.
+    public func nextFrameBoundary(after elapsed: TimeInterval) -> TimeInterval? {
+        let elapsed = max(0, elapsed)
+        let total = duration
+        guard total > 0 else { return nil }
+        var base: TimeInterval = 0
+        var offset = elapsed
+        if loops {
+            guard frames.count > 1 else { return nil }
+            let cycles = (elapsed / total).rounded(.down)
+            base = cycles * total
+            offset = elapsed - base
+        }
+        var boundary: TimeInterval = 0
+        for frame in frames {
+            boundary += frame.duration
+            if offset < boundary - Self.rounding { return base + boundary }
+        }
+        // Rounding put `offset` on the loop's end: the next change is one frame in.
+        return loops ? base + total + frames[0].duration : nil
     }
 }
 
