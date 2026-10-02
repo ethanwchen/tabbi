@@ -28,7 +28,7 @@ final class StudyStore: ObservableObject {
     init() {
         isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
         if isDemo {
-            session = Self.demoSession(now: Date())
+            session = Self.demoSession(StudySnapshotState.current?.demoMethod ?? .pomodoro, now: Date())
             return
         }
         session = defaults.data(forKey: Self.sessionKey)
@@ -149,13 +149,29 @@ final class StudyStore: ObservableObject {
         sound.play()
     }
 
-    /// A Pomodoro on its second round, a bit over a third of the way through.
-    private static func demoSession(now: Date) -> StudySession {
-        var session = StudySession(method: .pomodoro)
-        let start = now.addingTimeInterval(-(30 * 60 + 9 * 60 + 47))
-        session.start(at: start)
-        session.advance(to: start.addingTimeInterval(30 * 60))
-        session.start(at: start.addingTimeInterval(30 * 60))
+    /// A believable session part-way through: a Pomodoro on its second
+    /// round, a Flowtime stretch counting up, a sprint with cards done, or
+    /// another method a bit over a third into its first focus block.
+    private static func demoSession(_ kind: StudyMethodKind, now: Date) -> StudySession {
+        var session = StudySession(method: .preset(kind))
+        switch kind {
+        case .pomodoro:
+            let start = now.addingTimeInterval(-(30 * 60 + 9 * 60 + 47))
+            session.start(at: start)
+            session.advance(to: start.addingTimeInterval(30 * 60))
+            session.start(at: start.addingTimeInterval(30 * 60))
+        case .flowtime:
+            session.start(at: now.addingTimeInterval(-(23 * 60 + 12)))
+        case .ankiSprint:
+            let start = now.addingTimeInterval(-(11 * 60 + 5))
+            session.start(at: start)
+            session.recordReviewedToday(120, at: start)
+            session.recordReviewedToday(157, at: now)
+        default:
+            if case .duration(let length) = session.method.focus {
+                session.start(at: now.addingTimeInterval(-(length * 0.38).rounded()))
+            }
+        }
         _ = session.takeLog()
         return session
     }

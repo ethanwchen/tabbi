@@ -4,29 +4,32 @@ import NotchKit
 
 /// The Study tab: a countdown dial on the left (the panel's primary
 /// element), and on the right the method in use and the timer controls.
-/// Tapping the method swaps the panel for an in-notch method picker,
-/// since a system menu would pop outside the notch.
+/// Tapping the method swaps the panel for an in-notch method picker, and
+/// each method's (i) for its info popover, since system menus and popovers
+/// would pop outside the notch.
 struct StudyPanel: View {
     @ObservedObject var store: StudyStore
-    @State private var isPicking = false
+    @State private var overlay: StudyPanelOverlay? = StudyPanelOverlay(snapshot: StudySnapshotState.current)
 
     var body: some View {
         Group {
-            if isPicking {
-                StudyMethodPicker(current: store.session.method.kind) { kind in
-                    withAnimation(Theme.Motion.snappy) {
-                        if let kind { store.choose(kind) }
-                        isPicking = false
-                    }
+            switch overlay {
+            case .picker:
+                StudyMethodPicker(current: store.session.method.kind, info: { show(.info($0, from: .picker)) }) { kind in
+                    if let kind { store.choose(kind) }
+                    show(nil)
                 }
-            } else {
+            case .info(let kind, let back):
+                StudyMethodInfoView(method: .preset(kind), isCurrent: kind == store.session.method.kind,
+                                    use: { store.choose(kind); show(nil) },
+                                    close: { show(back) })
+            case nil:
                 HStack(spacing: Theme.Spacing.s) {
                     StudyDial(store: store)
                         .frame(width: 176)
                     VStack(spacing: Theme.Spacing.s) {
-                        StudyMethodCard(session: store.session) {
-                            withAnimation(Theme.Motion.snappy) { isPicking = true }
-                        }
+                        StudyMethodCard(session: store.session, choose: { show(.picker) },
+                                        info: { show(.info(store.session.method.kind, from: nil)) })
                         StudyControls(store: store)
                     }
                 }
@@ -36,9 +39,28 @@ struct StudyPanel: View {
         .onAppear { store.setVisible(true) }
         .onDisappear { store.setVisible(false) }
     }
+
+    private func show(_ next: StudyPanelOverlay?) {
+        withAnimation(Theme.Motion.snappy) { overlay = next }
+    }
 }
 
-private var accent: Color { Theme.Palette.accent(for: .study) }
+/// What covers the timer: the method picker, or a method's info popover
+/// that returns to wherever it was opened from.
+private indirect enum StudyPanelOverlay: Equatable {
+    case picker
+    case info(StudyMethodKind, from: StudyPanelOverlay?)
+
+    init?(snapshot: StudySnapshotState?) {
+        switch snapshot {
+        case .picker: self = .picker
+        case .info(let kind): self = .info(kind, from: nil)
+        case .method, nil: return nil
+        }
+    }
+}
+
+private var accent: Color { studyAccent }
 
 /// The time (or cards) inside a progress ring, with the phase underneath.
 private struct StudyDial: View {
@@ -80,54 +102,60 @@ private struct StudyDial: View {
     }
 }
 
-/// The method in use, its rhythm and round, as a button that opens the picker.
+/// The method in use, its rhythm and round. The name opens the picker and
+/// the (i) the method's info popover.
 private struct StudyMethodCard: View {
     let session: StudySession
     let choose: () -> Void
+    let info: () -> Void
     @State private var hovering = false
 
     var body: some View {
-        let info = session.method.info
-        Button(action: choose) {
-            Card {
-                VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-                    HStack(spacing: Theme.Spacing.xs) {
-                        Text("Method")
-                        Spacer(minLength: Theme.Spacing.s)
-                        if let round = StudyTimerFormat.roundLabel(session) {
-                            Text(round).monospacedDigit()
-                        }
+        let methodInfo = session.method.info
+        Card {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+                HStack(spacing: Theme.Spacing.xs) {
+                    Text("Method")
+                    Spacer(minLength: Theme.Spacing.s)
+                    if let round = StudyTimerFormat.roundLabel(session) {
+                        Text(round).monospacedDigit()
                     }
-                    .font(Theme.Typography.caption)
-                    .foregroundStyle(Theme.Palette.tertiaryText)
-                    HStack(spacing: Theme.Spacing.xs) {
-                        Text(info.name)
-                            .foregroundStyle(Theme.Palette.primaryText)
-                        Text(session.method.rhythmLabel)
-                            .foregroundStyle(accent)
-                            .monospacedDigit()
-                        Image(systemName: "chevron.up.chevron.down")
-                            .font(.system(size: 9, weight: .bold))
-                            .foregroundStyle(hovering ? Theme.Palette.secondaryText : Theme.Palette.tertiaryText)
-                        Spacer(minLength: 0)
-                    }
-                    .font(Theme.Typography.title)
-                    Text(info.tagline)
-                        .font(Theme.Typography.caption)
-                        .foregroundStyle(Theme.Palette.secondaryText)
-                        .lineLimit(1)
+                    StudyInfoButton(method: session.method.kind, action: info)
+                        .padding(.trailing, -Theme.Spacing.xs)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+                .font(Theme.Typography.caption)
+                .foregroundStyle(Theme.Palette.tertiaryText)
+                Button(action: choose) {
+                    VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+                        HStack(spacing: Theme.Spacing.xs) {
+                            Text(methodInfo.name)
+                                .foregroundStyle(Theme.Palette.primaryText)
+                            Text(session.method.rhythmLabel)
+                                .foregroundStyle(accent)
+                                .monospacedDigit()
+                            Image(systemName: "chevron.up.chevron.down")
+                                .font(.system(size: 9, weight: .bold))
+                                .foregroundStyle(hovering ? Theme.Palette.secondaryText : Theme.Palette.tertiaryText)
+                            Spacer(minLength: 0)
+                        }
+                        .font(Theme.Typography.title)
+                        Text(methodInfo.tagline)
+                            .font(Theme.Typography.caption)
+                            .foregroundStyle(Theme.Palette.secondaryText)
+                            .lineLimit(1)
+                    }
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .help("Change the study method")
+                .onHover { hovering = $0 }
             }
-            .overlay(
-                RoundedRectangle(cornerRadius: Theme.Radius.l, style: .continuous)
-                    .stroke(Theme.Palette.stroke.opacity(hovering ? 2 : 0), lineWidth: 1)
-            )
-            .contentShape(Rectangle())
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         }
-        .buttonStyle(.plain)
-        .help("Change the study method")
-        .onHover { hovering = $0 }
+        .overlay(
+            RoundedRectangle(cornerRadius: Theme.Radius.m, style: .continuous)
+                .strokeBorder(Theme.Palette.stroke.opacity(hovering ? 2 : 0), lineWidth: 1)
+        )
         .animation(Theme.Motion.snappy, value: hovering)
     }
 }
@@ -135,6 +163,8 @@ private struct StudyMethodCard: View {
 /// Every method as a tile; picking one starts a fresh session with it.
 private struct StudyMethodPicker: View {
     let current: StudyMethodKind
+    /// Opens a method's info popover.
+    let info: (StudyMethodKind) -> Void
     /// Called with the chosen kind, or nil to close without changing.
     let done: (StudyMethodKind?) -> Void
 
@@ -151,7 +181,8 @@ private struct StudyMethodPicker: View {
             }
             LazyVGrid(columns: columns, spacing: Theme.Spacing.xs) {
                 ForEach(StudyMethod.presets) { method in
-                    StudyMethodTile(method: method, isCurrent: method.kind == current) {
+                    StudyMethodTile(method: method, isCurrent: method.kind == current,
+                                    info: { info(method.kind) }) {
                         done(method.kind)
                     }
                 }
@@ -165,17 +196,25 @@ private struct StudyMethodPicker: View {
 private struct StudyMethodTile: View {
     let method: StudyMethod
     let isCurrent: Bool
+    let info: () -> Void
     let action: () -> Void
     @State private var hovering = false
 
     var body: some View {
+        HStack(spacing: Theme.Spacing.xxs) {
+            tile
+            StudyInfoButton(method: method.kind, action: info)
+        }
+    }
+
+    private var tile: some View {
         Button(action: action) {
             HStack(spacing: Theme.Spacing.xs) {
                 Text(method.info.name)
                     .foregroundStyle(isCurrent ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
                     .lineLimit(1)
                 Spacer(minLength: Theme.Spacing.xs)
-                if !nameIsRhythm {
+                if !StudyMethodInfoView.nameIsRhythm(method) {
                     Text(method.rhythmLabel)
                         .foregroundStyle(isCurrent ? accent : Theme.Palette.tertiaryText)
                         .monospacedDigit()
@@ -199,11 +238,6 @@ private struct StudyMethodTile: View {
         .help(isCurrent ? "\(method.info.name) is in use" : "Switch to \(method.info.name): \(method.info.tagline)")
         .onHover { hovering = $0 }
         .animation(Theme.Motion.snappy, value: hovering)
-    }
-
-    /// "52 / 17" already says its rhythm, so it shouldn't repeat it.
-    private var nameIsRhythm: Bool {
-        method.info.name.replacingOccurrences(of: " ", with: "") == method.rhythmLabel
     }
 }
 
