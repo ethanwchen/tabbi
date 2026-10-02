@@ -63,3 +63,32 @@ All failures are `AnkiConnectError`, each with a short `title` and a one-sentenc
 - `AnkiDeckStats`: new, learn, and review counts plus `dueTotal`, matching Anki's deck list.
 - `AnkiDay`: a `yyyy-MM-dd` calendar day with `adding(days:)`, built from a `Date` with Anki's rollover hour.
 - `AnkiReview`: one review-log row (`ease`, `kind`, `durationMilliseconds`, `isFailure`, `reviewedAt`).
+
+### Summary
+
+`AnkiSummary` is the glanceable model for the Anki card.
+The pure initializer does the math, so it is tested without a transport.
+`AnkiConnectClient.summary(now:rolloverHour:calendar:historyDays:retentionWindowDays:)` fetches and aggregates in one call.
+
+```swift
+let summary = try await client.summary()   // decks, getDeckStats, today, by-day, cardReviews per deck
+summary.dueTotal       // new + learn + review due today
+summary.streak         // consecutive review days
+summary.retention      // 0.91, or nil below 20 graded reviews
+```
+
+| Field | Meaning |
+|---|---|
+| `newDue`, `learnDue`, `reviewDue`, `dueTotal` | Due today, summed over top-level decks only, because Anki already rolls children into parents |
+| `reviewedToday`, `hasReviewedToday` | The larger of `getNumCardsReviewedToday` and today's by-day row, so the two queries never disagree visibly |
+| `streak` | Consecutive days with reviews ending today; if today has none yet, it counts from yesterday so the streak still reads as alive |
+| `history` | `defaultHistoryDays` (14) `AnkiDayCount`s, oldest first, ending today, zero-filled |
+| `retention`, `retentionSampleSize` | True retention over `defaultRetentionWindowDays` (30): `1 - Again / graded` over review-kind rows only (learn, relearn, filtered, and manual rows are ignored). `nil` below `minimumRetentionSample` (20) so the UI never shows a noisy percentage |
+| `studyTimeToday` | Sum of answer durations for reviews on today's Anki day (rollover-aware) |
+| `decks` | Every `AnkiDeckStats`, in the order given, for a per-deck list |
+
+- Review rows are de-duplicated by id, so overlapping `cardReviews` fetches are safe.
+- `summary` makes one `cardReviews` call per deck because that action does not include child decks.
+- `AnkiSummary.demo(now:)` is the `NOTCHDECK_DEMO=1` sample: about 320 due, 112 reviewed today, a 12-day streak, about 91% retention.
+  It is built through the real aggregation.
+- `AnkiSummary` is `Codable`, so the UI can cache the last good value for its error state.
