@@ -226,6 +226,27 @@ final class ClaudeUsageLogScannerTests: XCTestCase {
         XCTAssertEqual(stats.today.tokens.total, 30)
     }
 
+    func testPersistedIndexKeepsModelsAndDedupesAfterAModelAgesOut() async throws {
+        let index = root.appendingPathComponent("scan-index.json")
+        try write([
+            assistantLine(id: "old", model: "claude-sonnet-4-5", timestamp: "2026-09-25T10:00:00Z", output: 100),
+            assistantLine(id: "m1", model: "claude-haiku-4-5", timestamp: "2026-10-01T10:00:00Z", output: 7),
+            assistantLine(id: "m2", timestamp: "2026-10-01T11:00:00Z", output: 9),
+        ], to: "project-a/a.jsonl")
+        let later = date("2026-10-02T09:00:00Z")
+        _ = await ClaudeUsageLogScanner(root: root, indexURL: index).scan(now: now, calendar: utc)
+        // Sonnet ages out, so its name is dropped and the others are renumbered.
+        _ = await ClaudeUsageLogScanner(root: root, indexURL: index).scan(now: later, calendar: utc)
+        // Copies of m1 in a new file are deduped against the persisted record.
+        try write([assistantLine(id: "m1", model: "claude-haiku-4-5", timestamp: "2026-10-01T10:00:00Z", output: 7)],
+                  to: "project-a/resumed.jsonl")
+
+        let stats = await ClaudeUsageLogScanner(root: root, indexURL: index).scan(now: later, calendar: utc)
+        XCTAssertEqual(stats.lastSevenDays.models.map(\.model), ["claude-opus-4-5-20251101", "claude-haiku-4-5"])
+        XCTAssertEqual(stats.lastSevenDays.models.map(\.tokens.output), [9, 7])
+        XCTAssertEqual(stats.lastSevenDays.messages, 2)
+    }
+
     func testCorruptIndexFallsBackToAFullScan() async throws {
         let index = root.appendingPathComponent("scan-index.json")
         try Data("{not json".utf8).write(to: index)

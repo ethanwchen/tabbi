@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 
 /// Incrementally reads Claude Code session transcripts and keeps the usage
@@ -11,7 +12,11 @@ import Foundation
 ///   its pool, which once held the whole week in memory at launch);
 /// - each file's read offset is remembered, and persisted to `indexURL`
 ///   together with the records, so unchanged bytes are never read again,
-///   not even after a relaunch.
+///   not even after a relaunch;
+/// - records are kept as fixed-size values keyed by a hash of the message id,
+///   with model names interned, so a week of them is a few flat tables
+///   instead of tens of thousands of small heap strings that would pin
+///   fragmented malloc pages for the life of the app.
 ///
 /// A trailing partial line (still being written) is left for the next scan.
 /// Files that shrink or are replaced are re-read from the start. Strictly
@@ -49,7 +54,10 @@ public actor ClaudeUsageLogScanner {
     private var files: [String: FileState] = [:]
     /// Keyed by message id so copies of a message (content-block lines,
     /// resumed or forked sessions) are counted once.
-    private var records: [String: ClaudeUsageRecord] = [:]
+    private var records: [MessageKey: StoredRecord] = [:]
+    /// Interned model names; `StoredRecord.model` indexes into this.
+    private var models: [String] = []
+    private var modelIndex: [String: UInt32] = [:]
     private var indexLoaded = false
     /// Reused across the files of a scan; grows only for a line longer than
     /// `chunkSize`, shrinks back after that file and is freed after the scan.
@@ -89,13 +97,20 @@ public actor ClaudeUsageLogScanner {
         let staleFiles = files.keys.filter { !seen.contains($0) }
         for path in staleFiles { files[path] = nil }
         let recordCount = records.count
-        records = records.filter { $0.value.timestamp >= windowStart }
+        let windowSeconds = windowStart.timeIntervalSince1970
+        records = records.filter { $0.value.timestamp >= windowSeconds }
+        if records.count != recordCount { compactModels() }
 
         if bytesRead > 0 || !staleFiles.isEmpty || records.count != recordCount { saveIndex() }
         // The scan itself allocates little, but reading a week of files or
         // decoding the index still leaves freed pages behind; return them once.
         if isFirstScan || bytesRead >= Self.pressureReliefThreshold { malloc_zone_pressure_relief(nil, 0) }
-        return ClaudeLocalStats.aggregate(records.values, now: now, calendar: calendar)
+        // Aggregation ignores message ids; records are already unique.
+        let models = self.models
+        return ClaudeLocalStats.aggregate(records.values.lazy.map {
+            ClaudeUsageRecord(messageID: "", model: models[Int($0.model)],
+                              timestamp: Date(timeIntervalSince1970: $0.timestamp), usage: $0.usage)
+        }, now: now, calendar: calendar)
     }
 
     private func transcriptPaths() -> [String] {
@@ -186,9 +201,62 @@ public actor ClaudeUsageLogScanner {
     }
 
     private func ingest(_ line: UnsafeRawBufferPointer, windowStart: Date) {
-        if let record = ClaudeUsageRecord.parse(bytes: line), record.timestamp >= windowStart {
-            records[record.messageID] = record
+        guard let record = ClaudeUsageRecord.parse(bytes: line), record.timestamp >= windowStart else { return }
+        records[MessageKey(record.messageID)] = StoredRecord(
+            model: intern(record.model),
+            timestamp: record.timestamp.timeIntervalSince1970,
+            usage: record.usage
+        )
+    }
+
+    private func intern(_ model: String) -> UInt32 {
+        if let index = modelIndex[model] { return index }
+        let index = UInt32(models.count)
+        models.append(model)
+        modelIndex[model] = index
+        return index
+    }
+
+    /// Drops model names no record in the window uses any more.
+    private func compactModels() {
+        let used = Set(records.values.map(\.model)).sorted()
+        guard used.count < models.count else { return }
+        var remap: [UInt32: UInt32] = [:]
+        for (new, old) in used.enumerated() { remap[old] = UInt32(new) }
+        records = records.mapValues { record in
+            var record = record
+            record.model = remap[record.model]!
+            return record
         }
+        models = used.map { models[Int($0)] }
+        modelIndex = Dictionary(uniqueKeysWithValues: models.enumerated().map { ($1, UInt32($0)) })
+    }
+
+    /// The first 128 bits of the id's SHA-256: fixed-size, stable across
+    /// launches (unlike `Hasher`), and collision-free in practice.
+    private struct MessageKey: Hashable {
+        var high: UInt64
+        var low: UInt64
+
+        init(high: UInt64, low: UInt64) {
+            self.high = high
+            self.low = low
+        }
+
+        init(_ messageID: String) {
+            let digest = SHA256.hash(data: Data(messageID.utf8))
+            (high, low) = digest.withUnsafeBytes {
+                ($0.loadUnaligned(fromByteOffset: 0, as: UInt64.self),
+                 $0.loadUnaligned(fromByteOffset: 8, as: UInt64.self))
+            }
+        }
+    }
+
+    private struct StoredRecord {
+        var model: UInt32
+        /// Seconds since 1970.
+        var timestamp: Double
+        var usage: ClaudeTokenUsage
     }
 
     /// One malloc'd block, so growing or reading into it never touches
@@ -214,54 +282,82 @@ public actor ClaudeUsageLogScanner {
 
     // MARK: Index
 
-    /// Short keys keep a week's worth of records small on disk.
+    /// Records are packed into one binary blob (base64 in the JSON), so
+    /// loading a week of them is a single allocation, not one per field.
     private struct Index: Codable {
-        static let currentVersion = 1
-
-        struct Record: Codable {
-            var id: String
-            var m: String
-            var t: Double
-            var u: [Int]
-        }
+        static let currentVersion = 2
 
         var version: Int
         var files: [String: FileState]
-        var records: [Record]
+        var models: [String]
+        var records: Data
     }
+
+    /// key high, key low, model, timestamp bits, then the four token counts.
+    private static let packedRecordSize = 8 + 8 + 4 + 8 + 4 * 8
 
     private func loadIndex() {
         guard let indexURL, let data = try? Data(contentsOf: indexURL),
               let index = try? JSONDecoder().decode(Index.self, from: data),
-              index.version == Index.currentVersion
+              index.version == Index.currentVersion,
+              index.records.count.isMultiple(of: Self.packedRecordSize)
         else { return }
-        files = index.files
-        for record in index.records where record.u.count == 4 {
-            records[record.id] = ClaudeUsageRecord(
-                messageID: record.id,
-                model: record.m,
-                timestamp: Date(timeIntervalSince1970: record.t),
-                usage: ClaudeTokenUsage(input: record.u[0], output: record.u[1],
-                                        cacheRead: record.u[2], cacheCreation: record.u[3])
-            )
+        let count = index.records.count / Self.packedRecordSize
+        var loaded: [MessageKey: StoredRecord] = [:]
+        loaded.reserveCapacity(count)
+        let valid = index.records.withUnsafeBytes { bytes -> Bool in
+            var reader = PackedReader(bytes: bytes)
+            for _ in 0..<count {
+                let key = MessageKey(high: reader.next(), low: reader.next())
+                let model: UInt32 = reader.next()
+                guard Int(model) < index.models.count else { return false }
+                let timestamp = Double(bitPattern: reader.next())
+                let usage = ClaudeTokenUsage(input: Int(reader.next() as Int64), output: Int(reader.next() as Int64),
+                                             cacheRead: Int(reader.next() as Int64),
+                                             cacheCreation: Int(reader.next() as Int64))
+                loaded[key] = StoredRecord(model: model, timestamp: timestamp, usage: usage)
+            }
+            return true
         }
+        guard valid else { return }
+        files = index.files
+        records = loaded
+        models = index.models
+        modelIndex = Dictionary(index.models.enumerated().map { ($1, UInt32($0)) }, uniquingKeysWith: { first, _ in first })
     }
 
     /// Best effort: a failed write only costs a re-read next launch.
     private func saveIndex() {
         guard let indexURL else { return }
-        let index = Index(
-            version: Index.currentVersion,
-            files: files,
-            records: records.values.map {
-                Index.Record(id: $0.messageID, m: $0.model, t: $0.timestamp.timeIntervalSince1970,
-                             u: [$0.usage.input, $0.usage.output, $0.usage.cacheRead, $0.usage.cacheCreation])
+        var packed = Data(capacity: records.count * Self.packedRecordSize)
+        func append<T: FixedWidthInteger>(_ value: T) {
+            withUnsafeBytes(of: value.littleEndian) { packed.append(contentsOf: $0) }
+        }
+        for (key, record) in records {
+            append(key.high)
+            append(key.low)
+            append(record.model)
+            append(record.timestamp.bitPattern)
+            for count in [record.usage.input, record.usage.output, record.usage.cacheRead, record.usage.cacheCreation] {
+                append(Int64(count))
             }
-        )
+        }
+        let index = Index(version: Index.currentVersion, files: files, models: models, records: packed)
         guard let data = try? JSONEncoder().encode(index) else { return }
         try? FileManager.default.createDirectory(
             at: indexURL.deletingLastPathComponent(), withIntermediateDirectories: true
         )
         try? data.write(to: indexURL, options: .atomic)
+    }
+
+    /// Reads little-endian integers in order; callers check the length first.
+    private struct PackedReader {
+        let bytes: UnsafeRawBufferPointer
+        var offset = 0
+
+        mutating func next<T: FixedWidthInteger>() -> T {
+            defer { offset += MemoryLayout<T>.size }
+            return T(littleEndian: bytes.loadUnaligned(fromByteOffset: offset, as: T.self))
+        }
     }
 }
