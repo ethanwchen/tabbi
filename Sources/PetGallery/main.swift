@@ -87,3 +87,34 @@ for species in PetSpecies.allCases {
     try writeSheet(cells, columns: 4, title: "\(species.displayName) breeds",
                    to: outputDirectory.appendingPathComponent("breeds-\(species.rawValue).png"))
 }
+
+// Costumes: every item alone on two breeds, plus full looks.
+let looks: [(String, PetOutfit, [PetAccessory])] = [
+    ("None", .none, []),
+] + PetOutfit.allCases.dropFirst().map { ($0.displayName, $0, []) }
+  + PetAccessory.allCases.map { ($0.displayName, .none, [$0]) }
+  + [
+      ("On call", .scrubs, [.stethoscope, .surgicalCap]),
+      ("Attending", .whiteCoat, [.stethoscope, .headMirror]),
+      ("Graduate", .whiteCoat, [.roundGlasses, .graduationCap]),
+      ("Study day", .none, [.scarf, .roundGlasses, .beanie]),
+  ]
+for breed in [PetBreed.orangeTabby, .goldenRetriever] {
+    let cells = looks.map { label, outfit, accessories in
+        Cell(label: label, canvas: PetComposer.sitting(breed, outfit: outfit, accessories: accessories),
+             palette: breed.palette.withVisibleRim())
+    }
+    try writeSheet(cells, columns: 5, title: "Costumes on \(breed.displayName)",
+                   to: outputDirectory.appendingPathComponent("costumes-\(breed.rawValue).png"))
+}
+
+// Fit check: every breed in two full looks, so each head and body shape is covered.
+for (name, outfit, accessories) in [looks[looks.count - 4], looks[looks.count - 1]] {
+    let cells = PetBreed.allCases.map { breed in
+        Cell(label: breed.displayName, canvas: PetComposer.sitting(breed, outfit: outfit, accessories: accessories),
+             palette: breed.palette.withVisibleRim())
+    }
+    let slug = name.lowercased().replacingOccurrences(of: " ", with: "-")
+    try writeSheet(cells, columns: 7, title: "Fit check: \(name)",
+                   to: outputDirectory.appendingPathComponent("fit-\(slug).png"))
+}

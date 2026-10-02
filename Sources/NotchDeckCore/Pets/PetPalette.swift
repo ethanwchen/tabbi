@@ -79,9 +79,22 @@ public enum PetPaletteRole: String, CaseIterable, Codable, Sendable {
     case eyeLight
     case nose
     case blush
+    /// Scrubs and the matching surgical cap (user-recolorable).
     case costumeBase
     case costumeShade
     case costumeTrim
+    /// White coat. Kept separate from the scrubs roles so recolored scrubs
+    /// never tint the coat.
+    case coat
+    case coatShade
+    /// Cozy knit items and stethoscope tubing (user-recolorable).
+    case accessoryBase
+    case accessoryShade
+    /// Dark gear: graduation cap, head mirror band, pens.
+    case ink
+    /// Glasses frames, graduation tassel.
+    case gold
+    /// Stethoscope chest piece, head mirror.
     case metal
     /// Light effect pixels: sleep "z", sparkles, speech bubble fill.
     case effect
@@ -104,6 +117,12 @@ public enum PetPaletteRole: String, CaseIterable, Codable, Sendable {
         case .costumeBase: "C"
         case .costumeShade: "D"
         case .costumeTrim: "T"
+        case .coat: "U"
+        case .coatShade: "V"
+        case .accessoryBase: "G"
+        case .accessoryShade: "J"
+        case .ink: "Q"
+        case .gold: "Y"
         case .metal: "M"
         case .effect: "Z"
         case .heart: "H"
@@ -119,6 +138,7 @@ public enum PetPaletteRole: String, CaseIterable, Codable, Sendable {
     /// and effects stay fixed so every pet keeps the same readable style.
     public static let userEditable: [PetPaletteRole] = [
         .furBase, .furShade, .furAccent, .furSpot, .belly, .costumeBase, .costumeShade, .costumeTrim,
+        .accessoryBase, .accessoryShade,
     ]
 }
 
@@ -179,6 +199,12 @@ public struct PetPalette: Hashable, Codable, Sendable {
         .costumeBase: PetColor(hex: "#5BC0BE")!,
         .costumeShade: PetColor(hex: "#3E9593")!,
         .costumeTrim: PetColor(hex: "#E8FFFB")!,
+        .coat: PetColor(hex: "#F6F8FB")!,
+        .coatShade: PetColor(hex: "#C3CCD9")!,
+        .accessoryBase: PetColor(hex: "#E0607A")!,
+        .accessoryShade: PetColor(hex: "#B04460")!,
+        .ink: PetColor(hex: "#3F4A78")!,
+        .gold: PetColor(hex: "#F2C14E")!,
         .metal: PetColor(hex: "#C9D3DD")!,
         .effect: PetColor(hex: "#F4F1FF")!,
         .heart: PetColor(hex: "#FF5C7A")!,

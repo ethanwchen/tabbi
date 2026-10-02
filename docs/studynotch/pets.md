@@ -3,8 +3,8 @@
 A study-buddy cat or dog lives in the notch.
 This document explains how pet sprites are drawn, composed, and rendered, and how to add a breed.
 
-Status: the sprite format, palettes, pattern zones, renderer, all eight cat breeds, and all six dog breeds (sitting pose) exist.
-Costumes and animations are in progress.
+Status: the sprite format, palettes, pattern zones, renderer, all eight cat breeds, all six dog breeds, and every costume (sitting pose) exist.
+Animations are in progress.
 
 ![All cat breeds sitting, on black at 4x](images/cats-sitting.png)
 
@@ -51,10 +51,16 @@ Parse errors report the 1-based row and column of the problem.
 | `L` | eyeLight | eye highlight |
 | `N` | nose | nose |
 | `P` | blush | cheeks, inner ears |
-| `C` | costumeBase | clothing |
-| `D` | costumeShade | clothing shading |
-| `T` | costumeTrim | collars, cuffs, piping |
-| `M` | metal | stethoscope, head mirror |
+| `C` | costumeBase | scrubs and the matching surgical cap |
+| `D` | costumeShade | scrubs shading and hems |
+| `T` | costumeTrim | V-neck piping, badge, cap dots |
+| `U` | coat | white coat |
+| `V` | coatShade | white coat seams and lapels |
+| `G` | accessoryBase | scarf, beanie, stethoscope tubing |
+| `J` | accessoryShade | knit shading and cuffs |
+| `Q` | ink | graduation cap, glasses frames, head mirror band, pen |
+| `Y` | gold | graduation tassel |
+| `M` | metal | stethoscope chest piece, head mirror |
 | `Z` | effect | sleep "z", sparkles, speech bubble |
 | `H` | heart | celebration heart |
 
@@ -97,6 +103,36 @@ Layers are stamped in order, later layers painting over earlier ones:
 5. accessory
 
 After stamping, `PetCanvas.outlined()` adds a one-pixel outline around the whole silhouette using direct neighbors only, so corners stay round and every costume is outlined consistently.
+
+## Costumes
+
+![Every costume on a cat](images/costumes-cat.png)
+
+![Every costume on a dog](images/costumes-dog.png)
+
+A pet wears one `PetOutfit` (`none`, `scrubs`, `whiteCoat`) and accessories (`PetAccessory`).
+Each accessory has a slot (neck, face, or head); a pet wears at most one per slot.
+`PetAccessory.wearable(_:)` keeps the last item listed per slot and sorts them in drawing order, so hats always land on top.
+
+Costume art lives in `Art/CostumeArt.swift` and is anchored to the pose layout instead of per-breed positions:
+
+- Body items (outfits, stethoscope, scarf) have one grid per body family (cat, dog, long dog), the same size as that family's body and stamped at the same origin.
+- Glasses have a cat and a dog grid, stamped one row above each head's eye row.
+  Dog eyes sit close together, so the dog lenses are wider than the eyes; frames touching the pupils blur into them.
+- Hats are 20 wide like every head.
+  Each declares a `sitRow`, the grid row that lands on the head's `skullTop` (the row just below the top of the skull, so hats rest on the head instead of floating).
+
+Colors come from dedicated roles so items never fight: scrubs and the surgical cap share the recolorable costume roles (a matching set), the white coat has its own roles so recolored scrubs never tint it, and knit items share the recolorable accessory roles.
+Accessories are drawn after the face and before the automatic outline, so hats get the same rounded outline as the pet.
+
+![Every breed in the study-day look](images/fit-study-day.png)
+
+### Adding a costume item
+
+1. Add a case to `PetOutfit` or `PetAccessory` (with its `slot` and `displayName`).
+2. Draw it in `CostumeArt` using costume roles only: a `BodyItem` for each body family, or a `HeadItem` with its `sitRow`.
+3. Map the case to its art in `PetComposer`.
+4. Run `swift test` (the costume tests check every breed for clipping and covered eyes) and review `costumes-*.png` and `fit-*.png` from `PetGallery`.
 
 ## Colors and visibility on black
 
