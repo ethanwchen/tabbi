@@ -29,16 +29,22 @@ public struct DayPlanContext: Sendable {
     public let events: [UpcomingEvent]
     /// Unfinished checklist items, in list order.
     public let tasks: [PlannerItem]
+    /// Work other modules share for today (say, Anki reviews), described in
+    /// a few words. Claude can schedule it, but blocks for it don't link to
+    /// a checklist item.
+    public let sharedWork: [String]
     public let calendar: Calendar
     /// When planned work should stop for the day.
     public let dayEnd: Date
     /// Free time between `now` and `dayEnd`, never overlapping a timed event.
     public let gaps: [DateInterval]
 
-    public init(now: Date, events: [UpcomingEvent], tasks: [PlannerItem], calendar: Calendar = .current) {
+    public init(now: Date, events: [UpcomingEvent], tasks: [PlannerItem], sharedWork: [String] = [],
+                calendar: Calendar = .current) {
         self.now = now
         self.events = events
         self.tasks = tasks.filter { !$0.isDone }
+        self.sharedWork = sharedWork.compactMap(PlannerDay.normalized)
         self.calendar = calendar
         let dayEnd = DayPlanner.dayEnd(now: now, calendar: calendar)
         self.dayEnd = dayEnd
@@ -49,6 +55,12 @@ public struct DayPlanContext: Sendable {
     /// and invite typos when echoed back.
     public var taskKeys: [(key: String, task: PlannerItem)] {
         tasks.enumerated().map { ("t\($0.offset + 1)", $0.element) }
+    }
+
+    /// Keys for `sharedWork`, continuing after the checklist's ("t3", ...),
+    /// so every task in the prompt has one id scheme.
+    public var sharedWorkKeys: [(key: String, work: String)] {
+        sharedWork.enumerated().map { ("t\(tasks.count + $0.offset + 1)", $0.element) }
     }
 
     /// Whether there is any free time worth planning.
@@ -145,6 +157,7 @@ public enum DayPlanner {
             .map { "- \(range($0.start, $0.end)) \(UpcomingEventFormat.title($0))" }
         let gaps = context.gaps.map { "- \(range($0.start, $0.end))" }
         let tasks = context.taskKeys.map { "- \($0.key): \($0.task.title)" }
+            + context.sharedWorkKeys.map { "- \($0.key): \($0.work)" }
 
         return """
         You plan the rest of someone's day. It is now \(clock.string(from: context.now)). \

@@ -35,9 +35,9 @@ struct PlannerPanel: View {
                 // Re-checks the hour each minute so "Wrap up" takes the lead at 5 pm on its own.
                 TimelineView(.everyMinute) { context in
                     let isEvening = Self.isWrapUpTime(context.date)
-                    let hasOpenTasks = store.items.contains { !$0.isDone }
+                    let hasPlannableWork = store.hasPlannableWork
                     VStack(spacing: Theme.Spacing.s) {
-                        PlannerHeader(store: store, isEvening: isEvening, hasOpenTasks: hasOpenTasks)
+                        PlannerHeader(store: store, isEvening: isEvening, hasPlannableWork: hasPlannableWork)
                         content
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                         if store.canEdit {
@@ -49,7 +49,7 @@ struct PlannerPanel: View {
                                         store.wrapUp()
                                     }
                                     .transition(.opacity.combined(with: .scale(scale: 0.9)))
-                                } else if hasOpenTasks {
+                                } else if hasPlannableWork {
                                     // Nothing to schedule until there's an open task.
                                     PlannerPillButton(title: "Plan my day", symbol: "sparkles", height: 28,
                                                       help: "Let Claude fit your open tasks around today's calendar") {
@@ -157,7 +157,7 @@ enum PlannerField: Hashable {
 private struct PlannerHeader: View {
     @ObservedObject var store: PlannerStore
     let isEvening: Bool
-    let hasOpenTasks: Bool
+    let hasPlannableWork: Bool
 
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
@@ -187,7 +187,7 @@ private struct PlannerHeader: View {
             if store.canEdit {
                 // The action that isn't the bottom row's pill right now.
                 if isEvening {
-                    if hasOpenTasks {
+                    if hasPlannableWork {
                         IconButton(symbol: "sparkles", size: 20,
                                    help: "Plan my day: fit your open tasks around today's calendar") {
                             store.planMyDay()

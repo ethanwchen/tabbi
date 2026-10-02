@@ -96,7 +96,6 @@ Constraints to keep in mind:
 - Ask a kit's onboarding questions when switching kits in Settings too (first run already asks them).
 - Apply the kit's study methods and pet defaults once the Study and Closet modules read them (tabs, ticker previews, focus sounds and starter tasks already apply).
 - Move the remaining module-specific settings (e.g. the Claude pane) into `NotchModule.makeSettingsPane()`; Focus already lives in Today's pane.
-- Offer tasks other modules provide to Plan my day (Today and the ticker already show them).
 - Focus as its own module.
 - Finish the `NotchKit` split: move the notch controller and view, settings infrastructure and focus audio out of the app target.
 - Real Study, Anki, Party and Closet modules replacing today's previews.

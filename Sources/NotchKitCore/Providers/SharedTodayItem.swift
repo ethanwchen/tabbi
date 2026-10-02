@@ -52,3 +52,19 @@ extension ProviderSnapshot {
         return goals + tasks
     }
 }
+
+extension ProviderSnapshot {
+    /// Unfinished work that modules other than `module` share, phrased for
+    /// Plan My Day's prompt, e.g. "Anki reviews (320 cards left)" or
+    /// "LeetCode daily (about 30 min)". Same order as `sharedTodayItems`,
+    /// so Claude sees the day's big goals first.
+    public func plannableWork(excluding module: ModuleID) -> [String] {
+        let goals = progress
+            .filter { $0.source != module && !$0.isComplete }
+            .map { "\($0.title) (\($0.remaining.formatted()) \($0.unit) left)" }
+        let tasks = openTasks
+            .filter { $0.source != module }
+            .map { task in task.estimatedMinutes.map { "\(task.title) (about \($0) min)" } ?? task.title }
+        return goals + tasks
+    }
+}

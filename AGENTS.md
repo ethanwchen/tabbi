@@ -47,8 +47,9 @@ Judge them against the design rules below before you call the work done.
   publisher from `NotchModule.provision`. `ProviderHub` (in `Modules/`)
   merges the enabled modules' values into a `ProviderSnapshot`
   (`NotchKitCore/Providers`). The ticker reads it, and Today lists other
-  modules' goals and tasks above its checklist (`sharedTodayItems`), so
-  e.g. Anki reviews show up there with no Today code. Never reach into
+  modules' goals and tasks above its checklist (`sharedTodayItems`) and
+  hands their unfinished work to Plan my day (`plannableWork`), so e.g.
+  Anki reviews show up there with no Today code. Never reach into
   another module's store; publish what you have and consume the snapshot.
 - `Sources/NotchDeck/Modules/ModuleViews.swift` — the closed notch's
   live-activity wings.

@@ -24,6 +24,21 @@ final class SharedTodayItemTests: XCTestCase {
         XCTAssertNil(items[1].fraction)
     }
 
+    func testPlannableWorkListsOnlyOtherModulesUnfinishedWork() {
+        let snapshot = ProviderSnapshot([
+            (.planner, ModuleProvision(tasks: [ProvidedTask(id: "mine", source: .planner, title: "Mine")])),
+            (.study, ModuleProvision(tasks: [
+                ProvidedTask(id: "pomodoro", source: .study, title: "Pomodoro", estimatedMinutes: 25),
+                ProvidedTask(id: "done", source: .study, title: "Done", isDone: true),
+            ])),
+            (.anki, ModuleProvision(progress: [progress("Anki reviews", 112, of: 432), progress("met", 5, of: 5),
+                                               progress("empty", 0, of: 0)])),
+        ])
+        XCTAssertEqual(snapshot.plannableWork(excluding: .planner),
+                       ["Anki reviews (320 cards left)", "Pomodoro (about 25 min)"])
+        XCTAssertEqual(ProviderSnapshot().plannableWork(excluding: .planner), [])
+    }
+
     func testGoalsWithNothingDueTodayAreHiddenAndMetGoalsCountAsDone() {
         let snapshot = ProviderSnapshot([
             (.anki, ModuleProvision(progress: [progress("empty", 0, of: 0), progress("met", 50, of: 50)])),

@@ -83,6 +83,18 @@ final class DayPlannerTests: XCTestCase {
         XCTAssertFalse(prompt.contains("Done already"))
     }
 
+    func testSharedWorkIsKeyedAfterChecklistAndNeverLinksABlock() throws {
+        let context = DayPlanContext(now: at(9), events: [], tasks: [taskA, doneTask, taskB],
+                                     sharedWork: ["Anki reviews (320 cards left)", "  "], calendar: calendar)
+        XCTAssertEqual(context.sharedWorkKeys.map(\.key), ["t3"])
+        let prompt = DayPlanner.prompt(for: context)
+        XCTAssertTrue(prompt.contains("- t2: Write release notes\n- t3: Anki reviews (320 cards left)"))
+        let text = #"{"blocks":[{"start":"10:00","end":"11:00","title":"Anki reviews","task":"t3"}]}"#
+        let blocks = try DayPlanner.parse(text, context: context)
+        XCTAssertEqual(blocks.map(\.title), ["Anki reviews"])
+        XCTAssertNil(blocks[0].linkedTaskID)
+    }
+
     func testPromptSaysNoneForEmptySections() {
         let prompt = DayPlanner.prompt(for: DayPlanContext(now: at(23), events: [], tasks: [], calendar: calendar))
         XCTAssertEqual(prompt.components(separatedBy: "- none").count - 1, 3)

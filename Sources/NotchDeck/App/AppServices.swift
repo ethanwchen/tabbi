@@ -40,6 +40,7 @@ final class AppServices: ObservableObject {
             ClosetModule(),
         ])
         providers = ProviderHub(registry: modules)
+        planner.followSharedWork(from: providers.$snapshot, excluding: .planner)
         ticker = TickerStore(settings: settings, spotify: spotify, providers: providers,
                              upNext: planner.upNext, claudeUsage: claudeUsage)
         // `$settings` emits before the new value is stored, so read the

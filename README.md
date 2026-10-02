@@ -58,7 +58,7 @@ Your 5-hour and weekly Claude limits, read through your own `claude` CLI, plus t
 ### Today
 
 A daily checklist that lives one click away, with progress for the day and quick add.
-**Plan my day** asks your local `claude` CLI to fit your unfinished tasks into today's free calendar gaps, and adds the blocks you accept to your default calendar.
+**Plan my day** asks your local `claude` CLI to fit your unfinished tasks, plus work your other tabs share (such as Anki reviews), into today's free calendar gaps, and adds the blocks you accept to your default calendar.
 **Wrap up** shows what you finished, what carries over to tomorrow, and your focus sessions, with a short summary from Claude.
 
 While a focus timer runs, focus mode can play a locally generated focus sound (brown, pink or white noise, rain, fireplace or cafe murmur, blended up to three), start a playlist in Spotify or Apple Music, and turn on Do Not Disturb through two Shortcuts you create.
@@ -163,7 +163,7 @@ They run the `claude` command that is already installed and signed in on your Ma
 - **The only network requests it makes itself** are for album artwork URLs that Spotify provides.
 - **Claude features go only through your local `claude` CLI.** NotchDeck never reads your Claude credentials or the keychain.
   Ask Claude sends your question to Claude through that CLI, exactly as if you had typed `claude -p` in a terminal.
-  Plan my day sends today's remaining events and unfinished task titles the same way, and Wrap up sends your task titles, only when you press them.
+  Plan my day sends today's remaining events, unfinished task titles and your other tabs' goals (such as "Anki reviews (320 cards left)") the same way, and Wrap up sends your task titles, only when you press them.
 - **Claude Usage** reads token counts from the transcripts in `~/.claude/projects`, read-only, and never writes there.
   Checking your limits sends a tiny request with the cheapest model, so it never runs until you press refresh once.
   After that, it runs when you press refresh or open the panel 10 or more minutes after the last check.

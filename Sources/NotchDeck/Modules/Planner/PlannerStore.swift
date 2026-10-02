@@ -20,6 +20,9 @@ final class PlannerStore: ObservableObject {
 
     @Published private(set) var day: PlannerDay
     @Published private(set) var problem: Problem?
+    /// Unfinished work other modules share (say, Anki reviews), which Plan
+    /// My Day schedules along with the checklist. See `followSharedWork`.
+    @Published private(set) var sharedWork: [String] = []
     /// Today's remaining calendar events, shown beside the checklist.
     let upNext = UpNextStore()
     /// The Pomodoro timer; lives here so it keeps running while the notch is closed.
@@ -30,6 +33,8 @@ final class PlannerStore: ObservableObject {
     let review = DayReviewStore()
 
     var items: [PlannerItem] { day.items }
+    /// Whether Plan My Day has anything to schedule.
+    var hasPlannableWork: Bool { items.contains { !$0.isDone } || !sharedWork.isEmpty }
     /// False while today's file is unreadable, so a bad file is never overwritten.
     var canEdit: Bool { !isUnreadable }
 
@@ -64,11 +69,23 @@ final class PlannerStore: ObservableObject {
         load(today)
     }
 
+    /// Keeps `sharedWork` in step with what other modules provide, so Today
+    /// reads the merged snapshot instead of any one module's store.
+    func followSharedWork(from snapshots: some Publisher<ProviderSnapshot, Never>, excluding module: ModuleID) {
+        snapshots
+            .map { $0.plannableWork(excluding: module) }
+            .removeDuplicates()
+            .sink { [weak self] work in
+                MainActor.assumeIsolated { self?.sharedWork = work }
+            }
+            .store(in: &cancellables)
+    }
+
     /// Asks Claude to schedule today's unfinished items around the calendar.
     func planMyDay() {
         review.close()
         refreshDay()
-        plan.plan(tasks: items)
+        plan.plan(tasks: items, sharedWork: sharedWork)
     }
 
     /// Opens the End-of-Day Review of today's list and focus sessions.
