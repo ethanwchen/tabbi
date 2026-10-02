@@ -87,4 +87,28 @@ final class StudyFocusShareTests: XCTestCase {
         XCTAssertEqual(items, [.focus(phase: .focus, remaining: 20 * 60, isRunning: true, source: .study)])
         XCTAssertEqual(items.first?.module, .study)
     }
+
+    func testDeepFocusTravelsWithTheWinningTimer() {
+        var session = StudySession(method: .pomodoro)
+        session.start(at: t0)
+        let study = ModuleProvision(focus: session.sharedFocusTimer(at: at(5)), focusIsDeep: true)
+        let snapshot = ProviderSnapshot([(.planner, ModuleProvision(focus: FocusTimer())), (.study, study)])
+        XCTAssertEqual(snapshot.focusSource, .study)
+        XCTAssertTrue(snapshot.focusIsDeep)
+    }
+
+    func testDeepFocusOfALosingTimerIsIgnored() {
+        var planner = FocusTimer()
+        planner.start(at: t0)
+        let idleStudy = ModuleProvision(focus: nil, focusIsDeep: true)
+        let snapshot = ProviderSnapshot([(.planner, ModuleProvision(focus: planner)), (.study, idleStudy)])
+        XCTAssertEqual(snapshot.focusSource, .planner)
+        XCTAssertFalse(snapshot.focusIsDeep)
+
+        // An idle deep-focus timer listed first still gives way to a running one.
+        let idleDeep = ModuleProvision(focus: FocusTimer(), focusIsDeep: true)
+        let merged = ProviderSnapshot([(.study, idleDeep), (.planner, ModuleProvision(focus: planner))])
+        XCTAssertEqual(merged.focusSource, .planner)
+        XCTAssertFalse(merged.focusIsDeep)
+    }
 }

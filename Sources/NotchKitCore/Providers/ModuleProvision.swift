@@ -59,7 +59,8 @@ public struct ProgressItem: Identifiable, Hashable, Sendable {
 /// - `tasks`: TaskSource, things to do today.
 /// - `events`: EventSource, calendar events.
 /// - `progress`: ProgressSource, today's study or practice goals.
-/// - `focus`: FocusState, the focus timer the module runs.
+/// - `focus`: FocusState, the focus timer the module runs, and
+///   `focusIsDeep`, whether the user asked for deep focus with it.
 ///
 /// Modules publish a new value whenever their data changes, and
 /// `ProviderSnapshot` merges all enabled modules' values, so consumers such
@@ -69,17 +70,22 @@ public struct ModuleProvision: Equatable, Sendable {
     public var events: [UpcomingEvent]
     public var progress: [ProgressItem]
     public var focus: FocusTimer?
+    /// The user turned on deep focus for `focus` (Study's switch), so
+    /// followers such as the pet coach can save their nudges for it.
+    public var focusIsDeep: Bool
 
     public init(
         tasks: [ProvidedTask] = [],
         events: [UpcomingEvent] = [],
         progress: [ProgressItem] = [],
-        focus: FocusTimer? = nil
+        focus: FocusTimer? = nil,
+        focusIsDeep: Bool = false
     ) {
         self.tasks = tasks
         self.events = events
         self.progress = progress
         self.focus = focus
+        self.focusIsDeep = focusIsDeep
     }
 
     public static let empty = ModuleProvision()
@@ -100,6 +106,8 @@ public struct ProviderSnapshot: Equatable, Sendable {
     /// The module running `focus`, so a click on its preview opens that
     /// module and consumers can tell one module's timer from another's.
     public private(set) var focusSource: ModuleID?
+    /// Whether `focus` runs in deep focus, as its module reported it.
+    public private(set) var focusIsDeep = false
 
     public init() {}
 
@@ -110,7 +118,7 @@ public struct ProviderSnapshot: Equatable, Sendable {
         var taskKeys = Set<[String]>()
         var progressKeys = Set<[String]>()
         var eventIDs = Set<String>()
-        var activeFocus: (timer: FocusTimer, module: ModuleID)?
+        var activeFocus: (timer: FocusTimer, module: ModuleID, isDeep: Bool)?
         for (module, provision) in provisions {
             for var task in provision.tasks where taskKeys.insert([module.rawValue, task.id]).inserted {
                 task.source = module
@@ -122,11 +130,13 @@ public struct ProviderSnapshot: Equatable, Sendable {
             }
             events += provision.events.filter { eventIDs.insert($0.id).inserted }
             if let timer = provision.focus {
-                if focus == nil { (focus, focusSource) = (timer, module) }
-                if activeFocus == nil, timer.isRunning || timer.isPaused { activeFocus = (timer, module) }
+                if focus == nil { (focus, focusSource, focusIsDeep) = (timer, module, provision.focusIsDeep) }
+                if activeFocus == nil, timer.isRunning || timer.isPaused {
+                    activeFocus = (timer, module, provision.focusIsDeep)
+                }
             }
         }
-        if let activeFocus { (focus, focusSource) = activeFocus }
+        if let activeFocus { (focus, focusSource, focusIsDeep) = activeFocus }
         // Stable, so events with equal starts keep their tab order.
         events = events.enumerated()
             .sorted { ($0.element.start, $0.offset) < ($1.element.start, $1.offset) }

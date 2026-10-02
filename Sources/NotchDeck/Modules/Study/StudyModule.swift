@@ -21,11 +21,12 @@ final class StudyModule: NotchModule {
     /// Today's study minutes against the kit's daily goal, so Today lists
     /// study time and Plan my day can schedule what is left, and the block
     /// under way as the shared focus timer, so the closed notch counts it
-    /// down and a click there opens Study.
+    /// down and a click there opens Study. The deep focus switch rides
+    /// along, so the pet coach can nudge only during deep focus blocks.
     var provision: AnyPublisher<ModuleProvision, Never>? {
         store.goalProgress
-            .combineLatest(store.sharedFocus)
-            .map { ModuleProvision(progress: [$0], focus: $1) }
+            .combineLatest(store.sharedFocus, store.$deepFocus.removeDuplicates())
+            .map { ModuleProvision(progress: [$0], focus: $1, focusIsDeep: $2) }
             .eraseToAnyPublisher()
     }
 
