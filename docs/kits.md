@@ -24,7 +24,7 @@ Every question can be skipped, and a row of tab icons previews what the answers 
 To change kits later, open **Settings > Modules**.
 The **Kit** section lets you:
 
-- **Switch kit.** Your tabs change to the new kit's tabs, and its notch previews and focus sound replace yours if the kit sets them. The kit's starter tasks are added to Today, skipping any already on the list. Every other preference stays as it is.
+- **Switch kit.** If the kit has onboarding questions, a sheet asks them first, the same way first-run setup does; **Cancel** keeps your current kit. Your tabs change to the new kit's tabs for your answers, and its notch previews and focus sound replace yours if the kit sets them. The kit's starter tasks, plus those your answers add, go on Today, skipping any already on the list. Every other preference stays as it is.
 - **Reset to Kit Defaults.** Puts the tabs, notch previews and focus sound back the way the kit ships them, without adding starter tasks again. The button is disabled when nothing would change.
 - **Import Kit…** Pick a `.json` kit file. NotchDeck checks it, saves a copy, and switches to it. If the kit mentions things this version doesn't know, such as a module from a newer release, you see a warning listing them, and they are skipped.
 - **Remove Kit.** Shown for imported kits only. NotchDeck switches back to the default kit.
@@ -61,7 +61,7 @@ A kit file is a JSON object with these fields.
 | `symbol` | no | string | [SF Symbol](https://developer.apple.com/sf-symbols/) name shown beside the name. Defaults to `square.grid.2x2`. |
 | `modules` | yes | array | The tabs, in order. At least one. See [Modules](#modules). |
 | `defaults` | no | object | Settings the kit starts with. See [Defaults](#defaults). |
-| `onboarding` | no | array | Questions first-run setup asks to tailor the kit. See [Onboarding](#onboarding). |
+| `onboarding` | no | array | Questions first-run setup and Settings ask to tailor the kit. See [Onboarding](#onboarding). |
 | `starterTasks` | no | array of strings | Tasks added to Today when the user picks or switches to the kit. Titles already on the list are skipped. |
 
 Unknown top-level fields are ignored, so a kit written for a newer version still loads.
@@ -159,7 +159,8 @@ Each answer can switch modules on or off and add starter tasks.
 
 Answers are applied in question order, so when two answers disagree about a tab, the later question wins.
 The answers are saved with the kit, so **Reset to kit defaults** rebuilds the tabs they chose.
-Switching to another kit starts without answers, since they belong to the kit that asked them.
+Switching kits in Settings asks the new kit's questions and saves those answers instead, since answers belong to the kit that asked them.
+An imported kit is applied without answers; pick it again from another kit to answer its questions.
 Duplicate and blank starter tasks are dropped.
 
 ## Errors and warnings

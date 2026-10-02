@@ -89,6 +89,33 @@ enum SnapshotRenderer {
             try? png.write(to: url)
             print(url.path)
         }
+        // The same questions as the sheet Settings shows when switching kits.
+        if let kit = services.settings.kits[kitID], !kit.onboarding.isEmpty,
+           let png = await sheetSnapshot(KitQuestionsView(kit: kit, dismissal: .cancel, back: {}, start: { _ in })
+               .frame(width: 520)) {
+            let url = outputDirectory.appendingPathComponent("settings-kit-questions.png")
+            try? png.write(to: url)
+            print(url.path)
+        }
+    }
+
+    /// Renders a sheet's content in an off-screen titleless window, since
+    /// ImageRenderer can't draw AppKit-backed controls such as buttons.
+    private static func sheetSnapshot(_ content: some View) async -> Data? {
+        let host = NSHostingController(rootView: content)
+        host.sizingOptions = .preferredContentSize
+        let window = NSWindow(contentViewController: host)
+        window.styleMask = [.titled, .fullSizeContentView]
+        window.titlebarAppearsTransparent = true
+        window.titleVisibility = .hidden
+        window.isReleasedWhenClosed = false
+        try? await Task.sleep(for: .milliseconds(300))
+        window.layoutIfNeeded()
+        guard let frameView = window.contentView?.superview,
+              let rep = frameView.bitmapImageRepForCachingDisplay(in: frameView.bounds)
+        else { return nil }
+        frameView.cacheDisplay(in: frameView.bounds, to: rep)
+        return rep.representation(using: .png, properties: [:])
     }
 
     private static func snapshotName(_ kind: TickerKind) -> String {

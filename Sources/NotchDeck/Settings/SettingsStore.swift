@@ -103,10 +103,12 @@ final class SettingsStore: ObservableObject {
         activeKit.map { settings.usesDefaults(of: $0) } ?? true
     }
 
-    /// Switches to another kit, replacing the tab layout with its defaults.
-    func switchKit(to id: String) {
+    /// Switches to another kit, replacing the tab layout with its defaults
+    /// for the user's onboarding `answers` (Settings asks the kit's
+    /// questions first, as first-run setup does).
+    func switchKit(to id: String, answers: KitAnswers = [:]) {
         guard id != settings.kitID, let kit = kits[id] else { return }
-        apply(kit, addsStarterTasks: true)
+        apply(kit, answers: answers, addsStarterTasks: true)
     }
 
     /// The first-run pick: applies `id`'s tabs for the user's onboarding
@@ -118,7 +120,7 @@ final class SettingsStore: ObservableObject {
     }
 
     /// Puts the active kit's tabs back the way the kit sets them up for the
-    /// answers the user gave on first run.
+    /// answers the user gave when picking it.
     func resetToKitDefaults() {
         guard let kit = activeKit else { return }
         apply(kit, answers: settings.kitAnswers, addsStarterTasks: false)

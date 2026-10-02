@@ -93,7 +93,6 @@ Constraints to keep in mind:
 
 ## Near-term engineering
 
-- Ask a kit's onboarding questions when switching kits in Settings too (first run already asks them).
 - Apply the kit's study methods and pet defaults once the Study and Closet modules read them (tabs, ticker previews, focus sounds and starter tasks already apply).
 - Move the remaining module-specific settings (e.g. the Claude pane) into `NotchModule.makeSettingsPane()`; Focus already lives in Today's pane.
 - Focus as its own module.

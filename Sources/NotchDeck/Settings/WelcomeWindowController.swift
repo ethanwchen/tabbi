@@ -234,9 +234,17 @@ private struct TabIcons: View {
 }
 
 /// The kit's onboarding questions. Every question is optional; the tabs
-/// row previews what the answers will turn on or off.
-private struct KitQuestionsView: View {
+/// row previews what the answers will turn on or off. First-run setup shows
+/// it as its second step, and Settings as a sheet when switching kits.
+struct KitQuestionsView: View {
+    /// The leading button: Back to the kit picker on first run, Cancel in
+    /// Settings, where it leaves the current kit as it was.
+    enum Dismissal {
+        case back, cancel
+    }
+
     let kit: KitManifest
+    var dismissal: Dismissal = .back
     let back: () -> Void
     let start: (KitAnswers) -> Void
     @State private var answers: KitAnswers = [:]
@@ -284,15 +292,25 @@ private struct KitQuestionsView: View {
             .help("The tabs \(kit.name) starts with: \(tabs.map(\.title).joined(separator: ", "))")
 
             HStack {
-                Button("Back", action: back)
-                    .controlSize(.large)
-                    .help("Pick a different kit")
+                switch dismissal {
+                case .back:
+                    Button("Back", action: back)
+                        .controlSize(.large)
+                        .help("Pick a different kit")
+                case .cancel:
+                    Button("Cancel", action: back)
+                        .keyboardShortcut(.cancelAction)
+                        .controlSize(.large)
+                        .help("Keep your current kit and tabs")
+                }
                 Spacer()
-                Button("Start") { start(answers) }
+                Button(dismissal == .back ? "Start" : "Switch Kit") { start(answers) }
                     .keyboardShortcut(.defaultAction)
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)
-                    .help("Start with the \(kit.name) kit")
+                    .help(dismissal == .back
+                          ? "Start with the \(kit.name) kit"
+                          : "Switch to \(kit.name) with these answers")
             }
             .padding(.horizontal, 24)
             .padding(.top, 20)

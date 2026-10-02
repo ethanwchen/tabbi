@@ -159,6 +159,9 @@ private struct KitSection: View {
     @ObservedObject private var focus = FocusController.shared
     /// The outcome of the last import or removal, shown under the buttons.
     @State private var message: (text: String, isWarning: Bool)?
+    /// A kit with onboarding questions the user picked; its questions show
+    /// in a sheet and the switch happens only once they confirm.
+    @State private var askingKit: KitManifest?
 
     private var usesKitDefaults: Bool {
         store.usesKitDefaults && (store.activeKit.map { focus.settings.usesDefaults(of: $0.defaults) } ?? true)
@@ -204,12 +207,26 @@ private struct KitSection: View {
         } footer: {
             SectionFooter("A kit is a premade set of tabs and defaults. Switching kits or resetting replaces your tabs, notch previews and focus sound with the kit's, and switching adds its starter tasks to Today. Other settings stay.")
         }
+        .sheet(item: $askingKit) { kit in
+            KitQuestionsView(kit: kit, dismissal: .cancel, back: { askingKit = nil }) { answers in
+                askingKit = nil
+                store.switchKit(to: kit.id, answers: answers)
+            }
+            .frame(width: 520)
+        }
     }
 
+    /// Picking a kit with onboarding questions asks them first; the picker
+    /// keeps showing the current kit until the user confirms.
     private var kitSelection: Binding<String> {
         Binding(get: { store.activeKit?.id ?? store.settings.kitID }, set: { id in
             message = nil
-            store.switchKit(to: id)
+            guard id != store.settings.kitID, let kit = store.kits[id] else { return }
+            if kit.onboarding.isEmpty {
+                store.switchKit(to: id)
+            } else {
+                askingKit = kit
+            }
         })
     }
 
