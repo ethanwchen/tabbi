@@ -21,6 +21,10 @@ final class FocusPlaylistScriptTests: XCTestCase {
         XCTAssertFalse(FocusPlaylistScript.startsPlayback(playlist))
     }
 
+    func testResumeContinuesWithoutRestarting() {
+        XCTAssertEqual(FocusPlaylistScript.resume(.spotify), #"tell application id "com.spotify.client" to play"#)
+    }
+
     func testPauseNeverToggles() {
         XCTAssertEqual(FocusPlaylistScript.pause(.music), #"tell application id "com.apple.Music" to pause"#)
         XCTAssertEqual(FocusPlaylistScript.pause(.spotify), #"tell application id "com.spotify.client" to pause"#)
@@ -114,6 +118,49 @@ final class FocusSessionTests: XCTestCase {
         session.observe(.playing, of: .spotify)
         _ = go(&session, .interrupted)
         session.observe(.paused, of: .spotify)
+        XCTAssertTrue(go(&session, .focusing).contains(.resumePlaylist(.spotify)))
+    }
+
+    func testAPlaylistPausedAtTheBreakResumesWhereItLeftOff() {
+        var session = FocusSession()
+        _ = go(&session, .focusing)
+        session.observe(.playing, of: .spotify)
+        _ = go(&session, .interrupted)
+        let next = go(&session, .focusing)
+        XCTAssertTrue(next.contains(.resumePlaylist(.spotify)))
+        XCTAssertFalse(next.contains(.playPlaylist(spotify)), "not restarted from the first track")
+        session.observe(.paused, of: .spotify)  // resume still landing
+        session.observe(.playing, of: .spotify)
+        XCTAssertTrue(go(&session, .interrupted).contains(.pausePlaylist(.spotify)), "paused again at the next break")
+        _ = go(&session, .idle)
+        XCTAssertTrue(go(&session, .focusing).contains(.playPlaylist(spotify)), "a new session starts fresh")
+    }
+
+    func testPlayingOrQuittingDuringTheBreakStartsThePlaylistFresh() {
+        for state in [SpotifyPlayerState.playing, .stopped] {
+            var session = FocusSession()
+            _ = go(&session, .focusing)
+            session.observe(.playing, of: .spotify)
+            _ = go(&session, .interrupted)
+            session.observe(state, of: .spotify)
+            XCTAssertTrue(go(&session, .focusing).contains(.playPlaylist(spotify)), "\(state)")
+        }
+    }
+
+    func testAChangedPlaylistIsPlayedRatherThanResumed() {
+        var session = FocusSession()
+        _ = go(&session, .focusing)
+        session.observe(.playing, of: .spotify)
+        _ = go(&session, .interrupted)
+        var settings = full
+        settings.playlistText = "spotify:playlist:other"
+        XCTAssertTrue(go(&session, .focusing, settings: settings).contains(.playPlaylist(.spotify(uri: "spotify:playlist:other"))))
+    }
+
+    func testAPlaylistNeverSeenPlayingIsStartedFreshNextTime() {
+        var session = FocusSession()
+        _ = go(&session, .focusing)
+        _ = go(&session, .interrupted)
         XCTAssertTrue(go(&session, .focusing).contains(.playPlaylist(spotify)))
     }
 

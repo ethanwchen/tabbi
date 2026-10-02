@@ -32,6 +32,11 @@ public enum FocusPlaylistScript {
         return true
     }
 
+    /// Resumes `source` where it was paused, keeping its queue and position.
+    public static func resume(_ source: MediaSource) -> String {
+        tell(source, "play")
+    }
+
     /// Pauses `source`. Unlike `playpause`, this never starts playback, so
     /// it's safe to send even if the user already paused.
     public static func pause(_ source: MediaSource) -> String {

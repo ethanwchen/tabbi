@@ -27,6 +27,8 @@ public enum FocusSessionAction: Equatable, Sendable {
     case stopSound
     case runShortcut(String)
     case playPlaylist(FocusPlaylist)
+    /// Continue the playlist we paused at the break, where it left off.
+    case resumePlaylist(MediaSource)
     case pausePlaylist(MediaSource)
 }
 
@@ -42,6 +44,9 @@ public enum FocusSessionAction: Equatable, Sendable {
 ///   playing something. Once we've seen our playlist play, a manual pause
 ///   hands it to the user: we won't pause it at the break or restart it in
 ///   later focus phases until the session ends (the timer goes idle).
+/// - A playlist we paused at a break resumes where it left off in the next
+///   focus phase, rather than restarting from its first track, unless the
+///   user played something in that app meanwhile.
 public struct FocusSession: Equatable, Sendable {
     /// Who controls the playlist's app during this session.
     enum PlaylistControl: Equatable, Sendable {
@@ -52,6 +57,8 @@ public struct FocusSession: Equatable, Sendable {
         case requested(MediaSource, autoPlays: Bool)
         /// Seen playing what we started; we pause it when focus ends.
         case playing(MediaSource)
+        /// We paused it at a break; the next focus phase resumes it.
+        case paused(FocusPlaylist)
         /// The user paused it. Hands off until the session ends.
         case declined
     }
@@ -94,6 +101,10 @@ public struct FocusSession: Equatable, Sendable {
             playlist = .playing(source)
         case .playing(let owned) where owned == source && state != .playing && isFocusing:
             playlist = .declined
+        case .paused(let item) where item.source == source && state != .paused:
+            // The user played something there during the break, or quit
+            // the app: resuming would no longer continue our playlist.
+            playlist = .none
         default:
             break
         }
@@ -106,8 +117,13 @@ public struct FocusSession: Equatable, Sendable {
             actions.append(.startSound(settings.mix, volume: settings.volume))
         }
         if let item = settings.playlist, playlist != .declined, !isPlaying(item.source) {
-            playlist = .requested(item.source, autoPlays: FocusPlaylistScript.startsPlayback(item))
-            actions.append(.playPlaylist(item))
+            if case .paused(item) = playlist {
+                playlist = .requested(item.source, autoPlays: true)
+                actions.append(.resumePlaylist(item.source))
+            } else {
+                playlist = .requested(item.source, autoPlays: FocusPlaylistScript.startsPlayback(item))
+                actions.append(.playPlaylist(item))
+            }
         }
         if let name = settings.activeOnShortcut {
             shortcutRan = true
@@ -122,14 +138,21 @@ public struct FocusSession: Equatable, Sendable {
         var actions: [FocusSessionAction] = []
         if !settings.mix.isOff { actions.append(.stopSound) }
         switch playlist {
-        case .requested(let source, autoPlays: true), .playing(let source):
+        case .playing(let source):
             actions.append(.pausePlaylist(source))
-        case .requested(_, autoPlays: false), .none, .declined:
+            if let item = settings.playlist { playlist = .paused(item) }
+        case .requested(let source, autoPlays: true):
+            // Never seen playing, so it may not have loaded: pause, but
+            // start it fresh next time rather than resuming.
+            actions.append(.pausePlaylist(source))
+            playlist = .none
+        case .requested(_, autoPlays: false):
             // Never pause music we didn't see our playlist start: it may be
             // something the user chose instead.
+            playlist = .none
+        case .none, .declined, .paused:
             break
         }
-        if playlist != .declined { playlist = .none }
         if shortcutRan {
             shortcutRan = false
             if let name = settings.activeOffShortcut { actions.append(.runShortcut(name)) }

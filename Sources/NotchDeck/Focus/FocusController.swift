@@ -122,6 +122,8 @@ final class FocusController: ObservableObject {
             }
         case .playPlaylist(let playlist):
             Task { await Self.run(FocusPlaylistScript.play(playlist), on: playlist.source, launching: true) }
+        case .resumePlaylist(let source):
+            Task { await Self.run(FocusPlaylistScript.resume(source), on: source, launching: false) }
         case .pausePlaylist(let source):
             Task { await Self.run(FocusPlaylistScript.pause(source), on: source, launching: false) }
         }
