@@ -57,7 +57,7 @@ struct GeneralSettingsPane: View {
             } header: {
                 Text("Display")
             } footer: {
-                SectionFooter("Falls back to the main display when the chosen one is disconnected.")
+                SectionFooter("Falls back to the built-in display when the chosen one is disconnected.")
             }
         }
         .formStyle(.grouped)
@@ -239,9 +239,6 @@ struct ShortcutsSettingsPane: View {
         .formStyle(.grouped)
         .scrollDisabled(true)
         .frame(width: paneWidth, height: 324)
-        .onChange(of: recorder.isRecording) { _, recording in
-            store.isRecordingHotkey = recording
-        }
         .onDisappear { recorder.stop() }
     }
 
