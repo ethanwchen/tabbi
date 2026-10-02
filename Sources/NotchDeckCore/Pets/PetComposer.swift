@@ -39,6 +39,10 @@ public enum PetComposer {
         case hanging
         /// Side-on torso mid-stride; `step` indexes `WalkArt.cycle`.
         case walking(step: Int)
+        /// The walking body bowing into a stretch: the chest sinks `depth`
+        /// pixels while the front paws slide forward and the rump stays up.
+        /// `wag` picks the tail position.
+        case stretching(depth: Int, wag: Int)
     }
 
     static func compose(
@@ -80,19 +84,37 @@ public enum PetComposer {
             for (x, lean, far) in legs {
                 canvas.stamp(WalkArt.leg(height: walk.legHeight, lean: lean, far: far), x: x, y: legY, pattern: pattern)
             }
-            canvas.stamp(walk.torso, x: walk.torsoX, y: walk.torsoY + sink, pattern: pattern)
-            if breed.hasTail {
-                // The tail sways once per half cycle, not every step, so it doesn't flicker.
-                let tail = walk.tails[(index / 2) % walk.tails.count]
-                canvas.stamp(tail, x: walk.tailX, y: walk.torsoY + sink - tail.height, pattern: pattern)
-            }
-            // The torso is behind the head, so torso costumes go on now.
-            for item in bodyItems(outfit: outfit, accessories: accessories) {
-                canvas.stamp(walk.pick(item), x: walk.torsoX, y: walk.torsoY + sink)
-            }
+            // The tail sways once per half cycle, not every step, so it doesn't flicker.
+            canvas.lay(walkingTorso(breed, walk, outfit: outfit, accessories: accessories, wag: index / 2)) { _ in sink }
             bodyItem = { _ in nil }
             headX = walk.headX
             headY = walk.chinRow + 1 - layout.head.height + sink + pose.headDrop
+        case .stretching(let bow, let wag):
+            let walk = WalkLayout(layout.family)
+            // Short legs bow less, so the chin never sinks onto the paws.
+            let depth = min(bow, walk.legHeight - 1)
+            let legY = walk.torsoY + walk.torso.height
+            // Back legs stand straight; front legs fold down and reach ahead,
+            // ending on the same baseline.
+            let height = max(2, walk.legHeight - depth)
+            let reach = depth * 2
+            for (x, far) in [(walk.backHip + 3, true), (walk.backHip, false)] {
+                canvas.stamp(WalkArt.leg(height: walk.legHeight, lean: .under, far: far), x: x, y: legY, pattern: pattern)
+            }
+            // Bow the torso: columns toward the chest sink, the rump stays put.
+            let torso = walkingTorso(breed, walk, outfit: outfit, accessories: accessories, wag: wag)
+            let pivot = walk.torsoX + walk.torso.width * 2 / 3
+            canvas.lay(torso) { x in
+                x >= pivot ? 0 : min(depth, Int((Double(depth * (pivot - x)) / Double(pivot - walk.torsoX)).rounded()))
+            }
+            // The forearms lie in front of the lowered chest.
+            for (x, far) in [(walk.frontHip + 3, true), (walk.frontHip, false)] {
+                canvas.stamp(WalkArt.reachingLeg(height: height, reach: reach, far: far),
+                             x: x - reach, y: legY + walk.legHeight - height, pattern: pattern)
+            }
+            bodyItem = { _ in nil }
+            headX = walk.headX
+            headY = walk.chinRow + 1 - layout.head.height + depth + pose.headDrop
         }
         canvas.stamp(layout.head, x: headX, y: headY, pattern: pattern)
         let face = EffectArt.face(layout.face, eyeRow: layout.eyeRow - layout.faceRow, eyes: pose.eyes)
@@ -115,6 +137,24 @@ public enum PetComposer {
         }
         let anchor = PetPoint(x: headX + layout.head.width - 1, y: headY + layout.skullTop - pose.lift)
         return Composed(canvas: canvas.outlined().shifted(x: 0, y: -pose.lift), headTopRight: anchor)
+    }
+
+    /// The walking torso with its tail and torso costumes, on its own frame
+    /// canvas so a stance can bend it before laying it over the legs. The
+    /// torso is behind the head, so torso costumes go on here, before it.
+    private static func walkingTorso(
+        _ breed: PetBreed, _ walk: WalkLayout, outfit: PetOutfit, accessories: [PetAccessory], wag: Int
+    ) -> PetCanvas {
+        var canvas = PetCanvas(width: frameSize, height: frameSize)
+        canvas.stamp(walk.torso, x: walk.torsoX, y: walk.torsoY, pattern: breed.pattern)
+        if breed.hasTail {
+            let tail = walk.tails[wag % walk.tails.count]
+            canvas.stamp(tail, x: walk.tailX, y: walk.torsoY - tail.height, pattern: breed.pattern)
+        }
+        for item in bodyItems(outfit: outfit, accessories: accessories) {
+            canvas.stamp(walk.pick(item), x: walk.torsoX, y: walk.torsoY)
+        }
+        return canvas
     }
 
     /// The outfit and neck items worn, in drawing order.
@@ -246,6 +286,17 @@ public enum PetComposer {
 
         func pick(_ item: CostumeArt.BodyItem) -> SpriteGrid {
             family == .longDog ? item.walkLong : item.walk
+        }
+    }
+}
+
+extension PetCanvas {
+    /// Paints the opaque pixels of `layer` over this canvas, moving each
+    /// column down by `drop(x)` pixels: a plain offset, or a bend.
+    fileprivate mutating func lay(_ layer: PetCanvas, drop: (Int) -> Int) {
+        for x in 0..<layer.width {
+            let dy = drop(x)
+            for y in 0..<layer.height { if let role = layer[x, y] { self[x, y + dy] = role } }
         }
     }
 }

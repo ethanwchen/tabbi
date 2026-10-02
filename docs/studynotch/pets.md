@@ -3,8 +3,7 @@
 A study-buddy cat or dog lives in the notch.
 This document explains how pet sprites are drawn, composed, and rendered, and how to add a breed.
 
-Status: the sprite format, palettes, pattern zones, renderer, all eight cat breeds, all six dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate), the walk cycle, the animation state machine, and the app's `PetView` exist.
-The stretch animation is in progress.
+Status: the sprite format, palettes, pattern zones, renderer, all eight cat breeds, all six dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
 
 ![All cat breeds sitting, on black at 4x](images/cats-sitting.png)
 
@@ -138,7 +137,7 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 ## Animations
 
 `PetComposer.clip(_:for:outfit:accessories:)` builds a `PetClip`: a list of `PetFrame`s, each with its own `duration` in seconds.
-`clip.frame(at: elapsed)` picks the frame to show; looping clips (idle, sit, sleep, walk) wrap around, one-shot clips (blink, peek, alert, celebrate) hold their last frame, and `isFinished(at:)` tells the player when to move on.
+`clip.frame(at: elapsed)` picks the frame to show; looping clips (idle, sit, sleep, walk) wrap around, one-shot clips (blink, stretch, peek, alert, celebrate) hold their last frame, and `isFinished(at:)` tells the player when to move on.
 
 Front-facing animations are not drawn frame by frame.
 Each frame is the sitting composition in a `PetPose`, so every breed and costume animates without extra art:
@@ -162,6 +161,7 @@ The composer finds the open eyes on the face's eye row, clears them so the head'
 | alert | Two hops (2 px, then 1 px) and a hold; every frame has a `bubbleAnchor` at the top-right of the head for the app's speech bubble |
 | celebrate | Happy eyes, a 3 px hop, a heart floating up beside the head, and sparkles |
 | walk | Four 150 ms steps of a trot, side-on (see below) |
+| stretch | A side-on play bow: down in three steps, a held bow with happy eyes and a tail wag, then back up (see below) |
 
 Effects (the "z", heart, and sparkles) use the `effect` and `heart` roles and are painted after outlining and only into transparent pixels, so they float free of the pet and never hide part of a hat.
 The peek legs come from `EffectArt.hangingLeg`, drawn behind the head with the breed's paw zone.
@@ -170,7 +170,7 @@ The peek legs come from `EffectArt.hangingLeg`, drawn behind the head with the b
 
 ### Walking
 
-The walk is the one animation that is not a sitting pose.
+The walk and the stretch are the two animations that are not sitting poses.
 It is drawn chibi-style: the usual front-facing head sits in front of a side-on torso, so the face, glasses, and hats need no walking art and stay readable at notch size.
 Pets walk toward the left; mirror the frames to walk right.
 
@@ -189,6 +189,21 @@ Torso costumes are stamped right after the torso, before the head, because the h
 `PetComposer.WalkLayout` holds the per-family positions (torso origin, hips, tail, and the chin row the head rests on).
 
 ![The walk cycle for every breed and four looks](images/walk.png)
+
+### Stretching
+
+The stretch is a play bow built from the walking body, so it needs no new torso, head, or costume art.
+The composer's `stretching(depth:wag:)` stance:
+
+- keeps the back legs standing straight, so the rump and tail stay where they are when walking;
+- bends the torso, with its tail and torso costumes, by moving each column toward the chest down by up to `depth` pixels (the rump third stays put);
+- folds the front legs with `WalkArt.reachingLeg(height:reach:far:)`: shorter legs whose forearms lie flat and reach `2 * depth` pixels forward, drawn over the lowered chest so the paws show under the chin;
+- lowers the head by `depth`, so hats and glasses follow.
+
+The bow is at most `legHeight - 1` deep, so the short-legged dachshund bows 2 px instead of 3 and its chin never lands on its paws.
+The first and last frames equal the walk's passing step, so a stretch can chain with walking without a jump.
+
+![The stretch for every breed and two looks](images/stretch.png)
 
 ### Playing animations
 

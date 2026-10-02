@@ -168,6 +168,37 @@ final class PetAnimationTests: XCTestCase {
         }
     }
 
+    func testStretchBowsDownAndRisesBackToStanding() throws {
+        for breed in PetBreed.allCases {
+            let clip = PetComposer.clip(.stretch, for: breed, outfit: .scrubs, accessories: [.stethoscope, .beanie])
+            XCTAssertFalse(clip.loops)
+            let canvases = clip.frames.map(\.canvas)
+            // It starts and ends on the walk's standing (passing) step, so it
+            // chains with walking without a jump.
+            let standing = PetComposer.clip(.walk, for: breed, outfit: .scrubs, accessories: [.stethoscope, .beanie])
+                .frames[1].canvas
+            XCTAssertEqual(canvases.first, standing, "\(breed)")
+            XCTAssertEqual(canvases.last, standing, "\(breed)")
+
+            let last = PetComposer.frameSize - 1
+            for canvas in canvases {
+                let bounds = try XCTUnwrap(canvas.opaqueBounds)
+                XCTAssertEqual(bounds.maxY, baseline, "paws stay on the baseline: \(breed)")
+                let edges = (0...last).flatMap { [canvas[0, $0], canvas[last, $0], canvas[$0, 0]] }
+                XCTAssertTrue(edges.allSatisfy { $0 == nil || $0 == .outline }, "nothing clipped: \(breed)")
+                XCTAssertTrue(canvas.pixels.contains(.costumeBase), "scrubs follow the bow: \(breed)")
+            }
+
+            // In the bow the head (topmost pixel, under the beanie) sinks while
+            // the rump stays up and the eyes squint happily.
+            let bow = try XCTUnwrap(canvases.max { $0.opaqueTop(inColumns: 0..<12) < $1.opaqueTop(inColumns: 0..<12) })
+            XCTAssertGreaterThan(bow.opaqueTop(inColumns: 0..<12), standing.opaqueTop(inColumns: 0..<12) + 1, "\(breed)")
+            XCTAssertEqual(bow.opaqueTop(inColumns: 24..<30), standing.opaqueTop(inColumns: 24..<30),
+                           "the rump stays up: \(breed)")
+            XCTAssertLessThan(eyePixels(bow), eyePixels(standing), "\(breed)")
+        }
+    }
+
     func testCanvasShiftAndFlip() {
         var canvas = PetCanvas(width: 3, height: 3)
         canvas[0, 0] = .eye
@@ -177,5 +208,12 @@ final class PetAnimationTests: XCTestCase {
         XCTAssertNil(canvas.shifted(x: 0, y: -1).opaqueBounds, "moved off the canvas is clipped")
         XCTAssertEqual(canvas.flippedVertically()[0, 2], .eye)
         XCTAssertEqual(canvas.flippedVertically().flippedVertically(), canvas)
+    }
+}
+
+private extension PetCanvas {
+    /// The highest opaque row within `columns`, or the canvas height if empty.
+    func opaqueTop(inColumns columns: Range<Int>) -> Int {
+        (0..<height).first { y in columns.contains { self[$0, y] != nil } } ?? height
     }
 }

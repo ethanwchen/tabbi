@@ -118,6 +118,26 @@ enum WalkArt {
         return grid
     }
 
+    /// A front leg reaching forward along the ground for the stretch: the
+    /// hip column drops `height` rows and the forearm lies flat for `reach`
+    /// more pixels toward the left, paw first. With no reach it is a plain
+    /// standing leg.
+    static func reachingLeg(height: Int, reach: Int, far: Bool) -> SpriteGrid {
+        var grid = SpriteGrid(width: reach + 2, height: height)
+        let fur: SpriteCell = far ? .role(.furShade) : .role(.furBase)
+        for y in 0..<height {
+            // The bottom two rows are the forearm resting on the ground.
+            let lying = reach > 0 && y >= height - 2
+            for x in (lying ? 0 : reach)..<(reach + 2) {
+                grid[x, y] = fur
+            }
+        }
+        // The paw is the leading tip of the bottom row.
+        grid[0, height - 1] = .zone(.paws)
+        grid[1, height - 1] = .zone(.paws)
+        return grid
+    }
+
     /// One step of the gait: the lean of the near front, far front, near
     /// back, and far back leg. Diagonal pairs move together, like a real trot.
     struct Step {

@@ -157,3 +157,17 @@ for (breed, look) in [(PetBreed.orangeTabby, looks[looks.count - 4]), (.goldenRe
 }
 try writeSheet(walkCells, columns: 8, title: "Walk cycle (150ms per step)",
                to: outputDirectory.appendingPathComponent("walk.png"))
+
+// Stretch check: every breed through the whole bow, then two dressed looks.
+var stretchCells: [Cell] = []
+let stretchRuns = PetBreed.allCases.map { ($0, $0.displayName, PetOutfit.none, [PetAccessory]()) }
+    + [(.corgi, "On call", .scrubs, [.stethoscope, .surgicalCap]), (.siamese, "Graduate", .whiteCoat, [.roundGlasses, .graduationCap])]
+for (breed, name, outfit, accessories) in stretchRuns {
+    let clip = PetComposer.clip(.stretch, for: breed, outfit: outfit, accessories: accessories)
+    for (index, frame) in clip.frames.enumerated() {
+        stretchCells.append(Cell(label: "\(name) \(index + 1)", canvas: frame.canvas,
+                                 palette: breed.palette.withVisibleRim()))
+    }
+}
+try writeSheet(stretchCells, columns: 9, title: "Stretch (play bow)",
+               to: outputDirectory.appendingPathComponent("stretch.png"))

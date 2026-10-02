@@ -51,6 +51,9 @@ public enum PetAnimation: String, CaseIterable, Codable, Sendable {
     /// Trotting toward the left, side-on with the face to the viewer. Loops;
     /// mirror the frames to walk right.
     case walk
+    /// A play bow: chest down, paws forward, rump and tail up, then back to
+    /// standing. Side-on like `walk`, facing left.
+    case stretch
     /// Hanging head first out of the notch's top edge.
     case peekIn
     /// The reverse of `peekIn`: pulling back up into the notch.
@@ -64,7 +67,7 @@ public enum PetAnimation: String, CaseIterable, Codable, Sendable {
     public var loops: Bool {
         switch self {
         case .idle, .sit, .sleep, .walk: true
-        case .blink, .peekIn, .peekOut, .alert, .celebrate: false
+        case .blink, .stretch, .peekIn, .peekOut, .alert, .celebrate: false
         }
     }
 }
@@ -204,6 +207,19 @@ extension PetComposer {
                 let composed = compose(breed, pose: PetPose(), outfit: outfit, accessories: accessories,
                                        stance: .walking(step: step))
                 return PetFrame(canvas: composed.canvas, duration: 0.15)
+            }
+
+        case .stretch:
+            // Ease down into the bow, hold it with a tail wag and happy
+            // eyes, then rise back up.
+            let steps: [(Int, Int, PetPose.Eyes, TimeInterval)] = [
+                (0, 0, .open, 0.15), (1, 0, .open, 0.1), (2, 0, .happy, 0.1), (3, 0, .happy, 0.35),
+                (3, 1, .happy, 0.35), (3, 0, .happy, 0.35), (2, 0, .open, 0.1), (1, 0, .open, 0.1), (0, 0, .open, 0.3),
+            ]
+            frames = steps.map { depth, wag, eyes, duration in
+                let composed = compose(breed, pose: PetPose(eyes: eyes), outfit: outfit, accessories: accessories,
+                                       stance: .stretching(depth: depth, wag: wag))
+                return PetFrame(canvas: composed.canvas, duration: duration)
             }
 
         case .alert:
