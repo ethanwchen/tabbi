@@ -141,7 +141,19 @@ final class ClaudeUsageStore: ObservableObject {
                 messages: 58
             ),
         ])
-        stats = ClaudeLocalStats(today: today, lastSevenDays: today)
+        let week = ClaudeUsagePeriod(models: [
+            ClaudeModelUsage(
+                model: "claude-opus-4-5-20251101",
+                tokens: ClaudeTokenUsage(input: 96_000, output: 512_000, cacheRead: 9_870_000, cacheCreation: 1_204_000),
+                messages: 1_318
+            ),
+            ClaudeModelUsage(
+                model: "claude-haiku-4-5-20251001",
+                tokens: ClaudeTokenUsage(input: 31_000, output: 64_000, cacheRead: 702_000, cacheCreation: 158_000),
+                messages: 297
+            ),
+        ])
+        stats = ClaudeLocalStats(today: today, lastSevenDays: week)
     }
 
     /// Next Thursday 9:00, so the weekly label reads like "resets Thu 9:00 AM".
