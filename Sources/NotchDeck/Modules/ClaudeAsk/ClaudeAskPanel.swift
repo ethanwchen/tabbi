@@ -391,7 +391,7 @@ private struct EmptyChatView: View {
     private static let examples = [
         "Explain git rebase simply",
         "Regex for an email address",
-        "Make this sentence shorter",
+        "Tips for commit messages",
     ]
 
     var body: some View {
@@ -403,7 +403,7 @@ private struct EmptyChatView: View {
                 Text("Ask Claude anything")
                     .font(Theme.Typography.title)
                     .foregroundStyle(Theme.Palette.primaryText)
-                Text("Quick answers from your local Claude Code. No tools, nothing saved.")
+                Text("Quick text answers from your local Claude Code, with no tools or file access.")
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.tertiaryText)
             }
