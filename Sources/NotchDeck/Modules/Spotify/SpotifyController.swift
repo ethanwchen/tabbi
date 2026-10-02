@@ -2,40 +2,51 @@ import AppKit
 import SwiftUI
 import NotchDeckCore
 
-/// Spotify playback state and controls.
+/// Now Playing state and controls for Spotify and Apple Music.
 ///
-/// Spotify is found through `NSRunningApplication` and is never launched
-/// implicitly: AppleScript (which would launch it) only runs after a running
-/// check. Updates come from Spotify's `PlaybackStateChanged` distributed
-/// notification; while the panel is visible the position ticks locally every
-/// second and is re-synced with a 5 s read. With `NOTCHDECK_DEMO=1` it shows
-/// `SpotifyPlayback.demo` and never talks to Spotify.
+/// Both apps are found through `NSRunningApplication` and are never launched
+/// implicitly: AppleScript (which would launch them) only runs after a
+/// running check. `MediaSourceTracker` decides which app the panel follows.
+/// Updates come from each app's distributed notification; while the panel is
+/// visible the position ticks locally every second and is re-synced with a
+/// 5 s read. With `NOTCHDECK_DEMO=1` it shows `SpotifyPlayback.demo` and
+/// never talks to either app.
 @MainActor
 final class SpotifyController: NSObject, ObservableObject {
     /// When true, album art + equalizer show beside the closed notch.
     @Published var showsCompactActivity = false
     /// What the panel shows; the playback position is extrapolated between reads.
     @Published private(set) var status: SpotifyStatus = .notRunning
+    /// The app `status` belongs to; nil while no player app is running.
+    @Published private(set) var source: MediaSource?
+    /// Player apps on this Mac, for the empty state's open buttons.
+    @Published private(set) var installedSources: [MediaSource] = []
 
-    private static let playbackChanged = Notification.Name("com.spotify.client.PlaybackStateChanged")
+    private static let notifications: [MediaSource: Notification.Name] = [
+        .spotify: Notification.Name("com.spotify.client.PlaybackStateChanged"),
+        .music: Notification.Name("com.apple.Music.playerInfo"),
+    ]
     private static let automationSettings =
         URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Automation")!
     /// Resync interval while the panel is visible. Never poll faster than this.
     private static let pollInterval: TimeInterval = 5
 
     private let isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
-    private var clock: SpotifyPlaybackClock?
+    private var tracker = MediaSourceTracker()
+    /// Per app, so a read of one app never re-anchors the other's position.
+    private var clocks: [MediaSource: SpotifyPlaybackClock] = [:]
     private var isPanelVisible = false
     private var tickTimer: Timer?
     private var pollTimer: Timer?
-    /// Bumped by every read and command so a slow, stale read can't overwrite
-    /// a newer state (e.g. an optimistic play/pause).
-    private var generation = 0
+    /// Bumped per app by every read and command so a slow, stale read can't
+    /// overwrite a newer state (e.g. an optimistic play/pause).
+    private var generations: [MediaSource: Int] = [:]
 
     override init() {
         super.init()
         if isDemo {
-            apply(.connected(.demo))
+            record(.music, .notRunning)
+            record(.spotify, .connected(.demo))
             return
         }
         let workspace = NSWorkspace.shared.notificationCenter
@@ -44,11 +55,13 @@ final class SpotifyController: NSObject, ObservableObject {
         workspace.addObserver(self, selector: #selector(applicationsChanged(_:)),
                               name: NSWorkspace.didTerminateApplicationNotification, object: nil)
         // Background (LSUIElement) apps are "inactive", so ask for immediate
-        // delivery or Spotify's notifications would queue until activation.
-        DistributedNotificationCenter.default().addObserver(
-            self, selector: #selector(playbackStateChanged(_:)),
-            name: Self.playbackChanged, object: nil, suspensionBehavior: .deliverImmediately
-        )
+        // delivery or the players' notifications would queue until activation.
+        for name in Self.notifications.values {
+            DistributedNotificationCenter.default().addObserver(
+                self, selector: #selector(playbackStateChanged(_:)),
+                name: name, object: nil, suspensionBehavior: .deliverImmediately
+            )
+        }
         refresh()
     }
 
@@ -66,26 +79,33 @@ final class SpotifyController: NSObject, ObservableObject {
     // MARK: - Commands
 
     func playPause() {
-        guard let playback = currentStatus.playback, playback.track != nil else { return }
-        applyOptimistic(playback.togglingPlayPause())
-        send(SpotifyScript.playPause)
+        guard let source, let playback = currentStatus.playback, playback.track != nil else { return }
+        applyOptimistic(playback.togglingPlayPause(), to: source)
+        send(source.playPauseScript, to: source)
     }
 
-    func next() { send(SpotifyScript.nextTrack) }
+    func next() {
+        guard let source else { return }
+        send(source.nextTrackScript, to: source)
+    }
 
-    func previous() { send(SpotifyScript.previousTrack) }
+    func previous() {
+        guard let source else { return }
+        send(source.previousTrackScript, to: source)
+    }
 
     func seek(to seconds: TimeInterval) {
-        guard let playback = currentStatus.playback, playback.track != nil else { return }
+        guard let source, let playback = currentStatus.playback, playback.track != nil else { return }
         let target = playback.clampedPosition(seconds)
-        applyOptimistic(playback.seeking(to: target))
-        send(SpotifyScript.seek(to: target))
+        applyOptimistic(playback.seeking(to: target), to: source)
+        send(source.seekScript(to: target), to: source)
     }
 
-    /// Launches Spotify. Only ever called from an explicit user action.
-    func openSpotify() {
+    /// Launches `source`, or brings it forward if it's running. Only ever
+    /// called from an explicit user action.
+    func open(_ source: MediaSource) {
         guard !isDemo,
-              let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: SpotifyScript.bundleIdentifier)
+              let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: source.bundleIdentifier)
         else { return }
         let configuration = NSWorkspace.OpenConfiguration()
         configuration.activates = true
@@ -96,64 +116,98 @@ final class SpotifyController: NSObject, ObservableObject {
         NSWorkspace.shared.open(Self.automationSettings)
     }
 
+    // MARK: - Artwork
+
+    /// Raw cover bytes for a Music track (Music has no artwork URLs). Nil for
+    /// other tracks, in demo mode, when the track has no artwork, or once
+    /// Music has moved on to another track.
+    func artworkData(for track: SpotifyTrack) async -> Data? {
+        guard !isDemo, let script = MusicScript.readArtwork(forTrackID: track.id) else { return nil }
+        return await Self.runForData(script, on: .music)
+    }
+
     // MARK: - Reading state
 
-    /// Reads Spotify's state now, if it's running.
+    /// Reads every running player's state now.
     func refresh() {
         guard !isDemo else { return }
-        generation += 1
-        let current = generation
-        guard Self.isRunning else {
-            apply(SpotifyStatus.resolve(isRunning: false, isInstalled: Self.isInstalled, read: nil, previous: currentStatus))
-            return
-        }
-        apply(SpotifyStatus.resolve(isRunning: true, isInstalled: true, read: nil, previous: currentStatus))
+        for source in MediaSource.allCases { refresh(source) }
+    }
+
+    private func refresh(_ source: MediaSource) {
+        let current = bumpGeneration(source)
+        let isRunning = Self.isRunning(source)
+        record(source, SpotifyStatus.resolve(source: source, isRunning: isRunning,
+                                             isInstalled: Self.isInstalled(source),
+                                             read: nil, previous: latestStatus(source)))
+        guard isRunning else { return }
         Task {
-            let result = await Self.run(SpotifyScript.readState)
-            guard current == generation else { return }
-            apply(SpotifyStatus.resolve(isRunning: Self.isRunning, isInstalled: Self.isInstalled,
-                                        read: result, previous: currentStatus))
+            let result = await Self.run(source.readStateScript, on: source)
+            guard current == generations[source] else { return }
+            record(source, SpotifyStatus.resolve(source: source, isRunning: Self.isRunning(source),
+                                                 isInstalled: Self.isInstalled(source),
+                                                 read: result, previous: latestStatus(source)))
         }
     }
 
     /// `status` with the playback position extrapolated to now; `status` itself
     /// only advances while the panel ticks.
     private var currentStatus: SpotifyStatus {
-        clock.map { .connected($0.playback(at: Date())) } ?? status
+        source.map(latestStatus) ?? status
     }
 
-    private func send(_ source: String) {
+    /// `source`'s last known status, its position extrapolated to now.
+    private func latestStatus(_ source: MediaSource) -> SpotifyStatus {
+        if let clock = clocks[source] { return .connected(clock.playback(at: Date())) }
+        return tracker.statuses[source] ?? .notRunning
+    }
+
+    private func send(_ script: String, to source: MediaSource) {
         if isDemo {
-            if source == SpotifyScript.nextTrack || source == SpotifyScript.previousTrack {
-                applyOptimistic(SpotifyPlayback.demo.seeking(to: 0))
+            if script == source.nextTrackScript || script == source.previousTrackScript {
+                applyOptimistic(SpotifyPlayback.demo.seeking(to: 0), to: source)
             }
             return
         }
-        guard Self.isRunning else { return refresh() }
-        generation += 1
+        guard Self.isRunning(source) else { return refresh(source) }
+        bumpGeneration(source)
         Task {
-            let result = await Self.run(source)
+            let result = await Self.run(script, on: source)
             if case .failure(.permissionDenied) = result {
-                apply(.permissionDenied)
+                record(source, .permissionDenied)
             }
-            refresh()
+            refresh(source)
         }
     }
 
-    private func applyOptimistic(_ playback: SpotifyPlayback) {
-        generation += 1
-        apply(.connected(playback))
+    private func applyOptimistic(_ playback: SpotifyPlayback, to source: MediaSource) {
+        bumpGeneration(source)
+        record(source, .connected(playback))
     }
 
-    /// Sets the confirmed status, re-anchoring the local position clock.
-    private func apply(_ newStatus: SpotifyStatus) {
-        if let playback = newStatus.playback {
-            clock = SpotifyPlaybackClock(anchor: playback, at: Date())
-        } else {
-            clock = nil
-        }
-        if status != newStatus { status = newStatus }
-        if showsCompactActivity != newStatus.isPlaying { showsCompactActivity = newStatus.isPlaying }
+    @discardableResult
+    private func bumpGeneration(_ source: MediaSource) -> Int {
+        let next = (generations[source] ?? 0) + 1
+        generations[source] = next
+        return next
+    }
+
+    /// Stores `source`'s confirmed status, re-anchoring its position clock,
+    /// and republishes whichever app the tracker now selects.
+    private func record(_ source: MediaSource, _ newStatus: SpotifyStatus) {
+        clocks[source] = newStatus.playback.map { SpotifyPlaybackClock(anchor: $0, at: Date()) }
+        tracker.update(source, status: newStatus, at: Date())
+        publish()
+    }
+
+    private func publish() {
+        let selected = tracker.selected
+        let shown = selected.map(latestStatus) ?? tracker.status
+        if source != selected { source = selected }
+        if status != shown { status = shown }
+        let installed = tracker.installedSources
+        if installedSources != installed { installedSources = installed }
+        if showsCompactActivity != shown.isPlaying { showsCompactActivity = shown.isPlaying }
         updateTimers()
     }
 
@@ -167,7 +221,7 @@ final class SpotifyController: NSObject, ObservableObject {
             tickTimer?.invalidate()
             tickTimer = nil
         }
-        let poll = isPanelVisible && !isDemo && Self.isRunning
+        let poll = isPanelVisible && !isDemo && MediaSource.allCases.contains(where: Self.isRunning)
         if poll, pollTimer == nil {
             pollTimer = makeTimer(interval: Self.pollInterval) { $0.refresh() }
         } else if !poll {
@@ -189,7 +243,7 @@ final class SpotifyController: NSObject, ObservableObject {
     }
 
     private func tick() {
-        guard let clock else { return }
+        guard let source, let clock = clocks[source] else { return }
         let playback = clock.playback(at: Date())
         if status.playback != playback { status = .connected(playback) }
     }
@@ -198,27 +252,29 @@ final class SpotifyController: NSObject, ObservableObject {
 
     @objc private func applicationsChanged(_ notification: Notification) {
         let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
-        guard app?.bundleIdentifier == SpotifyScript.bundleIdentifier else { return }
+        guard let source = MediaSource.allCases.first(where: { $0.bundleIdentifier == app?.bundleIdentifier })
+        else { return }
         if notification.name == NSWorkspace.didTerminateApplicationNotification {
-            generation += 1
-            apply(Self.isInstalled ? .notRunning : .notInstalled)
+            bumpGeneration(source)
+            record(source, Self.isInstalled(source) ? .notRunning : .notInstalled)
         } else {
-            refresh()
+            refresh(source)
         }
     }
 
     @objc private func playbackStateChanged(_ notification: Notification) {
-        refresh()
+        guard let source = Self.notifications.first(where: { $0.value == notification.name })?.key else { return }
+        refresh(source)
     }
 
     // MARK: - AppleScript
 
-    private static var isRunning: Bool {
-        !NSRunningApplication.runningApplications(withBundleIdentifier: SpotifyScript.bundleIdentifier).isEmpty
+    private nonisolated static func isRunning(_ source: MediaSource) -> Bool {
+        !NSRunningApplication.runningApplications(withBundleIdentifier: source.bundleIdentifier).isEmpty
     }
 
-    private static var isInstalled: Bool {
-        NSWorkspace.shared.urlForApplication(withBundleIdentifier: SpotifyScript.bundleIdentifier) != nil
+    private static func isInstalled(_ source: MediaSource) -> Bool {
+        NSWorkspace.shared.urlForApplication(withBundleIdentifier: source.bundleIdentifier) != nil
     }
 
     /// One serial queue: `NSAppleScript` isn't safe to run concurrently, and
@@ -226,21 +282,39 @@ final class SpotifyController: NSObject, ObservableObject {
     private nonisolated static let scriptQueue = DispatchQueue(label: "dev.notchdeck.spotify.applescript",
                                                                qos: .userInitiated)
 
-    private nonisolated static func run(_ source: String) async -> Result<String, SpotifyScriptError> {
+    private nonisolated static func run(_ script: String,
+                                        on source: MediaSource) async -> Result<String, SpotifyScriptError> {
+        await execute(script, on: source) { $0.stringValue ?? "" }
+    }
+
+    /// Runs a script that returns raw bytes; nil for `missing value`.
+    private nonisolated static func runForData(_ script: String, on source: MediaSource) async -> Data? {
+        let result = await execute(script, on: source) { descriptor -> Data? in
+            // `missing value` comes back as a type descriptor ('msng').
+            guard descriptor.descriptorType != typeNull, descriptor.descriptorType != typeType else { return nil }
+            return descriptor.data.isEmpty ? nil : descriptor.data
+        }
+        return (try? result.get()) ?? nil
+    }
+
+    /// Converts the result on the script queue, since `NSAppleEventDescriptor`
+    /// isn't `Sendable`.
+    private nonisolated static func execute<Output: Sendable>(
+        _ script: String, on source: MediaSource,
+        convert: @escaping @Sendable (NSAppleEventDescriptor) -> Output
+    ) async -> Result<Output, SpotifyScriptError> {
         await withCheckedContinuation { continuation in
             scriptQueue.async {
                 // Re-check right before sending: an Apple Event to a quit
-                // Spotify would relaunch it.
-                guard !NSRunningApplication.runningApplications(
-                    withBundleIdentifier: SpotifyScript.bundleIdentifier).isEmpty
-                else { return continuation.resume(returning: .failure(.notRunning)) }
+                // app would relaunch it.
+                guard isRunning(source) else { return continuation.resume(returning: .failure(.notRunning)) }
                 var error: NSDictionary?
-                let output = NSAppleScript(source: source)?.executeAndReturnError(&error)
+                let output = NSAppleScript(source: script)?.executeAndReturnError(&error)
                 if let error {
                     let code = (error[NSAppleScript.errorNumber] as? NSNumber)?.intValue ?? 0
                     continuation.resume(returning: .failure(SpotifyScriptError(code: code)))
                 } else {
-                    continuation.resume(returning: .success(output?.stringValue ?? ""))
+                    continuation.resume(returning: .success(convert(output ?? .null())))
                 }
             }
         }

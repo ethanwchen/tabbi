@@ -15,9 +15,9 @@ struct SpotifyPanel: View {
                 } else {
                     SpotifyEmptyState(
                         symbol: "music.note.list", title: "Nothing playing",
-                        message: "Start something in Spotify and it shows up here.",
-                        action: .init(title: "Show Spotify", help: "Bring Spotify to the front",
-                                      perform: controller.openSpotify)
+                        message: "Start something in \(sourceName) and it shows up here.",
+                        action: .init(title: "Show \(sourceName)", help: "Bring \(sourceName) to the front",
+                                      perform: { controller.open(controller.source ?? .spotify) })
                     )
                 }
             case .notRunning:
@@ -25,7 +25,7 @@ struct SpotifyPanel: View {
                     symbol: "music.note", title: "Spotify isn't running",
                     message: "Open Spotify to see and control what's playing.",
                     action: .init(title: "Open Spotify", help: "Launch Spotify",
-                                  perform: controller.openSpotify)
+                                  perform: { controller.open(.spotify) })
                 )
             case .notInstalled:
                 SpotifyEmptyState(
@@ -34,11 +34,11 @@ struct SpotifyPanel: View {
                     action: nil
                 )
             case .connecting:
-                SpotifyEmptyState(symbol: nil, title: "Connecting to Spotify…",
+                SpotifyEmptyState(symbol: nil, title: "Connecting to \(sourceName)…",
                                   message: "Reading what's playing.", action: nil)
             case .permissionDenied:
                 SpotifyEmptyState(
-                    symbol: "lock.fill", title: "NotchDeck can't control Spotify",
+                    symbol: "lock.fill", title: "NotchDeck can't control \(sourceName)",
                     message: "Allow access in Privacy & Security › Automation.",
                     action: .init(title: "Open Settings", help: "Open Automation settings",
                                   perform: controller.openAutomationSettings)
@@ -50,6 +50,8 @@ struct SpotifyPanel: View {
         .onAppear { controller.setPanelVisible(true) }
         .onDisappear { controller.setPanelVisible(false) }
     }
+
+    private var sourceName: String { (controller.source ?? .spotify).displayName }
 }
 
 private extension SpotifyStatus {
@@ -108,7 +110,7 @@ private struct SpotifyNowPlaying: View {
             .frame(height: Self.artworkSize)
         }
         .padding(.horizontal, Theme.Spacing.m)
-        .task(id: track?.artworkURL) { await artwork.load(track?.artworkURL) }
+        .task(id: track?.id) { await artwork.load(track, from: controller) }
     }
 
     private var subtitle: String {
@@ -124,8 +126,8 @@ private struct SpotifyNowPlaying: View {
     /// A soft halo tinted by the cover, so the panel picks up the album's mood.
     private var glow: some View {
         let tint = artwork.artwork?.averageColor
-            ?? playback.track.flatMap { $0.artworkURL == nil
-                ? SpotifyGeneratedCoverView.glowColor(for: SpotifyGeneratedCover(seed: $0.id)) : nil }
+            ?? playback.track.flatMap { artwork.isLoading
+                ? nil : SpotifyGeneratedCoverView.glowColor(for: SpotifyGeneratedCover(seed: $0.id)) }
         // A radial fade (not a blur) reaches zero before the panel's clip
         // edge, so the halo never shows a hard cut-off.
         return RadialGradient(colors: [(tint ?? .clear).opacity(0.5), .clear],
@@ -398,8 +400,8 @@ struct SpotifyCompactLeading: View {
         SpotifyArtworkView(track: track, artwork: artwork.artwork, isLoading: artwork.isLoading,
                            size: 20, cornerRadius: 5)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .task(id: track?.artworkURL) { await artwork.load(track?.artworkURL) }
-            .help(track.map { "\($0.title) · \($0.artist)" } ?? "Spotify")
+            .task(id: track?.id) { await artwork.load(track, from: controller) }
+            .help(track.map { "\($0.title) · \($0.artist)" } ?? (controller.source ?? .spotify).displayName)
     }
 }
 
@@ -428,6 +430,6 @@ struct SpotifyCompactTrailing: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .animation(Theme.Motion.snappy, value: isPlaying)
-        .help(isPlaying ? "Playing in Spotify" : "Paused")
+        .help(isPlaying ? "Playing in \((controller.source ?? .spotify).displayName)" : "Paused")
     }
 }

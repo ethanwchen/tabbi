@@ -51,15 +51,28 @@ public enum MusicScript {
     end tell
     """
 
-    /// The current track's first artwork as raw image bytes (JPEG or PNG).
+    /// The current track's first artwork as raw image bytes (JPEG or PNG),
+    /// or `missing value` when it has none or the track already changed.
     /// Music has no artwork URLs, so the controller reads this once per
     /// track and keeps the decoded image in memory.
-    public static let readArtwork = """
-    tell application id "\(bundleIdentifier)"
-        if (count of artworks of current track) is 0 then return missing value
-        return raw data of artwork 1 of current track
-    end tell
-    """
+    ///
+    /// Returns nil for ids `parse` didn't derive from a persistent ID (e.g.
+    /// streams), since the script can't confirm which track it would read.
+    /// Checking the persistent ID inside the script makes the read atomic:
+    /// a track change between the request and the read can never store one
+    /// track's cover under another track's id.
+    public static func readArtwork(forTrackID trackID: String) -> String? {
+        guard trackID.hasPrefix(trackIDPrefix) else { return nil }
+        let persistentID = trackID.dropFirst(trackIDPrefix.count)
+        guard !persistentID.isEmpty, persistentID.allSatisfy(\.isHexDigit) else { return nil }
+        return """
+        tell application id "\(bundleIdentifier)"
+            if (persistent ID of current track) is not "\(persistentID)" then return missing value
+            if (count of artworks of current track) is 0 then return missing value
+            return raw data of artwork 1 of current track
+        end tell
+        """
+    }
 
     public static let playPause = command("playpause")
     public static let nextTrack = command("next track")

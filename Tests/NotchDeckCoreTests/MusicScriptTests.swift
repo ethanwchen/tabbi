@@ -75,6 +75,19 @@ final class MusicScriptTests: XCTestCase {
         XCTAssertTrue(MediaSource.spotify.setVolumeScript(-3).hasSuffix("to 0"))
     }
 
+    func testArtworkReadIsPinnedToTheTrack() throws {
+        let id = try XCTUnwrap(MusicScript.parse(record(["playing", "8F3A2B1C9D0E7F65", "t", "a", "b", "10", "1",
+                                                         "false", "off"]))?.track?.id)
+        let script = try XCTUnwrap(MusicScript.readArtwork(forTrackID: id))
+        XCTAssertTrue(script.contains(#"is not "8F3A2B1C9D0E7F65" then return missing value"#))
+        XCTAssertTrue(script.contains("raw data of artwork 1"))
+        // Spotify ids, streams keyed by title, and injected quotes never read.
+        XCTAssertNil(MusicScript.readArtwork(forTrackID: "spotify:track:abc"))
+        XCTAssertNil(MusicScript.readArtwork(forTrackID: "music:Radio One"))
+        XCTAssertNil(MusicScript.readArtwork(forTrackID: #"music:A" then beep"#))
+        XCTAssertNil(MusicScript.readArtwork(forTrackID: "music:"))
+    }
+
     func testStatusResolvesWithTheSourcesParser() {
         let output = record(["playing", "A", "Teardrop", "a", "b", "10", "1", "false", "off"])
         let status = SpotifyStatus.resolve(source: .music, isRunning: true, isInstalled: true,
