@@ -24,10 +24,15 @@ Judge them against the design rules below before you call the work done.
 
 - `Sources/NotchKitCore` — pure Swift, no AppKit/SwiftUI. Parsers, models,
   stores, formatting. Everything here gets unit tests in `Tests/NotchKitCoreTests`.
-- `Sources/NotchDeck/Notch` — the window, shape, open/close state, input. Shared;
-  change only when your task requires it.
-- `Sources/NotchDeck/Design/Theme.swift` — design tokens and shared controls
-  (`Card`, `IconButton`). Reuse them; add new shared components here.
+- `Sources/NotchKit` — shared AppKit/SwiftUI that modules build on:
+  `Design/Theme.swift` (design tokens and shared controls `Card`,
+  `IconButton`), `Components/` (`ModulePreview`, `ModulePlaceholder`),
+  `Notch/` (the panel window, notch shape and screen geometry) and `Pets/`
+  (`PetPlayer`, `PetView`). Everything here is `public`. Reuse it; add new
+  shared components here, not inside a module.
+- `Sources/NotchDeck/Notch` — the notch controller, view and open/close state,
+  which assemble the app's modules. Shared; change only when your task
+  requires it.
 - `Sources/NotchDeck/Modules/<Module>/` — one folder per module: a store
   (`ObservableObject`, owned by `AppServices`), SwiftUI views, and a
   `NotchModule` class (descriptor, panel, optional settings section,

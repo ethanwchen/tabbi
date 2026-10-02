@@ -8,7 +8,7 @@ import NotchKitCore
 /// placement never jumps between frames (hops and peeks happen inside it).
 /// Each frame is rendered at an integer device-pixel scale and drawn with
 /// interpolation off, keeping edges sharp on any display.
-struct PetView: View {
+public struct PetView: View {
     @ObservedObject var player: PetPlayer
     /// Points per sprite pixel. 1 makes a 32 pt pet, which reads clearly
     /// beside the notch; use 0.75 for a 24 pt pet.
@@ -16,9 +16,14 @@ struct PetView: View {
 
     @Environment(\.displayScale) private var displayScale
 
+    public init(player: PetPlayer, pixelSize: CGFloat = 1) {
+        self.player = player
+        self.pixelSize = pixelSize
+    }
+
     private var side: CGFloat { CGFloat(PetComposer.frameSize) * pixelSize }
 
-    var body: some View {
+    public var body: some View {
         TimelineView(player.schedule) { context in
             if let frame = player.frame(at: context.date) {
                 PetFrameView(frame: frame, palette: player.palette, pixelSize: pixelSize,

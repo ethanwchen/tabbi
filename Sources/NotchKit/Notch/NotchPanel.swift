@@ -5,8 +5,8 @@ import SwiftUI
 ///
 /// Non-activating so clicking it never steals focus from the app you're in,
 /// but it can still become key so text fields (Ask Claude) accept typing.
-final class NotchPanel: NSPanel {
-    init(contentRect: CGRect) {
+public final class NotchPanel: NSPanel {
+    public init(contentRect: CGRect) {
         super.init(
             contentRect: contentRect,
             styleMask: [.borderless, .nonactivatingPanel, .fullSizeContentView],
@@ -25,12 +25,12 @@ final class NotchPanel: NSPanel {
         ignoresMouseEvents = true
     }
 
-    override var canBecomeKey: Bool { true }
-    override var canBecomeMain: Bool { false }
+    override public var canBecomeKey: Bool { true }
+    override public var canBecomeMain: Bool { false }
 }
 
 /// Hosting view that accepts the first click, so a single click on the closed
 /// notch opens it without first focusing the panel.
-final class NotchHostingView<Content: View>: NSHostingView<Content> {
-    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+public final class NotchHostingView<Content: View>: NSHostingView<Content> {
+    override public func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
 }

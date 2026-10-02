@@ -1,6 +1,7 @@
 import Combine
 import SwiftUI
 import NotchKitCore
+import NotchKit
 
 /// One tab of the notch: its metadata, its panel, and its lifecycle.
 ///

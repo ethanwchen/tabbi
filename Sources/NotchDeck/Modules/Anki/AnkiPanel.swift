@@ -1,5 +1,6 @@
 import SwiftUI
 import NotchKitCore
+import NotchKit
 
 /// The Anki tab: today's due cards from Anki via AnkiConnect. Shows a
 /// preview until the deck view lands.

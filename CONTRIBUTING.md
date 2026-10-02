@@ -65,8 +65,8 @@ In short:
 | Path | What lives there |
 | --- | --- |
 | `Sources/NotchKitCore` | Pure Swift with no AppKit or SwiftUI: parsers, models, stores, formatting. Everything here has unit tests in `Tests/NotchKitCoreTests`. |
-| `Sources/NotchDeck/Notch` | The notch window, shape, open and close state, and input handling. Shared by all modules. |
-| `Sources/NotchDeck/Design/Theme.swift` | Design tokens (palette, type, spacing, radius, motion) and shared controls such as `Card` and `IconButton`. |
+| `Sources/NotchKit` | Shared AppKit and SwiftUI: the design system in `Design/Theme.swift` (palette, type, spacing, radius, motion, plus `Card` and `IconButton`), shared components, the notch panel, shape and geometry, and pet views. |
+| `Sources/NotchDeck/Notch` | The notch controller, view, open and close state, and input handling. Shared by all modules. |
 | `Sources/NotchDeck/Modules/<Module>/` | One folder per module: an `ObservableObject` store owned by `AppServices`, and its SwiftUI views. |
 | `Sources/NotchKitCore/Claude` | `ClaudeCLI` and the stream-json parser used by both Claude modules. |
 

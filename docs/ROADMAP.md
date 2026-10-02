@@ -98,5 +98,5 @@ Constraints to keep in mind:
 - Move each module's Settings pane into its `NotchModule` settings section.
 - Show tasks and progress other modules provide in Today and Plan my day (the ticker already reads them).
 - Focus as its own module.
-- The shared `NotchKit` target for the notch window, theme and shared components.
+- Finish the `NotchKit` split: move the notch controller and view, settings infrastructure and focus audio out of the app target.
 - Real Study, Anki, Party and Closet modules replacing today's previews.

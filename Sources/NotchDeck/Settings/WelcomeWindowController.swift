@@ -2,6 +2,7 @@ import AppKit
 import Combine
 import SwiftUI
 import NotchKitCore
+import NotchKit
 
 /// The first-run "choose a kit" step: shown once, before the user has picked
 /// a kit, so each audience starts from tabs that fit them. Like Settings it

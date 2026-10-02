@@ -2,18 +2,25 @@ import AppKit
 import NotchKitCore
 
 /// Where the hardware notch is (or where a virtual one should go).
-struct NotchGeometry: Equatable {
+public struct NotchGeometry: Equatable {
     /// Size of the hardware notch, or of the virtual pill on notchless screens.
-    var notchSize: CGSize
-    var hasHardwareNotch: Bool
+    public var notchSize: CGSize
+    public var hasHardwareNotch: Bool
     /// The screen's full frame in global coordinates.
-    var screenFrame: CGRect
+    public var screenFrame: CGRect
     /// Horizontal center of the notch in global coordinates.
-    var centerX: CGFloat
+    public var centerX: CGFloat
+
+    public init(notchSize: CGSize, hasHardwareNotch: Bool, screenFrame: CGRect, centerX: CGFloat) {
+        self.notchSize = notchSize
+        self.hasHardwareNotch = hasHardwareNotch
+        self.screenFrame = screenFrame
+        self.centerX = centerX
+    }
 
     /// The screen NotchDeck lives on, per the user's display preference, falling
     /// back to another connected screen when the preferred one is gone.
-    static func screen(for preference: DisplayPreference) -> NSScreen? {
+    public static func screen(for preference: DisplayPreference) -> NSScreen? {
         let screens = NSScreen.screens
         let descriptors = screens.map { screen in
             let id = screen.displayID
@@ -24,7 +31,7 @@ struct NotchGeometry: Equatable {
         return screens.first { $0.displayID == chosen.id }
     }
 
-    static func measure(_ screen: NSScreen) -> NotchGeometry {
+    public static func measure(_ screen: NSScreen) -> NotchGeometry {
         let frame = screen.frame
         if screen.safeAreaInsets.top > 0,
            let left = screen.auxiliaryTopLeftArea,
@@ -50,7 +57,7 @@ struct NotchGeometry: Equatable {
 
 extension NSScreen {
     /// The screen's `CGDirectDisplayID`, stable while the display stays connected.
-    var displayID: CGDirectDisplayID {
+    public var displayID: CGDirectDisplayID {
         (deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber)?.uint32Value ?? 0
     }
 }

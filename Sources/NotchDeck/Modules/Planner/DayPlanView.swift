@@ -1,5 +1,6 @@
 import SwiftUI
 import NotchKitCore
+import NotchKit
 
 /// Plan My Day, shown in place of the checklist: a header with the plan's
 /// actions over the proposed blocks, a shimmer while Claude thinks, or a

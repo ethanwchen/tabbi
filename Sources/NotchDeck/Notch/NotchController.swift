@@ -2,6 +2,7 @@ import AppKit
 import Combine
 import SwiftUI
 import NotchKitCore
+import NotchKit
 
 /// Owns the notch panel: positions it, tracks the pointer, and translates
 /// mouse/keyboard input into NotchViewModel state changes.

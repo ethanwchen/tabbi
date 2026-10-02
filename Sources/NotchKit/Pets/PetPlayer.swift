@@ -9,15 +9,15 @@ import NotchKitCore
 /// The animator clock is `Date.timeIntervalSinceReferenceDate`, so events
 /// and redraws share one timeline.
 @MainActor
-final class PetPlayer: ObservableObject {
-    private(set) var profile: PetProfile
-    private(set) var clips: PetClipSet
+public final class PetPlayer: ObservableObject {
+    public private(set) var profile: PetProfile
+    public private(set) var clips: PetClipSet
     /// Deliberately not `@Published`: drawing advances it many times a
     /// second, and that must not invalidate views. Only events, which change
     /// the redraw schedule, notify observers.
     private var animator: PetAnimator
 
-    init(
+    public init(
         profile: PetProfile, place: PetAnimator.Place = .beside, asleep: Bool = false,
         at date: Date = .now, seed: UInt64 = .random(in: .min ... .max)
     ) {
@@ -27,19 +27,19 @@ final class PetPlayer: ObservableObject {
                                at: date.timeIntervalSinceReferenceDate, seed: seed)
     }
 
-    var place: PetAnimator.Place { animator.place }
-    var palette: PetPalette { profile.palette }
+    public var place: PetAnimator.Place { animator.place }
+    public var palette: PetPalette { profile.palette }
 
     /// Sends `event` to the animator; returns false when it doesn't apply
     /// where the pet is (see `PetAnimator.send`).
     @discardableResult
-    func send(_ event: PetAnimator.Event, at date: Date = .now) -> Bool {
+    public func send(_ event: PetAnimator.Event, at date: Date = .now) -> Bool {
         objectWillChange.send()
         return animator.send(event, at: date.timeIntervalSinceReferenceDate)
     }
 
     /// Swaps in a new look (breed, colors, outfit) without moving the pet.
-    func update(profile: PetProfile, at date: Date = .now) {
+    public func update(profile: PetProfile, at date: Date = .now) {
         guard profile != self.profile else { return }
         objectWillChange.send()
         let time = date.timeIntervalSinceReferenceDate
@@ -52,7 +52,7 @@ final class PetPlayer: ObservableObject {
     }
 
     /// The frame to draw at `date`, or nil while the pet is inside the notch.
-    func frame(at date: Date) -> PetFrame? {
+    public func frame(at date: Date) -> PetFrame? {
         let time = date.timeIntervalSinceReferenceDate
         animator.advance(to: time)
         return clips.frame(for: animator.playback, at: time)
@@ -60,20 +60,20 @@ final class PetPlayer: ObservableObject {
 
     /// Redraw dates for `TimelineView`: exactly when the frame changes, so an
     /// idle pet costs a few redraws a second instead of a 60 Hz loop.
-    var schedule: PetFrameSchedule { PetFrameSchedule(animator: animator, clips: clips) }
+    public var schedule: PetFrameSchedule { PetFrameSchedule(animator: animator, clips: clips) }
 }
 
 /// A `TimelineSchedule` that yields one date per frame change, simulated on
 /// a copy of the animator. It ends when the picture holds (hidden, or
 /// hanging from the notch); the next event publishes a fresh schedule.
-struct PetFrameSchedule: TimelineSchedule {
+public struct PetFrameSchedule: TimelineSchedule {
     let animator: PetAnimator
     let clips: PetClipSet
 
     /// Redraw a hair after each change so rounding can't show the old frame.
     private static let lag: TimeInterval = 0.001
 
-    func entries(from startDate: Date, mode: Mode) -> AnyIterator<Date> {
+    public func entries(from startDate: Date, mode: Mode) -> AnyIterator<Date> {
         var animator = animator
         var next: Date? = startDate
         return AnyIterator {

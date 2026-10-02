@@ -236,7 +236,7 @@ To draw, call `animator.advance(to: now)` and then `clipSet.frame(for: animator.
 
 ### In the app
 
-`Sources/NotchDeck/Pets` plays a pet in SwiftUI:
+`Sources/NotchKit/Pets` plays a pet in SwiftUI:
 
 - `PetPlayer` (an `ObservableObject`) owns the clip set and the animator.
   Features drive it with `send(.nudge)`, `send(.celebrate)`, and so on, and `update(profile:)` swaps the look in place.

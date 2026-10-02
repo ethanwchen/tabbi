@@ -19,10 +19,17 @@ let package = Package(
             resources: [.copy("Kits/Bundled")],
             swiftSettings: swiftSettings
         ),
-        // The app: notch window, SwiftUI views, system integrations.
+        // Shared AppKit/SwiftUI: design system, notch window pieces, shared
+        // components and pet views. Modules build their panels from these.
+        .target(
+            name: "NotchKit",
+            dependencies: ["NotchKitCore"],
+            swiftSettings: swiftSettings
+        ),
+        // The app: modules, settings, system integrations, assembly.
         .executableTarget(
             name: "NotchDeck",
-            dependencies: ["NotchKitCore"],
+            dependencies: ["NotchKitCore", "NotchKit"],
             swiftSettings: swiftSettings
         ),
         // Renders pet sprite contact sheets for art review: `swift run PetGallery out/`.

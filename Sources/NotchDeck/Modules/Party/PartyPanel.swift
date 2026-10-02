@@ -1,5 +1,6 @@
 import SwiftUI
 import NotchKitCore
+import NotchKit
 
 /// The Party tab: studying alongside friends. Shows a preview until
 /// group sessions land.

@@ -1,5 +1,6 @@
 import SwiftUI
 import NotchKitCore
+import NotchKit
 
 /// The Study tab: a study timer with research-backed methods. Shows a
 /// preview until the timer lands.

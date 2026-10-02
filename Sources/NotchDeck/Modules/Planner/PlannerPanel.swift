@@ -1,5 +1,6 @@
 import SwiftUI
 import NotchKitCore
+import NotchKit
 
 /// The Today panel: the checklist (date and progress header, items, add
 /// field) on the left, swapped for the Plan My Day proposal or the

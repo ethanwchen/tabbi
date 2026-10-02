@@ -1,5 +1,6 @@
 import SwiftUI
 import NotchKitCore
+import NotchKit
 
 /// The Closet tab: the study pet and its wardrobe. Shows a preview until
 /// the closet lands.

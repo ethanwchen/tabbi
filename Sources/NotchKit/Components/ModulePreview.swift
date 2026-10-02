@@ -7,22 +7,34 @@ import NotchKitCore
 /// look intentional: the module's identity and pitch on the left, what it
 /// will do on the right. Each module's own panel file wraps this, so the
 /// feature can later replace that one file without touching shared code.
-struct ModulePreview: View {
+public struct ModulePreview: View {
     /// One planned capability, shown as a row in the feature card.
-    struct Feature: Identifiable {
+    public struct Feature: Identifiable {
         let symbol: String
         let title: String
         let detail: String
-        var id: String { title }
+        public var id: String { title }
+
+        public init(symbol: String, title: String, detail: String) {
+            self.symbol = symbol
+            self.title = title
+            self.detail = detail
+        }
     }
 
     let module: ModuleID
     let pitch: String
     let features: [Feature]
 
+    public init(module: ModuleID, pitch: String, features: [Feature]) {
+        self.module = module
+        self.pitch = pitch
+        self.features = features
+    }
+
     private var accent: Color { Theme.Palette.accent(for: module) }
 
-    var body: some View {
+    public var body: some View {
         HStack(spacing: Theme.Spacing.l) {
             hero
             featureCard
