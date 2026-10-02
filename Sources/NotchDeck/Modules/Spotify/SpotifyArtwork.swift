@@ -9,15 +9,16 @@ struct SpotifyArtworkImage {
     let averageColor: Color?
 }
 
-/// Loads album art by URL and caches it, so reopening the panel or the
-/// compact wing never refetches the same cover.
+/// Loads album art (Spotify by URL, Music as raw AppleScript bytes) and
+/// caches it in memory by track id, so reopening the panel or the compact
+/// wing never refetches the same cover.
 @MainActor
 final class SpotifyArtworkLoader: ObservableObject {
     @Published private(set) var artwork: SpotifyArtworkImage?
     @Published private(set) var isLoading = false
 
-    private static let cache: NSCache<NSURL, Box> = {
-        let cache = NSCache<NSURL, Box>()
+    private static let cache: NSCache<NSString, Box> = {
+        let cache = NSCache<NSString, Box>()
         cache.countLimit = 24
         return cache
     }()
@@ -27,35 +28,41 @@ final class SpotifyArtworkLoader: ObservableObject {
         init(_ artwork: SpotifyArtworkImage) { self.artwork = artwork }
     }
 
-    private var currentURL: URL?
+    private var currentID: String?
 
-    /// Shows the cover for `url`. Call from `.task(id: url)` so a track change
-    /// cancels the previous download.
-    func load(_ url: URL?) async {
-        currentURL = url
-        guard let url else {
+    /// Shows the cover for `track`. Call from `.task(id: track?.id)` so a
+    /// track change cancels the previous load.
+    func load(_ track: SpotifyTrack?, from controller: SpotifyController) async {
+        currentID = track?.id
+        guard let track else {
             artwork = nil
             isLoading = false
             return
         }
-        if let cached = Self.cache.object(forKey: url as NSURL) {
+        let key = track.id as NSString
+        if let cached = Self.cache.object(forKey: key) {
             artwork = cached.artwork
             isLoading = false
             return
         }
         artwork = nil
         isLoading = true
-        let decoded = await Self.fetch(url)
-        guard !Task.isCancelled, currentURL == url else { return }
-        if let decoded { Self.cache.setObject(Box(decoded), forKey: url as NSURL) }
+        let data: Data?
+        if let url = track.artworkURL {
+            data = try? await URLSession.shared.data(from: url).0
+        } else {
+            data = await controller.artworkData(for: track)
+        }
+        var decoded: SpotifyArtworkImage?
+        if let data { decoded = await Self.decode(data) }
+        guard !Task.isCancelled, currentID == track.id else { return }
+        if let decoded { Self.cache.setObject(Box(decoded), forKey: key) }
         artwork = decoded
         isLoading = false
     }
 
-    private nonisolated static func fetch(_ url: URL) async -> SpotifyArtworkImage? {
-        guard let (data, _) = try? await URLSession.shared.data(from: url),
-              let image = NSImage(data: data)
-        else { return nil }
+    private nonisolated static func decode(_ data: Data) async -> SpotifyArtworkImage? {
+        guard let image = NSImage(data: data) else { return nil }
         return SpotifyArtworkImage(image: image, averageColor: averageColor(of: data))
     }
 
@@ -83,7 +90,7 @@ final class SpotifyArtworkLoader: ObservableObject {
 }
 
 /// Album art with continuous corners. Shows a generated gradient cover for
-/// tracks without artwork, and a quiet glyph while a cover downloads.
+/// tracks without (loadable) artwork, and a quiet glyph while a cover loads.
 struct SpotifyArtworkView: View {
     let track: SpotifyTrack?
     let artwork: SpotifyArtworkImage?
@@ -100,7 +107,7 @@ struct SpotifyArtworkView: View {
                     .interpolation(.high)
                     .aspectRatio(contentMode: .fill)
                     .transition(.opacity)
-            } else if let track, track.artworkURL == nil {
+            } else if let track, !isLoading {
                 SpotifyGeneratedCoverView(cover: SpotifyGeneratedCover(seed: track.id), size: size)
             } else {
                 Theme.Palette.surface

@@ -29,6 +29,27 @@ final class SpotifyEqualizerTests: XCTestCase {
         XCTAssertGreaterThan(samples.max()!, 0.9)
     }
 
+    func testMotionIsSmoothBetweenFrames() {
+        // At 30 fps no bar should jump more than a fraction of its range.
+        let frame = 1.0 / 30
+        for step in 0..<3_000 {
+            let time = 812_345_678.0 + Double(step) * frame
+            let now = SpotifyEqualizer.levels(at: time)
+            let next = SpotifyEqualizer.levels(at: time + frame)
+            for (a, b) in zip(now, next) {
+                XCTAssertLessThan(abs(a - b), 0.25, "jump at \(time)")
+            }
+        }
+    }
+
+    func testHugeTimesStayInRange() {
+        for time in [1e12, -1e12, 1e18, 812_345_678.9] {
+            let levels = SpotifyEqualizer.levels(at: time)
+            XCTAssertEqual(levels.count, SpotifyEqualizer.barCount)
+            XCTAssert(levels.allSatisfy { (SpotifyEqualizer.minimumLevel...1).contains($0) })
+        }
+    }
+
     func testRestingLevelsAreShortAndVisible() {
         let resting = SpotifyEqualizer.restingLevels()
         XCTAssertEqual(resting.count, SpotifyEqualizer.barCount)

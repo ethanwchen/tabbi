@@ -11,7 +11,7 @@ public enum SpotifyScript {
 
     /// Returns `stopped`, or every field below separated by U+001F:
     /// state, id, name, artist, album, artwork url, duration (ms),
-    /// position (s), shuffling, repeating.
+    /// position (s), shuffling, repeating, sound volume (0 ... 100).
     public static let readState = """
     tell application id "\(bundleIdentifier)"
         set sep to character id 31
@@ -20,7 +20,7 @@ public enum SpotifyScript {
         set t to current track
         return ps & sep & (id of t) & sep & (name of t) & sep & (artist of t) & sep & ¬
             (album of t) & sep & (artwork url of t) & sep & (duration of t) & sep & ¬
-            (player position) & sep & shuffling & sep & repeating
+            (player position) & sep & shuffling & sep & repeating & sep & sound volume
     end tell
     """
 
@@ -52,7 +52,7 @@ public enum SpotifyScript {
             return SpotifyPlayback(state: .stopped, track: nil, position: 0,
                                    isShuffling: false, isRepeating: false)
         }
-        guard fields.count == 10 else { return nil }
+        guard fields.count == 11 else { return nil }
 
         let artwork = fields[5].trimmingCharacters(in: .whitespacesAndNewlines)
         let track = SpotifyTrack(
@@ -66,7 +66,8 @@ public enum SpotifyScript {
         var playback = SpotifyPlayback(
             state: state, track: track, position: 0,
             isShuffling: fields[8].trimmingCharacters(in: .whitespaces) == "true",
-            isRepeating: fields[9].trimmingCharacters(in: .whitespacesAndNewlines) == "true"
+            isRepeating: fields[9].trimmingCharacters(in: .whitespaces) == "true",
+            volume: MediaVolume.parse(fields[10])
         )
         playback.position = playback.clampedPosition(number(fields[7]) ?? 0)
         return playback

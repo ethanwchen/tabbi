@@ -4,7 +4,7 @@ import XCTest
 final class SpotifyStatusTests: XCTestCase {
     private let playingOutput = [
         "playing", "spotify:track:abc", "Midnight City", "M83", "Hurry Up, We're Dreaming",
-        "", "243960", "87.25", "false", "false",
+        "", "243960", "87.25", "false", "false", "64",
     ].joined(separator: String(SpotifyScript.fieldSeparator))
 
     private func resolve(running: Bool = true, installed: Bool = true,

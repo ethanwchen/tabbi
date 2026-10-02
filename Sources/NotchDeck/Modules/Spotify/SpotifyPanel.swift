@@ -15,33 +15,37 @@ struct SpotifyPanel: View {
                 } else {
                     SpotifyEmptyState(
                         symbol: "music.note.list", title: "Nothing playing",
-                        message: "Start something in Spotify and it shows up here.",
-                        action: .init(title: "Show Spotify", help: "Bring Spotify to the front",
-                                      perform: controller.openSpotify)
+                        message: "Start something in \(sourceName) and it shows up here.",
+                        actions: [.init(title: "Show \(sourceName)", help: "Bring \(sourceName) to the front",
+                                        icon: controller.appIcon(for: activeSource),
+                                        perform: { controller.open(activeSource) })]
                     )
                 }
             case .notRunning:
                 SpotifyEmptyState(
-                    symbol: "music.note", title: "Spotify isn't running",
-                    message: "Open Spotify to see and control what's playing.",
-                    action: .init(title: "Open Spotify", help: "Launch Spotify",
-                                  perform: controller.openSpotify)
+                    symbol: "music.note", title: "No music app is open",
+                    message: "Open \(MediaSource.names(controller.installedSources)) to see and control what's playing.",
+                    actions: controller.installedSources.map { source in
+                        .init(title: "Open \(source.displayName)", help: "Launch \(source.displayName)",
+                              icon: controller.appIcon(for: source),
+                              perform: { controller.open(source) })
+                    }
                 )
             case .notInstalled:
                 SpotifyEmptyState(
-                    symbol: "arrow.down.app", title: "Spotify isn't installed",
-                    message: "Install the Spotify app to control music from the notch.",
-                    action: nil
+                    symbol: "arrow.down.app", title: "No music app found",
+                    message: "Install Spotify or Music to control playback from the notch.",
+                    actions: []
                 )
             case .connecting:
-                SpotifyEmptyState(symbol: nil, title: "Connecting to Spotify…",
-                                  message: "Reading what's playing.", action: nil)
+                SpotifyEmptyState(symbol: nil, title: "Connecting to \(sourceName)…",
+                                  message: "Reading what's playing.", actions: [])
             case .permissionDenied:
                 SpotifyEmptyState(
-                    symbol: "lock.fill", title: "NotchDeck can't control Spotify",
+                    symbol: "lock.fill", title: "NotchDeck can't control \(sourceName)",
                     message: "Allow access in Privacy & Security › Automation.",
-                    action: .init(title: "Open Settings", help: "Open Automation settings",
-                                  perform: controller.openAutomationSettings)
+                    actions: [.init(title: "Open Settings", help: "Open Automation settings",
+                                    perform: controller.openAutomationSettings)]
                 )
             }
         }
@@ -50,6 +54,9 @@ struct SpotifyPanel: View {
         .onAppear { controller.setPanelVisible(true) }
         .onDisappear { controller.setPanelVisible(false) }
     }
+
+    private var activeSource: MediaSource { controller.source ?? .spotify }
+    private var sourceName: String { activeSource.displayName }
 }
 
 private extension SpotifyStatus {
@@ -72,28 +79,29 @@ private struct SpotifyNowPlaying: View {
     @ObservedObject var controller: SpotifyController
     let playback: SpotifyPlayback
     @StateObject private var artwork = SpotifyArtworkLoader()
+    @State private var hoveringTitle = false
 
     private static let artworkSize: CGFloat = 112
 
     var body: some View {
         let track = playback.track
         HStack(spacing: Theme.Spacing.l) {
-            SpotifyArtworkView(track: track, artwork: artwork.artwork, isLoading: artwork.isLoading,
-                               size: Self.artworkSize, cornerRadius: Theme.Radius.l)
-                .shadow(color: .black.opacity(0.5), radius: 10, y: 4)
+            SpotifyArtworkButton(controller: controller, track: track, artwork: artwork,
+                                 size: Self.artworkSize)
                 .background { glow }
 
             VStack(alignment: .leading, spacing: 0) {
                 VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-                    Text(track?.title.isEmpty == false ? track!.title : "Unknown track")
+                    SpotifyMarqueeText(text: track?.title.isEmpty == false ? track!.title : "Unknown track",
+                                       isActive: hoveringTitle)
                         .font(Theme.Typography.title)
                         .foregroundStyle(Theme.Palette.primaryText)
-                    Text(subtitle)
+                    SpotifyMarqueeText(text: subtitle, isActive: hoveringTitle)
                         .font(Theme.Typography.body)
                         .foregroundStyle(Theme.Palette.secondaryText)
                 }
-                .lineLimit(1)
-                .truncationMode(.tail)
+                .contentShape(Rectangle())
+                .onHover { hoveringTitle = $0 }
                 .help(helpText)
 
                 Spacer(minLength: Theme.Spacing.s)
@@ -108,7 +116,7 @@ private struct SpotifyNowPlaying: View {
             .frame(height: Self.artworkSize)
         }
         .padding(.horizontal, Theme.Spacing.m)
-        .task(id: track?.artworkURL) { await artwork.load(track?.artworkURL) }
+        .task(id: track?.id) { await artwork.load(track, from: controller) }
     }
 
     private var subtitle: String {
@@ -124,8 +132,8 @@ private struct SpotifyNowPlaying: View {
     /// A soft halo tinted by the cover, so the panel picks up the album's mood.
     private var glow: some View {
         let tint = artwork.artwork?.averageColor
-            ?? playback.track.flatMap { $0.artworkURL == nil
-                ? SpotifyGeneratedCoverView.glowColor(for: SpotifyGeneratedCover(seed: $0.id)) : nil }
+            ?? playback.track.flatMap { artwork.isLoading
+                ? nil : SpotifyGeneratedCoverView.glowColor(for: SpotifyGeneratedCover(seed: $0.id)) }
         // A radial fade (not a blur) reaches zero before the panel's clip
         // edge, so the halo never shows a hard cut-off.
         return RadialGradient(colors: [(tint ?? .clear).opacity(0.5), .clear],
@@ -134,6 +142,140 @@ private struct SpotifyNowPlaying: View {
             .frame(width: Self.artworkSize * 1.2, height: Self.artworkSize * 1.2)
             .allowsHitTesting(false)
             .animation(Theme.Motion.content, value: tint)
+    }
+}
+
+// MARK: - Marquee
+
+/// One line of text that truncates at rest and, while `isActive` (hovered),
+/// scrolls as a gentle loop if it doesn't fit. Text that fits never moves.
+/// Font and color come from the environment like a plain `Text`.
+private struct SpotifyMarqueeText: View {
+    let text: String
+    let isActive: Bool
+
+    @State private var textWidth: CGFloat = 0
+    @State private var containerWidth: CGFloat = 0
+    @State private var startDate = Date()
+
+    private static let edgeFade: CGFloat = 12
+
+    private var scrolls: Bool {
+        isActive && SpotifyMarquee.needsScrolling(textWidth: textWidth, containerWidth: containerWidth)
+    }
+
+    var body: some View {
+        Text(text)
+            .lineLimit(1)
+            .truncationMode(.tail)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .opacity(scrolls ? 0 : 1)
+            .onGeometryChange(for: CGFloat.self, of: { $0.size.width }) { containerWidth = $0 }
+            .background(alignment: .leading) {
+                // Measures the untruncated width without affecting layout.
+                Text(text)
+                    .lineLimit(1)
+                    .fixedSize()
+                    .hidden()
+                    .onGeometryChange(for: CGFloat.self, of: { $0.size.width }) { textWidth = $0 }
+            }
+            .overlay(alignment: .leading) {
+                if scrolls { scrollingText }
+            }
+            .onChange(of: scrolls) { _, scrolls in
+                if scrolls { startDate = .now }
+            }
+    }
+
+    private var scrollingText: some View {
+        TimelineView(.animation(minimumInterval: 1.0 / 60)) { context in
+            let offset = SpotifyMarquee.offset(elapsed: context.date.timeIntervalSince(startDate),
+                                               textWidth: textWidth, containerWidth: containerWidth)
+            // The leading fade grows in as the text moves, so the first
+            // letter is crisp while the line rests.
+            let leadingFade = min(-offset, Self.edgeFade) / max(containerWidth, 1)
+            let trailingFade = Self.edgeFade / max(containerWidth, 1)
+            HStack(spacing: SpotifyMarquee.gap) {
+                Text(text)
+                Text(text)
+            }
+            .lineLimit(1)
+            .fixedSize()
+            .offset(x: offset)
+            .frame(width: containerWidth, alignment: .leading)
+            .clipped()
+            .mask {
+                LinearGradient(stops: [
+                    .init(color: .clear, location: 0),
+                    .init(color: .black, location: leadingFade),
+                    .init(color: .black, location: 1 - trailingFade),
+                    .init(color: .clear, location: 1),
+                ], startPoint: .leading, endPoint: .trailing)
+            }
+        }
+        .accessibilityHidden(true)
+    }
+}
+
+// MARK: - Artwork button
+
+/// The cover with a small badge of the app it plays in. Clicking it brings
+/// that app forward; hovering lifts the cover and hints at the action.
+private struct SpotifyArtworkButton: View {
+    @ObservedObject var controller: SpotifyController
+    let track: SpotifyTrack?
+    @ObservedObject var artwork: SpotifyArtworkLoader
+    let size: CGFloat
+    @State private var hovering = false
+
+    private static let badgeSize: CGFloat = 24
+
+    var body: some View {
+        let source = controller.source ?? .spotify
+        Button { controller.open(source) } label: {
+            SpotifyArtworkView(track: track, artwork: artwork.artwork, isLoading: artwork.isLoading,
+                               size: size, cornerRadius: Theme.Radius.l)
+                .overlay {
+                    RoundedRectangle(cornerRadius: Theme.Radius.l, style: .continuous)
+                        .fill(.black.opacity(hovering ? 0.35 : 0))
+                    Image(systemName: "arrow.up.forward.app.fill")
+                        .font(.system(size: 22, weight: .semibold))
+                        .foregroundStyle(Theme.Palette.primaryText)
+                        .shadow(color: .black.opacity(0.4), radius: 4)
+                        .opacity(hovering ? 1 : 0)
+                }
+                .overlay(alignment: .bottomTrailing) {
+                    badge(for: source)
+                        .padding(Theme.Spacing.xs + Theme.Spacing.xxs)
+                }
+                .shadow(color: .black.opacity(0.5), radius: 10, y: 4)
+                .scaleEffect(hovering ? 1.03 : 1)
+                .contentShape(RoundedRectangle(cornerRadius: Theme.Radius.l, style: .continuous))
+        }
+        .buttonStyle(.plain)
+        .help("Show \(source.displayName)")
+        .onHover { hovering = $0 }
+        .animation(Theme.Motion.snappy, value: hovering)
+    }
+
+    /// The player's own icon; a glyph on a dark disc if the icon is missing.
+    @ViewBuilder private func badge(for source: MediaSource) -> some View {
+        Group {
+            if let icon = controller.appIcon(for: source) {
+                Image(nsImage: icon)
+                    .resizable()
+                    .interpolation(.high)
+            } else {
+                Image(systemName: "music.note")
+                    .font(.system(size: Self.badgeSize * 0.45, weight: .semibold))
+                    .foregroundStyle(Theme.Palette.primaryText)
+                    .frame(width: Self.badgeSize, height: Self.badgeSize)
+                    .background(Circle().fill(.black.opacity(0.6)))
+            }
+        }
+        .frame(width: Self.badgeSize, height: Self.badgeSize)
+        .shadow(color: .black.opacity(0.45), radius: 3, y: 1)
+        .accessibilityLabel("Playing in \(source.displayName)")
     }
 }
 
@@ -208,10 +350,21 @@ private struct SpotifyTransport: View {
     let playback: SpotifyPlayback
 
     var body: some View {
-        HStack(spacing: 0) {
-            SpotifyModeIndicator(symbol: "shuffle", isOn: playback.isShuffling,
-                                 help: playback.isShuffling ? "Shuffle is on" : "Shuffle is off")
-            Spacer(minLength: 0)
+        // The buttons stay centered in the column; modes sit on the left and
+        // the volume control on the right, so the slider can grow on hover
+        // without shifting anything.
+        ZStack {
+            HStack(spacing: Theme.Spacing.xs) {
+                SpotifyModeIndicator(symbol: "shuffle", isOn: playback.isShuffling,
+                                     help: playback.isShuffling ? "Shuffle is on" : "Shuffle is off")
+                SpotifyModeIndicator(symbol: "repeat", isOn: playback.isRepeating,
+                                     help: playback.isRepeating ? "Repeat is on" : "Repeat is off")
+                Spacer(minLength: 0)
+                if let volume = playback.volume {
+                    SpotifyVolumeControl(volume: volume, onChange: controller.setVolume,
+                                         onToggleMute: controller.toggleMute)
+                }
+            }
             HStack(spacing: Theme.Spacing.m) {
                 SpotifyTransportButton(symbol: "backward.fill", help: "Previous track",
                                        action: controller.previous)
@@ -219,9 +372,112 @@ private struct SpotifyTransport: View {
                 SpotifyTransportButton(symbol: "forward.fill", help: "Next track",
                                        action: controller.next)
             }
-            Spacer(minLength: 0)
-            SpotifyModeIndicator(symbol: "repeat", isOn: playback.isRepeating,
-                                 help: playback.isRepeating ? "Repeat is on" : "Repeat is off")
+        }
+    }
+}
+
+/// A speaker button that mutes and unmutes; hovering it slides out a
+/// volume slider to its left.
+private struct SpotifyVolumeControl: View {
+    let volume: Int
+    let onChange: (Int) -> Void
+    let onToggleMute: () -> Void
+
+    /// Volume under the pointer while dragging; nil otherwise.
+    @State private var dragVolume: Int?
+    @State private var hovering = false
+    @State private var hoveringSpeaker = false
+
+    private static let sliderWidth: CGFloat = 56
+    private static let height: CGFloat = 24
+
+    private var shownVolume: Int { dragVolume ?? volume }
+    /// Stays open mid-drag even if the pointer leaves the control.
+    private var isExpanded: Bool { hovering || dragVolume != nil }
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.xs) {
+            if isExpanded {
+                slider
+                    .transition(.opacity.combined(with: .scale(scale: 0.6, anchor: .trailing)))
+            }
+            speaker
+        }
+        .padding(.leading, isExpanded ? Theme.Spacing.s : 0)
+        .background(Capsule().fill(isExpanded ? Theme.Palette.surface : .clear))
+        .contentShape(Capsule())
+        .onHover { hovering = $0 }
+        .animation(Theme.Motion.snappy, value: isExpanded)
+    }
+
+    private var speaker: some View {
+        Button(action: onToggleMute) {
+            Image(systemName: Self.symbol(for: shownVolume))
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(hoveringSpeaker ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
+                .contentTransition(.symbolEffect(.replace))
+                .frame(width: Self.height, height: Self.height)
+                .background(Circle().fill(hoveringSpeaker ? Theme.Palette.surfaceHover : .clear))
+                .contentShape(Circle())
+        }
+        .buttonStyle(.plain)
+        .help(shownVolume == 0 ? "Unmute" : "Mute")
+        .onHover { hoveringSpeaker = $0 }
+        .animation(Theme.Motion.snappy, value: hoveringSpeaker)
+        .accessibilityLabel(shownVolume == 0 ? "Unmute" : "Mute")
+    }
+
+    private var slider: some View {
+        GeometryReader { proxy in
+            let width = proxy.size.width
+            let fraction = CGFloat(shownVolume) / 100
+            ZStack(alignment: .leading) {
+                Capsule().fill(Theme.Palette.surfaceHover)
+                Capsule()
+                    .fill(Theme.Palette.accent(for: .spotify))
+                    .frame(width: width * fraction)
+                Circle()
+                    .fill(Theme.Palette.primaryText)
+                    .frame(width: 10, height: 10)
+                    .shadow(color: .black.opacity(0.4), radius: 2)
+                    .offset(x: width * fraction - 5)
+            }
+            .frame(height: 4)
+            .frame(maxHeight: .infinity)
+            .contentShape(Rectangle())
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { value in
+                        let volume = MediaVolume.volume(atX: value.location.x, width: width)
+                        dragVolume = volume
+                        onChange(volume)
+                    }
+                    .onEnded { value in
+                        onChange(MediaVolume.volume(atX: value.location.x, width: width))
+                        dragVolume = nil
+                    }
+            )
+        }
+        .frame(width: Self.sliderWidth, height: Self.height)
+        .help("Volume \(shownVolume)%")
+        .accessibilityElement()
+        .accessibilityLabel("Volume")
+        .accessibilityValue("\(shownVolume)%")
+        .accessibilityAdjustableAction { direction in
+            switch direction {
+            case .increment: onChange(volume + 10)
+            case .decrement: onChange(volume - 10)
+            @unknown default: break
+            }
+        }
+    }
+
+    private static func symbol(for volume: Int) -> String {
+        switch MediaVolume.level(volume) {
+        case 0: "speaker.slash.fill"
+        case 1: "speaker.wave.1.fill"
+        case 2: "speaker.wave.2.fill"
+        default: "speaker.wave.3.fill"
         }
     }
 }
@@ -302,6 +558,8 @@ private struct SpotifyEmptyState: View {
     struct Action {
         let title: String
         let help: String
+        /// The app's own icon, shown on buttons that open or show an app.
+        var icon: NSImage? = nil
         let perform: () -> Void
     }
 
@@ -309,7 +567,7 @@ private struct SpotifyEmptyState: View {
     let symbol: String?
     let title: String
     let message: String
-    let action: Action?
+    let actions: [Action]
 
     var body: some View {
         VStack(spacing: Theme.Spacing.s) {
@@ -336,9 +594,13 @@ private struct SpotifyEmptyState: View {
             }
             .lineLimit(2)
 
-            if let action {
-                SpotifyActionButton(action: action)
-                    .padding(.top, Theme.Spacing.xs)
+            if !actions.isEmpty {
+                HStack(spacing: Theme.Spacing.s) {
+                    ForEach(actions.indices, id: \.self) { index in
+                        SpotifyActionButton(action: actions[index])
+                    }
+                }
+                .padding(.top, Theme.Spacing.xs)
             }
         }
         .frame(maxWidth: 360)
@@ -369,20 +631,41 @@ private struct SpotifyActionButton: View {
 
     var body: some View {
         Button(action: action.perform) {
-            Text(action.title)
-                .font(Theme.Typography.bodyEmphasis)
-                .foregroundStyle(Theme.Palette.background)
-                .padding(.horizontal, Theme.Spacing.m)
-                .frame(height: 24)
-                .background(Capsule().fill(Theme.Palette.accent(for: .spotify)
-                    .opacity(hovering ? 1 : 0.9)))
-                .scaleEffect(hovering ? 1.03 : 1)
-                .contentShape(Capsule())
+            HStack(spacing: Theme.Spacing.xs + Theme.Spacing.xxs) {
+                if let icon = action.icon {
+                    Image(nsImage: icon)
+                        .resizable()
+                        .interpolation(.high)
+                        .frame(width: 16, height: 16)
+                }
+                Text(action.title)
+                    .font(Theme.Typography.bodyEmphasis)
+            }
+            .foregroundStyle(isAppLauncher ? Theme.Palette.primaryText : Theme.Palette.background)
+            .padding(.leading, isAppLauncher ? Theme.Spacing.xs + Theme.Spacing.xxs : Theme.Spacing.m)
+            .padding(.trailing, Theme.Spacing.m)
+            .frame(height: 28)
+            .background(Capsule().fill(fill))
+            .overlay {
+                if isAppLauncher { Capsule().strokeBorder(Theme.Palette.stroke, lineWidth: 0.5) }
+            }
+            .scaleEffect(hovering ? 1.03 : 1)
+            .contentShape(Capsule())
         }
         .buttonStyle(.plain)
         .help(action.help)
         .onHover { hovering = $0 }
         .animation(Theme.Motion.snappy, value: hovering)
+    }
+
+    /// App launch buttons sit on a neutral surface so each app's own icon
+    /// carries the color; other actions use the module accent.
+    private var isAppLauncher: Bool { action.icon != nil }
+
+    private var fill: Color {
+        isAppLauncher
+            ? (hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface)
+            : Theme.Palette.accent(for: .spotify).opacity(hovering ? 1 : 0.9)
     }
 }
 
@@ -398,8 +681,8 @@ struct SpotifyCompactLeading: View {
         SpotifyArtworkView(track: track, artwork: artwork.artwork, isLoading: artwork.isLoading,
                            size: 20, cornerRadius: 5)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .task(id: track?.artworkURL) { await artwork.load(track?.artworkURL) }
-            .help(track.map { "\($0.title) · \($0.artist)" } ?? "Spotify")
+            .task(id: track?.id) { await artwork.load(track, from: controller) }
+            .help(track.map { "\($0.title) · \($0.artist)" } ?? (controller.source ?? .spotify).displayName)
     }
 }
 
@@ -428,6 +711,6 @@ struct SpotifyCompactTrailing: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .animation(Theme.Motion.snappy, value: isPlaying)
-        .help(isPlaying ? "Playing in Spotify" : "Paused")
+        .help(isPlaying ? "Playing in \((controller.source ?? .spotify).displayName)" : "Paused")
     }
 }
