@@ -1,0 +1,203 @@
+import Foundation
+
+/// An 8-bit sRGB color. Pet art uses a handful of flat colors, so a tiny
+/// value type keeps palettes `Codable`, hashable, and free of AppKit.
+public struct PetColor: Hashable, Codable, Sendable, CustomStringConvertible {
+    public var red: UInt8
+    public var green: UInt8
+    public var blue: UInt8
+    public var alpha: UInt8
+
+    public init(red: UInt8, green: UInt8, blue: UInt8, alpha: UInt8 = 255) {
+        self.red = red
+        self.green = green
+        self.blue = blue
+        self.alpha = alpha
+    }
+
+    /// Parses `#RRGGBB` or `#RRGGBBAA` (the `#` is optional).
+    public init?(hex: String) {
+        let digits = hex.hasPrefix("#") ? String(hex.dropFirst()) : hex
+        guard digits.count == 6 || digits.count == 8,
+              digits.allSatisfy(\.isHexDigit),
+              let value = UInt32(digits, radix: 16) else { return nil }
+        if digits.count == 6 {
+            self.init(red: UInt8(value >> 16 & 0xFF), green: UInt8(value >> 8 & 0xFF), blue: UInt8(value & 0xFF))
+        } else {
+            self.init(red: UInt8(value >> 24 & 0xFF), green: UInt8(value >> 16 & 0xFF),
+                      blue: UInt8(value >> 8 & 0xFF), alpha: UInt8(value & 0xFF))
+        }
+    }
+
+    /// Uppercase `#RRGGBB`, plus `AA` when not fully opaque.
+    public var hex: String {
+        alpha == 255
+            ? String(format: "#%02X%02X%02X", red, green, blue)
+            : String(format: "#%02X%02X%02X%02X", red, green, blue, alpha)
+    }
+
+    public var description: String { hex }
+
+    /// Relative luminance (0...1, WCAG formula). Used to decide whether a fur
+    /// color needs a light rim to stay visible on the black notch.
+    public var luminance: Double {
+        func channel(_ value: UInt8) -> Double {
+            let c = Double(value) / 255
+            return c <= 0.040_45 ? c / 12.92 : pow((c + 0.055) / 1.055, 2.4)
+        }
+        return 0.2126 * channel(red) + 0.7152 * channel(green) + 0.0722 * channel(blue)
+    }
+
+    public init(from decoder: Decoder) throws {
+        let raw = try decoder.singleValueContainer().decode(String.self)
+        guard let color = PetColor(hex: raw) else {
+            throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath, debugDescription: "Invalid color \(raw)"))
+        }
+        self = color
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(hex)
+    }
+}
+
+/// What a sprite pixel *means*, not what color it is. Sprite grids paint
+/// roles; a palette turns roles into colors. That is what makes every breed,
+/// costume, and user recolor work from the same hand-drawn art.
+///
+/// Each role has a single uppercase character used in sprite text grids.
+public enum PetPaletteRole: String, CaseIterable, Codable, Sendable {
+    case outline
+    case furBase
+    case furShade
+    case furAccent
+    /// Second marking color (calico black patches, beagle saddle).
+    case furSpot
+    case belly
+    case eye
+    case eyeLight
+    case nose
+    case blush
+    case costumeBase
+    case costumeShade
+    case costumeTrim
+    case metal
+    /// Light effect pixels: sleep "z", sparkles, speech bubble fill.
+    case effect
+    /// Celebration heart.
+    case heart
+
+    /// The grid character for this role.
+    public var symbol: Character {
+        switch self {
+        case .outline: "O"
+        case .furBase: "B"
+        case .furShade: "S"
+        case .furAccent: "A"
+        case .furSpot: "K"
+        case .belly: "W"
+        case .eye: "E"
+        case .eyeLight: "L"
+        case .nose: "N"
+        case .blush: "P"
+        case .costumeBase: "C"
+        case .costumeShade: "D"
+        case .costumeTrim: "T"
+        case .metal: "M"
+        case .effect: "Z"
+        case .heart: "H"
+        }
+    }
+
+    public init?(symbol: Character) {
+        guard let role = Self.allCases.first(where: { $0.symbol == symbol }) else { return nil }
+        self = role
+    }
+
+    /// Roles a user may recolor from the customization UI. Eyes, outline,
+    /// and effects stay fixed so every pet keeps the same readable style.
+    public static let userEditable: [PetPaletteRole] = [
+        .furBase, .furShade, .furAccent, .furSpot, .belly, .costumeBase, .costumeShade, .costumeTrim,
+    ]
+}
+
+/// A complete role -> color table. Breeds define a default palette; a pet
+/// profile layers user overrides on top with `applying(_:)`.
+public struct PetPalette: Hashable, Codable, Sendable {
+    public private(set) var colors: [PetPaletteRole: PetColor]
+
+    /// Every role must have a color so rendering never hits a hole; missing
+    /// entries fall back to `PetPalette.base`.
+    public init(_ colors: [PetPaletteRole: PetColor]) {
+        var filled = PetPalette.baseColors
+        filled.merge(colors) { _, new in new }
+        self.colors = filled
+    }
+
+    public subscript(role: PetPaletteRole) -> PetColor {
+        get { colors[role] ?? PetPalette.baseColors[role]! }
+        set { colors[role] = newValue }
+    }
+
+    /// A copy with `overrides` replacing the matching roles.
+    public func applying(_ overrides: [PetPaletteRole: PetColor]) -> PetPalette {
+        var copy = self
+        for (role, color) in overrides { copy[role] = color }
+        return copy
+    }
+
+    /// A copy whose outline stays visible on the black notch. Dark fur with a
+    /// dark outline would vanish, so the outline becomes a warm light rim.
+    /// Applied after user overrides, so recoloring a pet black is still safe.
+    public func withVisibleRim() -> PetPalette {
+        guard self[.furBase].luminance < PetPalette.darkFurThreshold,
+              self[.outline].luminance < PetPalette.rimMinimumLuminance else { return self }
+        var copy = self
+        copy[.outline] = PetPalette.warmRim
+        return copy
+    }
+
+    /// Fur darker than this needs a rim (about #555 gray).
+    static let darkFurThreshold = 0.09
+    /// Outlines at least this bright already read on black.
+    static let rimMinimumLuminance = 0.12
+    public static let warmRim = PetColor(hex: "#9C7A68")!
+
+    /// Shared, breed-independent colors: eyes, effects, the default costume.
+    static let baseColors: [PetPaletteRole: PetColor] = [
+        .outline: PetColor(hex: "#2A1A14")!,
+        .furBase: PetColor(hex: "#E9A25B")!,
+        .furShade: PetColor(hex: "#C87A3E")!,
+        .furAccent: PetColor(hex: "#A85A2A")!,
+        .furSpot: PetColor(hex: "#3A3036")!,
+        .belly: PetColor(hex: "#FFF1DC")!,
+        .eye: PetColor(hex: "#1E1420")!,
+        .eyeLight: PetColor(hex: "#FFFFFF")!,
+        .nose: PetColor(hex: "#E77A8C")!,
+        .blush: PetColor(hex: "#FF9AAE")!,
+        .costumeBase: PetColor(hex: "#5BC0BE")!,
+        .costumeShade: PetColor(hex: "#3E9593")!,
+        .costumeTrim: PetColor(hex: "#E8FFFB")!,
+        .metal: PetColor(hex: "#C9D3DD")!,
+        .effect: PetColor(hex: "#F4F1FF")!,
+        .heart: PetColor(hex: "#FF5C7A")!,
+    ]
+
+    public static let base = PetPalette([:])
+
+    // Codable as a flat `{ "furBase": "#RRGGBB", ... }` object.
+    public init(from decoder: Decoder) throws {
+        let raw = try decoder.singleValueContainer().decode([String: PetColor].self)
+        var colors: [PetPaletteRole: PetColor] = [:]
+        for (key, color) in raw {
+            if let role = PetPaletteRole(rawValue: key) { colors[role] = color }
+        }
+        self.init(colors)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(Dictionary(uniqueKeysWithValues: colors.map { ($0.key.rawValue, $0.value) }))
+    }
+}

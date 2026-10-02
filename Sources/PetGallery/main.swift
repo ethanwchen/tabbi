@@ -1,0 +1,87 @@
+import CoreGraphics
+import CoreText
+import Foundation
+import ImageIO
+import NotchDeckCore
+import UniformTypeIdentifiers
+
+// Renders pet contact sheets for art review: `swift run PetGallery out/`.
+// Everything is drawn on pure black, like the real notch.
+
+let scale = 4
+let cellPadding = 16
+let labelHeight = 28
+
+struct Cell {
+    let label: String
+    let canvas: PetCanvas
+    let palette: PetPalette
+}
+
+/// Lays cells out in rows of `columns` and writes a PNG.
+func writeSheet(_ cells: [Cell], columns: Int, title: String, to url: URL) throws {
+    let spriteSide = PetComposer.frameSize * scale
+    let cellWidth = spriteSide + cellPadding * 2
+    let cellHeight = spriteSide + cellPadding + labelHeight
+    let titleHeight = 44
+    let rows = (cells.count + columns - 1) / columns
+    let width = cellWidth * columns
+    let height = titleHeight + cellHeight * rows
+
+    guard let context = CGContext(
+        data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0,
+        space: CGColorSpace(name: CGColorSpace.sRGB)!,
+        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+    ) else { throw GalleryError.context }
+    context.interpolationQuality = .none
+    context.setFillColor(CGColor(red: 0, green: 0, blue: 0, alpha: 1))
+    context.fill(CGRect(x: 0, y: 0, width: width, height: height))
+
+    // CoreGraphics is bottom-up; convert from top-left layout coordinates.
+    func flip(_ y: Int, _ h: Int) -> Int { height - y - h }
+
+    draw(title, size: 18, color: CGColor(gray: 1, alpha: 0.9), at: CGPoint(x: cellPadding, y: flip(14, 18)), in: context)
+    for (index, cell) in cells.enumerated() {
+        let column = index % columns, row = index / columns
+        let x = column * cellWidth + cellPadding
+        let y = titleHeight + row * cellHeight
+        if let image = PetRenderer.shared.image(for: cell.canvas, palette: cell.palette, scale: scale) {
+            context.draw(image, in: CGRect(x: x, y: flip(y, spriteSide), width: spriteSide, height: spriteSide))
+        }
+        draw(cell.label, size: 12, color: CGColor(gray: 1, alpha: 0.62),
+             at: CGPoint(x: x, y: flip(y + spriteSide + 6, 12)), in: context)
+    }
+
+    guard let image = context.makeImage(),
+          let destination = CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil)
+    else { throw GalleryError.encode }
+    CGImageDestinationAddImage(destination, image, nil)
+    guard CGImageDestinationFinalize(destination) else { throw GalleryError.encode }
+    print("wrote \(url.path)")
+}
+
+func draw(_ text: String, size: CGFloat, color: CGColor, at point: CGPoint, in context: CGContext) {
+    let font = CTFontCreateWithName("SF Pro Rounded" as CFString, size, nil)
+    let attributes: [NSAttributedString.Key: Any] = [
+        NSAttributedString.Key(kCTFontAttributeName as String): font,
+        NSAttributedString.Key(kCTForegroundColorAttributeName as String): color,
+    ]
+    let line = CTLineCreateWithAttributedString(NSAttributedString(string: text, attributes: attributes))
+    context.textPosition = point
+    CTLineDraw(line, context)
+}
+
+enum GalleryError: Error {
+    case context
+    case encode
+}
+
+let arguments = CommandLine.arguments.dropFirst()
+let outputDirectory = URL(fileURLWithPath: arguments.first ?? "out", isDirectory: true)
+try FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
+
+let breedCells = PetBreed.allCases.map { breed in
+    Cell(label: breed.displayName, canvas: PetComposer.sitting(breed), palette: breed.palette.withVisibleRim())
+}
+try writeSheet(breedCells, columns: 4, title: "Breeds",
+               to: outputDirectory.appendingPathComponent("breeds.png"))
