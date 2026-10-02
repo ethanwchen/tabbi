@@ -132,18 +132,6 @@ describe("weekly leaderboard", () => {
     expect(await storedDays(a.code)).toEqual([]);
   });
 
-  it("upgrades presence storage created before the day column existed", async () => {
-    const stub = env.HUB.get(env.HUB.idFromName("hub"));
-    const columns = await runInDurableObject(stub, (hub: Hub, state) => {
-      state.storage.sql.exec("ALTER TABLE presence DROP COLUMN day");
-      (hub as unknown as { migrate(): void }).migrate();
-      return state.storage.sql.exec<{ name: string }>("SELECT name FROM pragma_table_info('presence')").toArray().map((c) => c.name);
-    });
-    expect(columns).toContain("day");
-    const a = await register();
-    expect((await beat(a, { todayMinutes: 3 })).status).toBe(200);
-  });
-
   it("ranks by minutes, then name", () => {
     const p = (code: string, name: string) => ({ code, name } as Profile);
     const ranked = rankEntries([

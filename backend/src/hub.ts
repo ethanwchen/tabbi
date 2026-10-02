@@ -183,13 +183,6 @@ export class Hub extends DurableObject<Env> {
     super(ctx, env);
     this.sql = ctx.storage.sql;
     this.sql.exec(SCHEMA);
-    this.migrate();
-  }
-
-  /** Upgrades storage created by an earlier schema; `CREATE TABLE IF NOT EXISTS` never adds columns. */
-  private migrate(): void {
-    const hasDay = this.sql.exec("SELECT 1 FROM pragma_table_info('presence') WHERE name = 'day'").toArray().length > 0;
-    if (!hasDay) this.sql.exec("ALTER TABLE presence ADD COLUMN day TEXT NOT NULL DEFAULT ''");
   }
 
   async fetch(req: Request): Promise<Response> {
