@@ -39,7 +39,7 @@ struct SpotifyPanel: View {
             case .permissionDenied:
                 SpotifyEmptyState(
                     symbol: "lock.fill", title: "NotchDeck can't control Spotify",
-                    message: "Allow NotchDeck to control Spotify in Privacy & Security › Automation.",
+                    message: "Allow access in Privacy & Security › Automation.",
                     action: .init(title: "Open Settings", help: "Open Automation settings",
                                   perform: controller.openAutomationSettings)
                 )
@@ -320,7 +320,7 @@ private struct SpotifyEmptyState: View {
                         .font(.system(size: 17, weight: .semibold))
                         .foregroundStyle(Theme.Palette.accent(for: .spotify))
                 } else {
-                    ProgressView().controlSize(.small)
+                    SpotifySpinner()
                 }
             }
             .frame(width: 40, height: 40)
@@ -342,6 +342,24 @@ private struct SpotifyEmptyState: View {
             }
         }
         .frame(maxWidth: 360)
+    }
+}
+
+/// An accent arc that turns once a second. Drawn in SwiftUI rather than
+/// `ProgressView`, whose AppKit-backed spinner doesn't render in snapshots
+/// and ignores the module accent.
+private struct SpotifySpinner: View {
+    var body: some View {
+        TimelineView(.animation(minimumInterval: 1 / 30)) { context in
+            let turns = context.date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: 1)
+            Circle()
+                .trim(from: 0, to: 0.7)
+                .stroke(Theme.Palette.accent(for: .spotify),
+                        style: StrokeStyle(lineWidth: 2.5, lineCap: .round))
+                .rotationEffect(.degrees(turns * 360))
+        }
+        .frame(width: 16, height: 16)
+        .accessibilityLabel("Loading")
     }
 }
 
