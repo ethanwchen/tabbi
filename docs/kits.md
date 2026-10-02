@@ -14,7 +14,12 @@ They are good starting points for your own kit.
 
 ## Using kits
 
-Open **Settings > Modules**.
+On first launch, a welcome window asks which kit to start with.
+It lists every kit with the tabs it turns on, and preselects the edition's kit (Productivity for NotchDeck, Medicine for StudyNotch).
+Closing the window keeps the preselected kit, and the window doesn't come back.
+The kit's onboarding questions aren't asked yet; that comes with full onboarding.
+
+To change kits later, open **Settings > Modules**.
 The **Kit** section lets you:
 
 - **Switch kit.** Your tabs change to the new kit's tabs. Every other preference stays as it is.

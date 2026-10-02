@@ -73,6 +73,13 @@ enum SnapshotRenderer {
             try? png.write(to: url)
             print(url.path)
         }
+
+        // The first-run kit picker, before anything is chosen.
+        if let png = await WelcomeWindowController(settings: services.settings).snapshot() {
+            let url = outputDirectory.appendingPathComponent("welcome.png")
+            try? png.write(to: url)
+            print(url.path)
+        }
     }
 
     private static func snapshotName(_ kind: TickerKind) -> String {

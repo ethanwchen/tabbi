@@ -5,6 +5,7 @@ import NotchKitCore
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var services: AppServices?
     private var notch: NotchController?
+    private var welcome: WelcomeWindowController?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         let edition = Edition.current
@@ -12,6 +13,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let services = AppServices(settings: settings)
         self.services = services
         notch = NotchController(services: services)
+        if !settings.settings.hasChosenKit {
+            let welcome = WelcomeWindowController(settings: settings)
+            self.welcome = welcome
+            welcome.present()
+        }
     }
 
     /// With no Dock icon or menu bar item, opening the app again (from Finder,

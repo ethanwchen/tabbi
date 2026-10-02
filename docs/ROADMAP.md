@@ -93,10 +93,10 @@ Constraints to keep in mind:
 
 ## Near-term engineering
 
-- A first-run "choose a kit" step, then full onboarding with the kit's questions.
+- Full onboarding: ask the kit's questions after the first-run kit picker.
 - Apply kit defaults beyond tabs: study methods, focus sounds, ticker previews, pet and starter tasks.
-- The `NotchModule` protocol and registry: lifecycle, settings section, ticker items and provided data per module.
-- Provider protocols (`TaskSource`, `EventSource`, `ProgressSource`, `FocusState`) consumed by Today, Plan my day and the ticker.
+- Move each module's Settings pane into its `NotchModule` settings section.
+- Show tasks and progress other modules provide in Today and Plan my day (the ticker already reads them).
 - Focus as its own module.
 - The shared `NotchKit` target for the notch window, theme and shared components.
 - Real Study, Anki, Party and Closet modules replacing today's previews.

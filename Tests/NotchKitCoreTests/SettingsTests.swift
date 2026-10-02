@@ -196,6 +196,7 @@ final class SettingsRepositoryTests: XCTestCase {
         modules.setEnabled(.spotify, false)
         let settings = AppSettings(
             kitID: "student",
+            hasChosenKit: true,
             modules: modules,
             openOnHover: true,
             hapticsEnabled: false,
@@ -263,6 +264,28 @@ final class SettingsRepositoryTests: XCTestCase {
         XCTAssertTrue(reloaded.modules.isEnabled(.system))
     }
 
+    func testFirstRunHasNotChosenAKitUntilOneIsApplied() throws {
+        let repository = SettingsRepository(defaults: defaults, defaultKitID: "medicine")
+        var settings = repository.load()
+        XCTAssertFalse(settings.hasChosenKit)
+        // Saving unrelated preferences doesn't count as choosing.
+        settings.openOnHover = true
+        repository.save(settings)
+        XCTAssertFalse(repository.load().hasChosenKit)
+
+        settings.apply(try XCTUnwrap(KitLibrary.bundled["student"]))
+        repository.save(settings)
+        let reloaded = repository.load()
+        XCTAssertTrue(reloaded.hasChosenKit)
+        XCTAssertEqual(reloaded.kitID, "student")
+    }
+
+    func testLayoutsSavedBeforeKitsExistedCountAsChosen() {
+        // A pre-kits install: a tab layout but no kit and no flag.
+        defaults.set(["spotify", "system", "claudeUsage", "planner", "claudeAsk"], forKey: "settings.modules.order")
+        XCTAssertTrue(SettingsRepository(defaults: defaults).load().hasChosenKit)
+    }
+
     func testUnknownSavedKitFallsBackToTheDefaultKit() {
         defaults.set("removed-import", forKey: "settings.kit")
         let settings = SettingsRepository(defaults: defaults).load()
@@ -279,6 +302,7 @@ final class SettingsRepositoryTests: XCTestCase {
         XCTAssertEqual(settings.modules, student.layout(answers: ["flashcards": ["anki"]]))
         XCTAssertTrue(settings.modules.isEnabled(.anki))
         XCTAssertTrue(settings.openOnHover)
+        XCTAssertTrue(settings.hasChosenKit)
     }
 
     func testMalformedPreviewValuesFallBack() {

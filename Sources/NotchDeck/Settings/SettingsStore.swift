@@ -93,6 +93,13 @@ final class SettingsStore: ObservableObject {
         settings.apply(kit)
     }
 
+    /// The first-run pick: applies `id`'s tabs even when it is already the
+    /// default kit, and records that the user has chosen.
+    func chooseKit(_ id: String) {
+        guard let kit = kits[id] ?? activeKit else { return }
+        settings.apply(kit)
+    }
+
     /// Puts the active kit's tabs back the way the kit ships them.
     func resetToKitDefaults() {
         guard let kit = activeKit else { return }

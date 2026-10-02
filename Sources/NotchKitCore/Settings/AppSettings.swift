@@ -5,6 +5,9 @@ public struct AppSettings: Equatable, Sendable {
     /// The kit the user (or edition) picked. Its layout seeds `modules`, and
     /// "reset to kit defaults" goes back to it.
     public var kitID: String
+    /// False until the user picks a kit, so the first launch can ask which
+    /// kit to start from. Settings saved before kits existed count as picked.
+    public var hasChosenKit: Bool
     public var modules: ModuleLayout
     /// When on, resting the pointer on the closed notch for `hoverOpenDelay` opens it.
     public var openOnHover: Bool
@@ -26,6 +29,7 @@ public struct AppSettings: Equatable, Sendable {
 
     public init(
         kitID: String = KitLibrary.defaultKitID,
+        hasChosenKit: Bool = false,
         modules: ModuleLayout = .default,
         openOnHover: Bool = false,
         hapticsEnabled: Bool = true,
@@ -36,6 +40,7 @@ public struct AppSettings: Equatable, Sendable {
         notchPreview: NotchPreviewSettings = .default
     ) {
         self.kitID = kitID
+        self.hasChosenKit = hasChosenKit
         self.modules = modules
         self.openOnHover = openOnHover
         self.hapticsEnabled = hapticsEnabled
@@ -55,9 +60,11 @@ public struct AppSettings: Equatable, Sendable {
 
     /// Switches to `kit` and replaces the tab layout with the one it
     /// produces for `answers`. Used both to switch kits and to reset to the
-    /// current kit's defaults; other preferences are kept.
+    /// current kit's defaults; other preferences are kept. Either way the
+    /// user has now picked a kit.
     public mutating func apply(_ kit: KitManifest, answers: KitAnswers = [:], catalog: ModuleCatalog = .builtIn) {
         kitID = kit.id
+        hasChosenKit = true
         modules = kit.layout(catalog: catalog, answers: answers)
     }
 
@@ -87,6 +94,7 @@ public struct AppSettings: Equatable, Sendable {
 public struct SettingsRepository {
     enum Key {
         static let kitID = "settings.kit"
+        static let hasChosenKit = "settings.kit.chosen"
         static let moduleOrder = "settings.modules.order"
         static let disabledModules = "settings.modules.disabled"
         static let openOnHover = "settings.openOnHover"
@@ -126,11 +134,15 @@ public struct SettingsRepository {
         // An unknown saved id (an imported kit that was removed) falls back
         // to the default kit.
         let kit = kits.kit(defaults.string(forKey: Key.kitID) ?? defaultKitID)
-        let modules = defaults.stringArray(forKey: Key.moduleOrder).map {
+        let savedOrder = defaults.stringArray(forKey: Key.moduleOrder)
+        let modules = savedOrder.map {
             ModuleLayout(orderRawValues: $0, disabledRawValues: defaults.stringArray(forKey: Key.disabledModules) ?? [])
         }
         return AppSettings(
             kitID: kit?.id ?? defaultKitID,
+            // Older versions saved a tab layout but no flag: those users
+            // already set NotchDeck up, so don't greet them again.
+            hasChosenKit: bool(Key.hasChosenKit) ?? (savedOrder != nil),
             modules: modules ?? kit?.layout() ?? .default,
             openOnHover: bool(Key.openOnHover) ?? fallback.openOnHover,
             hapticsEnabled: bool(Key.hapticsEnabled) ?? fallback.hapticsEnabled,
@@ -152,6 +164,7 @@ public struct SettingsRepository {
 
     public func save(_ settings: AppSettings) {
         defaults.set(settings.kitID, forKey: Key.kitID)
+        defaults.set(settings.hasChosenKit, forKey: Key.hasChosenKit)
         defaults.set(settings.modules.order.map(\.rawValue), forKey: Key.moduleOrder)
         defaults.set(settings.modules.order.filter { !settings.modules.isEnabled($0) }.map(\.rawValue),
                      forKey: Key.disabledModules)
