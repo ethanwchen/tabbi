@@ -8,6 +8,7 @@ public enum TickerKind: String, CaseIterable, Codable, Hashable, Sendable, Ident
     case tasks
     case progress
     case claudeUsage
+    case party
     /// The study pet, last so live data always comes first.
     case pet
 
@@ -23,6 +24,7 @@ public enum TickerKind: String, CaseIterable, Codable, Hashable, Sendable, Ident
         case .progress: "Study goals left today"
         case .claudeUsage: "Claude usage above 80%"
         case .pet: "Study pet"
+        case .party: "Study party pets"
         }
     }
 
@@ -36,6 +38,7 @@ public enum TickerKind: String, CaseIterable, Codable, Hashable, Sendable, Ident
         case .progress: nil
         case .claudeUsage: .claudeUsage
         case .pet: .closet
+        case .party: .party
         }
     }
 }
@@ -71,6 +74,22 @@ public struct TickerPet: Hashable, Sendable {
     }
 }
 
+/// The pets the closed notch shows while the user is in a study party.
+public struct TickerParty: Hashable, Sendable {
+    /// Most pets that fit beside the notch: the user's and three others.
+    public static let maxPets = 4
+
+    /// The user's pet first, capped at `maxPets`.
+    public var pets: [ProvidedPartyPet]
+    /// Everyone in the party, including members whose pets don't fit.
+    public var memberCount: Int
+
+    public init(pets: [ProvidedPartyPet], memberCount: Int) {
+        self.pets = pets
+        self.memberCount = memberCount
+    }
+}
+
 /// One live activity the closed notch can show beside the hardware cutout.
 public enum TickerItem: Hashable, Sendable {
     case meeting(TickerMeeting)
@@ -82,6 +101,7 @@ public enum TickerItem: Hashable, Sendable {
     case progress(ProgressItem)
     case claudeUsage(window: TickerUsageWindow, utilization: Double)
     case pet(TickerPet)
+    case party(TickerParty)
 
     public var kind: TickerKind {
         switch self {
@@ -92,6 +112,7 @@ public enum TickerItem: Hashable, Sendable {
         case .progress: .progress
         case .claudeUsage: .claudeUsage
         case .pet: .pet
+        case .party: .party
         }
     }
 
@@ -135,6 +156,7 @@ public struct TickerSources: Equatable, Sendable {
     public var progress: [ProgressItem]
     public var usage: ClaudeRateLimitSnapshot?
     public var pet: PetPresence?
+    public var party: ProvidedParty?
 
     public init(
         events: [UpcomingEvent] = [],
@@ -143,7 +165,8 @@ public struct TickerSources: Equatable, Sendable {
         tasksRemaining: Int = 0,
         progress: [ProgressItem] = [],
         usage: ClaudeRateLimitSnapshot? = nil,
-        pet: PetPresence? = nil
+        pet: PetPresence? = nil,
+        party: ProvidedParty? = nil
     ) {
         self.events = events
         self.isMusicPlaying = isMusicPlaying
@@ -152,6 +175,7 @@ public struct TickerSources: Equatable, Sendable {
         self.progress = progress
         self.usage = usage
         self.pet = pet
+        self.party = party
     }
 
     /// Every item that has something to say at `now`, in `TickerKind` order.
@@ -239,6 +263,11 @@ public struct TickerSources: Equatable, Sendable {
         case .pet:
             guard let pet else { return nil }
             return .pet(TickerPet(profile: pet.profile, mood: pet.mood(focus: focus, at: now)))
+        case .party:
+            // Alone in a party there are no other pets to show.
+            guard let party, party.memberCount > 1 else { return nil }
+            return .party(TickerParty(pets: Array(party.pets.prefix(TickerParty.maxPets)),
+                                      memberCount: party.memberCount))
         }
     }
 

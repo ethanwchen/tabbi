@@ -140,7 +140,7 @@ Accepted values:
 
 - **Study methods:** `pomodoro`, `fiftyTwoSeventeen`, `ultradian`, `flowtime`, `ankiSprint`, `questionBlock`, `custom`.
 - **Focus sounds:** `brown`, `pink`, `white`, `rain`, `fireplace`, `cafe`.
-- **Ticker previews:** `meeting`, `nowPlaying`, `focus`, `tasks`, `progress` (shared study goals such as Anki cards left), `claudeUsage`, `pet` (the study pet, from the Closet module; it naps after 20 minutes without a session).
+- **Ticker previews:** `meeting`, `nowPlaying`, `focus`, `tasks`, `progress` (shared study goals such as Anki cards left), `claudeUsage`, `party` (party members' pets beside yours while in a study party), `pet` (the study pet, from the Closet module; it naps after 20 minutes without a session).
 - **Pet breeds:** `orangeTabby`, `grayTabby`, `blackCat`, `whiteCat`, `tuxedo`, `calico`, `siamese`, `britishShorthair`, `goldenRetriever`, `labrador`, `frenchBulldog`, `corgi`, `dachshund`, `beagle`.
 
 Today (`planner`) reads these `moduleSettings.planner` keys, all optional:

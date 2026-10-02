@@ -42,7 +42,7 @@ final class TickerStore: ObservableObject {
             .map { shared, isMusicPlaying, usage in
                 TickerSources(events: shared.events, isMusicPlaying: isMusicPlaying, focus: shared.focus,
                               tasksRemaining: shared.openTasks.count, progress: shared.progress, usage: usage,
-                              pet: shared.pet)
+                              pet: shared.pet, party: shared.party)
             }
             .removeDuplicates()
             .sink { [weak self] sources in

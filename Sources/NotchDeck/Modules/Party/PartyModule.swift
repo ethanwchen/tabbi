@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 import NotchKitCore
 import NotchKit
@@ -21,6 +22,14 @@ final class PartyModule: NotchModule {
 
     func makeSettingsPane() -> SettingsPane? {
         .party(store: store)
+    }
+
+    /// The party I'm in, so the closed notch can show members' pets by mine.
+    var provision: AnyPublisher<ModuleProvision, Never>? {
+        store.$state
+            .map { ModuleProvision(party: $0.provided) }
+            .removeDuplicates()
+            .eraseToAnyPublisher()
     }
 
     func start() {

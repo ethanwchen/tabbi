@@ -63,6 +63,20 @@ public struct PartyState: Equatable, Sendable {
         party?.members.filter { $0.profile.code != profile?.code } ?? []
     }
 
+    /// The party for other modules and the closed notch: my pet first,
+    /// then the other members' in roster order; nil when I'm in none.
+    /// Only names and pets leave the module.
+    public var provided: ProvidedParty? {
+        guard inParty, let me = profile else { return nil }
+        let mine = ProvidedPartyPet(id: me.code, name: me.name, pet: PartyPetAppearance.pet(for: me))
+        let others = companions.map { member in
+            ProvidedPartyPet(id: member.profile.code, name: member.profile.name,
+                             pet: PartyPetAppearance.pet(for: member.profile),
+                             isAway: PartyRoster.status(member.presence, online: member.online) == .offline)
+        }
+        return ProvidedParty(pets: [mine] + others)
+    }
+
     // MARK: Transitions
 
     /// Starts over after the server setting changed: drops everything that

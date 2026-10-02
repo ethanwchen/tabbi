@@ -166,6 +166,7 @@ enum SnapshotRenderer {
         case .progress: "progress"
         case .claudeUsage: "usage"
         case .pet: "pet"
+        case .party: "party"
         }
     }
 }
