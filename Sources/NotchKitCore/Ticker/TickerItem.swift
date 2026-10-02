@@ -8,6 +8,8 @@ public enum TickerKind: String, CaseIterable, Codable, Hashable, Sendable, Ident
     case tasks
     case progress
     case claudeUsage
+    /// The study pet, last so live data always comes first.
+    case pet
 
     public var id: String { rawValue }
 
@@ -20,6 +22,7 @@ public enum TickerKind: String, CaseIterable, Codable, Hashable, Sendable, Ident
         case .tasks: "Tasks left today"
         case .progress: "Study goals left today"
         case .claudeUsage: "Claude usage above 80%"
+        case .pet: "Study pet"
         }
     }
 
@@ -32,6 +35,7 @@ public enum TickerKind: String, CaseIterable, Codable, Hashable, Sendable, Ident
         case .nowPlaying: .spotify
         case .progress: nil
         case .claudeUsage: .claudeUsage
+        case .pet: .closet
         }
     }
 }
@@ -56,6 +60,17 @@ public enum TickerUsageWindow: Hashable, Sendable {
     case weekly
 }
 
+/// The study pet beside the closed notch and what it is doing.
+public struct TickerPet: Hashable, Sendable {
+    public var profile: PetProfile
+    public var mood: PetMood
+
+    public init(profile: PetProfile, mood: PetMood) {
+        self.profile = profile
+        self.mood = mood
+    }
+}
+
 /// One live activity the closed notch can show beside the hardware cutout.
 public enum TickerItem: Hashable, Sendable {
     case meeting(TickerMeeting)
@@ -66,6 +81,7 @@ public enum TickerItem: Hashable, Sendable {
     /// An unfinished shared goal, e.g. Anki cards left to review today.
     case progress(ProgressItem)
     case claudeUsage(window: TickerUsageWindow, utilization: Double)
+    case pet(TickerPet)
 
     public var kind: TickerKind {
         switch self {
@@ -75,6 +91,7 @@ public enum TickerItem: Hashable, Sendable {
         case .tasks: .tasks
         case .progress: .progress
         case .claudeUsage: .claudeUsage
+        case .pet: .pet
         }
     }
 
@@ -117,6 +134,7 @@ public struct TickerSources: Equatable, Sendable {
     /// Shared goals from the enabled modules, in tab order.
     public var progress: [ProgressItem]
     public var usage: ClaudeRateLimitSnapshot?
+    public var pet: PetPresence?
 
     public init(
         events: [UpcomingEvent] = [],
@@ -124,7 +142,8 @@ public struct TickerSources: Equatable, Sendable {
         focus: FocusTimer? = nil,
         tasksRemaining: Int = 0,
         progress: [ProgressItem] = [],
-        usage: ClaudeRateLimitSnapshot? = nil
+        usage: ClaudeRateLimitSnapshot? = nil,
+        pet: PetPresence? = nil
     ) {
         self.events = events
         self.isMusicPlaying = isMusicPlaying
@@ -132,6 +151,7 @@ public struct TickerSources: Equatable, Sendable {
         self.tasksRemaining = tasksRemaining
         self.progress = progress
         self.usage = usage
+        self.pet = pet
     }
 
     /// Every item that has something to say at `now`, in `TickerKind` order.
@@ -145,7 +165,7 @@ public struct TickerSources: Equatable, Sendable {
     /// The earliest moment after `now` at which `items(at:enabled:)` can
     /// change from the clock alone: a meeting countdown ticking down a
     /// minute, a meeting entering the horizon or ending, a focus phase
-    /// ending, or a usage window resetting. `nil` when nothing is pending.
+    /// ending, a usage window resetting, or the pet dozing off. `nil` when nothing is pending.
     ///
     /// Lets the caller sleep until then instead of polling. A running focus
     /// clock's per-second change is left to the caller, which only needs it
@@ -172,6 +192,9 @@ public struct TickerSources: Equatable, Sendable {
         }
         if enabled.contains(.claudeUsage) {
             dates += [usage?.fiveHour?.resetsAt, usage?.sevenDay?.resetsAt].compactMap { $0 }.filter { $0 > now }
+        }
+        if enabled.contains(.pet), let sleepsAt = pet?.sleepsAt(focus: focus, after: now) {
+            dates.append(sleepsAt)
         }
         return dates.min()
     }
@@ -213,6 +236,9 @@ public struct TickerSources: Equatable, Sendable {
             guard let worst = windows.max(by: { $0.1 < $1.1 }),
                   worst.1 > Self.usageThreshold else { return nil }
             return .claudeUsage(window: worst.0, utilization: worst.1)
+        case .pet:
+            guard let pet else { return nil }
+            return .pet(TickerPet(profile: pet.profile, mood: pet.mood(focus: focus, at: now)))
         }
     }
 

@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import SwiftUI
 import NotchKitCore
@@ -19,7 +20,11 @@ final class ClosetStore: ObservableObject {
     @Published var section: ClosetSection = .wardrobe
     /// The large preview in the Closet tab.
     let preview: PetPlayer
+    /// The saved pet plus when a study session last ran, which the closed
+    /// notch uses to show the pet awake or asleep.
+    @Published private(set) var presence: PetPresence
 
+    private var focusSubscription: AnyCancellable?
     private let saveURL: URL?
     /// Set when the save on disk could not be read: the closet then runs on
     /// a fresh pet but never overwrites the file, so nothing is lost.
@@ -43,6 +48,17 @@ final class ClosetStore: ObservableObject {
         saveURL = url
         saveIsUnreadable = unreadable
         preview = PetPlayer(profile: closet.profile)
+        presence = PetPresence(profile: closet.profile, lastActive: .now)
+    }
+
+    /// Follows the shared focus timer, so the notch pet stays awake through
+    /// sessions and dozes off a while after the last one.
+    func follow(focus: AnyPublisher<FocusTimer?, Never>) {
+        focusSubscription = focus
+            .removeDuplicates()
+            .sink { [weak self] timer in
+                MainActor.assumeIsolated { self?.presence.observe(timer, at: .now) }
+            }
     }
 
     /// `~/Library/Application Support/<edition>/Pet/pet.json`.
@@ -77,6 +93,7 @@ final class ClosetStore: ObservableObject {
 
     private func edit<Result>(_ change: (inout PetCloset) -> Result) -> Result {
         let result = change(&closet)
+        if presence.profile != closet.profile { presence.profile = closet.profile }
         refreshPreview()
         persist()
         return result

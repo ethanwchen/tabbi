@@ -9,7 +9,7 @@
     "studyMethods": ["pomodoro", "ankiSprint", "questionBlock", "fiftyTwoSeventeen", "ultradian", "flowtime", "custom"],
     "studyMethod": "pomodoro",
     "focusSounds": [{ "sound": "rain", "level": 0.8 }, { "sound": "brown", "level": 0.4 }],
-    "ticker": ["focus", "tasks", "progress", "meeting", "nowPlaying"],
+    "ticker": ["focus", "tasks", "progress", "meeting", "nowPlaying", "pet"],
     "pet": { "breed": "orangeTabby" },
     "theme": "notch",
     "moduleSettings": {

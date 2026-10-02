@@ -101,7 +101,7 @@ The open notch shows up to nine tabs comfortably, and the number keys 1-9 jump t
   "studyMethods": ["pomodoro", "ankiSprint", "questionBlock"],
   "studyMethod": "pomodoro",
   "focusSounds": [{ "sound": "rain", "level": 0.8 }, { "sound": "brown", "level": 0.4 }],
-  "ticker": ["focus", "tasks", "meeting", "nowPlaying"],
+  "ticker": ["focus", "tasks", "meeting", "nowPlaying", "pet"],
   "pet": { "breed": "orangeTabby", "name": "Miso" },
   "theme": "notch",
   "moduleSettings": { "anki": { "deck": "AnKing" } }
@@ -122,7 +122,7 @@ Accepted values:
 
 - **Study methods:** `pomodoro`, `fiftyTwoSeventeen`, `ultradian`, `flowtime`, `ankiSprint`, `questionBlock`, `custom`.
 - **Focus sounds:** `brown`, `pink`, `white`, `rain`, `fireplace`, `cafe`.
-- **Ticker previews:** `meeting`, `nowPlaying`, `focus`, `tasks`, `progress` (shared study goals such as Anki cards left), `claudeUsage`.
+- **Ticker previews:** `meeting`, `nowPlaying`, `focus`, `tasks`, `progress` (shared study goals such as Anki cards left), `claudeUsage`, `pet` (the study pet, from the Closet module; it naps after 20 minutes without a session).
 - **Pet breeds:** `orangeTabby`, `grayTabby`, `blackCat`, `whiteCat`, `tuxedo`, `calico`, `siamese`, `britishShorthair`, `goldenRetriever`, `labrador`, `frenchBulldog`, `corgi`, `dachshund`, `beagle`.
 
 Today (`planner`) reads these `moduleSettings.planner` keys, all optional:

@@ -34,4 +34,17 @@ public enum TickerFormat {
         let label = window == .fiveHour ? "5h" : "Week"
         return "\(label) \(ClaudeUsageFormat.percent(utilization))"
     }
+
+    /// The pet's line for tooltips and accessibility, e.g. "Mochi is napping".
+    public static func petSummary(_ pet: TickerPet) -> String {
+        switch pet.mood {
+        case .studying: "\(pet.profile.name) is studying with you"
+        case .onBreak: "\(pet.profile.name) is on a break with you"
+        case .awake: "\(pet.profile.name) is keeping you company"
+        case .asleep: "\(pet.profile.name) is napping until your next session"
+        }
+    }
+
+    /// Shown after the name while the pet sleeps.
+    public static let petSleeping = "zzz"
 }

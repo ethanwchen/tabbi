@@ -274,6 +274,16 @@ Run the app with `NOTCHDECK_COACH_PREVIEW=1` to play one nudge at launch.
 Settings › Pet Coach (shown with the Closet module) turns nudges on or off and edits the distracting apps: suggestion chips plus any app picked from the Applications folder.
 Turning nudges off stops sampling and ends any open episode, so turning them back on starts fresh.
 
+### The pet in the notch
+
+`PetPresence` is the pet as the closed notch shows it: its profile plus `lastActive`, the last time a session ran.
+`observe(_:at:)` stamps `lastActive` while the shared timer runs or is paused, and at the moment a session ends.
+`mood(focus:at:)` reads `.studying` in a running focus phase, `.onBreak` in a running break, `.awake` while paused or within `sleepAfter` (20 min) of the last session, and `.asleep` after that.
+The Closet module shares it as `ModuleProvision.pet`, and `ProviderSnapshot.pet` keeps the first in tab order.
+The ticker turns it into a `.pet` item (`TickerKind.pet`, last in rotation), and `TickerSources.nextChange` includes the moment the pet dozes off, so the notch updates without polling.
+`NotchPetWing` (NotchKit) draws the animated pet in the leading wing and its name in the trailing wing, with a quiet "zzz" while it sleeps; mood changes play the real fall-asleep and wake-up clips.
+`--snapshot` renders `closed-pet.png` and `closed-pet-asleep.png` when the Closet module is on (use `--edition studynotch`).
+
 ## Closet (`Sources/NotchKitCore/Closet`)
 
 `PetCloset` holds the Closet tab's editing rules over one `PetSave`, so every edit leaves a save that is valid to persist.
