@@ -91,7 +91,7 @@ public struct UpNextEmptyState: Hashable, Sendable {
     ///
     /// - Parameters:
     ///   - upcoming: events still ahead today.
-    ///   - eventsToday: every event today, including finished ones.
+    ///   - eventsToday: every timed event today, including finished ones.
     ///   - hasAccounts: whether any calendar syncs from an online account
     ///     (CalDAV, Exchange, iCloud) rather than living only on this Mac.
     public static func granted(upcoming: Int, eventsToday: Int, hasAccounts: Bool) -> Situation? {

@@ -28,7 +28,7 @@ final class UpNextStore: ObservableObject {
     @Published private(set) var access: Access
     /// Up to three events still ahead today, soonest first.
     @Published private(set) var events: [UpcomingEvent] = []
-    /// How many events today has in all, finished ones included, so an empty
+    /// How many timed events today has in all, finished ones included, so an empty
     /// list can tell "day is done" from "nothing on the calendar".
     @Published private(set) var eventsToday = 0
     /// Whether any calendar syncs from an online account (Google, Exchange,
@@ -68,7 +68,7 @@ final class UpNextStore: ObservableObject {
             demoEvents = preview == nil ? UpcomingEvent.samples(now: start, kind: sampleDay) : []
             now = start
             events = UpcomingEvent.upNext(from: demoEvents, at: start)
-            eventsToday = demoEvents.count
+            eventsToday = demoEvents.filter { !$0.isAllDay }.count
         } else {
             demoEvents = []
             access = Self.currentAccess()
@@ -188,7 +188,7 @@ final class UpNextStore: ObservableObject {
     func showSampleDay(_ kind: PlannerSampleDay) {
         guard isDemo, !demoEvents.isEmpty else { return }
         demoEvents = UpcomingEvent.samples(now: Date(), kind: kind)
-        eventsToday = demoEvents.count
+        eventsToday = demoEvents.filter { !$0.isAllDay }.count
         reload()
     }
 
@@ -209,7 +209,7 @@ final class UpNextStore: ObservableObject {
         let predicate = eventStore.predicateForEvents(withStart: startOfDay, end: endOfDay, calendars: nil)
         let today = eventStore.events(matching: predicate).map(Self.upcomingEvent)
         events = UpcomingEvent.upNext(from: today, at: now)
-        eventsToday = today.count
+        eventsToday = today.filter { !$0.isAllDay }.count
         hasAccounts = eventStore.calendars(for: .event).contains { Self.syncsFromAccount($0.source) }
     }
 
