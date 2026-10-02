@@ -1,6 +1,7 @@
 import Combine
 import SwiftUI
 import NotchKitCore
+import NotchKit
 
 /// Long-lived state for every module, created once at launch and shared with
 /// all views through the environment. Each module owns its own store class

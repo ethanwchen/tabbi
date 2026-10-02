@@ -7,26 +7,31 @@ import NotchKitCore
 /// Uses a local `NSEvent` monitor, so it only sees keys while Settings is the
 /// key window and needs no Accessibility permission. Recording stops when a
 /// shortcut is accepted, on Esc, or when the window loses focus. While it
-/// records, the global hotkey is suspended through the settings store.
+/// records, the app should suspend its global hotkey, which `start` reports
+/// through `onRecordingChange` so this type needs no app settings store.
 @MainActor
-final class HotkeyRecorder: ObservableObject {
-    @Published private(set) var isRecording = false
+public final class HotkeyRecorder: ObservableObject {
+    @Published public private(set) var isRecording = false
     /// Modifiers currently held, shown live while recording.
-    @Published private(set) var heldModifiers: Hotkey.Modifiers = []
+    @Published public private(set) var heldModifiers: Hotkey.Modifiers = []
     /// Why the last key press was refused, cleared on the next press.
-    @Published private(set) var rejection: Hotkey.Recording?
+    @Published public private(set) var rejection: Hotkey.Recording?
 
     private var monitor: Any?
     private var resignObserver: NSObjectProtocol?
     private var onRecord: ((Hotkey) -> Void)?
-    private weak var store: SettingsStore?
+    private var onRecordingChange: ((Bool) -> Void)?
 
-    func start(suspending store: SettingsStore, onRecord: @escaping (Hotkey) -> Void) {
+    public init() {}
+
+    /// Starts recording. `onRecordingChange` is called with `true` now and
+    /// `false` when recording stops; `onRecord` gets the accepted shortcut.
+    public func start(onRecordingChange: @escaping (Bool) -> Void, onRecord: @escaping (Hotkey) -> Void) {
         guard !isRecording else { return }
-        self.store = store
+        self.onRecordingChange = onRecordingChange
         self.onRecord = onRecord
         isRecording = true
-        store.isRecordingHotkey = true
+        onRecordingChange(true)
         heldModifiers = Hotkey.Modifiers(NSEvent.modifierFlags)
         rejection = nil
         monitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown, .flagsChanged]) { [weak self] event in
@@ -40,15 +45,15 @@ final class HotkeyRecorder: ObservableObject {
         }
     }
 
-    func stop() {
+    public func stop() {
         if let monitor { NSEvent.removeMonitor(monitor) }
         if let resignObserver { NotificationCenter.default.removeObserver(resignObserver) }
         monitor = nil
         resignObserver = nil
         onRecord = nil
         isRecording = false
-        store?.isRecordingHotkey = false
-        store = nil
+        onRecordingChange?(false)
+        onRecordingChange = nil
         heldModifiers = []
         rejection = nil
     }
@@ -89,16 +94,32 @@ extension Hotkey.Modifiers {
 
 /// The clickable shortcut field: shows the current shortcut as key caps and
 /// switches to a highlighted recording state when clicked.
-struct HotkeyRecorderField: View {
+public struct HotkeyRecorderField: View {
     let hotkey: Hotkey
     @ObservedObject var recorder: HotkeyRecorder
-    @EnvironmentObject private var store: SettingsStore
+    let onRecordingChange: (Bool) -> Void
     let onRecord: (Hotkey) -> Void
     @State private var hovering = false
 
-    var body: some View {
+    public init(
+        hotkey: Hotkey,
+        recorder: HotkeyRecorder,
+        onRecordingChange: @escaping (Bool) -> Void,
+        onRecord: @escaping (Hotkey) -> Void
+    ) {
+        self.hotkey = hotkey
+        self.recorder = recorder
+        self.onRecordingChange = onRecordingChange
+        self.onRecord = onRecord
+    }
+
+    public var body: some View {
         Button {
-            if recorder.isRecording { recorder.stop() } else { recorder.start(suspending: store, onRecord: onRecord) }
+            if recorder.isRecording {
+                recorder.stop()
+            } else {
+                recorder.start(onRecordingChange: onRecordingChange, onRecord: onRecord)
+            }
         } label: {
             Text(label)
                 .font(.system(size: 13, weight: .medium, design: .rounded))

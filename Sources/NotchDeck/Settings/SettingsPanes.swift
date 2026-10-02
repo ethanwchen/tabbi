@@ -404,9 +404,12 @@ struct ShortcutsSettingsPane: View {
                             .buttonStyle(.borderless)
                             .help("Restore \(Hotkey.default.displayString)")
                         }
-                        HotkeyRecorderField(hotkey: store.settings.hotkey, recorder: recorder) {
-                            store.settings.hotkey = $0
-                        }
+                        HotkeyRecorderField(
+                            hotkey: store.settings.hotkey,
+                            recorder: recorder,
+                            onRecordingChange: { store.isRecordingHotkey = $0 },
+                            onRecord: { store.settings.hotkey = $0 }
+                        )
                     }
                 } label: {
                     Text("Open and close the notch")

@@ -65,7 +65,7 @@ In short:
 | Path | What lives there |
 | --- | --- |
 | `Sources/NotchKitCore` | Pure Swift with no AppKit or SwiftUI: parsers, models, stores, formatting. Everything here has unit tests in `Tests/NotchKitCoreTests`. |
-| `Sources/NotchKit` | Shared AppKit and SwiftUI: the design system in `Design/Theme.swift` (palette, type, spacing, radius, motion, plus `Card` and `IconButton`), shared components, the notch panel, shape and geometry, the notch's open/close and tab state with its tab bar, the root notch view with its closed-notch preview, the notch controller (panel placement, pointer, keyboard, swipe and hotkey input), and pet views. The app fills the notch through `ModuleViews.notchContent` and `ModuleViews.notchInputs`. |
+| `Sources/NotchKit` | Shared AppKit and SwiftUI: the design system in `Design/Theme.swift` (palette, type, spacing, radius, motion, plus `Card` and `IconButton`), shared components, the notch panel, shape and geometry, the notch's open/close and tab state with its tab bar, the root notch view with its closed-notch preview, the notch controller (panel placement, pointer, keyboard, swipe and hotkey input), pet views, the focus audio engine, and the settings infrastructure (the toolbar Settings window and the shortcut recorder field). The app fills the notch through `ModuleViews.notchContent` and `ModuleViews.notchInputs`. |
 | `Sources/NotchDeck/Modules/<Module>/` | One folder per module: an `ObservableObject` store owned by `AppServices`, and its SwiftUI views. |
 | `Sources/NotchKitCore/Claude` | `ClaudeCLI` and the stream-json parser used by both Claude modules. |
 

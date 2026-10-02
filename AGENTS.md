@@ -34,8 +34,12 @@ Judge them against the design rules below before you call the work done.
   `NotchController` with its `GlobalHotkey`, which places the panel and
   handles pointer, keyboard, swipe and hotkey input while following the
   app state passed in as `NotchInputs`), `Pets/`
-  (`PetPlayer`, `PetView`) and `Audio/` (`FocusSoundEngine`, which plays a
-  `FocusMix` through AVAudioEngine; Study can reuse it). Everything here is `public`. Reuse it; add new
+  (`PetPlayer`, `PetView`), `Audio/` (`FocusSoundEngine`, which plays a
+  `FocusMix` through AVAudioEngine; Study can reuse it) and `Settings/`
+  (the toolbar `SettingsWindowController`, which shows whatever
+  `SettingsPane`s the app hands it, and the `HotkeyRecorder` shortcut
+  field). The app's own panes and their order live in
+  `NotchDeck/Settings/AppSettingsPanes.swift`. Everything here is `public`. Reuse it; add new
   shared components here, not inside a module.
 - `Sources/NotchDeck/Modules/ModuleViews.swift` — hooks the shared notch up
   to the app: the closed notch's live-activity wings, `notchContent`

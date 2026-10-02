@@ -22,7 +22,7 @@ protocol NotchModule: AnyObject {
     /// A pane for the Settings window's toolbar, shown while the module is
     /// enabled, or nil when it has nothing to configure beyond the Modules
     /// pane's on/off switch.
-    func makeSettingsPane() -> ModuleSettingsPane?
+    func makeSettingsPane() -> SettingsPane?
 
     /// Called when the module becomes enabled in the layout (at launch, or
     /// when the user or a kit turns it on). Start background work the module
@@ -42,21 +42,10 @@ protocol NotchModule: AnyObject {
 extension NotchModule {
     var id: ModuleID { descriptor.id }
 
-    func makeSettingsPane() -> ModuleSettingsPane? { nil }
+    func makeSettingsPane() -> SettingsPane? { nil }
     func start() {}
     func stop() {}
     var provision: AnyPublisher<ModuleProvision, Never>? { nil }
-}
-
-/// A Settings window pane that a module contributes. The window lists
-/// enabled modules' panes between its own panes, in canonical module order.
-struct ModuleSettingsPane {
-    /// Unique among all panes; also names the snapshot (`settings-<id>.png`).
-    let id: String
-    let title: String
-    /// SF Symbol for the toolbar item.
-    let symbol: String
-    let view: AnyView
 }
 
 /// The modules this build runs, in canonical order, keyed by id.

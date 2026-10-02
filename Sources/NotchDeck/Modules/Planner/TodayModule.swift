@@ -1,6 +1,7 @@
 import Combine
 import SwiftUI
 import NotchKitCore
+import NotchKit
 
 /// Today: the daily checklist, Up Next calendar card, focus timer, and
 /// Plan my day / Wrap up.
@@ -18,8 +19,8 @@ final class TodayModule: NotchModule {
     }
 
     /// Focus mode follows Today's focus timer, so its settings live here.
-    func makeSettingsPane() -> ModuleSettingsPane? {
-        ModuleSettingsPane(id: "focus", title: "Focus", symbol: "moon", view: AnyView(FocusSettingsPane()))
+    func makeSettingsPane() -> SettingsPane? {
+        SettingsPane(id: "focus", title: "Focus", symbol: "moon", view: AnyView(FocusSettingsPane()))
     }
 
     /// The checklist, today's calendar events, and the focus timer.
