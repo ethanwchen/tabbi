@@ -33,7 +33,7 @@ struct NotchPreview: View {
         .help(NotchPreviewLayout.summary(for: item))
     }
 
-    private var accent: Color { Theme.Palette.accent(for: item.kind.module) }
+    private var accent: Color { Theme.Palette.accent(for: item.module) }
 
     @ViewBuilder private var leading: some View {
         switch item {
@@ -67,6 +67,10 @@ struct NotchPreview: View {
                 .previewText()
         case .tasks(let remaining):
             Text(TickerFormat.tasksLeft(remaining))
+                .foregroundStyle(Theme.Palette.primaryText)
+                .previewText()
+        case .progress(let progress):
+            Text(TickerFormat.progressLeft(progress))
                 .foregroundStyle(Theme.Palette.primaryText)
                 .previewText()
         case .claudeUsage(let window, let utilization):

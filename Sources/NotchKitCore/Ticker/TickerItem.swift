@@ -6,6 +6,7 @@ public enum TickerKind: String, CaseIterable, Codable, Hashable, Sendable, Ident
     case nowPlaying
     case focus
     case tasks
+    case progress
     case claudeUsage
 
     public var id: String { rawValue }
@@ -17,15 +18,19 @@ public enum TickerKind: String, CaseIterable, Codable, Hashable, Sendable, Ident
         case .nowPlaying: "Now playing"
         case .focus: "Focus timer"
         case .tasks: "Tasks left today"
+        case .progress: "Study goals left today"
         case .claudeUsage: "Claude usage above 80%"
         }
     }
 
-    /// The panel a click on this preview opens.
-    public var module: ModuleID {
+    /// The module this preview needs turned on, and whose panel a click opens.
+    /// `nil` for progress, which any module can provide; only enabled modules
+    /// publish it, and `TickerItem.module` opens the one it came from.
+    public var module: ModuleID? {
         switch self {
         case .meeting, .focus, .tasks: .planner
         case .nowPlaying: .spotify
+        case .progress: nil
         case .claudeUsage: .claudeUsage
         }
     }
@@ -58,6 +63,8 @@ public enum TickerItem: Hashable, Sendable {
     case nowPlaying
     case focus(phase: FocusPhase, remaining: TimeInterval, isRunning: Bool)
     case tasks(remaining: Int)
+    /// An unfinished shared goal, e.g. Anki cards left to review today.
+    case progress(ProgressItem)
     case claudeUsage(window: TickerUsageWindow, utilization: Double)
 
     public var kind: TickerKind {
@@ -66,8 +73,16 @@ public enum TickerItem: Hashable, Sendable {
         case .nowPlaying: .nowPlaying
         case .focus: .focus
         case .tasks: .tasks
+        case .progress: .progress
         case .claudeUsage: .claudeUsage
         }
+    }
+
+    /// The panel a click on this preview opens: the kind's module, or for
+    /// progress the module that provided the goal.
+    public var module: ModuleID {
+        if case .progress(let item) = self { return item.source }
+        return kind.module ?? .planner
     }
 
     /// Whether this item should hold the notch instead of rotating away.
@@ -99,6 +114,8 @@ public struct TickerSources: Equatable, Sendable {
     public var isMusicPlaying: Bool
     public var focus: FocusTimer?
     public var tasksRemaining: Int
+    /// Shared goals from the enabled modules, in tab order.
+    public var progress: [ProgressItem]
     public var usage: ClaudeRateLimitSnapshot?
 
     public init(
@@ -106,12 +123,14 @@ public struct TickerSources: Equatable, Sendable {
         isMusicPlaying: Bool = false,
         focus: FocusTimer? = nil,
         tasksRemaining: Int = 0,
+        progress: [ProgressItem] = [],
         usage: ClaudeRateLimitSnapshot? = nil
     ) {
         self.events = events
         self.isMusicPlaying = isMusicPlaying
         self.focus = focus
         self.tasksRemaining = tasksRemaining
+        self.progress = progress
         self.usage = usage
     }
 
@@ -180,6 +199,10 @@ public struct TickerSources: Equatable, Sendable {
             return .focus(phase: focus.phase, remaining: focus.remaining(at: now), isRunning: focus.isRunning)
         case .tasks:
             return tasksRemaining > 0 ? .tasks(remaining: tasksRemaining) : nil
+        case .progress:
+            // The first goal in tab order with work left; a finished goal
+            // has nothing to say.
+            return progress.first { !$0.isComplete }.map(TickerItem.progress)
         case .claudeUsage:
             let windows: [(TickerUsageWindow, Double)] = [
                 (.fiveHour, Self.utilization(of: usage?.fiveHour, at: now)),

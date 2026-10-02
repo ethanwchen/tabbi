@@ -21,6 +21,10 @@ final class TickerSourcesTests: XCTestCase {
         return timer
     }
 
+    private func cards(completed: Int, target: Int, source: ModuleID = .anki) -> ProgressItem {
+        ProgressItem(id: "reviews", source: source, title: "Anki reviews", completed: completed, target: target, unit: "cards")
+    }
+
     func testNoDataMeansNoItems() {
         XCTAssertEqual(TickerSources().items(at: now), [])
     }
@@ -31,9 +35,10 @@ final class TickerSourcesTests: XCTestCase {
             isMusicPlaying: true,
             focus: runningFocus(remaining: 600),
             tasksRemaining: 3,
+            progress: [cards(completed: 10, target: 50)],
             usage: ClaudeRateLimitSnapshot(status: nil, fiveHour: ClaudeUsageWindow(utilization: 0.85, resetsAt: nil), sevenDay: nil)
         )
-        XCTAssertEqual(sources.items(at: now).map(\.kind), [.meeting, .nowPlaying, .focus, .tasks, .claudeUsage])
+        XCTAssertEqual(sources.items(at: now).map(\.kind), [.meeting, .nowPlaying, .focus, .tasks, .progress, .claudeUsage])
     }
 
     func testDisabledKindsAreSkipped() {
@@ -123,6 +128,14 @@ final class TickerSourcesTests: XCTestCase {
         XCTAssertEqual(TickerSources(tasksRemaining: 0).items(at: now), [])
     }
 
+    func testProgressShowsTheFirstUnfinishedGoal() {
+        let done = cards(completed: 40, target: 40)
+        let left = ProgressItem(id: "qbank", source: .study, title: "Questions", completed: 5, target: 40, unit: "questions")
+        XCTAssertEqual(TickerSources(progress: [done]).items(at: now), [])
+        XCTAssertEqual(TickerSources(progress: [cards(completed: 0, target: 0)]).items(at: now), [])
+        XCTAssertEqual(TickerSources(progress: [done, left]).items(at: now), [.progress(left)])
+    }
+
     func testUsageShowsOnlyAboveEightyPercentAndPicksTheFullerWindow() {
         func usage(_ fiveHour: Double?, _ weekly: Double?) -> [TickerItem] {
             TickerSources(usage: ClaudeRateLimitSnapshot(
@@ -166,6 +179,13 @@ final class TickerSourcesTests: XCTestCase {
         XCTAssertEqual(TickerKind.tasks.module, .planner)
         XCTAssertEqual(TickerKind.nowPlaying.module, .spotify)
         XCTAssertEqual(TickerKind.claudeUsage.module, .claudeUsage)
+        XCTAssertNil(TickerKind.progress.module)
+    }
+
+    func testProgressOpensTheModuleThatProvidedIt() {
+        XCTAssertEqual(TickerItem.progress(cards(completed: 1, target: 5)).module, .anki)
+        XCTAssertEqual(TickerItem.progress(cards(completed: 1, target: 5, source: .study)).module, .study)
+        XCTAssertEqual(TickerItem.tasks(remaining: 1).module, .planner)
     }
 }
 
@@ -276,6 +296,11 @@ final class TickerFormatTests: XCTestCase {
     func testTasksLeftPluralizes() {
         XCTAssertEqual(TickerFormat.tasksLeft(1), "1 task left")
         XCTAssertEqual(TickerFormat.tasksLeft(3), "3 tasks left")
+    }
+
+    func testProgressLeftUsesTheGoalsUnit() {
+        let item = ProgressItem(id: "reviews", source: .anki, title: "Anki reviews", completed: 16, target: 100, unit: "cards")
+        XCTAssertEqual(TickerFormat.progressLeft(item), "84 cards left")
     }
 
     func testFocusAndUsage() {
