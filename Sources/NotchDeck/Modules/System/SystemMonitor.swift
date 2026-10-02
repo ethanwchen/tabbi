@@ -19,6 +19,8 @@ final class SystemMonitor: ObservableObject {
     @Published private(set) var gpu: Double?
     @Published private(set) var gpuHistory = RingBuffer<Double>(capacity: historyCapacity)
     @Published private(set) var memory: MemoryStats?
+    /// Used-memory fraction over time.
+    @Published private(set) var memoryHistory = RingBuffer<Double>(capacity: historyCapacity)
     @Published private(set) var thermal: ThermalLevel = .nominal
 
     private let isDemo: Bool
@@ -38,7 +40,9 @@ final class SystemMonitor: ObservableObject {
             // baseline makes the first timer tick report a real percentage.
             previousTicks = SystemSampler.cpuTicks()
             memory = SystemSampler.memory()
+            if let memory { memoryHistory.append(memory.usedFraction) }
             gpu = SystemSampler.gpuUtilization()
+            if let gpu { gpuHistory.append(gpu) }
             thermal = SystemSampler.thermal()
         }
     }
@@ -77,7 +81,9 @@ final class SystemMonitor: ObservableObject {
         gpu = gpuNow
         if let gpuNow { gpuHistory.append(gpuNow) }
 
-        memory = SystemSampler.memory()
+        let memoryNow = SystemSampler.memory()
+        memory = memoryNow
+        if let memoryNow { memoryHistory.append(memoryNow.usedFraction) }
         let thermalNow = SystemSampler.thermal()
         if thermalNow != thermal { thermal = thermalNow }
     }
@@ -89,6 +95,8 @@ final class SystemMonitor: ObservableObject {
         let gpuNow = SystemDemoData.gpu(at: step)
         gpu = gpuNow
         gpuHistory.append(gpuNow)
-        memory = SystemDemoData.memory(at: step)
+        let memoryNow = SystemDemoData.memory(at: step)
+        memory = memoryNow
+        memoryHistory.append(memoryNow.usedFraction)
     }
 }
