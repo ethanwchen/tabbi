@@ -29,9 +29,9 @@ final class NotchViewModel: ObservableObject {
     }
     @Published private(set) var movingForward = true
     @Published var geometry: NotchGeometry
-    /// Whether a module currently shows a compact live activity beside the
-    /// closed notch (set by AppServices).
-    @Published var hasCompactActivity = false
+    /// The live preview beside the closed notch, nil for a plain black notch
+    /// (fed from `TickerStore`).
+    @Published var preview: TickerItem?
     /// While true the notch stays open even when the pointer leaves
     /// (e.g. the user is typing a question).
     @Published var isPinned = false
@@ -46,6 +46,10 @@ final class NotchViewModel: ObservableObject {
     }
 
     var isOpen: Bool { phase == .open }
+
+    /// Changes only when the preview switches kind, so the notch animates its
+    /// width on rotation but not on every countdown tick.
+    var previewKind: TickerKind? { preview?.kind }
 
     /// The visible size of the notch shape for the current phase.
     var size: CGSize {
@@ -72,7 +76,7 @@ final class NotchViewModel: ObservableObject {
     }
 
     private func closedWidth(_ notch: CGSize) -> CGFloat {
-        notch.width + (hasCompactActivity ? Theme.Layout.compactWingWidth * 2 : 0)
+        notch.width + (preview.map { NotchPreviewLayout.wingWidth(for: $0) * 2 } ?? 0)
     }
 
     func open(_ module: ModuleID? = nil) {
@@ -88,6 +92,12 @@ final class NotchViewModel: ObservableObject {
     func setHovering(_ hovering: Bool) {
         guard phase != .open else { return }
         phase = hovering ? .hovering : .closed
+    }
+
+    /// Clicking the closed notch opens the module its preview belongs to,
+    /// e.g. Today for a meeting countdown.
+    func openFromClosedClick() {
+        open(preview?.kind.module)
     }
 
     func toggle() {

@@ -144,8 +144,8 @@ public struct TickerSources: Equatable, Sendable {
             return tasksRemaining > 0 ? .tasks(remaining: tasksRemaining) : nil
         case .claudeUsage:
             let windows: [(TickerUsageWindow, Double)] = [
-                (.fiveHour, usage?.fiveHour?.utilization ?? 0),
-                (.weekly, usage?.sevenDay?.utilization ?? 0),
+                (.fiveHour, Self.utilization(of: usage?.fiveHour, at: now)),
+                (.weekly, Self.utilization(of: usage?.sevenDay, at: now)),
             ]
             // The fuller window is the more urgent one; ties favor the 5-hour
             // window because it resets sooner and is the one the user can act on.
@@ -153,5 +153,13 @@ public struct TickerSources: Equatable, Sendable {
                   worst.1 > Self.usageThreshold else { return nil }
             return .claudeUsage(window: worst.0, utilization: worst.1)
         }
+    }
+
+    /// The window's utilization, or 0 once it has reset: the snapshot is only
+    /// refreshed on demand, so after `resetsAt` its number no longer holds.
+    private static func utilization(of window: ClaudeUsageWindow?, at now: Date) -> Double {
+        guard let window else { return 0 }
+        if let resetsAt = window.resetsAt, resetsAt <= now { return 0 }
+        return window.utilization
     }
 }

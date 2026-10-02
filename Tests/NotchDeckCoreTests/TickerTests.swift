@@ -94,6 +94,17 @@ final class TickerSourcesTests: XCTestCase {
         XCTAssertEqual(usage(0.9, 0.9), [.claudeUsage(window: .fiveHour, utilization: 0.9)])
     }
 
+    func testUsageFromAWindowThatHasResetIsIgnored() {
+        let snapshot = ClaudeRateLimitSnapshot(
+            status: nil,
+            fiveHour: ClaudeUsageWindow(utilization: 0.95, resetsAt: now.addingTimeInterval(-60)),
+            sevenDay: ClaudeUsageWindow(utilization: 0.85, resetsAt: now.addingTimeInterval(3600))
+        )
+        XCTAssertEqual(TickerSources(usage: snapshot).items(at: now),
+                       [.claudeUsage(window: .weekly, utilization: 0.85)])
+        XCTAssertEqual(TickerSources(usage: snapshot).items(at: now.addingTimeInterval(7200)), [])
+    }
+
     func testOnlyImminentOrCurrentMeetingsPin() {
         func pinned(startsIn minutes: Double) -> Bool {
             TickerSources(events: [event("M", startsIn: minutes)]).items(at: now).first?.isPinned ?? false
