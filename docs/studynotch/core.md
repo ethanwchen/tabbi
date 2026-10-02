@@ -263,12 +263,16 @@ In the app, `PetCoachOverlayView` (`Modules/PetCoach`) draws a stroll.
 `PetCoachStudyState(_:)` reads the shared focus timer (`ProviderSnapshot.focus`): only a running focus phase is `.focusing`, so the pet stays quiet on breaks, while paused, and with no timer.
 `PetCoachInput(now:idleSeconds:frontmost:timer:)` builds a reading from that timer and marks focus phases of 45 min or longer as deep focus.
 The app samples every `PetCoach.sampleInterval` (5 s) during a focus phase and not at all otherwise.
-`PetCoachSave` persists the coach (cooldowns, snooze) and the app lists as `Pet/coach.json`, next to the pet's save.
+`PetCoachSave` persists the coach (cooldowns, snooze), the app lists and the user's `nudgesOn` switch as `Pet/coach.json`, next to the pet's save.
+Saves without `nudgesOn` read as on.
+`CoachAppList.toggleDistracting(_:)` backs the settings chips, and `addedDistracting` lists the apps the user added beyond the suggestions.
 
 In the app, `PetCoachController` (`Modules/PetCoach`) runs while the Closet module is on.
 It plays each nudge in `PetCoachOverlayWindow`, a transparent, non-activating panel hung below the menu bar at the notch's right edge.
 The window ignores the mouse except while the pointer is over the bubble.
 Run the app with `NOTCHDECK_COACH_PREVIEW=1` to play one nudge at launch.
+Settings › Pet Coach (shown with the Closet module) turns nudges on or off and edits the distracting apps: suggestion chips plus any app picked from the Applications folder.
+Turning nudges off stops sampling and ends any open episode, so turning them back on starts fresh.
 
 ## Closet (`Sources/NotchKitCore/Closet`)
 

@@ -18,8 +18,11 @@ import NotchKit
 /// through closures `AppServices` provides. Coach state (cooldowns, snooze,
 /// app lists) persists next to the pet's save. With `NOTCHDECK_DEMO=1` the
 /// coach never samples, nudges, or writes.
+///
+/// It also backs Settings › Pet Coach: the nudges switch and the user's
+/// distracting apps, published so the pane follows them.
 @MainActor
-final class PetCoachController {
+final class PetCoachController: ObservableObject {
     private let profile: () -> PetProfile
     private let screen: () -> NSScreen?
     private let pauseTimer: () -> Void
@@ -30,7 +33,13 @@ final class PetCoachController {
     /// never overwrite the file.
     private let saveIsUnreadable: Bool
 
-    private var save: PetCoachSave
+    private var save: PetCoachSave {
+        didSet {
+            // Samples rewrite the coach state every few seconds; only tell
+            // views when what Settings shows changes.
+            if save.apps != oldValue.apps || save.nudgesOn != oldValue.nudgesOn { objectWillChange.send() }
+        }
+    }
     private var timer: FocusTimer?
     private var isRunning = false
     private var focusSubscription: AnyCancellable?
@@ -53,6 +62,12 @@ final class PetCoachController {
         saveURL = isDemo ? nil : Self.saveURL(for: edition)
         var unreadable = false
         var save = PetCoachSave()
+        if isDemo {
+            // A realistic Settings pane: two suggestions and one added app.
+            save.apps.markDistracting("com.apple.MobileSMS")
+            save.apps.markDistracting("com.hnc.Discord")
+            save.apps.markDistracting("com.apple.news")
+        }
         if let saveURL {
             do {
                 save = try PetCoachSave.load(from: saveURL) ?? PetCoachSave()
@@ -100,6 +115,31 @@ final class PetCoachController {
         closeOverlay()
     }
 
+    // MARK: Settings
+
+    var nudgesOn: Bool { save.nudgesOn }
+    var apps: CoachAppList { save.apps }
+
+    func setNudgesOn(_ on: Bool) {
+        guard on != save.nudgesOn else { return }
+        save.nudgesOn = on
+        updateSampling()
+        persist()
+        if !on { closeOverlay() }
+    }
+
+    func toggleDistracting(_ bundleID: String) {
+        save.apps.toggleDistracting(bundleID)
+        persist()
+    }
+
+    /// Adds the app at `url` (an `.app` picked in Settings) as distracting.
+    func addDistractingApp(at url: URL) {
+        guard let bundleID = Bundle(url: url)?.bundleIdentifier, !save.apps.isDistracting(bundleID) else { return }
+        save.apps.markDistracting(bundleID)
+        persist()
+    }
+
     // MARK: Sampling
 
     private func focusChanged(_ timer: FocusTimer?) {
@@ -107,11 +147,12 @@ final class PetCoachController {
         updateSampling()
     }
 
-    /// Samples every few seconds during a focus phase, and not at all
-    /// otherwise. Leaving focus takes one last sample, which ends any
-    /// distraction or idle episode in the coach.
+    /// Samples every few seconds during a focus phase with nudges on, and
+    /// not at all otherwise. Leaving focus takes one last sample, which ends
+    /// any distraction or idle episode in the coach; switching nudges off
+    /// ends them without one, so switching back on starts fresh.
     private func updateSampling() {
-        let focusing = isRunning && PetCoachStudyState(timer) == .focusing
+        let focusing = isRunning && save.nudgesOn && PetCoachStudyState(timer) == .focusing
         if focusing, sampler == nil {
             let sampler = Timer(timeInterval: PetCoach.sampleInterval, repeats: true) { [weak self] _ in
                 MainActor.assumeIsolated { self?.sample() }
@@ -122,7 +163,12 @@ final class PetCoachController {
         } else if !focusing, let sampler {
             sampler.invalidate()
             self.sampler = nil
-            if isRunning { sample() }
+            guard isRunning else { return }
+            if save.nudgesOn {
+                sample()
+            } else {
+                _ = save.coach.evaluate(PetCoachInput(now: Date(), idleSeconds: 0, frontmost: .neutral, study: .notStudying))
+            }
         }
     }
 

@@ -54,11 +54,26 @@ public struct PetCoachSave: Hashable, Codable, Sendable {
     public var version: Int
     public var coach: PetCoach
     public var apps: CoachAppList
+    /// The user's Settings switch. Off means the app doesn't sample at all,
+    /// so the pet never walks out.
+    public var nudgesOn: Bool
 
-    public init(coach: PetCoach = PetCoach(), apps: CoachAppList = CoachAppList()) {
+    public init(coach: PetCoach = PetCoach(), apps: CoachAppList = CoachAppList(), nudgesOn: Bool = true) {
         version = Self.currentVersion
         self.coach = coach
         self.apps = apps
+        self.nudgesOn = nudgesOn
+    }
+
+    private enum CodingKeys: String, CodingKey { case version, coach, apps, nudgesOn }
+
+    /// Saves written before the switch existed read as nudges on.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        version = try container.decode(Int.self, forKey: .version)
+        coach = try container.decode(PetCoach.self, forKey: .coach)
+        apps = try container.decode(CoachAppList.self, forKey: .apps)
+        nudgesOn = try container.decodeIfPresent(Bool.self, forKey: .nudgesOn) ?? true
     }
 
     public func encoded() throws -> Data {

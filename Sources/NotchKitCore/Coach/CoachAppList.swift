@@ -80,6 +80,24 @@ public struct CoachAppList: Codable, Hashable, Sendable {
         focus.insert(id)
     }
 
+    public func isDistracting(_ bundleID: String) -> Bool {
+        category(of: bundleID) == .distracting
+    }
+
+    /// Settings' one-tap switch: adds the app to the distracting list, or
+    /// takes it off when it is already there.
+    public mutating func toggleDistracting(_ bundleID: String) {
+        if isDistracting(bundleID) { forget(bundleID) } else { markDistracting(bundleID) }
+    }
+
+    /// Distracting apps the user added beyond `suggestedDistracting`, sorted
+    /// so Settings lists them in a stable order. Ids are normalized
+    /// (lowercased), so the app resolves names through Launch Services.
+    public var addedDistracting: [String] {
+        let suggested = Set(Self.suggestedDistracting.map { Self.normalized($0.bundleID) })
+        return distracting.subtracting(suggested).sorted()
+    }
+
     /// Takes an app off both lists.
     public mutating func forget(_ bundleID: String) {
         let id = Self.normalized(bundleID)

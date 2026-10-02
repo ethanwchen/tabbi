@@ -95,4 +95,14 @@ final class PetCoachSessionTests: XCTestCase {
         try Data("not json".utf8).write(to: url)
         XCTAssertThrowsError(try PetCoachSave.load(from: url))
     }
+
+    func testNudgesSwitchRoundTripsAndOlderSavesReadAsOn() throws {
+        let off = PetCoachSave(nudgesOn: false)
+        XCTAssertFalse(try PetCoachSave.decode(off.encoded()).nudgesOn)
+
+        var json = try JSONSerialization.jsonObject(with: PetCoachSave().encoded()) as! [String: Any]
+        json.removeValue(forKey: "nudgesOn")
+        let older = try JSONSerialization.data(withJSONObject: json)
+        XCTAssertTrue(try PetCoachSave.decode(older).nudgesOn)
+    }
 }
