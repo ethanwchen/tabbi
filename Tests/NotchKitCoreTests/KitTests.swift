@@ -155,6 +155,20 @@ final class KitApplicationTests: XCTestCase {
         XCTAssertEqual(kit.chosenAnswers(["music": ["yes", "no"]]).map(\.id), ["yes"])
     }
 
+    func testSelectingASingleChoiceAnswerReplacesThePick() throws {
+        let music = try XCTUnwrap(kit.onboarding.first { $0.id == "music" })
+        XCTAssertEqual(music.selecting("yes", in: []), ["yes"])
+        XCTAssertEqual(music.selecting("no", in: ["yes"]), ["no"])
+        XCTAssertEqual(music.selecting("no", in: ["no"]), [], "clicking the pick again skips the question")
+        XCTAssertEqual(music.selecting("maybe", in: ["yes"]), ["yes"], "unknown answers are ignored")
+    }
+
+    func testSelectingAMultipleChoiceAnswerTogglesIt() throws {
+        let extras = try XCTUnwrap(kit.onboarding.first { $0.id == "extras" })
+        XCTAssertEqual(extras.selecting("claude", in: ["stats"]), ["stats", "claude"])
+        XCTAssertEqual(extras.selecting("stats", in: ["stats", "claude"]), ["claude"])
+    }
+
     func testStarterTasksMergeAnswersWithoutBlanksOrDuplicates() {
         XCTAssertEqual(kit.starterTasks(answers: ["music": ["yes"], "extras": ["stats", "claude"]]),
                        ["Plan the day", "Make a playlist", "Check CPU"])

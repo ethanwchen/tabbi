@@ -8,6 +8,9 @@ public struct AppSettings: Equatable, Sendable {
     /// False until the user picks a kit, so the first launch can ask which
     /// kit to start from. Settings saved before kits existed count as picked.
     public var hasChosenKit: Bool
+    /// The user's answers to the kit's onboarding questions, kept so "reset
+    /// to kit defaults" rebuilds the tabs those answers chose.
+    public var kitAnswers: KitAnswers
     public var modules: ModuleLayout
     /// When on, resting the pointer on the closed notch for `hoverOpenDelay` opens it.
     public var openOnHover: Bool
@@ -30,6 +33,7 @@ public struct AppSettings: Equatable, Sendable {
     public init(
         kitID: String = KitLibrary.defaultKitID,
         hasChosenKit: Bool = false,
+        kitAnswers: KitAnswers = [:],
         modules: ModuleLayout = .default,
         openOnHover: Bool = false,
         hapticsEnabled: Bool = true,
@@ -41,6 +45,7 @@ public struct AppSettings: Equatable, Sendable {
     ) {
         self.kitID = kitID
         self.hasChosenKit = hasChosenKit
+        self.kitAnswers = kitAnswers
         self.modules = modules
         self.openOnHover = openOnHover
         self.hapticsEnabled = hapticsEnabled
@@ -66,6 +71,7 @@ public struct AppSettings: Equatable, Sendable {
     public mutating func apply(_ kit: KitManifest, answers: KitAnswers = [:], catalog: ModuleCatalog = .builtIn) {
         kitID = kit.id
         hasChosenKit = true
+        kitAnswers = answers
         modules = kit.layout(catalog: catalog, answers: answers)
         if let kinds = kit.defaults.resolvedTicker {
             notchPreview.disabledKinds = Set(TickerKind.allCases).subtracting(kinds)
@@ -73,11 +79,11 @@ public struct AppSettings: Equatable, Sendable {
     }
 
     /// True when `kit` is the active kit and the tabs (and previews, if the
-    /// kit sets them) are still exactly the ones it ships with, so "Reset to
-    /// kit defaults" would change nothing here.
+    /// kit sets them) are still exactly the ones it produces for the saved
+    /// answers, so "Reset to kit defaults" would change nothing here.
     public func usesDefaults(of kit: KitManifest, catalog: ModuleCatalog = .builtIn) -> Bool {
         var reset = self
-        reset.apply(kit, catalog: catalog)
+        reset.apply(kit, answers: kitAnswers, catalog: catalog)
         return kitID == kit.id && reset.modules == modules && reset.notchPreview == notchPreview
     }
 
@@ -102,6 +108,7 @@ public struct SettingsRepository {
     enum Key {
         static let kitID = "settings.kit"
         static let hasChosenKit = "settings.kit.chosen"
+        static let kitAnswers = "settings.kit.answers"
         static let moduleOrder = "settings.modules.order"
         static let disabledModules = "settings.modules.disabled"
         static let openOnHover = "settings.openOnHover"
@@ -150,6 +157,8 @@ public struct SettingsRepository {
             // Older versions saved a tab layout but no flag: those users
             // already set NotchDeck up, so don't greet them again.
             hasChosenKit: bool(Key.hasChosenKit) ?? (savedOrder != nil),
+            kitAnswers: (defaults.dictionary(forKey: Key.kitAnswers) as? [String: [String]])?
+                .mapValues(Set.init) ?? [:],
             modules: modules ?? kit?.layout() ?? .default,
             openOnHover: bool(Key.openOnHover) ?? fallback.openOnHover,
             hapticsEnabled: bool(Key.hapticsEnabled) ?? fallback.hapticsEnabled,
@@ -172,6 +181,8 @@ public struct SettingsRepository {
     public func save(_ settings: AppSettings) {
         defaults.set(settings.kitID, forKey: Key.kitID)
         defaults.set(settings.hasChosenKit, forKey: Key.hasChosenKit)
+        // Sorted so the stored value is stable across saves.
+        defaults.set(settings.kitAnswers.mapValues { $0.sorted() }, forKey: Key.kitAnswers)
         defaults.set(settings.modules.order.map(\.rawValue), forKey: Key.moduleOrder)
         defaults.set(settings.modules.order.filter { !settings.modules.isEnabled($0) }.map(\.rawValue),
                      forKey: Key.disabledModules)

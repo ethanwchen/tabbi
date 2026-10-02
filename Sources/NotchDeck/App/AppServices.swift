@@ -59,7 +59,7 @@ final class AppServices: ObservableObject {
                     let focus = FocusController.shared
                     focus.settings = focus.settings.applying(application.kit.defaults)
                     if application.addsStarterTasks {
-                        planner.addStarterTasks(application.kit.starterTasks())
+                        planner.addStarterTasks(application.kit.starterTasks(answers: application.answers))
                     }
                 }
             }

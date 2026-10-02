@@ -3,6 +3,17 @@ import Foundation
 /// The user's onboarding answers: question id to the chosen answer ids.
 public typealias KitAnswers = [String: Set<String>]
 
+public extension KitQuestion {
+    /// `picked` after the user clicks `answerID`: a multiple-choice question
+    /// toggles it, a single-choice one picks it alone. Clicking a picked
+    /// answer clears it either way, since every question can be skipped.
+    func selecting(_ answerID: String, in picked: Set<String>) -> Set<String> {
+        guard options.contains(where: { $0.id == answerID }) else { return picked }
+        if picked.contains(answerID) { return picked.subtracting([answerID]) }
+        return allowsMultiple ? picked.union([answerID]) : [answerID]
+    }
+}
+
 public extension KitManifest {
     /// The answers picked for `answers`, in question and option order, so
     /// later answers win when two disagree about a module.

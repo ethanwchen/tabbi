@@ -40,6 +40,8 @@ final class SettingsStore: ObservableObject {
     /// whoever owns them.
     struct KitApplication {
         let kit: KitManifest
+        /// The onboarding answers it was applied with.
+        let answers: KitAnswers
         /// True when the user picked or switched to the kit (not a reset), so
         /// its starter tasks belong on Today.
         let addsStarterTasks: Bool
@@ -107,17 +109,19 @@ final class SettingsStore: ObservableObject {
         apply(kit, addsStarterTasks: true)
     }
 
-    /// The first-run pick: applies `id`'s tabs even when it is already the
-    /// default kit, and records that the user has chosen.
-    func chooseKit(_ id: String) {
+    /// The first-run pick: applies `id`'s tabs for the user's onboarding
+    /// `answers` even when it is already the default kit, and records that
+    /// the user has chosen.
+    func chooseKit(_ id: String, answers: KitAnswers = [:]) {
         guard let kit = kits[id] ?? activeKit else { return }
-        apply(kit, addsStarterTasks: true)
+        apply(kit, answers: kit.id == id ? answers : [:], addsStarterTasks: true)
     }
 
-    /// Puts the active kit's tabs back the way the kit ships them.
+    /// Puts the active kit's tabs back the way the kit sets them up for the
+    /// answers the user gave on first run.
     func resetToKitDefaults() {
         guard let kit = activeKit else { return }
-        apply(kit, addsStarterTasks: false)
+        apply(kit, answers: settings.kitAnswers, addsStarterTasks: false)
     }
 
     /// Copies a kit file into the user's kits and switches to it. Returns
@@ -145,9 +149,9 @@ final class SettingsStore: ObservableObject {
         }
     }
 
-    private func apply(_ kit: KitManifest, addsStarterTasks: Bool) {
-        settings.apply(kit)
-        kitApplied.send(KitApplication(kit: kit, addsStarterTasks: addsStarterTasks))
+    private func apply(_ kit: KitManifest, answers: KitAnswers = [:], addsStarterTasks: Bool) {
+        settings.apply(kit, answers: answers)
+        kitApplied.send(KitApplication(kit: kit, answers: answers, addsStarterTasks: addsStarterTasks))
     }
 
     /// Registers or removes the login item first and only records the

@@ -17,7 +17,9 @@ They are good starting points for your own kit.
 On first launch, a welcome window asks which kit to start with.
 It lists every kit with the tabs it turns on, and preselects the edition's kit (Productivity for NotchDeck, Medicine for StudyNotch).
 Closing the window keeps the preselected kit, and the window doesn't come back.
-The kit's onboarding questions aren't asked yet; that comes with full onboarding.
+If the chosen kit has [onboarding questions](#onboarding), **Continue** leads to them; **Back** returns to the kit list.
+Every question can be skipped, and a row of tab icons previews what the answers turn on or off.
+**Start** applies the kit for those answers and adds their starter tasks to Today.
 
 To change kits later, open **Settings > Modules**.
 The **Kit** section lets you:
@@ -156,6 +158,8 @@ Each answer can switch modules on or off and add starter tasks.
 | `options[].tasks` | array of strings | Starter tasks this answer adds to Today. |
 
 Answers are applied in question order, so when two answers disagree about a tab, the later question wins.
+The answers are saved with the kit, so **Reset to kit defaults** rebuilds the tabs they chose.
+Switching to another kit starts without answers, since they belong to the kit that asked them.
 Duplicate and blank starter tasks are dropped.
 
 ## Errors and warnings

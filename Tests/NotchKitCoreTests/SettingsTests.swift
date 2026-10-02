@@ -197,6 +197,7 @@ final class SettingsRepositoryTests: XCTestCase {
         let settings = AppSettings(
             kitID: "student",
             hasChosenKit: true,
+            kitAnswers: ["level": ["college"], "flashcards": ["anki", "no"]],
             modules: modules,
             openOnHover: true,
             hapticsEnabled: false,
@@ -303,6 +304,27 @@ final class SettingsRepositoryTests: XCTestCase {
         XCTAssertTrue(settings.modules.isEnabled(.anki))
         XCTAssertTrue(settings.openOnHover)
         XCTAssertTrue(settings.hasChosenKit)
+    }
+
+    func testResetCheckUsesTheSavedOnboardingAnswers() throws {
+        let medicine = try XCTUnwrap(KitLibrary.bundled["medicine"])
+        var settings = AppSettings()
+        settings.apply(medicine, answers: ["anki": ["no"]])
+        XCTAssertEqual(settings.kitAnswers, ["anki": ["no"]])
+        XCTAssertFalse(settings.modules.isEnabled(.anki))
+        XCTAssertTrue(settings.usesDefaults(of: medicine), "the answers' tabs are this user's kit defaults")
+
+        settings.modules.setEnabled(.anki, true)
+        XCTAssertFalse(settings.usesDefaults(of: medicine))
+    }
+
+    func testApplyingAKitWithoutAnswersClearsTheOldOnes() throws {
+        let medicine = try XCTUnwrap(KitLibrary.bundled["medicine"])
+        let student = try XCTUnwrap(KitLibrary.bundled["student"])
+        var settings = AppSettings()
+        settings.apply(medicine, answers: ["anki": ["no"]])
+        settings.apply(student)
+        XCTAssertEqual(settings.kitAnswers, [:])
     }
 
     func testApplyingAKitWithTickerDefaultsReplacesThePreviews() throws {

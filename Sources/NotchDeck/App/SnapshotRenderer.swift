@@ -81,6 +81,14 @@ enum SnapshotRenderer {
             try? png.write(to: url)
             print(url.path)
         }
+        // Its second step: the active kit's onboarding questions.
+        let kitID = services.settings.settings.kitID
+        if services.settings.kits[kitID]?.onboarding.isEmpty == false,
+           let png = await WelcomeWindowController(settings: services.settings, questionsFor: kitID).snapshot() {
+            let url = outputDirectory.appendingPathComponent("welcome-questions.png")
+            try? png.write(to: url)
+            print(url.path)
+        }
     }
 
     private static func snapshotName(_ kind: TickerKind) -> String {
