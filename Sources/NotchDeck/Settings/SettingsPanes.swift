@@ -188,6 +188,55 @@ private struct ModuleRow: View {
     }
 }
 
+// MARK: Preview
+
+struct PreviewSettingsPane: View {
+    @EnvironmentObject private var store: SettingsStore
+
+    var body: some View {
+        Form {
+            Section {
+                Toggle(isOn: $store.settings.notchPreview.isEnabled) {
+                    Text("Show live activity")
+                    Text("Meetings, music, and more beside the closed notch.")
+                }
+                .help("Show a small live preview beside the closed notch")
+                Picker("Switch every", selection: $store.settings.notchPreview.interval) {
+                    ForEach(TickerInterval.allCases) { interval in
+                        Text(interval.title).tag(interval)
+                    }
+                }
+                .disabled(!store.settings.notchPreview.isEnabled)
+                .help("How long each item stays before the next one")
+            } header: {
+                Text("Notch preview")
+            }
+
+            Section {
+                ForEach(TickerKind.allCases) { kind in
+                    let moduleOn = store.settings.modules.isEnabled(kind.module)
+                    Toggle(kind.title, isOn: Binding(
+                        get: { store.settings.notchPreview.isEnabled(kind) },
+                        set: { store.settings.notchPreview.setEnabled(kind, $0) }
+                    ))
+                    .disabled(!moduleOn)
+                    .help(moduleOn
+                        ? "Include \(kind.title.lowercased()) in the preview"
+                        : "Turn on \(kind.module.title) in Modules to include this")
+                }
+                .disabled(!store.settings.notchPreview.isEnabled)
+            } header: {
+                Text("Items")
+            } footer: {
+                SectionFooter("Items without anything to show are skipped. A meeting starting within 5 minutes stays until it ends.")
+            }
+        }
+        .formStyle(.grouped)
+        .scrollDisabled(true)
+        .frame(width: paneWidth, height: 444)
+    }
+}
+
 // MARK: Shortcuts
 
 struct ShortcutsSettingsPane: View {

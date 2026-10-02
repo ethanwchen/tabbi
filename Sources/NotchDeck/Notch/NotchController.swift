@@ -230,9 +230,15 @@ final class NotchController {
             .sink { [weak self] preference in self?.reposition(on: preference) }
             .store(in: &cancellables)
 
-        services.$hasCompactActivity
+        services.ticker.$item
             .removeDuplicates()
-            .sink { [weak self] active in self?.model.hasCompactActivity = active }
+            .sink { [weak self] item in self?.model.preview = item }
+            .store(in: &cancellables)
+
+        // The preview only ticks while it can be seen.
+        model.$phase
+            .removeDuplicates()
+            .sink { [weak self] phase in self?.services.ticker.setActive(phase != .open) }
             .store(in: &cancellables)
     }
 

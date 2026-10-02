@@ -14,9 +14,8 @@ final class AppServices: ObservableObject {
     let claudeUsage = ClaudeUsageStore()
     let planner = PlannerStore()
     let claudeAsk = ClaudeAskSession()
-
-    /// True when some module wants a live activity beside the closed notch.
-    @Published private(set) var hasCompactActivity = false
+    /// The rotating live preview beside the closed notch.
+    let ticker: TickerStore
 
     private var cancellables: Set<AnyCancellable> = []
     /// Created on first use so launching never builds a window nobody opens.
@@ -24,9 +23,16 @@ final class AppServices: ObservableObject {
 
     init(settings: SettingsStore) {
         self.settings = settings
-        spotify.$showsCompactActivity
-            .removeDuplicates()
-            .assign(to: &$hasCompactActivity)
+        ticker = TickerStore(settings: settings, spotify: spotify, planner: planner, claudeUsage: claudeUsage)
+        // A new `claude` path in Settings must reach both Claude modules
+        // live, not on the next launch.
+        settings.$appliedClaudePathOverride
+            .dropFirst()
+            .sink { [claudeUsage, claudeAsk] _ in
+                claudeUsage.claudePathDidChange()
+                claudeAsk.claudePathDidChange()
+            }
+            .store(in: &cancellables)
     }
 
     /// Shows the Settings window (from the notch's gear button or context menu).

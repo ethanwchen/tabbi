@@ -17,15 +17,15 @@ struct NotchView: View {
             if model.isOpen {
                 OpenNotchContent()
                     .transition(AnyTransition.opacity.combined(with: .scale(scale: 0.96, anchor: .top)))
-            } else if model.hasCompactActivity {
-                CompactActivity()
-                    .transition(.opacity)
+            } else if let preview = model.preview {
+                NotchPreview(item: preview, notchWidth: model.geometry.notchSize.width)
+                    .frame(height: model.geometry.notchSize.height)
             }
         }
         .frame(width: model.size.width, height: model.size.height, alignment: .top)
         .clipShape(shape)
         .contentShape(shape)
-        .onTapGesture { if !model.isOpen { model.open() } }
+        .onTapGesture { if !model.isOpen { model.openFromClosedClick() } }
         .contextMenu {
             ForEach(model.layout.enabled) { module in
                 Button(module.title) { model.open(module) }
@@ -39,7 +39,7 @@ struct NotchView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .animation(Theme.Motion.notch, value: model.phase)
-        .animation(Theme.Motion.notch, value: model.hasCompactActivity)
+        .animation(Theme.Motion.notch, value: model.previewKind)
         .preferredColorScheme(.dark)
     }
 }
@@ -133,22 +133,5 @@ private struct TabButton: View {
         .buttonStyle(.plain)
         .help(module.title)
         .onHover { hovering = $0 }
-    }
-}
-
-/// Live activity beside the closed notch (e.g. album art + equalizer).
-private struct CompactActivity: View {
-    @EnvironmentObject private var model: NotchViewModel
-    @EnvironmentObject private var services: AppServices
-
-    var body: some View {
-        HStack(spacing: 0) {
-            ModuleViews.compactLeading(services: services)
-                .frame(width: Theme.Layout.compactWingWidth)
-            Color.clear.frame(width: model.geometry.notchSize.width)
-            ModuleViews.compactTrailing(services: services)
-                .frame(width: Theme.Layout.compactWingWidth)
-        }
-        .frame(height: model.geometry.notchSize.height)
     }
 }

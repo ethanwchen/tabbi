@@ -22,7 +22,9 @@
 ---
 
 NotchDeck is a small, native macOS app that lives in the notch.
-Closed, it is invisible except for a quiet live activity, like an equalizer while music plays.
+Closed, it is invisible except for a quiet live activity beside the notch: your next meeting, the song playing, a focus timer, tasks left today, or a Claude limit above 80%.
+A meeting starting within 5 minutes stays put; otherwise the activities take turns every few seconds.
+Right-click the notch and choose **Settings…** to pick which ones show, or turn the preview off.
 Click it and the notch grows into a dark panel with five modules.
 Flip between them with a two-finger swipe, the arrow keys or the tab icons, and press Esc to close it again.
 

@@ -26,6 +26,11 @@ final class SettingsStore: ObservableObject {
     /// recorded instead of toggling the notch.
     @Published var isRecordingHotkey = false
 
+    /// The `claude` path override currently in effect. Publishes only after
+    /// `ClaudeCLI.userPathOverride` is updated, so subscribers that re-locate
+    /// the binary in response always see the new value.
+    @Published private(set) var appliedClaudePathOverride: String?
+
     private let repository: SettingsRepository
     /// False for snapshot stores, which must never touch the real login item.
     let integratesWithSystem: Bool
@@ -70,5 +75,8 @@ final class SettingsStore: ObservableObject {
 
     private func apply() {
         ClaudeCLI.userPathOverride = settings.claudePathOverride
+        if appliedClaudePathOverride != settings.claudePathOverride {
+            appliedClaudePathOverride = settings.claudePathOverride
+        }
     }
 }

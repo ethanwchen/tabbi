@@ -31,7 +31,7 @@ final class ClaudeUsageStore: ObservableObject {
     private let isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
     private let defaults = UserDefaults.standard
     private let scanner = ClaudeUsageLogScanner()
-    private var locateTask: Task<URL?, Never>?
+    private var statusTask: Task<Void, Never>?
     private var probeTask: Task<Void, Never>?
     private var scanTask: Task<Void, Never>?
     /// A scan was requested while one was running; run another when it ends.
@@ -43,11 +43,7 @@ final class ClaudeUsageStore: ObservableObject {
             return
         }
         limits = ClaudeLimitsRecord(encoded: defaults.data(forKey: Self.defaultsKey))
-        locateTask = Task.detached(priority: .utility) { ClaudeCLI.locate() }
-        Task { [weak self] in
-            let url = await self?.locateTask?.value
-            self?.cliStatus = url == nil ? .missing : .available
-        }
+        updateCLIStatus()
         // Warm the stats so the first open is instant; later scans are incremental.
         scanLocalStats()
     }
@@ -61,10 +57,10 @@ final class ClaudeUsageStore: ObservableObject {
 
     /// Probes the CLI for live limits. No-op while a probe is running.
     func refresh() {
-        guard !isDemo, probeTask == nil, let locate = locateTask else { return }
+        guard !isDemo, probeTask == nil else { return }
         isFetching = true
         probeTask = Task { [weak self] in
-            let executable = await locate.value
+            let executable = await Self.locateCLI()
             let outcome: Result<ClaudeRateLimitSnapshot, Error>
             if let executable {
                 do { outcome = .success(try await ClaudeLimitsProbe.run(executable: executable)) }
@@ -74,6 +70,27 @@ final class ClaudeUsageStore: ObservableObject {
             }
             self?.finishProbe(outcome, cliFound: executable != nil)
         }
+    }
+
+    /// Called when the user changes the `claude` path in Settings.
+    func claudePathDidChange() {
+        guard !isDemo else { return }
+        updateCLIStatus()
+    }
+
+    /// Cancels the previous lookup so a slow one for an old path can't win.
+    private func updateCLIStatus() {
+        statusTask?.cancel()
+        statusTask = Task { [weak self] in
+            let url = await Self.locateCLI()
+            guard !Task.isCancelled else { return }
+            self?.cliStatus = url == nil ? .missing : .available
+        }
+    }
+
+    /// Off the main thread: a cache miss may consult the login shell.
+    private static func locateCLI() async -> URL? {
+        await Task.detached(priority: .utility) { ClaudeExecutableResolver.shared.resolve() }.value
     }
 
     private func finishProbe(_ outcome: Result<ClaudeRateLimitSnapshot, Error>, cliFound: Bool) {

@@ -22,7 +22,7 @@ struct ClaudeAskPanel: View {
     var body: some View {
         VStack(spacing: Theme.Spacing.s) {
             if session.isClaudeMissing && conversation.isEmpty {
-                ClaudeMissingView { session.prepare(force: true) }
+                ClaudeMissingView { session.prepare() }
                     .transition(.opacity)
             } else {
                 Group {

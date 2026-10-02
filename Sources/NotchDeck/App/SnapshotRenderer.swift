@@ -23,8 +23,21 @@ enum SnapshotRenderer {
 
         var shots: [(String, NotchViewModel)] = []
         let closed = NotchViewModel(geometry: geometry)
-        closed.hasCompactActivity = services.hasCompactActivity
+        closed.preview = services.ticker.item
         shots.append(("closed", closed))
+        // One closed shot per preview kind that has data. Demo usage sits
+        // below the 80% threshold, so demo mode fills that one in.
+        let now = Date()
+        let isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
+        for kind in TickerKind.allCases {
+            let live = services.ticker.sources.items(at: now, enabled: [kind]).first
+            let demoUsage: TickerItem? = isDemo && kind == .claudeUsage
+                ? .claudeUsage(window: .fiveHour, utilization: 0.86) : nil
+            guard let item = live ?? demoUsage else { continue }
+            let model = NotchViewModel(geometry: geometry)
+            model.preview = item
+            shots.append(("closed-\(snapshotName(kind))", model))
+        }
         for module in ModuleID.allCases {
             let model = NotchViewModel(geometry: geometry)
             model.open(module)
@@ -55,6 +68,16 @@ enum SnapshotRenderer {
             let url = outputDirectory.appendingPathComponent("settings-\(pane.rawValue).png")
             try? png.write(to: url)
             print(url.path)
+        }
+    }
+
+    private static func snapshotName(_ kind: TickerKind) -> String {
+        switch kind {
+        case .meeting: "meeting"
+        case .nowPlaying: "music"
+        case .focus: "focus"
+        case .tasks: "tasks"
+        case .claudeUsage: "usage"
         }
     }
 }
