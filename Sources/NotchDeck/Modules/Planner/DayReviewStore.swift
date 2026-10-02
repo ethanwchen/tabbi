@@ -28,31 +28,38 @@ final class DayReviewStore: ObservableObject {
     /// Longest wait for Claude before using the local summary.
     private static let timeout: Duration = .seconds(30)
 
-    init() {
+    /// `studyPreview` makes the demo previews a study day's wrap-up, with
+    /// the demo Anki reviews and a sample study tally.
+    init(studyPreview: Bool = false) {
         let environment = ProcessInfo.processInfo.environment
         isDemo = environment["NOTCHDECK_DEMO"] == "1"
         repository = isDemo ? nil : DayReviewRepository()
         // Lets demo snapshots render each state: `NOTCHDECK_PLANNER_PREVIEW=review`.
         guard isDemo else { return }
         let today = PlannerDayKey(date: Date())
+        let progress = studyPreview ? [AnkiSummary.demo().progressItem()] : []
+        let sample = DayReview.sample(on: today, study: studyPreview ? .sample : nil, progress: progress)
         switch environment["NOTCHDECK_PLANNER_PREVIEW"] {
-        case "review": review = .sample(on: today)
+        case "review": review = sample
         case "review-loading":
-            var sample = DayReview.sample(on: today)
-            sample.summary = nil
-            review = sample
+            var loading = sample
+            loading.summary = nil
+            review = loading
         default: break
         }
     }
 
-    /// Opens the review of `day` and starts writing its summary.
-    func wrapUp(day: PlannerDay, focusLog: FocusSessionLog) {
+    /// Opens the review of `day` and starts writing its summary. `study`
+    /// and `progress` are what other modules share; on a study day the demo
+    /// fills in a sample tally, since no demo module keeps one yet.
+    func wrapUp(day: PlannerDay, focusLog: FocusSessionLog, study: StudyDayTally? = nil,
+                progress: [ProgressItem] = [], isStudyDay: Bool = false) {
         invalidateRun()
         saveFailed = false
         let generation = generation
 
         if isDemo {
-            var sample = DayReview.sample(on: day.date)
+            var sample = DayReview.sample(on: day.date, study: study ?? (isStudyDay ? .sample : nil), progress: progress)
             let summary = sample.summary
             sample.summary = nil
             review = sample
@@ -63,7 +70,7 @@ final class DayReviewStore: ObservableObject {
             return
         }
 
-        let review = DayReviewer.review(of: day, focusLog: focusLog)
+        let review = DayReviewer.review(of: day, focusLog: focusLog, study: study, progress: progress)
         self.review = review
         task = Task { [weak self] in
             let summary = await Self.summary(for: review)

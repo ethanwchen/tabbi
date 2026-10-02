@@ -153,4 +153,81 @@ final class DayReviewTests: XCTestCase {
         let summary = try XCTUnwrap(sample.summary)
         XCTAssertEqual(DayReviewer.summary(from: summary), summary, "the canned summary already fits the card")
     }
+
+    // MARK: Study stats
+
+    private func ankiReviews(done: Int, of target: Int) -> ProgressItem {
+        ProgressItem(id: "reviews", source: .anki, title: "Anki reviews", completed: done, target: target, unit: "cards")
+    }
+
+    func testReviewKeepsStudyTallyAndSharedGoalCounts() {
+        let tally = StudyDayTally(minutes: 185, sessions: 3, points: 215)
+        let idle = ProgressItem(id: "q", source: .anki, title: "Questions", completed: 0, target: 0, unit: "questions")
+        let review = DayReviewer.review(of: checklist(), focusLog: FocusSessionLog(), study: tally,
+                                        progress: [ankiReviews(done: 112, of: 432), idle], calendar: calendar)
+        XCTAssertEqual(review.study, tally)
+        XCTAssertEqual(review.progress, [DayReviewCount(title: "Anki reviews", count: 112, unit: "cards")],
+                       "a goal with nothing due and nothing done is left out")
+    }
+
+    func testStatsShowStudyTimeSessionsCardsAndPoints() {
+        let review = DayReviewer.review(of: checklist(), focusLog: FocusSessionLog(),
+                                        study: StudyDayTally(minutes: 185, sessions: 3, points: 215),
+                                        progress: [ankiReviews(done: 112, of: 432)], calendar: calendar)
+        XCTAssertEqual(DayReviewer.stats(for: review).map(\.text), ["3h 5m · 3 sessions", "112 cards", "215 pts"])
+    }
+
+    func testStatsFallBackToFocusSessionsWithoutAStudyTally() {
+        var review = DayReviewer.review(of: checklist(), focusLog: FocusSessionLog(), calendar: calendar)
+        XCTAssertEqual(DayReviewer.stats(for: review).map(\.text), ["No focus sessions today"])
+        review.focusSessions = 1
+        review.focusMinutes = 60
+        XCTAssertEqual(DayReviewer.stats(for: review).map(\.text), ["1 focus session · 1h"])
+    }
+
+    func testStatsForAStudyDayWithNothingLoggedYet() {
+        let review = DayReviewer.review(of: PlannerDay(date: oct1), focusLog: FocusSessionLog(), study: StudyDayTally(),
+                                        progress: [ankiReviews(done: 0, of: 200)], calendar: calendar)
+        XCTAssertEqual(DayReviewer.stats(for: review).map(\.text), ["No study yet", "0 cards", "0 pts"])
+        XCTAssertTrue(review.isEmpty)
+    }
+
+    func testStudyTimeAloneMakesTheDayWorthReviewing() {
+        let review = DayReviewer.review(of: PlannerDay(date: oct1), focusLog: FocusSessionLog(),
+                                        study: StudyDayTally(minutes: 50, sessions: 1, points: 60), calendar: calendar)
+        XCTAssertFalse(review.isEmpty)
+        XCTAssertEqual(DayReviewer.fallbackSummary(for: review), "You put in 50m of study today. Rest up and start fresh tomorrow.")
+    }
+
+    func testPromptMentionsStudyAndSharedGoalsOnlyWhenPresent() {
+        let plain = DayReviewer.prompt(for: DayReviewer.review(of: checklist(), focusLog: FocusSessionLog(), calendar: calendar))
+        XCTAssertFalse(plain.contains("Studied"))
+
+        let study = DayReviewer.review(of: checklist(), focusLog: FocusSessionLog(),
+                                       study: StudyDayTally(minutes: 185, sessions: 3, points: 215),
+                                       progress: [ankiReviews(done: 112, of: 432)], calendar: calendar)
+        let prompt = DayReviewer.prompt(for: study)
+        XCTAssertTrue(prompt.contains("Studied: 185 minutes over 3 sessions, 215 points earned"))
+        XCTAssertTrue(prompt.contains("Anki reviews: 112 cards done"))
+    }
+
+    func testReviewsSavedBeforeStudyStatsStillLoad() throws {
+        let json = #"{"date":"2026-10-01","done":["A"],"carryingOver":[],"focusSessions":1,"focusMinutes":25,"summary":"Nice."}"#
+        let review = try JSONDecoder().decode(DayReview.self, from: Data(json.utf8))
+        XCTAssertEqual(review.done, ["A"])
+        XCTAssertNil(review.study)
+        XCTAssertEqual(review.progress, [])
+        XCTAssertEqual(review.summary, "Nice.")
+    }
+
+    func testStudyReviewRoundTripsThroughJSON() throws {
+        let review = DayReviewer.review(of: checklist(), focusLog: FocusSessionLog(), study: .sample,
+                                        progress: [ankiReviews(done: 112, of: 432)], calendar: calendar)
+        let decoded = try JSONDecoder().decode(DayReview.self, from: JSONEncoder().encode(review))
+        XCTAssertEqual(decoded, review)
+    }
+
+    func testSampleTallyFollowsThePointsRules() {
+        XCTAssertEqual(StudyDayTally.sample, StudyDayTally(minutes: 185, sessions: 3, points: 215))
+    }
 }

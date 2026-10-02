@@ -26,6 +26,9 @@ final class PlannerStore: ObservableObject {
     /// Other modules' goals for today (say, Anki reviews), which the study
     /// planner turns into review blocks.
     private(set) var sharedProgress: [ProgressItem] = []
+    /// Today's study minutes, sessions and points from the modules that keep
+    /// them, for Wrap Up. Nil when no enabled module does.
+    private(set) var sharedStudy: StudyDayTally?
     /// How Plan My Day works for the active kit.
     @Published var planSettings: TodayPlanSettings {
         didSet { plan.settings = planSettings }
@@ -38,7 +41,7 @@ final class PlannerStore: ObservableObject {
     /// Plan My Day; its proposal replaces the checklist while active.
     private(set) lazy var plan = DayPlanStore(upNext: upNext, settings: planSettings)
     /// The End-of-Day Review; its card replaces the checklist while open.
-    let review = DayReviewStore()
+    let review: DayReviewStore
 
     var items: [PlannerItem] { day.items }
     /// Whether Plan My Day has anything to schedule. The study planner
@@ -55,6 +58,7 @@ final class PlannerStore: ObservableObject {
     init(focus: FocusStore, planSettings: TodayPlanSettings = TodayPlanSettings()) {
         self.focus = focus
         self.planSettings = planSettings
+        review = DayReviewStore(studyPreview: planSettings.planMode == .study)
         let today = PlannerDayKey(date: Date())
         if ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1" {
             repository = nil
@@ -93,6 +97,13 @@ final class PlannerStore: ObservableObject {
             }
             .store(in: &cancellables)
         snapshots
+            .map(\.study)
+            .removeDuplicates()
+            .sink { [weak self] study in
+                MainActor.assumeIsolated { self?.sharedStudy = study }
+            }
+            .store(in: &cancellables)
+        snapshots
             .map { $0.plannableWork(excluding: module) }
             .removeDuplicates()
             .sink { [weak self] work in
@@ -108,11 +119,13 @@ final class PlannerStore: ObservableObject {
         plan.plan(tasks: items, sharedWork: sharedWork, progress: sharedProgress)
     }
 
-    /// Opens the End-of-Day Review of today's list and focus sessions.
+    /// Opens the End-of-Day Review of today's list, focus sessions, and
+    /// what other modules share (study time, points, cards reviewed).
     func wrapUp() {
         plan.cancel()
         refreshDay()
-        review.wrapUp(day: day, focusLog: focus.sessionLog)
+        review.wrapUp(day: day, focusLog: focus.sessionLog, study: sharedStudy, progress: sharedProgress,
+                      isStudyDay: planSettings.planMode == .study)
     }
 
     // MARK: Edits

@@ -54,12 +54,48 @@ public struct ProgressItem: Identifiable, Hashable, Sendable {
     }
 }
 
+/// Today's study time and rewards so far, such as a study timer's log. The
+/// `StudySource` role of a module: Wrap Up shows it without knowing which
+/// module ran the sessions.
+public struct StudyDayTally: Hashable, Codable, Sendable {
+    /// Minutes studied today, finished or not.
+    public var minutes: Int
+    /// Study sessions that ran to their end today.
+    public var sessions: Int
+    /// Points earned today (see `PetPointsRules`).
+    public var points: Int
+
+    public init(minutes: Int = 0, sessions: Int = 0, points: Int = 0) {
+        self.minutes = minutes
+        self.sessions = sessions
+        self.points = points
+    }
+
+    /// Demo data: three finished 50-minute blocks and an unfinished 35, with
+    /// points worked out by the real `PetPointsRules`.
+    public static let sample: StudyDayTally = {
+        let blocks = [(50, true), (50, true), (50, true), (35, false)]
+        return StudyDayTally(
+            minutes: blocks.reduce(0) { $0 + $1.0 },
+            sessions: blocks.filter(\.1).count,
+            points: blocks.reduce(0) { $0 + PetPointsRules.points(forMinutes: $1.0, completed: $1.1) }
+        )
+    }()
+
+    /// Adds two modules' tallies.
+    public static func + (lhs: StudyDayTally, rhs: StudyDayTally) -> StudyDayTally {
+        StudyDayTally(minutes: lhs.minutes + rhs.minutes, sessions: lhs.sessions + rhs.sessions,
+                      points: lhs.points + rhs.points)
+    }
+}
+
 /// What one module offers the rest of the app right now. Each field is one
 /// provider role; a module fills only the ones it has:
 /// - `tasks`: TaskSource, things to do today.
 /// - `events`: EventSource, calendar events.
 /// - `progress`: ProgressSource, today's study or practice goals.
 /// - `focus`: FocusState, the focus timer the module runs.
+/// - `study`: StudySource, today's study minutes, sessions and points.
 ///
 /// Modules publish a new value whenever their data changes, and
 /// `ProviderSnapshot` merges all enabled modules' values, so consumers such
@@ -69,17 +105,20 @@ public struct ModuleProvision: Equatable, Sendable {
     public var events: [UpcomingEvent]
     public var progress: [ProgressItem]
     public var focus: FocusTimer?
+    public var study: StudyDayTally?
 
     public init(
         tasks: [ProvidedTask] = [],
         events: [UpcomingEvent] = [],
         progress: [ProgressItem] = [],
-        focus: FocusTimer? = nil
+        focus: FocusTimer? = nil,
+        study: StudyDayTally? = nil
     ) {
         self.tasks = tasks
         self.events = events
         self.progress = progress
         self.focus = focus
+        self.study = study
     }
 
     public static let empty = ModuleProvision()
@@ -97,6 +136,8 @@ public struct ProviderSnapshot: Equatable, Sendable {
     public private(set) var progress: [ProgressItem] = []
     /// A running or paused timer beats an idle one; ties go to tab order.
     public private(set) var focus: FocusTimer?
+    /// Every module's study tally added up; nil when no module keeps one.
+    public private(set) var study: StudyDayTally?
 
     public init() {}
 
@@ -118,6 +159,7 @@ public struct ProviderSnapshot: Equatable, Sendable {
                 progress.append(item)
             }
             events += provision.events.filter { eventIDs.insert($0.id).inserted }
+            if let tally = provision.study { study = (study ?? StudyDayTally()) + tally }
             if let timer = provision.focus {
                 if focus == nil { focus = timer }
                 if activeFocus == nil, timer.isRunning || timer.isPaused { activeFocus = timer }

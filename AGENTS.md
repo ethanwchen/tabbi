@@ -60,7 +60,8 @@ Judge them against the design rules below before you call the work done.
   `ModuleCatalog.builtIn`, write `<Module>Module` in its folder, and list it
   once in `AppServices.modules`.
 - Shared data providers: a module that has tasks, calendar events, progress
-  (e.g. cards due) or a focus timer to share returns a `ModuleProvision`
+  (e.g. cards due), a focus timer or a study tally (today's study minutes,
+  sessions and points, which Wrap Up shows) to share returns a `ModuleProvision`
   publisher from `NotchModule.provision`. `ProviderHub` (in `Modules/`)
   merges the enabled modules' values into a `ProviderSnapshot`
   (`NotchKitCore/Providers`). The ticker reads it, and Today lists other
