@@ -93,7 +93,7 @@ public struct StudyMethodInfo: Hashable, Sendable {
                 kind: kind,
                 name: "Question block",
                 tagline: "40 questions in 60 min, then review",
-                howTo: "Do a timed block of practice questions, up to 40 in 60 minutes like a real Step 1 block. Then spend at least as long reviewing every explanation, including the ones you got right.",
+                howTo: "Do a timed block of practice questions, up to 40 in 60 minutes, as on a real board exam. Then spend at least as long reviewing every explanation, including the ones you got right.",
                 evidence: "Testing yourself, then checking answers, is among the best-supported ways to learn (Roediger & Karpicke, 2006; Dunlosky et al., 2013).",
                 evidenceLevel: .strong
             )

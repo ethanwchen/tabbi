@@ -9,13 +9,14 @@ import NotchKitCore
 ///
 /// Values: `method:<kind>` (the timer running that method; without the
 /// demo, a fresh session on it), `picker`,
-/// `sounds` (the sound mixer), `paused` (the demo Pomodoro paused, so the
+/// `sounds` (the sound mixer), `custom` (the Custom lengths), `paused` (the demo Pomodoro paused, so the
 /// pet dozes), or `info:<kind>` (that method's info popover over a Pomodoro session). Kinds are
 /// `StudyMethodKind` raw values. Ignored outside snapshot runs.
 enum StudySnapshotState: Equatable {
     case method(StudyMethodKind)
     case picker
     case sounds
+    case custom
     case paused
     case info(StudyMethodKind)
 
@@ -29,6 +30,7 @@ enum StudySnapshotState: Equatable {
     static func parse(_ value: String) -> StudySnapshotState? {
         if value == "picker" { return .picker }
         if value == "sounds" { return .sounds }
+        if value == "custom" { return .custom }
         if value == "paused" { return .paused }
         let parts = value.split(separator: ":", maxSplits: 1).map(String.init)
         guard parts.count == 2, let kind = StudyMethodKind(rawValue: parts[1]) else { return nil }

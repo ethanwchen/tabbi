@@ -242,6 +242,22 @@ public struct StudySession: Codable, Hashable, Sendable {
         (log, cardBaseline) = kept
     }
 
+    /// Swaps in new lengths for the same kind of method without starting
+    /// over, e.g. after editing the Custom rhythm mid-session. Rounds,
+    /// cards and the clock carry on; the current phase takes its new length,
+    /// but a phase already past it ends no sooner than a minute from `now`,
+    /// so trimming a block never finishes it on the spot.
+    /// Returns false (and does nothing) when `newMethod` is another kind.
+    @discardableResult
+    public mutating func retune(to newMethod: StudyMethod, at now: Date) -> Bool {
+        guard newMethod.kind == method.kind else { return false }
+        method = newMethod
+        phaseDuration = newMethod.duration(of: phase, workedBeforeBreak: lastFocusWorked).map { length in
+            phaseStartedAt == nil ? length : max(length, elapsed(at: now) + StudyMethod.minimumPhase)
+        }
+        return true
+    }
+
     // MARK: Time and cards
 
     /// Applies every phase end that has passed by `now` and returns them.

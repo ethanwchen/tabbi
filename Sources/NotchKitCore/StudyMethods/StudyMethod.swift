@@ -195,7 +195,7 @@ public struct StudyMethod: Codable, Hashable, Sendable, Identifiable {
         return due > 0 ? due : defaultSprintCards
     }
 
-    /// Up to 40 questions in 60 min (one USMLE Step 1 block), then an equally
+    /// Up to 40 questions in 60 min (one board-exam block), then an equally
     /// long review of every explanation, then a 10 min break.
     public static let questionBlock = StudyMethod(
         kind: .questionBlock,

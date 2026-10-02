@@ -15,16 +15,19 @@ struct StudyPanel: View {
         Group {
             switch overlay {
             case .picker:
-                StudyMethodPicker(methods: store.menu.methods, current: store.session.method.kind, info: { show(.info($0, from: .picker)) }) { kind in
+                StudyMethodPicker(methods: store.methods, current: store.session.method.kind, info: { show(.info($0, from: .picker)) }) { kind in
                     if let kind { store.choose(kind) }
-                    show(nil)
+                    // Custom opens its lengths right away, so picking it is never a guess.
+                    show(kind == .custom ? .custom : nil)
                 }
             case .info(let kind, let back):
-                StudyMethodInfoView(method: .preset(kind), isCurrent: kind == store.session.method.kind,
+                StudyMethodInfoView(method: .preset(kind, custom: store.custom), isCurrent: kind == store.session.method.kind,
                                     use: { store.choose(kind); show(nil) },
                                     close: { show(back) })
             case .sounds:
                 StudySoundMixer { show(nil) }
+            case .custom:
+                StudyCustomEditor(store: store) { show(nil) }
             case nil:
                 HStack(spacing: Theme.Spacing.s) {
                     StudyDial(store: store)
@@ -32,7 +35,7 @@ struct StudyPanel: View {
                     VStack(spacing: Theme.Spacing.s) {
                         StudyMethodCard(store: store, choose: { show(.picker) },
                                         info: { show(.info(store.session.method.kind, from: nil)) },
-                                        sounds: { show(.sounds) })
+                                        sounds: { show(.sounds) }, edit: { show(.custom) })
                         StudyControls(store: store)
                     }
                 }
@@ -49,17 +52,20 @@ struct StudyPanel: View {
 }
 
 /// What covers the timer: the method picker, a method's info popover
-/// that returns to wherever it was opened from, or the sound mixer.
+/// that returns to wherever it was opened from, the sound mixer, or the
+/// Custom method's lengths.
 private indirect enum StudyPanelOverlay: Equatable {
     case picker
     case info(StudyMethodKind, from: StudyPanelOverlay?)
     case sounds
+    case custom
 
     init?(snapshot: StudySnapshotState?) {
         switch snapshot {
         case .picker: self = .picker
         case .info(let kind): self = .info(kind, from: nil)
         case .sounds: self = .sounds
+        case .custom: self = .custom
         case .method, .paused, nil: return nil
         }
     }
@@ -139,6 +145,8 @@ private struct StudyMethodCard: View {
     let choose: () -> Void
     let info: () -> Void
     let sounds: () -> Void
+    /// Opens the Custom method's lengths.
+    let edit: () -> Void
     @State private var hovering = false
 
     var body: some View {
@@ -151,6 +159,9 @@ private struct StudyMethodCard: View {
                     Spacer(minLength: Theme.Spacing.s)
                     if let round = StudyTimerFormat.roundLabel(session) {
                         Text(round).monospacedDigit()
+                    }
+                    if session.method.kind == .custom {
+                        StudyEditButton(action: edit)
                     }
                     StudyInfoButton(method: session.method.kind, action: info)
                         .padding(.trailing, -Theme.Spacing.xs)
