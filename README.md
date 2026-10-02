@@ -73,6 +73,13 @@ A quick question box that streams answers from your local `claude` CLI, with Mar
 
 <img src="docs/images/ask-claude.png" alt="Ask Claude panel" width="680">
 
+### Kits
+
+A kit is a premade set of tabs for one kind of user.
+NotchDeck ships Productivity (the tabs above), Medicine (StudyNotch) and Student, and you can switch kits, reset to a kit's defaults, or import a kit someone shared in **Settings > Modules**.
+Kits are small JSON files; [docs/kits.md](docs/kits.md) explains how to write your own.
+See [docs/ROADMAP.md](docs/ROADMAP.md) for where NotchDeck is going next.
+
 ## Install
 
 1. Download `NotchDeck-<version>.zip` from the [latest release](https://github.com/ethanwchen/notchdeck/releases/latest).
@@ -195,6 +202,7 @@ System sampling and Claude refreshes only run while their panel is open, and Now
 
 Contributions are welcome.
 Start with [CONTRIBUTING.md](CONTRIBUTING.md) for the dev setup and the snapshot workflow, and [AGENTS.md](AGENTS.md) for the architecture and design rules.
+[docs/ROADMAP.md](docs/ROADMAP.md) lists planned kits, modules and content packs.
 Please follow the [Code of Conduct](CODE_OF_CONDUCT.md), and report security issues privately as described in [SECURITY.md](SECURITY.md).
 Notable changes are listed in [CHANGELOG.md](CHANGELOG.md).
 

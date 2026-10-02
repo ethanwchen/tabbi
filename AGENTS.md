@@ -34,6 +34,9 @@ Judge them against the design rules below before you call the work done.
 - `Sources/NotchKitCore/Claude` — `ClaudeCLI` (locate + stream `claude -p`) and
   `ClaudeStreamEvent` (stream-json parser). Both Claude modules use these.
 
+Kits are JSON manifests in `Sources/NotchKitCore/Kits/Bundled`; the format
+is documented in `docs/kits.md`. Direction and planned work: `docs/ROADMAP.md`.
+
 Module ownership: when working on one module, keep changes inside its
 `Modules/<Module>/` folder and a matching `NotchKitCore/<Module>/` folder plus
 tests. Touch shared files only when unavoidable, and keep those edits minimal.
