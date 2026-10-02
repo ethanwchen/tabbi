@@ -14,6 +14,6 @@
     <key>LSUIElement</key><true/>
     <key>NSHighResolutionCapable</key><true/>
     <key>NSAppleEventsUsageDescription</key>
-    <string>NotchDeck controls Spotify playback and shows what's playing.</string>
+    <string>NotchDeck controls Spotify and Music playback and shows what's playing.</string>
 </dict>
 </plist>

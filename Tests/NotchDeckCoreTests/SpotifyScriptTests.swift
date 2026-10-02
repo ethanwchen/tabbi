@@ -9,7 +9,7 @@ final class SpotifyScriptTests: XCTestCase {
     func testParsesPlayingTrack() throws {
         let output = record([
             "playing", "spotify:track:abc", "Midnight City", "M83", "Hurry Up, We're Dreaming",
-            "https://i.scdn.co/image/ab67", "243960", "87.25", "true", "false",
+            "https://i.scdn.co/image/ab67", "243960", "87.25", "true", "false", "64",
         ])
         let playback = try XCTUnwrap(SpotifyScript.parse(output))
         XCTAssertEqual(playback.state, .playing)
@@ -29,7 +29,7 @@ final class SpotifyScriptTests: XCTestCase {
         let title = "Don't Stop | \"Live\" (feat. Ñoño & 坂本龍一)\tPart 2\nReprise 🎧"
         let output = record([
             "paused", "spotify:track:x", title, "Sigur Rós, Björk", "Ágætis byrjun — Remaster",
-            "", "60000", "0", "false", "true",
+            "", "60000", "0", "false", "true", "64",
         ]) + "\n"
         let playback = try XCTUnwrap(SpotifyScript.parse(output))
         XCTAssertEqual(playback.state, .paused)
@@ -42,21 +42,21 @@ final class SpotifyScriptTests: XCTestCase {
     }
 
     func testEmptyTitleFieldsAreKept() throws {
-        let output = record(["playing", "spotify:ad:1", "", "", "", "", "30000", "3", "false", "false"])
+        let output = record(["playing", "spotify:ad:1", "", "", "", "", "30000", "3", "false", "false", "64"])
         let playback = try XCTUnwrap(SpotifyScript.parse(output))
         XCTAssertEqual(playback.track?.title, "")
         XCTAssertEqual(playback.track?.duration, 30)
     }
 
     func testCommaDecimalAndExponentPositions() throws {
-        let comma = record(["playing", "id", "t", "a", "b", "", "200000", "12,5", "false", "false"])
+        let comma = record(["playing", "id", "t", "a", "b", "", "200000", "12,5", "false", "false", "64"])
         XCTAssertEqual(try XCTUnwrap(SpotifyScript.parse(comma)).position, 12.5, accuracy: 0.0001)
-        let exponent = record(["playing", "id", "t", "a", "b", "", "200000", "1.0E-3", "false", "false"])
+        let exponent = record(["playing", "id", "t", "a", "b", "", "200000", "1.0E-3", "false", "false", "64"])
         XCTAssertEqual(try XCTUnwrap(SpotifyScript.parse(exponent)).position, 0.001, accuracy: 0.00001)
     }
 
     func testPositionIsClampedToDuration() throws {
-        let output = record(["playing", "id", "t", "a", "b", "", "10000", "12", "false", "false"])
+        let output = record(["playing", "id", "t", "a", "b", "", "10000", "12", "false", "false", "64"])
         XCTAssertEqual(try XCTUnwrap(SpotifyScript.parse(output)).position, 10)
     }
 
