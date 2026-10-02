@@ -86,6 +86,13 @@ final class FocusStore: ObservableObject {
         change { $0.linkedItemID = itemID }
     }
 
+    /// "Focus on this": links the item and, if nothing is under way yet,
+    /// starts a focus session so it's one click from the checklist.
+    func focus(on itemID: UUID) {
+        link(itemID)
+        if timer.runState == .idle, timer.phase == .focus { start() }
+    }
+
     // MARK: Private
 
     /// Applies `edit`, then saves and reschedules the sound, notification, and ticker.
