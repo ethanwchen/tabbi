@@ -198,6 +198,52 @@ final class ClaudeUsageLogScannerTests: XCTestCase {
         let stats = await scanner.scan(now: now, calendar: utc)
         XCTAssertEqual(stats, .empty)
     }
+
+    func testSkipsFilesLastModifiedBeforeTheWindow() async throws {
+        try write([assistantLine(id: "m1", timestamp: "2026-10-01T10:00:00Z")], to: "project-a/old.jsonl")
+        try FileManager.default.setAttributes(
+            [.modificationDate: date("2026-09-20T00:00:00Z")],
+            ofItemAtPath: root.appendingPathComponent("project-a/old.jsonl").path
+        )
+        let stats = await ClaudeUsageLogScanner(root: root).scan(now: now, calendar: utc)
+        XCTAssertEqual(stats, .empty)
+    }
+
+    func testPersistedIndexSurvivesRelaunchWithoutRereadingFiles() async throws {
+        let index = root.appendingPathComponent("index/scan-index.json")
+        try write([assistantLine(id: "m1", timestamp: "2026-10-01T10:00:00Z")], to: "project-a/a.jsonl")
+        try write([assistantLine(id: "m2", timestamp: "2026-10-01T11:00:00Z")], to: "project-a/b.jsonl")
+        _ = await ClaudeUsageLogScanner(root: root, indexURL: index).scan(now: now, calendar: utc)
+
+        // An unreadable file proves the next launch never opens it again.
+        let locked = root.appendingPathComponent("project-a/a.jsonl").path
+        try FileManager.default.setAttributes([.posixPermissions: 0], ofItemAtPath: locked)
+        defer { try? FileManager.default.setAttributes([.posixPermissions: 0o644], ofItemAtPath: locked) }
+        try append(assistantLine(id: "m3", timestamp: "2026-10-01T12:00:00Z") + "\n", to: "project-a/b.jsonl")
+
+        let stats = await ClaudeUsageLogScanner(root: root, indexURL: index).scan(now: now, calendar: utc)
+        XCTAssertEqual(stats.today.messages, 3)
+        XCTAssertEqual(stats.today.tokens.total, 30)
+    }
+
+    func testCorruptIndexFallsBackToAFullScan() async throws {
+        let index = root.appendingPathComponent("scan-index.json")
+        try Data("{not json".utf8).write(to: index)
+        try write([assistantLine(id: "m1", timestamp: "2026-10-01T10:00:00Z")], to: "project-a/a.jsonl")
+        let stats = await ClaudeUsageLogScanner(root: root, indexURL: index).scan(now: now, calendar: utc)
+        XCTAssertEqual(stats.today.messages, 1)
+    }
+
+    func testSkipsLinesLongerThanTheLimitAndKeepsReading() async throws {
+        let filler = String(repeating: "x", count: ClaudeUsageLogScanner.maxLineLength + 10)
+        try write([
+            assistantLine(id: "m1", timestamp: "2026-10-01T10:00:00Z"),
+            #"{"type":"user","text":"\#(filler)"}"#,
+            assistantLine(id: "m2", timestamp: "2026-10-01T11:00:00Z"),
+        ], to: "project-a/s.jsonl")
+        let stats = await ClaudeUsageLogScanner(root: root).scan(now: now, calendar: utc)
+        XCTAssertEqual(stats.today.messages, 2)
+    }
 }
 
 final class ClaudeUsageFormatTests: XCTestCase {
