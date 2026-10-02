@@ -147,8 +147,8 @@ extension AnkiSummary {
 extension AnkiConnectClient {
     /// Fetches everything `AnkiSummary` needs: due counts for every deck,
     /// today's count, the per-day history, and the review log for the
-    /// retention window (one `cardReviews` call per deck, since that action
-    /// does not include child decks).
+    /// retention window. `cardReviews` does not include child decks, so every
+    /// deck is asked for, batched into a single `multi` request.
     public func summary(
         now: Date = Date(),
         rolloverHour: Int = 4,
@@ -163,11 +163,7 @@ extension AnkiConnectClient {
         let byDay = try await numCardsReviewedByDay()
 
         let startID = Int64((now.timeIntervalSince1970 - TimeInterval(retentionWindowDays) * 86_400) * 1000)
-        var reviews: [AnkiReview] = []
-        for name in names {
-            try Task.checkCancellation()
-            reviews += try await cardReviews(deck: name, startID: startID)
-        }
+        let reviews = try await cardReviews(decks: names, startID: startID)
 
         return AnkiSummary(
             deckStats: stats,

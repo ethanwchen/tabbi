@@ -43,6 +43,24 @@ private final class FakeAnkiTransport: AnkiConnectTransport, @unchecked Sendable
     }
 }
 
+/// Cancels its caller mid-request, then fails the way a transport racing
+/// a cancellation might (a timeout), to prove cancellation takes priority.
+private final class CancellingTransport: AnkiConnectTransport, @unchecked Sendable {
+    private let lock = NSLock()
+    private var caller: Task<Int, Error>?
+
+    var task: Task<Int, Error>? {
+        get { lock.withLock { caller } }
+        set { lock.withLock { caller = newValue } }
+    }
+
+    func post(_ body: Data, timeout: TimeInterval) async throws -> AnkiConnectHTTPResponse {
+        while task == nil { await Task.yield() }
+        task?.cancel()
+        throw AnkiConnectTransportError.timedOut
+    }
+}
+
 final class AnkiConnectClientTests: XCTestCase {
     private func client(_ replies: [String: FakeAnkiTransport.Reply], apiKey: String? = nil, ankiRunning: Bool = false) -> (AnkiConnectClient, FakeAnkiTransport) {
         let transport = FakeAnkiTransport(replies)
@@ -187,6 +205,36 @@ final class AnkiConnectClientTests: XCTestCase {
         XCTAssertEqual(reviews.first?.kind, .unknown)
     }
 
+    func testCardReviewsForSeveralDecksBatchThroughMulti() async throws {
+        let fixture = #"{"result":[{"result":[[1594194095746,1485369733217,-1,3,4,-60,2500,6157,1]],"error":null},{"result":[],"error":null},{"result":[[1594201393292,1485369902086,-1,1,-60,-60,0,4846,1]],"error":null}],"error":null}"#
+        let (client, transport) = client(["multi": .json(fixture)])
+        let reviews = try await client.cardReviews(decks: ["Step1", "Step1::Cardio", "Pharm"], startID: 42)
+        XCTAssertEqual(reviews.map(\.id), [1594194095746, 1594201393292])
+
+        XCTAssertEqual(transport.requests.count, 1, "one round trip for every deck")
+        let request = try XCTUnwrap(transport.requests.first)
+        XCTAssertEqual(request["action"] as? String, "multi")
+        let actions = try XCTUnwrap((request["params"] as? [String: Any])?["actions"] as? [[String: Any]])
+        XCTAssertEqual(actions.map { $0["action"] as? String }, ["cardReviews", "cardReviews", "cardReviews"])
+        XCTAssertTrue(actions.allSatisfy { $0["version"] as? Int == 6 }, "inner actions need version 6 for {result, error} replies")
+        XCTAssertEqual(actions.map { ($0["params"] as? [String: Any])?["deck"] as? String }, ["Step1", "Step1::Cardio", "Pharm"])
+        XCTAssertTrue(actions.allSatisfy { (($0["params"] as? [String: Any])?["startID"] as? NSNumber)?.int64Value == 42 })
+    }
+
+    func testBatchedCardReviewsSkipTheRequestForNoDecks() async throws {
+        let (client, transport) = client([:])
+        let reviews = try await client.cardReviews(decks: [], startID: 0)
+        XCTAssertTrue(reviews.isEmpty)
+        XCTAssertTrue(transport.requests.isEmpty)
+    }
+
+    func testBatchedCardReviewsSurfaceInnerErrors() async {
+        let (failing, _) = client(["multi": .json(#"{"result":[{"result":[],"error":null},{"result":null,"error":"collection is not available"}],"error":null}"#)])
+        await assertThrows(.collectionUnavailable) { try await failing.cardReviews(decks: ["A", "B"], startID: 0) }
+        let (short, _) = client(["multi": .json(#"{"result":[{"result":[],"error":null}],"error":null}"#)])
+        await assertThrows(.invalidResponse("multi: expected 2 replies, got 1")) { try await short.cardReviews(decks: ["A", "B"], startID: 0) }
+    }
+
     func testFindCardsSendsQuery() async throws {
         let (client, transport) = client(["findCards": .json(#"{"result":[1494723142483,1494703460437],"error":null}"#)])
         let ids = try await client.findCards(query: #"deck:"Step1" rated:7"#)
@@ -302,6 +350,36 @@ final class AnkiConnectClientTests: XCTestCase {
         let request = Task { try await client.version() }
         try? await Task.sleep(for: .milliseconds(100))
         request.cancel()
+        do {
+            _ = try await request.value
+            XCTFail("Expected cancellation")
+        } catch {
+            XCTAssertTrue(error is CancellationError, "\(error)")
+        }
+    }
+
+    func testCancelledCallerGetsCancellationEvenWhenTheTransportFails() async {
+        // Anki quitting while a refresh is being abandoned must not surface
+        // as "Anki is closed": the caller asked to stop, so it hears that.
+        let (client, transport) = client(["version": .failure(.connectionRefused)])
+        let request = Task {
+            withUnsafeCurrentTask { $0?.cancel() }
+            return try await client.version()
+        }
+        do {
+            _ = try await request.value
+            XCTFail("Expected cancellation")
+        } catch {
+            XCTAssertTrue(error is CancellationError, "\(error)")
+        }
+        XCTAssertTrue(transport.requests.isEmpty, "a cancelled caller sends nothing")
+    }
+
+    func testCancellationDuringARequestWinsOverItsError() async {
+        let transport = CancellingTransport()
+        let client = AnkiConnectClient(transport: transport)
+        let request = Task { try await client.version() }
+        transport.task = request
         do {
             _ = try await request.value
             XCTFail("Expected cancellation")
