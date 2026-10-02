@@ -78,9 +78,13 @@ final class MusicScriptTests: XCTestCase {
     func testArtworkReadIsPinnedToTheTrack() throws {
         let id = try XCTUnwrap(MusicScript.parse(record(["playing", "8F3A2B1C9D0E7F65", "t", "a", "b", "10", "1",
                                                          "false", "off", "64"]))?.track?.id)
-        let script = try XCTUnwrap(MusicScript.readArtwork(forTrackID: id))
-        XCTAssertTrue(script.contains(#"is not "8F3A2B1C9D0E7F65" then return missing value"#))
-        XCTAssertTrue(script.contains("raw data of artwork 1"))
+        XCTAssertEqual(MusicScript.readArtwork(forTrackID: id), """
+        tell application id "com.apple.Music"
+            if (persistent ID of current track) is not "8F3A2B1C9D0E7F65" then return missing value
+            if (count of artworks of current track) is 0 then return missing value
+            return raw data of artwork 1 of current track
+        end tell
+        """)
         // Spotify ids, streams keyed by title, and injected quotes never read.
         XCTAssertNil(MusicScript.readArtwork(forTrackID: "spotify:track:abc"))
         XCTAssertNil(MusicScript.readArtwork(forTrackID: "music:Radio One"))
