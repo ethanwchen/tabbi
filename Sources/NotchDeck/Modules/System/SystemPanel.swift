@@ -57,10 +57,10 @@ struct SystemPanel: View {
         let memory = monitor.memory
         return MetricCard(
             title: "Memory", symbol: "memorychip",
-            value: memory.map { SystemFormat.gigabytes($0.usedBytes) } ?? SystemFormat.unavailable,
+            value: memory.map { SystemFormat.gigabytes($0.usedBytes, alwaysShowTenths: true) } ?? SystemFormat.unavailable,
             unit: memory == nil ? nil : "GB",
             history: monitor.memoryHistory.elements,
-            help: "Memory in use and memory pressure"
+            help: memory.map { "Memory in use: \(SystemFormat.memory($0))" } ?? "Memory in use and memory pressure"
         ) {
             if let memory { Text("of \(SystemFormat.gigabytes(memory.totalBytes)) GB") }
         } footer: {

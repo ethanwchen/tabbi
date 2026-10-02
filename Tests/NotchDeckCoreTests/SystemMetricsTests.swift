@@ -126,6 +126,8 @@ final class SystemFormatTests: XCTestCase {
         XCTAssertEqual(SystemFormat.gigabytes(UInt64(12.4 * 1_073_741_824)), "12.4")
         XCTAssertEqual(SystemFormat.gigabytes(UInt64(0.96 * 1_073_741_824)), "1")
         XCTAssertEqual(SystemFormat.gigabytes(nil), SystemFormat.unavailable)
+        XCTAssertEqual(SystemFormat.gigabytes(34 << 30, alwaysShowTenths: true), "34.0")
+        XCTAssertEqual(SystemFormat.gigabytes(UInt64(12.44 * 1_073_741_824), alwaysShowTenths: true), "12.4")
     }
 
     func testMemorySummary() {

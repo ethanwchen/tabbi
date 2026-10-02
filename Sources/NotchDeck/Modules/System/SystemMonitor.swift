@@ -25,6 +25,10 @@ final class SystemMonitor: ObservableObject {
 
     private let isDemo: Bool
     private var previousTicks: [CPUTicks] = []
+    /// When `previousTicks` was taken. A baseline older than a couple of
+    /// ticks (e.g. from before the panel was last hidden) would report the
+    /// average over that whole gap, so it is replaced instead of used.
+    private var previousTicksTime: ContinuousClock.Instant?
     private var demoStep = 0
     private var samplingTask: Task<Void, Never>?
     /// Number of visible panels; sampling stops when it drops to zero.
@@ -39,6 +43,7 @@ final class SystemMonitor: ObservableObject {
             // Cheap one-off reading so the first frame isn't empty; the CPU
             // baseline makes the first timer tick report a real percentage.
             previousTicks = SystemSampler.cpuTicks()
+            previousTicksTime = .now
             memory = SystemSampler.memory()
             if let memory { memoryHistory.append(memory.usedFraction) }
             gpu = SystemSampler.gpuUtilization()
@@ -72,10 +77,14 @@ final class SystemMonitor: ObservableObject {
             return
         }
         let ticks = SystemSampler.cpuTicks()
-        let usage = CPUUsageCalculator.usage(from: previousTicks, to: ticks)
+        let now = ContinuousClock.now
+        if let previousTicksTime, now - previousTicksTime < .seconds(3) {
+            let usage = CPUUsageCalculator.usage(from: previousTicks, to: ticks)
+            cpu = usage
+            if let usage { cpuHistory.append(usage.total) }
+        }
         previousTicks = ticks
-        cpu = usage
-        if let usage { cpuHistory.append(usage.total) }
+        previousTicksTime = now
 
         let gpuNow = SystemSampler.gpuUtilization()
         gpu = gpuNow
