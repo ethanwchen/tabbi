@@ -5,7 +5,7 @@ public enum ClaudeAskRequest {
     /// Fast model alias; Ask Claude is a quick Q&A box, not a coding agent.
     public static let model = "sonnet"
 
-    /// Arguments appended to `claude -p <prompt> --output-format stream-json`.
+    /// Arguments inserted before `-- <prompt>` in `claude -p --output-format stream-json`.
     ///
     /// `--tools ""` removes every built-in tool and `--strict-mcp-config`
     /// (with no `--mcp-config`) ignores the user's MCP servers, so the CLI

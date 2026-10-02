@@ -56,13 +56,15 @@ public enum ClaudeCLI {
     /// Runs `claude -p` with stream-json output and yields parsed events.
     ///
     /// Runs in a neutral temporary directory so no project CLAUDE.md or
-    /// settings are picked up. Cancel the consuming task to stop the process.
+    /// settings are picked up. The prompt goes last, after `--`, so text that
+    /// starts with `-` or matches a subcommand is never parsed as CLI input.
+    /// Cancel the consuming task to stop the process.
     public static func stream(
         executable: URL,
         prompt: String,
         extraArguments: [String] = []
     ) -> AsyncThrowingStream<ClaudeStreamEvent, Error> {
-        let arguments = ["-p", prompt, "--output-format", "stream-json", "--verbose"] + extraArguments
+        let arguments = ["-p", "--output-format", "stream-json", "--verbose"] + extraArguments + ["--", prompt]
         let lines = StreamingProcess.lines(
             executable: executable,
             arguments: arguments,
