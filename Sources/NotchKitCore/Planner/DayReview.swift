@@ -368,8 +368,8 @@ public extension DayReview {
             "Strong day: the pull request, design feedback, and flights are all off your plate. "
                 + "Start tomorrow with the planner beta while your focus is fresh."
         case .medicine:
-            "Solid study day: First Aid, the heart failure lecture, and the shift email are done. "
-                + "Start tomorrow with the UWorld block while your focus is fresh."
+            "Solid study day: First Aid, the lecture recording, and the shift email are done. "
+                + "Start tomorrow with UWorld while your focus is fresh."
         }
         return review
     }

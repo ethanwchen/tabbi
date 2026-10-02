@@ -60,6 +60,12 @@ final class TodayPlanSettingsTests: XCTestCase {
         XCTAssertEqual(settings.sampleDay, .work)
     }
 
+    func testOutOfRangeNumbersClampInsteadOfCrashing() {
+        let huge = TodayPlanSettings(kit: kit(["eventBufferMinutes": .number(1e20), "dayEndHour": .number(-1e30)]))
+        XCTAssertEqual(huge.eventBufferMinutes, 240)
+        XCTAssertEqual(huge.dayEndHour, 0)
+    }
+
     func testMedicineKitPlansStudyDays() throws {
         let medicine = try KitLibrary.loadBundled("medicine")
         let settings = TodayPlanSettings(kit: medicine.defaults)

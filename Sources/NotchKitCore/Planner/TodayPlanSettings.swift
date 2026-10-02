@@ -73,14 +73,21 @@ public struct TodayPlanSettings: Hashable, Sendable {
             planMode: section?["planMode"]?.stringValue.flatMap(PlanMode.init(rawValue:)) ?? defaults.planMode,
             studyMethod: kit?.resolvedStudyMethod.map(StudyMethod.preset) ?? defaults.studyMethod,
             reviewsFirst: section?["reviewsFirst"]?.boolValue ?? defaults.reviewsFirst,
-            eventBufferMinutes: section?["eventBufferMinutes"]?.numberValue.map { Int($0.rounded()) }
+            eventBufferMinutes: section?["eventBufferMinutes"]?.numberValue.flatMap { Self.wholeNumber($0, upTo: 240) }
                 ?? defaults.eventBufferMinutes,
             studyBlockTitle: section?["studyBlockTitle"]?.stringValue ?? defaults.studyBlockTitle,
             secondsPerCard: section?["secondsPerCard"]?.numberValue ?? defaults.secondsPerCard,
             upNextEvents: section?["upNextEvents"]?.stringValue ?? defaults.upNextEvents,
-            dayEndHour: section?["dayEndHour"]?.numberValue.map { Int($0.rounded()) } ?? defaults.dayEndHour,
+            dayEndHour: section?["dayEndHour"]?.numberValue.flatMap { Self.wholeNumber($0, upTo: 24) } ?? defaults.dayEndHour,
             sampleDay: section?["sampleDay"]?.stringValue.flatMap(PlannerSampleDay.init(rawValue:)) ?? defaults.sampleDay
         )
+    }
+
+    /// `value` rounded and clamped to 0...`limit` before it becomes an Int,
+    /// since converting an out-of-range Double traps. Nil for NaN.
+    private static func wholeNumber(_ value: Double, upTo limit: Int) -> Int? {
+        guard !value.isNaN else { return nil }
+        return Int(min(max(value.rounded(), 0), Double(limit)))
     }
 
     /// Block lengths and wording for `StudyDayPlanner`.

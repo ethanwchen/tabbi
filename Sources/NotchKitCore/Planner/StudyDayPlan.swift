@@ -20,7 +20,10 @@ extension ProgressItem {
     /// Nil when the goal is already met.
     public func reviewWork(secondsPerUnit: TimeInterval = StudyDayPreferences.defaultSecondsPerCard) -> StudyReviewWork? {
         guard remaining > 0 else { return nil }
-        let minutes = (Double(remaining) * max(secondsPerUnit, 1) / 60 / 5).rounded(.up) * 5
+        // Capped before converting, so a huge kit value can't overflow Int.
+        let seconds = secondsPerUnit.isNaN ? StudyDayPreferences.defaultSecondsPerCard : max(secondsPerUnit, 1)
+        let minutes = min((Double(remaining) * seconds / 60 / 5).rounded(.up) * 5,
+                          Double(StudyDayPreferences.maximumReviewMinutes))
         return StudyReviewWork(title: title, minutes: Int(minutes))
     }
 }
@@ -30,7 +33,8 @@ extension ProgressItem {
 public struct StudyDayPreferences: Hashable, Sendable {
     /// Typical time to answer one Anki card.
     public static let defaultSecondsPerCard: TimeInterval = 10
-    /// Longest single review block; anything left over waits for later.
+    /// Longest review a plan schedules; a bigger queue is planned up to
+    /// this and the rest is left for the user to fit in.
     public static let maximumReviewMinutes = 120
 
     /// Length of one study block.
@@ -209,14 +213,21 @@ public enum StudyDayPlanner {
         return StudyDayPlan(blocks: ordered.map(\.block), breaks: breaks)
     }
 
-    /// `context.gaps` with `buffer` trimmed off every edge that touches a
-    /// calendar event. The edge at `now` and the one at `dayEnd` stay put.
+    /// `context.gaps` with `buffer` kept clear after any calendar event that
+    /// ended within `buffer` of the gap (including one ending right around
+    /// `now`) and before the event that closes it; the edge at `dayEnd`
+    /// stays put. Both edges land on the slot grid, so every block, early or
+    /// late, starts on a slot mark.
     static func bufferedGaps(context: DayPlanContext, buffer: TimeInterval) -> [DateInterval] {
         let minimum = TimeInterval(DayPlanner.minimumBlockMinutes * 60)
-        let firstSlot = DayPlanner.nextSlot(onOrAfter: context.now)
+        let slot = TimeInterval(DayPlanner.slotMinutes * 60)
+        let ends = context.events.filter { !$0.isAllDay && $0.end > $0.start }.map(\.end)
         return context.gaps.compactMap { gap in
-            let start = gap.start > firstSlot ? DayPlanner.nextSlot(onOrAfter: gap.start.addingTimeInterval(buffer)) : gap.start
-            let end = gap.end < context.dayEnd ? gap.end.addingTimeInterval(-buffer) : gap.end
+            let lastEnd = ends.filter { $0 <= gap.start }.max()
+            let start = lastEnd.map { max(gap.start, DayPlanner.nextSlot(onOrAfter: $0.addingTimeInterval(buffer))) }
+                ?? gap.start
+            let edge = gap.end < context.dayEnd ? gap.end.addingTimeInterval(-buffer) : gap.end
+            let end = Date(timeIntervalSinceReferenceDate: (edge.timeIntervalSinceReferenceDate / slot).rounded(.down) * slot)
             guard end.timeIntervalSince(start) >= minimum else { return nil }
             return DateInterval(start: start, end: end)
         }

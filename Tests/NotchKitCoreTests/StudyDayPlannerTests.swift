@@ -125,6 +125,8 @@ final class StudyDayPlannerTests: XCTestCase {
         XCTAssertEqual(item.reviewWork(secondsPerUnit: 6), StudyReviewWork(title: "Anki reviews", minutes: 35))
         let done = ProgressItem(id: "reviews", source: .anki, title: "Anki reviews", completed: 432, target: 432, unit: "cards")
         XCTAssertNil(done.reviewWork())
+        // A huge per-card time stays at the longest review instead of overflowing.
+        XCTAssertEqual(item.reviewWork(secondsPerUnit: 1e300)?.minutes, StudyDayPreferences.maximumReviewMinutes)
     }
 
     // MARK: - Study blocks
@@ -179,6 +181,29 @@ final class StudyDayPlannerTests: XCTestCase {
         for rest in plan.breaks {
             XCTAssertFalse(classDay.contains { !$0.isAllDay && $0.start < rest.end && rest.start < $0.end })
         }
+        assertConstraints(plan, context)
+    }
+
+    func testAnEventEndingRightAroundNowStillGetsItsBuffer() {
+        // At 9:01 the lecture ends at 9:05, so nothing starts before 9:15.
+        let context = context(now: at(9, 1), events: [event("Lecture", at(8), at(9, 5))])
+        let plan = StudyDayPlanner.plan(context: context, reviews: [anki],
+                                        preferences: StudyDayPreferences(eventBufferMinutes: 10))
+        XCTAssertEqual(plan.blocks.first?.start, at(9, 15))
+        assertConstraints(plan, context)
+    }
+
+    func testLateReviewsStartOnTheSlotGrid() {
+        // The clinic at 13:57 minus a 10 min buffer is 13:47; reviews end
+        // on the slot before it, 13:45, rather than starting at 13:22.
+        let context = context(now: at(12), events: [event("Clinic", at(13, 57), at(18))])
+        let plan = StudyDayPlanner.plan(context: context, reviews: [StudyReviewWork(title: "Anki reviews", minutes: 25)],
+                                        preferences: StudyDayPreferences(reviewsFirst: false, eventBufferMinutes: 10))
+        let reviews = plan.blocks.filter { $0.kind == .reviews }
+        XCTAssertEqual(reviews.map(\.start), [at(13, 20)])
+        XCTAssertEqual(reviews.map(\.end), [at(13, 45)])
+        let minute = Calendar.Component.minute
+        for block in plan.blocks { XCTAssertEqual(calendar.component(minute, from: block.start) % 5, 0) }
         assertConstraints(plan, context)
     }
 
