@@ -131,7 +131,7 @@ final class NotchController {
         guard model.isOpen else { return false }
         let editingText = panel.firstResponder is NSTextView
         switch event.keyCode {
-        case 53: // esc
+        case 53 where !editingText: // esc (text fields handle it themselves, e.g. to clear)
             model.close()
             return true
         case 123 where !editingText: // left arrow
