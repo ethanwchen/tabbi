@@ -151,13 +151,15 @@ Each frame is the sitting composition in a `PetPose`, so every breed and costume
 
 Eye states live in `EffectArt` as 4x3 grids centered on the 2x3 open eye.
 The composer finds the open eyes on the face's eye row, clears them so the head's fur shows through, and stamps the new state, so a new face only needs its open-eyed version.
+Sleepy eyes also close the mouth: blush pixels below the cheek row (the eye row + 3) are cleared, so a dog's panting tongue tucks away and its nose-colored mouth corners read as a closed "w".
+Draw a tongue with the blush role below the cheek row and it will hide itself during sleep.
 
 | Animation | Frames |
 | --- | --- |
 | idle | Head nods down 1 px and back, 1.1 s + 0.9 s, so the pet breathes slowly |
 | blink | One closed-eye frame, 140 ms, played now and then over idle |
 | sit | The plain sitting frame, held |
-| sleep | Sleepy eyes, head sinking 1-2 px, a small "z" by the ear and a larger one drifting up |
+| sleep | Sleepy eyes, a closed mouth, head sinking 1-2 px, a small "z" by the ear and a larger one drifting up |
 | peekIn / peekOut | The pet dangles from the notch by its front paws: the head lowers into view from beyond the top edge, bounces 1 px, and rests with its chin on row 20; peekOut is the same frames reversed |
 | alert | Two hops (2 px, then 1 px) and a hold; every frame has a `bubbleAnchor` at the top-right of the head for the app's speech bubble |
 | celebrate | Happy eyes, a 3 px hop, a heart floating up beside the head, and sparkles |

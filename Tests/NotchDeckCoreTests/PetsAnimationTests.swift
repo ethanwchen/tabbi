@@ -73,6 +73,24 @@ final class PetAnimationTests: XCTestCase {
         }
     }
 
+    func testSleepingDogsCloseTheirMouthButKeepTheirCheeks() {
+        let blush: (PetCanvas) -> Int = { $0.pixels.filter { $0 == .blush }.count }
+        for breed in PetBreed.allCases {
+            let awake = blush(PetComposer.sitting(breed))
+            let happy = PetComposer.clip(.celebrate, for: breed).frames.map { blush($0.canvas) }
+            XCTAssertTrue(happy.allSatisfy { $0 == awake }, "celebrating keeps the tongue: \(breed)")
+            for frame in PetComposer.clip(.sleep, for: breed).frames {
+                let asleep = blush(frame.canvas)
+                if breed.species == .dog {
+                    XCTAssertLessThan(asleep, awake, "the tongue is tucked in: \(breed)")
+                    XCTAssertGreaterThanOrEqual(asleep, 4, "cheeks stay rosy: \(breed)")
+                } else {
+                    XCTAssertEqual(asleep, awake, "cats have no tongue to tuck in: \(breed)")
+                }
+            }
+        }
+    }
+
     func testCelebrationHopsShowsAHeartAndLandsBackOnTheBaseline() throws {
         for breed in PetBreed.allCases {
             let clip = PetComposer.clip(.celebrate, for: breed, outfit: .whiteCoat, accessories: [.graduationCap])

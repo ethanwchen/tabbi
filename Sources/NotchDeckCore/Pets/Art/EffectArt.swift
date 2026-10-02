@@ -75,6 +75,10 @@ enum EffectArt {
     /// the eye-colored pixels on the face's `eyeRow`, so contributors only
     /// draw the open face. Cleared eye pixels become transparent, letting the
     /// head's fur (and any mask zone) show through.
+    ///
+    /// Asleep, the mouth closes too: a panting tongue (blush pixels below the
+    /// cheek row, `eyeRow + 3`) is cleared, so the muzzle shows through and
+    /// the nose-colored mouth corners read as a closed "w".
     static func face(_ face: SpriteGrid, eyeRow: Int, eyes: PetPose.Eyes) -> SpriteGrid {
         let overlay: SpriteGrid
         switch eyes {
@@ -84,6 +88,11 @@ enum EffectArt {
         case .happy: overlay = eyesHappy
         }
         var result = face
+        if eyes == .sleepy {
+            for y in min(face.height, eyeRow + 4)..<face.height {
+                for x in 0..<face.width where face[x, y] == .role(.blush) { result[x, y] = .empty }
+            }
+        }
         let isEye: (SpriteCell) -> Bool = { $0 == .role(.eye) || $0 == .role(.eyeLight) }
         // Left edges of each 2-wide eye on the eye row.
         let lefts = (0..<face.width).filter { x in
