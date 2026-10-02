@@ -5,6 +5,7 @@ import NotchDeckCore
 /// dragging: the others slide aside live and the move is saved on release.
 struct PlannerList: View {
     static let rowHeight: CGFloat = 22
+    private static let fadeHeight = Theme.Spacing.m
 
     @ObservedObject var store: PlannerStore
     var focus: FocusState<PlannerField?>.Binding
@@ -28,6 +29,16 @@ struct PlannerList: View {
             ScrollView(.vertical) { rows }
                 .scrollIndicators(.automatic)
                 .scrollBounceBehavior(.basedOnSize)
+                // Fade the bottom edge so a cut-off row reads as "more below",
+                // with a matching margin so the last row can scroll clear of it.
+                .contentMargins(.bottom, Self.fadeHeight, for: .scrollContent)
+                .mask {
+                    VStack(spacing: 0) {
+                        Rectangle()
+                        LinearGradient(colors: [.black, .clear], startPoint: .top, endPoint: .bottom)
+                            .frame(height: Self.fadeHeight)
+                    }
+                }
         }
         .frame(maxHeight: .infinity, alignment: .top)
     }
