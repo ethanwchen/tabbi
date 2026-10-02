@@ -74,7 +74,7 @@ struct FocusCard: View {
             Label {
                 Text(linkedTitle)
             } icon: {
-                Image(systemName: "scope").foregroundStyle(accent)
+                Image(systemName: "scope").imageScale(.small).foregroundStyle(accent)
             }
             .labelStyle(FocusDetailLabelStyle())
             .help("Focusing on: \(linkedTitle)")
