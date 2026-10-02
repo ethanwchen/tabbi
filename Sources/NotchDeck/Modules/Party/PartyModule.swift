@@ -1,5 +1,6 @@
 import SwiftUI
 import NotchKitCore
+import NotchKit
 
 /// Party: study with friends on the StudyNotch friends server. The store
 /// lives in `AppServices` so presence keeps flowing while the notch is
@@ -16,6 +17,10 @@ final class PartyModule: NotchModule {
 
     func makePanel() -> AnyView {
         AnyView(PartyPanel(store: store))
+    }
+
+    func makeSettingsPane() -> SettingsPane? {
+        .party(store: store)
     }
 
     func start() {
