@@ -86,6 +86,15 @@ final class NotchController {
                 self.model.close()
             }
         }) { monitors.append(outside) }
+        // Global monitors never see our own windows, so clicks in Settings
+        // need a local monitor to close the notch the same way.
+        if let ownWindows = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown], handler: { [weak self] event in
+            MainActor.assumeIsolated {
+                guard let self, self.model.isOpen, event.window !== self.panel else { return }
+                self.model.close()
+            }
+            return event
+        }) { monitors.append(ownWindows) }
 
         if let keys = NSEvent.addLocalMonitorForEvents(matching: .keyDown, handler: { [weak self] event in
             MainActor.assumeIsolated { self?.handleKey(event) ?? false } ? nil : event
@@ -152,7 +161,8 @@ final class NotchController {
 
     /// Returns true when the key was consumed.
     private func handleKey(_ event: NSEvent) -> Bool {
-        guard model.isOpen else { return false }
+        // Keys typed into the Settings window (e.g. the Claude path field) are not ours.
+        guard model.isOpen, event.window === panel else { return false }
         let editingText = panel.firstResponder is NSTextView
         switch event.keyCode {
         case 53 where !editingText: // esc (text fields handle it themselves, e.g. to clear)
