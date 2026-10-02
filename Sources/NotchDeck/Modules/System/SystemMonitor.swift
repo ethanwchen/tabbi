@@ -12,7 +12,8 @@ import NotchDeckCore
 final class SystemMonitor: ObservableObject {
     static let historyCapacity = 60
 
-    /// `nil` until two CPU samples exist, or when the kernel won't report.
+    /// `nil` until two CPU samples a second apart exist (including right
+    /// after a sampling gap), or when the kernel won't report.
     @Published private(set) var cpu: CPUUsage?
     @Published private(set) var cpuHistory = RingBuffer<Double>(capacity: historyCapacity)
     /// `nil` when no accelerator reports utilization.
