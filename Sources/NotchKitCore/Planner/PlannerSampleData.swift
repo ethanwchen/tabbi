@@ -26,13 +26,6 @@ public extension PlannerDay {
         }
         return PlannerDay(date: date, items: items)
     }
-
-    /// Short progress caption for the panel header, e.g. "3 of 5 done".
-    var progressSummary: String {
-        if items.isEmpty { return "Nothing planned" }
-        if doneCount == items.count { return "All \(items.count) done" }
-        return "\(doneCount) of \(items.count) done"
-    }
 }
 
 public extension UpcomingEvent {

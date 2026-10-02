@@ -37,7 +37,8 @@ struct PlannerPanel: View {
                     let isEvening = Self.isWrapUpTime(context.date)
                     let hasPlannableWork = store.hasPlannableWork
                     VStack(spacing: Theme.Spacing.s) {
-                        PlannerHeader(store: store, isEvening: isEvening, hasPlannableWork: hasPlannableWork)
+                        PlannerHeader(store: store, providers: services.providers, isEvening: isEvening,
+                                      hasPlannableWork: hasPlannableWork)
                         content
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                         if store.canEdit {
@@ -156,14 +157,18 @@ enum PlannerField: Hashable {
 
 // MARK: Header
 
+/// Date and progress for the whole day. Shared goals such as Anki reviews
+/// count as items, so the ring and "N of M done" move when they finish too.
 private struct PlannerHeader: View {
     @ObservedObject var store: PlannerStore
+    @ObservedObject var providers: ProviderHub
     let isEvening: Bool
     let hasPlannableWork: Bool
 
     var body: some View {
+        let tally = TodayTally(day: store.day, shared: providers.snapshot.sharedTodayItems(excluding: .planner))
         HStack(spacing: Theme.Spacing.s) {
-            PlannerProgressRing(progress: store.day.progress)
+            PlannerProgressRing(progress: tally.progress)
                 .frame(width: 16, height: 16)
                 .frame(width: 20)
             Text(store.day.date.startDate().formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day()))
@@ -176,7 +181,7 @@ private struct PlannerHeader: View {
                     .foregroundStyle(Theme.Palette.warning)
                     .help("The last change couldn't be written to disk")
             }
-            Text(store.day.progressSummary)
+            Text(tally.summary)
                 .font(Theme.Typography.caption.monospacedDigit())
                 .foregroundStyle(Theme.Palette.secondaryText)
                 .contentTransition(.numericText())
@@ -207,7 +212,7 @@ private struct PlannerHeader: View {
         }
         .frame(height: 20)
         .padding(.horizontal, Theme.Spacing.s)
-        .animation(Theme.Motion.snappy, value: store.day.doneCount)
+        .animation(Theme.Motion.snappy, value: tally)
     }
 }
 

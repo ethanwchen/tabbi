@@ -17,7 +17,7 @@ final class SharedTodayItemTests: XCTestCase {
         let items = snapshot.sharedTodayItems(excluding: .planner)
         XCTAssertEqual(items.map(\.title), ["reviews", "Pomodoro"])
         XCTAssertEqual(items.map(\.source), [.anki, .study])
-        XCTAssertEqual(items[0].detail, "112/432 cards")
+        XCTAssertEqual(items[0].detail, "320 cards left")
         XCTAssertEqual(items[0].fraction ?? 0, 112.0 / 432, accuracy: 0.0001)
         XCTAssertFalse(items[0].isDone)
         XCTAssertEqual(items[1].detail, "25 min")
@@ -46,6 +46,7 @@ final class SharedTodayItemTests: XCTestCase {
         let items = snapshot.sharedTodayItems(excluding: .planner)
         XCTAssertEqual(items.map(\.title), ["met"])
         XCTAssertTrue(items[0].isDone)
+        XCTAssertEqual(items[0].detail, "50 cards")
     }
 
     func testIdsStayUniqueAcrossModulesAndKinds() {

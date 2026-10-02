@@ -209,18 +209,6 @@ final class PlannerSampleDataTests: XCTestCase {
     func testSampleIsStable() {
         XCTAssertEqual(PlannerDay.sample(on: oct1), PlannerDay.sample(on: oct1))
     }
-
-    func testProgressSummary() throws {
-        var day = PlannerDay(date: oct1)
-        XCTAssertEqual(day.progressSummary, "Nothing planned")
-        let first = try XCTUnwrap(day.add("One"))
-        day.add("Two")
-        XCTAssertEqual(day.progressSummary, "0 of 2 done")
-        day.toggle(first.id)
-        XCTAssertEqual(day.progressSummary, "1 of 2 done")
-        day.toggle(day.items[1].id)
-        XCTAssertEqual(day.progressSummary, "All 2 done")
-    }
 }
 
 final class PlannerStarterTaskTests: XCTestCase {
