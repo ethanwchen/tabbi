@@ -5,6 +5,8 @@ import NotchKit
 /// The Party tab: studying alongside friends. Shows a preview until
 /// group sessions land.
 struct PartyPanel: View {
+    @ObservedObject var store: PartyStore
+
     var body: some View {
         ModulePreview(
             module: .party,
@@ -18,5 +20,7 @@ struct PartyPanel: View {
                       detail: "Check-ins and streaks, no leaderboards"),
             ]
         )
+        .onAppear { store.setVisible(true) }
+        .onDisappear { store.setVisible(false) }
     }
 }

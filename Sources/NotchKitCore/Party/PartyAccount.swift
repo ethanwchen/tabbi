@@ -20,7 +20,21 @@ public actor PartyAccount {
 
     /// The stored or newly registered identity; nil until the first
     /// successful `connect`, or after `deleteAccount`.
-    public private(set) var credentials: PartyCredentials?
+    ///
+    /// Read from the store on first use, inside the actor, never in `init`:
+    /// a Keychain read can wait on an access prompt (say, for an item an
+    /// older build wrote), which must not block the main thread.
+    public private(set) var credentials: PartyCredentials? {
+        get {
+            if let loaded { return loaded }
+            let stored = store.load(for: server)
+            loaded = .some(stored)
+            return stored
+        }
+        set { loaded = .some(newValue) }
+    }
+    /// `nil` until the store was read.
+    private var loaded: PartyCredentials??
     /// The profile the server last returned.
     public private(set) var profile: PartyProfile?
     /// The profile last sent, reused when the identity must be recreated.
@@ -34,7 +48,6 @@ public actor PartyAccount {
         self.transport = transport ?? URLSessionPartyTransport(baseURL: server)
         self.store = store
         self.timeout = timeout
-        credentials = store.load(for: server)
     }
 
     /// The public friend code, once known.
