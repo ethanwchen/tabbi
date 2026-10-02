@@ -134,6 +134,17 @@ final class ClaudeAskConversationTests: XCTestCase {
         conversation.fail(.claudeNotFound)
         XCTAssertEqual(conversation.phase, .failed(.claudeNotFound))
         XCTAssertEqual(answer(conversation)?.status, .failed)
+        XCTAssertEqual(conversation.failure, .claudeNotFound)
+    }
+
+    func testFailureClearsWhenTheNextQuestionStarts() {
+        var conversation = ClaudeAskConversation()
+        XCTAssertNil(conversation.failure)
+        conversation.begin(prompt: "hi")
+        conversation.fail(.process(detail: "exit 1"))
+        XCTAssertEqual(conversation.failure, .process(detail: "exit 1"))
+        conversation.begin(prompt: "again")
+        XCTAssertNil(conversation.failure)
     }
 
     func testResetStartsFreshWithNewIDs() {

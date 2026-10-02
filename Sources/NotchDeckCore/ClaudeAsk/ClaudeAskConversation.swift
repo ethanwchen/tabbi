@@ -68,6 +68,12 @@ public struct ClaudeAskConversation: Equatable, Sendable {
     public var isStreaming: Bool { phase == .streaming }
     public var isEmpty: Bool { messages.isEmpty }
 
+    /// Why the latest exchange failed, while it is still the latest.
+    public var failure: ClaudeAskFailure? {
+        if case .failed(let failure) = phase { return failure }
+        return nil
+    }
+
     /// Starts a new exchange. Returns the trimmed prompt to send, or `nil` if
     /// the prompt is blank or an answer is still streaming.
     @discardableResult

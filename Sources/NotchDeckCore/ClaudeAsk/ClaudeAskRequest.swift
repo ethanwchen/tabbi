@@ -43,17 +43,14 @@ extension ClaudeAskConversation {
     /// screenshots, built through the same reducer as live data.
     public static var demo: ClaudeAskConversation {
         var conversation = ClaudeAskConversation()
-        conversation.begin(prompt: "What's a good name for a function that retries with backoff?")
+        conversation.begin(prompt: "Name for a function that retries with backoff?")
         conversation.apply(.sessionStarted(sessionID: "demo-session"))
         conversation.apply(.result(ClaudeResult(
             text: """
-            A few options, depending on how explicit you want to be:
-
             - **`retryWithBackoff(_:)`** - clear and conventional
             - **`withRetries(maxAttempts:)`** - reads well at the call site
-            - **`resilient(_:)`** - short, if the backoff is an implementation detail
 
-            I'd pick `retryWithBackoff` unless your codebase already uses the `with…` style.
+            I'd pick `retryWithBackoff` unless you already use the `with…` style.
             """,
             sessionID: "demo-session",
             isError: false

@@ -8,6 +8,9 @@ import NotchDeckCore
 @MainActor
 final class ClaudeAskSession: ObservableObject {
     @Published private(set) var conversation: ClaudeAskConversation
+    /// True when the last lookup found no `claude` executable, so the panel
+    /// can explain setup before the user types a question.
+    @Published private(set) var isClaudeMissing = false
 
     /// True with `NOTCHDECK_DEMO=1`: shows a sample chat and never runs the CLI.
     let isDemo: Bool
@@ -82,6 +85,15 @@ final class ClaudeAskSession: ObservableObject {
         ask(prompt)
     }
 
+    /// Looks up `claude` ahead of the first question (the panel calls this
+    /// when it appears). Pass `force` to look again after a failed lookup.
+    func prepare(force: Bool = false) {
+        guard !isDemo else { return }
+        if force { executable = nil }
+        guard executable == nil else { return }
+        Task { _ = await resolveExecutable() }
+    }
+
     /// Clears the chat; the next question starts a fresh CLI session.
     func newChat() {
         invalidateRun()
@@ -106,6 +118,7 @@ final class ClaudeAskSession: ObservableObject {
         if let executable { return executable }
         let found = await Task.detached(priority: .userInitiated) { ClaudeCLI.locate() }.value
         executable = found
+        isClaudeMissing = found == nil
         return found
     }
 }
