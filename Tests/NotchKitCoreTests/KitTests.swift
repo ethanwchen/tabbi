@@ -39,8 +39,11 @@ final class KitManifestDecodingTests: XCTestCase {
     }
 
     func testEnabledEntriesEncodeAsBareIds() throws {
-        let data = try JSONEncoder().encode([KitModuleEntry(.planner), KitModuleEntry(.system, enabled: false)])
-        XCTAssertEqual(String(decoding: data, as: UTF8.self), #"["planner",{"id":"system","enabled":false}]"#)
+        // Sorted keys: JSONEncoder's default key order isn't stable across runs.
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .sortedKeys
+        let data = try encoder.encode([KitModuleEntry(.planner), KitModuleEntry(.system, enabled: false)])
+        XCTAssertEqual(String(decoding: data, as: UTF8.self), #"["planner",{"enabled":false,"id":"system"}]"#)
     }
 
     func testRejectsNewerFormat() {

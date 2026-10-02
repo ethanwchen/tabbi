@@ -97,7 +97,8 @@ private struct TabBar: View {
     var body: some View {
         HStack(spacing: Theme.Spacing.xxs) {
             ForEach(model.layout.enabled) { module in
-                TabButton(module: module, isSelected: model.selected == module, namespace: selection) {
+                TabButton(module: module, shortcut: model.layout.shortcut(for: module),
+                          isSelected: model.selected == module, namespace: selection) {
                     model.selected = module
                 }
             }
@@ -109,6 +110,8 @@ private struct TabBar: View {
 
 private struct TabButton: View {
     let module: ModuleID
+    /// Number key that jumps here, shown in the tooltip.
+    let shortcut: Int?
     let isSelected: Bool
     let namespace: Namespace.ID
     let action: () -> Void
@@ -131,7 +134,7 @@ private struct TabButton: View {
                 .contentShape(Capsule())
         }
         .buttonStyle(.plain)
-        .help(module.title)
+        .help(shortcut.map { "\(module.title) (\($0))" } ?? module.title)
         .onHover { hovering = $0 }
     }
 }

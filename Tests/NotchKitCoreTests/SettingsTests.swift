@@ -56,6 +56,33 @@ final class ModuleLayoutTests: XCTestCase {
         XCTAssertEqual(layout.module(before: .spotify), .claudeAsk)
     }
 
+    func testNumberShortcutsFollowEnabledTabs() {
+        var layout = ModuleLayout.default
+        layout.setEnabled(.system, false)
+        XCTAssertEqual(layout.module(forShortcut: 1), .spotify)
+        XCTAssertEqual(layout.module(forShortcut: 2), .claudeUsage)
+        XCTAssertEqual(layout.module(forShortcut: 4), .claudeAsk)
+        XCTAssertNil(layout.module(forShortcut: 5))
+        XCTAssertNil(layout.module(forShortcut: 0))
+        XCTAssertEqual(layout.shortcut(for: .claudeUsage), 2)
+        XCTAssertNil(layout.shortcut(for: .system))
+        XCTAssertNil(layout.shortcut(for: .study))
+    }
+
+    func testNumberShortcutsStopAtNine() {
+        let ten: [ModuleID] = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
+        let catalog = ModuleCatalog(ten.map {
+            ModuleDescriptor(id: $0, title: $0.rawValue, symbol: "circle", category: .productivity,
+                             accent: ModuleAccent(red: 1, green: 1, blue: 1))
+        })
+        let layout = ModuleLayout(order: ten, disabled: [], catalog: catalog)
+        XCTAssertEqual(layout.enabled.count, 10)
+        XCTAssertEqual(layout.module(forShortcut: 9), "i")
+        XCTAssertNil(layout.module(forShortcut: 10))
+        XCTAssertEqual(layout.shortcut(for: "i"), 9)
+        XCTAssertNil(layout.shortcut(for: "j"), "the tenth tab is reachable by arrows and swipes only")
+    }
+
     func testSelectionFallsBackToFirstEnabled() {
         var layout = ModuleLayout(order: [.planner, .spotify, .system, .claudeUsage, .claudeAsk], disabled: [])
         layout.setEnabled(.system, false)

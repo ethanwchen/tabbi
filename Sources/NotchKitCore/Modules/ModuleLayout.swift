@@ -88,6 +88,25 @@ public struct ModuleLayout: Equatable, Sendable {
     /// The enabled module before `module`, wrapping around.
     public func module(before module: ModuleID) -> ModuleID { step(from: module, by: -1) }
 
+    /// Number keys reach at most this many tabs (1-9), so a kit can show up to
+    /// nine tabs that are all one keystroke away.
+    public static let maxShortcutTabs = 9
+
+    /// The enabled module that number key `number` (1-based) jumps to, or nil
+    /// when that tab doesn't exist or the key is outside 1-9.
+    public func module(forShortcut number: Int) -> ModuleID? {
+        let list = enabled
+        guard (1...Self.maxShortcutTabs).contains(number), number <= list.count else { return nil }
+        return list[number - 1]
+    }
+
+    /// The number key (1-9) that jumps to `module`, or nil when it's disabled
+    /// or sits beyond the ninth tab.
+    public func shortcut(for module: ModuleID) -> Int? {
+        guard let index = enabled.firstIndex(of: module), index < Self.maxShortcutTabs else { return nil }
+        return index + 1
+    }
+
     private func step(from module: ModuleID, by delta: Int) -> ModuleID {
         let list = enabled
         guard let index = list.firstIndex(of: module) else { return list[0] }

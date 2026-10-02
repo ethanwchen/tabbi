@@ -106,4 +106,12 @@ final class NotchViewModel: ObservableObject {
 
     func selectNext() { selected = layout.module(after: selected) }
     func selectPrevious() { selected = layout.module(before: selected) }
+
+    /// Jumps to the tab under number key `number` (1-9). Returns false when
+    /// there's no such tab, so the key isn't swallowed.
+    func select(shortcut number: Int) -> Bool {
+        guard let module = layout.module(forShortcut: number) else { return false }
+        selected = module
+        return true
+    }
 }

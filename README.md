@@ -26,7 +26,7 @@ Closed, it is invisible except for a quiet live activity beside the notch: your 
 A meeting starting within 5 minutes stays put; otherwise the activities take turns every few seconds.
 Right-click the notch and choose **Settings…** to pick which ones show, or turn the preview off.
 Click it and the notch grows into a dark panel with five modules.
-Flip between them with a two-finger swipe, the arrow keys or the tab icons, and press Esc to close it again.
+Flip between them with a two-finger swipe, the arrow keys, the number keys 1-9 or the tab icons, and press Esc to close it again.
 
 It is written in Swift with SwiftUI and AppKit, has no third-party dependencies, no account and no telemetry.
 

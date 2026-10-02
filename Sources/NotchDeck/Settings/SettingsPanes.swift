@@ -373,6 +373,7 @@ struct ShortcutsSettingsPane: View {
 
             Section {
                 LabeledContent("Switch tabs") { KeyCaps(["←", "→"]) }
+                LabeledContent("Jump to a tab") { KeyCaps(["1-9"]) }
                 LabeledContent("Close") { KeyCaps(["Esc"]) }
             } header: {
                 Text("In the open notch")
@@ -382,7 +383,7 @@ struct ShortcutsSettingsPane: View {
         }
         .formStyle(.grouped)
         .scrollDisabled(true)
-        .frame(width: paneWidth, height: 324)
+        .frame(width: paneWidth, height: 364)
         .onDisappear { recorder.stop() }
     }
 

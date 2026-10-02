@@ -175,7 +175,14 @@ final class NotchController {
             model.selectNext()
             return true
         default:
-            return false
+            // Number keys 1-9 jump straight to a tab. Read the typed character
+            // rather than the key code so numpad digits and other layouts work;
+            // with ⌘/⌃/⌥ held the key belongs to someone else.
+            guard !editingText,
+                  event.modifierFlags.intersection([.command, .control, .option]).isEmpty,
+                  let characters = event.charactersIgnoringModifiers, characters.count == 1,
+                  let number = Int(characters) else { return false }
+            return model.select(shortcut: number)
         }
     }
 
