@@ -35,8 +35,9 @@ Judge them against the design rules below before you call the work done.
   requires it.
 - `Sources/NotchDeck/Modules/<Module>/` — one folder per module: a store
   (`ObservableObject`, owned by `AppServices`), SwiftUI views, and a
-  `NotchModule` class (descriptor, panel, optional settings section,
-  `start()`/`stop()` while the module is enabled).
+  `NotchModule` class (descriptor, panel, an optional Settings toolbar pane
+  from `makeSettingsPane()`, and `start()`/`stop()`). The pane and the
+  lifecycle follow the module's on/off switch; Today's pane is Focus.
 - `Sources/NotchDeck/Modules/NotchModule.swift` — the `NotchModule` protocol
   and `ModuleRegistry`. To add a module: add its `ModuleDescriptor` to
   `ModuleCatalog.builtIn`, write `<Module>Module` in its folder, and list it

@@ -5,8 +5,8 @@ import os
 /// Runs focus mode: follows the Today panel's focus timer and performs what
 /// `FocusSession` decides (focus sound, playlist, Do Not Disturb shortcuts).
 ///
-/// One shared instance, because the timer (Planner) and the Settings section
-/// both need it and neither owns the other. It also owns the persisted
+/// One shared instance, because the timer (Planner), Today's Settings pane
+/// and kit defaults all need it and none of them owns the others. It also owns the persisted
 /// `FocusSettings`, so a change from Settings applies immediately: volume and
 /// sounds update live while focusing (crossfading), the rest on the next
 /// focus phase.

@@ -67,10 +67,10 @@ enum SnapshotRenderer {
             print(url.path)
         }
 
-        let settingsWindow = SettingsWindowController(settings: services.settings)
-        for pane in SettingsWindowController.Pane.allCases {
+        let settingsWindow = SettingsWindowController(settings: services.settings, modules: services.modules)
+        for pane in settingsWindow.paneIDs {
             guard let png = await settingsWindow.snapshot(of: pane) else { continue }
-            let url = outputDirectory.appendingPathComponent("settings-\(pane.rawValue).png")
+            let url = outputDirectory.appendingPathComponent("settings-\(pane).png")
             try? png.write(to: url)
             print(url.path)
         }

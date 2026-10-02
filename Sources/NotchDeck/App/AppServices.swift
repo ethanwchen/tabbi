@@ -77,7 +77,7 @@ final class AppServices: ObservableObject {
 
     /// Shows the Settings window (from the notch's gear button or context menu).
     func openSettings() {
-        let controller = settingsWindow ?? SettingsWindowController(settings: settings)
+        let controller = settingsWindow ?? SettingsWindowController(settings: settings, modules: modules)
         settingsWindow = controller
         controller.present()
     }
