@@ -6,6 +6,9 @@ import SwiftUI
 /// inside `Modules/<Module>/`; add new stores here.
 @MainActor
 final class AppServices: ObservableObject {
+    /// Passed in (not created here) so the saved settings, e.g. the `claude`
+    /// path override, are applied before any module store starts up.
+    let settings: SettingsStore
     let spotify = SpotifyController()
     let system = SystemMonitor()
     let claudeUsage = ClaudeUsageStore()
@@ -17,7 +20,8 @@ final class AppServices: ObservableObject {
 
     private var cancellables: Set<AnyCancellable> = []
 
-    init() {
+    init(settings: SettingsStore) {
+        self.settings = settings
         spotify.$showsCompactActivity
             .removeDuplicates()
             .assign(to: &$hasCompactActivity)

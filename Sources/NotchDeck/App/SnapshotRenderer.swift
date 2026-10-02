@@ -13,7 +13,7 @@ import NotchDeckCore
 enum SnapshotRenderer {
     static func run(outputDirectory: URL, settle: TimeInterval = 1.5) async {
         try? FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
-        let services = AppServices()
+        let services = AppServices(settings: .ephemeral())
         // 14"/16" MacBook Pro notch.
         let geometry = NotchGeometry(
             notchSize: CGSize(width: 185, height: 32), hasHardwareNotch: true,

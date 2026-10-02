@@ -27,7 +27,7 @@ struct NotchView: View {
         .contentShape(shape)
         .onTapGesture { if !model.isOpen { model.open() } }
         .contextMenu {
-            ForEach(ModuleID.allCases) { module in
+            ForEach(model.layout.enabled) { module in
                 Button(module.title) { model.open(module) }
             }
             Divider()
@@ -86,13 +86,14 @@ private struct TabBar: View {
 
     var body: some View {
         HStack(spacing: Theme.Spacing.xxs) {
-            ForEach(ModuleID.allCases) { module in
+            ForEach(model.layout.enabled) { module in
                 TabButton(module: module, isSelected: model.selected == module, namespace: selection) {
                     model.selected = module
                 }
             }
         }
         .animation(Theme.Motion.snappy, value: model.selected)
+        .animation(Theme.Motion.snappy, value: model.layout)
     }
 }
 

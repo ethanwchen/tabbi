@@ -50,4 +50,11 @@ final class ClaudeCLIPathOverrideTests: XCTestCase {
         )
         XCTAssertEqual(url?.path, "/bin/zsh")
     }
+
+    func testUserPathOverrideIsTheDefault() {
+        ClaudeCLI.userPathOverride = "/bin/sh"
+        defer { ClaudeCLI.userPathOverride = nil }
+        let url = ClaudeCLI.locate(environment: [ClaudeCLI.overrideVariable: "/bin/zsh"], loginShellLookup: { nil })
+        XCTAssertEqual(url?.path, "/bin/sh")
+    }
 }

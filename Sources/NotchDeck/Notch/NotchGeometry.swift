@@ -1,4 +1,5 @@
 import AppKit
+import NotchDeckCore
 
 /// Where the hardware notch is (or where a virtual one should go).
 struct NotchGeometry: Equatable {
@@ -10,9 +11,17 @@ struct NotchGeometry: Equatable {
     /// Horizontal center of the notch in global coordinates.
     var centerX: CGFloat
 
-    /// The screen NotchDeck lives on: the built-in notched display if present.
-    static func preferredScreen() -> NSScreen? {
-        NSScreen.screens.first { $0.safeAreaInsets.top > 0 } ?? NSScreen.main ?? NSScreen.screens.first
+    /// The screen NotchDeck lives on, per the user's display preference, falling
+    /// back to another connected screen when the preferred one is gone.
+    static func screen(for preference: DisplayPreference) -> NSScreen? {
+        let screens = NSScreen.screens
+        let descriptors = screens.map { screen in
+            let id = screen.displayID
+            return DisplayPreference.Screen(id: id, isBuiltIn: CGDisplayIsBuiltin(id) != 0,
+                                            isMain: id == CGMainDisplayID())
+        }
+        guard let chosen = preference.resolve(in: descriptors) else { return nil }
+        return screens.first { $0.displayID == chosen.id }
     }
 
     static func measure(_ screen: NSScreen) -> NotchGeometry {
@@ -36,5 +45,12 @@ struct NotchGeometry: Equatable {
             screenFrame: frame,
             centerX: frame.midX
         )
+    }
+}
+
+extension NSScreen {
+    /// The screen's `CGDirectDisplayID`, stable while the display stays connected.
+    var displayID: CGDirectDisplayID {
+        (deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber)?.uint32Value ?? 0
     }
 }

@@ -1,6 +1,7 @@
 import AppKit
 import Combine
 import SwiftUI
+import NotchDeckCore
 
 /// Owns the notch panel: positions it, tracks the pointer, and translates
 /// mouse/keyboard input into NotchViewModel state changes.
@@ -12,6 +13,7 @@ final class NotchController {
     private var monitors: [Any] = []
     private var cancellables: Set<AnyCancellable> = []
     private var closeTask: Task<Void, Never>?
+    private var hoverOpenTask: Task<Void, Never>?
     private var pointerInside = false
     private var horizontalScroll: CGFloat = 0
 
@@ -20,12 +22,13 @@ final class NotchController {
 
     init(services: AppServices) {
         self.services = services
-        let screen = NotchGeometry.preferredScreen()
+        let settings = services.settings.settings
+        let screen = NotchGeometry.screen(for: settings.preferredDisplay)
         let geometry = screen.map(NotchGeometry.measure) ?? NotchGeometry(
             notchSize: CGSize(width: 190, height: 32), hasHardwareNotch: false,
             screenFrame: CGRect(x: 0, y: 0, width: 1440, height: 900), centerX: 720
         )
-        model = NotchViewModel(geometry: geometry)
+        model = NotchViewModel(geometry: geometry, layout: settings.modules)
         panel = NotchPanel(contentRect: .zero)
 
         let root = NotchView()
@@ -107,13 +110,32 @@ final class NotchController {
         if inside {
             closeTask?.cancel()
             if !model.isOpen {
-                NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .now)
+                if settings.hapticsEnabled {
+                    NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .now)
+                }
+                if settings.openOnHover { scheduleHoverOpen() }
             }
             model.setHovering(true)
-        } else if model.isOpen {
+            return
+        }
+        hoverOpenTask?.cancel()
+        if model.isOpen {
             scheduleClose()
         } else {
             model.setHovering(false)
+        }
+    }
+
+    private var settings: AppSettings { services.settings.settings }
+
+    /// Opens the notch once the pointer has rested on it for `hoverOpenDelay`,
+    /// so merely passing over the menu bar doesn't pop it open.
+    private func scheduleHoverOpen() {
+        hoverOpenTask?.cancel()
+        hoverOpenTask = Task { [weak self] in
+            try? await Task.sleep(for: AppSettings.hoverOpenDelay)
+            guard let self, !Task.isCancelled, self.pointerInside, !self.model.isOpen else { return }
+            self.model.open()
         }
     }
 
@@ -183,6 +205,19 @@ final class NotchController {
             }
             .store(in: &cancellables)
 
+        services.settings.$settings
+            .map(\.modules)
+            .removeDuplicates()
+            .sink { [weak self] layout in self?.model.layout = layout }
+            .store(in: &cancellables)
+
+        services.settings.$settings
+            .map(\.preferredDisplay)
+            .removeDuplicates()
+            .dropFirst()
+            .sink { [weak self] preference in self?.reposition(on: preference) }
+            .store(in: &cancellables)
+
         services.$hasCompactActivity
             .removeDuplicates()
             .sink { [weak self] active in self?.model.hasCompactActivity = active }
@@ -190,8 +225,17 @@ final class NotchController {
     }
 
     private func screensChanged() {
-        guard let screen = NotchGeometry.preferredScreen() else { return }
-        model.geometry = NotchGeometry.measure(screen)
+        reposition(on: settings.preferredDisplay)
+    }
+
+    /// Moves the notch to the screen `preference` resolves to. Closes it first
+    /// so it never animates open across two displays.
+    private func reposition(on preference: DisplayPreference) {
+        guard let screen = NotchGeometry.screen(for: preference) else { return }
+        let geometry = NotchGeometry.measure(screen)
+        guard geometry != model.geometry else { return }
+        model.close()
+        model.geometry = geometry
         layoutPanel()
     }
 }
