@@ -144,7 +144,8 @@ They run the `claude` command that is already installed and signed in on your Ma
 - **Claude features go only through your local `claude` CLI.** NotchDeck never reads your Claude credentials or the keychain.
   Ask Claude sends your question to Claude through that CLI, exactly as if you had typed `claude -p` in a terminal.
 - **Claude Usage** reads token counts from the transcripts in `~/.claude/projects`, read-only, and never writes there.
-  Checking your limits sends a tiny request with the cheapest model, so it only runs when you open the panel after 10 or more minutes or press refresh.
+  Checking your limits sends a tiny request with the cheapest model, so it never runs until you press refresh once.
+  After that, it runs when you press refresh or open the panel 10 or more minutes after the last check.
 - **Your checklist** is stored locally in your user Library and nowhere else.
 
 ## FAQ
