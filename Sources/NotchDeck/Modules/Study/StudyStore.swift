@@ -11,11 +11,19 @@ import NotchKitCore
 /// session is saved on every change so a relaunch picks up where it was.
 /// Finished stretches move from the session into the persisted `StudyLog`,
 /// which totals the day and holds earned points for the pet ledger.
+/// With deep focus on, study phases drive the shared focus mode (sound and
+/// Do Not Disturb) through `FocusController`, alongside the Focus timer.
 /// With `NOTCHDECK_DEMO=1` it shows a sample Pomodoro round and a sample
 /// day, and never touches sounds or disk.
 @MainActor
 final class StudyStore: ObservableObject {
-    @Published private(set) var session: StudySession
+    @Published private(set) var session: StudySession {
+        didSet { reportFocusActivity() }
+    }
+    /// Whether study phases turn on focus mode. Opt-in, like focus sound.
+    @Published private(set) var deepFocus: Bool {
+        didSet { reportFocusActivity() }
+    }
     /// The moment the view measures against; advances every second while visible.
     @Published private(set) var now = Date()
     /// Every logged study stretch and the points not yet credited to the pet.
@@ -24,6 +32,9 @@ final class StudyStore: ObservableObject {
     private let isDemo: Bool
     private let defaults = UserDefaults.standard
     private var isVisible = false
+    /// False while the Study module is turned off, so a session left
+    /// running in a hidden tab never holds focus mode on.
+    private var isEnabled = false
     private var ticker: Timer?
     private var phaseEndTimer: Timer?
     private let logURL: URL?
@@ -32,6 +43,7 @@ final class StudyStore: ObservableObject {
     private let logIsUnreadable: Bool
 
     private static let sessionKey = "study.session"
+    private static let deepFocusKey = "study.deepFocus"
 
     init(edition: Edition = .current) {
         isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
@@ -39,6 +51,7 @@ final class StudyStore: ObservableObject {
             let now = Date()
             session = Self.demoSession(StudySnapshotState.current?.demoMethod ?? .pomodoro, now: now)
             log = Self.demoLog(now: now)
+            deepFocus = true
             logURL = nil
             logIsUnreadable = false
             return
@@ -46,6 +59,7 @@ final class StudyStore: ObservableObject {
         session = defaults.data(forKey: Self.sessionKey)
             .flatMap { try? JSONDecoder().decode(StudySession.self, from: $0) }
             ?? StudySession(method: .pomodoro)
+        deepFocus = defaults.bool(forKey: Self.deepFocusKey)
         logURL = Self.logURL(for: edition)
         do {
             log = try logURL.flatMap { try StudyLog.load(from: $0) } ?? StudyLog()
@@ -77,6 +91,19 @@ final class StudyStore: ObservableObject {
         isVisible = visible
         catchUp()
         updateTicker()
+    }
+
+    /// Called by the module's `start()` / `stop()`.
+    func setEnabled(_ enabled: Bool) {
+        guard enabled != isEnabled else { return }
+        isEnabled = enabled
+        reportFocusActivity()
+    }
+
+    func setDeepFocus(_ on: Bool) {
+        guard on != deepFocus else { return }
+        deepFocus = on
+        if !isDemo { defaults.set(on, forKey: Self.deepFocusKey) }
     }
 
     /// The big button: start, pause, resume, or end a Flowtime stretch.
@@ -171,6 +198,13 @@ final class StudyStore: ObservableObject {
         tick.tolerance = 0.1
         RunLoop.main.add(tick, forMode: .common)
         ticker = tick
+    }
+
+    /// Tells focus mode what the session needs. `FocusController` ignores
+    /// repeats and is inert in demo and snapshot runs.
+    private func reportFocusActivity() {
+        FocusController.shared.activityChanged(FocusActivity(session, deepFocus: deepFocus && isEnabled),
+                                               from: .study)
     }
 
     /// Drains the session's phase records into the persisted log.

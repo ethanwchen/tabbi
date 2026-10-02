@@ -16,4 +16,12 @@ final class StudyModule: NotchModule {
     func makePanel() -> AnyView {
         AnyView(StudyPanel(store: store))
     }
+
+    func start() {
+        store.setEnabled(true)
+    }
+
+    func stop() {
+        store.setEnabled(false)
+    }
 }

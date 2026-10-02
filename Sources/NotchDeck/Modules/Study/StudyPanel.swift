@@ -28,7 +28,7 @@ struct StudyPanel: View {
                     StudyDial(store: store)
                         .frame(width: 176)
                     VStack(spacing: Theme.Spacing.s) {
-                        StudyMethodCard(session: store.session, today: store.today, choose: { show(.picker) },
+                        StudyMethodCard(store: store, choose: { show(.picker) },
                                         info: { show(.info(store.session.method.kind, from: nil)) })
                         StudyControls(store: store)
                     }
@@ -102,16 +102,17 @@ private struct StudyDial: View {
     }
 }
 
-/// The method in use, its rhythm and round, with today's tally at the
-/// bottom. The name opens the picker and the (i) the method's info popover.
+/// The method in use, its rhythm and round, the deep focus switch, and
+/// today's tally at the bottom. The name opens the picker and the (i) the
+/// method's info popover.
 private struct StudyMethodCard: View {
-    let session: StudySession
-    let today: StudyDaySummary
+    @ObservedObject var store: StudyStore
     let choose: () -> Void
     let info: () -> Void
     @State private var hovering = false
 
     var body: some View {
+        let session = store.session
         let methodInfo = session.method.info
         Card {
             VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
@@ -151,7 +152,9 @@ private struct StudyMethodCard: View {
                 .help("Change the study method")
                 .onHover { hovering = $0 }
                 Spacer(minLength: Theme.Spacing.xs)
-                StudyTodayRow(today: today)
+                StudyDeepFocusRow(store: store)
+                Spacer(minLength: Theme.Spacing.xs)
+                StudyTodayRow(today: store.today)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
@@ -160,6 +163,59 @@ private struct StudyMethodCard: View {
                 .strokeBorder(Theme.Palette.stroke.opacity(hovering ? 2 : 0), lineWidth: 1)
         )
         .animation(Theme.Motion.snappy, value: hovering)
+    }
+}
+
+/// The deep focus switch, and what focus mode will do while it's on.
+private struct StudyDeepFocusRow: View {
+    @ObservedObject var store: StudyStore
+    @ObservedObject private var focus = FocusController.shared
+    @State private var hovering = false
+
+    var body: some View {
+        let isOn = store.deepFocus
+        HStack(spacing: Theme.Spacing.s) {
+            Button {
+                withAnimation(Theme.Motion.snappy) { store.setDeepFocus(!isOn) }
+            } label: {
+                HStack(spacing: Theme.Spacing.xxs) {
+                    Image(systemName: isOn ? "moon.fill" : "moon")
+                        .font(.system(size: 9, weight: .bold))
+                        .contentTransition(.symbolEffect(.replace))
+                    Text("Deep focus")
+                        .font(Theme.Typography.caption.weight(.semibold))
+                }
+                .foregroundStyle(isOn ? Theme.Palette.background : Theme.Palette.secondaryText)
+                .padding(.horizontal, Theme.Spacing.s)
+                .frame(height: 20)
+                .background(Capsule().fill(isOn ? accent.opacity(hovering ? 1 : 0.88)
+                                                : (hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface)))
+                .overlay(Capsule().strokeBorder(Theme.Palette.stroke.opacity(isOn ? 0 : 1), lineWidth: 1))
+                .contentShape(Capsule())
+            }
+            .buttonStyle(.plain)
+            .help(isOn ? "Turn off deep focus: study blocks leave sound and Do Not Disturb alone"
+                       : "Turn on deep focus: study blocks play your focus sound and turn on Do Not Disturb")
+            .onHover { hovering = $0 }
+            Text(summary)
+                .font(Theme.Typography.caption)
+                .foregroundStyle(isOn ? Theme.Palette.secondaryText : Theme.Palette.tertiaryText)
+                .lineLimit(1)
+                .truncationMode(.tail)
+                .help("Change focus sound and Do Not Disturb in Settings › Focus")
+            Spacer(minLength: 0)
+        }
+        .animation(Theme.Motion.snappy, value: hovering)
+    }
+
+    /// The focus mode effects that study blocks apply, e.g. "Rain + Fireplace · DND".
+    private var summary: String {
+        let settings = focus.settings
+        var parts: [String] = []
+        if !settings.mix.isOff { parts.append(settings.mix.summary) }
+        if settings.playlist != nil { parts.append("Playlist") }
+        if settings.doNotDisturb { parts.append("DND") }
+        return parts.isEmpty ? "Silent, notifications on" : parts.joined(separator: " · ")
     }
 }
 
