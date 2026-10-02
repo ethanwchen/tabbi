@@ -27,6 +27,14 @@ final class PartyLiveServerTests: XCTestCase {
             let profile = try await anaClient.updateProfile(PartyProfileUpdate(costume: "scrubs", accessories: ["glasses"]))
             XCTAssertEqual(profile.costume, "scrubs")
 
+            // A recolored, dressed local pet syncs and comes back looking the same.
+            var pet = PetProfile(name: "Pixel", breed: .grayTabby, outfit: .whiteCoat, accessories: [.roundGlasses, .scarf])
+            pet.tintFur(PetColor(hex: "#8E6FD1"))
+            let synced = try await anaClient.updateProfile(PartyPetAppearance.update(for: pet))
+            let seen = PartyPetAppearance.pet(for: synced)
+            XCTAssertEqual(seen.sittingCanvas(), pet.sittingCanvas())
+            XCTAssertEqual(seen.palette[.furBase], pet.palette[.furBase])
+
             let added = try await anaClient.addFriend(code: ben.code.lowercased())
             XCTAssertTrue(added.added)
             XCTAssertEqual(added.friend.name, "Test Ben")
