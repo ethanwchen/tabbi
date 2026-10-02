@@ -7,7 +7,8 @@ import NotchKitCore
 ///     NOTCHDECK_DEMO=1 NOTCHDECK_STUDY_SNAPSHOT=info:flowtime \
 ///         swift run NotchDeck --snapshot snapshots-study --kit medicine
 ///
-/// Values: `method:<kind>` (the timer running that method), `picker`,
+/// Values: `method:<kind>` (the timer running that method; without the
+/// demo, a fresh session on it), `picker`,
 /// `sounds` (the sound mixer), `paused` (the demo Pomodoro paused, so the
 /// pet dozes), or `info:<kind>` (that method's info popover over a Pomodoro session). Kinds are
 /// `StudyMethodKind` raw values. Ignored outside snapshot runs.

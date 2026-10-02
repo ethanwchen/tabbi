@@ -36,6 +36,12 @@ final class StudyStore: ObservableObject {
     @Published private(set) var log: StudyLog
     /// The methods the picker offers and where a fresh timer starts, set by the kit.
     @Published private(set) var menu: StudyMethodMenu
+    /// Cards reviewed today from the modules that share a card goal (Anki),
+    /// or nil when none does; an Anki sprint counts its cards from this.
+    @Published private(set) var cardsReviewedToday: Int?
+    /// Whether an Anki sprint has a card count to follow; the demo's sample
+    /// sprint always does.
+    var canCountCards: Bool { isDemo || cardsReviewedToday != nil }
     /// The pet in the panel's corner, wearing the look saved by the Closet.
     let pet: PetPlayer
 
@@ -44,6 +50,7 @@ final class StudyStore: ObservableObject {
     /// rendering with another kit can't change the user's method.
     private let isSnapshot = CommandLine.arguments.contains("--snapshot")
     private let defaults = UserDefaults.standard
+    private var cancellables: Set<AnyCancellable> = []
     private var isVisible = false
     /// False while the Study module is turned off, so a session left
     /// running in a hidden tab never holds focus mode on.
@@ -88,6 +95,8 @@ final class StudyStore: ObservableObject {
         if let kind = menu.replacement(for: saved, kitApplied: false) {
             saved.switchMethod(to: .preset(kind), at: launch)
         }
+        // A snapshot of one method shows it fresh, as a new user would see it.
+        if let kind = StudySnapshotState.current?.demoMethod { saved = StudySession(method: .preset(kind)) }
         session = saved
         pet = PetPlayer(profile: Self.petProfile(for: edition), asleep: StudyPetCue.isDozing(saved))
         deepFocus = defaults.bool(forKey: Self.deepFocusKey)
@@ -199,12 +208,39 @@ final class StudyStore: ObservableObject {
         change { $0.switchMethod(to: .preset(kind), at: now) }
     }
 
+    /// Counts an Anki sprint's cards from the shared progress goals, so the
+    /// timer never depends on the Anki module itself. The demo keeps its
+    /// fixed sample sprint.
+    func followCards(from snapshots: some Publisher<ProviderSnapshot, Never>) {
+        guard !isDemo else { return }
+        snapshots
+            .map { $0.cardsReviewedToday(excluding: .study) }
+            .removeDuplicates()
+            .sink { [weak self] count in
+                MainActor.assumeIsolated { self?.receiveCards(count) }
+            }
+            .store(in: &cancellables)
+    }
+
     // MARK: Private
 
-    /// Applies `edit`, then saves and re-arms the phase-end timer and ticker.
+    private func receiveCards(_ count: Int?) {
+        cardsReviewedToday = count
+        guard count != nil else { return }
+        catchUp()
+        let finished = session.completedFocusCount
+        change { _ in }
+        // Reaching the card goal ends the sprint like a timer running out.
+        if session.completedFocusCount > finished, !isSnapshot { Self.playChime() }
+    }
+
+    /// Applies `edit`, then the latest card count (which sets a sprint's
+    /// baseline right after it starts or resumes, and counts cards while it
+    /// runs), then saves and re-arms the phase-end timer and ticker.
     private func change(_ edit: (inout StudySession) -> Void) {
         var updated = session
         edit(&updated)
+        if let cardsReviewedToday { updated.recordReviewedToday(cardsReviewedToday, at: now) }
         guard updated != session else { return }
         session = updated
         scheduleSideEffects()

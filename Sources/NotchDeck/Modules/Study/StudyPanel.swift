@@ -91,6 +91,12 @@ private struct StudyDial: View {
                     Text(readout.caption)
                         .font(Theme.Typography.caption)
                         .foregroundStyle(session.phase.isBreak ? accent : Theme.Palette.tertiaryText)
+                    if waitsForCards {
+                        Text("Waiting for Anki")
+                            .font(Theme.Typography.caption)
+                            .foregroundStyle(accent.opacity(0.8))
+                            .help("Turn on the Anki tab with Anki open so the sprint can count your cards")
+                    }
                 }
             }
             .frame(width: 128, height: 128)
@@ -104,6 +110,11 @@ private struct StudyDial: View {
         }
         .animation(Theme.Motion.content, value: store.progress)
         .animation(Theme.Motion.snappy, value: session.phase)
+    }
+
+    /// A sprint whose cards nothing is counting: say so instead of a stuck 0.
+    private var waitsForCards: Bool {
+        store.session.phase == .focus && store.session.method.cardGoal != nil && !store.canCountCards
     }
 
     /// What the corner pet is up to, in the pet's own name.
