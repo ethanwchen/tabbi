@@ -112,6 +112,34 @@ public struct StudySession: Codable, Hashable, Sendable {
         cardBaseline = nil
     }
 
+    /// Decodes a saved session, repairing values a corrupt or hand-edited
+    /// file could carry: a phase shorter than `StudyMethod.minimumPhase`
+    /// (which would complete instantly), non-finite or negative banked time,
+    /// and negative tallies. The method itself re-clamps in its own decoder.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        method = try container.decode(StudyMethod.self, forKey: .method)
+        phase = try container.decode(StudyPhaseKind.self, forKey: .phase)
+        phaseDuration = try container.decodeIfPresent(TimeInterval.self, forKey: .phaseDuration).map {
+            $0.isNaN ? StudyMethod.minimumPhase : max($0, StudyMethod.minimumPhase)
+        }
+        completedFocusCount = max(try container.decode(Int.self, forKey: .completedFocusCount), 0)
+        cardsDone = max(try container.decode(Int.self, forKey: .cardsDone), 0)
+        log = try container.decode([StudyPhaseRecord].self, forKey: .log)
+        banked = Self.nonNegative(try container.decode(TimeInterval.self, forKey: .banked))
+        resumedAt = try container.decodeIfPresent(Date.self, forKey: .resumedAt)
+        phaseStartedAt = try container.decodeIfPresent(Date.self, forKey: .phaseStartedAt)
+        lastFocusWorked = Self.nonNegative(try container.decode(TimeInterval.self, forKey: .lastFocusWorked))
+        lastFocusCounted = try container.decode(Bool.self, forKey: .lastFocusCounted)
+        cardBaseline = try container.decodeIfPresent(Int.self, forKey: .cardBaseline)
+        // A running clock always belongs to a started phase.
+        if resumedAt != nil, phaseStartedAt == nil { phaseStartedAt = resumedAt }
+    }
+
+    private static func nonNegative(_ value: TimeInterval) -> TimeInterval {
+        value.isFinite ? max(value, 0) : 0
+    }
+
     // MARK: Reading
 
     public var runState: StudyRunState {

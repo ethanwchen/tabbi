@@ -395,6 +395,45 @@ final class StudySessionTests: XCTestCase {
         XCTAssertEqual(session.endsAt, at(1))
     }
 
+    func testDecodingRepairsCorruptSessionValues() throws {
+        var session = StudySession(method: .pomodoro)
+        session.start(at: t0)
+        session.pause(at: at(5))
+        var object = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: JSONEncoder().encode(session)) as? [String: Any]
+        )
+        object["phaseDuration"] = 0
+        object["banked"] = -600
+        object["completedFocusCount"] = -3
+        object["cardsDone"] = -7
+        var restored = try JSONDecoder().decode(
+            StudySession.self, from: JSONSerialization.data(withJSONObject: object)
+        )
+        XCTAssertEqual(restored.phaseDuration, StudyMethod.minimumPhase)
+        XCTAssertEqual(restored.elapsed(at: at(5)), 0)
+        XCTAssertEqual(restored.completedFocusCount, 0)
+        XCTAssertEqual(restored.cardsDone, 0)
+        restored.start(at: at(10))
+        XCTAssertTrue(restored.advance(to: at(10)).isEmpty, "A repaired phase must not complete instantly")
+        XCTAssertEqual(restored.endsAt, at(11))
+    }
+
+    func testDecodingGivesARunningClockAStartedPhase() throws {
+        var session = StudySession(method: .pomodoro)
+        session.start(at: t0)
+        var object = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: JSONEncoder().encode(session)) as? [String: Any]
+        )
+        object.removeValue(forKey: "phaseStartedAt")
+        var restored = try JSONDecoder().decode(
+            StudySession.self, from: JSONSerialization.data(withJSONObject: object)
+        )
+        XCTAssertEqual(restored.runState, .running)
+        restored.reset(at: at(5))
+        XCTAssertEqual(restored.log.first?.startedAt, t0)
+        XCTAssertEqual(restored.log.first?.outcome, .abandoned)
+    }
+
     func testTakeLogDrainsRecords() {
         var session = StudySession(method: .pomodoro)
         session.start(at: t0)

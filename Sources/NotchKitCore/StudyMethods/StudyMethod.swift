@@ -47,7 +47,7 @@ public enum FlowtimeBreakScheme: String, Codable, CaseIterable, Hashable, Sendab
 
     /// Break length after `worked` seconds of focus, never shorter than a minute.
     public func breakDuration(afterWorking worked: TimeInterval) -> TimeInterval {
-        let minutes = max(worked, 0) / 60
+        let minutes = worked.isFinite ? max(worked, 0) / 60 : 0
         switch self {
         case .tiered:
             if minutes <= 25 { return 5 * 60 }
@@ -292,8 +292,12 @@ public struct StudyMethod: Codable, Hashable, Sendable, Identifiable {
 
     // MARK: Clamping
 
+    /// Clamps a phase length to 1 min...4 h. NaN, which `min`/`max` would
+    /// pass straight through, becomes the minimum so labels and timers never
+    /// see a non-finite length.
     static func clamped(_ length: TimeInterval) -> TimeInterval {
-        min(max(length, minimumPhase), maximumPhase)
+        guard !length.isNaN else { return minimumPhase }
+        return min(max(length, minimumPhase), maximumPhase)
     }
 
     private static func clamped(_ focus: StudyFocusTarget) -> StudyFocusTarget {

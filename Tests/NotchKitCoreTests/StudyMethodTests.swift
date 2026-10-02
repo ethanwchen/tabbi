@@ -127,6 +127,20 @@ final class StudyMethodTests: XCTestCase {
         XCTAssertEqual(long.every, 2, "A long break every round would replace every short break")
     }
 
+    func testNonFiniteLengthsAreClamped() {
+        let method = StudyMethod.custom(
+            focus: .nan,
+            breakLength: .infinity,
+            longBreak: StudyLongBreak(duration: .nan, every: 4)
+        )
+        XCTAssertEqual(method.duration(of: .focus), StudyMethod.minimumPhase)
+        XCTAssertEqual(method.duration(of: .shortBreak), StudyMethod.maximumPhase)
+        XCTAssertEqual(method.longBreak?.duration, StudyMethod.minimumPhase)
+        XCTAssertEqual(method.rhythmLabel, "1/240")
+        XCTAssertEqual(FlowtimeBreakScheme.fifth.breakDuration(afterWorking: .nan), minute)
+        XCTAssertEqual(FlowtimeBreakScheme.tiered.breakDuration(afterWorking: .infinity), 5 * minute)
+    }
+
     func testDecodingAppliesTheSameClamps() throws {
         let json = #"""
         {"kind":"custom","focus":{"cards":{"_0":0}},"breakRule":{"fixed":{"_0":0}},
