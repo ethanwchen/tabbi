@@ -18,6 +18,23 @@ public enum PetBodyShape: String, CaseIterable, Codable, Sendable {
     case cat
     /// Cat body with the round-cheeked, small-eared head.
     case roundCat
+    /// Hanging ears on a rounded skull (Labrador, Beagle).
+    case floppyDog
+    /// Long feathered ears (Golden Retriever).
+    case fluffyDog
+    /// Big rounded bat ears on a broad flat face (French Bulldog).
+    case batEaredDog
+    /// Tall pointed ears and a fox-like face (Corgi).
+    case pointyEaredDog
+    /// Long snout and a long low body (Dachshund).
+    case longDog
+
+    public var species: PetSpecies {
+        switch self {
+        case .cat, .roundCat: .cat
+        case .floppyDog, .fluffyDog, .batEaredDog, .pointyEaredDog, .longDog: .dog
+        }
+    }
 }
 
 /// A selectable breed: which art it uses, its default colors, and how it
@@ -31,11 +48,34 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
     case calico
     case siamese
     case britishShorthair
+    case goldenRetriever
+    case labrador
+    case frenchBulldog
+    case corgi
+    case dachshund
+    case beagle
 
-    public var species: PetSpecies { .cat }
+    public var species: PetSpecies { bodyShape.species }
 
     public var bodyShape: PetBodyShape {
-        self == .britishShorthair ? .roundCat : .cat
+        switch self {
+        case .orangeTabby, .grayTabby, .blackCat, .whiteCat, .tuxedo, .calico, .siamese: .cat
+        case .britishShorthair: .roundCat
+        case .goldenRetriever: .fluffyDog
+        case .labrador, .beagle: .floppyDog
+        case .frenchBulldog: .batEaredDog
+        case .corgi: .pointyEaredDog
+        case .dachshund: .longDog
+        }
+    }
+
+    /// Whether the breed shows a tail when sitting. Corgis and French
+    /// Bulldogs are drawn stubby-tailed, which also sets their silhouettes apart.
+    public var hasTail: Bool {
+        switch self {
+        case .corgi, .frenchBulldog: false
+        default: true
+        }
     }
 
     public var displayName: String {
@@ -48,6 +88,12 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
         case .calico: "Calico"
         case .siamese: "Siamese"
         case .britishShorthair: "British Shorthair"
+        case .goldenRetriever: "Golden Retriever"
+        case .labrador: "Labrador"
+        case .frenchBulldog: "French Bulldog"
+        case .corgi: "Corgi"
+        case .dachshund: "Dachshund"
+        case .beagle: "Beagle"
         }
     }
 
@@ -84,6 +130,27 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
             return PetPalette([.furBase: c("#8E9AAD"), .furShade: c("#76839A"), .furAccent: c("#6A7790"),
                                .belly: c("#A5B0C0"), .eye: c("#E3A12C"), .eyeLight: c("#FFF4D2"),
                                .outline: c("#1F232B")])
+        case .goldenRetriever:
+            return PetPalette([.furBase: c("#E6AE52"), .furShade: c("#C98C36"), .furAccent: c("#F3CB82"),
+                               .belly: c("#F7DCA8"), .nose: c("#3A2622"), .outline: c("#3A2214")])
+        case .labrador:
+            return PetPalette([.furBase: c("#7C4D31"), .furShade: c("#623B25"), .furAccent: c("#8F5C3C"),
+                               .belly: c("#8F5C3C"), .eye: c("#2A1810"), .eyeLight: c("#FFE7C8"),
+                               .nose: c("#3A231C"), .outline: c("#26160E")])
+        case .frenchBulldog:
+            return PetPalette([.furBase: c("#F6F1EA"), .furShade: c("#D8CFC4"), .furSpot: c("#342E33"),
+                               .belly: c("#FFFFFF"), .nose: c("#2E2428"), .outline: c("#3A2A22")])
+        case .corgi:
+            return PetPalette([.furBase: c("#E88D3C"), .furShade: c("#C76F28"), .furAccent: c("#F2A65A"),
+                               .belly: c("#FFF6EA"), .nose: c("#2E2224"), .outline: c("#3A1E10")])
+        case .dachshund:
+            return PetPalette([.furBase: c("#302729"), .furShade: c("#221B1D"), .furAccent: c("#3E3337"),
+                               .belly: c("#C9803F"), .eye: c("#A0602F"), .eyeLight: c("#FFE7C8"),
+                               .nose: c("#1E1618")])
+        case .beagle:
+            return PetPalette([.furBase: c("#D58F48"), .furShade: c("#B57234"), .furAccent: c("#A9652C"),
+                               .furSpot: c("#332D31"), .belly: c("#FFF8EE"), .nose: c("#2E2224"),
+                               .outline: c("#3A1E10")])
         }
     }
 
@@ -105,6 +172,18 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
                                .muzzle: .furAccent])
         case .britishShorthair:
             return PetPattern([.muzzle: .belly, .chest: .furBase])
+        case .goldenRetriever:
+            return PetPattern([.chest: .furAccent, .muzzle: .furAccent])
+        case .labrador:
+            return PetPattern([.muzzle: .furBase, .chest: .furBase])
+        case .frenchBulldog:
+            return PetPattern([.ears: .furSpot, .patchB: .furSpot])
+        case .corgi:
+            return PetPattern([.mask: .belly, .paws: .belly])
+        case .dachshund:
+            return PetPattern([.patchA: .belly, .paws: .belly])
+        case .beagle:
+            return PetPattern([.ears: .furAccent, .mask: .belly, .patchA: .furSpot, .paws: .belly, .tailTip: .belly])
         }
     }
 }

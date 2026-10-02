@@ -80,8 +80,10 @@ let arguments = CommandLine.arguments.dropFirst()
 let outputDirectory = URL(fileURLWithPath: arguments.first ?? "out", isDirectory: true)
 try FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
 
-let breedCells = PetBreed.allCases.map { breed in
-    Cell(label: breed.displayName, canvas: PetComposer.sitting(breed), palette: breed.palette.withVisibleRim())
+for species in PetSpecies.allCases {
+    let cells = PetBreed.breeds(of: species).map { breed in
+        Cell(label: breed.displayName, canvas: PetComposer.sitting(breed), palette: breed.palette.withVisibleRim())
+    }
+    try writeSheet(cells, columns: 4, title: "\(species.displayName) breeds",
+                   to: outputDirectory.appendingPathComponent("breeds-\(species.rawValue).png"))
 }
-try writeSheet(breedCells, columns: 4, title: "Breeds",
-               to: outputDirectory.appendingPathComponent("breeds.png"))

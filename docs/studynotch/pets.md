@@ -3,10 +3,12 @@
 A study-buddy cat or dog lives in the notch.
 This document explains how pet sprites are drawn, composed, and rendered, and how to add a breed.
 
-Status: the sprite format, palettes, pattern zones, renderer, and all eight cat breeds (sitting pose) exist.
-Dogs, costumes, and animations are in progress.
+Status: the sprite format, palettes, pattern zones, renderer, all eight cat breeds, and all six dog breeds (sitting pose) exist.
+Costumes and animations are in progress.
 
 ![All cat breeds sitting, on black at 4x](images/cats-sitting.png)
+
+![All dog breeds sitting, on black at 4x](images/dogs-sitting.png)
 
 ## Look at the art
 
@@ -107,6 +109,26 @@ This also protects user recolors.
 
 `PetRenderer` turns a canvas plus palette into a `CGImage`, writing every sprite pixel as an exact `scale`x`scale` block for crisp nearest-neighbor scaling.
 `PetRenderer.shared` caches results, since an idle animation repeats a handful of frames.
+
+## Body shapes
+
+Breeds that share a silhouette share all of their art and differ only in palette and pattern.
+Cats look alike enough that two shapes cover all eight breeds.
+Dogs need more, because their ears and snouts are what make them recognizable at notch size:
+
+| Shape | Breeds | What sets it apart |
+| --- | --- | --- |
+| `cat` | most cats | pointed ears, tabby stripe zones |
+| `roundCat` | British Shorthair | small wide-set ears, round cheeks |
+| `floppyDog` | Labrador, Beagle | hanging ears beside a rounded skull |
+| `fluffyDog` | Golden Retriever | long feathered ears |
+| `batEaredDog` | French Bulldog | big rounded bat ears, broad face |
+| `pointyEaredDog` | Corgi | tall pointed ears, fox-like face |
+| `longDog` | Dachshund | long snout and a long low body behind the head |
+
+Dog heads have different heights, so the shared dog face is stamped on each head's eye row.
+The dog mouth is drawn in the nose color, not the outline, because on dark breeds the outline becomes a light rim that would look noisy on the muzzle.
+`PetBreed.hasTail` leaves the tail off stubby-tailed breeds (Corgi, French Bulldog), which also sets their silhouettes apart.
 
 ## Adding a breed
 

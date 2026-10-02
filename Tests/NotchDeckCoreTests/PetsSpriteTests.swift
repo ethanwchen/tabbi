@@ -160,8 +160,22 @@ final class PetRendererTests: XCTestCase {
 }
 
 final class PetBreedTests: XCTestCase {
-    func testCatalogHasEveryCatBreed() {
+    func testCatalogHasEveryCatAndDogBreed() {
         XCTAssertEqual(PetBreed.breeds(of: .cat).count, 8)
+        XCTAssertEqual(PetBreed.breeds(of: .dog), [
+            .goldenRetriever, .labrador, .frenchBulldog, .corgi, .dachshund, .beagle,
+        ])
+    }
+
+    func testDogsUseDistinctSilhouettesWhereColorAloneIsNotEnough() {
+        // Each of these breeds must be recognizable by shape, not just color.
+        let shapes: [PetBreed] = [.goldenRetriever, .labrador, .frenchBulldog, .corgi, .dachshund]
+        let silhouettes = shapes.map { breed in PetComposer.sitting(breed).pixels.map { $0 != nil } }
+        XCTAssertEqual(Set(silhouettes).count, shapes.count)
+    }
+
+    func testDarkDogsStillGetTheWarmRim() {
+        XCTAssertEqual(PetBreed.dachshund.palette.withVisibleRim()[.outline], PetPalette.warmRim)
     }
 
     func testEveryBreedSitsInsideTheFrameWithAMargin() throws {
