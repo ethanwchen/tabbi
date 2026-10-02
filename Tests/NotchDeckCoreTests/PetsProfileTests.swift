@@ -111,7 +111,7 @@ final class PetProfileTests: XCTestCase {
         let json = """
         {"name": "Mochi", "breed": "calico", "outfit": "spaceSuit",
          "accessories": ["jetpack", "beanie"],
-         "paletteOverrides": {"furBase": "#112233", "sparkle": "#FFFFFF", "eye": "#00FF00"}}
+         "paletteOverrides": {"furBase": "#112233", "sparkle": "#FFFFFF", "eye": "#12345", "nose": "tan"}}
         """
         let profile = try JSONDecoder().decode(PetProfile.self, from: Data(json.utf8))
         XCTAssertEqual(profile.breed, .calico)

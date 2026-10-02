@@ -29,13 +29,10 @@ final class PetAnimationTests: XCTestCase {
         XCTAssertEqual(idle.frameIndex(at: 0), 0)
         XCTAssertEqual(idle.frameIndex(at: idle.frames[0].duration + 0.01), 1)
         XCTAssertEqual(idle.frameIndex(at: idle.duration + 0.01), 0, "wraps after one pass")
-        XCTAssertFalse(idle.isFinished(at: idle.duration * 10))
 
         let celebrate = PetComposer.clip(.celebrate, for: .calico)
         XCTAssertFalse(celebrate.loops)
         XCTAssertEqual(celebrate.frameIndex(at: celebrate.duration * 3), celebrate.frames.count - 1)
-        XCTAssertFalse(celebrate.isFinished(at: celebrate.duration - 0.01))
-        XCTAssertTrue(celebrate.isFinished(at: celebrate.duration))
         XCTAssertEqual(celebrate.frameIndex(at: -1), 0, "negative time shows the first frame")
     }
 

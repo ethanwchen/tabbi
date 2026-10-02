@@ -285,10 +285,10 @@ public struct PetPalette: Hashable, Codable, Sendable {
 
     // Codable as a flat `{ "furBase": "#RRGGBB", ... }` object.
     public init(from decoder: Decoder) throws {
-        let raw = try decoder.singleValueContainer().decode([String: PetColor].self)
+        let raw = try decoder.singleValueContainer().decode([String: String].self)
         var colors: [PetPaletteRole: PetColor] = [:]
-        for (key, color) in raw {
-            if let role = PetPaletteRole(rawValue: key) { colors[role] = color }
+        for (key, hex) in raw {
+            if let role = PetPaletteRole(rawValue: key), let color = PetColor(hex: hex) { colors[role] = color }
         }
         self.init(colors)
     }

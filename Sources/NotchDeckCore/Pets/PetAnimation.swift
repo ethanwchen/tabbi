@@ -110,12 +110,6 @@ public struct PetClip: Hashable, Sendable {
     /// Length of one pass through every frame, in seconds.
     public var duration: TimeInterval { frames.reduce(0) { $0 + $1.duration } }
 
-    /// Whether a one-shot clip has played to the end after `elapsed`
-    /// seconds. Looping clips never finish.
-    public func isFinished(at elapsed: TimeInterval) -> Bool {
-        !loops && elapsed >= duration
-    }
-
     /// The frame to show `elapsed` seconds after the clip started. Looping
     /// clips wrap around; one-shot clips hold their last frame.
     public func frameIndex(at elapsed: TimeInterval) -> Int {

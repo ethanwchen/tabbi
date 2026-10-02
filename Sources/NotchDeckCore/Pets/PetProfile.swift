@@ -118,10 +118,10 @@ public struct PetProfile: Hashable, Codable, Sendable {
         // back to a sensible default.
         let breed = try container.decode(PetBreed.self, forKey: .breed)
         let name = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
-        let rawColors = try container.decodeIfPresent([String: PetColor].self, forKey: .paletteOverrides) ?? [:]
+        let rawColors = try container.decodeIfPresent([String: String].self, forKey: .paletteOverrides) ?? [:]
         var overrides: [PetPaletteRole: PetColor] = [:]
-        for (key, color) in rawColors {
-            if let role = PetPaletteRole(rawValue: key) { overrides[role] = color }
+        for (key, hex) in rawColors {
+            if let role = PetPaletteRole(rawValue: key), let color = PetColor(hex: hex) { overrides[role] = color }
         }
         let rawOutfit = try container.decodeIfPresent(String.self, forKey: .outfit) ?? ""
         let rawAccessories = try container.decodeIfPresent([String].self, forKey: .accessories) ?? []

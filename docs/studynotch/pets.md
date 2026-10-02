@@ -138,7 +138,7 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 ## Animations
 
 `PetComposer.clip(_:for:outfit:accessories:)` builds a `PetClip`: a list of `PetFrame`s, each with its own `duration` in seconds.
-`clip.frame(at: elapsed)` picks the frame to show; looping clips (idle, sit, sleep, walk) wrap around, one-shot clips (blink, stretch, peek, alert, celebrate) hold their last frame, and `isFinished(at:)` tells the player when to move on.
+`clip.frame(at: elapsed)` picks the frame to show; looping clips (idle, sit, sleep, walk) wrap around, one-shot clips (blink, stretch, peek, alert, celebrate) hold their last frame until `PetAnimator.advance(to:)` sees the clip's duration has passed and moves the pet on.
 
 Front-facing animations are not drawn frame by frame.
 Each frame is the sitting composition in a `PetPose`, so every breed and costume animates without extra art:
