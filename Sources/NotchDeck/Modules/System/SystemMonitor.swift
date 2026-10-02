@@ -1,4 +1,94 @@
+import Foundation
 import SwiftUI
+import NotchDeckCore
 
+/// Live CPU, GPU, memory and thermal readings for the System panel.
+///
+/// Sampling runs once per second only while the panel is visible: the
+/// panel calls `start()` / `stop()` from `onAppear` / `onDisappear`. With
+/// `NOTCHDECK_DEMO=1` it plays back `SystemDemoData` instead of reading
+/// the machine, so snapshots look the same everywhere.
 @MainActor
-final class SystemMonitor: ObservableObject {}
+final class SystemMonitor: ObservableObject {
+    static let historyCapacity = 60
+
+    /// `nil` until two CPU samples exist, or when the kernel won't report.
+    @Published private(set) var cpu: CPUUsage?
+    @Published private(set) var cpuHistory = RingBuffer<Double>(capacity: historyCapacity)
+    /// `nil` when no accelerator reports utilization.
+    @Published private(set) var gpu: Double?
+    @Published private(set) var gpuHistory = RingBuffer<Double>(capacity: historyCapacity)
+    @Published private(set) var memory: MemoryStats?
+    @Published private(set) var thermal: ThermalLevel = .nominal
+
+    private let isDemo: Bool
+    private var previousTicks: [CPUTicks] = []
+    private var demoStep = 0
+    private var samplingTask: Task<Void, Never>?
+    /// Number of visible panels; sampling stops when it drops to zero.
+    private var viewers = 0
+
+    init() {
+        isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
+        if isDemo {
+            demoStep = Self.historyCapacity
+            for step in 1...Self.historyCapacity { applyDemo(step: step) }
+        } else {
+            // Cheap one-off reading so the first frame isn't empty; the CPU
+            // baseline makes the first timer tick report a real percentage.
+            previousTicks = SystemSampler.cpuTicks()
+            memory = SystemSampler.memory()
+            gpu = SystemSampler.gpuUtilization()
+            thermal = SystemSampler.thermal()
+        }
+    }
+
+    func start() {
+        viewers += 1
+        guard samplingTask == nil else { return }
+        samplingTask = Task { [weak self] in
+            while !Task.isCancelled {
+                self?.sample()
+                try? await Task.sleep(for: .seconds(1), tolerance: .milliseconds(100))
+            }
+        }
+    }
+
+    func stop() {
+        viewers = max(viewers - 1, 0)
+        guard viewers == 0 else { return }
+        samplingTask?.cancel()
+        samplingTask = nil
+    }
+
+    private func sample() {
+        if isDemo {
+            demoStep += 1
+            applyDemo(step: demoStep)
+            return
+        }
+        let ticks = SystemSampler.cpuTicks()
+        let usage = CPUUsageCalculator.usage(from: previousTicks, to: ticks)
+        previousTicks = ticks
+        cpu = usage
+        if let usage { cpuHistory.append(usage.total) }
+
+        let gpuNow = SystemSampler.gpuUtilization()
+        gpu = gpuNow
+        if let gpuNow { gpuHistory.append(gpuNow) }
+
+        memory = SystemSampler.memory()
+        let thermalNow = SystemSampler.thermal()
+        if thermalNow != thermal { thermal = thermalNow }
+    }
+
+    private func applyDemo(step: Int) {
+        let total = SystemDemoData.cpu(at: step)
+        cpu = CPUUsage(total: total, perCore: SystemDemoData.perCore(at: step))
+        cpuHistory.append(total)
+        let gpuNow = SystemDemoData.gpu(at: step)
+        gpu = gpuNow
+        gpuHistory.append(gpuNow)
+        memory = SystemDemoData.memory(at: step)
+    }
+}
