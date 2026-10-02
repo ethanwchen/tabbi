@@ -13,7 +13,7 @@ MainActor.assumeIsolated {
         Task { @MainActor in
             await SnapshotRenderer.run(
                 outputDirectory: URL(fileURLWithPath: path),
-                kitID: kitID ?? KitLibrary.defaultKitID
+                kitID: kitID ?? Edition.current.defaultKitID
             )
             exit(0)
         }

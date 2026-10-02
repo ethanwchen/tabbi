@@ -11,7 +11,9 @@ swift build                                  # must stay warning-free
 swift test                                   # NotchKitCore unit tests
 swift run NotchDeck --snapshot snapshots     # render every notch state to PNG
 swift run NotchDeck --snapshot snapshots-medicine --kit medicine  # same, for another kit's tabs
-scripts/run.sh                               # bundle + launch the real app
+swift run NotchDeck --snapshot snapshots-study --edition studynotch  # as the StudyNotch edition
+scripts/run.sh [studynotch]                  # bundle + launch the real app (or an edition)
+scripts/bundle.sh studynotch                 # build/StudyNotch.app, Medicine kit preselected
 ```
 
 You cannot see the screen. **After any UI change, run the snapshot command and

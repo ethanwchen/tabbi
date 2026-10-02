@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  StudyNotch edition overlay: scripts/bundle.sh studynotch copies
+  Resources/Info.plist and replaces each key below. Keys not listed here
+  (version, minimum macOS, LSUIElement...) come from the base plist.
+  NotchDeckEdition must match an id in Edition.builtIn (NotchKitCore).
+-->
+<plist version="1.0">
+<dict>
+    <key>NotchDeckEdition</key><string>studynotch</string>
+    <key>CFBundleName</key><string>StudyNotch</string>
+    <key>CFBundleDisplayName</key><string>StudyNotch</string>
+    <key>CFBundleIdentifier</key><string>dev.notchdeck.StudyNotch</string>
+    <key>NSAppleEventsUsageDescription</key>
+    <string>StudyNotch controls Spotify and Music playback while you study and shows what's playing.</string>
+    <key>NSCalendarsFullAccessUsageDescription</key>
+    <string>StudyNotch shows your classes and exams today, and adds the study blocks you accept in Plan my day to your default calendar.</string>
+</dict>
+</plist>

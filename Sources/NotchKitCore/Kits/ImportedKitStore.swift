@@ -1,7 +1,7 @@
 import Foundation
 
 /// Kits the user imported, kept as one `<id>.json` file each in a folder
-/// (Application Support/NotchDeck/Kits in the app).
+/// (Application Support/<edition name>/Kits in the app).
 ///
 /// The imported file is copied byte for byte, so it stays human-editable
 /// and keeps fields a newer NotchDeck understands. Files that stop loading
@@ -13,10 +13,11 @@ public struct ImportedKitStore: Sendable {
         self.directory = directory
     }
 
-    /// The app's store in the user's Application Support folder.
-    public static var standard: ImportedKitStore? {
+    /// The edition's store in the user's Application Support folder. Each
+    /// edition is its own app, so StudyNotch and NotchDeck keep separate kits.
+    public static func standard(for edition: Edition = .notchDeck) -> ImportedKitStore? {
         FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first.map {
-            ImportedKitStore(directory: $0.appendingPathComponent("NotchDeck/Kits", isDirectory: true))
+            ImportedKitStore(directory: $0.appendingPathComponent("\(edition.name)/Kits", isDirectory: true))
         }
     }
 

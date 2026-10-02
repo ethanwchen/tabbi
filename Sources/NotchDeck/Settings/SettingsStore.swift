@@ -48,7 +48,7 @@ final class SettingsStore: ObservableObject {
     init(
         defaults: UserDefaults = .standard,
         defaultKitID: String = KitLibrary.defaultKitID,
-        kitStore: ImportedKitStore? = .standard,
+        kitStore: ImportedKitStore? = .standard(),
         integratesWithSystem: Bool = true
     ) {
         let kits = KitLibrary.installed(imported: kitStore?.load() ?? [])

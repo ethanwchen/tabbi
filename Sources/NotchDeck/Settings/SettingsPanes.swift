@@ -17,7 +17,7 @@ struct GeneralSettingsPane: View {
             Section {
                 Toggle("Launch at login", isOn: launchAtLogin)
                     .disabled(!LaunchAtLogin.isAvailable && store.integratesWithSystem)
-                    .help("Start NotchDeck automatically when you log in")
+                    .help("Start \(Edition.current.name) automatically when you log in")
                 if let caption = launchAtLoginCaption {
                     Text(caption)
                         .font(.callout)
@@ -78,10 +78,10 @@ struct GeneralSettingsPane: View {
         if let error = store.launchAtLoginError { return error }
         guard store.integratesWithSystem else { return nil }
         if !LaunchAtLogin.isAvailable {
-            return "Available when NotchDeck runs as an app bundle."
+            return "Available when \(Edition.current.name) runs as an app bundle."
         }
         if LaunchAtLogin.needsApproval {
-            return "Allow NotchDeck in System Settings › General › Login Items."
+            return "Allow \(Edition.current.name) in System Settings › General › Login Items."
         }
         return nil
     }
@@ -486,7 +486,7 @@ struct ClaudeSettingsPane: View {
             } header: {
                 Text("Claude CLI")
             } footer: {
-                SectionFooter("Claude Usage and Ask Claude run your own signed-in claude CLI; NotchDeck never reads your credentials. Set a location only if claude isn't found automatically.")
+                SectionFooter("Claude Usage and Ask Claude run your own signed-in claude CLI; \(Edition.current.name) never reads your credentials. Set a location only if claude isn't found automatically.")
             }
         }
         .formStyle(.grouped)
@@ -602,7 +602,7 @@ struct AboutSettingsPane: View {
         VStack(spacing: 0) {
             AppGlyph()
                 .padding(.bottom, 16)
-            Text("NotchDeck")
+            Text(Edition.current.name)
                 .font(.system(size: 20, weight: .semibold, design: .rounded))
             Text(versionText)
                 .font(.callout)

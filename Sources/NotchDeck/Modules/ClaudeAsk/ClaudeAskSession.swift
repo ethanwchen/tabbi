@@ -39,7 +39,7 @@ final class ClaudeAskSession: ObservableObject {
 
         if isDemo {
             conversation.apply(.result(ClaudeResult(
-                text: "This is a demo. Run NotchDeck without `NOTCHDECK_DEMO` to ask the real Claude.",
+                text: "This is a demo. Run \(Edition.current.name) without `NOTCHDECK_DEMO` to ask the real Claude.",
                 sessionID: sessionID,
                 isError: false
             )))

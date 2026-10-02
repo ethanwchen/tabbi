@@ -35,7 +35,7 @@ struct NotchView: View {
                 model.close()
                 services.openSettings()
             }
-            Button("Quit NotchDeck") { NSApp.terminate(nil) }
+            Button("Quit \(Edition.current.name)") { NSApp.terminate(nil) }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .animation(Theme.Motion.notch, value: model.phase)
@@ -62,7 +62,7 @@ private struct OpenNotchContent: View {
                         .foregroundStyle(Theme.Palette.secondaryText)
                         .lineLimit(1)
                         .contentTransition(.opacity)
-                    IconButton(symbol: "gearshape.fill", size: 22, help: "NotchDeck Settings") {
+                    IconButton(symbol: "gearshape.fill", size: 22, help: "\(Edition.current.name) Settings") {
                         model.close()
                         services.openSettings()
                     }

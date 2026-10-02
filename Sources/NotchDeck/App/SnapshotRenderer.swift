@@ -4,7 +4,7 @@ import NotchKitCore
 
 /// Renders every notch state and Settings pane to PNG without showing a window:
 ///
-///     swift run NotchDeck --snapshot ./snapshots [--kit medicine]
+///     swift run NotchDeck --snapshot ./snapshots [--kit medicine] [--edition studynotch]
 ///
 /// Used to review UI changes (by people and by agents) without Screen
 /// Recording permission. Live data sources run as usual, so panels show

@@ -1,5 +1,6 @@
 import Foundation
 import ServiceManagement
+import NotchKitCore
 
 /// Registers NotchDeck as a login item through `SMAppService.mainApp`.
 ///
@@ -10,7 +11,7 @@ enum LaunchAtLogin {
         case notBundled
 
         var errorDescription: String? {
-            "Launch at login is only available when NotchDeck runs as an app (scripts/run.sh)."
+            "Launch at login is only available when \(Edition.current.name) runs as an app (scripts/run.sh)."
         }
     }
 

@@ -1,4 +1,5 @@
 import AppKit
+import NotchKitCore
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
@@ -6,7 +7,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var notch: NotchController?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        let services = AppServices(settings: SettingsStore())
+        let edition = Edition.current
+        let settings = SettingsStore(defaultKitID: edition.defaultKitID, kitStore: .standard(for: edition))
+        let services = AppServices(settings: settings)
         self.services = services
         notch = NotchController(services: services)
     }

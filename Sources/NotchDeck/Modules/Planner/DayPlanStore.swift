@@ -40,8 +40,8 @@ final class DayPlanStore: ObservableObject {
         var detail: String {
             switch self {
             case .claudeNotFound: "Install the claude CLI, or set its path in Settings."
-            case .calendarOff: "Allow NotchDeck in Privacy & Security to plan around meetings."
-            case .calendarUnavailable: "Open the NotchDeck app to plan around your calendar."
+            case .calendarOff: "Allow \(Edition.current.name) in Privacy & Security to plan around meetings."
+            case .calendarUnavailable: "Open the \(Edition.current.name) app to plan around your calendar."
             case .claudeFailed: "Claude didn't send back a usable plan. Try again in a moment."
             }
         }

@@ -126,7 +126,12 @@ swift build                     # compile; must stay warning-free
 swift test                      # unit tests for NotchKitCore
 NOTCHDECK_DEMO=1 swift run NotchDeck --snapshot snapshots   # render every notch state to PNG with sample data
 scripts/release.sh              # universal, ad-hoc signed release zip in build/release/
+scripts/bundle.sh studynotch    # build/StudyNotch.app: the same app branded for studying
 ```
+
+Editions are branded builds of the same binary.
+`scripts/bundle.sh studynotch` (or `scripts/run.sh studynotch`) builds StudyNotch, with its own name, bundle id and the Medicine kit preselected.
+An edition is an Info.plist overlay in `Resources/Editions/<edition>/` plus an entry in `Edition.builtIn`; an optional `AppIcon.icns` beside it replaces the icon.
 
 `NOTCHDECK_DEMO=1` swaps every data source for realistic sample data, so you can try the UI without Spotify, a calendar or the `claude` CLI.
 
