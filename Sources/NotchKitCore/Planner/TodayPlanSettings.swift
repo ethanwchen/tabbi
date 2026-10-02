@@ -7,7 +7,8 @@ import Foundation
 /// "moduleSettings": {
 ///   "planner": { "planMode": "study", "reviewsFirst": true, "eventBufferMinutes": 10,
 ///                "studyBlockTitle": "Study block", "secondsPerCard": 10,
-///                "upNextEvents": "lectures, labs, and shifts", "dayEndHour": 21 }
+///                "upNextEvents": "lectures, labs, and shifts", "dayEndHour": 21,
+///                "sampleDay": "medicine" }
 /// }
 /// ```
 ///
@@ -37,6 +38,8 @@ public struct TodayPlanSettings: Hashable, Sendable {
     /// When planned work usually stops, 0-22 (6 pm by default); see
     /// `DayPlanner.dayEnd`.
     public var dayEndHour: Int
+    /// The day demo mode shows on Today; never affects real data.
+    public var sampleDay: PlannerSampleDay
 
     public init(
         planMode: PlanMode = .claude,
@@ -46,7 +49,8 @@ public struct TodayPlanSettings: Hashable, Sendable {
         studyBlockTitle: String = "Study block",
         secondsPerCard: TimeInterval = StudyDayPreferences.defaultSecondsPerCard,
         upNextEvents: String = "meetings and calls",
-        dayEndHour: Int = DayPlanner.defaultDayEndHour
+        dayEndHour: Int = DayPlanner.defaultDayEndHour,
+        sampleDay: PlannerSampleDay = .work
     ) {
         self.planMode = planMode
         self.studyMethod = studyMethod
@@ -56,6 +60,7 @@ public struct TodayPlanSettings: Hashable, Sendable {
         self.secondsPerCard = max(secondsPerCard, 1)
         self.upNextEvents = PlannerDay.normalized(upNextEvents) ?? "meetings and calls"
         self.dayEndHour = min(max(dayEndHour, 0), DayPlanner.latestDayEndHour)
+        self.sampleDay = sampleDay
     }
 
     /// The kit's settings; values of the wrong type or unknown modes fall
@@ -73,7 +78,8 @@ public struct TodayPlanSettings: Hashable, Sendable {
             studyBlockTitle: section?["studyBlockTitle"]?.stringValue ?? defaults.studyBlockTitle,
             secondsPerCard: section?["secondsPerCard"]?.numberValue ?? defaults.secondsPerCard,
             upNextEvents: section?["upNextEvents"]?.stringValue ?? defaults.upNextEvents,
-            dayEndHour: section?["dayEndHour"]?.numberValue.map { Int($0.rounded()) } ?? defaults.dayEndHour
+            dayEndHour: section?["dayEndHour"]?.numberValue.map { Int($0.rounded()) } ?? defaults.dayEndHour,
+            sampleDay: section?["sampleDay"]?.stringValue.flatMap(PlannerSampleDay.init(rawValue:)) ?? defaults.sampleDay
         )
     }
 

@@ -29,8 +29,9 @@ final class DayReviewStore: ObservableObject {
     private static let timeout: Duration = .seconds(30)
 
     /// `studyPreview` makes the demo previews a study day's wrap-up, with
-    /// the demo Anki reviews and a sample study tally.
-    init(studyPreview: Bool = false) {
+    /// the demo Anki reviews and a sample study tally; `sampleDay` picks
+    /// the demo day reviewed.
+    init(studyPreview: Bool = false, sampleDay: PlannerSampleDay = .work) {
         let environment = ProcessInfo.processInfo.environment
         isDemo = environment["NOTCHDECK_DEMO"] == "1"
         repository = isDemo ? nil : DayReviewRepository()
@@ -38,7 +39,8 @@ final class DayReviewStore: ObservableObject {
         guard isDemo else { return }
         let today = PlannerDayKey(date: Date())
         let progress = studyPreview ? [AnkiSummary.demo().progressItem()] : []
-        let sample = DayReview.sample(on: today, study: studyPreview ? .sample : nil, progress: progress)
+        let sample = DayReview.sample(on: today, kind: sampleDay, study: studyPreview ? .sample : nil,
+                                      progress: progress)
         switch environment["NOTCHDECK_PLANNER_PREVIEW"] {
         case "review": review = sample
         case "review-loading":
@@ -53,13 +55,14 @@ final class DayReviewStore: ObservableObject {
     /// and `progress` are what other modules share; on a study day the demo
     /// fills in a sample tally, since no demo module keeps one yet.
     func wrapUp(day: PlannerDay, focusLog: FocusSessionLog, study: StudyDayTally? = nil,
-                progress: [ProgressItem] = [], isStudyDay: Bool = false) {
+                progress: [ProgressItem] = [], isStudyDay: Bool = false, sampleDay: PlannerSampleDay = .work) {
         invalidateRun()
         saveFailed = false
         let generation = generation
 
         if isDemo {
-            var sample = DayReview.sample(on: day.date, study: study ?? (isStudyDay ? .sample : nil), progress: progress)
+            var sample = DayReview.sample(on: day.date, kind: sampleDay, study: study ?? (isStudyDay ? .sample : nil),
+                                         progress: progress)
             let summary = sample.summary
             sample.summary = nil
             review = sample

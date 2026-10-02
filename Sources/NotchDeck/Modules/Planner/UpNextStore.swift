@@ -38,7 +38,7 @@ final class UpNextStore: ObservableObject {
     @Published private(set) var now = Date()
 
     private let isDemo: Bool
-    private let demoEvents: [UpcomingEvent]
+    private var demoEvents: [UpcomingEvent]
     private lazy var eventStore = EKEventStore()
     private var isVisible = false
     private var isPreviewWatching = false
@@ -50,7 +50,8 @@ final class UpNextStore: ObservableObject {
     static let privacySettingsURL = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Calendars")!
     static let internetAccountsURL = URL(string: "x-apple.systempreferences:com.apple.Internet-Accounts-Settings.extension")!
 
-    init() {
+    /// `sampleDay` picks the demo calendar (the active kit's `sampleDay`).
+    init(sampleDay: PlannerSampleDay = .work) {
         let environment = ProcessInfo.processInfo.environment
         isDemo = environment["NOTCHDECK_DEMO"] == "1"
         if isDemo {
@@ -64,7 +65,7 @@ final class UpNextStore: ObservableObject {
             default: .granted
             }
             hasAccounts = preview != "noAccounts"
-            demoEvents = preview == nil ? UpcomingEvent.samples(now: start) : []
+            demoEvents = preview == nil ? UpcomingEvent.samples(now: start, kind: sampleDay) : []
             now = start
             events = UpcomingEvent.upNext(from: demoEvents, at: start)
             eventsToday = demoEvents.count
@@ -180,6 +181,15 @@ final class UpNextStore: ObservableObject {
         case .notDetermined: return .notDetermined
         default: return .denied
         }
+    }
+
+    /// Swaps the demo calendar when the active kit's sample day changes.
+    /// Does nothing outside demo mode or while previewing an empty state.
+    func showSampleDay(_ kind: PlannerSampleDay) {
+        guard isDemo, !demoEvents.isEmpty else { return }
+        demoEvents = UpcomingEvent.samples(now: Date(), kind: kind)
+        eventsToday = demoEvents.count
+        reload()
     }
 
     private func reload() {

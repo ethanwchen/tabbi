@@ -83,7 +83,7 @@ final class DayPlanStore: ObservableObject {
         guard isDemo else { return }
         switch environment["NOTCHDECK_PLANNER_PREVIEW"] {
         case "plan": phase = .proposal(sampleProposal(
-            tasks: PlannerDay.sample(on: PlannerDayKey(date: Date())).items,
+            tasks: PlannerDay.sample(on: PlannerDayKey(date: Date()), kind: settings.sampleDay).items,
             progress: [AnkiSummary.demo().progressItem()]))
         case "planning": phase = .planning
         case "plan-failed": phase = .failed(.claudeFailed)
@@ -155,12 +155,12 @@ final class DayPlanStore: ObservableObject {
 
     // MARK: - Private
 
-    /// Demo mode's proposal: the study planner over the sample calendar for
+    /// Demo mode's proposal: the study planner over the demo calendar for
     /// study kits, otherwise Claude's canned sample.
     private func sampleProposal(tasks: [PlannerItem], progress: [ProgressItem]) -> DayPlanProposal {
         guard settings.planMode == .study else { return DayPlanProposal(blocks: DayPlanner.sampleProposal(now: Date())) }
         let now = Date()
-        let context = DayPlanContext(now: now, events: UpcomingEvent.samples(now: now), tasks: tasks,
+        let context = DayPlanContext(now: now, events: upNext.todayEvents(), tasks: tasks,
                                      dayEndHour: settings.dayEndHour)
         return DayPlanProposal(settings.studyPlan(context: context, progress: progress))
     }

@@ -348,21 +348,29 @@ public final class DayReviewRepository {
 }
 
 public extension DayReview {
-    /// The review of `PlannerDay.sample` for demo mode, with a canned
+    /// The review of `PlannerDay.sample` (of `kind`) for demo mode, with a canned
     /// summary so no Claude call is needed. Pass shared `progress` and a
     /// `study` tally to preview a study day's wrap-up.
     static func sample(
         on date: PlannerDayKey,
+        kind: PlannerSampleDay = .work,
         study: StudyDayTally? = nil,
         progress: [ProgressItem] = [],
         calendar: Calendar = .current
     ) -> DayReview {
-        var review = DayReviewer.review(of: .sample(on: date, calendar: calendar), focusLog: FocusSessionLog(),
-                                        study: study, progress: progress, calendar: calendar)
+        var review = DayReviewer.review(of: .sample(on: date, kind: kind, calendar: calendar),
+                                        focusLog: FocusSessionLog(), study: study, progress: progress,
+                                        calendar: calendar)
         review.focusSessions = 3
         review.focusMinutes = 75
-        review.summary = "Strong day: the pull request, design feedback, and flights are all off your plate. "
-            + "Start tomorrow with the planner beta while your focus is fresh."
+        review.summary = switch kind {
+        case .work:
+            "Strong day: the pull request, design feedback, and flights are all off your plate. "
+                + "Start tomorrow with the planner beta while your focus is fresh."
+        case .medicine:
+            "Solid study day: First Aid, the heart failure lecture, and the shift email are done. "
+                + "Start tomorrow with the UWorld block while your focus is fresh."
+        }
         return review
     }
 }

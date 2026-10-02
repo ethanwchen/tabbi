@@ -154,6 +154,14 @@ final class DayReviewTests: XCTestCase {
         XCTAssertEqual(DayReviewer.summary(from: summary), summary, "the canned summary already fits the card")
     }
 
+    func testMedicineSampleReviewCarriesOverStudyWork() throws {
+        let sample = DayReview.sample(on: oct1, kind: .medicine, calendar: calendar)
+        XCTAssertEqual(sample.carryingOver, ["UWorld cardio Qs", "Renal notes"])
+        let summary = try XCTUnwrap(sample.summary)
+        XCTAssertEqual(DayReviewer.summary(from: summary), summary, "the canned summary already fits the card")
+        XCTAssertTrue(summary.contains("UWorld"))
+    }
+
     // MARK: Study stats
 
     private func ankiReviews(done: Int, of target: Int) -> ProgressItem {

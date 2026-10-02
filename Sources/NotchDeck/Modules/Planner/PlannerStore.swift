@@ -31,10 +31,13 @@ final class PlannerStore: ObservableObject {
     private(set) var sharedStudy: StudyDayTally?
     /// How Plan My Day works for the active kit.
     @Published var planSettings: TodayPlanSettings {
-        didSet { plan.settings = planSettings }
+        didSet {
+            plan.settings = planSettings
+            if planSettings.sampleDay != oldValue.sampleDay { showSampleDay(planSettings.sampleDay) }
+        }
     }
     /// Today's remaining calendar events, shown beside the checklist.
-    let upNext = UpNextStore()
+    let upNext: UpNextStore
     /// The Pomodoro timer, shared with the Focus tab; Today shows it as a
     /// card and links checklist items to it.
     let focus: FocusStore
@@ -58,11 +61,12 @@ final class PlannerStore: ObservableObject {
     init(focus: FocusStore, planSettings: TodayPlanSettings = TodayPlanSettings()) {
         self.focus = focus
         self.planSettings = planSettings
-        review = DayReviewStore(studyPreview: planSettings.planMode == .study)
+        upNext = UpNextStore(sampleDay: planSettings.sampleDay)
+        review = DayReviewStore(studyPreview: planSettings.planMode == .study, sampleDay: planSettings.sampleDay)
         let today = PlannerDayKey(date: Date())
         if ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1" {
             repository = nil
-            day = .sample(on: today)
+            day = .sample(on: today, kind: planSettings.sampleDay)
             return
         }
         repository = PlannerRepository()
@@ -76,6 +80,13 @@ final class PlannerStore: ObservableObject {
                 MainActor.assumeIsolated { self?.refreshDay() }
             }
             .store(in: &cancellables)
+    }
+
+    /// Demo mode only: shows the sample day of a newly applied kit.
+    private func showSampleDay(_ kind: PlannerSampleDay) {
+        guard repository == nil else { return }
+        day = .sample(on: PlannerDayKey(date: Date()), kind: kind)
+        upNext.showSampleDay(kind)
     }
 
     /// Switches to the current calendar day if it has changed (or retries a
@@ -125,7 +136,7 @@ final class PlannerStore: ObservableObject {
         plan.cancel()
         refreshDay()
         review.wrapUp(day: day, focusLog: focus.sessionLog, study: sharedStudy, progress: sharedProgress,
-                      isStudyDay: planSettings.planMode == .study)
+                      isStudyDay: planSettings.planMode == .study, sampleDay: planSettings.sampleDay)
     }
 
     // MARK: Edits
