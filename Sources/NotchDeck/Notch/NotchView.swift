@@ -73,7 +73,7 @@ private struct OpenNotchContent: View {
             .frame(height: max(notch.height, 32))
 
             ZStack {
-                ModuleViews.panel(for: model.selected, services: services)
+                services.modules.panel(for: model.selected)
                     .id(model.selected)
                     .transition(.asymmetric(
                         insertion: .move(edge: model.movingForward ? .trailing : .leading).combined(with: .opacity),

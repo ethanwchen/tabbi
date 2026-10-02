@@ -20,4 +20,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         services?.openSettings()
         return false
     }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        services?.modules.stopAll()
+    }
 }

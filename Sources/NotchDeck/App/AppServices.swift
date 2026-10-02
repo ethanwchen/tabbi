@@ -1,5 +1,6 @@
 import Combine
 import SwiftUI
+import NotchKitCore
 
 /// Long-lived state for every module, created once at launch and shared with
 /// all views through the environment. Each module owns its own store class
@@ -16,6 +17,8 @@ final class AppServices: ObservableObject {
     let claudeAsk = ClaudeAskSession()
     /// The rotating live preview beside the closed notch.
     let ticker: TickerStore
+    /// Every tab this build can show. Register new modules here.
+    let modules: ModuleRegistry
 
     private var cancellables: Set<AnyCancellable> = []
     /// Created on first use so launching never builds a window nobody opens.
@@ -24,6 +27,24 @@ final class AppServices: ObservableObject {
     init(settings: SettingsStore) {
         self.settings = settings
         ticker = TickerStore(settings: settings, spotify: spotify, planner: planner, claudeUsage: claudeUsage)
+        modules = ModuleRegistry([
+            NowPlayingModule(controller: spotify),
+            SystemModule(monitor: system),
+            ClaudeUsageModule(store: claudeUsage),
+            TodayModule(store: planner),
+            AskClaudeModule(session: claudeAsk),
+            StudyModule(),
+            AnkiModule(),
+            PartyModule(),
+            ClosetModule(),
+        ])
+        // `$settings` emits before the new value is stored, so read the
+        // layout from the emission.
+        settings.$settings
+            .map(\.modules.enabled)
+            .removeDuplicates()
+            .sink { [modules] enabled in modules.update(enabled: enabled) }
+            .store(in: &cancellables)
         // A new `claude` path in Settings must reach both Claude modules
         // live, not on the next launch.
         settings.$appliedClaudePathOverride

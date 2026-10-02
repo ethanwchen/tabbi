@@ -29,8 +29,15 @@ Judge them against the design rules below before you call the work done.
 - `Sources/NotchDeck/Design/Theme.swift` — design tokens and shared controls
   (`Card`, `IconButton`). Reuse them; add new shared components here.
 - `Sources/NotchDeck/Modules/<Module>/` — one folder per module: a store
-  (`ObservableObject`, owned by `AppServices`) and SwiftUI views.
-- `Sources/NotchDeck/Modules/ModuleViews.swift` — module → view registry.
+  (`ObservableObject`, owned by `AppServices`), SwiftUI views, and a
+  `NotchModule` class (descriptor, panel, optional settings section,
+  `start()`/`stop()` while the module is enabled).
+- `Sources/NotchDeck/Modules/NotchModule.swift` — the `NotchModule` protocol
+  and `ModuleRegistry`. To add a module: add its `ModuleDescriptor` to
+  `ModuleCatalog.builtIn`, write `<Module>Module` in its folder, and list it
+  once in `AppServices.modules`.
+- `Sources/NotchDeck/Modules/ModuleViews.swift` — the closed notch's
+  live-activity wings.
 - `Sources/NotchKitCore/Claude` — `ClaudeCLI` (locate + stream `claude -p`) and
   `ClaudeStreamEvent` (stream-json parser). Both Claude modules use these.
 
