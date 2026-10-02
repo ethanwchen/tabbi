@@ -19,6 +19,8 @@ final class AppServices: ObservableObject {
     let ticker: TickerStore
     /// Every tab this build can show. Register new modules here.
     let modules: ModuleRegistry
+    /// What the enabled modules share (tasks, events, progress, focus).
+    let providers: ProviderHub
 
     private var cancellables: Set<AnyCancellable> = []
     /// Created on first use so launching never builds a window nobody opens.
@@ -26,7 +28,6 @@ final class AppServices: ObservableObject {
 
     init(settings: SettingsStore) {
         self.settings = settings
-        ticker = TickerStore(settings: settings, spotify: spotify, planner: planner, claudeUsage: claudeUsage)
         modules = ModuleRegistry([
             NowPlayingModule(controller: spotify),
             SystemModule(monitor: system),
@@ -38,12 +39,18 @@ final class AppServices: ObservableObject {
             PartyModule(),
             ClosetModule(),
         ])
+        providers = ProviderHub(registry: modules)
+        ticker = TickerStore(settings: settings, spotify: spotify, providers: providers,
+                             upNext: planner.upNext, claudeUsage: claudeUsage)
         // `$settings` emits before the new value is stored, so read the
         // layout from the emission.
         settings.$settings
             .map(\.modules.enabled)
             .removeDuplicates()
-            .sink { [modules] enabled in modules.update(enabled: enabled) }
+            .sink { [modules, providers] enabled in
+                modules.update(enabled: enabled)
+                providers.update(enabled: enabled)
+            }
             .store(in: &cancellables)
         // A new `claude` path in Settings must reach both Claude modules
         // live, not on the next launch.

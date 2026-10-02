@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 import NotchKitCore
 
@@ -14,5 +15,16 @@ final class TodayModule: NotchModule {
 
     func makePanel() -> AnyView {
         AnyView(PlannerPanel(store: store))
+    }
+
+    /// The checklist, today's calendar events, and the focus timer.
+    var provision: AnyPublisher<ModuleProvision, Never>? {
+        let id = descriptor.id
+        return store.$day
+            .combineLatest(store.upNext.$events, store.focus.$timer)
+            .map { day, events, timer in
+                ModuleProvision(tasks: day.items.map { $0.provided(by: id) }, events: events, focus: timer)
+            }
+            .eraseToAnyPublisher()
     }
 }

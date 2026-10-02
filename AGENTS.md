@@ -36,6 +36,12 @@ Judge them against the design rules below before you call the work done.
   and `ModuleRegistry`. To add a module: add its `ModuleDescriptor` to
   `ModuleCatalog.builtIn`, write `<Module>Module` in its folder, and list it
   once in `AppServices.modules`.
+- Shared data providers: a module that has tasks, calendar events, progress
+  (e.g. cards due) or a focus timer to share returns a `ModuleProvision`
+  publisher from `NotchModule.provision`. `ProviderHub` (in `Modules/`)
+  merges the enabled modules' values into a `ProviderSnapshot`
+  (`NotchKitCore/Providers`), which the ticker reads. Never reach into
+  another module's store; publish what you have and consume the snapshot.
 - `Sources/NotchDeck/Modules/ModuleViews.swift` — the closed notch's
   live-activity wings.
 - `Sources/NotchKitCore/Claude` — `ClaudeCLI` (locate + stream `claude -p`) and

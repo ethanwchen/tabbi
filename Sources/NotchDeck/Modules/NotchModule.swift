@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 import NotchKitCore
 
@@ -29,6 +30,11 @@ protocol NotchModule: AnyObject {
 
     /// Called when the module is turned off or the app quits. Undo `start()`.
     func stop()
+
+    /// Tasks, events, progress, and focus state this module shares with
+    /// Today and the ticker, re-published whenever they change; nil when it
+    /// shares nothing. `ProviderHub` merges the enabled modules' values.
+    var provision: AnyPublisher<ModuleProvision, Never>? { get }
 }
 
 extension NotchModule {
@@ -37,6 +43,7 @@ extension NotchModule {
     func makeSettingsSection() -> AnyView? { nil }
     func start() {}
     func stop() {}
+    var provision: AnyPublisher<ModuleProvision, Never>? { nil }
 }
 
 /// The modules this build runs, in canonical order, keyed by id.

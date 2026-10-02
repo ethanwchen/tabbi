@@ -4,7 +4,8 @@ import NotchKitCore
 
 /// Drives the live preview beside the closed notch.
 ///
-/// Collects a `TickerSources` snapshot from the module stores, filters it by
+/// Collects a `TickerSources` snapshot from the shared providers (events,
+/// focus, open tasks) and the Now Playing and Claude Usage stores, filters it by
 /// the user's notch preview settings, and runs `TickerRotation` to pick the
 /// item on screen. The clock only runs while the notch is closed, and then
 /// only wakes when the screen can change: the next rotation turn, the next
@@ -30,18 +31,17 @@ final class TickerStore: ObservableObject {
     private var timer: Timer?
     private var cancellables: Set<AnyCancellable> = []
 
-    init(settings: SettingsStore, spotify: SpotifyController, planner: PlannerStore, claudeUsage: ClaudeUsageStore) {
+    init(settings: SettingsStore, spotify: SpotifyController, providers: ProviderHub,
+         upNext: UpNextStore, claudeUsage: ClaudeUsageStore) {
         kinds = settings.settings.previewKinds
-        upNext = planner.upNext
+        self.upNext = upNext
         rotation = TickerRotation(interval: settings.settings.notchPreview.interval.seconds)
 
-        let tasksRemaining = planner.$day.map { $0.items.count - $0.doneCount }
-        planner.upNext.$events
-            .combineLatest(spotify.$showsCompactActivity, planner.focus.$timer, tasksRemaining)
-            .combineLatest(claudeUsage.$limits.map { $0?.snapshot })
-            .map { modules, usage in
-                TickerSources(events: modules.0, isMusicPlaying: modules.1, focus: modules.2,
-                              tasksRemaining: modules.3, usage: usage)
+        providers.$snapshot
+            .combineLatest(spotify.$showsCompactActivity, claudeUsage.$limits.map { $0?.snapshot })
+            .map { shared, isMusicPlaying, usage in
+                TickerSources(events: shared.events, isMusicPlaying: isMusicPlaying, focus: shared.focus,
+                              tasksRemaining: shared.openTasks.count, usage: usage)
             }
             .removeDuplicates()
             .sink { [weak self] sources in

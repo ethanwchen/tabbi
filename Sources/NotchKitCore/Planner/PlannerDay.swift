@@ -157,3 +157,10 @@ public struct PlannerDay: Hashable, Codable, Sendable {
         return collapsed.isEmpty ? nil : collapsed
     }
 }
+
+public extension PlannerItem {
+    /// This checklist item as Today's contribution to the shared task list.
+    func provided(by module: ModuleID) -> ProvidedTask {
+        ProvidedTask(id: id.uuidString, source: module, title: title, isDone: isDone)
+    }
+}
