@@ -46,7 +46,7 @@ NOTCHDECK_DEMO=1 swift run NotchDeck --snapshot snapshots   # sample data
 swift run NotchDeck --snapshot snapshots-live               # your real data, or the empty states
 ```
 
-This writes `closed.png`, one `closed-<item>.png` per closed-notch preview item that has data (`meeting`, `music`, `focus`, `tasks`, `usage`), and one `open-<module>.png` per module, including modules the kit leaves off (shown as if switched on).
+This writes `closed.png`, one `closed-<item>.png` per closed-notch preview item that has data (`meeting`, `music`, `focus`, `tasks`, `progress`, `usage`), and one `open-<module>.png` per module, including modules the kit leaves off (shown as if switched on).
 Look at both runs:
 
 - The demo run shows the panel with realistic content.

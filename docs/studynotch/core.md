@@ -111,7 +111,7 @@ summary.retention      // 0.91, or nil below 20 graded reviews
 
 - `isSetupStep` marks the states that need the user to act first.
 - `keepsLastSummary` is true for `ready`, `checking` and `problem`, so a transient error shows the last numbers instead of an empty panel.
-- `refreshInterval` is the poll interval while the panel is visible: 2 s while starting, 5 s for setup steps, 30 s for problems, 3 min when ready.
+- `refreshInterval` is the poll interval while the panel is visible: 2 s while starting, 5 s for setup steps (60 s when Anki is not installed), 30 s for problems, 3 min when ready.
 - `pollsWhileHidden` is true only for `starting`, so Today and the ticker get numbers as soon as AnkiConnect comes up after a background launch; the startup grace bounds it to a few polls.
 - `AnkiSummary.topDecks` lists top-level decks with cards due, most due first; `completionFraction` drives the progress ring; `isCurrent(now:)` stops yesterday's numbers from being shared after the rollover.
   `AnkiSummary.nextRollover(after:)` is when that happens, so the store wakes once a day at the rollover to stop sharing the old summary and fetch the new day's.
