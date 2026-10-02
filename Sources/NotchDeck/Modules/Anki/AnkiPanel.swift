@@ -61,6 +61,11 @@ private struct AnkiDeckView: View {
             AnkiFooter(store: store, summary: summary)
         }
         .animation(Theme.Motion.content, value: showsAllDecks)
+        // Reviewing or a refresh can leave too few decks for the toggle to
+        // show; collapse then, or the ring would stay hidden with no way back.
+        .onChange(of: summary.topDecks.count) { _, count in
+            if count <= DecksCard.collapsedCount { showsAllDecks = false }
+        }
     }
 }
 
@@ -167,7 +172,7 @@ private struct DecksCard: View {
     let decks: [AnkiDeckStats]
     @Binding var showsAll: Bool
 
-    private static let collapsedCount = 4
+    static let collapsedCount = 4
 
     var body: some View {
         Card(padding: Theme.Spacing.s) {
