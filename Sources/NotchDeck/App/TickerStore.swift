@@ -5,7 +5,7 @@ import NotchKitCore
 /// Drives the live preview beside the closed notch.
 ///
 /// Collects a `TickerSources` snapshot from the shared providers (events,
-/// focus, open tasks) and the Now Playing and Claude Usage stores, filters it by
+/// focus, open tasks, study progress) and the Now Playing and Claude Usage stores, filters it by
 /// the user's notch preview settings, and runs `TickerRotation` to pick the
 /// item on screen. The clock only runs while the notch is closed, and then
 /// only wakes when the screen can change: the next rotation turn, the next
@@ -41,7 +41,7 @@ final class TickerStore: ObservableObject {
             .combineLatest(spotify.$showsCompactActivity, claudeUsage.$limits.map { $0?.snapshot })
             .map { shared, isMusicPlaying, usage in
                 TickerSources(events: shared.events, isMusicPlaying: isMusicPlaying, focus: shared.focus,
-                              tasksRemaining: shared.openTasks.count, usage: usage)
+                              tasksRemaining: shared.openTasks.count, progress: shared.progress, usage: usage)
             }
             .removeDuplicates()
             .sink { [weak self] sources in

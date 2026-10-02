@@ -132,6 +132,7 @@ enum SnapshotRenderer {
         case .nowPlaying: "music"
         case .focus: "focus"
         case .tasks: "tasks"
+        case .progress: "progress"
         case .claudeUsage: "usage"
         }
     }

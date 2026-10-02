@@ -60,7 +60,7 @@ public struct AppSettings: Equatable, Sendable {
     /// minus items whose module is turned off, since clicking one would open
     /// a tab that isn't there.
     public var previewKinds: Set<TickerKind> {
-        notchPreview.enabledKinds.filter { modules.isEnabled($0.module) }
+        notchPreview.enabledKinds.filter { kind in kind.module.map(modules.isEnabled) ?? true }
     }
 
     /// Switches to `kit`: replaces the tab layout with the one it produces

@@ -122,7 +122,7 @@ Accepted values:
 
 - **Study methods:** `pomodoro`, `fiftyTwoSeventeen`, `ultradian`, `flowtime`, `ankiSprint`, `questionBlock`, `custom`.
 - **Focus sounds:** `brown`, `pink`, `white`, `rain`, `fireplace`, `cafe`.
-- **Ticker previews:** `meeting`, `nowPlaying`, `focus`, `tasks`, `claudeUsage`.
+- **Ticker previews:** `meeting`, `nowPlaying`, `focus`, `tasks`, `progress` (shared study goals such as Anki cards left), `claudeUsage`.
 - **Pet breeds:** `orangeTabby`, `grayTabby`, `blackCat`, `whiteCat`, `tuxedo`, `calico`, `siamese`, `britishShorthair`, `goldenRetriever`, `labrador`, `frenchBulldog`, `corgi`, `dachshund`, `beagle`.
 
 Switching kits, picking one on first run, and resetting apply the tabs, `ticker` and `focusSounds`.

@@ -14,6 +14,7 @@ A typed async client for the [AnkiConnect](https://ankiweb.net/shared/info/20554
 - `URLSessionAnkiConnectTransport` posts to `http://127.0.0.1:8765`.
   It sends no `Origin` header, and AnkiConnect trusts requests without one, so no CORS setup is needed.
 - `URLError`s are classified into `AnkiConnectTransportError` (`connectionRefused`, `timedOut`, `failed`), except `.cancelled`, which is rethrown as `CancellationError` so a cancelled refresh never shows an error state.
+- The client checks for cancellation before sending and again after any failure, so a cancelled caller always gets `CancellationError`, never an `AnkiConnectError`, even if the transport failed for another reason meanwhile.
 
 ### Client
 
@@ -36,6 +37,7 @@ A typed async client for the [AnkiConnect](https://ankiweb.net/shared/info/20554
 | `numCardsReviewedByDay()` | `getNumCardsReviewedByDay` | `[AnkiDayCount]`, newest first |
 | `findCards(query:)` | `findCards` | `[Int64]` card ids |
 | `cardReviews(deck:startID:)` | `cardReviews` | `[AnkiReview]` (exact deck only, no children) |
+| `cardReviews(decks:startID:)` | `multi` of `cardReviews` | `[AnkiReview]` for every deck in one round trip; any deck's error fails the call |
 | `guiDeckReview(name:)` | `guiDeckReview` | `Bool`; the app must still activate Anki |
 | `guiDeckOverview(name:)` | `guiDeckOverview` | `Bool` |
 | `sync()` | `sync` | nothing |
@@ -71,7 +73,7 @@ The pure initializer does the math, so it is tested without a transport.
 `AnkiConnectClient.summary(now:rolloverHour:calendar:historyDays:retentionWindowDays:)` fetches and aggregates in one call.
 
 ```swift
-let summary = try await client.summary()   // decks, getDeckStats, today, by-day, cardReviews per deck
+let summary = try await client.summary()   // decks, getDeckStats, today, by-day, one multi of cardReviews
 summary.dueTotal       // new + learn + review due today
 summary.streak         // consecutive review days
 summary.retention      // 0.91, or nil below 20 graded reviews
@@ -88,10 +90,36 @@ summary.retention      // 0.91, or nil below 20 graded reviews
 | `decks` | Every `AnkiDeckStats`, in the order given, for a per-deck list |
 
 - Review rows are de-duplicated by id, so overlapping `cardReviews` fetches are safe.
-- `summary` makes one `cardReviews` call per deck because that action does not include child decks.
-- `AnkiSummary.demo(now:)` is the `NOTCHDECK_DEMO=1` sample: about 320 due, 112 reviewed today, a 12-day streak, about 91% retention.
+- `cardReviews` does not include child decks, so `summary` asks for every deck, batched into one `multi` request (five requests per refresh, however many decks).
+- `AnkiSummary.demo(now:)` is the `NOTCHDECK_DEMO=1` sample: about 425 due, 112 reviewed today, a 12-day streak, about 91% retention.
   It is built through the real aggregation.
 - `AnkiSummary` is `Codable`, so the UI can cache the last good value for its error state.
+
+### Connection state
+
+`AnkiConnectionState.resolve(error:isInstalled:launchedAt:now:)` turns a refresh outcome into the screen the Anki tab shows.
+
+| State | From |
+|---|---|
+| `ready` | The refresh succeeded |
+| `notInstalled` / `notRunning` | `ankiNotRunning`, split by whether an Anki app is on disk |
+| `starting` | `addOnMissing` within `startupGrace` (15 s) of Anki launching, while add-ons load |
+| `addOnMissing` | `addOnMissing` after the grace period |
+| `needsPermission(_)` | `permissionDenied` or `apiKeyRequired` |
+| `addOnOutdated` | `addOnOutdated` or `unsupportedAction` |
+| `problem(_)` | Anything transient (timeout, profile picker, transport) |
+
+- `isSetupStep` marks the states that need the user to act first.
+- `keepsLastSummary` is true for `ready`, `checking` and `problem`, so a transient error shows the last numbers instead of an empty panel.
+- `refreshInterval` is the poll interval while the panel is visible: 2 s while starting, 5 s for setup steps (60 s when Anki is not installed), 30 s for problems, 3 min when ready.
+- `pollsWhileHidden` is true only for `starting`, so Today and the ticker get numbers as soon as AnkiConnect comes up after a background launch; the startup grace bounds it to a few polls.
+- `AnkiSummary.topDecks` lists top-level decks with cards due, most due first; `completionFraction` drives the progress ring; `isCurrent(now:)` stops yesterday's numbers from being shared after the rollover.
+  `AnkiSummary.nextRollover(after:)` is when that happens, so the store wakes once a day at the rollover to stop sharing the old summary and fetch the new day's.
+- `AnkiConnectionState(previewName:)` parses `NOTCHDECK_ANKI_STATE` (for example `addOnMissing`, `notRunning`, `apiKey`, `problem`), which pins the Anki tab to one screen so every state can be snapshotted: `NOTCHDECK_ANKI_STATE=addOnMissing swift run NotchDeck --snapshot snapshots-anki`.
+
+### Formatting
+
+`AnkiFormat` holds the Anki tab's wording and scales: `heatLevels(for:)` shades the two-week heatmap (0 to 4, scaled to the busiest day, any reviews at least 1), `streak(_:)`, `dayHelp(_:today:)` for heatmap tooltips, `progressHelp(_:)` for the ring, and `age(_:now:)` for how stale the numbers are.
 
 ## Study methods (`Sources/NotchKitCore/StudyMethods`)
 

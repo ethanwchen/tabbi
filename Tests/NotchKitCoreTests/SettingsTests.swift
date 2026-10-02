@@ -367,7 +367,7 @@ final class NotchPreviewSettingsTests: XCTestCase {
         var preview = NotchPreviewSettings.default
         preview.setEnabled(.nowPlaying, false)
         XCTAssertFalse(preview.isEnabled(.nowPlaying))
-        XCTAssertEqual(preview.enabledKinds, [.meeting, .focus, .tasks, .claudeUsage])
+        XCTAssertEqual(preview.enabledKinds, [.meeting, .focus, .tasks, .progress, .claudeUsage])
         preview.setEnabled(.nowPlaying, true)
         XCTAssertEqual(preview.enabledKinds, Set(TickerKind.allCases))
     }
@@ -385,9 +385,10 @@ final class NotchPreviewSettingsTests: XCTestCase {
         var settings = AppSettings(notchPreview: NotchPreviewSettings(disabledKinds: [.tasks]))
         _ = settings.modules.setEnabled(.claudeUsage, false)
         _ = settings.modules.setEnabled(.spotify, false)
-        XCTAssertEqual(settings.previewKinds, [.meeting, .focus])
+        // Progress has no module of its own: only enabled modules publish it.
+        XCTAssertEqual(settings.previewKinds, [.meeting, .focus, .progress])
         _ = settings.modules.setEnabled(.planner, false)
-        XCTAssertTrue(settings.previewKinds.isEmpty)
+        XCTAssertEqual(settings.previewKinds, [.progress])
         settings.notchPreview.isEnabled = false
         _ = settings.modules.setEnabled(.planner, true)
         XCTAssertTrue(settings.previewKinds.isEmpty)

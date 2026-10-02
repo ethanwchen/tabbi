@@ -102,7 +102,7 @@ public struct AnkiSummary: Hashable, Sendable, Codable {
 
     /// Decks with no ancestor in the list. `getDeckStats` already includes
     /// children in a parent's counts, so summing both would double count.
-    private static func rootDecks(_ stats: [AnkiDeckStats]) -> [AnkiDeckStats] {
+    static func rootDecks(_ stats: [AnkiDeckStats]) -> [AnkiDeckStats] {
         let names = Set(stats.map(\.name))
         var seenIDs = Set<Int64>()
         return stats.filter { deck in
@@ -122,6 +122,9 @@ extension AnkiSummary {
             AnkiDeckStats(deckID: 1, name: "AnKing Step 1", newCount: 30, learnCount: 12, reviewCount: 186, totalInDeck: 28_000),
             AnkiDeckStats(deckID: 2, name: "AnKing Step 1::Cardio", newCount: 10, learnCount: 4, reviewCount: 61, totalInDeck: 3_100),
             AnkiDeckStats(deckID: 3, name: "Pharm Sketchy", newCount: 15, learnCount: 3, reviewCount: 74, totalInDeck: 4_200),
+            AnkiDeckStats(deckID: 4, name: "Sketchy Micro", newCount: 0, learnCount: 2, reviewCount: 58, totalInDeck: 2_900),
+            AnkiDeckStats(deckID: 5, name: "Pathoma", newCount: 5, learnCount: 0, reviewCount: 22, totalInDeck: 1_400),
+            AnkiDeckStats(deckID: 6, name: "Boards and Beyond Biochem", newCount: 0, learnCount: 1, reviewCount: 17, totalInDeck: 1_100),
         ]
         // Oldest to newest; a missed day 12 days ago ends the earlier run.
         let counts = [180, 0, 240, 310, 205, 410, 380, 290, 455, 320, 365, 280, 430, 112]
@@ -147,8 +150,8 @@ extension AnkiSummary {
 extension AnkiConnectClient {
     /// Fetches everything `AnkiSummary` needs: due counts for every deck,
     /// today's count, the per-day history, and the review log for the
-    /// retention window (one `cardReviews` call per deck, since that action
-    /// does not include child decks).
+    /// retention window. `cardReviews` does not include child decks, so every
+    /// deck is asked for, batched into a single `multi` request.
     public func summary(
         now: Date = Date(),
         rolloverHour: Int = 4,
@@ -163,11 +166,7 @@ extension AnkiConnectClient {
         let byDay = try await numCardsReviewedByDay()
 
         let startID = Int64((now.timeIntervalSince1970 - TimeInterval(retentionWindowDays) * 86_400) * 1000)
-        var reviews: [AnkiReview] = []
-        for name in names {
-            try Task.checkCancellation()
-            reviews += try await cardReviews(deck: name, startID: startID)
-        }
+        let reviews = try await cardReviews(decks: names, startID: startID)
 
         return AnkiSummary(
             deckStats: stats,

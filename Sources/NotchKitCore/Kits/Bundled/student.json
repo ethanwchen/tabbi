@@ -10,7 +10,7 @@
     "studyMethods": ["pomodoro", "fiftyTwoSeventeen", "flowtime", "custom"],
     "studyMethod": "pomodoro",
     "focusSounds": [{ "sound": "cafe", "level": 0.7 }],
-    "ticker": ["focus", "tasks", "meeting", "nowPlaying"],
+    "ticker": ["focus", "tasks", "progress", "meeting", "nowPlaying"],
     "pet": { "breed": "corgi" },
     "theme": "notch"
   },

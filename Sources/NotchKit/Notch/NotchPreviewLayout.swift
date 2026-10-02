@@ -30,6 +30,8 @@ public enum NotchPreviewLayout {
             content = textWidth(String(TickerFormat.focusClock(remaining).map { $0.isNumber ? "0" : $0 }))
         case .tasks(let remaining):
             content = textWidth(TickerFormat.tasksLeft(remaining))
+        case .progress(let progress):
+            content = textWidth(TickerFormat.progressLeft(progress))
         case .claudeUsage(let window, let utilization):
             content = textWidth(TickerFormat.usage(window: window, utilization: utilization))
         }
@@ -43,6 +45,7 @@ public enum NotchPreviewLayout {
         case .nowPlaying: "music.note"
         case .focus(let phase, _, _): phase == .focus ? "timer" : "cup.and.saucer.fill"
         case .tasks: "checklist"
+        case .progress(let progress): progress.source.descriptor.symbol
         case .claudeUsage: "gauge.with.dots.needle.67percent"
         }
     }
@@ -55,6 +58,7 @@ public enum NotchPreviewLayout {
         case .focus(let phase, let remaining, let isRunning):
             "\(phase == .focus ? "Focus" : "Break") \(TickerFormat.focusClock(remaining))\(isRunning ? "" : " (paused)")"
         case .tasks(let remaining): TickerFormat.tasksLeft(remaining)
+        case .progress(let progress): "\(progress.title): \(TickerFormat.progressLeft(progress))"
         case .claudeUsage(let window, let utilization):
             "Claude usage \(TickerFormat.usage(window: window, utilization: utilization))"
         }
