@@ -22,6 +22,8 @@ final class PlannerStore: ObservableObject {
     @Published private(set) var problem: Problem?
     /// Today's remaining calendar events, shown beside the checklist.
     let upNext = UpNextStore()
+    /// The Pomodoro timer; lives here so it keeps running while the notch is closed.
+    let focus = FocusStore()
 
     var items: [PlannerItem] { day.items }
     /// False while today's file is unreadable, so a bad file is never overwritten.

@@ -2,7 +2,8 @@ import SwiftUI
 import NotchDeckCore
 
 /// The Today panel: the checklist (date and progress header, items, add
-/// field) on the left and an "Up next" calendar card on the right. Keeps the notch pinned open while any field is focused
+/// field) on the left; an "Up next" calendar card above a compact focus
+/// timer on the right. Keeps the notch pinned open while any field is focused
 /// so it doesn't close under the cursor mid-typing.
 struct PlannerPanel: View {
     @ObservedObject var store: PlannerStore
@@ -22,17 +23,22 @@ struct PlannerPanel: View {
                     PlannerAddField(store: store, focus: $focus)
                 }
             }
-            UpNextCard(store: store.upNext)
-                .frame(width: Self.sideColumnWidth)
+            VStack(spacing: Theme.Spacing.s) {
+                UpNextCard(store: store.upNext)
+                FocusCard(store: store.focus, items: store.items)
+            }
+            .frame(width: Self.sideColumnWidth)
         }
         .onAppear {
             store.refreshDay()
             store.upNext.setVisible(true)
+            store.focus.setVisible(true)
         }
         .onChange(of: focus) { _, field in notch.isPinned = field != nil }
         .onDisappear {
             notch.isPinned = false
             store.upNext.setVisible(false)
+            store.focus.setVisible(false)
         }
     }
 

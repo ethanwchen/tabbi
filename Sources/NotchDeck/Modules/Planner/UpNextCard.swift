@@ -47,7 +47,7 @@ struct UpNextCard: View {
             UpNextMessage(symbol: "calendar.badge.checkmark", title: "No more events today",
                           detail: "The rest of the day is yours.") { EmptyView() }
         case .granted:
-            VStack(spacing: Theme.Spacing.xxs) {
+            VStack(spacing: 0) {
                 ForEach(store.events) { event in
                     UpNextRow(event: event, now: store.now) { store.join($0) }
                         .transition(.opacity.combined(with: .move(edge: .top)))
