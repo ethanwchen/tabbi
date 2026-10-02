@@ -6,7 +6,8 @@ import NotchDeckCore
 ///
 /// Uses a local `NSEvent` monitor, so it only sees keys while Settings is the
 /// key window and needs no Accessibility permission. Recording stops when a
-/// shortcut is accepted, on Esc, or when the window loses focus.
+/// shortcut is accepted, on Esc, or when the window loses focus. While it
+/// records, the global hotkey is suspended through the settings store.
 @MainActor
 final class HotkeyRecorder: ObservableObject {
     @Published private(set) var isRecording = false
@@ -18,11 +19,14 @@ final class HotkeyRecorder: ObservableObject {
     private var monitor: Any?
     private var resignObserver: NSObjectProtocol?
     private var onRecord: ((Hotkey) -> Void)?
+    private weak var store: SettingsStore?
 
-    func start(onRecord: @escaping (Hotkey) -> Void) {
+    func start(suspending store: SettingsStore, onRecord: @escaping (Hotkey) -> Void) {
         guard !isRecording else { return }
+        self.store = store
         self.onRecord = onRecord
         isRecording = true
+        store.isRecordingHotkey = true
         heldModifiers = Hotkey.Modifiers(NSEvent.modifierFlags)
         rejection = nil
         monitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown, .flagsChanged]) { [weak self] event in
@@ -43,6 +47,8 @@ final class HotkeyRecorder: ObservableObject {
         resignObserver = nil
         onRecord = nil
         isRecording = false
+        store?.isRecordingHotkey = false
+        store = nil
         heldModifiers = []
         rejection = nil
     }
@@ -86,12 +92,13 @@ extension Hotkey.Modifiers {
 struct HotkeyRecorderField: View {
     let hotkey: Hotkey
     @ObservedObject var recorder: HotkeyRecorder
+    @EnvironmentObject private var store: SettingsStore
     let onRecord: (Hotkey) -> Void
     @State private var hovering = false
 
     var body: some View {
         Button {
-            if recorder.isRecording { recorder.stop() } else { recorder.start(onRecord: onRecord) }
+            if recorder.isRecording { recorder.stop() } else { recorder.start(suspending: store, onRecord: onRecord) }
         } label: {
             Text(label)
                 .font(.system(size: 13, weight: .medium, design: .rounded))
