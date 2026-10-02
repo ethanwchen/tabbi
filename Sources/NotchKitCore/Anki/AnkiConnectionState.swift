@@ -101,6 +101,14 @@ extension AnkiSummary {
         day == AnkiDay(date: now, rolloverHour: rolloverHour, calendar: calendar)
     }
 
+    /// The instant the next Anki day starts after `now`, when due counts
+    /// reset and a summary from today stops being current.
+    public static func nextRollover(after now: Date, rolloverHour: Int = 4, calendar: Calendar = .current) -> Date {
+        let tomorrow = AnkiDay(date: now, rolloverHour: rolloverHour, calendar: calendar).adding(days: 1)
+        let start = DateComponents(year: tomorrow.year, month: tomorrow.month, day: tomorrow.day, hour: rolloverHour)
+        return calendar.date(from: start) ?? now.addingTimeInterval(86_400)
+    }
+
     /// Top-level decks with cards due, most due first, ties by name. Anki
     /// rolls children into parents, so listing only roots never double counts.
     public var topDecks: [AnkiDeckStats] {

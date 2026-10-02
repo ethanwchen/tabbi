@@ -95,4 +95,16 @@ final class AnkiConnectionStateTests: XCTestCase {
         XCTAssertTrue(value.isCurrent(now: beforeRollover, calendar: utc))
         XCTAssertFalse(value.isCurrent(now: beforeRollover.addingTimeInterval(2 * 3600), calendar: utc))
     }
+
+    func testNextRolloverIsTheStartOfTheNextAnkiDay() {
+        // 2026-10-02 03:00 UTC is still Oct 1 in Anki, so the next day starts at 04:00 the same morning.
+        let beforeRollover = Date(timeIntervalSince1970: 1_790_910_000)
+        let sameMorning = AnkiSummary.nextRollover(after: beforeRollover, calendar: utc)
+        XCTAssertEqual(sameMorning.timeIntervalSince(beforeRollover), 3600)
+        // From 04:00 on, the next one is a full day later.
+        XCTAssertEqual(AnkiSummary.nextRollover(after: sameMorning, calendar: utc).timeIntervalSince(sameMorning), 86_400)
+        let summary = summary([])
+        XCTAssertFalse(summary.isCurrent(now: AnkiSummary.nextRollover(after: now, calendar: utc), calendar: utc))
+        XCTAssertTrue(summary.isCurrent(now: AnkiSummary.nextRollover(after: now, calendar: utc).addingTimeInterval(-1), calendar: utc))
+    }
 }

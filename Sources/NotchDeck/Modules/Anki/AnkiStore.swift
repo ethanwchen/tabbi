@@ -20,6 +20,9 @@ final class AnkiStore: ObservableObject {
     @Published private(set) var isRestarting = false
     /// The last Sync or Start reviews failure, shown briefly in the panel.
     @Published private(set) var actionError: AnkiConnectError?
+    /// Bumped at each Anki-day rollover so `provision` re-checks whether
+    /// the summary is still today's even when no new one arrives.
+    @Published private var rolloverCount = 0
 
     let isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
     /// A screen pinned by `NOTCHDECK_ANKI_STATE` for snapshots; nothing
@@ -31,6 +34,7 @@ final class AnkiStore: ObservableObject {
     private let client: AnkiConnectClient
     private var refreshTask: Task<Void, Never>?
     private var pollTask: Task<Void, Never>?
+    private var rolloverTask: Task<Void, Never>?
     private var workspaceObservers: [NSObjectProtocol] = []
     private var isPanelVisible = false
 
@@ -76,6 +80,7 @@ final class AnkiStore: ObservableObject {
             }
         }
         refresh()
+        scheduleRollover()
     }
 
     func stop() {
@@ -84,6 +89,8 @@ final class AnkiStore: ObservableObject {
         refreshTask?.cancel()
         refreshTask = nil
         isRefreshing = false
+        rolloverTask?.cancel()
+        rolloverTask = nil
         stopPolling()
     }
 
@@ -152,6 +159,20 @@ final class AnkiStore: ObservableObject {
     private func stopPolling() {
         pollTask?.cancel()
         pollTask = nil
+    }
+
+    /// Once a day, at Anki's rollover: stop sharing yesterday's numbers and
+    /// fetch the new day's. One wake-up per day, not a poll.
+    private func scheduleRollover() {
+        rolloverTask?.cancel()
+        let delay = max(AnkiSummary.nextRollover(after: Date()).timeIntervalSinceNow, 1)
+        rolloverTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(delay))
+            guard !Task.isCancelled, let self else { return }
+            rolloverCount += 1
+            refresh()
+            scheduleRollover()
+        }
     }
 
     // MARK: Actions
@@ -229,7 +250,8 @@ final class AnkiStore: ObservableObject {
     /// current. Yesterday's numbers are never shared as today's.
     func provision(source: ModuleID) -> AnyPublisher<ModuleProvision, Never> {
         $summary
-            .map { summary in
+            .combineLatest($rolloverCount)
+            .map { summary, _ in
                 guard let summary, summary.isCurrent(now: Date()) else { return ModuleProvision.empty }
                 return ModuleProvision(progress: [summary.progressItem(source: source)])
             }
