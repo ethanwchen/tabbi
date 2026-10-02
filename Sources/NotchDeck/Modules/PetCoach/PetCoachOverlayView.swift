@@ -45,6 +45,11 @@ struct PetCoachOverlayView: View {
     /// The pet's paws sit this far below the overlay's top edge.
     static let petTop = Theme.Spacing.xs
 
+    /// The bubble's top-left corner in the overlay, beside the pet's stop.
+    static func bubbleOrigin(for stroll: PetCoachStroll) -> CGPoint {
+        CGPoint(x: CGFloat(stroll.distance) + bubbleGap, y: bubbleTop)
+    }
+
     /// Size of the overlay window for `stroll`: room for the walk plus the
     /// bubble beside the pet's stopping spot.
     static func size(for stroll: PetCoachStroll) -> CGSize {
@@ -80,7 +85,12 @@ struct PetCoachOverlayView: View {
             if stroll.showsBubble(at: date) {
                 PetCoachBubble(nudge: scene.nudge, onReply: onReply)
                     .frame(width: Self.bubbleWidth, alignment: .leading)
-                    .offset(x: CGFloat(stroll.distance) + Self.bubbleGap, y: Self.bubbleTop)
+                    .background(GeometryReader { proxy in
+                        // Placed by the offset below; only the size is measured.
+                        Color.clear.preference(key: PetCoachBubbleFrameKey.self,
+                                               value: CGRect(origin: Self.bubbleOrigin(for: stroll), size: proxy.size))
+                    })
+                    .offset(x: Self.bubbleOrigin(for: stroll).x, y: Self.bubbleOrigin(for: stroll).y)
                     .transition(.scale(scale: 0.85, anchor: .leading).combined(with: .opacity))
             }
         }
@@ -111,6 +121,15 @@ struct PetCoachOverlayView: View {
         return PetSpriteView(canvas: canvas, palette: scene.profile.palette, pixelSize: Self.pixelSize)
             .scaleEffect(x: mirrored ? -1 : 1, y: 1)
             .accessibilityLabel(scene.profile.name)
+    }
+}
+
+/// Where the speech bubble is, in the overlay's top-left coordinates; nil
+/// while it's hidden. The overlay window takes clicks only there.
+struct PetCoachBubbleFrameKey: PreferenceKey {
+    static let defaultValue: CGRect? = nil
+    static func reduce(value: inout CGRect?, nextValue: () -> CGRect?) {
+        value = value ?? nextValue()
     }
 }
 

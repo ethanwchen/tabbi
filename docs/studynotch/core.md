@@ -258,6 +258,18 @@ Ask it for `phase(at:)`, `offset(at:)`, `heading(at:)`, and `showsBubble(at:)`, 
 In the app, `PetCoachOverlayView` (`Modules/PetCoach`) draws a stroll.
 `--snapshot` renders `coach-walking.png` and one `coach-<kind>.png` per bubble kind.
 
+### Running the coach
+
+`PetCoachStudyState(_:)` reads the shared focus timer (`ProviderSnapshot.focus`): only a running focus phase is `.focusing`, so the pet stays quiet on breaks, while paused, and with no timer.
+`PetCoachInput(now:idleSeconds:frontmost:timer:)` builds a reading from that timer and marks focus phases of 45 min or longer as deep focus.
+The app samples every `PetCoach.sampleInterval` (5 s) during a focus phase and not at all otherwise.
+`PetCoachSave` persists the coach (cooldowns, snooze) and the app lists as `Pet/coach.json`, next to the pet's save.
+
+In the app, `PetCoachController` (`Modules/PetCoach`) runs while the Closet module is on.
+It plays each nudge in `PetCoachOverlayWindow`, a transparent, non-activating panel hung below the menu bar at the notch's right edge.
+The window ignores the mouse except while the pointer is over the bubble.
+Run the app with `NOTCHDECK_COACH_PREVIEW=1` to play one nudge at launch.
+
 ## Closet (`Sources/NotchKitCore/Closet`)
 
 `PetCloset` holds the Closet tab's editing rules over one `PetSave`, so every edit leaves a save that is valid to persist.
