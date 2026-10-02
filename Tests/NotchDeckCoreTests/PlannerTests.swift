@@ -186,3 +186,39 @@ final class PlannerRepositoryTests: XCTestCase {
         XCTAssertNotNil(try repository.load(oct1))
     }
 }
+
+final class PlannerSampleDataTests: XCTestCase {
+    private let oct1 = PlannerDayKey(rawValue: "2026-10-01")!
+
+    func testSampleIsAPartlyFinishedDayWithinTheDate() {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "America/Los_Angeles")!
+        let day = PlannerDay.sample(on: oct1, calendar: calendar)
+
+        XCTAssertEqual(day.date, oct1)
+        XCTAssertEqual(day.items.count, 5)
+        XCTAssertEqual(day.doneCount, 3)
+        XCTAssertEqual(Set(day.items.map(\.id)).count, 5)
+        for item in day.items {
+            XCTAssertEqual(PlannerDayKey(date: item.createdAt, calendar: calendar), oct1)
+            XCTAssertEqual(item.isDone, item.completedAt != nil)
+            if let completed = item.completedAt { XCTAssertGreaterThan(completed, item.createdAt) }
+        }
+    }
+
+    func testSampleIsStable() {
+        XCTAssertEqual(PlannerDay.sample(on: oct1), PlannerDay.sample(on: oct1))
+    }
+
+    func testProgressSummary() throws {
+        var day = PlannerDay(date: oct1)
+        XCTAssertEqual(day.progressSummary, "Nothing planned")
+        let first = try XCTUnwrap(day.add("One"))
+        day.add("Two")
+        XCTAssertEqual(day.progressSummary, "0 of 2 done")
+        day.toggle(first.id)
+        XCTAssertEqual(day.progressSummary, "1 of 2 done")
+        day.toggle(day.items[1].id)
+        XCTAssertEqual(day.progressSummary, "All 2 done")
+    }
+}
