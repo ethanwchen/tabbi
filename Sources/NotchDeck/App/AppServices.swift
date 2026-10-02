@@ -60,6 +60,7 @@ final class AppServices: ObservableObject {
         planner.followSharedWork(from: providers.$snapshot, excluding: .planner)
         coach.follow(focus: providers.$snapshot.map(\.focus).eraseToAnyPublisher())
         closet.follow(focus: providers.$snapshot.map(\.focus).eraseToAnyPublisher())
+        coach.follow(awards: closet.awards.eraseToAnyPublisher())
         ticker = TickerStore(settings: settings, spotify: spotify, providers: providers,
                              upNext: planner.upNext, claudeUsage: claudeUsage)
         // `$settings` emits before the new value is stored, so read the

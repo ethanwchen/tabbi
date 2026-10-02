@@ -31,7 +31,7 @@ public enum PetClosetTapResult: Hashable, Sendable {
 /// Every edit keeps the save valid (a pet only ever wears owned items), so
 /// the app can persist `save` after any call without further checks.
 public struct PetCloset: Hashable, Sendable {
-    public private(set) var save: PetSave
+    public internal(set) var save: PetSave
 
     public init(save: PetSave) {
         self.save = save

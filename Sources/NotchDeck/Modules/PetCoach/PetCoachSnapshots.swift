@@ -21,6 +21,14 @@ enum PetCoachSnapshots {
             let scene = PetCoachScene(profile: profile, stroll: stroll, nudge: nudge(kind))
             shots.append(("coach-\(name(kind))", self.scene(scene, at: talking)))
         }
+        // Celebrations: mid-hop with the heart up, then a level-up bubble.
+        let party = PetCoachStroll(startedAt: start, talkDuration: PetCoach.celebrationDuration)
+        let done = PetCoachScene(profile: profile, stroll: party,
+                                 line: .celebration(PetStudyAward(completedSessions: 1, minutes: 25, points: 35)))
+        shots.append(("coach-celebrate", scene(done, at: party.arrivesAt.addingTimeInterval(0.3))))
+        let levelUp = PetCoachScene(profile: profile, stroll: party, line: .celebration(
+            PetStudyAward(completedSessions: 1, minutes: 50, points: 60, unlocked: [.outfit(.scrubs)])))
+        shots.append(("coach-level-up", scene(levelUp, at: party.arrivesAt.addingTimeInterval(2))))
         return shots
     }
 

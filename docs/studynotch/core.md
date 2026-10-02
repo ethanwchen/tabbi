@@ -270,7 +270,7 @@ Saves without `nudgesOn` read as on.
 In the app, `PetCoachController` (`Modules/PetCoach`) runs while the Closet module is on.
 It plays each nudge in `PetCoachOverlayWindow`, a transparent, non-activating panel hung below the menu bar at the notch's right edge.
 The window ignores the mouse except while the pointer is over the bubble.
-Run the app with `NOTCHDECK_COACH_PREVIEW=1` to play one nudge at launch.
+Run the app with `NOTCHDECK_COACH_PREVIEW=1` to play one nudge at launch, or `NOTCHDECK_COACH_PREVIEW=celebrate` to play a level-up celebration.
 Settings › Pet Coach (shown with the Closet module) turns nudges on or off and edits the distracting apps: suggestion chips plus any app picked from the Applications folder.
 Turning nudges off stops sampling and ends any open episode, so turning them back on starts fresh.
 
@@ -296,6 +296,19 @@ The ticker turns it into a `.pet` item (`TickerKind.pet`, last in rotation), and
 - `cycleBreed(by:)` wraps within the species, and `setBreed(_:)` re-derives the fur tint from the new breed's shading.
 - `furSwatches` are the offered fur colors; `furTint` reads the picked one back from the `furBase` override.
 - `PetCloset.demo` is the `NOTCHDECK_DEMO=1` closet, with every tile state on show.
+
+### Points and celebrations
+
+`PetCloset.credit(from:to:at:)` pays study points from two observations of the shared focus timer and returns a `PetStudyAward` to celebrate.
+A focus phase that runs out earns its length plus the completion bonus (`PetPointsRules`).
+Completions are counted from `FocusTimer.completedFocusCount` against `PetSave.creditedFocusCount`, so sessions that ended while the app was closed are paid once, and the first timer a pet ever sees only sets the baseline.
+A focus phase skipped or reset part-way earns the minutes studied without the bonus; under 5 minutes earns nothing.
+`PetStudyAward.unlocked` lists wardrobe items the award just made affordable (a level-up), and `headline`, `unlockLine` and `pointsText` are the bubble's copy, free of any subject so every kit can use it.
+
+`ClosetStore` credits on every shared focus change, plays the celebrate clip on the Closet preview, and publishes the award.
+`PetCoachController.celebrate(_:)` then sends the pet out of the notch with a happy hop and a heart, the points pill, the unlock line on a level-up, and a single "Yay!" button.
+Celebrations play whenever the coach runs (with the Closet module), even with nudges off, and stay up for `PetCoach.celebrationDuration` (6 s).
+`--snapshot` renders `coach-celebrate.png` and `coach-level-up.png`.
 
 In the app, `ClosetStore` (owned by `AppServices`) saves to `~/Library/Application Support/<edition>/Pet/pet.json` after each edit.
 It never writes in demo mode, and never overwrites a save it could not read.

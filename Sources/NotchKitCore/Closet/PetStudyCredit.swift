@@ -1,0 +1,101 @@
+import Foundation
+
+/// Points the pet earned from study sessions that just ended, for the
+/// celebration: the pet hops with a heart, and when the points make a new
+/// wardrobe item affordable (a "level-up") the bubble says which.
+public struct PetStudyAward: Hashable, Sendable {
+    /// Focus phases that ran to their end.
+    public var completedSessions: Int
+    /// Minutes studied across the credited sessions.
+    public var minutes: Int
+    public var points: Int
+    /// Items that were out of reach before this award and are affordable
+    /// now, cheapest first.
+    public var unlocked: [PetItem]
+
+    public init(completedSessions: Int, minutes: Int, points: Int, unlocked: [PetItem] = []) {
+        self.completedSessions = completedSessions
+        self.minutes = minutes
+        self.points = points
+        self.unlocked = unlocked
+    }
+
+    /// Whether this award is a level-up moment: something new to buy.
+    public var isLevelUp: Bool { !unlocked.isEmpty }
+}
+
+extension PetCloset {
+    /// Credits study points for what changed between two observations of
+    /// the shared focus timer at `now`, and returns the award to celebrate.
+    ///
+    /// - A focus phase that ran out earns its full length plus the
+    ///   completion bonus (`PetPointsRules`). Completions are counted from
+    ///   `FocusTimer.completedFocusCount` against `PetSave.creditedFocusCount`,
+    ///   so sessions that ended while the app was closed are paid once, and
+    ///   the first timer the pet ever sees only sets the baseline.
+    /// - A focus phase cut short (skipped or reset) earns the minutes
+    ///   actually studied, without the bonus; short ones earn nothing.
+    ///
+    /// Returns nil when nothing earned points.
+    public mutating func credit(from old: FocusTimer?, to new: FocusTimer?, at now: Date) -> PetStudyAward? {
+        guard let new else { return nil }
+        let count = new.completedFocusCount
+        guard let credited = save.creditedFocusCount, credited <= count else {
+            // First sight of a timer, or its history was reset: start over.
+            save.creditedFocusCount = count
+            return nil
+        }
+        save.creditedFocusCount = count
+        let before = Set(PetCloset.wardrobe.filter { state(of: $0) == .affordable })
+
+        var award = PetStudyAward(completedSessions: 0, minutes: 0, points: 0)
+        if count > credited {
+            let minutes = Int(new.config.focusDuration / 60)
+            for _ in credited..<count {
+                award.points += recordStudy(minutes: minutes, completed: true)
+            }
+            award.completedSessions = count - credited
+            award.minutes = minutes * award.completedSessions
+        } else if let old, Self.focusWasCutShort(old, by: new) {
+            let minutes = Int((old.phaseDuration - old.remaining(at: now)) / 60)
+            award.points = recordStudy(minutes: minutes, completed: false)
+            award.minutes = minutes
+        }
+        guard award.points > 0 else { return nil }
+        award.unlocked = PetCloset.wardrobe.filter { state(of: $0) == .affordable && !before.contains($0) }
+        return award
+    }
+
+    /// A focus phase under way in `old` that `new` left without completing
+    /// it: skipped to the break, or reset to idle.
+    private static func focusWasCutShort(_ old: FocusTimer, by new: FocusTimer) -> Bool {
+        guard old.phase == .focus, old.isRunning || old.isPaused else { return false }
+        return new.phase != .focus || new.runState == .idle
+    }
+}
+
+extension PetStudyAward {
+    /// The celebration bubble's first line. Kind and plain, and it never
+    /// names a subject, so any kit can use it.
+    public var headline: String {
+        switch completedSessions {
+        case 0: "\(minutes) minutes in the bank."
+        case 1: Self.cheers[minutes % Self.cheers.count]
+        default: "\(completedSessions) sessions done. Wow!"
+        }
+    }
+
+    private static let cheers = ["Session done. Nice work!", "That's a wrap. Well done!", "Done! You stuck with it."]
+
+    /// The second line on a level-up, e.g. "Enough for the Beanie now.";
+    /// nil otherwise.
+    public var unlockLine: String? {
+        let names = unlocked.prefix(2).map { "the \($0.displayName)" }
+        guard let first = names.first else { return nil }
+        let list = names.count == 2 ? "\(first) and \(names[1])" : first
+        return "Enough for \(list) now."
+    }
+
+    /// The points pill, e.g. "+35".
+    public var pointsText: String { "+\(points)" }
+}

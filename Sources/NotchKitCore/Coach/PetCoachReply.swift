@@ -13,6 +13,8 @@ public enum PetCoachReply: String, Codable, CaseIterable, Hashable, Sendable {
     case resume
     /// Silence the coach for `PetCoachReply.snoozeDuration`.
     case snooze
+    /// "Yay!": closes a celebration bubble. Nothing else changes.
+    case thanks
 
     /// How long "Snooze" keeps the pet quiet.
     public static let snoozeDuration: TimeInterval = 15 * 60
@@ -25,13 +27,14 @@ public enum PetCoachReply: String, Codable, CaseIterable, Hashable, Sendable {
         case .pause: "Pause"
         case .resume: "Resume"
         case .snooze: "Snooze 15 min"
+        case .thanks: "Yay!"
         }
     }
 
     /// The tooltip, saying exactly what the click does.
     public var help: String {
         switch self {
-        case .backToIt: "Send your pet back to the notch"
+        case .backToIt, .thanks: "Send your pet back to the notch"
         case .stillHere: "Keep the timer running"
         case .pause: "Pause the study timer"
         case .resume: "Resume the study timer"

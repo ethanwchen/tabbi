@@ -2,18 +2,44 @@ import SwiftUI
 import NotchKitCore
 import NotchKit
 
+/// What the pet comes out to say: a coach nudge, or a celebration of
+/// points just earned.
+enum PetCoachLine {
+    case nudge(PetCoachNudge)
+    case celebration(PetStudyAward)
+
+    var replies: [PetCoachReply] {
+        switch self {
+        case .nudge(let nudge): nudge.kind.replies
+        case .celebration: [.thanks]
+        }
+    }
+
+    /// The clip the pet plays on arrival before it idles.
+    var arrival: PetAnimation {
+        switch self {
+        case .nudge: .alert
+        case .celebration: .celebrate
+        }
+    }
+}
+
 /// What the coach overlay plays: one stroll of one pet with one line.
 struct PetCoachScene {
     let profile: PetProfile
     let clips: PetClipSet
     var stroll: PetCoachStroll
-    let nudge: PetCoachNudge
+    let line: PetCoachLine
 
-    init(profile: PetProfile, stroll: PetCoachStroll, nudge: PetCoachNudge) {
+    init(profile: PetProfile, stroll: PetCoachStroll, line: PetCoachLine) {
         self.profile = profile
         clips = PetClipSet(profile: profile)
         self.stroll = stroll
-        self.nudge = nudge
+        self.line = line
+    }
+
+    init(profile: PetProfile, stroll: PetCoachStroll, nudge: PetCoachNudge) {
+        self.init(profile: profile, stroll: stroll, line: .nudge(nudge))
     }
 }
 
@@ -83,7 +109,7 @@ struct PetCoachOverlayView: View {
             pet(at: date)
                 .offset(x: CGFloat(offset) - Self.petSide, y: Self.petTop)
             if stroll.showsBubble(at: date) {
-                PetCoachBubble(nudge: scene.nudge, onReply: onReply)
+                PetCoachBubble(line: scene.line, onReply: onReply)
                     .frame(width: Self.bubbleWidth, alignment: .leading)
                     .background(GeometryReader { proxy in
                         // Placed by the offset below; only the size is measured.
@@ -99,8 +125,9 @@ struct PetCoachOverlayView: View {
     }
 
     /// Walking frames while moving (the clip faces left, so walking away
-    /// from the notch, to the right, is mirrored); an alert hop on arrival,
-    /// then idle breathing while the bubble is up.
+    /// from the notch, to the right, is mirrored); an alert hop (or a happy
+    /// hop with a heart, to celebrate) on arrival, then idle breathing while
+    /// the bubble is up.
     private func pet(at date: Date) -> some View {
         let stroll = scene.stroll
         let canvas: PetCanvas
@@ -111,10 +138,10 @@ struct PetCoachOverlayView: View {
             mirrored = true
         case .talking:
             let elapsed = date.timeIntervalSince(stroll.arrivesAt)
-            let alert = scene.clips[.alert]
-            canvas = elapsed < alert.duration
-                ? alert.frame(at: elapsed).canvas
-                : scene.clips[.idle].frame(at: elapsed - alert.duration).canvas
+            let arrival = scene.clips[scene.line.arrival]
+            canvas = elapsed < arrival.duration
+                ? arrival.frame(at: elapsed).canvas
+                : scene.clips[.idle].frame(at: elapsed - arrival.duration).canvas
         case .walkingBack, .finished:
             canvas = scene.clips[.walk].frame(at: date.timeIntervalSince(stroll.turnsBackAt)).canvas
         }
@@ -133,24 +160,29 @@ struct PetCoachBubbleFrameKey: PreferenceKey {
     }
 }
 
-/// The speech bubble: the pet's line and the nudge's buttons, on the same
-/// black as the notch so it reads as part of it, over any wallpaper.
+/// The speech bubble: the pet's line and its buttons, on the same black as
+/// the notch so it reads as part of it, over any wallpaper.
 private struct PetCoachBubble: View {
-    let nudge: PetCoachNudge
+    let line: PetCoachLine
     let onReply: (PetCoachReply) -> Void
 
     private static let accent = Theme.Palette.accent(for: .closet)
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.s) {
-            Text(nudge.message.text)
-                .font(Theme.Typography.bodyEmphasis)
-                .foregroundStyle(Theme.Palette.primaryText)
-                .fixedSize(horizontal: false, vertical: true)
-                .lineLimit(2)
+            switch line {
+            case .nudge(let nudge):
+                Text(nudge.message.text)
+                    .font(Theme.Typography.bodyEmphasis)
+                    .foregroundStyle(Theme.Palette.primaryText)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .lineLimit(2)
+            case .celebration(let award):
+                PetCelebrationText(award: award, accent: Self.accent)
+            }
             HStack(spacing: Theme.Spacing.xs) {
-                ForEach(nudge.kind.replies, id: \.self) { reply in
-                    PetCoachReplyButton(reply: reply, isPrimary: reply == nudge.kind.replies.first,
+                ForEach(line.replies, id: \.self) { reply in
+                    PetCoachReplyButton(reply: reply, isPrimary: reply == line.replies.first,
                                         accent: Self.accent) { onReply(reply) }
                 }
             }
@@ -161,6 +193,43 @@ private struct PetCoachBubble: View {
         .overlay(PetCoachBubbleShape().stroke(Color.white.opacity(0.14), lineWidth: 0.5))
         .shadow(color: .black.opacity(0.35), radius: 10, y: 4)
         .accessibilityElement(children: .contain)
+    }
+}
+
+/// A celebration's words: the headline with the points pill beside it,
+/// and on a level-up the item that is now within reach.
+private struct PetCelebrationText: View {
+    let award: PetStudyAward
+    let accent: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+            HStack(spacing: Theme.Spacing.xs) {
+                Text(award.headline)
+                    .font(Theme.Typography.bodyEmphasis)
+                    .foregroundStyle(Theme.Palette.primaryText)
+                    .lineLimit(1)
+                    .layoutPriority(1)
+                HStack(spacing: Theme.Spacing.xxs) {
+                    Image(systemName: "star.fill").font(.system(size: 8, weight: .bold))
+                    Text(award.pointsText).monospacedDigit()
+                }
+                .font(Theme.Typography.caption.weight(.semibold))
+                .foregroundStyle(accent)
+                .padding(.horizontal, Theme.Spacing.xs)
+                .frame(height: 18)
+                .background(Capsule().fill(accent.opacity(0.16)))
+                .fixedSize()
+                .help("Points earned for this session")
+            }
+            if let unlock = award.unlockLine {
+                Text(unlock)
+                    .font(Theme.Typography.caption)
+                    .foregroundStyle(Theme.Palette.secondaryText)
+                    .lineLimit(1)
+            }
+        }
+        .accessibilityElement(children: .combine)
     }
 }
 

@@ -43,6 +43,7 @@ final class PetCoachController: ObservableObject {
     private var timer: FocusTimer?
     private var isRunning = false
     private var focusSubscription: AnyCancellable?
+    private var awardSubscription: AnyCancellable?
     private var sampler: Timer?
     private var overlay: PetCoachOverlayWindow?
     private var overlayCloser: Timer?
@@ -94,13 +95,27 @@ final class PetCoachController: ObservableObject {
             }
     }
 
+    /// Celebrates each study award the pet's closet credits.
+    func follow(awards: AnyPublisher<PetStudyAward, Never>) {
+        awardSubscription = awards.sink { [weak self] award in
+            MainActor.assumeIsolated { self?.celebrate(award) }
+        }
+    }
+
     /// Turns the coach on, with the pet's module.
     func start() {
         // Developer hook: `NOTCHDECK_COACH_PREVIEW=1` plays one nudge right
         // away, to check the real overlay window without waiting minutes.
-        if ProcessInfo.processInfo.environment["NOTCHDECK_COACH_PREVIEW"] == "1" {
+        // `=celebrate` plays a level-up celebration instead.
+        switch ProcessInfo.processInfo.environment["NOTCHDECK_COACH_PREVIEW"] {
+        case "1":
             present(PetCoachNudge(kind: .distraction, message: PetCoachMessages.messages(for: .distraction)[0]),
                     at: Date().addingTimeInterval(1))
+        case "celebrate":
+            present(.celebration(PetStudyAward(completedSessions: 1, minutes: 25, points: 35, unlocked: [.accessory(.beanie)])),
+                    stroll: PetCoachStroll(startedAt: Date().addingTimeInterval(1), talkDuration: PetCoach.celebrationDuration))
+        default:
+            break
         }
         guard !isDemo, !isRunning else { return }
         isRunning = true
@@ -190,12 +205,23 @@ final class PetCoachController: ObservableObject {
 
     // MARK: Overlay
 
+    /// Sends the pet out to celebrate points just earned: a happy hop with
+    /// a heart and the points, plus what they unlock on a level-up. Plays
+    /// whenever the coach is on, nudges or not, since it never interrupts.
+    func celebrate(_ award: PetStudyAward) {
+        guard isRunning else { return }
+        present(.celebration(award), stroll: PetCoachStroll(startedAt: Date(), talkDuration: PetCoach.celebrationDuration))
+    }
+
     private func present(_ nudge: PetCoachNudge, at now: Date) {
-        // One pet on screen at a time; a newer nudge replaces an old one.
+        present(.nudge(nudge), stroll: PetCoachStroll(startedAt: now))
+    }
+
+    private func present(_ line: PetCoachLine, stroll: PetCoachStroll) {
+        // One pet on screen at a time; a newer line replaces an old one.
         closeOverlay()
         guard let screen = screen() else { return }
-        let stroll = PetCoachStroll(startedAt: now)
-        let scene = PetCoachScene(profile: profile(), stroll: stroll, nudge: nudge)
+        let scene = PetCoachScene(profile: profile(), stroll: stroll, line: line)
         let overlay = PetCoachOverlayWindow(scene: scene, geometry: .measure(screen)) { [weak self] reply in
             self?.answer(reply)
         }
