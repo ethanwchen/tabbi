@@ -13,7 +13,7 @@ A typed async client for the [AnkiConnect](https://ankiweb.net/shared/info/20554
 - `AnkiConnectTransport` is a one-method protocol (`post(_:timeout:)`) so tests replay JSON fixtures.
 - `URLSessionAnkiConnectTransport` posts to `http://127.0.0.1:8765`.
   It sends no `Origin` header, and AnkiConnect trusts requests without one, so no CORS setup is needed.
-- `URLError`s are classified into `AnkiConnectTransportError` (`connectionRefused`, `timedOut`, `failed`).
+- `URLError`s are classified into `AnkiConnectTransportError` (`connectionRefused`, `timedOut`, `failed`), except `.cancelled`, which is rethrown as `CancellationError` so a cancelled refresh never shows an error state.
 
 ### Client
 
