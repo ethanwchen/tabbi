@@ -14,8 +14,11 @@ import NotchKitCore
 /// `offline` one, which is sent when going invisible, when the Mac sleeps,
 /// and when the module stops or the app quits.
 ///
-/// With `NOTCHDECK_DEMO=1` it shows `PartyState.demo` and never touches the
-/// network or the Keychain.
+/// With `NOTCHDECK_DEMO=1` it shows `PartyState.demo` (or the screen
+/// `NOTCHDECK_PARTY_PREVIEW` names) and never touches the
+/// network or the Keychain. Neither does a live `--snapshot` run, which
+/// would otherwise register a throwaway user on the production server: it
+/// renders the state a first launch shows before the server answers.
 @MainActor
 final class PartyStore: ObservableObject {
     @Published private(set) var state: PartyState
@@ -28,6 +31,8 @@ final class PartyStore: ObservableObject {
     @Published private(set) var notice: String?
 
     let isDemo: Bool
+    /// A `--snapshot` render: stays offline so no user is ever registered.
+    private let isSnapshot: Bool
     private let repository: PartySettingsRepository?
     private let credentials: any PartyCredentialStore
     private let defaults = UserDefaults.standard
@@ -39,7 +44,7 @@ final class PartyStore: ObservableObject {
     /// The study timer from the shared providers, for presence.
     private var focus: FocusTimer?
     /// My pet as friends should see it.
-    private var pet = PetProfile.starter(.cat)
+    private(set) var pet = PetProfile.starter(.cat)
     private var isRunning = false
 
     private var connectTask: Task<Void, Never>?
@@ -50,19 +55,25 @@ final class PartyStore: ObservableObject {
 
     private static let trackerKey = "party.presence"
 
-    init(environment: [String: String] = ProcessInfo.processInfo.environment) {
+    init(environment: [String: String] = ProcessInfo.processInfo.environment,
+         arguments: [String] = CommandLine.arguments) {
         isDemo = environment["NOTCHDECK_DEMO"] == "1"
+        isSnapshot = arguments.contains("--snapshot")
         if isDemo {
             repository = nil
             credentials = InMemoryPartyCredentialStore()
             settings = PartySettings(name: "Sam")
-            state = .demo(now: Date())
+            // `NOTCHDECK_PARTY_PREVIEW=lobby` and friends pick another screen for snapshots.
+            let scenario = environment["NOTCHDECK_PARTY_PREVIEW"].flatMap(PartyDemoScenario.init) ?? .hosting
+            state = .demo(scenario, now: Date())
             tracker = PartyPresenceTracker()
             return
         }
         let repository = PartySettingsRepository()
         self.repository = repository
-        credentials = KeychainPartyCredentialStore(service: Edition.current.bundleIdentifier + ".party")
+        credentials = isSnapshot
+            ? InMemoryPartyCredentialStore()
+            : KeychainPartyCredentialStore(service: Edition.current.bundleIdentifier + ".party")
         let settings = repository.load()
         self.settings = settings
         state = PartyState(settings: settings)
@@ -86,7 +97,7 @@ final class PartyStore: ObservableObject {
     func start() {
         guard !isRunning else { return }
         isRunning = true
-        guard !isDemo else { return }
+        guard !isDemo, !isSnapshot else { return }
         let center = NSWorkspace.shared.notificationCenter
         center.addObserver(self, selector: #selector(willSleep), name: NSWorkspace.willSleepNotification, object: nil)
         center.addObserver(self, selector: #selector(didWake), name: NSWorkspace.didWakeNotification, object: nil)

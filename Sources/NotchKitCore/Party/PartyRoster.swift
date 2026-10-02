@@ -35,6 +35,20 @@ public enum PartyRoster {
         }
     }
 
+    /// The same status in a narrow row: "Studying · 18m", "Break · 4m",
+    /// "Online" or "Offline". A phase that already ended drops its count.
+    public static func compactStatusLine(_ presence: PartyPresence?, online: Bool, at now: Date) -> String {
+        let status = status(presence, online: online)
+        let minutes = timeLeft(presence, online: online, at: now).map { Int(($0 / 60).rounded(.up)) } ?? 0
+        let left = minutes > 0 ? " · \(minutes)m" : ""
+        switch status {
+        case .studying: return "Studying" + left
+        case .onBreak: return "Break" + left
+        case .idle: return "Online"
+        case .offline: return "Offline"
+        }
+    }
+
     /// "18 min left", rounding up so a phase reads "1 min left" until it ends.
     public static func minutesLeft(_ seconds: TimeInterval) -> String {
         let minutes = Int((max(seconds, 0) / 60).rounded(.up))

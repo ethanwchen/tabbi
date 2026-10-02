@@ -33,6 +33,16 @@ final class PartyRosterTests: XCTestCase {
         XCTAssertEqual(PartyRoster.statusLine(presence(.studying, endsIn: 600), online: false, at: now), "Offline")
     }
 
+    func testCompactStatusLineFitsANarrowRow() {
+        XCTAssertEqual(PartyRoster.compactStatusLine(presence(.studying, endsIn: 40 * 60 + 1), online: true, at: now),
+                       "Studying · 41m")
+        XCTAssertEqual(PartyRoster.compactStatusLine(presence(.onBreak, endsIn: 200), online: true, at: now), "Break · 4m")
+        XCTAssertEqual(PartyRoster.compactStatusLine(presence(.studying, endsIn: -5), online: true, at: now), "Studying")
+        XCTAssertEqual(PartyRoster.compactStatusLine(presence(.onBreak), online: true, at: now), "Break")
+        XCTAssertEqual(PartyRoster.compactStatusLine(presence(.idle), online: true, at: now), "Online")
+        XCTAssertEqual(PartyRoster.compactStatusLine(nil, online: true, at: now), "Offline")
+    }
+
     func testTimeLeftOnlyForRunningPhases() {
         XCTAssertEqual(PartyRoster.timeLeft(presence(.studying, endsIn: 90), online: true, at: now), 90)
         XCTAssertNil(PartyRoster.timeLeft(presence(.idle, endsIn: 90), online: true, at: now))

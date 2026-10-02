@@ -74,3 +74,73 @@ extension PartyState {
         )
     }
 }
+
+/// The Party tab's screens, so demo snapshots can show each one
+/// (`NOTCHDECK_PARTY_PREVIEW=<raw value>`).
+public enum PartyDemoScenario: String, CaseIterable, Sendable {
+    /// I host a party with a shared session running (the default demo).
+    case hosting
+    /// A friend hosts and hasn't started a session: I wait.
+    case guest
+    /// A full party of eight with no session, so I can start one.
+    case crowded
+    /// Not in a party; friends are around and one party is joinable.
+    case lobby
+    /// Just registered: no friends and no party yet.
+    case noFriends
+    /// Waiting for the server's first answer.
+    case connecting
+    /// The server never answered.
+    case unreachable
+    /// The server setting can't be used.
+    case invalidServer
+}
+
+extension PartyState {
+    /// `demo(now:)` reshaped into `scenario`.
+    public static func demo(_ scenario: PartyDemoScenario, now: Date, calendar: Calendar = .current) -> PartyState {
+        let base = demo(now: now, calendar: calendar)
+        guard let me = base.profile, var party = base.party else { return base }
+        switch scenario {
+        case .hosting:
+            return base
+        case .guest:
+            let host = party.members[1].profile.code
+            party.host = host
+            party.session = nil
+            party.members = party.members.map { member in
+                var member = member
+                member.host = member.profile.code == host
+                return member
+            }
+            return PartyState(profile: me, friends: base.friends, party: party)
+        case .crowded:
+            party.session = nil
+            let names = [("Ana", "Pretzel", PetBreed.corgi), ("Ben", "Olive", .tuxedo), ("Chloe", "Noodle", .beagle),
+                         ("Dev", "Tofu", .frenchBulldog), ("Eli", "Smudge", .grayTabby)]
+            party.members += names.enumerated().map { index, entry in
+                let code = "CRWD\(index + 2)ABZ"
+                let profile = profile(code: code, name: entry.0, pet: PetProfile(name: entry.1, breed: entry.2))
+                var member = party.members[1]
+                member.profile = profile
+                member.host = false
+                member.presence?.status = index.isMultiple(of: 2) ? .idle : .studying
+                member.presence?.phaseEndsAt = index.isMultiple(of: 2) ? nil : now.addingTimeInterval(Double(10 + index) * 60)
+                return member
+            }
+            return PartyState(profile: me, friends: base.friends, party: party)
+        case .lobby:
+            return PartyState(profile: me, friends: base.friends, party: nil)
+        case .noFriends:
+            return PartyState(profile: me, friends: [], party: nil)
+        case .connecting:
+            return PartyState(settings: PartySettings())
+        case .unreachable:
+            var state = PartyState(settings: PartySettings())
+            state.didFailToConnect(.unreachable)
+            return state
+        case .invalidServer:
+            return PartyState(settings: PartySettings(serverText: "http://studynotch.example.com"))
+        }
+    }
+}

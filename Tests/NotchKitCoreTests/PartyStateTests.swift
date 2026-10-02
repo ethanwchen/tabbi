@@ -130,4 +130,30 @@ final class PartyStateTests: XCTestCase {
                            "demo pets come from real appearance data")
         }
     }
+
+    func testDemoScenariosCoverEveryScreen() {
+        func demo(_ scenario: PartyDemoScenario) -> PartyState { PartyState.demo(scenario, now: now) }
+
+        XCTAssertEqual(demo(.hosting), PartyState.demo(now: now))
+        let guest = demo(.guest)
+        XCTAssertFalse(guest.isHost)
+        XCTAssertNil(guest.party?.session)
+        XCTAssertEqual(guest.party?.members.first?.host, true, "the host stands first")
+        XCTAssertEqual(guest.party?.members.filter(\.host).count, 1)
+        let crowded = demo(.crowded)
+        XCTAssertTrue(crowded.isHost)
+        XCTAssertEqual(crowded.party?.isFull, true)
+        XCTAssertEqual(Set(crowded.party?.members.map(\.id) ?? []).count, 8)
+        XCTAssertFalse(demo(.lobby).inParty)
+        XCTAssertFalse(demo(.lobby).friends.isEmpty)
+        let noFriends = demo(.noFriends)
+        XCTAssertTrue(noFriends.friendsLoaded)
+        XCTAssertTrue(noFriends.friends.isEmpty)
+        XCTAssertNotNil(noFriends.friendCode)
+        XCTAssertEqual(demo(.connecting).connection, .connecting)
+        XCTAssertEqual(demo(.unreachable).connection, .unreachable(.unreachable))
+        guard case .invalidServer = demo(.invalidServer).connection else {
+            return XCTFail("expected an invalid server")
+        }
+    }
 }
