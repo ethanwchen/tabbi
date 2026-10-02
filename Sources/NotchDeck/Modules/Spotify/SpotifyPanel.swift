@@ -17,7 +17,8 @@ struct SpotifyPanel: View {
                         symbol: "music.note.list", title: "Nothing playing",
                         message: "Start something in \(sourceName) and it shows up here.",
                         actions: [.init(title: "Show \(sourceName)", help: "Bring \(sourceName) to the front",
-                                        perform: { controller.open(controller.source ?? .spotify) })]
+                                        icon: controller.appIcon(for: activeSource),
+                                        perform: { controller.open(activeSource) })]
                     )
                 }
             case .notRunning:
@@ -54,7 +55,8 @@ struct SpotifyPanel: View {
         .onDisappear { controller.setPanelVisible(false) }
     }
 
-    private var sourceName: String { (controller.source ?? .spotify).displayName }
+    private var activeSource: MediaSource { controller.source ?? .spotify }
+    private var sourceName: String { activeSource.displayName }
 }
 
 private extension SpotifyStatus {
@@ -556,7 +558,7 @@ private struct SpotifyEmptyState: View {
     struct Action {
         let title: String
         let help: String
-        /// The app's own icon, shown on launch buttons.
+        /// The app's own icon, shown on buttons that open or show an app.
         var icon: NSImage? = nil
         let perform: () -> Void
     }
