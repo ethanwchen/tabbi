@@ -123,3 +123,39 @@ It is `Codable`, so a running session persists the exact method it started with.
 `StudyMethodInfo.info(for:)` (or `method.info`) returns `name`, `tagline`, a 2 to 3 sentence `howTo`, a 1 to 2 sentence `evidence` note, and an `evidenceLevel` badge (`strong`, `mixed`, `weak`).
 `StudyMethodInfo.footnote` goes under every popover.
 The copy follows the research notes and never claims an interval is proven: what research supports is regular breaks, self-testing, and spacing, so only the Anki sprint and question block (retrieval practice) are rated `strong`.
+
+### Session engine
+
+`StudySession` is the `Codable` state machine every method runs through.
+Time comes from wall-clock dates (when the clock last resumed plus the time banked before it), never a ticking counter.
+So the session stays correct while the notch is closed or the Mac sleeps, and a snapshot restored after relaunch continues exactly where it was.
+Every call takes `now`, so tests drive it with fixed dates.
+
+| Member | Purpose |
+|---|---|
+| `method`, `phase`, `runState` (`idle` / `running` / `paused`) | Where the session is |
+| `phaseDuration` | Length of the current phase, fixed when it begins; `nil` for open-ended or card-goal focus |
+| `elapsed(at:)`, `remaining(at:)`, `endsAt`, `progress(at:)` | Clock readouts; `progress` uses cards for a sprint and is `nil` for Flowtime focus |
+| `start(at:)`, `pause(at:)` | Start an idle phase, resume a paused one, freeze a running one |
+| `skip(at:)` | End the phase early; the next phase keeps running only if the clock was running |
+| `stopFocus(at:)` | End open-ended Flowtime focus and start its proportional break; `false` for any other phase |
+| `reset(at:)`, `switchMethod(to:at:)` | Start over idle, logging the current phase as `abandoned` |
+| `advance(to:)` | Apply every phase end that has passed and return them |
+| `recordReviewedToday(_:at:)` | Feed AnkiConnect's reviewed-today count; reaching the sprint goal ends focus |
+| `suggestsSprintBreak(at:)` | A sprint ran 200 cards or 30 minutes |
+| `completedFocusCount`, `cardsDone` | Tallies for the header |
+| `log`, `takeLog()` | Phases that ran, as `StudyPhaseRecord`s, until the app collects them |
+
+Rules:
+
+- When focus or review ends, the next phase starts on its own.
+  When a break ends, the next focus waits idle, so the timer never runs on while the user is away.
+- After a long sleep, `advance(to:)` can return several records (focus, then the auto-started break), each stamped with its real end time.
+- Only completed or stopped focus phases count (`StudyPhaseOutcome.countsAsDone`).
+  A skipped focus never earns a long break.
+- Sprint cards are the increases in reviewed-today while sprint focus runs.
+  The first reading only sets the baseline, cards answered while paused or on a break are ignored, and the drop at Anki's day rollover just rebases.
+- A decoded method with a zero-length phase is floored to `StudyMethod.minimumPhase`, so it can never complete instantly.
+
+`StudyPhaseRecord` holds `method`, `phase`, `startedAt`, `endedAt`, `activeDuration` (pauses excluded), `outcome` (`completed`, `stopped`, `skipped`, `abandoned`), and `cards` for sprint focus.
+Records are only logged for phases that actually started.
