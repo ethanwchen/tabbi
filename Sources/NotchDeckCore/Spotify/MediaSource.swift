@@ -74,6 +74,6 @@ public enum MediaSource: String, CaseIterable, Equatable, Hashable, Sendable {
 
     /// Sets the app's own volume (not the system volume), 0 ... 100.
     public func setVolumeScript(_ volume: Int) -> String {
-        "tell application id \"\(bundleIdentifier)\" to set sound volume to \(min(max(volume, 0), 100))"
+        "tell application id \"\(bundleIdentifier)\" to set sound volume to \(MediaVolume.clamped(volume))"
     }
 }

@@ -10,7 +10,8 @@ public enum MusicScript {
 
     /// Returns `stopped`, or every field below separated by U+001F:
     /// state, persistent id, name, artist, album, duration (s), position (s),
-    /// shuffle enabled, song repeat (`off` / `one` / `all`).
+    /// shuffle enabled, song repeat (`off` / `one` / `all`), sound volume
+    /// (0 ... 100, or -1 when unreadable).
     ///
     /// Radio streams and some cloud tracks report `missing value` for
     /// duration, position, artist, or album; concatenating that would turn
@@ -28,6 +29,7 @@ public enum MusicScript {
         set al to ""
         set d to 0
         set p to 0
+        set v to -1
         try
             set pid to (persistent ID of t) as text
         end try
@@ -46,8 +48,11 @@ public enum MusicScript {
         try
             set p to (player position) as real
         end try
+        try
+            set v to sound volume
+        end try
         return ps & sep & pid & sep & nm & sep & ar & sep & al & sep & d & sep & p & sep & ¬
-            (shuffle enabled as text) & sep & (song repeat as text)
+            (shuffle enabled as text) & sep & (song repeat as text) & sep & v
     end tell
     """
 
@@ -100,7 +105,7 @@ public enum MusicScript {
             guard state == .stopped else { return nil }
             return .nothingPlaying
         }
-        guard fields.count == 9 else { return nil }
+        guard fields.count == 10 else { return nil }
 
         let persistentID = fields[1].trimmingCharacters(in: .whitespaces)
         // Streams without a persistent ID still need a stable-ish identity
@@ -113,11 +118,12 @@ public enum MusicScript {
             artworkURL: nil,
             duration: max(number(fields[5]) ?? 0, 0)
         )
-        let repeatMode = fields[8].trimmingCharacters(in: .whitespacesAndNewlines)
+        let repeatMode = fields[8].trimmingCharacters(in: .whitespaces)
         var playback = SpotifyPlayback(
             state: state, track: track, position: 0,
             isShuffling: fields[7].trimmingCharacters(in: .whitespaces) == "true",
-            isRepeating: repeatMode == "one" || repeatMode == "all"
+            isRepeating: repeatMode == "one" || repeatMode == "all",
+            volume: MediaVolume.parse(fields[9])
         )
         playback.position = playback.clampedPosition(number(fields[6]) ?? 0)
         return playback

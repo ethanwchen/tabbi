@@ -38,14 +38,17 @@ public struct SpotifyPlayback: Equatable, Sendable {
     public var position: TimeInterval
     public var isShuffling: Bool
     public var isRepeating: Bool
+    /// The app's own volume, 0 ... 100; nil when it couldn't be read.
+    public var volume: Int?
 
     public init(state: SpotifyPlayerState, track: SpotifyTrack?, position: TimeInterval,
-                isShuffling: Bool, isRepeating: Bool) {
+                isShuffling: Bool, isRepeating: Bool, volume: Int? = nil) {
         self.state = state
         self.track = track
         self.position = position
         self.isShuffling = isShuffling
         self.isRepeating = isRepeating
+        self.volume = volume.map(MediaVolume.clamped)
     }
 
     public var isPlaying: Bool { state == .playing && track != nil }
@@ -88,6 +91,7 @@ extension SpotifyPlayback {
         ),
         position: 87.4,
         isShuffling: true,
-        isRepeating: false
+        isRepeating: false,
+        volume: 64
     )
 }

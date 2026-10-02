@@ -9,7 +9,7 @@ final class MusicScriptTests: XCTestCase {
     func testParsesPlayingTrack() throws {
         let output = record([
             "playing", "8F3A2B1C9D0E7F65", "Teardrop", "Massive Attack", "Mezzanine",
-            "330.5", "42.25", "true", "all",
+            "330.5", "42.25", "true", "all", "64",
         ])
         let playback = try XCTUnwrap(MusicScript.parse(output))
         XCTAssertTrue(playback.isPlaying)
@@ -25,23 +25,23 @@ final class MusicScriptTests: XCTestCase {
     }
 
     func testRepeatModesAndPausedState() throws {
-        let off = try XCTUnwrap(MusicScript.parse(record(["paused", "A", "t", "a", "b", "10", "1", "false", "off"])))
+        let off = try XCTUnwrap(MusicScript.parse(record(["paused", "A", "t", "a", "b", "10", "1", "false", "off", "64"])))
         XCTAssertEqual(off.state, .paused)
         XCTAssertFalse(off.isRepeating)
         XCTAssertFalse(off.isShuffling)
-        let one = try XCTUnwrap(MusicScript.parse(record(["paused", "A", "t", "a", "b", "10", "1", "false", "one\n"])))
+        let one = try XCTUnwrap(MusicScript.parse(record(["paused", "A", "t", "a", "b", "10", "1", "false", "one", "64\n"])))
         XCTAssertTrue(one.isRepeating)
     }
 
     func testSeekingStatesCountAsPlaying() throws {
         for state in ["fast forwarding", "rewinding"] {
-            let output = record([state, "A", "t", "a", "b", "10", "1", "false", "off"])
+            let output = record([state, "A", "t", "a", "b", "10", "1", "false", "off", "64"])
             XCTAssertEqual(try XCTUnwrap(MusicScript.parse(output)).state, .playing, state)
         }
     }
 
     func testRadioStreamWithoutDurationOrID() throws {
-        let output = record(["playing", "", "Beats 1", "", "", "0", "0", "false", "off"])
+        let output = record(["playing", "", "Beats 1", "", "", "0", "0", "false", "off", "64"])
         let playback = try XCTUnwrap(MusicScript.parse(output))
         XCTAssertEqual(playback.track?.id, "music:Beats 1")
         XCTAssertEqual(playback.track?.duration, 0)
@@ -50,7 +50,7 @@ final class MusicScriptTests: XCTestCase {
     }
 
     func testCommaDecimalsAndClamping() throws {
-        let output = record(["playing", "A", "t", "a", "b", "200,5", "250,25", "false", "off"])
+        let output = record(["playing", "A", "t", "a", "b", "200,5", "250,25", "false", "off", "64"])
         let playback = try XCTUnwrap(MusicScript.parse(output))
         XCTAssertEqual(try XCTUnwrap(playback.track?.duration), 200.5, accuracy: 0.0001)
         XCTAssertEqual(playback.position, 200.5, accuracy: 0.0001)
@@ -60,9 +60,9 @@ final class MusicScriptTests: XCTestCase {
         XCTAssertEqual(MusicScript.parse("stopped\n"), .nothingPlaying)
         XCTAssertNil(MusicScript.parse(""))
         XCTAssertNil(MusicScript.parse("playing"))
-        XCTAssertNil(MusicScript.parse(record(["buffering", "A", "t", "a", "b", "1", "0", "false", "off"])))
+        XCTAssertNil(MusicScript.parse(record(["buffering", "A", "t", "a", "b", "1", "0", "false", "off", "64"])))
         // Spotify's 10-field record is not a Music record.
-        XCTAssertNil(MusicScript.parse(record(["playing", "id", "t", "a", "b", "", "1000", "0", "false", "false"])))
+        XCTAssertNil(MusicScript.parse(record(["playing", "id", "t", "a", "b", "", "1000", "0", "false", "false", "64"])))
     }
 
     func testCommandsTargetMusic() {
@@ -77,7 +77,7 @@ final class MusicScriptTests: XCTestCase {
 
     func testArtworkReadIsPinnedToTheTrack() throws {
         let id = try XCTUnwrap(MusicScript.parse(record(["playing", "8F3A2B1C9D0E7F65", "t", "a", "b", "10", "1",
-                                                         "false", "off"]))?.track?.id)
+                                                         "false", "off", "64"]))?.track?.id)
         let script = try XCTUnwrap(MusicScript.readArtwork(forTrackID: id))
         XCTAssertTrue(script.contains(#"is not "8F3A2B1C9D0E7F65" then return missing value"#))
         XCTAssertTrue(script.contains("raw data of artwork 1"))
@@ -89,7 +89,7 @@ final class MusicScriptTests: XCTestCase {
     }
 
     func testStatusResolvesWithTheSourcesParser() {
-        let output = record(["playing", "A", "Teardrop", "a", "b", "10", "1", "false", "off"])
+        let output = record(["playing", "A", "Teardrop", "a", "b", "10", "1", "false", "off", "64"])
         let status = SpotifyStatus.resolve(source: .music, isRunning: true, isInstalled: true,
                                            read: .success(output), previous: .connecting)
         XCTAssertEqual(status.playback?.track?.title, "Teardrop")

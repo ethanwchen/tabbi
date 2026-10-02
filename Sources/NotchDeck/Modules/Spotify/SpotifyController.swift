@@ -42,6 +42,13 @@ final class SpotifyController: NSObject, ObservableObject {
     /// overwrite a newer state (e.g. an optimistic play/pause).
     private var generations: [MediaSource: Int] = [:]
     private var appIcons: [MediaSource: NSImage] = [:]
+    /// The newest volume requested per app but not yet sent. A slider drag
+    /// produces many values; only one set-volume script runs at a time and
+    /// the latest value wins, so Apple Events never pile up.
+    private var pendingVolumes: [MediaSource: Int] = [:]
+    private var volumeInFlight: Set<MediaSource> = []
+    /// The level before the speaker button muted each app, for unmuting.
+    private var volumesBeforeMute: [MediaSource: Int] = [:]
 
     override init() {
         super.init()
@@ -100,6 +107,25 @@ final class SpotifyController: NSObject, ObservableObject {
         let target = playback.clampedPosition(seconds)
         applyOptimistic(playback.seeking(to: target), to: source)
         send(source.seekScript(to: target), to: source)
+    }
+
+    /// Sets the active app's own volume (0 ... 100). Safe to call for every
+    /// step of a drag: the panel updates at once and commands are coalesced.
+    func setVolume(_ volume: Int) {
+        guard let source, let playback = currentStatus.playback, let current = playback.volume else { return }
+        let target = MediaVolume.clamped(volume)
+        guard target != current else { return }
+        applyOptimistic(playback.settingVolume(target), to: source)
+        guard !isDemo else { return }
+        pendingVolumes[source] = target
+        sendPendingVolume(source)
+    }
+
+    /// Mutes the active app, or restores the level it had before muting.
+    func toggleMute() {
+        guard let source, let current = currentStatus.playback?.volume else { return }
+        if current > 0 { volumesBeforeMute[source] = current }
+        setVolume(MediaVolume.togglingMute(current, previous: volumesBeforeMute[source]))
     }
 
     /// Launches `source`, or brings it forward if it's running. Only ever
@@ -188,6 +214,23 @@ final class SpotifyController: NSObject, ObservableObject {
                 record(source, .permissionDenied)
             }
             refresh(source)
+        }
+    }
+
+    private func sendPendingVolume(_ source: MediaSource) {
+        guard !volumeInFlight.contains(source), let volume = pendingVolumes.removeValue(forKey: source) else { return }
+        guard Self.isRunning(source) else { return refresh(source) }
+        volumeInFlight.insert(source)
+        bumpGeneration(source)
+        Task {
+            let result = await Self.run(source.setVolumeScript(volume), on: source)
+            volumeInFlight.remove(source)
+            if case .failure(.permissionDenied) = result {
+                pendingVolumes[source] = nil
+                return record(source, .permissionDenied)
+            }
+            // Confirm with a read only once the drag's last value is sent.
+            if pendingVolumes[source] != nil { sendPendingVolume(source) } else { refresh(source) }
         }
     }
 

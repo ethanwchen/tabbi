@@ -348,10 +348,21 @@ private struct SpotifyTransport: View {
     let playback: SpotifyPlayback
 
     var body: some View {
-        HStack(spacing: 0) {
-            SpotifyModeIndicator(symbol: "shuffle", isOn: playback.isShuffling,
-                                 help: playback.isShuffling ? "Shuffle is on" : "Shuffle is off")
-            Spacer(minLength: 0)
+        // The buttons stay centered in the column; modes sit on the left and
+        // the volume control on the right, so the slider can grow on hover
+        // without shifting anything.
+        ZStack {
+            HStack(spacing: Theme.Spacing.xs) {
+                SpotifyModeIndicator(symbol: "shuffle", isOn: playback.isShuffling,
+                                     help: playback.isShuffling ? "Shuffle is on" : "Shuffle is off")
+                SpotifyModeIndicator(symbol: "repeat", isOn: playback.isRepeating,
+                                     help: playback.isRepeating ? "Repeat is on" : "Repeat is off")
+                Spacer(minLength: 0)
+                if let volume = playback.volume {
+                    SpotifyVolumeControl(volume: volume, onChange: controller.setVolume,
+                                         onToggleMute: controller.toggleMute)
+                }
+            }
             HStack(spacing: Theme.Spacing.m) {
                 SpotifyTransportButton(symbol: "backward.fill", help: "Previous track",
                                        action: controller.previous)
@@ -359,9 +370,112 @@ private struct SpotifyTransport: View {
                 SpotifyTransportButton(symbol: "forward.fill", help: "Next track",
                                        action: controller.next)
             }
-            Spacer(minLength: 0)
-            SpotifyModeIndicator(symbol: "repeat", isOn: playback.isRepeating,
-                                 help: playback.isRepeating ? "Repeat is on" : "Repeat is off")
+        }
+    }
+}
+
+/// A speaker button that mutes and unmutes; hovering it slides out a
+/// volume slider to its left.
+private struct SpotifyVolumeControl: View {
+    let volume: Int
+    let onChange: (Int) -> Void
+    let onToggleMute: () -> Void
+
+    /// Volume under the pointer while dragging; nil otherwise.
+    @State private var dragVolume: Int?
+    @State private var hovering = false
+    @State private var hoveringSpeaker = false
+
+    private static let sliderWidth: CGFloat = 56
+    private static let height: CGFloat = 24
+
+    private var shownVolume: Int { dragVolume ?? volume }
+    /// Stays open mid-drag even if the pointer leaves the control.
+    private var isExpanded: Bool { hovering || dragVolume != nil }
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.xs) {
+            if isExpanded {
+                slider
+                    .transition(.opacity.combined(with: .scale(scale: 0.6, anchor: .trailing)))
+            }
+            speaker
+        }
+        .padding(.leading, isExpanded ? Theme.Spacing.s : 0)
+        .background(Capsule().fill(isExpanded ? Theme.Palette.surface : .clear))
+        .contentShape(Capsule())
+        .onHover { hovering = $0 }
+        .animation(Theme.Motion.snappy, value: isExpanded)
+    }
+
+    private var speaker: some View {
+        Button(action: onToggleMute) {
+            Image(systemName: Self.symbol(for: shownVolume))
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(hoveringSpeaker ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
+                .contentTransition(.symbolEffect(.replace))
+                .frame(width: Self.height, height: Self.height)
+                .background(Circle().fill(hoveringSpeaker ? Theme.Palette.surfaceHover : .clear))
+                .contentShape(Circle())
+        }
+        .buttonStyle(.plain)
+        .help(shownVolume == 0 ? "Unmute" : "Mute")
+        .onHover { hoveringSpeaker = $0 }
+        .animation(Theme.Motion.snappy, value: hoveringSpeaker)
+        .accessibilityLabel(shownVolume == 0 ? "Unmute" : "Mute")
+    }
+
+    private var slider: some View {
+        GeometryReader { proxy in
+            let width = proxy.size.width
+            let fraction = CGFloat(shownVolume) / 100
+            ZStack(alignment: .leading) {
+                Capsule().fill(Theme.Palette.surfaceHover)
+                Capsule()
+                    .fill(Theme.Palette.accent(for: .spotify))
+                    .frame(width: width * fraction)
+                Circle()
+                    .fill(Theme.Palette.primaryText)
+                    .frame(width: 10, height: 10)
+                    .shadow(color: .black.opacity(0.4), radius: 2)
+                    .offset(x: width * fraction - 5)
+            }
+            .frame(height: 4)
+            .frame(maxHeight: .infinity)
+            .contentShape(Rectangle())
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { value in
+                        let volume = MediaVolume.volume(atX: value.location.x, width: width)
+                        dragVolume = volume
+                        onChange(volume)
+                    }
+                    .onEnded { value in
+                        onChange(MediaVolume.volume(atX: value.location.x, width: width))
+                        dragVolume = nil
+                    }
+            )
+        }
+        .frame(width: Self.sliderWidth, height: Self.height)
+        .help("Volume \(shownVolume)%")
+        .accessibilityElement()
+        .accessibilityLabel("Volume")
+        .accessibilityValue("\(shownVolume)%")
+        .accessibilityAdjustableAction { direction in
+            switch direction {
+            case .increment: onChange(volume + 10)
+            case .decrement: onChange(volume - 10)
+            @unknown default: break
+            }
+        }
+    }
+
+    private static func symbol(for volume: Int) -> String {
+        switch MediaVolume.level(volume) {
+        case 0: "speaker.slash.fill"
+        case 1: "speaker.wave.1.fill"
+        case 2: "speaker.wave.2.fill"
+        default: "speaker.wave.3.fill"
         }
     }
 }
