@@ -83,9 +83,8 @@ private struct SpotifyNowPlaying: View {
     var body: some View {
         let track = playback.track
         HStack(spacing: Theme.Spacing.l) {
-            SpotifyArtworkView(track: track, artwork: artwork.artwork, isLoading: artwork.isLoading,
-                               size: Self.artworkSize, cornerRadius: Theme.Radius.l)
-                .shadow(color: .black.opacity(0.5), radius: 10, y: 4)
+            SpotifyArtworkButton(controller: controller, track: track, artwork: artwork,
+                                 size: Self.artworkSize)
                 .background { glow }
 
             VStack(alignment: .leading, spacing: 0) {
@@ -139,6 +138,68 @@ private struct SpotifyNowPlaying: View {
             .frame(width: Self.artworkSize * 1.2, height: Self.artworkSize * 1.2)
             .allowsHitTesting(false)
             .animation(Theme.Motion.content, value: tint)
+    }
+}
+
+// MARK: - Artwork button
+
+/// The cover with a small badge of the app it plays in. Clicking it brings
+/// that app forward; hovering lifts the cover and hints at the action.
+private struct SpotifyArtworkButton: View {
+    @ObservedObject var controller: SpotifyController
+    let track: SpotifyTrack?
+    @ObservedObject var artwork: SpotifyArtworkLoader
+    let size: CGFloat
+    @State private var hovering = false
+
+    private static let badgeSize: CGFloat = 24
+
+    var body: some View {
+        let source = controller.source ?? .spotify
+        Button { controller.open(source) } label: {
+            SpotifyArtworkView(track: track, artwork: artwork.artwork, isLoading: artwork.isLoading,
+                               size: size, cornerRadius: Theme.Radius.l)
+                .overlay {
+                    RoundedRectangle(cornerRadius: Theme.Radius.l, style: .continuous)
+                        .fill(.black.opacity(hovering ? 0.35 : 0))
+                    Image(systemName: "arrow.up.forward.app.fill")
+                        .font(.system(size: 22, weight: .semibold))
+                        .foregroundStyle(Theme.Palette.primaryText)
+                        .shadow(color: .black.opacity(0.4), radius: 4)
+                        .opacity(hovering ? 1 : 0)
+                }
+                .overlay(alignment: .bottomTrailing) {
+                    badge(for: source)
+                        .padding(Theme.Spacing.xs + Theme.Spacing.xxs)
+                }
+                .shadow(color: .black.opacity(0.5), radius: 10, y: 4)
+                .scaleEffect(hovering ? 1.03 : 1)
+                .contentShape(RoundedRectangle(cornerRadius: Theme.Radius.l, style: .continuous))
+        }
+        .buttonStyle(.plain)
+        .help("Show \(source.displayName)")
+        .onHover { hovering = $0 }
+        .animation(Theme.Motion.snappy, value: hovering)
+    }
+
+    /// The player's own icon; a glyph on a dark disc if the icon is missing.
+    @ViewBuilder private func badge(for source: MediaSource) -> some View {
+        Group {
+            if let icon = controller.appIcon(for: source) {
+                Image(nsImage: icon)
+                    .resizable()
+                    .interpolation(.high)
+            } else {
+                Image(systemName: "music.note")
+                    .font(.system(size: Self.badgeSize * 0.45, weight: .semibold))
+                    .foregroundStyle(Theme.Palette.primaryText)
+                    .frame(width: Self.badgeSize, height: Self.badgeSize)
+                    .background(Circle().fill(.black.opacity(0.6)))
+            }
+        }
+        .frame(width: Self.badgeSize, height: Self.badgeSize)
+        .shadow(color: .black.opacity(0.45), radius: 3, y: 1)
+        .accessibilityLabel("Playing in \(source.displayName)")
     }
 }
 

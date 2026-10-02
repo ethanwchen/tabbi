@@ -41,6 +41,7 @@ final class SpotifyController: NSObject, ObservableObject {
     /// Bumped per app by every read and command so a slow, stale read can't
     /// overwrite a newer state (e.g. an optimistic play/pause).
     private var generations: [MediaSource: Int] = [:]
+    private var appIcons: [MediaSource: NSImage] = [:]
 
     override init() {
         super.init()
@@ -112,10 +113,14 @@ final class SpotifyController: NSObject, ObservableObject {
         NSWorkspace.shared.openApplication(at: url, configuration: configuration)
     }
 
-    /// The app's Finder icon for launch buttons; nil if it isn't installed.
+    /// The app's Finder icon for launch buttons and the source badge; nil if
+    /// it isn't installed. Cached, since the panel re-renders every second.
     func appIcon(for source: MediaSource) -> NSImage? {
-        NSWorkspace.shared.urlForApplication(withBundleIdentifier: source.bundleIdentifier)
+        if let icon = appIcons[source] { return icon }
+        let icon = NSWorkspace.shared.urlForApplication(withBundleIdentifier: source.bundleIdentifier)
             .map { NSWorkspace.shared.icon(forFile: $0.path) }
+        appIcons[source] = icon
+        return icon
     }
 
     func openAutomationSettings() {
