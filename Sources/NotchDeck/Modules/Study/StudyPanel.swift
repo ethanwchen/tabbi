@@ -23,13 +23,16 @@ struct StudyPanel: View {
                 StudyMethodInfoView(method: .preset(kind), isCurrent: kind == store.session.method.kind,
                                     use: { store.choose(kind); show(nil) },
                                     close: { show(back) })
+            case .sounds:
+                StudySoundMixer { show(nil) }
             case nil:
                 HStack(spacing: Theme.Spacing.s) {
                     StudyDial(store: store)
                         .frame(width: 176)
                     VStack(spacing: Theme.Spacing.s) {
                         StudyMethodCard(store: store, choose: { show(.picker) },
-                                        info: { show(.info(store.session.method.kind, from: nil)) })
+                                        info: { show(.info(store.session.method.kind, from: nil)) },
+                                        sounds: { show(.sounds) })
                         StudyControls(store: store)
                     }
                 }
@@ -45,16 +48,18 @@ struct StudyPanel: View {
     }
 }
 
-/// What covers the timer: the method picker, or a method's info popover
-/// that returns to wherever it was opened from.
+/// What covers the timer: the method picker, a method's info popover
+/// that returns to wherever it was opened from, or the sound mixer.
 private indirect enum StudyPanelOverlay: Equatable {
     case picker
     case info(StudyMethodKind, from: StudyPanelOverlay?)
+    case sounds
 
     init?(snapshot: StudySnapshotState?) {
         switch snapshot {
         case .picker: self = .picker
         case .info(let kind): self = .info(kind, from: nil)
+        case .sounds: self = .sounds
         case .method, nil: return nil
         }
     }
@@ -102,13 +107,14 @@ private struct StudyDial: View {
     }
 }
 
-/// The method in use, its rhythm and round, the deep focus switch, and
-/// today's tally at the bottom. The name opens the picker and the (i) the
-/// method's info popover.
+/// The method in use, its rhythm and round, the deep focus switch with
+/// the sound chips, and today's tally at the bottom. The name opens the
+/// picker, the (i) the method's info popover, and Mix or Playlist the mixer.
 private struct StudyMethodCard: View {
     @ObservedObject var store: StudyStore
     let choose: () -> Void
     let info: () -> Void
+    let sounds: () -> Void
     @State private var hovering = false
 
     var body: some View {
@@ -152,7 +158,7 @@ private struct StudyMethodCard: View {
                 .help("Change the study method")
                 .onHover { hovering = $0 }
                 Spacer(minLength: Theme.Spacing.xs)
-                StudyDeepFocusRow(store: store)
+                StudyDeepFocusRow(store: store, openMixer: sounds)
                 Spacer(minLength: Theme.Spacing.xs)
                 StudyTodayRow(today: store.today)
             }
@@ -166,56 +172,40 @@ private struct StudyMethodCard: View {
     }
 }
 
-/// The deep focus switch, and what focus mode will do while it's on.
+/// The deep focus switch, and the focus sound study blocks play with it.
 private struct StudyDeepFocusRow: View {
     @ObservedObject var store: StudyStore
     @ObservedObject private var focus = FocusController.shared
-    @State private var hovering = false
+    let openMixer: () -> Void
 
     var body: some View {
         let isOn = store.deepFocus
         HStack(spacing: Theme.Spacing.s) {
-            Button {
-                withAnimation(Theme.Motion.snappy) { store.setDeepFocus(!isOn) }
-            } label: {
-                HStack(spacing: Theme.Spacing.xxs) {
-                    Image(systemName: isOn ? "moon.fill" : "moon")
-                        .font(.system(size: 9, weight: .bold))
-                        .contentTransition(.symbolEffect(.replace))
-                    Text("Deep focus")
-                        .font(Theme.Typography.caption.weight(.semibold))
-                }
-                .foregroundStyle(isOn ? Theme.Palette.background : Theme.Palette.secondaryText)
-                .padding(.horizontal, Theme.Spacing.s)
-                .frame(height: 20)
-                .background(Capsule().fill(isOn ? accent.opacity(hovering ? 1 : 0.88)
-                                                : (hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface)))
-                .overlay(Capsule().strokeBorder(Theme.Palette.stroke.opacity(isOn ? 0 : 1), lineWidth: 1))
-                .contentShape(Capsule())
+            StudyCapsuleToggle(title: "Deep focus", symbol: "moon", isOn: isOn, help: help) {
+                store.setDeepFocus(!isOn)
             }
-            .buttonStyle(.plain)
-            .help(isOn ? "Turn off deep focus: study blocks leave sound and Do Not Disturb alone"
-                       : "Turn on deep focus: study blocks play your focus sound and turn on Do Not Disturb")
-            .onHover { hovering = $0 }
-            Text(summary)
-                .font(Theme.Typography.caption)
-                .foregroundStyle(isOn ? Theme.Palette.secondaryText : Theme.Palette.tertiaryText)
-                .lineLimit(1)
-                .truncationMode(.tail)
-                .help("Change focus sound and Do Not Disturb in Settings › Focus")
             Spacer(minLength: 0)
+            StudySoundRow(isActive: isOn, openMixer: openMixer)
         }
-        .animation(Theme.Motion.snappy, value: hovering)
     }
 
-    /// The focus mode effects that study blocks apply, e.g. "Rain + Fireplace · DND".
+    private var help: String {
+        store.deepFocus ? "Deep focus is on: study blocks bring \(summary). Click to turn it off"
+             : "Turn on deep focus: study blocks bring \(summary)"
+    }
+
+    /// The focus mode effects that study blocks apply, e.g. "Rain + Fireplace, a playlist and Do Not Disturb".
     private var summary: String {
         let settings = focus.settings
         var parts: [String] = []
-        if !settings.mix.isOff { parts.append(settings.mix.summary) }
-        if settings.playlist != nil { parts.append("Playlist") }
-        if settings.doNotDisturb { parts.append("DND") }
-        return parts.isEmpty ? "Silent, notifications on" : parts.joined(separator: " · ")
+        if !settings.mix.isOff { parts.append(settings.mix.summary.lowercased()) }
+        if settings.playlist != nil { parts.append("your playlist") }
+        if settings.doNotDisturb { parts.append("Do Not Disturb") }
+        switch parts.count {
+        case 0: return "nothing yet; pick a sound"
+        case 1: return parts[0]
+        default: return parts.dropLast().joined(separator: ", ") + " and " + parts[parts.count - 1]
+        }
     }
 }
 
