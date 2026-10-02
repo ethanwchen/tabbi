@@ -248,8 +248,8 @@ final class StudySessionTests: XCTestCase {
 
     func testSprintCountsCardsFromReviewedTodayDeltas() {
         var session = StudySession(method: .ankiSprint(cards: 50))
-        session.recordReviewedToday(100, at: t0) // baseline before starting
         session.start(at: t0)
+        session.recordReviewedToday(100, at: t0) // baseline right after starting
         session.recordReviewedToday(120, at: at(5))
         XCTAssertEqual(session.cardsDone, 20)
         XCTAssertEqual(session.progress(at: at(5))!, 0.4, accuracy: 1e-9)
@@ -267,20 +267,21 @@ final class StudySessionTests: XCTestCase {
 
     func testSprintIgnoresCardsWhilePausedOrOnBreak() {
         var session = StudySession(method: .ankiSprint(cards: 50))
-        session.recordReviewedToday(0, at: t0)
         session.start(at: t0)
+        session.recordReviewedToday(0, at: t0)
         session.recordReviewedToday(10, at: at(1))
         session.pause(at: at(2))
         session.recordReviewedToday(30, at: at(3))
         session.start(at: at(4))
-        session.recordReviewedToday(35, at: at(5))
+        session.recordReviewedToday(32, at: at(4))
+        session.recordReviewedToday(37, at: at(5))
         XCTAssertEqual(session.cardsDone, 15)
     }
 
     func testSprintGoalEndsFocusAndStartsBreak() {
         var session = StudySession(method: .ankiSprint(cards: 50))
-        session.recordReviewedToday(0, at: t0)
         session.start(at: t0)
+        session.recordReviewedToday(0, at: t0)
         let ended = session.recordReviewedToday(55, at: at(12))
         XCTAssertEqual(ended.map(\.phase), [.focus])
         XCTAssertEqual(ended.first?.cards, 55)
@@ -295,12 +296,38 @@ final class StudySessionTests: XCTestCase {
 
     func testSprintRolloverDropRebasesWithoutLosingProgress() {
         var session = StudySession(method: .ankiSprint(cards: 50))
-        session.recordReviewedToday(200, at: t0)
         session.start(at: t0)
+        session.recordReviewedToday(200, at: t0)
         session.recordReviewedToday(210, at: at(1))
         session.recordReviewedToday(0, at: at(2)) // Anki's day rolled over
         session.recordReviewedToday(5, at: at(3))
         XCTAssertEqual(session.cardsDone, 15)
+    }
+
+    func testSprintIgnoresCardsAnsweredBeforeItStarted() {
+        var session = StudySession(method: .ankiSprint(cards: 50))
+        session.recordReviewedToday(100, at: t0) // panel open, sprint idle
+        // The notch closes, polling stops, and 30 cards are done in Anki.
+        session.start(at: at(20))
+        session.recordReviewedToday(130, at: at(20))
+        XCTAssertEqual(session.cardsDone, 0)
+        session.recordReviewedToday(140, at: at(25))
+        XCTAssertEqual(session.cardsDone, 10)
+    }
+
+    func testSprintStartedBySkippingABreakTakesAFreshBaseline() {
+        var session = StudySession(method: .ankiSprint(cards: 20))
+        session.start(at: t0)
+        session.recordReviewedToday(0, at: t0)
+        session.recordReviewedToday(20, at: at(5)) // goal: break starts
+        XCTAssertEqual(session.phase, .shortBreak)
+        session.skip(at: at(6))
+        XCTAssertEqual(session.phase, .focus)
+        XCTAssertTrue(session.isRunning)
+        session.recordReviewedToday(25, at: at(7))
+        XCTAssertEqual(session.cardsDone, 0)
+        session.recordReviewedToday(28, at: at(8))
+        XCTAssertEqual(session.cardsDone, 3)
     }
 
     func testSprintSuggestsBreakAfterThirtyMinutesOrTwoHundredCards() {
@@ -311,8 +338,8 @@ final class StudySessionTests: XCTestCase {
         XCTAssertTrue(session.suggestsSprintBreak(at: at(30)))
 
         var fast = StudySession(method: .ankiSprint(cards: 500))
-        fast.recordReviewedToday(0, at: t0)
         fast.start(at: t0)
+        fast.recordReviewedToday(0, at: t0)
         fast.recordReviewedToday(200, at: at(10))
         XCTAssertTrue(fast.suggestsSprintBreak(at: at(10)))
 
@@ -350,8 +377,8 @@ final class StudySessionTests: XCTestCase {
 
     func testCodableRoundTripKeepsSprintBaseline() throws {
         var session = StudySession(method: .ankiSprint(cards: 30))
-        session.recordReviewedToday(10, at: t0)
         session.start(at: t0)
+        session.recordReviewedToday(10, at: t0)
         session.recordReviewedToday(20, at: at(1))
         var restored = try JSONDecoder().decode(StudySession.self, from: JSONEncoder().encode(session))
         restored.recordReviewedToday(25, at: at(2))

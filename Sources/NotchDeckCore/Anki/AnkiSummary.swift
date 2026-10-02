@@ -15,7 +15,7 @@ public struct AnkiSummary: Hashable, Sendable, Codable {
     public let streak: Int
     /// One entry per day, oldest first, ending today, zero-filled.
     public let history: [AnkiDayCount]
-    /// True retention over `retentionWindowDays`: the share of mature-review
+    /// True retention over `retentionWindowDays`: the share of review-card
     /// answers that were not Again. Nil when there are too few reviews to say.
     public let retention: Double?
     /// How many review answers `retention` is based on.

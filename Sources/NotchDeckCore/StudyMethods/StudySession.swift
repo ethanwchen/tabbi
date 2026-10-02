@@ -162,10 +162,14 @@ public struct StudySession: Codable, Hashable, Sendable {
     // MARK: Controls
 
     /// Starts an idle phase or resumes a paused one. No-op while running.
+    ///
+    /// For sprint focus, the next `recordReviewedToday(_:at:)` sets a fresh
+    /// card baseline, so call it right after starting.
     public mutating func start(at now: Date) {
         guard resumedAt == nil else { return }
         if phaseStartedAt == nil { phaseStartedAt = now }
         resumedAt = now
+        dropStaleCardBaseline()
     }
 
     /// Freezes the clock. No-op unless running.
@@ -232,6 +236,8 @@ public struct StudySession: Codable, Hashable, Sendable {
     ///
     /// Only increases count, so cards answered during a break or a pause are
     /// ignored, and the drop to zero at Anki's day rollover just rebases.
+    /// The first reading after a sprint focus starts or resumes only sets the
+    /// baseline.
     /// Applies `advance(to:)` first and returns every phase that ended.
     @discardableResult
     public mutating func recordReviewedToday(_ count: Int, at now: Date) -> [StudyPhaseRecord] {
@@ -291,7 +297,15 @@ public struct StudySession: Codable, Hashable, Sendable {
         cardsDone = 0
         phaseStartedAt = startNext ? end : nil
         resumedAt = startNext ? end : nil
+        if startNext { dropStaleCardBaseline() }
         return record
+    }
+
+    /// Forgets the card baseline when a sprint focus run segment begins.
+    /// The app may not poll while the notch is closed, so an older reading
+    /// would count cards answered before the sprint started or while paused.
+    private mutating func dropStaleCardBaseline() {
+        if phase == .focus, method.cardGoal != nil { cardBaseline = nil }
     }
 
     /// Keeps a decoded or hand-built zero-length phase from completing instantly.
