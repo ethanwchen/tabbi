@@ -33,9 +33,7 @@ struct DayPlanView: View {
                         .transition(.opacity.combined(with: .move(edge: .leading)))
                 }
                 Spacer(minLength: Theme.Spacing.xs)
-                Text(proposal.addedCount > 0
-                     ? "\(proposal.addedCount) added to your calendar"
-                     : "Blocks go to your default calendar.")
+                Text(DayPlanFormat.footer(proposal))
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.tertiaryText)
                     .lineLimit(1)
@@ -51,8 +49,15 @@ struct DayPlanView: View {
         case .failed(let failure):
             PlannerMessage(symbol: "exclamationmark.triangle.fill", tint: Theme.Palette.warning,
                            title: failure.title, detail: failure.detail) {
-                PlannerPillButton(title: "Retry", symbol: "arrow.clockwise", help: "Ask Claude again") {
-                    plan.retry()
+                if failure.canRetry {
+                    PlannerPillButton(title: "Retry", symbol: "arrow.clockwise", help: "Ask Claude again") {
+                        plan.retry()
+                    }
+                } else if failure == .calendarOff {
+                    PlannerPillButton(title: "Open Settings", symbol: "gearshape",
+                                      help: "Open Privacy & Security to allow Calendar access") {
+                        plan.openPrivacySettings()
+                    }
                 }
             }
             .frame(maxHeight: .infinity)
@@ -237,6 +242,15 @@ enum DayPlanFormat {
 
     static func range(_ block: PlanBlock) -> String {
         "\(UpcomingEventFormat.startTime(block.start))–\(UpcomingEventFormat.startTime(block.end))"
+    }
+
+    /// The caption under the rows: where blocks go, then what happened to
+    /// the ones accepted so far, including any that no longer fit.
+    static func footer(_ proposal: DayPlanProposal) -> String {
+        var parts: [String] = []
+        if proposal.addedCount > 0 { parts.append("\(proposal.addedCount) added to your calendar") }
+        if proposal.skippedCount > 0 { parts.append("\(proposal.skippedCount) no longer fit") }
+        return parts.isEmpty ? "Blocks go to your default calendar." : parts.joined(separator: " · ")
     }
 }
 

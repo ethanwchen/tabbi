@@ -30,7 +30,7 @@ final class DayPlanProposalTests: XCTestCase {
     func testAddingOneBlockWritesItWithTheNoteAndRemovesIt() throws {
         var proposal = DayPlanProposal(blocks: [first, second])
         let writer = RecordingWriter()
-        try proposal.add([first.id], now: at(-10), writer: writer)
+        try proposal.add([first.id], now: at(-10), events: [], writer: writer)
 
         XCTAssertEqual(writer.written, [[
             PlannedCalendarEvent(title: "Ship planner beta", start: at(60), end: at(120), notes: "Planned with NotchDeck"),
@@ -43,7 +43,7 @@ final class DayPlanProposalTests: XCTestCase {
         var proposal = DayPlanProposal(blocks: [first, second, third])
         proposal.dismiss(third.id)
         let writer = RecordingWriter()
-        try proposal.add(now: at(-10), writer: writer)
+        try proposal.add(now: at(-10), events: [], writer: writer)
 
         XCTAssertEqual(writer.written.count, 1)
         XCTAssertEqual(writer.written.first?.map(\.title), ["Write release notes", "Ship planner beta"])
@@ -55,20 +55,50 @@ final class DayPlanProposalTests: XCTestCase {
         var proposal = DayPlanProposal(blocks: [first, second, third])
         let writer = RecordingWriter()
         // 70 minutes in: the earliest block is over and the next has started.
-        let written = try proposal.add(now: at(70), writer: writer)
+        let written = try proposal.add(now: at(70), events: [], writer: writer)
 
         XCTAssertEqual(written.map(\.title), ["Ship planner beta", "Inbox"])
         XCTAssertEqual(written.first?.start, at(70))
         XCTAssertEqual(written.first?.end, at(120))
         XCTAssertTrue(proposal.isSettled, "a dropped block is no longer pending either")
         XCTAssertEqual(proposal.addedCount, 2)
+        XCTAssertEqual(proposal.skippedCount, 1)
+    }
+
+    func testBlocksAreRecheckedAgainstMeetingsAddedSinceTheProposal() throws {
+        var proposal = DayPlanProposal(blocks: [first, second, third])
+        let writer = RecordingWriter()
+        let events = [
+            // Takes the first 20 minutes of "Ship planner beta"; the rest stays.
+            UpcomingEvent(id: "sync", title: "Sync", start: at(50), end: at(80)),
+            // Swallows "Inbox" whole.
+            UpcomingEvent(id: "call", title: "Call", start: at(140), end: at(190)),
+            // All-day events never block time.
+            UpcomingEvent(id: "holiday", title: "Holiday", start: at(-600), end: at(800), isAllDay: true),
+        ]
+        let written = try proposal.add(now: at(-10), events: events, writer: writer)
+
+        XCTAssertEqual(written.map(\.title), ["Write release notes", "Ship planner beta"])
+        XCTAssertEqual(written.last?.start, at(80))
+        XCTAssertEqual(written.last?.end, at(120))
+        XCTAssertEqual(proposal.addedCount, 2)
+        XCTAssertEqual(proposal.skippedCount, 1)
+        XCTAssertTrue(proposal.isSettled)
+    }
+
+    func testMeetingInTheMiddleKeepsTheLongestFreePiece() throws {
+        var proposal = DayPlanProposal(blocks: [first])
+        let events = [UpcomingEvent(id: "chat", title: "Chat", start: at(75), end: at(85))]
+        let written = try proposal.add(now: at(-10), events: events, writer: RecordingWriter())
+        XCTAssertEqual(written.first?.start, at(85))
+        XCTAssertEqual(written.first?.end, at(120))
     }
 
     func testFailedWriteLeavesTheProposalUntouched() {
         var proposal = DayPlanProposal(blocks: [first, second])
         let writer = RecordingWriter()
         writer.fails = true
-        XCTAssertThrowsError(try proposal.add(now: at(-10), writer: writer))
+        XCTAssertThrowsError(try proposal.add(now: at(-10), events: [], writer: writer))
         XCTAssertEqual(proposal.pending.count, 2)
         XCTAssertEqual(proposal.addedCount, 0)
     }
@@ -77,8 +107,9 @@ final class DayPlanProposalTests: XCTestCase {
         var proposal = DayPlanProposal(blocks: [second])
         let writer = RecordingWriter()
         writer.fails = true
-        XCTAssertEqual(try proposal.add(now: at(40), writer: writer), [])
+        XCTAssertEqual(try proposal.add(now: at(40), events: [], writer: writer), [])
         XCTAssertTrue(proposal.isSettled)
+        XCTAssertEqual(proposal.skippedCount, 1)
     }
 
     func testSampleProposalAvoidsTheSampleEventsAndIsInTheFuture() {

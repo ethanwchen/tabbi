@@ -32,7 +32,8 @@ final class DayReviewStore: ObservableObject {
         let environment = ProcessInfo.processInfo.environment
         isDemo = environment["NOTCHDECK_DEMO"] == "1"
         repository = isDemo ? nil : DayReviewRepository()
-        // Lets snapshots render each state: `NOTCHDECK_PLANNER_PREVIEW=review`.
+        // Lets demo snapshots render each state: `NOTCHDECK_PLANNER_PREVIEW=review`.
+        guard isDemo else { return }
         let today = PlannerDayKey(date: Date())
         switch environment["NOTCHDECK_PLANNER_PREVIEW"] {
         case "review": review = .sample(on: today)

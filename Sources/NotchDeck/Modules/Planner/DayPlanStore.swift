@@ -24,12 +24,15 @@ final class DayPlanStore: ObservableObject {
     enum Failure: Equatable {
         case claudeNotFound
         case calendarOff
+        /// This build can't ask for calendar access (an unbundled `swift run`).
+        case calendarUnavailable
         case claudeFailed
 
         var title: String {
             switch self {
             case .claudeNotFound: "Claude isn't installed"
             case .calendarOff: "Calendar access is off"
+            case .calendarUnavailable: "Calendar isn't available"
             case .claudeFailed: "Couldn't plan your day"
             }
         }
@@ -38,9 +41,14 @@ final class DayPlanStore: ObservableObject {
             switch self {
             case .claudeNotFound: "Install the claude CLI, or set its path in Settings."
             case .calendarOff: "Allow NotchDeck in Privacy & Security to plan around meetings."
+            case .calendarUnavailable: "Open the NotchDeck app to plan around your calendar."
             case .claudeFailed: "Claude didn't send back a usable plan. Try again in a moment."
             }
         }
+
+        /// Asking Claude again only helps when Claude was the problem;
+        /// calendar access is fixed in System Settings instead.
+        var canRetry: Bool { self == .claudeFailed }
     }
 
     @Published private(set) var phase: Phase = .idle
@@ -63,11 +71,14 @@ final class DayPlanStore: ObservableObject {
         self.upNext = upNext
         let environment = ProcessInfo.processInfo.environment
         isDemo = environment["NOTCHDECK_DEMO"] == "1"
-        // Lets snapshots render each state: `NOTCHDECK_PLANNER_PREVIEW=plan`.
+        // Lets demo snapshots render each state: `NOTCHDECK_PLANNER_PREVIEW=plan`.
+        // Demo only, so a preview proposal can never reach the real calendar.
+        guard isDemo else { return }
         switch environment["NOTCHDECK_PLANNER_PREVIEW"] {
         case "plan": phase = .proposal(DayPlanProposal(blocks: DayPlanner.sampleProposal(now: Date())))
         case "planning": phase = .planning
         case "plan-failed": phase = .failed(.claudeFailed)
+        case "plan-calendar-off": phase = .failed(.calendarOff)
         default: break
         }
     }
@@ -97,6 +108,8 @@ final class DayPlanStore: ObservableObject {
 
     func retry() { plan(tasks: lastTasks) }
 
+    func openPrivacySettings() { upNext.openPrivacySettings() }
+
     /// Discards the proposal (or stops waiting) and shows the checklist again.
     func cancel() {
         invalidateRun()
@@ -114,7 +127,9 @@ final class DayPlanStore: ObservableObject {
     func add(_ id: PlanBlock.ID? = nil) {
         guard case .proposal(var proposal) = phase else { return }
         do {
-            try proposal.add(id.map { [$0] }, now: Date(), writer: upNext.makePlanWriter())
+            // Re-read the calendar: meetings may have arrived since Claude answered.
+            try proposal.add(id.map { [$0] }, now: Date(), events: upNext.todayEvents(),
+                             writer: upNext.makePlanWriter())
             writeFailed = false
             settle(proposal)
         } catch {
@@ -143,8 +158,9 @@ final class DayPlanStore: ObservableObject {
         switch await upNext.ensureAccess() {
         case .granted: break
         case .denied, .notDetermined: return .failed(.calendarOff)
-        // `swift run` builds can't ask; plan without meetings rather than not at all.
-        case .unavailable: break
+        // `swift run` builds can't ask, so blocks couldn't be written either.
+        // Dry runs plan without meetings, which is enough to try the flow.
+        case .unavailable: guard upNext.isPlanDryRun else { return .failed(.calendarUnavailable) }
         }
         let context = DayPlanContext(now: Date(), events: upNext.todayEvents(), tasks: lastTasks)
         guard context.hasFreeTime else { return .noFreeTime }

@@ -67,6 +67,7 @@ final class PlannerStore: ObservableObject {
     /// Asks Claude to schedule today's unfinished items around the calendar.
     func planMyDay() {
         review.close()
+        refreshDay()
         plan.plan(tasks: items)
     }
 

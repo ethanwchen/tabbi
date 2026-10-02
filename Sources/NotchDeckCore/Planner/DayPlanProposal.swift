@@ -33,6 +33,9 @@ public struct DayPlanProposal: Equatable, Sendable {
     public private(set) var pending: [PlanBlock]
     /// How many blocks have been written to the calendar.
     public private(set) var addedCount = 0
+    /// How many accepted blocks were left out because, by the time they
+    /// were added, they had run out or a meeting had taken their time.
+    public private(set) var skippedCount = 0
 
     public init(blocks: [PlanBlock]) {
         pending = blocks.sorted { ($0.start, $0.end) < ($1.start, $1.end) }
@@ -47,24 +50,28 @@ public struct DayPlanProposal: Equatable, Sendable {
     }
 
     /// Writes the given pending blocks (all of them when `ids` is nil) and
-    /// removes them from the proposal. Blocks that have slipped into the
-    /// past are trimmed to `now` or dropped, so nothing lands behind the
-    /// clock. Nothing changes when the writer throws.
+    /// removes them from the proposal. Each block is re-checked against
+    /// `now` and the calendar as it is at that moment (`events`), since time
+    /// passes and meetings may arrive while the proposal is open: blocks are
+    /// trimmed to the free time left or skipped, and skipped ones are
+    /// counted in `skippedCount`. Nothing changes when the writer throws.
     ///
     /// - Returns: The events that were written.
     @discardableResult
     public mutating func add(
         _ ids: Set<PlanBlock.ID>? = nil,
         now: Date,
+        events: [UpcomingEvent],
         writer: PlanCalendarWriting
     ) throws -> [PlannedCalendarEvent] {
         let chosen = pending.filter { ids?.contains($0.id) ?? true }
-        let events = DayPlanner.calendarEvents(for: chosen, now: now)
-        if !events.isEmpty { try writer.write(events) }
+        let written = DayPlanner.calendarEvents(for: chosen, now: now, events: events)
+        if !written.isEmpty { try writer.write(written) }
         let chosenIDs = Set(chosen.map(\.id))
         pending.removeAll { chosenIDs.contains($0.id) }
-        addedCount += events.count
-        return events
+        addedCount += written.count
+        skippedCount += chosen.count - written.count
+        return written
     }
 }
 
@@ -72,15 +79,32 @@ public extension DayPlanner {
     /// Note on every event Plan My Day writes, so they're easy to recognize.
     static let eventNote = "Planned with NotchDeck"
 
-    /// Calendar events for `blocks`, re-checked against `now`: a block that
-    /// has started is trimmed to begin now, and one with less than
-    /// `minimumBlockMinutes` left is dropped.
-    static func calendarEvents(for blocks: [PlanBlock], now: Date) -> [PlannedCalendarEvent] {
+    /// Calendar events for `blocks`, re-checked against `now` and today's
+    /// `events`: a block that has started is trimmed to begin now, a block a
+    /// timed event now overlaps keeps its longest free piece, and one with
+    /// less than `minimumBlockMinutes` left is dropped.
+    static func calendarEvents(
+        for blocks: [PlanBlock],
+        now: Date,
+        events: [UpcomingEvent]
+    ) -> [PlannedCalendarEvent] {
         let minimum = TimeInterval(minimumBlockMinutes * 60)
+        let busy = events.filter { !$0.isAllDay && $0.end > $0.start }
         return blocks.compactMap { block in
-            let start = max(block.start, now)
-            guard block.end.timeIntervalSince(start) >= minimum else { return nil }
-            return PlannedCalendarEvent(title: block.title, start: start, end: block.end, notes: eventNote)
+            guard block.end > max(block.start, now) else { return nil }
+            var pieces = [DateInterval(start: max(block.start, now), end: block.end)]
+            for event in busy {
+                pieces = pieces.flatMap { piece -> [DateInterval] in
+                    guard event.start < piece.end, piece.start < event.end else { return [piece] }
+                    var rest: [DateInterval] = []
+                    if piece.start < event.start { rest.append(DateInterval(start: piece.start, end: event.start)) }
+                    if event.end < piece.end { rest.append(DateInterval(start: event.end, end: piece.end)) }
+                    return rest
+                }
+            }
+            guard let longest = pieces.max(by: { $0.duration < $1.duration }), longest.duration >= minimum
+            else { return nil }
+            return PlannedCalendarEvent(title: block.title, start: longest.start, end: longest.end, notes: eventNote)
         }
     }
 

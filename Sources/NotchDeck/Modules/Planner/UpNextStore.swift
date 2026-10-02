@@ -101,9 +101,12 @@ final class UpNextStore: ObservableObject {
     /// or one that never touches the calendar in demo mode and dry runs.
     func makePlanWriter() -> PlanCalendarWriting {
         if isDemo { return DryRunPlanWriter(logs: false) }
-        if ProcessInfo.processInfo.environment["NOTCHDECK_PLAN_DRY_RUN"] == "1" { return DryRunPlanWriter(logs: true) }
+        if isPlanDryRun { return DryRunPlanWriter(logs: true) }
         return EventKitPlanWriter(store: eventStore)
     }
+
+    /// `NOTCHDECK_PLAN_DRY_RUN=1`: plan blocks are printed, never written.
+    var isPlanDryRun: Bool { ProcessInfo.processInfo.environment["NOTCHDECK_PLAN_DRY_RUN"] == "1" }
 
     func openPrivacySettings() {
         NSWorkspace.shared.open(Self.privacySettingsURL)
