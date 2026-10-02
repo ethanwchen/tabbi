@@ -212,6 +212,7 @@ final class AnkiConnectClientTests: XCTestCase {
         XCTAssertEqual(reviews.map(\.id), [1594194095746, 1594201393292])
 
         XCTAssertEqual(transport.requests.count, 1, "one round trip for every deck")
+        XCTAssertEqual(transport.timeouts, [20], "the whole batch gets the longer batch timeout")
         let request = try XCTUnwrap(transport.requests.first)
         XCTAssertEqual(request["action"] as? String, "multi")
         let actions = try XCTUnwrap((request["params"] as? [String: Any])?["actions"] as? [[String: Any]])

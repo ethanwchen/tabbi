@@ -86,6 +86,10 @@ final class AnkiStore: ObservableObject {
         scheduleRollover()
     }
 
+    /// Between `start()` and `stop()`; late action results are dropped
+    /// once the module is off.
+    private var isStarted: Bool { !workspaceObservers.isEmpty }
+
     func stop() {
         workspaceObservers.forEach(NSWorkspace.shared.notificationCenter.removeObserver)
         workspaceObservers = []
@@ -127,6 +131,7 @@ final class AnkiStore: ObservableObject {
             } catch {
                 return // Cancelled: a newer refresh or stop() owns the state.
             }
+            guard !Task.isCancelled else { return }
             self?.finishRefresh(outcome)
         }
     }
@@ -230,8 +235,10 @@ final class AnkiStore: ObservableObject {
             do {
                 try await client.guiDeckReview(name: name)
                 Self.runningAnki()?.activate()
+                guard self?.isStarted == true else { return }
                 self?.actionError = nil
             } catch let error as AnkiConnectError {
+                guard self?.isStarted == true else { return }
                 self?.actionError = error
             } catch {}
         }
@@ -246,6 +253,7 @@ final class AnkiStore: ObservableObject {
             do { try await client.sync() } catch let error as AnkiConnectError { failure = error } catch {}
             guard let self else { return }
             isSyncing = false
+            guard isStarted else { return }
             actionError = failure
             refresh()
         }

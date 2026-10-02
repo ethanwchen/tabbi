@@ -20,6 +20,9 @@ public struct AnkiConnectClient: Sendable {
     public var apiKey: String?
     /// Short timeout for polling reads.
     public var requestTimeout: TimeInterval
+    /// A `multi` batch runs every inner query on Anki's main thread before
+    /// replying, so it gets more time than a single read.
+    public var batchTimeout: TimeInterval
     /// `sync` runs on Anki's main thread and can take many seconds.
     public var syncTimeout: TimeInterval
     /// Whether an Anki process is running (by bundle id or name).
@@ -29,12 +32,14 @@ public struct AnkiConnectClient: Sendable {
         transport: any AnkiConnectTransport = URLSessionAnkiConnectTransport(),
         apiKey: String? = nil,
         requestTimeout: TimeInterval = 3,
+        batchTimeout: TimeInterval = 20,
         syncTimeout: TimeInterval = 90,
         isAnkiRunning: @escaping @Sendable () async -> Bool = { false }
     ) {
         self.transport = transport
         self.apiKey = apiKey
         self.requestTimeout = requestTimeout
+        self.batchTimeout = batchTimeout
         self.syncTimeout = syncTimeout
         self.isAnkiRunning = isAnkiRunning
     }
@@ -113,7 +118,7 @@ public struct AnkiConnectClient: Sendable {
         let actions = decks.map {
             MultiAction(action: "cardReviews", version: Self.apiVersion, params: CardReviewsParams(deck: $0, startID: startID))
         }
-        let replies = try await invoke("multi", params: ["actions": actions], as: [MultiReply<[AnkiReview]>].self)
+        let replies = try await invoke("multi", params: ["actions": actions], timeout: batchTimeout, as: [MultiReply<[AnkiReview]>].self)
         guard replies.count == decks.count else {
             throw AnkiConnectError.invalidResponse("multi: expected \(decks.count) replies, got \(replies.count)")
         }
@@ -186,9 +191,9 @@ public struct AnkiConnectClient: Sendable {
     }
 
     private func invoke<Params: Encodable, Result: Decodable>(
-        _ action: String, params: Params?, as type: Result.Type
+        _ action: String, params: Params?, timeout: TimeInterval? = nil, as type: Result.Type
     ) async throws -> Result {
-        let body = try await send(action, params: params, timeout: requestTimeout)
+        let body = try await send(action, params: params, timeout: timeout ?? requestTimeout)
         do {
             return try JSONDecoder().decode(ResultReply<Result>.self, from: body).result
         } catch {

@@ -91,7 +91,7 @@ summary.retention      // 0.91, or nil below 20 graded reviews
 
 - Review rows are de-duplicated by id, so overlapping `cardReviews` fetches are safe.
 - `cardReviews` does not include child decks, so `summary` asks for every deck, batched into one `multi` request (five requests per refresh, however many decks).
-- `AnkiSummary.demo(now:)` is the `NOTCHDECK_DEMO=1` sample: about 320 due, 112 reviewed today, a 12-day streak, about 91% retention.
+- `AnkiSummary.demo(now:)` is the `NOTCHDECK_DEMO=1` sample: about 425 due, 112 reviewed today, a 12-day streak, about 91% retention.
   It is built through the real aggregation.
 - `AnkiSummary` is `Codable`, so the UI can cache the last good value for its error state.
 
