@@ -131,7 +131,7 @@ final class NotchController {
         guard model.isOpen else { return false }
         let editingText = panel.firstResponder is NSTextView
         switch event.keyCode {
-        case 53: // esc
+        case 53 where !editingText: // esc (text fields handle it themselves, e.g. to clear)
             model.close()
             return true
         case 123 where !editingText: // left arrow
@@ -172,6 +172,14 @@ final class NotchController {
                 } else if self.panel.isKeyWindow {
                     self.panel.resignKey()
                 }
+            }
+            .store(in: &cancellables)
+
+        model.$isPinned
+            .removeDuplicates()
+            .sink { [weak self] pinned in
+                guard let self, !pinned, self.model.isOpen, !self.pointerInside else { return }
+                self.scheduleClose()
             }
             .store(in: &cancellables)
 
