@@ -103,11 +103,12 @@ final class SettingsStore: ObservableObject {
         activeKit.map { settings.usesDefaults(of: $0) } ?? true
     }
 
-    /// Switches to another kit, replacing the tab layout with its defaults
-    /// for the user's onboarding `answers` (Settings asks the kit's
-    /// questions first, as first-run setup does).
+    /// Switches to a kit, replacing the tab layout with its defaults for the
+    /// user's onboarding `answers` (Settings asks the kit's questions first,
+    /// as first-run setup does). Re-applies the active kit too, so a kit
+    /// re-imported with changes takes effect.
     func switchKit(to id: String, answers: KitAnswers = [:]) {
-        guard id != settings.kitID, let kit = kits[id] else { return }
+        guard let kit = kits[id] else { return }
         apply(kit, answers: answers, addsStarterTasks: true)
     }
 
@@ -126,13 +127,14 @@ final class SettingsStore: ObservableObject {
         apply(kit, answers: settings.kitAnswers, addsStarterTasks: false)
     }
 
-    /// Copies a kit file into the user's kits and switches to it. Returns
-    /// what the kit uses that this build will skip, so the user can be told.
+    /// Copies a kit file into the user's kits without switching to it, so
+    /// Settings can ask the kit's onboarding questions first; `switchKit`
+    /// applies it. Returns what the kit uses that this build will skip, so
+    /// the user can be told.
     func importKit(from url: URL) throws -> (kit: KitManifest, issues: [KitIssue]) {
         guard let kitStore else { throw KitError.malformed("importing is off in this mode") }
         let kit = try kitStore.install(from: url)
         kits = KitLibrary.installed(imported: kitStore.load())
-        apply(kit, addsStarterTasks: true)
         return (kit, kit.issues())
     }
 

@@ -162,6 +162,9 @@ private struct KitSection: View {
     /// A kit with onboarding questions the user picked; its questions show
     /// in a sheet and the switch happens only once they confirm.
     @State private var askingKit: KitManifest?
+    /// Set while `askingKit` is a just-imported kit: what it uses that this
+    /// build skips, reported once the user answers or cancels.
+    @State private var importIssues: [KitIssue]?
 
     private var usesKitDefaults: Bool {
         store.usesKitDefaults && (store.activeKit.map { focus.settings.usesDefaults(of: $0.defaults) } ?? true)
@@ -208,9 +211,13 @@ private struct KitSection: View {
             SectionFooter("A kit is a premade set of tabs and defaults. Switching kits or resetting replaces your tabs, notch previews and focus sound with the kit's, and switching adds its starter tasks to Today. Other settings stay.")
         }
         .sheet(item: $askingKit) { kit in
-            KitQuestionsView(kit: kit, dismissal: .cancel, back: { askingKit = nil }) { answers in
+            KitQuestionsView(kit: kit, dismissal: .cancel, back: { cancelQuestions(for: kit) }) { answers in
                 askingKit = nil
                 store.switchKit(to: kit.id, answers: answers)
+                if let issues = importIssues {
+                    message = importMessage("Imported \(kit.name).", issues: issues)
+                    importIssues = nil
+                }
             }
             .frame(width: 520)
         }
@@ -241,9 +248,13 @@ private struct KitSection: View {
             guard response == .OK, let url = panel.url else { return }
             do {
                 let (kit, issues) = try store.importKit(from: url)
-                message = issues.isEmpty
-                    ? ("Imported \(kit.name).", false)
-                    : ("Imported \(kit.name). " + issues.map(\.description).joined(separator: " "), true)
+                if kit.onboarding.isEmpty {
+                    store.switchKit(to: kit.id)
+                    message = importMessage("Imported \(kit.name).", issues: issues)
+                } else {
+                    importIssues = issues
+                    askingKit = kit
+                }
             } catch {
                 message = ("\(error)", true)
             }
@@ -253,6 +264,23 @@ private struct KitSection: View {
         } else {
             apply(panel.runModal())
         }
+    }
+
+    /// Closes the questions sheet without switching. A just-imported kit
+    /// stays installed, so the user can pick it later.
+    private func cancelQuestions(for kit: KitManifest) {
+        askingKit = nil
+        guard let issues = importIssues else { return }
+        importIssues = nil
+        let note = kit.id == store.settings.kitID
+            ? "Updated \(kit.name); your tabs are unchanged."
+            : "Imported \(kit.name). Pick it under Current kit to use it."
+        message = importMessage(note, issues: issues)
+    }
+
+    /// The import outcome, with what the kit uses that this build skips.
+    private func importMessage(_ note: String, issues: [KitIssue]) -> (text: String, isWarning: Bool) {
+        issues.isEmpty ? (note, false) : (note + " " + issues.map(\.description).joined(separator: " "), true)
     }
 
     private func removeKit() {

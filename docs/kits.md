@@ -26,7 +26,8 @@ The **Kit** section lets you:
 
 - **Switch kit.** If the kit has onboarding questions, a sheet asks them first, the same way first-run setup does; **Cancel** keeps your current kit. Your tabs change to the new kit's tabs for your answers, and its notch previews and focus sound replace yours if the kit sets them. The kit's starter tasks, plus those your answers add, go on Today, skipping any already on the list. Every other preference stays as it is.
 - **Reset to Kit Defaults.** Puts the tabs, notch previews and focus sound back the way the kit ships them, without adding starter tasks again. The button is disabled when nothing would change.
-- **Import Kit…** Pick a `.json` kit file. NotchDeck checks it, saves a copy, and switches to it. If the kit mentions things this version doesn't know, such as a module from a newer release, you see a warning listing them, and they are skipped.
+- **Import Kit…** Pick a `.json` kit file. NotchDeck checks it, saves a copy, asks the kit's questions if it has any, and switches to it.
+If you cancel the questions, the kit stays in the list so you can pick it later. If the kit mentions things this version doesn't know, such as a module from a newer release, you see a warning listing them, and they are skipped.
 - **Remove Kit.** Shown for imported kits only. NotchDeck switches back to the default kit.
 
 After switching, you can still turn tabs on and off and reorder them below the Kit section.
@@ -160,7 +161,7 @@ Each answer can switch modules on or off and add starter tasks.
 Answers are applied in question order, so when two answers disagree about a tab, the later question wins.
 The answers are saved with the kit, so **Reset to kit defaults** rebuilds the tabs they chose.
 Switching kits in Settings asks the new kit's questions and saves those answers instead, since answers belong to the kit that asked them.
-An imported kit is applied without answers; pick it again from another kit to answer its questions.
+Importing a kit asks its questions the same way before switching to it.
 Duplicate and blank starter tasks are dropped.
 
 ## Errors and warnings
