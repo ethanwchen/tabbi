@@ -87,8 +87,9 @@ struct PlannerList: View {
     }
 }
 
-/// One checklist row: checkbox, title (double-click to rename), and a delete
-/// button that appears on hover.
+/// One checklist row: checkbox, title (double-click to rename), and focus and
+/// delete buttons that appear on hover. The focus target keeps a small scope
+/// glyph so it's clear which task the timer is for.
 private struct PlannerRow: View {
     let item: PlannerItem
     @ObservedObject var store: PlannerStore
@@ -131,6 +132,11 @@ private struct PlannerRow: View {
                     .contentShape(Rectangle())
                     .onTapGesture(count: 2) { beginRename() }
                     .help(item.title)
+            }
+
+            if !isRenaming {
+                PlannerFocusToggle(item: item, focusStore: store.focus,
+                                   showsButton: hovering && store.canEdit)
             }
 
             if hovering, !isRenaming, store.canEdit {
@@ -204,6 +210,49 @@ private struct PlannerCheckbox: View {
         .help(isOn ? "Mark as not done" : "Mark as done")
         .onHover { hovering = $0 }
         .animation(.spring(response: 0.3, dampingFraction: 0.55), value: isOn)
+        .animation(Theme.Motion.snappy, value: hovering)
+    }
+}
+
+/// The row's link to the focus timer. Observes `FocusStore` in its own view
+/// so the timer's once-a-second tick doesn't re-render whole rows.
+private struct PlannerFocusToggle: View {
+    let item: PlannerItem
+    @ObservedObject var focusStore: FocusStore
+    /// True while the row is hovered and editable.
+    let showsButton: Bool
+    @State private var hovering = false
+
+    private var isLinked: Bool { focusStore.timer.linkedItemID == item.id }
+
+    var body: some View {
+        let accent = Theme.Palette.accent(for: .planner)
+        Group {
+            if showsButton, isLinked || !item.isDone {
+                Button {
+                    withAnimation(Theme.Motion.snappy) {
+                        if isLinked { focusStore.link(nil) } else { focusStore.focus(on: item.id) }
+                    }
+                } label: {
+                    Image(systemName: "scope")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundStyle(isLinked || hovering ? accent : Theme.Palette.tertiaryText)
+                        .frame(width: 20, height: 20)
+                        .background(Circle().fill(hovering ? accent.opacity(0.16) : .clear))
+                        .contentShape(Circle())
+                }
+                .buttonStyle(.plain)
+                .help(isLinked ? "Stop focusing on this task" : "Focus on this task")
+                .onHover { hovering = $0 }
+            } else if isLinked {
+                Image(systemName: "scope")
+                    .font(.system(size: 10, weight: .bold))
+                    .foregroundStyle(accent)
+                    .frame(width: 20, height: 20)
+                    .help("The focus timer is on this task")
+            }
+        }
+        .transition(.opacity.combined(with: .scale(scale: 0.8)))
         .animation(Theme.Motion.snappy, value: hovering)
     }
 }
