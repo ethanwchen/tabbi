@@ -11,8 +11,8 @@
  */
 import { DurableObject } from "cloudflare:workers";
 import {
-  HttpError, RATE_LIMIT_PER_MIN, REGISTER_PER_MIN, FRIEND_CODE_RE, TOKEN_RE,
-  newCode, newToken, nowS, readBody, sha256Hex,
+  HttpError, MAX_FRIENDS, RATE_LIMIT_PER_MIN, REGISTER_PER_MIN, FRIEND_CODE_RE, TOKEN_RE,
+  newCode, newToken, nowS, parseFriendCode, readBody, sha256Hex,
 } from "./lib";
 import { PROFILE_FIELDS, Profile, applyProfilePatch, defaultProfile, parseProfilePatch, sameProfile } from "./profile";
 import { json } from "./http";
@@ -36,6 +36,13 @@ CREATE TABLE IF NOT EXISTS users (
   level       INTEGER NOT NULL,
   created_at  INTEGER NOT NULL
 );
+-- Friendships are symmetric and stored in both directions, so "my friends" is one indexed range scan.
+CREATE TABLE IF NOT EXISTS friends (
+  a          TEXT NOT NULL,
+  b          TEXT NOT NULL,
+  created_at INTEGER NOT NULL,
+  PRIMARY KEY (a, b)
+) WITHOUT ROWID;
 `;
 
 interface UserRow extends Record<string, SqlStorageValue> {
@@ -121,6 +128,11 @@ export class Hub extends DurableObject<Env> {
     if (path === "/v1/me" && method === "PATCH") return this.updateProfile(req, caller, false);
     if (path === "/v1/me" && method === "DELETE") return this.deleteMe(caller);
 
+    if (path === "/v1/friends" && method === "GET") return this.listFriends(caller);
+    if (path === "/v1/friends" && method === "POST") return this.addFriend(req, caller, now);
+    const friendPath = /^\/v1\/friends\/([^/]+)$/.exec(path);
+    if (friendPath && method === "DELETE") return this.removeFriend(caller, friendPath[1]);
+
     throw new HttpError(404, "not_found", "not found");
   }
 
@@ -193,11 +205,63 @@ export class Hub extends DurableObject<Env> {
   private deleteMe(caller: Caller): Response {
     this.ctx.storage.transactionSync(() => {
       this.sql.exec("DELETE FROM users WHERE code = ?", caller.code);
+      // Both directions via the primary key: the reverse rows are found through my own friend list.
+      this.sql.exec("DELETE FROM friends WHERE b = ? AND a IN (SELECT b FROM friends WHERE a = ?)", caller.code, caller.code);
+      this.sql.exec("DELETE FROM friends WHERE a = ?", caller.code);
     });
     return json({ ok: true });
   }
 
   private userExists(code: string): boolean {
     return FRIEND_CODE_RE.test(code) && this.sql.exec("SELECT 1 FROM users WHERE code = ?", code).toArray().length > 0;
+  }
+
+  // ---------- friends ----------
+
+  private listFriends(caller: Caller): Response {
+    const rows = this.sql.exec<UserRow & { since: number }>(
+      `SELECT u.*, f.created_at AS since FROM friends f JOIN users u ON u.code = f.b
+       WHERE f.a = ? ORDER BY u.name COLLATE NOCASE, u.code`,
+      caller.code,
+    ).toArray();
+    return json({ ok: true, friends: rows.map((r) => ({ profile: rowToProfile(r), since: r.since })) });
+  }
+
+  /** Symmetric add by friend code. Adding someone who is already a friend is a no-op success. */
+  private async addFriend(req: Request, caller: Caller, now: number): Promise<Response> {
+    const body = await readBody(req, ["code"]);
+    const code = parseFriendCode(body.code);
+    if (code === caller.code) throw new HttpError(400, "self_friend", "you cannot add yourself");
+    const row = this.sql.exec<UserRow>("SELECT * FROM users WHERE code = ?", code).toArray()[0];
+    if (!row) throw new HttpError(404, "unknown_code", "no one has that code");
+    const already = this.sql.exec("SELECT 1 FROM friends WHERE a = ? AND b = ?", caller.code, code).toArray().length > 0;
+    if (!already) {
+      if (this.friendCount(caller.code) >= MAX_FRIENDS) {
+        throw new HttpError(409, "friend_limit", `you already have ${MAX_FRIENDS} friends`);
+      }
+      if (this.friendCount(code) >= MAX_FRIENDS) {
+        throw new HttpError(409, "their_friend_limit", `they already have ${MAX_FRIENDS} friends`);
+      }
+      this.ctx.storage.transactionSync(() => {
+        this.sql.exec("INSERT OR IGNORE INTO friends (a, b, created_at) VALUES (?, ?, ?), (?, ?, ?)",
+          caller.code, code, now, code, caller.code, now);
+      });
+    }
+    return json({ ok: true, added: !already, friend: rowToProfile(row) });
+  }
+
+  /** Symmetric remove. Removing someone who is not a friend is a no-op success (`removed: false`). */
+  private removeFriend(caller: Caller, raw: string): Response {
+    const code = parseFriendCode(raw);
+    let removed = false;
+    this.ctx.storage.transactionSync(() => {
+      removed = this.sql.exec("DELETE FROM friends WHERE a = ? AND b = ?", caller.code, code).rowsWritten > 0;
+      this.sql.exec("DELETE FROM friends WHERE a = ? AND b = ?", code, caller.code);
+    });
+    return json({ ok: true, removed });
+  }
+
+  private friendCount(code: string): number {
+    return this.sql.exec<{ n: number }>("SELECT COUNT(*) AS n FROM friends WHERE a = ?", code).one().n;
   }
 }

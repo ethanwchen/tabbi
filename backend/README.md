@@ -44,6 +44,8 @@ app ──HTTPS──> Worker (studynotch-friends) ──> Durable Object "Hub" 
 - Every other `/v1/*` call is forwarded to a single SQLite-backed Durable Object, `Hub`, which owns all state.
   One object gives strongly consistent, transactional updates: symmetric friendships, the friend cap and party capacity cannot race.
 - Tokens are stored only as SHA-256 hashes.
+- Friendships are symmetric and stored as two rows (`a -> b` and `b -> a`) keyed by `(a, b)`.
+  Listing my friends is one primary-key range scan, and adding a friend costs 2 row writes.
 - Rate limits (60 requests per minute per token, 10 registrations per minute per IP) are counted in the Hub's memory.
   With a single instance they are exact while it is alive, and they cost no storage writes.
 
