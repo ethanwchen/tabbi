@@ -19,6 +19,8 @@ import NotchKitCore
 /// network or the Keychain. Neither does a live `--snapshot` run, which
 /// would otherwise register a throwaway user on the production server: it
 /// renders the state a first launch shows before the server answers.
+/// `NOTCHDECK_PARTY_SERVER=http://localhost:8787` makes a snapshot run
+/// render a local worker's real data instead (see `localSnapshotServer`).
 @MainActor
 final class PartyStore: ObservableObject {
     @Published private(set) var state: PartyState
@@ -31,8 +33,10 @@ final class PartyStore: ObservableObject {
     @Published private(set) var notice: String?
 
     let isDemo: Bool
-    /// A `--snapshot` render: stays offline so no user is ever registered.
+    /// A `--snapshot` render: stays offline so no user is ever registered,
+    /// unless `snapshotServer` names a local worker to render live data from.
     private let isSnapshot: Bool
+    private var snapshotServer: URL?
     private let repository: PartySettingsRepository?
     private let credentials: any PartyCredentialStore
     private let defaults = UserDefaults.standard
@@ -69,6 +73,19 @@ final class PartyStore: ObservableObject {
             tracker = PartyPresenceTracker()
             return
         }
+        if isSnapshot, let local = Self.localSnapshotServer(environment) {
+            // An end-to-end snapshot against a local worker: connect as
+            // the given user (or a new one) and render what the server returns.
+            repository = nil
+            snapshotServer = local.server
+            let settings = PartySettings(serverText: local.server.absoluteString,
+                                         name: environment["NOTCHDECK_PARTY_NAME"] ?? "Sam")
+            self.settings = settings
+            credentials = InMemoryPartyCredentialStore(local.credentials.map { [local.server: $0] } ?? [:])
+            state = PartyState(settings: settings)
+            tracker = PartyPresenceTracker()
+            return
+        }
         let repository = PartySettingsRepository()
         self.repository = repository
         credentials = isSnapshot
@@ -91,13 +108,34 @@ final class PartyStore: ObservableObject {
             .store(in: &cancellables)
     }
 
+    /// `NOTCHDECK_PARTY_SERVER` for a `--snapshot` run, with the optional
+    /// `NOTCHDECK_PARTY_TOKEN` and `NOTCHDECK_PARTY_CODE` of the user to
+    /// render as. Only plain-http servers count, which `PartyServer.parse`
+    /// allows for this Mac alone, so a snapshot can never register users
+    /// on a deployed server.
+    private static func localSnapshotServer(_ environment: [String: String])
+        -> (server: URL, credentials: PartyCredentials?)? {
+        guard let text = environment["NOTCHDECK_PARTY_SERVER"],
+              let server = PartyServer.parse(text), server.scheme == "http" else { return nil }
+        let credentials = environment["NOTCHDECK_PARTY_TOKEN"].flatMap { token in
+            environment["NOTCHDECK_PARTY_CODE"].map { PartyCredentials(token: token, code: $0) }
+        }
+        return (server, credentials)
+    }
+
     // MARK: Lifecycle
 
     /// The module was enabled: connect and start heartbeats.
     func start() {
         guard !isRunning else { return }
         isRunning = true
-        guard !isDemo, !isSnapshot else { return }
+        guard !isDemo, !isSnapshot || snapshotServer != nil else { return }
+        if snapshotServer != nil {
+            // Nothing calls `onAppear` in an offscreen render; load as if open.
+            plan.setVisible(true)
+            rebuildAccount()
+            return
+        }
         let center = NSWorkspace.shared.notificationCenter
         center.addObserver(self, selector: #selector(willSleep), name: NSWorkspace.willSleepNotification, object: nil)
         center.addObserver(self, selector: #selector(didWake), name: NSWorkspace.didWakeNotification, object: nil)

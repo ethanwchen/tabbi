@@ -10,6 +10,9 @@ Deployment, architecture and the free-tier math are in [`backend/README.md`](../
   Local dev: `http://localhost:8787` (`npm run dev` in `backend/`).
 - The Swift client is `PartyClient` in `Sources/NotchKitCore/Party`.
   Its end-to-end test runs against a worker with `PARTY_TEST_SERVER=http://localhost:8787 swift test --filter PartyLiveServerTests`; against production it only creates throwaway users and deletes them.
+- To see the Party tab render a local worker's real data, run `NOTCHDECK_PARTY_SERVER=http://localhost:8787 swift run NotchDeck --snapshot snapshots-live --edition studynotch`.
+  Add `NOTCHDECK_PARTY_TOKEN` and `NOTCHDECK_PARTY_CODE` from a `POST /v1/register` reply to render as that user, with the friends and party you set up for it with `curl`.
+  Only plain-http (local) servers are accepted there, so a snapshot never registers users on a deployed server.
 - Every route is under `/v1/` except the health check `GET /`.
 - Bodies are JSON objects (`Content-Type: application/json`), at most 4096 bytes.
   An empty body counts as `{}`.
