@@ -2,9 +2,9 @@ import Foundation
 
 /// The user's tab bar: which modules are shown and in what order.
 ///
-/// Every known module always has a slot in `order`, so a module that ships in
-/// a future version (and is missing from saved data) is appended at the end and
-/// starts enabled. At least one module always stays enabled so the notch never
+/// Every module in the catalog always has a slot in `order`, so a module that
+/// ships in a future version (and is missing from saved data) is appended at
+/// the end and starts enabled. At least one module always stays enabled so the notch never
 /// opens onto an empty panel.
 public struct ModuleLayout: Equatable, Sendable {
     /// Every known module, in the user's order.
@@ -12,16 +12,17 @@ public struct ModuleLayout: Equatable, Sendable {
     /// Modules the user turned off.
     public private(set) var disabled: Set<ModuleID>
 
-    public static let `default` = ModuleLayout(order: ModuleID.allCases, disabled: [])
+    public static let `default` = ModuleLayout(order: ModuleCatalog.builtIn.ids, disabled: [])
 
-    /// Builds a layout from possibly stale or partial data: unknown and duplicate
-    /// entries are dropped, missing modules are appended (enabled), and if that
-    /// would leave nothing enabled the first module is re-enabled.
-    public init(order: [ModuleID], disabled: Set<ModuleID>) {
+    /// Builds a layout from possibly stale or partial data: ids not in
+    /// `catalog` and duplicates are dropped, missing modules are appended
+    /// (enabled), and if that would leave nothing enabled the first module is
+    /// re-enabled.
+    public init(order: [ModuleID], disabled: Set<ModuleID>, catalog: ModuleCatalog = .builtIn) {
         var seen = Set<ModuleID>()
-        var normalized = order.filter { seen.insert($0).inserted }
-        normalized += ModuleID.allCases.filter { !seen.contains($0) }
-        var disabled = disabled
+        var normalized = order.filter { catalog.contains($0) && seen.insert($0).inserted }
+        normalized += catalog.ids.filter { !seen.contains($0) }
+        var disabled = disabled.intersection(normalized)
         if normalized.allSatisfy(disabled.contains), let first = normalized.first {
             disabled.remove(first)
         }
@@ -29,11 +30,12 @@ public struct ModuleLayout: Equatable, Sendable {
         self.disabled = disabled
     }
 
-    /// Restores a layout from raw identifiers, ignoring ones this version doesn't know.
-    public init(orderRawValues: [String], disabledRawValues: [String]) {
+    /// Restores a layout from raw identifiers, ignoring ones `catalog` doesn't know.
+    public init(orderRawValues: [String], disabledRawValues: [String], catalog: ModuleCatalog = .builtIn) {
         self.init(
-            order: orderRawValues.compactMap(ModuleID.init(rawValue:)),
-            disabled: Set(disabledRawValues.compactMap(ModuleID.init(rawValue:)))
+            order: orderRawValues.map(ModuleID.init(rawValue:)),
+            disabled: Set(disabledRawValues.map(ModuleID.init(rawValue:))),
+            catalog: catalog
         )
     }
 

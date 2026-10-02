@@ -3,7 +3,7 @@ import NotchKitCore
 
 final class ModuleLayoutTests: XCTestCase {
     func testDefaultEnablesEveryModuleInCanonicalOrder() {
-        XCTAssertEqual(ModuleLayout.default.enabled, ModuleID.allCases)
+        XCTAssertEqual(ModuleLayout.default.enabled, ModuleCatalog.builtIn.ids)
     }
 
     func testMissingModulesAreAppendedEnabledAndUnknownOnesDropped() {
@@ -16,13 +16,13 @@ final class ModuleLayoutTests: XCTestCase {
     }
 
     func testAllDisabledDataReenablesFirstModule() {
-        let layout = ModuleLayout(order: [.system, .spotify], disabled: Set(ModuleID.allCases))
+        let layout = ModuleLayout(order: [.system, .spotify], disabled: Set(ModuleCatalog.builtIn.ids))
         XCTAssertEqual(layout.enabled, [.system])
     }
 
     func testCannotDisableLastEnabledModule() {
         var layout = ModuleLayout.default
-        for module in ModuleID.allCases.dropLast() {
+        for module in ModuleCatalog.builtIn.ids.dropLast() {
             XCTAssertTrue(layout.setEnabled(module, false))
         }
         XCTAssertFalse(layout.canDisable(.claudeAsk))

@@ -38,7 +38,7 @@ enum SnapshotRenderer {
             model.preview = item
             shots.append(("closed-\(snapshotName(kind))", model))
         }
-        for module in ModuleID.allCases {
+        for module in ModuleCatalog.builtIn.ids {
             let model = NotchViewModel(geometry: geometry)
             model.open(module)
             shots.append(("open-\(module.rawValue)", model))

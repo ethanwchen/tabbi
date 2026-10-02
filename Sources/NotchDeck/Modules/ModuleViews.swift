@@ -12,6 +12,7 @@ enum ModuleViews {
         case .claudeUsage: ClaudeUsagePanel(store: services.claudeUsage)
         case .planner: PlannerPanel(store: services.planner)
         case .claudeAsk: ClaudeAskPanel(session: services.claudeAsk)
+        default: ModulePlaceholder(module: module, detail: "This module isn't available in this build")
         }
     }
 

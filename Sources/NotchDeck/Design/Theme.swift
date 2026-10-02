@@ -23,12 +23,8 @@ enum Theme {
 
         /// One accent per module, used for progress, selection, and highlights.
         static func accent(for module: ModuleID) -> Color {
-            switch module {
-            case .spotify: Color(red: 0.12, green: 0.84, blue: 0.38)
-            case .system: Color(red: 0.35, green: 0.78, blue: 1.00)
-            case .claudeUsage, .claudeAsk: Color(red: 0.85, green: 0.47, blue: 0.34)
-            case .planner: Color(red: 0.66, green: 0.55, blue: 1.00)
-            }
+            let accent = module.descriptor.accent
+            return Color(red: accent.red, green: accent.green, blue: accent.blue)
         }
     }
 
