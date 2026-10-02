@@ -42,7 +42,7 @@ final class FocusStore: ObservableObject {
             .flatMap { try? JSONDecoder().decode(FocusTimer.self, from: $0) } ?? FocusTimer()
         // A phase may have ended while the app wasn't running; catch up quietly.
         timer.advance(to: Date())
-        scheduleSideEffects()
+        scheduleSideEffects(withdrawingPending: false)
     }
 
     var remaining: TimeInterval { timer.remaining(at: now) }
@@ -105,7 +105,7 @@ final class FocusStore: ObservableObject {
         edit(&updated)
         guard updated != timer else { return }
         timer = updated
-        scheduleSideEffects()
+        scheduleSideEffects(withdrawingPending: true)
         updateTicker()
     }
 
@@ -119,20 +119,21 @@ final class FocusStore: ObservableObject {
         if let last = completions.last, now.timeIntervalSince(last.endedAt) < 60 {
             Self.playChime()
         }
-        scheduleSideEffects()
+        scheduleSideEffects(withdrawingPending: false)
         updateTicker()
     }
 
-    private func scheduleSideEffects() {
+    /// Saves the timer and arms the phase-end timer and notification. A user
+    /// action withdraws the pending banner; a phase that ended on its own keeps
+    /// it, since macOS may not have delivered it yet.
+    private func scheduleSideEffects(withdrawingPending: Bool) {
         guard !isDemo else { return }
         if let data = try? JSONEncoder().encode(timer) { defaults.set(data, forKey: Self.timerKey) }
 
         phaseEndTimer?.invalidate()
         phaseEndTimer = nil
-        guard let endsAt = timer.endsAt else {
-            notifications?.cancel()
-            return
-        }
+        if withdrawingPending { notifications?.cancelPending() }
+        guard let endsAt = timer.endsAt else { return }
         notifications?.schedule(phaseEndingAt: endsAt, timer: timer)
         let fire = Timer(fire: endsAt, interval: 0, repeats: false) { [weak self] _ in
             MainActor.assumeIsolated { self?.catchUp() }
@@ -183,8 +184,11 @@ final class FocusStore: ObservableObject {
 /// `UNUserNotificationCenter` aborts in a bare `swift run` executable.
 @MainActor
 private final class FocusNotifications: NSObject, UNUserNotificationCenterDelegate {
-    private static let requestID = "planner.focus.phaseEnd"
+    private static let requestPrefix = "planner.focus.phaseEnd"
     private let center: UNUserNotificationCenter
+    /// The request for the current phase. Each phase end gets its own ID so
+    /// scheduling the next phase never replaces a banner that is about to show.
+    private var pendingID: String?
 
     /// Nil outside an `.app` bundle.
     static func make() -> FocusNotifications? {
@@ -211,7 +215,7 @@ private final class FocusNotifications: NSObject, UNUserNotificationCenterDelega
         }
     }
 
-    /// Replaces any pending notification with one for the running phase.
+    /// Schedules the banner for the running phase's end.
     /// It's silent because the app plays its own softer chime.
     func schedule(phaseEndingAt endsAt: Date, timer: FocusTimer) {
         let (title, body) = FocusTimerFormat.completionMessage(
@@ -221,11 +225,16 @@ private final class FocusNotifications: NSObject, UNUserNotificationCenterDelega
         content.body = body
         let interval = max(endsAt.timeIntervalSinceNow, 1)
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: interval, repeats: false)
-        center.add(UNNotificationRequest(identifier: Self.requestID, content: content, trigger: trigger))
+        let id = "\(Self.requestPrefix).\(Int64(endsAt.timeIntervalSinceReferenceDate * 1000))"
+        pendingID = id
+        center.add(UNNotificationRequest(identifier: id, content: content, trigger: trigger))
     }
 
-    func cancel() {
-        center.removePendingNotificationRequests(withIdentifiers: [Self.requestID])
+    /// Withdraws the current phase's banner, e.g. after pause, reset, or skip.
+    func cancelPending() {
+        guard let id = pendingID else { return }
+        pendingID = nil
+        center.removePendingNotificationRequests(withIdentifiers: [id])
     }
 
     /// NotchDeck is always "frontmost" as an accessory app, so ask for the
