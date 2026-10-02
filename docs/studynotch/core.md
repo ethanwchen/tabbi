@@ -159,3 +159,59 @@ Rules:
 
 `StudyPhaseRecord` holds `method`, `phase`, `startedAt`, `endedAt`, `activeDuration` (pauses excluded), `outcome` (`completed`, `stopped`, `skipped`, `abandoned`), and `cards` for sprint focus.
 Records are only logged for phases that actually started.
+
+## Pet coach (`Sources/NotchDeckCore/Coach`)
+
+`PetCoach` decides when the study pet nudges and what it says.
+It sees only idle seconds and the category of the frontmost app's bundle id, never window titles, URLs, or keystrokes, so it needs no permission prompt.
+Nothing it sees leaves the device.
+
+### App lists
+
+`CoachAppList` sorts bundle ids into `CoachAppCategory` (`focus`, `distracting`, `neutral`) with `category(of:)`.
+Matching ignores case, and an app on both lists counts as `focus`, so the coach errs toward staying quiet.
+Anki (`net.ankiweb.anki`, `net.ankiweb.dtop`) is a focus app by default.
+The distracting list starts empty: the user picks it, and `suggestedDistracting` only offers common apps (Messages, Discord, Slack, WhatsApp, Telegram, Steam, TV) as opt-in chips.
+Websites such as YouTube can't be detected without window titles, so settings copy should say so.
+Edit with `markDistracting(_:)`, `markFocus(_:)`, and `forget(_:)`.
+
+### Evaluating
+
+The app builds a `PetCoachInput` every few seconds while a session runs and calls `evaluate(_:)` (or `evaluate(_:using:)` with a seeded generator in tests):
+
+| Field | Source |
+|---|---|
+| `now` | Wall clock |
+| `idleSeconds` | `CGEventSource.secondsSinceLastEventType` |
+| `frontmost` | `CoachAppList.category(of:)` on the frontmost app's bundle id |
+| `study` | `PetCoachStudyState`: `focusing`, `onBreak`, `paused`, `notStudying` |
+| `deepFocus` | The UI's deep-focus flag |
+
+It returns a `PetCoachDecision`: `.none`, `.lookOver` (a silent glance, no bubble), or `.nudge(PetCoachNudge)`.
+A nudge has a `kind` and a `message`; `pausesTimer` is true for `autoPause`, and the app should pause the `StudySession` with it.
+
+| `PetCoachNudgeKind` | When (standard rules) | Buttons |
+|---|---|---|
+| `distraction` | 2 min in a distracting app (after a glance at 30 s) | Back to it |
+| `offerPause` | 5 min in a distracting app | Pause / Back to it |
+| `idleCheck` | 2 min without input (10 min in deep focus) | Still studying / Pause |
+| `autoPause` | 5 min without input (20 min in deep focus) | Resume |
+
+Rules:
+
+- The coach only acts while `study == .focusing`; breaks, pauses, and no session end any episode.
+- Each step fires once per episode and steps up one at a time, even when the app first notices an episode late.
+  The last step is always an offer to rest, so escalation only gets kinder.
+- Leaving the distracting app ends that episode; any input ends the idle episode.
+- Idle never means distracted: it only triggers a question, because reading and thinking look idle.
+- Rate limits (`PetCoachRules`): the first bubble of an episode needs 10 minutes since the last one, the next step within an episode needs 2 minutes, and at most 3 bubbles per rolling hour, after which the pet goes quiet rather than nag.
+  The silent glance is not rate limited.
+- `autoPause` skips the cooldowns, because pausing keeps the stats honest, but it still counts toward the hourly cap.
+- `snooze(for:at:)` / `snooze(until:)` / `endSnooze()` and the per-session `nudgesEnabled` switch silence everything, including the glance and auto-pause.
+- `PetCoach` is `Codable`, so cooldowns, the hourly window, and snooze survive relaunch.
+
+### Messages
+
+`PetCoachMessages.all` holds 4 to 6 lines per kind, each with a stable `id`.
+Lines are short enough for a notch bubble (`maxLength`, 64 characters), warm, lightly med-school flavored ("The Krebs cycle is saving your seat."), and never shaming: no counting slip-ups, no guilt, no "you should".
+`pick(_:avoiding:using:)` skips recently used ids while others remain and never repeats the most recent line; the coach remembers its last 8 lines in `recentMessageIDs`.
