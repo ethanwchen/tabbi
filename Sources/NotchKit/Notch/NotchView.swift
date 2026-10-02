@@ -1,14 +1,18 @@
 import SwiftUI
 import NotchKitCore
-import NotchKit
 
 /// Root view: the black notch shape, morphing between closed and open, with
-/// the tab bar and the selected module inside.
-struct NotchView: View {
+/// the tab bar and the selected module inside. Reads `NotchViewModel` from
+/// the environment; the app supplies its panels through `content`.
+public struct NotchView: View {
     @EnvironmentObject private var model: NotchViewModel
-    @EnvironmentObject private var services: AppServices
+    private let content: NotchContent
 
-    var body: some View {
+    public init(content: NotchContent) {
+        self.content = content
+    }
+
+    public var body: some View {
         let shape = NotchShape(topRadius: model.topRadius, bottomRadius: model.bottomRadius)
         ZStack(alignment: .top) {
             shape
@@ -16,10 +20,10 @@ struct NotchView: View {
                 .shadow(color: .black.opacity(model.isOpen ? 0.45 : 0), radius: 18, y: 8)
 
             if model.isOpen {
-                OpenNotchContent()
+                OpenNotchContent(content: content)
                     .transition(AnyTransition.opacity.combined(with: .scale(scale: 0.96, anchor: .top)))
             } else if let preview = model.preview {
-                NotchPreview(item: preview, notchWidth: model.geometry.notchSize.width)
+                NotchPreview(item: preview, notchWidth: model.geometry.notchSize.width, content: content)
                     .frame(height: model.geometry.notchSize.height)
             }
         }
@@ -34,9 +38,9 @@ struct NotchView: View {
             Divider()
             Button("Settings…") {
                 model.close()
-                services.openSettings()
+                content.openSettings()
             }
-            Button("Quit \(Edition.current.name)") { NSApp.terminate(nil) }
+            Button("Quit \(content.appName)") { NSApp.terminate(nil) }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .animation(Theme.Motion.notch, value: model.phase)
@@ -48,7 +52,7 @@ struct NotchView: View {
 /// Header (tabs left of the notch, title right of it) above the module panel.
 private struct OpenNotchContent: View {
     @EnvironmentObject private var model: NotchViewModel
-    @EnvironmentObject private var services: AppServices
+    let content: NotchContent
 
     var body: some View {
         let notch = model.geometry.notchSize
@@ -63,9 +67,9 @@ private struct OpenNotchContent: View {
                         .foregroundStyle(Theme.Palette.secondaryText)
                         .lineLimit(1)
                         .contentTransition(.opacity)
-                    IconButton(symbol: "gearshape.fill", size: 22, help: "\(Edition.current.name) Settings") {
+                    IconButton(symbol: "gearshape.fill", size: 22, help: "\(content.appName) Settings") {
                         model.close()
-                        services.openSettings()
+                        content.openSettings()
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .trailing)
@@ -74,7 +78,7 @@ private struct OpenNotchContent: View {
             .frame(height: max(notch.height, 32))
 
             ZStack {
-                services.modules.panel(for: model.selected)
+                content.panel(model.selected)
                     .id(model.selected)
                     .transition(.asymmetric(
                         insertion: .move(edge: model.movingForward ? .trailing : .leading).combined(with: .opacity),

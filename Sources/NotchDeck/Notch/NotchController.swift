@@ -33,7 +33,7 @@ final class NotchController {
         model = NotchViewModel(geometry: geometry, layout: settings.modules)
         panel = NotchPanel(contentRect: .zero)
 
-        let root = NotchView()
+        let root = NotchView(content: ModuleViews.notchContent(services: services))
             .environmentObject(model)
             .environmentObject(services)
         panel.contentView = NotchHostingView(rootView: root)

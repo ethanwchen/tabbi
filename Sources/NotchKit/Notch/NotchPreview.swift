@@ -1,6 +1,5 @@
 import SwiftUI
 import NotchKitCore
-import NotchKit
 
 /// The live preview in the two wings beside the closed notch: an icon or
 /// artwork on the leading side, short text or the equalizer on the trailing
@@ -8,7 +7,7 @@ import NotchKit
 struct NotchPreview: View {
     let item: TickerItem
     let notchWidth: CGFloat
-    @EnvironmentObject private var services: AppServices
+    let content: NotchContent
 
     var body: some View {
         let wing = NotchPreviewLayout.wingWidth(for: item)
@@ -39,7 +38,7 @@ struct NotchPreview: View {
     @ViewBuilder private var leading: some View {
         switch item {
         case .nowPlaying:
-            ModuleViews.compactLeading(services: services)
+            content.nowPlayingLeading()
         default:
             Image(systemName: NotchPreviewLayout.symbol(for: item))
                 .font(.system(size: 12, weight: .semibold))
@@ -51,7 +50,7 @@ struct NotchPreview: View {
     @ViewBuilder private var trailing: some View {
         switch item {
         case .nowPlaying:
-            ModuleViews.compactTrailing(services: services)
+            content.nowPlayingTrailing()
         case .meeting(let meeting):
             HStack(spacing: Theme.Spacing.xs) {
                 Text(meeting.title)

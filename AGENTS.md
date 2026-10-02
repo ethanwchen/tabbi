@@ -28,13 +28,15 @@ Judge them against the design rules below before you call the work done.
   `Design/Theme.swift` (design tokens and shared controls `Card`,
   `IconButton`), `Components/` (`ModulePreview`, `ModulePlaceholder`),
   `Notch/` (the panel window, notch shape, screen geometry, the
-  open/close and tab state `NotchViewModel`, the `NotchTabBar`, and the
-  closed-notch wing sizes `NotchPreviewLayout`), `Pets/`
+  open/close and tab state `NotchViewModel`, the `NotchTabBar`, the
+  closed-notch wing sizes `NotchPreviewLayout`, and the root `NotchView`,
+  which the app fills through `NotchContent` closures), `Pets/`
   (`PetPlayer`, `PetView`) and `Audio/` (`FocusSoundEngine`, which plays a
   `FocusMix` through AVAudioEngine; Study can reuse it). Everything here is `public`. Reuse it; add new
   shared components here, not inside a module.
-- `Sources/NotchDeck/Notch` — the notch controller, root view and wing
-  preview, which assemble the app's modules from `AppServices`. Shared; change only when your task
+- `Sources/NotchDeck/Notch` — the notch controller (panel placement,
+  pointer, keyboard, swipe and hotkey input), which shows `NotchView` with
+  the `NotchContent` built from `AppServices` in `ModuleViews.notchContent`. Shared; change only when your task
   requires it.
 - `Sources/NotchDeck/Modules/<Module>/` — one folder per module: a store
   (`ObservableObject`, owned by `AppServices`), SwiftUI views, and a

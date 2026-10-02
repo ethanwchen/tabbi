@@ -50,7 +50,7 @@ enum SnapshotRenderer {
         }
 
         for (name, model) in shots {
-            let view = NotchView()
+            let view = NotchView(content: ModuleViews.notchContent(services: services))
                 .environmentObject(model)
                 .environmentObject(services)
                 .frame(width: Theme.Layout.expandedSize.width + 40,
