@@ -1,0 +1,13 @@
+name = "studynotch-friends"
+main = "src/index.ts"
+compatibility_date = "2025-09-01"
+
+# One SQLite-backed Durable Object holds all state. SQLite-backed objects are available on the
+# Workers Free plan; nothing has to be created in the dashboard before `wrangler deploy`.
+[[durable_objects.bindings]]
+name = "HUB"
+class_name = "Hub"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Hub"]
