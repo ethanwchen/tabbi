@@ -14,11 +14,27 @@ final class SettingsStore: ObservableObject {
         }
     }
 
-    private let repository: SettingsRepository
+    /// Why the last launch-at-login change failed, for the Settings window.
+    @Published private(set) var launchAtLoginError: String?
 
-    init(repository: SettingsRepository = SettingsRepository()) {
+    /// False when another app already owns `settings.hotkey`; set by whoever
+    /// registers the shortcut so the Settings window can explain it.
+    @Published var hotkeyIsRegistered = true
+
+    private let repository: SettingsRepository
+    /// False for snapshot stores, which must never touch the real login item.
+    private let integratesWithSystem: Bool
+
+    init(repository: SettingsRepository = SettingsRepository(), integratesWithSystem: Bool = true) {
         self.repository = repository
-        settings = repository.load()
+        self.integratesWithSystem = integratesWithSystem
+        var settings = repository.load()
+        if integratesWithSystem, LaunchAtLogin.isAvailable {
+            // The user may have removed the login item in System Settings.
+            settings.launchAtLogin = LaunchAtLogin.isEnabled
+            repository.save(settings)
+        }
+        self.settings = settings
         apply()
     }
 
@@ -28,7 +44,23 @@ final class SettingsStore: ObservableObject {
         let suite = "NotchDeck.ephemeral"
         let defaults = UserDefaults(suiteName: suite) ?? .standard
         defaults.removePersistentDomain(forName: suite)
-        return SettingsStore(repository: SettingsRepository(defaults: defaults))
+        return SettingsStore(repository: SettingsRepository(defaults: defaults), integratesWithSystem: false)
+    }
+
+    /// Registers or removes the login item first and only records the
+    /// preference once the system accepted it, so the toggle never lies.
+    func setLaunchAtLogin(_ enabled: Bool) {
+        guard integratesWithSystem else {
+            settings.launchAtLogin = enabled
+            return
+        }
+        do {
+            try LaunchAtLogin.setEnabled(enabled)
+            launchAtLoginError = nil
+        } catch {
+            launchAtLoginError = error.localizedDescription
+        }
+        settings.launchAtLogin = LaunchAtLogin.isEnabled
     }
 
     private func apply() {

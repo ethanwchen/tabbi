@@ -16,6 +16,7 @@ final class NotchController {
     private var hoverOpenTask: Task<Void, Never>?
     private var pointerInside = false
     private var horizontalScroll: CGFloat = 0
+    private var hotkey: GlobalHotkey?
 
     /// Extra room around the open notch for its shadow.
     private static let canvasMargin = CGSize(width: 48, height: 40)
@@ -40,6 +41,7 @@ final class NotchController {
 
         installMonitors()
         observeState()
+        observeHotkey()
     }
 
     // MARK: Layout
@@ -221,6 +223,20 @@ final class NotchController {
         services.$hasCompactActivity
             .removeDuplicates()
             .sink { [weak self] active in self?.model.hasCompactActivity = active }
+            .store(in: &cancellables)
+    }
+
+    /// The global shortcut toggles the notch from anywhere, re-registered
+    /// whenever the user records a new one.
+    private func observeHotkey() {
+        let hotkey = GlobalHotkey { [weak self] in self?.model.toggle() }
+        self.hotkey = hotkey
+        services.settings.$settings
+            .map(\.hotkey)
+            .removeDuplicates()
+            .sink { [weak self] shortcut in
+                self?.services.settings.hotkeyIsRegistered = hotkey.register(shortcut)
+            }
             .store(in: &cancellables)
     }
 
