@@ -34,10 +34,15 @@ final class StudyStore: ObservableObject {
     @Published private(set) var now = Date()
     /// Every logged study stretch and the points not yet credited to the pet.
     @Published private(set) var log: StudyLog
+    /// The methods the picker offers and where a fresh timer starts, set by the kit.
+    @Published private(set) var menu: StudyMethodMenu
     /// The pet in the panel's corner, wearing the look saved by the Closet.
     let pet: PetPlayer
 
     private let isDemo: Bool
+    /// Snapshot runs read the saved session but never write it back, so
+    /// rendering with another kit can't change the user's method.
+    private let isSnapshot = CommandLine.arguments.contains("--snapshot")
     private let defaults = UserDefaults.standard
     private var isVisible = false
     /// False while the Study module is turned off, so a session left
@@ -57,9 +62,12 @@ final class StudyStore: ObservableObject {
     private static let sessionKey = "study.session"
     private static let deepFocusKey = "study.deepFocus"
 
-    init(edition: Edition = .current) {
+    /// - Parameter menu: the active kit's methods; a saved session on a
+    ///   method the kit no longer offers moves to its starting method.
+    init(menu: StudyMethodMenu = .all, edition: Edition = .current) {
         isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
         self.edition = edition
+        self.menu = menu
         if isDemo {
             let now = Date()
             let session = Self.demoSession(StudySnapshotState.current, now: now)
@@ -73,9 +81,13 @@ final class StudyStore: ObservableObject {
         }
         var saved = defaults.data(forKey: Self.sessionKey)
             .flatMap { try? JSONDecoder().decode(StudySession.self, from: $0) }
-            ?? StudySession(method: .pomodoro)
+            ?? StudySession(method: .preset(menu.startingKind))
         // A phase may have ended while the app wasn't running; catch up quietly.
-        saved.advance(to: Date())
+        let launch = Date()
+        saved.advance(to: launch)
+        if let kind = menu.replacement(for: saved, kitApplied: false) {
+            saved.switchMethod(to: .preset(kind), at: launch)
+        }
         session = saved
         pet = PetPlayer(profile: Self.petProfile(for: edition), asleep: StudyPetCue.isDozing(saved))
         deepFocus = defaults.bool(forKey: Self.deepFocusKey)
@@ -176,6 +188,17 @@ final class StudyStore: ObservableObject {
         change { $0.switchMethod(to: .preset(kind), at: now) }
     }
 
+    /// Follows a new kit: the picker offers its methods, and a stopped
+    /// timer moves to its starting method. A running block is never cut short.
+    /// - Parameter kitApplied: true when the user just picked or reset the
+    ///   kit, so even a still-offered method gives way to the kit's start.
+    func use(_ menu: StudyMethodMenu, kitApplied: Bool) {
+        if menu != self.menu { self.menu = menu }
+        catchUp()
+        guard let kind = menu.replacement(for: session, kitApplied: kitApplied) else { return }
+        change { $0.switchMethod(to: .preset(kind), at: now) }
+    }
+
     // MARK: Private
 
     /// Applies `edit`, then saves and re-arms the phase-end timer and ticker.
@@ -205,7 +228,7 @@ final class StudyStore: ObservableObject {
     /// Moves finished stretches into the log, saves the session and the log,
     /// and arms a one-shot timer for the running phase's end.
     private func scheduleSideEffects() {
-        guard !isDemo else { return }
+        guard !isDemo, !isSnapshot else { return }
         collectLog()
         if let data = try? JSONEncoder().encode(session) { defaults.set(data, forKey: Self.sessionKey) }
 

@@ -19,7 +19,7 @@ final class AppServices: ObservableObject {
     let focus = FocusStore()
     let planner: PlannerStore
     /// The Study tab's timer, kept running while the notch is closed.
-    let study = StudyStore()
+    let study: StudyStore
     let claudeAsk = ClaudeAskSession()
     /// The rotating live preview beside the closed notch.
     let ticker: TickerStore
@@ -35,6 +35,7 @@ final class AppServices: ObservableObject {
     init(settings: SettingsStore) {
         self.settings = settings
         planner = PlannerStore(focus: focus)
+        study = StudyStore(menu: StudyMethodMenu(kit: settings.activeKit?.defaults))
         modules = ModuleRegistry([
             NowPlayingModule(controller: spotify),
             SystemModule(monitor: system),
@@ -63,10 +64,11 @@ final class AppServices: ObservableObject {
             .store(in: &cancellables)
         // Kit defaults that live outside `AppSettings`.
         settings.kitApplied
-            .sink { [planner] application in
+            .sink { [planner, study] application in
                 MainActor.assumeIsolated {
                     let focus = FocusController.shared
                     focus.settings = focus.settings.applying(application.kit.defaults)
+                    study.use(StudyMethodMenu(kit: application.kit.defaults), kitApplied: true)
                     if application.addsStarterTasks {
                         planner.addStarterTasks(application.kit.starterTasks(answers: application.answers))
                     }

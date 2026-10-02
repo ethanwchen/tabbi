@@ -15,7 +15,7 @@ struct StudyPanel: View {
         Group {
             switch overlay {
             case .picker:
-                StudyMethodPicker(current: store.session.method.kind, info: { show(.info($0, from: .picker)) }) { kind in
+                StudyMethodPicker(methods: store.menu.methods, current: store.session.method.kind, info: { show(.info($0, from: .picker)) }) { kind in
                     if let kind { store.choose(kind) }
                     show(nil)
                 }
@@ -260,8 +260,10 @@ private struct StudyTodayLabelStyle: LabelStyle {
     }
 }
 
-/// Every method as a tile; picking one starts a fresh session with it.
+/// Every method the kit offers as a tile; picking one starts a fresh session with it.
 private struct StudyMethodPicker: View {
+    /// The kit's methods, in its order.
+    let methods: [StudyMethod]
     let current: StudyMethodKind
     /// Opens a method's info popover.
     let info: (StudyMethodKind) -> Void
@@ -280,7 +282,7 @@ private struct StudyMethodPicker: View {
                 IconButton(symbol: "xmark", help: "Keep the current method") { done(nil) }
             }
             LazyVGrid(columns: columns, spacing: Theme.Spacing.xs) {
-                ForEach(StudyMethod.presets) { method in
+                ForEach(methods) { method in
                     StudyMethodTile(method: method, isCurrent: method.kind == current,
                                     info: { info(method.kind) }) {
                         done(method.kind)
