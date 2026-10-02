@@ -11,8 +11,8 @@ import os
 /// AVAudioEngine converts to whatever the output device wants, so swapping
 /// headphones mid-session never needs a new mixer.
 @MainActor
-final class FocusSoundEngine {
-    static let sampleRate = 48_000.0
+public final class FocusSoundEngine {
+    public static let sampleRate = 48_000.0
 
     /// The mixer lives in a heap box so the render callback can mutate it in
     /// place (no copy-on-write of its generator arrays on the audio thread).
@@ -30,20 +30,20 @@ final class FocusSoundEngine {
         }
     }
 
-    let engine: AVAudioEngine
+    public let engine: AVAudioEngine
     private let box: MixerBox
     private let source: AVAudioSourceNode
     private var shutdownTask: Task<Void, Never>?
     private var configurationObserver: NSObjectProtocol?
 
-    private(set) var mix: FocusMix = .off
-    private(set) var volume: Float
+    public private(set) var mix: FocusMix = .off
+    public private(set) var volume: Float
     /// True between `play()` and `stop()`, i.e. while sound is (or is fading) in.
-    private(set) var isPlaying = false
+    public private(set) var isPlaying = false
 
     /// - Parameter engine: injectable so a harness can put it in manual
     ///   (offline) rendering mode before the first `play()`.
-    init(volume: Float = FocusSettings.default.volume, engine: AVAudioEngine = AVAudioEngine()) {
+    public init(volume: Float = FocusSettings.default.volume, engine: AVAudioEngine = AVAudioEngine()) {
         self.engine = engine
         self.volume = volume
         let box = MixerBox(mixer: FocusMixer(sampleRate: Self.sampleRate, volume: volume, seed: UInt64.random(in: 1...UInt64.max)))
@@ -82,14 +82,14 @@ final class FocusSoundEngine {
     /// Changes the sounds; crossfades over 2 s while playing. Switching to
     /// Off while playing fades out and shuts the engine down; picking a
     /// sound again fades back in.
-    func setMix(_ mix: FocusMix) {
+    public func setMix(_ mix: FocusMix) {
         self.mix = mix
         box.withMixer { $0.setMix(mix) }
         if isPlaying { updateTransport() }
     }
 
     /// Sets the 0...1 master volume; glides over 50 ms so sliders never zip.
-    func setVolume(_ volume: Float) {
+    public func setVolume(_ volume: Float) {
         self.volume = box.withMixer {
             $0.setVolume(volume)
             return $0.volume
@@ -97,20 +97,20 @@ final class FocusSoundEngine {
     }
 
     /// Fades in over 2 s (starting the engine) when the mix has any sound.
-    func play() {
+    public func play() {
         isPlaying = true
         updateTransport()
     }
 
     /// Fades out over 2 s, then stops the engine.
-    func stop() {
+    public func stop() {
         guard isPlaying else { return }
         isPlaying = false
         updateTransport()
     }
 
     /// True when the mixer is producing exact silence (stopped and faded out).
-    var isSilent: Bool { box.withMixer { $0.isSilent } }
+    public var isSilent: Bool { box.withMixer { $0.isSilent } }
 
     /// The mixer plays only when we're playing *and* there's something to
     /// hear, so an Off mix lets the engine shut down mid-session.

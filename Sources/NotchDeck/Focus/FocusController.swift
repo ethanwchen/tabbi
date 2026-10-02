@@ -1,4 +1,5 @@
 import AppKit
+import NotchKit
 import NotchKitCore
 import os
 

@@ -96,5 +96,5 @@ Constraints to keep in mind:
 - Apply the kit's study methods and pet defaults once the Study and Closet modules read them (tabs, ticker previews, focus sounds and starter tasks already apply).
 - Move the remaining module-specific settings (e.g. the Claude pane) into `NotchModule.makeSettingsPane()`; Focus already lives in Today's pane.
 - Focus as its own module.
-- Finish the `NotchKit` split: move the notch controller and view, settings infrastructure and focus audio out of the app target.
+- Finish the `NotchKit` split: move the notch controller and view and the settings infrastructure out of the app target (focus audio already lives in `NotchKit/Audio`).
 - Real Study, Anki, Party and Closet modules replacing today's previews.
