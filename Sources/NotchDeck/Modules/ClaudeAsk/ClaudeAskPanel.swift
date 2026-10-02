@@ -242,7 +242,7 @@ private struct AssistantBubble: View {
     @State private var hovering = false
 
     var body: some View {
-        HStack(alignment: .top, spacing: 0) {
+        HStack(alignment: .top, spacing: Theme.Spacing.xs) {
             Card(padding: 0) {
                 VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                     content
@@ -259,16 +259,12 @@ private struct AssistantBubble: View {
                 }
                 .padding(.horizontal, Theme.Spacing.m)
                 .padding(.vertical, Theme.Spacing.s)
-                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .overlay(alignment: .topTrailing) {
-                if hovering && canCopy {
-                    CopyButton(text: message.text)
-                        .padding(Theme.Spacing.xs)
-                        .transition(.opacity)
-                }
-            }
-            Spacer(minLength: Theme.Spacing.xl)
+            // Beside the card rather than over it, so short answers stay readable.
+            CopyButton(text: message.text)
+                .opacity(hovering && canCopy ? 1 : 0)
+                .allowsHitTesting(hovering && canCopy)
+            Spacer(minLength: 0)
         }
         .onHover { hovering = $0 }
         .animation(Theme.Motion.snappy, value: hovering)
@@ -332,7 +328,7 @@ private struct FailureRow: View {
                         .font(Theme.Typography.bodyEmphasis)
                         .foregroundStyle(Theme.Palette.primaryText)
                     if let detail {
-                        Text(detail)
+                        Text(ClaudeAskMarkdown.attributed(detail))
                             .font(Theme.Typography.caption)
                             .foregroundStyle(Theme.Palette.secondaryText)
                             .fixedSize(horizontal: false, vertical: true)
@@ -358,7 +354,7 @@ private struct FailureRow: View {
 
     private var detail: String? {
         switch failure {
-        case .claudeNotFound: "Install Claude Code, or set \(ClaudeCLI.overrideVariable) to its path."
+        case .claudeNotFound: "Install Claude Code, or set `\(ClaudeCLI.overrideVariable)` to its path."
         case .process(let detail): detail
         case nil: nil
         }
