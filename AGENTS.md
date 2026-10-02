@@ -10,6 +10,7 @@ Claude Usage, Today (daily checklist), and Ask Claude.
 swift build                                  # must stay warning-free
 swift test                                   # NotchKitCore unit tests
 swift run NotchDeck --snapshot snapshots     # render every notch state to PNG
+swift run NotchDeck --snapshot snapshots-medicine --kit medicine  # same, for another kit's tabs
 scripts/run.sh                               # bundle + launch the real app
 ```
 

@@ -4,16 +4,17 @@ import NotchKitCore
 
 /// Renders every notch state and Settings pane to PNG without showing a window:
 ///
-///     swift run NotchDeck --snapshot ./snapshots
+///     swift run NotchDeck --snapshot ./snapshots [--kit medicine]
 ///
 /// Used to review UI changes (by people and by agents) without Screen
 /// Recording permission. Live data sources run as usual, so panels show
 /// whatever state they reach within `settle` seconds.
 @MainActor
 enum SnapshotRenderer {
-    static func run(outputDirectory: URL, settle: TimeInterval = 1.5) async {
+    /// - Parameter kitID: the kit whose tabs are rendered, as on first run.
+    static func run(outputDirectory: URL, kitID: String = KitLibrary.defaultKitID, settle: TimeInterval = 1.5) async {
         try? FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
-        let services = AppServices(settings: .ephemeral())
+        let services = AppServices(settings: .ephemeral(kitID: kitID))
         // 14"/16" MacBook Pro notch.
         let geometry = NotchGeometry(
             notchSize: CGSize(width: 185, height: 32), hasHardwareNotch: true,

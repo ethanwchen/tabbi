@@ -49,12 +49,13 @@ final class SettingsStore: ObservableObject {
     }
 
     /// A store backed by a throwaway defaults suite, so snapshots always render
-    /// the default layout regardless of the user's saved preferences.
-    static func ephemeral() -> SettingsStore {
+    /// the kit's default layout regardless of the user's saved preferences.
+    static func ephemeral(kitID: String = KitLibrary.defaultKitID) -> SettingsStore {
         let suite = "NotchDeck.ephemeral"
         let defaults = UserDefaults(suiteName: suite) ?? .standard
         defaults.removePersistentDomain(forName: suite)
-        return SettingsStore(repository: SettingsRepository(defaults: defaults), integratesWithSystem: false)
+        let repository = SettingsRepository(defaults: defaults, defaultKitID: kitID)
+        return SettingsStore(repository: repository, integratesWithSystem: false)
     }
 
     /// Registers or removes the login item first and only records the
