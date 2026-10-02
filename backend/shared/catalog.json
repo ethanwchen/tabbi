@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "species": ["cat", "dog"],
+  "breeds": {
+    "cat": [
+      "domestic-shorthair", "domestic-longhair", "tabby", "tuxedo", "calico", "tortoiseshell",
+      "siamese", "persian", "maine-coon", "british-shorthair", "ragdoll", "bengal",
+      "sphynx", "scottish-fold", "russian-blue", "abyssinian", "norwegian-forest", "black-cat"
+    ],
+    "dog": [
+      "mixed", "labrador", "golden-retriever", "german-shepherd", "corgi", "shiba-inu",
+      "husky", "beagle", "dachshund", "poodle", "french-bulldog", "pug",
+      "border-collie", "samoyed", "chihuahua", "pomeranian", "dalmatian", "bernese"
+    ]
+  },
+  "costumes": [
+    "none", "scrubs", "white-coat", "surgical-cap", "stethoscope", "lab-goggles", "graduation",
+    "hoodie", "sweater", "pajamas", "raincoat", "wizard", "chef", "pirate", "astronaut",
+    "superhero", "witch", "santa", "pumpkin", "bunny"
+  ],
+  "accessories": [
+    "glasses", "sunglasses", "headphones", "bow", "bandana", "scarf", "collar-bell", "crown",
+    "flower", "party-hat", "beanie", "coffee-mug", "pencil", "book", "id-badge", "reflex-hammer",
+    "face-mask", "halo"
+  ],
+  "statuses": ["studying", "break", "idle", "offline"],
+  "studyMethods": ["pomodoro", "52-17", "flowtime", "timeblock", "anki", "qbank", "lecture", "free"],
+  "heartbeatSeconds": { "studying": 120, "break": 120, "idle": 300 },
+  "limits": {
+    "nameMaxLength": 24,
+    "petNameMaxLength": 24,
+    "maxColors": 6,
+    "maxAccessories": 4,
+    "maxFriends": 50,
+    "maxPartyMembers": 8,
+    "partyIdleExpirySeconds": 43200
+  }
+}
