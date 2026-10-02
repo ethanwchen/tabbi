@@ -77,6 +77,7 @@ private struct SpotifyNowPlaying: View {
     @ObservedObject var controller: SpotifyController
     let playback: SpotifyPlayback
     @StateObject private var artwork = SpotifyArtworkLoader()
+    @State private var hoveringTitle = false
 
     private static let artworkSize: CGFloat = 112
 
@@ -89,15 +90,16 @@ private struct SpotifyNowPlaying: View {
 
             VStack(alignment: .leading, spacing: 0) {
                 VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-                    Text(track?.title.isEmpty == false ? track!.title : "Unknown track")
+                    SpotifyMarqueeText(text: track?.title.isEmpty == false ? track!.title : "Unknown track",
+                                       isActive: hoveringTitle)
                         .font(Theme.Typography.title)
                         .foregroundStyle(Theme.Palette.primaryText)
-                    Text(subtitle)
+                    SpotifyMarqueeText(text: subtitle, isActive: hoveringTitle)
                         .font(Theme.Typography.body)
                         .foregroundStyle(Theme.Palette.secondaryText)
                 }
-                .lineLimit(1)
-                .truncationMode(.tail)
+                .contentShape(Rectangle())
+                .onHover { hoveringTitle = $0 }
                 .help(helpText)
 
                 Spacer(minLength: Theme.Spacing.s)
@@ -138,6 +140,78 @@ private struct SpotifyNowPlaying: View {
             .frame(width: Self.artworkSize * 1.2, height: Self.artworkSize * 1.2)
             .allowsHitTesting(false)
             .animation(Theme.Motion.content, value: tint)
+    }
+}
+
+// MARK: - Marquee
+
+/// One line of text that truncates at rest and, while `isActive` (hovered),
+/// scrolls as a gentle loop if it doesn't fit. Text that fits never moves.
+/// Font and color come from the environment like a plain `Text`.
+private struct SpotifyMarqueeText: View {
+    let text: String
+    let isActive: Bool
+
+    @State private var textWidth: CGFloat = 0
+    @State private var containerWidth: CGFloat = 0
+    @State private var startDate = Date()
+
+    private static let edgeFade: CGFloat = 12
+
+    private var scrolls: Bool {
+        isActive && SpotifyMarquee.needsScrolling(textWidth: textWidth, containerWidth: containerWidth)
+    }
+
+    var body: some View {
+        Text(text)
+            .lineLimit(1)
+            .truncationMode(.tail)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .opacity(scrolls ? 0 : 1)
+            .onGeometryChange(for: CGFloat.self, of: { $0.size.width }) { containerWidth = $0 }
+            .background(alignment: .leading) {
+                // Measures the untruncated width without affecting layout.
+                Text(text)
+                    .lineLimit(1)
+                    .fixedSize()
+                    .hidden()
+                    .onGeometryChange(for: CGFloat.self, of: { $0.size.width }) { textWidth = $0 }
+            }
+            .overlay(alignment: .leading) {
+                if scrolls { scrollingText }
+            }
+            .onChange(of: scrolls) { _, scrolls in
+                if scrolls { startDate = .now }
+            }
+    }
+
+    private var scrollingText: some View {
+        TimelineView(.animation(minimumInterval: 1.0 / 60)) { context in
+            let offset = SpotifyMarquee.offset(elapsed: context.date.timeIntervalSince(startDate),
+                                               textWidth: textWidth, containerWidth: containerWidth)
+            // The leading fade grows in as the text moves, so the first
+            // letter is crisp while the line rests.
+            let leadingFade = min(-offset, Self.edgeFade) / max(containerWidth, 1)
+            let trailingFade = Self.edgeFade / max(containerWidth, 1)
+            HStack(spacing: SpotifyMarquee.gap) {
+                Text(text)
+                Text(text)
+            }
+            .lineLimit(1)
+            .fixedSize()
+            .offset(x: offset)
+            .frame(width: containerWidth, alignment: .leading)
+            .clipped()
+            .mask {
+                LinearGradient(stops: [
+                    .init(color: .clear, location: 0),
+                    .init(color: .black, location: leadingFade),
+                    .init(color: .black, location: 1 - trailingFade),
+                    .init(color: .clear, location: 1),
+                ], startPoint: .leading, endPoint: .trailing)
+            }
+        }
+        .accessibilityHidden(true)
     }
 }
 
