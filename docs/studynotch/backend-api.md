@@ -5,7 +5,11 @@ Deployment, architecture and the free-tier math are in [`backend/README.md`](../
 
 ## Basics
 
-- Base URL: `https://studynotch-friends.<subdomain>.workers.dev` (local dev: `http://localhost:8787`).
+- Production base URL: `https://studynotch-friends.drosophil-anki-friends-backend.workers.dev`.
+  It is the default server in StudyNotch's Party settings (`PartyServer.productionURL`); users can point the app at their own deployment there.
+  Local dev: `http://localhost:8787` (`npm run dev` in `backend/`).
+- The Swift client is `PartyClient` in `Sources/NotchKitCore/Party`.
+  Its end-to-end test runs against a worker with `PARTY_TEST_SERVER=http://localhost:8787 swift test --filter PartyLiveServerTests`; against production it only creates throwaway users and deletes them.
 - Every route is under `/v1/` except the health check `GET /`.
 - Bodies are JSON objects (`Content-Type: application/json`), at most 4096 bytes.
   An empty body counts as `{}`.
