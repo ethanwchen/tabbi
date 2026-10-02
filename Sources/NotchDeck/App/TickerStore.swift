@@ -6,9 +6,10 @@ import NotchDeckCore
 ///
 /// Collects a `TickerSources` snapshot from the module stores, filters it by
 /// the user's notch preview settings, and runs `TickerRotation` to pick the
-/// item on screen. The clock only ticks while the notch is closed: once a
-/// second while an item shows (countdowns and the rotation need it), twice a
-/// minute while only a far-off meeting could appear, and not at all otherwise.
+/// item on screen. The clock only runs while the notch is closed, and then
+/// only wakes when the screen can change: the next rotation turn, the next
+/// change `TickerSources.nextChange` predicts, or every second while a
+/// running focus clock is showing.
 /// While the meeting item is on and the notch is closed it also keeps
 /// `UpNextStore` reloading, so events added since Today was last open show up.
 @MainActor
@@ -24,13 +25,10 @@ final class TickerStore: ObservableObject {
     private var rotation: TickerRotation
     /// False while the notch is open, where the preview isn't visible.
     private var isActive = true
+    /// More than one item can take a turn, so the rotation has a deadline.
+    private var rotates = false
     private var timer: Timer?
-    private var timerInterval: TimeInterval?
     private var cancellables: Set<AnyCancellable> = []
-
-    /// While nothing shows, how often to check whether a meeting has come
-    /// within `TickerSources.meetingHorizon`.
-    private static let idleMeetingCheck: TimeInterval = 30
 
     init(settings: SettingsStore, spotify: SpotifyController, planner: PlannerStore, claudeUsage: ClaudeUsageStore) {
         kinds = settings.settings.previewKinds
@@ -75,33 +73,32 @@ final class TickerStore: ObservableObject {
 
     private func refresh() {
         upNext.setPreviewWatching(isActive && kinds.contains(.meeting))
+        let now = Date()
         if isActive {
-            let now = Date()
-            let next = rotation.update(items: sources.items(at: now, enabled: kinds), at: now)
+            let items = sources.items(at: now, enabled: kinds)
+            let next = rotation.update(items: items, at: now)
+            rotates = items.count > 1 && next?.isPinned == false
             if next != item { item = next }
         }
-        scheduleTimer()
+        scheduleTimer(now: now)
     }
 
-    private func scheduleTimer() {
-        let wanted: TimeInterval? = if !isActive {
-            nil
-        } else if item != nil {
-            1
-        } else if kinds.contains(.meeting), !sources.events.isEmpty {
-            Self.idleMeetingCheck
-        } else {
-            nil
-        }
-        guard wanted != timerInterval else { return }
+    private func scheduleTimer(now: Date) {
         timer?.invalidate()
         timer = nil
-        timerInterval = wanted
-        guard let wanted else { return }
-        let timer = Timer(timeInterval: wanted, repeats: true) { [weak self] _ in
+        guard isActive else { return }
+        var wakes = [sources.nextChange(after: now, enabled: kinds)]
+        if rotates, let shownSince = rotation.shownSince {
+            wakes.append(shownSince.addingTimeInterval(rotation.interval))
+        }
+        if case .focus(_, _, isRunning: true) = item {
+            wakes.append(now.addingTimeInterval(1))
+        }
+        guard let fireDate = wakes.compactMap({ $0 }).min() else { return }
+        let timer = Timer(fire: max(fireDate, now), interval: 0, repeats: false) { [weak self] _ in
             MainActor.assumeIsolated { self?.refresh() }
         }
-        timer.tolerance = wanted / 10
+        timer.tolerance = min(max(fireDate.timeIntervalSince(now), 0) / 10, 1)
         RunLoop.main.add(timer, forMode: .common)
         self.timer = timer
     }

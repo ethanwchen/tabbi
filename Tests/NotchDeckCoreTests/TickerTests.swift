@@ -68,6 +68,38 @@ final class TickerSourcesTests: XCTestCase {
         ])
     }
 
+    func testNothingTimedMeansNoWake() {
+        XCTAssertNil(TickerSources(isMusicPlaying: true, tasksRemaining: 3).nextChange(after: now))
+    }
+
+    func testNextChangeFollowsTheMeetingCountdown() {
+        let soon = TickerSources(events: [event("Standup", startsIn: 3.5)])
+        let wake = try! XCTUnwrap(soon.nextChange(after: now))
+        XCTAssertEqual(wake, now.addingTimeInterval(30))
+        XCTAssertNotEqual(soon.items(at: now), soon.items(at: wake))
+        XCTAssertEqual(soon.items(at: now), soon.items(at: wake.addingTimeInterval(-1)))
+
+        let started = TickerSources(events: [event("Review", startsIn: -10, length: 30)])
+        XCTAssertEqual(started.nextChange(after: now), now.addingTimeInterval(20 * 60))
+
+        let distant = TickerSources(events: [event("Later", startsIn: 90)])
+        let entry = try! XCTUnwrap(distant.nextChange(after: now))
+        XCTAssertEqual(entry, now.addingTimeInterval(30 * 60))
+        XCTAssertEqual(distant.items(at: entry).map(\.kind), [.meeting])
+        XCTAssertEqual(distant.nextChange(after: now, enabled: [.tasks]), nil)
+    }
+
+    func testNextChangeCoversFocusEndAndUsageReset() {
+        let focus = TickerSources(focus: runningFocus(remaining: 600))
+        XCTAssertEqual(focus.nextChange(after: now), now.addingTimeInterval(600))
+
+        let reset = now.addingTimeInterval(900)
+        let usage = TickerSources(usage: ClaudeRateLimitSnapshot(
+            status: nil, fiveHour: ClaudeUsageWindow(utilization: 0.9, resetsAt: reset), sevenDay: nil))
+        XCTAssertEqual(usage.nextChange(after: now), reset)
+        XCTAssertEqual(usage.items(at: reset), [])
+    }
+
     func testMeetingsBeyondTheHorizonAndAllDayEventsAreHidden() {
         var allDay = event("Offsite", startsIn: 0, length: 24 * 60)
         allDay.isAllDay = true

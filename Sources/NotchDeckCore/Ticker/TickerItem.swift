@@ -123,6 +123,40 @@ public struct TickerSources: Equatable, Sendable {
         TickerKind.allCases.filter(enabled.contains).compactMap { item(for: $0, at: now) }
     }
 
+    /// The earliest moment after `now` at which `items(at:enabled:)` can
+    /// change from the clock alone: a meeting countdown ticking down a
+    /// minute, a meeting entering the horizon or ending, a focus phase
+    /// ending, or a usage window resetting. `nil` when nothing is pending.
+    ///
+    /// Lets the caller sleep until then instead of polling. A running focus
+    /// clock's per-second change is left to the caller, which only needs it
+    /// while that clock is on screen.
+    public func nextChange(after now: Date, enabled: Set<TickerKind> = Set(TickerKind.allCases)) -> Date? {
+        var dates: [Date] = []
+        if enabled.contains(.meeting) {
+            for event in events where !event.isAllDay && event.end > now {
+                let lead = event.start.timeIntervalSince(now)
+                if lead > Self.meetingHorizon {
+                    dates.append(event.start.addingTimeInterval(-Self.meetingHorizon))
+                } else if lead > 0 {
+                    // The countdown shows whole minutes rounded up, so it
+                    // drops by one each time the lead crosses a minute.
+                    let minutes = (lead / 60).rounded(.up)
+                    dates.append(event.start.addingTimeInterval(-(minutes - 1) * 60))
+                } else {
+                    dates.append(event.end)
+                }
+            }
+        }
+        if enabled.contains(.focus), let endsAt = focus?.endsAt, endsAt > now {
+            dates.append(endsAt)
+        }
+        if enabled.contains(.claudeUsage) {
+            dates += [usage?.fiveHour?.resetsAt, usage?.sevenDay?.resetsAt].compactMap { $0 }.filter { $0 > now }
+        }
+        return dates.min()
+    }
+
     private func item(for kind: TickerKind, at now: Date) -> TickerItem? {
         switch kind {
         case .meeting:
