@@ -1,0 +1,78 @@
+name: Bug report
+description: Something in NotchDeck looks wrong or does not work.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug.
+        Please search existing issues first, and report security issues privately as described in SECURITY.md.
+  - type: dropdown
+    id: module
+    attributes:
+      label: Area
+      description: Where does the problem happen?
+      options:
+        - Notch (opening, closing, hover, window)
+        - Now Playing
+        - System
+        - Claude Usage
+        - Today
+        - Ask Claude
+        - Install or first launch
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the problem. Screenshots or a screen recording help a lot.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open the notch
+        2. Click the Today tab
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: NotchDeck version
+      description: The release you installed, or the commit if you built from source.
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version
+      placeholder: macOS 15.4
+    validations:
+      required: true
+  - type: input
+    id: mac
+    attributes:
+      label: Mac and display
+      description: Your Mac model, and whether NotchDeck runs on the built-in notched display or an external one.
+      placeholder: MacBook Pro 14-inch (M3), built-in display
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Optional. Output from Console.app filtered by "NotchDeck", or from `swift run NotchDeck` if you built from source. Please remove anything private.
+      render: text

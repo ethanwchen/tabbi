@@ -1,0 +1,39 @@
+name: CI
+
+# The repository is private for now, so CI only runs when started by hand
+# (Actions tab > CI > Run workflow).
+on:
+  workflow_dispatch:
+  # Enable at public launch: uncomment to run on every push to main and every PR.
+  # push:
+  #   branches: [main]
+  # pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build and test
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Toolchain
+        run: |
+          sw_vers
+          swift --version
+
+      - name: Build (warnings are errors)
+        run: swift build -Xswiftc -warnings-as-errors
+
+      - name: Test
+        run: swift test
+
+      - name: Release bundle (universal, ad-hoc signed)
+        run: scripts/release.sh

@@ -1,0 +1,52 @@
+name: Feature request
+description: Suggest an improvement or a new module for NotchDeck.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the idea.
+        Every panel has to fit a small fixed canvas (about 500 x 150 pt), so the best requests describe the problem first and the UI second.
+  - type: dropdown
+    id: module
+    attributes:
+      label: Area
+      options:
+        - Notch (opening, closing, hover, window)
+        - Now Playing
+        - System
+        - Claude Usage
+        - Today
+        - Ask Claude
+        - New module
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: What are you trying to do, and what gets in the way today?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: What would you like to happen?
+      description: Describe the behavior you have in mind. Sketches or mockups are welcome.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you have considered
+      description: Optional. Other apps, workarounds, or designs you have tried.
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy
+      description: NotchDeck has no telemetry and makes no network requests beyond what a module inherently needs.
+      options:
+        - label: This idea works without sending my data to a new service, or I have explained why it needs one.
+          required: true
