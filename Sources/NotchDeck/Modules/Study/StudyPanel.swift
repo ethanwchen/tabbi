@@ -60,7 +60,7 @@ private indirect enum StudyPanelOverlay: Equatable {
         case .picker: self = .picker
         case .info(let kind): self = .info(kind, from: nil)
         case .sounds: self = .sounds
-        case .method, nil: return nil
+        case .method, .paused, nil: return nil
         }
     }
 }
@@ -97,8 +97,21 @@ private struct StudyDial: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .help("\(readout.caption): \(readout.value)")
+        .overlay(alignment: .bottomTrailing) {
+            PetView(player: store.pet)
+                .padding(Theme.Spacing.xs)
+                .help(petHelp)
+        }
         .animation(Theme.Motion.content, value: store.progress)
         .animation(Theme.Motion.snappy, value: session.phase)
+    }
+
+    /// What the corner pet is up to, in the pet's own name.
+    private var petHelp: String {
+        let name = store.pet.profile.name
+        let session = store.session
+        if !session.isRunning { return "\(name) naps until the timer runs" }
+        return session.phase.isBreak ? "\(name) is taking the break with you" : "\(name) is studying with you"
     }
 
     /// Open-ended Flowtime has no finish line, so its ring stays a quiet track.

@@ -8,12 +8,14 @@ import NotchKitCore
 ///         swift run NotchDeck --snapshot snapshots-study --kit medicine
 ///
 /// Values: `method:<kind>` (the timer running that method), `picker`,
-/// `sounds` (the sound mixer), or `info:<kind>` (that method's info popover over a Pomodoro session). Kinds are
+/// `sounds` (the sound mixer), `paused` (the demo Pomodoro paused, so the
+/// pet dozes), or `info:<kind>` (that method's info popover over a Pomodoro session). Kinds are
 /// `StudyMethodKind` raw values. Ignored outside snapshot runs.
 enum StudySnapshotState: Equatable {
     case method(StudyMethodKind)
     case picker
     case sounds
+    case paused
     case info(StudyMethodKind)
 
     static let current: StudySnapshotState? = {
@@ -26,6 +28,7 @@ enum StudySnapshotState: Equatable {
     static func parse(_ value: String) -> StudySnapshotState? {
         if value == "picker" { return .picker }
         if value == "sounds" { return .sounds }
+        if value == "paused" { return .paused }
         let parts = value.split(separator: ":", maxSplits: 1).map(String.init)
         guard parts.count == 2, let kind = StudyMethodKind(rawValue: parts[1]) else { return nil }
         switch parts[0] {

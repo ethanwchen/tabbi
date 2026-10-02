@@ -1,6 +1,7 @@
 import AppKit
 import Combine
 import NotchKitCore
+import NotchKit
 
 /// The Study tab's timer: owns the `StudySession` so a block keeps running
 /// while the notch is closed or another tab is showing.
@@ -13,12 +14,17 @@ import NotchKitCore
 /// which totals the day and holds earned points for the pet ledger.
 /// With deep focus on, study phases drive the shared focus mode (sound and
 /// Do Not Disturb) through `FocusController`, alongside the Focus timer.
+/// It also plays the corner pet, which dozes while the clock is stopped,
+/// wakes when it runs and celebrates each finished block (`StudyPetCue`).
 /// With `NOTCHDECK_DEMO=1` it shows a sample Pomodoro round and a sample
 /// day, and never touches sounds or disk.
 @MainActor
 final class StudyStore: ObservableObject {
     @Published private(set) var session: StudySession {
-        didSet { reportFocusActivity() }
+        didSet {
+            reportFocusActivity()
+            reactPet(from: oldValue)
+        }
     }
     /// Whether study phases turn on focus mode. Opt-in, like focus sound.
     @Published private(set) var deepFocus: Bool {
@@ -28,6 +34,8 @@ final class StudyStore: ObservableObject {
     @Published private(set) var now = Date()
     /// Every logged study stretch and the points not yet credited to the pet.
     @Published private(set) var log: StudyLog
+    /// The pet in the panel's corner, wearing the look saved by the Closet.
+    let pet: PetPlayer
 
     private let isDemo: Bool
     private let defaults = UserDefaults.standard
@@ -41,24 +49,35 @@ final class StudyStore: ObservableObject {
     /// Set when the log on disk could not be read: new stretches are still
     /// logged in memory, but the file is never overwritten, so nothing is lost.
     private let logIsUnreadable: Bool
+    private let edition: Edition
+    /// A block finished while the panel was hidden; the pet celebrates it
+    /// the next time the panel shows, so the hop is never played unseen.
+    private var celebrationPending = false
 
     private static let sessionKey = "study.session"
     private static let deepFocusKey = "study.deepFocus"
 
     init(edition: Edition = .current) {
         isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
+        self.edition = edition
         if isDemo {
             let now = Date()
-            session = Self.demoSession(StudySnapshotState.current?.demoMethod ?? .pomodoro, now: now)
+            let session = Self.demoSession(StudySnapshotState.current, now: now)
+            self.session = session
             log = Self.demoLog(now: now)
             deepFocus = true
             logURL = nil
             logIsUnreadable = false
+            pet = PetPlayer(profile: .starter(.cat), asleep: StudyPetCue.isDozing(session), seed: 7)
             return
         }
-        session = defaults.data(forKey: Self.sessionKey)
+        var saved = defaults.data(forKey: Self.sessionKey)
             .flatMap { try? JSONDecoder().decode(StudySession.self, from: $0) }
             ?? StudySession(method: .pomodoro)
+        // A phase may have ended while the app wasn't running; catch up quietly.
+        saved.advance(to: Date())
+        session = saved
+        pet = PetPlayer(profile: Self.petProfile(for: edition), asleep: StudyPetCue.isDozing(saved))
         deepFocus = defaults.bool(forKey: Self.deepFocusKey)
         logURL = Self.logURL(for: edition)
         do {
@@ -68,8 +87,6 @@ final class StudyStore: ObservableObject {
             log = StudyLog()
             logIsUnreadable = true
         }
-        // A phase may have ended while the app wasn't running; catch up quietly.
-        session.advance(to: Date())
         scheduleSideEffects()
     }
 
@@ -77,6 +94,17 @@ final class StudyStore: ObservableObject {
     static func logURL(for edition: Edition) -> URL? {
         FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
             .appendingPathComponent("\(edition.name)/Study/log.json")
+    }
+
+    /// The pet's look from the Closet's save
+    /// (`~/Library/Application Support/<edition>/Pet/pet.json`), read only:
+    /// the Closet owns that file. A missing or unreadable save shows the
+    /// starter cat.
+    static func petProfile(for edition: Edition) -> PetProfile {
+        let url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
+            .appendingPathComponent("\(edition.name)/Pet/pet.json")
+        let save = try? url.flatMap { try PetSave.load(from: $0) }
+        return save?.profile ?? .starter(.cat)
     }
 
     var readout: StudyDialReadout { StudyTimerFormat.readout(session, at: now) }
@@ -91,6 +119,14 @@ final class StudyStore: ObservableObject {
         isVisible = visible
         catchUp()
         updateTicker()
+        guard visible else { return }
+        // Pick up a new outfit or breed chosen in the Closet since last time.
+        if !isDemo { pet.update(profile: Self.petProfile(for: edition)) }
+        if celebrationPending {
+            celebrationPending = false
+            pet.send(.celebrate)
+            if StudyPetCue.isDozing(session) { pet.send(.sleep) }
+        }
     }
 
     /// Called by the module's `start()` / `stop()`.
@@ -207,6 +243,18 @@ final class StudyStore: ObservableObject {
                                                from: .study)
     }
 
+    /// Plays the pet's reaction to a session change. A celebration that
+    /// would happen out of sight waits for the panel to show.
+    private func reactPet(from old: StudySession) {
+        for event in StudyPetCue.events(from: old, to: session) {
+            if event == .celebrate, !isVisible {
+                celebrationPending = true
+            } else {
+                pet.send(event)
+            }
+        }
+    }
+
     /// Drains the session's phase records into the persisted log.
     private func collectLog() {
         guard !session.log.isEmpty else { return }
@@ -227,7 +275,9 @@ final class StudyStore: ObservableObject {
     /// A believable session part-way through: a Pomodoro on its second
     /// round, a Flowtime stretch counting up, a sprint with cards done, or
     /// another method a bit over a third into its first focus block.
-    private static func demoSession(_ kind: StudyMethodKind, now: Date) -> StudySession {
+    /// The `paused` snapshot state pauses the Pomodoro, so the pet dozes.
+    private static func demoSession(_ state: StudySnapshotState?, now: Date) -> StudySession {
+        let kind = state?.demoMethod ?? .pomodoro
         var session = StudySession(method: .preset(kind))
         switch kind {
         case .pomodoro:
@@ -248,6 +298,7 @@ final class StudyStore: ObservableObject {
             }
         }
         _ = session.takeLog()
+        if state == .paused { session.pause(at: now) }
         return session
     }
 
