@@ -134,6 +134,28 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 3. Map the case to its art in `PetComposer`.
 4. Run `swift test` (the costume tests check every breed for clipping and covered eyes) and review `costumes-*.png` and `fit-*.png` from `PetGallery`.
 
+## Profile, points, and unlocks
+
+`PetProfile` is what the user chose: a name, a breed (the species is derived from it), palette overrides, an outfit, and accessories.
+Its initializer and editing methods keep it valid at all times:
+
+- Names are trimmed, inner whitespace is collapsed, and the length is capped at 16; an empty name falls back to the breed name.
+- Only `PetPaletteRole.userEditable` roles can be overridden, so eyes, outline, and effects keep every pet readable.
+- Accessories always go through `PetAccessory.wearable(_:)`; `wear(_:)` replaces whatever is in the same slot.
+- `palette` is breed colors, then overrides, then `withVisibleRim()`, so a pet recolored black still gets its warm rim.
+
+Costume items are earned with study points; breeds and colors are always free.
+`PetItem` wraps an outfit or accessory with a stable string id (`outfit.scrubs`, `accessory.beanie`) and a `cost`.
+Cozy basics are cheap so the first finished 25-minute session unlocks the scarf; the white coat and the graduation cap are long-term goals.
+
+`PetPointsRules` turns a session into points: one point per full minute, nothing under 5 minutes, and a 10-point bonus for completing a session of at least 25 minutes.
+`PetPointsLedger` stores lifetime `earned` and `spent` points plus the purchased items; `balance` is the difference, so it can never drift.
+`buy(_:)` throws `PetPurchaseError.alreadyOwned` or `.notEnoughPoints(missing:)` and changes nothing on failure.
+
+`PetSave` persists the profile and the ledger together as one versioned JSON document (`write(to:)` is atomic, `load(from:)` returns nil when there is no save yet).
+Decoding is forgiving: unknown breeds fail, but unknown outfits, accessories, palette roles, and item ids from a newer build are dropped instead of breaking the file.
+Every save is passed through `PetProfile.restricted(to:)`, so a hand-edited file can never dress the pet in items it has not bought.
+
 ## Colors and visibility on black
 
 `PetPalette` holds one color per role.
