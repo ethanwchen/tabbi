@@ -53,6 +53,22 @@ final class AnkiConnectionStateTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(AnkiConnectionState.ready.refreshInterval, 120)
     }
 
+    func testOnlyStartingPollsWhileHidden() {
+        XCTAssertTrue(AnkiConnectionState.starting.pollsWhileHidden)
+        let others: [AnkiConnectionState] = [
+            .checking, .notInstalled, .notRunning, .addOnMissing, .needsPermission(.permissionDenied),
+            .addOnOutdated, .ready, .problem(.timeout),
+        ]
+        for state in others {
+            XCTAssertFalse(state.pollsWhileHidden, "\(state)")
+        }
+        // Starting ends with the grace period, so hidden polling is bounded.
+        let launched = Date(timeIntervalSince1970: 1_000)
+        let afterGrace = launched.addingTimeInterval(AnkiConnectionState.startupGrace + 1)
+        let state = AnkiConnectionState.resolve(error: .addOnMissing, isInstalled: true, launchedAt: launched, now: afterGrace)
+        XCTAssertFalse(state.pollsWhileHidden)
+    }
+
     // MARK: Summary helpers
 
     private var utc: Calendar {

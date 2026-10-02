@@ -89,6 +89,12 @@ public enum AnkiConnectionState: Hashable, Sendable {
         case .ready: return 180
         }
     }
+
+    /// Whether to keep refreshing while the panel is hidden. Only while Anki
+    /// is starting: AnkiConnect comes up seconds later, and Today and the
+    /// ticker should get numbers then, not whenever Anki next loses focus.
+    /// The startup grace bounds this to a handful of polls.
+    public var pollsWhileHidden: Bool { self == .starting }
 }
 
 extension AnkiSummary {

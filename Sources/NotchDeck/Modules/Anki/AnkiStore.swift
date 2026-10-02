@@ -19,7 +19,9 @@ final class AnkiStore: ObservableObject {
     @Published private(set) var isSyncing = false
     @Published private(set) var isRestarting = false
     /// The last Sync or Start reviews failure, shown briefly in the panel.
-    @Published private(set) var actionError: AnkiConnectError?
+    @Published private(set) var actionError: AnkiConnectError? {
+        didSet { scheduleActionErrorExpiry() }
+    }
     /// Bumped at each Anki-day rollover so `provision` re-checks whether
     /// the summary is still today's even when no new one arrives.
     @Published private var rolloverCount = 0
@@ -35,6 +37,7 @@ final class AnkiStore: ObservableObject {
     private var refreshTask: Task<Void, Never>?
     private var pollTask: Task<Void, Never>?
     private var rolloverTask: Task<Void, Never>?
+    private var actionErrorTask: Task<Void, Never>?
     private var workspaceObservers: [NSObjectProtocol] = []
     private var isPanelVisible = false
 
@@ -91,6 +94,7 @@ final class AnkiStore: ObservableObject {
         isRefreshing = false
         rolloverTask?.cancel()
         rolloverTask = nil
+        actionError = nil
         stopPolling()
     }
 
@@ -103,7 +107,7 @@ final class AnkiStore: ObservableObject {
 
     func panelDidDisappear() {
         isPanelVisible = false
-        stopPolling()
+        if !state.pollsWhileHidden { stopPolling() }
     }
 
     // MARK: Refresh
@@ -141,7 +145,7 @@ final class AnkiStore: ObservableObject {
             state = .resolve(error: error, isInstalled: Self.isInstalled, launchedAt: anki?.launchDate, now: now)
             if !state.keepsLastSummary { summary = nil }
         }
-        if isPanelVisible { schedulePoll() }
+        if shouldPoll { schedulePoll() } else { stopPolling() }
     }
 
     /// One timer at a time, re-armed after every refresh with the interval
@@ -151,10 +155,13 @@ final class AnkiStore: ObservableObject {
         let interval = state.refreshInterval
         pollTask = Task { [weak self] in
             try? await Task.sleep(for: .seconds(interval))
-            guard !Task.isCancelled, let self, isPanelVisible else { return }
+            guard !Task.isCancelled, let self, shouldPoll else { return }
             refresh()
         }
     }
+
+    /// Polls run while the panel shows, or while Anki is starting up.
+    private var shouldPoll: Bool { isPanelVisible || state.pollsWhileHidden }
 
     private func stopPolling() {
         pollTask?.cancel()
@@ -243,6 +250,20 @@ final class AnkiStore: ObservableObject {
             refresh()
         }
     }
+
+    /// Clears a Sync or Start reviews failure after a few seconds, so one
+    /// failed action doesn't leave a warning up for good.
+    private func scheduleActionErrorExpiry() {
+        actionErrorTask?.cancel()
+        guard actionError != nil else { return }
+        actionErrorTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(Self.actionErrorLifetime))
+            guard !Task.isCancelled else { return }
+            self?.actionError = nil
+        }
+    }
+
+    private static let actionErrorLifetime: TimeInterval = 8
 
     // MARK: Sharing
 
