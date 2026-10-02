@@ -66,7 +66,7 @@ final class SpotifyController: NSObject, ObservableObject {
     // MARK: - Commands
 
     func playPause() {
-        guard let playback = status.playback, playback.track != nil else { return }
+        guard let playback = currentStatus.playback, playback.track != nil else { return }
         applyOptimistic(playback.togglingPlayPause())
         send(SpotifyScript.playPause)
     }
@@ -76,7 +76,7 @@ final class SpotifyController: NSObject, ObservableObject {
     func previous() { send(SpotifyScript.previousTrack) }
 
     func seek(to seconds: TimeInterval) {
-        guard let playback = status.playback, playback.track != nil else { return }
+        guard let playback = currentStatus.playback, playback.track != nil else { return }
         let target = playback.clampedPosition(seconds)
         applyOptimistic(playback.seeking(to: target))
         send(SpotifyScript.seek(to: target))
@@ -104,16 +104,22 @@ final class SpotifyController: NSObject, ObservableObject {
         generation += 1
         let current = generation
         guard Self.isRunning else {
-            apply(SpotifyStatus.resolve(isRunning: false, isInstalled: Self.isInstalled, read: nil, previous: status))
+            apply(SpotifyStatus.resolve(isRunning: false, isInstalled: Self.isInstalled, read: nil, previous: currentStatus))
             return
         }
-        apply(SpotifyStatus.resolve(isRunning: true, isInstalled: true, read: nil, previous: status))
+        apply(SpotifyStatus.resolve(isRunning: true, isInstalled: true, read: nil, previous: currentStatus))
         Task {
             let result = await Self.run(SpotifyScript.readState)
             guard current == generation else { return }
             apply(SpotifyStatus.resolve(isRunning: Self.isRunning, isInstalled: Self.isInstalled,
-                                        read: result, previous: status))
+                                        read: result, previous: currentStatus))
         }
+    }
+
+    /// `status` with the playback position extrapolated to now; `status` itself
+    /// only advances while the panel ticks.
+    private var currentStatus: SpotifyStatus {
+        clock.map { .connected($0.playback(at: Date())) } ?? status
     }
 
     private func send(_ source: String) {
