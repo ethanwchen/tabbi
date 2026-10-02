@@ -31,11 +31,31 @@ final class SettingsStore: ObservableObject {
     /// the binary in response always see the new value.
     @Published private(set) var appliedClaudePathOverride: String?
 
+    /// The kits Settings offers: bundled ones, then the user's imports.
+    @Published private(set) var kits: KitLibrary
+
     private let repository: SettingsRepository
+    /// Where imported kits live; nil for snapshot stores, which only show
+    /// the bundled kits.
+    private let kitStore: ImportedKitStore?
+    /// The edition's kit, used again when the active imported kit is removed.
+    private let defaultKitID: String
     /// False for snapshot stores, which must never touch the real login item.
     let integratesWithSystem: Bool
 
-    init(repository: SettingsRepository = SettingsRepository(), integratesWithSystem: Bool = true) {
+    /// - Parameter defaultKitID: the kit used before the user picks one,
+    ///   e.g. a branded edition's kit.
+    init(
+        defaults: UserDefaults = .standard,
+        defaultKitID: String = KitLibrary.defaultKitID,
+        kitStore: ImportedKitStore? = .standard,
+        integratesWithSystem: Bool = true
+    ) {
+        let kits = KitLibrary.installed(imported: kitStore?.load() ?? [])
+        let repository = SettingsRepository(defaults: defaults, kits: kits, defaultKitID: defaultKitID)
+        self.kits = kits
+        self.kitStore = kitStore
+        self.defaultKitID = defaultKitID
         self.repository = repository
         self.integratesWithSystem = integratesWithSystem
         var settings = repository.load()
@@ -54,8 +74,54 @@ final class SettingsStore: ObservableObject {
         let suite = "NotchDeck.ephemeral"
         let defaults = UserDefaults(suiteName: suite) ?? .standard
         defaults.removePersistentDomain(forName: suite)
-        let repository = SettingsRepository(defaults: defaults, defaultKitID: kitID)
-        return SettingsStore(repository: repository, integratesWithSystem: false)
+        return SettingsStore(defaults: defaults, defaultKitID: kitID, kitStore: nil, integratesWithSystem: false)
+    }
+
+    // MARK: Kits
+
+    /// The kit the user picked (the default kit if it has gone missing).
+    var activeKit: KitManifest? { kits.kit(settings.kitID) }
+
+    /// True when the tabs already match the active kit, so reset is a no-op.
+    var usesKitDefaults: Bool {
+        activeKit.map { settings.usesDefaults(of: $0) } ?? true
+    }
+
+    /// Switches to another kit, replacing the tab layout with its defaults.
+    func switchKit(to id: String) {
+        guard id != settings.kitID, let kit = kits[id] else { return }
+        settings.apply(kit)
+    }
+
+    /// Puts the active kit's tabs back the way the kit ships them.
+    func resetToKitDefaults() {
+        guard let kit = activeKit else { return }
+        settings.apply(kit)
+    }
+
+    /// Copies a kit file into the user's kits and switches to it. Returns
+    /// what the kit uses that this build will skip, so the user can be told.
+    func importKit(from url: URL) throws -> (kit: KitManifest, issues: [KitIssue]) {
+        guard let kitStore else { throw KitError.malformed("importing is off in this mode") }
+        let kit = try kitStore.install(from: url)
+        kits = KitLibrary.installed(imported: kitStore.load())
+        settings.apply(kit)
+        return (kit, kit.issues())
+    }
+
+    /// True when the active kit was imported, so it can be removed.
+    var canRemoveActiveKit: Bool {
+        kitStore != nil && !KitLibrary.isBundled(settings.kitID) && kits[settings.kitID] != nil
+    }
+
+    /// Deletes the active imported kit and falls back to the default kit.
+    func removeActiveKit() throws {
+        guard canRemoveActiveKit, let kitStore else { return }
+        try kitStore.remove(id: settings.kitID)
+        kits = KitLibrary.installed(imported: kitStore.load())
+        if let fallback = kits.kit(defaultKitID) {
+            settings.apply(fallback)
+        }
     }
 
     /// Registers or removes the login item first and only records the

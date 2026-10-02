@@ -61,6 +61,12 @@ public struct AppSettings: Equatable, Sendable {
         modules = kit.layout(catalog: catalog, answers: answers)
     }
 
+    /// True when `kit` is the active kit and the tabs are still exactly the
+    /// ones it ships with, so "Reset to kit defaults" would change nothing.
+    public func usesDefaults(of kit: KitManifest, catalog: ModuleCatalog = .builtIn) -> Bool {
+        kitID == kit.id && modules == kit.layout(catalog: catalog)
+    }
+
     /// Trims whitespace and expands `~`; blank means "no override".
     static func normalizedPath(_ path: String?) -> String? {
         guard let trimmed = path?.trimmingCharacters(in: .whitespacesAndNewlines), !trimmed.isEmpty else {

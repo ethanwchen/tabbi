@@ -9,6 +9,8 @@ public enum KitError: Error, Equatable, Sendable, CustomStringConvertible {
     case invalidID(String)
     case emptyName
     case noModules
+    /// An imported kit reuses a built-in kit's id, which would replace it.
+    case reservedID(String)
 
     public var description: String {
         switch self {
@@ -18,6 +20,7 @@ public enum KitError: Error, Equatable, Sendable, CustomStringConvertible {
         case .invalidID(let id): "The kit id \"\(id)\" must be lowercase letters, digits, and dashes."
         case .emptyName: "The kit has no name."
         case .noModules: "The kit doesn't list any modules."
+        case .reservedID(let id): "The kit id \"\(id)\" belongs to a built-in kit. Give your kit its own id."
         }
     }
 }

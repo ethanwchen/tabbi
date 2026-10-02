@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import UniformTypeIdentifiers
 import NotchKitCore
 
 /// Width shared by every pane so the window only animates its height.
@@ -128,6 +129,8 @@ struct ModulesSettingsPane: View {
 
     var body: some View {
         Form {
+            KitSection()
+
             Section {
                 ForEach(store.settings.modules.order) { module in
                     ModuleRow(module: module, layout: $store.settings.modules)
@@ -144,6 +147,98 @@ struct ModulesSettingsPane: View {
         .formStyle(.grouped)
         // Scrolls: the module list grows with every module NotchDeck ships.
         .frame(width: paneWidth, height: 444)
+    }
+}
+
+/// Picks the kit (a premade set of tabs), resets to its defaults, and
+/// imports kits shared as JSON files (see docs/kits.md).
+private struct KitSection: View {
+    @EnvironmentObject private var store: SettingsStore
+    /// The outcome of the last import or removal, shown under the buttons.
+    @State private var message: (text: String, isWarning: Bool)?
+
+    var body: some View {
+        Section {
+            Picker(selection: kitSelection) {
+                ForEach(store.kits.kits) { kit in
+                    Label(kit.name, systemImage: kit.symbol).tag(kit.id)
+                }
+            } label: {
+                Text("Current kit")
+                if let summary = store.activeKit?.summary, !summary.isEmpty {
+                    Text(summary)
+                }
+            }
+            .help("Switching kits replaces your tabs with the kit's")
+
+            HStack(spacing: 8) {
+                Button("Import Kit…", action: importKit)
+                    .help("Add a kit someone shared as a .json file")
+                if store.canRemoveActiveKit {
+                    Button("Remove Kit", role: .destructive, action: removeKit)
+                        .help("Delete this imported kit and go back to the default kit")
+                }
+                Spacer()
+                Button("Reset to Kit Defaults", action: store.resetToKitDefaults)
+                    .disabled(store.usesKitDefaults)
+                    .help(store.usesKitDefaults
+                          ? "Your tabs already match \(store.activeKit?.name ?? "the kit")"
+                          : "Restore the tabs and order \(store.activeKit?.name ?? "the kit") ships with")
+            }
+
+            if let message {
+                Label(message.text, systemImage: message.isWarning ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
+                    .font(.callout)
+                    .foregroundStyle(message.isWarning ? AnyShapeStyle(.orange) : AnyShapeStyle(.secondary))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        } header: {
+            Text("Kit")
+        } footer: {
+            SectionFooter("A kit is a premade set of tabs. Switching kits or resetting replaces your tabs; other settings stay.")
+        }
+    }
+
+    private var kitSelection: Binding<String> {
+        Binding(get: { store.activeKit?.id ?? store.settings.kitID }, set: { id in
+            message = nil
+            store.switchKit(to: id)
+        })
+    }
+
+    private func importKit() {
+        let panel = NSOpenPanel()
+        panel.title = "Import a Kit"
+        panel.prompt = "Import"
+        panel.allowedContentTypes = [.json]
+        panel.canChooseDirectories = false
+        panel.allowsMultipleSelection = false
+        let apply: (NSApplication.ModalResponse) -> Void = { response in
+            guard response == .OK, let url = panel.url else { return }
+            do {
+                let (kit, issues) = try store.importKit(from: url)
+                message = issues.isEmpty
+                    ? ("Imported \(kit.name).", false)
+                    : ("Imported \(kit.name). " + issues.map(\.description).joined(separator: " "), true)
+            } catch {
+                message = ("\(error)", true)
+            }
+        }
+        if let window = NSApp.keyWindow {
+            panel.beginSheetModal(for: window, completionHandler: apply)
+        } else {
+            apply(panel.runModal())
+        }
+    }
+
+    private func removeKit() {
+        let name = store.activeKit?.name ?? "The kit"
+        do {
+            try store.removeActiveKit()
+            message = ("Removed \(name).", false)
+        } catch {
+            message = ("Couldn't remove \(name): \(error.localizedDescription)", true)
+        }
     }
 }
 
