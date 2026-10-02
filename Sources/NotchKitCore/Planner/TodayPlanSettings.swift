@@ -6,7 +6,8 @@ import Foundation
 /// ```json
 /// "moduleSettings": {
 ///   "planner": { "planMode": "study", "reviewsFirst": true, "eventBufferMinutes": 10,
-///                "studyBlockTitle": "Study block", "secondsPerCard": 10 }
+///                "studyBlockTitle": "Study block", "secondsPerCard": 10,
+///                "upNextEvents": "lectures, labs, and shifts" }
 /// }
 /// ```
 ///
@@ -30,6 +31,9 @@ public struct TodayPlanSettings: Hashable, Sendable {
     public var studyBlockTitle: String
     /// Typical time to answer one review card, for sizing review blocks.
     public var secondsPerCard: TimeInterval
+    /// What the user's calendar holds, lowercase, for the Up next card's
+    /// empty states: "meetings and calls", or "lectures, labs, and shifts".
+    public var upNextEvents: String
 
     public init(
         planMode: PlanMode = .claude,
@@ -37,7 +41,8 @@ public struct TodayPlanSettings: Hashable, Sendable {
         reviewsFirst: Bool = true,
         eventBufferMinutes: Int = 10,
         studyBlockTitle: String = "Study block",
-        secondsPerCard: TimeInterval = StudyDayPreferences.defaultSecondsPerCard
+        secondsPerCard: TimeInterval = StudyDayPreferences.defaultSecondsPerCard,
+        upNextEvents: String = "meetings and calls"
     ) {
         self.planMode = planMode
         self.studyMethod = studyMethod
@@ -45,6 +50,7 @@ public struct TodayPlanSettings: Hashable, Sendable {
         self.eventBufferMinutes = max(eventBufferMinutes, 0)
         self.studyBlockTitle = PlannerDay.normalized(studyBlockTitle) ?? "Study block"
         self.secondsPerCard = max(secondsPerCard, 1)
+        self.upNextEvents = PlannerDay.normalized(upNextEvents) ?? "meetings and calls"
     }
 
     /// The kit's settings; values of the wrong type or unknown modes fall
@@ -60,7 +66,8 @@ public struct TodayPlanSettings: Hashable, Sendable {
             eventBufferMinutes: section?["eventBufferMinutes"]?.numberValue.map { Int($0.rounded()) }
                 ?? defaults.eventBufferMinutes,
             studyBlockTitle: section?["studyBlockTitle"]?.stringValue ?? defaults.studyBlockTitle,
-            secondsPerCard: section?["secondsPerCard"]?.numberValue ?? defaults.secondsPerCard
+            secondsPerCard: section?["secondsPerCard"]?.numberValue ?? defaults.secondsPerCard,
+            upNextEvents: section?["upNextEvents"]?.stringValue ?? defaults.upNextEvents
         )
     }
 

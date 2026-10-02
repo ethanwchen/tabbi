@@ -13,7 +13,13 @@
     "pet": { "breed": "orangeTabby" },
     "theme": "notch",
     "moduleSettings": {
-      "planner": { "planMode": "study", "reviewsFirst": true, "eventBufferMinutes": 10, "studyBlockTitle": "Study block" }
+      "planner": {
+        "planMode": "study",
+        "reviewsFirst": true,
+        "eventBufferMinutes": 10,
+        "studyBlockTitle": "Study block",
+        "upNextEvents": "lectures, labs, and shifts"
+      }
     }
   },
   "onboarding": [

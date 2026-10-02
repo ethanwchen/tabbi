@@ -134,6 +134,7 @@ Today (`planner`) reads these `moduleSettings.planner` keys, all optional:
 | `eventBufferMinutes` | number | Free time kept clear before and after each calendar event (default 10). |
 | `studyBlockTitle` | string | Title for study blocks once every open task has one (default "Study block"). |
 | `secondsPerCard` | number | Typical time per review card, for sizing review blocks (default 10). |
+| `upNextEvents` | string | What the calendar holds, lowercase, for the Up next card's empty states, such as "lectures, labs, and shifts" (default "meetings and calls"). |
 
 Switching kits, picking one on first run, and resetting apply the tabs, `ticker` and `focusSounds`.
 A field the kit leaves out keeps the user's current setting, and only the sound mix changes: the user's volume, playlist and Do Not Disturb shortcuts stay.
