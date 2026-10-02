@@ -79,7 +79,8 @@ Touch the shared files only when you have to, and keep those edits small.
 - **Open an issue first** for new modules, new permissions, or larger design changes, so we can agree on the direction before you build it.
 - **Keep each pull request focused** on one fix or feature.
 - **Keep the build clean:** `swift build` with zero warnings and `swift test` green.
-  CI runs both with warnings treated as errors.
+  CI builds with warnings treated as errors and runs the tests.
+  While the repository is private, a maintainer starts CI by hand from the Actions tab.
 - **Add tests** for new logic in `NotchDeckCore`.
 - **Show the UI:** for any visual change, attach the relevant snapshot PNGs (demo and live), before and after.
 - **Follow the design rules:** `Theme` tokens only, one accent color per module, spring animations, a hover state and a `.help(...)` tooltip on every control.
