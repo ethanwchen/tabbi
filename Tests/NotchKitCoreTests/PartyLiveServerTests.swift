@@ -39,9 +39,17 @@ final class PartyLiveServerTests: XCTestCase {
             XCTAssertTrue(added.added)
             XCTAssertEqual(added.friend.name, "Test Ben")
 
-            let phaseEnd = Date().addingTimeInterval(25 * 60)
-            let beat = try await benClient.heartbeat(PartyHeartbeat(status: .studying, method: "pomodoro", phaseEndsAt: phaseEnd, todayMinutes: 30, day: Self.today()))
+            // Ben's focus timer, reported the way the app does it.
+            let started = Date().addingTimeInterval(-60)
+            var timer = FocusTimer()
+            timer.start(at: started)
+            var tracker = PartyPresenceTracker()
+            tracker.observe(timer, at: started)
+            let beat = try await benClient.heartbeat(tracker.heartbeat(at: Date()))
+            let phaseEnd = try XCTUnwrap(tracker.phaseEndsAt)
             XCTAssertEqual(beat.presence.status, .studying)
+            XCTAssertEqual(beat.presence.sessionMinutes, 1)
+            XCTAssertEqual(beat.presence.day, PartyPresenceTracker.dayString(Date()))
             XCTAssertNotNil(beat.nextHeartbeat)
 
             let party = try await benClient.createParty()
@@ -67,7 +75,7 @@ final class PartyLiveServerTests: XCTestCase {
 
             let board = try await anaClient.leaderboard()
             XCTAssertEqual(Set(board.entries.map(\.profile.code)), [ana.code, ben.code])
-            XCTAssertEqual(board.entries.first { $0.profile.code == ben.code }?.minutes, 30)
+            XCTAssertEqual(board.entries.first { $0.profile.code == ben.code }?.minutes, 1)
 
             let left = try await anaClient.leaveParty()
             XCTAssertTrue(left)
@@ -91,12 +99,5 @@ final class PartyLiveServerTests: XCTestCase {
         } catch let error as PartyError {
             XCTAssertEqual(error, .unauthorized)
         }
-    }
-
-    private static func today() -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.string(from: Date())
     }
 }
