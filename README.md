@@ -7,7 +7,8 @@ open, swipe or use ← → to flip between:
   equalizer beside the closed notch while music plays
 - **System:** CPU, GPU, and memory at a glance
 - **Claude Usage:** your 5-hour and weekly Claude limits, read from your own
-  `claude` CLI
+  `claude` CLI, plus today's token and message totals from your local Claude
+  Code transcripts
 - **Today:** a daily checklist that lives one click away
 - **Ask Claude:** a quick question box that streams answers from your `claude` CLI
 
@@ -33,6 +34,10 @@ control Spotify.
 
 NotchDeck has no telemetry and no server. Claude features run through the
 `claude` CLI already on your Mac; NotchDeck never reads your credentials.
+Claude Usage reads token counts from the transcripts in `~/.claude/projects`
+read-only and never writes there. Each limits refresh sends a tiny `claude`
+request, so it only runs when you open the panel after 10+ minutes or press
+refresh.
 
 ## Contributing
 
