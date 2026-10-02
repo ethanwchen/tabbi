@@ -16,6 +16,6 @@
     <key>NSAppleEventsUsageDescription</key>
     <string>NotchDeck controls Spotify and Music playback and shows what's playing.</string>
     <key>NSCalendarsFullAccessUsageDescription</key>
-    <string>NotchDeck shows your next events today and lets you join video calls from the notch.</string>
+    <string>NotchDeck shows your next events today, lets you join video calls from the notch, and adds the Plan my day blocks you accept to your default calendar.</string>
 </dict>
 </plist>
