@@ -57,6 +57,13 @@ public struct PetProfile: Hashable, Codable, Sendable {
         paletteOverrides[role] = color
     }
 
+    /// Recolors all fur from one picked color (see `PetPalette.furTint(_:)`),
+    /// or returns the fur to the breed colors with `nil`.
+    public mutating func tintFur(_ color: PetColor?) {
+        let overrides = color.map { breed.palette.furTint($0) } ?? [:]
+        for role in PetPalette.tintableFurRoles { paletteOverrides[role] = overrides[role] }
+    }
+
     public mutating func resetColors() {
         paletteOverrides = [:]
     }

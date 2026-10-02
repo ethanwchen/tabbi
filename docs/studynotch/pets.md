@@ -254,6 +254,8 @@ Its initializer and editing methods keep it valid at all times:
 - Only `PetPaletteRole.userEditable` roles can be overridden, so eyes, outline, and effects keep every pet readable.
 - Accessories always go through `PetAccessory.wearable(_:)`; `wear(_:)` replaces whatever is in the same slot.
 - `palette` is breed colors, then overrides, then `withVisibleRim()`, so a pet recolored black still gets its warm rim.
+- `tintFur(_:)` recolors all fur from one picked color, and `tintFur(nil)` returns the fur to the breed colors without touching costume colors.
+
 
 Costume items are earned with study points; breeds and colors are always free.
 `PetItem` wraps an outfit or accessory with a stable string id (`outfit.scrubs`, `accessory.beanie`) and a `cost`.
@@ -266,6 +268,18 @@ Cozy basics are cheap so the first finished 25-minute session unlocks the scarf;
 `PetSave` persists the profile and the ledger together as one versioned JSON document (`write(to:)` is atomic, `load(from:)` returns nil when there is no save yet).
 Decoding is forgiving: unknown breeds fail, but unknown outfits, accessories, palette roles, and item ids from a newer build are dropped instead of breaking the file.
 Every save is passed through `PetProfile.restricted(to:)`, so a hand-edited file can never dress the pet in items it has not bought.
+
+### Recoloring fur
+
+`furAccent` means different things per breed: darker stripes on a tabby, lighter feathering on a golden's chest.
+Setting fixed colors for every fur role would turn a golden's chest into a dark hole.
+`PetPalette.furTint(_:)` takes one picked color instead.
+It becomes `furBase`, and `furShade` and `furAccent` keep the picked hue and saturation while shifting lightness by as much as they differed from the breed's `furBase`.
+Each breed keeps its own light and dark structure.
+`furSpot` and `belly` are left alone, so tuxedo, calico, beagle, and corgi markings survive any tint.
+Costume and knit colors are recolored per role with `setColor(_:for:)`.
+
+![Fur tints on three breeds, recolored scrubs, and recolored knits](images/recolors.png)
 
 ## Colors and visibility on black
 

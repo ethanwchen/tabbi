@@ -44,6 +44,41 @@ final class PetProfileTests: XCTestCase {
         XCTAssertEqual(profile.palette[.outline], PetPalette.warmRim)
     }
 
+    func testFurTintKeepsEachBreedsLightAndDarkMarkings() {
+        let lilac = PetColor(hex: "#B4A2C8")!
+        for breed in PetBreed.allCases {
+            var profile = PetProfile(name: "Pip", breed: breed)
+            profile.tintFur(lilac)
+            let original = breed.palette, tinted = profile.palette
+            XCTAssertEqual(tinted[.furBase], lilac, "\(breed)")
+            for role in PetPalette.tintableFurRoles where role != .furBase {
+                // A lighter golden chest stays lighter; darker tabby stripes stay darker.
+                let wasLighter = original[role].luminance > original[.furBase].luminance
+                let isLighter = tinted[role].luminance > tinted[.furBase].luminance
+                if original[role] != original[.furBase] {
+                    XCTAssertEqual(wasLighter, isLighter, "\(breed) \(role)")
+                }
+                // The picked hue carries to every fur role: purple stays blue-and-red heavy.
+                XCTAssertGreaterThan(tinted[role].blue, tinted[role].green, "\(breed) \(role)")
+            }
+            // Markings outside the fur roles keep their breed colors.
+            XCTAssertEqual(tinted[.belly], original[.belly], "\(breed)")
+            XCTAssertEqual(tinted[.furSpot], original[.furSpot], "\(breed)")
+        }
+    }
+
+    func testFurTintCanBeClearedWithoutLosingOtherColors() {
+        let pink = PetColor(hex: "#FF77AA")!
+        var profile = PetProfile(name: "Pip", breed: .goldenRetriever)
+        profile.setColor(pink, for: .costumeBase)
+        profile.tintFur(PetColor(hex: "#1C1719")!)
+        XCTAssertEqual(profile.palette[.outline], PetPalette.warmRim, "black fur still gets the warm rim")
+
+        profile.tintFur(nil)
+        XCTAssertEqual(profile.paletteOverrides, [.costumeBase: pink])
+        XCTAssertEqual(profile.palette[.furAccent], PetBreed.goldenRetriever.palette[.furAccent])
+    }
+
     func testWearingReplacesTheItemInTheSameSlot() {
         var profile = PetProfile(name: "Pip", breed: .beagle, accessories: [.beanie, .graduationCap])
         XCTAssertEqual(profile.accessories, [.graduationCap])

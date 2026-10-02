@@ -48,6 +48,44 @@ public struct PetColor: Hashable, Codable, Sendable, CustomStringConvertible {
         return 0.2126 * channel(red) + 0.7152 * channel(green) + 0.0722 * channel(blue)
     }
 
+    /// Hue, saturation, and lightness, each 0...1. Fur tinting works in HSL
+    /// because "same hue, a bit darker" is exactly how fur shades relate.
+    var hsl: (hue: Double, saturation: Double, lightness: Double) {
+        let r = Double(red) / 255, g = Double(green) / 255, b = Double(blue) / 255
+        let maxC = max(r, g, b), minC = min(r, g, b)
+        let lightness = (maxC + minC) / 2
+        let delta = maxC - minC
+        guard delta > 0 else { return (0, 0, lightness) }
+        let saturation = delta / (1 - abs(2 * lightness - 1))
+        var hue: Double
+        switch maxC {
+        case r: hue = ((g - b) / delta).truncatingRemainder(dividingBy: 6)
+        case g: hue = (b - r) / delta + 2
+        default: hue = (r - g) / delta + 4
+        }
+        hue /= 6
+        if hue < 0 { hue += 1 }
+        return (hue, min(saturation, 1), lightness)
+    }
+
+    init(hue: Double, saturation: Double, lightness: Double, alpha: UInt8 = 255) {
+        let l = min(max(lightness, 0), 1), s = min(max(saturation, 0), 1)
+        let chroma = (1 - abs(2 * l - 1)) * s
+        let h6 = hue * 6
+        let x = chroma * (1 - abs(h6.truncatingRemainder(dividingBy: 2) - 1))
+        let (r, g, b): (Double, Double, Double) = switch Int(h6) % 6 {
+        case 0: (chroma, x, 0)
+        case 1: (x, chroma, 0)
+        case 2: (0, chroma, x)
+        case 3: (0, x, chroma)
+        case 4: (x, 0, chroma)
+        default: (chroma, 0, x)
+        }
+        let m = l - chroma / 2
+        func byte(_ v: Double) -> UInt8 { UInt8(min(max((v + m) * 255, 0), 255).rounded()) }
+        self.init(red: byte(r), green: byte(g), blue: byte(b), alpha: alpha)
+    }
+
     public init(from decoder: Decoder) throws {
         let raw = try decoder.singleValueContainer().decode(String.self)
         guard let color = PetColor(hex: raw) else {
@@ -165,6 +203,30 @@ public struct PetPalette: Hashable, Codable, Sendable {
         var copy = self
         for (role, color) in overrides { copy[role] = color }
         return copy
+    }
+
+    /// The fur roles that `furTint(_:)` recolors. Spots and the belly keep
+    /// their breed colors so tuxedo, calico, and corgi markings survive.
+    public static let tintableFurRoles: [PetPaletteRole] = [.furBase, .furShade, .furAccent]
+
+    /// Overrides that recolor all fur roles from one picked color.
+    ///
+    /// `furAccent` means different things per breed (darker stripes on a
+    /// tabby, lighter feathering on a golden), so setting each role to a
+    /// fixed color would invert some breeds' markings. Instead the picked
+    /// color becomes `furBase`, and every other fur role keeps the picked
+    /// hue while shifting lightness by as much as it differed from this
+    /// palette's `furBase`. Each breed's light/dark structure is preserved.
+    public func furTint(_ color: PetColor) -> [PetPaletteRole: PetColor] {
+        let base = self[.furBase].hsl
+        let target = color.hsl
+        var overrides: [PetPaletteRole: PetColor] = [.furBase: color]
+        for role in Self.tintableFurRoles where role != .furBase {
+            let original = self[role].hsl
+            overrides[role] = PetColor(hue: target.hue, saturation: target.saturation,
+                                       lightness: target.lightness + original.lightness - base.lightness)
+        }
+        return overrides
     }
 
     /// A copy whose outline stays visible on the black notch. Dark fur with a

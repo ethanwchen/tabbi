@@ -171,3 +171,48 @@ for (breed, name, outfit, accessories) in stretchRuns {
 }
 try writeSheet(stretchCells, columns: 9, title: "Stretch (play bow)",
                to: outputDirectory.appendingPathComponent("stretch.png"))
+
+// Recolor check: user overrides through PetProfile, so the real palette path
+// (breed, then overrides, then the warm rim) is what gets reviewed.
+func hex(_ value: String) -> PetColor { PetColor(hex: value)! }
+// Fur goes through PetProfile.tintFur, the one-color picker path, so each
+// breed keeps its own light/dark markings.
+let furTints: [(String, PetColor?)] = [
+    ("Default", nil), ("Cream", hex("#F2D7A6")), ("Lilac", hex("#B4A2C8")),
+    ("Chocolate", hex("#6E4632")), ("Black (rim)", hex("#1C1719")),
+]
+let scrubRecolors: [(String, [PetPaletteRole: PetColor])] = [
+    ("Teal scrubs", [:]),
+    ("Navy scrubs", [.costumeBase: hex("#3B5B9A"), .costumeShade: hex("#2B4478"), .costumeTrim: hex("#DCE6FF")]),
+    ("Ceil scrubs", [.costumeBase: hex("#8FB8E8"), .costumeShade: hex("#6C95C8"), .costumeTrim: hex("#F2F8FF")]),
+    ("Wine scrubs", [.costumeBase: hex("#A0405A"), .costumeShade: hex("#7C2E45"), .costumeTrim: hex("#FFE3EA")]),
+    ("Lavender scrubs", [.costumeBase: hex("#A99BE0"), .costumeShade: hex("#8578C0"), .costumeTrim: hex("#F4F0FF")]),
+]
+let knitRecolors: [(String, [PetPaletteRole: PetColor])] = [
+    ("Rose knit", [:]),
+    ("Mustard knit", [.accessoryBase: hex("#E2B23E"), .accessoryShade: hex("#B98A24")]),
+    ("Forest knit", [.accessoryBase: hex("#4E9A6A"), .accessoryShade: hex("#367550")]),
+    ("Sky knit", [.accessoryBase: hex("#6FB2E6"), .accessoryShade: hex("#4C8CC0")]),
+    ("Plum knit", [.accessoryBase: hex("#9A5AA8"), .accessoryShade: hex("#764084")]),
+]
+var recolorCells: [Cell] = []
+for breed in [PetBreed.orangeTabby, .goldenRetriever, .corgi] {
+    for (label, tint) in furTints {
+        var profile = PetProfile(name: label, breed: breed)
+        profile.tintFur(tint)
+        recolorCells.append(Cell(label: label, canvas: profile.sittingCanvas(), palette: profile.palette))
+    }
+}
+let recolorRuns: [(PetBreed, PetOutfit, [PetAccessory], [(String, [PetPaletteRole: PetColor])])] = [
+    (.grayTabby, .scrubs, [.stethoscope, .surgicalCap], scrubRecolors),
+    (.beagle, .none, [.scarf, .beanie], knitRecolors),
+]
+for (breed, outfit, accessories, recolors) in recolorRuns {
+    for (label, overrides) in recolors {
+        let profile = PetProfile(name: label, breed: breed, paletteOverrides: overrides,
+                                 outfit: outfit, accessories: accessories)
+        recolorCells.append(Cell(label: label, canvas: profile.sittingCanvas(), palette: profile.palette))
+    }
+}
+try writeSheet(recolorCells, columns: 5, title: "Recolors (fur, scrubs, knits)",
+               to: outputDirectory.appendingPathComponent("recolors.png"))
