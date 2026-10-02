@@ -20,6 +20,12 @@ let package = Package(
             dependencies: ["NotchDeckCore"],
             swiftSettings: swiftSettings
         ),
+        // Renders pet sprite contact sheets for art review: `swift run PetGallery out/`.
+        .executableTarget(
+            name: "PetGallery",
+            dependencies: ["NotchDeckCore"],
+            swiftSettings: swiftSettings
+        ),
         .testTarget(
             name: "NotchDeckCoreTests",
             dependencies: ["NotchDeckCore"],
