@@ -12,11 +12,6 @@ open, swipe or use ← → to flip between:
 - **Today:** a daily checklist that lives one click away
 - **Ask Claude:** a quick question box that streams answers from your `claude` CLI
 
-Press Control-Option-Space anywhere to toggle the notch.
-Open Settings from the gear in the open notch or by right-clicking it to launch
-at login, open on hover, pick a display, reorder or hide modules, change the
-hotkey, or point NotchDeck at a specific `claude` binary.
-
 > Status: early development.
 
 ## Requirements
