@@ -11,6 +11,16 @@ public struct Hotkey: Codable, Equatable, Hashable, Sendable {
         public static let option = Modifiers(rawValue: 1 << 1)
         public static let shift = Modifiers(rawValue: 1 << 2)
         public static let command = Modifiers(rawValue: 1 << 3)
+
+        /// Symbols in Apple's order (⌃⌥⇧⌘), e.g. "⌃⌥".
+        public var symbols: String {
+            var symbols = ""
+            if contains(.control) { symbols += "⌃" }
+            if contains(.option) { symbols += "⌥" }
+            if contains(.shift) { symbols += "⇧" }
+            if contains(.command) { symbols += "⌘" }
+            return symbols
+        }
     }
 
     /// `kVK_*` virtual key code.
@@ -33,17 +43,38 @@ public struct Hotkey: Codable, Equatable, Hashable, Sendable {
 
     /// Human-readable form in Apple's modifier order, e.g. "⌃⌥Space".
     public var displayString: String {
-        var symbols = ""
-        if modifiers.contains(.control) { symbols += "⌃" }
-        if modifiers.contains(.option) { symbols += "⌥" }
-        if modifiers.contains(.shift) { symbols += "⇧" }
-        if modifiers.contains(.command) { symbols += "⌘" }
-        return symbols + (KeyCode.name(for: keyCode) ?? "Key \(keyCode)")
+        modifiers.symbols + (KeyCode.name(for: keyCode) ?? "Key \(keyCode)")
+    }
+
+    /// What a key press means while the user is recording a new shortcut.
+    public enum Recording: Equatable, Sendable {
+        /// Use this as the new shortcut.
+        case recorded(Hotkey)
+        /// Esc on its own: stop recording and keep the current shortcut.
+        case cancelled
+        /// The combination lacks a modifier that makes it safe to claim system-wide.
+        case needsModifier
+        /// A key NotchDeck can't name or register (e.g. a modifier-only or media key).
+        case unsupportedKey
+    }
+
+    /// Interprets one key press in the shortcut recorder.
+    ///
+    /// Stricter than `isValid`: Command on its own is refused too, because an
+    /// exclusive global hotkey like ⌘C would swallow that shortcut in every app.
+    public static func record(keyCode: UInt32, modifiers: Modifiers) -> Recording {
+        if keyCode == KeyCode.escape, modifiers.isEmpty { return .cancelled }
+        guard KeyCode.name(for: keyCode) != nil else { return .unsupportedKey }
+        let safe = !modifiers.isDisjoint(with: [.control, .option])
+            || modifiers.isSuperset(of: [.command, .shift])
+        guard safe else { return .needsModifier }
+        return .recorded(Hotkey(keyCode: keyCode, modifiers: modifiers))
     }
 
     /// ANSI virtual key codes (`kVK_*` from Carbon's Events.h) and their display names.
     public enum KeyCode {
         public static let space: UInt32 = 49
+        public static let escape: UInt32 = 53
 
         private static let names: [UInt32: String] = [
             0: "A", 11: "B", 8: "C", 2: "D", 14: "E", 3: "F", 5: "G", 4: "H", 34: "I",

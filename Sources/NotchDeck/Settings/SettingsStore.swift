@@ -21,6 +21,11 @@ final class SettingsStore: ObservableObject {
     /// registers the shortcut so the Settings window can explain it.
     @Published var hotkeyIsRegistered = true
 
+    /// True while the Settings window records a new shortcut. The global
+    /// hotkey is suspended meanwhile, so pressing the current shortcut is
+    /// recorded instead of toggling the notch.
+    @Published var isRecordingHotkey = false
+
     private let repository: SettingsRepository
     /// False for snapshot stores, which must never touch the real login item.
     let integratesWithSystem: Bool

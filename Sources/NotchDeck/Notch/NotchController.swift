@@ -227,15 +227,20 @@ final class NotchController {
     }
 
     /// The global shortcut toggles the notch from anywhere, re-registered
-    /// whenever the user records a new one.
+    /// whenever the user records a new one and paused while they record.
     private func observeHotkey() {
         let hotkey = GlobalHotkey { [weak self] in self?.model.toggle() }
         self.hotkey = hotkey
         services.settings.$settings
             .map(\.hotkey)
             .removeDuplicates()
-            .sink { [weak self] shortcut in
-                self?.services.settings.hotkeyIsRegistered = hotkey.register(shortcut)
+            .combineLatest(services.settings.$isRecordingHotkey.removeDuplicates())
+            .sink { [weak self] shortcut, recording in
+                if recording {
+                    hotkey.unregister()
+                } else {
+                    self?.services.settings.hotkeyIsRegistered = hotkey.register(shortcut)
+                }
             }
             .store(in: &cancellables)
     }

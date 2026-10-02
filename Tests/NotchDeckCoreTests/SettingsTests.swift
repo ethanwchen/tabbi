@@ -69,6 +69,8 @@ final class HotkeyTests: XCTestCase {
     func testDisplayUsesAppleModifierOrder() {
         let hotkey = Hotkey(keyCode: 40, modifiers: [.command, .shift, .option, .control])
         XCTAssertEqual(hotkey.displayString, "⌃⌥⇧⌘K")
+        XCTAssertEqual(Hotkey.Modifiers([.command, .option]).symbols, "⌥⌘")
+        XCTAssertEqual(Hotkey.Modifiers([]).symbols, "")
     }
 
     func testRequiresANonShiftModifierAndKnownKey() {
@@ -76,6 +78,31 @@ final class HotkeyTests: XCTestCase {
         XCTAssertFalse(Hotkey(keyCode: 0, modifiers: []).isValid)
         XCTAssertFalse(Hotkey(keyCode: 999, modifiers: [.command]).isValid)
         XCTAssertTrue(Hotkey(keyCode: 0, modifiers: [.command, .shift]).isValid)
+    }
+
+    func testRecordingAcceptsSafeCombinations() {
+        XCTAssertEqual(Hotkey.record(keyCode: 49, modifiers: [.control, .option]), .recorded(.default))
+        XCTAssertEqual(Hotkey.record(keyCode: 40, modifiers: [.option]),
+                       .recorded(Hotkey(keyCode: 40, modifiers: [.option])))
+        XCTAssertEqual(Hotkey.record(keyCode: 40, modifiers: [.command, .shift]),
+                       .recorded(Hotkey(keyCode: 40, modifiers: [.command, .shift])))
+    }
+
+    func testRecordingRefusesCombinationsThatWouldHijackTyping() {
+        XCTAssertEqual(Hotkey.record(keyCode: 0, modifiers: []), .needsModifier)
+        XCTAssertEqual(Hotkey.record(keyCode: 0, modifiers: [.shift]), .needsModifier)
+        // ⌘C alone would swallow Copy in every app.
+        XCTAssertEqual(Hotkey.record(keyCode: 8, modifiers: [.command]), .needsModifier)
+    }
+
+    func testEscapeAloneCancelsButIsRecordableWithModifiers() {
+        XCTAssertEqual(Hotkey.record(keyCode: 53, modifiers: []), .cancelled)
+        XCTAssertEqual(Hotkey.record(keyCode: 53, modifiers: [.control]),
+                       .recorded(Hotkey(keyCode: 53, modifiers: [.control])))
+    }
+
+    func testRecordingRejectsUnknownKeys() {
+        XCTAssertEqual(Hotkey.record(keyCode: 999, modifiers: [.control]), .unsupportedKey)
     }
 }
 

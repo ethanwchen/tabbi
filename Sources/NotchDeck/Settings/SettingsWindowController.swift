@@ -8,12 +8,13 @@ import SwiftUI
 final class SettingsWindowController: NSWindowController {
     /// The panes, in toolbar order.
     enum Pane: String, CaseIterable {
-        case general, modules, about
+        case general, modules, shortcuts, about
 
         var title: String {
             switch self {
             case .general: "General"
             case .modules: "Modules"
+            case .shortcuts: "Shortcuts"
             case .about: "About"
             }
         }
@@ -22,6 +23,7 @@ final class SettingsWindowController: NSWindowController {
             switch self {
             case .general: "gearshape"
             case .modules: "square.grid.2x2"
+            case .shortcuts: "keyboard"
             case .about: "info.circle"
             }
         }
@@ -96,6 +98,7 @@ final class SettingsWindowController: NSWindowController {
         switch pane {
         case .general: GeneralSettingsPane()
         case .modules: ModulesSettingsPane()
+        case .shortcuts: ShortcutsSettingsPane()
         case .about: AboutSettingsPane()
         }
     }

@@ -188,6 +188,106 @@ private struct ModuleRow: View {
     }
 }
 
+// MARK: Shortcuts
+
+struct ShortcutsSettingsPane: View {
+    @EnvironmentObject private var store: SettingsStore
+    @StateObject private var recorder = HotkeyRecorder()
+
+    var body: some View {
+        Form {
+            Section {
+                LabeledContent {
+                    HStack(spacing: 8) {
+                        if store.settings.hotkey != .default, !recorder.isRecording {
+                            Button {
+                                store.settings.hotkey = .default
+                            } label: {
+                                Image(systemName: "arrow.counterclockwise")
+                            }
+                            .buttonStyle(.borderless)
+                            .help("Restore \(Hotkey.default.displayString)")
+                        }
+                        HotkeyRecorderField(hotkey: store.settings.hotkey, recorder: recorder) {
+                            store.settings.hotkey = $0
+                        }
+                    }
+                } label: {
+                    Text("Open and close the notch")
+                    Text("Works from any app.")
+                }
+                if let status {
+                    Label(status.text, systemImage: status.symbol)
+                        .font(.callout)
+                        .foregroundStyle(status.isWarning ? AnyShapeStyle(.orange) : AnyShapeStyle(.secondary))
+                }
+            } header: {
+                Text("Global shortcut")
+            } footer: {
+                SectionFooter("Click the shortcut, then press a new combination with Control or Option. Esc cancels.")
+            }
+
+            Section {
+                LabeledContent("Switch tabs") { KeyCaps(["←", "→"]) }
+                LabeledContent("Close") { KeyCaps(["Esc"]) }
+            } header: {
+                Text("In the open notch")
+            } footer: {
+                SectionFooter("Two-finger swipes on the trackpad switch tabs too.")
+            }
+        }
+        .formStyle(.grouped)
+        .scrollDisabled(true)
+        .frame(width: paneWidth, height: 324)
+        .onChange(of: recorder.isRecording) { _, recording in
+            store.isRecordingHotkey = recording
+        }
+        .onDisappear { recorder.stop() }
+    }
+
+    private var status: (text: String, symbol: String, isWarning: Bool)? {
+        switch recorder.rejection {
+        case .needsModifier:
+            return ("Add Control or Option so the shortcut doesn't get in the way of typing.", "exclamationmark.triangle.fill", true)
+        case .unsupportedKey:
+            return ("That key can't be part of a shortcut. Try a letter, number, or Space.", "exclamationmark.triangle.fill", true)
+        default:
+            break
+        }
+        if !recorder.isRecording, !store.hotkeyIsRegistered {
+            return ("\(store.settings.hotkey.displayString) is already used by another app. Record a different shortcut.",
+                    "exclamationmark.triangle.fill", true)
+        }
+        return nil
+    }
+}
+
+/// Keys drawn as small key caps, for documenting fixed shortcuts.
+private struct KeyCaps: View {
+    let keys: [String]
+    init(_ keys: [String]) { self.keys = keys }
+
+    var body: some View {
+        HStack(spacing: 4) {
+            ForEach(keys, id: \.self) { key in
+                Text(key)
+                    .font(.system(size: 11, weight: .medium, design: .rounded))
+                    .foregroundStyle(.secondary)
+                    .frame(minWidth: 22, minHeight: 20)
+                    .padding(.horizontal, 4)
+                    .background(
+                        RoundedRectangle(cornerRadius: 4, style: .continuous)
+                            .fill(Color(nsColor: .controlBackgroundColor))
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 4, style: .continuous)
+                            .strokeBorder(Color(nsColor: .separatorColor), lineWidth: 1)
+                    )
+            }
+        }
+    }
+}
+
 // MARK: About
 
 struct AboutSettingsPane: View {
