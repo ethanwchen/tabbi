@@ -1,0 +1,5 @@
+# Private-phase setup: no remote CI yet, so the local build+tests are the gate.
+# Remove no_ci when GitHub Actions CI is added for the open-source launch.
+no_ci: true
+commands:
+  test: swift build && swift test
