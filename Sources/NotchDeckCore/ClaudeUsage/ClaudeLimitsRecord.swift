@@ -15,10 +15,11 @@ public struct ClaudeLimitsRecord: Equatable, Sendable {
     /// user's own limits, so opening the panel only re-probes after this long.
     public static let staleAfter: TimeInterval = 10 * 60
 
-    /// Whether opening the panel should trigger a probe. Manual refresh
-    /// always probes regardless.
+    /// Whether opening the panel should trigger a probe. Never before the
+    /// first manual refresh: spending the user's usage is opt-in. Manual
+    /// refresh always probes regardless.
     public static func shouldRefreshOnOpen(_ record: ClaudeLimitsRecord?, now: Date) -> Bool {
-        guard let record else { return true }
+        guard let record else { return false }
         return now.timeIntervalSince(record.fetchedAt) >= staleAfter
     }
 

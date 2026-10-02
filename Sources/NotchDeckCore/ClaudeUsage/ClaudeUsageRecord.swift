@@ -52,31 +52,81 @@ public struct ClaudeUsageRecord: Equatable, Sendable {
     /// assistant message with usage, including malformed JSON and the
     /// `<synthetic>` placeholder messages Claude Code writes for local errors.
     public static func parse(line: some StringProtocol) -> ClaudeUsageRecord? {
-        // Cheap prefilter: most lines are user turns, tool results, or metadata.
-        guard line.contains("\"assistant\""), line.contains("\"usage\"") else { return nil }
-        guard let data = String(line).data(using: .utf8),
-              let object = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              object["type"] as? String == "assistant",
-              let message = object["message"] as? [String: Any],
-              let id = message["id"] as? String,
-              let model = message["model"] as? String, !model.hasPrefix("<"),
-              let usage = message["usage"] as? [String: Any],
-              let timestampText = object["timestamp"] as? String,
+        parse(bytes: Data(String(line).utf8))
+    }
+
+    /// Parses one transcript line given as UTF-8 bytes.
+    ///
+    /// The byte-level path matters: a week of transcripts can be close to a
+    /// gigabyte, and most lines are user turns or tool results. Rejecting them
+    /// with a raw byte search before any String or JSON work makes the first
+    /// scan several times faster.
+    public static func parse(bytes: some ContiguousBytes) -> ClaudeUsageRecord? {
+        let decoded: Line? = bytes.withUnsafeBytes { buffer in
+            guard contains(buffer, assistantMarker), contains(buffer, usageMarker),
+                  let base = buffer.baseAddress
+            else { return nil }
+            let data = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: base), count: buffer.count, deallocator: .none)
+            return try? decoder.decode(Line.self, from: data)
+        }
+        guard let line = decoded,
+              line.type == "assistant",
+              let message = line.message,
+              let id = message.id,
+              let model = message.model, !model.hasPrefix("<"),
+              let usage = message.usage,
+              let timestampText = line.timestamp,
               let timestamp = parseTimestamp(timestampText)
         else { return nil }
 
-        func count(_ key: String) -> Int { (usage[key] as? NSNumber)?.intValue ?? 0 }
         return ClaudeUsageRecord(
             messageID: id,
             model: model,
             timestamp: timestamp,
             usage: ClaudeTokenUsage(
-                input: count("input_tokens"),
-                output: count("output_tokens"),
-                cacheRead: count("cache_read_input_tokens"),
-                cacheCreation: count("cache_creation_input_tokens")
+                input: usage.input ?? 0,
+                output: usage.output ?? 0,
+                cacheRead: usage.cacheRead ?? 0,
+                cacheCreation: usage.cacheCreation ?? 0
             )
         )
+    }
+
+    /// Only the fields we need; JSONDecoder skips everything else (content
+    /// blocks can be large) without materializing it.
+    private struct Line: Decodable {
+        struct Message: Decodable {
+            var id: String?
+            var model: String?
+            var usage: Usage?
+        }
+        struct Usage: Decodable {
+            var input: Int?
+            var output: Int?
+            var cacheRead: Int?
+            var cacheCreation: Int?
+
+            enum CodingKeys: String, CodingKey {
+                case input = "input_tokens"
+                case output = "output_tokens"
+                case cacheRead = "cache_read_input_tokens"
+                case cacheCreation = "cache_creation_input_tokens"
+            }
+        }
+        var type: String?
+        var message: Message?
+        var timestamp: String?
+    }
+
+    private static let decoder = JSONDecoder()
+    private static let assistantMarker = Array("\"assistant\"".utf8)
+    private static let usageMarker = Array("\"usage\"".utf8)
+
+    private static func contains(_ haystack: UnsafeRawBufferPointer, _ needle: [UInt8]) -> Bool {
+        needle.withUnsafeBytes { pattern in
+            guard let base = haystack.baseAddress, let pat = pattern.baseAddress else { return false }
+            return memmem(base, haystack.count, pat, pattern.count) != nil
+        }
     }
 
     private static func parseTimestamp(_ text: String) -> Date? {

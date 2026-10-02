@@ -92,12 +92,21 @@ public actor ClaudeUsageLogScanner {
         files[path] = state
     }
 
+    /// Walks complete lines in place; only lines that pass the byte prefilter
+    /// in `ClaudeUsageRecord.parse(bytes:)` are ever copied or decoded.
     private func ingest(_ data: Data, windowStart: Date) {
-        for line in data.split(separator: UInt8(ascii: "\n")) {
-            guard let record = ClaudeUsageRecord.parse(line: String(decoding: line, as: UTF8.self)),
-                  record.timestamp >= windowStart
-            else { continue }
-            records[record.messageID] = record
+        data.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) in
+            guard let base = buffer.baseAddress else { return }
+            var start = 0
+            while start < buffer.count {
+                let newline = memchr(base + start, 0x0A, buffer.count - start)
+                let end = newline.map { UnsafeRawPointer($0) - base } ?? buffer.count
+                let line = UnsafeRawBufferPointer(rebasing: buffer[start..<end])
+                if let record = ClaudeUsageRecord.parse(bytes: line), record.timestamp >= windowStart {
+                    records[record.messageID] = record
+                }
+                start = end + 1
+            }
         }
     }
 }

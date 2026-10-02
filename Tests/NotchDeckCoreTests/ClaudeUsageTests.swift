@@ -54,6 +54,21 @@ final class ClaudeUsageRecordTests: XCTestCase {
         let line = #"{"type":"assistant","message":{"model":"claude-haiku-4-5","id":"m","usage":{"output_tokens":7}},"timestamp":"2026-10-01T00:00:00Z"}"#
         XCTAssertEqual(ClaudeUsageRecord.parse(line: line)?.usage, ClaudeTokenUsage(output: 7))
     }
+
+    func testParsesBytesFromSliceOfLargerBuffer() {
+        let line = assistantLine(id: "m", timestamp: "2026-10-01T12:30:00Z", output: 5)
+        let buffer = Data(("{\"type\":\"user\"}\n" + line + "\n").utf8)
+        let start = buffer.firstIndex(of: UInt8(ascii: "\n"))! + 1
+        let slice = buffer[start..<(buffer.count - 1)]
+        XCTAssertEqual(ClaudeUsageRecord.parse(bytes: slice), ClaudeUsageRecord.parse(line: line))
+        XCTAssertEqual(ClaudeUsageRecord.parse(bytes: slice)?.usage.output, 5)
+    }
+
+    func testIgnoresContentFieldsItDoesNotNeed() {
+        // Large or unusual content blocks must not affect parsing.
+        let line = #"{"type":"assistant","message":{"model":"claude-opus-4-5","id":"m","content":[{"type":"tool_use","input":{"nested":[1,{"a":null}],"text":"\"usage\" \n"}}],"usage":{"input_tokens":1,"output_tokens":2,"server_tool_use":{"web_search_requests":0}}},"timestamp":"2026-10-01T00:00:00Z","toolUseResult":{"x":[true]}}"#
+        XCTAssertEqual(ClaudeUsageRecord.parse(line: line)?.usage, ClaudeTokenUsage(input: 1, output: 2))
+    }
 }
 
 final class ClaudeLocalStatsTests: XCTestCase {
@@ -278,8 +293,58 @@ final class ClaudeLimitsRecordTests: XCTestCase {
             ClaudeLimitsRecord(snapshot: ClaudeRateLimitSnapshot(status: nil, fiveHour: nil, sevenDay: nil),
                                fetchedAt: now - age)
         }
-        XCTAssertTrue(ClaudeLimitsRecord.shouldRefreshOnOpen(nil, now: now))
+        XCTAssertFalse(ClaudeLimitsRecord.shouldRefreshOnOpen(nil, now: now))
         XCTAssertFalse(ClaudeLimitsRecord.shouldRefreshOnOpen(record(age: 9 * 60), now: now))
         XCTAssertTrue(ClaudeLimitsRecord.shouldRefreshOnOpen(record(age: 10 * 60), now: now))
+    }
+}
+
+final class ClaudeLimitsProbeTests: XCTestCase {
+    private let window = ClaudeUsageWindow(utilization: 0.3, resetsAt: nil)
+
+    func testTakesFirstRateLimitWithAWindowAndStopsConsuming() async throws {
+        let terminated = expectation(description: "stream terminated")
+        let (events, continuation) = AsyncThrowingStream<ClaudeStreamEvent, Error>.makeStream()
+        continuation.onTermination = { _ in terminated.fulfill() }
+        continuation.yield(.sessionStarted(sessionID: "s"))
+        continuation.yield(.rateLimit(ClaudeRateLimitSnapshot(status: "allowed", fiveHour: nil, sevenDay: nil)))
+        continuation.yield(.rateLimit(ClaudeRateLimitSnapshot(status: "allowed", fiveHour: window, sevenDay: nil)))
+        // The stream is never finished: the probe must stop on its own.
+
+        let snapshot = try await ClaudeLimitsProbe.firstSnapshot(in: events, timeout: .seconds(5))
+        XCTAssertEqual(snapshot.fiveHour, window)
+        await fulfillment(of: [terminated], timeout: 2)
+    }
+
+    func testErrorResultFails() async {
+        let (events, continuation) = AsyncThrowingStream<ClaudeStreamEvent, Error>.makeStream()
+        continuation.yield(.result(ClaudeResult(text: "Not logged in", sessionID: nil, isError: true)))
+        await assertProbe(events, throws: .cliError("Not logged in"))
+    }
+
+    func testStreamEndingWithoutLimitsFails() async {
+        let (events, continuation) = AsyncThrowingStream<ClaudeStreamEvent, Error>.makeStream()
+        continuation.yield(.assistantText("ok"))
+        continuation.finish()
+        await assertProbe(events, throws: .noLimitsReported)
+    }
+
+    func testTimesOut() async {
+        let (events, _) = AsyncThrowingStream<ClaudeStreamEvent, Error>.makeStream()
+        await assertProbe(events, timeout: .milliseconds(50), throws: .timedOut)
+    }
+
+    private func assertProbe(
+        _ events: AsyncThrowingStream<ClaudeStreamEvent, Error>,
+        timeout: Duration = .seconds(5),
+        throws expected: ClaudeLimitsProbe.Failure,
+        line: UInt = #line
+    ) async {
+        do {
+            _ = try await ClaudeLimitsProbe.firstSnapshot(in: events, timeout: timeout)
+            XCTFail("expected \(expected)", line: line)
+        } catch {
+            XCTAssertEqual(error as? ClaudeLimitsProbe.Failure, expected, line: line)
+        }
     }
 }
