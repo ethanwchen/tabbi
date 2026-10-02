@@ -126,7 +126,11 @@ public struct TickerSources: Equatable, Sendable {
     private func item(for kind: TickerKind, at now: Date) -> TickerItem? {
         switch kind {
         case .meeting:
-            guard let event = UpcomingEvent.upNext(from: events, at: now, limit: 1).first,
+            // A meeting about to start beats one already under way, so a long
+            // block can't hide "Standup in 3 min".
+            let upcoming = UpcomingEvent.upNext(from: events, at: now, limit: events.count)
+            let imminent = upcoming.first { $0.start > now && $0.start.timeIntervalSince(now) <= Self.pinLeadTime }
+            guard let event = imminent ?? upcoming.first,
                   event.start.timeIntervalSince(now) <= Self.meetingHorizon else { return nil }
             return .meeting(TickerMeeting(
                 title: UpcomingEventFormat.title(event),

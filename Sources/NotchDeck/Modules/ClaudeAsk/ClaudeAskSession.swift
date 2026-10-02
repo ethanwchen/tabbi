@@ -19,6 +19,9 @@ final class ClaudeAskSession: ObservableObject {
     /// Bumped on every ask, stop, and New chat so a superseded run can't
     /// write into the conversation after it was cancelled.
     private var generation = 0
+    /// Bumped on every lookup so a slow one for an old path can't overwrite
+    /// `isClaudeMissing` after a newer one finished.
+    private var lookupGeneration = 0
 
     init() {
         isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
@@ -117,8 +120,10 @@ final class ClaudeAskSession: ObservableObject {
     /// Locates `claude` off the main thread (the login-shell fallback blocks).
     /// The shared resolver caches hits and follows the Settings override.
     private func resolveExecutable() async -> URL? {
+        lookupGeneration += 1
+        let lookup = lookupGeneration
         let found = await Task.detached(priority: .userInitiated) { ClaudeExecutableResolver.shared.resolve() }.value
-        isClaudeMissing = found == nil
+        if lookup == lookupGeneration { isClaudeMissing = found == nil }
         return found
     }
 }

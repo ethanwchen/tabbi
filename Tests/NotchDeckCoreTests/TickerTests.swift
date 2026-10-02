@@ -56,6 +56,18 @@ final class TickerSourcesTests: XCTestCase {
         ])
     }
 
+    func testImminentMeetingBeatsOneAlreadyUnderWay() {
+        let focusBlock = event("Focus block", startsIn: -57, length: 120)
+        let standup = event("Standup", startsIn: 3)
+        XCTAssertEqual(TickerSources(events: [focusBlock, standup]).items(at: now), [
+            .meeting(TickerMeeting(title: "Standup", timing: .startsIn(minutes: 3), canJoin: false)),
+        ])
+        let later = event("Standup", startsIn: 20)
+        XCTAssertEqual(TickerSources(events: [focusBlock, later]).items(at: now), [
+            .meeting(TickerMeeting(title: "Focus block", timing: .now, canJoin: false)),
+        ])
+    }
+
     func testMeetingsBeyondTheHorizonAndAllDayEventsAreHidden() {
         var allDay = event("Offsite", startsIn: 0, length: 24 * 60)
         allDay.isAllDay = true
