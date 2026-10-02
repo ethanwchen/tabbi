@@ -100,4 +100,31 @@ final class PartyLiveServerTests: XCTestCase {
             XCTAssertEqual(error, .unauthorized)
         }
     }
+
+    /// The account registers on first use, patches the profile, and heals
+    /// with a new identity after its user is deleted behind its back.
+    func testAccountRegistersAndRecoversFromADeletedUser() async throws {
+        guard let text = ProcessInfo.processInfo.environment["PARTY_TEST_SERVER"],
+              let server = PartyServer.parse(text)
+        else { throw XCTSkip("Set PARTY_TEST_SERVER to run against a worker") }
+
+        let store = InMemoryPartyCredentialStore()
+        let account = PartyAccount(server: server, credentials: store)
+        let first = try await account.connect(profile: PartyProfileUpdate(name: "Throwaway"))
+        XCTAssertEqual(first.name, "Throwaway")
+        let renamed = try await account.connect(profile: PartyProfileUpdate(name: "Renamed"))
+        XCTAssertEqual(renamed.code, first.code)
+        XCTAssertEqual(renamed.name, "Renamed")
+
+        let original = try XCTUnwrap(store.load(for: server))
+        try await PartyClient(baseURL: server, token: original.token).deleteMe()
+        let friends = try await account.perform { try await $0.friends() }
+        XCTAssertEqual(friends, [])
+        let healed = try await account.refreshProfile()
+        XCTAssertNotEqual(healed.code, first.code)
+        XCTAssertEqual(healed.name, "Renamed")
+
+        try await account.deleteAccount()
+        XCTAssertNil(store.load(for: server))
+    }
 }
