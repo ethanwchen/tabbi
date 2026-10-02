@@ -64,6 +64,9 @@ public enum DayPlanner {
     public static let minimumBlockMinutes = 15
     /// Proposal rows the panel can show without scrolling.
     public static let maximumBlocks = 5
+    /// Longest block title Claude is asked for; a proposal row shows about
+    /// this many characters before truncating.
+    public static let maximumTitleLength = 22
     /// Planned blocks start on these minute marks.
     static let slotMinutes = 5
 
@@ -154,7 +157,8 @@ public enum DayPlanner {
         Propose at most \(maximumBlocks) focused time blocks that fit entirely inside the free time. \
         Each block is \(minimumBlockMinutes) to 120 minutes, starts on a 5-minute mark, and blocks never overlap. \
         Prefer the most important tasks first and leave short breaks. \
-        Titles are short (under 40 characters), in the task's words. \
+        Titles are at most \(maximumTitleLength) characters, a shortened form of the task's words \
+        (for example "Draft release notes", not "Write the release notes for the beta launch"). \
         Set "task" to the task id (like "t1") when a block works on a task; omit it otherwise. \
         Use 24-hour local times as "HH:mm". If there is no useful free time, return no blocks.
 

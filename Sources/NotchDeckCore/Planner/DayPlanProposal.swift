@@ -126,8 +126,8 @@ public extension DayPlanner {
         }
         // Gaps around the samples: after the review (+45) and after the run (+125).
         return [
-            block(50, 90, "Ship notch planner beta", 3),
-            block(135, 180, "Write beta release notes"),
+            block(50, 90, "Ship planner beta", 3),
+            block(135, 180, "Draft release notes"),
             block(190, 220, "Triage beta feedback"),
         ]
     }
