@@ -386,8 +386,7 @@ final class StudySessionTests: XCTestCase {
     }
 
     func testDecodedZeroLengthMethodDoesNotCompleteInstantly() throws {
-        // Synthesized Codable skips StudyMethod's clamping, so a corrupt file
-        // could carry a zero-length phase.
+        // A corrupt or hand-edited file could carry a zero-length phase.
         let json = #"{"kind":"custom","focus":{"duration":{"_0":0}},"breakRule":{"fixed":{"_0":0}}}"#
         let method = try JSONDecoder().decode(StudyMethod.self, from: Data(json.utf8))
         var session = StudySession(method: method)

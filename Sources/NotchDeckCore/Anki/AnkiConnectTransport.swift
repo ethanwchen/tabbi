@@ -53,6 +53,8 @@ public struct URLSessionAnkiConnectTransport: AnkiConnectTransport {
             let (data, response) = try await session.data(for: request)
             let status = (response as? HTTPURLResponse)?.statusCode ?? 200
             return AnkiConnectHTTPResponse(statusCode: status, body: data)
+        } catch let error as URLError where error.code == .cancelled {
+            throw CancellationError()
         } catch let error as URLError {
             throw Self.classify(error)
         }

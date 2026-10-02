@@ -69,13 +69,24 @@ public enum StudyBreakRule: Codable, Hashable, Sendable {
 }
 
 /// A longer break that replaces every `every`-th regular break.
+///
+/// Fields are immutable and decoding goes through `init`, so `every >= 2`
+/// and the 1 min...4 h duration hold however the value was made.
 public struct StudyLongBreak: Codable, Hashable, Sendable {
-    public var duration: TimeInterval
-    public var every: Int
+    public let duration: TimeInterval
+    public let every: Int
 
     public init(duration: TimeInterval, every: Int) {
-        self.duration = max(duration, StudyMethod.minimumPhase)
+        self.duration = StudyMethod.clamped(duration)
         self.every = max(every, 2)
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            duration: try container.decode(TimeInterval.self, forKey: .duration),
+            every: try container.decode(Int.self, forKey: .every)
+        )
     }
 }
 
@@ -85,7 +96,8 @@ public struct StudyLongBreak: Codable, Hashable, Sendable {
 /// A session cycles focus -> (review) -> break -> focus. `nextPhase` and
 /// `duration(of:...)` are the only rules the engine needs, so presets and
 /// custom methods run through identical code. Codable so a running session
-/// can persist the exact method it started with.
+/// can persist the exact method it started with. Fields are immutable and
+/// decoding goes through `init`, so the clamping rules hold on every path.
 public struct StudyMethod: Codable, Hashable, Sendable, Identifiable {
     /// Shortest phase the engine accepts, so a bad custom value never makes a
     /// zero-length phase that would complete instantly.
@@ -93,14 +105,14 @@ public struct StudyMethod: Codable, Hashable, Sendable, Identifiable {
     /// Longest timed phase accepted for a custom method (4 hours).
     public static let maximumPhase: TimeInterval = 4 * 60 * 60
 
-    public var kind: StudyMethodKind
-    public var focus: StudyFocusTarget
-    public var breakRule: StudyBreakRule
-    public var longBreak: StudyLongBreak?
+    public let kind: StudyMethodKind
+    public let focus: StudyFocusTarget
+    public let breakRule: StudyBreakRule
+    public let longBreak: StudyLongBreak?
     /// Length of the review phase that follows each focus phase, if any.
-    public var review: TimeInterval?
+    public let review: TimeInterval?
     /// Questions per block, shown as a target ("40 questions"); not enforced.
-    public var questionCount: Int?
+    public let questionCount: Int?
 
     public var id: StudyMethodKind { kind }
 
@@ -118,6 +130,18 @@ public struct StudyMethod: Codable, Hashable, Sendable, Identifiable {
         self.longBreak = longBreak
         self.review = review.map(Self.clamped)
         self.questionCount = questionCount.map { max($0, 1) }
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            kind: try container.decode(StudyMethodKind.self, forKey: .kind),
+            focus: try container.decode(StudyFocusTarget.self, forKey: .focus),
+            breakRule: try container.decode(StudyBreakRule.self, forKey: .breakRule),
+            longBreak: try container.decodeIfPresent(StudyLongBreak.self, forKey: .longBreak),
+            review: try container.decodeIfPresent(TimeInterval.self, forKey: .review),
+            questionCount: try container.decodeIfPresent(Int.self, forKey: .questionCount)
+        )
     }
 
     // MARK: Presets
@@ -268,7 +292,7 @@ public struct StudyMethod: Codable, Hashable, Sendable, Identifiable {
 
     // MARK: Clamping
 
-    private static func clamped(_ length: TimeInterval) -> TimeInterval {
+    static func clamped(_ length: TimeInterval) -> TimeInterval {
         min(max(length, minimumPhase), maximumPhase)
     }
 

@@ -127,6 +127,21 @@ final class StudyMethodTests: XCTestCase {
         XCTAssertEqual(long.every, 2, "A long break every round would replace every short break")
     }
 
+    func testDecodingAppliesTheSameClamps() throws {
+        let json = #"""
+        {"kind":"custom","focus":{"cards":{"_0":0}},"breakRule":{"fixed":{"_0":0}},
+         "longBreak":{"duration":0,"every":0},"review":0,"questionCount":0}
+        """#
+        let method = try JSONDecoder().decode(StudyMethod.self, from: Data(json.utf8))
+        XCTAssertEqual(method.cardGoal, 1)
+        XCTAssertEqual(method.duration(of: .shortBreak), StudyMethod.minimumPhase)
+        XCTAssertEqual(method.longBreak, StudyLongBreak(duration: 0, every: 0))
+        XCTAssertEqual(method.longBreak?.every, 2)
+        XCTAssertEqual(method.review, StudyMethod.minimumPhase)
+        XCTAssertEqual(method.questionCount, 1)
+        XCTAssertEqual(method.nextPhase(after: .review, completedFocusCount: 2), .longBreak)
+    }
+
     func testZeroFocusCountNeverPicksLongBreak() {
         XCTAssertEqual(StudyMethod.pomodoro.nextPhase(after: .focus, completedFocusCount: 0), .shortBreak)
     }

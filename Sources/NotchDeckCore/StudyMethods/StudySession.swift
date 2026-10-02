@@ -100,7 +100,7 @@ public struct StudySession: Codable, Hashable, Sendable {
     public init(method: StudyMethod) {
         self.method = method
         phase = .focus
-        phaseDuration = Self.sanitized(method.duration(of: .focus))
+        phaseDuration = method.duration(of: .focus)
         completedFocusCount = 0
         cardsDone = 0
         log = []
@@ -292,7 +292,7 @@ public struct StudySession: Codable, Hashable, Sendable {
         let next = method.nextPhase(after: phase, completedFocusCount: lastFocusCounted ? completedFocusCount : 0)
 
         phase = next
-        phaseDuration = Self.sanitized(method.duration(of: next, workedBeforeBreak: lastFocusWorked))
+        phaseDuration = method.duration(of: next, workedBeforeBreak: lastFocusWorked)
         banked = 0
         cardsDone = 0
         phaseStartedAt = startNext ? end : nil
@@ -306,10 +306,5 @@ public struct StudySession: Codable, Hashable, Sendable {
     /// would count cards answered before the sprint started or while paused.
     private mutating func dropStaleCardBaseline() {
         if phase == .focus, method.cardGoal != nil { cardBaseline = nil }
-    }
-
-    /// Keeps a decoded or hand-built zero-length phase from completing instantly.
-    private static func sanitized(_ duration: TimeInterval?) -> TimeInterval? {
-        duration.map { max($0, StudyMethod.minimumPhase) }
     }
 }

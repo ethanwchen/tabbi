@@ -1,6 +1,14 @@
 import XCTest
 import NotchDeckCore
 
+/// Accepts every request and never answers, like a busy Anki.
+private final class SilentURLProtocol: URLProtocol {
+    override class func canInit(with request: URLRequest) -> Bool { true }
+    override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+    override func startLoading() {}
+    override func stopLoading() {}
+}
+
 /// Replays canned AnkiConnect replies and records what was sent.
 private final class FakeAnkiTransport: AnkiConnectTransport, @unchecked Sendable {
     enum Reply {
@@ -284,6 +292,22 @@ final class AnkiConnectClientTests: XCTestCase {
         let transport = URLSessionAnkiConnectTransport(endpoint: URL(string: "http://127.0.0.1:1")!)
         let client = AnkiConnectClient(transport: transport, requestTimeout: 2)
         await assertThrows(.ankiNotRunning) { try await client.version() }
+    }
+
+    func testCancellingARealRequestThrowsCancellationNotAnError() async {
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [SilentURLProtocol.self]
+        let transport = URLSessionAnkiConnectTransport(session: URLSession(configuration: config))
+        let client = AnkiConnectClient(transport: transport, requestTimeout: 30)
+        let request = Task { try await client.version() }
+        try? await Task.sleep(for: .milliseconds(100))
+        request.cancel()
+        do {
+            _ = try await request.value
+            XCTFail("Expected cancellation")
+        } catch {
+            XCTAssertTrue(error is CancellationError, "\(error)")
+        }
     }
 
     func testDefaultEndpointIsLoopback() {

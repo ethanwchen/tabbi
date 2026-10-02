@@ -156,7 +156,7 @@ Rules:
 - Sprint cards are the increases in reviewed-today while sprint focus runs.
   The first reading after sprint focus starts or resumes only sets the baseline, so call `recordReviewedToday(_:at:)` right after `start(at:)`.
   Cards answered before the sprint, while paused, or on a break are therefore ignored even if the app stopped polling, and the drop at Anki's day rollover just rebases.
-- A decoded method with a zero-length phase is floored to `StudyMethod.minimumPhase`, so it can never complete instantly.
+- `StudyMethod` and `StudyLongBreak` are immutable and decode through their initializers, so a decoded method gets the same clamps (phases 1 min...4 h, long break every 2+ rounds, card goal 1+) and can never complete a phase instantly.
 
 `StudyPhaseRecord` holds `method`, `phase`, `startedAt`, `endedAt`, `activeDuration` (pauses excluded), `outcome` (`completed`, `stopped`, `skipped`, `abandoned`), and `cards` for sprint focus.
 Records are only logged for phases that actually started.
