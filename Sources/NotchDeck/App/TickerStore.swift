@@ -9,6 +9,8 @@ import NotchDeckCore
 /// item on screen. The clock only ticks while the notch is closed: once a
 /// second while an item shows (countdowns and the rotation need it), twice a
 /// minute while only a far-off meeting could appear, and not at all otherwise.
+/// While the meeting item is on and the notch is closed it also keeps
+/// `UpNextStore` reloading, so events added since Today was last open show up.
 @MainActor
 final class TickerStore: ObservableObject {
     /// The item beside the closed notch; nil keeps the notch plain black.
@@ -17,6 +19,7 @@ final class TickerStore: ObservableObject {
     /// The latest module snapshot, before the user's settings filter it.
     private(set) var sources = TickerSources()
     private var preview: NotchPreviewSettings
+    private let upNext: UpNextStore
     private var rotation: TickerRotation
     /// False while the notch is open, where the preview isn't visible.
     private var isActive = true
@@ -30,6 +33,7 @@ final class TickerStore: ObservableObject {
 
     init(settings: SettingsStore, spotify: SpotifyController, planner: PlannerStore, claudeUsage: ClaudeUsageStore) {
         preview = settings.settings.notchPreview
+        upNext = planner.upNext
         rotation = TickerRotation(interval: preview.interval.seconds)
 
         let tasksRemaining = planner.$day.map { $0.items.count - $0.doneCount }
@@ -69,6 +73,7 @@ final class TickerStore: ObservableObject {
     }
 
     private func refresh() {
+        upNext.setPreviewWatching(isActive && preview.enabledKinds.contains(.meeting))
         if isActive {
             let now = Date()
             let next = rotation.update(items: sources.items(at: now, enabled: preview.enabledKinds), at: now)

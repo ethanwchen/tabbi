@@ -8,7 +8,8 @@ import NotchDeckCore
 /// Calendar access is only requested when the user asks for it from the panel,
 /// never at launch. While the panel is visible the list refreshes on every
 /// minute boundary (so "in 12 min" badges stay true) and whenever the calendar
-/// database changes; while it's hidden nothing runs.
+/// database changes. The closed-notch meeting preview keeps it refreshing the
+/// same way while it's on; while neither needs events nothing runs.
 ///
 /// With `NOTCHDECK_DEMO=1` it shows `UpcomingEvent.samples` and never touches
 /// EventKit.
@@ -34,6 +35,9 @@ final class UpNextStore: ObservableObject {
     private let demoEvents: [UpcomingEvent]
     private lazy var eventStore = EKEventStore()
     private var isVisible = false
+    private var isPreviewWatching = false
+    /// True while the panel or the closed-notch preview needs fresh events.
+    private var isWatched: Bool { isVisible || isPreviewWatching }
     private var ticker: Timer?
     private var changeObserver: AnyCancellable?
 
@@ -56,14 +60,18 @@ final class UpNextStore: ObservableObject {
     /// Call from the panel's `onAppear` / `onDisappear`.
     func setVisible(_ visible: Bool) {
         guard visible != isVisible else { return }
+        let wasWatched = isWatched
         isVisible = visible
-        if visible {
-            if !isDemo { access = Self.currentAccess() }
-            reload()
-            startUpdates()
-        } else {
-            stopUpdates()
-        }
+        watchedDidChange(from: wasWatched)
+    }
+
+    /// Call while the closed-notch preview can show a meeting, so it learns
+    /// about events added since the panel was last open.
+    func setPreviewWatching(_ watching: Bool) {
+        guard watching != isPreviewWatching else { return }
+        let wasWatched = isWatched
+        isPreviewWatching = watching
+        watchedDidChange(from: wasWatched)
     }
 
     /// Asks for full calendar access (shows the system prompt the first time).
@@ -93,7 +101,7 @@ final class UpNextStore: ObservableObject {
         _ = try? await eventStore.requestFullAccessToEvents()
         access = Self.currentAccess()
         reload()
-        if isVisible { startUpdates() }
+        if isWatched { startUpdates() }
         return access
     }
 
@@ -117,6 +125,17 @@ final class UpNextStore: ObservableObject {
     }
 
     // MARK: Private
+
+    private func watchedDidChange(from wasWatched: Bool) {
+        guard isWatched != wasWatched else { return }
+        if isWatched {
+            if !isDemo { access = Self.currentAccess() }
+            reload()
+            startUpdates()
+        } else {
+            stopUpdates()
+        }
+    }
 
     private static func currentAccess() -> Access {
         // Without a usage description macOS terminates the app on request.
@@ -170,7 +189,7 @@ final class UpNextStore: ObservableObject {
         let interval = 60 - Date().timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: 60) + 0.05
         let timer = Timer(timeInterval: interval, repeats: false) { [weak self] _ in
             MainActor.assumeIsolated {
-                guard let self, self.isVisible else { return }
+                guard let self, self.isWatched else { return }
                 self.reload()
                 self.scheduleTick()
             }
