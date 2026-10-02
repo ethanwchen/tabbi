@@ -42,6 +42,26 @@ final class PetPaletteTests: XCTestCase {
         XCTAssertEqual(orange.withVisibleRim(), orange)
     }
 
+    func testCatMouthContrastsWithTheFurItSitsOn() {
+        func mouthColors(_ breed: PetBreed, tint: PetColor? = nil) -> Set<PetColor> {
+            var profile = PetProfile(name: "", breed: breed)
+            profile.tintFur(tint)
+            let canvas = PetComposer.sitting(breed)
+            let colors = canvas.colors(using: profile.palette)
+            let mouth = canvas.pixels.indices.filter { canvas.pixels[$0] == .mouth }
+            XCTAssertFalse(mouth.isEmpty, "\(breed) draws a mouth")
+            return Set(mouth.compactMap { colors[$0] })
+        }
+        let dark = PetPalette([:])[.mouth]
+        // The tuxedo is black fur with a white muzzle: a rim-colored mouth would smudge it.
+        XCTAssertEqual(mouthColors(.tuxedo), [dark])
+        XCTAssertEqual(mouthColors(.orangeTabby), [dark])
+        // A dark mouth vanishes into black fur or a Siamese mask.
+        XCTAssertEqual(mouthColors(.blackCat), [PetPalette.warmRim])
+        XCTAssertEqual(mouthColors(.siamese), [PetPalette.warmRim])
+        XCTAssertEqual(mouthColors(.blackCat, tint: PetColor(hex: "#F4F0EA")!), [dark], "recolors adapt too")
+    }
+
     func testRoleSymbolsAreUniqueAndRoundTrip() {
         let symbols = PetPaletteRole.allCases.map(\.symbol) + PetPatternZone.allCases.map(\.symbol)
         XCTAssertEqual(Set(symbols).count, symbols.count)

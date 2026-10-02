@@ -40,7 +40,7 @@ Parse errors report the 1-based row and column of the problem.
 
 | Symbol | Role | Used for |
 | --- | --- | --- |
-| `O` | outline | inner lines, mouth; outer outlines are automatic |
+| `O` | outline | inner lines; outer outlines are automatic |
 | `B` | furBase | main fur |
 | `S` | furShade | shading, leg separation |
 | `A` | furAccent | stripes, points |
@@ -48,7 +48,8 @@ Parse errors report the 1-based row and column of the problem.
 | `W` | belly | light fur |
 | `E` | eye | pupils |
 | `L` | eyeLight | eye highlight |
-| `N` | nose | nose |
+| `N` | nose | nose (and dog mouths) |
+| `R` | mouth | cat mouth lines; dark on light fur, warm rim on dark fur (picked per pixel from the 4 neighbors) |
 | `P` | blush | cheeks, inner ears |
 | `C` | costumeBase | scrubs and the matching surgical cap |
 | `D` | costumeShade | scrubs shading and hems |

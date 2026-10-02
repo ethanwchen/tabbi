@@ -116,6 +116,10 @@ public enum PetPaletteRole: String, CaseIterable, Codable, Sendable {
     case eye
     case eyeLight
     case nose
+    /// Cat mouth lines. Resolved against the fur around them (see
+    /// `PetCanvas.colors(using:)`), so a mouth reads on both a white muzzle
+    /// and black fur.
+    case mouth
     case blush
     /// Scrubs and the matching surgical cap (user-recolorable).
     case costumeBase
@@ -151,6 +155,7 @@ public enum PetPaletteRole: String, CaseIterable, Codable, Sendable {
         case .eye: "E"
         case .eyeLight: "L"
         case .nose: "N"
+        case .mouth: "R"
         case .blush: "P"
         case .costumeBase: "C"
         case .costumeShade: "D"
@@ -245,6 +250,9 @@ public struct PetPalette: Hashable, Codable, Sendable {
     /// Outlines at least this bright already read on black.
     static let rimMinimumLuminance = 0.12
     public static let warmRim = PetColor(hex: "#9C7A68")!
+    /// Fur around a mouth darker than this (on average) gets a rim-colored
+    /// mouth instead of the dark one.
+    static let darkMouthBackground = 0.15
 
     /// Shared, breed-independent colors: eyes, effects, the default costume.
     static let baseColors: [PetPaletteRole: PetColor] = [
@@ -257,6 +265,7 @@ public struct PetPalette: Hashable, Codable, Sendable {
         .eye: PetColor(hex: "#1E1420")!,
         .eyeLight: PetColor(hex: "#FFFFFF")!,
         .nose: PetColor(hex: "#E77A8C")!,
+        .mouth: PetColor(hex: "#2A1A14")!,
         .blush: PetColor(hex: "#FF9AAE")!,
         .costumeBase: PetColor(hex: "#5BC0BE")!,
         .costumeShade: PetColor(hex: "#3E9593")!,
