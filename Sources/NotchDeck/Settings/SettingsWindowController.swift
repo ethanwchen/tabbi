@@ -8,13 +8,14 @@ import SwiftUI
 final class SettingsWindowController: NSWindowController {
     /// The panes, in toolbar order.
     enum Pane: String, CaseIterable {
-        case general, modules, shortcuts, about
+        case general, modules, shortcuts, claude, about
 
         var title: String {
             switch self {
             case .general: "General"
             case .modules: "Modules"
             case .shortcuts: "Shortcuts"
+            case .claude: "Claude"
             case .about: "About"
             }
         }
@@ -24,6 +25,7 @@ final class SettingsWindowController: NSWindowController {
             case .general: "gearshape"
             case .modules: "square.grid.2x2"
             case .shortcuts: "keyboard"
+            case .claude: "terminal"
             case .about: "info.circle"
             }
         }
@@ -82,8 +84,9 @@ final class SettingsWindowController: NSWindowController {
         // server, which `cacheDisplay` draws as an opaque white box; the title
         // still names the pane.
         window.toolbar?.selectedItemIdentifier = nil
-        // Let SwiftUI lay out the new pane and the window adopt its size.
-        try? await Task.sleep(for: .milliseconds(300))
+        // Let SwiftUI lay out the new pane and the window adopt its size;
+        // the Claude pane also waits for its CLI check to finish.
+        try? await Task.sleep(for: pane == .claude ? .seconds(2) : .milliseconds(300))
         window.layoutIfNeeded()
         // The theme frame (the content view's superview) draws the chrome.
         guard let frameView = window.contentView?.superview else { return nil }
@@ -99,6 +102,7 @@ final class SettingsWindowController: NSWindowController {
         case .general: GeneralSettingsPane()
         case .modules: ModulesSettingsPane()
         case .shortcuts: ShortcutsSettingsPane()
+        case .claude: ClaudeSettingsPane()
         case .about: AboutSettingsPane()
         }
     }

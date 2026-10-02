@@ -288,6 +288,170 @@ private struct KeyCaps: View {
     }
 }
 
+// MARK: Claude
+
+struct ClaudeSettingsPane: View {
+    @EnvironmentObject private var store: SettingsStore
+    /// The text being edited; committed on Return, focus loss, Choose, or Validate
+    /// so trimming and `~` expansion never fight the user mid-typing.
+    @State private var draft = ""
+    @State private var check: ClaudePathCheck?
+    /// Bumped by Validate so the check re-runs even when the path is unchanged.
+    @State private var attempt = 0
+    @FocusState private var fieldFocused: Bool
+
+    /// With `NOTCHDECK_DEMO=1` the pane shows a sample result and never runs the CLI.
+    private static let isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
+
+    var body: some View {
+        Form {
+            Section {
+                LabeledContent {
+                    HStack(spacing: 8) {
+                        if store.settings.claudePathOverride != nil {
+                            Button {
+                                draft = ""
+                                commit()
+                            } label: {
+                                Image(systemName: "arrow.counterclockwise")
+                            }
+                            .buttonStyle(.borderless)
+                            .help("Detect claude automatically")
+                        }
+                        TextField("Path", text: $draft, prompt: Text("Detect automatically"))
+                            .labelsHidden()
+                            .textFieldStyle(.roundedBorder)
+                            .multilineTextAlignment(.leading)
+                            .frame(width: 240)
+                            .focused($fieldFocused)
+                            .onSubmit(commit)
+                            .help("Full path to the claude binary. Leave empty to detect it automatically.")
+                        Button("Choose…", action: choose)
+                            .help("Pick the claude binary in Finder")
+                    }
+                } label: {
+                    Text("Location")
+                }
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    statusView
+                    Spacer(minLength: 8)
+                    Button("Validate") {
+                        commit()
+                        attempt += 1
+                    }
+                    .disabled(check == nil)
+                    .help("Check that this claude runs and report its version")
+                }
+            } header: {
+                Text("Claude CLI")
+            } footer: {
+                SectionFooter("Claude Usage and Ask Claude run your own signed-in claude CLI; NotchDeck never reads your credentials. Set a location only if claude isn't found automatically.")
+            }
+        }
+        .formStyle(.grouped)
+        .scrollDisabled(true)
+        .frame(width: paneWidth, height: 224)
+        .onAppear { draft = Self.displayPath(store.settings.claudePathOverride) }
+        .onChange(of: fieldFocused) { _, focused in
+            if !focused { commit() }
+        }
+        .task(id: CheckRequest(path: store.settings.claudePathOverride, attempt: attempt)) {
+            check = nil
+            check = await Self.run(override: store.settings.claudePathOverride)
+        }
+    }
+
+    @ViewBuilder
+    private var statusView: some View {
+        if let check {
+            let status = Self.status(for: check)
+            Label {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(status.title)
+                    Text(status.detail)
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                }
+            } icon: {
+                Image(systemName: check.isSuccess ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
+                    .foregroundStyle(check.isSuccess ? Color.green : Color.orange)
+            }
+            .help(status.detail)
+        } else {
+            Label {
+                Text("Checking…")
+                    .foregroundStyle(.secondary)
+            } icon: {
+                ProgressView().controlSize(.small)
+            }
+        }
+    }
+
+    private func commit() {
+        store.settings.claudePathOverride = draft
+        draft = Self.displayPath(store.settings.claudePathOverride)
+    }
+
+    private func choose() {
+        let panel = NSOpenPanel()
+        panel.title = "Choose the claude CLI"
+        panel.prompt = "Use"
+        panel.canChooseFiles = true
+        panel.canChooseDirectories = false
+        panel.allowsMultipleSelection = false
+        panel.showsHiddenFiles = true
+        panel.treatsFilePackagesAsDirectories = true
+        let current = store.settings.claudePathOverride.map { URL(fileURLWithPath: $0) }
+        panel.directoryURL = current?.deletingLastPathComponent()
+            ?? FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".local/bin")
+        let apply: (NSApplication.ModalResponse) -> Void = { response in
+            guard response == .OK, let url = panel.url else { return }
+            draft = url.path
+            commit()
+        }
+        if let window = NSApp.keyWindow {
+            panel.beginSheetModal(for: window, completionHandler: apply)
+        } else {
+            apply(panel.runModal())
+        }
+    }
+
+    private struct CheckRequest: Equatable {
+        let path: String?
+        let attempt: Int
+    }
+
+    private static func run(override: String?) async -> ClaudePathCheck {
+        if isDemo {
+            let home = FileManager.default.homeDirectoryForCurrentUser.path
+            return .found(path: override ?? "\(home)/.local/bin/claude", version: "2.1.4", isOverride: override != nil)
+        }
+        return await Task.detached(priority: .userInitiated) { ClaudePathCheck.run(override: override) }.value
+    }
+
+    private static func displayPath(_ path: String?) -> String {
+        path.map { ($0 as NSString).abbreviatingWithTildeInPath } ?? ""
+    }
+
+    private static func status(for check: ClaudePathCheck) -> (title: String, detail: String) {
+        switch check {
+        case let .found(path, version, isOverride):
+            let title = version.map { "Claude Code \($0)" } ?? "Claude Code"
+            return (title, (isOverride ? "Using " : "Found automatically at ") + displayPath(path))
+        case .missing(let path):
+            return ("Nothing at this path", "\(displayPath(path)) doesn't exist.")
+        case .notExecutable(let path):
+            return ("Can't run this file", "\(displayPath(path)) isn't an executable program.")
+        case .notClaude(let path):
+            return ("Not Claude Code", "\(displayPath(path)) didn't report a Claude Code version.")
+        case .notFound:
+            return ("claude wasn't found", "Install Claude Code, or choose where it is.")
+        }
+    }
+}
+
 // MARK: About
 
 struct AboutSettingsPane: View {
