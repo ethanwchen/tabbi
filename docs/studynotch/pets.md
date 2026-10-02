@@ -269,7 +269,7 @@ Cozy basics are cheap so the first finished 25-minute session unlocks the scarf;
 `buy(_:)` throws `PetPurchaseError.alreadyOwned` or `.notEnoughPoints(missing:)` and changes nothing on failure.
 
 `PetSave` persists the profile and the ledger together as one versioned JSON document (`write(to:)` is atomic, `load(from:)` returns nil when there is no save yet).
-Decoding is forgiving: unknown breeds fail, but unknown outfits, accessories, palette roles, and item ids from a newer build are dropped instead of breaking the file.
+Decoding is forgiving: unknown breeds fail, but unknown outfits, accessories, palette roles, and item ids from a newer build are dropped instead of breaking the file, and so are palette colors that are not valid hex.
 Every save is passed through `PetProfile.restricted(to:)`, so a hand-edited file can never dress the pet in items it has not bought.
 
 ### Recoloring fur
