@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Build a universal (arm64 + x86_64) NotchDeck.app, ad-hoc sign it, and package
-# it as build/release/NotchDeck-<version>.zip plus a .sha256 checksum.
+# Build a universal (arm64 + x86_64) edition .app, ad-hoc sign it, and package
+# it as build/release/<Name>-<version>.zip plus a .sha256 checksum.
 #
-#   usage: scripts/release.sh
+#   usage: scripts/release.sh [edition]      (default: notchdeck)
 #
 # The version comes from CFBundleShortVersionString in Resources/Info.plist.
 #
@@ -14,13 +14,11 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-plist=Resources/Info.plist
-version=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$plist")
+edition=${1:-notchdeck}
+version=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" Resources/Info.plist)
 out=build/release
-app="$out/NotchDeck.app"
-zip="$out/NotchDeck-$version.zip"
 
-echo "==> Building NotchDeck $version (arm64 + x86_64)"
+echo "==> Building $edition $version (arm64 + x86_64)"
 arch_flags=(-c release --arch arm64 --arch x86_64)
 swift build "${arch_flags[@]}"
 bin="$(swift build "${arch_flags[@]}" --show-bin-path)/NotchDeck"
@@ -30,12 +28,11 @@ for arch in arm64 x86_64; do
     [[ " $archs " == *" $arch "* ]] || { echo "error: $bin is missing $arch (has: $archs)" >&2; exit 1; }
 done
 
-echo "==> Assembling $app"
+echo "==> Assembling the $edition app"
 rm -rf "$out"
-mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
-cp "$bin" "$app/Contents/MacOS/NotchDeck"
-cp "$plist" "$app/Contents/Info.plist"
-cp Resources/AppIcon.icns "$app/Contents/Resources/AppIcon.icns"
+app=$(scripts/assemble.sh "$bin" "$out" "$edition")
+name=$(basename "$app" .app)
+zip="$out/$name-$version.zip"
 
 echo "==> Ad-hoc signing"
 codesign --force --deep --sign - --timestamp=none "$app"
@@ -56,8 +53,8 @@ Next steps for a GitHub release:
   1. Make sure CHANGELOG.md has a $version section and commit it.
   2. Tag and push:   git tag v$version && git push origin v$version
   3. Publish:        gh release create v$version "$zip" "$zip.sha256" \\
-                       --title "NotchDeck $version" --notes-file <release-notes.md>
+                       --title "$name $version" --notes-file <release-notes.md>
   4. Remind users in the notes that the app is ad-hoc signed, not notarized:
-     right-click NotchDeck.app > Open on first launch, or run
-       xattr -dr com.apple.quarantine /Applications/NotchDeck.app
+     right-click $name.app > Open on first launch, or run
+       xattr -dr com.apple.quarantine /Applications/$name.app
 EOF

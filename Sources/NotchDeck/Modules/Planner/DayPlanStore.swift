@@ -1,5 +1,5 @@
 import Foundation
-import NotchDeckCore
+import NotchKitCore
 
 /// Drives Plan My Day: gathers today's events and open tasks, asks the local
 /// `claude` CLI for time blocks, validates them, and writes the ones the
@@ -40,8 +40,8 @@ final class DayPlanStore: ObservableObject {
         var detail: String {
             switch self {
             case .claudeNotFound: "Install the claude CLI, or set its path in Settings."
-            case .calendarOff: "Allow NotchDeck in Privacy & Security to plan around meetings."
-            case .calendarUnavailable: "Open the NotchDeck app to plan around your calendar."
+            case .calendarOff: "Allow \(Edition.current.name) in Privacy & Security to plan around meetings."
+            case .calendarUnavailable: "Open the \(Edition.current.name) app to plan around your calendar."
             case .claudeFailed: "Claude didn't send back a usable plan. Try again in a moment."
             }
         }
@@ -61,6 +61,7 @@ final class DayPlanStore: ObservableObject {
     private let isDemo: Bool
     private var task: Task<Void, Never>?
     private var lastTasks: [PlannerItem] = []
+    private var lastSharedWork: [String] = []
     /// Bumped on every run and cancel so a superseded run can't publish.
     private var generation = 0
 
@@ -83,9 +84,11 @@ final class DayPlanStore: ObservableObject {
         }
     }
 
-    /// Starts planning the rest of today around `tasks` (unfinished ones count).
-    func plan(tasks: [PlannerItem]) {
+    /// Starts planning the rest of today around `tasks` (unfinished ones
+    /// count) and what other modules share (`ProviderSnapshot.plannableWork`).
+    func plan(tasks: [PlannerItem], sharedWork: [String] = []) {
         lastTasks = tasks
+        lastSharedWork = sharedWork
         invalidateRun()
         writeFailed = false
         phase = .planning
@@ -106,7 +109,7 @@ final class DayPlanStore: ObservableObject {
         }
     }
 
-    func retry() { plan(tasks: lastTasks) }
+    func retry() { plan(tasks: lastTasks, sharedWork: lastSharedWork) }
 
     func openPrivacySettings() { upNext.openPrivacySettings() }
 
@@ -162,7 +165,8 @@ final class DayPlanStore: ObservableObject {
         // Dry runs plan without meetings, which is enough to try the flow.
         case .unavailable: guard upNext.isPlanDryRun else { return .failed(.calendarUnavailable) }
         }
-        let context = DayPlanContext(now: Date(), events: upNext.todayEvents(), tasks: lastTasks)
+        let context = DayPlanContext(now: Date(), events: upNext.todayEvents(), tasks: lastTasks,
+                                     sharedWork: lastSharedWork)
         guard context.hasFreeTime else { return .noFreeTime }
 
         guard let executable = await Task.detached(priority: .userInitiated, operation: { ClaudeCLI.locate() }).value else {

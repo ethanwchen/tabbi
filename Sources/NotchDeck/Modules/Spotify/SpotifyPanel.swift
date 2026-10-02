@@ -1,5 +1,6 @@
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
+import NotchKit
 
 /// Now Playing: album art on the left; title, scrubber, and transport on the
 /// right. Every non-playing `SpotifyStatus` gets its own designed state.
@@ -42,7 +43,7 @@ struct SpotifyPanel: View {
                                   message: "Reading what's playing.", actions: [])
             case .permissionDenied:
                 SpotifyEmptyState(
-                    symbol: "lock.fill", title: "NotchDeck can't control \(sourceName)",
+                    symbol: "lock.fill", title: "\(Edition.current.name) can't control \(sourceName)",
                     message: "Allow access in Privacy & Security › Automation.",
                     actions: [.init(title: "Open Settings", help: "Open Automation settings",
                                     perform: controller.openAutomationSettings)]

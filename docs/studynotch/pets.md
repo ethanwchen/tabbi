@@ -20,7 +20,7 @@ Do not commit the output folder; curated sheets live in `docs/studynotch/images/
 
 ## Sprite format
 
-Art is plain text inside Swift string literals (`Sources/NotchDeckCore/Pets/Art/`).
+Art is plain text inside Swift string literals (`Sources/NotchKitCore/Pets/Art/`).
 Each character is one pixel.
 A grid never stores a color, only what the pixel *means*; palettes turn meanings into colors.
 That is what lets one drawing serve every breed, user recolor, and costume color.
@@ -236,7 +236,7 @@ To draw, call `animator.advance(to: now)` and then `clipSet.frame(for: animator.
 
 ### In the app
 
-`Sources/NotchDeck/Pets` plays a pet in SwiftUI:
+`Sources/NotchKit/Pets` plays a pet in SwiftUI:
 
 - `PetPlayer` (an `ObservableObject`) owns the clip set and the animator.
   Features drive it with `send(.nudge)`, `send(.celebrate)`, and so on, and `update(profile:)` swaps the look in place.

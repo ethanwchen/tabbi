@@ -1,4 +1,5 @@
 import AppKit
+import NotchKitCore
 
 // NotchDeck is a menu-bar-less accessory app: no Dock icon, no main window.
 MainActor.assumeIsolated {
@@ -6,9 +7,14 @@ MainActor.assumeIsolated {
     let arguments = CommandLine.arguments
     if let flag = arguments.firstIndex(of: "--snapshot") {
         let path = arguments.indices.contains(flag + 1) ? arguments[flag + 1] : "snapshots"
+        let kitFlag = arguments.firstIndex(of: "--kit")
+        let kitID = kitFlag.flatMap { arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil }
         app.setActivationPolicy(.prohibited)
         Task { @MainActor in
-            await SnapshotRenderer.run(outputDirectory: URL(fileURLWithPath: path))
+            await SnapshotRenderer.run(
+                outputDirectory: URL(fileURLWithPath: path),
+                kitID: kitID ?? Edition.current.defaultKitID
+            )
             exit(0)
         }
         app.run()

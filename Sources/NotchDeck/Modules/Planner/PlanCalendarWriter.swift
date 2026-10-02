@@ -1,5 +1,5 @@
 import EventKit
-import NotchDeckCore
+import NotchKitCore
 
 /// Writes accepted Plan My Day blocks into the user's default calendar, so
 /// any account added in Internet Accounts (iCloud, Google, Exchange) works

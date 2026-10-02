@@ -26,7 +26,7 @@ Closed, it is invisible except for a quiet live activity beside the notch: your 
 A meeting starting within 5 minutes stays put; otherwise the activities take turns every few seconds.
 Right-click the notch and choose **Settings…** to pick which ones show, or turn the preview off.
 Click it and the notch grows into a dark panel with five modules.
-Flip between them with a two-finger swipe, the arrow keys or the tab icons, and press Esc to close it again.
+Flip between them with a two-finger swipe, the arrow keys, the number keys 1-9 or the tab icons, and press Esc to close it again.
 
 It is written in Swift with SwiftUI and AppKit, has no third-party dependencies, no account and no telemetry.
 
@@ -58,12 +58,13 @@ Your 5-hour and weekly Claude limits, read through your own `claude` CLI, plus t
 ### Today
 
 A daily checklist that lives one click away, with progress for the day and quick add.
-**Plan my day** asks your local `claude` CLI to fit your unfinished tasks into today's free calendar gaps, and adds the blocks you accept to your default calendar.
+**Plan my day** asks your local `claude` CLI to fit your unfinished tasks, plus work your other tabs share (such as Anki reviews), into today's free calendar gaps, and adds the blocks you accept to your default calendar.
 **Wrap up** shows what you finished, what carries over to tomorrow, and your focus sessions, with a short summary from Claude.
 
 While a focus timer runs, focus mode can play a locally generated focus sound (brown, pink or white noise, rain, fireplace or cafe murmur, blended up to three), start a playlist in Spotify or Apple Music, and turn on Do Not Disturb through two Shortcuts you create.
 On a break or when you stop, the sound fades out, a playlist it started is paused and Do Not Disturb is turned off again.
 Set it up in **Settings > Focus**, which includes a short guide for the shortcuts and Test buttons.
+Prefer a timer without the checklist? Turn on the **Focus** tab in **Settings > Modules**: the same timer, large, with focus mode at a glance.
 
 <img src="docs/images/today.png" alt="Today panel" width="680">
 
@@ -72,6 +73,13 @@ Set it up in **Settings > Focus**, which includes a short guide for the shortcut
 A quick question box that streams answers from your local `claude` CLI, with Markdown rendering and follow-up questions.
 
 <img src="docs/images/ask-claude.png" alt="Ask Claude panel" width="680">
+
+### Kits
+
+A kit is a premade set of tabs for one kind of user.
+NotchDeck ships Productivity (the tabs above), Medicine (StudyNotch) and Student, and you can switch kits, reset to a kit's defaults, or import a kit someone shared in **Settings > Modules**.
+Kits are small JSON files; [docs/kits.md](docs/kits.md) explains how to write your own.
+See [docs/ROADMAP.md](docs/ROADMAP.md) for where NotchDeck is going next.
 
 ## Install
 
@@ -123,10 +131,15 @@ Other useful commands:
 
 ```sh
 swift build                     # compile; must stay warning-free
-swift test                      # unit tests for NotchDeckCore
+swift test                      # unit tests for NotchKitCore
 NOTCHDECK_DEMO=1 swift run NotchDeck --snapshot snapshots   # render every notch state to PNG with sample data
 scripts/release.sh              # universal, ad-hoc signed release zip in build/release/
+scripts/bundle.sh studynotch    # build/StudyNotch.app: the same app branded for studying
 ```
+
+Editions are branded builds of the same binary.
+`scripts/bundle.sh studynotch` (or `scripts/run.sh studynotch`) builds StudyNotch, with its own name, bundle id and the Medicine kit preselected.
+An edition is an Info.plist overlay in `Resources/Editions/<edition>/` plus an entry in `Edition.builtIn`; an optional `AppIcon.icns` beside it replaces the icon.
 
 `NOTCHDECK_DEMO=1` swaps every data source for realistic sample data, so you can try the UI without Spotify, a calendar or the `claude` CLI.
 
@@ -140,7 +153,7 @@ You can change any of them later in **System Settings > Privacy & Security**.
 | **Automation: Spotify** | Now Playing, focus mode | Read the current track and send play, pause, skip, seek, shuffle and repeat commands to Spotify through Apple Events, and start or pause a focus playlist. |
 | **Automation: Music** | Now Playing, focus mode | The same for Apple Music. |
 | **Calendars** | Today | Show your next events and their video call links, and add the Plan my day blocks you accept to your default calendar. Events are read on your Mac and never leave it. |
-| **Notifications** | Today | Tell you when a focus timer ends while the notch is closed. |
+| **Notifications** | Today, Focus | Tell you when a focus timer ends while the notch is closed. |
 
 Claude Usage and Ask Claude need no system permission.
 They run the `claude` command that is already installed and signed in on your Mac.
@@ -151,7 +164,7 @@ They run the `claude` command that is already installed and signed in on your Ma
 - **The only network requests it makes itself** are for album artwork URLs that Spotify provides.
 - **Claude features go only through your local `claude` CLI.** NotchDeck never reads your Claude credentials or the keychain.
   Ask Claude sends your question to Claude through that CLI, exactly as if you had typed `claude -p` in a terminal.
-  Plan my day sends today's remaining events and unfinished task titles the same way, and Wrap up sends your task titles, only when you press them.
+  Plan my day sends today's remaining events, unfinished task titles and your other tabs' goals (such as "Anki reviews (320 cards left)") the same way, and Wrap up sends your task titles, only when you press them.
 - **Claude Usage** reads token counts from the transcripts in `~/.claude/projects`, read-only, and never writes there.
   Checking your limits sends a tiny request with the cheapest model, so it never runs until you press refresh once.
   After that, it runs when you press refresh or open the panel 10 or more minutes after the last check.
@@ -190,6 +203,7 @@ System sampling and Claude refreshes only run while their panel is open, and Now
 
 Contributions are welcome.
 Start with [CONTRIBUTING.md](CONTRIBUTING.md) for the dev setup and the snapshot workflow, and [AGENTS.md](AGENTS.md) for the architecture and design rules.
+[docs/ROADMAP.md](docs/ROADMAP.md) lists planned kits, modules and content packs.
 Please follow the [Code of Conduct](CODE_OF_CONDUCT.md), and report security issues privately as described in [SECURITY.md](SECURITY.md).
 Notable changes are listed in [CHANGELOG.md](CHANGELOG.md).
 

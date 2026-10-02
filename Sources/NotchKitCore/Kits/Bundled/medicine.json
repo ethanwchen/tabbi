@@ -1,0 +1,51 @@
+{
+  "formatVersion": 1,
+  "id": "medicine",
+  "name": "Medicine",
+  "summary": "StudyNotch: study timer, Anki reviews, and a study pet for med school.",
+  "symbol": "cross.case.fill",
+  "modules": ["study", "planner", "anki", "party", "spotify", "claudeAsk", "closet"],
+  "defaults": {
+    "studyMethods": ["pomodoro", "ankiSprint", "questionBlock", "fiftyTwoSeventeen", "ultradian", "flowtime", "custom"],
+    "studyMethod": "pomodoro",
+    "focusSounds": [{ "sound": "rain", "level": 0.8 }, { "sound": "brown", "level": 0.4 }],
+    "ticker": ["focus", "tasks", "meeting", "nowPlaying"],
+    "pet": { "breed": "orangeTabby" },
+    "theme": "notch"
+  },
+  "onboarding": [
+    {
+      "id": "stage",
+      "prompt": "Where are you in training?",
+      "options": [
+        {
+          "id": "preclinical",
+          "label": "Preclinical (Step 1)",
+          "symbol": "books.vertical",
+          "tasks": ["Clear today's Anki reviews", "Do one block of UWorld questions"]
+        },
+        {
+          "id": "clinical",
+          "label": "Clinical rotations (Step 2)",
+          "symbol": "stethoscope",
+          "tasks": ["Clear today's Anki reviews", "Do 20 shelf questions"]
+        },
+        {
+          "id": "other",
+          "label": "Something else",
+          "symbol": "graduationcap",
+          "tasks": ["Plan today's study blocks"]
+        }
+      ]
+    },
+    {
+      "id": "anki",
+      "prompt": "Do you use Anki?",
+      "options": [
+        { "id": "yes", "label": "Yes, every day", "symbol": "rectangle.stack", "enables": ["anki"] },
+        { "id": "no", "label": "Not right now", "symbol": "xmark", "disables": ["anki"] }
+      ]
+    }
+  ],
+  "starterTasks": []
+}

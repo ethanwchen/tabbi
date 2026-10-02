@@ -1,7 +1,8 @@
 import AppKit
 import CoreImage
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
+import NotchKit
 
 /// A decoded album cover plus its average color (for the panel's glow).
 struct SpotifyArtworkImage {

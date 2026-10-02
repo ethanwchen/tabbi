@@ -1,5 +1,6 @@
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
+import NotchKit
 
 /// The End-of-Day Review, shown in place of the checklist: a header with
 /// Done, Claude's short summary (a shimmer until it arrives) over today's

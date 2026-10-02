@@ -1,6 +1,8 @@
 import AppKit
 import SwiftUI
-import NotchDeckCore
+import UniformTypeIdentifiers
+import NotchKitCore
+import NotchKit
 
 /// Width shared by every pane so the window only animates its height.
 private let paneWidth: CGFloat = 500
@@ -16,7 +18,7 @@ struct GeneralSettingsPane: View {
             Section {
                 Toggle("Launch at login", isOn: launchAtLogin)
                     .disabled(!LaunchAtLogin.isAvailable && store.integratesWithSystem)
-                    .help("Start NotchDeck automatically when you log in")
+                    .help("Start \(Edition.current.name) automatically when you log in")
                 if let caption = launchAtLoginCaption {
                     Text(caption)
                         .font(.callout)
@@ -77,10 +79,10 @@ struct GeneralSettingsPane: View {
         if let error = store.launchAtLoginError { return error }
         guard store.integratesWithSystem else { return nil }
         if !LaunchAtLogin.isAvailable {
-            return "Available when NotchDeck runs as an app bundle."
+            return "Available when \(Edition.current.name) runs as an app bundle."
         }
         if LaunchAtLogin.needsApproval {
-            return "Allow NotchDeck in System Settings › General › Login Items."
+            return "Allow \(Edition.current.name) in System Settings › General › Login Items."
         }
         return nil
     }
@@ -128,6 +130,8 @@ struct ModulesSettingsPane: View {
 
     var body: some View {
         Form {
+            KitSection()
+
             Section {
                 ForEach(store.settings.modules.order) { module in
                     ModuleRow(module: module, layout: $store.settings.modules)
@@ -142,8 +146,151 @@ struct ModulesSettingsPane: View {
             }
         }
         .formStyle(.grouped)
-        .scrollDisabled(true)
-        .frame(width: paneWidth, height: 336)
+        // Scrolls: the module list grows with every module NotchDeck ships.
+        .frame(width: paneWidth, height: 444)
+    }
+}
+
+/// Picks the kit (a premade set of tabs), resets to its defaults, and
+/// imports kits shared as JSON files (see docs/kits.md).
+private struct KitSection: View {
+    @EnvironmentObject private var store: SettingsStore
+    /// Reset also restores the kit's focus sound, so it counts toward "already at defaults".
+    @ObservedObject private var focus = FocusController.shared
+    /// The outcome of the last import or removal, shown under the buttons.
+    @State private var message: (text: String, isWarning: Bool)?
+    /// A kit with onboarding questions the user picked; its questions show
+    /// in a sheet and the switch happens only once they confirm.
+    @State private var askingKit: KitManifest?
+    /// Set while `askingKit` is a just-imported kit: what it uses that this
+    /// build skips, reported once the user answers or cancels.
+    @State private var importIssues: [KitIssue]?
+
+    private var usesKitDefaults: Bool {
+        store.usesKitDefaults && (store.activeKit.map { focus.settings.usesDefaults(of: $0.defaults) } ?? true)
+    }
+
+    var body: some View {
+        Section {
+            Picker(selection: kitSelection) {
+                ForEach(store.kits.kits) { kit in
+                    Label(kit.name, systemImage: kit.symbol).tag(kit.id)
+                }
+            } label: {
+                Text("Current kit")
+                if let summary = store.activeKit?.summary, !summary.isEmpty {
+                    Text(summary)
+                }
+            }
+            .help("Switching kits replaces your tabs with the kit's")
+
+            HStack(spacing: 8) {
+                Button("Import Kit…", action: importKit)
+                    .help("Add a kit someone shared as a .json file")
+                if store.canRemoveActiveKit {
+                    Button("Remove Kit", role: .destructive, action: removeKit)
+                        .help("Delete this imported kit and go back to the default kit")
+                }
+                Spacer()
+                Button("Reset to Kit Defaults", action: store.resetToKitDefaults)
+                    .disabled(usesKitDefaults)
+                    .help(usesKitDefaults
+                          ? "Your setup already matches \(store.activeKit?.name ?? "the kit")"
+                          : "Restore the tabs, previews and focus sound \(store.activeKit?.name ?? "the kit") ships with")
+            }
+
+            if let message {
+                Label(message.text, systemImage: message.isWarning ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
+                    .font(.callout)
+                    .foregroundStyle(message.isWarning ? AnyShapeStyle(.orange) : AnyShapeStyle(.secondary))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        } header: {
+            Text("Kit")
+        } footer: {
+            SectionFooter("A kit is a premade set of tabs and defaults. Switching kits or resetting replaces your tabs, notch previews and focus sound with the kit's, and switching adds its starter tasks to Today. Other settings stay.")
+        }
+        .sheet(item: $askingKit) { kit in
+            KitQuestionsView(kit: kit, dismissal: .cancel, back: { cancelQuestions(for: kit) }) { answers in
+                askingKit = nil
+                store.switchKit(to: kit.id, answers: answers)
+                if let issues = importIssues {
+                    message = importMessage("Imported \(kit.name).", issues: issues)
+                    importIssues = nil
+                }
+            }
+            .frame(width: 520)
+        }
+    }
+
+    /// Picking a kit with onboarding questions asks them first; the picker
+    /// keeps showing the current kit until the user confirms.
+    private var kitSelection: Binding<String> {
+        Binding(get: { store.activeKit?.id ?? store.settings.kitID }, set: { id in
+            message = nil
+            guard id != store.settings.kitID, let kit = store.kits[id] else { return }
+            if kit.onboarding.isEmpty {
+                store.switchKit(to: id)
+            } else {
+                askingKit = kit
+            }
+        })
+    }
+
+    private func importKit() {
+        let panel = NSOpenPanel()
+        panel.title = "Import a Kit"
+        panel.prompt = "Import"
+        panel.allowedContentTypes = [.json]
+        panel.canChooseDirectories = false
+        panel.allowsMultipleSelection = false
+        let apply: (NSApplication.ModalResponse) -> Void = { response in
+            guard response == .OK, let url = panel.url else { return }
+            do {
+                let (kit, issues) = try store.importKit(from: url)
+                if kit.onboarding.isEmpty {
+                    store.switchKit(to: kit.id)
+                    message = importMessage("Imported \(kit.name).", issues: issues)
+                } else {
+                    importIssues = issues
+                    askingKit = kit
+                }
+            } catch {
+                message = ("\(error)", true)
+            }
+        }
+        if let window = NSApp.keyWindow {
+            panel.beginSheetModal(for: window, completionHandler: apply)
+        } else {
+            apply(panel.runModal())
+        }
+    }
+
+    /// Closes the questions sheet without switching. A just-imported kit
+    /// stays installed, so the user can pick it later.
+    private func cancelQuestions(for kit: KitManifest) {
+        askingKit = nil
+        guard let issues = importIssues else { return }
+        importIssues = nil
+        let note = kit.id == store.settings.kitID
+            ? "Updated \(kit.name); your tabs are unchanged."
+            : "Imported \(kit.name). Pick it under Current kit to use it."
+        message = importMessage(note, issues: issues)
+    }
+
+    /// The import outcome, with what the kit uses that this build skips.
+    private func importMessage(_ note: String, issues: [KitIssue]) -> (text: String, isWarning: Bool) {
+        issues.isEmpty ? (note, false) : (note + " " + issues.map(\.description).joined(separator: " "), true)
+    }
+
+    private func removeKit() {
+        let name = store.activeKit?.name ?? "The kit"
+        do {
+            try store.removeActiveKit()
+            message = ("Removed \(name).", false)
+        } catch {
+            message = ("Couldn't remove \(name): \(error.localizedDescription)", true)
+        }
     }
 }
 
@@ -257,9 +404,12 @@ struct ShortcutsSettingsPane: View {
                             .buttonStyle(.borderless)
                             .help("Restore \(Hotkey.default.displayString)")
                         }
-                        HotkeyRecorderField(hotkey: store.settings.hotkey, recorder: recorder) {
-                            store.settings.hotkey = $0
-                        }
+                        HotkeyRecorderField(
+                            hotkey: store.settings.hotkey,
+                            recorder: recorder,
+                            onRecordingChange: { store.isRecordingHotkey = $0 },
+                            onRecord: { store.settings.hotkey = $0 }
+                        )
                     }
                 } label: {
                     Text("Open and close the notch")
@@ -278,6 +428,7 @@ struct ShortcutsSettingsPane: View {
 
             Section {
                 LabeledContent("Switch tabs") { KeyCaps(["←", "→"]) }
+                LabeledContent("Jump to a tab") { KeyCaps(["1-9"]) }
                 LabeledContent("Close") { KeyCaps(["Esc"]) }
             } header: {
                 Text("In the open notch")
@@ -287,7 +438,7 @@ struct ShortcutsSettingsPane: View {
         }
         .formStyle(.grouped)
         .scrollDisabled(true)
-        .frame(width: paneWidth, height: 324)
+        .frame(width: paneWidth, height: 364)
         .onDisappear { recorder.stop() }
     }
 
@@ -391,7 +542,7 @@ struct ClaudeSettingsPane: View {
             } header: {
                 Text("Claude CLI")
             } footer: {
-                SectionFooter("Claude Usage and Ask Claude run your own signed-in claude CLI; NotchDeck never reads your credentials. Set a location only if claude isn't found automatically.")
+                SectionFooter("Claude Usage and Ask Claude run your own signed-in claude CLI; \(Edition.current.name) never reads your credentials. Set a location only if claude isn't found automatically.")
             }
         }
         .formStyle(.grouped)
@@ -507,7 +658,7 @@ struct AboutSettingsPane: View {
         VStack(spacing: 0) {
             AppGlyph()
                 .padding(.bottom, 16)
-            Text("NotchDeck")
+            Text(Edition.current.name)
                 .font(.system(size: 20, weight: .semibold, design: .rounded))
             Text(versionText)
                 .font(.callout)

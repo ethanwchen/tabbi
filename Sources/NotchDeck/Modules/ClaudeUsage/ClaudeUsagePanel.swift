@@ -1,5 +1,6 @@
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
+import NotchKit
 
 /// Live 5-hour and weekly limits as rings, today's local usage in a card,
 /// and a footer with freshness and a manual refresh.

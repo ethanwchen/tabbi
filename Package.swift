@@ -13,22 +13,34 @@ let package = Package(
     ],
     targets: [
         // Pure, testable logic: parsers, models, stores. No AppKit/SwiftUI.
-        .target(name: "NotchDeckCore", swiftSettings: swiftSettings),
-        // The app: notch window, SwiftUI views, system integrations.
+        .target(
+            name: "NotchKitCore",
+            // Kit manifests ship as human-editable JSON (see docs/kits.md).
+            resources: [.copy("Kits/Bundled")],
+            swiftSettings: swiftSettings
+        ),
+        // Shared AppKit/SwiftUI: design system, notch window pieces, shared
+        // components and pet views. Modules build their panels from these.
+        .target(
+            name: "NotchKit",
+            dependencies: ["NotchKitCore"],
+            swiftSettings: swiftSettings
+        ),
+        // The app: modules, settings, system integrations, assembly.
         .executableTarget(
             name: "NotchDeck",
-            dependencies: ["NotchDeckCore"],
+            dependencies: ["NotchKitCore", "NotchKit"],
             swiftSettings: swiftSettings
         ),
         // Renders pet sprite contact sheets for art review: `swift run PetGallery out/`.
         .executableTarget(
             name: "PetGallery",
-            dependencies: ["NotchDeckCore"],
+            dependencies: ["NotchKitCore"],
             swiftSettings: swiftSettings
         ),
         .testTarget(
-            name: "NotchDeckCoreTests",
-            dependencies: ["NotchDeckCore"],
+            name: "NotchKitCoreTests",
+            dependencies: ["NotchKitCore"],
             swiftSettings: swiftSettings
         ),
     ]

@@ -1,0 +1,37 @@
+{
+  "formatVersion": 1,
+  "id": "student",
+  "name": "Student",
+  "summary": "A study timer, today's classes and homework, and music to focus.",
+  "symbol": "graduationcap.fill",
+  "accent": "planner",
+  "modules": ["study", "planner", "spotify", "claudeAsk", { "id": "anki", "enabled": false }, "closet"],
+  "defaults": {
+    "studyMethods": ["pomodoro", "fiftyTwoSeventeen", "flowtime", "custom"],
+    "studyMethod": "pomodoro",
+    "focusSounds": [{ "sound": "cafe", "level": 0.7 }],
+    "ticker": ["focus", "tasks", "meeting", "nowPlaying"],
+    "pet": { "breed": "corgi" },
+    "theme": "notch"
+  },
+  "onboarding": [
+    {
+      "id": "level",
+      "prompt": "What are you studying for?",
+      "options": [
+        { "id": "high-school", "label": "High school", "symbol": "backpack" },
+        { "id": "college", "label": "College", "symbol": "building.columns" },
+        { "id": "exam", "label": "A big exam", "symbol": "pencil.and.list.clipboard" }
+      ]
+    },
+    {
+      "id": "flashcards",
+      "prompt": "Do you study with flashcards?",
+      "options": [
+        { "id": "anki", "label": "Yes, in Anki", "symbol": "rectangle.stack", "enables": ["anki"] },
+        { "id": "no", "label": "No", "symbol": "xmark" }
+      ]
+    }
+  ],
+  "starterTasks": ["Review today's lecture notes", "Plan this week's assignments"]
+}

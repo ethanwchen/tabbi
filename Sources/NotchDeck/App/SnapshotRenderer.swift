@@ -1,19 +1,21 @@
 import AppKit
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
+import NotchKit
 
 /// Renders every notch state and Settings pane to PNG without showing a window:
 ///
-///     swift run NotchDeck --snapshot ./snapshots
+///     swift run NotchDeck --snapshot ./snapshots [--kit medicine] [--edition studynotch]
 ///
 /// Used to review UI changes (by people and by agents) without Screen
 /// Recording permission. Live data sources run as usual, so panels show
 /// whatever state they reach within `settle` seconds.
 @MainActor
 enum SnapshotRenderer {
-    static func run(outputDirectory: URL, settle: TimeInterval = 1.5) async {
+    /// - Parameter kitID: the kit whose tabs are rendered, as on first run.
+    static func run(outputDirectory: URL, kitID: String = KitLibrary.defaultKitID, settle: TimeInterval = 1.5) async {
         try? FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
-        let services = AppServices(settings: .ephemeral())
+        let services = AppServices(settings: .ephemeral(kitID: kitID))
         // 14"/16" MacBook Pro notch.
         let geometry = NotchGeometry(
             notchSize: CGSize(width: 185, height: 32), hasHardwareNotch: true,
@@ -21,8 +23,10 @@ enum SnapshotRenderer {
         )
         try? await Task.sleep(for: .seconds(settle))
 
+        // Every shot uses the active kit's tab layout.
+        let layout = services.settings.settings.modules
         var shots: [(String, NotchViewModel)] = []
-        let closed = NotchViewModel(geometry: geometry)
+        let closed = NotchViewModel(geometry: geometry, layout: layout)
         closed.preview = services.ticker.item
         shots.append(("closed", closed))
         // One closed shot per preview kind that has data. Demo usage sits
@@ -34,20 +38,29 @@ enum SnapshotRenderer {
             let demoUsage: TickerItem? = isDemo && kind == .claudeUsage
                 ? .claudeUsage(window: .fiveHour, utilization: 0.86) : nil
             guard let item = live ?? demoUsage else { continue }
-            let model = NotchViewModel(geometry: geometry)
+            let model = NotchViewModel(geometry: geometry, layout: layout)
             model.preview = item
             shots.append(("closed-\(snapshotName(kind))", model))
         }
-        for module in ModuleID.allCases {
-            let model = NotchViewModel(geometry: geometry)
+        // One open shot per tab of the active kit.
+        for module in layout.enabled {
+            let model = NotchViewModel(geometry: geometry, layout: layout)
+            model.open(module)
+            shots.append(("open-\(module.rawValue)", model))
+        }
+        // And one per tab the kit leaves off (e.g. Focus), as if turned on,
+        // so every module's panel can be reviewed under any kit.
+        for module in layout.order where !layout.isEnabled(module) {
+            var withModule = layout
+            _ = withModule.setEnabled(module, true)
+            let model = NotchViewModel(geometry: geometry, layout: withModule)
             model.open(module)
             shots.append(("open-\(module.rawValue)", model))
         }
 
         for (name, model) in shots {
-            let view = NotchView()
+            let view = NotchView(content: ModuleViews.notchContent(services: services))
                 .environmentObject(model)
-                .environmentObject(services)
                 .frame(width: Theme.Layout.expandedSize.width + 40,
                        height: Theme.Layout.expandedSize.height + 24, alignment: .top)
                 .background(Color(white: 0.16)) // stand-in for a desktop
@@ -62,13 +75,55 @@ enum SnapshotRenderer {
             print(url.path)
         }
 
-        let settingsWindow = SettingsWindowController(settings: services.settings)
-        for pane in SettingsWindowController.Pane.allCases {
+        let settingsWindow = SettingsWindowController(settings: services.settings, modules: services.modules)
+        for pane in settingsWindow.paneIDs {
             guard let png = await settingsWindow.snapshot(of: pane) else { continue }
-            let url = outputDirectory.appendingPathComponent("settings-\(pane.rawValue).png")
+            let url = outputDirectory.appendingPathComponent("settings-\(pane).png")
             try? png.write(to: url)
             print(url.path)
         }
+
+        // The first-run kit picker, before anything is chosen.
+        if let png = await WelcomeWindowController(settings: services.settings).snapshot() {
+            let url = outputDirectory.appendingPathComponent("welcome.png")
+            try? png.write(to: url)
+            print(url.path)
+        }
+        // Its second step: the active kit's onboarding questions.
+        let kitID = services.settings.settings.kitID
+        if services.settings.kits[kitID]?.onboarding.isEmpty == false,
+           let png = await WelcomeWindowController(settings: services.settings, questionsFor: kitID).snapshot() {
+            let url = outputDirectory.appendingPathComponent("welcome-questions.png")
+            try? png.write(to: url)
+            print(url.path)
+        }
+        // The same questions as the sheet Settings shows when switching kits.
+        if let kit = services.settings.kits[kitID], !kit.onboarding.isEmpty,
+           let png = await sheetSnapshot(KitQuestionsView(kit: kit, dismissal: .cancel, back: {}, start: { _ in })
+               .frame(width: 520)) {
+            let url = outputDirectory.appendingPathComponent("settings-kit-questions.png")
+            try? png.write(to: url)
+            print(url.path)
+        }
+    }
+
+    /// Renders a sheet's content in an off-screen titleless window, since
+    /// ImageRenderer can't draw AppKit-backed controls such as buttons.
+    private static func sheetSnapshot(_ content: some View) async -> Data? {
+        let host = NSHostingController(rootView: content)
+        host.sizingOptions = .preferredContentSize
+        let window = NSWindow(contentViewController: host)
+        window.styleMask = [.titled, .fullSizeContentView]
+        window.titlebarAppearsTransparent = true
+        window.titleVisibility = .hidden
+        window.isReleasedWhenClosed = false
+        try? await Task.sleep(for: .milliseconds(300))
+        window.layoutIfNeeded()
+        guard let frameView = window.contentView?.superview,
+              let rep = frameView.bitmapImageRepForCachingDisplay(in: frameView.bounds)
+        else { return nil }
+        frameView.cacheDisplay(in: frameView.bounds, to: rep)
+        return rep.representation(using: .png, properties: [:])
     }
 
     private static func snapshotName(_ kind: TickerKind) -> String {

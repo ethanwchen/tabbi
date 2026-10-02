@@ -1,5 +1,6 @@
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
+import NotchKit
 
 /// The Today panel: the checklist (date and progress header, items, add
 /// field) on the left, swapped for the Plan My Day proposal or the
@@ -9,6 +10,7 @@ import NotchDeckCore
 struct PlannerPanel: View {
     @ObservedObject var store: PlannerStore
     @EnvironmentObject private var notch: NotchViewModel
+    @EnvironmentObject private var services: AppServices
     @FocusState private var focus: PlannerField?
 
     /// Width of the right column; the checklist keeps the remaining ~60%.
@@ -33,9 +35,9 @@ struct PlannerPanel: View {
                 // Re-checks the hour each minute so "Wrap up" takes the lead at 5 pm on its own.
                 TimelineView(.everyMinute) { context in
                     let isEvening = Self.isWrapUpTime(context.date)
-                    let hasOpenTasks = store.items.contains { !$0.isDone }
+                    let hasPlannableWork = store.hasPlannableWork
                     VStack(spacing: Theme.Spacing.s) {
-                        PlannerHeader(store: store, isEvening: isEvening, hasOpenTasks: hasOpenTasks)
+                        PlannerHeader(store: store, isEvening: isEvening, hasPlannableWork: hasPlannableWork)
                         content
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                         if store.canEdit {
@@ -47,7 +49,7 @@ struct PlannerPanel: View {
                                         store.wrapUp()
                                     }
                                     .transition(.opacity.combined(with: .scale(scale: 0.9)))
-                                } else if hasOpenTasks {
+                                } else if hasPlannableWork {
                                     // Nothing to schedule until there's an open task.
                                     PlannerPillButton(title: "Plan my day", symbol: "sparkles", height: 28,
                                                       help: "Let Claude fit your open tasks around today's calendar") {
@@ -69,13 +71,13 @@ struct PlannerPanel: View {
         .onAppear {
             store.refreshDay()
             store.upNext.setVisible(true)
-            store.focus.setVisible(true)
+            store.focus.setVisible(true, viewer: .today)
         }
         .onChange(of: focus) { _, field in notch.isPinned = field != nil }
         .onDisappear {
             notch.isPinned = false
             store.upNext.setVisible(false)
-            store.focus.setVisible(false)
+            store.focus.setVisible(false, viewer: .today)
         }
     }
 
@@ -88,7 +90,23 @@ struct PlannerPanel: View {
                 title: "Couldn't read today's list",
                 detail: "\(fileName) is damaged, so it's left untouched."
             )
-        } else if store.items.isEmpty {
+        } else {
+            PlannerChecklist(store: store, providers: services.providers, focus: $focus)
+        }
+    }
+}
+
+/// The checklist with what other modules share for today (say, Anki
+/// reviews) above it, or the fresh-day message while both are empty.
+/// Observes `ProviderHub` here so its updates don't re-render the panel.
+private struct PlannerChecklist: View {
+    @ObservedObject var store: PlannerStore
+    @ObservedObject var providers: ProviderHub
+    var focus: FocusState<PlannerField?>.Binding
+
+    var body: some View {
+        let shared = providers.snapshot.sharedTodayItems(excluding: .planner)
+        if store.items.isEmpty, shared.isEmpty {
             PlannerMessage(
                 symbol: "checklist",
                 tint: Theme.Palette.accent(for: .planner),
@@ -96,7 +114,7 @@ struct PlannerPanel: View {
                 detail: "Add a few things you want to get done today."
             )
         } else {
-            PlannerList(store: store, focus: $focus)
+            PlannerList(store: store, shared: shared, focus: focus)
         }
     }
 }
@@ -139,7 +157,7 @@ enum PlannerField: Hashable {
 private struct PlannerHeader: View {
     @ObservedObject var store: PlannerStore
     let isEvening: Bool
-    let hasOpenTasks: Bool
+    let hasPlannableWork: Bool
 
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
@@ -169,7 +187,7 @@ private struct PlannerHeader: View {
             if store.canEdit {
                 // The action that isn't the bottom row's pill right now.
                 if isEvening {
-                    if hasOpenTasks {
+                    if hasPlannableWork {
                         IconButton(symbol: "sparkles", size: 20,
                                    help: "Plan my day: fit your open tasks around today's calendar") {
                             store.planMyDay()

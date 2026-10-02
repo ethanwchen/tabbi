@@ -14,7 +14,7 @@ Delete this section if the change has no UI.
 ## Checklist
 
 - [ ] `swift build` has zero warnings.
-- [ ] `swift test` passes, and new logic in `NotchDeckCore` has tests.
+- [ ] `swift test` passes, and new logic in `NotchKitCore` has tests.
 - [ ] UI changes follow the [design rules](https://github.com/ethanwchen/notchdeck/blob/main/AGENTS.md#design-rules), and I checked the demo and live snapshots.
 - [ ] Demo mode (`NOTCHDECK_DEMO=1`) still shows realistic sample data for anything I added.
 - [ ] No telemetry, no new network calls, and no new dependencies (or the reason is explained above).

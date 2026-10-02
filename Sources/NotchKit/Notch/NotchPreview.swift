@@ -1,0 +1,87 @@
+import SwiftUI
+import NotchKitCore
+
+/// The live preview in the two wings beside the closed notch: an icon or
+/// artwork on the leading side, short text or the equalizer on the trailing
+/// side, crossfading as the ticker rotates.
+struct NotchPreview: View {
+    let item: TickerItem
+    let notchWidth: CGFloat
+    let content: NotchContent
+
+    var body: some View {
+        let wing = NotchPreviewLayout.wingWidth(for: item)
+        // Music keeps the centered artwork + equalizer pair it always had;
+        // everything else hugs the outer edges like a Dynamic Island.
+        let inset = item == .nowPlaying ? 0 : NotchPreviewLayout.outerInset
+        let edge: (leading: Alignment, trailing: Alignment) =
+            item == .nowPlaying ? (.center, .center) : (.leading, .trailing)
+        HStack(spacing: 0) {
+            leading
+                .padding(.leading, inset)
+                .frame(width: wing, alignment: edge.leading)
+            Color.clear.frame(width: notchWidth)
+            trailing
+                .padding(.trailing, inset)
+                .frame(width: wing, alignment: edge.trailing)
+        }
+        .id(item.kind)
+        .transition(.asymmetric(
+            insertion: .opacity.combined(with: .offset(y: 6)),
+            removal: .opacity.combined(with: .offset(y: -6))
+        ))
+        .help(NotchPreviewLayout.summary(for: item))
+    }
+
+    private var accent: Color { Theme.Palette.accent(for: item.kind.module) }
+
+    @ViewBuilder private var leading: some View {
+        switch item {
+        case .nowPlaying:
+            content.nowPlayingLeading()
+        default:
+            Image(systemName: NotchPreviewLayout.symbol(for: item))
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(accent)
+                .frame(width: NotchPreviewLayout.iconSize, height: NotchPreviewLayout.iconSize)
+        }
+    }
+
+    @ViewBuilder private var trailing: some View {
+        switch item {
+        case .nowPlaying:
+            content.nowPlayingTrailing()
+        case .meeting(let meeting):
+            HStack(spacing: Theme.Spacing.xs) {
+                Text(meeting.title)
+                    .foregroundStyle(Theme.Palette.primaryText)
+                    .truncationMode(.tail)
+                Text(TickerFormat.meetingCountdown(meeting.timing))
+                    .foregroundStyle(accent)
+                    .fixedSize()
+            }
+            .previewText()
+        case .focus(_, let remaining, let isRunning):
+            Text(TickerFormat.focusClock(remaining))
+                .foregroundStyle(isRunning ? accent : Theme.Palette.secondaryText)
+                .previewText()
+        case .tasks(let remaining):
+            Text(TickerFormat.tasksLeft(remaining))
+                .foregroundStyle(Theme.Palette.primaryText)
+                .previewText()
+        case .claudeUsage(let window, let utilization):
+            Text(TickerFormat.usage(window: window, utilization: utilization))
+                .foregroundStyle(utilization >= 1 ? Theme.Palette.danger : accent)
+                .previewText()
+        }
+    }
+}
+
+private extension View {
+    func previewText() -> some View {
+        font(Theme.Typography.caption)
+            .monospacedDigit()
+            .lineLimit(1)
+            .contentTransition(.numericText())
+    }
+}

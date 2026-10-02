@@ -1,5 +1,6 @@
 import SwiftUI
-import NotchDeckCore
+import NotchKitCore
+import NotchKit
 
 /// The Today panel's "Up next" card: the next few events today with a timing
 /// badge and a Join button for video calls, or a compact state explaining why
@@ -29,20 +30,20 @@ struct UpNextCard: View {
         case .notDetermined:
             UpNextMessage(symbol: "calendar", title: "See your next meetings",
                           detail: "Today's events and call links, right here.") {
-                PlannerPillButton(title: "Show calendar", help: "Allow NotchDeck to read your calendars") {
+                PlannerPillButton(title: "Show calendar", help: "Allow \(Edition.current.name) to read your calendars") {
                     store.requestAccess()
                 }
             }
         case .denied:
             UpNextMessage(symbol: "calendar.badge.exclamationmark", title: "Calendar access is off",
-                          detail: "Allow NotchDeck in Privacy & Security.") {
+                          detail: "Allow \(Edition.current.name) in Privacy & Security.") {
                 PlannerPillButton(title: "Open Settings", help: "Open Calendars privacy settings") {
                     store.openPrivacySettings()
                 }
             }
         case .unavailable:
             UpNextMessage(symbol: "calendar", title: "Calendar unavailable",
-                          detail: "Open the NotchDeck app to see today's events.") { EmptyView() }
+                          detail: "Open the \(Edition.current.name) app to see today's events.") { EmptyView() }
         case .granted where store.events.isEmpty:
             UpNextMessage(symbol: "calendar.badge.checkmark", title: "No more events today",
                           detail: "The rest of the day is yours.") { EmptyView() }

@@ -1,5 +1,5 @@
 import Foundation
-import NotchDeckCore
+import NotchKitCore
 
 /// Drives the End-of-Day Review: shows today's numbers at once, asks the
 /// local `claude` CLI for a short encouraging summary (falling back to a

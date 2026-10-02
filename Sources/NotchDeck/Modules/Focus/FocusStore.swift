@@ -1,0 +1,272 @@
+import AppKit
+import Combine
+import NotchKitCore
+@preconcurrency import UserNotifications
+
+/// The Pomodoro timer, shown as a card in Today and as the Focus tab.
+///
+/// The store owns the `FocusTimer`, so the countdown keeps going while the
+/// notch is closed: time comes from a wall-clock end date, and a single
+/// one-shot timer fires at that date to play a soft sound and roll into the
+/// next phase. A local notification is scheduled for the same date so the
+/// user hears about it even if the app is busy or the Mac just woke. The view
+/// only ticks once a second while the panel is visible.
+///
+/// Notification permission is requested the first time the user starts the
+/// timer. With `NOTCHDECK_DEMO=1` it shows a running sample session and never
+/// touches notifications, sounds, or disk.
+@MainActor
+final class FocusStore: ObservableObject {
+    @Published private(set) var timer: FocusTimer {
+        didSet { FocusController.shared.timerChanged(timer) }
+    }
+    /// The moment the view measures against; advances every second while visible.
+    @Published private(set) var now = Date()
+    /// Focus phases completed in the last few days, for the End-of-Day Review.
+    private(set) var sessionLog = FocusSessionLog()
+
+    private let isDemo: Bool
+    private let defaults = UserDefaults.standard
+    /// The panels showing the timer right now (Today, Focus). Tracked per
+    /// viewer because switching tabs may show the new panel before the old
+    /// one disappears.
+    private var viewers: Set<FocusViewer> = []
+    private var isVisible: Bool { !viewers.isEmpty }
+    private var ticker: Timer?
+    private var phaseEndTimer: Timer?
+    private let notifications: FocusNotifications?
+
+    private static let timerKey = "planner.focusTimer"
+    private static let sessionLogKey = "planner.focusSessions"
+
+    init() {
+        isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
+        if isDemo {
+            timer = Self.demoTimer(now: Date())
+            notifications = nil
+            return
+        }
+        notifications = FocusNotifications.make()
+        timer = defaults.data(forKey: Self.timerKey)
+            .flatMap { try? JSONDecoder().decode(FocusTimer.self, from: $0) } ?? FocusTimer()
+        sessionLog = defaults.data(forKey: Self.sessionLogKey)
+            .flatMap { try? JSONDecoder().decode(FocusSessionLog.self, from: $0) } ?? FocusSessionLog()
+        // A phase may have ended while the app wasn't running; catch up quietly.
+        record(timer.advance(to: Date()))
+        scheduleSideEffects(withdrawingPending: false)
+    }
+
+    var remaining: TimeInterval { timer.remaining(at: now) }
+    var progress: Double { timer.progress(at: now) }
+
+    /// Call from a panel's `onAppear` / `onDisappear`; the clock ticks while
+    /// any viewer is visible.
+    func setVisible(_ visible: Bool, viewer: FocusViewer) {
+        let wasVisible = isVisible
+        if visible { viewers.insert(viewer) } else { viewers.remove(viewer) }
+        guard isVisible != wasVisible else { return }
+        catchUp()
+        updateTicker()
+    }
+
+    func toggleRunning() {
+        if timer.isRunning { pause() } else { start() }
+    }
+
+    func start() {
+        catchUp()
+        if !isDemo, !timer.isRunning {
+            // The phase-end request scheduled below is rejected while permission
+            // is still undecided, so schedule it again once the user allows it.
+            notifications?.requestAuthorizationIfNeeded { [weak self] in self?.rescheduleNotification() }
+        }
+        change { $0.start(at: now) }
+    }
+
+    func pause() {
+        catchUp()
+        change { $0.pause(at: now) }
+    }
+
+    func reset() {
+        catchUp()
+        change { $0.reset() }
+    }
+
+    func skip() {
+        catchUp()
+        change { $0.skip(at: now) }
+    }
+
+    /// Links the timer to a checklist item, or clears the link with `nil`.
+    func link(_ itemID: UUID?) {
+        change { $0.linkedItemID = itemID }
+    }
+
+    /// "Focus on this": links the item and, if nothing is under way yet,
+    /// starts a focus session so it's one click from the checklist.
+    func focus(on itemID: UUID) {
+        link(itemID)
+        if timer.runState == .idle, timer.phase == .focus { start() }
+    }
+
+    // MARK: Private
+
+    /// Applies `edit`, then saves and reschedules the sound, notification, and ticker.
+    private func change(_ edit: (inout FocusTimer) -> Void) {
+        var updated = timer
+        edit(&updated)
+        guard updated != timer else { return }
+        timer = updated
+        scheduleSideEffects(withdrawingPending: true)
+        updateTicker()
+    }
+
+    /// Moves `now` forward and applies phase ends that have passed, playing
+    /// the sound for one that just happened.
+    private func catchUp() {
+        now = Date()
+        let completions = timer.advance(to: now)
+        guard !completions.isEmpty else { return }
+        record(completions)
+        // Stale ends (the Mac was asleep) already got their notification; stay quiet.
+        if let last = completions.last, now.timeIntervalSince(last.endedAt) < 60 {
+            Self.playChime()
+        }
+        scheduleSideEffects(withdrawingPending: false)
+        updateTicker()
+    }
+
+    /// Adds finished focus phases to the session log and saves it.
+    private func record(_ completions: [FocusPhaseCompletion]) {
+        guard !isDemo, !completions.isEmpty else { return }
+        sessionLog.record(completions, config: timer.config, now: Date())
+        if let data = try? JSONEncoder().encode(sessionLog) { defaults.set(data, forKey: Self.sessionLogKey) }
+    }
+
+    /// Saves the timer and arms the phase-end timer and notification. A user
+    /// action withdraws the pending banner; a phase that ended on its own keeps
+    /// it, since macOS may not have delivered it yet.
+    private func scheduleSideEffects(withdrawingPending: Bool) {
+        guard !isDemo else { return }
+        if let data = try? JSONEncoder().encode(timer) { defaults.set(data, forKey: Self.timerKey) }
+
+        phaseEndTimer?.invalidate()
+        phaseEndTimer = nil
+        if withdrawingPending { notifications?.cancelPending() }
+        guard let endsAt = timer.endsAt else { return }
+        notifications?.schedule(phaseEndingAt: endsAt, timer: timer)
+        let fire = Timer(fire: endsAt, interval: 0, repeats: false) { [weak self] _ in
+            MainActor.assumeIsolated { self?.catchUp() }
+        }
+        fire.tolerance = 0.2
+        RunLoop.main.add(fire, forMode: .common)
+        phaseEndTimer = fire
+    }
+
+    /// Re-adds the pending phase-end notification, e.g. after permission was granted.
+    private func rescheduleNotification() {
+        guard !isDemo, let endsAt = timer.endsAt else { return }
+        notifications?.schedule(phaseEndingAt: endsAt, timer: timer)
+    }
+
+    /// Ticks once a second, only while the panel is visible and the clock runs.
+    private func updateTicker() {
+        guard isVisible, timer.isRunning, !isDemo else {
+            ticker?.invalidate()
+            ticker = nil
+            return
+        }
+        guard ticker == nil else { return }
+        let tick = Timer(timeInterval: 1, repeats: true) { [weak self] _ in
+            MainActor.assumeIsolated { self?.catchUp() }
+        }
+        tick.tolerance = 0.1
+        RunLoop.main.add(tick, forMode: .common)
+        ticker = tick
+    }
+
+    private static func playChime() {
+        guard let sound = NSSound(named: "Glass") else { return }
+        sound.volume = 0.5
+        sound.play()
+    }
+
+    /// A focus block a third of the way through, linked to the sample
+    /// checklist's first open item.
+    private static func demoTimer(now: Date) -> FocusTimer {
+        var timer = FocusTimer(linkedItemID: PlannerDay.sample(on: PlannerDayKey(date: now)).items.first { !$0.isDone }?.id)
+        timer.start(at: now.addingTimeInterval(-(10 * 60 + 28)))
+        return timer
+    }
+}
+
+/// A panel that shows the focus timer.
+enum FocusViewer: Hashable {
+    case today, focus
+}
+
+/// Local notifications for phase ends. Only exists inside a real app bundle:
+/// `UNUserNotificationCenter` aborts in a bare `swift run` executable.
+@MainActor
+private final class FocusNotifications: NSObject, UNUserNotificationCenterDelegate {
+    private static let requestPrefix = "planner.focus.phaseEnd"
+    private let center: UNUserNotificationCenter
+    /// The request for the current phase. Each phase end gets its own ID so
+    /// scheduling the next phase never replaces a banner that is about to show.
+    private var pendingID: String?
+
+    /// Nil outside an `.app` bundle.
+    static func make() -> FocusNotifications? {
+        guard Bundle.main.bundleURL.pathExtension == "app" else { return nil }
+        return FocusNotifications(center: .current())
+    }
+
+    private init(center: UNUserNotificationCenter) {
+        self.center = center
+        super.init()
+        center.delegate = self
+    }
+
+    /// Asks for permission if the user hasn't decided yet, and calls
+    /// `onGranted` on the main actor when they allow it.
+    func requestAuthorizationIfNeeded(onGranted: @escaping @MainActor @Sendable () -> Void) {
+        let center = center
+        center.getNotificationSettings { settings in
+            guard settings.authorizationStatus == .notDetermined else { return }
+            center.requestAuthorization(options: [.alert, .sound]) { granted, _ in
+                guard granted else { return }
+                Task { @MainActor in onGranted() }
+            }
+        }
+    }
+
+    /// Schedules the banner for the running phase's end.
+    /// It's silent because the app plays its own softer chime.
+    func schedule(phaseEndingAt endsAt: Date, timer: FocusTimer) {
+        let (title, body) = FocusTimerFormat.completionMessage(
+            FocusPhaseCompletion(phase: timer.phase, endedAt: endsAt), config: timer.config)
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        let interval = max(endsAt.timeIntervalSinceNow, 1)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: interval, repeats: false)
+        let id = "\(Self.requestPrefix).\(Int64(endsAt.timeIntervalSinceReferenceDate * 1000))"
+        pendingID = id
+        center.add(UNNotificationRequest(identifier: id, content: content, trigger: trigger))
+    }
+
+    /// Withdraws the current phase's banner, e.g. after pause, reset, or skip.
+    func cancelPending() {
+        guard let id = pendingID else { return }
+        pendingID = nil
+        center.removePendingNotificationRequests(withIdentifiers: [id])
+    }
+
+    /// NotchDeck is always "frontmost" as an accessory app, so ask for the
+    /// banner explicitly or macOS would swallow it.
+    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                            willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
+        [.banner, .list]
+    }
+}
