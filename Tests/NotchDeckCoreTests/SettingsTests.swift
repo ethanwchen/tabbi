@@ -241,6 +241,18 @@ final class NotchPreviewSettingsTests: XCTestCase {
         XCTAssertEqual(preview.enabledKinds, Set(TickerKind.allCases).subtracting([.tasks]))
     }
 
+    func testPreviewSkipsKindsWhoseModuleIsOff() {
+        var settings = AppSettings(notchPreview: NotchPreviewSettings(disabledKinds: [.tasks]))
+        _ = settings.modules.setEnabled(.claudeUsage, false)
+        _ = settings.modules.setEnabled(.spotify, false)
+        XCTAssertEqual(settings.previewKinds, [.meeting, .focus])
+        _ = settings.modules.setEnabled(.planner, false)
+        XCTAssertTrue(settings.previewKinds.isEmpty)
+        settings.notchPreview.isEnabled = false
+        _ = settings.modules.setEnabled(.planner, true)
+        XCTAssertTrue(settings.previewKinds.isEmpty)
+    }
+
     func testIntervalsMatchTheOfferedChoices() {
         XCTAssertEqual(TickerInterval.allCases.map(\.seconds), [5, 8, 12])
         XCTAssertEqual(TickerInterval.medium.title, "8 seconds")

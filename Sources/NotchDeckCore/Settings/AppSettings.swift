@@ -41,6 +41,13 @@ public struct AppSettings: Equatable, Sendable {
         self.notchPreview = notchPreview
     }
 
+    /// Kinds the closed-notch preview may show: the user's preview choices,
+    /// minus items whose module is turned off, since clicking one would open
+    /// a tab that isn't there.
+    public var previewKinds: Set<TickerKind> {
+        notchPreview.enabledKinds.filter { modules.isEnabled($0.module) }
+    }
+
     /// Trims whitespace and expands `~`; blank means "no override".
     static func normalizedPath(_ path: String?) -> String? {
         guard let trimmed = path?.trimmingCharacters(in: .whitespacesAndNewlines), !trimmed.isEmpty else {

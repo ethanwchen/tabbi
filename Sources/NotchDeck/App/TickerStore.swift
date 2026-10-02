@@ -18,7 +18,8 @@ final class TickerStore: ObservableObject {
 
     /// The latest module snapshot, before the user's settings filter it.
     private(set) var sources = TickerSources()
-    private var preview: NotchPreviewSettings
+    /// Kinds allowed by the preview settings and the enabled modules.
+    private var kinds: Set<TickerKind>
     private let upNext: UpNextStore
     private var rotation: TickerRotation
     /// False while the notch is open, where the preview isn't visible.
@@ -32,9 +33,9 @@ final class TickerStore: ObservableObject {
     private static let idleMeetingCheck: TimeInterval = 30
 
     init(settings: SettingsStore, spotify: SpotifyController, planner: PlannerStore, claudeUsage: ClaudeUsageStore) {
-        preview = settings.settings.notchPreview
+        kinds = settings.settings.previewKinds
         upNext = planner.upNext
-        rotation = TickerRotation(interval: preview.interval.seconds)
+        rotation = TickerRotation(interval: settings.settings.notchPreview.interval.seconds)
 
         let tasksRemaining = planner.$day.map { $0.items.count - $0.doneCount }
         planner.upNext.$events
@@ -54,12 +55,12 @@ final class TickerStore: ObservableObject {
         // `$settings` emits before the new value is stored, so read it from
         // the emission rather than from `settings.settings`.
         settings.$settings
-            .map(\.notchPreview)
-            .removeDuplicates()
-            .sink { [weak self] preview in
+            .map { ($0.previewKinds, $0.notchPreview.interval) }
+            .removeDuplicates { $0 == $1 }
+            .sink { [weak self] kinds, interval in
                 guard let self else { return }
-                self.preview = preview
-                self.rotation.interval = preview.interval.seconds
+                self.kinds = kinds
+                self.rotation.interval = interval.seconds
                 self.refresh()
             }
             .store(in: &cancellables)
@@ -73,10 +74,10 @@ final class TickerStore: ObservableObject {
     }
 
     private func refresh() {
-        upNext.setPreviewWatching(isActive && preview.enabledKinds.contains(.meeting))
+        upNext.setPreviewWatching(isActive && kinds.contains(.meeting))
         if isActive {
             let now = Date()
-            let next = rotation.update(items: sources.items(at: now, enabled: preview.enabledKinds), at: now)
+            let next = rotation.update(items: sources.items(at: now, enabled: kinds), at: now)
             if next != item { item = next }
         }
         scheduleTimer()
@@ -87,7 +88,7 @@ final class TickerStore: ObservableObject {
             nil
         } else if item != nil {
             1
-        } else if preview.enabledKinds.contains(.meeting), !sources.events.isEmpty {
+        } else if kinds.contains(.meeting), !sources.events.isEmpty {
             Self.idleMeetingCheck
         } else {
             nil
