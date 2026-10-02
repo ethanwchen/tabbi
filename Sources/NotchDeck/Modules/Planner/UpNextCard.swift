@@ -7,6 +7,8 @@ import NotchKit
 /// there's nothing to show.
 struct UpNextCard: View {
     @ObservedObject var store: UpNextStore
+    /// The kit's name for what the calendar holds (`TodayPlanSettings.upNextEvents`).
+    let upNextEvents: String
 
     var body: some View {
         Card(padding: Theme.Spacing.s) {
@@ -21,39 +23,29 @@ struct UpNextCard: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
         .animation(Theme.Motion.content, value: store.events)
-        .animation(Theme.Motion.content, value: store.access)
+        .animation(Theme.Motion.content, value: store.emptySituation)
     }
 
     @ViewBuilder
     private var content: some View {
-        switch store.access {
-        case .notDetermined:
-            UpNextMessage(symbol: "calendar", title: "See your next meetings",
-                          detail: "Today's events and call links, right here.") {
-                PlannerPillButton(title: "Show calendar", help: "Allow \(Edition.current.name) to read your calendars") {
-                    store.requestAccess()
-                }
-            }
-        case .denied:
-            UpNextMessage(symbol: "calendar.badge.exclamationmark", title: "Calendar access is off",
-                          detail: "Allow \(Edition.current.name) in Privacy & Security.") {
-                PlannerPillButton(title: "Open Settings", help: "Open Calendars privacy settings") {
-                    store.openPrivacySettings()
-                }
-            }
-        case .unavailable:
-            UpNextMessage(symbol: "calendar", title: "Calendar unavailable",
-                          detail: "Open the \(Edition.current.name) app to see today's events.") { EmptyView() }
-        case .granted where store.events.isEmpty:
-            UpNextMessage(symbol: "calendar.badge.checkmark", title: "No more events today",
-                          detail: "The rest of the day is yours.") { EmptyView() }
-        case .granted:
+        if let situation = store.emptySituation {
+            let state = UpNextEmptyState(situation, upNextEvents: upNextEvents, appName: Edition.current.name)
+            UpNextMessage(state: state) { perform($0) }
+        } else {
             VStack(spacing: 0) {
                 ForEach(store.events) { event in
                     UpNextRow(event: event, now: store.now) { store.join($0) }
                         .transition(.opacity.combined(with: .move(edge: .top)))
                 }
             }
+        }
+    }
+
+    private func perform(_ action: UpNextEmptyState.Action) {
+        switch action {
+        case .requestAccess: store.requestAccess()
+        case .openPrivacySettings: store.openPrivacySettings()
+        case .openInternetAccounts: store.openInternetAccounts()
         }
     }
 }
@@ -140,36 +132,37 @@ private struct UpNextJoinButton: View {
 }
 
 /// Icon, title, detail, and an optional action, sized for the narrow card.
-private struct UpNextMessage<Action: View>: View {
-    let symbol: String
-    let title: String
-    let detail: String
-    @ViewBuilder var action: Action
+private struct UpNextMessage: View {
+    let state: UpNextEmptyState
+    let perform: (UpNextEmptyState.Action) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
             HStack(spacing: Theme.Spacing.s) {
-                Image(systemName: symbol)
+                Image(systemName: state.symbol)
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(Theme.Palette.accent(for: .planner))
-                    .frame(width: 16)
-                Text(title)
+                    // Badged symbols run taller; a fixed box keeps every state's height alike.
+                    .frame(width: 16, height: 16)
+                Text(state.title)
                     .font(Theme.Typography.bodyEmphasis)
                     .foregroundStyle(Theme.Palette.primaryText)
                     .lineLimit(1)
             }
-            Text(detail)
+            Text(state.detail)
                 .font(Theme.Typography.caption)
                 .foregroundStyle(Theme.Palette.secondaryText)
-                .lineLimit(2)
+                .lineLimit(3)
                 .fixedSize(horizontal: false, vertical: true)
-            action
-                .padding(.top, Theme.Spacing.xxs)
+            if let action = state.action {
+                PlannerPillButton(title: state.actionTitle, help: state.actionHelp) { perform(action) }
+                    .padding(.top, Theme.Spacing.xxs)
+            }
         }
         .padding(.horizontal, Theme.Spacing.xs)
         // Centered in the space under the caption, nudged up so it sits
         // near the card's optical middle instead of hanging off the top.
-        .padding(.bottom, Theme.Spacing.m)
+        .padding(.bottom, Theme.Spacing.s)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
     }
 }

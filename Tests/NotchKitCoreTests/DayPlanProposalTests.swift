@@ -27,6 +27,30 @@ final class DayPlanProposalTests: XCTestCase {
         XCTAssertFalse(proposal.isSettled)
     }
 
+    func testBreaksShowBetweenBlocksStillOnOffer() throws {
+        let study = PlanBlock(start: at(0), end: at(25), title: "Study block", kind: .study)
+        let next = PlanBlock(start: at(30), end: at(55), title: "Study block", kind: .study)
+        let last = PlanBlock(start: at(90), end: at(115), title: "Anki reviews", kind: .reviews)
+        let rest = DateInterval(start: at(25), end: at(30))
+        var proposal = DayPlanProposal(StudyDayPlan(blocks: [last, next, study], breaks: [rest]))
+
+        XCTAssertEqual(proposal.breakAfter(study), rest)
+        XCTAssertNil(proposal.breakAfter(next), "an event or free time, not a break, follows")
+        XCTAssertNil(proposal.breakAfter(last))
+
+        proposal.dismiss(next.id)
+        XCTAssertNil(proposal.breakAfter(study), "no break before a dismissed block")
+
+        try proposal.add([study.id], now: at(-10), events: [], writer: RecordingWriter())
+        XCTAssertNil(proposal.breakAfter(study), "added blocks leave the proposal")
+    }
+
+    func testClaudePlansHaveNoBreaks() {
+        let proposal = DayPlanProposal(blocks: [second, first])
+        XCTAssertTrue(proposal.breaks.isEmpty)
+        XCTAssertNil(proposal.breakAfter(second))
+    }
+
     func testAddingOneBlockWritesItWithTheNoteAndRemovesIt() throws {
         var proposal = DayPlanProposal(blocks: [first, second])
         let writer = RecordingWriter()

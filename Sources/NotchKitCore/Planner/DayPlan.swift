@@ -1,20 +1,34 @@
 import Foundation
 
+/// What a Plan My Day block is for, so the proposal can mark review and
+/// study blocks differently from general focus time.
+public enum PlanBlockKind: String, Hashable, Sendable {
+    /// General focus time, as Claude plans it.
+    case focus
+    /// Clearing a shared review goal, such as today's Anki cards.
+    case reviews
+    /// One study-method-length block, from `StudyDayPlanner`.
+    case study
+}
+
 /// One proposed focus block from Plan My Day.
 public struct PlanBlock: Identifiable, Hashable, Sendable {
     public let id: UUID
     public var start: Date
     public var end: Date
     public var title: String
-    /// The checklist item this block works on, when Claude linked one.
+    /// The checklist item this block works on, when one is linked.
     public var linkedTaskID: UUID?
+    public var kind: PlanBlockKind
 
-    public init(id: UUID = UUID(), start: Date, end: Date, title: String, linkedTaskID: UUID? = nil) {
+    public init(id: UUID = UUID(), start: Date, end: Date, title: String, linkedTaskID: UUID? = nil,
+                kind: PlanBlockKind = .focus) {
         self.id = id
         self.start = start
         self.end = end
         self.title = title
         self.linkedTaskID = linkedTaskID
+        self.kind = kind
     }
 
     public var interval: DateInterval { DateInterval(start: start, end: end) }
@@ -39,14 +53,15 @@ public struct DayPlanContext: Sendable {
     /// Free time between `now` and `dayEnd`, never overlapping a timed event.
     public let gaps: [DateInterval]
 
+    /// `dayEndHour` is when planned work usually stops (see `DayPlanner.dayEnd`).
     public init(now: Date, events: [UpcomingEvent], tasks: [PlannerItem], sharedWork: [String] = [],
-                calendar: Calendar = .current) {
+                calendar: Calendar = .current, dayEndHour: Int = DayPlanner.defaultDayEndHour) {
         self.now = now
         self.events = events
         self.tasks = tasks.filter { !$0.isDone }
         self.sharedWork = sharedWork.compactMap(PlannerDay.normalized)
         self.calendar = calendar
-        let dayEnd = DayPlanner.dayEnd(now: now, calendar: calendar)
+        let dayEnd = DayPlanner.dayEnd(now: now, calendar: calendar, endHour: dayEndHour)
         self.dayEnd = dayEnd
         self.gaps = DayPlanner.freeGaps(events: events, from: now, until: dayEnd)
     }
@@ -105,13 +120,20 @@ public enum DayPlanner {
         ["--model", model, "--tools", "", "--strict-mcp-config", "--json-schema", jsonSchema]
     }
 
-    /// A sensible stop time: 6 pm, or two hours from now when planning
-    /// later, but never past 10 pm. After 10 pm there is nothing to plan.
-    public static func dayEnd(now: Date, calendar: Calendar = .current) -> Date {
+    /// Usual end of the planned day; kits can move it (study days run later).
+    public static let defaultDayEndHour = 18
+    /// The latest a planned day can end.
+    public static let latestDayEndHour = 22
+
+    /// A sensible stop time: `endHour` (6 pm by default), or two hours from
+    /// now when planning later, but never past 10 pm. After 10 pm there is
+    /// nothing to plan.
+    public static func dayEnd(now: Date, calendar: Calendar = .current, endHour: Int = defaultDayEndHour) -> Date {
         let midnight = calendar.startOfDay(for: now)
-        let sixPM = calendar.date(bySettingHour: 18, minute: 0, second: 0, of: midnight)!
-        let tenPM = calendar.date(bySettingHour: 22, minute: 0, second: 0, of: midnight)!
-        return min(max(sixPM, now.addingTimeInterval(2 * 3600)), tenPM)
+        let usualEnd = calendar.date(bySettingHour: min(max(endHour, 0), latestDayEndHour),
+                                     minute: 0, second: 0, of: midnight)!
+        let latest = calendar.date(bySettingHour: latestDayEndHour, minute: 0, second: 0, of: midnight)!
+        return min(max(usualEnd, now.addingTimeInterval(2 * 3600)), latest)
     }
 
     /// Free intervals between `start` and `end` that no timed event touches.

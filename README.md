@@ -59,7 +59,8 @@ Your 5-hour and weekly Claude limits, read through your own `claude` CLI, plus t
 
 A daily checklist that lives one click away, with progress for the day and quick add.
 **Plan my day** asks your local `claude` CLI to fit your unfinished tasks, plus work your other tabs share (such as Anki reviews), into today's free calendar gaps, and adds the blocks you accept to your default calendar.
-**Wrap up** shows what you finished, what carries over to tomorrow, and your focus sessions, with a short summary from Claude.
+Study kits such as Medicine plan on your Mac instead: review blocks early in the day, study blocks of the kit's study method length, and breaks around your events.
+**Wrap up** shows what you finished, what carries over to tomorrow, your study time or focus sessions and goals such as cards reviewed, with a short summary from Claude.
 
 While a focus timer runs, focus mode can play a locally generated focus sound (brown, pink or white noise, rain, fireplace or cafe murmur, blended up to three), start a playlist in Spotify or Apple Music, and turn on Do Not Disturb through two Shortcuts you create.
 On a break or when you stop, the sound fades out, a playlist it started is paused and Do Not Disturb is turned off again.
@@ -164,7 +165,7 @@ They run the `claude` command that is already installed and signed in on your Ma
 - **The only network requests it makes itself** are for album artwork URLs that Spotify provides.
 - **Claude features go only through your local `claude` CLI.** NotchDeck never reads your Claude credentials or the keychain.
   Ask Claude sends your question to Claude through that CLI, exactly as if you had typed `claude -p` in a terminal.
-  Plan my day sends today's remaining events, unfinished task titles and your other tabs' goals (such as "Anki reviews (320 cards left)") the same way, and Wrap up sends your task titles, only when you press them.
+  Plan my day sends today's remaining events, unfinished task titles and your other tabs' goals (such as "Anki reviews (320 cards left)") the same way, and Wrap up sends your task titles and today's study and goal figures, only when you press them.
 - **Claude Usage** reads token counts from the transcripts in `~/.claude/projects`, read-only, and never writes there.
   Checking your limits sends a tiny request with the cheapest model, so it never runs until you press refresh once.
   After that, it runs when you press refresh or open the panel 10 or more minutes after the last check.
@@ -186,7 +187,7 @@ It also means there is no API key to paste into a third-party app and no extra b
 No.
 Now Playing, System and Today work without it.
 The two Claude panels show a short setup hint until the `claude` command is found.
-In Today, Plan my day needs it, and Wrap up falls back to a local summary line without it.
+In Today, Plan my day needs it (except in study kits, which plan on your Mac), and Wrap up falls back to a local summary line without it.
 
 **Why is the app not notarized?**
 Notarization requires a paid Apple Developer account.

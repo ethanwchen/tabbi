@@ -34,6 +34,14 @@ final class DayPlannerTests: XCTestCase {
         XCTAssertEqual(DayPlanner.dayEnd(now: at(23), calendar: calendar), at(22))
     }
 
+    func testDayEndFollowsTheKitsEndHour() {
+        XCTAssertEqual(DayPlanner.dayEnd(now: at(9), calendar: calendar, endHour: 21), at(21))
+        XCTAssertEqual(DayPlanner.dayEnd(now: at(20), calendar: calendar, endHour: 21), at(22))
+        XCTAssertEqual(DayPlanner.dayEnd(now: at(9), calendar: calendar, endHour: 23), at(22))
+        let evening = DayPlanContext(now: at(17), events: [], tasks: [], calendar: calendar, dayEndHour: 21)
+        XCTAssertEqual(evening.gaps, [DateInterval(start: at(17), end: at(21))])
+    }
+
     // MARK: - Gaps
 
     func testFreeGapsSkipEventsAllDayEventsAndSlivers() {

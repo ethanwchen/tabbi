@@ -32,7 +32,7 @@ final class AppServices: ObservableObject {
 
     init(settings: SettingsStore) {
         self.settings = settings
-        planner = PlannerStore(focus: focus)
+        planner = PlannerStore(focus: focus, planSettings: TodayPlanSettings(kit: settings.activeKit?.defaults))
         modules = ModuleRegistry([
             NowPlayingModule(controller: spotify),
             SystemModule(monitor: system),
@@ -59,10 +59,21 @@ final class AppServices: ObservableObject {
                 providers.update(enabled: enabled)
             }
             .store(in: &cancellables)
+        settings.$settings
+            .map(\.kitID)
+            .removeDuplicates()
+            .sink { [planner, settings] id in
+                MainActor.assumeIsolated {
+                    planner.planSettings = TodayPlanSettings(kit: settings.kits.kit(id)?.defaults)
+                }
+            }
+            .store(in: &cancellables)
         // Kit defaults that live outside `AppSettings`.
         settings.kitApplied
             .sink { [planner] application in
                 MainActor.assumeIsolated {
+                    // Also when re-applying the same kit, which may have been re-imported.
+                    planner.planSettings = TodayPlanSettings(kit: application.kit.defaults)
                     let focus = FocusController.shared
                     focus.settings = focus.settings.applying(application.kit.defaults)
                     if application.addsStarterTasks {

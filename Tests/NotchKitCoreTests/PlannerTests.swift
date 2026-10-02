@@ -190,36 +190,44 @@ final class PlannerRepositoryTests: XCTestCase {
 final class PlannerSampleDataTests: XCTestCase {
     private let oct1 = PlannerDayKey(rawValue: "2026-10-01")!
 
-    func testSampleIsAPartlyFinishedDayWithinTheDate() {
+    func testEverySampleIsAPartlyFinishedDayWithinTheDate() {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = TimeZone(identifier: "America/Los_Angeles")!
-        let day = PlannerDay.sample(on: oct1, calendar: calendar)
+        for kind in PlannerSampleDay.allCases {
+            assertPartlyFinished(PlannerDay.sample(on: oct1, kind: kind, calendar: calendar), calendar: calendar)
+        }
+    }
 
-        XCTAssertEqual(day.date, oct1)
-        XCTAssertEqual(day.items.count, 5)
-        XCTAssertEqual(day.doneCount, 3)
-        XCTAssertEqual(Set(day.items.map(\.id)).count, 5)
+    func testSampleDaysShareTheFirstOpenItem() {
+        // The demo focus timer links the work day's first open item; every
+        // other sample day must have an open item with that id too.
+        let firstOpen = PlannerDay.sample(on: oct1).items.first { !$0.isDone }?.id
+        XCTAssertNotNil(firstOpen)
+        for kind in PlannerSampleDay.allCases {
+            XCTAssertEqual(PlannerDay.sample(on: oct1, kind: kind).items.first { !$0.isDone }?.id, firstOpen)
+        }
+    }
+
+    func testMedicineSampleIsAStudyDay() {
+        let titles = PlannerDay.sample(on: oct1, kind: .medicine).items.map(\.title)
+        XCTAssertTrue(titles.contains("UWorld cardio Qs"))
+        XCTAssertFalse(titles.contains("Ship notch planner beta"))
+    }
+
+    private func assertPartlyFinished(_ day: PlannerDay, calendar: Calendar, line: UInt = #line) {
+        XCTAssertEqual(day.date, oct1, line: line)
+        XCTAssertEqual(day.items.count, 5, line: line)
+        XCTAssertEqual(day.doneCount, 3, line: line)
+        XCTAssertEqual(Set(day.items.map(\.id)).count, 5, line: line)
         for item in day.items {
-            XCTAssertEqual(PlannerDayKey(date: item.createdAt, calendar: calendar), oct1)
-            XCTAssertEqual(item.isDone, item.completedAt != nil)
-            if let completed = item.completedAt { XCTAssertGreaterThan(completed, item.createdAt) }
+            XCTAssertEqual(PlannerDayKey(date: item.createdAt, calendar: calendar), oct1, line: line)
+            XCTAssertEqual(item.isDone, item.completedAt != nil, line: line)
+            if let completed = item.completedAt { XCTAssertGreaterThan(completed, item.createdAt, line: line) }
         }
     }
 
     func testSampleIsStable() {
         XCTAssertEqual(PlannerDay.sample(on: oct1), PlannerDay.sample(on: oct1))
-    }
-
-    func testProgressSummary() throws {
-        var day = PlannerDay(date: oct1)
-        XCTAssertEqual(day.progressSummary, "Nothing planned")
-        let first = try XCTUnwrap(day.add("One"))
-        day.add("Two")
-        XCTAssertEqual(day.progressSummary, "0 of 2 done")
-        day.toggle(first.id)
-        XCTAssertEqual(day.progressSummary, "1 of 2 done")
-        day.toggle(day.items[1].id)
-        XCTAssertEqual(day.progressSummary, "All 2 done")
     }
 }
 

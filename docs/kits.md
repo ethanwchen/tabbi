@@ -125,6 +125,19 @@ Accepted values:
 - **Ticker previews:** `meeting`, `nowPlaying`, `focus`, `tasks`, `progress` (shared study goals such as Anki cards left), `claudeUsage`.
 - **Pet breeds:** `orangeTabby`, `grayTabby`, `blackCat`, `whiteCat`, `tuxedo`, `calico`, `siamese`, `britishShorthair`, `goldenRetriever`, `labrador`, `frenchBulldog`, `corgi`, `dachshund`, `beagle`.
 
+Today (`planner`) reads these `moduleSettings.planner` keys, all optional:
+
+| Key | Type | Meaning |
+| --- | --- | --- |
+| `planMode` | string | `claude` (default) asks the local `claude` CLI to plan the day. `study` plans on device: review blocks for other modules' goals (such as Anki reviews), study blocks of the kit's `studyMethod` length, and breaks. |
+| `reviewsFirst` | bool | Schedule review blocks in the first free time (default `true`), or last. |
+| `eventBufferMinutes` | number | Free time kept clear before and after each calendar event (default 10). |
+| `studyBlockTitle` | string | Title for study blocks once every open task has one (default "Study block"). |
+| `secondsPerCard` | number | Typical time per review card, for sizing review blocks (default 10). |
+| `upNextEvents` | string | What the calendar holds, lowercase, for the Up next card's empty states, such as "lectures, labs, and shifts" (default "meetings and calls"). |
+| `dayEndHour` | number | Hour (0-22) when Plan My Day stops planning, such as 21 for evening study (default 18). Planning late still leaves at least two hours, up to 10 pm. |
+| `sampleDay` | string | Which realistic day demo mode (`NOTCHDECK_DEMO=1`) shows on Today: `work` (default) or `medicine` (a lecture, a lab, clinical skills, question banks). Never affects real data. |
+
 Switching kits, picking one on first run, and resetting apply the tabs, `ticker` and `focusSounds`.
 A field the kit leaves out keeps the user's current setting, and only the sound mix changes: the user's volume, playlist and Do Not Disturb shortcuts stay.
 The other defaults are read and checked, and will be applied as the modules that use them (Study, Closet) land.

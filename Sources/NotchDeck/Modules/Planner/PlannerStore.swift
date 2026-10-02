@@ -23,31 +23,50 @@ final class PlannerStore: ObservableObject {
     /// Unfinished work other modules share (say, Anki reviews), which Plan
     /// My Day schedules along with the checklist. See `followSharedWork`.
     @Published private(set) var sharedWork: [String] = []
+    /// Other modules' goals for today (say, Anki reviews), which the study
+    /// planner turns into review blocks.
+    private(set) var sharedProgress: [ProgressItem] = []
+    /// Today's study minutes, sessions and points from the modules that keep
+    /// them, for Wrap Up. Nil when no enabled module does.
+    private(set) var sharedStudy: StudyDayTally?
+    /// How Plan My Day works for the active kit.
+    @Published var planSettings: TodayPlanSettings {
+        didSet {
+            plan.settings = planSettings
+            if planSettings.sampleDay != oldValue.sampleDay { showSampleDay(planSettings.sampleDay) }
+        }
+    }
     /// Today's remaining calendar events, shown beside the checklist.
-    let upNext = UpNextStore()
+    let upNext: UpNextStore
     /// The Pomodoro timer, shared with the Focus tab; Today shows it as a
     /// card and links checklist items to it.
     let focus: FocusStore
     /// Plan My Day; its proposal replaces the checklist while active.
-    private(set) lazy var plan = DayPlanStore(upNext: upNext)
+    private(set) lazy var plan = DayPlanStore(upNext: upNext, settings: planSettings)
     /// The End-of-Day Review; its card replaces the checklist while open.
-    let review = DayReviewStore()
+    let review: DayReviewStore
 
     var items: [PlannerItem] { day.items }
-    /// Whether Plan My Day has anything to schedule.
-    var hasPlannableWork: Bool { items.contains { !$0.isDone } || !sharedWork.isEmpty }
+    /// Whether Plan My Day has anything to schedule. The study planner
+    /// always does: it fills free time with study blocks.
+    var hasPlannableWork: Bool {
+        planSettings.planMode == .study || items.contains { !$0.isDone } || !sharedWork.isEmpty
+    }
     /// False while today's file is unreadable, so a bad file is never overwritten.
     var canEdit: Bool { !isUnreadable }
 
     private let repository: PlannerRepository?
     private var cancellables: Set<AnyCancellable> = []
 
-    init(focus: FocusStore) {
+    init(focus: FocusStore, planSettings: TodayPlanSettings = TodayPlanSettings()) {
         self.focus = focus
+        self.planSettings = planSettings
+        upNext = UpNextStore(sampleDay: planSettings.sampleDay)
+        review = DayReviewStore(studyPreview: planSettings.planMode == .study, sampleDay: planSettings.sampleDay)
         let today = PlannerDayKey(date: Date())
         if ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1" {
             repository = nil
-            day = .sample(on: today)
+            day = .sample(on: today, kind: planSettings.sampleDay)
             return
         }
         repository = PlannerRepository()
@@ -63,6 +82,13 @@ final class PlannerStore: ObservableObject {
             .store(in: &cancellables)
     }
 
+    /// Demo mode only: shows the sample day of a newly applied kit.
+    private func showSampleDay(_ kind: PlannerSampleDay) {
+        guard repository == nil else { return }
+        day = .sample(on: PlannerDayKey(date: Date()), kind: kind)
+        upNext.showSampleDay(kind)
+    }
+
     /// Switches to the current calendar day if it has changed (or retries a
     /// failed load). Cheap to call whenever the panel appears.
     func refreshDay() {
@@ -75,6 +101,20 @@ final class PlannerStore: ObservableObject {
     /// reads the merged snapshot instead of any one module's store.
     func followSharedWork(from snapshots: some Publisher<ProviderSnapshot, Never>, excluding module: ModuleID) {
         snapshots
+            .map { $0.progress.filter { $0.source != module } }
+            .removeDuplicates()
+            .sink { [weak self] progress in
+                MainActor.assumeIsolated { self?.sharedProgress = progress }
+            }
+            .store(in: &cancellables)
+        snapshots
+            .map(\.study)
+            .removeDuplicates()
+            .sink { [weak self] study in
+                MainActor.assumeIsolated { self?.sharedStudy = study }
+            }
+            .store(in: &cancellables)
+        snapshots
             .map { $0.plannableWork(excluding: module) }
             .removeDuplicates()
             .sink { [weak self] work in
@@ -83,18 +123,20 @@ final class PlannerStore: ObservableObject {
             .store(in: &cancellables)
     }
 
-    /// Asks Claude to schedule today's unfinished items around the calendar.
+    /// Schedules today's unfinished items around the calendar.
     func planMyDay() {
         review.close()
         refreshDay()
-        plan.plan(tasks: items, sharedWork: sharedWork)
+        plan.plan(tasks: items, sharedWork: sharedWork, progress: sharedProgress)
     }
 
-    /// Opens the End-of-Day Review of today's list and focus sessions.
+    /// Opens the End-of-Day Review of today's list, focus sessions, and
+    /// what other modules share (study time, points, cards reviewed).
     func wrapUp() {
         plan.cancel()
         refreshDay()
-        review.wrapUp(day: day, focusLog: focus.sessionLog)
+        review.wrapUp(day: day, focusLog: focus.sessionLog, study: sharedStudy, progress: sharedProgress,
+                      isStudyDay: planSettings.planMode == .study, sampleDay: planSettings.sampleDay)
     }
 
     // MARK: Edits
