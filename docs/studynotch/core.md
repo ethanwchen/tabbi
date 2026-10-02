@@ -95,6 +95,25 @@ summary.retention      // 0.91, or nil below 20 graded reviews
   It is built through the real aggregation.
 - `AnkiSummary` is `Codable`, so the UI can cache the last good value for its error state.
 
+### Connection state
+
+`AnkiConnectionState.resolve(error:isInstalled:launchedAt:now:)` turns a refresh outcome into the screen the Anki tab shows.
+
+| State | From |
+|---|---|
+| `ready` | The refresh succeeded |
+| `notInstalled` / `notRunning` | `ankiNotRunning`, split by whether an Anki app is on disk |
+| `starting` | `addOnMissing` within `startupGrace` (15 s) of Anki launching, while add-ons load |
+| `addOnMissing` | `addOnMissing` after the grace period |
+| `needsPermission(_)` | `permissionDenied` or `apiKeyRequired` |
+| `addOnOutdated` | `addOnOutdated` or `unsupportedAction` |
+| `problem(_)` | Anything transient (timeout, profile picker, transport) |
+
+- `isSetupStep` marks the states that need the user to act first.
+- `keepsLastSummary` is true for `ready`, `checking` and `problem`, so a transient error shows the last numbers instead of an empty panel.
+- `refreshInterval` is the poll interval while the panel is visible: 2 s while starting, 5 s for setup steps, 30 s for problems, 3 min when ready.
+- `AnkiSummary.topDecks` lists top-level decks with cards due, most due first; `completionFraction` drives the progress ring; `isCurrent(now:)` stops yesterday's numbers from being shared after the rollover.
+
 ## Study methods (`Sources/NotchKitCore/StudyMethods`)
 
 ### Methods

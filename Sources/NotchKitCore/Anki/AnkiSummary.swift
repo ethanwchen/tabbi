@@ -102,7 +102,7 @@ public struct AnkiSummary: Hashable, Sendable, Codable {
 
     /// Decks with no ancestor in the list. `getDeckStats` already includes
     /// children in a parent's counts, so summing both would double count.
-    private static func rootDecks(_ stats: [AnkiDeckStats]) -> [AnkiDeckStats] {
+    static func rootDecks(_ stats: [AnkiDeckStats]) -> [AnkiDeckStats] {
         let names = Set(stats.map(\.name))
         var seenIDs = Set<Int64>()
         return stats.filter { deck in
