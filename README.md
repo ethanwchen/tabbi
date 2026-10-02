@@ -64,6 +64,7 @@ A daily checklist that lives one click away, with progress for the day and quick
 While a focus timer runs, focus mode can play a locally generated focus sound (brown, pink or white noise, rain, fireplace or cafe murmur, blended up to three), start a playlist in Spotify or Apple Music, and turn on Do Not Disturb through two Shortcuts you create.
 On a break or when you stop, the sound fades out, a playlist it started is paused and Do Not Disturb is turned off again.
 Set it up in **Settings > Focus**, which includes a short guide for the shortcuts and Test buttons.
+Prefer a timer without the checklist? Turn on the **Focus** tab in **Settings > Modules**: the same timer, large, with focus mode at a glance.
 
 <img src="docs/images/today.png" alt="Today panel" width="680">
 
@@ -152,7 +153,7 @@ You can change any of them later in **System Settings > Privacy & Security**.
 | **Automation: Spotify** | Now Playing, focus mode | Read the current track and send play, pause, skip, seek, shuffle and repeat commands to Spotify through Apple Events, and start or pause a focus playlist. |
 | **Automation: Music** | Now Playing, focus mode | The same for Apple Music. |
 | **Calendars** | Today | Show your next events and their video call links, and add the Plan my day blocks you accept to your default calendar. Events are read on your Mac and never leave it. |
-| **Notifications** | Today | Tell you when a focus timer ends while the notch is closed. |
+| **Notifications** | Today, Focus | Tell you when a focus timer ends while the notch is closed. |
 
 Claude Usage and Ask Claude need no system permission.
 They run the `claude` command that is already installed and signed in on your Mac.

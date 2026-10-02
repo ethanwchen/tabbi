@@ -3,12 +3,13 @@ import NotchKitCore
 
 final class ModuleLayoutTests: XCTestCase {
     private let classic: [ModuleID] = [.spotify, .system, .claudeUsage, .planner, .claudeAsk]
-    private let studyNotch: [ModuleID] = [.study, .anki, .party, .closet]
+    /// Built-in modules that start switched off: Focus and the StudyNotch tabs.
+    private let optIn: [ModuleID] = [.focus, .study, .anki, .party, .closet]
 
     func testDefaultShowsTheOriginalTabsAndParksTheRest() {
         XCTAssertEqual(ModuleLayout.default.enabled, classic)
         XCTAssertEqual(ModuleLayout.default.order, ModuleCatalog.builtIn.ids)
-        XCTAssertFalse(studyNotch.contains(where: ModuleLayout.default.isEnabled))
+        XCTAssertFalse(optIn.contains(where: ModuleLayout.default.isEnabled))
     }
 
     func testMissingModulesAreAppendedSwitchedOffAndUnknownOnesDropped() {
@@ -16,7 +17,7 @@ final class ModuleLayoutTests: XCTestCase {
             orderRawValues: ["planner", "futureThing", "spotify", "system", "planner"],
             disabledRawValues: ["spotify", "alsoUnknown"]
         )
-        XCTAssertEqual(layout.order, [.planner, .spotify, .system, .claudeUsage, .claudeAsk] + studyNotch)
+        XCTAssertEqual(layout.order, [.planner, .spotify, .system, .claudeUsage, .claudeAsk] + optIn)
         XCTAssertEqual(layout.enabled, [.planner, .system])
     }
 
@@ -40,11 +41,11 @@ final class ModuleLayoutTests: XCTestCase {
     func testMoveMatchesOnMoveSemantics() {
         var layout = ModuleLayout.default
         layout.move(fromOffsets: [0], toOffset: 3)
-        XCTAssertEqual(layout.order, [.system, .claudeUsage, .spotify, .planner, .claudeAsk] + studyNotch)
+        XCTAssertEqual(layout.order, [.system, .claudeUsage, .spotify, .planner, .claudeAsk] + optIn)
         layout.move(fromOffsets: [4], toOffset: 0)
-        XCTAssertEqual(layout.order, [.claudeAsk, .system, .claudeUsage, .spotify, .planner] + studyNotch)
+        XCTAssertEqual(layout.order, [.claudeAsk, .system, .claudeUsage, .spotify, .planner] + optIn)
         layout.move(fromOffsets: [1, 3], toOffset: 5)
-        XCTAssertEqual(layout.order, [.claudeAsk, .claudeUsage, .planner, .system, .spotify] + studyNotch)
+        XCTAssertEqual(layout.order, [.claudeAsk, .claudeUsage, .planner, .system, .spotify] + optIn)
     }
 
     func testCyclingSkipsDisabledModulesAndWraps() {
@@ -244,7 +245,7 @@ final class SettingsRepositoryTests: XCTestCase {
         defaults.set(["system"], forKey: "settings.modules.disabled")
         let layout = SettingsRepository(defaults: defaults).load().modules
         XCTAssertEqual(layout.enabled, [.claudeAsk, .spotify, .claudeUsage])
-        XCTAssertEqual(layout.order.suffix(5), [.planner, .study, .anki, .party, .closet])
+        XCTAssertEqual(layout.order.suffix(6), [.planner, .focus, .study, .anki, .party, .closet])
     }
 
     func testFirstRunUsesTheDefaultKitsLayout() throws {

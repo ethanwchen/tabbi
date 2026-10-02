@@ -25,8 +25,9 @@ final class PlannerStore: ObservableObject {
     @Published private(set) var sharedWork: [String] = []
     /// Today's remaining calendar events, shown beside the checklist.
     let upNext = UpNextStore()
-    /// The Pomodoro timer; lives here so it keeps running while the notch is closed.
-    let focus = FocusStore()
+    /// The Pomodoro timer, shared with the Focus tab; Today shows it as a
+    /// card and links checklist items to it.
+    let focus: FocusStore
     /// Plan My Day; its proposal replaces the checklist while active.
     private(set) lazy var plan = DayPlanStore(upNext: upNext)
     /// The End-of-Day Review; its card replaces the checklist while open.
@@ -41,7 +42,8 @@ final class PlannerStore: ObservableObject {
     private let repository: PlannerRepository?
     private var cancellables: Set<AnyCancellable> = []
 
-    init() {
+    init(focus: FocusStore) {
+        self.focus = focus
         let today = PlannerDayKey(date: Date())
         if ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1" {
             repository = nil

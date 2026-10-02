@@ -85,6 +85,7 @@ Modules the kit doesn't mention are also listed in Settings, switched off, after
 | `claudeUsage` | Claude Usage |
 | `planner` | Today (calendar, tasks, focus timer) |
 | `claudeAsk` | Ask Claude |
+| `focus` | Focus (the same timer as Today's, with focus mode, as its own tab) |
 | `study` | Study timer and study methods |
 | `anki` | Anki reviews |
 | `party` | Study party |

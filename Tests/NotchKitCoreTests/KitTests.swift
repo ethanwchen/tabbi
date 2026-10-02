@@ -142,7 +142,7 @@ final class KitApplicationTests: XCTestCase {
     func testLayoutFollowsKitOrderAndParksOtherModulesSwitchedOff() {
         let layout = kit.layout()
         XCTAssertEqual(layout.order, [.planner, .spotify, .system, .claudeUsage, .claudeAsk,
-                                      .study, .anki, .party, .closet])
+                                      .focus, .study, .anki, .party, .closet])
         XCTAssertEqual(layout.enabled, [.planner, .spotify])
     }
 

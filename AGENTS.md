@@ -50,7 +50,10 @@ Judge them against the design rules below before you call the work done.
   (`ObservableObject`, owned by `AppServices`), SwiftUI views, and a
   `NotchModule` class (descriptor, panel, an optional Settings toolbar pane
   from `makeSettingsPane()`, and `start()`/`stop()`). The pane and the
-  lifecycle follow the module's on/off switch; Today's pane is Focus.
+  lifecycle follow the module's on/off switch. Modules that share a pane
+  return the same id and it shows once: Today and Focus both offer the
+  Focus pane, since both show the focus timer (`FocusStore` in
+  `Modules/Focus/`, which `AppServices` owns and hands to Today).
 - `Sources/NotchDeck/Modules/NotchModule.swift` — the `NotchModule` protocol
   and `ModuleRegistry`. To add a module: add its `ModuleDescriptor` to
   `ModuleCatalog.builtIn`, write `<Module>Module` in its folder, and list it

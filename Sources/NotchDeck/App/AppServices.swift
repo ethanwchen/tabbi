@@ -14,7 +14,10 @@ final class AppServices: ObservableObject {
     let spotify = SpotifyController()
     let system = SystemMonitor()
     let claudeUsage = ClaudeUsageStore()
-    let planner = PlannerStore()
+    /// The Pomodoro timer, shown by both Today and Focus. It lives here so
+    /// it keeps running while the notch is closed or either tab is off.
+    let focus = FocusStore()
+    let planner: PlannerStore
     let claudeAsk = ClaudeAskSession()
     /// The rotating live preview beside the closed notch.
     let ticker: TickerStore
@@ -29,12 +32,14 @@ final class AppServices: ObservableObject {
 
     init(settings: SettingsStore) {
         self.settings = settings
+        planner = PlannerStore(focus: focus)
         modules = ModuleRegistry([
             NowPlayingModule(controller: spotify),
             SystemModule(monitor: system),
             ClaudeUsageModule(store: claudeUsage),
             TodayModule(store: planner),
             AskClaudeModule(session: claudeAsk),
+            FocusModule(store: focus),
             StudyModule(),
             AnkiModule(),
             PartyModule(),

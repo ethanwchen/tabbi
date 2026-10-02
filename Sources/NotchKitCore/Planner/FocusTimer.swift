@@ -165,7 +165,7 @@ public struct FocusTimer: Codable, Hashable, Sendable {
     }
 }
 
-/// Short strings for the focus card.
+/// Short strings for the focus timer in Today and the Focus tab.
 public enum FocusTimerFormat {
     /// Countdown as "25:00", "4:59", or "0:00".
     ///
@@ -179,6 +179,17 @@ public enum FocusTimerFormat {
     /// Phase label, e.g. "Focus" or "Break".
     public static func phaseName(_ phase: FocusPhase) -> String {
         phase == .focus ? "Focus" : "Break"
+    }
+
+    /// One line on where the timer stands, shown when no task is linked,
+    /// e.g. "25 min, no distractions" before a focus session starts.
+    public static func status(_ timer: FocusTimer) -> String {
+        switch (timer.phase, timer.runState) {
+        case (.rest, _): "Step away for a bit"
+        case (.focus, .idle): "\(Int(timer.config.focusDuration / 60)) min, no distractions"
+        case (.focus, .paused): "Paused"
+        case (.focus, .running): "Heads down"
+        }
     }
 
     /// Notification copy for a finished phase.

@@ -26,7 +26,7 @@ final class ModuleCatalogTests: XCTestCase {
 
     func testBuiltInKeepsTheShippedTabOrder() {
         XCTAssertEqual(ModuleCatalog.builtIn.ids, [.spotify, .system, .claudeUsage, .planner, .claudeAsk,
-                                                   .study, .anki, .party, .closet])
+                                                   .focus, .study, .anki, .party, .closet])
     }
 
     func testBuiltInIdsAreUniqueAndDescribed() {

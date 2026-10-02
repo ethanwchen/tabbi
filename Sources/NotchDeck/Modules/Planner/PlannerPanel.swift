@@ -71,13 +71,13 @@ struct PlannerPanel: View {
         .onAppear {
             store.refreshDay()
             store.upNext.setVisible(true)
-            store.focus.setVisible(true)
+            store.focus.setVisible(true, viewer: .today)
         }
         .onChange(of: focus) { _, field in notch.isPinned = field != nil }
         .onDisappear {
             notch.isPinned = false
             store.upNext.setVisible(false)
-            store.focus.setVisible(false)
+            store.focus.setVisible(false, viewer: .today)
         }
     }
 

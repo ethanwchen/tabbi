@@ -149,4 +149,16 @@ final class FocusTimerTests: XCTestCase {
         let breakDone = FocusTimerFormat.completionMessage(.init(phase: .rest, endedAt: t0), config: config)
         XCTAssertEqual(breakDone.body, "Ready for another 25-minute focus session?")
     }
+
+    func testStatusFollowsPhaseAndRunState() {
+        var timer = FocusTimer(config: FocusTimerConfig(focusDuration: 50 * 60, restDuration: 10 * 60))
+        XCTAssertEqual(FocusTimerFormat.status(timer), "50 min, no distractions")
+        timer.start(at: t0)
+        XCTAssertEqual(FocusTimerFormat.status(timer), "Heads down")
+        timer.pause(at: t0.addingTimeInterval(60))
+        XCTAssertEqual(FocusTimerFormat.status(timer), "Paused")
+        timer.skip(at: t0.addingTimeInterval(120))
+        XCTAssertEqual(timer.phase, .rest)
+        XCTAssertEqual(FocusTimerFormat.status(timer), "Step away for a bit")
+    }
 }

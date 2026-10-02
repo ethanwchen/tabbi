@@ -48,6 +48,15 @@ enum SnapshotRenderer {
             model.open(module)
             shots.append(("open-\(module.rawValue)", model))
         }
+        // And one per tab the kit leaves off (e.g. Focus), as if turned on,
+        // so every module's panel can be reviewed under any kit.
+        for module in layout.order where !layout.isEnabled(module) {
+            var withModule = layout
+            _ = withModule.setEnabled(module, true)
+            let model = NotchViewModel(geometry: geometry, layout: withModule)
+            model.open(module)
+            shots.append(("open-\(module.rawValue)", model))
+        }
 
         for (name, model) in shots {
             let view = NotchView(content: ModuleViews.notchContent(services: services))

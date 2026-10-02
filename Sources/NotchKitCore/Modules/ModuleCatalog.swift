@@ -38,7 +38,7 @@ public struct ModuleCatalog: Equatable, Sendable {
 
 public extension ModuleCatalog {
     /// The modules that ship with NotchDeck, in canonical order: the original
-    /// five tabs, then the StudyNotch modules (off unless a kit lists them).
+    /// five tabs, Focus, then the StudyNotch modules (off unless a kit lists them).
     static let builtIn = ModuleCatalog([
         ModuleDescriptor(id: .spotify, title: "Now Playing", symbol: "music.note", category: .media,
                          accent: ModuleAccent(red: 0.12, green: 0.84, blue: 0.38), permissions: [.automation]),
@@ -51,6 +51,9 @@ public extension ModuleCatalog {
                          permissions: [.calendars, .notifications]),
         ModuleDescriptor(id: .claudeAsk, title: "Ask Claude", symbol: "sparkles", category: .ai,
                          accent: .claude, permissions: [.claudeCLI]),
+        // Off in every bundled kit: Today already embeds the same timer.
+        ModuleDescriptor(id: .focus, title: "Focus", symbol: "hourglass", category: .productivity,
+                         accent: ModuleAccent(red: 0.30, green: 0.84, blue: 0.76), permissions: [.notifications]),
         ModuleDescriptor(id: .study, title: "Study", symbol: "timer", category: .study,
                          accent: ModuleAccent(red: 1.00, green: 0.62, blue: 0.26)),
         // AnkiConnect is a localhost HTTP add-on, so no macOS permission is involved.

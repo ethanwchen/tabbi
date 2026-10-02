@@ -1,9 +1,18 @@
 import AppKit
 import SwiftUI
 import NotchKitCore
+import NotchKit
+
+extension SettingsPane {
+    /// Settings › Focus. Today and the Focus tab both offer it, since either
+    /// can run the timer; the Settings window shows it once.
+    @MainActor static var focus: SettingsPane {
+        SettingsPane(id: "focus", title: "Focus", symbol: "moon", view: AnyView(FocusSettingsPane()))
+    }
+}
 
 /// Settings › Focus: what plays and whether Do Not Disturb turns on while
-/// the Today panel's focus timer runs. Edits go straight to
+/// the focus timer (in Today or the Focus tab) runs. Edits go straight to
 /// `FocusController`, which saves them and applies sound changes live.
 struct FocusSettingsPane: View {
     @ObservedObject private var controller = FocusController.shared

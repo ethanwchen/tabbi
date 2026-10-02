@@ -18,10 +18,9 @@ final class TodayModule: NotchModule {
         AnyView(PlannerPanel(store: store))
     }
 
-    /// Focus mode follows Today's focus timer, so its settings live here.
-    func makeSettingsPane() -> SettingsPane? {
-        SettingsPane(id: "focus", title: "Focus", symbol: "moon", view: AnyView(FocusSettingsPane()))
-    }
+    /// Today embeds the focus timer, so it offers the focus mode settings
+    /// too (as the Focus tab does).
+    func makeSettingsPane() -> SettingsPane? { .focus }
 
     /// The checklist, today's calendar events, and the focus timer.
     var provision: AnyPublisher<ModuleProvision, Never>? {

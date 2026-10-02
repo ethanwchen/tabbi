@@ -3,7 +3,7 @@ import Combine
 import NotchKitCore
 @preconcurrency import UserNotifications
 
-/// The Today panel's Pomodoro timer.
+/// The Pomodoro timer, shown as a card in Today and as the Focus tab.
 ///
 /// The store owns the `FocusTimer`, so the countdown keeps going while the
 /// notch is closed: time comes from a wall-clock end date, and a single
@@ -27,7 +27,11 @@ final class FocusStore: ObservableObject {
 
     private let isDemo: Bool
     private let defaults = UserDefaults.standard
-    private var isVisible = false
+    /// The panels showing the timer right now (Today, Focus). Tracked per
+    /// viewer because switching tabs may show the new panel before the old
+    /// one disappears.
+    private var viewers: Set<FocusViewer> = []
+    private var isVisible: Bool { !viewers.isEmpty }
     private var ticker: Timer?
     private var phaseEndTimer: Timer?
     private let notifications: FocusNotifications?
@@ -55,10 +59,12 @@ final class FocusStore: ObservableObject {
     var remaining: TimeInterval { timer.remaining(at: now) }
     var progress: Double { timer.progress(at: now) }
 
-    /// Call from the panel's `onAppear` / `onDisappear`.
-    func setVisible(_ visible: Bool) {
-        guard visible != isVisible else { return }
-        isVisible = visible
+    /// Call from a panel's `onAppear` / `onDisappear`; the clock ticks while
+    /// any viewer is visible.
+    func setVisible(_ visible: Bool, viewer: FocusViewer) {
+        let wasVisible = isVisible
+        if visible { viewers.insert(viewer) } else { viewers.remove(viewer) }
+        guard isVisible != wasVisible else { return }
         catchUp()
         updateTicker()
     }
@@ -193,6 +199,11 @@ final class FocusStore: ObservableObject {
         timer.start(at: now.addingTimeInterval(-(10 * 60 + 28)))
         return timer
     }
+}
+
+/// A panel that shows the focus timer.
+enum FocusViewer: Hashable {
+    case today, focus
 }
 
 /// Local notifications for phase ends. Only exists inside a real app bundle:

@@ -80,16 +80,7 @@ struct FocusCard: View {
             .labelStyle(FocusDetailLabelStyle())
             .help("Focusing on: \(linkedTitle)")
         } else {
-            Text(status)
-        }
-    }
-
-    private var status: String {
-        switch (store.timer.phase, store.timer.runState) {
-        case (.rest, _): return "Step away for a bit"
-        case (.focus, .idle): return "\(Int(store.timer.config.focusDuration / 60)) min, no distractions"
-        case (.focus, .paused): return "Paused"
-        case (.focus, .running): return "Heads down"
+            Text(FocusTimerFormat.status(store.timer))
         }
     }
 

@@ -46,13 +46,17 @@ enum AppSettingsPane: String, CaseIterable {
 
     /// The toolbar's panes for a layout: the window's own, with the enabled
     /// modules' panes (in canonical module order) in between, each reading
-    /// the settings store from its environment.
+    /// the settings store from its environment. Modules that share a pane
+    /// (Today and Focus) return the same id; it shows once, in the first
+    /// one's place.
     @MainActor
     static func panes(settings: SettingsStore, modules: ModuleRegistry, enabled: [ModuleID]) -> [SettingsPane] {
         let enabled = Set(enabled)
+        var seen: Set<String> = []
         let modulePanes = modules.modules
             .filter { enabled.contains($0.id) }
             .compactMap { $0.makeSettingsPane() }
+            .filter { seen.insert($0.id).inserted }
         func own(_ panes: [AppSettingsPane]) -> [SettingsPane] {
             panes.map { pane in
                 // The Claude pane checks the CLI when shown; let that finish in snapshots.
