@@ -80,9 +80,10 @@ public extension DayPlanner {
     static let eventNote = "Planned with NotchDeck"
 
     /// Calendar events for `blocks`, re-checked against `now` and today's
-    /// `events`: a block that has started is trimmed to begin now, a block a
-    /// timed event now overlaps keeps its longest free piece, and one with
-    /// less than `minimumBlockMinutes` left is dropped.
+    /// `events`: a block that has started is trimmed to begin on the next
+    /// five-minute mark, a block a timed event now overlaps keeps its longest
+    /// free piece, and one with less than `minimumBlockMinutes` left is
+    /// dropped.
     static func calendarEvents(
         for blocks: [PlanBlock],
         now: Date,
@@ -91,8 +92,9 @@ public extension DayPlanner {
         let minimum = TimeInterval(minimumBlockMinutes * 60)
         let busy = events.filter { !$0.isAllDay && $0.end > $0.start }
         return blocks.compactMap { block in
-            guard block.end > max(block.start, now) else { return nil }
-            var pieces = [DateInterval(start: max(block.start, now), end: block.end)]
+            let start = block.start >= now ? block.start : nextSlot(onOrAfter: now)
+            guard block.end > start else { return nil }
+            var pieces = [DateInterval(start: start, end: block.end)]
             for event in busy {
                 pieces = pieces.flatMap { piece -> [DateInterval] in
                     guard event.start < piece.end, piece.start < event.end else { return [piece] }

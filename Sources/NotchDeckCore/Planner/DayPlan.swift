@@ -70,6 +70,12 @@ public enum DayPlanner {
     /// Planned blocks start on these minute marks.
     static let slotMinutes = 5
 
+    /// The first slot mark at or after `date`.
+    static func nextSlot(onOrAfter date: Date) -> Date {
+        let slot = TimeInterval(slotMinutes * 60)
+        return Date(timeIntervalSinceReferenceDate: (date.timeIntervalSinceReferenceDate / slot).rounded(.up) * slot)
+    }
+
     /// JSON Schema handed to `claude --json-schema` so the result text is
     /// the bare plan object.
     public static let jsonSchema = """
@@ -107,8 +113,7 @@ public enum DayPlanner {
         until end: Date,
         minimumMinutes: Int = minimumBlockMinutes
     ) -> [DateInterval] {
-        let slot = TimeInterval(slotMinutes * 60)
-        var cursor = Date(timeIntervalSinceReferenceDate: (start.timeIntervalSinceReferenceDate / slot).rounded(.up) * slot)
+        var cursor = nextSlot(onOrAfter: start)
         var gaps: [DateInterval] = []
         let busy = events
             .filter { !$0.isAllDay && $0.end > $0.start && $0.end > cursor && $0.start < end }

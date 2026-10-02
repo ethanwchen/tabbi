@@ -14,7 +14,7 @@ final class DayPlanProposalTests: XCTestCase {
         }
     }
 
-    private let base = Date(timeIntervalSinceReferenceDate: 800_000_000)
+    private let base = Date(timeIntervalSinceReferenceDate: 800_000_100)
     private func at(_ minutes: Int) -> Date { base.addingTimeInterval(TimeInterval(minutes * 60)) }
 
     private lazy var first = PlanBlock(start: at(60), end: at(120), title: "Ship planner beta")
@@ -54,11 +54,12 @@ final class DayPlanProposalTests: XCTestCase {
     func testBlocksThatSlippedIntoThePastAreTrimmedOrDropped() throws {
         var proposal = DayPlanProposal(blocks: [first, second, third])
         let writer = RecordingWriter()
-        // 70 minutes in: the earliest block is over and the next has started.
-        let written = try proposal.add(now: at(70), events: [], writer: writer)
+        // Just past 72 minutes in: the earliest block is over and the next
+        // has started, so it resumes on the next five-minute mark.
+        let written = try proposal.add(now: at(72).addingTimeInterval(23), events: [], writer: writer)
 
         XCTAssertEqual(written.map(\.title), ["Ship planner beta", "Inbox"])
-        XCTAssertEqual(written.first?.start, at(70))
+        XCTAssertEqual(written.first?.start, at(75))
         XCTAssertEqual(written.first?.end, at(120))
         XCTAssertTrue(proposal.isSettled, "a dropped block is no longer pending either")
         XCTAssertEqual(proposal.addedCount, 2)
