@@ -13,7 +13,12 @@ let package = Package(
     ],
     targets: [
         // Pure, testable logic: parsers, models, stores. No AppKit/SwiftUI.
-        .target(name: "NotchKitCore", swiftSettings: swiftSettings),
+        .target(
+            name: "NotchKitCore",
+            // Kit manifests ship as human-editable JSON (see docs/kits.md).
+            resources: [.copy("Kits/Bundled")],
+            swiftSettings: swiftSettings
+        ),
         // The app: notch window, SwiftUI views, system integrations.
         .executableTarget(
             name: "NotchDeck",

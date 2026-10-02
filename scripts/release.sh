@@ -36,6 +36,8 @@ mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
 cp "$bin" "$app/Contents/MacOS/NotchDeck"
 cp "$plist" "$app/Contents/Info.plist"
 cp Resources/AppIcon.icns "$app/Contents/Resources/AppIcon.icns"
+# SwiftPM resource bundles (bundled kit manifests); see KitResources.swift.
+cp -R "$(dirname "$bin")"/*.bundle "$app/Contents/Resources/"
 
 echo "==> Ad-hoc signing"
 codesign --force --deep --sign - --timestamp=none "$app"
