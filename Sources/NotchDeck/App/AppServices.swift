@@ -35,7 +35,8 @@ final class AppServices: ObservableObject {
     init(settings: SettingsStore) {
         self.settings = settings
         planner = PlannerStore(focus: focus)
-        study = StudyStore(menu: StudyMethodMenu(kit: settings.activeKit?.defaults))
+        let kit = settings.activeKit?.defaults
+        study = StudyStore(menu: StudyMethodMenu(kit: kit), goal: StudyDailyGoal(kit: kit))
         modules = ModuleRegistry([
             NowPlayingModule(controller: spotify),
             SystemModule(monitor: system),
@@ -69,7 +70,8 @@ final class AppServices: ObservableObject {
                 MainActor.assumeIsolated {
                     let focus = FocusController.shared
                     focus.settings = focus.settings.applying(application.kit.defaults)
-                    study.use(StudyMethodMenu(kit: application.kit.defaults), kitApplied: true)
+                    let kit = application.kit.defaults
+                    study.use(StudyMethodMenu(kit: kit), goal: StudyDailyGoal(kit: kit), kitApplied: true)
                     if application.addsStarterTasks {
                         planner.addStarterTasks(application.kit.starterTasks(answers: application.answers))
                     }

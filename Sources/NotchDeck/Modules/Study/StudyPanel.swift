@@ -195,7 +195,7 @@ private struct StudyMethodCard: View {
                 Spacer(minLength: Theme.Spacing.xs)
                 StudyDeepFocusRow(store: store, openMixer: sounds)
                 Spacer(minLength: Theme.Spacing.xs)
-                StudyTodayRow(today: store.today)
+                StudyTodayRow(today: store.today, goal: store.goal)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
@@ -248,13 +248,17 @@ private struct StudyDeepFocusRow: View {
 /// for the pet.
 private struct StudyTodayRow: View {
     let today: StudyDaySummary
+    let goal: StudyDailyGoal
 
     var body: some View {
+        let metGoal = today.minutes >= goal.minutes
         HStack(spacing: Theme.Spacing.s) {
             Text("Today")
                 .foregroundStyle(Theme.Palette.tertiaryText)
-            Label(StudyTimerFormat.studied(minutes: today.minutes), systemImage: "clock")
-                .help("Time studied today")
+            Label("\(StudyTimerFormat.studied(minutes: today.minutes)) of \(StudyTimerFormat.studied(minutes: goal.minutes))",
+                  systemImage: metGoal ? "checkmark.seal.fill" : "clock")
+                .foregroundStyle(metGoal ? accent : Theme.Palette.secondaryText)
+                .help(metGoal ? "Daily study goal met" : "Time studied today, out of your daily goal")
             Label("\(today.completedSessions) done", systemImage: "checkmark.circle")
                 .help("Study stretches finished today")
             Spacer(minLength: 0)

@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 import NotchKitCore
 
@@ -15,6 +16,14 @@ final class StudyModule: NotchModule {
 
     func makePanel() -> AnyView {
         AnyView(StudyPanel(store: store))
+    }
+
+    /// Today's study minutes against the kit's daily goal, so Today lists
+    /// study time and Plan my day can schedule what is left.
+    var provision: AnyPublisher<ModuleProvision, Never>? {
+        store.goalProgress
+            .map { ModuleProvision(progress: [$0]) }
+            .eraseToAnyPublisher()
     }
 
     func start() {

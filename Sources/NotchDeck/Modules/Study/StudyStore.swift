@@ -38,6 +38,8 @@ final class StudyStore: ObservableObject {
     @Published private(set) var menu: StudyMethodMenu
     /// The user's own lengths for the Custom method.
     @Published private(set) var custom: StudyCustomRhythm
+    /// Minutes a day to aim for, set by the kit; shared with Today as progress.
+    @Published private(set) var goal: StudyDailyGoal
     /// Cards reviewed today from the modules that share a card goal (Anki),
     /// or nil when none does; an Anki sprint counts its cards from this.
     @Published private(set) var cardsReviewedToday: Int?
@@ -72,12 +74,15 @@ final class StudyStore: ObservableObject {
     private static let deepFocusKey = "study.deepFocus"
     private static let customKey = "study.custom"
 
-    /// - Parameter menu: the active kit's methods; a saved session on a
-    ///   method the kit no longer offers moves to its starting method.
-    init(menu: StudyMethodMenu = .all, edition: Edition = .current) {
+    /// - Parameters:
+    ///   - menu: the active kit's methods; a saved session on a method the
+    ///     kit no longer offers moves to its starting method.
+    ///   - goal: the active kit's daily study goal.
+    init(menu: StudyMethodMenu = .all, goal: StudyDailyGoal = .standard, edition: Edition = .current) {
         isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
         self.edition = edition
         self.menu = menu
+        self.goal = goal
         if isDemo {
             custom = Self.demoCustom
             let now = Date()
@@ -223,11 +228,22 @@ final class StudyStore: ObservableObject {
     /// timer moves to its starting method. A running block is never cut short.
     /// - Parameter kitApplied: true when the user just picked or reset the
     ///   kit, so even a still-offered method gives way to the kit's start.
-    func use(_ menu: StudyMethodMenu, kitApplied: Bool) {
+    func use(_ menu: StudyMethodMenu, goal: StudyDailyGoal, kitApplied: Bool) {
         if menu != self.menu { self.menu = menu }
+        if goal != self.goal { self.goal = goal }
         catchUp()
         guard let kind = menu.replacement(for: session, kitApplied: kitApplied) else { return }
         change { $0.switchMethod(to: .preset(kind, custom: custom), at: now) }
+    }
+
+    /// Today's study minutes against the daily goal, for Today and Plan my
+    /// day. Recomputed when a stretch is logged, the goal changes or the
+    /// clock moves (so a new day starts from zero).
+    var goalProgress: AnyPublisher<ProgressItem, Never> {
+        Publishers.CombineLatest3($log, $goal, $now)
+            .map { log, goal, now in goal.progressItem(for: log.summary(on: now)) }
+            .removeDuplicates()
+            .eraseToAnyPublisher()
     }
 
     /// Counts an Anki sprint's cards from the shared progress goals, so the

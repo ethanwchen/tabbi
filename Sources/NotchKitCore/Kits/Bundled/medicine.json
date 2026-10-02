@@ -11,7 +11,8 @@
     "focusSounds": [{ "sound": "rain", "level": 0.8 }, { "sound": "brown", "level": 0.4 }],
     "ticker": ["focus", "tasks", "meeting", "nowPlaying"],
     "pet": { "breed": "orangeTabby" },
-    "theme": "notch"
+    "theme": "notch",
+    "moduleSettings": { "study": { "dailyGoalMinutes": 240 } }
   },
   "onboarding": [
     {

@@ -24,7 +24,7 @@ Every question can be skipped, and a row of tab icons previews what the answers 
 To change kits later, open **Settings > Modules**.
 The **Kit** section lets you:
 
-- **Switch kit.** If the kit has onboarding questions, a sheet asks them first, the same way first-run setup does; **Cancel** keeps your current kit. Your tabs change to the new kit's tabs for your answers, and its notch previews, focus sound and study methods replace yours if the kit sets them (a study block already under way keeps going). The kit's starter tasks, plus those your answers add, go on Today, skipping any already on the list. Every other preference stays as it is.
+- **Switch kit.** If the kit has onboarding questions, a sheet asks them first, the same way first-run setup does; **Cancel** keeps your current kit. Your tabs change to the new kit's tabs for your answers, and its notch previews, focus sound, study methods and daily study goal replace yours if the kit sets them (a study block already under way keeps going). The kit's starter tasks, plus those your answers add, go on Today, skipping any already on the list. Every other preference stays as it is.
 - **Reset to Kit Defaults.** Puts the tabs, notch previews and focus sound back the way the kit ships them, without adding starter tasks again. The button is disabled when nothing would change.
 - **Import Kit…** Pick a `.json` kit file. NotchDeck checks it, saves a copy, asks the kit's questions if it has any, and switches to it.
 If you cancel the questions, the kit stays in the list so you can pick it later. If the kit mentions things this version doesn't know, such as a module from a newer release, you see a warning listing them, and they are skipped.
@@ -104,7 +104,7 @@ The open notch shows up to nine tabs comfortably, and the number keys 1-9 jump t
   "ticker": ["focus", "tasks", "meeting", "nowPlaying"],
   "pet": { "breed": "orangeTabby", "name": "Miso" },
   "theme": "notch",
-  "moduleSettings": { "anki": { "deck": "AnKing" } }
+  "moduleSettings": { "anki": { "deck": "AnKing" }, "study": { "dailyGoalMinutes": 240 } }
 }
 ```
 
@@ -124,6 +124,10 @@ Accepted values:
 - **Focus sounds:** `brown`, `pink`, `white`, `rain`, `fireplace`, `cafe`.
 - **Ticker previews:** `meeting`, `nowPlaying`, `focus`, `tasks`, `claudeUsage`.
 - **Pet breeds:** `orangeTabby`, `grayTabby`, `blackCat`, `whiteCat`, `tuxedo`, `calico`, `siamese`, `britishShorthair`, `goldenRetriever`, `labrador`, `frenchBulldog`, `corgi`, `dachshund`, `beagle`.
+
+Module settings the built-in modules read:
+
+- **`study`:** `dailyGoalMinutes`, the minutes a day to aim for (15 to 720, rounded to a quarter hour; 120 when left out). The Study tab shows today's time against it, and Today lists it as a goal.
 
 Switching kits, picking one on first run, and resetting apply the tabs, `ticker` and `focusSounds`.
 A field the kit leaves out keeps the user's current setting, and only the sound mix changes: the user's volume, playlist and Do Not Disturb shortcuts stay.
