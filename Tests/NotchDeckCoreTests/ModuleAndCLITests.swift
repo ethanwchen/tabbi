@@ -31,3 +31,23 @@ private final class EmptyFileManager: FileManager {
         path.hasPrefix("/bin/") && super.isExecutableFile(atPath: path)
     }
 }
+
+final class ClaudeCLIPathOverrideTests: XCTestCase {
+    func testSettingsOverrideBeatsEnvironmentOverride() {
+        let url = ClaudeCLI.locate(
+            pathOverride: "/bin/sh",
+            environment: [ClaudeCLI.overrideVariable: "/bin/zsh"],
+            loginShellLookup: { nil }
+        )
+        XCTAssertEqual(url?.path, "/bin/sh")
+    }
+
+    func testNonExecutableSettingsOverrideFallsBackToEnvironment() {
+        let url = ClaudeCLI.locate(
+            pathOverride: "/nonexistent/claude",
+            environment: [ClaudeCLI.overrideVariable: "/bin/zsh"],
+            loginShellLookup: { nil }
+        )
+        XCTAssertEqual(url?.path, "/bin/zsh")
+    }
+}

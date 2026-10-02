@@ -1,0 +1,182 @@
+import XCTest
+import NotchDeckCore
+
+final class ModuleLayoutTests: XCTestCase {
+    func testDefaultEnablesEveryModuleInCanonicalOrder() {
+        XCTAssertEqual(ModuleLayout.default.enabled, ModuleID.allCases)
+    }
+
+    func testMissingModulesAreAppendedEnabledAndUnknownOnesDropped() {
+        let layout = ModuleLayout(
+            orderRawValues: ["planner", "futureThing", "spotify", "planner"],
+            disabledRawValues: ["spotify", "alsoUnknown"]
+        )
+        XCTAssertEqual(layout.order, [.planner, .spotify, .system, .claudeUsage, .claudeAsk])
+        XCTAssertEqual(layout.enabled, [.planner, .system, .claudeUsage, .claudeAsk])
+    }
+
+    func testAllDisabledDataReenablesFirstModule() {
+        let layout = ModuleLayout(order: [.system, .spotify], disabled: Set(ModuleID.allCases))
+        XCTAssertEqual(layout.enabled, [.system])
+    }
+
+    func testCannotDisableLastEnabledModule() {
+        var layout = ModuleLayout.default
+        for module in ModuleID.allCases.dropLast() {
+            XCTAssertTrue(layout.setEnabled(module, false))
+        }
+        XCTAssertFalse(layout.canDisable(.claudeAsk))
+        XCTAssertFalse(layout.setEnabled(.claudeAsk, false))
+        XCTAssertEqual(layout.enabled, [.claudeAsk])
+        XCTAssertTrue(layout.setEnabled(.system, true))
+        XCTAssertEqual(layout.enabled, [.system, .claudeAsk])
+    }
+
+    func testMoveMatchesOnMoveSemantics() {
+        var layout = ModuleLayout.default
+        layout.move(fromOffsets: [0], toOffset: 3)
+        XCTAssertEqual(layout.order, [.system, .claudeUsage, .spotify, .planner, .claudeAsk])
+        layout.move(fromOffsets: [4], toOffset: 0)
+        XCTAssertEqual(layout.order, [.claudeAsk, .system, .claudeUsage, .spotify, .planner])
+        layout.move(fromOffsets: [1, 3], toOffset: 5)
+        XCTAssertEqual(layout.order, [.claudeAsk, .claudeUsage, .planner, .system, .spotify])
+    }
+
+    func testCyclingSkipsDisabledModulesAndWraps() {
+        var layout = ModuleLayout.default
+        layout.setEnabled(.system, false)
+        XCTAssertEqual(layout.module(after: .spotify), .claudeUsage)
+        XCTAssertEqual(layout.module(after: .claudeAsk), .spotify)
+        XCTAssertEqual(layout.module(before: .claudeUsage), .spotify)
+        XCTAssertEqual(layout.module(before: .spotify), .claudeAsk)
+    }
+
+    func testSelectionFallsBackToFirstEnabled() {
+        var layout = ModuleLayout(order: [.planner, .spotify, .system, .claudeUsage, .claudeAsk], disabled: [])
+        layout.setEnabled(.system, false)
+        XCTAssertEqual(layout.resolvedSelection(.system), .planner)
+        XCTAssertEqual(layout.resolvedSelection(.spotify), .spotify)
+        XCTAssertEqual(layout.module(after: .system), .planner)
+    }
+}
+
+final class HotkeyTests: XCTestCase {
+    func testDefaultIsControlOptionSpace() {
+        XCTAssertEqual(Hotkey.default.displayString, "⌃⌥Space")
+        XCTAssertTrue(Hotkey.default.isValid)
+    }
+
+    func testDisplayUsesAppleModifierOrder() {
+        let hotkey = Hotkey(keyCode: 40, modifiers: [.command, .shift, .option, .control])
+        XCTAssertEqual(hotkey.displayString, "⌃⌥⇧⌘K")
+    }
+
+    func testRequiresANonShiftModifierAndKnownKey() {
+        XCTAssertFalse(Hotkey(keyCode: 0, modifiers: [.shift]).isValid)
+        XCTAssertFalse(Hotkey(keyCode: 0, modifiers: []).isValid)
+        XCTAssertFalse(Hotkey(keyCode: 999, modifiers: [.command]).isValid)
+        XCTAssertTrue(Hotkey(keyCode: 0, modifiers: [.command, .shift]).isValid)
+    }
+}
+
+final class DisplayPreferenceTests: XCTestCase {
+    private let builtIn = DisplayPreference.Screen(id: 1, isBuiltIn: true, isMain: false)
+    private let external = DisplayPreference.Screen(id: 7, isBuiltIn: false, isMain: true)
+    private let side = DisplayPreference.Screen(id: 9, isBuiltIn: false, isMain: false)
+
+    func testResolvesEachPreference() {
+        let screens = [external, builtIn, side]
+        XCTAssertEqual(DisplayPreference.builtIn.resolve(in: screens), builtIn)
+        XCTAssertEqual(DisplayPreference.main.resolve(in: screens), external)
+        XCTAssertEqual(DisplayPreference.specific(9).resolve(in: screens), side)
+    }
+
+    func testFallsBackWhenPreferredScreenIsGone() {
+        XCTAssertEqual(DisplayPreference.specific(42).resolve(in: [external, builtIn]), builtIn)
+        XCTAssertEqual(DisplayPreference.builtIn.resolve(in: [side, external]), external)
+        XCTAssertEqual(DisplayPreference.main.resolve(in: [side]), side)
+        XCTAssertNil(DisplayPreference.main.resolve(in: []))
+    }
+
+    func testStorageValueRoundTrips() {
+        for preference in [DisplayPreference.builtIn, .main, .specific(69_733_632)] {
+            XCTAssertEqual(DisplayPreference(storageValue: preference.storageValue), preference)
+        }
+        XCTAssertNil(DisplayPreference(storageValue: "screen:abc"))
+        XCTAssertNil(DisplayPreference(storageValue: ""))
+    }
+}
+
+final class SettingsRepositoryTests: XCTestCase {
+    private var suiteName: String!
+    private var defaults: UserDefaults!
+
+    override func setUp() {
+        suiteName = "NotchDeckTests.\(UUID().uuidString)"
+        defaults = UserDefaults(suiteName: suiteName)
+    }
+
+    override func tearDown() {
+        defaults.removePersistentDomain(forName: suiteName)
+    }
+
+    func testEmptyStoreYieldsDefaults() {
+        let settings = SettingsRepository(defaults: defaults).load()
+        XCTAssertEqual(settings, .default)
+        XCTAssertFalse(settings.openOnHover)
+        XCTAssertTrue(settings.hapticsEnabled)
+        XCTAssertEqual(settings.hotkey, .default)
+        XCTAssertEqual(settings.preferredDisplay, .builtIn)
+    }
+
+    func testRoundTripsEveryField() {
+        var modules = ModuleLayout(order: [.claudeAsk, .planner], disabled: [])
+        modules.setEnabled(.spotify, false)
+        let settings = AppSettings(
+            modules: modules,
+            openOnHover: true,
+            hapticsEnabled: false,
+            launchAtLogin: true,
+            hotkey: Hotkey(keyCode: 40, modifiers: [.command, .shift]),
+            claudePathOverride: "/opt/claude",
+            preferredDisplay: .specific(5)
+        )
+        let repository = SettingsRepository(defaults: defaults)
+        repository.save(settings)
+        XCTAssertEqual(repository.load(), settings)
+    }
+
+    func testClearingPathOverrideRemovesIt() {
+        let repository = SettingsRepository(defaults: defaults)
+        repository.save(AppSettings(claudePathOverride: "/opt/claude"))
+        var settings = repository.load()
+        settings.claudePathOverride = "   "
+        XCTAssertNil(settings.claudePathOverride)
+        repository.save(settings)
+        XCTAssertNil(repository.load().claudePathOverride)
+    }
+
+    func testPathOverrideExpandsTilde() {
+        let settings = AppSettings(claudePathOverride: " ~/bin/claude ")
+        XCTAssertEqual(settings.claudePathOverride, NSHomeDirectory() + "/bin/claude")
+    }
+
+    func testMalformedValuesFallBackIndividually() {
+        defaults.set("yes please", forKey: "settings.openOnHover")
+        defaults.set(Data("garbage".utf8), forKey: "settings.hotkey")
+        defaults.set("screen:nope", forKey: "settings.preferredDisplay")
+        defaults.set(false, forKey: "settings.hapticsEnabled")
+        let settings = SettingsRepository(defaults: defaults).load()
+        XCTAssertFalse(settings.openOnHover)
+        XCTAssertEqual(settings.hotkey, .default)
+        XCTAssertEqual(settings.preferredDisplay, .builtIn)
+        XCTAssertFalse(settings.hapticsEnabled)
+    }
+
+    func testFutureModuleIsEnabledAtEndOfSavedOrder() {
+        defaults.set(["claudeAsk", "system", "spotify", "claudeUsage"], forKey: "settings.modules.order")
+        defaults.set(["system"], forKey: "settings.modules.disabled")
+        let layout = SettingsRepository(defaults: defaults).load().modules
+        XCTAssertEqual(layout.enabled, [.claudeAsk, .spotify, .claudeUsage, .planner])
+    }
+}

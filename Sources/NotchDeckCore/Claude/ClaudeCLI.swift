@@ -9,12 +9,16 @@ public enum ClaudeCLI {
     /// Environment variable that overrides discovery.
     public static let overrideVariable = "NOTCHDECK_CLAUDE_PATH"
 
+    /// Finds the binary. A non-executable `pathOverride` (the user's setting)
+    /// or environment override is skipped so discovery still works.
     public static func locate(
+        pathOverride: String? = nil,
         environment: [String: String] = ProcessInfo.processInfo.environment,
         fileManager: FileManager = .default,
         loginShellLookup: () -> String? = ClaudeCLI.lookupInLoginShell
     ) -> URL? {
-        if let override = environment[overrideVariable], fileManager.isExecutableFile(atPath: override) {
+        for override in [pathOverride, environment[overrideVariable]].compactMap({ $0 })
+        where fileManager.isExecutableFile(atPath: override) {
             return URL(fileURLWithPath: override)
         }
         let home = fileManager.homeDirectoryForCurrentUser.path
