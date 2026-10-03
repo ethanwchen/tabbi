@@ -152,7 +152,9 @@ public enum DayReviewer {
         progress: [ProgressItem] = [],
         calendar: Calendar = .current
     ) -> DayReview {
-        let sessions = activity.filter { $0.kind == .focusCompleted && $0.day(calendar: calendar) == day.date }
+        let sessions = activity.filter {
+            $0.kind == .focusCompleted && $0.day(calendar: calendar) == day.date && countsAsDone($0)
+        }
         let minutes = sessions.reduce(0) { $0 + ($1.quantity ?? $1.end.timeIntervalSince($1.start) / 60) }
         return DayReview(
             date: day.date,
@@ -165,6 +167,15 @@ public enum DayReviewer {
                 .filter { $0.target > 0 || $0.completed > 0 }
                 .map { DayReviewCount(title: $0.title, count: max($0.completed, 0), unit: $0.unit) }
         )
+    }
+
+    /// Whether a focus stretch counts as a finished session. Study logs
+    /// skipped and abandoned phases too; like its own tally, only phases
+    /// that ran out or were stopped at their normal end count. A record
+    /// without an outcome (a module that logs only finished stretches) does.
+    private static func countsAsDone(_ record: ActivityRecord) -> Bool {
+        guard let outcome = record.metadata[ActivityMetadata.outcome] else { return true }
+        return StudyPhaseOutcome(rawValue: outcome)?.countsAsDone ?? false
     }
 
     /// The figures under the summary, in order: study time and sessions (or

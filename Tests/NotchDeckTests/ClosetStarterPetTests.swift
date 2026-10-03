@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import XCTest
 import NotchKitCore
@@ -36,6 +37,33 @@ final class ClosetStarterPetTests: XCTestCase {
         let relaunched = ClosetStore(storage: EditionStorage(root: folder), runMode: .live, starter: .starter(.cat))
         relaunched.useStarter(.starter(.cat))
         XCTAssertEqual(relaunched.profile.name, "Waffles", "the save wins over any kit's starter")
+    }
+
+    /// At launch the pet sees the idle Pomodoro before the welcome window's
+    /// kit pick. Taking that baseline must not save the starter, or the
+    /// picked kit's pet would never apply.
+    func testSeeingAnIdleTimerDoesNotSaveTheStarter() throws {
+        let store = ClosetStore(storage: EditionStorage(root: folder), runMode: .live, starter: .starter(.cat))
+        let focus = PassthroughSubject<ProvidedFocus?, Never>()
+        store.follow(focus: focus.eraseToAnyPublisher())
+        focus.send(pomodoro(completed: 3))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: saveURL.path), "a baseline alone isn't a save")
+
+        store.useStarter(corgi)
+        XCTAssertEqual(store.profile.breed, .corgi, "the kit picked after launch decides the first pet")
+
+        focus.send(pomodoro(completed: 4))
+        let save = try XCTUnwrap(PetSave.load(from: saveURL), "the first points save the pet")
+        XCTAssertEqual(save.profile.breed, .corgi)
+        XCTAssertEqual(save.creditedFocusCount, 4, "the baseline survived the kit switch, so the session was paid")
+        XCTAssertGreaterThan(save.ledger.balance, 0)
+    }
+
+    private func pomodoro(completed: Int) -> ProvidedFocus {
+        ProvidedFocus(
+            source: ModuleID("focus"), phase: .focus, clock: .idle,
+            phaseLength: 1500, focusLength: 1500, completedFocusCount: completed
+        )
     }
 
     func testDemoKeepsItsSamplePet() {

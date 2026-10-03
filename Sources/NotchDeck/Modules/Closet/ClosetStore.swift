@@ -87,7 +87,10 @@ final class ClosetStore: ObservableObject {
         lastFocus = timer
         let before = closet.save
         let award = closet.credit(from: old, to: timer, at: now)
-        if closet.save != before { persist() }
+        // A starter pet that only moved its baseline stays unsaved, so it
+        // keeps following kit switches (the first-run kit pick comes after
+        // the first timer the pet sees).
+        if closet.save != before, hasSave || award != nil { persist() }
         guard let award else { return }
         preview.send(.celebrate)
         awards.send(award)
@@ -148,7 +151,10 @@ final class ClosetStore: ObservableObject {
     /// Swaps a pet that was never saved for a new kit's starter.
     func useStarter(_ starter: PetProfile) {
         guard !hasSave, !saveIsUnreadable, closet.profile != starter else { return }
-        closet = PetCloset(save: PetSave(profile: starter))
+        var save = PetSave(profile: starter)
+        save.creditedFocusCount = closet.save.creditedFocusCount
+        save.creditedFocusSource = closet.save.creditedFocusSource
+        closet = PetCloset(save: save)
         presence.profile = starter
         refreshPreview()
     }

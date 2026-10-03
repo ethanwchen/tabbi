@@ -54,6 +54,19 @@ final class DayReviewTests: XCTestCase {
         XCTAssertEqual(review.focusMinutes, 65)
     }
 
+    func testReviewSkipsStudyPhasesThatWereCutShort() {
+        func phase(_ outcome: StudyPhaseOutcome, from start: Int) -> ActivityRecord? {
+            StudyPhaseRecord(method: .flowtime, phase: .focus, startedAt: at(start), endedAt: at(start, 30),
+                             activeDuration: 30 * 60, outcome: outcome).activityRecord(source: .study)
+        }
+        let activity = [phase(.completed, from: 9), phase(.stopped, from: 10),
+                        phase(.skipped, from: 11), phase(.abandoned, from: 12)].compactMap { $0 }
+
+        let review = DayReviewer.review(of: checklist(), activity: activity, calendar: calendar)
+        XCTAssertEqual(review.focusSessions, 2, "a skipped or abandoned phase isn't a finished session")
+        XCTAssertEqual(review.focusMinutes, 60)
+    }
+
     func testLegacySessionLogBecomesPomodoroFocusRecords() {
         let log = FocusSessionLog(sessions: [.init(endedAt: at(10), duration: 25 * 60)])
         let records = log.activityRecords(source: .focus)
