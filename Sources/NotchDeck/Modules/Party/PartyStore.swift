@@ -10,8 +10,7 @@ import NotchKitCore
 /// types: `PartyPresenceTracker` decides when the shared focus timer is
 /// worth a heartbeat, `PartyHeartbeatSchedule` when the next one is due or
 /// how long to back off, and `PartyRefreshPlan` when friends and the party
-/// are fetched (while the panel is hidden, only the party, once after
-/// connecting and once per notch opening). Heartbeats stop after an
+/// are fetched (never while the panel is hidden). Heartbeats stop after an
 /// `offline` one, which is sent when going invisible, when the Mac sleeps,
 /// and when the module stops or the app quits.
 ///
@@ -168,13 +167,6 @@ final class PartyStore: ObservableObject {
             }
             if case .unreachable = state.connection { retry() }
         }
-        scheduleRefresh()
-    }
-
-    /// The notch opened on any tab: refresh the party once, so the closed
-    /// notch's party pets don't go stale while the Party tab stays unopened.
-    func notchDidOpen() {
-        plan.notchDidOpen()
         scheduleRefresh()
     }
 
@@ -354,7 +346,6 @@ final class PartyStore: ObservableObject {
                 connectBackoff.reset()
                 state.didConnect(profile)
                 sendHeartbeat()
-                plan.invalidate(.party)
                 scheduleRefresh()
             } catch {
                 guard let self, !Task.isCancelled, self.account === account else { return }
@@ -436,8 +427,8 @@ final class PartyStore: ObservableObject {
 
     // MARK: Refresh
 
-    /// Sleeps until the next feed is due, fetches it, and repeats while
-    /// anything is due (see `PartyRefreshPlan`).
+    /// Sleeps until the next feed is due, fetches it, and repeats while the
+    /// panel is visible.
     private func scheduleRefresh() {
         refreshTask?.cancel()
         plan.inParty = state.inParty
