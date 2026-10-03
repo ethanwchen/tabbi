@@ -10,9 +10,20 @@
     "studyMethods": ["pomodoro", "fiftyTwoSeventeen", "flowtime", "custom"],
     "studyMethod": "pomodoro",
     "focusSounds": [{ "sound": "cafe", "level": 0.7 }],
-    "ticker": ["focus", "tasks", "progress", "meeting", "nowPlaying"],
+    "ticker": ["focus", "tasks", "progress", "meeting", "nowPlaying", "pet"],
     "pet": { "breed": "corgi" },
-    "theme": "notch"
+    "theme": "notch",
+    "moduleSettings": {
+      "closet": {
+        "coachLines": {
+          "distraction": [
+            "Your homework is saving your seat. Back for a bit?",
+            "Your essay is ready when you are. Head back?"
+          ],
+          "idleCheck": ["Working a problem on paper? Tap if you're here."]
+        }
+      }
+    }
   },
   "onboarding": [
     {

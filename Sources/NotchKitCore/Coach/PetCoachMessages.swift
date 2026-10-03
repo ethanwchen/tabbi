@@ -30,31 +30,32 @@ public struct PetCoachMessage: Codable, Hashable, Sendable, Identifiable {
 /// The pet's lines and a picker that keeps them varied.
 ///
 /// Copy rules (from the research notes): short enough for a notch bubble,
-/// warm, a little med-school flavored, and never shaming. No counting
-/// slip-ups, no guilt, no "you should".
+/// warm, and never shaming. No counting slip-ups, no guilt, no "you should".
+/// The `standard` lines name no subject, so any kit can use them; a kit adds
+/// its own flavor (cardiology, case law, LeetCode) through
+/// `lines(kitSettings:)` instead of core hardcoding one field of study.
 public enum PetCoachMessages {
     /// Longest line, in characters, that fits a notch speech bubble.
     public static let maxLength = 64
 
-    public static let all: [PetCoachMessage] = [
-        m("distraction.flashcards", .distraction, "Your flashcards miss you. Back for a few more?"),
-        m("distraction.krebs", .distraction, "The Krebs cycle is saving your seat."),
-        m("distraction.nextCard", .distraction, "Psst, the next card might be the one on the exam."),
+    /// Subject-free lines every kit gets.
+    public static let standard: [PetCoachMessage] = [
+        m("distraction.notes", .distraction, "Your notes miss you. Back for a few more minutes?"),
+        m("distraction.seat", .distraction, "Your study spot is saving your seat."),
+        m("distraction.nextPage", .distraction, "Psst, the next page might be the one that clicks."),
         m("distraction.detour", .distraction, "Brains need detours too. Ready to head back?"),
         m("distraction.warm", .distraction, "Your study block is still warm. Pick it back up?"),
-        m("distraction.residents", .distraction, "Even residents check their phones. Back when ready."),
+        m("distraction.phones", .distraction, "Everyone checks their phone. Back when ready."),
 
         m("offerPause.breather", .offerPause, "A breather is part of the plan. Pause for now?"),
         m("offerPause.fresh", .offerPause, "Want me to pause the clock so you come back fresh?"),
         m("offerPause.taking5", .offerPause, "Taking five? I can pause the timer for you."),
         m("offerPause.realBreak", .offerPause, "Looks like a real break might help. Pause?"),
-        m("offerPause.rounds", .offerPause, "Step off the wards for a bit? I'll hold your spot."),
 
         m("idleCheck.reading", .idleCheck, "Still studying? Reading counts too."),
-        m("idleCheck.firstAid", .idleCheck, "Deep in First Aid? Just checking you're here."),
-        m("idleCheck.vignette", .idleCheck, "Thinking through a vignette? Tap if you're here."),
+        m("idleCheck.thinking", .idleCheck, "Thinking something through? Tap if you're here."),
         m("idleCheck.quiet", .idleCheck, "Quiet over here. Still with me?"),
-        m("idleCheck.clock", .idleCheck, "Still going? Tap yes and I'll keep the clock running."),
+        m("idleCheck.clock", .idleCheck, "Still going? Let me know and I'll keep the clock running."),
 
         m("autoPause.away", .autoPause, "You stepped away, so I paused the clock. No rush."),
         m("autoPause.honest", .autoPause, "Timer paused so your stats stay honest. Resume anytime."),
@@ -62,19 +63,57 @@ public enum PetCoachMessages {
         m("autoPause.welcome", .autoPause, "Paused while you were away. Welcome back anytime."),
     ]
 
-    public static func messages(for kind: PetCoachNudgeKind) -> [PetCoachMessage] {
-        all.filter { $0.kind == kind }
+    /// The standard lines plus the kit's own, read from the pet module's
+    /// kit settings (`moduleSettings.closet`):
+    ///
+    ///     { "coachLines": { "distraction": ["The Krebs cycle is saving your seat."] } }
+    ///
+    /// Keys are `PetCoachNudgeKind` raw values. Kit lines join the standard
+    /// ones rather than replace them, so a kit with a few lines still varies.
+    /// Unknown kinds, blank lines and lines longer than `maxLength` are
+    /// skipped, so a hand-written kit can't break the bubble.
+    public static func lines(kitSettings: KitValue?) -> [PetCoachMessage] {
+        standard + kitLines(kitSettings)
     }
 
-    /// Picks a line of `kind`, skipping ids in `recentIDs` while any other
-    /// line is left. If every line was used recently, it still avoids the
-    /// most recent one so the same line never shows twice in a row.
+    /// Only the kit's valid lines, ids `kit.<kind>.<index>`.
+    public static func kitLines(_ kitSettings: KitValue?) -> [PetCoachMessage] {
+        guard let byKind = kitSettings?["coachLines"] else { return [] }
+        return PetCoachNudgeKind.allCases.flatMap { kind in
+            entries(byKind[kind.rawValue]).enumerated().compactMap { index, raw -> PetCoachMessage? in
+                guard let text = raw?.trimmingCharacters(in: .whitespacesAndNewlines),
+                      !text.isEmpty, text.count <= maxLength else { return nil }
+                return m("kit.\(kind.rawValue).\(index)", kind, text)
+            }
+        }
+    }
+
+    /// One kind's entries, read leniently so one badly shaped entry can't
+    /// drop the kit's other lines: a single string counts as a one-line
+    /// list, and non-string items stay as nil so later ids don't shift.
+    private static func entries(_ value: KitValue?) -> [String?] {
+        switch value {
+        case .string(let text): [text]
+        case .array(let items): items.map(\.stringValue)
+        default: []
+        }
+    }
+
+    public static func messages(for kind: PetCoachNudgeKind, in lines: [PetCoachMessage] = standard) -> [PetCoachMessage] {
+        let pool = lines.filter { $0.kind == kind }
+        return pool.isEmpty ? standard.filter { $0.kind == kind } : pool
+    }
+
+    /// Picks a line of `kind` from `lines`, skipping ids in `recentIDs` while
+    /// any other line is left. If every line was used recently, it still
+    /// avoids the most recent one so the same line never shows twice in a row.
     public static func pick<G: RandomNumberGenerator>(
         _ kind: PetCoachNudgeKind,
+        from lines: [PetCoachMessage] = standard,
         avoiding recentIDs: [String] = [],
         using generator: inout G
     ) -> PetCoachMessage {
-        let pool = messages(for: kind)
+        let pool = messages(for: kind, in: lines)
         let recent = Set(recentIDs)
         var candidates = pool.filter { !recent.contains($0.id) }
         if candidates.isEmpty, let last = recentIDs.last {

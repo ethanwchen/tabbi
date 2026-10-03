@@ -96,6 +96,7 @@ public struct StudyDayTally: Hashable, Codable, Sendable {
 /// - `progress`: ProgressSource, today's study or practice goals.
 /// - `focus`: FocusState, the focus timer the module runs.
 /// - `study`: StudySource, today's study minutes, sessions and points.
+/// - `pet`: PetSource, the study pet the closed notch shows.
 ///
 /// Modules publish a new value whenever their data changes, and
 /// `ProviderSnapshot` merges all enabled modules' values, so consumers such
@@ -106,19 +107,22 @@ public struct ModuleProvision: Equatable, Sendable {
     public var progress: [ProgressItem]
     public var focus: FocusTimer?
     public var study: StudyDayTally?
+    public var pet: PetPresence?
 
     public init(
         tasks: [ProvidedTask] = [],
         events: [UpcomingEvent] = [],
         progress: [ProgressItem] = [],
         focus: FocusTimer? = nil,
-        study: StudyDayTally? = nil
+        study: StudyDayTally? = nil,
+        pet: PetPresence? = nil
     ) {
         self.tasks = tasks
         self.events = events
         self.progress = progress
         self.focus = focus
         self.study = study
+        self.pet = pet
     }
 
     public static let empty = ModuleProvision()
@@ -138,6 +142,8 @@ public struct ProviderSnapshot: Equatable, Sendable {
     public private(set) var focus: FocusTimer?
     /// Every module's study tally added up; nil when no module keeps one.
     public private(set) var study: StudyDayTally?
+    /// The first pet in tab order.
+    public private(set) var pet: PetPresence?
 
     public init() {}
 
@@ -158,6 +164,7 @@ public struct ProviderSnapshot: Equatable, Sendable {
                 item.source = module
                 progress.append(item)
             }
+            if pet == nil { pet = provision.pet }
             events += provision.events.filter { eventIDs.insert($0.id).inserted }
             if let tally = provision.study { study = (study ?? StudyDayTally()) + tally }
             if let timer = provision.focus {

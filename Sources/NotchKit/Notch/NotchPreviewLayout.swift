@@ -34,6 +34,10 @@ public enum NotchPreviewLayout {
             content = textWidth(TickerFormat.progressLeft(progress))
         case .claudeUsage(let window, let utilization):
             content = textWidth(TickerFormat.usage(window: window, utilization: utilization))
+        case .pet(let pet):
+            // Measured asleep too, so the wing doesn't jump when the pet dozes off.
+            content = max(textWidth(pet.profile.name) + Theme.Spacing.xs + textWidth(TickerFormat.petSleeping),
+                          NotchPetWing.side)
         }
         let wing = (content + outerInset + innerGap).rounded(.up)
         return min(max(wing, iconSize + outerInset + innerGap), maxWingWidth)
@@ -47,6 +51,7 @@ public enum NotchPreviewLayout {
         case .tasks: "checklist"
         case .progress(let progress): progress.source.descriptor.symbol
         case .claudeUsage: "gauge.with.dots.needle.67percent"
+        case .pet: "pawprint.fill"
         }
     }
 
@@ -61,6 +66,7 @@ public enum NotchPreviewLayout {
         case .progress(let progress): "\(progress.title): \(TickerFormat.progressLeft(progress))"
         case .claudeUsage(let window, let utilization):
             "Claude usage \(TickerFormat.usage(window: window, utilization: utilization))"
+        case .pet(let pet): TickerFormat.petSummary(pet)
         }
     }
 

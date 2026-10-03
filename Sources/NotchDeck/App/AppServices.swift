@@ -19,6 +19,11 @@ final class AppServices: ObservableObject {
     let focus = FocusStore()
     let planner: PlannerStore
     let claudeAsk = ClaudeAskSession()
+    /// The study pet's look and points, shared by the Closet tab and the pet
+    /// in the notch.
+    let closet = ClosetStore()
+    /// The pet's study coach: nudges from the notch during focus phases.
+    let coach: PetCoachController
     /// The rotating live preview beside the closed notch.
     let ticker: TickerStore
     /// Every tab this build can show. Register new modules here.
@@ -33,6 +38,13 @@ final class AppServices: ObservableObject {
     init(settings: SettingsStore) {
         self.settings = settings
         planner = PlannerStore(focus: focus, planSettings: TodayPlanSettings(kit: settings.activeKit?.defaults))
+        coach = PetCoachController(
+            profile: { [closet] in closet.profile },
+            lines: { [settings] in PetCoachMessages.lines(kitSettings: settings.activeKit?.defaults.settings(for: .closet)) },
+            screen: { [settings] in NotchGeometry.screen(for: settings.settings.preferredDisplay) },
+            pauseTimer: { [focus] in focus.pause() },
+            resumeTimer: { [focus] in focus.start() }
+        )
         modules = ModuleRegistry([
             NowPlayingModule(controller: spotify),
             SystemModule(monitor: system),
@@ -43,10 +55,13 @@ final class AppServices: ObservableObject {
             StudyModule(),
             AnkiModule(),
             PartyModule(),
-            ClosetModule(),
+            ClosetModule(store: closet, coach: coach),
         ])
         providers = ProviderHub(registry: modules)
         planner.followSharedWork(from: providers.$snapshot, excluding: .planner)
+        coach.follow(focus: providers.$snapshot.map(\.focus).eraseToAnyPublisher())
+        closet.follow(focus: providers.$snapshot.map(\.focus).eraseToAnyPublisher())
+        coach.follow(awards: closet.awards.eraseToAnyPublisher())
         ticker = TickerStore(settings: settings, spotify: spotify, providers: providers,
                              upNext: planner.upNext, claudeUsage: claudeUsage)
         // `$settings` emits before the new value is stored, so read the

@@ -380,7 +380,7 @@ struct PreviewSettingsPane: View {
         }
         .formStyle(.grouped)
         .scrollDisabled(true)
-        .frame(width: paneWidth, height: 444)
+        .frame(width: paneWidth, height: 482)
     }
 }
 

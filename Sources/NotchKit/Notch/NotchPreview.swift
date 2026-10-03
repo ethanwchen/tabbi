@@ -39,6 +39,8 @@ struct NotchPreview: View {
         switch item {
         case .nowPlaying:
             content.nowPlayingLeading()
+        case .pet(let pet):
+            NotchPetWing(pet: pet)
         default:
             Image(systemName: NotchPreviewLayout.symbol(for: item))
                 .font(.system(size: 12, weight: .semibold))
@@ -77,6 +79,20 @@ struct NotchPreview: View {
             Text(TickerFormat.usage(window: window, utilization: utilization))
                 .foregroundStyle(utilization >= 1 ? Theme.Palette.danger : accent)
                 .previewText()
+        case .pet(let pet):
+            HStack(spacing: Theme.Spacing.xs) {
+                Text(pet.profile.name)
+                    .foregroundStyle(pet.mood == .asleep ? Theme.Palette.secondaryText : Theme.Palette.primaryText)
+                    .truncationMode(.tail)
+                if pet.mood == .asleep {
+                    Text(TickerFormat.petSleeping)
+                        .foregroundStyle(Theme.Palette.tertiaryText)
+                        .fixedSize()
+                        .transition(.opacity)
+                }
+            }
+            .previewText()
+            .animation(Theme.Motion.content, value: pet.mood)
         }
     }
 }

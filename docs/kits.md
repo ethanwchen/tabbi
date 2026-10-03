@@ -101,7 +101,7 @@ The open notch shows up to nine tabs comfortably, and the number keys 1-9 jump t
   "studyMethods": ["pomodoro", "ankiSprint", "questionBlock"],
   "studyMethod": "pomodoro",
   "focusSounds": [{ "sound": "rain", "level": 0.8 }, { "sound": "brown", "level": 0.4 }],
-  "ticker": ["focus", "tasks", "meeting", "nowPlaying"],
+  "ticker": ["focus", "tasks", "meeting", "nowPlaying", "pet"],
   "pet": { "breed": "orangeTabby", "name": "Miso" },
   "theme": "notch",
   "moduleSettings": { "anki": { "deck": "AnKing" } }
@@ -118,11 +118,29 @@ The open notch shows up to nine tabs comfortably, and the number keys 1-9 jump t
 | `theme` | string | Theme id. `notch` is the built-in hardware-black theme. |
 | `moduleSettings` | object | Settings for individual modules, keyed by module id. Each module reads its own section, in a shape that module documents. |
 
+Module settings sections:
+
+- **`closet`:** `coachLines`, extra lines the study pet's coach can say, keyed by bubble kind: `distraction` (a while in a distracting app), `offerPause` (offering to pause the timer), `idleCheck` (no input for a while) and `autoPause` (the timer was paused while the user was away).
+  They join the built-in lines, which name no subject, so a few lines give the coach your kit's flavor.
+  Each kind takes a list of lines or a single line.
+  Keep them kind and at most 64 characters; longer, blank or non-text entries are skipped without dropping the others.
+
+```json
+"moduleSettings": {
+  "closet": {
+    "coachLines": {
+      "distraction": ["The Krebs cycle is saving your seat."],
+      "idleCheck": ["Thinking through a vignette? Tap if you're here."]
+    }
+  }
+}
+```
+
 Accepted values:
 
 - **Study methods:** `pomodoro`, `fiftyTwoSeventeen`, `ultradian`, `flowtime`, `ankiSprint`, `questionBlock`, `custom`.
 - **Focus sounds:** `brown`, `pink`, `white`, `rain`, `fireplace`, `cafe`.
-- **Ticker previews:** `meeting`, `nowPlaying`, `focus`, `tasks`, `progress` (shared study goals such as Anki cards left), `claudeUsage`.
+- **Ticker previews:** `meeting`, `nowPlaying`, `focus`, `tasks`, `progress` (shared study goals such as Anki cards left), `claudeUsage`, `pet` (the study pet, from the Closet module; it naps after 20 minutes without a session).
 - **Pet breeds:** `orangeTabby`, `grayTabby`, `blackCat`, `whiteCat`, `tuxedo`, `calico`, `siamese`, `britishShorthair`, `goldenRetriever`, `labrador`, `frenchBulldog`, `corgi`, `dachshund`, `beagle`.
 
 Today (`planner`) reads these `moduleSettings.planner` keys, all optional:

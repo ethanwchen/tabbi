@@ -274,11 +274,37 @@ final class PetCoachTests: XCTestCase {
         _ = run(&coach, from: 0, to: 130) { self.input($0, app: .distracting) }
         coach.snooze(until: at(200))
         let restored = try JSONDecoder().decode(PetCoach.self, from: JSONEncoder().encode(coach))
-        XCTAssertEqual(restored, coach)
+        var ended = coach
+        ended.endEpisodes()
+        XCTAssertEqual(restored, ended)
+        XCTAssertTrue(restored.isSnoozed(at: at(150)))
         var resumed = restored
         // Cooldown remembered: a fresh episode right after relaunch only glances.
         _ = eval(&resumed, input(300, app: .neutral))
         let events = run(&resumed, from: 305, to: 600) { self.input($0, app: .distracting) }
+        XCTAssertEqual(kinds(events), ["lookOver"])
+    }
+
+    func testAnEpisodeOpenAtRelaunchDoesNotCarryIntoTheNextPhase() throws {
+        var coach = PetCoach()
+        // Quit 20 s into a distracting app, then start a new phase much later
+        // with the same app still in front.
+        _ = run(&coach, from: 0, to: 20) { self.input($0, app: .distracting) }
+        var resumed = try JSONDecoder().decode(PetCoach.self, from: JSONEncoder().encode(coach))
+        XCTAssertNil(resumed.distractionStartedAt)
+        let events = run(&resumed, from: 3600, to: 3625) { self.input($0, app: .distracting) }
+        XCTAssertTrue(events.isEmpty, "the new phase keeps its 30 s grace period")
+    }
+
+    func testEndingEpisodesKeepsCooldownsAndStartsFresh() {
+        var coach = PetCoach()
+        _ = run(&coach, from: 0, to: 130) { self.input($0, app: .distracting) }
+        XCTAssertEqual(coach.distractionStep, .nudged)
+        coach.endEpisodes()
+        XCTAssertNil(coach.distractionStartedAt)
+        XCTAssertEqual(coach.distractionStep, .none)
+        // The next episode starts over with a glance, and the bubble waits for the cooldown.
+        let events = run(&coach, from: 135, to: 300) { self.input($0, app: .distracting) }
         XCTAssertEqual(kinds(events), ["lookOver"])
     }
 
@@ -288,14 +314,18 @@ final class PetCoachTests: XCTestCase {
         for kind in PetCoachNudgeKind.allCases {
             XCTAssertGreaterThanOrEqual(PetCoachMessages.messages(for: kind).count, 4, "\(kind)")
         }
-        let ids = PetCoachMessages.all.map(\.id)
+        let ids = PetCoachMessages.standard.map(\.id)
         XCTAssertEqual(Set(ids).count, ids.count)
     }
 
     func testLinesFitTheBubbleAndNeverShame() {
         let banned = ["lazy", "fail", "distracted", "again", "procrastinat", "wasted", "waste", "should",
                       "disappoint", "shame", "guilt", "slack off", "!"]
-        for message in PetCoachMessages.all {
+        // The bundled kits' own lines follow the same copy rules.
+        let kitLines = KitLibrary.bundled.kits.flatMap {
+            PetCoachMessages.kitLines($0.defaults.settings(for: .closet))
+        }
+        for message in PetCoachMessages.standard + kitLines {
             XCTAssertLessThanOrEqual(message.text.count, PetCoachMessages.maxLength, message.id)
             XCTAssertFalse(message.text.isEmpty)
             let lower = message.text.lowercased()
@@ -334,6 +364,76 @@ final class PetCoachTests: XCTestCase {
         // Six distraction lines exist and memory covers the last eight picks: no repeats.
         XCTAssertEqual(Set(texts).count, 6)
         XCTAssertLessThanOrEqual(coach.recentMessageIDs.count, 8)
+    }
+
+    func testStandardLinesNameNoSubject() {
+        let subjects = ["krebs", "card", "exam", "resident", "ward", "first aid", "vignette", "anki", "step 1"]
+        for message in PetCoachMessages.standard {
+            for subject in subjects {
+                XCTAssertFalse(message.text.lowercased().contains(subject), "\(message.id) mentions \(subject)")
+            }
+        }
+    }
+
+    func testKitLinesJoinTheStandardOnesAndSkipBadEntries() throws {
+        let json = """
+        { "coachLines": {
+            "distraction": ["  Back to cardiology?  ", "", "\(String(repeating: "x", count: 65))"],
+            "idleCheck": ["Deep in First Aid?"],
+            "scolding": ["Unknown kinds are ignored."]
+        } }
+        """
+        let settings = try JSONDecoder().decode(KitValue.self, from: Data(json.utf8))
+        let kit = PetCoachMessages.kitLines(settings)
+        XCTAssertEqual(kit.map(\.text), ["Back to cardiology?", "Deep in First Aid?"])
+        XCTAssertEqual(kit.map(\.id), ["kit.distraction.0", "kit.idleCheck.0"])
+
+        let lines = PetCoachMessages.lines(kitSettings: settings)
+        XCTAssertEqual(lines.count, PetCoachMessages.standard.count + 2)
+        XCTAssertEqual(PetCoachMessages.messages(for: .distraction, in: lines).count,
+                       PetCoachMessages.messages(for: .distraction).count + 1)
+        // No settings, or a section without lines, means the standard lines.
+        XCTAssertEqual(PetCoachMessages.lines(kitSettings: nil), PetCoachMessages.standard)
+        XCTAssertEqual(PetCoachMessages.lines(kitSettings: .object(["deck": .string("AnKing")])),
+                       PetCoachMessages.standard)
+    }
+
+    func testOneBadlyShapedKitEntryKeepsTheOtherLines() throws {
+        let json = """
+        { "coachLines": {
+            "distraction": ["Back to the essay?", 3, "Thesis still waiting."],
+            "idleCheck": "Still outlining?",
+            "offerPause": { "oops": true }
+        } }
+        """
+        let kit = PetCoachMessages.kitLines(try JSONDecoder().decode(KitValue.self, from: Data(json.utf8)))
+        XCTAssertEqual(kit.map(\.text), ["Back to the essay?", "Thesis still waiting.", "Still outlining?"])
+        XCTAssertEqual(kit.map(\.id), ["kit.distraction.0", "kit.distraction.2", "kit.idleCheck.0"])
+    }
+
+    func testMedicineKitFlavorsTheCoachButOtherKitsStayNeutral() throws {
+        let medicine = try KitLibrary.loadBundled("medicine")
+        let productivity = try KitLibrary.loadBundled("productivity")
+        let medLines = PetCoachMessages.kitLines(medicine.defaults.settings(for: .closet))
+        XCTAssertTrue(medLines.contains { $0.text.contains("Krebs") })
+        XCTAssertTrue(PetCoachMessages.kitLines(productivity.defaults.settings(for: .closet)).isEmpty)
+    }
+
+    func testCoachPicksKitLinesItIsGiven() {
+        let only = [PetCoachMessage(id: "kit.distraction.0", kind: .distraction, text: "Back to torts?")]
+        var coach = PetCoach()
+        _ = coach.evaluate(input(0, app: .neutral), lines: only, using: &rng)
+        var said: [String] = []
+        var t: TimeInterval = 5
+        while t <= 300 {
+            if let nudge = coach.evaluate(input(t, app: .distracting), lines: only, using: &rng).nudge {
+                said.append(nudge.message.text)
+            }
+            t += 5
+        }
+        XCTAssertEqual(said.first, "Back to torts?")
+        // A kind the kit has no lines for falls back to the standard ones.
+        XCTAssertEqual(PetCoachMessages.pick(.autoPause, from: only, using: &rng).kind, .autoPause)
     }
 
     func testSeededGeneratorMakesPicksReproducible() {

@@ -41,7 +41,8 @@ final class TickerStore: ObservableObject {
             .combineLatest(spotify.$showsCompactActivity, claudeUsage.$limits.map { $0?.snapshot })
             .map { shared, isMusicPlaying, usage in
                 TickerSources(events: shared.events, isMusicPlaying: isMusicPlaying, focus: shared.focus,
-                              tasksRemaining: shared.openTasks.count, progress: shared.progress, usage: usage)
+                              tasksRemaining: shared.openTasks.count, progress: shared.progress, usage: usage,
+                              pet: shared.pet)
             }
             .removeDuplicates()
             .sink { [weak self] sources in
