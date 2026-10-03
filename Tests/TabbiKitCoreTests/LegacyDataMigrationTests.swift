@@ -93,10 +93,26 @@ final class LegacyDataMigrationTests: XCTestCase {
 
         XCTAssertEqual(try read("Pet/pet.json", in: storage.root), "new pet")
         XCTAssertEqual(try read("Kits/mine.json", in: storage.root), "old kit")
-        // The folder Tabbi already had stays behind, so the old folder is kept.
+        // The file Tabbi already had stays behind, so the old folder is kept.
         XCTAssertEqual(try read("Pet/pet.json", in: folder("NotchDeck")), "old pet")
         XCTAssertEqual(defaults.string(forKey: "selectedModule"), "today")
         XCTAssertEqual(defaults.string(forKey: "claudeUsage.limitsRecord"), "record")
+    }
+
+    func testMergesASubfolderTabbiAlreadyCreated() throws {
+        try write("old day", to: "Planner/2026-10-01.json", in: folder("NotchDeck"))
+        try write("old today", to: "Planner/2026-10-03.json", in: folder("NotchDeck"))
+        try write("old index", to: "ClaudeUsage/Index/index.json", in: folder("NotchDeck"))
+        try write("new today", to: "Planner/2026-10-03.json", in: storage.root)
+        try FileManager.default.createDirectory(at: storage.folder("ClaudeUsage"), withIntermediateDirectories: true)
+
+        migration(folders: ["NotchDeck"], domains: []).runIfNeeded()
+
+        XCTAssertEqual(try read("Planner/2026-10-01.json", in: storage.root), "old day")
+        XCTAssertEqual(try read("Planner/2026-10-03.json", in: storage.root), "new today")
+        XCTAssertEqual(try read("ClaudeUsage/Index/index.json", in: storage.root), "old index")
+        XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: folder("NotchDeck").path), ["Planner"])
+        XCTAssertEqual(try read("Planner/2026-10-03.json", in: folder("NotchDeck")), "old today")
     }
 
     func testAdoptsTheFirstLegacySourceThatHasData() throws {

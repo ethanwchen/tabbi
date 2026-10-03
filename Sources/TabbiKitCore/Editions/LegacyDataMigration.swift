@@ -8,8 +8,8 @@ import Foundation
 /// study log, pet and setting, since both the Application Support folder and
 /// the `UserDefaults` domain follow the app's name and bundle id.
 ///
-/// The move never overwrites: a file or preference Tabbi already has wins,
-/// and the first legacy source that has anything is the one adopted. Old
+/// The move never overwrites: a file or preference Tabbi already has wins
+/// (folders both sides have are merged file by file), and the first legacy source that has anything is the one adopted. Old
 /// preferences are copied (the old domain is left as it was), while the old
 /// folder's contents are moved, so the data lives in one place afterwards.
 public struct LegacyDataMigration {
@@ -86,18 +86,38 @@ public struct LegacyDataMigration {
         for folder in legacyFolders where folder.standardizedFileURL != destination.standardizedFileURL {
             guard let items = try? fileManager.contentsOfDirectory(at: folder, includingPropertiesForKeys: nil),
                   !items.isEmpty else { continue }
-            try? fileManager.createDirectory(at: destination, withIntermediateDirectories: true)
-            for item in items {
-                let target = destination.appendingPathComponent(item.lastPathComponent)
-                guard !fileManager.fileExists(atPath: target.path) else { continue }
-                try? fileManager.moveItem(at: item, to: target)
-            }
-            // Remove the old folder only once nothing is left behind in it.
-            if (try? fileManager.contentsOfDirectory(atPath: folder.path))?.isEmpty == true {
-                try? fileManager.removeItem(at: folder)
-            }
+            merge(items, into: destination, fileManager: fileManager)
+            removeIfEmpty(folder, fileManager: fileManager)
             return folder
         }
         return nil
+    }
+
+    /// Moves each item that `destination` does not have yet. A folder both
+    /// sides have is merged file by file, so a subfolder Tabbi already
+    /// created (a live snapshot saves today's checklist) does not hide the
+    /// old one's files.
+    private func merge(_ items: [URL], into destination: URL, fileManager: FileManager) {
+        try? fileManager.createDirectory(at: destination, withIntermediateDirectories: true)
+        for item in items {
+            let target = destination.appendingPathComponent(item.lastPathComponent)
+            var targetIsFolder: ObjCBool = false
+            guard fileManager.fileExists(atPath: target.path, isDirectory: &targetIsFolder) else {
+                try? fileManager.moveItem(at: item, to: target)
+                continue
+            }
+            guard targetIsFolder.boolValue,
+                  let children = try? fileManager.contentsOfDirectory(at: item, includingPropertiesForKeys: nil)
+            else { continue }
+            merge(children, into: target, fileManager: fileManager)
+            removeIfEmpty(item, fileManager: fileManager)
+        }
+    }
+
+    /// Removes an old folder only once nothing is left behind in it.
+    private func removeIfEmpty(_ folder: URL, fileManager: FileManager) {
+        if (try? fileManager.contentsOfDirectory(atPath: folder.path))?.isEmpty == true {
+            try? fileManager.removeItem(at: folder)
+        }
     }
 }
