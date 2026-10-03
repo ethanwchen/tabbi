@@ -24,7 +24,7 @@ public enum SystemFormat {
         return "\(Int(tenths) / 10).\(Int(tenths) % 10)"
     }
 
-    /// `"12.4 / 16 GB"`, or an em dash when memory is unknown.
+    /// `"12.4 / 16 GB"`, or a plain hyphen when memory is unknown.
     public static func memory(_ stats: MemoryStats?) -> String {
         guard let stats else { return unavailable }
         return "\(gigabytes(stats.usedBytes, alwaysShowTenths: true)) / \(gigabytes(stats.totalBytes)) GB"
