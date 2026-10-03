@@ -140,11 +140,11 @@ private struct InputField: View {
                         // Deferred: the field editor ignores binding changes made
                         // while it handles the key, so clearing the draft here
                         // would leave the sent text in the field.
-                        DispatchQueue.main.async(execute: onSubmit)
+                        Task { @MainActor in onSubmit() }
                     }
                     return .handled
                 }
-                .onSubmit { DispatchQueue.main.async(execute: onSubmit) }
+                .onSubmit { Task { @MainActor in onSubmit() } }
         }
     }
 

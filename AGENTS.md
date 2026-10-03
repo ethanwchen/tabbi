@@ -186,4 +186,7 @@ If a module seems to need one, the provider protocols are missing something: ext
 - Never poll faster than needed; stop timers when a panel isn't visible if
   the data is only shown there.
 - Keep `swift build` warning-free and `swift test` green.
+  `NotchKitCore` and its tests build in Swift 6 language mode; the other
+  targets stay in Swift 5 mode with complete concurrency checking, so a
+  data race there shows up as a warning to fix.
 - Public types and non-obvious logic get a short doc comment explaining why.

@@ -6,7 +6,7 @@ import NotchKit
 /// outgrow the canvas. Checklist rows reorder by dragging: the others slide
 /// aside live and the move is saved on release.
 struct PlannerList: View {
-    static let rowHeight: CGFloat = 22
+    nonisolated static let rowHeight: CGFloat = 22
     private static let fadeHeight = Theme.Spacing.m
 
     @ObservedObject var store: PlannerStore

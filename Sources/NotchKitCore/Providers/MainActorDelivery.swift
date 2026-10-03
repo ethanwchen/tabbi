@@ -18,12 +18,13 @@ extension Publisher where Failure == Never {
     ) -> AnyCancellable {
         let queue = MainDeliveryQueue()
         return sink { value in
+            // A box keeps `Output` from having to be Sendable: the value
+            // reaches the main actor once, unshared, either right here on the
+            // main thread or after one hop to the main queue.
+            let box = UncheckedBox(value)
             if Thread.isMainThread, queue.isIdle {
-                MainActor.assumeIsolated { receiveValue(value) }
+                MainActor.assumeIsolated { receiveValue(box.value) }
             } else {
-                // A box keeps Swift 5 mode from asking `Output` to be Sendable;
-                // the value crosses to the main queue once, unshared.
-                let box = UncheckedBox(value)
                 queue.enqueue {
                     MainActor.assumeIsolated { receiveValue(box.value) }
                 }

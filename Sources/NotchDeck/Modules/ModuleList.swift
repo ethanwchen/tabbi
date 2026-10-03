@@ -6,7 +6,7 @@ import NotchKitCore
 /// validation all read the catalog built from this list.
 @MainActor
 enum ModuleList {
-    nonisolated static let all: [any NotchModule.Type] = [
+    static let all: [any NotchModule.Type] = [
         NowPlayingModule.self,
         SystemModule.self,
         ClaudeUsageModule.self,

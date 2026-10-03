@@ -284,7 +284,7 @@ final class SpotifyController: NSObject, ObservableObject {
         }
     }
 
-    private func makeTimer(interval: TimeInterval, _ action: @escaping @MainActor (SpotifyController) -> Void) -> Timer {
+    private func makeTimer(interval: TimeInterval, _ action: @escaping @MainActor @Sendable (SpotifyController) -> Void) -> Timer {
         let timer = Timer(timeInterval: interval, repeats: true) { [weak self] _ in
             MainActor.assumeIsolated {
                 guard let self else { return }

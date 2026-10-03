@@ -42,9 +42,13 @@ enum SystemSampler {
                 host_statistics64(host, HOST_VM_INFO64, $0, &count)
             }
         }
-        guard result == KERN_SUCCESS else { return nil }
+        // The counts are in kernel pages. Asking the host for their size
+        // avoids reading the `vm_kernel_page_size` global, which Swift 6
+        // treats as shared mutable state.
+        var pageSize: vm_size_t = 0
+        guard result == KERN_SUCCESS, host_page_size(host, &pageSize) == KERN_SUCCESS else { return nil }
         let pages = MemoryPageCounts(
-            pageSize: UInt64(vm_kernel_page_size),
+            pageSize: UInt64(pageSize),
             wired: UInt64(stats.wire_count),
             compressed: UInt64(stats.compressor_page_count),
             internalPages: UInt64(stats.internal_page_count),

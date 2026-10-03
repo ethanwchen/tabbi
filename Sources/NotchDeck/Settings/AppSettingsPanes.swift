@@ -33,6 +33,7 @@ enum AppSettingsPane: String, CaseIterable {
         }
     }
 
+    @MainActor
     var view: AnyView {
         switch self {
         case .general: AnyView(GeneralSettingsPane())
