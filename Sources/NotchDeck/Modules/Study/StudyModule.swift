@@ -7,7 +7,10 @@ import NotchKitCore
 /// notch is closed.
 @MainActor
 final class StudyModule: NotchModule {
-    let descriptor = ModuleCatalog.builtIn.descriptor(for: .study)
+    nonisolated static let descriptor = ModuleDescriptor(
+        id: .study, title: "Study", symbol: "timer", category: .study,
+        accent: ModuleAccent(red: 1.00, green: 0.62, blue: 0.26)
+    )
     private let store: StudyStore
 
     init(store: StudyStore) {

@@ -45,7 +45,7 @@ struct DayPlanView: View {
                     .padding(.leading, Theme.Spacing.s + 20 + Theme.Spacing.s)
             }
         case .noFreeTime:
-            PlannerMessage(symbol: "moon.stars.fill", tint: Theme.Palette.accent(for: .planner),
+            PlannerMessage(symbol: "moon.stars.fill", tint: TodayModule.descriptor.accentColor,
                            title: "Nothing left to plan",
                            detail: "There's no free time worth a block before the evening.")
                 .frame(maxHeight: .infinity)
@@ -77,7 +77,7 @@ private struct DayPlanHeader: View {
         HStack(spacing: Theme.Spacing.s) {
             Image(systemName: "sparkles")
                 .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(Theme.Palette.accent(for: .planner))
+                .foregroundStyle(TodayModule.descriptor.accentColor)
                 .symbolEffect(.pulse, isActive: plan.phase == .planning)
                 .frame(width: 20)
             Text(title)
@@ -152,7 +152,7 @@ private struct DayPlanBlockRow: View {
                     .transition(.opacity)
             }
             HStack(spacing: Theme.Spacing.xxs) {
-                DayPlanRowButton(symbol: "checkmark", tint: Theme.Palette.accent(for: .planner), isTinted: true,
+                DayPlanRowButton(symbol: "checkmark", tint: TodayModule.descriptor.accentColor, isTinted: true,
                                  help: "Add this block to your calendar", action: add)
                 DayPlanRowButton(symbol: "xmark", tint: Theme.Palette.danger,
                                  help: "Leave this block out", action: dismiss)
@@ -186,7 +186,7 @@ private struct DayPlanKindMarker: View {
                 Capsule().frame(width: 3, height: 14)
             }
         }
-        .foregroundStyle(Theme.Palette.accent(for: .planner))
+        .foregroundStyle(TodayModule.descriptor.accentColor)
         .frame(width: 20)
     }
 }
@@ -330,7 +330,7 @@ struct PlannerPillButton: View {
     @State private var hovering = false
 
     var body: some View {
-        let accent = Theme.Palette.accent(for: .planner)
+        let accent = TodayModule.descriptor.accentColor
         Button(action: action) {
             HStack(spacing: Theme.Spacing.xs) {
                 if let symbol {

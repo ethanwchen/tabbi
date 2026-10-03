@@ -15,7 +15,7 @@ enum SnapshotRenderer {
     /// - Parameter kitID: the kit whose tabs are rendered, as on first run.
     static func run(outputDirectory: URL, kitID: String = KitLibrary.defaultKitID, settle: TimeInterval = 1.5) async {
         try? FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
-        let services = AppServices(settings: .ephemeral(kitID: kitID))
+        let services = AppServices(settings: .ephemeral(catalog: ModuleList.catalog, kitID: kitID))
         // 14"/16" MacBook Pro notch.
         let geometry = NotchGeometry(
             notchSize: CGSize(width: 185, height: 32), hasHardwareNotch: true,
@@ -131,6 +131,7 @@ enum SnapshotRenderer {
         // The same questions as the sheet Settings shows when switching kits.
         if let kit = services.settings.kits[kitID], !kit.onboarding.isEmpty,
            let png = await sheetSnapshot(KitQuestionsView(kit: kit, dismissal: .cancel, back: {}, start: { _ in })
+               .environment(\.moduleCatalog, services.settings.catalog)
                .frame(width: 520)) {
             let url = outputDirectory.appendingPathComponent("settings-kit-questions.png")
             try? png.write(to: url)

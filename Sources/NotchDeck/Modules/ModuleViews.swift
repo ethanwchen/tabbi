@@ -24,6 +24,7 @@ enum ModuleViews {
     static func notchContent(services: AppServices) -> NotchContent {
         NotchContent(
             appName: Edition.current.name,
+            catalog: services.settings.catalog,
             // Panels such as Today's read AppServices from the environment.
             panel: { AnyView(services.modules.panel(for: $0).environmentObject(services)) },
             nowPlayingLeading: { AnyView(compactLeading(services: services)) },

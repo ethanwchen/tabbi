@@ -20,7 +20,9 @@ final class WelcomeWindowController: NSWindowController, NSWindowDelegate {
     ///   used by snapshots to render the second step.
     init(settings: SettingsStore, questionsFor kitID: String? = nil) {
         self.settings = settings
-        let host = NSHostingController(rootView: WelcomeView(questionsFor: kitID).environmentObject(settings))
+        let host = NSHostingController(rootView: WelcomeView(questionsFor: kitID)
+            .environmentObject(settings)
+            .environment(\.moduleCatalog, settings.catalog))
         host.sizingOptions = .preferredContentSize
         let window = NSWindow(contentViewController: host)
         window.styleMask = [.titled, .closable, .fullSizeContentView]
@@ -169,10 +171,11 @@ private struct KitCard: View {
     let isSelected: Bool
     let action: () -> Void
     @State private var hovering = false
+    @Environment(\.moduleCatalog) private var catalog
 
     var body: some View {
-        let tabs = kit.layout().enabled
-        let tint = kit.accentModule().map { Theme.Palette.accent(for: $0) } ?? .accentColor
+        let tabs = kit.layout(catalog: catalog).enabled
+        let tint = kit.accentModule(catalog: catalog).map { catalog.descriptor(for: $0).accentColor } ?? .accentColor
         Button(action: action) {
             HStack(spacing: 12) {
                 Image(systemName: kit.symbol)
@@ -209,7 +212,7 @@ private struct KitCard: View {
             .contentShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
         }
         .buttonStyle(.plain)
-        .help("\(kit.name): \(tabs.map(\.title).joined(separator: ", "))")
+        .help("\(kit.name): \(tabs.map { catalog.descriptor(for: $0).title }.joined(separator: ", "))")
         .onHover { hovering = $0 }
     }
 }
@@ -217,15 +220,16 @@ private struct KitCard: View {
 /// A kit's tabs as a row of small tinted symbols.
 private struct TabIcons: View {
     let modules: [ModuleID]
+    @Environment(\.moduleCatalog) private var catalog
 
     var body: some View {
         HStack(spacing: 4) {
-            ForEach(modules) { module in
+            ForEach(modules.map(catalog.descriptor(for:))) { module in
                 Image(systemName: module.symbol)
                     .font(.system(size: 9, weight: .semibold))
-                    .foregroundStyle(Theme.Palette.accent(for: module))
+                    .foregroundStyle(module.accentColor)
                     .frame(width: 18, height: 18)
-                    .background(Circle().fill(Theme.Palette.accent(for: module).opacity(0.16)))
+                    .background(Circle().fill(module.accentColor.opacity(0.16)))
                     .help(module.title)
                     .transition(.scale.combined(with: .opacity))
             }
@@ -248,10 +252,11 @@ struct KitQuestionsView: View {
     let back: () -> Void
     let start: (KitAnswers) -> Void
     @State private var answers: KitAnswers = [:]
+    @Environment(\.moduleCatalog) private var catalog
 
     var body: some View {
-        let tabs = kit.layout(answers: answers).enabled
-        let tint = kit.accentModule().map { Theme.Palette.accent(for: $0) } ?? .accentColor
+        let tabs = kit.layout(catalog: catalog, answers: answers).enabled
+        let tint = kit.accentModule(catalog: catalog).map { catalog.descriptor(for: $0).accentColor } ?? .accentColor
         VStack(spacing: 0) {
             VStack(spacing: 8) {
                 Image(systemName: kit.symbol)
@@ -289,7 +294,7 @@ struct KitQuestionsView: View {
             }
             .padding(.horizontal, 24)
             .padding(.top, 20)
-            .help("The tabs \(kit.name) starts with: \(tabs.map(\.title).joined(separator: ", "))")
+            .help("The tabs \(kit.name) starts with: \(tabs.map { catalog.descriptor(for: $0).title }.joined(separator: ", "))")
 
             HStack {
                 switch dismissal {

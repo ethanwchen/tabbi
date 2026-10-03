@@ -5,6 +5,7 @@ import NotchKitCore
 public struct ModulePlaceholder: View {
     let module: ModuleID
     let detail: String
+    @Environment(\.moduleCatalog) private var catalog
 
     public init(module: ModuleID, detail: String) {
         self.module = module
@@ -13,9 +14,9 @@ public struct ModulePlaceholder: View {
 
     public var body: some View {
         VStack(spacing: Theme.Spacing.s) {
-            Image(systemName: module.symbol)
+            Image(systemName: catalog.descriptor(for: module).symbol)
                 .font(.system(size: 26, weight: .semibold))
-                .foregroundStyle(Theme.Palette.accent(for: module))
+                .foregroundStyle(catalog.descriptor(for: module).accentColor)
             Text(detail)
                 .font(Theme.Typography.body)
                 .foregroundStyle(Theme.Palette.secondaryText)

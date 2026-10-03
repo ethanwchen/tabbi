@@ -21,10 +21,11 @@ public enum Theme {
         public static let warning = Color(red: 1.00, green: 0.74, blue: 0.28)
         public static let danger = Color(red: 1.00, green: 0.38, blue: 0.36)
 
-        /// One accent per module, used for progress, selection, and highlights.
-        public static func accent(for module: ModuleID) -> Color {
-            let accent = module.descriptor.accent
-            return Color(red: accent.red, green: accent.green, blue: accent.blue)
+        /// One accent per module, used for progress, selection, and
+        /// highlights. Modules pass their own descriptor's accent; shared
+        /// views look it up through the `moduleCatalog` environment value.
+        public static func accent(_ accent: ModuleAccent) -> Color {
+            Color(red: accent.red, green: accent.green, blue: accent.blue)
         }
     }
 
@@ -133,4 +134,9 @@ public struct IconButton: View {
         .onHover { hovering = $0 }
         .animation(Theme.Motion.snappy, value: hovering)
     }
+}
+
+public extension ModuleDescriptor {
+    /// The module's accent as a SwiftUI color.
+    var accentColor: Color { Theme.Palette.accent(accent) }
 }

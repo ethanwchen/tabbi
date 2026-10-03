@@ -9,7 +9,10 @@ import NotchKit
 /// it's turned off.
 @MainActor
 final class PartyModule: NotchModule {
-    let descriptor = ModuleCatalog.builtIn.descriptor(for: .party)
+    nonisolated static let descriptor = ModuleDescriptor(
+        id: .party, title: "Party", symbol: "person.3.fill", category: .study,
+        accent: ModuleAccent(red: 1.00, green: 0.42, blue: 0.62)
+    )
     private let store: PartyStore
 
     init(store: PartyStore) {

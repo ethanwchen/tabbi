@@ -134,7 +134,7 @@ struct ModulesSettingsPane: View {
 
             Section {
                 ForEach(store.settings.modules.order) { module in
-                    ModuleRow(module: module, layout: $store.settings.modules)
+                    ModuleRow(module: store.catalog.descriptor(for: module), layout: $store.settings.modules)
                 }
                 .onMove { source, destination in
                     store.settings.modules.move(fromOffsets: source, toOffset: destination)
@@ -295,11 +295,11 @@ private struct KitSection: View {
 }
 
 private struct ModuleRow: View {
-    let module: ModuleID
+    let module: ModuleDescriptor
     @Binding var layout: ModuleLayout
 
     var body: some View {
-        let enabled = layout.isEnabled(module)
+        let enabled = layout.isEnabled(module.id)
         HStack(spacing: 10) {
             Image(systemName: "line.3.horizontal")
                 .font(.system(size: 12, weight: .medium))
@@ -311,7 +311,7 @@ private struct ModuleRow: View {
                 .frame(width: 24, height: 24)
                 .background(
                     RoundedRectangle(cornerRadius: 6, style: .continuous)
-                        .fill(Theme.Palette.accent(for: module).gradient)
+                        .fill(module.accentColor.gradient)
                 )
                 .saturation(enabled ? 1 : 0)
                 .opacity(enabled ? 1 : 0.6)
@@ -320,13 +320,13 @@ private struct ModuleRow: View {
             Spacer()
             Toggle("Show \(module.title)", isOn: Binding(
                 get: { enabled },
-                set: { layout.setEnabled(module, $0) }
+                set: { layout.setEnabled(module.id, $0) }
             ))
             .labelsHidden()
             .toggleStyle(.switch)
             .controlSize(.small)
-            .disabled(enabled && !layout.canDisable(module))
-            .help(enabled && !layout.canDisable(module)
+            .disabled(enabled && !layout.canDisable(module.id))
+            .help(enabled && !layout.canDisable(module.id)
                   ? "At least one module must stay on"
                   : (enabled ? "Hide \(module.title) from the notch" : "Show \(module.title) in the notch"))
         }
@@ -369,7 +369,7 @@ struct PreviewSettingsPane: View {
                     .disabled(!moduleOn)
                     .help(moduleOn
                         ? "Include \(kind.title.lowercased()) in the preview"
-                        : "Turn on \(kind.module?.title ?? "its module") in Modules to include this")
+                        : "Turn on \(kind.module.map { store.catalog.descriptor(for: $0).title } ?? "its module") in Modules to include this")
                 }
                 .disabled(!store.settings.notchPreview.isEnabled)
             } header: {
@@ -707,9 +707,9 @@ private struct AppGlyph: View {
                 .fill(.black)
                 .frame(width: 44, height: 16)
             HStack(spacing: 4) {
-                ForEach([ModuleID.spotify, .system, .planner], id: \.self) { module in
+                ForEach([NowPlayingModule.descriptor, SystemModule.descriptor, TodayModule.descriptor]) { module in
                     Capsule()
-                        .fill(Theme.Palette.accent(for: module))
+                        .fill(module.accentColor)
                         .frame(width: 12, height: 4)
                 }
             }

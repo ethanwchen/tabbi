@@ -6,14 +6,15 @@ import NotchKit
 /// One tab of the notch: its metadata, its panel, and its lifecycle.
 ///
 /// Each feature implements this in its own `Modules/<Module>/` folder and is
-/// listed once in `AppServices`, so adding a module never means editing a
+/// listed once in `ModuleList`, so adding a module never means editing a
 /// switch in shared code. A module usually wraps a store that `AppServices`
 /// owns, so its state outlives the panel.
 @MainActor
 protocol NotchModule: AnyObject {
     /// Id, title, symbol, category, accent, and permissions. Kits refer to
-    /// modules by `descriptor.id`.
-    var descriptor: ModuleDescriptor { get }
+    /// modules by `descriptor.id`. Static so the catalog (layouts, kits,
+    /// the tab bar) is known before any module is created.
+    nonisolated static var descriptor: ModuleDescriptor { get }
 
     /// The panel shown while this tab is selected, laid out inside the fixed
     /// canvas (`Theme.Layout.expandedSize` minus header and insets).
@@ -42,6 +43,7 @@ protocol NotchModule: AnyObject {
 }
 
 extension NotchModule {
+    var descriptor: ModuleDescriptor { Self.descriptor }
     var id: ModuleID { descriptor.id }
 
     func makeSettingsPane() -> SettingsPane? { nil }

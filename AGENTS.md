@@ -1,4 +1,4 @@
-# NotchDeck — guide for contributors and coding agents
+# NotchDeck - guide for contributors and coding agents
 
 NotchDeck is a macOS menu-bar-less app that turns the MacBook notch into a small,
 clickable panel of tabs. Each tab is a module (Now Playing, System, Claude Usage,
@@ -23,9 +23,9 @@ Judge them against the design rules below before you call the work done.
 
 ## Architecture
 
-- `Sources/NotchKitCore` — pure Swift, no AppKit/SwiftUI. Parsers, models,
+- `Sources/NotchKitCore` - pure Swift, no AppKit/SwiftUI. Parsers, models,
   stores, formatting. Everything here gets unit tests in `Tests/NotchKitCoreTests`.
-- `Sources/NotchKit` — shared AppKit/SwiftUI that modules build on:
+- `Sources/NotchKit` - shared AppKit/SwiftUI that modules build on:
   `Design/Theme.swift` (design tokens and shared controls `Card`,
   `IconButton`), `Components/` (`ModulePreview`, `ModulePlaceholder`),
   `Notch/` (the panel window, notch shape, screen geometry, the
@@ -42,23 +42,29 @@ Judge them against the design rules below before you call the work done.
   field). The app's own panes and their order live in
   `NotchDeck/Settings/AppSettingsPanes.swift`. Everything here is `public`. Reuse it; add new
   shared components here, not inside a module.
-- `Sources/NotchDeck/Modules/ModuleViews.swift` — hooks the shared notch up
+- `Sources/NotchDeck/Modules/ModuleViews.swift` - hooks the shared notch up
   to the app: the closed notch's live-activity wings, `notchContent`
   (module panels, music wings, Settings) and
   `notchInputs` (settings, hotkey recorder, ticker) built from `AppServices`.
   Shared; change only when your task requires it.
-- `Sources/NotchDeck/Modules/<Module>/` — one folder per module: a store
+- `Sources/NotchDeck/Modules/<Module>/` - one folder per module: a store
   (`ObservableObject`, owned by `AppServices`), SwiftUI views, and a
-  `NotchModule` class (descriptor, panel, an optional Settings toolbar pane
+  `NotchModule` class (its own `static let descriptor` with id, title,
+  symbol, category, accent and permissions, a panel, an optional Settings toolbar pane
   from `makeSettingsPane()`, and `start()`/`stop()`). The pane and the
   lifecycle follow the module's on/off switch. Modules that share a pane
   return the same id and it shows once: Today and Focus both offer the
   Focus pane, since both show the focus timer (`FocusStore` in
   `Modules/Focus/`, which `AppServices` owns and hands to Today).
-- `Sources/NotchDeck/Modules/NotchModule.swift` — the `NotchModule` protocol
-  and `ModuleRegistry`. To add a module: add its `ModuleDescriptor` to
-  `ModuleCatalog.builtIn`, write `<Module>Module` in its folder, and list it
-  once in `AppServices.modules`.
+- `Sources/NotchDeck/Modules/NotchModule.swift` - the `NotchModule` protocol
+  and `ModuleRegistry`. `Sources/NotchDeck/Modules/ModuleList.swift` lists
+  every module type, one per line; its `ModuleList.catalog` is the only
+  module catalog. Layouts, kit validation, the tab bar, Settings and
+  previews all resolve ids through it (SwiftUI views read it from the
+  `moduleCatalog` environment value), so no shared code hardcodes a module's
+  title, symbol or accent. To add a module: write `<Module>Module` with its
+  descriptor in its folder, add its line at the end of `ModuleList.all`,
+  and create it in `AppServices.modules`.
 - Shared data providers: a module that has tasks, calendar events, progress
   (e.g. cards due), a focus timer or a study tally (today's study minutes,
   sessions and points, which Wrap Up shows) to share returns a `ModuleProvision`
@@ -69,7 +75,7 @@ Judge them against the design rules below before you call the work done.
   hands their unfinished work to Plan my day (`plannableWork`), so e.g.
   Anki reviews show up there with no Today code. Never reach into
   another module's store; publish what you have and consume the snapshot.
-- `Sources/NotchKitCore/Claude` — `ClaudeCLI` (locate + stream `claude -p`) and
+- `Sources/NotchKitCore/Claude` - `ClaudeCLI` (locate + stream `claude -p`) and
   `ClaudeStreamEvent` (stream-json parser). Both Claude modules use these.
 
 Kits are JSON manifests in `Sources/NotchKitCore/Kits/Bundled`; the format
@@ -86,7 +92,8 @@ tests. Touch shared files only when unavoidable, and keep those edits minimal.
 - Every panel renders inside the same fixed canvas
   (`Theme.Layout.expandedSize`, minus header and insets ≈ 500×150 pt). Design
   for that size; no scrolling except in lists that can genuinely grow.
-- One accent color per module: `Theme.Palette.accent(for:)`.
+- One accent color per module, from its descriptor: `<Module>Module.descriptor.accentColor`
+  inside the module, `catalog.descriptor(for: id).accentColor` in shared views.
 - Rounded SF type from `Theme.Typography`; changing numbers use
   `.monospacedDigit()` so they don't jitter.
 - Spacing on the 4pt grid via `Theme.Spacing`; corners via `Theme.Radius`
@@ -103,7 +110,7 @@ tests. Touch shared files only when unavoidable, and keep those edits minimal.
 - No third-party dependencies without a strong reason stated in the PR.
 - Privacy: no network calls except what a module inherently needs (album
   artwork URLs). No telemetry. Claude features only go through the user's
-  local `claude` CLI via `ClaudeCLI` — never read credentials or the keychain.
+  local `claude` CLI via `ClaudeCLI` - never read credentials or the keychain.
 - Never poll faster than needed; stop timers when a panel isn't visible if
   the data is only shown there.
 - Keep `swift build` warning-free and `swift test` green.

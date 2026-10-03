@@ -9,6 +9,8 @@ struct NotchPreview: View {
     let notchWidth: CGFloat
     let content: NotchContent
 
+    private var catalog: ModuleCatalog { content.catalog }
+
     var body: some View {
         let wing = NotchPreviewLayout.wingWidth(for: item)
         // Music keeps the centered artwork + equalizer pair it always had;
@@ -33,7 +35,7 @@ struct NotchPreview: View {
         .help(NotchPreviewLayout.summary(for: item))
     }
 
-    private var accent: Color { Theme.Palette.accent(for: item.module) }
+    private var accent: Color { catalog.descriptor(for: item.module).accentColor }
 
     @ViewBuilder private var leading: some View {
         switch item {
@@ -44,7 +46,7 @@ struct NotchPreview: View {
         case .party(let party):
             NotchPartyPets(pets: party.pets)
         default:
-            Image(systemName: NotchPreviewLayout.symbol(for: item))
+            Image(systemName: NotchPreviewLayout.symbol(for: item, catalog: catalog))
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(accent)
                 .frame(width: NotchPreviewLayout.iconSize, height: NotchPreviewLayout.iconSize)

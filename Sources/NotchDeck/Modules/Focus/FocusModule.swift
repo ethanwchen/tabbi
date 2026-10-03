@@ -9,7 +9,11 @@ import NotchKit
 /// both tabs always agree.
 @MainActor
 final class FocusModule: NotchModule {
-    let descriptor = ModuleCatalog.builtIn.descriptor(for: .focus)
+    /// Off in every bundled kit: Today already embeds the same timer.
+    nonisolated static let descriptor = ModuleDescriptor(
+        id: .focus, title: "Focus", symbol: "hourglass", category: .productivity,
+        accent: ModuleAccent(red: 0.30, green: 0.84, blue: 0.76), permissions: [.notifications]
+    )
     private let store: FocusStore
 
     init(store: FocusStore) {

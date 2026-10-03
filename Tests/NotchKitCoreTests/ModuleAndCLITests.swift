@@ -7,41 +7,19 @@ final class ModuleIDTests: XCTestCase {
         XCTAssertEqual(String(decoding: data, as: UTF8.self), #"["planner","anki"]"#)
         XCTAssertEqual(try JSONDecoder().decode([ModuleID].self, from: data), [.planner, ModuleID("anki")])
     }
-
-    func testKnownIdsReadTheirMetadataFromTheBuiltInCatalog() {
-        XCTAssertEqual(ModuleID.planner.title, "Today")
-        XCTAssertEqual(ModuleID.spotify.symbol, "music.note")
-    }
-
-    func testUnknownIdsGetANeutralPlaceholder() {
-        let id = ModuleID("leetcode")
-        XCTAssertEqual(id.title, "leetcode")
-        XCTAssertEqual(id.symbol, "square.dashed")
-        XCTAssertFalse(ModuleCatalog.builtIn.contains(id))
-    }
 }
 
 final class ModuleCatalogTests: XCTestCase {
     private let accent = ModuleAccent(red: 0, green: 0, blue: 0)
 
-    func testBuiltInKeepsTheShippedTabOrder() {
-        XCTAssertEqual(ModuleCatalog.builtIn.ids, [.spotify, .system, .claudeUsage, .planner, .claudeAsk,
-                                                   .focus, .study, .anki, .party, .closet])
-    }
-
-    func testBuiltInIdsAreUniqueAndDescribed() {
-        let catalog = ModuleCatalog.builtIn
-        XCTAssertEqual(Set(catalog.ids).count, catalog.descriptors.count)
-        for descriptor in catalog.descriptors {
-            XCTAssertFalse(descriptor.title.isEmpty)
-            XCTAssertFalse(descriptor.symbol.isEmpty)
-        }
-    }
-
-    func testClaudeModulesDeclareTheCLIRequirement() {
-        XCTAssertTrue(ModuleCatalog.builtIn[.claudeAsk]?.permissions.contains(.claudeCLI) ?? false)
-        XCTAssertTrue(ModuleCatalog.builtIn[.claudeUsage]?.permissions.contains(.claudeCLI) ?? false)
-        XCTAssertEqual(ModuleCatalog.builtIn[.system]?.permissions, [])
+    func testUnknownIdsGetANeutralPlaceholder() {
+        let catalog = ModuleCatalog([
+            ModuleDescriptor(id: "study", title: "Study", symbol: "book", category: .study, accent: accent),
+        ])
+        let unknown = catalog.descriptor(for: "leetcode")
+        XCTAssertFalse(catalog.contains("leetcode"))
+        XCTAssertEqual(unknown.title, "leetcode")
+        XCTAssertEqual(unknown.symbol, "square.dashed")
     }
 
     func testFirstDescriptorWinsOnDuplicateIds() {
@@ -64,6 +42,16 @@ final class ModuleCatalogTests: XCTestCase {
         let layout = ModuleLayout(order: ["anki", .spotify], disabled: [], catalog: catalog)
         XCTAssertEqual(layout.order, ["anki", "study"])
         XCTAssertEqual(layout.enabled, ["anki"])
+    }
+
+    func testCatalogOnlyLayoutTurnsEveryModuleOnInCatalogOrder() {
+        let catalog = ModuleCatalog([
+            ModuleDescriptor(id: "study", title: "Study", symbol: "book", category: .study, accent: accent),
+            ModuleDescriptor(id: "anki", title: "Anki", symbol: "rectangle.stack", category: .study, accent: accent),
+        ])
+        let layout = ModuleLayout(catalog: catalog)
+        XCTAssertEqual(layout.order, ["study", "anki"])
+        XCTAssertEqual(layout.enabled, ["study", "anki"])
     }
 }
 

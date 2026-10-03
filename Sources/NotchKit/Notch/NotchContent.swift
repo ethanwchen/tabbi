@@ -8,6 +8,9 @@ import NotchKitCore
 public struct NotchContent {
     /// The app or edition name shown in the Quit item and Settings tooltip.
     public var appName: String
+    /// The modules this build has (from the app's registry): their titles,
+    /// symbols and accents for the tab bar, previews and placeholders.
+    public var catalog: ModuleCatalog
     /// The open panel for a module id; the app falls back to a placeholder
     /// for ids it has no module for.
     public var panel: (ModuleID) -> AnyView
@@ -20,12 +23,14 @@ public struct NotchContent {
 
     public init(
         appName: String,
+        catalog: ModuleCatalog,
         panel: @escaping (ModuleID) -> AnyView,
         nowPlayingLeading: @escaping () -> AnyView,
         nowPlayingTrailing: @escaping () -> AnyView,
         openSettings: @escaping () -> Void
     ) {
         self.appName = appName
+        self.catalog = catalog
         self.panel = panel
         self.nowPlayingLeading = nowPlayingLeading
         self.nowPlayingTrailing = nowPlayingTrailing

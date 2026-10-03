@@ -7,12 +7,13 @@ import NotchKitCore
 /// A module that only provides, fed by a subject the test controls.
 @MainActor
 private final class ProvidingModule: NotchModule {
-    let descriptor: ModuleDescriptor
+    nonisolated static let descriptor = ModuleDescriptor(
+        id: "providing", title: "Providing", symbol: "circle", category: .productivity,
+        accent: ModuleAccent(red: 0.5, green: 0.5, blue: 0.5)
+    )
     let subject: CurrentValueSubject<ModuleProvision, Never>
 
-    init(_ id: String, _ initial: ModuleProvision = .empty) {
-        descriptor = ModuleDescriptor(id: ModuleID(id), title: id, symbol: "circle", category: .productivity,
-                                      accent: ModuleAccent(red: 0.5, green: 0.5, blue: 0.5))
+    init(_ initial: ModuleProvision = .empty) {
         subject = CurrentValueSubject(initial)
     }
 
@@ -27,14 +28,14 @@ final class ProviderHubTests: XCTestCase {
     }
 
     func testFirstSnapshotIncludesValuesEmittedOnSubscribe() {
-        let module = ProvidingModule("fixture", ModuleProvision(tasks: [task("a")]))
+        let module = ProvidingModule(ModuleProvision(tasks: [task("a")]))
         let hub = ProviderHub(registry: ModuleRegistry([module]))
         hub.update(enabled: [module.id])
         XCTAssertEqual(hub.snapshot.tasks.map(\.id), ["a"])
     }
 
     func testBackgroundEmissionsAreDeliveredOnTheMainActor() {
-        let module = ProvidingModule("network")
+        let module = ProvidingModule()
         let hub = ProviderHub(registry: ModuleRegistry([module]))
         hub.update(enabled: [module.id])
         let delivered = expectation(description: "background value merged")
@@ -52,7 +53,7 @@ final class ProviderHubTests: XCTestCase {
     }
 
     func testConcurrentBackgroundEmissionsSettleOnTheLatestValue() {
-        let module = ProvidingModule("burst")
+        let module = ProvidingModule()
         let hub = ProviderHub(registry: ModuleRegistry([module]))
         hub.update(enabled: [module.id])
         let subject = module.subject
@@ -87,7 +88,7 @@ final class ProviderHubTests: XCTestCase {
     }
 
     func testValueQueuedBeforeTheModuleIsTurnedOffIsDropped() {
-        let module = ProvidingModule("late")
+        let module = ProvidingModule()
         let hub = ProviderHub(registry: ModuleRegistry([module]))
         hub.update(enabled: [module.id])
         sendFromBackground(ModuleProvision(tasks: [task("stale")]), to: module)
@@ -97,7 +98,7 @@ final class ProviderHubTests: XCTestCase {
     }
 
     func testValueQueuedBeforeTheModuleIsTurnedOffAndOnDoesNotOverwriteNewerData() {
-        let module = ProvidingModule("flapping")
+        let module = ProvidingModule()
         let hub = ProviderHub(registry: ModuleRegistry([module]))
         hub.update(enabled: [module.id])
         sendFromBackground(ModuleProvision(tasks: [task("stale")]), to: module)

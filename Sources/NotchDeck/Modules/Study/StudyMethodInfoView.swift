@@ -134,4 +134,4 @@ struct StudyCapsuleButton: View {
 }
 
 /// The Study module's one accent.
-var studyAccent: Color { Theme.Palette.accent(for: .study) }
+var studyAccent: Color { StudyModule.descriptor.accentColor }

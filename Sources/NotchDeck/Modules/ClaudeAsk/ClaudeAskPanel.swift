@@ -14,7 +14,7 @@ struct ClaudeAskPanel: View {
     @FocusState private var fieldFocused: Bool
 
     private var conversation: ClaudeAskConversation { session.conversation }
-    private var accent: Color { Theme.Palette.accent(for: .claudeAsk) }
+    private var accent: Color { AskClaudeModule.descriptor.accentColor }
 
     /// `ImageRenderer` (used by `--snapshot`) can't draw AppKit-backed views
     /// such as `ScrollView` and `TextField`, so snapshots get static stand-ins.

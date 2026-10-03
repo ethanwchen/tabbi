@@ -7,7 +7,10 @@ import NotchKit
 /// Plan my day / Wrap up.
 @MainActor
 final class TodayModule: NotchModule {
-    let descriptor = ModuleCatalog.builtIn.descriptor(for: .planner)
+    nonisolated static let descriptor = ModuleDescriptor(
+        id: .planner, title: "Today", symbol: "checklist", category: .productivity,
+        accent: ModuleAccent(red: 0.66, green: 0.55, blue: 1.00), permissions: [.calendars, .notifications]
+    )
     private let store: PlannerStore
 
     init(store: PlannerStore) {

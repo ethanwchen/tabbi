@@ -24,7 +24,7 @@ struct FocusPanel: View {
     }
 }
 
-private var accent: Color { Theme.Palette.accent(for: .focus) }
+private var accent: Color { FocusModule.descriptor.accentColor }
 
 /// The countdown inside a progress ring, with the phase underneath.
 private struct FocusDial: View {

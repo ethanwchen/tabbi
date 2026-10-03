@@ -112,7 +112,7 @@ private struct PlannerChecklist: View {
         if store.items.isEmpty, shared.isEmpty {
             PlannerMessage(
                 symbol: "checklist",
-                tint: Theme.Palette.accent(for: .planner),
+                tint: TodayModule.descriptor.accentColor,
                 title: "A fresh day",
                 detail: "Add a few things you want to get done today."
             )
@@ -221,7 +221,7 @@ struct PlannerProgressRing: View {
     let progress: Double
 
     var body: some View {
-        let accent = Theme.Palette.accent(for: .planner)
+        let accent = TodayModule.descriptor.accentColor
         ZStack {
             Circle().stroke(accent.opacity(0.22), lineWidth: 2.5)
             Circle()
@@ -288,7 +288,7 @@ private struct PlannerAddField: View {
         HStack(spacing: Theme.Spacing.s) {
             Image(systemName: "plus")
                 .font(.system(size: 11, weight: .bold))
-                .foregroundStyle(isFocused ? Theme.Palette.accent(for: .planner) : Theme.Palette.tertiaryText)
+                .foregroundStyle(isFocused ? TodayModule.descriptor.accentColor : Theme.Palette.tertiaryText)
                 .frame(width: 20)
             ZStack(alignment: .leading) {
                 if text.isEmpty {
@@ -322,7 +322,7 @@ private struct PlannerAddField: View {
         )
         .overlay(
             RoundedRectangle(cornerRadius: Theme.Radius.m, style: .continuous)
-                .strokeBorder(isFocused ? Theme.Palette.accent(for: .planner).opacity(0.5) : Theme.Palette.stroke,
+                .strokeBorder(isFocused ? TodayModule.descriptor.accentColor.opacity(0.5) : Theme.Palette.stroke,
                               lineWidth: isFocused ? 1 : 0.5)
         )
         .contentShape(Rectangle())

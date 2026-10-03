@@ -11,7 +11,10 @@ import NotchKit
 /// notch shows it too.
 @MainActor
 final class ClosetModule: NotchModule {
-    let descriptor = ModuleCatalog.builtIn.descriptor(for: .closet)
+    nonisolated static let descriptor = ModuleDescriptor(
+        id: .closet, title: "Closet", symbol: "pawprint.fill", category: .fun,
+        accent: ModuleAccent(red: 0.98, green: 0.80, blue: 0.30)
+    )
     private let store: ClosetStore
     private let coach: PetCoachController
 

@@ -66,7 +66,8 @@ enum AppSettingsPane: String, CaseIterable {
         }
         return (own(leading) + modulePanes + own(trailing)).map { pane in
             SettingsPane(id: pane.id, title: pane.title, symbol: pane.symbol,
-                         view: AnyView(pane.view.environmentObject(settings)), settleTime: pane.settleTime)
+                         view: AnyView(pane.view.environmentObject(settings)
+                                         .environment(\.moduleCatalog, settings.catalog)), settleTime: pane.settleTime)
         }
     }
 }

@@ -50,6 +50,9 @@ final class SettingsStore: ObservableObject {
     /// Emits after `settings` holds the applied kit.
     let kitApplied = PassthroughSubject<KitApplication, Never>()
 
+    /// The modules this build has (`ModuleList.catalog`), which layouts and
+    /// kits resolve against.
+    let catalog: ModuleCatalog
     private let repository: SettingsRepository
     /// Where imported kits live; nil for snapshot stores, which only show
     /// the bundled kits.
@@ -62,13 +65,15 @@ final class SettingsStore: ObservableObject {
     /// - Parameter defaultKitID: the kit used before the user picks one,
     ///   e.g. a branded edition's kit.
     init(
+        catalog: ModuleCatalog,
         defaults: UserDefaults = .standard,
         defaultKitID: String = KitLibrary.defaultKitID,
         kitStore: ImportedKitStore? = .standard(),
         integratesWithSystem: Bool = true
     ) {
         let kits = KitLibrary.installed(imported: kitStore?.load() ?? [])
-        let repository = SettingsRepository(defaults: defaults, kits: kits, defaultKitID: defaultKitID)
+        let repository = SettingsRepository(defaults: defaults, catalog: catalog, kits: kits, defaultKitID: defaultKitID)
+        self.catalog = catalog
         self.kits = kits
         self.kitStore = kitStore
         self.defaultKitID = defaultKitID
@@ -86,11 +91,11 @@ final class SettingsStore: ObservableObject {
 
     /// A store backed by a throwaway defaults suite, so snapshots always render
     /// the kit's default layout regardless of the user's saved preferences.
-    static func ephemeral(kitID: String = KitLibrary.defaultKitID) -> SettingsStore {
+    static func ephemeral(catalog: ModuleCatalog, kitID: String = KitLibrary.defaultKitID) -> SettingsStore {
         let suite = "NotchDeck.ephemeral"
         let defaults = UserDefaults(suiteName: suite) ?? .standard
         defaults.removePersistentDomain(forName: suite)
-        return SettingsStore(defaults: defaults, defaultKitID: kitID, kitStore: nil, integratesWithSystem: false)
+        return SettingsStore(catalog: catalog, defaults: defaults, defaultKitID: kitID, kitStore: nil, integratesWithSystem: false)
     }
 
     // MARK: Kits
@@ -100,7 +105,7 @@ final class SettingsStore: ObservableObject {
 
     /// True when the tabs already match the active kit, so reset is a no-op.
     var usesKitDefaults: Bool {
-        activeKit.map { settings.usesDefaults(of: $0) } ?? true
+        activeKit.map { settings.usesDefaults(of: $0, catalog: catalog) } ?? true
     }
 
     /// Switches to a kit, replacing the tab layout with its defaults for the
@@ -135,7 +140,7 @@ final class SettingsStore: ObservableObject {
         guard let kitStore else { throw KitError.malformed("importing is off in this mode") }
         let kit = try kitStore.install(from: url)
         kits = KitLibrary.installed(imported: kitStore.load())
-        return (kit, kit.issues())
+        return (kit, kit.issues(catalog: catalog))
     }
 
     /// True when the active kit was imported, so it can be removed.
@@ -154,7 +159,7 @@ final class SettingsStore: ObservableObject {
     }
 
     private func apply(_ kit: KitManifest, answers: KitAnswers = [:], addsStarterTasks: Bool) {
-        settings.apply(kit, answers: answers)
+        settings.apply(kit, answers: answers, catalog: catalog)
         kitApplied.send(KitApplication(kit: kit, answers: answers, addsStarterTasks: addsStarterTasks))
     }
 

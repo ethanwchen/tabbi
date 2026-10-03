@@ -49,13 +49,15 @@ public enum NotchPreviewLayout {
         return min(max(wing, iconSize + outerInset + innerGap), maxWingWidth)
     }
 
-    public static func symbol(for item: TickerItem) -> String {
+    /// The icon beside the closed notch; a module's progress uses that
+    /// module's symbol from `catalog`.
+    public static func symbol(for item: TickerItem, catalog: ModuleCatalog) -> String {
         switch item {
         case .meeting(let meeting): meeting.canJoin ? "video.fill" : "calendar"
         case .nowPlaying: "music.note"
         case .focus(let phase, _, _, _): phase == .focus ? "timer" : "cup.and.saucer.fill"
         case .tasks: "checklist"
-        case .progress(let progress): progress.source.descriptor.symbol
+        case .progress(let progress): catalog.descriptor(for: progress.source).symbol
         case .claudeUsage: "gauge.with.dots.needle.67percent"
         case .pet: "pawprint.fill"
         case .party: "person.3.fill"

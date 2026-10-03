@@ -30,7 +30,7 @@ final class AppServices: ObservableObject {
     let party = PartyStore()
     /// The rotating live preview beside the closed notch.
     let ticker: TickerStore
-    /// Every tab this build can show. Register new modules here.
+    /// Every tab this build can show, created from `ModuleList`.
     let modules: ModuleRegistry
     /// What the enabled modules share (tasks, events, progress, focus).
     let providers: ProviderHub
@@ -63,6 +63,8 @@ final class AppServices: ObservableObject {
             PartyModule(store: party),
             ClosetModule(store: closet, coach: coach),
         ])
+        assert(modules.catalog == settings.catalog,
+               "AppServices must create exactly the modules in ModuleList, in order")
         providers = ProviderHub(registry: modules)
         planner.followSharedWork(from: providers.$snapshot, excluding: .planner)
         study.followCards(from: providers.$snapshot)

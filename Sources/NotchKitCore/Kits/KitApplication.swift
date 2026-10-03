@@ -29,7 +29,7 @@ public extension KitManifest {
     /// other module in `catalog` switched off (so Settings can still offer
     /// them). Onboarding answers then switch modules on or off. Modules
     /// `catalog` doesn't know are skipped.
-    func layout(catalog: ModuleCatalog = .builtIn, answers: KitAnswers = [:]) -> ModuleLayout {
+    func layout(catalog: ModuleCatalog, answers: KitAnswers = [:]) -> ModuleLayout {
         let kitIDs = moduleIDs.filter(catalog.contains)
         let kitSet = Set(kitIDs)
         let order = kitIDs + catalog.ids.filter { !kitSet.contains($0) }

@@ -23,12 +23,6 @@ public struct ModuleID: RawRepresentable, Hashable, Codable, Sendable, Identifia
 
     public var id: String { rawValue }
     public var description: String { rawValue }
-
-    /// Metadata from the built-in catalog (a generic fallback for unknown ids).
-    public var descriptor: ModuleDescriptor { ModuleCatalog.builtIn.descriptor(for: self) }
-    public var title: String { descriptor.title }
-    /// SF Symbol shown in the tab bar.
-    public var symbol: String { descriptor.symbol }
 }
 
 public extension ModuleID {

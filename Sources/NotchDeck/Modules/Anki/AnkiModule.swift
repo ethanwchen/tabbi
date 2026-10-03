@@ -5,7 +5,11 @@ import NotchKitCore
 /// Anki: due cards, streak and review history via AnkiConnect.
 @MainActor
 final class AnkiModule: NotchModule {
-    let descriptor = ModuleCatalog.builtIn.descriptor(for: .anki)
+    /// AnkiConnect is a localhost HTTP add-on, so no macOS permission is involved.
+    nonisolated static let descriptor = ModuleDescriptor(
+        id: .anki, title: "Anki", symbol: "rectangle.stack.fill", category: .study,
+        accent: ModuleAccent(red: 0.36, green: 0.62, blue: 1.00)
+    )
     let store = AnkiStore()
 
     func makePanel() -> AnyView {

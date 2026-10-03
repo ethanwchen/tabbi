@@ -59,7 +59,7 @@ struct FocusCard: View {
         .animation(Theme.Motion.snappy, value: timer.phase)
     }
 
-    private var accent: Color { Theme.Palette.accent(for: .planner) }
+    private var accent: Color { TodayModule.descriptor.accentColor }
 
     /// The linked checklist item, while it's still on today's list.
     private var linkedTitle: String? {
@@ -108,7 +108,7 @@ private struct FocusRingButton: View {
     @State private var hovering = false
 
     var body: some View {
-        let accent = Theme.Palette.accent(for: .planner)
+        let accent = TodayModule.descriptor.accentColor
         Button(action: action) {
             ZStack {
                 Circle()

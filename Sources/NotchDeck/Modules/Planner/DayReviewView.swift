@@ -61,7 +61,7 @@ private struct DayReviewHeader: View {
         HStack(spacing: Theme.Spacing.s) {
             Image(systemName: "moon.stars.fill")
                 .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(Theme.Palette.accent(for: .planner))
+                .foregroundStyle(TodayModule.descriptor.accentColor)
                 .symbolEffect(.pulse, isActive: store.isSummarizing)
                 .frame(width: 20)
             Text("Wrap-up")
@@ -118,7 +118,7 @@ private struct DayReviewList: View {
                     HStack(spacing: Theme.Spacing.xs + Theme.Spacing.xxs) {
                         Image(systemName: isDone ? "checkmark.circle.fill" : "arrow.turn.down.right")
                             .font(.system(size: 9.5, weight: .bold))
-                            .foregroundStyle(isDone ? Theme.Palette.accent(for: .planner) : Theme.Palette.tertiaryText)
+                            .foregroundStyle(isDone ? TodayModule.descriptor.accentColor : Theme.Palette.tertiaryText)
                             .frame(width: 12)
                         Text(title)
                             .font(Theme.Typography.body)

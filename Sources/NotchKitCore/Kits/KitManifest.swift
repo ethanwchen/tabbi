@@ -78,7 +78,7 @@ public struct KitManifest: Codable, Equatable, Sendable, Identifiable {
 
     /// The module whose accent tints the kit: `accent` if `catalog` knows
     /// it, otherwise the first tab the kit turns on.
-    public func accentModule(catalog: ModuleCatalog = .builtIn) -> ModuleID? {
+    public func accentModule(catalog: ModuleCatalog) -> ModuleID? {
         if let accent, catalog.contains(accent) { return accent }
         return layout(catalog: catalog).enabled.first
     }

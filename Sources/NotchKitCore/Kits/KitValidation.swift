@@ -74,7 +74,7 @@ public extension KitManifest {
     }
 
     /// Values this build doesn't recognize, in the order they appear.
-    func issues(catalog: ModuleCatalog = .builtIn) -> [KitIssue] {
+    func issues(catalog: ModuleCatalog) -> [KitIssue] {
         var issues: [KitIssue] = []
         var seen = Set<ModuleID>()
         for entry in modules {

@@ -302,7 +302,7 @@ private struct SpotifyScrubberBar: View {
                 ZStack(alignment: .leading) {
                     Capsule().fill(Theme.Palette.surfaceHover)
                     Capsule()
-                        .fill(isActive ? Theme.Palette.accent(for: .spotify) : Theme.Palette.primaryText)
+                        .fill(isActive ? NowPlayingModule.descriptor.accentColor : Theme.Palette.primaryText)
                         .frame(width: max(width * fraction, isActive ? 0 : 4))
                     Circle()
                         .fill(Theme.Palette.primaryText)
@@ -435,7 +435,7 @@ private struct SpotifyVolumeControl: View {
             ZStack(alignment: .leading) {
                 Capsule().fill(Theme.Palette.surfaceHover)
                 Capsule()
-                    .fill(Theme.Palette.accent(for: .spotify))
+                    .fill(NowPlayingModule.descriptor.accentColor)
                     .frame(width: width * fraction)
                 Circle()
                     .fill(Theme.Palette.primaryText)
@@ -540,11 +540,11 @@ private struct SpotifyModeIndicator: View {
     var body: some View {
         Image(systemName: symbol)
             .font(.system(size: 11, weight: .semibold))
-            .foregroundStyle(isOn ? Theme.Palette.accent(for: .spotify) : Theme.Palette.tertiaryText)
+            .foregroundStyle(isOn ? NowPlayingModule.descriptor.accentColor : Theme.Palette.tertiaryText)
             .frame(width: 24, height: 24)
             .overlay(alignment: .bottom) {
                 Circle()
-                    .fill(Theme.Palette.accent(for: .spotify))
+                    .fill(NowPlayingModule.descriptor.accentColor)
                     .frame(width: 3, height: 3)
                     .opacity(isOn ? 1 : 0)
             }
@@ -573,11 +573,11 @@ private struct SpotifyEmptyState: View {
     var body: some View {
         VStack(spacing: Theme.Spacing.s) {
             ZStack {
-                Circle().fill(Theme.Palette.accent(for: .spotify).opacity(0.14))
+                Circle().fill(NowPlayingModule.descriptor.accentColor.opacity(0.14))
                 if let symbol {
                     Image(systemName: symbol)
                         .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(Theme.Palette.accent(for: .spotify))
+                        .foregroundStyle(NowPlayingModule.descriptor.accentColor)
                 } else {
                     SpotifySpinner()
                 }
@@ -617,7 +617,7 @@ private struct SpotifySpinner: View {
             let turns = context.date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: 1)
             Circle()
                 .trim(from: 0, to: 0.7)
-                .stroke(Theme.Palette.accent(for: .spotify),
+                .stroke(NowPlayingModule.descriptor.accentColor,
                         style: StrokeStyle(lineWidth: 2.5, lineCap: .round))
                 .rotationEffect(.degrees(turns * 360))
         }
@@ -666,7 +666,7 @@ private struct SpotifyActionButton: View {
     private var fill: Color {
         isAppLauncher
             ? (hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface)
-            : Theme.Palette.accent(for: .spotify).opacity(hovering ? 1 : 0.9)
+            : NowPlayingModule.descriptor.accentColor.opacity(hovering ? 1 : 0.9)
     }
 }
 
@@ -704,7 +704,7 @@ struct SpotifyCompactTrailing: View {
             HStack(alignment: .bottom, spacing: Theme.Spacing.xxs) {
                 ForEach(levels.indices, id: \.self) { index in
                     Capsule(style: .continuous)
-                        .fill(Theme.Palette.accent(for: .spotify))
+                        .fill(NowPlayingModule.descriptor.accentColor)
                         .frame(width: Self.barWidth, height: Self.maxHeight * levels[index])
                 }
             }

@@ -32,7 +32,10 @@ public struct ModulePreview: View {
         self.features = features
     }
 
-    private var accent: Color { Theme.Palette.accent(for: module) }
+    @Environment(\.moduleCatalog) private var catalog
+
+    private var descriptor: ModuleDescriptor { catalog.descriptor(for: module) }
+    private var accent: Color { descriptor.accentColor }
 
     public var body: some View {
         HStack(spacing: Theme.Spacing.l) {
@@ -44,7 +47,7 @@ public struct ModulePreview: View {
 
     private var hero: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.s) {
-            Image(systemName: module.symbol)
+            Image(systemName: descriptor.symbol)
                 .font(.system(size: 20, weight: .semibold))
                 .foregroundStyle(accent)
                 .frame(width: 44, height: 44)
@@ -64,7 +67,7 @@ public struct ModulePreview: View {
                 .padding(.horizontal, Theme.Spacing.s)
                 .padding(.vertical, Theme.Spacing.xxs)
                 .background(Capsule(style: .continuous).fill(accent.opacity(0.14)))
-                .help("\(module.title) is part of this kit and arrives in an upcoming update")
+                .help("\(descriptor.title) is part of this kit and arrives in an upcoming update")
         }
         .frame(width: 196, alignment: .leading)
     }

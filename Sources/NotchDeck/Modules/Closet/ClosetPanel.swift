@@ -42,7 +42,7 @@ enum ClosetSection: String, CaseIterable {
     }
 }
 
-private var accent: Color { Theme.Palette.accent(for: .closet) }
+private var accent: Color { ClosetModule.descriptor.accentColor }
 
 // MARK: - Pet
 
