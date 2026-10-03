@@ -170,6 +170,13 @@ final class PartyStore: ObservableObject {
         scheduleRefresh()
     }
 
+    /// The notch opened on any tab: refresh the party once, so the closed
+    /// notch's party pets don't go stale while the Party tab stays unopened.
+    func notchDidOpen() {
+        plan.notchDidOpen()
+        scheduleRefresh()
+    }
+
     // MARK: Settings
 
     /// Applies edited settings: a new server starts over with that server's
@@ -346,6 +353,7 @@ final class PartyStore: ObservableObject {
                 connectBackoff.reset()
                 state.didConnect(profile)
                 sendHeartbeat()
+                plan.invalidate(.party)
                 scheduleRefresh()
             } catch {
                 guard let self, !Task.isCancelled, self.account === account else { return }
@@ -427,8 +435,8 @@ final class PartyStore: ObservableObject {
 
     // MARK: Refresh
 
-    /// Sleeps until the next feed is due, fetches it, and repeats while the
-    /// panel is visible.
+    /// Sleeps until the next feed is due, fetches it, and repeats while
+    /// anything is due (see `PartyRefreshPlan`).
     private func scheduleRefresh() {
         refreshTask?.cancel()
         plan.inParty = state.inParty

@@ -43,7 +43,10 @@ enum ModuleViews {
             isRecordingHotkey: store.$isRecordingHotkey.eraseToAnyPublisher(),
             hotkeyRegistered: { store.hotkeyIsRegistered = $0 },
             preview: services.ticker.$item.eraseToAnyPublisher(),
-            previewVisible: { services.ticker.setActive($0) }
+            previewVisible: { visible in
+                services.ticker.setActive(visible)
+                if !visible { services.party.notchDidOpen() }
+            }
         )
     }
 }

@@ -68,4 +68,28 @@ final class PartyRefreshPlanTests: XCTestCase {
         plan.invalidate(.party)
         XCTAssertEqual(plan.due(at: t0.addingTimeInterval(1)), [.party])
     }
+
+    func testHiddenPanelFetchesThePartyOnceAfterConnecting() {
+        var plan = PartyRefreshPlan()
+        plan.inParty = true
+        plan.invalidate(.party)
+        XCTAssertEqual(plan.due(at: t0), [.party])
+
+        plan.didFetch(.party, at: t0)
+        XCTAssertEqual(plan.due(at: t0.addingTimeInterval(600)), [])
+        XCTAssertNil(plan.nextDue())
+    }
+
+    func testOpeningTheNotchOnAnyTabFetchesThePartyOnce() {
+        var plan = PartyRefreshPlan()
+        plan.inParty = true
+        plan.notchDidOpen()
+        XCTAssertEqual(plan.due(at: t0), [.party])
+
+        plan.didFetch(.party, at: t0)
+        XCTAssertEqual(plan.due(at: t0.addingTimeInterval(600)), [])
+
+        plan.notchDidOpen()
+        XCTAssertEqual(plan.due(at: t0.addingTimeInterval(601)), [.party])
+    }
 }
