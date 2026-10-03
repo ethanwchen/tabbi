@@ -69,6 +69,10 @@ public struct ModuleDescriptor: Hashable, Sendable, Identifiable {
     /// highlights, e.g. "Claude usage above 80%"; nil when the module never
     /// publishes `TickerHighlight`s.
     public var highlightTitle: String?
+    /// The module runs a focus clock of its own (Study's session), not the
+    /// shared Pomodoro. A layout with such a module enabled has one timer:
+    /// Today shows that module's clock instead of its Pomodoro card.
+    public var ownsFocusClock: Bool
 
     public init(
         id: ModuleID,
@@ -77,7 +81,8 @@ public struct ModuleDescriptor: Hashable, Sendable, Identifiable {
         category: ModuleCategory,
         accent: ModuleAccent,
         permissions: Set<ModulePermission> = [],
-        highlightTitle: String? = nil
+        highlightTitle: String? = nil,
+        ownsFocusClock: Bool = false
     ) {
         self.id = id
         self.title = title
@@ -86,6 +91,7 @@ public struct ModuleDescriptor: Hashable, Sendable, Identifiable {
         self.accent = accent
         self.permissions = permissions
         self.highlightTitle = highlightTitle
+        self.ownsFocusClock = ownsFocusClock
     }
 
     /// Stand-in for an id no catalog knows (say, from a newer kit file), so

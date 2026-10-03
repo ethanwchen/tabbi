@@ -158,7 +158,9 @@ private struct PlannerRow: View {
                     .help(item.title)
             }
 
-            if !isRenaming {
+            // Rows link to the Pomodoro, which isn't offered while another
+            // module owns the timer.
+            if !isRenaming, store.focusClockOwner == nil {
                 PlannerFocusToggle(item: item, focusStore: store.focus,
                                    showsButton: hovering && store.canEdit)
             }

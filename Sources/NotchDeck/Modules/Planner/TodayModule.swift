@@ -11,7 +11,8 @@ final class TodayModule: NotchModule {
         id: .planner, title: "Today", symbol: "checklist", category: .productivity,
         accent: ModuleAccent(red: 0.66, green: 0.55, blue: 1.00), permissions: [.calendars, .notifications]
     )
-    private let store: PlannerStore
+    /// Internal so app tests can check what Today shows.
+    let store: PlannerStore
     private let providers: ProviderHub
     private var cancellables: Set<AnyCancellable> = []
 
@@ -38,6 +39,11 @@ final class TodayModule: NotchModule {
             .sink { [store] id in
                 store.planSettings = TodayPlanSettings(kit: settings.kits.kit(id)?.defaults)
             }
+            .store(in: &cancellables)
+        settings.$settings
+            .map { settings.catalog.focusClockOwner(in: $0.modules) }
+            .removeDuplicates()
+            .sink { [store] in store.focusClockOwner = $0 }
             .store(in: &cancellables)
         context.kitApplied
             .sink { [store] application in

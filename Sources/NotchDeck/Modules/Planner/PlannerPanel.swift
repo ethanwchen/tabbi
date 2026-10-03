@@ -68,7 +68,11 @@ struct PlannerPanel: View {
             }
             VStack(spacing: Theme.Spacing.s) {
                 UpNextCard(store: store.upNext, upNextEvents: store.planSettings.upNextEvents)
-                FocusCard(store: store.focus, items: store.items)
+                if let owner = store.focusClockOwner {
+                    SharedFocusCard(owner: owner, providers: providers)
+                } else {
+                    FocusCard(store: store.focus, items: store.items)
+                }
             }
             .frame(width: Self.sideColumnWidth)
         }

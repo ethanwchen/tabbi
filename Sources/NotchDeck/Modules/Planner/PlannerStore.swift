@@ -41,6 +41,10 @@ final class PlannerStore: ObservableObject {
     /// The Pomodoro timer, shared with the Focus tab; Today shows it as a
     /// card and links checklist items to it.
     let focus: FocusStore
+    /// An enabled module that runs its own focus clock (Study in the Med
+    /// School kit). While set, Today shows that clock instead of the
+    /// Pomodoro, so the layout has one timer.
+    @Published var focusClockOwner: ModuleID?
     /// Plan My Day; its proposal replaces the checklist while active.
     private(set) lazy var plan = DayPlanStore(upNext: upNext, settings: planSettings)
     /// The End-of-Day Review; its card replaces the checklist while open.

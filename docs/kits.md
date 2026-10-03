@@ -87,7 +87,7 @@ Modules the kit doesn't mention are also listed in Settings, switched off, after
 | `spotify` | Now Playing (Spotify and Apple Music) |
 | `system` | System (CPU and GPU) |
 | `claudeUsage` | Claude Usage |
-| `planner` | Today (calendar, tasks, focus timer) |
+| `planner` | Today (calendar, tasks, focus timer; with `study` on, it shows the Study timer instead of its own) |
 | `claudeAsk` | Ask Claude |
 | `focus` | Focus (the same timer as Today's, with focus mode, as its own tab) |
 | `study` | Study timer and study methods |

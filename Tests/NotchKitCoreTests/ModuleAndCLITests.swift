@@ -53,6 +53,22 @@ final class ModuleCatalogTests: XCTestCase {
         XCTAssertEqual(layout.order, ["study", "anki"])
         XCTAssertEqual(layout.enabled, ["study", "anki"])
     }
+
+    func testFocusClockOwnerIsTheFirstEnabledModuleWithItsOwnClock() {
+        let catalog = ModuleCatalog([
+            ModuleDescriptor(id: "today", title: "Today", symbol: "checklist", category: .productivity, accent: accent),
+            ModuleDescriptor(id: "study", title: "Study", symbol: "timer", category: .study, accent: accent,
+                             ownsFocusClock: true),
+            ModuleDescriptor(id: "drill", title: "Drill", symbol: "bolt", category: .study, accent: accent,
+                             ownsFocusClock: true),
+        ])
+        var layout = ModuleLayout(order: ["today", "drill", "study"], disabled: [], catalog: catalog)
+        XCTAssertEqual(catalog.focusClockOwner(in: layout), "drill")
+        XCTAssertTrue(layout.setEnabled("drill", false))
+        XCTAssertEqual(catalog.focusClockOwner(in: layout), "study")
+        XCTAssertTrue(layout.setEnabled("study", false))
+        XCTAssertNil(catalog.focusClockOwner(in: layout), "with no such module on, the shared Pomodoro is the timer")
+    }
 }
 
 final class ClaudeCLITests: XCTestCase {

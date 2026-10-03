@@ -9,7 +9,7 @@ import NotchKitCore
 final class StudyModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
         id: .study, title: "Study", symbol: "timer", category: .study,
-        accent: ModuleAccent(red: 1.00, green: 0.62, blue: 0.26)
+        accent: ModuleAccent(red: 1.00, green: 0.62, blue: 0.26), ownsFocusClock: true
     )
     private let store: StudyStore
     private var cancellables: Set<AnyCancellable> = []

@@ -34,6 +34,14 @@ public struct ModuleCatalog: Equatable, Sendable {
     public func descriptor(for id: ModuleID) -> ModuleDescriptor {
         self[id] ?? .unknown(id)
     }
+
+    /// The first enabled module in `layout` that runs its own focus clock
+    /// (`ModuleDescriptor.ownsFocusClock`), or nil when the shared Pomodoro
+    /// is the layout's only timer. Keeps a kit to one timer: with Study on,
+    /// Today follows Study's clock rather than offering a second one.
+    public func focusClockOwner(in layout: ModuleLayout) -> ModuleID? {
+        layout.enabled.first { self[$0]?.ownsFocusClock == true }
+    }
 }
 
 public extension ModuleAccent {

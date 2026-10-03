@@ -139,8 +139,8 @@ A new vertical is its own files plus one line in `ModuleList.swift`.
 
 1. Create `Sources/NotchDeck/Modules/<Module>/` with a store (`ObservableObject`), its SwiftUI panel, and `<Module>Module: NotchModule`.
    Pure logic (parsers, models, formatting) goes in `Sources/NotchKitCore/<Module>/` with tests in `Tests/NotchKitCoreTests`.
-2. Declare `nonisolated static let descriptor = ModuleDescriptor(...)`: id, title, SF Symbol, category, accent, permissions, and `highlightTitle` if it shows a line in the ticker.
-   The tab bar, Settings, kit validation and previews read title, symbol and accent from here.
+2. Declare `nonisolated static let descriptor = ModuleDescriptor(...)`: id, title, SF Symbol, category, accent, permissions, `highlightTitle` if it shows a line in the ticker, and `ownsFocusClock: true` if it runs a focus clock of its own.
+   The tab bar, Settings, kit validation and previews read title, symbol and accent from here, and Today shows such a module's clock in place of its Pomodoro, so a layout has one timer.
 3. In `init(context:)`, build the store and follow what the context offers (`kitApplied`, `providers.$snapshot`, shared services).
    Start background work in `start()` and undo it in `stop()`; the registry calls them when the module's switch changes.
    In demo mode (`context.isDemo`) show realistic sample data and touch no network, calendar or CLI.
