@@ -121,6 +121,14 @@ final class StudyStore: ObservableObject {
             logIsUnreadable = true
         }
         scheduleSideEffects()
+
+        // Rolls the shared day tally over at midnight even while the panel is hidden.
+        NotificationCenter.default.publisher(for: .NSCalendarDayChanged)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                MainActor.assumeIsolated { self?.catchUp() }
+            }
+            .store(in: &cancellables)
     }
 
     /// `~/Library/Application Support/<edition>/Study/log.json`.
