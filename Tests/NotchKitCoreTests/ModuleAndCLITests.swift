@@ -9,6 +9,25 @@ final class ModuleIDTests: XCTestCase {
     }
 }
 
+final class ModuleCategoryTests: XCTestCase {
+    func testCodesAsABareStringAndKeepsBuiltInTitles() throws {
+        let data = try JSONEncoder().encode([ModuleCategory.ai, ModuleCategory("law", title: "Law")])
+        XCTAssertEqual(String(decoding: data, as: UTF8.self), #"["ai","law"]"#)
+        let decoded = try JSONDecoder().decode([ModuleCategory].self, from: data)
+        XCTAssertEqual(decoded, [.ai, "law"])
+        XCTAssertEqual(decoded.map(\.title), ["AI", "Law"])
+    }
+
+    func testAModuleCanBringItsOwnCategory() {
+        let law = ModuleCategory("law", title: "Law and LSAT")
+        XCTAssertEqual(law, ModuleCategory(rawValue: "law"))
+        XCTAssertEqual(law.title, "Law and LSAT")
+        XCTAssertNotEqual(law, .study)
+        XCTAssertEqual(ModuleCategory(rawValue: "coding").title, "Coding")
+        XCTAssertEqual(Set([law, "law"]).count, 1)
+    }
+}
+
 final class ModuleCatalogTests: XCTestCase {
     private let accent = ModuleAccent(red: 0, green: 0, blue: 0)
 

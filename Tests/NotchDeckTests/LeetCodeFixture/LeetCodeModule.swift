@@ -77,12 +77,18 @@ final class LeetCodeStore: ObservableObject {
     }
 }
 
+/// A category of the fixture's own, declared beside the module: categories
+/// are open, so a new vertical needs no edit to the core list.
+extension ModuleCategory {
+    static let coding = ModuleCategory("coding", title: "Coding")
+}
+
 /// The module itself: descriptor, store, panel and provision.
 @MainActor
 final class LeetCodeModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
         id: "leetcode", title: "LeetCode", symbol: "chevron.left.forwardslash.chevron.right",
-        category: .productivity, accent: ModuleAccent(red: 1.00, green: 0.63, blue: 0.16),
+        category: .coding, accent: ModuleAccent(red: 1.00, green: 0.63, blue: 0.16),
         highlightTitle: "LeetCode daily",
         kitSettings: KitSettingsSchema(["minutesPerProblem": .number(minutesPerProblem)])
     )

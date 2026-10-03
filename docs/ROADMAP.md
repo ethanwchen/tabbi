@@ -93,6 +93,4 @@ Constraints to keep in mind:
 
 ## Near-term engineering
 
-
-- Open module categories, so a vertical can group its modules under a category of its own in Settings and kit pickers.
 - Describe editions as data (id, name, bundle id, default kit, icon) beside the kits, so a new branded edition is a file, not a code change.

@@ -149,7 +149,7 @@ A new vertical is its own files plus one line in `ModuleList.swift`.
 
 1. Create `Sources/NotchDeck/Modules/<Module>/` with a store (`ObservableObject`), its SwiftUI panel, and `<Module>Module: NotchModule`.
    Pure logic (parsers, models, formatting) goes in `Sources/NotchKitCore/<Module>/` with tests in `Tests/NotchKitCoreTests`.
-2. Declare `nonisolated static let descriptor = ModuleDescriptor(...)`: id, title, SF Symbol, category, accent, permissions, `network` with each host its code connects to (none for the fixture), `highlightTitle` if it shows a line in the ticker, and `ownsFocusClock: true` if it runs a focus clock of its own.
+2. Declare `nonisolated static let descriptor = ModuleDescriptor(...)`: id, title, SF Symbol, category (an open `ModuleCategory`: use a built-in one or declare your own beside the module, as the fixture's `.coding` does), accent, permissions, `network` with each host its code connects to (none for the fixture), `highlightTitle` if it shows a line in the ticker, and `ownsFocusClock: true` if it runs a focus clock of its own.
    The tab bar, Settings, kit validation and previews read title, symbol and accent from here, and Today shows such a module's clock in place of its Pomodoro, so a layout has one timer.
    If kits can configure the module, declare the keys of its `moduleSettings` section as `kitSettings: KitSettingsSchema([...])`, so kit validation warns about typos and out-of-range values there; the fixture declares `minutesPerProblem`.
 3. In `init(context:)`, build the store and follow what the context offers (`kitApplied`, `providers.$snapshot`, shared services).

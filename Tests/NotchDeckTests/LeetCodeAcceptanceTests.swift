@@ -39,6 +39,7 @@ final class LeetCodeAcceptanceTests: XCTestCase {
     func testTheModuleIsInTheCatalogTheTabBarAndSettingsRead() {
         let catalog = services.settings.catalog
         XCTAssertEqual(catalog.descriptor(for: "leetcode").title, "LeetCode")
+        XCTAssertEqual(catalog.descriptor(for: "leetcode").category.title, "Coding")
         XCTAssertEqual(services.modules.catalog, catalog)
         XCTAssertEqual(services.settings.settings.modules.enabled, ["leetcode"])
         XCTAssertTrue(TickerKind.all(in: catalog).contains(.highlights(from: "leetcode")))

@@ -1,22 +1,57 @@
 /// Where a module is grouped in Settings and kit pickers.
-public enum ModuleCategory: String, CaseIterable, Codable, Sendable {
-    case media
-    case system
-    case productivity
-    case study
-    case ai
-    case fun
+/// The shelf a module sits on in Settings and the module browser.
+///
+/// An open string type like `ModuleID`, so a new vertical (an LSAT or a
+/// coding module) can bring a category of its own without editing this
+/// file: declare `static let law = ModuleCategory("law", title: "Law")`
+/// beside the module. Two categories are equal when their ids are, and only
+/// the id is stored, so a title can change without touching saved data.
+public struct ModuleCategory: RawRepresentable, Hashable, Codable, Sendable, Identifiable,
+                              ExpressibleByStringLiteral, CustomStringConvertible {
+    public let rawValue: String
+    /// The name shown to people, such as "Productivity".
+    public let title: String
 
-    public var title: String {
-        switch self {
-        case .media: "Media"
-        case .system: "System"
-        case .productivity: "Productivity"
-        case .study: "Study"
-        case .ai: "AI"
-        case .fun: "Fun"
-        }
+    /// A category whose title is its id with the first letter capitalized.
+    public init(rawValue: String) {
+        self.init(rawValue, title: rawValue.prefix(1).uppercased() + rawValue.dropFirst())
     }
+
+    public init(_ rawValue: String, title: String) {
+        self.rawValue = rawValue
+        self.title = title
+    }
+
+    public init(stringLiteral value: String) { self.init(rawValue: value) }
+
+    public init(from decoder: Decoder) throws {
+        let raw = try decoder.singleValueContainer().decode(String.self)
+        self = Self.builtIn.first { $0.rawValue == raw } ?? ModuleCategory(rawValue: raw)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(rawValue)
+    }
+
+    public static func == (lhs: Self, rhs: Self) -> Bool { lhs.rawValue == rhs.rawValue }
+    public func hash(into hasher: inout Hasher) { hasher.combine(rawValue) }
+
+    public var id: String { rawValue }
+    public var description: String { rawValue }
+}
+
+public extension ModuleCategory {
+    static let media = ModuleCategory("media", title: "Media")
+    static let system = ModuleCategory("system", title: "System")
+    static let productivity = ModuleCategory("productivity", title: "Productivity")
+    static let study = ModuleCategory("study", title: "Study")
+    static let ai = ModuleCategory("ai", title: "AI")
+    static let fun = ModuleCategory("fun", title: "Fun")
+
+    /// The categories the built-in modules use, so decoding a stored id
+    /// gets back the proper title ("AI", not "Ai").
+    static let builtIn: [ModuleCategory] = [.media, .system, .productivity, .study, .ai, .fun]
 }
 
 /// A macOS permission a module asks for, so Settings and onboarding can say
