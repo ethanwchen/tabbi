@@ -15,7 +15,7 @@ import Foundation
 /// Every key is optional. Kits without the section keep the Claude planner,
 /// so nothing here is specific to medicine; a study kit opts in.
 public struct TodayPlanSettings: Hashable, Sendable {
-    public enum PlanMode: String, Hashable, Sendable {
+    public enum PlanMode: String, Hashable, Sendable, CaseIterable {
         /// Ask the local `claude` CLI to schedule the checklist.
         case claude
         /// Plan on device with `StudyDayPlanner`: review blocks, study
@@ -82,6 +82,18 @@ public struct TodayPlanSettings: Hashable, Sendable {
             sampleDay: section?["sampleDay"]?.stringValue.flatMap(PlannerSampleDay.init(rawValue:)) ?? defaults.sampleDay
         )
     }
+
+    /// The keys `init(kit:)` reads, for `TodayModule`'s descriptor.
+    public static let kitSchema = KitSettingsSchema([
+        "planMode": .choice(PlanMode.allCases.map(\.rawValue)),
+        "reviewsFirst": .bool,
+        "eventBufferMinutes": .number(0...240),
+        "studyBlockTitle": .text(maxLength: KitLimits.maxTaskLength),
+        "secondsPerCard": .number(1...600),
+        "upNextEvents": .text(maxLength: KitLimits.maxNameLength),
+        "dayEndHour": .number(0...Double(DayPlanner.latestDayEndHour)),
+        "sampleDay": .choice(PlannerSampleDay.allCases.map(\.rawValue)),
+    ])
 
     /// `value` rounded and clamped to 0...`limit` before it becomes an Int,
     /// since converting an out-of-range Double traps. Nil for NaN.

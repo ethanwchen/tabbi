@@ -9,7 +9,8 @@ import NotchKit
 final class TodayModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
         id: .planner, title: "Today", symbol: "checklist", category: .productivity,
-        accent: ModuleAccent(red: 0.66, green: 0.55, blue: 1.00), permissions: [.calendars, .notifications]
+        accent: ModuleAccent(red: 0.66, green: 0.55, blue: 1.00), permissions: [.calendars, .notifications],
+        kitSettings: TodayPlanSettings.kitSchema
     )
     /// Internal so app tests can check what Today shows.
     let store: PlannerStore

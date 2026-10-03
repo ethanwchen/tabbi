@@ -73,6 +73,10 @@ public struct ModuleDescriptor: Hashable, Sendable, Identifiable {
     /// shared Pomodoro. A layout with such a module enabled has one timer:
     /// Today shows that module's clock instead of its Pomodoro card.
     public var ownsFocusClock: Bool
+    /// The keys this module reads from its section of a kit's
+    /// `moduleSettings`, so kit validation can warn about typos and bad
+    /// values there. Nil leaves the section unchecked.
+    public var kitSettings: KitSettingsSchema?
 
     public init(
         id: ModuleID,
@@ -82,7 +86,8 @@ public struct ModuleDescriptor: Hashable, Sendable, Identifiable {
         accent: ModuleAccent,
         permissions: Set<ModulePermission> = [],
         highlightTitle: String? = nil,
-        ownsFocusClock: Bool = false
+        ownsFocusClock: Bool = false,
+        kitSettings: KitSettingsSchema? = nil
     ) {
         self.id = id
         self.title = title
@@ -92,6 +97,7 @@ public struct ModuleDescriptor: Hashable, Sendable, Identifiable {
         self.permissions = permissions
         self.highlightTitle = highlightTitle
         self.ownsFocusClock = ownsFocusClock
+        self.kitSettings = kitSettings
     }
 
     /// Stand-in for an id no catalog knows (say, from a newer kit file), so

@@ -57,6 +57,12 @@ public enum KitIssue: Equatable, Sendable, CustomStringConvertible {
     case focusLevelOutOfRange(sound: String, level: Double)
     /// A field the kit format doesn't read, such as a typo; ignored.
     case unknownField(String)
+    /// A `moduleSettings` section for a module this build doesn't have.
+    case unknownModuleSettings(ModuleID)
+    /// A value in a module's `moduleSettings` section that doesn't match
+    /// the module's `KitSettingsSchema`. Modules read their section
+    /// leniently, so the value is skipped or kept in range.
+    case invalidModuleSetting(path: String, expected: String)
 
     public var description: String {
         switch self {
@@ -72,6 +78,9 @@ public enum KitIssue: Equatable, Sendable, CustomStringConvertible {
         case .focusLevelOutOfRange(let sound, let level):
             "Focus sound \"\(sound)\" level \(level.formatted()) will be kept between 0 and 1."
         case .unknownField(let path): "Unknown field \"\(path)\" will be ignored."
+        case .unknownModuleSettings(let id): "Settings for unknown module \"\(id)\" will be ignored."
+        case .invalidModuleSetting(let path, let expected):
+            "\"\(path)\" should be \(expected); other values are skipped or kept in range."
         }
     }
 }
@@ -154,7 +163,20 @@ public extension KitManifest {
             }
         }
         issues += unknownFields.map(KitIssue.unknownField)
+        issues += moduleSettingsIssues(catalog: catalog)
         return issues
+    }
+
+    /// Checks each `moduleSettings` section against the schema its module
+    /// declares. Modules without a schema read a free-form section.
+    private func moduleSettingsIssues(catalog: ModuleCatalog) -> [KitIssue] {
+        defaults.moduleSettings.keys.sorted().flatMap { key -> [KitIssue] in
+            let id = ModuleID(rawValue: key)
+            guard catalog.contains(id) else { return [.unknownModuleSettings(id)] }
+            guard let schema = catalog.descriptor(for: id).kitSettings,
+                  let section = defaults.moduleSettings[key] else { return [] }
+            return schema.issues(in: section, at: "moduleSettings.\(key)")
+        }
     }
 
     static func isValidID(_ id: String) -> Bool {

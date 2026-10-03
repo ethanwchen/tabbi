@@ -38,6 +38,15 @@ final class LeetCodeStore: ObservableObject {
     func start() { isRunning = true }
     func stop() { isRunning = false }
 
+    /// Reads the module's section of a kit's `moduleSettings`, such as
+    /// `{"minutesPerProblem": 45}`. Like every module it reads leniently:
+    /// a value outside the schema's range keeps the current estimate.
+    func use(kitSettings section: KitValue?) {
+        guard let minutes = section?["minutesPerProblem"]?.numberValue,
+              LeetCodeModule.minutesPerProblem.contains(minutes) else { return }
+        daily.estimatedMinutes = Int(minutes)
+    }
+
     /// Marks today's problem solved and logs it in the shared activity log
     /// under a kind of the module's own.
     func markSolved() {
@@ -74,15 +83,23 @@ final class LeetCodeModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
         id: "leetcode", title: "LeetCode", symbol: "chevron.left.forwardslash.chevron.right",
         category: .productivity, accent: ModuleAccent(red: 1.00, green: 0.63, blue: 0.16),
-        highlightTitle: "LeetCode daily"
+        highlightTitle: "LeetCode daily",
+        kitSettings: KitSettingsSchema(["minutesPerProblem": .number(minutesPerProblem)])
     )
+    /// The estimate a kit may set for one problem.
+    nonisolated static let minutesPerProblem: ClosedRange<Double> = 5...180
     let store: LeetCodeStore
     /// The shared activity log, which the store writes to.
     let activityLog: ActivityLog
+    private var cancellables: Set<AnyCancellable> = []
 
     init(context: ModuleContext) {
         activityLog = context.activityLog
         store = LeetCodeStore(activity: activityLog)
+        store.use(kitSettings: context.activeKit?.defaults.settings(for: context.id))
+        context.kitApplied
+            .sink { [store, id = context.id] in store.use(kitSettings: $0.kit.defaults.settings(for: id)) }
+            .store(in: &cancellables)
     }
 
     func makePanel() -> AnyView { AnyView(LeetCodePanel(store: store)) }

@@ -229,8 +229,11 @@ Tabbi refuses a kit file only when it can't be used at all:
 | Task titles | 120 characters |
 
 Everything else is a warning shown after importing, and the value is skipped: an unknown module, study method, focus sound, ticker preview or pet breed, a module listed twice, a question id used twice, an answer id used twice in one question, a focus sound `level` outside 0 to 1 (it is clamped), or a field the format doesn't know (such as `defaults.tickers`).
-The contents of `moduleSettings` are up to each module and aren't checked for unknown fields.
 This keeps kits written for newer versions working on older ones.
+Each module checks its own `moduleSettings` section against the keys it declares: an unknown key (such as `moduleSettings.planner.reviewsFrist`) or a value of the wrong kind or out of range (such as a `dailyGoalMinutes` of 2000) is a warning, and the module skips the value or keeps it in range.
+A section for a module this version doesn't have is a warning too.
+Today, Study and Closet declare their keys; other modules' sections aren't checked yet.
+Module settings are plain values only: a module never accepts a URL, file path, command or anything else that runs.
 
 ## Versioning
 
@@ -258,4 +261,4 @@ The format is defined by `KitManifest` in [`Sources/NotchKitCore/Kits`](../Sourc
 
 To ship a new bundled kit, add `<id>.json` to `Sources/NotchKitCore/Kits/Bundled`, add the id to `KitLibrary.bundledIDs`, and check that its tests report no issues.
 To render it, run `swift run NotchDeck --snapshot snapshots-<id> --kit <id>`.
-A module reads its own `moduleSettings` section with `KitDefaults.settings(for:)` and `KitValue.decode(_:)`.
+A module reads its own `moduleSettings` section with `KitDefaults.settings(for:)` and `KitValue.decode(_:)`, and declares its keys as `ModuleDescriptor.kitSettings` (a `KitSettingsSchema` of booleans, numbers in a range, bounded text, choices, lines and nested objects), which `issues(catalog:)` checks.

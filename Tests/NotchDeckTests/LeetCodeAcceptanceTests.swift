@@ -99,4 +99,28 @@ final class LeetCodeAcceptanceTests: XCTestCase {
         XCTAssertEqual(kit.issues(catalog: ModuleList.catalog), [.unknownModule("leetcode"), .unknownTickerKind("leetcode")],
                        "without its list line the module is unknown")
     }
+
+    func testAKitConfiguresItThroughItsOwnSettingsSection() throws {
+        let json = """
+        {
+          "formatVersion": 1, "id": "tech", "name": "Tech interviews", "modules": ["leetcode"],
+          "defaults": { "moduleSettings": { "leetcode": { "minutesPerProblem": 45 } } }
+        }
+        """
+        let kit = try KitManifest.decode(from: Data(json.utf8))
+        let catalog = services.settings.catalog
+        XCTAssertEqual(kit.issues(catalog: catalog), [])
+        services.settings.kitApplied.send(.init(kit: kit, answers: [:], addsStarterTasks: false))
+        XCTAssertEqual(services.providers.snapshot.plannableWork(excluding: .planner).last,
+                       "LeetCode: Two Sum (about 45 min)")
+
+        var sloppy = kit
+        sloppy.defaults.moduleSettings["leetcode"] = .object(["minutesPerProblem": .number(900), "minutes": .number(30)])
+        XCTAssertEqual(sloppy.issues(catalog: catalog), [
+            .unknownField("moduleSettings.leetcode.minutes"),
+            .invalidModuleSetting(path: "moduleSettings.leetcode.minutesPerProblem", expected: "a number from 5 to 180"),
+        ])
+        XCTAssertEqual(sloppy.issues(catalog: ModuleList.catalog).last, .unknownModuleSettings("leetcode"),
+                       "without its list line the section is unknown")
+    }
 }

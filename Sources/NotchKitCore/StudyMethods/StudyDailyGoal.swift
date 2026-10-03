@@ -39,6 +39,11 @@ public struct StudyDailyGoal: Codable, Hashable, Sendable {
         self.init(minutes: Int(min(max(value, -1e6), 1e6)))
     }
 
+    /// How a kit writes the goal (`moduleSettings.study.dailyGoalMinutes`).
+    public static let kitSettingType = KitSettingType.number(
+        Double(range.lowerBound)...Double(range.upperBound)
+    )
+
     private enum CodingKeys: String, CodingKey { case minutes }
 
     public init(from decoder: Decoder) throws {

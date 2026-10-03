@@ -76,6 +76,17 @@ public enum PetCoachMessages {
         standard + kitLines(kitSettings)
     }
 
+    /// How a kit writes `coachLines`: per nudge kind, a line or a list of
+    /// lines of at most `maxLength` characters.
+    public static let kitSettingType = KitSettingType.object(Dictionary(
+        uniqueKeysWithValues: PetCoachNudgeKind.allCases.map {
+            ($0.rawValue, KitSettingType.lines(maxLength: maxLength, maxCount: maxKitLinesPerKind))
+        }
+    ))
+
+    /// Plenty for variety; a kit with more gets a warning, not an error.
+    public static let maxKitLinesPerKind = 20
+
     /// Only the kit's valid lines, ids `kit.<kind>.<index>`.
     public static func kitLines(_ kitSettings: KitValue?) -> [PetCoachMessage] {
         guard let byKind = kitSettings?["coachLines"] else { return [] }

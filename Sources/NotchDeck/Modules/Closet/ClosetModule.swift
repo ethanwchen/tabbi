@@ -14,7 +14,8 @@ import NotchKit
 final class ClosetModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
         id: .closet, title: "Closet", symbol: "pawprint.fill", category: .fun,
-        accent: ModuleAccent(red: 0.98, green: 0.80, blue: 0.30)
+        accent: ModuleAccent(red: 0.98, green: 0.80, blue: 0.30),
+        kitSettings: KitSettingsSchema(["coachLines": PetCoachMessages.kitSettingType])
     )
     let store: ClosetStore
     /// The pet's study coach: nudges from the notch during focus phases.
