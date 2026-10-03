@@ -44,7 +44,7 @@ final class TickerStore: ObservableObject {
                                ?? Just(nil).eraseToAnyPublisher())
             .map { shared, isMusicPlaying, usage in
                 TickerSources(events: shared.events, isMusicPlaying: isMusicPlaying, focus: shared.focus,
-                              focusSource: shared.focusSource, tasksRemaining: shared.openTasks.count,
+                              tasksRemaining: shared.openTasks.count,
                               progress: shared.progress, usage: usage,
                               pet: shared.pet, party: shared.party)
             }
@@ -96,7 +96,7 @@ final class TickerStore: ObservableObject {
         if rotates, let shownSince = rotation.shownSince {
             wakes.append(shownSince.addingTimeInterval(rotation.interval))
         }
-        if case .focus(_, _, isRunning: true, _) = item {
+        if case .focus(let focus) = item, focus.isRunning {
             wakes.append(now.addingTimeInterval(1))
         }
         guard let fireDate = wakes.compactMap({ $0 }).min() else { return }

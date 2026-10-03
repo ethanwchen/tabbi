@@ -59,18 +59,19 @@ final class ProviderSnapshotTests: XCTestCase {
         var running = FocusTimer()
         running.start(at: now)
         let snapshot = ProviderSnapshot([
-            (.planner, ModuleProvision(focus: idle)),
-            (.study, ModuleProvision(focus: running)),
+            (.planner, ModuleProvision(focus: idle.shared)),
+            (.study, ModuleProvision(focus: running.shared)),
         ])
-        XCTAssertEqual(snapshot.focus, running)
+        XCTAssertEqual(snapshot.focus, running.provided(by: .study))
+        XCTAssertEqual(snapshot.focus?.source, .study)
     }
 
     func testIdleFocusTimerIsKeptWhenNoneIsActive() {
         let snapshot = ProviderSnapshot([
             (.anki, ModuleProvision()),
-            (.planner, ModuleProvision(focus: FocusTimer())),
+            (.planner, ModuleProvision(focus: FocusTimer().shared)),
         ])
-        XCTAssertEqual(snapshot.focus, FocusTimer())
+        XCTAssertEqual(snapshot.focus, FocusTimer().shared)
     }
 
     func testProgressIsMergedInTabOrder() {

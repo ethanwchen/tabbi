@@ -67,9 +67,9 @@ struct NotchPreview: View {
                     .fixedSize()
             }
             .previewText()
-        case .focus(_, let remaining, let isRunning, _):
-            Text(TickerFormat.focusClock(remaining))
-                .foregroundStyle(isRunning ? accent : Theme.Palette.secondaryText)
+        case .focus(let focus):
+            Text(TickerFormat.focusClock(focus.time))
+                .foregroundStyle(focus.isRunning ? accent : Theme.Palette.secondaryText)
                 .previewText()
         case .tasks(let remaining):
             Text(TickerFormat.tasksLeft(remaining))

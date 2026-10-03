@@ -35,16 +35,16 @@ public struct PetPresence: Hashable, Sendable {
         self.lastActive = lastActive
     }
 
-    /// Records the shared focus timer at `now`. Running or paused sessions
+    /// Records the shared focus clock at `now`. Running or paused sessions
     /// keep the pet awake, and so does the moment one ends.
-    public mutating func observe(_ focus: FocusTimer?, at now: Date) {
+    public mutating func observe(_ focus: ProvidedFocus?, at now: Date) {
         let active = Self.isActive(focus)
         if active || sessionWasActive { lastActive = max(lastActive, now) }
         sessionWasActive = active
     }
 
-    /// The pet's mood at `now` for the shared focus timer.
-    public func mood(focus: FocusTimer?, at now: Date) -> PetMood {
+    /// The pet's mood at `now` for the shared focus clock.
+    public func mood(focus: ProvidedFocus?, at now: Date) -> PetMood {
         if let focus, focus.isRunning {
             return focus.phase == .focus ? .studying : .onBreak
         }
@@ -54,14 +54,13 @@ public struct PetPresence: Hashable, Sendable {
 
     /// When the pet falls asleep if nothing else happens: nil while a
     /// session runs and once the pet is already asleep at `now`.
-    public func sleepsAt(focus: FocusTimer?, after now: Date) -> Date? {
+    public func sleepsAt(focus: ProvidedFocus?, after now: Date) -> Date? {
         guard !Self.isActive(focus) else { return nil }
         let date = lastActive.addingTimeInterval(Self.sleepAfter)
         return date > now ? date : nil
     }
 
-    private static func isActive(_ focus: FocusTimer?) -> Bool {
-        guard let focus else { return false }
-        return focus.isRunning || focus.isPaused
+    private static func isActive(_ focus: ProvidedFocus?) -> Bool {
+        focus?.isActive ?? false
     }
 }

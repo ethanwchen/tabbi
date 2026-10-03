@@ -39,8 +39,9 @@ final class FocusModule: NotchModule {
 
     /// The focus timer, for the ticker and other modules.
     var provision: AnyPublisher<ModuleProvision, Never>? {
-        store.$timer
-            .map { ModuleProvision(focus: $0) }
+        let id = descriptor.id
+        return store.$timer
+            .map { ModuleProvision(focus: $0.provided(by: id)) }
             .eraseToAnyPublisher()
     }
 }

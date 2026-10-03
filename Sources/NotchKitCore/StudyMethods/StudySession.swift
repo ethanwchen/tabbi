@@ -155,6 +155,12 @@ public struct StudySession: Codable, Hashable, Sendable {
         return banked + max(now.timeIntervalSince(resumedAt), 0)
     }
 
+    /// The moment the running phase would have started had it never paused,
+    /// so a clock counting up from it shows `elapsed`; nil unless running.
+    public var runningSince: Date? {
+        resumedAt.map { $0.addingTimeInterval(-banked) }
+    }
+
     /// Time left at `now`, never negative; nil when the phase has no length.
     public func remaining(at now: Date) -> TimeInterval? {
         phaseDuration.map { max($0 - elapsed(at: now), 0) }

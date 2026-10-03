@@ -41,7 +41,7 @@ final class PetCoachController: ObservableObject {
             if save.apps != oldValue.apps || save.nudgesOn != oldValue.nudgesOn { objectWillChange.send() }
         }
     }
-    private var timer: FocusTimer?
+    private var timer: ProvidedFocus?
     private var isRunning = false
     private var focusSubscription: AnyCancellable?
     private var awardSubscription: AnyCancellable?
@@ -94,7 +94,7 @@ final class PetCoachController: ObservableObject {
     }
 
     /// Follows the shared focus timer (`ProviderSnapshot.focus`).
-    func follow(focus: AnyPublisher<FocusTimer?, Never>) {
+    func follow(focus: AnyPublisher<ProvidedFocus?, Never>) {
         focusSubscription = focus
             .removeDuplicates()
             .sink { [weak self] timer in
@@ -167,7 +167,7 @@ final class PetCoachController: ObservableObject {
 
     // MARK: Sampling
 
-    private func focusChanged(_ timer: FocusTimer?) {
+    private func focusChanged(_ timer: ProvidedFocus?) {
         self.timer = timer
         updateSampling()
     }

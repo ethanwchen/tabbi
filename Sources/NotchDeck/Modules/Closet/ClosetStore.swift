@@ -29,7 +29,7 @@ final class ClosetStore: ObservableObject {
     let awards = PassthroughSubject<PetStudyAward, Never>()
 
     private var focusSubscription: AnyCancellable?
-    private var lastFocus: FocusTimer?
+    private var lastFocus: ProvidedFocus?
     private let saveURL: URL?
     /// Set when the save on disk could not be read: the closet then runs on
     /// a fresh pet but never overwrites the file, so nothing is lost.
@@ -59,7 +59,7 @@ final class ClosetStore: ObservableObject {
     /// Follows the shared focus timer, so the notch pet stays awake through
     /// sessions and dozes off a while after the last one, and finished
     /// sessions earn points (`PetCloset.credit`).
-    func follow(focus: AnyPublisher<FocusTimer?, Never>) {
+    func follow(focus: AnyPublisher<ProvidedFocus?, Never>) {
         focusSubscription = focus
             .removeDuplicates()
             .sink { [weak self] timer in
@@ -67,7 +67,7 @@ final class ClosetStore: ObservableObject {
             }
     }
 
-    private func focusChanged(_ timer: FocusTimer?) {
+    private func focusChanged(_ timer: ProvidedFocus?) {
         let now = Date()
         presence.observe(timer, at: now)
         let old = lastFocus

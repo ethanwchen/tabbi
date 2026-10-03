@@ -1,10 +1,10 @@
 import Foundation
 
 extension PetCoachStudyState {
-    /// Reads the shared focus timer (`ProviderSnapshot.focus`) the way the
+    /// Reads the shared focus clock (`ProviderSnapshot.focus`) the way the
     /// coach sees it: only a running focus phase counts as studying, so the
     /// pet stays quiet on breaks, while paused, and with no timer at all.
-    public init(_ timer: FocusTimer?) {
+    public init(_ timer: ProvidedFocus?) {
         guard let timer else {
             self = .notStudying
             return
@@ -20,19 +20,20 @@ extension PetCoachStudyState {
 }
 
 extension PetCoachInput {
-    /// Focus phases at least this long count as deep focus: long reading
-    /// stretches are expected there, so idle checks wait longer.
+    /// Focus phases at least this long count as deep focus, like a clock the
+    /// user marked deep: long reading stretches are expected there, so idle
+    /// checks wait longer.
     public static let deepFocusPhaseLength: TimeInterval = 45 * 60
 
-    /// One reading built from the shared focus timer, so the app only has
+    /// One reading built from the shared focus clock, so the app only has
     /// to supply what the system reports (idle seconds, frontmost app).
-    public init(now: Date, idleSeconds: TimeInterval, frontmost: CoachAppCategory, timer: FocusTimer?) {
+    public init(now: Date, idleSeconds: TimeInterval, frontmost: CoachAppCategory, timer: ProvidedFocus?) {
         self.init(
             now: now,
             idleSeconds: idleSeconds,
             frontmost: frontmost,
             study: PetCoachStudyState(timer),
-            deepFocus: (timer?.config.focusDuration ?? 0) >= Self.deepFocusPhaseLength
+            deepFocus: timer?.isDeep == true || (timer?.focusLength ?? 0) >= Self.deepFocusPhaseLength
         )
     }
 }

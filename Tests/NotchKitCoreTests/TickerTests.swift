@@ -33,7 +33,7 @@ final class TickerSourcesTests: XCTestCase {
         let sources = TickerSources(
             events: [event("Standup", startsIn: 30)],
             isMusicPlaying: true,
-            focus: runningFocus(remaining: 600),
+            focus: runningFocus(remaining: 600).shared,
             tasksRemaining: 3,
             progress: [cards(completed: 10, target: 50)],
             usage: ClaudeRateLimitSnapshot(status: nil, fiveHour: ClaudeUsageWindow(utilization: 0.85, resetsAt: nil), sevenDay: nil)
@@ -95,7 +95,7 @@ final class TickerSourcesTests: XCTestCase {
     }
 
     func testNextChangeCoversFocusEndAndUsageReset() {
-        let focus = TickerSources(focus: runningFocus(remaining: 600))
+        let focus = TickerSources(focus: runningFocus(remaining: 600).shared)
         XCTAssertEqual(focus.nextChange(after: now), now.addingTimeInterval(600))
 
         let reset = now.addingTimeInterval(900)
@@ -113,15 +113,15 @@ final class TickerSourcesTests: XCTestCase {
     }
 
     func testOnlyAnActiveFocusSessionShows() {
-        XCTAssertEqual(TickerSources(focus: FocusTimer()).items(at: now), [])
+        XCTAssertEqual(TickerSources(focus: FocusTimer().shared).items(at: now), [])
 
-        XCTAssertEqual(TickerSources(focus: runningFocus(remaining: 600)).items(at: now),
-                       [.focus(phase: .focus, remaining: 600, isRunning: true)])
+        XCTAssertEqual(TickerSources(focus: runningFocus(remaining: 600).shared).items(at: now),
+                       [.focus(TickerFocus(phase: .focus, time: 600, isRunning: true))])
 
         var paused = runningFocus(remaining: 600)
         paused.pause(at: now)
-        XCTAssertEqual(TickerSources(focus: paused).items(at: now),
-                       [.focus(phase: .focus, remaining: 600, isRunning: false)])
+        XCTAssertEqual(TickerSources(focus: paused.shared).items(at: now),
+                       [.focus(TickerFocus(phase: .focus, time: 600, isRunning: false))])
     }
 
     func testFinishedTaskListShowsNothing() {
@@ -193,7 +193,7 @@ final class TickerRotationTests: XCTestCase {
     private let start = Date(timeIntervalSinceReferenceDate: 800_000_000)
     private let music = TickerItem.nowPlaying
     private let tasks = TickerItem.tasks(remaining: 3)
-    private let focus = TickerItem.focus(phase: .focus, remaining: 600, isRunning: true)
+    private let focus = TickerItem.focus(TickerFocus(phase: .focus, time: 600, isRunning: true))
 
     private func at(_ seconds: TimeInterval) -> Date { start.addingTimeInterval(seconds) }
 
@@ -221,7 +221,7 @@ final class TickerRotationTests: XCTestCase {
     func testReturnsFreshDataForTheItemOnScreen() {
         var rotation = TickerRotation(interval: 8)
         _ = rotation.update(items: [focus], at: at(0))
-        let later = TickerItem.focus(phase: .focus, remaining: 597, isRunning: true)
+        let later = TickerItem.focus(TickerFocus(phase: .focus, time: 597, isRunning: true))
         XCTAssertEqual(rotation.update(items: [later], at: at(3)), later)
     }
 

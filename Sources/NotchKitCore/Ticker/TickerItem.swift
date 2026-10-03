@@ -90,13 +90,43 @@ public struct TickerParty: Hashable, Sendable {
     }
 }
 
+/// A focus or break clock under way, as the closed notch shows it.
+public struct TickerFocus: Hashable, Sendable {
+    public var phase: FocusPhase
+    /// The running engine's name for the phase, e.g. "Focus" or "Review".
+    public var label: String
+    /// Time left, or time worked when `countsUp`.
+    public var time: TimeInterval
+    /// An open-ended phase (Flowtime, a card sprint) that counts up.
+    public var countsUp: Bool
+    public var isRunning: Bool
+    /// The module running the clock, whose panel a click opens.
+    public var source: ModuleID
+
+    public init(phase: FocusPhase, label: String? = nil, time: TimeInterval, countsUp: Bool = false,
+                isRunning: Bool, source: ModuleID = .planner) {
+        self.phase = phase
+        self.label = label ?? FocusTimerFormat.phaseName(phase)
+        self.time = time
+        self.countsUp = countsUp
+        self.isRunning = isRunning
+        self.source = source
+    }
+
+    /// The clock at `now` for the shared focus clock.
+    public init(_ focus: ProvidedFocus, at now: Date) {
+        self.init(phase: focus.phase, label: focus.label, time: focus.shownTime(at: now),
+                  countsUp: focus.countsUp, isRunning: focus.isRunning, source: focus.source)
+    }
+}
+
 /// One live activity the closed notch can show beside the hardware cutout.
 public enum TickerItem: Hashable, Sendable {
     case meeting(TickerMeeting)
     /// Music is playing; the app renders artwork and the equalizer itself.
     case nowPlaying
-    /// A focus clock under way; `source` is the module running it.
-    case focus(phase: FocusPhase, remaining: TimeInterval, isRunning: Bool, source: ModuleID = .planner)
+    /// A focus clock under way, from whichever module runs it.
+    case focus(TickerFocus)
     case tasks(remaining: Int)
     /// An unfinished shared goal, e.g. Anki cards left to review today.
     case progress(ProgressItem)
@@ -122,7 +152,7 @@ public enum TickerItem: Hashable, Sendable {
     /// module.
     public var module: ModuleID {
         switch self {
-        case .focus(_, _, _, let source): return source
+        case .focus(let focus): return focus.source
         case .progress(let item): return item.source
         default: return kind.module ?? .planner
         }
@@ -155,9 +185,8 @@ public struct TickerSources: Equatable, Sendable {
 
     public var events: [UpcomingEvent]
     public var isMusicPlaying: Bool
-    public var focus: FocusTimer?
-    /// The module running `focus`; nil means the Today panel's timer.
-    public var focusSource: ModuleID?
+    /// The shared focus clock; its `source` is the module running it.
+    public var focus: ProvidedFocus?
     public var tasksRemaining: Int
     /// Shared goals from the enabled modules, in tab order.
     public var progress: [ProgressItem]
@@ -168,8 +197,7 @@ public struct TickerSources: Equatable, Sendable {
     public init(
         events: [UpcomingEvent] = [],
         isMusicPlaying: Bool = false,
-        focus: FocusTimer? = nil,
-        focusSource: ModuleID? = nil,
+        focus: ProvidedFocus? = nil,
         tasksRemaining: Int = 0,
         progress: [ProgressItem] = [],
         usage: ClaudeRateLimitSnapshot? = nil,
@@ -179,7 +207,6 @@ public struct TickerSources: Equatable, Sendable {
         self.events = events
         self.isMusicPlaying = isMusicPlaying
         self.focus = focus
-        self.focusSource = focusSource
         self.tasksRemaining = tasksRemaining
         self.progress = progress
         self.usage = usage
@@ -251,9 +278,8 @@ public struct TickerSources: Equatable, Sendable {
         case .focus:
             // An idle timer isn't an activity; paused still is, since the
             // user is mid-session.
-            guard let focus, focus.isRunning || focus.isPaused else { return nil }
-            return .focus(phase: focus.phase, remaining: focus.remaining(at: now), isRunning: focus.isRunning,
-                          source: focusSource ?? .planner)
+            guard let focus, focus.isActive else { return nil }
+            return .focus(TickerFocus(focus, at: now))
         case .tasks:
             return tasksRemaining > 0 ? .tasks(remaining: tasksRemaining) : nil
         case .progress:

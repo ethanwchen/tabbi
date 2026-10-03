@@ -264,12 +264,14 @@ final class StudyStore: ObservableObject {
             .eraseToAnyPublisher()
     }
 
-    /// The session as the shared focus timer, republished only when the
-    /// session changes: a running block carries its end date, so the
-    /// closed notch counts down without a per-second feed.
-    var sharedFocus: AnyPublisher<FocusTimer?, Never> {
+    /// The session as the shared focus clock with the deep focus switch,
+    /// republished only when either changes: a running block carries its
+    /// end (or start) date, so the closed notch counts without a per-second
+    /// feed.
+    func sharedFocus(by source: ModuleID) -> AnyPublisher<ProvidedFocus?, Never> {
         $session
-            .map { $0.sharedFocusTimer(at: Date()) }
+            .combineLatest($deepFocus)
+            .map { $0.sharedFocus(by: source, isDeep: $1, at: Date()) }
             .removeDuplicates()
             .eraseToAnyPublisher()
     }

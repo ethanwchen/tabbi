@@ -46,7 +46,7 @@ final class PartyStore: ObservableObject {
     private var connectBackoff = PartyHeartbeatSchedule()
     private var plan = PartyRefreshPlan()
     /// The study timer from the shared providers, for presence.
-    private var focus: FocusTimer?
+    private var focus: ProvidedFocus?
     /// My pet as friends should see it.
     private(set) var pet = PetProfile.starter(.cat)
     private var isRunning = false
@@ -101,7 +101,7 @@ final class PartyStore: ObservableObject {
 
     /// Follows the shared focus timer, so presence reflects whichever
     /// module runs it (Focus, Today, Study) without reaching into them.
-    func followFocus(from timers: AnyPublisher<FocusTimer?, Never>) {
+    func followFocus(from timers: AnyPublisher<ProvidedFocus?, Never>) {
         timers
             .removeDuplicates()
             .sink { [weak self] timer in self?.focusDidChange(timer) }
@@ -361,7 +361,7 @@ final class PartyStore: ObservableObject {
 
     // MARK: Presence
 
-    private func focusDidChange(_ timer: FocusTimer?) {
+    private func focusDidChange(_ timer: ProvidedFocus?) {
         focus = timer
         guard !isDemo else { return }
         let changed = tracker.observe(timer, at: Date())

@@ -125,8 +125,8 @@ public struct ProvidedParty: Hashable, Sendable {
 /// - `tasks`: TaskSource, things to do today.
 /// - `events`: EventSource, calendar events.
 /// - `progress`: ProgressSource, today's study or practice goals.
-/// - `focus`: FocusState, the focus timer the module runs, and
-///   `focusIsDeep`, whether the user asked for deep focus with it.
+/// - `focus`: FocusState, the focus or break clock the module runs, in
+///   the engine-neutral `ProvidedFocus` shape.
 /// - `study`: StudySource, today's study minutes, sessions and points.
 /// - `pet`: PetSource, the study pet the closed notch shows.
 /// - `party`: PartySource, the study party the user is in.
@@ -138,10 +138,7 @@ public struct ModuleProvision: Equatable, Sendable {
     public var tasks: [ProvidedTask]
     public var events: [UpcomingEvent]
     public var progress: [ProgressItem]
-    public var focus: FocusTimer?
-    /// The user turned on deep focus for `focus` (Study's switch), so
-    /// followers such as the pet coach can save their nudges for it.
-    public var focusIsDeep: Bool
+    public var focus: ProvidedFocus?
     public var study: StudyDayTally?
     public var pet: PetPresence?
     public var party: ProvidedParty?
@@ -150,8 +147,7 @@ public struct ModuleProvision: Equatable, Sendable {
         tasks: [ProvidedTask] = [],
         events: [UpcomingEvent] = [],
         progress: [ProgressItem] = [],
-        focus: FocusTimer? = nil,
-        focusIsDeep: Bool = false,
+        focus: ProvidedFocus? = nil,
         study: StudyDayTally? = nil,
         pet: PetPresence? = nil,
         party: ProvidedParty? = nil
@@ -160,7 +156,6 @@ public struct ModuleProvision: Equatable, Sendable {
         self.events = events
         self.progress = progress
         self.focus = focus
-        self.focusIsDeep = focusIsDeep
         self.study = study
         self.pet = pet
         self.party = party
@@ -179,13 +174,11 @@ public struct ProviderSnapshot: Equatable, Sendable {
     /// Events from every module, by start time; a repeated id keeps the first.
     public private(set) var events: [UpcomingEvent] = []
     public private(set) var progress: [ProgressItem] = []
-    /// A running or paused timer beats an idle one; ties go to tab order.
-    public private(set) var focus: FocusTimer?
-    /// The module running `focus`, so a click on its preview opens that
-    /// module and consumers can tell one module's timer from another's.
-    public private(set) var focusSource: ModuleID?
-    /// Whether `focus` runs in deep focus, as its module reported it.
-    public private(set) var focusIsDeep = false
+    /// A running or paused clock beats an idle one; ties go to tab order.
+    /// Its `source` is the module running it, so a click on its preview
+    /// opens that module and consumers can tell one module's clock from
+    /// another's.
+    public private(set) var focus: ProvidedFocus?
     /// Every module's study tally added up; nil when no module keeps one.
     public private(set) var study: StudyDayTally?
     /// The first pet in tab order.
@@ -202,7 +195,7 @@ public struct ProviderSnapshot: Equatable, Sendable {
         var taskKeys = Set<[String]>()
         var progressKeys = Set<[String]>()
         var eventIDs = Set<String>()
-        var activeFocus: (timer: FocusTimer, module: ModuleID, isDeep: Bool)?
+        var activeFocus: ProvidedFocus?
         for (module, provision) in provisions {
             for var task in provision.tasks where taskKeys.insert([module.rawValue, task.id]).inserted {
                 task.source = module
@@ -216,14 +209,13 @@ public struct ProviderSnapshot: Equatable, Sendable {
             events += provision.events.filter { eventIDs.insert($0.id).inserted }
             if let tally = provision.study { study = (study ?? StudyDayTally()) + tally }
             if party == nil { party = provision.party }
-            if let timer = provision.focus {
-                if focus == nil { (focus, focusSource, focusIsDeep) = (timer, module, provision.focusIsDeep) }
-                if activeFocus == nil, timer.isRunning || timer.isPaused {
-                    activeFocus = (timer, module, provision.focusIsDeep)
-                }
+            if var clock = provision.focus {
+                clock.source = module
+                if focus == nil { focus = clock }
+                if activeFocus == nil, clock.isActive { activeFocus = clock }
             }
         }
-        if let activeFocus { (focus, focusSource, focusIsDeep) = activeFocus }
+        if let activeFocus { focus = activeFocus }
         // Stable, so events with equal starts keep their tab order.
         events = events.enumerated()
             .sorted { ($0.element.start, $0.offset) < ($1.element.start, $1.offset) }

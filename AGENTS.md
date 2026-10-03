@@ -77,9 +77,14 @@ Judge them against the design rules below before you call the work done.
   creates every listed module with its own context; it holds no module
   stores.
 - Shared data providers: a module that has tasks, calendar events, progress
-  (e.g. cards due), a focus timer or a study tally (today's study minutes,
-  sessions and points, which Wrap Up shows) to share returns a `ModuleProvision`
-  publisher from `NotchModule.provision`. `ProviderHub` (in `Modules/`)
+  (e.g. cards due), a focus or break clock or a study tally (today's study
+  minutes, sessions and points, which Wrap Up shows) to share returns a
+  `ModuleProvision` publisher from `NotchModule.provision`. Any timer engine
+  maps its clock into the neutral `ProvidedFocus` (counting down, counting up
+  for open-ended phases, paused or idle, plus a phase label and a deep focus
+  flag): Today and Focus share their Pomodoro with `FocusTimer.provided(by:)`
+  and Study its session with `StudySession.sharedFocus(by:isDeep:at:)`, and
+  the ticker, the pet, the coach and Party all read `ProviderSnapshot.focus`. `ProviderHub` (in `Modules/`)
   merges the enabled modules' values into a `ProviderSnapshot`
   (`NotchKitCore/Providers`). The ticker reads it, and Today lists other
   modules' goals and tasks above its checklist (`sharedTodayItems`) and

@@ -60,7 +60,8 @@ final class TodayModule: NotchModule {
         return store.$day
             .combineLatest(store.upNext.$events, store.focus.$timer)
             .map { day, events, timer in
-                ModuleProvision(tasks: day.items.map { $0.provided(by: id) }, events: events, focus: timer)
+                ModuleProvision(tasks: day.items.map { $0.provided(by: id) }, events: events,
+                                 focus: timer.provided(by: id))
             }
             .eraseToAnyPublisher()
     }
