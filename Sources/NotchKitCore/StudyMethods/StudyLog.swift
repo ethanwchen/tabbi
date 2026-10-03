@@ -120,6 +120,9 @@ public struct StudyLog: Codable, Hashable, Sendable {
 
     // MARK: Persistence
 
+    /// The log file format. Version 1 added the `schemaVersion` key.
+    public static let schema = VersionedJSON(current: 1)
+
     private enum CodingKeys: String, CodingKey { case entries }
 
     public init(from decoder: Decoder) throws {
@@ -133,7 +136,7 @@ public struct StudyLog: Codable, Hashable, Sendable {
     /// A corrupt file throws so the caller can decide not to overwrite it.
     public static func load(from url: URL) throws -> StudyLog? {
         guard FileManager.default.fileExists(atPath: url.path) else { return nil }
-        return try JSONDecoder().decode(StudyLog.self, from: Data(contentsOf: url))
+        return try schema.decode(StudyLog.self, from: Data(contentsOf: url))
     }
 
     /// Writes atomically, creating the parent folder if needed.
@@ -143,6 +146,6 @@ public struct StudyLog: Codable, Hashable, Sendable {
         )
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
-        try encoder.encode(self).write(to: url, options: .atomic)
+        try Self.schema.encode(self, using: encoder).write(to: url, options: .atomic)
     }
 }

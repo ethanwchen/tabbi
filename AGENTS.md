@@ -67,6 +67,12 @@ Judge them against the design rules below before you call the work done.
   `shared`, so all of them get one instance: `context.focusTimer` (the
   `FocusStore` in `Modules/Focus/`) is how Today, Focus and the pet coach
   share one Pomodoro timer.
+- Persisted formats are versioned. A JSON file (or `UserDefaults` value)
+  goes through a `VersionedJSON` schema (`NotchKitCore/Persistence/`),
+  which writes a `schemaVersion` key and runs ordered migration steps on
+  older documents; `PlannerRepository.schema` is an example. A change to
+  how a preference is stored is a new step in `SettingsSchema`. Never edit
+  a step that has shipped, and test the migration.
 - `Sources/NotchDeck/Modules/NotchModule.swift` - the `NotchModule` protocol
   and `ModuleRegistry`. `Sources/NotchDeck/Modules/ModuleList.swift` lists
   every module type, one per line; its `ModuleList.catalog` is the only

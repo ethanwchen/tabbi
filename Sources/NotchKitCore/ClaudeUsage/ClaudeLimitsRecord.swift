@@ -25,6 +25,9 @@ public struct ClaudeLimitsRecord: Equatable, Sendable {
 
     // MARK: Persistence
 
+    /// The stored format. Version 1 added the `schemaVersion` key.
+    public static let schema = VersionedJSON(current: 1)
+
     private struct Stored: Codable {
         struct Window: Codable {
             var utilization: Double
@@ -48,12 +51,12 @@ public struct ClaudeLimitsRecord: Equatable, Sendable {
             sevenDay: window(snapshot.sevenDay),
             fetchedAt: fetchedAt
         )
-        return try? JSONEncoder().encode(stored)
+        return try? Self.schema.encode(stored)
     }
 
     /// Decodes `encoded()` output; nil for missing or corrupt data.
     public init?(encoded data: Data?) {
-        guard let data, let stored = try? JSONDecoder().decode(Stored.self, from: data) else { return nil }
+        guard let data, let stored = try? Self.schema.decode(Stored.self, from: data) else { return nil }
         func window(_ value: Stored.Window?) -> ClaudeUsageWindow? {
             value.map { ClaudeUsageWindow(utilization: $0.utilization, resetsAt: $0.resetsAt) }
         }

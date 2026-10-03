@@ -12,6 +12,9 @@ public final class PlannerRepository {
     /// The folder in an edition's storage, `Application Support/<edition>/Planner`.
     public static let folderName = "Planner"
 
+    /// The day file format. Version 1 added the `schemaVersion` key.
+    public static let schema = VersionedJSON(current: 1)
+
     public init(directory: URL, fileManager: FileManager = .default) {
         self.directory = directory
         self.fileManager = fileManager
@@ -32,14 +35,14 @@ public final class PlannerRepository {
     public func load(_ date: PlannerDayKey) throws -> PlannerDay? {
         let url = fileURL(for: date)
         guard fileManager.fileExists(atPath: url.path) else { return nil }
-        let day = try Self.decoder.decode(PlannerDay.self, from: Data(contentsOf: url))
+        let day = try Self.schema.decode(PlannerDay.self, from: Data(contentsOf: url), using: Self.decoder)
         // The file name is authoritative; a copied file must not masquerade as another day.
         return day.date == date ? day : PlannerDay(date: date, items: day.items)
     }
 
     public func save(_ day: PlannerDay) throws {
         try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
-        try Self.encoder.encode(day).write(to: fileURL(for: day.date), options: .atomic)
+        try Self.schema.encode(day, using: Self.encoder).write(to: fileURL(for: day.date), options: .atomic)
     }
 
     /// Every day with a file on disk, oldest first. Unrelated files are ignored.

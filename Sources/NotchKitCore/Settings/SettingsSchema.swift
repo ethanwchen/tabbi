@@ -34,6 +34,11 @@ public enum SettingsSchema {
                 defaults.set(true, forKey: SettingsRepository.Key.hasChosenKit)
             }
         },
+        // 1 -> 2: the shared focus timer and its session log move from the
+        // `planner.*` keys Today used to own to `focus.*` keys.
+        Migration(version: 2) { defaults in
+            FocusTimerStorage.moveLegacyKeys(in: defaults)
+        },
     ]
 
     /// The version this build writes.

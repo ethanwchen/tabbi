@@ -26,7 +26,7 @@ final class FocusStore: ObservableObject {
     private(set) var sessionLog = FocusSessionLog()
 
     private let isDemo: Bool
-    private let defaults = UserDefaults.standard
+    private let storage = FocusTimerStorage()
     /// The panels showing the timer right now (Today, Focus). Tracked per
     /// viewer because switching tabs may show the new panel before the old
     /// one disappears.
@@ -36,9 +36,6 @@ final class FocusStore: ObservableObject {
     private var phaseEndTimer: Timer?
     private let notifications: FocusNotifications?
 
-    private static let timerKey = "planner.focusTimer"
-    private static let sessionLogKey = "planner.focusSessions"
-
     init() {
         isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
         if isDemo {
@@ -47,10 +44,8 @@ final class FocusStore: ObservableObject {
             return
         }
         notifications = FocusNotifications.make()
-        timer = defaults.data(forKey: Self.timerKey)
-            .flatMap { try? JSONDecoder().decode(FocusTimer.self, from: $0) } ?? FocusTimer()
-        sessionLog = defaults.data(forKey: Self.sessionLogKey)
-            .flatMap { try? JSONDecoder().decode(FocusSessionLog.self, from: $0) } ?? FocusSessionLog()
+        timer = storage.loadTimer()
+        sessionLog = storage.loadSessionLog()
         // A phase may have ended while the app wasn't running; catch up quietly.
         record(timer.advance(to: Date()))
         scheduleSideEffects(withdrawingPending: false)
@@ -141,7 +136,7 @@ final class FocusStore: ObservableObject {
     private func record(_ completions: [FocusPhaseCompletion]) {
         guard !isDemo, !completions.isEmpty else { return }
         sessionLog.record(completions, config: timer.config, now: Date())
-        if let data = try? JSONEncoder().encode(sessionLog) { defaults.set(data, forKey: Self.sessionLogKey) }
+        storage.save(sessionLog)
     }
 
     /// Saves the timer and arms the phase-end timer and notification. A user
@@ -149,7 +144,7 @@ final class FocusStore: ObservableObject {
     /// it, since macOS may not have delivered it yet.
     private func scheduleSideEffects(withdrawingPending: Bool) {
         guard !isDemo else { return }
-        if let data = try? JSONEncoder().encode(timer) { defaults.set(data, forKey: Self.timerKey) }
+        storage.save(timer)
 
         phaseEndTimer?.invalidate()
         phaseEndTimer = nil

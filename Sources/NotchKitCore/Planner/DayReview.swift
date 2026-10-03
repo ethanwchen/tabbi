@@ -332,11 +332,14 @@ public final class DayReviewRepository {
         directory.appendingPathComponent("\(date.rawValue).json", isDirectory: false)
     }
 
+    /// The review file format. Version 1 added the `schemaVersion` key.
+    public static let schema = VersionedJSON(current: 1)
+
     /// The saved review, or nil if none exists. Throws on unreadable files.
     public func load(_ date: PlannerDayKey) throws -> DayReview? {
         let url = fileURL(for: date)
         guard fileManager.fileExists(atPath: url.path) else { return nil }
-        return try JSONDecoder().decode(DayReview.self, from: Data(contentsOf: url))
+        return try Self.schema.decode(DayReview.self, from: Data(contentsOf: url))
     }
 
     /// Writes atomically, replacing an earlier review of the same day.
@@ -344,7 +347,7 @@ public final class DayReviewRepository {
         try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-        try encoder.encode(review).write(to: fileURL(for: review.date), options: .atomic)
+        try Self.schema.encode(review, using: encoder).write(to: fileURL(for: review.date), options: .atomic)
     }
 }
 
