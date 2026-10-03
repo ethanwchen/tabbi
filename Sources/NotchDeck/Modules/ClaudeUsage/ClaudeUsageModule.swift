@@ -13,7 +13,7 @@ final class ClaudeUsageModule: NotchModule {
     private var cancellables: Set<AnyCancellable> = []
 
     init(context: ModuleContext) {
-        store = ClaudeUsageStore(storage: context.storage)
+        store = ClaudeUsageStore(storage: context.storage, runMode: context.runMode)
         // A new `claude` path in Settings must take effect live, not on the
         // next launch.
         context.settings.$appliedClaudePathOverride

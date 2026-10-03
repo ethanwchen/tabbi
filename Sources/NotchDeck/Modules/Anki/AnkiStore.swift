@@ -26,7 +26,7 @@ final class AnkiStore: ObservableObject {
     /// the summary is still today's even when no new one arrives.
     @Published private var rolloverCount = 0
 
-    let isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
+    let isDemo: Bool
     /// A screen pinned by `NOTCHDECK_ANKI_STATE` for snapshots; nothing
     /// refreshes while it is set.
     private let pinnedState = ProcessInfo.processInfo.environment["NOTCHDECK_ANKI_STATE"]
@@ -43,8 +43,9 @@ final class AnkiStore: ObservableObject {
     /// Where newly answered cards are logged, as the Anki module's.
     private let activity: ActivityLog?
 
-    init(activity: ActivityLog? = nil) {
+    init(activity: ActivityLog? = nil, runMode: RunMode) {
         self.activity = activity
+        isDemo = runMode.isDemo
         client = AnkiConnectClient(isAnkiRunning: { await MainActor.run { AnkiStore.runningAnki() != nil } })
         if let pinnedState {
             state = pinnedState

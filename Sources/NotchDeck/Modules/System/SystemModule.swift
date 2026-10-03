@@ -8,9 +8,11 @@ final class SystemModule: NotchModule {
         id: .system, title: "System", symbol: "cpu", category: .system,
         accent: ModuleAccent(red: 0.35, green: 0.78, blue: 1.00)
     )
-    private let monitor = SystemMonitor()
+    private let monitor: SystemMonitor
 
-    init(context: ModuleContext) {}
+    init(context: ModuleContext) {
+        monitor = SystemMonitor(runMode: context.runMode)
+    }
 
     func makePanel() -> AnyView {
         AnyView(SystemPanel(monitor: monitor))

@@ -51,5 +51,5 @@ extension ModuleContext {
     /// the pet coach pauses it, so all of them share this instance; it keeps
     /// running while the notch is closed or either tab is off. Its finished
     /// phases go to the activity log under the Focus module's id.
-    var focusTimer: FocusStore { shared.resolve { FocusStore(activity: activityLog) } }
+    var focusTimer: FocusStore { shared.resolve { FocusStore(activity: activityLog, runMode: runMode) } }
 }

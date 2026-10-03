@@ -36,8 +36,8 @@ final class SystemMonitor: ObservableObject {
     /// Number of visible panels; sampling stops when it drops to zero.
     private var viewers = 0
 
-    init() {
-        isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
+    init(runMode: RunMode) {
+        isDemo = runMode.isDemo
         if isDemo {
             demoStep = Self.historyCapacity
             for step in 1...Self.historyCapacity { applyDemo(step: step) }

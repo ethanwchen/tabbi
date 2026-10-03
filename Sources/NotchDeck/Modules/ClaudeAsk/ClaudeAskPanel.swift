@@ -18,7 +18,7 @@ struct ClaudeAskPanel: View {
 
     /// `ImageRenderer` (used by `--snapshot`) can't draw AppKit-backed views
     /// such as `ScrollView` and `TextField`, so snapshots get static stand-ins.
-    static let isSnapshot = CommandLine.arguments.contains("--snapshot")
+    static var isSnapshot: Bool { RunMode.current.isSnapshot }
 
     var body: some View {
         VStack(spacing: Theme.Spacing.s) {

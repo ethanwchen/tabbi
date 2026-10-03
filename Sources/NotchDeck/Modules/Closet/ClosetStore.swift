@@ -35,8 +35,8 @@ final class ClosetStore: ObservableObject {
     /// a fresh pet but never overwrites the file, so nothing is lost.
     private let saveIsUnreadable: Bool
 
-    init(storage: EditionStorage) {
-        let isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
+    init(storage: EditionStorage, runMode: RunMode) {
+        let isDemo = runMode.isDemo
         let url = isDemo ? nil : ClosetStore.saveURL(in: storage)
         var unreadable = false
         var closet = PetCloset.demo

@@ -45,7 +45,7 @@ struct PlannerList: View {
 
     /// `ImageRenderer` draws a `ScrollView` blank, so snapshots show the
     /// top of an overflowing list clipped instead.
-    private static let isSnapshot = CommandLine.arguments.contains("--snapshot")
+    private static var isSnapshot: Bool { RunMode.current.isSnapshot }
 
     @ViewBuilder
     private var scrollingRows: some View {

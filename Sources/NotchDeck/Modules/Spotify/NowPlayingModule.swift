@@ -11,9 +11,11 @@ final class NowPlayingModule: NotchModule {
         accent: ModuleAccent(red: 0.12, green: 0.84, blue: 0.38), permissions: [.automation]
     )
     /// Also drives the closed notch's music wings.
-    let controller = SpotifyController()
+    let controller: SpotifyController
 
-    init(context: ModuleContext) {}
+    init(context: ModuleContext) {
+        controller = SpotifyController(runMode: context.runMode)
+    }
 
     func makePanel() -> AnyView {
         AnyView(SpotifyPanel(controller: controller))

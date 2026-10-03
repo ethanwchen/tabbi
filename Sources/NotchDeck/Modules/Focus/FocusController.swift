@@ -55,8 +55,8 @@ final class FocusController: ObservableObject {
     private var observers: [NSObjectProtocol] = []
 
     init(repository: FocusSettingsRepository = FocusSettingsRepository()) {
-        let environment = ProcessInfo.processInfo.environment
-        isLive = environment["NOTCHDECK_DEMO"] != "1" && !CommandLine.arguments.contains("--snapshot")
+        // A singleton no context reaches, so it reads the process's mode.
+        isLive = !RunMode.current.isEphemeral
         self.repository = repository
         settings = isLive ? repository.load() : Self.sampleSettings
         guard isLive else { return }

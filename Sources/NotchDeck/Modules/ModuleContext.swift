@@ -26,21 +26,19 @@ struct ModuleContext {
     let shared: SharedServices
     /// Logs under this module's id.
     let logger: Logger
-    /// `NOTCHDECK_DEMO=1`: show realistic sample data and never touch the
-    /// network, disk, Spotify, Music, Calendar or the `claude` CLI.
-    let isDemo: Bool
-    /// Rendering `--snapshot` PNGs: no sounds, nothing saved.
-    let isSnapshot: Bool
+    /// Live, demo data or snapshot rendering. Hand it to your store rather
+    /// than reading the environment, so demo and snapshot runs behave the
+    /// same in every module.
+    let runMode: RunMode
 
     init(id: ModuleID, edition: Edition, settings: SettingsStore, providers: ProviderHub,
-         shared: SharedServices, isDemo: Bool, isSnapshot: Bool) {
+         shared: SharedServices, runMode: RunMode) {
         self.id = id
         self.edition = edition
         self.settings = settings
         self.providers = providers
         self.shared = shared
-        self.isDemo = isDemo
-        self.isSnapshot = isSnapshot
+        self.runMode = runMode
         logger = Logger(subsystem: "Tabbi", category: id.rawValue)
     }
 
@@ -48,6 +46,12 @@ struct ModuleContext {
     /// of it (`storage.folder("Planner")`), never in a hardcoded app folder,
     /// so each edition keeps its own data.
     var storage: EditionStorage { EditionStorage(edition: edition) }
+
+    /// `NOTCHDECK_DEMO=1`: show realistic sample data and never touch the
+    /// network, disk, Spotify, Music, Calendar or the `claude` CLI.
+    var isDemo: Bool { runMode.isDemo }
+    /// Rendering `--snapshot` PNGs: no sounds, nothing saved.
+    var isSnapshot: Bool { runMode.isSnapshot }
 
     /// The kit the user has active now.
     var activeKit: KitManifest? { settings.activeKit }

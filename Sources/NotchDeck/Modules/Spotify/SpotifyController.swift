@@ -31,7 +31,7 @@ final class SpotifyController: NSObject, ObservableObject {
     /// Resync interval while the panel is visible. Never poll faster than this.
     private static let pollInterval: TimeInterval = 5
 
-    private let isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
+    private let isDemo: Bool
     private var tracker = MediaSourceTracker()
     /// Per app, so a read of one app never re-anchors the other's position.
     private var clocks: [MediaSource: SpotifyPlaybackClock] = [:]
@@ -50,7 +50,8 @@ final class SpotifyController: NSObject, ObservableObject {
     /// The level before the speaker button muted each app, for unmuting.
     private var volumesBeforeMute: [MediaSource: Int] = [:]
 
-    override init() {
+    init(runMode: RunMode) {
+        isDemo = runMode.isDemo
         super.init()
         if isDemo {
             record(.music, .notRunning)

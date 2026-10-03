@@ -32,7 +32,7 @@ final class TickerStoreTests: XCTestCase {
         let shared = SharedServices()
         let module = HighlightingModule(context: ModuleContext(
             id: "highlighting", edition: .notchDeck, settings: settings, providers: hub, shared: shared,
-            isDemo: true, isSnapshot: false))
+            runMode: .demo))
         hub.attach(ModuleRegistry([module]))
         hub.update(enabled: ["highlighting"])
         let ticker = TickerStore(settings: settings, providers: hub, preview: shared.closedNotchPreview)

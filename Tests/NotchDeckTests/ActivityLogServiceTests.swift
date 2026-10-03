@@ -56,7 +56,7 @@ final class ActivityLogServiceTests: XCTestCase {
         let shared = SharedServices()
         func context(_ id: ModuleID) -> ModuleContext {
             ModuleContext(id: id, edition: .notchDeck, settings: settings, providers: ProviderHub(), shared: shared,
-                          isDemo: true, isSnapshot: false)
+                          runMode: .demo)
         }
         XCTAssertTrue(context(.focus).activityLog === context(.study).activityLog)
     }
@@ -64,7 +64,8 @@ final class ActivityLogServiceTests: XCTestCase {
     func testCheckingATaskOffLogsIt() throws {
         setenv("NOTCHDECK_DEMO", "1", 1)
         let log = ActivityLog(repository: nil)
-        let store = PlannerStore(focus: FocusStore(), storage: EditionStorage(root: folder), activity: log)
+        let store = PlannerStore(focus: FocusStore(runMode: .demo), storage: EditionStorage(root: folder), activity: log,
+                                 runMode: .demo)
         let open = try XCTUnwrap(store.day.items.first { !$0.isDone })
 
         store.toggle(open.id)

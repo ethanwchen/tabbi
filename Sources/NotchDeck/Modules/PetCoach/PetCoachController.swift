@@ -51,6 +51,7 @@ final class PetCoachController: ObservableObject {
 
     init(
         storage: EditionStorage,
+        runMode: RunMode,
         profile: @escaping () -> PetProfile,
         lines: @escaping () -> [PetCoachMessage] = { PetCoachMessages.standard },
         screen: @escaping () -> NSScreen?,
@@ -62,7 +63,7 @@ final class PetCoachController: ObservableObject {
         self.screen = screen
         self.pauseTimer = pauseTimer
         self.resumeTimer = resumeTimer
-        isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
+        isDemo = runMode.isDemo
         saveURL = isDemo ? nil : Self.saveURL(in: storage)
         var unreadable = false
         var save = PetCoachSave()

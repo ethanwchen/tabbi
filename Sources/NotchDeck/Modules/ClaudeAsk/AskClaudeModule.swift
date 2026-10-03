@@ -9,10 +9,11 @@ final class AskClaudeModule: NotchModule {
         id: .claudeAsk, title: "Ask Claude", symbol: "sparkles", category: .ai,
         accent: .claude, permissions: [.claudeCLI]
     )
-    private let session = ClaudeAskSession()
+    private let session: ClaudeAskSession
     private var cancellables: Set<AnyCancellable> = []
 
     init(context: ModuleContext) {
+        session = ClaudeAskSession(runMode: context.runMode)
         // A new `claude` path in Settings must take effect live, not on the
         // next launch.
         context.settings.$appliedClaudePathOverride

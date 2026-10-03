@@ -32,7 +32,7 @@ enum SnapshotRenderer {
         // One closed shot per preview kind that has data. Demo usage sits
         // below the 80% threshold, so demo mode fills that one in.
         let now = Date()
-        let isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
+        let isDemo = RunMode.current.isDemo
         for kind in TickerKind.all(in: services.settings.catalog) {
             let live = services.ticker.sources.items(at: now, enabled: [kind]).first
             let demoUsage: TickerItem? = isDemo && kind == .highlights(from: .claudeUsage)

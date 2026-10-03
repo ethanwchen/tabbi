@@ -67,7 +67,7 @@ final class ModuleContextTests: XCTestCase {
         let shared = SharedServices()
         let registry = ModuleRegistry(types.map { type in
             type.init(context: ModuleContext(id: type.descriptor.id, edition: .notchDeck, settings: settings,
-                                             providers: hub, shared: shared, isDemo: true, isSnapshot: false))
+                                             providers: hub, shared: shared, runMode: .demo))
         })
         hub.attach(registry)
         return (registry, hub)
@@ -107,6 +107,16 @@ final class ModuleContextTests: XCTestCase {
         let kit = try XCTUnwrap(store.kits.kits.first)
         store.switchKit(to: kit.id)
         XCTAssertEqual(module.kitsApplied, [kit.id])
+    }
+    func testAppServicesHandsEveryModuleTheProcessRunMode() throws {
+        let demoSnapshot = AppServices(settings: settings(), moduleTypes: types,
+                                       environment: ["NOTCHDECK_DEMO": "1"], arguments: ["--snapshot", "out"])
+        let module = try XCTUnwrap(demoSnapshot.modules.module(SelfContainedModule.self))
+        XCTAssertEqual(module.context.runMode, RunMode(isDemo: true, isSnapshot: true))
+        XCTAssertTrue(module.context.isDemo)
+
+        let live = AppServices(settings: settings(), moduleTypes: types, environment: [:], arguments: [])
+        XCTAssertEqual(try XCTUnwrap(live.modules.module(SelfContainedModule.self)).context.runMode, .live)
     }
 }
 

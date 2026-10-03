@@ -59,10 +59,11 @@ final class PartyStore: ObservableObject {
 
     private static let trackerKey = "party.presence"
 
-    init(environment: [String: String] = ProcessInfo.processInfo.environment,
-         arguments: [String] = CommandLine.arguments) {
-        isDemo = environment["NOTCHDECK_DEMO"] == "1"
-        isSnapshot = arguments.contains("--snapshot")
+    /// - Parameter environment: the snapshot-only knobs, such as
+    ///   `NOTCHDECK_PARTY_PREVIEW` and a local `NOTCHDECK_PARTY_SERVER`.
+    init(runMode: RunMode, environment: [String: String] = ProcessInfo.processInfo.environment) {
+        isDemo = runMode.isDemo
+        isSnapshot = runMode.isSnapshot
         if isDemo {
             repository = nil
             credentials = InMemoryPartyCredentialStore()

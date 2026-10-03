@@ -23,8 +23,8 @@ final class ClaudeAskSession: ObservableObject {
     /// `isClaudeMissing` after a newer one finished.
     private var lookupGeneration = 0
 
-    init() {
-        isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
+    init(runMode: RunMode) {
+        isDemo = runMode.isDemo
         conversation = isDemo ? .demo : ClaudeAskConversation()
     }
 

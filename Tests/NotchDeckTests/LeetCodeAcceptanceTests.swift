@@ -16,8 +16,10 @@ final class LeetCodeAcceptanceTests: XCTestCase {
     private var leetCode: LeetCodeModule!
 
     override func setUp() async throws {
-        // The real modules read demo mode from the environment, so none of
-        // them touches the user's data, the calendar or the network.
+        // The modules get demo mode from their context (the environment
+        // passed below), so none of them touches the user's data, the
+        // calendar or the network. The variable is for the one singleton no
+        // context reaches yet, `FocusController.shared`.
         setenv("NOTCHDECK_DEMO", "1", 1)
         let catalog = ModuleList.catalog(of: moduleTypes)
         let settings = SettingsStore.ephemeral(catalog: catalog)

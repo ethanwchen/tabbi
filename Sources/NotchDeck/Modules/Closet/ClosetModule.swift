@@ -23,10 +23,11 @@ final class ClosetModule: NotchModule {
 
     init(context: ModuleContext) {
         let settings = context.settings
-        let store = ClosetStore(storage: context.storage)
+        let store = ClosetStore(storage: context.storage, runMode: context.runMode)
         let focus = context.focusTimer
         coach = PetCoachController(
             storage: context.storage,
+            runMode: context.runMode,
             profile: { [store] in store.profile },
             lines: { PetCoachMessages.lines(kitSettings: settings.activeKit?.defaults.settings(for: .closet)) },
             screen: { NotchGeometry.screen(for: settings.settings.preferredDisplay) },

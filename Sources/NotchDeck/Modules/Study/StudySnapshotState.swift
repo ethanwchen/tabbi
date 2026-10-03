@@ -21,7 +21,7 @@ enum StudySnapshotState: Equatable {
     case info(StudyMethodKind)
 
     static let current: StudySnapshotState? = {
-        guard CommandLine.arguments.contains("--snapshot"),
+        guard RunMode.current.isSnapshot,
               let value = ProcessInfo.processInfo.environment["NOTCHDECK_STUDY_SNAPSHOT"]
         else { return nil }
         return parse(value)

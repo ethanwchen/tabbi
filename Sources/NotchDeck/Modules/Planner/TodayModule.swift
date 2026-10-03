@@ -29,7 +29,7 @@ final class TodayModule: NotchModule {
         }
         store = PlannerStore(focus: context.focusTimer, storage: context.storage,
                              planSettings: TodayPlanSettings(kit: context.activeKit?.defaults),
-                             activity: context.activityLog)
+                             activity: context.activityLog, runMode: context.runMode)
         providers = context.providers
         store.followSharedWork(from: context.providers.$snapshot, excluding: context.id)
         // `$settings` emits before the new value is stored, so read the kit

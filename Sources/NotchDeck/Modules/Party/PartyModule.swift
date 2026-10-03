@@ -13,9 +13,10 @@ final class PartyModule: NotchModule {
         id: .party, title: "Party", symbol: "person.3.fill", category: .study,
         accent: ModuleAccent(red: 1.00, green: 0.42, blue: 0.62)
     )
-    private let store = PartyStore()
+    private let store: PartyStore
 
     init(context: ModuleContext) {
+        store = PartyStore(runMode: context.runMode)
         store.followFocus(from: context.providers.$snapshot.map(\.focus).eraseToAnyPublisher())
     }
 

@@ -31,12 +31,10 @@ final class AppServices {
         self.settings = settings
         let providers = ProviderHub()
         let shared = SharedServices()
-        let isDemo = environment["NOTCHDECK_DEMO"] == "1"
-        let isSnapshot = arguments.contains("--snapshot")
+        let runMode = RunMode(environment: environment, arguments: arguments)
         modules = ModuleRegistry(moduleTypes.map { type in
             type.init(context: ModuleContext(id: type.descriptor.id, edition: edition, settings: settings,
-                                             providers: providers, shared: shared,
-                                             isDemo: isDemo, isSnapshot: isSnapshot))
+                                             providers: providers, shared: shared, runMode: runMode))
         })
         providers.attach(modules)
         self.providers = providers

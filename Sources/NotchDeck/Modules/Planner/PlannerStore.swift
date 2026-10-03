@@ -46,7 +46,7 @@ final class PlannerStore: ObservableObject {
     /// Pomodoro, so the layout has one timer.
     @Published var focusClockOwner: ModuleID?
     /// Plan My Day; its proposal replaces the checklist while active.
-    private(set) lazy var plan = DayPlanStore(upNext: upNext, settings: planSettings)
+    private(set) lazy var plan = DayPlanStore(upNext: upNext, settings: planSettings, runMode: runMode)
     /// The End-of-Day Review; its card replaces the checklist while open.
     let review: DayReviewStore
 
@@ -60,20 +60,22 @@ final class PlannerStore: ObservableObject {
     var canEdit: Bool { !isUnreadable }
 
     private let repository: PlannerRepository?
+    private let runMode: RunMode
     /// Where checked-off tasks are logged, as Today's.
     private let activity: ActivityLog?
     private var cancellables: Set<AnyCancellable> = []
 
     init(focus: FocusStore, storage: EditionStorage, planSettings: TodayPlanSettings = TodayPlanSettings(),
-         activity: ActivityLog? = nil) {
+         activity: ActivityLog? = nil, runMode: RunMode) {
         self.focus = focus
         self.activity = activity
+        self.runMode = runMode
         self.planSettings = planSettings
-        upNext = UpNextStore(sampleDay: planSettings.sampleDay)
+        upNext = UpNextStore(sampleDay: planSettings.sampleDay, runMode: runMode)
         review = DayReviewStore(storage: storage, studyPreview: planSettings.planMode == .study,
-                                sampleDay: planSettings.sampleDay)
+                                sampleDay: planSettings.sampleDay, runMode: runMode)
         let today = PlannerDayKey(date: Date())
-        if ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1" {
+        if runMode.isDemo {
             repository = nil
             day = .sample(on: today, kind: planSettings.sampleDay)
             return

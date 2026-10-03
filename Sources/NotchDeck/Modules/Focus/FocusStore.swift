@@ -38,9 +38,9 @@ final class FocusStore: ObservableObject {
     private var phaseEndTimer: Timer?
     private let notifications: FocusNotifications?
 
-    init(activity: ActivityLog? = nil) {
+    init(activity: ActivityLog? = nil, runMode: RunMode) {
         self.activity = activity
-        isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
+        isDemo = runMode.isDemo
         if isDemo {
             timer = Self.demoTimer(now: Date())
             notifications = nil

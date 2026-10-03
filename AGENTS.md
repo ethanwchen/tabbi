@@ -58,7 +58,8 @@ Judge them against the design rules below before you call the work done.
 - `Sources/NotchDeck/Modules/ModuleContext.swift` - what every module gets
   in `init(context:)`: its id, the edition, read access to settings and the
   active kit (`kitApplied` fires when the user applies a kit), the
-  `ProviderHub`, a logger, the demo and snapshot flags, the edition's
+  `ProviderHub`, a logger, the `runMode` (live, demo data, snapshot
+  rendering; hand it to your store, never read `NOTCHDECK_DEMO` yourself), the edition's
   `storage` (`EditionStorage`: put files in `storage.folder("<Name>")`,
   never in a hardcoded Application Support path, so each edition keeps
   its own data), and `SharedServices`. A module builds and owns its store there and follows
@@ -145,7 +146,7 @@ A new vertical is its own files plus one line in `ModuleList.swift`.
 3. In `init(context:)`, build the store and follow what the context offers (`kitApplied`, `providers.$snapshot`, shared services).
    Read your kit section with `context.activeKit?.defaults.settings(for: context.id)` and again on each `kitApplied`, leniently: a value that doesn't fit keeps your default.
    Start background work in `start()` and undo it in `stop()`; the registry calls them when the module's switch changes.
-   In demo mode (`context.isDemo`) show realistic sample data and touch no network, calendar or CLI.
+   In demo mode (`context.isDemo`, from `context.runMode`) show realistic sample data and touch no network, calendar or CLI; in a snapshot run (`context.isSnapshot`) play no sound and save nothing.
 4. Share what you have through `provision`: `tasks` and `progress` show in Today and Plan my day, `progress` also in the ticker's progress preview, and `highlights` as the module's own ticker line.
    The fixture publishes a task ("LeetCode: Two Sum", about 20 min), a goal ("LeetCode daily, 1 problem left") and a highlight that goes away once the problem is solved.
    Log what the user did in `context.activityLog`: the fixture records a `problem.solved` activity of its own kind when the problem is solved.

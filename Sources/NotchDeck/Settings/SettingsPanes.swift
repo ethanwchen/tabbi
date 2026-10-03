@@ -499,7 +499,7 @@ struct ClaudeSettingsPane: View {
     @FocusState private var fieldFocused: Bool
 
     /// With `NOTCHDECK_DEMO=1` the pane shows a sample result and never runs the CLI.
-    private static let isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
+    private static var isDemo: Bool { RunMode.current.isDemo }
 
     var body: some View {
         Form {

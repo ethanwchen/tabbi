@@ -52,7 +52,7 @@ final class StudyStore: ObservableObject {
     private let isDemo: Bool
     /// Snapshot runs read the saved session but never write it back, so
     /// rendering with another kit can't change the user's method.
-    private let isSnapshot = CommandLine.arguments.contains("--snapshot")
+    private let isSnapshot: Bool
     private let defaults = UserDefaults.standard
     private var cancellables: Set<AnyCancellable> = []
     private var isVisible = false
@@ -81,8 +81,9 @@ final class StudyStore: ObservableObject {
     ///     kit no longer offers moves to its starting method.
     ///   - goal: the active kit's daily study goal.
     init(menu: StudyMethodMenu = .all, goal: StudyDailyGoal = .standard, storage: EditionStorage,
-         activity: ActivityLog? = nil) {
-        isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
+         activity: ActivityLog? = nil, runMode: RunMode) {
+        isDemo = runMode.isDemo
+        isSnapshot = runMode.isSnapshot
         self.storage = storage
         self.activity = activity
         self.menu = menu
