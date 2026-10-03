@@ -43,8 +43,8 @@ final class FocusSettingsTests: XCTestCase {
         XCTAssertFalse(settings.doNotDisturb)
         XCTAssertNil(settings.activeOnShortcut)
         XCTAssertFalse(settings.hasEffect)
-        XCTAssertEqual(settings.onShortcut, "NotchDeck Focus On")
-        XCTAssertEqual(settings.offShortcut, "NotchDeck Focus Off")
+        XCTAssertEqual(settings.onShortcut, "Tabbi Focus On")
+        XCTAssertEqual(settings.offShortcut, "Tabbi Focus Off")
     }
 
     func testShortcutsOnlyRunWhenDoNotDisturbIsOnAndNamed() {
@@ -91,6 +91,15 @@ final class FocusSettingsTests: XCTestCase {
         XCTAssertTrue(settings.mix.isOff)
         XCTAssertEqual(settings.onShortcut, FocusSettings.suggestedOnShortcut)
     }
+
+    /// Settings saved before the rename hold the old suggested names, which
+    /// match the Shortcuts users created then, so loading must keep them.
+    func testSavedShortcutNamesFromBeforeTheRenameAreKept() throws {
+        let json = #"{"doNotDisturb": true, "onShortcut": "NotchDeck Focus On", "offShortcut": "NotchDeck Focus Off"}"#
+        let settings = try JSONDecoder().decode(FocusSettings.self, from: Data(json.utf8))
+        XCTAssertEqual(settings.activeOnShortcut, "NotchDeck Focus On")
+        XCTAssertEqual(settings.activeOffShortcut, "NotchDeck Focus Off")
+    }
 }
 
 final class FocusShortcutRunnerTests: XCTestCase {
@@ -117,9 +126,9 @@ final class FocusShortcutRunnerTests: XCTestCase {
     func testPassesTheNameAndReportsSuccess() async throws {
         let log = directory.appendingPathComponent("args")
         let runner = FocusShortcutRunner(executable: try fakeShortcuts(#"printf '%s|' "$@" > "\#(log.path)""#))
-        let result = await runner.run("  NotchDeck Focus On ")
+        let result = await runner.run("  Tabbi Focus On ")
         XCTAssertEqual(result, .succeeded)
-        XCTAssertEqual(try String(contentsOf: log, encoding: .utf8), "run|NotchDeck Focus On|")
+        XCTAssertEqual(try String(contentsOf: log, encoding: .utf8), "run|Tabbi Focus On|")
     }
 
     func testMissingShortcutIsReportedAsNotFound() async throws {
@@ -162,7 +171,7 @@ final class FocusShortcutRunnerTests: XCTestCase {
     /// fail gracefully rather than hang or crash.
     func testRealShortcutsToolReportsAMissingShortcut() async throws {
         try XCTSkipUnless(FileManager.default.isExecutableFile(atPath: FocusShortcutRunner.systemExecutable.path))
-        let name = "NotchDeck Test Missing \(UUID().uuidString)"
+        let name = "Tabbi Test Missing \(UUID().uuidString)"
         let result = await FocusShortcutRunner().run(name)
         XCTAssertEqual(result, .notFound(name: name))
     }

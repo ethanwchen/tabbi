@@ -7,8 +7,10 @@ import Foundation
 /// Disturb alone, so updating the app never makes a focus session louder.
 public struct FocusSettings: Codable, Equatable, Sendable {
     /// Suggested shortcut names; Settings explains how to create them.
-    public static let suggestedOnShortcut = "NotchDeck Focus On"
-    public static let suggestedOffShortcut = "NotchDeck Focus Off"
+    /// Every save writes the names, so settings saved before the rename
+    /// keep the old "NotchDeck Focus On/Off" that match the user's Shortcuts.
+    public static let suggestedOnShortcut = "Tabbi Focus On"
+    public static let suggestedOffShortcut = "Tabbi Focus Off"
 
     public static let `default` = FocusSettings()
 
