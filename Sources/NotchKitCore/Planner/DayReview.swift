@@ -97,7 +97,7 @@ public struct DayReviewStat: Hashable, Sendable {
 /// them for the End-of-Day Review (the last week, in `UserDefaults`).
 ///
 /// Only read once, to move its sessions into the activity log
-/// (`FocusTimerStorage.takeSessionLog`); nothing writes it any more.
+/// (`FocusTimerStorage.moveSessionLog`); nothing writes it any more.
 public struct FocusSessionLog: Hashable, Codable, Sendable {
     public struct Session: Hashable, Codable, Sendable {
         public let endedAt: Date

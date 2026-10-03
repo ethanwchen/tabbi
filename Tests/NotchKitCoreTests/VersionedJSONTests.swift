@@ -133,8 +133,36 @@ final class VersionedJSONTests: XCTestCase {
             XCTAssertNil(defaults.object(forKey: "planner.focusSessions"))
             let storage = FocusTimerStorage(defaults: defaults)
             XCTAssertEqual(storage.loadTimer(), timer)
-            XCTAssertEqual(storage.takeSessionLog(), log)
-            XCTAssertNil(storage.takeSessionLog(), "the legacy log is handed out once")
+            var moved: [FocusSessionLog] = []
+            storage.moveSessionLog { moved.append($0); return true }
+            storage.moveSessionLog { moved.append($0); return true }
+            XCTAssertEqual(moved, [log], "the legacy log is handed out once")
+        }
+    }
+
+    func testTheLegacySessionLogStaysUntilItIsMoved() throws {
+        try withDefaults { defaults in
+            let storage = FocusTimerStorage(defaults: defaults)
+            let log = FocusSessionLog(sessions: [.init(endedAt: Date(timeIntervalSinceReferenceDate: 0), duration: 1500)])
+            defaults.set(try FocusTimerStorage.sessionLogSchema.encode(log), forKey: FocusTimerStorage.sessionLogKey)
+
+            storage.moveSessionLog { _ in false }
+            XCTAssertNotNil(defaults.object(forKey: FocusTimerStorage.sessionLogKey), "a failed move keeps the history")
+
+            var moved: [FocusSessionLog] = []
+            storage.moveSessionLog { moved.append($0); return true }
+            XCTAssertEqual(moved, [log])
+            XCTAssertNil(defaults.object(forKey: FocusTimerStorage.sessionLogKey))
+        }
+    }
+
+    func testAnUnreadableLegacySessionLogIsDropped() throws {
+        try withDefaults { defaults in
+            let storage = FocusTimerStorage(defaults: defaults)
+            defaults.set(Data("not json".utf8), forKey: FocusTimerStorage.sessionLogKey)
+
+            storage.moveSessionLog { _ in XCTFail("nothing to move"); return true }
+            XCTAssertNil(defaults.object(forKey: FocusTimerStorage.sessionLogKey))
         }
     }
 

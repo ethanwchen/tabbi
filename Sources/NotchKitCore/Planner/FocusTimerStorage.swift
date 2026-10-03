@@ -32,13 +32,15 @@ public struct FocusTimerStorage {
         if let data = try? Self.timerSchema.encode(timer) { defaults.set(data, forKey: Self.timerKey) }
     }
 
-    /// The session log an older build saved, removed from `UserDefaults` so
-    /// it is handed out once, for moving into the activity log. Nil when
-    /// there is none or it can't be read.
-    public func takeSessionLog() -> FocusSessionLog? {
-        guard let data = defaults.data(forKey: Self.sessionLogKey) else { return nil }
+    /// Hands the session log an older build saved to `move`, and removes it
+    /// from `UserDefaults` once `move` reports that it is safely stored
+    /// elsewhere (the activity log), so a failed move is retried on the next
+    /// launch instead of losing the history. A log that can't be read is
+    /// removed without calling `move`, since nothing can be recovered from it.
+    public func moveSessionLog(_ move: (FocusSessionLog) -> Bool) {
+        guard let data = defaults.data(forKey: Self.sessionLogKey) else { return }
+        if let log = try? Self.sessionLogSchema.decode(FocusSessionLog.self, from: data), !move(log) { return }
         defaults.removeObject(forKey: Self.sessionLogKey)
-        return try? Self.sessionLogSchema.decode(FocusSessionLog.self, from: data)
     }
 
     /// Moves values from the `planner.*` keys to the `focus.*` keys, unless

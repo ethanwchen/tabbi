@@ -14,6 +14,12 @@ public struct PetSave: Hashable, Codable, Sendable {
     /// points, so a completed session is credited once, also across
     /// relaunches. Nil until the pet first sees a timer.
     public var creditedFocusCount: Int?
+    /// The module whose clock `creditedFocusCount` counts. Clocks count
+    /// differently (the Pomodoro's total is lifetime, a Study session's
+    /// starts at zero), so another clock's count is never compared against
+    /// it. Nil in saves from before it was kept: the next clock adopts the
+    /// count, as those builds did.
+    public var creditedFocusSource: ModuleID?
 
     public init(profile: PetProfile, ledger: PetPointsLedger = PetPointsLedger()) {
         self.version = PetSave.currentVersion
@@ -34,6 +40,7 @@ public struct PetSave: Hashable, Codable, Sendable {
         var save = PetSave(profile: raw.profile, ledger: raw.ledger)
         save.version = raw.version
         save.creditedFocusCount = raw.creditedFocusCount
+        save.creditedFocusSource = raw.creditedFocusSource
         return save
     }
 

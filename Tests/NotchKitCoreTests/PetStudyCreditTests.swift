@@ -131,10 +131,36 @@ final class PetStudyCreditTests: XCTestCase {
         XCTAssertEqual(second.unlocked, [.accessory(.roundGlasses), .outfit(.scrubs)], "only newly affordable items")
     }
 
+    func testSwitchingToAnotherClockOnlySetsANewBaseline() throws {
+        var closet = closet()
+        var pomodoro = running()
+        pomodoro.advance(to: t0.addingTimeInterval(25 * 60))
+        XCTAssertNotNil(closet.credit(from: running().shared, to: pomodoro.shared, at: t0.addingTimeInterval(25 * 60)))
+        let balance = closet.balance
+
+        // A Study session starts at zero; then the Pomodoro, with its lifetime
+        // total, comes back. Neither switch is a completed session.
+        let study = ProvidedFocus(source: .study, phase: .focus, clock: .countUp(since: t0), phaseLength: nil)
+        XCTAssertNil(closet.credit(from: pomodoro.shared, to: study, at: t0.addingTimeInterval(26 * 60)))
+        XCTAssertNil(closet.credit(from: study, to: pomodoro.shared, at: t0.addingTimeInterval(27 * 60)))
+        XCTAssertEqual(closet.balance, balance)
+        XCTAssertEqual(closet.save.creditedFocusSource, pomodoro.shared.source)
+
+        // The baseline still pays the Pomodoro's next completion once.
+        var next = pomodoro
+        next.advance(to: t0.addingTimeInterval(30 * 60))
+        next.start(at: t0.addingTimeInterval(30 * 60))
+        let started = next
+        next.advance(to: t0.addingTimeInterval(55 * 60))
+        XCTAssertEqual(closet.credit(from: started.shared, to: next.shared, at: t0.addingTimeInterval(55 * 60))?.completedSessions, 1)
+    }
+
     func testCreditedCountSurvivesSaving() throws {
         var save = PetSave(profile: .starter(.dog))
         save.creditedFocusCount = 7
+        save.creditedFocusSource = .study
         XCTAssertEqual(try PetSave.decode(save.encoded()).creditedFocusCount, 7)
+        XCTAssertEqual(try PetSave.decode(save.encoded()).creditedFocusSource, .study)
         let old = Data(#"{"version":1,"profile":\#(String(decoding: try JSONEncoder().encode(PetProfile.starter(.cat)), as: UTF8.self)),"ledger":{"earned":0,"spent":0,"purchased":[]}}"#.utf8)
         XCTAssertNil(try PetSave.decode(old).creditedFocusCount, "saves from before credits decode")
     }

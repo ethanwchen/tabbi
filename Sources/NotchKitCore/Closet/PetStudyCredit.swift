@@ -32,7 +32,10 @@ extension PetCloset {
     ///   completion bonus (`PetPointsRules`). Completions are counted from
     ///   `ProvidedFocus.completedFocusCount` against `PetSave.creditedFocusCount`,
     ///   so sessions that ended while the app was closed are paid once, and
-    ///   the first timer the pet ever sees only sets the baseline.
+    ///   the first timer the pet ever sees only sets the baseline. The
+    ///   baseline belongs to one clock (`PetSave.creditedFocusSource`): when
+    ///   the shared clock switches to another module's, its count only sets
+    ///   a new baseline, since one clock's total says nothing about another's.
     /// - A focus phase cut short (skipped or reset) earns the minutes
     ///   actually studied, without the bonus; short ones earn nothing.
     ///
@@ -40,8 +43,10 @@ extension PetCloset {
     public mutating func credit(from old: ProvidedFocus?, to new: ProvidedFocus?, at now: Date) -> PetStudyAward? {
         guard let new else { return nil }
         let count = new.completedFocusCount
-        guard let credited = save.creditedFocusCount, credited <= count else {
-            // First sight of a timer, or its history was reset: start over.
+        let sameClock = save.creditedFocusSource.map { $0 == new.source } ?? true
+        save.creditedFocusSource = new.source
+        guard sameClock, let credited = save.creditedFocusCount, credited <= count else {
+            // First sight of a timer, another clock, or its history was reset: start over.
             save.creditedFocusCount = count
             return nil
         }
@@ -56,7 +61,7 @@ extension PetCloset {
             }
             award.completedSessions = count - credited
             award.minutes = minutes * award.completedSessions
-        } else if let old, Self.focusWasCutShort(old, by: new) {
+        } else if let old, old.source == new.source, Self.focusWasCutShort(old, by: new) {
             let minutes = Int(old.elapsed(at: now) / 60)
             award.points = recordStudy(minutes: minutes, completed: false)
             award.minutes = minutes

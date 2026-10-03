@@ -29,12 +29,18 @@ final class ActivityLog {
     /// Each record as it is logged, on the main actor.
     var recorded: AnyPublisher<ActivityRecord, Never> { subject.eraseToAnyPublisher() }
 
-    /// Appends records and tells followers about each.
-    func record(_ records: [ActivityRecord]) {
-        guard !records.isEmpty else { return }
+    /// Appends records and tells followers about each. Returns true when
+    /// they are on disk, false when they only live in memory for this run
+    /// (demo and snapshot runs, or a day file that can't be written), so a
+    /// caller moving history out of an older store knows when it may drop it.
+    @discardableResult
+    func record(_ records: [ActivityRecord]) -> Bool {
+        guard !records.isEmpty else { return repository != nil }
+        var saved = false
         if let repository {
             do {
                 try repository.append(records)
+                saved = true
             } catch {
                 unsaved += records
             }
@@ -42,9 +48,11 @@ final class ActivityLog {
             unsaved += records
         }
         records.forEach(subject.send)
+        return saved
     }
 
-    func record(_ record: ActivityRecord) {
+    @discardableResult
+    func record(_ record: ActivityRecord) -> Bool {
         self.record([record])
     }
 
