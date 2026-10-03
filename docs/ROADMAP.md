@@ -14,8 +14,8 @@ A kit can also ship as a branded edition of the same binary, such as StudyNotch 
 
 Three ideas drive every design decision:
 
-- **Modules, not features.** Every tab is a self-contained module with its own folder, settings, lifecycle and data. Adding one never means editing another.
-- **Providers, not wiring.** Modules share data through small protocols (things to do today, calendar events, study progress, focus state). Today, Plan my day and the closed-notch ticker read every provider, so a new module shows up in them without new plumbing.
+- **Modules, not features.** Every tab is a self-contained module with its own folder, settings, lifecycle and data. Adding one means writing its own files plus one line in the module list, never editing another module or shared code.
+- **Providers, not wiring.** Modules share data through one provision (tasks, calendar events, progress, a focus clock, a study tally, ticker highlights) and log what happened in a shared activity log. Today, Plan my day, Wrap Up and the closed-notch ticker read the merged snapshot, so a new module shows up in them without new plumbing.
 - **Data before code.** Kits and content packs are plain files anyone can write, review and share. They are the safe path for community contributions.
 
 ## Kits
@@ -93,4 +93,6 @@ Constraints to keep in mind:
 
 ## Near-term engineering
 
-- Apply the kit's pet defaults once the Closet module reads them (tabs, ticker previews, focus sounds, study methods and starter tasks already apply).
+
+- Open module categories, so a vertical can group its modules under a category of its own in Settings and kit pickers.
+- Describe editions as data (id, name, bundle id, default kit, icon) beside the kits, so a new branded edition is a file, not a code change.
