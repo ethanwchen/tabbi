@@ -10,7 +10,8 @@ import NotchKitCore
 /// types: `PartyPresenceTracker` decides when the shared focus timer is
 /// worth a heartbeat, `PartyHeartbeatSchedule` when the next one is due or
 /// how long to back off, and `PartyRefreshPlan` when friends and the party
-/// are fetched (never while the panel is hidden). Heartbeats stop after an
+/// are fetched (while the panel is hidden, only the party, once after
+/// connecting and once per notch opening). Heartbeats stop after an
 /// `offline` one, which is sent when going invisible, when the Mac sleeps,
 /// and when the module stops or the app quits.
 ///

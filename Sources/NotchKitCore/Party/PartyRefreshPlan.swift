@@ -12,8 +12,8 @@ public enum PartyFeed: String, CaseIterable, Hashable, Sendable {
 /// and once per opening otherwise. While the panel is hidden the party is
 /// still fetched once after connecting (via `invalidate`) and once whenever
 /// the notch opens on any tab, so the closed notch's party pets stay
-/// current. The free plan's
-/// daily request budget is shared by every user, so this never polls faster.
+/// current. The free plan's daily request budget is shared by every user,
+/// so this never polls faster.
 ///
 /// The store calls `didFetch` after every attempt, failed or not, so a down
 /// server is retried at the normal interval instead of in a tight loop.
