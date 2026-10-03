@@ -48,11 +48,6 @@ final class StudyStore: ObservableObject {
     var canCountCards: Bool { isDemo || cardsReviewedToday != nil }
     /// The pet in the panel's corner, wearing the look saved by the Closet.
     let pet: PetPlayer
-    /// The pet shown before the Closet has saved one: the active kit's
-    /// starter (`PetProfile.starter(kit:)`), as the Closet shows it.
-    var starterPet: PetProfile {
-        didSet { if !isDemo, starterPet != oldValue { pet.update(profile: Self.petProfile(in: storage, starter: starterPet)) } }
-    }
 
     private let isDemo: Bool
     /// Snapshot runs read the saved session but never write it back, so
@@ -70,7 +65,6 @@ final class StudyStore: ObservableObject {
     /// Set when the log on disk could not be read: new stretches are still
     /// logged in memory, but the file is never overwritten, so nothing is lost.
     private let logIsUnreadable: Bool
-    private let storage: EditionStorage
     /// Where every phase that ran is logged, as the Study module's.
     private let activity: ActivityLog?
     private let focusMode: FocusController?
@@ -88,15 +82,14 @@ final class StudyStore: ObservableObject {
     ///   - goal: the active kit's daily study goal.
     ///   - focusMode: plays the focus sound and turns on Do Not Disturb
     ///     during deep focus blocks; nil in tests.
-    ///   - starterPet: the pet to show until the Closet saves one.
+    ///   - petProfile: the study pet's look now; `follow(pet:)` keeps it
+    ///     current. Demo runs show their own sample pet.
     init(menu: StudyMethodMenu = .all, goal: StudyDailyGoal = .standard, storage: EditionStorage,
-         activity: ActivityLog? = nil, focusMode: FocusController? = nil, starterPet: PetProfile = .starter(.cat),
+         activity: ActivityLog? = nil, focusMode: FocusController? = nil, petProfile: PetProfile = .starter(.cat),
          runMode: RunMode) {
-        self.starterPet = starterPet
         isDemo = runMode.isDemo
         self.focusMode = focusMode
         isSnapshot = runMode.isSnapshot
-        self.storage = storage
         self.activity = activity
         self.menu = menu
         self.goal = goal
@@ -127,7 +120,7 @@ final class StudyStore: ObservableObject {
         // A snapshot of one method shows it fresh, as a new user would see it.
         if let kind = StudySnapshotState.current?.demoMethod { saved = StudySession(method: .preset(kind, custom: custom)) }
         session = saved
-        pet = PetPlayer(profile: Self.petProfile(in: storage, starter: starterPet), asleep: StudyPetCue.isDozing(saved))
+        pet = PetPlayer(profile: petProfile, asleep: StudyPetCue.isDozing(saved))
         deepFocus = defaults.bool(forKey: Self.deepFocusKey)
         logURL = Self.logURL(in: storage)
         do {
@@ -153,13 +146,17 @@ final class StudyStore: ObservableObject {
         storage.file("log.json", in: "Study")
     }
 
-    /// The pet's look from the Closet's save
-    /// (`~/Library/Application Support/<edition>/Pet/pet.json`), read only:
-    /// the Closet owns that file. A missing or unreadable save shows
-    /// `starter`.
-    static func petProfile(in storage: EditionStorage, starter: PetProfile) -> PetProfile {
-        let save = try? PetSave.load(from: storage.file("pet.json", in: "Pet"))
-        return save?.profile ?? starter
+    /// Dresses the corner pet in the study pet's look as it changes (a new
+    /// outfit or breed in the Closet, or a kit's starter pet before the
+    /// first save). Demo runs keep their sample pet.
+    func follow(pet profiles: AnyPublisher<PetProfile, Never>) {
+        guard !isDemo else { return }
+        profiles
+            .removeDuplicates()
+            .sink { [weak self] profile in
+                MainActor.assumeIsolated { self?.pet.update(profile: profile) }
+            }
+            .store(in: &cancellables)
     }
 
     /// The kit's methods for the picker, with Custom on the user's lengths.
@@ -178,8 +175,6 @@ final class StudyStore: ObservableObject {
         catchUp()
         updateTicker()
         guard visible else { return }
-        // Pick up a new outfit or breed chosen in the Closet since last time.
-        if !isDemo { pet.update(profile: Self.petProfile(in: storage, starter: starterPet)) }
         if celebrationPending {
             celebrationPending = false
             pet.send(.celebrate)

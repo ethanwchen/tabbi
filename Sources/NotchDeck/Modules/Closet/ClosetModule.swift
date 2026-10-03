@@ -4,9 +4,9 @@ import NotchKitCore
 import NotchKit
 
 /// Closet: preview the study pet, rename and recolor it, and dress it in
-/// items unlocked with study points. The pet itself lives in `ClosetStore`,
-/// which this module owns and hands the coach, so the notch and the coach
-/// show the same pet.
+/// items unlocked with study points. The pet itself is the shared
+/// `context.studyPet`, which this module edits and hands the coach, so the
+/// notch, the coach, Study and Party show the same pet.
 /// The pet's study coach runs while this module is on, and its Settings
 /// pane shows with it. The pet is shared as a provider, so the closed
 /// notch shows it too.
@@ -23,12 +23,10 @@ final class ClosetModule: NotchModule {
     let store: ClosetStore
     /// The pet's study coach: nudges from the notch during focus phases.
     let coach: PetCoachController
-    private var kitSubscription: AnyCancellable?
 
     init(context: ModuleContext) {
         let settings = context.settings
-        let store = ClosetStore(storage: context.storage, runMode: context.runMode,
-                                starter: .starter(kit: context.activeKit?.defaults))
+        let store = context.studyPet
         let focus = context.focusTimer
         coach = PetCoachController(
             storage: context.storage,
@@ -40,13 +38,8 @@ final class ClosetModule: NotchModule {
             resumeTimer: { focus.start() }
         )
         self.store = store
-        let timers = context.providers.$snapshot.map(\.focus).eraseToAnyPublisher()
-        coach.follow(focus: timers)
-        store.follow(focus: timers)
+        coach.follow(focus: context.providers.$snapshot.map(\.focus).eraseToAnyPublisher())
         coach.follow(awards: store.awards.eraseToAnyPublisher())
-        // Until the pet is saved, it is the active kit's starter pet.
-        kitSubscription = context.kitApplied
-            .sink { [store] in store.useStarter(.starter(kit: $0.kit.defaults)) }
     }
 
     func start() { coach.start() }
@@ -61,5 +54,21 @@ final class ClosetModule: NotchModule {
 
     func makePanel() -> AnyView {
         AnyView(ClosetPanel(store: store))
+    }
+}
+
+extension ModuleContext {
+    /// The one study pet: its look, points and save
+    /// (`<edition>/Pet/pet.json`). The Closet edits it and the coach, Study
+    /// and Party show it, so no other module reads the save. It earns points
+    /// from the shared focus clock and, until first saved, follows the
+    /// active kit's starter pet.
+    var studyPet: ClosetStore {
+        shared.resolve {
+            let store = ClosetStore(storage: storage, runMode: runMode, starter: .starter(kit: activeKit?.defaults))
+            store.follow(focus: providers.$snapshot.map(\.focus).eraseToAnyPublisher())
+            store.follow(kits: kitApplied)
+            return store
+        }
     }
 }

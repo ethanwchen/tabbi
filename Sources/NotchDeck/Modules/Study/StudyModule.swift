@@ -23,14 +23,14 @@ final class StudyModule: NotchModule {
         focusMode = context.focusMode
         store = StudyStore(menu: StudyMethodMenu(kit: kit), goal: StudyDailyGoal(kit: kit), storage: context.storage,
                            activity: context.activityLog, focusMode: focusMode,
-                           starterPet: .starter(kit: kit), runMode: context.runMode)
+                           petProfile: context.studyPet.profile, runMode: context.runMode)
         store.followCards(from: context.providers.$snapshot)
+        store.follow(pet: context.studyPet.profiles)
         context.kitApplied
             .sink { [store] application in
                 let kit = application.kit.defaults
                 // Undo keeps the user's method when the earlier kit offers it.
                 store.use(StudyMethodMenu(kit: kit), goal: StudyDailyGoal(kit: kit), kitApplied: application.kind != .undo)
-                store.starterPet = .starter(kit: kit)
             }
             .store(in: &cancellables)
     }

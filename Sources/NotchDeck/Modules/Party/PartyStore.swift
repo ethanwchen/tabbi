@@ -109,6 +109,14 @@ final class PartyStore: ObservableObject {
             .store(in: &cancellables)
     }
 
+    /// Follows the study pet (`context.studyPet`), so friends see the pet
+    /// dressed in the Closet rather than a starter.
+    func follow(pet profiles: AnyPublisher<PetProfile, Never>) {
+        profiles
+            .sink { [weak self] profile in self?.update(pet: profile) }
+            .store(in: &cancellables)
+    }
+
     /// `NOTCHDECK_PARTY_SERVER` for a `--snapshot` run, with the optional
     /// `NOTCHDECK_PARTY_TOKEN` and `NOTCHDECK_PARTY_CODE` of the user to
     /// render as. Only plain-http servers count, which `PartyServer.parse`

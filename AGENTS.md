@@ -70,7 +70,9 @@ Judge them against the design rules below before you call the work done.
   `FocusStore` in `Modules/Focus/`) is how Today, Focus and the pet coach
   share one Pomodoro timer, and `context.focusMode` (the `FocusController`
   beside it) is the one focus mode (sound, playlist, Do Not Disturb) that
-  the Pomodoro and Study's deep focus blocks drive. A module that takes
+  the Pomodoro and Study's deep focus blocks drive. Likewise
+  `context.studyPet` (the `ClosetStore` in `Modules/Closet/`) is the one
+  owner of the pet's save, and Study and Party follow its `profiles`. A module that takes
   state of its own from a kit's defaults (Focus: the focus sound) reports
   whether it still matches through `usesKitDefaults(of:)`, so Settings
   knows when Reset to Kit Defaults has work to do.

@@ -19,6 +19,7 @@ final class PartyModule: NotchModule {
     init(context: ModuleContext) {
         store = PartyStore(runMode: context.runMode)
         store.followFocus(from: context.providers.$snapshot.map(\.focus).eraseToAnyPublisher())
+        store.follow(pet: context.studyPet.profiles)
     }
 
     func makePanel() -> AnyView {

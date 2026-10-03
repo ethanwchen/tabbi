@@ -5,8 +5,10 @@ import NotchKitCore
 import NotchKit
 
 /// The study pet's look and points, persisted as one `PetSave`, plus the
-/// animated preview the Closet tab shows. `ClosetModule` owns it so the pet
-/// in the notch and the coach can share the same pet.
+/// animated preview the Closet tab shows. It is the only reader and writer
+/// of the pet's save: modules share it as `context.studyPet` and follow
+/// `profiles`, so the Closet, the coach, Study's corner pet and Party all
+/// show the same pet.
 ///
 /// With `NOTCHDECK_DEMO=1` it starts from `PetCloset.demo` and never writes,
 /// so demos and snapshots can't touch a real save.
@@ -29,6 +31,7 @@ final class ClosetStore: ObservableObject {
     let awards = PassthroughSubject<PetStudyAward, Never>()
 
     private var focusSubscription: AnyCancellable?
+    private var kitSubscription: AnyCancellable?
     private var lastFocus: ProvidedFocus?
     private let saveURL: URL?
     /// Set when the save on disk could not be read: the closet then runs on
@@ -97,6 +100,11 @@ final class ClosetStore: ObservableObject {
 
     var profile: PetProfile { closet.profile }
 
+    /// The pet's look now and on every change, for modules that show it.
+    var profiles: AnyPublisher<PetProfile, Never> {
+        $closet.map(\.profile).removeDuplicates().eraseToAnyPublisher()
+    }
+
     // MARK: Editing
 
     /// Wears, takes off, or buys `item`. A purchase makes the pet celebrate.
@@ -130,6 +138,11 @@ final class ClosetStore: ObservableObject {
     private func refreshPreview() {
         let shown = tryingOn.map { PetCloset.wearing($0, on: closet.profile) } ?? closet.profile
         preview.update(profile: shown)
+    }
+
+    /// Until the pet is saved, it is the active kit's starter pet.
+    func follow(kits: AnyPublisher<SettingsStore.KitApplication, Never>) {
+        kitSubscription = kits.sink { [weak self] in self?.useStarter(.starter(kit: $0.kit.defaults)) }
     }
 
     /// Swaps a pet that was never saved for a new kit's starter.
