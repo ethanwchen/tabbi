@@ -68,8 +68,26 @@ enum AppSettingsPane: String, CaseIterable {
         return (own(leading) + modulePanes + own(trailing)).map { pane in
             SettingsPane(id: pane.id, title: pane.title, symbol: pane.symbol,
                          view: AnyView(pane.view.environmentObject(settings)
-                                         .environment(\.moduleCatalog, settings.catalog)), settleTime: pane.settleTime)
+                                         .environment(\.moduleCatalog, settings.catalog)
+                                         .environment(\.modulesUseKitDefaults, { modules.usesKitDefaults(of: $0) })),
+                         settleTime: pane.settleTime)
         }
+    }
+}
+
+private struct ModulesUseKitDefaultsKey: EnvironmentKey {
+    static let defaultValue: @MainActor @Sendable (KitManifest) -> AnyPublisher<Bool, Never> = { _ in
+        Just(true).eraseToAnyPublisher()
+    }
+}
+
+extension EnvironmentValues {
+    /// Whether the modules' kit-derived state (`NotchModule.usesKitDefaults`)
+    /// matches a kit, so the Kit section in Settings can tell if Reset to
+    /// Kit Defaults has work to do without knowing any module.
+    var modulesUseKitDefaults: @MainActor @Sendable (KitManifest) -> AnyPublisher<Bool, Never> {
+        get { self[ModulesUseKitDefaultsKey.self] }
+        set { self[ModulesUseKitDefaultsKey.self] = newValue }
     }
 }
 

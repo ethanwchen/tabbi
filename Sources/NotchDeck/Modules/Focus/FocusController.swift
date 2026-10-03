@@ -7,9 +7,9 @@ import os
 /// deep focus is on) and performs what `FocusSession` decides (focus
 /// sound, playlist, Do Not Disturb shortcuts).
 ///
-/// One shared instance, because the timer, the Focus settings pane, the
-/// Modules pane and kit defaults all need it and none of them owns the
-/// others. It also owns the persisted
+/// One instance per app, `context.focusMode`, because the focus timer,
+/// Study, the Focus settings pane and kit defaults all need it and none of
+/// them owns the others. It also owns the persisted
 /// `FocusSettings`, so a change from Settings applies immediately: volume and
 /// sounds update live while focusing (crossfading), the rest on the next
 /// focus phase.
@@ -18,12 +18,10 @@ import os
 /// polling. An Apple Event is only sent to an app that is already running,
 /// except `play` when a focus phase really starts with a playlist set.
 ///
-/// Inert with `NOTCHDECK_DEMO=1` and while rendering snapshots: it shows
-/// sample settings and never plays sound, runs scripts or saves.
+/// Inert in demo and snapshot runs: it shows sample settings and never
+/// plays sound, runs scripts or saves.
 @MainActor
 final class FocusController: ObservableObject {
-    static let shared = FocusController()
-
     @Published var settings: FocusSettings {
         didSet { settingsChanged(from: oldValue) }
     }
@@ -54,9 +52,8 @@ final class FocusController: ObservableObject {
     private var shortcutRuns: Task<Void, Never>?
     private var observers: [NSObjectProtocol] = []
 
-    init(repository: FocusSettingsRepository = FocusSettingsRepository()) {
-        // A singleton no context reaches, so it reads the process's mode.
-        isLive = !RunMode.current.isEphemeral
+    init(runMode: RunMode, repository: FocusSettingsRepository = FocusSettingsRepository()) {
+        isLive = !runMode.isEphemeral
         self.repository = repository
         settings = isLive ? repository.load() : Self.sampleSettings
         guard isLive else { return }

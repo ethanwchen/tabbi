@@ -6,7 +6,7 @@ import NotchKit
 /// Mix and Playlist. They edit the shared focus settings, so the Focus
 /// timer plays the same sound; Mix and Playlist open the in-notch mixer.
 struct StudySoundRow: View {
-    @ObservedObject private var focus = FocusController.shared
+    @ObservedObject var focus: FocusController
     /// Whether study blocks play the sound; the chips dim while it's off.
     let isActive: Bool
     let openMixer: () -> Void
@@ -77,7 +77,7 @@ private struct StudySoundChipButton: View {
 /// Disturb. Everything edits the shared focus settings, which crossfade
 /// live while focusing.
 struct StudySoundMixer: View {
-    @ObservedObject private var focus = FocusController.shared
+    @ObservedObject var focus: FocusController
     let close: () -> Void
 
     var body: some View {
@@ -88,7 +88,7 @@ struct StudySoundMixer: View {
                     blend.frame(maxHeight: .infinity, alignment: .top)
                 }
                 Card(padding: Theme.Spacing.s) {
-                    StudyPlaylistList().frame(maxHeight: .infinity, alignment: .top)
+                    StudyPlaylistList(focus: focus).frame(maxHeight: .infinity, alignment: .top)
                 }
                 .frame(width: 176)
             }
@@ -282,7 +282,7 @@ private struct StudyLevelSlider: View {
 /// The study playlist presets; tapping the one in use turns it off. A link
 /// typed in Settings that isn't a preset shows on top as "Your playlist".
 private struct StudyPlaylistList: View {
-    @ObservedObject private var focus = FocusController.shared
+    @ObservedObject var focus: FocusController
 
     var body: some View {
         let text = focus.settings.playlistText

@@ -46,6 +46,13 @@ protocol NotchModule: AnyObject {
     /// It may emit on any thread (a network callback, say): the hub hops
     /// to the main actor itself.
     var provision: AnyPublisher<ModuleProvision, Never>? { get }
+
+    /// Whether the state this module takes from a kit's defaults (Focus:
+    /// the focus sound and Do Not Disturb) still matches `kit`, published
+    /// again whenever that state changes, so Settings knows whether Reset
+    /// to Kit Defaults would change anything. Nil when the module keeps
+    /// nothing from a kit beyond the layout, which Settings checks itself.
+    func usesKitDefaults(of kit: KitManifest) -> AnyPublisher<Bool, Never>?
 }
 
 extension NotchModule {
@@ -56,6 +63,7 @@ extension NotchModule {
     func start() {}
     func stop() {}
     var provision: AnyPublisher<ModuleProvision, Never>? { nil }
+    func usesKitDefaults(of kit: KitManifest) -> AnyPublisher<Bool, Never>? { nil }
 }
 
 /// The modules this build runs, in canonical order, keyed by id.
@@ -101,6 +109,17 @@ final class ModuleRegistry {
     func panel(for id: ModuleID) -> AnyView {
         index[id]?.makePanel()
             ?? AnyView(ModulePlaceholder(module: id, detail: "This module isn't available in this build"))
+    }
+
+    /// True while every module's kit-derived state matches `kit`, enabled
+    /// or not (Study and Today run focus mode with the Focus tab off).
+    func usesKitDefaults(of kit: KitManifest) -> AnyPublisher<Bool, Never> {
+        modules.compactMap { $0.usesKitDefaults(of: kit) }
+            .reduce(Just(true).eraseToAnyPublisher()) { all, module in
+                all.combineLatest(module).map { $0 && $1 }.eraseToAnyPublisher()
+            }
+            .removeDuplicates()
+            .eraseToAnyPublisher()
     }
 
     /// Ids of the modules currently started.

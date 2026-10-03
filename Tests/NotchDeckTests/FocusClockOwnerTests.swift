@@ -13,7 +13,6 @@ final class FocusClockOwnerTests: XCTestCase {
     private var today: TodayModule!
 
     override func setUp() async throws {
-        setenv("NOTCHDECK_DEMO", "1", 1)
         let settings = SettingsStore.ephemeral(catalog: ModuleList.catalog(of: moduleTypes))
         services = AppServices(settings: settings, moduleTypes: moduleTypes,
                                environment: ["NOTCHDECK_DEMO": "1"], arguments: [])
@@ -23,7 +22,6 @@ final class FocusClockOwnerTests: XCTestCase {
     override func tearDown() async throws {
         services = nil
         today = nil
-        unsetenv("NOTCHDECK_DEMO")
     }
 
     func testStudyOwnsTheTimerWhileItIsOn() {

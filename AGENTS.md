@@ -67,7 +67,12 @@ Judge them against the design rules below before you call the work done.
   `ModuleContext` extension in its owner's folder and resolved through
   `shared`, so all of them get one instance: `context.focusTimer` (the
   `FocusStore` in `Modules/Focus/`) is how Today, Focus and the pet coach
-  share one Pomodoro timer.
+  share one Pomodoro timer, and `context.focusMode` (the `FocusController`
+  beside it) is the one focus mode (sound, playlist, Do Not Disturb) that
+  the Pomodoro and Study's deep focus blocks drive. A module that takes
+  state of its own from a kit's defaults (Focus: the focus sound) reports
+  whether it still matches through `usesKitDefaults(of:)`, so Settings
+  knows when Reset to Kit Defaults has work to do.
 - Persisted formats are versioned. A JSON file (or `UserDefaults` value)
   goes through a `VersionedJSON` schema (`NotchKitCore/Persistence/`),
   which writes a `schemaVersion` key and runs ordered migration steps on

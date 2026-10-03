@@ -13,10 +13,10 @@ import NotchKit
 /// Finished stretches move from the session into the persisted `StudyLog`,
 /// which totals the day and holds earned points for the pet ledger.
 /// With deep focus on, study phases drive the shared focus mode (sound and
-/// Do Not Disturb) through `FocusController`, alongside the Focus timer.
+/// Do Not Disturb) through `context.focusMode`, alongside the Focus timer.
 /// It also plays the corner pet, which dozes while the clock is stopped,
 /// wakes when it runs and celebrates each finished block (`StudyPetCue`).
-/// With `NOTCHDECK_DEMO=1` it shows a sample Pomodoro round and a sample
+/// In demo mode it shows a sample Pomodoro round and a sample
 /// day, and never touches sounds or disk.
 @MainActor
 final class StudyStore: ObservableObject {
@@ -68,6 +68,7 @@ final class StudyStore: ObservableObject {
     private let storage: EditionStorage
     /// Where every phase that ran is logged, as the Study module's.
     private let activity: ActivityLog?
+    private let focusMode: FocusController?
     /// A block finished while the panel was hidden; the pet celebrates it
     /// the next time the panel shows, so the hop is never played unseen.
     private var celebrationPending = false
@@ -80,9 +81,12 @@ final class StudyStore: ObservableObject {
     ///   - menu: the active kit's methods; a saved session on a method the
     ///     kit no longer offers moves to its starting method.
     ///   - goal: the active kit's daily study goal.
+    ///   - focusMode: plays the focus sound and turns on Do Not Disturb
+    ///     during deep focus blocks; nil in tests.
     init(menu: StudyMethodMenu = .all, goal: StudyDailyGoal = .standard, storage: EditionStorage,
-         activity: ActivityLog? = nil, runMode: RunMode) {
+         activity: ActivityLog? = nil, focusMode: FocusController? = nil, runMode: RunMode) {
         isDemo = runMode.isDemo
+        self.focusMode = focusMode
         isSnapshot = runMode.isSnapshot
         self.storage = storage
         self.activity = activity
@@ -368,8 +372,7 @@ final class StudyStore: ObservableObject {
     /// Tells focus mode what the session needs. `FocusController` ignores
     /// repeats and is inert in demo and snapshot runs.
     private func reportFocusActivity() {
-        FocusController.shared.activityChanged(FocusActivity(session, deepFocus: deepFocus && isEnabled),
-                                               from: .study)
+        focusMode?.activityChanged(FocusActivity(session, deepFocus: deepFocus && isEnabled), from: .study)
     }
 
     /// Plays the pet's reaction to a session change. A celebration that

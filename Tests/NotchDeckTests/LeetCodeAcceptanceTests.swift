@@ -18,9 +18,7 @@ final class LeetCodeAcceptanceTests: XCTestCase {
     override func setUp() async throws {
         // The modules get demo mode from their context (the environment
         // passed below), so none of them touches the user's data, the
-        // calendar or the network. The variable is for the one singleton no
-        // context reaches yet, `FocusController.shared`.
-        setenv("NOTCHDECK_DEMO", "1", 1)
+        // calendar or the network.
         let catalog = ModuleList.catalog(of: moduleTypes)
         let settings = SettingsStore.ephemeral(catalog: catalog)
         // Only LeetCode runs, so no real module starts background work.
@@ -36,7 +34,6 @@ final class LeetCodeAcceptanceTests: XCTestCase {
     override func tearDown() async throws {
         services = nil
         leetCode = nil
-        unsetenv("NOTCHDECK_DEMO")
     }
 
     func testTheModuleIsInTheCatalogTheTabBarAndSettingsRead() {

@@ -1,4 +1,5 @@
 import AppKit
+import Combine
 import SwiftUI
 import UniformTypeIdentifiers
 import NotchKitCore
@@ -155,8 +156,10 @@ struct ModulesSettingsPane: View {
 /// imports kits shared as JSON files (see docs/kits.md).
 private struct KitSection: View {
     @EnvironmentObject private var store: SettingsStore
-    /// Reset also restores the kit's focus sound, so it counts toward "already at defaults".
-    @ObservedObject private var focus = FocusController.shared
+    /// Reset also restores what modules take from the kit (Focus: the focus
+    /// sound), so their state counts toward "already at defaults".
+    @Environment(\.modulesUseKitDefaults) private var modulesUseKitDefaults
+    @State private var modulesMatchKit = true
     /// The outcome of the last import or removal, shown under the buttons.
     @State private var message: (text: String, isWarning: Bool)?
     /// A kit with onboarding questions the user picked; its questions show
@@ -167,7 +170,7 @@ private struct KitSection: View {
     @State private var importIssues: [KitIssue]?
 
     private var usesKitDefaults: Bool {
-        store.usesKitDefaults && (store.activeKit.map { focus.settings.usesDefaults(of: $0.defaults) } ?? true)
+        store.usesKitDefaults && (store.activeKit == nil || modulesMatchKit)
     }
 
     var body: some View {
@@ -209,6 +212,9 @@ private struct KitSection: View {
             Text("Kit")
         } footer: {
             SectionFooter("A kit is a premade set of tabs and defaults. Switching kits or resetting replaces your tabs, notch previews and focus sound with the kit's, and switching adds its starter tasks to Today. Other settings stay.")
+        }
+        .onReceive(store.activeKit.map(modulesUseKitDefaults) ?? Just(true).eraseToAnyPublisher()) {
+            modulesMatchKit = $0
         }
         .sheet(item: $askingKit) { kit in
             KitQuestionsView(kit: kit, dismissal: .cancel, back: { cancelQuestions(for: kit) }) { answers in

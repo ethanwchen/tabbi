@@ -13,12 +13,14 @@ final class StudyModule: NotchModule {
         kitSettings: KitSettingsSchema(["dailyGoalMinutes": StudyDailyGoal.kitSettingType])
     )
     private let store: StudyStore
+    private let focusMode: FocusController
     private var cancellables: Set<AnyCancellable> = []
 
     init(context: ModuleContext) {
         let kit = context.activeKit?.defaults
+        focusMode = context.focusMode
         store = StudyStore(menu: StudyMethodMenu(kit: kit), goal: StudyDailyGoal(kit: kit), storage: context.storage,
-                           activity: context.activityLog, runMode: context.runMode)
+                           activity: context.activityLog, focusMode: focusMode, runMode: context.runMode)
         store.followCards(from: context.providers.$snapshot)
         context.kitApplied
             .sink { [store] application in
@@ -29,7 +31,7 @@ final class StudyModule: NotchModule {
     }
 
     func makePanel() -> AnyView {
-        AnyView(StudyPanel(store: store))
+        AnyView(StudyPanel(store: store, focusMode: focusMode))
     }
 
     /// Today's study minutes against the kit's daily goal, so Today lists

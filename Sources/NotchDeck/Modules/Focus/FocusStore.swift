@@ -13,12 +13,12 @@ import NotchKitCore
 /// only ticks once a second while the panel is visible.
 ///
 /// Notification permission is requested the first time the user starts the
-/// timer. With `NOTCHDECK_DEMO=1` it shows a running sample session and never
+/// timer. In demo mode it shows a running sample session and never
 /// touches notifications, sounds, or disk.
 @MainActor
 final class FocusStore: ObservableObject {
     @Published private(set) var timer: FocusTimer {
-        didSet { FocusController.shared.timerChanged(timer) }
+        didSet { focusMode?.timerChanged(timer) }
     }
     /// The moment the view measures against; advances every second while visible.
     @Published private(set) var now = Date()
@@ -26,6 +26,8 @@ final class FocusStore: ObservableObject {
     private(set) var sessionLog = FocusSessionLog()
 
     private let isDemo: Bool
+    /// Starts and ends focus mode with the focus phases; nil in tests.
+    private let focusMode: FocusController?
     private let storage = FocusTimerStorage()
     /// Where finished focus stretches and breaks are logged, as the Focus module's.
     private let activity: ActivityLog?
@@ -38,8 +40,9 @@ final class FocusStore: ObservableObject {
     private var phaseEndTimer: Timer?
     private let notifications: FocusNotifications?
 
-    init(activity: ActivityLog? = nil, runMode: RunMode) {
+    init(activity: ActivityLog? = nil, focusMode: FocusController? = nil, runMode: RunMode) {
         self.activity = activity
+        self.focusMode = focusMode
         isDemo = runMode.isDemo
         if isDemo {
             timer = Self.demoTimer(now: Date())

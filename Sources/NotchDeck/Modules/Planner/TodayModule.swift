@@ -15,6 +15,7 @@ final class TodayModule: NotchModule {
     /// Internal so app tests can check what Today shows.
     let store: PlannerStore
     private let providers: ProviderHub
+    private let focusMode: FocusController
     private var cancellables: Set<AnyCancellable> = []
 
     init(context: ModuleContext) {
@@ -31,6 +32,7 @@ final class TodayModule: NotchModule {
                              planSettings: TodayPlanSettings(kit: context.activeKit?.defaults),
                              activity: context.activityLog, runMode: context.runMode)
         providers = context.providers
+        focusMode = context.focusMode
         store.followSharedWork(from: context.providers.$snapshot, excluding: context.id)
         // `$settings` emits before the new value is stored, so read the kit
         // id from the emission.
@@ -70,7 +72,7 @@ final class TodayModule: NotchModule {
 
     /// Today embeds the focus timer, so it offers the focus mode settings
     /// too (as the Focus tab does).
-    func makeSettingsPane() -> SettingsPane? { .focus }
+    func makeSettingsPane() -> SettingsPane? { .focus(focusMode) }
 
     /// The checklist, today's calendar events, and the focus timer.
     var provision: AnyPublisher<ModuleProvision, Never>? {

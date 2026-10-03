@@ -7,6 +7,8 @@ import NotchKit
 /// does while it runs, and the timer controls.
 struct FocusPanel: View {
     @ObservedObject var store: FocusStore
+    /// Focus mode, whose sound and Do Not Disturb settings the panel shows.
+    let focusMode: FocusController
     /// What other modules share, for the task this session is linked to.
     let providers: ProviderHub
 
@@ -16,7 +18,7 @@ struct FocusPanel: View {
                 .frame(width: 176)
             VStack(spacing: Theme.Spacing.s) {
                 FocusTaskCard(store: store, providers: providers)
-                FocusModeCard()
+                FocusModeCard(controller: focusMode)
                 FocusControls(store: store)
             }
         }
@@ -125,7 +127,7 @@ private struct FocusTaskCard: View {
 
 /// What focus mode does while a focus phase runs, from Settings › Focus.
 private struct FocusModeCard: View {
-    @ObservedObject private var controller = FocusController.shared
+    @ObservedObject var controller: FocusController
 
     var body: some View {
         let settings = controller.settings

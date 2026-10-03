@@ -14,7 +14,6 @@ final class ActivityLogServiceTests: XCTestCase {
 
     override func tearDown() async throws {
         try? FileManager.default.removeItem(at: folder)
-        unsetenv("NOTCHDECK_DEMO")
     }
 
     private var today: PlannerDayKey { PlannerDayKey(date: Date()) }
@@ -62,7 +61,6 @@ final class ActivityLogServiceTests: XCTestCase {
     }
 
     func testCheckingATaskOffLogsIt() throws {
-        setenv("NOTCHDECK_DEMO", "1", 1)
         let log = ActivityLog(repository: nil)
         let store = PlannerStore(focus: FocusStore(runMode: .demo), storage: EditionStorage(root: folder), activity: log,
                                  runMode: .demo)
