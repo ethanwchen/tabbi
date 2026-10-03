@@ -33,6 +33,8 @@ When the kit is the one you use, the buttons read **Apply Update** and **Keep My
 - **Remove Kit.** Shown for imported kits only. Tabbi switches back to the default kit.
 - **Undo.** After a switch, an import or a removal, the message under the buttons has an Undo button.
 It puts back the tabs, notch previews and focus sound you had, removes the starter tasks the switch added that you haven't checked off or renamed, and puts the kit files back as they were (an import is taken out again, a replaced import comes back, a removed kit returns).
+Preferences a kit doesn't set, such as the hotkey, hover and launch at login, keep any change you made since the switch.
+Undoing **Add Only** or **Keep My Tabs** only takes that import back, since your tabs didn't change.
 Only the last change can be undone; Reset to Kit Defaults is not undoable.
 
 After switching, you can still turn tabs on and off and reorder them below the Kit section.
