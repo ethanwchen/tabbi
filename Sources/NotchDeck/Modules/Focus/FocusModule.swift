@@ -18,6 +18,8 @@ final class FocusModule: NotchModule {
     /// Internal so app tests can drive focus mode.
     let focusMode: FocusController
     private let providers: ProviderHub
+    /// Focus mode as it was before the last kit switch, for undo.
+    private var settingsBeforeSwitch: FocusSettings?
     private var cancellables: Set<AnyCancellable> = []
 
     init(context: ModuleContext) {
@@ -26,9 +28,19 @@ final class FocusModule: NotchModule {
         providers = context.providers
         // A kit's focus sounds and mode defaults, also while this tab is off,
         // since Today and Study run focus mode too.
+        // Undo puts back the sound the user had before the switch.
         context.kitApplied
-            .sink { [focusMode] application in
-                focusMode.settings = focusMode.settings.applying(application.kit.defaults)
+            .sink { [weak self, focusMode] application in
+                switch application.kind {
+                case .switched:
+                    self?.settingsBeforeSwitch = focusMode.settings
+                    focusMode.settings = focusMode.settings.applying(application.kit.defaults)
+                case .reset:
+                    focusMode.settings = focusMode.settings.applying(application.kit.defaults)
+                case .undo:
+                    focusMode.settings = self?.settingsBeforeSwitch ?? focusMode.settings.applying(application.kit.defaults)
+                    self?.settingsBeforeSwitch = nil
+                }
             }
             .store(in: &cancellables)
     }

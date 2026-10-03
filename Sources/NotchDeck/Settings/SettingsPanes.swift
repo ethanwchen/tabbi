@@ -162,12 +162,10 @@ private struct KitSection: View {
     @State private var modulesMatchKit = true
     /// The outcome of the last import or removal, shown under the buttons.
     @State private var message: (text: String, isWarning: Bool)?
-    /// A kit with onboarding questions the user picked; its questions show
-    /// in a sheet and the switch happens only once they confirm.
-    @State private var askingKit: KitManifest?
-    /// Set while `askingKit` is a just-imported kit: what it uses that this
-    /// build skips, reported once the user answers or cancels.
-    @State private var importIssues: [KitIssue]?
+    /// The kit sheet: a picked kit's onboarding questions, or an imported
+    /// kit's questions and then what it will change. Nothing switches, and
+    /// an import isn't saved, until the user confirms.
+    @State private var sheet: KitSheet?
 
     private var usesKitDefaults: Bool {
         store.usesKitDefaults && (store.activeKit == nil || modulesMatchKit)
@@ -189,7 +187,7 @@ private struct KitSection: View {
 
             HStack(spacing: 8) {
                 Button("Import Kit…", action: importKit)
-                    .help("Add a kit someone shared as a .json file")
+                    .help("Add a kit someone shared as a .json file; you see what it changes first")
                 if store.canRemoveActiveKit {
                     Button("Remove Kit", role: .destructive, action: removeKit)
                         .help("Delete this imported kit and go back to the default kit")
@@ -203,10 +201,17 @@ private struct KitSection: View {
             }
 
             if let message {
-                Label(message.text, systemImage: message.isWarning ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
-                    .font(.callout)
-                    .foregroundStyle(message.isWarning ? AnyShapeStyle(.orange) : AnyShapeStyle(.secondary))
-                    .fixedSize(horizontal: false, vertical: true)
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Label(message.text, systemImage: message.isWarning ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
+                        .font(.callout)
+                        .foregroundStyle(message.isWarning ? AnyShapeStyle(.orange) : AnyShapeStyle(.secondary))
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer()
+                    if !message.isWarning, let undo = store.lastKitSwitch {
+                        Button("Undo", action: undoSwitch)
+                            .help("Go back to the tabs and kit you had before \(undo.kitName)")
+                    }
+                }
             }
         } header: {
             Text("Kit")
@@ -216,16 +221,37 @@ private struct KitSection: View {
         .onReceive(store.activeKit.map(modulesUseKitDefaults) ?? Just(true).eraseToAnyPublisher()) {
             modulesMatchKit = $0
         }
-        .sheet(item: $askingKit) { kit in
-            KitQuestionsView(kit: kit, dismissal: .cancel, back: { cancelQuestions(for: kit) }) { answers in
-                askingKit = nil
-                store.switchKit(to: kit.id, answers: answers)
-                if let issues = importIssues {
-                    message = importMessage("Imported \(kit.name).", issues: issues)
-                    importIssues = nil
+        .sheet(item: $sheet) { sheet in
+            sheetContent(sheet)
+                .frame(width: 520)
+        }
+    }
+
+    @ViewBuilder
+    private func sheetContent(_ current: KitSheet) -> some View {
+        switch current.step {
+        case .questions:
+            KitQuestionsView(kit: current.kit, answers: current.answers, dismissal: .cancel, back: { sheet = nil }) { answers in
+                if current.candidate == nil {
+                    sheet = nil
+                    switchKit(to: current.kit.id, answers: answers)
+                } else {
+                    sheet = current.reviewing(answers)
                 }
             }
-            .frame(width: 520)
+        case .review:
+            if let candidate = current.candidate {
+                KitImportReviewView(
+                    candidate: candidate,
+                    preview: store.preview(of: candidate.kit, answers: current.answers),
+                    issues: store.issues(of: candidate.kit),
+                    isActiveKit: candidate.kit.id == store.settings.kitID,
+                    back: candidate.kit.onboarding.isEmpty ? nil : { sheet = current.askingAgain },
+                    cancel: { sheet = nil },
+                    addOnly: { install(candidate, switchingWith: nil) },
+                    apply: { install(candidate, switchingWith: current.answers) }
+                )
+            }
         }
     }
 
@@ -236,13 +262,20 @@ private struct KitSection: View {
             message = nil
             guard id != store.settings.kitID, let kit = store.kits[id] else { return }
             if kit.onboarding.isEmpty {
-                store.switchKit(to: id)
+                switchKit(to: id, answers: [:])
             } else {
-                askingKit = kit
+                sheet = KitSheet(kit: kit)
             }
         })
     }
 
+    private func switchKit(to id: String, answers: KitAnswers) {
+        store.switchKit(to: id, answers: answers)
+        message = ("Switched to \(store.activeKit?.name ?? "the kit").", false)
+    }
+
+    /// Reads and checks the picked file, then shows the kit's questions (if
+    /// any) and what it changes; nothing is saved before the user confirms.
     private func importKit() {
         let panel = NSOpenPanel()
         panel.title = "Import a Kit"
@@ -250,43 +283,38 @@ private struct KitSection: View {
         panel.allowedContentTypes = [.json]
         panel.canChooseDirectories = false
         panel.allowsMultipleSelection = false
-        let apply: (NSApplication.ModalResponse) -> Void = { response in
+        let open: (NSApplication.ModalResponse) -> Void = { response in
             guard response == .OK, let url = panel.url else { return }
+            message = nil
             do {
-                let (kit, issues) = try store.importKit(from: url)
-                if kit.onboarding.isEmpty {
-                    store.switchKit(to: kit.id)
-                    message = importMessage("Imported \(kit.name).", issues: issues)
-                } else {
-                    importIssues = issues
-                    askingKit = kit
-                }
+                sheet = KitSheet(candidate: try store.inspectKit(from: url))
             } catch {
                 message = ("\(error)", true)
             }
         }
         if let window = NSApp.keyWindow {
-            panel.beginSheetModal(for: window, completionHandler: apply)
+            panel.beginSheetModal(for: window, completionHandler: open)
         } else {
-            apply(panel.runModal())
+            open(panel.runModal())
         }
     }
 
-    /// Closes the questions sheet without switching. A just-imported kit
-    /// stays installed, so the user can pick it later.
-    private func cancelQuestions(for kit: KitManifest) {
-        askingKit = nil
-        guard let issues = importIssues else { return }
-        importIssues = nil
-        let note = kit.id == store.settings.kitID
-            ? "Updated \(kit.name); your tabs are unchanged."
-            : "Imported \(kit.name). Pick it under Current kit to use it."
-        message = importMessage(note, issues: issues)
-    }
-
-    /// The import outcome, with what the kit uses that this build skips.
-    private func importMessage(_ note: String, issues: [KitIssue]) -> (text: String, isWarning: Bool) {
-        issues.isEmpty ? (note, false) : (note + " " + issues.map(\.description).joined(separator: " "), true)
+    /// Saves a reviewed import and, with `answers`, switches to it.
+    private func install(_ candidate: KitImportCandidate, switchingWith answers: KitAnswers?) {
+        sheet = nil
+        let kit = candidate.kit
+        do {
+            try store.installKit(candidate, switchingWith: answers)
+            let note: String
+            switch (answers != nil, kit.id == store.settings.kitID) {
+            case (true, _): note = candidate.overwritesFile ? "Updated \(kit.name) and applied it." : "Imported \(kit.name) and switched to it."
+            case (false, true): note = "Updated \(kit.name); your tabs are unchanged."
+            case (false, false): note = "Imported \(kit.name). Pick it under Current kit to use it."
+            }
+            message = (note, false)
+        } catch {
+            message = ("Couldn't import \(kit.name): \(error)", true)
+        }
     }
 
     private func removeKit() {
@@ -297,6 +325,55 @@ private struct KitSection: View {
         } catch {
             message = ("Couldn't remove \(name): \(error.localizedDescription)", true)
         }
+    }
+
+    private func undoSwitch() {
+        store.undoKitSwitch()
+        message = ("Back to \(store.activeKit?.name ?? "your previous kit").", false)
+    }
+}
+
+/// The kit sheet's content: the kit, the import it came from (nil when the
+/// user picked an installed kit), and which step shows.
+private struct KitSheet: Identifiable {
+    enum Step {
+        case questions
+        /// What the import changes for `answers`.
+        case review
+    }
+
+    let kit: KitManifest
+    var candidate: KitImportCandidate?
+    var step: Step
+    /// The answers picked so far, which the questions start from when the
+    /// user goes back from the review.
+    var answers: KitAnswers = [:]
+    /// Stays the same across steps, so moving between them keeps the sheet up.
+    let id = UUID()
+
+    init(kit: KitManifest) {
+        self.kit = kit
+        step = .questions
+    }
+
+    /// An import shows its questions first when it has any.
+    init(candidate: KitImportCandidate) {
+        kit = candidate.kit
+        self.candidate = candidate
+        step = candidate.kit.onboarding.isEmpty ? .review : .questions
+    }
+
+    func reviewing(_ answers: KitAnswers) -> KitSheet {
+        var next = self
+        next.step = .review
+        next.answers = answers
+        return next
+    }
+
+    var askingAgain: KitSheet {
+        var next = self
+        next.step = .questions
+        return next
     }
 }
 

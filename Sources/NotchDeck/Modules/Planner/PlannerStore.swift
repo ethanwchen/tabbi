@@ -158,9 +158,19 @@ final class PlannerStore: ObservableObject {
         edit { $0.add(title) != nil }
     }
 
-    /// Adds a kit's starter tasks that aren't on today's list yet.
-    func addStarterTasks(_ titles: [String]) {
-        edit { !$0.addStarterTasks(titles).isEmpty }
+    /// Adds a kit's starter tasks that aren't on today's list yet and
+    /// returns them, so undoing the kit switch can take them back.
+    @discardableResult
+    func addStarterTasks(_ titles: [String]) -> [PlannerItem] {
+        var added: [PlannerItem] = []
+        edit { added = $0.addStarterTasks(titles); return !added.isEmpty }
+        return added
+    }
+
+    /// Removes starter tasks `addStarterTasks` returned that the user hasn't
+    /// renamed or checked off since.
+    func takeBackStarterTasks(_ added: [PlannerItem]) {
+        edit { $0.removeUntouched(added) }
     }
 
     /// Checks an item off or back on. Checking one off logs `taskCompleted`

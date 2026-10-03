@@ -218,7 +218,7 @@ private struct KitCard: View {
 }
 
 /// A kit's tabs as a row of small tinted symbols.
-private struct TabIcons: View {
+struct TabIcons: View {
     let modules: [ModuleID]
     @Environment(\.moduleCatalog) private var catalog
 
@@ -251,7 +251,18 @@ struct KitQuestionsView: View {
     var dismissal: Dismissal = .back
     let back: () -> Void
     let start: (KitAnswers) -> Void
-    @State private var answers: KitAnswers = [:]
+    @State private var answers: KitAnswers
+
+    /// - Parameter answers: the answers to start from, e.g. when the user
+    ///   comes back from the import review to change them.
+    init(kit: KitManifest, answers: KitAnswers = [:], dismissal: Dismissal = .back,
+         back: @escaping () -> Void, start: @escaping (KitAnswers) -> Void) {
+        self.kit = kit
+        self.dismissal = dismissal
+        self.back = back
+        self.start = start
+        _answers = State(initialValue: answers)
+    }
     @Environment(\.moduleCatalog) private var catalog
 
     var body: some View {

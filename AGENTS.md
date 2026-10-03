@@ -57,7 +57,8 @@ Judge them against the design rules below before you call the work done.
   Focus pane, since both show the focus timer.
 - `Sources/NotchDeck/Modules/ModuleContext.swift` - what every module gets
   in `init(context:)`: its id, the edition, read access to settings and the
-  active kit (`kitApplied` fires when the user applies a kit), the
+  active kit (`kitApplied` fires when the user switches to, resets or
+  undoes a kit; on `.undo` put back what the undone switch changed), the
   `ProviderHub`, a logger, the `runMode` (live, demo data, snapshot
   rendering; hand it to your store, never read `NOTCHDECK_DEMO` yourself), the edition's
   `storage` (`EditionStorage`: put files in `storage.folder("<Name>")`,

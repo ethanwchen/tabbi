@@ -16,6 +16,8 @@ final class TodayModule: NotchModule {
     let store: PlannerStore
     private let providers: ProviderHub
     private let focusMode: FocusController
+    /// The starter tasks the last kit switch added, which undoing it takes back.
+    private var starterTasksAdded: [PlannerItem] = []
     private var cancellables: Set<AnyCancellable> = []
 
     init(context: ModuleContext) {
@@ -49,11 +51,17 @@ final class TodayModule: NotchModule {
             .sink { [store] in store.focusClockOwner = $0 }
             .store(in: &cancellables)
         context.kitApplied
-            .sink { [store] application in
+            .sink { [weak self, store] application in
                 // Also when re-applying the same kit, which may have been re-imported.
                 store.planSettings = TodayPlanSettings(kit: application.kit.defaults)
-                if application.addsStarterTasks {
-                    store.addStarterTasks(application.kit.starterTasks(answers: application.answers))
+                switch application.kind {
+                case .switched:
+                    self?.starterTasksAdded = store.addStarterTasks(application.kit.starterTasks(answers: application.answers))
+                case .undo:
+                    store.takeBackStarterTasks(self?.starterTasksAdded ?? [])
+                    self?.starterTasksAdded = []
+                case .reset:
+                    break
                 }
             }
             .store(in: &cancellables)

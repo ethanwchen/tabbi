@@ -25,7 +25,8 @@ final class StudyModule: NotchModule {
         context.kitApplied
             .sink { [store] application in
                 let kit = application.kit.defaults
-                store.use(StudyMethodMenu(kit: kit), goal: StudyDailyGoal(kit: kit), kitApplied: true)
+                // Undo keeps the user's method when the earlier kit offers it.
+                store.use(StudyMethodMenu(kit: kit), goal: StudyDailyGoal(kit: kit), kitApplied: application.kind != .undo)
             }
             .store(in: &cancellables)
     }

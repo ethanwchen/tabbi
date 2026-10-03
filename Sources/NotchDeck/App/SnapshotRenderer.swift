@@ -139,6 +139,29 @@ enum SnapshotRenderer {
             try? png.write(to: url)
             print(url.path)
         }
+        await renderKitImportReview(services, to: outputDirectory)
+    }
+
+    /// The review Settings shows before applying an imported kit: another
+    /// bundled kit posing as an update of an earlier import, so every row
+    /// shows.
+    private static func renderKitImportReview(_ services: AppServices, to outputDirectory: URL) async {
+        let settings = services.settings
+        let others = settings.kits.kits.filter { $0.id != settings.settings.kitID }
+        guard var kit = others.first(where: { !$0.starterTasks.isEmpty }) ?? others.first else { return }
+        var earlier = kit
+        earlier.version = "1.2"
+        kit.version = "1.3"
+        let candidate = KitImportCandidate(kit: kit, data: Data(), fileName: "\(kit.id).json", replaces: earlier)
+        let review = KitImportReviewView(
+            candidate: candidate, preview: settings.preview(of: kit), issues: settings.issues(of: kit),
+            isActiveKit: false, back: nil, cancel: {}, addOnly: {}, apply: {}
+        )
+        if let png = await sheetSnapshot(review.environment(\.moduleCatalog, settings.catalog).frame(width: 520)) {
+            let url = outputDirectory.appendingPathComponent("settings-kit-import.png")
+            try? png.write(to: url)
+            print(url.path)
+        }
     }
 
     /// Renders a sheet's content in an off-screen titleless window, since

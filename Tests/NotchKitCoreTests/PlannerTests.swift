@@ -242,4 +242,16 @@ final class PlannerStarterTaskTests: XCTestCase {
         XCTAssertTrue(day.addStarterTasks(["Plan the week"]).isEmpty, "applying a kit again adds nothing")
         XCTAssertEqual(day.items.count, 2)
     }
+
+    func testUndoTakesBackOnlyStarterTasksTheUserHasNotTouched() {
+        var day = PlannerDay(date: PlannerDayKey(date: Date()))
+        day.add("Mine")
+        let added = day.addStarterTasks(["Read", "Write", "Plan"])
+        day.toggle(added[0].id)
+        XCTAssertTrue(day.rename(added[1].id, to: "Write the essay"))
+
+        XCTAssertTrue(day.removeUntouched(added))
+        XCTAssertEqual(day.items.map(\.title), ["Mine", "Read", "Write the essay"])
+        XCTAssertFalse(day.removeUntouched(added), "nothing left to take back")
+    }
 }

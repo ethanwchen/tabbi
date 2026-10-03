@@ -26,9 +26,14 @@ The **Kit** section lets you:
 
 - **Switch kit.** If the kit has onboarding questions, a sheet asks them first, the same way first-run setup does; **Cancel** keeps your current kit. Your tabs change to the new kit's tabs for your answers, and its notch previews, focus sound, study methods and daily study goal replace yours if the kit sets them (a study block already under way keeps going). The kit's starter tasks, plus those your answers add, go on Today, skipping any already on the list. Every other preference stays as it is.
 - **Reset to Kit Defaults.** Puts the tabs, notch previews and focus sound back the way the kit ships them, without adding starter tasks again. The button is disabled when nothing would change.
-- **Import Kit…** Pick a `.json` kit file. NotchDeck checks it, saves a copy, asks the kit's questions if it has any, and switches to it.
-If you cancel the questions, the kit stays in the list so you can pick it later. If the kit mentions things this version doesn't know, such as a module from a newer release, you see a warning listing them, and they are skipped.
-- **Remove Kit.** Shown for imported kits only. NotchDeck switches back to the default kit.
+- **Import Kit…** Pick a `.json` kit file. Tabbi checks it and asks the kit's questions if it has any, then shows what the kit will do before anything is saved: the tabs it turns on and off, the permissions those new tabs may ask for, the starter tasks Today gets, whether the closed-notch previews change, and what this version skips (such as a module from a newer release).
+If you imported a kit with the same id before, the sheet says so (with both versions, when the files have a `version`), so a re-import never replaces the earlier copy unasked.
+**Switch Kit** saves the kit and switches to it, **Add Only** saves it so you can pick it later under Current kit, and **Cancel** saves nothing.
+When the kit is the one you use, the buttons read **Apply Update** and **Keep My Tabs**.
+- **Remove Kit.** Shown for imported kits only. Tabbi switches back to the default kit.
+- **Undo.** After a switch, an import or a removal, the message under the buttons has an Undo button.
+It puts back the tabs, notch previews and focus sound you had, removes the starter tasks the switch added that you haven't checked off or renamed, and puts the kit files back as they were (an import is taken out again, a replaced import comes back, a removed kit returns).
+Only the last change can be undone; Reset to Kit Defaults is not undoable.
 
 After switching, you can still turn tabs on and off and reorder them below the Kit section.
 
@@ -229,7 +234,7 @@ Tabbi refuses a kit file only when it can't be used at all:
 | `version` | 32 characters |
 | Task titles | 120 characters |
 
-Everything else is a warning shown after importing, and the value is skipped: an unknown module, study method, focus sound, ticker preview or pet breed, a module listed twice, a question id used twice, an answer id used twice in one question, a focus sound `level` outside 0 to 1 (it is clamped), or a field the format doesn't know (such as `defaults.tickers`).
+Everything else is a warning, shown in the import sheet before you switch, and the value is skipped: an unknown module, study method, focus sound, ticker preview or pet breed, a module listed twice, a question id used twice, an answer id used twice in one question, a focus sound `level` outside 0 to 1 (it is clamped), or a field the format doesn't know (such as `defaults.tickers`).
 This keeps kits written for newer versions working on older ones.
 Each module checks its own `moduleSettings` section against the keys it declares: an unknown key (such as `moduleSettings.planner.reviewsFrist`) or a value of the wrong kind or out of range (such as a `dailyGoalMinutes` of 2000) is a warning, and the module skips the value or keeps it in range.
 A section for a module this version doesn't have is a warning too.
@@ -256,7 +261,9 @@ The format is defined by `KitManifest` in [`Sources/NotchKitCore/Kits`](../Sourc
 
 - `KitManifest.decode(from:)` parses and validates a file, including the `KitLimits` caps, and throws a `KitError`.
 - `issues(catalog:)` lists the non-fatal `KitIssue` warnings, including fields the format doesn't read (`unknownFields`).
-- `missingRequirements(catalog:)` lists `requires.modules` the catalog lacks; `ImportedKitStore.install(from:catalog:)` refuses such a kit.
+- `missingRequirements(catalog:)` lists `requires.modules` the catalog lacks; `ImportedKitStore.inspect(from:catalog:)` refuses such a kit.
+- `ImportedKitStore.inspect(from:catalog:)` reads and checks a file without saving it and returns a `KitImportCandidate`, which names the earlier import it would replace; `install(_:)` saves it.
+- `KitChangePreview` says what switching to a kit would change for given answers (tabs on and off, new permissions, starter tasks, previews), which the import sheet shows.
 - `layout(catalog:answers:)` turns a kit and onboarding answers into a `ModuleLayout`, and `starterTasks(answers:)` collects starter tasks.
 - `KitLibrary` holds the bundled kits in picker order plus imported kits, and `ImportedKitStore` keeps imported files on disk.
 

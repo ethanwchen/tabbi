@@ -109,7 +109,7 @@ final class LeetCodeAcceptanceTests: XCTestCase {
         let kit = try KitManifest.decode(from: Data(json.utf8))
         let catalog = services.settings.catalog
         XCTAssertEqual(kit.issues(catalog: catalog), [])
-        services.settings.kitApplied.send(.init(kit: kit, answers: [:], addsStarterTasks: false))
+        services.settings.kitApplied.send(.init(kit: kit, answers: [:], kind: .reset))
         XCTAssertEqual(services.providers.snapshot.plannableWork(excluding: .planner).last,
                        "LeetCode: Two Sum (about 45 min)")
 

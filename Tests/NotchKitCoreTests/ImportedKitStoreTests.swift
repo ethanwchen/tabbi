@@ -49,6 +49,42 @@ final class ImportedKitStoreTests: XCTestCase {
         XCTAssertEqual(store.load().map(\.name), ["Tech v2"])
     }
 
+    func testInspectingSavesNothingAndNamesTheImportItReplaces() throws {
+        let first = try store.inspect(from: file("one.json", kitJSON(id: "tech", name: "Tech", extra: #", "version": "1.2""#)),
+                                      catalog: .builtIn)
+        XCTAssertNil(first.replaces)
+        XCTAssertFalse(first.overwritesFile)
+        XCTAssertEqual(store.load(), [], "nothing is saved before the user confirms")
+
+        try store.install(first)
+        let second = try store.inspect(from: file("two.json", kitJSON(id: "tech", name: "Tech", extra: #", "version": "1.3""#)),
+                                       catalog: .builtIn)
+        XCTAssertEqual(second.replaces?.version, "1.2")
+        XCTAssertTrue(second.overwritesFile)
+        XCTAssertEqual(second.versionChange, "Tech 1.2 to 1.3")
+        XCTAssertEqual(store.load().map(\.version), ["1.2"])
+    }
+
+    func testAFileThatNoLongerLoadsStillCountsAsReplaced() throws {
+        try FileManager.default.createDirectory(at: store.directory, withIntermediateDirectories: true)
+        try Data("{".utf8).write(to: store.directory.appendingPathComponent("tech.json"))
+        let candidate = try store.inspect(from: file("tech.json", kitJSON(id: "tech", name: "Tech")), catalog: .builtIn)
+        XCTAssertNil(candidate.replaces)
+        XCTAssertTrue(candidate.overwritesFile)
+        XCTAssertNil(candidate.versionChange)
+    }
+
+    func testRestorePutsBackOrRemovesAFile() throws {
+        try store.install(from: file("one.json", kitJSON(id: "tech", name: "Tech")), catalog: .builtIn)
+        let saved = store.savedData(for: "tech")
+        try store.install(from: file("two.json", kitJSON(id: "tech", name: "Tech v2")), catalog: .builtIn)
+        try store.restore(saved, for: "tech")
+        XCTAssertEqual(store.load().map(\.name), ["Tech"])
+        try store.restore(nil, for: "tech")
+        XCTAssertEqual(store.load(), [])
+        XCTAssertNil(store.savedData(for: "tech"))
+    }
+
     func testRefusesInvalidKitsAndBuiltInIds() throws {
         XCTAssertThrowsError(try store.install(from: file("bad.json", "{"), catalog: .builtIn)) { error in
             guard case KitError.malformed = error else { return XCTFail("\(error)") }
