@@ -107,6 +107,15 @@ public struct FocusSessionLog: Hashable, Codable, Sendable {
             self.endedAt = endedAt
             self.duration = duration
         }
+
+        /// The same UUID for the same session on every launch: the bit
+        /// patterns of its end time and length fill the 16 bytes.
+        var recordID: UUID {
+            let bytes = [endedAt.timeIntervalSinceReferenceDate.bitPattern, duration.bitPattern]
+                .flatMap { value in (0..<8).map { UInt8(truncatingIfNeeded: value >> (56 - 8 * $0)) } }
+            return UUID(uuid: (bytes[0], bytes[1], bytes[2], bytes[3], bytes[4], bytes[5], bytes[6], bytes[7],
+                               bytes[8], bytes[9], bytes[10], bytes[11], bytes[12], bytes[13], bytes[14], bytes[15]))
+        }
     }
 
     public let sessions: [Session]
@@ -116,10 +125,12 @@ public struct FocusSessionLog: Hashable, Codable, Sendable {
     }
 
     /// Each session as the record the Pomodoro logs for a finished focus
-    /// phase today (`FocusPhaseCompletion.activityRecord`).
+    /// phase today (`FocusPhaseCompletion.activityRecord`). Ids come from
+    /// the session itself, so retrying a move that only wrote some days
+    /// skips the records already on disk instead of copying them again.
     public func activityRecords(source: ModuleID) -> [ActivityRecord] {
         sessions.map {
-            ActivityRecord(source: source, kind: .focusCompleted, start: $0.endedAt.addingTimeInterval(-$0.duration),
+            ActivityRecord(id: $0.recordID, source: source, kind: .focusCompleted, start: $0.endedAt.addingTimeInterval(-$0.duration),
                            end: $0.endedAt, quantity: $0.duration / 60, unit: .minutes,
                            metadata: [ActivityMetadata.method: "pomodoro", ActivityMetadata.outcome: "completed"])
         }

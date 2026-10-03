@@ -81,6 +81,19 @@ final class DayReviewTests: XCTestCase {
         XCTAssertEqual(DayReviewer.review(of: checklist(), activity: records, calendar: calendar).focusMinutes, 25)
     }
 
+    func testMovingTheLegacyLogAgainAddsNoCopies() throws {
+        let folder = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: folder) }
+        let repository = ActivityLogRepository(directory: folder, calendar: calendar)
+        let log = FocusSessionLog(sessions: [.init(endedAt: at(10), duration: 25 * 60),
+                                             .init(endedAt: at(11), duration: 25 * 60)])
+
+        try repository.append(log.activityRecords(source: .focus))
+        try repository.append(log.activityRecords(source: .focus))
+
+        XCTAssertEqual(try repository.records(on: oct1).count, 2, "a retried move skips what is already on disk")
+    }
+
     func testEmptyDayIsEmpty() {
         let review = DayReviewer.review(of: PlannerDay(date: oct1), activity: [], calendar: calendar)
         XCTAssertTrue(review.isEmpty)

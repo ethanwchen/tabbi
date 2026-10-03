@@ -87,10 +87,12 @@ final class ClosetStore: ObservableObject {
         lastFocus = timer
         let before = closet.save
         let award = closet.credit(from: old, to: timer, at: now)
-        // A starter pet that only moved its baseline stays unsaved, so it
+        // A starter pet that only saw an idle clock stays unsaved, so it
         // keeps following kit switches (the first-run kit pick comes after
-        // the first timer the pet sees).
-        if closet.save != before, hasSave || award != nil { persist() }
+        // the first timer the pet sees). Once a clock runs, the pet and its
+        // baseline are saved, so a session that ends while Tabbi is closed
+        // is still paid on the next launch.
+        if hasSave ? closet.save != before : award != nil || timer?.isActive == true { persist() }
         guard let award else { return }
         preview.send(.celebrate)
         awards.send(award)

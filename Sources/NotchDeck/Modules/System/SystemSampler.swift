@@ -5,7 +5,7 @@ import NotchKitCore
 
 /// Reads raw system metrics from the kernel and IOKit. Every call works on
 /// Apple Silicon without root or entitlements; anything the OS refuses to
-/// report comes back as `nil` so the panel can show "—".
+/// report comes back as `nil` so the panel can show "-".
 enum SystemSampler {
     /// `mach_host_self()` hands out a new send right on every call, so take
     /// one for the lifetime of the process.

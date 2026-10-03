@@ -59,9 +59,27 @@ final class ClosetStarterPetTests: XCTestCase {
         XCTAssertGreaterThan(save.ledger.balance, 0)
     }
 
-    private func pomodoro(completed: Int) -> ProvidedFocus {
+    /// A session that ends while Tabbi is closed is caught up at the next
+    /// launch, so the baseline taken when it started has to be on disk.
+    func testStartingAClockSavesTheBaseline() throws {
+        let store = ClosetStore(storage: EditionStorage(root: folder), runMode: .live, starter: .starter(.cat))
+        let focus = PassthroughSubject<ProvidedFocus?, Never>()
+        store.follow(focus: focus.eraseToAnyPublisher())
+        focus.send(pomodoro(completed: 0))
+        focus.send(pomodoro(completed: 0, clock: .countdown(endsAt: .now.addingTimeInterval(1500))))
+        XCTAssertEqual(try XCTUnwrap(PetSave.load(from: saveURL)).creditedFocusCount, 0)
+
+        let relaunched = ClosetStore(storage: EditionStorage(root: folder), runMode: .live, starter: .starter(.cat))
+        let caughtUp = PassthroughSubject<ProvidedFocus?, Never>()
+        relaunched.follow(focus: caughtUp.eraseToAnyPublisher())
+        caughtUp.send(pomodoro(completed: 1))
+        XCTAssertGreaterThan(try XCTUnwrap(PetSave.load(from: saveURL)).ledger.balance, 0,
+                             "the session that ended while Tabbi was closed is paid")
+    }
+
+    private func pomodoro(completed: Int, clock: ProvidedFocus.Clock = .idle) -> ProvidedFocus {
         ProvidedFocus(
-            source: ModuleID("focus"), phase: .focus, clock: .idle,
+            source: ModuleID("focus"), phase: .focus, clock: clock,
             phaseLength: 1500, focusLength: 1500, completedFocusCount: completed
         )
     }
