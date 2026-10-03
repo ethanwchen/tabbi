@@ -36,9 +36,28 @@ public struct DayPlanProposal: Equatable, Sendable {
     /// How many accepted blocks were left out because, by the time they
     /// were added, they had run out or a meeting had taken their time.
     public private(set) var skippedCount = 0
+    /// Planned rests between blocks (`StudyDayPlan.breaks`); empty for
+    /// Claude's plans.
+    public let breaks: [DateInterval]
 
-    public init(blocks: [PlanBlock]) {
+    public init(blocks: [PlanBlock], breaks: [DateInterval] = []) {
         pending = blocks.sorted { ($0.start, $0.end) < ($1.start, $1.end) }
+        self.breaks = breaks
+    }
+
+    /// A study plan's blocks with its breaks.
+    public init(_ plan: StudyDayPlan) {
+        self.init(blocks: plan.blocks, breaks: plan.breaks)
+    }
+
+    /// The planned rest right after `block`, while the block it leads into
+    /// is still on offer; dismissing either side drops the break too.
+    public func breakAfter(_ block: PlanBlock) -> DateInterval? {
+        guard pending.contains(where: { $0.id == block.id }),
+              let rest = breaks.first(where: { $0.start == block.end }),
+              pending.contains(where: { $0.start == rest.end })
+        else { return nil }
+        return rest
     }
 
     /// True once every block has been added or dismissed.

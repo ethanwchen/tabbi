@@ -23,12 +23,14 @@ struct DayPlanView: View {
         case .idle:
             EmptyView()
         case .planning:
-            DayPlanShimmer()
+            DayPlanShimmer(help: plan.settings.planMode == .study
+                           ? "Fitting reviews and study blocks around today's events"
+                           : "Claude is fitting your tasks around today's events")
                 .transition(.opacity)
         case .proposal(let proposal):
             VStack(alignment: .leading, spacing: 0) {
                 ForEach(proposal.pending) { block in
-                    DayPlanBlockRow(block: block,
+                    DayPlanBlockRow(block: block, rest: proposal.breakAfter(block),
                                     add: { withAnimation(Theme.Motion.snappy) { plan.add(block.id) } },
                                     dismiss: { withAnimation(Theme.Motion.snappy) { plan.dismiss(block.id) } })
                         .transition(.opacity.combined(with: .move(edge: .leading)))
@@ -120,20 +122,19 @@ private struct DayPlanHeader: View {
 
 // MARK: Rows
 
-/// One proposed block: an accent tick, the time range, the title, and
-/// buttons to add it to the calendar or drop it.
+/// One proposed block: a kind marker, the time range, the title, the break
+/// that follows it, and buttons to add it to the calendar or drop it.
 private struct DayPlanBlockRow: View {
     let block: PlanBlock
+    /// The planned rest before the next block, if any.
+    let rest: DateInterval?
     let add: () -> Void
     let dismiss: () -> Void
     @State private var hovering = false
 
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
-            Capsule()
-                .fill(Theme.Palette.accent(for: .planner))
-                .frame(width: 3, height: 14)
-                .frame(width: 20)
+            DayPlanKindMarker(kind: block.kind)
             Text(DayPlanFormat.range(block))
                 .font(Theme.Typography.caption.monospacedDigit())
                 .foregroundStyle(Theme.Palette.secondaryText)
@@ -146,6 +147,10 @@ private struct DayPlanBlockRow: View {
                 .truncationMode(.tail)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .help(block.title)
+            if let rest {
+                DayPlanBreakLabel(rest: rest)
+                    .transition(.opacity)
+            }
             HStack(spacing: Theme.Spacing.xxs) {
                 DayPlanRowButton(symbol: "checkmark", tint: Theme.Palette.accent(for: .planner), isTinted: true,
                                  help: "Add this block to your calendar", action: add)
@@ -162,6 +167,45 @@ private struct DayPlanBlockRow: View {
         .contentShape(Rectangle())
         .onHover { hovering = $0 }
         .animation(Theme.Motion.snappy, value: hovering)
+    }
+}
+
+/// The leading marker: a symbol for review and study blocks, so the
+/// day's rhythm reads at a glance, or the plain accent tick for Claude's
+/// focus blocks.
+private struct DayPlanKindMarker: View {
+    let kind: PlanBlockKind
+
+    var body: some View {
+        Group {
+            if let symbol = DayPlanFormat.symbol(for: kind) {
+                Image(systemName: symbol)
+                    .font(.system(size: 10, weight: .semibold))
+                    .help(kind == .reviews ? "Review block" : "Study block")
+            } else {
+                Capsule().frame(width: 3, height: 14)
+            }
+        }
+        .foregroundStyle(Theme.Palette.accent(for: .planner))
+        .frame(width: 20)
+    }
+}
+
+/// The rest after a block, in quiet metadata type: a cup and "5m".
+private struct DayPlanBreakLabel: View {
+    let rest: DateInterval
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.xxs) {
+            Image(systemName: "cup.and.saucer.fill")
+                .font(.system(size: 9, weight: .semibold))
+            Text(DayPlanFormat.breakLength(rest))
+                .font(Theme.Typography.caption.monospacedDigit())
+        }
+        .foregroundStyle(Theme.Palette.tertiaryText)
+        .lineLimit(1)
+        .fixedSize()
+        .help("Then a break until \(UpcomingEventFormat.startTime(rest.end))")
     }
 }
 
@@ -192,6 +236,7 @@ private struct DayPlanRowButton: View {
 
 /// Placeholder rows with a soft highlight sweeping across while Claude plans.
 private struct DayPlanShimmer: View {
+    let help: String
     @State private var phase: CGFloat = -1
 
     private static let widths: [CGFloat] = [0.72, 0.54, 0.64]
@@ -232,7 +277,7 @@ private struct DayPlanShimmer: View {
         .onAppear {
             withAnimation(.easeInOut(duration: 1.4).repeatForever(autoreverses: false)) { phase = 1.5 }
         }
-        .help("Claude is fitting your tasks around today's events")
+        .help(help)
     }
 }
 
@@ -240,6 +285,22 @@ private struct DayPlanShimmer: View {
 enum DayPlanFormat {
     /// Fits "10:45–11:30" in the caption font.
     static let rangeWidth: CGFloat = 64
+
+    /// Review and study blocks get a symbol; Claude's focus blocks don't.
+    static func symbol(for kind: PlanBlockKind) -> String? {
+        switch kind {
+        case .focus: nil
+        case .reviews: "rectangle.stack.fill"
+        case .study: "book.fill"
+        }
+    }
+
+    /// "5m", "17m", "1h 30m": short, since it shares the row with the title.
+    static func breakLength(_ rest: DateInterval) -> String {
+        let minutes = Int((rest.duration / 60).rounded())
+        guard minutes >= 60 else { return "\(minutes)m" }
+        return minutes % 60 == 0 ? "\(minutes / 60)h" : "\(minutes / 60)h \(minutes % 60)m"
+    }
 
     static func range(_ block: PlanBlock) -> String {
         "\(UpcomingEventFormat.startTime(block.start))–\(UpcomingEventFormat.startTime(block.end))"

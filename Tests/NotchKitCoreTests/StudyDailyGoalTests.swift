@@ -55,7 +55,7 @@ final class StudyDailyGoalTests: XCTestCase {
 
     func testProgressReachesTodayAndPlanMyDay() {
         let goal = StudyDailyGoal(minutes: 120)
-        let item = goal.progressItem(for: StudyDaySummary(minutes: 45, completedSessions: 2, points: 50))
+        let item = goal.progressItem(for: StudyDayTally(minutes: 45, sessions: 2, points: 50))
         XCTAssertEqual(item.completed, 45)
         XCTAssertEqual(item.target, 120)
         XCTAssertEqual(item.remaining, 75)
@@ -63,14 +63,14 @@ final class StudyDailyGoalTests: XCTestCase {
         let snapshot = ProviderSnapshot([(.study, ModuleProvision(progress: [item]))])
         let row = snapshot.sharedTodayItems(excluding: .planner).first
         XCTAssertEqual(row?.source, .study)
-        XCTAssertEqual(row?.detail, "45/120 min")
+        XCTAssertEqual(row?.detail, "75 min left")
         XCTAssertEqual(row?.isDone, false)
         XCTAssertEqual(snapshot.plannableWork(excluding: .planner), ["Study time (75 min left)"])
         XCTAssertNil(snapshot.cardsReviewedToday(excluding: .anki), "study minutes are not cards")
     }
 
     func testMetGoalIsDoneAndLeavesPlanMyDay() {
-        let item = StudyDailyGoal(minutes: 60).progressItem(for: StudyDaySummary(minutes: 75))
+        let item = StudyDailyGoal(minutes: 60).progressItem(for: StudyDayTally(minutes: 75))
         XCTAssertTrue(item.isComplete)
         let snapshot = ProviderSnapshot([(.study, ModuleProvision(progress: [item]))])
         XCTAssertEqual(snapshot.sharedTodayItems(excluding: .planner).first?.isDone, true)

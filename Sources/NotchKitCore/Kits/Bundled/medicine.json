@@ -9,10 +9,37 @@
     "studyMethods": ["pomodoro", "ankiSprint", "questionBlock", "fiftyTwoSeventeen", "ultradian", "flowtime", "custom"],
     "studyMethod": "pomodoro",
     "focusSounds": [{ "sound": "rain", "level": 0.8 }, { "sound": "brown", "level": 0.4 }],
-    "ticker": ["focus", "tasks", "meeting", "nowPlaying"],
+    "ticker": ["focus", "tasks", "progress", "party", "meeting", "nowPlaying", "pet"],
     "pet": { "breed": "orangeTabby" },
     "theme": "notch",
-    "moduleSettings": { "study": { "dailyGoalMinutes": 240 } }
+    "moduleSettings": {
+      "study": { "dailyGoalMinutes": 240 },
+      "planner": {
+        "planMode": "study",
+        "reviewsFirst": true,
+        "eventBufferMinutes": 10,
+        "studyBlockTitle": "Study block",
+        "upNextEvents": "lectures, labs, and shifts",
+        "dayEndHour": 21,
+        "sampleDay": "medicine"
+      },
+      "closet": {
+        "coachLines": {
+          "distraction": [
+            "Your flashcards miss you. Back for a few more?",
+            "The Krebs cycle is saving your seat.",
+            "Psst, the next card might be the one on the exam.",
+            "Back to cardiology? Your heart notes are waiting.",
+            "Even residents check their phones. Back when ready."
+          ],
+          "offerPause": ["Step off the wards for a bit? I'll hold your spot."],
+          "idleCheck": [
+            "Deep in First Aid? Just checking you're here.",
+            "Thinking through a vignette? Tap if you're here."
+          ]
+        }
+      }
+    }
   },
   "onboarding": [
     {

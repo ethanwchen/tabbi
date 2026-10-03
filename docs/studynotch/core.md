@@ -14,6 +14,7 @@ A typed async client for the [AnkiConnect](https://ankiweb.net/shared/info/20554
 - `URLSessionAnkiConnectTransport` posts to `http://127.0.0.1:8765`.
   It sends no `Origin` header, and AnkiConnect trusts requests without one, so no CORS setup is needed.
 - `URLError`s are classified into `AnkiConnectTransportError` (`connectionRefused`, `timedOut`, `failed`), except `.cancelled`, which is rethrown as `CancellationError` so a cancelled refresh never shows an error state.
+- The client checks for cancellation before sending and again after any failure, so a cancelled caller always gets `CancellationError`, never an `AnkiConnectError`, even if the transport failed for another reason meanwhile.
 
 ### Client
 
@@ -36,6 +37,7 @@ A typed async client for the [AnkiConnect](https://ankiweb.net/shared/info/20554
 | `numCardsReviewedByDay()` | `getNumCardsReviewedByDay` | `[AnkiDayCount]`, newest first |
 | `findCards(query:)` | `findCards` | `[Int64]` card ids |
 | `cardReviews(deck:startID:)` | `cardReviews` | `[AnkiReview]` (exact deck only, no children) |
+| `cardReviews(decks:startID:)` | `multi` of `cardReviews` | `[AnkiReview]` for every deck in one round trip; any deck's error fails the call |
 | `guiDeckReview(name:)` | `guiDeckReview` | `Bool`; the app must still activate Anki |
 | `guiDeckOverview(name:)` | `guiDeckOverview` | `Bool` |
 | `sync()` | `sync` | nothing |
@@ -71,7 +73,7 @@ The pure initializer does the math, so it is tested without a transport.
 `AnkiConnectClient.summary(now:rolloverHour:calendar:historyDays:retentionWindowDays:)` fetches and aggregates in one call.
 
 ```swift
-let summary = try await client.summary()   // decks, getDeckStats, today, by-day, cardReviews per deck
+let summary = try await client.summary()   // decks, getDeckStats, today, by-day, one multi of cardReviews
 summary.dueTotal       // new + learn + review due today
 summary.streak         // consecutive review days
 summary.retention      // 0.91, or nil below 20 graded reviews
@@ -88,10 +90,36 @@ summary.retention      // 0.91, or nil below 20 graded reviews
 | `decks` | Every `AnkiDeckStats`, in the order given, for a per-deck list |
 
 - Review rows are de-duplicated by id, so overlapping `cardReviews` fetches are safe.
-- `summary` makes one `cardReviews` call per deck because that action does not include child decks.
-- `AnkiSummary.demo(now:)` is the `NOTCHDECK_DEMO=1` sample: about 320 due, 112 reviewed today, a 12-day streak, about 91% retention.
+- `cardReviews` does not include child decks, so `summary` asks for every deck, batched into one `multi` request (five requests per refresh, however many decks).
+- `AnkiSummary.demo(now:)` is the `NOTCHDECK_DEMO=1` sample: about 425 due, 112 reviewed today, a 12-day streak, about 91% retention.
   It is built through the real aggregation.
 - `AnkiSummary` is `Codable`, so the UI can cache the last good value for its error state.
+
+### Connection state
+
+`AnkiConnectionState.resolve(error:isInstalled:launchedAt:now:)` turns a refresh outcome into the screen the Anki tab shows.
+
+| State | From |
+|---|---|
+| `ready` | The refresh succeeded |
+| `notInstalled` / `notRunning` | `ankiNotRunning`, split by whether an Anki app is on disk |
+| `starting` | `addOnMissing` within `startupGrace` (15 s) of Anki launching, while add-ons load |
+| `addOnMissing` | `addOnMissing` after the grace period |
+| `needsPermission(_)` | `permissionDenied` or `apiKeyRequired` |
+| `addOnOutdated` | `addOnOutdated` or `unsupportedAction` |
+| `problem(_)` | Anything transient (timeout, profile picker, transport) |
+
+- `isSetupStep` marks the states that need the user to act first.
+- `keepsLastSummary` is true for `ready`, `checking` and `problem`, so a transient error shows the last numbers instead of an empty panel.
+- `refreshInterval` is the poll interval while the panel is visible: 2 s while starting, 5 s for setup steps (60 s when Anki is not installed), 30 s for problems, 3 min when ready.
+- `pollsWhileHidden` is true only for `starting`, so Today and the ticker get numbers as soon as AnkiConnect comes up after a background launch; the startup grace bounds it to a few polls.
+- `AnkiSummary.topDecks` lists top-level decks with cards due, most due first; `completionFraction` drives the progress ring; `isCurrent(now:)` stops yesterday's numbers from being shared after the rollover.
+  `AnkiSummary.nextRollover(after:)` is when that happens, so the store wakes once a day at the rollover to stop sharing the old summary and fetch the new day's.
+- `AnkiConnectionState(previewName:)` parses `NOTCHDECK_ANKI_STATE` (for example `addOnMissing`, `notRunning`, `apiKey`, `problem`), which pins the Anki tab to one screen so every state can be snapshotted: `NOTCHDECK_ANKI_STATE=addOnMissing swift run NotchDeck --snapshot snapshots-anki`.
+
+### Formatting
+
+`AnkiFormat` holds the Anki tab's wording and scales: `heatLevels(for:)` shades the two-week heatmap (0 to 4, scaled to the busiest day, any reviews at least 1), `streak(_:)`, `dayHelp(_:today:)` for heatmap tooltips, `progressHelp(_:)` for the ring, and `age(_:now:)` for how stale the numbers are.
 
 ## Study methods (`Sources/NotchKitCore/StudyMethods`)
 
@@ -213,6 +241,84 @@ Rules:
 
 ### Messages
 
-`PetCoachMessages.all` holds 4 to 6 lines per kind, each with a stable `id`.
-Lines are short enough for a notch bubble (`maxLength`, 64 characters), warm, lightly med-school flavored ("The Krebs cycle is saving your seat."), and never shaming: no counting slip-ups, no guilt, no "you should".
-`pick(_:avoiding:using:)` skips recently used ids while others remain and never repeats the most recent line; the coach remembers its last 8 lines in `recentMessageIDs`.
+`PetCoachMessages.standard` holds 4 to 6 lines per kind, each with a stable `id`.
+Lines are short enough for a notch bubble (`maxLength`, 64 characters), warm, and never shaming: no counting slip-ups, no guilt, no "you should".
+The standard lines name no subject, so every kit can use them.
+A kit adds its own flavor as `coachLines` in the Closet module's settings (see [Kits](../kits.md#defaults)), and `PetCoachMessages.lines(kitSettings:)` returns the standard lines plus the kit's.
+The Medicine kit brings the med-school lines ("The Krebs cycle is saving your seat.").
+Blank lines, lines over `maxLength` and unknown kinds are skipped.
+`evaluate(_:lines:)` picks from the lines it is given; the app passes the active kit's lines on every sample, so switching kits changes the flavor at once.
+`pick(_:from:avoiding:using:)` skips recently used ids while others remain and never repeats the most recent line; the coach remembers its last 8 lines in `recentMessageIDs`.
+
+### Replies and the stroll
+
+`PetCoachNudgeKind.replies` lists a bubble's buttons as `PetCoachReply` values, the kind's default first and `snooze` always last.
+`PetCoach.handle(_:at:)` applies the coach's part of a reply: `snooze` silences it for `PetCoachReply.snoozeDuration` (15 minutes).
+`pausesTimer` and `resumesTimer` tell the app when to change the study timer.
+
+`PetCoachStroll` times the overlay: the pet walks `distance` points out from the notch at `speed`, talks for `talkDuration`, then walks back.
+Ask it for `phase(at:)`, `offset(at:)`, `heading(at:)`, and `showsBubble(at:)`, so every frame (and every snapshot) follows from a date.
+`dismiss(at:)` (any reply) turns the pet around at once, mid-walk included; only the first dismissal counts.
+
+`PetCoachGlance` times the silent `.lookOver`: the pet lowers its head out of the notch (`peekIn`), hangs there looking for `hold` (2.5 s by default), then pulls back up (`peekOut`).
+`init(startedAt:clips:)` takes the clip lengths from the pet's own peek clips, `pose(at:)` gives the clip and the time into it (nil while tucked away), and `stroll` is a zero-distance stroll of the same length, so the overlay closes a glance the same way it closes a walk.
+
+In the app, `PetCoachOverlayView` (`Modules/PetCoach`) draws a stroll or a glance.
+A glance hangs from the notch's own bottom edge, just inside its rounded corner, has no bubble, takes no clicks, and never replaces a bubble that is still up.
+`--snapshot` renders `coach-walking.png`, one `coach-<kind>.png` per bubble kind, and `coach-glance-lowering.png` and `coach-glance.png`.
+
+### Running the coach
+
+`PetCoachStudyState(_:)` reads the shared focus timer (`ProviderSnapshot.focus`): only a running focus phase is `.focusing`, so the pet stays quiet on breaks, while paused, and with no timer.
+`PetCoachInput(now:idleSeconds:frontmost:timer:)` builds a reading from that timer and marks focus phases of 45 min or longer as deep focus.
+The app samples every `PetCoach.sampleInterval` (5 s) during a focus phase and not at all otherwise.
+`PetCoachSave` persists the coach (cooldowns, snooze), the app lists and the user's `nudgesOn` switch as `Pet/coach.json`, next to the pet's save.
+Saves without `nudgesOn` read as on.
+`CoachAppList.toggleDistracting(_:)` backs the settings chips, and `addedDistracting` lists the apps the user added beyond the suggestions.
+
+In the app, `PetCoachController` (`Modules/PetCoach`) runs while the Closet module is on.
+It plays each nudge in `PetCoachOverlayWindow`, a transparent, non-activating panel hung below the menu bar at the notch's right edge.
+The window ignores the mouse except while the pointer is over the bubble.
+Run the app with `NOTCHDECK_COACH_PREVIEW=1` to play one nudge at launch, `NOTCHDECK_COACH_PREVIEW=celebrate` to play a level-up celebration, or `NOTCHDECK_COACH_PREVIEW=glance` to play the silent glance.
+Settings › Pet Coach (shown with the Closet module) turns nudges on or off and edits the distracting apps: suggestion chips plus any app picked from the Applications folder.
+Turning nudges off stops sampling and ends any open episode, so turning them back on starts fresh.
+Turning the coach off (the Closet module) does the same, and the save keeps cooldowns and snooze but never an open episode, so the next focus phase after a relaunch gets its full grace period.
+
+### The pet in the notch
+
+`PetPresence` is the pet as the closed notch shows it: its profile plus `lastActive`, the last time a session ran.
+`observe(_:at:)` stamps `lastActive` while the shared timer runs or is paused, and at the moment a session ends.
+`mood(focus:at:)` reads `.studying` in a running focus phase, `.onBreak` in a running break, `.awake` while paused or within `sleepAfter` (20 min) of the last session, and `.asleep` after that.
+The Closet module shares it as `ModuleProvision.pet`, and `ProviderSnapshot.pet` keeps the first in tab order.
+The ticker turns it into a `.pet` item (`TickerKind.pet`, last in rotation), and `TickerSources.nextChange` includes the moment the pet dozes off, so the notch updates without polling.
+`NotchPetWing` (NotchKit) draws the animated pet in the leading wing and its name in the trailing wing, with a quiet "zzz" while it sleeps; mood changes play the real fall-asleep and wake-up clips.
+`--snapshot` renders `closed-pet.png` and `closed-pet-asleep.png` when the Closet module is on (use `--edition studynotch`).
+
+## Closet (`Sources/NotchKitCore/Closet`)
+
+`PetCloset` holds the Closet tab's editing rules over one `PetSave`, so every edit leaves a save that is valid to persist.
+
+- `wardrobe` lists every paid item, cheapest first; "no outfit" is not a tile, because tapping the worn outfit takes it off.
+- `state(of:)` is `wearing`, `owned`, `affordable`, or `locked(missing:)`.
+- `tap(_:)` toggles owned items, buys and wears affordable ones, and changes nothing for locked ones.
+- `wearing(_:on:)` dresses a profile without checking ownership, for hover "try it on" previews.
+- `setSpecies(_:)` picks the species' first breed; a default name (the starter or breed name) follows the species, a chosen name is kept.
+- `cycleBreed(by:)` wraps within the species, and `setBreed(_:)` re-derives the fur tint from the new breed's shading.
+- `furSwatches` are the offered fur colors; `furTint` reads the picked one back from the `furBase` override.
+- `PetCloset.demo` is the `NOTCHDECK_DEMO=1` closet, with every tile state on show.
+
+### Points and celebrations
+
+`PetCloset.credit(from:to:at:)` pays study points from two observations of the shared focus timer and returns a `PetStudyAward` to celebrate.
+A focus phase that runs out earns its length plus the completion bonus (`PetPointsRules`).
+Completions are counted from `FocusTimer.completedFocusCount` against `PetSave.creditedFocusCount`, so sessions that ended while the app was closed are paid once, and the first timer a pet ever sees only sets the baseline.
+A focus phase skipped or reset part-way earns the minutes studied without the bonus; under 5 minutes earns nothing.
+`PetStudyAward.unlocked` lists wardrobe items the award just made affordable (a level-up), and `headline`, `unlockLine` and `pointsText` are the bubble's copy, free of any subject so every kit can use it.
+
+`ClosetStore` credits on every shared focus change, plays the celebrate clip on the Closet preview, and publishes the award.
+`PetCoachController.celebrate(_:)` then sends the pet out of the notch with a happy hop and a heart, the points pill, the unlock line on a level-up, and a single "Yay!" button.
+Celebrations play whenever the coach runs (with the Closet module), even with nudges off, and stay up for `PetCoach.celebrationDuration` (6 s).
+`--snapshot` renders `coach-celebrate.png` and `coach-level-up.png`.
+
+In the app, `ClosetStore` (owned by `AppServices`) saves to `~/Library/Application Support/<edition>/Pet/pet.json` after each edit.
+It never writes in demo mode, and never overwrites a save it could not read.

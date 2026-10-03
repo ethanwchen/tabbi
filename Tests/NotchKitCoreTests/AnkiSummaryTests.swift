@@ -24,9 +24,15 @@ private final class SummaryTransport: AnkiConnectTransport, @unchecked Sendable 
         let params = object["params"] as? [String: Any] ?? [:]
         let text: String = lock.withLock {
             actions.append(action)
-            if action == "cardReviews" {
-                reviewParams.append(params)
-                return reviewsByDeck[params["deck"] as? String ?? ""] ?? #"{"result":[],"error":null}"#
+            if action == "multi" {
+                // Like AnkiConnect: one inner `{result, error}` per batched action.
+                let inner = (params["actions"] as? [[String: Any]] ?? []).map { item -> String in
+                    actions.append(item["action"] as? String ?? "")
+                    let itemParams = item["params"] as? [String: Any] ?? [:]
+                    reviewParams.append(itemParams)
+                    return reviewsByDeck[itemParams["deck"] as? String ?? ""] ?? #"{"result":[],"error":null}"#
+                }
+                return #"{"result":[\#(inner.joined(separator: ","))],"error":null}"#
             }
             return replies[action] ?? #"{"result":null,"error":"unsupported action"}"#
         }
@@ -253,7 +259,8 @@ final class AnkiSummaryTests: XCTestCase {
 
     func testDemoLooksLikeAStudyingMedStudent() {
         let demo = AnkiSummary.demo(now: now, calendar: utc)
-        XCTAssertEqual(demo.dueTotal, 320, "child deck rolled into its parent")
+        XCTAssertEqual(demo.dueTotal, 425, "child deck rolled into its parent")
+        XCTAssertEqual(demo.topDecks.map(\.name), ["AnKing Step 1", "Pharm Sketchy", "Sketchy Micro", "Pathoma", "Boards and Beyond Biochem"])
         XCTAssertEqual(demo.reviewedToday, 112)
         XCTAssertEqual(demo.streak, 12)
         XCTAssertEqual(demo.history.count, 14)
@@ -290,6 +297,11 @@ final class AnkiSummaryTests: XCTestCase {
         XCTAssertEqual(try XCTUnwrap(result.retention), 0.95, accuracy: 0.0001)
         XCTAssertEqual(result.studyTimeToday, 100)
 
+        XCTAssertEqual(
+            transport.sentActions,
+            ["deckNamesAndIds", "getDeckStats", "getNumCardsReviewedToday", "getNumCardsReviewedByDay", "multi", "cardReviews", "cardReviews"],
+            "every deck's review log is fetched in one batched request"
+        )
         let params = transport.sentReviewParams
         XCTAssertEqual(params.compactMap { $0["deck"] as? String }.sorted(), ["Step1", "Step1::Cardio"])
         let expectedStart = Int64((now.timeIntervalSince1970 - 30 * 86_400) * 1000)

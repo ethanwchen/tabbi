@@ -41,6 +41,13 @@ enum SnapshotRenderer {
             let model = NotchViewModel(geometry: geometry, layout: layout)
             model.preview = item
             shots.append(("closed-\(snapshotName(kind))", model))
+            // The pet's other look: dozing after a quiet spell.
+            if case .pet(var pet) = item, pet.mood != .asleep {
+                pet.mood = .asleep
+                let asleep = NotchViewModel(geometry: geometry, layout: layout)
+                asleep.preview = .pet(pet)
+                shots.append(("closed-pet-asleep", asleep))
+            }
         }
         // One open shot per tab of the active kit.
         for module in layout.enabled {
@@ -58,12 +65,36 @@ enum SnapshotRenderer {
             shots.append(("open-\(module.rawValue)", model))
         }
 
+        // The Closet's second section, rendered after the others because
+        // the open section is store state.
+        if layout.order.contains(.closet) {
+            var withCloset = layout
+            _ = withCloset.setEnabled(.closet, true)
+            let model = NotchViewModel(geometry: geometry, layout: withCloset)
+            model.open(.closet)
+            shots.append(("open-closet-look", model))
+        }
+
         for (name, model) in shots {
+            if name == "open-closet-look" { services.closet.section = .look }
             let view = NotchView(content: ModuleViews.notchContent(services: services))
                 .environmentObject(model)
                 .frame(width: Theme.Layout.expandedSize.width + 40,
                        height: Theme.Layout.expandedSize.height + 24, alignment: .top)
                 .background(Color(white: 0.16)) // stand-in for a desktop
+            let renderer = ImageRenderer(content: view)
+            renderer.scale = 2
+            guard let image = renderer.nsImage,
+                  let tiff = image.tiffRepresentation,
+                  let png = NSBitmapImageRep(data: tiff)?.representation(using: .png, properties: [:])
+            else { continue }
+            let url = outputDirectory.appendingPathComponent("\(name).png")
+            try? png.write(to: url)
+            print(url.path)
+        }
+
+        // The pet coach's overlay: walking out, then each kind of bubble.
+        for (name, view) in PetCoachSnapshots.shots(profile: services.closet.profile, lines: services.coach.lines) {
             let renderer = ImageRenderer(content: view)
             renderer.scale = 2
             guard let image = renderer.nsImage,
@@ -132,7 +163,10 @@ enum SnapshotRenderer {
         case .nowPlaying: "music"
         case .focus: "focus"
         case .tasks: "tasks"
+        case .progress: "progress"
         case .claudeUsage: "usage"
+        case .pet: "pet"
+        case .party: "party"
         }
     }
 }

@@ -54,6 +54,72 @@ public struct ProgressItem: Identifiable, Hashable, Sendable {
     }
 }
 
+/// Today's study time and rewards so far, such as a study timer's log. The
+/// `StudySource` role of a module: Wrap Up shows it without knowing which
+/// module ran the sessions.
+public struct StudyDayTally: Hashable, Codable, Sendable {
+    /// Minutes studied today, finished or not.
+    public var minutes: Int
+    /// Study sessions that ran to their end today.
+    public var sessions: Int
+    /// Points earned today (see `PetPointsRules`).
+    public var points: Int
+
+    public init(minutes: Int = 0, sessions: Int = 0, points: Int = 0) {
+        self.minutes = minutes
+        self.sessions = sessions
+        self.points = points
+    }
+
+    /// Demo data: three finished 50-minute blocks and an unfinished 35, with
+    /// points worked out by the real `PetPointsRules`.
+    public static let sample: StudyDayTally = {
+        let blocks = [(50, true), (50, true), (50, true), (35, false)]
+        return StudyDayTally(
+            minutes: blocks.reduce(0) { $0 + $1.0 },
+            sessions: blocks.filter(\.1).count,
+            points: blocks.reduce(0) { $0 + PetPointsRules.points(forMinutes: $1.0, completed: $1.1) }
+        )
+    }()
+
+    /// Adds two modules' tallies.
+    public static func + (lhs: StudyDayTally, rhs: StudyDayTally) -> StudyDayTally {
+        StudyDayTally(minutes: lhs.minutes + rhs.minutes, sessions: lhs.sessions + rhs.sessions,
+                      points: lhs.points + rhs.points)
+    }
+}
+
+/// One pet in a `ProvidedParty`.
+public struct ProvidedPartyPet: Identifiable, Hashable, Sendable {
+    /// Stable for the person, e.g. their friend code.
+    public var id: String
+    public var name: String
+    public var pet: PetProfile
+    /// Offline, so their pet dozes.
+    public var isAway: Bool
+
+    public init(id: String, name: String, pet: PetProfile, isAway: Bool = false) {
+        self.id = id
+        self.name = name
+        self.pet = pet
+        self.isAway = isAway
+    }
+}
+
+/// The study party the user is in, so the closed notch can show the other
+/// members' pets beside the user's own. The `PartySource` role.
+public struct ProvidedParty: Hashable, Sendable {
+    /// The user's pet first, then the other members' in roster order.
+    public var pets: [ProvidedPartyPet]
+
+    public init(pets: [ProvidedPartyPet]) {
+        self.pets = pets
+    }
+
+    /// Everyone in the party, the user included.
+    public var memberCount: Int { pets.count }
+}
+
 /// What one module offers the rest of the app right now. Each field is one
 /// provider role; a module fills only the ones it has:
 /// - `tasks`: TaskSource, things to do today.
@@ -61,6 +127,9 @@ public struct ProgressItem: Identifiable, Hashable, Sendable {
 /// - `progress`: ProgressSource, today's study or practice goals.
 /// - `focus`: FocusState, the focus timer the module runs, and
 ///   `focusIsDeep`, whether the user asked for deep focus with it.
+/// - `study`: StudySource, today's study minutes, sessions and points.
+/// - `pet`: PetSource, the study pet the closed notch shows.
+/// - `party`: PartySource, the study party the user is in.
 ///
 /// Modules publish a new value whenever their data changes, and
 /// `ProviderSnapshot` merges all enabled modules' values, so consumers such
@@ -73,19 +142,28 @@ public struct ModuleProvision: Equatable, Sendable {
     /// The user turned on deep focus for `focus` (Study's switch), so
     /// followers such as the pet coach can save their nudges for it.
     public var focusIsDeep: Bool
+    public var study: StudyDayTally?
+    public var pet: PetPresence?
+    public var party: ProvidedParty?
 
     public init(
         tasks: [ProvidedTask] = [],
         events: [UpcomingEvent] = [],
         progress: [ProgressItem] = [],
         focus: FocusTimer? = nil,
-        focusIsDeep: Bool = false
+        focusIsDeep: Bool = false,
+        study: StudyDayTally? = nil,
+        pet: PetPresence? = nil,
+        party: ProvidedParty? = nil
     ) {
         self.tasks = tasks
         self.events = events
         self.progress = progress
         self.focus = focus
         self.focusIsDeep = focusIsDeep
+        self.study = study
+        self.pet = pet
+        self.party = party
     }
 
     public static let empty = ModuleProvision()
@@ -108,6 +186,12 @@ public struct ProviderSnapshot: Equatable, Sendable {
     public private(set) var focusSource: ModuleID?
     /// Whether `focus` runs in deep focus, as its module reported it.
     public private(set) var focusIsDeep = false
+    /// Every module's study tally added up; nil when no module keeps one.
+    public private(set) var study: StudyDayTally?
+    /// The first pet in tab order.
+    public private(set) var pet: PetPresence?
+    /// The first party in tab order.
+    public private(set) var party: ProvidedParty?
 
     public init() {}
 
@@ -128,7 +212,10 @@ public struct ProviderSnapshot: Equatable, Sendable {
                 item.source = module
                 progress.append(item)
             }
+            if pet == nil { pet = provision.pet }
             events += provision.events.filter { eventIDs.insert($0.id).inserted }
+            if let tally = provision.study { study = (study ?? StudyDayTally()) + tally }
+            if party == nil { party = provision.party }
             if let timer = provision.focus {
                 if focus == nil { (focus, focusSource, focusIsDeep) = (timer, module, provision.focusIsDeep) }
                 if activeFocus == nil, timer.isRunning || timer.isPaused {

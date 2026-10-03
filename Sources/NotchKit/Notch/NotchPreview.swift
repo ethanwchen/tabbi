@@ -39,6 +39,10 @@ struct NotchPreview: View {
         switch item {
         case .nowPlaying:
             content.nowPlayingLeading()
+        case .pet(let pet):
+            NotchPetWing(pet: pet)
+        case .party(let party):
+            NotchPartyPets(pets: party.pets)
         default:
             Image(systemName: NotchPreviewLayout.symbol(for: item))
                 .font(.system(size: 12, weight: .semibold))
@@ -69,11 +73,71 @@ struct NotchPreview: View {
             Text(TickerFormat.tasksLeft(remaining))
                 .foregroundStyle(Theme.Palette.primaryText)
                 .previewText()
+        case .progress(let progress):
+            Text(TickerFormat.progressLeft(progress))
+                .foregroundStyle(Theme.Palette.primaryText)
+                .previewText()
         case .claudeUsage(let window, let utilization):
             Text(TickerFormat.usage(window: window, utilization: utilization))
                 .foregroundStyle(utilization >= 1 ? Theme.Palette.danger : accent)
                 .previewText()
+        case .pet(let pet):
+            HStack(spacing: Theme.Spacing.xs) {
+                Text(pet.profile.name)
+                    .foregroundStyle(pet.mood == .asleep ? Theme.Palette.secondaryText : Theme.Palette.primaryText)
+                    .truncationMode(.tail)
+                if pet.mood == .asleep {
+                    Text(TickerFormat.petSleeping)
+                        .foregroundStyle(Theme.Palette.tertiaryText)
+                        .fixedSize()
+                        .transition(.opacity)
+                }
+            }
+            .previewText()
+            .animation(Theme.Motion.content, value: pet.mood)
+        case .party(let party):
+            Text(TickerFormat.partySize(party.memberCount))
+                .foregroundStyle(accent)
+                .previewText()
         }
+    }
+}
+
+/// The user's pet with the other party members' pets behind it, overlapping
+/// slightly so up to four fit in one wing. Away members' pets doze.
+private struct NotchPartyPets: View {
+    let pets: [ProvidedPartyPet]
+
+    var body: some View {
+        HStack(spacing: NotchPreviewLayout.partyPetStep - side) {
+            // The user's pet leads and is drawn on top.
+            ForEach(Array(pets.enumerated()), id: \.element.id) { index, pet in
+                NotchPartyPet(pet: pet)
+                    .zIndex(Double(pets.count - index))
+            }
+        }
+        .frame(height: side)
+        // Paws sit at the bottom of the sprite frame, above headroom for
+        // hops, so lift the row to center the pets optically.
+        .offset(y: -Theme.Spacing.xxs)
+    }
+
+    private var side: CGFloat { CGFloat(PetComposer.frameSize) * NotchPreviewLayout.partyPetPixelSize }
+}
+
+private struct NotchPartyPet: View {
+    let pet: ProvidedPartyPet
+    @StateObject private var player: PetPlayer
+
+    init(pet: ProvidedPartyPet) {
+        self.pet = pet
+        _player = StateObject(wrappedValue: PetPlayer(profile: pet.pet, asleep: pet.isAway))
+    }
+
+    var body: some View {
+        PetView(player: player, pixelSize: NotchPreviewLayout.partyPetPixelSize)
+            .onChange(of: pet.pet) { _, profile in player.update(profile: profile) }
+            .onChange(of: pet.isAway) { _, away in player.send(away ? .sleep : .wake) }
     }
 }
 

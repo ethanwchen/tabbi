@@ -52,8 +52,8 @@ public struct StudyDailyGoal: Codable, Hashable, Sendable {
     }
 
     /// The day's study minutes against this goal, for `ModuleProvision.progress`.
-    /// Shown by Today as e.g. "Study time 45/120 min".
-    public func progressItem(for day: StudyDaySummary, source: ModuleID = .study) -> ProgressItem {
+    /// Shown by Today as e.g. "Study time, 75 min left".
+    public func progressItem(for day: StudyDayTally, source: ModuleID = .study) -> ProgressItem {
         ProgressItem(id: Self.progressID, source: source, title: "Study time",
                      completed: max(day.minutes, 0), target: minutes, unit: Self.unit)
     }

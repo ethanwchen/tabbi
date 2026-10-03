@@ -249,7 +249,7 @@ private struct StudyDeepFocusRow: View {
 /// Today's study minutes, finished stretches and the points they earned
 /// for the pet.
 private struct StudyTodayRow: View {
-    let today: StudyDaySummary
+    let today: StudyDayTally
     let goal: StudyDailyGoal
 
     var body: some View {
@@ -261,7 +261,7 @@ private struct StudyTodayRow: View {
                   systemImage: metGoal ? "checkmark.seal.fill" : "clock")
                 .foregroundStyle(metGoal ? accent : Theme.Palette.secondaryText)
                 .help(metGoal ? "Daily study goal met" : "Time studied today, out of your daily goal")
-            Label("\(today.completedSessions) done", systemImage: "checkmark.circle")
+            Label("\(today.sessions) done", systemImage: "checkmark.circle")
                 .help("Study stretches finished today")
             Spacer(minLength: 0)
             Label(StudyTimerFormat.points(today.points), systemImage: "star.fill")

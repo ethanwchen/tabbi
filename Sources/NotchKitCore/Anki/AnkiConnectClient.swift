@@ -20,6 +20,9 @@ public struct AnkiConnectClient: Sendable {
     public var apiKey: String?
     /// Short timeout for polling reads.
     public var requestTimeout: TimeInterval
+    /// A `multi` batch runs every inner query on Anki's main thread before
+    /// replying, so it gets more time than a single read.
+    public var batchTimeout: TimeInterval
     /// `sync` runs on Anki's main thread and can take many seconds.
     public var syncTimeout: TimeInterval
     /// Whether an Anki process is running (by bundle id or name).
@@ -29,12 +32,14 @@ public struct AnkiConnectClient: Sendable {
         transport: any AnkiConnectTransport = URLSessionAnkiConnectTransport(),
         apiKey: String? = nil,
         requestTimeout: TimeInterval = 3,
+        batchTimeout: TimeInterval = 20,
         syncTimeout: TimeInterval = 90,
         isAnkiRunning: @escaping @Sendable () async -> Bool = { false }
     ) {
         self.transport = transport
         self.apiKey = apiKey
         self.requestTimeout = requestTimeout
+        self.batchTimeout = batchTimeout
         self.syncTimeout = syncTimeout
         self.isAnkiRunning = isAnkiRunning
     }
@@ -105,6 +110,26 @@ public struct AnkiConnectClient: Sendable {
         try await invoke("cardReviews", params: CardReviewsParams(deck: deck, startID: startID), as: [AnkiReview].self)
     }
 
+    /// Review-log rows for several decks in one round trip, batched through
+    /// `multi` because `cardReviews` takes a single deck and skips children.
+    /// Rows come back in deck order; any deck's error fails the whole call.
+    public func cardReviews(decks: [String], startID: Int64) async throws -> [AnkiReview] {
+        guard !decks.isEmpty else { return [] }
+        let actions = decks.map {
+            MultiAction(action: "cardReviews", version: Self.apiVersion, params: CardReviewsParams(deck: $0, startID: startID))
+        }
+        let replies = try await invoke("multi", params: ["actions": actions], timeout: batchTimeout, as: [MultiReply<[AnkiReview]>].self)
+        guard replies.count == decks.count else {
+            throw AnkiConnectError.invalidResponse("multi: expected \(decks.count) replies, got \(replies.count)")
+        }
+        var rows: [AnkiReview] = []
+        for reply in replies {
+            if let message = reply.error { throw AnkiConnectError.fromAnkiMessage(message, action: "cardReviews") }
+            rows += reply.result ?? []
+        }
+        return rows
+    }
+
     /// Opens the deck and starts reviewing. Anki is not brought to the
     /// front; the app must activate it.
     @discardableResult
@@ -132,6 +157,20 @@ public struct AnkiConnectClient: Sendable {
         let startID: Int64
     }
 
+    /// One inner action of a `multi` batch. Inner actions default to API
+    /// version 4 (bare results), so each carries its own `version`.
+    private struct MultiAction<Params: Encodable & Sendable>: Encodable, Sendable {
+        let action: String
+        let version: Int
+        let params: Params
+    }
+
+    /// One inner `{result, error}` reply of a `multi` batch.
+    private struct MultiReply<Result: Decodable>: Decodable {
+        let result: Result?
+        let error: String?
+    }
+
     private struct Envelope<Params: Encodable>: Encodable {
         let action: String
         let version: Int
@@ -152,9 +191,9 @@ public struct AnkiConnectClient: Sendable {
     }
 
     private func invoke<Params: Encodable, Result: Decodable>(
-        _ action: String, params: Params?, as type: Result.Type
+        _ action: String, params: Params?, timeout: TimeInterval? = nil, as type: Result.Type
     ) async throws -> Result {
-        let body = try await send(action, params: params, timeout: requestTimeout)
+        let body = try await send(action, params: params, timeout: timeout ?? requestTimeout)
         do {
             return try JSONDecoder().decode(ResultReply<Result>.self, from: body).result
         } catch {
@@ -163,7 +202,11 @@ public struct AnkiConnectClient: Sendable {
     }
 
     /// Posts one action and returns the body once the `error` field is clear.
+    /// A cancelled caller always gets `CancellationError`, never an
+    /// `AnkiConnectError`, so a refresh abandoned mid-flight (panel closed,
+    /// newer refresh started) can't flash an error state.
     private func send<Params: Encodable>(_ action: String, params: Params?, timeout: TimeInterval) async throws -> Data {
+        try Task.checkCancellation()
         let envelope = Envelope(action: action, version: Self.apiVersion, params: params, key: apiKey)
         let request: Data
         do {
@@ -176,6 +219,7 @@ public struct AnkiConnectClient: Sendable {
         do {
             response = try await transport.post(request, timeout: timeout)
         } catch let error as AnkiConnectTransportError {
+            try Task.checkCancellation()
             switch error {
             case .connectionRefused:
                 throw await isAnkiRunning() ? AnkiConnectError.addOnMissing : AnkiConnectError.ankiNotRunning
@@ -187,8 +231,10 @@ public struct AnkiConnectClient: Sendable {
         } catch is CancellationError {
             throw CancellationError()
         } catch {
+            try Task.checkCancellation()
             throw AnkiConnectError.transport(Self.describe(error))
         }
+        try Task.checkCancellation()
 
         if response.statusCode == 403 { throw AnkiConnectError.permissionDenied }
         guard (200..<300).contains(response.statusCode) else {

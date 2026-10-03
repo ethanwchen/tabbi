@@ -30,7 +30,7 @@ final class ClaudeUsageStore: ObservableObject {
 
     private let isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
     private let defaults = UserDefaults.standard
-    private let scanner = ClaudeUsageLogScanner()
+    private let scanner = ClaudeUsageLogScanner(indexURL: ClaudeUsageLogScanner.defaultIndexURL)
     private var statusTask: Task<Void, Never>?
     private var probeTask: Task<Void, Never>?
     private var scanTask: Task<Void, Never>?

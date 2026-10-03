@@ -101,7 +101,7 @@ The open notch shows up to nine tabs comfortably, and the number keys 1-9 jump t
   "studyMethods": ["pomodoro", "ankiSprint", "questionBlock"],
   "studyMethod": "pomodoro",
   "focusSounds": [{ "sound": "rain", "level": 0.8 }, { "sound": "brown", "level": 0.4 }],
-  "ticker": ["focus", "tasks", "meeting", "nowPlaying"],
+  "ticker": ["focus", "tasks", "meeting", "nowPlaying", "pet"],
   "pet": { "breed": "orangeTabby", "name": "Miso" },
   "theme": "notch",
   "moduleSettings": { "anki": { "deck": "AnKing" }, "study": { "dailyGoalMinutes": 240 } }
@@ -118,16 +118,47 @@ The open notch shows up to nine tabs comfortably, and the number keys 1-9 jump t
 | `theme` | string | Theme id. `notch` is the built-in hardware-black theme. |
 | `moduleSettings` | object | Settings for individual modules, keyed by module id. Each module reads its own section, in a shape that module documents. |
 
+Module settings sections:
+
+- **`closet`:** `coachLines`, extra lines the study pet's coach can say, keyed by bubble kind: `distraction` (a while in a distracting app), `offerPause` (offering to pause the timer), `idleCheck` (no input for a while) and `autoPause` (the timer was paused while the user was away).
+  They join the built-in lines, which name no subject, so a few lines give the coach your kit's flavor.
+  Each kind takes a list of lines or a single line.
+  Keep them kind and at most 64 characters; longer, blank or non-text entries are skipped without dropping the others.
+
+```json
+"moduleSettings": {
+  "closet": {
+    "coachLines": {
+      "distraction": ["The Krebs cycle is saving your seat."],
+      "idleCheck": ["Thinking through a vignette? Tap if you're here."]
+    }
+  }
+}
+```
+
 Accepted values:
 
 - **Study methods:** `pomodoro`, `fiftyTwoSeventeen`, `ultradian`, `flowtime`, `ankiSprint`, `questionBlock`, `custom`.
 - **Focus sounds:** `brown`, `pink`, `white`, `rain`, `fireplace`, `cafe`.
-- **Ticker previews:** `meeting`, `nowPlaying`, `focus`, `tasks`, `claudeUsage`.
+- **Ticker previews:** `meeting`, `nowPlaying`, `focus`, `tasks`, `progress` (shared study goals such as Anki cards left), `claudeUsage`, `party` (party members' pets beside yours while in a study party), `pet` (the study pet, from the Closet module; it naps after 20 minutes without a session).
 - **Pet breeds:** `orangeTabby`, `grayTabby`, `blackCat`, `whiteCat`, `tuxedo`, `calico`, `siamese`, `britishShorthair`, `goldenRetriever`, `labrador`, `frenchBulldog`, `corgi`, `dachshund`, `beagle`.
 
 Module settings the built-in modules read:
 
 - **`study`:** `dailyGoalMinutes`, the minutes a day to aim for (15 to 720, rounded to a quarter hour; 120 when left out). The Study tab shows today's time against it, and Today lists it as a goal.
+
+Today (`planner`) reads these `moduleSettings.planner` keys, all optional:
+
+| Key | Type | Meaning |
+| --- | --- | --- |
+| `planMode` | string | `claude` (default) asks the local `claude` CLI to plan the day. `study` plans on device: review blocks for other modules' goals (such as Anki reviews), study blocks of the kit's `studyMethod` length, and breaks. |
+| `reviewsFirst` | bool | Schedule review blocks in the first free time (default `true`), or last. |
+| `eventBufferMinutes` | number | Free time kept clear before and after each calendar event (default 10). |
+| `studyBlockTitle` | string | Title for study blocks once every open task has one (default "Study block"). |
+| `secondsPerCard` | number | Typical time per review card, for sizing review blocks (default 10). |
+| `upNextEvents` | string | What the calendar holds, lowercase, for the Up next card's empty states, such as "lectures, labs, and shifts" (default "meetings and calls"). |
+| `dayEndHour` | number | Hour (0-22) when Plan My Day stops planning, such as 21 for evening study (default 18). Planning late still leaves at least two hours, up to 10 pm. |
+| `sampleDay` | string | Which realistic day demo mode (`NOTCHDECK_DEMO=1`) shows on Today: `work` (default) or `medicine` (a lecture, a lab, clinical skills, question banks). Never affects real data. |
 
 Switching kits, picking one on first run, and resetting apply the tabs, `ticker` and `focusSounds`.
 A field the kit leaves out keeps the user's current setting, and only the sound mix changes: the user's volume, playlist and Do Not Disturb shortcuts stay.

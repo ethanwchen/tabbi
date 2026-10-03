@@ -13,6 +13,10 @@ public enum NotchPreviewLayout {
     public static let outerInset: CGFloat = Theme.Spacing.s
     /// Keeps a long meeting title from turning the notch into a menu bar.
     public static let maxWingWidth: CGFloat = 132
+    /// Points per sprite pixel for party pets: a 24 pt pet fits the notch's height.
+    public static let partyPetPixelSize: CGFloat = 0.75
+    /// Party pets overlap a little, since each sprite has empty room around it.
+    public static let partyPetStep: CGFloat = 18
     /// Gap between the trailing text and the camera housing.
     private static let innerGap: CGFloat = Theme.Spacing.s
 
@@ -30,8 +34,16 @@ public enum NotchPreviewLayout {
             content = textWidth(String(TickerFormat.focusClock(remaining).map { $0.isNumber ? "0" : $0 }))
         case .tasks(let remaining):
             content = textWidth(TickerFormat.tasksLeft(remaining))
+        case .progress(let progress):
+            content = textWidth(TickerFormat.progressLeft(progress))
         case .claudeUsage(let window, let utilization):
             content = textWidth(TickerFormat.usage(window: window, utilization: utilization))
+        case .pet(let pet):
+            // Measured asleep too, so the wing doesn't jump when the pet dozes off.
+            content = max(textWidth(pet.profile.name) + Theme.Spacing.xs + textWidth(TickerFormat.petSleeping),
+                          NotchPetWing.side)
+        case .party(let party):
+            content = max(partyPetsWidth(count: party.pets.count), textWidth(TickerFormat.partySize(party.memberCount)))
         }
         let wing = (content + outerInset + innerGap).rounded(.up)
         return min(max(wing, iconSize + outerInset + innerGap), maxWingWidth)
@@ -43,7 +55,10 @@ public enum NotchPreviewLayout {
         case .nowPlaying: "music.note"
         case .focus(let phase, _, _, _): phase == .focus ? "timer" : "cup.and.saucer.fill"
         case .tasks: "checklist"
+        case .progress(let progress): progress.source.descriptor.symbol
         case .claudeUsage: "gauge.with.dots.needle.67percent"
+        case .pet: "pawprint.fill"
+        case .party: "person.3.fill"
         }
     }
 
@@ -55,9 +70,20 @@ public enum NotchPreviewLayout {
         case .focus(let phase, let remaining, let isRunning, _):
             "\(phase == .focus ? "Focus" : "Break") \(TickerFormat.focusClock(remaining))\(isRunning ? "" : " (paused)")"
         case .tasks(let remaining): TickerFormat.tasksLeft(remaining)
+        case .progress(let progress): "\(progress.title): \(TickerFormat.progressLeft(progress))"
         case .claudeUsage(let window, let utilization):
             "Claude usage \(TickerFormat.usage(window: window, utilization: utilization))"
+        case .pet(let pet): TickerFormat.petSummary(pet)
+        case .party(let party):
+            "Studying with " + ListFormatter.localizedString(byJoining: party.pets.dropFirst().map(\.name)
+                + (party.memberCount > party.pets.count ? ["\(party.memberCount - party.pets.count) more"] : []))
         }
+    }
+
+    /// Width of `count` overlapping party pets.
+    public static func partyPetsWidth(count: Int) -> CGFloat {
+        let side = CGFloat(PetComposer.frameSize) * partyPetPixelSize
+        return count > 0 ? side + CGFloat(count - 1) * partyPetStep : 0
     }
 
     /// `Theme.Typography.caption` with monospaced digits, as AppKit measures it.

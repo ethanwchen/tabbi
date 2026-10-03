@@ -2,11 +2,13 @@ import Foundation
 import NotchKitCore
 
 /// Drives Plan My Day: gathers today's events and open tasks, asks the local
-/// `claude` CLI for time blocks, validates them, and writes the ones the
-/// user accepts to the calendar. The proposal replaces the checklist inline.
+/// `claude` CLI for time blocks (or, when the kit's `TodayPlanSettings` say
+/// so, plans study and review blocks on device with `StudyDayPlanner`),
+/// validates them, and writes the ones the user accepts to the calendar.
+/// The proposal replaces the checklist inline.
 ///
-/// With `NOTCHDECK_DEMO=1` it shows `DayPlanner.sampleProposal` and never
-/// runs the CLI or touches EventKit.
+/// With `NOTCHDECK_DEMO=1` it plans around `UpcomingEvent.samples(now:)` and
+/// never runs the CLI or touches EventKit.
 @MainActor
 final class DayPlanStore: ObservableObject {
     enum Phase: Equatable {
@@ -62,21 +64,27 @@ final class DayPlanStore: ObservableObject {
     private var task: Task<Void, Never>?
     private var lastTasks: [PlannerItem] = []
     private var lastSharedWork: [String] = []
+    private var lastProgress: [ProgressItem] = []
+    /// The active kit's planning settings; `PlannerStore` keeps them current.
+    var settings: TodayPlanSettings
     /// Bumped on every run and cancel so a superseded run can't publish.
     private var generation = 0
 
     /// Longest wait for Claude before showing the Retry message.
     private static let timeout: Duration = .seconds(60)
 
-    init(upNext: UpNextStore) {
+    init(upNext: UpNextStore, settings: TodayPlanSettings) {
         self.upNext = upNext
+        self.settings = settings
         let environment = ProcessInfo.processInfo.environment
         isDemo = environment["NOTCHDECK_DEMO"] == "1"
         // Lets demo snapshots render each state: `NOTCHDECK_PLANNER_PREVIEW=plan`.
         // Demo only, so a preview proposal can never reach the real calendar.
         guard isDemo else { return }
         switch environment["NOTCHDECK_PLANNER_PREVIEW"] {
-        case "plan": phase = .proposal(DayPlanProposal(blocks: DayPlanner.sampleProposal(now: Date())))
+        case "plan": phase = .proposal(sampleProposal(
+            tasks: PlannerDay.sample(on: PlannerDayKey(date: Date()), kind: settings.sampleDay).items,
+            progress: [AnkiSummary.demo().progressItem()]))
         case "planning": phase = .planning
         case "plan-failed": phase = .failed(.claudeFailed)
         case "plan-calendar-off": phase = .failed(.calendarOff)
@@ -85,10 +93,13 @@ final class DayPlanStore: ObservableObject {
     }
 
     /// Starts planning the rest of today around `tasks` (unfinished ones
-    /// count) and what other modules share (`ProviderSnapshot.plannableWork`).
-    func plan(tasks: [PlannerItem], sharedWork: [String] = []) {
+    /// count) and what other modules share: `sharedWork` phrased for Claude
+    /// (`ProviderSnapshot.plannableWork`), `progress` as goals the study
+    /// planner turns into review blocks.
+    func plan(tasks: [PlannerItem], sharedWork: [String] = [], progress: [ProgressItem] = []) {
         lastTasks = tasks
         lastSharedWork = sharedWork
+        lastProgress = progress
         invalidateRun()
         writeFailed = false
         phase = .planning
@@ -97,7 +108,9 @@ final class DayPlanStore: ObservableObject {
         if isDemo {
             task = Task { [weak self] in
                 try? await Task.sleep(for: .seconds(1.2))
-                self?.publish(generation, .proposal(DayPlanProposal(blocks: DayPlanner.sampleProposal(now: Date()))))
+                guard let self else { return }
+                let proposal = self.sampleProposal(tasks: tasks, progress: progress)
+                self.publish(generation, proposal.isSettled ? .noFreeTime : .proposal(proposal))
             }
             return
         }
@@ -109,7 +122,7 @@ final class DayPlanStore: ObservableObject {
         }
     }
 
-    func retry() { plan(tasks: lastTasks, sharedWork: lastSharedWork) }
+    func retry() { plan(tasks: lastTasks, sharedWork: lastSharedWork, progress: lastProgress) }
 
     func openPrivacySettings() { upNext.openPrivacySettings() }
 
@@ -142,6 +155,16 @@ final class DayPlanStore: ObservableObject {
 
     // MARK: - Private
 
+    /// Demo mode's proposal: the study planner over the demo calendar for
+    /// study kits, otherwise Claude's canned sample.
+    private func sampleProposal(tasks: [PlannerItem], progress: [ProgressItem]) -> DayPlanProposal {
+        guard settings.planMode == .study else { return DayPlanProposal(blocks: DayPlanner.sampleProposal(now: Date())) }
+        let now = Date()
+        let context = DayPlanContext(now: now, events: upNext.todayEvents(), tasks: tasks,
+                                     dayEndHour: settings.dayEndHour)
+        return DayPlanProposal(settings.studyPlan(context: context, progress: progress))
+    }
+
     private func settle(_ proposal: DayPlanProposal) {
         phase = proposal.isSettled ? .idle : .proposal(proposal)
     }
@@ -166,8 +189,13 @@ final class DayPlanStore: ObservableObject {
         case .unavailable: guard upNext.isPlanDryRun else { return .failed(.calendarUnavailable) }
         }
         let context = DayPlanContext(now: Date(), events: upNext.todayEvents(), tasks: lastTasks,
-                                     sharedWork: lastSharedWork)
+                                     sharedWork: lastSharedWork, dayEndHour: settings.dayEndHour)
         guard context.hasFreeTime else { return .noFreeTime }
+
+        if settings.planMode == .study {
+            let proposal = DayPlanProposal(settings.studyPlan(context: context, progress: lastProgress))
+            return proposal.isSettled ? .noFreeTime : .proposal(proposal)
+        }
 
         guard let executable = await Task.detached(priority: .userInitiated, operation: { ClaudeCLI.locate() }).value else {
             return .failed(.claudeNotFound)

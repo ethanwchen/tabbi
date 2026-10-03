@@ -81,6 +81,16 @@ final class ProviderSnapshotTests: XCTestCase {
         XCTAssertEqual(snapshot.progress.first?.source, .anki)
     }
 
+    func testStudyTalliesAddUpAcrossModules() {
+        XCTAssertNil(ProviderSnapshot([(.anki, ModuleProvision())]).study, "no module keeps a tally")
+        let snapshot = ProviderSnapshot([
+            (.study, ModuleProvision(study: StudyDayTally(minutes: 100, sessions: 2, points: 120))),
+            (.anki, ModuleProvision()),
+            (.focus, ModuleProvision(study: StudyDayTally(minutes: 25, sessions: 1, points: 35))),
+        ])
+        XCTAssertEqual(snapshot.study, StudyDayTally(minutes: 125, sessions: 3, points: 155))
+    }
+
     func testProgressMath() {
         var item = ProgressItem(id: "q", source: .study, title: "Questions", completed: 30, target: 40, unit: "questions")
         XCTAssertEqual(item.remaining, 10)

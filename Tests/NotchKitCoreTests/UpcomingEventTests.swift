@@ -78,11 +78,23 @@ final class UpcomingEventTests: XCTestCase {
     }
 
     func testSamplesIncludeCurrentAndJoinableEvents() {
-        let upNext = UpcomingEvent.upNext(from: UpcomingEvent.samples(now: now), at: now)
-        XCTAssertEqual(upNext.count, 3)
-        XCTAssertEqual(upNext.first?.timing(at: now), .now)
-        XCTAssertTrue(upNext.contains { $0.meetingLink != nil })
-        XCTAssertTrue(upNext.contains { $0.meetingLink == nil })
+        for kind in PlannerSampleDay.allCases {
+            let samples = UpcomingEvent.samples(now: now, kind: kind)
+            let upNext = UpcomingEvent.upNext(from: samples, at: now)
+            XCTAssertEqual(upNext.count, 3)
+            XCTAssertEqual(upNext.first?.timing(at: now), .now)
+            XCTAssertTrue(upNext.contains { $0.meetingLink != nil })
+            XCTAssertTrue(upNext.contains { $0.meetingLink == nil })
+            XCTAssertEqual(Set(samples.map(\.id)).count, samples.count)
+            for (earlier, later) in zip(samples, samples.dropFirst()) {
+                XCTAssertLessThan(earlier.start, later.start, "\(kind) samples are in order")
+            }
+        }
+    }
+
+    func testMedicineSamplesAreLecturesAndLabs() {
+        let titles = UpcomingEvent.samples(now: now, kind: .medicine).map(\.title)
+        XCTAssertEqual(titles, ["Cardiology lecture", "Anatomy lab: thorax", "Clinical skills session"])
     }
 
     func testSamplesStartOnFiveMinuteMarksAtAnyMoment() {
@@ -90,7 +102,7 @@ final class UpcomingEventTests: XCTestCase {
         // live, the next is still ahead, and all starts are on clean times.
         for offset in stride(from: 0.0, to: 300, by: 1) {
             let moment = now.addingTimeInterval(offset)
-            let upNext = UpcomingEvent.upNext(from: UpcomingEvent.samples(now: moment), at: moment)
+            let upNext = UpcomingEvent.upNext(from: UpcomingEvent.samples(now: moment, kind: offset < 150 ? .work : .medicine), at: moment)
             XCTAssertEqual(upNext.count, 3)
             XCTAssertEqual(upNext.first?.timing(at: moment), .now)
             XCTAssertNotEqual(upNext[1].timing(at: moment), .now)

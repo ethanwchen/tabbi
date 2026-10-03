@@ -203,28 +203,26 @@ private struct PlannerRow: View {
     }
 }
 
-/// A goal or task another module shares, e.g. "Anki reviews 112/432 cards":
-/// the module's symbol in its accent where a checkbox would be, the count,
-/// and a small progress bar. Clicking opens that module's tab, where the
-/// work actually happens.
+/// A goal or task another module shares, pinned above the checklist, e.g.
+/// "Anki reviews, 320 cards left". Its checkbox is a ring that fills in the
+/// source module's accent as the work gets done and checks itself at zero,
+/// since the work happens (and is counted) in that module, not here.
+/// Clicking opens that module's tab.
 private struct PlannerSharedRow: View {
     let item: SharedTodayItem
     @EnvironmentObject private var notch: NotchViewModel
     @State private var hovering = false
 
     var body: some View {
-        let accent = Theme.Palette.accent(for: item.source)
         Button {
             notch.selected = item.source
         } label: {
             HStack(spacing: Theme.Spacing.s) {
-                Image(systemName: item.isDone ? "checkmark.circle.fill" : item.source.symbol)
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(accent)
-                    .frame(width: 20, height: 20)
+                PlannerSharedCheck(item: item)
                 Text(item.title)
                     .font(Theme.Typography.body)
                     .foregroundStyle(item.isDone ? Theme.Palette.secondaryText : Theme.Palette.primaryText)
+                    .strikethrough(item.isDone, color: Theme.Palette.secondaryText)
                     .lineLimit(1)
                     .truncationMode(.tail)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -234,9 +232,6 @@ private struct PlannerSharedRow: View {
                         .foregroundStyle(Theme.Palette.tertiaryText)
                         .lineLimit(1)
                         .contentTransition(.numericText())
-                }
-                if let fraction = item.fraction {
-                    PlannerSharedBar(fraction: fraction, accent: accent)
                 }
                 Image(systemName: "chevron.right")
                     .font(.system(size: 9, weight: .bold))
@@ -253,27 +248,47 @@ private struct PlannerSharedRow: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .help("Open \(item.source.title)")
+        .help(item.isDone ? "\(item.title) done for today. Open \(item.source.title)"
+                          : "Checks itself when done. Open \(item.source.title)")
         .onHover { hovering = $0 }
         .animation(Theme.Motion.snappy, value: hovering)
     }
 }
 
-/// A short capsule that fills with the source module's accent.
-private struct PlannerSharedBar: View {
-    let fraction: Double
-    let accent: Color
+/// The shared row's checkbox, the same size as `PlannerCheckbox`: the
+/// source module's symbol inside a ring that fills with its progress, then
+/// a filled check once the work is done.
+private struct PlannerSharedCheck: View {
+    let item: SharedTodayItem
 
     var body: some View {
-        Capsule()
-            .fill(accent.opacity(0.22))
-            .overlay(alignment: .leading) {
-                Capsule()
-                    .fill(accent)
-                    .frame(width: 32 * max(fraction, 0.08))
-            }
-            .frame(width: 32, height: 4)
-            .animation(Theme.Motion.content, value: fraction)
+        let accent = Theme.Palette.accent(for: item.source)
+        ZStack {
+            Circle()
+                .strokeBorder(accent.opacity(0.28), lineWidth: 1.5)
+            Circle()
+                .inset(by: 0.75)
+                .trim(from: 0, to: item.fraction ?? 0)
+                .stroke(accent, style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+            Image(systemName: item.source.symbol)
+                .font(.system(size: 7, weight: .bold))
+                .foregroundStyle(accent)
+                .opacity(item.isDone ? 0 : 1)
+            Circle()
+                .fill(accent)
+                .scaleEffect(item.isDone ? 1 : 0.4)
+                .opacity(item.isDone ? 1 : 0)
+            Image(systemName: "checkmark")
+                .font(.system(size: 8, weight: .heavy))
+                .foregroundStyle(Theme.Palette.background)
+                .scaleEffect(item.isDone ? 1 : 0.2)
+                .opacity(item.isDone ? 1 : 0)
+        }
+        .frame(width: 16, height: 16)
+        .frame(width: 20, height: 20)
+        .animation(Theme.Motion.content, value: item.fraction)
+        .animation(.spring(response: 0.3, dampingFraction: 0.55), value: item.isDone)
     }
 }
 

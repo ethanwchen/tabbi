@@ -21,6 +21,13 @@ final class AppServices: ObservableObject {
     /// The Study tab's timer, kept running while the notch is closed.
     let study: StudyStore
     let claudeAsk = ClaudeAskSession()
+    /// The study pet's look and points, shared by the Closet tab and the pet
+    /// in the notch.
+    let closet = ClosetStore()
+    /// The pet's study coach: nudges from the notch during focus phases.
+    let coach: PetCoachController
+    /// Friends and study parties; presence follows the shared focus timer.
+    let party = PartyStore()
     /// The rotating live preview beside the closed notch.
     let ticker: TickerStore
     /// Every tab this build can show. Register new modules here.
@@ -34,9 +41,16 @@ final class AppServices: ObservableObject {
 
     init(settings: SettingsStore) {
         self.settings = settings
-        planner = PlannerStore(focus: focus)
         let kit = settings.activeKit?.defaults
+        planner = PlannerStore(focus: focus, planSettings: TodayPlanSettings(kit: kit))
         study = StudyStore(menu: StudyMethodMenu(kit: kit), goal: StudyDailyGoal(kit: kit))
+        coach = PetCoachController(
+            profile: { [closet] in closet.profile },
+            lines: { [settings] in PetCoachMessages.lines(kitSettings: settings.activeKit?.defaults.settings(for: .closet)) },
+            screen: { [settings] in NotchGeometry.screen(for: settings.settings.preferredDisplay) },
+            pauseTimer: { [focus] in focus.pause() },
+            resumeTimer: { [focus] in focus.start() }
+        )
         modules = ModuleRegistry([
             NowPlayingModule(controller: spotify),
             SystemModule(monitor: system),
@@ -46,12 +60,16 @@ final class AppServices: ObservableObject {
             FocusModule(store: focus),
             StudyModule(store: study),
             AnkiModule(),
-            PartyModule(),
-            ClosetModule(),
+            PartyModule(store: party),
+            ClosetModule(store: closet, coach: coach),
         ])
         providers = ProviderHub(registry: modules)
         planner.followSharedWork(from: providers.$snapshot, excluding: .planner)
         study.followCards(from: providers.$snapshot)
+        coach.follow(focus: providers.$snapshot.map(\.focus).eraseToAnyPublisher())
+        closet.follow(focus: providers.$snapshot.map(\.focus).eraseToAnyPublisher())
+        coach.follow(awards: closet.awards.eraseToAnyPublisher())
+        party.followFocus(from: providers.$snapshot.map(\.focus).eraseToAnyPublisher())
         ticker = TickerStore(settings: settings, spotify: spotify, providers: providers,
                              upNext: planner.upNext, claudeUsage: claudeUsage)
         // `$settings` emits before the new value is stored, so read the
@@ -64,10 +82,21 @@ final class AppServices: ObservableObject {
                 providers.update(enabled: enabled)
             }
             .store(in: &cancellables)
+        settings.$settings
+            .map(\.kitID)
+            .removeDuplicates()
+            .sink { [planner, settings] id in
+                MainActor.assumeIsolated {
+                    planner.planSettings = TodayPlanSettings(kit: settings.kits.kit(id)?.defaults)
+                }
+            }
+            .store(in: &cancellables)
         // Kit defaults that live outside `AppSettings`.
         settings.kitApplied
             .sink { [planner, study] application in
                 MainActor.assumeIsolated {
+                    // Also when re-applying the same kit, which may have been re-imported.
+                    planner.planSettings = TodayPlanSettings(kit: application.kit.defaults)
                     let focus = FocusController.shared
                     focus.settings = focus.settings.applying(application.kit.defaults)
                     let kit = application.kit.defaults

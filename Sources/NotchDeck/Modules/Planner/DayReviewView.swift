@@ -16,11 +16,7 @@ struct DayReviewView: View {
                     summary(review)
                     // Pinned above the lists so it doesn't move when the summary arrives.
                     Spacer(minLength: 0)
-                    Label(DayReviewFormat.focus(review), systemImage: "scope")
-                        .font(Theme.Typography.caption.monospacedDigit())
-                        .foregroundStyle(Theme.Palette.tertiaryText)
-                        .lineLimit(1)
-                        .help("Focus sessions completed today")
+                    DayReviewStats(stats: DayReviewer.stats(for: review))
                 }
                 .padding(.horizontal, Theme.Spacing.s)
                 .frame(maxHeight: .infinity, alignment: .top)
@@ -152,6 +148,32 @@ private struct DayReviewList: View {
     private var hidden: Int { titles.count - shown.count }
 }
 
+/// Today's figures in one caption row: study or focus time, shared goals
+/// such as cards reviewed, and points earned.
+private struct DayReviewStats: View {
+    let stats: [DayReviewStat]
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.m) {
+            ForEach(Array(stats.enumerated()), id: \.offset) { index, stat in
+                // Tighter than `Label` so four figures fit the column.
+                HStack(spacing: Theme.Spacing.xs) {
+                    Image(systemName: stat.symbol)
+                        .font(.system(size: 10, weight: .semibold))
+                    Text(stat.text)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                }
+                // The first figure (study time) gives way before the short counts.
+                .layoutPriority(index == 0 ? 0 : 1)
+                .help(stat.help)
+            }
+        }
+        .font(Theme.Typography.caption.monospacedDigit())
+        .foregroundStyle(Theme.Palette.tertiaryText)
+    }
+}
+
 /// Two placeholder lines with a soft highlight sweeping across while Claude writes.
 private struct DayReviewShimmer: View {
     @State private var phase: CGFloat = -1
@@ -183,16 +205,5 @@ private struct DayReviewShimmer: View {
             withAnimation(.easeInOut(duration: 1.4).repeatForever(autoreverses: false)) { phase = 1.5 }
         }
         .help("Claude is writing a short summary of your day")
-    }
-}
-
-enum DayReviewFormat {
-    /// "3 focus sessions · 1h 15m", or "No focus sessions today".
-    static func focus(_ review: DayReview) -> String {
-        guard review.focusSessions > 0 else { return "No focus sessions today" }
-        let minutes = review.focusMinutes
-        let time = minutes < 60 ? "\(minutes)m" : (minutes % 60 == 0 ? "\(minutes / 60)h" : "\(minutes / 60)h \(minutes % 60)m")
-        let sessions = review.focusSessions == 1 ? "1 focus session" : "\(review.focusSessions) focus sessions"
-        return "\(sessions) · \(time)"
     }
 }

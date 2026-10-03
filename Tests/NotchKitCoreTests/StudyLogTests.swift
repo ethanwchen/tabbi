@@ -106,9 +106,24 @@ final class StudyLogTests: XCTestCase {
             record(minutes: 12, outcome: .skipped, startingAt: 30),
         ])
         let today = log.summary(on: t0, calendar: utc)
-        XCTAssertEqual(today, StudyDaySummary(minutes: 37, completedSessions: 1, points: 47))
+        XCTAssertEqual(today, StudyDayTally(minutes: 37, sessions: 1, points: 47))
         let yesterday = log.summary(on: dayStart.addingTimeInterval(-3600), calendar: utc)
         XCTAssertEqual(yesterday.minutes, 25)
+    }
+
+    func testDayTallyReachesTheSharedSnapshotForWrapUp() {
+        var log = StudyLog()
+        log.record([record(minutes: 25), record(minutes: 10, outcome: .skipped, startingAt: 30)])
+        let tally = log.summary(on: t0, calendar: utc)
+        let other = StudyDayTally(minutes: 20, sessions: 1, points: 25)
+        let snapshot = ProviderSnapshot([
+            (module: .study, provision: ModuleProvision(study: tally)),
+            (module: .planner, provision: ModuleProvision()),
+            (module: .anki, provision: ModuleProvision(study: other)),
+        ])
+        XCTAssertEqual(tally.minutes, 35)
+        XCTAssertEqual(snapshot.study, StudyDayTally(minutes: 55, sessions: 2, points: tally.points + 25))
+        XCTAssertNil(ProviderSnapshot([(module: .planner, provision: ModuleProvision())]).study)
     }
 
     func testLogKeepsOnlyTheNewestEntries() {

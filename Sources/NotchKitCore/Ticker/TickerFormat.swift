@@ -19,9 +19,19 @@ public enum TickerFormat {
         count == 1 ? "1 task left" : "\(count) tasks left"
     }
 
+    /// "84 cards left": what remains of a shared goal, in its own unit.
+    public static func progressLeft(_ item: ProgressItem) -> String {
+        "\(item.remaining) \(item.unit) left"
+    }
+
     /// Focus countdown, e.g. "18:42", matching the focus card's clock.
     public static func focusClock(_ remaining: TimeInterval) -> String {
         FocusTimerFormat.clock(remaining)
+    }
+
+    /// Party size, e.g. "4 in party".
+    public static func partySize(_ count: Int) -> String {
+        "\(count) in party"
     }
 
     /// Usage line, e.g. "5h 84%" or "Week 91%".
@@ -29,4 +39,17 @@ public enum TickerFormat {
         let label = window == .fiveHour ? "5h" : "Week"
         return "\(label) \(ClaudeUsageFormat.percent(utilization))"
     }
+
+    /// The pet's line for tooltips and accessibility, e.g. "Mochi is napping".
+    public static func petSummary(_ pet: TickerPet) -> String {
+        switch pet.mood {
+        case .studying: "\(pet.profile.name) is studying with you"
+        case .onBreak: "\(pet.profile.name) is on a break with you"
+        case .awake: "\(pet.profile.name) is keeping you company"
+        case .asleep: "\(pet.profile.name) is napping until your next session"
+        }
+    }
+
+    /// Shown after the name while the pet sleeps.
+    public static let petSleeping = "zzz"
 }

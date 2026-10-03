@@ -23,10 +23,11 @@ final class StudyModule: NotchModule {
     /// under way as the shared focus timer, so the closed notch counts it
     /// down and a click there opens Study. The deep focus switch rides
     /// along, so the pet coach can nudge only during deep focus blocks.
+    /// Today's tally (minutes, stretches, points) feeds Wrap Up.
     var provision: AnyPublisher<ModuleProvision, Never>? {
         store.goalProgress
-            .combineLatest(store.sharedFocus, store.$deepFocus.removeDuplicates())
-            .map { ModuleProvision(progress: [$0], focus: $1, focusIsDeep: $2) }
+            .combineLatest(store.sharedFocus, store.$deepFocus.removeDuplicates(), store.dayTally)
+            .map { ModuleProvision(progress: [$0], focus: $1, focusIsDeep: $2, study: $3) }
             .eraseToAnyPublisher()
     }
 

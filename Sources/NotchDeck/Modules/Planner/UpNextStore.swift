@@ -28,11 +28,17 @@ final class UpNextStore: ObservableObject {
     @Published private(set) var access: Access
     /// Up to three events still ahead today, soonest first.
     @Published private(set) var events: [UpcomingEvent] = []
+    /// How many timed events today has in all, finished ones included, so an empty
+    /// list can tell "day is done" from "nothing on the calendar".
+    @Published private(set) var eventsToday = 0
+    /// Whether any calendar syncs from an online account (Google, Exchange,
+    /// iCloud). Without one, an empty day suggests adding it in Internet Accounts.
+    @Published private(set) var hasAccounts = true
     /// The moment badges are measured against; advances once a minute while visible.
     @Published private(set) var now = Date()
 
     private let isDemo: Bool
-    private let demoEvents: [UpcomingEvent]
+    private var demoEvents: [UpcomingEvent]
     private lazy var eventStore = EKEventStore()
     private var isVisible = false
     private var isPreviewWatching = false
@@ -42,15 +48,27 @@ final class UpNextStore: ObservableObject {
     private var changeObserver: AnyCancellable?
 
     static let privacySettingsURL = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Calendars")!
+    static let internetAccountsURL = URL(string: "x-apple.systempreferences:com.apple.Internet-Accounts-Settings.extension")!
 
-    init() {
-        isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
+    /// `sampleDay` picks the demo calendar (the active kit's `sampleDay`).
+    init(sampleDay: PlannerSampleDay = .work) {
+        let environment = ProcessInfo.processInfo.environment
+        isDemo = environment["NOTCHDECK_DEMO"] == "1"
         if isDemo {
             let start = Date()
-            access = .granted
-            demoEvents = UpcomingEvent.samples(now: start)
+            // Lets demo snapshots render each empty state:
+            // `NOTCHDECK_UPNEXT_PREVIEW=notAsked|denied|noAccounts|freeDay`.
+            let preview = environment["NOTCHDECK_UPNEXT_PREVIEW"]
+            access = switch preview {
+            case "notAsked": .notDetermined
+            case "denied": .denied
+            default: .granted
+            }
+            hasAccounts = preview != "noAccounts"
+            demoEvents = preview == nil ? UpcomingEvent.samples(now: start, kind: sampleDay) : []
             now = start
             events = UpcomingEvent.upNext(from: demoEvents, at: start)
+            eventsToday = demoEvents.filter { !$0.isAllDay }.count
         } else {
             demoEvents = []
             access = Self.currentAccess()
@@ -120,6 +138,22 @@ final class UpNextStore: ObservableObject {
         NSWorkspace.shared.open(Self.privacySettingsURL)
     }
 
+    func openInternetAccounts() {
+        NSWorkspace.shared.open(Self.internetAccountsURL)
+    }
+
+    /// The empty state for the current access and day, or nil when there
+    /// are events to list.
+    var emptySituation: UpNextEmptyState.Situation? {
+        switch access {
+        case .notDetermined: .notAsked
+        case .denied: .denied
+        case .unavailable: .unavailable
+        case .granted: UpNextEmptyState.granted(upcoming: events.count, eventsToday: eventsToday,
+                                                hasAccounts: hasAccounts)
+        }
+    }
+
     func join(_ link: MeetingLink) {
         NSWorkspace.shared.open(link.url)
     }
@@ -149,6 +183,15 @@ final class UpNextStore: ObservableObject {
         }
     }
 
+    /// Swaps the demo calendar when the active kit's sample day changes.
+    /// Does nothing outside demo mode or while previewing an empty state.
+    func showSampleDay(_ kind: PlannerSampleDay) {
+        guard isDemo, !demoEvents.isEmpty else { return }
+        demoEvents = UpcomingEvent.samples(now: Date(), kind: kind)
+        eventsToday = demoEvents.filter { !$0.isAllDay }.count
+        reload()
+    }
+
     private func reload() {
         now = Date()
         if isDemo {
@@ -157,6 +200,7 @@ final class UpNextStore: ObservableObject {
         }
         guard access == .granted else {
             events = []
+            eventsToday = 0
             return
         }
         let calendar = Calendar.current
@@ -165,6 +209,17 @@ final class UpNextStore: ObservableObject {
         let predicate = eventStore.predicateForEvents(withStart: startOfDay, end: endOfDay, calendars: nil)
         let today = eventStore.events(matching: predicate).map(Self.upcomingEvent)
         events = UpcomingEvent.upNext(from: today, at: now)
+        eventsToday = today.filter { !$0.isAllDay }.count
+        hasAccounts = eventStore.calendars(for: .event).contains { Self.syncsFromAccount($0.source) }
+    }
+
+    /// Local and birthday calendars live only on this Mac; subscribed ones
+    /// are read-only feeds. Anything else came from an Internet Account.
+    private static func syncsFromAccount(_ source: EKSource?) -> Bool {
+        switch source?.sourceType {
+        case .calDAV, .exchange, .mobileMe: true
+        default: false
+        }
     }
 
     private func startUpdates() {

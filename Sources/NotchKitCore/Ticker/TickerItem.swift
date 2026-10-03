@@ -6,7 +6,11 @@ public enum TickerKind: String, CaseIterable, Codable, Hashable, Sendable, Ident
     case nowPlaying
     case focus
     case tasks
+    case progress
     case claudeUsage
+    case party
+    /// The study pet, last so live data always comes first.
+    case pet
 
     public var id: String { rawValue }
 
@@ -17,16 +21,24 @@ public enum TickerKind: String, CaseIterable, Codable, Hashable, Sendable, Ident
         case .nowPlaying: "Now playing"
         case .focus: "Focus timer"
         case .tasks: "Tasks left today"
+        case .progress: "Study goals left today"
         case .claudeUsage: "Claude usage above 80%"
+        case .pet: "Study pet"
+        case .party: "Study party pets"
         }
     }
 
-    /// The panel a click on this preview opens.
-    public var module: ModuleID {
+    /// The module this preview needs turned on, and whose panel a click opens.
+    /// `nil` for progress, which any module can provide; only enabled modules
+    /// publish it, and `TickerItem.module` opens the one it came from.
+    public var module: ModuleID? {
         switch self {
         case .meeting, .focus, .tasks: .planner
         case .nowPlaying: .spotify
+        case .progress: nil
         case .claudeUsage: .claudeUsage
+        case .pet: .closet
+        case .party: .party
         }
     }
 }
@@ -51,6 +63,33 @@ public enum TickerUsageWindow: Hashable, Sendable {
     case weekly
 }
 
+/// The study pet beside the closed notch and what it is doing.
+public struct TickerPet: Hashable, Sendable {
+    public var profile: PetProfile
+    public var mood: PetMood
+
+    public init(profile: PetProfile, mood: PetMood) {
+        self.profile = profile
+        self.mood = mood
+    }
+}
+
+/// The pets the closed notch shows while the user is in a study party.
+public struct TickerParty: Hashable, Sendable {
+    /// Most pets that fit beside the notch: the user's and three others.
+    public static let maxPets = 4
+
+    /// The user's pet first, capped at `maxPets`.
+    public var pets: [ProvidedPartyPet]
+    /// Everyone in the party, including members whose pets don't fit.
+    public var memberCount: Int
+
+    public init(pets: [ProvidedPartyPet], memberCount: Int) {
+        self.pets = pets
+        self.memberCount = memberCount
+    }
+}
+
 /// One live activity the closed notch can show beside the hardware cutout.
 public enum TickerItem: Hashable, Sendable {
     case meeting(TickerMeeting)
@@ -59,7 +98,11 @@ public enum TickerItem: Hashable, Sendable {
     /// A focus clock under way; `source` is the module running it.
     case focus(phase: FocusPhase, remaining: TimeInterval, isRunning: Bool, source: ModuleID = .planner)
     case tasks(remaining: Int)
+    /// An unfinished shared goal, e.g. Anki cards left to review today.
+    case progress(ProgressItem)
     case claudeUsage(window: TickerUsageWindow, utilization: Double)
+    case pet(TickerPet)
+    case party(TickerParty)
 
     public var kind: TickerKind {
         switch self {
@@ -67,15 +110,22 @@ public enum TickerItem: Hashable, Sendable {
         case .nowPlaying: .nowPlaying
         case .focus: .focus
         case .tasks: .tasks
+        case .progress: .progress
         case .claudeUsage: .claudeUsage
+        case .pet: .pet
+        case .party: .party
         }
     }
 
     /// The panel a click on this item opens: the module running a focus
-    /// clock, otherwise the kind's module.
+    /// clock, the module that provided a progress goal, otherwise the kind's
+    /// module.
     public var module: ModuleID {
-        if case .focus(_, _, _, let source) = self { return source }
-        return kind.module
+        switch self {
+        case .focus(_, _, _, let source): return source
+        case .progress(let item): return item.source
+        default: return kind.module ?? .planner
+        }
     }
 
     /// Whether this item should hold the notch instead of rotating away.
@@ -109,7 +159,11 @@ public struct TickerSources: Equatable, Sendable {
     /// The module running `focus`; nil means the Today panel's timer.
     public var focusSource: ModuleID?
     public var tasksRemaining: Int
+    /// Shared goals from the enabled modules, in tab order.
+    public var progress: [ProgressItem]
     public var usage: ClaudeRateLimitSnapshot?
+    public var pet: PetPresence?
+    public var party: ProvidedParty?
 
     public init(
         events: [UpcomingEvent] = [],
@@ -117,14 +171,20 @@ public struct TickerSources: Equatable, Sendable {
         focus: FocusTimer? = nil,
         focusSource: ModuleID? = nil,
         tasksRemaining: Int = 0,
-        usage: ClaudeRateLimitSnapshot? = nil
+        progress: [ProgressItem] = [],
+        usage: ClaudeRateLimitSnapshot? = nil,
+        pet: PetPresence? = nil,
+        party: ProvidedParty? = nil
     ) {
         self.events = events
         self.isMusicPlaying = isMusicPlaying
         self.focus = focus
         self.focusSource = focusSource
         self.tasksRemaining = tasksRemaining
+        self.progress = progress
         self.usage = usage
+        self.pet = pet
+        self.party = party
     }
 
     /// Every item that has something to say at `now`, in `TickerKind` order.
@@ -138,7 +198,7 @@ public struct TickerSources: Equatable, Sendable {
     /// The earliest moment after `now` at which `items(at:enabled:)` can
     /// change from the clock alone: a meeting countdown ticking down a
     /// minute, a meeting entering the horizon or ending, a focus phase
-    /// ending, or a usage window resetting. `nil` when nothing is pending.
+    /// ending, a usage window resetting, or the pet dozing off. `nil` when nothing is pending.
     ///
     /// Lets the caller sleep until then instead of polling. A running focus
     /// clock's per-second change is left to the caller, which only needs it
@@ -165,6 +225,9 @@ public struct TickerSources: Equatable, Sendable {
         }
         if enabled.contains(.claudeUsage) {
             dates += [usage?.fiveHour?.resetsAt, usage?.sevenDay?.resetsAt].compactMap { $0 }.filter { $0 > now }
+        }
+        if enabled.contains(.pet), let sleepsAt = pet?.sleepsAt(focus: focus, after: now) {
+            dates.append(sleepsAt)
         }
         return dates.min()
     }
@@ -193,6 +256,10 @@ public struct TickerSources: Equatable, Sendable {
                           source: focusSource ?? .planner)
         case .tasks:
             return tasksRemaining > 0 ? .tasks(remaining: tasksRemaining) : nil
+        case .progress:
+            // The first goal in tab order with work left; a finished goal
+            // has nothing to say.
+            return progress.first { !$0.isComplete }.map(TickerItem.progress)
         case .claudeUsage:
             let windows: [(TickerUsageWindow, Double)] = [
                 (.fiveHour, Self.utilization(of: usage?.fiveHour, at: now)),
@@ -203,6 +270,14 @@ public struct TickerSources: Equatable, Sendable {
             guard let worst = windows.max(by: { $0.1 < $1.1 }),
                   worst.1 > Self.usageThreshold else { return nil }
             return .claudeUsage(window: worst.0, utilization: worst.1)
+        case .pet:
+            guard let pet else { return nil }
+            return .pet(TickerPet(profile: pet.profile, mood: pet.mood(focus: focus, at: now)))
+        case .party:
+            // Alone in a party there are no other pets to show.
+            guard let party, party.memberCount > 1 else { return nil }
+            return .party(TickerParty(pets: Array(party.pets.prefix(TickerParty.maxPets)),
+                                      memberCount: party.memberCount))
         }
     }
 

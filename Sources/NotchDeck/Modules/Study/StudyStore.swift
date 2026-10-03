@@ -146,7 +146,7 @@ final class StudyStore: ObservableObject {
     var readout: StudyDialReadout { StudyTimerFormat.readout(session, at: now) }
     var progress: Double? { session.progress(at: now) }
     /// Minutes, finished stretches and points logged today.
-    var today: StudyDaySummary { log.summary(on: now) }
+    var today: StudyDayTally { log.summary(on: now) }
 
     /// Call from the panel's `onAppear` / `onDisappear`; the clock ticks
     /// only while it's visible.
@@ -236,12 +236,22 @@ final class StudyStore: ObservableObject {
         change { $0.switchMethod(to: .preset(kind, custom: custom), at: now) }
     }
 
+    /// Today's study minutes, finished stretches and points, for Wrap Up.
+    /// Recomputed when a stretch is logged or the clock moves (so a new day
+    /// starts from zero).
+    var dayTally: AnyPublisher<StudyDayTally, Never> {
+        $log.combineLatest($now)
+            .map { log, now in log.summary(on: now) }
+            .removeDuplicates()
+            .eraseToAnyPublisher()
+    }
+
     /// Today's study minutes against the daily goal, for Today and Plan my
-    /// day. Recomputed when a stretch is logged, the goal changes or the
-    /// clock moves (so a new day starts from zero).
+    /// day.
     var goalProgress: AnyPublisher<ProgressItem, Never> {
-        Publishers.CombineLatest3($log, $goal, $now)
-            .map { log, goal, now in goal.progressItem(for: log.summary(on: now)) }
+        dayTally
+            .combineLatest($goal)
+            .map { tally, goal in goal.progressItem(for: tally) }
             .removeDuplicates()
             .eraseToAnyPublisher()
     }

@@ -10,6 +10,10 @@ public struct PetSave: Hashable, Codable, Sendable {
     public var version: Int
     public var profile: PetProfile
     public var ledger: PetPointsLedger
+    /// The shared focus timer's `completedFocusCount` already paid out in
+    /// points, so a completed session is credited once, also across
+    /// relaunches. Nil until the pet first sees a timer.
+    public var creditedFocusCount: Int?
 
     public init(profile: PetProfile, ledger: PetPointsLedger = PetPointsLedger()) {
         self.version = PetSave.currentVersion
@@ -29,6 +33,7 @@ public struct PetSave: Hashable, Codable, Sendable {
         let raw = try JSONDecoder().decode(PetSave.self, from: data)
         var save = PetSave(profile: raw.profile, ledger: raw.ledger)
         save.version = raw.version
+        save.creditedFocusCount = raw.creditedFocusCount
         return save
     }
 

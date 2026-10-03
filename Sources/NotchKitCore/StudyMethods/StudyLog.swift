@@ -73,20 +73,6 @@ public struct StudyLogEntry: Codable, Hashable, Sendable, Identifiable {
     }
 }
 
-/// Study totals for one day.
-public struct StudyDaySummary: Hashable, Sendable {
-    public var minutes: Int
-    /// Stretches that counted as done.
-    public var completedSessions: Int
-    public var points: Int
-
-    public init(minutes: Int = 0, completedSessions: Int = 0, points: Int = 0) {
-        self.minutes = minutes
-        self.completedSessions = completedSessions
-        self.points = points
-    }
-}
-
 /// The persisted history of study stretches, and the points not yet handed
 /// to the pet's `PetPointsLedger`.
 ///
@@ -133,13 +119,13 @@ public struct StudyLog: Codable, Hashable, Sendable {
     }
 
     /// Totals for the stretches that ended on `day`'s calendar day.
-    public func summary(on day: Date, calendar: Calendar = .current) -> StudyDaySummary {
+    public func summary(on day: Date, calendar: Calendar = .current) -> StudyDayTally {
         entries
             .filter { calendar.isDate($0.endedAt, inSameDayAs: day) }
-            .reduce(into: StudyDaySummary()) { total, entry in
+            .reduce(into: StudyDayTally()) { total, entry in
                 total.minutes += entry.minutes
                 total.points += entry.points
-                if entry.completed { total.completedSessions += 1 }
+                if entry.completed { total.sessions += 1 }
             }
     }
 
