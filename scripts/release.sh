@@ -21,7 +21,7 @@ out=build/release
 echo "==> Building $edition $version (arm64 + x86_64)"
 arch_flags=(-c release --arch arm64 --arch x86_64)
 swift build "${arch_flags[@]}"
-bin="$(swift build "${arch_flags[@]}" --show-bin-path)/NotchDeck"
+bin="$(swift build "${arch_flags[@]}" --show-bin-path)/Tabbi"
 
 archs=$(lipo -archs "$bin")
 for arch in arm64 x86_64; do

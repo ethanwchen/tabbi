@@ -16,7 +16,7 @@ for arg in "$@"; do
     esac
 done
 swift build -c "$config"
-bin="$(swift build -c "$config" --show-bin-path)/NotchDeck"
+bin="$(swift build -c "$config" --show-bin-path)/Tabbi"
 app=$(scripts/assemble.sh "$bin" build "$edition")
 # Ad-hoc signature: required on Apple Silicon and gives TCC a stable identity.
 codesign --force --sign - "$app" >/dev/null

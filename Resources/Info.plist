@@ -6,7 +6,7 @@
     <key>CFBundleDisplayName</key><string>NotchDeck</string>
     <key>CFBundleIdentifier</key><string>dev.notchdeck.NotchDeck</string>
     <key>NotchDeckEdition</key><string>notchdeck</string>
-    <key>CFBundleExecutable</key><string>NotchDeck</string>
+    <key>CFBundleExecutable</key><string>Tabbi</string>
     <key>CFBundlePackageType</key><string>APPL</string>
     <key>CFBundleIconFile</key><string>AppIcon</string>
     <key>CFBundleShortVersionString</key><string>0.1.0</string>

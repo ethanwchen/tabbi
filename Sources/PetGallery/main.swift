@@ -2,7 +2,7 @@ import CoreGraphics
 import CoreText
 import Foundation
 import ImageIO
-import NotchKitCore
+import TabbiKitCore
 import UniformTypeIdentifiers
 
 // Renders pet contact sheets for art review: `swift run PetGallery out/`.

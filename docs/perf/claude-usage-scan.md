@@ -14,7 +14,7 @@ So every chunk of the week's transcripts stayed alive until the scan finished, a
 
 ## The fix
 
-`ClaudeUsageLogScanner` (`Sources/NotchKitCore/ClaudeUsage`) now:
+`ClaudeUsageLogScanner` (`Sources/TabbiKitCore/ClaudeUsage`) now:
 
 - skips files whose modification time is before the window using `stat`, without opening them;
 - reads with POSIX `read` into one reused `malloc`'d buffer (256 KB, grown only for a longer line and capped at 32 MB), so reading allocates nothing per chunk;

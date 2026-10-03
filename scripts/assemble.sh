@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Assemble an edition's .app around a built NotchDeck binary. Used by
+# Assemble an edition's .app around a built Tabbi binary. Used by
 # bundle.sh and release.sh; prints the .app path.
 #
 #   usage: scripts/assemble.sh <binary> <output-dir> [edition]
 #
 # Every edition ships the same binary. An edition is one JSON file,
-# Sources/NotchKitCore/Editions/BundledEditions/<edition>.json, which the
+# Sources/TabbiKitCore/Editions/BundledEditions/<edition>.json, which the
 # app reads too (Edition.swift). Its name, bundle id and id (NotchDeckEdition,
 # which the app reads to preselect its kit) and its infoPlist strings
 # (usage descriptions that name the app) replace keys of Resources/Info.plist,
@@ -16,7 +16,7 @@ cd "$(dirname "$0")/.."
 bin=$1
 out=$2
 edition=${3:-notchdeck}
-editions=Sources/NotchKitCore/Editions/BundledEditions
+editions=Sources/TabbiKitCore/Editions/BundledEditions
 file=$editions/$edition.json
 
 if [[ ! -f "$file" ]]; then
@@ -45,7 +45,7 @@ plutil -lint -s "$plist"
 app="$out/$name.app"
 rm -rf "$app"
 mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
-cp "$bin" "$app/Contents/MacOS/NotchDeck"
+cp "$bin" "$app/Contents/MacOS/Tabbi"
 cp "$plist" "$app/Contents/Info.plist"
 cp "$icon" "$app/Contents/Resources/AppIcon.icns"
 # SwiftPM resource bundles (bundled kits and editions); see KitResources.swift.

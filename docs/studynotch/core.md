@@ -1,10 +1,10 @@
 # StudyNotch core
 
-Pure Swift logic behind StudyNotch, living in `Sources/NotchKitCore`.
-No AppKit or SwiftUI, so every type here is unit tested and can later move into a shared `NotchKitCore` library unchanged.
+Pure Swift logic behind StudyNotch, living in `Sources/TabbiKitCore`.
+No AppKit or SwiftUI, so every type here is unit tested and can later move into a shared `TabbiKitCore` library unchanged.
 Each folder is self-contained: `Anki/`, `StudyMethods/`, `Coach/`.
 
-## Anki (`Sources/NotchKitCore/Anki`)
+## Anki (`Sources/TabbiKitCore/Anki`)
 
 A typed async client for the [AnkiConnect](https://ankiweb.net/shared/info/2055492159) add-on, API version 6.
 
@@ -115,13 +115,13 @@ summary.retention      // 0.91, or nil below 20 graded reviews
 - `pollsWhileHidden` is true only for `starting`, so Today and the ticker get numbers as soon as AnkiConnect comes up after a background launch; the startup grace bounds it to a few polls.
 - `AnkiSummary.topDecks` lists top-level decks with cards due, most due first; `completionFraction` drives the progress ring; `isCurrent(now:)` stops yesterday's numbers from being shared after the rollover.
   `AnkiSummary.nextRollover(after:)` is when that happens, so the store wakes once a day at the rollover to stop sharing the old summary and fetch the new day's.
-- `AnkiConnectionState(previewName:)` parses `NOTCHDECK_ANKI_STATE` (for example `addOnMissing`, `notRunning`, `apiKey`, `problem`), which pins the Anki tab to one screen so every state can be snapshotted: `NOTCHDECK_ANKI_STATE=addOnMissing swift run NotchDeck --snapshot snapshots-anki`.
+- `AnkiConnectionState(previewName:)` parses `NOTCHDECK_ANKI_STATE` (for example `addOnMissing`, `notRunning`, `apiKey`, `problem`), which pins the Anki tab to one screen so every state can be snapshotted: `NOTCHDECK_ANKI_STATE=addOnMissing swift run Tabbi --snapshot snapshots-anki`.
 
 ### Formatting
 
 `AnkiFormat` holds the Anki tab's wording and scales: `heatLevels(for:)` shades the two-week heatmap (0 to 4, scaled to the busiest day, any reviews at least 1), `streak(_:)`, `dayHelp(_:today:)` for heatmap tooltips, `progressHelp(_:)` for the ring, and `age(_:now:)` for how stale the numbers are.
 
-## Study methods (`Sources/NotchKitCore/StudyMethods`)
+## Study methods (`Sources/TabbiKitCore/StudyMethods`)
 
 ### Methods
 
@@ -191,7 +191,7 @@ Rules:
 `StudyPhaseRecord` holds `method`, `phase`, `startedAt`, `endedAt`, `activeDuration` (pauses excluded), `outcome` (`completed`, `stopped`, `skipped`, `abandoned`), and `cards` for sprint focus.
 Records are only logged for phases that actually started.
 
-## Pet coach (`Sources/NotchKitCore/Coach`)
+## Pet coach (`Sources/TabbiKitCore/Coach`)
 
 `PetCoach` decides when the study pet nudges and what it says.
 It sees only idle seconds and the category of the frontmost app's bundle id, never window titles, URLs, or keystrokes, so it needs no permission prompt.
@@ -293,10 +293,10 @@ Turning the coach off (the Closet module) does the same, and the save keeps cool
 `mood(focus:at:)` reads `.studying` in a running focus phase, `.onBreak` in a running break, `.awake` while paused or within `sleepAfter` (20 min) of the last session, and `.asleep` after that.
 The Closet module shares it as `ModuleProvision.pet`, and `ProviderSnapshot.pet` keeps the first in tab order.
 The ticker turns it into a `.pet` item (`TickerKind.pet`, last in rotation), and `TickerSources.nextChange` includes the moment the pet dozes off, so the notch updates without polling.
-`NotchPetWing` (NotchKit) draws the animated pet in the leading wing and its name in the trailing wing, with a quiet "zzz" while it sleeps; mood changes play the real fall-asleep and wake-up clips.
+`NotchPetWing` (TabbiKit) draws the animated pet in the leading wing and its name in the trailing wing, with a quiet "zzz" while it sleeps; mood changes play the real fall-asleep and wake-up clips.
 `--snapshot` renders `closed-pet.png` and `closed-pet-asleep.png` when the Closet module is on (use `--edition studynotch`).
 
-## Closet (`Sources/NotchKitCore/Closet`)
+## Closet (`Sources/TabbiKitCore/Closet`)
 
 `PetCloset` holds the Closet tab's editing rules over one `PetSave`, so every edit leaves a save that is valid to persist.
 

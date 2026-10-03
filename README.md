@@ -132,15 +132,15 @@ Other useful commands:
 
 ```sh
 swift build                     # compile; must stay warning-free
-swift test                      # unit tests for NotchKitCore
-NOTCHDECK_DEMO=1 swift run NotchDeck --snapshot snapshots   # render every notch state to PNG with sample data
+swift test                      # unit tests for TabbiKitCore
+NOTCHDECK_DEMO=1 swift run Tabbi --snapshot snapshots   # render every notch state to PNG with sample data
 scripts/release.sh              # universal, ad-hoc signed release zip in build/release/
 scripts/bundle.sh studynotch    # build/StudyNotch.app: the same app branded for studying
 ```
 
 Editions are branded builds of the same binary.
 `scripts/bundle.sh studynotch` (or `scripts/run.sh studynotch`) builds StudyNotch, with its own name, bundle id and the Medicine kit preselected.
-An edition is one JSON file in `Sources/NotchKitCore/Editions/BundledEditions/` (id, name, bundle id, default kit, an optional icon in `Resources/` and the Info.plist strings that name the app), which both the app and `scripts/assemble.sh` read, so a new edition needs no code change.
+An edition is one JSON file in `Sources/TabbiKitCore/Editions/BundledEditions/` (id, name, bundle id, default kit, an optional icon in `Resources/` and the Info.plist strings that name the app), which both the app and `scripts/assemble.sh` read, so a new edition needs no code change.
 
 `NOTCHDECK_DEMO=1` swaps every data source for realistic sample data, so you can try the UI without Spotify, a calendar or the `claude` CLI.
 

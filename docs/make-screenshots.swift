@@ -35,7 +35,7 @@ func renderDemoSnapshots() -> URL {
         .appendingPathComponent("notchdeck-snapshots-\(ProcessInfo.processInfo.processIdentifier)")
     let process = Process()
     process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-    process.arguments = ["swift", "run", "-c", "release", "NotchDeck", "--snapshot", directory.path]
+    process.arguments = ["swift", "run", "-c", "release", "Tabbi", "--snapshot", directory.path]
     process.currentDirectoryURL = root
     var environment = ProcessInfo.processInfo.environment
     environment["NOTCHDECK_DEMO"] = "1"

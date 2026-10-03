@@ -9,7 +9,7 @@ NotchDeck ships three kits, and anyone can write their own as a small JSON file 
 | Medicine (StudyNotch) | `medicine` | Study, Today, Anki, Party, Now Playing, Ask Claude, Closet |
 | Student | `student` | Study, Today, Now Playing, Ask Claude, Closet (Anki off) |
 
-The bundled kits live in [`Sources/NotchKitCore/Kits/Bundled`](../Sources/NotchKitCore/Kits/Bundled).
+The bundled kits live in [`Sources/TabbiKitCore/Kits/Bundled`](../Sources/TabbiKitCore/Kits/Bundled).
 They are good starting points for your own kit.
 
 ## Using kits
@@ -262,7 +262,7 @@ Modules listed only in `modules` stay optional: an older version skips them with
 
 ## For developers
 
-The format is defined by `KitManifest` in [`Sources/NotchKitCore/Kits`](../Sources/NotchKitCore/Kits):
+The format is defined by `KitManifest` in [`Sources/TabbiKitCore/Kits`](../Sources/TabbiKitCore/Kits):
 
 - `KitManifest.decode(from:)` parses and validates a file, including the `KitLimits` caps, and throws a `KitError`.
 - `issues(catalog:)` lists the non-fatal `KitIssue` warnings, including fields the format doesn't read (`unknownFields`) and old field names (`KitDefaults.legacyFields`, see `KitLegacyField`), which decoding has already moved into their module's section.
@@ -274,7 +274,7 @@ The format is defined by `KitManifest` in [`Sources/NotchKitCore/Kits`](../Sourc
 - `KitLibrary` holds the bundled kits in picker order plus imported kits, and `ImportedKitStore` keeps imported files on disk.
 - Inside the app an imported kit goes by `KitLibrary.importedID(_:)` of its author's id (`imported.deep-work` for `deep-work`), so it never shares an id with a bundled kit; that is the id saved as the active kit, and the file stays `<author id>.json`. Settings from before this rule get the new id through a `SettingsSchema` step.
 
-To ship a new bundled kit, add `<id>.json` (the file name must match its `id`) with a `pickerOrder` to `Sources/NotchKitCore/Kits/Bundled`, and check that its tests report no issues.
+To ship a new bundled kit, add `<id>.json` (the file name must match its `id`) with a `pickerOrder` to `Sources/TabbiKitCore/Kits/Bundled`, and check that its tests report no issues.
 `KitLibrary.bundled` lists that folder, so no code changes; `KitLibraryTests` checks that every file loads under its own name and has a picker order.
-To render it, run `swift run NotchDeck --snapshot snapshots-<id> --kit <id>`.
+To render it, run `swift run Tabbi --snapshot snapshots-<id> --kit <id>`.
 A module reads its own `moduleSettings` section with `KitDefaults.settings(for:)` and `KitValue.decode(_:)`, and declares its keys as `ModuleDescriptor.kitSettings` (a `KitSettingsSchema` of booleans, numbers in a range, bounded text, choices, lines and nested objects), which `issues(catalog:)` checks.

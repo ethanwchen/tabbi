@@ -74,5 +74,5 @@ body:
     id: logs
     attributes:
       label: Relevant logs
-      description: Optional. Output from Console.app filtered by "NotchDeck", or from `swift run NotchDeck` if you built from source. Please remove anything private.
+      description: Optional. Output from Console.app filtered by "NotchDeck", or from `swift run Tabbi` if you built from source. Please remove anything private.
       render: text
