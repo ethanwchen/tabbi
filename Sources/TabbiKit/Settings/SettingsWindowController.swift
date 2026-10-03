@@ -35,6 +35,7 @@ public struct SettingsPane {
 public final class SettingsWindowController: NSWindowController {
     private let tabs = NSTabViewController()
     private var panes: [String: SettingsPane] = [:]
+    private let fit = ToolbarFit()
     private var cancellable: AnyCancellable?
 
     /// - Parameters:
@@ -44,7 +45,7 @@ public final class SettingsWindowController: NSWindowController {
     public init(panes: [SettingsPane], updates: AnyPublisher<[SettingsPane], Never>, autosaveName: String) {
         tabs.tabStyle = .toolbar
         tabs.transitionOptions = [.crossfade, .allowUserInteraction]
-        self.panes = Self.sync(tabs, to: panes)
+        self.panes = Self.sync(tabs, to: panes, fit: fit)
 
         let window = NSWindow(contentViewController: tabs)
         window.styleMask = [.titled, .closable]
@@ -56,7 +57,7 @@ public final class SettingsWindowController: NSWindowController {
 
         cancellable = updates.sink { [weak self] panes in
             guard let self else { return }
-            self.panes = Self.sync(tabs, to: panes)
+            self.panes = Self.sync(tabs, to: panes, fit: self.fit)
         }
     }
 
@@ -106,7 +107,8 @@ public final class SettingsWindowController: NSWindowController {
     /// Removes panes that are no longer wanted and inserts new ones in
     /// place, so panes that stay keep their state and the selection.
     /// Returns the panes keyed by id.
-    private static func sync(_ tabs: NSTabViewController, to wanted: [SettingsPane]) -> [String: SettingsPane] {
+    private static func sync(_ tabs: NSTabViewController, to wanted: [SettingsPane], fit: ToolbarFit) -> [String: SettingsPane] {
+        fit.minWidth = ToolbarFit.width(for: wanted.map(\.title))
         let panes = Dictionary(wanted.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
         for item in tabs.tabViewItems where panes[item.identifier as? String ?? ""] == nil {
             tabs.removeTabViewItem(item)
@@ -114,7 +116,7 @@ public final class SettingsWindowController: NSWindowController {
         for (index, pane) in wanted.enumerated() {
             let items = tabs.tabViewItems
             if index < items.count, items[index].identifier as? String == pane.id { continue }
-            let host = NSHostingController(rootView: pane.view)
+            let host = NSHostingController(rootView: FittedPane(content: pane.view, fit: fit))
             // The window follows each pane's natural size as the user switches tabs.
             host.sizingOptions = .preferredContentSize
             // The tab view controller shows the selected child's title in the title bar.
@@ -126,5 +128,34 @@ public final class SettingsWindowController: NSWindowController {
             tabs.insertTabViewItem(item, at: index)
         }
         return panes
+    }
+}
+
+/// The width every pane keeps so the toolbar shows all its items. A narrow
+/// window hides the last ones (often About) behind an overflow chevron, and
+/// the pane list grows with the user's tabs (Party, Pet Coach, ...).
+@MainActor
+private final class ToolbarFit: ObservableObject {
+    @Published var minWidth: CGFloat = 0
+
+    /// An estimate of the preference toolbar's natural width: each item is
+    /// as wide as its label or icon plus padding, plus the window's margins.
+    static func width(for titles: [String]) -> CGFloat {
+        let font = NSFont.systemFont(ofSize: NSFont.smallSystemFontSize)
+        let items = titles.reduce(CGFloat(0)) { total, title in
+            let label = (title as NSString).size(withAttributes: [.font: font]).width
+            return total + max(label, 32) + 20
+        }
+        return ceil(items + 40)
+    }
+}
+
+/// A pane centered in at least the toolbar's width.
+private struct FittedPane: View {
+    let content: AnyView
+    @ObservedObject var fit: ToolbarFit
+
+    var body: some View {
+        content.frame(minWidth: fit.minWidth)
     }
 }
