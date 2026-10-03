@@ -79,7 +79,7 @@ final class WelcomeWindowController: NSWindowController, NSWindowDelegate {
 /// The two setup steps, with a spring between them.
 private struct WelcomeView: View {
     @EnvironmentObject private var store: SettingsStore
-    /// Starts on the edition's kit, e.g. Medicine for StudyNotch.
+    /// Starts on the edition's preselected kit, if it has one.
     @State private var picked: String?
     /// The kit whose questions are showing; nil on the kit picker.
     @State private var questionsKit: String?

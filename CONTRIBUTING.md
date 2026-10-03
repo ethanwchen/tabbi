@@ -27,10 +27,10 @@ Open the folder in Xcode (`xed .`) if you want the IDE; it reads `Package.swift`
 
 ## Demo mode
 
-Set `NOTCHDECK_DEMO=1` to replace every data source with realistic sample data:
+Set `TABBI_DEMO=1` to replace every data source with realistic sample data:
 
 ```sh
-NOTCHDECK_DEMO=1 scripts/run.sh
+TABBI_DEMO=1 scripts/run.sh
 ```
 
 Demo mode never talks to Spotify, Music, Calendar, the network, or the `claude` CLI.
@@ -42,7 +42,7 @@ NotchDeck can render every notch state to PNG without opening a window.
 Use it to check your UI change, and attach the result to your pull request.
 
 ```sh
-NOTCHDECK_DEMO=1 swift run Tabbi --snapshot snapshots   # sample data
+TABBI_DEMO=1 swift run Tabbi --snapshot snapshots   # sample data
 swift run Tabbi --snapshot snapshots-live               # your real data, or the empty states
 ```
 

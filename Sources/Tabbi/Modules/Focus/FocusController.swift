@@ -198,14 +198,14 @@ final class FocusController: ObservableObject {
 
     // MARK: - AppleScript
 
-    private nonisolated static let log = Logger(subsystem: "NotchDeck", category: "Focus")
+    private nonisolated static let log = Logger(subsystem: "Tabbi", category: "Focus")
 
     private nonisolated static func isRunning(_ source: MediaSource) -> Bool {
         !NSRunningApplication.runningApplications(withBundleIdentifier: source.bundleIdentifier).isEmpty
     }
 
     /// Serial, and off the main thread: Apple Events can block for seconds.
-    private nonisolated static let scriptQueue = DispatchQueue(label: "dev.notchdeck.focus.applescript",
+    private nonisolated static let scriptQueue = DispatchQueue(label: "dev.tabbi.focus.applescript",
                                                                qos: .userInitiated)
 
     /// Runs `script` against `source`. Unless `launching`, it's skipped when

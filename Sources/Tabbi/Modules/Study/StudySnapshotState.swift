@@ -4,7 +4,7 @@ import TabbiKitCore
 /// Which Study state `--snapshot` renders, so every method and the
 /// in-notch overlays can be reviewed without clicking:
 ///
-///     NOTCHDECK_DEMO=1 NOTCHDECK_STUDY_SNAPSHOT=info:flowtime \
+///     TABBI_DEMO=1 TABBI_STUDY_SNAPSHOT=info:flowtime \
 ///         swift run Tabbi --snapshot snapshots-study --kit medicine
 ///
 /// Values: `method:<kind>` (the timer running that method; without the
@@ -22,7 +22,7 @@ enum StudySnapshotState: Equatable {
 
     static let current: StudySnapshotState? = {
         guard RunMode.current.isSnapshot,
-              let value = ProcessInfo.processInfo.environment["NOTCHDECK_STUDY_SNAPSHOT"]
+              let value = ProcessInfo.processInfo.environment["TABBI_STUDY_SNAPSHOT"]
         else { return nil }
         return parse(value)
     }()

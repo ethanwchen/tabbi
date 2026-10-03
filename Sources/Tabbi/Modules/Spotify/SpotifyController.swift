@@ -9,7 +9,7 @@ import TabbiKitCore
 /// running check. `MediaSourceTracker` decides which app the panel follows.
 /// Updates come from each app's distributed notification; while the panel is
 /// visible the position ticks locally every second and is re-synced with a
-/// 5 s read. With `NOTCHDECK_DEMO=1` it shows `SpotifyPlayback.demo` and
+/// 5 s read. With `TABBI_DEMO=1` it shows `SpotifyPlayback.demo` and
 /// never talks to either app.
 @MainActor
 final class SpotifyController: NSObject, ObservableObject {
@@ -334,7 +334,7 @@ final class SpotifyController: NSObject, ObservableObject {
 
     /// One serial queue: `NSAppleScript` isn't safe to run concurrently, and
     /// Apple Events can block for seconds, so keep them off the main thread.
-    private nonisolated static let scriptQueue = DispatchQueue(label: "dev.notchdeck.spotify.applescript",
+    private nonisolated static let scriptQueue = DispatchQueue(label: "dev.tabbi.spotify.applescript",
                                                                qos: .userInitiated)
 
     private nonisolated static func run(_ script: String,

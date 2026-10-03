@@ -6,7 +6,7 @@ import TabbiKitCore
 ///
 /// Sampling runs once per second only while the panel is visible: the
 /// panel calls `start()` / `stop()` from `onAppear` / `onDisappear`. With
-/// `NOTCHDECK_DEMO=1` it plays back `SystemDemoData` instead of reading
+/// `TABBI_DEMO=1` it plays back `SystemDemoData` instead of reading
 /// the machine, so snapshots look the same everywhere.
 @MainActor
 final class SystemMonitor: ObservableObject {

@@ -1,6 +1,6 @@
 import Foundation
 
-/// A music app NotchDeck can read and control over AppleScript.
+/// A music app Tabbi can read and control over AppleScript.
 public enum MediaSource: String, CaseIterable, Equatable, Hashable, Sendable {
     case spotify
     case music

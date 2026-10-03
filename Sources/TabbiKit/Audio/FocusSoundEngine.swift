@@ -165,5 +165,5 @@ public final class FocusSoundEngine {
         startEngineIfNeeded()
     }
 
-    private static let log = Logger(subsystem: "NotchDeck", category: "FocusSound")
+    private static let log = Logger(subsystem: "Tabbi", category: "FocusSound")
 }

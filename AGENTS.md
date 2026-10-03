@@ -59,7 +59,7 @@ Judge them against the design rules below before you call the work done.
   active kit (`kitApplied` fires when the user switches to, resets or
   undoes a kit; on `.undo` put back what the undone switch changed), the
   `ProviderHub`, a logger, the `runMode` (live, demo data, snapshot
-  rendering; hand it to your store, never read `NOTCHDECK_DEMO` yourself), the edition's
+  rendering; hand it to your store, never read `TABBI_DEMO` yourself), the edition's
   `storage` (`EditionStorage`: put files in `storage.folder("<Name>")`,
   never in a hardcoded Application Support path, so each edition keeps
   its own data), and `SharedServices`. A module builds and owns its store there and follows

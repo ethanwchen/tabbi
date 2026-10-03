@@ -2,7 +2,7 @@ import Foundation
 import ServiceManagement
 import TabbiKitCore
 
-/// Registers NotchDeck as a login item through `SMAppService.mainApp`.
+/// Registers Tabbi as a login item through `SMAppService.mainApp`.
 ///
 /// The system, not our defaults, is the source of truth: the user can remove
 /// the item in System Settings › General › Login Items at any time.

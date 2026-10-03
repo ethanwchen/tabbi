@@ -6,7 +6,7 @@ public struct KitLibrary: Equatable, Sendable {
     /// Bundled kit ids in picker order. Each is a `<id>.json` in `Kits/Bundled`.
     public static var bundledIDs: [String] { bundled.kits.map(\.id) }
     /// The kit used when the user (or edition) hasn't picked one. It
-    /// reproduces NotchDeck's original tabs.
+    /// reproduces Tabbi's original tabs.
     public static let defaultKitID = "productivity"
 
     public private(set) var kits: [KitManifest]

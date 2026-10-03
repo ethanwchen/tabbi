@@ -19,10 +19,10 @@ struct PlannerPanel: View {
 
     /// From 5 pm "Wrap up" is the panel's call to action and "Plan my day"
     /// moves to a small header button; during the day it's the other way round.
-    /// `NOTCHDECK_PLANNER_PREVIEW=daytime|evening` pins either for demo snapshots.
+    /// `TABBI_PLANNER_PREVIEW=daytime|evening` pins either for demo snapshots.
     static func isWrapUpTime(_ date: Date) -> Bool {
         guard RunMode.current.isDemo else { return DayReviewer.isWrapUpTime(date) }
-        return switch ProcessInfo.processInfo.environment["NOTCHDECK_PLANNER_PREVIEW"] {
+        return switch ProcessInfo.processInfo.environment["TABBI_PLANNER_PREVIEW"] {
         case "daytime": false
         case "evening": true
         default: DayReviewer.isWrapUpTime(date)

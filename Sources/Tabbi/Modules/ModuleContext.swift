@@ -47,7 +47,7 @@ struct ModuleContext {
     /// so each edition keeps its own data.
     var storage: EditionStorage { EditionStorage(edition: edition) }
 
-    /// `NOTCHDECK_DEMO=1`: show realistic sample data and never touch the
+    /// `TABBI_DEMO=1`: show realistic sample data and never touch the
     /// network, disk, Spotify, Music, Calendar or the `claude` CLI.
     var isDemo: Bool { runMode.isDemo }
     /// Rendering `--snapshot` PNGs: no sounds, nothing saved.

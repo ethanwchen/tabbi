@@ -110,7 +110,7 @@ final class ModuleContextTests: XCTestCase {
     }
     func testAppServicesHandsEveryModuleTheProcessRunMode() throws {
         let demoSnapshot = AppServices(settings: settings(), moduleTypes: types,
-                                       environment: ["NOTCHDECK_DEMO": "1"], arguments: ["--snapshot", "out"])
+                                       environment: ["TABBI_DEMO": "1"], arguments: ["--snapshot", "out"])
         let module = try XCTUnwrap(demoSnapshot.modules.module(SelfContainedModule.self))
         XCTAssertEqual(module.context.runMode, RunMode(isDemo: true, isSnapshot: true))
         XCTAssertTrue(module.context.isDemo)

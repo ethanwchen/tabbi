@@ -69,7 +69,7 @@ public enum AnkiConnectError: Error, Hashable, Sendable {
         case .timeout:
             return "Close any open Anki dialog. If it keeps happening, turn off App Nap for Anki."
         case .permissionDenied:
-            return "Allow StudyNotch in AnkiConnect's settings, then try again."
+            return "Allow Tabbi in AnkiConnect's settings, then try again."
         case .apiKeyRequired:
             return "Enter the key from AnkiConnect's config in Settings."
         case .addOnOutdated, .unsupportedAction:

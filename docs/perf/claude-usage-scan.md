@@ -6,7 +6,7 @@ On a heavy user's Mac that folder holds 1.2 GB across 1,660 `.jsonl` files, and 
 ## The bug
 
 A release build idled at 0% CPU but `footprint` reported 952 MB, almost all of it dirty `MALLOC_SMALL` pages.
-With `NOTCHDECK_DEMO=1` (no scan) the same build used 14 MB.
+With `TABBI_DEMO=1` (no scan) the same build used 14 MB.
 
 The scanner already skipped files older than the window and read in 1 MB chunks, but each chunk came from `FileHandle.read(upToCount:)`, which returns an autoreleased `NSData`.
 The whole scan is one synchronous job on a Swift concurrency thread, whose autorelease pool is not drained until the job ends.
@@ -36,7 +36,7 @@ Release bundle (`scripts/bundle.sh notchdeck release`), real data (1.2 GB, 1,664
 | After, first launch (no index, reads the whole week) | 40 MB |
 | After, later launches (index on disk) | 31-32 MB |
 | Launch scan disabled (reference) | 25 MB |
-| `NOTCHDECK_DEMO=1` | 15 MB |
+| `TABBI_DEMO=1` | 15 MB |
 
 The first version of the fix kept each record's message id and model as Swift strings.
 Those 22k long-lived small allocations sat between the scan's transient garbage and pinned fragmented `MALLOC_SMALL` pages, so later launches measured 47-49 MB.

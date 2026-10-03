@@ -105,7 +105,7 @@ extension SettingsWindowController {
         self.init(
             panes: AppSettingsPane.panes(settings: settings, modules: modules, enabled: settings.settings.modules.enabled),
             updates: updates,
-            autosaveName: "NotchDeckSettings"
+            autosaveName: "TabbiSettings"
         )
     }
 }

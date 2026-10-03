@@ -133,7 +133,7 @@ Other useful commands:
 ```sh
 swift build                     # compile; must stay warning-free
 swift test                      # unit tests for TabbiKitCore
-NOTCHDECK_DEMO=1 swift run Tabbi --snapshot snapshots   # render every notch state to PNG with sample data
+TABBI_DEMO=1 swift run Tabbi --snapshot snapshots   # render every notch state to PNG with sample data
 scripts/release.sh              # universal, ad-hoc signed release zip in build/release/
 scripts/bundle.sh               # build/Tabbi.app
 ```
@@ -142,7 +142,7 @@ Editions are branded builds of the same binary, with their own name, bundle id, 
 Tabbi ships as a single edition, `tabbi`, and serves different audiences with kits; the mechanism stays for future branded builds.
 An edition is one JSON file in `Sources/TabbiKitCore/Editions/BundledEditions/` (id, name, bundle id, default kit, an optional icon in `Resources/` and the Info.plist strings that name the app), which both the app and `scripts/assemble.sh` read, so a new edition needs no code change: `scripts/bundle.sh <id>` builds it.
 
-`NOTCHDECK_DEMO=1` swaps every data source for realistic sample data, so you can try the UI without Spotify, a calendar or the `claude` CLI.
+`TABBI_DEMO=1` swaps every data source for realistic sample data, so you can try the UI without Spotify, a calendar or the `claude` CLI.
 
 ## Permissions
 

@@ -1,7 +1,7 @@
 import SwiftUI
 import TabbiKitCore
 
-/// The NotchDeck design system. Use these tokens instead of literals so every
+/// The Tabbi design system. Use these tokens instead of literals so every
 /// module feels like part of one product.
 ///
 /// Principles: the notch is hardware-black and calm. Content uses one accent per

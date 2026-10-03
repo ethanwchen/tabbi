@@ -172,7 +172,7 @@ public struct PetCloset: Hashable, Sendable {
 }
 
 extension PetCloset {
-    /// The `NOTCHDECK_DEMO=1` closet: a dressed cat a few sessions in, with
+    /// The `TABBI_DEMO=1` closet: a dressed cat a few sessions in, with
     /// some items owned, two affordable, and the rest still to earn.
     public static var demo: PetCloset {
         let ledger = PetPointsLedger(

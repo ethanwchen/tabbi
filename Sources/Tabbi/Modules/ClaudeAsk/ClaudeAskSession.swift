@@ -12,7 +12,7 @@ final class ClaudeAskSession: ObservableObject {
     /// can explain setup before the user types a question.
     @Published private(set) var isClaudeMissing = false
 
-    /// True with `NOTCHDECK_DEMO=1`: shows a sample chat and never runs the CLI.
+    /// True with `TABBI_DEMO=1`: shows a sample chat and never runs the CLI.
     let isDemo: Bool
 
     private var task: Task<Void, Never>?
@@ -39,7 +39,7 @@ final class ClaudeAskSession: ObservableObject {
 
         if isDemo {
             conversation.apply(.result(ClaudeResult(
-                text: "This is a demo. Run \(Edition.current.name) without `NOTCHDECK_DEMO` to ask the real Claude.",
+                text: "This is a demo. Run \(Edition.current.name) without `TABBI_DEMO` to ask the real Claude.",
                 sessionID: sessionID,
                 isError: false
             )))

@@ -147,7 +147,7 @@ struct ModulesSettingsPane: View {
             }
         }
         .formStyle(.grouped)
-        // Scrolls: the module list grows with every module NotchDeck ships.
+        // Scrolls: the module list grows with every module Tabbi ships.
         .frame(width: paneWidth, height: 444)
     }
 }
@@ -588,7 +588,7 @@ struct ClaudeSettingsPane: View {
     @State private var attempt = 0
     @FocusState private var fieldFocused: Bool
 
-    /// With `NOTCHDECK_DEMO=1` the pane shows a sample result and never runs the CLI.
+    /// With `TABBI_DEMO=1` the pane shows a sample result and never runs the CLI.
     private static var isDemo: Bool { RunMode.current.isDemo }
 
     var body: some View {

@@ -277,7 +277,7 @@ private final class FocusNotifications: NSObject, UNUserNotificationCenterDelega
         center.removePendingNotificationRequests(withIdentifiers: [id])
     }
 
-    /// NotchDeck is always "frontmost" as an accessory app, so ask for the
+    /// Tabbi is always "frontmost" as an accessory app, so ask for the
     /// banner explicitly or macOS would swallow it.
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter,
                                             willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {

@@ -57,7 +57,7 @@ final class DayPlanProposalTests: XCTestCase {
         try proposal.add([first.id], now: at(-10), events: [], writer: writer)
 
         XCTAssertEqual(writer.written, [[
-            PlannedCalendarEvent(title: "Ship planner beta", start: at(60), end: at(120), notes: "Planned with NotchDeck"),
+            PlannedCalendarEvent(title: "Ship planner beta", start: at(60), end: at(120), notes: "Planned with Tabbi"),
         ]])
         XCTAssertEqual(proposal.pending.map(\.id), [second.id])
         XCTAssertEqual(proposal.addedCount, 1)

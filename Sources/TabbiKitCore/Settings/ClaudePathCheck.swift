@@ -1,6 +1,6 @@
 import Foundation
 
-/// The outcome of checking which `claude` binary NotchDeck would run, shown
+/// The outcome of checking which `claude` binary Tabbi would run, shown
 /// by the Settings window's Validate button.
 public enum ClaudePathCheck: Equatable, Sendable {
     /// A working CLI. `isOverride` is false when it was found automatically.

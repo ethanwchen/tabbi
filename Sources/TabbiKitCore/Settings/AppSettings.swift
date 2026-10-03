@@ -1,6 +1,6 @@
 import Foundation
 
-/// Every user preference NotchDeck has, as one value.
+/// Every user preference Tabbi has, as one value.
 public struct AppSettings: Equatable, Sendable {
     /// The kit the user (or edition) picked. Its layout seeds `modules`, and
     /// "reset to kit defaults" goes back to it.

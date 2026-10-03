@@ -1,7 +1,7 @@
 import Foundation
 
 extension PartyState {
-    /// Sample data for `NOTCHDECK_DEMO=1` and snapshots: I host a party
+    /// Sample data for `TABBI_DEMO=1` and snapshots: I host a party
     /// with two friends on a shared session, one more friend is in another
     /// party I could join, and the rest cover every status. Built relative
     /// to `now` so countdowns always read sensibly.
@@ -76,7 +76,7 @@ extension PartyState {
 }
 
 /// The Party tab's screens, so demo snapshots can show each one
-/// (`NOTCHDECK_PARTY_PREVIEW=<raw value>`).
+/// (`TABBI_PARTY_PREVIEW=<raw value>`).
 public enum PartyDemoScenario: String, CaseIterable, Sendable {
     /// I host a party with a shared session running (the default demo).
     case hosting
@@ -140,7 +140,7 @@ extension PartyState {
             state.didFailToConnect(.unreachable)
             return state
         case .invalidServer:
-            return PartyState(settings: PartySettings(serverText: "http://studynotch.example.com"))
+            return PartyState(settings: PartySettings(serverText: "http://tabbi.example.com"))
         }
     }
 }

@@ -146,7 +146,7 @@ final class ClaudeUsageStore: ObservableObject {
 
     // MARK: Demo
 
-    /// Realistic sample data for screenshots (`NOTCHDECK_DEMO=1`).
+    /// Realistic sample data for screenshots (`TABBI_DEMO=1`).
     private func loadDemoData() {
         let now = Date()
         cliStatus = .available

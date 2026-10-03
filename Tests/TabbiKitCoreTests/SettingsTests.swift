@@ -3,7 +3,7 @@ import TabbiKitCore
 
 final class ModuleLayoutTests: XCTestCase {
     private let classic: [ModuleID] = [.spotify, .system, .claudeUsage, .planner, .claudeAsk]
-    /// Built-in modules that start switched off: Focus and the StudyNotch tabs.
+    /// Built-in modules that start switched off: Focus and the study tabs.
     private let optIn: [ModuleID] = [.focus, .study, .anki, .party, .closet]
 
     func testDefaultShowsTheOriginalTabsAndParksTheRest() {

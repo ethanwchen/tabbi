@@ -11,7 +11,7 @@ enum KitResources {
     static let bundleName = "Tabbi_TabbiKitCore.bundle"
 
     static let bundle: Bundle? = {
-        // NotchDeck.app/Contents/Resources, then beside the executable
+        // Tabbi.app/Contents/Resources, then beside the executable
         // (`swift run`), then beside the test bundle (`swift test`).
         let candidates = [
             Bundle.main.resourceURL,

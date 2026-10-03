@@ -27,9 +27,9 @@ final class AnkiStore: ObservableObject {
     @Published private var rolloverCount = 0
 
     let isDemo: Bool
-    /// A screen pinned by `NOTCHDECK_ANKI_STATE` for snapshots; nothing
+    /// A screen pinned by `TABBI_ANKI_STATE` for snapshots; nothing
     /// refreshes while it is set.
-    private let pinnedState = ProcessInfo.processInfo.environment["NOTCHDECK_ANKI_STATE"]
+    private let pinnedState = ProcessInfo.processInfo.environment["TABBI_ANKI_STATE"]
         .flatMap(AnkiConnectionState.init(previewName:))
     /// Demo or pinned: sample data only, no AnkiConnect calls.
     private var isStatic: Bool { isDemo || pinnedState != nil }

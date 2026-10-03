@@ -9,9 +9,9 @@ final class RunModeTests: XCTestCase {
     }
 
     func testDemoNeedsTheVariableSetToOne() {
-        XCTAssertEqual(RunMode(environment: ["NOTCHDECK_DEMO": "1"], arguments: []), .demo)
-        XCTAssertEqual(RunMode(environment: ["NOTCHDECK_DEMO": "0"], arguments: []), .live)
-        XCTAssertEqual(RunMode(environment: ["NOTCHDECK_DEMO": "true"], arguments: []), .live)
+        XCTAssertEqual(RunMode(environment: ["TABBI_DEMO": "1"], arguments: []), .demo)
+        XCTAssertEqual(RunMode(environment: ["TABBI_DEMO": "0"], arguments: []), .live)
+        XCTAssertEqual(RunMode(environment: ["TABBI_DEMO": "true"], arguments: []), .live)
     }
 
     func testTheSnapshotFlagMakesASnapshotRunThatSavesNothing() {
@@ -22,7 +22,7 @@ final class RunModeTests: XCTestCase {
     }
 
     func testDemoSnapshotsAreBoth() {
-        let mode = RunMode(environment: ["NOTCHDECK_DEMO": "1"], arguments: ["--snapshot", "snapshots-demo"])
+        let mode = RunMode(environment: ["TABBI_DEMO": "1"], arguments: ["--snapshot", "snapshots-demo"])
         XCTAssertEqual(mode, RunMode(isDemo: true, isSnapshot: true))
         XCTAssertTrue(mode.isEphemeral)
     }

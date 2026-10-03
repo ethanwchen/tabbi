@@ -1,7 +1,7 @@
 import AppKit
 import TabbiKitCore
 
-// NotchDeck is a menu-bar-less accessory app: no Dock icon, no main window.
+// Tabbi is a menu-bar-less accessory app: no Dock icon, no main window.
 MainActor.assumeIsolated {
     let app = NSApplication.shared
     let arguments = CommandLine.arguments

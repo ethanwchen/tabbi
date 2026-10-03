@@ -1,6 +1,6 @@
 import Foundation
 
-/// Deterministic, realistic-looking metrics for `NOTCHDECK_DEMO=1`, used by
+/// Deterministic, realistic-looking metrics for `TABBI_DEMO=1`, used by
 /// snapshots and README screenshots so they never depend on the machine
 /// they were rendered on.
 public enum SystemDemoData {

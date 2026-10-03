@@ -11,7 +11,7 @@ import TabbiKitCore
 /// database changes. The closed-notch meeting preview keeps it refreshing the
 /// same way while it's on; while neither needs events nothing runs.
 ///
-/// With `NOTCHDECK_DEMO=1` it shows `UpcomingEvent.samples` and never touches
+/// With `TABBI_DEMO=1` it shows `UpcomingEvent.samples` and never touches
 /// EventKit.
 @MainActor
 final class UpNextStore: ObservableObject {
@@ -57,8 +57,8 @@ final class UpNextStore: ObservableObject {
         if isDemo {
             let start = Date()
             // Lets demo snapshots render each empty state:
-            // `NOTCHDECK_UPNEXT_PREVIEW=notAsked|denied|noAccounts|freeDay`.
-            let preview = environment["NOTCHDECK_UPNEXT_PREVIEW"]
+            // `TABBI_UPNEXT_PREVIEW=notAsked|denied|noAccounts|freeDay`.
+            let preview = environment["TABBI_UPNEXT_PREVIEW"]
             access = switch preview {
             case "notAsked": .notDetermined
             case "denied": .denied
@@ -131,8 +131,8 @@ final class UpNextStore: ObservableObject {
         return EventKitPlanWriter(store: eventStore)
     }
 
-    /// `NOTCHDECK_PLAN_DRY_RUN=1`: plan blocks are printed, never written.
-    var isPlanDryRun: Bool { ProcessInfo.processInfo.environment["NOTCHDECK_PLAN_DRY_RUN"] == "1" }
+    /// `TABBI_PLAN_DRY_RUN=1`: plan blocks are printed, never written.
+    var isPlanDryRun: Bool { ProcessInfo.processInfo.environment["TABBI_PLAN_DRY_RUN"] == "1" }
 
     func openPrivacySettings() {
         NSWorkspace.shared.open(Self.privacySettingsURL)

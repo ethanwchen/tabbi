@@ -18,7 +18,7 @@ public struct NotchGeometry: Equatable {
         self.centerX = centerX
     }
 
-    /// The screen NotchDeck lives on, per the user's display preference, falling
+    /// The screen Tabbi lives on, per the user's display preference, falling
     /// back to another connected screen when the preferred one is gone.
     public static func screen(for preference: DisplayPreference) -> NSScreen? {
         let screens = NSScreen.screens

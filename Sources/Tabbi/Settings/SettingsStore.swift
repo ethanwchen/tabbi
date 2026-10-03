@@ -125,7 +125,7 @@ final class SettingsStore: ObservableObject {
     /// A store backed by a throwaway defaults suite, so snapshots always render
     /// the kit's default layout regardless of the user's saved preferences.
     static func ephemeral(catalog: ModuleCatalog, kitID: String = KitLibrary.defaultKitID) -> SettingsStore {
-        let suite = "NotchDeck.ephemeral"
+        let suite = "Tabbi.ephemeral"
         let defaults = UserDefaults(suiteName: suite) ?? .standard
         defaults.removePersistentDomain(forName: suite)
         return SettingsStore(catalog: catalog, defaults: defaults, defaultKitID: kitID, kitStore: nil, integratesWithSystem: false)

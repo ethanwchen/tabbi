@@ -2,12 +2,12 @@ import Foundation
 
 /// Finds and runs the user's local `claude` CLI.
 ///
-/// NotchDeck never talks to Anthropic directly and never reads credentials:
+/// Tabbi never talks to Anthropic directly and never reads credentials:
 /// every Claude feature goes through the CLI the user is already signed in to.
 /// GUI apps don't inherit the shell PATH, so the binary is located explicitly.
 public enum ClaudeCLI {
     /// Environment variable that overrides discovery.
-    public static let overrideVariable = "NOTCHDECK_CLAUDE_PATH"
+    public static let overrideVariable = "TABBI_CLAUDE_PATH"
 
     /// The user's "claude path" setting, applied by the app whenever it changes.
     /// It is the default `pathOverride` so every caller of `locate()` honors the

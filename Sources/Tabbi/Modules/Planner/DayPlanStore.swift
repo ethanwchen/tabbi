@@ -7,7 +7,7 @@ import TabbiKitCore
 /// validates them, and writes the ones the user accepts to the calendar.
 /// The proposal replaces the checklist inline.
 ///
-/// With `NOTCHDECK_DEMO=1` it plans around `UpcomingEvent.samples(now:)` and
+/// With `TABBI_DEMO=1` it plans around `UpcomingEvent.samples(now:)` and
 /// never runs the CLI or touches EventKit.
 @MainActor
 final class DayPlanStore: ObservableObject {
@@ -78,10 +78,10 @@ final class DayPlanStore: ObservableObject {
         self.settings = settings
         let environment = ProcessInfo.processInfo.environment
         isDemo = runMode.isDemo
-        // Lets demo snapshots render each state: `NOTCHDECK_PLANNER_PREVIEW=plan`.
+        // Lets demo snapshots render each state: `TABBI_PLANNER_PREVIEW=plan`.
         // Demo only, so a preview proposal can never reach the real calendar.
         guard isDemo else { return }
-        switch environment["NOTCHDECK_PLANNER_PREVIEW"] {
+        switch environment["TABBI_PLANNER_PREVIEW"] {
         case "plan": phase = .proposal(sampleProposal(
             tasks: PlannerDay.sample(on: PlannerDayKey(date: Date()), kind: settings.sampleDay).items,
             progress: [AnkiSummary.demo().progressItem()]))

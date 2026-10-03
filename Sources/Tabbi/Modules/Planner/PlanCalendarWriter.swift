@@ -34,7 +34,7 @@ struct EventKitPlanWriter: PlanCalendarWriting {
 }
 
 /// Accepts blocks without touching the calendar: demo mode, and
-/// `NOTCHDECK_PLAN_DRY_RUN=1` runs that print what would be written.
+/// `TABBI_PLAN_DRY_RUN=1` runs that print what would be written.
 struct DryRunPlanWriter: PlanCalendarWriting {
     let logs: Bool
 

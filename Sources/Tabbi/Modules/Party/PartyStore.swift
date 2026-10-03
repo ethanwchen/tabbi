@@ -14,12 +14,12 @@ import TabbiKitCore
 /// `offline` one, which is sent when going invisible, when the Mac sleeps,
 /// and when the module stops or the app quits.
 ///
-/// With `NOTCHDECK_DEMO=1` it shows `PartyState.demo` (or the screen
-/// `NOTCHDECK_PARTY_PREVIEW` names) and never touches the
+/// With `TABBI_DEMO=1` it shows `PartyState.demo` (or the screen
+/// `TABBI_PARTY_PREVIEW` names) and never touches the
 /// network or the Keychain. Neither does a live `--snapshot` run, which
 /// would otherwise register a throwaway user on the production server: it
 /// renders the state a first launch shows before the server answers.
-/// `NOTCHDECK_PARTY_SERVER=http://localhost:8787` makes a snapshot run
+/// `TABBI_PARTY_SERVER=http://localhost:8787` makes a snapshot run
 /// render a local worker's real data instead (see `localSnapshotServer`).
 @MainActor
 final class PartyStore: ObservableObject {
@@ -60,7 +60,7 @@ final class PartyStore: ObservableObject {
     private static let trackerKey = "party.presence"
 
     /// - Parameter environment: the snapshot-only knobs, such as
-    ///   `NOTCHDECK_PARTY_PREVIEW` and a local `NOTCHDECK_PARTY_SERVER`.
+    ///   `TABBI_PARTY_PREVIEW` and a local `TABBI_PARTY_SERVER`.
     init(runMode: RunMode, environment: [String: String] = ProcessInfo.processInfo.environment) {
         isDemo = runMode.isDemo
         isSnapshot = runMode.isSnapshot
@@ -68,8 +68,8 @@ final class PartyStore: ObservableObject {
             repository = nil
             credentials = InMemoryPartyCredentialStore()
             settings = PartySettings(name: "Sam")
-            // `NOTCHDECK_PARTY_PREVIEW=lobby` and friends pick another screen for snapshots.
-            let scenario = environment["NOTCHDECK_PARTY_PREVIEW"].flatMap(PartyDemoScenario.init) ?? .hosting
+            // `TABBI_PARTY_PREVIEW=lobby` and friends pick another screen for snapshots.
+            let scenario = environment["TABBI_PARTY_PREVIEW"].flatMap(PartyDemoScenario.init) ?? .hosting
             state = .demo(scenario, now: Date())
             tracker = PartyPresenceTracker()
             return
@@ -80,7 +80,7 @@ final class PartyStore: ObservableObject {
             repository = nil
             snapshotServer = local.server
             let settings = PartySettings(serverText: local.server.absoluteString,
-                                         name: environment["NOTCHDECK_PARTY_NAME"] ?? "Sam")
+                                         name: environment["TABBI_PARTY_NAME"] ?? "Sam")
             self.settings = settings
             credentials = InMemoryPartyCredentialStore(local.credentials.map { [local.server: $0] } ?? [:])
             state = PartyState(settings: settings)
@@ -117,17 +117,17 @@ final class PartyStore: ObservableObject {
             .store(in: &cancellables)
     }
 
-    /// `NOTCHDECK_PARTY_SERVER` for a `--snapshot` run, with the optional
-    /// `NOTCHDECK_PARTY_TOKEN` and `NOTCHDECK_PARTY_CODE` of the user to
+    /// `TABBI_PARTY_SERVER` for a `--snapshot` run, with the optional
+    /// `TABBI_PARTY_TOKEN` and `TABBI_PARTY_CODE` of the user to
     /// render as. Only plain-http servers count, which `PartyServer.parse`
     /// allows for this Mac alone, so a snapshot can never register users
     /// on a deployed server.
     private static func localSnapshotServer(_ environment: [String: String])
         -> (server: URL, credentials: PartyCredentials?)? {
-        guard let text = environment["NOTCHDECK_PARTY_SERVER"],
+        guard let text = environment["TABBI_PARTY_SERVER"],
               let server = PartyServer.parse(text), server.scheme == "http" else { return nil }
-        let credentials = environment["NOTCHDECK_PARTY_TOKEN"].flatMap { token in
-            environment["NOTCHDECK_PARTY_CODE"].map { PartyCredentials(token: token, code: $0) }
+        let credentials = environment["TABBI_PARTY_TOKEN"].flatMap { token in
+            environment["TABBI_PARTY_CODE"].map { PartyCredentials(token: token, code: $0) }
         }
         return (server, credentials)
     }
@@ -306,7 +306,7 @@ final class PartyStore: ObservableObject {
         guard pending == nil else { return }
         notice = nil
         if isDemo {
-            notice = "This is a demo. Run without NOTCHDECK_DEMO to study with friends."
+            notice = "This is a demo. Run without TABBI_DEMO to study with friends."
             return
         }
         guard let account else { return }

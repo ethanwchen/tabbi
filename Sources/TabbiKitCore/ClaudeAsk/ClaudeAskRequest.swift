@@ -39,7 +39,7 @@ extension ClaudeAskFailure {
 }
 
 extension ClaudeAskConversation {
-    /// A finished sample exchange for `NOTCHDECK_DEMO=1` snapshots and
+    /// A finished sample exchange for `TABBI_DEMO=1` snapshots and
     /// screenshots, built through the same reducer as live data.
     public static var demo: ClaudeAskConversation {
         var conversation = ClaudeAskConversation()

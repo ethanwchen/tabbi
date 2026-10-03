@@ -60,7 +60,7 @@ final class KitSwitchUndoTests: XCTestCase {
     func testUndoingAnImportRestoresTabsFilesAndModuleState() throws {
         let settings = makeSettings()
         let services = AppServices(settings: settings, moduleTypes: moduleTypes,
-                                   environment: ["NOTCHDECK_DEMO": "1"], arguments: [])
+                                   environment: ["TABBI_DEMO": "1"], arguments: [])
         let today = try XCTUnwrap(services.modules.module(TodayModule.self)).store
         let focusMode = try XCTUnwrap(services.modules.module(FocusModule.self)).focusMode
         focusMode.settings.mix = .off
@@ -84,7 +84,7 @@ final class KitSwitchUndoTests: XCTestCase {
     func testUndoKeepsStarterTasksTheUserAlreadyWorkedOn() throws {
         let settings = makeSettings()
         let services = AppServices(settings: settings, moduleTypes: moduleTypes,
-                                   environment: ["NOTCHDECK_DEMO": "1"], arguments: [])
+                                   environment: ["TABBI_DEMO": "1"], arguments: [])
         let today = try XCTUnwrap(services.modules.module(TodayModule.self)).store
         try settings.installKit(settings.inspectKit(from: kitFile(deepWork)), switchingWith: [:])
         let task = try XCTUnwrap(today.day.items.first { $0.title == "Block two hours" })

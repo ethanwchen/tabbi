@@ -77,7 +77,7 @@ public struct SpotifyPlayback: Equatable, Sendable {
 }
 
 extension SpotifyPlayback {
-    /// Sample state for `NOTCHDECK_DEMO=1` snapshots and screenshots. Has no
+    /// Sample state for `TABBI_DEMO=1` snapshots and screenshots. Has no
     /// artwork URL so demo mode never touches the network.
     public static let demo = SpotifyPlayback(
         state: .playing,

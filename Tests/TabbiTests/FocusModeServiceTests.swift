@@ -30,7 +30,7 @@ final class FocusModeServiceTests: XCTestCase {
     func testResetHasWorkOnlyOnceTheFocusSoundDrifts() throws {
         let settings = SettingsStore.ephemeral(catalog: ModuleList.catalog(of: moduleTypes))
         let services = AppServices(settings: settings, moduleTypes: moduleTypes,
-                                   environment: ["NOTCHDECK_DEMO": "1"], arguments: [])
+                                   environment: ["TABBI_DEMO": "1"], arguments: [])
         let focusMode = try XCTUnwrap(services.modules.module(FocusModule.self)).focusMode
         settings.switchKit(to: "student")
         let kit = try XCTUnwrap(settings.activeKit)
@@ -54,7 +54,7 @@ final class FocusModeServiceTests: XCTestCase {
         let types: [any NotchModule.Type] = [StudyModule.self]
         let settings = SettingsStore.ephemeral(catalog: ModuleList.catalog(of: types))
         let services = AppServices(settings: settings, moduleTypes: types,
-                                   environment: ["NOTCHDECK_DEMO": "1"], arguments: [])
+                                   environment: ["TABBI_DEMO": "1"], arguments: [])
         let kit = try XCTUnwrap(settings.kits.kits.first)
         var matches: [Bool] = []
         let subscription = services.modules.usesKitDefaults(of: kit).sink { matches.append($0) }

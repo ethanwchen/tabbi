@@ -132,7 +132,7 @@ extension AnkiSummary {
 }
 
 extension AnkiConnectionState {
-    /// Parses a state name for `NOTCHDECK_ANKI_STATE`, which pins the Anki
+    /// Parses a state name for `TABBI_ANKI_STATE`, which pins the Anki
     /// tab to one screen so every setup state can be snapshotted without
     /// uninstalling Anki or its add-on. Nil for an unknown name.
     public init?(previewName: String) {

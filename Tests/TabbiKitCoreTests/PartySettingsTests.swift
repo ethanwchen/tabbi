@@ -81,7 +81,7 @@ final class PartySettingsTests: XCTestCase {
     }
 
     func testKeychainStoreSavesUpdatesAndDeletes() throws {
-        let store = KeychainPartyCredentialStore(service: "dev.notchdeck.tests.party.\(UUID().uuidString)")
+        let store = KeychainPartyCredentialStore(service: "dev.tabbi.tests.party.\(UUID().uuidString)")
         let server = URL(string: "https://friends.example.org")!
         defer { try? store.delete(for: server) }
 

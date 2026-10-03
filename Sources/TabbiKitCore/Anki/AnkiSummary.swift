@@ -1,6 +1,6 @@
 import Foundation
 
-/// Everything the StudyNotch Anki card shows, aggregated from a handful of
+/// Everything the Anki card shows, aggregated from a handful of
 /// AnkiConnect replies. Built by the pure `init(deckStats:...)` so the math
 /// is testable without a transport; `AnkiConnectClient.summary` fetches it.
 public struct AnkiSummary: Hashable, Sendable, Codable {
@@ -114,7 +114,7 @@ public struct AnkiSummary: Hashable, Sendable, Codable {
 }
 
 extension AnkiSummary {
-    /// Realistic sample data for `NOTCHDECK_DEMO=1`: a Step 1 student with a
+    /// Realistic sample data for `TABBI_DEMO=1`: a Step 1 student with a
     /// 12-day streak, built through the real aggregation so it stays honest.
     public static func demo(now: Date = Date(), rolloverHour: Int = 4, calendar: Calendar = .current) -> AnkiSummary {
         let today = AnkiDay(date: now, rolloverHour: rolloverHour, calendar: calendar)

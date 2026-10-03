@@ -6,7 +6,7 @@ import TabbiKitCore
 /// local line), and saves the review when the user taps Done. The review
 /// card replaces the checklist inline.
 ///
-/// With `NOTCHDECK_DEMO=1` it shows `DayReview.sample` and never runs the
+/// With `TABBI_DEMO=1` it shows `DayReview.sample` and never runs the
 /// CLI or touches disk.
 @MainActor
 final class DayReviewStore: ObservableObject {
@@ -36,13 +36,13 @@ final class DayReviewStore: ObservableObject {
         let environment = ProcessInfo.processInfo.environment
         isDemo = runMode.isDemo
         repository = isDemo ? nil : DayReviewRepository(storage: storage)
-        // Lets demo snapshots render each state: `NOTCHDECK_PLANNER_PREVIEW=review`.
+        // Lets demo snapshots render each state: `TABBI_PLANNER_PREVIEW=review`.
         guard isDemo else { return }
         let today = PlannerDayKey(date: Date())
         let progress = studyPreview ? [AnkiSummary.demo().progressItem()] : []
         let sample = DayReview.sample(on: today, kind: sampleDay, study: studyPreview ? .sample : nil,
                                       progress: progress)
-        switch environment["NOTCHDECK_PLANNER_PREVIEW"] {
+        switch environment["TABBI_PLANNER_PREVIEW"] {
         case "review": review = sample
         case "review-loading":
             var loading = sample

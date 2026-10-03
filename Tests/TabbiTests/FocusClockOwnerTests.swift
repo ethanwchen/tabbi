@@ -15,7 +15,7 @@ final class FocusClockOwnerTests: XCTestCase {
     override func setUp() async throws {
         let settings = SettingsStore.ephemeral(catalog: ModuleList.catalog(of: moduleTypes))
         services = AppServices(settings: settings, moduleTypes: moduleTypes,
-                               environment: ["NOTCHDECK_DEMO": "1"], arguments: [])
+                               environment: ["TABBI_DEMO": "1"], arguments: [])
         today = try XCTUnwrap(services.modules.module(TodayModule.self))
     }
 

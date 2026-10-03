@@ -6,11 +6,11 @@ import Foundation
 public enum SpotifyStatus: Equatable, Sendable {
     /// Spotify isn't installed on this Mac.
     case notInstalled
-    /// Installed but not running. NotchDeck never launches it on its own.
+    /// Installed but not running. Tabbi never launches it on its own.
     case notRunning
     /// Running, waiting for the first state read.
     case connecting
-    /// The user denied NotchDeck's Automation access to Spotify.
+    /// The user denied Tabbi's Automation access to Spotify.
     case permissionDenied
     /// Connected. A `stopped` playback means nothing is loaded.
     case connected(SpotifyPlayback)

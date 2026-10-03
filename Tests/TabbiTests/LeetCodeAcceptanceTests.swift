@@ -27,7 +27,7 @@ final class LeetCodeAcceptanceTests: XCTestCase {
             settings.settings.modules.setEnabled(id, false)
         }
         services = AppServices(settings: settings, moduleTypes: moduleTypes,
-                               environment: ["NOTCHDECK_DEMO": "1"], arguments: [])
+                               environment: ["TABBI_DEMO": "1"], arguments: [])
         leetCode = try XCTUnwrap(services.modules.module(LeetCodeModule.self))
     }
 

@@ -32,7 +32,7 @@ final class LegacyDataMigrationTests: XCTestCase {
 
     /// A legacy domain holding `values`, removed again in tear down.
     private func legacyDomain(_ values: [String: Any]) -> String {
-        let name = "dev.notchdeck.tests.\(UUID().uuidString)"
+        let name = "dev.tabbi.tests.\(UUID().uuidString)"
         legacySuites.append(name)
         UserDefaults.standard.setPersistentDomain(values, forName: name)
         return name

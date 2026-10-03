@@ -1,6 +1,6 @@
 import Foundation
 
-/// Which realistic day demo mode (`NOTCHDECK_DEMO=1`) shows on Today: the
+/// Which realistic day demo mode (`TABBI_DEMO=1`) shows on Today: the
 /// checklist, calendar and wrap-up summary. A kit picks one with
 /// `moduleSettings.planner.sampleDay`, so a study kit's screenshots show
 /// its users' day instead of an office one.
@@ -12,7 +12,7 @@ public enum PlannerSampleDay: String, Hashable, Sendable, CaseIterable {
 }
 
 public extension PlannerDay {
-    /// A realistic, partly finished day for demo mode (`NOTCHDECK_DEMO=1`),
+    /// A realistic, partly finished day for demo mode (`TABBI_DEMO=1`),
     /// used for snapshots and screenshots. Never touches disk. The first
     /// unfinished item always has the same id, so the demo focus timer links
     /// to it whichever day `kind` is.

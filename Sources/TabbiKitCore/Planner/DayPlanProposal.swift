@@ -96,7 +96,7 @@ public struct DayPlanProposal: Equatable, Sendable {
 
 public extension DayPlanner {
     /// Note on every event Plan My Day writes, so they're easy to recognize.
-    static let eventNote = "Planned with NotchDeck"
+    static let eventNote = "Planned with Tabbi"
 
     /// Calendar events for `blocks`, re-checked against `now` and today's
     /// `events`: a block that has started is trimmed to begin on the next

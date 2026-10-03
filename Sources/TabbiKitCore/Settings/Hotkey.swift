@@ -54,7 +54,7 @@ public struct Hotkey: Codable, Equatable, Hashable, Sendable {
         case cancelled
         /// The combination lacks a modifier that makes it safe to claim system-wide.
         case needsModifier
-        /// A key NotchDeck can't name or register (e.g. a modifier-only or media key).
+        /// A key Tabbi can't name or register (e.g. a modifier-only or media key).
         case unsupportedKey
     }
 
@@ -89,7 +89,7 @@ public struct Hotkey: Codable, Equatable, Hashable, Sendable {
             98: "F7", 100: "F8", 101: "F9", 109: "F10", 103: "F11", 111: "F12",
         ]
 
-        /// Display name for a key code, or `nil` for keys NotchDeck doesn't support as hotkeys.
+        /// Display name for a key code, or `nil` for keys Tabbi doesn't support as hotkeys.
         public static func name(for keyCode: UInt32) -> String? { names[keyCode] }
     }
 }

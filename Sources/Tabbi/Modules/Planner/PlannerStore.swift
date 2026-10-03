@@ -7,7 +7,7 @@ import SwiftUI
 /// main actor, saves after every edit, and rolls over to a new day (carrying
 /// unfinished items) when the calendar day changes.
 ///
-/// With `NOTCHDECK_DEMO=1` it shows `PlannerDay.sample` and never touches disk.
+/// With `TABBI_DEMO=1` it shows `PlannerDay.sample` and never touches disk.
 @MainActor
 final class PlannerStore: ObservableObject {
     /// Why today's list can't be shown or saved. Kept short for the UI.

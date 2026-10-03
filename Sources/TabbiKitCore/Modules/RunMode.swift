@@ -5,7 +5,7 @@
 /// so no store reads the environment itself and a new module cannot
 /// forget demo mode.
 public struct RunMode: Sendable, Hashable {
-    /// `NOTCHDECK_DEMO=1`: show realistic sample data and never touch the
+    /// `TABBI_DEMO=1`: show realistic sample data and never touch the
     /// network, Spotify, Music, Calendar or the `claude` CLI.
     public var isDemo: Bool
     /// `--snapshot <folder>`: render PNGs and exit. No sounds, nothing
@@ -33,7 +33,7 @@ public struct RunMode: Sendable, Hashable {
     public var isEphemeral: Bool { isDemo || isSnapshot }
 
     /// The environment variable that turns demo mode on.
-    public static let demoVariable = "NOTCHDECK_DEMO"
+    public static let demoVariable = "TABBI_DEMO"
     /// The argument that renders snapshots.
     public static let snapshotFlag = "--snapshot"
 }

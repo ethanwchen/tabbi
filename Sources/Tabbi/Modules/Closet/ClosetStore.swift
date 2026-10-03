@@ -10,7 +10,7 @@ import TabbiKit
 /// `profiles`, so the Closet, the coach, Study's corner pet and Party all
 /// show the same pet.
 ///
-/// With `NOTCHDECK_DEMO=1` it starts from `PetCloset.demo` and never writes,
+/// With `TABBI_DEMO=1` it starts from `PetCloset.demo` and never writes,
 /// so demos and snapshots can't touch a real save.
 @MainActor
 final class ClosetStore: ObservableObject {

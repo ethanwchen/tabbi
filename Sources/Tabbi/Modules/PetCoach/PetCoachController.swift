@@ -16,7 +16,7 @@ import TabbiKit
 /// The focus timer comes from the shared `ProviderSnapshot`, so the coach
 /// works with whichever module runs the timer. Pausing and resuming go
 /// through closures `ClosetModule` provides. Coach state (cooldowns, snooze,
-/// app lists) persists next to the pet's save. With `NOTCHDECK_DEMO=1` the
+/// app lists) persists next to the pet's save. With `TABBI_DEMO=1` the
 /// coach never samples, nudges, or writes.
 ///
 /// It also backs Settings › Pet Coach: the nudges switch and the user's
@@ -111,11 +111,11 @@ final class PetCoachController: ObservableObject {
 
     /// Turns the coach on, with the pet's module.
     func start() {
-        // Developer hook: `NOTCHDECK_COACH_PREVIEW=1` plays one nudge right
+        // Developer hook: `TABBI_COACH_PREVIEW=1` plays one nudge right
         // away, to check the real overlay window without waiting minutes.
         // `=celebrate` plays a level-up celebration and `=glance` the
         // silent look instead.
-        switch ProcessInfo.processInfo.environment["NOTCHDECK_COACH_PREVIEW"] {
+        switch ProcessInfo.processInfo.environment["TABBI_COACH_PREVIEW"] {
         case "1":
             present(PetCoachNudge(kind: .distraction, message: PetCoachMessages.messages(for: .distraction, in: lines).last!),
                     at: Date().addingTimeInterval(1))

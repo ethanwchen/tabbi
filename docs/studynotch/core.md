@@ -91,7 +91,7 @@ summary.retention      // 0.91, or nil below 20 graded reviews
 
 - Review rows are de-duplicated by id, so overlapping `cardReviews` fetches are safe.
 - `cardReviews` does not include child decks, so `summary` asks for every deck, batched into one `multi` request (five requests per refresh, however many decks).
-- `AnkiSummary.demo(now:)` is the `NOTCHDECK_DEMO=1` sample: about 425 due, 112 reviewed today, a 12-day streak, about 91% retention.
+- `AnkiSummary.demo(now:)` is the `TABBI_DEMO=1` sample: about 425 due, 112 reviewed today, a 12-day streak, about 91% retention.
   It is built through the real aggregation.
 - `AnkiSummary` is `Codable`, so the UI can cache the last good value for its error state.
 
@@ -115,7 +115,7 @@ summary.retention      // 0.91, or nil below 20 graded reviews
 - `pollsWhileHidden` is true only for `starting`, so Today and the ticker get numbers as soon as AnkiConnect comes up after a background launch; the startup grace bounds it to a few polls.
 - `AnkiSummary.topDecks` lists top-level decks with cards due, most due first; `completionFraction` drives the progress ring; `isCurrent(now:)` stops yesterday's numbers from being shared after the rollover.
   `AnkiSummary.nextRollover(after:)` is when that happens, so the store wakes once a day at the rollover to stop sharing the old summary and fetch the new day's.
-- `AnkiConnectionState(previewName:)` parses `NOTCHDECK_ANKI_STATE` (for example `addOnMissing`, `notRunning`, `apiKey`, `problem`), which pins the Anki tab to one screen so every state can be snapshotted: `NOTCHDECK_ANKI_STATE=addOnMissing swift run Tabbi --snapshot snapshots-anki`.
+- `AnkiConnectionState(previewName:)` parses `TABBI_ANKI_STATE` (for example `addOnMissing`, `notRunning`, `apiKey`, `problem`), which pins the Anki tab to one screen so every state can be snapshotted: `TABBI_ANKI_STATE=addOnMissing swift run Tabbi --snapshot snapshots-anki`.
 
 ### Formatting
 
@@ -281,7 +281,7 @@ Saves without `nudgesOn` read as on.
 In the app, `PetCoachController` (`Modules/PetCoach`) runs while the Closet module is on.
 It plays each nudge in `PetCoachOverlayWindow`, a transparent, non-activating panel hung below the menu bar at the notch's right edge.
 The window ignores the mouse except while the pointer is over the bubble.
-Run the app with `NOTCHDECK_COACH_PREVIEW=1` to play one nudge at launch, `NOTCHDECK_COACH_PREVIEW=celebrate` to play a level-up celebration, or `NOTCHDECK_COACH_PREVIEW=glance` to play the silent glance.
+Run the app with `TABBI_COACH_PREVIEW=1` to play one nudge at launch, `TABBI_COACH_PREVIEW=celebrate` to play a level-up celebration, or `TABBI_COACH_PREVIEW=glance` to play the silent glance.
 Settings › Pet Coach (shown with the Closet module) turns nudges on or off and edits the distracting apps: suggestion chips plus any app picked from the Applications folder.
 Turning nudges off stops sampling and ends any open episode, so turning them back on starts fresh.
 Turning the coach off (the Closet module) does the same, and the save keeps cooldowns and snooze but never an open episode, so the next focus phase after a relaunch gets its full grace period.
@@ -307,7 +307,7 @@ The ticker turns it into a `.pet` item (`TickerKind.pet`, last in rotation), and
 - `setSpecies(_:)` picks the species' first breed; a default name (the starter or breed name) follows the species, a chosen name is kept.
 - `cycleBreed(by:)` wraps within the species, and `setBreed(_:)` re-derives the fur tint from the new breed's shading.
 - `furSwatches` are the offered fur colors; `furTint` reads the picked one back from the `furBase` override.
-- `PetCloset.demo` is the `NOTCHDECK_DEMO=1` closet, with every tile state on show.
+- `PetCloset.demo` is the `TABBI_DEMO=1` closet, with every tile state on show.
 
 ### Points and celebrations
 
