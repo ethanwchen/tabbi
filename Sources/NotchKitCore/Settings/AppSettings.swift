@@ -78,6 +78,31 @@ public struct AppSettings: Equatable, Sendable {
         }
     }
 
+    /// The preferences a kit sets (`apply(_:answers:catalog:)`), so undoing
+    /// a kit switch puts back only these and keeps everything the user
+    /// changed elsewhere since (hotkey, hover, launch at login).
+    public struct KitState: Equatable, Sendable {
+        public var kitID: String
+        public var hasChosenKit: Bool
+        public var kitAnswers: KitAnswers
+        public var modules: ModuleLayout
+        public var disabledPreviews: Set<TickerKind>
+    }
+
+    public var kitState: KitState {
+        get {
+            KitState(kitID: kitID, hasChosenKit: hasChosenKit, kitAnswers: kitAnswers,
+                     modules: modules, disabledPreviews: notchPreview.disabledKinds)
+        }
+        set {
+            kitID = newValue.kitID
+            hasChosenKit = newValue.hasChosenKit
+            kitAnswers = newValue.kitAnswers
+            modules = newValue.modules
+            notchPreview.disabledKinds = newValue.disabledPreviews
+        }
+    }
+
     /// True when `kit` is the active kit and the tabs (and previews, if the
     /// kit sets them) are still exactly the ones it produces for the saved
     /// answers, so "Reset to kit defaults" would change nothing here.

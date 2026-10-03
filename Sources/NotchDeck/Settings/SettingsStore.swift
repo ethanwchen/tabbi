@@ -63,10 +63,14 @@ final class SettingsStore: ObservableObject {
 
     /// What the last kit switch replaced, so Settings can offer to undo it.
     struct KitSwitchUndo {
-        /// The settings before the switch.
-        let settings: AppSettings
-        /// The kit switched to, or removed, for the Undo button's help.
+        /// The kit, tabs and previews before the switch. Undo restores only
+        /// these, so other settings changed since stay.
+        let kitState: AppSettings.KitState
+        /// The kit switched to, imported or removed, for the Undo button's help.
         let kitName: String
+        /// False for an import that kept the user's tabs (Add Only, Keep My
+        /// Tabs), whose undo only takes the kit file back.
+        let switchedKit: Bool
         /// Imported kit files the switch wrote or removed: each id with the
         /// bytes saved under it before (nil when there was no file).
         let kitFiles: [String: Data?]
@@ -185,6 +189,11 @@ final class SettingsStore: ObservableObject {
         kits = KitLibrary.installed(imported: kitStore.load())
         if let answers, let kit = kits[id] {
             switchKit(to: kit, answers: answers, kitFiles: previous)
+        } else {
+            // Replaces any earlier switch's undo, so Undo never reverts that
+            // switch and deletes the file just imported.
+            lastKitSwitch = KitSwitchUndo(kitState: settings.kitState, kitName: candidate.kit.name,
+                                          switchedKit: false, kitFiles: previous)
         }
     }
 
@@ -211,8 +220,9 @@ final class SettingsStore: ObservableObject {
     }
 
     /// Reverts the last kit switch, import or removal: the kit files it
-    /// wrote or deleted, then every setting as it was, and modules hear the
-    /// previous kit again as an `.undo` so they restore their own state.
+    /// wrote or deleted, then the kit, tabs and previews as they were, and
+    /// modules hear the previous kit again as an `.undo` so they restore
+    /// their own state. An import that kept the tabs only takes its file back.
     func undoKitSwitch() {
         guard let undo = lastKitSwitch else { return }
         lastKitSwitch = nil
@@ -222,7 +232,8 @@ final class SettingsStore: ObservableObject {
             }
             kits = KitLibrary.installed(imported: kitStore.load())
         }
-        settings = undo.settings
+        guard undo.switchedKit else { return }
+        settings.kitState = undo.kitState
         if let kit = activeKit {
             kitApplied.send(KitApplication(kit: kit, answers: settings.kitAnswers, kind: .undo))
         }
@@ -231,9 +242,9 @@ final class SettingsStore: ObservableObject {
     /// - Parameter undoName: the kit Undo names; `kit` unless the switch
     ///   is the fallback after removing a kit.
     private func switchKit(to kit: KitManifest, answers: KitAnswers, kitFiles: [String: Data?], undoName: String? = nil) {
-        let before = settings
+        let before = settings.kitState
         apply(kit, answers: answers, kind: .switched)
-        lastKitSwitch = KitSwitchUndo(settings: before, kitName: undoName ?? kit.name, kitFiles: kitFiles)
+        lastKitSwitch = KitSwitchUndo(kitState: before, kitName: undoName ?? kit.name, switchedKit: true, kitFiles: kitFiles)
     }
 
     private func apply(_ kit: KitManifest, answers: KitAnswers = [:], kind: KitApplication.Kind) {

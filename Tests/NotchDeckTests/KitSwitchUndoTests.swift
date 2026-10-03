@@ -120,6 +120,37 @@ final class KitSwitchUndoTests: XCTestCase {
         XCTAssertEqual(settings.activeKit?.id, "imported.deep-work")
     }
 
+    func testUndoingAnAddOnlyImportTakesBackOnlyThatFile() throws {
+        let settings = makeSettings()
+        settings.switchKit(to: "student")
+        let switched = settings.settings
+        let candidate = try settings.inspectKit(from: kitFile(deepWork))
+        try settings.installKit(candidate, switchingWith: nil)
+        XCTAssertEqual(settings.lastKitSwitch?.kitName, "Deep Work")
+        XCTAssertEqual(settings.lastKitSwitch?.switchedKit, false)
+
+        settings.undoKitSwitch()
+        XCTAssertNil(settings.kits["imported.deep-work"], "the import is taken back")
+        XCTAssertEqual(settings.settings, switched, "the earlier switch to Student stays")
+        XCTAssertNil(settings.lastKitSwitch)
+    }
+
+    func testUndoKeepsSettingsTheKitDoesNotSet() throws {
+        let settings = makeSettings()
+        let kitBefore = settings.settings.kitID
+        settings.switchKit(to: "student")
+        settings.settings.openOnHover.toggle()
+        settings.settings.hapticsEnabled.toggle()
+        settings.settings.notchPreview.interval = .long
+        let changed = settings.settings
+
+        settings.undoKitSwitch()
+        XCTAssertEqual(settings.settings.kitID, kitBefore)
+        XCTAssertEqual(settings.settings.openOnHover, changed.openOnHover)
+        XCTAssertEqual(settings.settings.hapticsEnabled, changed.hapticsEnabled)
+        XCTAssertEqual(settings.settings.notchPreview.interval, .long)
+    }
+
     func testResetIsNotUndoable() throws {
         let settings = makeSettings()
         settings.resetToKitDefaults()

@@ -209,7 +209,9 @@ private struct KitSection: View {
                     Spacer()
                     if !message.isWarning, let undo = store.lastKitSwitch {
                         Button("Undo", action: undoSwitch)
-                            .help("Go back to the tabs and kit you had before \(undo.kitName)")
+                            .help(undo.switchedKit
+                                  ? "Go back to the tabs and kit you had before \(undo.kitName)"
+                                  : "Take back this import of \(undo.kitName)")
                     }
                 }
             }
@@ -328,8 +330,13 @@ private struct KitSection: View {
     }
 
     private func undoSwitch() {
+        let undone = store.lastKitSwitch
         store.undoKitSwitch()
-        message = ("Back to \(store.activeKit?.name ?? "your previous kit").", false)
+        if let undone, !undone.switchedKit {
+            message = ("Took back the import of \(undone.kitName).", false)
+        } else {
+            message = ("Back to \(store.activeKit?.name ?? "your previous kit").", false)
+        }
     }
 }
 
