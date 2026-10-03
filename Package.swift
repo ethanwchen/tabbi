@@ -47,7 +47,7 @@ let package = Package(
         // `@testable import NotchDeck`.
         .testTarget(
             name: "NotchDeckTests",
-            dependencies: ["NotchDeck", "NotchKitCore"],
+            dependencies: ["NotchDeck", "NotchKitCore", "NotchKit"],
             swiftSettings: swiftSettings
         ),
     ]

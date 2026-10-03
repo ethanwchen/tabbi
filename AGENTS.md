@@ -113,6 +113,28 @@ Module ownership: when working on one module, keep changes inside its
 `Modules/<Module>/` folder and a matching `NotchKitCore/<Module>/` folder plus
 tests. Touch shared files only when unavoidable, and keep those edits minimal.
 
+## Adding a module
+
+A new vertical is its own files plus one line in `ModuleList.swift`.
+`Tests/NotchDeckTests/LeetCodeFixture/LeetCodeModule.swift` is a complete example (a "LeetCode daily" module), and `LeetCodeAcceptanceTests` proves it plugs in that way: it builds `AppServices` from `ModuleList.all + [LeetCodeModule.self]` and checks every shared surface.
+
+1. Create `Sources/NotchDeck/Modules/<Module>/` with a store (`ObservableObject`), its SwiftUI panel, and `<Module>Module: NotchModule`.
+   Pure logic (parsers, models, formatting) goes in `Sources/NotchKitCore/<Module>/` with tests in `Tests/NotchKitCoreTests`.
+2. Declare `nonisolated static let descriptor = ModuleDescriptor(...)`: id, title, SF Symbol, category, accent, permissions, and `highlightTitle` if it shows a line in the ticker.
+   The tab bar, Settings, kit validation and previews read title, symbol and accent from here.
+3. In `init(context:)`, build the store and follow what the context offers (`kitApplied`, `providers.$snapshot`, shared services).
+   Start background work in `start()` and undo it in `stop()`; the registry calls them when the module's switch changes.
+   In demo mode (`context.isDemo`) show realistic sample data and touch no network, calendar or CLI.
+4. Share what you have through `provision`: `tasks` and `progress` show in Today and Plan my day, `progress` also in the ticker's progress preview, and `highlights` as the module's own ticker line.
+   The fixture publishes a task ("LeetCode: Two Sum", about 20 min), a goal ("LeetCode daily, 1 problem left") and a highlight that goes away once the problem is solved.
+5. Add `<Module>Module.self,` at the end of `ModuleList.all`.
+   A kit can now list the module id in `modules` and in its `ticker` field; until that line exists, kit validation reports both as unknown.
+6. Optionally return a Settings pane from `makeSettingsPane()`.
+   A kit that ships with the app is a separate change: its JSON in `Sources/NotchKitCore/Kits/Bundled` plus its id in `KitLibrary.bundledIDs` (see `docs/kits.md`).
+
+The module itself needs no edits to `AppServices`, the ticker, Today, `Theme`, layouts or the catalog.
+If a module seems to need one, the provider protocols are missing something: extend them in a separate change rather than special-casing the module.
+
 ## Design rules
 
 - The notch is hardware-black (`Theme.Palette.background`). Content sits on

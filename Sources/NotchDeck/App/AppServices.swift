@@ -23,7 +23,9 @@ final class AppServices {
     /// Created on first use so launching never builds a window nobody opens.
     private var settingsWindow: SettingsWindowController?
 
-    init(settings: SettingsStore, edition: Edition = .current,
+    /// - Parameter moduleTypes: the modules to create, `ModuleList.all` in
+    ///   the app; `settings` must resolve layouts against their catalog.
+    init(settings: SettingsStore, moduleTypes: [any NotchModule.Type] = ModuleList.all, edition: Edition = .current,
          environment: [String: String] = ProcessInfo.processInfo.environment,
          arguments: [String] = CommandLine.arguments) {
         self.settings = settings
@@ -31,7 +33,7 @@ final class AppServices {
         let shared = SharedServices()
         let isDemo = environment["NOTCHDECK_DEMO"] == "1"
         let isSnapshot = arguments.contains("--snapshot")
-        modules = ModuleRegistry(ModuleList.all.map { type in
+        modules = ModuleRegistry(moduleTypes.map { type in
             type.init(context: ModuleContext(id: type.descriptor.id, edition: edition, settings: settings,
                                              providers: providers, shared: shared,
                                              isDemo: isDemo, isSnapshot: isSnapshot))

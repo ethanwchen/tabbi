@@ -6,7 +6,7 @@ import NotchKitCore
 /// validation all read the catalog built from this list.
 @MainActor
 enum ModuleList {
-    static let all: [any NotchModule.Type] = [
+    nonisolated static let all: [any NotchModule.Type] = [
         NowPlayingModule.self,
         SystemModule.self,
         ClaudeUsageModule.self,
@@ -20,5 +20,11 @@ enum ModuleList {
     ]
 
     /// The listed modules' descriptors, for layouts, kits and the tab bar.
-    static let catalog = ModuleCatalog(all.map { $0.descriptor })
+    static let catalog = catalog(of: all)
+
+    /// The descriptors of `modules`, in list order. Tests use it to run the
+    /// app with a module list of their own.
+    static func catalog(of modules: [any NotchModule.Type]) -> ModuleCatalog {
+        ModuleCatalog(modules.map { $0.descriptor })
+    }
 }
