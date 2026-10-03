@@ -56,10 +56,14 @@ final class PlannerStore: ObservableObject {
     var canEdit: Bool { !isUnreadable }
 
     private let repository: PlannerRepository?
+    /// Where checked-off tasks are logged, as Today's.
+    private let activity: ActivityLog?
     private var cancellables: Set<AnyCancellable> = []
 
-    init(focus: FocusStore, storage: EditionStorage, planSettings: TodayPlanSettings = TodayPlanSettings()) {
+    init(focus: FocusStore, storage: EditionStorage, planSettings: TodayPlanSettings = TodayPlanSettings(),
+         activity: ActivityLog? = nil) {
         self.focus = focus
+        self.activity = activity
         self.planSettings = planSettings
         upNext = UpNextStore(sampleDay: planSettings.sampleDay)
         review = DayReviewStore(storage: storage, studyPreview: planSettings.planMode == .study,
@@ -153,8 +157,14 @@ final class PlannerStore: ObservableObject {
         edit { !$0.addStarterTasks(titles).isEmpty }
     }
 
+    /// Checks an item off or back on. Checking one off logs `taskCompleted`
+    /// with the item's id as the subject.
     func toggle(_ id: PlannerItem.ID) {
-        edit { $0.toggle(id); return true }
+        guard edit({ $0.toggle(id); return true }),
+              let item = day.items.first(where: { $0.id == id }), item.isDone, let completedAt = item.completedAt
+        else { return }
+        activity?.record(ActivityRecord(source: TodayModule.descriptor.id, kind: .taskCompleted, start: completedAt,
+                                        quantity: 1, subject: id.uuidString))
     }
 
     func rename(_ id: PlannerItem.ID, to title: String) {

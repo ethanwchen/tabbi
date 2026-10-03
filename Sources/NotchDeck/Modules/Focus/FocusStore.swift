@@ -27,6 +27,8 @@ final class FocusStore: ObservableObject {
 
     private let isDemo: Bool
     private let storage = FocusTimerStorage()
+    /// Where finished focus stretches and breaks are logged, as the Focus module's.
+    private let activity: ActivityLog?
     /// The panels showing the timer right now (Today, Focus). Tracked per
     /// viewer because switching tabs may show the new panel before the old
     /// one disappears.
@@ -36,7 +38,8 @@ final class FocusStore: ObservableObject {
     private var phaseEndTimer: Timer?
     private let notifications: FocusNotifications?
 
-    init() {
+    init(activity: ActivityLog? = nil) {
+        self.activity = activity
         isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
         if isDemo {
             timer = Self.demoTimer(now: Date())
@@ -132,11 +135,13 @@ final class FocusStore: ObservableObject {
         updateTicker()
     }
 
-    /// Adds finished focus phases to the session log and saves it.
+    /// Adds finished focus phases to the session log and saves it, and logs
+    /// every finished phase in the shared activity log.
     private func record(_ completions: [FocusPhaseCompletion]) {
         guard !isDemo, !completions.isEmpty else { return }
         sessionLog.record(completions, config: timer.config, now: Date())
         storage.save(sessionLog)
+        activity?.record(completions.map { $0.activityRecord(config: timer.config, source: FocusModule.descriptor.id) })
     }
 
     /// Saves the timer and arms the phase-end timer and notification. A user

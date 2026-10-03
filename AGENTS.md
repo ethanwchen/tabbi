@@ -111,6 +111,17 @@ Judge them against the design rules below before you call the work done.
   that only refreshes while someone can see it follows
   `context.closedNotchPreview.watchedKinds` (Today reloads the calendar
   while the meeting preview can show).
+- Activity log: the snapshot says what is true now; `context.activityLog`
+  (`ActivityLog` in `Modules/`, one per app) says what happened. Log
+  your own events as `ActivityRecord`s (`NotchKitCore/Activity`: your
+  module id as `source`, an open `ActivityKind` such as
+  `focus.completed`, `break.taken`, `cards.reviewed`, `task.completed`
+  or one of your own, start and end, a quantity and unit, an optional
+  `subject` id and metadata), and read anyone's by day or follow
+  `recorded`. The Focus timer, Study, Today and Anki log there, so
+  streaks, insights and the pet never need another module's store.
+  Records stay on the Mac, one versioned JSON file per day in the
+  edition's `Activity` folder; demo and snapshot runs keep them in memory.
 - `Sources/NotchKitCore/Claude` - `ClaudeCLI` (locate + stream `claude -p`) and
   `ClaudeStreamEvent` (stream-json parser). Both Claude modules use these.
 
@@ -135,6 +146,7 @@ A new vertical is its own files plus one line in `ModuleList.swift`.
    In demo mode (`context.isDemo`) show realistic sample data and touch no network, calendar or CLI.
 4. Share what you have through `provision`: `tasks` and `progress` show in Today and Plan my day, `progress` also in the ticker's progress preview, and `highlights` as the module's own ticker line.
    The fixture publishes a task ("LeetCode: Two Sum", about 20 min), a goal ("LeetCode daily, 1 problem left") and a highlight that goes away once the problem is solved.
+   Log what the user did in `context.activityLog`: the fixture records a `problem.solved` activity of its own kind when the problem is solved.
 5. Add `<Module>Module.self,` at the end of `ModuleList.all`.
    A kit can now list the module id in `modules` and in its `ticker` field; until that line exists, kit validation reports both as unknown.
 6. Optionally return a Settings pane from `makeSettingsPane()`.

@@ -28,17 +28,23 @@ struct LeetCodeDaily: Equatable {
 final class LeetCodeStore: ObservableObject {
     @Published var daily: LeetCodeDaily
     private(set) var isRunning = false
+    private let activity: ActivityLog?
 
-    init(daily: LeetCodeDaily = .sample) {
+    init(daily: LeetCodeDaily = .sample, activity: ActivityLog? = nil) {
         self.daily = daily
+        self.activity = activity
     }
 
     func start() { isRunning = true }
     func stop() { isRunning = false }
 
+    /// Marks today's problem solved and logs it in the shared activity log
+    /// under a kind of the module's own.
     func markSolved() {
         daily.isSolved = true
         daily.streak += 1
+        activity?.record(ActivityRecord(source: LeetCodeModule.descriptor.id, kind: "problem.solved", start: Date(),
+                                        quantity: 1, subject: daily.title))
     }
 
     /// A task for Today and Plan my day, a progress goal, and a ticker line
@@ -70,9 +76,14 @@ final class LeetCodeModule: NotchModule {
         category: .productivity, accent: ModuleAccent(red: 1.00, green: 0.63, blue: 0.16),
         highlightTitle: "LeetCode daily"
     )
-    let store = LeetCodeStore()
+    let store: LeetCodeStore
+    /// The shared activity log, which the store writes to.
+    let activityLog: ActivityLog
 
-    init(context: ModuleContext) {}
+    init(context: ModuleContext) {
+        activityLog = context.activityLog
+        store = LeetCodeStore(activity: activityLog)
+    }
 
     func makePanel() -> AnyView { AnyView(LeetCodePanel(store: store)) }
     func start() { store.start() }

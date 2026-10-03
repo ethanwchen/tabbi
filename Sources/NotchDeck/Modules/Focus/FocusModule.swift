@@ -49,6 +49,7 @@ final class FocusModule: NotchModule {
 extension ModuleContext {
     /// The one Pomodoro timer. Today embeds it, Focus shows it as a tab, and
     /// the pet coach pauses it, so all of them share this instance; it keeps
-    /// running while the notch is closed or either tab is off.
-    var focusTimer: FocusStore { shared.resolve { FocusStore() } }
+    /// running while the notch is closed or either tab is off. Its finished
+    /// phases go to the activity log under the Focus module's id.
+    var focusTimer: FocusStore { shared.resolve { FocusStore(activity: activityLog) } }
 }

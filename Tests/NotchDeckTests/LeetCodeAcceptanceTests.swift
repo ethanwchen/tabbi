@@ -80,6 +80,8 @@ final class LeetCodeAcceptanceTests: XCTestCase {
         XCTAssertEqual(snapshot.plannableWork(excluding: .planner), [])
         let items = services.ticker.sources.items(at: Date(), enabled: services.settings.settings.showsPreview)
         XCTAssertFalse(items.contains { $0.kind == .highlights(from: "leetcode") })
+        let solved = leetCode.activityLog.records(on: PlannerDayKey(date: Date())).filter { $0.source == "leetcode" }
+        XCTAssertEqual(solved.map(\.kind), ["problem.solved"])
     }
 
     func testAKitCanTurnItOnAndListItsTickerLine() throws {

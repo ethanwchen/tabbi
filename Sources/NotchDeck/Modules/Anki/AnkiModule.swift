@@ -10,9 +10,11 @@ final class AnkiModule: NotchModule {
         id: .anki, title: "Anki", symbol: "rectangle.stack.fill", category: .study,
         accent: ModuleAccent(red: 0.36, green: 0.62, blue: 1.00)
     )
-    let store = AnkiStore()
+    let store: AnkiStore
 
-    init(context: ModuleContext) {}
+    init(context: ModuleContext) {
+        store = AnkiStore(activity: context.activityLog)
+    }
 
     func makePanel() -> AnyView {
         AnyView(AnkiPanel(store: store))

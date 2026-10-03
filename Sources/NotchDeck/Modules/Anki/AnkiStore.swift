@@ -40,8 +40,11 @@ final class AnkiStore: ObservableObject {
     private var actionErrorTask: Task<Void, Never>?
     private var workspaceObservers: [NSObjectProtocol] = []
     private var isPanelVisible = false
+    /// Where newly answered cards are logged, as the Anki module's.
+    private let activity: ActivityLog?
 
-    init() {
+    init(activity: ActivityLog? = nil) {
+        self.activity = activity
         client = AnkiConnectClient(isAnkiRunning: { await MainActor.run { AnkiStore.runningAnki() != nil } })
         if let pinnedState {
             state = pinnedState
@@ -146,11 +149,25 @@ final class AnkiStore: ObservableObject {
             summary = value
             updatedAt = now
             state = .ready
+            logReviews(value, now: now)
         case .failure(let error):
             state = .resolve(error: error, isInstalled: Self.isInstalled, launchedAt: anki?.launchDate, now: now)
             if !state.keepsLastSummary { summary = nil }
         }
         if shouldPoll { schedulePoll() } else { stopPolling() }
+    }
+
+    /// Logs the cards answered since the last logged count. The log is read
+    /// back each time (yesterday and today, which covers Anki's rollover),
+    /// so a relaunch never logs the same cards twice.
+    private func logReviews(_ summary: AnkiSummary, now: Date) {
+        guard let activity else { return }
+        let today = PlannerDayKey(date: now)
+        let yesterday = PlannerDayKey(date: now.addingTimeInterval(-86_400))
+        let logged = activity.records(from: yesterday, through: today)
+        if let record = summary.reviewActivity(after: logged, source: AnkiModule.descriptor.id, now: now) {
+            activity.record(record)
+        }
     }
 
     /// One timer at a time, re-armed after every refresh with the interval

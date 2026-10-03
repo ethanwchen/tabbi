@@ -66,6 +66,8 @@ final class StudyStore: ObservableObject {
     /// logged in memory, but the file is never overwritten, so nothing is lost.
     private let logIsUnreadable: Bool
     private let storage: EditionStorage
+    /// Where every phase that ran is logged, as the Study module's.
+    private let activity: ActivityLog?
     /// A block finished while the panel was hidden; the pet celebrates it
     /// the next time the panel shows, so the hop is never played unseen.
     private var celebrationPending = false
@@ -78,9 +80,11 @@ final class StudyStore: ObservableObject {
     ///   - menu: the active kit's methods; a saved session on a method the
     ///     kit no longer offers moves to its starting method.
     ///   - goal: the active kit's daily study goal.
-    init(menu: StudyMethodMenu = .all, goal: StudyDailyGoal = .standard, storage: EditionStorage) {
+    init(menu: StudyMethodMenu = .all, goal: StudyDailyGoal = .standard, storage: EditionStorage,
+         activity: ActivityLog? = nil) {
         isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
         self.storage = storage
+        self.activity = activity
         self.menu = menu
         self.goal = goal
         if isDemo {
@@ -379,11 +383,14 @@ final class StudyStore: ObservableObject {
         }
     }
 
-    /// Drains the session's phase records into the persisted log.
+    /// Drains the session's phase records into the persisted log and the
+    /// shared activity log.
     private func collectLog() {
         guard !session.log.isEmpty else { return }
+        let records = session.takeLog()
+        activity?.record(records.compactMap { $0.activityRecord(source: StudyModule.descriptor.id) })
         var updated = log
-        updated.record(session.takeLog())
+        updated.record(records)
         if updated != log {
             log = updated
             if let logURL, !logIsUnreadable { try? log.write(to: logURL) }
