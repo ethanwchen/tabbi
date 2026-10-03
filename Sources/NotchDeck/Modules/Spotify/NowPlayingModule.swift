@@ -8,7 +8,8 @@ import NotchKitCore
 final class NowPlayingModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
         id: .spotify, title: "Now Playing", symbol: "music.note", category: .media,
-        accent: ModuleAccent(red: 0.12, green: 0.84, blue: 0.38), permissions: [.automation]
+        accent: ModuleAccent(red: 0.12, green: 0.84, blue: 0.38), permissions: [.automation],
+        network: [ModuleNetworkAccess(host: "i.scdn.co", purpose: "Spotify album artwork")]
     )
     /// Also drives the closed notch's music wings.
     let controller: SpotifyController

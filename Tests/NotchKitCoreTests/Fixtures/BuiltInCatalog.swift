@@ -8,7 +8,8 @@ import Foundation
 extension ModuleCatalog {
     static let builtIn = ModuleCatalog([
         ModuleDescriptor(id: .spotify, title: "Now Playing", symbol: "music.note", category: .media,
-                         accent: ModuleAccent(red: 0.12, green: 0.84, blue: 0.38), permissions: [.automation]),
+                         accent: ModuleAccent(red: 0.12, green: 0.84, blue: 0.38), permissions: [.automation],
+                         network: [ModuleNetworkAccess(host: "i.scdn.co", purpose: "Spotify album artwork")]),
         ModuleDescriptor(id: .system, title: "System", symbol: "cpu", category: .system,
                          accent: ModuleAccent(red: 0.35, green: 0.78, blue: 1.00)),
         ModuleDescriptor(id: .claudeUsage, title: "Claude Usage", symbol: "gauge.with.dots.needle.67percent",
@@ -27,9 +28,11 @@ extension ModuleCatalog {
                          kitSettings: KitSettingsSchema(StudyMethodMenu.kitSettingFields
                             .merging(["dailyGoalMinutes": StudyDailyGoal.kitSettingType]) { $1 })),
         ModuleDescriptor(id: .anki, title: "Anki", symbol: "rectangle.stack.fill", category: .study,
-                         accent: ModuleAccent(red: 0.36, green: 0.62, blue: 1.00)),
+                         accent: ModuleAccent(red: 0.36, green: 0.62, blue: 1.00),
+                         network: [ModuleNetworkAccess(host: "127.0.0.1", purpose: "your decks through AnkiConnect")]),
         ModuleDescriptor(id: .party, title: "Party", symbol: "person.3.fill", category: .study,
-                         accent: ModuleAccent(red: 1.00, green: 0.42, blue: 0.62)),
+                         accent: ModuleAccent(red: 1.00, green: 0.42, blue: 0.62),
+                         network: [ModuleNetworkAccess(host: "friends.example.com", purpose: "your presence and parties")]),
         ModuleDescriptor(id: .closet, title: "Closet", symbol: "pawprint.fill", category: .fun,
                          accent: ModuleAccent(red: 0.98, green: 0.80, blue: 0.30),
                          kitSettings: KitSettingsSchema(["coachLines": PetCoachMessages.kitSettingType,

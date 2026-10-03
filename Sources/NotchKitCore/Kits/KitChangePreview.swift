@@ -5,7 +5,8 @@ import Foundation
 ///
 /// It compares the settings the kit produces for the user's onboarding
 /// answers with the current ones: which tabs turn on or off, which
-/// permissions the new tabs will ask for, the starter tasks Today gets and
+/// permissions the new tabs will ask for, the hosts off this Mac they
+/// connect to, the starter tasks Today gets and
 /// whether the closed-notch previews change.
 public struct KitChangePreview: Equatable, Sendable {
     /// The tabs after the switch, in order.
@@ -17,6 +18,10 @@ public struct KitChangePreview: Equatable, Sendable {
     /// Permissions the tabs that turn on need and no tab on now already
     /// needs, so the user knows which prompts to expect.
     public var newPermissions: [ModulePermission]
+    /// Hosts off this Mac that the tabs turning on connect to and no tab on
+    /// now already does, in tab order, so the user sees where data goes
+    /// before switching. Local services (AnkiConnect) are left out.
+    public var newNetworkAccess: [ModuleNetworkAccess]
     /// The starter tasks the switch adds to Today (Today skips titles it
     /// already lists).
     public var starterTasks: [String]
@@ -35,6 +40,11 @@ public struct KitChangePreview: Equatable, Sendable {
         let granted = Set(current.modules.enabled.flatMap { catalog[$0]?.permissions ?? [] })
         let needed = Set(turnsOn.flatMap { catalog[$0]?.permissions ?? [] })
         newPermissions = ModulePermission.allCases.filter { needed.contains($0) && !granted.contains($0) }
+        let reached = Set(current.modules.enabled.flatMap { catalog[$0]?.network ?? [] }.map(\.host))
+        var listed = Set<String>()
+        newNetworkAccess = turnsOn.flatMap { catalog[$0]?.network ?? [] }.filter {
+            !$0.isLocal && !reached.contains($0.host) && listed.insert($0.host).inserted
+        }
         starterTasks = kit.starterTasks(answers: answers)
         changesNotchPreviews = next.notchPreview != current.notchPreview
     }

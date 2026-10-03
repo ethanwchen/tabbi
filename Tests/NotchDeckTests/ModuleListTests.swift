@@ -29,6 +29,24 @@ final class ModuleListTests: XCTestCase {
         XCTAssertEqual(SystemModule.descriptor.permissions, [])
     }
 
+    func testModulesThatUseTheNetworkDeclareTheirHosts() {
+        let declared = Dictionary(uniqueKeysWithValues: ModuleList.catalog.descriptors.map {
+            ($0.id, Set($0.network.map(\.host)))
+        })
+        XCTAssertEqual(declared[.spotify], ["i.scdn.co"])
+        XCTAssertEqual(declared[.anki], [URLSessionAnkiConnectTransport.defaultEndpoint.host()!])
+        XCTAssertEqual(declared[.party], [PartyServer.productionURL.host()!])
+        for id in ModuleList.catalog.ids where ![.spotify, .anki, .party].contains(id) {
+            XCTAssertEqual(declared[id], [], "\(id) declares a host but makes no network calls")
+        }
+        for descriptor in ModuleList.catalog.descriptors {
+            for access in descriptor.network {
+                XCTAssertFalse(access.host.isEmpty, "\(descriptor.id)")
+                XCTAssertFalse(access.purpose.isEmpty, "\(descriptor.id)")
+            }
+        }
+    }
+
     func testEveryBundledKitResolvesAgainstTheModuleList() {
         XCTAssertEqual(KitLibrary.bundled.kits.count, KitLibrary.bundledIDs.count)
         for kit in KitLibrary.bundled.kits {

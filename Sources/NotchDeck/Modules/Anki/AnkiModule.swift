@@ -8,7 +8,9 @@ final class AnkiModule: NotchModule {
     /// AnkiConnect is a localhost HTTP add-on, so no macOS permission is involved.
     nonisolated static let descriptor = ModuleDescriptor(
         id: .anki, title: "Anki", symbol: "rectangle.stack.fill", category: .study,
-        accent: ModuleAccent(red: 0.36, green: 0.62, blue: 1.00)
+        accent: ModuleAccent(red: 0.36, green: 0.62, blue: 1.00),
+        network: [ModuleNetworkAccess(host: URLSessionAnkiConnectTransport.defaultEndpoint.host() ?? "",
+                                      purpose: "your decks through AnkiConnect")]
     )
     let store: AnkiStore
 

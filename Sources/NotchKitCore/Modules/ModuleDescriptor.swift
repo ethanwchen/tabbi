@@ -41,6 +41,29 @@ public enum ModulePermission: String, CaseIterable, Codable, Sendable {
     }
 }
 
+/// A host a module talks to over the network, declared on its descriptor so
+/// Settings and the kit import sheet can say up front where data goes.
+/// Tabbi has no telemetry; this lists only what a module inherently needs.
+public struct ModuleNetworkAccess: Hashable, Codable, Sendable {
+    /// The host name, such as `i.scdn.co`, or the default one when the user
+    /// can pick another (Party's server).
+    public var host: String
+    /// What the module fetches or sends there, finishing "connects to the
+    /// host for ...", e.g. "album artwork".
+    public var purpose: String
+
+    public init(host: String, purpose: String) {
+        self.host = host
+        self.purpose = purpose
+    }
+
+    /// True for a service on this Mac (AnkiConnect), which sends nothing
+    /// off the machine.
+    public var isLocal: Bool {
+        ["localhost", "127.0.0.1", "::1"].contains(host.lowercased())
+    }
+}
+
 /// An sRGB color in 0...1 components, so module accents can live in pure
 /// code and later come from kit or theme files.
 public struct ModuleAccent: Hashable, Codable, Sendable {
@@ -65,6 +88,9 @@ public struct ModuleDescriptor: Hashable, Sendable, Identifiable {
     public var category: ModuleCategory
     public var accent: ModuleAccent
     public var permissions: Set<ModulePermission>
+    /// The hosts the module connects to; empty for a module that never
+    /// touches the network. Declare every host a module's own code calls.
+    public var network: [ModuleNetworkAccess]
     /// Label for the Settings toggle of this module's closed-notch
     /// highlights, e.g. "Claude usage above 80%"; nil when the module never
     /// publishes `TickerHighlight`s.
@@ -85,6 +111,7 @@ public struct ModuleDescriptor: Hashable, Sendable, Identifiable {
         category: ModuleCategory,
         accent: ModuleAccent,
         permissions: Set<ModulePermission> = [],
+        network: [ModuleNetworkAccess] = [],
         highlightTitle: String? = nil,
         ownsFocusClock: Bool = false,
         kitSettings: KitSettingsSchema? = nil
@@ -95,6 +122,7 @@ public struct ModuleDescriptor: Hashable, Sendable, Identifiable {
         self.category = category
         self.accent = accent
         self.permissions = permissions
+        self.network = network
         self.highlightTitle = highlightTitle
         self.ownsFocusClock = ownsFocusClock
         self.kitSettings = kitSettings

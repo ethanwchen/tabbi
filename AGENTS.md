@@ -147,7 +147,7 @@ A new vertical is its own files plus one line in `ModuleList.swift`.
 
 1. Create `Sources/NotchDeck/Modules/<Module>/` with a store (`ObservableObject`), its SwiftUI panel, and `<Module>Module: NotchModule`.
    Pure logic (parsers, models, formatting) goes in `Sources/NotchKitCore/<Module>/` with tests in `Tests/NotchKitCoreTests`.
-2. Declare `nonisolated static let descriptor = ModuleDescriptor(...)`: id, title, SF Symbol, category, accent, permissions, `highlightTitle` if it shows a line in the ticker, and `ownsFocusClock: true` if it runs a focus clock of its own.
+2. Declare `nonisolated static let descriptor = ModuleDescriptor(...)`: id, title, SF Symbol, category, accent, permissions, `network` with each host its code connects to (none for the fixture), `highlightTitle` if it shows a line in the ticker, and `ownsFocusClock: true` if it runs a focus clock of its own.
    The tab bar, Settings, kit validation and previews read title, symbol and accent from here, and Today shows such a module's clock in place of its Pomodoro, so a layout has one timer.
    If kits can configure the module, declare the keys of its `moduleSettings` section as `kitSettings: KitSettingsSchema([...])`, so kit validation warns about typos and out-of-range values there; the fixture declares `minutesPerProblem`.
 3. In `init(context:)`, build the store and follow what the context offers (`kitApplied`, `providers.$snapshot`, shared services).
@@ -189,7 +189,9 @@ If a module seems to need one, the provider protocols are missing something: ext
 
 - No third-party dependencies without a strong reason stated in the PR.
 - Privacy: no network calls except what a module inherently needs (album
-  artwork URLs). No telemetry. Claude features only go through the user's
+  artwork URLs), and every host a module's code connects to is listed in its
+  descriptor's `network` (`ModuleNetworkAccess`: host and purpose), which the
+  kit import sheet shows before a kit turns the module on. No telemetry. Claude features only go through the user's
   local `claude` CLI via `ClaudeCLI` - never read credentials or the keychain.
 - Never poll faster than needed; stop timers when a panel isn't visible if
   the data is only shown there.

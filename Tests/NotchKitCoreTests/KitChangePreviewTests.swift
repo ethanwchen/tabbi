@@ -19,6 +19,7 @@ final class KitChangePreviewTests: XCTestCase {
         // Today already needs notifications and calendars; the new tabs add
         // Automation (Now Playing) and the Claude CLI (Ask Claude).
         XCTAssertEqual(preview.newPermissions, [.automation, .claudeCLI])
+        XCTAssertEqual(preview.newNetworkAccess.map(\.host), ["i.scdn.co"])
         XCTAssertEqual(preview.starterTasks, ["Plan the week"])
         XCTAssertFalse(preview.changesNotchPreviews, "the kit lists no previews")
         XCTAssertFalse(preview.isEmpty)
@@ -37,6 +38,25 @@ final class KitChangePreviewTests: XCTestCase {
         XCTAssertEqual(withMusic.turnsOn, [.spotify])
         XCTAssertEqual(withMusic.newPermissions, [.automation])
         XCTAssertEqual(withMusic.starterTasks, ["Pick a playlist"])
+    }
+
+    func testListsOnlyNewHostsOffThisMac() throws {
+        let current = AppSettings(modules: ModuleLayout(order: [.planner, .spotify], disabled: []))
+        let study = try kit(#"""
+        {"formatVersion": 1, "id": "med", "name": "Med", "modules": ["planner", "spotify", "anki", "party"]}
+        """#)
+        let preview = KitChangePreview(applying: study, to: current, catalog: .builtIn)
+        XCTAssertEqual(preview.turnsOn, [.anki, .party])
+        // Anki's AnkiConnect runs on this Mac and Now Playing was already on,
+        // so only Party's server is new.
+        XCTAssertEqual(preview.newNetworkAccess,
+                       [ModuleNetworkAccess(host: "friends.example.com", purpose: "your presence and parties")])
+    }
+
+    func testRecognizesLocalHosts() {
+        XCTAssertTrue(ModuleNetworkAccess(host: "127.0.0.1", purpose: "").isLocal)
+        XCTAssertTrue(ModuleNetworkAccess(host: "LOCALHOST", purpose: "").isLocal)
+        XCTAssertFalse(ModuleNetworkAccess(host: "i.scdn.co", purpose: "").isLocal)
     }
 
     func testNotesWhenTheClosedNotchPreviewsChange() throws {

@@ -63,6 +63,11 @@ struct KitImportReviewView: View {
                         Text("New tabs may ask for \(list(preview.newPermissions.map(\.title))).")
                     }
                 }
+                if !preview.newNetworkAccess.isEmpty {
+                    row("Network") {
+                        Text(networkNote)
+                    }
+                }
                 row("Today") {
                     Text(starterTasksNote)
                         .foregroundStyle(preview.starterTasks.isEmpty ? .secondary : .primary)
@@ -169,6 +174,10 @@ struct KitImportReviewView: View {
         case 1: "Adds \"\(preview.starterTasks[0])\"."
         default: "Adds \(preview.starterTasks.count) starter tasks: \(list(preview.starterTasks.map { "\"\($0)\"" }))."
         }
+    }
+
+    private var networkNote: String {
+        "New tabs connect to \(list(preview.newNetworkAccess.map { "\($0.host) for \($0.purpose)" }))."
     }
 
     private func list(_ items: [String]) -> String {
