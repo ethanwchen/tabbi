@@ -176,7 +176,7 @@ public struct ModuleProvision: Equatable, Sendable {
 /// Everything the enabled modules provide, merged into one value.
 ///
 /// Built from provisions in tab order, so the user's ordering decides whose
-/// tasks come first and whose focus timer wins when two are active.
+/// tasks come first; which focus clock wins when two run is `focus`'s rule.
 public struct ProviderSnapshot: Equatable, Sendable {
     /// Tasks in tab order, then each module's own order.
     public private(set) var tasks: [ProvidedTask] = []
@@ -188,10 +188,14 @@ public struct ProviderSnapshot: Equatable, Sendable {
     /// they never merge by accident.
     public private(set) var events: [UpcomingEvent] = []
     public private(set) var progress: [ProgressItem] = []
-    /// A running or paused clock beats an idle one; ties go to tab order.
-    /// Its `source` is the module running it, so a click on its preview
-    /// opens that module and consumers can tell one module's clock from
-    /// another's.
+    /// The one clock the app shows when several modules run one (say the
+    /// Pomodoro and a Study block): a running clock beats a paused one,
+    /// which beats an idle one. Among running clocks the most recently
+    /// started or resumed one wins (`focusStarts`), since that is the one
+    /// the user just turned to; the rest, and clocks with no known start,
+    /// go by tab order. Its `source` is the module running it, so a click
+    /// on its preview opens that module and consumers can tell one
+    /// module's clock from another's.
     public private(set) var focus: ProvidedFocus?
     /// Every module's study tally added up; nil when no module keeps one.
     public private(set) var study: StudyDayTally?
@@ -210,12 +214,17 @@ public struct ProviderSnapshot: Equatable, Sendable {
     /// `source` is set to the module that provided it, and a repeated
     /// `(source, id)` keeps only its first occurrence. Events are the one
     /// exception: they merge by id across modules (see `events`).
-    public init(_ provisions: [(module: ModuleID, provision: ModuleProvision)]) {
+    /// `focusStarts` says when each module's focus clock last started or
+    /// resumed running, which decides between two running clocks.
+    public init(
+        _ provisions: [(module: ModuleID, provision: ModuleProvision)],
+        focusStarts: [ModuleID: Date] = [:]
+    ) {
         var taskKeys = Set<[String]>()
         var progressKeys = Set<[String]>()
         var highlightKeys = Set<[String]>()
         var eventIDs = Set<String>()
-        var activeFocus: ProvidedFocus?
+        var clocks: [ProvidedFocus] = []
         for (module, provision) in provisions {
             for var task in provision.tasks where taskKeys.insert([module.rawValue, task.id]).inserted {
                 task.source = module
@@ -237,15 +246,28 @@ public struct ProviderSnapshot: Equatable, Sendable {
             if party == nil { party = provision.party }
             if var clock = provision.focus {
                 clock.source = module
-                if focus == nil { focus = clock }
-                if activeFocus == nil, clock.isActive { activeFocus = clock }
+                clocks.append(clock)
             }
         }
-        if let activeFocus { focus = activeFocus }
+        focus = Self.leadingClock(clocks, focusStarts: focusStarts)
         // Stable, so events with equal starts keep their tab order.
         events = events.enumerated()
             .sorted { ($0.element.start, $0.offset) < ($1.element.start, $1.offset) }
             .map(\.element)
+    }
+
+    /// The clock `focus` picks from `clocks`, which are in tab order.
+    private static func leadingClock(_ clocks: [ProvidedFocus], focusStarts: [ModuleID: Date]) -> ProvidedFocus? {
+        func rank(_ clock: ProvidedFocus) -> Int {
+            clock.isRunning ? 2 : clock.isPaused ? 1 : 0
+        }
+        func start(_ clock: ProvidedFocus) -> Date {
+            clock.isRunning ? focusStarts[clock.source] ?? .distantPast : .distantPast
+        }
+        // The negated offset makes an earlier tab win a tie.
+        return clocks.enumerated().max { lhs, rhs in
+            (rank(lhs.element), start(lhs.element), -lhs.offset) < (rank(rhs.element), start(rhs.element), -rhs.offset)
+        }?.element
     }
 
     /// Tasks not done yet, in order.

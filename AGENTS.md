@@ -98,7 +98,8 @@ Judge them against the design rules below before you call the work done.
   for open-ended phases, paused or idle, plus a phase label and a deep focus
   flag): Today and Focus share their Pomodoro with `FocusTimer.provided(by:)`
   and Study its session with `StudySession.sharedFocus(by:isDeep:at:)`, and
-  the ticker, the pet, the coach and Party all read `ProviderSnapshot.focus`. `ProviderHub` (in `Modules/`)
+  the ticker, the pet, the coach and Party all read `ProviderSnapshot.focus`
+  (when two clocks run, the one started or resumed last). `ProviderHub` (in `Modules/`)
   merges the enabled modules' values into a `ProviderSnapshot`
   (`NotchKitCore/Providers`). The closed-notch ticker (`TickerStore`) reads
   only that snapshot, and Today lists other

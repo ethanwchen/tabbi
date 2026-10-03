@@ -9,6 +9,10 @@ import NotchKitCore
 /// Only enabled modules contribute, in tab order; a disabled module's data
 /// disappears with its tab. Modules may publish from any thread; the hub
 /// always merges and publishes on the main actor.
+///
+/// When two modules run a focus clock at once, the hub notes when each
+/// one started or resumed running, so the snapshot shows the one the user
+/// turned to last (`ProviderSnapshot.focus`).
 @MainActor
 final class ProviderHub: ObservableObject {
     @Published private(set) var snapshot = ProviderSnapshot()
@@ -23,12 +27,20 @@ final class ProviderHub: ObservableObject {
     /// main actor when its module was turned off (or off and on again) is
     /// dropped instead of reviving stale data.
     private var generation: [ModuleID: Int] = [:]
+    /// When each module's focus clock went from stopped to running, as seen
+    /// by the hub. A clock already running when its module connects (one
+    /// restored at launch) has no entry and yields to any started later.
+    private var focusStarts: [ModuleID: Date] = [:]
+    private let now: () -> Date
 
     /// A hub with no modules yet; `attach` the registry once it exists.
-    init() {}
+    init(now: @escaping () -> Date = Date.init) {
+        self.now = now
+    }
 
-    init(registry: ModuleRegistry) {
+    init(registry: ModuleRegistry, now: @escaping () -> Date = Date.init) {
         self.registry = registry
+        self.now = now
     }
 
     /// Connects the modules whose provisions this hub merges.
@@ -45,6 +57,7 @@ final class ProviderHub: ObservableObject {
         for id in subscriptions.keys where !seen.contains(id) {
             subscriptions[id] = nil
             latest[id] = nil
+            focusStarts[id] = nil
             generation[id, default: 0] += 1
         }
         for id in self.enabled where subscriptions[id] == nil {
@@ -65,12 +78,18 @@ final class ProviderHub: ObservableObject {
 
     private func receive(_ provision: ModuleProvision, from id: ModuleID) {
         guard latest[id] != provision else { return }
+        if provision.focus?.isRunning != true {
+            focusStarts[id] = nil
+        } else if let previous = latest[id], previous.focus?.isRunning != true {
+            focusStarts[id] = now()
+        }
         latest[id] = provision
         merge()
     }
 
     private func merge() {
-        let next = ProviderSnapshot(enabled.compactMap { id in latest[id].map { (id, $0) } })
+        let next = ProviderSnapshot(enabled.compactMap { id in latest[id].map { (id, $0) } },
+                                    focusStarts: focusStarts)
         if next != snapshot { snapshot = next }
     }
 }

@@ -23,6 +23,22 @@ private final class ProvidingModule: NotchModule {
     var provision: AnyPublisher<ModuleProvision, Never>? { subject.eraseToAnyPublisher() }
 }
 
+/// A second providing module, so two can run a focus clock at once.
+@MainActor
+private final class OtherProvidingModule: NotchModule {
+    nonisolated static let descriptor = ModuleDescriptor(
+        id: "other-providing", title: "Other", symbol: "square", category: .productivity,
+        accent: ModuleAccent(red: 0.5, green: 0.5, blue: 0.5)
+    )
+    let subject = CurrentValueSubject<ModuleProvision, Never>(.empty)
+
+    init() {}
+    convenience init(context: ModuleContext) { self.init() }
+
+    func makePanel() -> AnyView { AnyView(EmptyView()) }
+    var provision: AnyPublisher<ModuleProvision, Never>? { subject.eraseToAnyPublisher() }
+}
+
 @MainActor
 final class ProviderHubTests: XCTestCase {
     private func task(_ id: String) -> ProvidedTask {
@@ -109,5 +125,41 @@ final class ProviderHubTests: XCTestCase {
         hub.update(enabled: [module.id])
         drainMainQueue()
         XCTAssertEqual(hub.snapshot.tasks.map(\.id), ["fresh"])
+    }
+
+    private func focus(_ clock: ProvidedFocus.Clock) -> ModuleProvision {
+        ModuleProvision(focus: ProvidedFocus(source: ModuleID("unset"), phase: .focus, clock: clock, phaseLength: 1500))
+    }
+
+    func testTheClockStartedLastWinsWhateverTheTabOrder() {
+        var time = Date(timeIntervalSinceReferenceDate: 800_000_000)
+        let first = ProvidingModule(), second = OtherProvidingModule()
+        let hub = ProviderHub(registry: ModuleRegistry([first, second]), now: { time })
+        hub.update(enabled: [first.id, second.id])
+
+        second.subject.send(focus(.countUp(since: time)))
+        XCTAssertEqual(hub.snapshot.focus?.source, second.id)
+        time += 60
+        first.subject.send(focus(.countdown(endsAt: time + 1500)))
+        XCTAssertEqual(hub.snapshot.focus?.source, first.id)
+
+        // Pausing hands the notch back; resuming takes it again.
+        first.subject.send(focus(.paused(shown: 1400)))
+        XCTAssertEqual(hub.snapshot.focus?.source, second.id)
+        time += 60
+        first.subject.send(focus(.countdown(endsAt: time + 1400)))
+        XCTAssertEqual(hub.snapshot.focus?.source, first.id)
+    }
+
+    func testAClockAlreadyRunningWhenItsModuleConnectsYieldsToOneStartedLater() {
+        let time = Date(timeIntervalSinceReferenceDate: 800_000_000)
+        let first = ProvidingModule(focus(.countUp(since: time)))
+        let second = OtherProvidingModule()
+        let hub = ProviderHub(registry: ModuleRegistry([first, second]), now: { time })
+        hub.update(enabled: [first.id, second.id])
+        XCTAssertEqual(hub.snapshot.focus?.source, first.id)
+
+        second.subject.send(focus(.countdown(endsAt: time + 1500)))
+        XCTAssertEqual(hub.snapshot.focus?.source, second.id)
     }
 }

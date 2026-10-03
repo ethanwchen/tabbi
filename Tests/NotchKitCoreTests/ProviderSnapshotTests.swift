@@ -66,6 +66,47 @@ final class ProviderSnapshotTests: XCTestCase {
         XCTAssertEqual(snapshot.focus?.source, .study)
     }
 
+    private func clock(_ clock: ProvidedFocus.Clock) -> ProvidedFocus {
+        ProvidedFocus(source: ModuleID("unset"), phase: .focus, clock: clock, phaseLength: 1500)
+    }
+
+    func testRunningFocusClockBeatsAPausedOneEarlierInTabOrder() {
+        let snapshot = ProviderSnapshot([
+            (.focus, ModuleProvision(focus: clock(.paused(shown: 600)))),
+            (.study, ModuleProvision(focus: clock(.countUp(since: now)))),
+        ])
+        XCTAssertEqual(snapshot.focus?.source, .study)
+    }
+
+    func testMostRecentlyStartedRunningClockWins() {
+        let provisions: [(module: ModuleID, provision: ModuleProvision)] = [
+            (.focus, ModuleProvision(focus: clock(.countdown(endsAt: now.addingTimeInterval(1200))))),
+            (.study, ModuleProvision(focus: clock(.countUp(since: now)))),
+        ]
+        let studyLater = ProviderSnapshot(provisions, focusStarts: [.focus: now, .study: now.addingTimeInterval(60)])
+        XCTAssertEqual(studyLater.focus?.source, .study)
+        let focusLater = ProviderSnapshot(provisions, focusStarts: [.focus: now.addingTimeInterval(60), .study: now])
+        XCTAssertEqual(focusLater.focus?.source, .focus)
+    }
+
+    func testRunningClocksWithNoKnownStartGoByTabOrder() {
+        let provisions: [(module: ModuleID, provision: ModuleProvision)] = [
+            (.study, ModuleProvision(focus: clock(.countUp(since: now)))),
+            (.focus, ModuleProvision(focus: clock(.countdown(endsAt: now.addingTimeInterval(1200))))),
+        ]
+        XCTAssertEqual(ProviderSnapshot(provisions).focus?.source, .study)
+        // A known start beats one restored with no start.
+        XCTAssertEqual(ProviderSnapshot(provisions, focusStarts: [.focus: now]).focus?.source, .focus)
+    }
+
+    func testStartOfAPausedClockDoesNotCount() {
+        let snapshot = ProviderSnapshot([
+            (.study, ModuleProvision(focus: clock(.countUp(since: now)))),
+            (.focus, ModuleProvision(focus: clock(.paused(shown: 600)))),
+        ], focusStarts: [.focus: now.addingTimeInterval(60)])
+        XCTAssertEqual(snapshot.focus?.source, .study)
+    }
+
     func testIdleFocusTimerIsKeptWhenNoneIsActive() {
         let snapshot = ProviderSnapshot([
             (.anki, ModuleProvision()),
