@@ -29,6 +29,7 @@ final class ModuleCatalogTests: XCTestCase {
             ModuleDescriptor(id: "a", title: "Second", symbol: "3.circle", category: .media, accent: accent),
         ])
         XCTAssertEqual(catalog.ids, ["a", "b"])
+        XCTAssertEqual(catalog.duplicateIDs, ["a"])
         XCTAssertEqual(catalog["a"]?.title, "First")
         XCTAssertNil(catalog["c"])
         XCTAssertEqual(catalog.descriptor(for: "c").title, "c")

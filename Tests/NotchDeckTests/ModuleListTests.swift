@@ -8,7 +8,8 @@ import NotchKitCore
 final class ModuleListTests: XCTestCase {
     func testIdsAreUniqueAndEveryModuleIsDescribed() {
         let catalog = ModuleList.catalog
-        XCTAssertEqual(catalog.descriptors.count, ModuleList.all.count, "two listed modules share an id")
+        XCTAssertEqual(catalog.duplicateIDs, [], "two listed modules share an id")
+        XCTAssertEqual(catalog.descriptors.count, ModuleList.all.count)
         for descriptor in catalog.descriptors {
             XCTAssertFalse(descriptor.title.isEmpty, "\(descriptor.id)")
             XCTAssertFalse(descriptor.symbol.isEmpty, "\(descriptor.id)")

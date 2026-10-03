@@ -64,7 +64,9 @@ extension NotchModule {
 /// `stop()` in step with the enabled tabs via `ModuleLifecycle`.
 @MainActor
 final class ModuleRegistry {
-    /// Registered modules, in canonical order; a later duplicate id is ignored.
+    /// Registered modules, in canonical order. A later duplicate id is left
+    /// out, and stops debug builds, since it means two modules in the list
+    /// claim the same id and one of them would silently disappear.
     let modules: [any NotchModule]
     /// The registered modules' descriptors, for layouts and kit validation.
     let catalog: ModuleCatalog
@@ -81,6 +83,10 @@ final class ModuleRegistry {
         self.modules = unique
         self.index = index
         catalog = ModuleCatalog(unique.map(\.descriptor))
+        let duplicates = ModuleCatalog(modules.map(\.descriptor)).duplicateIDs
+        if !duplicates.isEmpty {
+            assertionFailure("Two modules share an id: \(duplicates.map(\.rawValue).joined(separator: ", "))")
+        }
     }
 
     subscript(id: ModuleID) -> (any NotchModule)? { index[id] }

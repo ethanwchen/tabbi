@@ -180,7 +180,12 @@ public struct ModuleProvision: Equatable, Sendable {
 public struct ProviderSnapshot: Equatable, Sendable {
     /// Tasks in tab order, then each module's own order.
     public private(set) var tasks: [ProvidedTask] = []
-    /// Events from every module, by start time; a repeated id keeps the first.
+    /// Events from every module, by start time. Unlike tasks and progress,
+    /// events are keyed by id alone, across modules: an event id is the
+    /// calendar's own identifier, so two modules that read the same
+    /// calendar list a meeting once, and the first in tab order wins. Ids
+    /// that are not calendar identifiers should carry a module prefix so
+    /// they never merge by accident.
     public private(set) var events: [UpcomingEvent] = []
     public private(set) var progress: [ProgressItem] = []
     /// A running or paused clock beats an idle one; ties go to tab order.
@@ -203,7 +208,8 @@ public struct ProviderSnapshot: Equatable, Sendable {
 
     /// Merges `provisions` from modules listed in tab order. Each item's
     /// `source` is set to the module that provided it, and a repeated
-    /// `(source, id)` keeps only its first occurrence.
+    /// `(source, id)` keeps only its first occurrence. Events are the one
+    /// exception: they merge by id across modules (see `events`).
     public init(_ provisions: [(module: ModuleID, provision: ModuleProvision)]) {
         var taskKeys = Set<[String]>()
         var progressKeys = Set<[String]>()
