@@ -39,6 +39,15 @@ public enum SettingsSchema {
         Migration(version: 2) { defaults in
             FocusTimerStorage.moveLegacyKeys(in: defaults)
         },
+        // 2 -> 3: imported kits go by `KitLibrary.importedID`, so a kit a
+        // later Tabbi ships can't shadow one the user imported. An active kit
+        // id that isn't a bundled kit was an import; give it the new id.
+        Migration(version: 3) { defaults in
+            let key = SettingsRepository.Key.kitID
+            if let id = defaults.string(forKey: key), !KitLibrary.isBundled(id) {
+                defaults.set(KitLibrary.importedID(id), forKey: key)
+            }
+        },
     ]
 
     /// The version this build writes.

@@ -64,7 +64,7 @@ A kit file is a JSON object with these fields.
 | `formatVersion` | yes | number | Kit format version. Use `1`. |
 | `version` | no | string | Your own version of the kit, such as `1.3`, up to 32 characters. Tabbi shows it but never compares it. |
 | `requires` | no | object | What the kit can't work without. See [Versioning](#versioning). |
-| `id` | yes | string | Stable id: lowercase letters, digits and dashes, such as `law-school`. It is saved in settings, so never change it after sharing the kit. It can't be the id of a bundled kit. |
+| `id` | yes | string | Stable id: lowercase letters, digits and dashes, such as `law-school`. It is saved in settings, so never change it after sharing the kit. It can't be the id of a kit that ships with this version of Tabbi; a kit that a later version ships under the same id appears beside yours and never replaces it. |
 | `name` | yes | string | Name shown in the kit picker. |
 | `summary` | no | string | One line shown under the name. |
 | `symbol` | no | string | [SF Symbol](https://developer.apple.com/sf-symbols/) name shown beside the name. Defaults to `square.grid.2x2`. |
@@ -73,7 +73,7 @@ A kit file is a JSON object with these fields.
 | `defaults` | no | object | Settings the kit starts with. See [Defaults](#defaults). |
 | `onboarding` | no | array | Questions first-run setup and Settings ask to tailor the kit. See [Onboarding](#onboarding). |
 | `starterTasks` | no | array of strings | Tasks added to Today when the user picks or switches to the kit. Titles already on the list are skipped. |
-| `pickerOrder` | no | integer | Bundled kits only: where the kit sits in the picker, lowest first (kits without one follow by id). Imported kits always come after the bundled ones, in import order, and ignore it. |
+| `pickerOrder` | no | integer | Bundled kits only: where the kit sits in the picker, lowest first (kits without one follow by id). Imported kits always come after the bundled ones, by name, and ignore it. |
 
 Fields the format doesn't know are ignored with a warning, so a kit written for a newer version still loads and a typo such as `tickers` is easy to spot.
 
@@ -266,6 +266,7 @@ The format is defined by `KitManifest` in [`Sources/NotchKitCore/Kits`](../Sourc
 - `KitChangePreview` says what switching to a kit would change for given answers (tabs on and off, new permissions, starter tasks, previews), which the import sheet shows.
 - `layout(catalog:answers:)` turns a kit and onboarding answers into a `ModuleLayout`, and `starterTasks(answers:)` collects starter tasks.
 - `KitLibrary` holds the bundled kits in picker order plus imported kits, and `ImportedKitStore` keeps imported files on disk.
+- Inside the app an imported kit goes by `KitLibrary.importedID(_:)` of its author's id (`imported.deep-work` for `deep-work`), so it never shares an id with a bundled kit; that is the id saved as the active kit, and the file stays `<author id>.json`. Settings from before this rule get the new id through a `SettingsSchema` step.
 
 To ship a new bundled kit, add `<id>.json` (the file name must match its `id`) with a `pickerOrder` to `Sources/NotchKitCore/Kits/Bundled`, and check that its tests report no issues.
 `KitLibrary.bundled` lists that folder, so no code changes; `KitLibraryTests` checks that every file loads under its own name and has a picker order.

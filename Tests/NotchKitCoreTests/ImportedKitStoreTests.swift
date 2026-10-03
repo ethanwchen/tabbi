@@ -110,15 +110,37 @@ final class ImportedKitStoreTests: XCTestCase {
         try store.install(from: file("tech.json", kitJSON(id: "tech", name: "Tech")), catalog: .builtIn)
         try Data("not json".utf8).write(to: store.directory.appendingPathComponent("broken.json"))
         try Data("notes".utf8).write(to: store.directory.appendingPathComponent("README.txt"))
-        XCTAssertEqual(store.load().map(\.id), ["tech"])
+        XCTAssertEqual(store.load().map(\.id), ["imported.tech"])
     }
 
     func testRemoveDeletesOnlyThatKit() throws {
         try store.install(from: file("a.json", kitJSON(id: "tech", name: "Tech")), catalog: .builtIn)
         try store.install(from: file("b.json", kitJSON(id: "law", name: "Law")), catalog: .builtIn)
-        try store.remove(id: "tech")
-        try store.remove(id: "tech")
-        XCTAssertEqual(store.load().map(\.id), ["law"])
+        try store.remove(id: "imported.tech")
+        try store.remove(id: "imported.tech")
+        XCTAssertEqual(store.load().map(\.id), ["imported.law"])
+    }
+
+    func testImportedKitsGoByTheirOwnNamespacedID() throws {
+        let candidate = try store.inspect(from: file("tech.json", kitJSON(id: "tech", name: "Tech")), catalog: .builtIn)
+        XCTAssertEqual(candidate.kit.id, "imported.tech")
+        try store.install(candidate)
+        XCTAssertTrue(FileManager.default.fileExists(atPath: store.directory.appendingPathComponent("tech.json").path),
+                      "the file keeps its author's id as its name")
+        XCTAssertNotNil(store.savedData(for: "imported.tech"))
+        XCTAssertEqual(KitLibrary.authorID(of: "imported.tech"), "tech")
+        XCTAssertEqual(KitLibrary.importedID("imported.tech"), "imported.tech")
+    }
+
+    func testABundledKitShippedLaterNeverShadowsAnImport() throws {
+        // An import saved before this build bundled a kit with the same id.
+        try FileManager.default.createDirectory(at: store.directory, withIntermediateDirectories: true)
+        try Data(kitJSON(id: "medicine", name: "My Med").utf8)
+            .write(to: store.directory.appendingPathComponent("medicine.json"))
+        let library = KitLibrary.installed(imported: store.load())
+        XCTAssertEqual(library["imported.medicine"]?.name, "My Med")
+        XCTAssertEqual(library["medicine"]?.name, KitLibrary.bundled["medicine"]?.name)
+        XCTAssertFalse(KitLibrary.isBundled("imported.medicine"))
     }
 
     func testInstalledLibraryListsBundledKitsFirst() throws {

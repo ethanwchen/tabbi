@@ -64,6 +64,23 @@ final class SettingsSchemaTests: XCTestCase {
         XCTAssertFalse(SettingsRepository(defaults: defaults).load().hasChosenKit)
     }
 
+    func testVersionTwoActiveImportGetsItsNamespacedID() throws {
+        defaults.set(2, forKey: SettingsSchema.versionKey)
+        defaults.set("deep-work", forKey: "settings.kit")
+        let imported = try KitManifest.decode(from: Data(#"{"formatVersion": 1, "id": "deep-work", "name": "Deep Work", "modules": ["focus"]}"#.utf8))
+        var deepWork = imported
+        deepWork.id = KitLibrary.importedID(imported.id)
+        let settings = SettingsRepository(defaults: defaults, kits: .installed(imported: [deepWork])).load()
+        XCTAssertEqual(settings.kitID, "imported.deep-work")
+        XCTAssertEqual(defaults.string(forKey: "settings.kit"), "imported.deep-work")
+    }
+
+    func testVersionTwoBundledKitIDIsKept() {
+        defaults.set(2, forKey: SettingsSchema.versionKey)
+        defaults.set("medicine", forKey: "settings.kit")
+        XCTAssertEqual(SettingsRepository(defaults: defaults).load().kitID, "medicine")
+    }
+
     // MARK: Modules this build doesn't know
 
     func testStoredOrderPutsUnknownIdsBackAfterTheirPredecessor() {

@@ -3,6 +3,12 @@ import Foundation
 /// Kits the user imported, kept as one `<id>.json` file each in a folder
 /// (Application Support/<edition name>/Kits in the app).
 ///
+/// In the app an imported kit goes by `KitLibrary.importedID(_:)` of the id
+/// its author wrote ("imported.deep-work" for "deep-work"): `load()` and
+/// `inspect` hand out kits with that id, and the other methods take it. So
+/// a kit that a later Tabbi ships with the same author id can never shadow
+/// the user's import or change their active kit.
+///
 /// The imported file is copied byte for byte, so it stays human-editable
 /// and keeps fields a newer Tabbi understands. Files that stop loading
 /// (say, edited by hand into invalid JSON) are skipped, never fatal.
@@ -24,7 +30,7 @@ public struct ImportedKitStore: Sendable {
         let files = (try? FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)) ?? []
         return files
             .filter { $0.pathExtension == "json" }
-            .compactMap { try? KitLibrary.load(from: $0) }
+            .compactMap { try? KitLibrary.load(from: $0).importedCopy }
             .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
     }
 
@@ -48,10 +54,11 @@ public struct ImportedKitStore: Sendable {
         guard !reserved.contains(kit.id) else { throw KitError.reservedID(kit.id) }
         let missing = kit.missingRequirements(catalog: catalog)
         guard missing.isEmpty else { throw KitError.missingRequiredModules(missing) }
-        let saved = savedData(for: kit.id)
+        let id = KitLibrary.importedID(kit.id)
+        let saved = savedData(for: id)
         return KitImportCandidate(
-            kit: kit, data: data, fileName: url.lastPathComponent,
-            replaces: saved.flatMap { try? KitManifest.decode(from: $0) }, overwritesFile: saved != nil
+            kit: kit.importedCopy, data: data, fileName: url.lastPathComponent,
+            replaces: saved.flatMap { try? KitManifest.decode(from: $0).importedCopy }, overwritesFile: saved != nil
         )
     }
 
@@ -77,7 +84,7 @@ public struct ImportedKitStore: Sendable {
         return candidate.kit
     }
 
-    /// The stored file of the kit imported as `id`, byte for byte, or nil
+    /// The stored file of the imported kit `id` (a `KitLibrary.importedID`), byte for byte, or nil
     /// when there is none. Undo keeps it to put the file back.
     public func savedData(for id: String) -> Data? {
         try? Data(contentsOf: fileURL(for: id))
@@ -98,9 +105,10 @@ public struct ImportedKitStore: Sendable {
         try FileManager.default.removeItem(at: url)
     }
 
-    /// Ids are validated slugs, so they are safe as file names.
+    /// The file of the imported kit `id`, named after its author's id.
+    /// Those are validated slugs, so they are safe as file names.
     private func fileURL(for id: String) -> URL {
-        directory.appendingPathComponent("\(id).json")
+        directory.appendingPathComponent("\(KitLibrary.authorID(of: id)).json")
     }
 }
 
@@ -135,8 +143,8 @@ public struct KitImportCandidate: Sendable {
 }
 
 public extension KitLibrary {
-    /// The bundled kits followed by `imported` ones. An imported kit can't
-    /// replace a bundled one: the first kit with an id wins.
+    /// The bundled kits followed by `imported` ones (as `ImportedKitStore`
+    /// loads them, with their `importedID`), so the two never share an id.
     static func installed(imported: [KitManifest]) -> KitLibrary {
         KitLibrary(bundled.kits + imported)
     }
@@ -144,5 +152,33 @@ public extension KitLibrary {
     /// True for kits that ship with the app (they can't be removed).
     static func isBundled(_ id: String) -> Bool {
         bundledIDs.contains(id)
+    }
+
+    /// Begins every imported kit's id in the app. A kit's own id is a slug
+    /// (`[a-z0-9-]+`) with no dot, so no bundled kit can ever have it.
+    static let importedIDPrefix = "imported."
+
+    /// The id the app gives a kit imported with `authorID`.
+    static func importedID(_ authorID: String) -> String {
+        isImported(authorID) ? authorID : importedIDPrefix + authorID
+    }
+
+    /// True for an id from `importedID(_:)`.
+    static func isImported(_ id: String) -> Bool {
+        id.hasPrefix(importedIDPrefix)
+    }
+
+    /// The id the kit's author wrote, for an id from `importedID(_:)`.
+    static func authorID(of id: String) -> String {
+        isImported(id) ? String(id.dropFirst(importedIDPrefix.count)) : id
+    }
+}
+
+extension KitManifest {
+    /// This kit as the app knows it once imported: with its `importedID`.
+    var importedCopy: KitManifest {
+        var kit = self
+        kit.id = KitLibrary.importedID(id)
+        return kit
     }
 }

@@ -45,7 +45,7 @@ final class KitSwitchUndoTests: XCTestCase {
         let settings = makeSettings()
         let before = settings.settings
         let candidate = try settings.inspectKit(from: kitFile(deepWork))
-        XCTAssertNil(settings.kits["deep-work"])
+        XCTAssertNil(settings.kits["imported.deep-work"])
         XCTAssertEqual(settings.settings, before)
 
         let preview = settings.preview(of: candidate.kit)
@@ -53,7 +53,7 @@ final class KitSwitchUndoTests: XCTestCase {
         XCTAssertEqual(preview.starterTasks, ["Block two hours"])
 
         try settings.installKit(candidate, switchingWith: nil)
-        XCTAssertNotNil(settings.kits["deep-work"])
+        XCTAssertNotNil(settings.kits["imported.deep-work"])
         XCTAssertEqual(settings.settings, before, "Add Only keeps the user's tabs")
     }
 
@@ -68,14 +68,14 @@ final class KitSwitchUndoTests: XCTestCase {
         let settingsBefore = settings.settings
 
         try settings.installKit(settings.inspectKit(from: kitFile(deepWork)), switchingWith: [:])
-        XCTAssertEqual(settings.settings.kitID, "deep-work")
+        XCTAssertEqual(settings.settings.kitID, "imported.deep-work")
         XCTAssertEqual(today.day.items.map(\.title), tasksBefore + ["Block two hours"])
         XCTAssertNotEqual(focusMode.settings.mix, .off)
         XCTAssertEqual(settings.lastKitSwitch?.kitName, "Deep Work")
 
         settings.undoKitSwitch()
         XCTAssertEqual(settings.settings, settingsBefore)
-        XCTAssertNil(settings.kits["deep-work"], "the import is taken back too")
+        XCTAssertNil(settings.kits["imported.deep-work"], "the import is taken back too")
         XCTAssertEqual(today.day.items.map(\.title), tasksBefore)
         XCTAssertEqual(focusMode.settings.mix, .off, "the user's focus sound comes back")
         XCTAssertNil(settings.lastKitSwitch)
@@ -112,12 +112,12 @@ final class KitSwitchUndoTests: XCTestCase {
         try settings.installKit(settings.inspectKit(from: kitFile(deepWork)), switchingWith: [:])
         let imported = settings.settings
         try settings.removeActiveKit()
-        XCTAssertNil(settings.kits["deep-work"])
+        XCTAssertNil(settings.kits["imported.deep-work"])
         XCTAssertEqual(settings.lastKitSwitch?.kitName, "Deep Work")
 
         settings.undoKitSwitch()
         XCTAssertEqual(settings.settings, imported)
-        XCTAssertEqual(settings.activeKit?.id, "deep-work")
+        XCTAssertEqual(settings.activeKit?.id, "imported.deep-work")
     }
 
     func testResetIsNotUndoable() throws {
