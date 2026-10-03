@@ -66,7 +66,7 @@ final class ModuleContextTests: XCTestCase {
         let hub = ProviderHub()
         let shared = SharedServices()
         let registry = ModuleRegistry(types.map { type in
-            type.init(context: ModuleContext(id: type.descriptor.id, edition: .notchDeck, settings: settings,
+            type.init(context: ModuleContext(id: type.descriptor.id, edition: .tabbi, settings: settings,
                                              providers: hub, shared: shared, runMode: .demo))
         })
         hub.attach(registry)

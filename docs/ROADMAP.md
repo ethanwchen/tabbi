@@ -10,7 +10,6 @@ You choose exactly the tabs and integrations you want: a Pomodoro timer, Anki re
 
 One app serves many audiences.
 First-run setup offers premade [kits](kits.md), each a starting point for one kind of user, which you can then tweak tab by tab.
-A kit can also ship as a branded edition of the same binary, such as StudyNotch for medical students.
 
 Three ideas drive every design decision:
 

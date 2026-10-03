@@ -1,17 +1,18 @@
 import Foundation
 
-/// A branded build of the same NotchDeck binary, such as StudyNotch.
+/// A branded build of the same Tabbi binary.
 ///
-/// An edition only changes identity and first-run defaults: the app name,
-/// bundle id, which kit is preselected, and where its files live. Every
-/// edition contains every module, so a StudyNotch user can still switch to
-/// the Productivity kit.
+/// Tabbi ships as one edition, `tabbi`; audiences are served by kits, not
+/// by separate apps. The mechanism stays for future branded builds: an
+/// edition only changes identity and first-run defaults (the app name,
+/// bundle id, which kit is preselected, and where its files live). Every
+/// edition contains every module, so its users can still switch to any kit.
 ///
 /// Editions are data: each is a `<id>.json` in `Editions/BundledEditions`,
 /// which the app reads through `builtIn` and `scripts/assemble.sh` reads to
 /// write the packaged app's Info.plist, so a new edition is a file, not a
 /// code change. `assemble.sh` writes the edition's id into Info.plist
-/// (`NotchDeckEdition`); the app reads it back at launch with
+/// (`TabbiEdition`); the app reads it back at launch with
 /// `Edition.resolve(infoDictionary:)`.
 public struct Edition: Sendable, Hashable, Identifiable, Decodable {
     /// Stable lowercase id, used by `bundle.sh` and `--edition`. It is also
@@ -48,17 +49,16 @@ public struct Edition: Sendable, Hashable, Identifiable, Decodable {
     public static let formatVersion = 1
 
     /// The Info.plist key that names a packaged app's edition.
-    public static let infoKey = "NotchDeckEdition"
+    public static let infoKey = "TabbiEdition"
 
     /// The id of the edition used when none is named, such as `swift run`.
-    public static let defaultID = "notchdeck"
+    public static let defaultID = "tabbi"
 
-    /// The classic NotchDeck app with the Productivity kit. Falls back to
-    /// these values if its file can't be read, so the app always has an
-    /// edition to run as.
-    public static let notchDeck = named(defaultID) ?? Edition(
-        id: defaultID, name: "NotchDeck",
-        bundleIdentifier: "dev.notchdeck.NotchDeck", defaultKitID: KitLibrary.defaultKitID
+    /// Tabbi with the Productivity kit. Falls back to these values if its
+    /// file can't be read, so the app always has an edition to run as.
+    public static let tabbi = named(defaultID) ?? Edition(
+        id: defaultID, name: "Tabbi",
+        bundleIdentifier: "dev.tabbi.Tabbi", defaultKitID: KitLibrary.defaultKitID
     )
 
     /// Every edition `bundle.sh` can build, read from `Editions/BundledEditions`:
@@ -83,9 +83,9 @@ public struct Edition: Sendable, Hashable, Identifiable, Decodable {
 
     /// The edition a running app belongs to, from its Info.plist. Builds
     /// without the key (or with an unknown id), such as `swift run`, are
-    /// the default edition, so development keeps behaving like NotchDeck.
+    /// the default edition, so development runs as Tabbi.
     public static func resolve(infoDictionary: [String: Any]?) -> Edition {
-        (infoDictionary?[infoKey] as? String).flatMap(named) ?? .notchDeck
+        (infoDictionary?[infoKey] as? String).flatMap(named) ?? .tabbi
     }
 
     /// Reads and checks one edition file.

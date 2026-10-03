@@ -294,7 +294,7 @@ Turning the coach off (the Closet module) does the same, and the save keeps cool
 The Closet module shares it as `ModuleProvision.pet`, and `ProviderSnapshot.pet` keeps the first in tab order.
 The ticker turns it into a `.pet` item (`TickerKind.pet`, last in rotation), and `TickerSources.nextChange` includes the moment the pet dozes off, so the notch updates without polling.
 `NotchPetWing` (TabbiKit) draws the animated pet in the leading wing and its name in the trailing wing, with a quiet "zzz" while it sleeps; mood changes play the real fall-asleep and wake-up clips.
-`--snapshot` renders `closed-pet.png` and `closed-pet-asleep.png` when the Closet module is on (use `--edition studynotch`).
+`--snapshot` renders `closed-pet.png` and `closed-pet-asleep.png` when the Closet module is on (use `--kit medicine`).
 
 ## Closet (`Sources/TabbiKitCore/Closet`)
 

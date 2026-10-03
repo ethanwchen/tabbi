@@ -15,7 +15,7 @@ They are good starting points for your own kit.
 ## Using kits
 
 On first launch, a welcome window asks which kit to start with.
-It lists every kit with the tabs it turns on, and preselects the edition's kit (Productivity for NotchDeck, Medicine for StudyNotch).
+It lists every kit with the tabs it turns on, and preselects the edition's kit (Productivity for Tabbi).
 Closing the window keeps the preselected kit, and the window doesn't come back.
 If the chosen kit has [onboarding questions](#onboarding), **Continue** leads to them; **Back** returns to the kit list.
 Every question can be skipped, and a row of tab icons previews what the answers turn on or off.
@@ -39,9 +39,9 @@ Only the last change can be undone; Reset to Kit Defaults is not undoable.
 
 After switching, you can still turn tabs on and off and reorder them below the Kit section.
 
-Imported kits are stored as `<id>.json` in `~/Library/Application Support/NotchDeck/Kits` (or `.../StudyNotch/Kits` for the StudyNotch edition).
+Imported kits are stored as `<id>.json` in `~/Library/Application Support/Tabbi/Kits`.
 Each edition keeps all of its files apart in its own folder: kits, Today's checklist and reviews, the activity log, the study log, the pet and the Claude Usage scan index.
-Deleting a file there removes the kit the next time NotchDeck starts.
+Deleting a file there removes the kit the next time Tabbi starts.
 
 ## A minimal kit
 

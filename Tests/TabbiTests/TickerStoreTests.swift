@@ -31,7 +31,7 @@ final class TickerStoreTests: XCTestCase {
         let hub = ProviderHub()
         let shared = SharedServices()
         let module = HighlightingModule(context: ModuleContext(
-            id: "highlighting", edition: .notchDeck, settings: settings, providers: hub, shared: shared,
+            id: "highlighting", edition: .tabbi, settings: settings, providers: hub, shared: shared,
             runMode: .demo))
         hub.attach(ModuleRegistry([module]))
         hub.update(enabled: ["highlighting"])

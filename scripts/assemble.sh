@@ -6,7 +6,7 @@
 #
 # Every edition ships the same binary. An edition is one JSON file,
 # Sources/TabbiKitCore/Editions/BundledEditions/<edition>.json, which the
-# app reads too (Edition.swift). Its name, bundle id and id (NotchDeckEdition,
+# app reads too (Edition.swift). Its name, bundle id and id (TabbiEdition,
 # which the app reads to preselect its kit) and its infoPlist strings
 # (usage descriptions that name the app) replace keys of Resources/Info.plist,
 # and its optional icon names an .icns file in Resources.
@@ -15,7 +15,7 @@ cd "$(dirname "$0")/.."
 
 bin=$1
 out=$2
-edition=${3:-notchdeck}
+edition=${3:-tabbi}
 editions=Sources/TabbiKitCore/Editions/BundledEditions
 file=$editions/$edition.json
 
@@ -31,10 +31,10 @@ bundle_id=$(field bundleIdentifier)
 icon=Resources/$(field icon || echo AppIcon.icns)
 [[ -f "$icon" ]] || { echo "error: edition icon $icon not found" >&2; exit 1; }
 
-plist=$(mktemp -t notchdeck-plist)
+plist=$(mktemp -t tabbi-plist)
 trap 'rm -f "$plist"' EXIT
 plutil -extract infoPlist xml1 -o "$plist" "$file" 2>/dev/null || plutil -create xml1 "$plist"
-plutil -replace NotchDeckEdition -string "$edition" "$plist"
+plutil -replace TabbiEdition -string "$edition" "$plist"
 plutil -replace CFBundleName -string "$name" "$plist"
 plutil -replace CFBundleDisplayName -string "$name" "$plist"
 plutil -replace CFBundleIdentifier -string "$bundle_id" "$plist"

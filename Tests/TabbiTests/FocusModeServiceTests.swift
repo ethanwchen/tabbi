@@ -15,7 +15,7 @@ final class FocusModeServiceTests: XCTestCase {
         let settings = SettingsStore.ephemeral(catalog: ModuleList.catalog)
         let shared = SharedServices()
         func context(_ id: ModuleID) -> ModuleContext {
-            ModuleContext(id: id, edition: .notchDeck, settings: settings, providers: ProviderHub(), shared: shared,
+            ModuleContext(id: id, edition: .tabbi, settings: settings, providers: ProviderHub(), shared: shared,
                           runMode: .demo)
         }
         XCTAssertTrue(context(.focus).focusMode === context(.study).focusMode)

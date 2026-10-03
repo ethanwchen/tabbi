@@ -9,12 +9,11 @@ and a kit picks which ones are on and in what order.
 
 ```sh
 swift build                                  # must stay warning-free
-swift test                                   # TabbiKitCore and NotchDeck (app wiring) tests
-swift run Tabbi --snapshot snapshots     # render every notch state to PNG
+swift test                                   # TabbiKitCore and Tabbi (app wiring) tests
+swift run Tabbi --snapshot snapshots         # render every notch state to PNG
 swift run Tabbi --snapshot snapshots-medicine --kit medicine  # same, for another kit's tabs
-swift run Tabbi --snapshot snapshots-study --edition studynotch  # as the StudyNotch edition
-scripts/run.sh [studynotch]                  # bundle + launch the real app (or an edition)
-scripts/bundle.sh studynotch                 # build/StudyNotch.app, Medicine kit preselected
+scripts/run.sh [edition]                     # bundle + launch the real app (or an edition)
+scripts/bundle.sh                            # build/Tabbi.app
 ```
 
 You cannot see the screen. **After any UI change, run the snapshot command and
@@ -137,9 +136,11 @@ Judge them against the design rules below before you call the work done.
 
 Kits are JSON manifests in `Sources/TabbiKitCore/Kits/Bundled`; the format
 is documented in `docs/kits.md`.
-Editions (branded builds such as StudyNotch) are JSON files in
+Editions (branded builds of the same binary with their own name, bundle id,
+data folder and preselected kit) are JSON files in
 `Sources/TabbiKitCore/Editions/BundledEditions` that the app and
 `scripts/assemble.sh` both read (see `Edition.swift`); a new edition is a file.
+Tabbi ships one edition, `tabbi`; audiences are served by kits.
 Direction and planned work: `docs/ROADMAP.md`.
 
 Module ownership: when working on one module, keep changes inside its

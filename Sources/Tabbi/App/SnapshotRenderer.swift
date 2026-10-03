@@ -5,7 +5,7 @@ import TabbiKit
 
 /// Renders every notch state and Settings pane to PNG without showing a window:
 ///
-///     swift run Tabbi --snapshot ./snapshots [--kit medicine] [--edition studynotch]
+///     swift run Tabbi --snapshot ./snapshots [--kit medicine] [--edition <id>]
 ///
 /// Used to review UI changes (by people and by agents) without Screen
 /// Recording permission. Live data sources run as usual, so panels show

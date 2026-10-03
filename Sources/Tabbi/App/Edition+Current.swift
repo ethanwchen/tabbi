@@ -3,7 +3,7 @@ import TabbiKitCore
 
 extension Edition {
     /// The edition this process runs as: `--edition <id>` (for snapshots and
-    /// `swift run`) wins, then the bundle's Info.plist, then NotchDeck.
+    /// `swift run`) wins, then the bundle's Info.plist, then Tabbi.
     /// Resolved once at first use, so it is safe to read from any thread.
     static let current: Edition = {
         let arguments = CommandLine.arguments

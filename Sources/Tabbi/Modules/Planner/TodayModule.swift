@@ -22,14 +22,6 @@ final class TodayModule: NotchModule {
 
     init(context: ModuleContext) {
         let settings = context.settings
-        if !context.isDemo {
-            // Older builds kept every edition's checklist and reviews in the
-            // default edition's folder; bring them along once. Live snapshots
-            // too: they open today's file, which would otherwise create the
-            // folder empty and skip this for good.
-            context.storage.adoptFolders([PlannerRepository.folderName, DayReviewRepository.folderName],
-                                         from: EditionStorage(edition: .notchDeck))
-        }
         store = PlannerStore(focus: context.focusTimer, storage: context.storage,
                              planSettings: TodayPlanSettings(kit: context.activeKit?.defaults),
                              activity: context.activityLog, runMode: context.runMode)

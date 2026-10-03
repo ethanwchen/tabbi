@@ -3,11 +3,11 @@
 #
 #   usage: scripts/bundle.sh [edition] [debug|release]
 #
-# edition defaults to notchdeck; `scripts/bundle.sh studynotch` builds
-# build/StudyNotch.app with the Medicine kit preselected. See assemble.sh.
+# edition defaults to tabbi, which builds build/Tabbi.app. Other editions
+# are files in Sources/TabbiKitCore/Editions/BundledEditions; see assemble.sh.
 set -euo pipefail
 cd "$(dirname "$0")/.."
-edition=notchdeck
+edition=tabbi
 config=release
 for arg in "$@"; do
     case "$arg" in

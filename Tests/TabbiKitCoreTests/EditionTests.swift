@@ -2,10 +2,6 @@ import XCTest
 @testable import TabbiKitCore
 
 final class EditionTests: XCTestCase {
-    private func studyNotch() throws -> Edition {
-        try XCTUnwrap(Edition.named("studynotch"))
-    }
-
     private func decode(_ json: String) throws -> Edition {
         try Edition.decode(from: Data(json.utf8))
     }
@@ -13,43 +9,38 @@ final class EditionTests: XCTestCase {
     private func edition(_ fields: String) -> String {
         """
         {"formatVersion": 1, "id": "lsat", "name": "LSAT Notch",
-         "bundleIdentifier": "dev.notchdeck.LSAT", "defaultKitID": "student"\(fields)}
+         "bundleIdentifier": "dev.tabbi.LSAT", "defaultKitID": "student"\(fields)}
         """
     }
 
-    func testABuildWithoutTheKeyIsNotchDeckWithTheProductivityKit() {
+    func testABuildWithoutTheKeyIsTabbiWithTheProductivityKit() {
         let edition = Edition.resolve(infoDictionary: nil)
-        XCTAssertEqual(edition, .notchDeck)
+        XCTAssertEqual(edition, .tabbi)
         XCTAssertEqual(edition.id, Edition.defaultID)
-        XCTAssertEqual(edition.name, "NotchDeck")
+        XCTAssertEqual(edition.name, "Tabbi")
+        XCTAssertEqual(edition.bundleIdentifier, "dev.tabbi.Tabbi")
         XCTAssertEqual(edition.defaultKitID, KitLibrary.defaultKitID)
-        XCTAssertEqual(Edition.resolve(infoDictionary: ["CFBundleName": "NotchDeck"]), .notchDeck)
-    }
-
-    func testStudyNotchPreselectsTheMedicineKit() throws {
-        let edition = Edition.resolve(infoDictionary: [Edition.infoKey: "studynotch"])
-        XCTAssertEqual(edition.name, "StudyNotch")
-        XCTAssertEqual(edition.bundleIdentifier, "dev.notchdeck.StudyNotch")
-        XCTAssertEqual(edition.defaultKitID, "medicine")
-        XCTAssertEqual(edition.infoPlist["NSCalendarsFullAccessUsageDescription"]?.hasPrefix("StudyNotch "), true)
         XCTAssertNil(edition.icon)
+        XCTAssertEqual(Edition.resolve(infoDictionary: ["CFBundleName": "Tabbi"]), .tabbi)
+        XCTAssertEqual(Edition.resolve(infoDictionary: [Edition.infoKey: "tabbi"]), .tabbi)
     }
 
-    func testUnknownOrMistypedEditionsFallBackToNotchDeck() throws {
-        XCTAssertEqual(Edition.resolve(infoDictionary: [Edition.infoKey: "lawnotch"]), .notchDeck)
-        XCTAssertEqual(Edition.resolve(infoDictionary: [Edition.infoKey: 42]), .notchDeck)
-        XCTAssertEqual(Edition.named("StudyNotch"), try studyNotch())
+    func testUnknownOrRetiredEditionsFallBackToTabbi() throws {
+        XCTAssertEqual(Edition.resolve(infoDictionary: [Edition.infoKey: "lawnotch"]), .tabbi)
+        XCTAssertEqual(Edition.resolve(infoDictionary: [Edition.infoKey: "studynotch"]), .tabbi)
+        XCTAssertEqual(Edition.resolve(infoDictionary: [Edition.infoKey: 42]), .tabbi)
+        XCTAssertEqual(Edition.named("Tabbi"), .tabbi)
         XCTAssertNil(Edition.named(""))
     }
 
     func testEveryEditionFileLoadsUnderItsOwnNameAndStartsWithABundledKit() throws {
         let files = Edition.bundledFileURLs
-        XCTAssertEqual(files.map { $0.deletingPathExtension().lastPathComponent }, ["notchdeck", "studynotch"])
+        XCTAssertEqual(files.map { $0.deletingPathExtension().lastPathComponent }, ["tabbi"])
         for file in files {
             XCTAssertNoThrow(try Edition.load(from: file), file.lastPathComponent)
         }
         XCTAssertEqual(Edition.builtIn.count, files.count, "an edition file failed to load")
-        XCTAssertEqual(Edition.builtIn.first, .notchDeck)
+        XCTAssertEqual(Edition.builtIn.first, .tabbi)
         XCTAssertEqual(Set(Edition.builtIn.map(\.bundleIdentifier)).count, Edition.builtIn.count)
         XCTAssertEqual(Set(Edition.builtIn.map(\.name)).count, Edition.builtIn.count)
         for edition in Edition.builtIn {
@@ -103,24 +94,23 @@ final class EditionTests: XCTestCase {
         XCTAssertThrowsError(try Edition.load(from: file))
     }
 
-    func testAFreshStudyNotchInstallGetsTheMedicineTabs() throws {
+    func testAFreshInstallStartsWithTheEditionsKit() throws {
         let suite = "EditionTests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
         defer { defaults.removePersistentDomain(forName: suite) }
-        let repository = SettingsRepository(
-            defaults: defaults, kits: .bundled, defaultKitID: try studyNotch().defaultKitID
-        )
+        let lsat = try decode(edition(""))
+        let repository = SettingsRepository(defaults: defaults, kits: .bundled, defaultKitID: lsat.defaultKitID)
         let settings = repository.load()
-        let medicine = try XCTUnwrap(KitLibrary.bundled["medicine"])
-        XCTAssertEqual(settings.kitID, "medicine")
-        XCTAssertEqual(settings.modules, medicine.layout())
+        let student = try XCTUnwrap(KitLibrary.bundled["student"])
+        XCTAssertEqual(settings.kitID, "student")
+        XCTAssertEqual(settings.modules, student.layout())
     }
 
     func testEachEditionKeepsItsOwnImportedKits() throws {
-        let notchDeck = try XCTUnwrap(ImportedKitStore.standard(for: .notchDeck))
-        let studyNotch = try XCTUnwrap(ImportedKitStore.standard(for: try studyNotch()))
-        XCTAssertNotEqual(notchDeck.directory, studyNotch.directory)
-        XCTAssertEqual(notchDeck.directory.deletingLastPathComponent().lastPathComponent, "NotchDeck")
-        XCTAssertEqual(studyNotch.directory.deletingLastPathComponent().lastPathComponent, "StudyNotch")
+        let tabbi = try XCTUnwrap(ImportedKitStore.standard(for: .tabbi))
+        let lsat = try XCTUnwrap(ImportedKitStore.standard(for: try decode(edition(""))))
+        XCTAssertNotEqual(tabbi.directory, lsat.directory)
+        XCTAssertEqual(tabbi.directory.deletingLastPathComponent().lastPathComponent, "Tabbi")
+        XCTAssertEqual(lsat.directory.deletingLastPathComponent().lastPathComponent, "LSAT Notch")
     }
 }
