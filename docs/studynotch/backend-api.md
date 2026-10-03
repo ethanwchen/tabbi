@@ -1,12 +1,13 @@
-# StudyNotch friends API (client contract)
+# Tabbi friends API (client contract)
 
-This is the contract between the StudyNotch app and the `studynotch-friends` Cloudflare Worker in [`backend/`](../../backend).
+This is the contract between the Tabbi app and the `tabbi-friends` Cloudflare Worker in [`backend/`](../../backend).
 Deployment, architecture and the free-tier math are in [`backend/README.md`](../../backend/README.md); what is stored is in [`backend/PRIVACY.md`](../../backend/PRIVACY.md).
 
 ## Basics
 
 - Production base URL: `https://studynotch-friends.drosophil-anki-friends-backend.workers.dev`.
   It is the default server in Tabbi's Party settings (`PartyServer.productionURL`); users can point the app at their own deployment there.
+  That deployment predates the rename and still answers as `studynotch-friends`, which the client accepts alongside `tabbi-friends` (`PartyClient.serviceNames`); the URL changes once the renamed worker is deployed.
   Local dev: `http://localhost:8787` (`npm run dev` in `backend/`).
 - The Swift client is `PartyClient` in `Sources/TabbiKitCore/Party`.
   Its end-to-end test runs against a worker with `PARTY_TEST_SERVER=http://localhost:8787 swift test --filter PartyLiveServerTests`; against production it only creates throwaway users and deletes them.
@@ -154,7 +155,7 @@ Auth column: "token" means `Authorization: Bearer <token>` is required.
 
 ### `GET /`
 
-`200 {"ok": true, "service": "studynotch-friends", "version": 1}`
+`200 {"ok": true, "service": "tabbi-friends", "version": 1}`
 
 ### `GET /v1/catalog`
 

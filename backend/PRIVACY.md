@@ -1,6 +1,6 @@
 # Privacy
 
-The StudyNotch friends service exists so you can see which friends are studying, study together in a party where everyone's pets sit side by side, and compare weekly study minutes.
+The Tabbi friends service exists so you can see which friends are studying, study together in a party where everyone's pets sit side by side, and compare weekly study minutes.
 It is designed to know as little as possible.
 
 ## What is stored

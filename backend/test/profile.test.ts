@@ -19,7 +19,7 @@ const FULL = {
 describe("worker basics", () => {
   it("answers the health check, the catalog and CORS preflight", async () => {
     const root = await call("GET", "/");
-    expect(root.body).toEqual({ ok: true, service: "studynotch-friends", version: 1 });
+    expect(root.body).toEqual({ ok: true, service: "tabbi-friends", version: 1 });
     const cat = await call("GET", "/v1/catalog");
     expect(cat.body).toEqual({ ok: true, catalog });
     const pre = await SELF.fetch(BASE + "/v1/me", { method: "OPTIONS" });

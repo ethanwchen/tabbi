@@ -304,7 +304,7 @@ All fetched 2026-10-01. Daily limits reset at 00:00 UTC, and requests over a lim
 - WebSocket messages into a hibernating DO cost only 1/20 of a request and don't use the Worker request quota after the upgrade.
 
 **Recommended architecture (hundreds of users):**
-- **Storage:** one Worker, `studynotch-friends`, with SQLite-backed DOs.
+- **Storage:** one Worker, `tabbi-friends`, with SQLite-backed DOs.
   - `UserDO`, one per user, keyed by `idFromName(userId)`: stores the profile, friend list, and presence row. Friend lookups do a fan-out read via RPC.
   - Or, simpler at this scale: a single **`PresenceDO`** (or 4–16 shards keyed by hash of userId) that keeps presence **in memory** and writes to SQLite **only on status change** (studying ↔ break ↔ idle ↔ offline), not on every heartbeat. "Online" = `lastSeen` within 2× the heartbeat interval, computed on read. Use an alarm every 5–10 minutes to mark stale users offline and persist them.
 - **`PartyDO`**, one per party code: members, shared session (`method`, `phaseEndsAt`), last activity. Clients connect by **WebSocket with the Hibernation API**:

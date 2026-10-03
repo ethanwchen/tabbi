@@ -15,7 +15,7 @@ export class HttpError extends Error {
   }
 }
 
-export const SERVICE = "studynotch-friends";
+export const SERVICE = "tabbi-friends";
 export const CATALOG = catalog;
 export const SPECIES = catalog.species as readonly string[];
 export const STATUSES = catalog.statuses as readonly string[];

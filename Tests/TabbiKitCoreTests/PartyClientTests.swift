@@ -267,10 +267,19 @@ final class PartyClientTests: XCTestCase {
     }
 
     func testHealthCheckNeedsNoToken() async throws {
-        let transport = FakePartyTransport(["GET /": .json(#"{"ok":true,"service":"studynotch-friends","version":1}"#)])
+        let transport = FakePartyTransport(["GET /": .json(#"{"ok":true,"service":"tabbi-friends","version":1}"#)])
         let healthy = try await PartyClient(transport: transport).health()
         XCTAssertTrue(healthy)
         XCTAssertNil(transport.requests.last?.token)
+    }
+
+    func testHealthCheckAcceptsThePreRenameWorkerButNoOtherService() async throws {
+        let cases = [("studynotch-friends", true), ("tabbi-friends", true), ("some-other-api", false)]
+        for (service, expected) in cases {
+            let transport = FakePartyTransport(["GET /": .json(#"{"ok":true,"service":"\#(service)","version":1}"#)])
+            let healthy = try await PartyClient(transport: transport).health()
+            XCTAssertEqual(healthy, expected, service)
+        }
     }
 
     func testURLErrorsMapToReachabilityStates() {

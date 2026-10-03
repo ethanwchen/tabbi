@@ -2,7 +2,9 @@ import Foundation
 
 /// The friends server Tabbi talks to.
 public enum PartyServer {
-    /// The deployed `studynotch-friends` worker, used until the user enters another.
+    /// The deployed friends worker, used until the user enters another.
+    /// It still runs under its old `studynotch-friends` name until the
+    /// maintainer deploys the renamed `tabbi-friends` worker and updates this.
     public static let productionURL = URL(string: "https://studynotch-friends.drosophil-anki-friends-backend.workers.dev")!
     /// `npm run dev` in `backend/`.
     public static let localDevURL = URL(string: "http://localhost:8787")!
@@ -53,10 +55,15 @@ public struct PartyClient: Sendable {
 
     // MARK: Health
 
-    /// `GET /`: true when the server answers as `studynotch-friends`.
+    /// Service names a friends server answers `GET /` with: the current
+    /// `tabbi-friends` worker and the `studynotch-friends` deployment from
+    /// before the rename, which serves the same contract.
+    public static let serviceNames: Set<String> = ["tabbi-friends", "studynotch-friends"]
+
+    /// `GET /`: true when the server answers as a friends server.
     public func health() async throws -> Bool {
         let reply = try await send("GET", "/", authorized: false, as: HealthReply.self)
-        return reply.service == "studynotch-friends"
+        return Self.serviceNames.contains(reply.service)
     }
 
     // MARK: Profile
