@@ -283,3 +283,96 @@ final class KitLibraryTests: XCTestCase {
         XCTAssertThrowsError(try KitLibrary.load(from: url.appendingPathExtension("missing")))
     }
 }
+
+final class KitSafetyTests: XCTestCase {
+    private func decode(_ json: String) throws -> KitManifest {
+        try KitManifest.decode(from: Data(json.utf8))
+    }
+
+    private func kit(_ fields: String = "") -> String {
+        #"{"formatVersion": 1, "id": "k", "name": "K", "modules": ["planner"]\#(fields)}"#
+    }
+
+    private func assertRefused(_ json: String, _ expected: KitError, line: UInt = #line) {
+        XCTAssertThrowsError(try decode(json), line: line) { XCTAssertEqual($0 as? KitError, expected, line: line) }
+    }
+
+    func testRefusesFormatVersionsBelowOne() {
+        assertRefused(#"{"formatVersion": 0, "id": "k", "name": "K", "modules": ["planner"]}"#, .invalidFormatVersion(0))
+        assertRefused(#"{"formatVersion": -3, "id": "k", "name": "K", "modules": ["planner"]}"#, .invalidFormatVersion(-3))
+    }
+
+    func testRefusesFilesOverTheSizeLimit() {
+        let padding = String(repeating: " ", count: KitLimits.maxFileBytes)
+        assertRefused(kit() + padding, .tooLarge)
+    }
+
+    func testRefusesKitsPastTheCaps() {
+        let modules = (0...KitLimits.maxModules).map { #""m\#($0)""# }.joined(separator: ",")
+        assertRefused(#"{"formatVersion": 1, "id": "k", "name": "K", "modules": [\#(modules)]}"#,
+                      .exceedsLimit("more than 16 modules"))
+        let tasks = (0...KitLimits.maxTasks).map { #""Task \#($0)""# }.joined(separator: ",")
+        assertRefused(kit(#", "starterTasks": [\#(tasks)]"#), .exceedsLimit("more than 20 starter tasks"))
+        let longName = String(repeating: "x", count: KitLimits.maxNameLength + 1)
+        assertRefused(#"{"formatVersion": 1, "id": "k", "name": "\#(longName)", "modules": ["planner"]}"#,
+                      .exceedsLimit("a name longer than 80 characters"))
+        let longTask = String(repeating: "x", count: KitLimits.maxTaskLength + 1)
+        assertRefused(kit(#", "onboarding": [{"id": "q", "prompt": "?", "options": [{"id": "a", "label": "A", "tasks": ["\#(longTask)"]}]}]"#),
+                      .exceedsLimit("a task title longer than 120 characters"))
+        let options = (0...KitLimits.maxOptions).map { #"{"id": "a\#($0)", "label": "A"}"# }.joined(separator: ",")
+        assertRefused(kit(#", "onboarding": [{"id": "q", "prompt": "?", "options": [\#(options)]}]"#),
+                      .exceedsLimit(#"more than 8 answers in question "q""#))
+        let longID = String(repeating: "a", count: KitLimits.maxIDLength + 1)
+        assertRefused(#"{"formatVersion": 1, "id": "\#(longID)", "name": "K", "modules": ["planner"]}"#, .invalidID(longID))
+    }
+
+    func testBundledKitsStayWithinTheCaps() throws {
+        for id in KitLibrary.bundledIDs {
+            XCTAssertNil(KitLimits.firstExceeded(by: try KitLibrary.loadBundled(id)), id)
+        }
+    }
+
+    func testRefusesQuestionsWithoutAnswers() {
+        assertRefused(kit(#", "onboarding": [{"id": "q", "prompt": "?", "options": []}]"#), .questionWithoutOptions("q"))
+    }
+
+    func testWarnsAboutDuplicateAnswersAndOutOfRangeLevels() throws {
+        let kit = try decode(kit(#"""
+        , "defaults": {"focusSounds": [{"sound": "rain", "level": 1.5}, {"sound": "brown", "level": 0.5}]},
+        "onboarding": [{"id": "q", "prompt": "?", "options": [{"id": "a", "label": "A"}, {"id": "a", "label": "B"}]}]
+        """#))
+        XCTAssertEqual(kit.issues(), [.focusLevelOutOfRange(sound: "rain", level: 1.5),
+                                      .duplicateAnswer(question: "q", answer: "a")])
+    }
+
+    func testWarnsAboutFieldsTheFormatDoesNotRead() throws {
+        let kit = try decode(#"""
+        {"formatVersion": 1, "id": "k", "name": "K", "modules": ["planner", {"id": "system", "on": false}],
+         "colour": "red",
+         "defaults": {"tickers": ["focus"], "pet": {"breed": "corgi", "nmae": "Biscuit"},
+                      "focusSounds": [{"sound": "rain", "volume": 0.5}],
+                      "moduleSettings": {"anything": {"goes": true}}},
+         "onboarding": [{"id": "q", "prompt": "?", "options": [{"id": "a", "label": "A", "lable": "B"}]}],
+         "requires": {"modules": ["planner"], "app": "2.0"}}
+        """#)
+        XCTAssertEqual(kit.unknownFields, ["colour", "defaults.focusSounds[0].volume", "defaults.pet.nmae",
+                                           "defaults.tickers", "modules[1].on", "onboarding[0].options[0].lable",
+                                           "requires.app"])
+        XCTAssertEqual(kit.issues().filter { if case .unknownField = $0 { true } else { false } }.count, 7)
+    }
+
+    func testAKitWithEveryKnownFieldHasNoIssues() throws {
+        let kit = try decode(kit(#", "version": "1.3", "requires": {"modules": ["planner"]}, "summary": "s""#))
+        XCTAssertEqual(kit.version, "1.3")
+        XCTAssertEqual(kit.requires, KitRequirements(modules: [.planner]))
+        XCTAssertEqual(kit.issues(), [])
+        XCTAssertEqual(kit.missingRequirements(catalog: .builtIn), [])
+        let roundTrip = try KitManifest.decode(from: JSONEncoder().encode(kit))
+        XCTAssertEqual(roundTrip, kit)
+    }
+
+    func testMissingRequirementsListsUnknownModulesOnce() throws {
+        let kit = try decode(kit(#", "requires": {"modules": ["leetcode", "planner", "leetcode"]}"#))
+        XCTAssertEqual(kit.missingRequirements(catalog: .builtIn), ["leetcode"])
+    }
+}

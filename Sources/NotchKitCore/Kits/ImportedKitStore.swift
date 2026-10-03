@@ -4,7 +4,7 @@ import Foundation
 /// (Application Support/<edition name>/Kits in the app).
 ///
 /// The imported file is copied byte for byte, so it stays human-editable
-/// and keeps fields a newer NotchDeck understands. Files that stop loading
+/// and keeps fields a newer Tabbi understands. Files that stop loading
 /// (say, edited by hand into invalid JSON) are skipped, never fatal.
 public struct ImportedKitStore: Sendable {
     public let directory: URL
@@ -30,9 +30,14 @@ public struct ImportedKitStore: Sendable {
 
     /// Validates the kit at `url` and copies it into the store, replacing an
     /// earlier import with the same id. Ids in `reserved` (the built-in kits)
-    /// are refused so an import can never shadow a kit that ships with the app.
+    /// are refused so an import can never shadow a kit that ships with the app,
+    /// and so is a kit that `requires` a module `catalog` doesn't have.
     @discardableResult
-    public func install(from url: URL, reserved: Set<String> = Set(KitLibrary.bundledIDs)) throws -> KitManifest {
+    public func install(
+        from url: URL,
+        catalog: ModuleCatalog,
+        reserved: Set<String> = Set(KitLibrary.bundledIDs)
+    ) throws -> KitManifest {
         let data: Data
         do {
             data = try Data(contentsOf: url)
@@ -41,6 +46,8 @@ public struct ImportedKitStore: Sendable {
         }
         let kit = try KitManifest.decode(from: data)
         guard !reserved.contains(kit.id) else { throw KitError.reservedID(kit.id) }
+        let missing = kit.missingRequirements(catalog: catalog)
+        guard missing.isEmpty else { throw KitError.missingRequiredModules(missing) }
         do {
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
             try data.write(to: fileURL(for: kit.id), options: .atomic)

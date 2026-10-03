@@ -14,6 +14,13 @@ public struct KitManifest: Codable, Equatable, Sendable, Identifiable {
     public static let currentFormatVersion = 1
 
     public var formatVersion: Int
+    /// The author's own version of the kit, such as "1.3", shown when a
+    /// re-import replaces an earlier copy. Free text; Tabbi never compares it.
+    public var version: String?
+    /// Modules the kit can't work without. Importing refuses the kit when
+    /// this build lacks one, instead of quietly skipping the tab the kit is
+    /// about. Optional modules are just listed in `modules`.
+    public var requires: KitRequirements
     /// Stable slug (`[a-z0-9-]+`), e.g. "medicine". Saved in settings, so it
     /// must never change once shipped.
     public var id: String
@@ -33,9 +40,15 @@ public struct KitManifest: Codable, Equatable, Sendable, Identifiable {
     public var onboarding: [KitQuestion]
     /// Tasks added to Today the first time the kit is applied.
     public var starterTasks: [String]
+    /// Fields of the decoded file that the kit format doesn't read (typos,
+    /// or fields from a newer format), as paths like `defaults.tickers`.
+    /// Filled by `decode(from:)` and reported by `issues(catalog:)`; never encoded.
+    public internal(set) var unknownFields: [String] = []
 
     public init(
         formatVersion: Int = currentFormatVersion,
+        version: String? = nil,
+        requires: KitRequirements = KitRequirements(),
         id: String,
         name: String,
         summary: String,
@@ -47,6 +60,8 @@ public struct KitManifest: Codable, Equatable, Sendable, Identifiable {
         starterTasks: [String] = []
     ) {
         self.formatVersion = formatVersion
+        self.version = version
+        self.requires = requires
         self.id = id
         self.name = name
         self.summary = summary
@@ -58,13 +73,17 @@ public struct KitManifest: Codable, Equatable, Sendable, Identifiable {
         self.starterTasks = starterTasks
     }
 
-    private enum CodingKeys: String, CodingKey {
-        case formatVersion, id, name, summary, symbol, accent, modules, defaults, onboarding, starterTasks
+    private enum CodingKeys: String, CodingKey, CaseIterable {
+        case formatVersion, version, requires, id, name, summary, symbol, accent, modules, defaults, onboarding
+        case starterTasks
     }
 
     public init(from decoder: Decoder) throws {
+        decoder.reportUnknownKitFields(CodingKeys.self)
         let container = try decoder.container(keyedBy: CodingKeys.self)
         formatVersion = try container.decode(Int.self, forKey: .formatVersion)
+        version = try container.decodeIfPresent(String.self, forKey: .version)
+        requires = try container.decodeIfPresent(KitRequirements.self, forKey: .requires) ?? KitRequirements()
         id = try container.decode(String.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)
         summary = try container.decodeIfPresent(String.self, forKey: .summary) ?? ""
@@ -90,6 +109,24 @@ public struct KitManifest: Codable, Equatable, Sendable, Identifiable {
     }
 }
 
+/// What a kit needs from the app it runs in.
+public struct KitRequirements: Codable, Equatable, Sendable {
+    /// Modules that must exist in this build for the kit to be imported.
+    public var modules: [ModuleID]
+
+    public init(modules: [ModuleID] = []) {
+        self.modules = modules
+    }
+
+    private enum CodingKeys: String, CodingKey, CaseIterable { case modules }
+
+    public init(from decoder: Decoder) throws {
+        decoder.reportUnknownKitFields(CodingKeys.self)
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        modules = try container.decodeIfPresent([ModuleID].self, forKey: .modules) ?? []
+    }
+}
+
 /// One tab in a kit. Written in JSON as a bare id (`"planner"`), or as an
 /// object (`{"id": "system", "enabled": false}`) to ship it switched off.
 public struct KitModuleEntry: Codable, Equatable, Sendable {
@@ -101,13 +138,14 @@ public struct KitModuleEntry: Codable, Equatable, Sendable {
         self.enabled = enabled
     }
 
-    private enum CodingKeys: String, CodingKey { case id, enabled }
+    private enum CodingKeys: String, CodingKey, CaseIterable { case id, enabled }
 
     public init(from decoder: Decoder) throws {
         if let id = try? decoder.singleValueContainer().decode(ModuleID.self) {
             self.init(id)
             return
         }
+        decoder.reportUnknownKitFields(CodingKeys.self)
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.init(try container.decode(ModuleID.self, forKey: .id),
                   enabled: try container.decodeIfPresent(Bool.self, forKey: .enabled) ?? true)
@@ -163,11 +201,12 @@ public struct KitDefaults: Codable, Equatable, Sendable {
         self.moduleSettings = moduleSettings
     }
 
-    private enum CodingKeys: String, CodingKey {
+    private enum CodingKeys: String, CodingKey, CaseIterable {
         case studyMethods, studyMethod, focusSounds, ticker, pet, theme, moduleSettings
     }
 
     public init(from decoder: Decoder) throws {
+        decoder.reportUnknownKitFields(CodingKeys.self)
         let container = try decoder.container(keyedBy: CodingKeys.self)
         studyMethods = try container.decodeIfPresent([String].self, forKey: .studyMethods)
         studyMethod = try container.decodeIfPresent(String.self, forKey: .studyMethod)
@@ -221,9 +260,10 @@ public struct KitFocusSound: Codable, Equatable, Sendable {
         self.level = level
     }
 
-    private enum CodingKeys: String, CodingKey { case sound, level }
+    private enum CodingKeys: String, CodingKey, CaseIterable { case sound, level }
 
     public init(from decoder: Decoder) throws {
+        decoder.reportUnknownKitFields(CodingKeys.self)
         let container = try decoder.container(keyedBy: CodingKeys.self)
         sound = try container.decode(String.self, forKey: .sound)
         level = try container.decodeIfPresent(Double.self, forKey: .level) ?? 1
@@ -238,6 +278,15 @@ public struct KitPetDefaults: Codable, Equatable, Sendable {
     public init(breed: String? = nil, name: String? = nil) {
         self.breed = breed
         self.name = name
+    }
+
+    private enum CodingKeys: String, CodingKey, CaseIterable { case breed, name }
+
+    public init(from decoder: Decoder) throws {
+        decoder.reportUnknownKitFields(CodingKeys.self)
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        breed = try container.decodeIfPresent(String.self, forKey: .breed)
+        name = try container.decodeIfPresent(String.self, forKey: .name)
     }
 
     public var resolvedBreed: PetBreed? { breed.flatMap(PetBreed.init(rawValue:)) }
@@ -260,9 +309,10 @@ public struct KitQuestion: Codable, Equatable, Sendable, Identifiable {
         self.options = options
     }
 
-    private enum CodingKeys: String, CodingKey { case id, prompt, allowsMultiple, options }
+    private enum CodingKeys: String, CodingKey, CaseIterable { case id, prompt, allowsMultiple, options }
 
     public init(from decoder: Decoder) throws {
+        decoder.reportUnknownKitFields(CodingKeys.self)
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(String.self, forKey: .id)
         prompt = try container.decode(String.self, forKey: .prompt)
@@ -296,9 +346,10 @@ public struct KitAnswer: Codable, Equatable, Sendable, Identifiable {
         self.tasks = tasks
     }
 
-    private enum CodingKeys: String, CodingKey { case id, label, symbol, enables, disables, tasks }
+    private enum CodingKeys: String, CodingKey, CaseIterable { case id, label, symbol, enables, disables, tasks }
 
     public init(from decoder: Decoder) throws {
+        decoder.reportUnknownKitFields(CodingKeys.self)
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(String.self, forKey: .id)
         label = try container.decode(String.self, forKey: .label)

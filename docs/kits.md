@@ -57,6 +57,8 @@ A kit file is a JSON object with these fields.
 | Field | Required | Type | Meaning |
 | --- | --- | --- | --- |
 | `formatVersion` | yes | number | Kit format version. Use `1`. |
+| `version` | no | string | Your own version of the kit, such as `1.3`, up to 32 characters. Tabbi shows it but never compares it. |
+| `requires` | no | object | What the kit can't work without. See [Versioning](#versioning). |
 | `id` | yes | string | Stable id: lowercase letters, digits and dashes, such as `law-school`. It is saved in settings, so never change it after sharing the kit. It can't be the id of a bundled kit. |
 | `name` | yes | string | Name shown in the kit picker. |
 | `summary` | no | string | One line shown under the name. |
@@ -67,7 +69,7 @@ A kit file is a JSON object with these fields.
 | `onboarding` | no | array | Questions first-run setup and Settings ask to tailor the kit. See [Onboarding](#onboarding). |
 | `starterTasks` | no | array of strings | Tasks added to Today when the user picks or switches to the kit. Titles already on the list are skipped. |
 
-Unknown top-level fields are ignored, so a kit written for a newer version still loads.
+Fields the format doesn't know are ignored with a warning, so a kit written for a newer version still loads and a typo such as `tickers` is easy to spot.
 
 ### Modules
 
@@ -204,27 +206,53 @@ Duplicate and blank starter tasks are dropped.
 
 ## Errors and warnings
 
-NotchDeck refuses a kit file only when it can't be used at all:
+Tabbi refuses a kit file only when it can't be used at all:
 
 - it isn't valid JSON, or a required field is missing or has the wrong type;
-- `formatVersion` is newer than this version of NotchDeck reads;
-- `id` has characters other than lowercase letters, digits and dashes, or is a bundled kit's id;
-- `name` is empty, or `modules` is empty.
+- `formatVersion` is below 1, or newer than this version of Tabbi reads;
+- `id` has characters other than lowercase letters, digits and dashes, is longer than 64 characters, or is a bundled kit's id;
+- `name` is empty, or `modules` is empty;
+- an onboarding question has no answers;
+- `requires.modules` names a module this version of Tabbi doesn't have;
+- it goes past one of the limits below.
 
-Everything else is a warning shown after importing, and the value is skipped: an unknown module, study method, focus sound, ticker preview or pet breed, a module listed twice, or a question id used twice.
+| Limit | Maximum |
+| --- | --- |
+| File size | 64 KB |
+| `modules` entries | 16 |
+| Onboarding questions | 10 |
+| Answers per question | 8 |
+| `starterTasks`, and `tasks` per answer | 20 each |
+| `name` and answer labels | 80 characters |
+| `summary` and question prompts | 160 characters |
+| `version` | 32 characters |
+| Task titles | 120 characters |
+
+Everything else is a warning shown after importing, and the value is skipped: an unknown module, study method, focus sound, ticker preview or pet breed, a module listed twice, a question id used twice, an answer id used twice in one question, a focus sound `level` outside 0 to 1 (it is clamped), or a field the format doesn't know (such as `defaults.tickers`).
+The contents of `moduleSettings` are up to each module and aren't checked for unknown fields.
 This keeps kits written for newer versions working on older ones.
 
 ## Versioning
 
 `formatVersion` changes only for changes older versions would misread.
-New optional fields are added without a version bump, and older versions ignore them.
+New optional fields are added without a version bump, and older versions ignore them with a warning.
+
+`formatVersion` says how to read the file, not what the app must offer.
+A kit whose whole point is a module from a newer release lists it in `requires`, so older versions refuse it with a clear message instead of quietly skipping that tab:
+
+```json
+"requires": { "modules": ["anki"] }
+```
+
+Modules listed only in `modules` stay optional: an older version skips them with a warning.
 
 ## For developers
 
 The format is defined by `KitManifest` in [`Sources/NotchKitCore/Kits`](../Sources/NotchKitCore/Kits):
 
-- `KitManifest.decode(from:)` parses and validates a file and throws a `KitError`.
-- `issues(catalog:)` lists the non-fatal `KitIssue` warnings.
+- `KitManifest.decode(from:)` parses and validates a file, including the `KitLimits` caps, and throws a `KitError`.
+- `issues(catalog:)` lists the non-fatal `KitIssue` warnings, including fields the format doesn't read (`unknownFields`).
+- `missingRequirements(catalog:)` lists `requires.modules` the catalog lacks; `ImportedKitStore.install(from:catalog:)` refuses such a kit.
 - `layout(catalog:answers:)` turns a kit and onboarding answers into a `ModuleLayout`, and `starterTasks(answers:)` collects starter tasks.
 - `KitLibrary` holds the bundled kits in picker order plus imported kits, and `ImportedKitStore` keeps imported files on disk.
 

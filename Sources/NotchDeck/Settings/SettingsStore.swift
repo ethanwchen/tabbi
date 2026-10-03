@@ -138,7 +138,7 @@ final class SettingsStore: ObservableObject {
     /// the user can be told.
     func importKit(from url: URL) throws -> (kit: KitManifest, issues: [KitIssue]) {
         guard let kitStore else { throw KitError.malformed("importing is off in this mode") }
-        let kit = try kitStore.install(from: url)
+        let kit = try kitStore.install(from: url, catalog: catalog)
         kits = KitLibrary.installed(imported: kitStore.load())
         return (kit, kit.issues(catalog: catalog))
     }

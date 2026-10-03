@@ -31,45 +31,55 @@ final class ImportedKitStoreTests: XCTestCase {
 
     func testInstalledKitsLoadBackSortedByName() throws {
         // File and id order differ from name order on purpose.
-        try store.install(from: file("a.json", kitJSON(id: "tech", name: "LeetCode grind")))
-        try store.install(from: file("b.json", kitJSON(id: "z-law", name: "Law school")))
+        try store.install(from: file("a.json", kitJSON(id: "tech", name: "LeetCode grind")), catalog: .builtIn)
+        try store.install(from: file("b.json", kitJSON(id: "z-law", name: "Law school")), catalog: .builtIn)
         XCTAssertEqual(store.load().map(\.name), ["Law school", "LeetCode grind"])
     }
 
     func testInstallKeepsTheFileAsWritten() throws {
         let json = kitJSON(id: "tech", name: "Tech", extra: #", "futureField": {"x": 1}"#)
-        try store.install(from: file("tech.json", json))
+        try store.install(from: file("tech.json", json), catalog: .builtIn)
         let saved = try String(contentsOf: store.directory.appendingPathComponent("tech.json"), encoding: .utf8)
         XCTAssertEqual(saved, json)
     }
 
     func testReimportingAnIdReplacesTheEarlierKit() throws {
-        try store.install(from: file("one.json", kitJSON(id: "tech", name: "Tech")))
-        try store.install(from: file("two.json", kitJSON(id: "tech", name: "Tech v2")))
+        try store.install(from: file("one.json", kitJSON(id: "tech", name: "Tech")), catalog: .builtIn)
+        try store.install(from: file("two.json", kitJSON(id: "tech", name: "Tech v2")), catalog: .builtIn)
         XCTAssertEqual(store.load().map(\.name), ["Tech v2"])
     }
 
     func testRefusesInvalidKitsAndBuiltInIds() throws {
-        XCTAssertThrowsError(try store.install(from: file("bad.json", "{"))) { error in
+        XCTAssertThrowsError(try store.install(from: file("bad.json", "{"), catalog: .builtIn)) { error in
             guard case KitError.malformed = error else { return XCTFail("\(error)") }
         }
-        XCTAssertThrowsError(try store.install(from: file("med.json", kitJSON(id: "medicine", name: "Mine")))) { error in
+        XCTAssertThrowsError(try store.install(from: file("med.json", kitJSON(id: "medicine", name: "Mine")), catalog: .builtIn)) { error in
             XCTAssertEqual(error as? KitError, .reservedID("medicine"))
         }
-        XCTAssertThrowsError(try store.install(from: root.appendingPathComponent("missing.json")))
+        XCTAssertThrowsError(try store.install(from: root.appendingPathComponent("missing.json"), catalog: .builtIn))
         XCTAssertEqual(store.load(), [])
     }
 
+    func testRefusesAKitThatRequiresAModuleThisBuildLacks() throws {
+        let json = kitJSON(id: "grind", name: "Grind", extra: #", "requires": {"modules": ["leetcode", "planner"]}"#)
+        XCTAssertThrowsError(try store.install(from: file("grind.json", json), catalog: .builtIn)) { error in
+            XCTAssertEqual(error as? KitError, .missingRequiredModules(["leetcode"]))
+        }
+        XCTAssertEqual(store.load(), [])
+        let plain = kitJSON(id: "plain", name: "Plain", extra: #", "requires": {"modules": ["planner"]}"#)
+        XCTAssertEqual(try store.install(from: file("plain.json", plain), catalog: .builtIn).requires.modules, [.planner])
+    }
+
     func testFilesBrokenAfterImportAreSkipped() throws {
-        try store.install(from: file("tech.json", kitJSON(id: "tech", name: "Tech")))
+        try store.install(from: file("tech.json", kitJSON(id: "tech", name: "Tech")), catalog: .builtIn)
         try Data("not json".utf8).write(to: store.directory.appendingPathComponent("broken.json"))
         try Data("notes".utf8).write(to: store.directory.appendingPathComponent("README.txt"))
         XCTAssertEqual(store.load().map(\.id), ["tech"])
     }
 
     func testRemoveDeletesOnlyThatKit() throws {
-        try store.install(from: file("a.json", kitJSON(id: "tech", name: "Tech")))
-        try store.install(from: file("b.json", kitJSON(id: "law", name: "Law")))
+        try store.install(from: file("a.json", kitJSON(id: "tech", name: "Tech")), catalog: .builtIn)
+        try store.install(from: file("b.json", kitJSON(id: "law", name: "Law")), catalog: .builtIn)
         try store.remove(id: "tech")
         try store.remove(id: "tech")
         XCTAssertEqual(store.load().map(\.id), ["law"])
