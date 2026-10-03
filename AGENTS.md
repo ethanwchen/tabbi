@@ -141,6 +141,7 @@ data folder and preselected kit) are JSON files in
 `Sources/TabbiKitCore/Editions/BundledEditions` that the app and
 `scripts/assemble.sh` both read (see `Edition.swift`); a new edition is a file.
 Tabbi ships one edition, `tabbi`; audiences are served by kits.
+On its first live launch, `LegacyDataMigration` moves what the app saved as NotchDeck (or the retired StudyNotch edition) into Tabbi's Application Support folder and preferences, once and without overwriting.
 Direction and planned work: `docs/ROADMAP.md`.
 
 Module ownership: when working on one module, keep changes inside its

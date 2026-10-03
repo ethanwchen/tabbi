@@ -10,6 +10,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         let edition = Edition.current
+        if edition == .tabbi, RunMode.current == .live {
+            // Before any store opens a file: adopts NotchDeck's data once.
+            LegacyDataMigration.tabbi(storage: EditionStorage(edition: edition)).runIfNeeded()
+        }
         let settings = SettingsStore(catalog: ModuleList.catalog, defaultKitID: edition.defaultKitID, kitStore: .standard(for: edition))
         let services = AppServices(settings: settings)
         self.services = services
