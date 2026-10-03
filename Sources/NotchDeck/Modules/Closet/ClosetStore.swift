@@ -35,9 +35,9 @@ final class ClosetStore: ObservableObject {
     /// a fresh pet but never overwrites the file, so nothing is lost.
     private let saveIsUnreadable: Bool
 
-    init(edition: Edition = .current) {
+    init(storage: EditionStorage) {
         let isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
-        let url = isDemo ? nil : ClosetStore.saveURL(for: edition)
+        let url = isDemo ? nil : ClosetStore.saveURL(in: storage)
         var unreadable = false
         var closet = PetCloset.demo
         if !isDemo {
@@ -81,9 +81,8 @@ final class ClosetStore: ObservableObject {
     }
 
     /// `~/Library/Application Support/<edition>/Pet/pet.json`.
-    static func saveURL(for edition: Edition) -> URL? {
-        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
-            .appendingPathComponent("\(edition.name)/Pet/pet.json")
+    static func saveURL(in storage: EditionStorage) -> URL {
+        storage.file("pet.json", in: "Pet")
     }
 
     var profile: PetProfile { closet.profile }

@@ -31,10 +31,10 @@ final class DayReviewStore: ObservableObject {
     /// `studyPreview` makes the demo previews a study day's wrap-up, with
     /// the demo Anki reviews and a sample study tally; `sampleDay` picks
     /// the demo day reviewed.
-    init(studyPreview: Bool = false, sampleDay: PlannerSampleDay = .work) {
+    init(storage: EditionStorage, studyPreview: Bool = false, sampleDay: PlannerSampleDay = .work) {
         let environment = ProcessInfo.processInfo.environment
         isDemo = environment["NOTCHDECK_DEMO"] == "1"
-        repository = isDemo ? nil : DayReviewRepository()
+        repository = isDemo ? nil : DayReviewRepository(storage: storage)
         // Lets demo snapshots render each state: `NOTCHDECK_PLANNER_PREVIEW=review`.
         guard isDemo else { return }
         let today = PlannerDayKey(date: Date())

@@ -65,7 +65,7 @@ final class StudyStore: ObservableObject {
     /// Set when the log on disk could not be read: new stretches are still
     /// logged in memory, but the file is never overwritten, so nothing is lost.
     private let logIsUnreadable: Bool
-    private let edition: Edition
+    private let storage: EditionStorage
     /// A block finished while the panel was hidden; the pet celebrates it
     /// the next time the panel shows, so the hop is never played unseen.
     private var celebrationPending = false
@@ -78,9 +78,9 @@ final class StudyStore: ObservableObject {
     ///   - menu: the active kit's methods; a saved session on a method the
     ///     kit no longer offers moves to its starting method.
     ///   - goal: the active kit's daily study goal.
-    init(menu: StudyMethodMenu = .all, goal: StudyDailyGoal = .standard, edition: Edition = .current) {
+    init(menu: StudyMethodMenu = .all, goal: StudyDailyGoal = .standard, storage: EditionStorage) {
         isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
-        self.edition = edition
+        self.storage = storage
         self.menu = menu
         self.goal = goal
         if isDemo {
@@ -110,9 +110,9 @@ final class StudyStore: ObservableObject {
         // A snapshot of one method shows it fresh, as a new user would see it.
         if let kind = StudySnapshotState.current?.demoMethod { saved = StudySession(method: .preset(kind, custom: custom)) }
         session = saved
-        pet = PetPlayer(profile: Self.petProfile(for: edition), asleep: StudyPetCue.isDozing(saved))
+        pet = PetPlayer(profile: Self.petProfile(in: storage), asleep: StudyPetCue.isDozing(saved))
         deepFocus = defaults.bool(forKey: Self.deepFocusKey)
-        logURL = Self.logURL(for: edition)
+        logURL = Self.logURL(in: storage)
         do {
             log = try logURL.flatMap { try StudyLog.load(from: $0) } ?? StudyLog()
             logIsUnreadable = false
@@ -132,19 +132,16 @@ final class StudyStore: ObservableObject {
     }
 
     /// `~/Library/Application Support/<edition>/Study/log.json`.
-    static func logURL(for edition: Edition) -> URL? {
-        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
-            .appendingPathComponent("\(edition.name)/Study/log.json")
+    static func logURL(in storage: EditionStorage) -> URL? {
+        storage.file("log.json", in: "Study")
     }
 
     /// The pet's look from the Closet's save
     /// (`~/Library/Application Support/<edition>/Pet/pet.json`), read only:
     /// the Closet owns that file. A missing or unreadable save shows the
     /// starter cat.
-    static func petProfile(for edition: Edition) -> PetProfile {
-        let url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
-            .appendingPathComponent("\(edition.name)/Pet/pet.json")
-        let save = try? url.flatMap { try PetSave.load(from: $0) }
+    static func petProfile(in storage: EditionStorage) -> PetProfile {
+        let save = try? PetSave.load(from: storage.file("pet.json", in: "Pet"))
         return save?.profile ?? .starter(.cat)
     }
 
@@ -165,7 +162,7 @@ final class StudyStore: ObservableObject {
         updateTicker()
         guard visible else { return }
         // Pick up a new outfit or breed chosen in the Closet since last time.
-        if !isDemo { pet.update(profile: Self.petProfile(for: edition)) }
+        if !isDemo { pet.update(profile: Self.petProfile(in: storage)) }
         if celebrationPending {
             celebrationPending = false
             pet.send(.celebrate)

@@ -58,18 +58,19 @@ final class PlannerStore: ObservableObject {
     private let repository: PlannerRepository?
     private var cancellables: Set<AnyCancellable> = []
 
-    init(focus: FocusStore, planSettings: TodayPlanSettings = TodayPlanSettings()) {
+    init(focus: FocusStore, storage: EditionStorage, planSettings: TodayPlanSettings = TodayPlanSettings()) {
         self.focus = focus
         self.planSettings = planSettings
         upNext = UpNextStore(sampleDay: planSettings.sampleDay)
-        review = DayReviewStore(studyPreview: planSettings.planMode == .study, sampleDay: planSettings.sampleDay)
+        review = DayReviewStore(storage: storage, studyPreview: planSettings.planMode == .study,
+                                sampleDay: planSettings.sampleDay)
         let today = PlannerDayKey(date: Date())
         if ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1" {
             repository = nil
             day = .sample(on: today, kind: planSettings.sampleDay)
             return
         }
-        repository = PlannerRepository()
+        repository = PlannerRepository(storage: storage)
         day = PlannerDay(date: today)
         load(today)
 

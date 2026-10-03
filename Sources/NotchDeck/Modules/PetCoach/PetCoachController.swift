@@ -50,7 +50,7 @@ final class PetCoachController: ObservableObject {
     private var overlayCloser: Timer?
 
     init(
-        edition: Edition = .current,
+        storage: EditionStorage,
         profile: @escaping () -> PetProfile,
         lines: @escaping () -> [PetCoachMessage] = { PetCoachMessages.standard },
         screen: @escaping () -> NSScreen?,
@@ -63,7 +63,7 @@ final class PetCoachController: ObservableObject {
         self.pauseTimer = pauseTimer
         self.resumeTimer = resumeTimer
         isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
-        saveURL = isDemo ? nil : Self.saveURL(for: edition)
+        saveURL = isDemo ? nil : Self.saveURL(in: storage)
         var unreadable = false
         var save = PetCoachSave()
         if isDemo {
@@ -88,9 +88,8 @@ final class PetCoachController: ObservableObject {
     var lines: [PetCoachMessage] { kitLines() }
 
     /// `~/Library/Application Support/<edition>/Pet/coach.json`.
-    static func saveURL(for edition: Edition) -> URL? {
-        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
-            .appendingPathComponent("\(edition.name)/Pet/coach.json")
+    static func saveURL(in storage: EditionStorage) -> URL {
+        storage.file("coach.json", in: "Pet")
     }
 
     /// Follows the shared focus timer (`ProviderSnapshot.focus`).

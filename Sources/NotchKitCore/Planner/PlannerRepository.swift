@@ -9,16 +9,17 @@ public final class PlannerRepository {
     public let directory: URL
     private let fileManager: FileManager
 
-    /// `~/Library/Application Support/NotchDeck/Planner`.
-    public static var defaultDirectory: URL {
-        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("NotchDeck", isDirectory: true)
-            .appendingPathComponent("Planner", isDirectory: true)
-    }
+    /// The folder in an edition's storage, `Application Support/<edition>/Planner`.
+    public static let folderName = "Planner"
 
-    public init(directory: URL = PlannerRepository.defaultDirectory, fileManager: FileManager = .default) {
+    public init(directory: URL, fileManager: FileManager = .default) {
         self.directory = directory
         self.fileManager = fileManager
+    }
+
+    /// The edition's checklist folder.
+    public convenience init(storage: EditionStorage) {
+        self.init(directory: storage.folder(Self.folderName))
     }
 
     public func fileURL(for date: PlannerDayKey) -> URL {

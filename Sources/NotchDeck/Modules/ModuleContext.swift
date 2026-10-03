@@ -44,6 +44,11 @@ struct ModuleContext {
         logger = Logger(subsystem: "Tabbi", category: id.rawValue)
     }
 
+    /// Where this edition keeps its files. Put a module's files in a folder
+    /// of it (`storage.folder("Planner")`), never in a hardcoded app folder,
+    /// so each edition keeps its own data.
+    var storage: EditionStorage { EditionStorage(edition: edition) }
+
     /// The kit the user has active now.
     var activeKit: KitManifest? { settings.activeKit }
 

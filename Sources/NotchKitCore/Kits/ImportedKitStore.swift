@@ -16,9 +16,7 @@ public struct ImportedKitStore: Sendable {
     /// The edition's store in the user's Application Support folder. Each
     /// edition is its own app, so StudyNotch and NotchDeck keep separate kits.
     public static func standard(for edition: Edition = .notchDeck) -> ImportedKitStore? {
-        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first.map {
-            ImportedKitStore(directory: $0.appendingPathComponent("\(edition.name)/Kits", isDirectory: true))
-        }
+        ImportedKitStore(directory: EditionStorage(edition: edition).folder("Kits"))
     }
 
     /// Every imported kit that still loads, by name.

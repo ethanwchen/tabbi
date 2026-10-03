@@ -9,10 +9,11 @@ final class ClaudeUsageModule: NotchModule {
         id: .claudeUsage, title: "Claude Usage", symbol: "gauge.with.dots.needle.67percent", category: .ai,
         accent: .claude, permissions: [.claudeCLI], highlightTitle: "Claude usage above 80%"
     )
-    private let store = ClaudeUsageStore()
+    private let store: ClaudeUsageStore
     private var cancellables: Set<AnyCancellable> = []
 
     init(context: ModuleContext) {
+        store = ClaudeUsageStore(storage: context.storage)
         // A new `claude` path in Settings must take effect live, not on the
         // next launch.
         context.settings.$appliedClaudePathOverride

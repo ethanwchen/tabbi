@@ -315,16 +315,17 @@ public final class DayReviewRepository {
     public let directory: URL
     private let fileManager: FileManager
 
-    /// `~/Library/Application Support/NotchDeck/Reviews`.
-    public static var defaultDirectory: URL {
-        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("NotchDeck", isDirectory: true)
-            .appendingPathComponent("Reviews", isDirectory: true)
-    }
+    /// The folder in an edition's storage, `Application Support/<edition>/Reviews`.
+    public static let folderName = "Reviews"
 
-    public init(directory: URL = DayReviewRepository.defaultDirectory, fileManager: FileManager = .default) {
+    public init(directory: URL, fileManager: FileManager = .default) {
         self.directory = directory
         self.fileManager = fileManager
+    }
+
+    /// The edition's review folder.
+    public convenience init(storage: EditionStorage) {
+        self.init(directory: storage.folder(Self.folderName))
     }
 
     public func fileURL(for date: PlannerDayKey) -> URL {

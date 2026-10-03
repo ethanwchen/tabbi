@@ -58,8 +58,10 @@ Judge them against the design rules below before you call the work done.
 - `Sources/NotchDeck/Modules/ModuleContext.swift` - what every module gets
   in `init(context:)`: its id, the edition, read access to settings and the
   active kit (`kitApplied` fires when the user applies a kit), the
-  `ProviderHub`, a logger, the demo and snapshot flags, and
-  `SharedServices`. A module builds and owns its store there and follows
+  `ProviderHub`, a logger, the demo and snapshot flags, the edition's
+  `storage` (`EditionStorage`: put files in `storage.folder("<Name>")`,
+  never in a hardcoded Application Support path, so each edition keeps
+  its own data), and `SharedServices`. A module builds and owns its store there and follows
   kit changes itself. A service several modules use is declared as a
   `ModuleContext` extension in its owner's folder and resolved through
   `shared`, so all of them get one instance: `context.focusTimer` (the

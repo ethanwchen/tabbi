@@ -16,7 +16,7 @@ final class StudyModule: NotchModule {
 
     init(context: ModuleContext) {
         let kit = context.activeKit?.defaults
-        store = StudyStore(menu: StudyMethodMenu(kit: kit), goal: StudyDailyGoal(kit: kit), edition: context.edition)
+        store = StudyStore(menu: StudyMethodMenu(kit: kit), goal: StudyDailyGoal(kit: kit), storage: context.storage)
         store.followCards(from: context.providers.$snapshot)
         context.kitApplied
             .sink { [store] application in

@@ -33,6 +33,7 @@ If you cancel the questions, the kit stays in the list so you can pick it later.
 After switching, you can still turn tabs on and off and reorder them below the Kit section.
 
 Imported kits are stored as `<id>.json` in `~/Library/Application Support/NotchDeck/Kits` (or `.../StudyNotch/Kits` for the StudyNotch edition).
+Each edition keeps all of its files apart in its own folder: kits, Today's checklist and reviews, the study log, the pet and the Claude Usage scan index.
 Deleting a file there removes the kit the next time NotchDeck starts.
 
 ## A minimal kit
