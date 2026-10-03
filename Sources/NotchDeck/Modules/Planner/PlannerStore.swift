@@ -41,8 +41,12 @@ final class PlannerStore: ObservableObject {
     /// The Pomodoro timer, shared with the Focus tab; Today shows it as a
     /// card and links checklist items to it.
     let focus: FocusStore
+    /// An enabled module that runs its own focus clock (Study in the Med
+    /// School kit). While set, Today shows that clock instead of the
+    /// Pomodoro, so the layout has one timer.
+    @Published var focusClockOwner: ModuleID?
     /// Plan My Day; its proposal replaces the checklist while active.
-    private(set) lazy var plan = DayPlanStore(upNext: upNext, settings: planSettings)
+    private(set) lazy var plan = DayPlanStore(upNext: upNext, settings: planSettings, runMode: runMode)
     /// The End-of-Day Review; its card replaces the checklist while open.
     let review: DayReviewStore
 
@@ -56,20 +60,27 @@ final class PlannerStore: ObservableObject {
     var canEdit: Bool { !isUnreadable }
 
     private let repository: PlannerRepository?
+    private let runMode: RunMode
+    /// Where checked-off tasks are logged, as Today's.
+    private let activity: ActivityLog?
     private var cancellables: Set<AnyCancellable> = []
 
-    init(focus: FocusStore, planSettings: TodayPlanSettings = TodayPlanSettings()) {
+    init(focus: FocusStore, storage: EditionStorage, planSettings: TodayPlanSettings = TodayPlanSettings(),
+         activity: ActivityLog? = nil, runMode: RunMode) {
         self.focus = focus
+        self.activity = activity
+        self.runMode = runMode
         self.planSettings = planSettings
-        upNext = UpNextStore(sampleDay: planSettings.sampleDay)
-        review = DayReviewStore(studyPreview: planSettings.planMode == .study, sampleDay: planSettings.sampleDay)
+        upNext = UpNextStore(sampleDay: planSettings.sampleDay, runMode: runMode)
+        review = DayReviewStore(storage: storage, studyPreview: planSettings.planMode == .study,
+                                sampleDay: planSettings.sampleDay, runMode: runMode)
         let today = PlannerDayKey(date: Date())
-        if ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1" {
+        if runMode.isDemo {
             repository = nil
             day = .sample(on: today, kind: planSettings.sampleDay)
             return
         }
-        repository = PlannerRepository()
+        repository = PlannerRepository(storage: storage)
         day = PlannerDay(date: today)
         load(today)
 
@@ -130,13 +141,15 @@ final class PlannerStore: ObservableObject {
         plan.plan(tasks: items, sharedWork: sharedWork, progress: sharedProgress)
     }
 
-    /// Opens the End-of-Day Review of today's list, focus sessions, and
-    /// what other modules share (study time, points, cards reviewed).
+    /// Opens the End-of-Day Review of today's list, the focus sessions in
+    /// the activity log, and what other modules share (study time, points,
+    /// cards reviewed).
     func wrapUp() {
         plan.cancel()
         refreshDay()
-        review.wrapUp(day: day, focusLog: focus.sessionLog, study: sharedStudy, progress: sharedProgress,
-                      isStudyDay: planSettings.planMode == .study, sampleDay: planSettings.sampleDay)
+        review.wrapUp(day: day, activity: activity?.records(on: day.date) ?? [], study: sharedStudy,
+                      progress: sharedProgress, isStudyDay: planSettings.planMode == .study,
+                      sampleDay: planSettings.sampleDay)
     }
 
     // MARK: Edits
@@ -147,13 +160,29 @@ final class PlannerStore: ObservableObject {
         edit { $0.add(title) != nil }
     }
 
-    /// Adds a kit's starter tasks that aren't on today's list yet.
-    func addStarterTasks(_ titles: [String]) {
-        edit { !$0.addStarterTasks(titles).isEmpty }
+    /// Adds a kit's starter tasks that aren't on today's list yet and
+    /// returns them, so undoing the kit switch can take them back.
+    @discardableResult
+    func addStarterTasks(_ titles: [String]) -> [PlannerItem] {
+        var added: [PlannerItem] = []
+        edit { added = $0.addStarterTasks(titles); return !added.isEmpty }
+        return added
     }
 
+    /// Removes starter tasks `addStarterTasks` returned that the user hasn't
+    /// renamed or checked off since.
+    func takeBackStarterTasks(_ added: [PlannerItem]) {
+        edit { $0.removeUntouched(added) }
+    }
+
+    /// Checks an item off or back on. Checking one off logs `taskCompleted`
+    /// with the item's id as the subject.
     func toggle(_ id: PlannerItem.ID) {
-        edit { $0.toggle(id); return true }
+        guard edit({ $0.toggle(id); return true }),
+              let item = day.items.first(where: { $0.id == id }), item.isDone, let completedAt = item.completedAt
+        else { return }
+        activity?.record(ActivityRecord(source: TodayModule.descriptor.id, kind: .taskCompleted, start: completedAt,
+                                        quantity: 1, subject: id.uuidString))
     }
 
     func rename(_ id: PlannerItem.ID, to title: String) {

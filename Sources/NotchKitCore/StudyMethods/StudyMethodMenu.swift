@@ -2,7 +2,8 @@ import Foundation
 
 /// The study methods the Study timer offers and the one it starts on.
 ///
-/// A kit picks these (`KitDefaults.studyMethods` / `studyMethod`), so a
+/// A kit picks these in its Study section (`moduleSettings.study.methods`
+/// and `method`), so a
 /// medicine kit can lead with Anki sprints and question blocks while a
 /// general student kit offers only the classic timers, without the Study
 /// module hardcoding either. The menu is never empty: a kit that names no
@@ -26,8 +27,31 @@ public struct StudyMethodMenu: Equatable, Sendable {
     }
 
     /// The menu a kit sets up; every preset when the kit says nothing.
+    /// Unknown method names are skipped.
     public init(kit defaults: KitDefaults?) {
-        self.init(kinds: defaults?.resolvedStudyMethods, starting: defaults?.resolvedStudyMethod)
+        let section = defaults?.settings(for: .study)
+        self.init(kinds: Self.kitKinds(in: section), starting: Self.kitStartingKind(of: defaults))
+    }
+
+    /// The method a kit starts on: its `method` if known, otherwise the
+    /// first known one in `methods`; nil when it names neither. Today plans
+    /// study blocks on it too.
+    public static func kitStartingKind(of defaults: KitDefaults?) -> StudyMethodKind? {
+        let section = defaults?.settings(for: .study)
+        return section?["method"]?.stringValue.flatMap(StudyMethodKind.init(rawValue:)) ?? kitKinds(in: section)?.first
+    }
+
+    /// The keys the menu reads from the Study section, for its descriptor.
+    public static let kitSettingFields: [String: KitSettingType] = [
+        "methods": .list(methodChoice, maxCount: StudyMethodKind.allCases.count),
+        "method": methodChoice,
+    ]
+
+    private static let methodChoice = KitSettingType.choice(StudyMethodKind.allCases.map(\.rawValue))
+
+    /// Known methods from `methods`, or nil when the kit has no list.
+    private static func kitKinds(in section: KitValue?) -> [StudyMethodKind]? {
+        section?["methods"]?.arrayValue.map { $0.compactMap { $0.stringValue.flatMap(StudyMethodKind.init(rawValue:)) } }
     }
 
     /// Every preset, starting on Pomodoro.

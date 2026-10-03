@@ -5,12 +5,12 @@ import NotchKit
 
 /// Small building blocks shared by the Party panel's stage and friends card.
 enum PartyStyle {
-    static var accent: Color { Theme.Palette.accent(for: .party) }
+    static var accent: Color { PartyModule.descriptor.accentColor }
 
     /// `ImageRenderer` (used by `--snapshot`) draws AppKit-backed views such
     /// as `ScrollView` and a visible `TextField` blank, so snapshots get
     /// static stand-ins.
-    static let isSnapshot = CommandLine.arguments.contains("--snapshot")
+    static var isSnapshot: Bool { RunMode.current.isSnapshot }
 
     /// The dot beside a status: accent while studying, amber on a break,
     /// green when around, gray when away.

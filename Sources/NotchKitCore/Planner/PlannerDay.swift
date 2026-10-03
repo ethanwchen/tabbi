@@ -129,6 +129,18 @@ public struct PlannerDay: Hashable, Codable, Sendable {
         items.removeAll { $0.id == id }
     }
 
+    /// Removes the items in `added` that are still exactly as they were
+    /// added (not renamed or checked off), so undoing a kit switch takes
+    /// back its starter tasks but never work the user has touched since.
+    /// Returns whether anything was removed.
+    @discardableResult
+    public mutating func removeUntouched(_ added: [PlannerItem]) -> Bool {
+        let untouched = Set(added)
+        let before = items.count
+        items.removeAll { untouched.contains($0) }
+        return items.count != before
+    }
+
     /// Moves the items at `offsets` so they land before `destination`, with
     /// the same semantics as SwiftUI's `onMove` / `Array.move(fromOffsets:toOffset:)`.
     public mutating func move(fromOffsets offsets: IndexSet, toOffset destination: Int) {

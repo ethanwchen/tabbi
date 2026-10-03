@@ -1,9 +1,16 @@
 // swift-tools-version: 6.0
 import PackageDescription
 
-// Swift 5 language mode keeps AppKit/SwiftUI interop free of strict-concurrency
-// noise; the core target is still written to be Sendable-friendly.
-let swiftSettings: [SwiftSetting] = [.swiftLanguageMode(.v5)]
+// The pure core and its tests use Swift 6, so data races there are errors.
+// The AppKit/SwiftUI targets keep Swift 5 mode, whose runtime does not trap
+// when an AppKit, audio or notification callback runs a closure off the main
+// actor, but they get Swift 6's complete concurrency checking as warnings,
+// and the build stays warning-free.
+let coreSettings: [SwiftSetting] = [.swiftLanguageMode(.v6)]
+let swiftSettings: [SwiftSetting] = [
+    .swiftLanguageMode(.v5),
+    .enableUpcomingFeature("StrictConcurrency"),
+]
 
 let package = Package(
     name: "NotchDeck",
@@ -15,9 +22,10 @@ let package = Package(
         // Pure, testable logic: parsers, models, stores. No AppKit/SwiftUI.
         .target(
             name: "NotchKitCore",
-            // Kit manifests ship as human-editable JSON (see docs/kits.md).
-            resources: [.copy("Kits/Bundled")],
-            swiftSettings: swiftSettings
+            // Kit manifests and edition files ship as human-editable JSON
+            // (see docs/kits.md and Edition.swift).
+            resources: [.copy("Kits/Bundled"), .copy("Editions/BundledEditions")],
+            swiftSettings: coreSettings
         ),
         // Shared AppKit/SwiftUI: design system, notch window pieces, shared
         // components and pet views. Modules build their panels from these.
@@ -41,6 +49,13 @@ let package = Package(
         .testTarget(
             name: "NotchKitCoreTests",
             dependencies: ["NotchKitCore"],
+            swiftSettings: coreSettings
+        ),
+        // App-level wiring (registry, provider hub) tested through
+        // `@testable import NotchDeck`.
+        .testTarget(
+            name: "NotchDeckTests",
+            dependencies: ["NotchDeck", "NotchKitCore", "NotchKit"],
             swiftSettings: swiftSettings
         ),
     ]

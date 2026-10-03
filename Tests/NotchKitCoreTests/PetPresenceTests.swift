@@ -26,32 +26,32 @@ final class PetPresenceTests: XCTestCase {
         let presence = PetPresence(profile: profile, lastActive: start)
         XCTAssertEqual(presence.mood(focus: nil, at: minutes(19)), .awake)
         XCTAssertEqual(presence.mood(focus: nil, at: minutes(20)), .asleep)
-        XCTAssertEqual(presence.mood(focus: FocusTimer(), at: minutes(60)), .asleep, "an idle timer is no session")
+        XCTAssertEqual(presence.mood(focus: FocusTimer().shared, at: minutes(60)), .asleep, "an idle timer is no session")
     }
 
     func testRunningPhasesShowStudyingOrBreakWhateverTheQuietTime() {
         let presence = PetPresence(profile: profile, lastActive: start)
-        XCTAssertEqual(presence.mood(focus: focusRunning(since: minutes(59)), at: minutes(60)), .studying)
-        XCTAssertEqual(presence.mood(focus: breakRunning(since: minutes(59)), at: minutes(60)), .onBreak)
+        XCTAssertEqual(presence.mood(focus: focusRunning(since: minutes(59)).shared, at: minutes(60)), .studying)
+        XCTAssertEqual(presence.mood(focus: breakRunning(since: minutes(59)).shared, at: minutes(60)), .onBreak)
     }
 
     func testPausedSessionKeepsThePetAwake() {
         var timer = focusRunning(since: start)
         timer.pause(at: minutes(1))
         let presence = PetPresence(profile: profile, lastActive: start)
-        XCTAssertEqual(presence.mood(focus: timer, at: minutes(90)), .awake)
+        XCTAssertEqual(presence.mood(focus: timer.shared, at: minutes(90)), .awake)
     }
 
     func testEndingASessionCountsAsActivity() {
         var presence = PetPresence(profile: profile, lastActive: start)
-        presence.observe(focusRunning(since: minutes(30)), at: minutes(30))
+        presence.observe(focusRunning(since: minutes(30)).shared, at: minutes(30))
         XCTAssertEqual(presence.lastActive, minutes(30))
         // The user stops the timer 25 minutes later: the pet stays up for
         // another quiet spell from then, not from when the session began.
-        presence.observe(FocusTimer(), at: minutes(55))
+        presence.observe(FocusTimer().shared, at: minutes(55))
         XCTAssertEqual(presence.lastActive, minutes(55))
-        XCTAssertEqual(presence.mood(focus: FocusTimer(), at: minutes(74)), .awake)
-        XCTAssertEqual(presence.mood(focus: FocusTimer(), at: minutes(75)), .asleep)
+        XCTAssertEqual(presence.mood(focus: FocusTimer().shared, at: minutes(74)), .awake)
+        XCTAssertEqual(presence.mood(focus: FocusTimer().shared, at: minutes(75)), .asleep)
         // Later idle observations don't keep it awake.
         presence.observe(nil, at: minutes(80))
         XCTAssertEqual(presence.lastActive, minutes(55))
@@ -59,7 +59,7 @@ final class PetPresenceTests: XCTestCase {
 
     func testObservingNeverMovesLastActiveBack() {
         var presence = PetPresence(profile: profile, lastActive: minutes(10))
-        presence.observe(focusRunning(since: start), at: start)
+        presence.observe(focusRunning(since: start).shared, at: start)
         XCTAssertEqual(presence.lastActive, minutes(10))
     }
 
@@ -67,7 +67,7 @@ final class PetPresenceTests: XCTestCase {
         let presence = PetPresence(profile: profile, lastActive: start)
         XCTAssertEqual(presence.sleepsAt(focus: nil, after: minutes(5)), minutes(20))
         XCTAssertNil(presence.sleepsAt(focus: nil, after: minutes(20)), "already asleep")
-        XCTAssertNil(presence.sleepsAt(focus: focusRunning(since: start), after: minutes(5)))
+        XCTAssertNil(presence.sleepsAt(focus: focusRunning(since: start).shared, after: minutes(5)))
     }
 
     // MARK: Ticker

@@ -7,17 +7,45 @@ import NotchKitCore
 /// data without depending on the module that produced it.
 ///
 /// Only enabled modules contribute, in tab order; a disabled module's data
-/// disappears with its tab.
+/// disappears with its tab. Modules may publish from any thread; the hub
+/// always merges and publishes on the main actor.
+///
+/// When two modules run a focus clock at once, the hub notes when each
+/// one started or resumed running, so the snapshot shows the one the user
+/// turned to last (`ProviderSnapshot.focus`).
 @MainActor
 final class ProviderHub: ObservableObject {
     @Published private(set) var snapshot = ProviderSnapshot()
 
-    private let registry: ModuleRegistry
+    /// Set once by `attach`, after the modules (which read this hub
+    /// through their context) exist.
+    private var registry: ModuleRegistry?
     private var enabled: [ModuleID] = []
     private var latest: [ModuleID: ModuleProvision] = [:]
     private var subscriptions: [ModuleID: AnyCancellable] = [:]
+    /// Bumped per subscription, so a value that was already queued for the
+    /// main actor when its module was turned off (or off and on again) is
+    /// dropped instead of reviving stale data.
+    private var generation: [ModuleID: Int] = [:]
+    /// When each module's focus clock went from stopped to running, as seen
+    /// by the hub. A clock already running when its module connects (one
+    /// restored at launch) has no entry and yields to any started later.
+    private var focusStarts: [ModuleID: Date] = [:]
+    private let now: () -> Date
 
-    init(registry: ModuleRegistry) {
+    /// A hub with no modules yet; `attach` the registry once it exists.
+    init(now: @escaping () -> Date = Date.init) {
+        self.now = now
+    }
+
+    init(registry: ModuleRegistry, now: @escaping () -> Date = Date.init) {
+        self.registry = registry
+        self.now = now
+    }
+
+    /// Connects the modules whose provisions this hub merges.
+    func attach(_ registry: ModuleRegistry) {
+        precondition(self.registry == nil, "ProviderHub is attached once")
         self.registry = registry
     }
 
@@ -29,13 +57,20 @@ final class ProviderHub: ObservableObject {
         for id in subscriptions.keys where !seen.contains(id) {
             subscriptions[id] = nil
             latest[id] = nil
+            focusStarts[id] = nil
+            generation[id, default: 0] += 1
         }
         for id in self.enabled where subscriptions[id] == nil {
-            guard let provision = registry[id]?.provision else { continue }
+            guard let provision = registry?[id]?.provision else { continue }
             // Publishers that emit on subscribe land here synchronously, so
-            // the first snapshot already includes them.
-            subscriptions[id] = provision.sink { [weak self] value in
-                MainActor.assumeIsolated { self?.receive(value, from: id) }
+            // the first snapshot already includes them. Values a module
+            // sends from a background thread (a network callback) hop to
+            // the main actor instead of trapping.
+            generation[id, default: 0] += 1
+            let current = generation[id, default: 0]
+            subscriptions[id] = provision.sinkOnMainActor { [weak self] value in
+                guard let self, self.generation[id] == current else { return }
+                self.receive(value, from: id)
             }
         }
         merge()
@@ -43,12 +78,18 @@ final class ProviderHub: ObservableObject {
 
     private func receive(_ provision: ModuleProvision, from id: ModuleID) {
         guard latest[id] != provision else { return }
+        if provision.focus?.isRunning != true {
+            focusStarts[id] = nil
+        } else if let previous = latest[id], previous.focus?.isRunning != true {
+            focusStarts[id] = now()
+        }
         latest[id] = provision
         merge()
     }
 
     private func merge() {
-        let next = ProviderSnapshot(enabled.compactMap { id in latest[id].map { (id, $0) } })
+        let next = ProviderSnapshot(enabled.compactMap { id in latest[id].map { (id, $0) } },
+                                    focusStarts: focusStarts)
         if next != snapshot { snapshot = next }
     }
 }

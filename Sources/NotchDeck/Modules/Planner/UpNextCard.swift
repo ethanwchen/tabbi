@@ -97,7 +97,7 @@ private struct UpNextRow: View {
         .help("\(UpcomingEventFormat.title(event)), \(event.start.formatted(date: .omitted, time: .shortened))")
     }
 
-    private var accent: Color { Theme.Palette.accent(for: .planner) }
+    private var accent: Color { TodayModule.descriptor.accentColor }
 
     private var dotColor: Color {
         guard let color = event.calendarColor else { return accent }
@@ -113,7 +113,7 @@ private struct UpNextJoinButton: View {
     @State private var hovering = false
 
     var body: some View {
-        let accent = Theme.Palette.accent(for: .planner)
+        let accent = TodayModule.descriptor.accentColor
         Button(action: action) {
             Image(systemName: "video.fill")
                 .font(.system(size: 9, weight: .bold))
@@ -141,7 +141,7 @@ private struct UpNextMessage: View {
             HStack(spacing: Theme.Spacing.s) {
                 Image(systemName: state.symbol)
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Theme.Palette.accent(for: .planner))
+                    .foregroundStyle(TodayModule.descriptor.accentColor)
                     // Badged symbols run taller; a fixed box keeps every state's height alike.
                     .frame(width: 16, height: 16)
                 Text(state.title)

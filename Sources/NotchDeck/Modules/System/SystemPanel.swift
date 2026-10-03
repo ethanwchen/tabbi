@@ -81,7 +81,7 @@ private struct MetricCard<Accessory: View, Footer: View>: View {
     @ViewBuilder var accessory: Accessory
     @ViewBuilder var footer: Footer
 
-    private let accent = Theme.Palette.accent(for: .system)
+    private let accent = SystemModule.descriptor.accentColor
 
     var body: some View {
         Card {
@@ -130,7 +130,7 @@ private struct MetricCard<Accessory: View, Footer: View>: View {
 /// Empty history draws a dashed baseline instead of a blank gap.
 private struct Sparkline: View {
     let series: HistorySeries
-    private let accent = Theme.Palette.accent(for: .system)
+    private let accent = SystemModule.descriptor.accentColor
 
     var body: some View {
         if series.points.count < 2 {
@@ -187,7 +187,7 @@ private struct Line: Shape {
 /// One tiny bar per core, filled bottom-up with that core's load.
 private struct CoreStrip: View {
     let perCore: [Double]
-    private let accent = Theme.Palette.accent(for: .system)
+    private let accent = SystemModule.descriptor.accentColor
 
     var body: some View {
         if perCore.isEmpty {

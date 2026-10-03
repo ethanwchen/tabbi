@@ -13,6 +13,9 @@ public struct TickerRotation: Equatable, Sendable {
     public private(set) var currentKind: TickerKind?
     /// When `currentKind` came on screen.
     public private(set) var shownSince: Date?
+    /// The kinds of the last `update`'s items, in order, so that when the
+    /// kind on screen vanishes its successor still takes over.
+    private var order: [TickerKind] = []
 
     public init(interval: TimeInterval) {
         self.interval = max(interval, 1)
@@ -23,6 +26,8 @@ public struct TickerRotation: Equatable, Sendable {
     /// The returned item carries fresh data (e.g. a countdown) even when the
     /// kind on screen hasn't changed.
     public mutating func update(items: [TickerItem], at now: Date) -> TickerItem? {
+        let previousOrder = order
+        order = items.map(\.kind)
         guard !items.isEmpty else {
             currentKind = nil
             shownSince = nil
@@ -39,7 +44,7 @@ public struct TickerRotation: Equatable, Sendable {
            now.timeIntervalSince(shownSince) < interval {
             return current
         }
-        let next = nextItem(after: currentKind, in: items)
+        let next = nextItem(after: currentKind, in: items, previousOrder: previousOrder)
         show(next.kind, at: now)
         return next
     }
@@ -50,13 +55,17 @@ public struct TickerRotation: Equatable, Sendable {
     }
 
     /// The first item whose kind comes after `kind` in rotation order,
-    /// wrapping around. If `kind` itself vanished, its successor still takes
-    /// over, so the order the user sees stays stable.
-    private func nextItem(after kind: TickerKind?, in items: [TickerItem]) -> TickerItem {
-        guard let kind, let position = TickerKind.allCases.firstIndex(of: kind) else { return items[0] }
-        let order = TickerKind.allCases
-        for offset in 1...order.count {
-            let candidate = order[(position + offset) % order.count]
+    /// wrapping around. If `kind` itself vanished, the first kind that
+    /// followed it last time and is still there takes over, so the order the
+    /// user sees stays stable.
+    private func nextItem(after kind: TickerKind?, in items: [TickerItem],
+                          previousOrder: [TickerKind]) -> TickerItem {
+        guard let kind else { return items[0] }
+        if let position = items.firstIndex(where: { $0.kind == kind }) {
+            return items[(position + 1) % items.count]
+        }
+        guard let position = previousOrder.firstIndex(of: kind) else { return items[0] }
+        for candidate in previousOrder[(position + 1)...] {
             if let item = items.first(where: { $0.kind == candidate }) { return item }
         }
         return items[0]

@@ -1,6 +1,7 @@
 {
   "formatVersion": 1,
   "id": "productivity",
+  "pickerOrder": 1,
   "name": "Productivity",
   "summary": "Music, system stats, your day, and Claude, one glance away.",
   "symbol": "briefcase.fill",

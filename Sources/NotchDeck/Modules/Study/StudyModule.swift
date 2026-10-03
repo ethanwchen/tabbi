@@ -2,32 +2,53 @@ import Combine
 import SwiftUI
 import NotchKitCore
 
-/// Study: a study timer with research-backed methods. It runs the
-/// `StudyStore` that `AppServices` owns, so a block keeps going while the
+/// Study: a study timer with research-backed methods. The module owns its
+/// `StudyStore` for the app's lifetime, so a block keeps going while the
 /// notch is closed.
 @MainActor
 final class StudyModule: NotchModule {
-    let descriptor = ModuleCatalog.builtIn.descriptor(for: .study)
+    nonisolated static let descriptor = ModuleDescriptor(
+        id: .study, title: "Study", symbol: "timer", category: .study,
+        accent: ModuleAccent(red: 1.00, green: 0.62, blue: 0.26), ownsFocusClock: true,
+        kitSettings: KitSettingsSchema(
+            StudyMethodMenu.kitSettingFields.merging(["dailyGoalMinutes": StudyDailyGoal.kitSettingType]) { $1 }
+        )
+    )
     private let store: StudyStore
+    private let focusMode: FocusController
+    private var cancellables: Set<AnyCancellable> = []
 
-    init(store: StudyStore) {
-        self.store = store
+    init(context: ModuleContext) {
+        let kit = context.activeKit?.defaults
+        focusMode = context.focusMode
+        store = StudyStore(menu: StudyMethodMenu(kit: kit), goal: StudyDailyGoal(kit: kit), storage: context.storage,
+                           activity: context.activityLog, focusMode: focusMode,
+                           petProfile: context.studyPet.profile, runMode: context.runMode)
+        store.followCards(from: context.providers.$snapshot)
+        store.follow(pet: context.studyPet.profiles)
+        context.kitApplied
+            .sink { [store] application in
+                let kit = application.kit.defaults
+                // Undo keeps the user's method when the earlier kit offers it.
+                store.use(StudyMethodMenu(kit: kit), goal: StudyDailyGoal(kit: kit), kitApplied: application.kind != .undo)
+            }
+            .store(in: &cancellables)
     }
 
     func makePanel() -> AnyView {
-        AnyView(StudyPanel(store: store))
+        AnyView(StudyPanel(store: store, focusMode: focusMode))
     }
 
     /// Today's study minutes against the kit's daily goal, so Today lists
     /// study time and Plan my day can schedule what is left, and the block
-    /// under way as the shared focus timer, so the closed notch counts it
-    /// down and a click there opens Study. The deep focus switch rides
-    /// along, so the pet coach can nudge only during deep focus blocks.
+    /// under way as the shared focus clock, so the closed notch counts it
+    /// and a click there opens Study. The deep focus switch rides along, so
+    /// the pet coach holds its idle nudges longer in deep focus blocks.
     /// Today's tally (minutes, stretches, points) feeds Wrap Up.
     var provision: AnyPublisher<ModuleProvision, Never>? {
         store.goalProgress
-            .combineLatest(store.sharedFocus, store.$deepFocus.removeDuplicates(), store.dayTally)
-            .map { ModuleProvision(progress: [$0], focus: $1, focusIsDeep: $2, study: $3) }
+            .combineLatest(store.sharedFocus(by: descriptor.id), store.dayTally)
+            .map { ModuleProvision(progress: [$0], focus: $1, study: $2) }
             .eraseToAnyPublisher()
     }
 

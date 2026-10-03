@@ -40,7 +40,7 @@ public final class NotchViewModel: ObservableObject {
 
     private static let selectedKey = "selectedModule"
 
-    public init(geometry: NotchGeometry, layout: ModuleLayout = .default) {
+    public init(geometry: NotchGeometry, layout: ModuleLayout) {
         self.geometry = geometry
         self.layout = layout
         let saved = UserDefaults.standard.string(forKey: Self.selectedKey).flatMap(ModuleID.init(rawValue:))

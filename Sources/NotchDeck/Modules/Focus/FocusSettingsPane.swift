@@ -6,8 +6,9 @@ import NotchKit
 extension SettingsPane {
     /// Settings › Focus. Today and the Focus tab both offer it, since either
     /// can run the timer; the Settings window shows it once.
-    @MainActor static var focus: SettingsPane {
-        SettingsPane(id: "focus", title: "Focus", symbol: "moon", view: AnyView(FocusSettingsPane()))
+    @MainActor static func focus(_ controller: FocusController) -> SettingsPane {
+        SettingsPane(id: "focus", title: "Focus", symbol: "moon",
+                     view: AnyView(FocusSettingsPane(controller: controller)))
     }
 }
 
@@ -15,7 +16,7 @@ extension SettingsPane {
 /// the focus timer (in Today or the Focus tab) runs. Edits go straight to
 /// `FocusController`, which saves them and applies sound changes live.
 struct FocusSettingsPane: View {
-    @ObservedObject private var controller = FocusController.shared
+    @ObservedObject var controller: FocusController
     @State private var testing: ShortcutKind?
     @State private var testResult: (kind: ShortcutKind, result: FocusShortcutResult)?
 

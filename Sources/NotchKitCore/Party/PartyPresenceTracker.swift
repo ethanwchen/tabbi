@@ -51,17 +51,29 @@ public struct PartyPresenceTracker: Codable, Hashable, Sendable {
     /// Records the timer at `now` and credits focus time since the last
     /// observation. Returns `true` when friends should hear about it now.
     @discardableResult
-    public mutating func observe(_ timer: FocusTimer?, at now: Date, calendar: Calendar = .current) -> Bool {
+    public mutating func observe(_ timer: ProvidedFocus?, at now: Date, calendar: Calendar = .current) -> Bool {
         credit(until: now, calendar: calendar)
-        var timer = timer
-        // A phase that ended between ticks counts from its real end.
-        timer?.advance(to: now)
-        switch timer?.runState {
-        case .running(let endsAt)?:
+        switch timer?.clock {
+        case .countdown(let endsAt)? where endsAt <= now:
+            // The phase ran out between ticks and its module hasn't moved
+            // on yet: a finished focus phase leads to a break, a finished
+            // break to no session.
+            status = timer?.phase == .focus ? .onBreak : .idle
+            phaseEndsAt = nil
+            focusEndsAt = nil
+            if status == .idle { sessionSeconds = 0 }
+        case .countdown(let endsAt)?:
             let focusing = timer?.phase == .focus
             status = focusing ? .studying : .onBreak
             phaseEndsAt = Date(timeIntervalSince1970: endsAt.timeIntervalSince1970.rounded())
             focusEndsAt = focusing ? endsAt : nil
+        case .countUp?:
+            // Open-ended: no end to report, and focus time runs until the
+            // next observation says otherwise.
+            let focusing = timer?.phase == .focus
+            status = focusing ? .studying : .onBreak
+            phaseEndsAt = nil
+            focusEndsAt = focusing ? .distantFuture : nil
         case .paused?:
             status = .onBreak
             phaseEndsAt = nil

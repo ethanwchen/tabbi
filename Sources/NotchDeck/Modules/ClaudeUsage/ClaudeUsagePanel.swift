@@ -90,7 +90,7 @@ private struct UsageRing: View {
 
     private func color(for utilization: Double) -> Color {
         switch ClaudeUsageLevel(utilization: utilization) {
-        case .normal: Theme.Palette.accent(for: .claudeUsage)
+        case .normal: ClaudeUsageModule.descriptor.accentColor
         case .warning: Theme.Palette.warning
         case .critical: Theme.Palette.danger
         }
@@ -227,7 +227,7 @@ private struct LoadingArc: View {
         TimelineView(.animation) { context in
             Circle()
                 .trim(from: 0, to: 0.7)
-                .stroke(Theme.Palette.accent(for: .claudeUsage),
+                .stroke(ClaudeUsageModule.descriptor.accentColor,
                         style: StrokeStyle(lineWidth: 2, lineCap: .round))
                 .rotationEffect(.degrees(spinAngle(at: context.date)))
         }

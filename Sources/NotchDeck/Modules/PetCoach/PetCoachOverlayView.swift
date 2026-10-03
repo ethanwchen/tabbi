@@ -217,7 +217,7 @@ private struct PetCoachBubble: View {
     let line: PetCoachLine
     let onReply: (PetCoachReply) -> Void
 
-    private static let accent = Theme.Palette.accent(for: .closet)
+    private static let accent = ClosetModule.descriptor.accentColor
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.s) {

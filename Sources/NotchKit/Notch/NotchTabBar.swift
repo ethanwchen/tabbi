@@ -32,25 +32,27 @@ private struct TabButton: View {
     let namespace: Namespace.ID
     let action: () -> Void
     @State private var hovering = false
+    @Environment(\.moduleCatalog) private var catalog
 
     var body: some View {
+        let descriptor = catalog.descriptor(for: module)
         Button(action: action) {
-            Image(systemName: module.symbol)
+            Image(systemName: descriptor.symbol)
                 .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(isSelected ? Theme.Palette.accent(for: module)
+                .foregroundStyle(isSelected ? descriptor.accentColor
                                  : (hovering ? Theme.Palette.primaryText : Theme.Palette.tertiaryText))
                 .frame(width: 28, height: 24)
                 .background {
                     if isSelected {
                         Capsule()
-                            .fill(Theme.Palette.accent(for: module).opacity(0.16))
+                            .fill(descriptor.accentColor.opacity(0.16))
                             .matchedGeometryEffect(id: "tab", in: namespace)
                     }
                 }
                 .contentShape(Capsule())
         }
         .buttonStyle(.plain)
-        .help(shortcut.map { "\(module.title) (\($0))" } ?? module.title)
+        .help(shortcut.map { "\(descriptor.title) (\($0))" } ?? descriptor.title)
         .onHover { hovering = $0 }
     }
 }

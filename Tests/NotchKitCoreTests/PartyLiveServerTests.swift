@@ -44,7 +44,7 @@ final class PartyLiveServerTests: XCTestCase {
             var timer = FocusTimer()
             timer.start(at: started)
             var tracker = PartyPresenceTracker()
-            tracker.observe(timer, at: started)
+            tracker.observe(timer.shared, at: started)
             let beat = try await benClient.heartbeat(tracker.heartbeat(at: Date()))
             let phaseEnd = try XCTUnwrap(tracker.phaseEndsAt)
             XCTAssertEqual(beat.presence.status, .studying)

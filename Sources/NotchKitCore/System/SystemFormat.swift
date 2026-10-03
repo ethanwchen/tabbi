@@ -1,7 +1,7 @@
-/// Display strings for system metrics. Missing values render as an em
-/// dash so an unavailable metric reads as "unknown", never as 0.
+/// Display strings for system metrics. Missing values render as a plain
+/// hyphen so an unavailable metric reads as "unknown", never as 0.
 public enum SystemFormat {
-    public static let unavailable = "\u{2014}"
+    public static let unavailable = "-"
 
     /// `0.423` → `"42%"`; values are clamped to `0...100`.
     public static func percent(_ fraction: Double?) -> String {
@@ -24,7 +24,7 @@ public enum SystemFormat {
         return "\(Int(tenths) / 10).\(Int(tenths) % 10)"
     }
 
-    /// `"12.4 / 16 GB"`, or an em dash when memory is unknown.
+    /// `"12.4 / 16 GB"`, or a plain hyphen when memory is unknown.
     public static func memory(_ stats: MemoryStats?) -> String {
         guard let stats else { return unavailable }
         return "\(gigabytes(stats.usedBytes, alwaysShowTenths: true)) / \(gigabytes(stats.totalBytes)) GB"

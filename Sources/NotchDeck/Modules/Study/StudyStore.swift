@@ -13,10 +13,10 @@ import NotchKit
 /// Finished stretches move from the session into the persisted `StudyLog`,
 /// which totals the day and holds earned points for the pet ledger.
 /// With deep focus on, study phases drive the shared focus mode (sound and
-/// Do Not Disturb) through `FocusController`, alongside the Focus timer.
+/// Do Not Disturb) through `context.focusMode`, alongside the Focus timer.
 /// It also plays the corner pet, which dozes while the clock is stopped,
 /// wakes when it runs and celebrates each finished block (`StudyPetCue`).
-/// With `NOTCHDECK_DEMO=1` it shows a sample Pomodoro round and a sample
+/// In demo mode it shows a sample Pomodoro round and a sample
 /// day, and never touches sounds or disk.
 @MainActor
 final class StudyStore: ObservableObject {
@@ -52,7 +52,7 @@ final class StudyStore: ObservableObject {
     private let isDemo: Bool
     /// Snapshot runs read the saved session but never write it back, so
     /// rendering with another kit can't change the user's method.
-    private let isSnapshot = CommandLine.arguments.contains("--snapshot")
+    private let isSnapshot: Bool
     private let defaults = UserDefaults.standard
     private var cancellables: Set<AnyCancellable> = []
     private var isVisible = false
@@ -65,7 +65,9 @@ final class StudyStore: ObservableObject {
     /// Set when the log on disk could not be read: new stretches are still
     /// logged in memory, but the file is never overwritten, so nothing is lost.
     private let logIsUnreadable: Bool
-    private let edition: Edition
+    /// Where every phase that ran is logged, as the Study module's.
+    private let activity: ActivityLog?
+    private let focusMode: FocusController?
     /// A block finished while the panel was hidden; the pet celebrates it
     /// the next time the panel shows, so the hop is never played unseen.
     private var celebrationPending = false
@@ -78,9 +80,17 @@ final class StudyStore: ObservableObject {
     ///   - menu: the active kit's methods; a saved session on a method the
     ///     kit no longer offers moves to its starting method.
     ///   - goal: the active kit's daily study goal.
-    init(menu: StudyMethodMenu = .all, goal: StudyDailyGoal = .standard, edition: Edition = .current) {
-        isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
-        self.edition = edition
+    ///   - focusMode: plays the focus sound and turns on Do Not Disturb
+    ///     during deep focus blocks; nil in tests.
+    ///   - petProfile: the study pet's look now; `follow(pet:)` keeps it
+    ///     current. Demo runs show their own sample pet.
+    init(menu: StudyMethodMenu = .all, goal: StudyDailyGoal = .standard, storage: EditionStorage,
+         activity: ActivityLog? = nil, focusMode: FocusController? = nil, petProfile: PetProfile = .starter(.cat),
+         runMode: RunMode) {
+        isDemo = runMode.isDemo
+        self.focusMode = focusMode
+        isSnapshot = runMode.isSnapshot
+        self.activity = activity
         self.menu = menu
         self.goal = goal
         if isDemo {
@@ -110,9 +120,9 @@ final class StudyStore: ObservableObject {
         // A snapshot of one method shows it fresh, as a new user would see it.
         if let kind = StudySnapshotState.current?.demoMethod { saved = StudySession(method: .preset(kind, custom: custom)) }
         session = saved
-        pet = PetPlayer(profile: Self.petProfile(for: edition), asleep: StudyPetCue.isDozing(saved))
+        pet = PetPlayer(profile: petProfile, asleep: StudyPetCue.isDozing(saved))
         deepFocus = defaults.bool(forKey: Self.deepFocusKey)
-        logURL = Self.logURL(for: edition)
+        logURL = Self.logURL(in: storage)
         do {
             log = try logURL.flatMap { try StudyLog.load(from: $0) } ?? StudyLog()
             logIsUnreadable = false
@@ -132,20 +142,21 @@ final class StudyStore: ObservableObject {
     }
 
     /// `~/Library/Application Support/<edition>/Study/log.json`.
-    static func logURL(for edition: Edition) -> URL? {
-        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
-            .appendingPathComponent("\(edition.name)/Study/log.json")
+    static func logURL(in storage: EditionStorage) -> URL? {
+        storage.file("log.json", in: "Study")
     }
 
-    /// The pet's look from the Closet's save
-    /// (`~/Library/Application Support/<edition>/Pet/pet.json`), read only:
-    /// the Closet owns that file. A missing or unreadable save shows the
-    /// starter cat.
-    static func petProfile(for edition: Edition) -> PetProfile {
-        let url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
-            .appendingPathComponent("\(edition.name)/Pet/pet.json")
-        let save = try? url.flatMap { try PetSave.load(from: $0) }
-        return save?.profile ?? .starter(.cat)
+    /// Dresses the corner pet in the study pet's look as it changes (a new
+    /// outfit or breed in the Closet, or a kit's starter pet before the
+    /// first save). Demo runs keep their sample pet.
+    func follow(pet profiles: AnyPublisher<PetProfile, Never>) {
+        guard !isDemo else { return }
+        profiles
+            .removeDuplicates()
+            .sink { [weak self] profile in
+                MainActor.assumeIsolated { self?.pet.update(profile: profile) }
+            }
+            .store(in: &cancellables)
     }
 
     /// The kit's methods for the picker, with Custom on the user's lengths.
@@ -164,8 +175,6 @@ final class StudyStore: ObservableObject {
         catchUp()
         updateTicker()
         guard visible else { return }
-        // Pick up a new outfit or breed chosen in the Closet since last time.
-        if !isDemo { pet.update(profile: Self.petProfile(for: edition)) }
         if celebrationPending {
             celebrationPending = false
             pet.send(.celebrate)
@@ -264,12 +273,14 @@ final class StudyStore: ObservableObject {
             .eraseToAnyPublisher()
     }
 
-    /// The session as the shared focus timer, republished only when the
-    /// session changes: a running block carries its end date, so the
-    /// closed notch counts down without a per-second feed.
-    var sharedFocus: AnyPublisher<FocusTimer?, Never> {
+    /// The session as the shared focus clock with the deep focus switch,
+    /// republished only when either changes: a running block carries its
+    /// end (or start) date, so the closed notch counts without a per-second
+    /// feed.
+    func sharedFocus(by source: ModuleID) -> AnyPublisher<ProvidedFocus?, Never> {
         $session
-            .map { $0.sharedFocusTimer(at: Date()) }
+            .combineLatest($deepFocus)
+            .map { $0.sharedFocus(by: source, isDeep: $1, at: Date()) }
             .removeDuplicates()
             .eraseToAnyPublisher()
     }
@@ -364,8 +375,7 @@ final class StudyStore: ObservableObject {
     /// Tells focus mode what the session needs. `FocusController` ignores
     /// repeats and is inert in demo and snapshot runs.
     private func reportFocusActivity() {
-        FocusController.shared.activityChanged(FocusActivity(session, deepFocus: deepFocus && isEnabled),
-                                               from: .study)
+        focusMode?.activityChanged(FocusActivity(session, deepFocus: deepFocus && isEnabled), from: .study)
     }
 
     /// Plays the pet's reaction to a session change. A celebration that
@@ -380,11 +390,14 @@ final class StudyStore: ObservableObject {
         }
     }
 
-    /// Drains the session's phase records into the persisted log.
+    /// Drains the session's phase records into the persisted log and the
+    /// shared activity log.
     private func collectLog() {
         guard !session.log.isEmpty else { return }
+        let records = session.takeLog()
+        activity?.record(records.compactMap { $0.activityRecord(source: StudyModule.descriptor.id) })
         var updated = log
-        updated.record(session.takeLog())
+        updated.record(records)
         if updated != log {
             log = updated
             if let logURL, !logIsUnreadable { try? log.write(to: logURL) }

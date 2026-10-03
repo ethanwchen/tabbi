@@ -1,4 +1,4 @@
-# NotchDeck — guide for contributors and coding agents
+# NotchDeck - guide for contributors and coding agents
 
 NotchDeck is a macOS menu-bar-less app that turns the MacBook notch into a small,
 clickable panel of tabs. Each tab is a module (Now Playing, System, Claude Usage,
@@ -9,7 +9,7 @@ and a kit picks which ones are on and in what order.
 
 ```sh
 swift build                                  # must stay warning-free
-swift test                                   # NotchKitCore unit tests
+swift test                                   # NotchKitCore and NotchDeck (app wiring) tests
 swift run NotchDeck --snapshot snapshots     # render every notch state to PNG
 swift run NotchDeck --snapshot snapshots-medicine --kit medicine  # same, for another kit's tabs
 swift run NotchDeck --snapshot snapshots-study --edition studynotch  # as the StudyNotch edition
@@ -23,9 +23,9 @@ Judge them against the design rules below before you call the work done.
 
 ## Architecture
 
-- `Sources/NotchKitCore` — pure Swift, no AppKit/SwiftUI. Parsers, models,
+- `Sources/NotchKitCore` - pure Swift, no AppKit/SwiftUI. Parsers, models,
   stores, formatting. Everything here gets unit tests in `Tests/NotchKitCoreTests`.
-- `Sources/NotchKit` — shared AppKit/SwiftUI that modules build on:
+- `Sources/NotchKit` - shared AppKit/SwiftUI that modules build on:
   `Design/Theme.swift` (design tokens and shared controls `Card`,
   `IconButton`), `Components/` (`ModulePreview`, `ModulePlaceholder`),
   `Notch/` (the panel window, notch shape, screen geometry, the
@@ -42,42 +42,134 @@ Judge them against the design rules below before you call the work done.
   field). The app's own panes and their order live in
   `NotchDeck/Settings/AppSettingsPanes.swift`. Everything here is `public`. Reuse it; add new
   shared components here, not inside a module.
-- `Sources/NotchDeck/Modules/ModuleViews.swift` — hooks the shared notch up
+- `Sources/NotchDeck/Modules/ModuleViews.swift` - hooks the shared notch up
   to the app: the closed notch's live-activity wings, `notchContent`
   (module panels, music wings, Settings) and
   `notchInputs` (settings, hotkey recorder, ticker) built from `AppServices`.
   Shared; change only when your task requires it.
-- `Sources/NotchDeck/Modules/<Module>/` — one folder per module: a store
-  (`ObservableObject`, owned by `AppServices`), SwiftUI views, and a
-  `NotchModule` class (descriptor, panel, an optional Settings toolbar pane
+- `Sources/NotchDeck/Modules/<Module>/` - one folder per module: a store
+  (`ObservableObject`), SwiftUI views, and a `NotchModule` class (its own
+  `static let descriptor` with id, title, symbol, category, accent and
+  permissions, `init(context:)`, a panel, an optional Settings toolbar pane
   from `makeSettingsPane()`, and `start()`/`stop()`). The pane and the
   lifecycle follow the module's on/off switch. Modules that share a pane
   return the same id and it shows once: Today and Focus both offer the
-  Focus pane, since both show the focus timer (`FocusStore` in
-  `Modules/Focus/`, which `AppServices` owns and hands to Today).
-- `Sources/NotchDeck/Modules/NotchModule.swift` — the `NotchModule` protocol
-  and `ModuleRegistry`. To add a module: add its `ModuleDescriptor` to
-  `ModuleCatalog.builtIn`, write `<Module>Module` in its folder, and list it
-  once in `AppServices.modules`.
+  Focus pane, since both show the focus timer.
+- `Sources/NotchDeck/Modules/ModuleContext.swift` - what every module gets
+  in `init(context:)`: its id, the edition, read access to settings and the
+  active kit (`kitApplied` fires when the user switches to, resets or
+  undoes a kit; on `.undo` put back what the undone switch changed), the
+  `ProviderHub`, a logger, the `runMode` (live, demo data, snapshot
+  rendering; hand it to your store, never read `NOTCHDECK_DEMO` yourself), the edition's
+  `storage` (`EditionStorage`: put files in `storage.folder("<Name>")`,
+  never in a hardcoded Application Support path, so each edition keeps
+  its own data), and `SharedServices`. A module builds and owns its store there and follows
+  kit changes itself. A service several modules use is declared as a
+  `ModuleContext` extension in its owner's folder and resolved through
+  `shared`, so all of them get one instance: `context.focusTimer` (the
+  `FocusStore` in `Modules/Focus/`) is how Today, Focus and the pet coach
+  share one Pomodoro timer, and `context.focusMode` (the `FocusController`
+  beside it) is the one focus mode (sound, playlist, Do Not Disturb) that
+  the Pomodoro and Study's deep focus blocks drive. Likewise
+  `context.studyPet` (the `ClosetStore` in `Modules/Closet/`) is the one
+  owner of the pet's save, and Study and Party follow its `profiles`. A module that takes
+  state of its own from a kit's defaults (Focus: the focus sound) reports
+  whether it still matches through `usesKitDefaults(of:)`, so Settings
+  knows when Reset to Kit Defaults has work to do.
+- Persisted formats are versioned. A JSON file (or `UserDefaults` value)
+  goes through a `VersionedJSON` schema (`NotchKitCore/Persistence/`),
+  which writes a `schemaVersion` key and runs ordered migration steps on
+  older documents; `PlannerRepository.schema` is an example. A change to
+  how a preference is stored is a new step in `SettingsSchema`. Never edit
+  a step that has shipped, and test the migration.
+- `Sources/NotchDeck/Modules/NotchModule.swift` - the `NotchModule` protocol
+  and `ModuleRegistry`. `Sources/NotchDeck/Modules/ModuleList.swift` lists
+  every module type, one per line; its `ModuleList.catalog` is the only
+  module catalog. Layouts, kit validation, the tab bar, Settings and
+  previews all resolve ids through it (SwiftUI views read it from the
+  `moduleCatalog` environment value), so no shared code hardcodes a module's
+  title, symbol or accent. To add a module: write `<Module>Module` with its
+  descriptor and `init(context:)` in its folder and add its line at the end
+  of `ModuleList.all`. `AppServices` (the composition root in `App/`)
+  creates every listed module with its own context; it holds no module
+  stores.
 - Shared data providers: a module that has tasks, calendar events, progress
-  (e.g. cards due), a focus timer or a study tally (today's study minutes,
-  sessions and points, which Wrap Up shows) to share returns a `ModuleProvision`
-  publisher from `NotchModule.provision`. `ProviderHub` (in `Modules/`)
+  (e.g. cards due), a focus or break clock or a study tally (today's study
+  minutes, sessions and points, which Wrap Up shows) to share returns a
+  `ModuleProvision` publisher from `NotchModule.provision`. Any timer engine
+  maps its clock into the neutral `ProvidedFocus` (counting down, counting up
+  for open-ended phases, paused or idle, plus a phase label and a deep focus
+  flag): Today and Focus share their Pomodoro with `FocusTimer.provided(by:)`
+  and Study its session with `StudySession.sharedFocus(by:isDeep:at:)`, and
+  the ticker, the pet, the coach and Party all read `ProviderSnapshot.focus`
+  (when two clocks run, the one started or resumed last). `ProviderHub` (in `Modules/`)
   merges the enabled modules' values into a `ProviderSnapshot`
-  (`NotchKitCore/Providers`). The ticker reads it, and Today lists other
+  (`NotchKitCore/Providers`). The closed-notch ticker (`TickerStore`) reads
+  only that snapshot, and Today lists other
   modules' goals and tasks above its checklist (`sharedTodayItems`) and
   hands their unfinished work to Plan my day (`plannableWork`), so e.g.
   Anki reviews show up there with no Today code. Never reach into
   another module's store; publish what you have and consume the snapshot.
-- `Sources/NotchKitCore/Claude` — `ClaudeCLI` (locate + stream `claude -p`) and
+- Ticker highlights: to put a line of your own beside the closed notch
+  (Claude Usage's "5h 86%"), publish `TickerHighlight`s in
+  `ModuleProvision.highlights` (text, tooltip, tone, priority, optional
+  pin, expiry and symbol) and give your descriptor a `highlightTitle`,
+  which names the Settings toggle. The ticker shows each module's top
+  highlight with the module's symbol and accent and opens the module on
+  click; its kind is `TickerKind.highlights(from: id)`, so kits list it
+  by module id. Music playing is `ModuleProvision.isPlaying`. A module
+  that only refreshes while someone can see it follows
+  `context.closedNotchPreview.watchedKinds` (Today reloads the calendar
+  while the meeting preview can show).
+- Activity log: the snapshot says what is true now; `context.activityLog`
+  (`ActivityLog` in `Modules/`, one per app) says what happened. Log
+  your own events as `ActivityRecord`s (`NotchKitCore/Activity`: your
+  module id as `source`, an open `ActivityKind` such as
+  `focus.completed`, `break.taken`, `cards.reviewed`, `task.completed`
+  or one of your own, start and end, a quantity and unit, an optional
+  `subject` id and metadata), and read anyone's by day or follow
+  `recorded`. The Focus timer, Study, Today and Anki log there, so
+  streaks, insights and the pet never need another module's store.
+  Records stay on the Mac, one versioned JSON file per day in the
+  edition's `Activity` folder; demo and snapshot runs keep them in memory.
+- `Sources/NotchKitCore/Claude` - `ClaudeCLI` (locate + stream `claude -p`) and
   `ClaudeStreamEvent` (stream-json parser). Both Claude modules use these.
 
 Kits are JSON manifests in `Sources/NotchKitCore/Kits/Bundled`; the format
-is documented in `docs/kits.md`. Direction and planned work: `docs/ROADMAP.md`.
+is documented in `docs/kits.md`.
+Editions (branded builds such as StudyNotch) are JSON files in
+`Sources/NotchKitCore/Editions/BundledEditions` that the app and
+`scripts/assemble.sh` both read (see `Edition.swift`); a new edition is a file.
+Direction and planned work: `docs/ROADMAP.md`.
 
 Module ownership: when working on one module, keep changes inside its
 `Modules/<Module>/` folder and a matching `NotchKitCore/<Module>/` folder plus
 tests. Touch shared files only when unavoidable, and keep those edits minimal.
+
+## Adding a module
+
+A new vertical is its own files plus one line in `ModuleList.swift`.
+`Tests/NotchDeckTests/LeetCodeFixture/LeetCodeModule.swift` is a complete example (a "LeetCode daily" module), and `LeetCodeAcceptanceTests` proves it plugs in that way: it builds `AppServices` from `ModuleList.all + [LeetCodeModule.self]` and checks every shared surface.
+
+1. Create `Sources/NotchDeck/Modules/<Module>/` with a store (`ObservableObject`), its SwiftUI panel, and `<Module>Module: NotchModule`.
+   Pure logic (parsers, models, formatting) goes in `Sources/NotchKitCore/<Module>/` with tests in `Tests/NotchKitCoreTests`.
+2. Declare `nonisolated static let descriptor = ModuleDescriptor(...)`: id, title, SF Symbol, category (an open `ModuleCategory`: use a built-in one or declare your own beside the module, as the fixture's `.coding` does), accent, permissions, `network` with each host its code connects to (none for the fixture), `highlightTitle` if it shows a line in the ticker, and `ownsFocusClock: true` if it runs a focus clock of its own.
+   The tab bar, Settings, kit validation and previews read title, symbol and accent from here, and Today shows such a module's clock in place of its Pomodoro, so a layout has one timer.
+   If kits can configure the module, declare the keys of its `moduleSettings` section as `kitSettings: KitSettingsSchema([...])`, so kit validation warns about typos and out-of-range values there; the fixture declares `minutesPerProblem`.
+3. In `init(context:)`, build the store and follow what the context offers (`kitApplied`, `providers.$snapshot`, shared services).
+   Read your kit section with `context.activeKit?.defaults.settings(for: context.id)` and again on each `kitApplied`, leniently: a value that doesn't fit keeps your default.
+   Start background work in `start()` and undo it in `stop()`; the registry calls them when the module's switch changes.
+   In demo mode (`context.isDemo`, from `context.runMode`) show realistic sample data and touch no network, calendar or CLI; in a snapshot run (`context.isSnapshot`) play no sound and save nothing.
+4. Share what you have through `provision`: `tasks` and `progress` show in Today and Plan my day, `progress` also in the ticker's progress preview, and `highlights` as the module's own ticker line.
+   The fixture publishes a task ("LeetCode: Two Sum", about 20 min), a goal ("LeetCode daily, 1 problem left") and a highlight that goes away once the problem is solved.
+   Log what the user did in `context.activityLog`: the fixture records a `problem.solved` activity of its own kind when the problem is solved.
+5. Add `<Module>Module.self,` at the end of `ModuleList.all`.
+   A kit can now list the module id in `modules` and in its `ticker` field; until that line exists, kit validation reports both as unknown.
+6. Optionally return a Settings pane from `makeSettingsPane()`.
+   A kit that ships with the app is a separate change: its JSON file, named after its id and with a `pickerOrder`, in `Sources/NotchKitCore/Kits/Bundled`, which `KitLibrary.bundled` lists (see `docs/kits.md`).
+
+The module itself needs no edits to `AppServices`, the ticker, Today, `Theme`, layouts or the catalog.
+If a module seems to need one, the provider protocols are missing something: extend them in a separate change rather than special-casing the module.
 
 ## Design rules
 
@@ -86,7 +178,8 @@ tests. Touch shared files only when unavoidable, and keep those edits minimal.
 - Every panel renders inside the same fixed canvas
   (`Theme.Layout.expandedSize`, minus header and insets ≈ 500×150 pt). Design
   for that size; no scrolling except in lists that can genuinely grow.
-- One accent color per module: `Theme.Palette.accent(for:)`.
+- One accent color per module, from its descriptor: `<Module>Module.descriptor.accentColor`
+  inside the module, `catalog.descriptor(for: id).accentColor` in shared views.
 - Rounded SF type from `Theme.Typography`; changing numbers use
   `.monospacedDigit()` so they don't jitter.
 - Spacing on the 4pt grid via `Theme.Spacing`; corners via `Theme.Radius`
@@ -102,9 +195,14 @@ tests. Touch shared files only when unavoidable, and keep those edits minimal.
 
 - No third-party dependencies without a strong reason stated in the PR.
 - Privacy: no network calls except what a module inherently needs (album
-  artwork URLs). No telemetry. Claude features only go through the user's
-  local `claude` CLI via `ClaudeCLI` — never read credentials or the keychain.
+  artwork URLs), and every host a module's code connects to is listed in its
+  descriptor's `network` (`ModuleNetworkAccess`: host and purpose), which the
+  kit import sheet shows before a kit turns the module on. No telemetry. Claude features only go through the user's
+  local `claude` CLI via `ClaudeCLI` - never read credentials or the keychain.
 - Never poll faster than needed; stop timers when a panel isn't visible if
   the data is only shown there.
 - Keep `swift build` warning-free and `swift test` green.
+  `NotchKitCore` and its tests build in Swift 6 language mode; the other
+  targets stay in Swift 5 mode with complete concurrency checking, so a
+  data race there shows up as a warning to fix.
 - Public types and non-obvious logic get a short doc comment explaining why.

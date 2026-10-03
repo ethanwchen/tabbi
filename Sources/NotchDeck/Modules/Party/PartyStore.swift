@@ -46,7 +46,7 @@ final class PartyStore: ObservableObject {
     private var connectBackoff = PartyHeartbeatSchedule()
     private var plan = PartyRefreshPlan()
     /// The study timer from the shared providers, for presence.
-    private var focus: FocusTimer?
+    private var focus: ProvidedFocus?
     /// My pet as friends should see it.
     private(set) var pet = PetProfile.starter(.cat)
     private var isRunning = false
@@ -59,10 +59,11 @@ final class PartyStore: ObservableObject {
 
     private static let trackerKey = "party.presence"
 
-    init(environment: [String: String] = ProcessInfo.processInfo.environment,
-         arguments: [String] = CommandLine.arguments) {
-        isDemo = environment["NOTCHDECK_DEMO"] == "1"
-        isSnapshot = arguments.contains("--snapshot")
+    /// - Parameter environment: the snapshot-only knobs, such as
+    ///   `NOTCHDECK_PARTY_PREVIEW` and a local `NOTCHDECK_PARTY_SERVER`.
+    init(runMode: RunMode, environment: [String: String] = ProcessInfo.processInfo.environment) {
+        isDemo = runMode.isDemo
+        isSnapshot = runMode.isSnapshot
         if isDemo {
             repository = nil
             credentials = InMemoryPartyCredentialStore()
@@ -101,10 +102,18 @@ final class PartyStore: ObservableObject {
 
     /// Follows the shared focus timer, so presence reflects whichever
     /// module runs it (Focus, Today, Study) without reaching into them.
-    func followFocus(from timers: AnyPublisher<FocusTimer?, Never>) {
+    func followFocus(from timers: AnyPublisher<ProvidedFocus?, Never>) {
         timers
             .removeDuplicates()
             .sink { [weak self] timer in self?.focusDidChange(timer) }
+            .store(in: &cancellables)
+    }
+
+    /// Follows the study pet (`context.studyPet`), so friends see the pet
+    /// dressed in the Closet rather than a starter.
+    func follow(pet profiles: AnyPublisher<PetProfile, Never>) {
+        profiles
+            .sink { [weak self] profile in self?.update(pet: profile) }
             .store(in: &cancellables)
     }
 
@@ -361,7 +370,7 @@ final class PartyStore: ObservableObject {
 
     // MARK: Presence
 
-    private func focusDidChange(_ timer: FocusTimer?) {
+    private func focusDidChange(_ timer: ProvidedFocus?) {
         focus = timer
         guard !isDemo else { return }
         let changed = tracker.observe(timer, at: Date())

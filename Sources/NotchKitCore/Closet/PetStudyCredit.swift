@@ -26,22 +26,27 @@ public struct PetStudyAward: Hashable, Sendable {
 
 extension PetCloset {
     /// Credits study points for what changed between two observations of
-    /// the shared focus timer at `now`, and returns the award to celebrate.
+    /// the shared focus clock at `now`, and returns the award to celebrate.
     ///
     /// - A focus phase that ran out earns its full length plus the
     ///   completion bonus (`PetPointsRules`). Completions are counted from
-    ///   `FocusTimer.completedFocusCount` against `PetSave.creditedFocusCount`,
+    ///   `ProvidedFocus.completedFocusCount` against `PetSave.creditedFocusCount`,
     ///   so sessions that ended while the app was closed are paid once, and
-    ///   the first timer the pet ever sees only sets the baseline.
+    ///   the first timer the pet ever sees only sets the baseline. The
+    ///   baseline belongs to one clock (`PetSave.creditedFocusSource`): when
+    ///   the shared clock switches to another module's, its count only sets
+    ///   a new baseline, since one clock's total says nothing about another's.
     /// - A focus phase cut short (skipped or reset) earns the minutes
     ///   actually studied, without the bonus; short ones earn nothing.
     ///
     /// Returns nil when nothing earned points.
-    public mutating func credit(from old: FocusTimer?, to new: FocusTimer?, at now: Date) -> PetStudyAward? {
+    public mutating func credit(from old: ProvidedFocus?, to new: ProvidedFocus?, at now: Date) -> PetStudyAward? {
         guard let new else { return nil }
         let count = new.completedFocusCount
-        guard let credited = save.creditedFocusCount, credited <= count else {
-            // First sight of a timer, or its history was reset: start over.
+        let sameClock = save.creditedFocusSource.map { $0 == new.source } ?? true
+        save.creditedFocusSource = new.source
+        guard sameClock, let credited = save.creditedFocusCount, credited <= count else {
+            // First sight of a timer, another clock, or its history was reset: start over.
             save.creditedFocusCount = count
             return nil
         }
@@ -50,14 +55,14 @@ extension PetCloset {
 
         var award = PetStudyAward(completedSessions: 0, minutes: 0, points: 0)
         if count > credited {
-            let minutes = Int(new.config.focusDuration / 60)
+            let minutes = Int((new.focusLength ?? 0) / 60)
             for _ in credited..<count {
                 award.points += recordStudy(minutes: minutes, completed: true)
             }
             award.completedSessions = count - credited
             award.minutes = minutes * award.completedSessions
-        } else if let old, Self.focusWasCutShort(old, by: new) {
-            let minutes = Int((old.phaseDuration - old.remaining(at: now)) / 60)
+        } else if let old, old.source == new.source, Self.focusWasCutShort(old, by: new) {
+            let minutes = Int(old.elapsed(at: now) / 60)
             award.points = recordStudy(minutes: minutes, completed: false)
             award.minutes = minutes
         }
@@ -68,9 +73,9 @@ extension PetCloset {
 
     /// A focus phase under way in `old` that `new` left without completing
     /// it: skipped to the break, or reset to idle.
-    private static func focusWasCutShort(_ old: FocusTimer, by new: FocusTimer) -> Bool {
-        guard old.phase == .focus, old.isRunning || old.isPaused else { return false }
-        return new.phase != .focus || new.runState == .idle
+    private static func focusWasCutShort(_ old: ProvidedFocus, by new: ProvidedFocus) -> Bool {
+        guard old.phase == .focus, old.isActive else { return false }
+        return new.phase != .focus || !new.isActive
     }
 }
 

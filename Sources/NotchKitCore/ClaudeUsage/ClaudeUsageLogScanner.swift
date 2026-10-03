@@ -30,10 +30,10 @@ public actor ClaudeUsageLogScanner {
             .appendingPathComponent(".claude/projects", isDirectory: true)
     }
 
-    /// `~/Library/Application Support/NotchDeck/ClaudeUsage/scan-index.json`.
-    public static var defaultIndexURL: URL {
-        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("NotchDeck/ClaudeUsage/scan-index.json", isDirectory: false)
+    /// `Application Support/<edition>/ClaudeUsage/scan-index.json`. A cache:
+    /// a missing index only makes the next scan read every transcript.
+    public static func indexURL(in storage: EditionStorage) -> URL {
+        storage.file("scan-index.json", in: "ClaudeUsage")
     }
 
     /// Lines longer than this can't be usage records worth the memory; they

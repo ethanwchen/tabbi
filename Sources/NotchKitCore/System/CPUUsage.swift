@@ -33,7 +33,7 @@ public struct CPUUsage: Equatable, Sendable {
 /// Turns two consecutive per-core tick snapshots into usage percentages.
 public enum CPUUsageCalculator {
     /// Returns `nil` when the snapshots can't be compared (no cores, or the
-    /// core count changed between samples), so callers show "—" instead of
+    /// core count changed between samples), so callers show "-" instead of
     /// a misleading number.
     public static func usage(from previous: [CPUTicks], to current: [CPUTicks]) -> CPUUsage? {
         guard !current.isEmpty, previous.count == current.count else { return nil }

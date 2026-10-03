@@ -23,7 +23,7 @@ final class PetStudyCreditTests: XCTestCase {
         var new = old
         new.advance(to: t0.addingTimeInterval(25 * 60))
 
-        let award = try XCTUnwrap(closet.credit(from: old, to: new, at: t0.addingTimeInterval(25 * 60)))
+        let award = try XCTUnwrap(closet.credit(from: old.shared, to: new.shared, at: t0.addingTimeInterval(25 * 60)))
         XCTAssertEqual(award.completedSessions, 1)
         XCTAssertEqual(award.minutes, 25)
         XCTAssertEqual(award.points, 25 + PetPointsRules.completionBonus)
@@ -35,9 +35,9 @@ final class PetStudyCreditTests: XCTestCase {
         var closet = closet()
         var done = running()
         done.advance(to: t0.addingTimeInterval(25 * 60))
-        XCTAssertNotNil(closet.credit(from: running(), to: done, at: t0.addingTimeInterval(25 * 60)))
-        XCTAssertNil(closet.credit(from: done, to: done, at: t0.addingTimeInterval(26 * 60)))
-        XCTAssertNil(closet.credit(from: nil, to: done, at: t0.addingTimeInterval(27 * 60)), "a relaunch sees the same count")
+        XCTAssertNotNil(closet.credit(from: running().shared, to: done.shared, at: t0.addingTimeInterval(25 * 60)))
+        XCTAssertNil(closet.credit(from: done.shared, to: done.shared, at: t0.addingTimeInterval(26 * 60)))
+        XCTAssertNil(closet.credit(from: nil, to: done.shared, at: t0.addingTimeInterval(27 * 60)), "a relaunch sees the same count")
         XCTAssertEqual(closet.balance, 35)
     }
 
@@ -45,7 +45,7 @@ final class PetStudyCreditTests: XCTestCase {
         var closet = closet(credited: nil)
         var timer = running()
         timer.advance(to: t0.addingTimeInterval(25 * 60))
-        XCTAssertNil(closet.credit(from: nil, to: timer, at: t0.addingTimeInterval(25 * 60)))
+        XCTAssertNil(closet.credit(from: nil, to: timer.shared, at: t0.addingTimeInterval(25 * 60)))
         XCTAssertEqual(closet.balance, 0, "history from before the pet existed is not paid out")
         XCTAssertEqual(closet.save.creditedFocusCount, 1)
     }
@@ -55,18 +55,18 @@ final class PetStudyCreditTests: XCTestCase {
         var timer = running()
         // Asleep through the focus end and the break end.
         timer.advance(to: t0.addingTimeInterval(40 * 60))
-        let award = try XCTUnwrap(closet.credit(from: nil, to: timer, at: t0.addingTimeInterval(40 * 60)))
+        let award = try XCTUnwrap(closet.credit(from: nil, to: timer.shared, at: t0.addingTimeInterval(40 * 60)))
         XCTAssertEqual(award.completedSessions, 1)
         XCTAssertEqual(award.points, 35)
     }
 
     func testAResetTimerHistoryRebaselinesWithoutPaying() {
         var closet = closet(credited: 4)
-        XCTAssertNil(closet.credit(from: nil, to: FocusTimer(), at: t0))
+        XCTAssertNil(closet.credit(from: nil, to: FocusTimer().shared, at: t0))
         XCTAssertEqual(closet.save.creditedFocusCount, 0)
         var done = running()
         done.advance(to: t0.addingTimeInterval(25 * 60))
-        XCTAssertEqual(closet.credit(from: running(), to: done, at: t0.addingTimeInterval(25 * 60))?.points, 35)
+        XCTAssertEqual(closet.credit(from: running().shared, to: done.shared, at: t0.addingTimeInterval(25 * 60))?.points, 35)
     }
 
     func testSkippingMidFocusEarnsTheMinutesStudiedWithoutBonus() throws {
@@ -76,7 +76,7 @@ final class PetStudyCreditTests: XCTestCase {
         var skipped = old
         skipped.skip(at: now)
 
-        let award = try XCTUnwrap(closet.credit(from: old, to: skipped, at: now))
+        let award = try XCTUnwrap(closet.credit(from: old.shared, to: skipped.shared, at: now))
         XCTAssertEqual(award.completedSessions, 0)
         XCTAssertEqual(award.minutes, 12)
         XCTAssertEqual(award.points, 12)
@@ -88,7 +88,7 @@ final class PetStudyCreditTests: XCTestCase {
         paused.pause(at: t0.addingTimeInterval(9 * 60))
         var reset = paused
         reset.reset()
-        XCTAssertEqual(closet.credit(from: paused, to: reset, at: t0.addingTimeInterval(60 * 60))?.points, 9,
+        XCTAssertEqual(closet.credit(from: paused.shared, to: reset.shared, at: t0.addingTimeInterval(60 * 60))?.points, 9,
                        "time spent paused doesn't count")
     }
 
@@ -97,19 +97,19 @@ final class PetStudyCreditTests: XCTestCase {
         let old = running()
         var reset = old
         reset.reset()
-        XCTAssertNil(closet.credit(from: old, to: reset, at: t0.addingTimeInterval(3 * 60)), "under the minimum")
+        XCTAssertNil(closet.credit(from: old.shared, to: reset.shared, at: t0.addingTimeInterval(3 * 60)), "under the minimum")
 
         var paused = old
         paused.pause(at: t0.addingTimeInterval(10 * 60))
-        XCTAssertNil(closet.credit(from: old, to: paused, at: t0.addingTimeInterval(10 * 60)), "pausing is not ending")
+        XCTAssertNil(closet.credit(from: old.shared, to: paused.shared, at: t0.addingTimeInterval(10 * 60)), "pausing is not ending")
 
         var onBreak = old
         onBreak.advance(to: t0.addingTimeInterval(25 * 60))
         var skippedBreak = onBreak
         skippedBreak.skip(at: t0.addingTimeInterval(26 * 60))
         closet = self.closet(credited: 1)
-        XCTAssertNil(closet.credit(from: onBreak, to: skippedBreak, at: t0.addingTimeInterval(26 * 60)), "skipping a break")
-        XCTAssertNil(closet.credit(from: old, to: nil, at: t0.addingTimeInterval(10 * 60)), "the timer going away")
+        XCTAssertNil(closet.credit(from: onBreak.shared, to: skippedBreak.shared, at: t0.addingTimeInterval(26 * 60)), "skipping a break")
+        XCTAssertNil(closet.credit(from: old.shared, to: nil, at: t0.addingTimeInterval(10 * 60)), "the timer going away")
         XCTAssertEqual(closet.balance, 0)
     }
 
@@ -117,7 +117,7 @@ final class PetStudyCreditTests: XCTestCase {
         var closet = closet(earned: 20)
         var done = running()
         done.advance(to: t0.addingTimeInterval(25 * 60))
-        let award = try XCTUnwrap(closet.credit(from: running(), to: done, at: t0.addingTimeInterval(25 * 60)))
+        let award = try XCTUnwrap(closet.credit(from: running().shared, to: done.shared, at: t0.addingTimeInterval(25 * 60)))
         XCTAssertEqual(closet.balance, 55)
         XCTAssertEqual(award.unlocked, [.accessory(.scarf), .accessory(.beanie)])
         XCTAssertTrue(award.isLevelUp)
@@ -127,14 +127,40 @@ final class PetStudyCreditTests: XCTestCase {
         next.start(at: t0.addingTimeInterval(30 * 60))
         let first = next
         next.advance(to: t0.addingTimeInterval(55 * 60))
-        let second = try XCTUnwrap(closet.credit(from: first, to: next, at: t0.addingTimeInterval(55 * 60)))
+        let second = try XCTUnwrap(closet.credit(from: first.shared, to: next.shared, at: t0.addingTimeInterval(55 * 60)))
         XCTAssertEqual(second.unlocked, [.accessory(.roundGlasses), .outfit(.scrubs)], "only newly affordable items")
+    }
+
+    func testSwitchingToAnotherClockOnlySetsANewBaseline() throws {
+        var closet = closet()
+        var pomodoro = running()
+        pomodoro.advance(to: t0.addingTimeInterval(25 * 60))
+        XCTAssertNotNil(closet.credit(from: running().shared, to: pomodoro.shared, at: t0.addingTimeInterval(25 * 60)))
+        let balance = closet.balance
+
+        // A Study session starts at zero; then the Pomodoro, with its lifetime
+        // total, comes back. Neither switch is a completed session.
+        let study = ProvidedFocus(source: .study, phase: .focus, clock: .countUp(since: t0), phaseLength: nil)
+        XCTAssertNil(closet.credit(from: pomodoro.shared, to: study, at: t0.addingTimeInterval(26 * 60)))
+        XCTAssertNil(closet.credit(from: study, to: pomodoro.shared, at: t0.addingTimeInterval(27 * 60)))
+        XCTAssertEqual(closet.balance, balance)
+        XCTAssertEqual(closet.save.creditedFocusSource, pomodoro.shared.source)
+
+        // The baseline still pays the Pomodoro's next completion once.
+        var next = pomodoro
+        next.advance(to: t0.addingTimeInterval(30 * 60))
+        next.start(at: t0.addingTimeInterval(30 * 60))
+        let started = next
+        next.advance(to: t0.addingTimeInterval(55 * 60))
+        XCTAssertEqual(closet.credit(from: started.shared, to: next.shared, at: t0.addingTimeInterval(55 * 60))?.completedSessions, 1)
     }
 
     func testCreditedCountSurvivesSaving() throws {
         var save = PetSave(profile: .starter(.dog))
         save.creditedFocusCount = 7
+        save.creditedFocusSource = .study
         XCTAssertEqual(try PetSave.decode(save.encoded()).creditedFocusCount, 7)
+        XCTAssertEqual(try PetSave.decode(save.encoded()).creditedFocusSource, .study)
         let old = Data(#"{"version":1,"profile":\#(String(decoding: try JSONEncoder().encode(PetProfile.starter(.cat)), as: UTF8.self)),"ledger":{"earned":0,"spent":0,"purchased":[]}}"#.utf8)
         XCTAssertNil(try PetSave.decode(old).creditedFocusCount, "saves from before credits decode")
     }

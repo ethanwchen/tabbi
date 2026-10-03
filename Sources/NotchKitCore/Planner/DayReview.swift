@@ -93,11 +93,11 @@ public struct DayReviewStat: Hashable, Sendable {
     }
 }
 
-/// Completed focus phases, stamped with when each one ended.
+/// Completed focus phases, as builds before the shared activity log kept
+/// them for the End-of-Day Review (the last week, in `UserDefaults`).
 ///
-/// `FocusTimer.completedFocusCount` is a lifetime total; the review needs a
-/// per-day count, so the focus store records each completion here too.
-/// Only recent days are kept so the log never grows without bound.
+/// Only read once, to move its sessions into the activity log
+/// (`FocusTimerStorage.moveSessionLog`); nothing writes it any more.
 public struct FocusSessionLog: Hashable, Codable, Sendable {
     public struct Session: Hashable, Codable, Sendable {
         public let endedAt: Date
@@ -107,35 +107,33 @@ public struct FocusSessionLog: Hashable, Codable, Sendable {
             self.endedAt = endedAt
             self.duration = duration
         }
+
+        /// The same UUID for the same session on every launch: the bit
+        /// patterns of its end time and length fill the 16 bytes.
+        var recordID: UUID {
+            let bytes = [endedAt.timeIntervalSinceReferenceDate.bitPattern, duration.bitPattern]
+                .flatMap { value in (0..<8).map { UInt8(truncatingIfNeeded: value >> (56 - 8 * $0)) } }
+            return UUID(uuid: (bytes[0], bytes[1], bytes[2], bytes[3], bytes[4], bytes[5], bytes[6], bytes[7],
+                               bytes[8], bytes[9], bytes[10], bytes[11], bytes[12], bytes[13], bytes[14], bytes[15]))
+        }
     }
 
-    /// Days of history kept by `record`.
-    public static let retentionDays = 7
-
-    public private(set) var sessions: [Session]
+    public let sessions: [Session]
 
     public init(sessions: [Session] = []) {
         self.sessions = sessions
     }
 
-    /// Adds the focus phases among `completions` (breaks are ignored) and
-    /// drops sessions older than `retentionDays` before `now`.
-    public mutating func record(
-        _ completions: [FocusPhaseCompletion],
-        config: FocusTimerConfig,
-        now: Date,
-        calendar: Calendar = .current
-    ) {
-        sessions += completions
-            .filter { $0.phase == .focus }
-            .map { Session(endedAt: $0.endedAt, duration: config.focusDuration) }
-        let cutoff = calendar.date(byAdding: .day, value: -Self.retentionDays, to: calendar.startOfDay(for: now)) ?? now
-        sessions.removeAll { $0.endedAt < cutoff }
-    }
-
-    /// Sessions that ended on `day` in `calendar`'s time zone.
-    public func sessions(on day: PlannerDayKey, calendar: Calendar = .current) -> [Session] {
-        sessions.filter { PlannerDayKey(date: $0.endedAt, calendar: calendar) == day }
+    /// Each session as the record the Pomodoro logs for a finished focus
+    /// phase today (`FocusPhaseCompletion.activityRecord`). Ids come from
+    /// the session itself, so retrying a move that only wrote some days
+    /// skips the records already on disk instead of copying them again.
+    public func activityRecords(source: ModuleID) -> [ActivityRecord] {
+        sessions.map {
+            ActivityRecord(id: $0.recordID, source: source, kind: .focusCompleted, start: $0.endedAt.addingTimeInterval(-$0.duration),
+                           end: $0.endedAt, quantity: $0.duration / 60, unit: .minutes,
+                           metadata: [ActivityMetadata.method: "pomodoro", ActivityMetadata.outcome: "completed"])
+        }
     }
 }
 
@@ -154,18 +152,21 @@ public enum DayReviewer {
         calendar.component(.hour, from: now) >= wrapUpHour
     }
 
-    /// Builds the review for `day`'s checklist and today's focus sessions,
-    /// plus what other modules share: their study `tally` and how far each
+    /// Builds the review for `day`'s checklist and the focus stretches in
+    /// the shared `activity` log that ended that day (from any timer), plus
+    /// what other modules share: their study `tally` and how far each
     /// `progress` goal got (goals with nothing due today are left out).
     public static func review(
         of day: PlannerDay,
-        focusLog: FocusSessionLog,
+        activity: [ActivityRecord],
         study tally: StudyDayTally? = nil,
         progress: [ProgressItem] = [],
         calendar: Calendar = .current
     ) -> DayReview {
-        let sessions = focusLog.sessions(on: day.date, calendar: calendar)
-        let minutes = sessions.reduce(0) { $0 + $1.duration } / 60
+        let sessions = activity.filter {
+            $0.kind == .focusCompleted && $0.day(calendar: calendar) == day.date && countsAsDone($0)
+        }
+        let minutes = sessions.reduce(0) { $0 + ($1.quantity ?? $1.end.timeIntervalSince($1.start) / 60) }
         return DayReview(
             date: day.date,
             done: day.items.filter(\.isDone).map(\.title),
@@ -177,6 +178,15 @@ public enum DayReviewer {
                 .filter { $0.target > 0 || $0.completed > 0 }
                 .map { DayReviewCount(title: $0.title, count: max($0.completed, 0), unit: $0.unit) }
         )
+    }
+
+    /// Whether a focus stretch counts as a finished session. Study logs
+    /// skipped and abandoned phases too; like its own tally, only phases
+    /// that ran out or were stopped at their normal end count. A record
+    /// without an outcome (a module that logs only finished stretches) does.
+    private static func countsAsDone(_ record: ActivityRecord) -> Bool {
+        guard let outcome = record.metadata[ActivityMetadata.outcome] else { return true }
+        return StudyPhaseOutcome(rawValue: outcome)?.countsAsDone ?? false
     }
 
     /// The figures under the summary, in order: study time and sessions (or
@@ -315,27 +325,31 @@ public final class DayReviewRepository {
     public let directory: URL
     private let fileManager: FileManager
 
-    /// `~/Library/Application Support/NotchDeck/Reviews`.
-    public static var defaultDirectory: URL {
-        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("NotchDeck", isDirectory: true)
-            .appendingPathComponent("Reviews", isDirectory: true)
-    }
+    /// The folder in an edition's storage, `Application Support/<edition>/Reviews`.
+    public static let folderName = "Reviews"
 
-    public init(directory: URL = DayReviewRepository.defaultDirectory, fileManager: FileManager = .default) {
+    public init(directory: URL, fileManager: FileManager = .default) {
         self.directory = directory
         self.fileManager = fileManager
+    }
+
+    /// The edition's review folder.
+    public convenience init(storage: EditionStorage) {
+        self.init(directory: storage.folder(Self.folderName))
     }
 
     public func fileURL(for date: PlannerDayKey) -> URL {
         directory.appendingPathComponent("\(date.rawValue).json", isDirectory: false)
     }
 
+    /// The review file format. Version 1 added the `schemaVersion` key.
+    public static let schema = VersionedJSON(current: 1)
+
     /// The saved review, or nil if none exists. Throws on unreadable files.
     public func load(_ date: PlannerDayKey) throws -> DayReview? {
         let url = fileURL(for: date)
         guard fileManager.fileExists(atPath: url.path) else { return nil }
-        return try JSONDecoder().decode(DayReview.self, from: Data(contentsOf: url))
+        return try Self.schema.decode(DayReview.self, from: Data(contentsOf: url))
     }
 
     /// Writes atomically, replacing an earlier review of the same day.
@@ -343,7 +357,7 @@ public final class DayReviewRepository {
         try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-        try encoder.encode(review).write(to: fileURL(for: review.date), options: .atomic)
+        try Self.schema.encode(review, using: encoder).write(to: fileURL(for: review.date), options: .atomic)
     }
 }
 
@@ -359,7 +373,7 @@ public extension DayReview {
         calendar: Calendar = .current
     ) -> DayReview {
         var review = DayReviewer.review(of: .sample(on: date, kind: kind, calendar: calendar),
-                                        focusLog: FocusSessionLog(), study: study, progress: progress,
+                                        activity: [], study: study, progress: progress,
                                         calendar: calendar)
         review.focusSessions = 3
         review.focusMinutes = 75

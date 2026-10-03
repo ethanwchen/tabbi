@@ -13,17 +13,17 @@ public struct ModuleLayout: Equatable, Sendable {
     /// Modules the user turned off.
     public private(set) var disabled: Set<ModuleID>
 
-    /// NotchDeck's original five tabs, with every other module parked
-    /// switched off. Matches the Productivity kit (a test keeps them in step).
-    public static let `default` = ModuleLayout(
-        order: [.spotify, .system, .claudeUsage, .planner, .claudeAsk], disabled: []
-    )
+    /// Every module in `catalog`, in canonical order, all switched on: the
+    /// last resort when no saved layout or kit says otherwise.
+    public init(catalog: ModuleCatalog) {
+        self.init(order: catalog.ids, disabled: [], catalog: catalog)
+    }
 
     /// Builds a layout from possibly stale or partial data: ids not in
     /// `catalog` and duplicates are dropped, missing modules are appended
     /// switched off, and if that would leave nothing enabled the first module is
     /// re-enabled.
-    public init(order: [ModuleID], disabled: Set<ModuleID>, catalog: ModuleCatalog = .builtIn) {
+    public init(order: [ModuleID], disabled: Set<ModuleID>, catalog: ModuleCatalog) {
         var seen = Set<ModuleID>()
         var normalized = order.filter { catalog.contains($0) && seen.insert($0).inserted }
         let missing = catalog.ids.filter { !seen.contains($0) }
@@ -37,7 +37,7 @@ public struct ModuleLayout: Equatable, Sendable {
     }
 
     /// Restores a layout from raw identifiers, ignoring ones `catalog` doesn't know.
-    public init(orderRawValues: [String], disabledRawValues: [String], catalog: ModuleCatalog = .builtIn) {
+    public init(orderRawValues: [String], disabledRawValues: [String], catalog: ModuleCatalog) {
         self.init(
             order: orderRawValues.map(ModuleID.init(rawValue:)),
             disabled: Set(disabledRawValues.map(ModuleID.init(rawValue:))),

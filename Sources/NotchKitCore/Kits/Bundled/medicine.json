@@ -1,19 +1,21 @@
 {
   "formatVersion": 1,
   "id": "medicine",
+  "pickerOrder": 2,
   "name": "Medicine",
   "summary": "StudyNotch: study timer, Anki reviews, and a study pet for med school.",
   "symbol": "cross.case.fill",
   "modules": ["study", "planner", "anki", "party", "spotify", "claudeAsk", "closet"],
   "defaults": {
-    "studyMethods": ["pomodoro", "ankiSprint", "questionBlock", "fiftyTwoSeventeen", "ultradian", "flowtime", "custom"],
-    "studyMethod": "pomodoro",
-    "focusSounds": [{ "sound": "rain", "level": 0.8 }, { "sound": "brown", "level": 0.4 }],
     "ticker": ["focus", "tasks", "progress", "party", "meeting", "nowPlaying", "pet"],
-    "pet": { "breed": "orangeTabby" },
     "theme": "notch",
     "moduleSettings": {
-      "study": { "dailyGoalMinutes": 240 },
+      "study": {
+        "methods": ["pomodoro", "ankiSprint", "questionBlock", "fiftyTwoSeventeen", "ultradian", "flowtime", "custom"],
+        "method": "pomodoro",
+        "dailyGoalMinutes": 240
+      },
+      "focus": { "sounds": [{ "sound": "rain", "level": 0.8 }, { "sound": "brown", "level": 0.4 }] },
       "planner": {
         "planMode": "study",
         "reviewsFirst": true,
@@ -24,6 +26,7 @@
         "sampleDay": "medicine"
       },
       "closet": {
+        "pet": { "breed": "orangeTabby" },
         "coachLines": {
           "distraction": [
             "Your flashcards miss you. Back for a few more?",

@@ -3,8 +3,8 @@ import Foundation
 /// The kits a user can choose from: the ones that ship in `Kits/Bundled`
 /// plus any they imported.
 public struct KitLibrary: Equatable, Sendable {
-    /// Bundled kit ids in picker order. Each has a `<id>.json` in `Kits/Bundled`.
-    public static let bundledIDs = ["productivity", "medicine", "student"]
+    /// Bundled kit ids in picker order. Each is a `<id>.json` in `Kits/Bundled`.
+    public static var bundledIDs: [String] { bundled.kits.map(\.id) }
     /// The kit used when the user (or edition) hasn't picked one. It
     /// reproduces NotchDeck's original tabs.
     public static let defaultKitID = "productivity"
@@ -17,10 +17,21 @@ public struct KitLibrary: Equatable, Sendable {
         self.kits = kits.filter { seen.insert($0.id).inserted }
     }
 
-    /// The kits that ship with the app. Bundled files are covered by tests,
-    /// so one failing to load is a packaging bug; it is skipped rather than
-    /// crashing the app.
-    public static let bundled = KitLibrary(bundledIDs.compactMap { try? loadBundled($0) })
+    /// The kits that ship with the app: every JSON file in `Kits/Bundled`,
+    /// ordered by `pickerOrder` and then id, so shipping a kit is adding its
+    /// file. Bundled files are covered by tests, so one failing to load is a
+    /// packaging bug; it is skipped rather than crashing the app.
+    public static let bundled = KitLibrary(
+        bundledFileURLs
+            .compactMap { try? load(from: $0) }
+            .sorted { ($0.pickerOrder ?? .max, $0.id) < ($1.pickerOrder ?? .max, $1.id) }
+    )
+
+    /// Every kit file in `Kits/Bundled`, in file-name order.
+    static var bundledFileURLs: [URL] {
+        (KitResources.bundle?.urls(forResourcesWithExtension: "json", subdirectory: "Bundled") ?? [])
+            .sorted { $0.lastPathComponent < $1.lastPathComponent }
+    }
 
     /// Loads one bundled kit by id.
     public static func loadBundled(_ id: String) throws -> KitManifest {

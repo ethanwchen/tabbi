@@ -10,7 +10,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         let edition = Edition.current
-        let settings = SettingsStore(defaultKitID: edition.defaultKitID, kitStore: .standard(for: edition))
+        let settings = SettingsStore(catalog: ModuleList.catalog, defaultKitID: edition.defaultKitID, kitStore: .standard(for: edition))
         let services = AppServices(settings: settings)
         self.services = services
         notch = NotchController(content: ModuleViews.notchContent(services: services),

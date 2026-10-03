@@ -29,15 +29,15 @@ public enum NotchPreviewLayout {
         case .meeting(let meeting):
             content = textWidth(meeting.title) + Theme.Spacing.xs
                 + textWidth(TickerFormat.meetingCountdown(meeting.timing))
-        case .focus(_, let remaining, _, _):
+        case .focus(let focus):
             // Measure a fixed-width sample so the wing doesn't breathe as digits change.
-            content = textWidth(String(TickerFormat.focusClock(remaining).map { $0.isNumber ? "0" : $0 }))
+            content = textWidth(String(TickerFormat.focusClock(focus.time).map { $0.isNumber ? "0" : $0 }))
         case .tasks(let remaining):
             content = textWidth(TickerFormat.tasksLeft(remaining))
         case .progress(let progress):
             content = textWidth(TickerFormat.progressLeft(progress))
-        case .claudeUsage(let window, let utilization):
-            content = textWidth(TickerFormat.usage(window: window, utilization: utilization))
+        case .highlight(let highlight):
+            content = textWidth(highlight.text)
         case .pet(let pet):
             // Measured asleep too, so the wing doesn't jump when the pet dozes off.
             content = max(textWidth(pet.profile.name) + Theme.Spacing.xs + textWidth(TickerFormat.petSleeping),
@@ -49,14 +49,17 @@ public enum NotchPreviewLayout {
         return min(max(wing, iconSize + outerInset + innerGap), maxWingWidth)
     }
 
-    public static func symbol(for item: TickerItem) -> String {
+    /// The icon beside the closed notch; a module's progress, and its
+    /// highlight unless it names a symbol, use that module's symbol from
+    /// `catalog`.
+    public static func symbol(for item: TickerItem, catalog: ModuleCatalog) -> String {
         switch item {
         case .meeting(let meeting): meeting.canJoin ? "video.fill" : "calendar"
         case .nowPlaying: "music.note"
-        case .focus(let phase, _, _, _): phase == .focus ? "timer" : "cup.and.saucer.fill"
+        case .focus(let focus): focus.phase == .focus ? "timer" : "cup.and.saucer.fill"
         case .tasks: "checklist"
-        case .progress(let progress): progress.source.descriptor.symbol
-        case .claudeUsage: "gauge.with.dots.needle.67percent"
+        case .progress(let progress): catalog.descriptor(for: progress.source).symbol
+        case .highlight(let highlight): highlight.symbol ?? catalog.descriptor(for: highlight.source).symbol
         case .pet: "pawprint.fill"
         case .party: "person.3.fill"
         }
@@ -67,12 +70,10 @@ public enum NotchPreviewLayout {
         switch item {
         case .meeting(let meeting): TickerFormat.meetingSummary(meeting)
         case .nowPlaying: "Now playing"
-        case .focus(let phase, let remaining, let isRunning, _):
-            "\(phase == .focus ? "Focus" : "Break") \(TickerFormat.focusClock(remaining))\(isRunning ? "" : " (paused)")"
+        case .focus(let focus): TickerFormat.focusSummary(focus)
         case .tasks(let remaining): TickerFormat.tasksLeft(remaining)
         case .progress(let progress): "\(progress.title): \(TickerFormat.progressLeft(progress))"
-        case .claudeUsage(let window, let utilization):
-            "Claude usage \(TickerFormat.usage(window: window, utilization: utilization))"
+        case .highlight(let highlight): highlight.summary
         case .pet(let pet): TickerFormat.petSummary(pet)
         case .party(let party):
             "Studying with " + ListFormatter.localizedString(byJoining: party.pets.dropFirst().map(\.name)

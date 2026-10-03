@@ -5,8 +5,10 @@ import NotchKitCore
 import NotchKit
 
 /// The study pet's look and points, persisted as one `PetSave`, plus the
-/// animated preview the Closet tab shows. `AppServices` owns it so the pet
-/// in the notch and the coach can share the same pet.
+/// animated preview the Closet tab shows. It is the only reader and writer
+/// of the pet's save: modules share it as `context.studyPet` and follow
+/// `profiles`, so the Closet, the coach, Study's corner pet and Party all
+/// show the same pet.
 ///
 /// With `NOTCHDECK_DEMO=1` it starts from `PetCloset.demo` and never writes,
 /// so demos and snapshots can't touch a real save.
@@ -29,29 +31,40 @@ final class ClosetStore: ObservableObject {
     let awards = PassthroughSubject<PetStudyAward, Never>()
 
     private var focusSubscription: AnyCancellable?
-    private var lastFocus: FocusTimer?
+    private var kitSubscription: AnyCancellable?
+    private var lastFocus: ProvidedFocus?
     private let saveURL: URL?
     /// Set when the save on disk could not be read: the closet then runs on
     /// a fresh pet but never overwrites the file, so nothing is lost.
     private let saveIsUnreadable: Bool
 
-    init(edition: Edition = .current) {
-        let isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
-        let url = isDemo ? nil : ClosetStore.saveURL(for: edition)
+    /// False until the pet is saved (a rename, a new outfit, the first
+    /// points). Until then the pet is the kit's starter and follows kit
+    /// switches, so the kit picked on first run decides the first pet.
+    private var hasSave: Bool
+
+    /// - Parameter starter: the pet to start someone with no saved pet on,
+    ///   usually the kit's (`PetProfile.starter(kit:)`).
+    init(storage: EditionStorage, runMode: RunMode, starter: PetProfile = .starter(.cat)) {
+        let isDemo = runMode.isDemo
+        let url = isDemo ? nil : ClosetStore.saveURL(in: storage)
         var unreadable = false
+        var saved = true
         var closet = PetCloset.demo
         if !isDemo {
             do {
                 let save = try url.flatMap { try PetSave.load(from: $0) }
-                closet = PetCloset(save: save ?? PetSave(profile: .starter(.cat)))
+                saved = save != nil
+                closet = PetCloset(save: save ?? PetSave(profile: starter))
             } catch {
                 unreadable = true
-                closet = PetCloset(save: PetSave(profile: .starter(.cat)))
+                closet = PetCloset(save: PetSave(profile: starter))
             }
         }
         self.closet = closet
         saveURL = url
         saveIsUnreadable = unreadable
+        hasSave = saved
         preview = PetPlayer(profile: closet.profile)
         presence = PetPresence(profile: closet.profile, lastActive: .now)
     }
@@ -59,7 +72,7 @@ final class ClosetStore: ObservableObject {
     /// Follows the shared focus timer, so the notch pet stays awake through
     /// sessions and dozes off a while after the last one, and finished
     /// sessions earn points (`PetCloset.credit`).
-    func follow(focus: AnyPublisher<FocusTimer?, Never>) {
+    func follow(focus: AnyPublisher<ProvidedFocus?, Never>) {
         focusSubscription = focus
             .removeDuplicates()
             .sink { [weak self] timer in
@@ -67,26 +80,35 @@ final class ClosetStore: ObservableObject {
             }
     }
 
-    private func focusChanged(_ timer: FocusTimer?) {
+    private func focusChanged(_ timer: ProvidedFocus?) {
         let now = Date()
         presence.observe(timer, at: now)
         let old = lastFocus
         lastFocus = timer
         let before = closet.save
         let award = closet.credit(from: old, to: timer, at: now)
-        if closet.save != before { persist() }
+        // A starter pet that only saw an idle clock stays unsaved, so it
+        // keeps following kit switches (the first-run kit pick comes after
+        // the first timer the pet sees). Once a clock runs, the pet and its
+        // baseline are saved, so a session that ends while Tabbi is closed
+        // is still paid on the next launch.
+        if hasSave ? closet.save != before : award != nil || timer?.isActive == true { persist() }
         guard let award else { return }
         preview.send(.celebrate)
         awards.send(award)
     }
 
     /// `~/Library/Application Support/<edition>/Pet/pet.json`.
-    static func saveURL(for edition: Edition) -> URL? {
-        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
-            .appendingPathComponent("\(edition.name)/Pet/pet.json")
+    static func saveURL(in storage: EditionStorage) -> URL {
+        storage.file("pet.json", in: "Pet")
     }
 
     var profile: PetProfile { closet.profile }
+
+    /// The pet's look now and on every change, for modules that show it.
+    var profiles: AnyPublisher<PetProfile, Never> {
+        $closet.map(\.profile).removeDuplicates().eraseToAnyPublisher()
+    }
 
     // MARK: Editing
 
@@ -123,8 +145,24 @@ final class ClosetStore: ObservableObject {
         preview.update(profile: shown)
     }
 
+    /// Until the pet is saved, it is the active kit's starter pet.
+    func follow(kits: AnyPublisher<SettingsStore.KitApplication, Never>) {
+        kitSubscription = kits.sink { [weak self] in self?.useStarter(.starter(kit: $0.kit.defaults)) }
+    }
+
+    /// Swaps a pet that was never saved for a new kit's starter.
+    func useStarter(_ starter: PetProfile) {
+        guard !hasSave, !saveIsUnreadable, closet.profile != starter else { return }
+        var save = PetSave(profile: starter)
+        save.creditedFocusCount = closet.save.creditedFocusCount
+        save.creditedFocusSource = closet.save.creditedFocusSource
+        closet = PetCloset(save: save)
+        presence.profile = starter
+        refreshPreview()
+    }
+
     private func persist() {
         guard let saveURL, !saveIsUnreadable else { return }
-        try? closet.save.write(to: saveURL)
+        if (try? closet.save.write(to: saveURL)) != nil { hasSave = true }
     }
 }

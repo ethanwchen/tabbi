@@ -7,15 +7,18 @@ import NotchKit
 /// does while it runs, and the timer controls.
 struct FocusPanel: View {
     @ObservedObject var store: FocusStore
-    @EnvironmentObject private var services: AppServices
+    /// Focus mode, whose sound and Do Not Disturb settings the panel shows.
+    let focusMode: FocusController
+    /// What other modules share, for the task this session is linked to.
+    let providers: ProviderHub
 
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
             FocusDial(store: store)
                 .frame(width: 176)
             VStack(spacing: Theme.Spacing.s) {
-                FocusTaskCard(store: store, providers: services.providers)
-                FocusModeCard()
+                FocusTaskCard(store: store, providers: providers)
+                FocusModeCard(controller: focusMode)
                 FocusControls(store: store)
             }
         }
@@ -24,7 +27,7 @@ struct FocusPanel: View {
     }
 }
 
-private var accent: Color { Theme.Palette.accent(for: .focus) }
+private var accent: Color { FocusModule.descriptor.accentColor }
 
 /// The countdown inside a progress ring, with the phase underneath.
 private struct FocusDial: View {
@@ -124,7 +127,7 @@ private struct FocusTaskCard: View {
 
 /// What focus mode does while a focus phase runs, from Settings › Focus.
 private struct FocusModeCard: View {
-    @ObservedObject private var controller = FocusController.shared
+    @ObservedObject var controller: FocusController
 
     var body: some View {
         let settings = controller.settings

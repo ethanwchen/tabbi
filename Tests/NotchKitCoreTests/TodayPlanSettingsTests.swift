@@ -13,7 +13,9 @@ final class TodayPlanSettingsTests: XCTestCase {
     }
 
     private func kit(_ planner: [String: KitValue]?, studyMethod: String? = nil) -> KitDefaults {
-        KitDefaults(studyMethod: studyMethod, moduleSettings: planner.map { ["planner": .object($0)] } ?? [:])
+        var sections: [String: KitValue] = planner.map { ["planner": .object($0)] } ?? [:]
+        if let studyMethod { sections["study"] = ["method": .string(studyMethod)] }
+        return KitDefaults(moduleSettings: sections)
     }
 
     // MARK: - Reading the kit
@@ -70,7 +72,7 @@ final class TodayPlanSettingsTests: XCTestCase {
         let medicine = try KitLibrary.loadBundled("medicine")
         let settings = TodayPlanSettings(kit: medicine.defaults)
         XCTAssertEqual(settings.planMode, .study)
-        XCTAssertEqual(settings.studyMethod.kind, medicine.defaults.resolvedStudyMethod)
+        XCTAssertEqual(settings.studyMethod.kind, StudyMethodMenu(kit: medicine.defaults).startingKind)
         XCTAssertTrue(settings.reviewsFirst)
         XCTAssertEqual(settings.dayEndHour, 21, "study days run into the evening")
         XCTAssertEqual(settings.sampleDay, .medicine, "demo shows a med student's day")

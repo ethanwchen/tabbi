@@ -9,6 +9,8 @@ import NotchKit
 /// would pop outside the notch.
 struct StudyPanel: View {
     @ObservedObject var store: StudyStore
+    /// Focus mode, whose sound and Do Not Disturb deep focus blocks use.
+    let focusMode: FocusController
     @State private var overlay: StudyPanelOverlay? = StudyPanelOverlay(snapshot: StudySnapshotState.current)
 
     var body: some View {
@@ -25,7 +27,7 @@ struct StudyPanel: View {
                                     use: { store.choose(kind); show(nil) },
                                     close: { show(back) })
             case .sounds:
-                StudySoundMixer { show(nil) }
+                StudySoundMixer(focus: focusMode) { show(nil) }
             case .custom:
                 StudyCustomEditor(store: store) { show(nil) }
             case nil:
@@ -33,7 +35,7 @@ struct StudyPanel: View {
                     StudyDial(store: store)
                         .frame(width: 176)
                     VStack(spacing: Theme.Spacing.s) {
-                        StudyMethodCard(store: store, choose: { show(.picker) },
+                        StudyMethodCard(store: store, focusMode: focusMode, choose: { show(.picker) },
                                         info: { show(.info(store.session.method.kind, from: nil)) },
                                         sounds: { show(.sounds) }, edit: { show(.custom) })
                         StudyControls(store: store)
@@ -142,6 +144,7 @@ private struct StudyDial: View {
 /// picker, the (i) the method's info popover, and Mix or Playlist the mixer.
 private struct StudyMethodCard: View {
     @ObservedObject var store: StudyStore
+    let focusMode: FocusController
     let choose: () -> Void
     let info: () -> Void
     let sounds: () -> Void
@@ -195,7 +198,7 @@ private struct StudyMethodCard: View {
                 .help("Change the study method")
                 .onHover { hovering = $0 }
                 Spacer(minLength: Theme.Spacing.xs)
-                StudyDeepFocusRow(store: store, openMixer: sounds)
+                StudyDeepFocusRow(store: store, focus: focusMode, openMixer: sounds)
                 Spacer(minLength: Theme.Spacing.xs)
                 StudyTodayRow(today: store.today, goal: store.goal)
             }
@@ -212,7 +215,7 @@ private struct StudyMethodCard: View {
 /// The deep focus switch, and the focus sound study blocks play with it.
 private struct StudyDeepFocusRow: View {
     @ObservedObject var store: StudyStore
-    @ObservedObject private var focus = FocusController.shared
+    @ObservedObject var focus: FocusController
     let openMixer: () -> Void
 
     var body: some View {
@@ -222,7 +225,7 @@ private struct StudyDeepFocusRow: View {
                 store.setDeepFocus(!isOn)
             }
             Spacer(minLength: 0)
-            StudySoundRow(isActive: isOn, openMixer: openMixer)
+            StudySoundRow(focus: focus, isActive: isOn, openMixer: openMixer)
         }
     }
 

@@ -140,7 +140,7 @@ scripts/bundle.sh studynotch    # build/StudyNotch.app: the same app branded for
 
 Editions are branded builds of the same binary.
 `scripts/bundle.sh studynotch` (or `scripts/run.sh studynotch`) builds StudyNotch, with its own name, bundle id and the Medicine kit preselected.
-An edition is an Info.plist overlay in `Resources/Editions/<edition>/` plus an entry in `Edition.builtIn`; an optional `AppIcon.icns` beside it replaces the icon.
+An edition is one JSON file in `Sources/NotchKitCore/Editions/BundledEditions/` (id, name, bundle id, default kit, an optional icon in `Resources/` and the Info.plist strings that name the app), which both the app and `scripts/assemble.sh` read, so a new edition needs no code change.
 
 `NOTCHDECK_DEMO=1` swaps every data source for realistic sample data, so you can try the UI without Spotify, a calendar or the `claude` CLI.
 

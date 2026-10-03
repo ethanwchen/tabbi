@@ -125,11 +125,14 @@ public struct ProvidedParty: Hashable, Sendable {
 /// - `tasks`: TaskSource, things to do today.
 /// - `events`: EventSource, calendar events.
 /// - `progress`: ProgressSource, today's study or practice goals.
-/// - `focus`: FocusState, the focus timer the module runs, and
-///   `focusIsDeep`, whether the user asked for deep focus with it.
+/// - `focus`: FocusState, the focus or break clock the module runs, in
+///   the engine-neutral `ProvidedFocus` shape.
 /// - `study`: StudySource, today's study minutes, sessions and points.
 /// - `pet`: PetSource, the study pet the closed notch shows.
 /// - `party`: PartySource, the study party the user is in.
+/// - `highlights`: HighlightSource, short lines for the closed-notch ticker.
+/// - `isPlaying`: MediaSource, music is playing, so the closed notch shows
+///   the music wings (artwork and equalizer).
 ///
 /// Modules publish a new value whenever their data changes, and
 /// `ProviderSnapshot` merges all enabled modules' values, so consumers such
@@ -138,32 +141,33 @@ public struct ModuleProvision: Equatable, Sendable {
     public var tasks: [ProvidedTask]
     public var events: [UpcomingEvent]
     public var progress: [ProgressItem]
-    public var focus: FocusTimer?
-    /// The user turned on deep focus for `focus` (Study's switch), so
-    /// followers such as the pet coach can save their nudges for it.
-    public var focusIsDeep: Bool
+    public var focus: ProvidedFocus?
     public var study: StudyDayTally?
     public var pet: PetPresence?
     public var party: ProvidedParty?
+    public var highlights: [TickerHighlight]
+    public var isPlaying: Bool
 
     public init(
         tasks: [ProvidedTask] = [],
         events: [UpcomingEvent] = [],
         progress: [ProgressItem] = [],
-        focus: FocusTimer? = nil,
-        focusIsDeep: Bool = false,
+        focus: ProvidedFocus? = nil,
         study: StudyDayTally? = nil,
         pet: PetPresence? = nil,
-        party: ProvidedParty? = nil
+        party: ProvidedParty? = nil,
+        highlights: [TickerHighlight] = [],
+        isPlaying: Bool = false
     ) {
         self.tasks = tasks
         self.events = events
         self.progress = progress
         self.focus = focus
-        self.focusIsDeep = focusIsDeep
         self.study = study
         self.pet = pet
         self.party = party
+        self.highlights = highlights
+        self.isPlaying = isPlaying
     }
 
     public static let empty = ModuleProvision()
@@ -172,37 +176,55 @@ public struct ModuleProvision: Equatable, Sendable {
 /// Everything the enabled modules provide, merged into one value.
 ///
 /// Built from provisions in tab order, so the user's ordering decides whose
-/// tasks come first and whose focus timer wins when two are active.
+/// tasks come first; which focus clock wins when two run is `focus`'s rule.
 public struct ProviderSnapshot: Equatable, Sendable {
     /// Tasks in tab order, then each module's own order.
     public private(set) var tasks: [ProvidedTask] = []
-    /// Events from every module, by start time; a repeated id keeps the first.
+    /// Events from every module, by start time. Unlike tasks and progress,
+    /// events are keyed by id alone, across modules: an event id is the
+    /// calendar's own identifier, so two modules that read the same
+    /// calendar list a meeting once, and the first in tab order wins. Ids
+    /// that are not calendar identifiers should carry a module prefix so
+    /// they never merge by accident.
     public private(set) var events: [UpcomingEvent] = []
     public private(set) var progress: [ProgressItem] = []
-    /// A running or paused timer beats an idle one; ties go to tab order.
-    public private(set) var focus: FocusTimer?
-    /// The module running `focus`, so a click on its preview opens that
-    /// module and consumers can tell one module's timer from another's.
-    public private(set) var focusSource: ModuleID?
-    /// Whether `focus` runs in deep focus, as its module reported it.
-    public private(set) var focusIsDeep = false
+    /// The one clock the app shows when several modules run one (say the
+    /// Pomodoro and a Study block): a running clock beats a paused one,
+    /// which beats an idle one. Among running clocks the most recently
+    /// started or resumed one wins (`focusStarts`), since that is the one
+    /// the user just turned to; the rest, and clocks with no known start,
+    /// go by tab order. Its `source` is the module running it, so a click
+    /// on its preview opens that module and consumers can tell one
+    /// module's clock from another's.
+    public private(set) var focus: ProvidedFocus?
     /// Every module's study tally added up; nil when no module keeps one.
     public private(set) var study: StudyDayTally?
     /// The first pet in tab order.
     public private(set) var pet: PetPresence?
     /// The first party in tab order.
     public private(set) var party: ProvidedParty?
+    /// Highlights in tab order, then each module's own order.
+    public private(set) var highlights: [TickerHighlight] = []
+    /// Whether any module is playing music.
+    public private(set) var isPlaying = false
 
     public init() {}
 
     /// Merges `provisions` from modules listed in tab order. Each item's
     /// `source` is set to the module that provided it, and a repeated
-    /// `(source, id)` keeps only its first occurrence.
-    public init(_ provisions: [(module: ModuleID, provision: ModuleProvision)]) {
+    /// `(source, id)` keeps only its first occurrence. Events are the one
+    /// exception: they merge by id across modules (see `events`).
+    /// `focusStarts` says when each module's focus clock last started or
+    /// resumed running, which decides between two running clocks.
+    public init(
+        _ provisions: [(module: ModuleID, provision: ModuleProvision)],
+        focusStarts: [ModuleID: Date] = [:]
+    ) {
         var taskKeys = Set<[String]>()
         var progressKeys = Set<[String]>()
+        var highlightKeys = Set<[String]>()
         var eventIDs = Set<String>()
-        var activeFocus: (timer: FocusTimer, module: ModuleID, isDeep: Bool)?
+        var clocks: [ProvidedFocus] = []
         for (module, provision) in provisions {
             for var task in provision.tasks where taskKeys.insert([module.rawValue, task.id]).inserted {
                 task.source = module
@@ -212,22 +234,40 @@ public struct ProviderSnapshot: Equatable, Sendable {
                 item.source = module
                 progress.append(item)
             }
+            for var highlight in provision.highlights
+            where highlightKeys.insert([module.rawValue, highlight.id]).inserted {
+                highlight.source = module
+                highlights.append(highlight)
+            }
+            if provision.isPlaying { isPlaying = true }
             if pet == nil { pet = provision.pet }
             events += provision.events.filter { eventIDs.insert($0.id).inserted }
             if let tally = provision.study { study = (study ?? StudyDayTally()) + tally }
             if party == nil { party = provision.party }
-            if let timer = provision.focus {
-                if focus == nil { (focus, focusSource, focusIsDeep) = (timer, module, provision.focusIsDeep) }
-                if activeFocus == nil, timer.isRunning || timer.isPaused {
-                    activeFocus = (timer, module, provision.focusIsDeep)
-                }
+            if var clock = provision.focus {
+                clock.source = module
+                clocks.append(clock)
             }
         }
-        if let activeFocus { (focus, focusSource, focusIsDeep) = activeFocus }
+        focus = Self.leadingClock(clocks, focusStarts: focusStarts)
         // Stable, so events with equal starts keep their tab order.
         events = events.enumerated()
             .sorted { ($0.element.start, $0.offset) < ($1.element.start, $1.offset) }
             .map(\.element)
+    }
+
+    /// The clock `focus` picks from `clocks`, which are in tab order.
+    private static func leadingClock(_ clocks: [ProvidedFocus], focusStarts: [ModuleID: Date]) -> ProvidedFocus? {
+        func rank(_ clock: ProvidedFocus) -> Int {
+            clock.isRunning ? 2 : clock.isPaused ? 1 : 0
+        }
+        func start(_ clock: ProvidedFocus) -> Date {
+            clock.isRunning ? focusStarts[clock.source] ?? .distantPast : .distantPast
+        }
+        // The negated offset makes an earlier tab win a tie.
+        return clocks.enumerated().max { lhs, rhs in
+            (rank(lhs.element), start(lhs.element), -lhs.offset) < (rank(rhs.element), start(rhs.element), -rhs.offset)
+        }?.element
     }
 
     /// Tasks not done yet, in order.

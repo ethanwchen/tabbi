@@ -13,20 +13,24 @@ import NotchKitCore
 /// only ticks once a second while the panel is visible.
 ///
 /// Notification permission is requested the first time the user starts the
-/// timer. With `NOTCHDECK_DEMO=1` it shows a running sample session and never
-/// touches notifications, sounds, or disk.
+/// timer. In demo mode it shows a running sample session; in demo and
+/// snapshot runs it never touches notifications, sounds, or disk.
 @MainActor
 final class FocusStore: ObservableObject {
     @Published private(set) var timer: FocusTimer {
-        didSet { FocusController.shared.timerChanged(timer) }
+        didSet { focusMode?.timerChanged(timer) }
     }
     /// The moment the view measures against; advances every second while visible.
     @Published private(set) var now = Date()
-    /// Focus phases completed in the last few days, for the End-of-Day Review.
-    private(set) var sessionLog = FocusSessionLog()
 
     private let isDemo: Bool
-    private let defaults = UserDefaults.standard
+    /// Demo or snapshot run: nothing is saved, scheduled, played or logged.
+    private let isEphemeral: Bool
+    /// Starts and ends focus mode with the focus phases; nil in tests.
+    private let focusMode: FocusController?
+    private let storage: FocusTimerStorage
+    /// Where finished focus stretches and breaks are logged, as the Focus module's.
+    private let activity: ActivityLog?
     /// The panels showing the timer right now (Today, Focus). Tracked per
     /// viewer because switching tabs may show the new panel before the old
     /// one disappears.
@@ -36,21 +40,31 @@ final class FocusStore: ObservableObject {
     private var phaseEndTimer: Timer?
     private let notifications: FocusNotifications?
 
-    private static let timerKey = "planner.focusTimer"
-    private static let sessionLogKey = "planner.focusSessions"
-
-    init() {
-        isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
+    init(activity: ActivityLog? = nil, focusMode: FocusController? = nil, runMode: RunMode,
+         defaults: UserDefaults = .standard) {
+        self.activity = activity
+        storage = FocusTimerStorage(defaults: defaults)
+        self.focusMode = focusMode
+        isDemo = runMode.isDemo
+        isEphemeral = runMode.isEphemeral
         if isDemo {
             timer = Self.demoTimer(now: Date())
             notifications = nil
             return
         }
+        timer = storage.loadTimer()
+        if isEphemeral {
+            // A snapshot shows the saved timer as it stands now and leaves it be.
+            notifications = nil
+            _ = timer.advance(to: Date())
+            return
+        }
         notifications = FocusNotifications.make()
-        timer = defaults.data(forKey: Self.timerKey)
-            .flatMap { try? JSONDecoder().decode(FocusTimer.self, from: $0) } ?? FocusTimer()
-        sessionLog = defaults.data(forKey: Self.sessionLogKey)
-            .flatMap { try? JSONDecoder().decode(FocusSessionLog.self, from: $0) } ?? FocusSessionLog()
+        // Older builds kept finished focus phases in a log of their own; it is
+        // dropped only once the activity log has them on disk.
+        if let activity {
+            storage.moveSessionLog { activity.record($0.activityRecords(source: FocusModule.descriptor.id)) }
+        }
         // A phase may have ended while the app wasn't running; catch up quietly.
         record(timer.advance(to: Date()))
         scheduleSideEffects(withdrawingPending: false)
@@ -75,7 +89,7 @@ final class FocusStore: ObservableObject {
 
     func start() {
         catchUp()
-        if !isDemo, !timer.isRunning {
+        if !isEphemeral, !timer.isRunning {
             // The phase-end request scheduled below is rejected while permission
             // is still undecided, so schedule it again once the user allows it.
             notifications?.requestAuthorizationIfNeeded { [weak self] in self?.rescheduleNotification() }
@@ -130,26 +144,26 @@ final class FocusStore: ObservableObject {
         guard !completions.isEmpty else { return }
         record(completions)
         // Stale ends (the Mac was asleep) already got their notification; stay quiet.
-        if let last = completions.last, now.timeIntervalSince(last.endedAt) < 60 {
+        if !isEphemeral, let last = completions.last, now.timeIntervalSince(last.endedAt) < 60 {
             Self.playChime()
         }
         scheduleSideEffects(withdrawingPending: false)
         updateTicker()
     }
 
-    /// Adds finished focus phases to the session log and saves it.
+    /// Logs every finished phase in the shared activity log, which the
+    /// End-of-Day Review counts focus sessions from.
     private func record(_ completions: [FocusPhaseCompletion]) {
-        guard !isDemo, !completions.isEmpty else { return }
-        sessionLog.record(completions, config: timer.config, now: Date())
-        if let data = try? JSONEncoder().encode(sessionLog) { defaults.set(data, forKey: Self.sessionLogKey) }
+        guard !isEphemeral, !completions.isEmpty else { return }
+        activity?.record(completions.map { $0.activityRecord(config: timer.config, source: FocusModule.descriptor.id) })
     }
 
     /// Saves the timer and arms the phase-end timer and notification. A user
     /// action withdraws the pending banner; a phase that ended on its own keeps
     /// it, since macOS may not have delivered it yet.
     private func scheduleSideEffects(withdrawingPending: Bool) {
-        guard !isDemo else { return }
-        if let data = try? JSONEncoder().encode(timer) { defaults.set(data, forKey: Self.timerKey) }
+        guard !isEphemeral else { return }
+        storage.save(timer)
 
         phaseEndTimer?.invalidate()
         phaseEndTimer = nil
@@ -166,13 +180,13 @@ final class FocusStore: ObservableObject {
 
     /// Re-adds the pending phase-end notification, e.g. after permission was granted.
     private func rescheduleNotification() {
-        guard !isDemo, let endsAt = timer.endsAt else { return }
+        guard !isEphemeral, let endsAt = timer.endsAt else { return }
         notifications?.schedule(phaseEndingAt: endsAt, timer: timer)
     }
 
     /// Ticks once a second, only while the panel is visible and the clock runs.
     private func updateTicker() {
-        guard isVisible, timer.isRunning, !isDemo else {
+        guard isVisible, timer.isRunning, !isEphemeral else {
             ticker?.invalidate()
             ticker = nil
             return

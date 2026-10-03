@@ -1,20 +1,23 @@
 {
   "formatVersion": 1,
   "id": "student",
+  "pickerOrder": 3,
   "name": "Student",
   "summary": "A study timer, today's classes and homework, and music to focus.",
   "symbol": "graduationcap.fill",
   "accent": "planner",
   "modules": ["study", "planner", "spotify", "claudeAsk", { "id": "anki", "enabled": false }, "closet"],
   "defaults": {
-    "studyMethods": ["pomodoro", "fiftyTwoSeventeen", "flowtime", "custom"],
-    "studyMethod": "pomodoro",
-    "focusSounds": [{ "sound": "cafe", "level": 0.7 }],
     "ticker": ["focus", "tasks", "progress", "meeting", "nowPlaying", "pet"],
-    "pet": { "breed": "corgi" },
     "theme": "notch",
     "moduleSettings": {
+      "study": {
+        "methods": ["pomodoro", "fiftyTwoSeventeen", "flowtime", "custom"],
+        "method": "pomodoro"
+      },
+      "focus": { "sounds": [{ "sound": "cafe", "level": 0.7 }] },
       "closet": {
+        "pet": { "breed": "corgi" },
         "coachLines": {
           "distraction": [
             "Your homework is saving your seat. Back for a bit?",

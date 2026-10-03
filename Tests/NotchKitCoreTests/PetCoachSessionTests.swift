@@ -8,20 +8,20 @@ final class PetCoachSessionTests: XCTestCase {
 
     func testNoTimerOrIdleTimerIsNotStudying() {
         XCTAssertEqual(PetCoachStudyState(nil), .notStudying)
-        XCTAssertEqual(PetCoachStudyState(FocusTimer()), .notStudying)
+        XCTAssertEqual(PetCoachStudyState(FocusTimer().shared), .notStudying)
     }
 
     func testRunningFocusPhaseIsFocusing() {
         var timer = FocusTimer()
         timer.start(at: t0)
-        XCTAssertEqual(PetCoachStudyState(timer), .focusing)
+        XCTAssertEqual(PetCoachStudyState(timer.shared), .focusing)
     }
 
     func testPausedTimerIsPaused() {
         var timer = FocusTimer()
         timer.start(at: t0)
         timer.pause(at: t0.addingTimeInterval(60))
-        XCTAssertEqual(PetCoachStudyState(timer), .paused)
+        XCTAssertEqual(PetCoachStudyState(timer.shared), .paused)
     }
 
     func testRunningBreakIsOnBreak() {
@@ -29,7 +29,7 @@ final class PetCoachSessionTests: XCTestCase {
         timer.start(at: t0)
         timer.advance(to: t0.addingTimeInterval(timer.config.focusDuration + 1))
         XCTAssertEqual(timer.phase, .rest)
-        XCTAssertEqual(PetCoachStudyState(timer), .onBreak)
+        XCTAssertEqual(PetCoachStudyState(timer.shared), .onBreak)
     }
 
     // MARK: Inputs
@@ -39,8 +39,8 @@ final class PetCoachSessionTests: XCTestCase {
         short.start(at: t0)
         var long = FocusTimer(config: FocusTimerConfig(focusDuration: 50 * 60))
         long.start(at: t0)
-        let shortInput = PetCoachInput(now: t0, idleSeconds: 0, frontmost: .neutral, timer: short)
-        let longInput = PetCoachInput(now: t0, idleSeconds: 0, frontmost: .neutral, timer: long)
+        let shortInput = PetCoachInput(now: t0, idleSeconds: 0, frontmost: .neutral, timer: short.shared)
+        let longInput = PetCoachInput(now: t0, idleSeconds: 0, frontmost: .neutral, timer: long.shared)
         XCTAssertFalse(shortInput.deepFocus)
         XCTAssertTrue(longInput.deepFocus)
         XCTAssertEqual(longInput.study, .focusing)
@@ -53,10 +53,10 @@ final class PetCoachSessionTests: XCTestCase {
         onBreak.skip(at: t0)
 
         var coach = PetCoach()
-        let away = PetCoachInput(now: t0, idleSeconds: 6 * 60, frontmost: .neutral, timer: onBreak)
+        let away = PetCoachInput(now: t0, idleSeconds: 6 * 60, frontmost: .neutral, timer: onBreak.shared)
         XCTAssertEqual(coach.evaluate(away), .none)
 
-        let idle = PetCoachInput(now: t0, idleSeconds: 3 * 60, frontmost: .neutral, timer: focusing)
+        let idle = PetCoachInput(now: t0, idleSeconds: 3 * 60, frontmost: .neutral, timer: focusing.shared)
         XCTAssertEqual(coach.evaluate(idle).nudge?.kind, .idleCheck)
     }
 
@@ -70,7 +70,7 @@ final class PetCoachSessionTests: XCTestCase {
         var coach = PetCoach()
         var focusing = FocusTimer()
         focusing.start(at: t0)
-        _ = coach.evaluate(PetCoachInput(now: t0, idleSeconds: 3 * 60, frontmost: .neutral, timer: focusing))
+        _ = coach.evaluate(PetCoachInput(now: t0, idleSeconds: 3 * 60, frontmost: .neutral, timer: focusing.shared))
         coach.handle(.snooze, at: t0)
         var apps = CoachAppList()
         apps.markDistracting("com.hnc.Discord")

@@ -62,9 +62,32 @@ public struct FocusSettings: Codable, Equatable, Sendable {
     /// keeps the current mix; volume, playlist and shortcuts are the user's.
     public func applying(_ kit: KitDefaults) -> FocusSettings {
         var settings = self
-        if let mix = kit.resolvedFocusMix { settings.mix = mix }
+        if let mix = Self.kitMix(of: kit) { settings.mix = mix }
         return settings
     }
+
+    /// The focus sound a kit sets in its Focus section
+    /// (`moduleSettings.focus.sounds`: a list of `sound` and an optional
+    /// `level` from 0 to 1, default 1), with unknown sounds skipped and
+    /// levels clamped by `FocusMix`. Nil when the kit sets no sound; an
+    /// empty list turns the sound off.
+    public static func kitMix(of kit: KitDefaults) -> FocusMix? {
+        kit.settings(for: .focus)?["sounds"]?.arrayValue.map { entries in
+            FocusMix(entries.compactMap { entry in
+                guard let sound = entry["sound"]?.stringValue.flatMap(FocusSound.init(rawValue:)) else { return nil }
+                let level = entry["level"]?.numberValue ?? 1
+                return FocusMix.Layer(sound: sound, level: level.isFinite ? Float(level) : 1)
+            })
+        }
+    }
+
+    /// The keys `kitMix(of:)` reads, for the Focus descriptor.
+    public static let kitSettings = KitSettingsSchema([
+        "sounds": .list(.object([
+            "sound": .choice(FocusSound.allCases.map(\.rawValue)),
+            "level": .number(0...1),
+        ]), maxCount: FocusMix.maxLayers),
+    ])
 
     /// True when applying `kit` would leave these settings unchanged.
     public func usesDefaults(of kit: KitDefaults) -> Bool {

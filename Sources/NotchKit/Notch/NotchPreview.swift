@@ -9,6 +9,8 @@ struct NotchPreview: View {
     let notchWidth: CGFloat
     let content: NotchContent
 
+    private var catalog: ModuleCatalog { content.catalog }
+
     var body: some View {
         let wing = NotchPreviewLayout.wingWidth(for: item)
         // Music keeps the centered artwork + equalizer pair it always had;
@@ -33,7 +35,16 @@ struct NotchPreview: View {
         .help(NotchPreviewLayout.summary(for: item))
     }
 
-    private var accent: Color { Theme.Palette.accent(for: item.module) }
+    private var accent: Color { catalog.descriptor(for: item.module).accentColor }
+
+    private func color(for tone: TickerHighlight.Tone) -> Color {
+        switch tone {
+        case .accent: accent
+        case .primary: Theme.Palette.primaryText
+        case .secondary: Theme.Palette.secondaryText
+        case .danger: Theme.Palette.danger
+        }
+    }
 
     @ViewBuilder private var leading: some View {
         switch item {
@@ -44,7 +55,7 @@ struct NotchPreview: View {
         case .party(let party):
             NotchPartyPets(pets: party.pets)
         default:
-            Image(systemName: NotchPreviewLayout.symbol(for: item))
+            Image(systemName: NotchPreviewLayout.symbol(for: item, catalog: catalog))
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(accent)
                 .frame(width: NotchPreviewLayout.iconSize, height: NotchPreviewLayout.iconSize)
@@ -65,9 +76,9 @@ struct NotchPreview: View {
                     .fixedSize()
             }
             .previewText()
-        case .focus(_, let remaining, let isRunning, _):
-            Text(TickerFormat.focusClock(remaining))
-                .foregroundStyle(isRunning ? accent : Theme.Palette.secondaryText)
+        case .focus(let focus):
+            Text(TickerFormat.focusClock(focus.time))
+                .foregroundStyle(focus.isRunning ? accent : Theme.Palette.secondaryText)
                 .previewText()
         case .tasks(let remaining):
             Text(TickerFormat.tasksLeft(remaining))
@@ -77,9 +88,10 @@ struct NotchPreview: View {
             Text(TickerFormat.progressLeft(progress))
                 .foregroundStyle(Theme.Palette.primaryText)
                 .previewText()
-        case .claudeUsage(let window, let utilization):
-            Text(TickerFormat.usage(window: window, utilization: utilization))
-                .foregroundStyle(utilization >= 1 ? Theme.Palette.danger : accent)
+        case .highlight(let highlight):
+            Text(highlight.text)
+                .foregroundStyle(color(for: highlight.tone))
+                .truncationMode(.tail)
                 .previewText()
         case .pet(let pet):
             HStack(spacing: Theme.Spacing.xs) {

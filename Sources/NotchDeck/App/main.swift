@@ -5,7 +5,7 @@ import NotchKitCore
 MainActor.assumeIsolated {
     let app = NSApplication.shared
     let arguments = CommandLine.arguments
-    if let flag = arguments.firstIndex(of: "--snapshot") {
+    if let flag = arguments.firstIndex(of: RunMode.snapshotFlag) {
         let path = arguments.indices.contains(flag + 1) ? arguments[flag + 1] : "snapshots"
         let kitFlag = arguments.firstIndex(of: "--kit")
         let kitID = kitFlag.flatMap { arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil }

@@ -1,4 +1,5 @@
 import AppKit
+import Combine
 import SwiftUI
 import UniformTypeIdentifiers
 import NotchKitCore
@@ -134,7 +135,7 @@ struct ModulesSettingsPane: View {
 
             Section {
                 ForEach(store.settings.modules.order) { module in
-                    ModuleRow(module: module, layout: $store.settings.modules)
+                    ModuleRow(module: store.catalog.descriptor(for: module), layout: $store.settings.modules)
                 }
                 .onMove { source, destination in
                     store.settings.modules.move(fromOffsets: source, toOffset: destination)
@@ -155,19 +156,19 @@ struct ModulesSettingsPane: View {
 /// imports kits shared as JSON files (see docs/kits.md).
 private struct KitSection: View {
     @EnvironmentObject private var store: SettingsStore
-    /// Reset also restores the kit's focus sound, so it counts toward "already at defaults".
-    @ObservedObject private var focus = FocusController.shared
+    /// Reset also restores what modules take from the kit (Focus: the focus
+    /// sound), so their state counts toward "already at defaults".
+    @Environment(\.modulesUseKitDefaults) private var modulesUseKitDefaults
+    @State private var modulesMatchKit = true
     /// The outcome of the last import or removal, shown under the buttons.
     @State private var message: (text: String, isWarning: Bool)?
-    /// A kit with onboarding questions the user picked; its questions show
-    /// in a sheet and the switch happens only once they confirm.
-    @State private var askingKit: KitManifest?
-    /// Set while `askingKit` is a just-imported kit: what it uses that this
-    /// build skips, reported once the user answers or cancels.
-    @State private var importIssues: [KitIssue]?
+    /// The kit sheet: a picked kit's onboarding questions, or an imported
+    /// kit's questions and then what it will change. Nothing switches, and
+    /// an import isn't saved, until the user confirms.
+    @State private var sheet: KitSheet?
 
     private var usesKitDefaults: Bool {
-        store.usesKitDefaults && (store.activeKit.map { focus.settings.usesDefaults(of: $0.defaults) } ?? true)
+        store.usesKitDefaults && (store.activeKit == nil || modulesMatchKit)
     }
 
     var body: some View {
@@ -186,7 +187,7 @@ private struct KitSection: View {
 
             HStack(spacing: 8) {
                 Button("Import Kit…", action: importKit)
-                    .help("Add a kit someone shared as a .json file")
+                    .help("Add a kit someone shared as a .json file; you see what it changes first")
                 if store.canRemoveActiveKit {
                     Button("Remove Kit", role: .destructive, action: removeKit)
                         .help("Delete this imported kit and go back to the default kit")
@@ -200,26 +201,59 @@ private struct KitSection: View {
             }
 
             if let message {
-                Label(message.text, systemImage: message.isWarning ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
-                    .font(.callout)
-                    .foregroundStyle(message.isWarning ? AnyShapeStyle(.orange) : AnyShapeStyle(.secondary))
-                    .fixedSize(horizontal: false, vertical: true)
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Label(message.text, systemImage: message.isWarning ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
+                        .font(.callout)
+                        .foregroundStyle(message.isWarning ? AnyShapeStyle(.orange) : AnyShapeStyle(.secondary))
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer()
+                    if !message.isWarning, let undo = store.lastKitSwitch {
+                        Button("Undo", action: undoSwitch)
+                            .help(undo.switchedKit
+                                  ? "Go back to the tabs and kit you had before \(undo.kitName)"
+                                  : "Take back this import of \(undo.kitName)")
+                    }
+                }
             }
         } header: {
             Text("Kit")
         } footer: {
             SectionFooter("A kit is a premade set of tabs and defaults. Switching kits or resetting replaces your tabs, notch previews and focus sound with the kit's, and switching adds its starter tasks to Today. Other settings stay.")
         }
-        .sheet(item: $askingKit) { kit in
-            KitQuestionsView(kit: kit, dismissal: .cancel, back: { cancelQuestions(for: kit) }) { answers in
-                askingKit = nil
-                store.switchKit(to: kit.id, answers: answers)
-                if let issues = importIssues {
-                    message = importMessage("Imported \(kit.name).", issues: issues)
-                    importIssues = nil
+        .onReceive(store.activeKit.map(modulesUseKitDefaults) ?? Just(true).eraseToAnyPublisher()) {
+            modulesMatchKit = $0
+        }
+        .sheet(item: $sheet) { sheet in
+            sheetContent(sheet)
+                .frame(width: 520)
+        }
+    }
+
+    @ViewBuilder
+    private func sheetContent(_ current: KitSheet) -> some View {
+        switch current.step {
+        case .questions:
+            KitQuestionsView(kit: current.kit, answers: current.answers, dismissal: .cancel, back: { sheet = nil }) { answers in
+                if current.candidate == nil {
+                    sheet = nil
+                    switchKit(to: current.kit.id, answers: answers)
+                } else {
+                    sheet = current.reviewing(answers)
                 }
             }
-            .frame(width: 520)
+        case .review:
+            if let candidate = current.candidate {
+                KitImportReviewView(
+                    candidate: candidate,
+                    preview: store.preview(of: candidate.kit, answers: current.answers),
+                    issues: store.issues(of: candidate.kit),
+                    isActiveKit: candidate.kit.id == store.settings.kitID,
+                    back: candidate.kit.onboarding.isEmpty ? nil : { sheet = current.askingAgain },
+                    cancel: { sheet = nil },
+                    addOnly: { install(candidate, switchingWith: nil) },
+                    apply: { install(candidate, switchingWith: current.answers) }
+                )
+            }
         }
     }
 
@@ -230,13 +264,20 @@ private struct KitSection: View {
             message = nil
             guard id != store.settings.kitID, let kit = store.kits[id] else { return }
             if kit.onboarding.isEmpty {
-                store.switchKit(to: id)
+                switchKit(to: id, answers: [:])
             } else {
-                askingKit = kit
+                sheet = KitSheet(kit: kit)
             }
         })
     }
 
+    private func switchKit(to id: String, answers: KitAnswers) {
+        store.switchKit(to: id, answers: answers)
+        message = ("Switched to \(store.activeKit?.name ?? "the kit").", false)
+    }
+
+    /// Reads and checks the picked file, then shows the kit's questions (if
+    /// any) and what it changes; nothing is saved before the user confirms.
     private func importKit() {
         let panel = NSOpenPanel()
         panel.title = "Import a Kit"
@@ -244,43 +285,38 @@ private struct KitSection: View {
         panel.allowedContentTypes = [.json]
         panel.canChooseDirectories = false
         panel.allowsMultipleSelection = false
-        let apply: (NSApplication.ModalResponse) -> Void = { response in
+        let open: (NSApplication.ModalResponse) -> Void = { response in
             guard response == .OK, let url = panel.url else { return }
+            message = nil
             do {
-                let (kit, issues) = try store.importKit(from: url)
-                if kit.onboarding.isEmpty {
-                    store.switchKit(to: kit.id)
-                    message = importMessage("Imported \(kit.name).", issues: issues)
-                } else {
-                    importIssues = issues
-                    askingKit = kit
-                }
+                sheet = KitSheet(candidate: try store.inspectKit(from: url))
             } catch {
                 message = ("\(error)", true)
             }
         }
         if let window = NSApp.keyWindow {
-            panel.beginSheetModal(for: window, completionHandler: apply)
+            panel.beginSheetModal(for: window, completionHandler: open)
         } else {
-            apply(panel.runModal())
+            open(panel.runModal())
         }
     }
 
-    /// Closes the questions sheet without switching. A just-imported kit
-    /// stays installed, so the user can pick it later.
-    private func cancelQuestions(for kit: KitManifest) {
-        askingKit = nil
-        guard let issues = importIssues else { return }
-        importIssues = nil
-        let note = kit.id == store.settings.kitID
-            ? "Updated \(kit.name); your tabs are unchanged."
-            : "Imported \(kit.name). Pick it under Current kit to use it."
-        message = importMessage(note, issues: issues)
-    }
-
-    /// The import outcome, with what the kit uses that this build skips.
-    private func importMessage(_ note: String, issues: [KitIssue]) -> (text: String, isWarning: Bool) {
-        issues.isEmpty ? (note, false) : (note + " " + issues.map(\.description).joined(separator: " "), true)
+    /// Saves a reviewed import and, with `answers`, switches to it.
+    private func install(_ candidate: KitImportCandidate, switchingWith answers: KitAnswers?) {
+        sheet = nil
+        let kit = candidate.kit
+        do {
+            try store.installKit(candidate, switchingWith: answers)
+            let note: String
+            switch (answers != nil, kit.id == store.settings.kitID) {
+            case (true, _): note = candidate.overwritesFile ? "Updated \(kit.name) and applied it." : "Imported \(kit.name) and switched to it."
+            case (false, true): note = "Updated \(kit.name); your tabs are unchanged."
+            case (false, false): note = "Imported \(kit.name). Pick it under Current kit to use it."
+            }
+            message = (note, false)
+        } catch {
+            message = ("Couldn't import \(kit.name): \(error)", true)
+        }
     }
 
     private func removeKit() {
@@ -292,14 +328,68 @@ private struct KitSection: View {
             message = ("Couldn't remove \(name): \(error.localizedDescription)", true)
         }
     }
+
+    private func undoSwitch() {
+        let undone = store.lastKitSwitch
+        store.undoKitSwitch()
+        if let undone, !undone.switchedKit {
+            message = ("Took back the import of \(undone.kitName).", false)
+        } else {
+            message = ("Back to \(store.activeKit?.name ?? "your previous kit").", false)
+        }
+    }
+}
+
+/// The kit sheet's content: the kit, the import it came from (nil when the
+/// user picked an installed kit), and which step shows.
+private struct KitSheet: Identifiable {
+    enum Step {
+        case questions
+        /// What the import changes for `answers`.
+        case review
+    }
+
+    let kit: KitManifest
+    var candidate: KitImportCandidate?
+    var step: Step
+    /// The answers picked so far, which the questions start from when the
+    /// user goes back from the review.
+    var answers: KitAnswers = [:]
+    /// Stays the same across steps, so moving between them keeps the sheet up.
+    let id = UUID()
+
+    init(kit: KitManifest) {
+        self.kit = kit
+        step = .questions
+    }
+
+    /// An import shows its questions first when it has any.
+    init(candidate: KitImportCandidate) {
+        kit = candidate.kit
+        self.candidate = candidate
+        step = candidate.kit.onboarding.isEmpty ? .review : .questions
+    }
+
+    func reviewing(_ answers: KitAnswers) -> KitSheet {
+        var next = self
+        next.step = .review
+        next.answers = answers
+        return next
+    }
+
+    var askingAgain: KitSheet {
+        var next = self
+        next.step = .questions
+        return next
+    }
 }
 
 private struct ModuleRow: View {
-    let module: ModuleID
+    let module: ModuleDescriptor
     @Binding var layout: ModuleLayout
 
     var body: some View {
-        let enabled = layout.isEnabled(module)
+        let enabled = layout.isEnabled(module.id)
         HStack(spacing: 10) {
             Image(systemName: "line.3.horizontal")
                 .font(.system(size: 12, weight: .medium))
@@ -311,7 +401,7 @@ private struct ModuleRow: View {
                 .frame(width: 24, height: 24)
                 .background(
                     RoundedRectangle(cornerRadius: 6, style: .continuous)
-                        .fill(Theme.Palette.accent(for: module).gradient)
+                        .fill(module.accentColor.gradient)
                 )
                 .saturation(enabled ? 1 : 0)
                 .opacity(enabled ? 1 : 0.6)
@@ -320,13 +410,13 @@ private struct ModuleRow: View {
             Spacer()
             Toggle("Show \(module.title)", isOn: Binding(
                 get: { enabled },
-                set: { layout.setEnabled(module, $0) }
+                set: { layout.setEnabled(module.id, $0) }
             ))
             .labelsHidden()
             .toggleStyle(.switch)
             .controlSize(.small)
-            .disabled(enabled && !layout.canDisable(module))
-            .help(enabled && !layout.canDisable(module)
+            .disabled(enabled && !layout.canDisable(module.id))
+            .help(enabled && !layout.canDisable(module.id)
                   ? "At least one module must stay on"
                   : (enabled ? "Hide \(module.title) from the notch" : "Show \(module.title) in the notch"))
         }
@@ -360,16 +450,17 @@ struct PreviewSettingsPane: View {
             }
 
             Section {
-                ForEach(TickerKind.allCases) { kind in
+                ForEach(TickerKind.all(in: store.catalog)) { kind in
                     let moduleOn = kind.module.map(store.settings.modules.isEnabled) ?? true
-                    Toggle(kind.title, isOn: Binding(
+                    let title = kind.title(in: store.catalog)
+                    Toggle(title, isOn: Binding(
                         get: { store.settings.notchPreview.isEnabled(kind) },
                         set: { store.settings.notchPreview.setEnabled(kind, $0) }
                     ))
                     .disabled(!moduleOn)
                     .help(moduleOn
-                        ? "Include \(kind.title.lowercased()) in the preview"
-                        : "Turn on \(kind.module?.title ?? "its module") in Modules to include this")
+                        ? "Include \(title.lowercased()) in the preview"
+                        : "Turn on \(kind.module.map { store.catalog.descriptor(for: $0).title } ?? "its module") in Modules to include this")
                 }
                 .disabled(!store.settings.notchPreview.isEnabled)
             } header: {
@@ -498,7 +589,7 @@ struct ClaudeSettingsPane: View {
     @FocusState private var fieldFocused: Bool
 
     /// With `NOTCHDECK_DEMO=1` the pane shows a sample result and never runs the CLI.
-    private static let isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
+    private static var isDemo: Bool { RunMode.current.isDemo }
 
     var body: some View {
         Form {
@@ -707,9 +798,9 @@ private struct AppGlyph: View {
                 .fill(.black)
                 .frame(width: 44, height: 16)
             HStack(spacing: 4) {
-                ForEach([ModuleID.spotify, .system, .planner], id: \.self) { module in
+                ForEach([NowPlayingModule.descriptor, SystemModule.descriptor, TodayModule.descriptor]) { module in
                     Capsule()
-                        .fill(Theme.Palette.accent(for: module))
+                        .fill(module.accentColor)
                         .frame(width: 12, height: 4)
                 }
             }

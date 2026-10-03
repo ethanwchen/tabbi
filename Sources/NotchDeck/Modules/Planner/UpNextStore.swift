@@ -51,9 +51,9 @@ final class UpNextStore: ObservableObject {
     static let internetAccountsURL = URL(string: "x-apple.systempreferences:com.apple.Internet-Accounts-Settings.extension")!
 
     /// `sampleDay` picks the demo calendar (the active kit's `sampleDay`).
-    init(sampleDay: PlannerSampleDay = .work) {
+    init(sampleDay: PlannerSampleDay = .work, runMode: RunMode) {
         let environment = ProcessInfo.processInfo.environment
-        isDemo = environment["NOTCHDECK_DEMO"] == "1"
+        isDemo = runMode.isDemo
         if isDemo {
             let start = Date()
             // Lets demo snapshots render each empty state:

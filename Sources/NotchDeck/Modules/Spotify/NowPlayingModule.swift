@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 import NotchKitCore
 
@@ -5,14 +6,26 @@ import NotchKitCore
 /// keeps its own timers in step with the panel.
 @MainActor
 final class NowPlayingModule: NotchModule {
-    let descriptor = ModuleCatalog.builtIn.descriptor(for: .spotify)
-    private let controller: SpotifyController
+    nonisolated static let descriptor = ModuleDescriptor(
+        id: .spotify, title: "Now Playing", symbol: "music.note", category: .media,
+        accent: ModuleAccent(red: 0.12, green: 0.84, blue: 0.38), permissions: [.automation],
+        network: [ModuleNetworkAccess(host: "i.scdn.co", purpose: "Spotify album artwork")]
+    )
+    /// Also drives the closed notch's music wings.
+    let controller: SpotifyController
 
-    init(controller: SpotifyController) {
-        self.controller = controller
+    init(context: ModuleContext) {
+        controller = SpotifyController(runMode: context.runMode)
     }
 
     func makePanel() -> AnyView {
         AnyView(SpotifyPanel(controller: controller))
+    }
+
+    /// Whether music is playing, so the closed notch shows the music wings.
+    var provision: AnyPublisher<ModuleProvision, Never>? {
+        controller.$showsCompactActivity
+            .map { ModuleProvision(isPlaying: $0) }
+            .eraseToAnyPublisher()
     }
 }

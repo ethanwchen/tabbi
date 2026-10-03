@@ -28,16 +28,18 @@ final class ClaudeUsageStore: ObservableObject {
 
     private static let defaultsKey = "claudeUsage.limitsRecord"
 
-    private let isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
+    private let isDemo: Bool
     private let defaults = UserDefaults.standard
-    private let scanner = ClaudeUsageLogScanner(indexURL: ClaudeUsageLogScanner.defaultIndexURL)
+    private let scanner: ClaudeUsageLogScanner
     private var statusTask: Task<Void, Never>?
     private var probeTask: Task<Void, Never>?
     private var scanTask: Task<Void, Never>?
     /// A scan was requested while one was running; run another when it ends.
     private var rescanPending = false
 
-    init() {
+    init(storage: EditionStorage, runMode: RunMode) {
+        isDemo = runMode.isDemo
+        scanner = ClaudeUsageLogScanner(indexURL: ClaudeUsageLogScanner.indexURL(in: storage))
         if isDemo {
             loadDemoData()
             return

@@ -14,11 +14,11 @@ struct ClaudeAskPanel: View {
     @FocusState private var fieldFocused: Bool
 
     private var conversation: ClaudeAskConversation { session.conversation }
-    private var accent: Color { Theme.Palette.accent(for: .claudeAsk) }
+    private var accent: Color { AskClaudeModule.descriptor.accentColor }
 
     /// `ImageRenderer` (used by `--snapshot`) can't draw AppKit-backed views
     /// such as `ScrollView` and `TextField`, so snapshots get static stand-ins.
-    static let isSnapshot = CommandLine.arguments.contains("--snapshot")
+    static var isSnapshot: Bool { RunMode.current.isSnapshot }
 
     var body: some View {
         VStack(spacing: Theme.Spacing.s) {
@@ -140,11 +140,11 @@ private struct InputField: View {
                         // Deferred: the field editor ignores binding changes made
                         // while it handles the key, so clearing the draft here
                         // would leave the sent text in the field.
-                        DispatchQueue.main.async(execute: onSubmit)
+                        Task { @MainActor in onSubmit() }
                     }
                     return .handled
                 }
-                .onSubmit { DispatchQueue.main.async(execute: onSubmit) }
+                .onSubmit { Task { @MainActor in onSubmit() } }
         }
     }
 

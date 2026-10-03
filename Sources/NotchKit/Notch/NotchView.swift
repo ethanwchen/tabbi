@@ -33,7 +33,7 @@ public struct NotchView: View {
         .onTapGesture { if !model.isOpen { model.openFromClosedClick() } }
         .contextMenu {
             ForEach(model.layout.enabled) { module in
-                Button(module.title) { model.open(module) }
+                Button(content.catalog.descriptor(for: module).title) { model.open(module) }
             }
             Divider()
             Button("Settings…") {
@@ -46,6 +46,7 @@ public struct NotchView: View {
         .animation(Theme.Motion.notch, value: model.phase)
         .animation(Theme.Motion.notch, value: model.previewKind)
         .preferredColorScheme(.dark)
+        .environment(\.moduleCatalog, content.catalog)
     }
 }
 
@@ -62,7 +63,7 @@ private struct OpenNotchContent: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Color.clear.frame(width: notch.width)
                 HStack(spacing: Theme.Spacing.s) {
-                    Text(model.selected.title)
+                    Text(content.catalog.descriptor(for: model.selected).title)
                         .font(Theme.Typography.title)
                         .foregroundStyle(Theme.Palette.secondaryText)
                         .lineLimit(1)

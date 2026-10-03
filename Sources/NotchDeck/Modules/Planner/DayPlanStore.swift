@@ -73,11 +73,11 @@ final class DayPlanStore: ObservableObject {
     /// Longest wait for Claude before showing the Retry message.
     private static let timeout: Duration = .seconds(60)
 
-    init(upNext: UpNextStore, settings: TodayPlanSettings) {
+    init(upNext: UpNextStore, settings: TodayPlanSettings, runMode: RunMode) {
         self.upNext = upNext
         self.settings = settings
         let environment = ProcessInfo.processInfo.environment
-        isDemo = environment["NOTCHDECK_DEMO"] == "1"
+        isDemo = runMode.isDemo
         // Lets demo snapshots render each state: `NOTCHDECK_PLANNER_PREVIEW=plan`.
         // Demo only, so a preview proposal can never reach the real calendar.
         guard isDemo else { return }

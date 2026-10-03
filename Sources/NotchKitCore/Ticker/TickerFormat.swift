@@ -29,15 +29,16 @@ public enum TickerFormat {
         FocusTimerFormat.clock(remaining)
     }
 
+    /// The focus line for tooltips and accessibility, e.g. "Focus 18:42",
+    /// "Review 3:10 (paused)" or "Focus 12:05 so far" for a clock counting up.
+    public static func focusSummary(_ focus: TickerFocus) -> String {
+        let clock = focusClock(focus.time) + (focus.countsUp ? " so far" : "")
+        return "\(focus.label) \(clock)\(focus.isRunning ? "" : " (paused)")"
+    }
+
     /// Party size, e.g. "4 in party".
     public static func partySize(_ count: Int) -> String {
         "\(count) in party"
-    }
-
-    /// Usage line, e.g. "5h 84%" or "Week 91%".
-    public static func usage(window: TickerUsageWindow, utilization: Double) -> String {
-        let label = window == .fiveHour ? "5h" : "Week"
-        return "\(label) \(ClaudeUsageFormat.percent(utilization))"
     }
 
     /// The pet's line for tooltips and accessibility, e.g. "Mochi is napping".

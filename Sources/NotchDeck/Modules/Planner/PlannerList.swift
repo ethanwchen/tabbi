@@ -6,7 +6,7 @@ import NotchKit
 /// outgrow the canvas. Checklist rows reorder by dragging: the others slide
 /// aside live and the move is saved on release.
 struct PlannerList: View {
-    static let rowHeight: CGFloat = 22
+    nonisolated static let rowHeight: CGFloat = 22
     private static let fadeHeight = Theme.Spacing.m
 
     @ObservedObject var store: PlannerStore
@@ -45,7 +45,7 @@ struct PlannerList: View {
 
     /// `ImageRenderer` draws a `ScrollView` blank, so snapshots show the
     /// top of an overflowing list clipped instead.
-    private static let isSnapshot = CommandLine.arguments.contains("--snapshot")
+    private static var isSnapshot: Bool { RunMode.current.isSnapshot }
 
     @ViewBuilder
     private var scrollingRows: some View {
@@ -158,7 +158,9 @@ private struct PlannerRow: View {
                     .help(item.title)
             }
 
-            if !isRenaming {
+            // Rows link to the Pomodoro, which isn't offered while another
+            // module owns the timer.
+            if !isRenaming, store.focusClockOwner == nil {
                 PlannerFocusToggle(item: item, focusStore: store.focus,
                                    showsButton: hovering && store.canEdit)
             }
@@ -211,6 +213,7 @@ private struct PlannerRow: View {
 private struct PlannerSharedRow: View {
     let item: SharedTodayItem
     @EnvironmentObject private var notch: NotchViewModel
+    @Environment(\.moduleCatalog) private var catalog
     @State private var hovering = false
 
     var body: some View {
@@ -248,8 +251,8 @@ private struct PlannerSharedRow: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .help(item.isDone ? "\(item.title) done for today. Open \(item.source.title)"
-                          : "Checks itself when done. Open \(item.source.title)")
+        .help(item.isDone ? "\(item.title) done for today. Open \(catalog.descriptor(for: item.source).title)"
+                          : "Checks itself when done. Open \(catalog.descriptor(for: item.source).title)")
         .onHover { hovering = $0 }
         .animation(Theme.Motion.snappy, value: hovering)
     }
@@ -260,9 +263,11 @@ private struct PlannerSharedRow: View {
 /// a filled check once the work is done.
 private struct PlannerSharedCheck: View {
     let item: SharedTodayItem
+    @Environment(\.moduleCatalog) private var catalog
 
     var body: some View {
-        let accent = Theme.Palette.accent(for: item.source)
+        let source = catalog.descriptor(for: item.source)
+        let accent = source.accentColor
         ZStack {
             Circle()
                 .strokeBorder(accent.opacity(0.28), lineWidth: 1.5)
@@ -271,7 +276,7 @@ private struct PlannerSharedCheck: View {
                 .trim(from: 0, to: item.fraction ?? 0)
                 .stroke(accent, style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
                 .rotationEffect(.degrees(-90))
-            Image(systemName: item.source.symbol)
+            Image(systemName: source.symbol)
                 .font(.system(size: 7, weight: .bold))
                 .foregroundStyle(accent)
                 .opacity(item.isDone ? 0 : 1)
@@ -299,7 +304,7 @@ private struct PlannerCheckbox: View {
     @State private var hovering = false
 
     var body: some View {
-        let accent = Theme.Palette.accent(for: .planner)
+        let accent = TodayModule.descriptor.accentColor
         Button(action: action) {
             ZStack {
                 Circle()
@@ -339,7 +344,7 @@ private struct PlannerFocusToggle: View {
     private var isLinked: Bool { focusStore.timer.linkedItemID == item.id }
 
     var body: some View {
-        let accent = Theme.Palette.accent(for: .planner)
+        let accent = TodayModule.descriptor.accentColor
         Group {
             if showsButton, isLinked || !item.isDone {
                 Button {

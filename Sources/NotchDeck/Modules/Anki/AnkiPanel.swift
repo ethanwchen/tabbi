@@ -30,7 +30,7 @@ struct AnkiPanel: View {
     }
 }
 
-private var accent: Color { Theme.Palette.accent(for: .anki) }
+private var accent: Color { AnkiModule.descriptor.accentColor }
 
 /// Anki's own colors for the three queues, so the numbers read the same as
 /// in Anki's deck list.

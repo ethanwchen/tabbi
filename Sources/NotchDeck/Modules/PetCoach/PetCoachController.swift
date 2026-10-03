@@ -15,7 +15,7 @@ import NotchKit
 ///
 /// The focus timer comes from the shared `ProviderSnapshot`, so the coach
 /// works with whichever module runs the timer. Pausing and resuming go
-/// through closures `AppServices` provides. Coach state (cooldowns, snooze,
+/// through closures `ClosetModule` provides. Coach state (cooldowns, snooze,
 /// app lists) persists next to the pet's save. With `NOTCHDECK_DEMO=1` the
 /// coach never samples, nudges, or writes.
 ///
@@ -41,7 +41,7 @@ final class PetCoachController: ObservableObject {
             if save.apps != oldValue.apps || save.nudgesOn != oldValue.nudgesOn { objectWillChange.send() }
         }
     }
-    private var timer: FocusTimer?
+    private var timer: ProvidedFocus?
     private var isRunning = false
     private var focusSubscription: AnyCancellable?
     private var awardSubscription: AnyCancellable?
@@ -50,7 +50,8 @@ final class PetCoachController: ObservableObject {
     private var overlayCloser: Timer?
 
     init(
-        edition: Edition = .current,
+        storage: EditionStorage,
+        runMode: RunMode,
         profile: @escaping () -> PetProfile,
         lines: @escaping () -> [PetCoachMessage] = { PetCoachMessages.standard },
         screen: @escaping () -> NSScreen?,
@@ -62,8 +63,8 @@ final class PetCoachController: ObservableObject {
         self.screen = screen
         self.pauseTimer = pauseTimer
         self.resumeTimer = resumeTimer
-        isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
-        saveURL = isDemo ? nil : Self.saveURL(for: edition)
+        isDemo = runMode.isDemo
+        saveURL = isDemo ? nil : Self.saveURL(in: storage)
         var unreadable = false
         var save = PetCoachSave()
         if isDemo {
@@ -88,13 +89,12 @@ final class PetCoachController: ObservableObject {
     var lines: [PetCoachMessage] { kitLines() }
 
     /// `~/Library/Application Support/<edition>/Pet/coach.json`.
-    static func saveURL(for edition: Edition) -> URL? {
-        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
-            .appendingPathComponent("\(edition.name)/Pet/coach.json")
+    static func saveURL(in storage: EditionStorage) -> URL {
+        storage.file("coach.json", in: "Pet")
     }
 
     /// Follows the shared focus timer (`ProviderSnapshot.focus`).
-    func follow(focus: AnyPublisher<FocusTimer?, Never>) {
+    func follow(focus: AnyPublisher<ProvidedFocus?, Never>) {
         focusSubscription = focus
             .removeDuplicates()
             .sink { [weak self] timer in
@@ -167,7 +167,7 @@ final class PetCoachController: ObservableObject {
 
     // MARK: Sampling
 
-    private func focusChanged(_ timer: FocusTimer?) {
+    private func focusChanged(_ timer: ProvidedFocus?) {
         self.timer = timer
         updateSampling()
     }

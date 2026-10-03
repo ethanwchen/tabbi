@@ -31,10 +31,11 @@ final class DayReviewStore: ObservableObject {
     /// `studyPreview` makes the demo previews a study day's wrap-up, with
     /// the demo Anki reviews and a sample study tally; `sampleDay` picks
     /// the demo day reviewed.
-    init(studyPreview: Bool = false, sampleDay: PlannerSampleDay = .work) {
+    init(storage: EditionStorage, studyPreview: Bool = false, sampleDay: PlannerSampleDay = .work,
+         runMode: RunMode) {
         let environment = ProcessInfo.processInfo.environment
-        isDemo = environment["NOTCHDECK_DEMO"] == "1"
-        repository = isDemo ? nil : DayReviewRepository()
+        isDemo = runMode.isDemo
+        repository = isDemo ? nil : DayReviewRepository(storage: storage)
         // Lets demo snapshots render each state: `NOTCHDECK_PLANNER_PREVIEW=review`.
         guard isDemo else { return }
         let today = PlannerDayKey(date: Date())
@@ -51,10 +52,11 @@ final class DayReviewStore: ObservableObject {
         }
     }
 
-    /// Opens the review of `day` and starts writing its summary. `study`
-    /// and `progress` are what other modules share; on a study day the demo
+    /// Opens the review of `day` and starts writing its summary. `activity`
+    /// is the shared log's records of that day, and `study` and `progress`
+    /// are what other modules share; on a study day the demo
     /// fills in a sample tally, since no demo module keeps one yet.
-    func wrapUp(day: PlannerDay, focusLog: FocusSessionLog, study: StudyDayTally? = nil,
+    func wrapUp(day: PlannerDay, activity: [ActivityRecord], study: StudyDayTally? = nil,
                 progress: [ProgressItem] = [], isStudyDay: Bool = false, sampleDay: PlannerSampleDay = .work) {
         invalidateRun()
         saveFailed = false
@@ -73,7 +75,7 @@ final class DayReviewStore: ObservableObject {
             return
         }
 
-        let review = DayReviewer.review(of: day, focusLog: focusLog, study: study, progress: progress)
+        let review = DayReviewer.review(of: day, activity: activity, study: study, progress: progress)
         self.review = review
         task = Task { [weak self] in
             let summary = await Self.summary(for: review)
