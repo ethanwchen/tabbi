@@ -3,8 +3,9 @@ import NotchKit
 import NotchKitCore
 import os
 
-/// Runs focus mode: follows the focus timer and performs what
-/// `FocusSession` decides (focus sound, playlist, Do Not Disturb shortcuts).
+/// Runs focus mode: follows the focus timer (and the Study timer when its
+/// deep focus is on) and performs what `FocusSession` decides (focus
+/// sound, playlist, Do Not Disturb shortcuts).
 ///
 /// One shared instance, because the timer, the Focus settings pane, the
 /// Modules pane and kit defaults all need it and none of them owns the
@@ -42,7 +43,9 @@ final class FocusController: ObservableObject {
     private var engine: FocusSoundEngine?
     /// The last state each music app reported; absent until it posts one.
     private var playerStates: [MediaSource: SpotifyPlayerState] = [:]
-    /// The activity the timer last asked for, ahead of `session` while a
+    /// What each timer last asked for; focus mode follows the strongest.
+    private var activities: [FocusActivitySource: FocusActivity] = [:]
+    /// The combined activity last asked for, ahead of `session` while a
     /// transition is waiting on a player-state read.
     private var requestedActivity: FocusActivity = .idle
     /// Transitions run one at a time, in order.
@@ -81,8 +84,16 @@ final class FocusController: ObservableObject {
     /// Call whenever the focus timer changes. Starts focus mode when a focus
     /// phase starts running, and ends it on a break, pause or reset.
     func timerChanged(_ timer: FocusTimer) {
+        activityChanged(FocusActivity(timer), from: .focusTimer)
+    }
+
+    /// Call whenever another timer that drives focus mode changes (the
+    /// Study tab with deep focus on). Focus mode stays on while any timer
+    /// is focusing.
+    func activityChanged(_ sourceActivity: FocusActivity, from source: FocusActivitySource) {
         guard isLive else { return }
-        let activity = FocusActivity(timer)
+        activities[source] = sourceActivity
+        let activity = FocusActivity.combined(activities.values)
         guard activity != requestedActivity else { return }
         requestedActivity = activity
         let previous = transitions
@@ -224,4 +235,9 @@ final class FocusController: ObservableObject {
         guard let output = await run(source.readStateScript, on: source, launching: false) else { return nil }
         return source.parse(output)?.state
     }
+}
+
+/// A timer that can turn focus mode on.
+enum FocusActivitySource: Hashable {
+    case focusTimer, study
 }

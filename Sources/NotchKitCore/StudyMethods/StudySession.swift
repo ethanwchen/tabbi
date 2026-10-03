@@ -91,7 +91,7 @@ public struct StudySession: Codable, Hashable, Sendable {
     /// First start of the current phase; nil while idle.
     private var phaseStartedAt: Date?
     /// Active time of the last focus phase, which sizes Flowtime breaks.
-    private var lastFocusWorked: TimeInterval
+    public private(set) var lastFocusWorked: TimeInterval
     /// Whether the last focus phase counted, so a skipped one never earns a long break.
     private var lastFocusCounted: Bool
     /// Last reviewed-today count seen from AnkiConnect; cards are its deltas.
@@ -110,6 +110,34 @@ public struct StudySession: Codable, Hashable, Sendable {
         lastFocusWorked = 0
         lastFocusCounted = false
         cardBaseline = nil
+    }
+
+    /// Decodes a saved session, repairing values a corrupt or hand-edited
+    /// file could carry: a phase shorter than `StudyMethod.minimumPhase`
+    /// (which would complete instantly), non-finite or negative banked time,
+    /// and negative tallies. The method itself re-clamps in its own decoder.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        method = try container.decode(StudyMethod.self, forKey: .method)
+        phase = try container.decode(StudyPhaseKind.self, forKey: .phase)
+        phaseDuration = try container.decodeIfPresent(TimeInterval.self, forKey: .phaseDuration).map {
+            $0.isNaN ? StudyMethod.minimumPhase : max($0, StudyMethod.minimumPhase)
+        }
+        completedFocusCount = max(try container.decode(Int.self, forKey: .completedFocusCount), 0)
+        cardsDone = max(try container.decode(Int.self, forKey: .cardsDone), 0)
+        log = try container.decode([StudyPhaseRecord].self, forKey: .log)
+        banked = Self.nonNegative(try container.decode(TimeInterval.self, forKey: .banked))
+        resumedAt = try container.decodeIfPresent(Date.self, forKey: .resumedAt)
+        phaseStartedAt = try container.decodeIfPresent(Date.self, forKey: .phaseStartedAt)
+        lastFocusWorked = Self.nonNegative(try container.decode(TimeInterval.self, forKey: .lastFocusWorked))
+        lastFocusCounted = try container.decode(Bool.self, forKey: .lastFocusCounted)
+        cardBaseline = try container.decodeIfPresent(Int.self, forKey: .cardBaseline)
+        // A running clock always belongs to a started phase.
+        if resumedAt != nil, phaseStartedAt == nil { phaseStartedAt = resumedAt }
+    }
+
+    private static func nonNegative(_ value: TimeInterval) -> TimeInterval {
+        value.isFinite ? max(value, 0) : 0
     }
 
     // MARK: Reading
@@ -212,6 +240,22 @@ public struct StudySession: Codable, Hashable, Sendable {
         let kept = (log, cardBaseline)
         self = StudySession(method: newMethod)
         (log, cardBaseline) = kept
+    }
+
+    /// Swaps in new lengths for the same kind of method without starting
+    /// over, e.g. after editing the Custom rhythm mid-session. Rounds,
+    /// cards and the clock carry on; the current phase takes its new length,
+    /// but a phase already past it ends no sooner than a minute from `now`,
+    /// so trimming a block never finishes it on the spot.
+    /// Returns false (and does nothing) when `newMethod` is another kind.
+    @discardableResult
+    public mutating func retune(to newMethod: StudyMethod, at now: Date) -> Bool {
+        guard newMethod.kind == method.kind else { return false }
+        method = newMethod
+        phaseDuration = newMethod.duration(of: phase, workedBeforeBreak: lastFocusWorked).map { length in
+            phaseStartedAt == nil ? length : max(length, elapsed(at: now) + StudyMethod.minimumPhase)
+        }
+        return true
     }
 
     // MARK: Time and cards

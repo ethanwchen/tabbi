@@ -93,5 +93,4 @@ Constraints to keep in mind:
 
 ## Near-term engineering
 
-- Apply the kit's study methods and pet defaults once the Study and Closet modules read them (tabs, ticker previews, focus sounds and starter tasks already apply).
-- A real Study module replacing today's preview.
+- Apply the kit's pet defaults once the Closet module reads them (tabs, ticker previews, focus sounds, study methods and starter tasks already apply).

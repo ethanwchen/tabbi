@@ -13,6 +13,7 @@
     "pet": { "breed": "orangeTabby" },
     "theme": "notch",
     "moduleSettings": {
+      "study": { "dailyGoalMinutes": 240 },
       "planner": {
         "planMode": "study",
         "reviewsFirst": true,

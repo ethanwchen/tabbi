@@ -29,7 +29,7 @@ public enum NotchPreviewLayout {
         case .meeting(let meeting):
             content = textWidth(meeting.title) + Theme.Spacing.xs
                 + textWidth(TickerFormat.meetingCountdown(meeting.timing))
-        case .focus(_, let remaining, _):
+        case .focus(_, let remaining, _, _):
             // Measure a fixed-width sample so the wing doesn't breathe as digits change.
             content = textWidth(String(TickerFormat.focusClock(remaining).map { $0.isNumber ? "0" : $0 }))
         case .tasks(let remaining):
@@ -53,7 +53,7 @@ public enum NotchPreviewLayout {
         switch item {
         case .meeting(let meeting): meeting.canJoin ? "video.fill" : "calendar"
         case .nowPlaying: "music.note"
-        case .focus(let phase, _, _): phase == .focus ? "timer" : "cup.and.saucer.fill"
+        case .focus(let phase, _, _, _): phase == .focus ? "timer" : "cup.and.saucer.fill"
         case .tasks: "checklist"
         case .progress(let progress): progress.source.descriptor.symbol
         case .claudeUsage: "gauge.with.dots.needle.67percent"
@@ -67,7 +67,7 @@ public enum NotchPreviewLayout {
         switch item {
         case .meeting(let meeting): TickerFormat.meetingSummary(meeting)
         case .nowPlaying: "Now playing"
-        case .focus(let phase, let remaining, let isRunning):
+        case .focus(let phase, let remaining, let isRunning, _):
             "\(phase == .focus ? "Focus" : "Break") \(TickerFormat.focusClock(remaining))\(isRunning ? "" : " (paused)")"
         case .tasks(let remaining): TickerFormat.tasksLeft(remaining)
         case .progress(let progress): "\(progress.title): \(TickerFormat.progressLeft(progress))"

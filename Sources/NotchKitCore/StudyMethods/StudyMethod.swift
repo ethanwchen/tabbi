@@ -1,6 +1,6 @@
 import Foundation
 
-/// The study-timer presets StudyNotch offers, plus a user-defined one.
+/// The study-timer presets Tabbi offers, plus a user-defined one.
 ///
 /// Interval lengths are conventions rather than science (see
 /// `StudyMethodInfo`), so each kind is a preset of `StudyMethod` parameters
@@ -47,7 +47,7 @@ public enum FlowtimeBreakScheme: String, Codable, CaseIterable, Hashable, Sendab
 
     /// Break length after `worked` seconds of focus, never shorter than a minute.
     public func breakDuration(afterWorking worked: TimeInterval) -> TimeInterval {
-        let minutes = max(worked, 0) / 60
+        let minutes = worked.isFinite ? max(worked, 0) / 60 : 0
         switch self {
         case .tiered:
             if minutes <= 25 { return 5 * 60 }
@@ -195,7 +195,7 @@ public struct StudyMethod: Codable, Hashable, Sendable, Identifiable {
         return due > 0 ? due : defaultSprintCards
     }
 
-    /// Up to 40 questions in 60 min (one USMLE Step 1 block), then an equally
+    /// Up to 40 questions in 60 min (one board-exam block), then an equally
     /// long review of every explanation, then a 10 min break.
     public static let questionBlock = StudyMethod(
         kind: .questionBlock,
@@ -292,8 +292,12 @@ public struct StudyMethod: Codable, Hashable, Sendable, Identifiable {
 
     // MARK: Clamping
 
+    /// Clamps a phase length to 1 min...4 h. NaN, which `min`/`max` would
+    /// pass straight through, becomes the minimum so labels and timers never
+    /// see a non-finite length.
     static func clamped(_ length: TimeInterval) -> TimeInterval {
-        min(max(length, minimumPhase), maximumPhase)
+        guard !length.isNaN else { return minimumPhase }
+        return min(max(length, minimumPhase), maximumPhase)
     }
 
     private static func clamped(_ focus: StudyFocusTarget) -> StudyFocusTarget {

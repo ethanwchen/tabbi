@@ -24,7 +24,7 @@ public enum StudyEvidenceLevel: String, Codable, CaseIterable, Hashable, Sendabl
 /// Copy for a study method's info popover: what it is, how to do it, and an
 /// honest note on the evidence.
 ///
-/// Wording follows the StudyNotch research notes. It is deliberately modest:
+/// Wording follows the Tabbi study research notes. It is deliberately modest:
 /// what research supports is regular breaks, self-testing, and spacing, not
 /// any particular interval length, so no note claims a rhythm is proven.
 public struct StudyMethodInfo: Hashable, Sendable {
@@ -93,7 +93,7 @@ public struct StudyMethodInfo: Hashable, Sendable {
                 kind: kind,
                 name: "Question block",
                 tagline: "40 questions in 60 min, then review",
-                howTo: "Do a timed block of practice questions, up to 40 in 60 minutes like a real Step 1 block. Then spend at least as long reviewing every explanation, including the ones you got right.",
+                howTo: "Do a timed block of practice questions, up to 40 in 60 minutes, as on a real board exam. Then spend at least as long reviewing every explanation, including the ones you got right.",
                 evidence: "Testing yourself, then checking answers, is among the best-supported ways to learn (Roediger & Karpicke, 2006; Dunlosky et al., 2013).",
                 evidenceLevel: .strong
             )
@@ -116,4 +116,10 @@ public struct StudyMethodInfo: Hashable, Sendable {
 public extension StudyMethod {
     /// Popover copy for this method's kind.
     var info: StudyMethodInfo { StudyMethodInfo.info(for: kind) }
+
+    /// Whether the method's name already spells out its rhythm ("52 / 17"),
+    /// so views show the name alone instead of "52 / 17 52/17".
+    var nameIsRhythm: Bool {
+        info.name.replacingOccurrences(of: " ", with: "") == rhythmLabel
+    }
 }

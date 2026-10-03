@@ -18,6 +18,8 @@ final class AppServices: ObservableObject {
     /// it keeps running while the notch is closed or either tab is off.
     let focus = FocusStore()
     let planner: PlannerStore
+    /// The Study tab's timer, kept running while the notch is closed.
+    let study: StudyStore
     let claudeAsk = ClaudeAskSession()
     /// The study pet's look and points, shared by the Closet tab and the pet
     /// in the notch.
@@ -39,7 +41,9 @@ final class AppServices: ObservableObject {
 
     init(settings: SettingsStore) {
         self.settings = settings
-        planner = PlannerStore(focus: focus, planSettings: TodayPlanSettings(kit: settings.activeKit?.defaults))
+        let kit = settings.activeKit?.defaults
+        planner = PlannerStore(focus: focus, planSettings: TodayPlanSettings(kit: kit))
+        study = StudyStore(menu: StudyMethodMenu(kit: kit), goal: StudyDailyGoal(kit: kit))
         coach = PetCoachController(
             profile: { [closet] in closet.profile },
             lines: { [settings] in PetCoachMessages.lines(kitSettings: settings.activeKit?.defaults.settings(for: .closet)) },
@@ -54,13 +58,14 @@ final class AppServices: ObservableObject {
             TodayModule(store: planner),
             AskClaudeModule(session: claudeAsk),
             FocusModule(store: focus),
-            StudyModule(),
+            StudyModule(store: study),
             AnkiModule(),
             PartyModule(store: party),
             ClosetModule(store: closet, coach: coach),
         ])
         providers = ProviderHub(registry: modules)
         planner.followSharedWork(from: providers.$snapshot, excluding: .planner)
+        study.followCards(from: providers.$snapshot)
         coach.follow(focus: providers.$snapshot.map(\.focus).eraseToAnyPublisher())
         closet.follow(focus: providers.$snapshot.map(\.focus).eraseToAnyPublisher())
         coach.follow(awards: closet.awards.eraseToAnyPublisher())
@@ -88,12 +93,14 @@ final class AppServices: ObservableObject {
             .store(in: &cancellables)
         // Kit defaults that live outside `AppSettings`.
         settings.kitApplied
-            .sink { [planner] application in
+            .sink { [planner, study] application in
                 MainActor.assumeIsolated {
                     // Also when re-applying the same kit, which may have been re-imported.
                     planner.planSettings = TodayPlanSettings(kit: application.kit.defaults)
                     let focus = FocusController.shared
                     focus.settings = focus.settings.applying(application.kit.defaults)
+                    let kit = application.kit.defaults
+                    study.use(StudyMethodMenu(kit: kit), goal: StudyDailyGoal(kit: kit), kitApplied: true)
                     if application.addsStarterTasks {
                         planner.addStarterTasks(application.kit.starterTasks(answers: application.answers))
                     }
