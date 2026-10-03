@@ -35,23 +35,33 @@ final class ClosetStore: ObservableObject {
     /// a fresh pet but never overwrites the file, so nothing is lost.
     private let saveIsUnreadable: Bool
 
-    init(storage: EditionStorage, runMode: RunMode) {
+    /// False until the pet is saved (a rename, a new outfit, the first
+    /// points). Until then the pet is the kit's starter and follows kit
+    /// switches, so the kit picked on first run decides the first pet.
+    private var hasSave: Bool
+
+    /// - Parameter starter: the pet to start someone with no saved pet on,
+    ///   usually the kit's (`PetProfile.starter(kit:)`).
+    init(storage: EditionStorage, runMode: RunMode, starter: PetProfile = .starter(.cat)) {
         let isDemo = runMode.isDemo
         let url = isDemo ? nil : ClosetStore.saveURL(in: storage)
         var unreadable = false
+        var saved = true
         var closet = PetCloset.demo
         if !isDemo {
             do {
                 let save = try url.flatMap { try PetSave.load(from: $0) }
-                closet = PetCloset(save: save ?? PetSave(profile: .starter(.cat)))
+                saved = save != nil
+                closet = PetCloset(save: save ?? PetSave(profile: starter))
             } catch {
                 unreadable = true
-                closet = PetCloset(save: PetSave(profile: .starter(.cat)))
+                closet = PetCloset(save: PetSave(profile: starter))
             }
         }
         self.closet = closet
         saveURL = url
         saveIsUnreadable = unreadable
+        hasSave = saved
         preview = PetPlayer(profile: closet.profile)
         presence = PetPresence(profile: closet.profile, lastActive: .now)
     }
@@ -122,8 +132,16 @@ final class ClosetStore: ObservableObject {
         preview.update(profile: shown)
     }
 
+    /// Swaps a pet that was never saved for a new kit's starter.
+    func useStarter(_ starter: PetProfile) {
+        guard !hasSave, !saveIsUnreadable, closet.profile != starter else { return }
+        closet = PetCloset(save: PetSave(profile: starter))
+        presence.profile = starter
+        refreshPreview()
+    }
+
     private func persist() {
         guard let saveURL, !saveIsUnreadable else { return }
-        try? closet.save.write(to: saveURL)
+        if (try? closet.save.write(to: saveURL)) != nil { hasSave = true }
     }
 }

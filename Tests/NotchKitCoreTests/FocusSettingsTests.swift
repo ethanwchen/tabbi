@@ -169,7 +169,7 @@ final class FocusShortcutRunnerTests: XCTestCase {
 
     func testApplyingAKitReplacesOnlyTheMix() {
         let user = FocusSettings(mix: FocusMix([.init(sound: .fireplace)]), volume: 0.3, playlistText: "lofi", doNotDisturb: true)
-        let kit = KitDefaults(focusSounds: [KitFocusSound(sound: "rain", level: 0.8), KitFocusSound(sound: "hologram", level: 1)])
+        let kit = KitDefaults(moduleSettings: ["focus": ["sounds": [["sound": "rain", "level": 0.8], ["sound": "hologram", "level": 1]]]])
         let applied = user.applying(kit)
         XCTAssertEqual(applied.mix, FocusMix([.init(sound: .rain, level: 0.8)]))
         XCTAssertEqual(applied.volume, 0.3)
@@ -177,6 +177,17 @@ final class FocusShortcutRunnerTests: XCTestCase {
         XCTAssertTrue(applied.doNotDisturb)
         XCTAssertTrue(applied.usesDefaults(of: kit))
         XCTAssertFalse(user.usesDefaults(of: kit))
+    }
+
+    func testKitSoundsAreReadLeniently() {
+        func mix(_ sounds: KitValue) -> FocusMix? {
+            FocusSettings.kitMix(of: KitDefaults(moduleSettings: ["focus": ["sounds": sounds]]))
+        }
+        XCTAssertEqual(mix([["sound": "rain", "level": 2], ["sound": "brown"], ["level": 0.5]]),
+                       FocusMix([.init(sound: .rain, level: 1), .init(sound: .brown, level: 1)]),
+                       "levels clamp, a missing level is full, an entry without a sound is skipped")
+        XCTAssertEqual(mix([]), .off, "an empty list turns the sound off")
+        XCTAssertNil(mix("rain"), "not a list: keep the user's sound")
     }
 
     func testAKitWithoutFocusSoundsKeepsTheMix() {

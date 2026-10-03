@@ -65,13 +65,13 @@ public struct TodayPlanSettings: Hashable, Sendable {
 
     /// The kit's settings; values of the wrong type or unknown modes fall
     /// back to the defaults rather than failing the whole kit. The study
-    /// method is the kit's starting one (`KitDefaults.resolvedStudyMethod`).
+    /// method is the kit's starting one (`StudyMethodMenu.kitStartingKind(of:)`).
     public init(kit: KitDefaults?) {
         let section = kit?.settings(for: .planner)
         let defaults = TodayPlanSettings()
         self.init(
             planMode: section?["planMode"]?.stringValue.flatMap(PlanMode.init(rawValue:)) ?? defaults.planMode,
-            studyMethod: kit?.resolvedStudyMethod.map(StudyMethod.preset) ?? defaults.studyMethod,
+            studyMethod: StudyMethodMenu.kitStartingKind(of: kit).map(StudyMethod.preset) ?? defaults.studyMethod,
             reviewsFirst: section?["reviewsFirst"]?.boolValue ?? defaults.reviewsFirst,
             eventBufferMinutes: section?["eventBufferMinutes"]?.numberValue.flatMap { Self.wholeNumber($0, upTo: 240) }
                 ?? defaults.eventBufferMinutes,

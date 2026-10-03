@@ -107,32 +107,42 @@ The open notch shows up to nine tabs comfortably, and the number keys 1-9 jump t
 
 ```json
 "defaults": {
-  "studyMethods": ["pomodoro", "ankiSprint", "questionBlock"],
-  "studyMethod": "pomodoro",
-  "focusSounds": [{ "sound": "rain", "level": 0.8 }, { "sound": "brown", "level": 0.4 }],
   "ticker": ["focus", "tasks", "meeting", "nowPlaying", "pet"],
-  "pet": { "breed": "orangeTabby", "name": "Miso" },
   "theme": "notch",
-  "moduleSettings": { "anki": { "deck": "AnKing" }, "study": { "dailyGoalMinutes": 240 } }
+  "moduleSettings": {
+    "study": { "methods": ["pomodoro", "ankiSprint", "questionBlock"], "method": "pomodoro", "dailyGoalMinutes": 240 },
+    "focus": { "sounds": [{ "sound": "rain", "level": 0.8 }, { "sound": "brown", "level": 0.4 }] },
+    "closet": { "pet": { "breed": "orangeTabby", "name": "Miso" } }
+  }
 }
 ```
 
 | Field | Type | Meaning |
 | --- | --- | --- |
-| `studyMethods` | array of strings | Study methods the Study timer offers, in order. Leave it out to offer them all. |
-| `studyMethod` | string | The method the timer starts on. Defaults to the first of `studyMethods`. |
-| `focusSounds` | array of objects | The focus sound mix: `sound` and an optional `level` from 0 to 1 (default 1). |
 | `ticker` | array of strings | Which live previews the closed notch rotates through: built-in previews and the ids of modules whose highlights should show. Leave it out to show them all. |
-| `pet` | object | The study pet: optional `breed` and `name`. |
 | `theme` | string | Theme id. `notch` is the built-in hardware-black theme. |
-| `moduleSettings` | object | Settings for individual modules, keyed by module id. Each module reads its own section, in a shape that module documents. |
+| `moduleSettings` | object | Settings for individual modules, keyed by module id. Each module reads its own section and declares the keys it accepts, so a typo or a value out of range shows as a warning when importing. |
 
-Module settings sections:
+Only settings that span modules sit directly in `defaults`.
+Everything a single module uses lives in that module's section.
 
-- **`closet`:** `coachLines`, extra lines the study pet's coach can say, keyed by bubble kind: `distraction` (a while in a distracting app), `offerPause` (offering to pause the timer), `idleCheck` (no input for a while) and `autoPause` (the timer was paused while the user was away).
-  They join the built-in lines, which name no subject, so a few lines give the coach your kit's flavor.
-  Each kind takes a list of lines or a single line.
-  Keep them kind and at most 64 characters; longer, blank or non-text entries are skipped without dropping the others.
+Accepted values:
+
+- **Ticker previews:** `meeting`, `nowPlaying`, `focus`, `tasks`, `progress` (shared study goals such as Anki cards left), `party` (party members' pets beside yours while in a study party), `pet` (the study pet, from the Closet module; it naps after 20 minutes without a session), and the id of any module that publishes highlights, such as `claudeUsage` (a usage window above 80%).
+
+Module settings the built-in modules read, all optional:
+
+- **`study`:**
+  - `methods`, the study methods the Study timer offers, in order: `pomodoro`, `fiftyTwoSeventeen`, `ultradian`, `flowtime`, `ankiSprint`, `questionBlock`, `custom`. Leave it out to offer them all.
+  - `method`, the method the timer starts on. Defaults to the first of `methods`. Today's on-device planner (`planMode` `study`) sizes study blocks on it too.
+  - `dailyGoalMinutes`, the minutes a day to aim for (15 to 720, rounded to a quarter hour; 120 when left out). The Study tab shows today's time against it, and Today lists it as a goal.
+- **`focus`:** `sounds`, the focus sound mix that Study, Today and Focus play: up to three objects with a `sound` (`brown`, `pink`, `white`, `rain`, `fireplace`, `cafe`) and an optional `level` from 0 to 1 (default 1). An empty list turns the sound off.
+- **`closet`:**
+  - `pet`, the study pet someone starts with when they have none yet: an optional `breed` (`orangeTabby`, `grayTabby`, `blackCat`, `whiteCat`, `tuxedo`, `calico`, `siamese`, `britishShorthair`, `goldenRetriever`, `labrador`, `frenchBulldog`, `corgi`, `dachshund`, `beagle`) and `name` (up to 16 characters). An existing pet is never changed.
+  - `coachLines`, extra lines the study pet's coach can say, keyed by bubble kind: `distraction` (a while in a distracting app), `offerPause` (offering to pause the timer), `idleCheck` (no input for a while) and `autoPause` (the timer was paused while the user was away).
+    They join the built-in lines, which name no subject, so a few lines give the coach your kit's flavor.
+    Each kind takes a list of lines or a single line.
+    Keep them kind and at most 64 characters; longer, blank or non-text entries are skipped without dropping the others.
 
 ```json
 "moduleSettings": {
@@ -145,22 +155,15 @@ Module settings sections:
 }
 ```
 
-Accepted values:
-
-- **Study methods:** `pomodoro`, `fiftyTwoSeventeen`, `ultradian`, `flowtime`, `ankiSprint`, `questionBlock`, `custom`.
-- **Focus sounds:** `brown`, `pink`, `white`, `rain`, `fireplace`, `cafe`.
-- **Ticker previews:** `meeting`, `nowPlaying`, `focus`, `tasks`, `progress` (shared study goals such as Anki cards left), `party` (party members' pets beside yours while in a study party), `pet` (the study pet, from the Closet module; it naps after 20 minutes without a session), and the id of any module that publishes highlights, such as `claudeUsage` (a usage window above 80%).
-- **Pet breeds:** `orangeTabby`, `grayTabby`, `blackCat`, `whiteCat`, `tuxedo`, `calico`, `siamese`, `britishShorthair`, `goldenRetriever`, `labrador`, `frenchBulldog`, `corgi`, `dachshund`, `beagle`.
-
-Module settings the built-in modules read:
-
-- **`study`:** `dailyGoalMinutes`, the minutes a day to aim for (15 to 720, rounded to a quarter hour; 120 when left out). The Study tab shows today's time against it, and Today lists it as a goal.
+Older kits wrote four of these directly in `defaults`: `studyMethods`, `studyMethod`, `focusSounds` and `pet`.
+This version still reads them as `study.methods`, `study.method`, `focus.sounds` and `closet.pet`, with a warning on import that names the new place; a key in the module's section wins over its old name.
+A later version will stop reading the old names, so move them when you next edit the kit.
 
 Today (`planner`) reads these `moduleSettings.planner` keys, all optional:
 
 | Key | Type | Meaning |
 | --- | --- | --- |
-| `planMode` | string | `claude` (default) asks the local `claude` CLI to plan the day. `study` plans on device: review blocks for other modules' goals (such as Anki reviews), study blocks of the kit's `studyMethod` length, and breaks. |
+| `planMode` | string | `claude` (default) asks the local `claude` CLI to plan the day. `study` plans on device: review blocks for other modules' goals (such as Anki reviews), study blocks the length of the kit's `study.method`, and breaks. |
 | `reviewsFirst` | bool | Schedule review blocks in the first free time (default `true`), or last. |
 | `eventBufferMinutes` | number | Free time kept clear before and after each calendar event (default 10). |
 | `studyBlockTitle` | string | Title for study blocks once every open task has one (default "Study block"). |
@@ -169,9 +172,9 @@ Today (`planner`) reads these `moduleSettings.planner` keys, all optional:
 | `dayEndHour` | number | Hour (0-22) when Plan My Day stops planning, such as 21 for evening study (default 18). Planning late still leaves at least two hours, up to 10 pm. |
 | `sampleDay` | string | Which realistic day demo mode (`NOTCHDECK_DEMO=1`) shows on Today: `work` (default) or `medicine` (a lecture, a lab, clinical skills, question banks). Never affects real data. |
 
-Switching kits, picking one on first run, and resetting apply the tabs, `ticker` and `focusSounds`.
-A field the kit leaves out keeps the user's current setting, and only the sound mix changes: the user's volume, playlist and Do Not Disturb shortcuts stay.
-The other defaults are read and checked, and will be applied as the modules that use them (Study, Closet) land.
+Switching kits, picking one on first run, and resetting apply the tabs, `ticker` and every module's section: Study's methods and goal, the focus sound, Today's planning settings and the coach's lines.
+A field the kit leaves out keeps the user's current setting, and only the sound mix changes in focus mode: the user's volume, playlist and Do Not Disturb shortcuts stay.
+A stopped Study timer moves to the kit's `method`; one that is running is never interrupted.
 
 ### Onboarding
 
@@ -234,11 +237,11 @@ Tabbi refuses a kit file only when it can't be used at all:
 | `version` | 32 characters |
 | Task titles | 120 characters |
 
-Everything else is a warning, shown in the import sheet before you switch, and the value is skipped: an unknown module, study method, focus sound, ticker preview or pet breed, a module listed twice, a question id used twice, an answer id used twice in one question, a focus sound `level` outside 0 to 1 (it is clamped), or a field the format doesn't know (such as `defaults.tickers`).
+Everything else is a warning, shown in the import sheet before you switch, and the value is skipped: an unknown module or ticker preview, a module listed twice, a question id used twice, an answer id used twice in one question, a field the format doesn't know (such as `defaults.tickers`), or an old field name that has moved into a module's section (such as `defaults.studyMethods`, which still works for now).
 This keeps kits written for newer versions working on older ones.
-Each module checks its own `moduleSettings` section against the keys it declares: an unknown key (such as `moduleSettings.planner.reviewsFrist`) or a value of the wrong kind or out of range (such as a `dailyGoalMinutes` of 2000) is a warning, and the module skips the value or keeps it in range.
+Each module checks its own `moduleSettings` section against the keys it declares: an unknown key (such as `moduleSettings.planner.reviewsFrist`), a value of the wrong kind or out of range (such as a `dailyGoalMinutes` of 2000, a focus sound `level` above 1, or a study method this version doesn't have, named by its place such as `moduleSettings.study.methods[2]`) is a warning, and the module skips the value or keeps it in range.
 A section for a module this version doesn't have is a warning too.
-Today, Study and Closet declare their keys; other modules' sections aren't checked yet.
+Today, Study, Focus and Closet declare their keys; the other built-in modules read no kit settings, and their sections aren't checked.
 Module settings are plain values only: a module never accepts a URL, file path, command or anything else that runs.
 
 ## Versioning
@@ -260,7 +263,8 @@ Modules listed only in `modules` stay optional: an older version skips them with
 The format is defined by `KitManifest` in [`Sources/NotchKitCore/Kits`](../Sources/NotchKitCore/Kits):
 
 - `KitManifest.decode(from:)` parses and validates a file, including the `KitLimits` caps, and throws a `KitError`.
-- `issues(catalog:)` lists the non-fatal `KitIssue` warnings, including fields the format doesn't read (`unknownFields`).
+- `issues(catalog:)` lists the non-fatal `KitIssue` warnings, including fields the format doesn't read (`unknownFields`) and old field names (`KitDefaults.legacyFields`, see `KitLegacyField`), which decoding has already moved into their module's section.
+- A module declares its section's keys as `kitSettings: KitSettingsSchema([...])` on its descriptor (types: `bool`, `number` in a range, `text`, `choice`, `lines`, `list` of any type, and `object`) and reads the section with `defaults.settings(for: id)`. `KitValue` takes JSON-like literals, so a test can write `KitDefaults(moduleSettings: ["focus": ["sounds": [["sound": "rain"]]]])`.
 - `missingRequirements(catalog:)` lists `requires.modules` the catalog lacks; `ImportedKitStore.inspect(from:catalog:)` refuses such a kit.
 - `ImportedKitStore.inspect(from:catalog:)` reads and checks a file without saving it and returns a `KitImportCandidate`, which names the earlier import it would replace; `install(_:)` saves it.
 - `KitChangePreview` says what switching to a kit would change for given answers (tabs on and off, new permissions, starter tasks, previews), which the import sheet shows.

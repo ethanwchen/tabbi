@@ -20,17 +20,20 @@ extension ModuleCatalog {
         ModuleDescriptor(id: .claudeAsk, title: "Ask Claude", symbol: "sparkles", category: .ai,
                          accent: .claude, permissions: [.claudeCLI]),
         ModuleDescriptor(id: .focus, title: "Focus", symbol: "hourglass", category: .productivity,
-                         accent: ModuleAccent(red: 0.30, green: 0.84, blue: 0.76), permissions: [.notifications]),
+                         accent: ModuleAccent(red: 0.30, green: 0.84, blue: 0.76), permissions: [.notifications],
+                         kitSettings: FocusSettings.kitSettings),
         ModuleDescriptor(id: .study, title: "Study", symbol: "timer", category: .study,
                          accent: ModuleAccent(red: 1.00, green: 0.62, blue: 0.26), ownsFocusClock: true,
-                         kitSettings: KitSettingsSchema(["dailyGoalMinutes": StudyDailyGoal.kitSettingType])),
+                         kitSettings: KitSettingsSchema(StudyMethodMenu.kitSettingFields
+                            .merging(["dailyGoalMinutes": StudyDailyGoal.kitSettingType]) { $1 })),
         ModuleDescriptor(id: .anki, title: "Anki", symbol: "rectangle.stack.fill", category: .study,
                          accent: ModuleAccent(red: 0.36, green: 0.62, blue: 1.00)),
         ModuleDescriptor(id: .party, title: "Party", symbol: "person.3.fill", category: .study,
                          accent: ModuleAccent(red: 1.00, green: 0.42, blue: 0.62)),
         ModuleDescriptor(id: .closet, title: "Closet", symbol: "pawprint.fill", category: .fun,
                          accent: ModuleAccent(red: 0.98, green: 0.80, blue: 0.30),
-                         kitSettings: KitSettingsSchema(["coachLines": PetCoachMessages.kitSettingType])),
+                         kitSettings: KitSettingsSchema(["coachLines": PetCoachMessages.kitSettingType,
+                                                         "pet": PetProfile.kitSettingType])),
     ])
 }
 

@@ -43,7 +43,7 @@ final class FocusModeServiceTests: XCTestCase {
         // Volume is the user's; only the kit's focus sound counts.
         focusMode.settings.volume = focusMode.settings.volume == 0.2 ? 0.3 : 0.2
         XCTAssertEqual(matches, [true])
-        focusMode.settings.mix = kit.defaults.resolvedFocusMix == .off ? FocusMix([.init(sound: .rain)]) : .off
+        focusMode.settings.mix = FocusSettings.kitMix(of: kit.defaults) == .off ? FocusMix([.init(sound: .rain)]) : .off
         XCTAssertEqual(matches, [true, false])
 
         settings.resetToKitDefaults()

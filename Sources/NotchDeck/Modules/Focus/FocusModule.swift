@@ -12,7 +12,8 @@ final class FocusModule: NotchModule {
     /// Off in every bundled kit: Today already embeds the same timer.
     nonisolated static let descriptor = ModuleDescriptor(
         id: .focus, title: "Focus", symbol: "hourglass", category: .productivity,
-        accent: ModuleAccent(red: 0.30, green: 0.84, blue: 0.76), permissions: [.notifications]
+        accent: ModuleAccent(red: 0.30, green: 0.84, blue: 0.76), permissions: [.notifications],
+        kitSettings: FocusSettings.kitSettings
     )
     private let store: FocusStore
     /// Internal so app tests can drive focus mode.

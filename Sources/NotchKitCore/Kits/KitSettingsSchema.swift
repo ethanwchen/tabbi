@@ -39,6 +39,9 @@ public indirect enum KitSettingType: Hashable, Sendable {
     case lines(maxLength: Int, maxCount: Int)
     /// An object with these optional keys.
     case object([String: KitSettingType])
+    /// A list of up to `maxCount` items, each checked against `item`, so a
+    /// warning names the one item that doesn't fit (`methods[2]`).
+    case list(KitSettingType, maxCount: Int)
 
     /// What the value should be, for a warning: "a number from 0 to 22".
     public var expectation: String {
@@ -50,6 +53,7 @@ public indirect enum KitSettingType: Hashable, Sendable {
         case .lines(let maxLength, let maxCount):
             "a line or a list of up to \(maxCount) lines, each at most \(maxLength) characters"
         case .object: "an object"
+        case .list(_, let maxCount): "a list of up to \(maxCount) items"
         }
     }
 
@@ -60,6 +64,9 @@ public indirect enum KitSettingType: Hashable, Sendable {
                 guard let type = fields[key] else { return [.unknownField(child)] }
                 return type.issues(in: object[key] ?? .null, at: child)
             }
+        }
+        if case .list(let item, let maxCount) = self, case .array(let items) = value, items.count <= maxCount {
+            return items.indices.flatMap { item.issues(in: items[$0], at: "\(path)[\($0)]") }
         }
         let fits: Bool = switch (self, value) {
         case (.bool, .bool): true

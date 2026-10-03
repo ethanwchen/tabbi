@@ -47,14 +47,9 @@ public enum KitError: Error, Equatable, Sendable, CustomStringConvertible {
 public enum KitIssue: Equatable, Sendable, CustomStringConvertible {
     case unknownModule(ModuleID)
     case duplicateModule(ModuleID)
-    case unknownStudyMethod(String)
-    case unknownFocusSound(String)
     case unknownTickerKind(String)
-    case unknownPetBreed(String)
     case duplicateQuestion(String)
     case duplicateAnswer(question: String, answer: String)
-    /// A focus sound level outside 0...1, clamped when applied.
-    case focusLevelOutOfRange(sound: String, level: Double)
     /// A field the kit format doesn't read, such as a typo; ignored.
     case unknownField(String)
     /// A `moduleSettings` section for a module this build doesn't have.
@@ -63,24 +58,24 @@ public enum KitIssue: Equatable, Sendable, CustomStringConvertible {
     /// the module's `KitSettingsSchema`. Modules read their section
     /// leniently, so the value is skipped or kept in range.
     case invalidModuleSetting(path: String, expected: String)
+    /// An old top-level field that now lives in a module's section. Still
+    /// read for now (`KitLegacyField`), so the kit works as before.
+    case legacyField(KitLegacyField)
 
     public var description: String {
         switch self {
         case .unknownModule(let id): "Unknown module \"\(id)\" will be skipped."
         case .duplicateModule(let id): "Module \"\(id)\" is listed more than once."
-        case .unknownStudyMethod(let kind): "Unknown study method \"\(kind)\" will be skipped."
-        case .unknownFocusSound(let sound): "Unknown focus sound \"\(sound)\" will be skipped."
         case .unknownTickerKind(let kind): "Unknown preview \"\(kind)\" will be skipped."
-        case .unknownPetBreed(let breed): "Unknown pet breed \"\(breed)\" will be skipped."
         case .duplicateQuestion(let id): "Onboarding question \"\(id)\" is listed more than once."
         case .duplicateAnswer(let question, let answer):
             "Answer \"\(answer)\" is listed more than once in question \"\(question)\"."
-        case .focusLevelOutOfRange(let sound, let level):
-            "Focus sound \"\(sound)\" level \(level.formatted()) will be kept between 0 and 1."
         case .unknownField(let path): "Unknown field \"\(path)\" will be ignored."
         case .unknownModuleSettings(let id): "Settings for unknown module \"\(id)\" will be ignored."
         case .invalidModuleSetting(let path, let expected):
             "\"\(path)\" should be \(expected); other values are skipped or kept in range."
+        case .legacyField(let field):
+            "\"\(field.oldPath)\" has moved to \"\(field.newPath)\". It still works for now."
         }
     }
 }
@@ -142,18 +137,9 @@ public extension KitManifest {
         for id in answerModules where !catalog.contains(id) && seen.insert(id).inserted {
             issues.append(.unknownModule(id))
         }
-        let methods = (defaults.studyMethods ?? []) + [defaults.studyMethod].compactMap { $0 }
-        issues += Self.unknown(methods, StudyMethodKind.init(rawValue:)).map(KitIssue.unknownStudyMethod)
-        issues += Self.unknown((defaults.focusSounds ?? []).map(\.sound), FocusSound.init(rawValue:))
-            .map(KitIssue.unknownFocusSound)
         let previews = Set(TickerKind.all(in: catalog))
         issues += Self.unknown(defaults.ticker ?? []) { previews.contains(TickerKind(rawValue: $0)) ? $0 : nil }
             .map(KitIssue.unknownTickerKind)
-        issues += Self.unknown([defaults.pet?.breed].compactMap { $0 }, PetBreed.init(rawValue:))
-            .map(KitIssue.unknownPetBreed)
-        for sound in defaults.focusSounds ?? [] where !(0...1).contains(sound.level) {
-            issues.append(.focusLevelOutOfRange(sound: sound.sound, level: sound.level))
-        }
         var questions = Set<String>()
         for question in onboarding {
             if !questions.insert(question.id).inserted { issues.append(.duplicateQuestion(question.id)) }
@@ -163,6 +149,7 @@ public extension KitManifest {
             }
         }
         issues += unknownFields.map(KitIssue.unknownField)
+        issues += defaults.legacyFields.map(KitIssue.legacyField)
         issues += moduleSettingsIssues(catalog: catalog)
         return issues
     }

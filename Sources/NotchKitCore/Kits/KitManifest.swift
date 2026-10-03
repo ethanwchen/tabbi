@@ -173,76 +173,63 @@ public struct KitModuleEntry: Codable, Equatable, Sendable {
 }
 
 /// Settings a kit starts the user with. Every field is optional: absent means
-/// "keep the app default". Values are stored as written; the `resolved…`
-/// accessors drop ones this build doesn't know.
+/// "keep the app default". Only settings that span modules live here; each
+/// module's own defaults are in its `moduleSettings` section.
 public struct KitDefaults: Codable, Equatable, Sendable {
-    /// Study methods offered by the Study timer, in order (`StudyMethodKind` raw values).
-    public var studyMethods: [String]?
-    /// The method the Study timer starts on.
-    public var studyMethod: String?
-    /// The focus sound mix, as sound id and 0...1 level.
-    public var focusSounds: [KitFocusSound]?
     /// Closed-notch previews to show: built-in `TickerKind` raw values and
     /// the ids of modules whose highlights should show.
     public var ticker: [String]?
-    public var pet: KitPetDefaults?
     /// Theme id; "notch" is the built-in hardware-black theme.
     public var theme: String?
     /// Per-module settings, keyed by module id. Each module reads its own
-    /// section, so new modules need no changes here.
+    /// section and declares its keys as `ModuleDescriptor.kitSettings`, so
+    /// new modules need no changes here.
     public var moduleSettings: [String: KitValue]
+    /// Old top-level fields this kit still uses, already read into their
+    /// module's section. Filled when decoding, reported by
+    /// `issues(catalog:)`; never encoded.
+    public internal(set) var legacyFields: [KitLegacyField] = []
 
-    public init(
-        studyMethods: [String]? = nil,
-        studyMethod: String? = nil,
-        focusSounds: [KitFocusSound]? = nil,
-        ticker: [String]? = nil,
-        pet: KitPetDefaults? = nil,
-        theme: String? = nil,
-        moduleSettings: [String: KitValue] = [:]
-    ) {
-        self.studyMethods = studyMethods
-        self.studyMethod = studyMethod
-        self.focusSounds = focusSounds
+    public init(ticker: [String]? = nil, theme: String? = nil, moduleSettings: [String: KitValue] = [:]) {
         self.ticker = ticker
-        self.pet = pet
         self.theme = theme
         self.moduleSettings = moduleSettings
     }
 
     private enum CodingKeys: String, CodingKey, CaseIterable {
-        case studyMethods, studyMethod, focusSounds, ticker, pet, theme, moduleSettings
+        case ticker, theme, moduleSettings
+        // Legacy aliases, see `KitLegacyField.all`.
+        case studyMethods, studyMethod, focusSounds, pet
     }
 
     public init(from decoder: Decoder) throws {
         decoder.reportUnknownKitFields(CodingKeys.self)
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        studyMethods = try container.decodeIfPresent([String].self, forKey: .studyMethods)
-        studyMethod = try container.decodeIfPresent(String.self, forKey: .studyMethod)
-        focusSounds = try container.decodeIfPresent([KitFocusSound].self, forKey: .focusSounds)
         ticker = try container.decodeIfPresent([String].self, forKey: .ticker)
-        pet = try container.decodeIfPresent(KitPetDefaults.self, forKey: .pet)
         theme = try container.decodeIfPresent(String.self, forKey: .theme)
         moduleSettings = try container.decodeIfPresent([String: KitValue].self, forKey: .moduleSettings) ?? [:]
-    }
-
-    /// Known study methods in kit order, or `nil` to offer every preset.
-    public var resolvedStudyMethods: [StudyMethodKind]? {
-        studyMethods.map { unique($0.compactMap(StudyMethodKind.init(rawValue:))) }
-    }
-
-    /// The starting method if known; otherwise the first offered one.
-    public var resolvedStudyMethod: StudyMethodKind? {
-        studyMethod.flatMap(StudyMethodKind.init(rawValue:)) ?? resolvedStudyMethods?.first
-    }
-
-    /// The sound mix with unknown sounds dropped (and levels clamped by `FocusMix`).
-    public var resolvedFocusMix: FocusMix? {
-        focusSounds.map { sounds in
-            FocusMix(sounds.compactMap { entry in
-                FocusSound(rawValue: entry.sound).map { FocusMix.Layer(sound: $0, level: Float(entry.level)) }
-            })
+        for field in KitLegacyField.all {
+            guard let key = CodingKeys(rawValue: field.name),
+                  let value = try container.decodeIfPresent(KitValue.self, forKey: key) else { continue }
+            legacyFields.append(field)
+            moveLegacy(value, to: field)
         }
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(ticker, forKey: .ticker)
+        try container.encodeIfPresent(theme, forKey: .theme)
+        if !moduleSettings.isEmpty { try container.encode(moduleSettings, forKey: .moduleSettings) }
+    }
+
+    /// Puts an old field's value where its module reads it, unless the kit
+    /// also sets the new key, which wins.
+    private mutating func moveLegacy(_ value: KitValue, to field: KitLegacyField) {
+        let section = moduleSettings[field.module.rawValue] ?? .object([:])
+        guard case .object(var object) = section, object[field.key] == nil else { return }
+        object[field.key] = value
+        moduleSettings[field.module.rawValue] = .object(object)
     }
 
     /// Preview kinds to show, or `nil` to keep the app default (all). Names
@@ -258,47 +245,26 @@ public struct KitDefaults: Codable, Equatable, Sendable {
     }
 }
 
-public struct KitFocusSound: Codable, Equatable, Sendable {
-    /// `FocusSound` raw value, e.g. "rain".
-    public var sound: String
-    /// Relative level, 0...1.
-    public var level: Double
+/// A field that kit format 1 first had at the top of `defaults` and that
+/// now belongs to one module's `moduleSettings` section. Kits that still
+/// use the old name keep working for one release, with a warning, so
+/// core never again has to know a module's settings.
+public struct KitLegacyField: Equatable, Sendable {
+    /// The old name under `defaults`, such as "studyMethods".
+    public let name: String
+    public let module: ModuleID
+    /// The key in the module's section, such as "methods".
+    public let key: String
 
-    public init(sound: String, level: Double = 1) {
-        self.sound = sound
-        self.level = level
-    }
+    public static let all = [
+        KitLegacyField(name: "studyMethods", module: .study, key: "methods"),
+        KitLegacyField(name: "studyMethod", module: .study, key: "method"),
+        KitLegacyField(name: "focusSounds", module: .focus, key: "sounds"),
+        KitLegacyField(name: "pet", module: .closet, key: "pet"),
+    ]
 
-    private enum CodingKeys: String, CodingKey, CaseIterable { case sound, level }
-
-    public init(from decoder: Decoder) throws {
-        decoder.reportUnknownKitFields(CodingKeys.self)
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        sound = try container.decode(String.self, forKey: .sound)
-        level = try container.decodeIfPresent(Double.self, forKey: .level) ?? 1
-    }
-}
-
-public struct KitPetDefaults: Codable, Equatable, Sendable {
-    /// `PetBreed` raw value, e.g. "corgi".
-    public var breed: String?
-    public var name: String?
-
-    public init(breed: String? = nil, name: String? = nil) {
-        self.breed = breed
-        self.name = name
-    }
-
-    private enum CodingKeys: String, CodingKey, CaseIterable { case breed, name }
-
-    public init(from decoder: Decoder) throws {
-        decoder.reportUnknownKitFields(CodingKeys.self)
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        breed = try container.decodeIfPresent(String.self, forKey: .breed)
-        name = try container.decodeIfPresent(String.self, forKey: .name)
-    }
-
-    public var resolvedBreed: PetBreed? { breed.flatMap(PetBreed.init(rawValue:)) }
+    public var oldPath: String { "defaults.\(name)" }
+    public var newPath: String { "defaults.moduleSettings.\(module.rawValue).\(key)" }
 }
 
 /// A first-run question. Each answer can switch modules on or off and add
@@ -367,9 +333,4 @@ public struct KitAnswer: Codable, Equatable, Sendable, Identifiable {
         disables = try container.decodeIfPresent([ModuleID].self, forKey: .disables) ?? []
         tasks = try container.decodeIfPresent([String].self, forKey: .tasks) ?? []
     }
-}
-
-private func unique<T: Hashable>(_ values: [T]) -> [T] {
-    var seen = Set<T>()
-    return values.filter { seen.insert($0).inserted }
 }

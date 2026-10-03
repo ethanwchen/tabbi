@@ -12,12 +12,12 @@ final class KitSwitchUndoTests: XCTestCase {
     private let moduleTypes: [any NotchModule.Type] = [TodayModule.self, FocusModule.self, StudyModule.self]
     private var root: URL!
 
-    override func setUpWithError() throws {
+    override func setUp() async throws {
         root = FileManager.default.temporaryDirectory.appendingPathComponent("kit-undo-\(UUID().uuidString)")
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
     }
 
-    override func tearDownWithError() throws {
+    override func tearDown() async throws {
         try? FileManager.default.removeItem(at: root)
     }
 
@@ -38,7 +38,7 @@ final class KitSwitchUndoTests: XCTestCase {
 
     private let deepWork = #"""
     {"formatVersion": 1, "id": "deep-work", "name": "Deep Work", "version": "1.0", "modules": ["focus", "planner"],
-     "starterTasks": ["Block two hours"], "defaults": {"focusSounds": [{"sound": "rain", "level": 0.5}]}}
+     "starterTasks": ["Block two hours"], "defaults": {"moduleSettings": {"focus": {"sounds": [{"sound": "rain", "level": 0.5}]}}}}
     """#
 
     func testInspectingAnImportChangesNothingUntilItIsInstalled() throws {

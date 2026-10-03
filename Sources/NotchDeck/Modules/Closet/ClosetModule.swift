@@ -15,15 +15,20 @@ final class ClosetModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
         id: .closet, title: "Closet", symbol: "pawprint.fill", category: .fun,
         accent: ModuleAccent(red: 0.98, green: 0.80, blue: 0.30),
-        kitSettings: KitSettingsSchema(["coachLines": PetCoachMessages.kitSettingType])
+        kitSettings: KitSettingsSchema([
+            "coachLines": PetCoachMessages.kitSettingType,
+            "pet": PetProfile.kitSettingType,
+        ])
     )
     let store: ClosetStore
     /// The pet's study coach: nudges from the notch during focus phases.
     let coach: PetCoachController
+    private var kitSubscription: AnyCancellable?
 
     init(context: ModuleContext) {
         let settings = context.settings
-        let store = ClosetStore(storage: context.storage, runMode: context.runMode)
+        let store = ClosetStore(storage: context.storage, runMode: context.runMode,
+                                starter: .starter(kit: context.activeKit?.defaults))
         let focus = context.focusTimer
         coach = PetCoachController(
             storage: context.storage,
@@ -39,6 +44,9 @@ final class ClosetModule: NotchModule {
         coach.follow(focus: timers)
         store.follow(focus: timers)
         coach.follow(awards: store.awards.eraseToAnyPublisher())
+        // Until the pet is saved, it is the active kit's starter pet.
+        kitSubscription = context.kitApplied
+            .sink { [store] in store.useStarter(.starter(kit: $0.kit.defaults)) }
     }
 
     func start() { coach.start() }

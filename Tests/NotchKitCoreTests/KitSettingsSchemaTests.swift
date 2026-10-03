@@ -10,6 +10,7 @@ final class KitSettingsSchemaTests: XCTestCase {
         "mode": .choice(["fast", "slow"]),
         "lines": .lines(maxLength: 4, maxCount: 2),
         "nested": .object(["level": .number(0...1)]),
+        "steps": .list(.object(["size": .number(1...3)]), maxCount: 2),
     ])
 
     private func issues(_ json: String) throws -> [KitIssue] {
@@ -23,6 +24,17 @@ final class KitSettingsSchemaTests: XCTestCase {
         """#), [])
         XCTAssertEqual(try issues(#"{"lines": "one"}"#), [], "a single line counts as a list of one")
         XCTAssertEqual(try issues("{}"), [], "every key is optional")
+    }
+
+    func testListItemsAreCheckedOneByOne() throws {
+        XCTAssertEqual(try issues(#"{"steps": [{"size": 1}, {"size": 3}]}"#), [])
+        XCTAssertEqual(try issues(#"{"steps": [{"size": 1}, {"size": 9, "colour": "red"}]}"#), [
+            .unknownField("moduleSettings.drill.steps[1].colour"),
+            .invalidModuleSetting(path: "moduleSettings.drill.steps[1].size", expected: "a number from 1 to 3"),
+        ])
+        let tooMany = KitIssue.invalidModuleSetting(path: "moduleSettings.drill.steps", expected: "a list of up to 2 items")
+        XCTAssertEqual(try issues(#"{"steps": [{}, {}, {}]}"#), [tooMany])
+        XCTAssertEqual(try issues(#"{"steps": {"size": 1}}"#), [tooMany], "not a list")
     }
 
     func testWrongValuesAreNamedByPathInKeyOrder() throws {

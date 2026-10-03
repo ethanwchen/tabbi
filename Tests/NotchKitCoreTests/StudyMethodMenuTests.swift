@@ -12,7 +12,7 @@ final class StudyMethodMenuTests: XCTestCase {
     }
 
     func testKitPicksMethodsInOrderAndTheStartingOne() {
-        let kit = KitDefaults(studyMethods: ["flowtime", "pomodoro", "flowtime", "chess"], studyMethod: "pomodoro")
+        let kit = KitDefaults(moduleSettings: ["study": ["methods": ["flowtime", "pomodoro", "flowtime", "chess"], "method": "pomodoro"]])
         let menu = StudyMethodMenu(kit: kit)
         XCTAssertEqual(menu.kinds, [.flowtime, .pomodoro])
         XCTAssertEqual(menu.startingKind, .pomodoro)
@@ -28,7 +28,7 @@ final class StudyMethodMenuTests: XCTestCase {
     }
 
     func testKitNamingNoKnownMethodOffersEveryPreset() {
-        let menu = StudyMethodMenu(kit: KitDefaults(studyMethods: ["chess"], studyMethod: "chess"))
+        let menu = StudyMethodMenu(kit: KitDefaults(moduleSettings: ["study": ["methods": ["chess"], "method": "chess"]]))
         XCTAssertEqual(menu.kinds, StudyMethod.presets.map(\.kind))
         XCTAssertEqual(menu.startingKind, .pomodoro)
     }

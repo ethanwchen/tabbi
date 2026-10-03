@@ -59,8 +59,28 @@ public enum KitValue: Codable, Equatable, Sendable {
         return nil
     }
 
+    public var arrayValue: [KitValue]? {
+        if case .array(let value) = self { return value }
+        return nil
+    }
+
     public subscript(key: String) -> KitValue? {
         if case .object(let value) = self { return value[key] }
         return nil
+    }
+}
+
+/// Literals, so code and tests can write a kit section the way the JSON
+/// reads: `["methods": ["pomodoro", "flowtime"], "method": "flowtime"]`.
+extension KitValue: ExpressibleByBooleanLiteral, ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral,
+    ExpressibleByStringLiteral, ExpressibleByArrayLiteral, ExpressibleByDictionaryLiteral {
+    public init(booleanLiteral value: Bool) { self = .bool(value) }
+    public init(integerLiteral value: Int) { self = .number(Double(value)) }
+    public init(floatLiteral value: Double) { self = .number(value) }
+    public init(stringLiteral value: String) { self = .string(value) }
+    public init(arrayLiteral elements: KitValue...) { self = .array(elements) }
+
+    public init(dictionaryLiteral elements: (String, KitValue)...) {
+        self = .object(Dictionary(elements, uniquingKeysWith: { _, last in last }))
     }
 }

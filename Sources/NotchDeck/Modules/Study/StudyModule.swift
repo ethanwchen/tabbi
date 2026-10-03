@@ -10,7 +10,9 @@ final class StudyModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
         id: .study, title: "Study", symbol: "timer", category: .study,
         accent: ModuleAccent(red: 1.00, green: 0.62, blue: 0.26), ownsFocusClock: true,
-        kitSettings: KitSettingsSchema(["dailyGoalMinutes": StudyDailyGoal.kitSettingType])
+        kitSettings: KitSettingsSchema(
+            StudyMethodMenu.kitSettingFields.merging(["dailyGoalMinutes": StudyDailyGoal.kitSettingType]) { $1 }
+        )
     )
     private let store: StudyStore
     private let focusMode: FocusController
@@ -20,13 +22,15 @@ final class StudyModule: NotchModule {
         let kit = context.activeKit?.defaults
         focusMode = context.focusMode
         store = StudyStore(menu: StudyMethodMenu(kit: kit), goal: StudyDailyGoal(kit: kit), storage: context.storage,
-                           activity: context.activityLog, focusMode: focusMode, runMode: context.runMode)
+                           activity: context.activityLog, focusMode: focusMode,
+                           starterPet: .starter(kit: kit), runMode: context.runMode)
         store.followCards(from: context.providers.$snapshot)
         context.kitApplied
             .sink { [store] application in
                 let kit = application.kit.defaults
                 // Undo keeps the user's method when the earlier kit offers it.
                 store.use(StudyMethodMenu(kit: kit), goal: StudyDailyGoal(kit: kit), kitApplied: application.kind != .undo)
+                store.starterPet = .starter(kit: kit)
             }
             .store(in: &cancellables)
     }
