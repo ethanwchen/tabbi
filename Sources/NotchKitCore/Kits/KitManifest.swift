@@ -135,7 +135,8 @@ public struct KitDefaults: Codable, Equatable, Sendable {
     public var studyMethod: String?
     /// The focus sound mix, as sound id and 0...1 level.
     public var focusSounds: [KitFocusSound]?
-    /// Closed-notch preview kinds (`TickerKind` raw values) to show.
+    /// Closed-notch previews to show: built-in `TickerKind` raw values and
+    /// the ids of modules whose highlights should show.
     public var ticker: [String]?
     public var pet: KitPetDefaults?
     /// Theme id; "notch" is the built-in hardware-black theme.
@@ -196,9 +197,11 @@ public struct KitDefaults: Codable, Equatable, Sendable {
         }
     }
 
-    /// Preview kinds to show, or `nil` to keep the app default (all).
-    public var resolvedTicker: Set<TickerKind>? {
-        ticker.map { Set($0.compactMap(TickerKind.init(rawValue:))) }
+    /// Preview kinds to show, or `nil` to keep the app default (all). Names
+    /// `catalog` has no preview for are dropped.
+    public func resolvedTicker(catalog: ModuleCatalog) -> Set<TickerKind>? {
+        let known = Set(TickerKind.all(in: catalog))
+        return ticker.map { Set($0.map(TickerKind.init(rawValue:)).filter(known.contains)) }
     }
 
     /// Settings for one module, if the kit has any.

@@ -56,11 +56,11 @@ public struct AppSettings: Equatable, Sendable {
         self.notchPreview = notchPreview
     }
 
-    /// Kinds the closed-notch preview may show: the user's preview choices,
-    /// minus items whose module is turned off, since clicking one would open
-    /// a tab that isn't there.
-    public var previewKinds: Set<TickerKind> {
-        notchPreview.enabledKinds.filter { kind in kind.module.map(modules.isEnabled) ?? true }
+    /// Whether the closed-notch preview may show `kind`: the user's preview
+    /// choices, minus items whose module is turned off, since clicking one
+    /// would open a tab that isn't there.
+    public func showsPreview(_ kind: TickerKind) -> Bool {
+        notchPreview.shows(kind) && (kind.module.map(modules.isEnabled) ?? true)
     }
 
     /// Switches to `kit`: replaces the tab layout with the one it produces
@@ -73,8 +73,8 @@ public struct AppSettings: Equatable, Sendable {
         hasChosenKit = true
         kitAnswers = answers
         modules = kit.layout(catalog: catalog, answers: answers)
-        if let kinds = kit.defaults.resolvedTicker {
-            notchPreview.disabledKinds = Set(TickerKind.allCases).subtracting(kinds)
+        if let kinds = kit.defaults.resolvedTicker(catalog: catalog) {
+            notchPreview.disabledKinds = Set(TickerKind.all(in: catalog)).subtracting(kinds)
         }
     }
 
@@ -177,7 +177,7 @@ public struct SettingsRepository {
                 isEnabled: bool(Key.previewEnabled) ?? fallback.notchPreview.isEnabled,
                 // Unknown raw values (a kind removed in a later version) are dropped.
                 disabledKinds: Set((defaults.stringArray(forKey: Key.previewDisabledKinds) ?? [])
-                    .compactMap(TickerKind.init(rawValue:))),
+                    .map(TickerKind.init(rawValue:))),
                 interval: (defaults.object(forKey: Key.previewInterval) as? Int)
                     .flatMap(TickerInterval.init(rawValue:)) ?? fallback.notchPreview.interval
             )

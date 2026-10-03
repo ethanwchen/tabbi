@@ -1,44 +1,88 @@
 import Foundation
 
-/// The kinds of live activity the closed notch can preview, in rotation order.
-public enum TickerKind: String, CaseIterable, Codable, Hashable, Sendable, Identifiable {
-    case meeting
-    case nowPlaying
-    case focus
-    case tasks
-    case progress
-    case claudeUsage
-    case party
-    /// The study pet, last so live data always comes first.
-    case pet
+/// A kind of live activity the closed notch can preview, and the unit the
+/// user turns previews on and off by.
+///
+/// Open rather than a closed enum: besides the built-in kinds with their own
+/// look (meetings, music, the focus clock, the pet), every module that
+/// publishes `TickerHighlight`s gets a kind of its own, `highlights(from:)`,
+/// whose raw value is the module id. So a new module's previews need no
+/// ticker code, and a kit's `ticker` list names them by module id.
+public struct TickerKind: RawRepresentable, Hashable, Codable, Sendable, Identifiable, CustomStringConvertible {
+    public let rawValue: String
+
+    public init(rawValue: String) { self.rawValue = rawValue }
+
+    public init(from decoder: Decoder) throws {
+        rawValue = try decoder.singleValueContainer().decode(String.self)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(rawValue)
+    }
 
     public var id: String { rawValue }
+    public var description: String { rawValue }
 
-    /// Label for the per-item toggle in Settings.
-    public var title: String {
+    public static let meeting = TickerKind(rawValue: "meeting")
+    public static let nowPlaying = TickerKind(rawValue: "nowPlaying")
+    public static let focus = TickerKind(rawValue: "focus")
+    public static let tasks = TickerKind(rawValue: "tasks")
+    public static let progress = TickerKind(rawValue: "progress")
+    public static let party = TickerKind(rawValue: "party")
+    /// The study pet, last so live data always comes first.
+    public static let pet = TickerKind(rawValue: "pet")
+
+    /// Built-in kinds that come before module highlights in the rotation.
+    public static let leading: [TickerKind] = [.meeting, .nowPlaying, .focus, .tasks, .progress]
+    /// Built-in kinds that come after module highlights.
+    public static let trailing: [TickerKind] = [.party, .pet]
+    /// Every built-in kind, in rotation order.
+    public static let builtIn: [TickerKind] = leading + trailing
+
+    /// The kind for `module`'s highlights.
+    public static func highlights(from module: ModuleID) -> TickerKind {
+        TickerKind(rawValue: module.rawValue)
+    }
+
+    /// Every kind this build can show: the built-in ones, with the
+    /// highlights of each module in `catalog` that declares a
+    /// `highlightTitle` in between, in catalog order.
+    public static func all(in catalog: ModuleCatalog) -> [TickerKind] {
+        leading + catalog.descriptors.filter { $0.highlightTitle != nil }.map { highlights(from: $0.id) } + trailing
+    }
+
+    public var isBuiltIn: Bool { Self.builtIn.contains(self) }
+
+    /// Label for the per-item toggle in Settings; a module's highlights use
+    /// its descriptor's `highlightTitle`.
+    public func title(in catalog: ModuleCatalog) -> String {
         switch self {
         case .meeting: "Next meeting"
         case .nowPlaying: "Now playing"
         case .focus: "Focus timer"
         case .tasks: "Tasks left today"
         case .progress: "Study goals left today"
-        case .claudeUsage: "Claude usage above 80%"
         case .pet: "Study pet"
         case .party: "Study party pets"
+        default: catalog.descriptor(for: ModuleID(rawValue: rawValue)).highlightTitle
+            ?? catalog.descriptor(for: ModuleID(rawValue: rawValue)).title
         }
     }
 
-    /// The module this preview needs turned on, and whose panel a click opens.
-    /// `nil` for progress, which any module can provide; only enabled modules
-    /// publish it, and `TickerItem.module` opens the one it came from.
+    /// The module this preview needs turned on, and whose panel a click
+    /// opens. `nil` for the focus clock and progress, which any module can
+    /// provide; only enabled modules publish them, and `TickerItem.module`
+    /// opens the one they came from.
     public var module: ModuleID? {
         switch self {
-        case .meeting, .focus, .tasks: .planner
+        case .meeting, .tasks: .planner
+        case .focus, .progress: nil
         case .nowPlaying: .spotify
-        case .progress: nil
-        case .claudeUsage: .claudeUsage
         case .pet: .closet
         case .party: .party
+        default: ModuleID(rawValue: rawValue)
         }
     }
 }
@@ -55,12 +99,6 @@ public struct TickerMeeting: Hashable, Sendable {
         self.timing = timing
         self.canJoin = canJoin
     }
-}
-
-/// Which Claude usage window crossed the warning threshold.
-public enum TickerUsageWindow: Hashable, Sendable {
-    case fiveHour
-    case weekly
 }
 
 /// The study pet beside the closed notch and what it is doing.
@@ -130,7 +168,8 @@ public enum TickerItem: Hashable, Sendable {
     case tasks(remaining: Int)
     /// An unfinished shared goal, e.g. Anki cards left to review today.
     case progress(ProgressItem)
-    case claudeUsage(window: TickerUsageWindow, utilization: Double)
+    /// A module's own line, drawn with its symbol and accent.
+    case highlight(TickerHighlight)
     case pet(TickerPet)
     case party(TickerParty)
 
@@ -141,19 +180,20 @@ public enum TickerItem: Hashable, Sendable {
         case .focus: .focus
         case .tasks: .tasks
         case .progress: .progress
-        case .claudeUsage: .claudeUsage
+        case .highlight(let highlight): .highlights(from: highlight.source)
         case .pet: .pet
         case .party: .party
         }
     }
 
     /// The panel a click on this item opens: the module running a focus
-    /// clock, the module that provided a progress goal, otherwise the kind's
-    /// module.
+    /// clock or that provided a progress goal or highlight, otherwise the
+    /// kind's module.
     public var module: ModuleID {
         switch self {
         case .focus(let focus): return focus.source
         case .progress(let item): return item.source
+        case .highlight(let highlight): return highlight.source
         default: return kind.module ?? .planner
         }
     }
@@ -161,27 +201,32 @@ public enum TickerItem: Hashable, Sendable {
     /// Whether this item should hold the notch instead of rotating away.
     ///
     /// A meeting that starts within `TickerSources.pinLeadTime` or is under
-    /// way is the one thing the user must not miss.
+    /// way is the one thing the user must not miss; a module can pin a
+    /// highlight for the same reason.
     public var isPinned: Bool {
-        guard case .meeting(let meeting) = self else { return false }
-        switch meeting.timing {
-        case .now: return true
-        case .startsIn(let minutes): return TimeInterval(minutes * 60) <= TickerSources.pinLeadTime
+        switch self {
+        case .meeting(let meeting):
+            switch meeting.timing {
+            case .now: return true
+            case .startsIn(let minutes): return TimeInterval(minutes * 60) <= TickerSources.pinLeadTime
+            }
+        case .highlight(let highlight):
+            return highlight.isPinned
+        default:
+            return false
         }
     }
 }
 
 /// A snapshot of every module's state the ticker draws from.
 ///
-/// The app fills this from its stores; keeping it a plain value lets the
-/// selection rules be tested without any of them.
+/// The app fills this from the merged `ProviderSnapshot`; keeping it a plain
+/// value lets the selection rules be tested without any module.
 public struct TickerSources: Equatable, Sendable {
     /// Meetings starting this soon (or already under way) pin themselves.
     public static let pinLeadTime: TimeInterval = 5 * 60
     /// Meetings further out than this are not "live" yet and stay hidden.
     public static let meetingHorizon: TimeInterval = 60 * 60
-    /// Claude usage only surfaces once a window is above this fraction.
-    public static let usageThreshold: Double = 0.8
 
     public var events: [UpcomingEvent]
     public var isMusicPlaying: Bool
@@ -190,7 +235,8 @@ public struct TickerSources: Equatable, Sendable {
     public var tasksRemaining: Int
     /// Shared goals from the enabled modules, in tab order.
     public var progress: [ProgressItem]
-    public var usage: ClaudeRateLimitSnapshot?
+    /// Modules' own lines, in tab order.
+    public var highlights: [TickerHighlight]
     public var pet: PetPresence?
     public var party: ProvidedParty?
 
@@ -200,7 +246,7 @@ public struct TickerSources: Equatable, Sendable {
         focus: ProvidedFocus? = nil,
         tasksRemaining: Int = 0,
         progress: [ProgressItem] = [],
-        usage: ClaudeRateLimitSnapshot? = nil,
+        highlights: [TickerHighlight] = [],
         pet: PetPresence? = nil,
         party: ProvidedParty? = nil
     ) {
@@ -209,30 +255,47 @@ public struct TickerSources: Equatable, Sendable {
         self.focus = focus
         self.tasksRemaining = tasksRemaining
         self.progress = progress
-        self.usage = usage
+        self.highlights = highlights
         self.pet = pet
         self.party = party
     }
 
-    /// Every item that has something to say at `now`, in `TickerKind` order.
+    /// What the ticker needs from the enabled modules' merged provisions.
+    public init(_ snapshot: ProviderSnapshot) {
+        self.init(events: snapshot.events, isMusicPlaying: snapshot.isPlaying, focus: snapshot.focus,
+                  tasksRemaining: snapshot.openTasks.count, progress: snapshot.progress,
+                  highlights: snapshot.highlights, pet: snapshot.pet, party: snapshot.party)
+    }
+
+    /// Every item that has something to say at `now`, in rotation order: the
+    /// leading built-in kinds, then one highlight per module (highest
+    /// priority first, ties in tab order), then the party and the pet.
     ///
-    /// Kinds missing from `enabled` and kinds with no data are skipped, so an
+    /// Kinds `enabled` rejects and kinds with no data are skipped, so an
     /// empty result means the notch stays plain black.
-    public func items(at now: Date, enabled: Set<TickerKind> = Set(TickerKind.allCases)) -> [TickerItem] {
-        TickerKind.allCases.filter(enabled.contains).compactMap { item(for: $0, at: now) }
+    public func items(at now: Date, enabled: (TickerKind) -> Bool = { _ in true }) -> [TickerItem] {
+        TickerKind.leading.filter(enabled).compactMap { item(for: $0, at: now) }
+            + topHighlights(at: now).filter { enabled(.highlights(from: $0.source)) }.map(TickerItem.highlight)
+            + TickerKind.trailing.filter(enabled).compactMap { item(for: $0, at: now) }
+    }
+
+    /// `items(at:enabled:)` limited to the kinds in `enabled`.
+    public func items(at now: Date, enabled: Set<TickerKind>) -> [TickerItem] {
+        items(at: now) { enabled.contains($0) }
     }
 
     /// The earliest moment after `now` at which `items(at:enabled:)` can
     /// change from the clock alone: a meeting countdown ticking down a
     /// minute, a meeting entering the horizon or ending, a focus phase
-    /// ending, a usage window resetting, or the pet dozing off. `nil` when nothing is pending.
+    /// ending, a highlight expiring, or the pet dozing off. `nil` when
+    /// nothing is pending.
     ///
     /// Lets the caller sleep until then instead of polling. A running focus
     /// clock's per-second change is left to the caller, which only needs it
     /// while that clock is on screen.
-    public func nextChange(after now: Date, enabled: Set<TickerKind> = Set(TickerKind.allCases)) -> Date? {
+    public func nextChange(after now: Date, enabled: (TickerKind) -> Bool = { _ in true }) -> Date? {
         var dates: [Date] = []
-        if enabled.contains(.meeting) {
+        if enabled(.meeting) {
             for event in events where !event.isAllDay && event.end > now {
                 let lead = event.start.timeIntervalSince(now)
                 if lead > Self.meetingHorizon {
@@ -247,16 +310,38 @@ public struct TickerSources: Equatable, Sendable {
                 }
             }
         }
-        if enabled.contains(.focus), let endsAt = focus?.endsAt, endsAt > now {
+        if enabled(.focus), let endsAt = focus?.endsAt, endsAt > now {
             dates.append(endsAt)
         }
-        if enabled.contains(.claudeUsage) {
-            dates += [usage?.fiveHour?.resetsAt, usage?.sevenDay?.resetsAt].compactMap { $0 }.filter { $0 > now }
-        }
-        if enabled.contains(.pet), let sleepsAt = pet?.sleepsAt(focus: focus, after: now) {
+        dates += highlights.filter { enabled(.highlights(from: $0.source)) }
+            .compactMap(\.expiresAt).filter { $0 > now }
+        if enabled(.pet), let sleepsAt = pet?.sleepsAt(focus: focus, after: now) {
             dates.append(sleepsAt)
         }
         return dates.min()
+    }
+
+    /// `nextChange(after:enabled:)` limited to the kinds in `enabled`.
+    public func nextChange(after now: Date, enabled: Set<TickerKind>) -> Date? {
+        nextChange(after: now) { enabled.contains($0) }
+    }
+
+    /// Each module's live highlight with the highest priority (ties keep the
+    /// module's own order), ordered by priority with ties in tab order.
+    private func topHighlights(at now: Date) -> [TickerHighlight] {
+        var best: [ModuleID: TickerHighlight] = [:]
+        var modules: [ModuleID] = []
+        for highlight in highlights where highlight.isLive(at: now) {
+            guard let current = best[highlight.source] else {
+                best[highlight.source] = highlight
+                modules.append(highlight.source)
+                continue
+            }
+            if highlight.priority > current.priority { best[highlight.source] = highlight }
+        }
+        return modules.compactMap { best[$0] }.enumerated()
+            .sorted { ($1.element.priority, $0.offset) < ($0.element.priority, $1.offset) }
+            .map(\.element)
     }
 
     private func item(for kind: TickerKind, at now: Date) -> TickerItem? {
@@ -286,16 +371,6 @@ public struct TickerSources: Equatable, Sendable {
             // The first goal in tab order with work left; a finished goal
             // has nothing to say.
             return progress.first { !$0.isComplete }.map(TickerItem.progress)
-        case .claudeUsage:
-            let windows: [(TickerUsageWindow, Double)] = [
-                (.fiveHour, Self.utilization(of: usage?.fiveHour, at: now)),
-                (.weekly, Self.utilization(of: usage?.sevenDay, at: now)),
-            ]
-            // The fuller window is the more urgent one; ties favor the 5-hour
-            // window because it resets sooner and is the one the user can act on.
-            guard let worst = windows.max(by: { $0.1 < $1.1 }),
-                  worst.1 > Self.usageThreshold else { return nil }
-            return .claudeUsage(window: worst.0, utilization: worst.1)
         case .pet:
             guard let pet else { return nil }
             return .pet(TickerPet(profile: pet.profile, mood: pet.mood(focus: focus, at: now)))
@@ -304,14 +379,8 @@ public struct TickerSources: Equatable, Sendable {
             guard let party, party.memberCount > 1 else { return nil }
             return .party(TickerParty(pets: Array(party.pets.prefix(TickerParty.maxPets)),
                                       memberCount: party.memberCount))
+        default:
+            return nil
         }
-    }
-
-    /// The window's utilization, or 0 once it has reset: the snapshot is only
-    /// refreshed on demand, so after `resetsAt` its number no longer holds.
-    private static func utilization(of window: ClaudeUsageWindow?, at now: Date) -> Double {
-        guard let window else { return 0 }
-        if let resetsAt = window.resetsAt, resetsAt <= now { return 0 }
-        return window.utilization
     }
 }

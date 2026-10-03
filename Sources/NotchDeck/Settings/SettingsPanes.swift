@@ -360,15 +360,16 @@ struct PreviewSettingsPane: View {
             }
 
             Section {
-                ForEach(TickerKind.allCases) { kind in
+                ForEach(TickerKind.all(in: store.catalog)) { kind in
                     let moduleOn = kind.module.map(store.settings.modules.isEnabled) ?? true
-                    Toggle(kind.title, isOn: Binding(
+                    let title = kind.title(in: store.catalog)
+                    Toggle(title, isOn: Binding(
                         get: { store.settings.notchPreview.isEnabled(kind) },
                         set: { store.settings.notchPreview.setEnabled(kind, $0) }
                     ))
                     .disabled(!moduleOn)
                     .help(moduleOn
-                        ? "Include \(kind.title.lowercased()) in the preview"
+                        ? "Include \(title.lowercased()) in the preview"
                         : "Turn on \(kind.module.map { store.catalog.descriptor(for: $0).title } ?? "its module") in Modules to include this")
                 }
                 .disabled(!store.settings.notchPreview.isEnabled)

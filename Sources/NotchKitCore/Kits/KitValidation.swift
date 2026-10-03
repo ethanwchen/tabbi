@@ -93,7 +93,9 @@ public extension KitManifest {
         issues += Self.unknown(methods, StudyMethodKind.init(rawValue:)).map(KitIssue.unknownStudyMethod)
         issues += Self.unknown((defaults.focusSounds ?? []).map(\.sound), FocusSound.init(rawValue:))
             .map(KitIssue.unknownFocusSound)
-        issues += Self.unknown(defaults.ticker ?? [], TickerKind.init(rawValue:)).map(KitIssue.unknownTickerKind)
+        let previews = Set(TickerKind.all(in: catalog))
+        issues += Self.unknown(defaults.ticker ?? []) { previews.contains(TickerKind(rawValue: $0)) ? $0 : nil }
+            .map(KitIssue.unknownTickerKind)
         issues += Self.unknown([defaults.pet?.breed].compactMap { $0 }, PetBreed.init(rawValue:))
             .map(KitIssue.unknownPetBreed)
         var questions = Set<String>()

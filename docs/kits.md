@@ -113,7 +113,7 @@ The open notch shows up to nine tabs comfortably, and the number keys 1-9 jump t
 | `studyMethods` | array of strings | Study methods the Study timer offers, in order. Leave it out to offer them all. |
 | `studyMethod` | string | The method the timer starts on. Defaults to the first of `studyMethods`. |
 | `focusSounds` | array of objects | The focus sound mix: `sound` and an optional `level` from 0 to 1 (default 1). |
-| `ticker` | array of strings | Which live previews the closed notch rotates through. Leave it out to show them all. |
+| `ticker` | array of strings | Which live previews the closed notch rotates through: built-in previews and the ids of modules whose highlights should show. Leave it out to show them all. |
 | `pet` | object | The study pet: optional `breed` and `name`. |
 | `theme` | string | Theme id. `notch` is the built-in hardware-black theme. |
 | `moduleSettings` | object | Settings for individual modules, keyed by module id. Each module reads its own section, in a shape that module documents. |
@@ -140,7 +140,7 @@ Accepted values:
 
 - **Study methods:** `pomodoro`, `fiftyTwoSeventeen`, `ultradian`, `flowtime`, `ankiSprint`, `questionBlock`, `custom`.
 - **Focus sounds:** `brown`, `pink`, `white`, `rain`, `fireplace`, `cafe`.
-- **Ticker previews:** `meeting`, `nowPlaying`, `focus`, `tasks`, `progress` (shared study goals such as Anki cards left), `claudeUsage`, `party` (party members' pets beside yours while in a study party), `pet` (the study pet, from the Closet module; it naps after 20 minutes without a session).
+- **Ticker previews:** `meeting`, `nowPlaying`, `focus`, `tasks`, `progress` (shared study goals such as Anki cards left), `party` (party members' pets beside yours while in a study party), `pet` (the study pet, from the Closet module; it naps after 20 minutes without a session), and the id of any module that publishes highlights, such as `claudeUsage` (a usage window above 80%).
 - **Pet breeds:** `orangeTabby`, `grayTabby`, `blackCat`, `whiteCat`, `tuxedo`, `calico`, `siamese`, `britishShorthair`, `goldenRetriever`, `labrador`, `frenchBulldog`, `corgi`, `dachshund`, `beagle`.
 
 Module settings the built-in modules read:

@@ -36,8 +36,8 @@ public enum NotchPreviewLayout {
             content = textWidth(TickerFormat.tasksLeft(remaining))
         case .progress(let progress):
             content = textWidth(TickerFormat.progressLeft(progress))
-        case .claudeUsage(let window, let utilization):
-            content = textWidth(TickerFormat.usage(window: window, utilization: utilization))
+        case .highlight(let highlight):
+            content = textWidth(highlight.text)
         case .pet(let pet):
             // Measured asleep too, so the wing doesn't jump when the pet dozes off.
             content = max(textWidth(pet.profile.name) + Theme.Spacing.xs + textWidth(TickerFormat.petSleeping),
@@ -49,8 +49,9 @@ public enum NotchPreviewLayout {
         return min(max(wing, iconSize + outerInset + innerGap), maxWingWidth)
     }
 
-    /// The icon beside the closed notch; a module's progress uses that
-    /// module's symbol from `catalog`.
+    /// The icon beside the closed notch; a module's progress, and its
+    /// highlight unless it names a symbol, use that module's symbol from
+    /// `catalog`.
     public static func symbol(for item: TickerItem, catalog: ModuleCatalog) -> String {
         switch item {
         case .meeting(let meeting): meeting.canJoin ? "video.fill" : "calendar"
@@ -58,7 +59,7 @@ public enum NotchPreviewLayout {
         case .focus(let focus): focus.phase == .focus ? "timer" : "cup.and.saucer.fill"
         case .tasks: "checklist"
         case .progress(let progress): catalog.descriptor(for: progress.source).symbol
-        case .claudeUsage: "gauge.with.dots.needle.67percent"
+        case .highlight(let highlight): highlight.symbol ?? catalog.descriptor(for: highlight.source).symbol
         case .pet: "pawprint.fill"
         case .party: "person.3.fill"
         }
@@ -72,8 +73,7 @@ public enum NotchPreviewLayout {
         case .focus(let focus): TickerFormat.focusSummary(focus)
         case .tasks(let remaining): TickerFormat.tasksLeft(remaining)
         case .progress(let progress): "\(progress.title): \(TickerFormat.progressLeft(progress))"
-        case .claudeUsage(let window, let utilization):
-            "Claude usage \(TickerFormat.usage(window: window, utilization: utilization))"
+        case .highlight(let highlight): highlight.summary
         case .pet(let pet): TickerFormat.petSummary(pet)
         case .party(let party):
             "Studying with " + ListFormatter.localizedString(byJoining: party.pets.dropFirst().map(\.name)

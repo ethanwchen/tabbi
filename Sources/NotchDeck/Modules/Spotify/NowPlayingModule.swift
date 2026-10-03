@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 import NotchKitCore
 
@@ -9,13 +10,19 @@ final class NowPlayingModule: NotchModule {
         id: .spotify, title: "Now Playing", symbol: "music.note", category: .media,
         accent: ModuleAccent(red: 0.12, green: 0.84, blue: 0.38), permissions: [.automation]
     )
-    /// Also drives the closed notch's music wings and, until Now Playing
-    /// provides its highlight like every other module (review B3), the ticker.
+    /// Also drives the closed notch's music wings.
     let controller = SpotifyController()
 
     init(context: ModuleContext) {}
 
     func makePanel() -> AnyView {
         AnyView(SpotifyPanel(controller: controller))
+    }
+
+    /// Whether music is playing, so the closed notch shows the music wings.
+    var provision: AnyPublisher<ModuleProvision, Never>? {
+        controller.$showsCompactActivity
+            .map { ModuleProvision(isPlaying: $0) }
+            .eraseToAnyPublisher()
     }
 }

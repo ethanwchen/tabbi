@@ -357,7 +357,9 @@ final class SettingsRepositoryTests: XCTestCase {
         defaults.set("on", forKey: "settings.preview.enabled")
         let preview = SettingsRepository(defaults: defaults).load().notchPreview
         XCTAssertEqual(preview.interval, .medium)
-        XCTAssertEqual(preview.disabledKinds, [.focus])
+        // An unknown kind may be a module's highlights this build lacks, so
+        // the choice is kept for when it comes back.
+        XCTAssertEqual(preview.disabledKinds, [.focus, TickerKind(rawValue: "hologram")])
         XCTAssertTrue(preview.isEnabled)
     }
 }
@@ -387,8 +389,9 @@ final class NotchPreviewSettingsTests: XCTestCase {
         _ = settings.modules.setEnabled(.spotify, false)
         // Progress has no module of its own: only enabled modules publish it.
         XCTAssertEqual(settings.previewKinds, [.meeting, .focus, .progress])
+        // Neither has the focus clock: Study or Focus can run it with Today off.
         _ = settings.modules.setEnabled(.planner, false)
-        XCTAssertEqual(settings.previewKinds, [.progress])
+        XCTAssertEqual(settings.previewKinds, [.focus, .progress])
         settings.notchPreview.isEnabled = false
         _ = settings.modules.setEnabled(.planner, true)
         XCTAssertTrue(settings.previewKinds.isEmpty)

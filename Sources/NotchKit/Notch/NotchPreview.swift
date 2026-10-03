@@ -37,6 +37,15 @@ struct NotchPreview: View {
 
     private var accent: Color { catalog.descriptor(for: item.module).accentColor }
 
+    private func color(for tone: TickerHighlight.Tone) -> Color {
+        switch tone {
+        case .accent: accent
+        case .primary: Theme.Palette.primaryText
+        case .secondary: Theme.Palette.secondaryText
+        case .danger: Theme.Palette.danger
+        }
+    }
+
     @ViewBuilder private var leading: some View {
         switch item {
         case .nowPlaying:
@@ -79,9 +88,10 @@ struct NotchPreview: View {
             Text(TickerFormat.progressLeft(progress))
                 .foregroundStyle(Theme.Palette.primaryText)
                 .previewText()
-        case .claudeUsage(let window, let utilization):
-            Text(TickerFormat.usage(window: window, utilization: utilization))
-                .foregroundStyle(utilization >= 1 ? Theme.Palette.danger : accent)
+        case .highlight(let highlight):
+            Text(highlight.text)
+                .foregroundStyle(color(for: highlight.tone))
+                .truncationMode(.tail)
                 .previewText()
         case .pet(let pet):
             HStack(spacing: Theme.Spacing.xs) {

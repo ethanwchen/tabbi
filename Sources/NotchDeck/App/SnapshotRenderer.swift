@@ -33,10 +33,10 @@ enum SnapshotRenderer {
         // below the 80% threshold, so demo mode fills that one in.
         let now = Date()
         let isDemo = ProcessInfo.processInfo.environment["NOTCHDECK_DEMO"] == "1"
-        for kind in TickerKind.allCases {
+        for kind in TickerKind.all(in: services.settings.catalog) {
             let live = services.ticker.sources.items(at: now, enabled: [kind]).first
-            let demoUsage: TickerItem? = isDemo && kind == .claudeUsage
-                ? .claudeUsage(window: .fiveHour, utilization: 0.86) : nil
+            let demoUsage: TickerItem? = isDemo && kind == .highlights(from: .claudeUsage)
+                ? .highlight(ClaudeUsageHighlights.highlight(window: .fiveHour, utilization: 0.86)) : nil
             guard let item = live ?? demoUsage else { continue }
             let model = NotchViewModel(geometry: geometry, layout: layout)
             model.preview = item
@@ -160,16 +160,12 @@ enum SnapshotRenderer {
         return rep.representation(using: .png, properties: [:])
     }
 
+    /// A module's highlights are named after the module.
     private static func snapshotName(_ kind: TickerKind) -> String {
         switch kind {
-        case .meeting: "meeting"
         case .nowPlaying: "music"
-        case .focus: "focus"
-        case .tasks: "tasks"
-        case .progress: "progress"
-        case .claudeUsage: "usage"
-        case .pet: "pet"
-        case .party: "party"
+        case .highlights(from: .claudeUsage): "usage"
+        default: kind.rawValue
         }
     }
 }

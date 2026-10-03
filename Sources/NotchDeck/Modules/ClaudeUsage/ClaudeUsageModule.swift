@@ -7,11 +7,9 @@ import NotchKitCore
 final class ClaudeUsageModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
         id: .claudeUsage, title: "Claude Usage", symbol: "gauge.with.dots.needle.67percent", category: .ai,
-        accent: .claude, permissions: [.claudeCLI]
+        accent: .claude, permissions: [.claudeCLI], highlightTitle: "Claude usage above 80%"
     )
-    /// Read by the closed-notch ticker until Claude Usage provides its
-    /// highlight like every other module (review B3).
-    let store = ClaudeUsageStore()
+    private let store = ClaudeUsageStore()
     private var cancellables: Set<AnyCancellable> = []
 
     init(context: ModuleContext) {
@@ -25,5 +23,12 @@ final class ClaudeUsageModule: NotchModule {
 
     func makePanel() -> AnyView {
         AnyView(ClaudeUsagePanel(store: store))
+    }
+
+    /// A rate-limit window above 80% for the closed-notch ticker.
+    var provision: AnyPublisher<ModuleProvision, Never>? {
+        store.$limits
+            .map { ModuleProvision(highlights: ClaudeUsageHighlights.highlights(for: $0?.snapshot, at: Date())) }
+            .eraseToAnyPublisher()
     }
 }

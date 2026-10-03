@@ -41,12 +41,6 @@ public enum TickerFormat {
         "\(count) in party"
     }
 
-    /// Usage line, e.g. "5h 84%" or "Week 91%".
-    public static func usage(window: TickerUsageWindow, utilization: Double) -> String {
-        let label = window == .fiveHour ? "5h" : "Week"
-        return "\(label) \(ClaudeUsageFormat.percent(utilization))"
-    }
-
     /// The pet's line for tooltips and accessibility, e.g. "Mochi is napping".
     public static func petSummary(_ pet: TickerPet) -> String {
         switch pet.mood {

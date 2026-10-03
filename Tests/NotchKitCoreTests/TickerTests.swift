@@ -25,6 +25,10 @@ final class TickerSourcesTests: XCTestCase {
         ProgressItem(id: "reviews", source: source, title: "Anki reviews", completed: completed, target: target, unit: "cards")
     }
 
+    private func usageHighlights(_ snapshot: ClaudeRateLimitSnapshot) -> [TickerHighlight] {
+        ClaudeUsageHighlights.highlights(for: snapshot, at: now)
+    }
+
     func testNoDataMeansNoItems() {
         XCTAssertEqual(TickerSources().items(at: now), [])
     }
@@ -36,7 +40,8 @@ final class TickerSourcesTests: XCTestCase {
             focus: runningFocus(remaining: 600).shared,
             tasksRemaining: 3,
             progress: [cards(completed: 10, target: 50)],
-            usage: ClaudeRateLimitSnapshot(status: nil, fiveHour: ClaudeUsageWindow(utilization: 0.85, resetsAt: nil), sevenDay: nil)
+            highlights: usageHighlights(ClaudeRateLimitSnapshot(
+                status: nil, fiveHour: ClaudeUsageWindow(utilization: 0.85, resetsAt: nil), sevenDay: nil))
         )
         XCTAssertEqual(sources.items(at: now).map(\.kind), [.meeting, .nowPlaying, .focus, .tasks, .progress, .claudeUsage])
     }
@@ -99,8 +104,8 @@ final class TickerSourcesTests: XCTestCase {
         XCTAssertEqual(focus.nextChange(after: now), now.addingTimeInterval(600))
 
         let reset = now.addingTimeInterval(900)
-        let usage = TickerSources(usage: ClaudeRateLimitSnapshot(
-            status: nil, fiveHour: ClaudeUsageWindow(utilization: 0.9, resetsAt: reset), sevenDay: nil))
+        let usage = TickerSources(highlights: usageHighlights(ClaudeRateLimitSnapshot(
+            status: nil, fiveHour: ClaudeUsageWindow(utilization: 0.9, resetsAt: reset), sevenDay: nil)))
         XCTAssertEqual(usage.nextChange(after: now), reset)
         XCTAssertEqual(usage.items(at: reset), [])
     }
@@ -138,17 +143,17 @@ final class TickerSourcesTests: XCTestCase {
 
     func testUsageShowsOnlyAboveEightyPercentAndPicksTheFullerWindow() {
         func usage(_ fiveHour: Double?, _ weekly: Double?) -> [TickerItem] {
-            TickerSources(usage: ClaudeRateLimitSnapshot(
+            TickerSources(highlights: usageHighlights(ClaudeRateLimitSnapshot(
                 status: nil,
                 fiveHour: fiveHour.map { ClaudeUsageWindow(utilization: $0, resetsAt: nil) },
                 sevenDay: weekly.map { ClaudeUsageWindow(utilization: $0, resetsAt: nil) }
-            )).items(at: now)
+            ))).items(at: now)
         }
         XCTAssertEqual(usage(0.8, 0.5), [])
         XCTAssertEqual(usage(nil, nil), [])
-        XCTAssertEqual(usage(0.81, 0.5), [.claudeUsage(window: .fiveHour, utilization: 0.81)])
-        XCTAssertEqual(usage(0.4, 0.93), [.claudeUsage(window: .weekly, utilization: 0.93)])
-        XCTAssertEqual(usage(0.9, 0.9), [.claudeUsage(window: .fiveHour, utilization: 0.9)])
+        XCTAssertEqual(usage(0.81, 0.5), [.highlight(ClaudeUsageHighlights.highlight(window: .fiveHour, utilization: 0.81))])
+        XCTAssertEqual(usage(0.4, 0.93), [.highlight(ClaudeUsageHighlights.highlight(window: .weekly, utilization: 0.93))])
+        XCTAssertEqual(usage(0.9, 0.9), [.highlight(ClaudeUsageHighlights.highlight(window: .fiveHour, utilization: 0.9))])
     }
 
     func testUsageFromAWindowThatHasResetIsIgnored() {
@@ -157,9 +162,10 @@ final class TickerSourcesTests: XCTestCase {
             fiveHour: ClaudeUsageWindow(utilization: 0.95, resetsAt: now.addingTimeInterval(-60)),
             sevenDay: ClaudeUsageWindow(utilization: 0.85, resetsAt: now.addingTimeInterval(3600))
         )
-        XCTAssertEqual(TickerSources(usage: snapshot).items(at: now),
-                       [.claudeUsage(window: .weekly, utilization: 0.85)])
-        XCTAssertEqual(TickerSources(usage: snapshot).items(at: now.addingTimeInterval(7200)), [])
+        let sources = TickerSources(highlights: usageHighlights(snapshot))
+        XCTAssertEqual(sources.items(at: now), [.highlight(ClaudeUsageHighlights.highlight(
+            window: .weekly, utilization: 0.85, resetsAt: now.addingTimeInterval(3600)))])
+        XCTAssertEqual(sources.items(at: now.addingTimeInterval(7200)), [])
     }
 
     func testOnlyImminentOrCurrentMeetingsPin() {
@@ -175,10 +181,10 @@ final class TickerSourcesTests: XCTestCase {
 
     func testEveryKindOpensItsModule() {
         XCTAssertEqual(TickerKind.meeting.module, .planner)
-        XCTAssertEqual(TickerKind.focus.module, .planner)
+        XCTAssertNil(TickerKind.focus.module, "Any module can run the focus clock")
         XCTAssertEqual(TickerKind.tasks.module, .planner)
         XCTAssertEqual(TickerKind.nowPlaying.module, .spotify)
-        XCTAssertEqual(TickerKind.claudeUsage.module, .claudeUsage)
+        XCTAssertEqual(TickerKind.highlights(from: .claudeUsage).module, .claudeUsage)
         XCTAssertNil(TickerKind.progress.module)
     }
 
@@ -305,7 +311,7 @@ final class TickerFormatTests: XCTestCase {
 
     func testFocusAndUsage() {
         XCTAssertEqual(TickerFormat.focusClock(18 * 60 + 42), "18:42")
-        XCTAssertEqual(TickerFormat.usage(window: .fiveHour, utilization: 0.842), "5h 84%")
-        XCTAssertEqual(TickerFormat.usage(window: .weekly, utilization: 0.91), "Week 91%")
+        XCTAssertEqual(ClaudeUsageHighlights.highlight(window: .fiveHour, utilization: 0.842).text, "5h 84%")
+        XCTAssertEqual(ClaudeUsageHighlights.highlight(window: .weekly, utilization: 0.91).text, "Week 91%")
     }
 }

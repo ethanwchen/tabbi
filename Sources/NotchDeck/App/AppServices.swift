@@ -38,12 +38,7 @@ final class AppServices {
         })
         providers.attach(modules)
         self.providers = providers
-        // Until the ticker reads highlights from providers (review B3), it
-        // follows the Now Playing, Claude Usage and Today stores directly.
-        ticker = TickerStore(settings: settings, providers: providers,
-                             spotify: modules.module(NowPlayingModule.self)?.controller,
-                             claudeUsage: modules.module(ClaudeUsageModule.self)?.store,
-                             upNext: modules.module(TodayModule.self)?.upNext)
+        ticker = TickerStore(settings: settings, providers: providers, preview: shared.closedNotchPreview)
         // `$settings` emits before the new value is stored, so read the
         // layout from the emission.
         settings.$settings

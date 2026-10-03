@@ -15,11 +15,6 @@ final class TodayModule: NotchModule {
     private let providers: ProviderHub
     private var cancellables: Set<AnyCancellable> = []
 
-    /// Today's calendar events. The closed-notch ticker keeps it reloading
-    /// while the meeting preview shows, until the ticker reads highlights
-    /// from providers (review B3).
-    var upNext: UpNextStore { store.upNext }
-
     init(context: ModuleContext) {
         let settings = context.settings
         store = PlannerStore(focus: context.focusTimer,
@@ -43,6 +38,13 @@ final class TodayModule: NotchModule {
                     store.addStarterTasks(application.kit.starterTasks(answers: application.answers))
                 }
             }
+            .store(in: &cancellables)
+        // Keep the calendar reloading while the closed notch can show the
+        // next meeting, so events added since the panel was open show up.
+        context.closedNotchPreview.$watchedKinds
+            .map { $0.contains(.meeting) }
+            .removeDuplicates()
+            .sink { [upNext = store.upNext] in upNext.setPreviewWatching($0) }
             .store(in: &cancellables)
     }
 

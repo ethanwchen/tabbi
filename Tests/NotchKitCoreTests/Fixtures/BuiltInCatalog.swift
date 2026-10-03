@@ -12,7 +12,8 @@ extension ModuleCatalog {
         ModuleDescriptor(id: .system, title: "System", symbol: "cpu", category: .system,
                          accent: ModuleAccent(red: 0.35, green: 0.78, blue: 1.00)),
         ModuleDescriptor(id: .claudeUsage, title: "Claude Usage", symbol: "gauge.with.dots.needle.67percent",
-                         category: .ai, accent: .claude, permissions: [.claudeCLI]),
+                         category: .ai, accent: .claude, permissions: [.claudeCLI],
+                         highlightTitle: "Claude usage above 80%"),
         ModuleDescriptor(id: .planner, title: "Today", symbol: "checklist", category: .productivity,
                          accent: ModuleAccent(red: 0.66, green: 0.55, blue: 1.00),
                          permissions: [.calendars, .notifications]),
@@ -90,4 +91,25 @@ extension SettingsRepository {
          defaultKitID: String = KitLibrary.defaultKitID) {
         self.init(defaults: defaults, catalog: .builtIn, kits: kits, defaultKitID: defaultKitID)
     }
+}
+
+extension TickerKind {
+    /// Claude Usage's highlights.
+    static let claudeUsage = TickerKind.highlights(from: .claudeUsage)
+    /// Every kind the built-in catalog can show, in rotation order.
+    static var allCases: [TickerKind] { all(in: .builtIn) }
+}
+
+extension NotchPreviewSettings {
+    /// The built-in catalog's kinds the ticker may show.
+    var enabledKinds: Set<TickerKind> { Set(TickerKind.allCases.filter(shows)) }
+}
+
+extension AppSettings {
+    /// The built-in catalog's kinds the closed-notch preview may show.
+    var previewKinds: Set<TickerKind> { Set(TickerKind.allCases.filter(showsPreview)) }
+}
+
+extension KitDefaults {
+    var resolvedTicker: Set<TickerKind>? { resolvedTicker(catalog: .builtIn) }
 }

@@ -130,6 +130,9 @@ public struct ProvidedParty: Hashable, Sendable {
 /// - `study`: StudySource, today's study minutes, sessions and points.
 /// - `pet`: PetSource, the study pet the closed notch shows.
 /// - `party`: PartySource, the study party the user is in.
+/// - `highlights`: HighlightSource, short lines for the closed-notch ticker.
+/// - `isPlaying`: MediaSource, music is playing, so the closed notch shows
+///   the music wings (artwork and equalizer).
 ///
 /// Modules publish a new value whenever their data changes, and
 /// `ProviderSnapshot` merges all enabled modules' values, so consumers such
@@ -142,6 +145,8 @@ public struct ModuleProvision: Equatable, Sendable {
     public var study: StudyDayTally?
     public var pet: PetPresence?
     public var party: ProvidedParty?
+    public var highlights: [TickerHighlight]
+    public var isPlaying: Bool
 
     public init(
         tasks: [ProvidedTask] = [],
@@ -150,7 +155,9 @@ public struct ModuleProvision: Equatable, Sendable {
         focus: ProvidedFocus? = nil,
         study: StudyDayTally? = nil,
         pet: PetPresence? = nil,
-        party: ProvidedParty? = nil
+        party: ProvidedParty? = nil,
+        highlights: [TickerHighlight] = [],
+        isPlaying: Bool = false
     ) {
         self.tasks = tasks
         self.events = events
@@ -159,6 +166,8 @@ public struct ModuleProvision: Equatable, Sendable {
         self.study = study
         self.pet = pet
         self.party = party
+        self.highlights = highlights
+        self.isPlaying = isPlaying
     }
 
     public static let empty = ModuleProvision()
@@ -185,6 +194,10 @@ public struct ProviderSnapshot: Equatable, Sendable {
     public private(set) var pet: PetPresence?
     /// The first party in tab order.
     public private(set) var party: ProvidedParty?
+    /// Highlights in tab order, then each module's own order.
+    public private(set) var highlights: [TickerHighlight] = []
+    /// Whether any module is playing music.
+    public private(set) var isPlaying = false
 
     public init() {}
 
@@ -194,6 +207,7 @@ public struct ProviderSnapshot: Equatable, Sendable {
     public init(_ provisions: [(module: ModuleID, provision: ModuleProvision)]) {
         var taskKeys = Set<[String]>()
         var progressKeys = Set<[String]>()
+        var highlightKeys = Set<[String]>()
         var eventIDs = Set<String>()
         var activeFocus: ProvidedFocus?
         for (module, provision) in provisions {
@@ -205,6 +219,12 @@ public struct ProviderSnapshot: Equatable, Sendable {
                 item.source = module
                 progress.append(item)
             }
+            for var highlight in provision.highlights
+            where highlightKeys.insert([module.rawValue, highlight.id]).inserted {
+                highlight.source = module
+                highlights.append(highlight)
+            }
+            if provision.isPlaying { isPlaying = true }
             if pet == nil { pet = provision.pet }
             events += provision.events.filter { eventIDs.insert($0.id).inserted }
             if let tally = provision.study { study = (study ?? StudyDayTally()) + tally }

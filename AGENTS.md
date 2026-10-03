@@ -86,11 +86,23 @@ Judge them against the design rules below before you call the work done.
   and Study its session with `StudySession.sharedFocus(by:isDeep:at:)`, and
   the ticker, the pet, the coach and Party all read `ProviderSnapshot.focus`. `ProviderHub` (in `Modules/`)
   merges the enabled modules' values into a `ProviderSnapshot`
-  (`NotchKitCore/Providers`). The ticker reads it, and Today lists other
+  (`NotchKitCore/Providers`). The closed-notch ticker (`TickerStore`) reads
+  only that snapshot, and Today lists other
   modules' goals and tasks above its checklist (`sharedTodayItems`) and
   hands their unfinished work to Plan my day (`plannableWork`), so e.g.
   Anki reviews show up there with no Today code. Never reach into
   another module's store; publish what you have and consume the snapshot.
+- Ticker highlights: to put a line of your own beside the closed notch
+  (Claude Usage's "5h 86%"), publish `TickerHighlight`s in
+  `ModuleProvision.highlights` (text, tooltip, tone, priority, optional
+  pin, expiry and symbol) and give your descriptor a `highlightTitle`,
+  which names the Settings toggle. The ticker shows each module's top
+  highlight with the module's symbol and accent and opens the module on
+  click; its kind is `TickerKind.highlights(from: id)`, so kits list it
+  by module id. Music playing is `ModuleProvision.isPlaying`. A module
+  that only refreshes while someone can see it follows
+  `context.closedNotchPreview.watchedKinds` (Today reloads the calendar
+  while the meeting preview can show).
 - `Sources/NotchKitCore/Claude` - `ClaudeCLI` (locate + stream `claude -p`) and
   `ClaudeStreamEvent` (stream-json parser). Both Claude modules use these.
 

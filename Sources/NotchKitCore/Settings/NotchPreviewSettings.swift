@@ -30,9 +30,10 @@ public struct NotchPreviewSettings: Equatable, Sendable {
         self.interval = interval
     }
 
-    /// Kinds the ticker may show; empty while the master switch is off.
-    public var enabledKinds: Set<TickerKind> {
-        isEnabled ? Set(TickerKind.allCases).subtracting(disabledKinds) : []
+    /// Whether the ticker may show `kind`: false for every kind while the
+    /// master switch is off.
+    public func shows(_ kind: TickerKind) -> Bool {
+        isEnabled && !disabledKinds.contains(kind)
     }
 
     public func isEnabled(_ kind: TickerKind) -> Bool {

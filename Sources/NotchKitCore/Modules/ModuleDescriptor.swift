@@ -65,6 +65,10 @@ public struct ModuleDescriptor: Hashable, Sendable, Identifiable {
     public var category: ModuleCategory
     public var accent: ModuleAccent
     public var permissions: Set<ModulePermission>
+    /// Label for the Settings toggle of this module's closed-notch
+    /// highlights, e.g. "Claude usage above 80%"; nil when the module never
+    /// publishes `TickerHighlight`s.
+    public var highlightTitle: String?
 
     public init(
         id: ModuleID,
@@ -72,7 +76,8 @@ public struct ModuleDescriptor: Hashable, Sendable, Identifiable {
         symbol: String,
         category: ModuleCategory,
         accent: ModuleAccent,
-        permissions: Set<ModulePermission> = []
+        permissions: Set<ModulePermission> = [],
+        highlightTitle: String? = nil
     ) {
         self.id = id
         self.title = title
@@ -80,6 +85,7 @@ public struct ModuleDescriptor: Hashable, Sendable, Identifiable {
         self.category = category
         self.accent = accent
         self.permissions = permissions
+        self.highlightTitle = highlightTitle
     }
 
     /// Stand-in for an id no catalog knows (say, from a newer kit file), so
