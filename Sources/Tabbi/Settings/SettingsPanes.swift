@@ -757,7 +757,7 @@ struct AboutSettingsPane: View {
                 .foregroundStyle(.secondary)
                 .textSelection(.enabled)
                 .padding(.top, 4)
-            Text("Your MacBook notch, turned into a small deck of things you check all day.")
+            Text("A cozy study and productivity companion: a cat in your notch, with your tabs one click away.")
                 .font(.callout)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

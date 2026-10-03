@@ -1,13 +1,13 @@
 <p align="center">
-  <img src="docs/images/hero.png" alt="NotchDeck open on the Now Playing panel, with the notch expanded into a dark panel showing album artwork, a progress bar and playback controls" width="100%">
+  <img src="docs/images/hero.png" alt="Tabbi open on the Now Playing panel, with the notch expanded into a dark panel showing album artwork, a progress bar and playback controls" width="100%">
 </p>
 
-<h1 align="center">NotchDeck</h1>
+<h1 align="center">Tabbi</h1>
 
 <p align="center">
-  <strong>Turn your MacBook's notch into a tiny command deck.</strong>
+  <strong>A cozy study and productivity companion: a cat in your notch.</strong>
   <br>
-  Music, system stats, Claude limits, your day and a quick Claude prompt, one click away.
+  Your day, a focus timer, Anki reviews, music and Claude, one click away, with a small pet keeping you company.
 </p>
 
 <p align="center">
@@ -21,11 +21,12 @@
 
 ---
 
-NotchDeck is a small, native macOS app that lives in the notch.
+Tabbi is a small, native macOS app that lives in the notch.
+Its name is a tabby cat plus the tabs it keeps for you.
 Closed, it is invisible except for a quiet live activity beside the notch: your next meeting, the song playing, a focus timer, tasks left today, study goals left (such as Anki cards to review), or a Claude limit above 80%.
 A meeting starting within 5 minutes stays put; otherwise the activities take turns every few seconds.
 Right-click the notch and choose **Settings…** to pick which ones show, or turn the preview off.
-Click it and the notch grows into a dark panel with five modules.
+Click it and the notch grows into a dark panel with the tabs of your kit.
 Flip between them with a two-finger swipe, the arrow keys, the number keys 1-9 or the tab icons, and press Esc to close it again.
 
 It is written in Swift with SwiftUI and AppKit, has no third-party dependencies, no account and no telemetry.
@@ -75,21 +76,30 @@ A quick question box that streams answers from your local `claude` CLI, with Mar
 
 <img src="docs/images/ask-claude.png" alt="Ask Claude panel" width="680">
 
+### Study tabs
+
+The Med School and Student kits add tabs for studying.
+**Study** runs a session in the study method you pick (Pomodoro, deep focus blocks and more) and counts today's minutes and points.
+**Anki** shows the cards due in your decks through the AnkiConnect add-on on your Mac.
+**Party** lets friends study together and see who is focusing, through an optional friends server.
+**Closet** is your study pet's home: pick a cat or a dog, recolor it and dress it up with what your study points unlock.
+The pet lives beside the notch and, if you turn on its coach, nudges you back when you drift off.
+
 ### Kits
 
 A kit is a premade set of tabs for one kind of user.
-NotchDeck ships Productivity (the tabs above), Medicine (StudyNotch) and Student, and you can switch kits, reset to a kit's defaults, or import a kit someone shared in **Settings > Modules**.
+Tabbi ships Productivity (the tabs above), Med School and Student, and you can switch kits, reset to a kit's defaults, or import a kit someone shared in **Settings > Modules**.
 Kits are small JSON files; [docs/kits.md](docs/kits.md) explains how to write your own.
-See [docs/ROADMAP.md](docs/ROADMAP.md) for where NotchDeck is going next.
+See [docs/ROADMAP.md](docs/ROADMAP.md) for where Tabbi is going next.
 
 ## Install
 
-1. Download `NotchDeck-<version>.zip` from the [latest release](https://github.com/ethanwchen/notchdeck/releases/latest).
-2. Unzip it and drag **NotchDeck.app** into `/Applications`.
+1. Download `Tabbi-<version>.zip` from the [latest release](https://github.com/ethanwchen/notchdeck/releases/latest).
+2. Unzip it and drag **Tabbi.app** into `/Applications`.
 3. Open it once as described below, then click the notch.
 
-NotchDeck has no Dock icon and no menu bar item.
-To quit, right-click the notch and choose **Quit NotchDeck**.
+Tabbi has no Dock icon and no menu bar item.
+To quit, right-click the notch and choose **Quit Tabbi**.
 
 ### First launch: the app is not notarized
 
@@ -97,18 +107,18 @@ Releases are ad-hoc signed but not notarized, because notarization needs a paid 
 macOS will therefore refuse to open a freshly downloaded copy the first time.
 Use one of these once:
 
-- **System Settings:** try to open the app, then go to **System Settings > Privacy & Security** and click **Open Anyway** next to the NotchDeck message.
-- **Right-click:** on macOS 14, right-click (or Control-click) NotchDeck.app in Finder, choose **Open**, then confirm.
+- **System Settings:** try to open the app, then go to **System Settings > Privacy & Security** and click **Open Anyway** next to the Tabbi message.
+- **Right-click:** on macOS 14, right-click (or Control-click) Tabbi.app in Finder, choose **Open**, then confirm.
 - **Terminal:** clear the quarantine flag.
 
   ```sh
-  xattr -dr com.apple.quarantine /Applications/NotchDeck.app
+  xattr -dr com.apple.quarantine /Applications/Tabbi.app
   ```
 
 To verify the download, compare it with the `.sha256` file from the release:
 
 ```sh
-shasum -a 256 -c NotchDeck-<version>.zip.sha256
+shasum -a 256 -c Tabbi-<version>.zip.sha256
 ```
 
 ## Requirements
@@ -125,7 +135,7 @@ You need Xcode 16 or later, or a Swift 6 toolchain, on macOS 14+.
 ```sh
 git clone https://github.com/ethanwchen/notchdeck.git
 cd notchdeck
-scripts/run.sh                  # builds build/NotchDeck.app (debug) and launches it
+scripts/run.sh                  # builds build/Tabbi.app (debug) and launches it
 ```
 
 Other useful commands:
@@ -146,7 +156,7 @@ An edition is one JSON file in `Sources/TabbiKitCore/Editions/BundledEditions/` 
 
 ## Permissions
 
-NotchDeck asks for each permission only when the module that needs it is first used.
+Tabbi asks for each permission only when the module that needs it is first used.
 You can change any of them later in **System Settings > Privacy & Security**.
 
 | Permission | Asked by | Why |
@@ -161,9 +171,9 @@ They run the `claude` command that is already installed and signed in on your Ma
 
 ## Privacy
 
-- **No telemetry, no analytics, no server.** NotchDeck does not phone home.
-- **The only network requests it makes itself** are for album artwork URLs that Spotify provides.
-- **Claude features go only through your local `claude` CLI.** NotchDeck never reads your Claude credentials or the keychain.
+- **No telemetry, no analytics, no account.** Tabbi does not phone home.
+- **The only network requests it makes itself** are the ones its tabs need: album artwork URLs that Spotify provides, AnkiConnect on your own Mac for Anki, and the friends server for Party, only while that tab is on.
+- **Claude features go only through your local `claude` CLI.** Tabbi never reads your Claude credentials or the keychain.
   Ask Claude sends your question to Claude through that CLI, exactly as if you had typed `claude -p` in a terminal.
   Plan my day sends today's remaining events, unfinished task titles and your other tabs' goals (such as "Anki reviews (320 cards left)") the same way, and Wrap up sends your task titles and today's study and goal figures, only when you press them.
 - **Claude Usage** reads token counts from the transcripts in `~/.claude/projects`, read-only, and never writes there.
@@ -175,15 +185,15 @@ They run the `claude` command that is already installed and signed in on your Ma
 
 **Does it work on Macs without a notch?**
 Yes.
-On a display without a notch, NotchDeck draws a virtual notch, a small black pill at the top center of the screen, that opens into the same panel.
+On a display without a notch, Tabbi draws a virtual notch, a small black pill at the top center of the screen, that opens into the same panel.
 It looks most at home on a notched MacBook, though.
 
 **Why does it use the `claude` CLI instead of an API key?**
-So NotchDeck never has to handle your credentials.
+So Tabbi never has to handle your credentials.
 The CLI is already signed in, already knows your plan and its limits, and keeps your Claude usage in one place.
 It also means there is no API key to paste into a third-party app and no extra billing.
 
-**Do I need Claude Code to use NotchDeck?**
+**Do I need Claude Code to use Tabbi?**
 No.
 Now Playing, System and Today work without it.
 The two Claude panels show a short setup hint until the `claude` command is found.
@@ -194,7 +204,7 @@ Notarization requires a paid Apple Developer account.
 The release is ad-hoc signed and its checksum is published with every release, and you can always [build it from source](#build-from-source).
 
 **How do I quit it?**
-Right-click the notch and choose **Quit NotchDeck**.
+Right-click the notch and choose **Quit Tabbi**.
 
 **Does it slow my Mac down?**
 It is a small native app with no web views.
@@ -210,4 +220,4 @@ Notable changes are listed in [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 
-NotchDeck is released under the [MIT License](LICENSE).
+Tabbi is released under the [MIT License](LICENSE).
