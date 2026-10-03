@@ -2,7 +2,7 @@
 
 A small Cloudflare Worker for Tabbi: friends by code, "who is studying right now" presence, study parties where everyone's pets sit side by side in the notch, and a weekly study-minutes leaderboard.
 No accounts, no emails, no passwords: a user is a random secret token the app receives on registration, and the public 8-character **friend code** is what people share.
-See [`PRIVACY.md`](PRIVACY.md) for what is stored and [`../docs/studynotch/backend-api.md`](../docs/studynotch/backend-api.md) for the client contract.
+See [`PRIVACY.md`](PRIVACY.md) for what is stored and [`../docs/study/backend-api.md`](../docs/study/backend-api.md) for the client contract.
 
 The pet catalog (species, breeds, costumes, accessories, study methods, limits) lives in [`shared/catalog.json`](shared/catalog.json).
 The server validates against it, the app can bundle the same file, and `GET /v1/catalog` serves it.

@@ -7,7 +7,7 @@ import TabbiKit
 /// the user has been idle and which app is in front, feeds `PetCoach`, and
 /// plays each nudge in a `PetCoachOverlayWindow`.
 ///
-/// Permission-free by design (see docs/studynotch/research.md): idle time
+/// Permission-free by design (see docs/study/research.md): idle time
 /// comes from `CGEventSource` (only the time since the last event, never
 /// its content) and the app from `NSWorkspace`. No Accessibility, Screen
 /// Recording, or Input Monitoring. Sampling only happens during a focus

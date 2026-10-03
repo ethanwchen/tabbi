@@ -2,7 +2,7 @@ import Foundation
 
 /// Hand-drawn dog art. Dogs need more silhouettes than cats to stay
 /// recognizable at notch size, so each ear/snout family has its own head;
-/// most share the sitting body and face. See docs/studynotch/pets.md for the
+/// most share the sitting body and face. See docs/study/pets.md for the
 /// symbol legend. Outer outlines are added automatically.
 enum DogArt {
     /// Labrador and Beagle: soft ears hanging beside a rounded skull. The

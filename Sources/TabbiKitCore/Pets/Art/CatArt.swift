@@ -1,6 +1,6 @@
 import Foundation
 
-/// Hand-drawn cat art shared by every cat breed. See docs/studynotch/pets.md
+/// Hand-drawn cat art shared by every cat breed. See docs/study/pets.md
 /// for the symbol legend. Outer outlines are added automatically.
 enum CatArt {
     static let head = SpriteGrid(art: """

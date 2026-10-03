@@ -3,7 +3,7 @@ import Foundation
 /// Hand-drawn costume art. Body items (outfits, neck items) have one grid per
 /// body family, the same size as and stamped at the same origin as that
 /// family's body. Head items are 20 wide like every head and are placed by
-/// the composer on each head's skull top. See docs/studynotch/pets.md.
+/// the composer on each head's skull top. See docs/study/pets.md.
 enum CostumeArt {
     /// A grid drawn for each body family.
     struct BodyItem {

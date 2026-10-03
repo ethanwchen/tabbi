@@ -1,6 +1,6 @@
-# StudyNotch research notes
+# Study research notes
 
-Researched 2026-10-01 for the coding agents building StudyNotch (macOS 14+, Swift/SwiftUI).
+Researched 2026-10-01 for the coding agents building Tabbi's study tabs (macOS 14+, Swift/SwiftUI).
 Confidence labels: **[verified]** = checked against primary source or tested on this machine (macOS 26.6.2); **[source]** = from a cited secondary/primary page, not tested; **[memory/uncertain]** = from background knowledge, check before relying on it.
 
 ---
@@ -140,7 +140,7 @@ Popover copy (2–3 sentences each), plus the default parameters:
    *Implementation:* break = 5 min if work ≤ 25, 8 if ≤ 50, else 10 (the scheme used in Smits 2025). Offer a "work ÷ 5" option as an alternative.
    *Evidence:* no better or worse than Pomodoro overall (Smits 2025).
 
-5. **Anki sprint (card-count goal)**. A StudyNotch-specific method.
+5. **Anki sprint (card-count goal)**. A Tabbi-specific method.
    *Popover:* "Pick a number of cards, for example 100, and go through them without stopping. The timer counts cards (from AnkiConnect), not minutes, and ends when you hit the goal. Do your due reviews before adding new cards."
    *Implementation:* the goal is the delta of `getNumCardsReviewedToday` since the sprint started. Default the goal to `review_count + learn_count` from `getDeckStats`. Show cards/min and an ETA. Suggest a 5-minute break every 200 cards or about 30 minutes.
    *Evidence:* the underlying spaced-retrieval technique is very well supported. Anki use is associated with higher USMLE Step 1 scores (Deng et al. 2015, *Med Educ Online* 20:29436 [memory/uncertain on exact citation]; Lu et al. 2021, *Med Sci Educ* [memory/uncertain]). These are correlational studies.
@@ -267,7 +267,7 @@ Alternative to all of this: ship short CC0 loops (e.g. from freesound.org, CC0 f
 | Global key/mouse monitors (`NSEvent.addGlobalMonitorForEvents`, `CGEventTap`) | Accessibility (keyboard) / Input Monitoring (`listenOnly` tap) (https://developer.apple.com/forums/thread/122492) | Avoid. Idle time does not need them. |
 
 Privacy-friendly nudge design:
-1. Track only **app bundle ids**, never window titles, URLs, keystrokes or screenshots. Say so on screen ("StudyNotch only sees which app is in front").
+1. Track only **app bundle ids**, never window titles, URLs, keystrokes or screenshots. Say so on screen ("Tabbi only sees which app is in front").
 2. The user chooses the distracting-apps list. Nothing is pre-filled from analytics. Suggest common ones (Messages, Discord, YouTube in Safari can't be detected without titles, so be honest about that).
 3. All of this stays on the device. Never send app names to the party backend. Share only coarse state (`studying` / `break` / `idle`).
 4. Gentle escalation: the pet looks over after 30 s in a distracting app, does a speech bubble or nudge after 2 min, and offers to pause after 5 min. Never shame, never use a loud sound, and limit nudges (e.g. at most one every 10 minutes).
@@ -332,7 +332,7 @@ All fetched 2026-10-01. Daily limits reset at 00:00 UTC, and requests over a lim
 | **Shimeji-ee** (https://github.com/chaoskagami/shimeji-ee) [source] | **128×128** canvas per frame | **46 images** (`shime1.png`…`shime46.png`) shared across all actions. Duration is set per frame in `actions.xml` (units of 1/25 s, typical 4–8 → 160–320 ms) [memory/uncertain on the unit] |
 | **VS Code Pets** (https://github.com/tonybaloney/vscode-pets) [verified from repo] | GIFs per state, e.g. `media/dog/brown_idle_8fps.gif` is 115×90 (upscaled pixel art). Sizes: `nano`, `small`, `medium`, `large` | States: idle, walk, walk_fast, run, lie, swipe, with_ball. **8 fps** convention (idle GIF: **4 frames × 130 ms**) |
 
-**Conventions for StudyNotch (notch height is about 32–37 pt):**
+**Conventions for Tabbi (notch height is about 32–37 pt):**
 - **Sizes and states:**
   - Draw at **16×16 to 24×24** (or 32×32 at most) native pixels.
   - Display at integer scale: 2× or 3× in points. On Retina that becomes 4× or 6× device pixels. Use nearest-neighbour: `Image(...).interpolation(.none)`, or `CALayer.magnificationFilter = .nearest`.
@@ -378,7 +378,7 @@ These are observations from the apps' public design and store pages (analysis, n
   - Too many pastel tints, which make the UI muddy and low-contrast
   - Gamification that pulls attention away from studying
 
-**10 design rules for StudyNotch:**
+**10 design rules for Tabbi:**
 1. **One glanceable state per view.** The closed notch shows only the pet plus one number (time left or cards left). Everything else goes in the expanded panel.
 2. **The palette is a near-black base plus one warm accent and one secondary.** For example, base #0E0E10, surfaces #1A1A1F; the accent is a warm peach or amber (#FFB27A); the secondary is a soft sage (#9ED9B0) for "on track". Make the pet the most colourful thing on screen. Text is 87% white for primary and 60% for secondary.
 3. **Rounding:** use continuous corners (`.rect(cornerRadius:, style: .continuous)`) on a scale of 8 / 12 / 20. Pills for buttons and chips. Use one radius scale everywhere.

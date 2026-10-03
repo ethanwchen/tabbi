@@ -1,4 +1,4 @@
-# StudyNotch pets
+# Tabbi pets
 
 A study-buddy cat or dog lives in the notch.
 This document explains how pet sprites are drawn, composed, and rendered, and how to add a breed.
@@ -16,7 +16,7 @@ swift run PetGallery /tmp/petgallery   # writes contact sheets as PNGs at 4x
 ```
 
 Sheets are drawn on pure black, exactly like the notch.
-Do not commit the output folder; curated sheets live in `docs/studynotch/images/`.
+Do not commit the output folder; curated sheets live in `docs/study/images/`.
 
 ## Sprite format
 

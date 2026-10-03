@@ -4,7 +4,7 @@ import Foundation
 /// it, the chibi style that keeps the face (and every hat) readable at notch
 /// size. Pets walk toward the left; mirror the frame to walk right. Legs are
 /// generated so every body family steps with the same gait. See
-/// docs/studynotch/pets.md.
+/// docs/study/pets.md.
 enum WalkArt {
     /// Cat torso, 22x7, stamped at `torsoOrigin`. The front half hides behind
     /// the head; stripes run over the back and the rump stays round. Zones `a` and `b` are

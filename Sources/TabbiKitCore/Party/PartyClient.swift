@@ -31,7 +31,7 @@ public enum PartyServer {
 }
 
 /// Typed async client for the Tabbi friends API (see
-/// `docs/studynotch/backend-api.md`).
+/// `docs/study/backend-api.md`).
 ///
 /// It only sends what the contract lists: profile and pet appearance,
 /// presence (status, timer, minute counters) and codes. It has no call that

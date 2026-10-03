@@ -39,7 +39,7 @@ private final class FakePartyTransport: PartyTransport, @unchecked Sendable {
     }
 }
 
-/// Recorded replies, shaped exactly like `docs/studynotch/backend-api.md`.
+/// Recorded replies, shaped exactly like `docs/study/backend-api.md`.
 private enum Fixture {
     static let ana = ##"{"code":"K7QW2MZD","name":"Ana","petName":"Mochi","species":"cat","breed":"tabby","colors":["#F2A65A","#FFFFFF"],"costume":"scrubs","accessories":["glasses","coffee-mug"],"points":1240,"level":7}"##
     static let ben = #"{"code":"B3NX9QRT","name":"Ben","petName":"Biscuit","species":"dog","breed":"corgi","colors":[],"costume":"none","accessories":[],"points":80,"level":2}"#

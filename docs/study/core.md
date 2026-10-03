@@ -1,7 +1,7 @@
-# StudyNotch core
+# Study core
 
-Pure Swift logic behind StudyNotch, living in `Sources/TabbiKitCore`.
-No AppKit or SwiftUI, so every type here is unit tested and can later move into a shared `TabbiKitCore` library unchanged.
+Pure Swift logic behind Tabbi's study tabs, living in `Sources/TabbiKitCore`.
+No AppKit or SwiftUI, so every type here is unit tested.
 Each folder is self-contained: `Anki/`, `StudyMethods/`, `Coach/`.
 
 ## Anki (`Sources/TabbiKitCore/Anki`)
