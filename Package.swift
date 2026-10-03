@@ -43,5 +43,12 @@ let package = Package(
             dependencies: ["NotchKitCore"],
             swiftSettings: swiftSettings
         ),
+        // App-level wiring (registry, provider hub) tested through
+        // `@testable import NotchDeck`.
+        .testTarget(
+            name: "NotchDeckTests",
+            dependencies: ["NotchDeck", "NotchKitCore"],
+            swiftSettings: swiftSettings
+        ),
     ]
 )

@@ -7,7 +7,8 @@ import NotchKitCore
 /// data without depending on the module that produced it.
 ///
 /// Only enabled modules contribute, in tab order; a disabled module's data
-/// disappears with its tab.
+/// disappears with its tab. Modules may publish from any thread; the hub
+/// always merges and publishes on the main actor.
 @MainActor
 final class ProviderHub: ObservableObject {
     @Published private(set) var snapshot = ProviderSnapshot()
@@ -16,6 +17,10 @@ final class ProviderHub: ObservableObject {
     private var enabled: [ModuleID] = []
     private var latest: [ModuleID: ModuleProvision] = [:]
     private var subscriptions: [ModuleID: AnyCancellable] = [:]
+    /// Bumped per subscription, so a value that was already queued for the
+    /// main actor when its module was turned off (or off and on again) is
+    /// dropped instead of reviving stale data.
+    private var generation: [ModuleID: Int] = [:]
 
     init(registry: ModuleRegistry) {
         self.registry = registry
@@ -29,13 +34,19 @@ final class ProviderHub: ObservableObject {
         for id in subscriptions.keys where !seen.contains(id) {
             subscriptions[id] = nil
             latest[id] = nil
+            generation[id, default: 0] += 1
         }
         for id in self.enabled where subscriptions[id] == nil {
             guard let provision = registry[id]?.provision else { continue }
             // Publishers that emit on subscribe land here synchronously, so
-            // the first snapshot already includes them.
-            subscriptions[id] = provision.sink { [weak self] value in
-                MainActor.assumeIsolated { self?.receive(value, from: id) }
+            // the first snapshot already includes them. Values a module
+            // sends from a background thread (a network callback) hop to
+            // the main actor instead of trapping.
+            generation[id, default: 0] += 1
+            let current = generation[id, default: 0]
+            subscriptions[id] = provision.sinkOnMainActor { [weak self] value in
+                guard let self, self.generation[id] == current else { return }
+                self.receive(value, from: id)
             }
         }
         merge()

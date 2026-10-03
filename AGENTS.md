@@ -9,7 +9,7 @@ and a kit picks which ones are on and in what order.
 
 ```sh
 swift build                                  # must stay warning-free
-swift test                                   # NotchKitCore unit tests
+swift test                                   # NotchKitCore and NotchDeck (app wiring) tests
 swift run NotchDeck --snapshot snapshots     # render every notch state to PNG
 swift run NotchDeck --snapshot snapshots-medicine --kit medicine  # same, for another kit's tabs
 swift run NotchDeck --snapshot snapshots-study --edition studynotch  # as the StudyNotch edition

@@ -36,6 +36,8 @@ protocol NotchModule: AnyObject {
     /// Tasks, events, progress, and focus state this module shares with
     /// Today and the ticker, re-published whenever they change; nil when it
     /// shares nothing. `ProviderHub` merges the enabled modules' values.
+    /// It may emit on any thread (a network callback, say): the hub hops
+    /// to the main actor itself.
     var provision: AnyPublisher<ModuleProvision, Never>? { get }
 }
 
