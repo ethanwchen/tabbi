@@ -9,8 +9,8 @@ import Foundation
 /// the `UserDefaults` domain follow the app's name and bundle id.
 ///
 /// The move never overwrites: a file or preference Tabbi already has wins
-/// (folders both sides have are merged file by file), and the first legacy source that has anything is the one adopted. Old
-/// preferences are copied (the old domain is left as it was), while the old
+/// (folders both sides have are merged file by file), and the first legacy
+/// source that has anything is the one adopted. Old preferences are copied (the old domain is left as it was), while the old
 /// folder's contents are moved, so the data lives in one place afterwards.
 public struct LegacyDataMigration {
     /// Old Application Support folders, most preferred first.
