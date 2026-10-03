@@ -3,7 +3,7 @@ import Foundation
 /// How many minutes a day the user means to study.
 ///
 /// A kit sets it under `moduleSettings.study.dailyGoalMinutes`, so a
-/// medicine kit can aim for a long board-prep day while a general student
+/// Med School kit can aim for a long board-prep day while a general student
 /// kit stays modest. The Study timer shares the day's minutes against it as
 /// a progress goal, which is how Today and Plan my day learn about study
 /// time without knowing the Study module.

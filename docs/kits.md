@@ -1,12 +1,12 @@
 # Kits
 
-A kit is a premade setup of NotchDeck for one audience: which tabs are on, in what order, and the defaults they start with.
-NotchDeck ships three kits, and anyone can write their own as a small JSON file and share it.
+A kit is a premade setup of Tabbi for one audience: which tabs are on, in what order, and the defaults they start with.
+Tabbi ships three kits, and anyone can write their own as a small JSON file and share it.
 
 | Kit | Id | Tabs |
 | --- | --- | --- |
 | Productivity | `productivity` | Now Playing, System, Claude Usage, Today, Ask Claude |
-| Medicine (StudyNotch) | `medicine` | Study, Today, Anki, Party, Now Playing, Ask Claude, Closet |
+| Med School | `medicine` | Study, Today, Anki, Party, Now Playing, Ask Claude, Closet |
 | Student | `student` | Study, Today, Now Playing, Ask Claude, Closet (Anki off) |
 
 The bundled kits live in [`Sources/TabbiKitCore/Kits/Bundled`](../Sources/TabbiKitCore/Kits/Bundled).

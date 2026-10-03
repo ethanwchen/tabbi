@@ -1,5 +1,5 @@
 name: Feature request
-description: Suggest an improvement or a new module for NotchDeck.
+description: Suggest an improvement or a new module for Tabbi.
 title: "[Feature]: "
 labels: [enhancement]
 body:
@@ -46,7 +46,7 @@ body:
     id: privacy
     attributes:
       label: Privacy
-      description: NotchDeck has no telemetry and makes no network requests beyond what a module inherently needs.
+      description: Tabbi has no telemetry and makes no network requests beyond what a module inherently needs.
       options:
         - label: This idea works without sending my data to a new service, or I have explained why it needs one.
           required: true

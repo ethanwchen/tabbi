@@ -2,7 +2,7 @@ import Foundation
 
 /// The pet a kit starts someone on, from the Closet section of the kit
 /// (`moduleSettings.closet.pet`: an optional `breed` and `name`), so the
-/// Medicine kit can hand out a tabby and the Student kit a corgi.
+/// Med School kit can hand out a tabby and the Student kit a corgi.
 public extension PetProfile {
     /// The fresh pet for someone with no saved pet yet: the kit's breed
     /// and name when it sets them, otherwise the starter cat. An unknown

@@ -1,8 +1,8 @@
-# NotchDeck - guide for contributors and coding agents
+# Tabbi - guide for contributors and coding agents
 
-NotchDeck is a macOS menu-bar-less app that turns the MacBook notch into a small,
+Tabbi is a macOS menu-bar-less app that turns the MacBook notch into a small,
 clickable panel of tabs. Each tab is a module (Now Playing, System, Claude Usage,
-Today, Ask Claude, Focus, and the StudyNotch modules Study, Anki, Party, Closet),
+Today, Ask Claude, Focus, and the study modules Study, Anki, Party, Closet),
 and a kit picks which ones are on and in what order.
 
 ## Build, test, look
@@ -39,7 +39,7 @@ Judge them against the design rules below before you call the work done.
   (the toolbar `SettingsWindowController`, which shows whatever
   `SettingsPane`s the app hands it, and the `HotkeyRecorder` shortcut
   field). The app's own panes and their order live in
-  `NotchDeck/Settings/AppSettingsPanes.swift`. Everything here is `public`. Reuse it; add new
+  `Sources/Tabbi/Settings/AppSettingsPanes.swift`. Everything here is `public`. Reuse it; add new
   shared components here, not inside a module.
 - `Sources/Tabbi/Modules/ModuleViews.swift` - hooks the shared notch up
   to the app: the closed notch's live-activity wings, `notchContent`

@@ -247,7 +247,7 @@ Rules:
 Lines are short enough for a notch bubble (`maxLength`, 64 characters), warm, and never shaming: no counting slip-ups, no guilt, no "you should".
 The standard lines name no subject, so every kit can use them.
 A kit adds its own flavor as `coachLines` in the Closet module's settings (see [Kits](../kits.md#defaults)), and `PetCoachMessages.lines(kitSettings:)` returns the standard lines plus the kit's.
-The Medicine kit brings the med-school lines ("The Krebs cycle is saving your seat.").
+The Med School kit brings the med-school lines ("The Krebs cycle is saving your seat.").
 Blank lines, lines over `maxLength` and unknown kinds are skipped.
 `evaluate(_:lines:)` picks from the lines it is given; the app passes the active kit's lines on every sample, so switching kits changes the flavor at once.
 `pick(_:from:avoiding:using:)` skips recently used ids while others remain and never repeats the most recent line; the coach remembers its last 8 lines in `recentMessageIDs`.

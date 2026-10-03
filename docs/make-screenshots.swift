@@ -32,7 +32,7 @@ func fail(_ message: String) -> Never {
 /// Renders fresh demo snapshots into a temporary folder and returns it.
 func renderDemoSnapshots() -> URL {
     let directory = FileManager.default.temporaryDirectory
-        .appendingPathComponent("notchdeck-snapshots-\(ProcessInfo.processInfo.processIdentifier)")
+        .appendingPathComponent("tabbi-snapshots-\(ProcessInfo.processInfo.processIdentifier)")
     let process = Process()
     process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
     process.arguments = ["swift", "run", "-c", "release", "Tabbi", "--snapshot", directory.path]

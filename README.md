@@ -59,7 +59,7 @@ Your 5-hour and weekly Claude limits, read through your own `claude` CLI, plus t
 
 A daily checklist that lives one click away, with progress for the day and quick add.
 **Plan my day** asks your local `claude` CLI to fit your unfinished tasks, plus work your other tabs share (such as Anki reviews), into today's free calendar gaps, and adds the blocks you accept to your default calendar.
-Study kits such as Medicine plan on your Mac instead: review blocks early in the day, study blocks of the kit's study method length, and breaks around your events.
+Study kits such as Med School plan on your Mac instead: review blocks early in the day, study blocks of the kit's study method length, and breaks around your events.
 **Wrap up** shows what you finished, what carries over to tomorrow, your study time or focus sessions and goals such as cards reviewed, with a short summary from Claude.
 
 While a focus timer runs, focus mode can play a locally generated focus sound (brown, pink or white noise, rain, fireplace or cafe murmur, blended up to three), start a playlist in Spotify or Apple Music, and turn on Do Not Disturb through two Shortcuts you create.

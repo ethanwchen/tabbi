@@ -266,6 +266,7 @@ final class KitLibraryTests: XCTestCase {
 
     func testMedicineKitStartsOnTheStudyTimerWithAnkiFirstClassMethods() throws {
         let kit = try XCTUnwrap(KitLibrary.bundled["medicine"])
+        XCTAssertEqual(kit.name, "Med School", "the kit keeps its saved id but shows its new name")
         XCTAssertEqual(kit.moduleIDs, ["study", .planner, "anki", "party", .spotify, .claudeAsk, "closet"])
         let menu = StudyMethodMenu(kit: kit.defaults)
         XCTAssertEqual(menu.startingKind, .pomodoro)

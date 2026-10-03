@@ -33,7 +33,7 @@ public extension ModuleID {
     static let claudeAsk: ModuleID = "claudeAsk"
     /// The Pomodoro timer and focus mode as a tab of its own.
     static let focus: ModuleID = "focus"
-    // Study modules (Medicine and Student kits).
+    // Study modules (Med School and Student kits).
     static let study: ModuleID = "study"
     static let anki: ModuleID = "anki"
     static let party: ModuleID = "party"

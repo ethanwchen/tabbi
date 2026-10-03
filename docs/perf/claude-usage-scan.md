@@ -21,14 +21,14 @@ So every chunk of the week's transcripts stayed alive until the scan finished, a
 - walks lines in place with `memchr` and only decodes lines that pass a byte prefilter, decoding just the fields it needs;
 - wraps line processing in `autoreleasepool`, in case decoding autoreleases anything;
 - keeps records as fixed-size values keyed by the first 128 bits of the message id's SHA-256, with model names interned, so a week of records is a few flat tables instead of about 22k small heap strings;
-- persists each file's offset and the window's records (packed into one binary blob) to `~/Library/Application Support/NotchDeck/ClaudeUsage/scan-index.json`, so unchanged bytes are never read again, even after a relaunch;
+- persists each file's offset and the window's records (packed into one binary blob) to `~/Library/Application Support/Tabbi/ClaudeUsage/scan-index.json`, so unchanged bytes are never read again, even after a relaunch;
 - calls `malloc_zone_pressure_relief` after the first scan of a launch or after reading more than 32 MB.
 
 The store still runs scans off the main thread at utility priority and coalesces requests that arrive mid-scan into one follow-up scan.
 
 ## Measurements
 
-Release bundle (`scripts/bundle.sh notchdeck release`), real data (1.2 GB, 1,664 files, 987 MB modified in the last 7 days), `footprint <pid>` 15 s after launch, Apple Silicon, macOS 26.6.
+Release bundle (`scripts/bundle.sh tabbi release`), real data (1.2 GB, 1,664 files, 987 MB modified in the last 7 days), `footprint <pid>` 15 s after launch, Apple Silicon, macOS 26.6.
 
 | Build | Footprint |
 | --- | --- |

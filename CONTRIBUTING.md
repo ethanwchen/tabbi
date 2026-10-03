@@ -1,4 +1,4 @@
-# Contributing to NotchDeck
+# Contributing to Tabbi
 
 Thanks for helping make the notch more useful.
 Bug reports, design feedback, and pull requests are all welcome.
@@ -16,11 +16,11 @@ git clone https://github.com/ethanwchen/notchdeck.git
 cd notchdeck
 swift build                     # compile; must stay warning-free
 swift test                      # unit tests for TabbiKitCore
-scripts/run.sh                  # bundle build/NotchDeck.app (debug) and launch it
+scripts/run.sh                  # bundle build/Tabbi.app (debug) and launch it
 ```
 
-`scripts/run.sh` quits any running NotchDeck before it relaunches the fresh build.
-To quit the app yourself, right-click the notch and choose **Quit NotchDeck**.
+`scripts/run.sh` quits any running Tabbi before it relaunches the fresh build.
+To quit the app yourself, right-click the notch and choose **Quit Tabbi**.
 
 There is no Xcode project.
 Open the folder in Xcode (`xed .`) if you want the IDE; it reads `Package.swift` directly.
@@ -38,7 +38,7 @@ If you add a data source, give it demo data too, so screenshots and reviews neve
 
 ## Snapshot workflow
 
-NotchDeck can render every notch state to PNG without opening a window.
+Tabbi can render every notch state to PNG without opening a window.
 Use it to check your UI change, and attach the result to your pull request.
 
 ```sh
@@ -101,6 +101,6 @@ swift docs/make-screenshots.swift        # re-renders docs/images/*.png from dem
 ## Releases
 
 Maintainers cut releases with `scripts/release.sh`.
-It builds a universal (Apple silicon and Intel), ad-hoc signed `NotchDeck-<version>.zip` with a `.sha256` checksum in `build/release/`, and prints the steps to publish a GitHub release.
+It builds a universal (Apple silicon and Intel), ad-hoc signed `Tabbi-<version>.zip` with a `.sha256` checksum in `build/release/`, and prints the steps to publish a GitHub release.
 The version comes from `CFBundleShortVersionString` in `Resources/Info.plist`.
 Builds are not notarized, so the README explains how to open the app the first time.
