@@ -24,6 +24,8 @@ final class AppServices: ObservableObject {
     let closet = ClosetStore()
     /// The pet's study coach: nudges from the notch during focus phases.
     let coach: PetCoachController
+    /// Friends and study parties; presence follows the shared focus timer.
+    let party = PartyStore()
     /// The rotating live preview beside the closed notch.
     let ticker: TickerStore
     /// Every tab this build can show. Register new modules here.
@@ -54,7 +56,7 @@ final class AppServices: ObservableObject {
             FocusModule(store: focus),
             StudyModule(),
             AnkiModule(),
-            PartyModule(),
+            PartyModule(store: party),
             ClosetModule(store: closet, coach: coach),
         ])
         providers = ProviderHub(registry: modules)
@@ -62,6 +64,7 @@ final class AppServices: ObservableObject {
         coach.follow(focus: providers.$snapshot.map(\.focus).eraseToAnyPublisher())
         closet.follow(focus: providers.$snapshot.map(\.focus).eraseToAnyPublisher())
         coach.follow(awards: closet.awards.eraseToAnyPublisher())
+        party.followFocus(from: providers.$snapshot.map(\.focus).eraseToAnyPublisher())
         ticker = TickerStore(settings: settings, spotify: spotify, providers: providers,
                              upNext: planner.upNext, claudeUsage: claudeUsage)
         // `$settings` emits before the new value is stored, so read the

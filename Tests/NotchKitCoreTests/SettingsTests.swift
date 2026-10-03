@@ -367,7 +367,7 @@ final class NotchPreviewSettingsTests: XCTestCase {
         var preview = NotchPreviewSettings.default
         preview.setEnabled(.nowPlaying, false)
         XCTAssertFalse(preview.isEnabled(.nowPlaying))
-        XCTAssertEqual(preview.enabledKinds, [.meeting, .focus, .tasks, .progress, .claudeUsage, .pet])
+        XCTAssertEqual(preview.enabledKinds, [.meeting, .focus, .tasks, .progress, .claudeUsage, .party, .pet])
         preview.setEnabled(.nowPlaying, true)
         XCTAssertEqual(preview.enabledKinds, Set(TickerKind.allCases))
     }

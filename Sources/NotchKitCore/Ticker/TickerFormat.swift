@@ -29,6 +29,11 @@ public enum TickerFormat {
         FocusTimerFormat.clock(remaining)
     }
 
+    /// Party size, e.g. "4 in party".
+    public static func partySize(_ count: Int) -> String {
+        "\(count) in party"
+    }
+
     /// Usage line, e.g. "5h 84%" or "Week 91%".
     public static func usage(window: TickerUsageWindow, utilization: Double) -> String {
         let label = window == .fiveHour ? "5h" : "Week"

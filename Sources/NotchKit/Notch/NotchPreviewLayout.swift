@@ -13,6 +13,10 @@ public enum NotchPreviewLayout {
     public static let outerInset: CGFloat = Theme.Spacing.s
     /// Keeps a long meeting title from turning the notch into a menu bar.
     public static let maxWingWidth: CGFloat = 132
+    /// Points per sprite pixel for party pets: a 24 pt pet fits the notch's height.
+    public static let partyPetPixelSize: CGFloat = 0.75
+    /// Party pets overlap a little, since each sprite has empty room around it.
+    public static let partyPetStep: CGFloat = 18
     /// Gap between the trailing text and the camera housing.
     private static let innerGap: CGFloat = Theme.Spacing.s
 
@@ -38,6 +42,8 @@ public enum NotchPreviewLayout {
             // Measured asleep too, so the wing doesn't jump when the pet dozes off.
             content = max(textWidth(pet.profile.name) + Theme.Spacing.xs + textWidth(TickerFormat.petSleeping),
                           NotchPetWing.side)
+        case .party(let party):
+            content = max(partyPetsWidth(count: party.pets.count), textWidth(TickerFormat.partySize(party.memberCount)))
         }
         let wing = (content + outerInset + innerGap).rounded(.up)
         return min(max(wing, iconSize + outerInset + innerGap), maxWingWidth)
@@ -52,6 +58,7 @@ public enum NotchPreviewLayout {
         case .progress(let progress): progress.source.descriptor.symbol
         case .claudeUsage: "gauge.with.dots.needle.67percent"
         case .pet: "pawprint.fill"
+        case .party: "person.3.fill"
         }
     }
 
@@ -67,7 +74,16 @@ public enum NotchPreviewLayout {
         case .claudeUsage(let window, let utilization):
             "Claude usage \(TickerFormat.usage(window: window, utilization: utilization))"
         case .pet(let pet): TickerFormat.petSummary(pet)
+        case .party(let party):
+            "Studying with " + ListFormatter.localizedString(byJoining: party.pets.dropFirst().map(\.name)
+                + (party.memberCount > party.pets.count ? ["\(party.memberCount - party.pets.count) more"] : []))
         }
+    }
+
+    /// Width of `count` overlapping party pets.
+    public static func partyPetsWidth(count: Int) -> CGFloat {
+        let side = CGFloat(PetComposer.frameSize) * partyPetPixelSize
+        return count > 0 ? side + CGFloat(count - 1) * partyPetStep : 0
     }
 
     /// `Theme.Typography.caption` with monospaced digits, as AppKit measures it.
