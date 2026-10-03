@@ -1,6 +1,6 @@
 import Foundation
 
-/// The friends server StudyNotch talks to.
+/// The friends server Tabbi talks to.
 public enum PartyServer {
     /// The deployed `studynotch-friends` worker, used until the user enters another.
     public static let productionURL = URL(string: "https://studynotch-friends.drosophil-anki-friends-backend.workers.dev")!
@@ -28,7 +28,7 @@ public enum PartyServer {
     }
 }
 
-/// Typed async client for the StudyNotch friends API (see
+/// Typed async client for the Tabbi friends API (see
 /// `docs/studynotch/backend-api.md`).
 ///
 /// It only sends what the contract lists: profile and pet appearance,

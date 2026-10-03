@@ -3,7 +3,7 @@ import SwiftUI
 import NotchKitCore
 import NotchKit
 
-/// Party: study with friends on the StudyNotch friends server. The store
+/// Party: study with friends on the Tabbi friends server. The store
 /// lives in `AppServices` so presence keeps flowing while the notch is
 /// closed; it connects when the module is enabled and goes offline when
 /// it's turned off.

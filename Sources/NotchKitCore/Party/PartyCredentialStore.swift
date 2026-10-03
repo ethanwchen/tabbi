@@ -73,7 +73,7 @@ public struct KeychainPartyCredentialStore: PartyCredentialStore {
             var item = query
             item[kSecValueData as String] = data
             item[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlock
-            item[kSecAttrLabel as String] = "StudyNotch friends (\(server.host ?? "server"))"
+            item[kSecAttrLabel as String] = "Tabbi friends (\(server.host ?? "server"))"
             let added = SecItemAdd(item as CFDictionary, nil)
             guard added == errSecSuccess else { throw KeychainError(status: added) }
         default:
