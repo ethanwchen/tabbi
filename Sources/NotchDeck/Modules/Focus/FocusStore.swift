@@ -22,8 +22,6 @@ final class FocusStore: ObservableObject {
     }
     /// The moment the view measures against; advances every second while visible.
     @Published private(set) var now = Date()
-    /// Focus phases completed in the last few days, for the End-of-Day Review.
-    private(set) var sessionLog = FocusSessionLog()
 
     private let isDemo: Bool
     /// Starts and ends focus mode with the focus phases; nil in tests.
@@ -51,7 +49,10 @@ final class FocusStore: ObservableObject {
         }
         notifications = FocusNotifications.make()
         timer = storage.loadTimer()
-        sessionLog = storage.loadSessionLog()
+        // Older builds kept finished focus phases in a log of their own.
+        if let activity, let legacy = storage.takeSessionLog() {
+            activity.record(legacy.activityRecords(source: FocusModule.descriptor.id))
+        }
         // A phase may have ended while the app wasn't running; catch up quietly.
         record(timer.advance(to: Date()))
         scheduleSideEffects(withdrawingPending: false)
@@ -138,12 +139,10 @@ final class FocusStore: ObservableObject {
         updateTicker()
     }
 
-    /// Adds finished focus phases to the session log and saves it, and logs
-    /// every finished phase in the shared activity log.
+    /// Logs every finished phase in the shared activity log, which the
+    /// End-of-Day Review counts focus sessions from.
     private func record(_ completions: [FocusPhaseCompletion]) {
         guard !isDemo, !completions.isEmpty else { return }
-        sessionLog.record(completions, config: timer.config, now: Date())
-        storage.save(sessionLog)
         activity?.record(completions.map { $0.activityRecord(config: timer.config, source: FocusModule.descriptor.id) })
     }
 

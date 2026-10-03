@@ -1,7 +1,7 @@
 import Foundation
 
-/// Where the shared Pomodoro timer and its session log live in
-/// `UserDefaults`, and their versioned JSON formats.
+/// Where the shared Pomodoro timer lives in `UserDefaults`, and its
+/// versioned JSON format, plus the session log older builds kept there.
 ///
 /// Builds before settings had a schema version stored them under
 /// `planner.*` keys; `SettingsSchema` step 2 moves them here.
@@ -13,7 +13,7 @@ public struct FocusTimerStorage {
 
     /// The timer format. Version 1 added the `schemaVersion` key.
     public static let timerSchema = VersionedJSON(current: 1)
-    /// The session log format. Version 1 added the `schemaVersion` key.
+    /// The legacy session log format. Version 1 added the `schemaVersion` key.
     public static let sessionLogSchema = VersionedJSON(current: 1)
 
     private let defaults: UserDefaults
@@ -32,14 +32,13 @@ public struct FocusTimerStorage {
         if let data = try? Self.timerSchema.encode(timer) { defaults.set(data, forKey: Self.timerKey) }
     }
 
-    /// The saved session log, or an empty one.
-    public func loadSessionLog() -> FocusSessionLog {
-        defaults.data(forKey: Self.sessionLogKey)
-            .flatMap { try? Self.sessionLogSchema.decode(FocusSessionLog.self, from: $0) } ?? FocusSessionLog()
-    }
-
-    public func save(_ log: FocusSessionLog) {
-        if let data = try? Self.sessionLogSchema.encode(log) { defaults.set(data, forKey: Self.sessionLogKey) }
+    /// The session log an older build saved, removed from `UserDefaults` so
+    /// it is handed out once, for moving into the activity log. Nil when
+    /// there is none or it can't be read.
+    public func takeSessionLog() -> FocusSessionLog? {
+        guard let data = defaults.data(forKey: Self.sessionLogKey) else { return nil }
+        defaults.removeObject(forKey: Self.sessionLogKey)
+        return try? Self.sessionLogSchema.decode(FocusSessionLog.self, from: data)
     }
 
     /// Moves values from the `planner.*` keys to the `focus.*` keys, unless

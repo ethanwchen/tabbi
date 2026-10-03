@@ -27,7 +27,7 @@ final class DayReviewTests: XCTestCase {
     // MARK: Aggregation
 
     func testReviewSplitsDoneAndCarryOverInListOrder() {
-        let review = DayReviewer.review(of: checklist(), focusLog: FocusSessionLog(), calendar: calendar)
+        let review = DayReviewer.review(of: checklist(), activity: [], calendar: calendar)
         XCTAssertEqual(review.date, oct1)
         XCTAssertEqual(review.done, ["Ship planner beta", "Review Ana's PR"])
         XCTAssertEqual(review.carryingOver, ["Write release notes"])
@@ -36,33 +36,40 @@ final class DayReviewTests: XCTestCase {
         XCTAssertFalse(review.isEmpty)
     }
 
-    func testReviewCountsOnlyTodaysFocusSessions() {
+    func testReviewCountsTodaysFocusStretchesFromEveryTimer() {
         let config = FocusTimerConfig(focusDuration: 25 * 60, restDuration: 5 * 60)
-        var log = FocusSessionLog()
         let yesterday = PlannerDayKey(rawValue: "2026-09-30")!
-        log.record([FocusPhaseCompletion(phase: .focus, endedAt: at(23, 50, day: yesterday))], config: config, now: at(0), calendar: calendar)
-        log.record([
-            FocusPhaseCompletion(phase: .focus, endedAt: at(10)),
-            FocusPhaseCompletion(phase: .rest, endedAt: at(10, 5)),
-        ], config: config, now: at(10, 5), calendar: calendar)
-        log.record([FocusPhaseCompletion(phase: .focus, endedAt: at(14))], config: FocusTimerConfig(focusDuration: 50 * 60), now: at(14), calendar: calendar)
+        let study = ActivityRecord(source: .study, kind: .focusCompleted, start: at(13), end: at(13, 40),
+                                   quantity: 40, unit: .minutes)
+        let activity = [
+            FocusPhaseCompletion(phase: .focus, endedAt: at(23, 50, day: yesterday)).activityRecord(config: config, source: .focus),
+            FocusPhaseCompletion(phase: .focus, endedAt: at(10)).activityRecord(config: config, source: .focus),
+            FocusPhaseCompletion(phase: .rest, endedAt: at(10, 5)).activityRecord(config: config, source: .focus),
+            ActivityRecord(source: .anki, kind: .cardsReviewed, start: at(11), quantity: 80, unit: .cards),
+            study,
+        ]
 
-        let review = DayReviewer.review(of: checklist(), focusLog: log, calendar: calendar)
-        XCTAssertEqual(review.focusSessions, 2, "breaks and yesterday's session don't count")
-        XCTAssertEqual(review.focusMinutes, 75)
+        let review = DayReviewer.review(of: checklist(), activity: activity, calendar: calendar)
+        XCTAssertEqual(review.focusSessions, 2, "breaks, cards and yesterday's session don't count")
+        XCTAssertEqual(review.focusMinutes, 65)
     }
 
-    func testFocusLogForgetsSessionsOlderThanAWeek() {
-        let config = FocusTimerConfig()
-        var log = FocusSessionLog()
-        let old = PlannerDayKey(rawValue: "2026-09-20")!
-        log.record([FocusPhaseCompletion(phase: .focus, endedAt: at(10, day: old))], config: config, now: at(10, day: old), calendar: calendar)
-        log.record([FocusPhaseCompletion(phase: .focus, endedAt: at(10))], config: config, now: at(10), calendar: calendar)
-        XCTAssertEqual(log.sessions.map(\.endedAt), [at(10)])
+    func testLegacySessionLogBecomesPomodoroFocusRecords() {
+        let log = FocusSessionLog(sessions: [.init(endedAt: at(10), duration: 25 * 60)])
+        let records = log.activityRecords(source: .focus)
+        let expected = FocusPhaseCompletion(phase: .focus, endedAt: at(10))
+            .activityRecord(config: FocusTimerConfig(focusDuration: 25 * 60), source: .focus)
+        XCTAssertEqual(records.count, 1)
+        XCTAssertEqual(records.first?.kind, expected.kind)
+        XCTAssertEqual(records.first?.start, expected.start)
+        XCTAssertEqual(records.first?.end, expected.end)
+        XCTAssertEqual(records.first?.quantity, 25)
+        XCTAssertEqual(records.first?.metadata, expected.metadata)
+        XCTAssertEqual(DayReviewer.review(of: checklist(), activity: records, calendar: calendar).focusMinutes, 25)
     }
 
     func testEmptyDayIsEmpty() {
-        let review = DayReviewer.review(of: PlannerDay(date: oct1), focusLog: FocusSessionLog(), calendar: calendar)
+        let review = DayReviewer.review(of: PlannerDay(date: oct1), activity: [], calendar: calendar)
         XCTAssertTrue(review.isEmpty)
     }
 
@@ -75,7 +82,7 @@ final class DayReviewTests: XCTestCase {
     // MARK: Claude
 
     func testPromptListsTheDayAndArgumentsDisableTools() {
-        var review = DayReviewer.review(of: checklist(), focusLog: FocusSessionLog(), calendar: calendar)
+        var review = DayReviewer.review(of: checklist(), activity: [], calendar: calendar)
         review.focusSessions = 2
         review.focusMinutes = 50
         let prompt = DayReviewer.prompt(for: review)
@@ -134,7 +141,7 @@ final class DayReviewTests: XCTestCase {
         let repository = DayReviewRepository(directory: directory)
         XCTAssertNil(try repository.load(oct1))
 
-        var review = DayReviewer.review(of: checklist(), focusLog: FocusSessionLog(), calendar: calendar)
+        var review = DayReviewer.review(of: checklist(), activity: [], calendar: calendar)
         review.summary = "Good day."
         try repository.save(review)
         XCTAssertEqual(repository.fileURL(for: oct1).lastPathComponent, "2026-10-01.json")
@@ -171,7 +178,7 @@ final class DayReviewTests: XCTestCase {
     func testReviewKeepsStudyTallyAndSharedGoalCounts() {
         let tally = StudyDayTally(minutes: 185, sessions: 3, points: 215)
         let idle = ProgressItem(id: "q", source: .anki, title: "Questions", completed: 0, target: 0, unit: "questions")
-        let review = DayReviewer.review(of: checklist(), focusLog: FocusSessionLog(), study: tally,
+        let review = DayReviewer.review(of: checklist(), activity: [], study: tally,
                                         progress: [ankiReviews(done: 112, of: 432), idle], calendar: calendar)
         XCTAssertEqual(review.study, tally)
         XCTAssertEqual(review.progress, [DayReviewCount(title: "Anki reviews", count: 112, unit: "cards")],
@@ -179,14 +186,14 @@ final class DayReviewTests: XCTestCase {
     }
 
     func testStatsShowStudyTimeSessionsCardsAndPoints() {
-        let review = DayReviewer.review(of: checklist(), focusLog: FocusSessionLog(),
+        let review = DayReviewer.review(of: checklist(), activity: [],
                                         study: StudyDayTally(minutes: 185, sessions: 3, points: 215),
                                         progress: [ankiReviews(done: 112, of: 432)], calendar: calendar)
         XCTAssertEqual(DayReviewer.stats(for: review).map(\.text), ["3h 5m · 3 sessions", "112 cards", "215 pts"])
     }
 
     func testStatsFallBackToFocusSessionsWithoutAStudyTally() {
-        var review = DayReviewer.review(of: checklist(), focusLog: FocusSessionLog(), calendar: calendar)
+        var review = DayReviewer.review(of: checklist(), activity: [], calendar: calendar)
         XCTAssertEqual(DayReviewer.stats(for: review).map(\.text), ["No focus sessions today"])
         review.focusSessions = 1
         review.focusMinutes = 60
@@ -194,24 +201,24 @@ final class DayReviewTests: XCTestCase {
     }
 
     func testStatsForAStudyDayWithNothingLoggedYet() {
-        let review = DayReviewer.review(of: PlannerDay(date: oct1), focusLog: FocusSessionLog(), study: StudyDayTally(),
+        let review = DayReviewer.review(of: PlannerDay(date: oct1), activity: [], study: StudyDayTally(),
                                         progress: [ankiReviews(done: 0, of: 200)], calendar: calendar)
         XCTAssertEqual(DayReviewer.stats(for: review).map(\.text), ["No study yet", "0 cards", "0 pts"])
         XCTAssertTrue(review.isEmpty)
     }
 
     func testStudyTimeAloneMakesTheDayWorthReviewing() {
-        let review = DayReviewer.review(of: PlannerDay(date: oct1), focusLog: FocusSessionLog(),
+        let review = DayReviewer.review(of: PlannerDay(date: oct1), activity: [],
                                         study: StudyDayTally(minutes: 50, sessions: 1, points: 60), calendar: calendar)
         XCTAssertFalse(review.isEmpty)
         XCTAssertEqual(DayReviewer.fallbackSummary(for: review), "You put in 50m of study today. Rest up and start fresh tomorrow.")
     }
 
     func testPromptMentionsStudyAndSharedGoalsOnlyWhenPresent() {
-        let plain = DayReviewer.prompt(for: DayReviewer.review(of: checklist(), focusLog: FocusSessionLog(), calendar: calendar))
+        let plain = DayReviewer.prompt(for: DayReviewer.review(of: checklist(), activity: [], calendar: calendar))
         XCTAssertFalse(plain.contains("Studied"))
 
-        let study = DayReviewer.review(of: checklist(), focusLog: FocusSessionLog(),
+        let study = DayReviewer.review(of: checklist(), activity: [],
                                        study: StudyDayTally(minutes: 185, sessions: 3, points: 215),
                                        progress: [ankiReviews(done: 112, of: 432)], calendar: calendar)
         let prompt = DayReviewer.prompt(for: study)
@@ -229,7 +236,7 @@ final class DayReviewTests: XCTestCase {
     }
 
     func testStudyReviewRoundTripsThroughJSON() throws {
-        let review = DayReviewer.review(of: checklist(), focusLog: FocusSessionLog(), study: .sample,
+        let review = DayReviewer.review(of: checklist(), activity: [], study: .sample,
                                         progress: [ankiReviews(done: 112, of: 432)], calendar: calendar)
         let decoded = try JSONDecoder().decode(DayReview.self, from: JSONEncoder().encode(review))
         XCTAssertEqual(decoded, review)

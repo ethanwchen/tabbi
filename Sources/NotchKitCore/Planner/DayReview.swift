@@ -93,11 +93,11 @@ public struct DayReviewStat: Hashable, Sendable {
     }
 }
 
-/// Completed focus phases, stamped with when each one ended.
+/// Completed focus phases, as builds before the shared activity log kept
+/// them for the End-of-Day Review (the last week, in `UserDefaults`).
 ///
-/// `FocusTimer.completedFocusCount` is a lifetime total; the review needs a
-/// per-day count, so the focus store records each completion here too.
-/// Only recent days are kept so the log never grows without bound.
+/// Only read once, to move its sessions into the activity log
+/// (`FocusTimerStorage.takeSessionLog`); nothing writes it any more.
 public struct FocusSessionLog: Hashable, Codable, Sendable {
     public struct Session: Hashable, Codable, Sendable {
         public let endedAt: Date
@@ -109,33 +109,20 @@ public struct FocusSessionLog: Hashable, Codable, Sendable {
         }
     }
 
-    /// Days of history kept by `record`.
-    public static let retentionDays = 7
-
-    public private(set) var sessions: [Session]
+    public let sessions: [Session]
 
     public init(sessions: [Session] = []) {
         self.sessions = sessions
     }
 
-    /// Adds the focus phases among `completions` (breaks are ignored) and
-    /// drops sessions older than `retentionDays` before `now`.
-    public mutating func record(
-        _ completions: [FocusPhaseCompletion],
-        config: FocusTimerConfig,
-        now: Date,
-        calendar: Calendar = .current
-    ) {
-        sessions += completions
-            .filter { $0.phase == .focus }
-            .map { Session(endedAt: $0.endedAt, duration: config.focusDuration) }
-        let cutoff = calendar.date(byAdding: .day, value: -Self.retentionDays, to: calendar.startOfDay(for: now)) ?? now
-        sessions.removeAll { $0.endedAt < cutoff }
-    }
-
-    /// Sessions that ended on `day` in `calendar`'s time zone.
-    public func sessions(on day: PlannerDayKey, calendar: Calendar = .current) -> [Session] {
-        sessions.filter { PlannerDayKey(date: $0.endedAt, calendar: calendar) == day }
+    /// Each session as the record the Pomodoro logs for a finished focus
+    /// phase today (`FocusPhaseCompletion.activityRecord`).
+    public func activityRecords(source: ModuleID) -> [ActivityRecord] {
+        sessions.map {
+            ActivityRecord(source: source, kind: .focusCompleted, start: $0.endedAt.addingTimeInterval(-$0.duration),
+                           end: $0.endedAt, quantity: $0.duration / 60, unit: .minutes,
+                           metadata: [ActivityMetadata.method: "pomodoro", ActivityMetadata.outcome: "completed"])
+        }
     }
 }
 
@@ -154,18 +141,19 @@ public enum DayReviewer {
         calendar.component(.hour, from: now) >= wrapUpHour
     }
 
-    /// Builds the review for `day`'s checklist and today's focus sessions,
-    /// plus what other modules share: their study `tally` and how far each
+    /// Builds the review for `day`'s checklist and the focus stretches in
+    /// the shared `activity` log that ended that day (from any timer), plus
+    /// what other modules share: their study `tally` and how far each
     /// `progress` goal got (goals with nothing due today are left out).
     public static func review(
         of day: PlannerDay,
-        focusLog: FocusSessionLog,
+        activity: [ActivityRecord],
         study tally: StudyDayTally? = nil,
         progress: [ProgressItem] = [],
         calendar: Calendar = .current
     ) -> DayReview {
-        let sessions = focusLog.sessions(on: day.date, calendar: calendar)
-        let minutes = sessions.reduce(0) { $0 + $1.duration } / 60
+        let sessions = activity.filter { $0.kind == .focusCompleted && $0.day(calendar: calendar) == day.date }
+        let minutes = sessions.reduce(0) { $0 + ($1.quantity ?? $1.end.timeIntervalSince($1.start) / 60) }
         return DayReview(
             date: day.date,
             done: day.items.filter(\.isDone).map(\.title),
@@ -363,7 +351,7 @@ public extension DayReview {
         calendar: Calendar = .current
     ) -> DayReview {
         var review = DayReviewer.review(of: .sample(on: date, kind: kind, calendar: calendar),
-                                        focusLog: FocusSessionLog(), study: study, progress: progress,
+                                        activity: [], study: study, progress: progress,
                                         calendar: calendar)
         review.focusSessions = 3
         review.focusMinutes = 75

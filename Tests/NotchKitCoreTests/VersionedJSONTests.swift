@@ -133,7 +133,8 @@ final class VersionedJSONTests: XCTestCase {
             XCTAssertNil(defaults.object(forKey: "planner.focusSessions"))
             let storage = FocusTimerStorage(defaults: defaults)
             XCTAssertEqual(storage.loadTimer(), timer)
-            XCTAssertEqual(storage.loadSessionLog(), log)
+            XCTAssertEqual(storage.takeSessionLog(), log)
+            XCTAssertNil(storage.takeSessionLog(), "the legacy log is handed out once")
         }
     }
 

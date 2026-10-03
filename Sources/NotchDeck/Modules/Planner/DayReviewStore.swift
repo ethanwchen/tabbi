@@ -52,10 +52,11 @@ final class DayReviewStore: ObservableObject {
         }
     }
 
-    /// Opens the review of `day` and starts writing its summary. `study`
-    /// and `progress` are what other modules share; on a study day the demo
+    /// Opens the review of `day` and starts writing its summary. `activity`
+    /// is the shared log's records of that day, and `study` and `progress`
+    /// are what other modules share; on a study day the demo
     /// fills in a sample tally, since no demo module keeps one yet.
-    func wrapUp(day: PlannerDay, focusLog: FocusSessionLog, study: StudyDayTally? = nil,
+    func wrapUp(day: PlannerDay, activity: [ActivityRecord], study: StudyDayTally? = nil,
                 progress: [ProgressItem] = [], isStudyDay: Bool = false, sampleDay: PlannerSampleDay = .work) {
         invalidateRun()
         saveFailed = false
@@ -74,7 +75,7 @@ final class DayReviewStore: ObservableObject {
             return
         }
 
-        let review = DayReviewer.review(of: day, focusLog: focusLog, study: study, progress: progress)
+        let review = DayReviewer.review(of: day, activity: activity, study: study, progress: progress)
         self.review = review
         task = Task { [weak self] in
             let summary = await Self.summary(for: review)

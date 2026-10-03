@@ -141,13 +141,15 @@ final class PlannerStore: ObservableObject {
         plan.plan(tasks: items, sharedWork: sharedWork, progress: sharedProgress)
     }
 
-    /// Opens the End-of-Day Review of today's list, focus sessions, and
-    /// what other modules share (study time, points, cards reviewed).
+    /// Opens the End-of-Day Review of today's list, the focus sessions in
+    /// the activity log, and what other modules share (study time, points,
+    /// cards reviewed).
     func wrapUp() {
         plan.cancel()
         refreshDay()
-        review.wrapUp(day: day, focusLog: focus.sessionLog, study: sharedStudy, progress: sharedProgress,
-                      isStudyDay: planSettings.planMode == .study, sampleDay: planSettings.sampleDay)
+        review.wrapUp(day: day, activity: activity?.records(on: day.date) ?? [], study: sharedStudy,
+                      progress: sharedProgress, isStudyDay: planSettings.planMode == .study,
+                      sampleDay: planSettings.sampleDay)
     }
 
     // MARK: Edits
