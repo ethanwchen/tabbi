@@ -24,7 +24,7 @@ public enum StudyEvidenceLevel: String, Codable, CaseIterable, Hashable, Sendabl
 /// Copy for a study method's info popover: what it is, how to do it, and an
 /// honest note on the evidence.
 ///
-/// Wording follows the StudyNotch research notes. It is deliberately modest:
+/// Wording follows the Tabbi study research notes. It is deliberately modest:
 /// what research supports is regular breaks, self-testing, and spacing, not
 /// any particular interval length, so no note claims a rhythm is proven.
 public struct StudyMethodInfo: Hashable, Sendable {

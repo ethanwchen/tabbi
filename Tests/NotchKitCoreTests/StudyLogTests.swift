@@ -26,7 +26,7 @@ final class StudyLogTests: XCTestCase {
         XCTAssertEqual(added[0].minutes, 25)
         XCTAssertTrue(added[0].completed)
         XCTAssertEqual(added[0].points, PetPointsRules.points(forMinutes: 25, completed: true))
-        XCTAssertEqual(log.uncreditedPoints, 35)
+        XCTAssertEqual(log.totalPoints, 35)
     }
 
     func testBreaksAndSubMinuteStretchesAreNotLogged() {
@@ -58,25 +58,24 @@ final class StudyLogTests: XCTestCase {
         XCTAssertEqual(entry.points, 50)
     }
 
-    func testShortStretchIsLoggedButEarnsNothingAndIsNotPending() {
+    func testShortStretchIsLoggedButEarnsNothing() {
         var log = StudyLog()
         log.record([record(minutes: 3, outcome: .abandoned)])
         XCTAssertEqual(log.entries.count, 1)
         XCTAssertEqual(log.entries[0].points, 0)
-        XCTAssertTrue(log.uncredited.isEmpty)
+        XCTAssertEqual(log.totalPoints, 0)
     }
 
-    func testTakeUncreditedHandsPointsOverOnce() {
+    func testLogPointsMatchWhatThePetLedgerPays() {
         var log = StudyLog()
-        log.record([record(minutes: 25), record(minutes: 10, outcome: .skipped, startingAt: 30)])
+        log.record([record(minutes: 25), record(minutes: 10, outcome: .skipped, startingAt: 30),
+                    record(minutes: 3, outcome: .abandoned, startingAt: 45)])
         var ledger = PetPointsLedger()
-        for entry in log.takeUncredited() {
+        for entry in log.entries {
             ledger.recordStudy(minutes: entry.minutes, completed: entry.completed)
         }
         XCTAssertEqual(ledger.earned, 45)
-        XCTAssertEqual(log.uncreditedPoints, 0)
-        XCTAssertTrue(log.takeUncredited().isEmpty)
-        XCTAssertEqual(log.totalPoints, 45)
+        XCTAssertEqual(log.totalPoints, ledger.earned)
     }
 
     func testSessionLogFlowsIntoStudyLog() {
@@ -154,6 +153,15 @@ final class StudyLogTests: XCTestCase {
         XCTAssertEqual(log.entries[0].minutes, 0)
         XCTAssertEqual(log.entries[0].cards, 0)
         XCTAssertEqual(log.entries[0].points, 0)
-        XCTAssertTrue(log.uncredited.isEmpty)
+        XCTAssertEqual(log.totalPoints, 0)
+    }
+
+    func testDecodingIgnoresTheRetiredUncreditedList() throws {
+        let entry = StudyLogEntry(StudyPhaseRecord(
+            method: .pomodoro, phase: .focus, startedAt: t0, endedAt: at(25),
+            activeDuration: 25 * 60, outcome: .completed, cards: nil))!
+        let old = try JSONEncoder().encode(["entries": [entry], "uncredited": [entry]])
+        let log = try JSONDecoder().decode(StudyLog.self, from: old)
+        XCTAssertEqual(log, StudyLog(entries: [entry]))
     }
 }

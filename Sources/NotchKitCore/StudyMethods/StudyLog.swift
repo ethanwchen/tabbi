@@ -73,15 +73,15 @@ public struct StudyLogEntry: Codable, Hashable, Sendable, Identifiable {
     }
 }
 
-/// The persisted history of study stretches, and the points not yet handed
-/// to the pet's `PetPointsLedger`.
+/// The persisted history of study stretches.
 ///
 /// The timer's `StudySession` only buffers phase records until
-/// `takeLog()`; this log keeps them across launches, feeds the day's totals,
-/// and holds earned points in `uncredited` until whoever owns the pet save
-/// collects them with `takeUncredited()`. Keeping that hand-off explicit
-/// means the Study timer never writes the pet save itself, so the save has
-/// one writer and points are credited exactly once.
+/// `takeLog()`; this log keeps them across launches and feeds the day's
+/// totals. Points use `PetPointsRules`, the same rules the pet's
+/// `PetPointsLedger` pays by, so the tally Study shows matches what the pet
+/// earns. The log never credits the pet itself: Study shares its blocks as
+/// the app's focus timer, and the pet credits points from that, so the pet
+/// save has one writer and every stretch is paid exactly once.
 public struct StudyLog: Codable, Hashable, Sendable {
     /// The most entries kept; the oldest fall off first. Roughly a year of
     /// heavy daily use.
@@ -89,12 +89,9 @@ public struct StudyLog: Codable, Hashable, Sendable {
 
     /// Oldest first.
     public private(set) var entries: [StudyLogEntry]
-    /// Entries whose points the pet ledger hasn't received yet, oldest first.
-    public private(set) var uncredited: [StudyLogEntry]
 
-    public init(entries: [StudyLogEntry] = [], uncredited: [StudyLogEntry] = []) {
+    public init(entries: [StudyLogEntry] = []) {
         self.entries = Array(entries.suffix(Self.capacity))
-        self.uncredited = Array(uncredited.suffix(Self.capacity))
     }
 
     /// Logs the study stretches among `records` (breaks and stretches under a
@@ -104,18 +101,7 @@ public struct StudyLog: Codable, Hashable, Sendable {
         let added = records.compactMap { StudyLogEntry($0) }
         guard !added.isEmpty else { return [] }
         entries = Array((entries + added).suffix(Self.capacity))
-        uncredited = Array((uncredited + added.filter { $0.points > 0 }).suffix(Self.capacity))
         return added
-    }
-
-    /// Points waiting for the pet ledger.
-    public var uncreditedPoints: Int { uncredited.reduce(0) { $0 + $1.points } }
-
-    /// Hands the uncredited entries over (credit each with
-    /// `PetPointsLedger.recordStudy(minutes:completed:)`) and clears them.
-    public mutating func takeUncredited() -> [StudyLogEntry] {
-        defer { uncredited.removeAll() }
-        return uncredited
     }
 
     /// Totals for the stretches that ended on `day`'s calendar day.
@@ -129,18 +115,17 @@ public struct StudyLog: Codable, Hashable, Sendable {
             }
     }
 
-    /// Every point the log has earned, credited or not.
+    /// Every point the log has earned.
     public var totalPoints: Int { entries.reduce(0) { $0 + $1.points } }
 
     // MARK: Persistence
 
-    private enum CodingKeys: String, CodingKey { case entries, uncredited }
+    private enum CodingKeys: String, CodingKey { case entries }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.init(
-            entries: try container.decodeIfPresent([StudyLogEntry].self, forKey: .entries) ?? [],
-            uncredited: try container.decodeIfPresent([StudyLogEntry].self, forKey: .uncredited) ?? []
+            entries: try container.decodeIfPresent([StudyLogEntry].self, forKey: .entries) ?? []
         )
     }
 

@@ -1,6 +1,6 @@
 import Foundation
 
-/// The study-timer presets StudyNotch offers, plus a user-defined one.
+/// The study-timer presets Tabbi offers, plus a user-defined one.
 ///
 /// Interval lengths are conventions rather than science (see
 /// `StudyMethodInfo`), so each kind is a preset of `StudyMethod` parameters
