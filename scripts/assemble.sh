@@ -4,39 +4,43 @@
 #
 #   usage: scripts/assemble.sh <binary> <output-dir> [edition]
 #
-# Every edition ships the same binary. An edition only differs in its
-# Info.plist (Resources/Editions/<edition>/Info.plist replaces keys of
-# Resources/Info.plist: name, bundle id, usage descriptions, and the
-# NotchDeckEdition id the app reads to preselect its kit) and, optionally,
-# its icon (Resources/Editions/<edition>/AppIcon.icns).
+# Every edition ships the same binary. An edition is one JSON file,
+# Sources/NotchKitCore/Editions/BundledEditions/<edition>.json, which the
+# app reads too (Edition.swift). Its name, bundle id and id (NotchDeckEdition,
+# which the app reads to preselect its kit) and its infoPlist strings
+# (usage descriptions that name the app) replace keys of Resources/Info.plist,
+# and its optional icon names an .icns file in Resources.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
 bin=$1
 out=$2
 edition=${3:-notchdeck}
-overlay_dir=Resources/Editions/$edition
+editions=Sources/NotchKitCore/Editions/BundledEditions
+file=$editions/$edition.json
 
-if [[ "$edition" != notchdeck && ! -f "$overlay_dir/Info.plist" ]]; then
-    available=$(cd Resources/Editions && ls -d -- */ 2>/dev/null | tr -d / | tr '\n' ' ' | sed 's/ *$//')
-    echo "error: unknown edition '$edition' (available: notchdeck $available)" >&2
+if [[ ! -f "$file" ]]; then
+    available=$(cd "$editions" && ls -- *.json | sed 's/\.json$//' | tr '\n' ' ' | sed 's/ *$//')
+    echo "error: unknown edition '$edition' (available: $available)" >&2
     exit 1
 fi
 
+field() { plutil -extract "$1" raw -o - "$file" 2>/dev/null; }
+name=$(field name)
+bundle_id=$(field bundleIdentifier)
+icon=Resources/$(field icon || echo AppIcon.icns)
+[[ -f "$icon" ]] || { echo "error: edition icon $icon not found" >&2; exit 1; }
+
 plist=$(mktemp -t notchdeck-plist)
 trap 'rm -f "$plist"' EXIT
-if [[ -f "$overlay_dir/Info.plist" ]]; then
-    # Merge skips keys the overlay already has, so the overlay wins.
-    cp "$overlay_dir/Info.plist" "$plist"
-    /usr/libexec/PlistBuddy -c "Merge Resources/Info.plist" "$plist" >/dev/null
-else
-    cp Resources/Info.plist "$plist"
-fi
+plutil -extract infoPlist xml1 -o "$plist" "$file" 2>/dev/null || plutil -create xml1 "$plist"
+plutil -replace NotchDeckEdition -string "$edition" "$plist"
+plutil -replace CFBundleName -string "$name" "$plist"
+plutil -replace CFBundleDisplayName -string "$name" "$plist"
+plutil -replace CFBundleIdentifier -string "$bundle_id" "$plist"
+# Merge skips keys the edition already set, so the edition wins.
+/usr/libexec/PlistBuddy -c "Merge Resources/Info.plist" "$plist" >/dev/null
 plutil -lint -s "$plist"
-
-name=$(/usr/libexec/PlistBuddy -c "Print :CFBundleName" "$plist")
-icon=Resources/AppIcon.icns
-[[ -f "$overlay_dir/AppIcon.icns" ]] && icon=$overlay_dir/AppIcon.icns
 
 app="$out/$name.app"
 rm -rf "$app"
@@ -44,6 +48,6 @@ mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
 cp "$bin" "$app/Contents/MacOS/NotchDeck"
 cp "$plist" "$app/Contents/Info.plist"
 cp "$icon" "$app/Contents/Resources/AppIcon.icns"
-# SwiftPM resource bundles (bundled kit manifests); see KitResources.swift.
+# SwiftPM resource bundles (bundled kits and editions); see KitResources.swift.
 cp -R "$(dirname "$bin")"/*.bundle "$app/Contents/Resources/"
 echo "$app"

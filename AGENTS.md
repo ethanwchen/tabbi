@@ -136,7 +136,11 @@ Judge them against the design rules below before you call the work done.
   `ClaudeStreamEvent` (stream-json parser). Both Claude modules use these.
 
 Kits are JSON manifests in `Sources/NotchKitCore/Kits/Bundled`; the format
-is documented in `docs/kits.md`. Direction and planned work: `docs/ROADMAP.md`.
+is documented in `docs/kits.md`.
+Editions (branded builds such as StudyNotch) are JSON files in
+`Sources/NotchKitCore/Editions/BundledEditions` that the app and
+`scripts/assemble.sh` both read (see `Edition.swift`); a new edition is a file.
+Direction and planned work: `docs/ROADMAP.md`.
 
 Module ownership: when working on one module, keep changes inside its
 `Modules/<Module>/` folder and a matching `NotchKitCore/<Module>/` folder plus

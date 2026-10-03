@@ -22,8 +22,9 @@ let package = Package(
         // Pure, testable logic: parsers, models, stores. No AppKit/SwiftUI.
         .target(
             name: "NotchKitCore",
-            // Kit manifests ship as human-editable JSON (see docs/kits.md).
-            resources: [.copy("Kits/Bundled")],
+            // Kit manifests and edition files ship as human-editable JSON
+            // (see docs/kits.md and Edition.swift).
+            resources: [.copy("Kits/Bundled"), .copy("Editions/BundledEditions")],
             swiftSettings: coreSettings
         ),
         // Shared AppKit/SwiftUI: design system, notch window pieces, shared

@@ -90,7 +90,3 @@ Constraints to keep in mind:
 - **App Store sandboxing conflicts with the AppleScript and Shortcuts integrations** that Now Playing and other modules rely on. A Mac App Store build would lose features, so direct downloads stay the main channel.
 - **Protect the name.** A trademark on NotchDeck (and StudyNotch) lets forks exist under the MIT license while keeping the official builds and marketplace recognizable.
 - **No telemetry, ever,** paid tier or not. Any hosted feature is opt-in and documented in the README's privacy section.
-
-## Near-term engineering
-
-- Describe editions as data (id, name, bundle id, default kit, icon) beside the kits, so a new branded edition is a file, not a code change.

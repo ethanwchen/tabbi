@@ -22,9 +22,9 @@ final class EditionStorageTests: XCTestCase {
         try XCTUnwrap(PlannerDayKey(rawValue: key))
     }
 
-    func testEachEditionHasItsOwnFolders() {
+    func testEachEditionHasItsOwnFolders() throws {
         let notchDeck = EditionStorage(edition: .notchDeck)
-        let studyNotch = EditionStorage(edition: .studyNotch)
+        let studyNotch = EditionStorage(edition: try XCTUnwrap(Edition.named("studynotch")))
         XCTAssertNotEqual(notchDeck.root, studyNotch.root)
         XCTAssertEqual(studyNotch.root.lastPathComponent, "StudyNotch")
         XCTAssertEqual(studyNotch.folder("Planner").deletingLastPathComponent(), studyNotch.root)
