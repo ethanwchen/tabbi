@@ -22,7 +22,7 @@ final class TickerStore: ObservableObject {
     private(set) var sources = TickerSources()
     /// Kinds allowed by the preview settings and the enabled modules.
     private var kinds: Set<TickerKind>
-    private let upNext: UpNextStore
+    private let upNext: UpNextStore?
     private var rotation: TickerRotation
     /// False while the notch is open, where the preview isn't visible.
     private var isActive = true
@@ -31,14 +31,17 @@ final class TickerStore: ObservableObject {
     private var timer: Timer?
     private var cancellables: Set<AnyCancellable> = []
 
-    init(settings: SettingsStore, spotify: SpotifyController, providers: ProviderHub,
-         upNext: UpNextStore, claudeUsage: ClaudeUsageStore) {
+    /// The stores are nil when this build lacks their module.
+    init(settings: SettingsStore, providers: ProviderHub, spotify: SpotifyController?,
+         claudeUsage: ClaudeUsageStore?, upNext: UpNextStore?) {
         kinds = settings.settings.previewKinds
         self.upNext = upNext
         rotation = TickerRotation(interval: settings.settings.notchPreview.interval.seconds)
 
         providers.$snapshot
-            .combineLatest(spotify.$showsCompactActivity, claudeUsage.$limits.map { $0?.snapshot })
+            .combineLatest(spotify?.$showsCompactActivity.eraseToAnyPublisher() ?? Just(false).eraseToAnyPublisher(),
+                           claudeUsage?.$limits.map { $0?.snapshot }.eraseToAnyPublisher()
+                               ?? Just(nil).eraseToAnyPublisher())
             .map { shared, isMusicPlaying, usage in
                 TickerSources(events: shared.events, isMusicPlaying: isMusicPlaying, focus: shared.focus,
                               focusSource: shared.focusSource, tasksRemaining: shared.openTasks.count,
@@ -74,7 +77,7 @@ final class TickerStore: ObservableObject {
     }
 
     private func refresh() {
-        upNext.setPreviewWatching(isActive && kinds.contains(.meeting))
+        upNext?.setPreviewWatching(isActive && kinds.contains(.meeting))
         let now = Date()
         if isActive {
             let items = sources.items(at: now, enabled: kinds)

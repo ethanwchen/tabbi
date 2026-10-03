@@ -17,6 +17,8 @@ private final class ProvidingModule: NotchModule {
         subject = CurrentValueSubject(initial)
     }
 
+    convenience init(context: ModuleContext) { self.init() }
+
     func makePanel() -> AnyView { AnyView(EmptyView()) }
     var provision: AnyPublisher<ModuleProvision, Never>? { subject.eraseToAnyPublisher() }
 }

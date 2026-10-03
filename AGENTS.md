@@ -48,14 +48,23 @@ Judge them against the design rules below before you call the work done.
   `notchInputs` (settings, hotkey recorder, ticker) built from `AppServices`.
   Shared; change only when your task requires it.
 - `Sources/NotchDeck/Modules/<Module>/` - one folder per module: a store
-  (`ObservableObject`, owned by `AppServices`), SwiftUI views, and a
-  `NotchModule` class (its own `static let descriptor` with id, title,
-  symbol, category, accent and permissions, a panel, an optional Settings toolbar pane
+  (`ObservableObject`), SwiftUI views, and a `NotchModule` class (its own
+  `static let descriptor` with id, title, symbol, category, accent and
+  permissions, `init(context:)`, a panel, an optional Settings toolbar pane
   from `makeSettingsPane()`, and `start()`/`stop()`). The pane and the
   lifecycle follow the module's on/off switch. Modules that share a pane
   return the same id and it shows once: Today and Focus both offer the
-  Focus pane, since both show the focus timer (`FocusStore` in
-  `Modules/Focus/`, which `AppServices` owns and hands to Today).
+  Focus pane, since both show the focus timer.
+- `Sources/NotchDeck/Modules/ModuleContext.swift` - what every module gets
+  in `init(context:)`: its id, the edition, read access to settings and the
+  active kit (`kitApplied` fires when the user applies a kit), the
+  `ProviderHub`, a logger, the demo and snapshot flags, and
+  `SharedServices`. A module builds and owns its store there and follows
+  kit changes itself. A service several modules use is declared as a
+  `ModuleContext` extension in its owner's folder and resolved through
+  `shared`, so all of them get one instance: `context.focusTimer` (the
+  `FocusStore` in `Modules/Focus/`) is how Today, Focus and the pet coach
+  share one Pomodoro timer.
 - `Sources/NotchDeck/Modules/NotchModule.swift` - the `NotchModule` protocol
   and `ModuleRegistry`. `Sources/NotchDeck/Modules/ModuleList.swift` lists
   every module type, one per line; its `ModuleList.catalog` is the only
@@ -63,8 +72,10 @@ Judge them against the design rules below before you call the work done.
   previews all resolve ids through it (SwiftUI views read it from the
   `moduleCatalog` environment value), so no shared code hardcodes a module's
   title, symbol or accent. To add a module: write `<Module>Module` with its
-  descriptor in its folder, add its line at the end of `ModuleList.all`,
-  and create it in `AppServices.modules`.
+  descriptor and `init(context:)` in its folder and add its line at the end
+  of `ModuleList.all`. `AppServices` (the composition root in `App/`)
+  creates every listed module with its own context; it holds no module
+  stores.
 - Shared data providers: a module that has tasks, calendar events, progress
   (e.g. cards due), a focus timer or a study tally (today's study minutes,
   sessions and points, which Wrap Up shows) to share returns a `ModuleProvision`

@@ -3,20 +3,20 @@ import SwiftUI
 import NotchKitCore
 import NotchKit
 
-/// Party: study with friends on the Tabbi friends server. The store
-/// lives in `AppServices` so presence keeps flowing while the notch is
-/// closed; it connects when the module is enabled and goes offline when
-/// it's turned off.
+/// Party: study with friends on the Tabbi friends server. The module
+/// owns the store, so presence keeps flowing while the notch is closed; it
+/// connects when the module is enabled and goes offline when it's turned
+/// off. Presence follows the shared focus timer.
 @MainActor
 final class PartyModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
         id: .party, title: "Party", symbol: "person.3.fill", category: .study,
         accent: ModuleAccent(red: 1.00, green: 0.42, blue: 0.62)
     )
-    private let store: PartyStore
+    private let store = PartyStore()
 
-    init(store: PartyStore) {
-        self.store = store
+    init(context: ModuleContext) {
+        store.followFocus(from: context.providers.$snapshot.map(\.focus).eraseToAnyPublisher())
     }
 
     func makePanel() -> AnyView {

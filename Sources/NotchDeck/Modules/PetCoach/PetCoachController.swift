@@ -15,7 +15,7 @@ import NotchKit
 ///
 /// The focus timer comes from the shared `ProviderSnapshot`, so the coach
 /// works with whichever module runs the timer. Pausing and resuming go
-/// through closures `AppServices` provides. Coach state (cooldowns, snooze,
+/// through closures `ClosetModule` provides. Coach state (cooldowns, snooze,
 /// app lists) persists next to the pet's save. With `NOTCHDECK_DEMO=1` the
 /// coach never samples, nudges, or writes.
 ///

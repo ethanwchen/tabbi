@@ -75,8 +75,9 @@ enum SnapshotRenderer {
             shots.append(("open-closet-look", model))
         }
 
+        let closet = services.modules.module(ClosetModule.self)
         for (name, model) in shots {
-            if name == "open-closet-look" { services.closet.section = .look }
+            if name == "open-closet-look" { closet?.store.section = .look }
             let view = NotchView(content: ModuleViews.notchContent(services: services))
                 .environmentObject(model)
                 .frame(width: Theme.Layout.expandedSize.width + 40,
@@ -94,7 +95,8 @@ enum SnapshotRenderer {
         }
 
         // The pet coach's overlay: walking out, then each kind of bubble.
-        for (name, view) in PetCoachSnapshots.shots(profile: services.closet.profile, lines: services.coach.lines) {
+        let coachShots = closet.map { PetCoachSnapshots.shots(profile: $0.store.profile, lines: $0.coach.lines) } ?? []
+        for (name, view) in coachShots {
             let renderer = ImageRenderer(content: view)
             renderer.scale = 2
             guard let image = renderer.nsImage,

@@ -5,7 +5,7 @@ import NotchKitCore
 import NotchKit
 
 /// The study pet's look and points, persisted as one `PetSave`, plus the
-/// animated preview the Closet tab shows. `AppServices` owns it so the pet
+/// animated preview the Closet tab shows. `ClosetModule` owns it so the pet
 /// in the notch and the coach can share the same pet.
 ///
 /// With `NOTCHDECK_DEMO=1` it starts from `PetCloset.demo` and never writes,

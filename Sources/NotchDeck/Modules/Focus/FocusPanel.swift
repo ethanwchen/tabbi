@@ -7,14 +7,15 @@ import NotchKit
 /// does while it runs, and the timer controls.
 struct FocusPanel: View {
     @ObservedObject var store: FocusStore
-    @EnvironmentObject private var services: AppServices
+    /// What other modules share, for the task this session is linked to.
+    let providers: ProviderHub
 
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
             FocusDial(store: store)
                 .frame(width: 176)
             VStack(spacing: Theme.Spacing.s) {
-                FocusTaskCard(store: store, providers: services.providers)
+                FocusTaskCard(store: store, providers: providers)
                 FocusModeCard()
                 FocusControls(store: store)
             }

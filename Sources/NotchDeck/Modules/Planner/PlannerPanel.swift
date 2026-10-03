@@ -10,7 +10,8 @@ import NotchKit
 struct PlannerPanel: View {
     @ObservedObject var store: PlannerStore
     @EnvironmentObject private var notch: NotchViewModel
-    @EnvironmentObject private var services: AppServices
+    /// What other modules share, listed above the checklist.
+    let providers: ProviderHub
     @FocusState private var focus: PlannerField?
 
     /// Width of the right column; the checklist keeps the remaining ~60%.
@@ -37,7 +38,7 @@ struct PlannerPanel: View {
                     let isEvening = Self.isWrapUpTime(context.date)
                     let hasPlannableWork = store.hasPlannableWork
                     VStack(spacing: Theme.Spacing.s) {
-                        PlannerHeader(store: store, providers: services.providers, isEvening: isEvening,
+                        PlannerHeader(store: store, providers: providers, isEvening: isEvening,
                                       hasPlannableWork: hasPlannableWork)
                         content
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -94,7 +95,7 @@ struct PlannerPanel: View {
                 detail: "\(fileName) is damaged, so it's left untouched."
             )
         } else {
-            PlannerChecklist(store: store, providers: services.providers, focus: $focus)
+            PlannerChecklist(store: store, providers: providers, focus: $focus)
         }
     }
 }

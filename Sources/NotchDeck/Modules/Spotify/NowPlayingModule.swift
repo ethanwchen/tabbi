@@ -9,11 +9,11 @@ final class NowPlayingModule: NotchModule {
         id: .spotify, title: "Now Playing", symbol: "music.note", category: .media,
         accent: ModuleAccent(red: 0.12, green: 0.84, blue: 0.38), permissions: [.automation]
     )
-    private let controller: SpotifyController
+    /// Also drives the closed notch's music wings and, until Now Playing
+    /// provides its highlight like every other module (review B3), the ticker.
+    let controller = SpotifyController()
 
-    init(controller: SpotifyController) {
-        self.controller = controller
-    }
+    init(context: ModuleContext) {}
 
     func makePanel() -> AnyView {
         AnyView(SpotifyPanel(controller: controller))

@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 import NotchKitCore
 
@@ -8,10 +9,18 @@ final class ClaudeUsageModule: NotchModule {
         id: .claudeUsage, title: "Claude Usage", symbol: "gauge.with.dots.needle.67percent", category: .ai,
         accent: .claude, permissions: [.claudeCLI]
     )
-    private let store: ClaudeUsageStore
+    /// Read by the closed-notch ticker until Claude Usage provides its
+    /// highlight like every other module (review B3).
+    let store = ClaudeUsageStore()
+    private var cancellables: Set<AnyCancellable> = []
 
-    init(store: ClaudeUsageStore) {
-        self.store = store
+    init(context: ModuleContext) {
+        // A new `claude` path in Settings must take effect live, not on the
+        // next launch.
+        context.settings.$appliedClaudePathOverride
+            .dropFirst()
+            .sink { [store] _ in store.claudePathDidChange() }
+            .store(in: &cancellables)
     }
 
     func makePanel() -> AnyView {

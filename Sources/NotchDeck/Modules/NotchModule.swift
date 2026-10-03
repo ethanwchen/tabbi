@@ -7,14 +7,20 @@ import NotchKit
 ///
 /// Each feature implements this in its own `Modules/<Module>/` folder and is
 /// listed once in `ModuleList`, so adding a module never means editing a
-/// switch in shared code. A module usually wraps a store that `AppServices`
-/// owns, so its state outlives the panel.
+/// switch in shared code. A module builds and owns its store from the
+/// `ModuleContext` it is created with; modules live as long as the app, so
+/// that state outlives the panel.
 @MainActor
 protocol NotchModule: AnyObject {
     /// Id, title, symbol, category, accent, and permissions. Kits refer to
     /// modules by `descriptor.id`. Static so the catalog (layouts, kits,
     /// the tab bar) is known before any module is created.
     nonisolated static var descriptor: ModuleDescriptor { get }
+
+    /// Creates the module once at launch, whether or not it is enabled.
+    /// Build stores here and follow what the context offers (the provider
+    /// snapshot, kit changes); start background work in `start()`.
+    init(context: ModuleContext)
 
     /// The panel shown while this tab is selected, laid out inside the fixed
     /// canvas (`Theme.Layout.expandedSize` minus header and insets).
@@ -78,6 +84,11 @@ final class ModuleRegistry {
     }
 
     subscript(id: ModuleID) -> (any NotchModule)? { index[id] }
+
+    /// The registered module of type `Module`, if this build has it.
+    func module<Module: NotchModule>(_ type: Module.Type) -> Module? {
+        index[Module.descriptor.id] as? Module
+    }
 
     /// The panel for `id`, or a neutral placeholder when no module with that
     /// id is registered (say, a kit from a newer version lists it).

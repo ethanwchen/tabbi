@@ -12,13 +12,42 @@ final class TodayModule: NotchModule {
         accent: ModuleAccent(red: 0.66, green: 0.55, blue: 1.00), permissions: [.calendars, .notifications]
     )
     private let store: PlannerStore
+    private let providers: ProviderHub
+    private var cancellables: Set<AnyCancellable> = []
 
-    init(store: PlannerStore) {
-        self.store = store
+    /// Today's calendar events. The closed-notch ticker keeps it reloading
+    /// while the meeting preview shows, until the ticker reads highlights
+    /// from providers (review B3).
+    var upNext: UpNextStore { store.upNext }
+
+    init(context: ModuleContext) {
+        let settings = context.settings
+        store = PlannerStore(focus: context.focusTimer,
+                             planSettings: TodayPlanSettings(kit: context.activeKit?.defaults))
+        providers = context.providers
+        store.followSharedWork(from: context.providers.$snapshot, excluding: context.id)
+        // `$settings` emits before the new value is stored, so read the kit
+        // id from the emission.
+        settings.$settings
+            .map(\.kitID)
+            .removeDuplicates()
+            .sink { [store] id in
+                store.planSettings = TodayPlanSettings(kit: settings.kits.kit(id)?.defaults)
+            }
+            .store(in: &cancellables)
+        context.kitApplied
+            .sink { [store] application in
+                // Also when re-applying the same kit, which may have been re-imported.
+                store.planSettings = TodayPlanSettings(kit: application.kit.defaults)
+                if application.addsStarterTasks {
+                    store.addStarterTasks(application.kit.starterTasks(answers: application.answers))
+                }
+            }
+            .store(in: &cancellables)
     }
 
     func makePanel() -> AnyView {
-        AnyView(PlannerPanel(store: store))
+        AnyView(PlannerPanel(store: store, providers: providers))
     }
 
     /// Today embeds the focus timer, so it offers the focus mode settings

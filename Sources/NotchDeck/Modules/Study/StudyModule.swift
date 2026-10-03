@@ -2,8 +2,8 @@ import Combine
 import SwiftUI
 import NotchKitCore
 
-/// Study: a study timer with research-backed methods. It runs the
-/// `StudyStore` that `AppServices` owns, so a block keeps going while the
+/// Study: a study timer with research-backed methods. The module owns its
+/// `StudyStore` for the app's lifetime, so a block keeps going while the
 /// notch is closed.
 @MainActor
 final class StudyModule: NotchModule {
@@ -12,9 +12,18 @@ final class StudyModule: NotchModule {
         accent: ModuleAccent(red: 1.00, green: 0.62, blue: 0.26)
     )
     private let store: StudyStore
+    private var cancellables: Set<AnyCancellable> = []
 
-    init(store: StudyStore) {
-        self.store = store
+    init(context: ModuleContext) {
+        let kit = context.activeKit?.defaults
+        store = StudyStore(menu: StudyMethodMenu(kit: kit), goal: StudyDailyGoal(kit: kit), edition: context.edition)
+        store.followCards(from: context.providers.$snapshot)
+        context.kitApplied
+            .sink { [store] application in
+                let kit = application.kit.defaults
+                store.use(StudyMethodMenu(kit: kit), goal: StudyDailyGoal(kit: kit), kitApplied: true)
+            }
+            .store(in: &cancellables)
     }
 
     func makePanel() -> AnyView {

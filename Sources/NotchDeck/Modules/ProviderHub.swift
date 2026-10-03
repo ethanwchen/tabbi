@@ -13,7 +13,9 @@ import NotchKitCore
 final class ProviderHub: ObservableObject {
     @Published private(set) var snapshot = ProviderSnapshot()
 
-    private let registry: ModuleRegistry
+    /// Set once by `attach`, after the modules (which read this hub
+    /// through their context) exist.
+    private var registry: ModuleRegistry?
     private var enabled: [ModuleID] = []
     private var latest: [ModuleID: ModuleProvision] = [:]
     private var subscriptions: [ModuleID: AnyCancellable] = [:]
@@ -22,7 +24,16 @@ final class ProviderHub: ObservableObject {
     /// dropped instead of reviving stale data.
     private var generation: [ModuleID: Int] = [:]
 
+    /// A hub with no modules yet; `attach` the registry once it exists.
+    init() {}
+
     init(registry: ModuleRegistry) {
+        self.registry = registry
+    }
+
+    /// Connects the modules whose provisions this hub merges.
+    func attach(_ registry: ModuleRegistry) {
+        precondition(self.registry == nil, "ProviderHub is attached once")
         self.registry = registry
     }
 
@@ -37,7 +48,7 @@ final class ProviderHub: ObservableObject {
             generation[id, default: 0] += 1
         }
         for id in self.enabled where subscriptions[id] == nil {
-            guard let provision = registry[id]?.provision else { continue }
+            guard let provision = registry?[id]?.provision else { continue }
             // Publishers that emit on subscribe land here synchronously, so
             // the first snapshot already includes them. Values a module
             // sends from a background thread (a network callback) hop to
