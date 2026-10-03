@@ -104,6 +104,10 @@ public struct AppSettings: Equatable, Sendable {
 ///
 /// With no saved tab layout (first run), the layout comes from the saved or
 /// default kit, so a branded edition opens on its own kit's tabs.
+///
+/// Loading first brings the stored keys up to `SettingsSchema.current`.
+/// Saving keeps the stored position and on/off state of modules this build
+/// doesn't know, so they come back where they were in a build that has them.
 public struct SettingsRepository {
     enum Key {
         static let kitID = "settings.kit"
@@ -146,6 +150,7 @@ public struct SettingsRepository {
     }
 
     public func load() -> AppSettings {
+        SettingsSchema.migrate(defaults)
         let fallback = AppSettings(modules: ModuleLayout(catalog: catalog))
         let hotkey = defaults.data(forKey: Key.hotkey)
             .flatMap { try? JSONDecoder().decode(Hotkey.self, from: $0) }
@@ -160,9 +165,7 @@ public struct SettingsRepository {
         }
         return AppSettings(
             kitID: kit?.id ?? defaultKitID,
-            // Older versions saved a tab layout but no flag: those users
-            // already set NotchDeck up, so don't greet them again.
-            hasChosenKit: bool(Key.hasChosenKit) ?? (savedOrder != nil),
+            hasChosenKit: bool(Key.hasChosenKit) ?? false,
             kitAnswers: (defaults.dictionary(forKey: Key.kitAnswers) as? [String: [String]])?
                 .mapValues(Set.init) ?? [:],
             modules: modules ?? kit?.layout(catalog: catalog) ?? fallback.modules,
@@ -185,13 +188,22 @@ public struct SettingsRepository {
     }
 
     public func save(_ settings: AppSettings) {
+        // Never lower it: a newer build that wrote these settings must not
+        // run its migrations again after the user goes back to it.
+        defaults.set(max(SettingsSchema.current, SettingsSchema.storedVersion(in: defaults)),
+                     forKey: SettingsSchema.versionKey)
         defaults.set(settings.kitID, forKey: Key.kitID)
         defaults.set(settings.hasChosenKit, forKey: Key.hasChosenKit)
         // Sorted so the stored value is stable across saves.
         defaults.set(settings.kitAnswers.mapValues { $0.sorted() }, forKey: Key.kitAnswers)
-        defaults.set(settings.modules.order.map(\.rawValue), forKey: Key.moduleOrder)
-        defaults.set(settings.modules.order.filter { !settings.modules.isEnabled($0) }.map(\.rawValue),
-                     forKey: Key.disabledModules)
+        let isKnown = { catalog.contains(ModuleID(rawValue: $0)) }
+        let storedOrder = defaults.stringArray(forKey: Key.moduleOrder) ?? []
+        let unknownDisabled = (defaults.stringArray(forKey: Key.disabledModules) ?? []).filter { !isKnown($0) }
+        let order = SettingsSchema.storedOrder(settings.modules.order.map(\.rawValue),
+                                               keepingUnknownFrom: storedOrder, isKnown: isKnown)
+        let disabled = Set(settings.modules.disabled.map(\.rawValue) + unknownDisabled)
+        defaults.set(order, forKey: Key.moduleOrder)
+        defaults.set(order.filter(disabled.contains), forKey: Key.disabledModules)
         defaults.set(settings.openOnHover, forKey: Key.openOnHover)
         defaults.set(settings.hapticsEnabled, forKey: Key.hapticsEnabled)
         defaults.set(settings.launchAtLogin, forKey: Key.launchAtLogin)
