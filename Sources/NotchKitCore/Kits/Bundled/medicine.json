@@ -1,6 +1,7 @@
 {
   "formatVersion": 1,
   "id": "medicine",
+  "pickerOrder": 2,
   "name": "Medicine",
   "summary": "StudyNotch: study timer, Anki reviews, and a study pet for med school.",
   "symbol": "cross.case.fill",

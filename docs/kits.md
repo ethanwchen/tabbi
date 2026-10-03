@@ -68,6 +68,7 @@ A kit file is a JSON object with these fields.
 | `defaults` | no | object | Settings the kit starts with. See [Defaults](#defaults). |
 | `onboarding` | no | array | Questions first-run setup and Settings ask to tailor the kit. See [Onboarding](#onboarding). |
 | `starterTasks` | no | array of strings | Tasks added to Today when the user picks or switches to the kit. Titles already on the list are skipped. |
+| `pickerOrder` | no | integer | Bundled kits only: where the kit sits in the picker, lowest first (kits without one follow by id). Imported kits always come after the bundled ones, in import order, and ignore it. |
 
 Fields the format doesn't know are ignored with a warning, so a kit written for a newer version still loads and a typo such as `tickers` is easy to spot.
 
@@ -259,6 +260,7 @@ The format is defined by `KitManifest` in [`Sources/NotchKitCore/Kits`](../Sourc
 - `layout(catalog:answers:)` turns a kit and onboarding answers into a `ModuleLayout`, and `starterTasks(answers:)` collects starter tasks.
 - `KitLibrary` holds the bundled kits in picker order plus imported kits, and `ImportedKitStore` keeps imported files on disk.
 
-To ship a new bundled kit, add `<id>.json` to `Sources/NotchKitCore/Kits/Bundled`, add the id to `KitLibrary.bundledIDs`, and check that its tests report no issues.
+To ship a new bundled kit, add `<id>.json` (the file name must match its `id`) with a `pickerOrder` to `Sources/NotchKitCore/Kits/Bundled`, and check that its tests report no issues.
+`KitLibrary.bundled` lists that folder, so no code changes; `KitLibraryTests` checks that every file loads under its own name and has a picker order.
 To render it, run `swift run NotchDeck --snapshot snapshots-<id> --kit <id>`.
 A module reads its own `moduleSettings` section with `KitDefaults.settings(for:)` and `KitValue.decode(_:)`, and declares its keys as `ModuleDescriptor.kitSettings` (a `KitSettingsSchema` of booleans, numbers in a range, bounded text, choices, lines and nested objects), which `issues(catalog:)` checks.

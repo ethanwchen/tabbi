@@ -152,7 +152,7 @@ A new vertical is its own files plus one line in `ModuleList.swift`.
 5. Add `<Module>Module.self,` at the end of `ModuleList.all`.
    A kit can now list the module id in `modules` and in its `ticker` field; until that line exists, kit validation reports both as unknown.
 6. Optionally return a Settings pane from `makeSettingsPane()`.
-   A kit that ships with the app is a separate change: its JSON in `Sources/NotchKitCore/Kits/Bundled` plus its id in `KitLibrary.bundledIDs` (see `docs/kits.md`).
+   A kit that ships with the app is a separate change: its JSON file, named after its id and with a `pickerOrder`, in `Sources/NotchKitCore/Kits/Bundled`, which `KitLibrary.bundled` lists (see `docs/kits.md`).
 
 The module itself needs no edits to `AppServices`, the ticker, Today, `Theme`, layouts or the catalog.
 If a module seems to need one, the provider protocols are missing something: extend them in a separate change rather than special-casing the module.

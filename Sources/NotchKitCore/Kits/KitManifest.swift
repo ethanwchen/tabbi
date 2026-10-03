@@ -40,6 +40,12 @@ public struct KitManifest: Codable, Equatable, Sendable, Identifiable {
     public var onboarding: [KitQuestion]
     /// Tasks added to Today the first time the kit is applied.
     public var starterTasks: [String]
+    /// Where a kit that ships with Tabbi sits in the kit picker; lower comes
+    /// first, and kits without one follow in id order. Bundled kits are
+    /// found by listing their folder, so this is what keeps the picker
+    /// order stable. Imported kits always follow the bundled ones in import
+    /// order, so the field means nothing there.
+    public var pickerOrder: Int?
     /// Fields of the decoded file that the kit format doesn't read (typos,
     /// or fields from a newer format), as paths like `defaults.tickers`.
     /// Filled by `decode(from:)` and reported by `issues(catalog:)`; never encoded.
@@ -57,7 +63,8 @@ public struct KitManifest: Codable, Equatable, Sendable, Identifiable {
         modules: [KitModuleEntry],
         defaults: KitDefaults = KitDefaults(),
         onboarding: [KitQuestion] = [],
-        starterTasks: [String] = []
+        starterTasks: [String] = [],
+        pickerOrder: Int? = nil
     ) {
         self.formatVersion = formatVersion
         self.version = version
@@ -71,11 +78,12 @@ public struct KitManifest: Codable, Equatable, Sendable, Identifiable {
         self.defaults = defaults
         self.onboarding = onboarding
         self.starterTasks = starterTasks
+        self.pickerOrder = pickerOrder
     }
 
     private enum CodingKeys: String, CodingKey, CaseIterable {
         case formatVersion, version, requires, id, name, summary, symbol, accent, modules, defaults, onboarding
-        case starterTasks
+        case starterTasks, pickerOrder
     }
 
     public init(from decoder: Decoder) throws {
@@ -93,6 +101,7 @@ public struct KitManifest: Codable, Equatable, Sendable, Identifiable {
         defaults = try container.decodeIfPresent(KitDefaults.self, forKey: .defaults) ?? KitDefaults()
         onboarding = try container.decodeIfPresent([KitQuestion].self, forKey: .onboarding) ?? []
         starterTasks = try container.decodeIfPresent([String].self, forKey: .starterTasks) ?? []
+        pickerOrder = try container.decodeIfPresent(Int.self, forKey: .pickerOrder)
     }
 
     /// The module whose accent tints the kit: `accent` if `catalog` knows

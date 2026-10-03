@@ -211,13 +211,31 @@ final class KitApplicationTests: XCTestCase {
 }
 
 final class KitLibraryTests: XCTestCase {
-    func testEveryBundledKitLoads() throws {
-        for id in KitLibrary.bundledIDs {
-            let kit = try KitLibrary.loadBundled(id)
-            XCTAssertEqual(kit.id, id)
-            XCTAssertFalse(kit.summary.isEmpty, id)
+    func testEveryBundledKitFileLoadsUnderItsOwnName() throws {
+        let files = KitLibrary.bundledFileURLs
+        XCTAssertFalse(files.isEmpty, "the Bundled folder ships with the core resources")
+        for url in files {
+            let kit = try KitLibrary.load(from: url)
+            XCTAssertEqual(kit.id, url.deletingPathExtension().lastPathComponent, "loadBundled finds a kit by file name")
+            XCTAssertFalse(kit.summary.isEmpty, kit.id)
+            XCTAssertNotNil(kit.pickerOrder, "\(kit.id) needs a pickerOrder so the picker order is stable")
         }
-        XCTAssertEqual(KitLibrary.bundled.kits.map(\.id), KitLibrary.bundledIDs)
+        XCTAssertEqual(KitLibrary.bundled.kits.count, files.count, "no bundled file is skipped or shadowed")
+    }
+
+    func testBundledKitsAreInPickerOrder() {
+        XCTAssertEqual(KitLibrary.bundledIDs, ["productivity", "medicine", "student"])
+        XCTAssertEqual(KitLibrary.bundled.kits.first?.id, KitLibrary.defaultKitID)
+        let orders = KitLibrary.bundled.kits.compactMap(\.pickerOrder)
+        XCTAssertEqual(Set(orders).count, orders.count, "picker orders are distinct")
+    }
+
+    func testPickerOrderDecodesAndIsOptional() throws {
+        let ordered = try KitManifest.decode(from: Data(#"{"formatVersion": 1, "id": "k", "name": "K", "pickerOrder": 4, "modules": ["planner"]}"#.utf8))
+        XCTAssertEqual(ordered.pickerOrder, 4)
+        XCTAssertEqual(ordered.unknownFields, [])
+        let unordered = try KitManifest.decode(from: Data(#"{"formatVersion": 1, "id": "k", "name": "K", "modules": ["planner"]}"#.utf8))
+        XCTAssertNil(unordered.pickerOrder)
     }
 
     func testBundledKitsHaveDistinctAccents() {
