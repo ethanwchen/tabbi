@@ -231,10 +231,13 @@ func headPath() -> CGPath {
 
 /// Folder-tab ears adapted to the breed: small, low and rounded, set wide apart on
 /// the corners of the round head. `inset` shrinks the tab for the pink label inside.
-func earPath(side: CGFloat, inset: CGFloat = 0) -> CGPath {
-    tabPath(baseCenter: CGPoint(x: 512 + side * (250 - inset * 0.2), y: 572 - inset * 0.6),
-            baseWidth: 236 - inset * 2.2, topWidth: 156 - inset * 1.6, height: 160 - inset * 1.5,
-            radius: 48 - inset * 0.5, angle: side * 0.42)
+/// At 32 px and below the ears are cut taller and more upright, so each one still
+/// rises above the crown as a distinct two-pixel bump instead of merging into the head.
+func earPath(side: CGFloat, inset: CGFloat = 0, small: Bool = false) -> CGPath {
+    let height: CGFloat = small ? 220 : 160
+    return tabPath(baseCenter: CGPoint(x: 512 + side * (small ? 236 : 250 - inset * 0.2), y: 572 - inset * 0.6),
+                   baseWidth: 236 - inset * 2.2, topWidth: 156 - inset * 1.6, height: height - inset * 1.5,
+                   radius: 48 - inset * 0.5, angle: side * (small ? 0.30 : 0.42))
 }
 
 /// The open eye: grey-green under a heavy, level upper lid, the unimpressed half-lidded
@@ -293,10 +296,17 @@ func drawCat(_ ctx: CGContext) {
     defer { ctx.restoreGState() }
     ctx.translateBy(x: 0, y: -56)
 
-    // Ears: taupe tabs with a pink label, tucked behind the head.
+    let small = isSmallRender
+    // Ears: taupe tabs with a pink label, tucked behind the head. At small sizes they
+    // are a solid darker taupe, the one shape that has to survive as a bump.
     for side in [-1.0, 1.0] as [CGFloat] {
-        fill(ctx, earPath(side: side), top: brand.back.cg(), bottom: brand.furShade.cg(), shadow: 20)
-        fill(ctx, earPath(side: side, inset: 40), top: brand.innerEar.cg(), bottom: brand.fur.cg())
+        if small {
+            fill(ctx, earPath(side: side, small: true), brand.ticking.cg())
+            fill(ctx, earPath(side: side, inset: 56, small: true), brand.innerEar.cg())
+        } else {
+            fill(ctx, earPath(side: side), top: brand.back.cg(), bottom: brand.furShade.cg(), shadow: 20)
+            fill(ctx, earPath(side: side, inset: 40), top: brand.innerEar.cg(), bottom: brand.fur.cg())
+        }
     }
 
     let head = headPath()
@@ -304,7 +314,6 @@ func drawCat(_ ctx: CGContext) {
     fill(ctx, head, top: brand.back.cg(), bottom: brand.furShade.cg(), shadow: 30)
     fill(ctx, head, stops: [(0, brand.back.cg()), (0.16, brand.fur.cg()), (0.75, brand.fur.cg()), (1, brand.furShade.cg())])
 
-    let small = isSmallRender
     ctx.saveGState()
     ctx.addPath(head)
     ctx.clip()
@@ -371,9 +380,9 @@ func drawCat(_ ctx: CGContext) {
 /// least a pixel and a half.
 func drawFaceSmall(_ ctx: CGContext) {
     fill(ctx, ellipse(512, 830, 320, 170), brand.white.cg())
-    halfLiddedEye(ctx, center: CGPoint(x: 392, y: 650), width: 150, height: 130, lid: 642, tilt: 6,
+    halfLiddedEye(ctx, center: CGPoint(x: 392, y: 662), width: 156, height: 156, lid: 638, tilt: 6,
                   lidWidth: 0, small: true)
-    stroke(ctx, [CGPoint(x: 562, y: 650), CGPoint(x: 608, y: 698), CGPoint(x: 688, y: 604)], width: 62,
+    stroke(ctx, [CGPoint(x: 560, y: 652), CGPoint(x: 606, y: 702), CGPoint(x: 690, y: 604)], width: 70,
            color: brand.eye.cg())
     fill(ctx, ellipse(512, 752, 84, 56), brand.nose.cg())
 }
@@ -518,24 +527,29 @@ func writePNG(_ image: CGImage, to url: URL) {
 // MARK: - Glyph and variants
 
 /// A one-colour Tabbi mark for small UI (menus, onboarding, the website favicon):
-/// the head with its folder-tab ears, and the open eye, the checkmark wink and the
-/// nose cut out. The "M" is left out: at menu size its gaps turn into speckle.
+/// the British Shorthair's round head with its chubby jowls and small folder-tab
+/// ears, with the half-lidded eye, the checkmark wink and the nose cut out.
 /// It is a single path, so it renders the same as a bitmap and as vector PDF, and
 /// works as an AppKit template image.
 func glyphPath() -> CGPath {
-    var shape: CGPath = ellipse(512, 590, 800, 640)
+    var shape: CGPath = ellipse(512, 560, 700, 600)
     for side in [-1.0, 1.0] as [CGFloat] {
-        let ear = tabPath(baseCenter: CGPoint(x: 512 + side * 230, y: 420), baseWidth: 300, topWidth: 176,
-                          height: 230, radius: 44, angle: side * 0.30)
-        shape = shape.union(ear)
+        shape = shape.union(ellipse(512 + side * 196, 640, 400, 360))
+        shape = shape.union(tabPath(baseCenter: CGPoint(x: 512 + side * 222, y: 390), baseWidth: 250,
+                                    topWidth: 150, height: 200, radius: 50, angle: side * 0.26))
     }
+    // The open eye is a half-oval whose flat top is the heavy lid, sloping toward the nose.
+    let lid = CGMutablePath()
+    lid.addLines(between: [CGPoint(x: 280, y: 560), CGPoint(x: 500, y: 576), CGPoint(x: 500, y: 760),
+                           CGPoint(x: 280, y: 760)])
+    lid.closeSubpath()
     let check = CGMutablePath()
-    check.addLines(between: [CGPoint(x: 552, y: 600), CGPoint(x: 606, y: 654), CGPoint(x: 696, y: 548)])
-    let cuts = ellipse(388, 600, 116, 140)
+    check.addLines(between: [CGPoint(x: 560, y: 580), CGPoint(x: 610, y: 632), CGPoint(x: 700, y: 530)])
+    let cuts = ellipse(388, 590, 160, 136).intersection(lid)
         .union(check.copy(strokingWithWidth: 64, lineCap: .round, lineJoin: .round, miterLimit: 10))
-        .union(ellipse(512, 728, 84, 56))
-    // The ears reach higher than the head reaches low, so lift the mark to centre it.
-    var lift = CGAffineTransform(translationX: 0, y: -24)
+        .union(ellipse(512, 706, 84, 56))
+    // The ears reach higher than the jowls reach low, so lift the mark to centre it.
+    var lift = CGAffineTransform(translationX: 0, y: -10)
     return shape.subtracting(cuts).copy(using: &lift)!
 }
 

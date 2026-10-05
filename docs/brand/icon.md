@@ -117,7 +117,25 @@ Verdict:
 - The glyph is still the tabby's silhouette (large ears, round head) and needs the new jowls and small ears.
 - `Resources/AppIcon.icns` and the 1024 px brand assets were regenerated from this round.
 
-Next round: the glyph with the new silhouette and a half-lidded eye cut-out, stronger ears at 16 px, and the light, dark and tinted appearances reviewed together.
+### Round 4: small sizes and the glyph
+
+Sheets: `rounds/r4.png`, `rounds/r4-dock.png`, `rounds/r4-variants.png`.
+
+Changes from round 3:
+
+- At 32 px and below the ears are cut taller (220 units instead of 160) and more upright (0.30 rad instead of 0.42), in solid ticking taupe with a small pink label.
+  Before, the taupe ears ran into the taupe crown and the head read as a box; now each ear rises above the crown as its own bump.
+- The small-size eye is taller (156 units) with the lid a little higher, so at 16 px it is a solid dark pixel pair instead of a grey smear, and the checkmark is 70 units wide instead of 62.
+- The glyph is redrawn with the new silhouette: a round skull joined to two chubby jowls, small upright tab ears, a half-oval eye cut-out whose flat top is the lid sloping toward the nose, the checkmark wink and the nose.
+
+Verdict:
+
+- At 16 px the icon is now a pale round face with two dark ear bumps, two dark eye marks and a pink nose on navy: a cat, and the same cat as at 1024 px.
+- At 32 px the ears are clearly tabs with a pink label, and the deadpan eye and the check read as a wink.
+- In the Dock it is the only character icon and holds its own between Clock and Messages on both desktops.
+- The glyph keeps the deadpan wink in one colour: the heavy lid survives even at 16 px as a flat-topped hole.
+- The Light (blush), Dark and Tinted appearances were reviewed side by side: all three keep the cat recognizable, and the Tinted render separates the ears, crown and eyes by luminance alone.
+- `Resources/AppIcon.icns` and the glyph assets were regenerated from this round.
 
 ## Assets
 
