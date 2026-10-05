@@ -23,6 +23,9 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v5
+        with:
+          # The release build numbers the app by commit count, so it needs the full history.
+          fetch-depth: 0
 
       - name: Toolchain
         run: |
@@ -35,5 +38,7 @@ jobs:
       - name: Test
         run: swift test
 
-      - name: Release bundle (universal, ad-hoc signed)
-        run: scripts/release.sh
+      # CI has no Developer ID, so it checks the ad-hoc path of the release
+      # build: universal binary, strip, signing, zip and DMG.
+      - name: Release build (universal, ad-hoc signed, DMG)
+        run: scripts/release.sh --adhoc

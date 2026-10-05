@@ -1,0 +1,137 @@
+name: Release
+
+# Builds a Tabbi release with scripts/release.sh: a universal (arm64 + x86_64)
+# app, Developer ID signed and notarized, its DMG, the update zip, the Sparkle
+# appcast, release notes, checksums and the Homebrew cask. The repository is
+# private for now, so this only runs when started by hand
+# (Actions tab > Release > Run workflow).
+#
+# Developer ID releases need these repository secrets (Settings > Secrets and
+# variables > Actions):
+#   DEVELOPER_ID_P12             the "Developer ID Application" certificate and
+#                                its private key, exported from Keychain Access
+#                                as .p12, then base64 encoded (base64 -i <file>)
+#   DEVELOPER_ID_P12_PASSWORD    the password the .p12 was exported with
+#   NOTARY_APPLE_ID              the Apple ID that notarizes
+#   NOTARY_TEAM_ID               the team id from the certificate's name
+#   NOTARY_PASSWORD              an app-specific password for that Apple ID
+#   SPARKLE_PRIVATE_KEY          the update key, the contents of the file that
+#                                generate_keys -x <file> writes
+# The "adhoc" signing choice needs none of them; its build is for testing
+# only and is never published.
+on:
+  workflow_dispatch:
+    inputs:
+      signing:
+        description: Signing
+        type: choice
+        options: [developer-id, adhoc]
+        default: developer-id
+      publish:
+        description: Create a draft GitHub Release (Developer ID builds only)
+        type: boolean
+        default: false
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Build ${{ inputs.signing }} release
+    runs-on: macos-26
+    timeout-minutes: 60
+    permissions:
+      # Creating the draft release and its tag.
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # The build number is the commit count and the release notes come
+          # from the history since the last tag, so this needs all of it.
+          fetch-depth: 0
+
+      - name: Toolchain
+        run: |
+          sw_vers
+          swift --version
+
+      # A keychain of its own, made the default so codesign finds the
+      # identity and notarytool finds the profile with no extra flags.
+      # Deleted at the end of the job.
+      - name: Set up signing
+        if: inputs.signing == 'developer-id'
+        env:
+          KEYCHAIN: ${{ runner.temp }}/release.keychain-db
+          DEVELOPER_ID_P12: ${{ secrets.DEVELOPER_ID_P12 }}
+          DEVELOPER_ID_P12_PASSWORD: ${{ secrets.DEVELOPER_ID_P12_PASSWORD }}
+          NOTARY_APPLE_ID: ${{ secrets.NOTARY_APPLE_ID }}
+          NOTARY_TEAM_ID: ${{ secrets.NOTARY_TEAM_ID }}
+          NOTARY_PASSWORD: ${{ secrets.NOTARY_PASSWORD }}
+          SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
+        run: |
+          for secret in DEVELOPER_ID_P12 DEVELOPER_ID_P12_PASSWORD NOTARY_APPLE_ID NOTARY_TEAM_ID NOTARY_PASSWORD SPARKLE_PRIVATE_KEY; do
+            [[ -n "${!secret}" ]] || { echo "::error::The $secret secret is not set. The top of .github/workflows/release.yml lists the release secrets."; exit 1; }
+          done
+          keychain_password=$(openssl rand -base64 24)
+          security create-keychain -p "$keychain_password" "$KEYCHAIN"
+          security set-keychain-settings -lut 3600 "$KEYCHAIN"
+          security unlock-keychain -p "$keychain_password" "$KEYCHAIN"
+          certificate="$RUNNER_TEMP/developer-id.p12"
+          printf '%s' "$DEVELOPER_ID_P12" | base64 -D > "$certificate"
+          security import "$certificate" -k "$KEYCHAIN" -P "$DEVELOPER_ID_P12_PASSWORD" -T /usr/bin/codesign
+          rm -f "$certificate"
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$keychain_password" "$KEYCHAIN" >/dev/null
+          security list-keychains -d user -s "$KEYCHAIN"
+          security default-keychain -d user -s "$KEYCHAIN"
+          xcrun notarytool store-credentials notchdeck \
+            --apple-id "$NOTARY_APPLE_ID" --team-id "$NOTARY_TEAM_ID" --password "$NOTARY_PASSWORD" \
+            --keychain "$KEYCHAIN"
+
+      - name: Build the release
+        env:
+          SIGNING: ${{ inputs.signing }}
+          SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
+        run: |
+          if [[ "$SIGNING" == adhoc ]]; then
+            scripts/release.sh --adhoc
+          else
+            scripts/release.sh
+          fi
+          echo "VERSION=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' Resources/Info.plist)" >> "$GITHUB_ENV"
+
+      - name: Upload the build
+        uses: actions/upload-artifact@v4
+        with:
+          name: Tabbi-${{ env.VERSION }}-${{ inputs.signing }}
+          if-no-files-found: error
+          path: |
+            build/release/*.dmg
+            build/release/*.zip
+            build/release/appcast.xml
+            build/release/release-notes.md
+            build/release/SHA256SUMS
+            build/release/*.rb
+
+      # A draft, so nothing reaches users (or the update feed, which follows
+      # the latest published release) until it is published by hand.
+      - name: Create a draft release
+        if: inputs.publish && inputs.signing == 'developer-id'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd build/release
+          gh release create "v$VERSION" --draft --target "$GITHUB_SHA" \
+            --title "Tabbi $VERSION" --notes-file release-notes.md \
+            ./*.dmg ./*.zip appcast.xml SHA256SUMS
+
+      - name: Remove the signing keychain
+        if: always() && inputs.signing == 'developer-id'
+        env:
+          KEYCHAIN: ${{ runner.temp }}/release.keychain-db
+        run: |
+          security default-keychain -d user -s login.keychain-db || true
+          security delete-keychain "$KEYCHAIN" || true

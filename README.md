@@ -32,9 +32,13 @@ More tabs are one click away in Settings.
 
 ## Install
 
-1. Download `Tabbi-<version>.zip` from the [latest release](https://github.com/ethanwchen/notchdeck/releases/latest) and drag **Tabbi.app** to Applications.
-2. Open it once with right-click > **Open** (it is not notarized, see [first launch](#first-launch)).
-3. Click the notch and pick a kit.
+1. Download `Tabbi-<version>.dmg` from the [latest release](https://github.com/ethanwchen/notchdeck/releases/latest).
+2. Open it and drag **Tabbi** onto the **Applications** folder.
+3. Open Tabbi from Applications, then click the notch and pick a kit.
+
+Tabbi is signed and notarized, and it keeps itself up to date.
+[docs/install.md](docs/install.md) covers Homebrew, updates, troubleshooting and uninstalling.
+Tabbi has no Dock icon and no menu bar item: right-click the notch for **Settings** and **Quit Tabbi**.
 
 Requires macOS 14 Sonoma or later.
 Macs without a notch get a small virtual one at the top of the screen.
@@ -76,6 +80,7 @@ Kits are small JSON files, and [docs/kits.md](docs/kits.md) shows how to write y
 
 Tabbi has no account, no analytics and no telemetry.
 It only connects where a tab needs to: album artwork for Now Playing, AnkiConnect on your own Mac, and the friends server while Party is on.
+Update checks download Tabbi's release feed from GitHub once a day; you can turn them off in **Settings > About**.
 Claude features run through your local `claude` CLI, and Tabbi never reads your credentials or the keychain.
 
 <details>
@@ -96,21 +101,6 @@ Claude Usage reads token counts from `~/.claude/projects` read-only.
 </details>
 
 <details>
-<summary><b>First launch</b></summary>
-
-Releases are ad-hoc signed but not notarized, because notarization needs a paid Apple Developer ID.
-Open the app once in one of these ways:
-
-- Right-click **Tabbi.app** in Finder, choose **Open**, then confirm.
-- Or try to open it, then click **Open Anyway** in **System Settings > Privacy & Security**.
-- Or clear the quarantine flag: `xattr -dr com.apple.quarantine /Applications/Tabbi.app`
-
-Check the download with `shasum -a 256 -c Tabbi-<version>.zip.sha256`.
-Tabbi has no Dock icon and no menu bar item: right-click the notch for **Settings** and **Quit Tabbi**.
-
-</details>
-
-<details>
 <summary><b>FAQ</b></summary>
 
 **Do I need Claude Code?**
@@ -119,6 +109,10 @@ Only the Claude tabs and Plan my day in the Essentials kit use it, and they show
 
 **Why the `claude` CLI and not an API key?**
 So Tabbi never handles your credentials, and your usage stays on the plan you already have.
+
+**How do I update or uninstall it?**
+Tabbi updates itself; right-click the notch and choose **Check for Updates…** to check now.
+To uninstall, quit it and drag it from Applications to the Trash; [docs/install.md](docs/install.md#uninstall) also lists where your data lives.
 
 **Does it hide in fullscreen apps or on other displays?**
 By default it steps aside while an app is fullscreen and shows on every display.
@@ -138,7 +132,7 @@ TABBI_DEMO=1 swift run Tabbi --snapshot snapshots   # render every panel to PNG 
 ```
 
 You need Xcode 26 or later; the app runs on macOS 14 or later.
-There are no third-party dependencies.
+The only third-party dependency is Sparkle, for updates.
 
 ## Contributing
 

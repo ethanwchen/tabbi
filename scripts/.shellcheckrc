@@ -1,0 +1,3 @@
+# Follow the packaging/*.env files the release scripts read, from any working directory.
+external-sources=true
+source-path=SCRIPTDIR/..

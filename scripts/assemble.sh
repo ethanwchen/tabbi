@@ -6,7 +6,7 @@
 #
 # Every edition ships the same binary. An edition is one JSON file,
 # Sources/TabbiKitCore/Editions/BundledEditions/<edition>.json, which the
-# app reads too (Edition.swift). Its name, bundle id and id (TabbiEdition,
+# app reads too (Edition.swift). Its name (also the executable's), bundle id and id (TabbiEdition,
 # which the app reads to preselect its kit) and its infoPlist strings
 # (usage descriptions that name the app) replace keys of Resources/Info.plist,
 # and its optional icon names an .icns file in Resources.
@@ -20,7 +20,7 @@ editions=Sources/TabbiKitCore/Editions/BundledEditions
 file=$editions/$edition.json
 
 if [[ ! -f "$file" ]]; then
-    available=$(cd "$editions" && ls -- *.json | sed 's/\.json$//' | tr '\n' ' ' | sed 's/ *$//')
+    available=$(for path in "$editions"/*.json; do basename "$path" .json; done | tr '\n' ' ' | sed 's/ *$//')
     echo "error: unknown edition '$edition' (available: $available)" >&2
     exit 1
 fi
@@ -37,6 +37,9 @@ plutil -extract infoPlist xml1 -o "$plist" "$file" 2>/dev/null || plutil -create
 plutil -replace TabbiEdition -string "$edition" "$plist"
 plutil -replace CFBundleName -string "$name" "$plist"
 plutil -replace CFBundleDisplayName -string "$name" "$plist"
+# The executable carries the edition's name, so Activity Monitor, Force Quit
+# and pkill show the app the user installed.
+plutil -replace CFBundleExecutable -string "$name" "$plist"
 plutil -replace CFBundleIdentifier -string "$bundle_id" "$plist"
 # Merge skips keys the edition already set, so the edition wins.
 /usr/libexec/PlistBuddy -c "Merge Resources/Info.plist" "$plist" >/dev/null
@@ -45,9 +48,16 @@ plutil -lint -s "$plist"
 app="$out/$name.app"
 rm -rf "$app"
 mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
-cp "$bin" "$app/Contents/MacOS/Tabbi"
+cp "$bin" "$app/Contents/MacOS/$name"
 cp "$plist" "$app/Contents/Info.plist"
 cp "$icon" "$app/Contents/Resources/AppIcon.icns"
 # SwiftPM resource bundles (bundled kits and editions); see KitResources.swift.
 cp -R "$(dirname "$bin")"/*.bundle "$app/Contents/Resources/"
+# Frameworks from binary packages (Sparkle), found through the executable's
+# @executable_path/../Frameworks rpath (Package.swift). ditto keeps their symlinks.
+for framework in "$(dirname "$bin")"/*.framework; do
+    [[ -e "$framework" ]] || continue
+    mkdir -p "$app/Contents/Frameworks"
+    ditto "$framework" "$app/Contents/Frameworks/$(basename "$framework")"
+done
 echo "$app"

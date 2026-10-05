@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Hardened Runtime entitlements for Tabbi (see docs/research/installer.md).
+  Tabbi is not sandboxed, so this only re-allows the two protected resources
+  the Hardened Runtime blocks by default:
+  - apple-events: Now Playing scripts Spotify and Music (NSAppleEventsUsageDescription).
+  - calendars: Today and Plan my day use EventKit (NSCalendarsFullAccessUsageDescription).
+-->
+<plist version="1.0">
+<dict>
+    <key>com.apple.security.automation.apple-events</key>
+    <true/>
+    <key>com.apple.security.personal-information.calendars</key>
+    <true/>
+</dict>
+</plist>

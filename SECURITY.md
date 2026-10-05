@@ -34,11 +34,12 @@ Tabbi runs locally and has a small attack surface, but these areas deserve parti
 - **Apple Events.** Tabbi controls Spotify and Apple Music through Automation.
   Anything that lets another app abuse that permission through Tabbi is in scope.
 - **Network access.** Tabbi only connects to the hosts its modules list in their descriptors: album artwork for Now Playing, AnkiConnect on localhost for Anki, and the friends server for Party (only when that tab is on).
+  Release builds also download the update feed from GitHub through Sparkle, unless automatic checks are turned off in Settings > About.
   Any other outgoing request is a bug and in scope.
 
 These are out of scope:
 
-- Gatekeeper warnings caused by release builds being ad-hoc signed rather than notarized.
-  This is a known limitation, documented in the README.
+- Gatekeeper warnings on builds made with `scripts/release.sh --adhoc`, which are not notarized.
+  Official releases are signed and notarized; see [docs/install.md](docs/install.md).
 - Vulnerabilities in macOS, Spotify, Apple Music, or the `claude` CLI themselves.
   Please report those to their vendors.

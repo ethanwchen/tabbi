@@ -1,0 +1,29 @@
+cask "@TOKEN@" do
+  version "@VERSION@"
+  sha256 "@SHA256@"
+
+  url "@REPO_URL@/releases/download/v#{version}/@NAME@-#{version}.dmg"
+  name "@NAME@"
+  desc "Clickable panel of tabs in the MacBook notch"
+  homepage "@REPO_URL@"
+
+  livecheck do
+    url "@FEED_URL@"
+    strategy :sparkle, &:short_version
+  end
+
+  auto_updates true
+  depends_on macos: :sonoma
+
+  app "@NAME@.app"
+
+  uninstall quit: "@BUNDLE_ID@"
+
+  zap login_item: "@NAME@",
+      trash:      [
+        "~/Library/Application Support/@NAME@",
+        "~/Library/Caches/@BUNDLE_ID@",
+        "~/Library/HTTPStorages/@BUNDLE_ID@",
+        "~/Library/Preferences/@BUNDLE_ID@.plist",
+      ]
+end

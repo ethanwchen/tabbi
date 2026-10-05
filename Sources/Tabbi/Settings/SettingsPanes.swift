@@ -856,6 +856,8 @@ struct AboutSettingsPane: View {
                 .help(Self.repository.absoluteString)
             }
             .padding(.top, 20)
+            UpdatesSettingsSection()
+                .padding(.top, 16)
             Text("Released under the MIT License.")
                 .font(.caption)
                 .foregroundStyle(.tertiary)
@@ -873,30 +875,20 @@ struct AboutSettingsPane: View {
     }
 }
 
-/// The app mark: a black screen corner with the notch and a lit tab, drawn
-/// in code because the app ships without an asset catalog.
+/// The app icon. `swift run` has no bundle, so it falls back to the repo's
+/// icon file (the dev and snapshot working directory).
 private struct AppGlyph: View {
+    private static let icon: NSImage = Bundle.main.bundleURL.pathExtension == "app"
+        ? NSApp.applicationIconImage
+        : NSImage(contentsOfFile: "Resources/AppIcon.icns") ?? NSApp.applicationIconImage
+
     var body: some View {
-        ZStack(alignment: .top) {
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(LinearGradient(colors: [Color(white: 0.20), Color(white: 0.08)], startPoint: .top, endPoint: .bottom))
-            NotchShape(topRadius: 4, bottomRadius: 10)
-                .fill(.black)
-                .frame(width: 44, height: 16)
-            HStack(spacing: 4) {
-                ForEach([NowPlayingModule.descriptor, SystemModule.descriptor, TodayModule.descriptor]) { module in
-                    Capsule()
-                        .fill(module.accentColor)
-                        .frame(width: 12, height: 4)
-                }
-            }
-            .padding(.top, 40)
-        }
-        .frame(width: 80, height: 80)
-        .overlay(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .strokeBorder(.white.opacity(0.12), lineWidth: 0.5)
-        )
-        .shadow(color: .black.opacity(0.25), radius: 6, y: 3)
+        // The icon's art fills about 80% of its canvas, so a 100 pt image shows an 80 pt icon.
+        Image(nsImage: Self.icon)
+            .resizable()
+            .interpolation(.high)
+            .frame(width: 100, height: 100)
+            .padding(-10)
+            .accessibilityHidden(true)
     }
 }
