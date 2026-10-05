@@ -1,0 +1,234 @@
+import Foundation
+import TabbiKitCore
+
+/// Drives Plan My Day: gathers today's events and open tasks, asks the local
+/// `claude` CLI for time blocks (or, when the kit's `TodayPlanSettings` say
+/// so, plans study and review blocks on device with `StudyDayPlanner`),
+/// validates them, and writes the ones the user accepts to the calendar.
+/// The proposal replaces the checklist inline.
+///
+/// With `TABBI_DEMO=1` it plans around `UpcomingEvent.samples(now:)` and
+/// never runs the CLI or touches EventKit.
+@MainActor
+final class DayPlanStore: ObservableObject {
+    enum Phase: Equatable {
+        /// The checklist shows; nothing is being planned.
+        case idle
+        /// Waiting for Claude.
+        case planning
+        case proposal(DayPlanProposal)
+        /// Claude found nothing worth planning (or the day is over).
+        case noFreeTime
+        case failed(Failure)
+    }
+
+    /// Why planning stopped, phrased for the panel.
+    enum Failure: Equatable {
+        case claudeNotFound
+        case calendarOff
+        /// This build can't ask for calendar access (an unbundled `swift run`).
+        case calendarUnavailable
+        case claudeFailed
+
+        var title: String {
+            switch self {
+            case .claudeNotFound: "Claude isn't installed"
+            case .calendarOff: "Calendar access is off"
+            case .calendarUnavailable: "Calendar isn't available"
+            case .claudeFailed: "Couldn't plan your day"
+            }
+        }
+
+        var detail: String {
+            switch self {
+            case .claudeNotFound: "Install the claude CLI, or set its path in Settings."
+            case .calendarOff: "Allow \(Edition.current.name) in Privacy & Security to plan around meetings."
+            case .calendarUnavailable: "Open the \(Edition.current.name) app to plan around your calendar."
+            case .claudeFailed: "Claude didn't send back a usable plan. Try again in a moment."
+            }
+        }
+
+        /// Asking Claude again only helps when Claude was the problem;
+        /// calendar access is fixed in System Settings instead.
+        var canRetry: Bool { self == .claudeFailed }
+    }
+
+    @Published private(set) var phase: Phase = .idle
+    /// True when the last Add didn't reach the calendar; the proposal stays.
+    @Published private(set) var writeFailed = false
+
+    var isActive: Bool { phase != .idle }
+
+    private let upNext: UpNextStore
+    private let isDemo: Bool
+    private var task: Task<Void, Never>?
+    private var lastTasks: [PlannerItem] = []
+    private var lastSharedWork: [String] = []
+    private var lastProgress: [ProgressItem] = []
+    /// The active kit's planning settings; `PlannerStore` keeps them current.
+    var settings: TodayPlanSettings
+    /// Bumped on every run and cancel so a superseded run can't publish.
+    private var generation = 0
+
+    /// Longest wait for Claude before showing the Retry message.
+    private static let timeout: Duration = .seconds(60)
+
+    init(upNext: UpNextStore, settings: TodayPlanSettings, runMode: RunMode) {
+        self.upNext = upNext
+        self.settings = settings
+        let environment = ProcessInfo.processInfo.environment
+        isDemo = runMode.isDemo
+        // Lets demo snapshots render each state: `TABBI_PLANNER_PREVIEW=plan`.
+        // Demo only, so a preview proposal can never reach the real calendar.
+        guard isDemo else { return }
+        switch environment["TABBI_PLANNER_PREVIEW"] {
+        case "plan": phase = .proposal(sampleProposal(
+            tasks: PlannerDay.sample(on: PlannerDayKey(date: Date()), kind: settings.sampleDay).items,
+            progress: [AnkiSummary.demo().progressItem()]))
+        case "planning": phase = .planning
+        case "plan-failed": phase = .failed(.claudeFailed)
+        case "plan-calendar-off": phase = .failed(.calendarOff)
+        default: break
+        }
+    }
+
+    /// Starts planning the rest of today around `tasks` (unfinished ones
+    /// count) and what other modules share: `sharedWork` phrased for Claude
+    /// (`ProviderSnapshot.plannableWork`), `progress` as goals the study
+    /// planner turns into review blocks.
+    func plan(tasks: [PlannerItem], sharedWork: [String] = [], progress: [ProgressItem] = []) {
+        lastTasks = tasks
+        lastSharedWork = sharedWork
+        lastProgress = progress
+        invalidateRun()
+        writeFailed = false
+        phase = .planning
+        let generation = generation
+
+        if isDemo {
+            task = Task { [weak self] in
+                try? await Task.sleep(for: .seconds(1.2))
+                guard let self else { return }
+                let proposal = self.sampleProposal(tasks: tasks, progress: progress)
+                self.publish(generation, proposal.isSettled ? .noFreeTime : .proposal(proposal))
+            }
+            return
+        }
+
+        task = Task { [weak self] in
+            guard let self else { return }
+            let outcome = await self.run()
+            self.publish(generation, outcome)
+        }
+    }
+
+    func retry() { plan(tasks: lastTasks, sharedWork: lastSharedWork, progress: lastProgress) }
+
+    func openPrivacySettings() { upNext.openPrivacySettings() }
+
+    /// Discards the proposal (or stops waiting) and shows the checklist again.
+    func cancel() {
+        invalidateRun()
+        writeFailed = false
+        phase = .idle
+    }
+
+    func dismiss(_ id: PlanBlock.ID) {
+        guard case .proposal(var proposal) = phase else { return }
+        proposal.dismiss(id)
+        settle(proposal)
+    }
+
+    /// Adds one block, or every remaining block when `id` is nil.
+    func add(_ id: PlanBlock.ID? = nil) {
+        guard case .proposal(var proposal) = phase else { return }
+        do {
+            // Re-read the calendar: meetings may have arrived since Claude answered.
+            try proposal.add(id.map { [$0] }, now: Date(), events: upNext.todayEvents(),
+                             writer: upNext.makePlanWriter())
+            writeFailed = false
+            settle(proposal)
+        } catch {
+            writeFailed = true
+        }
+    }
+
+    // MARK: - Private
+
+    /// Demo mode's proposal: the study planner over the demo calendar for
+    /// study kits, otherwise Claude's canned sample.
+    private func sampleProposal(tasks: [PlannerItem], progress: [ProgressItem]) -> DayPlanProposal {
+        guard settings.planMode == .study else { return DayPlanProposal(blocks: DayPlanner.sampleProposal(now: Date())) }
+        let now = Date()
+        let context = DayPlanContext(now: now, events: upNext.todayEvents(), tasks: tasks,
+                                     dayEndHour: settings.dayEndHour)
+        return DayPlanProposal(settings.studyPlan(context: context, progress: progress))
+    }
+
+    private func settle(_ proposal: DayPlanProposal) {
+        phase = proposal.isSettled ? .idle : .proposal(proposal)
+    }
+
+    private func invalidateRun() {
+        generation += 1
+        task?.cancel()
+        task = nil
+    }
+
+    private func publish(_ generation: Int, _ phase: Phase) {
+        guard generation == self.generation else { return }
+        self.phase = phase
+    }
+
+    private func run() async -> Phase {
+        switch await upNext.ensureAccess() {
+        case .granted: break
+        case .denied, .notDetermined: return .failed(.calendarOff)
+        // `swift run` builds can't ask, so blocks couldn't be written either.
+        // Dry runs plan without meetings, which is enough to try the flow.
+        case .unavailable: guard upNext.isPlanDryRun else { return .failed(.calendarUnavailable) }
+        }
+        let context = DayPlanContext(now: Date(), events: upNext.todayEvents(), tasks: lastTasks,
+                                     sharedWork: lastSharedWork, dayEndHour: settings.dayEndHour)
+        guard context.hasFreeTime else { return .noFreeTime }
+
+        if settings.planMode == .study {
+            let proposal = DayPlanProposal(settings.studyPlan(context: context, progress: lastProgress))
+            return proposal.isSettled ? .noFreeTime : .proposal(proposal)
+        }
+
+        guard let executable = await Task.detached(priority: .userInitiated, operation: { ClaudeCLI.locate() }).value else {
+            return .failed(.claudeNotFound)
+        }
+        guard let text = await Self.answer(executable: executable, prompt: DayPlanner.prompt(for: context)),
+              let blocks = try? DayPlanner.proposal(from: text, context: context)
+        else { return Task.isCancelled ? .idle : .failed(.claudeFailed) }
+        return blocks.isEmpty ? .noFreeTime : .proposal(DayPlanProposal(blocks: blocks))
+    }
+
+    /// The final result text of one `claude -p` run, or nil on error or timeout.
+    private static func answer(executable: URL, prompt: String) async -> String? {
+        await withTaskGroup(of: String?.self) { group in
+            group.addTask {
+                var text: String?
+                do {
+                    let events = ClaudeCLI.stream(executable: executable, prompt: prompt,
+                                                  extraArguments: DayPlanner.extraArguments())
+                    for try await event in events {
+                        if case .result(let result) = event, !result.isError { text = result.text }
+                    }
+                } catch {
+                    // A successful result followed by a non-zero exit still counts.
+                }
+                return text
+            }
+            group.addTask {
+                try? await Task.sleep(for: timeout)
+                return nil
+            }
+            let first = await group.next() ?? nil
+            group.cancelAll()
+            return first
+        }
+    }
+}

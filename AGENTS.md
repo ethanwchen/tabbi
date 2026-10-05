@@ -1,20 +1,19 @@
-# NotchDeck - guide for contributors and coding agents
+# Tabbi - guide for contributors and coding agents
 
-NotchDeck is a macOS menu-bar-less app that turns the MacBook notch into a small,
+Tabbi is a macOS menu-bar-less app that turns the MacBook notch into a small,
 clickable panel of tabs. Each tab is a module (Now Playing, System, Claude Usage,
-Today, Ask Claude, Focus, and the StudyNotch modules Study, Anki, Party, Closet),
+Today, Ask Claude, Focus, and the study modules Study, Anki, Party, Closet),
 and a kit picks which ones are on and in what order.
 
 ## Build, test, look
 
 ```sh
 swift build                                  # must stay warning-free
-swift test                                   # NotchKitCore and NotchDeck (app wiring) tests
-swift run NotchDeck --snapshot snapshots     # render every notch state to PNG
-swift run NotchDeck --snapshot snapshots-medicine --kit medicine  # same, for another kit's tabs
-swift run NotchDeck --snapshot snapshots-study --edition studynotch  # as the StudyNotch edition
-scripts/run.sh [studynotch]                  # bundle + launch the real app (or an edition)
-scripts/bundle.sh studynotch                 # build/StudyNotch.app, Medicine kit preselected
+swift test                                   # TabbiKitCore and Tabbi (app wiring) tests
+swift run Tabbi --snapshot snapshots         # render every notch state to PNG
+swift run Tabbi --snapshot snapshots-medicine --kit medicine  # same, for another kit's tabs
+scripts/run.sh [edition]                     # bundle + launch the real app (or an edition)
+scripts/bundle.sh                            # build/Tabbi.app
 ```
 
 You cannot see the screen. **After any UI change, run the snapshot command and
@@ -23,9 +22,9 @@ Judge them against the design rules below before you call the work done.
 
 ## Architecture
 
-- `Sources/NotchKitCore` - pure Swift, no AppKit/SwiftUI. Parsers, models,
-  stores, formatting. Everything here gets unit tests in `Tests/NotchKitCoreTests`.
-- `Sources/NotchKit` - shared AppKit/SwiftUI that modules build on:
+- `Sources/TabbiKitCore` - pure Swift, no AppKit/SwiftUI. Parsers, models,
+  stores, formatting. Everything here gets unit tests in `Tests/TabbiKitCoreTests`.
+- `Sources/TabbiKit` - shared AppKit/SwiftUI that modules build on:
   `Design/Theme.swift` (design tokens and shared controls `Card`,
   `IconButton`), `Components/` (`ModulePreview`, `ModulePlaceholder`),
   `Notch/` (the panel window, notch shape, screen geometry, the
@@ -40,14 +39,14 @@ Judge them against the design rules below before you call the work done.
   (the toolbar `SettingsWindowController`, which shows whatever
   `SettingsPane`s the app hands it, and the `HotkeyRecorder` shortcut
   field). The app's own panes and their order live in
-  `NotchDeck/Settings/AppSettingsPanes.swift`. Everything here is `public`. Reuse it; add new
+  `Sources/Tabbi/Settings/AppSettingsPanes.swift`. Everything here is `public`. Reuse it; add new
   shared components here, not inside a module.
-- `Sources/NotchDeck/Modules/ModuleViews.swift` - hooks the shared notch up
+- `Sources/Tabbi/Modules/ModuleViews.swift` - hooks the shared notch up
   to the app: the closed notch's live-activity wings, `notchContent`
   (module panels, music wings, Settings) and
   `notchInputs` (settings, hotkey recorder, ticker) built from `AppServices`.
   Shared; change only when your task requires it.
-- `Sources/NotchDeck/Modules/<Module>/` - one folder per module: a store
+- `Sources/Tabbi/Modules/<Module>/` - one folder per module: a store
   (`ObservableObject`), SwiftUI views, and a `NotchModule` class (its own
   `static let descriptor` with id, title, symbol, category, accent and
   permissions, `init(context:)`, a panel, an optional Settings toolbar pane
@@ -55,12 +54,12 @@ Judge them against the design rules below before you call the work done.
   lifecycle follow the module's on/off switch. Modules that share a pane
   return the same id and it shows once: Today and Focus both offer the
   Focus pane, since both show the focus timer.
-- `Sources/NotchDeck/Modules/ModuleContext.swift` - what every module gets
+- `Sources/Tabbi/Modules/ModuleContext.swift` - what every module gets
   in `init(context:)`: its id, the edition, read access to settings and the
   active kit (`kitApplied` fires when the user switches to, resets or
   undoes a kit; on `.undo` put back what the undone switch changed), the
   `ProviderHub`, a logger, the `runMode` (live, demo data, snapshot
-  rendering; hand it to your store, never read `NOTCHDECK_DEMO` yourself), the edition's
+  rendering; hand it to your store, never read `TABBI_DEMO` yourself), the edition's
   `storage` (`EditionStorage`: put files in `storage.folder("<Name>")`,
   never in a hardcoded Application Support path, so each edition keeps
   its own data), and `SharedServices`. A module builds and owns its store there and follows
@@ -77,13 +76,13 @@ Judge them against the design rules below before you call the work done.
   whether it still matches through `usesKitDefaults(of:)`, so Settings
   knows when Reset to Kit Defaults has work to do.
 - Persisted formats are versioned. A JSON file (or `UserDefaults` value)
-  goes through a `VersionedJSON` schema (`NotchKitCore/Persistence/`),
+  goes through a `VersionedJSON` schema (`TabbiKitCore/Persistence/`),
   which writes a `schemaVersion` key and runs ordered migration steps on
   older documents; `PlannerRepository.schema` is an example. A change to
   how a preference is stored is a new step in `SettingsSchema`. Never edit
   a step that has shipped, and test the migration.
-- `Sources/NotchDeck/Modules/NotchModule.swift` - the `NotchModule` protocol
-  and `ModuleRegistry`. `Sources/NotchDeck/Modules/ModuleList.swift` lists
+- `Sources/Tabbi/Modules/NotchModule.swift` - the `NotchModule` protocol
+  and `ModuleRegistry`. `Sources/Tabbi/Modules/ModuleList.swift` lists
   every module type, one per line; its `ModuleList.catalog` is the only
   module catalog. Layouts, kit validation, the tab bar, Settings and
   previews all resolve ids through it (SwiftUI views read it from the
@@ -104,7 +103,7 @@ Judge them against the design rules below before you call the work done.
   the ticker, the pet, the coach and Party all read `ProviderSnapshot.focus`
   (when two clocks run, the one started or resumed last). `ProviderHub` (in `Modules/`)
   merges the enabled modules' values into a `ProviderSnapshot`
-  (`NotchKitCore/Providers`). The closed-notch ticker (`TickerStore`) reads
+  (`TabbiKitCore/Providers`). The closed-notch ticker (`TickerStore`) reads
   only that snapshot, and Today lists other
   modules' goals and tasks above its checklist (`sharedTodayItems`) and
   hands their unfinished work to Plan my day (`plannableWork`), so e.g.
@@ -123,7 +122,7 @@ Judge them against the design rules below before you call the work done.
   while the meeting preview can show).
 - Activity log: the snapshot says what is true now; `context.activityLog`
   (`ActivityLog` in `Modules/`, one per app) says what happened. Log
-  your own events as `ActivityRecord`s (`NotchKitCore/Activity`: your
+  your own events as `ActivityRecord`s (`TabbiKitCore/Activity`: your
   module id as `source`, an open `ActivityKind` such as
   `focus.completed`, `break.taken`, `cards.reviewed`, `task.completed`
   or one of your own, start and end, a quantity and unit, an optional
@@ -132,27 +131,30 @@ Judge them against the design rules below before you call the work done.
   streaks, insights and the pet never need another module's store.
   Records stay on the Mac, one versioned JSON file per day in the
   edition's `Activity` folder; demo and snapshot runs keep them in memory.
-- `Sources/NotchKitCore/Claude` - `ClaudeCLI` (locate + stream `claude -p`) and
+- `Sources/TabbiKitCore/Claude` - `ClaudeCLI` (locate + stream `claude -p`) and
   `ClaudeStreamEvent` (stream-json parser). Both Claude modules use these.
 
-Kits are JSON manifests in `Sources/NotchKitCore/Kits/Bundled`; the format
+Kits are JSON manifests in `Sources/TabbiKitCore/Kits/Bundled`; the format
 is documented in `docs/kits.md`.
-Editions (branded builds such as StudyNotch) are JSON files in
-`Sources/NotchKitCore/Editions/BundledEditions` that the app and
+Editions (branded builds of the same binary with their own name, bundle id,
+data folder and preselected kit) are JSON files in
+`Sources/TabbiKitCore/Editions/BundledEditions` that the app and
 `scripts/assemble.sh` both read (see `Edition.swift`); a new edition is a file.
+Tabbi ships one edition, `tabbi`; audiences are served by kits.
+On its first live launch, `LegacyDataMigration` moves what the app saved as NotchDeck (or the retired StudyNotch edition) into Tabbi's Application Support folder and preferences, once and without overwriting.
 Direction and planned work: `docs/ROADMAP.md`.
 
 Module ownership: when working on one module, keep changes inside its
-`Modules/<Module>/` folder and a matching `NotchKitCore/<Module>/` folder plus
+`Modules/<Module>/` folder and a matching `TabbiKitCore/<Module>/` folder plus
 tests. Touch shared files only when unavoidable, and keep those edits minimal.
 
 ## Adding a module
 
 A new vertical is its own files plus one line in `ModuleList.swift`.
-`Tests/NotchDeckTests/LeetCodeFixture/LeetCodeModule.swift` is a complete example (a "LeetCode daily" module), and `LeetCodeAcceptanceTests` proves it plugs in that way: it builds `AppServices` from `ModuleList.all + [LeetCodeModule.self]` and checks every shared surface.
+`Tests/TabbiTests/LeetCodeFixture/LeetCodeModule.swift` is a complete example (a "LeetCode daily" module), and `LeetCodeAcceptanceTests` proves it plugs in that way: it builds `AppServices` from `ModuleList.all + [LeetCodeModule.self]` and checks every shared surface.
 
-1. Create `Sources/NotchDeck/Modules/<Module>/` with a store (`ObservableObject`), its SwiftUI panel, and `<Module>Module: NotchModule`.
-   Pure logic (parsers, models, formatting) goes in `Sources/NotchKitCore/<Module>/` with tests in `Tests/NotchKitCoreTests`.
+1. Create `Sources/Tabbi/Modules/<Module>/` with a store (`ObservableObject`), its SwiftUI panel, and `<Module>Module: NotchModule`.
+   Pure logic (parsers, models, formatting) goes in `Sources/TabbiKitCore/<Module>/` with tests in `Tests/TabbiKitCoreTests`.
 2. Declare `nonisolated static let descriptor = ModuleDescriptor(...)`: id, title, SF Symbol, category (an open `ModuleCategory`: use a built-in one or declare your own beside the module, as the fixture's `.coding` does), accent, permissions, `network` with each host its code connects to (none for the fixture), `highlightTitle` if it shows a line in the ticker, and `ownsFocusClock: true` if it runs a focus clock of its own.
    The tab bar, Settings, kit validation and previews read title, symbol and accent from here, and Today shows such a module's clock in place of its Pomodoro, so a layout has one timer.
    If kits can configure the module, declare the keys of its `moduleSettings` section as `kitSettings: KitSettingsSchema([...])`, so kit validation warns about typos and out-of-range values there; the fixture declares `minutesPerProblem`.
@@ -166,7 +168,7 @@ A new vertical is its own files plus one line in `ModuleList.swift`.
 5. Add `<Module>Module.self,` at the end of `ModuleList.all`.
    A kit can now list the module id in `modules` and in its `ticker` field; until that line exists, kit validation reports both as unknown.
 6. Optionally return a Settings pane from `makeSettingsPane()`.
-   A kit that ships with the app is a separate change: its JSON file, named after its id and with a `pickerOrder`, in `Sources/NotchKitCore/Kits/Bundled`, which `KitLibrary.bundled` lists (see `docs/kits.md`).
+   A kit that ships with the app is a separate change: its JSON file, named after its id and with a `pickerOrder`, in `Sources/TabbiKitCore/Kits/Bundled`, which `KitLibrary.bundled` lists (see `docs/kits.md`).
 
 The module itself needs no edits to `AppServices`, the ticker, Today, `Theme`, layouts or the catalog.
 If a module seems to need one, the provider protocols are missing something: extend them in a separate change rather than special-casing the module.
@@ -202,7 +204,7 @@ If a module seems to need one, the provider protocols are missing something: ext
 - Never poll faster than needed; stop timers when a panel isn't visible if
   the data is only shown there.
 - Keep `swift build` warning-free and `swift test` green.
-  `NotchKitCore` and its tests build in Swift 6 language mode; the other
+  `TabbiKitCore` and its tests build in Swift 6 language mode; the other
   targets stay in Swift 5 mode with complete concurrency checking, so a
   data race there shows up as a warning to fix.
 - Public types and non-obvious logic get a short doc comment explaining why.

@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-NotchDeck is a young project.
+Tabbi is a young project.
 Security fixes go into the latest release only.
 
 | Version | Supported |
@@ -25,15 +25,15 @@ We will keep you updated while we work on a fix, and credit you in the release n
 
 ## Scope
 
-NotchDeck runs locally and has a small attack surface, but these areas deserve particular care:
+Tabbi runs locally and has a small attack surface, but these areas deserve particular care:
 
 - **The `claude` CLI integration.** Ask Claude, Claude Usage and Today's Plan my day and Wrap up start the user's local `claude` command.
   Issues such as running an unexpected binary, passing untrusted input to it in an unsafe way, or exposing its output to other processes are in scope.
-- **Local data.** NotchDeck reads Claude Code transcripts under `~/.claude` (read-only) and stores the Today checklist and daily reviews in `~/Library/Application Support/NotchDeck`.
+- **Local data.** Tabbi reads Claude Code transcripts under `~/.claude` (read-only) and stores the Today checklist and daily reviews in `~/Library/Application Support/Tabbi`.
   Leaking that data outside the Mac is in scope.
-- **Apple Events.** NotchDeck controls Spotify and Apple Music through Automation.
-  Anything that lets another app abuse that permission through NotchDeck is in scope.
-- **Network access.** The only network requests NotchDeck makes are for album artwork.
+- **Apple Events.** Tabbi controls Spotify and Apple Music through Automation.
+  Anything that lets another app abuse that permission through Tabbi is in scope.
+- **Network access.** Tabbi only connects to the hosts its modules list in their descriptors: album artwork for Now Playing, AnkiConnect on localhost for Anki, and the friends server for Party (only when that tab is on).
   Any other outgoing request is a bug and in scope.
 
 These are out of scope:

@@ -1,7 +1,7 @@
 import { SELF } from "cloudflare:test";
 import { expect } from "vitest";
 
-export const BASE = "https://studynotch.test";
+export const BASE = "https://tabbi.test";
 
 let ipCounter = 0;
 /** A fresh fake client IP, so per-IP registration limits never leak between tests. */

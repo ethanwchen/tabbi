@@ -1,7 +1,0 @@
-{
-  "formatVersion": 1,
-  "id": "notchdeck",
-  "name": "NotchDeck",
-  "bundleIdentifier": "dev.notchdeck.NotchDeck",
-  "defaultKitID": "productivity"
-}

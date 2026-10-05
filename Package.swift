@@ -13,15 +13,15 @@ let swiftSettings: [SwiftSetting] = [
 ]
 
 let package = Package(
-    name: "NotchDeck",
+    name: "Tabbi",
     platforms: [.macOS(.v14)],
     products: [
-        .executable(name: "NotchDeck", targets: ["NotchDeck"]),
+        .executable(name: "Tabbi", targets: ["Tabbi"]),
     ],
     targets: [
         // Pure, testable logic: parsers, models, stores. No AppKit/SwiftUI.
         .target(
-            name: "NotchKitCore",
+            name: "TabbiKitCore",
             // Kit manifests and edition files ship as human-editable JSON
             // (see docs/kits.md and Edition.swift).
             resources: [.copy("Kits/Bundled"), .copy("Editions/BundledEditions")],
@@ -30,32 +30,32 @@ let package = Package(
         // Shared AppKit/SwiftUI: design system, notch window pieces, shared
         // components and pet views. Modules build their panels from these.
         .target(
-            name: "NotchKit",
-            dependencies: ["NotchKitCore"],
+            name: "TabbiKit",
+            dependencies: ["TabbiKitCore"],
             swiftSettings: swiftSettings
         ),
         // The app: modules, settings, system integrations, assembly.
         .executableTarget(
-            name: "NotchDeck",
-            dependencies: ["NotchKitCore", "NotchKit"],
+            name: "Tabbi",
+            dependencies: ["TabbiKitCore", "TabbiKit"],
             swiftSettings: swiftSettings
         ),
         // Renders pet sprite contact sheets for art review: `swift run PetGallery out/`.
         .executableTarget(
             name: "PetGallery",
-            dependencies: ["NotchKitCore"],
+            dependencies: ["TabbiKitCore"],
             swiftSettings: swiftSettings
         ),
         .testTarget(
-            name: "NotchKitCoreTests",
-            dependencies: ["NotchKitCore"],
+            name: "TabbiKitCoreTests",
+            dependencies: ["TabbiKitCore"],
             swiftSettings: coreSettings
         ),
         // App-level wiring (registry, provider hub) tested through
-        // `@testable import NotchDeck`.
+        // `@testable import Tabbi`.
         .testTarget(
-            name: "NotchDeckTests",
-            dependencies: ["NotchDeck", "NotchKitCore", "NotchKit"],
+            name: "TabbiTests",
+            dependencies: ["Tabbi", "TabbiKitCore", "TabbiKit"],
             swiftSettings: swiftSettings
         ),
     ]

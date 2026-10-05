@@ -1,5 +1,5 @@
 #!/usr/bin/env swift
-// Renders the NotchDeck app icon with CoreGraphics and builds Resources/AppIcon.icns.
+// Renders the Tabbi app icon with CoreGraphics and builds Resources/AppIcon.icns.
 //
 //   usage: swift scripts/make-icon.swift [--preview <file.png>]
 //

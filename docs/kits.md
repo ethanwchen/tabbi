@@ -1,21 +1,21 @@
 # Kits
 
-A kit is a premade setup of NotchDeck for one audience: which tabs are on, in what order, and the defaults they start with.
-NotchDeck ships three kits, and anyone can write their own as a small JSON file and share it.
+A kit is a premade setup of Tabbi for one audience: which tabs are on, in what order, and the defaults they start with.
+Tabbi ships three kits, and anyone can write their own as a small JSON file and share it.
 
 | Kit | Id | Tabs |
 | --- | --- | --- |
 | Productivity | `productivity` | Now Playing, System, Claude Usage, Today, Ask Claude |
-| Medicine (StudyNotch) | `medicine` | Study, Today, Anki, Party, Now Playing, Ask Claude, Closet |
+| Med School | `medicine` | Study, Today, Anki, Party, Now Playing, Ask Claude, Closet |
 | Student | `student` | Study, Today, Now Playing, Ask Claude, Closet (Anki off) |
 
-The bundled kits live in [`Sources/NotchKitCore/Kits/Bundled`](../Sources/NotchKitCore/Kits/Bundled).
+The bundled kits live in [`Sources/TabbiKitCore/Kits/Bundled`](../Sources/TabbiKitCore/Kits/Bundled).
 They are good starting points for your own kit.
 
 ## Using kits
 
 On first launch, a welcome window asks which kit to start with.
-It lists every kit with the tabs it turns on, and preselects the edition's kit (Productivity for NotchDeck, Medicine for StudyNotch).
+It lists every kit with the tabs it turns on, and preselects the edition's kit (Productivity for Tabbi).
 Closing the window keeps the preselected kit, and the window doesn't come back.
 If the chosen kit has [onboarding questions](#onboarding), **Continue** leads to them; **Back** returns to the kit list.
 Every question can be skipped, and a row of tab icons previews what the answers turn on or off.
@@ -39,9 +39,9 @@ Only the last change can be undone; Reset to Kit Defaults is not undoable.
 
 After switching, you can still turn tabs on and off and reorder them below the Kit section.
 
-Imported kits are stored as `<id>.json` in `~/Library/Application Support/NotchDeck/Kits` (or `.../StudyNotch/Kits` for the StudyNotch edition).
+Imported kits are stored as `<id>.json` in `~/Library/Application Support/Tabbi/Kits`.
 Each edition keeps all of its files apart in its own folder: kits, Today's checklist and reviews, the activity log, the study log, the pet and the Claude Usage scan index.
-Deleting a file there removes the kit the next time NotchDeck starts.
+Deleting a file there removes the kit the next time Tabbi starts.
 
 ## A minimal kit
 
@@ -172,7 +172,7 @@ Today (`planner`) reads these `moduleSettings.planner` keys, all optional:
 | `secondsPerCard` | number | Typical time per review card, for sizing review blocks (default 10). |
 | `upNextEvents` | string | What the calendar holds, lowercase, for the Up next card's empty states, such as "lectures, labs, and shifts" (default "meetings and calls"). |
 | `dayEndHour` | number | Hour (0-22) when Plan My Day stops planning, such as 21 for evening study (default 18). Planning late still leaves at least two hours, up to 10 pm. |
-| `sampleDay` | string | Which realistic day demo mode (`NOTCHDECK_DEMO=1`) shows on Today: `work` (default) or `medicine` (a lecture, a lab, clinical skills, question banks). Never affects real data. |
+| `sampleDay` | string | Which realistic day demo mode (`TABBI_DEMO=1`) shows on Today: `work` (default) or `medicine` (a lecture, a lab, clinical skills, question banks). Never affects real data. |
 
 Switching kits, picking one on first run, and resetting apply the tabs, `ticker` and every module's section: Study's methods and goal, the focus sound, Today's planning settings and the coach's lines.
 A field the kit leaves out keeps the user's current setting, and only the sound mix changes in focus mode: the user's volume, playlist and Do Not Disturb shortcuts stay.
@@ -262,7 +262,7 @@ Modules listed only in `modules` stay optional: an older version skips them with
 
 ## For developers
 
-The format is defined by `KitManifest` in [`Sources/NotchKitCore/Kits`](../Sources/NotchKitCore/Kits):
+The format is defined by `KitManifest` in [`Sources/TabbiKitCore/Kits`](../Sources/TabbiKitCore/Kits):
 
 - `KitManifest.decode(from:)` parses and validates a file, including the `KitLimits` caps, and throws a `KitError`.
 - `issues(catalog:)` lists the non-fatal `KitIssue` warnings, including fields the format doesn't read (`unknownFields`) and old field names (`KitDefaults.legacyFields`, see `KitLegacyField`), which decoding has already moved into their module's section.
@@ -274,7 +274,7 @@ The format is defined by `KitManifest` in [`Sources/NotchKitCore/Kits`](../Sourc
 - `KitLibrary` holds the bundled kits in picker order plus imported kits, and `ImportedKitStore` keeps imported files on disk.
 - Inside the app an imported kit goes by `KitLibrary.importedID(_:)` of its author's id (`imported.deep-work` for `deep-work`), so it never shares an id with a bundled kit; that is the id saved as the active kit, and the file stays `<author id>.json`. Settings from before this rule get the new id through a `SettingsSchema` step.
 
-To ship a new bundled kit, add `<id>.json` (the file name must match its `id`) with a `pickerOrder` to `Sources/NotchKitCore/Kits/Bundled`, and check that its tests report no issues.
+To ship a new bundled kit, add `<id>.json` (the file name must match its `id`) with a `pickerOrder` to `Sources/TabbiKitCore/Kits/Bundled`, and check that its tests report no issues.
 `KitLibrary.bundled` lists that folder, so no code changes; `KitLibraryTests` checks that every file loads under its own name and has a picker order.
-To render it, run `swift run NotchDeck --snapshot snapshots-<id> --kit <id>`.
+To render it, run `swift run Tabbi --snapshot snapshots-<id> --kit <id>`.
 A module reads its own `moduleSettings` section with `KitDefaults.settings(for:)` and `KitValue.decode(_:)`, and declares its keys as `ModuleDescriptor.kitSettings` (a `KitSettingsSchema` of booleans, numbers in a range, bounded text, choices, lines and nested objects), which `issues(catalog:)` checks.

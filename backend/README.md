@@ -1,8 +1,8 @@
-# StudyNotch friends backend
+# Tabbi friends backend
 
-A small Cloudflare Worker for StudyNotch: friends by code, "who is studying right now" presence, study parties where everyone's pets sit side by side in the notch, and a weekly study-minutes leaderboard.
+A small Cloudflare Worker for Tabbi: friends by code, "who is studying right now" presence, study parties where everyone's pets sit side by side in the notch, and a weekly study-minutes leaderboard.
 No accounts, no emails, no passwords: a user is a random secret token the app receives on registration, and the public 8-character **friend code** is what people share.
-See [`PRIVACY.md`](PRIVACY.md) for what is stored and [`../docs/studynotch/backend-api.md`](../docs/studynotch/backend-api.md) for the client contract.
+See [`PRIVACY.md`](PRIVACY.md) for what is stored and [`../docs/study/backend-api.md`](../docs/study/backend-api.md) for the client contract.
 
 The pet catalog (species, breeds, costumes, accessories, study methods, limits) lives in [`shared/catalog.json`](shared/catalog.json).
 The server validates against it, the app can bundle the same file, and `GET /v1/catalog` serves it.
@@ -31,13 +31,13 @@ npx wrangler deploy
 ```
 
 There is no storage to create by hand: the Durable Object class and its SQLite storage are declared in `wrangler.toml` (`[[migrations]] new_sqlite_classes = ["Hub"]`) and created by the first deploy.
-Wrangler prints the base URL, `https://studynotch-friends.<your-subdomain>.workers.dev`.
-`GET /` answers `{"ok":true,"service":"studynotch-friends","version":1}` so you can check it is up.
+Wrangler prints the base URL, `https://tabbi-friends.<your-subdomain>.workers.dev`.
+`GET /` answers `{"ok":true,"service":"tabbi-friends","version":1}` so you can check it is up.
 
 ## Architecture
 
 ```
-app ──HTTPS──> Worker (studynotch-friends) ──> Durable Object "Hub" (one instance, SQLite)
+app ──HTTPS──> Worker (tabbi-friends) ──> Durable Object "Hub" (one instance, SQLite)
 ```
 
 - The Worker answers CORS preflights, `GET /` and `GET /v1/catalog` itself, so those cost no Durable Object request.

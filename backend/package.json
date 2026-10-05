@@ -1,8 +1,8 @@
 {
-  "name": "studynotch-friends-backend",
+  "name": "tabbi-friends-backend",
   "version": "0.1.0",
   "private": true,
-  "description": "Friends / presence / study-party backend for StudyNotch (Cloudflare Worker + SQLite Durable Object)",
+  "description": "Friends / presence / study-party backend for Tabbi (Cloudflare Worker + SQLite Durable Object)",
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",

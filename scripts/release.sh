@@ -2,7 +2,7 @@
 # Build a universal (arm64 + x86_64) edition .app, ad-hoc sign it, and package
 # it as build/release/<Name>-<version>.zip plus a .sha256 checksum.
 #
-#   usage: scripts/release.sh [edition]      (default: notchdeck)
+#   usage: scripts/release.sh [edition]      (default: tabbi)
 #
 # The version comes from CFBundleShortVersionString in Resources/Info.plist.
 #
@@ -10,18 +10,18 @@
 # Gatekeeper therefore blocks the first launch of a downloaded copy. Users open
 # it once with right-click > Open (or System Settings > Privacy & Security >
 # Open Anyway), or clear the quarantine flag:
-#   xattr -dr com.apple.quarantine /Applications/NotchDeck.app
+#   xattr -dr com.apple.quarantine /Applications/Tabbi.app
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-edition=${1:-notchdeck}
+edition=${1:-tabbi}
 version=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" Resources/Info.plist)
 out=build/release
 
 echo "==> Building $edition $version (arm64 + x86_64)"
 arch_flags=(-c release --arch arm64 --arch x86_64)
 swift build "${arch_flags[@]}"
-bin="$(swift build "${arch_flags[@]}" --show-bin-path)/NotchDeck"
+bin="$(swift build "${arch_flags[@]}" --show-bin-path)/Tabbi"
 
 archs=$(lipo -archs "$bin")
 for arch in arm64 x86_64; do

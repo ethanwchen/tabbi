@@ -1,16 +1,15 @@
 # Roadmap
 
-This page describes where NotchDeck is going and why.
+This page describes where Tabbi is going and why.
 Nothing here is a promise or a date; it is the direction that guides day-to-day decisions.
 
 ## Vision
 
-NotchDeck is open source and fully customizable.
+Tabbi is open source and fully customizable.
 You choose exactly the tabs and integrations you want: a Pomodoro timer, Anki reviews, your calendar, Spotify, Ask Claude, and more.
 
 One app serves many audiences.
 First-run setup offers premade [kits](kits.md), each a starting point for one kind of user, which you can then tweak tab by tab.
-A kit can also ship as a branded edition of the same binary, such as StudyNotch for medical students.
 
 Three ideas drive every design decision:
 
@@ -22,8 +21,8 @@ Three ideas drive every design decision:
 
 | Kit | Status | For |
 | --- | --- | --- |
-| Productivity | Shipping | Music, system stats, your day, Claude usage and Ask Claude. NotchDeck's original tabs. |
-| Medicine (StudyNotch) | In progress | Medical students: a study timer with evidence-based methods, Anki reviews, study parties, music, Ask Claude and a study pet. |
+| Productivity | Shipping | Music, system stats, your day, Claude usage and Ask Claude. Tabbi's original tabs. |
+| Med School | In progress | Medical students: a study timer with evidence-based methods, Anki reviews, study parties, music, Ask Claude and a study pet. |
 | Student | In progress | High school and college students: study timer, classes and homework, music and a pet. |
 | Tech | Planned | Developers and CS students. |
 | Law | Planned | LSAT takers and law students. |
@@ -41,7 +40,7 @@ Three ideas drive every design decision:
 
 - **LSAT prep:** practice sets, timed sections and score trends, from whatever resources the user already uses (LawHub, a prep book, a course).
 - **Law school:** case briefs and reading assignments as tasks, outlines, and exam countdowns.
-- The same study timer and methods as StudyNotch, tuned through kit defaults rather than new code.
+- The same study timer and methods as the Med School kit, tuned through kit defaults rather than new code.
 
 ### Casual learners
 
@@ -88,5 +87,5 @@ Possible paid layers on top:
 Constraints to keep in mind:
 
 - **App Store sandboxing conflicts with the AppleScript and Shortcuts integrations** that Now Playing and other modules rely on. A Mac App Store build would lose features, so direct downloads stay the main channel.
-- **Protect the name.** A trademark on NotchDeck (and StudyNotch) lets forks exist under the MIT license while keeping the official builds and marketplace recognizable.
+- **Protect the name.** A trademark on Tabbi lets forks exist under the MIT license while keeping the official builds and marketplace recognizable.
 - **No telemetry, ever,** paid tier or not. Any hosted feature is opt-in and documented in the README's privacy section.

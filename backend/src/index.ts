@@ -1,5 +1,5 @@
 /**
- * StudyNotch friends backend: a Cloudflare Worker in front of one SQLite-backed Durable Object (`Hub`).
+ * Tabbi friends backend: a Cloudflare Worker in front of one SQLite-backed Durable Object (`Hub`).
  *
  * The Worker answers CORS preflights, the health check and the public catalog itself (no Durable
  * Object request is spent on those) and forwards every `/v1/*` call to the Hub, which owns all state.

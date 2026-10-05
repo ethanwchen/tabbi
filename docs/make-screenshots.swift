@@ -7,7 +7,7 @@
 // The snapshot renderer draws the notch on a flat grey stand-in desktop. This
 // script cuts the notch out of that backdrop (keeping its anti-aliased edge)
 // and places it on a dark, wallpaper-like gradient so the screenshots look
-// like the top of a real Mac screen. Demo mode (NOTCHDECK_DEMO=1) keeps the
+// like the top of a real Mac screen. Demo mode (TABBI_DEMO=1) keeps the
 // data realistic and private: no Spotify, Calendar, network, or claude CLI.
 
 import AppKit
@@ -32,13 +32,13 @@ func fail(_ message: String) -> Never {
 /// Renders fresh demo snapshots into a temporary folder and returns it.
 func renderDemoSnapshots() -> URL {
     let directory = FileManager.default.temporaryDirectory
-        .appendingPathComponent("notchdeck-snapshots-\(ProcessInfo.processInfo.processIdentifier)")
+        .appendingPathComponent("tabbi-snapshots-\(ProcessInfo.processInfo.processIdentifier)")
     let process = Process()
     process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-    process.arguments = ["swift", "run", "-c", "release", "NotchDeck", "--snapshot", directory.path]
+    process.arguments = ["swift", "run", "-c", "release", "Tabbi", "--snapshot", directory.path]
     process.currentDirectoryURL = root
     var environment = ProcessInfo.processInfo.environment
-    environment["NOTCHDECK_DEMO"] = "1"
+    environment["TABBI_DEMO"] = "1"
     process.environment = environment
     do { try process.run() } catch { fail("could not run swift: \(error)") }
     process.waitUntilExit()

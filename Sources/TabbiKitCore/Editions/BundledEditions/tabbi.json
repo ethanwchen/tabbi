@@ -1,0 +1,7 @@
+{
+  "formatVersion": 1,
+  "id": "tabbi",
+  "name": "Tabbi",
+  "bundleIdentifier": "dev.tabbi.Tabbi",
+  "defaultKitID": "productivity"
+}

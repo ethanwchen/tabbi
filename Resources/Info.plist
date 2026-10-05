@@ -2,11 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>CFBundleName</key><string>NotchDeck</string>
-    <key>CFBundleDisplayName</key><string>NotchDeck</string>
-    <key>CFBundleIdentifier</key><string>dev.notchdeck.NotchDeck</string>
-    <key>NotchDeckEdition</key><string>notchdeck</string>
-    <key>CFBundleExecutable</key><string>NotchDeck</string>
+    <key>CFBundleName</key><string>Tabbi</string>
+    <key>CFBundleDisplayName</key><string>Tabbi</string>
+    <key>CFBundleIdentifier</key><string>dev.tabbi.Tabbi</string>
+    <key>TabbiEdition</key><string>tabbi</string>
+    <key>CFBundleExecutable</key><string>Tabbi</string>
     <key>CFBundlePackageType</key><string>APPL</string>
     <key>CFBundleIconFile</key><string>AppIcon</string>
     <key>CFBundleShortVersionString</key><string>0.1.0</string>
@@ -15,8 +15,8 @@
     <key>LSUIElement</key><true/>
     <key>NSHighResolutionCapable</key><true/>
     <key>NSAppleEventsUsageDescription</key>
-    <string>NotchDeck controls Spotify and Music playback and shows what's playing.</string>
+    <string>Tabbi controls Spotify and Music playback and shows what's playing in your notch.</string>
     <key>NSCalendarsFullAccessUsageDescription</key>
-    <string>NotchDeck shows your next events today, lets you join video calls from the notch, and adds the Plan my day blocks you accept to your default calendar.</string>
+    <string>Tabbi shows your next events today, lets you join video calls from the notch, and adds the Plan my day blocks you accept to your default calendar.</string>
 </dict>
 </plist>
