@@ -562,15 +562,27 @@ func renderGlyph(pixels: Int) -> CGImage {
     return ctx.makeImage()!
 }
 
+/// Quartz stamps every PDF with its creation time and a random file ID, so the
+/// file is only replaced when the drawing itself changed. That keeps a rerun of
+/// an unchanged design from showing up as a diff, like the .icns.
 func writeGlyphPDF(to url: URL) {
+    let data = NSMutableData()
     var box = CGRect(x: 0, y: 0, width: canvas, height: canvas)
-    let ctx = CGContext(url as CFURL, mediaBox: &box, nil)!
+    let ctx = CGContext(consumer: CGDataConsumer(data: data as CFMutableData)!, mediaBox: &box, nil)!
     ctx.beginPDFPage(nil)
     ctx.translateBy(x: 0, y: canvas)
     ctx.scaleBy(x: 1, y: -1)
     fill(ctx, glyphPath(), CGColor(gray: 0, alpha: 1))
     ctx.endPDFPage()
     ctx.closePDF()
+
+    func drawing(_ pdf: Data) -> String {
+        String(data: pdf, encoding: .isoLatin1)!
+            .replacingOccurrences(of: #"/(CreationDate|ModDate) \([^)]*\)"#, with: "", options: .regularExpression)
+            .replacingOccurrences(of: #"/ID \[[^\]]*\]"#, with: "", options: .regularExpression)
+    }
+    if let old = try? Data(contentsOf: url), drawing(old) == drawing(data as Data) { return }
+    try! (data as Data).write(to: url)
 }
 
 /// The exported appearances, in the order the variants sheet shows them.

@@ -140,13 +140,15 @@ What the round 3 Dock row showed:
 
 - Shape, size and drop shadow match Apple's icons; nothing looks boxed in or oversized.
 - Tabbi is the only character icon in the row, and the orange face on indigo stands out without shouting, the way Linear's dark tile does.
-- Apple's icons have a bright glass edge, strongest at the top, and soft rounded volume. Tabbi's faint even rim and flat head read as an older, flatter style beside them.
+- Apple's icons have a bright glass edge, strongest at the top, and soft rounded volume.
+  Tabbi's faint even rim and flat head read as an older, flatter style beside them.
 
 Changes from round 3:
 
 - The glass rim is a 10 unit stroke with a vertical gradient: brightest at the top (55% white), faint in the middle and slightly brighter at the bottom, like the lit edge on macOS 26 icons.
 - The crown of the head has a soft warm sheen from the same top light, so the face looks rounded instead of cut from flat paper.
-- The rim is still left out at 32 px and smaller, where it only lightened the outer pixel ring. The sheen stays at every size; at 16 px it only warms the top of the head.
+- The rim is still left out at 32 px and smaller, where it only lightened the outer pixel ring.
+  The sheen stays at every size; at 16 px it only warms the top of the head.
 
 Verdict:
 
@@ -199,7 +201,8 @@ swift scripts/make-icon.swift --variants /tmp/variants.png  # every appearance a
 ```
 
 The default run renders every size of the `.iconset` natively (16 to 1024 px, with the small-size drawing at 32 px and below), builds `Resources/AppIcon.icns` with `iconutil`, and exports the assets above.
-The output is deterministic, so an unchanged script rebuilds a byte-identical `.icns`.
+The output is deterministic, so an unchanged script rebuilds a byte-identical `.icns` and leaves every asset untouched.
+The glyph PDF is only rewritten when its drawing changes, since Quartz stamps each PDF with a new date and file ID.
 
 How the icon reaches the app: `scripts/assemble.sh` (used by `scripts/bundle.sh` and `scripts/run.sh`) copies `Resources/AppIcon.icns` into `Tabbi.app/Contents/Resources/AppIcon.icns`, and `Resources/Info.plist` names it with `CFBundleIconFile` = `AppIcon`.
 After regenerating, rebuild the bundle with `scripts/bundle.sh`; Finder and the Dock may keep a cached icon until the app is moved or `killall Dock` is run.
