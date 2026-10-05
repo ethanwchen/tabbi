@@ -62,11 +62,16 @@ enum SnapshotRenderer {
         // below the 80% threshold, so demo mode fills that one in.
         let now = Date()
         let isDemo = RunMode.current.isDemo
+        let closet = services.modules.module(ClosetModule.self)
         for kind in TickerKind.all(in: services.settings.catalog) {
             let live = services.ticker.sources.items(at: now, enabled: [kind]).first
             let demoUsage: TickerItem? = isDemo && kind == .highlights(from: .claudeUsage)
                 ? .highlight(ClaudeUsageHighlights.highlight(window: .fiveHour, utilization: 0.86)) : nil
-            guard let item = live ?? demoUsage else { continue }
+            // A kit with the Closet off publishes no pet, so the pet comes
+            // from the shared save, as if the Closet were on.
+            let offKitPet: TickerItem? = kind == .pet
+                ? closet.map { .pet(TickerPet(profile: $0.store.profile, mood: .awake)) } : nil
+            guard let item = live ?? demoUsage ?? offKitPet else { continue }
             let model = NotchViewModel(geometry: geometry, layout: layout)
             model.preview = item
             shots.append(Shot("closed-\(snapshotName(kind))", model))
@@ -112,7 +117,6 @@ enum SnapshotRenderer {
         // First-run setup in the notch, one shot per step of the active kit.
         shots += onboardingShots(services: services, geometry: geometry, layout: layout)
 
-        let closet = services.modules.module(ClosetModule.self)
         for (theme, folder) in themeFolders {
             Theme.apply(theme)
             try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
