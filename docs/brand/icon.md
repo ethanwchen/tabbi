@@ -1,7 +1,7 @@
 # Tabbi app icon
 
-Tabbi is a tabby cat that lives in the tabs on your MacBook notch.
-The icon has to say that in one glance: a friendly tabby, a nod to tabs, and a hint that this is a tool for getting things done.
+Tabbi's mascot is the maintainer's British Shorthair, a shaded silver cat with a famously unimpressed face, who lives in the tabs on your MacBook notch.
+The icon has to say that in one glance: this particular cat, a nod to tabs, and a hint that this is a tool for getting things done.
 
 The icon is drawn entirely in code by `scripts/make-icon.swift` (CoreGraphics, vector shapes, no source art).
 
@@ -36,146 +36,88 @@ Plan: ship a full-bleed squircle `.icns` (works on macOS 14 through 26 without t
 - CleanShot, Craft, Mela: soft gradients and a gentle top light, never busy.
 - Lesson: one subject, one accent colour, a silhouette that survives as a blob, and charm from one small detail rather than many.
 
-## Concept exploration (round 0)
+## History
 
-Each concept was rendered at 1024, 128, 32 and 16 px on a light and a dark desktop, plus 4x pixel blow-ups of the 32 and 16 px renders.
+The first Tabbi icon (2026) was a ginger tabby face on deep ink: folder-tab ears, a tabby "M" on the forehead and one eye winking as a checkmark.
+Its layout logic carries over unchanged: a face rising from the bottom edge and filling the squircle, ears that read as folder tabs, a checkmark wink, an optical small-size drawing at 32 px and below, a glass rim and top light, and the Default, Light, Dark, Tinted and glyph set.
+Its review sheets are in the git history of `docs/brand/rounds/`.
 
-| Concept | Sheet |
-| --- | --- |
-| A. "Tab-by": tabby face rising from the bottom, folder-tab ears, "M" stripes, one eye winking as a checkmark, on deep ink | `rounds/r0-concept-a.png` |
-| B. "Peek": tabby peeking over a strip of folder tabs, paws on the edge, tab-shaped stripes, on cream | `rounds/r0-concept-b.png` |
-| C. "Pomodoro": tabby curled into a timer ring, stripes as ticks, tail as the clock hand, on cream | `rounds/r0-concept-c.png` |
+## British Shorthair redesign
 
-Verdicts:
+Reference: a photo of the maintainer's cat lying on a pink silk pillow.
+What makes her recognizable, in order:
 
-- A reads as a cat instantly at every size, and the checkmark wink is the single charming detail that also says "done".
-  The deep ink background makes the orange glow on both light and dark desktops and echoes the black notch.
-  Weak points: the ears are tall enough to read as rabbit ears, and they read as generic ears more than as folder tabs; the cheek stripes poke past the head and look like whiskers.
-- B is cute, but the tab strip reads as a desk or a box, and at 32 px the tabs, paws and face merge into noise.
-  Two subjects (cat plus tab bar) split the attention.
-- C is the cleverest idea, but at 128 px and below it reads as a clock or a sun first and a cat second; the head is too small to carry the character, and at 16 px it is an orange ring that any timer app could own.
+1. A big round face with full, chubby jowls that are wider than the skull.
+2. A taupe blaze: the crown is darker than the face and the colour runs down between the eyes to the bridge of the nose.
+3. Heavy, half-lidded grey-green eyes whose lids slope down toward the nose: unimpressed, not angry.
+4. Pale silver-beige face, white muzzle pads, chin and chest, and a small pink-tan nose.
+5. Small ears set wide apart, low on the corners of the head.
 
-Decision: develop A.
-Refinement goals: make the ears unmistakably folder tabs (shorter, wider, flat-topped), keep stripes inside the head, strengthen the check at small sizes, and tune the 16 px render.
+The colours were sampled from the photo and brightened to studio light: fur `#EAE1D4`, jowl shade `#CDBFAE`, taupe crown `#A89A89`, ticking `#7F7264`, white `#FCFAF6`, iris `#A3AD8C`, nose `#D6978A`.
 
-## Refinement rounds (concept A)
+Each round is archived as a review sheet in `docs/brand/rounds/`: light desktop on top, dark below; 1024 px at half size, then 128, 32 and 16 px, then 4x pixel blow-ups of 32 and 16 px, and from round 2 on the reference photo on the right.
+Dock sheets put the icon between Apple's icons at 128 and 32 px.
 
-Each round is archived as a review sheet in `docs/brand/rounds/` (light desktop on top, dark below; 1024 at half size, then 128, 32 and 16 px, then 4x pixel blow-ups of 32 and 16 px).
+### Round 1: the breed, and two grounds
 
-### Round 1: ears become tabs
+Sheets: `rounds/r1-navy.png`, `rounds/r1-blush.png`.
 
-Sheet: `rounds/r1.png`.
+Changes from the tabby:
 
-Changes from round 0:
-
-- Ears are now short, wide, flat-topped tabs (290 px base, 170 px top, 200 px tall, leaning out 0.30 rad) instead of tall narrow ones.
-  The outer edges end up nearly vertical, so each ear reads as a folder tab standing on the head while still reading as a cat ear.
-  The cream inner ear sits in the tab like a label.
-- Cheek stripes are clipped to the head and run in from its edge, so they read as tabby markings rather than whiskers.
-- The head is a little wider (720 px) so the ears sit on its shoulders, and the "M" is a touch bolder.
+- The head is a skull ellipse joined (with path booleans) to two jowl ellipses, so the lower face bulges out the way a British Shorthair's does.
+- The ears are smaller, lower and set wider (236 px base, 160 px tall, leaning out 0.42 rad), still tab shapes with rounded corners and a pink label inside.
+- The "M" and cheek stripes are gone; the coat is silver-beige with a taupe crown, three faint ticked lines and white muzzle pads.
+- The open eye is grey-green under a heavy level lid; the other eye is still the checkmark wink.
+  Together they read as a deadpan wink: the cat is unimpressed, but the task is done.
+- The mouth is a short flat line instead of the tabby's smiling "w".
+- Two grounds were tried: deep navy (`#24335F` to `#0D1430`) and a warm blush like the pillow (`#F7D5C8` to `#E7A898`).
 
 Verdict:
 
-- The rabbit-ear problem is gone; the silhouette is now a round cat face with two blocky tab ears, and it is clearly a cat at 128 and 32 px.
-- At 16 px the face is an orange blob with two ear bumps: the cat survives, but the checkmark wink and the "M" turn to mush.
-- The orange glow behind the head reads slightly muddy purple on the ink background.
-- `Resources/AppIcon.icns` was regenerated from this round, so the bundled app shows the tabby instead of the old notch icon.
+- Navy is clearly stronger.
+  The pale cat glows on it at every size and on both desktops, and the dark ground still echoes the black notch.
+  On blush the silver-beige face and taupe ears have almost no contrast with the ground; at 32 px the ears disappear and the icon is a pale smudge.
+  Decision: navy is the Default ground.
+  Blush becomes the Light appearance, which is shown on dark pages where the ground itself provides the contrast, and it echoes the pillow in the photo.
+- The cat sits too low: the top 40% of the icon is empty navy.
+- The lid line runs past the eye and reads as an angry eyebrow rather than a heavy lid.
+- The ticked lines read as scratches, and the face is one flat beige.
 
-Next round: thicker check that survives at 32 px, a cleaner background light, and check how the ears sit against the squircle corners.
+### Round 2: lift, lids and the Dock
 
-### Round 2: clean shadows, light and check
-
-Sheet: `rounds/r2.png`.
+Sheets: `rounds/r2.png`, `rounds/r2-dock.png`.
 
 Changes from round 1:
 
-- Fixed a rendering bug that hurt every small size.
-  CoreGraphics applies shadow offsets and blurs in device pixels and ignores the current transform, so the 28 px icon shadow and the 20 to 30 px head and ear shadows stayed that size at 128, 32 and 16 px.
-  On the round 1 sheet this showed as a grey box around the small icons on the light desktop and a darkened, smeared face at 16 px.
-  Shadows are now scaled by the render's pixel scale, so they look the same at every size.
-- The warm screen-blend glow behind the head is replaced by a cool top light in the ink's own hue, like a glass layer lit from above.
-  The background is now a clean indigo instead of a muddy purple, and the orange head stands out more against it.
-- The checkmark wink is thicker (36 px stroke instead of 26) and a little larger, so it still reads as a dark tick at 32 px.
+- The whole cat is lifted 56 units, so the face sits at the optical centre and the ears fill the upper corners.
+- The jowls moved in a little (centres 200 units from the middle instead of 215) so the cheeks no longer touch the squircle sides.
+- The eye is larger (138 by 104), and the lid line stays inside the eye and slopes 12 units down toward the nose.
+- The ticked lines fade out as they run down, so they read as fur rather than marks.
 
 Verdict:
 
-- The small icons now sit cleanly on both desktops with no halo, and the 128 px render looks like a finished Dock icon.
-- At 32 px the wink reads as a mark and the face is clearly a cat; the "M" is only a smudge.
-- At 16 px it is still an orange cat blob with two ears on indigo, which is the right silhouette, but the eyes and stripes turn into noise.
-- The ears clear the squircle corners comfortably; the head's sides leave slim ink slivers at the bottom corners, which frame the face and are acceptable.
-- `Resources/AppIcon.icns` was regenerated from this round.
+- The eye now reads as half-lidded and deadpan, which is the cat's whole personality.
+- In the Dock row it is the only character icon and sits comfortably between Clock and Messages on both desktops; the pale face on navy is as easy to spot as Messages' green.
+- Beside the photo the face is still too even: the real cat's most recognizable marking, the taupe blaze down the forehead, is missing.
 
-Next round: an optical small-size drawing for 16 and 32 px (larger eyes and check, no cheek stripes, a bolder "M" or none), selected by render size.
+### Round 3: the taupe blaze
 
-### Round 3: an optical small size
-
-Sheet: `rounds/r3.png`.
+Sheets: `rounds/r3.png`, `rounds/r3-dock.png`.
 
 Changes from round 2:
 
-- Renders of 32 px or less (16 pt at 1x and 2x, 32 pt at 1x) now use a separate small-size drawing of the face, selected by render size in `drawConceptA`, like a caption cut of a typeface.
-  At 16 px one pixel is 64 canvas units, so anything thinner than about 50 units became grey noise.
-- The small face drops the cheek stripes, the mouth and the eye's catch light.
-- It grows what carries the character: a larger open eye, a 62 unit checkmark, a 52 unit "M", one wide cream muzzle and a bigger nose.
-- The glass rim stroke is left out at small sizes, where it only lightened the outer pixel ring.
+- A taupe blaze: wide across the crown, narrowing between the eyes and fading out on the bridge of the nose, like the reference.
+  It is drawn at every size, so even the 16 px face has a darker crown above the eyes.
 
 Verdict:
 
-- 32 px now reads as a finished small icon: a dark eye, a clear tick, the "M" and the cream muzzle are each distinct.
-- 16 px shows the eye, the wink and the muzzle as separate shapes instead of a smudged face, while keeping the round head and tab ears silhouette.
-- 64 px and up are unchanged, so the 1024 and 128 px art keeps its detail.
-- `Resources/AppIcon.icns` was regenerated from this round.
+- Beside the photo it is now clearly this cat: the V of taupe between the eyes, the pale jowls, the white muzzle and the heavy lid.
+- At 32 px the half-lidded eye, the check and the pink nose are distinct.
+- At 16 px the face is a pale round blob with two ear bumps and two dark marks; it reads as a cat, but the ears are weak.
+- The glyph is still the tabby's silhouette (large ears, round head) and needs the new jowls and small ears.
+- `Resources/AppIcon.icns` and the 1024 px brand assets were regenerated from this round.
 
-Next round: the light, dark and tinted variant PNGs, and a check of the 1024 px art against Apple's own icons in the Dock.
-
-### Round 4: next to Apple's icons
-
-Sheets: `rounds/r4.png` and `rounds/r4-dock.png`.
-
-The script has a new `--dock <file.png>` mode.
-It puts Tabbi in a Dock row between Calendar, Reminders, Notes, Clock, Messages and Music (plus Things, Linear and Anki when installed) at 128 and 32 px, on a light and a dark desktop.
-The other icons come from `NSWorkspace`, so on macOS 26 they show with the system's own Liquid Glass rendering.
-
-What the round 3 Dock row showed:
-
-- Shape, size and drop shadow match Apple's icons; nothing looks boxed in or oversized.
-- Tabbi is the only character icon in the row, and the orange face on indigo stands out without shouting, the way Linear's dark tile does.
-- Apple's icons have a bright glass edge, strongest at the top, and soft rounded volume.
-  Tabbi's faint even rim and flat head read as an older, flatter style beside them.
-
-Changes from round 3:
-
-- The glass rim is a 10 unit stroke with a vertical gradient: brightest at the top (55% white), faint in the middle and slightly brighter at the bottom, like the lit edge on macOS 26 icons.
-- The crown of the head has a soft warm sheen from the same top light, so the face looks rounded instead of cut from flat paper.
-- The rim is still left out at 32 px and smaller, where it only lightened the outer pixel ring.
-  The sheen stays at every size; at 16 px it only warms the top of the head.
-
-Verdict:
-
-- At 1024 px the icon now has the same glassy edge and lighting direction as Apple's icons while keeping its flat, friendly shapes.
-- In the Dock row it sits comfortably next to Calendar, Reminders and Music on both desktops and is still the most recognizable icon there at 32 px.
-- `Resources/AppIcon.icns` was regenerated from this round.
-
-Next round: the light, dark and tinted variant PNGs, the 1024 px README PNG and the monochrome glyph, then a final review of all of them together.
-
-### Round 5: appearances and the glyph
-
-Sheet: `rounds/r5-variants.png` (each appearance at 256, 32 and 16 px, then the glyph, on a light and a dark desktop).
-
-Changes from round 4:
-
-- The colours moved into a `Palette` with four appearances: Default (ginger tabby on deep ink, the shipped `.icns`), Light (the same tabby on warm cream), Dark (notch black ground, tabby unchanged) and Tinted (luminance only on black, for the system tint to colour).
-- In Tinted the ears are a shade darker than the inner ear, so the tab ears keep their label and still read as tabs without colour.
-- A monochrome glyph: the head and tab ears as one shape, with the open eye, the checkmark wink and the nose cut out.
-  It is built with path booleans (`union`, `subtracting`), so it is a single vector path that renders the same as a PNG and as a PDF template image.
-
-Verdict:
-
-- All four appearances are the same character at a glance; only the ground changes, which is how Apple's own Default and Dark icons behave.
-- Light works best on dark desktops and in web pages; on a light desktop it relies on the drop shadow for its edge, which is why Default stays the shipped icon.
-- Tinted keeps the eye, the check and the "M" as the darkest marks, so a system tint still shows a winking tabby.
-- A version of the glyph with the "M" cut out was tried and dropped: at 16 px its gaps became speckle above the eye.
-  Without it the glyph is a clean cat head with a wink at 16 px, and the tab ears carry the name.
+Next round: the glyph with the new silhouette and a half-lidded eye cut-out, stronger ears at 16 px, and the light, dark and tinted appearances reviewed together.
 
 ## Assets
 
@@ -185,7 +127,7 @@ Other parts of the project (README, website, installer, onboarding) should use t
 | File | Use |
 | --- | --- |
 | `tabbi-icon-1024.png` | The shipped icon at 1024 px; the README and anywhere the app icon is shown |
-| `tabbi-icon-light-1024.png` | Light appearance, for dark pages and light marketing surfaces |
+| `tabbi-icon-light-1024.png` | Light appearance (blush ground), for dark pages and light marketing surfaces |
 | `tabbi-icon-dark-1024.png` | macOS 26 Dark appearance |
 | `tabbi-icon-tinted-1024.png` | macOS 26 Tinted appearance (luminance only) |
 | `tabbi-glyph.pdf` | Monochrome vector mark, for template images in menus and small UI |
@@ -196,6 +138,8 @@ Other parts of the project (README, website, installer, onboarding) should use t
 ```sh
 swift scripts/make-icon.swift            # Resources/AppIcon.icns and docs/brand/assets
 swift scripts/make-icon.swift --sheet /tmp/sheet.png        # 1024, 128, 32, 16 px review sheet
+swift scripts/make-icon.swift --sheet /tmp/sheet.png --reference photo.png --crop 370,300,360  # beside the reference photo
+swift scripts/make-icon.swift --sheet /tmp/sheet.png --ground blush  # try a candidate ground
 swift scripts/make-icon.swift --dock /tmp/dock.png          # beside Apple's icons in a Dock row
 swift scripts/make-icon.swift --variants /tmp/variants.png  # every appearance and the glyph
 ```
