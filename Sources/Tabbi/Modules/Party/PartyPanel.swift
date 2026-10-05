@@ -67,7 +67,7 @@ struct PartyPanel: View {
             .transition(.opacity)
         case .invalidServer(let message):
             PartyMessage(symbol: "exclamationmark.triangle", title: "Check the party server",
-                         detail: message + " Fix it in Settings › Party, or clear it to use the Tabbi server.")
+                         detail: message + " Fix it in Settings > Tabs > Party > Options, or clear it to use the Tabbi server.")
                 .transition(.opacity)
         }
     }

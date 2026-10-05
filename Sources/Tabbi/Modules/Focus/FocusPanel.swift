@@ -134,7 +134,7 @@ private struct FocusModeCard: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .help("Change focus sound and Do Not Disturb in Settings › Focus")
+        .help("Change focus sound and Do Not Disturb in Settings > Tabs > Options")
     }
 }
 

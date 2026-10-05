@@ -73,7 +73,7 @@ Closed, the notch stays black and shows one quiet live activity beside it: your 
 ## Kits
 
 A kit is a premade set of tabs for one kind of user.
-Tabbi ships Essentials and Med School, adds any other tab from **Add More**, and you can switch, reset or import kits in **Settings > Modules**.
+Tabbi ships Essentials and Med School, adds any other tab from **Add more**, and you can switch, reset or import kits in **Settings > Tabs**.
 Kits are small JSON files, and [docs/kits.md](docs/kits.md) shows how to write your own.
 
 ## Privacy

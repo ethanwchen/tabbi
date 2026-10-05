@@ -13,6 +13,7 @@ let paneWidth: CGFloat = 500
 struct GeneralSettingsPane: View {
     @EnvironmentObject private var store: SettingsStore
     @State private var screens = DisplayOption.connectedScreens()
+    @State private var showsMore = false
 
     var body: some View {
         Form {
@@ -25,66 +26,83 @@ struct GeneralSettingsPane: View {
                         .font(.callout)
                         .foregroundStyle(.secondary)
                 }
-            } header: {
-                Text("Startup")
-            }
-
-            Section {
                 Toggle(isOn: $store.settings.openOnHover) {
                     Text("Open on hover")
-                    Text("Opens the notch when the pointer rests on it, without clicking.")
+                    Text("Opens the notch when the pointer rests on it.")
                 }
                 .help("Open the notch after hovering it briefly")
-                Toggle(isOn: $store.settings.hapticsEnabled) {
-                    Text("Haptic feedback")
-                    Text("A light trackpad tap at the notch edge and on celebrations.")
+                Toggle(isOn: $store.settings.notchPreview.isEnabled) {
+                    Text("Show live activity")
+                    Text("Meetings, music and timers beside the closed notch.")
                 }
-                .help("Tap the trackpad when the pointer reaches the notch or a celebration plays")
-                Toggle(isOn: $store.settings.celebrationSoundEnabled) {
-                    Text("Celebration sound")
-                    Text("A soft sound when you unlock an item or reach a streak milestone.")
-                }
-                .help("Play a soft sound with celebrations that have no sound of their own")
+                .help("Show a small live preview beside the closed notch")
                 Toggle(isOn: $store.settings.hideInFullscreen) {
                     Text("Hide in fullscreen")
                     Text("Steps aside while a video, game or app is fullscreen.")
                 }
                 .help("Hide the notch while an app is fullscreen on its display. The shortcut still opens it.")
-            } header: {
-                Text("Behavior")
             }
 
+            ShortcutSection()
+
             Section {
-                Picker("Show notch on", selection: $store.settings.preferredDisplay) {
-                    Text("Built-in display").tag(DisplayPreference.builtIn)
-                    Text("Main display").tag(DisplayPreference.main)
-                    let options = DisplayOption.specificOptions(screens: screens, selected: store.settings.preferredDisplay)
-                    if !options.isEmpty {
-                        Divider()
-                        ForEach(options) { option in
-                            Text(option.name).tag(option.preference)
-                        }
-                    }
-                }
-                .disabled(!store.settings.showOnExternalDisplays)
-                .help("Choose which display shows the notch")
-                Toggle(isOn: $store.settings.showOnExternalDisplays) {
-                    Text("Show on external displays")
-                    Text("When off, the notch hides while the lid is closed.")
-                }
-                .help("Allow the notch on displays other than the built-in one")
-            } header: {
-                Text("Display")
-            } footer: {
-                SectionFooter("Falls back to the built-in display when the chosen one is disconnected.")
+                MoreOptionsToggle(isExpanded: $showsMore)
+            }
+
+            if showsMore {
+                moreOptions
             }
         }
         .formStyle(.grouped)
-        .scrollDisabled(true)
-        .frame(width: paneWidth, height: 496)
+        .scrollDisabled(!showsMore)
+        .frame(width: paneWidth, height: showsMore ? 640 : 476)
+        .motion(Motion.snappy, value: showsMore)
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didChangeScreenParametersNotification)) { _ in
             screens = DisplayOption.connectedScreens()
         }
+    }
+
+    @ViewBuilder
+    private var moreOptions: some View {
+        Section {
+            Toggle(isOn: $store.settings.hapticsEnabled) {
+                Text("Haptic feedback")
+                Text("A light trackpad tap at the notch edge and on celebrations.")
+            }
+            .help("Tap the trackpad when the pointer reaches the notch or a celebration plays")
+            Toggle(isOn: $store.settings.celebrationSoundEnabled) {
+                Text("Celebration sound")
+                Text("A soft sound when you unlock an item or reach a streak.")
+            }
+            .help("Play a soft sound with celebrations that have no sound of their own")
+        } header: {
+            Text("Feedback")
+        }
+
+        Section {
+            Toggle(isOn: $store.settings.showOnExternalDisplays) {
+                Text("Show on external displays")
+                Text("When off, the notch hides while the lid is closed.")
+            }
+            .help("Allow the notch on displays other than the built-in one")
+            Picker("Show notch on", selection: $store.settings.preferredDisplay) {
+                Text("Built-in display").tag(DisplayPreference.builtIn)
+                Text("Main display").tag(DisplayPreference.main)
+                let options = DisplayOption.specificOptions(screens: screens, selected: store.settings.preferredDisplay)
+                if !options.isEmpty {
+                    Divider()
+                    ForEach(options) { option in
+                        Text(option.name).tag(option.preference)
+                    }
+                }
+            }
+            .disabled(!store.settings.showOnExternalDisplays)
+            .help("Choose which display shows the notch. It falls back to the built-in display when this one is disconnected.")
+        } header: {
+            Text("Display")
+        }
+
+        LiveActivitySection()
     }
 
     /// Routes through the store so the toggle only flips once macOS accepted it.
@@ -140,24 +158,57 @@ struct SectionFooter: View {
     }
 }
 
-// MARK: Modules
+/// The row that keeps settings few people need out of sight until asked for.
+struct MoreOptionsToggle: View {
+    @Binding var isExpanded: Bool
+    @State private var isHovering = false
+
+    var body: some View {
+        Button {
+            isExpanded.toggle()
+        } label: {
+            HStack {
+                Text("More options")
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 11, weight: .semibold))
+                    .rotationEffect(.degrees(isExpanded ? 90 : 0))
+            }
+            .foregroundStyle(isHovering ? AnyShapeStyle(.primary) : AnyShapeStyle(.secondary))
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .onHover { isHovering = $0 }
+        .help(isExpanded ? "Hide the less common settings" : "Show the less common settings")
+    }
+}
+
+// MARK: Tabs
 
 struct ModulesSettingsPane: View {
+    let moduleOptions: ModuleOptions
     @EnvironmentObject private var store: SettingsStore
+    /// The module whose own settings are open in a sheet.
+    @State private var options: SettingsPane?
 
     var body: some View {
         Form {
+            KitSection()
+
             Section {
                 ForEach(store.settings.modules.enabled) { module in
-                    TabRow(module: store.catalog.descriptor(for: module), layout: $store.settings.modules)
+                    TabRow(module: store.catalog.descriptor(for: module), layout: $store.settings.modules,
+                           hasOptions: moduleOptions(module) != nil) {
+                        options = moduleOptions(module)
+                    }
                 }
                 .onMove { source, destination in
                     store.settings.modules.moveTabs(fromOffsets: source, toOffset: destination)
                 }
             } header: {
-                Text("Tabs")
+                Text("Your tabs")
             } footer: {
-                SectionFooter("Drag to reorder. The notch's tab bar, arrow keys, and swipes follow this order. At least one tab stays.")
+                SectionFooter("Drag to reorder. At least one tab stays.")
             }
 
             Section {
@@ -171,17 +222,45 @@ struct ModulesSettingsPane: View {
                     }
                 }
             } header: {
-                Text("Add More")
-            } footer: {
-                SectionFooter("Added modules show up at the end of your tabs.")
+                Text("Add more")
             }
-
-            KitSection()
         }
         .formStyle(.grouped)
         .motion(Motion.snappy, value: store.settings.modules)
         // Scrolls: the library grows with every module Tabbi ships.
         .frame(width: paneWidth, height: 560)
+        // One sheet for the whole form: in a Form, a modifier on a row lands on every row.
+        .sheet(isPresented: Binding(get: { options != nil }, set: { if !$0 { options = nil } })) {
+            if let options {
+                ModuleOptionsSheet(pane: options) { self.options = nil }
+            }
+        }
+    }
+}
+
+/// A module's own settings over the Tabs pane, with a Done button.
+struct ModuleOptionsSheet: View {
+    let pane: SettingsPane
+    let done: () -> Void
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Text(pane.title)
+                .font(.headline)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 20)
+                .padding(.top, 16)
+            pane.view
+            Divider()
+            HStack {
+                Spacer()
+                Button("Done", action: done)
+                    .keyboardShortcut(.defaultAction)
+                    .help("Close \(pane.title) settings")
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 12)
+        }
     }
 }
 
@@ -200,6 +279,7 @@ private struct KitSection: View {
     /// kit's questions and then what it will change. Nothing switches, and
     /// an import isn't saved, until the user confirms.
     @State private var sheet: KitSheet?
+    @State private var showsMore = false
 
     private var usesKitDefaults: Bool {
         store.usesKitDefaults && (store.activeKit == nil || modulesMatchKit)
@@ -212,35 +292,12 @@ private struct KitSection: View {
                     Label(kit.name, systemImage: kit.symbol).tag(kit.id)
                 }
             } label: {
-                Text("Current kit")
+                Text("Kit")
                 if let summary = store.activeKit?.summary, !summary.isEmpty {
                     Text(summary)
                 }
             }
             .help("Switching kits replaces your tabs with the kit's")
-
-            HStack(spacing: 8) {
-                Button("Import Kit…", action: importKit)
-                    .help("Add a kit someone shared as a .json file; you see what it changes first")
-                if store.canRemoveActiveKit {
-                    Button("Remove Kit", role: .destructive, action: removeKit)
-                        .help("Delete this imported kit and go back to the default kit")
-                }
-                if let runSetup {
-                    Button("Run Setup Again") {
-                        // Setup runs in the notch; Settings steps aside.
-                        NSApp.keyWindow?.close()
-                        runSetup()
-                    }
-                    .help("Pick a kit, your tabs and what they need again, in the notch")
-                }
-                Spacer()
-                Button("Reset to Kit Defaults", action: store.resetToKitDefaults)
-                    .disabled(usesKitDefaults)
-                    .help(usesKitDefaults
-                          ? "Your setup already matches \(store.activeKit?.name ?? "the kit")"
-                          : "Restore the tabs, previews and focus sound \(store.activeKit?.name ?? "the kit") ships with")
-            }
 
             if let message {
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
@@ -257,10 +314,35 @@ private struct KitSection: View {
                     }
                 }
             }
-        } header: {
-            Text("Kit")
+
+            MoreOptionsToggle(isExpanded: $showsMore)
+            if showsMore {
+                HStack(spacing: 8) {
+                    Button("Import Kit…", action: importKit)
+                        .help("Add a kit someone shared as a .json file; you see what it changes first")
+                    if store.canRemoveActiveKit {
+                        Button("Remove Kit", role: .destructive, action: removeKit)
+                            .help("Delete this imported kit and go back to the default kit")
+                    }
+                    if let runSetup {
+                        Button("Run Setup Again") {
+                            // Setup runs in the notch; Settings steps aside.
+                            NSApp.keyWindow?.close()
+                            runSetup()
+                        }
+                        .help("Pick a kit, your tabs and what they need again, in the notch")
+                    }
+                    Spacer()
+                    Button("Reset to Kit Defaults", action: store.resetToKitDefaults)
+                        .disabled(usesKitDefaults)
+                        .help(usesKitDefaults
+                              ? "Your setup already matches \(store.activeKit?.name ?? "the kit")"
+                              : "Restore the tabs, previews and focus sound \(store.activeKit?.name ?? "the kit") ships with")
+                }
+            }
+
         } footer: {
-            SectionFooter("A kit is a premade set of tabs and defaults. Switching kits or resetting replaces your tabs, notch previews and focus sound with the kit's, and switching adds its starter tasks to Today. Other settings stay.")
+            SectionFooter("A kit is a ready-made set of tabs. Switching replaces your tabs and adds its starter tasks to Today.")
         }
         .onReceive(store.activeKit.map(modulesUseKitDefaults) ?? Just(true).eraseToAnyPublisher()) {
             modulesMatchKit = $0
@@ -353,7 +435,7 @@ private struct KitSection: View {
             switch (answers != nil, kit.id == store.settings.kitID) {
             case (true, _): note = candidate.overwritesFile ? "Updated \(kit.name) and applied it." : "Imported \(kit.name) and switched to it."
             case (false, true): note = "Updated \(kit.name); your tabs are unchanged."
-            case (false, false): note = "Imported \(kit.name). Pick it under Current kit to use it."
+            case (false, false): note = "Imported \(kit.name). Pick it under Kit to use it."
             }
             message = (note, false)
         } catch {
@@ -442,10 +524,13 @@ private struct ModuleIcon: View {
     }
 }
 
-/// One of the user's tabs: drag to reorder, or remove it to the library.
+/// One of the user's tabs: drag to reorder, open its own settings, or
+/// remove it to the library.
 private struct TabRow: View {
     let module: ModuleDescriptor
     @Binding var layout: ModuleLayout
+    let hasOptions: Bool
+    let openOptions: () -> Void
 
     var body: some View {
         let canRemove = layout.canDisable(module.id)
@@ -457,6 +542,11 @@ private struct TabRow: View {
             ModuleIcon(module: module)
             Text(module.title)
             Spacer()
+            if hasOptions {
+                Button("Options…", action: openOptions)
+                    .controlSize(.small)
+                    .help("\(module.title) settings")
+            }
             RemoveTabButton(title: module.title, canRemove: canRemove) { layout.remove(module.id) }
         }
         .contentShape(Rectangle())
@@ -481,11 +571,11 @@ private struct RemoveTabButton: View {
         .disabled(!canRemove)
         .onHover { isHovering = $0 }
         .accessibilityLabel("Remove \(title)")
-        .help(canRemove ? "Remove \(title) from the notch; it goes back to Add More" : "At least one tab must stay")
+        .help(canRemove ? "Remove \(title) from the notch; it goes back to Add more" : "At least one tab must stay")
     }
 }
 
-/// A module in the Add More library: what it is, in one line, and a button
+/// A module in the Add more library: what it is, in one line, and a button
 /// that makes it the last tab.
 private struct LibraryRow: View {
     let module: ModuleDescriptor
@@ -511,111 +601,82 @@ private struct LibraryRow: View {
     }
 }
 
-// MARK: Preview
+// MARK: Live activity
 
-struct PreviewSettingsPane: View {
+/// What the closed notch's live activity shows, under General's More options.
+private struct LiveActivitySection: View {
     @EnvironmentObject private var store: SettingsStore
 
     var body: some View {
-        Form {
-            Section {
-                Toggle(isOn: $store.settings.notchPreview.isEnabled) {
-                    Text("Show live activity")
-                    Text("Meetings, music, and more beside the closed notch.")
+        Section {
+            Picker("Switch every", selection: $store.settings.notchPreview.interval) {
+                ForEach(TickerInterval.allCases) { interval in
+                    Text(interval.title).tag(interval)
                 }
-                .help("Show a small live preview beside the closed notch")
-                Picker("Switch every", selection: $store.settings.notchPreview.interval) {
-                    ForEach(TickerInterval.allCases) { interval in
-                        Text(interval.title).tag(interval)
-                    }
-                }
-                .disabled(!store.settings.notchPreview.isEnabled)
-                .help("How long each item stays before the next one")
-            } header: {
-                Text("Notch preview")
             }
-
-            Section {
-                ForEach(TickerKind.all(in: store.catalog)) { kind in
-                    let moduleOn = kind.module.map(store.settings.modules.isEnabled) ?? true
-                    let title = kind.title(in: store.catalog)
-                    Toggle(title, isOn: Binding(
-                        get: { store.settings.notchPreview.isEnabled(kind) },
-                        set: { store.settings.notchPreview.setEnabled(kind, $0) }
-                    ))
-                    .disabled(!moduleOn)
-                    .help(moduleOn
-                        ? "Include \(title.lowercased()) in the preview"
-                        : "Turn on \(kind.module.map { store.catalog.descriptor(for: $0).title } ?? "its module") in Modules to include this")
-                }
-                .disabled(!store.settings.notchPreview.isEnabled)
-            } header: {
-                Text("Items")
-            } footer: {
-                SectionFooter("Items without anything to show are skipped. A meeting starting within 5 minutes stays until it ends.")
+            .help("How long each item stays before the next one")
+            ForEach(TickerKind.all(in: store.catalog)) { kind in
+                let moduleOn = kind.module.map(store.settings.modules.isEnabled) ?? true
+                let title = kind.title(in: store.catalog)
+                Toggle(title, isOn: Binding(
+                    get: { store.settings.notchPreview.isEnabled(kind) },
+                    set: { store.settings.notchPreview.setEnabled(kind, $0) }
+                ))
+                .disabled(!moduleOn)
+                .help(moduleOn
+                    ? "Include \(title.lowercased()) in the live activity"
+                    : "Add \(kind.module.map { store.catalog.descriptor(for: $0).title } ?? "its module") in Tabs to include this")
             }
+        } header: {
+            Text("Live activity")
+        } footer: {
+            SectionFooter("Items with nothing to show are skipped.")
         }
-        .formStyle(.grouped)
-        .scrollDisabled(true)
-        .frame(width: paneWidth, height: 482)
+        .disabled(!store.settings.notchPreview.isEnabled)
     }
 }
 
 // MARK: Shortcuts
 
-struct ShortcutsSettingsPane: View {
+/// The global shortcut, with the open notch's fixed keys in its footer.
+private struct ShortcutSection: View {
     @EnvironmentObject private var store: SettingsStore
     @StateObject private var recorder = HotkeyRecorder()
 
     var body: some View {
-        Form {
-            Section {
-                LabeledContent {
-                    HStack(spacing: 8) {
-                        if store.settings.hotkey != .default, !recorder.isRecording {
-                            Button {
-                                store.settings.hotkey = .default
-                            } label: {
-                                Image(systemName: "arrow.counterclockwise")
-                            }
-                            .buttonStyle(.borderless)
-                            .help("Restore \(Hotkey.default.displayString)")
+        Section {
+            LabeledContent {
+                HStack(spacing: 8) {
+                    if store.settings.hotkey != .default, !recorder.isRecording {
+                        Button {
+                            store.settings.hotkey = .default
+                        } label: {
+                            Image(systemName: "arrow.counterclockwise")
                         }
-                        HotkeyRecorderField(
-                            hotkey: store.settings.hotkey,
-                            recorder: recorder,
-                            onRecordingChange: { store.isRecordingHotkey = $0 },
-                            onRecord: { store.settings.hotkey = $0 }
-                        )
+                        .buttonStyle(.borderless)
+                        .help("Restore \(Hotkey.default.displayString)")
                     }
-                } label: {
-                    Text("Open and close the notch")
-                    Text("Works from any app. On Today, type right away to add a task.")
+                    HotkeyRecorderField(
+                        hotkey: store.settings.hotkey,
+                        recorder: recorder,
+                        onRecordingChange: { store.isRecordingHotkey = $0 },
+                        onRecord: { store.settings.hotkey = $0 }
+                    )
                 }
-                if let status {
-                    Label(status.text, systemImage: status.symbol)
-                        .font(.callout)
-                        .foregroundStyle(status.isWarning ? AnyShapeStyle(.orange) : AnyShapeStyle(.secondary))
-                }
-            } header: {
-                Text("Global shortcut")
-            } footer: {
-                SectionFooter("Click the shortcut, then press a new combination with Control or Option. Esc cancels.")
+            } label: {
+                Text("Open and close the notch")
+                Text("Works from any app. On Today, type right away to add a task.")
             }
-
-            Section {
-                LabeledContent("Switch tabs") { KeyCaps(["←", "→"]) }
-                LabeledContent("Jump to a tab") { KeyCaps(["1-9"]) }
-                LabeledContent("Close") { KeyCaps(["Esc"]) }
-            } header: {
-                Text("In the open notch")
-            } footer: {
-                SectionFooter("Two-finger swipes on the trackpad switch tabs too.")
+            if let status {
+                Label(status.text, systemImage: status.symbol)
+                    .font(.callout)
+                    .foregroundStyle(status.isWarning ? AnyShapeStyle(.orange) : AnyShapeStyle(.secondary))
             }
+        } header: {
+            Text("Shortcut")
+        } footer: {
+            SectionFooter("In the open notch, arrow keys or a two-finger swipe switch tabs, 1-9 jump to a tab and Esc closes.")
         }
-        .formStyle(.grouped)
-        .scrollDisabled(true)
-        .frame(width: paneWidth, height: 364)
         .onDisappear { recorder.stop() }
     }
 
@@ -636,35 +697,11 @@ struct ShortcutsSettingsPane: View {
     }
 }
 
-/// Keys drawn as small key caps, for documenting fixed shortcuts.
-private struct KeyCaps: View {
-    let keys: [String]
-    init(_ keys: [String]) { self.keys = keys }
-
-    var body: some View {
-        HStack(spacing: 4) {
-            ForEach(keys, id: \.self) { key in
-                Text(key)
-                    .font(.system(size: 11, weight: .medium, design: .rounded))
-                    .foregroundStyle(.secondary)
-                    .frame(minWidth: 22, minHeight: 20)
-                    .padding(.horizontal, 4)
-                    .background(
-                        RoundedRectangle(cornerRadius: 4, style: .continuous)
-                            .fill(Color(nsColor: .controlBackgroundColor))
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 4, style: .continuous)
-                            .strokeBorder(Color(nsColor: .separatorColor), lineWidth: 1)
-                    )
-            }
-        }
-    }
-}
-
 // MARK: Claude
 
-struct ClaudeSettingsPane: View {
+/// Where the claude CLI is, under Connections' More options: Claude Usage
+/// and Ask Claude find it by themselves almost always.
+struct ClaudeLocationSection: View {
     @EnvironmentObject private var store: SettingsStore
     /// The text being edited; committed on Return, focus loss, Choose, or Validate
     /// so trimming and `~` expansion never fight the user mid-typing.
@@ -678,53 +715,48 @@ struct ClaudeSettingsPane: View {
     private static var isDemo: Bool { RunMode.current.isDemo }
 
     var body: some View {
-        Form {
-            Section {
-                LabeledContent {
-                    HStack(spacing: 8) {
-                        if store.settings.claudePathOverride != nil {
-                            Button {
-                                draft = ""
-                                commit()
-                            } label: {
-                                Image(systemName: "arrow.counterclockwise")
-                            }
-                            .buttonStyle(.borderless)
-                            .help("Detect claude automatically")
+        Section {
+            LabeledContent {
+                HStack(spacing: 8) {
+                    if store.settings.claudePathOverride != nil {
+                        Button {
+                            draft = ""
+                            commit()
+                        } label: {
+                            Image(systemName: "arrow.counterclockwise")
                         }
-                        TextField("Path", text: $draft, prompt: Text("Detect automatically"))
-                            .labelsHidden()
-                            .textFieldStyle(.roundedBorder)
-                            .multilineTextAlignment(.leading)
-                            .frame(width: 240)
-                            .focused($fieldFocused)
-                            .onSubmit(commit)
-                            .help("Full path to the claude binary. Leave empty to detect it automatically.")
-                        Button("Choose…", action: choose)
-                            .help("Pick the claude binary in Finder")
+                        .buttonStyle(.borderless)
+                        .help("Detect claude automatically")
                     }
-                } label: {
-                    Text("Location")
+                    TextField("Path", text: $draft, prompt: Text("Detect automatically"))
+                        .labelsHidden()
+                        .textFieldStyle(.roundedBorder)
+                        .multilineTextAlignment(.leading)
+                        .frame(width: 240)
+                        .focused($fieldFocused)
+                        .onSubmit(commit)
+                        .help("Full path to the claude binary. Leave empty to detect it automatically.")
+                    Button("Choose…", action: choose)
+                        .help("Pick the claude binary in Finder")
                 }
-                HStack(alignment: .firstTextBaseline, spacing: 8) {
-                    statusView
-                    Spacer(minLength: 8)
-                    Button("Validate") {
-                        commit()
-                        attempt += 1
-                    }
-                    .disabled(check == nil)
-                    .help("Check that this claude runs and report its version")
-                }
-            } header: {
-                Text("Claude CLI")
-            } footer: {
-                SectionFooter("Claude Usage and Ask Claude run your own signed-in claude CLI; \(Edition.current.name) never reads your credentials. Set a location only if claude isn't found automatically.")
+            } label: {
+                Text("Location")
             }
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                statusView
+                Spacer(minLength: 8)
+                Button("Validate") {
+                    commit()
+                    attempt += 1
+                }
+                .disabled(check == nil)
+                .help("Check that this claude runs and report its version")
+            }
+        } header: {
+            Text("Claude location")
+        } footer: {
+            SectionFooter("Claude tabs run your own signed-in claude CLI; \(Edition.current.name) never reads your credentials. Set this only if claude isn't found automatically.")
         }
-        .formStyle(.grouped)
-        .scrollDisabled(true)
-        .frame(width: paneWidth, height: 224)
         .onAppear { draft = Self.displayPath(store.settings.claudePathOverride) }
         .onChange(of: fieldFocused) { _, focused in
             if !focused { commit() }

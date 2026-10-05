@@ -298,7 +298,7 @@ In the app, `PetCoachController` (`Modules/PetCoach`) runs while the Closet modu
 It plays each nudge in `PetCoachOverlayWindow`, a transparent, non-activating panel hung below the menu bar at the notch's right edge.
 The window ignores the mouse except while the pointer is over the bubble.
 Run the app with `TABBI_COACH_PREVIEW=1` to play one nudge at launch, `TABBI_COACH_PREVIEW=celebrate` to play a level-up celebration, or `TABBI_COACH_PREVIEW=glance` to play the silent glance.
-Settings › Pet Coach (shown with the Closet module) turns nudges on or off and edits the distracting apps: suggestion chips plus any app picked from the Applications folder.
+The Closet row's Options in Settings > Tabs (Pet Coach) turns nudges on or off and edits the distracting apps: suggestion chips plus any app picked from the Applications folder.
 Turning nudges off stops sampling and ends any open episode, so turning them back on starts fresh.
 Turning the coach off (the Closet module) does the same, and the save keeps cooldowns and snooze but never an open episode, so the next focus phase after a relaunch gets its full grace period.
 

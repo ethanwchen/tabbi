@@ -120,7 +120,7 @@ struct KitImportReviewView: View {
                     .controlSize(.large)
                     .help(isActiveKit
                           ? "Save the update without changing your tabs"
-                          : "Add \(kit.name) to your kits without switching; pick it later under Current kit")
+                          : "Add \(kit.name) to your kits without switching; pick it later under Kit in Settings > Tabs")
                 Button(isActiveKit ? "Apply Update" : "Switch Kit", action: apply)
                     .keyboardShortcut(.defaultAction)
                     .buttonStyle(.borderedProminent)

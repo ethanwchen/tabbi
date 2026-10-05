@@ -2,7 +2,7 @@
 
 On the first launch the notch opens on setup and stays open until it ends.
 Everything happens inside the notch, with no extra window, and every step can be skipped.
-**Run Setup Again** in **Settings > Modules** starts the same flow from the current kit and tabs.
+**Run Setup Again** in **Settings > Tabs** (under More options) starts the same flow from the current kit and tabs.
 
 ## The flow
 

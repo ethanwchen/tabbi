@@ -2,7 +2,7 @@
 
 A theme styles the open panel: its surfaces, text, accents, type and motion.
 The closed notch always stays pure black, so it keeps reading as part of the hardware.
-Users pick a theme in **Settings > Appearance**, which shows a live mini preview of each one, and a kit can start in one through its `theme` field (see [docs/kits.md](../kits.md)).
+Users pick a theme in **Settings > Look**, which shows a live mini preview of each one, and a kit can start in one through its `theme` field (see [docs/kits.md](../kits.md)).
 How to add a theme is in [CONTRIBUTING.md](../../CONTRIBUTING.md#add-a-theme).
 
 ## Where it lives

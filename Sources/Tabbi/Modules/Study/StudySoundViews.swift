@@ -295,7 +295,7 @@ private struct StudyPlaylistList: View {
                 .padding(.bottom, Theme.Spacing.xxs)
             if hasCustom {
                 StudyPlaylistRow(name: "Your playlist", detail: focus.settings.playlist?.source.displayName ?? "",
-                                 isOn: true, help: "The link from Settings › Focus; picking a preset replaces it") {}
+                                 isOn: true, help: "The link from the Focus options in Settings > Tabs; picking a preset replaces it") {}
             }
             ForEach(FocusPlaylistPreset.all.prefix(hasCustom ? 5 : 6)) { preset in
                 let isOn = preset == current

@@ -91,7 +91,7 @@ Updates keep the permissions you gave, so macOS does not ask again after Tabbi u
 **I can't find Tabbi after opening it.**
 Tabbi has no window or Dock icon.
 Move the pointer to the notch at the top of the built-in screen and click it.
-If you use an external display, open **Settings > General > Show notch on** to choose where it appears.
+If you use an external display, open **Settings > General > More options > Show notch on** to choose where it appears.
 
 **I opened Tabbi twice.**
 Only one copy runs at a time.
