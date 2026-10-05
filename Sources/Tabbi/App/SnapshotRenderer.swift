@@ -284,7 +284,6 @@ enum SnapshotRenderer {
         return rep.representation(using: .png, properties: [:])
     }
 
-    /// A module's highlights are named after the module.
     /// The open header at growing tab counts, with the pet's paw, to check
     /// that no tab reaches under the camera; past what fits, the last tabs
     /// move behind "more", shown once more with its list open at every tab
@@ -308,6 +307,7 @@ enum SnapshotRenderer {
         return shots
     }
 
+    /// A module's highlights are named after the module.
     private static func snapshotName(_ kind: TickerKind) -> String {
         switch kind {
         case .nowPlaying: "music"

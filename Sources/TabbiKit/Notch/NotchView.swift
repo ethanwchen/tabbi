@@ -103,18 +103,20 @@ private struct OpenNotchContent: View {
     let content: NotchContent
 
     var body: some View {
-        let notch = model.geometry.notchSize
         if model.showsTakeover, let takeover = content.takeover {
+            // The takeover's header keeps to the same camera-safe zones as the tabs.
+            let header = NotchHeaderLayout.openNotch(geometry: model.geometry, layout: model.layout, title: "")
             VStack(spacing: 0) {
                 HStack(spacing: 0) {
                     takeover.leading()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    Color.clear.frame(width: notch.width)
+                        .frame(width: header.leadingZone.width, alignment: .leading)
+                    Color.clear.frame(width: header.trailingZone.minX - header.leadingZone.maxX)
                     takeover.trailing()
-                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .frame(width: header.trailingZone.width, alignment: .trailing)
                 }
-                .padding(.horizontal, Theme.Layout.openTopRadius + Theme.Layout.contentInset)
-                .frame(height: max(notch.height, 32))
+                .padding(.leading, header.leadingZone.minX)
+                .frame(width: Theme.Layout.expandedSize.width,
+                       height: NotchHeaderLayout.headerHeight(for: model.geometry), alignment: .leading)
 
                 takeover.body()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -124,7 +126,7 @@ private struct OpenNotchContent: View {
             }
             .transition(.opacity)
         } else {
-            tabs(notch: notch)
+            tabs()
                 .transition(.opacity)
         }
     }
@@ -132,7 +134,7 @@ private struct OpenNotchContent: View {
     /// The usual open notch: the tab bar, the tab's title and the panel.
     /// Every header control sits where `NotchHeaderLayout` puts it, clear of
     /// the camera; tabs that don't fit open from the "more" list.
-    private func tabs(notch: CGSize) -> some View {
+    private func tabs() -> some View {
         let title = content.catalog.descriptor(for: model.selected).title
         let header = NotchHeaderLayout.openNotch(geometry: model.geometry, layout: model.layout, title: title)
         let headerHeight = NotchHeaderLayout.headerHeight(for: model.geometry)
