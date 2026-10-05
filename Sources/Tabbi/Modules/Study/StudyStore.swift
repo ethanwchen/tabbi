@@ -68,6 +68,8 @@ final class StudyStore: ObservableObject {
     /// Where every phase that ran is logged, as the Study module's.
     private let activity: ActivityLog?
     private let focusMode: FocusController?
+    /// Plays a paw print burst over the panel when a block finishes in view.
+    private let celebrations: CelebrationCenter?
     /// A block finished while the panel was hidden; the pet celebrates it
     /// the next time the panel shows, so the hop is never played unseen.
     private var celebrationPending = false
@@ -84,11 +86,14 @@ final class StudyStore: ObservableObject {
     ///     during deep focus blocks; nil in tests.
     ///   - petProfile: the study pet's look now; `follow(pet:)` keeps it
     ///     current. Demo runs show their own sample pet.
+    ///   - celebrations: plays a paw print burst when a block finishes
+    ///     while the panel shows; nil in tests.
     init(menu: StudyMethodMenu = .all, goal: StudyDailyGoal = .standard, storage: EditionStorage,
          activity: ActivityLog? = nil, focusMode: FocusController? = nil, petProfile: PetProfile = .starter(.cat),
-         runMode: RunMode) {
+         celebrations: CelebrationCenter? = nil, runMode: RunMode) {
         isDemo = runMode.isDemo
         self.focusMode = focusMode
+        self.celebrations = celebrations
         isSnapshot = runMode.isSnapshot
         self.activity = activity
         self.menu = menu
@@ -379,13 +384,17 @@ final class StudyStore: ObservableObject {
     }
 
     /// Plays the pet's reaction to a session change. A celebration that
-    /// would happen out of sight waits for the panel to show.
+    /// would happen out of sight waits for the panel to show; one in view
+    /// also scatters paw prints over the panel.
     private func reactPet(from old: StudySession) {
         for event in StudyPetCue.events(from: old, to: session) {
             if event == .celebrate, !isVisible {
                 celebrationPending = true
             } else {
                 pet.send(event)
+                if event == .celebrate {
+                    celebrations?.celebrate(.burst, style: .pawPrints, accent: StudyModule.descriptor.accentColor)
+                }
             }
         }
     }

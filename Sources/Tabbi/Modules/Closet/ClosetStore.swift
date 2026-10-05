@@ -34,6 +34,8 @@ final class ClosetStore: ObservableObject {
     private var kitSubscription: AnyCancellable?
     private var lastFocus: ProvidedFocus?
     private let saveURL: URL?
+    /// Plays a sparkle milestone over the panel when an item is unlocked.
+    private let celebrations: CelebrationCenter?
     /// Set when the save on disk could not be read: the closet then runs on
     /// a fresh pet but never overwrites the file, so nothing is lost.
     private let saveIsUnreadable: Bool
@@ -43,9 +45,13 @@ final class ClosetStore: ObservableObject {
     /// switches, so the kit picked on first run decides the first pet.
     private var hasSave: Bool
 
-    /// - Parameter starter: the pet to start someone with no saved pet on,
-    ///   usually the kit's (`PetProfile.starter(kit:)`).
-    init(storage: EditionStorage, runMode: RunMode, starter: PetProfile = .starter(.cat)) {
+    /// - Parameters:
+    ///   - starter: the pet to start someone with no saved pet on, usually
+    ///     the kit's (`PetProfile.starter(kit:)`).
+    ///   - celebrations: plays a sparkle milestone when points unlock an item;
+    ///     nil in tests.
+    init(storage: EditionStorage, runMode: RunMode, starter: PetProfile = .starter(.cat),
+         celebrations: CelebrationCenter? = nil) {
         let isDemo = runMode.isDemo
         let url = isDemo ? nil : ClosetStore.saveURL(in: storage)
         var unreadable = false
@@ -63,6 +69,7 @@ final class ClosetStore: ObservableObject {
         }
         self.closet = closet
         saveURL = url
+        self.celebrations = celebrations
         saveIsUnreadable = unreadable
         hasSave = saved
         preview = PetPlayer(profile: closet.profile)
@@ -112,11 +119,15 @@ final class ClosetStore: ObservableObject {
 
     // MARK: Editing
 
-    /// Wears, takes off, or buys `item`. A purchase makes the pet celebrate.
+    /// Wears, takes off, or buys `item`. A purchase makes the pet celebrate
+    /// and sparkles over the panel.
     @discardableResult
     func tap(_ item: PetItem) -> PetClosetTapResult {
         let result = edit { $0.tap(item) }
-        if result == .boughtAndWore { preview.send(.celebrate) }
+        if result == .boughtAndWore {
+            preview.send(.celebrate)
+            celebrations?.celebrate(.milestone, style: .sparkles, accent: ClosetModule.descriptor.accentColor)
+        }
         return result
     }
 

@@ -57,8 +57,8 @@ Staggered entrances use `MotionTokens.stagger(index)`: 30 ms per item, capped at
 Celebrations confirm a real event; they are brief, optional and never block input.
 
 - Three tiers.
-  A finished task or Pomodoro gets a symbol bounce and a numeric transition, with no particles.
-  A daily goal met or a streak continued gets a `.burst`: 36 particles, gone within 1.5 s.
+  A checked-off task gets a symbol bounce and a numeric transition, with no particles.
+  A finished focus session or study block, a daily goal met or a streak continued gets a `.burst`: 36 particles, gone within 1.5 s.
   A streak milestone, a level up or an unlock gets a `.milestone`: 72 particles, gone within 2 s.
 - `CelebrationPacer` (`Sources/TabbiKitCore/Motion/Celebration.swift`) keeps them rare: at most one burst every ten minutes, and one milestone a day (a second milestone that day plays as a burst).
   When it says no, play the symbol bounce instead.
@@ -71,7 +71,10 @@ Celebrations confirm a real event; they are brief, optional and never block inpu
 - Every open panel is a stage (`.celebrationStage(center)`, added once in `ModuleViews.notchContent`), so the burst plays over whichever panel is open.
   The overlay draws with `Canvas` from a `TimelineView` capped at 60 fps, ignores hits, and leaves the hierarchy when the last particle is gone.
   A celebration keeps the date of its event: a panel that appears mid-burst (a tab switch) picks it up where it is, and one that appears later shows nothing.
-- Wired today: a focus session of the shared Pomodoro that finishes while a panel is open plays a confetti burst.
+- Wired today, each only while a panel is open:
+  a focus session of the shared Pomodoro that finishes plays a confetti burst in the Focus accent,
+  a Study block that finishes plays a paw print burst in the Study accent (beside the corner pet's hop),
+  and buying a Closet item with points plays a sparkle milestone in the Closet accent (beside the pet's celebration).
 - Under Reduce Motion nothing moves: a soft glow of the accent brightens and fades in place over 0.9 s (`CelebrationGlow`).
 - `--snapshot` renders a frame strip for each style and tier (`motion-celebration-<style>-<tier>.png`) and for the glow (`motion-celebration-reduced.png`).
 
