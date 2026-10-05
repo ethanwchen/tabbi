@@ -224,7 +224,7 @@ private struct StudyTimerLengthRow: View {
         HStack(spacing: Theme.Spacing.xs) {
             ForEach(StudyTimerLength.presets, id: \.self) { minutes in
                 StudyTimerChip(title: "\(minutes) min", isOn: length.minutes == minutes,
-                               help: isCounting ? "Change the countdown to \(minutes) minutes"
+                               help: isCounting ? "Change the countdown to \(minutes) minutes, or to a minute from now if that time has passed"
                                                  : "Start a \(minutes) minute countdown") {
                     start(StudyTimerLength(minutes: minutes))
                 }

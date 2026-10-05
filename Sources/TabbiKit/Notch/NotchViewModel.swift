@@ -17,6 +17,7 @@ public final class NotchViewModel: ObservableObject {
         didSet {
             UserDefaults.standard.set(selected.rawValue, forKey: Self.selectedKey)
             showsMoreTabs = false
+            if selected != oldValue { openedFromKeyboard = false }
             // Direction drives the slide transition between modules, in the
             // header's visual order: the tabs, then the shortcuts at the far right.
             let order = layout.tabs + layout.headerShortcuts
@@ -59,7 +60,8 @@ public final class NotchViewModel: ObservableObject {
     /// True when the global shortcut opened the notch, so the open tab can
     /// put the caret in its main field (Today's "Add a task") and the user can
     /// type right away. Opening by pointer leaves focus alone, since a focused
-    /// field pins the notch open after the pointer leaves.
+    /// field pins the notch open after the pointer leaves. Switching tabs
+    /// clears it, so only the tab the shortcut opened on takes the caret.
     @Published public private(set) var openedFromKeyboard = false
 
     private static let selectedKey = "selectedModule"
