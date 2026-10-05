@@ -70,6 +70,25 @@ final class PetClosetTests: XCTestCase {
         XCTAssertEqual(closet.profile.name, "Nori")
     }
 
+    func testADefaultNameFollowsTheBreedAndSpeciesButAChosenOneStays() {
+        var closet = closet()
+        XCTAssertEqual(closet.profile.name, "British Shorthair", "the starter cat waits for the user to name it")
+        closet.cycleBreed(by: 1)
+        XCTAssertEqual(closet.profile.name, closet.profile.breed.displayName)
+        closet.setSpecies(.dog)
+        closet.setSpecies(.cat)
+        XCTAssertEqual(closet.profile.name, closet.profile.breed.displayName, "back to a cat named by its breed")
+
+        var saved = self.closet(profile: PetProfile(name: "Mochi", breed: .orangeTabby))
+        saved.setSpecies(.dog)
+        XCTAssertEqual(saved.profile.name, PetProfile.starter(.dog).name, "the old starter name is still a default")
+
+        var named = self.closet()
+        named.rename("Earl Grey")
+        named.cycleBreed(by: 1)
+        XCTAssertEqual(named.profile.name, "Earl Grey")
+    }
+
     func testSwitchingSpeciesKeepsTheOutfit() {
         var closet = closet(purchased: [.outfit(.scrubs), .accessory(.scarf)])
         closet.tap(.outfit(.scrubs))
@@ -80,7 +99,7 @@ final class PetClosetTests: XCTestCase {
     }
 
     func testCyclingBreedsWrapsWithinTheSpecies() {
-        var closet = closet()
+        var closet = closet(profile: PetProfile(name: "Nori", breed: PetBreed.breeds(of: .cat)[0]))
         let cats = PetBreed.breeds(of: .cat)
         closet.cycleBreed(by: -1)
         XCTAssertEqual(closet.profile.breed, cats.last)

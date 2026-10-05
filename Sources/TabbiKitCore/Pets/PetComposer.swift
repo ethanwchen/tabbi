@@ -72,7 +72,7 @@ public enum PetComposer {
             canvas.stamp(leg, x: layout.headX + layout.head.width - 4 - leg.width, y: 0, pattern: pattern)
             bodyItem = { _ in nil }
         case .walking(let index):
-            let walk = WalkLayout(layout.family)
+            let walk = WalkLayout(breed.bodyShape, layout.family)
             let step = WalkArt.cycle[index % WalkArt.cycle.count]
             // Contact steps sink a pixel onto bent legs; the head rides along.
             let sink = step.isContact ? 1 : 0
@@ -90,7 +90,7 @@ public enum PetComposer {
             headX = walk.headX
             headY = walk.chinRow + 1 - layout.head.height + sink + pose.headDrop
         case .stretching(let bow, let wag):
-            let walk = WalkLayout(layout.family)
+            let walk = WalkLayout(breed.bodyShape, layout.family)
             // Short legs bow less, so the chin never sinks onto the paws.
             let depth = min(bow, walk.legHeight - 1)
             let legY = walk.torsoY + walk.torso.height
@@ -218,9 +218,11 @@ public enum PetComposer {
             switch shape {
             case .cat, .roundCat:
                 family = .cat
-                (body, bodyX, bodyY, tail) = (CatArt.bodySit, 6, 20, nil)
-                head = shape == .roundCat ? CatArt.headRound : CatArt.head
-                (headX, headY, face, faceRow, eyeRow, skullTop) = (6, 7, CatArt.faceOpen, 0, 7, 3)
+                (bodyX, bodyY, tail) = (6, 20, nil)
+                (body, head, face) = shape == .roundCat
+                    ? (CatArt.bodyRound, CatArt.headRound, CatArt.faceRound)
+                    : (CatArt.bodySit, CatArt.head, CatArt.faceOpen)
+                (headX, headY, faceRow, eyeRow, skullTop) = (6, 7, 0, 7, 3)
             case .longDog:
                 family = .longDog
                 (body, bodyX, bodyY, tail) = (DogArt.bodyLong, 6, 21, nil)
@@ -269,11 +271,14 @@ public enum PetComposer {
         /// Frame row of the head's last pixel on a passing step.
         let chinRow: Int
 
-        init(_ family: Family) {
+        init(_ shape: PetBodyShape, _ family: Family) {
             self.family = family
             switch family {
             case .cat:
-                (torso, torsoY, tails, tailX) = (WalkArt.catTorso, 20, WalkArt.catTail, 26)
+                (torso, tails) = shape == .roundCat
+                    ? (WalkArt.roundCatTorso, WalkArt.roundCatTail)
+                    : (WalkArt.catTorso, WalkArt.catTail)
+                (torsoY, tailX) = (20, 26)
                 (legHeight, backHip, chinRow) = (4, 22, 24)
             case .dog:
                 (torso, torsoY, tails, tailX) = (WalkArt.dogTorso, 20, WalkArt.dogTail, 26)

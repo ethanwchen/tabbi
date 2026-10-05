@@ -318,7 +318,7 @@ The ticker turns it into a `.pet` item (`TickerKind.pet`, last in rotation), and
 - `state(of:)` is `wearing`, `owned`, `affordable`, or `locked(missing:)`.
 - `tap(_:)` toggles owned items, buys and wears affordable ones, and changes nothing for locked ones.
 - `wearing(_:on:)` dresses a profile without checking ownership, for hover "try it on" previews.
-- `setSpecies(_:)` picks the species' first breed; a default name (the starter or breed name) follows the species, a chosen name is kept.
+- `setSpecies(_:)` picks the species' first breed; a default name (`PetProfile.hasDefaultName`, see [pets.md](pets.md#the-default-pet)) follows the species, a chosen name is kept.
 - `cycleBreed(by:)` wraps within the species, and `setBreed(_:)` re-derives the fur tint from the new breed's shading.
 - `furSwatches` are the offered fur colors; `furTint` reads the picked one back from the `furBase` override.
 - `PetCloset.demo` is the `TABBI_DEMO=1` closet, with every tile state on show.

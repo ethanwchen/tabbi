@@ -10,7 +10,7 @@ public extension PetProfile {
     static func starter(kit: KitDefaults?) -> PetProfile {
         let section = kit?.settings(for: .closet)?["pet"]
         let breed = section?["breed"]?.stringValue.flatMap(PetBreed.init(rawValue:))
-        var profile = breed.map { PetProfile(name: starter($0.species).name, breed: $0) } ?? starter(.cat)
+        var profile = breed.map { PetProfile(name: defaultName(for: $0), breed: $0) } ?? starter(.cat)
         if let name = section?["name"]?.stringValue { profile.rename(name) }
         return profile
     }

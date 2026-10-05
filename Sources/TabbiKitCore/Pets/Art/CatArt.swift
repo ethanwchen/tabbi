@@ -21,23 +21,45 @@ enum CatArt {
         ....SSBBBBBBBBSS....
         """)
 
-    /// British Shorthair: small ears set wide, full round cheeks.
+    /// British Shorthair: small rounded ears set wide, a taupe crown with
+    /// faint ticking, and full round cheeks around a white muzzle and chin.
     static let headRound = SpriteGrid(art: """
         ....................
-        ..e..............e..
-        .eee............eee.
-        .ePeeaBBBBBBBBbbePe.
-        .aaaaaBBBBBBBBbbbbb.
-        aaaaaBBBBffBBBBbbbbb
-        aaaaBBBBffffBBBBbbbb
-        aaBBBBBffffffBBBBBbb
-        BBBBBBffffffffBBBBBB
-        BBBBBBfmmmmmmfBBBBBB
+        .ee..............ee.
+        .ePe.SSSSSSSSSS.ePe.
+        .ePSSSSSASSASSSSSPe.
+        .SSSSSSSASSASSSSSSS.
+        SSSSSSSBBffBBSSSSSSS
+        SBBBBBBBBffBBBBBBBBS
+        BBBBBBBBBffBBBBBBBBB
+        BBBBBBBBBBBBBBBBBBBB
+        BBBBBBBmmBBmmBBBBBBB
         BBBBBBmmmmmmmmBBBBBB
-        BBBBBBBmmmmmmBBBBBBB
-        .BBBBBBBmmmmBBBBBBB.
-        ..SBBBBBBBBBBBBBBS..
-        ....SSSBBBBBBSSS....
+        BBBBBmmmmmmmmmmBBBBB
+        .BBBBBmmmmmmmmBBBBB.
+        ..BBBBBmmmmmmBBBBB..
+        ....BBBBmmmmBBBB....
+        """)
+
+    /// British Shorthair face: heavy half-closed lids over gray-green eyes
+    /// (the lid is the eye color, the iris the eye light) for its
+    /// unimpressed look, and a small nose over a flat mouth.
+    static let faceRound = SpriteGrid(art: """
+        ....................
+        ....................
+        ....................
+        ....................
+        ....................
+        ....................
+        ....................
+        ....EEO......OEE....
+        ....LL........LL....
+        ....EE...NN...EE....
+        ..P..............P..
+        ........SSSS........
+        ....................
+        ....................
+        ....................
         """)
 
     static let faceOpen = SpriteGrid(art: """
@@ -70,5 +92,22 @@ enum CatArt {
         ...aaSBBBBBBBBSBBBB.
         ...SBppSBBBBSppBSS..
         ....pppp....pppp....
+        """)
+
+    /// British Shorthair sitting body, the same 20x11 frame as `bodySit` so
+    /// every costume fits: taupe flanks with faint ticking, full haunches,
+    /// a white chest and paws, and a thick tail ringed with dark bands.
+    static let bodyRound = SpriteGrid(art: """
+        .....SBBBBBBBBS.....
+        ....SBBccccccBBS....
+        ....SBccccccccBS..tt
+        ...SSBccccccccBSS.SS
+        ...SsBBccccccBBsS.tt
+        ...SSBBBccccBBBSS.SS
+        ...SsBBBBBBBBBBsS.tt
+        ..SSSBBBBBBBBBBSSSSS
+        ..SsSBBBBBBBBBBSsSS.
+        ..SSBpppBBBBpppBSS..
+        ...Spppp....ppppS...
         """)
 }
