@@ -158,6 +158,7 @@ An edition is one JSON file in `Sources/TabbiKitCore/Editions/BundledEditions/` 
 
 Tabbi asks for each permission only when the module that needs it is first used.
 You can change any of them later in **System Settings > Privacy & Security**.
+**Settings > Connections** shows whether each app and permission your tabs use is set up, with one button that fixes it (see [docs/connections.md](docs/connections.md)).
 
 | Permission | Asked by | Why |
 | --- | --- | --- |
