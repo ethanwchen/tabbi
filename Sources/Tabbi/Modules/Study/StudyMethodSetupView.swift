@@ -77,8 +77,10 @@ private struct StudyMethodSummaryCard: View {
                 }
                 .frame(maxHeight: .infinity, alignment: .topLeading)
                 .help(info.howTo)
-                StudyEvidenceBadge(level: info.evidenceLevel)
-                    .help("\(info.evidence) \(StudyMethodInfo.footnote)")
+                if let level = info.evidenceLevel {
+                    StudyEvidenceBadge(level: level)
+                        .help("\(info.evidence) \(StudyMethodInfo.footnote)")
+                }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }

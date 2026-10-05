@@ -935,7 +935,7 @@ struct AboutSettingsPane: View {
                 .foregroundStyle(.secondary)
                 .textSelection(.enabled)
                 .padding(.top, 4)
-            Text("A cozy study and productivity companion: a cat in your notch, with your tabs one click away.")
+            Text("A cozy everyday companion: a cat in your notch, with your tabs one click away.")
                 .font(.callout)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

@@ -26,7 +26,9 @@ struct StudyMethodInfoView: View {
                         .foregroundStyle(studyAccent)
                         .monospacedDigit()
                 }
-                StudyEvidenceBadge(level: info.evidenceLevel)
+                if let level = info.evidenceLevel {
+                    StudyEvidenceBadge(level: level)
+                }
                 Spacer(minLength: Theme.Spacing.s)
                 if !isCurrent {
                     StudyCapsuleButton(title: "Use \(info.name)", help: "Start a fresh session with \(info.name)",
@@ -37,9 +39,11 @@ struct StudyMethodInfoView: View {
             HStack(alignment: .top, spacing: Theme.Spacing.s) {
                 section("How to", info.howTo, font: Theme.Typography.body, color: Theme.Palette.primaryText)
                     .frame(maxWidth: .infinity)
-                section("Evidence", info.evidence, font: Theme.Typography.caption, color: Theme.Palette.secondaryText)
-                    .frame(width: 196)
-                    .help(StudyMethodInfo.footnote)
+                if info.evidenceLevel != nil {
+                    section("Evidence", info.evidence, font: Theme.Typography.caption, color: Theme.Palette.secondaryText)
+                        .frame(width: 196)
+                        .help(StudyMethodInfo.footnote)
+                }
             }
             .frame(maxHeight: .infinity)
         }

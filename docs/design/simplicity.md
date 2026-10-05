@@ -21,6 +21,8 @@ This page records what the simplicity pass removed, merged or hid, why, and how 
   The Timer tab's tooltips, the custom method editor, the focus playlist picker and the pet's points badge say focus blocks and points too, so nothing an Essentials user hovers talks about studying.
   Study wording stays only where it is the point: Anki, study parties and Plan my day in the study plan mode.
 - **Today's idle timer card** no longer reads "Study timer / Start a session in Study"; it shows one action, "Start a timer", which opens the Timer tab.
+- **The evidence rating on the plain Timer.** A countdown is a tool, not a study method, so its card in onboarding and its info popover show no "Mostly convention" badge or Evidence note; the study methods keep theirs.
+  About calls Tabbi "a cozy everyday companion" instead of a study companion.
 - **Skip on the plain Timer.** A single countdown has no next phase, so its skip button is hidden; reset stops it.
 - **The daily focus goal beside the closed notch.** A fresh day used to show an unexplained "120 min left" for a two hour goal the user never set, which read as a nag.
   The goal now shows there only once the day's first focus minutes are in; until then the notch shows the pet.
