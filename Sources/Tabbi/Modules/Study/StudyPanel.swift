@@ -194,7 +194,8 @@ private struct StudyMethodCard: View {
                 .help("Change the study method")
                 .onHover { hovering = $0 }
                 if session.method.kind == .timer {
-                    StudyTimerLengthRow(length: store.timer, set: store.setTimer)
+                    StudyTimerLengthRow(length: store.timer, isCounting: session.runState != .idle,
+                                        set: store.setTimer, start: store.startTimer)
                 }
                 Spacer(minLength: Theme.Spacing.xs)
                 StudyDeepFocusRow(store: store, focus: focusMode, openMixer: sounds)
@@ -211,18 +212,21 @@ private struct StudyMethodCard: View {
     }
 }
 
-/// The Timer's lengths: one click on a common one, or a stepper for any
-/// other, so a custom length needs no extra screen.
+/// The Timer's lengths: one click starts a common one, and a stepper sets
+/// any other, so a custom length needs no extra screen.
 private struct StudyTimerLengthRow: View {
     let length: StudyTimerLength
+    let isCounting: Bool
     let set: (StudyTimerLength) -> Void
+    let start: (StudyTimerLength) -> Void
 
     var body: some View {
         HStack(spacing: Theme.Spacing.xs) {
             ForEach(StudyTimerLength.presets, id: \.self) { minutes in
                 StudyTimerChip(title: "\(minutes) min", isOn: length.minutes == minutes,
-                               help: "Count down \(minutes) minutes") {
-                    set(StudyTimerLength(minutes: minutes))
+                               help: isCounting ? "Change the countdown to \(minutes) minutes"
+                                                 : "Start a \(minutes) minute countdown") {
+                    start(StudyTimerLength(minutes: minutes))
                 }
             }
             Spacer(minLength: 0)

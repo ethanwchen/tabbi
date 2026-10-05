@@ -262,6 +262,16 @@ final class StudyStore: ObservableObject {
         change { $0.retune(to: length.method, at: now) }
     }
 
+    /// A Timer length chip: saves the length and, when no countdown has
+    /// started yet, starts one, so a common length is a single click. A
+    /// running or paused countdown only takes on the new length.
+    func startTimer(_ length: StudyTimerLength) {
+        setTimer(length)
+        catchUp()
+        guard session.method.kind == .timer, session.runState == .idle else { return }
+        change { $0.start(at: now) }
+    }
+
     /// Follows a new kit: the picker offers its methods, and a stopped
     /// timer moves to its starting method. A running block is never cut short.
     /// - Parameter kitApplied: true when the user just picked or reset the
