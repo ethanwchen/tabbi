@@ -54,6 +54,13 @@ The report never includes account names or addresses: the calendar only reports 
 
 `swift run Tabbi --snapshot <dir>` writes several checkups as `connections-checkup-<state>.png`.
 
+## Every state, in one picture per row
+
+`ConnectionKind.everyState` lists every state a row can show, from missing to connected.
+Tests check that each row ends connected, that every problem state has one button and a failed check behind it, and that no headline or detail repeats the row's "unlocks" line.
+`swift run Tabbi --snapshot <dir>` draws each list as `connections-states-<row>.png`, at the Settings pane's width, with each state's support label above it.
+The "unlocks" lines stay at 38 characters or fewer, so they fit on one line beside the widest button.
+
 ## Integrations
 
 | Row | Detected from | Steps from nothing to connected |

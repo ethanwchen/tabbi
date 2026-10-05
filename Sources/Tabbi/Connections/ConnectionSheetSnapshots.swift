@@ -44,6 +44,46 @@ extension SnapshotRenderer {
                                                   perform: { _ in }, checkAgain: {}, copyDetails: {}, close: {})
             await write(render(view), named: "connections-checkup-\(name)", to: outputDirectory)
         }
+
+        for kind in ConnectionKind.allCases {
+            await write(renderStates(of: kind), named: "connections-states-\(kind.rawValue)", to: outputDirectory)
+        }
+    }
+
+    /// Every state of one row as Settings draws it, each under its
+    /// support label, so the whole path from missing to connected can be
+    /// read at once. (The Settings pane PNG only shows the first screenful.)
+    private static func renderStates(of kind: ConnectionKind) async -> Data? {
+        // A stack sized to its content, styled like the grouped Form, since
+        // a Form scrolls and would clip whatever doesn't fit.
+        let gallery = VStack(alignment: .leading, spacing: 16) {
+            ForEach(kind.everyState, id: \.technical) { state in
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(state.technical)
+                        .font(.callout.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 10)
+                    ConnectionRow(kind: kind, status: state.status, perform: { _ in }, troubleshoot: {})
+                        .padding(10)
+                        .background(.quinary, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                }
+            }
+        }
+        .padding(20)
+        // The width of the Settings pane, so rows wrap as they do there.
+        .frame(width: 500)
+        .background(Color(nsColor: .windowBackgroundColor))
+        let host = NSHostingView(rootView: gallery)
+        host.frame = CGRect(origin: .zero, size: host.fittingSize)
+        let window = NSWindow(contentRect: host.frame, styleMask: [.borderless], backing: .buffered, defer: false)
+        window.contentView = host
+        window.isReleasedWhenClosed = false
+        window.orderFront(nil)
+        defer { window.orderOut(nil) }
+        try? await Task.sleep(for: .milliseconds(500))
+        guard let rep = host.bitmapImageRepForCachingDisplay(in: host.bounds) else { return nil }
+        host.cacheDisplay(in: host.bounds, to: rep)
+        return rep.representation(using: .png, properties: [:])
     }
 
     /// Presents the view as a real sheet on an off-screen window and draws

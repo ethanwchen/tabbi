@@ -124,7 +124,6 @@ public enum ConnectionAction: Hashable, Sendable {
         case .download(let app): "Get \(app.name)"
         case .openApp(let app): "Open \(app.name)"
         case .showGuide(.googleCalendar): "Add Google Calendar"
-        case .showGuide(.ankiAddOnUpdate): "Show me how to update"
         case .showGuide: "Show me how"
         case .askPermission: "Connect"
         case .openSettings: "Open Settings"

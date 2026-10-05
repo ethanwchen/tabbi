@@ -44,17 +44,18 @@ public enum ConnectionKind: String, CaseIterable, Identifiable, Hashable, Sendab
         }
     }
 
-    /// What connecting it unlocks, in one plain line.
+    /// What connecting it unlocks, in one plain line short enough to
+    /// fit beside the widest button without wrapping.
     public var unlocks: String {
         switch self {
-        case .calendar: "See today's classes and events in the notch."
-        case .anki: "See how many cards are due and start reviews."
-        case .spotify: "Play, pause and skip songs on Spotify."
-        case .music: "Play, pause and skip songs in Apple Music."
-        case .notifications: "Get an alert when a focus block or break ends."
+        case .calendar: "See today's classes in the notch."
+        case .anki: "See due cards and start reviews."
+        case .spotify: "Play, pause and skip on Spotify."
+        case .music: "Play, pause and skip in Apple Music."
+        case .notifications: "Get an alert when a timer ends."
         case .doNotDisturb: "Quiet other alerts while you focus."
-        case .claude: "Let Claude plan your day and answer questions."
-        case .party: "Study alongside friends and see their timers."
+        case .claude: "Powers Plan my day and Ask Claude."
+        case .party: "Study with friends, see their timers."
         }
     }
 

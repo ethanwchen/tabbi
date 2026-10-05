@@ -159,7 +159,18 @@ extension AnkiConnectionState {
             ])
         }
         return ConnectionDiagnosis(kind: .anki, status: connectionStatus, checks: checks,
-                                   technical: "anki.\(String(describing: self))")
+                                   technical: technicalLabel)
+    }
+
+    /// `anki.<state>` plus the error's case for the states that carry one,
+    /// such as `anki.problem.timeout`. Leaves out any message text.
+    private var technicalLabel: String {
+        func caseName(_ value: Any) -> String { String(String(describing: value).prefix { $0 != "(" }) }
+        switch self {
+        case .needsPermission(let error): return "anki.needsPermission.\(caseName(error))"
+        case .problem(let error): return "anki.problem.\(caseName(error))"
+        default: return "anki.\(caseName(self))"
+        }
     }
 
     private var isNeedsPermission: Bool {
@@ -269,7 +280,9 @@ extension FocusShortcutsState {
         } else {
             checks = ConnectionCheck.chain([("Is the \u{201C}\(onName)\u{201D} shortcut there?", nil, "")])
         }
-        let technical = installed == nil ? "doNotDisturb.checking" : "doNotDisturb.missing=\(missing.count)"
+        // Says which shortcut is missing without repeating the user's names.
+        let technical = installed.map { "doNotDisturb.on=\($0.contains(onName)) off=\($0.contains(offName))" }
+            ?? "doNotDisturb.checking"
         return ConnectionDiagnosis(kind: .doNotDisturb, status: connectionStatus, checks: checks, technical: technical)
     }
 }

@@ -27,7 +27,7 @@ final class ConnectionKindTests: XCTestCase {
             XCTAssertFalse(kind.symbol.isEmpty)
             XCTAssertFalse(kind.modules.isEmpty, "\(kind) serves no tab")
             XCTAssertTrue(kind.unlocks.hasSuffix("."), "\(kind) should read as a sentence")
-            XCTAssertLessThanOrEqual(kind.unlocks.count, 60, "\(kind) should fit on one line")
+            XCTAssertLessThanOrEqual(kind.unlocks.count, 38, "\(kind) should fit on one line beside its button")
             for term in banned {
                 XCTAssertNil(kind.unlocks.range(of: "\\b\(term)\\b", options: .regularExpression),
                              "\(kind) uses \(term)")

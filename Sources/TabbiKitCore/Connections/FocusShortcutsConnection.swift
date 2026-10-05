@@ -44,7 +44,7 @@ public struct FocusShortcutsState: Hashable, Sendable {
                                     action: .showGuide(.focusShortcuts))
         default:
             return ConnectionStatus(light: .notSetUp, headline: "Do Not Disturb isn't set up",
-                                    detail: "Two quick shortcuts let Tabbi quiet alerts while you focus.",
+                                    detail: "Make two quick shortcuts in the Shortcuts app. It takes about two minutes.",
                                     action: .showGuide(.focusShortcuts))
         }
     }

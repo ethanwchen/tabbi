@@ -24,7 +24,7 @@ public enum PartyConnectionState: Hashable, Sendable {
     public var connectionStatus: ConnectionStatus {
         switch self {
         case .notSetUp:
-            return ConnectionStatus(light: .notSetUp, headline: "Study with friends",
+            return ConnectionStatus(light: .notSetUp, headline: "Party isn't set up",
                                     detail: "Pick a name and a pet to start. No account needed.",
                                     action: .setUp)
         case .connecting:
