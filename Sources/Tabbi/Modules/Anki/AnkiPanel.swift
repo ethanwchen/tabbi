@@ -45,7 +45,13 @@ private enum Queue {
 private struct AnkiDeckView: View {
     @ObservedObject var store: AnkiStore
     let summary: AnkiSummary
-    @State private var showsAllDecks = false
+    @State private var showsAllDecks: Bool
+
+    init(store: AnkiStore, summary: AnkiSummary) {
+        self.store = store
+        self.summary = summary
+        _showsAllDecks = State(initialValue: store.previewsAllDecks)
+    }
 
     var body: some View {
         VStack(spacing: Theme.Spacing.s) {
@@ -55,7 +61,7 @@ private struct AnkiDeckView: View {
                         .frame(width: 240)
                         .transition(.motionRow(from: .leading))
                 }
-                DecksCard(store: store, decks: summary.topDecks, showsAll: $showsAllDecks)
+                DecksCard(store: store, top: summary.topDecks, outline: summary.deckOutline, showsAll: $showsAllDecks)
             }
             .frame(maxHeight: .infinity)
             AnkiFooter(store: store, summary: summary)
@@ -63,7 +69,7 @@ private struct AnkiDeckView: View {
         .motion(Theme.Motion.content, value: showsAllDecks)
         // Reviewing or a refresh can leave too few decks for the toggle to
         // show; collapse then, or the ring would stay hidden with no way back.
-        .onChange(of: summary.topDecks.count) { _, count in
+        .onChange(of: summary.deckOutline.count) { _, count in
             if count <= DecksCard.collapsedCount { showsAllDecks = false }
         }
     }
@@ -161,10 +167,12 @@ private struct QueueRow: View {
 }
 
 /// The decks with the most due. Collapsed it fits the top four beside the
-/// ring; expanded it takes the full width and scrolls.
+/// ring; expanded it takes the full width, scrolls, and lists subdecks
+/// under their parents so any exact deck is one click away.
 private struct DecksCard: View {
     @ObservedObject var store: AnkiStore
-    let decks: [AnkiDeckStats]
+    let top: [AnkiDeckStats]
+    let outline: [AnkiDeckOutlineRow]
     @Binding var showsAll: Bool
 
     static let collapsedCount = 4
@@ -185,21 +193,18 @@ private struct DecksCard: View {
                             .foregroundStyle(Theme.Palette.tertiaryText)
                     }
                     Spacer(minLength: Theme.Spacing.s)
-                    if decks.count > Self.collapsedCount {
-                        ExpandButton(showsAll: $showsAll, total: decks.count)
+                    if outline.count > Self.collapsedCount {
+                        ExpandButton(showsAll: $showsAll, total: outline.count)
                     }
                 }
                 .frame(height: 18)
                 .padding(.horizontal, Theme.Spacing.xs)
-                if decks.isEmpty {
+                if top.isEmpty {
                     AllCaughtUp()
                 } else if showsAll {
-                    ScrollView(.vertical) {
-                        rows(decks)
-                    }
-                    .scrollIndicators(.never)
+                    scrollingRows
                 } else {
-                    rows(Array(decks.prefix(Self.collapsedCount)))
+                    rows(top.prefix(Self.collapsedCount).map { AnkiDeckOutlineRow(deck: $0, depth: 0, title: $0.name) })
                     Spacer(minLength: 0)
                 }
             }
@@ -207,10 +212,26 @@ private struct DecksCard: View {
         }
     }
 
-    private func rows(_ decks: [AnkiDeckStats]) -> some View {
+    /// `ImageRenderer` draws a `ScrollView` blank, so snapshots show the
+    /// top of the outline clipped instead.
+    @ViewBuilder
+    private var scrollingRows: some View {
+        if RunMode.current.isSnapshot {
+            // Takes the space offered rather than the rows' full height.
+            Color.clear
+                .overlay(alignment: .top) { rows(outline) }
+                .clipped()
+        } else {
+            ScrollView(.vertical) { rows(outline) }
+                .scrollIndicators(.never)
+        }
+    }
+
+    private func rows(_ rows: [AnkiDeckOutlineRow]) -> some View {
         VStack(spacing: Theme.Spacing.xxs) {
-            ForEach(decks, id: \.deckID) { deck in
-                DeckRow(deck: deck, isOpening: store.opening?.deck == deck.name,
+            ForEach(rows) { row in
+                let deck = row.deck
+                DeckRow(row: row, isOpening: store.opening?.deck == deck.name,
                         isFavorite: store.favorite?.matches(deck) == true,
                         toggleFavorite: { store.toggleFavorite(deck) }) {
                     store.startReviews(deck: deck.name)
@@ -308,7 +329,7 @@ private struct ExpandButton: View {
 /// Clicking it starts reviewing that deck in Anki. The star, shown on
 /// hover and always on the favorite, pins it as the Study button's deck.
 private struct DeckRow: View {
-    let deck: AnkiDeckStats
+    let row: AnkiDeckOutlineRow
     /// This deck's click is waiting for Anki to start.
     let isOpening: Bool
     let isFavorite: Bool
@@ -316,13 +337,15 @@ private struct DeckRow: View {
     let action: () -> Void
     @State private var hovering = false
 
+    private var deck: AnkiDeckStats { row.deck }
+
     var body: some View {
         // A tap gesture rather than a Button, so the star inside stays its
         // own control.
         HStack(spacing: Theme.Spacing.s) {
-            Text(deck.name)
-                .font(Theme.Typography.bodyEmphasis)
-                .foregroundStyle(Theme.Palette.primaryText)
+            Text(row.title)
+                .font(row.depth == 0 ? Theme.Typography.bodyEmphasis : Theme.Typography.body)
+                .foregroundStyle(row.depth == 0 ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
                 .lineLimit(1)
                 .truncationMode(.tail)
             Spacer(minLength: Theme.Spacing.xs)
@@ -343,6 +366,7 @@ private struct DeckRow: View {
             count(deck.learnCount, color: Queue.learning)
             count(deck.reviewCount, color: Queue.review)
         }
+        .padding(.leading, CGFloat(row.depth) * Theme.Spacing.m)
         .padding(.horizontal, Theme.Spacing.xs)
         .frame(height: 24)
         .background(

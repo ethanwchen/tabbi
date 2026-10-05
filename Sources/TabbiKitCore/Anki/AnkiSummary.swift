@@ -121,7 +121,10 @@ extension AnkiSummary {
         let stats = [
             AnkiDeckStats(deckID: 1, name: "AnKing Step 1", newCount: 30, learnCount: 12, reviewCount: 186, totalInDeck: 28_000),
             AnkiDeckStats(deckID: 2, name: "AnKing Step 1::Cardio", newCount: 10, learnCount: 4, reviewCount: 61, totalInDeck: 3_100),
+            AnkiDeckStats(deckID: 7, name: "AnKing Step 1::Renal", newCount: 8, learnCount: 3, reviewCount: 44, totalInDeck: 2_400),
+            AnkiDeckStats(deckID: 8, name: "AnKing Step 1::Renal::Acid Base", newCount: 0, learnCount: 1, reviewCount: 12, totalInDeck: 380),
             AnkiDeckStats(deckID: 3, name: "Pharm Sketchy", newCount: 15, learnCount: 3, reviewCount: 74, totalInDeck: 4_200),
+            AnkiDeckStats(deckID: 9, name: "Pharm Sketchy::Antibiotics", newCount: 5, learnCount: 1, reviewCount: 26, totalInDeck: 900),
             AnkiDeckStats(deckID: 4, name: "Sketchy Micro", newCount: 0, learnCount: 2, reviewCount: 58, totalInDeck: 2_900),
             AnkiDeckStats(deckID: 5, name: "Pathoma", newCount: 5, learnCount: 0, reviewCount: 22, totalInDeck: 1_400),
             AnkiDeckStats(deckID: 6, name: "Boards and Beyond Biochem", newCount: 0, learnCount: 1, reviewCount: 17, totalInDeck: 1_100),

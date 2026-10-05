@@ -41,6 +41,11 @@ final class AnkiStore: ObservableObject {
     /// refreshes while it is set.
     private let pinnedState = ProcessInfo.processInfo.environment["TABBI_ANKI_STATE"]
         .flatMap(AnkiConnectionState.init(previewName:))
+    /// `TABBI_ANKI_DECKS=all` opens the full deck list in demo or pinned
+    /// runs, so snapshots show the subdeck outline.
+    var previewsAllDecks: Bool {
+        isStatic && ProcessInfo.processInfo.environment["TABBI_ANKI_DECKS"]?.lowercased() == "all"
+    }
     /// Demo or pinned: sample data only, no AnkiConnect calls.
     private var isStatic: Bool { isDemo || pinnedState != nil }
     private let client: AnkiConnectClient

@@ -98,6 +98,34 @@ final class AnkiConnectionStateTests: XCTestCase {
         XCTAssertEqual(value.topDecks.map(\.name), ["Pharm", "AnKing", "Micro"])
     }
 
+    func testDeckOutlineNestsSubdecksUnderTheirParentByMostDue() {
+        let value = summary([
+            deck(1, "AnKing", due: 40),
+            deck(2, "AnKing::Cardio", due: 10),
+            deck(3, "AnKing::Renal", due: 30),
+            deck(4, "AnKing::Renal::Acid Base", due: 12),
+            deck(5, "Pharm", due: 90),
+            deck(6, "Pharm::Empty", due: 0),
+        ])
+        XCTAssertEqual(value.deckOutline.map(\.deck.name), ["Pharm", "AnKing", "AnKing::Renal", "AnKing::Renal::Acid Base", "AnKing::Cardio"])
+        XCTAssertEqual(value.deckOutline.map(\.depth), [0, 0, 1, 2, 1])
+        XCTAssertEqual(value.deckOutline.map(\.title), ["Pharm", "AnKing", "Renal", "Acid Base", "Cardio"])
+    }
+
+    func testDeckOutlineHangsASubdeckUnderItsNearestListedAncestor() {
+        let value = summary([
+            deck(1, "Step1", due: 20),
+            deck(2, "Step1::Cardio::Arrhythmias", due: 5),
+        ])
+        XCTAssertEqual(value.deckOutline.map(\.title), ["Step1", "Cardio::Arrhythmias"])
+        XCTAssertEqual(value.deckOutline.last?.deck.name, "Step1::Cardio::Arrhythmias")
+        XCTAssertEqual(value.deckOutline.last?.depth, 1)
+    }
+
+    func testDeckOutlineIsEmptyWhenNothingIsDue() {
+        XCTAssertTrue(summary([deck(1, "A", due: 0), deck(2, "A::B", due: 0)]).deckOutline.isEmpty)
+    }
+
     func testCompletionFraction() {
         XCTAssertEqual(summary([deck(1, "A", due: 30)], reviewed: 90).completionFraction, 0.75, accuracy: 0.0001)
         XCTAssertEqual(summary([], reviewed: 0).completionFraction, 1)
