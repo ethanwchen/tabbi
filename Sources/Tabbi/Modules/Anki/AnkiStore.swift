@@ -83,6 +83,7 @@ final class AnkiStore: ObservableObject {
         }
         if isStatic {
             favorite = summary?.decks.first { $0.name == Self.demoFavorite }.map(AnkiFavoriteDeck.init)
+                ?? AnkiFavoriteDeck(name: Self.demoFavorite)
             pinOpenPreview()
         } else {
             favorite = AnkiFavoriteDeck(encoded: UserDefaults.standard.data(forKey: Self.favoriteKey))
@@ -93,7 +94,7 @@ final class AnkiStore: ObservableObject {
     /// `opening`, or an `AnkiOpenOutcome` preview name) for snapshots.
     private func pinOpenPreview() {
         guard let name = ProcessInfo.processInfo.environment["TABBI_ANKI_OPEN"] else { return }
-        let deck = summary?.topDecks.first?.name ?? "Default"
+        let deck = summary?.topDecks.first?.name ?? favorite?.name ?? "Default"
         switch name.lowercased() {
         case "launching": opening = AnkiOpening(deck: deck, phase: .launching)
         case "opening": opening = AnkiOpening(deck: deck, phase: .opening)

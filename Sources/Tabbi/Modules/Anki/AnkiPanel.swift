@@ -543,13 +543,13 @@ private struct AnkiSetupView: View {
     @ObservedObject var store: AnkiStore
 
     var body: some View {
-        let guide = AnkiSetupGuide(state: store.state)
+        let guide = AnkiSetupGuide(state: store.state, opening: store.opening)
         Card(padding: Theme.Spacing.l) {
             HStack(alignment: .center, spacing: Theme.Spacing.l) {
                 ZStack {
                     RoundedRectangle(cornerRadius: Theme.Radius.l, style: .continuous)
                         .fill(accent.opacity(0.16))
-                    if store.state == .starting {
+                    if store.state == .starting || store.opening != nil {
                         PawLoader(tint: accent, size: 20, label: "Starting Anki")
                     } else {
                         Image(systemName: guide.symbol)
@@ -589,12 +589,23 @@ private struct AnkiSetupView: View {
     private func actions(_ guide: AnkiSetupGuide) -> some View {
         HStack(spacing: Theme.Spacing.s) {
             switch store.state {
+            case _ where store.opening != nil:
+                EmptyView()
+            case .notRunning:
+                if let favorite = store.favorite {
+                    // Anki is closed, so the favorite opens by its stored
+                    // name: one click launches Anki and opens that deck.
+                    AnkiPrimaryButton(title: "Study \(AnkiDeckName.leaf(favorite.name))", symbol: "play.fill",
+                                      help: "Open Anki straight into \(favorite.name)", action: store.studyFavorite)
+                    AnkiSecondaryButton(title: "Open Anki", symbol: "arrow.up.forward.app",
+                                        help: "Open Anki; this tab connects on its own", action: store.openAnki)
+                } else {
+                    AnkiPrimaryButton(title: "Open Anki", symbol: "arrow.up.forward.app.fill",
+                                      help: "Open Anki; this tab connects on its own", action: store.openAnki)
+                }
             case .notInstalled:
                 AnkiPrimaryButton(title: "Get Anki", symbol: "arrow.down.circle.fill",
                                   help: "Open apps.ankiweb.net in your browser", action: store.getAnki)
-            case .notRunning:
-                AnkiPrimaryButton(title: "Open Anki", symbol: "arrow.up.forward.app.fill",
-                                  help: "Open Anki; this tab connects on its own", action: store.openAnki)
             case .addOnMissing:
                 CopyCodeButton(code: AnkiConnectClient.addOnCode)
                 restartButton
@@ -634,7 +645,17 @@ private struct AnkiSetupGuide {
     var steps: [String] = []
     var hint: String?
 
-    init(state: AnkiConnectionState) {
+    init(state: AnkiConnectionState, opening: AnkiOpening?) {
+        if let opening {
+            // A click is launching Anki to open a deck: say which, so the
+            // wait reads as progress rather than a setup step.
+            symbol = "rectangle.stack"
+            title = opening.deck.map { "Opening \(AnkiDeckName.leaf($0))…" } ?? "Opening Anki…"
+            message = opening.phase == .launching
+                ? "Anki is starting. The deck opens for review as soon as it's ready."
+                : "Asking Anki to open the deck for review."
+            return
+        }
         switch state {
         case .notInstalled:
             symbol = "arrow.down.app"
