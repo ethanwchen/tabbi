@@ -250,10 +250,9 @@ private struct SpotifyArtworkButton: View {
                         .padding(Theme.Spacing.xs + Theme.Spacing.xxs)
                 }
                 .shadow(color: .black.opacity(0.5), radius: 10, y: 4)
-                .scaleEffect(hovering ? 1.03 : 1)
                 .contentShape(RoundedRectangle(cornerRadius: Theme.Radius.l, style: .continuous))
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile(.pill, lifts: true))
         .help("Show \(source.displayName)")
         .onHover { hovering = $0 }
         .animation(Theme.Motion.snappy, value: hovering)
@@ -421,7 +420,7 @@ private struct SpotifyVolumeControl: View {
                 .background(Circle().fill(hoveringSpeaker ? Theme.Palette.surfaceHover : .clear))
                 .contentShape(Circle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile)
         .help(shownVolume == 0 ? "Unmute" : "Mute")
         .onHover { hoveringSpeaker = $0 }
         .animation(Theme.Motion.snappy, value: hoveringSpeaker)
@@ -498,7 +497,7 @@ private struct SpotifyTransportButton: View {
                 .background(Circle().fill(hovering ? Theme.Palette.surfaceHover : .clear))
                 .contentShape(Circle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile)
         .help(help)
         .onHover { hovering = $0 }
         .animation(Theme.Motion.snappy, value: hovering)
@@ -520,10 +519,9 @@ private struct SpotifyPlayPauseButton: View {
                 .offset(x: isPlaying ? 0 : 1)
                 .frame(width: 36, height: 36)
                 .background(Circle().fill(Theme.Palette.primaryText))
-                .scaleEffect(hovering ? 1.06 : 1)
                 .contentShape(Circle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile(.control, lifts: true))
         .help(isPlaying ? "Pause" : "Play")
         .onHover { hovering = $0 }
         .animation(Theme.Motion.snappy, value: hovering)
@@ -632,10 +630,9 @@ private struct SpotifyActionButton: View {
             .overlay {
                 if isAppLauncher { Capsule().strokeBorder(Theme.Palette.stroke, lineWidth: 0.5) }
             }
-            .scaleEffect(hovering ? 1.03 : 1)
             .contentShape(Capsule())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile(.pill, lifts: true))
         .help(action.help)
         .onHover { hovering = $0 }
         .animation(Theme.Motion.snappy, value: hovering)

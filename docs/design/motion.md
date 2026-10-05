@@ -78,6 +78,25 @@ Celebrations confirm a real event; they are brief, optional and never block inpu
 - Under Reduce Motion nothing moves: a soft glow of the accent brightens and fades in place over 0.9 s (`CelebrationGlow`).
 - `--snapshot` renders a frame strip for each style and tier (`motion-celebration-<style>-<tier>.png`) and for the glow (`motion-celebration-reduced.png`).
 
+## Micro-interactions
+
+Controls answer the pointer with `TactileButtonStyle`, which replaces `.plain` on notch buttons.
+A press sinks the control with the press spring (180 ms, no bounce); release springs back with the hover spring.
+The amounts live in `TactileFeedback` (`TabbiKitCore/Motion/`, tested in `TactileFeedbackTests`) and move a control's edges by only a few points:
+
+| Preset | Pressed | Hover lift | Use for |
+| --- | --- | --- | --- |
+| `.control` | 0.92 | 1.06 | icon buttons, transport buttons, tabs |
+| `.pill` | 0.97 | 1.03 | labeled pills, artwork, rows |
+
+- `.buttonStyle(.tactile)` is a small control that sinks when pressed.
+- `.buttonStyle(.tactile(.pill, lifts: true))` also lifts on hover; use it for one primary control (the play button, the artwork, an empty state's action) rather than for every button, so the lift stays meaningful.
+- The label keeps its own hover colors (surface to `surfaceHover`); the style only adds the motion, scoped so it never retimes the label's own changes.
+- Disabled buttons neither sink nor lift.
+- Under Reduce Motion nothing scales: a press dims the control to 70% instead.
+- Adopted by `IconButton`, the tab bar, the Now Playing controls, the Focus, Study and Anki action pills, Study's method rows and the Today focus card's play ring.
+- `--snapshot` renders `motion-press.png`: rest, hover, pressed and Reduce Motion pressed for an icon, a play button and a pill.
+
 ## Reduce Motion
 
 Every animation has a calm fallback.

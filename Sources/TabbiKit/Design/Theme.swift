@@ -130,7 +130,7 @@ public struct IconButton: View {
                 .background(Circle().fill(hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface))
                 .contentShape(Circle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile)
         .help(help)
         .onHover { hovering = $0 }
         .animation(Theme.Motion.snappy, value: hovering)

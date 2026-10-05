@@ -124,7 +124,7 @@ private struct FocusRingButton: View {
             .frame(width: 28, height: 28)
             .contentShape(Circle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile)
         .help(help)
         .onHover { hovering = $0 }
         .animation(Theme.Motion.snappy, value: hovering)

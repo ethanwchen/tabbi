@@ -361,7 +361,7 @@ private struct StudyMethodTile: View {
             )
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile(.pill))
         .help(isCurrent ? "\(method.info.name) is in use" : "Switch to \(method.info.name): \(method.info.tagline)")
         .onHover { hovering = $0 }
         .animation(Theme.Motion.snappy, value: hovering)
@@ -451,7 +451,7 @@ private struct StudyPrimaryButton: View {
             .background(Capsule().fill(accent.opacity(hovering ? 1 : 0.88)))
             .contentShape(Capsule())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile(.pill))
         .help(help)
         .onHover { hovering = $0 }
         .animation(Theme.Motion.snappy, value: hovering)

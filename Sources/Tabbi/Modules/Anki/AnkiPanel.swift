@@ -653,7 +653,7 @@ private struct AnkiPrimaryButton: View {
             .background(Capsule().fill(accent.opacity(hovering ? 1 : 0.88)))
             .contentShape(Capsule())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile(.pill))
         .help(help)
         .onHover { hovering = $0 }
         .animation(Theme.Motion.snappy, value: hovering)
@@ -682,7 +682,7 @@ private struct AnkiSecondaryButton: View {
             .background(Capsule().fill(hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface))
             .contentShape(Capsule())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile(.pill))
         .help(help)
         .onHover { hovering = $0 }
         .animation(Theme.Motion.snappy, value: hovering)

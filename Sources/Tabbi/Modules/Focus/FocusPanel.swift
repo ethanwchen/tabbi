@@ -231,7 +231,7 @@ private struct FocusPrimaryButton: View {
             .background(Capsule().fill(accent.opacity(hovering ? 1 : 0.88)))
             .contentShape(Capsule())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile(.pill))
         .help(help)
         .onHover { hovering = $0 }
         .animation(Theme.Motion.snappy, value: hovering)

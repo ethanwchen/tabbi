@@ -51,7 +51,7 @@ private struct TabButton: View {
                 }
                 .contentShape(Capsule())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile)
         .help(shortcut.map { "\(descriptor.title) (\($0))" } ?? descriptor.title)
         .onHover { hovering = $0 }
     }
