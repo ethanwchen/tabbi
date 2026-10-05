@@ -573,7 +573,9 @@ private struct AnkiSetupView: View {
                 ZStack {
                     RoundedRectangle(cornerRadius: Theme.Radius.l, style: .continuous)
                         .fill(accent.opacity(0.16))
-                    if store.state == .starting || store.opening != nil {
+                    if store.opening != nil {
+                        Spinner(tint: accent, size: 20)
+                    } else if store.state == .starting {
                         PawLoader(tint: accent, size: 20, label: "Starting Anki")
                     } else {
                         Image(systemName: guide.symbol)
