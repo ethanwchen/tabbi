@@ -1,8 +1,12 @@
 #!/usr/bin/env swift
 // Builds the README screenshots in docs/images from the app's demo snapshots.
 //
-//     swift docs/make-screenshots.swift              # render demo snapshots, then compose
-//     swift docs/make-screenshots.swift <snapshots>  # compose from an existing snapshot folder
+//     swift docs/make-screenshots.swift                         # render demo snapshots, then compose
+//     swift docs/make-screenshots.swift <productivity> <medicine>  # compose from existing snapshot folders
+//
+// The Productivity kit's snapshots (Midnight theme) give the everyday tabs, and
+// the Med School kit's (Cozy theme, with the pet) give the study tabs, the hero
+// and onboarding, so the README shows both looks.
 //
 // The snapshot renderer draws the notch on a flat grey stand-in desktop. This
 // script cuts the notch out of that backdrop (keeping its anti-aliased edge)
@@ -29,13 +33,13 @@ func fail(_ message: String) -> Never {
 
 // MARK: - Snapshots
 
-/// Renders fresh demo snapshots into a temporary folder and returns it.
-func renderDemoSnapshots() -> URL {
+/// Renders fresh demo snapshots of one kit into a temporary folder and returns it.
+func renderDemoSnapshots(kit: String) -> URL {
     let directory = FileManager.default.temporaryDirectory
-        .appendingPathComponent("tabbi-snapshots-\(ProcessInfo.processInfo.processIdentifier)")
+        .appendingPathComponent("tabbi-snapshots-\(kit)-\(ProcessInfo.processInfo.processIdentifier)")
     let process = Process()
     process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-    process.arguments = ["swift", "run", "-c", "release", "Tabbi", "--snapshot", directory.path]
+    process.arguments = ["swift", "run", "-c", "release", "Tabbi", "--snapshot", directory.path, "--kit", kit]
     process.currentDirectoryURL = root
     var environment = ProcessInfo.processInfo.environment
     environment["TABBI_DEMO"] = "1"
@@ -218,35 +222,51 @@ func compose(_ notch: Bitmap, canvasWidth: Int, cropHeight: Int, cornerRadius: C
 
 // MARK: - Main
 
-let arguments = CommandLine.arguments.dropFirst()
-let snapshots = arguments.first.map { URL(fileURLWithPath: $0) } ?? renderDemoSnapshots()
-defer { if arguments.isEmpty { try? FileManager.default.removeItem(at: snapshots) } }
+let arguments = Array(CommandLine.arguments.dropFirst())
+guard arguments.isEmpty || arguments.count == 2 else {
+    fail("pass no arguments, or a Productivity and a Med School snapshot folder")
+}
+let productivity = arguments.first.map { URL(fileURLWithPath: $0) } ?? renderDemoSnapshots(kit: "productivity")
+let medicine = arguments.last.map { URL(fileURLWithPath: $0) } ?? renderDemoSnapshots(kit: "medicine")
+defer {
+    if arguments.isEmpty {
+        try? FileManager.default.removeItem(at: productivity)
+        try? FileManager.default.removeItem(at: medicine)
+    }
+}
 try? FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
 
-func notch(_ name: String) -> Bitmap {
-    var bitmap = Bitmap(contentsOf: snapshots.appendingPathComponent("\(name).png"))
+func notch(_ name: String, in folder: URL) -> Bitmap {
+    var bitmap = Bitmap(contentsOf: folder.appendingPathComponent("\(name).png"))
     cutOutNotch(&bitmap)
     return bitmap
 }
 
-/// Snapshot file name → README image name.
-let modules = [
-    ("open-spotify", "now-playing"),
-    ("open-system", "system"),
-    ("open-claudeUsage", "claude-usage"),
-    ("open-planner", "today"),
-    ("open-claudeAsk", "ask-claude"),
+func write(_ bitmap: Bitmap, as name: String) {
+    bitmap.write(to: outputDirectory.appendingPathComponent("\(name).png"))
+}
+
+// Hero: the Study timer with the pet, on a wide strip of desktop.
+write(compose(notch("open-study", in: medicine), canvasWidth: 2000, cropHeight: 560, cornerRadius: 24), as: "hero")
+
+// Closed: the compact live activities beside the camera housing.
+write(compose(notch("closed", in: productivity), canvasWidth: 1200, cropHeight: 160, cornerRadius: 24), as: "closed")
+write(compose(notch("closed-pet", in: medicine), canvasWidth: 1200, cropHeight: 160, cornerRadius: 24), as: "closed-pet")
+
+/// Feature grid tiles: snapshot file name, folder, README image name. Every
+/// tile has the same size so the README grid lines up.
+let tiles = [
+    ("open-spotify", productivity, "now-playing"),
+    ("open-planner", productivity, "today"),
+    ("open-claudeUsage", productivity, "claude-usage"),
+    ("open-system", productivity, "system"),
+    ("open-claudeAsk", productivity, "ask-claude"),
+    ("open-study", medicine, "study"),
+    ("open-anki", medicine, "anki"),
+    ("open-party", medicine, "party"),
+    ("open-closet", medicine, "closet"),
+    ("onboarding-kit", medicine, "onboarding"),
 ]
-
-// Hero: the Now Playing panel on a wide strip of desktop.
-compose(notch("open-spotify"), canvasWidth: 2000, cropHeight: 560, cornerRadius: 24)
-    .write(to: outputDirectory.appendingPathComponent("hero.png"))
-
-// Closed: the compact live activity beside the camera housing.
-compose(notch("closed"), canvasWidth: 1200, cropHeight: 160, cornerRadius: 24)
-    .write(to: outputDirectory.appendingPathComponent("closed.png"))
-
-for (snapshot, name) in modules {
-    compose(notch(snapshot), canvasWidth: 1360, cropHeight: 520, cornerRadius: 24)
-        .write(to: outputDirectory.appendingPathComponent("\(name).png"))
+for (snapshot, folder, name) in tiles {
+    write(compose(notch(snapshot, in: folder), canvasWidth: 1360, cropHeight: 520, cornerRadius: 24), as: name)
 }

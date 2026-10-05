@@ -95,7 +95,8 @@ The app icon and README screenshots are generated from code, so they stay reprod
 
 ```sh
 swift scripts/make-icon.swift            # redraws Resources/AppIcon.icns
-swift docs/make-screenshots.swift        # re-renders docs/images/*.png from demo snapshots
+swift scripts/make-icon.swift --preview docs/images/icon.png && sips -Z 256 docs/images/icon.png   # README icon
+swift docs/make-screenshots.swift        # re-renders docs/images/*.png from Productivity and Med School demo snapshots
 ```
 
 ## Releases
