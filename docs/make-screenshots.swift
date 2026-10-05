@@ -6,8 +6,8 @@
 //     swift docs/make-screenshots.swift <essentials> <medicine>  # compose from existing snapshot folders
 //
 // The Essentials kit's snapshots (Midnight theme) give the everyday tabs, and
-// the Med School kit's (Cozy theme, with the pet) give the study tabs, the hero
-// and onboarding, so the README shows both looks.
+// the Med School kit's (Cozy theme, with the pet) give the study tabs, the
+// animated hero and onboarding, so the README shows both looks.
 //
 // The snapshot renderer draws the notch on a flat grey stand-in desktop. This
 // script cuts the notch out of that backdrop (keeping its anti-aliased edge)
@@ -247,9 +247,6 @@ func write(_ bitmap: Bitmap, as name: String) {
     bitmap.write(to: outputDirectory.appendingPathComponent("\(name).png"))
 }
 
-// Hero: the Study timer with the pet, on a wide strip of desktop.
-write(compose(notch("open-study", in: medicine), canvasWidth: 2000, cropHeight: 560, cornerRadius: 24), as: "hero")
-
 // Closed: the compact live activities beside the camera housing.
 write(compose(notch("closed", in: productivity), canvasWidth: 1200, cropHeight: 160, cornerRadius: 24), as: "closed")
 write(compose(notch("closed-pet", in: medicine), canvasWidth: 1200, cropHeight: 160, cornerRadius: 24), as: "closed-pet")
@@ -271,6 +268,102 @@ let tiles = [
 for (snapshot, folder, name) in tiles {
     write(compose(notch(snapshot, in: folder), canvasWidth: 1360, cropHeight: 520, cornerRadius: 24), as: name)
 }
+
+// MARK: - Animation
+
+extension Bitmap {
+    /// A copy redrawn at `scale` with high-quality interpolation.
+    func scaled(by scale: CGFloat) -> Bitmap {
+        let size = CGSize(width: (CGFloat(width) * scale).rounded(), height: (CGFloat(height) * scale).rounded())
+        var result = Bitmap(width: Int(size.width), height: Int(size.height))
+        let image = cgImage()
+        result.withContext { context in
+            context.interpolationQuality = .high
+            context.draw(image, in: CGRect(origin: .zero, size: size))
+        }
+        return result
+    }
+}
+
+/// Smooth start and end, like the app's springs (no linear motion).
+func ease(_ t: CGFloat) -> CGFloat { t * t * (3 - 2 * t) }
+
+/// One wallpaper frame with notches drawn on top, each with its own opacity and
+/// a scale anchored at the top center, as the notch grows from the camera housing.
+func frame(_ layers: [(notch: Bitmap, alpha: CGFloat, scale: CGFloat)], width: Int, height: Int) -> Bitmap {
+    var canvas = Bitmap(width: width, height: height)
+    let size = CGSize(width: width, height: height)
+    canvas.withContext { context in
+        context.addPath(CGPath(roundedRect: CGRect(origin: .zero, size: size), cornerWidth: 24, cornerHeight: 24, transform: nil))
+        context.clip()
+        drawWallpaper(in: context, size: size)
+        context.interpolationQuality = .high
+        for layer in layers where layer.alpha > 0 {
+            let w = CGFloat(layer.notch.width) * layer.scale
+            let h = CGFloat(layer.notch.height) * layer.scale
+            context.setAlpha(layer.alpha)
+            context.draw(layer.notch.cgImage(), in: CGRect(x: (size.width - w) / 2, y: size.height - h, width: w, height: h))
+        }
+    }
+    return canvas
+}
+
+/// Writes a looping GIF. Each frame shows for its own delay, so a held state is
+/// one frame rather than many, which keeps the file small.
+func writeGIF(_ frames: [(Bitmap, Double)], as name: String) {
+    let url = outputDirectory.appendingPathComponent("\(name).gif")
+    guard let destination = CGImageDestinationCreateWithURL(url as CFURL, UTType.gif.identifier as CFString, frames.count, nil)
+    else { fail("cannot write \(url.path)") }
+    CGImageDestinationSetProperties(destination, [
+        kCGImagePropertyGIFDictionary: [kCGImagePropertyGIFLoopCount: 0],
+    ] as CFDictionary)
+    for (bitmap, delay) in frames {
+        CGImageDestinationAddImage(destination, bitmap.cgImage(), [
+            kCGImagePropertyGIFDictionary: [kCGImagePropertyGIFDelayTime: delay, kCGImagePropertyGIFUnclampedDelayTime: delay],
+        ] as CFDictionary)
+    }
+    guard CGImageDestinationFinalize(destination) else { fail("cannot write \(url.path)") }
+    print(url.path)
+}
+
+/// The README hero: the closed notch with the pet opens into Study, switches
+/// through a few tabs and the pet page, then closes again. Frames come from the
+/// Med School kit's demo snapshots, drawn a little over half the snapshot scale
+/// so the GIF stays under 2 MB.
+func heroAnimation(from folder: URL) -> [(Bitmap, Double)] {
+    let scale: CGFloat = 0.7
+    let (width, height) = (1020, 380)
+    let closed = notch("closed-pet", in: folder).scaled(by: scale)
+    let pages = ["open-study", "open-planner", "open-anki", "open-party", "open-closet"]
+        .map { notch($0, in: folder).scaled(by: scale) }
+    let steps = 6
+    let stepDelay = 0.05
+    var frames: [(Bitmap, Double)] = []
+
+    func resize(closed: Bitmap, open: Bitmap, opening: Bool) {
+        for step in 1..<steps {
+            var t = ease(CGFloat(step) / CGFloat(steps))
+            if !opening { t = 1 - t }
+            // The closed wings are gone a quarter of the way in, so the
+            // two never read as a double exposure.
+            let grow = 0.5 + 0.5 * t
+            frames.append((frame([(closed, max(0, 1 - 4 * t), 1), (open, t, grow)], width: width, height: height), stepDelay))
+        }
+    }
+
+    frames.append((frame([(closed, 1, 1)], width: width, height: height), 1.4))
+    resize(closed: closed, open: pages[0], opening: true)
+    // Tabs switch with a cut: a crossfade between two busy panels reads as a
+    // double exposure, and the selected tab moving along the header already
+    // shows what changed.
+    for page in pages {
+        frames.append((frame([(page, 1, 1)], width: width, height: height), 1.8))
+    }
+    resize(closed: closed, open: pages[pages.count - 1], opening: false)
+    return frames
+}
+
+writeGIF(heroAnimation(from: medicine), as: "hero")
 
 // MARK: - Social preview
 

@@ -153,7 +153,7 @@ The app icon and README screenshots are generated from code, so they stay reprod
 ```sh
 swift scripts/make-icon.swift            # redraws Resources/AppIcon.icns and docs/brand/assets (see docs/brand/icon.md)
 sips -Z 256 docs/brand/assets/tabbi-icon-1024.png --out docs/images/icon.png   # README icon
-swift docs/make-screenshots.swift        # re-renders docs/images/*.png from Essentials and Med School demo snapshots
+swift docs/make-screenshots.swift        # re-renders docs/images (PNGs and the hero GIF) from Essentials and Med School demo snapshots
 ```
 
 The same script writes `docs/images/social-preview.png`, the 1280x640 image GitHub shows when the repository is shared.

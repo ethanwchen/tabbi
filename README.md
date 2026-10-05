@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/images/hero.png" alt="The notch open on the Study tab: a Pomodoro timer at 15:14 with a pixel cat beside it, the study method, focus sounds and today's points" width="100%">
+  <img src="docs/images/hero.gif" alt="The closed notch with a pixel cat opens into the Study tab (a Pomodoro timer at 15:14), then switches to Today, Anki, Party and the pet's Closet before closing again" width="100%">
 </p>
 
 Click the notch and it opens into a small panel of tabs.
