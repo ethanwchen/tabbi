@@ -157,7 +157,7 @@ struct PetCoachOverlayView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .animation(Theme.Motion.snappy, value: stroll.showsBubble(at: date))
+        .motion(Theme.Motion.snappy, value: stroll.showsBubble(at: date))
     }
 
     /// Hanging from the top edge by its front paws: the head lowers into
@@ -335,7 +335,7 @@ private struct PetCoachReplyButton: View {
         .fixedSize()
         .help(reply.help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 
     private var foreground: Color {

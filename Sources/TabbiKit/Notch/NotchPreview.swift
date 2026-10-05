@@ -54,12 +54,24 @@ struct NotchPreview: View {
             NotchPetWing(pet: pet)
         case .party(let party):
             NotchPartyPets(pets: party.pets)
+        case .meeting(let meeting):
+            HStack(spacing: Theme.Spacing.xs) {
+                icon
+                Text(TickerFormat.meetingCountdown(meeting.timing))
+                    .foregroundStyle(accent)
+                    .previewText()
+                    .fixedSize()
+            }
         default:
-            Image(systemName: NotchPreviewLayout.symbol(for: item, catalog: catalog))
-                .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(accent)
-                .frame(width: NotchPreviewLayout.iconSize, height: NotchPreviewLayout.iconSize)
+            icon
         }
+    }
+
+    private var icon: some View {
+        Image(systemName: NotchPreviewLayout.symbol(for: item, catalog: catalog))
+            .font(.system(size: 12, weight: .semibold))
+            .foregroundStyle(accent)
+            .frame(width: NotchPreviewLayout.iconSize, height: NotchPreviewLayout.iconSize)
     }
 
     @ViewBuilder private var trailing: some View {
@@ -67,15 +79,10 @@ struct NotchPreview: View {
         case .nowPlaying:
             content.nowPlayingTrailing()
         case .meeting(let meeting):
-            HStack(spacing: Theme.Spacing.xs) {
-                Text(meeting.title)
-                    .foregroundStyle(Theme.Palette.primaryText)
-                    .truncationMode(.tail)
-                Text(TickerFormat.meetingCountdown(meeting.timing))
-                    .foregroundStyle(accent)
-                    .fixedSize()
-            }
-            .previewText()
+            Text(meeting.title)
+                .foregroundStyle(Theme.Palette.primaryText)
+                .truncationMode(.tail)
+                .previewText()
         case .focus(let focus):
             Text(TickerFormat.focusClock(focus.time))
                 .foregroundStyle(focus.isRunning ? accent : Theme.Palette.secondaryText)
@@ -106,7 +113,7 @@ struct NotchPreview: View {
                 }
             }
             .previewText()
-            .animation(Theme.Motion.content, value: pet.mood)
+            .motion(Theme.Motion.content, value: pet.mood)
         case .party(let party):
             Text(TickerFormat.partySize(party.memberCount))
                 .foregroundStyle(accent)

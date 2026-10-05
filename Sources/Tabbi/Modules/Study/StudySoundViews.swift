@@ -19,7 +19,7 @@ struct StudySoundRow: View {
                     if chip.opensMixer {
                         openMixer()
                     } else {
-                        withAnimation(Theme.Motion.snappy) { focus.settings = chip.applying(to: focus.settings) }
+                        withMotion(Theme.Motion.snappy) { focus.settings = chip.applying(to: focus.settings) }
                     }
                 }
             }
@@ -67,8 +67,8 @@ private struct StudySoundChipButton: View {
         .buttonStyle(.plain)
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
-        .animation(Theme.Motion.snappy, value: isOn)
+        .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: isOn)
     }
 }
 
@@ -147,7 +147,7 @@ struct StudySoundMixer: View {
                 ForEach(FocusSound.allCases) { sound in
                     StudyMixTile(sound: sound, level: mix.level(of: sound),
                                  canAdd: mix.canAddLayer,
-                                 toggle: { withAnimation(Theme.Motion.snappy) { _ = focus.settings.mix.toggle(sound) } },
+                                 toggle: { withMotion(Theme.Motion.snappy) { _ = focus.settings.mix.toggle(sound) } },
                                  setLevel: { focus.settings.mix.setLevel($0, for: sound) })
                 }
             }
@@ -218,8 +218,8 @@ private struct StudyMixTile: View {
         )
         .opacity(isEnabled ? 1 : 0.45)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
-        .animation(Theme.Motion.snappy, value: isOn)
+        .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: isOn)
     }
 
     private func help(isOn: Bool, isEnabled: Bool) -> String {
@@ -265,7 +265,7 @@ private struct StudyLevelSlider: View {
         .frame(height: 10)
         .help("\(help) \(Int((level * 100).rounded()))%")
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
         .accessibilityElement()
         .accessibilityLabel(help)
         .accessibilityValue("\(Int((level * 100).rounded()))%")
@@ -302,7 +302,7 @@ private struct StudyPlaylistList: View {
                 StudyPlaylistRow(name: preset.name, detail: preset.curator, isOn: isOn,
                                  help: isOn ? "Stop starting \(preset.name) with focus"
                                             : "Start \(preset.name) (\(preset.curator)) with focus") {
-                    withAnimation(Theme.Motion.snappy) { focus.settings.playlistText = isOn ? "" : preset.link }
+                    withMotion(Theme.Motion.snappy) { focus.settings.playlistText = isOn ? "" : preset.link }
                 }
             }
         }
@@ -351,7 +351,7 @@ private struct StudyPlaylistRow: View {
         .buttonStyle(.plain)
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 
     private var title: some View {
@@ -370,7 +370,7 @@ struct StudyCapsuleToggle: View {
 
     var body: some View {
         Button {
-            withAnimation(Theme.Motion.snappy) { action() }
+            withMotion(Theme.Motion.snappy) { action() }
         } label: {
             HStack(spacing: Theme.Spacing.xxs) {
                 Image(systemName: isOn ? "\(symbol).fill" : symbol)
@@ -390,6 +390,6 @@ struct StudyCapsuleToggle: View {
         .buttonStyle(.plain)
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }

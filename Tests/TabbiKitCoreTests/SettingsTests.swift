@@ -227,6 +227,7 @@ final class SettingsRepositoryTests: XCTestCase {
         XCTAssertEqual(settings.modules.enabled, [.study, .planner, .spotify, .claudeAsk])
         XCTAssertFalse(settings.openOnHover)
         XCTAssertTrue(settings.hapticsEnabled)
+        XCTAssertTrue(settings.celebrationSoundEnabled)
         XCTAssertEqual(settings.hotkey, .default)
         XCTAssertEqual(settings.preferredDisplay, .builtIn)
         XCTAssertTrue(settings.notchPreview.isEnabled)
@@ -244,6 +245,7 @@ final class SettingsRepositoryTests: XCTestCase {
             modules: modules,
             openOnHover: true,
             hapticsEnabled: false,
+            celebrationSoundEnabled: false,
             launchAtLogin: true,
             hotkey: Hotkey(keyCode: 40, modifiers: [.command, .shift]),
             claudePathOverride: "/opt/claude",
@@ -275,11 +277,13 @@ final class SettingsRepositoryTests: XCTestCase {
         defaults.set(Data("garbage".utf8), forKey: "settings.hotkey")
         defaults.set("screen:nope", forKey: "settings.preferredDisplay")
         defaults.set(false, forKey: "settings.hapticsEnabled")
+        defaults.set("loud", forKey: "settings.celebrationSoundEnabled")
         let settings = SettingsRepository(defaults: defaults).load()
         XCTAssertFalse(settings.openOnHover)
         XCTAssertEqual(settings.hotkey, .default)
         XCTAssertEqual(settings.preferredDisplay, .builtIn)
         XCTAssertFalse(settings.hapticsEnabled)
+        XCTAssertTrue(settings.celebrationSoundEnabled)
     }
 
     func testModulesMissingFromSavedOrderStartSwitchedOff() {

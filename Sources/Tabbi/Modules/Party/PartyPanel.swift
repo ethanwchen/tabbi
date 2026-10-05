@@ -17,8 +17,8 @@ struct PartyPanel: View {
         content
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .overlay(alignment: .bottom) { notice }
-            .animation(Theme.Motion.content, value: phase)
-            .animation(Theme.Motion.snappy, value: store.notice)
+            .motion(Theme.Motion.content, value: phase)
+            .motion(Theme.Motion.snappy, value: store.notice)
             .onAppear { store.setVisible(true) }
             .onChange(of: focus) { _, field in notch.isPinned = field != nil }
             .onDisappear {
@@ -100,7 +100,7 @@ struct PartyPanel: View {
             .overlay(Capsule().strokeBorder(Theme.Palette.stroke, lineWidth: 0.5))
             .onTapGesture { store.clearNotice() }
             .help("Click to dismiss")
-            .transition(.move(edge: .bottom).combined(with: .opacity))
+            .transition(.motionRow(from: .bottom))
         }
     }
 }

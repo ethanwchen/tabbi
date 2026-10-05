@@ -24,7 +24,8 @@ final class StudyModule: NotchModule {
         focusMode = context.focusMode
         store = StudyStore(menu: StudyMethodMenu(kit: kit), goal: StudyDailyGoal(kit: kit), storage: context.storage,
                            activity: context.activityLog, focusMode: focusMode,
-                           petProfile: context.studyPet.profile, runMode: context.runMode)
+                           petProfile: context.studyPet.profile, celebrations: context.celebrations,
+                           runMode: context.runMode)
         store.followCards(from: context.providers.$snapshot)
         store.follow(pet: context.studyPet.profiles)
         context.kitApplied

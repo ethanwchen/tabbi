@@ -37,9 +37,14 @@ struct GeneralSettingsPane: View {
                 .help("Open the notch after hovering it briefly")
                 Toggle(isOn: $store.settings.hapticsEnabled) {
                     Text("Haptic feedback")
-                    Text("A light trackpad tap when the pointer reaches the notch.")
+                    Text("A light trackpad tap at the notch edge and on celebrations.")
                 }
-                .help("Tap the trackpad when the pointer reaches the notch")
+                .help("Tap the trackpad when the pointer reaches the notch or a celebration plays")
+                Toggle(isOn: $store.settings.celebrationSoundEnabled) {
+                    Text("Celebration sound")
+                    Text("A soft sound when you unlock an item or reach a streak milestone.")
+                }
+                .help("Play a soft sound with celebrations that have no sound of their own")
             } header: {
                 Text("Behavior")
             }
@@ -163,14 +168,11 @@ struct ModulesSettingsPane: View {
             KitSection()
         }
         .formStyle(.grouped)
-        .animation(moduleListAnimation, value: store.settings.modules)
+        .motion(Motion.snappy, value: store.settings.modules)
         // Scrolls: the library grows with every module Tabbi ships.
         .frame(width: paneWidth, height: 560)
     }
 }
-
-/// Moves rows between Tabs and Add More.
-private let moduleListAnimation = Animation.spring(response: 0.3, dampingFraction: 0.86)
 
 /// Picks the kit (a premade set of tabs), resets to its defaults, and
 /// imports kits shared as JSON files (see docs/kits.md).
@@ -736,7 +738,7 @@ struct ClaudeSettingsPane: View {
                 Text("Checking…")
                     .foregroundStyle(.secondary)
             } icon: {
-                ProgressView().controlSize(.small)
+                Spinner()
             }
         }
     }

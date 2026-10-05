@@ -101,7 +101,7 @@ private struct WelcomeView: View {
             }
         }
         .frame(width: 520)
-        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: questionsKit)
+        .motion(Motion.content, value: questionsKit)
     }
 
     /// App icon, a short pitch, one selectable card per kit, and Continue.
@@ -155,7 +155,7 @@ private struct WelcomeView: View {
             .padding(.top, 20)
             .padding(.bottom, 24)
         }
-        .animation(.spring(response: 0.26, dampingFraction: 0.86), value: selection)
+        .motion(Motion.snappy, value: selection)
     }
 
     /// The bundle's icon. `swift run` has no bundle, so fall back to the
@@ -332,7 +332,7 @@ struct KitQuestionsView: View {
             .padding(.top, 20)
             .padding(.bottom, 24)
         }
-        .animation(.spring(response: 0.26, dampingFraction: 0.86), value: answers)
+        .motion(Motion.snappy, value: answers)
     }
 }
 

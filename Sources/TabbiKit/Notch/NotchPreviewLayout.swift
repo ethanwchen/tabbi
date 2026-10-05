@@ -12,7 +12,7 @@ public enum NotchPreviewLayout {
     /// Gap between the wing content and the outer edge of the notch shape.
     public static let outerInset: CGFloat = Theme.Spacing.s
     /// Keeps a long meeting title from turning the notch into a menu bar.
-    public static let maxWingWidth: CGFloat = 132
+    public static let maxWingWidth: CGFloat = 120
     /// Points per sprite pixel for party pets: a 24 pt pet fits the notch's height.
     public static let partyPetPixelSize: CGFloat = 0.75
     /// Party pets overlap a little, since each sprite has empty room around it.
@@ -27,8 +27,10 @@ public enum NotchPreviewLayout {
         case .nowPlaying:
             return Theme.Layout.compactWingWidth
         case .meeting(let meeting):
-            content = textWidth(meeting.title) + Theme.Spacing.xs
-                + textWidth(TickerFormat.meetingCountdown(meeting.timing))
+            // The countdown rides beside the icon and the title has the other
+            // wing to itself, so both wings carry text and stay close to the camera.
+            content = max(iconSize + Theme.Spacing.xs + textWidth(TickerFormat.meetingCountdown(meeting.timing)),
+                          textWidth(meeting.title))
         case .focus(let focus):
             // Measure a fixed-width sample so the wing doesn't breathe as digits change.
             content = textWidth(String(TickerFormat.focusClock(focus.time).map { $0.isNumber ? "0" : $0 }))

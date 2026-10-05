@@ -27,7 +27,7 @@ struct PetCoachSettingsPane: View {
         .formStyle(.grouped)
         .scrollDisabled(true)
         .frame(width: 500, height: height)
-        .animation(.spring(response: 0.3, dampingFraction: 0.88), value: height)
+        .motion(Motion.content, value: height)
     }
 
     /// The grouped form doesn't report its content height, so add up the
@@ -93,7 +93,7 @@ struct PetCoachSettingsPane: View {
         panel.allowsMultipleSelection = true
         panel.directoryURL = URL(fileURLWithPath: "/Applications")
         guard panel.runModal() == .OK else { return }
-        withAnimation(.spring(response: 0.3, dampingFraction: 0.88)) {
+        withMotion(Motion.content) {
             panel.urls.forEach(coach.addDistractingApp(at:))
         }
     }
@@ -135,7 +135,7 @@ private struct AppChip: View {
                 if isOn {
                     Image(systemName: "checkmark")
                         .font(.system(size: 10, weight: .bold))
-                        .transition(.scale.combined(with: .opacity))
+                        .transition(.motionPop)
                 }
             }
             .foregroundStyle(isOn ? Color.accentColor : Color.primary)
@@ -154,8 +154,8 @@ private struct AppChip: View {
         }
         .buttonStyle(.plain)
         .onHover { isHovered = $0 }
-        .animation(.spring(response: 0.26, dampingFraction: 0.86), value: isOn)
-        .animation(.spring(response: 0.2, dampingFraction: 0.9), value: isHovered)
+        .motion(Motion.snappy, value: isOn)
+        .motion(Motion.hover, value: isHovered)
         .help(isOn ? "Stop counting \(name) as distracting" : "Count time in \(name) as drifting")
     }
 }

@@ -66,7 +66,8 @@ extension ModuleContext {
     /// active kit's starter pet.
     var studyPet: ClosetStore {
         shared.resolve {
-            let store = ClosetStore(storage: storage, runMode: runMode, starter: .starter(kit: activeKit?.defaults))
+            let store = ClosetStore(storage: storage, runMode: runMode, starter: .starter(kit: activeKit?.defaults),
+                                    celebrations: celebrations)
             store.follow(focus: providers.$snapshot.map(\.focus).eraseToAnyPublisher())
             store.follow(kits: kitApplied)
             return store

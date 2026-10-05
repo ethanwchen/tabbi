@@ -13,7 +13,7 @@ struct AnkiPanel: View {
 
     var body: some View {
         content
-            .animation(Theme.Motion.content, value: store.state)
+            .motion(Theme.Motion.content, value: store.state)
             .onAppear { store.panelDidAppear() }
             .onDisappear { store.panelDidDisappear() }
     }
@@ -53,14 +53,14 @@ private struct AnkiDeckView: View {
                 if !showsAllDecks {
                     DueCard(summary: summary)
                         .frame(width: 240)
-                        .transition(.move(edge: .leading).combined(with: .opacity))
+                        .transition(.motionRow(from: .leading))
                 }
                 DecksCard(store: store, decks: summary.topDecks, showsAll: $showsAllDecks)
             }
             .frame(maxHeight: .infinity)
             AnkiFooter(store: store, summary: summary)
         }
-        .animation(Theme.Motion.content, value: showsAllDecks)
+        .motion(Theme.Motion.content, value: showsAllDecks)
         // Reviewing or a refresh can leave too few decks for the toggle to
         // show; collapse then, or the ring would stay hidden with no way back.
         .onChange(of: summary.topDecks.count) { _, count in
@@ -104,18 +104,13 @@ private struct DueCard: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .help(AnkiFormat.progressHelp(summary))
-        .animation(Theme.Motion.content, value: summary)
+        .motion(Theme.Motion.content, value: summary)
     }
 
     private var ring: some View {
-        ZStack {
-            Circle()
-                .stroke(accent.opacity(0.18), lineWidth: Self.lineWidth)
-            Circle()
-                .trim(from: 0, to: summary.completionFraction)
-                .stroke(summary.dueTotal == 0 ? Theme.Palette.success : accent,
-                        style: StrokeStyle(lineWidth: Self.lineWidth, lineCap: .round))
-                .rotationEffect(.degrees(-90))
+        ProgressRing(progress: summary.completionFraction,
+                     tint: summary.dueTotal == 0 ? Theme.Palette.success : accent,
+                     track: accent.opacity(0.2), lineWidth: Self.lineWidth) {
             if summary.dueTotal == 0 {
                 VStack(spacing: Theme.Spacing.xxs) {
                     Image(systemName: "checkmark")
@@ -263,7 +258,7 @@ private struct ExpandButton: View {
         .buttonStyle(.plain)
         .help(showsAll ? "Show the top decks beside today's total" : "Show every deck with cards due")
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -304,7 +299,7 @@ private struct DeckRow: View {
         .buttonStyle(.plain)
         .help("Review \(deck.name) in Anki: \(deck.newCount) new, \(deck.learnCount) learning, \(deck.reviewCount) review")
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 
     private func count(_ value: Int, color: Color) -> some View {
@@ -409,11 +404,9 @@ private struct SyncButton: View {
     let action: () -> Void
 
     var body: some View {
-        TimelineView(.animation(paused: !isSyncing)) { context in
-            IconButton(symbol: "arrow.triangle.2.circlepath", size: 28,
-                       help: isSyncing ? "Syncing with AnkiWeb…" : "Sync with AnkiWeb", action: action)
-                .rotationEffect(.degrees(isSyncing ? spinAngle(at: context.date) : 0))
-        }
+        IconButton(symbol: "arrow.triangle.2.circlepath", size: 28,
+                   help: isSyncing ? "Syncing with AnkiWeb…" : "Sync with AnkiWeb", action: action)
+            .spinning(isSyncing)
         .disabled(isSyncing)
     }
 }
@@ -423,7 +416,7 @@ private struct SyncButton: View {
 private struct AnkiLoadingView: View {
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
-            LoadingArc()
+            Spinner(tint: accent)
             Text("Looking for Anki…")
                 .font(Theme.Typography.body)
                 .foregroundStyle(Theme.Palette.secondaryText)
@@ -446,7 +439,7 @@ private struct AnkiSetupView: View {
                     RoundedRectangle(cornerRadius: Theme.Radius.l, style: .continuous)
                         .fill(accent.opacity(0.16))
                     if store.state == .starting {
-                        LoadingArc(size: 20, lineWidth: 2.5)
+                        PawLoader(tint: accent, size: 20, label: "Starting Anki")
                     } else {
                         Image(systemName: guide.symbol)
                             .font(.system(size: 22, weight: .semibold))
@@ -624,10 +617,10 @@ private struct CopyCodeButton: View {
                           help: "Copy the AnkiConnect add-on code to paste into Anki") {
             NSPasteboard.general.clearContents()
             NSPasteboard.general.setString(code, forType: .string)
-            withAnimation(Theme.Motion.snappy) { copied = true }
+            withMotion(Theme.Motion.snappy) { copied = true }
             Task {
                 try? await Task.sleep(for: .seconds(2))
-                withAnimation(Theme.Motion.snappy) { copied = false }
+                withMotion(Theme.Motion.snappy) { copied = false }
             }
         }
     }
@@ -660,10 +653,10 @@ private struct AnkiPrimaryButton: View {
             .background(Capsule().fill(accent.opacity(hovering ? 1 : 0.88)))
             .contentShape(Capsule())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile(.pill))
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -689,31 +682,9 @@ private struct AnkiSecondaryButton: View {
             .background(Capsule().fill(hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface))
             .contentShape(Capsule())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile(.pill))
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
-}
-
-/// A small spinning arc. Pure SwiftUI (unlike `ProgressView`) so it also
-/// renders in snapshots; driven by the clock, so it only ticks while shown.
-private struct LoadingArc: View {
-    var size: CGFloat = 12
-    var lineWidth: CGFloat = 2
-
-    var body: some View {
-        TimelineView(.animation) { context in
-            Circle()
-                .trim(from: 0, to: 0.7)
-                .stroke(accent, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
-                .rotationEffect(.degrees(spinAngle(at: context.date)))
-        }
-        .frame(width: size, height: size)
-    }
-}
-
-/// One turn per second, derived from the clock rather than an animation.
-private func spinAngle(at date: Date) -> Double {
-    date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: 1) * 360
 }
