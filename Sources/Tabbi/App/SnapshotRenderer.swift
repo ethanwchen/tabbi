@@ -54,10 +54,10 @@ enum SnapshotRenderer {
 
         // Every shot uses the active kit's tab layout.
         let layout = services.settings.settings.modules
-        var shots: [(String, NotchViewModel)] = []
+        var shots: [Shot] = []
         let closed = NotchViewModel(geometry: geometry, layout: layout)
         closed.preview = services.ticker.item
-        shots.append(("closed", closed))
+        shots.append(Shot("closed", closed))
         // One closed shot per preview kind that has data. Demo usage sits
         // below the 80% threshold, so demo mode fills that one in.
         let now = Date()
@@ -69,20 +69,20 @@ enum SnapshotRenderer {
             guard let item = live ?? demoUsage else { continue }
             let model = NotchViewModel(geometry: geometry, layout: layout)
             model.preview = item
-            shots.append(("closed-\(snapshotName(kind))", model))
+            shots.append(Shot("closed-\(snapshotName(kind))", model))
             // The pet's other look: dozing after a quiet spell.
             if case .pet(var pet) = item, pet.mood != .asleep {
                 pet.mood = .asleep
                 let asleep = NotchViewModel(geometry: geometry, layout: layout)
                 asleep.preview = .pet(pet)
-                shots.append(("closed-pet-asleep", asleep))
+                shots.append(Shot("closed-pet-asleep", asleep))
             }
         }
         // One open shot per tab of the active kit.
         for module in layout.enabled {
             let model = NotchViewModel(geometry: geometry, layout: layout)
             model.open(module)
-            shots.append(("open-\(module.rawValue)", model))
+            shots.append(Shot("open-\(module.rawValue)", model))
         }
         // And one per tab the kit leaves off (e.g. Focus), as if turned on,
         // so every module's panel can be reviewed under any kit.
@@ -91,7 +91,7 @@ enum SnapshotRenderer {
             _ = withModule.setEnabled(module, true)
             let model = NotchViewModel(geometry: geometry, layout: withModule)
             model.open(module)
-            shots.append(("open-\(module.rawValue)", model))
+            shots.append(Shot("open-\(module.rawValue)", model))
         }
 
         // The Closet's second section, rendered after the others because
@@ -101,8 +101,11 @@ enum SnapshotRenderer {
             _ = withCloset.setEnabled(.closet, true)
             let model = NotchViewModel(geometry: geometry, layout: withCloset)
             model.open(.closet)
-            shots.append(("open-closet-look", model))
+            shots.append(Shot("open-closet-look", model))
         }
+
+        // First-run setup in the notch, one shot per step of the active kit.
+        shots += onboardingShots(services: services, geometry: geometry, layout: layout)
 
         let closet = services.modules.module(ClosetModule.self)
         for (theme, folder) in themeFolders {
@@ -126,7 +129,8 @@ enum SnapshotRenderer {
             print(url.path)
         }
 
-        let settingsWindow = SettingsWindowController(settings: services.settings, modules: services.modules)
+        let settingsWindow = SettingsWindowController(settings: services.settings, modules: services.modules,
+                                                      onboarding: services.onboarding)
         for pane in settingsWindow.paneIDs {
             guard let png = await settingsWindow.snapshot(of: pane) else { continue }
             let url = outputDirectory.appendingPathComponent("settings-\(pane).png")
@@ -134,23 +138,10 @@ enum SnapshotRenderer {
             print(url.path)
         }
 
-        // The first-run kit picker, before anything is chosen.
-        if let png = await WelcomeWindowController(settings: services.settings).snapshot() {
-            let url = outputDirectory.appendingPathComponent("welcome.png")
-            try? png.write(to: url)
-            print(url.path)
-        }
-        // Its second step: the active kit's onboarding questions.
         let kitID = services.settings.settings.kitID
-        if services.settings.kits[kitID]?.onboarding.isEmpty == false,
-           let png = await WelcomeWindowController(settings: services.settings, questionsFor: kitID).snapshot() {
-            let url = outputDirectory.appendingPathComponent("welcome-questions.png")
-            try? png.write(to: url)
-            print(url.path)
-        }
         // The same questions as the sheet Settings shows when switching kits.
         if let kit = services.settings.kits[kitID], !kit.onboarding.isEmpty,
-           let png = await sheetSnapshot(KitQuestionsView(kit: kit, dismissal: .cancel, back: {}, start: { _ in })
+           let png = await sheetSnapshot(KitQuestionsView(kit: kit, cancel: {}, start: { _ in })
                .environment(\.moduleCatalog, services.settings.catalog)
                .frame(width: 520)) {
             let url = outputDirectory.appendingPathComponent("settings-kit-questions.png")
@@ -160,11 +151,52 @@ enum SnapshotRenderer {
         await renderKitImportReview(services, to: outputDirectory)
     }
 
+    /// One notch shot: its file name, the notch state, and the onboarding
+    /// flow showing in it, if any.
+    private struct Shot {
+        let name: String
+        let model: NotchViewModel
+        var onboarding: OnboardingFlow?
+
+        init(_ name: String, _ model: NotchViewModel, onboarding: OnboardingFlow? = nil) {
+            self.name = name
+            self.model = model
+            self.onboarding = onboarding
+        }
+    }
+
+    /// Walks onboarding from the kit step through the active kit's
+    /// questions, the tab step and every setup step its tabs need.
+    private static func onboardingShots(services: AppServices, geometry: NotchGeometry, layout: ModuleLayout) -> [Shot] {
+        let settings = services.settings
+        guard let kit = settings.activeKit else { return [] }
+        var flow = OnboardingFlow(catalog: settings.catalog, layout: layout, kit: kit)
+        var shots: [Shot] = []
+        var questions = 0
+        while flow.stage != .finished {
+            let name: String = switch flow.stage {
+            case .kit: "onboarding-kit"
+            case .question:
+                { questions += 1; return "onboarding-question-\(questions)" }()
+            case .modules: "onboarding-modules"
+            case .setup(let id): "onboarding-setup-\(id)"
+            case .finished: ""
+            }
+            let model = NotchViewModel(geometry: geometry, layout: layout)
+            model.showsTakeover = true
+            shots.append(Shot(name, model, onboarding: flow))
+            if flow.stage == .kit { flow.choose(kit) } else { flow.next() }
+        }
+        return shots
+    }
+
     /// Renders each notch shot in the active theme into `folder`.
-    private static func renderNotchShots(_ shots: [(String, NotchViewModel)], services: AppServices,
+    private static func renderNotchShots(_ shots: [Shot], services: AppServices,
                                          closet: ClosetModule?, to folder: URL) {
         let firstSection = closet?.store.section
-        for (name, model) in shots {
+        for shot in shots {
+            let (name, model) = (shot.name, shot.model)
+            services.onboarding.show(shot.onboarding)
             if let firstSection { closet?.store.section = name == "open-closet-look" ? .look : firstSection }
             model.themeID = Theme.current.id
             let view = NotchView(content: ModuleViews.notchContent(services: services))
@@ -183,6 +215,7 @@ enum SnapshotRenderer {
             try? png.write(to: url)
             print(url.path)
         }
+        services.onboarding.show(nil)
     }
 
     /// The review Settings shows before applying an imported kit: another

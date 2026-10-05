@@ -54,7 +54,8 @@ enum AppSettingsPane: String, CaseIterable {
     /// (Today and Focus) return the same id; it shows once, in the first
     /// one's place.
     @MainActor
-    static func panes(settings: SettingsStore, modules: ModuleRegistry, enabled: [ModuleID]) -> [SettingsPane] {
+    static func panes(settings: SettingsStore, modules: ModuleRegistry, onboarding: OnboardingStore?,
+                      enabled: [ModuleID]) -> [SettingsPane] {
         let enabled = Set(enabled)
         var seen: Set<String> = []
         let modulePanes = modules.modules
@@ -72,7 +73,8 @@ enum AppSettingsPane: String, CaseIterable {
             SettingsPane(id: pane.id, title: pane.title, symbol: pane.symbol,
                          view: AnyView(pane.view.environmentObject(settings)
                                          .environment(\.moduleCatalog, settings.catalog)
-                                         .environment(\.modulesUseKitDefaults, { modules.usesKitDefaults(of: $0) })),
+                                         .environment(\.modulesUseKitDefaults, { modules.usesKitDefaults(of: $0) })
+                                         .environment(\.runSetup, onboarding.map { store in { @MainActor @Sendable in store.start() } })),
                          settleTime: pane.settleTime)
         }
     }
@@ -92,21 +94,34 @@ extension EnvironmentValues {
         get { self[ModulesUseKitDefaultsKey.self] }
         set { self[ModulesUseKitDefaultsKey.self] = newValue }
     }
+
+    /// Starts first-run setup again in the notch; nil where there is no
+    /// notch to run it in (snapshots).
+    var runSetup: (@MainActor @Sendable () -> Void)? {
+        get { self[RunSetupKey.self] }
+        set { self[RunSetupKey.self] = newValue }
+    }
+}
+
+private struct RunSetupKey: EnvironmentKey {
+    static let defaultValue: (@MainActor @Sendable () -> Void)? = nil
 }
 
 extension SettingsWindowController {
     /// The app's Settings window, following the enabled modules.
-    convenience init(settings: SettingsStore, modules: ModuleRegistry) {
+    /// - Parameter onboarding: offers Run Setup Again in the Kit section.
+    convenience init(settings: SettingsStore, modules: ModuleRegistry, onboarding: OnboardingStore? = nil) {
         // `$settings` emits before the new value is stored, so read the
         // layout from the emission.
         let updates = settings.$settings
             .map(\.modules.enabled)
             .removeDuplicates()
             .dropFirst()
-            .map { AppSettingsPane.panes(settings: settings, modules: modules, enabled: $0) }
+            .map { AppSettingsPane.panes(settings: settings, modules: modules, onboarding: onboarding, enabled: $0) }
             .eraseToAnyPublisher()
         self.init(
-            panes: AppSettingsPane.panes(settings: settings, modules: modules, enabled: settings.settings.modules.enabled),
+            panes: AppSettingsPane.panes(settings: settings, modules: modules, onboarding: onboarding,
+                                         enabled: settings.settings.modules.enabled),
             updates: updates,
             autosaveName: "TabbiSettings"
         )

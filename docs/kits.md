@@ -14,12 +14,14 @@ They are good starting points for your own kit.
 
 ## Using kits
 
-On first launch, a welcome window asks which kit to start with.
-It lists every kit with the tabs it turns on, and preselects the edition's kit (Productivity for Tabbi).
-Closing the window keeps the preselected kit, and the window doesn't come back.
-If the chosen kit has [onboarding questions](#onboarding), **Continue** leads to them; **Back** returns to the kit list.
-Every question can be skipped, and a row of tab icons previews what the answers turn on or off.
-**Start** applies the kit for those answers and adds their starter tasks to Today.
+On first launch, the notch opens on a short setup inside the notch itself, with no extra window.
+The first step lists every kit with the tabs it turns on, plus **Start from Scratch**, and rings the edition's kit (Productivity for Tabbi).
+One tap on a kit moves on to its [onboarding questions](#onboarding), one tap per answer, and a row of tab icons previews what the answers turn on or off.
+The next step shows every tab: click one to turn it on or off, and drag to reorder.
+After that come only the setup steps the enabled tabs need (the pet, Anki, calendar access, the study method, study parties), each asked once.
+Every step can be skipped, and **Skip Setup** keeps what was picked so far, so setup doesn't come back.
+The kit is applied when the tab step is done: its tabs, its theme and the starter tasks for those answers.
+**Settings > Modules > Run Setup Again** runs the same setup later.
 
 To change kits later, open **Settings > Modules**.
 The **Kit** section lets you:

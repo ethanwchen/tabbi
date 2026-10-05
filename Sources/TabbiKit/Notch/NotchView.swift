@@ -50,6 +50,7 @@ public struct NotchView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .animation(Theme.Motion.notch, value: model.phase)
         .animation(Theme.Motion.notch, value: model.previewKind)
+        .animation(Theme.Motion.content, value: model.showsTakeover)
         .preferredColorScheme(.dark)
         .environment(\.moduleCatalog, content.catalog)
     }
@@ -68,13 +69,41 @@ private struct ThemeGlow: View {
     }
 }
 
-/// Header (tabs left of the notch, title right of it) above the module panel.
+/// Header (tabs left of the notch, title right of it) above the module panel,
+/// or the app's takeover (first-run setup) in their place while it runs.
 private struct OpenNotchContent: View {
     @EnvironmentObject private var model: NotchViewModel
     let content: NotchContent
 
     var body: some View {
         let notch = model.geometry.notchSize
+        if model.showsTakeover, let takeover = content.takeover {
+            VStack(spacing: 0) {
+                HStack(spacing: 0) {
+                    takeover.leading()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Color.clear.frame(width: notch.width)
+                    takeover.trailing()
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                }
+                .padding(.horizontal, Theme.Layout.openTopRadius + Theme.Layout.contentInset)
+                .frame(height: max(notch.height, 32))
+
+                takeover.body()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .padding(.horizontal, Theme.Layout.contentInset + Theme.Layout.openTopRadius)
+                    .padding(.top, Theme.Spacing.s)
+                    .padding(.bottom, Theme.Spacing.l)
+            }
+            .transition(.opacity)
+        } else {
+            tabs(notch: notch)
+                .transition(.opacity)
+        }
+    }
+
+    /// The usual open notch: the tab bar, the tab's title and the panel.
+    private func tabs(notch: CGSize) -> some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
                 NotchTabBar()

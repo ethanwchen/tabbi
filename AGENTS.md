@@ -48,6 +48,11 @@ Judge them against the design rules below before you call the work done.
   (module panels, music wings, Settings) and
   `notchInputs` (settings, hotkey recorder, ticker) built from `AppServices`.
   Shared; change only when your task requires it.
+- `Sources/Tabbi/Onboarding/` - first-run setup inside the notch. The
+  `OnboardingStore` runs the pure `OnboardingFlow` (`TabbiKitCore/Onboarding`)
+  and applies the kit and tabs once the tab step is done; its views fill the
+  open notch through `NotchContent.takeover` (a `NotchTakeover`) while
+  `NotchViewModel.showsTakeover` is on. Settings > Modules re-runs it.
 - `Sources/Tabbi/Modules/<Module>/` - one folder per module: a store
   (`ObservableObject`), SwiftUI views, and a `NotchModule` class (its own
   `static let descriptor` with id, title, symbol, category, accent and
@@ -158,6 +163,7 @@ A new vertical is its own files plus one line in `ModuleList.swift`.
 1. Create `Sources/Tabbi/Modules/<Module>/` with a store (`ObservableObject`), its SwiftUI panel, and `<Module>Module: NotchModule`.
    Pure logic (parsers, models, formatting) goes in `Sources/TabbiKitCore/<Module>/` with tests in `Tests/TabbiKitCoreTests`.
 2. Declare `nonisolated static let descriptor = ModuleDescriptor(...)`: id, title, SF Symbol, category (an open `ModuleCategory`: use a built-in one or declare your own beside the module, as the fixture's `.coding` does), accent, permissions, `network` with each host its code connects to (none for the fixture), `highlightTitle` if it shows a line in the ticker, `ownsFocusClock: true` if it runs a focus clock of its own, and `setup` with the first-run onboarding steps it needs (`OnboardingSetupStep` in `TabbiKitCore/Onboarding`: `.pet`, `.anki`, `.calendar`, `.studyMethod`, `.party`, or one of your own), which onboarding asks only when the module is on.
+   Draw a step in the notch from `makeSetupView(for:done:)` (call `done` to move on); without one, onboarding shows a card that points to the module's tab.
    The tab bar, Settings, kit validation and previews read title, symbol and accent from here, and Today shows such a module's clock in place of its Pomodoro, so a layout has one timer.
    If kits can configure the module, declare the keys of its `moduleSettings` section as `kitSettings: KitSettingsSchema([...])`, so kit validation warns about typos and out-of-range values there; the fixture declares `minutesPerProblem`.
 3. In `init(context:)`, build the store and follow what the context offers (`kitApplied`, `providers.$snapshot`, shared services).

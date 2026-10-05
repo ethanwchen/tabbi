@@ -1,4 +1,5 @@
 import Combine
+import Foundation
 import TabbiKitCore
 
 /// The app state `NotchController` follows: the user's settings, the hotkey
@@ -18,6 +19,9 @@ public struct NotchInputs {
     public var preview: AnyPublisher<TickerItem?, Never>
     /// Tells the preview whether it can be seen, so it only ticks while closed.
     public var previewVisible: (Bool) -> Void
+    /// True while the app's `NotchContent.takeover` should fill the notch:
+    /// the notch opens on it and stays open until it ends.
+    public var takeover: AnyPublisher<Bool, Never>
 
     public init(
         settings: AnyPublisher<AppSettings, Never>,
@@ -25,7 +29,8 @@ public struct NotchInputs {
         isRecordingHotkey: AnyPublisher<Bool, Never>,
         hotkeyRegistered: @escaping (Bool) -> Void,
         preview: AnyPublisher<TickerItem?, Never>,
-        previewVisible: @escaping (Bool) -> Void
+        previewVisible: @escaping (Bool) -> Void,
+        takeover: AnyPublisher<Bool, Never> = Just(false).eraseToAnyPublisher()
     ) {
         self.settings = settings
         self.currentSettings = currentSettings
@@ -33,5 +38,6 @@ public struct NotchInputs {
         self.hotkeyRegistered = hotkeyRegistered
         self.preview = preview
         self.previewVisible = previewVisible
+        self.takeover = takeover
     }
 }

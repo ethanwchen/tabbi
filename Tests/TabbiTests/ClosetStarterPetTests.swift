@@ -39,7 +39,7 @@ final class ClosetStarterPetTests: XCTestCase {
         XCTAssertEqual(relaunched.profile.name, "Waffles", "the save wins over any kit's starter")
     }
 
-    /// At launch the pet sees the idle Pomodoro before the welcome window's
+    /// At launch the pet sees the idle Pomodoro before first-run setup's
     /// kit pick. Taking that baseline must not save the starter, or the
     /// picked kit's pet would never apply.
     func testSeeingAnIdleTimerDoesNotSaveTheStarter() throws {

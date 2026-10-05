@@ -291,6 +291,11 @@ public final class NotchController {
             .sink { [weak self] item in self?.model.preview = item }
             .store(in: &cancellables)
 
+        inputs.takeover
+            .removeDuplicates()
+            .sink { [weak self] active in self?.model.showsTakeover = active }
+            .store(in: &cancellables)
+
         // The preview only ticks while it can be seen.
         model.$phase
             .removeDuplicates()

@@ -40,6 +40,15 @@ public final class NotchViewModel: ObservableObject {
     /// The active theme's id. `NotchView` re-keys the open panel by it, so a
     /// theme switch redraws every view with the new `Theme` tokens.
     @Published public var themeID: ThemeID = Theme.current.id
+    /// True while the app's takeover (first-run onboarding) fills the open
+    /// notch in place of the tabs; tab keys and swipes do nothing meanwhile.
+    @Published public var showsTakeover = false {
+        didSet {
+            guard showsTakeover != oldValue else { return }
+            isPinned = showsTakeover
+            if showsTakeover { phase = .open }
+        }
+    }
 
     private static let selectedKey = "selectedModule"
 
@@ -86,6 +95,8 @@ public final class NotchViewModel: ObservableObject {
 
     public func open(_ module: ModuleID? = nil) {
         if let module { selected = layout.resolvedSelection(module) }
+        // A takeover waits for the user, not the pointer.
+        if showsTakeover { isPinned = true }
         phase = .open
     }
 
@@ -109,13 +120,20 @@ public final class NotchViewModel: ObservableObject {
         isOpen ? close() : open()
     }
 
-    public func selectNext() { selected = layout.module(after: selected) }
-    public func selectPrevious() { selected = layout.module(before: selected) }
+    public func selectNext() {
+        guard !showsTakeover else { return }
+        selected = layout.module(after: selected)
+    }
+
+    public func selectPrevious() {
+        guard !showsTakeover else { return }
+        selected = layout.module(before: selected)
+    }
 
     /// Jumps to the tab under number key `number` (1-9). Returns false when
     /// there's no such tab, so the key isn't swallowed.
     public func select(shortcut number: Int) -> Bool {
-        guard let module = layout.module(forShortcut: number) else { return false }
+        guard !showsTakeover, let module = layout.module(forShortcut: number) else { return false }
         selected = module
         return true
     }

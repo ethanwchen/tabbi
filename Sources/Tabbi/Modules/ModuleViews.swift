@@ -23,7 +23,7 @@ enum ModuleViews {
     }
 
     /// Hooks the shared `NotchView` up to this app: registered module panels,
-    /// the music wings and the Settings window.
+    /// the music wings, the Settings window and first-run onboarding.
     @MainActor
     static func notchContent(services: AppServices) -> NotchContent {
         NotchContent(
@@ -32,7 +32,8 @@ enum ModuleViews {
             panel: { services.modules.panel(for: $0) },
             nowPlayingLeading: { AnyView(compactLeading(services: services)) },
             nowPlayingTrailing: { AnyView(compactTrailing(services: services)) },
-            openSettings: { services.openSettings() }
+            openSettings: { services.openSettings() },
+            takeover: OnboardingViews.takeover(store: services.onboarding, modules: services.modules)
         )
     }
 
@@ -47,7 +48,8 @@ enum ModuleViews {
             isRecordingHotkey: store.$isRecordingHotkey.eraseToAnyPublisher(),
             hotkeyRegistered: { store.hotkeyIsRegistered = $0 },
             preview: services.ticker.$item.eraseToAnyPublisher(),
-            previewVisible: { services.ticker.setActive($0) }
+            previewVisible: { services.ticker.setActive($0) },
+            takeover: services.onboarding.$flow.map { $0 != nil }.eraseToAnyPublisher()
         )
     }
 }

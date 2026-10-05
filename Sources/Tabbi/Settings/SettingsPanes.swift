@@ -170,6 +170,7 @@ private struct KitSection: View {
     /// Reset also restores what modules take from the kit (Focus: the focus
     /// sound), so their state counts toward "already at defaults".
     @Environment(\.modulesUseKitDefaults) private var modulesUseKitDefaults
+    @Environment(\.runSetup) private var runSetup
     @State private var modulesMatchKit = true
     /// The outcome of the last import or removal, shown under the buttons.
     @State private var message: (text: String, isWarning: Bool)?
@@ -202,6 +203,14 @@ private struct KitSection: View {
                 if store.canRemoveActiveKit {
                     Button("Remove Kit", role: .destructive, action: removeKit)
                         .help("Delete this imported kit and go back to the default kit")
+                }
+                if let runSetup {
+                    Button("Run Setup Again") {
+                        // Setup runs in the notch; Settings steps aside.
+                        NSApp.keyWindow?.close()
+                        runSetup()
+                    }
+                    .help("Pick a kit, your tabs and what they need again, in the notch")
                 }
                 Spacer()
                 Button("Reset to Kit Defaults", action: store.resetToKitDefaults)
@@ -244,7 +253,7 @@ private struct KitSection: View {
     private func sheetContent(_ current: KitSheet) -> some View {
         switch current.step {
         case .questions:
-            KitQuestionsView(kit: current.kit, answers: current.answers, dismissal: .cancel, back: { sheet = nil }) { answers in
+            KitQuestionsView(kit: current.kit, answers: current.answers, cancel: { sheet = nil }) { answers in
                 if current.candidate == nil {
                     sheet = nil
                     switchKit(to: current.kit.id, answers: answers)

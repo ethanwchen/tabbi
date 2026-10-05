@@ -53,6 +53,11 @@ protocol NotchModule: AnyObject {
     /// to Kit Defaults would change anything. Nil when the module keeps
     /// nothing from a kit beyond the layout, which Settings checks itself.
     func usesKitDefaults(of kit: KitManifest) -> AnyPublisher<Bool, Never>?
+
+    /// The view for one of the module's `descriptor.setup` steps inside
+    /// first-run onboarding, fitted to the panel canvas; `done` moves the
+    /// flow on. Nil shows a neutral card that points to the module's tab.
+    func makeSetupView(for step: OnboardingSetupStep, done: @escaping () -> Void) -> AnyView?
 }
 
 extension NotchModule {
@@ -64,6 +69,7 @@ extension NotchModule {
     func stop() {}
     var provision: AnyPublisher<ModuleProvision, Never>? { nil }
     func usesKitDefaults(of kit: KitManifest) -> AnyPublisher<Bool, Never>? { nil }
+    func makeSetupView(for step: OnboardingSetupStep, done: @escaping () -> Void) -> AnyView? { nil }
 }
 
 /// The modules this build runs, in canonical order, keyed by id.
@@ -109,6 +115,18 @@ final class ModuleRegistry {
     func panel(for id: ModuleID) -> AnyView {
         index[id]?.makePanel()
             ?? AnyView(ModulePlaceholder(module: id, detail: "This module isn't available in this build"))
+    }
+
+    /// The setup view for `step` from the first module in `modules` (tab
+    /// order) that declares the step and draws one, so a step two modules
+    /// share is set up once.
+    func setupView(for step: OnboardingSetupStep, modules ids: [ModuleID], done: @escaping () -> Void) -> AnyView? {
+        for id in ids {
+            guard let module = index[id], module.descriptor.setup.contains(step),
+                  let view = module.makeSetupView(for: step, done: done) else { continue }
+            return view
+        }
+        return nil
     }
 
     /// True while every module's kit-derived state matches `kit`, enabled

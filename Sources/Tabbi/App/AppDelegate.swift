@@ -6,7 +6,6 @@ import TabbiKit
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var services: AppServices?
     private var notch: NotchController?
-    private var welcome: WelcomeWindowController?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         let edition = Edition.current
@@ -19,10 +18,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         self.services = services
         notch = NotchController(content: ModuleViews.notchContent(services: services),
                                 inputs: ModuleViews.notchInputs(services: services))
+        // First run: the notch opens on setup and stays open until it ends.
         if !settings.settings.hasChosenKit {
-            let welcome = WelcomeWindowController(settings: settings)
-            self.welcome = welcome
-            welcome.present()
+            services.onboarding.start()
         }
     }
 

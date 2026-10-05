@@ -18,6 +18,8 @@ final class AppServices {
     let providers: ProviderHub
     /// The rotating live preview beside the closed notch.
     let ticker: TickerStore
+    /// First-run setup inside the notch, also re-run from Settings.
+    let onboarding: OnboardingStore
 
     private var cancellables: Set<AnyCancellable> = []
     /// Created on first use so launching never builds a window nobody opens.
@@ -39,6 +41,7 @@ final class AppServices {
         providers.attach(modules)
         self.providers = providers
         ticker = TickerStore(settings: settings, providers: providers, preview: shared.closedNotchPreview)
+        onboarding = OnboardingStore(settings: settings)
         // `$settings` emits before the new value is stored, so read the
         // layout from the emission.
         settings.$settings
@@ -53,7 +56,8 @@ final class AppServices {
 
     /// Shows the Settings window (from the notch's gear button or context menu).
     func openSettings() {
-        let controller = settingsWindow ?? SettingsWindowController(settings: settings, modules: modules)
+        let controller = settingsWindow ?? SettingsWindowController(settings: settings, modules: modules,
+                                                                    onboarding: onboarding)
         settingsWindow = controller
         controller.present()
     }
