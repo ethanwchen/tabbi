@@ -29,7 +29,7 @@ Right-click the notch and choose **Settings…** to pick which ones show, or tur
 Click it and the notch grows into a dark panel with the tabs of your kit.
 Flip between them with a two-finger swipe, the arrow keys, the number keys 1-9 or the tab icons, and press Esc to close it again.
 
-It is written in Swift with SwiftUI and AppKit, has no third-party dependencies, no account and no telemetry.
+It is written in Swift with SwiftUI and AppKit, with one third-party dependency (Sparkle, for updates), no account and no telemetry.
 
 <p align="center">
   <img src="docs/images/closed.png" alt="The closed notch with a small album cover on the left and a green equalizer on the right" width="600">
