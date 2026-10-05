@@ -18,7 +18,7 @@ How to add a theme is in [CONTRIBUTING.md](../../CONTRIBUTING.md#add-a-theme).
 | --- | --- | --- |
 | Midnight | Classic | Hardware black with white text: the original look and the Essentials default. |
 | Graphite | Classic | Cool gray surfaces and plain SF Pro. |
-| Liquid Glass | Classic | The black body with Liquid Glass on small controls (macOS 26). |
+| Liquid Glass | Classic | Frosted glass cards over a cool blue glow, with Liquid Glass controls on macOS 26. |
 | Neon | Classic | Vivid accents and a violet glow. |
 | Monochrome | Classic | Grayscale accents; errors keep a soft red so they are never lost. |
 | Cozy | Cozy | Warm cream text, a peach glow, sage and honey status colors: the Med School default. |
@@ -32,6 +32,7 @@ Each theme is a few independent choices:
 - `typeface`: SF Pro Rounded (the default) or SF Pro.
 - `motion`: `standard`, or `gentle` for the cozy themes, which plays every motion token 30% longer with 0.08 less bounce (see [motion.md](motion.md)).
 - `controls`: `solid` surfaces, or `glass` for Liquid Glass.
+- `surfaces`: `flat` cards, or `glass` for frosted cards (`GlassSheen`).
 
 ## Rules every theme keeps
 
@@ -45,8 +46,17 @@ Each theme is a few independent choices:
 ## Liquid Glass
 
 Apple describes Liquid Glass as a functional layer for controls and navigation that floats above content, and asks apps not to use it in the content layer and to use it sparingly.
-Glass over near-black has almost nothing to refract, so on a notch panel it would mostly read as gray fog, and Nielsen Norman Group found that it lowers contrast and legibility over busy backgrounds.
-So the Liquid Glass theme keeps cards and text containers opaque and puts glass only on small floating controls: icon buttons and the selected tab.
+Glass over plain black has almost nothing to refract, so an earlier version kept cards opaque and put glass only on small controls.
+In practice that made the theme nearly indistinguishable from Midnight.
+So the Liquid Glass theme now gives the glass something to catch: a cool blue glow rises from the bottom of the black body, and cards become frosted glass panes.
+
+A glass card (`surfaces: .glass`) is two layers:
+
+- A live layer: `glassEffect(.regular)` on macOS 26, `.ultraThinMaterial` on macOS 14 and 15, nothing with Reduce Transparency on or in snapshots.
+- A painted `GlassSheen` in every case: a fill lit from the top, a soft glint near the top-leading corner and a rim that catches the light.
+
+Because the sheen is plain paint, snapshots and Reduce Transparency still show the glass look, and `GlassSurfaceRenderingTests` renders a card in both themes to prove it.
+`ThemeTests` checks that text keeps 7:1 (primary) and 4.5:1 (secondary) on the brightest part of the sheen over the full glow.
 
 `ControlMaterial.resolve` picks what a glass control is drawn with on the user's Mac:
 

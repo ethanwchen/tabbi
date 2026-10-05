@@ -218,6 +218,55 @@ public enum ControlMaterial: Hashable, Sendable {
     }
 }
 
+/// What content surfaces (cards) are drawn as.
+public enum ThemeSurfaceStyle: String, Hashable, Sendable {
+    /// The palette's flat surface color.
+    case flat
+    /// Frosted glass: a live material where the system can draw one, always
+    /// under a drawn `GlassSheen`, so the look survives snapshots and
+    /// Reduce Transparency.
+    case glass
+}
+
+/// The drawn light of a glass surface: a fill that is brighter at the top,
+/// a specular glint near the top-leading corner and a rim lit from above.
+/// It is plain paint, so it shows the same in the live app, in
+/// `ImageRenderer` snapshots (which can't capture materials) and with
+/// Reduce Transparency on.
+public struct GlassSheen: Hashable, Sendable {
+    /// The fill at the top edge.
+    public var fillTop: ThemeColor
+    /// The fill at the bottom edge.
+    public var fillBottom: ThemeColor
+    /// The glint's center color; it fades out toward the middle.
+    public var glint: ThemeColor
+    /// The rim at the top edge, where the light catches it.
+    public var rimTop: ThemeColor
+    /// The rim at the bottom edge.
+    public var rimBottom: ThemeColor
+
+    public init(fillTop: ThemeColor, fillBottom: ThemeColor, glint: ThemeColor,
+                rimTop: ThemeColor, rimBottom: ThemeColor) {
+        self.fillTop = fillTop
+        self.fillBottom = fillBottom
+        self.glint = glint
+        self.rimTop = rimTop
+        self.rimBottom = rimBottom
+    }
+
+    /// Clear glass lit from above, tuned so white text stays legible on it.
+    public static let standard = GlassSheen(
+        fillTop: ThemeColor(white: 1, opacity: 0.12), fillBottom: ThemeColor(white: 1, opacity: 0.04),
+        glint: ThemeColor(white: 1, opacity: 0.08),
+        rimTop: ThemeColor(white: 1, opacity: 0.50), rimBottom: ThemeColor(white: 1, opacity: 0.08))
+
+    /// The brightest the fill gets (top edge plus glint) over `base`, for
+    /// checking text contrast.
+    public func brightest(over base: ThemeColor) -> ThemeColor {
+        glint.composited(over: fillTop.composited(over: base))
+    }
+}
+
 /// Which group a theme is listed under in the picker.
 public enum ThemeFamily: String, Hashable, Sendable {
     /// Calm, hardware-black looks.
@@ -239,10 +288,12 @@ public struct AppTheme: Identifiable, Hashable, Sendable {
     public var typeface: ThemeTypeface
     public var motion: ThemeMotion
     public var controls: ThemeControlStyle
+    public var surfaces: ThemeSurfaceStyle
 
     public init(id: ThemeID, name: String, summary: String, family: ThemeFamily, palette: ThemePalette,
                 accents: AccentTreatment = .original, typeface: ThemeTypeface = .rounded,
-                motion: ThemeMotion = .standard, controls: ThemeControlStyle = .solid) {
+                motion: ThemeMotion = .standard, controls: ThemeControlStyle = .solid,
+                surfaces: ThemeSurfaceStyle = .flat) {
         self.id = id
         self.name = name
         self.summary = summary
@@ -252,6 +303,7 @@ public struct AppTheme: Identifiable, Hashable, Sendable {
         self.typeface = typeface
         self.motion = motion
         self.controls = controls
+        self.surfaces = surfaces
     }
 
     /// The accent a module with `base` shows in this theme.

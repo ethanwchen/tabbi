@@ -36,7 +36,31 @@ final class ThemeCatalogTests: XCTestCase {
         for theme in ThemeCatalog.all {
             XCTAssertEqual(theme.motion == .gentle, theme.family == .cozy, theme.name)
             XCTAssertEqual(theme.controls == .glass, theme.id == .liquidGlass, theme.name)
+            XCTAssertEqual(theme.surfaces == .glass, theme.id == .liquidGlass, theme.name)
         }
+    }
+
+    /// Glass cards must read as glass, not as Midnight's flat gray: lit from
+    /// above, clearly brighter than a flat card, with a rim that catches light.
+    func testGlassSheenIsTopLitAndBrighterThanAFlatCard() {
+        let sheen = GlassSheen.standard
+        let black = ThemeColor(white: 0)
+        XCTAssertGreaterThan(sheen.fillTop.opacity, sheen.fillBottom.opacity)
+        XCTAssertGreaterThan(sheen.rimTop.opacity, sheen.rimBottom.opacity)
+        let flatCard = ThemeCatalog.midnight.palette.surface.composited(over: black)
+        let glassTop = sheen.fillTop.composited(over: black)
+        XCTAssertGreaterThan(glassTop.luminance, flatCard.luminance * 2)
+        XCTAssertGreaterThan(sheen.rimTop.opacity, ThemeCatalog.midnight.palette.stroke.opacity * 4)
+    }
+
+    func testTextStaysReadableOnTheBrightestGlass() {
+        let theme = ThemeCatalog.liquidGlass
+        let palette = theme.palette
+        let body = (palette.glow ?? palette.background).composited(over: palette.background)
+        let brightest = GlassSheen.standard.brightest(over: body)
+        func contrast(_ text: ThemeColor) -> Double { text.composited(over: brightest).contrast(with: brightest) }
+        XCTAssertGreaterThanOrEqual(contrast(palette.primaryText), 7)
+        XCTAssertGreaterThanOrEqual(contrast(palette.secondaryText), 4.5)
     }
 
     func testGentleMotionPlaysEveryTokenSlowerAndCalmer() {
