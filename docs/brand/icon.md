@@ -155,3 +155,51 @@ Verdict:
 - `Resources/AppIcon.icns` was regenerated from this round.
 
 Next round: the light, dark and tinted variant PNGs, the 1024 px README PNG and the monochrome glyph, then a final review of all of them together.
+
+### Round 5: appearances and the glyph
+
+Sheet: `rounds/r5-variants.png` (each appearance at 256, 32 and 16 px, then the glyph, on a light and a dark desktop).
+
+Changes from round 4:
+
+- The colours moved into a `Palette` with four appearances: Default (ginger tabby on deep ink, the shipped `.icns`), Light (the same tabby on warm cream), Dark (notch black ground, tabby unchanged) and Tinted (luminance only on black, for the system tint to colour).
+- In Tinted the ears are a shade darker than the inner ear, so the tab ears keep their label and still read as tabs without colour.
+- A monochrome glyph: the head and tab ears as one shape, with the open eye, the checkmark wink and the nose cut out.
+  It is built with path booleans (`union`, `subtracting`), so it is a single vector path that renders the same as a PNG and as a PDF template image.
+
+Verdict:
+
+- All four appearances are the same character at a glance; only the ground changes, which is how Apple's own Default and Dark icons behave.
+- Light works best on dark desktops and in web pages; on a light desktop it relies on the drop shadow for its edge, which is why Default stays the shipped icon.
+- Tinted keeps the eye, the check and the "M" as the darkest marks, so a system tint still shows a winking tabby.
+- A version of the glyph with the "M" cut out was tried and dropped: at 16 px its gaps became speckle above the eye.
+  Without it the glyph is a clean cat head with a wink at 16 px, and the tab ears carry the name.
+
+## Assets
+
+`scripts/make-icon.swift` writes these to `docs/brand/assets/` on every default run.
+Other parts of the project (README, website, installer, onboarding) should use them by path rather than copying or redrawing them.
+
+| File | Use |
+| --- | --- |
+| `tabbi-icon-1024.png` | The shipped icon at 1024 px; the README and anywhere the app icon is shown |
+| `tabbi-icon-light-1024.png` | Light appearance, for dark pages and light marketing surfaces |
+| `tabbi-icon-dark-1024.png` | macOS 26 Dark appearance |
+| `tabbi-icon-tinted-1024.png` | macOS 26 Tinted appearance (luminance only) |
+| `tabbi-glyph.pdf` | Monochrome vector mark, for template images in menus and small UI |
+| `tabbi-glyph-256.png` | The same mark as a black PNG on transparent |
+
+## Regenerating the icon
+
+```sh
+swift scripts/make-icon.swift            # Resources/AppIcon.icns and docs/brand/assets
+swift scripts/make-icon.swift --sheet /tmp/sheet.png        # 1024, 128, 32, 16 px review sheet
+swift scripts/make-icon.swift --dock /tmp/dock.png          # beside Apple's icons in a Dock row
+swift scripts/make-icon.swift --variants /tmp/variants.png  # every appearance and the glyph
+```
+
+The default run renders every size of the `.iconset` natively (16 to 1024 px, with the small-size drawing at 32 px and below), builds `Resources/AppIcon.icns` with `iconutil`, and exports the assets above.
+The output is deterministic, so an unchanged script rebuilds a byte-identical `.icns`.
+
+How the icon reaches the app: `scripts/assemble.sh` (used by `scripts/bundle.sh` and `scripts/run.sh`) copies `Resources/AppIcon.icns` into `Tabbi.app/Contents/Resources/AppIcon.icns`, and `Resources/Info.plist` names it with `CFBundleIconFile` = `AppIcon`.
+After regenerating, rebuild the bundle with `scripts/bundle.sh`; Finder and the Dock may keep a cached icon until the app is moved or `killall Dock` is run.
