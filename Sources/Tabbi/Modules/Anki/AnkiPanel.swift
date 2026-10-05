@@ -686,6 +686,12 @@ private struct AnkiSetupGuide {
             title = "Anki isn't installed"
             message = "Install the free Anki desktop app to see your due cards, decks and streak here."
             hint = "Using a copy outside Applications? Just open it."
+        case .notRunning where notice == .launchFailed:
+            // A click tried to launch Anki and macOS refused: say so, or
+            // the screen would look as if the click did nothing.
+            symbol = "exclamationmark.triangle"
+            title = AnkiOpenOutcome.launchFailed.title ?? "Anki wouldn't open"
+            message = AnkiOpenOutcome.launchFailed.suggestion ?? ""
         case .notRunning:
             symbol = "power"
             title = "Anki is closed"
