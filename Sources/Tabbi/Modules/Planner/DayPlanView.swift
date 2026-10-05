@@ -56,6 +56,11 @@ struct DayPlanView: View {
                     PlannerPillButton(title: "Retry", symbol: "arrow.clockwise", help: "Ask Claude again") {
                         plan.retry()
                     }
+                } else if failure.opensConnections {
+                    PlannerPillButton(title: failure == .claudeNotFound ? "Set up Claude" : "Connect calendar",
+                                      symbol: "link", help: "Open Connections to finish setting this up") {
+                        ConnectionsStore.shared.showHub()
+                    }
                 } else if failure == .calendarOff {
                     PlannerPillButton(title: "Open Settings", symbol: "gearshape",
                                       help: "Open Privacy & Security to allow Calendar access") {

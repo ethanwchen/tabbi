@@ -46,6 +46,7 @@ struct UpNextCard: View {
         case .requestAccess: store.requestAccess()
         case .openPrivacySettings: store.openPrivacySettings()
         case .openInternetAccounts: store.openInternetAccounts()
+        case .openConnections: ConnectionsStore.shared.showHub()
         }
     }
 }

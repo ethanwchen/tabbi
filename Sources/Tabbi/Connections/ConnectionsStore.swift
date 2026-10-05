@@ -41,6 +41,18 @@ final class ConnectionsStore: ObservableObject {
                                            detail: "This takes a second.")
     }
 
+    // MARK: The hub
+
+    /// Opens the Connections hub. The app installs it at launch (it owns the
+    /// Settings window); until then `showHub()` does nothing.
+    var hubPresenter: (() -> Void)?
+
+    /// Shows the Connections hub, so a tab's empty state or onboarding can
+    /// send the user to the one place that fixes any connection.
+    func showHub() {
+        hubPresenter?()
+    }
+
     // MARK: Watching
 
     /// A view showing connections appeared: check now, and on every return
