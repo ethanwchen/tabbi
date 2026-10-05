@@ -6,7 +6,7 @@ import TabbiKitCore
 import TabbiKit
 
 /// Width shared by every pane so the window only animates its height.
-private let paneWidth: CGFloat = 500
+let paneWidth: CGFloat = 500
 
 // MARK: General
 
@@ -112,7 +112,7 @@ struct DisplayOption: Identifiable, Equatable {
 }
 
 /// Explanatory text under a grouped section, aligned with the section's rows.
-private struct SectionFooter: View {
+struct SectionFooter: View {
     let text: String
     init(_ text: String) { self.text = text }
 

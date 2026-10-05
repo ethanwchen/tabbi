@@ -6,14 +6,15 @@ import TabbiKit
 /// The Settings window's own panes. Enabled modules' panes sit between
 /// `leading` and `trailing`.
 enum AppSettingsPane: String, CaseIterable {
-    case general, modules, preview, shortcuts, claude, about
+    case general, appearance, modules, preview, shortcuts, claude, about
 
-    static let leading: [AppSettingsPane] = [.general, .modules, .preview, .shortcuts]
+    static let leading: [AppSettingsPane] = [.general, .appearance, .modules, .preview, .shortcuts]
     static let trailing: [AppSettingsPane] = [.claude, .about]
 
     var title: String {
         switch self {
         case .general: "General"
+        case .appearance: "Appearance"
         case .modules: "Modules"
         case .preview: "Preview"
         case .shortcuts: "Shortcuts"
@@ -25,6 +26,7 @@ enum AppSettingsPane: String, CaseIterable {
     var symbol: String {
         switch self {
         case .general: "gearshape"
+        case .appearance: "paintpalette"
         case .modules: "square.grid.2x2"
         case .preview: "rectangle.topthird.inset.filled"
         case .shortcuts: "keyboard"
@@ -37,6 +39,7 @@ enum AppSettingsPane: String, CaseIterable {
     var view: AnyView {
         switch self {
         case .general: AnyView(GeneralSettingsPane())
+        case .appearance: AnyView(AppearanceSettingsPane())
         case .modules: AnyView(ModulesSettingsPane())
         case .preview: AnyView(PreviewSettingsPane())
         case .shortcuts: AnyView(ShortcutsSettingsPane())
