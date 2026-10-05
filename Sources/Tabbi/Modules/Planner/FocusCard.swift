@@ -110,16 +110,10 @@ private struct FocusRingButton: View {
     var body: some View {
         let accent = TodayModule.descriptor.accentColor
         Button(action: action) {
-            ZStack {
+            ProgressRing(progress: progress, tint: accent) {
                 Circle()
                     .fill(accent.opacity(hovering ? 0.22 : 0.10))
                     .padding(2.5)
-                Circle()
-                    .stroke(accent.opacity(0.22), lineWidth: 2.5)
-                Circle()
-                    .trim(from: 0, to: progress)
-                    .stroke(accent, style: StrokeStyle(lineWidth: 2.5, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
                 Image(systemName: isRunning ? "pause.fill" : "play.fill")
                     .font(.system(size: 10, weight: .bold))
                     .foregroundStyle(accent)
@@ -134,7 +128,6 @@ private struct FocusRingButton: View {
         .help(help)
         .onHover { hovering = $0 }
         .animation(Theme.Motion.snappy, value: hovering)
-        .animation(Theme.Motion.content, value: progress)
     }
 }
 

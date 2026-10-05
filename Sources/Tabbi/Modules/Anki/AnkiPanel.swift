@@ -108,14 +108,9 @@ private struct DueCard: View {
     }
 
     private var ring: some View {
-        ZStack {
-            Circle()
-                .stroke(accent.opacity(0.18), lineWidth: Self.lineWidth)
-            Circle()
-                .trim(from: 0, to: summary.completionFraction)
-                .stroke(summary.dueTotal == 0 ? Theme.Palette.success : accent,
-                        style: StrokeStyle(lineWidth: Self.lineWidth, lineCap: .round))
-                .rotationEffect(.degrees(-90))
+        ProgressRing(progress: summary.completionFraction,
+                     tint: summary.dueTotal == 0 ? Theme.Palette.success : accent,
+                     track: accent.opacity(0.2), lineWidth: Self.lineWidth) {
             if summary.dueTotal == 0 {
                 VStack(spacing: Theme.Spacing.xxs) {
                     Image(systemName: "checkmark")

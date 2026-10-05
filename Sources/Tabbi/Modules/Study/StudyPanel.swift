@@ -83,13 +83,7 @@ private struct StudyDial: View {
         let readout = store.readout
         let session = store.session
         Card(padding: 0) {
-            ZStack {
-                Circle()
-                    .stroke(ringColor.opacity(0.18), lineWidth: 6)
-                Circle()
-                    .trim(from: 0, to: store.progress ?? 0)
-                    .stroke(ringColor, style: StrokeStyle(lineWidth: 6, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
+            ProgressRing(progress: store.progress, tint: ringColor, lineWidth: 6) {
                 VStack(spacing: Theme.Spacing.xxs) {
                     Text(readout.value)
                         .font(.system(size: readout.value.count > 5 ? 26 : 30,

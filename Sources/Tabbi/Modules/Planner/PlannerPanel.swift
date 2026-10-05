@@ -225,15 +225,7 @@ struct PlannerProgressRing: View {
     let progress: Double
 
     var body: some View {
-        let accent = TodayModule.descriptor.accentColor
-        ZStack {
-            Circle().stroke(accent.opacity(0.22), lineWidth: 2.5)
-            Circle()
-                .trim(from: 0, to: progress)
-                .stroke(accent, style: StrokeStyle(lineWidth: 2.5, lineCap: .round))
-                .rotationEffect(.degrees(-90))
-        }
-        .animation(Theme.Motion.content, value: progress)
+        ProgressRing(progress: progress, tint: TodayModule.descriptor.accentColor)
     }
 }
 

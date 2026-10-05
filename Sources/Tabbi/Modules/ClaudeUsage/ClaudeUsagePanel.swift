@@ -52,14 +52,8 @@ private struct UsageRing: View {
     var body: some View {
         let utilization = window?.utilization ?? 0
         VStack(spacing: Theme.Spacing.xs) {
-            ZStack {
-                Circle()
-                    .stroke(Theme.Palette.surface, lineWidth: Self.lineWidth)
-                Circle()
-                    .trim(from: 0, to: min(max(utilization, 0), 1))
-                    .stroke(color(for: utilization),
-                            style: StrokeStyle(lineWidth: Self.lineWidth, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
+            ProgressRing(progress: utilization, tint: color(for: utilization),
+                         track: Theme.Palette.surface, lineWidth: Self.lineWidth) {
                 if let window {
                     Text(ClaudeUsageFormat.percent(window.utilization))
                         .font(Theme.Typography.metric)

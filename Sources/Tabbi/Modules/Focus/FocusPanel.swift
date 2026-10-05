@@ -36,13 +36,7 @@ private struct FocusDial: View {
     var body: some View {
         let timer = store.timer
         Card(padding: 0) {
-            ZStack {
-                Circle()
-                    .stroke(accent.opacity(0.18), lineWidth: 6)
-                Circle()
-                    .trim(from: 0, to: store.progress)
-                    .stroke(accent, style: StrokeStyle(lineWidth: 6, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
+            ProgressRing(progress: store.progress, tint: accent, lineWidth: 6) {
                 VStack(spacing: Theme.Spacing.xxs) {
                     Text(FocusTimerFormat.clock(store.remaining))
                         .font(.system(size: 30, weight: .semibold, design: .rounded).monospacedDigit())

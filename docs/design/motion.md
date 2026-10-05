@@ -45,6 +45,11 @@ Staggered entrances use `MotionTokens.stagger(index)`: 30 ms per item, capped at
 - Content that has a known shape (a list of rows, a paragraph) loads as a skeleton instead of a spinner: `SkeletonLine(fraction:)` and `SkeletonLine(width:)` lines laid out like the real content, so nothing jumps when it arrives, with `.shimmering()` on the group.
   The highlight is masked to the lines and sweeps across in 1.4 s, easing in and out from fully off one edge to fully off the other (`LoaderClock.shimmerOffset`); under Reduce Motion the skeleton breathes instead.
   Plan My Day and the Wrap-up summary use it.
+- `ProgressRing(progress:tint:track:lineWidth:)` is the one progress ring: a faint track and an arc in the accent that fills clockwise from twelve o'clock, with the readout inside.
+  The arc follows its value with the content spring, so a ticking timer glides instead of stepping.
+  A small drop unwinds, but a drop of more than half the ring is a new start (a Pomodoro phase change, a usage window that rolled over), so the arc snaps to the new value instead of sweeping backwards (`RingProgress.change`).
+  Missing or non-finite values draw an empty ring (`RingProgress.clamped`).
+  Focus, Study, Anki, Claude Usage and Today's rings use it; Today's shared-goal checkbox keeps its own ring because it turns into a filled check.
 - Show no loader for waits under about 300 ms; pair a loader with a short label that says what is happening.
 
 ## Reduce Motion
