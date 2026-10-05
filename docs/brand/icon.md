@@ -57,3 +57,28 @@ Verdicts:
 
 Decision: develop A.
 Refinement goals: make the ears unmistakably folder tabs (shorter, wider, flat-topped), keep stripes inside the head, strengthen the check at small sizes, and tune the 16 px render.
+
+## Refinement rounds (concept A)
+
+Each round is archived as a review sheet in `docs/brand/rounds/` (light desktop on top, dark below; 1024 at half size, then 128, 32 and 16 px, then 4x pixel blow-ups of 32 and 16 px).
+
+### Round 1: ears become tabs
+
+Sheet: `rounds/r1.png`.
+
+Changes from round 0:
+
+- Ears are now short, wide, flat-topped tabs (290 px base, 170 px top, 200 px tall, leaning out 0.30 rad) instead of tall narrow ones.
+  The outer edges end up nearly vertical, so each ear reads as a folder tab standing on the head while still reading as a cat ear.
+  The cream inner ear sits in the tab like a label.
+- Cheek stripes are clipped to the head and run in from its edge, so they read as tabby markings rather than whiskers.
+- The head is a little wider (720 px) so the ears sit on its shoulders, and the "M" is a touch bolder.
+
+Verdict:
+
+- The rabbit-ear problem is gone; the silhouette is now a round cat face with two blocky tab ears, and it is clearly a cat at 128 and 32 px.
+- At 16 px the face is an orange blob with two ear bumps: the cat survives, but the checkmark wink and the "M" turn to mush.
+- The orange glow behind the head reads slightly muddy purple on the ink background.
+- `Resources/AppIcon.icns` was regenerated from this round, so the bundled app shows the tabby instead of the old notch icon.
+
+Next round: thicker check that survives at 32 px, a cleaner background light, and check how the ears sit against the squircle corners.

@@ -180,30 +180,37 @@ func drawConceptA(_ ctx: CGContext) {
     radialGlow(ctx, at: CGPoint(x: 512, y: 520), radius: 440, color: RGB(0xFFB25B).cg(0.22))
     ctx.restoreGState()
 
-    // Folder-tab ears, leaning outward, tucked behind the head.
+    // Folder-tab ears: short, wide and flat-topped like the tabs in Tabbi's tab bar,
+    // leaning outward and tucked behind the head. The cream inner ear is the tab's label.
     for side in [-1.0, 1.0] as [CGFloat] {
-        let base = CGPoint(x: 512 + side * 190, y: 520)
-        let ear = tabPath(baseCenter: base, baseWidth: 250, topWidth: 150, height: 260, radius: 42, angle: side * 0.20)
+        let base = CGPoint(x: 512 + side * 200, y: 520)
+        let angle = side * 0.30
+        let ear = tabPath(baseCenter: base, baseWidth: 290, topWidth: 170, height: 200, radius: 40, angle: angle)
         fill(ctx, ear, top: Brand.ginger.cg(), bottom: Brand.gingerDeep.cg(), shadow: 20)
-        let inner = tabPath(baseCenter: CGPoint(x: base.x, y: base.y - 30), baseWidth: 150, topWidth: 84, height: 170,
-                            radius: 26, angle: side * 0.20)
+        let inner = tabPath(baseCenter: CGPoint(x: base.x + side * 8, y: base.y - 40), baseWidth: 170, topWidth: 100,
+                            height: 120, radius: 24, angle: angle)
         fill(ctx, inner, top: Brand.cream.cg(), bottom: Brand.creamShade.cg())
     }
 
     // Head: a broad oval that runs off the bottom of the icon.
-    let head = ellipse(512, 760, 700, 640)
+    let head = ellipse(512, 770, 720, 640)
     fill(ctx, head, top: Brand.ginger.cg(), bottom: Brand.gingerDeep.cg(), shadow: 30)
 
-    // Tabby "M" and cheek stripes.
+    // Tabby "M" and cheek stripes. The cheek stripes are clipped to the head so they
+    // run in from its edge, as on a real tabby, instead of sticking out like whiskers.
     let stripe = Brand.stripe.cg()
-    stroke(ctx, [CGPoint(x: 446, y: 560), CGPoint(x: 472, y: 486), CGPoint(x: 512, y: 540),
-                 CGPoint(x: 552, y: 486), CGPoint(x: 578, y: 560)], width: 26, color: stripe)
+    stroke(ctx, [CGPoint(x: 444, y: 562), CGPoint(x: 472, y: 490), CGPoint(x: 512, y: 542),
+                 CGPoint(x: 552, y: 490), CGPoint(x: 580, y: 562)], width: 28, color: stripe)
+    ctx.saveGState()
+    ctx.addPath(head)
+    ctx.clip()
     for side in [-1.0, 1.0] as [CGFloat] {
-        for (i, y) in [650.0, 700.0].enumerated() as EnumeratedSequence<[CGFloat]> {
-            let inner = 512 + side * (276 - CGFloat(i) * 6)
-            stroke(ctx, [CGPoint(x: 512 + side * 340, y: y - 6), CGPoint(x: inner, y: y + 4)], width: 22, color: stripe)
+        for (i, y) in [648.0, 708.0].enumerated() as EnumeratedSequence<[CGFloat]> {
+            let inner = 512 + side * (290 - CGFloat(i) * 14)
+            stroke(ctx, [CGPoint(x: 512 + side * 400, y: y - 14), CGPoint(x: inner, y: y + 4)], width: 26, color: stripe)
         }
     }
+    ctx.restoreGState()
 
     // Muzzle.
     fill(ctx, ellipse(462, 772, 150, 116), Brand.cream.cg())
