@@ -9,10 +9,10 @@ struct ConnectionsSettingsPane: View {
     @EnvironmentObject private var settings: SettingsStore
 
     var body: some View {
+        let kinds = ConnectionKind.relevant(to: settings.settings.modules.enabled)
         Form {
             Section {
-                ConnectionsList(kinds: ConnectionKind.relevant(to: settings.settings.modules.enabled)
-                    .filter(ConnectionsStore.listed.contains))
+                ConnectionsList(kinds: kinds)
             } header: {
                 Text("Apps and permissions")
             } footer: {
@@ -23,7 +23,7 @@ struct ConnectionsSettingsPane: View {
             }
         }
         .formStyle(.grouped)
-        .connectionsHost()
+        .connectionsHost(watching: kinds)
         // Matches the other panes' width; scrolls when many tabs are on.
         .frame(width: 500, height: 444)
     }
@@ -31,7 +31,8 @@ struct ConnectionsSettingsPane: View {
 
 /// The rows for some connections. Onboarding and the tabs' empty states
 /// can embed it with just the rows they need, inside a container that has
-/// `.connectionsHost()`, which opens their sheets and keeps them checked.
+/// `.connectionsHost(watching:)` with the same rows, which opens their
+/// sheets and keeps them checked.
 struct ConnectionsList: View {
     let kinds: [ConnectionKind]
     @ObservedObject var store: ConnectionsStore = .shared
@@ -88,17 +89,22 @@ final class ConnectionSheetPresenter: ObservableObject {
     }
 }
 
-/// Opens the sheets of the `ConnectionsList`s inside, and checks their
-/// connections while shown (and on every return to Tabbi).
+/// Opens the sheets of the `ConnectionsList`s inside, and checks the
+/// connections they show while shown (and on every return to Tabbi).
 private struct ConnectionsHost: ViewModifier {
+    let kinds: [ConnectionKind]
     @ObservedObject var store: ConnectionsStore
     @StateObject private var sheets = ConnectionSheetPresenter()
 
     func body(content: Content) -> some View {
         content
             .environmentObject(sheets)
-            .onAppear(perform: store.beginWatching)
-            .onDisappear(perform: store.endWatching)
+            .onAppear { store.beginWatching(kinds) }
+            .onDisappear { store.endWatching(kinds) }
+            .onChange(of: kinds) { old, new in
+                store.beginWatching(new)
+                store.endWatching(old)
+            }
             .sheet(item: $sheets.sheet, onDismiss: sheets.showNextSheet) {
                 ConnectionSheetView(sheet: $0, store: store, perform: { sheets.perform($0, for: $1, in: store) })
             }
@@ -106,10 +112,11 @@ private struct ConnectionsHost: ViewModifier {
 }
 
 extension View {
-    /// Hosts the `ConnectionsList`s inside this view. Apply it once, to the
-    /// container (a Form or a stack), never to the list itself.
-    func connectionsHost(_ store: ConnectionsStore = .shared) -> some View {
-        modifier(ConnectionsHost(store: store))
+    /// Hosts the `ConnectionsList`s inside this view, which show `kinds`.
+    /// Apply it once, to the container (a Form or a stack), never to the
+    /// list itself.
+    func connectionsHost(watching kinds: [ConnectionKind], _ store: ConnectionsStore = .shared) -> some View {
+        modifier(ConnectionsHost(kinds: kinds, store: store))
     }
 }
 

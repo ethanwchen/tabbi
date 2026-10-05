@@ -16,9 +16,6 @@ import TabbiKitCore
 final class ConnectionsStore: ObservableObject {
     static let shared = ConnectionsStore(runMode: .current)
 
-    /// The rows Connections lists.
-    static let listed = ConnectionKind.allCases
-
     /// The latest answer for each connection, with the checks behind it;
     /// absent until its first check.
     @Published private(set) var diagnoses: [ConnectionKind: ConnectionDiagnosis] = [:]
@@ -33,7 +30,8 @@ final class ConnectionsStore: ObservableObject {
     private let probes: ConnectionProbes
     private var checks: [ConnectionKind: Task<Void, Never>] = [:]
     private var waiting: [ConnectionKind: Task<Void, Never>] = [:]
-    private var watchers = 0
+    /// How many shown views list each connection.
+    private var watchers: [ConnectionKind: Int] = [:]
     private var activationObserver: NSObjectProtocol?
     /// What the Party tab shares (see `follow(party:)`).
     @Published private var party: PartyLink?
@@ -88,29 +86,39 @@ final class ConnectionsStore: ObservableObject {
 
     // MARK: Watching
 
-    /// A view showing connections appeared: check now, and on every return
-    /// to Tabbi until the last one goes away.
-    func beginWatching() {
-        watchers += 1
-        guard watchers == 1, !isDemo else { return }
-        activationObserver = NotificationCenter.default.addObserver(
-            forName: NSApplication.didBecomeActiveNotification, object: nil, queue: .main
-        ) { [weak self] _ in
-            MainActor.assumeIsolated { self?.refresh() }
+    /// A view showing these connections appeared: check the ones nobody
+    /// was showing yet now, and every shown one on each return to Tabbi
+    /// until the last view goes away. Hidden rows are never checked.
+    func beginWatching(_ kinds: [ConnectionKind]) {
+        guard !isDemo else { return }
+        let unwatched = kinds.filter { watchers[$0] == nil }
+        for kind in kinds { watchers[kind, default: 0] += 1 }
+        if activationObserver == nil {
+            activationObserver = NotificationCenter.default.addObserver(
+                forName: NSApplication.didBecomeActiveNotification, object: nil, queue: .main
+            ) { [weak self] _ in
+                MainActor.assumeIsolated {
+                    guard let self else { return }
+                    self.refresh(ConnectionKind.allCases.filter { self.watchers[$0] != nil })
+                }
+            }
         }
-        refresh()
+        refresh(unwatched)
     }
 
-    func endWatching() {
-        watchers = max(watchers - 1, 0)
-        guard watchers == 0, let activationObserver else { return }
+    func endWatching(_ kinds: [ConnectionKind]) {
+        for kind in kinds {
+            guard let count = watchers[kind] else { continue }
+            watchers[kind] = count > 1 ? count - 1 : nil
+        }
+        guard watchers.isEmpty, let activationObserver else { return }
         NotificationCenter.default.removeObserver(activationObserver)
         self.activationObserver = nil
     }
 
     /// Checks the given connections again. A check already running for a
     /// row is replaced, so the newest answer always wins.
-    func refresh(_ kinds: [ConnectionKind] = ConnectionsStore.listed) {
+    func refresh(_ kinds: [ConnectionKind]) {
         guard !isDemo else { return }
         for kind in kinds {
             // Party's state comes from its tab as it changes; no probe.
@@ -316,6 +324,7 @@ final class ConnectionsStore: ObservableObject {
         guard !isDemo else { return }
         switch permission {
         case .calendar:
+            guard ConnectionProbes.canAskForCalendar else { break }
             _ = try? await EKEventStore().requestFullAccessToEvents()
         case .notifications:
             guard ConnectionProbes.isAppBundle else { break }

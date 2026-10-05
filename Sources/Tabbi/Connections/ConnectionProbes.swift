@@ -46,8 +46,8 @@ struct ConnectionProbes: Sendable {
         let client = AnkiConnectClient(isAnkiRunning: { await MainActor.run { runningAnki() != nil } })
         let error: AnkiConnectError?
         do {
-            _ = try await client.connect()
-            error = nil
+            // Tabbi sends no key, so every call after the handshake fails.
+            error = try await client.connect().requireAPIKey ? .apiKeyRequired : nil
         } catch let failure as AnkiConnectError {
             error = failure
         } catch {
@@ -77,6 +77,12 @@ struct ConnectionProbes: Sendable {
         case .fullAccess: .fullAccess
         @unknown default: .denied
         }
+    }
+
+    /// Whether macOS may show its calendar prompt. Without a usage
+    /// description (a bare `swift run`) it terminates the app instead.
+    static var canAskForCalendar: Bool {
+        Bundle.main.object(forInfoDictionaryKey: "NSCalendarsFullAccessUsageDescription") != nil
     }
 
     private static func calendar() -> CalendarConnectionState {

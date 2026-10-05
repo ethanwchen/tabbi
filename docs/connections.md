@@ -19,7 +19,7 @@ The rules live in `Sources/TabbiKitCore/Connections`: each integration maps its 
 `ConnectionKind` names each row, what it unlocks and the tabs it serves, so Connections lists only what the current tabs use.
 In the app, `Sources/Tabbi/Connections` holds `ConnectionsStore` (one per app, `ConnectionsStore.shared`), the read-only `ConnectionProbes` that look at the Mac, and the views.
 `ConnectionsList` is the embeddable list of rows: the Settings pane shows it for every relevant row, and onboarding or a tab's empty state can show it for just the rows it needs.
-The container around it applies `.connectionsHost()` once, which opens the rows' sheets and keeps them checked while shown.
+The container around it applies `.connectionsHost(watching:)` once with the same rows, which opens their sheets and keeps only those rows checked while shown.
 A tab whose problem takes more than one click calls `ConnectionsStore.shared.showHub()`, which opens Settings at Connections (the app installs `hubPresenter` at launch).
 Today's Up next card and Plan my day do this when the calendar can't be reached from the notch or Claude is missing, and Ask Claude does it when Claude is missing, each with a single "Connect calendar" or "Set up Claude" button.
 The store checks only while a list is on screen, once when it appears and again each time Tabbi becomes active.
