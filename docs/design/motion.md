@@ -52,6 +52,24 @@ Staggered entrances use `MotionTokens.stagger(index)`: 30 ms per item, capped at
   Focus, Study, Anki, Claude Usage and Today's rings use it; Today's shared-goal checkbox keeps its own ring because it turns into a filled check.
 - Show no loader for waits under about 300 ms; pair a loader with a short label that says what is happening.
 
+## Celebrations
+
+Celebrations confirm a real event; they are brief, optional and never block input.
+
+- Three tiers.
+  A finished task or Pomodoro gets a symbol bounce and a numeric transition, with no particles.
+  A daily goal met or a streak continued gets a `.burst`: 36 particles, gone within 1.5 s.
+  A streak milestone, a level up or an unlock gets a `.milestone`: 72 particles, gone within 2 s.
+- `CelebrationPacer` (`Sources/TabbiKitCore/Motion/Celebration.swift`) keeps them rare: at most one burst every ten minutes, and one milestone a day (a second milestone that day plays as a burst).
+  When it says no, play the symbol bounce instead.
+- `CelebrationBurst` is the particle model: a seeded set of particles whose position, rotation, scale and opacity are pure functions of elapsed time (a fast launch within 35 degrees of vertical, gravity slowed by drag to a 200 pt/s fall, a pop in over 120 ms and a fade over the last 40% of each life).
+  Nothing changes per frame, so the same moment always draws the same picture.
+- Styles are `.confetti`, `.sparkles`, `.hearts` and `.pawPrints`, each drawn from paths (no image assets) in the module accent plus companions from the app palette.
+- In a view, set a new `Celebration(tier:style:accent:)` and add `.celebration(value)` to the panel.
+  The overlay draws with `Canvas` from a `TimelineView` capped at 60 fps, ignores hits, and leaves the hierarchy when the last particle is gone.
+- Under Reduce Motion nothing moves: a soft glow of the accent brightens and fades in place over 0.9 s (`CelebrationGlow`).
+- `--snapshot` renders a frame strip for each style and tier (`motion-celebration-<style>-<tier>.png`) and for the glow (`motion-celebration-reduced.png`).
+
 ## Reduce Motion
 
 Every animation has a calm fallback.

@@ -108,6 +108,19 @@ enum SnapshotRenderer {
             print(url.path)
         }
 
+        // Frame strips of the shared motion (celebrations), reviewed frame by frame.
+        for (name, view) in MotionSnapshots.shots() {
+            let renderer = ImageRenderer(content: view)
+            renderer.scale = 2
+            guard let image = renderer.nsImage,
+                  let tiff = image.tiffRepresentation,
+                  let png = NSBitmapImageRep(data: tiff)?.representation(using: .png, properties: [:])
+            else { continue }
+            let url = outputDirectory.appendingPathComponent("\(name).png")
+            try? png.write(to: url)
+            print(url.path)
+        }
+
         let settingsWindow = SettingsWindowController(settings: services.settings, modules: services.modules)
         for pane in settingsWindow.paneIDs {
             guard let png = await settingsWindow.snapshot(of: pane) else { continue }
