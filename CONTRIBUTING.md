@@ -15,7 +15,7 @@ A MacBook with a notch is nice to have but not required: other displays get a vi
 git clone https://github.com/ethanwchen/notchdeck.git
 cd notchdeck
 swift build                     # compile; must stay warning-free
-swift test                      # unit tests for TabbiKitCore
+swift test                      # unit tests for TabbiKitCore and the app wiring
 scripts/run.sh                  # bundle build/Tabbi.app (debug) and launch it
 ```
 
@@ -66,12 +66,69 @@ In short:
 | --- | --- |
 | `Sources/TabbiKitCore` | Pure Swift with no AppKit or SwiftUI: parsers, models, stores, formatting. Everything here has unit tests in `Tests/TabbiKitCoreTests`. |
 | `Sources/TabbiKit` | Shared AppKit and SwiftUI: the design system in `Design/Theme.swift` (palette, type, spacing, radius, motion, plus `Card` and `IconButton`), shared components, the notch panel, shape and geometry, the notch's open/close and tab state with its tab bar, the root notch view with its closed-notch preview, the notch controller (panel placement, pointer, keyboard, swipe and hotkey input), pet views, the focus audio engine, and the settings infrastructure (the toolbar Settings window and the shortcut recorder field). The app fills the notch through `ModuleViews.notchContent` and `ModuleViews.notchInputs`. |
-| `Sources/Tabbi/Modules/<Module>/` | One folder per module: an `ObservableObject` store owned by `AppServices`, and its SwiftUI views. |
+| `Sources/Tabbi/Modules/<Module>/` | One folder per module: an `ObservableObject` store, its SwiftUI views, and a `NotchModule` with its descriptor. `ModuleList.swift` lists every module, one per line. |
 | `Sources/TabbiKitCore/Claude` | `ClaudeCLI` and the stream-json parser used by both Claude modules. |
 
 Put logic you can test without a UI in `TabbiKitCore`, and test it through its public API.
 When you work on one module, keep your changes inside that module's folders and their tests.
 Touch the shared files only when you have to, and keep those edits small.
+
+## Extending Tabbi
+
+Most additions are a few lines in one place, plus a test.
+[AGENTS.md](AGENTS.md#adding-a-module) walks through adding a whole module.
+
+### Add a theme
+
+Themes live in `Sources/TabbiKitCore/Themes/ThemeCatalog.swift`.
+
+1. Add a `ThemeID` constant in `AppTheme.swift`.
+2. Declare the theme in `ThemeCatalog` with a name, a one-line summary, a `family` (`.classic` or `.cozy`, which picks its group in Settings > Appearance) and a `ThemePalette`.
+   Cozy themes can reuse `cozyPalette(glow:tint:)`.
+3. Choose its `accents` (`original`, `monochrome`, `vivid` or `pastel`), `typeface`, `motion` and `controls` (`glass` draws Liquid Glass on macOS 26 and falls back to a solid surface elsewhere or when Reduce Transparency is on).
+4. Add it to `ThemeCatalog.all` in picker order, update the order in `ThemeTests`, and add the id to the `theme` row in [docs/kits.md](docs/kits.md).
+
+Keep the panel `background` opaque black and any `glow` at 0.3 opacity or less, so the open panel still meets the hardware notch.
+`ThemeTests` checks both, and checks that primary, secondary and tertiary text stay readable on a card lit by the glow.
+Render every panel in the new theme and look at each one:
+
+```sh
+TABBI_DEMO=1 swift run Tabbi --snapshot snapshots-themes --theme all
+```
+
+A kit can start in the theme by naming its id in the kit's `theme` field (see [docs/kits.md](docs/kits.md)).
+
+### Add a pet breed
+
+Breeds are pixel art in `Sources/TabbiKitCore/Pets`: add a `PetBreed` case, pick or draw a body shape, and give it a palette and pattern.
+[docs/study/pets.md](docs/study/pets.md#adding-a-breed) explains the sprite format and the steps, and `swift run PetGallery /tmp/petgallery` draws contact sheets to review it on black.
+Give it the server's breed name in `PartyPetAppearance.wireBreed` (the compiler asks for it), so friends see the right pet.
+The breed then shows up in the Closet, the onboarding pet step, Party and kit validation with no other changes.
+
+### Add a focus sound
+
+Focus sounds are generated in code, so there are no audio files to ship.
+
+1. Add a case to `FocusSound` (`Sources/TabbiKitCore/Focus/FocusSound.swift`) with a `displayName` and an SF Symbol.
+2. Write its synth beside the others in `FocusAmbience.swift`: allocation-free per sample (it runs on the audio thread) and calibrated to `NoiseGenerator.targetRMS`, so layers mix at predictable levels.
+3. Wire it into `FocusSoundGenerator`, and add the id to the `focus` sounds in [docs/kits.md](docs/kits.md).
+
+`FocusAmbienceTests` checks every sound's level, DC offset, peaks and determinism; add a test for what makes the new sound recognizable, as the rain, fireplace and cafe tests do.
+The Focus pane, the Study sound chip and kit validation read `FocusSound.allCases`, so the sound appears there, and kits can list its id in `focus.sounds`.
+
+### Add a study method
+
+Study methods are presets of one engine in `Sources/TabbiKitCore/StudyMethods`.
+
+1. Add a case to `StudyMethodKind`.
+2. Add a preset to `StudyMethod` (focus target, break rule, optional long break and review phase) and list it in `StudyMethod.presets` in picker order.
+3. Write its copy in `StudyMethodInfo.info(for:)`: a name, a rhythm tagline, how to do it, and what the evidence says with an honest `evidenceLevel`.
+   Cite the source in the evidence text, and keep claims to what studies support.
+4. Add the id to the `study` methods in [docs/kits.md](docs/kits.md).
+
+`StudyMethodTests` checks that every kind has a preset.
+The Study tab, the onboarding study method step and kit validation pick the method up from there, and a kit offers it by listing its id in `study.methods`.
+Render `TABBI_STUDY_SNAPSHOT=method:<kind> swift run Tabbi --snapshot snapshots-study --kit medicine` to see it in the Study tab and in onboarding.
 
 ## Pull request guidelines
 
