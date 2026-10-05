@@ -330,7 +330,7 @@ public final class NotchController {
             revealed = true
             updateVisibility()
         }
-        model.toggle()
+        model.toggle(fromKeyboard: true)
     }
 
     private func screensChanged() {

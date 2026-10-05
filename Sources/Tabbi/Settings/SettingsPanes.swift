@@ -590,7 +590,7 @@ struct ShortcutsSettingsPane: View {
                     }
                 } label: {
                     Text("Open and close the notch")
-                    Text("Works from any app.")
+                    Text("Works from any app. On Today, type right away to add a task.")
                 }
                 if let status {
                     Label(status.text, systemImage: status.symbol)

@@ -80,6 +80,13 @@ struct PlannerPanel: View {
             store.upNext.setVisible(true)
             store.focus.setVisible(true, viewer: .today)
         }
+        .task {
+            // Opened by the global shortcut: the caret waits in "Add a task",
+            // once the notch panel has become key.
+            guard notch.openedFromKeyboard, store.canEdit else { return }
+            try? await Task.sleep(for: .milliseconds(80))
+            focus = .add
+        }
         .onChange(of: focus) { _, field in notch.isPinned = field != nil }
         .onDisappear {
             notch.isPinned = false

@@ -56,6 +56,12 @@ public final class NotchViewModel: ObservableObject {
         }
     }
 
+    /// True when the global shortcut opened the notch, so the open tab can
+    /// put the caret in its main field (Today's "Add a task") and the user can
+    /// type right away. Opening by pointer leaves focus alone, since a focused
+    /// field pins the notch open after the pointer leaves.
+    @Published public private(set) var openedFromKeyboard = false
+
     private static let selectedKey = "selectedModule"
 
     public init(geometry: NotchGeometry, layout: ModuleLayout) {
@@ -99,8 +105,9 @@ public final class NotchViewModel: ObservableObject {
         notch.width + (preview.map { NotchPreviewLayout.wingWidth(for: $0) * 2 } ?? 0)
     }
 
-    public func open(_ module: ModuleID? = nil) {
+    public func open(_ module: ModuleID? = nil, fromKeyboard: Bool = false) {
         if let module { selected = layout.resolvedSelection(module) }
+        openedFromKeyboard = fromKeyboard
         // A takeover waits for the user, not the pointer.
         if showsTakeover { isPinned = true }
         phase = .open
@@ -123,8 +130,8 @@ public final class NotchViewModel: ObservableObject {
         open(preview?.module)
     }
 
-    public func toggle() {
-        isOpen ? close() : open()
+    public func toggle(fromKeyboard: Bool = false) {
+        isOpen ? close() : open(fromKeyboard: fromKeyboard)
     }
 
     public func selectNext() {
