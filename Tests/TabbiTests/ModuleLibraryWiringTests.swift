@@ -19,16 +19,16 @@ final class ModuleLibraryWiringTests: XCTestCase {
         services = nil
     }
 
-    func testAFreshInstallRunsOnlyTheFourEssentialsTabs() {
+    func testAFreshInstallRunsOnlyTheFourEssentialsTabsAndThePet() {
         XCTAssertEqual(services.settings.settings.kitID, "essentials")
-        XCTAssertEqual(services.settings.settings.modules.enabled, [.study, .planner, .spotify, .claudeAsk])
-        XCTAssertEqual(Set(services.modules.running), [.study, .planner, .spotify, .claudeAsk])
+        XCTAssertEqual(services.settings.settings.modules.tabs, [.study, .planner, .spotify, .claudeAsk])
+        XCTAssertEqual(Set(services.modules.running), [.study, .planner, .spotify, .claudeAsk, .closet])
     }
 
     func testAddingFromTheLibraryStartsTheModuleAsTheLastTab() {
         XCTAssertTrue(services.settings.settings.modules.available.contains(.system))
         services.settings.settings.modules.add(.system)
-        XCTAssertEqual(services.settings.settings.modules.enabled, [.study, .planner, .spotify, .claudeAsk, .system])
+        XCTAssertEqual(services.settings.settings.modules.tabs, [.study, .planner, .spotify, .claudeAsk, .system])
         XCTAssertTrue(services.modules.running.contains(.system))
         XCTAssertFalse(services.settings.settings.modules.available.contains(.system))
     }
@@ -36,13 +36,13 @@ final class ModuleLibraryWiringTests: XCTestCase {
     func testRemovingATabStopsItAndReturnsItToTheLibrary() {
         services.settings.settings.modules.add(.system)
         services.settings.settings.modules.remove(.spotify)
-        XCTAssertEqual(services.settings.settings.modules.enabled, [.study, .planner, .claudeAsk, .system])
+        XCTAssertEqual(services.settings.settings.modules.tabs, [.study, .planner, .claudeAsk, .system])
         XCTAssertFalse(services.modules.running.contains(.spotify))
         XCTAssertTrue(services.settings.settings.modules.available.contains(.spotify))
     }
 
     func testTheLastTabCannotBeRemoved() {
-        for id in [ModuleID.study, .planner, .spotify] { services.settings.settings.modules.remove(id) }
+        for id in [ModuleID.study, .planner, .spotify, .closet] { services.settings.settings.modules.remove(id) }
         XCTAssertFalse(services.settings.settings.modules.remove(.claudeAsk))
         XCTAssertEqual(services.settings.settings.modules.enabled, [.claudeAsk])
         XCTAssertEqual(services.modules.running, [.claudeAsk])

@@ -103,18 +103,20 @@ private struct OpenNotchContent: View {
     let content: NotchContent
 
     var body: some View {
-        let notch = model.geometry.notchSize
         if model.showsTakeover, let takeover = content.takeover {
+            // The takeover's header keeps to the same camera-safe zones as the tabs.
+            let header = NotchHeaderLayout.openNotch(geometry: model.geometry, layout: model.layout, title: "")
             VStack(spacing: 0) {
                 HStack(spacing: 0) {
                     takeover.leading()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    Color.clear.frame(width: notch.width)
+                        .frame(width: header.leadingZone.width, alignment: .leading)
+                    Color.clear.frame(width: header.trailingZone.minX - header.leadingZone.maxX)
                     takeover.trailing()
-                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .frame(width: header.trailingZone.width, alignment: .trailing)
                 }
-                .padding(.horizontal, Theme.Layout.openTopRadius + Theme.Layout.contentInset)
-                .frame(height: max(notch.height, 32))
+                .padding(.leading, header.leadingZone.minX)
+                .frame(width: Theme.Layout.expandedSize.width,
+                       height: NotchHeaderLayout.headerHeight(for: model.geometry), alignment: .leading)
 
                 takeover.body()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -124,34 +126,45 @@ private struct OpenNotchContent: View {
             }
             .transition(.opacity)
         } else {
-            tabs(notch: notch)
+            tabs()
                 .transition(.opacity)
         }
     }
 
     /// The usual open notch: the tab bar, the tab's title and the panel.
-    private func tabs(notch: CGSize) -> some View {
-        VStack(spacing: 0) {
+    /// Every header control sits where `NotchHeaderLayout` puts it, clear of
+    /// the camera; tabs that don't fit open from the "more" list.
+    private func tabs() -> some View {
+        let title = content.catalog.descriptor(for: model.selected).title
+        let header = NotchHeaderLayout.openNotch(geometry: model.geometry, layout: model.layout, title: title)
+        let headerHeight = NotchHeaderLayout.headerHeight(for: model.geometry)
+        return VStack(spacing: 0) {
             HStack(spacing: 0) {
-                NotchTabBar(celebrations: content.celebrations)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Color.clear.frame(width: notch.width)
-                HStack(spacing: Theme.Spacing.s) {
-                    Text(content.catalog.descriptor(for: model.selected).title)
-                        .font(Theme.Typography.title)
-                        .foregroundStyle(Theme.Palette.secondaryText)
-                        .lineLimit(1)
-                        .contentTransition(.opacity)
-                    IconButton(symbol: "gearshape.fill", size: 22, help: "\(content.appName) Settings") {
+                NotchTabBar(header: header, celebrations: content.celebrations)
+                    .frame(width: header.leadingZone.width, alignment: .leading)
+                Color.clear.frame(width: header.trailingZone.minX - header.leadingZone.maxX)
+                HStack(spacing: NotchHeaderLayout.Metrics().trailingSpacing) {
+                    if let titleFrame = header.titleFrame {
+                        Text(title)
+                            .font(Theme.Typography.title)
+                            .foregroundStyle(Theme.Palette.secondaryText)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+                            .frame(maxWidth: titleFrame.width, alignment: .trailing)
+                            .contentTransition(.opacity)
+                            .help(title)
+                    }
+                    IconButton(symbol: "gearshape.fill", size: header.gearFrame.width,
+                               help: "\(content.appName) Settings") {
                         model.close()
                         content.openSettings()
                     }
                     NotchHeaderShortcuts()
                 }
-                .frame(maxWidth: .infinity, alignment: .trailing)
+                .frame(width: header.trailingZone.width, alignment: .trailing)
             }
-            .padding(.horizontal, Theme.Layout.openTopRadius + Theme.Layout.contentInset)
-            .frame(height: max(notch.height, 32))
+            .padding(.leading, header.leadingZone.minX)
+            .frame(width: Theme.Layout.expandedSize.width, height: headerHeight, alignment: .leading)
 
             ZStack {
                 content.panel(model.selected)
@@ -165,5 +178,18 @@ private struct OpenNotchContent: View {
             .padding(.bottom, Theme.Spacing.l)
             .motion(Motion.content, value: model.selected)
         }
+        .overlay(alignment: .topLeading) {
+            if model.showsMoreTabs, let more = header.moreFrame, let top = header.moreListTop {
+                ZStack(alignment: .topLeading) {
+                    // A tap anywhere else closes the list without acting.
+                    Color.black.opacity(0.001)
+                        .onTapGesture { model.showsMoreTabs = false }
+                    NotchMoreTabsMenu(header: header)
+                        .offset(x: more.minX, y: top)
+                }
+                .transition(.opacity)
+            }
+        }
+        .motion(Motion.content, value: model.showsMoreTabs)
     }
 }

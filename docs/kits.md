@@ -9,8 +9,8 @@ Tabbi ships two kits, and anyone can write their own as a small JSON file and sh
 | Med School | `medicine` | Study, Today, Anki, Now Playing, Ask Claude |
 
 Essentials is the default for every new user, and Med School is Essentials plus Anki, with study methods, a daily study goal, a focus sound and a study pet tuned for med school.
-Both keep the notch to a few tabs on purpose.
-Every other module (System, Claude Usage, Party, Focus, Closet and any added later) starts switched off and waits in the **Add More** library in Settings, one click away.
+Both keep the notch to a few tabs on purpose, and both also turn on the Closet, which opens from the paw at the far right of the header rather than taking a tab.
+Every other module (System, Claude Usage, Party, Focus and any added later) starts switched off and waits in the **Add More** library in Settings, one click away.
 
 Earlier versions shipped Productivity (`productivity`) and Student (`student`) kits.
 Someone who used either moves to Essentials on their first launch of this version and keeps every tab they had, in their order; only the old kit's onboarding answers are dropped.

@@ -48,7 +48,7 @@ final class OnboardingStoreTests: XCTestCase {
         XCTAssertFalse(settings.settings.modules.isEnabled(.claudeAsk))
         XCTAssertEqual(settings.settings.modules, store.flow?.layout)
         // Med School's tabs need setup steps, so the flow is still running.
-        XCTAssertEqual(store.flow?.stage, .setup(OnboardingSetupStep.anki.id))
+        XCTAssertEqual(store.flow?.stage, .setup(OnboardingSetupStep.pet.id))
     }
 
     func testSkipSetupKeepsTheSuggestedKitAndEnds() {

@@ -270,7 +270,7 @@ final class SettingsRepositoryTests: XCTestCase {
         var expected = AppSettings.default
         expected.modules = try XCTUnwrap(KitLibrary.bundled[KitLibrary.defaultKitID]).layout()
         XCTAssertEqual(settings, expected, "a fresh install starts on the default kit's tabs")
-        XCTAssertEqual(settings.modules.enabled, [.study, .planner, .spotify, .claudeAsk])
+        XCTAssertEqual(settings.modules.enabled, [.study, .planner, .spotify, .claudeAsk, .closet])
         XCTAssertFalse(settings.openOnHover)
         XCTAssertTrue(settings.hapticsEnabled)
         XCTAssertTrue(settings.celebrationSoundEnabled)
@@ -356,7 +356,7 @@ final class SettingsRepositoryTests: XCTestCase {
     func testFreshInstallOfTabbiShowsTheFourEssentialsTabs() {
         let settings = SettingsRepository(defaults: defaults, defaultKitID: Edition.tabbi.defaultKitID).load()
         XCTAssertEqual(settings.kitID, "essentials")
-        XCTAssertEqual(settings.modules.enabled, [.study, .planner, .spotify, .claudeAsk])
+        XCTAssertEqual(settings.modules.enabled, [.study, .planner, .spotify, .claudeAsk, .closet])
         XCTAssertEqual(Set(settings.modules.available),
                        Set(ModuleCatalog.builtIn.ids).subtracting(settings.modules.enabled),
                        "everything else waits in the Add More library")
