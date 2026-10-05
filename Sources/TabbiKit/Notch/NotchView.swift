@@ -31,7 +31,15 @@ public struct NotchView: View {
         .frame(width: model.size.width, height: model.size.height, alignment: .top)
         .clipShape(shape)
         .contentShape(shape)
-        .onTapGesture { if !model.isOpen { model.openFromClosedClick() } }
+        .onTapGesture {
+            guard !model.isOpen else { return }
+            // A preview with a one-click action (Anki's "Study <deck>") runs
+            // it, and the panel opens on its module to show how it goes.
+            if let preview = model.preview, let action = preview.action {
+                content.runAction(action, from: preview.module)
+            }
+            model.openFromClosedClick()
+        }
         .contextMenu {
             ForEach(model.layout.enabled) { module in
                 Button(content.catalog.descriptor(for: module).title) { model.open(module) }
@@ -51,6 +59,7 @@ public struct NotchView: View {
         .animation(Motion.adapted(Motion.content, reduceMotion: reduceMotion), value: model.previewKind)
         .preferredColorScheme(.dark)
         .environment(\.moduleCatalog, content.catalog)
+        .environment(\.runModuleAction, content.runAction)
     }
 
     /// Opening stretches and settles, closing lands with no overshoot, and

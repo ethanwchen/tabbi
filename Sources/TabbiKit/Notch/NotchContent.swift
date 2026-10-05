@@ -26,6 +26,9 @@ public struct NotchContent {
     /// Where real events celebrate; the tab bar bounces a tab for the
     /// center's nods. Nil shows no nods.
     public var celebrations: CelebrationCenter?
+    /// Hands a shared item's one-click action back to the module that
+    /// offered it, for the closed-notch preview and Today's shared rows.
+    public var runAction: ModuleActionRunner
 
     public init(
         appName: String,
@@ -35,7 +38,8 @@ public struct NotchContent {
         nowPlayingTrailing: @escaping () -> AnyView,
         openSettings: @escaping () -> Void,
         checkForUpdates: (() -> Void)? = nil,
-        celebrations: CelebrationCenter? = nil
+        celebrations: CelebrationCenter? = nil,
+        runAction: ModuleActionRunner = ModuleActionRunner { _, _ in }
     ) {
         self.appName = appName
         self.catalog = catalog
@@ -45,5 +49,6 @@ public struct NotchContent {
         self.openSettings = openSettings
         self.checkForUpdates = checkForUpdates
         self.celebrations = celebrations
+        self.runAction = runAction
     }
 }

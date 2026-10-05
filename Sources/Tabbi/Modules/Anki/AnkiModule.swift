@@ -31,4 +31,10 @@ final class AnkiModule: NotchModule {
     var provision: AnyPublisher<ModuleProvision, Never>? {
         store.provision(source: descriptor.id)
     }
+
+    /// The reviews goal's "Study <deck>", clicked in Today or the closed notch.
+    func perform(_ action: ProvidedAction) {
+        guard action.id == AnkiSummary.studyActionID else { return }
+        store.studyFromShared()
+    }
 }

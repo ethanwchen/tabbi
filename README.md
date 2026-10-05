@@ -81,6 +81,7 @@ A quick question box that streams answers from your local `claude` CLI, with Mar
 Study is one of the Essentials tabs, and the Med School kit adds Anki; Party and Closet are one click away in the **Add More** library in **Settings > Modules**.
 **Study** runs a session in the study method you pick (Pomodoro, deep focus blocks and more) and counts today's minutes and points.
 **Anki** shows the cards due in your decks through the AnkiConnect add-on on your Mac.
+Click any deck, subdecks included, to bring Anki to the front (starting it if needed) straight into that deck's review, and star a favorite deck to get a one-click **Study** button; the Anki row in Today and beside the notch opens it too.
 **Party** lets friends study together and see who is focusing, through an optional friends server.
 **Closet** is your study pet's home: pick a cat or a dog, recolor it and dress it up with what your study points unlock.
 The pet lives beside the notch and, if you turn on its coach, nudges you back when you drift off.

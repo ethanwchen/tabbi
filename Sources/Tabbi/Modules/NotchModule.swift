@@ -53,6 +53,12 @@ protocol NotchModule: AnyObject {
     /// to Kit Defaults would change anything. Nil when the module keeps
     /// nothing from a kit beyond the layout, which Settings checks itself.
     func usesKitDefaults(of kit: KitManifest) -> AnyPublisher<Bool, Never>?
+
+    /// Runs a `ProvidedAction` this module put on something it shares (a
+    /// progress goal's one-click action), after a click on Today's row or
+    /// the closed notch's preview. Ids the module no longer offers are
+    /// ignored.
+    func perform(_ action: ProvidedAction)
 }
 
 extension NotchModule {
@@ -64,6 +70,7 @@ extension NotchModule {
     func stop() {}
     var provision: AnyPublisher<ModuleProvision, Never>? { nil }
     func usesKitDefaults(of kit: KitManifest) -> AnyPublisher<Bool, Never>? { nil }
+    func perform(_ action: ProvidedAction) {}
 }
 
 /// The modules this build runs, in canonical order, keyed by id.
@@ -109,6 +116,14 @@ final class ModuleRegistry {
     func panel(for id: ModuleID) -> AnyView {
         index[id]?.makePanel()
             ?? AnyView(ModulePlaceholder(module: id, detail: "This module isn't available in this build"))
+    }
+
+    /// Hands `action` to the module `id` that offered it; ids with no
+    /// registered or running module are ignored, so a stale preview never
+    /// wakes a module the user turned off.
+    func perform(_ action: ProvidedAction, on id: ModuleID) {
+        guard running.contains(id) else { return }
+        index[id]?.perform(action)
     }
 
     /// True while every module's kit-derived state matches `kit`, enabled
