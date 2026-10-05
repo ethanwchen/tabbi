@@ -244,7 +244,7 @@ struct FocusSettingsPane: View {
                     test(kind, name: name)
                 } label: {
                     if testing == kind {
-                        ProgressView().controlSize(.small)
+                        Spinner()
                             .frame(minWidth: 36)
                     } else {
                         Text("Test").frame(minWidth: 36)

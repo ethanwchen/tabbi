@@ -736,7 +736,7 @@ struct ClaudeSettingsPane: View {
                 Text("Checking…")
                     .foregroundStyle(.secondary)
             } icon: {
-                ProgressView().controlSize(.small)
+                Spinner()
             }
         }
     }

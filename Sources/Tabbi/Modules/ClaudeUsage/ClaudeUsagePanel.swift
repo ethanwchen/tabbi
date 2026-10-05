@@ -125,7 +125,7 @@ private struct TodayCard: View {
                 } else {
                     Spacer(minLength: 0)
                     HStack(spacing: Theme.Spacing.s) {
-                        LoadingArc()
+                        Spinner(tint: ClaudeUsageModule.descriptor.accentColor)
                         Text("Reading Claude Code sessions…")
                             .font(Theme.Typography.body)
                             .foregroundStyle(Theme.Palette.secondaryText)
@@ -220,26 +220,6 @@ private struct UsageFooter: View {
     }
 }
 
-/// A small spinning arc. Pure SwiftUI (unlike `ProgressView`) so it also
-/// renders in snapshots; driven by the clock, so it only ticks while shown.
-private struct LoadingArc: View {
-    var body: some View {
-        TimelineView(.animation) { context in
-            Circle()
-                .trim(from: 0, to: 0.7)
-                .stroke(ClaudeUsageModule.descriptor.accentColor,
-                        style: StrokeStyle(lineWidth: 2, lineCap: .round))
-                .rotationEffect(.degrees(spinAngle(at: context.date)))
-        }
-        .frame(width: 12, height: 12)
-    }
-}
-
-/// One turn per second, derived from the clock rather than an animation.
-private func spinAngle(at date: Date) -> Double {
-    date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: 1) * 360
-}
-
 /// The shared `IconButton`, spinning while a probe runs. Rotating the whole
 /// button is invisible on its circular background, so only the glyph turns.
 private struct RefreshButton: View {
@@ -247,12 +227,10 @@ private struct RefreshButton: View {
     let action: () -> Void
 
     var body: some View {
-        TimelineView(.animation(paused: !isFetching)) { context in
-            IconButton(symbol: "arrow.clockwise", size: 24,
-                       help: "Check live limits (sends a tiny request with your claude CLI)",
-                       action: action)
-                .rotationEffect(.degrees(isFetching ? spinAngle(at: context.date) : 0))
-        }
+        IconButton(symbol: "arrow.clockwise", size: 24,
+                   help: "Check live limits (sends a tiny request with your claude CLI)",
+                   action: action)
+            .spinning(isFetching)
         .disabled(isFetching)
     }
 }

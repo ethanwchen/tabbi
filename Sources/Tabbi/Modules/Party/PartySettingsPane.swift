@@ -186,7 +186,7 @@ struct PartySettingsPane: View {
             }
         } icon: {
             if status.symbol.isEmpty {
-                ProgressView().controlSize(.small)
+                Spinner()
             } else {
                 Image(systemName: status.symbol)
                     .foregroundStyle(status.color)

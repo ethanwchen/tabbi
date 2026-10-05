@@ -35,6 +35,15 @@ Staggered entrances use `MotionTokens.stagger(index)`: 30 ms per item, capped at
 - Switching tabs slides the new panel 24 pt in the direction of travel while it fades (`AnyTransition.tabSwitch`), so the header and the notch never move.
 - Every animation is a spring that SwiftUI retargets mid-flight, so a second click or a pointer leaving never waits for the first animation.
 
+## Loading
+
+- `Spinner(tint:size:lineWidth:)` (`Sources/TabbiKit/Components/Loading/`) is the one spinner: an arc in the module accent that turns once a second.
+  Never use `ProgressView`, whose AppKit-backed spinner doesn't render in snapshots and ignores the accent.
+- `.spinning(isActive)` turns a glyph (a refresh or sync button) while work runs; its clock is paused while inactive.
+- Both draw from a `TimelineView` capped at 30 fps (`LoaderClock.frameRate`), so they stop as soon as they leave the screen and draw the same frame for the same date.
+- Under Reduce Motion they stop turning and breathe instead: opacity eases between 35% and 100% over 1.6 s (`LoaderClock.breathingOpacity`).
+- Show no loader for waits under about 300 ms; pair a loader with a short label that says what is happening.
+
 ## Reduce Motion
 
 Every animation has a calm fallback.

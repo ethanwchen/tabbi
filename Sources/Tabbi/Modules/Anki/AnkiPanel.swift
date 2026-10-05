@@ -409,11 +409,9 @@ private struct SyncButton: View {
     let action: () -> Void
 
     var body: some View {
-        TimelineView(.animation(paused: !isSyncing)) { context in
-            IconButton(symbol: "arrow.triangle.2.circlepath", size: 28,
-                       help: isSyncing ? "Syncing with AnkiWeb…" : "Sync with AnkiWeb", action: action)
-                .rotationEffect(.degrees(isSyncing ? spinAngle(at: context.date) : 0))
-        }
+        IconButton(symbol: "arrow.triangle.2.circlepath", size: 28,
+                   help: isSyncing ? "Syncing with AnkiWeb…" : "Sync with AnkiWeb", action: action)
+            .spinning(isSyncing)
         .disabled(isSyncing)
     }
 }
@@ -423,7 +421,7 @@ private struct SyncButton: View {
 private struct AnkiLoadingView: View {
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
-            LoadingArc()
+            Spinner(tint: accent)
             Text("Looking for Anki…")
                 .font(Theme.Typography.body)
                 .foregroundStyle(Theme.Palette.secondaryText)
@@ -446,7 +444,7 @@ private struct AnkiSetupView: View {
                     RoundedRectangle(cornerRadius: Theme.Radius.l, style: .continuous)
                         .fill(accent.opacity(0.16))
                     if store.state == .starting {
-                        LoadingArc(size: 20, lineWidth: 2.5)
+                        Spinner(tint: accent, size: 20, lineWidth: 2.5)
                     } else {
                         Image(systemName: guide.symbol)
                             .font(.system(size: 22, weight: .semibold))
@@ -694,26 +692,4 @@ private struct AnkiSecondaryButton: View {
         .onHover { hovering = $0 }
         .animation(Theme.Motion.snappy, value: hovering)
     }
-}
-
-/// A small spinning arc. Pure SwiftUI (unlike `ProgressView`) so it also
-/// renders in snapshots; driven by the clock, so it only ticks while shown.
-private struct LoadingArc: View {
-    var size: CGFloat = 12
-    var lineWidth: CGFloat = 2
-
-    var body: some View {
-        TimelineView(.animation) { context in
-            Circle()
-                .trim(from: 0, to: 0.7)
-                .stroke(accent, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
-                .rotationEffect(.degrees(spinAngle(at: context.date)))
-        }
-        .frame(width: size, height: size)
-    }
-}
-
-/// One turn per second, derived from the clock rather than an animation.
-private func spinAngle(at date: Date) -> Double {
-    date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: 1) * 360
 }
