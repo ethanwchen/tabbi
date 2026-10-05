@@ -6,7 +6,8 @@ import TabbiKitCore
 @MainActor
 final class ClaudeUsageModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
-        id: .claudeUsage, title: "Claude Usage", symbol: "gauge.with.dots.needle.67percent", category: .ai,
+        id: .claudeUsage, title: "Claude Usage", symbol: "gauge.with.dots.needle.67percent",
+        summary: "How much of your Claude plan you have used.", category: .ai,
         accent: .claude, permissions: [.claudeCLI], highlightTitle: "Claude usage above 80%"
     )
     private let store: ClaudeUsageStore

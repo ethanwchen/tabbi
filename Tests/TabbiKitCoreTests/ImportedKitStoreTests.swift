@@ -145,21 +145,21 @@ final class ImportedKitStoreTests: XCTestCase {
 
     func testInstalledLibraryListsBundledKitsFirst() throws {
         let tech = try KitManifest.decode(from: Data(kitJSON(id: "tech", name: "Tech").utf8))
-        let shadow = try KitManifest.decode(from: Data(kitJSON(id: "productivity", name: "Fake").utf8))
+        let shadow = try KitManifest.decode(from: Data(kitJSON(id: "essentials", name: "Fake").utf8))
         let library = KitLibrary.installed(imported: [tech, shadow])
         XCTAssertEqual(library.kits.map(\.id), KitLibrary.bundledIDs + ["tech"])
-        XCTAssertEqual(library["productivity"]?.name, KitLibrary.bundled["productivity"]?.name)
+        XCTAssertEqual(library["essentials"]?.name, KitLibrary.bundled["essentials"]?.name)
         XCTAssertTrue(KitLibrary.isBundled("medicine"))
         XCTAssertFalse(KitLibrary.isBundled("tech"))
     }
 
     func testUsesDefaultsUntilTheTabsChange() throws {
         let medicine = try XCTUnwrap(KitLibrary.bundled["medicine"])
-        let productivity = try XCTUnwrap(KitLibrary.bundled["productivity"])
+        let essentials = try XCTUnwrap(KitLibrary.bundled["essentials"])
         var settings = AppSettings.default
         settings.apply(medicine)
         XCTAssertTrue(settings.usesDefaults(of: medicine))
-        XCTAssertFalse(settings.usesDefaults(of: productivity))
+        XCTAssertFalse(settings.usesDefaults(of: essentials))
         settings.modules.setEnabled(.system, true)
         XCTAssertFalse(settings.usesDefaults(of: medicine))
         settings.apply(medicine)

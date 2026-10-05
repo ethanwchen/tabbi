@@ -24,6 +24,7 @@ edition_file=$(grep -l "\"name\": \"$name\"" Sources/TabbiKitCore/Editions/Bundl
 [[ -n "$edition_file" ]] || { echo "error: no edition is named $name" >&2; exit 1; }
 bundle_id=$(plutil -extract bundleIdentifier raw -o - "$edition_file")
 token=$(printf '%s' "$name" | tr '[:upper:]' '[:lower:]')
+# shellcheck source=packaging/updates.env disable=SC2031 # read in a subshell on purpose
 feed_url=${SPARKLE_FEED_URL:-$(. packaging/updates.env; printf '%s' "${SPARKLE_FEED_URL:-}")}
 # The repository is the one the feed's releases live in.
 repo_url=${feed_url%%/releases/*}

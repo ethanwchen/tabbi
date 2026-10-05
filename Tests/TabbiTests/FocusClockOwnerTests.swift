@@ -37,10 +37,10 @@ final class FocusClockOwnerTests: XCTestCase {
         XCTAssertNil(today.store.focusClockOwner)
     }
 
-    func testTheMedSchoolKitHasOneTimer() throws {
-        services.settings.switchKit(to: "medicine")
-        XCTAssertEqual(today.store.focusClockOwner, .study)
-        services.settings.switchKit(to: "productivity")
-        XCTAssertNil(today.store.focusClockOwner)
+    func testEveryBundledKitHasOneTimer() throws {
+        for kit in KitLibrary.bundledIDs {
+            services.settings.switchKit(to: kit)
+            XCTAssertEqual(today.store.focusClockOwner, .study, "\(kit): Today shows the Study timer, not a second one")
+        }
     }
 }

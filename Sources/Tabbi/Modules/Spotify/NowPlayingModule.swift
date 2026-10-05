@@ -7,7 +7,8 @@ import TabbiKitCore
 @MainActor
 final class NowPlayingModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
-        id: .spotify, title: "Now Playing", symbol: "music.note", category: .media,
+        id: .spotify, title: "Now Playing", symbol: "music.note",
+        summary: "Control Spotify or Apple Music from the notch.", category: .media,
         accent: ModuleAccent(red: 0.12, green: 0.84, blue: 0.38), permissions: [.automation],
         network: [ModuleNetworkAccess(host: "i.scdn.co", purpose: "Spotify album artwork")]
     )

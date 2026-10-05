@@ -20,7 +20,7 @@ editions=Sources/TabbiKitCore/Editions/BundledEditions
 file=$editions/$edition.json
 
 if [[ ! -f "$file" ]]; then
-    available=$(cd "$editions" && ls -- *.json | sed 's/\.json$//' | tr '\n' ' ' | sed 's/ *$//')
+    available=$(for path in "$editions"/*.json; do basename "$path" .json; done | tr '\n' ' ' | sed 's/ *$//')
     echo "error: unknown edition '$edition' (available: $available)" >&2
     exit 1
 fi

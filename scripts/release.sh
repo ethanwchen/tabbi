@@ -47,10 +47,14 @@ fail() { echo "error: $*" >&2; exit 1; }
 entitlements=packaging/Tabbi.entitlements
 config=packaging/signing.env
 # The file's values, then the environment's, which win when set.
+# shellcheck source=packaging/signing.env disable=SC2031 # read in a subshell on purpose
 developer_id=${DEVELOPER_ID:-$(. "$config"; printf '%s' "${DEVELOPER_ID:-}")}
+# shellcheck source=packaging/signing.env disable=SC2031 # read in a subshell on purpose
 notary_profile=${NOTARY_PROFILE:-$(. "$config"; printf '%s' "${NOTARY_PROFILE:-}")}
 updates=packaging/updates.env
+# shellcheck source=packaging/updates.env disable=SC2031 # read in a subshell on purpose
 sparkle_key=${SPARKLE_PUBLIC_KEY:-$(. "$updates"; printf '%s' "${SPARKLE_PUBLIC_KEY:-}")}
+# shellcheck source=packaging/updates.env disable=SC2031 # read in a subshell on purpose
 feed_url=${SPARKLE_FEED_URL:-$(. "$updates"; printf '%s' "${SPARKLE_FEED_URL:-}")}
 sparkle_bin=.build/artifacts/sparkle/Sparkle/bin
 

@@ -42,10 +42,24 @@ public enum SettingsSchema {
         // 2 -> 3: imported kits go by `KitLibrary.importedID`, so a kit a
         // later Tabbi ships can't shadow one the user imported. An active kit
         // id that isn't a bundled kit was an import; give it the new id.
+        // (A kit bundled then and retired since is still a bundled id here,
+        // so step 4 can move it to its replacement.)
         Migration(version: 3) { defaults in
             let key = SettingsRepository.Key.kitID
-            if let id = defaults.string(forKey: key), !KitLibrary.isBundled(id) {
+            if let id = defaults.string(forKey: key), !KitLibrary.isBundled(id),
+               KitLibrary.retiredKitIDs[id] == nil {
                 defaults.set(KitLibrary.importedID(id), forKey: key)
+            }
+        },
+        // 3 -> 4: Productivity and Student fold into Essentials. Someone on
+        // either moves to Essentials and keeps the tabs they had (the saved
+        // layout is left alone). Their onboarding answers belonged to the old
+        // kit's questions, so they go.
+        Migration(version: 4) { defaults in
+            let key = SettingsRepository.Key.kitID
+            if let id = defaults.string(forKey: key), let replacement = KitLibrary.retiredKitIDs[id] {
+                defaults.set(replacement, forKey: key)
+                defaults.removeObject(forKey: SettingsRepository.Key.kitAnswers)
             }
         },
     ]

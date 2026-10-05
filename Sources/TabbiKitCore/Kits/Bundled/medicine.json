@@ -3,9 +3,9 @@
   "id": "medicine",
   "pickerOrder": 2,
   "name": "Med School",
-  "summary": "A study timer, Anki reviews, study parties, and a study pet for med school.",
+  "summary": "Essentials plus Anki reviews, with study methods and a study pet tuned for med school.",
   "symbol": "cross.case.fill",
-  "modules": ["study", "planner", "anki", "party", "spotify", "claudeAsk", "closet"],
+  "modules": ["study", "planner", "anki", "spotify", "claudeAsk"],
   "defaults": {
     "ticker": ["focus", "tasks", "progress", "party", "meeting", "nowPlaying", "pet"],
     "theme": "notch",

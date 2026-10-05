@@ -30,25 +30,30 @@ let applicationsCenter = CGPoint(x: 510, y: 180)
 /// Where Finder centers a 13 pt label under a 128 pt icon (measured on macOS 26).
 let labelCenterY: CGFloat = 263
 
-// MARK: - Palette (mirrors Theme.Palette and the module accents in the app icon)
+// MARK: - Palette (mirrors the app icon in scripts/make-icon.swift)
 
 struct RGB {
     let r, g, b: CGFloat
+    init(_ hex: UInt32) {
+        r = CGFloat((hex >> 16) & 0xFF) / 255
+        g = CGFloat((hex >> 8) & 0xFF) / 255
+        b = CGFloat(hex & 0xFF) / 255
+    }
     func cg(_ alpha: CGFloat = 1) -> CGColor { CGColor(srgbRed: r, green: g, blue: b, alpha: alpha) }
     func ns(_ alpha: CGFloat = 1) -> NSColor { NSColor(srgbRed: r, green: g, blue: b, alpha: alpha) }
 }
 
-let accents: [RGB] = [
-    RGB(r: 0.12, g: 0.84, b: 0.38), // Now Playing - green
-    RGB(r: 0.35, g: 0.78, b: 1.00), // System - blue
-    RGB(r: 0.85, g: 0.47, b: 0.34), // Claude - orange
-    RGB(r: 0.66, g: 0.55, b: 1.00), // Today - violet
-]
-let arrowStart = accents[1]
-let arrowEnd = accents[3]
+/// The icon's deep ink field, from its lit top to its shaded bottom.
+let ink = RGB(0x2A2F5E)
+let inkDeep = RGB(0x0F1126)
+let inkLight = RGB(0x4A55A8)
+/// The tabby's orange and the cream of its muzzle.
+let ginger = RGB(0xFFA94D)
+let sheen = RGB(0xFFE3B8)
+let cream = RGB(0xFFF1DE)
 /// A frosted lavender with a relative luminance near 0.5, so Finder's black
-/// label text reaches about 11:1 contrast without the pill glaring on black.
-let labelPill = RGB(r: 0.76, g: 0.74, b: 0.82)
+/// label text reaches about 11:1 contrast without the pill glaring on the ink.
+let labelPill = RGB(0xC4C2DA)
 
 // MARK: - Drawing helpers
 
@@ -102,18 +107,15 @@ func drawText(_ text: String, font: NSFont, color: NSColor, centerX: CGFloat, ce
 func drawBackground(in ctx: CGContext, name: String) {
     let bounds = CGRect(origin: .zero, size: size)
 
-    // Base: charcoal at the top fading into the notch's hardware black.
+    // Base: the icon's ink, lit at the top and deepening toward the bottom.
     ctx.drawLinearGradient(
-        gradient([
-            (0, RGB(r: 0.13, g: 0.13, b: 0.16).cg()),
-            (0.6, RGB(r: 0.07, g: 0.07, b: 0.09).cg()),
-            (1, RGB(r: 0.03, g: 0.03, b: 0.04).cg()),
-        ]),
+        gradient([(0, ink.cg()), (0.65, RGB(0x1A1E3E).cg()), (1, inkDeep.cg())]),
         start: CGPoint(x: 0, y: 0), end: CGPoint(x: 0, y: bounds.maxY), options: [])
+    glow(ctx, inkLight, at: CGPoint(x: bounds.midX, y: 0), radius: 300, alpha: 0.35)
 
-    // Soft accent light pooling under each icon and along the path between them.
-    glow(ctx, arrowStart, at: appCenter, radius: 150, alpha: 0.16)
-    glow(ctx, arrowEnd, at: applicationsCenter, radius: 150, alpha: 0.16)
+    // Soft light pooling under each icon: the tabby's warm orange, then a cool ink blue.
+    glow(ctx, ginger, at: appCenter, radius: 150, alpha: 0.14)
+    glow(ctx, inkLight, at: applicationsCenter, radius: 150, alpha: 0.30)
 
     // A faint dotted grid gives the dark field some texture without competing.
     ctx.setFillColor(CGColor(gray: 1, alpha: 0.035))
@@ -123,10 +125,10 @@ func drawBackground(in ctx: CGContext, name: String) {
         }
     }
 
-    // The notch, with the four module dots glowing inside it, as on the app icon.
+    // The notch, with the tabby peeking out of it: one round eye and the icon's checkmark wink.
     let notchWidth: CGFloat = 132, notchHeight: CGFloat = 34
     let notch = notchPath(width: notchWidth, height: notchHeight, centerX: bounds.midX, shoulder: 8, bottomRadius: 12)
-    glow(ctx, RGB(r: 1, g: 1, b: 1), at: CGPoint(x: bounds.midX, y: notchHeight), radius: 120, alpha: 0.05)
+    glow(ctx, RGB(0xFFFFFF), at: CGPoint(x: bounds.midX, y: notchHeight), radius: 120, alpha: 0.05)
     ctx.addPath(notch)
     ctx.setFillColor(CGColor(gray: 0, alpha: 1))
     ctx.fillPath()
@@ -134,20 +136,33 @@ func drawBackground(in ctx: CGContext, name: String) {
     ctx.setStrokeColor(CGColor(gray: 1, alpha: 0.10))
     ctx.setLineWidth(1)
     ctx.strokePath()
-    for (i, accent) in accents.enumerated() {
-        let center = CGPoint(x: bounds.midX + (CGFloat(i) - 1.5) * 16, y: notchHeight / 2 + 1)
-        glow(ctx, accent, at: center, radius: 9, alpha: 0.6)
-        ctx.setFillColor(accent.cg())
-        ctx.fillEllipse(in: CGRect(x: center.x - 3.5, y: center.y - 3.5, width: 7, height: 7))
-    }
+    let eyeY = notchHeight / 2 + 1
+    let eye = CGPoint(x: bounds.midX - 12, y: eyeY)
+    glow(ctx, ginger, at: eye, radius: 11, alpha: 0.6)
+    ctx.setFillColor(ginger.cg())
+    ctx.fillEllipse(in: CGRect(x: eye.x - 4, y: eye.y - 4, width: 8, height: 8))
+    let wink = CGPoint(x: bounds.midX + 12, y: eyeY)
+    glow(ctx, ginger, at: wink, radius: 11, alpha: 0.6)
+    let check = CGMutablePath()
+    check.move(to: CGPoint(x: wink.x - 5, y: wink.y))
+    check.addLine(to: CGPoint(x: wink.x - 1.5, y: wink.y + 3.5))
+    check.addLine(to: CGPoint(x: wink.x + 5, y: wink.y - 4))
+    ctx.saveGState()
+    ctx.addPath(check)
+    ctx.setStrokeColor(ginger.cg())
+    ctx.setLineWidth(2.5)
+    ctx.setLineCap(.round)
+    ctx.setLineJoin(.round)
+    ctx.strokePath()
+    ctx.restoreGState()
 
     // Title and hint, quiet so the two icons stay the primary element.
     drawText("Install \(name)", font: roundedFont(20, .semibold), color: NSColor(white: 1, alpha: 0.92),
              centerX: bounds.midX, centerY: 74)
     drawText("Drag \(name) into the Applications folder", font: roundedFont(13, .medium),
-             color: NSColor(white: 1, alpha: 0.62), centerX: bounds.midX, centerY: 98)
+             color: cream.ns(0.66), centerX: bounds.midX, centerY: 98)
 
-    // The arrow: a gentle arc from the app to Applications, blue into violet.
+    // The arrow: a gentle arc from the app to Applications, in the tabby's orange.
     let gap: CGFloat = 20
     let start = CGPoint(x: appCenter.x + iconSize / 2 + gap, y: appCenter.y)
     let end = CGPoint(x: applicationsCenter.x - iconSize / 2 - gap, y: applicationsCenter.y)
@@ -172,10 +187,10 @@ func drawBackground(in ctx: CGContext, name: String) {
     ctx.addPath(head)
     ctx.replacePathWithStrokedPath()
     ctx.clip()
-    ctx.drawLinearGradient(gradient([(0, arrowStart.cg()), (1, arrowEnd.cg())]),
+    ctx.drawLinearGradient(gradient([(0, ginger.cg()), (1, sheen.cg())]),
                            start: start, end: end, options: [.drawsBeforeStartLocation, .drawsAfterEndLocation])
     ctx.restoreGState()
-    glow(ctx, arrowEnd, at: end, radius: 26, alpha: 0.35)
+    glow(ctx, ginger, at: end, radius: 26, alpha: 0.30)
 
     // Label pills, so Finder's black label text reads on the dark art.
     let pillWidth: CGFloat = 116, pillHeight: CGFloat = 22
@@ -188,7 +203,7 @@ func drawBackground(in ctx: CGContext, name: String) {
 
     // Footer: what happens next, well clear of the bottom edge that the title bar pushes out of view.
     drawText("Then open \(name) from Applications. It lives in your notch.", font: roundedFont(12, .medium),
-             color: NSColor(white: 1, alpha: 0.42), centerX: bounds.midX, centerY: 326)
+             color: cream.ns(0.46), centerX: bounds.midX, centerY: 326)
 }
 
 func render(name: String, scale: CGFloat) -> CGImage {
