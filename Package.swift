@@ -18,6 +18,12 @@ let package = Package(
     products: [
         .executable(name: "Tabbi", targets: ["Tabbi"]),
     ],
+    dependencies: [
+        // The one third-party dependency: secure in-place app updates (EdDSA
+        // signed archives, an installer that swaps the bundle and relaunches).
+        // Why it is worth it: docs/research/installer.md, section 3.
+        .package(url: "https://github.com/sparkle-project/Sparkle", exact: "2.10.0"),
+    ],
     targets: [
         // Pure, testable logic: parsers, models, stores. No AppKit/SwiftUI.
         .target(
@@ -37,8 +43,10 @@ let package = Package(
         // The app: modules, settings, system integrations, assembly.
         .executableTarget(
             name: "Tabbi",
-            dependencies: ["TabbiKitCore", "TabbiKit"],
-            swiftSettings: swiftSettings
+            dependencies: ["TabbiKitCore", "TabbiKit", .product(name: "Sparkle", package: "Sparkle")],
+            swiftSettings: swiftSettings,
+            // scripts/assemble.sh puts Sparkle.framework in Contents/Frameworks.
+            linkerSettings: [.unsafeFlags(["-Xlinker", "-rpath", "-Xlinker", "@executable_path/../Frameworks"])]
         ),
         // Renders pet sprite contact sheets for art review: `swift run PetGallery out/`.
         .executableTarget(

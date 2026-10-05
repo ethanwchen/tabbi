@@ -20,6 +20,9 @@ public struct NotchContent {
     public var nowPlayingTrailing: () -> AnyView
     /// Opens the app's Settings window (the notch closes first).
     public var openSettings: () -> Void
+    /// Checks for a newer version of the app; nil hides "Check for Updates…"
+    /// (development builds, demo and snapshot runs).
+    public var checkForUpdates: (() -> Void)?
     /// Where real events celebrate; the tab bar bounces a tab for the
     /// center's nods. Nil shows no nods.
     public var celebrations: CelebrationCenter?
@@ -31,6 +34,7 @@ public struct NotchContent {
         nowPlayingLeading: @escaping () -> AnyView,
         nowPlayingTrailing: @escaping () -> AnyView,
         openSettings: @escaping () -> Void,
+        checkForUpdates: (() -> Void)? = nil,
         celebrations: CelebrationCenter? = nil
     ) {
         self.appName = appName
@@ -39,6 +43,7 @@ public struct NotchContent {
         self.nowPlayingLeading = nowPlayingLeading
         self.nowPlayingTrailing = nowPlayingTrailing
         self.openSettings = openSettings
+        self.checkForUpdates = checkForUpdates
         self.celebrations = celebrations
     }
 }

@@ -81,7 +81,7 @@ Possible paid layers on top:
 - **Hosted AI:** for users without their own Claude subscription. Users with the `claude` CLI keep using it for free.
 - **A kit marketplace:** with a revenue share for kit and pack creators.
 - **Group and cohort licenses:** for study groups, schools and residency programs.
-- **Convenience builds:** signed and notarized downloads, or distribution through Setapp.
+- **Convenience distribution:** through Setapp. Official signed and notarized downloads stay free.
 
 Constraints to keep in mind:
 

@@ -41,6 +41,9 @@ public struct NotchView: View {
                 model.close()
                 content.openSettings()
             }
+            if let checkForUpdates = content.checkForUpdates {
+                Button("Check for Updates…", action: checkForUpdates)
+            }
             Button("Quit \(content.appName)") { NSApp.terminate(nil) }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
