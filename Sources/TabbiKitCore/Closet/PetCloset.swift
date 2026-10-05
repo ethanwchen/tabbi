@@ -111,9 +111,8 @@ public struct PetCloset: Hashable, Sendable {
     public mutating func setSpecies(_ species: PetSpecies) {
         let current = profile
         guard current.species != species, let breed = PetBreed.breeds(of: species).first else { return }
-        let keepsName = !PetCloset.isDefaultName(current.name, of: current)
         setBreed(breed)
-        save.profile.rename(keepsName ? current.name : PetProfile.starter(species).name)
+        save.profile.rename(current.hasDefaultName ? PetProfile.defaultName(for: breed) : current.name)
     }
 
     /// Steps through the current species' breeds, wrapping at both ends.
@@ -165,10 +164,6 @@ public struct PetCloset: Hashable, Sendable {
     public var nextUnlock: (item: PetItem, missing: Int)? {
         save.ledger.nextUnlock.map { ($0, max(0, $0.cost - balance)) }
     }
-
-    private static func isDefaultName(_ name: String, of profile: PetProfile) -> Bool {
-        name == profile.breed.displayName || name == PetProfile.starter(profile.species).name
-    }
 }
 
 extension PetCloset {
@@ -179,7 +174,7 @@ extension PetCloset {
             earned: 260, spent: 135,
             purchased: [.accessory(.scarf), .accessory(.beanie), .accessory(.roundGlasses)]
         )
-        let profile = PetProfile(name: "Mochi", breed: .orangeTabby, accessories: [.scarf, .roundGlasses])
+        let profile = PetProfile(name: "Mochi", breed: .britishShorthair, accessories: [.scarf, .roundGlasses])
         return PetCloset(save: PetSave(profile: profile, ledger: ledger))
     }
 }

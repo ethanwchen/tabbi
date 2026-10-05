@@ -14,6 +14,45 @@ final class PetProfileTests: XCTestCase {
         XCTAssertEqual(profile.name, "Nori")
     }
 
+    func testNewUsersStartWithTheBritishShorthairAndNameItThemselves() {
+        let starter = PetProfile.starter(.cat)
+        XCTAssertEqual(starter.breed, .britishShorthair)
+        XCTAssertEqual(starter.name, PetBreed.britishShorthair.displayName, "no made-up name until the user picks one")
+        XCTAssertTrue(starter.hasDefaultName)
+        XCTAssertEqual(starter.palette, PetBreed.britishShorthair.palette.withVisibleRim())
+        XCTAssertEqual(PetProfile.starter(kit: nil), starter)
+        XCTAssertFalse(PetProfile(name: "Earl Grey", breed: .britishShorthair).hasDefaultName)
+    }
+
+    func testAnExistingSavedPetKeepsItsBreedAndName() throws {
+        let old = Data(#"{"name": "Mochi", "breed": "orangeTabby", "outfit": "none", "accessories": []}"#.utf8)
+        let profile = try JSONDecoder().decode(PetProfile.self, from: old)
+        XCTAssertEqual(profile.breed, .orangeTabby)
+        XCTAssertEqual(profile.name, "Mochi")
+    }
+
+    func testTheStarterPetRendersEveryAnimationInEveryCostume() {
+        let starter = PetProfile.starter(.cat)
+        let palette = starter.palette
+        let looks = [PetProfile(name: "", breed: starter.breed)]
+            + PetOutfit.allCases.dropFirst().map { PetProfile(name: "", breed: starter.breed, outfit: $0) }
+            + PetAccessory.allCases.map { PetProfile(name: "", breed: starter.breed, accessories: [$0]) }
+        for look in looks {
+            let clips = PetClipSet(profile: look)
+            for animation in PetAnimation.allCases {
+                // A peek starts or ends hidden inside the notch, so only
+                // some of its frames show the pet.
+                let shown = clips[animation].frames.filter { $0.canvas.opaqueBounds != nil }
+                XCTAssertFalse(shown.isEmpty, "\(animation) \(look.outfit) \(look.accessories)")
+                for frame in shown {
+                    let colors = frame.canvas.colors(using: palette)
+                    XCTAssertTrue(colors.contains(palette[.furBase]),
+                                  "the silver fur shows: \(animation) \(look.outfit) \(look.accessories)")
+                }
+            }
+        }
+    }
+
     func testStarterMatchesTheChosenSpecies() {
         for species in PetSpecies.allCases {
             let starter = PetProfile.starter(species)

@@ -258,7 +258,14 @@ Its initializer and editing methods keep it valid at all times:
 - Accessories always go through `PetAccessory.wearable(_:)`; `wear(_:)` replaces whatever is in the same slot.
 - `palette` is breed colors, then overrides, then `withVisibleRim()`, so a pet recolored black still gets its warm rim.
 - `tintFur(_:)` recolors all fur from one picked color, and `tintFur(nil)` returns the fur to the breed colors without touching costume colors.
+- A pet still called by its breed name follows breed changes, so it never keeps a stale breed name; a name the user chose stays.
 
+### The default pet
+
+New users start with `PetProfile.starter(.cat)`: a British Shorthair drawn from the maintainer's own shaded-silver cat, with no name yet.
+It goes by "British Shorthair" until the user names it, and the Closet asks them to.
+`PetProfile.defaultName(for:)` gives cats no name and dogs "Biscuit", and `hasDefaultName` tells these (and "Mochi", the starter name in earlier versions) apart from a name the user chose, so switching species only renames a pet that still has a default name.
+A kit can still pick another starter (`moduleSettings.closet.pet`), and a pet that is already saved never changes.
 
 Costume items are earned with study points; breeds and colors are always free.
 `PetItem` wraps an outfit or accessory with a stable string id (`outfit.scrubs`, `accessory.beanie`) and a `cost`.

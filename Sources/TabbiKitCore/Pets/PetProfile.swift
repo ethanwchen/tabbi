@@ -12,7 +12,11 @@ public struct PetProfile: Hashable, Codable, Sendable {
     public static let maxNameLength = 16
 
     public private(set) var name: String
-    public var breed: PetBreed
+    /// Changing the breed renames a pet still called by its old breed's
+    /// name (the default name), so it never keeps a stale breed name.
+    public var breed: PetBreed {
+        didSet { if name == oldValue.displayName { name = breed.displayName } }
+    }
     /// User colors layered over the breed palette. Only
     /// `PetPaletteRole.userEditable` roles are kept.
     public private(set) var paletteOverrides: [PetPaletteRole: PetColor]
@@ -36,12 +40,32 @@ public struct PetProfile: Hashable, Codable, Sendable {
         self.accessories = PetAccessory.wearable(accessories)
     }
 
-    /// A fresh, undressed pet for someone who just picked a species.
+    /// A fresh, undressed pet for someone who just picked a species. The
+    /// starter cat is a British Shorthair drawn from the maintainer's own
+    /// cat, and it is the default pet for new users. It goes by its breed
+    /// name until the user names it.
     public static func starter(_ species: PetSpecies) -> PetProfile {
         switch species {
-        case .cat: PetProfile(name: "Mochi", breed: .orangeTabby)
-        case .dog: PetProfile(name: "Biscuit", breed: .goldenRetriever)
+        case .cat: PetProfile(name: defaultName(for: .britishShorthair), breed: .britishShorthair)
+        case .dog: PetProfile(name: defaultName(for: .goldenRetriever), breed: .goldenRetriever)
         }
+    }
+
+    /// The name a pet of this breed gets before the user picks one. Cats get
+    /// none, so they go by their breed name (which `maxNameLength` does not
+    /// cut) until the user names their own cat; dogs are called "Biscuit".
+    public static func defaultName(for breed: PetBreed) -> String {
+        switch breed.species {
+        case .cat: ""
+        case .dog: "Biscuit"
+        }
+    }
+
+    /// Whether the name is one the app gave (a breed name, a starter name,
+    /// or "Mochi", the starter cat's name in earlier versions) rather than
+    /// one the user chose.
+    public var hasDefaultName: Bool {
+        name == "Mochi" || PetBreed.allCases.contains { name == $0.displayName || name == PetProfile.defaultName(for: $0) }
     }
 
     // MARK: Editing

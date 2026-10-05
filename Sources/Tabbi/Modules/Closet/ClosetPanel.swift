@@ -75,6 +75,10 @@ private struct ClosetPetCard: View {
 
     private var subtitle: String {
         if let item = store.tryingOn { return "Trying on \(item.displayName)" }
+        // A pet still called by its breed would show the breed twice.
+        if store.profile.name == store.profile.breed.displayName {
+            return "Give your \(store.profile.species.displayName.lowercased()) a name"
+        }
         return store.profile.breed.displayName
     }
 
