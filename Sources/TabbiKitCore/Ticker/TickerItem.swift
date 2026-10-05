@@ -63,9 +63,9 @@ public struct TickerKind: RawRepresentable, Hashable, Codable, Sendable, Identif
         case .nowPlaying: "Now playing"
         case .focus: "Focus timer"
         case .tasks: "Tasks left today"
-        case .progress: "Study goals left today"
-        case .pet: "Study pet"
-        case .party: "Study party pets"
+        case .progress: "Goals left today"
+        case .pet: "Pet"
+        case .party: "Party pets"
         default: catalog.descriptor(for: ModuleID(rawValue: rawValue)).highlightTitle
             ?? catalog.descriptor(for: ModuleID(rawValue: rawValue)).title
         }
@@ -376,8 +376,8 @@ public struct TickerSources: Equatable, Sendable {
             return tasksRemaining > 0 ? .tasks(remaining: tasksRemaining) : nil
         case .progress:
             // The first goal in tab order with work left; a finished goal
-            // has nothing to say.
-            return progress.first { !$0.isComplete }.map(TickerItem.progress)
+            // has nothing to say, and nor has an untouched aspiration.
+            return progress.first(where: \.showsBesideNotch).map(TickerItem.progress)
         case .pet:
             guard let pet else { return nil }
             return .pet(TickerPet(profile: pet.profile, mood: pet.mood(focus: focus, at: now)))

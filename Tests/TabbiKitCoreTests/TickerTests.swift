@@ -141,6 +141,18 @@ final class TickerSourcesTests: XCTestCase {
         XCTAssertEqual(TickerSources(progress: [done, left]).items(at: now), [.progress(left)])
     }
 
+    func testAnUntouchedFocusGoalWaitsForTheDaysFirstMinutes() {
+        let goal = StudyDailyGoal(minutes: 120)
+        let fresh = goal.progressItem(for: StudyDayTally(minutes: 0))
+        XCTAssertEqual(TickerSources(progress: [fresh]).items(at: now), [],
+                       "a fresh day doesn't open on '120 min left' for a goal the user never set")
+        let started = goal.progressItem(for: StudyDayTally(minutes: 25))
+        XCTAssertEqual(TickerSources(progress: [started]).items(at: now), [.progress(started)])
+        let dueCards = cards(completed: 0, target: 50)
+        XCTAssertEqual(TickerSources(progress: [fresh, dueCards]).items(at: now), [.progress(dueCards)],
+                       "work that is due shows from the start")
+    }
+
     func testUsageShowsOnlyAboveEightyPercentAndPicksTheFullerWindow() {
         func usage(_ fiveHour: Double?, _ weekly: Double?) -> [TickerItem] {
             TickerSources(highlights: usageHighlights(ClaudeRateLimitSnapshot(
