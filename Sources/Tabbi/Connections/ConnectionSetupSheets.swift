@@ -9,12 +9,15 @@ enum ConnectionSheet: Identifiable, Hashable {
     case priming(ConnectionPermission, ConnectionKind)
     /// "Something not working?": the checks behind the row, in plain words.
     case troubleshoot(ConnectionKind)
+    /// Party's name and pet, the only setup it needs.
+    case partySetup
 
     var id: Self { self }
 
     var kind: ConnectionKind {
         switch self {
         case .guide(_, let kind, _), .priming(_, let kind), .troubleshoot(let kind): kind
+        case .partySetup: .party
         }
     }
 
@@ -24,6 +27,7 @@ enum ConnectionSheet: Identifiable, Hashable {
         case .showGuide(let guide):
             self = .guide(guide, kind, asSuggestion: status.action != action && status.suggestion == action)
         case .askPermission(let permission): self = .priming(permission, kind)
+        case .setUp where kind == .party: self = .partySetup
         default: return nil
         }
     }
@@ -63,6 +67,10 @@ struct ConnectionSheetView: View {
                 copyDetails: { store.details(of: kind).map(store.copy) }, close: { dismiss() }
             )
             .onAppear { store.refresh([kind]) }
+        case .partySetup:
+            let draft = store.partyDraft
+            PartySetupView(name: draft.name, species: draft.species, state: store.partyState,
+                           start: store.startParty, copy: store.copy, close: { dismiss() })
         }
     }
 }
@@ -368,7 +376,7 @@ extension ConnectionCheck.Outcome {
 }
 
 /// The icon, title and message at the top of a Connections sheet.
-private struct ConnectionSheetHeader: View {
+struct ConnectionSheetHeader: View {
     let kind: ConnectionKind
     /// Tints the icon like the row's light; nil for the neutral blue.
     let light: ConnectionLight?

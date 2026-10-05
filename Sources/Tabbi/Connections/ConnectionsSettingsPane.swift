@@ -113,6 +113,11 @@ struct ConnectionRow: View {
                     Text("\(Text(status.headline).fontWeight(.medium)). \(status.detail)")
                         .font(.callout)
                         .padding(.top, 2)
+                } else if case .copyFriendCode(let code) = status.suggestion {
+                    Text("Your friend code: \(Text(code).fontWeight(.semibold).monospacedDigit())")
+                        .font(.callout)
+                        .textSelection(.enabled)
+                        .padding(.top, 2)
                 }
                 Button("Something not working?", action: troubleshoot)
                     .buttonStyle(.link)
@@ -197,6 +202,7 @@ extension ConnectionAction {
         case .openSettings: "Open the right page in System Settings"
         case .checkAgain: "Check \(kind.title) again"
         case .setUp: "Set up \(kind.title)"
+        case .copyFriendCode: "Copy your friend code to send to a friend"
         }
     }
 }

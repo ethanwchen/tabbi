@@ -61,6 +61,14 @@ Tests check that each row ends connected, that every problem state has one butto
 `swift run Tabbi --snapshot <dir>` draws each list as `connections-states-<row>.png`, at the Settings pane's width, with each state's support label above it.
 The "unlocks" lines stay at 38 characters or fewer, so they fit on one line beside the widest button.
 
+## Party
+
+Party has no account to make.
+The Party tab reports its state to `ConnectionsStore.follow(party:name:species:start:retry:)`, so its row needs no probe and updates the moment the tab connects.
+Set up opens one sheet that asks for a name and a pet (cat or dog); Start Party saves both, and Party registers by itself.
+The sheet then shows the friend code large, with a Copy code button, and the connected row keeps the code and a Copy friend code button.
+`swift run Tabbi --snapshot <dir>` writes the sheet's states as `connections-party-<state>.png`.
+
 ## Integrations
 
 | Row | Detected from | Steps from nothing to connected |

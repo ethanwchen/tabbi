@@ -17,8 +17,8 @@ struct ConnectionProbes: Sendable {
         case .music: await Self.music(.music).diagnosis
         case .notifications: await Self.notifications().diagnosis
         case .doNotDisturb: await Self.focusShortcuts().diagnosis
-        // Party's state lives in its own tab; Connections doesn't list it yet.
-        case .party: PartyConnectionState.notSetUp.diagnosis
+        // The Party tab reports its own state (`ConnectionsStore.follow(party:)`).
+        case .party: PartyConnectionState.connecting.diagnosis
         }
     }
 

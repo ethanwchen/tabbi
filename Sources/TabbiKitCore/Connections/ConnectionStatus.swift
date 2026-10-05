@@ -117,6 +117,8 @@ public enum ConnectionAction: Hashable, Sendable {
     /// Start a connection that needs a little info from the user (Party:
     /// a name and a pet).
     case setUp
+    /// Put a value the user shares (Party's friend code) on the clipboard.
+    case copyFriendCode(String)
 
     /// The button's label.
     public var title: String {
@@ -129,6 +131,7 @@ public enum ConnectionAction: Hashable, Sendable {
         case .openSettings: "Open Settings"
         case .checkAgain: "Check again"
         case .setUp: "Set up"
+        case .copyFriendCode: "Copy friend code"
         }
     }
 }

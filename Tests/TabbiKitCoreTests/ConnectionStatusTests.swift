@@ -217,4 +217,32 @@ final class ConnectionStatusTests: XCTestCase {
         XCTAssertEqual(PartyConnectionState.notSetUp.connectionStatus.action, .setUp)
         XCTAssertTrue(PartyConnectionState.connected(friendCode: "PUFF-42").connectionStatus.detail.contains("PUFF-42"))
     }
+
+    func testConnectedPartyOffersToCopyItsFriendCode() {
+        let status = PartyConnectionState.connected(friendCode: "PUFF-42").connectionStatus
+        XCTAssertNil(status.action)
+        XCTAssertEqual(status.suggestion, .copyFriendCode("PUFF-42"))
+        XCTAssertEqual(status.suggestion?.title, "Copy friend code")
+    }
+
+    func testPartySetupNeedsARealName() {
+        XCTAssertNil(PartySetup.name(from: ""))
+        XCTAssertNil(PartySetup.name(from: "   \n"))
+        XCTAssertNil(PartySetup.name(from: "\u{200B}"))
+        XCTAssertEqual(PartySetup.name(from: "  Sam "), "Sam")
+        let long = String(repeating: "a", count: PartySettings.maxNameLength + 10)
+        XCTAssertEqual(PartySetup.name(from: long)?.count, PartySettings.maxNameLength)
+    }
+
+    func testPartySetupCopyIsPlain() {
+        let copy = [PartySetup.title, PartySetup.intro, PartySetup.nameLabel, PartySetup.namePlaceholder,
+                    PartySetup.petLabel, PartySetup.petNote, PartySetup.start, PartySetup.readyTitle,
+                    PartySetup.readyIntro]
+        for line in copy {
+            XCTAssertFalse(line.contains("\u{2014}"), line)
+            for word in ["account name", "server", "API", "register", "token"] {
+                XCTAssertFalse(line.localizedCaseInsensitiveContains(word), "\(line) says \(word)")
+            }
+        }
+    }
 }

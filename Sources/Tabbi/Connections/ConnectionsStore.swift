@@ -16,8 +16,8 @@ import TabbiKitCore
 final class ConnectionsStore: ObservableObject {
     static let shared = ConnectionsStore(runMode: .current)
 
-    /// The rows Connections lists. Party joins once its tab shares its state.
-    static let listed = ConnectionKind.allCases.filter { $0 != .party }
+    /// The rows Connections lists.
+    static let listed = ConnectionKind.allCases
 
     /// The latest answer for each connection, with the checks behind it;
     /// absent until its first check.
@@ -33,6 +33,9 @@ final class ConnectionsStore: ObservableObject {
     private var waiting: [ConnectionKind: Task<Void, Never>] = [:]
     private var watchers = 0
     private var activationObserver: NSObjectProtocol?
+    /// What the Party tab shares (see `follow(party:)`).
+    @Published private var party: PartyLink?
+    private var partyCancellables: Set<AnyCancellable> = []
 
     init(runMode: RunMode) {
         isDemo = runMode.isDemo
@@ -106,6 +109,11 @@ final class ConnectionsStore: ObservableObject {
     func refresh(_ kinds: [ConnectionKind] = ConnectionsStore.listed) {
         guard !isDemo else { return }
         for kind in kinds {
+            // Party's state comes from its tab as it changes; no probe.
+            if kind == .party {
+                showParty()
+                continue
+            }
             checks[kind]?.cancel()
             running.insert(kind)
             checks[kind] = Task { [weak self, probes] in
@@ -117,6 +125,61 @@ final class ConnectionsStore: ObservableObject {
                 checkedAt[kind] = Date()
             }
         }
+    }
+
+    // MARK: Party
+
+    /// What the Party tab shares with Connections: where it stands, the
+    /// name and pet it would use, and how to start it from the setup sheet.
+    struct PartyLink {
+        var state: PartyConnectionState = .connecting
+        var name = ""
+        var species: PetSpecies = .cat
+        /// Saves the name and pet; Party registers by itself after that.
+        let start: @MainActor (_ name: String, _ species: PetSpecies) -> Void
+        /// Tries the server again now.
+        let retry: @MainActor () -> Void
+    }
+
+    /// Lets the Party tab report where it stands, so its row needs no
+    /// probe and the setup sheet can start it. The tab calls this once.
+    func follow(party state: AnyPublisher<PartyConnectionState, Never>,
+                name: AnyPublisher<String, Never>, species: AnyPublisher<PetSpecies, Never>,
+                start: @escaping @MainActor (_ name: String, _ species: PetSpecies) -> Void,
+                retry: @escaping @MainActor () -> Void) {
+        partyCancellables = []
+        party = PartyLink(start: start, retry: retry)
+        state.removeDuplicates()
+            .sink { [weak self] in
+                self?.party?.state = $0
+                self?.showParty()
+            }
+            .store(in: &partyCancellables)
+        name.sink { [weak self] in self?.party?.name = $0 }.store(in: &partyCancellables)
+        species.sink { [weak self] in self?.party?.species = $0 }.store(in: &partyCancellables)
+    }
+
+    /// Where Party stands, for its setup sheet.
+    var partyState: PartyConnectionState {
+        isDemo ? .connected(friendCode: "PUFF-42") : party?.state ?? .connecting
+    }
+
+    /// The name and pet the setup sheet starts from.
+    var partyDraft: (name: String, species: PetSpecies) {
+        (party?.name ?? "", party?.species ?? .cat)
+    }
+
+    /// The setup sheet's start button: saves the name and pet, then Party
+    /// registers by itself and the row turns green.
+    func startParty(name: String, species: PetSpecies) {
+        guard !isDemo else { return }
+        party?.start(name, species)
+    }
+
+    private func showParty() {
+        guard !isDemo, let party else { return }
+        diagnoses[.party] = party.state.diagnosis
+        checkedAt[.party] = Date()
     }
 
     // MARK: Waiting for a walkthrough
@@ -168,10 +231,14 @@ final class ConnectionsStore: ObservableObject {
             open(app, for: kind)
         case .openSettings(let link):
             NSWorkspace.shared.open(link.url)
+        case .checkAgain where kind == .party:
+            party?.retry()
         case .checkAgain, .setUp, .showGuide:
             refresh([kind])
         case .askPermission(let permission):
             Task { await request(permission, for: kind) }
+        case .copyFriendCode(let code):
+            copy(code)
         }
     }
 

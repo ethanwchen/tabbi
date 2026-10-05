@@ -45,6 +45,17 @@ extension SnapshotRenderer {
             await write(render(view), named: "connections-checkup-\(name)", to: outputDirectory)
         }
 
+        let party: [(String, String, Bool, PartyConnectionState)] = [
+            ("new", "", false, .notSetUp), ("named", "Sam", false, .notSetUp),
+            ("joining", "Sam", true, .connecting), ("offline", "Sam", true, .offline),
+            ("ready", "Sam", true, .connected(friendCode: "PUFF-42")),
+        ]
+        for (name, typed, started, state) in party {
+            let view = PartySetupView(name: typed, species: .cat, state: state, start: { _, _ in }, copy: { _ in },
+                                      close: {}, started: started)
+            await write(render(view), named: "connections-party-\(name)", to: outputDirectory)
+        }
+
         for kind in ConnectionKind.allCases {
             await write(renderStates(of: kind), named: "connections-states-\(kind.rawValue)", to: outputDirectory)
         }
