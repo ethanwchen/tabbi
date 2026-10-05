@@ -77,6 +77,44 @@ final class PetProfileTests: XCTestCase {
         XCTAssertLessThan(ringCount(PetComposer.sitting(.grayTabby)), 3, "plain cats keep their plain tail")
     }
 
+    func testTheBritishShorthairHasOpenBlueEyesThatStillClose() {
+        let palette = PetBreed.britishShorthair.palette
+        XCTAssertGreaterThan(Int(palette[.eye].blue), Int(palette[.eye].red) + 80, "a clear blue iris")
+        XCTAssertGreaterThan(palette[.eyeLight].luminance, 0.9, "a white highlight")
+
+        // Open eyes: one highlight per eye, each beside a dark pupil and
+        // above the blue iris.
+        func highlights(_ canvas: PetCanvas) -> [(x: Int, y: Int)] {
+            (0..<canvas.height).flatMap { y in
+                (0..<canvas.width).filter { canvas[$0, y] == .eyeLight }.map { (x: $0, y: y) }
+            }
+        }
+        let clips = PetClipSet(profile: PetProfile(name: "", breed: .britishShorthair))
+        for animation in [PetAnimation.idle, .sit, .walk, .alert] {
+            for frame in clips[animation].frames {
+                let sparkles = highlights(frame.canvas)
+                XCTAssertEqual(sparkles.count, 2, "\(animation)")
+                for sparkle in sparkles {
+                    XCTAssertEqual(frame.canvas[sparkle.x + 1, sparkle.y], .outline, "pupil beside the highlight")
+                    XCTAssertEqual(frame.canvas[sparkle.x, sparkle.y + 1], .eye, "iris below the highlight")
+                }
+            }
+        }
+        // Blinking and sleeping close the whole eye, pupil included.
+        for animation in [PetAnimation.blink, .sleep] {
+            for frame in clips[animation].frames {
+                XCTAssertTrue(highlights(frame.canvas).isEmpty, "\(animation)")
+            }
+        }
+        let open = PetComposer.sitting(.britishShorthair)
+        let blink = PetComposer.sitting(.britishShorthair, pose: PetPose(eyes: .closed))
+        for sparkle in highlights(open) {
+            for y in sparkle.y..<sparkle.y + 2 {
+                XCTAssertNotEqual(blink[sparkle.x + 1, y], .outline, "no pupil left floating in a closed eye")
+            }
+        }
+    }
+
     func testStarterMatchesTheChosenSpecies() {
         for species in PetSpecies.allCases {
             let starter = PetProfile.starter(species)

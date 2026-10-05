@@ -6,7 +6,8 @@ import Foundation
 /// free of the pet instead of growing a border.
 enum EffectArt {
     /// Eye states are 4x3, centered on a 2x3 open eye (one pixel of margin
-    /// on each side), so they work for every face.
+    /// on each side), so they work for every face. A 3-wide eye keeps one
+    /// pixel of margin on its cheek side.
     static let eyesClosed = SpriteGrid(art: """
         ....
         ....
@@ -93,18 +94,26 @@ enum EffectArt {
                 for x in 0..<face.width where face[x, y] == .role(.blush) { result[x, y] = .empty }
             }
         }
-        let isEye: (SpriteCell) -> Bool = { $0 == .role(.eye) || $0 == .role(.eyeLight) }
-        // Left edges of each 2-wide eye on the eye row.
+        // A pupil drawn in the outline color is part of the eye it sits in.
+        let isEye: (SpriteCell) -> Bool = {
+            $0 == .role(.eye) || $0 == .role(.eyeLight) || $0 == .role(.outline)
+        }
+        // Left edges of each eye on the eye row; most eyes are 2 wide, a few 3.
         let lefts = (0..<face.width).filter { x in
             isEye(face[x, eyeRow]) && (x == 0 || !isEye(face[x - 1, eyeRow]))
         }
         for left in lefts {
+            let width = max(2, (left..<face.width).prefix { isEye(face[$0, eyeRow]) }.count)
             for y in eyeRow..<min(face.height, eyeRow + 3) {
-                for x in left..<min(face.width, left + 2) where isEye(face[x, y]) { result[x, y] = .empty }
+                for x in left..<min(face.width, left + width) where isEye(face[x, y]) { result[x, y] = .empty }
             }
+            // The overlay's spare pixel goes toward the cheek: left of a left
+            // eye, right of a right eye.
+            let isRightEye = width > 2 && left * 2 + width > face.width
+            let start = isRightEye ? left : left - 1
             for y in 0..<overlay.height {
                 for x in 0..<overlay.width where overlay[x, y] != .empty {
-                    let fx = left - 1 + x, fy = eyeRow + y
+                    let fx = start + x, fy = eyeRow + y
                     if fx >= 0, fx < face.width, fy < face.height { result[fx, fy] = overlay[x, y] }
                 }
             }
