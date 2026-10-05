@@ -23,8 +23,9 @@ final class PetKitDefaultsTests: XCTestCase {
         XCTAssertEqual(pet.name, "Sir Whiskers the")
     }
 
-    func testBundledStudyKitsStartOnTheirOwnPets() throws {
+    func testMedSchoolStartsOnItsOwnPetAndEssentialsOnTheDefault() throws {
         XCTAssertEqual(PetProfile.starter(kit: try XCTUnwrap(KitLibrary.bundled["medicine"]).defaults).breed, .orangeTabby)
-        XCTAssertEqual(PetProfile.starter(kit: try XCTUnwrap(KitLibrary.bundled["student"]).defaults).breed, .corgi)
+        XCTAssertEqual(PetProfile.starter(kit: try XCTUnwrap(KitLibrary.bundled["essentials"]).defaults).breed,
+                       PetProfile.starter(kit: KitDefaults()).breed)
     }
 }

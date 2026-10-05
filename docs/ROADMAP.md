@@ -21,9 +21,8 @@ Three ideas drive every design decision:
 
 | Kit | Status | For |
 | --- | --- | --- |
-| Productivity | Shipping | Music, system stats, your day, Claude usage and Ask Claude. Tabbi's original tabs. |
-| Med School | In progress | Medical students: a study timer with evidence-based methods, Anki reviews, study parties, music, Ask Claude and a study pet. |
-| Student | In progress | High school and college students: study timer, classes and homework, music and a pet. |
+| Essentials | Shipping | Everyone, and the default: timer, to-do, music and Ask Claude. Everything else is one click away in Settings > Modules > Add More. |
+| Med School | In progress | Medical students: Essentials plus Anki, with evidence-based study methods and a study pet. |
 | Tech | Planned | Developers and CS students. |
 | Law | Planned | LSAT takers and law students. |
 | Casual learner | Planned | Anyone learning for fun: a language, an instrument, a hobby. |

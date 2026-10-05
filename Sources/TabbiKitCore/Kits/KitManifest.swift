@@ -1,7 +1,7 @@
 import Foundation
 
 /// A kit: a declarative, human-editable bundle of modules and defaults for one
-/// audience (Productivity, Med School, Student, ...).
+/// audience (Essentials, Med School, ...).
 ///
 /// Kits are plain JSON so the community can write and share them without
 /// code (the format is documented in docs/kits.md). Decoding is strict about

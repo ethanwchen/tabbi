@@ -5,7 +5,7 @@ import Foundation
 /// A kit picks these in its Study section (`moduleSettings.study.methods`
 /// and `method`), so a
 /// Med School kit can lead with Anki sprints and question blocks while a
-/// general student kit offers only the classic timers, without the Study
+/// general kit offers only the classic timers, without the Study
 /// module hardcoding either. The menu is never empty: a kit that names no
 /// known method offers every preset.
 public struct StudyMethodMenu: Equatable, Sendable {
