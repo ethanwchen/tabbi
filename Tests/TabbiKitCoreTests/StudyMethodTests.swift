@@ -225,4 +225,16 @@ final class StudyMethodTests: XCTestCase {
             .filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
             .count
     }
+
+    func testHowToSentencePrefixesGrowOneWholeSentenceAtATime() {
+        let prefixes = StudyMethodInfo.info(for: .pomodoro).howToSentencePrefixes
+        XCTAssertEqual(prefixes.first, "Work on one thing for 25 minutes, then take a 5-minute break away from the screen.")
+        XCTAssertEqual(prefixes.count, 3)
+        for info in StudyMethodInfo.all {
+            let prefixes = info.howToSentencePrefixes
+            XCTAssertEqual(prefixes.last, info.howTo, "the longest prefix is the whole text")
+            XCTAssertTrue(prefixes.allSatisfy { $0.hasSuffix(".") }, "\(info.name) cuts only after a sentence")
+            XCTAssertEqual(prefixes, prefixes.sorted { $0.count < $1.count })
+        }
+    }
 }

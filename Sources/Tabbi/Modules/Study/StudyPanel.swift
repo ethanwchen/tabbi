@@ -325,18 +325,26 @@ private struct StudyMethodPicker: View {
     }
 }
 
-/// One method in the picker: name and rhythm.
-private struct StudyMethodTile: View {
+/// One method in the picker: name and rhythm, with its (i) when `info`
+/// is set. Onboarding's method step shows the info beside the tiles instead.
+struct StudyMethodTile: View {
     let method: StudyMethod
     let isCurrent: Bool
-    let info: () -> Void
+    let info: (() -> Void)?
     let action: () -> Void
+    /// Whether the tile shows the rhythm after the name; onboarding's
+    /// narrower tiles leave it to the summary beside them.
+    var showsRhythm = true
+    /// Reports hover changes, so onboarding can preview the hovered method.
+    var hovered: (Bool) -> Void = { _ in }
     @State private var hovering = false
 
     var body: some View {
         HStack(spacing: Theme.Spacing.xxs) {
             tile
-            StudyInfoButton(method: method.kind, action: info)
+            if let info {
+                StudyInfoButton(method: method.kind, action: info)
+            }
         }
     }
 
@@ -347,7 +355,7 @@ private struct StudyMethodTile: View {
                     .foregroundStyle(isCurrent ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
                     .lineLimit(1)
                 Spacer(minLength: Theme.Spacing.xs)
-                if !method.nameIsRhythm {
+                if showsRhythm, !method.nameIsRhythm {
                     Text(method.rhythmLabel)
                         .foregroundStyle(isCurrent ? accent : Theme.Palette.tertiaryText)
                         .monospacedDigit()
@@ -369,7 +377,7 @@ private struct StudyMethodTile: View {
         }
         .buttonStyle(.plain)
         .help(isCurrent ? "\(method.info.name) is in use" : "Switch to \(method.info.name): \(method.info.tagline)")
-        .onHover { hovering = $0 }
+        .onHover { hovering = $0; hovered($0) }
         .animation(Theme.Motion.snappy, value: hovering)
     }
 }

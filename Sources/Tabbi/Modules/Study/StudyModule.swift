@@ -40,6 +40,11 @@ final class StudyModule: NotchModule {
         AnyView(StudyPanel(store: store, focusMode: focusMode))
     }
 
+    /// Onboarding's study method step: pick the timer's method in one tap.
+    func makeSetupView(for step: OnboardingSetupStep, done: @escaping () -> Void) -> AnyView? {
+        step == .studyMethod ? AnyView(StudyMethodSetupView(store: store)) : nil
+    }
+
     /// Today's study minutes against the kit's daily goal, so Today lists
     /// study time and Plan my day can schedule what is left, and the block
     /// under way as the shared focus clock, so the closed notch counts it

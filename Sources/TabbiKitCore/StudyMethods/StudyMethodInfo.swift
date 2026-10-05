@@ -111,6 +111,17 @@ public struct StudyMethodInfo: Hashable, Sendable {
 
     /// Info for every method, in `StudyMethodKind.allCases` order.
     public static let all: [StudyMethodInfo] = StudyMethodKind.allCases.map(info(for:))
+
+    /// `howTo` cut after its first sentence, its first two, and so on up to
+    /// the whole text, so a small card can show as many whole sentences as
+    /// fit instead of cutting one off mid-way.
+    public var howToSentencePrefixes: [String] {
+        let sentences = howTo.components(separatedBy: ". ")
+        return sentences.indices.map { end in
+            let prefix = sentences[...end].joined(separator: ". ")
+            return end == sentences.count - 1 ? prefix : prefix + "."
+        }
+    }
 }
 
 public extension StudyMethod {

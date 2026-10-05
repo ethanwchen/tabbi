@@ -64,7 +64,7 @@ struct StudyMethodInfoView: View {
 }
 
 /// How well supported a method is, as a small tinted capsule.
-private struct StudyEvidenceBadge: View {
+struct StudyEvidenceBadge: View {
     let level: StudyEvidenceLevel
 
     var body: some View {
