@@ -36,8 +36,11 @@ final class UnlockCelebrationTests: XCTestCase {
         XCTAssertNil(center.current)
     }
 
-    func testALevelUpFromStudyPointsSparkles() throws {
-        let center = openCenter()
+    func testALevelUpFromStudyPointsSparklesWithoutStackingOnTheChime() throws {
+        var played: [CelebrationSound] = []
+        let center = CelebrationCenter(isEnabled: true, hapticsEnabled: { false }, soundEnabled: { true },
+                                       playSound: { played.append($0) })
+        center.stageAppeared()
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root) }
         let storage = EditionStorage(root: root)
@@ -59,5 +62,19 @@ final class UnlockCelebrationTests: XCTestCase {
 
         XCTAssertEqual(center.current?.style, .sparkles)
         XCTAssertEqual(center.current?.tier, .milestone)
+        XCTAssertEqual(played, [], "the finished session already chimed")
+    }
+
+    func testBuyingAnItemPlaysTheCelebrationSound() throws {
+        var played: [CelebrationSound] = []
+        let center = CelebrationCenter(isEnabled: true, hapticsEnabled: { false }, soundEnabled: { true },
+                                       playSound: { played.append($0) })
+        center.stageAppeared()
+        let store = ClosetStore(storage: EditionStorage(root: FileManager.default.temporaryDirectory),
+                                runMode: .demo, celebrations: center)
+        let item = try XCTUnwrap(PetItem.allCases.first { store.closet.state(of: $0) == .affordable })
+
+        XCTAssertEqual(store.tap(item), .boughtAndWore)
+        XCTAssertEqual(played.count, 1)
     }
 }

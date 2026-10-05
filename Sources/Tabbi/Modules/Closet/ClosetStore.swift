@@ -103,7 +103,7 @@ final class ClosetStore: ObservableObject {
         if hasSave ? closet.save != before : award != nil || timer?.isActive == true { persist() }
         guard let award else { return }
         preview.send(.celebrate)
-        if award.isLevelUp { celebrateUnlock() }
+        if award.isLevelUp { celebrateUnlock(hasOwnSound: award.completedSessions > 0) }
         awards.send(award)
     }
 
@@ -128,14 +128,14 @@ final class ClosetStore: ObservableObject {
         let result = edit { $0.tap(item) }
         if result == .boughtAndWore {
             preview.send(.celebrate)
-            celebrateUnlock()
+            celebrateUnlock(hasOwnSound: false)
         }
         return result
     }
 
-    private func celebrateUnlock() {
+    private func celebrateUnlock(hasOwnSound: Bool) {
         celebrations?.celebrate(.milestone, style: .sparkles, accent: ClosetModule.descriptor.accentColor,
-                                from: ClosetModule.descriptor.id)
+                                from: ClosetModule.descriptor.id, hasOwnSound: hasOwnSound)
     }
 
     func rename(_ name: String) { edit { $0.rename(name) } }
