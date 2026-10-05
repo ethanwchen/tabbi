@@ -228,9 +228,9 @@ Every other image that shows the icon is made from the assets above, so after a 
 | `docs/images/social-preview.png` | `swift docs/make-screenshots.swift`, which places `docs/images/icon.png` beside the name (it also rewrites the other README screenshots, whose clocks differ on every run) |
 | `docs/images/install/gatekeeper-steps.png` | `swift docs/images/install/render-gatekeeper-steps.swift`, which reads `Resources/AppIcon.icns` |
 | The DMG window background | `packaging/dmg/render-background.swift` at build time. Its palette mirrors the icon: the navy ground, the fur-coloured checkmark wink and arrow (from the pink-tan nose to the pale fur), a round blue eye in the notch, and label pills in the shaded silver-beige |
-| `docs/images/install/dmg-window.png` | A screenshot of the real installer: `scripts/make-dmg.sh`, mount the DMG, then `screencapture -l <window id>` of its Finder window |
+| `docs/images/install/dmg-window.png` | A screenshot of the real installer: `scripts/make-dmg.sh`, mount the DMG, then `screencapture -l <window id>` of its Finder window. For an icon-only change it can be repainted in place: the background art sits at (112, 140) in the 2x capture, so add the new minus the old `background@2x.png` there, draw the 1024 px asset at 258 px over the new background for the Finder icon, and the iconset's `icon_16x16@2x.png` for the title bar |
 | `docs/images/install/move-prompt.png`, `settings-about.png` | Screenshots of the running app. For an icon-only change the icon can be repainted in place: both show it on a flat surface, at 128 and 200 px with its 824/1024 body at the same spot, so the new 1024 px asset drawn into that rect matches a fresh capture |
 
 The pixel pet in the notch screenshots, the hero GIF and the social preview's Study panel is the pet sprite, not the icon.
-It is the Med School kit's starter pet (`moduleSettings.closet.pet.breed` in `medicine.json`, still `orangeTabby`), so it changes with the pets, not with the icon.
-Once the British Shorthair sprite and starter pet land, run `swift docs/make-screenshots.swift` again so the social preview and README shots show it, and check the hex values quoted above against `PetBreed.britishShorthair`.
+It is the demo pet (Mochi, a British Shorthair, from `PetCloset` in `TabbiKitCore/Closet`), so it changes with the pets, not with the icon.
+After a change to the British Shorthair sprite, run `swift docs/make-screenshots.swift` again so the social preview and README shots show it, and check the hex values quoted above against `PetBreed.britishShorthair`.
