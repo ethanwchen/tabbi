@@ -56,8 +56,6 @@ public enum Theme {
 
     /// Shorthands for the motion system (`Motion`, docs/design/motion.md).
     public enum Motion {
-        /// Notch opening. Closing uses `TabbiKit.Motion.close`.
-        public static let notch = TabbiKit.Motion.open
         /// Hover, selection, small state changes.
         public static let snappy = TabbiKit.Motion.snappy
         /// Content swaps between modules.

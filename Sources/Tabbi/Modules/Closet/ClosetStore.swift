@@ -34,7 +34,8 @@ final class ClosetStore: ObservableObject {
     private var kitSubscription: AnyCancellable?
     private var lastFocus: ProvidedFocus?
     private let saveURL: URL?
-    /// Plays a sparkle milestone over the panel when an item is unlocked.
+    /// Plays a sparkle milestone over the panel when an item is bought or
+    /// study points make a new one affordable (a level up).
     private let celebrations: CelebrationCenter?
     /// Set when the save on disk could not be read: the closet then runs on
     /// a fresh pet but never overwrites the file, so nothing is lost.
@@ -48,7 +49,7 @@ final class ClosetStore: ObservableObject {
     /// - Parameters:
     ///   - starter: the pet to start someone with no saved pet on, usually
     ///     the kit's (`PetProfile.starter(kit:)`).
-    ///   - celebrations: plays a sparkle milestone when points unlock an item;
+    ///   - celebrations: plays a sparkle milestone on a purchase or a level up;
     ///     nil in tests.
     init(storage: EditionStorage, runMode: RunMode, starter: PetProfile = .starter(.cat),
          celebrations: CelebrationCenter? = nil) {
@@ -102,6 +103,7 @@ final class ClosetStore: ObservableObject {
         if hasSave ? closet.save != before : award != nil || timer?.isActive == true { persist() }
         guard let award else { return }
         preview.send(.celebrate)
+        if award.isLevelUp { celebrateUnlock() }
         awards.send(award)
     }
 
@@ -126,10 +128,14 @@ final class ClosetStore: ObservableObject {
         let result = edit { $0.tap(item) }
         if result == .boughtAndWore {
             preview.send(.celebrate)
-            celebrations?.celebrate(.milestone, style: .sparkles, accent: ClosetModule.descriptor.accentColor,
-                                    from: ClosetModule.descriptor.id)
+            celebrateUnlock()
         }
         return result
+    }
+
+    private func celebrateUnlock() {
+        celebrations?.celebrate(.milestone, style: .sparkles, accent: ClosetModule.descriptor.accentColor,
+                                from: ClosetModule.descriptor.id)
     }
 
     func rename(_ name: String) { edit { $0.rename(name) } }

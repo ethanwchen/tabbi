@@ -34,11 +34,6 @@ public enum Motion {
         reduceMotion ? reduced : animation
     }
 
-    /// The notch shape's animation toward `isOpen`: open stretches, close lands.
-    public static func notch(opening isOpen: Bool, reduceMotion: Bool) -> Animation {
-        adapted(isOpen ? open : close, reduceMotion: reduceMotion)
-    }
-
     /// `animation` delayed for the item at `index` in a staggered entrance.
     /// No stagger under Reduce Motion, where everything crossfades together.
     public static func staggered(_ animation: Animation, index: Int, reduceMotion: Bool) -> Animation {

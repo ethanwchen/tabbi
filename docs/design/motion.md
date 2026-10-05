@@ -9,7 +9,7 @@ The research behind these values is in [docs/research/motion.md](../research/mot
 - `Sources/TabbiKitCore/Motion/`: the values as pure numbers (`SpringSpec`, `MotionTokens`), tested in `MotionTokensTests` (no overshoot on close, open and close done within their budgets, stagger caps).
 - `Sources/TabbiKit/Design/Motion/`: the SwiftUI side.
   `Motion` turns the tokens into `Animation`s, `AnyTransition.notchContent` and `.tabSwitch` are the notch's own transitions, `.motionPop`, `.motionSwap` and `.motionRow(from:)` are the shared insert and removal transitions, and `.motion(_:value:)` and `withMotion` apply an animation with the Reduce Motion fallback built in.
-- `Theme.Motion.notch`, `.snappy` and `.content` are shorthands for the same values, so existing call sites follow the system.
+- `Theme.Motion.snappy` and `.content` are shorthands for the same values, so existing call sites follow the system.
 
 ## Tokens
 
@@ -142,7 +142,7 @@ The timing is pure in `CheckDraw` (`TabbiKitCore/Motion/`, tested in `CheckDrawT
 ## Reduce Motion
 
 Every animation has a calm fallback.
-In a view, read `@Environment(\.accessibilityReduceMotion)` and pass it to `Motion.adapted`, `Motion.notch(opening:reduceMotion:)`, `Motion.staggered` or the shared transitions, or use `.motion(_:value:)`, which reads it for you.
+In a view, read `@Environment(\.accessibilityReduceMotion)` and pass it to `Motion.adapted`, `Motion.staggered` or the shared transitions, or use `.motion(_:value:)`, which reads it for you.
 Outside a view, `withMotion` reads `NSWorkspace.shared.accessibilityDisplayShouldReduceMotion`.
 Under Reduce Motion there is no scale, stretch, slide or particle: things crossfade in 180 ms.
 Text that would scroll stays put: the Now Playing title marquee keeps its truncated line under Reduce Motion, and the tooltip carries the full title.
