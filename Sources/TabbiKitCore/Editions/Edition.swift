@@ -54,7 +54,7 @@ public struct Edition: Sendable, Hashable, Identifiable, Decodable {
     /// The id of the edition used when none is named, such as `swift run`.
     public static let defaultID = "tabbi"
 
-    /// Tabbi with the Productivity kit. Falls back to these values if its
+    /// Tabbi with the Essentials kit. Falls back to these values if its
     /// file can't be read, so the app always has an edition to run as.
     public static let tabbi = named(defaultID) ?? Edition(
         id: defaultID, name: "Tabbi",

@@ -298,6 +298,15 @@ final class SettingsRepositoryTests: XCTestCase {
         XCTAssertEqual(settings.modules.enabled.first, .study)
     }
 
+    func testFreshInstallOfTabbiShowsTheFourEssentialsTabs() {
+        let settings = SettingsRepository(defaults: defaults, defaultKitID: Edition.tabbi.defaultKitID).load()
+        XCTAssertEqual(settings.kitID, "essentials")
+        XCTAssertEqual(settings.modules.enabled, [.study, .planner, .spotify, .claudeAsk])
+        XCTAssertEqual(Set(settings.modules.available),
+                       Set(ModuleCatalog.builtIn.ids).subtracting(settings.modules.enabled),
+                       "everything else waits in the Add More library")
+    }
+
     func testSavedLayoutWinsOverTheKitsLayout() {
         let repository = SettingsRepository(defaults: defaults, defaultKitID: "medicine")
         var settings = repository.load()
