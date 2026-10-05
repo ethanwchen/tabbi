@@ -7,14 +7,18 @@ import TabbiKitCore
 /// read-only: nothing here asks macOS for a permission or launches an app.
 /// The rules that turn what it finds into words live in TabbiKitCore.
 struct ConnectionProbes: Sendable {
+    /// Whether a check may save what it learned (that Spotify or Music
+    /// once allowed control). Off in demo and snapshot runs.
+    var remembers = true
+
     /// Where one connection stands right now, with the checks behind it.
     func diagnosis(of kind: ConnectionKind) async -> ConnectionDiagnosis {
         switch kind {
         case .anki: await Self.anki().diagnosis
         case .calendar: Self.calendar().diagnosis
         case .claude: await Self.claude().diagnosis
-        case .spotify: await Self.music(.spotify).diagnosis
-        case .music: await Self.music(.music).diagnosis
+        case .spotify: await Self.music(.spotify, remembers: remembers).diagnosis
+        case .music: await Self.music(.music, remembers: remembers).diagnosis
         case .notifications: await Self.notifications().diagnosis
         case .doNotDisturb: await Self.focusShortcuts().diagnosis
         // The Party tab reports its own state (`ConnectionsStore.follow(party:)`).
@@ -99,13 +103,17 @@ struct ConnectionProbes: Sendable {
 
     // MARK: Spotify and Music
 
-    private static func music(_ app: ConnectionApp) async -> MusicConnectionState {
+    private static func music(_ app: ConnectionApp, remembers: Bool) async -> MusicConnectionState {
         let isInstalled = await MainActor.run { installedURL(of: app) != nil }
         guard isInstalled, let bundleID = app.bundleIDs.first else {
             return MusicConnectionState(app: app, isInstalled: isInstalled, permission: .notAsked)
         }
         let permission = await automationPermission(for: bundleID, askIfNeeded: false)
         let key = "connections.automationGranted.\(bundleID)"
+        guard remembers else {
+            return MusicConnectionState(app: app, isInstalled: true, permission: permission,
+                                        grantedBefore: UserDefaults.standard.bool(forKey: key))
+        }
         if permission == .granted { UserDefaults.standard.set(true, forKey: key) }
         if permission == .denied || permission == .notAsked { UserDefaults.standard.removeObject(forKey: key) }
         return MusicConnectionState(app: app, isInstalled: true, permission: permission,
@@ -154,7 +162,8 @@ struct ConnectionProbes: Sendable {
             run(FocusShortcutRunner.systemExecutable, ["list"])
         }.value
         return FocusShortcutsState(onName: onName, offName: offName,
-                                   installed: FocusShortcutsState.parseList(output ?? ""))
+                                   installed: output.map(FocusShortcutsState.parseList),
+                                   couldNotList: output == nil)
     }
 
     /// The names Focus runs: the user's own, or the suggested ones.

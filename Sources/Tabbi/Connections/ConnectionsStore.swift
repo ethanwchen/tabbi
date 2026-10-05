@@ -30,7 +30,7 @@ final class ConnectionsStore: ObservableObject {
     @Published private(set) var doNotDisturbTest: DoNotDisturbTest?
 
     let isDemo: Bool
-    private let probes = ConnectionProbes()
+    private let probes: ConnectionProbes
     private var checks: [ConnectionKind: Task<Void, Never>] = [:]
     private var waiting: [ConnectionKind: Task<Void, Never>] = [:]
     private var watchers = 0
@@ -41,6 +41,8 @@ final class ConnectionsStore: ObservableObject {
 
     init(runMode: RunMode) {
         isDemo = runMode.isDemo
+        // A snapshot run may look at the Mac but saves nothing.
+        probes = ConnectionProbes(remembers: !runMode.isEphemeral)
         if isDemo {
             diagnoses = Dictionary(uniqueKeysWithValues: ConnectionKind.allCases.map { ($0, $0.demoDiagnosis) })
         }
@@ -222,7 +224,7 @@ final class ConnectionsStore: ObservableObject {
     // MARK: Actions
 
     /// Runs a row's button. Guides and permission prompts open a sheet in
-    /// the list first (see `ConnectionsList`), which then calls `run` or
+    /// the list's host first (see `ConnectionSheetPresenter`), which then calls `run` or
     /// `request`. Demo runs only pretend.
     func perform(_ action: ConnectionAction, for kind: ConnectionKind) {
         guard !isDemo else { return }
@@ -255,6 +257,8 @@ final class ConnectionsStore: ObservableObject {
             return
         }
         let names = ConnectionProbes.focusShortcutNames()
+        // Shown right away so a quick second click finds the test running.
+        doNotDisturbTest = .turningOn
         Task { [weak self] in
             let runner = FocusShortcutRunner()
             let result = await DoNotDisturbTest.run(onName: names.on, offName: names.off,

@@ -9,11 +9,17 @@ public struct FocusShortcutsState: Hashable, Sendable {
     public var offName: String
     /// The names of the user's shortcuts, or nil while they're being listed.
     public var installed: Set<String>?
+    /// Listing the shortcuts failed (the tool didn't start or took too
+    /// long), so Tabbi can't tell whether the two are there. Without this
+    /// a slow Mac would read as "not set up" and send the user into the
+    /// walkthrough for shortcuts they already made.
+    public var couldNotList: Bool
 
-    public init(onName: String, offName: String, installed: Set<String>?) {
+    public init(onName: String, offName: String, installed: Set<String>?, couldNotList: Bool = false) {
         self.onName = onName
         self.offName = offName
         self.installed = installed
+        self.couldNotList = couldNotList
     }
 
     /// Reads `shortcuts list` output: one shortcut name per line.
@@ -25,11 +31,16 @@ public struct FocusShortcutsState: Hashable, Sendable {
 
     /// The shortcuts still to make, on first.
     public var missing: [String] {
-        guard let installed else { return [] }
+        guard !couldNotList, let installed else { return [] }
         return [onName, offName].filter { !installed.contains($0) }
     }
 
     public var connectionStatus: ConnectionStatus {
+        if couldNotList {
+            return ConnectionStatus(light: .needsStep, headline: "Couldn't check your shortcuts",
+                                    detail: "The Shortcuts app didn't answer in time. Try again in a moment.",
+                                    action: .checkAgain)
+        }
         guard installed != nil else {
             return ConnectionStatus(light: .checking, headline: "Looking for your shortcuts",
                                     detail: "This takes a second.")

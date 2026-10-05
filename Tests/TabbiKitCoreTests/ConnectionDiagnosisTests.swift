@@ -85,6 +85,16 @@ final class ConnectionDiagnosisTests: XCTestCase {
         XCTAssertTrue(state.diagnosis.checks[0].question.contains("Quiet"))
     }
 
+    func testShortcutsThatCouldNotBeListedAskToCheckAgain() {
+        // A failed listing must not read as "not set up" and send the user
+        // into the walkthrough for shortcuts they may already have.
+        let state = FocusShortcutsState(onName: "Quiet", offName: "Loud", installed: nil, couldNotList: true)
+        XCTAssertEqual(state.connectionStatus.light, .needsStep)
+        XCTAssertEqual(state.connectionStatus.action, .checkAgain)
+        XCTAssertEqual(state.missing, [])
+        XCTAssertEqual(state.diagnosis.firstFailure?.question, "Can Tabbi see your shortcuts?")
+    }
+
     func testMissingGoogleCalendarIsOnlyANote() {
         let diagnosis = CalendarConnectionState(access: .fullAccess, accounts: ["iCloud"]).diagnosis
         XCTAssertTrue(diagnosis.status.isConnected)

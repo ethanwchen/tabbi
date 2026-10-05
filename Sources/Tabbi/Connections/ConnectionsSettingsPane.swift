@@ -23,51 +23,46 @@ struct ConnectionsSettingsPane: View {
             }
         }
         .formStyle(.grouped)
+        .connectionsHost()
         // Matches the other panes' width; scrolls when many tabs are on.
         .frame(width: 500, height: 444)
     }
 }
 
-/// The rows for some connections, checking them while shown. Onboarding
-/// and the tabs' empty states can embed it with just the rows they need.
+/// The rows for some connections. Onboarding and the tabs' empty states
+/// can embed it with just the rows they need, inside a container that has
+/// `.connectionsHost()`, which opens their sheets and keeps them checked.
 struct ConnectionsList: View {
     let kinds: [ConnectionKind]
     @ObservedObject var store: ConnectionsStore = .shared
-    @State private var sheet: ConnectionSheet?
-    /// A sheet to open once the current one has closed (the troubleshooter
-    /// handing over to a walkthrough), since only one shows at a time.
-    @State private var nextSheet: ConnectionSheet?
+    @EnvironmentObject private var sheets: ConnectionSheetPresenter
 
     var body: some View {
-        Group {
-            if kinds.isEmpty {
-                Text("None of your tabs need another app right now.")
-                    .foregroundStyle(.secondary)
-            } else {
-                ForEach(kinds) { kind in
-                    let status = store.status(of: kind)
-                    ConnectionRow(kind: kind, status: status,
-                                  test: kind == .doNotDisturb ? store.doNotDisturbTest : nil,
-                                  perform: { perform($0, for: kind) },
-                                  troubleshoot: { sheet = .troubleshoot(kind) })
-                }
+        if kinds.isEmpty {
+            Text("None of your tabs need another app right now.")
+                .foregroundStyle(.secondary)
+        } else {
+            ForEach(kinds) { kind in
+                ConnectionRow(kind: kind, status: store.status(of: kind),
+                              test: kind == .doNotDisturb ? store.doNotDisturbTest : nil,
+                              perform: { sheets.perform($0, for: kind, in: store) },
+                              troubleshoot: { sheets.show(.troubleshoot(kind)) })
             }
         }
-        .onAppear(perform: store.beginWatching)
-        .onDisappear(perform: store.endWatching)
-        .sheet(item: $sheet, onDismiss: showNextSheet) {
-            ConnectionSheetView(sheet: $0, store: store, perform: { perform($0, for: $1) })
-        }
     }
+}
 
-    /// Runs a row's button, opening its sheet when it has one. From inside
-    /// a sheet, the current sheet closes first and the next follows.
-    private func perform(_ action: ConnectionAction, for kind: ConnectionKind) {
-        let status = store.status(of: kind)
-        guard let next = ConnectionSheet(action, for: kind, status: status) else {
-            store.perform(action, for: kind)
-            return
-        }
+/// Which Connections sheet is open. One per host rather than per row: in
+/// a Form, modifiers on a list's rows land on every row, so each row would
+/// get its own sheet and its own watcher.
+@MainActor
+final class ConnectionSheetPresenter: ObservableObject {
+    @Published var sheet: ConnectionSheet?
+    /// A sheet to open once the current one has closed (the troubleshooter
+    /// handing over to a walkthrough), since only one shows at a time.
+    private var nextSheet: ConnectionSheet?
+
+    func show(_ next: ConnectionSheet) {
         if sheet == nil {
             sheet = next
         } else {
@@ -76,10 +71,45 @@ struct ConnectionsList: View {
         }
     }
 
-    private func showNextSheet() {
+    /// Runs a row's button, opening its sheet when it has one. From inside
+    /// a sheet, the current sheet closes first and the next follows.
+    func perform(_ action: ConnectionAction, for kind: ConnectionKind, in store: ConnectionsStore) {
+        guard let next = ConnectionSheet(action, for: kind, status: store.status(of: kind)) else {
+            store.perform(action, for: kind)
+            return
+        }
+        show(next)
+    }
+
+    func showNextSheet() {
         guard let next = nextSheet else { return }
         nextSheet = nil
         sheet = next
+    }
+}
+
+/// Opens the sheets of the `ConnectionsList`s inside, and checks their
+/// connections while shown (and on every return to Tabbi).
+private struct ConnectionsHost: ViewModifier {
+    @ObservedObject var store: ConnectionsStore
+    @StateObject private var sheets = ConnectionSheetPresenter()
+
+    func body(content: Content) -> some View {
+        content
+            .environmentObject(sheets)
+            .onAppear(perform: store.beginWatching)
+            .onDisappear(perform: store.endWatching)
+            .sheet(item: $sheets.sheet, onDismiss: sheets.showNextSheet) {
+                ConnectionSheetView(sheet: $0, store: store, perform: { sheets.perform($0, for: $1, in: store) })
+            }
+    }
+}
+
+extension View {
+    /// Hosts the `ConnectionsList`s inside this view. Apply it once, to the
+    /// container (a Form or a stack), never to the list itself.
+    func connectionsHost(_ store: ConnectionsStore = .shared) -> some View {
+        modifier(ConnectionsHost(store: store))
     }
 }
 

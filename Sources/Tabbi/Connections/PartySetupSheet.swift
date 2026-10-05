@@ -10,6 +10,8 @@ struct PartySetupView: View {
     let state: PartyConnectionState
     let start: (_ name: String, _ species: PetSpecies) -> Void
     let copy: (String) -> Void
+    /// Tries the server again now, from the "can't connect" result.
+    let retry: () -> Void
     let close: () -> Void
     /// Whether Start was pressed in this sheet, so it shows the result
     /// rather than the form.
@@ -18,13 +20,14 @@ struct PartySetupView: View {
 
     init(name: String, species: PetSpecies, state: PartyConnectionState,
          start: @escaping (String, PetSpecies) -> Void, copy: @escaping (String) -> Void,
-         close: @escaping () -> Void, started: Bool = false) {
+         retry: @escaping () -> Void, close: @escaping () -> Void, started: Bool = false) {
         _name = State(initialValue: name)
         _species = State(initialValue: species)
         _started = State(initialValue: started)
         self.state = state
         self.start = start
         self.copy = copy
+        self.retry = retry
         self.close = close
     }
 
@@ -110,7 +113,16 @@ struct PartySetupView: View {
         case .offline:
             Label("\(status.headline). \(status.detail)", systemImage: "wifi.exclamationmark")
                 .font(.callout)
-            footer(done: false)
+            HStack(spacing: 12) {
+                Spacer()
+                Button("Close", action: close)
+                    .keyboardShortcut(.cancelAction)
+                    .help("Close this. Party keeps trying by itself.")
+                Button("Try again", action: retry)
+                    .buttonStyle(.borderedProminent)
+                    .keyboardShortcut(.defaultAction)
+                    .help("Try to reach Party again now")
+            }
         case .connecting, .notSetUp:
             Label {
                 Text("Joining Party. This takes a second.")

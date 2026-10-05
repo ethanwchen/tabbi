@@ -225,7 +225,7 @@ extension ConnectionPermission {
                 title: "Show your calendar in Tabbi",
                 message: "Next, your Mac asks if Tabbi can use your calendar. Click Allow.",
                 points: ["Tabbi only reads events to show today's plan.",
-                         "Your events never leave your Mac."]
+                         "Claude only sees your events when you ask it to plan your day."]
             )
         case .notifications:
             ConnectionPriming(

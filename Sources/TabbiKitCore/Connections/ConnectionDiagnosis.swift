@@ -269,7 +269,10 @@ extension NotificationAccess {
 extension FocusShortcutsState {
     public var diagnosis: ConnectionDiagnosis {
         let checks: [ConnectionCheck]
-        if let installed {
+        if couldNotList {
+            checks = [ConnectionCheck("Can Tabbi see your shortcuts?", .failed,
+                                      "No. The Shortcuts app didn't answer. Click Check again.")]
+        } else if let installed {
             // The two shortcuts don't depend on each other, so both are checked.
             checks = [onName, offName].map { name in
                 installed.contains(name)
@@ -281,7 +284,7 @@ extension FocusShortcutsState {
             checks = ConnectionCheck.chain([("Is the \u{201C}\(onName)\u{201D} shortcut there?", nil, "")])
         }
         // Says which shortcut is missing without repeating the user's names.
-        let technical = installed.map { "doNotDisturb.on=\($0.contains(onName)) off=\($0.contains(offName))" }
+        let technical = couldNotList ? "doNotDisturb.listFailed" : installed.map { "doNotDisturb.on=\($0.contains(onName)) off=\($0.contains(offName))" }
             ?? "doNotDisturb.checking"
         return ConnectionDiagnosis(kind: .doNotDisturb, status: connectionStatus, checks: checks, technical: technical)
     }

@@ -72,7 +72,8 @@ struct ConnectionSheetView: View {
         case .partySetup:
             let draft = store.partyDraft
             PartySetupView(name: draft.name, species: draft.species, state: store.partyState,
-                           start: store.startParty, copy: store.copy, close: { dismiss() })
+                           start: store.startParty, copy: store.copy,
+                           retry: { store.perform(.checkAgain, for: .party) }, close: { dismiss() })
         }
     }
 }

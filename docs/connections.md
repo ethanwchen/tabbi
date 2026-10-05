@@ -19,13 +19,14 @@ The rules live in `Sources/TabbiKitCore/Connections`: each integration maps its 
 `ConnectionKind` names each row, what it unlocks and the tabs it serves, so Connections lists only what the current tabs use.
 In the app, `Sources/Tabbi/Connections` holds `ConnectionsStore` (one per app, `ConnectionsStore.shared`), the read-only `ConnectionProbes` that look at the Mac, and the views.
 `ConnectionsList` is the embeddable list of rows: the Settings pane shows it for every relevant row, and onboarding or a tab's empty state can show it for just the rows it needs.
+The container around it applies `.connectionsHost()` once, which opens the rows' sheets and keeps them checked while shown.
 A tab whose problem takes more than one click calls `ConnectionsStore.shared.showHub()`, which opens Settings at Connections (the app installs `hubPresenter` at launch).
 Today's Up next card and Plan my day do this when the calendar can't be reached from the notch or Claude is missing, and Ask Claude does it when Claude is missing, each with a single "Connect calendar" or "Set up Claude" button.
 The store checks only while a list is on screen, once when it appears and again each time Tabbi becomes active.
 
 ## Walkthroughs and priming screens
 
-A step that takes more than one click opens a sheet from the row, and `ConnectionsList` presents it, so onboarding gets the same sheets by embedding the list.
+A step that takes more than one click opens a sheet from the row, and the host presents it, so onboarding gets the same sheets by embedding the list.
 `ConnectionGuide.walkthrough()` (core) gives each guide a title, a one-sentence intro, at most three numbered steps with a symbol each, an optional value to copy (the AnkiConnect code, the Claude setup line, the shortcut names) and exactly one start button, such as "Copy code and open Anki".
 While a walkthrough is open, the store checks its row every 3 seconds, so the sheet turns green ("You're all set") and offers Done without the user reporting back.
 `ConnectionStatus.finishes(_:openedAsSuggestion:)` decides when that is: a guide opened to fix a problem is done once the row is connected, and Add Google Calendar, opened from a row that already works, is done once a Google account shows up.

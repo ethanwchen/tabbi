@@ -56,7 +56,7 @@ extension SnapshotRenderer {
         ]
         for (name, typed, started, state) in party {
             let view = PartySetupView(name: typed, species: .cat, state: state, start: { _, _ in }, copy: { _ in },
-                                      close: {}, started: started)
+                                      retry: {}, close: {}, started: started)
             await write(render(view), named: "connections-party-\(name)", to: outputDirectory)
         }
 
