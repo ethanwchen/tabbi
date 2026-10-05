@@ -74,6 +74,11 @@ final class TodayModule: NotchModule {
     /// too (as the Focus tab does).
     func makeSettingsPane() -> SettingsPane? { .focus(focusMode) }
 
+    /// Onboarding's calendar step: allow access and see the day Up next shows.
+    func makeSetupView(for step: OnboardingSetupStep, done: @escaping () -> Void) -> AnyView? {
+        step == .calendar ? AnyView(TodayCalendarSetupView(store: store)) : nil
+    }
+
     /// The checklist, today's calendar events, and the focus timer.
     var provision: AnyPublisher<ModuleProvision, Never>? {
         let id = descriptor.id

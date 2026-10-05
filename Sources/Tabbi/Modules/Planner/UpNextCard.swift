@@ -52,7 +52,7 @@ struct UpNextCard: View {
 
 /// One event: color dot and title, then start time and badge, with a Join
 /// button on the right when the event has a video-call link.
-private struct UpNextRow: View {
+struct UpNextRow: View {
     let event: UpcomingEvent
     let now: Date
     let join: (MeetingLink) -> Void
