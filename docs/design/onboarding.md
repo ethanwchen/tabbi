@@ -6,8 +6,8 @@ Everything happens inside the notch, with no extra window, and every step can be
 
 ## The flow
 
-1. **Pick a kit.** One card per bundled kit (Essentials, Med School) shows the tabs it turns on, plus **Start from Scratch**, which starts with a single tab.
-2. **The kit's questions.** Each is answered with one tap and moves on by itself; the answers decide which tabs are on and which starter tasks are added (see [docs/kits.md](../kits.md)).
+1. **Pick a kit.** One card per kit in the library (the bundled Essentials and Med School, plus any imported kit) shows the tabs it turns on, plus **Start from Scratch**, which starts with a single tab.
+2. **The kit's questions.** A single-choice question moves on with one tap; a multi-select one (such as Essentials' "What does your day look like?") waits for **Continue**; the answers decide which tabs are on and which starter tasks are added (see [docs/kits.md](../kits.md)).
 3. **Tabs.** Turn tabs on or off and drag to reorder them; the last tab can't be turned off.
 4. **Setup steps, only for the tabs that are on.** Each module declares the steps it needs in its descriptor's `setup`, each step is asked once, in rank order:
 

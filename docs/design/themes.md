@@ -27,7 +27,7 @@ How to add a theme is in [CONTRIBUTING.md](../../CONTRIBUTING.md#add-a-theme).
 
 Each theme is a few independent choices:
 
-- `palette`: surfaces, text levels, status colors and an optional `glow` that lights the open panel softly from the top.
+- `palette`: surfaces, text levels, status colors and an optional `glow` that rises softly from the bottom of the open panel, so the top still meets the hardware notch in black.
 - `accents`: how module accents are treated (`original`, `monochrome`, `vivid`, saturated and lifted until it reads on black at 4.5:1, or `pastel`, mixed toward cream for the cozy family), so one theme restyles every module without the module knowing.
 - `typeface`: SF Pro Rounded (the default) or SF Pro.
 - `motion`: `standard`, or `gentle` for the cozy themes, which plays every motion token 30% longer with 0.08 less bounce (see [motion.md](motion.md)).

@@ -137,7 +137,7 @@ scripts/run.sh                                   # build and launch build/Tabbi.
 TABBI_DEMO=1 swift run Tabbi --snapshot snapshots   # render every panel to PNG with sample data
 ```
 
-You need Xcode 16 or a Swift 6 toolchain on macOS 14 or later.
+You need Xcode 26 or later; the app runs on macOS 14 or later.
 There are no third-party dependencies.
 
 ## Contributing

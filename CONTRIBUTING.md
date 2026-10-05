@@ -8,7 +8,7 @@ Report security issues privately as described in [SECURITY.md](SECURITY.md), not
 
 ## Dev setup
 
-You need macOS 14 Sonoma or later and Xcode 16 or later (or a Swift 6 toolchain).
+You need macOS 14 Sonoma or later and Xcode 26 or later (its SDK has the Liquid Glass API the themes use).
 A MacBook with a notch is nice to have but not required: other displays get a virtual notch at the top center of the screen.
 
 ```sh
@@ -46,7 +46,14 @@ TABBI_DEMO=1 swift run Tabbi --snapshot snapshots   # sample data
 swift run Tabbi --snapshot snapshots-live               # your real data, or the empty states
 ```
 
-This writes `closed.png`, one `closed-<item>.png` per closed-notch preview item that has data (`meeting`, `music`, `focus`, `tasks`, `progress`, `usage`), and one `open-<module>.png` per module, including modules the kit leaves off (shown as if switched on).
+This writes, for the active kit (pick one with `--kit <id>`):
+
+- `closed.png`, plus one `closed-<item>.png` per closed-notch preview item that has data (`meeting`, `music`, `focus`, `tasks`, `progress`, `usage`, `pet` and `pet-asleep`, `party`).
+- One `open-<module>.png` per module, including modules the kit leaves off (shown as if switched on), plus `open-closet-look` (the Closet's second section) and `open-pet-shortcut` (the paw at the far right of the header).
+- `onboarding-*.png`, one per first-run setup step of the kit, and `settings-*.png`, one per Settings pane.
+- `coach-*.png` and `motion-*.png`, frame strips of the pet coach and the shared motion.
+
+Add `--theme all` to render every notch shot once per theme, one subfolder per theme.
 Look at both runs:
 
 - The demo run shows the panel with realistic content.
@@ -86,7 +93,7 @@ Themes live in `Sources/TabbiKitCore/Themes/ThemeCatalog.swift`.
 1. Add a `ThemeID` constant in `AppTheme.swift`.
 2. Declare the theme in `ThemeCatalog` with a name, a one-line summary, a `family` (`.classic` or `.cozy`, which picks its group in Settings > Appearance) and a `ThemePalette`.
    Cozy themes can reuse `cozyPalette(glow:tint:)`.
-3. Choose its `accents` (`original`, `monochrome`, `vivid` or `pastel`), `typeface`, `motion` and `controls` (`glass` draws Liquid Glass on macOS 26 and falls back to a solid surface elsewhere or when Reduce Transparency is on).
+3. Choose its `accents` (`original`, `monochrome`, `vivid` or `pastel`), `typeface`, `motion` and `controls` (`glass` draws Liquid Glass on macOS 26, a translucent material on macOS 14 and 15, and a solid surface when Reduce Transparency is on).
 4. Add it to `ThemeCatalog.all` in picker order, update the order in `ThemeTests`, and add the id to the `theme` row in [docs/kits.md](docs/kits.md).
 
 Keep the panel `background` opaque black and any `glow` at 0.3 opacity or less, so the open panel still meets the hardware notch.
