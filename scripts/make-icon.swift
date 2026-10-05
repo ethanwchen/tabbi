@@ -4,6 +4,7 @@
 //   usage: swift scripts/make-icon.swift                     build Resources/AppIcon.icns
 //          swift scripts/make-icon.swift --concept <a|b|c>   pick an exploration concept
 //          swift scripts/make-icon.swift --sheet <file.png>  render a 1024/128/32/16 review sheet
+//          swift scripts/make-icon.swift --dock <file.png>   compare it with Apple's icons in a Dock row
 //          swift scripts/make-icon.swift --preview <file.png>
 //
 // The icon is drawn from code (no binary source art) so it stays reproducible and
@@ -211,6 +212,15 @@ func drawConceptA(_ ctx: CGContext) {
     // Head: a broad oval that runs off the bottom of the icon.
     let head = ellipse(512, 770, 720, 640)
     fill(ctx, head, top: Brand.ginger.cg(), bottom: Brand.gingerDeep.cg(), shadow: 30)
+    // A soft sheen on the crown of the head, lit from the same top light as the
+    // background and the rim, so the face has the rounded volume of Apple's icons.
+    ctx.saveGState()
+    ctx.addPath(head)
+    ctx.clip()
+    ctx.translateBy(x: 512, y: 520)
+    ctx.scaleBy(x: 1.6, y: 1)
+    radialGlow(ctx, at: .zero, radius: 200, color: RGB(0xFFE3B8).cg(0.55))
+    ctx.restoreGState()
 
     let stripe = Brand.stripe.cg()
     if isSmallRender {
@@ -386,10 +396,14 @@ func drawIcon(in ctx: CGContext, concept: (CGContext) -> Void) {
         ctx.restoreGState()
         return
     }
+    // The rim is brightest at the top, where the light falls, and fades toward the bottom.
     ctx.addPath(body)
-    ctx.setStrokeColor(CGColor(gray: 1, alpha: 0.18))
-    ctx.setLineWidth(6)
-    ctx.strokePath()
+    ctx.setLineWidth(10)
+    ctx.replacePathWithStrokedPath()
+    ctx.clip()
+    ctx.drawLinearGradient(gradient([(0, CGColor(gray: 1, alpha: 0.55)), (0.45, CGColor(gray: 1, alpha: 0.12)),
+                                     (1, CGColor(gray: 1, alpha: 0.22))]),
+                           start: CGPoint(x: 0, y: bodyRect.minY), end: CGPoint(x: 0, y: bodyRect.maxY), options: [])
     ctx.restoreGState()
 }
 
@@ -442,6 +456,43 @@ func reviewSheet(concept: @escaping (CGContext) -> Void) -> CGImage {
     return ctx.makeImage()!
 }
 
+/// A Dock check: Tabbi between Apple's own icons (and a few well known Mac apps, when
+/// installed) at 128 and 32 px on a light and a dark desktop. Other icons come from
+/// NSWorkspace, so on macOS 26 they show with the system's own Liquid Glass rendering.
+func dockSheet(concept: @escaping (CGContext) -> Void) -> CGImage {
+    let neighbours = ["/System/Applications/Calendar.app", "/System/Applications/Reminders.app",
+                      "/System/Applications/Notes.app", "/System/Applications/Clock.app", "TABBI",
+                      "/System/Applications/Messages.app", "/System/Applications/Music.app",
+                      "/Applications/Things3.app", "/Applications/Linear.app", "/Applications/Anki.app"]
+        .filter { $0 == "TABBI" || FileManager.default.fileExists(atPath: $0) }
+    let gap: CGFloat = 24, rowH: CGFloat = 260
+    let w = Int(CGFloat(neighbours.count) * (128 + gap) + gap)
+    let ctx = makeContext(w, Int(rowH) * 2)
+    let ours = [128: render(pixels: 128, concept: concept), 32: render(pixels: 32, concept: concept)]
+    for (row, gray) in [(1, 0.93), (0, 0.13)] as [(Int, CGFloat)] {
+        let y0 = CGFloat(row) * rowH
+        ctx.setFillColor(CGColor(gray: gray, alpha: 1))
+        ctx.fill(CGRect(x: 0, y: y0, width: CGFloat(w), height: rowH))
+        for (i, path) in neighbours.enumerated() {
+            let x = gap + CGFloat(i) * (128 + gap)
+            for (px, y) in [(128, y0 + 110), (32, y0 + 40)] as [(Int, CGFloat)] {
+                let size = CGFloat(px)
+                let rect = CGRect(x: x + (128 - size) / 2, y: y, width: size, height: size)
+                if path == "TABBI" {
+                    ctx.draw(ours[px]!, in: rect)
+                } else {
+                    var proposed = CGRect(x: 0, y: 0, width: size, height: size)
+                    let icon = NSWorkspace.shared.icon(forFile: path)
+                    if let image = icon.cgImage(forProposedRect: &proposed, context: nil, hints: nil) {
+                        ctx.draw(image, in: rect)
+                    }
+                }
+            }
+        }
+    }
+    return ctx.makeImage()!
+}
+
 func writePNG(_ image: CGImage, to url: URL) {
     let dest = CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil)!
     CGImageDestinationAddImage(dest, image, nil)
@@ -462,6 +513,11 @@ guard let concept = concepts[conceptKey] else { fatalError("unknown concept \(co
 
 if let path = option("--sheet") {
     writePNG(reviewSheet(concept: concept), to: URL(fileURLWithPath: path))
+    print(path)
+    exit(0)
+}
+if let path = option("--dock") {
+    writePNG(dockSheet(concept: concept), to: URL(fileURLWithPath: path))
     print(path)
     exit(0)
 }

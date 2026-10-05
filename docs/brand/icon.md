@@ -127,3 +127,31 @@ Verdict:
 - `Resources/AppIcon.icns` was regenerated from this round.
 
 Next round: the light, dark and tinted variant PNGs, and a check of the 1024 px art against Apple's own icons in the Dock.
+
+### Round 4: next to Apple's icons
+
+Sheets: `rounds/r4.png` and `rounds/r4-dock.png`.
+
+The script has a new `--dock <file.png>` mode.
+It puts Tabbi in a Dock row between Calendar, Reminders, Notes, Clock, Messages and Music (plus Things, Linear and Anki when installed) at 128 and 32 px, on a light and a dark desktop.
+The other icons come from `NSWorkspace`, so on macOS 26 they show with the system's own Liquid Glass rendering.
+
+What the round 3 Dock row showed:
+
+- Shape, size and drop shadow match Apple's icons; nothing looks boxed in or oversized.
+- Tabbi is the only character icon in the row, and the orange face on indigo stands out without shouting, the way Linear's dark tile does.
+- Apple's icons have a bright glass edge, strongest at the top, and soft rounded volume. Tabbi's faint even rim and flat head read as an older, flatter style beside them.
+
+Changes from round 3:
+
+- The glass rim is a 10 unit stroke with a vertical gradient: brightest at the top (55% white), faint in the middle and slightly brighter at the bottom, like the lit edge on macOS 26 icons.
+- The crown of the head has a soft warm sheen from the same top light, so the face looks rounded instead of cut from flat paper.
+- The rim is still left out at 32 px and smaller, where it only lightened the outer pixel ring. The sheen stays at every size; at 16 px it only warms the top of the head.
+
+Verdict:
+
+- At 1024 px the icon now has the same glassy edge and lighting direction as Apple's icons while keeping its flat, friendly shapes.
+- In the Dock row it sits comfortably next to Calendar, Reminders and Music on both desktops and is still the most recognizable icon there at 32 px.
+- `Resources/AppIcon.icns` was regenerated from this round.
+
+Next round: the light, dark and tinted variant PNGs, the 1024 px README PNG and the monochrome glyph, then a final review of all of them together.
