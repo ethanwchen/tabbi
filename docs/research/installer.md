@@ -72,8 +72,10 @@ The Finder/AppleScript route works locally but is the usual cause of flaky CI, b
   Source: https://github.com/LinusU/node-appdmg (README, "Retina background")
 - Keep icon centers at least 100 pt from the edges for a 128 pt icon; Finder draws labels about 20 pt below the icon.
 - Draw a soft arrow from the app to Applications; keep text away from the bottom edge, since Finder may resize the window.
-- The background is a static bitmap while Finder chrome follows the system appearance, so pick a palette that reads in both light and dark mode (inference).
-  For Tabbi that means the hardware-black notch palette from `Theme.Palette`, with the app's accent glow, so the DMG looks like the app.
+- The background is a static bitmap while Finder chrome follows the system appearance.
+  Over a background picture Finder draws icon labels in black even in Dark Mode (verified on macOS 26 by mounting a test DMG and capturing the window), so dark art needs a light plate behind each label.
+  For Tabbi that means the hardware-black notch palette from `Theme.Palette`, with the app's accent glow, and light lavender label pills.
+- `window_rect` sets the whole window frame, title bar included: with a 400 pt tall window about 368 pt of the background is visible on macOS 26 (verified), so keep the art's content above y = 340.
 - Rendering the art programmatically (a Swift script with AppKit/Core Graphics, like `scripts/make-icon.swift`) keeps it reproducible and reviewable in git, with no binary design files.
 
 ### Compression and filesystem
@@ -82,6 +84,8 @@ The Finder/AppleScript route works locally but is the usual cause of flaky CI, b
   Source: https://sparkle-project.org/documentation/publishing/
 - `ULFO` (lzfse) needs macOS 10.11+, fine for a macOS 14 floor; `ULMO` (lzma) is smaller but slower to open and needs macOS 10.15+.
   Pick by measured size; both work on macOS 14.
+- Measured on Tabbi 0.1.0 (arm64, unstripped, 2026-10-05): ULFO 5.9 MB, ULMO 4.8 MB, UDZO 6.8 MB.
+  Tabbi uses APFS with ULFO, as Sparkle recommends; the lzma saving is about 1 MB.
 
 ## 2. Gatekeeper and notarization on macOS 14 through 26
 

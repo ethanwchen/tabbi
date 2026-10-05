@@ -37,3 +37,6 @@ jobs:
 
       - name: Release bundle (universal, ad-hoc signed)
         run: scripts/release.sh
+
+      - name: DMG
+        run: scripts/make-dmg.sh --app build/release/Tabbi.app --out build/release
