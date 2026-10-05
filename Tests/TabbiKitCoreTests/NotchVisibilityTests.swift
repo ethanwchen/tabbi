@@ -15,9 +15,32 @@ final class NotchVisibilityTests: XCTestCase {
         XCTAssertTrue(isFullscreen([.init(ownerPID: 7, layer: 0, bounds: display)]))
     }
 
+    private var menuBar: NotchVisibility.Window {
+        .init(ownerPID: 1, layer: NotchVisibility.menuBarLayer, bounds: CGRect(x: 0, y: 0, width: 1512, height: 37))
+    }
+
     func testAZoomedWindowBelowTheMenuBarIsNot() {
         let zoomed = CGRect(x: 0, y: 37, width: 1512, height: 945)
-        XCTAssertFalse(isFullscreen([.init(ownerPID: 7, layer: 0, bounds: zoomed)]))
+        XCTAssertFalse(isFullscreen([menuBar, .init(ownerPID: 7, layer: 0, bounds: zoomed)]))
+    }
+
+    func testAFullscreenWindowBelowTheCameraHousingIsFullscreen() {
+        let belowNotch = CGRect(x: 0, y: 37, width: 1512, height: 945)
+        XCTAssertTrue(isFullscreen([.init(ownerPID: 7, layer: 0, bounds: belowNotch)]))
+    }
+
+    func testAMenuBarOnAnotherDisplayDoesNotKeepTheNotchShown() {
+        let otherMenuBar = NotchVisibility.Window(ownerPID: 1, layer: NotchVisibility.menuBarLayer,
+                                                  bounds: CGRect(x: 1512, y: 0, width: 2560, height: 25))
+        let belowNotch = CGRect(x: 0, y: 37, width: 1512, height: 945)
+        XCTAssertTrue(isFullscreen([otherMenuBar, .init(ownerPID: 7, layer: 0, bounds: belowNotch)]))
+    }
+
+    func testAWindowThatLeavesPartOfTheDisplayUncoveredIsNot() {
+        let halfWidth = CGRect(x: 0, y: 37, width: 756, height: 945)
+        let shortWindow = CGRect(x: 0, y: 37, width: 1512, height: 600)
+        XCTAssertFalse(isFullscreen([.init(ownerPID: 7, layer: 0, bounds: halfWidth),
+                                     .init(ownerPID: 8, layer: 0, bounds: shortWindow)]))
     }
 
     func testTheDesktopAndOverlaysDoNotCount() {

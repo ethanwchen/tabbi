@@ -24,17 +24,29 @@ public enum NotchVisibility {
     }
 
     /// True when an app other than `ownPID` shows a visible, ordinary window
-    /// covering all of `displayBounds` (same coordinate space as the window
-    /// bounds): a native fullscreen space, a fullscreen game or video. A zoomed
-    /// window leaves the menu bar uncovered and the desktop sits below layer 0,
-    /// so neither counts.
+    /// that fills `displayBounds` (same coordinate space as the window
+    /// bounds): a native fullscreen space, a fullscreen game or video. On a
+    /// display with a camera housing macOS puts a fullscreen window below the
+    /// notch, the same shape as a zoomed window, so a window that spans the
+    /// display's width down to its bottom counts once the display's menu bar
+    /// window is gone, as it is in a fullscreen space. The desktop sits below
+    /// layer 0 and never counts.
     public static func isFullscreenAppActive(windows: [Window], displayBounds: CGRect, ownPID: Int32) -> Bool {
         guard !displayBounds.isEmpty else { return false }
+        let menuBarShown = windows.contains { window in
+            window.layer == menuBarLayer && window.alpha > 0 && window.bounds.intersects(displayBounds)
+                && window.bounds.minY <= displayBounds.minY
+        }
         return windows.contains { window in
-            window.ownerPID != ownPID && window.layer == 0 && window.alpha > 0
-                && window.bounds.contains(displayBounds)
+            guard window.ownerPID != ownPID, window.layer == 0, window.alpha > 0 else { return false }
+            if window.bounds.contains(displayBounds) { return true }
+            return !menuBarShown && window.bounds.minX <= displayBounds.minX && window.bounds.maxX >= displayBounds.maxX
+                && window.bounds.maxY >= displayBounds.maxY && window.bounds.minY < displayBounds.midY
         }
     }
+
+    /// The level of the menu bar window (`kCGMainMenuWindowLevel`).
+    static let menuBarLayer = Int(CGWindowLevelForKey(.mainMenuWindow))
 
     /// The screen the notch should appear on, or nil when it should not appear
     /// at all: with `showOnExternalDisplays` off only built-in screens qualify,
