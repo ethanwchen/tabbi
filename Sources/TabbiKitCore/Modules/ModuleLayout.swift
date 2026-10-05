@@ -117,18 +117,18 @@ public struct ModuleLayout: Equatable, Sendable {
         setEnabled(module, false)
     }
 
-    /// Reorders the tabs alone, with `onMove` offsets into `enabled`, which
-    /// is what a list that shows only the tabs hands over. Library modules
-    /// keep their slots.
+    /// Reorders the tabs alone, with `onMove` offsets into `tabs`, which is
+    /// what a list that shows only the tab bar hands over. Library modules
+    /// and header shortcuts keep their slots.
     public mutating func moveTabs(fromOffsets source: IndexSet, toOffset destination: Int) {
-        var tabs = enabled
+        var tabs = tabs
         let moving = source.filter(tabs.indices.contains).map { tabs[$0] }
         guard !moving.isEmpty else { return }
         let insertAt = destination - source.filter { $0 < destination }.count
         tabs = tabs.enumerated().filter { !source.contains($0.offset) }.map(\.element)
         tabs.insert(contentsOf: moving, at: min(max(insertAt, 0), tabs.count))
         var next = tabs.makeIterator()
-        order = order.map { disabled.contains($0) ? $0 : next.next() ?? $0 }
+        order = order.map { disabled.contains($0) || headerKeys[$0] != nil ? $0 : next.next() ?? $0 }
     }
 
     /// Moves modules with the same semantics as SwiftUI's `onMove`.

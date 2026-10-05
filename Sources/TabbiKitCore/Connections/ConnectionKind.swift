@@ -48,7 +48,7 @@ public enum ConnectionKind: String, CaseIterable, Identifiable, Hashable, Sendab
     /// fit beside the widest button without wrapping.
     public var unlocks: String {
         switch self {
-        case .calendar: "See today's classes in the notch."
+        case .calendar: "See today's events in the notch."
         case .anki: "See due cards and start reviews."
         case .spotify: "Play, pause and skip on Spotify."
         case .music: "Play, pause and skip in Apple Music."

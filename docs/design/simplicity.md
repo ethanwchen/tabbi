@@ -27,6 +27,7 @@ This page records what the simplicity pass removed, merged or hid, why, and how 
   Before, the toolbar listed General, Appearance, Modules, Connections, Preview, Shortcuts, one pane per module with settings, Claude and About, and it grew each time a module was turned on.
 - **Preview and Shortcuts merged into General.** Live activity is one switch there, and the global shortcut is one row with a one-line footer for the fixed in-notch keys.
 - **Modules and Kit merged into Tabs.** The kit picker, the list of your tabs (drag to reorder) and the Add more library are one page.
+  The pet (Closet) is listed last with no drag handle and the note "A button at the far right of the tab bar", because the notch always draws it as the paw, never as a tab.
 - **Module panes became Options buttons** on their tab row in Tabs, opened as a sheet with a Done button.
   Today and Focus share one Options sheet (the focus sound and Do Not Disturb), because both show the same focus timer.
 - **The Claude pane moved into Connections**, beside every other link to the outside world, and shows only while a Claude tab is on.

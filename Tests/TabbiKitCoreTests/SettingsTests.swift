@@ -144,6 +144,14 @@ final class ModuleLayoutTests: XCTestCase {
         XCTAssertNil(layout.headerKey(for: "a"))
     }
 
+    func testMovingTabsSkipsTheHeaderModule() {
+        var layout = layoutWithPet(order: ["a", "pet", "b", "c"])
+        layout.moveTabs(fromOffsets: [2], toOffset: 0)
+        XCTAssertEqual(layout.tabs, ["c", "a", "b"], "offsets count the tab bar only")
+        XCTAssertEqual(layout.order, ["c", "pet", "a", "b"], "the paw keeps its slot")
+        XCTAssertEqual(layout.headerShortcuts, ["pet"])
+    }
+
     func testHeaderKeyOpensOnlyAnEnabledHeaderModule() {
         XCTAssertEqual(layoutWithPet(order: ["a", "b", "pet"]).module(forHeaderKey: "P"), "pet")
         XCTAssertEqual(layoutWithPet(order: ["a", "b", "pet"]).module(forHeaderKey: "p"), "pet")

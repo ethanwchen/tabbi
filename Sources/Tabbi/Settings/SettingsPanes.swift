@@ -237,14 +237,16 @@ struct ModulesSettingsPane: View {
             KitSection()
 
             Section {
-                ForEach(store.settings.modules.enabled) { module in
-                    TabRow(module: store.catalog.descriptor(for: module), layout: $store.settings.modules,
-                           hasOptions: moduleOptions(module) != nil) {
-                        options = moduleOptions(module)
-                    }
+                ForEach(store.settings.modules.tabs) { module in
+                    tabRow(module)
                 }
                 .onMove { source, destination in
                     store.settings.modules.moveTabs(fromOffsets: source, toOffset: destination)
+                }
+                // Header shortcuts (the Closet's paw) sit last and don't drag:
+                // the notch always draws them at the far right.
+                ForEach(store.settings.modules.headerShortcuts) { module in
+                    tabRow(module)
                 }
             } header: {
                 Text("Your tabs")
@@ -275,6 +277,13 @@ struct ModulesSettingsPane: View {
             if let options {
                 ModuleOptionsSheet(pane: options) { self.options = nil }
             }
+        }
+    }
+
+    private func tabRow(_ module: ModuleID) -> some View {
+        TabRow(module: store.catalog.descriptor(for: module), layout: $store.settings.modules,
+               hasOptions: moduleOptions(module) != nil) {
+            options = moduleOptions(module)
         }
     }
 }
@@ -566,7 +575,8 @@ private struct ModuleIcon: View {
 }
 
 /// One of the user's tabs: drag to reorder, open its own settings, or
-/// remove it to the library.
+/// remove it to the library. A header shortcut says where it shows instead
+/// of offering a drag handle.
 private struct TabRow: View {
     let module: ModuleDescriptor
     @Binding var layout: ModuleLayout
@@ -575,13 +585,22 @@ private struct TabRow: View {
 
     var body: some View {
         let canRemove = layout.canDisable(module.id)
+        let isHeaderShortcut = module.headerShortcut != nil
         HStack(spacing: 10) {
             Image(systemName: "line.3.horizontal")
                 .font(.system(size: 12, weight: .medium))
                 .foregroundStyle(.tertiary)
-                .help("Drag to reorder")
+                .opacity(isHeaderShortcut ? 0 : 1)
+                .help(isHeaderShortcut ? "" : "Drag to reorder")
             ModuleIcon(module: module)
-            Text(module.title)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(module.title)
+                if isHeaderShortcut {
+                    Text("A button at the far right of the tab bar")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                }
+            }
             Spacer()
             if hasOptions {
                 Button("Options…", action: openOptions)
