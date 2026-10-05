@@ -94,32 +94,13 @@ See [docs/ROADMAP.md](docs/ROADMAP.md) for where Tabbi is going next.
 
 ## Install
 
-1. Download `Tabbi-<version>.zip` from the [latest release](https://github.com/ethanwchen/notchdeck/releases/latest).
-2. Unzip it and drag **Tabbi.app** into `/Applications`.
-3. Open it once as described below, then click the notch.
+1. Download `Tabbi-<version>.dmg` from the [latest release](https://github.com/ethanwchen/notchdeck/releases/latest).
+2. Open it and drag **Tabbi** onto the **Applications** folder.
+3. Open Tabbi from Applications, then click the notch.
 
-Tabbi has no Dock icon and no menu bar item.
-To quit, right-click the notch and choose **Quit Tabbi**.
-
-### First launch: the app is not notarized
-
-Releases are ad-hoc signed but not notarized, because notarization needs a paid Apple Developer ID.
-macOS will therefore refuse to open a freshly downloaded copy the first time.
-Use one of these once:
-
-- **System Settings:** try to open the app, then go to **System Settings > Privacy & Security** and click **Open Anyway** next to the Tabbi message.
-- **Right-click:** on macOS 14, right-click (or Control-click) Tabbi.app in Finder, choose **Open**, then confirm.
-- **Terminal:** clear the quarantine flag.
-
-  ```sh
-  xattr -dr com.apple.quarantine /Applications/Tabbi.app
-  ```
-
-To verify the download, compare it with the `.sha256` file from the release:
-
-```sh
-shasum -a 256 -c Tabbi-<version>.zip.sha256
-```
+Tabbi is signed and notarized, so macOS opens it without any workaround, and it keeps itself up to date.
+It has no Dock icon and no menu bar item; to quit, right-click the notch and choose **Quit Tabbi**.
+[docs/install.md](docs/install.md) walks through each step with pictures and covers Homebrew, updates, troubleshooting and uninstalling.
 
 ## Requirements
 
@@ -173,6 +154,7 @@ They run the `claude` command that is already installed and signed in on your Ma
 
 - **No telemetry, no analytics, no account.** Tabbi does not phone home.
 - **The only network requests it makes itself** are the ones its tabs need: album artwork URLs that Spotify provides, AnkiConnect on your own Mac for Anki, and the friends server for Party, only while that tab is on.
+- **Update checks** download Tabbi's release feed from GitHub once a day; you can turn them off in **Settings > About**.
 - **Claude features go only through your local `claude` CLI.** Tabbi never reads your Claude credentials or the keychain.
   Ask Claude sends your question to Claude through that CLI, exactly as if you had typed `claude -p` in a terminal.
   Plan my day sends today's remaining events, unfinished task titles and your other tabs' goals (such as "Anki reviews (320 cards left)") the same way, and Wrap up sends your task titles and today's study and goal figures, only when you press them.
@@ -199,9 +181,9 @@ Now Playing, System and Today work without it.
 The two Claude panels show a short setup hint until the `claude` command is found.
 In Today, Plan my day needs it (except in study kits, which plan on your Mac), and Wrap up falls back to a local summary line without it.
 
-**Why is the app not notarized?**
-Notarization requires a paid Apple Developer account.
-The release is ad-hoc signed and its checksum is published with every release, and you can always [build it from source](#build-from-source).
+**How do I update or uninstall it?**
+Tabbi updates itself; right-click the notch and choose **Check for Updates…** to check now.
+To uninstall, quit it and drag it from Applications to the Trash; [docs/install.md](docs/install.md#uninstall) also lists where your data lives.
 
 **How do I quit it?**
 Right-click the notch and choose **Quit Tabbi**.

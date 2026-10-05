@@ -107,9 +107,7 @@ final class InstallHygieneTests: XCTestCase {
     // MARK: Record
 
     func testRecordRoundTripsThroughVersionedDefaults() throws {
-        let suite = "InstallHygieneTests-\(UUID().uuidString)"
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
-        defer { defaults.removePersistentDomain(forName: suite) }
+        let defaults = try XCTUnwrap(MemoryDefaults(suiteName: nil))
 
         XCTAssertNil(InstallRecord.load(from: defaults))
         let record = InstallRecord(neverOfferMove: true, launchAtLoginDefaultApplied: true)
@@ -123,4 +121,15 @@ final class InstallHygieneTests: XCTestCase {
         let data = Data(#"{"schemaVersion":1}"#.utf8)
         XCTAssertEqual(try InstallRecord.schema.decode(InstallRecord.self, from: data), InstallRecord())
     }
+}
+
+/// Defaults kept in memory: a real suite leaves a plist in ~/Library/Preferences
+/// on every run, even after its domain is removed.
+private final class MemoryDefaults: UserDefaults, @unchecked Sendable {
+    private var values: [String: Any] = [:]
+
+    override func object(forKey defaultName: String) -> Any? { values[defaultName] }
+    override func data(forKey defaultName: String) -> Data? { values[defaultName] as? Data }
+    override func set(_ value: Any?, forKey defaultName: String) { values[defaultName] = value }
+    override func removeObject(forKey defaultName: String) { values[defaultName] = nil }
 }
