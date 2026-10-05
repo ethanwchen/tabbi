@@ -152,9 +152,11 @@ It is `Codable`, so a running session persists the exact method it started with.
 | `.ankiSprint(cards:)` | Card goal (default 100) | 5 min | Suggest a break every `sprintBreakCards` (200) or `sprintBreakInterval` (30 min) |
 | `.questionBlock` | 60 min, 40 questions | 10 min | 60 min `review` phase after each block |
 | `.custom(focus:breakLength:longBreak:)` | User | User | Lengths clamped to 1 min...4 h |
+| `.timer(_:)` | User (`StudyTimerLength`, 10 min by default) | None | One countdown that stops when it ends; one-click 5, 10 and 25 min, or a stepper |
 
 - `StudyMethod.presets` lists every kind once, in picker order; `preset(_:)` looks one up.
 - `nextPhase(after:completedFocusCount:)` gives the next `StudyPhaseKind`: focus, then `review` when the method has one, then `shortBreak` or `longBreak`, then focus.
+  A method without breaks (`hasBreaks` false, the Timer) goes from focus to a fresh idle focus.
 - `duration(of:workedBeforeBreak:)` is the wall-clock length of a phase, or `nil` for open-ended and card-goal focus.
   Proportional breaks use `workedBeforeBreak`.
 - `sprintGoal(reviewDue:learnDue:)` defaults a sprint to today's reviews plus learning cards, the work that should come before new cards.

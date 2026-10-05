@@ -148,7 +148,7 @@ Accepted values:
 Module settings the built-in modules read, all optional:
 
 - **`study`:**
-  - `methods`, the study methods the Study timer offers, in order: `pomodoro`, `fiftyTwoSeventeen`, `ultradian`, `flowtime`, `ankiSprint`, `questionBlock`, `custom`. Leave it out to offer them all.
+  - `methods`, the study methods the Study timer offers, in order: `pomodoro`, `fiftyTwoSeventeen`, `ultradian`, `flowtime`, `ankiSprint`, `questionBlock`, `custom`, `timer` (a plain countdown with no breaks, 5, 10 or 25 minutes in one click). Leave it out to offer them all.
   - `method`, the method the timer starts on. Defaults to the first of `methods`. Today's on-device planner (`planMode` `study`) sizes study blocks on it too.
   - `dailyGoalMinutes`, the minutes a day to aim for (15 to 720, rounded to a quarter hour; 120 when left out). The Study tab shows today's time against it, and Today lists it as a goal.
 - **`focus`:** `sounds`, the focus sound mix that Study, Today and Focus play: up to three objects with a `sound` (`brown`, `pink`, `white`, `rain`, `fireplace`, `cafe`) and an optional `level` from 0 to 1 (default 1). An empty list turns the sound off.

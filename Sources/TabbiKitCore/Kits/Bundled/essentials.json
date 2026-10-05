@@ -11,7 +11,7 @@
     "theme": "midnight",
     "moduleSettings": {
       "study": {
-        "methods": ["pomodoro", "fiftyTwoSeventeen", "flowtime", "custom"],
+        "methods": ["timer", "pomodoro", "fiftyTwoSeventeen", "flowtime", "custom"],
         "method": "pomodoro"
       }
     }

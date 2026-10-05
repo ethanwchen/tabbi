@@ -106,6 +106,15 @@ public struct StudyMethodInfo: Hashable, Sendable {
                 evidence: "No interval is proven best. Taking regular breaks at all is what has support.",
                 evidenceLevel: .mixed
             )
+        case .timer:
+            return StudyMethodInfo(
+                kind: kind,
+                name: "Timer",
+                tagline: "One countdown, no breaks",
+                howTo: "Pick 5, 10 or 25 minutes, or step to any length, and press Start. The timer counts down once and stops. Handy for a quick task, a break or the kettle.",
+                evidence: "A plain countdown is a tool, not a study method. Setting a short, fixed time can make a task easier to start.",
+                evidenceLevel: .weak
+            )
         }
     }
 

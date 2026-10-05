@@ -13,6 +13,9 @@ public enum StudyMethodKind: String, Codable, CaseIterable, Hashable, Sendable {
     case ankiSprint
     case questionBlock
     case custom
+    /// A plain countdown with no breaks, for everyday things (a 5 min tea,
+    /// a 10 min tidy-up, a 25 min task).
+    case timer
 }
 
 /// What happens in one stretch of a study session.
@@ -66,6 +69,8 @@ public enum StudyBreakRule: Codable, Hashable, Sendable {
     case fixed(TimeInterval)
     /// Scales with how long the focus phase actually ran (Flowtime).
     case proportional(FlowtimeBreakScheme)
+    /// No break: the timer stops once focus ends (the plain Timer).
+    case none
 }
 
 /// A longer break that replaces every `every`-th regular break.
@@ -214,10 +219,16 @@ public struct StudyMethod: Codable, Hashable, Sendable, Identifiable {
         StudyMethod(kind: .custom, focus: .duration(focus), breakRule: .fixed(breakLength), longBreak: longBreak)
     }
 
+    /// One countdown of `length`, then the timer stops and waits; no breaks
+    /// or rounds. Clamped to 1 min...4 h.
+    public static func timer(_ length: TimeInterval) -> StudyMethod {
+        StudyMethod(kind: .timer, focus: .duration(length), breakRule: .none)
+    }
+
     /// Every method in picker order, with default parameters.
     public static let presets: [StudyMethod] = [
         .pomodoro, .fiftyTwoSeventeen, .ultradian, .flowtime, .ankiSprint(), .questionBlock,
-        .custom(focus: 30 * 60, breakLength: 5 * 60),
+        .custom(focus: 30 * 60, breakLength: 5 * 60), StudyTimerLength.standard.method,
     ]
 
     /// The default-parameter method for `kind`.
@@ -232,6 +243,7 @@ public struct StudyMethod: Codable, Hashable, Sendable, Identifiable {
     /// - Parameter completedFocusCount: focus phases finished so far in this
     ///   session, including the one that just ended. Picks long breaks.
     public func nextPhase(after phase: StudyPhaseKind, completedFocusCount: Int) -> StudyPhaseKind {
+        guard hasBreaks else { return .focus }
         switch phase {
         case .focus where review != nil:
             return .review
@@ -261,11 +273,16 @@ public struct StudyMethod: Codable, Hashable, Sendable, Identifiable {
             switch breakRule {
             case .fixed(let length): return length
             case .proportional(let scheme): return scheme.breakDuration(afterWorking: workedBeforeBreak)
+            case .none: return nil
             }
         case .longBreak:
             return longBreak?.duration ?? duration(of: .shortBreak, workedBeforeBreak: workedBeforeBreak)
         }
     }
+
+    /// Whether focus is followed by breaks; false for the plain Timer, which
+    /// stops when its countdown ends instead of moving on.
+    public var hasBreaks: Bool { breakRule != .none }
 
     /// The card goal of an Anki sprint, or nil for time-based methods.
     public var cardGoal: Int? {
@@ -273,7 +290,7 @@ public struct StudyMethod: Codable, Hashable, Sendable, Identifiable {
         return nil
     }
 
-    /// Short label for the picker and the timer header, e.g. "25/5" or "100 cards".
+    /// Short label for the picker and the timer header, e.g. "25/5", "100 cards" or "10 min".
     public var rhythmLabel: String {
         func minutes(_ seconds: TimeInterval) -> String { "\(Int((seconds / 60).rounded()))" }
         switch focus {
@@ -282,7 +299,7 @@ public struct StudyMethod: Codable, Hashable, Sendable, Identifiable {
         case .openEnded:
             return "Open"
         case .duration(let length):
-            guard let pause = duration(of: .shortBreak) else { return minutes(length) }
+            guard let pause = duration(of: .shortBreak) else { return "\(minutes(length)) min" }
             if let review {
                 return "\(minutes(length))+\(minutes(review))/\(minutes(pause))"
             }
@@ -311,7 +328,7 @@ public struct StudyMethod: Codable, Hashable, Sendable, Identifiable {
     private static func clamped(_ rule: StudyBreakRule) -> StudyBreakRule {
         switch rule {
         case .fixed(let length): return .fixed(clamped(length))
-        case .proportional: return rule
+        case .proportional, .none: return rule
         }
     }
 }

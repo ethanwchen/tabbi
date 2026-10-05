@@ -129,15 +129,22 @@ public struct StudyCustomRhythm: Codable, Hashable, Sendable {
 }
 
 public extension StudyMethod {
-    /// The method for `kind`: the preset, or the user's own lengths for Custom.
-    static func preset(_ kind: StudyMethodKind, custom: StudyCustomRhythm) -> StudyMethod {
-        kind == .custom ? custom.method : preset(kind)
+    /// The method for `kind`: the preset, or the user's own lengths for
+    /// Custom and the Timer.
+    static func preset(_ kind: StudyMethodKind, custom: StudyCustomRhythm,
+                       timer: StudyTimerLength = .standard) -> StudyMethod {
+        switch kind {
+        case .custom: custom.method
+        case .timer: timer.method
+        default: preset(kind)
+        }
     }
 }
 
 public extension StudyMethodMenu {
-    /// The offered methods for the picker, with Custom on the user's lengths.
-    func methods(custom: StudyCustomRhythm) -> [StudyMethod] {
-        kinds.map { StudyMethod.preset($0, custom: custom) }
+    /// The offered methods for the picker, with Custom and the Timer on the
+    /// user's lengths.
+    func methods(custom: StudyCustomRhythm, timer: StudyTimerLength = .standard) -> [StudyMethod] {
+        kinds.map { StudyMethod.preset($0, custom: custom, timer: timer) }
     }
 }
