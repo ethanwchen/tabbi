@@ -156,6 +156,9 @@ swift scripts/make-icon.swift --preview docs/images/icon.png && sips -Z 256 docs
 swift docs/make-screenshots.swift        # re-renders docs/images/*.png from Productivity and Med School demo snapshots
 ```
 
+The same script writes `docs/images/social-preview.png`, the 1280x640 image GitHub shows when the repository is shared.
+After regenerating it, upload it under the repository's Settings > General > Social preview.
+
 ## Releases
 
 Maintainers cut releases with `scripts/release.sh`.

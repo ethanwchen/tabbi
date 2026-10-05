@@ -1,5 +1,6 @@
 #!/usr/bin/env swift
-// Builds the README screenshots in docs/images from the app's demo snapshots.
+// Builds the README screenshots and the GitHub social preview in docs/images
+// from the app's demo snapshots.
 //
 //     swift docs/make-screenshots.swift                         # render demo snapshots, then compose
 //     swift docs/make-screenshots.swift <productivity> <medicine>  # compose from existing snapshot folders
@@ -270,3 +271,64 @@ let tiles = [
 for (snapshot, folder, name) in tiles {
     write(compose(notch(snapshot, in: folder), canvasWidth: 1360, cropHeight: 520, cornerRadius: 24), as: name)
 }
+
+// MARK: - Social preview
+
+/// A rounded system font, the same family the app uses for its type.
+func roundedFont(size: CGFloat, weight: NSFont.Weight) -> NSFont {
+    let base = NSFont.systemFont(ofSize: size, weight: weight)
+    guard let descriptor = base.fontDescriptor.withDesign(.rounded) else { return base }
+    return NSFont(descriptor: descriptor, size: size) ?? base
+}
+
+/// GitHub's repository social preview (1280x640): the open Study panel at the
+/// top, then the icon, name and pitch. GitHub crops about 40 pt from each edge
+/// in some places, so everything stays inside that safe area.
+func socialPreview(notch: Bitmap, icon: Bitmap) -> Bitmap {
+    let size = CGSize(width: 1280, height: 640)
+    var canvas = Bitmap(width: Int(size.width), height: Int(size.height))
+    canvas.withContext { context in
+        drawWallpaper(in: context, size: size)
+
+        // The panel hangs from the top edge like the real notch.
+        let scale: CGFloat = 0.8
+        let notchSize = CGSize(width: CGFloat(notch.width) * scale, height: CGFloat(notch.height) * scale)
+        context.interpolationQuality = .high
+        context.draw(notch.cgImage(), in: CGRect(
+            x: (size.width - notchSize.width) / 2, y: size.height - notchSize.height,
+            width: notchSize.width, height: notchSize.height
+        ))
+
+        let graphics = NSGraphicsContext(cgContext: context, flipped: false)
+        NSGraphicsContext.saveGraphicsState()
+        NSGraphicsContext.current = graphics
+        defer { NSGraphicsContext.restoreGraphicsState() }
+
+        let name = NSAttributedString(string: "Tabbi", attributes: [
+            .font: roundedFont(size: 60, weight: .bold), .foregroundColor: NSColor.white,
+        ])
+        let pitch = NSAttributedString(string: "A cozy study and productivity companion in your MacBook's notch.", attributes: [
+            .font: roundedFont(size: 26, weight: .medium), .foregroundColor: NSColor(white: 1, alpha: 0.72),
+        ])
+        let iconSide: CGFloat = 76
+        let gap: CGFloat = 20
+        let nameSize = name.size()
+        let rowWidth = iconSide + gap + nameSize.width
+        let rowBottom: CGFloat = 124
+        context.draw(icon.cgImage(), in: CGRect(
+            x: (size.width - rowWidth) / 2, y: rowBottom, width: iconSide, height: iconSide
+        ))
+        name.draw(at: CGPoint(
+            x: (size.width - rowWidth) / 2 + iconSide + gap,
+            y: rowBottom + (iconSide - nameSize.height) / 2
+        ))
+        let pitchSize = pitch.size()
+        pitch.draw(at: CGPoint(x: (size.width - pitchSize.width) / 2, y: rowBottom - 24 - pitchSize.height))
+    }
+    return canvas
+}
+
+write(
+    socialPreview(notch: notch("open-study", in: medicine), icon: Bitmap(contentsOf: outputDirectory.appendingPathComponent("icon.png"))),
+    as: "social-preview"
+)
