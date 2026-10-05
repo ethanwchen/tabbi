@@ -1,60 +1,203 @@
 #!/usr/bin/env bash
-# Build a universal (arm64 + x86_64) edition .app, ad-hoc sign it, and package
-# it as build/release/<Name>-<version>.zip plus a .sha256 checksum.
+# Build a release of an edition: a universal (arm64 + x86_64), stripped app,
+# signed with a Developer ID under the Hardened Runtime, notarized and stapled,
+# packaged as a DMG (signed, notarized and stapled too) and a zip, with
+# checksums, in build/release/.
 #
-#   usage: scripts/release.sh [edition]      (default: tabbi)
+#   usage: scripts/release.sh [edition] [--adhoc]
 #
-# The version comes from CFBundleShortVersionString in Resources/Info.plist.
+# edition defaults to tabbi. The version comes from CFBundleShortVersionString
+# in Resources/Info.plist.
 #
-# The app is ad-hoc signed, NOT notarized (that needs a paid Apple Developer ID).
-# Gatekeeper therefore blocks the first launch of a downloaded copy. Users open
-# it once with right-click > Open (or System Settings > Privacy & Security >
-# Open Anyway), or clear the quarantine flag:
-#   xattr -dr com.apple.quarantine /Applications/Tabbi.app
+# Signing settings live in packaging/signing.env (DEVELOPER_ID, NOTARY_PROFILE);
+# environment variables with the same names override them. When the Developer ID
+# or the notary profile is missing, the script stops before building and says
+# how to set them up.
+#
+# --adhoc builds without a Developer ID (contributors, CI): the app is ad-hoc
+# signed and not notarized, so Gatekeeper blocks its first launch on other Macs
+# until the user clicks Open Anyway in System Settings > Privacy & Security.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-edition=${1:-tabbi}
+edition=tabbi
+adhoc=false
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --adhoc) adhoc=true; shift ;;
+        -h|--help) sed -n '2,19p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+        -*) echo "error: unknown option $1" >&2; exit 64 ;;
+        *) edition=$1; shift ;;
+    esac
+done
+
+log() { echo "==> $*" >&2; }
+fail() { echo "error: $*" >&2; exit 1; }
+
+entitlements=packaging/Tabbi.entitlements
+config=packaging/signing.env
+# The file's values, then the environment's, which win when set.
+developer_id=${DEVELOPER_ID:-$(. "$config"; printf '%s' "${DEVELOPER_ID:-}")}
+notary_profile=${NOTARY_PROFILE:-$(. "$config"; printf '%s' "${NOTARY_PROFILE:-}")}
+
+# Fails early, before the slow build, with the setup steps that are missing.
+preflight_developer_id() {
+    local identities identity_ok=true profile_ok=true
+    identities=$(security find-identity -v -p codesigning 2>/dev/null \
+        | sed -n 's/.*"\(Developer ID Application: .*\)"$/\1/p')
+    if [[ -z "$developer_id" ]]; then
+        case $(printf '%s' "$identities" | grep -c .) in
+            0) identity_ok=false ;;
+            1) developer_id=$identities ;;
+            *) fail "found more than one Developer ID Application identity. Set DEVELOPER_ID in $config to one of:
+$(printf '%s\n' "$identities" | sed 's/^/  /')" ;;
+        esac
+    elif ! printf '%s\n' "$identities" | grep -qxF "$developer_id"; then
+        identity_ok=false
+    fi
+    if [[ -z "$notary_profile" ]] \
+        || ! xcrun notarytool history --keychain-profile "$notary_profile" >/dev/null 2>&1; then
+        profile_ok=false
+    fi
+    $identity_ok && $profile_ok && return 0
+
+    mark() { $1 && echo "done" || echo "missing"; }
+    cat >&2 <<EOF
+
+Tabbi releases are signed with your Developer ID and notarized by Apple, so
+people can open them without a Gatekeeper warning. This needs two one-time
+setup steps on this Mac:
+
+  1. Developer ID certificate ($(mark $identity_ok))
+     ${developer_id:+Looked for: $developer_id
+     }In Xcode: Settings > Accounts > your team > Manage Certificates > + >
+     Developer ID Application. Check that it shows up with:
+       security find-identity -v -p codesigning
+
+  2. Notary credentials in the keychain ($(mark $profile_ok))
+     Create an app-specific password at https://account.apple.com, then run:
+       xcrun notarytool store-credentials ${notary_profile:-notchdeck} --apple-id <your Apple ID> --team-id <TEAMID>
+     notarytool asks for the password and keeps it in the keychain.
+
+To build without a Developer ID (for testing on your own Mac), run:
+  scripts/release.sh --adhoc
+EOF
+    exit 1
+}
+
+if $adhoc; then
+    log "Ad-hoc build: the app will not be notarized"
+else
+    preflight_developer_id
+    log "Signing as: $developer_id (notary profile: $notary_profile)"
+fi
+
 version=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" Resources/Info.plist)
 out=build/release
 
-echo "==> Building $edition $version (arm64 + x86_64)"
+log "Building $edition $version (arm64 + x86_64)"
 arch_flags=(-c release --arch arm64 --arch x86_64)
 swift build "${arch_flags[@]}"
 bin="$(swift build "${arch_flags[@]}" --show-bin-path)/Tabbi"
 
 archs=$(lipo -archs "$bin")
 for arch in arm64 x86_64; do
-    [[ " $archs " == *" $arch "* ]] || { echo "error: $bin is missing $arch (has: $archs)" >&2; exit 1; }
+    [[ " $archs " == *" $arch "* ]] || fail "$bin is missing $arch (has: $archs)"
 done
 
-echo "==> Assembling the $edition app"
+log "Assembling the $edition app"
 rm -rf "$out"
 app=$(scripts/assemble.sh "$bin" "$out" "$edition")
-name=$(basename "$app" .app)
+name=$(/usr/libexec/PlistBuddy -c "Print :CFBundleName" "$app/Contents/Info.plist")
+executable="$app/Contents/MacOS/$(/usr/libexec/PlistBuddy -c "Print :CFBundleExecutable" "$app/Contents/Info.plist")"
+
+# Local symbols are only useful to a debugger; stripping them roughly halves the binary.
+# The linker's ad-hoc signature goes first, or strip warns that it breaks it.
+codesign --remove-signature "$executable"
+before=$(stat -f %z "$executable")
+strip -x "$executable"
+log "Stripped $(basename "$executable"): $((before / 1024)) KB -> $(($(stat -f %z "$executable") / 1024)) KB"
+
+# codesign arguments for one piece of code. Developer ID builds get a secure
+# timestamp and the Hardened Runtime, both required for notarization.
+sign() {
+    if $adhoc; then
+        codesign --force --sign - --timestamp=none "$@"
+    else
+        codesign --force --sign "$developer_id" --timestamp --options runtime "$@"
+    fi
+}
+
+# Nested code is signed inside-out, each piece on its own, never with --deep,
+# which would sign everything with the app's entitlements.
+sign_nested() {
+    local frameworks="$app/Contents/Frameworks"
+    [[ -d "$frameworks" ]] || return 0
+    for framework in "$frameworks"/*.framework; do
+        [[ -e "$framework" ]] || continue
+        local current="$framework/Versions/Current"
+        # Sparkle's helpers, in the order its documentation gives
+        # (https://sparkle-project.org/documentation/sandboxing/#code-signing).
+        [[ -d "$current/XPCServices/Installer.xpc" ]] && sign "$current/XPCServices/Installer.xpc"
+        [[ -d "$current/XPCServices/Downloader.xpc" ]] \
+            && sign --preserve-metadata=entitlements "$current/XPCServices/Downloader.xpc"
+        [[ -f "$current/Autoupdate" ]] && sign "$current/Autoupdate"
+        [[ -d "$current/Updater.app" ]] && sign "$current/Updater.app"
+        sign "$framework"
+    done
+}
+
+log "Signing ($($adhoc && echo ad-hoc || echo Developer ID))"
+sign_nested
+sign --entitlements "$entitlements" "$app"
+codesign --verify --strict --deep --verbose=2 "$app"
+
+# Submits a file to Apple's notary service and waits; on rejection prints
+# Apple's log, which names each problem.
+notarize() {
+    log "Notarizing $(basename "$1") (this usually takes a few minutes)"
+    local result status id
+    result=$(xcrun notarytool submit "$1" --keychain-profile "$notary_profile" --wait --output-format json) \
+        || fail "notarytool could not submit $1"
+    status=$(plutil -extract status raw -o - - <<<"$result")
+    id=$(plutil -extract id raw -o - - <<<"$result")
+    if [[ "$status" != Accepted ]]; then
+        xcrun notarytool log "$id" --keychain-profile "$notary_profile" >&2 || true
+        fail "notarization of $1 ended with status '$status' (submission $id)"
+    fi
+}
+
+if ! $adhoc; then
+    # notarytool takes a zip of the app; the ticket is stapled to the app itself.
+    submission="$out/$name-notarize.zip"
+    ditto -c -k --sequesterRsrc --keepParent "$app" "$submission"
+    notarize "$submission"
+    rm -f "$submission"
+    xcrun stapler staple -q "$app"
+    spctl --assess --type execute --verbose=2 "$app"
+fi
+
 zip="$out/$name-$version.zip"
-
-echo "==> Ad-hoc signing"
-codesign --force --deep --sign - --timestamp=none "$app"
-codesign --verify --strict --verbose=2 "$app"
-
-echo "==> Packaging $zip"
+log "Packaging $zip"
 # ditto keeps the bundle structure and extended attributes the way Finder does.
 ditto -c -k --sequesterRsrc --keepParent "$app" "$zip"
-(cd "$out" && shasum -a 256 "$(basename "$zip")" > "$(basename "$zip").sha256")
 
+dmg=$(scripts/make-dmg.sh "$edition" --app "$app" --out "$out" | tail -n 1)
+if ! $adhoc; then
+    codesign --force --sign "$developer_id" --timestamp "$dmg"
+    notarize "$dmg"
+    xcrun stapler staple -q "$dmg"
+    spctl --assess --type open --context context:primary-signature --verbose=2 "$dmg"
+fi
+
+(cd "$out" && shasum -a 256 "$(basename "$dmg")" "$(basename "$zip")" > SHA256SUMS)
+
+size() { du -sh "$1" | cut -f1 | tr -d ' '; }
 cat <<EOF
 
-Built:
-  $zip
-  $zip.sha256  ($(cut -d' ' -f1 "$zip.sha256"))
-
-Next steps for a GitHub release:
-  1. Make sure CHANGELOG.md has a $version section and commit it.
-  2. Tag and push:   git tag v$version && git push origin v$version
-  3. Publish:        gh release create v$version "$zip" "$zip.sha256" \\
-                       --title "$name $version" --notes-file <release-notes.md>
-  4. Remind users in the notes that the app is ad-hoc signed, not notarized:
-     right-click $name.app > Open on first launch, or run
-       xattr -dr com.apple.quarantine /Applications/$name.app
+Built $name $version ($($adhoc && echo "ad-hoc signed, not notarized" || echo "Developer ID signed, notarized and stapled")):
+  $dmg  ($(size "$dmg"))
+  $zip  ($(size "$zip"))
+  $out/SHA256SUMS
+  app: $(size "$app"), executable: $(size "$executable")
 EOF

@@ -398,3 +398,9 @@ lipo -archs .build/apple/Products/Release/Tabbi                     # x86_64 arm
 - https://forums.swift.org/t/unable-to-compile-universal-binary-for-command-line-swift-package/53948
 - https://forums.swift.org/t/swift-5-9-type-bundle-has-no-member-module-when-building-universal-binary-via-swift-build-command/66882
 - https://developer.apple.com/forums/thread/672758
+
+## Measured: release build (iteration 3)
+
+- `scripts/release.sh --adhoc` for Tabbi 0.1.0: the universal executable shrinks from 29.6 MB to 12.5 MB with `strip -x`; the app is 13 MB, the zip 5.8 MB and the DMG (ULFO) 6.9 MB.
+- `strip` keeps or re-adds the linker's ad-hoc signature, so `codesign` reports "replacing existing signature" when the app is signed; removing the signature before `strip` only silences strip's warning about it.
+- Without a Developer ID identity or the `notchdeck` notary profile, the script stops before the build and lists which of the two setup steps is missing.

@@ -101,6 +101,8 @@ swift docs/make-screenshots.swift        # re-renders docs/images/*.png from dem
 ## Releases
 
 Maintainers cut releases with `scripts/release.sh`.
-It builds a universal (Apple silicon and Intel), ad-hoc signed `Tabbi-<version>.zip` with a `.sha256` checksum in `build/release/`, and prints the steps to publish a GitHub release.
+It builds a universal (Apple silicon and Intel), stripped app, signs it with the maintainer's Developer ID under the Hardened Runtime (`packaging/Tabbi.entitlements`), notarizes and staples it, and writes `Tabbi-<version>.dmg`, `Tabbi-<version>.zip` and `SHA256SUMS` to `build/release/`.
 The version comes from `CFBundleShortVersionString` in `Resources/Info.plist`.
-Builds are not notarized, so the README explains how to open the app the first time.
+Signing needs two one-time steps (a Developer ID Application certificate and `xcrun notarytool store-credentials notchdeck`); the script checks both before building and explains what is missing.
+`packaging/signing.env` picks the identity and notary profile when the defaults do not fit.
+Without a Developer ID, `scripts/release.sh --adhoc` builds the same files ad-hoc signed and not notarized, which is what CI runs.

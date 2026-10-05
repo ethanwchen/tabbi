@@ -35,8 +35,7 @@ jobs:
       - name: Test
         run: swift test
 
-      - name: Release bundle (universal, ad-hoc signed)
-        run: scripts/release.sh
-
-      - name: DMG
-        run: scripts/make-dmg.sh --app build/release/Tabbi.app --out build/release
+      # CI has no Developer ID, so it checks the ad-hoc path of the release
+      # build: universal binary, strip, signing, zip and DMG.
+      - name: Release build (universal, ad-hoc signed, DMG)
+        run: scripts/release.sh --adhoc

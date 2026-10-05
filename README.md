@@ -144,7 +144,7 @@ Other useful commands:
 swift build                     # compile; must stay warning-free
 swift test                      # unit tests for TabbiKitCore
 TABBI_DEMO=1 swift run Tabbi --snapshot snapshots   # render every notch state to PNG with sample data
-scripts/release.sh              # universal, ad-hoc signed release zip in build/release/
+scripts/release.sh [--adhoc]    # universal, signed and notarized DMG and zip in build/release/
 scripts/bundle.sh               # build/Tabbi.app
 ```
 
