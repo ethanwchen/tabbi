@@ -70,12 +70,14 @@ Celebrations confirm a real event; they are brief, optional and never block inpu
   A finished focus session or study block, a daily goal met or a streak continued gets a `.burst`: 36 particles, gone within 1.5 s.
   A streak milestone, a level up or an unlock gets a `.milestone`: 72 particles, gone within 2 s.
 - `CelebrationPacer` (`Sources/TabbiKitCore/Motion/Celebration.swift`) keeps them rare: at most one burst every ten minutes, and one milestone a day (a second milestone that day plays as a burst).
-  When it says no, play the symbol bounce instead.
+  When it says no while a panel is open, the event nods instead: its module's tab in the tab bar bounces once (`CelebrationNod`), with no particles and no haptic.
+  If that module has no tab (Today showing the Focus timer with Focus off), the open tab bounces.
+  Under Reduce Motion the tab symbol pulses its opacity instead of bouncing.
 - `CelebrationBurst` is the particle model: a seeded set of particles whose position, rotation, scale and opacity are pure functions of elapsed time (a fast launch within 35 degrees of vertical, gravity slowed by drag to a 200 pt/s fall, a pop in over 120 ms and a fade over the last 40% of each life).
   Nothing changes per frame, so the same moment always draws the same picture.
 - Styles are `.confetti`, `.sparkles`, `.hearts` and `.pawPrints`, each drawn from paths (no image assets) in the module accent plus companions from the app palette.
-- A module celebrates a real event through `context.celebrations` (`CelebrationCenter` in `Sources/TabbiKit/Components/Celebration/`): `celebrations.celebrate(.burst, style: .confetti, accent: <Module>Module.descriptor.accentColor)`.
-  The center holds the one app-wide pacer, plays nothing while the notch is closed (an unseen event uses up no allowance), taps a `.levelChange` haptic when Settings allows haptics (only felt with a finger on a Force Touch trackpad), and returns the tier that played, or nil so the caller can fall back to its symbol bounce.
+- A module celebrates a real event through `context.celebrations` (`CelebrationCenter` in `Sources/TabbiKit/Components/Celebration/`): `celebrations.celebrate(.burst, style: .confetti, accent: <Module>Module.descriptor.accentColor, from: <Module>Module.descriptor.id)`.
+  The center holds the one app-wide pacer, plays nothing while the notch is closed (an unseen event uses up no allowance), taps a `.levelChange` haptic when Settings allows haptics (only felt with a finger on a Force Touch trackpad), and returns the tier that played, or nil (in which case it has already nodded the `from` module's tab if the panel is open).
   Snapshot runs celebrate nothing.
 - Every open panel is a stage (`.celebrationStage(center)`, added once in `ModuleViews.notchContent`), so the burst plays over whichever panel is open.
   The overlay draws with `Canvas` from a `TimelineView` capped at 60 fps, ignores hits, and leaves the hierarchy when the last particle is gone.

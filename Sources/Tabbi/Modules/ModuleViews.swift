@@ -32,7 +32,8 @@ enum ModuleViews {
             panel: { AnyView(services.modules.panel(for: $0).celebrationStage(services.celebrations)) },
             nowPlayingLeading: { AnyView(compactLeading(services: services)) },
             nowPlayingTrailing: { AnyView(compactTrailing(services: services)) },
-            openSettings: { services.openSettings() }
+            openSettings: { services.openSettings() },
+            celebrations: services.celebrations
         )
     }
 

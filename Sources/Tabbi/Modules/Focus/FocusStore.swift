@@ -151,7 +151,8 @@ final class FocusStore: ObservableObject {
         if !isEphemeral, let last = completions.last, now.timeIntervalSince(last.endedAt) < 60 {
             Self.playChime()
             if last.phase == .focus {
-                celebrations?.celebrate(.burst, style: .confetti, accent: FocusModule.descriptor.accentColor)
+                celebrations?.celebrate(.burst, style: .confetti, accent: FocusModule.descriptor.accentColor,
+                                        from: FocusModule.descriptor.id)
             }
         }
         scheduleSideEffects(withdrawingPending: false)

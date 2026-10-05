@@ -60,4 +60,38 @@ final class CelebrationCenterTests: XCTestCase {
         center.stageAppeared()
         XCTAssertTrue(center.isShowing, "an extra disappearance never leaves the count negative")
     }
+
+    func testARefusedCelebrationNodsItsModuleTab() {
+        let center = center()
+        center.stageAppeared()
+        XCTAssertEqual(center.celebrate(.burst, style: .confetti, accent: .teal, from: .focus), .burst)
+        XCTAssertNil(center.nod, "a burst that plays needs no nod")
+
+        clock += 60
+        XCTAssertNil(center.celebrate(.burst, style: .pawPrints, accent: .teal, from: .study))
+        XCTAssertEqual(center.nod?.source, .study)
+        let first = center.nod?.id
+
+        clock += 60
+        center.celebrate(.burst, style: .pawPrints, accent: .teal, from: .study)
+        XCTAssertNotEqual(center.nod?.id, first, "a second nod from the same module is still a change")
+    }
+
+    func testNothingNodsWhileClosedOrWithoutASource() {
+        let center = center()
+        center.celebrate(.burst, style: .confetti, accent: .teal, from: .focus)
+        XCTAssertNil(center.nod, "an unseen event nods nowhere")
+
+        center.stageAppeared()
+        center.celebrate(.burst, style: .confetti, accent: .teal)
+        clock += 60
+        center.celebrate(.burst, style: .confetti, accent: .teal)
+        XCTAssertNil(center.nod, "without a source there is no tab to bounce")
+    }
+
+    func testANodBouncesTheOpenTabWhenItsModuleHasNone() {
+        let nod = CelebrationNod(id: 1, source: .focus)
+        XCTAssertEqual(nod.tab(enabled: [.planner, .focus], selected: .planner), .focus)
+        XCTAssertEqual(nod.tab(enabled: [.planner, .anki], selected: .anki), .anki)
+    }
 }

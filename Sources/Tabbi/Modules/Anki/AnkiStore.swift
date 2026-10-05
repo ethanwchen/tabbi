@@ -183,7 +183,8 @@ final class AnkiStore: ObservableObject {
         }
         guard let celebrations, celebrations.isShowing else { return }
         pendingMilestone = nil
-        celebrations.celebrate(.milestone, style: .confetti, accent: AnkiModule.descriptor.accentColor)
+        celebrations.celebrate(.milestone, style: .confetti, accent: AnkiModule.descriptor.accentColor,
+                               from: AnkiModule.descriptor.id)
     }
 
     /// Logs the cards answered since the last logged count. The log is read

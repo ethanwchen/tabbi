@@ -126,7 +126,8 @@ final class ClosetStore: ObservableObject {
         let result = edit { $0.tap(item) }
         if result == .boughtAndWore {
             preview.send(.celebrate)
-            celebrations?.celebrate(.milestone, style: .sparkles, accent: ClosetModule.descriptor.accentColor)
+            celebrations?.celebrate(.milestone, style: .sparkles, accent: ClosetModule.descriptor.accentColor,
+                                    from: ClosetModule.descriptor.id)
         }
         return result
     }

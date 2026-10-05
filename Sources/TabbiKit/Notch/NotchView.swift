@@ -73,7 +73,7 @@ private struct OpenNotchContent: View {
         let notch = model.geometry.notchSize
         VStack(spacing: 0) {
             HStack(spacing: 0) {
-                NotchTabBar()
+                NotchTabBar(celebrations: content.celebrations)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Color.clear.frame(width: notch.width)
                 HStack(spacing: Theme.Spacing.s) {
