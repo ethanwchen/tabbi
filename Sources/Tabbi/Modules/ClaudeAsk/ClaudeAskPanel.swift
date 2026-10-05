@@ -397,9 +397,9 @@ private struct EmptyChatView: View {
     let onPick: (String) -> Void
 
     private static let examples = [
-        "Explain git rebase simply",
-        "Regex for an email address",
-        "Tips for commit messages",
+        "Quick dinner ideas",
+        "Write a polite reminder",
+        "Tips to focus better",
     ]
 
     var body: some View {
@@ -411,7 +411,7 @@ private struct EmptyChatView: View {
                 Text("Ask Claude anything")
                     .font(Theme.Typography.title)
                     .foregroundStyle(Theme.Palette.primaryText)
-                Text("Quick text answers from your local Claude Code, with no tools or file access.")
+                Text("Quick answers right here. Claude can't see your files.")
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.tertiaryText)
             }

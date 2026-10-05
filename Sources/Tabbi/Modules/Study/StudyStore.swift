@@ -119,7 +119,9 @@ final class StudyStore: ObservableObject {
         self.custom = custom
         let timer = (defaults.object(forKey: Self.timerKey) as? Int).map(StudyTimerLength.init(minutes:)) ?? .standard
         self.timer = timer
-        var saved = defaults.data(forKey: Self.sessionKey)
+        // A snapshot run starts on the kit's method, as a new user would, so
+        // the PNGs never depend on what this Mac happens to have saved.
+        var saved = (isSnapshot ? nil : defaults.data(forKey: Self.sessionKey))
             .flatMap { try? JSONDecoder().decode(StudySession.self, from: $0) }
             ?? StudySession(method: .preset(menu.startingKind, custom: custom, timer: timer))
         // A phase may have ended while the app wasn't running; catch up quietly.

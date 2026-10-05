@@ -42,9 +42,10 @@ This page records what the simplicity pass removed, merged or hid, why, and how 
 
 ### Added, because they earn their place
 
-- **A plain Timer** first in the Essentials Timer tab: 5, 10 and 25 minute chips that start the countdown in one click, and a stepper for any other length, with no breaks or rounds.
+- **A plain Timer**, the method the Essentials Timer tab starts on: 5, 10 and 25 minute chips that start the countdown in one click, and a stepper for any other length, with no breaks or rounds.
   On a countdown that is already running or paused, a chip only changes its length.
-  Pomodoro and the other focus methods stay one menu away.
+  Pomodoro and the other focus methods stay one menu away, and the Med School kit still starts on Pomodoro.
+- **Everyday questions in Ask Claude.** The empty chat suggests dinner ideas, a polite reminder and focus tips instead of developer questions, and its one line of copy is shorter.
 - **Instant task capture.** When the global shortcut opens the notch on Today, the cursor starts in the Add a task field.
   Opening with the pointer does not steal focus, so a hover-opened notch still closes when the pointer leaves.
 - **Reset to Defaults** at the bottom of General and Look.
@@ -65,8 +66,8 @@ The global shortcut is Control-Option-Space and can be changed in **Settings > G
 | Action | How | Clicks |
 | --- | --- | --- |
 | Add a task | Shortcut on Today, then type; or click the notch, then the Add a task field | 0 (shortcut) or 2 |
-| Start a 5, 10 or 25 minute timer | Click the notch (on Timer), then a length chip (the Timer method stays picked once chosen) | 2 |
-| Start a focus session | Click the notch (on Timer), then Start focus | 2 |
+| Start a 5, 10 or 25 minute timer | Click the notch (on Timer), then a length chip | 2 |
+| Start a Pomodoro | Click the notch (on Timer), then Start focus once Pomodoro is picked in the method menu (it stays picked) | 2 (4 the first time) |
 | Play or pause music | Click the playing music wing, then play or pause | 2 |
 | Ask Claude | Shortcut on Ask Claude, then type; or click the notch, then the Ask Claude tab, then type | 0 (shortcut) or 2 |
 | Check a task off | Click the notch (on Today), then its circle | 2 |
@@ -81,6 +82,6 @@ The notch reopens on the last tab used, and clicking a live activity opens the t
 
 1. Tabbi opens the notch on setup: pick Essentials (one tap), answer one question, keep the suggested tabs, name the pet.
    Every step can be skipped.
-2. The notch opens on the first tab with something to do right away: Start focus, a length chip, the Add a task field, or Ask Claude anything with three example questions.
+2. The notch opens on the first tab with something to do right away: a 5, 10 or 25 minute chip, the Add a task field, or Ask Claude anything with three example questions.
 3. Nothing needs Settings.
    Calendar and Music ask for access from their own tab, the first time they are used.

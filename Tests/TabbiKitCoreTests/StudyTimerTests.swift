@@ -96,10 +96,10 @@ final class StudyTimerTests: XCTestCase {
         XCTAssertEqual(methods.first, StudyTimerLength(minutes: 5).method)
     }
 
-    func testEssentialsOffersTheTimerButStartsOnPomodoro() throws {
+    func testEssentialsStartsOnTheTimerWithPomodoroNext() throws {
         let kit = try XCTUnwrap(KitLibrary.bundled.kits.first { $0.id == "essentials" })
         let menu = StudyMethodMenu(kit: kit.defaults)
-        XCTAssertEqual(menu.kinds.first, .timer)
-        XCTAssertEqual(menu.startingKind, .pomodoro)
+        XCTAssertEqual(menu.kinds.prefix(2), [.timer, .pomodoro])
+        XCTAssertEqual(menu.startingKind, .timer)
     }
 }

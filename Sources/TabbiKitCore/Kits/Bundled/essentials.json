@@ -12,7 +12,7 @@
     "moduleSettings": {
       "study": {
         "methods": ["timer", "pomodoro", "fiftyTwoSeventeen", "flowtime", "custom"],
-        "method": "pomodoro"
+        "method": "timer"
       }
     }
   },
