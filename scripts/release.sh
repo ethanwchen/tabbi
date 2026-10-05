@@ -2,7 +2,7 @@
 # Build a release of an edition: a universal (arm64 + x86_64), stripped app,
 # signed with a Developer ID under the Hardened Runtime, notarized and stapled,
 # packaged as a DMG (signed, notarized and stapled too) and a zip, with
-# checksums, in build/release/.
+# checksums, release notes and a Sparkle appcast, in build/release/.
 #
 #   usage: scripts/release.sh [edition] [--adhoc]
 #
@@ -17,6 +17,13 @@
 # (CFBundleVersion, which Sparkle compares) is the commit count, so it needs a
 # full clone.
 #
+# The appcast (appcast.xml) offers the zip as the update, signed with the
+# update key's private half: from the login keychain, where generate_keys
+# keeps it, or from the SPARKLE_PRIVATE_KEY environment variable (CI secrets).
+# Its release notes (release-notes.md) come from git (scripts/release-notes.sh).
+# Upload the DMG, the zip, appcast.xml and SHA256SUMS to the GitHub Release
+# tagged v<version>; the feed URL points at the latest release's appcast.xml.
+#
 # --adhoc builds without a Developer ID (contributors, CI): the app is ad-hoc
 # signed and not notarized, so Gatekeeper blocks its first launch on other Macs
 # until the user clicks Open Anyway in System Settings > Privacy & Security.
@@ -28,7 +35,7 @@ adhoc=false
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --adhoc) adhoc=true; shift ;;
-        -h|--help) sed -n '2,22p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+        -h|--help) awk 'NR > 1 && !/^#/ { exit } NR > 1 { sub(/^# ?/, ""); print }' "$0"; exit 0 ;;
         -*) echo "error: unknown option $1" >&2; exit 64 ;;
         *) edition=$1; shift ;;
     esac
@@ -52,6 +59,19 @@ update_key_ok() {
     [[ -n "$sparkle_key" && "$(printf '%s' "$sparkle_key" | base64 -D 2>/dev/null | wc -c | tr -d ' ')" == 32 ]]
 }
 
+# Where generate_appcast finds the private update key: "env" when
+# SPARKLE_PRIVATE_KEY holds it, "keychain" when the login keychain has the
+# key that matches SPARKLE_PUBLIC_KEY, and nothing when neither does.
+update_signer() {
+    if [[ -n "${SPARKLE_PRIVATE_KEY:-}" ]]; then
+        echo env
+        return
+    fi
+    [[ -x "$sparkle_bin/generate_keys" ]] || swift package resolve >/dev/null || return 0
+    [[ "$("$sparkle_bin/generate_keys" -p 2>/dev/null)" == "$sparkle_key" ]] && echo keychain
+    return 0
+}
+
 # Fails early, before the slow build, with the setup steps that are missing.
 preflight_developer_id() {
     local identities identity_ok=true profile_ok=true key_ok=true
@@ -71,7 +91,7 @@ $(printf '%s\n' "$identities" | sed 's/^/  /')" ;;
         || ! xcrun notarytool history --keychain-profile "$notary_profile" >/dev/null 2>&1; then
         profile_ok=false
     fi
-    update_key_ok || key_ok=false
+    update_key_ok && [[ -n "$(update_signer)" ]] || key_ok=false
     $identity_ok && $profile_ok && $key_ok && return 0
 
     mark() { $1 && echo "done" || echo "missing"; }
@@ -98,7 +118,8 @@ through Sparkle. This needs three one-time setup steps on this Mac:
      It keeps the private key in your login keychain and prints the public
      key. Paste that into SPARKLE_PUBLIC_KEY in $updates. Back the private
      key up (generate_keys -x <file>) somewhere safe, never in the repository:
-     without it, installed copies can never be updated again.
+     without it, installed copies can never be updated again. On another Mac,
+     import the backup with generate_keys -f <file>.
 
 To build without a Developer ID (for testing on your own Mac), run:
   scripts/release.sh --adhoc
@@ -236,6 +257,47 @@ if ! $adhoc; then
     spctl --assess --type open --context context:primary-signature --verbose=2 "$dmg"
 fi
 
+notes="$out/release-notes.md"
+scripts/release-notes.sh "$version" "$name" > "$notes"
+
+# The appcast offers the zip: Sparkle installs from it without mounting
+# anything. A fresh folder per release holds just this version, so the feed
+# lists only the newest update, which is all Sparkle needs.
+appcast=
+signer=$(update_key_ok && update_signer || true)
+if [[ -n "$signer" ]]; then
+    log "Writing the appcast (update key from the $signer)"
+    feed_dir="$out/appcast"
+    mkdir -p "$feed_dir"
+    cp "$zip" "$feed_dir/"
+    # A Markdown file named like the archive becomes the item's release notes.
+    cp "$notes" "$feed_dir/$(basename "${zip%.zip}").md"
+    # The feed is .../releases/latest/download/appcast.xml; the archives live
+    # under the release's own tag.
+    case "$feed_url" in
+        https://github.com/*/releases/latest/download/*)
+            download_prefix="${feed_url%%/releases/latest/download/*}/releases/download/v$version/" ;;
+        *) download_prefix="${feed_url%/*}/" ;;
+    esac
+    appcast_args=(--download-url-prefix "$download_prefix" --embed-release-notes --disable-signing-warning -o "$out/appcast.xml")
+    if [[ "$signer" == env ]]; then
+        report=$(printf '%s' "$SPARKLE_PRIVATE_KEY" | "$sparkle_bin/generate_appcast" --ed-key-file - "${appcast_args[@]}" "$feed_dir" 2>&1)
+    else
+        report=$("$sparkle_bin/generate_appcast" "${appcast_args[@]}" "$feed_dir" 2>&1)
+    fi
+    echo "$report" >&2
+    rm -rf "$feed_dir"
+    # generate_appcast only warns when the private key is not the app's
+    # SUPublicEDKey, but every installed copy would then reject the update.
+    if grep -q "does not match" <<<"$report"; then
+        rm -f "$out/appcast.xml"
+        fail "the private update key does not match SPARKLE_PUBLIC_KEY, so no copy of $name could install this update"
+    fi
+    appcast="$out/appcast.xml"
+elif update_key_ok; then
+    log "No appcast: the private update key is not in the keychain or SPARKLE_PRIVATE_KEY"
+fi
+
 (cd "$out" && shasum -a 256 "$(basename "$dmg")" "$(basename "$zip")" > SHA256SUMS)
 
 size() { du -sh "$1" | cut -f1 | tr -d ' '; }
@@ -245,5 +307,7 @@ Built $name $version, build $build_number ($($adhoc && echo "ad-hoc signed, not 
   $dmg  ($(size "$dmg"))
   $zip  ($(size "$zip"))
   $out/SHA256SUMS
+  $notes${appcast:+
+  $appcast}
   app: $(size "$app"), executable: $(size "$executable")
 EOF

@@ -106,5 +106,8 @@ The version comes from `CFBundleShortVersionString` in `Resources/Info.plist`.
 Signing needs three one-time steps (a Developer ID Application certificate, `xcrun notarytool store-credentials notchdeck`, and an update signing key from Sparkle's `generate_keys`, whose public half goes in `packaging/updates.env`); the script checks all three before building and explains what is missing.
 `packaging/signing.env` picks the identity and notary profile when the defaults do not fit.
 The release app checks the appcast in `packaging/updates.env` through Sparkle (Settings > About > Check for Updates, and the notch's context menu); development builds carry no feed and never update themselves.
+It also writes `release-notes.md`, made from the `feat`, `fix` and `perf` commits since the previous `v*` tag by `scripts/release-notes.sh`, and `appcast.xml`, which offers the zip as the update with those notes and is signed with the update key from the login keychain (or `SPARKLE_PRIVATE_KEY` in CI).
+Publish the DMG, the zip, `appcast.xml` and `SHA256SUMS` as assets of a GitHub Release tagged `v<version>`, so the feed's `releases/latest/download/appcast.xml` points at it.
+Commit subjects become the release notes, so write `feat` and `fix` subjects for the people who use Tabbi.
 The build number is the commit count, so release from a full clone.
 Without a Developer ID, `scripts/release.sh --adhoc` builds the same files ad-hoc signed and not notarized, which is what CI runs.

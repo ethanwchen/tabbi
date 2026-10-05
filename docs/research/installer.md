@@ -433,3 +433,14 @@ Tested on macOS 26 with a debug build under a throwaway bundle id and a random p
   "Check for Updates..." in Settings > About brought the app forward and showed Sparkle's "Update Error!" window for the 404, so a user-initiated check is always answered on screen.
 - `tell application id "..." to quit` returned "User canceled (-128)" while Sparkle's window was open and quit at once after it closed, with Settings and the welcome window still open.
   AppKit refuses quit events during a modal session, so a quit that "did not work" in QA most likely met a modal alert; with no modal up, AppleScript quit is reliable.
+
+## Measured: appcast and release notes (iteration 6)
+
+Tested with `scripts/release.sh --adhoc` and a throwaway Ed25519 key pair made with openssl, passed as `SPARKLE_PUBLIC_KEY` and `SPARKLE_PRIVATE_KEY` (base64 of the 32-byte seed, the format `generate_keys -x` writes).
+
+- `generate_appcast --ed-key-file -` took the key from stdin and wrote one item: build 30, version 0.1.0, `minimumSystemVersion` 14.0 read from the app, the enclosure at `https://github.com/ethanwchen/notchdeck/releases/download/v0.1.0/Tabbi-0.1.0.zip`, and the Markdown release notes embedded as `<description sparkle:format="markdown">`.
+- Its `sparkle:edSignature` verified against the public key with `openssl pkeyutl -verify -rawin`, independently of Sparkle.
+- With a private key that does not match the app's `SUPublicEDKey`, `generate_appcast` only prints a warning and exits 0, so the appcast would offer an update that every installed copy rejects.
+  `release.sh` therefore fails on that warning and removes the appcast.
+- `generate_keys -p` prints the keychain's public key, or exits 1 with "No existing signing key found!", without creating a key; the preflight compares it with `SPARKLE_PUBLIC_KEY`.
+- Release notes come from `scripts/release-notes.sh`: `feat`, `fix` and `perf` subjects since the previous `v*` tag, with the `packaging` and `release` scopes left out because they only concern people building Tabbi.
