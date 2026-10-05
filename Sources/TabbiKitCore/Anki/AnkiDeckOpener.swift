@@ -179,12 +179,6 @@ public enum AnkiDeckName {
     public static func leaf(_ name: String) -> String {
         components(name).last ?? name
     }
-
-    /// The parent path for display, "Step1 › Cardio", or nil for a top-level deck.
-    public static func parentPath(_ name: String) -> String? {
-        let parts = components(name)
-        return parts.count > 1 ? parts.dropLast().joined(separator: " › ") : nil
-    }
 }
 
 extension AnkiOpenOutcome {

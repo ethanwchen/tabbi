@@ -324,11 +324,9 @@ final class AnkiDeckOpenerTests: XCTestCase {
         XCTAssertEqual(AnkiDeckName.normalized("Japanese: Kanji"), "Japanese: Kanji", "A single colon is part of the name")
     }
 
-    func testDeckNameLeafAndParentPath() {
+    func testDeckNameLeaf() {
         XCTAssertEqual(AnkiDeckName.leaf("Step1::Cardio::Arrhythmias"), "Arrhythmias")
-        XCTAssertEqual(AnkiDeckName.parentPath("Step1::Cardio::Arrhythmias"), "Step1 › Cardio")
         XCTAssertEqual(AnkiDeckName.leaf("Pharm"), "Pharm")
-        XCTAssertNil(AnkiDeckName.parentPath("Pharm"))
     }
 
     // MARK: Outcome wording
