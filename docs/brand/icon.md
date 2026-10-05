@@ -106,3 +106,24 @@ Verdict:
 - `Resources/AppIcon.icns` was regenerated from this round.
 
 Next round: an optical small-size drawing for 16 and 32 px (larger eyes and check, no cheek stripes, a bolder "M" or none), selected by render size.
+
+### Round 3: an optical small size
+
+Sheet: `rounds/r3.png`.
+
+Changes from round 2:
+
+- Renders of 32 px or less (16 pt at 1x and 2x, 32 pt at 1x) now use a separate small-size drawing of the face, selected by render size in `drawConceptA`, like a caption cut of a typeface.
+  At 16 px one pixel is 64 canvas units, so anything thinner than about 50 units became grey noise.
+- The small face drops the cheek stripes, the mouth and the eye's catch light.
+- It grows what carries the character: a larger open eye, a 62 unit checkmark, a 52 unit "M", one wide cream muzzle and a bigger nose.
+- The glass rim stroke is left out at small sizes, where it only lightened the outer pixel ring.
+
+Verdict:
+
+- 32 px now reads as a finished small icon: a dark eye, a clear tick, the "M" and the cream muzzle are each distinct.
+- 16 px shows the eye, the wink and the muzzle as separate shapes instead of a smudged face, while keeping the round head and tab ears silhouette.
+- 64 px and up are unchanged, so the 1024 and 128 px art keeps its detail.
+- `Resources/AppIcon.icns` was regenerated from this round.
+
+Next round: the light, dark and tinted variant PNGs, and a check of the 1024 px art against Apple's own icons in the Dock.

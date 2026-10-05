@@ -101,6 +101,12 @@ func ellipse(_ cx: CGFloat, _ cy: CGFloat, _ w: CGFloat, _ h: CGFloat) -> CGPath
 /// by this to look the same at 16 px as at 1024 px.
 var deviceScale: CGFloat = 1
 
+/// Pixel size of the render in progress. Renders of 32 px or less (the 16 pt icon
+/// at 1x and 2x, and 32 pt at 1x) use an optical small-size drawing, the way a type
+/// designer cuts a caption size: fewer, bigger features that survive a 13 px body.
+var renderPixels = 1024
+var isSmallRender: Bool { renderPixels <= 32 }
+
 func setShadow(_ ctx: CGContext, y: CGFloat, blur: CGFloat, alpha: CGFloat) {
     // Device space is y-up while the drawing is y-down, so a downward shadow has a negative offset.
     ctx.setShadow(offset: CGSize(width: 0, height: -y * deviceScale), blur: blur * deviceScale,
@@ -206,9 +212,14 @@ func drawConceptA(_ ctx: CGContext) {
     let head = ellipse(512, 770, 720, 640)
     fill(ctx, head, top: Brand.ginger.cg(), bottom: Brand.gingerDeep.cg(), shadow: 30)
 
+    let stripe = Brand.stripe.cg()
+    if isSmallRender {
+        drawConceptAFaceSmall(ctx, stripe: stripe)
+        return
+    }
+
     // Tabby "M" and cheek stripes. The cheek stripes are clipped to the head so they
     // run in from its edge, as on a real tabby, instead of sticking out like whiskers.
-    let stripe = Brand.stripe.cg()
     stroke(ctx, [CGPoint(x: 444, y: 562), CGPoint(x: 472, y: 490), CGPoint(x: 512, y: 542),
                  CGPoint(x: 552, y: 490), CGPoint(x: 580, y: 562)], width: 28, color: stripe)
     ctx.saveGState()
@@ -231,6 +242,19 @@ func drawConceptA(_ ctx: CGContext) {
     stroke(ctx, [CGPoint(x: 578, y: 644), CGPoint(x: 610, y: 678), CGPoint(x: 670, y: 606)], width: 36, color: Brand.eye.cg())
 
     noseAndMouth(ctx, at: CGPoint(x: 512, y: 728), scale: 1.2)
+}
+
+/// Concept A's face for 32 px and smaller. At 16 px one canvas pixel is 64 units, so
+/// anything thinner than about 50 units turns to grey noise: the cheek stripes, the
+/// mouth and the catch light go, while the eye, the check and the "M" grow and thicken
+/// until each covers at least a pixel and a half.
+func drawConceptAFaceSmall(_ ctx: CGContext, stripe: CGColor) {
+    stroke(ctx, [CGPoint(x: 432, y: 572), CGPoint(x: 466, y: 484), CGPoint(x: 512, y: 540),
+                 CGPoint(x: 558, y: 484), CGPoint(x: 592, y: 572)], width: 52, color: stripe)
+    fill(ctx, ellipse(512, 790, 300, 150), Brand.cream.cg())
+    fill(ctx, ellipse(398, 654, 110, 130), Brand.eye.cg())
+    stroke(ctx, [CGPoint(x: 566, y: 654), CGPoint(x: 610, y: 700), CGPoint(x: 684, y: 606)], width: 62, color: Brand.eye.cg())
+    fill(ctx, ellipse(512, 740, 76, 52), Brand.nose.cg())
 }
 
 /// B: "Peek". A tabby peeking over a strip of folder tabs, paws on the edge,
@@ -356,7 +380,12 @@ func drawIcon(in ctx: CGContext, concept: (CGContext) -> Void) {
     ctx.addPath(body)
     ctx.clip()
     concept(ctx)
-    // A faint rim of light along the edge, like the glass edge on macOS 26 icons.
+    // A faint rim of light along the edge, like the glass edge on macOS 26 icons. At
+    // small sizes it would only lighten the outer pixel ring, so it is left out.
+    if isSmallRender {
+        ctx.restoreGState()
+        return
+    }
     ctx.addPath(body)
     ctx.setStrokeColor(CGColor(gray: 1, alpha: 0.18))
     ctx.setLineWidth(6)
@@ -377,6 +406,7 @@ func render(pixels: Int, concept: @escaping (CGContext) -> Void) -> CGImage {
     let ctx = makeContext(pixels, pixels)
     let scale = CGFloat(pixels) / canvas
     deviceScale = scale
+    renderPixels = pixels
     // Flip to y-down so the drawing code reads top-to-bottom.
     ctx.translateBy(x: 0, y: CGFloat(pixels))
     ctx.scaleBy(x: scale, y: -scale)
