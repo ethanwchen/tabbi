@@ -51,7 +51,7 @@ Macs without a notch get a small virtual one at the top of the screen.
     <td><img src="docs/images/party.png" alt="Party tab"><br><b>Party.</b> Study with friends and see who is focusing.</td>
   </tr>
   <tr>
-    <td><img src="docs/images/closet.png" alt="Closet tab"><br><b>Closet.</b> Dress up your pet with what your study points unlock.</td>
+    <td><img src="docs/images/closet.png" alt="Closet, the pet page"><br><b>Closet.</b> Tap the paw to dress up your pet with what your study points unlock.</td>
     <td><img src="docs/images/now-playing.png" alt="Now Playing tab"><br><b>Now Playing.</b> Spotify and Apple Music, with artwork and controls.</td>
   </tr>
   <tr>

@@ -12,6 +12,9 @@ public struct ModuleLayout: Equatable, Sendable {
     public private(set) var order: [ModuleID]
     /// Modules the user turned off.
     public private(set) var disabled: Set<ModuleID>
+    /// The letter keys of modules that open from the header instead of a tab
+    /// (`ModuleDescriptor.headerShortcut`), taken from the catalog.
+    private let headerKeys: [ModuleID: String]
 
     /// Every module in `catalog`, in canonical order, all switched on: the
     /// last resort when no saved layout or kit says otherwise.
@@ -34,6 +37,9 @@ public struct ModuleLayout: Equatable, Sendable {
         }
         self.order = normalized
         self.disabled = disabled
+        self.headerKeys = Dictionary(uniqueKeysWithValues: catalog.descriptors.compactMap { descriptor in
+            descriptor.headerShortcut.map { (descriptor.id, $0.key) }
+        })
     }
 
     /// Restores a layout from raw identifiers, ignoring ones `catalog` doesn't know.
@@ -45,8 +51,30 @@ public struct ModuleLayout: Equatable, Sendable {
         )
     }
 
-    /// The modules shown in the tab bar, in order. Never empty.
+    /// The modules that are on, in order: the tabs plus any header
+    /// shortcut. Never empty.
     public var enabled: [ModuleID] { order.filter { !disabled.contains($0) } }
+
+    /// The modules shown in the tab bar, in order: the enabled ones minus
+    /// those opened from the header. Empty only when the header shortcut is
+    /// the one module on.
+    public var tabs: [ModuleID] { enabled.filter { headerKeys[$0] == nil } }
+
+    /// The enabled modules opened from a button at the far right of the
+    /// header instead of a tab, in order.
+    public var headerShortcuts: [ModuleID] { enabled.filter { headerKeys[$0] != nil } }
+
+    /// The letter key that opens `module` from the header, or nil for a tab
+    /// or a disabled module.
+    public func headerKey(for module: ModuleID) -> String? {
+        isEnabled(module) ? headerKeys[module] : nil
+    }
+
+    /// The enabled header module that letter `key` opens, if any.
+    public func module(forHeaderKey key: String) -> ModuleID? {
+        let key = key.lowercased()
+        return headerShortcuts.first { headerKeys[$0] == key }
+    }
 
     public func isEnabled(_ module: ModuleID) -> Bool { !disabled.contains(module) }
 
@@ -118,34 +146,38 @@ public struct ModuleLayout: Equatable, Sendable {
         isEnabled(module) ? module : enabled[0]
     }
 
-    /// The enabled module after `module`, wrapping around.
+    /// The tab after `module`, wrapping around; from a header module, the
+    /// first tab.
     public func module(after module: ModuleID) -> ModuleID { step(from: module, by: 1) }
 
-    /// The enabled module before `module`, wrapping around.
+    /// The tab before `module`, wrapping around; from a header module, the
+    /// last tab.
     public func module(before module: ModuleID) -> ModuleID { step(from: module, by: -1) }
 
     /// Number keys reach at most this many tabs (1-9), so a kit can show up to
     /// nine tabs that are all one keystroke away.
     public static let maxShortcutTabs = 9
 
-    /// The enabled module that number key `number` (1-based) jumps to, or nil
-    /// when that tab doesn't exist or the key is outside 1-9.
+    /// The tab that number key `number` (1-based) jumps to, or nil when that
+    /// tab doesn't exist or the key is outside 1-9. Header modules have
+    /// letter keys instead, so they take no number.
     public func module(forShortcut number: Int) -> ModuleID? {
-        let list = enabled
+        let list = tabs
         guard (1...Self.maxShortcutTabs).contains(number), number <= list.count else { return nil }
         return list[number - 1]
     }
 
-    /// The number key (1-9) that jumps to `module`, or nil when it's disabled
-    /// or sits beyond the ninth tab.
+    /// The number key (1-9) that jumps to `module`, or nil when it's disabled,
+    /// opens from the header or sits beyond the ninth tab.
     public func shortcut(for module: ModuleID) -> Int? {
-        guard let index = enabled.firstIndex(of: module), index < Self.maxShortcutTabs else { return nil }
+        guard let index = tabs.firstIndex(of: module), index < Self.maxShortcutTabs else { return nil }
         return index + 1
     }
 
     private func step(from module: ModuleID, by delta: Int) -> ModuleID {
-        let list = enabled
-        guard let index = list.firstIndex(of: module) else { return list[0] }
+        let list = tabs
+        guard let first = list.first, let last = list.last else { return module }
+        guard let index = list.firstIndex(of: module) else { return delta > 0 ? first : last }
         return list[(index + delta + list.count) % list.count]
     }
 }

@@ -102,6 +102,11 @@ enum SnapshotRenderer {
             let model = NotchViewModel(geometry: geometry, layout: withCloset)
             model.open(.closet)
             shots.append(Shot("open-closet-look", model))
+            // The pet's paw at the far right of the header while another tab
+            // is open, which no bundled kit shows since none has the Closet on.
+            let withPaw = NotchViewModel(geometry: geometry, layout: withCloset)
+            withPaw.open(withCloset.tabs.first)
+            shots.append(Shot("open-pet-shortcut", withPaw))
         }
 
         // First-run setup in the notch, one shot per step of the active kit.

@@ -114,7 +114,7 @@ So a kit only needs to list the tabs it starts with; the rest stay available.
 | `study` | Study timer and study methods |
 | `anki` | Anki reviews |
 | `party` | Study party |
-| `closet` | Closet (your study pet) |
+| `closet` | Closet (your study pet; opens from the paw at the far right of the header, or P, instead of a tab) |
 
 The open notch shows up to nine tabs comfortably, and the number keys 1-9 jump to the first nine.
 

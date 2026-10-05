@@ -69,7 +69,8 @@ private struct ThemeGlow: View {
     }
 }
 
-/// Header (tabs left of the notch, title right of it) above the module panel,
+/// Header (tabs left of the notch; title, Settings and the header shortcuts
+/// such as the pet's paw right of it) above the module panel,
 /// or the app's takeover (first-run setup) in their place while it runs.
 private struct OpenNotchContent: View {
     @EnvironmentObject private var model: NotchViewModel
@@ -119,6 +120,7 @@ private struct OpenNotchContent: View {
                         model.close()
                         content.openSettings()
                     }
+                    NotchHeaderShortcuts()
                 }
                 .frame(maxWidth: .infinity, alignment: .trailing)
             }

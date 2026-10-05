@@ -461,8 +461,8 @@ private struct ModulesStep: View {
                         .minimumScaleFactor(0.85)
                 }
                 Spacer(minLength: 0)
-                if let shortcut = flow.layout.shortcut(for: id) {
-                    Text("\(shortcut)")
+                if let shortcut = flow.layout.shortcut(for: id).map(String.init) ?? flow.layout.headerKey(for: id)?.uppercased() {
+                    Text(shortcut)
                         .font(Theme.Typography.caption.monospacedDigit())
                         .foregroundStyle(Theme.Palette.tertiaryText)
                 }
