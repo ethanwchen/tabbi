@@ -20,6 +20,9 @@ public enum MotionTokens {
     public static let content = SpringSpec(duration: 0.34, bounce: 0.1)
     /// A short spring for tactile press feedback.
     public static let press = SpringSpec(duration: 0.18, bounce: 0)
+    /// A checkbox turning on: the fill pops, the check draws on, and the
+    /// small overshoot is the toggle's bounce (see `CheckDraw`).
+    public static let check = SpringSpec(duration: 0.4, bounce: 0.25)
 
     /// How far the panel content trails the notch shape when it opens.
     public static let contentDelay: Double = 0.08

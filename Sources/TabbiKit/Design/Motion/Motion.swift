@@ -20,6 +20,8 @@ public enum Motion {
     public static let content = Animation(MotionTokens.content)
     /// Press feedback on controls.
     public static let press = Animation(MotionTokens.press)
+    /// A checkbox turning on, with a small bounce.
+    public static let check = Animation(MotionTokens.check)
     /// Panel content fading in behind the opening shape.
     public static let contentIn = Animation.easeOut(duration: MotionTokens.contentFadeIn).delay(MotionTokens.contentDelay)
     /// Panel content fading out before the shape collapses.

@@ -21,6 +21,7 @@ The research behind these values is in [docs/research/motion.md](../research/mot
 | `Motion.snappy` | duration 0.26, bounce 0.14 | Selection, toggles and other small state changes. |
 | `Motion.content` | duration 0.34, bounce 0.1 | Content swaps inside the open notch: tabs, phases, list changes. |
 | `Motion.press` | duration 0.18, bounce 0 | Press feedback on controls. |
+| `Motion.check` | duration 0.4, bounce 0.25 | A checkbox turning on: fill pop, check draw-on, small bounce. |
 | `Motion.contentIn` | ease out 0.22 s after 0.08 s | Panel content trailing the opening shape. |
 | `Motion.contentOut` | ease in 0.12 s | Panel content leaving before the shape collapses. |
 | `Motion.reduced` | ease in out 0.18 s | The Reduce Motion replacement for every spring. |
@@ -104,6 +105,15 @@ The amounts live in `TactileFeedback` (`TabbiKitCore/Motion/`, tested in `Tactil
 - Under Reduce Motion nothing scales: a press dims the control to 70% instead.
 - Adopted by `IconButton`, the tab bar, the Now Playing controls, the Focus, Study and Anki action pills, Study's method rows and the Today focus card's play ring.
 - `--snapshot` renders `motion-press.png`: rest, hover, pressed and Reduce Motion pressed for an icon, a play button and a pill.
+
+Checkboxes use `CheckGlyph(isOn:tint:ring:size:)`.
+Turning on, the accent fill pops in from the center and the check stroke draws on, short leg first, driven by the check spring (400 ms, bounce 0.25).
+The spring's small overshoot swells the fill by at most 8% and is the toggle's bounce; the stroke never overdraws.
+Turning off retracts it with the snappy spring, without a bounce.
+The timing is pure in `CheckDraw` (`TabbiKitCore/Motion/`, tested in `CheckDrawTests`): the check starts drawing at 30% progress, while the fill still grows until 55%.
+- Under Reduce Motion nothing grows or draws: the finished check crossfades in over the ring.
+- Adopted by Today's checklist (the checkbox is also `.tactile`) and by the check of shared rows, which keeps its own progress ring (`ring: nil`).
+- `--snapshot` renders `motion-check.png`: the draw sampled along the spring at 48 pt and at row size, then the Reduce Motion crossfade.
 
 ## Reduce Motion
 

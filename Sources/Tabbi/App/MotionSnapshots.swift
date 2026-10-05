@@ -48,7 +48,37 @@ enum MotionSnapshots {
         shots.append(("motion-loader-paws-reduced", AnyView(strip([0, 0.4, 0.8]) { time in
             PawTrailFrame(tint: AskClaudeModule.descriptor.accentColor, size: 40, time: time, reduceMotion: true)
         })))
+        shots.append(("motion-check", AnyView(checkFrames())))
         return shots
+    }
+
+    /// `CheckGlyph` turning on, sampled along the check spring (the fill
+    /// pops, the stroke draws on, the overshoot swells it), then the Reduce
+    /// Motion crossfade, each at row size and at 3x for detail.
+    private static func checkFrames() -> some View {
+        let accent = TodayModule.descriptor.accentColor
+        let moments: [TimeInterval] = [0, 0.04, 0.08, 0.12, 0.16, 0.2, 0.3, 0.5]
+        func column(_ label: String, _ progress: Double, reduce: Bool) -> some View {
+            VStack(spacing: Theme.Spacing.s) {
+                CheckGlyphFrame(progress: progress, tint: accent, size: 48, reduceMotion: reduce)
+                CheckGlyphFrame(progress: progress, tint: accent, reduceMotion: reduce)
+                Text(label)
+                    .font(Theme.Typography.caption.monospacedDigit())
+                    .foregroundStyle(Theme.Palette.secondaryText)
+            }
+            .frame(width: 64)
+        }
+        return HStack(spacing: Theme.Spacing.m) {
+            ForEach(moments, id: \.self) { moment in
+                column(String(format: "%.2f s", moment), MotionTokens.check.value(at: moment), reduce: false)
+            }
+            Divider().frame(height: 80)
+            ForEach([0.0, 0.5, 1], id: \.self) { fade in
+                column(String(format: "RM %.0f%%", fade * 100), fade, reduce: true)
+            }
+        }
+        .padding(Theme.Spacing.l)
+        .background(Theme.Palette.background)
     }
 
     /// The states of `TactileButtonStyle` side by side (rest, hover, pressed,

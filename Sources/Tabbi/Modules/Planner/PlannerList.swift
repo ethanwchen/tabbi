@@ -280,24 +280,16 @@ private struct PlannerSharedCheck: View {
                 .font(.system(size: 7, weight: .bold))
                 .foregroundStyle(accent)
                 .opacity(item.isDone ? 0 : 1)
-            Circle()
-                .fill(accent)
-                .scaleEffect(item.isDone ? 1 : 0.4)
-                .opacity(item.isDone ? 1 : 0)
-            Image(systemName: "checkmark")
-                .font(.system(size: 8, weight: .heavy))
-                .foregroundStyle(Theme.Palette.background)
-                .scaleEffect(item.isDone ? 1 : 0.2)
-                .opacity(item.isDone ? 1 : 0)
+            CheckGlyph(isOn: item.isDone, tint: accent, ring: nil)
         }
         .frame(width: 16, height: 16)
         .frame(width: 20, height: 20)
         .animation(Theme.Motion.content, value: item.fraction)
-        .animation(.spring(response: 0.3, dampingFraction: 0.55), value: item.isDone)
+        .animation(Theme.Motion.snappy, value: item.isDone)
     }
 }
 
-/// Round checkbox that springs a checkmark in, filled with the module accent.
+/// Round checkbox whose check draws on with a small bounce, filled with the module accent.
 private struct PlannerCheckbox: View {
     let isOn: Bool
     let action: () -> Void
@@ -306,28 +298,13 @@ private struct PlannerCheckbox: View {
     var body: some View {
         let accent = TodayModule.descriptor.accentColor
         Button(action: action) {
-            ZStack {
-                Circle()
-                    .strokeBorder(hovering ? accent : Theme.Palette.tertiaryText, lineWidth: 1.5)
-                    .opacity(isOn ? 0 : 1)
-                Circle()
-                    .fill(accent)
-                    .scaleEffect(isOn ? 1 : 0.4)
-                    .opacity(isOn ? 1 : 0)
-                Image(systemName: "checkmark")
-                    .font(.system(size: 8, weight: .heavy))
-                    .foregroundStyle(Theme.Palette.background)
-                    .scaleEffect(isOn ? 1 : 0.2)
-                    .opacity(isOn ? 1 : 0)
-            }
-            .frame(width: 16, height: 16)
-            .frame(width: 20, height: 20)
-            .contentShape(Rectangle())
+            CheckGlyph(isOn: isOn, tint: accent, ring: hovering ? accent : Theme.Palette.tertiaryText)
+                .frame(width: 20, height: 20)
+                .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile)
         .help(isOn ? "Mark as not done" : "Mark as done")
         .onHover { hovering = $0 }
-        .animation(.spring(response: 0.3, dampingFraction: 0.55), value: isOn)
         .animation(Theme.Motion.snappy, value: hovering)
     }
 }
