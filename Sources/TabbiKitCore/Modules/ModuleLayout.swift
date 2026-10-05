@@ -67,6 +67,42 @@ public struct ModuleLayout: Equatable, Sendable {
         return true
     }
 
+    /// The modules that aren't tabs, in the user's order: what the Settings
+    /// "Add more" library offers.
+    public var available: [ModuleID] { order.filter(disabled.contains) }
+
+    /// Adds `module` from the library as the last tab, so adding never
+    /// reshuffles the tabs the user already has. Does nothing for a module
+    /// that is already a tab or that the layout doesn't know.
+    public mutating func add(_ module: ModuleID) {
+        guard disabled.contains(module), let index = order.firstIndex(of: module) else { return }
+        order.remove(at: index)
+        let lastTab = order.lastIndex { !disabled.contains($0) } ?? -1
+        order.insert(module, at: lastTab + 1)
+        disabled.remove(module)
+    }
+
+    /// Puts `module` back in the library. Refuses (returns `false`) to remove
+    /// the last tab.
+    @discardableResult
+    public mutating func remove(_ module: ModuleID) -> Bool {
+        setEnabled(module, false)
+    }
+
+    /// Reorders the tabs alone, with `onMove` offsets into `enabled`, which
+    /// is what a list that shows only the tabs hands over. Library modules
+    /// keep their slots.
+    public mutating func moveTabs(fromOffsets source: IndexSet, toOffset destination: Int) {
+        var tabs = enabled
+        let moving = source.filter(tabs.indices.contains).map { tabs[$0] }
+        guard !moving.isEmpty else { return }
+        let insertAt = destination - source.filter { $0 < destination }.count
+        tabs = tabs.enumerated().filter { !source.contains($0.offset) }.map(\.element)
+        tabs.insert(contentsOf: moving, at: min(max(insertAt, 0), tabs.count))
+        var next = tabs.makeIterator()
+        order = order.map { disabled.contains($0) ? $0 : next.next() ?? $0 }
+    }
+
     /// Moves modules with the same semantics as SwiftUI's `onMove`.
     public mutating func move(fromOffsets source: IndexSet, toOffset destination: Int) {
         let moving = source.filter(order.indices.contains).map { order[$0] }

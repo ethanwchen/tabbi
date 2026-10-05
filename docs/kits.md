@@ -10,7 +10,7 @@ Tabbi ships two kits, and anyone can write their own as a small JSON file and sh
 
 Essentials is the default for every new user, and Med School is Essentials plus Anki, with study methods, a daily study goal, a focus sound and a study pet tuned for med school.
 Both keep the notch to a few tabs on purpose.
-Every other module (System, Claude Usage, Party, Focus, Closet and any added later) starts switched off and is one switch away in Settings.
+Every other module (System, Claude Usage, Party, Focus, Closet and any added later) starts switched off and waits in the **Add More** library in Settings, one click away.
 
 Earlier versions shipped Productivity (`productivity`) and Student (`student`) kits.
 Someone who used either moves to Essentials on their first launch of this version and keeps every tab they had, in their order; only the old kit's onboarding answers are dropped.
@@ -27,8 +27,12 @@ If the chosen kit has [onboarding questions](#onboarding), **Continue** leads to
 Every question can be skipped, and a row of tab icons previews what the answers turn on or off.
 **Start** applies the kit for those answers and adds their starter tasks to Today.
 
-To change kits later, open **Settings > Modules**.
-The **Kit** section lets you:
+Your tabs and the library are at the top of **Settings > Modules**:
+
+- **Tabs** lists the tabs the notch shows. Drag a row to reorder them; the tab bar, arrow keys, number keys and swipes follow that order. The minus button at the end of a row moves that tab back to the library. The last tab can't be removed.
+- **Add More** lists every other module with its icon and a one-line description. **Add** makes it the last tab right away, without reshuffling the tabs you have.
+
+To change kits later, use the **Kit** section below them, which lets you:
 
 - **Switch kit.** If the kit has onboarding questions, a sheet asks them first, the same way first-run setup does; **Cancel** keeps your current kit. Your tabs change to the new kit's tabs for your answers, and its notch previews, focus sound, study methods and daily study goal replace yours if the kit sets them (a study block already under way keeps going). The kit's starter tasks, plus those your answers add, go on Today, skipping any already on the list. Every other preference stays as it is.
 - **Reset to Kit Defaults.** Puts the tabs, notch previews and focus sound back the way the kit ships them, without adding starter tasks again. The button is disabled when nothing would change.
@@ -43,7 +47,7 @@ Preferences a kit doesn't set, such as the hotkey, hover and launch at login, ke
 Undoing **Add Only** or **Keep My Tabs** only takes that import back, since your tabs didn't change.
 Only the last change can be undone; Reset to Kit Defaults is not undoable.
 
-After switching, you can still turn tabs on and off and reorder them below the Kit section.
+After switching, you can still add, remove and reorder tabs above the Kit section.
 
 Imported kits are stored as `<id>.json` in `~/Library/Application Support/Tabbi/Kits`.
 Each edition keeps all of its files apart in its own folder: kits, Today's checklist and reviews, the activity log, the study log, the pet and the Claude Usage scan index.
@@ -93,8 +97,8 @@ Each entry is either a bare module id, or an object to ship a tab switched off:
 "modules": ["study", "planner", { "id": "anki", "enabled": false }]
 ```
 
-A switched-off tab is listed in Settings in that position, ready to turn on.
-Modules the kit doesn't mention are also listed in Settings, switched off, after the kit's own tabs.
+A switched-off tab is offered in the Settings **Add More** library, ready to add.
+Modules the kit doesn't mention are offered there too, after the kit's switched-off tabs.
 So a kit only needs to list the tabs it starts with; the rest stay available.
 
 | Id | Tab |

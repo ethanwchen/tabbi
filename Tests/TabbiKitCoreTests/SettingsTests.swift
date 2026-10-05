@@ -48,6 +48,45 @@ final class ModuleLayoutTests: XCTestCase {
         XCTAssertEqual(layout.order, [.claudeAsk, .claudeUsage, .planner, .system, .spotify] + optIn)
     }
 
+    func testLibraryOffersEveryModuleThatIsNotATab() {
+        XCTAssertEqual(ModuleLayout.default.available, optIn)
+    }
+
+    func testAddingFromTheLibraryAppendsTheLastTab() {
+        var layout = ModuleLayout(order: [.spotify, .party, .planner, .system], disabled: [.party, .system])
+        layout.add(.system)
+        XCTAssertEqual(layout.enabled, [.spotify, .planner, .system])
+        layout.add(.party)
+        XCTAssertEqual(layout.enabled, [.spotify, .planner, .system, .party])
+        XCTAssertFalse(layout.available.contains(.party))
+        // Adding a tab again leaves the order alone.
+        layout.add(.spotify)
+        XCTAssertEqual(layout.enabled, [.spotify, .planner, .system, .party])
+    }
+
+    func testRemovingPutsTheModuleBackInTheLibraryButKeepsOneTab() {
+        var layout = ModuleLayout(order: [.spotify, .planner], disabled: Set(optIn + [.system, .claudeUsage, .claudeAsk]))
+        XCTAssertTrue(layout.remove(.spotify))
+        XCTAssertEqual(layout.enabled, [.planner])
+        XCTAssertTrue(layout.available.contains(.spotify))
+        XCTAssertFalse(layout.remove(.planner))
+        XCTAssertEqual(layout.enabled, [.planner])
+        // Removed and added again, a module comes back at the end.
+        layout.add(.spotify)
+        XCTAssertEqual(layout.enabled, [.planner, .spotify])
+    }
+
+    func testMovingTabsUsesTabOffsetsAndLeavesLibrarySlots() {
+        var layout = ModuleLayout(order: [.spotify, .party, .planner, .system, .claudeAsk], disabled: [.party, .system])
+        layout.moveTabs(fromOffsets: [2], toOffset: 0)
+        XCTAssertEqual(layout.enabled, [.claudeAsk, .spotify, .planner])
+        XCTAssertEqual(Array(layout.order.prefix(5)), [.claudeAsk, .party, .spotify, .system, .planner])
+        layout.moveTabs(fromOffsets: [0], toOffset: 3)
+        XCTAssertEqual(layout.enabled, [.spotify, .planner, .claudeAsk])
+        layout.moveTabs(fromOffsets: [7], toOffset: 0)
+        XCTAssertEqual(layout.enabled, [.spotify, .planner, .claudeAsk])
+    }
+
     func testCyclingSkipsDisabledModulesAndWraps() {
         var layout = ModuleLayout.default
         layout.setEnabled(.system, false)

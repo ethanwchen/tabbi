@@ -131,26 +131,46 @@ struct ModulesSettingsPane: View {
 
     var body: some View {
         Form {
-            KitSection()
-
             Section {
-                ForEach(store.settings.modules.order) { module in
-                    ModuleRow(module: store.catalog.descriptor(for: module), layout: $store.settings.modules)
+                ForEach(store.settings.modules.enabled) { module in
+                    TabRow(module: store.catalog.descriptor(for: module), layout: $store.settings.modules)
                 }
                 .onMove { source, destination in
-                    store.settings.modules.move(fromOffsets: source, toOffset: destination)
+                    store.settings.modules.moveTabs(fromOffsets: source, toOffset: destination)
                 }
             } header: {
                 Text("Tabs")
             } footer: {
-                SectionFooter("Drag to reorder. The notch's tab bar, arrow keys, and swipes follow this order. At least one module stays on.")
+                SectionFooter("Drag to reorder. The notch's tab bar, arrow keys, and swipes follow this order. At least one tab stays.")
             }
+
+            Section {
+                let available = store.settings.modules.available
+                if available.isEmpty {
+                    Text("Every module is already a tab.")
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(available) { module in
+                        LibraryRow(module: store.catalog.descriptor(for: module), layout: $store.settings.modules)
+                    }
+                }
+            } header: {
+                Text("Add More")
+            } footer: {
+                SectionFooter("Added modules show up at the end of your tabs.")
+            }
+
+            KitSection()
         }
         .formStyle(.grouped)
-        // Scrolls: the module list grows with every module Tabbi ships.
-        .frame(width: paneWidth, height: 444)
+        .animation(moduleListAnimation, value: store.settings.modules)
+        // Scrolls: the library grows with every module Tabbi ships.
+        .frame(width: paneWidth, height: 560)
     }
 }
+
+/// Moves rows between Tabs and Add More.
+private let moduleListAnimation = Animation.spring(response: 0.3, dampingFraction: 0.86)
 
 /// Picks the kit (a premade set of tabs), resets to its defaults, and
 /// imports kits shared as JSON files (see docs/kits.md).
@@ -384,44 +404,88 @@ private struct KitSheet: Identifiable {
     }
 }
 
-private struct ModuleRow: View {
+/// A module's icon tile in the Modules pane, in its accent color.
+private struct ModuleIcon: View {
+    let module: ModuleDescriptor
+
+    var body: some View {
+        Image(systemName: module.symbol)
+            .font(.system(size: 12, weight: .semibold))
+            .foregroundStyle(.white)
+            .frame(width: 24, height: 24)
+            .background(
+                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                    .fill(module.accentColor.gradient)
+            )
+    }
+}
+
+/// One of the user's tabs: drag to reorder, or remove it to the library.
+private struct TabRow: View {
     let module: ModuleDescriptor
     @Binding var layout: ModuleLayout
 
     var body: some View {
-        let enabled = layout.isEnabled(module.id)
+        let canRemove = layout.canDisable(module.id)
         HStack(spacing: 10) {
             Image(systemName: "line.3.horizontal")
                 .font(.system(size: 12, weight: .medium))
                 .foregroundStyle(.tertiary)
                 .help("Drag to reorder")
-            Image(systemName: module.symbol)
-                .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(.white)
-                .frame(width: 24, height: 24)
-                .background(
-                    RoundedRectangle(cornerRadius: 6, style: .continuous)
-                        .fill(module.accentColor.gradient)
-                )
-                .saturation(enabled ? 1 : 0)
-                .opacity(enabled ? 1 : 0.6)
+            ModuleIcon(module: module)
             Text(module.title)
-                .foregroundStyle(enabled ? .primary : .secondary)
             Spacer()
-            Toggle("Show \(module.title)", isOn: Binding(
-                get: { enabled },
-                set: { layout.setEnabled(module.id, $0) }
-            ))
-            .labelsHidden()
-            .toggleStyle(.switch)
-            .controlSize(.small)
-            .disabled(enabled && !layout.canDisable(module.id))
-            .help(enabled && !layout.canDisable(module.id)
-                  ? "At least one module must stay on"
-                  : (enabled ? "Hide \(module.title) from the notch" : "Show \(module.title) in the notch"))
+            RemoveTabButton(title: module.title, canRemove: canRemove) { layout.remove(module.id) }
         }
         .contentShape(Rectangle())
-        .animation(.spring(response: 0.26, dampingFraction: 0.86), value: enabled)
+    }
+}
+
+/// The quiet minus at the end of a tab row; it turns red on hover so the
+/// list doesn't read as a column of buttons.
+private struct RemoveTabButton: View {
+    let title: String
+    let canRemove: Bool
+    let action: () -> Void
+    @State private var isHovering = false
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: "minus.circle.fill")
+                .font(.system(size: 14))
+                .foregroundStyle(isHovering && canRemove ? AnyShapeStyle(.red) : AnyShapeStyle(.tertiary))
+        }
+        .buttonStyle(.borderless)
+        .disabled(!canRemove)
+        .onHover { isHovering = $0 }
+        .accessibilityLabel("Remove \(title)")
+        .help(canRemove ? "Remove \(title) from the notch; it goes back to Add More" : "At least one tab must stay")
+    }
+}
+
+/// A module in the Add More library: what it is, in one line, and a button
+/// that makes it the last tab.
+private struct LibraryRow: View {
+    let module: ModuleDescriptor
+    @Binding var layout: ModuleLayout
+
+    var body: some View {
+        HStack(spacing: 10) {
+            ModuleIcon(module: module)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(module.title)
+                Text(module.summary ?? module.category.title)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+                    .help(module.summary ?? module.category.title)
+            }
+            Spacer(minLength: 8)
+            Button("Add") { layout.add(module.id) }
+                .controlSize(.small)
+                .help("Add \(module.title) as the last tab in the notch")
+        }
     }
 }
 

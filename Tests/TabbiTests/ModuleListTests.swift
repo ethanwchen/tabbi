@@ -13,6 +13,10 @@ final class ModuleListTests: XCTestCase {
         for descriptor in catalog.descriptors {
             XCTAssertFalse(descriptor.title.isEmpty, "\(descriptor.id)")
             XCTAssertFalse(descriptor.symbol.isEmpty, "\(descriptor.id)")
+            // The Add More library shows it on one line beside the module.
+            let summary = descriptor.summary ?? ""
+            XCTAssertFalse(summary.isEmpty, "\(descriptor.id) needs a one-line summary for the library")
+            XCTAssertLessThanOrEqual(summary.count, 56, "\(descriptor.id)'s summary would truncate")
         }
     }
 
