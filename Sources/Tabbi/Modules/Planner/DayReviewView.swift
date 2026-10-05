@@ -28,7 +28,7 @@ struct DayReviewView: View {
                 }
                 .padding(.horizontal, Theme.Spacing.s)
             }
-            .animation(Theme.Motion.content, value: review)
+            .motion(Theme.Motion.content, value: review)
         }
     }
 

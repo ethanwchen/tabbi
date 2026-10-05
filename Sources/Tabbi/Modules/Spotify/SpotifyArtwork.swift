@@ -121,7 +121,7 @@ struct SpotifyArtworkView: View {
         .frame(width: size, height: size)
         .clipShape(shape)
         .overlay(shape.strokeBorder(Theme.Palette.stroke, lineWidth: 0.5))
-        .animation(Theme.Motion.content, value: artwork?.image)
+        .motion(Theme.Motion.content, value: artwork?.image)
     }
 }
 

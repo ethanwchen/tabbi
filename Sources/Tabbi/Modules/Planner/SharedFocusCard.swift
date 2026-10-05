@@ -37,8 +37,8 @@ struct SharedFocusCard: View {
         .buttonStyle(.plain)
         .help("Open \(descriptor.title) to start, pause or skip")
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
-        .animation(Theme.Motion.snappy, value: focus)
+        .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: focus)
     }
 
     private func content(_ focus: ProvidedFocus?, descriptor: ModuleDescriptor, now: Date) -> some View {

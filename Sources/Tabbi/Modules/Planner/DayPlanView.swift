@@ -14,7 +14,7 @@ struct DayPlanView: View {
             content
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
-        .animation(Theme.Motion.content, value: plan.phase)
+        .motion(Theme.Motion.content, value: plan.phase)
     }
 
     @ViewBuilder
@@ -31,8 +31,8 @@ struct DayPlanView: View {
             VStack(alignment: .leading, spacing: 0) {
                 ForEach(proposal.pending) { block in
                     DayPlanBlockRow(block: block, rest: proposal.breakAfter(block),
-                                    add: { withAnimation(Theme.Motion.snappy) { plan.add(block.id) } },
-                                    dismiss: { withAnimation(Theme.Motion.snappy) { plan.dismiss(block.id) } })
+                                    add: { withMotion(Theme.Motion.snappy) { plan.add(block.id) } },
+                                    dismiss: { withMotion(Theme.Motion.snappy) { plan.dismiss(block.id) } })
                         .transition(.motionRow(from: .leading))
                 }
                 Spacer(minLength: Theme.Spacing.xs)
@@ -99,7 +99,7 @@ private struct DayPlanHeader: View {
             if case .proposal = plan.phase {
                 PlannerPillButton(title: "Add all", symbol: "calendar.badge.plus", isProminent: true,
                                   help: "Add every block to your default calendar") {
-                    withAnimation(Theme.Motion.snappy) { plan.add() }
+                    withMotion(Theme.Motion.snappy) { plan.add() }
                 }
                 .transition(.motionPop)
             }
@@ -166,7 +166,7 @@ private struct DayPlanBlockRow: View {
         )
         .contentShape(Rectangle())
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -230,7 +230,7 @@ private struct DayPlanRowButton: View {
         .buttonStyle(.plain)
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -329,7 +329,7 @@ struct PlannerPillButton: View {
         .buttonStyle(.plain)
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -355,6 +355,6 @@ struct PlannerTextButton: View {
         .buttonStyle(.plain)
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }

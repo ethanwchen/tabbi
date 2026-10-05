@@ -133,7 +133,7 @@ public struct IconButton: View {
         .buttonStyle(.tactile)
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 

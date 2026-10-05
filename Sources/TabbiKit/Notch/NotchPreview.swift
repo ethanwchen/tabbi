@@ -113,7 +113,7 @@ struct NotchPreview: View {
                 }
             }
             .previewText()
-            .animation(Theme.Motion.content, value: pet.mood)
+            .motion(Theme.Motion.content, value: pet.mood)
         case .party(let party):
             Text(TickerFormat.partySize(party.memberCount))
                 .foregroundStyle(accent)

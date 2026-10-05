@@ -39,8 +39,8 @@ struct ClaudeAskPanel: View {
                     .layoutPriority(1)
             }
         }
-        .animation(Theme.Motion.content, value: conversation.isEmpty)
-        .animation(Theme.Motion.content, value: session.isClaudeMissing)
+        .motion(Theme.Motion.content, value: conversation.isEmpty)
+        .motion(Theme.Motion.content, value: session.isClaudeMissing)
         .onAppear { session.prepare() }
         .task {
             // Wait for the notch panel to become key before focusing.
@@ -80,7 +80,7 @@ struct ClaudeAskPanel: View {
                 .transition(.motionPop)
             }
         }
-        .animation(Theme.Motion.snappy, value: session.isStreaming)
+        .motion(Theme.Motion.snappy, value: session.isStreaming)
     }
 
     private func send(_ prompt: String) {
@@ -113,8 +113,8 @@ private struct InputField: View {
         )
         .help("Return to send, Shift-Return for a new line")
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
-        .animation(Theme.Motion.snappy, value: focused.wrappedValue)
+        .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: focused.wrappedValue)
     }
 
     @ViewBuilder
@@ -209,13 +209,13 @@ private struct MessageList: View {
                 proxy.scrollTo(Self.bottomID, anchor: .bottom)
             }
             .onChange(of: conversation.messages.last?.status) {
-                withAnimation(Theme.Motion.snappy) { proxy.scrollTo(Self.bottomID, anchor: .bottom) }
+                withMotion(Theme.Motion.snappy) { proxy.scrollTo(Self.bottomID, anchor: .bottom) }
             }
             .onChange(of: conversation.messages.count) {
-                withAnimation(Theme.Motion.snappy) { proxy.scrollTo(Self.bottomID, anchor: .bottom) }
+                withMotion(Theme.Motion.snappy) { proxy.scrollTo(Self.bottomID, anchor: .bottom) }
             }
         }
-        .animation(Theme.Motion.snappy, value: conversation.messages.count)
+        .motion(Theme.Motion.snappy, value: conversation.messages.count)
     }
 
     @ViewBuilder
@@ -290,7 +290,7 @@ private struct AssistantBubble: View {
             Spacer(minLength: 0)
         }
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 
     private var canCopy: Bool { message.status != .streaming && !message.text.isEmpty }
@@ -477,6 +477,6 @@ private struct PillButton: View {
         .buttonStyle(.plain)
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }

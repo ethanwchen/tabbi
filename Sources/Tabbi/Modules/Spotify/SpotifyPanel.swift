@@ -51,7 +51,7 @@ struct SpotifyPanel: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .animation(Theme.Motion.content, value: controller.status.kind)
+        .motion(Theme.Motion.content, value: controller.status.kind)
         .onAppear { controller.setPanelVisible(true) }
         .onDisappear { controller.setPanelVisible(false) }
     }
@@ -142,7 +142,7 @@ private struct SpotifyNowPlaying: View {
                               endRadius: Self.artworkSize * 0.6)
             .frame(width: Self.artworkSize * 1.2, height: Self.artworkSize * 1.2)
             .allowsHitTesting(false)
-            .animation(Theme.Motion.content, value: tint)
+            .motion(Theme.Motion.content, value: tint)
     }
 }
 
@@ -258,7 +258,7 @@ private struct SpotifyArtworkButton: View {
         .buttonStyle(.tactile(.pill, lifts: true))
         .help("Show \(source.displayName)")
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 
     /// The player's own icon; a glyph on a dark disc if the icon is missing.
@@ -333,7 +333,7 @@ private struct SpotifyScrubberBar: View {
             .onHover { hovering = $0 }
             .help("Drag to seek")
             .disabled(duration <= 0)
-            .animation(Theme.Motion.snappy, value: isActive)
+            .motion(Theme.Motion.snappy, value: isActive)
 
             HStack {
                 Text(PlaybackTimeFormatter.string(shownPosition))
@@ -410,7 +410,7 @@ private struct SpotifyVolumeControl: View {
         .background(Capsule().fill(isExpanded ? Theme.Palette.surface : .clear))
         .contentShape(Capsule())
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: isExpanded)
+        .motion(Theme.Motion.snappy, value: isExpanded)
     }
 
     private var speaker: some View {
@@ -426,7 +426,7 @@ private struct SpotifyVolumeControl: View {
         .buttonStyle(.tactile)
         .help(shownVolume == 0 ? "Unmute" : "Mute")
         .onHover { hoveringSpeaker = $0 }
-        .animation(Theme.Motion.snappy, value: hoveringSpeaker)
+        .motion(Theme.Motion.snappy, value: hoveringSpeaker)
         .accessibilityLabel(shownVolume == 0 ? "Unmute" : "Mute")
     }
 
@@ -503,7 +503,7 @@ private struct SpotifyTransportButton: View {
         .buttonStyle(.tactile)
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -527,8 +527,8 @@ private struct SpotifyPlayPauseButton: View {
         .buttonStyle(.tactile(.control, lifts: true))
         .help(isPlaying ? "Pause" : "Play")
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
-        .animation(Theme.Motion.snappy, value: isPlaying)
+        .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: isPlaying)
     }
 }
 
@@ -638,7 +638,7 @@ private struct SpotifyActionButton: View {
         .buttonStyle(.tactile(.pill, lifts: true))
         .help(action.help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 
     /// App launch buttons sit on a neutral surface so each app's own icon
@@ -693,7 +693,7 @@ struct SpotifyCompactTrailing: View {
             .frame(height: Self.maxHeight, alignment: .bottom)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .animation(Theme.Motion.snappy, value: isPlaying)
+        .motion(Theme.Motion.snappy, value: isPlaying)
         .help(isPlaying ? "Playing in \((controller.source ?? .spotify).displayName)" : "Paused")
     }
 }

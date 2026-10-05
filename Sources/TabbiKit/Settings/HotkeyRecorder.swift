@@ -140,7 +140,7 @@ public struct HotkeyRecorderField: View {
         }
         .buttonStyle(.plain)
         .onHover { hovering = $0 }
-        .animation(.spring(response: 0.26, dampingFraction: 0.86), value: recorder.isRecording)
+        .motion(Motion.snappy, value: recorder.isRecording)
         .help(recorder.isRecording ? "Press a new shortcut, or Esc to cancel" : "Click to record a new shortcut")
         .accessibilityLabel("Shortcut \(hotkey.displayString)")
     }

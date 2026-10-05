@@ -51,8 +51,8 @@ private struct FocusDial: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .help("\(FocusTimerFormat.phaseName(timer.phase)): \(FocusTimerFormat.clock(store.remaining)) left")
-        .animation(Theme.Motion.content, value: store.progress)
-        .animation(Theme.Motion.snappy, value: timer.phase)
+        .motion(Theme.Motion.content, value: store.progress)
+        .motion(Theme.Motion.snappy, value: timer.phase)
     }
 
     private var phaseLabel: String {
@@ -173,21 +173,21 @@ private struct FocusControls: View {
         HStack(spacing: Theme.Spacing.xs) {
             FocusPrimaryButton(title: primaryTitle, symbol: timer.isRunning ? "pause.fill" : "play.fill",
                                help: primaryHelp) {
-                withAnimation(Theme.Motion.snappy) { store.toggleRunning() }
+                withMotion(Theme.Motion.snappy) { store.toggleRunning() }
             }
             Spacer(minLength: 0)
             Group {
                 IconButton(symbol: "forward.end.fill", help: timer.phase == .focus ? "Skip to the break" : "Skip the break") {
-                    withAnimation(Theme.Motion.snappy) { store.skip() }
+                    withMotion(Theme.Motion.snappy) { store.skip() }
                 }
                 IconButton(symbol: "arrow.counterclockwise", help: "Reset to a fresh focus session") {
-                    withAnimation(Theme.Motion.snappy) { store.reset() }
+                    withMotion(Theme.Motion.snappy) { store.reset() }
                 }
             }
             .disabled(isFresh)
             .opacity(isFresh ? 0.4 : 1)
         }
-        .animation(Theme.Motion.snappy, value: isFresh)
+        .motion(Theme.Motion.snappy, value: isFresh)
     }
 
     private var primaryTitle: String {
@@ -234,6 +234,6 @@ private struct FocusPrimaryButton: View {
         .buttonStyle(.tactile(.pill))
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }

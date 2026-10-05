@@ -146,10 +146,12 @@ In a view, read `@Environment(\.accessibilityReduceMotion)` and pass it to `Moti
 Outside a view, `withMotion` reads `NSWorkspace.shared.accessibilityDisplayShouldReduceMotion`.
 Under Reduce Motion there is no scale, stretch, slide or particle: things crossfade in 180 ms.
 Text that would scroll stays put: the Now Playing title marquee keeps its truncated line under Reduce Motion, and the tooltip carries the full title.
+Module panels, the Settings window and the Welcome window animate only through `.motion(_:value:)` and `withMotion`, never plain `.animation(_:value:)` or `withAnimation`, so every hover, toggle, list change and pane resize crossfades under Reduce Motion.
 
 ## Rules
 
 - Use the tokens; never a literal duration or a linear animation.
+- Apply them with `.motion(_:value:)` or `withMotion`, which honor Reduce Motion.
 - Animate `opacity`, `offset` and `scaleEffect`; avoid animating blur or shadow on moving content.
   The notch shape itself carries no shadow: it morphs on every frame of open and close, and its own clip would hide a shadow anyway.
 - Never loop an animation while idle: no `repeatForever`, no `phaseAnimator` without a trigger, and pause every `TimelineView` that is off-screen or has nothing to show.

@@ -45,7 +45,7 @@ struct StudyCustomEditor: View {
             .frame(maxHeight: .infinity)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .animation(Theme.Motion.content, value: rhythm)
+        .motion(Theme.Motion.content, value: rhythm)
     }
 
     private func lengthCard(_ title: String, field: StudyCustomRhythm.Field, rhythm: StudyCustomRhythm,
@@ -147,7 +147,7 @@ private struct StudyStepper: View {
         let tip = field == .longBreakEvery ? (steps < 0 ? "Fewer \(noun)" : "More \(noun)")
                                            : "\(help) (\(field.step) min)"
         return IconButton(symbol: symbol, size: 22, help: tip) {
-            withAnimation(Theme.Motion.snappy) { set(rhythm.stepped(field, by: steps)) }
+            withMotion(Theme.Motion.snappy) { set(rhythm.stepped(field, by: steps)) }
         }
         .disabled(!enabled)
         .opacity(enabled ? 1 : 0.4)
@@ -171,6 +171,6 @@ struct StudyEditButton: View {
         .buttonStyle(.plain)
         .help("Edit the Custom focus and break lengths")
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }

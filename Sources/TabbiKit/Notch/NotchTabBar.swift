@@ -27,8 +27,8 @@ public struct NotchTabBar: View {
                 }
             }
         }
-        .animation(Theme.Motion.snappy, value: model.selected)
-        .animation(Theme.Motion.snappy, value: model.layout)
+        .motion(Theme.Motion.snappy, value: model.selected)
+        .motion(Theme.Motion.snappy, value: model.layout)
         .onReceive(nods) { nod in
             guard let nod else { return }
             bounces[nod.tab(enabled: model.layout.enabled, selected: model.selected), default: 0] += 1

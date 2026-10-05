@@ -41,10 +41,10 @@ struct FocusCard: View {
                 if hovering, timer.runState != .idle || timer.phase == .rest {
                     HStack(spacing: Theme.Spacing.xxs) {
                         IconButton(symbol: "forward.end.fill", size: 20, help: skipHelp) {
-                            withAnimation(Theme.Motion.snappy) { store.skip() }
+                            withMotion(Theme.Motion.snappy) { store.skip() }
                         }
                         IconButton(symbol: "arrow.counterclockwise", size: 20, help: "Reset to a fresh focus session") {
-                            withAnimation(Theme.Motion.snappy) { store.reset() }
+                            withMotion(Theme.Motion.snappy) { store.reset() }
                         }
                     }
                     .transition(.motionPop)
@@ -54,9 +54,9 @@ struct FocusCard: View {
             .padding(.vertical, Theme.Spacing.xs + Theme.Spacing.xxs)
         }
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
-        .animation(Theme.Motion.snappy, value: timer.runState)
-        .animation(Theme.Motion.snappy, value: timer.phase)
+        .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: timer.runState)
+        .motion(Theme.Motion.snappy, value: timer.phase)
     }
 
     private var accent: Color { TodayModule.descriptor.accentColor }
@@ -127,7 +127,7 @@ private struct FocusRingButton: View {
         .buttonStyle(.tactile)
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 

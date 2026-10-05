@@ -13,7 +13,7 @@ struct AnkiPanel: View {
 
     var body: some View {
         content
-            .animation(Theme.Motion.content, value: store.state)
+            .motion(Theme.Motion.content, value: store.state)
             .onAppear { store.panelDidAppear() }
             .onDisappear { store.panelDidDisappear() }
     }
@@ -60,7 +60,7 @@ private struct AnkiDeckView: View {
             .frame(maxHeight: .infinity)
             AnkiFooter(store: store, summary: summary)
         }
-        .animation(Theme.Motion.content, value: showsAllDecks)
+        .motion(Theme.Motion.content, value: showsAllDecks)
         // Reviewing or a refresh can leave too few decks for the toggle to
         // show; collapse then, or the ring would stay hidden with no way back.
         .onChange(of: summary.topDecks.count) { _, count in
@@ -104,7 +104,7 @@ private struct DueCard: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .help(AnkiFormat.progressHelp(summary))
-        .animation(Theme.Motion.content, value: summary)
+        .motion(Theme.Motion.content, value: summary)
     }
 
     private var ring: some View {
@@ -258,7 +258,7 @@ private struct ExpandButton: View {
         .buttonStyle(.plain)
         .help(showsAll ? "Show the top decks beside today's total" : "Show every deck with cards due")
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -299,7 +299,7 @@ private struct DeckRow: View {
         .buttonStyle(.plain)
         .help("Review \(deck.name) in Anki: \(deck.newCount) new, \(deck.learnCount) learning, \(deck.reviewCount) review")
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 
     private func count(_ value: Int, color: Color) -> some View {
@@ -617,10 +617,10 @@ private struct CopyCodeButton: View {
                           help: "Copy the AnkiConnect add-on code to paste into Anki") {
             NSPasteboard.general.clearContents()
             NSPasteboard.general.setString(code, forType: .string)
-            withAnimation(Theme.Motion.snappy) { copied = true }
+            withMotion(Theme.Motion.snappy) { copied = true }
             Task {
                 try? await Task.sleep(for: .seconds(2))
-                withAnimation(Theme.Motion.snappy) { copied = false }
+                withMotion(Theme.Motion.snappy) { copied = false }
             }
         }
     }
@@ -656,7 +656,7 @@ private struct AnkiPrimaryButton: View {
         .buttonStyle(.tactile(.pill))
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -685,6 +685,6 @@ private struct AnkiSecondaryButton: View {
         .buttonStyle(.tactile(.pill))
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }

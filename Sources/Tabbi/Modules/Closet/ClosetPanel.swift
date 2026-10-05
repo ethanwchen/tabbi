@@ -66,7 +66,7 @@ private struct ClosetPetCard: View {
                     .foregroundStyle(store.tryingOn == nil ? Theme.Palette.tertiaryText : accent)
                     .lineLimit(1)
                     .truncationMode(.tail)
-                    .animation(Theme.Motion.snappy, value: subtitle)
+                    .motion(Theme.Motion.snappy, value: subtitle)
                 Spacer(minLength: 0)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -139,7 +139,7 @@ private struct ClosetNameButton: View {
         .buttonStyle(.plain)
         .help("Rename your pet")
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -154,7 +154,7 @@ private struct ClosetSectionPicker: View {
                 ClosetPill(title: section.rawValue, symbol: section.symbol,
                            isSelected: selection == section,
                            help: section == .wardrobe ? "Outfits and accessories" : "Species, breed and fur color") {
-                    withAnimation(Theme.Motion.content) { selection = section }
+                    withMotion(Theme.Motion.content) { selection = section }
                 }
             }
         }
@@ -186,7 +186,7 @@ private struct ClosetPill: View {
         .buttonStyle(.plain)
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -211,7 +211,7 @@ private struct ClosetPointsChip: View {
         .background(Capsule().fill(Theme.Palette.surface))
         .overlay(Capsule().strokeBorder(Theme.Palette.stroke, lineWidth: 0.5))
         .help("Study points: 1 for every focused minute, plus a bonus for finishing a session")
-        .animation(Theme.Motion.snappy, value: balance)
+        .motion(Theme.Motion.snappy, value: balance)
     }
 }
 
@@ -230,7 +230,7 @@ private struct ClosetWardrobe: View {
                 ForEach(PetCloset.wardrobe, id: \.id) { item in
                     ClosetItemTile(item: item, state: store.closet.state(of: item),
                                    model: thumbnailModel) {
-                        withAnimation(Theme.Motion.snappy) { _ = store.tap(item) }
+                        withMotion(Theme.Motion.snappy) { _ = store.tap(item) }
                     } onHover: { inside in
                         if inside { hovered = item } else if hovered == item { hovered = nil }
                         store.tryOn(hovered)
@@ -329,7 +329,7 @@ private struct ClosetItemTile: View {
             hovering = inside
             onHover(inside)
         }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 
     @ViewBuilder private var label: some View {
@@ -384,7 +384,7 @@ private struct ClosetLook: View {
                                    symbol: species == .cat ? "cat.fill" : "dog.fill",
                                    isSelected: store.profile.species == species,
                                    help: "Make your pet a \(species.displayName.lowercased())") {
-                            withAnimation(Theme.Motion.snappy) { store.setSpecies(species) }
+                            withMotion(Theme.Motion.snappy) { store.setSpecies(species) }
                         }
                     }
                 }
@@ -464,7 +464,7 @@ private struct ClosetSwatch: View {
         .buttonStyle(.plain)
         .help(color.map { "Fur color \($0.hex)" } ?? "Breed colors")
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
-        .animation(Theme.Motion.snappy, value: isSelected)
+        .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: isSelected)
     }
 }

@@ -104,7 +104,7 @@ struct StudyInfoButton: View {
         .buttonStyle(.plain)
         .help("How \(StudyMethodInfo.info(for: method).name) works")
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -129,7 +129,7 @@ struct StudyCapsuleButton: View {
         .buttonStyle(.plain)
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 

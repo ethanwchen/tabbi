@@ -148,8 +148,8 @@ private struct PlannerMainColumn<Checklist: View>: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .animation(Theme.Motion.content, value: plan.isActive)
-        .animation(Theme.Motion.content, value: review.isActive)
+        .motion(Theme.Motion.content, value: plan.isActive)
+        .motion(Theme.Motion.content, value: review.isActive)
     }
 }
 
@@ -191,7 +191,7 @@ private struct PlannerHeader: View {
                 .contentTransition(.numericText())
             if store.day.doneCount > 0, store.canEdit {
                 IconButton(symbol: "checkmark.circle.badge.xmark", size: 20, help: "Clear completed tasks") {
-                    withAnimation(Theme.Motion.snappy) { store.clearCompleted() }
+                    withMotion(Theme.Motion.snappy) { store.clearCompleted() }
                 }
                 .transition(.motionPop)
             }
@@ -216,7 +216,7 @@ private struct PlannerHeader: View {
         }
         .frame(height: 20)
         .padding(.horizontal, Theme.Spacing.s)
-        .animation(Theme.Motion.snappy, value: tally)
+        .motion(Theme.Motion.snappy, value: tally)
     }
 }
 
@@ -302,7 +302,7 @@ private struct PlannerAddField: View {
                     .focused(focus, equals: .add)
                     .opacity(isFocused || !text.isEmpty ? 1 : 0)
                     .onSubmit {
-                        if withAnimation(Theme.Motion.snappy, { store.add(text) }) { text = "" }
+                        if withMotion(Theme.Motion.snappy, { store.add(text) }) { text = "" }
                     }
                     // Esc clears the draft; a second Esc leaves the field so the next one closes the notch.
                     .onExitCommand {
@@ -325,7 +325,7 @@ private struct PlannerAddField: View {
         .onTapGesture { focus.wrappedValue = .add }
         .onHover { hovering = $0 }
         .help("Type a task and press Return to add it; Esc clears")
-        .animation(Theme.Motion.snappy, value: hovering)
-        .animation(Theme.Motion.snappy, value: isFocused)
+        .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: isFocused)
     }
 }

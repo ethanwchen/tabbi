@@ -67,7 +67,7 @@ private struct UsageRing: View {
             }
             .frame(width: Self.diameter, height: Self.diameter)
             .padding(.bottom, Theme.Spacing.xxs)
-            .animation(Theme.Motion.content, value: utilization)
+            .motion(Theme.Motion.content, value: utilization)
 
             Text(title)
                 .font(Theme.Typography.bodyEmphasis)
@@ -130,7 +130,7 @@ private struct TodayCard: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
-        .animation(Theme.Motion.content, value: stats)
+        .motion(Theme.Motion.content, value: stats)
     }
 
     private func row(_ title: String, value: String) -> some View {
@@ -196,7 +196,7 @@ private struct UsageFooter: View {
         .font(Theme.Typography.caption.monospacedDigit())
         .frame(height: 24)
         .help(store.probeError ?? "")
-        .animation(Theme.Motion.snappy, value: store.isFetching)
+        .motion(Theme.Motion.snappy, value: store.isFetching)
     }
 
     private var status: String {
