@@ -78,7 +78,7 @@ A quick question box that streams answers from your local `claude` CLI, with Mar
 
 ### Study tabs
 
-The Med School and Student kits add tabs for studying.
+Study is one of the Essentials tabs, and the Med School kit adds Anki; Party and Closet are a switch away in **Settings > Modules**.
 **Study** runs a session in the study method you pick (Pomodoro, deep focus blocks and more) and counts today's minutes and points.
 **Anki** shows the cards due in your decks through the AnkiConnect add-on on your Mac.
 **Party** lets friends study together and see who is focusing, through an optional friends server.
@@ -88,7 +88,7 @@ The pet lives beside the notch and, if you turn on its coach, nudges you back wh
 ### Kits
 
 A kit is a premade set of tabs for one kind of user.
-Tabbi ships Productivity (the tabs above), Med School and Student, and you can switch kits, reset to a kit's defaults, or import a kit someone shared in **Settings > Modules**.
+Tabbi ships Essentials (a timer, your to-do list, music and Claude; the default) and Med School (Essentials plus Anki), and you can switch kits, reset to a kit's defaults, or import a kit someone shared in **Settings > Modules**.
 Kits are small JSON files; [docs/kits.md](docs/kits.md) explains how to write your own.
 See [docs/ROADMAP.md](docs/ROADMAP.md) for where Tabbi is going next.
 

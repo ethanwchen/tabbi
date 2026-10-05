@@ -1,13 +1,19 @@
 # Kits
 
 A kit is a premade setup of Tabbi for one audience: which tabs are on, in what order, and the defaults they start with.
-Tabbi ships three kits, and anyone can write their own as a small JSON file and share it.
+Tabbi ships two kits, and anyone can write their own as a small JSON file and share it.
 
 | Kit | Id | Tabs |
 | --- | --- | --- |
-| Productivity | `productivity` | Now Playing, System, Claude Usage, Today, Ask Claude |
-| Med School | `medicine` | Study, Today, Anki, Party, Now Playing, Ask Claude, Closet |
-| Student | `student` | Study, Today, Now Playing, Ask Claude, Closet (Anki off) |
+| Essentials | `essentials` | Study (the timer), Today (the to-do list), Now Playing, Ask Claude |
+| Med School | `medicine` | Study, Today, Anki, Now Playing, Ask Claude |
+
+Essentials is the default for every new user, and Med School is Essentials plus Anki, with study methods, a daily study goal, a focus sound and a study pet tuned for med school.
+Both keep the notch to a few tabs on purpose.
+Every other module (System, Claude Usage, Party, Focus, Closet and any added later) starts switched off and is one switch away in Settings.
+
+Earlier versions shipped Productivity (`productivity`) and Student (`student`) kits.
+Someone who used either moves to Essentials on their first launch of this version and keeps every tab they had, in their order; only the old kit's onboarding answers are dropped.
 
 The bundled kits live in [`Sources/TabbiKitCore/Kits/Bundled`](../Sources/TabbiKitCore/Kits/Bundled).
 They are good starting points for your own kit.
@@ -15,7 +21,7 @@ They are good starting points for your own kit.
 ## Using kits
 
 On first launch, a welcome window asks which kit to start with.
-It lists every kit with the tabs it turns on, and preselects the edition's kit (Productivity for Tabbi).
+It lists every kit with the tabs it turns on, and preselects the edition's kit (Essentials for Tabbi).
 Closing the window keeps the preselected kit, and the window doesn't come back.
 If the chosen kit has [onboarding questions](#onboarding), **Continue** leads to them; **Back** returns to the kit list.
 Every question can be skipped, and a row of tab icons previews what the answers turn on or off.
@@ -89,6 +95,7 @@ Each entry is either a bare module id, or an object to ship a tab switched off:
 
 A switched-off tab is listed in Settings in that position, ready to turn on.
 Modules the kit doesn't mention are also listed in Settings, switched off, after the kit's own tabs.
+So a kit only needs to list the tabs it starts with; the rest stay available.
 
 | Id | Tab |
 | --- | --- |
@@ -273,6 +280,8 @@ The format is defined by `KitManifest` in [`Sources/TabbiKitCore/Kits`](../Sourc
 - `layout(catalog:answers:)` turns a kit and onboarding answers into a `ModuleLayout`, and `starterTasks(answers:)` collects starter tasks.
 - `KitLibrary` holds the bundled kits in picker order plus imported kits, and `ImportedKitStore` keeps imported files on disk.
 - Inside the app an imported kit goes by `KitLibrary.importedID(_:)` of its author's id (`imported.deep-work` for `deep-work`), so it never shares an id with a bundled kit; that is the id saved as the active kit, and the file stays `<author id>.json`. Settings from before this rule get the new id through a `SettingsSchema` step.
+
+To retire a bundled kit, delete its file and add its id to `KitLibrary.retiredKitIDs` with the kit that replaces it, plus a `SettingsSchema` step that moves a saved kit id there; never reuse a retired id.
 
 To ship a new bundled kit, add `<id>.json` (the file name must match its `id`) with a `pickerOrder` to `Sources/TabbiKitCore/Kits/Bundled`, and check that its tests report no issues.
 `KitLibrary.bundled` lists that folder, so no code changes; `KitLibraryTests` checks that every file loads under its own name and has a picker order.

@@ -180,9 +180,12 @@ final class SettingsRepositoryTests: XCTestCase {
         defaults.removePersistentDomain(forName: suiteName)
     }
 
-    func testEmptyStoreYieldsDefaults() {
+    func testEmptyStoreYieldsDefaults() throws {
         let settings = SettingsRepository(defaults: defaults).load()
-        XCTAssertEqual(settings, .default)
+        var expected = AppSettings.default
+        expected.modules = try XCTUnwrap(KitLibrary.bundled[KitLibrary.defaultKitID]).layout()
+        XCTAssertEqual(settings, expected, "a fresh install starts on the default kit's tabs")
+        XCTAssertEqual(settings.modules.enabled, [.study, .planner, .spotify, .claudeAsk])
         XCTAssertFalse(settings.openOnHover)
         XCTAssertTrue(settings.hapticsEnabled)
         XCTAssertEqual(settings.hotkey, .default)
@@ -196,9 +199,9 @@ final class SettingsRepositoryTests: XCTestCase {
         var modules = ModuleLayout(order: [.claudeAsk, .planner], disabled: [])
         modules.setEnabled(.spotify, false)
         let settings = AppSettings(
-            kitID: "student",
+            kitID: "medicine",
             hasChosenKit: true,
-            kitAnswers: ["level": ["college"], "flashcards": ["anki", "no"]],
+            kitAnswers: ["stage": ["clinical"], "anki": ["yes", "no"]],
             modules: modules,
             openOnHover: true,
             hapticsEnabled: false,
@@ -275,11 +278,11 @@ final class SettingsRepositoryTests: XCTestCase {
         repository.save(settings)
         XCTAssertFalse(repository.load().hasChosenKit)
 
-        settings.apply(try XCTUnwrap(KitLibrary.bundled["student"]))
+        settings.apply(try XCTUnwrap(KitLibrary.bundled["essentials"]))
         repository.save(settings)
         let reloaded = repository.load()
         XCTAssertTrue(reloaded.hasChosenKit)
-        XCTAssertEqual(reloaded.kitID, "student")
+        XCTAssertEqual(reloaded.kitID, "essentials")
     }
 
     func testLayoutsSavedBeforeKitsExistedCountAsChosen() {
@@ -288,21 +291,22 @@ final class SettingsRepositoryTests: XCTestCase {
         XCTAssertTrue(SettingsRepository(defaults: defaults).load().hasChosenKit)
     }
 
-    func testUnknownSavedKitFallsBackToTheDefaultKit() {
+    func testUnknownSavedKitFallsBackToTheDefaultKit() throws {
         defaults.set("removed-import", forKey: "settings.kit")
         let settings = SettingsRepository(defaults: defaults).load()
         XCTAssertEqual(settings.kitID, KitLibrary.defaultKitID)
-        XCTAssertEqual(settings.modules, .default)
+        XCTAssertEqual(settings.modules, try XCTUnwrap(KitLibrary.bundled[KitLibrary.defaultKitID]).layout())
     }
 
     func testApplyingAKitReplacesTheLayoutAndKeepsOtherPreferences() throws {
-        let student = try XCTUnwrap(KitLibrary.bundled["student"])
+        let medicine = try XCTUnwrap(KitLibrary.bundled["medicine"])
         var settings = AppSettings(openOnHover: true)
         settings.modules.setEnabled(.spotify, false)
-        settings.apply(student, answers: ["flashcards": ["anki"]])
-        XCTAssertEqual(settings.kitID, "student")
-        XCTAssertEqual(settings.modules, student.layout(answers: ["flashcards": ["anki"]]))
+        settings.apply(medicine, answers: ["anki": ["yes"]])
+        XCTAssertEqual(settings.kitID, "medicine")
+        XCTAssertEqual(settings.modules, medicine.layout(answers: ["anki": ["yes"]]))
         XCTAssertTrue(settings.modules.isEnabled(.anki))
+        XCTAssertTrue(settings.modules.isEnabled(.spotify))
         XCTAssertTrue(settings.openOnHover)
         XCTAssertTrue(settings.hasChosenKit)
     }
@@ -321,10 +325,10 @@ final class SettingsRepositoryTests: XCTestCase {
 
     func testApplyingAKitWithoutAnswersClearsTheOldOnes() throws {
         let medicine = try XCTUnwrap(KitLibrary.bundled["medicine"])
-        let student = try XCTUnwrap(KitLibrary.bundled["student"])
+        let essentials = try XCTUnwrap(KitLibrary.bundled["essentials"])
         var settings = AppSettings()
         settings.apply(medicine, answers: ["anki": ["no"]])
-        settings.apply(student)
+        settings.apply(essentials)
         XCTAssertEqual(settings.kitAnswers, [:])
     }
 
@@ -343,12 +347,13 @@ final class SettingsRepositoryTests: XCTestCase {
     }
 
     func testApplyingAKitWithoutTickerDefaultsKeepsThePreviews() throws {
-        let productivity = try XCTUnwrap(KitLibrary.bundled["productivity"])
+        let plain = KitManifest(id: "plain", name: "Plain", summary: "", symbol: "circle",
+                                modules: [KitModuleEntry(.planner), KitModuleEntry(.spotify)])
         var settings = AppSettings()
         settings.notchPreview.setEnabled(.meeting, false)
-        settings.apply(productivity)
+        settings.apply(plain)
         XCTAssertEqual(settings.notchPreview.disabledKinds, [.meeting])
-        XCTAssertTrue(settings.usesDefaults(of: productivity))
+        XCTAssertTrue(settings.usesDefaults(of: plain))
     }
 
     func testMalformedPreviewValuesFallBack() {

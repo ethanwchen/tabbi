@@ -81,6 +81,45 @@ final class SettingsSchemaTests: XCTestCase {
         XCTAssertEqual(SettingsRepository(defaults: defaults).load().kitID, "medicine")
     }
 
+    func testRetiredKitsMoveToEssentialsAndKeepTheirTabs() {
+        for (retired, version) in [("productivity", 3), ("student", 3), ("productivity", 2), ("student", 0)] {
+            let suite = "TabbiTests.\(UUID().uuidString)"
+            let defaults = UserDefaults(suiteName: suite)!
+            defer { defaults.removePersistentDomain(forName: suite) }
+            defaults.set(version, forKey: SettingsSchema.versionKey)
+            defaults.set(retired, forKey: "settings.kit")
+            defaults.set(true, forKey: "settings.kit.chosen")
+            defaults.set(["level": ["college"]], forKey: "settings.kit.answers")
+            defaults.set(["spotify", "system", "claudeUsage", "planner", "claudeAsk", "anki"], forKey: "settings.modules.order")
+            defaults.set(["anki"], forKey: "settings.modules.disabled")
+
+            let settings = SettingsRepository(defaults: defaults).load()
+            XCTAssertEqual(settings.kitID, "essentials", "\(retired) at version \(version)")
+            XCTAssertEqual(defaults.string(forKey: "settings.kit"), "essentials")
+            XCTAssertTrue(settings.hasChosenKit, "no kit picker again")
+            XCTAssertEqual(settings.kitAnswers, [:], "answers to the old kit's questions are dropped")
+            XCTAssertEqual(settings.modules.enabled, [.spotify, .system, .claudeUsage, .planner, .claudeAsk],
+                           "every tab the user had stays on, in their order")
+            XCTAssertFalse(settings.modules.isEnabled(.anki))
+        }
+    }
+
+    func testCurrentKitsAreNotMovedByTheRetiredKitStep() {
+        defaults.set(3, forKey: SettingsSchema.versionKey)
+        defaults.set("medicine", forKey: "settings.kit")
+        defaults.set(["anki": ["no"]], forKey: "settings.kit.answers")
+        let settings = SettingsRepository(defaults: defaults).load()
+        XCTAssertEqual(settings.kitID, "medicine")
+        XCTAssertEqual(settings.kitAnswers, ["anki": ["no"]])
+    }
+
+    func testRetiredKitIDsAreNotBundledAndPointAtABundledKit() {
+        for (retired, replacement) in KitLibrary.retiredKitIDs {
+            XCTAssertNil(KitLibrary.bundled[retired], "\(retired) is retired, so it must not ship again")
+            XCTAssertNotNil(KitLibrary.bundled[replacement], "\(retired) moves to a kit that ships")
+        }
+    }
+
     // MARK: Modules this build doesn't know
 
     func testStoredOrderPutsUnknownIdsBackAfterTheirPredecessor() {

@@ -9,7 +9,7 @@ final class EditionTests: XCTestCase {
     private func edition(_ fields: String) -> String {
         """
         {"formatVersion": 1, "id": "lsat", "name": "LSAT Notch",
-         "bundleIdentifier": "dev.tabbi.LSAT", "defaultKitID": "student"\(fields)}
+         "bundleIdentifier": "dev.tabbi.LSAT", "defaultKitID": "medicine"\(fields)}
         """
     }
 
@@ -59,10 +59,10 @@ final class EditionTests: XCTestCase {
 
     func testEditionFilesThatWouldBreakPackagingAreRefused() {
         let bad = [
-            #"{"formatVersion": 1, "id": "Bad Id", "name": "X", "bundleIdentifier": "a.b", "defaultKitID": "student"}"#,
-            #"{"formatVersion": 1, "id": "x", "name": "../X", "bundleIdentifier": "a.b", "defaultKitID": "student"}"#,
-            #"{"formatVersion": 1, "id": "x", "name": " ", "bundleIdentifier": "a.b", "defaultKitID": "student"}"#,
-            #"{"formatVersion": 1, "id": "x", "name": "X", "bundleIdentifier": "nodots", "defaultKitID": "student"}"#,
+            #"{"formatVersion": 1, "id": "Bad Id", "name": "X", "bundleIdentifier": "a.b", "defaultKitID": "medicine"}"#,
+            #"{"formatVersion": 1, "id": "x", "name": "../X", "bundleIdentifier": "a.b", "defaultKitID": "medicine"}"#,
+            #"{"formatVersion": 1, "id": "x", "name": " ", "bundleIdentifier": "a.b", "defaultKitID": "medicine"}"#,
+            #"{"formatVersion": 1, "id": "x", "name": "X", "bundleIdentifier": "nodots", "defaultKitID": "medicine"}"#,
             #"{"formatVersion": 1, "id": "x", "name": "X", "bundleIdentifier": "a.b", "defaultKitID": ""}"#,
             #"{"formatVersion": 1, "id": "x", "name": "X", "bundleIdentifier": "a.b", "defaultKitID": "s", "icon": "../x.icns"}"#,
             #"{"formatVersion": 1, "id": "x", "name": "X", "bundleIdentifier": "a.b", "defaultKitID": "s", "infoPlist": {"CFBundleIdentifier": "c.d"}}"#,
@@ -101,9 +101,9 @@ final class EditionTests: XCTestCase {
         let lsat = try decode(edition(""))
         let repository = SettingsRepository(defaults: defaults, kits: .bundled, defaultKitID: lsat.defaultKitID)
         let settings = repository.load()
-        let student = try XCTUnwrap(KitLibrary.bundled["student"])
-        XCTAssertEqual(settings.kitID, "student")
-        XCTAssertEqual(settings.modules, student.layout())
+        let medicine = try XCTUnwrap(KitLibrary.bundled["medicine"])
+        XCTAssertEqual(settings.kitID, "medicine")
+        XCTAssertEqual(settings.modules, medicine.layout())
     }
 
     func testEachEditionKeepsItsOwnImportedKits() throws {

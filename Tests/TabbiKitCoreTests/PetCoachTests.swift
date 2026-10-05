@@ -413,10 +413,10 @@ final class PetCoachTests: XCTestCase {
 
     func testMedicineKitFlavorsTheCoachButOtherKitsStayNeutral() throws {
         let medicine = try KitLibrary.loadBundled("medicine")
-        let productivity = try KitLibrary.loadBundled("productivity")
+        let essentials = try KitLibrary.loadBundled("essentials")
         let medLines = PetCoachMessages.kitLines(medicine.defaults.settings(for: .closet))
         XCTAssertTrue(medLines.contains { $0.text.contains("Krebs") })
-        XCTAssertTrue(PetCoachMessages.kitLines(productivity.defaults.settings(for: .closet)).isEmpty)
+        XCTAssertTrue(PetCoachMessages.kitLines(essentials.defaults.settings(for: .closet)).isEmpty)
     }
 
     func testCoachPicksKitLinesItIsGiven() {

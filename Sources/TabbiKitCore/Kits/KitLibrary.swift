@@ -5,9 +5,16 @@ import Foundation
 public struct KitLibrary: Equatable, Sendable {
     /// Bundled kit ids in picker order. Each is a `<id>.json` in `Kits/Bundled`.
     public static var bundledIDs: [String] { bundled.kits.map(\.id) }
-    /// The kit used when the user (or edition) hasn't picked one. It
-    /// reproduces Tabbi's original tabs.
-    public static let defaultKitID = "productivity"
+    /// The kit used when the user (or edition) hasn't picked one: the four
+    /// essential tabs, with everything else in Settings' module library.
+    public static let defaultKitID = "essentials"
+    /// Bundled kits that no longer ship, and the kit that replaced each.
+    /// Settings saved on one move to its replacement (`SettingsSchema`), and
+    /// the user's tabs stay as they were. Never reuse a retired id.
+    public static let retiredKitIDs: [String: String] = [
+        "productivity": "essentials",
+        "student": "essentials",
+    ]
 
     public private(set) var kits: [KitManifest]
 

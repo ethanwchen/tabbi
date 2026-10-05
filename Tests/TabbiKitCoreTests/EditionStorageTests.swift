@@ -25,7 +25,7 @@ final class EditionStorageTests: XCTestCase {
     func testEachEditionHasItsOwnFolders() throws {
         let tabbi = EditionStorage(edition: .tabbi)
         let lsat = EditionStorage(edition: Edition(id: "lsat", name: "LSAT Notch",
-                                                   bundleIdentifier: "dev.tabbi.LSAT", defaultKitID: "student"))
+                                                   bundleIdentifier: "dev.tabbi.LSAT", defaultKitID: "medicine"))
         XCTAssertNotEqual(tabbi.root, lsat.root)
         XCTAssertEqual(tabbi.root.lastPathComponent, "Tabbi")
         XCTAssertEqual(tabbi.folder("Planner").deletingLastPathComponent(), tabbi.root)

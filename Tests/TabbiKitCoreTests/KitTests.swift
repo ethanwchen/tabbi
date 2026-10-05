@@ -231,7 +231,7 @@ final class KitLibraryTests: XCTestCase {
     }
 
     func testBundledKitsAreInPickerOrder() {
-        XCTAssertEqual(KitLibrary.bundledIDs, ["productivity", "medicine", "student"])
+        XCTAssertEqual(KitLibrary.bundledIDs, ["essentials", "medicine"])
         XCTAssertEqual(KitLibrary.bundled.kits.first?.id, KitLibrary.defaultKitID)
         let orders = KitLibrary.bundled.kits.compactMap(\.pickerOrder)
         XCTAssertEqual(Set(orders).count, orders.count, "picker orders are distinct")
@@ -250,12 +250,31 @@ final class KitLibraryTests: XCTestCase {
         XCTAssertEqual(Set(accents).count, KitLibrary.bundledIDs.count)
     }
 
-    func testProductivityKitReproducesTheOriginalTabs() throws {
+    func testEssentialsIsTheDefaultWithExactlyFourTabs() throws {
         let kit = try XCTUnwrap(KitLibrary.bundled[KitLibrary.defaultKitID])
-        XCTAssertEqual(kit.layout(), ModuleLayout.default)
+        XCTAssertEqual(kit.id, "essentials")
+        XCTAssertEqual(kit.name, "Essentials")
+        XCTAssertEqual(kit.layout().enabled, [.study, .planner, .spotify, .claudeAsk],
+                       "timer, to-do, music and Claude, in that order")
         XCTAssertEqual(kit.issues(), [])
-        XCTAssertNil(kit.defaults.resolvedTicker, "Productivity keeps every preview kind on")
-        XCTAssertNil(FocusSettings.kitMix(of: kit.defaults), "Productivity keeps the user's focus sound (Off by default)")
+        XCTAssertNil(kit.defaults.resolvedTicker, "every preview stays on, so a module added later shows its own")
+        XCTAssertNil(FocusSettings.kitMix(of: kit.defaults), "Essentials keeps the user's focus sound (Off by default)")
+        XCTAssertEqual(StudyMethodMenu(kit: kit.defaults).startingKind, .pomodoro)
+    }
+
+    func testEssentialsAnswersAddTasksButNeverTabs() throws {
+        let kit = try XCTUnwrap(KitLibrary.bundled["essentials"])
+        let everyAnswer: KitAnswers = ["day": Set(kit.onboarding.flatMap { $0.options.map(\.id) })]
+        XCTAssertEqual(kit.layout(answers: everyAnswer), kit.layout(), "Essentials stays four tabs whatever the answers")
+        XCTAssertTrue(kit.starterTasks(answers: ["day": ["classes"]]).contains("Review today's lecture notes"))
+    }
+
+    func testModulesOutsideTheKitAreParkedOffForTheLibrary() throws {
+        let kit = try XCTUnwrap(KitLibrary.bundled["essentials"])
+        let layout = kit.layout()
+        XCTAssertEqual(Set(layout.order), Set(ModuleCatalog.builtIn.ids), "every module is listed, so Settings can add it")
+        XCTAssertEqual(Array(layout.order.suffix(from: 4)).filter(layout.isEnabled), [],
+                       "Party, System, Claude Usage and the rest start switched off after the kit's tabs")
     }
 
     func testBundledKitsOnlyUseKnownValues() throws {
@@ -267,7 +286,7 @@ final class KitLibraryTests: XCTestCase {
     func testMedicineKitStartsOnTheStudyTimerWithAnkiFirstClassMethods() throws {
         let kit = try XCTUnwrap(KitLibrary.bundled["medicine"])
         XCTAssertEqual(kit.name, "Med School", "the kit keeps its saved id but shows its new name")
-        XCTAssertEqual(kit.moduleIDs, ["study", .planner, "anki", "party", .spotify, .claudeAsk, "closet"])
+        XCTAssertEqual(kit.moduleIDs, ["study", .planner, "anki", .spotify, .claudeAsk])
         let menu = StudyMethodMenu(kit: kit.defaults)
         XCTAssertEqual(menu.startingKind, .pomodoro)
         XCTAssertTrue(menu.offers(.ankiSprint))
@@ -275,20 +294,21 @@ final class KitLibraryTests: XCTestCase {
         XCTAssertEqual(kit.starterTasks(answers: ["stage": ["preclinical"]]).first, "Clear today's Anki reviews")
     }
 
-    func testStudyKitsShowOnlyTheirOwnTabs() throws {
+    func testMedSchoolIsEssentialsPlusAnki() throws {
         let medicine = try XCTUnwrap(KitLibrary.bundled["medicine"])
-        XCTAssertEqual(medicine.layout().enabled, [.study, .planner, .anki, .party, .spotify, .claudeAsk, .closet])
-        XCTAssertEqual(medicine.layout(answers: ["anki": ["no"]]).enabled,
-                       [.study, .planner, .party, .spotify, .claudeAsk, .closet])
-        let student = try XCTUnwrap(KitLibrary.bundled["student"])
-        XCTAssertEqual(student.layout().enabled, [.study, .planner, .spotify, .claudeAsk, .closet])
+        let essentials = try XCTUnwrap(KitLibrary.bundled["essentials"])
+        XCTAssertEqual(medicine.layout().enabled, [.study, .planner, .anki, .spotify, .claudeAsk])
+        XCTAssertEqual(medicine.layout().enabled.filter { $0 != .anki }, essentials.layout().enabled)
+        XCTAssertEqual(medicine.layout(answers: ["anki": ["no"]]).enabled, essentials.layout().enabled,
+                       "without Anki, Med School shows the Essentials tabs")
     }
 
     func testMissingKitFallsBackToTheDefault() {
         let library = KitLibrary.bundled
         XCTAssertEqual(library.kit("removed")?.id, KitLibrary.defaultKitID)
         XCTAssertEqual(library.kit(nil)?.id, KitLibrary.defaultKitID)
-        XCTAssertEqual(library.kit("student")?.id, "student")
+        XCTAssertEqual(library.kit("medicine")?.id, "medicine")
+        XCTAssertEqual(library.kit("student")?.id, KitLibrary.defaultKitID, "a retired kit is gone")
     }
 
     func testUpsertReplacesInPlaceAndDropsDuplicateIds() {
