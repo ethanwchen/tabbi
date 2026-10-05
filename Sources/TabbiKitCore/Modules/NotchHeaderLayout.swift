@@ -37,6 +37,8 @@ public struct NotchHeaderLayout: Equatable, Sendable {
         /// A title squeezed narrower than this is dropped instead of shown as
         /// a lone ellipsis.
         public var minTitleWidth: CGFloat = 40
+        /// Gap above the overflow list, below both the "more" button and the cutout.
+        public var moreListGap: CGFloat = 4
 
         public init() {}
     }
@@ -55,6 +57,9 @@ public struct NotchHeaderLayout: Equatable, Sendable {
     public let tabFrames: [CGRect]
     /// The "more" button that reveals the tabs that didn't fit, or nil when all fit.
     public let moreFrame: CGRect?
+    /// Top edge of the overflow list, below the "more" button and the cutout
+    /// (which can be taller than the row), or nil when all tabs fit.
+    public let moreListTop: CGFloat?
     /// The tab title, nil when it was dropped to make room.
     public let titleFrame: CGRect?
     public let gearFrame: CGRect
@@ -103,6 +108,8 @@ public struct NotchHeaderLayout: Equatable, Sendable {
         }
         self.tabFrames = tabFrames
         moreFrame = fit.visible < tabs ? row(x, metrics.moreWidth) : nil
+        let listFloor = max(moreFrame?.maxY ?? 0, notchSize?.height ?? 0)
+        moreListTop = moreFrame == nil ? nil : listFloor + metrics.moreListGap
 
         // Trailing side, laid out from the far right: shortcuts, gear, title.
         var right = trailingZone.maxX

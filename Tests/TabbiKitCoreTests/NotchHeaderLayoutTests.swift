@@ -83,6 +83,17 @@ final class NotchHeaderLayoutTests: XCTestCase {
         XCTAssertEqual(more.minX, try XCTUnwrap(header.tabFrames.last).maxX, "more follows the last tab")
     }
 
+    func testOverflowListOpensBelowTheNotchAndTheMoreButton() throws {
+        for notch in notches {
+            let header = layout(tabs: 10, notch: notch)
+            let more = try XCTUnwrap(header.moreFrame)
+            let top = try XCTUnwrap(header.moreListTop)
+            XCTAssertGreaterThan(top, more.maxY)
+            XCTAssertGreaterThan(top, header.cutout?.maxY ?? 0, "a taller notch pushes the list below it")
+        }
+        XCTAssertNil(layout(tabs: 3, notch: CGSize(width: 185, height: 32)).moreListTop)
+    }
+
     func testNotchlessDisplayFitsMoreTabs() {
         let notched = layout(tabs: 7, notch: CGSize(width: 185, height: 32))
         let notchless = layout(tabs: 7, notch: nil)

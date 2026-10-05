@@ -179,13 +179,13 @@ private struct OpenNotchContent: View {
             .motion(Motion.content, value: model.selected)
         }
         .overlay(alignment: .topLeading) {
-            if model.showsMoreTabs, let more = header.moreFrame {
+            if model.showsMoreTabs, let more = header.moreFrame, let top = header.moreListTop {
                 ZStack(alignment: .topLeading) {
                     // A tap anywhere else closes the list without acting.
                     Color.black.opacity(0.001)
                         .onTapGesture { model.showsMoreTabs = false }
                     NotchMoreTabsMenu(header: header)
-                        .offset(x: more.minX, y: more.maxY + Theme.Spacing.xs)
+                        .offset(x: more.minX, y: top)
                 }
                 .transition(.opacity)
             }
