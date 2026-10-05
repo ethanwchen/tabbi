@@ -35,7 +35,7 @@ struct StudySoundRow: View {
             return chip.isSelected(in: settings) ? "Blend: \(settings.mix.summary). Open the mixer"
                                                  : "Blend up to \(FocusMix.maxLayers) sounds and set levels"
         case .playlist:
-            guard settings.playlist != nil else { return "Pick a study playlist to start with focus" }
+            guard settings.playlist != nil else { return "Pick a playlist to start with focus" }
             let name = FocusPlaylistPreset.matching(settings.playlistText)?.name ?? "your playlist"
             return "Plays \(name) with focus. Change it in the mixer"
         default:

@@ -37,7 +37,7 @@ struct StudyCustomEditor: View {
                 IconButton(symbol: "xmark", help: "Done") { close() }
             }
             HStack(spacing: Theme.Spacing.s) {
-                lengthCard("Focus", field: .focus, rhythm: rhythm, help: "How long each study block runs")
+                lengthCard("Focus", field: .focus, rhythm: rhythm, help: "How long each focus block runs")
                 lengthCard("Break", field: .shortBreak, rhythm: rhythm, help: "The pause after each block")
                 longBreakCard(rhythm)
                     .frame(width: 208)

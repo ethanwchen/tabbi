@@ -191,7 +191,7 @@ private struct StudyMethodCard: View {
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .help("Change the study method")
+                .help("Change the timer method")
                 .onHover { hovering = $0 }
                 if session.method.kind == .timer {
                     StudyTimerLengthRow(length: store.timer, isCounting: session.runState != .idle,
@@ -284,8 +284,8 @@ private struct StudyDeepFocusRow: View {
     }
 
     private var help: String {
-        store.deepFocus ? "Deep focus is on: study blocks bring \(summary). Click to turn it off"
-             : "Turn on deep focus: study blocks bring \(summary)"
+        store.deepFocus ? "Deep focus is on: focus blocks bring \(summary). Click to turn it off"
+             : "Turn on deep focus: focus blocks bring \(summary)"
     }
 
     /// The focus mode effects that study blocks apply, e.g. "Rain + Fireplace, a playlist and Do Not Disturb".
@@ -303,7 +303,7 @@ private struct StudyDeepFocusRow: View {
     }
 }
 
-/// Today's study minutes, finished stretches and the points they earned
+/// Today's focus minutes, finished blocks and the points they earned
 /// for the pet.
 private struct StudyTodayRow: View {
     let today: StudyDayTally
@@ -317,13 +317,13 @@ private struct StudyTodayRow: View {
             Label("\(StudyTimerFormat.studied(minutes: today.minutes)) of \(StudyTimerFormat.studied(minutes: goal.minutes))",
                   systemImage: metGoal ? "checkmark.seal.fill" : "clock")
                 .foregroundStyle(metGoal ? accent : Theme.Palette.secondaryText)
-                .help(metGoal ? "Daily study goal met" : "Time studied today, out of your daily goal")
+                .help(metGoal ? "Daily focus goal met" : "Focus time today, out of your daily goal")
             Label("\(today.sessions) done", systemImage: "checkmark.circle")
-                .help("Study stretches finished today")
+                .help("Focus blocks finished today")
             Spacer(minLength: 0)
             Label(StudyTimerFormat.points(today.points), systemImage: "star.fill")
                 .foregroundStyle(today.points > 0 ? accent : Theme.Palette.tertiaryText)
-                .help("Study points earned today; spend them on your pet's wardrobe")
+                .help("Points earned today; spend them on your pet's wardrobe")
         }
         .labelStyle(StudyTodayLabelStyle())
         .font(Theme.Typography.caption)

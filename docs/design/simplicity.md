@@ -18,6 +18,8 @@ This page records what the simplicity pass removed, merged or hid, why, and how 
 - **Study is called Timer.** Most people want a countdown, not a study session, so the tab header, the Tabs list and Today's timer card say Timer.
   The module id stays `study`, so kits and saved data are unchanged.
 - **"Study time" became "Focus time"** in Today's daily goal row, for the same reason.
+  The Timer tab's tooltips, the custom method editor, the focus playlist picker and the pet's points badge say focus blocks and points too, so nothing an Essentials user hovers talks about studying.
+  Study wording stays only where it is the point: Anki, study parties and Plan my day in the study plan mode.
 - **Today's idle timer card** no longer reads "Study timer / Start a session in Study"; it shows one action, "Start a timer", which opens the Timer tab.
 - **Skip on the plain Timer.** A single countdown has no next phase, so its skip button is hidden; reset stops it.
 
