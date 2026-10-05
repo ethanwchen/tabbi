@@ -26,6 +26,8 @@ final class ConnectionsStore: ObservableObject {
     private(set) var checkedAt: [ConnectionKind: Date] = [:]
     /// The rows with a check running right now.
     @Published private(set) var running: Set<ConnectionKind> = []
+    /// The latest Do Not Disturb test, shown under its row until the next.
+    @Published private(set) var doNotDisturbTest: DoNotDisturbTest?
 
     let isDemo: Bool
     private let probes = ConnectionProbes()
@@ -239,7 +241,32 @@ final class ConnectionsStore: ObservableObject {
             Task { await request(permission, for: kind) }
         case .copyFriendCode(let code):
             copy(code)
+        case .testDoNotDisturb:
+            testDoNotDisturb()
         }
+    }
+
+    /// Runs the user's Focus shortcuts once, on then off, so they see Do
+    /// Not Disturb really switch. Demo runs pretend it worked.
+    func testDoNotDisturb() {
+        guard doNotDisturbTest?.isRunning != true else { return }
+        guard !isDemo else {
+            doNotDisturbTest = .passed
+            return
+        }
+        let names = ConnectionProbes.focusShortcutNames()
+        Task { [weak self] in
+            let runner = FocusShortcutRunner()
+            let result = await DoNotDisturbTest.run(onName: names.on, offName: names.off,
+                                                    run: { await runner.run($0) },
+                                                    update: { @MainActor [weak self] stage in self?.showTest(stage) })
+            // A missing shortcut means the row is out of date.
+            if case .failed(_, _, .notFound) = result { self?.refresh([.doNotDisturb]) }
+        }
+    }
+
+    private func showTest(_ stage: DoNotDisturbTest) {
+        doNotDisturbTest = stage
     }
 
     /// Runs a walkthrough's start button.

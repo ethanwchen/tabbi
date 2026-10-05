@@ -69,6 +69,13 @@ Set up opens one sheet that asks for a name and a pet (cat or dog); Start Party 
 The sheet then shows the friend code large, with a Copy code button, and the connected row keeps the code and a Copy friend code button.
 `swift run Tabbi --snapshot <dir>` writes the sheet's states as `connections-party-<state>.png`.
 
+## Testing Do Not Disturb
+
+Finding both shortcuts proves they exist, not that they switch Do Not Disturb, so the connected row and the finished walkthrough both offer Test it.
+`DoNotDisturbTest.run` runs the on shortcut, waits two seconds, then runs the off shortcut, and stops at the first one that fails, so a broken on shortcut never leaves the Mac in a half-switched state it did not cause.
+Each outcome is one plain sentence that names the shortcut to fix; the shortcuts tool's own wording never reaches the user, and a missing shortcut also re-checks the row.
+`swift run Tabbi --snapshot <dir>` draws every stage and outcome as `connections-states-doNotDisturb-test.png`, and the finished walkthrough after a passing test as `connections-guide-focusShortcuts-tested.png`.
+
 ## Integrations
 
 | Row | Detected from | Steps from nothing to connected |

@@ -46,7 +46,9 @@ struct ConnectionsList: View {
             } else {
                 ForEach(kinds) { kind in
                     let status = store.status(of: kind)
-                    ConnectionRow(kind: kind, status: status, perform: { perform($0, for: kind) },
+                    ConnectionRow(kind: kind, status: status,
+                                  test: kind == .doNotDisturb ? store.doNotDisturbTest : nil,
+                                  perform: { perform($0, for: kind) },
                                   troubleshoot: { sheet = .troubleshoot(kind) })
                 }
             }
@@ -86,6 +88,8 @@ struct ConnectionsList: View {
 struct ConnectionRow: View {
     let kind: ConnectionKind
     let status: ConnectionStatus
+    /// The latest "Test it" result, for the Do Not Disturb row.
+    var test: DoNotDisturbTest?
     let perform: (ConnectionAction) -> Void
     /// Opens the "Something not working?" troubleshooter.
     let troubleshoot: () -> Void
@@ -119,6 +123,10 @@ struct ConnectionRow: View {
                         .textSelection(.enabled)
                         .padding(.top, 2)
                 }
+                if status.isConnected, let test {
+                    DoNotDisturbTestLine(test: test)
+                        .padding(.top, 2)
+                }
                 Button("Something not working?", action: troubleshoot)
                     .buttonStyle(.link)
                     .font(.caption)
@@ -135,12 +143,36 @@ struct ConnectionRow: View {
                     .help(action.help(for: kind))
             } else if let suggestion = status.suggestion {
                 Button(suggestion.title) { perform(suggestion) }
+                    .disabled(test?.isRunning == true)
                     .help(suggestion.help(for: kind))
             }
         }
         .padding(.vertical, 4)
         .animation(.spring(duration: 0.3), value: status)
         .accessibilityElement(children: .combine)
+    }
+}
+
+/// Where the Do Not Disturb test stands: a spinner while it runs, then a
+/// green check or an orange warning with one plain sentence.
+struct DoNotDisturbTestLine: View {
+    let test: DoNotDisturbTest
+
+    var body: some View {
+        Label {
+            Text(test.message)
+                .foregroundStyle(test.isRunning ? .secondary : .primary)
+        } icon: {
+            if test.isRunning {
+                ProgressView().controlSize(.small)
+            } else {
+                Image(systemName: test.isFailure ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
+                    .foregroundStyle(test.isFailure ? .orange : .green)
+            }
+        }
+        .font(.callout)
+        .help(test.isFailure ? "Fix the shortcut in the Shortcuts app, then test again"
+                             : "What happened when Tabbi ran your shortcuts")
     }
 }
 
@@ -203,6 +235,7 @@ extension ConnectionAction {
         case .checkAgain: "Check \(kind.title) again"
         case .setUp: "Set up \(kind.title)"
         case .copyFriendCode: "Copy your friend code to send to a friend"
+        case .testDoNotDisturb: "Turn Do Not Disturb on for a moment, then off again"
         }
     }
 }

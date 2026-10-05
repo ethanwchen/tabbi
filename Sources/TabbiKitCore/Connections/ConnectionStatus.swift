@@ -119,6 +119,8 @@ public enum ConnectionAction: Hashable, Sendable {
     case setUp
     /// Put a value the user shares (Party's friend code) on the clipboard.
     case copyFriendCode(String)
+    /// Run the Do Not Disturb shortcuts once, on then off, to prove they work.
+    case testDoNotDisturb
 
     /// The button's label.
     public var title: String {
@@ -132,6 +134,7 @@ public enum ConnectionAction: Hashable, Sendable {
         case .checkAgain: "Check again"
         case .setUp: "Set up"
         case .copyFriendCode: "Copy friend code"
+        case .testDoNotDisturb: "Test it"
         }
     }
 }

@@ -15,6 +15,10 @@ extension SnapshotRenderer {
         shots.append(("connections-guide-\(done.rawValue)-connected",
                       ConnectionWalkthroughView(kind: done.kind, walkthrough: done.walkthrough(), light: .notSetUp, isFinished: true,
                                                 start: { _ in }, copy: { _ in }, close: {})))
+        let dnd = ConnectionGuide.focusShortcuts
+        shots.append(("connections-guide-\(dnd.rawValue)-tested",
+                      ConnectionWalkthroughView(kind: dnd.kind, walkthrough: dnd.walkthrough(), light: .notSetUp, isFinished: true,
+                                                start: { _ in }, copy: { _ in }, close: {}, test: .passed, runTest: {})))
         for (name, view) in shots {
             await write(render(view), named: name, to: outputDirectory)
         }
@@ -57,24 +61,32 @@ extension SnapshotRenderer {
         }
 
         for kind in ConnectionKind.allCases {
-            await write(renderStates(of: kind), named: "connections-states-\(kind.rawValue)", to: outputDirectory)
+            let rows = kind.everyState.map { ($0.technical, $0.status, DoNotDisturbTest?.none) }
+            await write(renderRows(of: kind, rows), named: "connections-states-\(kind.rawValue)", to: outputDirectory)
         }
+        let ready = FocusShortcutsState(onName: FocusSettings.suggestedOnShortcut, offName: FocusSettings.suggestedOffShortcut,
+                                        installed: [FocusSettings.suggestedOnShortcut, FocusSettings.suggestedOffShortcut])
+        let tests = DoNotDisturbTest.everyOutcome(onName: ready.onName, offName: ready.offName)
+            .map { ($0.technical, ready.connectionStatus, Optional($0)) }
+        await write(renderRows(of: .doNotDisturb, tests), named: "connections-states-doNotDisturb-test", to: outputDirectory)
     }
 
     /// Every state of one row as Settings draws it, each under its
     /// support label, so the whole path from missing to connected can be
     /// read at once. (The Settings pane PNG only shows the first screenful.)
-    private static func renderStates(of kind: ConnectionKind) async -> Data? {
+    private static func renderRows(of kind: ConnectionKind,
+                                   _ rows: [(label: String, status: ConnectionStatus, test: DoNotDisturbTest?)]) async -> Data? {
         // A stack sized to its content, styled like the grouped Form, since
         // a Form scrolls and would clip whatever doesn't fit.
         let gallery = VStack(alignment: .leading, spacing: 16) {
-            ForEach(kind.everyState, id: \.technical) { state in
+            ForEach(rows.indices, id: \.self) { index in
+                let row = rows[index]
                 VStack(alignment: .leading, spacing: 6) {
-                    Text(state.technical)
+                    Text(row.label)
                         .font(.callout.weight(.semibold))
                         .foregroundStyle(.secondary)
                         .padding(.horizontal, 10)
-                    ConnectionRow(kind: kind, status: state.status, perform: { _ in }, troubleshoot: {})
+                    ConnectionRow(kind: kind, status: row.status, test: row.test, perform: { _ in }, troubleshoot: {})
                         .padding(10)
                         .background(.quinary, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
                 }

@@ -51,7 +51,9 @@ struct ConnectionSheetView: View {
             ConnectionWalkthroughView(
                 kind: kind, walkthrough: store.walkthrough(for: guide), light: status.light,
                 isFinished: status.finishes(guide, openedAsSuggestion: asSuggestion),
-                start: { store.run($0, for: kind) }, copy: store.copy, close: { dismiss() }
+                start: { store.run($0, for: kind) }, copy: store.copy, close: { dismiss() },
+                test: kind == .doNotDisturb ? store.doNotDisturbTest : nil,
+                runTest: kind == .doNotDisturb ? { store.testDoNotDisturb() } : nil
             )
             .onAppear { store.beginWaiting(for: kind) }
             .onDisappear { store.endWaiting(for: kind) }
@@ -88,6 +90,10 @@ struct ConnectionWalkthroughView: View {
     let start: (ConnectionStepAction) -> Void
     let copy: (String) -> Void
     let close: () -> Void
+    /// The latest test of the finished setup, and how to run one, for rows
+    /// that can prove themselves (Do Not Disturb); nil elsewhere.
+    var test: DoNotDisturbTest?
+    var runTest: (() -> Void)?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -111,6 +117,11 @@ struct ConnectionWalkthroughView: View {
                 }
                 Spacer(minLength: 8)
                 if isFinished {
+                    if let runTest {
+                        Button("Test it", action: runTest)
+                            .disabled(test?.isRunning == true)
+                            .help("Turn \(kind.title) on for a moment, then off again")
+                    }
                     Button("Done", action: close)
                         .buttonStyle(.borderedProminent)
                         .keyboardShortcut(.defaultAction)
@@ -134,7 +145,9 @@ struct ConnectionWalkthroughView: View {
 
     /// Whether the row works yet, on its own line above the buttons.
     @ViewBuilder private var progress: some View {
-        if isFinished {
+        if isFinished, let test {
+            DoNotDisturbTestLine(test: test)
+        } else if isFinished {
             Label("\(kind.title) is connected. You're all set.", systemImage: "checkmark.circle.fill")
                 .foregroundStyle(.green)
                 .font(.callout.weight(.medium))
