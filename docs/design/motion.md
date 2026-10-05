@@ -83,7 +83,10 @@ Celebrations confirm a real event; they are brief, optional and never block inpu
 - Wired today, each only while a panel is open:
   a focus session of the shared Pomodoro that finishes plays a confetti burst in the Focus accent,
   a Study block that finishes plays a paw print burst in the Study accent (beside the corner pet's hop),
-  and buying a Closet item with points plays a sparkle milestone in the Closet accent (beside the pet's celebration).
+  buying a Closet item with points plays a sparkle milestone in the Closet accent (beside the pet's celebration),
+  and an Anki review streak that reaches a milestone length plays a confetti milestone in the Anki accent.
+- Streak milestones are round lengths only (`StreakMilestone` in `Sources/TabbiKitCore/Motion/`): 7, 14, 30, 50, 100, 200 and 365 days, then every 100 days and every whole year.
+  The first look after launch only sets the baseline, a jump past several milestones counts the largest once, and a milestone reached while the notch was closed plays on the next open panel unless the streak broke meanwhile.
 - Under Reduce Motion nothing moves: a soft glow of the accent brightens and fades in place over 0.9 s (`CelebrationGlow`).
 - `--snapshot` renders a frame strip for each style and tier (`motion-celebration-<style>-<tier>.png`) and for the glow (`motion-celebration-reduced.png`).
 

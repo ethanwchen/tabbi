@@ -1,6 +1,7 @@
 import AppKit
 import Combine
 import TabbiKitCore
+import TabbiKit
 
 /// State for the Anki tab: the AnkiConnect connection and today's summary.
 ///
@@ -42,9 +43,17 @@ final class AnkiStore: ObservableObject {
     private var isPanelVisible = false
     /// Where newly answered cards are logged, as the Anki module's.
     private let activity: ActivityLog?
+    /// Plays a confetti milestone when the review streak reaches a round length.
+    private let celebrations: CelebrationCenter?
+    /// The streak length last seen, the baseline for `StreakMilestone.reached`.
+    private var seenStreak: Int?
+    /// A milestone reached while the notch was closed (Anki refreshes when
+    /// it loses focus after a review session), saved for the next open panel.
+    private var pendingMilestone: Int?
 
-    init(activity: ActivityLog? = nil, runMode: RunMode) {
+    init(activity: ActivityLog? = nil, celebrations: CelebrationCenter? = nil, runMode: RunMode) {
         self.activity = activity
+        self.celebrations = celebrations
         isDemo = runMode.isDemo
         client = AnkiConnectClient(isAnkiRunning: { await MainActor.run { AnkiStore.runningAnki() != nil } })
         if let pinnedState {
@@ -151,11 +160,30 @@ final class AnkiStore: ObservableObject {
             updatedAt = now
             state = .ready
             logReviews(value, now: now)
+            noteStreak(value.streak)
         case .failure(let error):
             state = .resolve(error: error, isInstalled: Self.isInstalled, launchedAt: anki?.launchDate, now: now)
             if !state.keepsLastSummary { summary = nil }
         }
         if shouldPoll { schedulePoll() } else { stopPolling() }
+    }
+
+    /// Celebrates a streak that just reached a milestone, once, over the open
+    /// panel. Opening the panel always refreshes, so a milestone reached out
+    /// of sight plays on the next open, unless the streak broke meanwhile.
+    func noteStreak(_ streak: Int) {
+        if let reached = StreakMilestone.reached(from: seenStreak, to: streak) {
+            pendingMilestone = reached
+        }
+        seenStreak = streak
+        guard let milestone = pendingMilestone else { return }
+        guard streak >= milestone else {
+            pendingMilestone = nil
+            return
+        }
+        guard let celebrations, celebrations.isShowing else { return }
+        pendingMilestone = nil
+        celebrations.celebrate(.milestone, style: .confetti, accent: AnkiModule.descriptor.accentColor)
     }
 
     /// Logs the cards answered since the last logged count. The log is read
