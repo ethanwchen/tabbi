@@ -94,7 +94,7 @@ Touch the shared files only when you have to, and keep those edits small.
 The app icon and README screenshots are generated from code, so they stay reproducible.
 
 ```sh
-swift scripts/make-icon.swift            # redraws Resources/AppIcon.icns
+swift scripts/make-icon.swift            # redraws Resources/AppIcon.icns and docs/brand/assets (see docs/brand/icon.md)
 swift docs/make-screenshots.swift        # re-renders docs/images/*.png from demo snapshots
 ```
 
