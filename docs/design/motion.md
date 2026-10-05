@@ -145,6 +145,7 @@ Every animation has a calm fallback.
 In a view, read `@Environment(\.accessibilityReduceMotion)` and pass it to `Motion.adapted`, `Motion.notch(opening:reduceMotion:)`, `Motion.staggered` or the shared transitions, or use `.motion(_:value:)`, which reads it for you.
 Outside a view, `withMotion` reads `NSWorkspace.shared.accessibilityDisplayShouldReduceMotion`.
 Under Reduce Motion there is no scale, stretch, slide or particle: things crossfade in 180 ms.
+Text that would scroll stays put: the Now Playing title marquee keeps its truncated line under Reduce Motion, and the tooltip carries the full title.
 
 ## Rules
 

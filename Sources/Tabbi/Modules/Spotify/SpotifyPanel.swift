@@ -149,11 +149,14 @@ private struct SpotifyNowPlaying: View {
 // MARK: - Marquee
 
 /// One line of text that truncates at rest and, while `isActive` (hovered),
-/// scrolls as a gentle loop if it doesn't fit. Text that fits never moves.
+/// scrolls as a gentle loop if it doesn't fit. Text that fits never moves,
+/// and under Reduce Motion nothing scrolls: the line stays truncated.
 /// Font and color come from the environment like a plain `Text`.
 private struct SpotifyMarqueeText: View {
     let text: String
     let isActive: Bool
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     @State private var textWidth: CGFloat = 0
     @State private var containerWidth: CGFloat = 0
@@ -162,7 +165,7 @@ private struct SpotifyMarqueeText: View {
     private static let edgeFade: CGFloat = 12
 
     private var scrolls: Bool {
-        isActive && SpotifyMarquee.needsScrolling(textWidth: textWidth, containerWidth: containerWidth)
+        isActive && !reduceMotion && SpotifyMarquee.needsScrolling(textWidth: textWidth, containerWidth: containerWidth)
     }
 
     var body: some View {
