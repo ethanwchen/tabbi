@@ -52,12 +52,17 @@ final class AppServices {
                 providers.update(enabled: enabled)
             }
             .store(in: &cancellables)
+        ConnectionsStore.shared.hubPresenter = { [weak self] in
+            self?.openSettings(pane: AppSettingsPane.connections.rawValue)
+        }
     }
 
-    /// Shows the Settings window (from the notch's gear button or context menu).
-    func openSettings() {
+    /// Shows the Settings window (from the notch's gear button or context
+    /// menu), at `pane` when given.
+    func openSettings(pane: String? = nil) {
         let controller = settingsWindow ?? SettingsWindowController(settings: settings, modules: modules)
         settingsWindow = controller
+        if let pane { controller.select(pane) }
         controller.present()
     }
 }

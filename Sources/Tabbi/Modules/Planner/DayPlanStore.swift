@@ -32,18 +32,18 @@ final class DayPlanStore: ObservableObject {
 
         var title: String {
             switch self {
-            case .claudeNotFound: "Claude isn't installed"
+            case .claudeNotFound: "Claude isn't set up yet"
             case .calendarOff: "Calendar access is off"
-            case .calendarUnavailable: "Calendar isn't available"
+            case .calendarUnavailable: "Connect your calendar"
             case .claudeFailed: "Couldn't plan your day"
             }
         }
 
         var detail: String {
             switch self {
-            case .claudeNotFound: "Install the claude CLI, or set its path in Settings."
+            case .claudeNotFound: "Plan my day needs Claude, an AI helper, on this Mac."
             case .calendarOff: "Allow \(Edition.current.name) in Privacy & Security to plan around meetings."
-            case .calendarUnavailable: "Open the \(Edition.current.name) app to plan around your calendar."
+            case .calendarUnavailable: "Plan my day fits your plan around your calendar."
             case .claudeFailed: "Claude didn't send back a usable plan. Try again in a moment."
             }
         }
@@ -51,6 +51,10 @@ final class DayPlanStore: ObservableObject {
         /// Asking Claude again only helps when Claude was the problem;
         /// calendar access is fixed in System Settings instead.
         var canRetry: Bool { self == .claudeFailed }
+
+        /// The missing app or calendar is set up in Connections, which
+        /// walks through every step.
+        var opensConnections: Bool { self == .claudeNotFound || self == .calendarUnavailable }
     }
 
     @Published private(set) var phase: Phase = .idle

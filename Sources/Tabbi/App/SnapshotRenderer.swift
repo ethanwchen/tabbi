@@ -154,6 +154,7 @@ enum SnapshotRenderer {
             print(url.path)
         }
         await renderKitImportReview(services, to: outputDirectory)
+        await renderConnectionSheets(to: outputDirectory)
     }
 
     /// The review Settings shows before applying an imported kit: another
