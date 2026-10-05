@@ -19,7 +19,7 @@ struct Cell {
 }
 
 /// Lays cells out in rows of `columns` and writes a PNG.
-func writeSheet(_ cells: [Cell], columns: Int, title: String, to url: URL) throws {
+func writeSheet(_ cells: [Cell], columns: Int, title: String, scale: Int = scale, to url: URL) throws {
     let spriteSide = PetComposer.frameSize * scale
     let cellWidth = spriteSide + cellPadding * 2
     let cellHeight = spriteSide + cellPadding + labelHeight
@@ -216,3 +216,31 @@ for (breed, outfit, accessories, recolors) in recolorRuns {
 }
 try writeSheet(recolorCells, columns: 5, title: "Recolors (fur, scrubs, knits)",
                to: outputDirectory.appendingPathComponent("recolors.png"))
+
+// Breed close-up: one breed through every animation frame and every look, at
+// 4x and at notch size (24 and 32 pt on a 2x display), for art direction.
+let focusBreed = PetBreed.britishShorthair
+var focusCells: [Cell] = []
+for animation in PetAnimation.allCases {
+    let clip = PetComposer.clip(animation, for: focusBreed)
+    for (index, frame) in clip.frames.enumerated() {
+        focusCells.append(Cell(label: "\(animation.rawValue) \(index + 1)", canvas: frame.canvas,
+                               palette: focusBreed.palette.withVisibleRim()))
+    }
+}
+try writeSheet(focusCells, columns: 8, title: "Animations: \(focusBreed.displayName)",
+               to: outputDirectory.appendingPathComponent("animations-\(focusBreed.rawValue).png"))
+let focusLooks = looks.map { label, outfit, accessories in
+    Cell(label: label, canvas: PetComposer.sitting(focusBreed, outfit: outfit, accessories: accessories),
+         palette: focusBreed.palette.withVisibleRim())
+}
+try writeSheet(focusLooks, columns: 5, title: "Costumes on \(focusBreed.displayName)",
+               to: outputDirectory.appendingPathComponent("costumes-\(focusBreed.rawValue).png"))
+let notchCells = PetBreed.breeds(of: .cat).map { breed in
+    Cell(label: "", canvas: PetComposer.sitting(breed), palette: breed.palette.withVisibleRim())
+} + focusCells.filter { !$0.label.hasPrefix("walk") && !$0.label.hasPrefix("stretch") }.prefix(8)
+    .map { Cell(label: "", canvas: $0.canvas, palette: $0.palette) }
+for notchScale in [1, 2] {
+    try writeSheet(notchCells, columns: 8, title: "", scale: notchScale,
+                   to: outputDirectory.appendingPathComponent("notch-size-\(notchScale)x.png"))
+}

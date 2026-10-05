@@ -127,9 +127,11 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
             return PetPalette([.furBase: c("#F3E6D2"), .furShade: c("#DCCAB0"), .furAccent: c("#5A4034"),
                                .belly: c("#FBF4E8"), .eye: c("#3E8FD8"), .outline: c("#3A2A22")])
         case .britishShorthair:
-            return PetPalette([.furBase: c("#8E9AAD"), .furShade: c("#76839A"), .furAccent: c("#6A7790"),
-                               .belly: c("#A5B0C0"), .eye: c("#E3A12C"), .eyeLight: c("#FFF4D2"),
-                               .outline: c("#1F232B")])
+            // Shaded silver: pale silver-beige with a taupe back, white chin
+            // and chest, gray-green eyes, and a pink-tan nose.
+            return PetPalette([.furBase: c("#D6CEC3"), .furShade: c("#ADA398"), .furAccent: c("#756D66"),
+                               .belly: c("#F8F5EF"), .eye: c("#2C2E2B"), .eyeLight: c("#9AA889"),
+                               .nose: c("#D29A8A"), .blush: c("#E6B3AC"), .outline: c("#3A3330")])
         case .goldenRetriever:
             return PetPalette([.furBase: c("#E6AE52"), .furShade: c("#C98C36"), .furAccent: c("#F3CB82"),
                                .belly: c("#F7DCA8"), .nose: c("#3A2622"), .outline: c("#3A2214")])
@@ -171,7 +173,8 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
             return PetPattern([.ears: .furAccent, .mask: .furAccent, .paws: .furAccent, .tailTip: .furAccent,
                                .muzzle: .furAccent])
         case .britishShorthair:
-            return PetPattern([.muzzle: .belly, .chest: .furBase])
+            return PetPattern([.muzzle: .belly, .chest: .belly, .paws: .belly, .ears: .furShade,
+                               .mask: .furShade, .stripes: .furShade, .tailTip: .furAccent])
         case .goldenRetriever:
             return PetPattern([.chest: .furAccent, .muzzle: .furAccent])
         case .labrador:

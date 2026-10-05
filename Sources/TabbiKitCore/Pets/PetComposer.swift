@@ -219,8 +219,8 @@ public enum PetComposer {
             case .cat, .roundCat:
                 family = .cat
                 (body, bodyX, bodyY, tail) = (CatArt.bodySit, 6, 20, nil)
-                head = shape == .roundCat ? CatArt.headRound : CatArt.head
-                (headX, headY, face, faceRow, eyeRow, skullTop) = (6, 7, CatArt.faceOpen, 0, 7, 3)
+                (head, face) = shape == .roundCat ? (CatArt.headRound, CatArt.faceRound) : (CatArt.head, CatArt.faceOpen)
+                (headX, headY, faceRow, eyeRow, skullTop) = (6, 7, 0, 7, 3)
             case .longDog:
                 family = .longDog
                 (body, bodyX, bodyY, tail) = (DogArt.bodyLong, 6, 21, nil)
