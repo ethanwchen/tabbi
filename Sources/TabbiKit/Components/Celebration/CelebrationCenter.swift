@@ -10,7 +10,8 @@ import TabbiKitCore
 /// while no stage is on screen (the notch is closed), so an unseen event
 /// never uses up the `CelebrationPacer`'s allowance; otherwise it asks the
 /// pacer for a tier, publishes the `Celebration` for the open panel's
-/// `.celebrationStage(_:)` to draw, and taps a light haptic. When the pacer
+/// `.celebrationStage(_:)` to draw, taps a light haptic and, when Settings
+/// allow it, plays a soft `CelebrationSound`. When the pacer
 /// says no while a panel is open, the event still gets the smallest tier: a
 /// `CelebrationNod` that bounces its module's tab.
 @MainActor
@@ -24,16 +25,24 @@ public final class CelebrationCenter: ObservableObject {
     private var stages = 0
     private let isEnabled: Bool
     private let hapticsEnabled: () -> Bool
+    private let soundEnabled: () -> Bool
+    private let playSound: @MainActor (CelebrationSound) -> Void
     private let now: () -> Date
 
     /// - Parameters:
     ///   - isEnabled: false for snapshot runs, which play and tap nothing.
     ///   - hapticsEnabled: read at each celebration, so it follows Settings.
+    ///   - soundEnabled: read at each celebration, so it follows Settings.
+    ///   - playSound: plays a cue; tests pass their own to hear nothing.
     ///   - now: the clock the pacer measures against; tests pass their own.
     public init(isEnabled: Bool = true, hapticsEnabled: @escaping () -> Bool = { true },
+                soundEnabled: @escaping () -> Bool = { false },
+                playSound: @escaping @MainActor (CelebrationSound) -> Void = CelebrationCenter.play,
                 now: @escaping () -> Date = Date.init) {
         self.isEnabled = isEnabled
         self.hapticsEnabled = hapticsEnabled
+        self.soundEnabled = soundEnabled
+        self.playSound = playSound
         self.now = now
     }
 
@@ -43,10 +52,12 @@ public final class CelebrationCenter: ObservableObject {
     /// Plays a celebration for a real event if one fits: returns the tier
     /// that plays, or nil when the notch is closed or the pacer says it is
     /// too soon. When it is too soon and `source` is given, the event nods
-    /// instead: that module's tab bounces once, with no particles or haptic.
+    /// instead: that module's tab bounces once, with no particles, haptic or
+    /// sound. Pass `hasOwnSound` when the event already played a sound (the
+    /// Pomodoro's chime), so the two never stack.
     @discardableResult
     public func celebrate(_ tier: CelebrationTier, style: CelebrationStyle, accent: Color,
-                          from source: ModuleID? = nil) -> CelebrationTier? {
+                          from source: ModuleID? = nil, hasOwnSound: Bool = false) -> CelebrationTier? {
         guard isEnabled, isShowing else { return nil }
         guard let admitted = pacer.admit(tier, at: now()) else {
             if let source { nod = CelebrationNod(id: (nod?.id ?? 0) + 1, source: source) }
@@ -57,7 +68,18 @@ public final class CelebrationCenter: ObservableObject {
             // Only felt on a Force Touch trackpad with a finger on it.
             NSHapticFeedbackManager.defaultPerformer.perform(.levelChange, performanceTime: .now)
         }
+        if let sound = CelebrationSound.cue(for: admitted, isEnabled: soundEnabled(), eventHasSound: hasOwnSound) {
+            playSound(sound)
+        }
         return admitted
+    }
+
+    /// Plays `sound` as a quiet macOS system sound.
+    public static func play(_ sound: CelebrationSound) {
+        // A fresh copy, so a second celebration never cuts the first one off.
+        guard let player = NSSound(named: sound.name)?.copy() as? NSSound else { return }
+        player.volume = sound.volume
+        player.play()
     }
 
     func stageAppeared() { stages += 1 }

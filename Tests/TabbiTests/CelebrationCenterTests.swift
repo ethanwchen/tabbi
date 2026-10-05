@@ -25,6 +25,32 @@ final class CelebrationCenterTests: XCTestCase {
         XCTAssertEqual(center.current?.date, clock)
     }
 
+    func testSoundPlaysOnlyWhenAllowedAndTheEventHasNone() {
+        var played: [CelebrationSound] = []
+        var soundOn = true
+        let center = CelebrationCenter(hapticsEnabled: { false }, soundEnabled: { soundOn },
+                                       playSound: { played.append($0) }, now: { [unowned self] in clock })
+        center.stageAppeared()
+
+        // The Pomodoro already chimed: its burst stays quiet.
+        XCTAssertEqual(center.celebrate(.burst, style: .confetti, accent: .teal, hasOwnSound: true), .burst)
+        XCTAssertEqual(played, [])
+
+        // An unlock has no sound of its own.
+        XCTAssertEqual(center.celebrate(.milestone, style: .sparkles, accent: .pink), .milestone)
+        XCTAssertEqual(played.map(\.name), ["Hero"])
+
+        // A refused event only nods, silently.
+        XCTAssertNil(center.celebrate(.burst, style: .hearts, accent: .pink, from: .closet))
+        XCTAssertEqual(played.count, 1)
+
+        // Turning the sound off in Settings applies to the next celebration.
+        soundOn = false
+        clock += CelebrationPacer.burstInterval
+        XCTAssertEqual(center.celebrate(.burst, style: .hearts, accent: .pink), .burst)
+        XCTAssertEqual(played.count, 1)
+    }
+
     func testSnapshotRunsNeverCelebrate() {
         let center = center(isEnabled: false)
         center.stageAppeared()

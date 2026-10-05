@@ -37,9 +37,14 @@ struct GeneralSettingsPane: View {
                 .help("Open the notch after hovering it briefly")
                 Toggle(isOn: $store.settings.hapticsEnabled) {
                     Text("Haptic feedback")
-                    Text("A light trackpad tap when the pointer reaches the notch.")
+                    Text("A light trackpad tap at the notch edge and on celebrations.")
                 }
-                .help("Tap the trackpad when the pointer reaches the notch")
+                .help("Tap the trackpad when the pointer reaches the notch or a celebration plays")
+                Toggle(isOn: $store.settings.celebrationSoundEnabled) {
+                    Text("Celebration sound")
+                    Text("A soft sound when you unlock an item or reach a streak milestone.")
+                }
+                .help("Play a soft sound with celebrations that have no sound of their own")
             } header: {
                 Text("Behavior")
             }

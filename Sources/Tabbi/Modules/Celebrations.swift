@@ -3,11 +3,12 @@ import TabbiKitCore
 
 extension SharedServices {
     /// The one `CelebrationCenter`, so every module shares its frequency
-    /// limits. Snapshot runs celebrate nothing; haptics follow Settings.
+    /// limits. Snapshot runs celebrate nothing; haptics and sound follow Settings.
     func celebrations(settings: SettingsStore, runMode: RunMode) -> CelebrationCenter {
         resolve {
             CelebrationCenter(isEnabled: !runMode.isSnapshot,
-                              hapticsEnabled: { [weak settings] in settings?.settings.hapticsEnabled ?? false })
+                              hapticsEnabled: { [weak settings] in settings?.settings.hapticsEnabled ?? false },
+                              soundEnabled: { [weak settings] in settings?.settings.celebrationSoundEnabled ?? false })
         }
     }
 }

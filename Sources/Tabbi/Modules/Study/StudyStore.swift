@@ -394,7 +394,7 @@ final class StudyStore: ObservableObject {
                 pet.send(event)
                 if event == .celebrate {
                     celebrations?.celebrate(.burst, style: .pawPrints, accent: StudyModule.descriptor.accentColor,
-                                            from: StudyModule.descriptor.id)
+                                            from: StudyModule.descriptor.id, hasOwnSound: true)
                 }
             }
         }

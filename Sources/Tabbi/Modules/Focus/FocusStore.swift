@@ -152,7 +152,7 @@ final class FocusStore: ObservableObject {
             Self.playChime()
             if last.phase == .focus {
                 celebrations?.celebrate(.burst, style: .confetti, accent: FocusModule.descriptor.accentColor,
-                                        from: FocusModule.descriptor.id)
+                                        from: FocusModule.descriptor.id, hasOwnSound: true)
             }
         }
         scheduleSideEffects(withdrawingPending: false)
