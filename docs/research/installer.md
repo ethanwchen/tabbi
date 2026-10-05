@@ -404,3 +404,18 @@ lipo -archs .build/apple/Products/Release/Tabbi                     # x86_64 arm
 - `scripts/release.sh --adhoc` for Tabbi 0.1.0: the universal executable shrinks from 29.6 MB to 12.5 MB with `strip -x`; the app is 13 MB, the zip 5.8 MB and the DMG (ULFO) 6.9 MB.
 - `strip` keeps or re-adds the linker's ad-hoc signature, so `codesign` reports "replacing existing signature" when the app is signed; removing the signature before `strip` only silences strip's warning about it.
 - Without a Developer ID identity or the `notchdeck` notary profile, the script stops before the build and lists which of the two setup steps is missing.
+
+## Measured: install hygiene (iteration 4)
+
+Tested on macOS 26 with a debug build under a throwaway edition (its own bundle id and data folder), so the maintainer's own Tabbi was never touched.
+
+- From a mounted disk image: the move prompt appears, the copy lands in `/Applications`, the disk image is ejected once the old process exits, and the copy opens straight into onboarding (the welcome window).
+- Replacing an older copy in `/Applications` works: the old copy is quit, moved to the Trash, and the new binary is in place (checksums matched the build).
+- From `~/Downloads`: deleting the original with `FileManager.trashItem` blocked the main thread behind the Downloads folder privacy prompt (TCC).
+  Tabbi therefore leaves a downloaded original in place and only ejects disk images.
+  Copying out of Downloads needs no prompt, because an app may always read its own bundle.
+- Launch at login turns on once for a new user running from Applications (`SMAppService.mainApp` registered, the Settings toggle shows it on), and turning it off sticks across launches.
+- A second copy started with `open -n` quits at once and the running copy opens Settings.
+  `NSWorkspace.openApplication` on the running copy did not deliver a reopen event, so the hand-off uses a distributed notification named after the bundle id (no Apple Event, so no Automation prompt).
+- App Translocation could not be tested locally: a quarantined ad-hoc build is blocked by Gatekeeper before it runs.
+  The translocated path is handled by resolving the original with `SecTranslocateCreateOriginalPathForURL` and clearing `com.apple.quarantine` on the copy, and needs a check with the first notarized build.

@@ -9,14 +9,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var welcome: WelcomeWindowController?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        if InstallHygiene.isAnotherCopyRunning() {
+            NSApp.terminate(nil)
+            return
+        }
         let edition = Edition.current
         if edition == .tabbi, RunMode.current == .live {
             // Before any store opens a file: adopts NotchDeck's data once.
             LegacyDataMigration.tabbi(storage: EditionStorage(edition: edition)).runIfNeeded()
         }
         let settings = SettingsStore(catalog: ModuleList.catalog, defaultKitID: edition.defaultKitID, kitStore: .standard(for: edition))
+        guard InstallHygiene.settle(settings: settings) == .proceed else {
+            NSApp.terminate(nil)
+            return
+        }
         let services = AppServices(settings: settings)
         self.services = services
+        InstallHygiene.whenAnotherCopyLaunches { [weak services] in services?.openSettings() }
         notch = NotchController(content: ModuleViews.notchContent(services: services),
                                 inputs: ModuleViews.notchInputs(services: services))
         if !settings.settings.hasChosenKit {
