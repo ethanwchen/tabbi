@@ -93,4 +93,21 @@ enum CatArt {
         ...SBppSBBBBSppBSS..
         ....pppp....pppp....
         """)
+
+    /// British Shorthair sitting body, the same 20x11 frame as `bodySit` so
+    /// every costume fits: taupe flanks with faint ticking, full haunches,
+    /// a white chest and paws, and a thick tail ringed with dark bands.
+    static let bodyRound = SpriteGrid(art: """
+        .....SBBBBBBBBS.....
+        ....SBBccccccBBS....
+        ....SBccccccccBS..tt
+        ...SSBccccccccBSS.SS
+        ...SsBBccccccBBsS.tt
+        ...SSBBBccccBBBSS.SS
+        ...SsBBBBBBBBBBsS.tt
+        ..SSSBBBBBBBBBBSSSSS
+        ..SsSBBBBBBBBBBSsSS.
+        ..SSBpppBBBBpppBSS..
+        ...Spppp....ppppS...
+        """)
 }

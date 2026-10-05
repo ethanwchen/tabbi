@@ -53,6 +53,30 @@ final class PetProfileTests: XCTestCase {
         }
     }
 
+    func testTheBritishShorthairTailIsRingedSittingAndWalking() {
+        // Its dark-ringed tail is what tells it apart from a gray tabby at
+        // notch size: some column must cross at least three dark bands
+        // (two while walking, where the swaying tail runs diagonally).
+        func ringCount(_ canvas: PetCanvas) -> Int {
+            (0..<canvas.width).map { x in
+                var runs = 0
+                var inRing = false
+                for y in 0..<canvas.height {
+                    let isRing = canvas[x, y] == .furAccent
+                    if isRing && !inRing { runs += 1 }
+                    inRing = isRing
+                }
+                return runs
+            }.max() ?? 0
+        }
+        let clips = PetClipSet(profile: PetProfile(name: "", breed: .britishShorthair))
+        XCTAssertGreaterThanOrEqual(ringCount(PetComposer.sitting(.britishShorthair)), 3)
+        for frame in clips[.walk].frames {
+            XCTAssertGreaterThanOrEqual(ringCount(frame.canvas), 2)
+        }
+        XCTAssertLessThan(ringCount(PetComposer.sitting(.grayTabby)), 3, "plain cats keep their plain tail")
+    }
+
     func testStarterMatchesTheChosenSpecies() {
         for species in PetSpecies.allCases {
             let starter = PetProfile.starter(species)

@@ -181,6 +181,7 @@ Pets walk toward the left; mirror the frames to walk right.
 
 - Torsos: `catTorso` and `dogTorso` share one size (22x7, so torso costumes fit both), and `longTorso` (23x6) sits lower on shorter legs for the dachshund.
   The cat torso carries stripe and calico patch zones; the dog torso carries the beagle saddle.
+  The British Shorthair walks on `roundCatTorso`, the same size with a taupe back, and swings the ringed `roundCatTail`.
 - Tails: two sway positions per family; the tail swings once per half cycle so it never flickers.
   Stubby-tailed breeds (`hasTail == false`) skip it.
 - Legs: `WalkArt.leg(height:lean:far:)` generates every leg, with the paw zone on the bottom row.
@@ -264,6 +265,20 @@ Its initializer and editing methods keep it valid at all times:
 
 New users start with `PetProfile.starter(.cat)`: a British Shorthair drawn from the maintainer's own shaded-silver cat, with no name yet.
 It goes by "British Shorthair" until the user names it, and the Closet asks them to.
+
+![The reference photo beside the sitting and walking sprite at 4x, and every cat breed plus the British Shorthair's resting frames at notch size](images/british-shorthair-comparison.png)
+
+What makes this cat recognizable, and where each part lives:
+
+- Coloring (`PetBreed.palette`): pale silver-beige fur, a taupe shade for the crown, back and flanks, a dark taupe accent for ticking and tail rings, a white muzzle, chin, chest and paws, a pink-tan nose, and gray-green eyes.
+- Head (`CatArt.headRound`): small rounded ears set wide apart, a taupe crown with faint ticking that runs down the forehead, and full cheeks around the white muzzle.
+- Face (`CatArt.faceRound`): heavy dark lids over 2x3 eyes, extended toward the nose, for the half-lidded "unimpressed" look, and a flat mouth.
+- Body (`CatArt.bodyRound`, `WalkArt.roundCatTorso`, `WalkArt.roundCatTail`): taupe flanks and back with ticking, full haunches, and a thick tail ringed with dark bands.
+  These grids have the same size as the plain cat's, so every costume fits without new art.
+
+![Every animation frame for the British Shorthair](images/animations-britishShorthair.png)
+
+![Every costume on the British Shorthair](images/costumes-britishShorthair.png)
 `PetProfile.defaultName(for:)` gives cats no name and dogs "Biscuit", and `hasDefaultName` tells these (and "Mochi", the starter name in earlier versions) apart from a name the user chose, so switching species only renames a pet that still has a default name.
 A kit can still pick another starter (`moduleSettings.closet.pet`), and a pet that is already saved never changes.
 
@@ -312,7 +327,7 @@ Dogs need more, because their ears and snouts are what make them recognizable at
 | Shape | Breeds | What sets it apart |
 | --- | --- | --- |
 | `cat` | most cats | pointed ears, tabby stripe zones |
-| `roundCat` | British Shorthair | small wide-set ears, round cheeks |
+| `roundCat` | British Shorthair | small wide-set ears, round cheeks, half-lidded eyes, stocky body, ringed tail |
 | `floppyDog` | Labrador, Beagle | hanging ears beside a rounded skull |
 | `fluffyDog` | Golden Retriever | long feathered ears |
 | `batEaredDog` | French Bulldog | big rounded bat ears, broad face |
