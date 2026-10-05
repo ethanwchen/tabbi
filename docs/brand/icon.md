@@ -1,6 +1,6 @@
 # Tabbi app icon
 
-Tabbi's mascot is the maintainer's British Shorthair, a shaded silver cat with a famously unimpressed face, who lives in the tabs on your MacBook notch.
+Tabbi's mascot is the maintainer's British Shorthair, a shaded silver cat with round blue eyes, who lives in the tabs on your MacBook notch.
 The icon has to say that in one glance: this particular cat, a nod to tabs, and a hint that this is a tool for getting things done.
 
 The icon is drawn entirely in code by `scripts/make-icon.swift` (CoreGraphics, vector shapes, no source art).
@@ -54,7 +54,7 @@ What makes her recognizable, in order:
 5. Small ears set wide apart, low on the corners of the head.
 
 The colours were first sampled from the photo and brightened to studio light, then in round 5 aligned with the pet sprite's British Shorthair palette (`PetBreed.britishShorthair`), so the icon and the cat in the notch are the same cat.
-The shipped colours: fur `#E6DFD5`, jowl shade `#CAC1B5`, taupe crown `#ADA398`, ticking `#756D66`, white `#F8F5EF`, inner ear `#E6B3AC`, iris `#9AA889`, nose `#D29A8A`.
+The shipped colours: fur `#E6DFD5`, jowl shade `#CAC1B5`, taupe crown `#ADA398`, ticking `#756D66`, white `#F8F5EF`, inner ear `#E6B3AC`, iris `#3F86D6` to `#5FA3EA` (round 6 on), nose `#D29A8A`.
 
 Each round is archived as a review sheet in `docs/brand/rounds/`: light desktop on top, dark below; 1024 px at half size, then 128, 32 and 16 px, then 4x pixel blow-ups of 32 and 16 px, and from round 2 on the reference photo on the right.
 Dock sheets put the icon between Apple's icons at 128 and 32 px.
@@ -157,6 +157,35 @@ Verdict:
 - The Light, Dark and Tinted appearances keep the cat recognizable; Tinted is unchanged because it carries its own greys.
 - `Resources/AppIcon.icns`, the 1024 px assets, every derived image and the DMG background were regenerated from this round.
 
+### Rounds 6 to 8: open, cute blue eyes
+
+Maintainer request: "Make sure the eyes on the British Shorthair are open and cute. Blue eye."
+The pet sprite got round blue eyes at the same time, so the icon follows it.
+
+Round 6 (`rounds/r6.png`):
+
+- The half-lidded grey-green eye is replaced by a round, wide-open eye: a blue iris (the sprite's `#3F86D6` at the top, lit to `#5FA3EA` at the bottom), a dark pupil, a thin dark rim, a big white catch light up and to the left and a small one low on the right.
+- The flat, downturned mouth becomes a short line under the nose that opens into a gentle "w", a content little smile.
+- At 32 px and below the eye is a blue disc around a dark pupil instead of a dark half-oval.
+- Verdict: friendly at once, and the 16 px render still shows a blue eye with a dark centre.
+  But the eye is small next to the heavy checkmark, and the iris ring is thin and lopsided.
+
+Round 7 (`rounds/r7.png`, `rounds/r7-dock.png`):
+
+- The eye grows from 118 by 128 to 136 by 146 units, and the catch light is bigger and closer to the centre.
+- Verdict: the eye and the check now balance as a wink.
+  In the Dock the open eye is the first thing you see, on both desktops.
+  Up close the pupil is a narrow oval that reads a little startled, and the rim is heavier than it needs to be.
+
+Round 8 (`rounds/r8.png`, `rounds/r8-dock.png`, `rounds/r8-variants.png`):
+
+- A rounder, larger pupil (a kitten's proportions) and a lighter 8-unit rim.
+- A soft pink blush under each eye, in the inner-ear colour, drawn at 1024 and 128 px only.
+- The glyph's eye is a round hole with its catch light left standing, so the one-colour mark is wide open too.
+- Verdict: cute and clear at every size.
+  The Light, Dark and Tinted appearances keep the round eye; Tinted turns it a mid grey with the same dark pupil and white catch lights.
+  `Resources/AppIcon.icns`, the 1024 px assets and the glyph were regenerated from this round.
+
 ## Assets
 
 `scripts/make-icon.swift` writes these to `docs/brand/assets/` on every default run.
@@ -198,7 +227,7 @@ Every other image that shows the icon is made from the assets above, so after a 
 | `docs/images/icon.png` (README) | `sips -Z 256 docs/brand/assets/tabbi-icon-1024.png --out docs/images/icon.png` |
 | `docs/images/social-preview.png` | `swift docs/make-screenshots.swift`, which places `docs/images/icon.png` beside the name (it also rewrites the other README screenshots, whose clocks differ on every run) |
 | `docs/images/install/gatekeeper-steps.png` | `swift docs/images/install/render-gatekeeper-steps.swift`, which reads `Resources/AppIcon.icns` |
-| The DMG window background | `packaging/dmg/render-background.swift` at build time. Its palette mirrors the icon: the navy ground, the fur-coloured checkmark wink and arrow (from the pink-tan nose to the pale fur), a half-lidded grey-green eye in the notch, and label pills in the shaded silver-beige |
+| The DMG window background | `packaging/dmg/render-background.swift` at build time. Its palette mirrors the icon: the navy ground, the fur-coloured checkmark wink and arrow (from the pink-tan nose to the pale fur), a round blue eye in the notch, and label pills in the shaded silver-beige |
 | `docs/images/install/dmg-window.png` | A screenshot of the real installer: `scripts/make-dmg.sh`, mount the DMG, then `screencapture -l <window id>` of its Finder window |
 | `docs/images/install/move-prompt.png`, `settings-about.png` | Screenshots of the running app. For an icon-only change the icon can be repainted in place: both show it on a flat surface, at 128 and 200 px with its 824/1024 body at the same spot, so the new 1024 px asset drawn into that rect matches a fresh capture |
 

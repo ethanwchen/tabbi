@@ -49,10 +49,11 @@ let inkMid = RGB(0x17214A)
 let inkDeep = RGB(0x0D1430)
 let inkLight = RGB(0x4660A8)
 /// The British Shorthair's pale silver-beige fur, its pink-tan nose and its
-/// grey-green eye.
+/// round blue eye with a dark pupil.
 let fur = RGB(0xE6DFD5)
 let nose = RGB(0xD29A8A)
-let iris = RGB(0x9AA889)
+let iris = RGB(0x5FA3EA)
+let pupil = RGB(0x2B2622)
 /// The cat's shaded silver-beige, with a relative luminance near 0.5, so
 /// Finder's black label text reaches about 11:1 contrast without the pill
 /// glaring on the navy.
@@ -128,7 +129,7 @@ func drawBackground(in ctx: CGContext, name: String) {
         }
     }
 
-    // The notch, with the cat peeking out of it: one half-lidded eye and the icon's checkmark wink.
+    // The notch, with the cat peeking out of it: one round blue eye and the icon's checkmark wink.
     let notchWidth: CGFloat = 132, notchHeight: CGFloat = 34
     let notch = notchPath(width: notchWidth, height: notchHeight, centerX: bounds.midX, shoulder: 8, bottomRadius: 12)
     glow(ctx, RGB(0xFFFFFF), at: CGPoint(x: bounds.midX, y: notchHeight), radius: 120, alpha: 0.05)
@@ -142,26 +143,13 @@ func drawBackground(in ctx: CGContext, name: String) {
     let eyeY = notchHeight / 2 + 1
     let eye = CGPoint(x: bounds.midX - 12, y: eyeY)
     glow(ctx, iris, at: eye, radius: 11, alpha: 0.5)
-    // The heavy lid: a flat top that slopes down toward the nose cuts the round iris.
-    let lidOuter = CGPoint(x: eye.x - 6, y: eye.y - 1.5), lidInner = CGPoint(x: eye.x + 6, y: eye.y + 0.5)
-    let lid = CGMutablePath()
-    lid.move(to: CGPoint(x: lidOuter.x, y: lidOuter.y))
-    lid.addLine(to: CGPoint(x: lidInner.x, y: lidInner.y))
-    lid.addLine(to: CGPoint(x: lidInner.x, y: eye.y + 8))
-    lid.addLine(to: CGPoint(x: lidOuter.x, y: eye.y + 8))
-    lid.closeSubpath()
-    ctx.saveGState()
-    ctx.addPath(lid)
-    ctx.clip()
+    // A round, wide-open blue eye: iris, a dark pupil and a white catch light.
     ctx.setFillColor(iris.cg())
-    ctx.fillEllipse(in: CGRect(x: eye.x - 4.5, y: eye.y - 4.5, width: 9, height: 9))
-    ctx.restoreGState()
-    ctx.move(to: CGPoint(x: lidOuter.x + 1, y: lidOuter.y + 0.1))
-    ctx.addLine(to: CGPoint(x: lidInner.x - 1, y: lidInner.y - 0.1))
-    ctx.setStrokeColor(fur.cg())
-    ctx.setLineWidth(1.5)
-    ctx.setLineCap(.round)
-    ctx.strokePath()
+    ctx.fillEllipse(in: CGRect(x: eye.x - 5.5, y: eye.y - 5.5, width: 11, height: 11))
+    ctx.setFillColor(pupil.cg())
+    ctx.fillEllipse(in: CGRect(x: eye.x - 2.75, y: eye.y - 2.5, width: 6, height: 6.5))
+    ctx.setFillColor(CGColor(gray: 1, alpha: 0.95))
+    ctx.fillEllipse(in: CGRect(x: eye.x - 3.5, y: eye.y - 3.75, width: 3, height: 3))
     let wink = CGPoint(x: bounds.midX + 12, y: eyeY)
     glow(ctx, fur, at: wink, radius: 11, alpha: 0.35)
     let check = CGMutablePath()

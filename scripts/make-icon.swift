@@ -52,8 +52,9 @@ struct Palette {
     var white = RGB(0xF8F5EF)           // muzzle, chin and chest
     var innerEar = RGB(0xE6B3AC)        // the tab's label: the pink inside of the ear
     var sheen = RGB(0xFFFFFF)           // top light on the crown of the head
-    var iris = RGB(0x9AA889)            // grey-green eye
-    var eye = RGB(0x2B2622)             // pupil, lid line and the checkmark wink
+    var iris = RGB(0x5FA3EA)            // clear blue eye, lit
+    var irisDeep = RGB(0x3F86D6)        // the top of the iris, the pet sprite's eye blue
+    var eye = RGB(0x2B2622)             // pupil, eye rim and the checkmark wink
     var nose = RGB(0xD29A8A)            // pink-tan nose
 
     /// Candidate ground: deep navy, so the pale cat glows and the icon echoes the black notch.
@@ -74,7 +75,7 @@ struct Palette {
                                 topLight: RGB(0x4A4A4A), topLightAlpha: 0.45,
                                 fur: RGB(0xE6E6E6), furShade: RGB(0xBDBDBD), back: RGB(0x9A9A9A),
                                 ticking: RGB(0x6E6E6E), white: RGB(0xFFFFFF), innerEar: RGB(0xD2D2D2),
-                                iris: RGB(0xA6A6A6), eye: RGB(0x161616), nose: RGB(0x8C8C8C))
+                                iris: RGB(0xA6A6A6), irisDeep: RGB(0x8C8C8C), eye: RGB(0x161616), nose: RGB(0x8C8C8C))
 }
 
 let candidatePalettes: [String: Palette] = ["navy": .navy, "blush": .blush]
@@ -242,39 +243,31 @@ func earPath(side: CGFloat, inset: CGFloat = 0, small: Bool = false) -> CGPath {
                    radius: 48 - inset * 0.5, angle: side * (small ? 0.30 : 0.42))
 }
 
-/// The open eye: grey-green under a heavy, level upper lid, the unimpressed half-lidded
-/// look of the reference cat. `lid` is the y of the lid line at the eye's centre; it
-/// tilts down toward the nose.
-func halfLiddedEye(_ ctx: CGContext, center c: CGPoint, width w: CGFloat, height h: CGFloat,
-                   lid: CGFloat, tilt: CGFloat, lidWidth: CGFloat, small: Bool) {
+/// The open eye: a round, wide-open blue eye with a big dark pupil and a white catch
+/// light, friendly rather than grumpy. The same clear blue as the pet sprite's eye.
+/// At 32 px and below it is a blue disc around a dark pupil, which still reads as
+/// an open eye when it covers only two or three pixels.
+func roundEye(_ ctx: CGContext, center c: CGPoint, width w: CGFloat, height h: CGFloat, small: Bool) {
     let eyeShape = ellipse(c.x, c.y, w, h)
-    // Everything below the lid line is visible eye.
-    let visible = CGMutablePath()
-    visible.move(to: CGPoint(x: c.x - w, y: lid - tilt))
-    visible.addLine(to: CGPoint(x: c.x + w, y: lid + tilt))
-    visible.addLine(to: CGPoint(x: c.x + w, y: c.y + h))
-    visible.addLine(to: CGPoint(x: c.x - w, y: c.y + h))
-    visible.closeSubpath()
-    let open = eyeShape.intersection(visible)
     if small {
-        // At 16 and 32 px the eye is one dark half-oval: the flat top is the lid.
-        fill(ctx, open, brand.eye.cg())
+        fill(ctx, eyeShape, brand.iris.cg())
+        fill(ctx, ellipse(c.x + w * 0.04, c.y + h * 0.04, w * 0.56, h * 0.62), brand.eye.cg())
         return
     }
-    fill(ctx, open, top: brand.iris.cg(), bottom: brand.iris.cg())
+    // Lighter at the bottom, the way light pools in a real iris.
+    fill(ctx, eyeShape, top: brand.irisDeep.cg(), bottom: brand.iris.cg())
     ctx.saveGState()
-    ctx.addPath(open)
+    ctx.addPath(eyeShape)
     ctx.clip()
-    fill(ctx, ellipse(c.x + w * 0.04, c.y + h * 0.06, w * 0.46, h * 0.86), brand.eye.cg())
-    fill(ctx, ellipse(c.x + w * 0.2, lid + h * 0.2, w * 0.16, w * 0.16), CGColor(gray: 1, alpha: 0.9))
+    fill(ctx, ellipse(c.x + w * 0.02, c.y + h * 0.05, w * 0.56, h * 0.6), brand.eye.cg())
     ctx.restoreGState()
-    // The dark rim around the visible eye, heaviest along the lid.
-    ctx.addPath(open)
+    ctx.addPath(eyeShape)
     ctx.setStrokeColor(brand.eye.cg())
-    ctx.setLineWidth(10)
+    ctx.setLineWidth(8)
     ctx.strokePath()
-    stroke(ctx, [CGPoint(x: c.x - w * 0.46, y: lid - tilt * 0.46 + 2), CGPoint(x: c.x + w * 0.46, y: lid + tilt * 0.46 + 2)],
-           width: lidWidth, color: brand.eye.cg())
+    // A big catch light up and to the left, and a small one low on the right: sparkle.
+    fill(ctx, ellipse(c.x - w * 0.14, c.y - h * 0.14, w * 0.34, w * 0.34), CGColor(gray: 1, alpha: 0.95))
+    fill(ctx, ellipse(c.x + w * 0.18, c.y + h * 0.24, w * 0.13, w * 0.13), CGColor(gray: 1, alpha: 0.85))
 }
 
 /// The pink-tan nose: a soft rounded triangle.
@@ -288,7 +281,7 @@ func nose(_ ctx: CGContext, at c: CGPoint, scale s: CGFloat) {
 }
 
 /// "Tab-by", British Shorthair cut: a round silver-beige face whose small ears are
-/// folder tabs, with a deadpan half-lidded eye and the other eye winking as a checkmark.
+/// folder tabs, with one round blue eye open and the other winking as a checkmark.
 func drawCat(_ ctx: CGContext) {
     fill(ctx, CGPath(rect: bodyRect, transform: nil), top: brand.ground.cg(), bottom: brand.groundDeep.cg())
     // A top light in the ground's own hue, like a glass layer lit from above.
@@ -363,17 +356,26 @@ func drawCat(_ ctx: CGContext) {
     fill(ctx, ellipse(456, 800, 140, 110), brand.white.cg())
     fill(ctx, ellipse(568, 800, 140, 110), brand.white.cg())
 
-    // One eye half-lidded and unimpressed, the other a checkmark wink: done.
-    halfLiddedEye(ctx, center: CGPoint(x: 396, y: 664), width: 138, height: 104, lid: 652, tilt: 12,
-                  lidWidth: 18, small: false)
+    // One eye wide open and blue, the other a checkmark wink: done.
+    roundEye(ctx, center: CGPoint(x: 400, y: 654), width: 136, height: 146, small: false)
     stroke(ctx, [CGPoint(x: 572, y: 654), CGPoint(x: 606, y: 690), CGPoint(x: 676, y: 616)], width: 36,
            color: brand.eye.cg())
 
+    // A soft pink blush under each eye.
+    for x in [392.0, 632.0] as [CGFloat] {
+        ctx.saveGState()
+        ctx.translateBy(x: x, y: 752)
+        ctx.scaleBy(x: 1.5, y: 1)
+        radialGlow(ctx, at: .zero, radius: 40, color: brand.innerEar.cg(0.6))
+        ctx.restoreGState()
+    }
     nose(ctx, at: CGPoint(x: 512, y: 744), scale: 1.15)
-    // A short, flat mouth line under the nose: deadpan, not smiling.
-    stroke(ctx, [CGPoint(x: 512, y: 762), CGPoint(x: 512, y: 790)], width: 8, color: brand.eye.cg(0.55))
-    stroke(ctx, [CGPoint(x: 476, y: 802), CGPoint(x: 512, y: 790), CGPoint(x: 548, y: 802)], width: 8,
-           color: brand.eye.cg(0.55), curved: true)
+    // A short line under the nose that opens into a gentle "w": a content little smile.
+    stroke(ctx, [CGPoint(x: 512, y: 762), CGPoint(x: 512, y: 784)], width: 8, color: brand.eye.cg(0.55))
+    for side in [-1.0, 1.0] as [CGFloat] {
+        stroke(ctx, [CGPoint(x: 512, y: 784), CGPoint(x: 512 + side * 20, y: 806), CGPoint(x: 512 + side * 42, y: 782)],
+               width: 8, color: brand.eye.cg(0.55), curved: true)
+    }
 }
 
 /// The face for 32 px and smaller. At 16 px one canvas pixel is 64 units, so anything
@@ -382,8 +384,7 @@ func drawCat(_ ctx: CGContext) {
 /// least a pixel and a half.
 func drawFaceSmall(_ ctx: CGContext) {
     fill(ctx, ellipse(512, 830, 320, 170), brand.white.cg())
-    halfLiddedEye(ctx, center: CGPoint(x: 392, y: 662), width: 156, height: 156, lid: 638, tilt: 6,
-                  lidWidth: 0, small: true)
+    roundEye(ctx, center: CGPoint(x: 398, y: 652), width: 170, height: 178, small: true)
     stroke(ctx, [CGPoint(x: 560, y: 652), CGPoint(x: 606, y: 702), CGPoint(x: 690, y: 604)], width: 70,
            color: brand.eye.cg())
     fill(ctx, ellipse(512, 752, 84, 56), brand.nose.cg())
@@ -530,7 +531,7 @@ func writePNG(_ image: CGImage, to url: URL) {
 
 /// A one-colour Tabbi mark for small UI (menus, onboarding, the website favicon):
 /// the British Shorthair's round head with its chubby jowls and small folder-tab
-/// ears, with the half-lidded eye, the checkmark wink and the nose cut out.
+/// ears, with the round open eye, the checkmark wink and the nose cut out.
 /// It is a single path, so it renders the same as a bitmap and as vector PDF, and
 /// works as an AppKit template image.
 func glyphPath() -> CGPath {
@@ -540,14 +541,12 @@ func glyphPath() -> CGPath {
         shape = shape.union(tabPath(baseCenter: CGPoint(x: 512 + side * 222, y: 390), baseWidth: 250,
                                     topWidth: 150, height: 200, radius: 50, angle: side * 0.26))
     }
-    // The open eye is a half-oval whose flat top is the heavy lid, sloping toward the nose.
-    let lid = CGMutablePath()
-    lid.addLines(between: [CGPoint(x: 280, y: 560), CGPoint(x: 500, y: 576), CGPoint(x: 500, y: 760),
-                           CGPoint(x: 280, y: 760)])
-    lid.closeSubpath()
+    // The open eye is a round hole with its catch light left standing, so it stays
+    // wide open and friendly in one colour.
+    let eye = ellipse(392, 590, 150, 160).subtracting(ellipse(362, 562, 50, 50))
     let check = CGMutablePath()
     check.addLines(between: [CGPoint(x: 560, y: 580), CGPoint(x: 610, y: 632), CGPoint(x: 700, y: 530)])
-    let cuts = ellipse(388, 590, 160, 136).intersection(lid)
+    let cuts = eye
         .union(check.copy(strokingWithWidth: 64, lineCap: .round, lineJoin: .round, miterLimit: 10))
         .union(ellipse(512, 706, 84, 56))
     // The ears reach higher than the jowls reach low, so lift the mark to centre it.
