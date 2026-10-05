@@ -261,6 +261,18 @@ Its initializer and editing methods keep it valid at all times:
 - `tintFur(_:)` recolors all fur from one picked color, and `tintFur(nil)` returns the fur to the breed colors without touching costume colors.
 - A pet still called by its breed name follows breed changes, so it never keeps a stale breed name; a name the user chose stays.
 
+Costume items are earned with study points; breeds and colors are always free.
+`PetItem` wraps an outfit or accessory with a stable string id (`outfit.scrubs`, `accessory.beanie`) and a `cost`.
+Cozy basics are cheap so the first finished 25-minute session unlocks the scarf; the white coat and the graduation cap are long-term goals.
+
+`PetPointsRules` turns a session into points: one point per full minute, nothing under 5 minutes, and a 10-point bonus for completing a session of at least 25 minutes.
+`PetPointsLedger` stores lifetime `earned` and `spent` points plus the purchased items; `balance` is the difference, so it can never drift.
+`buy(_:)` throws `PetPurchaseError.alreadyOwned` or `.notEnoughPoints(missing:)` and changes nothing on failure.
+
+`PetSave` persists the profile and the ledger together as one versioned JSON document (`write(to:)` is atomic, `load(from:)` returns nil when there is no save yet).
+Decoding is forgiving: unknown breeds fail, but unknown outfits, accessories, palette roles, and item ids from a newer build are dropped instead of breaking the file, and so are palette colors that are not valid hex.
+Every save is passed through `PetProfile.restricted(to:)`, so a hand-edited file can never dress the pet in items it has not bought.
+
 ### The default pet
 
 New users start with `PetProfile.starter(.cat)`: a British Shorthair drawn from the maintainer's own shaded-silver cat, with no name yet.
@@ -279,20 +291,9 @@ What makes this cat recognizable, and where each part lives:
 ![Every animation frame for the British Shorthair](images/animations-britishShorthair.png)
 
 ![Every costume on the British Shorthair](images/costumes-britishShorthair.png)
+
 `PetProfile.defaultName(for:)` gives cats no name and dogs "Biscuit", and `hasDefaultName` tells these (and "Mochi", the starter name in earlier versions) apart from a name the user chose, so switching species only renames a pet that still has a default name.
 A kit can still pick another starter (`moduleSettings.closet.pet`), and a pet that is already saved never changes.
-
-Costume items are earned with study points; breeds and colors are always free.
-`PetItem` wraps an outfit or accessory with a stable string id (`outfit.scrubs`, `accessory.beanie`) and a `cost`.
-Cozy basics are cheap so the first finished 25-minute session unlocks the scarf; the white coat and the graduation cap are long-term goals.
-
-`PetPointsRules` turns a session into points: one point per full minute, nothing under 5 minutes, and a 10-point bonus for completing a session of at least 25 minutes.
-`PetPointsLedger` stores lifetime `earned` and `spent` points plus the purchased items; `balance` is the difference, so it can never drift.
-`buy(_:)` throws `PetPurchaseError.alreadyOwned` or `.notEnoughPoints(missing:)` and changes nothing on failure.
-
-`PetSave` persists the profile and the ledger together as one versioned JSON document (`write(to:)` is atomic, `load(from:)` returns nil when there is no save yet).
-Decoding is forgiving: unknown breeds fail, but unknown outfits, accessories, palette roles, and item ids from a newer build are dropped instead of breaking the file, and so are palette colors that are not valid hex.
-Every save is passed through `PetProfile.restricted(to:)`, so a hand-edited file can never dress the pet in items it has not bought.
 
 ### Recoloring fur
 
