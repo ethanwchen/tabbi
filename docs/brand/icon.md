@@ -168,3 +168,18 @@ The glyph PDF is only rewritten when its drawing changes, since Quartz stamps ea
 
 How the icon reaches the app: `scripts/assemble.sh` (used by `scripts/bundle.sh` and `scripts/run.sh`) copies `Resources/AppIcon.icns` into `Tabbi.app/Contents/Resources/AppIcon.icns`, and `Resources/Info.plist` names it with `CFBundleIconFile` = `AppIcon`.
 After regenerating, rebuild the bundle with `scripts/bundle.sh`; Finder and the Dock may keep a cached icon until the app is moved or `killall Dock` is run.
+
+## Derived images
+
+Every other image that shows the icon is made from the assets above, so after a redesign regenerate them all and check that the old cat appears nowhere.
+
+| Image | How it is made |
+| --- | --- |
+| `docs/images/icon.png` (README) | `sips -Z 256 docs/brand/assets/tabbi-icon-1024.png --out docs/images/icon.png` |
+| `docs/images/social-preview.png` | `swift docs/make-screenshots.swift`, which places `docs/images/icon.png` beside the name (it also rewrites the other README screenshots, whose clocks differ on every run) |
+| `docs/images/install/gatekeeper-steps.png` | `swift docs/images/install/render-gatekeeper-steps.swift`, which reads `Resources/AppIcon.icns` |
+| The DMG window background | `packaging/dmg/render-background.swift` at build time. Its palette mirrors the icon: the navy ground, the fur-coloured checkmark wink and arrow (from the pink-tan nose to the pale fur), a half-lidded grey-green eye in the notch, and label pills in the shaded silver-beige |
+| `docs/images/install/dmg-window.png` | A screenshot of the real installer: `scripts/make-dmg.sh`, mount the DMG, then `screencapture -l <window id>` of its Finder window |
+| `docs/images/install/move-prompt.png`, `settings-about.png` | Screenshots of the running app. For an icon-only change the icon can be repainted in place: both show it on a flat surface, at 128 and 200 px with its 824/1024 body at the same spot, so the new 1024 px asset drawn into that rect matches a fresh capture |
+
+The pixel pet in the notch screenshots and the hero GIF is the pet sprite, not the icon, and is regenerated with the pets.
