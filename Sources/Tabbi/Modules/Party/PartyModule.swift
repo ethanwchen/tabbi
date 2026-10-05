@@ -27,6 +27,12 @@ final class PartyModule: NotchModule {
         AnyView(PartyPanel(store: store))
     }
 
+    /// Onboarding's party step: the name friends see, my code to share,
+    /// and going invisible, right in the notch.
+    func makeSetupView(for step: OnboardingSetupStep, done: @escaping () -> Void) -> AnyView? {
+        step == .party ? AnyView(PartySetupView(store: store)) : nil
+    }
+
     func makeSettingsPane() -> SettingsPane? {
         .party(store: store)
     }
