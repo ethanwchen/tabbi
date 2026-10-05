@@ -2,12 +2,13 @@
 // Renders the Tabbi app icon with CoreGraphics and builds Resources/AppIcon.icns.
 //
 //   usage: swift scripts/make-icon.swift                     build Resources/AppIcon.icns
-//          swift scripts/make-icon.swift --concept <a|b|c>   pick an exploration concept
 //          swift scripts/make-icon.swift --sheet <file.png>  render a 1024/128/32/16 review sheet
 //          swift scripts/make-icon.swift --dock <file.png>   compare it with Apple's icons in a Dock row
 //          swift scripts/make-icon.swift --variants <file.png>  every appearance and the glyph
 //          swift scripts/make-icon.swift --preview <file.png>
 //
+// Add --concept <a|b|c> to a review mode to render an exploration concept instead of
+// the chosen concept A. The default build always draws concept A.
 // The default run also writes docs/brand/assets: the icon at 1024 px in its default,
 // light, dark and tinted appearances, and the monochrome glyph as PDF and PNG.
 //
@@ -674,13 +675,16 @@ if let path = option("--preview") {
     print(path)
     exit(0)
 }
+guard option("--concept") == nil else {
+    fatalError("--concept only works with --sheet, --dock, --variants or --preview; the shipped icon is always concept A")
+}
 
 let iconset = FileManager.default.temporaryDirectory.appendingPathComponent("AppIcon.iconset")
 try? FileManager.default.removeItem(at: iconset)
 try FileManager.default.createDirectory(at: iconset, withIntermediateDirectories: true)
 for points in [16, 32, 128, 256, 512] {
-    writePNG(render(pixels: points, concept: concept), to: iconset.appendingPathComponent("icon_\(points)x\(points).png"))
-    writePNG(render(pixels: points * 2, concept: concept), to: iconset.appendingPathComponent("icon_\(points)x\(points)@2x.png"))
+    writePNG(render(pixels: points, concept: drawConceptA), to: iconset.appendingPathComponent("icon_\(points)x\(points).png"))
+    writePNG(render(pixels: points * 2, concept: drawConceptA), to: iconset.appendingPathComponent("icon_\(points)x\(points)@2x.png"))
 }
 
 let output = root.appendingPathComponent("Resources/AppIcon.icns")
@@ -694,5 +698,5 @@ try? FileManager.default.removeItem(at: iconset)
 print(output.path)
 
 let assets = root.appendingPathComponent("docs/brand/assets")
-try exportBrandAssets(concept: concept, to: assets)
+try exportBrandAssets(concept: drawConceptA, to: assets)
 print(assets.path)
