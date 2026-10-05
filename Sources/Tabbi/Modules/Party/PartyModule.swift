@@ -10,7 +10,8 @@ import TabbiKit
 @MainActor
 final class PartyModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
-        id: .party, title: "Party", symbol: "person.3.fill", category: .study,
+        id: .party, title: "Party", symbol: "person.3.fill",
+        summary: "Study with friends and see who is focusing now.", category: .study,
         accent: ModuleAccent(red: 1.00, green: 0.42, blue: 0.62),
         network: [ModuleNetworkAccess(host: PartyServer.productionURL.host() ?? "", purpose: "your presence and parties")],
         setup: [.party]

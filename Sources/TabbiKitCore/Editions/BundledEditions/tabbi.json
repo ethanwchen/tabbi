@@ -3,5 +3,5 @@
   "id": "tabbi",
   "name": "Tabbi",
   "bundleIdentifier": "dev.tabbi.Tabbi",
-  "defaultKitID": "productivity"
+  "defaultKitID": "essentials"
 }

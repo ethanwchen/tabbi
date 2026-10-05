@@ -1,0 +1,33 @@
+{
+  "formatVersion": 1,
+  "id": "essentials",
+  "pickerOrder": 1,
+  "name": "Essentials",
+  "summary": "A focus timer, your to-do list, music, and Claude. Add more tabs any time.",
+  "symbol": "square.grid.2x2.fill",
+  "accent": "planner",
+  "modules": ["study", "planner", "spotify", "claudeAsk"],
+  "defaults": {
+    "theme": "midnight",
+    "moduleSettings": {
+      "study": {
+        "methods": ["pomodoro", "fiftyTwoSeventeen", "flowtime", "custom"],
+        "method": "pomodoro"
+      }
+    }
+  },
+  "onboarding": [
+    {
+      "id": "day",
+      "prompt": "What does your day look like?",
+      "allowsMultiple": true,
+      "options": [
+        { "id": "meetings", "label": "Lots of meetings", "symbol": "calendar", "tasks": ["Prep for today's first meeting"] },
+        { "id": "deep-work", "label": "Long stretches of deep work", "symbol": "brain.head.profile", "tasks": ["Block out one deep-work session"] },
+        { "id": "code", "label": "Mostly coding", "symbol": "chevron.left.forwardslash.chevron.right", "tasks": ["Ship one small change"] },
+        { "id": "classes", "label": "Classes and homework", "symbol": "graduationcap", "tasks": ["Review today's lecture notes"] }
+      ]
+    }
+  ],
+  "starterTasks": []
+}

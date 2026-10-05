@@ -20,7 +20,8 @@
 </p>
 
 Click the notch and it opens into a small panel of tabs.
-A kit picks the tabs: Productivity for your day, music and Claude, or Med School and Student for study timers, Anki and a pet.
+A kit picks the tabs: Essentials for a focus timer, your day, music and Claude, or Med School for study with Anki and a pet.
+More tabs are one click away in Settings.
 
 - **Focus and study timers** in the study method you pick, with focus sounds and Do Not Disturb.
 - **Today:** a checklist, your next meetings and a Plan my day that fits work into free time.
@@ -68,7 +69,7 @@ Closed, the notch stays black and shows one quiet live activity beside it: your 
 ## Kits
 
 A kit is a premade set of tabs for one kind of user.
-Tabbi ships Productivity, Med School and Student, and you can switch, reset or import kits in **Settings > Modules**.
+Tabbi ships Essentials and Med School, adds any other tab from **Add More**, and you can switch, reset or import kits in **Settings > Modules**.
 Kits are small JSON files, and [docs/kits.md](docs/kits.md) shows how to write your own.
 
 ## Privacy
@@ -114,7 +115,7 @@ Tabbi has no Dock icon and no menu bar item: right-click the notch for **Setting
 
 **Do I need Claude Code?**
 No.
-Only the Claude tabs and Plan my day in the Productivity kit use it, and they show a setup hint until the `claude` command is found.
+Only the Claude tabs and Plan my day in the Essentials kit use it, and they show a setup hint until the `claude` command is found.
 
 **Why the `claude` CLI and not an API key?**
 So Tabbi never handles your credentials, and your usage stays on the plan you already have.

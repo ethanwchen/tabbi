@@ -120,6 +120,9 @@ public struct ModuleDescriptor: Hashable, Sendable, Identifiable {
     public var title: String
     /// SF Symbol shown in the tab bar and Settings.
     public var symbol: String
+    /// One plain sentence on what the module does, shown beside it in the
+    /// Settings "Add more" library. Nil falls back to the category's name.
+    public var summary: String?
     public var category: ModuleCategory
     public var accent: ModuleAccent
     public var permissions: Set<ModulePermission>
@@ -147,6 +150,7 @@ public struct ModuleDescriptor: Hashable, Sendable, Identifiable {
         id: ModuleID,
         title: String,
         symbol: String,
+        summary: String? = nil,
         category: ModuleCategory,
         accent: ModuleAccent,
         permissions: Set<ModulePermission> = [],
@@ -159,6 +163,7 @@ public struct ModuleDescriptor: Hashable, Sendable, Identifiable {
         self.id = id
         self.title = title
         self.symbol = symbol
+        self.summary = summary
         self.category = category
         self.accent = accent
         self.permissions = permissions

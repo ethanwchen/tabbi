@@ -50,8 +50,8 @@ extension ModuleCatalog {
 // to compile.
 
 extension ModuleLayout {
-    /// The original five tabs with every other module parked switched off;
-    /// the Productivity kit's layout.
+    /// The five tabs Tabbi first shipped with, every other module parked
+    /// switched off. A fixed layout for tests; no kit ships it anymore.
     static let `default` = ModuleLayout(
         order: [.spotify, .system, .claudeUsage, .planner, .claudeAsk], disabled: []
     )

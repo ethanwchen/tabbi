@@ -38,9 +38,9 @@ final class ModuleLifecycleTests: XCTestCase {
 
     func testSwitchingKitsSwapsTheRunningSet() {
         var lifecycle = ModuleLifecycle()
-        let productivity = KitLibrary.bundled.kit("productivity")!.layout(catalog: .builtIn)
+        let classic = ModuleLayout.default
         let medicine = KitLibrary.bundled.kit("medicine")!.layout(catalog: .builtIn)
-        _ = lifecycle.update(enabled: productivity.enabled)
+        _ = lifecycle.update(enabled: classic.enabled)
         let changes = lifecycle.update(enabled: medicine.enabled)
         XCTAssertTrue(changes.start.contains(.study))
         XCTAssertTrue(changes.stop.contains(.system))

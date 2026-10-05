@@ -3,9 +3,9 @@
 // from the app's demo snapshots.
 //
 //     swift docs/make-screenshots.swift                         # render demo snapshots, then compose
-//     swift docs/make-screenshots.swift <productivity> <medicine>  # compose from existing snapshot folders
+//     swift docs/make-screenshots.swift <essentials> <medicine>  # compose from existing snapshot folders
 //
-// The Productivity kit's snapshots (Midnight theme) give the everyday tabs, and
+// The Essentials kit's snapshots (Midnight theme) give the everyday tabs, and
 // the Med School kit's (Cozy theme, with the pet) give the study tabs, the hero
 // and onboarding, so the README shows both looks.
 //
@@ -225,9 +225,9 @@ func compose(_ notch: Bitmap, canvasWidth: Int, cropHeight: Int, cornerRadius: C
 
 let arguments = Array(CommandLine.arguments.dropFirst())
 guard arguments.isEmpty || arguments.count == 2 else {
-    fail("pass no arguments, or a Productivity and a Med School snapshot folder")
+    fail("pass no arguments, or an Essentials and a Med School snapshot folder")
 }
-let productivity = arguments.first.map { URL(fileURLWithPath: $0) } ?? renderDemoSnapshots(kit: "productivity")
+let productivity = arguments.first.map { URL(fileURLWithPath: $0) } ?? renderDemoSnapshots(kit: "essentials")
 let medicine = arguments.last.map { URL(fileURLWithPath: $0) } ?? renderDemoSnapshots(kit: "medicine")
 defer {
     if arguments.isEmpty {

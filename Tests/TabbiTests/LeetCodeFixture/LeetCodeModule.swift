@@ -88,7 +88,7 @@ extension ModuleCategory {
 final class LeetCodeModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
         id: "leetcode", title: "LeetCode", symbol: "chevron.left.forwardslash.chevron.right",
-        category: .coding, accent: ModuleAccent(red: 1.00, green: 0.63, blue: 0.16),
+        summary: "Solve the LeetCode daily problem.", category: .coding, accent: ModuleAccent(red: 1.00, green: 0.63, blue: 0.16),
         highlightTitle: "LeetCode daily",
         kitSettings: KitSettingsSchema(["minutesPerProblem": .number(minutesPerProblem)])
     )

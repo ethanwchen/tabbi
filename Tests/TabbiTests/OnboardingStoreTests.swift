@@ -10,7 +10,7 @@ import TabbiKitCore
 /// pick changed.
 @MainActor
 final class OnboardingStoreTests: XCTestCase {
-    private func makeSettings(kitID: String = "productivity") -> SettingsStore {
+    private func makeSettings(kitID: String = "essentials") -> SettingsStore {
         let suite = "OnboardingStoreTests.\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: suite)!
         addTeardownBlock { defaults.removePersistentDomain(forName: suite) }
@@ -25,7 +25,7 @@ final class OnboardingStoreTests: XCTestCase {
         store.start()
         XCTAssertEqual(store.flow?.stage, .kit)
         XCTAssertEqual(store.flow?.layout, settings.settings.modules)
-        XCTAssertEqual(store.flow?.kit?.id, "productivity")
+        XCTAssertEqual(store.flow?.kit?.id, "essentials")
     }
 
     func testPickingAKitAppliesNothingUntilTheTabStepIsDone() throws {
@@ -36,7 +36,7 @@ final class OnboardingStoreTests: XCTestCase {
         store.update { $0.choose(medicine) }
         store.update { $0.answer("preclinical") }
         XCTAssertFalse(settings.settings.hasChosenKit)
-        XCTAssertEqual(settings.settings.kitID, "productivity")
+        XCTAssertEqual(settings.settings.kitID, "essentials")
 
         while store.flow?.stage != .modules { store.update { $0.next() } }
         store.update { _ = $0.setEnabled(.claudeAsk, false) }
@@ -48,7 +48,7 @@ final class OnboardingStoreTests: XCTestCase {
         XCTAssertFalse(settings.settings.modules.isEnabled(.claudeAsk))
         XCTAssertEqual(settings.settings.modules, store.flow?.layout)
         // Med School's tabs need setup steps, so the flow is still running.
-        XCTAssertEqual(store.flow?.stage, .setup(OnboardingSetupStep.pet.id))
+        XCTAssertEqual(store.flow?.stage, .setup(OnboardingSetupStep.anki.id))
     }
 
     func testSkipSetupKeepsTheSuggestedKitAndEnds() {
@@ -58,7 +58,7 @@ final class OnboardingStoreTests: XCTestCase {
         store.finish()
         XCTAssertFalse(store.isActive)
         XCTAssertTrue(settings.settings.hasChosenKit)
-        XCTAssertEqual(settings.settings.kitID, "productivity")
+        XCTAssertEqual(settings.settings.kitID, "essentials")
     }
 
     func testStartFromScratchRecordsTheSuggestedKitWithTheChosenTabs() {
@@ -69,7 +69,7 @@ final class OnboardingStoreTests: XCTestCase {
         store.update { _ = $0.setEnabled(.focus, true) }
         store.finish()
         XCTAssertTrue(settings.settings.hasChosenKit)
-        XCTAssertEqual(settings.settings.kitID, "productivity")
+        XCTAssertEqual(settings.settings.kitID, "essentials")
         XCTAssertEqual(settings.settings.modules.enabled, [ModuleList.catalog.ids[0], .focus])
     }
 
@@ -83,10 +83,10 @@ final class OnboardingStoreTests: XCTestCase {
         defer { sink.cancel() }
 
         store.start()
-        store.update { _ = $0.setEnabled(.system, false) }
+        store.update { _ = $0.setEnabled(.spotify, false) }
         store.finish()
         XCTAssertTrue(applications.isEmpty, "starter tasks would be added again")
-        XCTAssertFalse(settings.settings.modules.isEnabled(.system))
+        XCTAssertFalse(settings.settings.modules.isEnabled(.spotify))
         XCTAssertNil(settings.lastKitSwitch)
     }
 
@@ -97,10 +97,10 @@ final class OnboardingStoreTests: XCTestCase {
         store.finish()
 
         store.start()
-        let student = try XCTUnwrap(settings.kits["student"])
-        store.update { $0.choose(student) }
+        let medicine = try XCTUnwrap(settings.kits["medicine"])
+        store.update { $0.choose(medicine) }
         store.finish()
-        XCTAssertEqual(settings.settings.kitID, "student")
-        XCTAssertEqual(settings.lastKitSwitch?.kitName, "Student")
+        XCTAssertEqual(settings.settings.kitID, "medicine")
+        XCTAssertEqual(settings.lastKitSwitch?.kitName, "Med School")
     }
 }

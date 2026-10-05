@@ -32,7 +32,7 @@ final class FocusModeServiceTests: XCTestCase {
         let services = AppServices(settings: settings, moduleTypes: moduleTypes,
                                    environment: ["TABBI_DEMO": "1"], arguments: [])
         let focusMode = try XCTUnwrap(services.modules.module(FocusModule.self)).focusMode
-        settings.switchKit(to: "student")
+        settings.switchKit(to: "medicine")
         let kit = try XCTUnwrap(settings.activeKit)
 
         var matches: [Bool] = []

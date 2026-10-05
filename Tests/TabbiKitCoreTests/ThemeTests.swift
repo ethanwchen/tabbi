@@ -127,7 +127,7 @@ final class ThemeSettingsTests: XCTestCase {
     }
 
     private func kit(theme: String?) throws -> KitManifest {
-        var kit = try XCTUnwrap(KitLibrary.bundled["student"])
+        var kit = try XCTUnwrap(KitLibrary.bundled["essentials"])
         kit.defaults.theme = theme
         return kit
     }
@@ -176,12 +176,11 @@ final class ThemeSettingsTests: XCTestCase {
         XCTAssertFalse(try kit(theme: "notch").issues().contains { if case .unknownTheme = $0 { true } else { false } })
     }
 
-    func testMedSchoolStartsCozyAndTheOtherBundledKitsMidnight() {
+    func testMedSchoolStartsCozyAndEssentialsMidnight() {
         func theme(_ kit: String) -> ThemeID? {
             KitLibrary.bundled[kit]?.defaults.theme.flatMap(ThemeCatalog.id(forKitValue:))
         }
         XCTAssertEqual(theme("medicine"), .cozy)
-        XCTAssertEqual(theme("productivity"), .midnight)
-        XCTAssertEqual(theme("student"), .midnight)
+        XCTAssertEqual(theme("essentials"), .midnight)
     }
 }

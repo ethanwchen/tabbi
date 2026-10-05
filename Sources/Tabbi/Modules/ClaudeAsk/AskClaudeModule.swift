@@ -6,7 +6,8 @@ import TabbiKitCore
 @MainActor
 final class AskClaudeModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
-        id: .claudeAsk, title: "Ask Claude", symbol: "sparkles", category: .ai,
+        id: .claudeAsk, title: "Ask Claude", symbol: "sparkles",
+        summary: "Ask Claude a quick question from the notch.", category: .ai,
         accent: .claude, permissions: [.claudeCLI]
     )
     private let session: ClaudeAskSession
