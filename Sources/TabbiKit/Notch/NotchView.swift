@@ -20,10 +20,15 @@ public struct NotchView: View {
                 .shadow(color: .black.opacity(model.isOpen ? 0.45 : 0), radius: 18, y: 8)
 
             if model.isOpen {
+                ThemeGlow()
+                    .id(model.themeID)
+                    .transition(.opacity)
                 OpenNotchContent(content: content)
+                    .id(model.themeID)
                     .transition(AnyTransition.opacity.combined(with: .scale(scale: 0.96, anchor: .top)))
             } else if let preview = model.preview {
                 NotchPreview(item: preview, notchWidth: model.geometry.notchSize.width, content: content)
+                    .id(model.themeID)
                     .frame(height: model.geometry.notchSize.height)
             }
         }
@@ -47,6 +52,19 @@ public struct NotchView: View {
         .animation(Theme.Motion.notch, value: model.previewKind)
         .preferredColorScheme(.dark)
         .environment(\.moduleCatalog, content.catalog)
+    }
+}
+
+/// The theme's soft color rising from the bottom of the open panel. The top
+/// stays black so the panel still meets the hardware notch seamlessly, and
+/// the closed notch never shows it.
+private struct ThemeGlow: View {
+    var body: some View {
+        if let glow = Theme.Palette.glow {
+            LinearGradient(stops: [.init(color: glow, location: 0), .init(color: glow.opacity(0), location: 0.6)],
+                           startPoint: .bottom, endPoint: .top)
+                .allowsHitTesting(false)
+        }
     }
 }
 

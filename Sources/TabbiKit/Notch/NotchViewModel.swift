@@ -37,6 +37,9 @@ public final class NotchViewModel: ObservableObject {
     /// While true the notch stays open even when the pointer leaves
     /// (e.g. the user is typing a question).
     @Published public var isPinned = false
+    /// The active theme's id. `NotchView` re-keys the open panel by it, so a
+    /// theme switch redraws every view with the new `Theme` tokens.
+    @Published public var themeID: ThemeID = Theme.current.id
 
     private static let selectedKey = "selectedModule"
 

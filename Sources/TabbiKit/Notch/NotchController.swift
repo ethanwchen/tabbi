@@ -26,6 +26,7 @@ public final class NotchController {
     public init(content: NotchContent, inputs: NotchInputs) {
         self.inputs = inputs
         let settings = inputs.currentSettings()
+        Theme.apply(ThemeCatalog.resolve(settings.themeID))
         let screen = NotchGeometry.screen(for: settings.preferredDisplay)
         let geometry = screen.map(NotchGeometry.measure) ?? NotchGeometry(
             notchSize: CGSize(width: 190, height: 32), hasHardwareNotch: false,
@@ -229,6 +230,15 @@ public final class NotchController {
             .map(\.modules)
             .removeDuplicates()
             .sink { [weak self] layout in self?.model.layout = layout }
+            .store(in: &cancellables)
+
+        inputs.settings
+            .map(\.themeID)
+            .removeDuplicates()
+            .sink { [weak self] id in
+                Theme.apply(ThemeCatalog.resolve(id))
+                self?.model.themeID = id
+            }
             .store(in: &cancellables)
 
         inputs.settings

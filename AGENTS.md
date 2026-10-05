@@ -12,6 +12,7 @@ swift build                                  # must stay warning-free
 swift test                                   # TabbiKitCore and Tabbi (app wiring) tests
 swift run Tabbi --snapshot snapshots         # render every notch state to PNG
 swift run Tabbi --snapshot snapshots-medicine --kit medicine  # same, for another kit's tabs
+swift run Tabbi --snapshot snapshots-themes --theme all     # every notch shot once per theme, in subfolders
 scripts/run.sh [edition]                     # bundle + launch the real app (or an edition)
 scripts/bundle.sh                            # build/Tabbi.app
 scripts/check-style.sh                       # no em dashes or emojis (swift test runs it too)

@@ -175,4 +175,13 @@ final class ThemeSettingsTests: XCTestCase {
         XCTAssertTrue(try kit(theme: "aurora").issues().contains(.unknownTheme("aurora")))
         XCTAssertFalse(try kit(theme: "notch").issues().contains { if case .unknownTheme = $0 { true } else { false } })
     }
+
+    func testMedSchoolStartsCozyAndTheOtherBundledKitsMidnight() {
+        func theme(_ kit: String) -> ThemeID? {
+            KitLibrary.bundled[kit]?.defaults.theme.flatMap(ThemeCatalog.id(forKitValue:))
+        }
+        XCTAssertEqual(theme("medicine"), .cozy)
+        XCTAssertEqual(theme("productivity"), .midnight)
+        XCTAssertEqual(theme("student"), .midnight)
+    }
 }

@@ -44,8 +44,8 @@ private struct TabButton: View {
                 .frame(width: 28, height: 24)
                 .background {
                     if isSelected {
-                        Capsule()
-                            .fill(descriptor.accentColor.opacity(0.16))
+                        Color.clear
+                            .controlBackground(Capsule(), tint: descriptor.accentColor.opacity(0.16))
                             .matchedGeometryEffect(id: "tab", in: namespace)
                     }
                 }

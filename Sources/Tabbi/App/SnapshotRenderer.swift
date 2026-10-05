@@ -5,17 +5,46 @@ import TabbiKit
 
 /// Renders every notch state and Settings pane to PNG without showing a window:
 ///
-///     swift run Tabbi --snapshot ./snapshots [--kit medicine] [--edition <id>]
+///     swift run Tabbi --snapshot ./snapshots [--kit medicine] [--theme <id>|all] [--edition <id>]
+///
+/// The notch renders in the kit's theme unless `--theme` names one; with
+/// `--theme all` every notch shot is rendered once per theme into a
+/// subfolder named after the theme id.
 ///
 /// Used to review UI changes (by people and by agents) without Screen
 /// Recording permission. Live data sources run as usual, so panels show
 /// whatever state they reach within `settle` seconds.
 @MainActor
 enum SnapshotRenderer {
+    /// Which themes the notch shots are rendered in.
+    enum ThemeSelection {
+        /// The active kit's theme.
+        case kit
+        case one(AppTheme)
+        /// Every theme, each in its own subfolder.
+        case all
+
+        /// Parses `--theme`'s value; an unknown id falls back to the kit's.
+        init(argument: String?) {
+            switch argument {
+            case "all": self = .all
+            case let id?: self = ThemeCatalog.theme(ThemeID(rawValue: id)).map(Self.one) ?? .kit
+            case nil: self = .kit
+            }
+        }
+    }
+
     /// - Parameter kitID: the kit whose tabs are rendered, as on first run.
-    static func run(outputDirectory: URL, kitID: String = KitLibrary.defaultKitID, settle: TimeInterval = 1.5) async {
+    static func run(outputDirectory: URL, kitID: String = KitLibrary.defaultKitID, themes: ThemeSelection = .kit,
+                    settle: TimeInterval = 1.5) async {
         try? FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
         let services = AppServices(settings: .ephemeral(catalog: ModuleList.catalog, kitID: kitID))
+        let kitTheme = ThemeCatalog.resolve(services.settings.settings.themeID)
+        let themeFolders: [(AppTheme, URL)] = switch themes {
+        case .kit: [(kitTheme, outputDirectory)]
+        case .one(let theme): [(theme, outputDirectory)]
+        case .all: ThemeCatalog.all.map { ($0, outputDirectory.appendingPathComponent($0.id.rawValue)) }
+        }
         // 14"/16" MacBook Pro notch.
         let geometry = NotchGeometry(
             notchSize: CGSize(width: 185, height: 32), hasHardwareNotch: true,
@@ -76,23 +105,12 @@ enum SnapshotRenderer {
         }
 
         let closet = services.modules.module(ClosetModule.self)
-        for (name, model) in shots {
-            if name == "open-closet-look" { closet?.store.section = .look }
-            let view = NotchView(content: ModuleViews.notchContent(services: services))
-                .environmentObject(model)
-                .frame(width: Theme.Layout.expandedSize.width + 40,
-                       height: Theme.Layout.expandedSize.height + 24, alignment: .top)
-                .background(Color(white: 0.16)) // stand-in for a desktop
-            let renderer = ImageRenderer(content: view)
-            renderer.scale = 2
-            guard let image = renderer.nsImage,
-                  let tiff = image.tiffRepresentation,
-                  let png = NSBitmapImageRep(data: tiff)?.representation(using: .png, properties: [:])
-            else { continue }
-            let url = outputDirectory.appendingPathComponent("\(name).png")
-            try? png.write(to: url)
-            print(url.path)
+        for (theme, folder) in themeFolders {
+            Theme.apply(theme)
+            try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+            renderNotchShots(shots, services: services, closet: closet, to: folder)
         }
+        Theme.apply(kitTheme)
 
         // The pet coach's overlay: walking out, then each kind of bubble.
         let coachShots = closet.map { PetCoachSnapshots.shots(profile: $0.store.profile, lines: $0.coach.lines) } ?? []
@@ -140,6 +158,31 @@ enum SnapshotRenderer {
             print(url.path)
         }
         await renderKitImportReview(services, to: outputDirectory)
+    }
+
+    /// Renders each notch shot in the active theme into `folder`.
+    private static func renderNotchShots(_ shots: [(String, NotchViewModel)], services: AppServices,
+                                         closet: ClosetModule?, to folder: URL) {
+        let firstSection = closet?.store.section
+        for (name, model) in shots {
+            if let firstSection { closet?.store.section = name == "open-closet-look" ? .look : firstSection }
+            model.themeID = Theme.current.id
+            let view = NotchView(content: ModuleViews.notchContent(services: services))
+                .environmentObject(model)
+                .environment(\.drawsLiquidGlass, false)
+                .frame(width: Theme.Layout.expandedSize.width + 40,
+                       height: Theme.Layout.expandedSize.height + 24, alignment: .top)
+                .background(Color(white: 0.16)) // stand-in for a desktop
+            let renderer = ImageRenderer(content: view)
+            renderer.scale = 2
+            guard let image = renderer.nsImage,
+                  let tiff = image.tiffRepresentation,
+                  let png = NSBitmapImageRep(data: tiff)?.representation(using: .png, properties: [:])
+            else { continue }
+            let url = folder.appendingPathComponent("\(name).png")
+            try? png.write(to: url)
+            print(url.path)
+        }
     }
 
     /// The review Settings shows before applying an imported kit: another

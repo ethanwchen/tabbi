@@ -7,7 +7,7 @@
   "symbol": "briefcase.fill",
   "modules": ["spotify", "system", "claudeUsage", "planner", "claudeAsk"],
   "defaults": {
-    "theme": "notch"
+    "theme": "midnight"
   },
   "onboarding": [
     {

@@ -9,7 +9,7 @@
   "modules": ["study", "planner", "spotify", "claudeAsk", { "id": "anki", "enabled": false }, "closet"],
   "defaults": {
     "ticker": ["focus", "tasks", "progress", "meeting", "nowPlaying", "pet"],
-    "theme": "notch",
+    "theme": "midnight",
     "moduleSettings": {
       "study": {
         "methods": ["pomodoro", "fiftyTwoSeventeen", "flowtime", "custom"],
