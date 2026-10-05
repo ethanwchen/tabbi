@@ -186,3 +186,56 @@ public enum AnkiDeckName {
         return parts.count > 1 ? parts.dropLast().joined(separator: " › ") : nil
     }
 }
+
+extension AnkiOpenOutcome {
+    /// Whether Anki opened what was asked for: the deck, or the app when
+    /// no deck was given.
+    public var isSuccess: Bool {
+        switch self {
+        case .opened, .openedApp: return true
+        default: return false
+        }
+    }
+
+    /// A short headline for a click that didn't open the deck, or nil when
+    /// it did. Short enough for the decks card's header.
+    public var title: String? {
+        switch self {
+        case .opened, .openedApp: return nil
+        case .addOnMissing: return "AnkiConnect needed"
+        case .deckNotFound: return "Deck not found"
+        case .failed(let error): return error.title
+        case .notInstalled: return "Anki isn't installed"
+        case .launchFailed: return "Anki wouldn't open"
+        }
+    }
+
+    /// The one next step, for the headline's tooltip.
+    public var suggestion: String? {
+        switch self {
+        case .opened, .openedApp: return nil
+        case .addOnMissing:
+            return "Install the AnkiConnect add-on to open decks directly: in Anki, choose Tools › Add-ons › Get Add-ons, paste the code \(AnkiConnectClient.addOnCode), then restart Anki."
+        case .deckNotFound(let name):
+            return "Anki has no deck called \(name). It may have been renamed or deleted."
+        case .failed(let error): return error.suggestion
+        case .notInstalled: return "Get the free Anki app from apps.ankiweb.net."
+        case .launchFailed: return "Open Anki from your Applications folder, then try again."
+        }
+    }
+
+    /// Parses a name for `TABBI_ANKI_OPEN`, which pins the Anki tab to the
+    /// result of a click so each one can be snapshotted. `deck` fills in
+    /// the cases that name a deck.
+    public init?(previewName: String, deck: String) {
+        switch previewName.lowercased() {
+        case "opened": self = .opened(deck: deck)
+        case "addonmissing": self = .addOnMissing
+        case "decknotfound": self = .deckNotFound(deck)
+        case "failed": self = .failed(.collectionUnavailable)
+        case "notinstalled": self = .notInstalled
+        case "launchfailed": self = .launchFailed
+        default: return nil
+        }
+    }
+}

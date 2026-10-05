@@ -173,7 +173,11 @@ private struct DecksCard: View {
         Card(padding: Theme.Spacing.s) {
             VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                 HStack(spacing: Theme.Spacing.xs) {
-                    if let problem = store.problem {
+                    if let opening = store.opening, opening.phase == .launching {
+                        OpeningNotice(opening: opening)
+                    } else if let notice = store.openNotice {
+                        OpenNotice(outcome: notice)
+                    } else if let problem = store.problem {
                         StaleNotice(problem: problem, updatedAt: store.updatedAt)
                     } else {
                         Text(showsAll ? "All decks with cards due" : "Top decks")
@@ -206,9 +210,45 @@ private struct DecksCard: View {
     private func rows(_ decks: [AnkiDeckStats]) -> some View {
         VStack(spacing: Theme.Spacing.xxs) {
             ForEach(decks, id: \.deckID) { deck in
-                DeckRow(deck: deck) { store.startReviews(deck: deck.name) }
+                DeckRow(deck: deck, isOpening: store.opening?.deck == deck.name) {
+                    store.startReviews(deck: deck.name)
+                }
             }
         }
+    }
+}
+
+/// Anki is starting after a click; the deck opens once it answers.
+private struct OpeningNotice: View {
+    let opening: AnkiOpening
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.xs) {
+            LoadingArc(size: 10, lineWidth: 1.5)
+            Text("Opening Anki…")
+                .foregroundStyle(Theme.Palette.secondaryText)
+                .lineLimit(1)
+        }
+        .font(Theme.Typography.caption)
+        .help(opening.deck.map { "Waiting for Anki to start, then opening \($0)" } ?? "Waiting for Anki to start")
+    }
+}
+
+/// Why the last click didn't open its deck, with the next step in the tooltip.
+private struct OpenNotice: View {
+    let outcome: AnkiOpenOutcome
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.xs) {
+            Image(systemName: outcome == .addOnMissing ? "puzzlepiece.extension.fill" : "exclamationmark.triangle.fill")
+                .foregroundStyle(outcome == .addOnMissing ? accent : Theme.Palette.warning)
+            Text(outcome.title ?? "")
+                .foregroundStyle(Theme.Palette.secondaryText)
+                .lineLimit(1)
+                .truncationMode(.tail)
+        }
+        .font(Theme.Typography.caption)
+        .help(outcome.suggestion ?? "")
     }
 }
 
@@ -266,6 +306,8 @@ private struct ExpandButton: View {
 /// Clicking it starts reviewing that deck in Anki.
 private struct DeckRow: View {
     let deck: AnkiDeckStats
+    /// This deck's click is waiting for Anki to start.
+    let isOpening: Bool
     let action: () -> Void
     @State private var hovering = false
 
@@ -278,7 +320,10 @@ private struct DeckRow: View {
                     .lineLimit(1)
                     .truncationMode(.tail)
                 Spacer(minLength: Theme.Spacing.xs)
-                if hovering {
+                if isOpening {
+                    LoadingArc(size: 10, lineWidth: 1.5)
+                        .transition(.opacity)
+                } else if hovering {
                     Image(systemName: "play.fill")
                         .font(.system(size: 9, weight: .bold))
                         .foregroundStyle(accent)

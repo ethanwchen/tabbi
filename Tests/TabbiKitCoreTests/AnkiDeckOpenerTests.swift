@@ -330,4 +330,39 @@ final class AnkiDeckOpenerTests: XCTestCase {
         XCTAssertEqual(AnkiDeckName.leaf("Pharm"), "Pharm")
         XCTAssertNil(AnkiDeckName.parentPath("Pharm"))
     }
+
+    // MARK: Outcome wording
+
+    func testOnlyFailuresHaveANoticeAndANextStep() {
+        for outcome in [AnkiOpenOutcome.opened(deck: "Pharm"), .openedApp] {
+            XCTAssertTrue(outcome.isSuccess)
+            XCTAssertNil(outcome.title)
+            XCTAssertNil(outcome.suggestion)
+        }
+        let failures: [AnkiOpenOutcome] = [.addOnMissing, .deckNotFound("Pharm"), .failed(.collectionUnavailable), .notInstalled, .launchFailed]
+        for outcome in failures {
+            XCTAssertFalse(outcome.isSuccess)
+            XCTAssertFalse(outcome.title?.isEmpty ?? true, "\(outcome)")
+            XCTAssertFalse(outcome.suggestion?.isEmpty ?? true, "\(outcome)")
+        }
+    }
+
+    func testAddOnMissingNamesTheOneNextStepAndTheCode() {
+        let suggestion = AnkiOpenOutcome.addOnMissing.suggestion ?? ""
+        XCTAssertTrue(suggestion.hasPrefix("Install the AnkiConnect add-on to open decks directly"))
+        XCTAssertTrue(suggestion.contains(AnkiConnectClient.addOnCode))
+    }
+
+    func testAMissingSubdeckIsNamedByItsFullPath() {
+        let outcome = AnkiOpenOutcome.deckNotFound("Step1::Cardio::Arrhythmias")
+        XCTAssertTrue(outcome.suggestion?.contains("Step1::Cardio::Arrhythmias") ?? false)
+        XCTAssertEqual(AnkiOpenOutcome.failed(.timeout).title, AnkiConnectError.timeout.title)
+    }
+
+    func testPreviewNamesPinEachOutcome() {
+        XCTAssertEqual(AnkiOpenOutcome(previewName: "addOnMissing", deck: "Pharm"), .addOnMissing)
+        XCTAssertEqual(AnkiOpenOutcome(previewName: "decknotfound", deck: "Pharm"), .deckNotFound("Pharm"))
+        XCTAssertEqual(AnkiOpenOutcome(previewName: "opened", deck: "Pharm"), .opened(deck: "Pharm"))
+        XCTAssertNil(AnkiOpenOutcome(previewName: "launching", deck: "Pharm"))
+    }
 }

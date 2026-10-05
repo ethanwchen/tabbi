@@ -23,6 +23,13 @@ final class AnkiStore: ObservableObject {
     @Published private(set) var actionError: AnkiConnectError? {
         didSet { scheduleActionErrorExpiry() }
     }
+    /// The deck a click is opening, while Anki starts or AnkiConnect
+    /// answers, for the panel's "Opening Anki" state.
+    @Published private(set) var opening: AnkiOpening?
+    /// How the last click on a deck went wrong, shown briefly in the panel.
+    @Published private(set) var openNotice: AnkiOpenOutcome? {
+        didSet { scheduleOpenNoticeExpiry() }
+    }
     /// Bumped at each Anki-day rollover so `provision` re-checks whether
     /// the summary is still today's even when no new one arrives.
     @Published private var rolloverCount = 0
@@ -35,6 +42,9 @@ final class AnkiStore: ObservableObject {
     /// Demo or pinned: sample data only, no AnkiConnect calls.
     private var isStatic: Bool { isDemo || pinnedState != nil }
     private let client: AnkiConnectClient
+    private let opener: AnkiDeckOpener
+    private var openTask: Task<Void, Never>?
+    private var openNoticeTask: Task<Void, Never>?
     private var refreshTask: Task<Void, Never>?
     private var pollTask: Task<Void, Never>?
     private var rolloverTask: Task<Void, Never>?
@@ -55,7 +65,9 @@ final class AnkiStore: ObservableObject {
         self.activity = activity
         self.celebrations = celebrations
         isDemo = runMode.isDemo
-        client = AnkiConnectClient(isAnkiRunning: { await MainActor.run { AnkiStore.runningAnki() != nil } })
+        let client = AnkiConnectClient(isAnkiRunning: { await MainActor.run { AnkiWorkspaceLauncher.runningAnki() != nil } })
+        self.client = client
+        opener = AnkiDeckOpener(client: client, launcher: AnkiWorkspaceLauncher())
         if let pinnedState {
             state = pinnedState
             if pinnedState.keepsLastSummary && pinnedState != .checking {
@@ -66,6 +78,19 @@ final class AnkiStore: ObservableObject {
             summary = .demo()
             updatedAt = Date()
             state = .ready
+        }
+        if isStatic { pinOpenPreview() }
+    }
+
+    /// Pins the result of a click named by `TABBI_ANKI_OPEN` (`launching`,
+    /// `opening`, or an `AnkiOpenOutcome` preview name) for snapshots.
+    private func pinOpenPreview() {
+        guard let name = ProcessInfo.processInfo.environment["TABBI_ANKI_OPEN"] else { return }
+        let deck = summary?.topDecks.first?.name ?? "Default"
+        switch name.lowercased() {
+        case "launching": opening = AnkiOpening(deck: deck, phase: .launching)
+        case "opening": opening = AnkiOpening(deck: deck, phase: .opening)
+        default: openNotice = AnkiOpenOutcome(previewName: name, deck: deck)
         }
     }
 
@@ -112,6 +137,10 @@ final class AnkiStore: ObservableObject {
         rolloverTask?.cancel()
         rolloverTask = nil
         actionError = nil
+        openTask?.cancel()
+        openTask = nil
+        opening = nil
+        openNotice = nil
         stopPolling()
     }
 
@@ -153,7 +182,7 @@ final class AnkiStore: ObservableObject {
         refreshTask = nil
         isRefreshing = false
         let now = Date()
-        let anki = Self.runningAnki()
+        let anki = AnkiWorkspaceLauncher.runningAnki()
         switch outcome {
         case .success(let value):
             summary = value
@@ -239,19 +268,18 @@ final class AnkiStore: ObservableObject {
     /// Opens Anki, which starts AnkiConnect along with it, and brings it
     /// forward if it is already running.
     func openAnki() {
-        guard let url = Self.ankiURL else {
-            Self.runningAnki()?.activate()
+        guard let url = AnkiWorkspaceLauncher.applicationURL else {
+            AnkiWorkspaceLauncher.runningAnki()?.activate()
             return
         }
         NSWorkspace.shared.openApplication(at: url, configuration: NSWorkspace.OpenConfiguration()) { _, _ in }
     }
 
-
     /// Quits Anki and opens it again, the last step after installing or
     /// updating AnkiConnect (add-ons load only at launch). Anki saves and
     /// may sync on quit, so wait up to a minute for it to exit.
     func restartAnki() {
-        guard !isStatic, !isRestarting, let anki = Self.runningAnki() else { return }
+        guard !isStatic, !isRestarting, let anki = AnkiWorkspaceLauncher.runningAnki() else { return }
         isRestarting = true
         anki.terminate()
         Task { [weak self] in
@@ -270,25 +298,37 @@ final class AnkiStore: ObservableObject {
         NSWorkspace.shared.open(url)
     }
 
-    /// Opens `deck` (or the deck with the most due) for review and brings
-    /// Anki forward, which `guiDeckReview` doesn't do on its own.
+    /// One click on a deck: brings Anki forward, starting it if it is
+    /// closed, and opens `deck` (or the deck with the most due) for review
+    /// once AnkiConnect answers. A newer click replaces one still waiting.
     func startReviews(deck: String? = nil) {
-        guard let name = deck ?? summary?.topDecks.first?.name else {
-            Self.runningAnki()?.activate()
-            return
-        }
         guard !isStatic else { return }
-        Task { [weak self, client] in
-            do {
-                try await client.guiDeckReview(name: name)
-                Self.runningAnki()?.activate()
-                guard self?.isStarted == true else { return }
-                self?.actionError = nil
-            } catch let error as AnkiConnectError {
-                guard self?.isStarted == true else { return }
-                self?.actionError = error
-            } catch {}
+        let name = (deck ?? summary?.topDecks.first?.name).flatMap(AnkiDeckName.normalized)
+        openTask?.cancel()
+        openNotice = nil
+        opening = nil
+        openTask = Task { [weak self, opener] in
+            let outcome = try? await opener.open(deck: name) { phase in
+                await self?.show(phase, deck: name)
+            }
+            guard let self, let outcome, !Task.isCancelled else { return }
+            finishOpening(outcome)
         }
+    }
+
+    private func show(_ phase: AnkiOpenPhase, deck: String?) {
+        guard !Task.isCancelled else { return }
+        opening = AnkiOpening(deck: deck, phase: phase)
+    }
+
+    private func finishOpening(_ outcome: AnkiOpenOutcome) {
+        openTask = nil
+        opening = nil
+        guard isStarted else { return }
+        openNotice = outcome.isSuccess ? nil : outcome
+        if outcome.isSuccess { actionError = nil }
+        // A launch or a missing deck changes what Anki has to show.
+        refresh()
     }
 
     /// Syncs with AnkiWeb, then refreshes the counts.
@@ -320,6 +360,19 @@ final class AnkiStore: ObservableObject {
 
     private static let actionErrorLifetime: TimeInterval = 8
 
+    /// Clears a failed click's notice after a while. The add-on step stays
+    /// longer, since following it means switching to Anki and back.
+    private func scheduleOpenNoticeExpiry() {
+        openNoticeTask?.cancel()
+        guard let openNotice, !isStatic else { return }
+        let lifetime = openNotice == .addOnMissing ? Self.actionErrorLifetime * 4 : Self.actionErrorLifetime
+        openNoticeTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(lifetime))
+            guard !Task.isCancelled else { return }
+            self?.openNotice = nil
+        }
+    }
+
     // MARK: Sharing
 
     /// Today's reviews as a shared progress goal, while the summary is
@@ -337,18 +390,12 @@ final class AnkiStore: ObservableObject {
 
     // MARK: Finding Anki
 
-    /// The running Anki, matched by either bundle id or by name.
-    private static func runningAnki() -> NSRunningApplication? {
-        NSWorkspace.shared.runningApplications.first {
-            AnkiConnectClient.isAnkiApp(bundleIdentifier: $0.bundleIdentifier, localizedName: $0.localizedName)
-        }
-    }
+    static var isInstalled: Bool { AnkiWorkspaceLauncher.applicationURL != nil }
+}
 
-    private static var ankiURL: URL? {
-        AnkiConnectClient.ankiBundleIdentifiers.lazy
-            .compactMap { NSWorkspace.shared.urlForApplication(withBundleIdentifier: $0) }
-            .first
-    }
-
-    static var isInstalled: Bool { ankiURL != nil }
+/// A click opening a deck in Anki, while it waits.
+struct AnkiOpening: Equatable {
+    /// The full deck name, or nil when only Anki itself is opening.
+    var deck: String?
+    var phase: AnkiOpenPhase
 }
