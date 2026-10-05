@@ -190,7 +190,9 @@ Scripts must never read, print or store the credentials themselves; `--keychain-
 
 - TCC keys Automation and Calendar grants on the app's designated requirement.
   For Developer ID apps that is the team ID plus the bundle ID, so grants survive updates.
-- For ad-hoc apps the designated requirement is the cdhash, so each new build looks like a new app to TCC and users are likely asked again after every update (inference until tested; the result of a local test belongs in `docs/install.md`).
+- For ad-hoc apps the designated requirement is the cdhash, which changes with every build.
+  Measured on macOS 26.6.2 (see "Measured: Automation grant across ad-hoc updates" below): the Automation grant still survived new ad-hoc builds, so TCC does not hold an ad-hoc app to its old cdhash for Apple Events.
+  Developer ID stays the supported path; the ad-hoc result is an observation about one macOS version, not a promise.
 
 ## 3. Sparkle 2 with SwiftPM
 
@@ -444,3 +446,28 @@ Tested with `scripts/release.sh --adhoc` and a throwaway Ed25519 key pair made w
   `release.sh` therefore fails on that warning and removes the appcast.
 - `generate_keys -p` prints the keychain's public key, or exits 1 with "No existing signing key found!", without creating a key; the preflight compares it with `SPARKLE_PUBLIC_KEY`.
 - Release notes come from `scripts/release-notes.sh`: `feat`, `fix` and `perf` subjects since the previous `v*` tag, with the `packaging` and `release` scopes left out because they only concern people building Tabbi.
+
+## Measured: Automation grant across ad-hoc updates (2026-10-05)
+
+Question: when an ad-hoc signed Tabbi updates itself, does macOS ask again for permission to control Spotify and Music (Automation, `kTCCServiceAppleEvents`)?
+
+Setup on macOS 26.6.2 (25G83): a minimal probe app (bundle id `dev.tabbi.tccprobe`, `LSUIElement`, `NSAppleEventsUsageDescription`) signed ad-hoc with the Hardened Runtime and `packaging/Tabbi.entitlements`, exactly as `release.sh --adhoc` signs Tabbi.
+It calls `AEDeterminePermissionToAutomateTarget` for Finder without asking (`askUserIfNeeded: false`), and later builds also send a real event (`tell application "Finder" to get name of startup disk`).
+Each new version was built into a fresh bundle that replaced the old one, as Sparkle does.
+
+| Step | Designated requirement | Result |
+| --- | --- | --- |
+| v1, before any grant | `cdhash H"5f28d76f..."` | `-1744` (would require consent) |
+| v1, asked once, Allow clicked | same | grant recorded (`TCCDEvent Create`) |
+| v2: new version in Info.plist | `cdhash H"1df56af6..."` | `0` (granted), no prompt |
+| v3: changed binary that sends a real event | `cdhash H"0986d29a..."` | `0`, event answered ("Macintosh HD"), no prompt |
+| v4: rebuilt at a different path | `cdhash H"b1e10968..."` | `0`, event answered, no prompt |
+| after `tccutil reset AppleEvents dev.tabbi.tccprobe` | same as v4 | `-1744`, and the event prompted again |
+
+- The tccd log showed no prompt between the grant and the reset, so v2 through v4 reused the v1 grant even though each had a different cdhash.
+  On this macOS version, the Automation grant follows the bundle id for an ad-hoc app, and an ad-hoc update does not reset it.
+- The reset check shows the grant was the probe's own record and not a leftover from another app.
+- This contradicts the earlier inference from the designated requirement, and Apple does not document it, so it may change.
+  Calendar access and other TCC services were not tested.
+- `tccutil reset` needs the bundle id registered with LaunchServices from a path it indexes; for an app in `/tmp` it fails with OSStatus -10814 until a copy sits under the home folder.
+

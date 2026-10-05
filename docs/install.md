@@ -84,7 +84,7 @@ Tabbi updates itself, so `brew upgrade` leaves it alone; that is expected.
 
 Tabbi asks for a permission only when a tab first needs it, for example when Now Playing first talks to Spotify or Music, or when Today first reads your calendar.
 The README's [Permissions](../README.md#permissions) section lists each one and why.
-Updates keep the permissions you gave.
+Updates keep the permissions you gave, so macOS does not ask again after Tabbi updates itself.
 
 ## Something went wrong?
 
