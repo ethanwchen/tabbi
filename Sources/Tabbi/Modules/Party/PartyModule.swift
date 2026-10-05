@@ -13,7 +13,8 @@ final class PartyModule: NotchModule {
         id: .party, title: "Party", symbol: "person.3.fill",
         summary: "Study with friends and see who is focusing now.", category: .study,
         accent: ModuleAccent(red: 1.00, green: 0.42, blue: 0.62),
-        network: [ModuleNetworkAccess(host: PartyServer.productionURL.host() ?? "", purpose: "your presence and parties")]
+        network: [ModuleNetworkAccess(host: PartyServer.productionURL.host() ?? "", purpose: "your presence and parties")],
+        setup: [.party]
     )
     private let store: PartyStore
 
@@ -50,6 +51,12 @@ final class PartyModule: NotchModule {
 
     func makePanel() -> AnyView {
         AnyView(PartyPanel(store: store))
+    }
+
+    /// Onboarding's party step: the name friends see, my code to share,
+    /// and going invisible, right in the notch.
+    func makeSetupView(for step: OnboardingSetupStep, done: @escaping () -> Void) -> AnyView? {
+        step == .party ? AnyView(PartyOnboardingView(store: store)) : nil
     }
 
     func makeSettingsPane() -> SettingsPane? {

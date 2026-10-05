@@ -3,7 +3,8 @@ import SwiftUI
 import TabbiKitCore
 import TabbiKit
 
-/// Closet: preview the study pet, rename and recolor it, and dress it in
+/// Closet: the pet's page, opened from the paw at the far right of the open
+/// notch header (or P) rather than a tab. Preview the study pet, rename and recolor it, and dress it in
 /// items unlocked with study points. The pet itself is the shared
 /// `context.studyPet`, which this module edits and hands the coach, so the
 /// notch, the coach, Study and Party show the same pet.
@@ -19,7 +20,9 @@ final class ClosetModule: NotchModule {
         kitSettings: KitSettingsSchema([
             "coachLines": PetCoachMessages.kitSettingType,
             "pet": PetProfile.kitSettingType,
-        ])
+        ]),
+        setup: [.pet],
+        headerShortcut: ModuleHeaderShortcut(label: "Your pet", key: "p")
     )
     let store: ClosetStore
     /// The pet's study coach: nudges from the notch during focus phases.
@@ -34,7 +37,10 @@ final class ClosetModule: NotchModule {
             runMode: context.runMode,
             profile: { [store] in store.profile },
             lines: { PetCoachMessages.lines(kitSettings: settings.activeKit?.defaults.settings(for: .closet)) },
-            screen: { NotchGeometry.screen(for: settings.settings.preferredDisplay) },
+            screen: {
+                NotchGeometry.screen(for: settings.settings.preferredDisplay,
+                                     showOnExternalDisplays: settings.settings.showOnExternalDisplays)
+            },
             pauseTimer: { focus.pause() },
             resumeTimer: { focus.start() }
         )
@@ -55,6 +61,11 @@ final class ClosetModule: NotchModule {
 
     func makePanel() -> AnyView {
         AnyView(ClosetPanel(store: store))
+    }
+
+    /// Onboarding's pet step: species, breed and name on the shared pet.
+    func makeSetupView(for step: OnboardingSetupStep, done: @escaping () -> Void) -> AnyView? {
+        step == .pet ? AnyView(ClosetSetupView(store: store)) : nil
     }
 }
 

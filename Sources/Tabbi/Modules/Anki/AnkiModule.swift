@@ -11,7 +11,8 @@ final class AnkiModule: NotchModule {
         summary: "Cards due today and your daily review streak.", category: .study,
         accent: ModuleAccent(red: 0.36, green: 0.62, blue: 1.00),
         network: [ModuleNetworkAccess(host: URLSessionAnkiConnectTransport.defaultEndpoint.host() ?? "",
-                                      purpose: "your decks through AnkiConnect")]
+                                      purpose: "your decks through AnkiConnect")],
+        setup: [.anki]
     )
     let store: AnkiStore
 
@@ -22,6 +23,11 @@ final class AnkiModule: NotchModule {
 
     func makePanel() -> AnyView {
         AnyView(AnkiPanel(store: store))
+    }
+
+    /// Onboarding's Anki step: connect to AnkiConnect without leaving the notch.
+    func makeSetupView(for step: OnboardingSetupStep, done: @escaping () -> Void) -> AnyView? {
+        step == .anki ? AnyView(AnkiConnectSetupView(store: store)) : nil
     }
 
     func start() { store.start() }

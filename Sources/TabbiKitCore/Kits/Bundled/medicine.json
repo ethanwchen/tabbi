@@ -8,7 +8,7 @@
   "modules": ["study", "planner", "anki", "spotify", "claudeAsk"],
   "defaults": {
     "ticker": ["focus", "tasks", "progress", "party", "meeting", "nowPlaying", "pet"],
-    "theme": "notch",
+    "theme": "cozy",
     "moduleSettings": {
       "study": {
         "methods": ["pomodoro", "ankiSprint", "questionBlock", "fiftyTwoSeventeen", "ultradian", "flowtime", "custom"],

@@ -1,3 +1,4 @@
+import os
 import SwiftUI
 import TabbiKitCore
 
@@ -8,24 +9,42 @@ import TabbiKitCore
 /// module, an 4pt spacing grid, rounded SF type, monospaced digits for anything
 /// that changes, and springs rather than linear animation.
 public enum Theme {
+    /// The active theme. Every token below reads it, so one call to `apply`
+    /// restyles the whole app; views that are already on screen redraw when
+    /// their root is re-keyed by the theme id (`NotchViewModel.themeID`).
+    public static var current: AppTheme { state.withLock { $0 } }
+
+    /// Makes `theme` the active theme. Call it before re-keying the views.
+    public static func apply(_ theme: AppTheme) {
+        state.withLock { $0 = theme }
+    }
+
+    private static let state = OSAllocatedUnfairLock(initialState: ThemeCatalog.midnight)
+
+    /// Colors of the active theme. The panel body is opaque black in every
+    /// theme, so the open notch stays continuous with the hardware cutout.
     public enum Palette {
-        public static let background = Color.black
+        public static var background: Color { Color(current.palette.background) }
+        /// A soft color rising from the bottom of the open panel, nil when
+        /// the theme keeps it flat.
+        public static var glow: Color? { current.palette.glow.map(Color.init) }
         /// Cards and controls sitting on the black notch.
-        public static let surface = Color.white.opacity(0.07)
-        public static let surfaceHover = Color.white.opacity(0.12)
-        public static let stroke = Color.white.opacity(0.08)
-        public static let primaryText = Color.white
-        public static let secondaryText = Color.white.opacity(0.62)
-        public static let tertiaryText = Color.white.opacity(0.38)
-        public static let success = Color(red: 0.30, green: 0.85, blue: 0.48)
-        public static let warning = Color(red: 1.00, green: 0.74, blue: 0.28)
-        public static let danger = Color(red: 1.00, green: 0.38, blue: 0.36)
+        public static var surface: Color { Color(current.palette.surface) }
+        public static var surfaceHover: Color { Color(current.palette.surfaceHover) }
+        public static var stroke: Color { Color(current.palette.stroke) }
+        public static var primaryText: Color { Color(current.palette.primaryText) }
+        public static var secondaryText: Color { Color(current.palette.secondaryText) }
+        public static var tertiaryText: Color { Color(current.palette.tertiaryText) }
+        public static var success: Color { Color(current.palette.success) }
+        public static var warning: Color { Color(current.palette.warning) }
+        public static var danger: Color { Color(current.palette.danger) }
 
         /// One accent per module, used for progress, selection, and
-        /// highlights. Modules pass their own descriptor's accent; shared
-        /// views look it up through the `moduleCatalog` environment value.
+        /// highlights, as the active theme treats it (muted, vivid, pastel).
+        /// Modules pass their own descriptor's accent; shared views look it
+        /// up through the `moduleCatalog` environment value.
         public static func accent(_ accent: ModuleAccent) -> Color {
-            Color(red: accent.red, green: accent.green, blue: accent.blue)
+            Color(current.accent(accent))
         }
     }
 
@@ -44,22 +63,34 @@ public enum Theme {
         public static let l: CGFloat = 14
     }
 
+    /// Type in the active theme's family (SF Pro Rounded or SF Pro).
     public enum Typography {
-        public static let title = Font.system(size: 13, weight: .semibold, design: .rounded)
-        public static let body = Font.system(size: 12, weight: .regular, design: .rounded)
-        public static let bodyEmphasis = Font.system(size: 12, weight: .medium, design: .rounded)
-        public static let caption = Font.system(size: 10.5, weight: .medium, design: .rounded)
+        public static var title: Font { font(13, .semibold) }
+        public static var body: Font { font(12, .regular) }
+        public static var bodyEmphasis: Font { font(12, .medium) }
+        public static var caption: Font { font(10.5, .medium) }
         /// Large numbers (percentages, timers). Always monospaced digits.
-        public static let metric = Font.system(size: 22, weight: .semibold, design: .rounded).monospacedDigit()
-        public static let metricSmall = Font.system(size: 13, weight: .semibold, design: .rounded).monospacedDigit()
+        public static var metric: Font { font(22, .semibold).monospacedDigit() }
+        public static var metricSmall: Font { font(13, .semibold).monospacedDigit() }
+
+        /// The active theme's design, for type outside the scale above.
+        public static var design: Font.Design {
+            current.typeface == .rounded ? .rounded : .default
+        }
+
+        private static func font(_ size: CGFloat, _ weight: Font.Weight) -> Font {
+            .system(size: size, weight: weight, design: design)
+        }
     }
 
-    /// Shorthands for the motion system (`Motion`, docs/design/motion.md).
+    /// Shorthands for the motion system (`Motion`, docs/design/motion.md),
+    /// which follows the theme: gentle themes slow the springs and drop
+    /// some bounce.
     public enum Motion {
         /// Hover, selection, small state changes.
-        public static let snappy = TabbiKit.Motion.snappy
+        public static var snappy: Animation { TabbiKit.Motion.snappy }
         /// Content swaps between modules.
-        public static let content = TabbiKit.Motion.content
+        public static var content: Animation { TabbiKit.Motion.content }
     }
 
     public enum Layout {
@@ -125,7 +156,7 @@ public struct IconButton: View {
                 .font(.system(size: size * 0.46, weight: .semibold))
                 .foregroundStyle(Theme.Palette.primaryText)
                 .frame(width: size, height: size)
-                .background(Circle().fill(hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface))
+                .controlBackground(Circle(), hovering: hovering)
                 .contentShape(Circle())
         }
         .buttonStyle(.tactile)
@@ -138,4 +169,82 @@ public struct IconButton: View {
 public extension ModuleDescriptor {
     /// The module's accent as a SwiftUI color.
     var accentColor: Color { Theme.Palette.accent(accent) }
+}
+
+public extension Color {
+    /// A theme color in sRGB.
+    init(_ color: ThemeColor) {
+        self.init(.sRGB, red: color.red, green: color.green, blue: color.blue, opacity: color.opacity)
+    }
+}
+
+public extension View {
+    /// The background of a small floating control (icon buttons, the tab
+    /// bar's selection) in the active theme: the palette's surface, or
+    /// Liquid Glass where the theme asks for it and the system allows it
+    /// (see `ControlMaterial`). Content never gets glass.
+    func controlBackground(_ shape: some Shape, hovering: Bool = false, tint: Color? = nil) -> some View {
+        modifier(ControlBackground(shape: shape, hovering: hovering, tint: tint))
+    }
+}
+
+public extension EnvironmentValues {
+    /// False where Liquid Glass can't be drawn, such as `ImageRenderer`
+    /// snapshots, so glass controls show their material fallback instead.
+    @Entry var drawsLiquidGlass = true
+}
+
+private struct ControlBackground<S: Shape>: ViewModifier {
+    let shape: S
+    let hovering: Bool
+    let tint: Color?
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @Environment(\.drawsLiquidGlass) private var drawsLiquidGlass
+
+    private var glassAvailable: Bool {
+        guard drawsLiquidGlass else { return false }
+        if #available(macOS 26, *) { return true } else { return false }
+    }
+
+    func body(content: Content) -> some View {
+        let material = ControlMaterial.resolve(Theme.current.controls, glassAvailable: glassAvailable,
+                                               reduceTransparency: reduceTransparency)
+        switch material {
+        case .glass:
+            if #available(macOS 26, *) {
+                content.glassEffect(.regular.tint(tint).interactive(), in: shape)
+            } else {
+                solid(content)
+            }
+        case .material where drawsLiquidGlass:
+            content.background {
+                ZStack {
+                    shape.fill(.ultraThinMaterial)
+                    shape.fill(fill)
+                }
+            }
+            .overlay(rim)
+        case .material:
+            // Snapshots can't draw materials either: a lit rim on the solid
+            // fill stands in for the glass.
+            solid(content).overlay(rim)
+        case .opaque:
+            solid(content)
+        }
+    }
+
+    private var fill: Color {
+        tint ?? (hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface)
+    }
+
+    /// The light catching the top edge of a glass control.
+    private var rim: some View {
+        shape.stroke(LinearGradient(colors: [.white.opacity(0.32), .white.opacity(0.06)],
+                                    startPoint: .top, endPoint: .bottom), lineWidth: 0.75)
+            .allowsHitTesting(false)
+    }
+
+    private func solid(_ content: Content) -> some View {
+        content.background(shape.fill(fill))
+    }
 }

@@ -6,7 +6,7 @@ import TabbiKitCore
 import TabbiKit
 
 /// Width shared by every pane so the window only animates its height.
-private let paneWidth: CGFloat = 500
+let paneWidth: CGFloat = 500
 
 // MARK: General
 
@@ -45,6 +45,11 @@ struct GeneralSettingsPane: View {
                     Text("A soft sound when you unlock an item or reach a streak milestone.")
                 }
                 .help("Play a soft sound with celebrations that have no sound of their own")
+                Toggle(isOn: $store.settings.hideInFullscreen) {
+                    Text("Hide in fullscreen")
+                    Text("Steps aside while a video, game or app is fullscreen.")
+                }
+                .help("Hide the notch while an app is fullscreen on its display. The shortcut still opens it.")
             } header: {
                 Text("Behavior")
             }
@@ -61,7 +66,13 @@ struct GeneralSettingsPane: View {
                         }
                     }
                 }
+                .disabled(!store.settings.showOnExternalDisplays)
                 .help("Choose which display shows the notch")
+                Toggle(isOn: $store.settings.showOnExternalDisplays) {
+                    Text("Show on external displays")
+                    Text("When off, the notch hides while the lid is closed.")
+                }
+                .help("Allow the notch on displays other than the built-in one")
             } header: {
                 Text("Display")
             } footer: {
@@ -70,7 +81,7 @@ struct GeneralSettingsPane: View {
         }
         .formStyle(.grouped)
         .scrollDisabled(true)
-        .frame(width: paneWidth, height: 388)
+        .frame(width: paneWidth, height: 496)
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didChangeScreenParametersNotification)) { _ in
             screens = DisplayOption.connectedScreens()
         }
@@ -117,7 +128,7 @@ struct DisplayOption: Identifiable, Equatable {
 }
 
 /// Explanatory text under a grouped section, aligned with the section's rows.
-private struct SectionFooter: View {
+struct SectionFooter: View {
     let text: String
     init(_ text: String) { self.text = text }
 
@@ -181,6 +192,7 @@ private struct KitSection: View {
     /// Reset also restores what modules take from the kit (Focus: the focus
     /// sound), so their state counts toward "already at defaults".
     @Environment(\.modulesUseKitDefaults) private var modulesUseKitDefaults
+    @Environment(\.runSetup) private var runSetup
     @State private var modulesMatchKit = true
     /// The outcome of the last import or removal, shown under the buttons.
     @State private var message: (text: String, isWarning: Bool)?
@@ -213,6 +225,14 @@ private struct KitSection: View {
                 if store.canRemoveActiveKit {
                     Button("Remove Kit", role: .destructive, action: removeKit)
                         .help("Delete this imported kit and go back to the default kit")
+                }
+                if let runSetup {
+                    Button("Run Setup Again") {
+                        // Setup runs in the notch; Settings steps aside.
+                        NSApp.keyWindow?.close()
+                        runSetup()
+                    }
+                    .help("Pick a kit, your tabs and what they need again, in the notch")
                 }
                 Spacer()
                 Button("Reset to Kit Defaults", action: store.resetToKitDefaults)
@@ -255,7 +275,7 @@ private struct KitSection: View {
     private func sheetContent(_ current: KitSheet) -> some View {
         switch current.step {
         case .questions:
-            KitQuestionsView(kit: current.kit, answers: current.answers, dismissal: .cancel, back: { sheet = nil }) { answers in
+            KitQuestionsView(kit: current.kit, answers: current.answers, cancel: { sheet = nil }) { answers in
                 if current.candidate == nil {
                     sheet = nil
                     switchKit(to: current.kit.id, answers: answers)

@@ -20,12 +20,14 @@ They are good starting points for your own kit.
 
 ## Using kits
 
-On first launch, a welcome window asks which kit to start with.
-It lists every kit with the tabs it turns on, and preselects the edition's kit (Essentials for Tabbi).
-Closing the window keeps the preselected kit, and the window doesn't come back.
-If the chosen kit has [onboarding questions](#onboarding), **Continue** leads to them; **Back** returns to the kit list.
-Every question can be skipped, and a row of tab icons previews what the answers turn on or off.
-**Start** applies the kit for those answers and adds their starter tasks to Today.
+On first launch, the notch opens on a short setup inside the notch itself, with no extra window.
+The first step lists every kit with the tabs it turns on, plus **Start from Scratch**, and rings the edition's kit (Essentials for Tabbi).
+One tap on a kit moves on to its [onboarding questions](#onboarding), one tap per answer, and a row of tab icons previews what the answers turn on or off.
+The next step shows every tab: click one to turn it on or off, and drag to reorder.
+After that come only the setup steps the enabled tabs need (the pet, Anki, calendar access, the study method, study parties), each asked once.
+Every step can be skipped, and **Skip Setup** keeps what was picked so far, so setup doesn't come back.
+The kit is applied when the tab step is done: its tabs, its theme and the starter tasks for those answers.
+**Settings > Modules > Run Setup Again** runs the same setup later.
 
 Your tabs and the library are at the top of **Settings > Modules**:
 
@@ -112,7 +114,7 @@ So a kit only needs to list the tabs it starts with; the rest stay available.
 | `study` | Study timer and study methods |
 | `anki` | Anki reviews |
 | `party` | Study party |
-| `closet` | Closet (your study pet) |
+| `closet` | Closet (your study pet; opens from the paw at the far right of the header, or P, instead of a tab) |
 
 The open notch shows up to nine tabs comfortably, and the number keys 1-9 jump to the first nine.
 
@@ -121,7 +123,7 @@ The open notch shows up to nine tabs comfortably, and the number keys 1-9 jump t
 ```json
 "defaults": {
   "ticker": ["focus", "tasks", "meeting", "nowPlaying", "pet"],
-  "theme": "notch",
+  "theme": "midnight",
   "moduleSettings": {
     "study": { "methods": ["pomodoro", "ankiSprint", "questionBlock"], "method": "pomodoro", "dailyGoalMinutes": 240 },
     "focus": { "sounds": [{ "sound": "rain", "level": 0.8 }, { "sound": "brown", "level": 0.4 }] },
@@ -133,7 +135,7 @@ The open notch shows up to nine tabs comfortably, and the number keys 1-9 jump t
 | Field | Type | Meaning |
 | --- | --- | --- |
 | `ticker` | array of strings | Which live previews the closed notch rotates through: built-in previews and the ids of modules whose highlights should show. Leave it out to show them all. |
-| `theme` | string | Theme id. `notch` is the built-in hardware-black theme. |
+| `theme` | string | The look of the open panel: `midnight`, `graphite`, `liquidGlass`, `neon`, `monochrome`, `cozy`, `sakura` or `forest`. Applying the kit switches to it, and the user can pick another in Settings. `notch` still works and means `midnight`. An unknown id shows as a warning and keeps the user's theme. |
 | `moduleSettings` | object | Settings for individual modules, keyed by module id. Each module reads its own section and declares the keys it accepts, so a typo or a value out of range shows as a warning when importing. |
 
 Only settings that span modules sit directly in `defaults`.

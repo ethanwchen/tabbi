@@ -13,7 +13,7 @@ final class SpotifyPanelLogicTests: XCTestCase {
     }
 
     func testGeneratedCoverHuesStayInRangeAndApart() {
-        for seed in ["", "x", "spotify:local:::Song:180", "🎧 曲", String(repeating: "z", count: 500)] {
+        for seed in ["", "x", "spotify:local:::Song:180", "\u{1F3A7} 曲", String(repeating: "z", count: 500)] {
             let cover = SpotifyGeneratedCover(seed: seed)
             XCTAssert((0..<1).contains(cover.startHue), seed)
             XCTAssert((0..<1).contains(cover.endHue), seed)

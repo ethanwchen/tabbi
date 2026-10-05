@@ -141,6 +141,7 @@ final class ClosetStore: ObservableObject {
     func rename(_ name: String) { edit { $0.rename(name) } }
     func setSpecies(_ species: PetSpecies) { edit { $0.setSpecies(species) } }
     func cycleBreed(by offset: Int) { edit { $0.cycleBreed(by: offset) } }
+    func setBreed(_ breed: PetBreed) { edit { $0.setBreed(breed) } }
     func tintFur(_ color: PetColor?) { edit { $0.tintFur(color) } }
 
     /// Starts or ends a hover preview of `item` on the big pet.

@@ -123,6 +123,52 @@ final class ModuleLayoutTests: XCTestCase {
         XCTAssertNil(layout.shortcut(for: "j"), "the tenth tab is reachable by arrows and swipes only")
     }
 
+    /// A layout whose "pet" module opens from the header (key P), not a tab.
+    private func layoutWithPet(order: [ModuleID], disabled: Set<ModuleID> = []) -> ModuleLayout {
+        let catalog = ModuleCatalog(["a", "b", "pet", "c"].map { (id: ModuleID) in
+            ModuleDescriptor(id: id, title: id.rawValue, symbol: "circle", category: .productivity,
+                             accent: ModuleAccent(red: 1, green: 1, blue: 1),
+                             headerShortcut: id == "pet" ? ModuleHeaderShortcut(label: "Your pet", key: "P") : nil)
+        })
+        return ModuleLayout(order: order, disabled: disabled, catalog: catalog)
+    }
+
+    func testHeaderModulesLeaveTheTabBarAndTakeNoNumber() {
+        let layout = layoutWithPet(order: ["a", "pet", "b", "c"])
+        XCTAssertEqual(layout.enabled, ["a", "pet", "b", "c"])
+        XCTAssertEqual(layout.tabs, ["a", "b", "c"])
+        XCTAssertEqual(layout.headerShortcuts, ["pet"])
+        XCTAssertEqual(layout.module(forShortcut: 2), "b", "numbers count the visible tabs only")
+        XCTAssertNil(layout.shortcut(for: "pet"))
+        XCTAssertEqual(layout.headerKey(for: "pet"), "p")
+        XCTAssertNil(layout.headerKey(for: "a"))
+    }
+
+    func testHeaderKeyOpensOnlyAnEnabledHeaderModule() {
+        XCTAssertEqual(layoutWithPet(order: ["a", "b", "pet"]).module(forHeaderKey: "P"), "pet")
+        XCTAssertEqual(layoutWithPet(order: ["a", "b", "pet"]).module(forHeaderKey: "p"), "pet")
+        XCTAssertNil(layoutWithPet(order: ["a", "b", "pet"]).module(forHeaderKey: "a"))
+        let petOff = layoutWithPet(order: ["a", "b", "pet"], disabled: ["pet"])
+        XCTAssertTrue(petOff.headerShortcuts.isEmpty, "no pet module on, no paw")
+        XCTAssertNil(petOff.module(forHeaderKey: "p"))
+        XCTAssertNil(petOff.headerKey(for: "pet"))
+    }
+
+    func testArrowsCycleTabsAndLeaveTheHeaderModuleTowardTheTabs() {
+        let layout = layoutWithPet(order: ["a", "pet", "b"], disabled: ["c"])
+        XCTAssertEqual(layout.module(after: "a"), "b", "arrows skip the paw")
+        XCTAssertEqual(layout.module(after: "b"), "a")
+        XCTAssertEqual(layout.module(after: "pet"), "a")
+        XCTAssertEqual(layout.module(before: "pet"), "b")
+    }
+
+    func testOnlyTheHeaderModuleOnKeepsItSelected() {
+        let layout = layoutWithPet(order: ["pet", "a", "b", "c"], disabled: ["a", "b", "c"])
+        XCTAssertTrue(layout.tabs.isEmpty)
+        XCTAssertEqual(layout.resolvedSelection("a"), "pet")
+        XCTAssertEqual(layout.module(after: "pet"), "pet")
+    }
+
     func testSelectionFallsBackToFirstEnabled() {
         var layout = ModuleLayout(order: [.planner, .spotify, .system, .claudeUsage, .claudeAsk], disabled: [])
         layout.setEnabled(.system, false)
@@ -230,6 +276,8 @@ final class SettingsRepositoryTests: XCTestCase {
         XCTAssertTrue(settings.celebrationSoundEnabled)
         XCTAssertEqual(settings.hotkey, .default)
         XCTAssertEqual(settings.preferredDisplay, .builtIn)
+        XCTAssertTrue(settings.showOnExternalDisplays)
+        XCTAssertTrue(settings.hideInFullscreen)
         XCTAssertTrue(settings.notchPreview.isEnabled)
         XCTAssertEqual(settings.notchPreview.enabledKinds, Set(TickerKind.allCases))
         XCTAssertEqual(settings.notchPreview.interval, .medium)
@@ -250,7 +298,10 @@ final class SettingsRepositoryTests: XCTestCase {
             hotkey: Hotkey(keyCode: 40, modifiers: [.command, .shift]),
             claudePathOverride: "/opt/claude",
             preferredDisplay: .specific(5),
-            notchPreview: NotchPreviewSettings(isEnabled: false, disabledKinds: [.tasks, .claudeUsage], interval: .long)
+            showOnExternalDisplays: false,
+            hideInFullscreen: false,
+            notchPreview: NotchPreviewSettings(isEnabled: false, disabledKinds: [.tasks, .claudeUsage], interval: .long),
+            themeID: .sakura
         )
         let repository = SettingsRepository(defaults: defaults)
         repository.save(settings)

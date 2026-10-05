@@ -19,6 +19,12 @@ body:
         - Claude Usage
         - Today
         - Ask Claude
+        - Focus
+        - Study
+        - Anki
+        - Party
+        - Closet (pet)
+        - Onboarding or Settings
         - New module
         - Other
     validations:

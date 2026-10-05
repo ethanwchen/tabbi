@@ -13,7 +13,8 @@ final class StudyModule: NotchModule {
         accent: ModuleAccent(red: 1.00, green: 0.62, blue: 0.26), ownsFocusClock: true,
         kitSettings: KitSettingsSchema(
             StudyMethodMenu.kitSettingFields.merging(["dailyGoalMinutes": StudyDailyGoal.kitSettingType]) { $1 }
-        )
+        ),
+        setup: [.studyMethod]
     )
     private let store: StudyStore
     private let focusMode: FocusController
@@ -39,6 +40,11 @@ final class StudyModule: NotchModule {
 
     func makePanel() -> AnyView {
         AnyView(StudyPanel(store: store, focusMode: focusMode))
+    }
+
+    /// Onboarding's study method step: pick the timer's method in one tap.
+    func makeSetupView(for step: OnboardingSetupStep, done: @escaping () -> Void) -> AnyView? {
+        step == .studyMethod ? AnyView(StudyMethodSetupView(store: store)) : nil
     }
 
     /// Today's study minutes against the kit's daily goal, so Today lists

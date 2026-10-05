@@ -26,9 +26,9 @@ final class SpotifyScriptTests: XCTestCase {
     }
 
     func testOddCharactersInTitlesSurvive() throws {
-        let title = "Don't Stop | \"Live\" (feat. Ñoño & 坂本龍一)\tPart 2\nReprise 🎧"
+        let title = "Don't Stop | \"Live\" (feat. Ñoño & 坂本龍一)\tPart 2\nReprise \u{1F3A7}"
         let output = record([
-            "paused", "spotify:track:x", title, "Sigur Rós, Björk", "Ágætis byrjun — Remaster",
+            "paused", "spotify:track:x", title, "Sigur Rós, Björk", "Ágætis byrjun \u{2014} Remaster",
             "", "60000", "0", "false", "true", "64",
         ]) + "\n"
         let playback = try XCTUnwrap(SpotifyScript.parse(output))
@@ -36,7 +36,7 @@ final class SpotifyScriptTests: XCTestCase {
         XCTAssertFalse(playback.isPlaying)
         XCTAssertEqual(playback.track?.title, title)
         XCTAssertEqual(playback.track?.artist, "Sigur Rós, Björk")
-        XCTAssertEqual(playback.track?.album, "Ágætis byrjun — Remaster")
+        XCTAssertEqual(playback.track?.album, "Ágætis byrjun \u{2014} Remaster")
         XCTAssertNil(playback.track?.artworkURL)
         XCTAssertTrue(playback.isRepeating)
     }

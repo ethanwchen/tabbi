@@ -19,6 +19,12 @@ public final class NotchController {
     private var pointerInside = false
     private var horizontalScroll: CGFloat = 0
     private var hotkey: GlobalHotkey?
+    /// The display the notch is on; nil while no screen qualifies.
+    private var displayID: CGDirectDisplayID?
+    private var fullscreenAppActive = false
+    /// The shortcut brought the notch back over a fullscreen app until it closes.
+    private var revealed = false
+    private var fullscreenCheckTask: Task<Void, Never>?
 
     /// Extra room around the open notch, so the open spring's stretch past
     /// its final size is never cut off by the panel's edge.
@@ -27,7 +33,9 @@ public final class NotchController {
     public init(content: NotchContent, inputs: NotchInputs) {
         self.inputs = inputs
         let settings = inputs.currentSettings()
-        let screen = NotchGeometry.screen(for: settings.preferredDisplay)
+        Theme.apply(ThemeCatalog.resolve(settings.themeID))
+        let screen = NotchGeometry.screen(for: settings.preferredDisplay,
+                                          showOnExternalDisplays: settings.showOnExternalDisplays)
         let geometry = screen.map(NotchGeometry.measure) ?? NotchGeometry(
             notchSize: CGSize(width: 190, height: 32), hasHardwareNotch: false,
             screenFrame: CGRect(x: 0, y: 0, width: 1440, height: 900), centerX: 720
@@ -38,8 +46,10 @@ public final class NotchController {
         let root = NotchView(content: content)
             .environmentObject(model)
         panel.contentView = NotchHostingView(rootView: root)
+        displayID = screen?.displayID
         layoutPanel()
-        panel.orderFrontRegardless()
+        fullscreenAppActive = detectFullscreenApp()
+        updateVisibility()
 
         installMonitors()
         observeState()
@@ -112,9 +122,21 @@ public final class NotchController {
                 MainActor.assumeIsolated { self?.screensChanged() }
             }
             .store(in: &cancellables)
+
+        // A fullscreen app arrives with a Space change or an app switch, so
+        // these events are enough; no polling.
+        let workspace = NSWorkspace.shared.notificationCenter
+        for name in [NSWorkspace.activeSpaceDidChangeNotification, NSWorkspace.didActivateApplicationNotification] {
+            workspace.publisher(for: name)
+                .sink { [weak self] _ in
+                    MainActor.assumeIsolated { self?.scheduleFullscreenCheck() }
+                }
+                .store(in: &cancellables)
+        }
     }
 
     private func pointerMoved() {
+        guard panel.isVisible else { return }
         let inside = hitRect.insetBy(dx: -4, dy: -4).contains(NSEvent.mouseLocation)
         panel.ignoresMouseEvents = !inside
         guard inside != pointerInside else { return }
@@ -177,14 +199,15 @@ public final class NotchController {
             model.selectNext()
             return true
         default:
-            // Number keys 1-9 jump straight to a tab. Read the typed character
-            // rather than the key code so numpad digits and other layouts work;
-            // with ⌘/⌃/⌥ held the key belongs to someone else.
+            // Number keys 1-9 jump straight to a tab and a header module's
+            // letter (P for the pet) opens it. Read the typed character rather
+            // than the key code so numpad digits and other layouts work; with
+            // ⌘/⌃/⌥ held the key belongs to someone else.
             guard !editingText,
                   event.modifierFlags.intersection([.command, .control, .option]).isEmpty,
-                  let characters = event.charactersIgnoringModifiers, characters.count == 1,
-                  let number = Int(characters) else { return false }
-            return model.select(shortcut: number)
+                  let characters = event.charactersIgnoringModifiers, characters.count == 1 else { return false }
+            if let number = Int(characters) { return model.select(shortcut: number) }
+            return model.select(headerKey: characters)
         }
     }
 
@@ -218,6 +241,16 @@ public final class NotchController {
             }
             .store(in: &cancellables)
 
+        // Closing the notch ends a shortcut reveal over a fullscreen app.
+        model.$phase
+            .removeDuplicates()
+            .sink { [weak self] phase in
+                guard let self, phase != .open, self.revealed else { return }
+                self.revealed = false
+                self.updateVisibility()
+            }
+            .store(in: &cancellables)
+
         model.$isPinned
             .removeDuplicates()
             .sink { [weak self] pinned in
@@ -233,15 +266,36 @@ public final class NotchController {
             .store(in: &cancellables)
 
         inputs.settings
-            .map(\.preferredDisplay)
+            .map(\.themeID)
+            .removeDuplicates()
+            .sink { [weak self] id in
+                Theme.apply(ThemeCatalog.resolve(id))
+                self?.model.themeID = id
+            }
+            .store(in: &cancellables)
+
+        inputs.settings
+            .map { DisplayChoice(preference: $0.preferredDisplay, showOnExternalDisplays: $0.showOnExternalDisplays) }
             .removeDuplicates()
             .dropFirst()
-            .sink { [weak self] preference in self?.reposition(on: preference) }
+            .sink { [weak self] _ in self?.screensChanged() }
+            .store(in: &cancellables)
+
+        inputs.settings
+            .map(\.hideInFullscreen)
+            .removeDuplicates()
+            .dropFirst()
+            .sink { [weak self] _ in self?.updateVisibility() }
             .store(in: &cancellables)
 
         inputs.preview
             .removeDuplicates()
             .sink { [weak self] item in self?.model.preview = item }
+            .store(in: &cancellables)
+
+        inputs.takeover
+            .removeDuplicates()
+            .sink { [weak self] active in self?.model.showsTakeover = active }
             .store(in: &cancellables)
 
         // The preview only ticks while it can be seen.
@@ -254,7 +308,7 @@ public final class NotchController {
     /// The global shortcut toggles the notch from anywhere, re-registered
     /// whenever the user records a new one and paused while they record.
     private func observeHotkey() {
-        let hotkey = GlobalHotkey { [weak self] in self?.model.toggle() }
+        let hotkey = GlobalHotkey { [weak self] in self?.hotkeyPressed() }
         self.hotkey = hotkey
         inputs.settings
             .map(\.hotkey)
@@ -270,18 +324,97 @@ public final class NotchController {
             .store(in: &cancellables)
     }
 
-    private func screensChanged() {
-        reposition(on: settings.preferredDisplay)
+    /// The shortcut also brings the notch back while a fullscreen app hides it.
+    private func hotkeyPressed() {
+        if !panel.isVisible && displayID != nil && !model.isOpen {
+            revealed = true
+            updateVisibility()
+        }
+        model.toggle()
     }
 
-    /// Moves the notch to the screen `preference` resolves to. Closes it first
-    /// so it never animates open across two displays.
-    private func reposition(on preference: DisplayPreference) {
-        guard let screen = NotchGeometry.screen(for: preference) else { return }
+    private func screensChanged() {
+        reposition()
+        scheduleFullscreenCheck()
+    }
+
+    /// Moves the notch to the screen the display settings resolve to. Closes
+    /// it first so it never animates open across two displays, and hides it
+    /// when no screen qualifies.
+    private func reposition() {
+        let settings = settings
+        let screen = NotchGeometry.screen(for: settings.preferredDisplay,
+                                          showOnExternalDisplays: settings.showOnExternalDisplays)
+        displayID = screen?.displayID
+        defer { updateVisibility() }
+        guard let screen else { return }
         let geometry = NotchGeometry.measure(screen)
         guard geometry != model.geometry else { return }
         model.close()
         model.geometry = geometry
         layoutPanel()
     }
+
+    // MARK: Visibility
+
+    /// Shows or hides the panel per `NotchVisibility`. The closed notch's
+    /// black shape is drawn by the panel, so hiding it leaves the hardware
+    /// notch (or nothing, on a notchless screen) and a fullscreen app untouched.
+    private func updateVisibility() {
+        let shown = displayID != nil && NotchVisibility.isShown(
+            hideInFullscreen: settings.hideInFullscreen,
+            fullscreenAppActive: fullscreenAppActive,
+            revealed: revealed
+        )
+        guard shown != panel.isVisible else { return }
+        if shown {
+            panel.orderFrontRegardless()
+        } else {
+            model.close()
+            model.setHovering(false)
+            pointerInside = false
+            panel.orderOut(nil)
+        }
+    }
+
+    /// Checks now and again once the Space switch animation has settled,
+    /// since the window list lags behind the notification.
+    private func scheduleFullscreenCheck() {
+        fullscreenCheckTask?.cancel()
+        fullscreenCheckTask = Task { [weak self] in
+            for delay in [Duration.zero, .milliseconds(700)] {
+                try? await Task.sleep(for: delay)
+                guard let self, !Task.isCancelled else { return }
+                let active = self.detectFullscreenApp()
+                guard active != self.fullscreenAppActive else { continue }
+                self.fullscreenAppActive = active
+                self.updateVisibility()
+            }
+        }
+    }
+
+    /// Reads on-screen window bounds and levels (no Screen Recording
+    /// permission needed) and asks `NotchVisibility` whether one covers the
+    /// notch's display.
+    private func detectFullscreenApp() -> Bool {
+        guard let displayID,
+              let list = CGWindowListCopyWindowInfo([.optionOnScreenOnly, .excludeDesktopElements], kCGNullWindowID)
+                as? [[String: Any]] else { return false }
+        let windows = list.compactMap { info -> NotchVisibility.Window? in
+            guard let pid = info[kCGWindowOwnerPID as String] as? Int32,
+                  let layer = info[kCGWindowLayer as String] as? Int,
+                  let boundsInfo = info[kCGWindowBounds as String] as? NSDictionary,
+                  let bounds = CGRect(dictionaryRepresentation: boundsInfo as CFDictionary) else { return nil }
+            return NotchVisibility.Window(ownerPID: pid, layer: layer,
+                                          alpha: info[kCGWindowAlpha as String] as? Double ?? 1, bounds: bounds)
+        }
+        return NotchVisibility.isFullscreenAppActive(windows: windows, displayBounds: CGDisplayBounds(displayID),
+                                                     ownPID: ProcessInfo.processInfo.processIdentifier)
+    }
+}
+
+/// The display settings that decide which screen the notch is on.
+private struct DisplayChoice: Equatable {
+    var preference: DisplayPreference
+    var showOnExternalDisplays: Bool
 }

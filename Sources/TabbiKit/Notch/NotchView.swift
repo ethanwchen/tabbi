@@ -21,10 +21,15 @@ public struct NotchView: View {
             shape.fill(Theme.Palette.background)
 
             if model.isOpen {
+                ThemeGlow()
+                    .id(model.themeID)
+                    .transition(.opacity)
                 OpenNotchContent(content: content)
+                    .id(model.themeID)
                     .transition(.notchContent(reduceMotion: reduceMotion))
             } else if let preview = model.preview {
                 NotchPreview(item: preview, notchWidth: model.geometry.notchSize.width, content: content)
+                    .id(model.themeID)
                     .frame(height: model.geometry.notchSize.height)
             }
         }
@@ -57,6 +62,7 @@ public struct NotchView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .animation(phaseAnimation, value: model.phase)
         .animation(Motion.adapted(Motion.content, reduceMotion: reduceMotion), value: model.previewKind)
+        .animation(Motion.adapted(Motion.content, reduceMotion: reduceMotion), value: model.showsTakeover)
         .preferredColorScheme(.dark)
         .environment(\.moduleCatalog, content.catalog)
         .environment(\.runModuleAction, content.runAction)
@@ -75,7 +81,22 @@ public struct NotchView: View {
     }
 }
 
-/// Header (tabs left of the notch, title right of it) above the module panel.
+/// The theme's soft color rising from the bottom of the open panel. The top
+/// stays black so the panel still meets the hardware notch seamlessly, and
+/// the closed notch never shows it.
+private struct ThemeGlow: View {
+    var body: some View {
+        if let glow = Theme.Palette.glow {
+            LinearGradient(stops: [.init(color: glow, location: 0), .init(color: glow.opacity(0), location: 0.6)],
+                           startPoint: .bottom, endPoint: .top)
+                .allowsHitTesting(false)
+        }
+    }
+}
+
+/// Header (tabs left of the notch; title, Settings and the header shortcuts
+/// such as the pet's paw right of it) above the module panel,
+/// or the app's takeover (first-run setup) in their place while it runs.
 private struct OpenNotchContent: View {
     @EnvironmentObject private var model: NotchViewModel
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -83,6 +104,33 @@ private struct OpenNotchContent: View {
 
     var body: some View {
         let notch = model.geometry.notchSize
+        if model.showsTakeover, let takeover = content.takeover {
+            VStack(spacing: 0) {
+                HStack(spacing: 0) {
+                    takeover.leading()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Color.clear.frame(width: notch.width)
+                    takeover.trailing()
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                }
+                .padding(.horizontal, Theme.Layout.openTopRadius + Theme.Layout.contentInset)
+                .frame(height: max(notch.height, 32))
+
+                takeover.body()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .padding(.horizontal, Theme.Layout.contentInset + Theme.Layout.openTopRadius)
+                    .padding(.top, Theme.Spacing.s)
+                    .padding(.bottom, Theme.Spacing.l)
+            }
+            .transition(.opacity)
+        } else {
+            tabs(notch: notch)
+                .transition(.opacity)
+        }
+    }
+
+    /// The usual open notch: the tab bar, the tab's title and the panel.
+    private func tabs(notch: CGSize) -> some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
                 NotchTabBar(celebrations: content.celebrations)
@@ -98,6 +146,7 @@ private struct OpenNotchContent: View {
                         model.close()
                         content.openSettings()
                     }
+                    NotchHeaderShortcuts()
                 }
                 .frame(maxWidth: .infinity, alignment: .trailing)
             }

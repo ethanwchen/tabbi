@@ -26,7 +26,15 @@ public struct AppSettings: Equatable, Sendable {
         didSet { claudePathOverride = Self.normalizedPath(claudePathOverride) }
     }
     public var preferredDisplay: DisplayPreference
+    /// When off, the notch only appears on a built-in display (see `NotchVisibility`).
+    public var showOnExternalDisplays: Bool
+    /// When on, the notch steps aside while an app is fullscreen on its screen.
+    public var hideInFullscreen: Bool
     public var notchPreview: NotchPreviewSettings
+    /// The look of the open panel. Kept as saved even when this build lacks
+    /// it (a theme from a newer Tabbi); `ThemeCatalog.resolve` draws the
+    /// default then.
+    public var themeID: ThemeID
 
     /// How long the pointer must rest on the closed notch before hover-to-open fires.
     public static let hoverOpenDelay: Duration = .milliseconds(250)
@@ -45,7 +53,10 @@ public struct AppSettings: Equatable, Sendable {
         hotkey: Hotkey = .default,
         claudePathOverride: String? = nil,
         preferredDisplay: DisplayPreference = .builtIn,
-        notchPreview: NotchPreviewSettings = .default
+        showOnExternalDisplays: Bool = true,
+        hideInFullscreen: Bool = true,
+        notchPreview: NotchPreviewSettings = .default,
+        themeID: ThemeID = ThemeCatalog.defaultID
     ) {
         self.kitID = kitID
         self.hasChosenKit = hasChosenKit
@@ -58,7 +69,10 @@ public struct AppSettings: Equatable, Sendable {
         self.hotkey = hotkey
         self.claudePathOverride = Self.normalizedPath(claudePathOverride)
         self.preferredDisplay = preferredDisplay
+        self.showOnExternalDisplays = showOnExternalDisplays
+        self.hideInFullscreen = hideInFullscreen
         self.notchPreview = notchPreview
+        self.themeID = themeID
     }
 
     /// Whether the closed-notch preview may show `kind`: the user's preview
@@ -70,7 +84,8 @@ public struct AppSettings: Equatable, Sendable {
 
     /// Switches to `kit`: replaces the tab layout with the one it produces
     /// for `answers`, and the closed-notch previews with the kit's when it
-    /// lists any. Used both to switch kits and to reset to the current kit's
+    /// lists any, and the theme with the kit's when it names one this build
+    /// has. Used both to switch kits and to reset to the current kit's
     /// defaults; other preferences are kept. Either way the user has now
     /// picked a kit.
     public mutating func apply(_ kit: KitManifest, answers: KitAnswers = [:], catalog: ModuleCatalog) {
@@ -80,6 +95,9 @@ public struct AppSettings: Equatable, Sendable {
         modules = kit.layout(catalog: catalog, answers: answers)
         if let kinds = kit.defaults.resolvedTicker(catalog: catalog) {
             notchPreview.disabledKinds = Set(TickerKind.all(in: catalog)).subtracting(kinds)
+        }
+        if let theme = kit.defaults.theme.flatMap(ThemeCatalog.id(forKitValue:)) {
+            themeID = theme
         }
     }
 
@@ -92,12 +110,13 @@ public struct AppSettings: Equatable, Sendable {
         public var kitAnswers: KitAnswers
         public var modules: ModuleLayout
         public var disabledPreviews: Set<TickerKind>
+        public var themeID: ThemeID
     }
 
     public var kitState: KitState {
         get {
             KitState(kitID: kitID, hasChosenKit: hasChosenKit, kitAnswers: kitAnswers,
-                     modules: modules, disabledPreviews: notchPreview.disabledKinds)
+                     modules: modules, disabledPreviews: notchPreview.disabledKinds, themeID: themeID)
         }
         set {
             kitID = newValue.kitID
@@ -105,16 +124,18 @@ public struct AppSettings: Equatable, Sendable {
             kitAnswers = newValue.kitAnswers
             modules = newValue.modules
             notchPreview.disabledKinds = newValue.disabledPreviews
+            themeID = newValue.themeID
         }
     }
 
     /// True when `kit` is the active kit and the tabs (and previews, if the
-    /// kit sets them) are still exactly the ones it produces for the saved
+    /// kit sets them) and theme (likewise) are still exactly the ones it produces for the saved
     /// answers, so "Reset to kit defaults" would change nothing here.
     public func usesDefaults(of kit: KitManifest, catalog: ModuleCatalog) -> Bool {
         var reset = self
         reset.apply(kit, answers: kitAnswers, catalog: catalog)
         return kitID == kit.id && reset.modules == modules && reset.notchPreview == notchPreview
+            && reset.themeID == themeID
     }
 
     /// Trims whitespace and expands `~`; blank means "no override".
@@ -152,9 +173,12 @@ public struct SettingsRepository {
         static let hotkey = "settings.hotkey"
         static let claudePathOverride = "settings.claudePathOverride"
         static let preferredDisplay = "settings.preferredDisplay"
+        static let showOnExternalDisplays = "settings.showOnExternalDisplays"
+        static let hideInFullscreen = "settings.hideInFullscreen"
         static let previewEnabled = "settings.preview.enabled"
         static let previewDisabledKinds = "settings.preview.disabledKinds"
         static let previewInterval = "settings.preview.interval"
+        static let theme = "settings.theme"
     }
 
     private let defaults: UserDefaults
@@ -208,6 +232,8 @@ public struct SettingsRepository {
             claudePathOverride: defaults.string(forKey: Key.claudePathOverride),
             preferredDisplay: defaults.string(forKey: Key.preferredDisplay)
                 .flatMap(DisplayPreference.init(storageValue:)) ?? fallback.preferredDisplay,
+            showOnExternalDisplays: bool(Key.showOnExternalDisplays) ?? fallback.showOnExternalDisplays,
+            hideInFullscreen: bool(Key.hideInFullscreen) ?? fallback.hideInFullscreen,
             notchPreview: NotchPreviewSettings(
                 isEnabled: bool(Key.previewEnabled) ?? fallback.notchPreview.isEnabled,
                 // Unknown raw values (a kind removed in a later version) are dropped.
@@ -215,7 +241,10 @@ public struct SettingsRepository {
                     .map(TickerKind.init(rawValue:))),
                 interval: (defaults.object(forKey: Key.previewInterval) as? Int)
                     .flatMap(TickerInterval.init(rawValue:)) ?? fallback.notchPreview.interval
-            )
+            ),
+            // Before the user picks one, the kit's theme.
+            themeID: defaults.string(forKey: Key.theme).map(ThemeID.init(rawValue:))
+                ?? kit?.defaults.theme.flatMap(ThemeCatalog.id(forKitValue:)) ?? fallback.themeID
         )
     }
 
@@ -247,10 +276,13 @@ public struct SettingsRepository {
             defaults.removeObject(forKey: Key.claudePathOverride)
         }
         defaults.set(settings.preferredDisplay.storageValue, forKey: Key.preferredDisplay)
+        defaults.set(settings.showOnExternalDisplays, forKey: Key.showOnExternalDisplays)
+        defaults.set(settings.hideInFullscreen, forKey: Key.hideInFullscreen)
         defaults.set(settings.notchPreview.isEnabled, forKey: Key.previewEnabled)
         // Sorted so the stored value is stable across saves.
         defaults.set(settings.notchPreview.disabledKinds.map(\.rawValue).sorted(), forKey: Key.previewDisabledKinds)
         defaults.set(settings.notchPreview.interval.rawValue, forKey: Key.previewInterval)
+        defaults.set(settings.themeID.rawValue, forKey: Key.theme)
     }
 
     /// `nil` when the key is absent or not a boolean, so defaults apply.

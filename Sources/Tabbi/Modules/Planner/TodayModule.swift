@@ -11,7 +11,7 @@ final class TodayModule: NotchModule {
         id: .planner, title: "Today", symbol: "checklist",
         summary: "Your to-do list, what is up next, and a day plan.", category: .productivity,
         accent: ModuleAccent(red: 0.66, green: 0.55, blue: 1.00), permissions: [.calendars, .notifications],
-        kitSettings: TodayPlanSettings.kitSchema
+        kitSettings: TodayPlanSettings.kitSchema, setup: [.calendar]
     )
     /// Internal so app tests can check what Today shows.
     let store: PlannerStore
@@ -74,6 +74,11 @@ final class TodayModule: NotchModule {
     /// Today embeds the focus timer, so it offers the focus mode settings
     /// too (as the Focus tab does).
     func makeSettingsPane() -> SettingsPane? { .focus(focusMode) }
+
+    /// Onboarding's calendar step: allow access and see the day Up next shows.
+    func makeSetupView(for step: OnboardingSetupStep, done: @escaping () -> Void) -> AnyView? {
+        step == .calendar ? AnyView(TodayCalendarSetupView(store: store)) : nil
+    }
 
     /// The checklist, today's calendar events, and the focus timer.
     var provision: AnyPublisher<ModuleProvision, Never>? {

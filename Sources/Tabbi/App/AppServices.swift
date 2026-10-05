@@ -18,6 +18,8 @@ final class AppServices {
     let providers: ProviderHub
     /// The rotating live preview beside the closed notch.
     let ticker: TickerStore
+    /// First-run setup inside the notch, also re-run from Settings.
+    let onboarding: OnboardingStore
     /// Celebrations of real events, played over the open panel.
     let celebrations: CelebrationCenter
 
@@ -41,6 +43,7 @@ final class AppServices {
         providers.attach(modules)
         self.providers = providers
         ticker = TickerStore(settings: settings, providers: providers, preview: shared.closedNotchPreview)
+        onboarding = OnboardingStore(settings: settings)
         celebrations = shared.celebrations(settings: settings, runMode: runMode)
         // `$settings` emits before the new value is stored, so read the
         // layout from the emission.
@@ -60,7 +63,8 @@ final class AppServices {
     /// Shows the Settings window (from the notch's gear button or context
     /// menu), at `pane` when given.
     func openSettings(pane: String? = nil) {
-        let controller = settingsWindow ?? SettingsWindowController(settings: settings, modules: modules)
+        let controller = settingsWindow ?? SettingsWindowController(settings: settings, modules: modules,
+                                                                    onboarding: onboarding)
         settingsWindow = controller
         if let pane { controller.select(pane) }
         controller.present()

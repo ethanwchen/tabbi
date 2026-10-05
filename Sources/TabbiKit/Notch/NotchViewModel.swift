@@ -3,7 +3,7 @@ import TabbiKitCore
 
 /// State of the notch: closed, hovered, or open on a module, plus tab
 /// selection and navigation. Shared so any notch app built on TabbiKit gets
-/// the same open/close and 1-9 / arrow-key behavior.
+/// the same open/close, 1-9 / arrow-key and header letter-key behavior.
 @MainActor
 public final class NotchViewModel: ObservableObject {
     public enum Phase: Equatable {
@@ -16,8 +16,9 @@ public final class NotchViewModel: ObservableObject {
     @Published public var selected: ModuleID {
         didSet {
             UserDefaults.standard.set(selected.rawValue, forKey: Self.selectedKey)
-            // Direction drives the slide transition between modules.
-            let order = layout.order
+            // Direction drives the slide transition between modules, in the
+            // header's visual order: the tabs, then the shortcuts at the far right.
+            let order = layout.tabs + layout.headerShortcuts
             movingForward = (order.firstIndex(of: selected) ?? 0) >= (order.firstIndex(of: oldValue) ?? 0)
         }
     }
@@ -37,6 +38,18 @@ public final class NotchViewModel: ObservableObject {
     /// While true the notch stays open even when the pointer leaves
     /// (e.g. the user is typing a question).
     @Published public var isPinned = false
+    /// The active theme's id. `NotchView` re-keys the open panel by it, so a
+    /// theme switch redraws every view with the new `Theme` tokens.
+    @Published public var themeID: ThemeID = Theme.current.id
+    /// True while the app's takeover (first-run onboarding) fills the open
+    /// notch in place of the tabs; tab keys and swipes do nothing meanwhile.
+    @Published public var showsTakeover = false {
+        didSet {
+            guard showsTakeover != oldValue else { return }
+            isPinned = showsTakeover
+            if showsTakeover { phase = .open }
+        }
+    }
 
     private static let selectedKey = "selectedModule"
 
@@ -83,6 +96,8 @@ public final class NotchViewModel: ObservableObject {
 
     public func open(_ module: ModuleID? = nil) {
         if let module { selected = layout.resolvedSelection(module) }
+        // A takeover waits for the user, not the pointer.
+        if showsTakeover { isPinned = true }
         phase = .open
     }
 
@@ -106,13 +121,28 @@ public final class NotchViewModel: ObservableObject {
         isOpen ? close() : open()
     }
 
-    public func selectNext() { selected = layout.module(after: selected) }
-    public func selectPrevious() { selected = layout.module(before: selected) }
+    public func selectNext() {
+        guard !showsTakeover else { return }
+        selected = layout.module(after: selected)
+    }
+
+    public func selectPrevious() {
+        guard !showsTakeover else { return }
+        selected = layout.module(before: selected)
+    }
 
     /// Jumps to the tab under number key `number` (1-9). Returns false when
     /// there's no such tab, so the key isn't swallowed.
     public func select(shortcut number: Int) -> Bool {
-        guard let module = layout.module(forShortcut: number) else { return false }
+        guard !showsTakeover, let module = layout.module(forShortcut: number) else { return false }
+        selected = module
+        return true
+    }
+
+    /// Opens the header module under letter `key` (P for the pet). Returns
+    /// false when no enabled module has that key, so the key isn't swallowed.
+    public func select(headerKey key: String) -> Bool {
+        guard !showsTakeover, let module = layout.module(forHeaderKey: key) else { return false }
         selected = module
         return true
     }

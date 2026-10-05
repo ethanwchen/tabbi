@@ -113,6 +113,21 @@ public struct ModuleAccent: Hashable, Codable, Sendable {
     }
 }
 
+/// How a module that lives in the notch header instead of the tab bar is
+/// offered: the button's tooltip and VoiceOver label, and the letter key
+/// that opens it while the notch is open.
+public struct ModuleHeaderShortcut: Hashable, Sendable {
+    /// Tooltip and VoiceOver label, e.g. "Your pet".
+    public var label: String
+    /// One lowercase letter, e.g. "p"; matched case-insensitively.
+    public var key: String
+
+    public init(label: String, key: String) {
+        self.label = label
+        self.key = key.lowercased()
+    }
+}
+
 /// Everything about a module that is known without running it: what the tab
 /// bar, Settings, and kit manifests need.
 public struct ModuleDescriptor: Hashable, Sendable, Identifiable {
@@ -141,6 +156,14 @@ public struct ModuleDescriptor: Hashable, Sendable, Identifiable {
     /// `moduleSettings`, so kit validation can warn about typos and bad
     /// values there. Nil leaves the section unchecked.
     public var kitSettings: KitSettingsSchema?
+    /// What first-run onboarding asks once this module is turned on (the
+    /// pet's name, calendar access), in no particular order: onboarding
+    /// sorts every enabled module's steps by rank and asks each one once.
+    public var setup: [OnboardingSetupStep]
+    /// Set for a module reached from its own button at the far right of the
+    /// open notch header (the pet's paw) rather than from a tab, which keeps
+    /// the tab bar short. Nil for a regular tab.
+    public var headerShortcut: ModuleHeaderShortcut?
 
     public init(
         id: ModuleID,
@@ -153,7 +176,9 @@ public struct ModuleDescriptor: Hashable, Sendable, Identifiable {
         network: [ModuleNetworkAccess] = [],
         highlightTitle: String? = nil,
         ownsFocusClock: Bool = false,
-        kitSettings: KitSettingsSchema? = nil
+        kitSettings: KitSettingsSchema? = nil,
+        setup: [OnboardingSetupStep] = [],
+        headerShortcut: ModuleHeaderShortcut? = nil
     ) {
         self.id = id
         self.title = title
@@ -166,6 +191,8 @@ public struct ModuleDescriptor: Hashable, Sendable, Identifiable {
         self.highlightTitle = highlightTitle
         self.ownsFocusClock = ownsFocusClock
         self.kitSettings = kitSettings
+        self.setup = setup
+        self.headerShortcut = headerShortcut
     }
 
     /// Stand-in for an id no catalog knows (say, from a newer kit file), so

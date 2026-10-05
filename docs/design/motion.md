@@ -10,6 +10,8 @@ The research behind these values is in [docs/research/motion.md](../research/mot
 - `Sources/TabbiKit/Design/Motion/`: the SwiftUI side.
   `Motion` turns the tokens into `Animation`s, `AnyTransition.notchContent` and `.tabSwitch` are the notch's own transitions, `.motionPop`, `.motionSwap` and `.motionRow(from:)` are the shared insert and removal transitions, and `.motion(_:value:)` and `withMotion` apply an animation with the Reduce Motion fallback built in.
 - `Theme.Motion.snappy` and `.content` are shorthands for the same values, so existing call sites follow the system.
+- The springs follow the active theme's `ThemeMotion`: the cozy themes (Cozy, Sakura, Forest) are `.gentle` and play every token 30% longer with 0.08 less bounce, never below none (`ThemeMotion.adjusted(_:)`, tested in `ThemeTests`).
+  The table below lists the standard values.
 
 ## Tokens
 

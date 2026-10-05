@@ -19,15 +19,18 @@ public struct NotchGeometry: Equatable {
     }
 
     /// The screen Tabbi lives on, per the user's display preference, falling
-    /// back to another connected screen when the preferred one is gone.
-    public static func screen(for preference: DisplayPreference) -> NSScreen? {
+    /// back to another connected screen when the preferred one is gone. Nil
+    /// when no screen qualifies (external displays turned off and only
+    /// external ones connected), and then the notch stays hidden.
+    public static func screen(for preference: DisplayPreference, showOnExternalDisplays: Bool = true) -> NSScreen? {
         let screens = NSScreen.screens
         let descriptors = screens.map { screen in
             let id = screen.displayID
             return DisplayPreference.Screen(id: id, isBuiltIn: CGDisplayIsBuiltin(id) != 0,
                                             isMain: id == CGMainDisplayID())
         }
-        guard let chosen = preference.resolve(in: descriptors) else { return nil }
+        guard let chosen = NotchVisibility.screen(for: preference, showOnExternalDisplays: showOnExternalDisplays,
+                                                  in: descriptors) else { return nil }
         return screens.first { $0.displayID == chosen.id }
     }
 

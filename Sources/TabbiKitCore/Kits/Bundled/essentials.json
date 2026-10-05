@@ -8,7 +8,7 @@
   "accent": "planner",
   "modules": ["study", "planner", "spotify", "claudeAsk"],
   "defaults": {
-    "theme": "notch",
+    "theme": "midnight",
     "moduleSettings": {
       "study": {
         "methods": ["pomodoro", "fiftyTwoSeventeen", "flowtime", "custom"],

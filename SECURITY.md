@@ -27,9 +27,9 @@ We will keep you updated while we work on a fix, and credit you in the release n
 
 Tabbi runs locally and has a small attack surface, but these areas deserve particular care:
 
-- **The `claude` CLI integration.** Ask Claude, Claude Usage and Today's Plan my day and Wrap up start the user's local `claude` command.
+- **The `claude` CLI integration.** Ask Claude, Claude Usage, Today's Plan my day and Wrap up, and the Validate button in Settings > Claude start the user's local `claude` command.
   Issues such as running an unexpected binary, passing untrusted input to it in an unsafe way, or exposing its output to other processes are in scope.
-- **Local data.** Tabbi reads Claude Code transcripts under `~/.claude` (read-only) and stores the Today checklist and daily reviews in `~/Library/Application Support/Tabbi`.
+- **Local data.** Tabbi reads Claude Code transcripts under `~/.claude` (read-only) and stores its own data in `~/Library/Application Support/Tabbi`: the Today checklist and daily reviews, the activity log, the study log, the pet save, imported kits and the Claude Usage scan index.
   Leaking that data outside the Mac is in scope.
 - **Apple Events.** Tabbi controls Spotify and Apple Music through Automation.
   Anything that lets another app abuse that permission through Tabbi is in scope.

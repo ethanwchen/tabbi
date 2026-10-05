@@ -1,8 +1,13 @@
 #!/usr/bin/env swift
-// Builds the README screenshots in docs/images from the app's demo snapshots.
+// Builds the README screenshots and the GitHub social preview in docs/images
+// from the app's demo snapshots.
 //
-//     swift docs/make-screenshots.swift              # render demo snapshots, then compose
-//     swift docs/make-screenshots.swift <snapshots>  # compose from an existing snapshot folder
+//     swift docs/make-screenshots.swift                         # render demo snapshots, then compose
+//     swift docs/make-screenshots.swift <essentials> <medicine>  # compose from existing snapshot folders
+//
+// The Essentials kit's snapshots (Midnight theme) give the everyday tabs, and
+// the Med School kit's (Cozy theme, with the pet) give the study tabs, the
+// animated hero and onboarding, so the README shows both looks.
 //
 // The snapshot renderer draws the notch on a flat grey stand-in desktop. This
 // script cuts the notch out of that backdrop (keeping its anti-aliased edge)
@@ -29,13 +34,13 @@ func fail(_ message: String) -> Never {
 
 // MARK: - Snapshots
 
-/// Renders fresh demo snapshots into a temporary folder and returns it.
-func renderDemoSnapshots() -> URL {
+/// Renders fresh demo snapshots of one kit into a temporary folder and returns it.
+func renderDemoSnapshots(kit: String) -> URL {
     let directory = FileManager.default.temporaryDirectory
-        .appendingPathComponent("tabbi-snapshots-\(ProcessInfo.processInfo.processIdentifier)")
+        .appendingPathComponent("tabbi-snapshots-\(kit)-\(ProcessInfo.processInfo.processIdentifier)")
     let process = Process()
     process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-    process.arguments = ["swift", "run", "-c", "release", "Tabbi", "--snapshot", directory.path]
+    process.arguments = ["swift", "run", "-c", "release", "Tabbi", "--snapshot", directory.path, "--kit", kit]
     process.currentDirectoryURL = root
     var environment = ProcessInfo.processInfo.environment
     environment["TABBI_DEMO"] = "1"
@@ -218,35 +223,205 @@ func compose(_ notch: Bitmap, canvasWidth: Int, cropHeight: Int, cornerRadius: C
 
 // MARK: - Main
 
-let arguments = CommandLine.arguments.dropFirst()
-let snapshots = arguments.first.map { URL(fileURLWithPath: $0) } ?? renderDemoSnapshots()
-defer { if arguments.isEmpty { try? FileManager.default.removeItem(at: snapshots) } }
+let arguments = Array(CommandLine.arguments.dropFirst())
+guard arguments.isEmpty || arguments.count == 2 else {
+    fail("pass no arguments, or an Essentials and a Med School snapshot folder")
+}
+let productivity = arguments.first.map { URL(fileURLWithPath: $0) } ?? renderDemoSnapshots(kit: "essentials")
+let medicine = arguments.last.map { URL(fileURLWithPath: $0) } ?? renderDemoSnapshots(kit: "medicine")
+defer {
+    if arguments.isEmpty {
+        try? FileManager.default.removeItem(at: productivity)
+        try? FileManager.default.removeItem(at: medicine)
+    }
+}
 try? FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
 
-func notch(_ name: String) -> Bitmap {
-    var bitmap = Bitmap(contentsOf: snapshots.appendingPathComponent("\(name).png"))
+func notch(_ name: String, in folder: URL) -> Bitmap {
+    var bitmap = Bitmap(contentsOf: folder.appendingPathComponent("\(name).png"))
     cutOutNotch(&bitmap)
     return bitmap
 }
 
-/// Snapshot file name → README image name.
-let modules = [
-    ("open-spotify", "now-playing"),
-    ("open-system", "system"),
-    ("open-claudeUsage", "claude-usage"),
-    ("open-planner", "today"),
-    ("open-claudeAsk", "ask-claude"),
-]
-
-// Hero: the Now Playing panel on a wide strip of desktop.
-compose(notch("open-spotify"), canvasWidth: 2000, cropHeight: 560, cornerRadius: 24)
-    .write(to: outputDirectory.appendingPathComponent("hero.png"))
-
-// Closed: the compact live activity beside the camera housing.
-compose(notch("closed"), canvasWidth: 1200, cropHeight: 160, cornerRadius: 24)
-    .write(to: outputDirectory.appendingPathComponent("closed.png"))
-
-for (snapshot, name) in modules {
-    compose(notch(snapshot), canvasWidth: 1360, cropHeight: 520, cornerRadius: 24)
-        .write(to: outputDirectory.appendingPathComponent("\(name).png"))
+func write(_ bitmap: Bitmap, as name: String) {
+    bitmap.write(to: outputDirectory.appendingPathComponent("\(name).png"))
 }
+
+// Closed: the compact live activities beside the camera housing.
+write(compose(notch("closed", in: productivity), canvasWidth: 1200, cropHeight: 160, cornerRadius: 24), as: "closed")
+write(compose(notch("closed-pet", in: medicine), canvasWidth: 1200, cropHeight: 160, cornerRadius: 24), as: "closed-pet")
+
+/// Feature grid tiles: snapshot file name, folder, README image name. Every
+/// tile has the same size so the README grid lines up.
+let tiles = [
+    ("open-spotify", productivity, "now-playing"),
+    ("open-planner", productivity, "today"),
+    ("open-claudeUsage", productivity, "claude-usage"),
+    ("open-system", productivity, "system"),
+    ("open-claudeAsk", productivity, "ask-claude"),
+    ("open-study", medicine, "study"),
+    ("open-anki", medicine, "anki"),
+    ("open-party", medicine, "party"),
+    ("open-closet", medicine, "closet"),
+    ("onboarding-kit", medicine, "onboarding"),
+]
+for (snapshot, folder, name) in tiles {
+    write(compose(notch(snapshot, in: folder), canvasWidth: 1360, cropHeight: 520, cornerRadius: 24), as: name)
+}
+
+// MARK: - Animation
+
+extension Bitmap {
+    /// A copy redrawn at `scale` with high-quality interpolation.
+    func scaled(by scale: CGFloat) -> Bitmap {
+        let size = CGSize(width: (CGFloat(width) * scale).rounded(), height: (CGFloat(height) * scale).rounded())
+        var result = Bitmap(width: Int(size.width), height: Int(size.height))
+        let image = cgImage()
+        result.withContext { context in
+            context.interpolationQuality = .high
+            context.draw(image, in: CGRect(origin: .zero, size: size))
+        }
+        return result
+    }
+}
+
+/// Smooth start and end, like the app's springs (no linear motion).
+func ease(_ t: CGFloat) -> CGFloat { t * t * (3 - 2 * t) }
+
+/// One wallpaper frame with notches drawn on top, each with its own opacity and
+/// a scale anchored at the top center, as the notch grows from the camera housing.
+func frame(_ layers: [(notch: Bitmap, alpha: CGFloat, scale: CGFloat)], width: Int, height: Int) -> Bitmap {
+    var canvas = Bitmap(width: width, height: height)
+    let size = CGSize(width: width, height: height)
+    canvas.withContext { context in
+        context.addPath(CGPath(roundedRect: CGRect(origin: .zero, size: size), cornerWidth: 24, cornerHeight: 24, transform: nil))
+        context.clip()
+        drawWallpaper(in: context, size: size)
+        context.interpolationQuality = .high
+        for layer in layers where layer.alpha > 0 {
+            let w = CGFloat(layer.notch.width) * layer.scale
+            let h = CGFloat(layer.notch.height) * layer.scale
+            context.setAlpha(layer.alpha)
+            context.draw(layer.notch.cgImage(), in: CGRect(x: (size.width - w) / 2, y: size.height - h, width: w, height: h))
+        }
+    }
+    return canvas
+}
+
+/// Writes a looping GIF. Each frame shows for its own delay, so a held state is
+/// one frame rather than many, which keeps the file small.
+func writeGIF(_ frames: [(Bitmap, Double)], as name: String) {
+    let url = outputDirectory.appendingPathComponent("\(name).gif")
+    guard let destination = CGImageDestinationCreateWithURL(url as CFURL, UTType.gif.identifier as CFString, frames.count, nil)
+    else { fail("cannot write \(url.path)") }
+    CGImageDestinationSetProperties(destination, [
+        kCGImagePropertyGIFDictionary: [kCGImagePropertyGIFLoopCount: 0],
+    ] as CFDictionary)
+    for (bitmap, delay) in frames {
+        CGImageDestinationAddImage(destination, bitmap.cgImage(), [
+            kCGImagePropertyGIFDictionary: [kCGImagePropertyGIFDelayTime: delay, kCGImagePropertyGIFUnclampedDelayTime: delay],
+        ] as CFDictionary)
+    }
+    guard CGImageDestinationFinalize(destination) else { fail("cannot write \(url.path)") }
+    print(url.path)
+}
+
+/// The README hero: the closed notch with the pet opens into Study, switches
+/// through a few tabs and the pet page, then closes again. Frames come from the
+/// Med School kit's demo snapshots, drawn a little over half the snapshot scale
+/// so the GIF stays under 2 MB.
+func heroAnimation(from folder: URL) -> [(Bitmap, Double)] {
+    let scale: CGFloat = 0.7
+    let (width, height) = (1020, 380)
+    let closed = notch("closed-pet", in: folder).scaled(by: scale)
+    let pages = ["open-study", "open-planner", "open-anki", "open-party", "open-closet"]
+        .map { notch($0, in: folder).scaled(by: scale) }
+    let steps = 6
+    let stepDelay = 0.05
+    var frames: [(Bitmap, Double)] = []
+
+    func resize(closed: Bitmap, open: Bitmap, opening: Bool) {
+        for step in 1..<steps {
+            var t = ease(CGFloat(step) / CGFloat(steps))
+            if !opening { t = 1 - t }
+            // The closed wings are gone a quarter of the way in, so the
+            // two never read as a double exposure.
+            let grow = 0.5 + 0.5 * t
+            frames.append((frame([(closed, max(0, 1 - 4 * t), 1), (open, t, grow)], width: width, height: height), stepDelay))
+        }
+    }
+
+    frames.append((frame([(closed, 1, 1)], width: width, height: height), 1.4))
+    resize(closed: closed, open: pages[0], opening: true)
+    // Tabs switch with a cut: a crossfade between two busy panels reads as a
+    // double exposure, and the selected tab moving along the header already
+    // shows what changed.
+    for page in pages {
+        frames.append((frame([(page, 1, 1)], width: width, height: height), 1.8))
+    }
+    resize(closed: closed, open: pages[pages.count - 1], opening: false)
+    return frames
+}
+
+writeGIF(heroAnimation(from: medicine), as: "hero")
+
+// MARK: - Social preview
+
+/// A rounded system font, the same family the app uses for its type.
+func roundedFont(size: CGFloat, weight: NSFont.Weight) -> NSFont {
+    let base = NSFont.systemFont(ofSize: size, weight: weight)
+    guard let descriptor = base.fontDescriptor.withDesign(.rounded) else { return base }
+    return NSFont(descriptor: descriptor, size: size) ?? base
+}
+
+/// GitHub's repository social preview (1280x640): the open Study panel at the
+/// top, then the icon, name and pitch. GitHub crops about 40 pt from each edge
+/// in some places, so everything stays inside that safe area.
+func socialPreview(notch: Bitmap, icon: Bitmap) -> Bitmap {
+    let size = CGSize(width: 1280, height: 640)
+    var canvas = Bitmap(width: Int(size.width), height: Int(size.height))
+    canvas.withContext { context in
+        drawWallpaper(in: context, size: size)
+
+        // The panel hangs from the top edge like the real notch.
+        let scale: CGFloat = 0.8
+        let notchSize = CGSize(width: CGFloat(notch.width) * scale, height: CGFloat(notch.height) * scale)
+        context.interpolationQuality = .high
+        context.draw(notch.cgImage(), in: CGRect(
+            x: (size.width - notchSize.width) / 2, y: size.height - notchSize.height,
+            width: notchSize.width, height: notchSize.height
+        ))
+
+        let graphics = NSGraphicsContext(cgContext: context, flipped: false)
+        NSGraphicsContext.saveGraphicsState()
+        NSGraphicsContext.current = graphics
+        defer { NSGraphicsContext.restoreGraphicsState() }
+
+        let name = NSAttributedString(string: "Tabbi", attributes: [
+            .font: roundedFont(size: 60, weight: .bold), .foregroundColor: NSColor.white,
+        ])
+        let pitch = NSAttributedString(string: "A cozy study and productivity companion in your MacBook's notch.", attributes: [
+            .font: roundedFont(size: 26, weight: .medium), .foregroundColor: NSColor(white: 1, alpha: 0.72),
+        ])
+        let iconSide: CGFloat = 76
+        let gap: CGFloat = 20
+        let nameSize = name.size()
+        let rowWidth = iconSide + gap + nameSize.width
+        let rowBottom: CGFloat = 124
+        context.draw(icon.cgImage(), in: CGRect(
+            x: (size.width - rowWidth) / 2, y: rowBottom, width: iconSide, height: iconSide
+        ))
+        name.draw(at: CGPoint(
+            x: (size.width - rowWidth) / 2 + iconSide + gap,
+            y: rowBottom + (iconSide - nameSize.height) / 2
+        ))
+        let pitchSize = pitch.size()
+        pitch.draw(at: CGPoint(x: (size.width - pitchSize.width) / 2, y: rowBottom - 24 - pitchSize.height))
+    }
+    return canvas
+}
+
+write(
+    socialPreview(notch: notch("open-study", in: medicine), icon: Bitmap(contentsOf: outputDirectory.appendingPathComponent("icon.png"))),
+    as: "social-preview"
+)
