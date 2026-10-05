@@ -30,6 +30,8 @@ final class AnkiStore: ObservableObject {
     @Published private(set) var openNotice: AnkiOpenOutcome? {
         didSet { scheduleOpenNoticeExpiry() }
     }
+    /// The deck the user pinned for the one-click Study button.
+    @Published private(set) var favorite: AnkiFavoriteDeck?
     /// Bumped at each Anki-day rollover so `provision` re-checks whether
     /// the summary is still today's even when no new one arrives.
     @Published private var rolloverCount = 0
@@ -79,7 +81,12 @@ final class AnkiStore: ObservableObject {
             updatedAt = Date()
             state = .ready
         }
-        if isStatic { pinOpenPreview() }
+        if isStatic {
+            favorite = summary?.decks.first { $0.name == Self.demoFavorite }.map(AnkiFavoriteDeck.init)
+            pinOpenPreview()
+        } else {
+            favorite = AnkiFavoriteDeck(encoded: UserDefaults.standard.data(forKey: Self.favoriteKey))
+        }
     }
 
     /// Pins the result of a click named by `TABBI_ANKI_OPEN` (`launching`,
@@ -186,6 +193,7 @@ final class AnkiStore: ObservableObject {
         switch outcome {
         case .success(let value):
             summary = value
+            if let current = favorite?.updated(from: value.decks) { saveFavorite(current) }
             updatedAt = now
             state = .ready
             logReviews(value, now: now)
@@ -308,7 +316,7 @@ final class AnkiStore: ObservableObject {
         openNotice = nil
         opening = nil
         openTask = Task { [weak self, opener] in
-            let outcome = try? await opener.open(deck: name) { phase in
+            let outcome = try? await opener.open(deck: name) { [weak self] phase in
                 await self?.show(phase, deck: name)
             }
             guard let self, let outcome, !Task.isCancelled else { return }
@@ -330,6 +338,35 @@ final class AnkiStore: ObservableObject {
         // A launch or a missing deck changes what Anki has to show.
         refresh()
     }
+
+    // MARK: Favorite deck
+
+    /// The favorite's current counts, when the summary has its deck.
+    var favoriteDeck: AnkiDeckStats? {
+        guard let favorite, let summary else { return nil }
+        return favorite.resolve(in: summary.decks)
+    }
+
+    /// Pins `deck` as the Study button's deck, or unpins it when it is
+    /// already the favorite.
+    func toggleFavorite(_ deck: AnkiDeckStats) {
+        saveFavorite(favorite?.matches(deck) == true ? nil : AnkiFavoriteDeck(deck))
+    }
+
+    /// Opens the favorite deck, falling back to the deck with the most due.
+    func studyFavorite() {
+        startReviews(deck: favoriteDeck?.name ?? favorite?.name)
+    }
+
+    private func saveFavorite(_ value: AnkiFavoriteDeck?) {
+        favorite = value
+        guard !isStatic else { return }
+        UserDefaults.standard.set(value?.encoded(), forKey: Self.favoriteKey)
+    }
+
+    private static let favoriteKey = "anki.favoriteDeck"
+    /// The demo student's pinned deck.
+    private static let demoFavorite = "Pharm Sketchy"
 
     /// Syncs with AnkiWeb, then refreshes the counts.
     func sync() {

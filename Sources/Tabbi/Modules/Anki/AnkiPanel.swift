@@ -210,7 +210,9 @@ private struct DecksCard: View {
     private func rows(_ decks: [AnkiDeckStats]) -> some View {
         VStack(spacing: Theme.Spacing.xxs) {
             ForEach(decks, id: \.deckID) { deck in
-                DeckRow(deck: deck, isOpening: store.opening?.deck == deck.name) {
+                DeckRow(deck: deck, isOpening: store.opening?.deck == deck.name,
+                        isFavorite: store.favorite?.matches(deck) == true,
+                        toggleFavorite: { store.toggleFavorite(deck) }) {
                     store.startReviews(deck: deck.name)
                 }
             }
@@ -303,48 +305,63 @@ private struct ExpandButton: View {
 }
 
 /// One deck: its name and the three queue counts, like Anki's deck list.
-/// Clicking it starts reviewing that deck in Anki.
+/// Clicking it starts reviewing that deck in Anki. The star, shown on
+/// hover and always on the favorite, pins it as the Study button's deck.
 private struct DeckRow: View {
     let deck: AnkiDeckStats
     /// This deck's click is waiting for Anki to start.
     let isOpening: Bool
+    let isFavorite: Bool
+    let toggleFavorite: () -> Void
     let action: () -> Void
     @State private var hovering = false
 
     var body: some View {
-        Button(action: action) {
-            HStack(spacing: Theme.Spacing.s) {
-                Text(deck.name)
-                    .font(Theme.Typography.bodyEmphasis)
-                    .foregroundStyle(Theme.Palette.primaryText)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
-                Spacer(minLength: Theme.Spacing.xs)
-                if isOpening {
-                    LoadingArc(size: 10, lineWidth: 1.5)
-                        .transition(.opacity)
-                } else if hovering {
-                    Image(systemName: "play.fill")
-                        .font(.system(size: 9, weight: .bold))
-                        .foregroundStyle(accent)
-                        .transition(.opacity)
-                }
-                count(deck.newCount, color: Queue.new)
-                count(deck.learnCount, color: Queue.learning)
-                count(deck.reviewCount, color: Queue.review)
+        // A tap gesture rather than a Button, so the star inside stays its
+        // own control.
+        HStack(spacing: Theme.Spacing.s) {
+            Text(deck.name)
+                .font(Theme.Typography.bodyEmphasis)
+                .foregroundStyle(Theme.Palette.primaryText)
+                .lineLimit(1)
+                .truncationMode(.tail)
+            Spacer(minLength: Theme.Spacing.xs)
+            if hovering || isFavorite {
+                FavoriteStar(isFavorite: isFavorite, deck: deck.name, action: toggleFavorite)
+                    .transition(.opacity)
             }
-            .padding(.horizontal, Theme.Spacing.xs)
-            .frame(height: 24)
-            .background(
-                RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
-                    .fill(hovering ? Theme.Palette.surfaceHover : Color.clear)
-            )
-            .contentShape(Rectangle())
+            if isOpening {
+                LoadingArc(size: 10, lineWidth: 1.5)
+                    .transition(.opacity)
+            } else if hovering {
+                Image(systemName: "play.fill")
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundStyle(accent)
+                    .transition(.opacity)
+            }
+            count(deck.newCount, color: Queue.new)
+            count(deck.learnCount, color: Queue.learning)
+            count(deck.reviewCount, color: Queue.review)
         }
-        .buttonStyle(.plain)
+        .padding(.horizontal, Theme.Spacing.xs)
+        .frame(height: 24)
+        .background(
+            RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
+                .fill(hovering ? Theme.Palette.surfaceHover : Color.clear)
+        )
+        .contentShape(Rectangle())
+        .onTapGesture(perform: action)
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityAction(named: isFavorite ? "Unpin favorite" : "Pin as favorite", toggleFavorite)
         .help("Review \(deck.name) in Anki: \(deck.newCount) new, \(deck.learnCount) learning, \(deck.reviewCount) review")
+        .contextMenu {
+            Button("Review in Anki", action: action)
+            Button(isFavorite ? "Unpin Favorite Deck" : "Pin as Favorite Deck", action: toggleFavorite)
+        }
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: isFavorite)
     }
 
     private func count(_ value: Int, color: Color) -> some View {
@@ -352,6 +369,30 @@ private struct DeckRow: View {
             .font(Theme.Typography.caption.monospacedDigit())
             .foregroundStyle(value > 0 ? color : Theme.Palette.tertiaryText)
             .frame(width: 26, alignment: .trailing)
+    }
+}
+
+/// Pins or unpins a deck as the favorite: filled in the accent when it is
+/// the favorite, an outline on hover otherwise.
+private struct FavoriteStar: View {
+    let isFavorite: Bool
+    let deck: String
+    let action: () -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: isFavorite || hovering ? "star.fill" : "star")
+                .font(.system(size: 10, weight: .semibold))
+                .foregroundStyle(isFavorite ? accent : hovering ? Theme.Palette.primaryText : Theme.Palette.tertiaryText)
+                .contentTransition(.symbolEffect(.replace))
+                .frame(width: 16, height: 16)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .help(isFavorite ? "Unpin \(deck) from the Study button" : "Pin \(deck) to the Study button")
+        .onHover { hovering = $0 }
+        .animation(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -377,15 +418,40 @@ private struct AnkiFooter: View {
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
                 StreakBadge(streak: summary.streak, reviewedToday: summary.hasReviewedToday)
-                ReviewHeatmap(history: summary.history)
+                // The latest days that fit, so a long favorite deck name
+                // keeps its button readable.
+                ViewThatFits(in: .horizontal) {
+                    ForEach([14, 10, 7], id: \.self) { days in
+                        ReviewHeatmap(history: Array(summary.history.suffix(days)))
+                    }
+                }
                 Spacer(minLength: Theme.Spacing.xs)
                 SyncButton(isSyncing: store.isSyncing, action: store.sync)
-                AnkiPrimaryButton(title: "Start reviews", symbol: "play.fill",
-                                  help: startHelp, action: { store.startReviews() })
-                    .disabled(summary.dueTotal == 0)
-                    .opacity(summary.dueTotal == 0 ? 0.4 : 1)
+                if let favorite = store.favorite {
+                    studyButton(favorite)
+                } else {
+                    AnkiPrimaryButton(title: "Start reviews", symbol: "play.fill",
+                                      help: startHelp, action: { store.startReviews() })
+                        .disabled(summary.dueTotal == 0)
+                        .opacity(summary.dueTotal == 0 ? 0.4 : 1)
+                }
         }
         .frame(height: 28)
+    }
+
+    /// The favorite deck in one click, with what it has due. Stays enabled
+    /// with nothing due: Anki then offers its own "Congratulations" screen
+    /// and custom study.
+    private func studyButton(_ favorite: AnkiFavoriteDeck) -> some View {
+        let deck = store.favoriteDeck
+        let name = deck?.name ?? favorite.name
+        let due = deck?.dueTotal ?? 0
+        let help = due > 0
+            ? "Review \(name) in Anki: \(due) due. Pin another deck with its star."
+            : "Open \(name) in Anki. Nothing is due there today."
+        return AnkiPrimaryButton(title: "Study \(AnkiDeckName.leaf(name))", symbol: "play.fill",
+                                 badge: due > 0 ? due : nil, help: help, action: store.studyFavorite)
+            .layoutPriority(1)
     }
 
     private var startHelp: String {
@@ -677,6 +743,8 @@ private struct CopyCodeButton: View {
 private struct AnkiPrimaryButton: View {
     let title: String
     let symbol: String
+    /// A count shown after the title, such as the favorite deck's due cards.
+    var badge: Int?
     let help: String
     let action: () -> Void
     @State private var hovering = false
@@ -690,7 +758,18 @@ private struct AnkiPrimaryButton: View {
                 Text(title)
                     .font(Theme.Typography.bodyEmphasis)
                     .monospacedDigit()
+                    .lineLimit(1)
+                    .truncationMode(.tail)
                     .contentTransition(.opacity)
+                if let badge {
+                    Text("\(badge)")
+                        .font(Theme.Typography.caption.weight(.bold).monospacedDigit())
+                        .contentTransition(.numericText(countsDown: true))
+                        .padding(.horizontal, Theme.Spacing.xs)
+                        .frame(height: 16)
+                        .background(Capsule().fill(Theme.Palette.background.opacity(0.18)))
+                        .fixedSize()
+                }
             }
             .foregroundStyle(Theme.Palette.background)
             .padding(.horizontal, Theme.Spacing.m)
