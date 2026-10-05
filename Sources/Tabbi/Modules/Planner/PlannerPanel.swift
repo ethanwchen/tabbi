@@ -49,7 +49,7 @@ struct PlannerPanel: View {
                                                       height: 28, help: "Review today and see what carries over to tomorrow") {
                                         store.wrapUp()
                                     }
-                                    .transition(.opacity.combined(with: .scale(scale: 0.9)))
+                                    .transition(.motionPop)
                                 } else if hasPlannableWork {
                                     // Nothing to schedule until there's an open task.
                                     PlannerPillButton(title: "Plan my day", symbol: "sparkles", height: 28,
@@ -58,7 +58,7 @@ struct PlannerPanel: View {
                                                           : "Let Claude fit your open tasks around today's calendar") {
                                         store.planMyDay()
                                     }
-                                    .transition(.opacity.combined(with: .scale(scale: 0.9)))
+                                    .transition(.motionPop)
                                 }
                             }
                         }
@@ -138,18 +138,18 @@ private struct PlannerMainColumn<Checklist: View>: View {
         ZStack {
             if review.isActive {
                 DayReviewView(store: review)
-                    .transition(.opacity.combined(with: .scale(scale: 0.98, anchor: .top)))
+                    .transition(.motionSwap)
             } else if plan.isActive {
                 DayPlanView(plan: plan)
-                    .transition(.opacity.combined(with: .scale(scale: 0.98, anchor: .top)))
+                    .transition(.motionSwap)
             } else {
                 checklist
-                    .transition(.opacity.combined(with: .scale(scale: 0.98, anchor: .top)))
+                    .transition(.motionSwap)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .animation(Theme.Motion.content, value: plan.isActive)
-        .animation(Theme.Motion.content, value: review.isActive)
+        .motion(Theme.Motion.content, value: plan.isActive)
+        .motion(Theme.Motion.content, value: review.isActive)
     }
 }
 
@@ -191,9 +191,9 @@ private struct PlannerHeader: View {
                 .contentTransition(.numericText())
             if store.day.doneCount > 0, store.canEdit {
                 IconButton(symbol: "checkmark.circle.badge.xmark", size: 20, help: "Clear completed tasks") {
-                    withAnimation(Theme.Motion.snappy) { store.clearCompleted() }
+                    withMotion(Theme.Motion.snappy) { store.clearCompleted() }
                 }
-                .transition(.opacity.combined(with: .scale(scale: 0.8)))
+                .transition(.motionPop)
             }
             if store.canEdit {
                 // The action that isn't the bottom row's pill right now.
@@ -216,7 +216,7 @@ private struct PlannerHeader: View {
         }
         .frame(height: 20)
         .padding(.horizontal, Theme.Spacing.s)
-        .animation(Theme.Motion.snappy, value: tally)
+        .motion(Theme.Motion.snappy, value: tally)
     }
 }
 
@@ -225,15 +225,7 @@ struct PlannerProgressRing: View {
     let progress: Double
 
     var body: some View {
-        let accent = TodayModule.descriptor.accentColor
-        ZStack {
-            Circle().stroke(accent.opacity(0.22), lineWidth: 2.5)
-            Circle()
-                .trim(from: 0, to: progress)
-                .stroke(accent, style: StrokeStyle(lineWidth: 2.5, lineCap: .round))
-                .rotationEffect(.degrees(-90))
-        }
-        .animation(Theme.Motion.content, value: progress)
+        ProgressRing(progress: progress, tint: TodayModule.descriptor.accentColor)
     }
 }
 
@@ -310,7 +302,7 @@ private struct PlannerAddField: View {
                     .focused(focus, equals: .add)
                     .opacity(isFocused || !text.isEmpty ? 1 : 0)
                     .onSubmit {
-                        if withAnimation(Theme.Motion.snappy, { store.add(text) }) { text = "" }
+                        if withMotion(Theme.Motion.snappy, { store.add(text) }) { text = "" }
                     }
                     // Esc clears the draft; a second Esc leaves the field so the next one closes the notch.
                     .onExitCommand {
@@ -333,7 +325,7 @@ private struct PlannerAddField: View {
         .onTapGesture { focus.wrappedValue = .add }
         .onHover { hovering = $0 }
         .help("Type a task and press Return to add it; Esc clears")
-        .animation(Theme.Motion.snappy, value: hovering)
-        .animation(Theme.Motion.snappy, value: isFocused)
+        .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: isFocused)
     }
 }

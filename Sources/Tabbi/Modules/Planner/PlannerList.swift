@@ -77,8 +77,8 @@ struct PlannerList: View {
                     .gesture(reorderGesture(for: item, at: index))
             }
         }
-        .animation(Theme.Motion.snappy, value: store.items.map(\.id))
-        .animation(Theme.Motion.snappy, value: shared)
+        .motion(Theme.Motion.snappy, value: store.items.map(\.id))
+        .motion(Theme.Motion.snappy, value: shared)
     }
 
     /// The dragged row follows the pointer; rows between its old and new slot
@@ -102,7 +102,7 @@ struct PlannerList: View {
             .onEnded { _ in
                 guard let finished = drag else { return }
                 let target = finished.target(count: store.items.count)
-                withAnimation(Theme.Motion.snappy) {
+                withMotion(Theme.Motion.snappy) {
                     // Clear the offsets and apply the move together so rows settle in one motion.
                     drag = nil
                     if target != finished.from { store.move(finished.id, to: target) }
@@ -131,7 +131,7 @@ private struct PlannerRow: View {
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
             PlannerCheckbox(isOn: item.isDone) {
-                withAnimation(Theme.Motion.snappy) { store.toggle(item.id) }
+                withMotion(Theme.Motion.snappy) { store.toggle(item.id) }
             }
             .disabled(!store.canEdit)
 
@@ -167,9 +167,9 @@ private struct PlannerRow: View {
 
             if hovering, !isRenaming, store.canEdit {
                 PlannerDeleteButton {
-                    withAnimation(Theme.Motion.snappy) { store.delete(item.id) }
+                    withMotion(Theme.Motion.snappy) { store.delete(item.id) }
                 }
-                .transition(.opacity.combined(with: .scale(scale: 0.8)))
+                .transition(.motionPop)
             }
         }
         .padding(.horizontal, Theme.Spacing.s)
@@ -182,7 +182,7 @@ private struct PlannerRow: View {
         )
         .contentShape(Rectangle())
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
         .onChange(of: hasRenameFocus) { hadFocus, hasFocus in
             // Every way out of the field (Return, Esc, clicking elsewhere) ends
             // here, so focus is cleared while the field still exists.
@@ -254,7 +254,7 @@ private struct PlannerSharedRow: View {
         .help(item.isDone ? "\(item.title) done for today. Open \(catalog.descriptor(for: item.source).title)"
                           : "Checks itself when done. Open \(catalog.descriptor(for: item.source).title)")
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -280,24 +280,16 @@ private struct PlannerSharedCheck: View {
                 .font(.system(size: 7, weight: .bold))
                 .foregroundStyle(accent)
                 .opacity(item.isDone ? 0 : 1)
-            Circle()
-                .fill(accent)
-                .scaleEffect(item.isDone ? 1 : 0.4)
-                .opacity(item.isDone ? 1 : 0)
-            Image(systemName: "checkmark")
-                .font(.system(size: 8, weight: .heavy))
-                .foregroundStyle(Theme.Palette.background)
-                .scaleEffect(item.isDone ? 1 : 0.2)
-                .opacity(item.isDone ? 1 : 0)
+            CheckGlyph(isOn: item.isDone, tint: accent, ring: nil)
         }
         .frame(width: 16, height: 16)
         .frame(width: 20, height: 20)
-        .animation(Theme.Motion.content, value: item.fraction)
-        .animation(.spring(response: 0.3, dampingFraction: 0.55), value: item.isDone)
+        .motion(Theme.Motion.content, value: item.fraction)
+        .motion(Theme.Motion.snappy, value: item.isDone)
     }
 }
 
-/// Round checkbox that springs a checkmark in, filled with the module accent.
+/// Round checkbox whose check draws on with a small bounce, filled with the module accent.
 private struct PlannerCheckbox: View {
     let isOn: Bool
     let action: () -> Void
@@ -306,29 +298,14 @@ private struct PlannerCheckbox: View {
     var body: some View {
         let accent = TodayModule.descriptor.accentColor
         Button(action: action) {
-            ZStack {
-                Circle()
-                    .strokeBorder(hovering ? accent : Theme.Palette.tertiaryText, lineWidth: 1.5)
-                    .opacity(isOn ? 0 : 1)
-                Circle()
-                    .fill(accent)
-                    .scaleEffect(isOn ? 1 : 0.4)
-                    .opacity(isOn ? 1 : 0)
-                Image(systemName: "checkmark")
-                    .font(.system(size: 8, weight: .heavy))
-                    .foregroundStyle(Theme.Palette.background)
-                    .scaleEffect(isOn ? 1 : 0.2)
-                    .opacity(isOn ? 1 : 0)
-            }
-            .frame(width: 16, height: 16)
-            .frame(width: 20, height: 20)
-            .contentShape(Rectangle())
+            CheckGlyph(isOn: isOn, tint: accent, ring: hovering ? accent : Theme.Palette.tertiaryText)
+                .frame(width: 20, height: 20)
+                .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile)
         .help(isOn ? "Mark as not done" : "Mark as done")
         .onHover { hovering = $0 }
-        .animation(.spring(response: 0.3, dampingFraction: 0.55), value: isOn)
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -348,7 +325,7 @@ private struct PlannerFocusToggle: View {
         Group {
             if showsButton, isLinked || !item.isDone {
                 Button {
-                    withAnimation(Theme.Motion.snappy) {
+                    withMotion(Theme.Motion.snappy) {
                         if isLinked { focusStore.link(nil) } else { focusStore.focus(on: item.id) }
                     }
                 } label: {
@@ -370,8 +347,8 @@ private struct PlannerFocusToggle: View {
                     .help("The focus timer is on this task")
             }
         }
-        .transition(.opacity.combined(with: .scale(scale: 0.8)))
-        .animation(Theme.Motion.snappy, value: hovering)
+        .transition(.motionPop)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -391,6 +368,6 @@ private struct PlannerDeleteButton: View {
         .buttonStyle(.plain)
         .help("Delete task")
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }

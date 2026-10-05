@@ -39,8 +39,8 @@ struct ClaudeAskPanel: View {
                     .layoutPriority(1)
             }
         }
-        .animation(Theme.Motion.content, value: conversation.isEmpty)
-        .animation(Theme.Motion.content, value: session.isClaudeMissing)
+        .motion(Theme.Motion.content, value: conversation.isEmpty)
+        .motion(Theme.Motion.content, value: session.isClaudeMissing)
         .onAppear { session.prepare() }
         .task {
             // Wait for the notch panel to become key before focusing.
@@ -64,12 +64,12 @@ struct ClaudeAskPanel: View {
             InputField(text: $draft, focused: $fieldFocused, accent: accent, onSubmit: { send(draft) })
             if session.isStreaming {
                 IconButton(symbol: "stop.fill", size: 32, help: "Stop answering") { session.stop() }
-                    .transition(.scale.combined(with: .opacity))
+                    .transition(.motionPop)
             } else {
                 IconButton(symbol: "arrow.up", size: 32, help: "Send (Return)") { send(draft) }
                     .disabled(!canSend)
                     .opacity(canSend ? 1 : 0.45)
-                    .transition(.scale.combined(with: .opacity))
+                    .transition(.motionPop)
             }
             if !conversation.isEmpty {
                 IconButton(symbol: "square.and.pencil", size: 32, help: "New chat") {
@@ -77,10 +77,10 @@ struct ClaudeAskPanel: View {
                     draft = ""
                     fieldFocused = true
                 }
-                .transition(.scale.combined(with: .opacity))
+                .transition(.motionPop)
             }
         }
-        .animation(Theme.Motion.snappy, value: session.isStreaming)
+        .motion(Theme.Motion.snappy, value: session.isStreaming)
     }
 
     private func send(_ prompt: String) {
@@ -113,8 +113,8 @@ private struct InputField: View {
         )
         .help("Return to send, Shift-Return for a new line")
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
-        .animation(Theme.Motion.snappy, value: focused.wrappedValue)
+        .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: focused.wrappedValue)
     }
 
     @ViewBuilder
@@ -189,7 +189,7 @@ private struct MessageList: View {
                 LazyVStack(alignment: .leading, spacing: Theme.Spacing.s) {
                     ForEach(conversation.messages) { message in
                         row(for: message, isLast: message.id == conversation.messages.last?.id)
-                            .transition(.opacity.combined(with: .move(edge: .bottom)))
+                            .transition(.motionRow(from: .bottom))
                     }
                     Color.clear.frame(height: 0).id(Self.bottomID)
                 }
@@ -209,13 +209,13 @@ private struct MessageList: View {
                 proxy.scrollTo(Self.bottomID, anchor: .bottom)
             }
             .onChange(of: conversation.messages.last?.status) {
-                withAnimation(Theme.Motion.snappy) { proxy.scrollTo(Self.bottomID, anchor: .bottom) }
+                withMotion(Theme.Motion.snappy) { proxy.scrollTo(Self.bottomID, anchor: .bottom) }
             }
             .onChange(of: conversation.messages.count) {
-                withAnimation(Theme.Motion.snappy) { proxy.scrollTo(Self.bottomID, anchor: .bottom) }
+                withMotion(Theme.Motion.snappy) { proxy.scrollTo(Self.bottomID, anchor: .bottom) }
             }
         }
-        .animation(Theme.Motion.snappy, value: conversation.messages.count)
+        .motion(Theme.Motion.snappy, value: conversation.messages.count)
     }
 
     @ViewBuilder
@@ -290,23 +290,25 @@ private struct AssistantBubble: View {
             Spacer(minLength: 0)
         }
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 
     private var canCopy: Bool { message.status != .streaming && !message.text.isEmpty }
 
     @ViewBuilder
     private var content: some View {
-        if message.status == .streaming {
+        if message.status == .streaming && message.text.isEmpty {
+            // Claude often takes seconds to start; the paw trail says it's on its way.
+            HStack(spacing: Theme.Spacing.s) {
+                Text("Thinking").foregroundStyle(Theme.Palette.tertiaryText)
+                PawLoader(tint: accent, size: 16, label: "Thinking")
+            }
+        } else if message.status == .streaming {
             // Re-rendered on a timer so the caret blinks while text streams in.
             TimelineView(.periodic(from: .now, by: 0.5)) { context in
                 let visible = Int(context.date.timeIntervalSinceReferenceDate * 2) % 2 == 0
                 let caret = Text(" ▍").foregroundStyle(accent.opacity(visible ? 1 : 0.25))
-                if message.text.isEmpty {
-                    Text("Thinking").foregroundStyle(Theme.Palette.tertiaryText) + caret
-                } else {
-                    Text(ClaudeAskMarkdown.attributed(message.text)) + caret
-                }
+                Text(ClaudeAskMarkdown.attributed(message.text)) + caret
             }
         } else if message.text.isEmpty {
             Text("No answer").foregroundStyle(Theme.Palette.tertiaryText)
@@ -475,6 +477,6 @@ private struct PillButton: View {
         .buttonStyle(.plain)
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }

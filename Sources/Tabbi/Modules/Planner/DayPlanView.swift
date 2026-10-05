@@ -14,7 +14,7 @@ struct DayPlanView: View {
             content
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
-        .animation(Theme.Motion.content, value: plan.phase)
+        .motion(Theme.Motion.content, value: plan.phase)
     }
 
     @ViewBuilder
@@ -31,9 +31,9 @@ struct DayPlanView: View {
             VStack(alignment: .leading, spacing: 0) {
                 ForEach(proposal.pending) { block in
                     DayPlanBlockRow(block: block, rest: proposal.breakAfter(block),
-                                    add: { withAnimation(Theme.Motion.snappy) { plan.add(block.id) } },
-                                    dismiss: { withAnimation(Theme.Motion.snappy) { plan.dismiss(block.id) } })
-                        .transition(.opacity.combined(with: .move(edge: .leading)))
+                                    add: { withMotion(Theme.Motion.snappy) { plan.add(block.id) } },
+                                    dismiss: { withMotion(Theme.Motion.snappy) { plan.dismiss(block.id) } })
+                        .transition(.motionRow(from: .leading))
                 }
                 Spacer(minLength: Theme.Spacing.xs)
                 Text(DayPlanFormat.footer(proposal))
@@ -99,9 +99,9 @@ private struct DayPlanHeader: View {
             if case .proposal = plan.phase {
                 PlannerPillButton(title: "Add all", symbol: "calendar.badge.plus", isProminent: true,
                                   help: "Add every block to your default calendar") {
-                    withAnimation(Theme.Motion.snappy) { plan.add() }
+                    withMotion(Theme.Motion.snappy) { plan.add() }
                 }
-                .transition(.opacity.combined(with: .scale(scale: 0.9)))
+                .transition(.motionPop)
             }
         }
         .frame(height: 20)
@@ -166,7 +166,7 @@ private struct DayPlanBlockRow: View {
         )
         .contentShape(Rectangle())
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -230,14 +230,14 @@ private struct DayPlanRowButton: View {
         .buttonStyle(.plain)
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
-/// Placeholder rows with a soft highlight sweeping across while Claude plans.
+/// Placeholder rows shaped like proposal rows (stripe, time, title), with
+/// the shared skeleton shimmer while Claude plans.
 private struct DayPlanShimmer: View {
     let help: String
-    @State private var phase: CGFloat = -1
 
     private static let widths: [CGFloat] = [0.72, 0.54, 0.64]
 
@@ -245,38 +245,17 @@ private struct DayPlanShimmer: View {
         VStack(spacing: 0) {
             ForEach(Self.widths.indices, id: \.self) { index in
                 HStack(spacing: Theme.Spacing.s) {
-                    Capsule().frame(width: 3, height: 14).frame(width: 20)
-                    Capsule().frame(width: DayPlanFormat.rangeWidth - Theme.Spacing.s, height: 8)
-                    GeometryReader { proxy in
-                        Capsule().frame(width: proxy.size.width * Self.widths[index], height: 8)
-                            .frame(maxHeight: .infinity)
-                    }
+                    SkeletonLine(width: 3, height: 14).frame(width: 20)
+                    SkeletonLine(width: DayPlanFormat.rangeWidth - Theme.Spacing.s)
+                    SkeletonLine(fraction: Self.widths[index])
                 }
                 .padding(.horizontal, Theme.Spacing.s)
                 .frame(height: PlannerList.rowHeight)
             }
         }
-        .foregroundStyle(Theme.Palette.surfaceHover)
-        .overlay {
-            GeometryReader { proxy in
-                LinearGradient(colors: [.clear, .white.opacity(0.10), .clear],
-                               startPoint: .leading, endPoint: .trailing)
-                    .frame(width: proxy.size.width * 0.5)
-                    .offset(x: proxy.size.width * phase)
-            }
-            .mask {
-                VStack(spacing: 0) {
-                    ForEach(Self.widths.indices, id: \.self) { _ in
-                        Rectangle().frame(height: PlannerList.rowHeight)
-                    }
-                }
-                .frame(maxHeight: .infinity, alignment: .top)
-            }
-            .allowsHitTesting(false)
-        }
-        .onAppear {
-            withAnimation(.easeInOut(duration: 1.4).repeatForever(autoreverses: false)) { phase = 1.5 }
-        }
+        .shimmering()
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Planning")
         .help(help)
     }
 }
@@ -350,7 +329,7 @@ struct PlannerPillButton: View {
         .buttonStyle(.plain)
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -376,6 +355,6 @@ struct PlannerTextButton: View {
         .buttonStyle(.plain)
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }

@@ -19,7 +19,7 @@ struct PartyStage: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
-        .animation(Theme.Motion.content, value: store.state.party?.code)
+        .motion(Theme.Motion.content, value: store.state.party?.code)
     }
 }
 
@@ -73,7 +73,7 @@ private struct PartyRoom: View {
             }
             .frame(width: proxy.size.width, height: proxy.size.height)
         }
-        .animation(Theme.Motion.snappy, value: party.members.map(\.id))
+        .motion(Theme.Motion.snappy, value: party.members.map(\.id))
     }
 
     private static let roomyWidth: CGFloat = 72

@@ -80,6 +80,7 @@ enum SnapshotRenderer {
             if name == "open-closet-look" { closet?.store.section = .look }
             let view = NotchView(content: ModuleViews.notchContent(services: services))
                 .environmentObject(model)
+                .environment(\.loaderRevealDelay, 0) // rendered the moment it appears
                 .frame(width: Theme.Layout.expandedSize.width + 40,
                        height: Theme.Layout.expandedSize.height + 24, alignment: .top)
                 .background(Color(white: 0.16)) // stand-in for a desktop
@@ -97,6 +98,19 @@ enum SnapshotRenderer {
         // The pet coach's overlay: walking out, then each kind of bubble.
         let coachShots = closet.map { PetCoachSnapshots.shots(profile: $0.store.profile, lines: $0.coach.lines) } ?? []
         for (name, view) in coachShots {
+            let renderer = ImageRenderer(content: view)
+            renderer.scale = 2
+            guard let image = renderer.nsImage,
+                  let tiff = image.tiffRepresentation,
+                  let png = NSBitmapImageRep(data: tiff)?.representation(using: .png, properties: [:])
+            else { continue }
+            let url = outputDirectory.appendingPathComponent("\(name).png")
+            try? png.write(to: url)
+            print(url.path)
+        }
+
+        // Frame strips of the shared motion (celebrations), reviewed frame by frame.
+        for (name, view) in MotionSnapshots.shots() {
             let renderer = ImageRenderer(content: view)
             renderer.scale = 2
             guard let image = renderer.nsImage,

@@ -20,6 +20,9 @@ public struct NotchContent {
     public var nowPlayingTrailing: () -> AnyView
     /// Opens the app's Settings window (the notch closes first).
     public var openSettings: () -> Void
+    /// Where real events celebrate; the tab bar bounces a tab for the
+    /// center's nods. Nil shows no nods.
+    public var celebrations: CelebrationCenter?
 
     public init(
         appName: String,
@@ -27,7 +30,8 @@ public struct NotchContent {
         panel: @escaping (ModuleID) -> AnyView,
         nowPlayingLeading: @escaping () -> AnyView,
         nowPlayingTrailing: @escaping () -> AnyView,
-        openSettings: @escaping () -> Void
+        openSettings: @escaping () -> Void,
+        celebrations: CelebrationCenter? = nil
     ) {
         self.appName = appName
         self.catalog = catalog
@@ -35,5 +39,6 @@ public struct NotchContent {
         self.nowPlayingLeading = nowPlayingLeading
         self.nowPlayingTrailing = nowPlayingTrailing
         self.openSettings = openSettings
+        self.celebrations = celebrations
     }
 }

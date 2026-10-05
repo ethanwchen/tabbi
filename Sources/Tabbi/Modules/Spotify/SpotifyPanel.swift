@@ -51,7 +51,7 @@ struct SpotifyPanel: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .animation(Theme.Motion.content, value: controller.status.kind)
+        .motion(Theme.Motion.content, value: controller.status.kind)
         .onAppear { controller.setPanelVisible(true) }
         .onDisappear { controller.setPanelVisible(false) }
     }
@@ -142,18 +142,21 @@ private struct SpotifyNowPlaying: View {
                               endRadius: Self.artworkSize * 0.6)
             .frame(width: Self.artworkSize * 1.2, height: Self.artworkSize * 1.2)
             .allowsHitTesting(false)
-            .animation(Theme.Motion.content, value: tint)
+            .motion(Theme.Motion.content, value: tint)
     }
 }
 
 // MARK: - Marquee
 
 /// One line of text that truncates at rest and, while `isActive` (hovered),
-/// scrolls as a gentle loop if it doesn't fit. Text that fits never moves.
+/// scrolls as a gentle loop if it doesn't fit. Text that fits never moves,
+/// and under Reduce Motion nothing scrolls: the line stays truncated.
 /// Font and color come from the environment like a plain `Text`.
 private struct SpotifyMarqueeText: View {
     let text: String
     let isActive: Bool
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     @State private var textWidth: CGFloat = 0
     @State private var containerWidth: CGFloat = 0
@@ -162,7 +165,7 @@ private struct SpotifyMarqueeText: View {
     private static let edgeFade: CGFloat = 12
 
     private var scrolls: Bool {
-        isActive && SpotifyMarquee.needsScrolling(textWidth: textWidth, containerWidth: containerWidth)
+        isActive && !reduceMotion && SpotifyMarquee.needsScrolling(textWidth: textWidth, containerWidth: containerWidth)
     }
 
     var body: some View {
@@ -250,13 +253,12 @@ private struct SpotifyArtworkButton: View {
                         .padding(Theme.Spacing.xs + Theme.Spacing.xxs)
                 }
                 .shadow(color: .black.opacity(0.5), radius: 10, y: 4)
-                .scaleEffect(hovering ? 1.03 : 1)
                 .contentShape(RoundedRectangle(cornerRadius: Theme.Radius.l, style: .continuous))
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile(.pill, lifts: true))
         .help("Show \(source.displayName)")
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 
     /// The player's own icon; a glyph on a dark disc if the icon is missing.
@@ -331,7 +333,7 @@ private struct SpotifyScrubberBar: View {
             .onHover { hovering = $0 }
             .help("Drag to seek")
             .disabled(duration <= 0)
-            .animation(Theme.Motion.snappy, value: isActive)
+            .motion(Theme.Motion.snappy, value: isActive)
 
             HStack {
                 Text(PlaybackTimeFormatter.string(shownPosition))
@@ -408,7 +410,7 @@ private struct SpotifyVolumeControl: View {
         .background(Capsule().fill(isExpanded ? Theme.Palette.surface : .clear))
         .contentShape(Capsule())
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: isExpanded)
+        .motion(Theme.Motion.snappy, value: isExpanded)
     }
 
     private var speaker: some View {
@@ -421,10 +423,10 @@ private struct SpotifyVolumeControl: View {
                 .background(Circle().fill(hoveringSpeaker ? Theme.Palette.surfaceHover : .clear))
                 .contentShape(Circle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile)
         .help(shownVolume == 0 ? "Unmute" : "Mute")
         .onHover { hoveringSpeaker = $0 }
-        .animation(Theme.Motion.snappy, value: hoveringSpeaker)
+        .motion(Theme.Motion.snappy, value: hoveringSpeaker)
         .accessibilityLabel(shownVolume == 0 ? "Unmute" : "Mute")
     }
 
@@ -498,10 +500,10 @@ private struct SpotifyTransportButton: View {
                 .background(Circle().fill(hovering ? Theme.Palette.surfaceHover : .clear))
                 .contentShape(Circle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile)
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -520,14 +522,13 @@ private struct SpotifyPlayPauseButton: View {
                 .offset(x: isPlaying ? 0 : 1)
                 .frame(width: 36, height: 36)
                 .background(Circle().fill(Theme.Palette.primaryText))
-                .scaleEffect(hovering ? 1.06 : 1)
                 .contentShape(Circle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile(.control, lifts: true))
         .help(isPlaying ? "Pause" : "Play")
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
-        .animation(Theme.Motion.snappy, value: isPlaying)
+        .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: isPlaying)
     }
 }
 
@@ -579,7 +580,7 @@ private struct SpotifyEmptyState: View {
                         .font(.system(size: 17, weight: .semibold))
                         .foregroundStyle(NowPlayingModule.descriptor.accentColor)
                 } else {
-                    SpotifySpinner()
+                    Spinner(tint: NowPlayingModule.descriptor.accentColor, size: 16, lineWidth: 2.5)
                 }
             }
             .frame(width: 40, height: 40)
@@ -608,24 +609,6 @@ private struct SpotifyEmptyState: View {
     }
 }
 
-/// An accent arc that turns once a second. Drawn in SwiftUI rather than
-/// `ProgressView`, whose AppKit-backed spinner doesn't render in snapshots
-/// and ignores the module accent.
-private struct SpotifySpinner: View {
-    var body: some View {
-        TimelineView(.animation(minimumInterval: 1 / 30)) { context in
-            let turns = context.date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: 1)
-            Circle()
-                .trim(from: 0, to: 0.7)
-                .stroke(NowPlayingModule.descriptor.accentColor,
-                        style: StrokeStyle(lineWidth: 2.5, lineCap: .round))
-                .rotationEffect(.degrees(turns * 360))
-        }
-        .frame(width: 16, height: 16)
-        .accessibilityLabel("Loading")
-    }
-}
-
 private struct SpotifyActionButton: View {
     let action: SpotifyEmptyState.Action
     @State private var hovering = false
@@ -650,13 +633,12 @@ private struct SpotifyActionButton: View {
             .overlay {
                 if isAppLauncher { Capsule().strokeBorder(Theme.Palette.stroke, lineWidth: 0.5) }
             }
-            .scaleEffect(hovering ? 1.03 : 1)
             .contentShape(Capsule())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile(.pill, lifts: true))
         .help(action.help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 
     /// App launch buttons sit on a neutral surface so each app's own icon
@@ -711,7 +693,7 @@ struct SpotifyCompactTrailing: View {
             .frame(height: Self.maxHeight, alignment: .bottom)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .animation(Theme.Motion.snappy, value: isPlaying)
+        .motion(Theme.Motion.snappy, value: isPlaying)
         .help(isPlaying ? "Playing in \((controller.source ?? .spotify).displayName)" : "Paused")
     }
 }

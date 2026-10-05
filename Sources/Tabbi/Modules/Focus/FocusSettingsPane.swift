@@ -29,7 +29,7 @@ struct FocusSettingsPane: View {
         .formStyle(.grouped)
         .scrollDisabled(true)
         .frame(width: 500, height: height)
-        .animation(.spring(response: 0.3, dampingFraction: 0.88), value: height)
+        .motion(Motion.content, value: height)
         .onDisappear { controller.setPreviewing(false) }
         .onChange(of: controller.settings.mix.isOff) { _, isOff in
             if isOff { controller.setPreviewing(false) }
@@ -244,7 +244,7 @@ struct FocusSettingsPane: View {
                     test(kind, name: name)
                 } label: {
                     if testing == kind {
-                        ProgressView().controlSize(.small)
+                        Spinner()
                             .frame(minWidth: 36)
                     } else {
                         Text("Test").frame(minWidth: 36)
@@ -269,7 +269,7 @@ struct FocusSettingsPane: View {
         Task {
             let result = await controller.testShortcut(name)
             testing = nil
-            withAnimation(.spring(response: 0.26, dampingFraction: 0.86)) {
+            withMotion(Motion.snappy) {
                 testResult = (kind, result)
             }
         }
@@ -312,7 +312,7 @@ private struct SoundChip: View {
                 if isOn {
                     Image(systemName: "checkmark")
                         .font(.system(size: 10, weight: .bold))
-                        .transition(.scale.combined(with: .opacity))
+                        .transition(.motionPop)
                 }
             }
             .foregroundStyle(isOn ? Color.accentColor : Color.primary)
@@ -333,8 +333,8 @@ private struct SoundChip: View {
         .disabled(!isEnabled)
         .opacity(isEnabled ? 1 : 0.45)
         .onHover { isHovered = $0 }
-        .animation(.spring(response: 0.26, dampingFraction: 0.86), value: isOn)
-        .animation(.spring(response: 0.2, dampingFraction: 0.9), value: isHovered)
+        .motion(Motion.snappy, value: isOn)
+        .motion(Motion.hover, value: isHovered)
         .help(help)
     }
 

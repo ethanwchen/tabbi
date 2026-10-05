@@ -41,22 +41,22 @@ struct FocusCard: View {
                 if hovering, timer.runState != .idle || timer.phase == .rest {
                     HStack(spacing: Theme.Spacing.xxs) {
                         IconButton(symbol: "forward.end.fill", size: 20, help: skipHelp) {
-                            withAnimation(Theme.Motion.snappy) { store.skip() }
+                            withMotion(Theme.Motion.snappy) { store.skip() }
                         }
                         IconButton(symbol: "arrow.counterclockwise", size: 20, help: "Reset to a fresh focus session") {
-                            withAnimation(Theme.Motion.snappy) { store.reset() }
+                            withMotion(Theme.Motion.snappy) { store.reset() }
                         }
                     }
-                    .transition(.opacity.combined(with: .scale(scale: 0.8)))
+                    .transition(.motionPop)
                 }
             }
             .padding(.horizontal, Theme.Spacing.s)
             .padding(.vertical, Theme.Spacing.xs + Theme.Spacing.xxs)
         }
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
-        .animation(Theme.Motion.snappy, value: timer.runState)
-        .animation(Theme.Motion.snappy, value: timer.phase)
+        .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: timer.runState)
+        .motion(Theme.Motion.snappy, value: timer.phase)
     }
 
     private var accent: Color { TodayModule.descriptor.accentColor }
@@ -110,16 +110,10 @@ private struct FocusRingButton: View {
     var body: some View {
         let accent = TodayModule.descriptor.accentColor
         Button(action: action) {
-            ZStack {
+            ProgressRing(progress: progress, tint: accent) {
                 Circle()
                     .fill(accent.opacity(hovering ? 0.22 : 0.10))
                     .padding(2.5)
-                Circle()
-                    .stroke(accent.opacity(0.22), lineWidth: 2.5)
-                Circle()
-                    .trim(from: 0, to: progress)
-                    .stroke(accent, style: StrokeStyle(lineWidth: 2.5, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
                 Image(systemName: isRunning ? "pause.fill" : "play.fill")
                     .font(.system(size: 10, weight: .bold))
                     .foregroundStyle(accent)
@@ -130,11 +124,10 @@ private struct FocusRingButton: View {
             .frame(width: 28, height: 28)
             .contentShape(Circle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile)
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
-        .animation(Theme.Motion.content, value: progress)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 

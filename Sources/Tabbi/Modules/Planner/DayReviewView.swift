@@ -28,7 +28,7 @@ struct DayReviewView: View {
                 }
                 .padding(.horizontal, Theme.Spacing.s)
             }
-            .animation(Theme.Motion.content, value: review)
+            .motion(Theme.Motion.content, value: review)
         }
     }
 
@@ -174,36 +174,21 @@ private struct DayReviewStats: View {
     }
 }
 
-/// Two placeholder lines with a soft highlight sweeping across while Claude writes.
+/// Two placeholder lines where the summary goes, with the shared skeleton
+/// shimmer while Claude writes.
 private struct DayReviewShimmer: View {
-    @State private var phase: CGFloat = -1
-
     private static let widths: [CGFloat] = [0.92, 0.6]
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.s) {
             ForEach(Self.widths.indices, id: \.self) { index in
-                GeometryReader { proxy in
-                    Capsule().frame(width: proxy.size.width * Self.widths[index], height: 8)
-                }
-                .frame(height: 8)
+                SkeletonLine(fraction: Self.widths[index])
             }
         }
         .padding(.top, Theme.Spacing.xs)
-        .foregroundStyle(Theme.Palette.surfaceHover)
-        .overlay {
-            GeometryReader { proxy in
-                LinearGradient(colors: [.clear, .white.opacity(0.10), .clear],
-                               startPoint: .leading, endPoint: .trailing)
-                    .frame(width: proxy.size.width * 0.5)
-                    .offset(x: proxy.size.width * phase)
-            }
-            .allowsHitTesting(false)
-        }
-        .clipped()
-        .onAppear {
-            withAnimation(.easeInOut(duration: 1.4).repeatForever(autoreverses: false)) { phase = 1.5 }
-        }
+        .shimmering()
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Writing a summary")
         .help("Claude is writing a short summary of your day")
     }
 }

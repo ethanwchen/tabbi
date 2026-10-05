@@ -22,8 +22,8 @@ struct UpNextCard: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
-        .animation(Theme.Motion.content, value: store.events)
-        .animation(Theme.Motion.content, value: store.emptySituation)
+        .motion(Theme.Motion.content, value: store.events)
+        .motion(Theme.Motion.content, value: store.emptySituation)
     }
 
     @ViewBuilder
@@ -35,7 +35,7 @@ struct UpNextCard: View {
             VStack(spacing: 0) {
                 ForEach(store.events) { event in
                     UpNextRow(event: event, now: store.now) { store.join($0) }
-                        .transition(.opacity.combined(with: .move(edge: .top)))
+                        .transition(.motionRow(from: .top))
                 }
             }
         }
@@ -93,7 +93,7 @@ private struct UpNextRow: View {
                 .fill(hovering ? Theme.Palette.surface : .clear)
         )
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
         .help("\(UpcomingEventFormat.title(event)), \(event.start.formatted(date: .omitted, time: .shortened))")
     }
 
@@ -127,7 +127,7 @@ private struct UpNextJoinButton: View {
         .buttonStyle(.plain)
         .help("Join \(link.provider.displayName) call")
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
