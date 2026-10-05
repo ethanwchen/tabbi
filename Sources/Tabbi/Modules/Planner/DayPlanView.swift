@@ -234,10 +234,10 @@ private struct DayPlanRowButton: View {
     }
 }
 
-/// Placeholder rows with a soft highlight sweeping across while Claude plans.
+/// Placeholder rows shaped like proposal rows (stripe, time, title), with
+/// the shared skeleton shimmer while Claude plans.
 private struct DayPlanShimmer: View {
     let help: String
-    @State private var phase: CGFloat = -1
 
     private static let widths: [CGFloat] = [0.72, 0.54, 0.64]
 
@@ -245,38 +245,17 @@ private struct DayPlanShimmer: View {
         VStack(spacing: 0) {
             ForEach(Self.widths.indices, id: \.self) { index in
                 HStack(spacing: Theme.Spacing.s) {
-                    Capsule().frame(width: 3, height: 14).frame(width: 20)
-                    Capsule().frame(width: DayPlanFormat.rangeWidth - Theme.Spacing.s, height: 8)
-                    GeometryReader { proxy in
-                        Capsule().frame(width: proxy.size.width * Self.widths[index], height: 8)
-                            .frame(maxHeight: .infinity)
-                    }
+                    SkeletonLine(width: 3, height: 14).frame(width: 20)
+                    SkeletonLine(width: DayPlanFormat.rangeWidth - Theme.Spacing.s)
+                    SkeletonLine(fraction: Self.widths[index])
                 }
                 .padding(.horizontal, Theme.Spacing.s)
                 .frame(height: PlannerList.rowHeight)
             }
         }
-        .foregroundStyle(Theme.Palette.surfaceHover)
-        .overlay {
-            GeometryReader { proxy in
-                LinearGradient(colors: [.clear, .white.opacity(0.10), .clear],
-                               startPoint: .leading, endPoint: .trailing)
-                    .frame(width: proxy.size.width * 0.5)
-                    .offset(x: proxy.size.width * phase)
-            }
-            .mask {
-                VStack(spacing: 0) {
-                    ForEach(Self.widths.indices, id: \.self) { _ in
-                        Rectangle().frame(height: PlannerList.rowHeight)
-                    }
-                }
-                .frame(maxHeight: .infinity, alignment: .top)
-            }
-            .allowsHitTesting(false)
-        }
-        .onAppear {
-            withAnimation(.easeInOut(duration: 1.4).repeatForever(autoreverses: false)) { phase = 1.5 }
-        }
+        .shimmering()
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Planning")
         .help(help)
     }
 }

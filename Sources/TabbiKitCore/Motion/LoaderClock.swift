@@ -16,6 +16,10 @@ public enum LoaderClock {
     /// Loaders redraw at most this often. A small arc looks smooth at 30 fps
     /// and costs half of what the display rate would.
     public static let frameRate: Double = 30
+    /// One sweep of a skeleton's highlight across its placeholder, in seconds.
+    public static let shimmerPeriod: Double = 1.4
+    /// The highlight's width, as a fraction of the skeleton's width.
+    public static let shimmerBand: Double = 0.5
 
     /// The spinner's rotation in degrees at `time`, in `0..<360`.
     public static func spinAngle(at time: TimeInterval, period: Double = spinPeriod) -> Double {
@@ -31,5 +35,18 @@ public enum LoaderClock {
         guard period > 0 else { return 1 }
         let wave = (1 + cos(2 * Double.pi * time / period)) / 2
         return breathFloor + (1 - breathFloor) * wave
+    }
+
+    /// Where a skeleton's highlight starts at `time`, as a fraction of the
+    /// skeleton's width: it eases in from just past the leading edge
+    /// (`-band`) to just past the trailing edge (1), so each sweep begins and
+    /// ends fully off the placeholder and the jump back is never seen.
+    public static func shimmerOffset(at time: TimeInterval, period: Double = shimmerPeriod,
+                                     band: Double = shimmerBand) -> Double {
+        guard period > 0 else { return -band }
+        let cycle = (time / period).truncatingRemainder(dividingBy: 1)
+        let progress = cycle < 0 ? cycle + 1 : cycle
+        let eased = progress * progress * (3 - 2 * progress)
+        return -band + (1 + band) * eased
     }
 }

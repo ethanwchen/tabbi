@@ -33,4 +33,27 @@ final class LoaderClockTests: XCTestCase {
     func testLoadersRedrawNoFasterThanThirtyFramesASecond() {
         XCTAssertLessThanOrEqual(LoaderClock.frameRate, 30)
     }
+
+    func testTheShimmerSweepsFromOffTheLeadingEdgeToOffTheTrailingEdge() {
+        let band = LoaderClock.shimmerBand
+        let period = LoaderClock.shimmerPeriod
+        XCTAssertEqual(LoaderClock.shimmerOffset(at: 0), -band, accuracy: 1e-9)
+        XCTAssertEqual(LoaderClock.shimmerOffset(at: period / 2), (1 - band) / 2, accuracy: 1e-9)
+        XCTAssertEqual(LoaderClock.shimmerOffset(at: period * 0.999_999), 1, accuracy: 1e-4)
+        XCTAssertEqual(LoaderClock.shimmerOffset(at: 6, period: 2), -band, accuracy: 1e-9)
+    }
+
+    func testTheShimmerMovesForwardAndEasesAtBothEnds() {
+        let period = LoaderClock.shimmerPeriod
+        var previous = -Double.infinity
+        for step in 0..<100 {
+            let offset = LoaderClock.shimmerOffset(at: Double(step) * period / 100)
+            XCTAssertGreaterThanOrEqual(offset, previous)
+            previous = offset
+        }
+        let start = LoaderClock.shimmerOffset(at: period * 0.05) - LoaderClock.shimmerOffset(at: 0)
+        let middle = LoaderClock.shimmerOffset(at: period * 0.525) - LoaderClock.shimmerOffset(at: period * 0.475)
+        XCTAssertLessThan(start, middle)
+        XCTAssertEqual(LoaderClock.shimmerOffset(at: 1, period: 0), -LoaderClock.shimmerBand)
+    }
 }
