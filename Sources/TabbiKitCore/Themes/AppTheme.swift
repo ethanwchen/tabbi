@@ -165,6 +165,16 @@ public enum ThemeMotion: String, Hashable, Sendable {
     case standard
     /// Slower, softer springs with less bounce, for the cozy themes.
     case gentle
+
+    /// `spec` as this theme plays it: unchanged for `.standard`; for
+    /// `.gentle`, 30% longer with 0.08 less bounce (never below none), so a
+    /// cozy theme keeps every motion token's character but calmer.
+    public func adjusted(_ spec: SpringSpec) -> SpringSpec {
+        switch self {
+        case .standard: spec
+        case .gentle: SpringSpec(duration: spec.duration * 1.3, bounce: max(spec.bounce - 0.08, 0))
+        }
+    }
 }
 
 /// What small floating controls (icon buttons, the tab bar selection) sit on.

@@ -92,8 +92,8 @@ struct PartyPillButton: View {
         .disabled(isBusy)
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
-        .animation(Theme.Motion.snappy, value: isBusy)
+        .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: isBusy)
     }
 }
 
@@ -122,7 +122,7 @@ struct PartyTextButton: View {
         .disabled(isBusy)
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -159,8 +159,8 @@ struct PartyCopyCode: View {
         .buttonStyle(.plain)
         .help(copied ? "Copied" : help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
-        .animation(Theme.Motion.snappy, value: copied)
+        .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: copied)
         .task(id: copied) {
             guard copied else { return }
             try? await Task.sleep(for: .seconds(1.5))
@@ -244,9 +244,9 @@ struct PartyCodeField: View {
         .onTapGesture { focus.wrappedValue = field }
         .onHover { hovering = $0 }
         .help(help)
-        .animation(Theme.Motion.snappy, value: hovering)
-        .animation(Theme.Motion.snappy, value: isFocused)
-        .animation(Theme.Motion.snappy, value: text.isEmpty)
+        .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: isFocused)
+        .motion(Theme.Motion.snappy, value: text.isEmpty)
     }
 
     private func send() {

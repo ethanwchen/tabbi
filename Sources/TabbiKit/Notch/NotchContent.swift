@@ -24,6 +24,9 @@ public struct NotchContent {
     /// `NotchViewModel.showsTakeover` is true, such as first-run onboarding;
     /// nil when the app has nothing of the kind.
     public var takeover: NotchTakeover?
+    /// Where real events celebrate; the tab bar bounces a tab for the
+    /// center's nods. Nil shows no nods.
+    public var celebrations: CelebrationCenter?
 
     public init(
         appName: String,
@@ -32,7 +35,8 @@ public struct NotchContent {
         nowPlayingLeading: @escaping () -> AnyView,
         nowPlayingTrailing: @escaping () -> AnyView,
         openSettings: @escaping () -> Void,
-        takeover: NotchTakeover? = nil
+        takeover: NotchTakeover? = nil,
+        celebrations: CelebrationCenter? = nil
     ) {
         self.appName = appName
         self.catalog = catalog
@@ -41,6 +45,7 @@ public struct NotchContent {
         self.nowPlayingTrailing = nowPlayingTrailing
         self.openSettings = openSettings
         self.takeover = takeover
+        self.celebrations = celebrations
     }
 }
 

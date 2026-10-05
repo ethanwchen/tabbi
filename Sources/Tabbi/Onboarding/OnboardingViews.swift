@@ -71,7 +71,7 @@ private struct OnboardingProgress: View {
                 .onHover { hovering = $0 }
                 .help("Start using \(Edition.current.name) with what you picked so far. Settings can run setup again.")
             }
-            .animation(Theme.Motion.snappy, value: flow.stageIndex)
+            .motion(Theme.Motion.snappy, value: flow.stageIndex)
         }
     }
 }
@@ -92,7 +92,7 @@ private struct OnboardingBody: View {
                                             removal: .opacity))
                 OnboardingFooter(flow: flow, hasSetupView: setup != nil)
             }
-            .animation(Theme.Motion.content, value: flow.stage)
+            .motion(Theme.Motion.content, value: flow.stage)
         }
     }
 
@@ -223,7 +223,7 @@ private struct FooterButton: View {
         .buttonStyle(.plain)
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -255,7 +255,7 @@ private struct OnboardingTile<Label: View>: View {
         .buttonStyle(.plain)
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -380,7 +380,7 @@ private struct QuestionStep: View {
                     .foregroundStyle(Theme.Palette.tertiaryText)
                 TabSymbols(modules: flow.layout.enabled, catalog: flow.catalog)
             }
-            .animation(Theme.Motion.snappy, value: flow.layout)
+            .motion(Theme.Motion.snappy, value: flow.layout)
         }
     }
 }
@@ -423,7 +423,7 @@ private struct ModulesStep: View {
                 .onAppear { gridWidth = proxy.size.width }
                 .onChange(of: proxy.size.width) { gridWidth = $1 }
         })
-        .animation(Theme.Motion.snappy, value: flow.layout)
+        .motion(Theme.Motion.snappy, value: flow.layout)
     }
 
     /// Moves the dragged tile into the slot under the pointer, live.

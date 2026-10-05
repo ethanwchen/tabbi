@@ -16,8 +16,8 @@ struct PartySetupView: View {
                 .frame(width: 252)
             PartySetupFriendsCard(store: store, focus: $focus)
         }
-        .animation(Theme.Motion.content, value: store.state.connection)
-        .animation(Theme.Motion.snappy, value: store.notice)
+        .motion(Theme.Motion.content, value: store.state.connection)
+        .motion(Theme.Motion.snappy, value: store.notice)
         // Visible like the panel, so friends load and a failed connect retries.
         .onAppear { store.setVisible(true) }
         .onDisappear { store.setVisible(false) }
@@ -160,7 +160,7 @@ private struct PartySetupNameButton: View {
         .buttonStyle(.plain)
         .help("The name friends see, up to \(PartySettings.maxNameLength) characters. Click to change it.")
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -191,8 +191,8 @@ private struct PartySetupVisibilityButton: View {
         .buttonStyle(.plain)
         .help(invisible ? "Show friends when you study again" : "Go invisible. Your study minutes still count.")
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
-        .animation(Theme.Motion.snappy, value: invisible)
+        .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: invisible)
     }
 }
 

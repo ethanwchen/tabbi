@@ -52,14 +52,8 @@ private struct UsageRing: View {
     var body: some View {
         let utilization = window?.utilization ?? 0
         VStack(spacing: Theme.Spacing.xs) {
-            ZStack {
-                Circle()
-                    .stroke(Theme.Palette.surface, lineWidth: Self.lineWidth)
-                Circle()
-                    .trim(from: 0, to: min(max(utilization, 0), 1))
-                    .stroke(color(for: utilization),
-                            style: StrokeStyle(lineWidth: Self.lineWidth, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
+            ProgressRing(progress: utilization, tint: color(for: utilization),
+                         track: Theme.Palette.surface, lineWidth: Self.lineWidth) {
                 if let window {
                     Text(ClaudeUsageFormat.percent(window.utilization))
                         .font(Theme.Typography.metric)
@@ -73,7 +67,7 @@ private struct UsageRing: View {
             }
             .frame(width: Self.diameter, height: Self.diameter)
             .padding(.bottom, Theme.Spacing.xxs)
-            .animation(Theme.Motion.content, value: utilization)
+            .motion(Theme.Motion.content, value: utilization)
 
             Text(title)
                 .font(Theme.Typography.bodyEmphasis)
@@ -125,7 +119,7 @@ private struct TodayCard: View {
                 } else {
                     Spacer(minLength: 0)
                     HStack(spacing: Theme.Spacing.s) {
-                        LoadingArc()
+                        Spinner(tint: ClaudeUsageModule.descriptor.accentColor)
                         Text("Reading Claude Code sessions…")
                             .font(Theme.Typography.body)
                             .foregroundStyle(Theme.Palette.secondaryText)
@@ -136,7 +130,7 @@ private struct TodayCard: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
-        .animation(Theme.Motion.content, value: stats)
+        .motion(Theme.Motion.content, value: stats)
     }
 
     private func row(_ title: String, value: String) -> some View {
@@ -202,7 +196,7 @@ private struct UsageFooter: View {
         .font(Theme.Typography.caption.monospacedDigit())
         .frame(height: 24)
         .help(store.probeError ?? "")
-        .animation(Theme.Motion.snappy, value: store.isFetching)
+        .motion(Theme.Motion.snappy, value: store.isFetching)
     }
 
     private var status: String {
@@ -220,26 +214,6 @@ private struct UsageFooter: View {
     }
 }
 
-/// A small spinning arc. Pure SwiftUI (unlike `ProgressView`) so it also
-/// renders in snapshots; driven by the clock, so it only ticks while shown.
-private struct LoadingArc: View {
-    var body: some View {
-        TimelineView(.animation) { context in
-            Circle()
-                .trim(from: 0, to: 0.7)
-                .stroke(ClaudeUsageModule.descriptor.accentColor,
-                        style: StrokeStyle(lineWidth: 2, lineCap: .round))
-                .rotationEffect(.degrees(spinAngle(at: context.date)))
-        }
-        .frame(width: 12, height: 12)
-    }
-}
-
-/// One turn per second, derived from the clock rather than an animation.
-private func spinAngle(at date: Date) -> Double {
-    date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: 1) * 360
-}
-
 /// The shared `IconButton`, spinning while a probe runs. Rotating the whole
 /// button is invisible on its circular background, so only the glyph turns.
 private struct RefreshButton: View {
@@ -247,12 +221,10 @@ private struct RefreshButton: View {
     let action: () -> Void
 
     var body: some View {
-        TimelineView(.animation(paused: !isFetching)) { context in
-            IconButton(symbol: "arrow.clockwise", size: 24,
-                       help: "Check live limits (sends a tiny request with your claude CLI)",
-                       action: action)
-                .rotationEffect(.degrees(isFetching ? spinAngle(at: context.date) : 0))
-        }
+        IconButton(symbol: "arrow.clockwise", size: 24,
+                   help: "Check live limits (sends a tiny request with your claude CLI)",
+                   action: action)
+            .spinning(isFetching)
         .disabled(isFetching)
     }
 }

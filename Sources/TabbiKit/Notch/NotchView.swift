@@ -6,6 +6,7 @@ import TabbiKitCore
 /// the environment; the app supplies its panels through `content`.
 public struct NotchView: View {
     @EnvironmentObject private var model: NotchViewModel
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     private let content: NotchContent
 
     public init(content: NotchContent) {
@@ -15,9 +16,9 @@ public struct NotchView: View {
     public var body: some View {
         let shape = NotchShape(topRadius: model.topRadius, bottomRadius: model.bottomRadius)
         ZStack(alignment: .top) {
-            shape
-                .fill(Theme.Palette.background)
-                .shadow(color: .black.opacity(model.isOpen ? 0.45 : 0), radius: 18, y: 8)
+            // No shadow: the clip below would hide it anyway, and a blur on
+            // a shape that morphs every frame costs GPU time for nothing.
+            shape.fill(Theme.Palette.background)
 
             if model.isOpen {
                 ThemeGlow()
@@ -25,7 +26,7 @@ public struct NotchView: View {
                     .transition(.opacity)
                 OpenNotchContent(content: content)
                     .id(model.themeID)
-                    .transition(AnyTransition.opacity.combined(with: .scale(scale: 0.96, anchor: .top)))
+                    .transition(.notchContent(reduceMotion: reduceMotion))
             } else if let preview = model.preview {
                 NotchPreview(item: preview, notchWidth: model.geometry.notchSize.width, content: content)
                     .id(model.themeID)
@@ -48,11 +49,23 @@ public struct NotchView: View {
             Button("Quit \(content.appName)") { NSApp.terminate(nil) }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .animation(Theme.Motion.notch, value: model.phase)
-        .animation(Theme.Motion.notch, value: model.previewKind)
-        .animation(Theme.Motion.content, value: model.showsTakeover)
+        .animation(phaseAnimation, value: model.phase)
+        .animation(Motion.adapted(Motion.content, reduceMotion: reduceMotion), value: model.previewKind)
+        .animation(Motion.adapted(Motion.content, reduceMotion: reduceMotion), value: model.showsTakeover)
         .preferredColorScheme(.dark)
         .environment(\.moduleCatalog, content.catalog)
+    }
+
+    /// Opening stretches and settles, closing lands with no overshoot, and
+    /// hovering answers quickly; Reduce Motion swaps all three for a short fade.
+    private var phaseAnimation: Animation {
+        let animation: Animation
+        switch model.phase {
+        case .open: animation = Motion.open
+        case .hovering: animation = Motion.hover
+        case .closed: animation = Motion.close
+        }
+        return Motion.adapted(animation, reduceMotion: reduceMotion)
     }
 }
 
@@ -74,6 +87,7 @@ private struct ThemeGlow: View {
 /// or the app's takeover (first-run setup) in their place while it runs.
 private struct OpenNotchContent: View {
     @EnvironmentObject private var model: NotchViewModel
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let content: NotchContent
 
     var body: some View {
@@ -107,7 +121,7 @@ private struct OpenNotchContent: View {
     private func tabs(notch: CGSize) -> some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
-                NotchTabBar()
+                NotchTabBar(celebrations: content.celebrations)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Color.clear.frame(width: notch.width)
                 HStack(spacing: Theme.Spacing.s) {
@@ -130,17 +144,14 @@ private struct OpenNotchContent: View {
             ZStack {
                 content.panel(model.selected)
                     .id(model.selected)
-                    .transition(.asymmetric(
-                        insertion: .move(edge: model.movingForward ? .trailing : .leading).combined(with: .opacity),
-                        removal: .move(edge: model.movingForward ? .leading : .trailing).combined(with: .opacity)
-                    ))
+                    .transition(.tabSwitch(forward: model.movingForward, reduceMotion: reduceMotion))
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .clipped()
             .padding(.horizontal, Theme.Layout.contentInset + Theme.Layout.openTopRadius)
             .padding(.top, Theme.Spacing.s)
             .padding(.bottom, Theme.Spacing.l)
-            .animation(Theme.Motion.content, value: model.selected)
+            .motion(Motion.content, value: model.selected)
         }
     }
 }

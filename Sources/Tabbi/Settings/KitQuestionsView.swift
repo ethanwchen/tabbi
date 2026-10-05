@@ -101,7 +101,7 @@ struct KitQuestionsView: View {
             .padding(.top, 20)
             .padding(.bottom, 24)
         }
-        .animation(.spring(response: 0.26, dampingFraction: 0.86), value: answers)
+        .motion(Theme.Motion.snappy, value: answers)
     }
 }
 

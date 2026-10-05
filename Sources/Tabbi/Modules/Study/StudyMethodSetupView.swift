@@ -31,11 +31,11 @@ struct StudyMethodSetupView: View {
                 .frame(width: 232)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .animation(Theme.Motion.snappy, value: current)
+        .motion(Theme.Motion.snappy, value: current)
     }
 
     private func choose(_ kind: StudyMethodKind) {
-        withAnimation(Theme.Motion.snappy) { store.choose(kind) }
+        withMotion(Theme.Motion.snappy) { store.choose(kind) }
     }
 }
 

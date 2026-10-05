@@ -90,7 +90,7 @@ struct PartyFriendsCard: View {
                 PartyFriendRow(friend: friend, store: store)
             }
         }
-        .animation(Theme.Motion.snappy, value: state.friends.map(\.id))
+        .motion(Theme.Motion.snappy, value: state.friends.map(\.id))
     }
 
     private var emptyFriends: some View {
@@ -147,7 +147,7 @@ private struct PartyFriendRow: View {
         )
         .contentShape(Rectangle())
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
         .help(help)
         .contextMenu {
             Button("Remove \(friend.profile.name)", role: .destructive) {

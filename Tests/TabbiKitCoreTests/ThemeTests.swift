@@ -39,6 +39,20 @@ final class ThemeCatalogTests: XCTestCase {
         }
     }
 
+    func testGentleMotionPlaysEveryTokenSlowerAndCalmer() {
+        let tokens = [MotionTokens.open, MotionTokens.close, MotionTokens.hover, MotionTokens.snappy,
+                      MotionTokens.content, MotionTokens.press, MotionTokens.check]
+        for spec in tokens {
+            XCTAssertEqual(ThemeMotion.standard.adjusted(spec), spec)
+            let gentle = ThemeMotion.gentle.adjusted(spec)
+            XCTAssertGreaterThan(gentle.duration, spec.duration)
+            XCTAssertLessThanOrEqual(gentle.peak, spec.peak)
+            XCTAssertGreaterThanOrEqual(gentle.bounce, 0)
+        }
+        // The close still lands with no overshoot.
+        XCTAssertFalse(ThemeMotion.gentle.adjusted(MotionTokens.close).overshoots)
+    }
+
     func testUnknownIDsResolveToTheDefault() {
         XCTAssertNil(ThemeCatalog.theme("aurora"))
         XCTAssertEqual(ThemeCatalog.resolve("aurora").id, ThemeCatalog.defaultID)

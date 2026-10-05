@@ -80,6 +80,7 @@ extension AppSettings {
         kitAnswers: KitAnswers = [:],
         openOnHover: Bool = false,
         hapticsEnabled: Bool = true,
+        celebrationSoundEnabled: Bool = true,
         launchAtLogin: Bool = false,
         hotkey: Hotkey = .default,
         claudePathOverride: String? = nil,
@@ -90,7 +91,8 @@ extension AppSettings {
         themeID: ThemeID = ThemeCatalog.defaultID
     ) {
         self.init(kitID: kitID, hasChosenKit: hasChosenKit, kitAnswers: kitAnswers, modules: .default,
-                  openOnHover: openOnHover, hapticsEnabled: hapticsEnabled, launchAtLogin: launchAtLogin,
+                  openOnHover: openOnHover, hapticsEnabled: hapticsEnabled,
+                  celebrationSoundEnabled: celebrationSoundEnabled, launchAtLogin: launchAtLogin,
                   hotkey: hotkey, claudePathOverride: claudePathOverride, preferredDisplay: preferredDisplay,
                   showOnExternalDisplays: showOnExternalDisplays, hideInFullscreen: hideInFullscreen,
                   notchPreview: notchPreview, themeID: themeID)

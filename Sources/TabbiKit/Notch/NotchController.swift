@@ -26,7 +26,8 @@ public final class NotchController {
     private var revealed = false
     private var fullscreenCheckTask: Task<Void, Never>?
 
-    /// Extra room around the open notch for its shadow.
+    /// Extra room around the open notch, so the open spring's stretch past
+    /// its final size is never cut off by the panel's edge.
     private static let canvasMargin = CGSize(width: 48, height: 40)
 
     public init(content: NotchContent, inputs: NotchInputs) {

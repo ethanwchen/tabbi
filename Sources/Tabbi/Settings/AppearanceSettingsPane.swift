@@ -92,8 +92,8 @@ private struct ThemeChoice: View {
         }
         .buttonStyle(.plain)
         .onHover { hovering = $0 }
-        .animation(.spring(response: 0.26, dampingFraction: 0.86), value: hovering)
-        .animation(.spring(response: 0.26, dampingFraction: 0.86), value: isSelected)
+        .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: isSelected)
         .help("\(theme.name): \(theme.summary)")
         .accessibilityLabel(theme.name)
         .accessibilityAddTraits(isSelected ? [.isSelected] : [])

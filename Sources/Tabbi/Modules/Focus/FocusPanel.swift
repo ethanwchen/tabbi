@@ -36,13 +36,7 @@ private struct FocusDial: View {
     var body: some View {
         let timer = store.timer
         Card(padding: 0) {
-            ZStack {
-                Circle()
-                    .stroke(accent.opacity(0.18), lineWidth: 6)
-                Circle()
-                    .trim(from: 0, to: store.progress)
-                    .stroke(accent, style: StrokeStyle(lineWidth: 6, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
+            ProgressRing(progress: store.progress, tint: accent, lineWidth: 6) {
                 VStack(spacing: Theme.Spacing.xxs) {
                     Text(FocusTimerFormat.clock(store.remaining))
                         .font(.system(size: 30, weight: .semibold, design: .rounded).monospacedDigit())
@@ -57,8 +51,8 @@ private struct FocusDial: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .help("\(FocusTimerFormat.phaseName(timer.phase)): \(FocusTimerFormat.clock(store.remaining)) left")
-        .animation(Theme.Motion.content, value: store.progress)
-        .animation(Theme.Motion.snappy, value: timer.phase)
+        .motion(Theme.Motion.content, value: store.progress)
+        .motion(Theme.Motion.snappy, value: timer.phase)
     }
 
     private var phaseLabel: String {
@@ -179,21 +173,21 @@ private struct FocusControls: View {
         HStack(spacing: Theme.Spacing.xs) {
             FocusPrimaryButton(title: primaryTitle, symbol: timer.isRunning ? "pause.fill" : "play.fill",
                                help: primaryHelp) {
-                withAnimation(Theme.Motion.snappy) { store.toggleRunning() }
+                withMotion(Theme.Motion.snappy) { store.toggleRunning() }
             }
             Spacer(minLength: 0)
             Group {
                 IconButton(symbol: "forward.end.fill", help: timer.phase == .focus ? "Skip to the break" : "Skip the break") {
-                    withAnimation(Theme.Motion.snappy) { store.skip() }
+                    withMotion(Theme.Motion.snappy) { store.skip() }
                 }
                 IconButton(symbol: "arrow.counterclockwise", help: "Reset to a fresh focus session") {
-                    withAnimation(Theme.Motion.snappy) { store.reset() }
+                    withMotion(Theme.Motion.snappy) { store.reset() }
                 }
             }
             .disabled(isFresh)
             .opacity(isFresh ? 0.4 : 1)
         }
-        .animation(Theme.Motion.snappy, value: isFresh)
+        .motion(Theme.Motion.snappy, value: isFresh)
     }
 
     private var primaryTitle: String {
@@ -237,9 +231,9 @@ private struct FocusPrimaryButton: View {
             .background(Capsule().fill(accent.opacity(hovering ? 1 : 0.88)))
             .contentShape(Capsule())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile(.pill))
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }

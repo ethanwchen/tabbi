@@ -87,8 +87,8 @@ private struct TodayCalendarSetupContent: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             }
         }
-        .animation(Theme.Motion.content, value: upNext.access)
-        .animation(Theme.Motion.content, value: upNext.events)
+        .motion(Theme.Motion.content, value: upNext.access)
+        .motion(Theme.Motion.content, value: upNext.events)
         // Visible like the panel, so access and events are read fresh.
         .onAppear { upNext.setVisible(true) }
         .onDisappear { upNext.setVisible(false) }

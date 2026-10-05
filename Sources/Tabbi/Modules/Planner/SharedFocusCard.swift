@@ -37,8 +37,8 @@ struct SharedFocusCard: View {
         .buttonStyle(.plain)
         .help("Open \(descriptor.title) to start, pause or skip")
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
-        .animation(Theme.Motion.snappy, value: focus)
+        .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: focus)
     }
 
     private func content(_ focus: ProvidedFocus?, descriptor: ModuleDescriptor, now: Date) -> some View {
@@ -92,21 +92,14 @@ private struct SharedFocusRing: View {
     let accent: Color
 
     var body: some View {
-        ZStack {
+        ProgressRing(progress: progress, tint: accent) {
             Circle()
                 .fill(accent.opacity(0.10))
                 .padding(2.5)
-            Circle()
-                .stroke(accent.opacity(0.22), lineWidth: 2.5)
-            Circle()
-                .trim(from: 0, to: progress)
-                .stroke(accent, style: StrokeStyle(lineWidth: 2.5, lineCap: .round))
-                .rotationEffect(.degrees(-90))
             Image(systemName: symbol)
                 .font(.system(size: 10, weight: .bold))
                 .foregroundStyle(accent)
         }
         .frame(width: 28, height: 28)
-        .animation(Theme.Motion.content, value: progress)
     }
 }

@@ -15,6 +15,9 @@ public struct AppSettings: Equatable, Sendable {
     /// When on, resting the pointer on the closed notch for `hoverOpenDelay` opens it.
     public var openOnHover: Bool
     public var hapticsEnabled: Bool
+    /// A soft sound under celebrations that have none of their own (an
+    /// unlock, a streak milestone).
+    public var celebrationSoundEnabled: Bool
     /// Mirrors the user's choice; the source of truth is `SMAppService.mainApp.status`.
     public var launchAtLogin: Bool
     public var hotkey: Hotkey
@@ -45,6 +48,7 @@ public struct AppSettings: Equatable, Sendable {
         modules: ModuleLayout,
         openOnHover: Bool = false,
         hapticsEnabled: Bool = true,
+        celebrationSoundEnabled: Bool = true,
         launchAtLogin: Bool = false,
         hotkey: Hotkey = .default,
         claudePathOverride: String? = nil,
@@ -60,6 +64,7 @@ public struct AppSettings: Equatable, Sendable {
         self.modules = modules
         self.openOnHover = openOnHover
         self.hapticsEnabled = hapticsEnabled
+        self.celebrationSoundEnabled = celebrationSoundEnabled
         self.launchAtLogin = launchAtLogin
         self.hotkey = hotkey
         self.claudePathOverride = Self.normalizedPath(claudePathOverride)
@@ -163,6 +168,7 @@ public struct SettingsRepository {
         static let disabledModules = "settings.modules.disabled"
         static let openOnHover = "settings.openOnHover"
         static let hapticsEnabled = "settings.hapticsEnabled"
+        static let celebrationSoundEnabled = "settings.celebrationSoundEnabled"
         static let launchAtLogin = "settings.launchAtLogin"
         static let hotkey = "settings.hotkey"
         static let claudePathOverride = "settings.claudePathOverride"
@@ -220,6 +226,7 @@ public struct SettingsRepository {
             modules: modules ?? kit?.layout(catalog: catalog) ?? fallback.modules,
             openOnHover: bool(Key.openOnHover) ?? fallback.openOnHover,
             hapticsEnabled: bool(Key.hapticsEnabled) ?? fallback.hapticsEnabled,
+            celebrationSoundEnabled: bool(Key.celebrationSoundEnabled) ?? fallback.celebrationSoundEnabled,
             launchAtLogin: bool(Key.launchAtLogin) ?? fallback.launchAtLogin,
             hotkey: hotkey ?? fallback.hotkey,
             claudePathOverride: defaults.string(forKey: Key.claudePathOverride),
@@ -260,6 +267,7 @@ public struct SettingsRepository {
         defaults.set(order.filter(disabled.contains), forKey: Key.disabledModules)
         defaults.set(settings.openOnHover, forKey: Key.openOnHover)
         defaults.set(settings.hapticsEnabled, forKey: Key.hapticsEnabled)
+        defaults.set(settings.celebrationSoundEnabled, forKey: Key.celebrationSoundEnabled)
         defaults.set(settings.launchAtLogin, forKey: Key.launchAtLogin)
         defaults.set(try? JSONEncoder().encode(settings.hotkey), forKey: Key.hotkey)
         if let path = settings.claudePathOverride {

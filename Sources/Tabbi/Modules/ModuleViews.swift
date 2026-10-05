@@ -22,18 +22,20 @@ enum ModuleViews {
         }
     }
 
-    /// Hooks the shared `NotchView` up to this app: registered module panels,
-    /// the music wings, the Settings window and first-run onboarding.
+    /// Hooks the shared `NotchView` up to this app: registered module panels
+    /// (each a stage for celebrations), the music wings, the Settings window
+    /// and first-run onboarding.
     @MainActor
     static func notchContent(services: AppServices) -> NotchContent {
         NotchContent(
             appName: Edition.current.name,
             catalog: services.settings.catalog,
-            panel: { services.modules.panel(for: $0) },
+            panel: { AnyView(services.modules.panel(for: $0).celebrationStage(services.celebrations)) },
             nowPlayingLeading: { AnyView(compactLeading(services: services)) },
             nowPlayingTrailing: { AnyView(compactTrailing(services: services)) },
             openSettings: { services.openSettings() },
-            takeover: OnboardingViews.takeover(store: services.onboarding, modules: services.modules)
+            takeover: OnboardingViews.takeover(store: services.onboarding, modules: services.modules),
+            celebrations: services.celebrations
         )
     }
 

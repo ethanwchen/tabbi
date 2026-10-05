@@ -11,7 +11,7 @@ struct AnkiConnectSetupView: View {
 
     var body: some View {
         content
-            .animation(Theme.Motion.content, value: store.state)
+            .motion(Theme.Motion.content, value: store.state)
             // Visible like the panel, so it checks again while the user sets up.
             .onAppear { store.panelDidAppear() }
             .onDisappear { store.panelDidDisappear() }

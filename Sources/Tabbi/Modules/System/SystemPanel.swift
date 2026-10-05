@@ -111,7 +111,7 @@ private struct MetricCard<Accessory: View, Footer: View>: View {
                             .foregroundStyle(Theme.Palette.secondaryText)
                     }
                 }
-                .animation(Theme.Motion.snappy, value: value)
+                .motion(Theme.Motion.snappy, value: value)
 
                 Sparkline(series: HistorySeries(history, capacity: SystemMonitor.historyCapacity))
                     .frame(maxHeight: .infinity)
@@ -170,7 +170,7 @@ private struct Sparkline: View {
             .chartYAxis(.hidden)
             .chartLegend(.hidden)
             .chartPlotStyle { $0.clipped() }
-            .animation(Theme.Motion.content, value: series)
+            .motion(Theme.Motion.content, value: series)
         }
     }
 }
@@ -206,7 +206,7 @@ private struct CoreStrip: View {
                         .frame(maxWidth: .infinity)
                 }
             }
-            .animation(Theme.Motion.snappy, value: perCore)
+            .motion(Theme.Motion.snappy, value: perCore)
         }
     }
 }
@@ -232,7 +232,7 @@ private struct PressureBar: View {
                     .foregroundStyle(color)
                     .fixedSize()
             }
-            .animation(Theme.Motion.snappy, value: memory)
+            .motion(Theme.Motion.snappy, value: memory)
             .help("Memory pressure: \(memory.pressure.title)")
         } else {
             FooterCaption("Memory stats unavailable")

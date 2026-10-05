@@ -18,7 +18,7 @@ struct ClosetSetupView: View {
                     HStack(spacing: Theme.Spacing.s) {
                         ForEach(PetSpecies.allCases, id: \.self) { species in
                             ClosetSetupSpeciesPill(species: species, isSelected: store.profile.species == species) {
-                                withAnimation(Theme.Motion.snappy) { store.setSpecies(species) }
+                                withMotion(Theme.Motion.snappy) { store.setSpecies(species) }
                             }
                         }
                         Spacer(minLength: 0)
@@ -32,7 +32,7 @@ struct ClosetSetupView: View {
                         ForEach(PetBreed.breeds(of: store.profile.species), id: \.self) { breed in
                             ClosetSetupBreedTile(profile: preview(of: breed),
                                                  isSelected: store.profile.breed == breed) {
-                                withAnimation(Theme.Motion.snappy) { store.setBreed(breed) }
+                                withMotion(Theme.Motion.snappy) { store.setBreed(breed) }
                             }
                         }
                     }
@@ -98,7 +98,7 @@ private struct ClosetSetupPetCard: View {
         }
         // Continue moves on without a Return, so keep what was typed.
         .onDisappear(perform: commit)
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 
     @ViewBuilder private var nameField: some View {
@@ -168,7 +168,7 @@ private struct ClosetSetupSpeciesPill: View {
         .buttonStyle(.plain)
         .help("Pick a \(species.displayName.lowercased())")
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -196,6 +196,6 @@ private struct ClosetSetupBreedTile: View {
         .buttonStyle(.plain)
         .help(profile.breed.displayName)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }

@@ -138,6 +138,19 @@ enum SnapshotRenderer {
             print(url.path)
         }
 
+        // Frame strips of the shared motion (celebrations), reviewed frame by frame.
+        for (name, view) in MotionSnapshots.shots() {
+            let renderer = ImageRenderer(content: view)
+            renderer.scale = 2
+            guard let image = renderer.nsImage,
+                  let tiff = image.tiffRepresentation,
+                  let png = NSBitmapImageRep(data: tiff)?.representation(using: .png, properties: [:])
+            else { continue }
+            let url = outputDirectory.appendingPathComponent("\(name).png")
+            try? png.write(to: url)
+            print(url.path)
+        }
+
         let settingsWindow = SettingsWindowController(settings: services.settings, modules: services.modules,
                                                       onboarding: services.onboarding)
         for pane in settingsWindow.paneIDs {
@@ -211,6 +224,7 @@ enum SnapshotRenderer {
             let view = NotchView(content: ModuleViews.notchContent(services: services))
                 .environmentObject(model)
                 .environment(\.drawsLiquidGlass, false)
+                .environment(\.loaderRevealDelay, 0) // rendered the moment it appears
                 .frame(width: Theme.Layout.expandedSize.width + 40,
                        height: Theme.Layout.expandedSize.height + 24, alignment: .top)
                 .background(Color(white: 0.16)) // stand-in for a desktop

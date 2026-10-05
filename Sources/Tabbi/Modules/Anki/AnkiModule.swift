@@ -17,7 +17,8 @@ final class AnkiModule: NotchModule {
     let store: AnkiStore
 
     init(context: ModuleContext) {
-        store = AnkiStore(activity: context.activityLog, runMode: context.runMode)
+        store = AnkiStore(activity: context.activityLog, celebrations: context.celebrations,
+                          runMode: context.runMode)
     }
 
     func makePanel() -> AnyView {

@@ -49,7 +49,7 @@ struct StudyPanel: View {
     }
 
     private func show(_ next: StudyPanelOverlay?) {
-        withAnimation(Theme.Motion.snappy) { overlay = next }
+        withMotion(Theme.Motion.snappy) { overlay = next }
     }
 }
 
@@ -83,13 +83,7 @@ private struct StudyDial: View {
         let readout = store.readout
         let session = store.session
         Card(padding: 0) {
-            ZStack {
-                Circle()
-                    .stroke(ringColor.opacity(0.18), lineWidth: 6)
-                Circle()
-                    .trim(from: 0, to: store.progress ?? 0)
-                    .stroke(ringColor, style: StrokeStyle(lineWidth: 6, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
+            ProgressRing(progress: store.progress, tint: ringColor, lineWidth: 6) {
                 VStack(spacing: Theme.Spacing.xxs) {
                     Text(readout.value)
                         .font(.system(size: readout.value.count > 5 ? 26 : 30,
@@ -116,8 +110,8 @@ private struct StudyDial: View {
                 .padding(Theme.Spacing.xs)
                 .help(petHelp)
         }
-        .animation(Theme.Motion.content, value: store.progress)
-        .animation(Theme.Motion.snappy, value: session.phase)
+        .motion(Theme.Motion.content, value: store.progress)
+        .motion(Theme.Motion.snappy, value: session.phase)
     }
 
     /// A sprint whose cards nothing is counting: say so instead of a stuck 0.
@@ -208,7 +202,7 @@ private struct StudyMethodCard: View {
             RoundedRectangle(cornerRadius: Theme.Radius.m, style: .continuous)
                 .strokeBorder(Theme.Palette.stroke.opacity(hovering ? 2 : 0), lineWidth: 1)
         )
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -277,7 +271,7 @@ private struct StudyTodayRow: View {
         .monospacedDigit()
         .lineLimit(1)
         .contentTransition(.numericText())
-        .animation(Theme.Motion.content, value: today)
+        .motion(Theme.Motion.content, value: today)
     }
 }
 
@@ -375,10 +369,10 @@ struct StudyMethodTile: View {
             )
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile(.pill))
         .help(isCurrent ? "\(method.info.name) is in use" : "Switch to \(method.info.name): \(method.info.tagline)")
         .onHover { hovering = $0; hovered($0) }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -394,26 +388,26 @@ private struct StudyControls: View {
         HStack(spacing: Theme.Spacing.xs) {
             StudyPrimaryButton(title: StudyTimerFormat.primaryAction(session), symbol: primarySymbol,
                                help: primaryHelp) {
-                withAnimation(Theme.Motion.snappy) { store.primaryAction() }
+                withMotion(Theme.Motion.snappy) { store.primaryAction() }
             }
             Spacer(minLength: 0)
             if isFlowing {
                 IconButton(symbol: "pause.fill", help: "Pause without ending the stretch") {
-                    withAnimation(Theme.Motion.snappy) { store.pause() }
+                    withMotion(Theme.Motion.snappy) { store.pause() }
                 }
             }
             Group {
                 IconButton(symbol: "forward.end.fill", help: skipHelp) {
-                    withAnimation(Theme.Motion.snappy) { store.skip() }
+                    withMotion(Theme.Motion.snappy) { store.skip() }
                 }
                 IconButton(symbol: "arrow.counterclockwise", help: "Reset to a fresh session") {
-                    withAnimation(Theme.Motion.snappy) { store.reset() }
+                    withMotion(Theme.Motion.snappy) { store.reset() }
                 }
             }
             .disabled(isFresh)
             .opacity(isFresh ? 0.4 : 1)
         }
-        .animation(Theme.Motion.snappy, value: isFresh)
+        .motion(Theme.Motion.snappy, value: isFresh)
     }
 
     private var primarySymbol: String {
@@ -465,9 +459,9 @@ private struct StudyPrimaryButton: View {
             .background(Capsule().fill(accent.opacity(hovering ? 1 : 0.88)))
             .contentShape(Capsule())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile(.pill))
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }

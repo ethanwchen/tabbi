@@ -83,22 +83,14 @@ public enum Theme {
         }
     }
 
-    /// Springs, never linear. Gentle themes slow them down and drop the
-    /// bounce.
+    /// Shorthands for the motion system (`Motion`, docs/design/motion.md),
+    /// which follows the theme: gentle themes slow the springs and drop
+    /// some bounce.
     public enum Motion {
-        /// Notch open/close.
-        public static var notch: Animation { spring(response: 0.42, damping: 0.80) }
         /// Hover, selection, small state changes.
-        public static var snappy: Animation { spring(response: 0.26, damping: 0.86) }
+        public static var snappy: Animation { TabbiKit.Motion.snappy }
         /// Content swaps between modules.
-        public static var content: Animation { spring(response: 0.34, damping: 0.90) }
-
-        private static func spring(response: Double, damping: Double) -> Animation {
-            switch current.motion {
-            case .standard: .spring(response: response, dampingFraction: damping)
-            case .gentle: .spring(response: response * 1.3, dampingFraction: min(damping + 0.08, 1))
-            }
-        }
+        public static var content: Animation { TabbiKit.Motion.content }
     }
 
     public enum Layout {
@@ -167,10 +159,10 @@ public struct IconButton: View {
                 .controlBackground(Circle(), hovering: hovering)
                 .contentShape(Circle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile)
         .help(help)
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
