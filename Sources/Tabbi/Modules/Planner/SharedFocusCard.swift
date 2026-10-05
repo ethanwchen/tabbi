@@ -3,7 +3,7 @@ import TabbiKitCore
 import TabbiKit
 
 /// Stands in for the Pomodoro card when another enabled module runs its own
-/// focus clock (Study in the Med School kit), so the layout has one timer.
+/// focus clock (Timer in the bundled kits), so the layout has one timer.
 /// It mirrors that clock from the provider snapshot in the owner's accent
 /// and opens the owner's tab on click; the controls live there.
 struct SharedFocusCard: View {
@@ -62,11 +62,11 @@ struct SharedFocusCard: View {
                         .foregroundStyle(Theme.Palette.secondaryText)
                         .lineLimit(1)
                 } else {
-                    Text("\(descriptor.title) timer")
+                    Text("Start a timer")
                         .font(Theme.Typography.metricSmall)
                         .foregroundStyle(Theme.Palette.secondaryText)
                         .lineLimit(1)
-                    Text("Start a session in \(descriptor.title)")
+                    Text("Opens the \(descriptor.title) tab")
                         .font(Theme.Typography.caption)
                         .foregroundStyle(Theme.Palette.tertiaryText)
                         .lineLimit(1)

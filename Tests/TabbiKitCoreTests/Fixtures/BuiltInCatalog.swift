@@ -24,7 +24,7 @@ extension ModuleCatalog {
         ModuleDescriptor(id: .focus, title: "Focus", symbol: "hourglass", category: .productivity,
                          accent: ModuleAccent(red: 0.30, green: 0.84, blue: 0.76), permissions: [.notifications],
                          kitSettings: FocusSettings.kitSettings),
-        ModuleDescriptor(id: .study, title: "Study", symbol: "timer", category: .study,
+        ModuleDescriptor(id: .study, title: "Timer", symbol: "timer", category: .study,
                          accent: ModuleAccent(red: 1.00, green: 0.62, blue: 0.26), ownsFocusClock: true,
                          kitSettings: KitSettingsSchema(StudyMethodMenu.kitSettingFields
                             .merging(["dailyGoalMinutes": StudyDailyGoal.kitSettingType]) { $1 }),

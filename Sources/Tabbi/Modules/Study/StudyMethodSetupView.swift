@@ -60,7 +60,7 @@ private struct StudyMethodSummaryCard: View {
                     if isCurrent {
                         Image(systemName: "checkmark.circle.fill")
                             .foregroundStyle(studyAccent)
-                            .help("The Study timer starts with \(info.name)")
+                            .help("The timer starts with \(info.name)")
                     }
                 }
                 .font(Theme.Typography.bodyEmphasis)

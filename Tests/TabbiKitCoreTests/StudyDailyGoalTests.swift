@@ -65,7 +65,7 @@ final class StudyDailyGoalTests: XCTestCase {
         XCTAssertEqual(row?.source, .study)
         XCTAssertEqual(row?.detail, "75 min left")
         XCTAssertEqual(row?.isDone, false)
-        XCTAssertEqual(snapshot.plannableWork(excluding: .planner), ["Study time (75 min left)"])
+        XCTAssertEqual(snapshot.plannableWork(excluding: .planner), ["Focus time (75 min left)"])
         XCTAssertNil(snapshot.cardsReviewedToday(excluding: .anki), "study minutes are not cards")
     }
 
