@@ -164,7 +164,7 @@ extension AnkiConnectClient {
     ) async throws -> AnkiSummary {
         let allDecks = try await decks()
         let names = allDecks.map(\.name)
-        let stats = try await deckStats(for: names)
+        let stats = try await deckStats(for: allDecks)
         let reviewedToday = try await numCardsReviewedToday()
         let byDay = try await numCardsReviewedByDay()
 

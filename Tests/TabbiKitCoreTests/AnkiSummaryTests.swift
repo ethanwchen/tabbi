@@ -304,7 +304,7 @@ final class AnkiSummaryTests: XCTestCase {
         let transport = SummaryTransport(
             [
                 "deckNamesAndIds": #"{"result":{"Step1":1,"Step1::Cardio":2},"error":null}"#,
-                "getDeckStats": #"{"result":{"1":{"deck_id":1,"name":"Step1","new_count":20,"learn_count":3,"review_count":80,"total_in_deck":900},"2":{"deck_id":2,"name":"Step1::Cardio","new_count":5,"learn_count":1,"review_count":30,"total_in_deck":200}},"error":null}"#,
+                "getDeckStats": #"{"result":{"1":{"deck_id":1,"name":"Step1","new_count":20,"learn_count":3,"review_count":80,"total_in_deck":900},"2":{"deck_id":2,"name":"Cardio","new_count":5,"learn_count":1,"review_count":30,"total_in_deck":200}},"error":null}"#,
                 "getNumCardsReviewedToday": #"{"result":20,"error":null}"#,
                 "getNumCardsReviewedByDay": #"{"result":[["2026-10-01",20],["2026-09-30",64],["2026-09-29",12]],"error":null}"#,
             ],
@@ -317,6 +317,7 @@ final class AnkiSummaryTests: XCTestCase {
         let result = try await client.summary(now: now, calendar: utc)
 
         XCTAssertEqual(result.dueTotal, 103)
+        XCTAssertEqual(result.decks.map(\.name), ["Step1", "Step1::Cardio"], "subdecks keep their full names though getDeckStats sends leaf names")
         XCTAssertEqual(result.reviewedToday, 20)
         XCTAssertEqual(result.streak, 3)
         XCTAssertEqual(result.retentionSampleSize, 20)
