@@ -247,7 +247,7 @@ private struct OpeningNotice: View {
 
     var body: some View {
         HStack(spacing: Theme.Spacing.xs) {
-            LoadingArc(size: 10, lineWidth: 1.5)
+            Spinner(tint: accent, size: 10, lineWidth: 1.5)
             Text("Opening Anki…")
                 .foregroundStyle(Theme.Palette.secondaryText)
                 .lineLimit(1)
@@ -354,7 +354,7 @@ private struct DeckRow: View {
                     .transition(.opacity)
             }
             if isOpening {
-                LoadingArc(size: 10, lineWidth: 1.5)
+                Spinner(tint: accent, size: 10, lineWidth: 1.5)
                     .transition(.opacity)
             } else if hovering {
                 Image(systemName: "play.fill")
@@ -416,7 +416,7 @@ private struct FavoriteStar: View {
         .buttonStyle(.plain)
         .help(isFavorite ? "Unpin \(deck) from the Study button" : "Pin \(deck) to the Study button")
         .onHover { hovering = $0 }
-        .animation(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
