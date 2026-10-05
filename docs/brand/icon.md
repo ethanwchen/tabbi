@@ -82,3 +82,27 @@ Verdict:
 - `Resources/AppIcon.icns` was regenerated from this round, so the bundled app shows the tabby instead of the old notch icon.
 
 Next round: thicker check that survives at 32 px, a cleaner background light, and check how the ears sit against the squircle corners.
+
+### Round 2: clean shadows, light and check
+
+Sheet: `rounds/r2.png`.
+
+Changes from round 1:
+
+- Fixed a rendering bug that hurt every small size.
+  CoreGraphics applies shadow offsets and blurs in device pixels and ignores the current transform, so the 28 px icon shadow and the 20 to 30 px head and ear shadows stayed that size at 128, 32 and 16 px.
+  On the round 1 sheet this showed as a grey box around the small icons on the light desktop and a darkened, smeared face at 16 px.
+  Shadows are now scaled by the render's pixel scale, so they look the same at every size.
+- The warm screen-blend glow behind the head is replaced by a cool top light in the ink's own hue, like a glass layer lit from above.
+  The background is now a clean indigo instead of a muddy purple, and the orange head stands out more against it.
+- The checkmark wink is thicker (36 px stroke instead of 26) and a little larger, so it still reads as a dark tick at 32 px.
+
+Verdict:
+
+- The small icons now sit cleanly on both desktops with no halo, and the 128 px render looks like a finished Dock icon.
+- At 32 px the wink reads as a mark and the face is clearly a cat; the "M" is only a smudge.
+- At 16 px it is still an orange cat blob with two ears on indigo, which is the right silhouette, but the eyes and stripes turn into noise.
+- The ears clear the squircle corners comfortably; the head's sides leave slim ink slivers at the bottom corners, which frame the face and are acceptable.
+- `Resources/AppIcon.icns` was regenerated from this round.
+
+Next round: an optical small-size drawing for 16 and 32 px (larger eyes and check, no cheek stripes, a bolder "M" or none), selected by render size.

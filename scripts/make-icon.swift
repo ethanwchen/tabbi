@@ -96,6 +96,17 @@ func ellipse(_ cx: CGFloat, _ cy: CGFloat, _ w: CGFloat, _ h: CGFloat) -> CGPath
 
 // MARK: - Drawing helpers
 
+/// Pixels per canvas unit for the render in progress. CoreGraphics applies shadow
+/// offsets and blurs in device space, ignoring the CTM, so every shadow is scaled
+/// by this to look the same at 16 px as at 1024 px.
+var deviceScale: CGFloat = 1
+
+func setShadow(_ ctx: CGContext, y: CGFloat, blur: CGFloat, alpha: CGFloat) {
+    // Device space is y-up while the drawing is y-down, so a downward shadow has a negative offset.
+    ctx.setShadow(offset: CGSize(width: 0, height: -y * deviceScale), blur: blur * deviceScale,
+                  color: CGColor(gray: 0, alpha: alpha))
+}
+
 func gradient(_ stops: [(CGFloat, CGColor)]) -> CGGradient {
     CGGradient(colorsSpace: CGColorSpace(name: CGColorSpace.sRGB),
                colors: stops.map(\.1) as CFArray,
@@ -107,7 +118,7 @@ func fill(_ ctx: CGContext, _ path: CGPath, top: CGColor, bottom: CGColor, shado
     let box = path.boundingBoxOfPath
     if shadow > 0 {
         ctx.saveGState()
-        ctx.setShadow(offset: CGSize(width: 0, height: shadow * 0.4), blur: shadow, color: CGColor(gray: 0, alpha: 0.30))
+        setShadow(ctx, y: shadow * 0.4, blur: shadow, alpha: 0.30)
         ctx.addPath(path)
         ctx.setFillColor(bottom)
         ctx.fillPath()
@@ -175,10 +186,9 @@ func noseAndMouth(_ ctx: CGContext, at c: CGPoint, scale s: CGFloat) {
 /// tabs, with the classic "M" on its forehead and one eye winking as a checkmark.
 func drawConceptA(_ ctx: CGContext) {
     fill(ctx, CGPath(rect: bodyRect, transform: nil), top: RGB(0x2A2F5E).cg(), bottom: Brand.inkDeep.cg())
-    ctx.saveGState()
-    ctx.setBlendMode(.screen)
-    radialGlow(ctx, at: CGPoint(x: 512, y: 520), radius: 440, color: RGB(0xFFB25B).cg(0.22))
-    ctx.restoreGState()
+    // A cool top light, like a glass layer lit from above. It stays in the ink's own
+    // hue: a warm glow behind the head mixed with the ink into a muddy purple.
+    radialGlow(ctx, at: CGPoint(x: 512, y: 130), radius: 520, color: RGB(0x4A55A8).cg(0.55))
 
     // Folder-tab ears: short, wide and flat-topped like the tabs in Tabbi's tab bar,
     // leaning outward and tucked behind the head. The cream inner ear is the tab's label.
@@ -218,7 +228,7 @@ func drawConceptA(_ ctx: CGContext) {
 
     // Eyes: one open, one a checkmark wink (the task is done).
     eye(ctx, 404, 646, 74, 92)
-    stroke(ctx, [CGPoint(x: 584, y: 646), CGPoint(x: 612, y: 676), CGPoint(x: 666, y: 612)], width: 26, color: Brand.eye.cg())
+    stroke(ctx, [CGPoint(x: 578, y: 644), CGPoint(x: 610, y: 678), CGPoint(x: 670, y: 606)], width: 36, color: Brand.eye.cg())
 
     noseAndMouth(ctx, at: CGPoint(x: 512, y: 728), scale: 1.2)
 }
@@ -336,7 +346,7 @@ func drawIcon(in ctx: CGContext, concept: (CGContext) -> Void) {
 
     // Drop shadow under the body, as on every macOS icon.
     ctx.saveGState()
-    ctx.setShadow(offset: CGSize(width: 0, height: 12), blur: 28, color: CGColor(gray: 0, alpha: 0.35))
+    setShadow(ctx, y: 12, blur: 28, alpha: 0.35)
     ctx.addPath(body)
     ctx.setFillColor(CGColor(gray: 0.5, alpha: 1))
     ctx.fillPath()
@@ -366,6 +376,7 @@ func makeContext(_ width: Int, _ height: Int) -> CGContext {
 func render(pixels: Int, concept: @escaping (CGContext) -> Void) -> CGImage {
     let ctx = makeContext(pixels, pixels)
     let scale = CGFloat(pixels) / canvas
+    deviceScale = scale
     // Flip to y-down so the drawing code reads top-to-bottom.
     ctx.translateBy(x: 0, y: CGFloat(pixels))
     ctx.scaleBy(x: scale, y: -scale)
