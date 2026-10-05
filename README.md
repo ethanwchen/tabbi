@@ -66,7 +66,7 @@ Study kits such as Med School plan on your Mac instead: review blocks early in t
 While a focus timer runs, focus mode can play a locally generated focus sound (brown, pink or white noise, rain, fireplace or cafe murmur, blended up to three), start a playlist in Spotify or Apple Music, and turn on Do Not Disturb through two Shortcuts you create.
 On a break or when you stop, the sound fades out, a playlist it started is paused and Do Not Disturb is turned off again.
 Set it up in **Settings > Focus**, which includes a short guide for the shortcuts and Test buttons.
-Prefer a timer without the checklist? Turn on the **Focus** tab in **Settings > Modules**: the same timer, large, with focus mode at a glance.
+Prefer a timer without the checklist? Add the **Focus** tab from **Add More** in **Settings > Modules**: the same timer, large, with focus mode at a glance.
 
 <img src="docs/images/today.png" alt="Today panel" width="680">
 
@@ -78,7 +78,7 @@ A quick question box that streams answers from your local `claude` CLI, with Mar
 
 ### Study tabs
 
-Study is one of the Essentials tabs, and the Med School kit adds Anki; Party and Closet are a switch away in **Settings > Modules**.
+Study is one of the Essentials tabs, and the Med School kit adds Anki; Party and Closet are one click away in the **Add More** library in **Settings > Modules**.
 **Study** runs a session in the study method you pick (Pomodoro, deep focus blocks and more) and counts today's minutes and points.
 **Anki** shows the cards due in your decks through the AnkiConnect add-on on your Mac.
 **Party** lets friends study together and see who is focusing, through an optional friends server.
