@@ -432,8 +432,9 @@ private struct ClosetLook: View {
     }
 }
 
-/// A round fur-color swatch; `nil` is the breed's own colors.
-private struct ClosetSwatch: View {
+/// A round fur-color swatch; `nil` is the breed's own colors. Onboarding's
+/// pet step shows the same swatches.
+struct ClosetSwatch: View {
     let color: PetColor?
     let isSelected: Bool
     let action: () -> Void

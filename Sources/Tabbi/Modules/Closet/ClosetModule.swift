@@ -59,6 +59,11 @@ final class ClosetModule: NotchModule {
     func makePanel() -> AnyView {
         AnyView(ClosetPanel(store: store))
     }
+
+    /// Onboarding's pet step: species, breed and name on the shared pet.
+    func makeSetupView(for step: OnboardingSetupStep, done: @escaping () -> Void) -> AnyView? {
+        step == .pet ? AnyView(ClosetSetupView(store: store)) : nil
+    }
 }
 
 extension ModuleContext {

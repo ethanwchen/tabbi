@@ -83,20 +83,27 @@ private struct OnboardingBody: View {
 
     var body: some View {
         if let flow = store.flow {
+            let setup = setupView(flow)
             VStack(spacing: Theme.Spacing.m) {
-                step(flow)
+                step(flow, setup: setup)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                     .id(flow.stage)
                     .transition(.asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity),
                                             removal: .opacity))
-                OnboardingFooter(flow: flow)
+                OnboardingFooter(flow: flow, hasSetupView: setup != nil)
             }
             .animation(Theme.Motion.content, value: flow.stage)
         }
     }
 
+    /// The current setup step as its module draws it, if one does.
+    private func setupView(_ flow: OnboardingFlow) -> AnyView? {
+        guard case .setup = flow.stage, let step = flow.currentSetupStep else { return nil }
+        return modules.setupView(for: step, modules: flow.layout.enabled) { store.update { $0.next() } }
+    }
+
     @ViewBuilder
-    private func step(_ flow: OnboardingFlow) -> some View {
+    private func step(_ flow: OnboardingFlow, setup: AnyView?) -> some View {
         switch flow.stage {
         case .kit, .finished:
             KitStep(flow: flow)
@@ -105,9 +112,10 @@ private struct OnboardingBody: View {
         case .modules:
             ModulesStep(flow: flow)
         case .setup:
-            if let step = flow.currentSetupStep {
-                modules.setupView(for: step, modules: flow.layout.enabled) { store.update { $0.next() } }
-                    ?? AnyView(SetupFallback(step: step, owner: owner(of: step, in: flow)))
+            if let setup {
+                setup
+            } else if let step = flow.currentSetupStep {
+                SetupFallback(step: step, owner: owner(of: step, in: flow))
             }
         }
     }
@@ -123,6 +131,9 @@ private struct OnboardingBody: View {
 private struct OnboardingFooter: View {
     @EnvironmentObject private var store: OnboardingStore
     let flow: OnboardingFlow
+    /// True when the setup step is drawn by its module (and so has
+    /// something to keep), false for the pointer-to-the-tab fallback.
+    var hasSetupView = false
 
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
@@ -150,6 +161,7 @@ private struct OnboardingFooter: View {
         switch flow.stage {
         case .modules: true
         case .question: flow.currentQuestion?.allowsMultiple == true
+        case .setup: hasSetupView
         default: false
         }
     }
@@ -164,7 +176,7 @@ private struct OnboardingFooter: View {
         case .kit, .finished: "Keep the \(flow.kit?.name ?? "suggested") kit"
         case .question: "Leave this question unanswered"
         case .modules: isLastStep ? "Start with these tabs" : "Keep these tabs and set up what they need"
-        case .setup: "Set this up later from its tab"
+        case .setup: hasSetupView ? (isLastStep ? "Finish setup" : "Keep this and go on") : "Set this up later from its tab"
         }
     }
 
@@ -173,7 +185,13 @@ private struct OnboardingFooter: View {
         case .kit, .finished: "A kit is a set of tabs. You can change them any time."
         case .question: flow.currentQuestion?.allowsMultiple == true ? "Pick any that fit." : "One tap moves on."
         case .modules: "Click a tab to turn it on or off. Drag to reorder."
-        case .setup: ""
+        case .setup:
+            if hasSetupView, let step = flow.currentSetupStep,
+               let owner = flow.layout.enabled.map(flow.catalog.descriptor(for:)).first(where: { $0.setup.contains(step) }) {
+                "You can change this later in the \(owner.title) tab."
+            } else {
+                ""
+            }
         }
     }
 }

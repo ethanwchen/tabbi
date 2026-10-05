@@ -39,6 +39,29 @@ final class ClosetStarterPetTests: XCTestCase {
         XCTAssertEqual(relaunched.profile.name, "Waffles", "the save wins over any kit's starter")
     }
 
+    /// Onboarding's pet step edits the shared pet, so the breed picked there
+    /// is saved and later kit switches no longer replace it.
+    func testABreedPickedInSetupIsSavedAndKeptOnKitSwitches() throws {
+        let store = ClosetStore(storage: EditionStorage(root: folder), runMode: .live, starter: .starter(.cat))
+        store.setSpecies(.dog)
+        store.setBreed(.beagle)
+        XCTAssertEqual(store.profile.breed, .beagle)
+        XCTAssertEqual(store.profile.name, PetProfile.starter(.dog).name, "a starter name follows the species")
+        store.useStarter(corgi)
+        XCTAssertEqual(store.profile.breed, .beagle)
+        XCTAssertEqual(try XCTUnwrap(PetSave.load(from: saveURL)).profile.breed, .beagle)
+    }
+
+    /// Only the Closet draws the pet step, and only that step.
+    func testTheClosetDrawsOnboardingsPetStep() throws {
+        let types: [any NotchModule.Type] = [TodayModule.self, ClosetModule.self]
+        let services = AppServices(settings: SettingsStore.ephemeral(catalog: ModuleList.catalog(of: types)),
+                                   moduleTypes: types, environment: ["TABBI_DEMO": "1"], arguments: [])
+        XCTAssertNotNil(services.modules.setupView(for: .pet, modules: [.planner, .closet]) {})
+        XCTAssertNil(services.modules.setupView(for: .pet, modules: [.planner]) {}, "the Closet tab is off")
+        XCTAssertNil(try XCTUnwrap(services.modules.module(ClosetModule.self)).makeSetupView(for: .calendar) {})
+    }
+
     /// At launch the pet sees the idle Pomodoro before first-run setup's
     /// kit pick. Taking that baseline must not save the starter, or the
     /// picked kit's pet would never apply.
