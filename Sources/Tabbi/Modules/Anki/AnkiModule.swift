@@ -10,7 +10,8 @@ final class AnkiModule: NotchModule {
         id: .anki, title: "Anki", symbol: "rectangle.stack.fill", category: .study,
         accent: ModuleAccent(red: 0.36, green: 0.62, blue: 1.00),
         network: [ModuleNetworkAccess(host: URLSessionAnkiConnectTransport.defaultEndpoint.host() ?? "",
-                                      purpose: "your decks through AnkiConnect")]
+                                      purpose: "your decks through AnkiConnect")],
+        setup: [.anki]
     )
     let store: AnkiStore
 

@@ -18,7 +18,8 @@ final class ClosetModule: NotchModule {
         kitSettings: KitSettingsSchema([
             "coachLines": PetCoachMessages.kitSettingType,
             "pet": PetProfile.kitSettingType,
-        ])
+        ]),
+        setup: [.pet]
     )
     let store: ClosetStore
     /// The pet's study coach: nudges from the notch during focus phases.

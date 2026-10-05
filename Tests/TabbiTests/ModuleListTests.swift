@@ -47,6 +47,18 @@ final class ModuleListTests: XCTestCase {
         }
     }
 
+    func testModulesDeclareTheOnboardingStepsTheyNeed() {
+        let steps = Dictionary(uniqueKeysWithValues: ModuleList.catalog.descriptors.map { ($0.id, $0.setup) })
+        XCTAssertEqual(steps[.closet], [.pet])
+        XCTAssertEqual(steps[.anki], [.anki])
+        XCTAssertEqual(steps[.planner], [.calendar])
+        XCTAssertEqual(steps[.study], [.studyMethod])
+        XCTAssertEqual(steps[.party], [.party])
+        for id in [ModuleID.spotify, .system, .claudeUsage, .claudeAsk, .focus] {
+            XCTAssertEqual(steps[id], [], "\(id)")
+        }
+    }
+
     func testEveryBundledKitResolvesAgainstTheModuleList() {
         XCTAssertEqual(KitLibrary.bundled.kits.count, KitLibrary.bundledIDs.count)
         for kit in KitLibrary.bundled.kits {

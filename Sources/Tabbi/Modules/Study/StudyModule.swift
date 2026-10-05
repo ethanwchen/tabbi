@@ -12,7 +12,8 @@ final class StudyModule: NotchModule {
         accent: ModuleAccent(red: 1.00, green: 0.62, blue: 0.26), ownsFocusClock: true,
         kitSettings: KitSettingsSchema(
             StudyMethodMenu.kitSettingFields.merging(["dailyGoalMinutes": StudyDailyGoal.kitSettingType]) { $1 }
-        )
+        ),
+        setup: [.studyMethod]
     )
     private let store: StudyStore
     private let focusMode: FocusController

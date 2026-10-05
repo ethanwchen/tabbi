@@ -138,6 +138,10 @@ public struct ModuleDescriptor: Hashable, Sendable, Identifiable {
     /// `moduleSettings`, so kit validation can warn about typos and bad
     /// values there. Nil leaves the section unchecked.
     public var kitSettings: KitSettingsSchema?
+    /// What first-run onboarding asks once this module is turned on (the
+    /// pet's name, calendar access), in no particular order: onboarding
+    /// sorts every enabled module's steps by rank and asks each one once.
+    public var setup: [OnboardingSetupStep]
 
     public init(
         id: ModuleID,
@@ -149,7 +153,8 @@ public struct ModuleDescriptor: Hashable, Sendable, Identifiable {
         network: [ModuleNetworkAccess] = [],
         highlightTitle: String? = nil,
         ownsFocusClock: Bool = false,
-        kitSettings: KitSettingsSchema? = nil
+        kitSettings: KitSettingsSchema? = nil,
+        setup: [OnboardingSetupStep] = []
     ) {
         self.id = id
         self.title = title
@@ -161,6 +166,7 @@ public struct ModuleDescriptor: Hashable, Sendable, Identifiable {
         self.highlightTitle = highlightTitle
         self.ownsFocusClock = ownsFocusClock
         self.kitSettings = kitSettings
+        self.setup = setup
     }
 
     /// Stand-in for an id no catalog knows (say, from a newer kit file), so
