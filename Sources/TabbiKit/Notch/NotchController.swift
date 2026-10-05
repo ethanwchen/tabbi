@@ -377,12 +377,13 @@ public final class NotchController {
         }
     }
 
-    /// Checks now and again once the Space switch animation has settled,
-    /// since the window list lags behind the notification.
+    /// Checks now and twice more as the Space switch animation settles,
+    /// since the window list lags behind the notification (mid-animation it
+    /// can still show the old Space's windows).
     private func scheduleFullscreenCheck() {
         fullscreenCheckTask?.cancel()
         fullscreenCheckTask = Task { [weak self] in
-            for delay in [Duration.zero, .milliseconds(700)] {
+            for delay in [Duration.zero, .milliseconds(700), .milliseconds(800)] {
                 try? await Task.sleep(for: delay)
                 guard let self, !Task.isCancelled else { return }
                 let active = self.detectFullscreenApp()
