@@ -81,6 +81,7 @@ Most additions are a few lines in one place, plus a test.
 ### Add a theme
 
 Themes live in `Sources/TabbiKitCore/Themes/ThemeCatalog.swift`.
+[docs/design/themes.md](docs/design/themes.md) explains what a theme controls and the rules every theme keeps.
 
 1. Add a `ThemeID` constant in `AppTheme.swift`.
 2. Declare the theme in `ThemeCatalog` with a name, a one-line summary, a `family` (`.classic` or `.cozy`, which picks its group in Settings > Appearance) and a `ThemePalette`.
