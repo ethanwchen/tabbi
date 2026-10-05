@@ -3,12 +3,13 @@
 //
 //   usage: swift scripts/make-icon.swift                     build Resources/AppIcon.icns
 //          swift scripts/make-icon.swift --sheet <file.png>  render a 1024/128/32/16 review sheet
+//                [--reference <photo> [--crop x,y,size]]      beside a reference photo
 //          swift scripts/make-icon.swift --dock <file.png>   compare it with Apple's icons in a Dock row
 //          swift scripts/make-icon.swift --variants <file.png>  every appearance and the glyph
 //          swift scripts/make-icon.swift --preview <file.png>
 //
-// Add --concept <a|b|c> to a review mode to render an exploration concept instead of
-// the chosen concept A. The default build always draws concept A.
+// Add --ground <navy|blush> to a review mode to try a candidate background. The
+// default build always uses the shipped palette.
 // The default run also writes docs/brand/assets: the icon at 1024 px in its default,
 // light, dark and tinted appearances, and the monochrome glyph as PDF and PNG.
 //
@@ -35,37 +36,48 @@ struct RGB {
 
 /// The colours of one icon appearance. macOS 26 shows an icon in Default, Dark and
 /// Tinted looks; `.icns` can only carry one, so the others are exported as PNGs.
+/// The cat colours come from the maintainer's British Shorthair: a shaded silver coat,
+/// pale silver-beige on the face, taupe on the crown and back, white muzzle and chin.
+/// They match the pet sprite's British Shorthair (`PetBreed`), lit: its flat base fur
+/// sits between `fur` and `furShade` here, so the icon and the notch pet are one cat.
 struct Palette {
     var ground: RGB                     // background, top of the squircle
     var groundDeep: RGB                 // background, bottom
-    var topLight: RGB                   // cool glow at the top of the background
+    var topLight: RGB                   // glow at the top of the background
     var topLightAlpha: CGFloat
-    var ginger = RGB(0xFFA94D)          // tabby orange, lit side
-    var gingerDeep = RGB(0xEE7A2B)      // tabby orange, shade side
-    var sheen = RGB(0xFFE3B8)           // top light on the crown of the head
-    var stripe = RGB(0xB8501C)          // tabby stripes
-    var cream = RGB(0xFFF1DE)           // muzzle, inner ear, light background
-    var creamShade = RGB(0xF6DCC0)
-    var eye = RGB(0x231A2E)
-    var nose = RGB(0xF2827F)
-    var inkDeep = RGB(0x0F1126)
+    var fur = RGB(0xE6DFD5)             // pale silver-beige face, lit
+    var furShade = RGB(0xCAC1B5)        // cheeks and jowls, shade side
+    var back = RGB(0xADA398)            // taupe crown, the darker colour of the back
+    var ticking = RGB(0x756D66)         // faint ticked lines on the forehead
+    var white = RGB(0xF8F5EF)           // muzzle, chin and chest
+    var innerEar = RGB(0xE6B3AC)        // the tab's label: the pink inside of the ear
+    var sheen = RGB(0xFFFFFF)           // top light on the crown of the head
+    var iris = RGB(0x9AA889)            // grey-green eye
+    var eye = RGB(0x2B2622)             // pupil, lid line and the checkmark wink
+    var nose = RGB(0xD29A8A)            // pink-tan nose
 
-    /// The shipped icon: the ginger tabby on deep ink, which echoes the black notch.
-    static let standard = Palette(ground: RGB(0x2A2F5E), groundDeep: RGB(0x0F1126),
-                                  topLight: RGB(0x4A55A8), topLightAlpha: 0.55)
-    /// For light surfaces such as a website hero: the same tabby on warm cream.
-    static let light = Palette(ground: RGB(0xFFF8EE), groundDeep: RGB(0xF7E3CA),
-                               topLight: RGB(0xFFFFFF), topLightAlpha: 0.8, cream: RGB(0xFFFBF5))
-    /// macOS 26 Dark: notch black ground, the tabby unchanged so it stays recognizable.
+    /// Candidate ground: deep navy, so the pale cat glows and the icon echoes the black notch.
+    static let navy = Palette(ground: RGB(0x24335F), groundDeep: RGB(0x0D1430),
+                              topLight: RGB(0x4660A8), topLightAlpha: 0.55)
+    /// Candidate ground: a warm blush like the pink silk pillow in the reference photo.
+    static let blush = Palette(ground: RGB(0xF7D5C8), groundDeep: RGB(0xE7A898),
+                               topLight: RGB(0xFFFFFF), topLightAlpha: 0.7)
+    /// The shipped icon.
+    static let standard = navy
+    /// For light surfaces such as a website hero.
+    static let light = blush
+    /// macOS 26 Dark: notch black ground, the cat unchanged so it stays recognizable.
     static let dark = Palette(ground: RGB(0x2A2A2E), groundDeep: RGB(0x0B0B0D),
                               topLight: RGB(0x56565E), topLightAlpha: 0.45)
-    /// macOS 26 Tinted: luminance only on black, so the system tint colours the tabby.
+    /// macOS 26 Tinted: luminance only on black, so the system tint colours the cat.
     static let tinted = Palette(ground: RGB(0x262626), groundDeep: RGB(0x0A0A0A),
                                 topLight: RGB(0x4A4A4A), topLightAlpha: 0.45,
-                                ginger: RGB(0xE4E4E4), gingerDeep: RGB(0xADADAD), sheen: RGB(0xFFFFFF),
-                                stripe: RGB(0x6E6E6E), cream: RGB(0xFFFFFF), creamShade: RGB(0xE6E6E6),
-                                eye: RGB(0x161616), nose: RGB(0x8C8C8C))
+                                fur: RGB(0xE6E6E6), furShade: RGB(0xBDBDBD), back: RGB(0x9A9A9A),
+                                ticking: RGB(0x6E6E6E), white: RGB(0xFFFFFF), innerEar: RGB(0xD2D2D2),
+                                iris: RGB(0xA6A6A6), eye: RGB(0x161616), nose: RGB(0x8C8C8C))
 }
+
+let candidatePalettes: [String: Palette] = ["navy": .navy, "blush": .blush]
 
 /// The appearance being drawn. Variant renders swap it before calling render().
 var brand = Palette.standard
@@ -196,216 +208,191 @@ func radialGlow(_ ctx: CGContext, at c: CGPoint, radius: CGFloat, color: CGColor
                            startCenter: c, startRadius: 0, endCenter: c, endRadius: radius, options: [])
 }
 
-/// A cat eye: a dark oval with a catch light, so it reads alive even at 32 px.
-func eye(_ ctx: CGContext, _ cx: CGFloat, _ cy: CGFloat, _ w: CGFloat, _ h: CGFloat) {
-    fill(ctx, ellipse(cx, cy, w, h), brand.eye.cg())
-    fill(ctx, ellipse(cx + w * 0.16, cy - h * 0.2, w * 0.36, w * 0.36), CGColor(gray: 1, alpha: 0.95))
+/// Fills `path` with a vertical gradient through `stops` (y-down, 0 at the top of the path).
+func fill(_ ctx: CGContext, _ path: CGPath, stops: [(CGFloat, CGColor)]) {
+    let box = path.boundingBoxOfPath
+    ctx.saveGState()
+    ctx.addPath(path)
+    ctx.clip()
+    ctx.drawLinearGradient(gradient(stops), start: CGPoint(x: 0, y: box.minY), end: CGPoint(x: 0, y: box.maxY),
+                           options: [.drawsBeforeStartLocation, .drawsAfterEndLocation])
+    ctx.restoreGState()
 }
 
-/// The little pink nose and the "w" mouth under it.
-func noseAndMouth(_ ctx: CGContext, at c: CGPoint, scale s: CGFloat) {
-    let nose = CGMutablePath()
-    nose.move(to: CGPoint(x: c.x - 26 * s, y: c.y - 12 * s))
-    nose.addQuadCurve(to: CGPoint(x: c.x + 26 * s, y: c.y - 12 * s), control: CGPoint(x: c.x, y: c.y - 22 * s))
-    nose.addQuadCurve(to: CGPoint(x: c.x, y: c.y + 14 * s), control: CGPoint(x: c.x + 22 * s, y: c.y + 4 * s))
-    nose.addQuadCurve(to: CGPoint(x: c.x - 26 * s, y: c.y - 12 * s), control: CGPoint(x: c.x - 22 * s, y: c.y + 4 * s))
-    fill(ctx, nose, brand.nose.cg())
-    let mouthY = c.y + 14 * s
-    stroke(ctx, [CGPoint(x: c.x, y: mouthY), CGPoint(x: c.x, y: mouthY + 22 * s), CGPoint(x: c.x - 26 * s, y: mouthY + 22 * s)],
-           width: 9 * s, color: brand.eye.cg(0.85), curved: true)
-    stroke(ctx, [CGPoint(x: c.x, y: mouthY), CGPoint(x: c.x, y: mouthY + 22 * s), CGPoint(x: c.x + 26 * s, y: mouthY + 22 * s)],
-           width: 9 * s, color: brand.eye.cg(0.85), curved: true)
-}
+// MARK: - The cat
 
-// MARK: - Concepts
-
-/// A: "Tab-by". A tabby face rising from the bottom edge whose ears are folder
-/// tabs, with the classic "M" on its forehead and one eye winking as a checkmark.
-func drawConceptA(_ ctx: CGContext) {
-    fill(ctx, CGPath(rect: bodyRect, transform: nil), top: brand.ground.cg(), bottom: brand.groundDeep.cg())
-    // A cool top light, like a glass layer lit from above. It stays in the ink's own
-    // hue: a warm glow behind the head mixed with the ink into a muddy purple.
-    radialGlow(ctx, at: CGPoint(x: 512, y: 130), radius: 520, color: brand.topLight.cg(brand.topLightAlpha))
-
-    // Folder-tab ears: short, wide and flat-topped like the tabs in Tabbi's tab bar,
-    // leaning outward and tucked behind the head. The cream inner ear is the tab's label.
+/// The head: a broad skull with the full, chubby jowls of a British Shorthair, rising
+/// from the bottom edge of the icon.
+func headPath() -> CGPath {
+    var head: CGPath = ellipse(512, 770, 700, 640)
     for side in [-1.0, 1.0] as [CGFloat] {
-        let base = CGPoint(x: 512 + side * 200, y: 520)
-        let angle = side * 0.30
-        let ear = tabPath(baseCenter: base, baseWidth: 290, topWidth: 170, height: 200, radius: 40, angle: angle)
-        fill(ctx, ear, top: brand.ginger.cg(), bottom: brand.gingerDeep.cg(), shadow: 20)
-        let inner = tabPath(baseCenter: CGPoint(x: base.x + side * 8, y: base.y - 40), baseWidth: 170, topWidth: 100,
-                            height: 120, radius: 24, angle: angle)
-        fill(ctx, inner, top: brand.cream.cg(), bottom: brand.creamShade.cg())
+        head = head.union(ellipse(512 + side * 200, 830, 370, 330))
+    }
+    return head
+}
+
+/// Folder-tab ears adapted to the breed: small, low and rounded, set wide apart on
+/// the corners of the round head. `inset` shrinks the tab for the pink label inside.
+/// At 32 px and below the ears are cut taller and more upright, so each one still
+/// rises above the crown as a distinct two-pixel bump instead of merging into the head.
+func earPath(side: CGFloat, inset: CGFloat = 0, small: Bool = false) -> CGPath {
+    let height: CGFloat = small ? 220 : 160
+    return tabPath(baseCenter: CGPoint(x: 512 + side * (small ? 236 : 250 - inset * 0.2), y: 572 - inset * 0.6),
+                   baseWidth: 236 - inset * 2.2, topWidth: 156 - inset * 1.6, height: height - inset * 1.5,
+                   radius: 48 - inset * 0.5, angle: side * (small ? 0.30 : 0.42))
+}
+
+/// The open eye: grey-green under a heavy, level upper lid, the unimpressed half-lidded
+/// look of the reference cat. `lid` is the y of the lid line at the eye's centre; it
+/// tilts down toward the nose.
+func halfLiddedEye(_ ctx: CGContext, center c: CGPoint, width w: CGFloat, height h: CGFloat,
+                   lid: CGFloat, tilt: CGFloat, lidWidth: CGFloat, small: Bool) {
+    let eyeShape = ellipse(c.x, c.y, w, h)
+    // Everything below the lid line is visible eye.
+    let visible = CGMutablePath()
+    visible.move(to: CGPoint(x: c.x - w, y: lid - tilt))
+    visible.addLine(to: CGPoint(x: c.x + w, y: lid + tilt))
+    visible.addLine(to: CGPoint(x: c.x + w, y: c.y + h))
+    visible.addLine(to: CGPoint(x: c.x - w, y: c.y + h))
+    visible.closeSubpath()
+    let open = eyeShape.intersection(visible)
+    if small {
+        // At 16 and 32 px the eye is one dark half-oval: the flat top is the lid.
+        fill(ctx, open, brand.eye.cg())
+        return
+    }
+    fill(ctx, open, top: brand.iris.cg(), bottom: brand.iris.cg())
+    ctx.saveGState()
+    ctx.addPath(open)
+    ctx.clip()
+    fill(ctx, ellipse(c.x + w * 0.04, c.y + h * 0.06, w * 0.46, h * 0.86), brand.eye.cg())
+    fill(ctx, ellipse(c.x + w * 0.2, lid + h * 0.2, w * 0.16, w * 0.16), CGColor(gray: 1, alpha: 0.9))
+    ctx.restoreGState()
+    // The dark rim around the visible eye, heaviest along the lid.
+    ctx.addPath(open)
+    ctx.setStrokeColor(brand.eye.cg())
+    ctx.setLineWidth(10)
+    ctx.strokePath()
+    stroke(ctx, [CGPoint(x: c.x - w * 0.46, y: lid - tilt * 0.46 + 2), CGPoint(x: c.x + w * 0.46, y: lid + tilt * 0.46 + 2)],
+           width: lidWidth, color: brand.eye.cg())
+}
+
+/// The pink-tan nose: a soft rounded triangle.
+func nose(_ ctx: CGContext, at c: CGPoint, scale s: CGFloat) {
+    let nose = CGMutablePath()
+    nose.move(to: CGPoint(x: c.x - 30 * s, y: c.y - 14 * s))
+    nose.addQuadCurve(to: CGPoint(x: c.x + 30 * s, y: c.y - 14 * s), control: CGPoint(x: c.x, y: c.y - 26 * s))
+    nose.addQuadCurve(to: CGPoint(x: c.x, y: c.y + 16 * s), control: CGPoint(x: c.x + 24 * s, y: c.y + 4 * s))
+    nose.addQuadCurve(to: CGPoint(x: c.x - 30 * s, y: c.y - 14 * s), control: CGPoint(x: c.x - 24 * s, y: c.y + 4 * s))
+    fill(ctx, nose, brand.nose.cg())
+}
+
+/// "Tab-by", British Shorthair cut: a round silver-beige face whose small ears are
+/// folder tabs, with a deadpan half-lidded eye and the other eye winking as a checkmark.
+func drawCat(_ ctx: CGContext) {
+    fill(ctx, CGPath(rect: bodyRect, transform: nil), top: brand.ground.cg(), bottom: brand.groundDeep.cg())
+    // A top light in the ground's own hue, like a glass layer lit from above.
+    radialGlow(ctx, at: CGPoint(x: 512, y: 130), radius: 520, color: brand.topLight.cg(brand.topLightAlpha))
+    // The cat is laid out on the tabby's grid and lifted so the face sits at the optical centre.
+    ctx.saveGState()
+    defer { ctx.restoreGState() }
+    ctx.translateBy(x: 0, y: -56)
+
+    let small = isSmallRender
+    // Ears: taupe tabs with a pink label, tucked behind the head. At small sizes they
+    // are a solid darker taupe, the one shape that has to survive as a bump.
+    for side in [-1.0, 1.0] as [CGFloat] {
+        if small {
+            fill(ctx, earPath(side: side, small: true), brand.ticking.cg())
+            fill(ctx, earPath(side: side, inset: 56, small: true), brand.innerEar.cg())
+        } else {
+            fill(ctx, earPath(side: side), top: brand.back.cg(), bottom: brand.furShade.cg(), shadow: 20)
+            fill(ctx, earPath(side: side, inset: 40), top: brand.innerEar.cg(), bottom: brand.fur.cg())
+        }
     }
 
-    // Head: a broad oval that runs off the bottom of the icon.
-    let head = ellipse(512, 770, 720, 640)
-    fill(ctx, head, top: brand.ginger.cg(), bottom: brand.gingerDeep.cg(), shadow: 30)
-    // A soft sheen on the crown of the head, lit from the same top light as the
-    // background and the rim, so the face has the rounded volume of Apple's icons.
+    let head = headPath()
+    // Taupe on the crown, the silver-beige face, slightly deeper on the lower jowls.
+    fill(ctx, head, top: brand.back.cg(), bottom: brand.furShade.cg(), shadow: 30)
+    fill(ctx, head, stops: [(0, brand.back.cg()), (0.16, brand.fur.cg()), (0.75, brand.fur.cg()), (1, brand.furShade.cg())])
+
     ctx.saveGState()
     ctx.addPath(head)
     ctx.clip()
-    ctx.translateBy(x: 512, y: 520)
-    ctx.scaleBy(x: 1.6, y: 1)
-    radialGlow(ctx, at: .zero, radius: 200, color: brand.sheen.cg(0.55))
+    // The taupe blaze of the reference cat: wide on the crown, narrowing between the
+    // eyes and fading out on the bridge of the nose.
+    let blaze = CGMutablePath()
+    blaze.move(to: CGPoint(x: 512 - 190, y: 420))
+    blaze.addCurve(to: CGPoint(x: 512, y: small ? 700 : 716), control1: CGPoint(x: 512 - 150, y: 560),
+                   control2: CGPoint(x: 512 - 40, y: 600))
+    blaze.addCurve(to: CGPoint(x: 512 + 190, y: 420), control1: CGPoint(x: 512 + 40, y: 600),
+                   control2: CGPoint(x: 512 + 150, y: 560))
+    blaze.closeSubpath()
+    fill(ctx, blaze, stops: [(0, brand.back.cg(0.95)), (0.45, brand.back.cg(0.8)), (1, brand.back.cg(0))])
+    if !small {
+        // Faint ticking: soft, tapering lines that fade into the streak.
+        for (dx, top, bottom) in [(-40.0, 488.0, 560.0), (0.0, 470.0, 590.0), (40.0, 488.0, 560.0)] as [(CGFloat, CGFloat, CGFloat)] {
+            let line = CGMutablePath()
+            line.move(to: CGPoint(x: 512 + dx, y: top))
+            line.addLine(to: CGPoint(x: 512 + dx * 0.85, y: bottom))
+            let shape = line.copy(strokingWithWidth: 14, lineCap: .round, lineJoin: .round, miterLimit: 10)
+            fill(ctx, shape, stops: [(0, brand.ticking.cg(0.7)), (1, brand.ticking.cg(0))])
+        }
+    }
+    // A soft sheen on the cheeks, lit from the same top light as the rim.
+    ctx.saveGState()
+    ctx.translateBy(x: 512, y: 600)
+    ctx.scaleBy(x: 1.9, y: 1)
+    radialGlow(ctx, at: .zero, radius: 180, color: brand.sheen.cg(0.35))
+    ctx.restoreGState()
+    // White chin and chest running off the bottom.
+    ctx.saveGState()
+    ctx.translateBy(x: 512, y: 930)
+    ctx.scaleBy(x: 1.5, y: 1)
+    radialGlow(ctx, at: .zero, radius: 170, color: brand.white.cg(0.95))
+    ctx.restoreGState()
     ctx.restoreGState()
 
-    let stripe = brand.stripe.cg()
-    if isSmallRender {
-        drawConceptAFaceSmall(ctx, stripe: stripe)
+    if small {
+        drawFaceSmall(ctx)
         return
     }
 
-    // Tabby "M" and cheek stripes. The cheek stripes are clipped to the head so they
-    // run in from its edge, as on a real tabby, instead of sticking out like whiskers.
-    stroke(ctx, [CGPoint(x: 444, y: 562), CGPoint(x: 472, y: 490), CGPoint(x: 512, y: 542),
-                 CGPoint(x: 552, y: 490), CGPoint(x: 580, y: 562)], width: 28, color: stripe)
-    ctx.saveGState()
-    ctx.addPath(head)
-    ctx.clip()
-    for side in [-1.0, 1.0] as [CGFloat] {
-        for (i, y) in [648.0, 708.0].enumerated() as EnumeratedSequence<[CGFloat]> {
-            let inner = 512 + side * (290 - CGFloat(i) * 14)
-            stroke(ctx, [CGPoint(x: 512 + side * 400, y: y - 14), CGPoint(x: inner, y: y + 4)], width: 26, color: stripe)
-        }
-    }
-    ctx.restoreGState()
+    // Puffy white muzzle pads and chin.
+    fill(ctx, ellipse(512, 852, 150, 96), brand.white.cg())
+    fill(ctx, ellipse(456, 800, 140, 110), brand.white.cg())
+    fill(ctx, ellipse(568, 800, 140, 110), brand.white.cg())
 
-    // Muzzle.
-    fill(ctx, ellipse(462, 772, 150, 116), brand.cream.cg())
-    fill(ctx, ellipse(562, 772, 150, 116), brand.cream.cg())
+    // One eye half-lidded and unimpressed, the other a checkmark wink: done.
+    halfLiddedEye(ctx, center: CGPoint(x: 396, y: 664), width: 138, height: 104, lid: 652, tilt: 12,
+                  lidWidth: 18, small: false)
+    stroke(ctx, [CGPoint(x: 572, y: 654), CGPoint(x: 606, y: 690), CGPoint(x: 676, y: 616)], width: 36,
+           color: brand.eye.cg())
 
-    // Eyes: one open, one a checkmark wink (the task is done).
-    eye(ctx, 404, 646, 74, 92)
-    stroke(ctx, [CGPoint(x: 578, y: 644), CGPoint(x: 610, y: 678), CGPoint(x: 670, y: 606)], width: 36, color: brand.eye.cg())
-
-    noseAndMouth(ctx, at: CGPoint(x: 512, y: 728), scale: 1.2)
+    nose(ctx, at: CGPoint(x: 512, y: 744), scale: 1.15)
+    // A short, flat mouth line under the nose: deadpan, not smiling.
+    stroke(ctx, [CGPoint(x: 512, y: 762), CGPoint(x: 512, y: 790)], width: 8, color: brand.eye.cg(0.55))
+    stroke(ctx, [CGPoint(x: 476, y: 802), CGPoint(x: 512, y: 790), CGPoint(x: 548, y: 802)], width: 8,
+           color: brand.eye.cg(0.55), curved: true)
 }
 
-/// Concept A's face for 32 px and smaller. At 16 px one canvas pixel is 64 units, so
-/// anything thinner than about 50 units turns to grey noise: the cheek stripes, the
-/// mouth and the catch light go, while the eye, the check and the "M" grow and thicken
-/// until each covers at least a pixel and a half.
-func drawConceptAFaceSmall(_ ctx: CGContext, stripe: CGColor) {
-    stroke(ctx, [CGPoint(x: 432, y: 572), CGPoint(x: 466, y: 484), CGPoint(x: 512, y: 540),
-                 CGPoint(x: 558, y: 484), CGPoint(x: 592, y: 572)], width: 52, color: stripe)
-    fill(ctx, ellipse(512, 790, 300, 150), brand.cream.cg())
-    fill(ctx, ellipse(398, 654, 110, 130), brand.eye.cg())
-    stroke(ctx, [CGPoint(x: 566, y: 654), CGPoint(x: 610, y: 700), CGPoint(x: 684, y: 606)], width: 62, color: brand.eye.cg())
-    fill(ctx, ellipse(512, 740, 76, 52), brand.nose.cg())
+/// The face for 32 px and smaller. At 16 px one canvas pixel is 64 units, so anything
+/// thinner than about 50 units turns to grey noise: the ticking, the mouth and the
+/// catch light go, while the eye, the check and the nose grow until each covers at
+/// least a pixel and a half.
+func drawFaceSmall(_ ctx: CGContext) {
+    fill(ctx, ellipse(512, 830, 320, 170), brand.white.cg())
+    halfLiddedEye(ctx, center: CGPoint(x: 392, y: 662), width: 156, height: 156, lid: 638, tilt: 6,
+                  lidWidth: 0, small: true)
+    stroke(ctx, [CGPoint(x: 560, y: 652), CGPoint(x: 606, y: 702), CGPoint(x: 690, y: 604)], width: 70,
+           color: brand.eye.cg())
+    fill(ctx, ellipse(512, 752, 84, 56), brand.nose.cg())
 }
-
-/// B: "Peek". A tabby peeking over a strip of folder tabs, paws on the edge,
-/// with tab-shaped stripes on its forehead.
-func drawConceptB(_ ctx: CGContext) {
-    fill(ctx, CGPath(rect: bodyRect, transform: nil), top: RGB(0xFFF6EA).cg(), bottom: RGB(0xFBDDBE).cg())
-
-    // Head behind the ledge.
-    for side in [-1.0, 1.0] as [CGFloat] {
-        let ear = tabPath(baseCenter: CGPoint(x: 512 + side * 170, y: 400), baseWidth: 200, topWidth: 60, height: 190,
-                          radius: 24, angle: side * 0.25)
-        fill(ctx, ear, top: brand.ginger.cg(), bottom: brand.gingerDeep.cg())
-        let inner = tabPath(baseCenter: CGPoint(x: 512 + side * 170, y: 390), baseWidth: 110, topWidth: 26, height: 120,
-                            radius: 12, angle: side * 0.25)
-        fill(ctx, inner, brand.nose.cg(0.55))
-    }
-    let head = ellipse(512, 560, 600, 480)
-    fill(ctx, head, top: brand.ginger.cg(), bottom: brand.gingerDeep.cg(), shadow: 18)
-
-    // Forehead stripes drawn as three little tabs.
-    for (i, dx) in [-70.0, 0.0, 70.0].enumerated() as EnumeratedSequence<[CGFloat]> {
-        let h: CGFloat = i == 1 ? 96 : 70
-        fill(ctx, tabPath(baseCenter: CGPoint(x: 512 + dx, y: 430), baseWidth: 50, topWidth: 30, height: h, radius: 10,
-                          angle: .pi), brand.stripe.cg())
-    }
-
-    eye(ctx, 418, 540, 70, 84)
-    eye(ctx, 606, 540, 70, 84)
-    fill(ctx, ellipse(470, 625, 120, 86), brand.cream.cg())
-    fill(ctx, ellipse(554, 625, 120, 86), brand.cream.cg())
-    noseAndMouth(ctx, at: CGPoint(x: 512, y: 596), scale: 1.0)
-
-    // The tab strip: three folder tabs on a dark bar, the middle one active.
-    let barTop: CGFloat = 690
-    fill(ctx, CGPath(rect: CGRect(x: 100, y: barTop, width: 824, height: 300), transform: nil),
-         top: RGB(0x2A2F5E).cg(), bottom: brand.inkDeep.cg())
-    for (i, x) in [252.0, 512.0, 772.0].enumerated() as EnumeratedSequence<[CGFloat]> {
-        let active = i == 1
-        let tab = tabPath(baseCenter: CGPoint(x: x, y: barTop + 1), baseWidth: 250, topWidth: 200, height: 70, radius: 24)
-        fill(ctx, tab, active ? RGB(0x2A2F5E).cg() : RGB(0x1A1E3E).cg())
-    }
-
-    // Paws over the edge.
-    for side in [-1.0, 1.0] as [CGFloat] {
-        let cx = 512 + side * 150
-        fill(ctx, ellipse(cx, barTop - 14, 130, 84), top: brand.ginger.cg(), bottom: brand.gingerDeep.cg(), shadow: 10)
-        for dx in [-24.0, 24.0] as [CGFloat] {
-            stroke(ctx, [CGPoint(x: cx + dx, y: barTop + 2), CGPoint(x: cx + dx, y: barTop + 20)], width: 8,
-                   color: brand.stripe.cg())
-        }
-    }
-}
-
-/// C: "Pomodoro". A tabby curled into a timer ring, stripes as the ticks and
-/// the tail as the clock hand.
-func drawConceptC(_ ctx: CGContext) {
-    fill(ctx, CGPath(rect: bodyRect, transform: nil), top: RGB(0xFFF6EA).cg(), bottom: RGB(0xF9D9B6).cg())
-
-    let center = CGPoint(x: 512, y: 548)
-    let radius: CGFloat = 258, thickness: CGFloat = 132
-
-    // Body ring with a soft shadow.
-    let ring = CGMutablePath()
-    ring.addArc(center: center, radius: radius, startAngle: 0, endAngle: .pi * 2, clockwise: false)
-    let ringShape = ring.copy(strokingWithWidth: thickness, lineCap: .round, lineJoin: .round, miterLimit: 10)
-    fill(ctx, ringShape, top: brand.ginger.cg(), bottom: brand.gingerDeep.cg(), shadow: 26)
-
-    // Stripes as timer ticks.
-    ctx.saveGState()
-    ctx.addPath(ringShape)
-    ctx.clip()
-    for i in 0..<12 where i != 0 {
-        let a = CGFloat(i) / 12 * .pi * 2 - .pi / 2
-        let inner = CGPoint(x: center.x + cos(a) * (radius - 80), y: center.y + sin(a) * (radius - 80))
-        let outer = CGPoint(x: center.x + cos(a) * (radius + 30), y: center.y + sin(a) * (radius + 30))
-        stroke(ctx, [inner, outer], width: 26, color: brand.stripe.cg())
-    }
-    ctx.restoreGState()
-
-    // Tail as the clock hand, sweeping from the centre.
-    let tip = CGPoint(x: center.x + 130, y: center.y - 110)
-    stroke(ctx, [center, CGPoint(x: center.x + 40, y: center.y - 10), tip], width: 44, color: brand.gingerDeep.cg(), curved: true)
-    stroke(ctx, [CGPoint(x: tip.x - 18, y: tip.y + 16), tip], width: 44, color: brand.stripe.cg())
-    fill(ctx, ellipse(center.x, center.y, 64, 64), brand.gingerDeep.cg())
-
-    // Head on top of the ring, at twelve o'clock.
-    let hc = CGPoint(x: center.x, y: center.y - radius + 6)
-    for side in [-1.0, 1.0] as [CGFloat] {
-        let ear = tabPath(baseCenter: CGPoint(x: hc.x + side * 92, y: hc.y - 30), baseWidth: 120, topWidth: 40,
-                          height: 120, radius: 16, angle: side * 0.3)
-        fill(ctx, ear, top: brand.ginger.cg(), bottom: brand.gingerDeep.cg())
-    }
-    fill(ctx, ellipse(hc.x, hc.y, 270, 220), top: brand.ginger.cg(), bottom: brand.gingerDeep.cg(), shadow: 16)
-    stroke(ctx, [CGPoint(x: hc.x - 44, y: hc.y - 50), CGPoint(x: hc.x - 26, y: hc.y - 88), CGPoint(x: hc.x, y: hc.y - 60),
-                 CGPoint(x: hc.x + 26, y: hc.y - 88), CGPoint(x: hc.x + 44, y: hc.y - 50)], width: 14, color: brand.stripe.cg())
-    // Content, eyes closed as it naps through the focus block.
-    for side in [-1.0, 1.0] as [CGFloat] {
-        stroke(ctx, [CGPoint(x: hc.x + side * 50 - 22, y: hc.y), CGPoint(x: hc.x + side * 50, y: hc.y + 18),
-                     CGPoint(x: hc.x + side * 50 + 22, y: hc.y)], width: 12, color: brand.eye.cg(), curved: true)
-    }
-    fill(ctx, ellipse(hc.x - 26, hc.y + 54, 64, 46), brand.cream.cg())
-    fill(ctx, ellipse(hc.x + 26, hc.y + 54, 64, 46), brand.cream.cg())
-    noseAndMouth(ctx, at: CGPoint(x: hc.x, y: hc.y + 38), scale: 0.55)
-}
-
-let concepts: [String: (CGContext) -> Void] = ["a": drawConceptA, "b": drawConceptB, "c": drawConceptC]
 
 // MARK: - Icon
 
 /// Draws the icon into a context whose user space is 1024×1024, y-down.
-func drawIcon(in ctx: CGContext, concept: (CGContext) -> Void) {
+func drawIcon(in ctx: CGContext) {
     let body = squircle(in: bodyRect)
 
     // Drop shadow under the body, as on every macOS icon.
@@ -419,7 +406,7 @@ func drawIcon(in ctx: CGContext, concept: (CGContext) -> Void) {
     ctx.saveGState()
     ctx.addPath(body)
     ctx.clip()
-    concept(ctx)
+    drawCat(ctx)
     // A faint rim of light along the edge, like the glass edge on macOS 26 icons. At
     // small sizes it would only lighten the outer pixel ring, so it is left out.
     if isSmallRender {
@@ -446,7 +433,7 @@ func makeContext(_ width: Int, _ height: Int) -> CGContext {
     return ctx
 }
 
-func render(pixels: Int, concept: @escaping (CGContext) -> Void) -> CGImage {
+func render(pixels: Int) -> CGImage {
     let ctx = makeContext(pixels, pixels)
     let scale = CGFloat(pixels) / canvas
     deviceScale = scale
@@ -454,18 +441,19 @@ func render(pixels: Int, concept: @escaping (CGContext) -> Void) -> CGImage {
     // Flip to y-down so the drawing code reads top-to-bottom.
     ctx.translateBy(x: 0, y: CGFloat(pixels))
     ctx.scaleBy(x: scale, y: -scale)
-    drawIcon(in: ctx, concept: concept)
+    drawIcon(in: ctx)
     return ctx.makeImage()!
 }
 
 /// A review sheet: the icon at 1024 (shown at half size), 128, 32 and 16 px on a
 /// light and a dark desktop, plus the 32 and 16 px renders blown up 4x with no
-/// smoothing so each pixel can be judged.
-func reviewSheet(concept: @escaping (CGContext) -> Void) -> CGImage {
-    let w = 1280, rowH = 600
+/// smoothing so each pixel can be judged. With `--reference <photo>` the photo's
+/// square centre crop (or `--crop x,y,size` in its pixels) is shown on the right.
+func reviewSheet(reference: CGImage?) -> CGImage {
+    let w = reference == nil ? 1280 : 1840, rowH = 600
     let ctx = makeContext(w, rowH * 2)
-    let big = render(pixels: 1024, concept: concept)
-    let small = [128, 32, 16].map { ($0, render(pixels: $0, concept: concept)) }
+    let big = render(pixels: 1024)
+    let small = [128, 32, 16].map { ($0, render(pixels: $0)) }
     for (row, gray) in [(1, 0.93), (0, 0.13)] as [(Int, CGFloat)] {
         let y0 = CGFloat(row * rowH)
         ctx.setFillColor(CGColor(gray: gray, alpha: 1))
@@ -483,13 +471,22 @@ func reviewSheet(concept: @escaping (CGContext) -> Void) -> CGImage {
             x += CGFloat(px) * 4 + 30
         }
     }
+    if let reference {
+        let side = min(reference.width, reference.height)
+        let crop = option("--crop").map { $0.split(separator: ",").compactMap { Int($0) } } ?? []
+        let rect = crop.count == 3
+            ? CGRect(x: crop[0], y: crop[1], width: crop[2], height: crop[2])
+            : CGRect(x: (reference.width - side) / 2, y: (reference.height - side) / 2, width: side, height: side)
+        ctx.interpolationQuality = .high
+        ctx.draw(reference.cropping(to: rect)!, in: CGRect(x: 1290, y: 340, width: 520, height: 520))
+    }
     return ctx.makeImage()!
 }
 
 /// A Dock check: Tabbi between Apple's own icons (and a few well known Mac apps, when
 /// installed) at 128 and 32 px on a light and a dark desktop. Other icons come from
 /// NSWorkspace, so on macOS 26 they show with the system's own Liquid Glass rendering.
-func dockSheet(concept: @escaping (CGContext) -> Void) -> CGImage {
+func dockSheet() -> CGImage {
     let neighbours = ["/System/Applications/Calendar.app", "/System/Applications/Reminders.app",
                       "/System/Applications/Notes.app", "/System/Applications/Clock.app", "TABBI",
                       "/System/Applications/Messages.app", "/System/Applications/Music.app",
@@ -498,7 +495,7 @@ func dockSheet(concept: @escaping (CGContext) -> Void) -> CGImage {
     let gap: CGFloat = 24, rowH: CGFloat = 260
     let w = Int(CGFloat(neighbours.count) * (128 + gap) + gap)
     let ctx = makeContext(w, Int(rowH) * 2)
-    let ours = [128: render(pixels: 128, concept: concept), 32: render(pixels: 32, concept: concept)]
+    let ours = [128: render(pixels: 128), 32: render(pixels: 32)]
     for (row, gray) in [(1, 0.93), (0, 0.13)] as [(Int, CGFloat)] {
         let y0 = CGFloat(row) * rowH
         ctx.setFillColor(CGColor(gray: gray, alpha: 1))
@@ -532,24 +529,29 @@ func writePNG(_ image: CGImage, to url: URL) {
 // MARK: - Glyph and variants
 
 /// A one-colour Tabbi mark for small UI (menus, onboarding, the website favicon):
-/// the head with its folder-tab ears, and the open eye, the checkmark wink and the
-/// nose cut out. The "M" is left out: at menu size its gaps turn into speckle.
+/// the British Shorthair's round head with its chubby jowls and small folder-tab
+/// ears, with the half-lidded eye, the checkmark wink and the nose cut out.
 /// It is a single path, so it renders the same as a bitmap and as vector PDF, and
 /// works as an AppKit template image.
 func glyphPath() -> CGPath {
-    var shape: CGPath = ellipse(512, 590, 800, 640)
+    var shape: CGPath = ellipse(512, 560, 700, 600)
     for side in [-1.0, 1.0] as [CGFloat] {
-        let ear = tabPath(baseCenter: CGPoint(x: 512 + side * 230, y: 420), baseWidth: 300, topWidth: 176,
-                          height: 230, radius: 44, angle: side * 0.30)
-        shape = shape.union(ear)
+        shape = shape.union(ellipse(512 + side * 196, 640, 400, 360))
+        shape = shape.union(tabPath(baseCenter: CGPoint(x: 512 + side * 222, y: 390), baseWidth: 250,
+                                    topWidth: 150, height: 200, radius: 50, angle: side * 0.26))
     }
+    // The open eye is a half-oval whose flat top is the heavy lid, sloping toward the nose.
+    let lid = CGMutablePath()
+    lid.addLines(between: [CGPoint(x: 280, y: 560), CGPoint(x: 500, y: 576), CGPoint(x: 500, y: 760),
+                           CGPoint(x: 280, y: 760)])
+    lid.closeSubpath()
     let check = CGMutablePath()
-    check.addLines(between: [CGPoint(x: 552, y: 600), CGPoint(x: 606, y: 654), CGPoint(x: 696, y: 548)])
-    let cuts = ellipse(388, 600, 116, 140)
+    check.addLines(between: [CGPoint(x: 560, y: 580), CGPoint(x: 610, y: 632), CGPoint(x: 700, y: 530)])
+    let cuts = ellipse(388, 590, 160, 136).intersection(lid)
         .union(check.copy(strokingWithWidth: 64, lineCap: .round, lineJoin: .round, miterLimit: 10))
-        .union(ellipse(512, 728, 84, 56))
-    // The ears reach higher than the head reaches low, so lift the mark to centre it.
-    var lift = CGAffineTransform(translationX: 0, y: -24)
+        .union(ellipse(512, 706, 84, 56))
+    // The ears reach higher than the jowls reach low, so lift the mark to centre it.
+    var lift = CGAffineTransform(translationX: 0, y: -10)
     return shape.subtracting(cuts).copy(using: &lift)!
 }
 
@@ -590,16 +592,16 @@ func writeGlyphPDF(to url: URL) {
 let appearances: [(name: String, palette: Palette)] = [("default", .standard), ("light", .light),
                                                         ("dark", .dark), ("tinted", .tinted)]
 
-func render(pixels: Int, palette: Palette, concept: @escaping (CGContext) -> Void) -> CGImage {
+func render(pixels: Int, palette: Palette) -> CGImage {
     let saved = brand
     brand = palette
     defer { brand = saved }
-    return render(pixels: pixels, concept: concept)
+    return render(pixels: pixels)
 }
 
 /// A variants sheet: every appearance at 256, 32 and 16 px, then the glyph at
 /// 256, 32 and 16 px, on a light and a dark desktop.
-func variantsSheet(concept: @escaping (CGContext) -> Void) -> CGImage {
+func variantsSheet() -> CGImage {
     let colW: CGFloat = 400, rowH: CGFloat = 360
     let columns = appearances.count + 1
     let ctx = makeContext(Int(colW) * columns, Int(rowH) * 2)
@@ -612,7 +614,7 @@ func variantsSheet(concept: @escaping (CGContext) -> Void) -> CGImage {
             for px in [256, 32, 16] {
                 let image: CGImage
                 if column < appearances.count {
-                    image = render(pixels: px, palette: appearances[column].palette, concept: concept)
+                    image = render(pixels: px, palette: appearances[column].palette)
                 } else {
                     // The glyph is black ink; on the dark desktop it is drawn as a template would be, in white.
                     let mask = renderGlyph(pixels: px)
@@ -633,11 +635,11 @@ func variantsSheet(concept: @escaping (CGContext) -> Void) -> CGImage {
 
 /// Writes the brand assets other parts of the project use: the icon in every
 /// appearance at 1024 px (the default one is the README image) and the glyph.
-func exportBrandAssets(concept: @escaping (CGContext) -> Void, to folder: URL) throws {
+func exportBrandAssets(to folder: URL) throws {
     try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
     for (name, palette) in appearances {
         let file = name == "default" ? "tabbi-icon-1024.png" : "tabbi-icon-\(name)-1024.png"
-        writePNG(render(pixels: 1024, palette: palette, concept: concept), to: folder.appendingPathComponent(file))
+        writePNG(render(pixels: 1024, palette: palette), to: folder.appendingPathComponent(file))
     }
     writeGlyphPDF(to: folder.appendingPathComponent("tabbi-glyph.pdf"))
     writePNG(renderGlyph(pixels: 256), to: folder.appendingPathComponent("tabbi-glyph-256.png"))
@@ -652,39 +654,43 @@ func option(_ name: String) -> String? {
     return args[i + 1]
 }
 
-let conceptKey = option("--concept") ?? "a"
-guard let concept = concepts[conceptKey] else { fatalError("unknown concept \(conceptKey)") }
+if let name = option("--ground") {
+    guard let palette = candidatePalettes[name] else { fatalError("unknown ground \(name)") }
+    brand = palette
+}
 
 if let path = option("--sheet") {
-    writePNG(reviewSheet(concept: concept), to: URL(fileURLWithPath: path))
+    let reference = option("--reference").flatMap { NSImage(contentsOfFile: $0) }
+        .flatMap { $0.cgImage(forProposedRect: nil, context: nil, hints: nil) }
+    writePNG(reviewSheet(reference: reference), to: URL(fileURLWithPath: path))
     print(path)
     exit(0)
 }
 if let path = option("--dock") {
-    writePNG(dockSheet(concept: concept), to: URL(fileURLWithPath: path))
+    writePNG(dockSheet(), to: URL(fileURLWithPath: path))
     print(path)
     exit(0)
 }
 if let path = option("--variants") {
-    writePNG(variantsSheet(concept: concept), to: URL(fileURLWithPath: path))
+    writePNG(variantsSheet(), to: URL(fileURLWithPath: path))
     print(path)
     exit(0)
 }
 if let path = option("--preview") {
-    writePNG(render(pixels: 1024, concept: concept), to: URL(fileURLWithPath: path))
+    writePNG(render(pixels: 1024), to: URL(fileURLWithPath: path))
     print(path)
     exit(0)
 }
-guard option("--concept") == nil else {
-    fatalError("--concept only works with --sheet, --dock, --variants or --preview; the shipped icon is always concept A")
+guard option("--ground") == nil else {
+    fatalError("--ground only works with --sheet, --dock or --preview; the shipped icon always uses its own palette")
 }
 
 let iconset = FileManager.default.temporaryDirectory.appendingPathComponent("AppIcon.iconset")
 try? FileManager.default.removeItem(at: iconset)
 try FileManager.default.createDirectory(at: iconset, withIntermediateDirectories: true)
 for points in [16, 32, 128, 256, 512] {
-    writePNG(render(pixels: points, concept: drawConceptA), to: iconset.appendingPathComponent("icon_\(points)x\(points).png"))
-    writePNG(render(pixels: points * 2, concept: drawConceptA), to: iconset.appendingPathComponent("icon_\(points)x\(points)@2x.png"))
+    writePNG(render(pixels: points), to: iconset.appendingPathComponent("icon_\(points)x\(points).png"))
+    writePNG(render(pixels: points * 2), to: iconset.appendingPathComponent("icon_\(points)x\(points)@2x.png"))
 }
 
 let output = root.appendingPathComponent("Resources/AppIcon.icns")
@@ -698,5 +704,5 @@ try? FileManager.default.removeItem(at: iconset)
 print(output.path)
 
 let assets = root.appendingPathComponent("docs/brand/assets")
-try exportBrandAssets(concept: drawConceptA, to: assets)
+try exportBrandAssets(to: assets)
 print(assets.path)

@@ -43,17 +43,20 @@ struct RGB {
     func ns(_ alpha: CGFloat = 1) -> NSColor { NSColor(srgbRed: r, green: g, blue: b, alpha: alpha) }
 }
 
-/// The icon's deep ink field, from its lit top to its shaded bottom.
-let ink = RGB(0x2A2F5E)
-let inkDeep = RGB(0x0F1126)
-let inkLight = RGB(0x4A55A8)
-/// The tabby's orange and the cream of its muzzle.
-let ginger = RGB(0xFFA94D)
-let sheen = RGB(0xFFE3B8)
-let cream = RGB(0xFFF1DE)
-/// A frosted lavender with a relative luminance near 0.5, so Finder's black
-/// label text reaches about 11:1 contrast without the pill glaring on the ink.
-let labelPill = RGB(0xC4C2DA)
+/// The icon's deep navy field, from its lit top to its shaded bottom.
+let ink = RGB(0x24335F)
+let inkMid = RGB(0x17214A)
+let inkDeep = RGB(0x0D1430)
+let inkLight = RGB(0x4660A8)
+/// The British Shorthair's pale silver-beige fur, its pink-tan nose and its
+/// grey-green eye.
+let fur = RGB(0xE6DFD5)
+let nose = RGB(0xD29A8A)
+let iris = RGB(0x9AA889)
+/// The cat's shaded silver-beige, with a relative luminance near 0.5, so
+/// Finder's black label text reaches about 11:1 contrast without the pill
+/// glaring on the navy.
+let labelPill = RGB(0xCAC1B5)
 
 // MARK: - Drawing helpers
 
@@ -109,12 +112,12 @@ func drawBackground(in ctx: CGContext, name: String) {
 
     // Base: the icon's ink, lit at the top and deepening toward the bottom.
     ctx.drawLinearGradient(
-        gradient([(0, ink.cg()), (0.65, RGB(0x1A1E3E).cg()), (1, inkDeep.cg())]),
+        gradient([(0, ink.cg()), (0.65, inkMid.cg()), (1, inkDeep.cg())]),
         start: CGPoint(x: 0, y: 0), end: CGPoint(x: 0, y: bounds.maxY), options: [])
     glow(ctx, inkLight, at: CGPoint(x: bounds.midX, y: 0), radius: 300, alpha: 0.35)
 
-    // Soft light pooling under each icon: the tabby's warm orange, then a cool ink blue.
-    glow(ctx, ginger, at: appCenter, radius: 150, alpha: 0.14)
+    // Soft light pooling under each icon: the cat's pale fur, then a cool navy blue.
+    glow(ctx, fur, at: appCenter, radius: 150, alpha: 0.10)
     glow(ctx, inkLight, at: applicationsCenter, radius: 150, alpha: 0.30)
 
     // A faint dotted grid gives the dark field some texture without competing.
@@ -125,7 +128,7 @@ func drawBackground(in ctx: CGContext, name: String) {
         }
     }
 
-    // The notch, with the tabby peeking out of it: one round eye and the icon's checkmark wink.
+    // The notch, with the cat peeking out of it: one half-lidded eye and the icon's checkmark wink.
     let notchWidth: CGFloat = 132, notchHeight: CGFloat = 34
     let notch = notchPath(width: notchWidth, height: notchHeight, centerX: bounds.midX, shoulder: 8, bottomRadius: 12)
     glow(ctx, RGB(0xFFFFFF), at: CGPoint(x: bounds.midX, y: notchHeight), radius: 120, alpha: 0.05)
@@ -138,18 +141,36 @@ func drawBackground(in ctx: CGContext, name: String) {
     ctx.strokePath()
     let eyeY = notchHeight / 2 + 1
     let eye = CGPoint(x: bounds.midX - 12, y: eyeY)
-    glow(ctx, ginger, at: eye, radius: 11, alpha: 0.6)
-    ctx.setFillColor(ginger.cg())
-    ctx.fillEllipse(in: CGRect(x: eye.x - 4, y: eye.y - 4, width: 8, height: 8))
+    glow(ctx, iris, at: eye, radius: 11, alpha: 0.5)
+    // The heavy lid: a flat top that slopes down toward the nose cuts the round iris.
+    let lidOuter = CGPoint(x: eye.x - 6, y: eye.y - 1.5), lidInner = CGPoint(x: eye.x + 6, y: eye.y + 0.5)
+    let lid = CGMutablePath()
+    lid.move(to: CGPoint(x: lidOuter.x, y: lidOuter.y))
+    lid.addLine(to: CGPoint(x: lidInner.x, y: lidInner.y))
+    lid.addLine(to: CGPoint(x: lidInner.x, y: eye.y + 8))
+    lid.addLine(to: CGPoint(x: lidOuter.x, y: eye.y + 8))
+    lid.closeSubpath()
+    ctx.saveGState()
+    ctx.addPath(lid)
+    ctx.clip()
+    ctx.setFillColor(iris.cg())
+    ctx.fillEllipse(in: CGRect(x: eye.x - 4.5, y: eye.y - 4.5, width: 9, height: 9))
+    ctx.restoreGState()
+    ctx.move(to: CGPoint(x: lidOuter.x + 1, y: lidOuter.y + 0.1))
+    ctx.addLine(to: CGPoint(x: lidInner.x - 1, y: lidInner.y - 0.1))
+    ctx.setStrokeColor(fur.cg())
+    ctx.setLineWidth(1.5)
+    ctx.setLineCap(.round)
+    ctx.strokePath()
     let wink = CGPoint(x: bounds.midX + 12, y: eyeY)
-    glow(ctx, ginger, at: wink, radius: 11, alpha: 0.6)
+    glow(ctx, fur, at: wink, radius: 11, alpha: 0.35)
     let check = CGMutablePath()
     check.move(to: CGPoint(x: wink.x - 5, y: wink.y))
     check.addLine(to: CGPoint(x: wink.x - 1.5, y: wink.y + 3.5))
     check.addLine(to: CGPoint(x: wink.x + 5, y: wink.y - 4))
     ctx.saveGState()
     ctx.addPath(check)
-    ctx.setStrokeColor(ginger.cg())
+    ctx.setStrokeColor(fur.cg())
     ctx.setLineWidth(2.5)
     ctx.setLineCap(.round)
     ctx.setLineJoin(.round)
@@ -160,9 +181,9 @@ func drawBackground(in ctx: CGContext, name: String) {
     drawText("Install \(name)", font: roundedFont(20, .semibold), color: NSColor(white: 1, alpha: 0.92),
              centerX: bounds.midX, centerY: 74)
     drawText("Drag \(name) into the Applications folder", font: roundedFont(13, .medium),
-             color: cream.ns(0.66), centerX: bounds.midX, centerY: 98)
+             color: fur.ns(0.66), centerX: bounds.midX, centerY: 98)
 
-    // The arrow: a gentle arc from the app to Applications, in the tabby's orange.
+    // The arrow: a gentle arc from the app to Applications, from the cat's pink nose to its pale fur.
     let gap: CGFloat = 20
     let start = CGPoint(x: appCenter.x + iconSize / 2 + gap, y: appCenter.y)
     let end = CGPoint(x: applicationsCenter.x - iconSize / 2 - gap, y: applicationsCenter.y)
@@ -187,10 +208,10 @@ func drawBackground(in ctx: CGContext, name: String) {
     ctx.addPath(head)
     ctx.replacePathWithStrokedPath()
     ctx.clip()
-    ctx.drawLinearGradient(gradient([(0, ginger.cg()), (1, sheen.cg())]),
+    ctx.drawLinearGradient(gradient([(0, nose.cg()), (1, fur.cg())]),
                            start: start, end: end, options: [.drawsBeforeStartLocation, .drawsAfterEndLocation])
     ctx.restoreGState()
-    glow(ctx, ginger, at: end, radius: 26, alpha: 0.30)
+    glow(ctx, fur, at: end, radius: 26, alpha: 0.22)
 
     // Label pills, so Finder's black label text reads on the dark art.
     let pillWidth: CGFloat = 116, pillHeight: CGFloat = 22
@@ -203,7 +224,7 @@ func drawBackground(in ctx: CGContext, name: String) {
 
     // Footer: what happens next, well clear of the bottom edge that the title bar pushes out of view.
     drawText("Then open \(name) from Applications. It lives in your notch.", font: roundedFont(12, .medium),
-             color: cream.ns(0.46), centerX: bounds.midX, centerY: 326)
+             color: fur.ns(0.46), centerX: bounds.midX, centerY: 326)
 }
 
 func render(name: String, scale: CGFloat) -> CGImage {
