@@ -50,6 +50,12 @@ Staggered entrances use `MotionTokens.stagger(index)`: 30 ms per item, capped at
   A small drop unwinds, but a drop of more than half the ring is a new start (a Pomodoro phase change, a usage window that rolled over), so the arc snaps to the new value instead of sweeping backwards (`RingProgress.change`).
   Missing or non-finite values draw an empty ring (`RingProgress.clamped`).
   Focus, Study, Anki, Claude Usage and Today's rings use it; Today's shared-goal checkbox keeps its own ring because it turns into a filled check.
+- `PawLoader(tint:size:label:)` is the loader for longer waits (a few seconds or more): a trail of four paw prints that press in left, right, left, right, as if the pet were trotting past, then fade behind it (`PawTrail`).
+  A print presses in over 120 ms, landing 15% large and settling, then fades over 1.1 s; prints are 320 ms apart and each walk ends with a short pause, 2.24 s in all.
+  Ask Claude's "Thinking" bubble and Anki's starting-up tile use it; quick waits keep `Spinner`.
+  It stays invisible for 300 ms and then fades in over 200 ms (`PawTrail.revealOpacity`), so a fast answer never flashes it; snapshot runs set `\.loaderRevealDelay` to 0.
+  Under Reduce Motion the whole trail stands still and breathes.
+  `--snapshot` renders `motion-loader-paws.png` (one frame per step), `motion-loader-paws-in-context.png` and `motion-loader-paws-reduced.png`.
 - Show no loader for waits under about 300 ms; pair a loader with a short label that says what is happening.
 
 ## Celebrations

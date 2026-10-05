@@ -439,7 +439,7 @@ private struct AnkiSetupView: View {
                     RoundedRectangle(cornerRadius: Theme.Radius.l, style: .continuous)
                         .fill(accent.opacity(0.16))
                     if store.state == .starting {
-                        Spinner(tint: accent, size: 20, lineWidth: 2.5)
+                        PawLoader(tint: accent, size: 20, label: "Starting Anki")
                     } else {
                         Image(systemName: guide.symbol)
                             .font(.system(size: 22, weight: .semibold))

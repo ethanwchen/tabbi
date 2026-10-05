@@ -80,6 +80,7 @@ enum SnapshotRenderer {
             if name == "open-closet-look" { closet?.store.section = .look }
             let view = NotchView(content: ModuleViews.notchContent(services: services))
                 .environmentObject(model)
+                .environment(\.loaderRevealDelay, 0) // rendered the moment it appears
                 .frame(width: Theme.Layout.expandedSize.width + 40,
                        height: Theme.Layout.expandedSize.height + 24, alignment: .top)
                 .background(Color(white: 0.16)) // stand-in for a desktop

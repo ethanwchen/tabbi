@@ -297,16 +297,18 @@ private struct AssistantBubble: View {
 
     @ViewBuilder
     private var content: some View {
-        if message.status == .streaming {
+        if message.status == .streaming && message.text.isEmpty {
+            // Claude often takes seconds to start; the paw trail says it's on its way.
+            HStack(spacing: Theme.Spacing.s) {
+                Text("Thinking").foregroundStyle(Theme.Palette.tertiaryText)
+                PawLoader(tint: accent, size: 16, label: "Thinking")
+            }
+        } else if message.status == .streaming {
             // Re-rendered on a timer so the caret blinks while text streams in.
             TimelineView(.periodic(from: .now, by: 0.5)) { context in
                 let visible = Int(context.date.timeIntervalSinceReferenceDate * 2) % 2 == 0
                 let caret = Text(" ▍").foregroundStyle(accent.opacity(visible ? 1 : 0.25))
-                if message.text.isEmpty {
-                    Text("Thinking").foregroundStyle(Theme.Palette.tertiaryText) + caret
-                } else {
-                    Text(ClaudeAskMarkdown.attributed(message.text)) + caret
-                }
+                Text(ClaudeAskMarkdown.attributed(message.text)) + caret
             }
         } else if message.text.isEmpty {
             Text("No answer").foregroundStyle(Theme.Palette.tertiaryText)

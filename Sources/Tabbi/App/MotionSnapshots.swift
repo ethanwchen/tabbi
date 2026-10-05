@@ -28,6 +28,26 @@ enum MotionSnapshots {
             CelebrationGlow(glow, elapsed: elapsed)
         })))
         shots.append(("motion-press", AnyView(pressStates(accent: accent))))
+        let pawMoments = stride(from: 0.1, to: PawTrail.cycle, by: PawTrail.stepInterval).map { $0 }
+        shots.append(("motion-loader-paws", AnyView(strip(pawMoments) { time in
+            PawTrailFrame(tint: AskClaudeModule.descriptor.accentColor, size: 40, time: time)
+        })))
+        shots.append(("motion-loader-paws-in-context", AnyView(strip([1.06]) { time in
+            // The Ask Claude bubble while Claude thinks, at full trail.
+            Card(padding: 0) {
+                HStack(spacing: Theme.Spacing.s) {
+                    Text("Thinking").foregroundStyle(Theme.Palette.tertiaryText)
+                    PawTrailFrame(tint: AskClaudeModule.descriptor.accentColor, size: 16, time: time)
+                }
+                .font(Theme.Typography.body)
+                .padding(.horizontal, Theme.Spacing.m)
+                .padding(.vertical, Theme.Spacing.s)
+            }
+            .fixedSize()
+        })))
+        shots.append(("motion-loader-paws-reduced", AnyView(strip([0, 0.4, 0.8]) { time in
+            PawTrailFrame(tint: AskClaudeModule.descriptor.accentColor, size: 40, time: time, reduceMotion: true)
+        })))
         return shots
     }
 
