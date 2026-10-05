@@ -32,7 +32,8 @@ enum ModuleViews {
             panel: { services.modules.panel(for: $0) },
             nowPlayingLeading: { AnyView(compactLeading(services: services)) },
             nowPlayingTrailing: { AnyView(compactTrailing(services: services)) },
-            openSettings: { services.openSettings() }
+            openSettings: { services.openSettings() },
+            checkForUpdates: AppUpdater.shared.isAvailable ? { AppUpdater.shared.checkForUpdates() } : nil
         )
     }
 

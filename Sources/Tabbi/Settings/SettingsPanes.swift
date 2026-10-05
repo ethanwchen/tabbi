@@ -770,6 +770,8 @@ struct AboutSettingsPane: View {
                 .help(Self.repository.absoluteString)
             }
             .padding(.top, 20)
+            UpdatesSettingsSection()
+                .padding(.top, 16)
             Text("Released under the MIT License.")
                 .font(.caption)
                 .foregroundStyle(.tertiary)

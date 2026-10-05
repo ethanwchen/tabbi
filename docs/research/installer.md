@@ -419,3 +419,17 @@ Tested on macOS 26 with a debug build under a throwaway edition (its own bundle 
   `NSWorkspace.openApplication` on the running copy did not deliver a reopen event, so the hand-off uses a distributed notification named after the bundle id (no Apple Event, so no Automation prompt).
 - App Translocation could not be tested locally: a quarantined ad-hoc build is blocked by Gatekeeper before it runs.
   The translocated path is handled by resolving the original with `SecTranslocateCreateOriginalPathForURL` and clearing `com.apple.quarantine` on the copy, and needs a check with the first notarized build.
+
+## Measured: Sparkle in the app (iteration 5)
+
+Tested on macOS 26 with a debug build under a throwaway bundle id and a random public key, pointed at the real (still private, so 404) feed.
+
+- `swift package resolve` hung with no network traffic in the agent's sandbox until it ran with `--disable-keychain`: SwiftPM looks up github.com credentials in the keychain before downloading a binary artifact, and the keychain prompt never shows there.
+  The download itself (Sparkle-for-Swift-Package-Manager.zip, 10 MB) takes about a second.
+- SwiftPM copies `Sparkle.framework` next to the built executable; `scripts/assemble.sh` copies it into `Contents/Frameworks` and the executable finds it through an `@executable_path/../Frameworks` rpath set in `Package.swift`.
+  The universal release build gets a universal framework (arm64 and x86_64).
+- Size: the embedded framework is 2.7 MB after dropping its headers and module maps; the app grows from 13 MB to 16 MB, the zip to 6.8 MB and the DMG (ULFO) to 7.8 MB.
+- With a feed and key in Info.plist and `SUEnableAutomaticChecks`, Sparkle checked at first launch without asking (`SULastCheckTime` set, the 404 stays silent).
+  "Check for Updates..." in Settings > About brought the app forward and showed Sparkle's "Update Error!" window for the 404, so a user-initiated check is always answered on screen.
+- `tell application id "..." to quit` returned "User canceled (-128)" while Sparkle's window was open and quit at once after it closed, with Settings and the welcome window still open.
+  AppKit refuses quit events during a modal session, so a quit that "did not work" in QA most likely met a modal alert; with no modal up, AppleScript quit is reliable.

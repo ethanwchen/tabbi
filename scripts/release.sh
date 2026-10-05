@@ -9,10 +9,13 @@
 # edition defaults to tabbi. The version comes from CFBundleShortVersionString
 # in Resources/Info.plist.
 #
-# Signing settings live in packaging/signing.env (DEVELOPER_ID, NOTARY_PROFILE);
-# environment variables with the same names override them. When the Developer ID
-# or the notary profile is missing, the script stops before building and says
-# how to set them up.
+# Signing settings live in packaging/signing.env (DEVELOPER_ID, NOTARY_PROFILE)
+# and update settings in packaging/updates.env (SPARKLE_PUBLIC_KEY,
+# SPARKLE_FEED_URL); environment variables with the same names override them.
+# When the Developer ID, the notary profile or the update key is missing, the
+# script stops before building and says how to set them up. The build number
+# (CFBundleVersion, which Sparkle compares) is the commit count, so it needs a
+# full clone.
 #
 # --adhoc builds without a Developer ID (contributors, CI): the app is ad-hoc
 # signed and not notarized, so Gatekeeper blocks its first launch on other Macs
@@ -25,7 +28,7 @@ adhoc=false
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --adhoc) adhoc=true; shift ;;
-        -h|--help) sed -n '2,19p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+        -h|--help) sed -n '2,22p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
         -*) echo "error: unknown option $1" >&2; exit 64 ;;
         *) edition=$1; shift ;;
     esac
@@ -39,10 +42,19 @@ config=packaging/signing.env
 # The file's values, then the environment's, which win when set.
 developer_id=${DEVELOPER_ID:-$(. "$config"; printf '%s' "${DEVELOPER_ID:-}")}
 notary_profile=${NOTARY_PROFILE:-$(. "$config"; printf '%s' "${NOTARY_PROFILE:-}")}
+updates=packaging/updates.env
+sparkle_key=${SPARKLE_PUBLIC_KEY:-$(. "$updates"; printf '%s' "${SPARKLE_PUBLIC_KEY:-}")}
+feed_url=${SPARKLE_FEED_URL:-$(. "$updates"; printf '%s' "${SPARKLE_FEED_URL:-}")}
+sparkle_bin=.build/artifacts/sparkle/Sparkle/bin
+
+# True when the update key is an Ed25519 public key (32 bytes, base64).
+update_key_ok() {
+    [[ -n "$sparkle_key" && "$(printf '%s' "$sparkle_key" | base64 -D 2>/dev/null | wc -c | tr -d ' ')" == 32 ]]
+}
 
 # Fails early, before the slow build, with the setup steps that are missing.
 preflight_developer_id() {
-    local identities identity_ok=true profile_ok=true
+    local identities identity_ok=true profile_ok=true key_ok=true
     identities=$(security find-identity -v -p codesigning 2>/dev/null \
         | sed -n 's/.*"\(Developer ID Application: .*\)"$/\1/p')
     if [[ -z "$developer_id" ]]; then
@@ -59,14 +71,15 @@ $(printf '%s\n' "$identities" | sed 's/^/  /')" ;;
         || ! xcrun notarytool history --keychain-profile "$notary_profile" >/dev/null 2>&1; then
         profile_ok=false
     fi
-    $identity_ok && $profile_ok && return 0
+    update_key_ok || key_ok=false
+    $identity_ok && $profile_ok && $key_ok && return 0
 
     mark() { $1 && echo "done" || echo "missing"; }
     cat >&2 <<EOF
 
 Tabbi releases are signed with your Developer ID and notarized by Apple, so
-people can open them without a Gatekeeper warning. This needs two one-time
-setup steps on this Mac:
+people can open them without a Gatekeeper warning, and they update themselves
+through Sparkle. This needs three one-time setup steps on this Mac:
 
   1. Developer ID certificate ($(mark $identity_ok))
      ${developer_id:+Looked for: $developer_id
@@ -78,6 +91,14 @@ setup steps on this Mac:
      Create an app-specific password at https://account.apple.com, then run:
        xcrun notarytool store-credentials ${notary_profile:-notchdeck} --apple-id <your Apple ID> --team-id <TEAMID>
      notarytool asks for the password and keeps it in the keychain.
+
+  3. Update signing key ($(mark $key_ok))
+     Run once (swift package resolve fetches the tool):
+       $sparkle_bin/generate_keys
+     It keeps the private key in your login keychain and prints the public
+     key. Paste that into SPARKLE_PUBLIC_KEY in $updates. Back the private
+     key up (generate_keys -x <file>) somewhere safe, never in the repository:
+     without it, installed copies can never be updated again.
 
 To build without a Developer ID (for testing on your own Mac), run:
   scripts/release.sh --adhoc
@@ -93,6 +114,11 @@ else
 fi
 
 version=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" Resources/Info.plist)
+# Sparkle offers an update when the appcast's build number is higher than the
+# running app's, so it must only ever grow: the commit count does.
+[[ $(git rev-parse --is-shallow-repository) == false ]] \
+    || fail "this is a shallow clone, so the build number would be wrong. Fetch the full history (git fetch --unshallow)."
+build_number=$(git rev-list --count HEAD)
 out=build/release
 
 log "Building $edition $version (arm64 + x86_64)"
@@ -110,6 +136,26 @@ rm -rf "$out"
 app=$(scripts/assemble.sh "$bin" "$out" "$edition")
 name=$(/usr/libexec/PlistBuddy -c "Print :CFBundleName" "$app/Contents/Info.plist")
 executable="$app/Contents/MacOS/$(/usr/libexec/PlistBuddy -c "Print :CFBundleExecutable" "$app/Contents/Info.plist")"
+
+info="$app/Contents/Info.plist"
+plutil -replace CFBundleVersion -string "$build_number" "$info"
+if update_key_ok; then
+    # The feed and key turn the updater on (UpdatePolicy); automatic checks
+    # default to on without Sparkle's "check automatically?" prompt, and
+    # Settings has the switch.
+    plutil -replace SUFeedURL -string "$feed_url" "$info"
+    plutil -replace SUPublicEDKey -string "$sparkle_key" "$info"
+    plutil -replace SUEnableAutomaticChecks -bool YES "$info"
+    log "Updates: on ($feed_url)"
+else
+    log "Updates: off (no SPARKLE_PUBLIC_KEY in $updates)"
+fi
+
+# Headers and module maps in embedded frameworks only matter to a compiler.
+for framework in "$app"/Contents/Frameworks/*.framework; do
+    [[ -e "$framework" ]] || continue
+    rm -rf "$framework"/{Headers,Modules,PrivateHeaders} "$framework"/Versions/Current/{Headers,Modules,PrivateHeaders}
+done
 
 # Local symbols are only useful to a debugger; stripping them roughly halves the binary.
 # The linker's ad-hoc signature goes first, or strip warns that it breaks it.
@@ -195,7 +241,7 @@ fi
 size() { du -sh "$1" | cut -f1 | tr -d ' '; }
 cat <<EOF
 
-Built $name $version ($($adhoc && echo "ad-hoc signed, not notarized" || echo "Developer ID signed, notarized and stapled")):
+Built $name $version, build $build_number ($($adhoc && echo "ad-hoc signed, not notarized" || echo "Developer ID signed, notarized and stapled")):
   $dmg  ($(size "$dmg"))
   $zip  ($(size "$zip"))
   $out/SHA256SUMS

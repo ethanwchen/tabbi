@@ -103,6 +103,8 @@ swift docs/make-screenshots.swift        # re-renders docs/images/*.png from dem
 Maintainers cut releases with `scripts/release.sh`.
 It builds a universal (Apple silicon and Intel), stripped app, signs it with the maintainer's Developer ID under the Hardened Runtime (`packaging/Tabbi.entitlements`), notarizes and staples it, and writes `Tabbi-<version>.dmg`, `Tabbi-<version>.zip` and `SHA256SUMS` to `build/release/`.
 The version comes from `CFBundleShortVersionString` in `Resources/Info.plist`.
-Signing needs two one-time steps (a Developer ID Application certificate and `xcrun notarytool store-credentials notchdeck`); the script checks both before building and explains what is missing.
+Signing needs three one-time steps (a Developer ID Application certificate, `xcrun notarytool store-credentials notchdeck`, and an update signing key from Sparkle's `generate_keys`, whose public half goes in `packaging/updates.env`); the script checks all three before building and explains what is missing.
 `packaging/signing.env` picks the identity and notary profile when the defaults do not fit.
+The release app checks the appcast in `packaging/updates.env` through Sparkle (Settings > About > Check for Updates, and the notch's context menu); development builds carry no feed and never update themselves.
+The build number is the commit count, so release from a full clone.
 Without a Developer ID, `scripts/release.sh --adhoc` builds the same files ad-hoc signed and not notarized, which is what CI runs.

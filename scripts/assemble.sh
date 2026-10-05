@@ -53,4 +53,11 @@ cp "$plist" "$app/Contents/Info.plist"
 cp "$icon" "$app/Contents/Resources/AppIcon.icns"
 # SwiftPM resource bundles (bundled kits and editions); see KitResources.swift.
 cp -R "$(dirname "$bin")"/*.bundle "$app/Contents/Resources/"
+# Frameworks from binary packages (Sparkle), found through the executable's
+# @executable_path/../Frameworks rpath (Package.swift). ditto keeps their symlinks.
+for framework in "$(dirname "$bin")"/*.framework; do
+    [[ -e "$framework" ]] || continue
+    mkdir -p "$app/Contents/Frameworks"
+    ditto "$framework" "$app/Contents/Frameworks/$(basename "$framework")"
+done
 echo "$app"
