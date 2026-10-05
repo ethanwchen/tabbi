@@ -25,6 +25,7 @@ private final class SelfContainedModule: NotchModule {
     let context: ModuleContext
     let service: CountingService
     var kitsApplied: [String] = []
+    var performed: [String] = []
     private var cancellables: Set<AnyCancellable> = []
 
     init(context: ModuleContext) {
@@ -40,6 +41,7 @@ private final class SelfContainedModule: NotchModule {
         Just(ModuleProvision(tasks: [ProvidedTask(id: "t", source: context.id, title: "From context")]))
             .eraseToAnyPublisher()
     }
+    func perform(_ action: ProvidedAction) { performed.append(action.id) }
 }
 
 /// A second module sharing the same service.
@@ -108,6 +110,20 @@ final class ModuleContextTests: XCTestCase {
         store.switchKit(to: kit.id)
         XCTAssertEqual(module.kitsApplied, [kit.id])
     }
+
+    func testSharedActionsGoOnlyToTheRunningModuleThatOfferedThem() throws {
+        let (registry, _) = makeModules(settings: settings())
+        let module = try XCTUnwrap(registry.module(SelfContainedModule.self))
+        let action = ProvidedAction(id: "go", title: "Go")
+        registry.perform(action, on: "self-contained")
+        XCTAssertEqual(module.performed, [], "a module that is off ignores a stale preview's click")
+        registry.update(enabled: ["self-contained", "sibling"])
+        registry.perform(action, on: "self-contained")
+        registry.perform(action, on: "sibling")
+        registry.perform(action, on: "absent")
+        XCTAssertEqual(module.performed, ["go"])
+    }
+
     func testAppServicesHandsEveryModuleTheProcessRunMode() throws {
         let demoSnapshot = AppServices(settings: settings(), moduleTypes: types,
                                        environment: ["TABBI_DEMO": "1"], arguments: ["--snapshot", "out"])

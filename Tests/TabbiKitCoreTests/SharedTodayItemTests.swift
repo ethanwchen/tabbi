@@ -68,4 +68,16 @@ final class SharedTodayItemTests: XCTestCase {
         XCTAssertEqual(item.remaining, summary.dueTotal)
         XCTAssertEqual(item.unit, "cards")
     }
+
+    func testGoalActionReachesTodayAndTheTicker() {
+        let action = ProvidedAction(id: "anki.study", title: "Study Renal")
+        let goal = ProgressItem(id: "reviews", source: .anki, title: "Anki reviews", completed: 2, target: 10,
+                                unit: "cards", action: action)
+        let snapshot = ProviderSnapshot([(.anki, ModuleProvision(progress: [goal]))])
+        XCTAssertEqual(snapshot.sharedTodayItems(excluding: .planner).first?.action, action)
+        let ticker = TickerItem.progress(snapshot.progress[0])
+        XCTAssertEqual(ticker.action, action)
+        XCTAssertEqual(ticker.module, .anki)
+        XCTAssertNil(TickerItem.tasks(remaining: 3).action, "items without a goal have no action")
+    }
 }

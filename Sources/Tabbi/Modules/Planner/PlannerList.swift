@@ -209,15 +209,24 @@ private struct PlannerRow: View {
 /// "Anki reviews, 320 cards left". Its checkbox is a ring that fills in the
 /// source module's accent as the work gets done and checks itself at zero,
 /// since the work happens (and is counted) in that module, not here.
-/// Clicking opens that module's tab.
+/// Clicking opens that module's tab and runs the item's one-click action,
+/// if the module offered one (Anki opens the deck to study).
 private struct PlannerSharedRow: View {
     let item: SharedTodayItem
     @EnvironmentObject private var notch: NotchViewModel
     @Environment(\.moduleCatalog) private var catalog
+    @Environment(\.runModuleAction) private var runAction
     @State private var hovering = false
+
+    private var help: String {
+        let module = catalog.descriptor(for: item.source).title
+        if let action = item.action { return "\(action.title) in \(module)" }
+        return item.isDone ? "\(item.title) done for today. Open \(module)" : "Checks itself when done. Open \(module)"
+    }
 
     var body: some View {
         Button {
+            if let action = item.action { runAction(action, from: item.source) }
             notch.selected = item.source
         } label: {
             HStack(spacing: Theme.Spacing.s) {
@@ -251,8 +260,7 @@ private struct PlannerSharedRow: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .help(item.isDone ? "\(item.title) done for today. Open \(catalog.descriptor(for: item.source).title)"
-                          : "Checks itself when done. Open \(catalog.descriptor(for: item.source).title)")
+        .help(help)
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }

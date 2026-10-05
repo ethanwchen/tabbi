@@ -198,6 +198,13 @@ public enum TickerItem: Hashable, Sendable {
         }
     }
 
+    /// What a click runs besides opening `module`: the action the module
+    /// offered on its progress goal, if any.
+    public var action: ProvidedAction? {
+        if case .progress(let item) = self { return item.action }
+        return nil
+    }
+
     /// Whether this item should hold the notch instead of rotating away.
     ///
     /// A meeting that starts within `TickerSources.pinLeadTime` or is under

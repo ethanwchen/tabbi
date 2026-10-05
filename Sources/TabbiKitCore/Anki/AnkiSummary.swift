@@ -189,9 +189,32 @@ extension AnkiConnectClient {
 extension AnkiSummary {
     /// Today's reviews as a shared progress goal: cards reviewed so far out
     /// of those plus the cards still due. Today and the ticker show it
-    /// without knowing it came from Anki.
-    public func progressItem(source: ModuleID = .anki) -> ProgressItem {
+    /// without knowing it came from Anki. A click on it studies
+    /// `studyDeck(favorite:)` (`studyAction(favorite:)`).
+    public func progressItem(source: ModuleID = .anki, favorite: AnkiFavoriteDeck? = nil) -> ProgressItem {
         ProgressItem(id: "reviews", source: source, title: "Anki reviews",
-                     completed: reviewedToday, target: reviewedToday + dueTotal, unit: "cards")
+                     completed: reviewedToday, target: reviewedToday + dueTotal, unit: "cards",
+                     action: studyAction(favorite: favorite))
     }
+
+    /// The full name of the deck a one-click Study opens: the pinned
+    /// favorite (by id, so a rename is followed, else by its stored name,
+    /// so a deck this summary does not list still opens), otherwise the
+    /// deck with the most due. Nil when there is neither, and Anki opens on
+    /// its deck list.
+    public func studyDeck(favorite: AnkiFavoriteDeck?) -> String? {
+        if let favorite { return favorite.resolve(in: decks)?.name ?? favorite.name }
+        return topDecks.first?.name
+    }
+
+    /// The action Today's Anki row and the closed notch's Anki preview run
+    /// on click: open `studyDeck(favorite:)` for review, the same as the
+    /// panel's primary button.
+    public func studyAction(favorite: AnkiFavoriteDeck?) -> ProvidedAction {
+        let title = studyDeck(favorite: favorite).map { "Study \(AnkiDeckName.leaf($0))" } ?? "Open Anki"
+        return ProvidedAction(id: Self.studyActionID, title: title)
+    }
+
+    /// The `ProvidedAction.id` of `studyAction(favorite:)`.
+    public static let studyActionID = "anki.study"
 }

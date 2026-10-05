@@ -370,6 +370,13 @@ final class AnkiStore: ObservableObject {
         startReviews(deck: favoriteDeck?.name ?? favorite?.name)
     }
 
+    /// The one-click study from Today's Anki row or the closed notch's
+    /// Anki preview: the favorite deck, else the deck with the most due,
+    /// as `AnkiSummary.studyDeck(favorite:)` names it in the action title.
+    func studyFromShared() {
+        startReviews(deck: summary?.studyDeck(favorite: favorite) ?? favorite?.name)
+    }
+
     private func saveFavorite(_ value: AnkiFavoriteDeck?) {
         favorite = value
         guard !isStatic else { return }
@@ -425,13 +432,15 @@ final class AnkiStore: ObservableObject {
     // MARK: Sharing
 
     /// Today's reviews as a shared progress goal, while the summary is
-    /// current. Yesterday's numbers are never shared as today's.
+    /// current. Yesterday's numbers are never shared as today's. A click
+    /// on the goal in Today or the closed notch studies the same deck as
+    /// the panel's primary button (`studyFromShared`).
     func provision(source: ModuleID) -> AnyPublisher<ModuleProvision, Never> {
         $summary
-            .combineLatest($rolloverCount)
-            .map { summary, _ in
+            .combineLatest($rolloverCount, $favorite)
+            .map { summary, _, favorite in
                 guard let summary, summary.isCurrent(now: Date()) else { return ModuleProvision.empty }
-                return ModuleProvision(progress: [summary.progressItem(source: source)])
+                return ModuleProvision(progress: [summary.progressItem(source: source, favorite: favorite)])
             }
             .removeDuplicates()
             .eraseToAnyPublisher()

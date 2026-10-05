@@ -22,6 +22,24 @@ public struct ProvidedTask: Identifiable, Hashable, Sendable {
     }
 }
 
+/// A one-click action a module offers on something it shares, such as
+/// Anki's "Study Pharm Sketchy" on its reviews goal. Today's row and the
+/// closed notch's preview run it on click (and still open the module, which
+/// shows how it goes), so a module's most common action works from anywhere
+/// without the shared views knowing what it does. The app hands `id` back
+/// to the module that shared the item.
+public struct ProvidedAction: Hashable, Sendable {
+    /// Meaningful only to the module that offered it.
+    public var id: String
+    /// What a click does, e.g. "Study Pharm Sketchy", for tooltips.
+    public var title: String
+
+    public init(id: String, title: String) {
+        self.id = id
+        self.title = title
+    }
+}
+
 /// A countable goal for today, such as Anki cards due or practice questions
 /// answered. The `ProgressSource` role of a module: Today and the ticker can
 /// show it without knowing which module it came from.
@@ -36,14 +54,18 @@ public struct ProgressItem: Identifiable, Hashable, Sendable {
     public var target: Int
     /// Plural noun for the counts, e.g. "cards".
     public var unit: String
+    /// What a click on the goal does, beyond opening its module.
+    public var action: ProvidedAction?
 
-    public init(id: String, source: ModuleID, title: String, completed: Int, target: Int, unit: String) {
+    public init(id: String, source: ModuleID, title: String, completed: Int, target: Int, unit: String,
+                action: ProvidedAction? = nil) {
         self.id = id
         self.source = source
         self.title = title
         self.completed = completed
         self.target = target
         self.unit = unit
+        self.action = action
     }
 
     public var remaining: Int { max(target - completed, 0) }

@@ -34,7 +34,10 @@ enum ModuleViews {
             nowPlayingTrailing: { AnyView(compactTrailing(services: services)) },
             openSettings: { services.openSettings() },
             checkForUpdates: AppUpdater.shared.isAvailable ? { AppUpdater.shared.checkForUpdates() } : nil,
-            celebrations: services.celebrations
+            celebrations: services.celebrations,
+            runAction: ModuleActionRunner { [weak services] module, action in
+                services?.modules.perform(action, on: module)
+            }
         )
     }
 

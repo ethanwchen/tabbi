@@ -247,6 +247,32 @@ final class AnkiSummaryTests: XCTestCase {
 
     // MARK: Codable and demo
 
+    // MARK: One-click study
+
+    func testStudyDeckPrefersTheFavoriteByIDThenByNameThenTheMostDue() throws {
+        let result = summary(deckStats: [
+            stats(1, "Step1", review: 100),
+            stats(2, "Step1::Renal::Acid Base", review: 9),
+            stats(4, "Pharm", review: 30),
+        ])
+        XCTAssertEqual(result.studyDeck(favorite: nil), "Step1", "no favorite opens the deck with the most due")
+        let renamed = try XCTUnwrap(AnkiFavoriteDeck(deckID: 2, name: "Step1::Renal::Old Name"))
+        XCTAssertEqual(result.studyDeck(favorite: renamed), "Step1::Renal::Acid Base", "follows a rename by id")
+        let unlisted = try XCTUnwrap(AnkiFavoriteDeck(deckID: 99, name: "Micro::Bugs"))
+        XCTAssertEqual(result.studyDeck(favorite: unlisted), "Micro::Bugs", "an unlisted favorite opens by name")
+        XCTAssertNil(summary().studyDeck(favorite: nil), "nothing due and no favorite opens Anki itself")
+    }
+
+    func testProgressItemCarriesTheStudyAction() throws {
+        let result = summary(deckStats: [stats(1, "Step1", review: 100), stats(2, "Step1::Renal", review: 9)])
+        XCTAssertEqual(result.progressItem().action,
+                       ProvidedAction(id: AnkiSummary.studyActionID, title: "Study Step1"))
+        let favorite = try XCTUnwrap(AnkiFavoriteDeck(deckID: 2, name: "Step1::Renal"))
+        XCTAssertEqual(result.progressItem(favorite: favorite).action?.title, "Study Renal",
+                       "a subdeck's title uses its leaf name")
+        XCTAssertEqual(summary().studyAction(favorite: nil).title, "Open Anki")
+    }
+
     func testSummaryRoundTripsThroughCodable() throws {
         let original = summary(
             deckStats: [stats(1, "Step1", new: 3, review: 9)],
