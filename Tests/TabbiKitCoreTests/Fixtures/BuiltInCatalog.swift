@@ -79,12 +79,13 @@ extension AppSettings {
         hotkey: Hotkey = .default,
         claudePathOverride: String? = nil,
         preferredDisplay: DisplayPreference = .builtIn,
-        notchPreview: NotchPreviewSettings = .default
+        notchPreview: NotchPreviewSettings = .default,
+        themeID: ThemeID = ThemeCatalog.defaultID
     ) {
         self.init(kitID: kitID, hasChosenKit: hasChosenKit, kitAnswers: kitAnswers, modules: .default,
                   openOnHover: openOnHover, hapticsEnabled: hapticsEnabled, launchAtLogin: launchAtLogin,
                   hotkey: hotkey, claudePathOverride: claudePathOverride, preferredDisplay: preferredDisplay,
-                  notchPreview: notchPreview)
+                  notchPreview: notchPreview, themeID: themeID)
     }
 
     mutating func apply(_ kit: KitManifest, answers: KitAnswers = [:]) {

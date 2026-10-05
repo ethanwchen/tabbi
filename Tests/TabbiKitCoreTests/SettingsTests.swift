@@ -206,7 +206,8 @@ final class SettingsRepositoryTests: XCTestCase {
             hotkey: Hotkey(keyCode: 40, modifiers: [.command, .shift]),
             claudePathOverride: "/opt/claude",
             preferredDisplay: .specific(5),
-            notchPreview: NotchPreviewSettings(isEnabled: false, disabledKinds: [.tasks, .claudeUsage], interval: .long)
+            notchPreview: NotchPreviewSettings(isEnabled: false, disabledKinds: [.tasks, .claudeUsage], interval: .long),
+            themeID: .sakura
         )
         let repository = SettingsRepository(defaults: defaults)
         repository.save(settings)

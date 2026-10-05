@@ -48,6 +48,8 @@ public enum KitIssue: Equatable, Sendable, CustomStringConvertible {
     case unknownModule(ModuleID)
     case duplicateModule(ModuleID)
     case unknownTickerKind(String)
+    /// A `theme` this build doesn't have; the user's theme is kept.
+    case unknownTheme(String)
     case duplicateQuestion(String)
     case duplicateAnswer(question: String, answer: String)
     /// A field the kit format doesn't read, such as a typo; ignored.
@@ -67,6 +69,7 @@ public enum KitIssue: Equatable, Sendable, CustomStringConvertible {
         case .unknownModule(let id): "Unknown module \"\(id)\" will be skipped."
         case .duplicateModule(let id): "Module \"\(id)\" is listed more than once."
         case .unknownTickerKind(let kind): "Unknown preview \"\(kind)\" will be skipped."
+        case .unknownTheme(let id): "Unknown theme \"\(id)\" will be ignored."
         case .duplicateQuestion(let id): "Onboarding question \"\(id)\" is listed more than once."
         case .duplicateAnswer(let question, let answer):
             "Answer \"\(answer)\" is listed more than once in question \"\(question)\"."
@@ -140,6 +143,9 @@ public extension KitManifest {
         let previews = Set(TickerKind.all(in: catalog))
         issues += Self.unknown(defaults.ticker ?? []) { previews.contains(TickerKind(rawValue: $0)) ? $0 : nil }
             .map(KitIssue.unknownTickerKind)
+        if let theme = defaults.theme, ThemeCatalog.id(forKitValue: theme) == nil {
+            issues.append(.unknownTheme(theme))
+        }
         var questions = Set<String>()
         for question in onboarding {
             if !questions.insert(question.id).inserted { issues.append(.duplicateQuestion(question.id)) }

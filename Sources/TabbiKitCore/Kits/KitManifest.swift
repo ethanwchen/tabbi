@@ -179,7 +179,7 @@ public struct KitDefaults: Codable, Equatable, Sendable {
     /// Closed-notch previews to show: built-in `TickerKind` raw values and
     /// the ids of modules whose highlights should show.
     public var ticker: [String]?
-    /// Theme id; "notch" is the built-in hardware-black theme.
+    /// Theme id from `ThemeCatalog` ("notch", the old name, means Midnight).
     public var theme: String?
     /// Per-module settings, keyed by module id. Each module reads its own
     /// section and declares its keys as `ModuleDescriptor.kitSettings`, so
