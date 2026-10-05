@@ -104,7 +104,7 @@ Celebrations confirm a real event; they are brief, optional and never block inpu
 - Wired today, each only while a panel is open:
   a focus session of the shared Pomodoro that finishes plays a confetti burst in the Focus accent,
   a Study block that finishes plays a paw print burst in the Study accent (beside the corner pet's hop),
-  buying a Closet item with points plays a sparkle milestone in the Closet accent (beside the pet's celebration),
+  buying a Closet item with points, or study points making a new one affordable (a level up), plays a sparkle milestone in the Closet accent (beside the pet's celebration; a level up that a finished session earned stays silent, since that session already chimes),
   and an Anki review streak that reaches a milestone length plays a confetti milestone in the Anki accent.
 - Streak milestones are round lengths only (`StreakMilestone` in `Sources/TabbiKitCore/Motion/`): 7, 14, 30, 50, 100, 200 and 365 days, then every 100 days and every whole year.
   The first look after launch only sets the baseline, a jump past several milestones counts the largest once, and a milestone reached while the notch was closed plays on the next open panel unless the streak broke meanwhile.
