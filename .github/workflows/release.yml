@@ -71,8 +71,9 @@ jobs:
           NOTARY_APPLE_ID: ${{ secrets.NOTARY_APPLE_ID }}
           NOTARY_TEAM_ID: ${{ secrets.NOTARY_TEAM_ID }}
           NOTARY_PASSWORD: ${{ secrets.NOTARY_PASSWORD }}
+          SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
         run: |
-          for secret in DEVELOPER_ID_P12 DEVELOPER_ID_P12_PASSWORD NOTARY_APPLE_ID NOTARY_TEAM_ID NOTARY_PASSWORD; do
+          for secret in DEVELOPER_ID_P12 DEVELOPER_ID_P12_PASSWORD NOTARY_APPLE_ID NOTARY_TEAM_ID NOTARY_PASSWORD SPARKLE_PRIVATE_KEY; do
             [[ -n "${!secret}" ]] || { echo "::error::The $secret secret is not set. The top of .github/workflows/release.yml lists the release secrets."; exit 1; }
           done
           keychain_password=$(openssl rand -base64 24)
