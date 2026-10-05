@@ -74,6 +74,24 @@ public struct AnkiConnectClient: Sendable {
         return permission
     }
 
+    /// Whether Tabbi can really read the cards, as the Connections row asks:
+    /// the handshake, then one call that needs the collection. The handshake
+    /// alone is not enough. It is the one action AnkiConnect answers without
+    /// the API key, and an older add-on doesn't say a key is required, so
+    /// only a real call shows that a key blocks access. Nil when it works.
+    public func checkAccess() async -> AnkiConnectError? {
+        do {
+            let permission = try await connect()
+            if permission.requireAPIKey, apiKey?.isEmpty ?? true { return .apiKeyRequired }
+            _ = try await decks()
+            return nil
+        } catch let error as AnkiConnectError {
+            return error
+        } catch {
+            return .transport(error.localizedDescription)
+        }
+    }
+
     /// All decks, sorted by name so parents precede their children.
     public func decks() async throws -> [AnkiDeck] {
         let map = try await invoke("deckNamesAndIds", as: [String: Int64].self)

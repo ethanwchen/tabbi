@@ -194,6 +194,44 @@ final class ConnectionsStore: ObservableObject {
         checkedAt[.party] = Date()
     }
 
+    // MARK: Do Not Disturb switch
+
+    /// Turns on focus mode's Do Not Disturb switch; nil until focus mode
+    /// reports in (see `follow(doNotDisturb:turnOn:)`).
+    private var doNotDisturbSwitch: (@MainActor () -> Void)?
+    private var doNotDisturbCancellable: AnyCancellable?
+
+    /// Lets focus mode report its Do Not Disturb switch, so the row changes
+    /// the moment the switch is flipped in Settings and its Turn on button
+    /// can flip it. Focus mode calls this once.
+    func follow(doNotDisturb isOn: AnyPublisher<Bool, Never>, turnOn: @escaping @MainActor () -> Void) {
+        doNotDisturbSwitch = turnOn
+        doNotDisturbCancellable = isOn.removeDuplicates().dropFirst()
+            // `@Published` emits before the new value is saved, which the
+            // probe reads, so check once this turn of the main loop is over.
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                MainActor.assumeIsolated {
+                    guard let self, self.watchers[.doNotDisturb] != nil else { return }
+                    self.refresh([.doNotDisturb])
+                }
+            }
+    }
+
+    /// The row's Turn on button. Without focus mode running (no tab uses
+    /// it), the saved setting is switched directly.
+    private func turnOnDoNotDisturb() {
+        if let doNotDisturbSwitch {
+            doNotDisturbSwitch()
+            return
+        }
+        let repository = FocusSettingsRepository()
+        var settings = repository.load()
+        settings.doNotDisturb = true
+        repository.save(settings)
+        refresh([.doNotDisturb])
+    }
+
     // MARK: Waiting for a walkthrough
 
     /// While a walkthrough is open, checks its row every few seconds, so
@@ -253,6 +291,8 @@ final class ConnectionsStore: ObservableObject {
             copy(code)
         case .testDoNotDisturb:
             testDoNotDisturb()
+        case .turnOnDoNotDisturb:
+            turnOnDoNotDisturb()
         }
     }
 

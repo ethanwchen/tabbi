@@ -22,10 +22,15 @@ public struct CalendarConnectionState: Hashable, Sendable {
     /// The titles of the accounts (EventKit sources) that hold at least one
     /// event calendar, such as "iCloud", "Google" or "you@gmail.com".
     public var accounts: [String]
+    /// Whether this copy of Tabbi may show the macOS calendar prompt. A
+    /// build without a calendar usage description (a bare `swift run`) is
+    /// terminated by macOS when it asks, so it must never offer Connect.
+    public var canAsk: Bool
 
-    public init(access: CalendarAccess, accounts: [String] = []) {
+    public init(access: CalendarAccess, accounts: [String] = [], canAsk: Bool = true) {
         self.access = access
         self.accounts = accounts
+        self.canAsk = canAsk
     }
 
     /// Whether any visible account looks like Google. macOS names an
@@ -40,6 +45,11 @@ public struct CalendarConnectionState: Hashable, Sendable {
 
     public var connectionStatus: ConnectionStatus {
         switch access {
+        // Only a development build gets here (the app bundle always has the
+        // usage description), so it has no button and no gallery entry.
+        case .notDetermined where !canAsk:
+            return ConnectionStatus(light: .needsStep, headline: "This copy can't use the calendar",
+                                    detail: "Open Tabbi from your Applications folder to connect your calendar.")
         case .notDetermined:
             return ConnectionStatus(light: .notSetUp, headline: "Calendar isn't connected",
                                     detail: "Click Connect, then Allow when your Mac asks. It only asks once.",

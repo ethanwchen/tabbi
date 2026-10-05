@@ -14,12 +14,18 @@ public struct FocusShortcutsState: Hashable, Sendable {
     /// a slow Mac would read as "not set up" and send the user into the
     /// walkthrough for shortcuts they already made.
     public var couldNotList: Bool
+    /// Whether the user turned on Do Not Disturb during focus. With it off
+    /// Tabbi never runs the shortcuts, so the row must not read as working
+    /// even when both shortcuts exist.
+    public var isTurnedOn: Bool
 
-    public init(onName: String, offName: String, installed: Set<String>?, couldNotList: Bool = false) {
+    public init(onName: String, offName: String, installed: Set<String>?, couldNotList: Bool = false,
+                isTurnedOn: Bool = true) {
         self.onName = onName
         self.offName = offName
         self.installed = installed
         self.couldNotList = couldNotList
+        self.isTurnedOn = isTurnedOn
     }
 
     /// Reads `shortcuts list` output: one shortcut name per line.
@@ -36,6 +42,11 @@ public struct FocusShortcutsState: Hashable, Sendable {
     }
 
     public var connectionStatus: ConnectionStatus {
+        guard isTurnedOn else {
+            return ConnectionStatus(light: .notSetUp, headline: "Do Not Disturb is off",
+                                    detail: "Tabbi leaves your alerts alone until you turn it on.",
+                                    action: .turnOnDoNotDisturb)
+        }
         if couldNotList {
             return ConnectionStatus(light: .needsStep, headline: "Couldn't check your shortcuts",
                                     detail: "The Shortcuts app didn't answer in time. Try again in a moment.",

@@ -273,6 +273,7 @@ extension ConnectionAction {
         case .setUp: "Set up \(kind.title)"
         case .copyFriendCode: "Copy your friend code to send to a friend"
         case .testDoNotDisturb: "Turn Do Not Disturb on for a moment, then off again"
+        case .turnOnDoNotDisturb: "Turn on Do Not Disturb whenever the focus timer runs"
         }
     }
 }

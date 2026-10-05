@@ -74,6 +74,9 @@ final class FocusController: ObservableObject {
             else { return }
             MainActor.assumeIsolated { self?.playerChanged(source, state: .stopped) }
         })
+        // The Do Not Disturb row in Connections follows the switch and can flip it on.
+        ConnectionsStore.shared.follow(doNotDisturb: $settings.map(\.doNotDisturb).eraseToAnyPublisher(),
+                                       turnOn: { [weak self] in self?.settings.doNotDisturb = true })
     }
 
     // MARK: - Timer

@@ -121,6 +121,8 @@ public enum ConnectionAction: Hashable, Sendable {
     case copyFriendCode(String)
     /// Run the Do Not Disturb shortcuts once, on then off, to prove they work.
     case testDoNotDisturb
+    /// Switch on Do Not Disturb during focus, which the user had turned off.
+    case turnOnDoNotDisturb
 
     /// The button's label.
     public var title: String {
@@ -135,6 +137,7 @@ public enum ConnectionAction: Hashable, Sendable {
         case .setUp: "Set up"
         case .copyFriendCode: "Copy friend code"
         case .testDoNotDisturb: "Test it"
+        case .turnOnDoNotDisturb: "Turn on"
         }
     }
 }

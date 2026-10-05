@@ -114,6 +114,55 @@ final class AnkiConnectClientTests: XCTestCase {
         XCTAssertTrue(permission.requireAPIKey)
     }
 
+    // MARK: Access check
+
+    private static let granted = #"{"result":{"permission":"granted","version":6},"error":null}"#
+    private static let keyed = #"{"result":{"permission":"granted","requireApikey":true,"version":6},"error":null}"#
+    private static let decks = #"{"result":{"Default":1},"error":null}"#
+
+    func testAccessCheckPassesWhenCardsCanBeRead() async {
+        let (client, transport) = client(["requestPermission": .json(Self.granted), "deckNamesAndIds": .json(Self.decks)])
+        let error = await client.checkAccess()
+        XCTAssertNil(error)
+        XCTAssertEqual(transport.requests.compactMap { $0["action"] as? String }, ["requestPermission", "deckNamesAndIds"])
+    }
+
+    func testAccessCheckFailsWhenTheHandshakeSaysAKeyIsNeeded() async {
+        let (client, _) = client(["requestPermission": .json(Self.keyed), "deckNamesAndIds": .json(Self.decks)])
+        let error = await client.checkAccess()
+        XCTAssertEqual(error, .apiKeyRequired)
+    }
+
+    func testAccessCheckCatchesAKeyTheHandshakeDoesNotMention() async {
+        // An older add-on grants the handshake without saying a key is set,
+        // then refuses every real call.
+        let (client, _) = client(["requestPermission": .json(Self.granted),
+                                  "deckNamesAndIds": .json(#"{"result":null,"error":"valid api key must be provided"}"#)])
+        let error = await client.checkAccess()
+        XCTAssertEqual(error, .apiKeyRequired)
+    }
+
+    func testAccessCheckPassesWithTheConfiguredKey() async {
+        let (client, transport) = client(["requestPermission": .json(Self.keyed), "deckNamesAndIds": .json(Self.decks)],
+                                         apiKey: "s3cret")
+        let error = await client.checkAccess()
+        XCTAssertNil(error)
+        XCTAssertEqual(transport.requests.last?["key"] as? String, "s3cret")
+    }
+
+    func testAccessCheckReportsAClosedProfile() async {
+        let (client, _) = client(["requestPermission": .json(Self.granted),
+                                  "deckNamesAndIds": .json(#"{"result":null,"error":"collection is not available"}"#)])
+        let error = await client.checkAccess()
+        XCTAssertEqual(error, .collectionUnavailable)
+    }
+
+    func testAccessCheckReportsADeniedHandshake() async {
+        let (client, _) = client(["requestPermission": .json(#"{"result":{"permission":"denied"},"error":null}"#)])
+        let error = await client.checkAccess()
+        XCTAssertEqual(error, .permissionDenied)
+    }
+
     func testDeniedPermissionThrowsFromConnect() async {
         let (client, _) = client(["requestPermission": .json(#"{"result":{"permission":"denied"},"error":null}"#)])
         await assertThrows(.permissionDenied) { try await client.connect() }
