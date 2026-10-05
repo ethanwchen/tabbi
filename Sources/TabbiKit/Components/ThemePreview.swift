@@ -6,7 +6,7 @@ import TabbiKitCore
 /// with a few module accents, and a card with a timer.
 ///
 /// It reads the theme it is given, never `Theme.current`, so a picker can
-/// show every theme side by side (Settings' Appearance pane, onboarding).
+/// show every theme side by side (Settings' Look pane, onboarding).
 public struct ThemePreview: View {
     let theme: AppTheme
     let accents: [ModuleAccent]

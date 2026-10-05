@@ -558,7 +558,7 @@ private struct KitSheet: Identifiable {
     }
 }
 
-/// A module's icon tile in the Modules pane, in its accent color.
+/// A module's icon tile in the Tabs pane, in its accent color.
 private struct ModuleIcon: View {
     let module: ModuleDescriptor
 
