@@ -202,4 +202,6 @@ Every other image that shows the icon is made from the assets above, so after a 
 | `docs/images/install/dmg-window.png` | A screenshot of the real installer: `scripts/make-dmg.sh`, mount the DMG, then `screencapture -l <window id>` of its Finder window |
 | `docs/images/install/move-prompt.png`, `settings-about.png` | Screenshots of the running app. For an icon-only change the icon can be repainted in place: both show it on a flat surface, at 128 and 200 px with its 824/1024 body at the same spot, so the new 1024 px asset drawn into that rect matches a fresh capture |
 
-The pixel pet in the notch screenshots and the hero GIF is the pet sprite, not the icon, and is regenerated with the pets.
+The pixel pet in the notch screenshots, the hero GIF and the social preview's Study panel is the pet sprite, not the icon.
+It is the Med School kit's starter pet (`moduleSettings.closet.pet.breed` in `medicine.json`, still `orangeTabby`), so it changes with the pets, not with the icon.
+Once the British Shorthair sprite and starter pet land, run `swift docs/make-screenshots.swift` again so the social preview and README shots show it, and check the hex values quoted above against `PetBreed.britishShorthair`.
