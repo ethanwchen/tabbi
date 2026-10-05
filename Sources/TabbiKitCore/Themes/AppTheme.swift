@@ -128,6 +128,9 @@ public enum AccentTreatment: String, Hashable, Sendable {
     /// Mixed toward a warm cream, for the cozy themes' pastel look.
     case pastel
 
+    /// The contrast against black a vivid accent keeps, so it still reads as text.
+    public static let minimumContrast = 4.5
+
     /// The accent `base` becomes under this treatment.
     public func apply(to base: ModuleAccent) -> ThemeColor {
         let color = ThemeColor(base)
@@ -145,7 +148,16 @@ public enum AccentTreatment: String, Hashable, Sendable {
             // Stretch the channels to the full 0...1 range: same hue, full
             // saturation and brightness.
             func stretch(_ c: Double) -> Double { (c - low) / (high - low) }
-            return ThemeColor(red: stretch(color.red), green: stretch(color.green), blue: stretch(color.blue))
+            let saturated = ThemeColor(red: stretch(color.red), green: stretch(color.green), blue: stretch(color.blue))
+            // Pure blues and violets are too dark to read as text on black,
+            // so lift them toward white just enough to reach 4.5:1.
+            let black = ThemeColor(white: 0)
+            var lift = 0.0
+            while saturated.mixed(with: ThemeColor(white: 1), by: lift).contrast(with: black) < Self.minimumContrast,
+                  lift < 1 {
+                lift += 0.05
+            }
+            return saturated.mixed(with: ThemeColor(white: 1), by: lift)
         case .pastel:
             return color.mixed(with: ThemeColor(red: 1.0, green: 0.94, blue: 0.86), by: 0.35)
         }

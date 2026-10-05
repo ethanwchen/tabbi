@@ -105,6 +105,15 @@ final class AccentTreatmentTests: XCTestCase {
                        ThemeColor(white: 1))
     }
 
+    func testVividLiftsDarkHuesUntilTheyReadOnBlack() {
+        let violet = ModuleAccent(red: 0.45, green: 0.35, blue: 0.95)
+        let vivid = AccentTreatment.vivid.apply(to: violet)
+        XCTAssertGreaterThanOrEqual(vivid.contrast(with: ThemeColor(white: 0)), AccentTreatment.minimumContrast)
+        // Still violet: blue leads, then red, then green.
+        XCTAssertGreaterThan(vivid.blue, vivid.red)
+        XCTAssertGreaterThan(vivid.red, vivid.green)
+    }
+
     func testPastelIsLighterAndWarmer() {
         let pastel = AccentTreatment.pastel.apply(to: teal)
         XCTAssertGreaterThan(pastel.luminance, ThemeColor(teal).luminance)
