@@ -5,7 +5,7 @@
   "name": "Med School",
   "summary": "Essentials plus Anki reviews, with study methods and a study pet tuned for med school.",
   "symbol": "cross.case.fill",
-  "modules": ["study", "planner", "anki", "spotify", "claudeAsk"],
+  "modules": ["study", "planner", "anki", "spotify", "claudeAsk", "closet"],
   "defaults": {
     "ticker": ["focus", "tasks", "progress", "party", "meeting", "nowPlaying", "pet"],
     "theme": "cozy",

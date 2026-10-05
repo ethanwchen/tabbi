@@ -107,12 +107,13 @@ enum SnapshotRenderer {
             let model = NotchViewModel(geometry: geometry, layout: withCloset)
             model.open(.closet)
             shots.append(Shot("open-closet-look", model))
-            // The pet's paw at the far right of the header while another tab
-            // is open, which no bundled kit shows since none has the Closet on.
+            // The pet's paw at the far right of the header while another tab is open.
             let withPaw = NotchViewModel(geometry: geometry, layout: withCloset)
             withPaw.open(withCloset.tabs.first)
             shots.append(Shot("open-pet-shortcut", withPaw))
         }
+
+        shots += headerShots(geometry: geometry, catalog: services.settings.catalog)
 
         // First-run setup in the notch, one shot per step of the active kit.
         shots += onboardingShots(services: services, geometry: geometry, layout: layout)
@@ -284,6 +285,29 @@ enum SnapshotRenderer {
     }
 
     /// A module's highlights are named after the module.
+    /// The open header at growing tab counts, with the pet's paw, to check
+    /// that no tab reaches under the camera; past what fits, the last tabs
+    /// move behind "more", shown once more with its list open at every tab
+    /// the catalog has (nine today; `NotchHeaderLayoutTests` covers up to twelve).
+    private static func headerShots(geometry: NotchGeometry, catalog: ModuleCatalog) -> [Shot] {
+        let tabModules = catalog.ids.filter { catalog.descriptor(for: $0).headerShortcut == nil }
+        var shots: [Shot] = []
+        for count in Set([4, 5, 7, tabModules.count]).sorted() where count <= tabModules.count {
+            let on = Set(tabModules.prefix(count)).union([.closet])
+            let layout = ModuleLayout(order: catalog.ids, disabled: Set(catalog.ids).subtracting(on), catalog: catalog)
+            let model = NotchViewModel(geometry: geometry, layout: layout)
+            model.open(layout.tabs.first)
+            shots.append(Shot("open-header-\(count)-tabs", model))
+            if count == tabModules.count {
+                let menu = NotchViewModel(geometry: geometry, layout: layout)
+                menu.open(layout.tabs.last)
+                menu.showsMoreTabs = true
+                shots.append(Shot("open-header-\(count)-tabs-more", menu))
+            }
+        }
+        return shots
+    }
+
     private static func snapshotName(_ kind: TickerKind) -> String {
         switch kind {
         case .nowPlaying: "music"

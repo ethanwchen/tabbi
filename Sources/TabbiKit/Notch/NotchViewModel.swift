@@ -16,6 +16,7 @@ public final class NotchViewModel: ObservableObject {
     @Published public var selected: ModuleID {
         didSet {
             UserDefaults.standard.set(selected.rawValue, forKey: Self.selectedKey)
+            showsMoreTabs = false
             // Direction drives the slide transition between modules, in the
             // header's visual order: the tabs, then the shortcuts at the far right.
             let order = layout.tabs + layout.headerShortcuts
@@ -28,9 +29,13 @@ public final class NotchViewModel: ObservableObject {
         didSet {
             let resolved = layout.resolvedSelection(selected)
             if resolved != selected { selected = resolved }
+            showsMoreTabs = false
         }
     }
     @Published public private(set) var movingForward = true
+    /// Whether the list of tabs that didn't fit in the header is showing.
+    /// Picking a tab, changing the tabs or closing the notch hides it.
+    @Published public var showsMoreTabs = false
     @Published public var geometry: NotchGeometry
     /// The live preview beside the closed notch, nil for a plain black notch
     /// (fed from `TickerStore`).
@@ -103,6 +108,7 @@ public final class NotchViewModel: ObservableObject {
 
     public func close() {
         isPinned = false
+        showsMoreTabs = false
         phase = .closed
     }
 

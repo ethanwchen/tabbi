@@ -6,7 +6,7 @@
   "summary": "A focus timer, your to-do list, music, and Claude. Add more tabs any time.",
   "symbol": "square.grid.2x2.fill",
   "accent": "planner",
-  "modules": ["study", "planner", "spotify", "claudeAsk"],
+  "modules": ["study", "planner", "spotify", "claudeAsk", "closet"],
   "defaults": {
     "theme": "midnight",
     "moduleSettings": {

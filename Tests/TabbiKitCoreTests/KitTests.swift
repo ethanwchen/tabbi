@@ -254,8 +254,8 @@ final class KitLibraryTests: XCTestCase {
         let kit = try XCTUnwrap(KitLibrary.bundled[KitLibrary.defaultKitID])
         XCTAssertEqual(kit.id, "essentials")
         XCTAssertEqual(kit.name, "Essentials")
-        XCTAssertEqual(kit.layout().enabled, [.study, .planner, .spotify, .claudeAsk],
-                       "timer, to-do, music and Claude, in that order")
+        XCTAssertEqual(kit.layout().enabled, [.study, .planner, .spotify, .claudeAsk, .closet],
+                       "timer, to-do, music and Claude, in that order, plus the pet's paw beside the tabs")
         XCTAssertEqual(kit.issues(), [])
         XCTAssertNil(kit.defaults.resolvedTicker, "every preview stays on, so a module added later shows its own")
         XCTAssertNil(FocusSettings.kitMix(of: kit.defaults), "Essentials keeps the user's focus sound (Off by default)")
@@ -273,7 +273,7 @@ final class KitLibraryTests: XCTestCase {
         let kit = try XCTUnwrap(KitLibrary.bundled["essentials"])
         let layout = kit.layout()
         XCTAssertEqual(Set(layout.order), Set(ModuleCatalog.builtIn.ids), "every module is listed, so Settings can add it")
-        XCTAssertEqual(Array(layout.order.suffix(from: 4)).filter(layout.isEnabled), [],
+        XCTAssertEqual(Array(layout.order.suffix(from: 5)).filter(layout.isEnabled), [],
                        "Party, System, Claude Usage and the rest start switched off after the kit's tabs")
     }
 
@@ -286,7 +286,7 @@ final class KitLibraryTests: XCTestCase {
     func testMedicineKitStartsOnTheStudyTimerWithAnkiFirstClassMethods() throws {
         let kit = try XCTUnwrap(KitLibrary.bundled["medicine"])
         XCTAssertEqual(kit.name, "Med School", "the kit keeps its saved id but shows its new name")
-        XCTAssertEqual(kit.moduleIDs, ["study", .planner, "anki", .spotify, .claudeAsk])
+        XCTAssertEqual(kit.moduleIDs, ["study", .planner, "anki", .spotify, .claudeAsk, .closet])
         let menu = StudyMethodMenu(kit: kit.defaults)
         XCTAssertEqual(menu.startingKind, .pomodoro)
         XCTAssertTrue(menu.offers(.ankiSprint))
@@ -297,7 +297,7 @@ final class KitLibraryTests: XCTestCase {
     func testMedSchoolIsEssentialsPlusAnki() throws {
         let medicine = try XCTUnwrap(KitLibrary.bundled["medicine"])
         let essentials = try XCTUnwrap(KitLibrary.bundled["essentials"])
-        XCTAssertEqual(medicine.layout().enabled, [.study, .planner, .anki, .spotify, .claudeAsk])
+        XCTAssertEqual(medicine.layout().enabled, [.study, .planner, .anki, .spotify, .claudeAsk, .closet])
         XCTAssertEqual(medicine.layout().enabled.filter { $0 != .anki }, essentials.layout().enabled)
         XCTAssertEqual(medicine.layout(answers: ["anki": ["no"]]).enabled, essentials.layout().enabled,
                        "without Anki, Med School shows the Essentials tabs")

@@ -24,7 +24,7 @@ final class OnboardingFlowTests: XCTestCase {
         flow.choose(medicine)
         XCTAssertEqual(flow.stages, [
             .kit, .question("stage"), .question("anki"), .modules,
-            .setup("anki"), .setup("calendar"), .setup("studyMethod"),
+            .setup("pet"), .setup("anki"), .setup("calendar"), .setup("studyMethod"),
         ])
         XCTAssertEqual(flow.stage, .question("stage"))
         XCTAssertEqual(flow.layout, medicine.layout(catalog: catalog))
@@ -36,7 +36,9 @@ final class OnboardingFlowTests: XCTestCase {
         XCTAssertEqual(flow.stage, .question("day"))
         flow.next()
         XCTAssertEqual(flow.stage, .modules)
-        XCTAssertEqual(flow.setupSteps, [.calendar, .studyMethod])
+        XCTAssertEqual(flow.setupSteps, [.pet, .calendar, .studyMethod])
+        flow.next()
+        XCTAssertEqual(flow.currentSetupStep, .pet)
         flow.next()
         XCTAssertEqual(flow.currentSetupStep, .calendar)
         flow.next()
@@ -61,11 +63,11 @@ final class OnboardingFlowTests: XCTestCase {
     func testTurningATabOnAddsItsSetupStepJustInTime() {
         var flow = flow()
         flow.choose(essentials)
-        XCTAssertFalse(flow.stages.contains(.setup("pet")))
-        flow.setEnabled(.closet, true)
-        XCTAssertEqual(flow.setupSteps, [.pet, .calendar, .studyMethod], "ranked, not in tab order")
+        XCTAssertFalse(flow.stages.contains(.setup("anki")))
+        flow.setEnabled(.anki, true)
+        XCTAssertEqual(flow.setupSteps, [.pet, .anki, .calendar, .studyMethod], "ranked, not in tab order")
         flow.setEnabled(.planner, false)
-        XCTAssertEqual(flow.setupSteps, [.pet, .studyMethod])
+        XCTAssertEqual(flow.setupSteps, [.pet, .anki, .studyMethod])
     }
 
     func testTwoModulesNeedingTheSameStepAskItOnce() {

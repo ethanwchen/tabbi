@@ -73,6 +73,17 @@ final class ModuleListTests: XCTestCase {
         }
     }
 
+    /// Both bundled kits show the pet's paw at the far right of the header,
+    /// and the Closet takes no tab: Essentials keeps four tabs, Med School five.
+    func testBundledKitsShowThePawBesideTheirTabs() throws {
+        let essentials = try XCTUnwrap(KitLibrary.bundled.kit("essentials")).layout(catalog: ModuleList.catalog)
+        XCTAssertEqual(essentials.tabs, [.study, .planner, .spotify, .claudeAsk])
+        XCTAssertEqual(essentials.headerShortcuts, [.closet])
+        let medicine = try XCTUnwrap(KitLibrary.bundled.kit("medicine")).layout(catalog: ModuleList.catalog)
+        XCTAssertEqual(medicine.tabs, [.study, .planner, .anki, .spotify, .claudeAsk])
+        XCTAssertEqual(medicine.headerShortcuts, [.closet])
+    }
+
     func testSettingsStoreResolvesLayoutsAgainstTheCatalogItIsGiven() {
         let store = SettingsStore.ephemeral(catalog: ModuleList.catalog, kitID: "medicine")
         XCTAssertEqual(Set(store.settings.modules.order), Set(ModuleList.catalog.ids))
