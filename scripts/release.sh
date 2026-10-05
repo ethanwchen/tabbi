@@ -300,6 +300,11 @@ fi
 
 (cd "$out" && shasum -a 256 "$(basename "$dmg")" "$(basename "$zip")" > SHA256SUMS)
 
+# The Homebrew cask for this DMG. Only a notarized release belongs in a cask:
+# Homebrew turns away apps that fail Gatekeeper.
+cask=
+$adhoc || cask=$(scripts/make-cask.sh "$dmg")
+
 size() { du -sh "$1" | cut -f1 | tr -d ' '; }
 cat <<EOF
 
@@ -308,6 +313,7 @@ Built $name $version, build $build_number ($($adhoc && echo "ad-hoc signed, not 
   $zip  ($(size "$zip"))
   $out/SHA256SUMS
   $notes${appcast:+
-  $appcast}
+  $appcast}${cask:+
+  $cask}
   app: $(size "$app"), executable: $(size "$executable")
 EOF
