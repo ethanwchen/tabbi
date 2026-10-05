@@ -141,14 +141,20 @@ final class AnkiConnectClientTests: XCTestCase {
         XCTAssertEqual(decks[0].depth, 0)
     }
 
-    func testDeckStatsDecodeReadmeFixtureInRequestedOrder() async throws {
+    func testDeckStatsMatchByIDAndKeepFullNamesInRequestedOrder() async throws {
+        // Real AnkiConnect names each deck by its leaf only ("JLPT N5").
         let fixture = #"""
-        {"result":{"1651445861967":{"deck_id":1651445861967,"name":"Japanese::JLPT N5","new_count":20,"learn_count":0,"review_count":0,"total_in_deck":1506},
+        {"result":{"1651445861967":{"deck_id":1651445861967,"name":"JLPT N5","new_count":20,"learn_count":0,"review_count":0,"total_in_deck":1506},
                    "1651445861960":{"deck_id":1651445861960,"name":"Easy Spanish","new_count":26,"learn_count":10,"review_count":5,"total_in_deck":852}},"error":null}
         """#
         let (client, transport) = client(["getDeckStats": .json(fixture)])
-        let stats = try await client.deckStats(for: ["Easy Spanish", "Japanese::JLPT N5", "Missing"])
+        let stats = try await client.deckStats(for: [
+            AnkiDeck(id: 1651445861960, name: "Easy Spanish"),
+            AnkiDeck(id: 1651445861967, name: "Japanese::JLPT N5"),
+            AnkiDeck(id: 7, name: "Missing"),
+        ])
         XCTAssertEqual(stats.map(\.name), ["Easy Spanish", "Japanese::JLPT N5"])
+        XCTAssertEqual(stats.map(\.deckID), [1651445861960, 1651445861967])
         XCTAssertEqual(stats[0], AnkiDeckStats(deckID: 1651445861960, name: "Easy Spanish", newCount: 26, learnCount: 10, reviewCount: 5, totalInDeck: 852))
         XCTAssertEqual(stats[0].dueTotal, 41)
         let params = transport.requests.first?["params"] as? [String: Any]

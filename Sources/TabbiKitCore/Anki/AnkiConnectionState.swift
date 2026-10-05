@@ -123,6 +123,37 @@ extension AnkiSummary {
             .sorted { $0.dueTotal != $1.dueTotal ? $0.dueTotal > $1.dueTotal : $0.name < $1.name }
     }
 
+    /// Every deck with cards due, as an outline: each of `topDecks`
+    /// followed by its subdecks with cards due, most due first at every
+    /// level. A subdeck hangs under its nearest listed ancestor, so a
+    /// missing middle deck never hides its children. This is the list a
+    /// user picks an exact subdeck from.
+    public var deckOutline: [AnkiDeckOutlineRow] {
+        var seenIDs = Set<Int64>()
+        let due = decks.filter { $0.dueTotal > 0 && seenIDs.insert($0.deckID).inserted }
+        let byName = Dictionary(due.map { (AnkiDeckName.components($0.name), $0) }, uniquingKeysWith: { first, _ in first })
+        var children: [[String]: [AnkiDeckStats]] = [:]
+        for deck in due {
+            let parts = AnkiDeckName.components(deck.name)
+            guard let parent = (1..<max(parts.count, 1)).reversed().map({ Array(parts.prefix($0)) }).first(where: { byName[$0] != nil }) else { continue }
+            children[parent, default: []].append(deck)
+        }
+        let order: (AnkiDeckStats, AnkiDeckStats) -> Bool = {
+            $0.dueTotal != $1.dueTotal ? $0.dueTotal > $1.dueTotal : $0.name < $1.name
+        }
+        var rows: [AnkiDeckOutlineRow] = []
+        func visit(_ deck: AnkiDeckStats, parent: [String], depth: Int) {
+            let parts = AnkiDeckName.components(deck.name)
+            let title = parts.dropFirst(parent.count).joined(separator: AnkiDeckName.separator)
+            rows.append(AnkiDeckOutlineRow(deck: deck, depth: depth, title: title.isEmpty ? deck.name : title))
+            for child in (children[parts] ?? []).sorted(by: order) {
+                visit(child, parent: parts, depth: depth + 1)
+            }
+        }
+        for root in topDecks { visit(root, parent: [], depth: 0) }
+        return rows
+    }
+
     /// Share of today's work done: reviewed out of reviewed plus still due.
     /// 1 when nothing was due at all.
     public var completionFraction: Double {
@@ -150,4 +181,23 @@ extension AnkiConnectionState {
         default: return nil
         }
     }
+}
+
+/// One line of `AnkiSummary.deckOutline`: a deck, how deep it sits under
+/// the listed decks, and its name relative to the row above it in the tree
+/// ("Cardio" under "AnKing Step 1"). Opening it still uses `deck.name`,
+/// the full path AnkiConnect needs.
+public struct AnkiDeckOutlineRow: Hashable, Sendable, Identifiable {
+    public let deck: AnkiDeckStats
+    /// 0 for a top-level deck, 1 for its child, and so on.
+    public let depth: Int
+    public let title: String
+
+    public init(deck: AnkiDeckStats, depth: Int, title: String) {
+        self.deck = deck
+        self.depth = depth
+        self.title = title
+    }
+
+    public var id: Int64 { deck.deckID }
 }

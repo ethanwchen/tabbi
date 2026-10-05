@@ -80,13 +80,22 @@ public struct AnkiConnectClient: Sendable {
         return map.map { AnkiDeck(id: $0.value, name: $0.key) }.sorted { $0.name < $1.name }
     }
 
-    /// Due counts for the named decks, in the order asked for. Decks Anki
-    /// doesn't return are left out.
-    public func deckStats(for deckNames: [String]) async throws -> [AnkiDeckStats] {
-        guard !deckNames.isEmpty else { return [] }
-        let byID = try await invoke("getDeckStats", params: ["decks": deckNames], as: [String: AnkiDeckStats].self)
-        let byName = Dictionary(byID.values.map { ($0.name, $0) }, uniquingKeysWith: { first, _ in first })
-        return deckNames.compactMap { byName[$0] }
+    /// Due counts for the decks, in the order asked for. Decks Anki doesn't
+    /// return are left out. `getDeckStats` names each deck by its leaf only
+    /// ("Cardio" for "Step1::Cardio"), so replies are matched by id and keep
+    /// the deck's full name.
+    public func deckStats(for decks: [AnkiDeck]) async throws -> [AnkiDeckStats] {
+        guard !decks.isEmpty else { return [] }
+        let replies = try await invoke("getDeckStats", params: ["decks": decks.map(\.name)], as: [String: AnkiDeckStats].self)
+        let byID = Dictionary(replies.values.map { ($0.deckID, $0) }, uniquingKeysWith: { first, _ in first })
+        return decks.compactMap { deck in
+            byID[deck.id].map {
+                AnkiDeckStats(
+                    deckID: deck.id, name: deck.name, newCount: $0.newCount, learnCount: $0.learnCount,
+                    reviewCount: $0.reviewCount, totalInDeck: $0.totalInDeck
+                )
+            }
+        }
     }
 
     /// Reviews (button presses) since today's rollover.

@@ -45,7 +45,13 @@ private enum Queue {
 private struct AnkiDeckView: View {
     @ObservedObject var store: AnkiStore
     let summary: AnkiSummary
-    @State private var showsAllDecks = false
+    @State private var showsAllDecks: Bool
+
+    init(store: AnkiStore, summary: AnkiSummary) {
+        self.store = store
+        self.summary = summary
+        _showsAllDecks = State(initialValue: store.previewsAllDecks)
+    }
 
     var body: some View {
         VStack(spacing: Theme.Spacing.s) {
@@ -55,7 +61,7 @@ private struct AnkiDeckView: View {
                         .frame(width: 240)
                         .transition(.motionRow(from: .leading))
                 }
-                DecksCard(store: store, decks: summary.topDecks, showsAll: $showsAllDecks)
+                DecksCard(store: store, top: summary.topDecks, outline: summary.deckOutline, showsAll: $showsAllDecks)
             }
             .frame(maxHeight: .infinity)
             AnkiFooter(store: store, summary: summary)
@@ -63,7 +69,7 @@ private struct AnkiDeckView: View {
         .motion(Theme.Motion.content, value: showsAllDecks)
         // Reviewing or a refresh can leave too few decks for the toggle to
         // show; collapse then, or the ring would stay hidden with no way back.
-        .onChange(of: summary.topDecks.count) { _, count in
+        .onChange(of: summary.deckOutline.count) { _, count in
             if count <= DecksCard.collapsedCount { showsAllDecks = false }
         }
     }
@@ -161,10 +167,12 @@ private struct QueueRow: View {
 }
 
 /// The decks with the most due. Collapsed it fits the top four beside the
-/// ring; expanded it takes the full width and scrolls.
+/// ring; expanded it takes the full width, scrolls, and lists subdecks
+/// under their parents so any exact deck is one click away.
 private struct DecksCard: View {
     @ObservedObject var store: AnkiStore
-    let decks: [AnkiDeckStats]
+    let top: [AnkiDeckStats]
+    let outline: [AnkiDeckOutlineRow]
     @Binding var showsAll: Bool
 
     static let collapsedCount = 4
@@ -173,7 +181,11 @@ private struct DecksCard: View {
         Card(padding: Theme.Spacing.s) {
             VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                 HStack(spacing: Theme.Spacing.xs) {
-                    if let problem = store.problem {
+                    if let opening = store.opening, opening.phase == .launching {
+                        OpeningNotice(opening: opening)
+                    } else if let notice = store.openNotice {
+                        OpenNotice(outcome: notice)
+                    } else if let problem = store.problem {
                         StaleNotice(problem: problem, updatedAt: store.updatedAt)
                     } else {
                         Text(showsAll ? "All decks with cards due" : "Top decks")
@@ -181,21 +193,18 @@ private struct DecksCard: View {
                             .foregroundStyle(Theme.Palette.tertiaryText)
                     }
                     Spacer(minLength: Theme.Spacing.s)
-                    if decks.count > Self.collapsedCount {
-                        ExpandButton(showsAll: $showsAll, total: decks.count)
+                    if outline.count > Self.collapsedCount {
+                        ExpandButton(showsAll: $showsAll, total: outline.count)
                     }
                 }
                 .frame(height: 18)
                 .padding(.horizontal, Theme.Spacing.xs)
-                if decks.isEmpty {
+                if top.isEmpty {
                     AllCaughtUp()
                 } else if showsAll {
-                    ScrollView(.vertical) {
-                        rows(decks)
-                    }
-                    .scrollIndicators(.never)
+                    scrollingRows
                 } else {
-                    rows(Array(decks.prefix(Self.collapsedCount)))
+                    rows(top.prefix(Self.collapsedCount).map { AnkiDeckOutlineRow(deck: $0, depth: 0, title: $0.name) })
                     Spacer(minLength: 0)
                 }
             }
@@ -203,12 +212,66 @@ private struct DecksCard: View {
         }
     }
 
-    private func rows(_ decks: [AnkiDeckStats]) -> some View {
+    /// `ImageRenderer` draws a `ScrollView` blank, so snapshots show the
+    /// top of the outline clipped instead.
+    @ViewBuilder
+    private var scrollingRows: some View {
+        if RunMode.current.isSnapshot {
+            // Takes the space offered rather than the rows' full height.
+            Color.clear
+                .overlay(alignment: .top) { rows(outline) }
+                .clipped()
+        } else {
+            ScrollView(.vertical) { rows(outline) }
+                .scrollIndicators(.never)
+        }
+    }
+
+    private func rows(_ rows: [AnkiDeckOutlineRow]) -> some View {
         VStack(spacing: Theme.Spacing.xxs) {
-            ForEach(decks, id: \.deckID) { deck in
-                DeckRow(deck: deck) { store.startReviews(deck: deck.name) }
+            ForEach(rows) { row in
+                let deck = row.deck
+                DeckRow(row: row, isOpening: store.opening?.deck == deck.name,
+                        isFavorite: store.favorite?.matches(deck) == true,
+                        toggleFavorite: { store.toggleFavorite(deck) }) {
+                    store.startReviews(deck: deck.name)
+                }
             }
         }
+    }
+}
+
+/// Anki is starting after a click; the deck opens once it answers.
+private struct OpeningNotice: View {
+    let opening: AnkiOpening
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.xs) {
+            Spinner(tint: accent, size: 10, lineWidth: 1.5)
+            Text("Opening Anki…")
+                .foregroundStyle(Theme.Palette.secondaryText)
+                .lineLimit(1)
+        }
+        .font(Theme.Typography.caption)
+        .help(opening.deck.map { "Waiting for Anki to start, then opening \($0)" } ?? "Waiting for Anki to start")
+    }
+}
+
+/// Why the last click didn't open its deck, with the next step in the tooltip.
+private struct OpenNotice: View {
+    let outcome: AnkiOpenOutcome
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.xs) {
+            Image(systemName: outcome == .addOnMissing ? "puzzlepiece.extension.fill" : "exclamationmark.triangle.fill")
+                .foregroundStyle(outcome == .addOnMissing ? accent : Theme.Palette.warning)
+            Text(outcome.title ?? "")
+                .foregroundStyle(Theme.Palette.secondaryText)
+                .lineLimit(1)
+                .truncationMode(.tail)
+        }
+        .font(Theme.Typography.caption)
+        .help(outcome.suggestion ?? "")
     }
 }
 
@@ -263,43 +326,66 @@ private struct ExpandButton: View {
 }
 
 /// One deck: its name and the three queue counts, like Anki's deck list.
-/// Clicking it starts reviewing that deck in Anki.
+/// Clicking it starts reviewing that deck in Anki. The star, shown on
+/// hover and always on the favorite, pins it as the Study button's deck.
 private struct DeckRow: View {
-    let deck: AnkiDeckStats
+    let row: AnkiDeckOutlineRow
+    /// This deck's click is waiting for Anki to start.
+    let isOpening: Bool
+    let isFavorite: Bool
+    let toggleFavorite: () -> Void
     let action: () -> Void
     @State private var hovering = false
 
+    private var deck: AnkiDeckStats { row.deck }
+
     var body: some View {
-        Button(action: action) {
-            HStack(spacing: Theme.Spacing.s) {
-                Text(deck.name)
-                    .font(Theme.Typography.bodyEmphasis)
-                    .foregroundStyle(Theme.Palette.primaryText)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
-                Spacer(minLength: Theme.Spacing.xs)
-                if hovering {
-                    Image(systemName: "play.fill")
-                        .font(.system(size: 9, weight: .bold))
-                        .foregroundStyle(accent)
-                        .transition(.opacity)
-                }
-                count(deck.newCount, color: Queue.new)
-                count(deck.learnCount, color: Queue.learning)
-                count(deck.reviewCount, color: Queue.review)
+        // A tap gesture rather than a Button, so the star inside stays its
+        // own control.
+        HStack(spacing: Theme.Spacing.s) {
+            Text(row.title)
+                .font(row.depth == 0 ? Theme.Typography.bodyEmphasis : Theme.Typography.body)
+                .foregroundStyle(row.depth == 0 ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
+                .lineLimit(1)
+                .truncationMode(.tail)
+            Spacer(minLength: Theme.Spacing.xs)
+            if hovering || isFavorite {
+                FavoriteStar(isFavorite: isFavorite, deck: deck.name, action: toggleFavorite)
+                    .transition(.opacity)
             }
-            .padding(.horizontal, Theme.Spacing.xs)
-            .frame(height: 24)
-            .background(
-                RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
-                    .fill(hovering ? Theme.Palette.surfaceHover : Color.clear)
-            )
-            .contentShape(Rectangle())
+            if isOpening {
+                Spinner(tint: accent, size: 10, lineWidth: 1.5)
+                    .transition(.opacity)
+            } else if hovering {
+                Image(systemName: "play.fill")
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundStyle(accent)
+                    .transition(.opacity)
+            }
+            count(deck.newCount, color: Queue.new)
+            count(deck.learnCount, color: Queue.learning)
+            count(deck.reviewCount, color: Queue.review)
         }
-        .buttonStyle(.plain)
+        .padding(.leading, CGFloat(row.depth) * Theme.Spacing.m)
+        .padding(.horizontal, Theme.Spacing.xs)
+        .frame(height: 24)
+        .background(
+            RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
+                .fill(hovering ? Theme.Palette.surfaceHover : Color.clear)
+        )
+        .contentShape(Rectangle())
+        .onTapGesture(perform: action)
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityAction(named: isFavorite ? "Unpin favorite" : "Pin as favorite", toggleFavorite)
         .help("Review \(deck.name) in Anki: \(deck.newCount) new, \(deck.learnCount) learning, \(deck.reviewCount) review")
+        .contextMenu {
+            Button("Review in Anki", action: action)
+            Button(isFavorite ? "Unpin Favorite Deck" : "Pin as Favorite Deck", action: toggleFavorite)
+        }
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: isFavorite)
     }
 
     private func count(_ value: Int, color: Color) -> some View {
@@ -307,6 +393,30 @@ private struct DeckRow: View {
             .font(Theme.Typography.caption.monospacedDigit())
             .foregroundStyle(value > 0 ? color : Theme.Palette.tertiaryText)
             .frame(width: 26, alignment: .trailing)
+    }
+}
+
+/// Pins or unpins a deck as the favorite: filled in the accent when it is
+/// the favorite, an outline on hover otherwise.
+private struct FavoriteStar: View {
+    let isFavorite: Bool
+    let deck: String
+    let action: () -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: isFavorite || hovering ? "star.fill" : "star")
+                .font(.system(size: 10, weight: .semibold))
+                .foregroundStyle(isFavorite ? accent : hovering ? Theme.Palette.primaryText : Theme.Palette.tertiaryText)
+                .contentTransition(.symbolEffect(.replace))
+                .frame(width: 16, height: 16)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .help(isFavorite ? "Unpin \(deck) from the Study button" : "Pin \(deck) to the Study button")
+        .onHover { hovering = $0 }
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -332,15 +442,40 @@ private struct AnkiFooter: View {
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
                 StreakBadge(streak: summary.streak, reviewedToday: summary.hasReviewedToday)
-                ReviewHeatmap(history: summary.history)
+                // The latest days that fit, so a long favorite deck name
+                // keeps its button readable.
+                ViewThatFits(in: .horizontal) {
+                    ForEach([14, 10, 7], id: \.self) { days in
+                        ReviewHeatmap(history: Array(summary.history.suffix(days)))
+                    }
+                }
                 Spacer(minLength: Theme.Spacing.xs)
                 SyncButton(isSyncing: store.isSyncing, action: store.sync)
-                AnkiPrimaryButton(title: "Start reviews", symbol: "play.fill",
-                                  help: startHelp, action: { store.startReviews() })
-                    .disabled(summary.dueTotal == 0)
-                    .opacity(summary.dueTotal == 0 ? 0.4 : 1)
+                if let favorite = store.favorite {
+                    studyButton(favorite)
+                } else {
+                    AnkiPrimaryButton(title: "Start reviews", symbol: "play.fill",
+                                      help: startHelp, action: { store.startReviews() })
+                        .disabled(summary.dueTotal == 0)
+                        .opacity(summary.dueTotal == 0 ? 0.4 : 1)
+                }
         }
         .frame(height: 28)
+    }
+
+    /// The favorite deck in one click, with what it has due. Stays enabled
+    /// with nothing due: Anki then offers its own "Congratulations" screen
+    /// and custom study.
+    private func studyButton(_ favorite: AnkiFavoriteDeck) -> some View {
+        let deck = store.favoriteDeck
+        let name = deck?.name ?? favorite.name
+        let due = deck?.dueTotal ?? 0
+        let help = due > 0
+            ? "Review \(name) in Anki: \(due) due. Pin another deck with its star."
+            : "Open \(name) in Anki. Nothing is due there today."
+        return AnkiPrimaryButton(title: "Study \(AnkiDeckName.leaf(name))", symbol: "play.fill",
+                                 badge: due > 0 ? due : nil, help: help, action: store.studyFavorite)
+            .layoutPriority(1)
     }
 
     private var startHelp: String {
@@ -435,14 +570,16 @@ struct AnkiSetupView: View {
     var isCompact = false
 
     var body: some View {
-        let guide = AnkiSetupGuide(state: store.state)
+        let guide = AnkiSetupGuide(state: store.state, opening: store.opening, notice: store.openNotice)
         let showsMessage = !(isCompact && !guide.steps.isEmpty)
         Card(padding: isCompact ? Theme.Spacing.m : Theme.Spacing.l) {
             HStack(alignment: .center, spacing: Theme.Spacing.l) {
                 ZStack {
                     RoundedRectangle(cornerRadius: Theme.Radius.l, style: .continuous)
                         .fill(accent.opacity(0.16))
-                    if store.state == .starting {
+                    if store.opening != nil {
+                        Spinner(tint: accent, size: 20)
+                    } else if store.state == .starting {
                         PawLoader(tint: accent, size: 20, label: "Starting Anki")
                     } else {
                         Image(systemName: guide.symbol)
@@ -485,12 +622,23 @@ struct AnkiSetupView: View {
     private func actions(_ guide: AnkiSetupGuide) -> some View {
         HStack(spacing: Theme.Spacing.s) {
             switch store.state {
+            case _ where store.opening != nil:
+                EmptyView()
+            case .notRunning:
+                if let favorite = store.favorite {
+                    // Anki is closed, so the favorite opens by its stored
+                    // name: one click launches Anki and opens that deck.
+                    AnkiPrimaryButton(title: "Study \(AnkiDeckName.leaf(favorite.name))", symbol: "play.fill",
+                                      help: "Open Anki straight into \(favorite.name)", action: store.studyFavorite)
+                    AnkiSecondaryButton(title: "Open Anki", symbol: "arrow.up.forward.app",
+                                        help: "Open Anki; this tab connects on its own", action: store.openAnki)
+                } else {
+                    AnkiPrimaryButton(title: "Open Anki", symbol: "arrow.up.forward.app.fill",
+                                      help: "Open Anki; this tab connects on its own", action: store.openAnki)
+                }
             case .notInstalled:
                 AnkiPrimaryButton(title: "Get Anki", symbol: "arrow.down.circle.fill",
                                   help: "Open apps.ankiweb.net in your browser", action: store.getAnki)
-            case .notRunning:
-                AnkiPrimaryButton(title: "Open Anki", symbol: "arrow.up.forward.app.fill",
-                                  help: "Open Anki; this tab connects on its own", action: store.openAnki)
             case .addOnMissing:
                 CopyCodeButton(code: AnkiConnectClient.addOnCode)
                 restartButton
@@ -530,13 +678,29 @@ private struct AnkiSetupGuide {
     var steps: [String] = []
     var hint: String?
 
-    init(state: AnkiConnectionState) {
+    init(state: AnkiConnectionState, opening: AnkiOpening?, notice: AnkiOpenOutcome? = nil) {
+        if let opening {
+            // A click is launching Anki to open a deck: say which, so the
+            // wait reads as progress rather than a setup step.
+            symbol = "rectangle.stack"
+            title = opening.deck.map { "Opening \(AnkiDeckName.leaf($0))…" } ?? "Opening Anki…"
+            message = opening.phase == .launching
+                ? "Anki is starting. The deck opens for review as soon as it's ready."
+                : "Asking Anki to open the deck for review."
+            return
+        }
         switch state {
         case .notInstalled:
             symbol = "arrow.down.app"
             title = "Anki isn't installed"
             message = "Install the free Anki desktop app to see your due cards, decks and streak here."
             hint = "Using a copy outside Applications? Just open it."
+        case .notRunning where notice == .launchFailed:
+            // A click tried to launch Anki and macOS refused: say so, or
+            // the screen would look as if the click did nothing.
+            symbol = "exclamationmark.triangle"
+            title = AnkiOpenOutcome.launchFailed.title ?? "Anki wouldn't open"
+            message = AnkiOpenOutcome.launchFailed.suggestion ?? ""
         case .notRunning:
             symbol = "power"
             title = "Anki is closed"
@@ -545,6 +709,17 @@ private struct AnkiSetupGuide {
             symbol = "hourglass"
             title = "Connecting to Anki…"
             message = "Waiting for Anki to finish loading its add-ons."
+        case .addOnMissing where notice == .addOnMissing:
+            // A click opened Anki but couldn't open its deck: name the one
+            // step left. The store already put the code on the clipboard.
+            symbol = "puzzlepiece.extension"
+            title = "One step to open decks from here"
+            message = "Install the AnkiConnect add-on to open decks directly."
+            steps = [
+                "In Anki, choose Tools › Add-ons › Get Add-ons…",
+                "Paste the code \(AnkiConnectClient.addOnCode) (copied) and click OK",
+                "Restart Anki, then click the deck again",
+            ]
         case .addOnMissing:
             symbol = "puzzlepiece.extension"
             title = "Add AnkiConnect to Anki"
@@ -639,6 +814,8 @@ private struct CopyCodeButton: View {
 private struct AnkiPrimaryButton: View {
     let title: String
     let symbol: String
+    /// A count shown after the title, such as the favorite deck's due cards.
+    var badge: Int?
     let help: String
     let action: () -> Void
     @State private var hovering = false
@@ -652,7 +829,18 @@ private struct AnkiPrimaryButton: View {
                 Text(title)
                     .font(Theme.Typography.bodyEmphasis)
                     .monospacedDigit()
+                    .lineLimit(1)
+                    .truncationMode(.tail)
                     .contentTransition(.opacity)
+                if let badge {
+                    Text("\(badge)")
+                        .font(Theme.Typography.caption.weight(.bold).monospacedDigit())
+                        .contentTransition(.numericText(countsDown: true))
+                        .padding(.horizontal, Theme.Spacing.xs)
+                        .frame(height: 16)
+                        .background(Capsule().fill(Theme.Palette.background.opacity(0.18)))
+                        .fixedSize()
+                }
             }
             .foregroundStyle(Theme.Palette.background)
             .padding(.horizontal, Theme.Spacing.m)

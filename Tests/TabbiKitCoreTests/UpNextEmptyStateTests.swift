@@ -45,8 +45,17 @@ final class UpNextEmptyStateTests: XCTestCase {
         XCTAssertTrue(state.detail.contains("Tabbi"))
     }
 
+    func testUnavailableCalendarSendsUserToConnections() {
+        let state = UpNextEmptyState(.unavailable, upNextEvents: "meetings and calls", appName: "Tabbi")
+        XCTAssertEqual(state.action, .openConnections)
+        XCTAssertEqual(state.actionTitle, "Connect calendar")
+        XCTAssertTrue(state.detail.contains("meetings and calls"))
+        // The user is already in the app; never tell them to open it.
+        XCTAssertFalse(state.detail.contains("Open the"))
+    }
+
     func testInformationalStatesHaveNoButton() {
-        for situation in [UpNextEmptyState.Situation.unavailable, .freeDay, .dayDone] {
+        for situation in [UpNextEmptyState.Situation.freeDay, .dayDone] {
             let state = UpNextEmptyState(situation, upNextEvents: "meetings and calls", appName: "Tabbi")
             XCTAssertNil(state.action, "\(situation)")
             XCTAssertTrue(state.actionTitle.isEmpty, "\(situation)")

@@ -247,6 +247,32 @@ final class AnkiSummaryTests: XCTestCase {
 
     // MARK: Codable and demo
 
+    // MARK: One-click study
+
+    func testStudyDeckPrefersTheFavoriteByIDThenByNameThenTheMostDue() throws {
+        let result = summary(deckStats: [
+            stats(1, "Step1", review: 100),
+            stats(2, "Step1::Renal::Acid Base", review: 9),
+            stats(4, "Pharm", review: 30),
+        ])
+        XCTAssertEqual(result.studyDeck(favorite: nil), "Step1", "no favorite opens the deck with the most due")
+        let renamed = try XCTUnwrap(AnkiFavoriteDeck(deckID: 2, name: "Step1::Renal::Old Name"))
+        XCTAssertEqual(result.studyDeck(favorite: renamed), "Step1::Renal::Acid Base", "follows a rename by id")
+        let unlisted = try XCTUnwrap(AnkiFavoriteDeck(deckID: 99, name: "Micro::Bugs"))
+        XCTAssertEqual(result.studyDeck(favorite: unlisted), "Micro::Bugs", "an unlisted favorite opens by name")
+        XCTAssertNil(summary().studyDeck(favorite: nil), "nothing due and no favorite opens Anki itself")
+    }
+
+    func testProgressItemCarriesTheStudyAction() throws {
+        let result = summary(deckStats: [stats(1, "Step1", review: 100), stats(2, "Step1::Renal", review: 9)])
+        XCTAssertEqual(result.progressItem().action,
+                       ProvidedAction(id: AnkiSummary.studyActionID, title: "Study Step1"))
+        let favorite = try XCTUnwrap(AnkiFavoriteDeck(deckID: 2, name: "Step1::Renal"))
+        XCTAssertEqual(result.progressItem(favorite: favorite).action?.title, "Study Renal",
+                       "a subdeck's title uses its leaf name")
+        XCTAssertEqual(summary().studyAction(favorite: nil).title, "Open Anki")
+    }
+
     func testSummaryRoundTripsThroughCodable() throws {
         let original = summary(
             deckStats: [stats(1, "Step1", new: 3, review: 9)],
@@ -278,7 +304,7 @@ final class AnkiSummaryTests: XCTestCase {
         let transport = SummaryTransport(
             [
                 "deckNamesAndIds": #"{"result":{"Step1":1,"Step1::Cardio":2},"error":null}"#,
-                "getDeckStats": #"{"result":{"1":{"deck_id":1,"name":"Step1","new_count":20,"learn_count":3,"review_count":80,"total_in_deck":900},"2":{"deck_id":2,"name":"Step1::Cardio","new_count":5,"learn_count":1,"review_count":30,"total_in_deck":200}},"error":null}"#,
+                "getDeckStats": #"{"result":{"1":{"deck_id":1,"name":"Step1","new_count":20,"learn_count":3,"review_count":80,"total_in_deck":900},"2":{"deck_id":2,"name":"Cardio","new_count":5,"learn_count":1,"review_count":30,"total_in_deck":200}},"error":null}"#,
                 "getNumCardsReviewedToday": #"{"result":20,"error":null}"#,
                 "getNumCardsReviewedByDay": #"{"result":[["2026-10-01",20],["2026-09-30",64],["2026-09-29",12]],"error":null}"#,
             ],
@@ -291,6 +317,7 @@ final class AnkiSummaryTests: XCTestCase {
         let result = try await client.summary(now: now, calendar: utc)
 
         XCTAssertEqual(result.dueTotal, 103)
+        XCTAssertEqual(result.decks.map(\.name), ["Step1", "Step1::Cardio"], "subdecks keep their full names though getDeckStats sends leaf names")
         XCTAssertEqual(result.reviewedToday, 20)
         XCTAssertEqual(result.streak, 3)
         XCTAssertEqual(result.retentionSampleSize, 20)

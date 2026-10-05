@@ -15,14 +15,19 @@ public struct SharedTodayItem: Identifiable, Hashable, Sendable {
     /// Share done, 0...1, for a progress bar; nil for a plain task.
     public var fraction: Double?
     public var isDone: Bool
+    /// What a click runs besides opening `source`, e.g. Anki's "Study
+    /// Pharm Sketchy".
+    public var action: ProvidedAction?
 
-    public init(id: String, source: ModuleID, title: String, detail: String?, fraction: Double?, isDone: Bool) {
+    public init(id: String, source: ModuleID, title: String, detail: String?, fraction: Double?, isDone: Bool,
+                action: ProvidedAction? = nil) {
         self.id = id
         self.source = source
         self.title = title
         self.detail = detail
         self.fraction = fraction
         self.isDone = isDone
+        self.action = action
     }
 }
 
@@ -41,7 +46,7 @@ extension ProviderSnapshot {
                     detail: item.isComplete
                         ? "\(item.target.formatted()) \(item.unit)"
                         : "\(item.remaining.formatted()) \(item.unit) left",
-                    fraction: item.fraction, isDone: item.isComplete
+                    fraction: item.fraction, isDone: item.isComplete, action: item.action
                 )
             }
         let tasks = tasks

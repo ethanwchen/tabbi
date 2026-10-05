@@ -171,6 +171,7 @@ enum SnapshotRenderer {
             print(url.path)
         }
         await renderKitImportReview(services, to: outputDirectory)
+        await renderConnectionSheets(to: outputDirectory)
     }
 
     /// One notch shot: its file name, the notch state, and the onboarding

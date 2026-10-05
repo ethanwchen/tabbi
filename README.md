@@ -51,7 +51,7 @@ Macs without a notch get a small virtual one at the top of the screen.
     <td width="50%"><img src="docs/images/today.png" alt="Today tab"><br><b>Today.</b> Your checklist, what's next on the calendar and a focus timer.</td>
   </tr>
   <tr>
-    <td><img src="docs/images/anki.png" alt="Anki tab"><br><b>Anki.</b> Cards due today in your decks, through AnkiConnect on your Mac.</td>
+    <td><img src="docs/images/anki.png" alt="Anki tab"><br><b>Anki.</b> Cards due today in your decks, through AnkiConnect on your Mac; click a deck to study it.</td>
     <td><img src="docs/images/party.png" alt="Party tab"><br><b>Party.</b> Study with friends and see who is focusing.</td>
   </tr>
   <tr>
@@ -87,6 +87,7 @@ Claude features run through your local `claude` CLI, and Tabbi never reads your 
 <summary><b>What each permission is for</b></summary>
 
 Tabbi asks for a permission only when the tab that needs it is first used.
+**Settings > Connections** shows what your tabs need and fixes it in one click (see [docs/connections.md](docs/connections.md)).
 
 | Permission | Asked by | Why |
 | --- | --- | --- |

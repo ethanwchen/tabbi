@@ -121,7 +121,10 @@ extension AnkiSummary {
         let stats = [
             AnkiDeckStats(deckID: 1, name: "AnKing Step 1", newCount: 30, learnCount: 12, reviewCount: 186, totalInDeck: 28_000),
             AnkiDeckStats(deckID: 2, name: "AnKing Step 1::Cardio", newCount: 10, learnCount: 4, reviewCount: 61, totalInDeck: 3_100),
+            AnkiDeckStats(deckID: 7, name: "AnKing Step 1::Renal", newCount: 8, learnCount: 3, reviewCount: 44, totalInDeck: 2_400),
+            AnkiDeckStats(deckID: 8, name: "AnKing Step 1::Renal::Acid Base", newCount: 0, learnCount: 1, reviewCount: 12, totalInDeck: 380),
             AnkiDeckStats(deckID: 3, name: "Pharm Sketchy", newCount: 15, learnCount: 3, reviewCount: 74, totalInDeck: 4_200),
+            AnkiDeckStats(deckID: 9, name: "Pharm Sketchy::Antibiotics", newCount: 5, learnCount: 1, reviewCount: 26, totalInDeck: 900),
             AnkiDeckStats(deckID: 4, name: "Sketchy Micro", newCount: 0, learnCount: 2, reviewCount: 58, totalInDeck: 2_900),
             AnkiDeckStats(deckID: 5, name: "Pathoma", newCount: 5, learnCount: 0, reviewCount: 22, totalInDeck: 1_400),
             AnkiDeckStats(deckID: 6, name: "Boards and Beyond Biochem", newCount: 0, learnCount: 1, reviewCount: 17, totalInDeck: 1_100),
@@ -161,7 +164,7 @@ extension AnkiConnectClient {
     ) async throws -> AnkiSummary {
         let allDecks = try await decks()
         let names = allDecks.map(\.name)
-        let stats = try await deckStats(for: names)
+        let stats = try await deckStats(for: allDecks)
         let reviewedToday = try await numCardsReviewedToday()
         let byDay = try await numCardsReviewedByDay()
 
@@ -186,9 +189,32 @@ extension AnkiConnectClient {
 extension AnkiSummary {
     /// Today's reviews as a shared progress goal: cards reviewed so far out
     /// of those plus the cards still due. Today and the ticker show it
-    /// without knowing it came from Anki.
-    public func progressItem(source: ModuleID = .anki) -> ProgressItem {
+    /// without knowing it came from Anki. A click on it studies
+    /// `studyDeck(favorite:)` (`studyAction(favorite:)`).
+    public func progressItem(source: ModuleID = .anki, favorite: AnkiFavoriteDeck? = nil) -> ProgressItem {
         ProgressItem(id: "reviews", source: source, title: "Anki reviews",
-                     completed: reviewedToday, target: reviewedToday + dueTotal, unit: "cards")
+                     completed: reviewedToday, target: reviewedToday + dueTotal, unit: "cards",
+                     action: studyAction(favorite: favorite))
     }
+
+    /// The full name of the deck a one-click Study opens: the pinned
+    /// favorite (by id, so a rename is followed, else by its stored name,
+    /// so a deck this summary does not list still opens), otherwise the
+    /// deck with the most due. Nil when there is neither, and Anki opens on
+    /// its deck list.
+    public func studyDeck(favorite: AnkiFavoriteDeck?) -> String? {
+        if let favorite { return favorite.resolve(in: decks)?.name ?? favorite.name }
+        return topDecks.first?.name
+    }
+
+    /// The action Today's Anki row and the closed notch's Anki preview run
+    /// on click: open `studyDeck(favorite:)` for review, the same as the
+    /// panel's primary button.
+    public func studyAction(favorite: AnkiFavoriteDeck?) -> ProvidedAction {
+        let title = studyDeck(favorite: favorite).map { "Study \(AnkiDeckName.leaf($0))" } ?? "Open Anki"
+        return ProvidedAction(id: Self.studyActionID, title: title)
+    }
+
+    /// The `ProvidedAction.id` of `studyAction(favorite:)`.
+    public static let studyActionID = "anki.study"
 }

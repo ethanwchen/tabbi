@@ -6,7 +6,7 @@ import TabbiKit
 /// name to edit in place), going invisible in one tap, and beside it my
 /// friend code to share and a field to add a friend's. While the server
 /// hasn't answered yet it says so, with a retry when it can't be reached.
-struct PartySetupView: View {
+struct PartyOnboardingView: View {
     @ObservedObject var store: PartyStore
     @FocusState private var focus: PartyField?
 

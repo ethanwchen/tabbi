@@ -36,7 +36,10 @@ enum ModuleViews {
             openSettings: { services.openSettings() },
             takeover: OnboardingViews.takeover(store: services.onboarding, modules: services.modules),
             checkForUpdates: AppUpdater.shared.isAvailable ? { AppUpdater.shared.checkForUpdates() } : nil,
-            celebrations: services.celebrations
+            celebrations: services.celebrations,
+            runAction: ModuleActionRunner { [weak services] module, action in
+                services?.modules.perform(action, on: module)
+            }
         )
     }
 

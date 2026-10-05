@@ -14,7 +14,8 @@ public struct UpNextEmptyState: Hashable, Sendable {
         case notAsked
         /// Access is denied, restricted, or write-only.
         case denied
-        /// This build can't ask for access (no usage description).
+        /// This build can't ask for access from the notch (no usage
+        /// description), so Connections takes over.
         case unavailable
         /// Access is granted but every calendar is local, and today is empty:
         /// most likely the user's real calendar lives in an online account.
@@ -29,6 +30,9 @@ public struct UpNextEmptyState: Hashable, Sendable {
         case requestAccess
         case openPrivacySettings
         case openInternetAccounts
+        /// Opens the Connections hub, which walks through the steps this
+        /// card can't take by itself.
+        case openConnections
     }
 
     public var symbol: String
@@ -57,11 +61,11 @@ public struct UpNextEmptyState: Hashable, Sendable {
             actionHelp = "Open Calendars privacy settings"
         case .unavailable:
             symbol = "calendar"
-            title = "Calendar unavailable"
-            detail = "Open the \(appName) app to see today's \(upNextEvents)."
-            action = nil
-            actionTitle = ""
-            actionHelp = ""
+            title = "Connect your calendar"
+            detail = "See today's \(upNextEvents) here. It only takes a moment."
+            action = .openConnections
+            actionTitle = "Connect calendar"
+            actionHelp = "Open Connections to connect your calendar"
         case .noAccounts:
             symbol = "calendar.badge.plus"
             title = "Add your calendar"

@@ -32,7 +32,7 @@ A typed async client for the [AnkiConnect](https://ankiweb.net/shared/info/20554
 | `requestPermission()` | `requestPermission` | `AnkiPermission` (decodes both `requireApikey` and `requireApiKey`) |
 | `connect()` | `requestPermission` | Same, but throws `.permissionDenied` or `.addOnOutdated` |
 | `decks()` | `deckNamesAndIds` | `[AnkiDeck]` sorted by name |
-| `deckStats(for:)` | `getDeckStats` | `[AnkiDeckStats]` in the order asked for |
+| `deckStats(for:)` | `getDeckStats` | `[AnkiDeckStats]` in the order asked for, matched by deck id so subdecks keep their full name |
 | `numCardsReviewedToday()` | `getNumCardsReviewedToday` | `Int` (button presses since rollover) |
 | `numCardsReviewedByDay()` | `getNumCardsReviewedByDay` | `[AnkiDayCount]`, newest first |
 | `findCards(query:)` | `findCards` | `[Int64]` card ids |
@@ -62,6 +62,8 @@ All failures are `AnkiConnectError`, each with a short `title` and a one-sentenc
 ### Models
 
 - `AnkiDeck`: `id`, `name`, `leafName`, `depth` (names nest with `::`).
+- `AnkiDeckName`: `components`, `normalized` and `leaf` for `::` paths; AnkiConnect always gets the full path.
+- `AnkiFavoriteDeck`: the pinned deck behind the one-click "Study <deck>" button, stored by id (follows renames) and full name (fallback), as a `VersionedJSON` document.
 - `AnkiDeckStats`: new, learn, and review counts plus `dueTotal`, matching Anki's deck list.
 - `AnkiDay`: a `yyyy-MM-dd` calendar day with `adding(days:)`, built from a `Date` with Anki's rollover hour.
 - `AnkiReview`: one review-log row (`ease`, `kind`, `durationMilliseconds`, `isFailure`, `reviewedAt`).
@@ -116,6 +118,18 @@ summary.retention      // 0.91, or nil below 20 graded reviews
 - `AnkiSummary.topDecks` lists top-level decks with cards due, most due first; `completionFraction` drives the progress ring; `isCurrent(now:)` stops yesterday's numbers from being shared after the rollover.
   `AnkiSummary.nextRollover(after:)` is when that happens, so the store wakes once a day at the rollover to stop sharing the old summary and fetch the new day's.
 - `AnkiConnectionState(previewName:)` parses `TABBI_ANKI_STATE` (for example `addOnMissing`, `notRunning`, `apiKey`, `problem`), which pins the Anki tab to one screen so every state can be snapshotted: `TABBI_ANKI_STATE=addOnMissing swift run Tabbi --snapshot snapshots-anki`.
+
+### Opening a deck
+
+`AnkiDeckOpener(client:launcher:clock:launchTimeout:pollInterval:)` runs one click on a deck: bring Anki forward, starting it if closed, wait for AnkiConnect, then `guiDeckReview` the deck's full name.
+
+- `AnkiAppLauncher` (find, launch, activate Anki) and `AnkiOpenClock` are injected, so tests step through the whole flow without Anki.
+- `open(deck:onPhase:)` reports `AnkiOpenPhase` (`opening`, or `launching` while a just-started Anki loads) and returns an `AnkiOpenOutcome`: `opened`, `openedApp`, `addOnMissing`, `deckNotFound`, `failed`, `notInstalled` or `launchFailed`.
+- An Anki started within `AnkiConnectionState.startupGrace` gets the full `launchTimeout` (30 s), polled every 0.5 s; one that has been up a while answers at once or not at all, so a refused connection means the add-on is missing.
+- Every outcome except `notInstalled` and `launchFailed` leaves Anki in front.
+- `AnkiOpenOutcome(previewName:deck:)` parses `TABBI_ANKI_OPEN`, which pins the Anki tab to one click result for snapshots.
+- `AnkiSummary.studyDeck(favorite:)` picks the deck a one-click Study opens (the favorite, else the deck with the most due), and `studyAction(favorite:)` is the `ProvidedAction` on the shared reviews goal, so Today's row and the closed notch's preview open it too.
+- `AnkiSummary.deckOutline` lists every deck with cards due, subdecks indented under their nearest listed ancestor, so any exact subdeck can be picked.
 
 ### Formatting
 

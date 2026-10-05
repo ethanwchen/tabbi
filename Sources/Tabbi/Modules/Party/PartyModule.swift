@@ -22,6 +22,31 @@ final class PartyModule: NotchModule {
         store = PartyStore(runMode: context.runMode)
         store.followFocus(from: context.providers.$snapshot.map(\.focus).eraseToAnyPublisher())
         store.follow(pet: context.studyPet.profiles)
+        shareConnection(pet: context.studyPet)
+    }
+
+    /// Lets the Connections hub show Party's row and start it from its
+    /// setup sheet with just a name and a pet.
+    private func shareConnection(pet: ClosetStore) {
+        let store = store
+        ConnectionsStore.shared.follow(
+            party: store.$state.combineLatest(store.$settings)
+                .map { PartyConnectionState.resolve($0.connection, friendCode: $0.friendCode,
+                                                    hasChosenName: $1.cleanedName != nil) }
+                .eraseToAnyPublisher(),
+            name: store.$settings.combineLatest(store.$state)
+                .map { $0.cleanedName ?? $1.profile?.name ?? "" }
+                .eraseToAnyPublisher(),
+            species: pet.profiles.map(\.species).eraseToAnyPublisher(),
+            start: { [weak store, weak pet] name, species in
+                pet?.setSpecies(species)
+                guard let store else { return }
+                var settings = store.settings
+                settings.name = name
+                store.update(settings)
+            },
+            retry: { [weak store] in store?.retry() }
+        )
     }
 
     func makePanel() -> AnyView {
@@ -31,7 +56,7 @@ final class PartyModule: NotchModule {
     /// Onboarding's party step: the name friends see, my code to share,
     /// and going invisible, right in the notch.
     func makeSetupView(for step: OnboardingSetupStep, done: @escaping () -> Void) -> AnyView? {
-        step == .party ? AnyView(PartySetupView(store: store)) : nil
+        step == .party ? AnyView(PartyOnboardingView(store: store)) : nil
     }
 
     func makeSettingsPane() -> SettingsPane? {

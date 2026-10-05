@@ -23,7 +23,7 @@ struct ClaudeAskPanel: View {
     var body: some View {
         VStack(spacing: Theme.Spacing.s) {
             if session.isClaudeMissing && conversation.isEmpty {
-                ClaudeMissingView { session.prepare() }
+                ClaudeMissingView()
                     .transition(.opacity)
             } else {
                 Group {
@@ -361,7 +361,11 @@ private struct FailureRow: View {
                     }
                 }
                 Spacer(minLength: Theme.Spacing.s)
-                if let onRetry {
+                if failure == .claudeNotFound {
+                    PillButton(title: "Set up Claude", symbol: "link", help: "Open Connections to set up Claude") {
+                        ConnectionsStore.shared.showHub()
+                    }
+                } else if let onRetry {
                     PillButton(title: "Retry", symbol: "arrow.clockwise", help: "Ask this question again", action: onRetry)
                 }
             }
@@ -372,14 +376,14 @@ private struct FailureRow: View {
 
     private var title: String {
         switch failure {
-        case .claudeNotFound: "Can't find the claude CLI"
+        case .claudeNotFound: "Claude isn't set up yet"
         case .process, nil: "Claude couldn't answer"
         }
     }
 
     private var detail: String? {
         switch failure {
-        case .claudeNotFound: "Install Claude Code, or set `\(ClaudeCLI.overrideVariable)` to its path."
+        case .claudeNotFound: "Connections shows you how to add it."
         case .process(let detail): detail
         case nil: nil
         }
@@ -422,29 +426,30 @@ private struct EmptyChatView: View {
     }
 }
 
+/// Shown when Claude isn't on this Mac: one plain sentence and the one
+/// button that leads to Connections, which walks through setting it up.
+/// The panel looks again each time it opens.
 private struct ClaudeMissingView: View {
-    let onCheckAgain: () -> Void
-
     var body: some View {
         VStack(spacing: Theme.Spacing.s) {
-            Image(systemName: "terminal")
+            Image(systemName: "sparkles")
                 .font(.system(size: 20, weight: .semibold))
-                .foregroundStyle(Theme.Palette.warning)
+                .foregroundStyle(AskClaudeModule.descriptor.accentColor)
             VStack(spacing: Theme.Spacing.xs) {
-                Text("Can't find the claude CLI")
+                Text("Set up Claude to ask questions")
                     .font(Theme.Typography.title)
                     .foregroundStyle(Theme.Palette.primaryText)
-                (Text("Install Claude Code and sign in, or set ")
-                    + Text(ClaudeCLI.overrideVariable).font(.system(size: 10.5, weight: .medium, design: .monospaced))
-                    + Text(" to the full path of your claude binary."))
+                Text("Claude is an AI helper that answers questions right here. Connections shows you how to add it.")
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.secondaryText)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: 340)
             }
-            PillButton(title: "Check again", symbol: "arrow.clockwise", help: "Look for claude again", action: onCheckAgain)
-                .padding(.top, Theme.Spacing.xs)
+            PillButton(title: "Set up Claude", symbol: "link", help: "Open Connections to set up Claude") {
+                ConnectionsStore.shared.showHub()
+            }
+            .padding(.top, Theme.Spacing.xs)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }

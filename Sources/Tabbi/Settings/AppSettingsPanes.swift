@@ -6,9 +6,9 @@ import TabbiKit
 /// The Settings window's own panes. Enabled modules' panes sit between
 /// `leading` and `trailing`.
 enum AppSettingsPane: String, CaseIterable {
-    case general, appearance, modules, preview, shortcuts, claude, about
+    case general, appearance, modules, connections, preview, shortcuts, claude, about
 
-    static let leading: [AppSettingsPane] = [.general, .appearance, .modules, .preview, .shortcuts]
+    static let leading: [AppSettingsPane] = [.general, .appearance, .modules, .connections, .preview, .shortcuts]
     static let trailing: [AppSettingsPane] = [.claude, .about]
 
     var title: String {
@@ -16,6 +16,7 @@ enum AppSettingsPane: String, CaseIterable {
         case .general: "General"
         case .appearance: "Appearance"
         case .modules: "Modules"
+        case .connections: "Connections"
         case .preview: "Preview"
         case .shortcuts: "Shortcuts"
         case .claude: "Claude"
@@ -28,6 +29,7 @@ enum AppSettingsPane: String, CaseIterable {
         case .general: "gearshape"
         case .appearance: "paintpalette"
         case .modules: "square.grid.2x2"
+        case .connections: "link"
         case .preview: "rectangle.topthird.inset.filled"
         case .shortcuts: "keyboard"
         case .claude: "terminal"
@@ -41,6 +43,7 @@ enum AppSettingsPane: String, CaseIterable {
         case .general: AnyView(GeneralSettingsPane())
         case .appearance: AnyView(AppearanceSettingsPane())
         case .modules: AnyView(ModulesSettingsPane())
+        case .connections: AnyView(ConnectionsSettingsPane())
         case .preview: AnyView(PreviewSettingsPane())
         case .shortcuts: AnyView(ShortcutsSettingsPane())
         case .claude: AnyView(ClaudeSettingsPane())
@@ -64,9 +67,10 @@ enum AppSettingsPane: String, CaseIterable {
             .filter { seen.insert($0.id).inserted }
         func own(_ panes: [AppSettingsPane]) -> [SettingsPane] {
             panes.map { pane in
-                // The Claude pane checks the CLI when shown; let that finish in snapshots.
+                // The Claude and Connections panes check the Mac when shown;
+                // let that finish in snapshots.
                 SettingsPane(id: pane.rawValue, title: pane.title, symbol: pane.symbol, view: pane.view,
-                             settleTime: pane == .claude ? .seconds(2) : .milliseconds(300))
+                             settleTime: [.claude, .connections].contains(pane) ? .seconds(2) : .milliseconds(300))
             }
         }
         return (own(leading) + modulePanes + own(trailing)).map { pane in
