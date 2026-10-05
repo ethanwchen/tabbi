@@ -52,10 +52,14 @@ struct GeneralSettingsPane: View {
             if showsMore {
                 moreOptions
             }
+
+            ResetToDefaultsRow(isAtDefaults: store.usesGeneralDefaults,
+                               help: "Put General back the way a new install has it. Launch at login stays as it is.",
+                               reset: store.resetGeneral)
         }
         .formStyle(.grouped)
         .scrollDisabled(!showsMore)
-        .frame(width: paneWidth, height: showsMore ? 640 : 476)
+        .frame(width: paneWidth, height: showsMore ? 640 : 520)
         .motion(Motion.snappy, value: showsMore)
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didChangeScreenParametersNotification)) { _ in
             screens = DisplayOption.connectedScreens()
@@ -180,6 +184,43 @@ struct MoreOptionsToggle: View {
         .buttonStyle(.plain)
         .onHover { isHovering = $0 }
         .help(isExpanded ? "Hide the less common settings" : "Show the less common settings")
+    }
+}
+
+/// The last row of a Settings section: puts that section back to its
+/// defaults, says so for a moment afterwards, and stays disabled while there
+/// is nothing to reset.
+struct ResetToDefaultsRow: View {
+    let isAtDefaults: Bool
+    let help: String
+    var title = "Reset to Defaults"
+    let reset: () -> Void
+    @State private var didReset = false
+
+    var body: some View {
+        Section {
+            HStack {
+                if didReset {
+                    Label("Back to defaults", systemImage: "checkmark.circle.fill")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .transition(.opacity)
+                }
+                Spacer()
+                Button(title) {
+                    reset()
+                    didReset = true
+                }
+                .disabled(isAtDefaults)
+                .help(isAtDefaults ? "Everything here is already at its default" : help)
+            }
+            .motion(Motion.snappy, value: didReset)
+        }
+        .task(id: didReset) {
+            guard didReset else { return }
+            try? await Task.sleep(for: .seconds(3))
+            didReset = false
+        }
     }
 }
 

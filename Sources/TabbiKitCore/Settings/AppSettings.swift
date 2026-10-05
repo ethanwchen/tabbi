@@ -138,6 +138,39 @@ public struct AppSettings: Equatable, Sendable {
             && reset.themeID == themeID
     }
 
+    /// Puts General's settings back to how a fresh install has them, with
+    /// the live activity items `kit` picks (all of them without a kit or when
+    /// it names none). Launch at login is kept: it is a system login item the
+    /// user turned on deliberately, and turning it off silently would surprise.
+    /// Tabs, theme and the Claude location belong to other sections.
+    public mutating func resetGeneral(to kit: KitManifest?, catalog: ModuleCatalog) {
+        let fresh = AppSettings(modules: modules)
+        openOnHover = fresh.openOnHover
+        hapticsEnabled = fresh.hapticsEnabled
+        celebrationSoundEnabled = fresh.celebrationSoundEnabled
+        hotkey = fresh.hotkey
+        preferredDisplay = fresh.preferredDisplay
+        showOnExternalDisplays = fresh.showOnExternalDisplays
+        hideInFullscreen = fresh.hideInFullscreen
+        notchPreview = fresh.notchPreview
+        if let kinds = kit?.defaults.resolvedTicker(catalog: catalog) {
+            notchPreview.disabledKinds = Set(TickerKind.all(in: catalog)).subtracting(kinds)
+        }
+    }
+
+    /// True when General's "Reset to Defaults" would change nothing.
+    public func usesGeneralDefaults(of kit: KitManifest?, catalog: ModuleCatalog) -> Bool {
+        var reset = self
+        reset.resetGeneral(to: kit, catalog: catalog)
+        return reset == self
+    }
+
+    /// The theme Look's "Reset to Default" picks: `kit`'s when it names one
+    /// this build has, else the app's default.
+    public static func defaultTheme(for kit: KitManifest?) -> ThemeID {
+        kit?.defaults.theme.flatMap(ThemeCatalog.id(forKitValue:)) ?? ThemeCatalog.defaultID
+    }
+
     /// Trims whitespace and expands `~`; blank means "no override".
     static func normalizedPath(_ path: String?) -> String? {
         guard let trimmed = path?.trimmingCharacters(in: .whitespacesAndNewlines), !trimmed.isEmpty else {
