@@ -16,9 +16,9 @@ public struct NotchView: View {
     public var body: some View {
         let shape = NotchShape(topRadius: model.topRadius, bottomRadius: model.bottomRadius)
         ZStack(alignment: .top) {
-            shape
-                .fill(Theme.Palette.background)
-                .shadow(color: .black.opacity(model.isOpen ? 0.45 : 0), radius: 18, y: 8)
+            // No shadow: the clip below would hide it anyway, and a blur on
+            // a shape that morphs every frame costs GPU time for nothing.
+            shape.fill(Theme.Palette.background)
 
             if model.isOpen {
                 OpenNotchContent(content: content)

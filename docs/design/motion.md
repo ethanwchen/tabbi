@@ -116,5 +116,6 @@ Under Reduce Motion there is no scale, stretch, slide or particle: things crossf
 
 - Use the tokens; never a literal duration or a linear animation.
 - Animate `opacity`, `offset` and `scaleEffect`; avoid animating blur or shadow on moving content.
+  The notch shape itself carries no shadow: it morphs on every frame of open and close, and its own clip would hide a shadow anyway.
 - Never loop an animation while idle: no `repeatForever`, no `phaseAnimator` without a trigger, and pause every `TimelineView` that is off-screen or has nothing to show.
 - Gate newer symbol effects: `.wiggle`, `.breathe` and `.rotate` need macOS 15, `.drawOn` needs macOS 26.
