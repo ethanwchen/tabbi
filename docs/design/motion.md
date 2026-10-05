@@ -34,6 +34,8 @@ Staggered entrances use `MotionTokens.stagger(index)`: 30 ms per item, capped at
 - Hovering the closed notch uses `Motion.hover`.
 - Switching tabs slides the new panel 24 pt in the direction of travel while it fades (`AnyTransition.tabSwitch`), so the header and the notch never move.
 - Every animation is a spring that SwiftUI retargets mid-flight, so a second click or a pointer leaving never waits for the first animation.
+- The closed-notch wings are equal in width, so the shape stays centered on the camera, and they are only as wide as the longer side needs (at most `NotchPreviewLayout.maxWingWidth`, 120 pt).
+  A preview with two parts puts one in each wing instead of one long line beside an empty wing: a meeting shows its icon and countdown on the left and its title on the right.
 
 ## Loading
 
