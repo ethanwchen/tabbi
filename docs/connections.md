@@ -16,6 +16,11 @@ It is written for a first-year student who has never opened Terminal.
 
 The rules live in `Sources/TabbiKitCore/Connections`: each integration maps its detected state to a `ConnectionStatus` (light, headline, detail, action, suggestion), so the views only draw what the core decides.
 
+`ConnectionKind` names each row, what it unlocks and the tabs it serves, so Connections lists only what the current tabs use.
+In the app, `Sources/Tabbi/Connections` holds `ConnectionsStore` (one per app, `ConnectionsStore.shared`), the read-only `ConnectionProbes` that look at the Mac, and the views.
+`ConnectionsList` is the embeddable list of rows: the Settings pane shows it for every relevant row, and onboarding or a tab's empty state can show it for just the rows it needs.
+The store checks only while a list is on screen, once when it appears and again each time Tabbi becomes active.
+
 ## Integrations
 
 | Row | Detected from | Steps from nothing to connected |

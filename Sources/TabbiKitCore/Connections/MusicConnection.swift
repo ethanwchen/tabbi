@@ -46,7 +46,7 @@ public struct MusicConnectionState: Hashable, Sendable {
                                     action: .openSettings(.automationPrivacy))
         case .notAsked, .appClosed:
             return ConnectionStatus(light: .notSetUp, headline: "\(name) isn't connected",
-                                    detail: "Connect it to play, pause and skip songs from the notch.",
+                                    detail: "Click Connect, then OK when your Mac asks if Tabbi can control \(name).",
                                     action: .askPermission(.automation(app)))
         }
     }

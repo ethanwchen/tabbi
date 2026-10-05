@@ -42,7 +42,7 @@ public struct CalendarConnectionState: Hashable, Sendable {
         switch access {
         case .notDetermined:
             return ConnectionStatus(light: .notSetUp, headline: "Calendar isn't connected",
-                                    detail: "Connect it to see today's classes and events in Tabbi.",
+                                    detail: "Click Connect, then OK when your Mac asks. It only asks once.",
                                     action: .askPermission(.calendar))
         case .denied:
             return ConnectionStatus(light: .needsStep, headline: "Calendar access is off",

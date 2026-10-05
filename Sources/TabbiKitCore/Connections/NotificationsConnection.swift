@@ -11,7 +11,7 @@ public enum NotificationAccess: String, CaseIterable, Hashable, Sendable {
         switch self {
         case .notDetermined:
             return ConnectionStatus(light: .notSetUp, headline: "Alerts are off",
-                                    detail: "Turn them on to hear when a focus block or break ends.",
+                                    detail: "Click Connect, then Allow when your Mac asks. It only asks once.",
                                     action: .askPermission(.notifications))
         case .denied:
             return ConnectionStatus(light: .needsStep, headline: "Alerts are blocked",
