@@ -54,13 +54,14 @@ public enum Theme {
         public static let metricSmall = Font.system(size: 13, weight: .semibold, design: .rounded).monospacedDigit()
     }
 
+    /// Shorthands for the motion system (`Motion`, docs/design/motion.md).
     public enum Motion {
-        /// Notch open/close.
-        public static let notch = Animation.spring(response: 0.42, dampingFraction: 0.80)
+        /// Notch opening. Closing uses `TabbiKit.Motion.close`.
+        public static let notch = TabbiKit.Motion.open
         /// Hover, selection, small state changes.
-        public static let snappy = Animation.spring(response: 0.26, dampingFraction: 0.86)
+        public static let snappy = TabbiKit.Motion.snappy
         /// Content swaps between modules.
-        public static let content = Animation.spring(response: 0.34, dampingFraction: 0.90)
+        public static let content = TabbiKit.Motion.content
     }
 
     public enum Layout {
