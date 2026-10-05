@@ -336,6 +336,12 @@ final class AnkiStore: ObservableObject {
         guard isStarted else { return }
         openNotice = outcome.isSuccess ? nil : outcome
         if outcome.isSuccess { actionError = nil }
+        if outcome == .addOnMissing {
+            // Anki is open but can't take the deck: copy the add-on code so
+            // the setup screen's next step is a paste.
+            NSPasteboard.general.clearContents()
+            NSPasteboard.general.setString(AnkiConnectClient.addOnCode, forType: .string)
+        }
         // A launch or a missing deck changes what Anki has to show.
         refresh()
     }

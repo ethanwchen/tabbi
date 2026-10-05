@@ -543,7 +543,7 @@ private struct AnkiSetupView: View {
     @ObservedObject var store: AnkiStore
 
     var body: some View {
-        let guide = AnkiSetupGuide(state: store.state, opening: store.opening)
+        let guide = AnkiSetupGuide(state: store.state, opening: store.opening, notice: store.openNotice)
         Card(padding: Theme.Spacing.l) {
             HStack(alignment: .center, spacing: Theme.Spacing.l) {
                 ZStack {
@@ -645,7 +645,7 @@ private struct AnkiSetupGuide {
     var steps: [String] = []
     var hint: String?
 
-    init(state: AnkiConnectionState, opening: AnkiOpening?) {
+    init(state: AnkiConnectionState, opening: AnkiOpening?, notice: AnkiOpenOutcome? = nil) {
         if let opening {
             // A click is launching Anki to open a deck: say which, so the
             // wait reads as progress rather than a setup step.
@@ -670,6 +670,17 @@ private struct AnkiSetupGuide {
             symbol = "hourglass"
             title = "Connecting to Anki…"
             message = "Waiting for Anki to finish loading its add-ons."
+        case .addOnMissing where notice == .addOnMissing:
+            // A click opened Anki but couldn't open its deck: name the one
+            // step left. The store already put the code on the clipboard.
+            symbol = "puzzlepiece.extension"
+            title = "One step to open decks from here"
+            message = "Install the AnkiConnect add-on to open decks directly."
+            steps = [
+                "In Anki, choose Tools › Add-ons › Get Add-ons…",
+                "Paste the code \(AnkiConnectClient.addOnCode) (copied) and click OK",
+                "Restart Anki, then click the deck again",
+            ]
         case .addOnMissing:
             symbol = "puzzlepiece.extension"
             title = "Add AnkiConnect to Anki"
