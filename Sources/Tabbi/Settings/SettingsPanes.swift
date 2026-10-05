@@ -40,6 +40,11 @@ struct GeneralSettingsPane: View {
                     Text("A light trackpad tap when the pointer reaches the notch.")
                 }
                 .help("Tap the trackpad when the pointer reaches the notch")
+                Toggle(isOn: $store.settings.hideInFullscreen) {
+                    Text("Hide in fullscreen")
+                    Text("Steps aside while a video, game or app is fullscreen.")
+                }
+                .help("Hide the notch while an app is fullscreen on its display. The shortcut still opens it.")
             } header: {
                 Text("Behavior")
             }
@@ -56,7 +61,13 @@ struct GeneralSettingsPane: View {
                         }
                     }
                 }
+                .disabled(!store.settings.showOnExternalDisplays)
                 .help("Choose which display shows the notch")
+                Toggle(isOn: $store.settings.showOnExternalDisplays) {
+                    Text("Show on external displays")
+                    Text("When off, the notch hides while the lid is closed.")
+                }
+                .help("Allow the notch on displays other than the built-in one")
             } header: {
                 Text("Display")
             } footer: {
@@ -65,7 +76,7 @@ struct GeneralSettingsPane: View {
         }
         .formStyle(.grouped)
         .scrollDisabled(true)
-        .frame(width: paneWidth, height: 388)
+        .frame(width: paneWidth, height: 496)
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didChangeScreenParametersNotification)) { _ in
             screens = DisplayOption.connectedScreens()
         }

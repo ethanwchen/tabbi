@@ -33,7 +33,10 @@ final class ClosetModule: NotchModule {
             runMode: context.runMode,
             profile: { [store] in store.profile },
             lines: { PetCoachMessages.lines(kitSettings: settings.activeKit?.defaults.settings(for: .closet)) },
-            screen: { NotchGeometry.screen(for: settings.settings.preferredDisplay) },
+            screen: {
+                NotchGeometry.screen(for: settings.settings.preferredDisplay,
+                                     showOnExternalDisplays: settings.settings.showOnExternalDisplays)
+            },
             pauseTimer: { focus.pause() },
             resumeTimer: { focus.start() }
         )

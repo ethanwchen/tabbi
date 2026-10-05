@@ -187,6 +187,8 @@ final class SettingsRepositoryTests: XCTestCase {
         XCTAssertTrue(settings.hapticsEnabled)
         XCTAssertEqual(settings.hotkey, .default)
         XCTAssertEqual(settings.preferredDisplay, .builtIn)
+        XCTAssertTrue(settings.showOnExternalDisplays)
+        XCTAssertTrue(settings.hideInFullscreen)
         XCTAssertTrue(settings.notchPreview.isEnabled)
         XCTAssertEqual(settings.notchPreview.enabledKinds, Set(TickerKind.allCases))
         XCTAssertEqual(settings.notchPreview.interval, .medium)
@@ -206,6 +208,8 @@ final class SettingsRepositoryTests: XCTestCase {
             hotkey: Hotkey(keyCode: 40, modifiers: [.command, .shift]),
             claudePathOverride: "/opt/claude",
             preferredDisplay: .specific(5),
+            showOnExternalDisplays: false,
+            hideInFullscreen: false,
             notchPreview: NotchPreviewSettings(isEnabled: false, disabledKinds: [.tasks, .claudeUsage], interval: .long),
             themeID: .sakura
         )

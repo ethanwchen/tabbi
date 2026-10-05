@@ -23,6 +23,10 @@ public struct AppSettings: Equatable, Sendable {
         didSet { claudePathOverride = Self.normalizedPath(claudePathOverride) }
     }
     public var preferredDisplay: DisplayPreference
+    /// When off, the notch only appears on a built-in display (see `NotchVisibility`).
+    public var showOnExternalDisplays: Bool
+    /// When on, the notch steps aside while an app is fullscreen on its screen.
+    public var hideInFullscreen: Bool
     public var notchPreview: NotchPreviewSettings
     /// The look of the open panel. Kept as saved even when this build lacks
     /// it (a theme from a newer Tabbi); `ThemeCatalog.resolve` draws the
@@ -45,6 +49,8 @@ public struct AppSettings: Equatable, Sendable {
         hotkey: Hotkey = .default,
         claudePathOverride: String? = nil,
         preferredDisplay: DisplayPreference = .builtIn,
+        showOnExternalDisplays: Bool = true,
+        hideInFullscreen: Bool = true,
         notchPreview: NotchPreviewSettings = .default,
         themeID: ThemeID = ThemeCatalog.defaultID
     ) {
@@ -58,6 +64,8 @@ public struct AppSettings: Equatable, Sendable {
         self.hotkey = hotkey
         self.claudePathOverride = Self.normalizedPath(claudePathOverride)
         self.preferredDisplay = preferredDisplay
+        self.showOnExternalDisplays = showOnExternalDisplays
+        self.hideInFullscreen = hideInFullscreen
         self.notchPreview = notchPreview
         self.themeID = themeID
     }
@@ -159,6 +167,8 @@ public struct SettingsRepository {
         static let hotkey = "settings.hotkey"
         static let claudePathOverride = "settings.claudePathOverride"
         static let preferredDisplay = "settings.preferredDisplay"
+        static let showOnExternalDisplays = "settings.showOnExternalDisplays"
+        static let hideInFullscreen = "settings.hideInFullscreen"
         static let previewEnabled = "settings.preview.enabled"
         static let previewDisabledKinds = "settings.preview.disabledKinds"
         static let previewInterval = "settings.preview.interval"
@@ -215,6 +225,8 @@ public struct SettingsRepository {
             claudePathOverride: defaults.string(forKey: Key.claudePathOverride),
             preferredDisplay: defaults.string(forKey: Key.preferredDisplay)
                 .flatMap(DisplayPreference.init(storageValue:)) ?? fallback.preferredDisplay,
+            showOnExternalDisplays: bool(Key.showOnExternalDisplays) ?? fallback.showOnExternalDisplays,
+            hideInFullscreen: bool(Key.hideInFullscreen) ?? fallback.hideInFullscreen,
             notchPreview: NotchPreviewSettings(
                 isEnabled: bool(Key.previewEnabled) ?? fallback.notchPreview.isEnabled,
                 // Unknown raw values (a kind removed in a later version) are dropped.
@@ -256,6 +268,8 @@ public struct SettingsRepository {
             defaults.removeObject(forKey: Key.claudePathOverride)
         }
         defaults.set(settings.preferredDisplay.storageValue, forKey: Key.preferredDisplay)
+        defaults.set(settings.showOnExternalDisplays, forKey: Key.showOnExternalDisplays)
+        defaults.set(settings.hideInFullscreen, forKey: Key.hideInFullscreen)
         defaults.set(settings.notchPreview.isEnabled, forKey: Key.previewEnabled)
         // Sorted so the stored value is stable across saves.
         defaults.set(settings.notchPreview.disabledKinds.map(\.rawValue).sorted(), forKey: Key.previewDisabledKinds)
