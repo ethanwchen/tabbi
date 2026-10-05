@@ -128,9 +128,9 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
                                .belly: c("#FBF4E8"), .eye: c("#3E8FD8"), .outline: c("#3A2A22")])
         case .britishShorthair:
             // Shaded silver: pale silver-beige with a taupe back, white chin
-            // and chest, gray-green eyes, and a pink-tan nose.
+            // and chest, clear blue eyes, and a pink-tan nose.
             return PetPalette([.furBase: c("#D6CEC3"), .furShade: c("#ADA398"), .furAccent: c("#756D66"),
-                               .belly: c("#F8F5EF"), .eye: c("#2C2E2B"), .eyeLight: c("#9AA889"),
+                               .belly: c("#F8F5EF"), .eye: c("#3F86D6"), .eyeLight: c("#FFFFFF"),
                                .nose: c("#D29A8A"), .blush: c("#E6B3AC"), .outline: c("#3A3330")])
         case .goldenRetriever:
             return PetPalette([.furBase: c("#E6AE52"), .furShade: c("#C98C36"), .furAccent: c("#F3CB82"),
