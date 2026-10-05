@@ -50,13 +50,13 @@ let inkDeep = RGB(0x0D1430)
 let inkLight = RGB(0x4660A8)
 /// The British Shorthair's pale silver-beige fur, its pink-tan nose and its
 /// grey-green eye.
-let fur = RGB(0xEAE1D4)
-let nose = RGB(0xD6978A)
-let iris = RGB(0xA3AD8C)
+let fur = RGB(0xE6DFD5)
+let nose = RGB(0xD29A8A)
+let iris = RGB(0x9AA889)
 /// The cat's shaded silver-beige, with a relative luminance near 0.5, so
 /// Finder's black label text reaches about 11:1 contrast without the pill
 /// glaring on the navy.
-let labelPill = RGB(0xCDBFAE)
+let labelPill = RGB(0xCAC1B5)
 
 // MARK: - Drawing helpers
 

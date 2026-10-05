@@ -38,21 +38,23 @@ struct RGB {
 /// Tinted looks; `.icns` can only carry one, so the others are exported as PNGs.
 /// The cat colours come from the maintainer's British Shorthair: a shaded silver coat,
 /// pale silver-beige on the face, taupe on the crown and back, white muzzle and chin.
+/// They match the pet sprite's British Shorthair (`PetBreed`), lit: its flat base fur
+/// sits between `fur` and `furShade` here, so the icon and the notch pet are one cat.
 struct Palette {
     var ground: RGB                     // background, top of the squircle
     var groundDeep: RGB                 // background, bottom
     var topLight: RGB                   // glow at the top of the background
     var topLightAlpha: CGFloat
-    var fur = RGB(0xEAE1D4)             // pale silver-beige face, lit
-    var furShade = RGB(0xCDBFAE)        // cheeks and jowls, shade side
-    var back = RGB(0xA89A89)            // taupe crown, the darker colour of the back
-    var ticking = RGB(0x7F7264)         // faint ticked lines on the forehead
-    var white = RGB(0xFCFAF6)           // muzzle, chin and chest
-    var innerEar = RGB(0xE7C3B4)        // the tab's label: the pink inside of the ear
+    var fur = RGB(0xE6DFD5)             // pale silver-beige face, lit
+    var furShade = RGB(0xCAC1B5)        // cheeks and jowls, shade side
+    var back = RGB(0xADA398)            // taupe crown, the darker colour of the back
+    var ticking = RGB(0x756D66)         // faint ticked lines on the forehead
+    var white = RGB(0xF8F5EF)           // muzzle, chin and chest
+    var innerEar = RGB(0xE6B3AC)        // the tab's label: the pink inside of the ear
     var sheen = RGB(0xFFFFFF)           // top light on the crown of the head
-    var iris = RGB(0xA3AD8C)            // grey-green eye
+    var iris = RGB(0x9AA889)            // grey-green eye
     var eye = RGB(0x2B2622)             // pupil, lid line and the checkmark wink
-    var nose = RGB(0xD6978A)            // pink-tan nose
+    var nose = RGB(0xD29A8A)            // pink-tan nose
 
     /// Candidate ground: deep navy, so the pale cat glows and the icon echoes the black notch.
     static let navy = Palette(ground: RGB(0x24335F), groundDeep: RGB(0x0D1430),

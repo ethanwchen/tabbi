@@ -53,7 +53,8 @@ What makes her recognizable, in order:
 4. Pale silver-beige face, white muzzle pads, chin and chest, and a small pink-tan nose.
 5. Small ears set wide apart, low on the corners of the head.
 
-The colours were sampled from the photo and brightened to studio light: fur `#EAE1D4`, jowl shade `#CDBFAE`, taupe crown `#A89A89`, ticking `#7F7264`, white `#FCFAF6`, iris `#A3AD8C`, nose `#D6978A`.
+The colours were first sampled from the photo and brightened to studio light, then in round 5 aligned with the pet sprite's British Shorthair palette (`PetBreed.britishShorthair`), so the icon and the cat in the notch are the same cat.
+The shipped colours: fur `#E6DFD5`, jowl shade `#CAC1B5`, taupe crown `#ADA398`, ticking `#756D66`, white `#F8F5EF`, inner ear `#E6B3AC`, iris `#9AA889`, nose `#D29A8A`.
 
 Each round is archived as a review sheet in `docs/brand/rounds/`: light desktop on top, dark below; 1024 px at half size, then 128, 32 and 16 px, then 4x pixel blow-ups of 32 and 16 px, and from round 2 on the reference photo on the right.
 Dock sheets put the icon between Apple's icons at 128 and 32 px.
@@ -136,6 +137,25 @@ Verdict:
 - The glyph keeps the deadpan wink in one colour: the heavy lid survives even at 16 px as a flat-topped hole.
 - The Light (blush), Dark and Tinted appearances were reviewed side by side: all three keep the cat recognizable, and the Tinted render separates the ears, crown and eyes by luminance alone.
 - `Resources/AppIcon.icns` and the glyph assets were regenerated from this round.
+
+### Round 5: one cat with the pet
+
+Sheets: `rounds/r5.png`, `rounds/r5-dock.png`, `rounds/r5-variants.png`.
+
+The pet sprite's British Shorthair was redrawn from the same photo in parallel.
+Its palette came out a little cooler and greyer than the icon's, so the two cats looked like relatives rather than the same animal.
+
+Changes from round 4, colour only (the shapes are unchanged):
+
+- Shared roles take the sprite's colours: taupe crown `#ADA398` (the sprite's fur shade), ticking `#756D66` (its accent), white `#F8F5EF` (its belly), inner ear `#E6B3AC` (its blush), iris `#9AA889` and nose `#D29A8A`.
+- The icon is lit and the sprite is flat, so the sprite's base fur `#D6CEC3` sits between the icon's lit fur `#E6DFD5` and its jowl shade `#CAC1B5`, which keeps the round modelling of the face.
+
+Verdict:
+
+- Next to the photo the coat now reads more silver and less cream, which is closer to the real cat.
+- On navy the face still glows: the contrast barely moves, and the 16 and 32 px renders are unchanged in shape and clarity.
+- The Light, Dark and Tinted appearances keep the cat recognizable; Tinted is unchanged because it carries its own greys.
+- `Resources/AppIcon.icns`, the 1024 px assets, every derived image and the DMG background were regenerated from this round.
 
 ## Assets
 
