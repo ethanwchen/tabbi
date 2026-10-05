@@ -7,18 +7,18 @@ import TabbiKitCore
 /// read-only: nothing here asks macOS for a permission or launches an app.
 /// The rules that turn what it finds into words live in TabbiKitCore.
 struct ConnectionProbes: Sendable {
-    /// The status of one connection right now.
-    func status(of kind: ConnectionKind) async -> ConnectionStatus {
+    /// Where one connection stands right now, with the checks behind it.
+    func diagnosis(of kind: ConnectionKind) async -> ConnectionDiagnosis {
         switch kind {
-        case .anki: await Self.anki().connectionStatus
-        case .calendar: Self.calendar().connectionStatus
-        case .claude: await Self.claude().connectionStatus
-        case .spotify: await Self.music(.spotify).connectionStatus
-        case .music: await Self.music(.music).connectionStatus
-        case .notifications: await Self.notifications().connectionStatus
-        case .doNotDisturb: await Self.focusShortcuts().connectionStatus
+        case .anki: await Self.anki().diagnosis
+        case .calendar: Self.calendar().diagnosis
+        case .claude: await Self.claude().diagnosis
+        case .spotify: await Self.music(.spotify).diagnosis
+        case .music: await Self.music(.music).diagnosis
+        case .notifications: await Self.notifications().diagnosis
+        case .doNotDisturb: await Self.focusShortcuts().diagnosis
         // Party's state lives in its own tab; Connections doesn't list it yet.
-        case .party: PartyConnectionState.notSetUp.connectionStatus
+        case .party: PartyConnectionState.notSetUp.diagnosis
         }
     }
 

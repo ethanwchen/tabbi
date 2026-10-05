@@ -7,12 +7,14 @@ enum ConnectionSheet: Identifiable, Hashable {
     /// `asSuggestion`: opened from a connected row's quiet extra button.
     case guide(ConnectionGuide, ConnectionKind, asSuggestion: Bool)
     case priming(ConnectionPermission, ConnectionKind)
+    /// "Something not working?": the checks behind the row, in plain words.
+    case troubleshoot(ConnectionKind)
 
     var id: Self { self }
 
     var kind: ConnectionKind {
         switch self {
-        case .guide(_, let kind, _), .priming(_, let kind): kind
+        case .guide(_, let kind, _), .priming(_, let kind), .troubleshoot(let kind): kind
         }
     }
 
@@ -33,6 +35,9 @@ enum ConnectionSheet: Identifiable, Hashable {
 struct ConnectionSheetView: View {
     let sheet: ConnectionSheet
     @ObservedObject var store: ConnectionsStore
+    /// Runs a row button pressed inside this sheet (the troubleshooter's
+    /// fix), which may close it and open the next sheet.
+    let perform: (ConnectionAction, ConnectionKind) -> Void
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -51,6 +56,13 @@ struct ConnectionSheetView: View {
                 dismiss()
                 Task { await store.request(permission, for: kind) }
             }
+        case .troubleshoot(let kind):
+            ConnectionTroubleshootView(
+                kind: kind, diagnosis: store.diagnosis(of: kind), isChecking: store.running.contains(kind),
+                perform: { perform($0, kind) }, checkAgain: { store.refresh([kind]) },
+                copyDetails: { store.details(of: kind).map(store.copy) }, close: { dismiss() }
+            )
+            .onAppear { store.refresh([kind]) }
         }
     }
 }
@@ -224,6 +236,134 @@ struct ConnectionPrimingView: View {
         }
         .padding(24)
         .frame(width: 460)
+    }
+}
+
+/// "Something not working?": runs the row's checks again and lists them
+/// as plain questions and answers, with the row's one fix as the main
+/// button and "Copy details" for writing to support.
+struct ConnectionTroubleshootView: View {
+    let kind: ConnectionKind
+    /// Nil until the first check finishes.
+    let diagnosis: ConnectionDiagnosis?
+    let isChecking: Bool
+    let perform: (ConnectionAction) -> Void
+    let checkAgain: () -> Void
+    let copyDetails: () -> Void
+    let close: () -> Void
+    @State private var copied = false
+
+    private var light: ConnectionLight { isChecking ? .checking : diagnosis?.status.light ?? .checking }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            ConnectionSheetHeader(kind: kind, light: light, title: "\(kind.title) checkup",
+                                  message: isChecking || diagnosis == nil
+                                      ? "Tabbi is checking \(kind.title) right now. This takes a second."
+                                      : diagnosis?.verdict ?? "")
+
+            if let diagnosis {
+                VStack(alignment: .leading, spacing: 12) {
+                    ForEach(Array(diagnosis.checks.enumerated()), id: \.offset) { _, check in
+                        TroubleshootCheckRow(check: check)
+                    }
+                }
+                .opacity(isChecking ? 0.5 : 1)
+            }
+
+            Divider()
+
+            HStack(spacing: 12) {
+                Button {
+                    copyDetails()
+                    copied = true
+                    Task {
+                        try? await Task.sleep(for: .seconds(1.5))
+                        copied = false
+                    }
+                } label: {
+                    Label(copied ? "Copied" : "Copy details", systemImage: copied ? "checkmark" : "doc.on.doc")
+                }
+                .disabled(diagnosis == nil)
+                .help("Copy what Tabbi found, to paste into a message if you ask someone for help")
+
+                Spacer(minLength: 8)
+
+                if let fix = diagnosis?.status.action, !isChecking {
+                    Button("Not now", action: close)
+                        .keyboardShortcut(.cancelAction)
+                        .help("Close the checkup")
+                    Button(fix.title) { perform(fix) }
+                        .buttonStyle(.borderedProminent)
+                        .keyboardShortcut(.defaultAction)
+                        .help(fix.help(for: kind))
+                } else {
+                    Button("Check again", action: checkAgain)
+                        .disabled(isChecking)
+                        .help("Run the checks for \(kind.title) again")
+                    Button("Done", action: close)
+                        .buttonStyle(.borderedProminent)
+                        .keyboardShortcut(.defaultAction)
+                        .help("Close the checkup")
+                }
+            }
+        }
+        .padding(24)
+        .frame(width: 460)
+        .fixedSize(horizontal: false, vertical: true)
+        .animation(.spring(duration: 0.3), value: diagnosis)
+        .animation(.spring(duration: 0.3), value: isChecking)
+    }
+}
+
+/// One question and its answer, with an icon for how it went.
+private struct TroubleshootCheckRow: View {
+    let check: ConnectionCheck
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 10) {
+            Image(systemName: check.outcome.symbol)
+                .foregroundStyle(check.outcome.tint)
+                .frame(width: 18)
+                .help(check.outcome.help)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(check.question)
+                    .fontWeight(.medium)
+                Text(check.answer)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .accessibilityElement(children: .combine)
+    }
+}
+
+extension ConnectionCheck.Outcome {
+    var symbol: String {
+        switch self {
+        case .passed: "checkmark.circle.fill"
+        case .failed: "exclamationmark.circle.fill"
+        case .skipped: "circle.dashed"
+        case .note: "info.circle.fill"
+        }
+    }
+
+    var tint: Color {
+        switch self {
+        case .passed: .green
+        case .failed: .orange
+        case .skipped: .secondary
+        case .note: .blue
+        }
+    }
+
+    var help: String {
+        switch self {
+        case .passed: "This part works"
+        case .failed: "This is what needs fixing"
+        case .skipped: "Not checked yet"
+        case .note: "Optional"
+        }
     }
 }
 

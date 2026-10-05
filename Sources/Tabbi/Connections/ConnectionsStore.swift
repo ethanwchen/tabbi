@@ -19,8 +19,13 @@ final class ConnectionsStore: ObservableObject {
     /// The rows Connections lists. Party joins once its tab shares its state.
     static let listed = ConnectionKind.allCases.filter { $0 != .party }
 
-    /// The latest answer for each connection; absent until its first check.
-    @Published private(set) var statuses: [ConnectionKind: ConnectionStatus] = [:]
+    /// The latest answer for each connection, with the checks behind it;
+    /// absent until its first check.
+    @Published private(set) var diagnoses: [ConnectionKind: ConnectionDiagnosis] = [:]
+    /// When each connection was last checked, for "Copy details".
+    private(set) var checkedAt: [ConnectionKind: Date] = [:]
+    /// The rows with a check running right now.
+    @Published private(set) var running: Set<ConnectionKind> = []
 
     let isDemo: Bool
     private let probes = ConnectionProbes()
@@ -32,14 +37,34 @@ final class ConnectionsStore: ObservableObject {
     init(runMode: RunMode) {
         isDemo = runMode.isDemo
         if isDemo {
-            statuses = Dictionary(uniqueKeysWithValues: ConnectionKind.allCases.map { ($0, $0.demoStatus) })
+            diagnoses = Dictionary(uniqueKeysWithValues: ConnectionKind.allCases.map { ($0, $0.demoDiagnosis) })
         }
     }
 
     /// The status to show: the latest answer, or "checking" before the first.
     func status(of kind: ConnectionKind) -> ConnectionStatus {
-        statuses[kind] ?? ConnectionStatus(light: .checking, headline: "Checking \(kind.title)",
-                                           detail: "This takes a second.")
+        diagnoses[kind]?.status ?? ConnectionStatus(light: .checking, headline: "Checking \(kind.title)",
+                                                    detail: "This takes a second.")
+    }
+
+    /// The troubleshooter's checks, or nil before the first check finishes.
+    func diagnosis(of kind: ConnectionKind) -> ConnectionDiagnosis? {
+        diagnoses[kind]
+    }
+
+    /// The text "Copy details" puts on the clipboard for support.
+    func details(of kind: ConnectionKind) -> String? {
+        guard let diagnosis = diagnoses[kind] else { return nil }
+        let info = Bundle.main.infoDictionary
+        let version = (info?["CFBundleShortVersionString"] as? String).map { version in
+            (info?["CFBundleVersion"] as? String).map { "\(version) (\($0))" } ?? version
+        } ?? "development build"
+        let system = ProcessInfo.processInfo.operatingSystemVersion
+        return diagnosis.details(
+            appVersion: isDemo ? "\(version), demo" : version,
+            systemVersion: "\(system.majorVersion).\(system.minorVersion).\(system.patchVersion)",
+            checkedAt: checkedAt[kind] ?? Date()
+        )
     }
 
     // MARK: The hub
@@ -82,11 +107,14 @@ final class ConnectionsStore: ObservableObject {
         guard !isDemo else { return }
         for kind in kinds {
             checks[kind]?.cancel()
+            running.insert(kind)
             checks[kind] = Task { [weak self, probes] in
-                let status = await probes.status(of: kind)
+                let diagnosis = await probes.diagnosis(of: kind)
                 guard !Task.isCancelled, let self else { return }
                 checks[kind] = nil
-                statuses[kind] = status
+                running.remove(kind)
+                diagnoses[kind] = diagnosis
+                checkedAt[kind] = Date()
             }
         }
     }

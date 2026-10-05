@@ -27,6 +27,23 @@ extension SnapshotRenderer {
             let view = ConnectionPrimingView(kind: kind, priming: permission.priming, proceed: {})
             await write(render(view), named: "connections-priming-\(name)", to: outputDirectory)
         }
+
+        let checkups: [(String, ConnectionDiagnosis)] = [
+            ("anki-closed", AnkiConnectionState.notRunning.diagnosis),
+            ("anki-addon", AnkiConnectionState.addOnMissing.diagnosis),
+            ("calendar-connected", CalendarConnectionState(access: .fullAccess, accounts: ["iCloud"]).diagnosis),
+            ("calendar-denied", CalendarConnectionState(access: .denied).diagnosis),
+            ("claude-missing", ClaudeConnectionState.notInstalled.diagnosis),
+            ("spotify-denied", MusicConnectionState(app: .spotify, isInstalled: true, permission: .denied).diagnosis),
+            ("dnd-one-left", FocusShortcutsState(onName: FocusSettings.suggestedOnShortcut,
+                                                 offName: FocusSettings.suggestedOffShortcut,
+                                                 installed: [FocusSettings.suggestedOnShortcut]).diagnosis),
+        ]
+        for (name, diagnosis) in checkups {
+            let view = ConnectionTroubleshootView(kind: diagnosis.kind, diagnosis: diagnosis, isChecking: false,
+                                                  perform: { _ in }, checkAgain: {}, copyDetails: {}, close: {})
+            await write(render(view), named: "connections-checkup-\(name)", to: outputDirectory)
+        }
     }
 
     /// Presents the view as a real sheet on an off-screen window and draws

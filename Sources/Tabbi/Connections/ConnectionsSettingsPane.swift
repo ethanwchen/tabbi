@@ -34,6 +34,9 @@ struct ConnectionsList: View {
     let kinds: [ConnectionKind]
     @ObservedObject var store: ConnectionsStore = .shared
     @State private var sheet: ConnectionSheet?
+    /// A sheet to open once the current one has closed (the troubleshooter
+    /// handing over to a walkthrough), since only one shows at a time.
+    @State private var nextSheet: ConnectionSheet?
 
     var body: some View {
         Group {
@@ -43,19 +46,38 @@ struct ConnectionsList: View {
             } else {
                 ForEach(kinds) { kind in
                     let status = store.status(of: kind)
-                    ConnectionRow(kind: kind, status: status) { action in
-                        if let next = ConnectionSheet(action, for: kind, status: status) {
-                            sheet = next
-                        } else {
-                            store.perform(action, for: kind)
-                        }
-                    }
+                    ConnectionRow(kind: kind, status: status, perform: { perform($0, for: kind) },
+                                  troubleshoot: { sheet = .troubleshoot(kind) })
                 }
             }
         }
         .onAppear(perform: store.beginWatching)
         .onDisappear(perform: store.endWatching)
-        .sheet(item: $sheet) { ConnectionSheetView(sheet: $0, store: store) }
+        .sheet(item: $sheet, onDismiss: showNextSheet) {
+            ConnectionSheetView(sheet: $0, store: store, perform: { perform($0, for: $1) })
+        }
+    }
+
+    /// Runs a row's button, opening its sheet when it has one. From inside
+    /// a sheet, the current sheet closes first and the next follows.
+    private func perform(_ action: ConnectionAction, for kind: ConnectionKind) {
+        let status = store.status(of: kind)
+        guard let next = ConnectionSheet(action, for: kind, status: status) else {
+            store.perform(action, for: kind)
+            return
+        }
+        if sheet == nil {
+            sheet = next
+        } else {
+            nextSheet = next
+            sheet = nil
+        }
+    }
+
+    private func showNextSheet() {
+        guard let next = nextSheet else { return }
+        nextSheet = nil
+        sheet = next
     }
 }
 
@@ -65,6 +87,8 @@ struct ConnectionRow: View {
     let kind: ConnectionKind
     let status: ConnectionStatus
     let perform: (ConnectionAction) -> Void
+    /// Opens the "Something not working?" troubleshooter.
+    let troubleshoot: () -> Void
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
@@ -90,6 +114,11 @@ struct ConnectionRow: View {
                         .font(.callout)
                         .padding(.top, 2)
                 }
+                Button("Something not working?", action: troubleshoot)
+                    .buttonStyle(.link)
+                    .font(.caption)
+                    .padding(.top, 2)
+                    .help("Run a checkup on \(kind.title) and see what's wrong, in plain words")
             }
             .fixedSize(horizontal: false, vertical: true)
 

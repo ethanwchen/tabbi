@@ -40,6 +40,20 @@ So Tabbi copies the code 2055492159, opens Anki and shows the three clicks.
 Claude's setup needs Terminal once, because the official installer is a single line.
 The walkthrough copies that line, opens Terminal and says exactly what to press; signing in uses `claude auth login`, which opens Claude's own sign-in page in the browser, so Tabbi never sees a password or key.
 
+## Something not working?
+
+Every row has a "Something not working?" link that opens a checkup sheet.
+It runs the row's checks again and lists them as plain questions with plain answers, such as "Is Anki open? No. Tabbi can only see your cards while Anki is open."
+Checks that depend on an earlier one are skipped once that one fails ("Not checked yet. Fix the step above first."), so the first problem is always the one to fix.
+The sheet's main button is the row's own fix, and it hands over to the walkthrough or priming screen when the fix needs one.
+
+`ConnectionDiagnosis` (core) holds the row's status, its `ConnectionCheck`s and a short technical label such as `anki.notRunning`.
+Each integration's state gives one through `diagnosis`, and `ConnectionDiagnosisTests` checks that the checks always agree with the light and stay jargon-free.
+"Copy details" puts a plain-text report on the clipboard (the connection, its light, the time, the Tabbi and macOS versions, the label and every check) for a message to support.
+The report never includes account names or addresses: the calendar only reports how many accounts it found and whether one is Google.
+
+`swift run Tabbi --snapshot <dir>` writes several checkups as `connections-checkup-<state>.png`.
+
 ## Integrations
 
 | Row | Detected from | Steps from nothing to connected |

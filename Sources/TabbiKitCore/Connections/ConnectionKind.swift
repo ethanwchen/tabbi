@@ -79,18 +79,21 @@ public enum ConnectionKind: String, CaseIterable, Identifiable, Hashable, Sendab
 
     /// A believable spread of states for demo mode and snapshots: most
     /// rows connected, a couple with one step left.
-    public var demoStatus: ConnectionStatus {
+    public var demoStatus: ConnectionStatus { demoDiagnosis.status }
+
+    /// The troubleshooter's checks for `demoStatus`.
+    public var demoDiagnosis: ConnectionDiagnosis {
         switch self {
-        case .calendar: CalendarConnectionState(access: .fullAccess, accounts: ["iCloud", "Google"]).connectionStatus
-        case .anki: AnkiConnectionState.ready.connectionStatus
-        case .spotify: MusicConnectionState(app: .spotify, isInstalled: true, permission: .granted).connectionStatus
-        case .music: MusicConnectionState(app: .music, isInstalled: true, permission: .notAsked).connectionStatus
-        case .notifications: NotificationAccess.allowed.connectionStatus
+        case .calendar: CalendarConnectionState(access: .fullAccess, accounts: ["iCloud", "Google"]).diagnosis
+        case .anki: AnkiConnectionState.ready.diagnosis
+        case .spotify: MusicConnectionState(app: .spotify, isInstalled: true, permission: .granted).diagnosis
+        case .music: MusicConnectionState(app: .music, isInstalled: true, permission: .notAsked).diagnosis
+        case .notifications: NotificationAccess.allowed.diagnosis
         case .doNotDisturb:
             FocusShortcutsState(onName: "Tabbi Focus On", offName: "Tabbi Focus Off",
-                                installed: ["Tabbi Focus On"]).connectionStatus
-        case .claude: ClaudeConnectionState.ready.connectionStatus
-        case .party: PartyConnectionState.connected(friendCode: "PUFF-42").connectionStatus
+                                installed: ["Tabbi Focus On"]).diagnosis
+        case .claude: ClaudeConnectionState.ready.diagnosis
+        case .party: PartyConnectionState.connected(friendCode: "PUFF-42").diagnosis
         }
     }
 }
