@@ -23,6 +23,11 @@ final class AnkiModule: NotchModule {
         AnyView(AnkiPanel(store: store))
     }
 
+    /// Onboarding's Anki step: connect to AnkiConnect without leaving the notch.
+    func makeSetupView(for step: OnboardingSetupStep, done: @escaping () -> Void) -> AnyView? {
+        step == .anki ? AnyView(AnkiConnectSetupView(store: store)) : nil
+    }
+
     func start() { store.start() }
     func stop() { store.stop() }
 

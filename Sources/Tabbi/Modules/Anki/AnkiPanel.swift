@@ -71,7 +71,7 @@ private struct AnkiDeckView: View {
 
 /// Cards due today inside a ring of reviewed versus due, with the
 /// new / learning / review split beside it.
-private struct DueCard: View {
+struct DueCard: View {
     let summary: AnkiSummary
 
     private static let diameter: CGFloat = 92
@@ -420,7 +420,7 @@ private struct SyncButton: View {
 
 // MARK: - Loading and setup
 
-private struct AnkiLoadingView: View {
+struct AnkiLoadingView: View {
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
             LoadingArc()
@@ -435,12 +435,16 @@ private struct AnkiLoadingView: View {
 /// One screen per setup step: what's wrong in a line, the steps to fix it,
 /// and a button for the next action. The panel flips to the deck view on
 /// its own a few seconds after the step is done.
-private struct AnkiSetupView: View {
+struct AnkiSetupView: View {
     @ObservedObject var store: AnkiStore
+    /// Fits onboarding's shorter body (under its footer): a step list
+    /// replaces the message line and the rows sit closer.
+    var isCompact = false
 
     var body: some View {
         let guide = AnkiSetupGuide(state: store.state)
-        Card(padding: Theme.Spacing.l) {
+        let showsMessage = !(isCompact && !guide.steps.isEmpty)
+        Card(padding: isCompact ? Theme.Spacing.m : Theme.Spacing.l) {
             HStack(alignment: .center, spacing: Theme.Spacing.l) {
                 ZStack {
                     RoundedRectangle(cornerRadius: Theme.Radius.l, style: .continuous)
@@ -460,20 +464,23 @@ private struct AnkiSetupView: View {
                         Text(guide.title)
                             .font(Theme.Typography.title)
                             .foregroundStyle(Theme.Palette.primaryText)
-                        Text(guide.message)
-                            .font(Theme.Typography.body)
-                            .foregroundStyle(Theme.Palette.secondaryText)
-                            .fixedSize(horizontal: false, vertical: true)
+                        if showsMessage {
+                            Text(guide.message)
+                                .font(Theme.Typography.body)
+                                .foregroundStyle(Theme.Palette.secondaryText)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
                     }
+                    .help(showsMessage ? "" : guide.message)
                     if !guide.steps.isEmpty {
-                        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+                        VStack(alignment: .leading, spacing: isCompact ? Theme.Spacing.xxs : Theme.Spacing.xs) {
                             ForEach(Array(guide.steps.enumerated()), id: \.offset) { index, step in
                                 SetupStep(number: index + 1, text: step)
                             }
                         }
                     }
                     actions(guide)
-                        .padding(.top, Theme.Spacing.xs)
+                        .padding(.top, isCompact ? 0 : Theme.Spacing.xs)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
