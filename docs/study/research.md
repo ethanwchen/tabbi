@@ -271,7 +271,7 @@ Privacy-friendly nudge design:
 2. The user chooses the distracting-apps list. Nothing is pre-filled from analytics. Suggest common ones (Messages, Discord, YouTube in Safari can't be detected without titles, so be honest about that).
 3. All of this stays on the device. Never send app names to the party backend. Share only coarse state (`studying` / `break` / `idle`).
 4. Gentle escalation: the pet looks over after 30 s in a distracting app, does a speech bubble or nudge after 2 min, and offers to pause after 5 min. Never shame, never use a loud sound, and limit nudges (e.g. at most one every 10 minutes).
-5. Idle is not "distracted". Reading a textbook or paper looks idle. Ask ("Still studying? 👀 Yes / Pause"); never auto-penalise.
+5. Idle is not "distracted". Reading a textbook or paper looks idle. Ask ("Still studying? Yes / Pause"); never auto-penalise.
 6. Allow "focus apps" (Anki, UWorld, browser) to be whitelisted, and a "Do not nudge" toggle per session.
 7. Respect the system Focus modes and screen lock (pause automatically, and don't count the time).
 

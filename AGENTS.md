@@ -14,6 +14,7 @@ swift run Tabbi --snapshot snapshots         # render every notch state to PNG
 swift run Tabbi --snapshot snapshots-medicine --kit medicine  # same, for another kit's tabs
 scripts/run.sh [edition]                     # bundle + launch the real app (or an edition)
 scripts/bundle.sh                            # build/Tabbi.app
+scripts/check-style.sh                       # no em dashes or emojis (swift test runs it too)
 ```
 
 You cannot see the screen. **After any UI change, run the snapshot command and
@@ -172,6 +173,17 @@ A new vertical is its own files plus one line in `ModuleList.swift`.
 
 The module itself needs no edits to `AppServices`, the ticker, Today, `Theme`, layouts or the catalog.
 If a module seems to need one, the provider protocols are missing something: extend them in a separate change rather than special-casing the module.
+
+## Writing style
+
+- No emojis and no em dashes anywhere in the repo: UI strings, README and
+  docs, code comments, kit descriptions, commit messages and release notes.
+  Use a plain hyphen, a period, a comma, a colon or parentheses instead.
+- `scripts/check-style.sh` fails on either character in a tracked text file,
+  and `WritingStyleTests` runs it in `swift test`. A test that needs one as
+  input data writes it as an escape (`"\u{1F3A7}"`).
+- The product is called Tabbi. NotchDeck and StudyNotch are old names; the
+  StudyNotch edition is now the Med School kit.
 
 ## Design rules
 
