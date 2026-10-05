@@ -5,7 +5,7 @@ import TabbiKitCore
 ///
 /// Make a new value (a new `id`) for each real event; `.celebration(_:)`
 /// plays a value once when its id changes. Ask a `CelebrationPacer` first, so
-/// bursts stay rare enough to feel earned.
+/// bursts stay rare enough to feel earned (`CelebrationCenter` does both).
 public struct Celebration: Identifiable, Equatable {
     public let id: UUID
     public let tier: CelebrationTier
@@ -13,10 +13,15 @@ public struct Celebration: Identifiable, Equatable {
     public let colors: [Color]
     /// Where the burst starts, as a point in the overlaid view.
     public let origin: UnitPoint
+    /// When the event happened. A view that appears mid-celebration (the
+    /// user switched tabs) picks the burst up where it is instead of
+    /// replaying it, and one that appears later shows nothing.
+    public let date: Date
 
     public init(tier: CelebrationTier, style: CelebrationStyle, accent: Color,
-                origin: UnitPoint = UnitPoint(x: 0.5, y: 0.6), id: UUID = UUID()) {
+                origin: UnitPoint = UnitPoint(x: 0.5, y: 0.6), date: Date = Date(), id: UUID = UUID()) {
         self.id = id
+        self.date = date
         self.tier = tier
         self.style = style
         self.colors = Self.palette(accent: accent, style: style)
@@ -168,10 +173,12 @@ private struct CelebrationOverlay: ViewModifier {
             }
             .task(id: celebration?.id) {
                 guard let celebration else { return }
-                let start = Date()
-                playing = (celebration, start)
+                let start = celebration.date
                 let length = reduceMotion ? CelebrationGlow.duration : celebration.burst.duration
-                try? await Task.sleep(for: .seconds(length))
+                let left = length - Date().timeIntervalSince(start)
+                guard left > 0 else { return }
+                playing = (celebration, start)
+                try? await Task.sleep(for: .seconds(left))
                 guard !Task.isCancelled, playing?.start == start else { return }
                 playing = nil
             }

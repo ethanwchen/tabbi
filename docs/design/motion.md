@@ -65,8 +65,13 @@ Celebrations confirm a real event; they are brief, optional and never block inpu
 - `CelebrationBurst` is the particle model: a seeded set of particles whose position, rotation, scale and opacity are pure functions of elapsed time (a fast launch within 35 degrees of vertical, gravity slowed by drag to a 200 pt/s fall, a pop in over 120 ms and a fade over the last 40% of each life).
   Nothing changes per frame, so the same moment always draws the same picture.
 - Styles are `.confetti`, `.sparkles`, `.hearts` and `.pawPrints`, each drawn from paths (no image assets) in the module accent plus companions from the app palette.
-- In a view, set a new `Celebration(tier:style:accent:)` and add `.celebration(value)` to the panel.
+- A module celebrates a real event through `context.celebrations` (`CelebrationCenter` in `Sources/TabbiKit/Components/Celebration/`): `celebrations.celebrate(.burst, style: .confetti, accent: <Module>Module.descriptor.accentColor)`.
+  The center holds the one app-wide pacer, plays nothing while the notch is closed (an unseen event uses up no allowance), taps a `.levelChange` haptic when Settings allows haptics (only felt with a finger on a Force Touch trackpad), and returns the tier that played, or nil so the caller can fall back to its symbol bounce.
+  Snapshot runs celebrate nothing.
+- Every open panel is a stage (`.celebrationStage(center)`, added once in `ModuleViews.notchContent`), so the burst plays over whichever panel is open.
   The overlay draws with `Canvas` from a `TimelineView` capped at 60 fps, ignores hits, and leaves the hierarchy when the last particle is gone.
+  A celebration keeps the date of its event: a panel that appears mid-burst (a tab switch) picks it up where it is, and one that appears later shows nothing.
+- Wired today: a focus session of the shared Pomodoro that finishes while a panel is open plays a confetti burst.
 - Under Reduce Motion nothing moves: a soft glow of the accent brightens and fades in place over 0.9 s (`CelebrationGlow`).
 - `--snapshot` renders a frame strip for each style and tier (`motion-celebration-<style>-<tier>.png`) and for the glow (`motion-celebration-reduced.png`).
 

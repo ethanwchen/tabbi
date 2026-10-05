@@ -77,7 +77,9 @@ extension ModuleContext {
     /// running while the notch is closed or either tab is off. Its finished
     /// phases go to the activity log under the Focus module's id.
     var focusTimer: FocusStore {
-        shared.resolve { FocusStore(activity: activityLog, focusMode: focusMode, runMode: runMode) }
+        shared.resolve {
+            FocusStore(activity: activityLog, focusMode: focusMode, celebrations: celebrations, runMode: runMode)
+        }
     }
 
     /// Focus mode (sound, playlist, Do Not Disturb), which follows the

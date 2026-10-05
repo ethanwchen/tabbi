@@ -1,5 +1,6 @@
 import AppKit
 import Combine
+import TabbiKit
 import TabbiKitCore
 @preconcurrency import UserNotifications
 
@@ -31,6 +32,8 @@ final class FocusStore: ObservableObject {
     private let storage: FocusTimerStorage
     /// Where finished focus stretches and breaks are logged, as the Focus module's.
     private let activity: ActivityLog?
+    /// Celebrates a focus session that just finished; nil in tests.
+    private let celebrations: CelebrationCenter?
     /// The panels showing the timer right now (Today, Focus). Tracked per
     /// viewer because switching tabs may show the new panel before the old
     /// one disappears.
@@ -40,9 +43,10 @@ final class FocusStore: ObservableObject {
     private var phaseEndTimer: Timer?
     private let notifications: FocusNotifications?
 
-    init(activity: ActivityLog? = nil, focusMode: FocusController? = nil, runMode: RunMode,
-         defaults: UserDefaults = .standard) {
+    init(activity: ActivityLog? = nil, focusMode: FocusController? = nil, celebrations: CelebrationCenter? = nil,
+         runMode: RunMode, defaults: UserDefaults = .standard) {
         self.activity = activity
+        self.celebrations = celebrations
         storage = FocusTimerStorage(defaults: defaults)
         self.focusMode = focusMode
         isDemo = runMode.isDemo
@@ -146,6 +150,9 @@ final class FocusStore: ObservableObject {
         // Stale ends (the Mac was asleep) already got their notification; stay quiet.
         if !isEphemeral, let last = completions.last, now.timeIntervalSince(last.endedAt) < 60 {
             Self.playChime()
+            if last.phase == .focus {
+                celebrations?.celebrate(.burst, style: .confetti, accent: FocusModule.descriptor.accentColor)
+            }
         }
         scheduleSideEffects(withdrawingPending: false)
         updateTicker()
