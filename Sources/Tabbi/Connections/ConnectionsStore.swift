@@ -25,6 +25,7 @@ final class ConnectionsStore: ObservableObject {
     let isDemo: Bool
     private let probes = ConnectionProbes()
     private var checks: [ConnectionKind: Task<Void, Never>] = [:]
+    private var waiting: [ConnectionKind: Task<Void, Never>] = [:]
     private var watchers = 0
     private var activationObserver: NSObjectProtocol?
 
@@ -90,9 +91,46 @@ final class ConnectionsStore: ObservableObject {
         }
     }
 
+    // MARK: Waiting for a walkthrough
+
+    /// While a walkthrough is open, checks its row every few seconds, so
+    /// the sheet turns green as soon as the steps work, even when the user
+    /// never leaves Tabbi (Anki and Terminal can sit beside it).
+    func beginWaiting(for kind: ConnectionKind) {
+        waiting[kind]?.cancel()
+        guard !isDemo else { return }
+        waiting[kind] = Task { [weak self] in
+            while !Task.isCancelled {
+                self?.refreshIfIdle(kind)
+                try? await Task.sleep(for: .seconds(3))
+            }
+        }
+    }
+
+    /// Checks a row unless a check is already running, so a slow probe
+    /// (Claude's takes a moment) isn't restarted before it can answer.
+    private func refreshIfIdle(_ kind: ConnectionKind) {
+        guard checks[kind] == nil else { return }
+        refresh([kind])
+    }
+
+    func endWaiting(for kind: ConnectionKind) {
+        waiting[kind]?.cancel()
+        waiting[kind] = nil
+    }
+
+    /// The walkthrough for a guide, naming the user's own shortcuts.
+    func walkthrough(for guide: ConnectionGuide) -> ConnectionWalkthrough {
+        guard guide == .focusShortcuts, !isDemo else { return guide.walkthrough() }
+        let names = ConnectionProbes.focusShortcutNames()
+        return guide.walkthrough(onShortcut: names.on, offShortcut: names.off)
+    }
+
     // MARK: Actions
 
-    /// Runs a row's button. Demo runs only pretend.
+    /// Runs a row's button. Guides and permission prompts open a sheet in
+    /// the list first (see `ConnectionsList`), which then calls `run` or
+    /// `request`. Demo runs only pretend.
     func perform(_ action: ConnectionAction, for kind: ConnectionKind) {
         guard !isDemo else { return }
         switch action {
@@ -102,19 +140,36 @@ final class ConnectionsStore: ObservableObject {
             open(app, for: kind)
         case .openSettings(let link):
             NSWorkspace.shared.open(link.url)
-        case .checkAgain:
+        case .checkAgain, .setUp, .showGuide:
             refresh([kind])
         case .askPermission(let permission):
             Task { await request(permission, for: kind) }
-        case .showGuide(let guide):
-            showFallback(for: guide, kind: kind)
-        case .setUp:
-            refresh([kind])
         }
     }
 
+    /// Runs a walkthrough's start button.
+    func run(_ step: ConnectionStepAction, for kind: ConnectionKind) {
+        guard !isDemo else { return }
+        switch step {
+        case .copyAndOpen(let text, let app):
+            copy(text)
+            open(app, for: kind)
+        case .openApp(let app):
+            open(app, for: kind)
+        case .openSettings(let link):
+            NSWorkspace.shared.open(link.url)
+        }
+    }
+
+    /// Puts text on the clipboard (a code or line from a walkthrough).
+    func copy(_ text: String) {
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(text, forType: .string)
+    }
+
     /// Opens an app, then checks again once it had time to start (Anki
-    /// takes a few seconds before its add-on answers).
+    /// takes a few seconds before its add-on answers). Terminal and
+    /// Shortcuts always come with the Mac.
     private func open(_ app: ConnectionApp, for kind: ConnectionKind) {
         guard let url = ConnectionProbes.installedURL(of: app) else {
             if let page = app.downloadPage { NSWorkspace.shared.open(page) }
@@ -130,7 +185,9 @@ final class ConnectionsStore: ObservableObject {
     }
 
     /// Lets macOS show its permission prompt, then checks the answer.
-    private func request(_ permission: ConnectionPermission, for kind: ConnectionKind) async {
+    /// Call it from the priming screen's Continue button.
+    func request(_ permission: ConnectionPermission, for kind: ConnectionKind) async {
+        guard !isDemo else { return }
         switch permission {
         case .calendar:
             _ = try? await EKEventStore().requestFullAccessToEvents()
@@ -148,22 +205,5 @@ final class ConnectionsStore: ObservableObject {
             _ = await ConnectionProbes.automationPermission(for: bundleID, askIfNeeded: true)
         }
         refresh([kind])
-    }
-
-    /// Until the walkthroughs exist, each guide button does its single most
-    /// useful step.
-    private func showFallback(for guide: ConnectionGuide, kind: ConnectionKind) {
-        switch guide {
-        case .ankiAddOn, .ankiAddOnUpdate, .ankiAccess:
-            NSPasteboard.general.clearContents()
-            NSPasteboard.general.setString(AnkiConnectClient.addOnCode, forType: .string)
-            open(.anki, for: kind)
-        case .googleCalendar:
-            NSWorkspace.shared.open(SystemSettingsLink.internetAccounts.url)
-        case .claudeInstall, .claudeSignIn:
-            NSWorkspace.shared.open(ClaudeConnectionState.installPage)
-        case .focusShortcuts:
-            NSWorkspace.shared.open(URL(fileURLWithPath: "/System/Applications/Shortcuts.app"))
-        }
     }
 }

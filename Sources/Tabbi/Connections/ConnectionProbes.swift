@@ -149,14 +149,19 @@ struct ConnectionProbes: Sendable {
 
     /// Lists the user's shortcuts and looks for the two that Focus runs.
     private static func focusShortcuts() async -> FocusShortcutsState {
-        let saved = FocusSettingsRepository().load()
-        let onName = saved.onShortcut.isEmpty ? FocusSettings.suggestedOnShortcut : saved.onShortcut
-        let offName = saved.offShortcut.isEmpty ? FocusSettings.suggestedOffShortcut : saved.offShortcut
+        let (onName, offName) = focusShortcutNames()
         let output = await Task.detached(priority: .userInitiated) {
             run(FocusShortcutRunner.systemExecutable, ["list"])
         }.value
         return FocusShortcutsState(onName: onName, offName: offName,
                                    installed: FocusShortcutsState.parseList(output ?? ""))
+    }
+
+    /// The names Focus runs: the user's own, or the suggested ones.
+    static func focusShortcutNames() -> (on: String, off: String) {
+        let saved = FocusSettingsRepository().load()
+        return (saved.onShortcut.isEmpty ? FocusSettings.suggestedOnShortcut : saved.onShortcut,
+                saved.offShortcut.isEmpty ? FocusSettings.suggestedOffShortcut : saved.offShortcut)
     }
 
     // MARK: Running a probe

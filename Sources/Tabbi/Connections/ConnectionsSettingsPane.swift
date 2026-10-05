@@ -33,6 +33,7 @@ struct ConnectionsSettingsPane: View {
 struct ConnectionsList: View {
     let kinds: [ConnectionKind]
     @ObservedObject var store: ConnectionsStore = .shared
+    @State private var sheet: ConnectionSheet?
 
     var body: some View {
         Group {
@@ -41,14 +42,20 @@ struct ConnectionsList: View {
                     .foregroundStyle(.secondary)
             } else {
                 ForEach(kinds) { kind in
-                    ConnectionRow(kind: kind, status: store.status(of: kind)) { action in
-                        store.perform(action, for: kind)
+                    let status = store.status(of: kind)
+                    ConnectionRow(kind: kind, status: status) { action in
+                        if let next = ConnectionSheet(action, for: kind, status: status) {
+                            sheet = next
+                        } else {
+                            store.perform(action, for: kind)
+                        }
                     }
                 }
             }
         }
         .onAppear(perform: store.beginWatching)
         .onDisappear(perform: store.endWatching)
+        .sheet(item: $sheet) { ConnectionSheetView(sheet: $0, store: store) }
     }
 }
 

@@ -23,6 +23,23 @@ A tab whose problem takes more than one click calls `ConnectionsStore.shared.sho
 Today's Up next card and Plan my day do this when the calendar can't be reached from the notch or Claude is missing, and Ask Claude does it when Claude is missing, each with a single "Connect calendar" or "Set up Claude" button.
 The store checks only while a list is on screen, once when it appears and again each time Tabbi becomes active.
 
+## Walkthroughs and priming screens
+
+A step that takes more than one click opens a sheet from the row, and `ConnectionsList` presents it, so onboarding gets the same sheets by embedding the list.
+`ConnectionGuide.walkthrough()` (core) gives each guide a title, a one-sentence intro, at most three numbered steps with a symbol each, an optional value to copy (the AnkiConnect code, the Claude setup line, the shortcut names) and exactly one start button, such as "Copy code and open Anki".
+While a walkthrough is open, the store checks its row every 3 seconds, so the sheet turns green ("You're all set") and offers Done without the user reporting back.
+`ConnectionStatus.finishes(_:openedAsSuggestion:)` decides when that is: a guide opened to fix a problem is done once the row is connected, and Add Google Calendar, opened from a row that already works, is done once a Google account shows up.
+
+`ConnectionPermission.priming` is the screen before a macOS prompt: what the Mac will ask, which button to click (Allow), two short reassurances and a single Continue button that leads straight to the prompt, as Apple's guidance asks.
+
+`swift run Tabbi --snapshot <dir>` writes every walkthrough (`connections-guide-<guide>.png`, plus one finished), and every priming screen (`connections-priming-<permission>.png`), rendered as real sheets.
+
+Why Anki is guided, not installed for the user: Anki installs, updates and checks its own add-ons through Get Add-ons, and writing into its add-on folder from outside could break when Anki changes its layout or while Anki is running.
+So Tabbi copies the code 2055492159, opens Anki and shows the three clicks.
+
+Claude's setup needs Terminal once, because the official installer is a single line.
+The walkthrough copies that line, opens Terminal and says exactly what to press; signing in uses `claude auth login`, which opens Claude's own sign-in page in the browser, so Tabbi never sees a password or key.
+
 ## Integrations
 
 | Row | Detected from | Steps from nothing to connected |

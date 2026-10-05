@@ -31,6 +31,9 @@ public enum ClaudeConnectionState: Hashable, Sendable {
     public static let installPage = URL(string: "https://code.claude.com/docs/en/setup")!
     /// The one line the setup page gives for a Mac, offered to copy.
     public static let installCommand = "curl -fsSL https://claude.ai/install.sh | bash"
+    /// The line that signs in, offered to copy. It opens a sign-in page in
+    /// the browser, so Tabbi never sees the password.
+    public static let signInCommand = "claude auth login"
     /// The arguments of the sign-in probe.
     public static let probeArguments = ["auth", "status", "--json"]
 
