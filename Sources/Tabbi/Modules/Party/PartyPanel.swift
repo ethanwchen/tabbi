@@ -100,7 +100,7 @@ struct PartyPanel: View {
             .overlay(Capsule().strokeBorder(Theme.Palette.stroke, lineWidth: 0.5))
             .onTapGesture { store.clearNotice() }
             .help("Click to dismiss")
-            .transition(.move(edge: .bottom).combined(with: .opacity))
+            .transition(.motionRow(from: .bottom))
         }
     }
 }

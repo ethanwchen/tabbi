@@ -53,7 +53,7 @@ private struct AnkiDeckView: View {
                 if !showsAllDecks {
                     DueCard(summary: summary)
                         .frame(width: 240)
-                        .transition(.move(edge: .leading).combined(with: .opacity))
+                        .transition(.motionRow(from: .leading))
                 }
                 DecksCard(store: store, decks: summary.topDecks, showsAll: $showsAllDecks)
             }

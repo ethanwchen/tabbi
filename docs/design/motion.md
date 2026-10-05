@@ -8,7 +8,7 @@ The research behind these values is in [docs/research/motion.md](../research/mot
 
 - `Sources/TabbiKitCore/Motion/`: the values as pure numbers (`SpringSpec`, `MotionTokens`), tested in `MotionTokensTests` (no overshoot on close, open and close done within their budgets, stagger caps).
 - `Sources/TabbiKit/Design/Motion/`: the SwiftUI side.
-  `Motion` turns the tokens into `Animation`s, `AnyTransition.notchContent` and `.tabSwitch` are the shared transitions, and `.motion(_:value:)` and `withMotion` apply an animation with the Reduce Motion fallback built in.
+  `Motion` turns the tokens into `Animation`s, `AnyTransition.notchContent` and `.tabSwitch` are the notch's own transitions, `.motionPop`, `.motionSwap` and `.motionRow(from:)` are the shared insert and removal transitions, and `.motion(_:value:)` and `withMotion` apply an animation with the Reduce Motion fallback built in.
 - `Theme.Motion.notch`, `.snappy` and `.content` are shorthands for the same values, so existing call sites follow the system.
 
 ## Tokens
@@ -37,6 +37,22 @@ Staggered entrances use `MotionTokens.stagger(index)`: 30 ms per item, capped at
 - Every animation is a spring that SwiftUI retargets mid-flight, so a second click or a pointer leaving never waits for the first animation.
 - The closed-notch wings are equal in width, so the shape stays centered on the camera, and they are only as wide as the longer side needs (at most `NotchPreviewLayout.maxWingWidth`, 120 pt).
   A preview with two parts puts one in each wing instead of one long line beside an empty wing: a meeting shows its icon and countdown on the left and its title on the right.
+
+## Inserts and removals
+
+Views that appear or leave inside a panel use one of three shared transitions, defined as pure `TransitionPose` values in `TabbiKitCore/Motion` (tested in `TransitionPoseTests`) and applied by `MotionTransition`.
+
+| Transition | Pose | Use for |
+| --- | --- | --- |
+| `.motionPop` | fade, scale from 0.8 | hover buttons, a clear button, a pill or icon that swaps with another |
+| `.motionSwap` | fade, scale from 0.98 at the top edge | one content state replacing another in the same space (checklist, day plan, wrap-up) |
+| `.motionRow(from:)` | fade, 8 pt offset from the edge | list rows, chat messages, toasts, a card leaving as its neighbor grows |
+
+Nothing moves more than 8 pt or shrinks below 80%, so a changing list never sends rows across the 150 pt canvas.
+Each transition reads Reduce Motion itself and only fades when it is on, so call sites write `.transition(.motionPop)` with no extra plumbing.
+Drive them with the animation the state change already uses (usually `Theme.Motion.snappy`).
+Today, Ask Claude, Anki, Party and the Focus and pet coach Settings panes use them in place of ad hoc `.scale` and `.move(edge:)` transitions.
+`motion-transitions.png` samples each one along the snappy spring, plus its Reduce Motion fade.
 
 ## Loading
 

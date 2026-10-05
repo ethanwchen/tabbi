@@ -47,7 +47,7 @@ struct FocusCard: View {
                             withAnimation(Theme.Motion.snappy) { store.reset() }
                         }
                     }
-                    .transition(.opacity.combined(with: .scale(scale: 0.8)))
+                    .transition(.motionPop)
                 }
             }
             .padding(.horizontal, Theme.Spacing.s)

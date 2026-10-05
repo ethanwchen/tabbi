@@ -49,7 +49,7 @@ struct PlannerPanel: View {
                                                       height: 28, help: "Review today and see what carries over to tomorrow") {
                                         store.wrapUp()
                                     }
-                                    .transition(.opacity.combined(with: .scale(scale: 0.9)))
+                                    .transition(.motionPop)
                                 } else if hasPlannableWork {
                                     // Nothing to schedule until there's an open task.
                                     PlannerPillButton(title: "Plan my day", symbol: "sparkles", height: 28,
@@ -58,7 +58,7 @@ struct PlannerPanel: View {
                                                           : "Let Claude fit your open tasks around today's calendar") {
                                         store.planMyDay()
                                     }
-                                    .transition(.opacity.combined(with: .scale(scale: 0.9)))
+                                    .transition(.motionPop)
                                 }
                             }
                         }
@@ -138,13 +138,13 @@ private struct PlannerMainColumn<Checklist: View>: View {
         ZStack {
             if review.isActive {
                 DayReviewView(store: review)
-                    .transition(.opacity.combined(with: .scale(scale: 0.98, anchor: .top)))
+                    .transition(.motionSwap)
             } else if plan.isActive {
                 DayPlanView(plan: plan)
-                    .transition(.opacity.combined(with: .scale(scale: 0.98, anchor: .top)))
+                    .transition(.motionSwap)
             } else {
                 checklist
-                    .transition(.opacity.combined(with: .scale(scale: 0.98, anchor: .top)))
+                    .transition(.motionSwap)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -193,7 +193,7 @@ private struct PlannerHeader: View {
                 IconButton(symbol: "checkmark.circle.badge.xmark", size: 20, help: "Clear completed tasks") {
                     withAnimation(Theme.Motion.snappy) { store.clearCompleted() }
                 }
-                .transition(.opacity.combined(with: .scale(scale: 0.8)))
+                .transition(.motionPop)
             }
             if store.canEdit {
                 // The action that isn't the bottom row's pill right now.

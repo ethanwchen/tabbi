@@ -312,7 +312,7 @@ private struct SoundChip: View {
                 if isOn {
                     Image(systemName: "checkmark")
                         .font(.system(size: 10, weight: .bold))
-                        .transition(.scale.combined(with: .opacity))
+                        .transition(.motionPop)
                 }
             }
             .foregroundStyle(isOn ? Color.accentColor : Color.primary)

@@ -169,7 +169,7 @@ private struct PlannerRow: View {
                 PlannerDeleteButton {
                     withAnimation(Theme.Motion.snappy) { store.delete(item.id) }
                 }
-                .transition(.opacity.combined(with: .scale(scale: 0.8)))
+                .transition(.motionPop)
             }
         }
         .padding(.horizontal, Theme.Spacing.s)
@@ -347,7 +347,7 @@ private struct PlannerFocusToggle: View {
                     .help("The focus timer is on this task")
             }
         }
-        .transition(.opacity.combined(with: .scale(scale: 0.8)))
+        .transition(.motionPop)
         .animation(Theme.Motion.snappy, value: hovering)
     }
 }

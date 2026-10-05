@@ -33,7 +33,7 @@ struct DayPlanView: View {
                     DayPlanBlockRow(block: block, rest: proposal.breakAfter(block),
                                     add: { withAnimation(Theme.Motion.snappy) { plan.add(block.id) } },
                                     dismiss: { withAnimation(Theme.Motion.snappy) { plan.dismiss(block.id) } })
-                        .transition(.opacity.combined(with: .move(edge: .leading)))
+                        .transition(.motionRow(from: .leading))
                 }
                 Spacer(minLength: Theme.Spacing.xs)
                 Text(DayPlanFormat.footer(proposal))
@@ -101,7 +101,7 @@ private struct DayPlanHeader: View {
                                   help: "Add every block to your default calendar") {
                     withAnimation(Theme.Motion.snappy) { plan.add() }
                 }
-                .transition(.opacity.combined(with: .scale(scale: 0.9)))
+                .transition(.motionPop)
             }
         }
         .frame(height: 20)

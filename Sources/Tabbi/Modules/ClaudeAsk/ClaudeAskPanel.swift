@@ -64,12 +64,12 @@ struct ClaudeAskPanel: View {
             InputField(text: $draft, focused: $fieldFocused, accent: accent, onSubmit: { send(draft) })
             if session.isStreaming {
                 IconButton(symbol: "stop.fill", size: 32, help: "Stop answering") { session.stop() }
-                    .transition(.scale.combined(with: .opacity))
+                    .transition(.motionPop)
             } else {
                 IconButton(symbol: "arrow.up", size: 32, help: "Send (Return)") { send(draft) }
                     .disabled(!canSend)
                     .opacity(canSend ? 1 : 0.45)
-                    .transition(.scale.combined(with: .opacity))
+                    .transition(.motionPop)
             }
             if !conversation.isEmpty {
                 IconButton(symbol: "square.and.pencil", size: 32, help: "New chat") {
@@ -77,7 +77,7 @@ struct ClaudeAskPanel: View {
                     draft = ""
                     fieldFocused = true
                 }
-                .transition(.scale.combined(with: .opacity))
+                .transition(.motionPop)
             }
         }
         .animation(Theme.Motion.snappy, value: session.isStreaming)
@@ -189,7 +189,7 @@ private struct MessageList: View {
                 LazyVStack(alignment: .leading, spacing: Theme.Spacing.s) {
                     ForEach(conversation.messages) { message in
                         row(for: message, isLast: message.id == conversation.messages.last?.id)
-                            .transition(.opacity.combined(with: .move(edge: .bottom)))
+                            .transition(.motionRow(from: .bottom))
                     }
                     Color.clear.frame(height: 0).id(Self.bottomID)
                 }

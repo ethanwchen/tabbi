@@ -49,6 +49,7 @@ enum MotionSnapshots {
             PawTrailFrame(tint: AskClaudeModule.descriptor.accentColor, size: 40, time: time, reduceMotion: true)
         })))
         shots.append(("motion-check", AnyView(checkFrames())))
+        shots.append(("motion-transitions", AnyView(transitionFrames())))
         return shots
     }
 
@@ -79,6 +80,66 @@ enum MotionSnapshots {
         }
         .padding(Theme.Spacing.l)
         .background(Theme.Palette.background)
+    }
+
+    /// The shared insert transitions (`.motionPop`, `.motionSwap` and
+    /// `.motionRow`) sampled along the snappy spring, then their Reduce
+    /// Motion fade at its midpoint, on a sample control, card and row.
+    private static func transitionFrames() -> some View {
+        let accent = TodayModule.descriptor.accentColor
+        let moments: [TimeInterval] = [0, 0.03, 0.06, 0.1, 0.15, 0.25]
+        let samples: [(String, TransitionPose, AnyView)] = [
+            ("pop", .pop, AnyView(Image(systemName: "xmark")
+                .font(.system(size: 11, weight: .bold))
+                .foregroundStyle(Theme.Palette.primaryText)
+                .frame(width: 24, height: 24)
+                .background(Circle().fill(Theme.Palette.surfaceHover)))),
+            ("swap", .swap, AnyView(Card {
+                Text("Plan my day").font(Theme.Typography.bodyEmphasis)
+                    .foregroundStyle(Theme.Palette.primaryText)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            }.frame(width: 120, height: 52))),
+            ("row", .row(from: .top), AnyView(HStack(spacing: Theme.Spacing.s) {
+                Circle().fill(accent).frame(width: 8, height: 8)
+                Text("Standup 10:00").font(Theme.Typography.body)
+                    .foregroundStyle(Theme.Palette.primaryText)
+            }.frame(width: 120, height: 24, alignment: .leading))),
+        ]
+        func cell(_ view: AnyView, _ pose: TransitionPose, progress: Double, reduce: Bool) -> some View {
+            let outside = pose.resolved(isIdentity: false, reduceMotion: reduce)
+            func mix(_ from: Double, _ to: Double) -> Double { from + (to - from) * progress }
+            return view
+                .scaleEffect(mix(outside.scale, 1), anchor: UnitPoint(x: pose.anchorX, y: pose.anchorY))
+                .offset(x: mix(outside.offsetX, 0), y: mix(outside.offsetY, 0))
+                .opacity(mix(outside.opacity, 1))
+                .frame(width: 136, height: 64)
+                .background(Theme.Palette.background)
+                .clipShape(RoundedRectangle(cornerRadius: Theme.Radius.m, style: .continuous))
+        }
+        return VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+            ForEach(samples, id: \.0) { name, pose, view in
+                HStack(spacing: Theme.Spacing.s) {
+                    Text(name).font(Theme.Typography.caption)
+                        .foregroundStyle(Theme.Palette.secondaryText)
+                        .frame(width: 40, alignment: .leading)
+                    ForEach(moments, id: \.self) { moment in
+                        cell(view, pose, progress: MotionTokens.snappy.value(at: moment), reduce: false)
+                    }
+                    cell(view, pose, progress: 0.5, reduce: true)
+                }
+            }
+            HStack(spacing: Theme.Spacing.s) {
+                Color.clear.frame(width: 40, height: 1)
+                ForEach(moments, id: \.self) { moment in
+                    Text(String(format: "%.2f s", moment)).frame(width: 136)
+                }
+                Text("RM 50%").frame(width: 136)
+            }
+            .font(Theme.Typography.caption.monospacedDigit())
+            .foregroundStyle(Theme.Palette.secondaryText)
+        }
+        .padding(Theme.Spacing.m)
+        .background(Color(white: 0.16))
     }
 
     /// The states of `TactileButtonStyle` side by side (rest, hover, pressed,
