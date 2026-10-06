@@ -73,7 +73,7 @@ struct ClaudeAskPanel: View {
     private var inputBar: some View {
         HStack(spacing: Theme.Spacing.s) {
             InputField(text: $draft, focused: $fieldFocused, accent: accent, maxLines: isLarge ? 6 : 3,
-                       onSubmit: { expand in send(draft, expand: expand) })
+                       help: fieldHelp, onSubmit: { expand in send(draft, expand: expand) })
             if session.isStreaming {
                 IconButton(symbol: "stop.fill", size: 32, help: "Stop answering") { session.stop() }
                     .transition(.motionPop)
@@ -98,10 +98,10 @@ struct ClaudeAskPanel: View {
                 }
                 .transition(.motionPop)
             }
-            if isLarge || !conversation.isEmpty {
+            if isLarge || (!conversation.isEmpty && largeView.offersExpand) {
                 IconButton(symbol: isLarge ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right",
                            size: 32,
-                           help: isLarge ? "Back to the notch (Esc)" : "Open in the large view (Command-Return sends and expands)") {
+                           help: isLarge ? "Back to the notch (Esc)" : expandHelp) {
                     notch.requestOpenSize(isLarge ? nil : Self.largeSize)
                 }
                 .transition(.motionPop)
@@ -113,12 +113,24 @@ struct ClaudeAskPanel: View {
         .motion(Theme.Motion.snappy, value: session.savedChats.isEmpty)
     }
 
-    /// Sends `prompt`; with `expand` (Command-Return) the chat also grows
-    /// into the large view.
+    private var largeView: ClaudeAskLargeView { session.preferences.largeView }
+
+    private var expandHelp: String {
+        largeView == .always ? "Open in the large view" : "Open in the large view (Command-Return sends and expands)"
+    }
+
+    private var fieldHelp: String {
+        largeView == .askEachTime && !isLarge
+            ? "Return to send, Command-Return to send in the large view, Shift-Return for a new line"
+            : "Return to send, Shift-Return for a new line"
+    }
+
+    /// Sends `prompt`, growing the chat into the large view when the user's
+    /// preference says so; `expand` is true for Command-Return.
     private func send(_ prompt: String, expand: Bool = false) {
         guard !session.isStreaming,
               !prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
-        if expand { notch.requestOpenSize(Self.largeSize) }
+        if !isLarge && largeView.opensLarge(commandReturn: expand) { notch.requestOpenSize(Self.largeSize) }
         session.ask(prompt)
         draft = ""
         fieldFocused = true
@@ -132,6 +144,8 @@ private struct InputField: View {
     var focused: FocusState<Bool>.Binding
     let accent: Color
     let maxLines: Int
+    /// The tooltip, which names Command-Return only when it expands.
+    let help: String
     /// Called with true for Command-Return.
     let onSubmit: (_ expand: Bool) -> Void
     @State private var hovering = false
@@ -147,7 +161,7 @@ private struct InputField: View {
             RoundedRectangle(cornerRadius: Theme.Radius.m, style: .continuous)
                 .strokeBorder(borderColor, lineWidth: 1)
         )
-        .help("Return to send, Command-Return to send in the large view, Shift-Return for a new line")
+        .help(help)
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
         .motion(Theme.Motion.snappy, value: focused.wrappedValue)

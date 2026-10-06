@@ -1,6 +1,7 @@
 import Combine
 import SwiftUI
 import TabbiKitCore
+import TabbiKit
 
 /// Ask Claude: a quick question to the local `claude` CLI, answered in the notch.
 @MainActor
@@ -26,5 +27,9 @@ final class AskClaudeModule: NotchModule {
 
     func makePanel() -> AnyView {
         AnyView(ClaudeAskPanel(session: session))
+    }
+
+    func makeSettingsPane() -> SettingsPane? {
+        .claudeAsk(session)
     }
 }

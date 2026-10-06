@@ -17,12 +17,18 @@ final class ClaudeAskSession: ObservableObject {
     @Published private(set) var savedChats: [ClaudeAskChat] = []
     /// True while the panel lists saved chats instead of the conversation.
     @Published var isShowingHistory = false
+    /// Saved as soon as it changes (live runs only).
+    @Published var preferences: ClaudeAskPreferences {
+        didSet { if preferences != oldValue { preferencesStorage?.save(preferences) } }
+    }
 
     /// True with `TABBI_DEMO=1`: shows a sample chat and never runs the CLI.
     let isDemo: Bool
 
     /// Nil in demo and snapshot runs, which save nothing.
     private let history: ClaudeAskHistory?
+    /// Nil in demo and snapshot runs, which keep preferences in memory.
+    private let preferencesStorage: ClaudeAskPreferencesStorage?
     private var task: Task<Void, Never>?
     /// Bumped on every ask, stop, and New chat so a superseded run can't
     /// write into the conversation after it was cancelled.
@@ -33,7 +39,10 @@ final class ClaudeAskSession: ObservableObject {
 
     init(runMode: RunMode, storage: EditionStorage) {
         isDemo = runMode.isDemo
-        history = runMode.isDemo || runMode.isSnapshot ? nil : ClaudeAskHistory(storage: storage)
+        let savesNothing = runMode.isDemo || runMode.isSnapshot
+        history = savesNothing ? nil : ClaudeAskHistory(storage: storage)
+        preferencesStorage = savesNothing ? nil : ClaudeAskPreferencesStorage()
+        preferences = preferencesStorage?.load() ?? ClaudeAskPreferences()
         if isDemo {
             let samples = ClaudeAskChat.demoHistory(now: Date())
             conversation = samples.first.map(ClaudeAskConversation.init(restoring:)) ?? .demo
