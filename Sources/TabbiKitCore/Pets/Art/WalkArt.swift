@@ -124,6 +124,26 @@ enum WalkArt {
             """),
     ]
 
+    /// The Scottish Fold's thick plush tail, held high with a shaded tip.
+    static let foldCatTail = [
+        SpriteGrid(art: """
+            .tt
+            .BB
+            .BB
+            BB.
+            BB.
+            BB.
+            """),
+        SpriteGrid(art: """
+            ..tt
+            .BB.
+            .BB.
+            BB..
+            BB..
+            BB..
+            """),
+    ]
+
     /// Poodle torso: the dog torso covered in curls, with a fluffy chest.
     static let poodleTorso = SpriteGrid(art: """
         ...BBSBBBSBBBBSBBBSB..

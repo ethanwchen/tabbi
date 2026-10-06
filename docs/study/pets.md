@@ -3,7 +3,7 @@
 A study-buddy cat or dog lives in the notch.
 This document explains how pet sprites are drawn, composed, and rendered, and how to add a breed.
 
-Status: the sprite format, palettes, pattern zones, renderer, all nine cat breeds, all eight dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate, yawn, hop, typing, coffee, wave, groom, tail swish, nap, play), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
+Status: the sprite format, palettes, pattern zones, renderer, all ten cat breeds, all eight dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate, yawn, hop, typing, coffee, wave, groom, tail swish, nap, play), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
 
 ![All cat breeds sitting, on black at 4x](images/cats-sitting.png)
 
@@ -198,7 +198,7 @@ The waving arm grows from the left shoulder (3 px in and 4 px down the body) and
 The grooming leg rises straight from just above the floor to the mouth, found like an open mouth, so it lines up on every head.
 
 A swinging tail is bent from its base by `TailArt`, so every breed keeps its own tail (the Sphynx's whip, the British Shorthair's rings, the Poodle's pom, the Shih Tzu's plume).
-Dogs draw the tail as its own grid; cats and the dachshund draw it into the sitting body, so the composer cuts it out at the body's tail column first (`SitLayout.tailColumn`: 17 for cats, 18 for the British Shorthair, whose plump body is a column wider, and 23 for the dachshund).
+Dogs draw the tail as its own grid; cats and the dachshund draw it into the sitting body, so the composer cuts it out at the body's tail column first (`SitLayout.tailColumn`: 17 for cats, 18 for the British Shorthair and the Scottish Fold, whose plump bodies are a column wider, and 23 for the dachshund).
 The base row stays put and each row above leans a little further, never more than a pixel past the row below, so the tail stays one connected stroke.
 The swing is cut down to the room left in the frame, which keeps the dachshund's tail, near the right edge, to a 1 px flick.
 The corgi and French bulldog have no tail, so `TailArt.nub` pops out past the haunch and bobs instead.
@@ -403,6 +403,19 @@ The Sphynx is hairless, so its look comes from shape and shading instead of mark
 
 ![Every animation frame for the Sphynx](images/animations-sphynx.png)
 
+### The Scottish Fold
+
+The Scottish Fold is all roundness, so its look comes from its folded ears and a plush silhouette:
+
+- Head (`CatArt.headFold`): a round dome with no ear tips above it; each small ear lies folded forward and down over the crown as a lighter flap with a shade crease under it, and full cheeks give it an owl-like face.
+- Face (`CatArt.faceOpen`): the shared cat face, so its eyes are the same 2x3 eyes with a top-left highlight as every other cat's, in copper gold.
+- Body (`CatArt.bodyFold`, `WalkArt.catTorso`, `WalkArt.foldCatTail`): the British Shorthair's plump 21-wide frame in a plain plush coat with a pale chest and paws, and a thick tail with a shaded tip. Walking, it uses the plain cat torso with its stripe and patch zones painted as fur.
+- Coloring (`PetBreed.palette`): a soft blue-gray coat with lighter ear flaps, a pale muzzle and chest, a rosy nose, and pink cheeks. Fur is recolorable like every breed.
+
+![Every animation frame for the Scottish Fold](images/animations-scottishFold.png)
+
+![Every costume on the Scottish Fold](images/costumes-scottishFold.png)
+
 ### The Poodle
 
 The Poodle is all curls, so its look comes from a bumpy silhouette and dotted texture:
@@ -456,7 +469,7 @@ This also protects user recolors.
 ## Body shapes
 
 Breeds that share a silhouette share all of their art and differ only in palette and pattern.
-Cats look alike enough that three shapes cover all nine breeds.
+Cats look alike enough that four shapes cover all ten breeds.
 Dogs need more, because their ears and snouts are what make them recognizable at notch size:
 
 | Shape | Breeds | What sets it apart |
@@ -464,6 +477,7 @@ Dogs need more, because their ears and snouts are what make them recognizable at
 | `cat` | most cats | pointed ears, tabby stripe zones |
 | `roundCat` | British Shorthair | small wide-set ears, round cheeks, big blue eyes, stocky body, ringed tail |
 | `sphynxCat` | Sphynx | big flared ears, wrinkled brow and neck, lemon eyes, lean body, thin whip tail |
+| `foldCat` | Scottish Fold | small ears folded forward and down, round owl-like head, plush body, thick plain tail |
 | `floppyDog` | Labrador, Beagle | hanging ears beside a rounded skull |
 | `fluffyDog` | Golden Retriever | long feathered ears |
 | `batEaredDog` | French Bulldog | big rounded bat ears, broad face |

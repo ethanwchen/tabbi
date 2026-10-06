@@ -181,7 +181,8 @@ final class PetRendererTests: XCTestCase {
 
 final class PetBreedTests: XCTestCase {
     func testCatalogHasEveryCatAndDogBreed() {
-        XCTAssertEqual(PetBreed.breeds(of: .cat).count, 9)
+        XCTAssertEqual(PetBreed.breeds(of: .cat).count, 10)
+        XCTAssertEqual(PetBreed.breeds(of: .cat).last, .scottishFold)
         XCTAssertEqual(PetBreed.breeds(of: .dog), [
             .goldenRetriever, .labrador, .frenchBulldog, .corgi, .dachshund, .beagle, .poodle, .shihTzu,
         ])
@@ -210,6 +211,76 @@ final class PetBreedTests: XCTestCase {
         XCTAssertFalse(roles.contains(.furSpot))
         XCTAssertTrue(roles.contains(.blush))
         XCTAssertTrue(roles.contains(.furShade), "wrinkles are hinted with shading")
+    }
+
+    func testScottishFoldLoadsAsAGrayCatWithItsOwnFoldedEarSilhouette() throws {
+        XCTAssertEqual(PetBreed(rawValue: "scottishFold"), .scottishFold)
+        XCTAssertEqual(PetBreed.scottishFold.species, .cat)
+        XCTAssertEqual(PetBreed.scottishFold.displayName, "Scottish Fold")
+        let profile = PetProfile(name: "Moon", breed: .scottishFold)
+        let decoded = try JSONDecoder().decode(PetProfile.self, from: JSONEncoder().encode(profile))
+        XCTAssertEqual(decoded.breed, .scottishFold)
+
+        // Gray by default: a low-saturation, mid-light coat that can be recolored.
+        let palette = PetBreed.scottishFold.palette
+        let fur = palette[.furBase]
+        XCTAssertLessThan(max(fur.red, fur.green, fur.blue) - min(fur.red, fur.green, fur.blue), 30)
+        XCTAssertTrue((0.3...0.7).contains(fur.luminance), "\(fur.luminance)")
+        let tinted = PetProfile(name: "", breed: .scottishFold, paletteOverrides: [.furBase: PetColor(hex: "#F2A65A")!])
+        XCTAssertTrue(tinted.sittingCanvas().colors(using: tinted.palette).contains(tinted.palette[.furBase]))
+
+        // Folded ears: no ear tip pokes above the crown, so the top of the
+        // head is one round dome centered over the face instead of two ear
+        // tips, and it is no taller than any upright-eared cat.
+        let fold = PetComposer.sitting(.scottishFold)
+        let top = try XCTUnwrap(fold.opaqueBounds).minY
+        let crown = (0..<fold.width).filter { fold[$0, top] != nil }
+        XCTAssertEqual(crown.count, try XCTUnwrap(crown.last) - crown[0] + 1, "one dome, no separate ear tips")
+        XCTAssertEqual(crown[0] + crown.last!, 6 * 2 + 19, "centered over the head")
+        for other in PetBreed.breeds(of: .cat) where other != .scottishFold {
+            XCTAssertGreaterThanOrEqual(top, try XCTUnwrap(PetComposer.sitting(other).opaqueBounds).minY, "\(other)")
+            XCTAssertNotEqual(PetComposer.sitting(other).pixels.map { $0 != nil }, fold.pixels.map { $0 != nil })
+        }
+        // Folded ears hide their pink insides.
+        let headRows = 0..<14
+        XCTAssertFalse(headRows.contains { y in (0..<fold.width).contains { fold[$0, y] == .blush } })
+    }
+
+    func testScottishFoldHasTheSharedCatEyesInEveryAnimation() {
+        func eyePixels(_ canvas: PetCanvas) -> [String] {
+            (0..<canvas.height).flatMap { y in
+                (0..<canvas.width).compactMap { x in
+                    let role = canvas[x, y]
+                    return role == .eye || role == .eyeLight ? "\(x),\(y),\(role!.symbol)" : nil
+                }
+            }
+        }
+        let fold = PetClipSet(profile: PetProfile(name: "", breed: .scottishFold))
+        let tabby = PetClipSet(profile: PetProfile(name: "", breed: .orangeTabby))
+        for animation in PetAnimation.allCases {
+            for (frame, plain) in zip(fold[animation].frames, tabby[animation].frames) {
+                XCTAssertEqual(eyePixels(frame.canvas), eyePixels(plain.canvas), "\(animation)")
+            }
+        }
+    }
+
+    func testScottishFoldRendersEveryAnimationInEveryCostume() {
+        let palette = PetBreed.scottishFold.palette
+        let looks = [PetProfile(name: "", breed: .scottishFold)]
+            + PetOutfit.allCases.dropFirst().map { PetProfile(name: "", breed: .scottishFold, outfit: $0) }
+            + PetAccessory.allCases.map { PetProfile(name: "", breed: .scottishFold, accessories: [$0]) }
+        for look in looks {
+            let clips = PetClipSet(profile: look)
+            for animation in PetAnimation.allCases {
+                // A peek starts or ends hidden inside the notch.
+                let shown = clips[animation].frames.filter { $0.canvas.opaqueBounds != nil }
+                XCTAssertFalse(shown.isEmpty, "\(animation) \(look.outfit) \(look.accessories)")
+                for frame in shown {
+                    XCTAssertTrue(frame.canvas.colors(using: palette).contains(palette[.furBase]),
+                                  "the gray fur shows: \(animation) \(look.outfit) \(look.accessories)")
+                }
+            }
+        }
     }
 
     func testPoodleHasACurlyCoatATopknotAndAPomTail() throws {

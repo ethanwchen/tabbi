@@ -73,6 +73,7 @@ public enum PartyPetAppearance {
         case .siamese: "siamese"
         case .britishShorthair: "british-shorthair"
         case .sphynx: "sphynx"
+        case .scottishFold: "scottish-fold"
         case .goldenRetriever: "golden-retriever"
         case .labrador: "labrador"
         case .frenchBulldog: "french-bulldog"
@@ -95,7 +96,6 @@ public enum PartyPetAppearance {
         "maine-coon": .britishShorthair,
         "ragdoll": .britishShorthair,
         "bengal": .orangeTabby,
-        "scottish-fold": .britishShorthair,
         "russian-blue": .grayTabby,
         "abyssinian": .orangeTabby,
         "norwegian-forest": .britishShorthair,

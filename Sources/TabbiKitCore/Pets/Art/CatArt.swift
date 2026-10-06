@@ -169,4 +169,43 @@ enum CatArt {
         ...SBppSBBBBSppBSS..
         ....pppp....pppp....
         """)
+
+    /// Scottish Fold: a round owl-like head with small ears folded forward
+    /// and down over the crown (a shade crease under each flap), wide full
+    /// cheeks, and a pale muzzle. It wears the shared cat face.
+    static let headFold = SpriteGrid(art: """
+        ....................
+        ......BBBBBBBB......
+        ..eeeeBBBBBBBBeeee..
+        .eeeeeeBBBBBBeeeeee.
+        .SeeeeSBBBBBBSeeeeS.
+        BBSSSSBBBBBBBBSSSSBB
+        BBBBBBBBBBBBBBBBBBBB
+        BBBBBBBBBBBBBBBBBBBB
+        BBBBBBBBBBBBBBBBBBBB
+        BBBBBBBmmmmmmBBBBBBB
+        BBBBBBmmmmmmmmBBBBBB
+        BBBBBBmmmmmmmmBBBBBB
+        .BBBBBBmmmmmmBBBBBB.
+        ..BBBBBBBBBBBBBBBB..
+        ....SSBBBBBBBBSS....
+        """)
+
+    /// Scottish Fold sitting body: as plump as the British Shorthair's (the
+    /// same 21-wide frame, centered under the head, so every costume fits)
+    /// in a plain plush coat with a pale chest and a thick tail split off
+    /// at column 18.
+    static let bodyFold = SpriteGrid(art: """
+        .....BBBBBBBBBB......
+        ....BBBccccccBBB.....
+        ...BBBccccccccBBB..tt
+        ..SBBBccccccccBBBS.BB
+        ..SBBBBccccccBBBBS.BB
+        ..SBBBBBccccBBBBBS.BB
+        ..SBBBBBBBBBBBBBBS.BB
+        ..SSBBBBBBBBBBBBSSBBB
+        ..SSSBBBBBBBBBBSSSS..
+        ..SSBpppBBBBpppBSS...
+        ...Spppp....ppppS....
+        """)
 }
