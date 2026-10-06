@@ -113,7 +113,7 @@ After stamping, `PetCanvas.outlined()` adds a one-pixel outline around the whole
 
 ![Every costume on a dog](images/costumes-dog.png)
 
-A pet wears one `PetOutfit` (`none`, `scrubs`, `whiteCoat`) and accessories (`PetAccessory`).
+A pet wears one `PetOutfit` (`none`, `scrubs`, `whiteCoat`, `cozyHoodie`, `superheroCape`, `dinosaurHoodie`, `wizardRobe`) and accessories (`PetAccessory`).
 Each accessory has a slot (neck, face, or head); a pet wears at most one per slot.
 `PetAccessory.wearable(_:)` keeps the last item listed per slot and sorts them in drawing order, so hats always land on top.
 
@@ -287,9 +287,10 @@ Its initializer and editing methods keep it valid at all times:
 - `tintFur(_:)` recolors all fur from one picked color, and `tintFur(nil)` returns the fur to the breed colors without touching costume colors.
 - A pet still called by its breed name follows breed changes, so it never keeps a stale breed name; a name the user chose stays.
 
-Costume items are earned with study points; breeds and colors are always free.
+Costume items are earned with study points, apart from a few free starters (the scarf, the party hat and the bow tie); breeds and colors are always free.
 `PetItem` wraps an outfit or accessory with a stable string id (`outfit.scrubs`, `accessory.beanie`) and a `cost`.
-Cozy basics are cheap so the first finished 25-minute session unlocks the scarf; the white coat and the graduation cap are long-term goals.
+Cozy basics are cheap so the first finished 25-minute session unlocks the beanie; the sorcerer and the graduation cap are long-term goals.
+A save from an older build that bought an item that is free now gets its price back once (`PetPointsLedger.refundedPrices`).
 
 `PetPointsRules` turns a session into points: one point per full minute, nothing under 5 minutes, and a 10-point bonus for completing a session of at least 25 minutes.
 `PetPointsLedger` stores lifetime `earned` and `spent` points plus the purchased items; `balance` is the difference, so it can never drift.
