@@ -125,6 +125,11 @@ enum SnapshotRenderer {
             let model = NotchViewModel(geometry: geometry, layout: withAsk)
             model.open(.claudeAsk)
             shots.append(Shot("open-claudeAsk-history", model))
+            // The large chat view the tab can grow into.
+            let large = NotchViewModel(geometry: geometry, layout: withAsk)
+            large.open(.claudeAsk)
+            large.requestOpenSize(ClaudeAskPanel.largeSize)
+            shots.append(Shot("open-claudeAsk-large", large))
         }
 
         shots += headerShots(geometry: geometry, catalog: services.settings.catalog)
@@ -256,8 +261,8 @@ enum SnapshotRenderer {
                 .environmentObject(model)
                 .environment(\.drawsLiquidGlass, false)
                 .environment(\.loaderRevealDelay, 0) // rendered the moment it appears
-                .frame(width: Theme.Layout.expandedSize.width + 40,
-                       height: Theme.Layout.expandedSize.height + 24, alignment: .top)
+                .frame(width: model.openSize.width + 40,
+                       height: model.openSize.height + 24, alignment: .top)
                 .background(Color(white: 0.16)) // stand-in for a desktop
             let renderer = ImageRenderer(content: view)
             renderer.scale = 2

@@ -17,7 +17,10 @@ public final class NotchViewModel: ObservableObject {
         didSet {
             UserDefaults.standard.set(selected.rawValue, forKey: Self.selectedKey)
             showsMoreTabs = false
-            if selected != oldValue { openedFromKeyboard = false }
+            if selected != oldValue {
+                openedFromKeyboard = false
+                requestedOpenSize = nil
+            }
             // Direction drives the slide transition between modules, in the
             // header's visual order: the tabs, then the shortcuts at the far right.
             let order = layout.tabs + layout.headerShortcuts
@@ -53,6 +56,7 @@ public final class NotchViewModel: ObservableObject {
         didSet {
             guard showsTakeover != oldValue else { return }
             isPinned = showsTakeover
+            requestedOpenSize = nil
             if showsTakeover { phase = .open }
         }
     }
@@ -64,7 +68,16 @@ public final class NotchViewModel: ObservableObject {
     /// clears it, so only the tab the shortcut opened on takes the caret.
     @Published public private(set) var openedFromKeyboard = false
 
+    /// A larger open canvas the selected tab asked for (Ask Claude's large
+    /// chat view), or nil for the usual `Theme.Layout.expandedSize`. It
+    /// lasts until the tab gives it back, Esc, another tab or closing.
+    @Published public private(set) var requestedOpenSize: CGSize?
+
     private static let selectedKey = "selectedModule"
+
+    /// Room kept free beside and below a larger open canvas, so it never
+    /// fills the screen.
+    private static let screenMargin = CGSize(width: 48, height: 96)
 
     public init(geometry: NotchGeometry, layout: ModuleLayout) {
         self.geometry = geometry
@@ -74,6 +87,30 @@ public final class NotchViewModel: ObservableObject {
     }
 
     public var isOpen: Bool { phase == .open }
+
+    /// True while the open notch shows the larger canvas a tab asked for.
+    public var isEnlarged: Bool { requestedOpenSize != nil }
+
+    /// The open notch's size: the usual canvas, or the larger one the
+    /// selected tab asked for, fitted to the screen and never smaller than
+    /// the usual one. It stays centered under the notch, so the header
+    /// keeps clear of the camera at either size.
+    public var openSize: CGSize {
+        let base = Theme.Layout.expandedSize
+        guard let requested = requestedOpenSize else { return base }
+        let screen = geometry.screenFrame.size
+        let fit = CGSize(width: screen.width - Self.screenMargin.width * 2,
+                         height: screen.height - Self.screenMargin.height)
+        return CGSize(width: max(base.width, min(requested.width, fit.width)),
+                      height: max(base.height, min(requested.height, fit.height)))
+    }
+
+    /// Asks for a larger open canvas, or gives it back with nil. Only the
+    /// open notch grows; a request while it's closed is ignored.
+    public func requestOpenSize(_ size: CGSize?) {
+        guard size == nil || (isOpen && !showsTakeover) else { return }
+        requestedOpenSize = size
+    }
 
     /// Changes only when the preview switches kind, so the notch animates its
     /// width on rotation but not on every countdown tick.
@@ -85,7 +122,7 @@ public final class NotchViewModel: ObservableObject {
         let flare = topRadius * 2
         switch phase {
         case .open:
-            return Theme.Layout.expandedSize
+            return openSize
         case .hovering:
             let base = closedWidth(notch)
             return CGSize(width: base + Theme.Layout.hoverGrowth.width + flare,
@@ -117,6 +154,7 @@ public final class NotchViewModel: ObservableObject {
 
     public func close() {
         isPinned = false
+        requestedOpenSize = nil
         showsMoreTabs = false
         phase = .closed
     }

@@ -6,8 +6,14 @@ import TabbiKit
 /// Ask Claude: a small chat with the local `claude` CLI. Messages fill the
 /// panel and a text field sits at the bottom. The notch stays pinned open
 /// while the focused field holds a draft or an answer is streaming, so an
-/// idle Ask tab still closes when the pointer leaves.
+/// idle Ask tab still closes when the pointer leaves. The chat can grow
+/// into a larger view (Expand, or Command-Return to send and expand),
+/// which stays open until Esc, Collapse or a click elsewhere.
 struct ClaudeAskPanel: View {
+    /// The large chat view's canvas: room for a long answer at a
+    /// comfortable reading width, still anchored under the notch.
+    static let largeSize = CGSize(width: 720, height: 460)
+
     @ObservedObject var session: ClaudeAskSession
     @EnvironmentObject private var notch: NotchViewModel
     @State private var draft = ""
@@ -50,7 +56,7 @@ struct ClaudeAskPanel: View {
             try? await Task.sleep(for: .milliseconds(80))
             fieldFocused = true
         }
-        .onChange(of: (fieldFocused && !draft.isEmpty) || session.isStreaming, initial: true) { _, pinned in
+        .onChange(of: (fieldFocused && !draft.isEmpty) || session.isStreaming || isLarge, initial: true) { _, pinned in
             notch.isPinned = pinned
         }
         .onDisappear { notch.isPinned = false }
@@ -58,13 +64,16 @@ struct ClaudeAskPanel: View {
 
     // MARK: Input
 
+    private var isLarge: Bool { notch.isEnlarged }
+
     private var canSend: Bool {
         !draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !session.isStreaming
     }
 
     private var inputBar: some View {
         HStack(spacing: Theme.Spacing.s) {
-            InputField(text: $draft, focused: $fieldFocused, accent: accent, onSubmit: { send(draft) })
+            InputField(text: $draft, focused: $fieldFocused, accent: accent, maxLines: isLarge ? 6 : 3,
+                       onSubmit: { expand in send(draft, expand: expand) })
             if session.isStreaming {
                 IconButton(symbol: "stop.fill", size: 32, help: "Stop answering") { session.stop() }
                     .transition(.motionPop)
@@ -89,27 +98,42 @@ struct ClaudeAskPanel: View {
                 }
                 .transition(.motionPop)
             }
+            if isLarge || !conversation.isEmpty {
+                IconButton(symbol: isLarge ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right",
+                           size: 32,
+                           help: isLarge ? "Back to the notch (Esc)" : "Open in the large view (Command-Return sends and expands)") {
+                    notch.requestOpenSize(isLarge ? nil : Self.largeSize)
+                }
+                .transition(.motionPop)
+            }
         }
         .motion(Theme.Motion.snappy, value: session.isStreaming)
+        .motion(Theme.Motion.snappy, value: isLarge)
         .motion(Theme.Motion.snappy, value: session.isShowingHistory)
         .motion(Theme.Motion.snappy, value: session.savedChats.isEmpty)
     }
 
-    private func send(_ prompt: String) {
+    /// Sends `prompt`; with `expand` (Command-Return) the chat also grows
+    /// into the large view.
+    private func send(_ prompt: String, expand: Bool = false) {
         guard !session.isStreaming,
               !prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+        if expand { notch.requestOpenSize(Self.largeSize) }
         session.ask(prompt)
         draft = ""
         fieldFocused = true
     }
 }
 
-/// The rounded question field. Return sends; Shift-Return adds a line.
+/// The rounded question field. Return sends, Command-Return sends and opens
+/// the large view, and Shift-Return adds a line.
 private struct InputField: View {
     @Binding var text: String
     var focused: FocusState<Bool>.Binding
     let accent: Color
-    let onSubmit: () -> Void
+    let maxLines: Int
+    /// Called with true for Command-Return.
+    let onSubmit: (_ expand: Bool) -> Void
     @State private var hovering = false
 
     var body: some View {
@@ -123,7 +147,7 @@ private struct InputField: View {
             RoundedRectangle(cornerRadius: Theme.Radius.m, style: .continuous)
                 .strokeBorder(borderColor, lineWidth: 1)
         )
-        .help("Return to send, Shift-Return for a new line")
+        .help("Return to send, Command-Return to send in the large view, Shift-Return for a new line")
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
         .motion(Theme.Motion.snappy, value: focused.wrappedValue)
@@ -140,7 +164,7 @@ private struct InputField: View {
                 .textFieldStyle(.plain)
                 .font(Theme.Typography.body)
                 .foregroundStyle(Theme.Palette.primaryText)
-                .lineLimit(1...3)
+                .lineLimit(1...maxLines)
                 .focused(focused)
                 .onKeyPress(.return, phases: .down) { press in
                     if press.modifiers.contains(.shift) {
@@ -152,11 +176,12 @@ private struct InputField: View {
                         // Deferred: the field editor ignores binding changes made
                         // while it handles the key, so clearing the draft here
                         // would leave the sent text in the field.
-                        Task { @MainActor in onSubmit() }
+                        let expand = press.modifiers.contains(.command)
+                        Task { @MainActor in onSubmit(expand) }
                     }
                     return .handled
                 }
-                .onSubmit { Task { @MainActor in onSubmit() } }
+                .onSubmit { Task { @MainActor in onSubmit(false) } }
         }
     }
 
