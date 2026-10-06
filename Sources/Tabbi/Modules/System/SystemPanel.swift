@@ -22,7 +22,7 @@ struct SystemPanel: View {
     private var cpuCard: some View {
         MetricCard(
             title: "CPU", symbol: "cpu",
-            value: SystemFormat.percent(monitor.cpu?.total),
+            value: monitor.cpu.map { SystemFormat.percent($0.total) },
             history: monitor.cpuHistory.elements,
             help: "Total CPU usage across all cores, last 60 seconds"
         ) {
@@ -74,7 +74,10 @@ struct SystemPanel: View {
 private struct MetricCard<Accessory: View, Footer: View>: View {
     let title: String
     let symbol: String
-    let value: String
+    /// `nil` while the first reading is still being taken: the figure
+    /// shows as a placeholder bar of the same size, so the card neither
+    /// jumps nor shows a lone "-" for the second it takes.
+    let value: String?
     var unit: String?
     let history: [Double]
     let help: String
@@ -100,10 +103,11 @@ private struct MetricCard<Accessory: View, Footer: View>: View {
                 .frame(height: 16)
 
                 HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.xxs) {
-                    Text(value)
+                    Text(value ?? "00%")
                         .font(Theme.Typography.metric)
-                        .foregroundStyle(value == SystemFormat.unavailable
+                        .foregroundStyle(value == nil || value == SystemFormat.unavailable
                                          ? Theme.Palette.tertiaryText : Theme.Palette.primaryText)
+                        .redacted(reason: value == nil ? .placeholder : [])
                         .contentTransition(.numericText())
                     if let unit {
                         Text(unit)
@@ -127,7 +131,9 @@ private struct MetricCard<Accessory: View, Footer: View>: View {
 }
 
 /// Area + line chart on a fixed 0–100% scale so cards compare at a glance.
-/// Empty history draws a dashed baseline instead of a blank gap.
+/// Empty history draws a dashed baseline instead of a blank gap; it is
+/// only empty for the second or two after the panel opens, so it carries
+/// no caption of its own.
 private struct Sparkline: View {
     let series: HistorySeries
     private let accent = SystemModule.descriptor.accentColor
@@ -139,11 +145,6 @@ private struct Sparkline: View {
                 Line()
                     .stroke(Theme.Palette.tertiaryText, style: StrokeStyle(lineWidth: 1, dash: [2, 3]))
                     .frame(height: 1)
-            }
-            .overlay {
-                Text("Measuring…")
-                    .font(Theme.Typography.caption)
-                    .foregroundStyle(Theme.Palette.tertiaryText)
             }
         } else {
             Chart {

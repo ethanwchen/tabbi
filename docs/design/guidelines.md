@@ -73,6 +73,8 @@ When a rule and a feature disagree, remove or hide the feature.
 
 - Every panel designs its empty, loading, unavailable and error states.
   An empty state is one line of guidance and at most one action ("Connect Calendar to see your day"), never a blank area or a raw error.
+- A figure that is still loading shows a placeholder bar the size of the figure (`.redacted(reason: .placeholder)`), and one caption says what is coming.
+  A plain "-" means the value is unknown or not reported, never that it is on its way.
 - Copy is sentence case, short and friendly; say what to do, not what went wrong inside.
 - Use the product name Tabbi; no emojis and no em dashes (enforced by `scripts/check-style.sh`).
 
