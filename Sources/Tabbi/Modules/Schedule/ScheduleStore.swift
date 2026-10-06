@@ -3,7 +3,8 @@ import Combine
 import EventKit
 import TabbiKitCore
 
-/// Today's calendar for the Schedule tab, read through EventKit (Google and
+/// The next seven days of calendar for the Schedule tab (today in the Day
+/// view, all of them in the Week view), read through EventKit (Google and
 /// other accounts come in through macOS Internet Accounts).
 ///
 /// Calendar access is only requested from the panel, never at launch.
@@ -13,7 +14,8 @@ import TabbiKitCore
 ///
 /// In demo mode it shows `ScheduleSampleData` seen from 11:20 and never
 /// touches EventKit; `TABBI_SCHEDULE_PREVIEW=notAsked|denied|freeDay` renders
-/// the empty states instead, and `selected` a block's details.
+/// the empty states instead, `selected` a block's details and `week` the
+/// Week view.
 @MainActor
 final class ScheduleStore: ObservableObject {
     enum Access: Equatable {
@@ -25,8 +27,16 @@ final class ScheduleStore: ObservableObject {
         case granted
     }
 
+    /// The two ways to look at the calendar.
+    enum Mode: String, CaseIterable {
+        case day = "Day"
+        case week = "Week"
+    }
+
     @Published private(set) var access: Access
-    /// Today's events and planned blocks, all-day ones included.
+    @Published var mode: Mode = .day
+    /// Events and planned blocks from today through the next six days,
+    /// all-day ones included.
     @Published private(set) var items: [ScheduleItem] = []
     /// Whether any calendar syncs from an online account, so an empty day can
     /// suggest adding one.
@@ -56,8 +66,10 @@ final class ScheduleStore: ObservableObject {
             default: .granted
             }
             now = ScheduleSampleData.now(on: date)
-            items = preview == nil || preview == "selected" ? ScheduleSampleData.items(on: date) : []
+            let showsDay = preview == nil || preview == "selected" || preview == "week"
+            items = showsDay ? ScheduleSampleData.weekItems(from: date) : []
             selectedID = preview == "selected" ? "demo-deck" : nil
+            mode = preview == "week" ? .week : .day
         } else {
             now = date
             access = Self.currentAccess()
@@ -67,6 +79,11 @@ final class ScheduleStore: ObservableObject {
     /// The Day view's layout for the current items and clock.
     var dayLayout: ScheduleDayLayout {
         ScheduleDayLayout(day: now, now: now, items: items)
+    }
+
+    /// The Week view's layout: today and the six days after it.
+    var weekLayout: ScheduleWeekLayout {
+        ScheduleWeekLayout(now: now, days: Self.dayCount, items: items)
     }
 
     var selectedItem: ScheduleItem? {
@@ -109,6 +126,11 @@ final class ScheduleStore: ObservableObject {
         }
     }
 
+    func show(_ mode: Mode) {
+        selectedID = nil
+        self.mode = mode
+    }
+
     func select(_ id: ScheduleItem.ID?) {
         selectedID = selectedID == id ? nil : id
     }
@@ -126,6 +148,9 @@ final class ScheduleStore: ObservableObject {
     }
 
     // MARK: Private
+
+    /// Days the store reads: the Week view's seven, the first one today.
+    private static let dayCount = 7
 
     private static func currentAccess() -> Access {
         guard ConnectionProbes.canAskForCalendar else { return .unavailable }
@@ -145,8 +170,8 @@ final class ScheduleStore: ObservableObject {
         }
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: now)
-        guard let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) else { return }
-        let predicate = eventStore.predicateForEvents(withStart: startOfDay, end: endOfDay, calendars: nil)
+        guard let end = calendar.date(byAdding: .day, value: Self.dayCount, to: startOfDay) else { return }
+        let predicate = eventStore.predicateForEvents(withStart: startOfDay, end: end, calendars: nil)
         items = eventStore.events(matching: predicate).map(Self.item)
         if let selectedID, !items.contains(where: { $0.id == selectedID }) { self.selectedID = nil }
         hasAccounts = eventStore.calendars(for: .event).contains { Self.syncsFromAccount($0.source) }

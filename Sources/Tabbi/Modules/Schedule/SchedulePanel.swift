@@ -2,19 +2,24 @@ import SwiftUI
 import TabbiKitCore
 import TabbiKit
 
-/// The Schedule panel: a header with the date and today's free time, the
-/// day's timeline (events, planned blocks, now-line), and a line under it
-/// with what is on now or the details of the block tapped.
+/// The Schedule panel: a header with the Day/Week switch, the date and the
+/// free time, then either today's timeline (events, planned blocks,
+/// now-line) with a line under it for what is on now or the block tapped,
+/// or the week's seven days stacked on the same clock hours.
 struct SchedulePanel: View {
     @ObservedObject var store: ScheduleStore
 
     var body: some View {
         let layout = store.dayLayout
         VStack(spacing: Theme.Spacing.s) {
-            ScheduleHeader(layout: layout, now: store.now, showsFreeTime: store.emptySituation == nil)
+            ScheduleHeader(store: store, layout: layout)
             if let situation = store.emptySituation {
                 ScheduleAccessMessage(situation: situation, store: store)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if store.mode == .week {
+                ScheduleWeek(layout: store.weekLayout, now: store.now)
+                    .frame(maxHeight: .infinity)
+                    .transition(.opacity)
             } else {
                 ScheduleTimeline(layout: layout, now: store.now, selectedID: store.selectedID) { store.select($0) }
                     .frame(maxHeight: .infinity)
@@ -24,6 +29,7 @@ struct SchedulePanel: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .motion(Theme.Motion.content, value: store.emptySituation)
+        .motion(Theme.Motion.content, value: store.mode)
         .motion(Theme.Motion.snappy, value: store.selectedID)
         .onAppear { store.setVisible(true) }
         .onDisappear { store.setVisible(false) }
@@ -32,39 +38,260 @@ struct SchedulePanel: View {
 
 private var accent: Color { ScheduleModule.descriptor.accentColor }
 
-/// "Today" with the date, then the free time left and any all-day events.
+/// The Day/Week switch and the date, then what's free: the all-day event
+/// and free time left today, or the free time across the week.
 private struct ScheduleHeader: View {
+    @ObservedObject var store: ScheduleStore
     let layout: ScheduleDayLayout
-    let now: Date
-    let showsFreeTime: Bool
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.s) {
-            Text("Today")
-                .font(Theme.Typography.title)
-                .foregroundStyle(Theme.Palette.primaryText)
-            Text(now.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day()))
+        HStack(alignment: .center, spacing: Theme.Spacing.s) {
+            ScheduleModePicker(selection: store.mode) { store.show($0) }
+            Text(dateText)
                 .font(Theme.Typography.caption)
                 .foregroundStyle(Theme.Palette.tertiaryText)
+                .lineLimit(1)
             Spacer(minLength: Theme.Spacing.s)
-            ForEach(layout.allDay.prefix(1)) { item in
-                Label(ScheduleFormat.title(item), systemImage: "sun.max")
-                    .font(Theme.Typography.caption)
-                    .foregroundStyle(Theme.Palette.secondaryText)
-                    .lineLimit(1)
-                    .help("All day: \(ScheduleFormat.title(item))")
-            }
-            if showsFreeTime {
-                Text(layout.freeMinutes > 0 ? "\(ScheduleFormat.duration(minutes: layout.freeMinutes)) free"
-                                            : "No free time left")
-                    .font(Theme.Typography.caption.monospacedDigit())
-                    .foregroundStyle(layout.freeMinutes > 0 ? accent : Theme.Palette.tertiaryText)
-                    .lineLimit(1)
-                    .fixedSize()
-                    .help("Free time left in your working day, with a buffer around each event")
+            if store.emptySituation == nil {
+                if store.mode == .day {
+                    ForEach(layout.allDay.prefix(1)) { item in
+                        Label(ScheduleFormat.title(item), systemImage: "sun.max")
+                            .font(Theme.Typography.caption)
+                            .foregroundStyle(Theme.Palette.secondaryText)
+                            .lineLimit(1)
+                            .help("All day: \(ScheduleFormat.title(item))")
+                    }
+                    freeTime(layout.freeMinutes, suffix: "free", none: "No free time left",
+                             help: "Free time left in your working day, with a buffer around each event")
+                } else {
+                    freeTime(store.weekLayout.freeMinutes, suffix: "free this week", none: "No free time this week",
+                             help: "Free working time over the next seven days, with a buffer around each event")
+                }
             }
         }
-        .padding(.horizontal, Theme.Spacing.xs)
+        .padding(.horizontal, Theme.Spacing.xxs)
+    }
+
+    private var dateText: String {
+        let now = store.now
+        guard store.mode == .week,
+              let last = Calendar.current.date(byAdding: .day, value: 6, to: now) else {
+            return now.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day())
+        }
+        return now.formatted(.dateTime.month(.abbreviated).day()) + " - "
+            + last.formatted(.dateTime.month(.abbreviated).day())
+    }
+
+    private func freeTime(_ minutes: Int, suffix: String, none: String, help: String) -> some View {
+        Text(minutes > 0 ? "\(ScheduleFormat.duration(minutes: minutes)) \(suffix)" : none)
+            .font(Theme.Typography.caption.monospacedDigit())
+            .foregroundStyle(minutes > 0 ? accent : Theme.Palette.tertiaryText)
+            .lineLimit(1)
+            .fixedSize()
+            .help(help)
+    }
+}
+
+/// Two capsule pills, Day and Week; the selected one wears the accent.
+private struct ScheduleModePicker: View {
+    let selection: ScheduleStore.Mode
+    let select: (ScheduleStore.Mode) -> Void
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.xxs) {
+            ForEach(ScheduleStore.Mode.allCases, id: \.self) { mode in
+                ScheduleModePill(title: mode.rawValue, isSelected: selection == mode,
+                                 help: mode == .day ? "Today on a timeline" : "The next seven days at a glance") {
+                    select(mode)
+                }
+            }
+        }
+        .padding(Theme.Spacing.xxs)
+        .background(Capsule().fill(Theme.Palette.surface))
+    }
+}
+
+private struct ScheduleModePill: View {
+    let title: String
+    let isSelected: Bool
+    let help: String
+    let action: () -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .font(Theme.Typography.caption)
+                .foregroundStyle(isSelected ? accent : hovering ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
+                .padding(.horizontal, Theme.Spacing.s + Theme.Spacing.xxs)
+                .frame(height: 20)
+                .background(Capsule().fill(isSelected ? accent.opacity(0.18) : hovering ? Theme.Palette.surfaceHover : .clear))
+                .contentShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .help(help)
+        .onHover { hovering = $0 }
+        .motion(Theme.Motion.snappy, value: hovering)
+    }
+}
+
+/// Seven rows, today first, on shared clock hours: each day's busy times
+/// in its calendars' colors, planned blocks in the accent, and its free
+/// time at the end of the row.
+private struct ScheduleWeek: View {
+    let layout: ScheduleWeekLayout
+    let now: Date
+
+    private static let labelWidth: CGFloat = 48
+    private static let freeWidth: CGFloat = 64
+    private static let axisHeight: CGFloat = 14
+
+    var body: some View {
+        Card(padding: Theme.Spacing.s) {
+            GeometryReader { geometry in
+                let rows = CGFloat(max(layout.days.count, 1))
+                let rowGap: CGFloat = 2
+                let rowHeight = max((geometry.size.height - Self.axisHeight - rowGap * rows) / rows, 8)
+                VStack(spacing: rowGap) {
+                    axis
+                        .frame(height: Self.axisHeight)
+                    ForEach(layout.days) { day in
+                        ScheduleWeekRow(day: day, now: now, hourMarks: hourMarks, labelWidth: Self.labelWidth,
+                                        freeWidth: Self.freeWidth)
+                            .frame(height: rowHeight)
+                    }
+                }
+            }
+        }
+    }
+
+    /// Each hour's place along the tracks, for their gridlines.
+    private var hourMarks: [Double] {
+        layout.hourMarks.dropFirst().dropLast().map { layout.position(ofMinute: $0) }
+    }
+
+    /// Clock labels over the tracks, every hour there's room for.
+    private var axis: some View {
+        HStack(spacing: Theme.Spacing.s) {
+            Color.clear.frame(width: Self.labelWidth)
+            GeometryReader { geometry in
+                let marks = layout.hourMarks
+                let hourWidth = geometry.size.width / CGFloat(max(marks.count - 1, 1))
+                let every = hourWidth >= 44 ? 1 : hourWidth >= 22 ? 2 : 3
+                ZStack(alignment: .topLeading) {
+                    ForEach(Array(marks.enumerated()), id: \.offset) { index, minute in
+                        if index % every == 0, index < marks.count - 1 {
+                            Text(Self.hourLabel(minute))
+                                .font(Theme.Typography.caption.monospacedDigit())
+                                .foregroundStyle(Theme.Palette.tertiaryText)
+                                .lineLimit(1)
+                                .fixedSize()
+                                .offset(x: geometry.size.width * layout.position(ofMinute: minute))
+                        }
+                    }
+                }
+            }
+            Color.clear.frame(width: Self.freeWidth)
+        }
+    }
+
+    private static func hourLabel(_ minute: Int) -> String {
+        let date = Calendar.current.date(byAdding: .minute, value: minute,
+                                         to: Calendar.current.startOfDay(for: Date())) ?? Date()
+        return date.formatted(.dateTime.hour())
+    }
+}
+
+/// One day of the week: its name, a track of its busy times, its free time.
+private struct ScheduleWeekRow: View {
+    let day: ScheduleWeekLayout.Day
+    let now: Date
+    let hourMarks: [Double]
+    let labelWidth: CGFloat
+    let freeWidth: CGFloat
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.s) {
+            Text(dayName)
+                .font(Theme.Typography.caption.weight(day.isToday ? .bold : .medium))
+                .foregroundStyle(day.isToday ? accent : Theme.Palette.secondaryText)
+                .lineLimit(1)
+                .frame(width: labelWidth, alignment: .leading)
+            track
+            Text(day.freeMinutes > 0 ? ScheduleFormat.duration(minutes: day.freeMinutes) : "Full")
+                .font(Theme.Typography.caption.monospacedDigit())
+                .foregroundStyle(day.freeMinutes > 0 ? Theme.Palette.secondaryText : Theme.Palette.tertiaryText)
+                .lineLimit(1)
+                .frame(width: freeWidth, alignment: .trailing)
+        }
+        .contentShape(Rectangle())
+        .help(summary)
+    }
+
+    private var track: some View {
+        GeometryReader { geometry in
+            let width = geometry.size.width
+            let height = geometry.size.height
+            let shape = RoundedRectangle(cornerRadius: 3, style: .continuous)
+            ZStack(alignment: .topLeading) {
+                shape.fill(Theme.Palette.surfaceHover.opacity(0.6))
+                ForEach(hourMarks, id: \.self) { mark in
+                    Rectangle()
+                        .fill(Theme.Palette.stroke)
+                        .frame(width: 1, height: height)
+                        .offset(x: width * mark)
+                }
+                if day.isToday, let nowX = day.position(of: now) {
+                    // The past is dimmed so what's left of today stands out.
+                    Rectangle()
+                        .fill(Theme.Palette.background.opacity(0.45))
+                        .frame(width: width * nowX, height: height)
+                }
+                ForEach(day.placed) { placed in
+                    let laneHeight = (height - CGFloat(placed.lanes - 1)) / CGFloat(placed.lanes)
+                    let color = blockColor(placed.item)
+                    let block = RoundedRectangle(cornerRadius: 2, style: .continuous)
+                    block.fill(color.opacity(placed.item.kind == .planned ? 0.35 : 0.7))
+                        .overlay {
+                            if placed.item.kind == .planned {
+                                block.strokeBorder(color, style: StrokeStyle(lineWidth: 1, dash: [2, 1.5]))
+                            }
+                        }
+                        .opacity(placed.item.end <= now ? 0.45 : 1)
+                        .frame(width: max(width * placed.width - 1, 2), height: laneHeight)
+                        .offset(x: width * placed.x + 0.5, y: CGFloat(placed.lane) * (laneHeight + 1))
+                }
+                if day.isToday, let nowX = day.position(of: now) {
+                    Rectangle()
+                        .fill(Theme.Palette.primaryText)
+                        .frame(width: 1.5, height: height + 2)
+                        .offset(x: width * nowX - 0.75, y: -1)
+                }
+            }
+            .clipShape(shape)
+        }
+    }
+
+    private var dayName: String {
+        day.isToday ? "Today" : day.date.formatted(.dateTime.weekday(.abbreviated).day())
+    }
+
+    private var summary: String {
+        var parts: [String] = []
+        let events = day.eventCount, planned = day.plannedCount
+        parts.append(events == 0 ? "No events" : events == 1 ? "1 event" : "\(events) events")
+        if planned > 0 { parts.append(planned == 1 ? "1 planned block" : "\(planned) planned blocks") }
+        if let allDay = day.allDay.first { parts.append("all day: \(ScheduleFormat.title(allDay))") }
+        parts.append(day.freeMinutes > 0 ? "\(ScheduleFormat.duration(minutes: day.freeMinutes)) free"
+                                         : "no free time")
+        let name = day.date.formatted(.dateTime.weekday(.wide).month(.abbreviated).day())
+        return "\(name): " + parts.joined(separator: ", ")
+    }
+
+    private func blockColor(_ item: ScheduleItem) -> Color {
+        if item.kind == .planned { return accent }
+        guard let color = item.calendarColor else { return Theme.Palette.secondaryText }
+        return Color(.sRGB, red: color.red, green: color.green, blue: color.blue)
     }
 }
 

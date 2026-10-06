@@ -130,7 +130,7 @@ public struct ScheduleDayLayout: Hashable, Sendable {
         }
         self.hours = hours
         self.placed = Self.place(timed, in: range)
-        self.allDay = items.filter(\.isAllDay)
+        self.allDay = items.filter { $0.isAllDay && $0.end > midnight && $0.start < nextMidnight }
         let free = SchedulePlanner.freeTime(day: midnight, now: now, events: timed.map(\.upcomingEvent),
                                             preferences: preferences, calendar: calendar)
         self.freeMinutes = free.reduce(0) { $0 + Int($1.duration / 60) }
@@ -233,5 +233,100 @@ public enum ScheduleFormat {
     public static func title(_ item: ScheduleItem) -> String {
         let trimmed = item.title.trimmingCharacters(in: .whitespacesAndNewlines)
         return trimmed.isEmpty ? "Untitled event" : trimmed
+    }
+}
+
+/// The Schedule's Week view, laid out: one row per day from today on, all
+/// sharing the same span of clock hours so busy times line up down the
+/// week, each with its free time.
+public struct ScheduleWeekLayout: Hashable, Sendable {
+    public struct Day: Identifiable, Hashable, Sendable {
+        /// Midnight of the day.
+        public var date: Date
+        /// The day's span on the shared clock hours.
+        public var range: DateInterval
+        /// Timed items, as fractions of `range`, in lanes like the Day view.
+        public var placed: [ScheduleDayLayout.Placed]
+        public var allDay: [ScheduleItem]
+        /// Free working time after the moment the layout was made for,
+        /// buffers kept, on the planner's grid.
+        public var freeMinutes: Int
+        public var isToday: Bool
+
+        public var id: Date { date }
+
+        /// Timed events, planned blocks left out.
+        public var eventCount: Int { placed.filter { $0.item.kind == .event }.count }
+        public var plannedCount: Int { placed.filter { $0.item.kind == .planned }.count }
+
+        /// Where `date` falls along the row, or nil outside it.
+        public func position(of date: Date) -> Double? {
+            guard range.contains(date) else { return nil }
+            return date.timeIntervalSince(range.start) / range.duration
+        }
+    }
+
+    public var days: [Day]
+    /// The clock hours every row spans, as minutes after midnight: the
+    /// working hours, stretched to whole hours around any earlier or later
+    /// timed item that week.
+    public var startMinute: Int
+    public var endMinute: Int
+    /// Free working time left across the week.
+    public var freeMinutes: Int
+
+    /// Each whole hour inside the span, as minutes after midnight.
+    public var hourMarks: [Int] { Array(stride(from: startMinute, through: endMinute, by: 60)) }
+
+    /// Where a clock time (minutes after midnight) falls along every row.
+    public func position(ofMinute minute: Int) -> Double {
+        Double(minute - startMinute) / Double(max(endMinute - startMinute, 1))
+    }
+
+    /// Lays out `dayCount` days starting with the day containing `now`.
+    public init(now: Date, days dayCount: Int = 7, items: [ScheduleItem],
+                preferences: SchedulePreferences = SchedulePreferences(), calendar: Calendar = .current) {
+        let first = calendar.startOfDay(for: now)
+        let midnights = (0..<max(dayCount, 1)).compactMap { calendar.date(byAdding: .day, value: $0, to: first) }
+        let last = midnights.last.flatMap { calendar.date(byAdding: .day, value: 1, to: $0) } ?? first
+        let timed = items
+            .filter { !$0.isAllDay && $0.end > $0.start && $0.end > first && $0.start < last }
+            .sorted { ($0.start, $0.end, $0.id) < ($1.start, $1.end, $1.id) }
+
+        // Clock minutes of each timed item, clipped to its own day.
+        func minuteOfDay(_ date: Date) -> Int {
+            let parts = calendar.dateComponents([.hour, .minute], from: date)
+            return (parts.hour ?? 0) * 60 + (parts.minute ?? 0)
+        }
+        var earliest = preferences.workdayStartMinute
+        var latest = preferences.workdayEndMinute
+        for item in timed {
+            let startDay = calendar.startOfDay(for: item.start)
+            earliest = min(earliest, startDay < first ? 0 : minuteOfDay(item.start))
+            // Ending at or past the next midnight runs to the end of the day.
+            latest = max(latest, calendar.startOfDay(for: item.end) > startDay ? 24 * 60 : minuteOfDay(item.end))
+        }
+        let startMinute = earliest / 60 * 60
+        var endMinute = min((latest + 59) / 60 * 60, 24 * 60)
+        if endMinute <= startMinute { endMinute = min(startMinute + 60, 24 * 60) }
+        self.startMinute = startMinute
+        self.endMinute = endMinute
+
+        let events = timed.map(\.upcomingEvent)
+        let today = first
+        days = midnights.map { midnight in
+            func time(_ minutes: Int) -> Date {
+                calendar.date(byAdding: .minute, value: minutes, to: midnight) ?? midnight
+            }
+            let range = DateInterval(start: time(startMinute), end: max(time(endMinute), time(startMinute)))
+            let next = calendar.date(byAdding: .day, value: 1, to: midnight) ?? midnight.addingTimeInterval(86_400)
+            let dayItems = timed.filter { $0.end > range.start && $0.start < range.end }
+            let free = SchedulePlanner.freeTime(day: midnight, now: now, events: events,
+                                                preferences: preferences, calendar: calendar)
+            return Day(date: midnight, range: range, placed: ScheduleDayLayout.place(dayItems, in: range),
+                       allDay: items.filter { $0.isAllDay && $0.end > midnight && $0.start < next },
+                       freeMinutes: free.reduce(0) { $0 + Int($1.duration / 60) }, isToday: midnight == today)
+        }
+        freeMinutes = days.reduce(0) { $0 + $1.freeMinutes }
     }
 }
