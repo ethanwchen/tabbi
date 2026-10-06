@@ -253,6 +253,10 @@ The peek legs come from `EffectArt.hangingLeg`, drawn behind the head with the b
 
 ![Playing with yarn or a ball for every breed](images/play.png)
 
+`notch-moves-1x.png` and `notch-moves-2x.png` show the key frame of each of those moves for every breed at the size the closed notch draws it (one row per breed, in the order above), because a move that only reads at 4x is not done:
+
+![The key frame of every newer move for every breed at notch size on a 2x display](images/notch-moves-2x.png)
+
 ### Walking
 
 The walk, the stretch and the nap are the animations that are not sitting poses.

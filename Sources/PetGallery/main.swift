@@ -308,3 +308,18 @@ for (name, outfit, accessories) in contactGroups.flatMap(\.1) {
     try writeSheet(cells, columns: keyFrames.count, title: "Animations in \(name)", scale: 3,
                    to: outputDirectory.appendingPathComponent("strip-\(slug).png"))
 }
+
+// Notch-size check of the newer moves: one row per breed, the key (middle)
+// frame of each move, at 1x and 2x, so every breed is judged at the size the
+// closed notch really draws it.
+let newerMoves: [PetAnimation] = [.yawn, .hop, .typing, .coffee, .wave, .groom, .tailSwish, .nap, .play]
+let moveCells = PetBreed.allCases.flatMap { breed in
+    newerMoves.map { animation in
+        let frames = PetComposer.clip(animation, for: breed).frames
+        return Cell(label: "", canvas: frames[frames.count / 2].canvas, palette: breed.palette.withVisibleRim())
+    }
+}
+for notchScale in [1, 2] {
+    try writeSheet(moveCells, columns: newerMoves.count, title: "", scale: notchScale,
+                   to: outputDirectory.appendingPathComponent("notch-moves-\(notchScale)x.png"))
+}
