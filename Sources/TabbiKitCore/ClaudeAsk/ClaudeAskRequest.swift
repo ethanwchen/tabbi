@@ -39,18 +39,35 @@ extension ClaudeAskFailure {
 }
 
 extension ClaudeAskConversation {
-    /// A finished sample exchange for `TABBI_DEMO=1` snapshots and
+    /// Two finished sample exchanges for `TABBI_DEMO=1` snapshots and
     /// screenshots, built through the same reducer as live data.
     public static var demo: ClaudeAskConversation {
         var conversation = ClaudeAskConversation()
-        conversation.begin(prompt: "Name for a function that retries with backoff?")
+        conversation.begin(prompt: "How should an app retry a flaky network call?")
         conversation.apply(.sessionStarted(sessionID: "demo-session"))
         conversation.apply(.result(ClaudeResult(
             text: """
-            - **`retryWithBackoff(_:)`** - clear and conventional
-            - **`withRetries(maxAttempts:)`** - reads well at the call site
+            Retry a few times, waiting longer after each try:
 
-            I'd pick `retryWithBackoff` unless you already use the `with…` style.
+            - Start around **0.5 s** and double the wait each time
+            - Add a little random jitter so clients don't retry in sync
+            - Stop after 3 to 5 tries and only retry errors that can pass
+            """,
+            sessionID: "demo-session",
+            isError: false
+        )))
+        conversation.begin(prompt: "Name for a function that retries with backoff?")
+        conversation.apply(.result(ClaudeResult(
+            text: """
+            I'd go with **`retryWithBackoff`**. It says what it does at the call site:
+
+            ```swift
+            let profile = try await retryWithBackoff(attempts: 3) {
+                try await api.fetchProfile()
+            }
+            ```
+
+            `withRetries(maxAttempts:)` also reads well if you already use the `with…` style.
             """,
             sessionID: "demo-session",
             isError: false

@@ -45,4 +45,47 @@ final class ClaudeAskMarkdownTests: XCTestCase {
         let text = String(ClaudeAskMarkdown.attributed("Partial **bold").characters)
         XCTAssertTrue(text.hasPrefix("Partial"))
     }
+
+    // MARK: - Blocks
+
+    func testProseWithoutFencesIsOneTextBlock() {
+        XCTAssertEqual(ClaudeAskMarkdown.blocks("One\n\n- two"), [.text("One\n\n- two")])
+    }
+
+    func testFencedCodeSplitsProseAndKeepsLanguageAndIndentation() {
+        let blocks = ClaudeAskMarkdown.blocks("Try this:\n\n```swift\nfunc a() {\n    b()\n}\n```\n\nThat's it.")
+        XCTAssertEqual(blocks, [
+            .text("Try this:"),
+            .code(language: "swift", code: "func a() {\n    b()\n}", isClosed: true),
+            .text("That's it."),
+        ])
+    }
+
+    func testFenceWithoutLanguageAndExtraInfo() {
+        XCTAssertEqual(ClaudeAskMarkdown.blocks("```\nls\n```"), [.code(language: nil, code: "ls", isClosed: true)])
+        XCTAssertEqual(ClaudeAskMarkdown.blocks("```sh title=x\nls\n```"),
+                       [.code(language: "sh", code: "ls", isClosed: true)])
+    }
+
+    func testUnclosedFenceWhileStreamingRunsToTheEnd() {
+        XCTAssertEqual(ClaudeAskMarkdown.blocks("Run:\n```sh\nswift build\nswift te"), [
+            .text("Run:"),
+            .code(language: "sh", code: "swift build\nswift te", isClosed: false),
+        ])
+        XCTAssertEqual(ClaudeAskMarkdown.blocks("Run:\n```"), [.text("Run:"), .code(language: nil, code: "", isClosed: false)])
+    }
+
+    func testIndentedFenceInAListLosesOnlyItsOwnIndent() {
+        let blocks = ClaudeAskMarkdown.blocks("- Step:\n  ```\n  if x {\n      y\n  }\n  ```")
+        XCTAssertEqual(blocks, [.text("- Step:"), .code(language: nil, code: "if x {\n    y\n}", isClosed: true)])
+    }
+
+    func testBlankLinesInsideCodeAreKept() {
+        XCTAssertEqual(ClaudeAskMarkdown.blocks("```\na\n\nb\n```"), [.code(language: nil, code: "a\n\nb", isClosed: true)])
+    }
+
+    func testEmptyAnswerHasNoBlocks() {
+        XCTAssertEqual(ClaudeAskMarkdown.blocks(""), [])
+        XCTAssertEqual(ClaudeAskMarkdown.blocks("\n\n"), [])
+    }
 }

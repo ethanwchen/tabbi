@@ -358,24 +358,113 @@ private struct AssistantBubble: View {
             // Re-rendered on a timer so the caret blinks while text streams in.
             TimelineView(.periodic(from: .now, by: 0.5)) { context in
                 let visible = Int(context.date.timeIntervalSinceReferenceDate * 2) % 2 == 0
-                let caret = Text(" ▍").foregroundStyle(accent.opacity(visible ? 1 : 0.25))
-                Text(ClaudeAskMarkdown.attributed(message.text)) + caret
+                AnswerBody(text: message.text,
+                           caret: Text(" ▍").foregroundStyle(accent.opacity(visible ? 1 : 0.25)))
             }
         } else if message.text.isEmpty {
             Text("No answer").foregroundStyle(Theme.Palette.tertiaryText)
         } else {
-            Text(ClaudeAskMarkdown.attributed(message.text))
+            AnswerBody(text: message.text, caret: nil)
         }
     }
 }
 
-/// Copies an answer's markdown; shows a checkmark briefly after copying.
+/// An answer's prose and code blocks, top to bottom. `caret` (while the
+/// answer streams) follows the last block, prose or code.
+private struct AnswerBody: View {
+    let text: String
+    let caret: Text?
+
+    var body: some View {
+        let blocks = ClaudeAskMarkdown.blocks(text)
+        VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+            ForEach(Array(blocks.enumerated()), id: \.offset) { index, block in
+                let caret = index == blocks.count - 1 ? caret : nil
+                switch block {
+                case .text(let prose):
+                    Text(Self.styled(prose)) + (caret ?? Text(""))
+                case .code(let language, let code, let isClosed):
+                    CodeBlock(language: language, code: code, canCopy: isClosed || self.caret == nil, caret: caret)
+                }
+            }
+        }
+    }
+}
+
+extension AnswerBody {
+    /// The prose's markdown with inline code in the code blocks' monospaced
+    /// size, so it sits level with the rounded body text (bold code stays bold).
+    static func styled(_ prose: String) -> AttributedString {
+        var text = ClaudeAskMarkdown.attributed(prose)
+        // Typed attribute keys, not `run.font`-style key paths, which the
+        // concurrency checker flags as non-Sendable.
+        typealias Intent = AttributeScopes.FoundationAttributes.InlinePresentationIntentAttribute
+        typealias FontKey = AttributeScopes.SwiftUIAttributes.FontAttribute
+        for run in text.runs {
+            guard let intent = run.attributes[Intent.self], intent.contains(.code) else { continue }
+            let weight: Font.Weight = intent.contains(.stronglyEmphasized) ? .semibold : .regular
+            text[run.range][FontKey.self] = .system(size: 11, weight: weight, design: .monospaced)
+        }
+        return text
+    }
+}
+
+/// A fenced code block: monospaced on a darker inset, with its language and
+/// a Copy button above. Long lines wrap, since the notch can't scroll sideways.
+private struct CodeBlock: View {
+    let language: String?
+    let code: String
+    let canCopy: Bool
+    let caret: Text?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(spacing: Theme.Spacing.s) {
+                Text(language ?? "Code")
+                    .font(Theme.Typography.caption)
+                    .foregroundStyle(Theme.Palette.tertiaryText)
+                    .lineLimit(1)
+                Spacer(minLength: Theme.Spacing.s)
+                CopyButton(text: code, help: "Copy code")
+                    .opacity(canCopy ? 1 : 0)
+                    .allowsHitTesting(canCopy)
+            }
+            .padding(.leading, Theme.Spacing.s)
+            .padding(.trailing, Theme.Spacing.xxs)
+            .frame(height: 24)
+            Rectangle()
+                .fill(Theme.Palette.stroke)
+                .frame(height: 0.5)
+            (Text(code) + (caret ?? Text("")))
+                .font(.system(size: 11, design: .monospaced))
+                .foregroundStyle(Theme.Palette.primaryText)
+                .lineSpacing(Theme.Spacing.xxs)
+                .fixedSize(horizontal: false, vertical: true)
+                .textSelection(.enabled)
+                .padding(.horizontal, Theme.Spacing.s)
+                .padding(.vertical, Theme.Spacing.s)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
+                .fill(Theme.Palette.background.opacity(0.55))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
+                .strokeBorder(Theme.Palette.stroke, lineWidth: 0.5)
+        )
+    }
+}
+
+/// Copies text (an answer's markdown or a code block); shows a checkmark
+/// briefly after copying.
 private struct CopyButton: View {
     let text: String
+    var help = "Copy answer"
     @State private var copied = false
 
     var body: some View {
-        IconButton(symbol: copied ? "checkmark" : "doc.on.doc", size: 22, help: "Copy answer") {
+        IconButton(symbol: copied ? "checkmark" : "doc.on.doc", size: 22, help: copied ? "Copied" : help) {
             NSPasteboard.general.clearContents()
             NSPasteboard.general.setString(text, forType: .string)
             copied = true
