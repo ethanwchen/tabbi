@@ -50,4 +50,20 @@ final class ClaudeAskChatLabelTests: XCTestCase {
         XCTAssertEqual(restored.sessionID, first.sessionID)
         XCTAssertEqual(restored.savedChat(updatedAt: first.updatedAt), first)
     }
+
+    func testDemoHistoryCanShowAQuestionAskedAboutAScreenshot() throws {
+        let now = date(2026, 10, 5)
+        let screenshot = ClaudeAskAttachment(pixelWidth: 1440, pixelHeight: 900)
+        let chats = ClaudeAskChat.demoHistory(now: now, screenshot: screenshot)
+        XCTAssertEqual(chats.count, ClaudeAskChat.demoHistory(now: now).count + 1)
+        XCTAssertEqual(chats.map(\.updatedAt), chats.map(\.updatedAt).sorted(by: >))
+        // The demo conversation still opens first; the screenshot chat follows.
+        XCTAssertTrue(chats[0].messages.allSatisfy { $0.attachments.isEmpty })
+        let restored = ClaudeAskConversation(restoring: chats[1])
+        let question = try XCTUnwrap(restored.messages.first)
+        XCTAssertEqual(question.role, .user)
+        XCTAssertEqual(question.attachments, [screenshot])
+        XCTAssertEqual(restored.messages.last?.status, .complete)
+        XCTAssertFalse(restored.messages.last?.text.isEmpty ?? true)
+    }
 }

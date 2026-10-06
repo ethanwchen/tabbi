@@ -192,8 +192,10 @@ extension ClaudeAskChat {
     }
 
     /// Sample saved chats for `TABBI_DEMO=1`, newest first. The first is
-    /// the demo conversation, which the panel opens on launch.
-    public static func demoHistory(now: Date) -> [ClaudeAskChat] {
+    /// the demo conversation, which the panel opens on launch. With
+    /// `screenshot`, the second is a question asked about that screenshot
+    /// (`demoScreenshotChat`), so the demo shows a sent thumbnail too.
+    public static func demoHistory(now: Date, screenshot: ClaudeAskAttachment? = nil) -> [ClaudeAskChat] {
         let hour: TimeInterval = 3600
         func chat(_ question: String, _ answer: String, hoursAgo: Double, session: String) -> ClaudeAskChat {
             let date = now.addingTimeInterval(-hoursAgo * hour)
@@ -204,7 +206,8 @@ extension ClaudeAskChat {
         }
         var current = ClaudeAskConversation.demo.savedChat(updatedAt: now.addingTimeInterval(-0.2 * hour))
         current?.createdAt = now.addingTimeInterval(-0.2 * hour)
-        return [current].compactMap { $0 } + [
+        let withScreenshot = screenshot.map { demoScreenshotChat($0, at: now.addingTimeInterval(-1.5 * hour)) }
+        return [current, withScreenshot].compactMap { $0 } + [
             chat("Explain the difference between a mutex and a semaphore",
                  "A **mutex** lets one thread in at a time and is released by the thread that took it. "
                      + "A **semaphore** counts, so up to *n* threads can hold it.",
@@ -219,5 +222,17 @@ extension ClaudeAskChat {
                  "Review just before you would forget, and stretch the gap each time you remember.",
                  hoursAgo: 24 * 12, session: "demo-session-5"),
         ]
+    }
+
+    /// A sample chat whose question carries `screenshot`, for demo and
+    /// snapshot runs, which never record the real screen.
+    public static func demoScreenshotChat(_ screenshot: ClaudeAskAttachment, at date: Date) -> ClaudeAskChat {
+        ClaudeAskChat(
+            id: UUID(), createdAt: date, updatedAt: date, sessionID: "demo-session-screenshot",
+            messages: [
+                Message(role: .user, text: "How can I make this page easier to read?", attachments: [screenshot]),
+                Message(role: .assistant, text: "Shorten the lines to about **70 characters** and darken the grey text."),
+            ]
+        )
     }
 }

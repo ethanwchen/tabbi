@@ -50,6 +50,11 @@ final class ClaudeAskSession: ObservableObject {
     /// Thumbnails by attachment id. A capture's image is cached when it is
     /// staged, so it still shows after an unsaved file is discarded.
     private var thumbnails: [UUID: NSImage] = [:]
+    /// Images of sample screenshots (demo and snapshot runs), which have no
+    /// file and outlive the cache.
+    private var sampleThumbnails: [UUID: NSImage] = [:]
+    /// The chat a snapshot shot replaced, put back for the next shot.
+    private var conversationBeforeSnapshot: ClaudeAskConversation?
     private var task: Task<Void, Never>?
     /// Bumped on every ask, stop, and New chat so a superseded run can't
     /// write into the conversation after it was cancelled.
@@ -72,13 +77,19 @@ final class ClaudeAskSession: ObservableObject {
             .appendingPathComponent(storage.root.lastPathComponent, isDirectory: true)
         attachmentStore = ClaudeAskAttachmentStore(stagingDirectory: staging, history: history)
         attachmentStore.clearStaging()
+        // Demo history has a question asked about a sample screenshot.
+        let capture = isDemo ? ClaudeAskScreenCapture.demoCapture() : nil
+        let screenshot = capture.map { ClaudeAskAttachment(pixelWidth: $0.pixelWidth, pixelHeight: $0.pixelHeight) }
         if isDemo {
-            let samples = ClaudeAskChat.demoHistory(now: Date())
+            let samples = ClaudeAskChat.demoHistory(now: Date(), screenshot: screenshot)
             conversation = samples.first.map(ClaudeAskConversation.init(restoring:)) ?? .demo
             savedChats = samples
         } else {
             conversation = ClaudeAskConversation()
             savedChats = history?.chats() ?? []
+        }
+        if let capture, let screenshot {
+            sampleThumbnails[screenshot.id] = NSImage(data: capture.pngData)
         }
     }
 
@@ -209,7 +220,7 @@ final class ClaudeAskSession: ObservableObject {
 
     /// The image for a thumbnail, from the cache or the file on disk.
     func thumbnail(for attachment: ClaudeAskAttachment) -> NSImage? {
-        if let cached = thumbnails[attachment.id] { return cached }
+        if let cached = thumbnails[attachment.id] ?? sampleThumbnails[attachment.id] { return cached }
         guard let url = attachmentStore.url(for: attachment, in: conversation.chatID),
               let image = NSImage(contentsOf: url) else { return nil }
         thumbnails[attachment.id] = image
@@ -223,18 +234,37 @@ final class ClaudeAskSession: ObservableObject {
         case pendingScreenshot
         /// The Screen Recording priming screen.
         case screenAccess
+        /// An answered question that was sent with a sample screenshot.
+        case sentScreenshot
     }
 
     /// Snapshot runs only: puts the panel in `state` for the next shot.
     func showForSnapshot(_ state: SnapshotState) {
         guard isSnapshot else { return }
         isAskingScreenAccess = state == .screenAccess
+        if state == .sentScreenshot {
+            if conversationBeforeSnapshot == nil { conversationBeforeSnapshot = conversation }
+            if let screenshot = sampleScreenshot() {
+                conversation = ClaudeAskConversation(restoring: .demoScreenshotChat(screenshot, at: Date()))
+            }
+        } else if let previous = conversationBeforeSnapshot {
+            conversation = previous
+            conversationBeforeSnapshot = nil
+        }
         let wantsPending = state == .pendingScreenshot
         if wantsPending, pendingAttachments.isEmpty, let capture = ClaudeAskScreenCapture.demoCapture() {
             stage(capture)
         } else if !wantsPending {
             for attachment in pendingAttachments { removePending(attachment) }
         }
+    }
+
+    /// A sample screenshot with its image cached, never written to disk.
+    private func sampleScreenshot() -> ClaudeAskAttachment? {
+        guard let capture = ClaudeAskScreenCapture.demoCapture() else { return nil }
+        let attachment = ClaudeAskAttachment(pixelWidth: capture.pixelWidth, pixelHeight: capture.pixelHeight)
+        sampleThumbnails[attachment.id] = NSImage(data: capture.pngData)
+        return attachment
     }
 
     private func stage(_ capture: ClaudeAskScreenCapture.Capture) {
