@@ -193,6 +193,7 @@ public enum PetComposer {
         switch accessory {
         case .stethoscope: .body(CostumeArt.stethoscope)
         case .scarf: .body(CostumeArt.scarf)
+        case .bowTie: .body(CostumeArt.bowTie)
         case .roundGlasses: .face(CostumeArt.roundGlasses)
         case .coolSunglasses: .face(CostumeArt.coolSunglasses)
         case .surgicalCap: .head(CostumeArt.surgicalCap)
@@ -211,6 +212,8 @@ public enum PetComposer {
         case .ninjaHeadband: .head(CostumeArt.ninjaHeadband)
         case .pirateHat: .mask(CostumeArt.pirateHat, CostumeArt.eyepatch)
         case .blindfoldedSorcerer: .mask(CostumeArt.spikyHair, CostumeArt.blindfold)
+        case .astronautHelmet: .head(CostumeArt.astronautHelmet)
+        case .chunkyHeadphones: .head(CostumeArt.chunkyHeadphones)
         }
     }
 

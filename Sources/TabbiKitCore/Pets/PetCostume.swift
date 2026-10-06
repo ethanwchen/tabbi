@@ -51,14 +51,17 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
     case pirateHat
     /// Spiky white hair and a dark blindfold over both eyes.
     case blindfoldedSorcerer
+    case astronautHelmet
+    case chunkyHeadphones
+    case bowTie
 
     public var slot: PetAccessorySlot {
         switch self {
-        case .stethoscope, .scarf: .neck
+        case .stethoscope, .scarf, .bowTie: .neck
         case .roundGlasses, .coolSunglasses: .face
         case .surgicalCap, .headMirror, .graduationCap, .beanie, .tinyCrown, .partyHat, .chefHat, .wizardHat,
              .bunnyEars, .witchHat, .cowboyHat, .flowerCrown, .frogHat, .ninjaHeadband, .pirateHat,
-             .blindfoldedSorcerer: .head
+             .blindfoldedSorcerer, .astronautHelmet, .chunkyHeadphones: .head
         }
     }
 
@@ -90,6 +93,9 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
         case .coolSunglasses: "Cool Sunglasses"
         case .pirateHat: "Pirate Hat"
         case .blindfoldedSorcerer: "Blindfolded Sorcerer"
+        case .astronautHelmet: "Astronaut Helmet"
+        case .chunkyHeadphones: "Chunky Headphones"
+        case .bowTie: "Bow Tie"
         }
     }
 
