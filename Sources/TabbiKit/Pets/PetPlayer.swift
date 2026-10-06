@@ -19,12 +19,13 @@ public final class PetPlayer: ObservableObject {
 
     public init(
         profile: PetProfile, place: PetAnimator.Place = .beside, asleep: Bool = false,
-        activity: PetAnimator.Activity = .free, at date: Date = .now,
+        activity: PetAnimator.Activity = .free, activitySince: Date? = nil, at date: Date = .now,
         seed: UInt64 = .random(in: .min ... .max)
     ) {
         self.profile = profile
         clips = PetClipSet(profile: profile)
         animator = PetAnimator(durations: clips.durations, place: place, asleep: asleep, activity: activity,
+                               activitySince: activitySince?.timeIntervalSinceReferenceDate,
                                at: date.timeIntervalSinceReferenceDate, seed: seed)
     }
 

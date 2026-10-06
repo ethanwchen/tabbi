@@ -23,7 +23,8 @@ struct NotchPetWing: View {
     init(pet: TickerPet) {
         self.pet = pet
         _player = StateObject(wrappedValue: PetPlayer(
-            profile: pet.profile, asleep: pet.mood == .asleep, activity: PetAnimator.Activity(pet.mood)))
+            profile: pet.profile, asleep: pet.mood == .asleep, activity: PetAnimator.Activity(pet.mood),
+            activitySince: pet.moodSince))
     }
 
     var body: some View {

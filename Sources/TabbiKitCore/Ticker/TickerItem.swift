@@ -105,10 +105,15 @@ public struct TickerMeeting: Hashable, Sendable {
 public struct TickerPet: Hashable, Sendable {
     public var profile: PetProfile
     public var mood: PetMood
+    /// When the running focus or break phase began (pauses taken out); nil
+    /// with no phase running. A pet drawn anew mid-session reads it, so it
+    /// still knows how long the user has been at it.
+    public var moodSince: Date?
 
-    public init(profile: PetProfile, mood: PetMood) {
+    public init(profile: PetProfile, mood: PetMood, moodSince: Date? = nil) {
         self.profile = profile
         self.mood = mood
+        self.moodSince = moodSince
     }
 }
 
@@ -380,7 +385,8 @@ public struct TickerSources: Equatable, Sendable {
             return progress.first(where: \.showsBesideNotch).map(TickerItem.progress)
         case .pet:
             guard let pet else { return nil }
-            return .pet(TickerPet(profile: pet.profile, mood: pet.mood(focus: focus, at: now)))
+            let since = focus.flatMap { $0.isRunning ? now.addingTimeInterval(-$0.elapsed(at: now)) : nil }
+            return .pet(TickerPet(profile: pet.profile, mood: pet.mood(focus: focus, at: now), moodSince: since))
         case .party:
             // Alone in a party there are no other pets to show.
             guard let party, party.memberCount > 1 else { return nil }
