@@ -6,6 +6,8 @@ public struct StudyDialReadout: Hashable, Sendable {
     /// answered for a sprint, e.g. "24:13", "1:02:40", "37".
     public let value: String
     /// Small text under the value, e.g. "Focus", "of 100 cards", "Break · Paused".
+    /// Empty for a plain Timer that is not paused: the tab and the method
+    /// card already say "Timer", so the dial shows just the time.
     public let caption: String
     /// Whether the value counts down (for the numeric text transition).
     public let countsDown: Bool
@@ -48,6 +50,9 @@ public enum StudyTimerFormat {
         let paused = session.runState == .paused
         func caption(_ base: String) -> String { paused ? "\(base) · Paused" : base }
 
+        if session.method.kind == .timer, let remaining = session.remaining(at: now) {
+            return StudyDialReadout(value: clock(remaining), caption: paused ? "Paused" : "", countsDown: true)
+        }
         if let remaining = session.remaining(at: now) {
             return StudyDialReadout(value: clock(remaining), caption: caption(phase), countsDown: true)
         }

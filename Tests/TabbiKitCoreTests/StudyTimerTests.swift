@@ -48,7 +48,11 @@ final class StudyTimerTests: XCTestCase {
         XCTAssertEqual(session.method.info.name, "Timer")
         XCTAssertFalse(session.method.nameIsRhythm)
         XCTAssertEqual(StudyTimerFormat.primaryAction(session), "Start timer")
-        XCTAssertEqual(StudyTimerFormat.readout(session, at: t0), StudyDialReadout(value: "25:00", caption: "Timer", countsDown: true))
+        XCTAssertEqual(StudyTimerFormat.readout(session, at: t0), StudyDialReadout(value: "25:00", caption: "", countsDown: true))
+        var paused = session
+        paused.start(at: t0)
+        paused.pause(at: t0.addingTimeInterval(60))
+        XCTAssertEqual(StudyTimerFormat.readout(paused, at: t0.addingTimeInterval(120)).caption, "Paused")
     }
 
     func testPresetsAreCommonEverydayLengths() {

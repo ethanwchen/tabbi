@@ -90,9 +90,11 @@ private struct StudyDial: View {
                                       weight: .semibold, design: .rounded).monospacedDigit())
                         .foregroundStyle(session.isRunning ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
                         .contentTransition(.numericText(countsDown: readout.countsDown))
-                    Text(readout.caption)
-                        .font(Theme.Typography.caption)
-                        .foregroundStyle(session.phase.isBreak ? accent : Theme.Palette.tertiaryText)
+                    if !readout.caption.isEmpty {
+                        Text(readout.caption)
+                            .font(Theme.Typography.caption)
+                            .foregroundStyle(session.phase.isBreak ? accent : Theme.Palette.tertiaryText)
+                    }
                     if waitsForCards {
                         Text("Waiting for Anki")
                             .font(Theme.Typography.caption)
@@ -104,7 +106,7 @@ private struct StudyDial: View {
             .frame(width: 128, height: 128)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .help("\(readout.caption): \(readout.value)")
+        .help(readout.caption.isEmpty ? "Timer: \(readout.value)" : "\(readout.caption): \(readout.value)")
         .overlay(alignment: .bottomTrailing) {
             PetView(player: store.pet)
                 .padding(Theme.Spacing.xs)
