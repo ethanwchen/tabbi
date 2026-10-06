@@ -229,4 +229,94 @@ final class PetAnimatorTests: XCTestCase {
         pet.send(.disappear, at: 20.5)
         XCTAssertNil(clips.nextChange(for: pet, after: 20.5), "nothing to redraw while hidden")
     }
+
+    func testStudyingTypesAndBreaksSipCoffeeWithoutIdleBlinks() {
+        var pet = animator()
+        XCTAssertTrue(pet.send(.activity(.studying), at: 1))
+        XCTAssertEqual(pet.playback, .init(animation: .typing, startedAt: 1))
+        XCTAssertNil(pet.nextBlinkAt, "the laptop loop has no idle blinks")
+        XCTAssertEqual(animation(&pet, at: 120), .typing, "typing keeps looping through the focus block")
+        XCTAssertFalse(pet.send(.activity(.studying), at: 121), "no change, no restart")
+        XCTAssertEqual(pet.playback?.startedAt, 1)
+
+        XCTAssertTrue(pet.send(.activity(.onBreak), at: 200))
+        XCTAssertEqual(pet.playback, .init(animation: .coffee, startedAt: 200), "a short block ends without a yawn")
+        XCTAssertTrue(pet.send(.activity(.free), at: 300))
+        XCTAssertEqual(pet.playback?.animation, .idle)
+        XCTAssertNotNil(pet.nextBlinkAt)
+
+        let studying = PetAnimator(durations: durations, activity: .studying, at: 0, seed: 7)
+        XCTAssertEqual(studying.playback?.animation, .typing, "a pet created mid-session studies at once")
+    }
+
+    func testOneShotsAndSleepReturnToTheActivityNotIdle() throws {
+        var pet = animator()
+        pet.send(.activity(.onBreak), at: 0)
+        pet.send(.celebrate, at: 1)
+        let end = 1 + (try XCTUnwrap(durations[.celebrate]))
+        XCTAssertEqual(animation(&pet, at: end + 0.1), .coffee, "back to the mug after celebrating")
+
+        var sleepy = animator(asleep: true)
+        XCTAssertTrue(sleepy.send(.activity(.studying), at: 1))
+        XCTAssertEqual(sleepy.playback?.animation, .sleep, "only the wake-up moves a sleeping pet")
+        sleepy.send(.wake, at: 2)
+        XCTAssertEqual(sleepy.playback?.animation, .stretch)
+        let stretchEnd = 2 + (try XCTUnwrap(durations[.stretch]))
+        XCTAssertEqual(animation(&sleepy, at: stretchEnd + 0.1), .typing)
+    }
+
+    func testALongFocusStretchEndsWithAYawnThenTheBreak() throws {
+        var pet = animator()
+        pet.send(.activity(.studying), at: 0)
+        let longEnd = PetAnimator.longSession
+        XCTAssertTrue(pet.send(.activity(.onBreak), at: longEnd))
+        XCTAssertEqual(pet.playback, .init(animation: .yawn, startedAt: longEnd))
+        let yawnEnd = longEnd + (try XCTUnwrap(durations[.yawn]))
+        XCTAssertEqual(animation(&pet, at: yawnEnd - 0.01), .yawn)
+        XCTAssertEqual(pet.playback?.startedAt, longEnd)
+        pet.advance(to: yawnEnd + 0.01)
+        XCTAssertEqual(pet.playback, .init(animation: .coffee, startedAt: yawnEnd), "coffee starts as the yawn ends")
+
+        var celebrating = animator()
+        celebrating.send(.activity(.studying), at: 0)
+        celebrating.send(.celebrate, at: longEnd)
+        celebrating.send(.activity(.free), at: longEnd + 0.1)
+        XCTAssertEqual(celebrating.playback?.animation, .celebrate, "the yawn never cuts a celebration short")
+        let celebrateEnd = longEnd + (try XCTUnwrap(durations[.celebrate]))
+        celebrating.advance(to: celebrateEnd + 0.01)
+        XCTAssertEqual(celebrating.playback, .init(animation: .yawn, startedAt: celebrateEnd))
+        celebrating.advance(to: celebrateEnd + (try XCTUnwrap(durations[.yawn])) + 0.01)
+        XCTAssertEqual(celebrating.playback?.animation, .idle)
+
+        var asleepAfterwards = animator()
+        asleepAfterwards.send(.activity(.studying), at: 0)
+        asleepAfterwards.send(.activity(.free), at: longEnd)
+        asleepAfterwards.send(.sleep, at: longEnd + 0.1)
+        XCTAssertEqual(asleepAfterwards.playback?.animation, .yawn, "a yawn plays out before dozing off")
+        asleepAfterwards.advance(to: yawnEnd + 0.01)
+        XCTAssertEqual(asleepAfterwards.playback?.animation, .sleep)
+    }
+
+    func testOnlyALongStretchOfFocusMakesThePetYawn() {
+        var pet = animator()
+        pet.send(.activity(.studying), at: 0)
+        pet.send(.activity(.free), at: PetAnimator.longSession - 1)
+        XCTAssertEqual(pet.playback?.animation, .idle)
+        pet.send(.activity(.onBreak), at: PetAnimator.longSession * 2)
+        XCTAssertEqual(pet.playback?.animation, .coffee, "time spent idle is not focus")
+
+        var hidden = animator(.hidden)
+        hidden.send(.activity(.studying), at: 0)
+        XCTAssertTrue(hidden.send(.activity(.free), at: PetAnimator.longSession))
+        XCTAssertNil(hidden.playback, "a hidden pet records the activity but draws nothing")
+        hidden.send(.appear, at: PetAnimator.longSession + 1)
+        XCTAssertEqual(hidden.playback?.animation, .idle)
+    }
+
+    func testTheNotchMoodPicksTheActivity() {
+        XCTAssertEqual(PetAnimator.Activity(.studying), .studying)
+        XCTAssertEqual(PetAnimator.Activity(.onBreak), .onBreak)
+        XCTAssertEqual(PetAnimator.Activity(.awake), .free)
+        XCTAssertEqual(PetAnimator.Activity(.asleep), .free)
+    }
 }

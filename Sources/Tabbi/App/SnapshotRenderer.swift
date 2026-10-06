@@ -75,12 +75,16 @@ enum SnapshotRenderer {
             let model = NotchViewModel(geometry: geometry, layout: layout)
             model.preview = item
             shots.append(Shot("closed-\(snapshotName(kind))", model))
-            // The pet's other look: dozing after a quiet spell.
-            if case .pet(var pet) = item, pet.mood != .asleep {
-                pet.mood = .asleep
-                let asleep = NotchViewModel(geometry: geometry, layout: layout)
-                asleep.preview = .pet(pet)
-                shots.append(Shot("closed-pet-asleep", asleep))
+            // The pet's other looks: typing through a focus block, sipping
+            // coffee on a break, and dozing after a quiet spell.
+            if case .pet(var pet) = item {
+                let looks = [(PetMood.studying, "studying"), (.onBreak, "break"), (.asleep, "asleep")]
+                for (mood, name) in looks where mood != pet.mood {
+                    pet.mood = mood
+                    let model = NotchViewModel(geometry: geometry, layout: layout)
+                    model.preview = .pet(pet)
+                    shots.append(Shot("closed-pet-\(name)", model))
+                }
             }
         }
         // One open shot per tab of the active kit.

@@ -269,7 +269,7 @@ The pet is always in one `Place`, and each place has a resting animation:
 
 | Place | Rests in |
 | --- | --- |
-| `beside` | `idle` with a `blink` every 2.5-6 s (random), or `sleep` while asleep |
+| `beside` | `sleep` while asleep; awake, it follows the `Activity`: `typing` while `studying`, `coffee` while `onBreak`, and `idle` with a `blink` every 2.5-6 s (random) while `free` |
 | `hanging` | The held last frame of `peekIn` |
 | `hidden` | Nothing; `playback` is nil |
 
@@ -280,6 +280,7 @@ The pet is always in one `Place`, and each place has a resting animation:
 | `sleep` / `wake` | Beside only; a running alert, celebration, or stretch finishes first. Waking plays `stretch`, then idles; a nudge still interrupts it |
 | `peekIn` / `peekOut` | Hidden to hanging and back |
 | `appear` / `disappear` | Cut straight to beside (awake) or hidden |
+| `activity(_:)` | Switches what the pet rests in. Leaving `studying` after at least `PetAnimator.longSession` (45 min) of focus plays `yawn` first; a running alert, celebration, or stretch finishes first, and the yawn follows it |
 
 When a one-shot clip ends, the next animation starts at the exact moment the clip ended, not at the next tick, so timing never drifts with the frame rate and jumping ahead lands in the same state as ticking.
 Peek transitions can't be interrupted: an event that arrives mid-climb is kept (latest wins) and applied as the transition ends.
@@ -292,6 +293,8 @@ To draw, call `animator.advance(to: now)` and then `clipSet.frame(for: animator.
 
 - `PetPlayer` (an `ObservableObject`) owns the clip set and the animator.
   Features drive it with `send(.nudge)`, `send(.celebrate)`, and so on, and `update(profile:)` swaps the look in place.
+- The closed notch's pet (`NotchPetWing`) maps the shared `PetMood` to an activity with `PetAnimator.Activity(mood)`, so it types on its laptop while the shared focus clock runs a focus phase, sips coffee on breaks, and yawns when a long focus stretch ends.
+  Snapshot runs render it as `closed-pet-studying.png`, `closed-pet-break.png` and `closed-pet-asleep.png` (whichever differ from the pet's current mood in `closed-pet.png`).
 - `PetView(player:pixelSize:)` is a fixed square of 32 sprite pixels (32 pt at the default `pixelSize` of 1, 24 pt at 0.75).
   A `TimelineView` with `PetFrameSchedule` redraws exactly at each `nextChange`, so an idle pet redraws a few times a second and a hidden or hanging pet not at all.
 - Frames are rendered at a whole number of device pixels per sprite pixel and drawn without interpolation; they are pixel-perfect whenever `pixelSize` times the display scale is a whole number.

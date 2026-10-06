@@ -50,7 +50,10 @@ public struct PetClipSet: Hashable, Sendable {
 ///
 /// The pet is always somewhere (beside the notch, hanging out of it, or
 /// hidden inside it) and has a resting animation for that place: idle with
-/// random blinks, sleep, or the held last frame of peekIn. Events start
+/// random blinks, sleep, or the held last frame of peekIn. Awake beside the
+/// notch it also follows what the user is doing (`Activity`): it types on
+/// its laptop through a focus block, sips coffee on a break, and yawns when
+/// a long focus stretch ends. Events start
 /// one-shot clips on top; when one finishes, the pet returns to rest at the
 /// exact moment the clip ended, so timing never drifts with the frame rate.
 ///
@@ -66,6 +69,34 @@ public struct PetAnimator: Hashable, Sendable {
         case hanging
         /// Tucked inside the notch; nothing is drawn.
         case hidden
+    }
+
+    /// What the user is doing, which picks the resting animation of a pet
+    /// awake beside the notch.
+    public enum Activity: Hashable, Sendable {
+        /// No session running: idle with blinks.
+        case free
+        /// A focus block is running: typing on the tiny laptop.
+        case studying
+        /// A break is running: sipping the tiny coffee mug.
+        case onBreak
+
+        var restingAnimation: PetAnimation {
+            switch self {
+            case .free: .idle
+            case .studying: .typing
+            case .onBreak: .coffee
+            }
+        }
+
+        /// The activity the closed notch's pet follows for its mood.
+        public init(_ mood: PetMood) {
+            switch mood {
+            case .studying: self = .studying
+            case .onBreak: self = .onBreak
+            case .awake, .asleep: self = .free
+            }
+        }
     }
 
     public enum Event: Hashable, Sendable {
@@ -86,6 +117,9 @@ public struct PetAnimator: Hashable, Sendable {
         case appear
         /// Cut straight to hidden inside the notch.
         case disappear
+        /// The user started or stopped studying or a break. Leaving a focus
+        /// stretch of at least `longSession` makes the pet yawn first.
+        case activity(Activity)
     }
 
     /// The clip on screen and when it started.
@@ -105,8 +139,16 @@ public struct PetAnimator: Hashable, Sendable {
     /// pet blinks often enough to feel alive but never mechanically.
     public static let blinkInterval: ClosedRange<TimeInterval> = 2.5...6
 
+    /// Focus this long in one go earns a yawn when it ends: longer than one
+    /// standard Pomodoro, so only a real stretch of work makes the pet tired.
+    public static let longSession: TimeInterval = 45 * 60
+
     public private(set) var place: Place
     public private(set) var isAsleep: Bool
+    public private(set) var activity: Activity
+    /// When the current activity started, so leaving a long focus stretch
+    /// can be told from leaving a short one.
+    public private(set) var activitySince: TimeInterval
     /// What to draw; nil while the pet is hidden inside the notch.
     public private(set) var playback: Playback?
     /// When the next idle blink starts, if the pet is idling.
@@ -116,15 +158,21 @@ public struct PetAnimator: Hashable, Sendable {
     /// An event that arrived during a peek transition, applied once the
     /// transition ends so the pet never teleports mid-climb. Latest wins.
     private var pending: Event?
+    /// A long focus stretch ended while another one-shot clip played; the
+    /// pet yawns as soon as that clip ends.
+    private var yawnsNext = false
     private var random: SplitMix64
 
     public init(
         durations: [PetAnimation: TimeInterval], place: Place = .beside, asleep: Bool = false,
+        activity: Activity = .free, activitySince: TimeInterval? = nil,
         at time: TimeInterval = 0, seed: UInt64 = 0
     ) {
         self.durations = durations
         self.place = place
         self.isAsleep = asleep && place == .beside
+        self.activity = activity
+        self.activitySince = activitySince ?? time
         self.random = SplitMix64(seed: seed)
         rest(at: time)
     }
@@ -172,7 +220,12 @@ public struct PetAnimator: Hashable, Sendable {
                     apply(event, at: end)
                 }
             default:
-                rest(at: end)
+                if yawnsNext, place == .beside, animation != .yawn {
+                    yawnsNext = false
+                    play(.yawn, at: end)
+                } else {
+                    rest(at: end)
+                }
             }
         }
     }
@@ -187,6 +240,7 @@ public struct PetAnimator: Hashable, Sendable {
         case .disappear:
             place = .hidden
             isAsleep = false
+            yawnsNext = false
             rest(at: time)
         case .sleep:
             guard place == .beside, !isAsleep else { return false }
@@ -198,6 +252,20 @@ public struct PetAnimator: Hashable, Sendable {
             isAsleep = false
             // Waking on its own (not by a nudge) earns a slow stretch first.
             if !isPlayingOneShot(at: time) { play(.stretch, at: time) }
+        case .activity(let next):
+            guard next != activity else { return false }
+            let tired = activity == .studying && time - activitySince >= Self.longSession
+            activity = next
+            activitySince = time
+            guard place == .beside, !isAsleep else { return true }
+            if isPlayingOneShot(at: time) {
+                // Let a celebration play out, then yawn.
+                yawnsNext = yawnsNext || tired
+            } else if tired {
+                play(.yawn, at: time)
+            } else {
+                rest(at: time)
+            }
         case .nudge:
             switch place {
             case .beside:
@@ -226,10 +294,10 @@ public struct PetAnimator: Hashable, Sendable {
         return true
     }
 
-    /// Alert, celebrate or the wake-up stretch still running (blinks don't
-    /// count: they yield).
+    /// Alert, celebrate, the wake-up stretch or a yawn still running (blinks
+    /// don't count: they yield).
     private func isPlayingOneShot(at time: TimeInterval) -> Bool {
-        guard let playback, [.alert, .celebrate, .stretch].contains(playback.animation) else { return false }
+        guard let playback, [.alert, .celebrate, .stretch, .yawn].contains(playback.animation) else { return false }
         return playback.elapsed(at: time) < duration(playback.animation)
     }
 
@@ -249,6 +317,8 @@ public struct PetAnimator: Hashable, Sendable {
             playback = Playback(animation: .peekIn, startedAt: time - duration(.peekIn))
         case .beside where isAsleep:
             playback = Playback(animation: .sleep, startedAt: time)
+        case .beside where activity != .free:
+            playback = Playback(animation: activity.restingAnimation, startedAt: time)
         case .beside:
             playback = Playback(animation: .idle, startedAt: time)
             nextBlinkAt = time + random.next(in: Self.blinkInterval)
