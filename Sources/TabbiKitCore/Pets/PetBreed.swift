@@ -143,11 +143,12 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
             return PetPalette([.furBase: c("#F3E6D2"), .furShade: c("#DCCAB0"), .furAccent: c("#5A4034"),
                                .belly: c("#FBF4E8"), .eye: c("#3E8FD8"), .outline: c("#3A2A22")])
         case .britishShorthair:
-            // Shaded silver: pale silver-beige with a taupe back, white chin
-            // and chest, clear blue eyes, and a pink-tan nose.
-            return PetPalette([.furBase: c("#D6CEC3"), .furShade: c("#ADA398"), .furAccent: c("#756D66"),
-                               .belly: c("#F8F5EF"), .eye: c("#3F86D6"), .eyeLight: c("#FFFFFF"),
-                               .nose: c("#D29A8A"), .blush: c("#E6B3AC"), .outline: c("#3A3330")])
+            // Shaded silver: a soft white-silver coat with a faintly ticked
+            // back and subtly ringed tail, white chin and chest, clear blue
+            // eyes, a pink-tan nose, and rosy cheeks.
+            return PetPalette([.furBase: c("#EEEBE7"), .furShade: c("#D8D2CB"), .furAccent: c("#A8A098"),
+                               .belly: c("#FFFFFF"), .eye: c("#3F86D6"), .eyeLight: c("#FFFFFF"),
+                               .nose: c("#D9998B"), .blush: c("#FB9FAA"), .outline: c("#3A3330")])
         case .sphynx:
             // Hairless pink-beige skin with deeper shade for wrinkles, a
             // rosy blush, and big green-gold eyes.

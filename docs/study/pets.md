@@ -180,7 +180,7 @@ Each frame is the sitting composition in a `PetPose`, so every breed and costume
 | `lift` | Raises the whole pet off the baseline, for hops |
 
 Eye states live in `EffectArt` as 4x3 grids centered on the 2x3 open eye.
-A 3-wide open eye (the British Shorthair's) gets the spare pixel on its cheek side, and a pupil drawn in the outline color inside an eye is cleared with it.
+A 3-wide open eye (the Sphynx's) gets the spare pixel on its cheek side, and a pupil drawn in the outline color inside an eye is cleared with it.
 The composer finds the open eyes on the face's eye row, clears them so the head's fur shows through, and stamps the new state, so a new face only needs its open-eyed version.
 Sleepy eyes also close the mouth: blush pixels below the cheek row (the eye row + 3) are cleared, so a dog's panting tongue tucks away and its nose-colored mouth corners read as a closed "w".
 Draw a tongue with the blush role below the cheek row and it will hide itself during sleep.
@@ -378,9 +378,9 @@ It goes by "British Shorthair" until the user names it, and the Closet asks them
 
 What makes this cat recognizable, and where each part lives:
 
-- Coloring (`PetBreed.palette`): pale silver-beige fur, a taupe shade for the crown, back and flanks, a dark taupe accent for ticking and tail rings, a white muzzle, chin, chest and paws, a pink-tan nose, and clear blue eyes with white highlights.
+- Coloring (`PetBreed.palette`): soft white-silver fur, a faint silver shade for the crown, back and flanks, a pale taupe accent for subtle ticking and tail rings, a white muzzle, chin, chest and paws, a pink-tan nose, and clear blue eyes with white highlights.
 - Head (`CatArt.headRound`): small rounded ears set wide apart, a taupe crown with faint ticking that runs down the forehead, and full cheeks around the white muzzle.
-- Face (`CatArt.faceRound`): big, open 3x3 eyes (a blue iris around a tall dark pupil, with a white highlight in the top corner) and a small "u" smile under the nose.
+- Face (`CatArt.faceRound`): the same 2x3 eyes as every other cat (a white highlight at the top left) in clear blue, the shared nose and "w" mouth, and rosy cheeks.
   The maintainer asked for open, cute blue eyes rather than the photo's half-lidded look, so this is the one place the sprite departs from the reference.
 - Body (`CatArt.bodyRound`, `WalkArt.roundCatTorso`, `WalkArt.roundCatTail`): taupe flanks and back with ticking, full haunches, and a thick tail ringed with dark bands.
   These grids have the same size as the plain cat's, so every costume fits without new art.
