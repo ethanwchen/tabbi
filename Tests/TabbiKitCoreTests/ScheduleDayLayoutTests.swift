@@ -82,6 +82,36 @@ struct ScheduleDayLayoutTests {
         #expect(layout.placed.map(\.lane).max() == ScheduleDayLayout.maximumLanes - 1)
     }
 
+    @Test func labelsRunOverTheFreeTrackUntilTheNextItemInTheirRow() {
+        // Day spans 9-18, so an hour is 1/9 of the width.
+        let layout = Self.layout([
+            Self.item("a", Self.at(10), Self.at(11)),
+            Self.item("b", Self.at(10, 30), Self.at(11, 30)),
+            Self.item("c", Self.at(12), Self.at(12, 30)),
+            Self.item("d", Self.at(14), Self.at(14, 30)),
+            Self.item("e", Self.at(17), Self.at(17, 30)),
+        ])
+        let room = Dictionary(uniqueKeysWithValues: layout.placed.map { ($0.id, $0.labelWidth * 9) })
+        // "a" shares its group's first row with nothing else, so it runs to "c",
+        // the next group, which spans every row; "b" in the second row too.
+        #expect(abs(room["a"]! - 2) < 1e-9)
+        #expect(abs(room["b"]! - 1.5) < 1e-9)
+        #expect(abs(room["c"]! - 2) < 1e-9)
+        #expect(abs(room["d"]! - 3) < 1e-9)
+        // The last item runs to the end of the timeline.
+        #expect(abs(room["e"]! - 1) < 1e-9)
+    }
+
+    @Test func labelsNeverShrinkBelowTheirItem() {
+        // Items sharing the last lane can overlap; each keeps at least its width.
+        let items = (0..<4).map { Self.item("e\($0)", Self.at(10), Self.at(11)) }
+        let layout = Self.layout(items)
+        #expect(layout.placed.allSatisfy { $0.labelWidth >= $0.width })
+        // Back-to-back items: the first label ends where the next item starts.
+        let row = Self.layout([Self.item("x", Self.at(10), Self.at(10, 30)), Self.item("y", Self.at(10, 30), Self.at(11))])
+        #expect(row.placed.first?.labelWidth == row.placed.first?.width)
+    }
+
     @Test func allDayItemsStayOffTheTimelineAndNeverBlockTime() {
         let layout = Self.layout([Self.item("holiday", Self.at(0), Self.at(24), allDay: true)])
         #expect(layout.placed.isEmpty)

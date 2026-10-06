@@ -387,6 +387,9 @@ private struct ScheduleTimeline: View {
 
     private static let labelHeight: CGFloat = 16
     private static let laneGap: CGFloat = 2
+    /// Below this a title would show only an ellipsis, so it's left to the
+    /// tooltip and the strip under the timeline.
+    private static let minimumLabelWidth: CGFloat = 24
 
     var body: some View {
         Card(padding: Theme.Spacing.s) {
@@ -422,14 +425,34 @@ private struct ScheduleTimeline: View {
                     ForEach(layout.placed) { placed in
                         let laneHeight = (trackHeight - CGFloat(placed.lanes - 1) * Self.laneGap)
                             / CGFloat(placed.lanes)
+                        let y = Self.labelHeight + CGFloat(placed.lane) * (laneHeight + Self.laneGap)
                         ScheduleBlock(item: placed.item, isPast: placed.item.end <= now,
                                       isSelected: placed.id == selectedID,
-                                      isDimmed: isDrafting && placed.item.kind != .proposed, height: laneHeight) {
+                                      isDimmed: isDrafting && placed.item.kind != .proposed) {
                             select(placed.id)
                         }
                         .frame(width: max(width * placed.width - 1, 3), height: laneHeight)
-                        .offset(x: width * placed.x + 0.5,
-                                y: Self.labelHeight + CGFloat(placed.lane) * (laneHeight + Self.laneGap))
+                        .offset(x: width * placed.x + 0.5, y: y)
+                    }
+                    // Labels sit above the blocks so a short block's title can run
+                    // on over the free track after it.
+                    ForEach(layout.placed) { placed in
+                        let laneHeight = (trackHeight - CGFloat(placed.lanes - 1) * Self.laneGap)
+                            / CGFloat(placed.lanes)
+                        let inset = ScheduleBlock.stripeWidth + Theme.Spacing.xs
+                        let labelWidth = width * placed.labelWidth - inset - Theme.Spacing.xs
+                        if labelWidth >= Self.minimumLabelWidth {
+                            ScheduleBlockLabel(item: placed.item, height: laneHeight, width: labelWidth,
+                                               canShowTime: width * placed.width >= 48)
+                                .frame(width: labelWidth, height: laneHeight,
+                                       alignment: laneHeight >= 20 ? .topLeading : .leading)
+                                .opacity(ScheduleBlock.opacity(isPast: placed.item.end <= now,
+                                                               isSelected: placed.id == selectedID,
+                                                               isDimmed: isDrafting && placed.item.kind != .proposed))
+                                .offset(x: width * placed.x + 0.5 + inset,
+                                        y: Self.labelHeight + CGFloat(placed.lane) * (laneHeight + Self.laneGap))
+                                .allowsHitTesting(false)
+                        }
                     }
                     if let nowX = layout.position(of: now) {
                         ScheduleNowLine(height: trackHeight + 4)
@@ -446,41 +469,21 @@ private struct ScheduleTimeline: View {
 /// blocks are outlined in the module's accent, and proposed ones are filled
 /// with it more strongly so they stand out until added or skipped.
 private struct ScheduleBlock: View {
+    static let stripeWidth: CGFloat = 2.5
+
     let item: ScheduleItem
     let isPast: Bool
     let isSelected: Bool
     let isDimmed: Bool
-    let height: CGFloat
     let action: () -> Void
     @State private var hovering = false
 
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: Theme.Radius.s - 2, style: .continuous)
         Button(action: action) {
-            GeometryReader { geometry in
-                HStack(spacing: 0) {
-                    Rectangle().fill(color).frame(width: 2.5)
-                    if geometry.size.width >= 40 {
-                        VStack(alignment: .leading, spacing: 0) {
-                            Text(ScheduleFormat.title(item))
-                                .font(Theme.Typography.caption)
-                                .foregroundStyle(Theme.Palette.primaryText)
-                                .lineLimit(height >= 48 ? 2 : 1)
-                            if height >= 34, geometry.size.width >= 48 {
-                                Text(UpcomingEventFormat.startTime(item.start))
-                                    .font(Theme.Typography.caption.monospacedDigit())
-                                    .foregroundStyle(Theme.Palette.secondaryText)
-                                    .lineLimit(1)
-                            }
-                        }
-                        .padding(.horizontal, Theme.Spacing.xs)
-                        .padding(.top, height >= 20 ? 3 : 0)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity,
-                               alignment: height >= 20 ? .topLeading : .leading)
-                    } else {
-                        Spacer(minLength: 0)
-                    }
-                }
+            HStack(spacing: 0) {
+                Rectangle().fill(color).frame(width: ScheduleBlock.stripeWidth)
+                Spacer(minLength: 0)
             }
             // An opaque base keeps the hour lines from showing through.
             .background(shape.fill(color.opacity(fillOpacity)))
@@ -496,13 +499,18 @@ private struct ScheduleBlock: View {
                 if isSelected { shape.strokeBorder(Theme.Palette.primaryText, lineWidth: 1.5) }
             }
             .clipShape(shape)
-            .opacity(isPast && !isSelected ? 0.5 : isDimmed ? 0.55 : 1)
+            .opacity(ScheduleBlock.opacity(isPast: isPast, isSelected: isSelected, isDimmed: isDimmed))
             .contentShape(shape)
         }
         .buttonStyle(.plain)
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
         .help(help)
+    }
+
+    /// Past items fade, and so does everything but a plan on offer.
+    static func opacity(isPast: Bool, isSelected: Bool, isDimmed: Bool) -> Double {
+        isPast && !isSelected ? 0.5 : isDimmed ? 0.55 : 1
     }
 
     private var fillOpacity: Double {
@@ -519,6 +527,33 @@ private struct ScheduleBlock: View {
         if item.kind != .event { return accent }
         guard let color = item.calendarColor else { return Theme.Palette.secondaryText }
         return Color(.sRGB, red: color.red, green: color.green, blue: color.blue)
+    }
+}
+
+/// A block's title, with its start time when the block is tall and wide
+/// enough to hold it.
+private struct ScheduleBlockLabel: View {
+    let item: ScheduleItem
+    let height: CGFloat
+    let width: CGFloat
+    let canShowTime: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            // A second line only where a word fits on it; a narrow label
+            // would break words apart instead.
+            Text(ScheduleFormat.title(item))
+                .font(Theme.Typography.caption)
+                .foregroundStyle(Theme.Palette.primaryText)
+                .lineLimit(height >= 48 && width >= 40 ? 2 : 1)
+            if height >= 34, canShowTime {
+                Text(UpcomingEventFormat.startTime(item.start))
+                    .font(Theme.Typography.caption.monospacedDigit())
+                    .foregroundStyle(Theme.Palette.secondaryText)
+                    .lineLimit(1)
+            }
+        }
+        .padding(.top, height >= 20 ? 3 : 0)
     }
 }
 
