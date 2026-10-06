@@ -28,6 +28,7 @@ When a rule and a feature disagree, remove or hide the feature.
 - Left edges, baselines and centers line up; no 1 to 2pt drift between rows or between tabs.
 - Lists show at most about 3 to 5 rows, then a "+N more" or a scroll only where the list genuinely grows.
 - A list cut off by its frame fades out at that edge with `.edgeFade(_:)` (16pt), never a hard clip through a row.
+- A marker drawn across content (the Schedule now line) passes behind labels, which keep a thin dark halo, so it never cuts through a word.
 - An element shown beside the closed notch keeps its side when the panel opens (spatial continuity).
 
 ## Typography

@@ -434,7 +434,13 @@ private struct ScheduleTimeline: View {
                         .frame(width: max(width * placed.width - 1, 3), height: laneHeight)
                         .offset(x: width * placed.x + 0.5, y: y)
                     }
-                    // Labels sit above the blocks so a short block's title can run
+                    // Under the labels, so the line never cuts through a title.
+                    if let nowX = layout.position(of: now) {
+                        ScheduleNowLine(height: trackHeight + 4)
+                            .offset(x: width * nowX - 3, y: Self.labelHeight - 4)
+                            .allowsHitTesting(false)
+                    }
+                    // Labels sit above the blocks and the now line so a short block's title can run
                     // on over the free track after it.
                     ForEach(layout.placed) { placed in
                         let laneHeight = (trackHeight - CGFloat(placed.lanes - 1) * Self.laneGap)
@@ -453,11 +459,6 @@ private struct ScheduleTimeline: View {
                                         y: Self.labelHeight + CGFloat(placed.lane) * (laneHeight + Self.laneGap))
                                 .allowsHitTesting(false)
                         }
-                    }
-                    if let nowX = layout.position(of: now) {
-                        ScheduleNowLine(height: trackHeight + 4)
-                            .offset(x: width * nowX - 3, y: Self.labelHeight - 4)
-                            .allowsHitTesting(false)
                     }
                 }
             }
@@ -554,6 +555,8 @@ private struct ScheduleBlockLabel: View {
             }
         }
         .padding(.top, height >= 20 ? 3 : 0)
+        // A dark halo keeps the title readable where the now line passes behind it.
+        .shadow(color: Theme.Palette.background.opacity(0.9), radius: 1.5)
     }
 }
 
