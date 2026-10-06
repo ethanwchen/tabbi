@@ -265,18 +265,23 @@ private struct ClosetWardrobe: View {
         }
     }
 
-    /// The wardrobe grows with every new item, so it scrolls. `ImageRenderer`
-    /// draws a `ScrollView` blank, so snapshots show the top rows clipped.
+    /// The wardrobe grows with every new item, so it scrolls, and the rows
+    /// fade out at the bottom edge to say so. `ImageRenderer` draws a
+    /// `ScrollView` blank, so snapshots show the top rows clipped.
     @ViewBuilder private var scrollingGrid: some View {
-        if RunMode.current.isSnapshot {
-            Color.clear
-                .overlay(alignment: .top) { grid }
-                .clipped()
-        } else {
-            ScrollView(.vertical) { grid }
-                .scrollIndicators(.automatic)
-                .scrollBounceBehavior(.basedOnSize)
+        Group {
+            if RunMode.current.isSnapshot {
+                Color.clear
+                    .overlay(alignment: .top) { grid }
+                    .clipped()
+            } else {
+                ScrollView(.vertical) { grid }
+                    .scrollIndicators(.automatic)
+                    .scrollBounceBehavior(.basedOnSize)
+                    .contentMargins(.bottom, Theme.Spacing.m, for: .scrollContent)
+            }
         }
+        .edgeFade(.bottom)
     }
 
     /// Thumbnails show each item alone on the pet, so the item reads clearly.

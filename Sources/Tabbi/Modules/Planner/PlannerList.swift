@@ -32,13 +32,7 @@ struct PlannerList: View {
             rows
             scrollingRows
                 // Fade the bottom edge so a cut-off row reads as "more below".
-                .mask {
-                    VStack(spacing: 0) {
-                        Rectangle()
-                        LinearGradient(colors: [.black, .clear], startPoint: .top, endPoint: .bottom)
-                            .frame(height: Self.fadeHeight)
-                    }
-                }
+                .edgeFade(.bottom, length: Self.fadeHeight)
         }
         .frame(maxHeight: .infinity, alignment: .top)
     }

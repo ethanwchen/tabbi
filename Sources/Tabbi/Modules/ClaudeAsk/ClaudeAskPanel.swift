@@ -275,13 +275,7 @@ private struct MessageList: View {
             .scrollIndicators(.never)
             .defaultScrollAnchor(.bottom)
             // Older messages fade out under the header instead of being cut off.
-            .mask(
-                VStack(spacing: 0) {
-                    LinearGradient(colors: [.clear, .black], startPoint: .top, endPoint: .bottom)
-                        .frame(height: Theme.Spacing.m)
-                    Color.black
-                }
-            )
+            .edgeFade(.top)
             // Follows streamed text and the taller stopped/failed rows that replace it.
             .onChange(of: conversation.messages.last?.text) {
                 proxy.scrollTo(Self.bottomID, anchor: .bottom)
@@ -610,23 +604,14 @@ private struct HistoryList: View {
                 rows
                     .frame(maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .top)
                     .clipped()
-                    .mask(bottomFade)
+                    .edgeFade(.bottom)
             } else {
                 ScrollView { rows }
                     .scrollIndicators(.never)
-                    .mask(bottomFade)
+                    .edgeFade(.bottom)
             }
         }
         .motion(Theme.Motion.snappy, value: session.savedChats.map(\.id))
-    }
-
-    /// Older chats fade out above the input bar instead of being cut off.
-    private var bottomFade: some View {
-        VStack(spacing: 0) {
-            Color.black
-            LinearGradient(colors: [.black, .clear], startPoint: .top, endPoint: .bottom)
-                .frame(height: Theme.Spacing.m)
-        }
     }
 
     private var rows: some View {
