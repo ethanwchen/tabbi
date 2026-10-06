@@ -775,7 +775,7 @@ private struct SetupStep: View {
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
             Text("\(number)")
-                .font(.system(size: 9.5, weight: .bold, design: .rounded))
+                .font(.system(size: 10, weight: .bold, design: .rounded))
                 .foregroundStyle(accent)
                 .frame(width: 16, height: 16)
                 .background(Circle().fill(accent.opacity(0.16)))

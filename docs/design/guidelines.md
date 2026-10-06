@@ -108,3 +108,15 @@ A screen passes when every item that applies to it passes.
 | 18 | Pet | The sprite is crisp at notch size, sits on the shared baseline, and never covers a hero or a control. |
 | 19 | Themes | The screen reads equally well in all eight themes (glow, cozy tints, monochrome accents). |
 | 20 | Simplicity | Nothing on the screen could be removed or moved under More options without losing everyday use. |
+
+## Before and after sheets
+
+Each fix found by the audit gets a sheet in `docs/design/before-after/`, numbered in order.
+Render the snapshots once on the commit before the fix and once after it, then build the sheet:
+
+```sh
+scripts/contact-sheet.py snapshots-before snapshots-after docs/design/before-after/NN-topic.png open-closet onboarding-modules
+```
+
+Each name is a snapshot file without `.png`; every name becomes one row with the before shot on the left and the after shot on the right.
+The script needs Pillow (`pip3 install pillow`).

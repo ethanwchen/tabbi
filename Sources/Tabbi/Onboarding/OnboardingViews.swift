@@ -232,6 +232,8 @@ private struct FooterButton: View {
 private struct OnboardingTile<Label: View>: View {
     var isSelected = false
     var tint: Color = Theme.Palette.primaryText
+    /// Short tiles trim their top and bottom padding and center their label.
+    var isCompact = false
     let help: String
     let action: () -> Void
     @ViewBuilder let label: Label
@@ -240,8 +242,9 @@ private struct OnboardingTile<Label: View>: View {
     var body: some View {
         Button(action: action) {
             label
-                .padding(Theme.Spacing.s)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .padding(.horizontal, Theme.Spacing.s)
+                .padding(.vertical, isCompact ? Theme.Spacing.xs : Theme.Spacing.s)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: isCompact ? .leading : .topLeading)
                 .background(
                     RoundedRectangle(cornerRadius: Theme.Radius.m, style: .continuous)
                         .fill(hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface)
@@ -391,84 +394,109 @@ private struct ModulesStep: View {
     @EnvironmentObject private var store: OnboardingStore
     let flow: OnboardingFlow
     @State private var dragging: ModuleID?
-    @State private var gridWidth: CGFloat = 0
 
-    private static let columns = 5
+    /// The tallest a tile gets; shorter when more rows have to fit.
     private static let tileHeight: CGFloat = 52
+    /// Below this height a tile trims its padding.
+    private static let roomyTileHeight: CGFloat = 49
+    /// Below this height a tile puts its symbol beside its title.
+    private static let stackedTileHeight: CGFloat = 41
     private static let space = "onboardingTiles"
+    private static let spacing = Theme.Spacing.s
+    /// Five columns keep titles such as Claude Usage whole.
+    private static let columns = 5
+
+    private var rowCount: Int { max((flow.layout.order.count + Self.columns - 1) / Self.columns, 1) }
+
+    /// Tiles share the step's height, so every row and the footer below
+    /// stay inside the notch however many tabs there are.
+    private func rowHeight(in size: CGSize) -> CGFloat {
+        let fitted = (size.height - Self.spacing * CGFloat(rowCount - 1)) / CGFloat(rowCount)
+        return min(Self.tileHeight, fitted.rounded(.down))
+    }
 
     var body: some View {
-        // A plain grid, not a lazy one: ten tiles at most, and snapshots
-        // can draw it. Dragging is a SwiftUI gesture for the same reason.
-        let order = flow.layout.order
-        let rows = stride(from: 0, to: order.count, by: Self.columns).map {
-            Array(order[$0..<min($0 + Self.columns, order.count)])
+        // Sized during layout, not from a measured @State, so the first
+        // frame (and a snapshot) already fits.
+        GeometryReader { proxy in
+            grid(size: proxy.size)
         }
-        Grid(horizontalSpacing: Theme.Spacing.s, verticalSpacing: Theme.Spacing.s) {
+    }
+
+    private func grid(size: CGSize) -> some View {
+        // A plain grid, not a lazy one: fifteen tiles at most, and snapshots
+        // can draw it. Dragging is a SwiftUI gesture for the same reason.
+        let rowHeight = rowHeight(in: size)
+        let order = flow.layout.order
+        let columns = Self.columns
+        let rows = stride(from: 0, to: order.count, by: columns).map {
+            Array(order[$0..<min($0 + columns, order.count)])
+        }
+        return Grid(horizontalSpacing: Self.spacing, verticalSpacing: Self.spacing) {
             ForEach(rows, id: \.self) { row in
                 GridRow {
                     ForEach(row) { id in
-                        tile(id)
+                        tile(id, height: rowHeight)
                             .highPriorityGesture(DragGesture(minimumDistance: 6, coordinateSpace: .named(Self.space))
-                                .onChanged { drag(id, to: $0.location) }
+                                .onChanged { drag(id, to: $0.location, in: size, rowHeight: rowHeight) }
                                 .onEnded { _ in dragging = nil })
                     }
-                    ForEach(row.count..<Self.columns, id: \.self) { _ in Color.clear.frame(height: 1) }
+                    ForEach(row.count..<columns, id: \.self) { _ in Color.clear.frame(height: 1) }
                 }
             }
         }
         .coordinateSpace(name: Self.space)
-        .background(GeometryReader { proxy in
-            Color.clear
-                .onAppear { gridWidth = proxy.size.width }
-                .onChange(of: proxy.size.width) { gridWidth = $1 }
-        })
+        .frame(width: size.width, height: size.height, alignment: .top)
         .motion(Theme.Motion.snappy, value: flow.layout)
     }
 
     /// Moves the dragged tile into the slot under the pointer, live.
-    private func drag(_ id: ModuleID, to location: CGPoint) {
+    private func drag(_ id: ModuleID, to location: CGPoint, in size: CGSize, rowHeight: CGFloat) {
         dragging = id
         let order = flow.layout.order
-        let spacing = Theme.Spacing.s
-        let columnWidth = (gridWidth - spacing * CGFloat(Self.columns - 1)) / CGFloat(Self.columns)
+        let columns = Self.columns
+        let columnWidth = (size.width - Self.spacing * CGFloat(columns - 1)) / CGFloat(columns)
         guard columnWidth > 0, let from = order.firstIndex(of: id) else { return }
-        let column = min(max(Int(location.x / (columnWidth + spacing)), 0), Self.columns - 1)
-        let row = max(Int(location.y / (Self.tileHeight + spacing)), 0)
-        let to = min(row * Self.columns + column, order.count - 1)
+        let column = min(max(Int(location.x / (columnWidth + Self.spacing)), 0), columns - 1)
+        let row = max(Int(location.y / (rowHeight + Self.spacing)), 0)
+        let to = min(row * columns + column, order.count - 1)
         guard to != from else { return }
         store.update { $0.move(fromOffsets: IndexSet(integer: from), toOffset: to > from ? to + 1 : to) }
     }
 
-    private func tile(_ id: ModuleID) -> some View {
+    private func tile(_ id: ModuleID, height rowHeight: CGFloat) -> some View {
         let module = flow.catalog.descriptor(for: id)
         let isOn = flow.layout.isEnabled(id)
         let canTurnOff = flow.layout.canDisable(id)
+        let isStacked = rowHeight >= Self.stackedTileHeight
         return OnboardingTile(isSelected: isOn, tint: module.accentColor.opacity(0.7),
+                              isCompact: rowHeight < Self.roomyTileHeight,
                               help: isOn ? (canTurnOff ? "Turn \(module.title) off" : "Keep at least one tab on")
                                          : "Turn \(module.title) on",
                               action: { store.update { $0.setEnabled(id, !isOn) } }) {
-            HStack(alignment: .top, spacing: Theme.Spacing.xs) {
+            let symbol = Image(systemName: module.symbol)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(isOn ? module.accentColor : Theme.Palette.tertiaryText)
+                .frame(height: 16)
+            let title = Text(module.title)
+                .font(Theme.Typography.caption)
+                .foregroundStyle(isOn ? Theme.Palette.primaryText : Theme.Palette.tertiaryText)
+                .lineLimit(1)
+                .minimumScaleFactor(10 / 10.5) // never below the 10pt floor
+            let key = (flow.layout.shortcut(for: id).map(String.init) ?? flow.layout.headerKey(for: id)?.uppercased())
+                .map { Text($0).font(Theme.Typography.caption.monospacedDigit()).foregroundStyle(Theme.Palette.tertiaryText) }
+            // The key sits beside the symbol, so the title gets the tile's
+            // whole width.
+            if isStacked {
                 VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-                    Image(systemName: module.symbol)
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundStyle(isOn ? module.accentColor : Theme.Palette.tertiaryText)
-                        .frame(height: 16)
-                    Text(module.title)
-                        .font(Theme.Typography.caption)
-                        .foregroundStyle(isOn ? Theme.Palette.primaryText : Theme.Palette.tertiaryText)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.85)
+                    HStack(spacing: Theme.Spacing.xs) { symbol; Spacer(minLength: 0); key }
+                    title
                 }
-                Spacer(minLength: 0)
-                if let shortcut = flow.layout.shortcut(for: id).map(String.init) ?? flow.layout.headerKey(for: id)?.uppercased() {
-                    Text(shortcut)
-                        .font(Theme.Typography.caption.monospacedDigit())
-                        .foregroundStyle(Theme.Palette.tertiaryText)
-                }
+            } else {
+                HStack(spacing: Theme.Spacing.xs) { symbol; title; Spacer(minLength: 0); key }
             }
         }
-        .frame(height: Self.tileHeight)
+        .frame(height: rowHeight)
         .scaleEffect(dragging == id ? 1.05 : 1)
         .opacity(dragging == id ? 0.8 : 1)
         .zIndex(dragging == id ? 1 : 0)
