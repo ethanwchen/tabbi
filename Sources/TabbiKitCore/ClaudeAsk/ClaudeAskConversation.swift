@@ -2,13 +2,13 @@ import Foundation
 
 /// One bubble in the Ask Claude panel.
 public struct ClaudeAskMessage: Identifiable, Equatable, Sendable {
-    public enum Role: Equatable, Sendable {
+    public enum Role: String, Codable, Equatable, Sendable {
         case user
         case assistant
     }
 
     /// Lifecycle of an assistant answer. User messages are always `.complete`.
-    public enum Status: Equatable, Sendable {
+    public enum Status: String, Codable, Equatable, Sendable {
         case streaming
         case complete
         /// The user pressed stop; `text` holds whatever arrived before that.
@@ -22,12 +22,27 @@ public struct ClaudeAskMessage: Identifiable, Equatable, Sendable {
     public let role: Role
     public internal(set) var text: String
     public internal(set) var status: Status
+    /// Screenshots sent with a question; always empty on answers.
+    public let attachments: [ClaudeAskAttachment]
 
-    public init(id: Int, role: Role, text: String, status: Status = .complete) {
+    public init(id: Int, role: Role, text: String, status: Status = .complete,
+                attachments: [ClaudeAskAttachment] = []) {
         self.id = id
         self.role = role
         self.text = text
         self.status = status
+        self.attachments = attachments
+    }
+}
+
+/// A question as it is sent: its text and any screenshots with it.
+public struct ClaudeAskQuestion: Equatable, Sendable {
+    public var text: String
+    public var attachments: [ClaudeAskAttachment]
+
+    public init(text: String, attachments: [ClaudeAskAttachment] = []) {
+        self.text = text
+        self.attachments = attachments
     }
 }
 
@@ -56,6 +71,10 @@ public struct ClaudeAskConversation: Equatable, Sendable {
     public private(set) var phase: Phase = .idle
     /// Session to pass to `--resume` so follow-ups keep context.
     public private(set) var sessionID: String?
+    /// Names this chat in the history; `reset()` starts a new one.
+    public private(set) var chatID: UUID
+    /// When this chat began, kept when it is saved and restored.
+    public private(set) var startedAt: Date
 
     /// Text of assistant messages the CLI has already finalized in this run.
     private var committedText = ""
@@ -63,7 +82,45 @@ public struct ClaudeAskConversation: Equatable, Sendable {
     private var partialText = ""
     private var nextID = 0
 
-    public init() {}
+    public init(chatID: UUID = UUID(), startedAt: Date = Date()) {
+        self.chatID = chatID
+        self.startedAt = startedAt
+    }
+
+    /// Reopens a saved chat so the next question continues it (with
+    /// `--resume` when the chat has a session).
+    public init(restoring chat: ClaudeAskChat) {
+        self.init(chatID: chat.id, startedAt: chat.createdAt)
+        sessionID = chat.sessionID
+        for message in chat.messages {
+            append(message.role, message.text, message.status, attachments: message.attachments)
+        }
+    }
+
+    /// The chat as it should be saved, or `nil` while there is nothing worth
+    /// keeping. A failed exchange is left out (its question can be retried,
+    /// not reread) and an answer still streaming is saved as stopped, so a
+    /// restored chat never shows a spinner that nothing drives.
+    public func savedChat(updatedAt: Date = Date()) -> ClaudeAskChat? {
+        var kept: [ClaudeAskChat.Message] = []
+        var pendingQuestion: ClaudeAskChat.Message?
+        for message in messages {
+            switch message.role {
+            case .user:
+                pendingQuestion = ClaudeAskChat.Message(role: .user, text: message.text,
+                                                        attachments: message.attachments)
+            case .assistant:
+                guard let question = pendingQuestion, message.status != .failed else { continue }
+                let status: ClaudeAskMessage.Status = message.status == .streaming ? .stopped : message.status
+                guard status != .stopped || !message.text.isEmpty else { continue }
+                kept += [question, ClaudeAskChat.Message(role: .assistant, text: message.text, status: status)]
+                pendingQuestion = nil
+            }
+        }
+        guard !kept.isEmpty else { return nil }
+        return ClaudeAskChat(id: chatID, createdAt: startedAt, updatedAt: updatedAt,
+                             sessionID: sessionID, messages: kept)
+    }
 
     public var isStreaming: Bool { phase == .streaming }
     public var isEmpty: Bool { messages.isEmpty }
@@ -75,12 +132,13 @@ public struct ClaudeAskConversation: Equatable, Sendable {
     }
 
     /// Starts a new exchange. Returns the trimmed prompt to send, or `nil` if
-    /// the prompt is blank or an answer is still streaming.
+    /// the prompt is blank or an answer is still streaming. A screenshot
+    /// always comes with a question, so `attachments` alone sends nothing.
     @discardableResult
-    public mutating func begin(prompt: String) -> String? {
+    public mutating func begin(prompt: String, attachments: [ClaudeAskAttachment] = []) -> String? {
         let trimmed = prompt.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty, !isStreaming else { return nil }
-        append(.user, trimmed, .complete)
+        append(.user, trimmed, .complete, attachments: attachments)
         append(.assistant, "", .streaming)
         committedText = ""
         partialText = ""
@@ -146,19 +204,33 @@ public struct ClaudeAskConversation: Equatable, Sendable {
         phase = .idle
     }
 
-    /// Removes the failed exchange and returns its prompt so it can be sent
-    /// again with `begin(prompt:)`. `nil` when there's nothing to retry.
-    public mutating func takeRetryPrompt() -> String? {
+    /// Removes the failed exchange and returns its question (with its
+    /// screenshots) so it can be sent again with `begin(prompt:attachments:)`.
+    /// `nil` when there's nothing to retry.
+    public mutating func takeRetryQuestion() -> ClaudeAskQuestion? {
         guard case .failed = phase else { return nil }
         phase = .idle
         guard let userIndex = messages.lastIndex(where: { $0.role == .user }) else { return nil }
-        let prompt = messages[userIndex].text
+        let question = ClaudeAskQuestion(text: messages[userIndex].text, attachments: messages[userIndex].attachments)
         messages.removeSubrange(userIndex...)
-        return prompt
+        return question
     }
 
-    /// Starts a new chat. Message ids keep increasing.
-    public mutating func reset() {
+    /// When the last question failed because the CLI no longer has this
+    /// chat's session (it deletes old ones), drops the session and returns
+    /// the question so it can be sent again as a fresh session. `nil` for
+    /// any other failure, so it never retries more than once.
+    public mutating func takeQuestionForLostSession() -> ClaudeAskQuestion? {
+        guard sessionID != nil, case .failed(.process(let detail)) = phase,
+              detail.localizedCaseInsensitiveContains("No conversation found") else { return nil }
+        sessionID = nil
+        return takeRetryQuestion()
+    }
+
+    /// Starts a new chat with a new `chatID`. Message ids keep increasing.
+    public mutating func reset(at now: Date = Date()) {
+        chatID = UUID()
+        startedAt = now
         messages = []
         phase = .idle
         sessionID = nil
@@ -174,8 +246,9 @@ public struct ClaudeAskConversation: Equatable, Sendable {
         messages.lastIndex(where: { $0.role == .assistant })
     }
 
-    private mutating func append(_ role: ClaudeAskMessage.Role, _ text: String, _ status: ClaudeAskMessage.Status) {
-        messages.append(ClaudeAskMessage(id: nextID, role: role, text: text, status: status))
+    private mutating func append(_ role: ClaudeAskMessage.Role, _ text: String, _ status: ClaudeAskMessage.Status,
+                                 attachments: [ClaudeAskAttachment] = []) {
+        messages.append(ClaudeAskMessage(id: nextID, role: role, text: text, status: status, attachments: attachments))
         nextID += 1
     }
 

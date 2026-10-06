@@ -6,8 +6,14 @@ import TabbiKit
 /// Ask Claude: a small chat with the local `claude` CLI. Messages fill the
 /// panel and a text field sits at the bottom. The notch stays pinned open
 /// while the focused field holds a draft or an answer is streaming, so an
-/// idle Ask tab still closes when the pointer leaves.
+/// idle Ask tab still closes when the pointer leaves. The chat can grow
+/// into a larger view (Expand, or Command-Return to send and expand),
+/// which stays open until Esc, Collapse or a click elsewhere.
 struct ClaudeAskPanel: View {
+    /// The large chat view's canvas: room for a long answer at a
+    /// comfortable reading width, still anchored under the notch.
+    static let largeSize = CGSize(width: 720, height: 460)
+
     @ObservedObject var session: ClaudeAskSession
     @EnvironmentObject private var notch: NotchViewModel
     @State private var draft = ""
@@ -27,7 +33,11 @@ struct ClaudeAskPanel: View {
                     .transition(.opacity)
             } else {
                 Group {
-                    if conversation.isEmpty {
+                    if session.isAskingScreenAccess {
+                        ScreenAccessView(session: session, accent: accent)
+                    } else if session.isShowingHistory {
+                        HistoryList(session: session, accent: accent)
+                    } else if conversation.isEmpty {
                         EmptyChatView(accent: accent) { send($0) }
                     } else {
                         MessageList(session: session, accent: accent)
@@ -40,14 +50,22 @@ struct ClaudeAskPanel: View {
             }
         }
         .motion(Theme.Motion.content, value: conversation.isEmpty)
+        .motion(Theme.Motion.content, value: session.isShowingHistory)
         .motion(Theme.Motion.content, value: session.isClaudeMissing)
-        .onAppear { session.prepare() }
+        .motion(Theme.Motion.content, value: session.isAskingScreenAccess)
+        .onAppear {
+            session.prepare()
+            session.recheckScreenAccess()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+            session.recheckScreenAccess()
+        }
         .task {
             // Wait for the notch panel to become key before focusing.
             try? await Task.sleep(for: .milliseconds(80))
             fieldFocused = true
         }
-        .onChange(of: (fieldFocused && !draft.isEmpty) || session.isStreaming, initial: true) { _, pinned in
+        .onChange(of: (fieldFocused && !draft.isEmpty) || session.isStreaming || isLarge, initial: true) { _, pinned in
             notch.isPinned = pinned
         }
         .onDisappear { notch.isPinned = false }
@@ -55,13 +73,22 @@ struct ClaudeAskPanel: View {
 
     // MARK: Input
 
+    private var isLarge: Bool { notch.isEnlarged }
+
     private var canSend: Bool {
         !draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !session.isStreaming
     }
 
     private var inputBar: some View {
-        HStack(spacing: Theme.Spacing.s) {
-            InputField(text: $draft, focused: $fieldFocused, accent: accent, onSubmit: { send(draft) })
+        // Bottom-aligned: with screenshots above the text, the buttons stay
+        // level with the line being typed.
+        HStack(alignment: .bottom, spacing: Theme.Spacing.s) {
+            InputField(text: $draft, focused: $fieldFocused, accent: accent, maxLines: isLarge ? 6 : 3,
+                       help: fieldHelp, onSubmit: { expand in send(draft, expand: expand) }) {
+                PendingAttachments(session: session)
+            } trailing: {
+                AttachButton(session: session)
+            }
             if session.isStreaming {
                 IconButton(symbol: "stop.fill", size: 32, help: "Stop answering") { session.stop() }
                     .transition(.motionPop)
@@ -71,6 +98,13 @@ struct ClaudeAskPanel: View {
                     .opacity(canSend ? 1 : 0.45)
                     .transition(.motionPop)
             }
+            if session.isShowingHistory || !session.savedChats.isEmpty {
+                IconButton(symbol: session.isShowingHistory ? "xmark" : "clock.arrow.circlepath", size: 32,
+                           help: session.isShowingHistory ? "Back to the chat" : "Chat history") {
+                    session.isShowingHistory.toggle()
+                }
+                .transition(.motionPop)
+            }
             if !conversation.isEmpty {
                 IconButton(symbol: "square.and.pencil", size: 32, help: "New chat") {
                     session.newChat()
@@ -79,39 +113,82 @@ struct ClaudeAskPanel: View {
                 }
                 .transition(.motionPop)
             }
+            if isLarge || (!conversation.isEmpty && largeView.offersExpand) {
+                IconButton(symbol: isLarge ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right",
+                           size: 32,
+                           help: isLarge ? "Back to the notch (Esc)" : expandHelp) {
+                    notch.requestOpenSize(isLarge ? nil : Self.largeSize)
+                }
+                .transition(.motionPop)
+            }
         }
         .motion(Theme.Motion.snappy, value: session.isStreaming)
+        .motion(Theme.Motion.snappy, value: isLarge)
+        .motion(Theme.Motion.snappy, value: session.isShowingHistory)
+        .motion(Theme.Motion.snappy, value: session.savedChats.isEmpty)
     }
 
-    private func send(_ prompt: String) {
+    private var largeView: ClaudeAskLargeView { session.preferences.largeView }
+
+    private var expandHelp: String {
+        largeView == .always ? "Open in the large view" : "Open in the large view (Command-Return sends and expands)"
+    }
+
+    private var fieldHelp: String {
+        largeView == .askEachTime && !isLarge
+            ? "Return to send, Command-Return to send in the large view, Shift-Return for a new line"
+            : "Return to send, Shift-Return for a new line"
+    }
+
+    /// Sends `prompt`, growing the chat into the large view when the user's
+    /// preference says so; `expand` is true for Command-Return.
+    private func send(_ prompt: String, expand: Bool = false) {
         guard !session.isStreaming,
               !prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+        if !isLarge && largeView.opensLarge(commandReturn: expand) { notch.requestOpenSize(Self.largeSize) }
         session.ask(prompt)
         draft = ""
         fieldFocused = true
     }
 }
 
-/// The rounded question field. Return sends; Shift-Return adds a line.
-private struct InputField: View {
+/// The rounded question field. Return sends, Command-Return sends and opens
+/// the large view, and Shift-Return adds a line. `top` sits above the text
+/// (the screenshots to send) and `trailing` at its right edge.
+private struct InputField<Top: View, Trailing: View>: View {
     @Binding var text: String
     var focused: FocusState<Bool>.Binding
     let accent: Color
-    let onSubmit: () -> Void
+    let maxLines: Int
+    /// The tooltip, which names Command-Return only when it expands.
+    let help: String
+    /// Called with true for Command-Return.
+    let onSubmit: (_ expand: Bool) -> Void
+    @ViewBuilder let top: () -> Top
+    @ViewBuilder let trailing: () -> Trailing
     @State private var hovering = false
 
     var body: some View {
         Card(padding: 0) {
-            field
-                .padding(.horizontal, Theme.Spacing.m)
+            HStack(alignment: .bottom, spacing: Theme.Spacing.xs) {
+                VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+                    top()
+                    field
+                        .frame(maxWidth: .infinity, minHeight: 16, alignment: .leading)
+                }
+                .padding(.leading, Theme.Spacing.m)
                 .padding(.vertical, Theme.Spacing.s)
-                .frame(maxWidth: .infinity, minHeight: 32, alignment: .leading)
+                trailing()
+                    .padding(.trailing, Theme.Spacing.xs)
+                    .padding(.bottom, Theme.Spacing.xs)
+            }
+            .frame(maxWidth: .infinity, minHeight: 32, alignment: .leading)
         }
         .overlay(
             RoundedRectangle(cornerRadius: Theme.Radius.m, style: .continuous)
                 .strokeBorder(borderColor, lineWidth: 1)
         )
-        .help("Return to send, Shift-Return for a new line")
+        .help(help)
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
         .motion(Theme.Motion.snappy, value: focused.wrappedValue)
@@ -128,7 +205,7 @@ private struct InputField: View {
                 .textFieldStyle(.plain)
                 .font(Theme.Typography.body)
                 .foregroundStyle(Theme.Palette.primaryText)
-                .lineLimit(1...3)
+                .lineLimit(1...maxLines)
                 .focused(focused)
                 .onKeyPress(.return, phases: .down) { press in
                     if press.modifiers.contains(.shift) {
@@ -140,11 +217,12 @@ private struct InputField: View {
                         // Deferred: the field editor ignores binding changes made
                         // while it handles the key, so clearing the draft here
                         // would leave the sent text in the field.
-                        Task { @MainActor in onSubmit() }
+                        let expand = press.modifiers.contains(.command)
+                        Task { @MainActor in onSubmit(expand) }
                     }
                     return .handled
                 }
-                .onSubmit { Task { @MainActor in onSubmit() } }
+                .onSubmit { Task { @MainActor in onSubmit(false) } }
         }
     }
 
@@ -222,7 +300,7 @@ private struct MessageList: View {
     private func row(for message: ClaudeAskMessage, isLast: Bool) -> some View {
         switch message.role {
         case .user:
-            UserBubble(text: message.text, accent: accent)
+            UserBubble(session: session, message: message, accent: accent)
         case .assistant:
             if message.status == .failed {
                 FailureRow(failure: isLast ? session.conversation.failure : nil,
@@ -235,13 +313,28 @@ private struct MessageList: View {
 }
 
 private struct UserBubble: View {
-    let text: String
+    let session: ClaudeAskSession
+    let message: ClaudeAskMessage
     let accent: Color
 
     var body: some View {
+        VStack(alignment: .trailing, spacing: Theme.Spacing.xs) {
+            if !message.attachments.isEmpty {
+                HStack(spacing: Theme.Spacing.xs) {
+                    ForEach(message.attachments) { attachment in
+                        AttachmentThumbnail(image: session.thumbnail(for: attachment), attachment: attachment, height: 56)
+                    }
+                }
+            }
+            bubble
+        }
+        .frame(maxWidth: .infinity, alignment: .trailing)
+    }
+
+    private var bubble: some View {
         HStack {
             Spacer(minLength: 72)
-            Text(text)
+            Text(message.text)
                 .font(Theme.Typography.body)
                 .foregroundStyle(Theme.Palette.primaryText)
                 .fixedSize(horizontal: false, vertical: true)
@@ -307,24 +400,113 @@ private struct AssistantBubble: View {
             // Re-rendered on a timer so the caret blinks while text streams in.
             TimelineView(.periodic(from: .now, by: 0.5)) { context in
                 let visible = Int(context.date.timeIntervalSinceReferenceDate * 2) % 2 == 0
-                let caret = Text(" ▍").foregroundStyle(accent.opacity(visible ? 1 : 0.25))
-                Text(ClaudeAskMarkdown.attributed(message.text)) + caret
+                AnswerBody(text: message.text,
+                           caret: Text(" ▍").foregroundStyle(accent.opacity(visible ? 1 : 0.25)))
             }
         } else if message.text.isEmpty {
             Text("No answer").foregroundStyle(Theme.Palette.tertiaryText)
         } else {
-            Text(ClaudeAskMarkdown.attributed(message.text))
+            AnswerBody(text: message.text, caret: nil)
         }
     }
 }
 
-/// Copies an answer's markdown; shows a checkmark briefly after copying.
+/// An answer's prose and code blocks, top to bottom. `caret` (while the
+/// answer streams) follows the last block, prose or code.
+private struct AnswerBody: View {
+    let text: String
+    let caret: Text?
+
+    var body: some View {
+        let blocks = ClaudeAskMarkdown.blocks(text)
+        VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+            ForEach(Array(blocks.enumerated()), id: \.offset) { index, block in
+                let caret = index == blocks.count - 1 ? caret : nil
+                switch block {
+                case .text(let prose):
+                    Text(Self.styled(prose)) + (caret ?? Text(""))
+                case .code(let language, let code, let isClosed):
+                    CodeBlock(language: language, code: code, canCopy: isClosed || self.caret == nil, caret: caret)
+                }
+            }
+        }
+    }
+}
+
+extension AnswerBody {
+    /// The prose's markdown with inline code in the code blocks' monospaced
+    /// size, so it sits level with the rounded body text (bold code stays bold).
+    static func styled(_ prose: String) -> AttributedString {
+        var text = ClaudeAskMarkdown.attributed(prose)
+        // Typed attribute keys, not `run.font`-style key paths, which the
+        // concurrency checker flags as non-Sendable.
+        typealias Intent = AttributeScopes.FoundationAttributes.InlinePresentationIntentAttribute
+        typealias FontKey = AttributeScopes.SwiftUIAttributes.FontAttribute
+        for run in text.runs {
+            guard let intent = run.attributes[Intent.self], intent.contains(.code) else { continue }
+            let weight: Font.Weight = intent.contains(.stronglyEmphasized) ? .semibold : .regular
+            text[run.range][FontKey.self] = .system(size: 11, weight: weight, design: .monospaced)
+        }
+        return text
+    }
+}
+
+/// A fenced code block: monospaced on a darker inset, with its language and
+/// a Copy button above. Long lines wrap, since the notch can't scroll sideways.
+private struct CodeBlock: View {
+    let language: String?
+    let code: String
+    let canCopy: Bool
+    let caret: Text?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(spacing: Theme.Spacing.s) {
+                Text(language ?? "Code")
+                    .font(Theme.Typography.caption)
+                    .foregroundStyle(Theme.Palette.tertiaryText)
+                    .lineLimit(1)
+                Spacer(minLength: Theme.Spacing.s)
+                CopyButton(text: code, help: "Copy code")
+                    .opacity(canCopy ? 1 : 0)
+                    .allowsHitTesting(canCopy)
+            }
+            .padding(.leading, Theme.Spacing.s)
+            .padding(.trailing, Theme.Spacing.xxs)
+            .frame(height: 24)
+            Rectangle()
+                .fill(Theme.Palette.stroke)
+                .frame(height: 0.5)
+            (Text(code) + (caret ?? Text("")))
+                .font(.system(size: 11, design: .monospaced))
+                .foregroundStyle(Theme.Palette.primaryText)
+                .lineSpacing(Theme.Spacing.xxs)
+                .fixedSize(horizontal: false, vertical: true)
+                .textSelection(.enabled)
+                .padding(.horizontal, Theme.Spacing.s)
+                .padding(.vertical, Theme.Spacing.s)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
+                .fill(Theme.Palette.background.opacity(0.55))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
+                .strokeBorder(Theme.Palette.stroke, lineWidth: 0.5)
+        )
+    }
+}
+
+/// Copies text (an answer's markdown or a code block); shows a checkmark
+/// briefly after copying.
 private struct CopyButton: View {
     let text: String
+    var help = "Copy answer"
     @State private var copied = false
 
     var body: some View {
-        IconButton(symbol: copied ? "checkmark" : "doc.on.doc", size: 22, help: "Copy answer") {
+        IconButton(symbol: copied ? "checkmark" : "doc.on.doc", size: 22, help: copied ? "Copied" : help) {
             NSPasteboard.general.clearContents()
             NSPasteboard.general.setString(text, forType: .string)
             copied = true
@@ -387,6 +569,151 @@ private struct FailureRow: View {
         case .process(let detail): detail
         case nil: nil
         }
+    }
+}
+
+// MARK: - History
+
+/// Saved chats, newest first: open one to continue it, or delete it.
+/// The first line says where they live and offers Clear All.
+private struct HistoryList: View {
+    @ObservedObject var session: ClaudeAskSession
+    let accent: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+            HStack(spacing: Theme.Spacing.s) {
+                Label("Chats stay on this Mac", systemImage: "lock.fill")
+                    .font(Theme.Typography.caption)
+                    .foregroundStyle(Theme.Palette.tertiaryText)
+                    .help("Saved chats are kept only on this Mac and never uploaded")
+                Spacer(minLength: Theme.Spacing.s)
+                if !session.savedChats.isEmpty {
+                    ClearAllButton { session.deleteAllChats() }
+                        .transition(.opacity)
+                }
+            }
+            // As tall as Clear All, so the line stays put when it goes.
+            .frame(height: 26)
+            if session.savedChats.isEmpty {
+                VStack(spacing: Theme.Spacing.xxs) {
+                    Text("No saved chats")
+                        .font(Theme.Typography.bodyEmphasis)
+                        .foregroundStyle(Theme.Palette.secondaryText)
+                    Text("Chats are saved here once Claude answers.")
+                        .font(Theme.Typography.caption)
+                        .foregroundStyle(Theme.Palette.tertiaryText)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .transition(.opacity)
+            } else if ClaudeAskPanel.isSnapshot {
+                rows
+                    .frame(maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .top)
+                    .clipped()
+                    .mask(bottomFade)
+            } else {
+                ScrollView { rows }
+                    .scrollIndicators(.never)
+                    .mask(bottomFade)
+            }
+        }
+        .motion(Theme.Motion.snappy, value: session.savedChats.map(\.id))
+    }
+
+    /// Older chats fade out above the input bar instead of being cut off.
+    private var bottomFade: some View {
+        VStack(spacing: 0) {
+            Color.black
+            LinearGradient(colors: [.black, .clear], startPoint: .top, endPoint: .bottom)
+                .frame(height: Theme.Spacing.m)
+        }
+    }
+
+    private var rows: some View {
+        // One clock for every row, so a list that stays open past midnight
+        // relabels together.
+        let now = Date()
+        return LazyVStack(spacing: Theme.Spacing.xxs) {
+            ForEach(session.savedChats) { chat in
+                HistoryRow(chat: chat, date: chat.dateLabel(now: now),
+                           isOpen: chat.id == session.conversation.chatID, accent: accent,
+                           open: { session.open(chat) }, delete: { session.delete(chat) })
+                    .transition(.motionRow(from: .top))
+            }
+        }
+    }
+}
+
+private struct HistoryRow: View {
+    let chat: ClaudeAskChat
+    let date: String
+    let isOpen: Bool
+    let accent: Color
+    let open: () -> Void
+    let delete: () -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.s) {
+            Button(action: open) {
+                HStack(spacing: Theme.Spacing.s) {
+                    Circle()
+                        .fill(isOpen ? accent : .clear)
+                        .frame(width: 6, height: 6)
+                    Text(chat.title)
+                        .font(Theme.Typography.body)
+                        .foregroundStyle(Theme.Palette.primaryText)
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                    Spacer(minLength: Theme.Spacing.s)
+                    Text(date)
+                        .font(Theme.Typography.caption)
+                        .foregroundStyle(Theme.Palette.tertiaryText)
+                        .monospacedDigit()
+                        .lineLimit(1)
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .help(isOpen ? "This chat is open" : "Open this chat and continue it")
+            IconButton(symbol: "trash", size: 22, help: "Delete this chat", action: delete)
+                .opacity(hovering ? 1 : 0)
+                .allowsHitTesting(hovering)
+        }
+        .padding(.leading, Theme.Spacing.s)
+        .padding(.trailing, Theme.Spacing.xxs)
+        .frame(height: 28)
+        .background(
+            RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
+                .fill(hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface)
+        )
+        .onHover { hovering = $0 }
+        .motion(Theme.Motion.snappy, value: hovering)
+    }
+}
+
+/// Clear All asks once more before deleting: the first click turns it into
+/// a warning, and it settles back if the second never comes.
+private struct ClearAllButton: View {
+    let action: () -> Void
+    @State private var armed = false
+
+    var body: some View {
+        PillButton(title: armed ? "Delete All Chats?" : "Clear All", symbol: armed ? "trash" : nil,
+                   tint: armed ? Theme.Palette.warning : nil,
+                   help: armed ? "Click again to delete every saved chat" : "Delete every saved chat") {
+            if armed {
+                armed = false
+                action()
+            } else {
+                armed = true
+                Task {
+                    try? await Task.sleep(for: .seconds(3))
+                    armed = false
+                }
+            }
+        }
+        .motion(Theme.Motion.snappy, value: armed)
     }
 }
 
@@ -456,9 +783,11 @@ private struct ClaudeMissingView: View {
 }
 
 /// A small capsule text button with a hover state.
-private struct PillButton: View {
+struct PillButton: View {
     let title: String
     var symbol: String?
+    /// Replaces the text color, e.g. for a confirmation.
+    var tint: Color?
     let help: String
     let action: () -> Void
     @State private var hovering = false
@@ -472,7 +801,7 @@ private struct PillButton: View {
                 Text(title).lineLimit(1)
             }
             .font(Theme.Typography.caption)
-            .foregroundStyle(hovering ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
+            .foregroundStyle(tint ?? (hovering ? Theme.Palette.primaryText : Theme.Palette.secondaryText))
             .padding(.horizontal, Theme.Spacing.m)
             .padding(.vertical, Theme.Spacing.s - Theme.Spacing.xxs)
             .background(Capsule().fill(hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface))

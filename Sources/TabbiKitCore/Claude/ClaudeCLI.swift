@@ -79,12 +79,36 @@ public enum ClaudeCLI {
         extraArguments: [String] = []
     ) -> AsyncThrowingStream<ClaudeStreamEvent, Error> {
         let arguments = ["-p", "--output-format", "stream-json", "--verbose"] + extraArguments + ["--", prompt]
-        let lines = StreamingProcess.lines(
+        return events(from: StreamingProcess.lines(
             executable: executable,
             arguments: arguments,
             currentDirectory: FileManager.default.temporaryDirectory
-        )
-        return AsyncThrowingStream { continuation in
+        ))
+    }
+
+    /// Runs `claude -p` with one stream-json `inputLine` on stdin (a user
+    /// message, which can carry images) and yields parsed events, like
+    /// `stream(executable:prompt:extraArguments:)`. The CLI answers and exits
+    /// once stdin closes.
+    public static func stream(
+        executable: URL,
+        inputLine: Data,
+        extraArguments: [String] = []
+    ) -> AsyncThrowingStream<ClaudeStreamEvent, Error> {
+        let arguments = ["-p", "--input-format", "stream-json", "--output-format", "stream-json", "--verbose"]
+            + extraArguments
+        return events(from: StreamingProcess.lines(
+            executable: executable,
+            arguments: arguments,
+            currentDirectory: FileManager.default.temporaryDirectory,
+            input: inputLine
+        ))
+    }
+
+    private static func events(
+        from lines: AsyncThrowingStream<String, Error>
+    ) -> AsyncThrowingStream<ClaudeStreamEvent, Error> {
+        AsyncThrowingStream { continuation in
             let task = Task {
                 do {
                     for try await line in lines {

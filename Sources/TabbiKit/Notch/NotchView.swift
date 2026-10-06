@@ -61,6 +61,10 @@ public struct NotchView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .animation(phaseAnimation, value: model.phase)
+        // Growing into a tab's larger canvas springs like opening, and
+        // giving it back settles like closing.
+        .animation(Motion.adapted(model.isEnlarged ? Motion.open : Motion.close, reduceMotion: reduceMotion),
+                   value: model.requestedOpenSize)
         .animation(Motion.adapted(Motion.content, reduceMotion: reduceMotion), value: model.previewKind)
         .animation(Motion.adapted(Motion.content, reduceMotion: reduceMotion), value: model.showsTakeover)
         .preferredColorScheme(.dark)
@@ -136,7 +140,8 @@ private struct OpenNotchContent: View {
     /// the camera; tabs that don't fit open from the "more" list.
     private func tabs() -> some View {
         let title = content.catalog.descriptor(for: model.selected).title
-        let header = NotchHeaderLayout.openNotch(geometry: model.geometry, layout: model.layout, title: title)
+        let header = NotchHeaderLayout.openNotch(geometry: model.geometry, layout: model.layout, title: title,
+                                                 canvasWidth: model.openSize.width)
         let headerHeight = NotchHeaderLayout.headerHeight(for: model.geometry)
         return VStack(spacing: 0) {
             HStack(spacing: 0) {
@@ -164,7 +169,7 @@ private struct OpenNotchContent: View {
                 .frame(width: header.trailingZone.width, alignment: .trailing)
             }
             .padding(.leading, header.leadingZone.minX)
-            .frame(width: Theme.Layout.expandedSize.width, height: headerHeight, alignment: .leading)
+            .frame(width: model.openSize.width, height: headerHeight, alignment: .leading)
 
             ZStack {
                 content.panel(model.selected)

@@ -13,12 +13,14 @@ public struct ProcessFailure: Error, Equatable, CustomStringConvertible {
 public enum StreamingProcess {
     /// Yields each stdout line (without the newline). Finishes when the process
     /// exits; throws `ProcessFailure` on a non-zero exit. Cancelling the
-    /// consumer terminates the process.
+    /// consumer terminates the process. `input`, when given, is written to
+    /// the process's stdin, which is then closed.
     public static func lines(
         executable: URL,
         arguments: [String],
         currentDirectory: URL? = nil,
-        environment: [String: String]? = nil
+        environment: [String: String]? = nil,
+        input: Data? = nil
     ) -> AsyncThrowingStream<String, Error> {
         AsyncThrowingStream { continuation in
             let process = Process()
@@ -31,7 +33,8 @@ public enum StreamingProcess {
             let stderr = Pipe()
             process.standardOutput = stdout
             process.standardError = stderr
-            process.standardInput = FileHandle.nullDevice
+            let stdin = input.map { _ in Pipe() }
+            process.standardInput = stdin ?? FileHandle.nullDevice
 
             let buffer = LineBuffer()
             stdout.fileHandleForReading.readabilityHandler = { handle in
@@ -71,6 +74,17 @@ public enum StreamingProcess {
                 try process.run()
             } catch {
                 continuation.finish(throwing: error)
+                return
+            }
+            if let input, let writer = stdin?.fileHandleForWriting {
+                // A process that exits before reading everything must not
+                // kill the app with SIGPIPE; the write just fails instead.
+                _ = fcntl(writer.fileDescriptor, F_SETNOSIGPIPE, 1)
+                // Off the caller's thread: a large input blocks until read.
+                DispatchQueue.global(qos: .userInitiated).async {
+                    try? writer.write(contentsOf: input)
+                    try? writer.close()
+                }
             }
         }
     }

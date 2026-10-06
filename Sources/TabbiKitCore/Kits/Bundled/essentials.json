@@ -8,6 +8,7 @@
   "accent": "planner",
   "modules": ["study", "planner", "spotify", "claudeAsk", "closet"],
   "defaults": {
+    "ticker": ["focus", "tasks", "progress", "party", "meeting", "nowPlaying", "pet"],
     "theme": "midnight",
     "moduleSettings": {
       "study": {

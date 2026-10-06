@@ -122,10 +122,40 @@ final class ClaudeAskConversationTests: XCTestCase {
         conversation.apply(.result(ClaudeResult(text: "fine", sessionID: "s1", isError: false)))
         conversation.begin(prompt: "boom")
         conversation.fail(.process(detail: "exit 1"))
-        XCTAssertEqual(conversation.takeRetryPrompt(), "boom")
+        XCTAssertEqual(conversation.takeRetryQuestion(), ClaudeAskQuestion(text: "boom"))
         XCTAssertEqual(conversation.messages.map(\.text), ["ok", "fine"])
         XCTAssertEqual(conversation.phase, .idle)
-        XCTAssertNil(conversation.takeRetryPrompt())
+        XCTAssertNil(conversation.takeRetryQuestion())
+    }
+
+    func testLostSessionDropsTheSessionAndReturnsTheQuestionOnce() {
+        let screenshot = ClaudeAskAttachment(pixelWidth: 10, pixelHeight: 10)
+        var conversation = ClaudeAskConversation(restoring: ClaudeAskChat(
+            id: UUID(), createdAt: Date(), updatedAt: Date(), sessionID: "gone",
+            messages: [.init(role: .user, text: "ok"), .init(role: .assistant, text: "fine")]
+        ))
+        conversation.begin(prompt: "more", attachments: [screenshot])
+        conversation.fail(.process(detail: "No conversation found with session ID: gone"))
+        XCTAssertEqual(conversation.takeQuestionForLostSession(),
+                       ClaudeAskQuestion(text: "more", attachments: [screenshot]))
+        XCTAssertNil(conversation.sessionID)
+        XCTAssertEqual(conversation.messages.map(\.text), ["ok", "fine"])
+
+        conversation.begin(prompt: "more")
+        conversation.fail(.process(detail: "No conversation found with session ID: gone"))
+        XCTAssertNil(conversation.takeQuestionForLostSession())
+        XCTAssertNotNil(conversation.failure)
+    }
+
+    func testOtherFailuresKeepTheSession() {
+        var conversation = ClaudeAskConversation()
+        conversation.begin(prompt: "ok")
+        conversation.apply(.result(ClaudeResult(text: "fine", sessionID: "s1", isError: false)))
+        conversation.begin(prompt: "boom")
+        conversation.fail(.process(detail: "exit 1"))
+        XCTAssertNil(conversation.takeQuestionForLostSession())
+        XCTAssertEqual(conversation.sessionID, "s1")
+        XCTAssertEqual(conversation.failure, .process(detail: "exit 1"))
     }
 
     func testClaudeNotFoundFailureMarksAnswerFailed() {
