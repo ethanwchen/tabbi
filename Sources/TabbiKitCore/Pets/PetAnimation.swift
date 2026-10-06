@@ -44,6 +44,11 @@ public struct PetPose: Hashable, Sendable {
         /// A coffee mug in both paws. `raise` is 0 at the chest, 1 on the
         /// way up, 2 at the mouth for a sip.
         case mug(raise: Int)
+        /// A toy on the floor in front: a ball of yarn for cats, a ball for
+        /// dogs. `roll` moves it that many pixels to the left as it rolls
+        /// away, `bounce` lifts a ball off the floor, and `bat` puts the
+        /// left front paw on top of it.
+        case toy(roll: Int, bounce: Int, bat: Bool)
     }
 
     /// A front paw lifted off the floor, beside the head or to the face.
@@ -132,12 +137,16 @@ public enum PetAnimation: String, CaseIterable, Codable, Sendable {
     /// on the tail wrapped round in front, the back rising with each slow
     /// breath while "z"s drift up. Loops; `sleep` is the sitting doze.
     case nap
+    /// Playing: a pat sends a ball of yarn (cats) or a ball (dogs) rolling
+    /// away, the pet watches it, and it comes back to be caught. A ball
+    /// bounces on the way.
+    case play
 
     /// Whether the clip repeats forever or stops on its last frame.
     public var loops: Bool {
         switch self {
         case .idle, .sit, .sleep, .walk, .typing, .coffee, .nap: true
-        case .blink, .stretch, .peekIn, .peekOut, .alert, .celebrate, .yawn, .hop, .wave, .groom, .tailSwish: false
+        case .blink, .stretch, .peekIn, .peekOut, .alert, .celebrate, .yawn, .hop, .wave, .groom, .tailSwish, .play: false
         }
     }
 }
@@ -442,6 +451,27 @@ extension PetComposer {
                 (1, 0.12), (2, 0.3), (1, 0.12), (0, 0.35),
             ]
             frames = steps.map { frame(PetPose(tailSwing: $0.0), $0.1) }
+
+        case .play:
+            // Eye the toy, crouch, and pat it: it rolls away (a ball bounces
+            // as it goes) and comes back to be caught.
+            let ball = breed.species == .dog
+            let steps: [(PetPose.Prop, PetPose.Eyes, Int, TimeInterval)] = [
+                (.toy(roll: 0, bounce: 0, bat: false), .open, 0, 0.35),
+                (.toy(roll: 0, bounce: 0, bat: false), .open, 1, 0.2),
+                (.toy(roll: 0, bounce: 0, bat: true), .open, 1, 0.16),
+                (.toy(roll: 3, bounce: 0, bat: false), .happy, 0, 0.1),
+                (.toy(roll: 7, bounce: ball ? 2 : 0, bat: false), .happy, 0, 0.1),
+                (.toy(roll: 10, bounce: 0, bat: false), .open, 0, 0.45),
+                (.toy(roll: 6, bounce: ball ? 3 : 0, bat: false), .open, 0, 0.12),
+                (.toy(roll: 2, bounce: ball ? 1 : 0, bat: false), .open, 1, 0.12),
+                (.toy(roll: 0, bounce: 0, bat: true), .happy, 1, 0.4),
+                (.toy(roll: 0, bounce: 0, bat: false), .happy, 0, 0.3),
+                (.toy(roll: 0, bounce: 0, bat: false), .open, 0, 0.2),
+            ]
+            frames = steps.map { toy, eyes, drop, duration in
+                frame(PetPose(eyes: eyes, prop: toy, headDrop: drop), duration)
+            }
 
         case .peekIn, .peekOut:
             // Dangling from the notch by the front paws: the head lowers into

@@ -3,7 +3,7 @@
 A study-buddy cat or dog lives in the notch.
 This document explains how pet sprites are drawn, composed, and rendered, and how to add a breed.
 
-Status: the sprite format, palettes, pattern zones, renderer, all nine cat breeds, all eight dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate, yawn, hop, typing, coffee, wave, groom, tail swish, nap), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
+Status: the sprite format, palettes, pattern zones, renderer, all nine cat breeds, all eight dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate, yawn, hop, typing, coffee, wave, groom, tail swish, nap, play), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
 
 ![All cat breeds sitting, on black at 4x](images/cats-sitting.png)
 
@@ -164,7 +164,7 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 ## Animations
 
 `PetComposer.clip(_:for:outfit:accessories:)` builds a `PetClip`: a list of `PetFrame`s, each with its own `duration` in seconds.
-`clip.frame(at: elapsed)` picks the frame to show; looping clips (idle, sit, sleep, walk, typing, coffee, nap) wrap around, one-shot clips (blink, stretch, peek, alert, celebrate, yawn, hop, wave, groom, tailSwish) hold their last frame until `PetAnimator.advance(to:)` sees the clip's duration has passed and moves the pet on.
+`clip.frame(at: elapsed)` picks the frame to show; looping clips (idle, sit, sleep, walk, typing, coffee, nap) wrap around, one-shot clips (blink, stretch, peek, alert, celebrate, yawn, hop, wave, groom, tailSwish, play) hold their last frame until `PetAnimator.advance(to:)` sees the clip's duration has passed and moves the pet on.
 
 Front-facing animations are not drawn frame by frame.
 Each frame is the sitting composition in a `PetPose`, so every breed and costume animates without extra art:
@@ -174,7 +174,7 @@ Each frame is the sitting composition in a `PetPose`, so every breed and costume
 | `eyes` | `.open`, `.closed` (blink), `.sleepy` (soft curves), `.happy` ("^" arches), `.squeezed` ("> <", mirrored for the right eye) |
 | `mouth` | `.closed` (the face as drawn), `.open` (a small "o"), `.wide` (a big yawn with the tongue showing) |
 | `headDrop` | Sinks the head (and its hat and glasses) into the shoulders, for breathing and dozing; -1 tips it back for a yawn |
-| `prop` | Something held in front of the pet: `.laptop(tap:)` (a paw lifted to type, -1 left, 1 right, 0 resting) or `.mug(raise:)` (0 in the lap, 1 on the way up, 2 at the mouth) |
+| `prop` | Something held in front of the pet: `.laptop(tap:)` (a paw lifted to type, -1 left, 1 right, 0 resting) or `.mug(raise:)` (0 in the lap, 1 on the way up, 2 at the mouth), or `.toy(roll:bounce:bat:)` (a toy on the floor, `roll` px to the left of its spot, `bounce` px off the floor, with the left paw on top when `bat` is set) |
 | `gesture` | The left front paw lifted off the floor: `.wave(swing:)` (0 leans out from the head, 1 swings back in beside the cheek) or `.groom(reach:)` (0 just under the chin, 1 under the tongue for a lick, 2 up over the left cheek to wash) |
 | `tailSwing` | Pixels the tip of the tail leans out to the side, 0 at rest; tailless breeds pop out a stub by the haunch instead, raised `tailSwing` px |
 | `lift` | Raises the whole pet off the baseline, for hops |
@@ -188,6 +188,9 @@ Draw a tongue with the blush role below the cheek row and it will hide itself du
 Props come from `PropArt` and are drawn in front of the pet with their own outline and the breed's paw zone, so they read on fur of any color.
 The laptop stands on the floor, centered under the head, with the paws resting over the lid's top edge; the mug is centered on the mouth (found like an open mouth, below) and rises from the lap to cover the mouth for a sip.
 The mug's steam curls over the chest, so it is line art in the mouth role, which turns dark on light fur and light on dark fur.
+The toy is a ball of yarn for cats (in the knit accessory colors, so it follows a recolored scarf) and a red ball with a gold band for dogs, 7x7 and round so it never reads as a box.
+It starts on the floor between the front paws, centered under the head, and rolls to the left, the only side with room (the tail is on the right), stopping at the frame edge; every 2 px rolled it swaps to its mirrored winding or turned band, so it reads as rolling.
+Batting lifts the left front paw off the floor and lays an outlined paw over the toy's top-left edge, so the paw shows against the toy instead of merging into same-colored fur.
 
 Gestures come from `PawArt`: a forearm in plain fur ending in a paw-zone paw, outlined all round except where it meets the body, so it reads over the head and chest of any breed.
 A gesturing pet lifts its left front paw off the floor (`PawArt.liftingLeftPaw`): the paw shape touching the floor furthest left is found from the body art, its floor run is cleared (a Poodle's cuff with it), paw pixels tucked against fur turn into a fold of shaded fur, and a leg standing free (the dachshund's) goes entirely.
@@ -221,6 +224,7 @@ When the row under the nose carries nose-colored mouth corners (most dogs), a ro
 | groom | The left leg lifts to the chin, three licks (the paw rises under an open mouth for 180 ms, drops for 120 ms) with the eyes shut, two strokes over the left cheek with the head bent into them, then a contented look; about 2.3 s |
 | tailSwish | The tail sweeps out to the side and back twice, the first sweep slower (400 ms held at the far end) and the second quicker, everything else still; about 2.1 s |
 | nap | A deeper sleep than `sleep`, curled up on the floor (see below): sleepy eyes, the back swelling a pixel on each slow breath, and "z"s drifting up like `sleep`; four 1 s frames, loops |
+| play | Eyes the toy (350 ms), crouches, and pats it (160 ms); it rolls away with happy eyes (a ball bounces 2 px), is watched for 450 ms, rolls back (a ball bounces 3 px, then 1 px) and is caught under the paw (400 ms), then a happy look; about 2.5 s |
 | walk | Four 150 ms steps of a trot, side-on (see below) |
 | stretch | A side-on play bow: down in three steps, a held bow with happy eyes and a tail wag, then back up (see below) |
 
@@ -229,7 +233,7 @@ The peek legs come from `EffectArt.hangingLeg`, drawn behind the head with the b
 
 ![Every animation frame for the orange tabby](images/animations-cat.png)
 
-`PetGallery` also writes `yawn.png`, `hop.png`, `typing.png`, `coffee.png`, `wave.png`, `groom.png`, `tailSwish.png` and `nap.png`, every breed through every frame of each move, one row per breed:
+`PetGallery` also writes `yawn.png`, `hop.png`, `typing.png`, `coffee.png`, `wave.png`, `groom.png`, `tailSwish.png`, `nap.png` and `play.png`, every breed through every frame of each move, one row per breed:
 
 ![The yawn for every breed](images/yawn.png)
 
@@ -246,6 +250,8 @@ The peek legs come from `EffectArt.hangingLeg`, drawn behind the head with the b
 ![The tail swish for every breed](images/tailSwish.png)
 
 ![The curled-up nap for every breed](images/nap.png)
+
+![Playing with yarn or a ball for every breed](images/play.png)
 
 ### Walking
 

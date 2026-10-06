@@ -424,6 +424,45 @@ final class PetAnimationTests: XCTestCase {
         }
     }
 
+    func testPlayPatsTheToyAwayWatchesItAndCatchesItWhenItComesBack() throws {
+        for breed in PetBreed.allCases {
+            let clip = PetComposer.clip(.play, for: breed)
+            XCTAssertFalse(clip.loops)
+            // Cats play with yarn (knit color), dogs with a red ball.
+            let toyRole: PetPaletteRole = breed.species == .cat ? .accessoryShade : .heart
+            func toy(_ canvas: PetCanvas) throws -> (left: Int, bottom: Int) {
+                let cells = (0..<canvas.height).flatMap { y in
+                    (0..<canvas.width).filter { canvas[$0, y] == toyRole }.map { (x: $0, y: y) }
+                }
+                return (try XCTUnwrap(cells.map(\.x).min(), "toy shows: \(breed)"), cells.map(\.y).max() ?? 0)
+            }
+            let canvases = clip.frames.map(\.canvas)
+            let rest = try toy(canvases[0])
+            XCTAssertEqual(try toy(canvases[canvases.count - 1]).left, rest.left, "the toy comes back: \(breed)")
+            let lefts = try canvases.map { try toy($0).left }
+            let furthest = try XCTUnwrap(lefts.indices.min { lefts[$0] < lefts[$1] })
+            XCTAssertLessThanOrEqual(lefts[furthest], rest.left - 8, "rolls well away: \(breed)")
+            // A ball bounces off the floor on the way; yarn just rolls.
+            let bottoms = try canvases.map { try toy($0).bottom }
+            if breed.species == .dog {
+                XCTAssertTrue(bottoms.contains { $0 < rest.bottom - 1 }, "the ball bounces: \(breed)")
+            } else {
+                XCTAssertTrue(bottoms.allSatisfy { $0 == rest.bottom }, "the yarn stays on the floor: \(breed)")
+            }
+            // The left paw comes off the floor to pat the toy away and again
+            // to catch it.
+            let floorPaws = leftFloorPixels(canvases[0])
+            let pats = canvases.indices.filter { leftFloorPixels(canvases[$0]) < floorPaws && lefts[$0] == rest.left }
+            XCTAssertTrue(pats.contains { $0 < furthest } && pats.contains { $0 > furthest }, "\(breed)")
+            XCTAssertTrue(canvases.contains { !$0.pixels.contains(.eyeLight) }, "happy eyes as it rolls: \(breed)")
+            for canvas in canvases {
+                XCTAssertEqual(try XCTUnwrap(canvas.opaqueBounds).maxY, baseline, "\(breed)")
+                let edges = (0...baseline).flatMap { [canvas[0, $0], canvas[baseline, $0], canvas[$0, 0]] }
+                XCTAssertTrue(edges.allSatisfy { $0 == nil || $0 == .outline }, "nothing clipped: \(breed)")
+            }
+        }
+    }
+
     func testCanvasShiftAndFlip() {
         var canvas = PetCanvas(width: 3, height: 3)
         canvas[0, 0] = .eye

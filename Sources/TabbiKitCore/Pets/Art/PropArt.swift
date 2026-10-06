@@ -1,7 +1,7 @@
 import Foundation
 
 /// Small props a sitting pet holds for the study moments: a tiny laptop
-/// (focusing) and a coffee mug (breaks). Props are drawn in front of the
+/// (focusing) and a coffee mug (breaks), plus its toys (yarn and a ball). Props are drawn in front of the
 /// pet with their own outline, so they read against fur of any color, and
 /// the paws holding them are drawn with the prop, so every body shape uses
 /// the same art.
@@ -58,6 +58,53 @@ enum PropArt {
             R..
             .R.
             ..R
+            """),
+    ]
+
+    /// A ball of yarn in the cozy knit color, wound in curved strands. The
+    /// two grids mirror the winding, so alternating them as it moves makes
+    /// it read as rolling.
+    static let yarn = [
+        SpriteGrid(art: """
+            ..OOO..
+            .OGJGO.
+            OGJGGJO
+            OJGGJGO
+            OGGJGGO
+            .OJGGO.
+            ..OOO..
+            """),
+        SpriteGrid(art: """
+            ..OOO..
+            .OGJGO.
+            OJGGJGO
+            OGJGGJO
+            OGGJGGO
+            .OGGJO.
+            ..OOO..
+            """),
+    ]
+
+    /// A red rubber ball with a gold band and a shine on the upper left (the
+    /// light stays put while the band turns as it rolls).
+    static let ball = [
+        SpriteGrid(art: """
+            ..OOO..
+            .OZHHO.
+            OZHHHHO
+            OYYYYYO
+            OHHHHHO
+            .OHHHO.
+            ..OOO..
+            """),
+        SpriteGrid(art: """
+            ..OOO..
+            .OZYHO.
+            OZHYHHO
+            OHHYHHO
+            OHHYHHO
+            .OHYHO.
+            ..OOO..
             """),
     ]
 }

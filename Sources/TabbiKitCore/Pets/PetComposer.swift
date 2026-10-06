@@ -67,7 +67,7 @@ public enum PetComposer {
         switch stance {
         case .sitting:
             // A gesturing pet lifts its left front paw off the floor.
-            var body = pose.gesture == nil ? layout.body : PawArt.liftingLeftPaw(layout.body)
+            var body = pose.liftsLeftPaw ? PawArt.liftingLeftPaw(layout.body) : layout.body
             let swing = max(pose.tailSwing, 0)
             if swing > 0, let column = layout.tailColumn {
                 // A tail drawn into the body is cut out and bent on its own.
@@ -210,7 +210,8 @@ public enum PetComposer {
     /// Draws a held prop in front of the sitting pet, centered under the
     /// head so it lines up on every body shape. The laptop stands on the
     /// floor; the mug rises from the chest to the mouth, found from the
-    /// face art like an open mouth. Returns the mug's top-left corner.
+    /// face art like an open mouth; a toy rolls away to the left along the
+    /// floor. Returns the mug's top-left corner.
     private static func stampProp(
         _ prop: PetPose.Prop, on canvas: inout PetCanvas, layout: SitLayout, headX: Int, headY: Int,
         pattern: PetPattern
@@ -238,7 +239,27 @@ public enum PetComposer {
             canvas.stamp(PropArt.mugPaw, x: x + 4, y: y + 1, pattern: pattern)
             canvas.stamp(PropArt.mug, x: x, y: y)
             return PetPoint(x: x, y: y)
+        case .toy(let roll, let bounce, let bat):
+            // Cats play with yarn, dogs with a ball. Each pixel rolled turns
+            // the winding or the band, so the toy reads as rolling.
+            let art = layout.family == .cat ? PropArt.yarn : PropArt.ball
+            let toy = art[(roll / 2) % art.count]
+            let x = toyX(roll: roll, center: center)
+            let y = frameSize - toy.height - max(bounce, 0)
+            canvas.stamp(toy, x: x, y: y)
+            if bat {
+                // The lifted left paw, outlined all round, presses on the
+                // toy's top; the leg it hangs from is hidden behind the toy.
+                canvas.stamp(PropArt.paw, x: x - 1, y: y - 1, pattern: pattern)
+            }
+            return nil
         }
+    }
+
+    /// Left edge of the toy `roll` pixels after it starts rolling away from
+    /// its spot on the floor, centered under the head; it stops at the edge.
+    private static func toyX(roll: Int, center: Int) -> Int {
+        max(0, center - PropArt.ball[0].width / 2 - max(roll, 0))
     }
 
     /// Draws the lifted front paw in front of the sitting pet. The wave
@@ -476,6 +497,16 @@ public enum PetComposer {
         func pick(_ item: CostumeArt.BodyItem) -> SpriteGrid {
             family == .longDog ? item.walkLong : item.walk
         }
+    }
+}
+
+extension PetPose {
+    /// Whether the left front paw is up (a gesture, or batting a toy), so
+    /// the sitting body must not also show it on the floor.
+    fileprivate var liftsLeftPaw: Bool {
+        if gesture != nil { return true }
+        if case .toy(_, _, true) = prop { return true }
+        return false
     }
 }
 
