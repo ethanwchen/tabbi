@@ -108,8 +108,8 @@ final class ClaudeAskSession: ObservableObject {
 
     /// Sends the failed question again.
     func retry() {
-        guard let prompt = conversation.takeRetryPrompt() else { return }
-        ask(prompt)
+        guard let question = conversation.takeRetryQuestion() else { return }
+        ask(question.text)
     }
 
     /// Looks up `claude` ahead of the first question (the panel calls this

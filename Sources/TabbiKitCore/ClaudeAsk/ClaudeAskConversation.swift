@@ -22,12 +22,27 @@ public struct ClaudeAskMessage: Identifiable, Equatable, Sendable {
     public let role: Role
     public internal(set) var text: String
     public internal(set) var status: Status
+    /// Screenshots sent with a question; always empty on answers.
+    public let attachments: [ClaudeAskAttachment]
 
-    public init(id: Int, role: Role, text: String, status: Status = .complete) {
+    public init(id: Int, role: Role, text: String, status: Status = .complete,
+                attachments: [ClaudeAskAttachment] = []) {
         self.id = id
         self.role = role
         self.text = text
         self.status = status
+        self.attachments = attachments
+    }
+}
+
+/// A question as it is sent: its text and any screenshots with it.
+public struct ClaudeAskQuestion: Equatable, Sendable {
+    public var text: String
+    public var attachments: [ClaudeAskAttachment]
+
+    public init(text: String, attachments: [ClaudeAskAttachment] = []) {
+        self.text = text
+        self.attachments = attachments
     }
 }
 
@@ -78,7 +93,7 @@ public struct ClaudeAskConversation: Equatable, Sendable {
         self.init(chatID: chat.id, startedAt: chat.createdAt)
         sessionID = chat.sessionID
         for message in chat.messages {
-            append(message.role, message.text, message.status)
+            append(message.role, message.text, message.status, attachments: message.attachments)
         }
     }
 
@@ -92,7 +107,8 @@ public struct ClaudeAskConversation: Equatable, Sendable {
         for message in messages {
             switch message.role {
             case .user:
-                pendingQuestion = ClaudeAskChat.Message(role: .user, text: message.text)
+                pendingQuestion = ClaudeAskChat.Message(role: .user, text: message.text,
+                                                        attachments: message.attachments)
             case .assistant:
                 guard let question = pendingQuestion, message.status != .failed else { continue }
                 let status: ClaudeAskMessage.Status = message.status == .streaming ? .stopped : message.status
@@ -116,12 +132,13 @@ public struct ClaudeAskConversation: Equatable, Sendable {
     }
 
     /// Starts a new exchange. Returns the trimmed prompt to send, or `nil` if
-    /// the prompt is blank or an answer is still streaming.
+    /// the prompt is blank or an answer is still streaming. A screenshot
+    /// always comes with a question, so `attachments` alone sends nothing.
     @discardableResult
-    public mutating func begin(prompt: String) -> String? {
+    public mutating func begin(prompt: String, attachments: [ClaudeAskAttachment] = []) -> String? {
         let trimmed = prompt.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty, !isStreaming else { return nil }
-        append(.user, trimmed, .complete)
+        append(.user, trimmed, .complete, attachments: attachments)
         append(.assistant, "", .streaming)
         committedText = ""
         partialText = ""
@@ -187,15 +204,16 @@ public struct ClaudeAskConversation: Equatable, Sendable {
         phase = .idle
     }
 
-    /// Removes the failed exchange and returns its prompt so it can be sent
-    /// again with `begin(prompt:)`. `nil` when there's nothing to retry.
-    public mutating func takeRetryPrompt() -> String? {
+    /// Removes the failed exchange and returns its question (with its
+    /// screenshots) so it can be sent again with `begin(prompt:attachments:)`.
+    /// `nil` when there's nothing to retry.
+    public mutating func takeRetryQuestion() -> ClaudeAskQuestion? {
         guard case .failed = phase else { return nil }
         phase = .idle
         guard let userIndex = messages.lastIndex(where: { $0.role == .user }) else { return nil }
-        let prompt = messages[userIndex].text
+        let question = ClaudeAskQuestion(text: messages[userIndex].text, attachments: messages[userIndex].attachments)
         messages.removeSubrange(userIndex...)
-        return prompt
+        return question
     }
 
     /// Starts a new chat with a new `chatID`. Message ids keep increasing.
@@ -217,8 +235,9 @@ public struct ClaudeAskConversation: Equatable, Sendable {
         messages.lastIndex(where: { $0.role == .assistant })
     }
 
-    private mutating func append(_ role: ClaudeAskMessage.Role, _ text: String, _ status: ClaudeAskMessage.Status) {
-        messages.append(ClaudeAskMessage(id: nextID, role: role, text: text, status: status))
+    private mutating func append(_ role: ClaudeAskMessage.Role, _ text: String, _ status: ClaudeAskMessage.Status,
+                                 attachments: [ClaudeAskAttachment] = []) {
+        messages.append(ClaudeAskMessage(id: nextID, role: role, text: text, status: status, attachments: attachments))
         nextID += 1
     }
 

@@ -122,10 +122,10 @@ final class ClaudeAskConversationTests: XCTestCase {
         conversation.apply(.result(ClaudeResult(text: "fine", sessionID: "s1", isError: false)))
         conversation.begin(prompt: "boom")
         conversation.fail(.process(detail: "exit 1"))
-        XCTAssertEqual(conversation.takeRetryPrompt(), "boom")
+        XCTAssertEqual(conversation.takeRetryQuestion(), ClaudeAskQuestion(text: "boom"))
         XCTAssertEqual(conversation.messages.map(\.text), ["ok", "fine"])
         XCTAssertEqual(conversation.phase, .idle)
-        XCTAssertNil(conversation.takeRetryPrompt())
+        XCTAssertNil(conversation.takeRetryQuestion())
     }
 
     func testClaudeNotFoundFailureMarksAnswerFailed() {

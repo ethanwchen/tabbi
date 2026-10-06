@@ -9,11 +9,36 @@ public struct ClaudeAskChat: Codable, Identifiable, Equatable, Sendable {
         public var role: ClaudeAskMessage.Role
         public var text: String
         public var status: ClaudeAskMessage.Status
+        /// Screenshots sent with a question. Absent in files written before
+        /// attachments existed, and left out when empty.
+        public var attachments: [ClaudeAskAttachment]
 
-        public init(role: ClaudeAskMessage.Role, text: String, status: ClaudeAskMessage.Status = .complete) {
+        public init(role: ClaudeAskMessage.Role, text: String, status: ClaudeAskMessage.Status = .complete,
+                    attachments: [ClaudeAskAttachment] = []) {
             self.role = role
             self.text = text
             self.status = status
+            self.attachments = attachments
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case role, text, status, attachments
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            role = try container.decode(ClaudeAskMessage.Role.self, forKey: .role)
+            text = try container.decode(String.self, forKey: .text)
+            status = try container.decode(ClaudeAskMessage.Status.self, forKey: .status)
+            attachments = try container.decodeIfPresent([ClaudeAskAttachment].self, forKey: .attachments) ?? []
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(role, forKey: .role)
+            try container.encode(text, forKey: .text)
+            try container.encode(status, forKey: .status)
+            if !attachments.isEmpty { try container.encode(attachments, forKey: .attachments) }
         }
     }
 
@@ -41,10 +66,14 @@ public struct ClaudeAskChat: Codable, Identifiable, Equatable, Sendable {
     }
 
     static let titleLimit = 60
+
+    /// Every screenshot in the chat, in message order.
+    public var attachments: [ClaudeAskAttachment] { messages.flatMap(\.attachments) }
 }
 
 /// Keeps Ask Claude chats on this Mac, one JSON file per chat
-/// (`<id>.json`) in the edition's `Claude Chats` folder.
+/// (`<id>.json`) in the edition's `Claude Chats` folder, with the chat's
+/// screenshots in a `<id>` folder beside it.
 ///
 /// Writes are atomic. A corrupt file is skipped when listing, so one bad
 /// chat never hides the rest. Not thread-safe; own it from a single actor.
@@ -69,6 +98,11 @@ public final class ClaudeAskHistory {
 
     public func fileURL(for id: UUID) -> URL {
         directory.appendingPathComponent("\(id.uuidString).json", isDirectory: false)
+    }
+
+    /// Where a chat's screenshots are kept once it is saved.
+    public func attachmentsDirectory(for id: UUID) -> URL {
+        directory.appendingPathComponent(id.uuidString, isDirectory: true)
     }
 
     /// Every readable saved chat, the most recently answered first.
@@ -98,19 +132,23 @@ public final class ClaudeAskHistory {
         try Self.schema.encode(chat, using: Self.encoder).write(to: fileURL(for: chat.id), options: .atomic)
     }
 
-    /// Removes one chat. Removing a chat that isn't saved is not an error.
+    /// Removes one chat and its screenshots. Removing a chat that isn't
+    /// saved is not an error.
     public func delete(_ id: UUID) throws {
-        let url = fileURL(for: id)
-        guard fileManager.fileExists(atPath: url.path) else { return }
-        try fileManager.removeItem(at: url)
+        for url in [fileURL(for: id), attachmentsDirectory(for: id)]
+        where fileManager.fileExists(atPath: url.path) {
+            try fileManager.removeItem(at: url)
+        }
     }
 
-    /// Removes every chat file, readable or not, and leaves unrelated files
-    /// in the folder alone.
+    /// Removes every chat file, readable or not, and every chat's
+    /// screenshot folder, and leaves unrelated files in the folder alone.
     public func deleteAll() throws {
         let names = (try? fileManager.contentsOfDirectory(atPath: directory.path)) ?? []
-        for name in names where name.hasSuffix(".json") && UUID(uuidString: String(name.dropLast(5))) != nil {
-            try fileManager.removeItem(at: directory.appendingPathComponent(name, isDirectory: false))
+        for name in names {
+            let id = name.hasSuffix(".json") ? String(name.dropLast(5)) : name
+            guard UUID(uuidString: id) != nil else { continue }
+            try fileManager.removeItem(at: directory.appendingPathComponent(name))
         }
     }
 
