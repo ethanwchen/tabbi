@@ -50,7 +50,7 @@ public enum SpotifyScript {
         if fields.count == 1 {
             guard state == .stopped else { return nil }
             return SpotifyPlayback(state: .stopped, track: nil, position: 0,
-                                   isShuffling: false, isRepeating: false)
+                                   isShuffling: false, repeatMode: .off)
         }
         guard fields.count == 11 else { return nil }
 
@@ -66,7 +66,7 @@ public enum SpotifyScript {
         var playback = SpotifyPlayback(
             state: state, track: track, position: 0,
             isShuffling: fields[8].trimmingCharacters(in: .whitespaces) == "true",
-            isRepeating: fields[9].trimmingCharacters(in: .whitespaces) == "true",
+            repeatMode: fields[9].trimmingCharacters(in: .whitespaces) == "true" ? .all : .off,
             volume: MediaVolume.parse(fields[10])
         )
         playback.position = playback.clampedPosition(number(fields[7]) ?? 0)

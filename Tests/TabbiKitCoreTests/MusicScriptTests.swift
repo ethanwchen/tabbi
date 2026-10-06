@@ -21,15 +21,16 @@ final class MusicScriptTests: XCTestCase {
         XCTAssertEqual(try XCTUnwrap(playback.track?.duration), 330.5, accuracy: 0.0001)
         XCTAssertEqual(playback.position, 42.25, accuracy: 0.0001)
         XCTAssertTrue(playback.isShuffling)
-        XCTAssertTrue(playback.isRepeating)
+        XCTAssertEqual(playback.repeatMode, .all)
     }
 
     func testRepeatModesAndPausedState() throws {
         let off = try XCTUnwrap(MusicScript.parse(record(["paused", "A", "t", "a", "b", "10", "1", "false", "off", "64"])))
         XCTAssertEqual(off.state, .paused)
-        XCTAssertFalse(off.isRepeating)
+        XCTAssertEqual(off.repeatMode, .off)
         XCTAssertFalse(off.isShuffling)
         let one = try XCTUnwrap(MusicScript.parse(record(["paused", "A", "t", "a", "b", "10", "1", "false", "one", "64\n"])))
+        XCTAssertEqual(one.repeatMode, .one)
         XCTAssertTrue(one.isRepeating)
     }
 
@@ -107,7 +108,7 @@ final class MediaSourceTrackerTests: XCTestCase {
         .connected(SpotifyPlayback(
             state: state,
             track: SpotifyTrack(id: id, title: id, artist: "", album: "", artworkURL: nil, duration: 100),
-            position: 0, isShuffling: false, isRepeating: false
+            position: 0, isShuffling: false, repeatMode: .off
         ))
     }
 

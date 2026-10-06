@@ -358,10 +358,14 @@ private struct SpotifyTransport: View {
         // without shifting anything.
         ZStack {
             HStack(spacing: Theme.Spacing.xs) {
-                SpotifyModeIndicator(symbol: "shuffle", isOn: playback.isShuffling,
-                                     help: playback.isShuffling ? "Shuffle is on" : "Shuffle is off")
-                SpotifyModeIndicator(symbol: "repeat", isOn: playback.isRepeating,
-                                     help: playback.isRepeating ? "Repeat is on" : "Repeat is off")
+                SpotifyModeButton(symbol: "shuffle", isOn: playback.isShuffling,
+                                  label: "Shuffle", value: playback.isShuffling ? "On" : "Off",
+                                  help: playback.isShuffling ? "Turn shuffle off" : "Turn shuffle on",
+                                  action: controller.toggleShuffle)
+                SpotifyModeButton(symbol: playback.repeatMode == .one ? "repeat.1" : "repeat",
+                                  isOn: playback.isRepeating,
+                                  label: "Repeat", value: Self.repeatValue(playback.repeatMode),
+                                  help: repeatHelp, action: controller.cycleRepeat)
                 Spacer(minLength: 0)
                 if let volume = playback.volume {
                     SpotifyVolumeControl(volume: volume, onChange: controller.setVolume,
@@ -375,6 +379,24 @@ private struct SpotifyTransport: View {
                 SpotifyTransportButton(symbol: "forward.fill", help: "Next track",
                                        action: controller.next)
             }
+        }
+    }
+
+    /// What the next click does, since repeat steps through several modes.
+    private var repeatHelp: String {
+        let source = controller.source ?? .spotify
+        switch source.repeatMode(after: playback.repeatMode) {
+        case .off: return "Turn repeat off"
+        case .all: return source == .music ? "Repeat all songs" : "Turn repeat on"
+        case .one: return "Repeat this song"
+        }
+    }
+
+    private static func repeatValue(_ mode: MediaRepeatMode) -> String {
+        switch mode {
+        case .off: "Off"
+        case .all: "All"
+        case .one: "One song"
         }
     }
 }
@@ -532,25 +554,47 @@ private struct SpotifyPlayPauseButton: View {
     }
 }
 
-/// Read-only shuffle / repeat state (Spotify owns those settings).
-private struct SpotifyModeIndicator: View {
+/// A shuffle or repeat toggle. On shows the module accent with a dot
+/// underneath; the player's own state decides it, read back after each click.
+private struct SpotifyModeButton: View {
     let symbol: String
     let isOn: Bool
+    let label: String
+    let value: String
     let help: String
+    let action: () -> Void
+    @State private var hovering = false
 
     var body: some View {
-        Image(systemName: symbol)
-            .font(.system(size: 11, weight: .semibold))
-            .foregroundStyle(isOn ? NowPlayingModule.descriptor.accentColor : Theme.Palette.tertiaryText)
-            .frame(width: 24, height: 24)
-            .overlay(alignment: .bottom) {
-                Circle()
-                    .fill(NowPlayingModule.descriptor.accentColor)
-                    .frame(width: 3, height: 3)
-                    .opacity(isOn ? 1 : 0)
-            }
-            .contentShape(Rectangle())
-            .help(help)
+        Button(action: action) {
+            Image(systemName: symbol)
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(foreground)
+                .contentTransition(.symbolEffect(.replace))
+                .frame(width: 24, height: 24)
+                .background(Circle().fill(hovering ? Theme.Palette.surfaceHover : .clear))
+                .overlay(alignment: .bottom) {
+                    Circle()
+                        .fill(NowPlayingModule.descriptor.accentColor)
+                        .frame(width: 3, height: 3)
+                        .offset(y: 1)
+                        .opacity(isOn ? 1 : 0)
+                }
+                .contentShape(Circle())
+        }
+        .buttonStyle(.tactile)
+        .help(help)
+        .onHover { hovering = $0 }
+        .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: isOn)
+        .accessibilityLabel(label)
+        .accessibilityValue(value)
+        .accessibilityHint(help)
+    }
+
+    private var foreground: Color {
+        if isOn { return NowPlayingModule.descriptor.accentColor }
+        return hovering ? Theme.Palette.primaryText : Theme.Palette.tertiaryText
     }
 }
 
