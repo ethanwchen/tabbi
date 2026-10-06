@@ -135,7 +135,7 @@ The open notch shows up to nine tabs comfortably, and the number keys 1-9 jump t
 
 | Field | Type | Meaning |
 | --- | --- | --- |
-| `ticker` | array of strings | Which live previews the closed notch rotates through: built-in previews and the ids of modules whose highlights should show. Leave it out to show them all. |
+| `ticker` | array of strings | Which live previews the closed notch rotates through: built-in previews and the ids of modules whose highlights should show. Leave it out to show them all. Both bundled kits list every built-in preview and leave out `claudeUsage`, so usage stats stay off the closed notch until the user turns them on in Settings. |
 | `theme` | string | The look of the open panel: `midnight`, `graphite`, `liquidGlass`, `neon`, `monochrome`, `cozy`, `sakura` or `forest`. Applying the kit switches to it, and the user can pick another in Settings. `notch` still works and means `midnight`. An unknown id shows as a warning and keeps the user's theme. |
 | `moduleSettings` | object | Settings for individual modules, keyed by module id. Each module reads its own section and declares the keys it accepts, so a typo or a value out of range shows as a warning when importing. |
 
