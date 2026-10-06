@@ -154,7 +154,7 @@ Module settings the built-in modules read, all optional:
   - `dailyGoalMinutes`, the minutes a day to aim for (15 to 720, rounded to a quarter hour; 120 when left out). The Timer tab shows today's time against it, and Today lists it as a goal.
 - **`focus`:** `sounds`, the focus sound mix that Study, Today and Focus play: up to three objects with a `sound` (`brown`, `pink`, `white`, `rain`, `fireplace`, `cafe`) and an optional `level` from 0 to 1 (default 1). An empty list turns the sound off.
 - **`closet`:**
-  - `pet`, the study pet someone starts with when they have none yet: an optional `breed` (`orangeTabby`, `grayTabby`, `blackCat`, `whiteCat`, `tuxedo`, `calico`, `siamese`, `britishShorthair`, `goldenRetriever`, `labrador`, `frenchBulldog`, `corgi`, `dachshund`, `beagle`) and `name` (up to 16 characters). An existing pet is never changed.
+  - `pet`, the study pet someone starts with when they have none yet: an optional `breed` (`orangeTabby`, `grayTabby`, `blackCat`, `whiteCat`, `tuxedo`, `calico`, `siamese`, `britishShorthair`, `sphynx`, `goldenRetriever`, `labrador`, `frenchBulldog`, `corgi`, `dachshund`, `beagle`, `poodle`, `shihTzu`) and `name` (up to 16 characters). An existing pet is never changed.
   - `coachLines`, extra lines the study pet's coach can say, keyed by bubble kind: `distraction` (a while in a distracting app), `offerPause` (offering to pause the timer), `idleCheck` (no input for a while) and `autoPause` (the timer was paused while the user was away).
     They join the built-in lines, which name no subject, so a few lines give the coach your kit's flavor.
     Each kind takes a list of lines or a single line.
