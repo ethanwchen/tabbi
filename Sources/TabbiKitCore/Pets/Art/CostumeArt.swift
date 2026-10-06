@@ -14,6 +14,9 @@ enum CostumeArt {
         let walk: SpriteGrid
         /// Over the dachshund walking torso (`WalkArt.longTorso`).
         let walkLong: SpriteGrid
+        /// Rows every grid reaches above its body's top row, for parts that
+        /// stick up out of the silhouette, such as spikes along the back.
+        var rise = 0
     }
 
     /// A face item, one grid for cat faces and one for dog faces, and the
@@ -525,4 +528,238 @@ extension CostumeArt {
             ..HH.HH................
             """)
     )
+}
+
+// MARK: - Fun outfits
+
+extension CostumeArt {
+    /// A zip-up hoodie in the knit color with the hood bunched at the collar,
+    /// a metal zipper, a kangaroo pocket, and the hood lying on the back when
+    /// seen from the side. White drawstrings read as a face from the front.
+    static let cozyHoodie = BodyItem(
+        cat: SpriteGrid(art: """
+            ....................
+            ....................
+            ....GJJJJJJJJJJG....
+            ...GGGGGGMGGGGGGG...
+            ...GGGGGGMGGGGGGG...
+            ...GGGGGGMGGGGGGG...
+            ...GGJJJJMJJJJGGG...
+            ...GGGJJJMJJJGGGG...
+            ...JJJJJJJJJJJJJJ...
+            """),
+        dog: SpriteGrid(art: """
+            ....................
+            ....GJJJJJJJJJJG....
+            ...GGGGGGMGGGGGGG...
+            ...GGGGGGMGGGGGGG...
+            ..GGGGGGGMGGGGGGGG..
+            ..GGGJJJJMJJJJGGGG..
+            ..GGGGJJJMJJJGGGGG..
+            ..JJJJJJJJJJJJJJJJ..
+            """),
+        longDog: SpriteGrid(art: """
+            ........................
+            ....GGGGGGJJJJGGGGGGGG..
+            ...JMGGGGJGGGGJGGGGGGGG.
+            ...JMGGGGGJJJJGGGGGGGGG.
+            ...JJJJJJJJJJJJJJJJJJJJ.
+            """),
+        walk: SpriteGrid(art: """
+            ...GGGGGGGGGGJJJJGG...
+            ..GGGGGGGGGGJGGGGJGG..
+            .GGGGGGGGGGGGJJJJGGGG.
+            .GGGGGGGGGGGGGGGGGGGG.
+            .GGGGGGGGGGGGGGGGGGGG.
+            .JJJJJJJJJJJJJJJJJJJJ.
+            """),
+        walkLong: SpriteGrid(art: """
+            ...GGGGGGGGGGGJJJJGGG..
+            ..GGGGGGGGGGGJGGGGJGGG.
+            .GGGGGGGGGGGGGJJJJGGGG.
+            .GGGGGGGGGGGGGGGGGGGGG.
+            .JJJJJJJJJJJJJJJJJJJJJ.
+            """)
+    )
+
+    /// A red cape fastened with a gold clasp at the collar. From the front it
+    /// drapes over the shoulders and falls past both sides of the body; from
+    /// the side it streams back over the rump.
+    static let superheroCape = BodyItem(
+        cat: SpriteGrid(art: """
+            ....................
+            ....................
+            ....................
+            ...HHHHH.YY.HHHHH...
+            ..HHH..........HHH..
+            ..HH............HH..
+            ..HH............HH..
+            .HHH............HHH.
+            .HHH............HHH.
+            .HHH............HHH.
+            .HHY............YHH.
+            """),
+        dog: SpriteGrid(art: """
+            ....................
+            ....................
+            ...HHHHH.YY.HHHHH...
+            ..HHH..........HHH..
+            ..HH............HH..
+            .HHH............HHH.
+            .HHH............HHH.
+            .HHH............HHH.
+            .HHH............HHH.
+            .HHY............YHH.
+            """),
+        longDog: SpriteGrid(art: """
+            .................HHH....
+            ........................
+            ........YHHHHHHHHHHH....
+            .........HHHHHHHHHHHHH..
+            ..........HHHHHHHHHHHHH.
+            ............HHHHHHH.HH..
+            """),
+        walk: SpriteGrid(art: """
+            ..............HHH.......
+            ...........HHHHHHHHHH...
+            ..........HHHHHHHHHHHHH.
+            ...........HHHHHHHHHHHH.
+            .............HHHHHHH.HH.
+            ...............HHH......
+            """),
+        walkLong: SpriteGrid(art: """
+            ...............HHH......
+            ............HHHHHHHHHH..
+            ...........HHHHHHHHHHHHH
+            ............HHHHHHHHHHHH
+            ..............HHHHHHH.HH
+            ................HHH.....
+            """),
+        rise: 1
+    )
+
+    /// A green dinosaur suit with a gold belly and gold spikes down the back.
+    /// Its hood is `dinosaurHood`.
+    static let dinosaurHoodie = BodyItem(
+        cat: SpriteGrid(art: """
+            ....................
+            ....................
+            ....................
+            ....................
+            ....FFFFYYYYFFFF....
+            ...FFFFYYYYYYFFFF...
+            ...FFFFYYYYYYFFFF...
+            ...FFFFYYYYYYFFFF...
+            ...FFFFFYYYYFFFFF...
+            ...FFFFFFFFFFFFFF...
+            """),
+        dog: SpriteGrid(art: """
+            ....................
+            ....................
+            ....................
+            ....FFFFYYYYFFFF....
+            ...FFFFYYYYYYFFFF...
+            ...FFFFYYYYYYFFFF...
+            ..FFFFFYYYYYYFFFFF..
+            ..FFFFFFYYYYFFFFFF..
+            ..FFFFFFFFFFFFFFFF..
+            """),
+        longDog: SpriteGrid(art: """
+            ..............Y..Y..Y...
+            .............YY.YY.YY...
+            ........................
+            ....FFFFFFFFFFFFFFFFFF..
+            ...YYYYFFFFFFFFFFFFFFFF.
+            ...YYYYFFFFFFFFFFFFFFFF.
+            ...FFFFFFFFFFFFFFFFFFFF.
+            """),
+        walk: SpriteGrid(art: """
+            ...............Y..Y...
+            ..............YY.YY...
+            ...FFFFFFFFFFFFFFFF...
+            ..FFFFFFFFFFFFFFFFFF..
+            .FFFFFFFFFFFFFFFFFFFF.
+            .FFFFFFFFFFFFFFFFFFFF.
+            .YYYYFFFFFFFFFFFFFFFF.
+            .YYYYYFFFFFFFFFFFFFFF.
+            """),
+        walkLong: SpriteGrid(art: """
+            ...............Y..Y....
+            ..............YY.YY....
+            ...FFFFFFFFFFFFFFFFFF..
+            ..FFFFFFFFFFFFFFFFFFFF.
+            .YYYFFFFFFFFFFFFFFFFFF.
+            .YYYYFFFFFFFFFFFFFFFFF.
+            .FFFFFFFFFFFFFFFFFFFFF.
+            """),
+        rise: 2
+    )
+
+    /// A starry navy robe to match the wizard hat, with gold trim down the
+    /// front and a gold hem that flares a little above the paws.
+    static let wizardRobe = BodyItem(
+        cat: SpriteGrid(art: """
+            ....................
+            ....................
+            ....QQQY....YQQQ....
+            ...QQYQQY..YQQQQQ...
+            ...QQQQQQYYQQQQYQ...
+            ...QQQQQQQYQQQQQQ...
+            ...QQYQQQQYQQQQQQ...
+            ..QQQQQQQQYQQQQYQQ..
+            ..QQQQQQQQYQQQQQQQ..
+            ..YYYYYYYYYYYYYYYY..
+            """),
+        dog: SpriteGrid(art: """
+            ....................
+            ....QQQY....YQQQ....
+            ...QQYQQY..YQQQQQ...
+            ...QQQQQQYYQQQQYQ...
+            ..QQQQQQQQYQQQQQQQ..
+            ..QQQYQQQQYQQQQQQQ..
+            ..QQQQQQQQYQQQQYQQ..
+            ..QQQQQQQQYQQQQQQQ..
+            ..YYYYYYYYYYYYYYYYY.
+            """),
+        longDog: SpriteGrid(art: """
+            ........................
+            ....QQQQQQQQQQQQQQQQQQ..
+            ...QQQYQQQQQYQQQQQQYQQQ.
+            ...QQQYQQYQQQQQQYQQQQQQ.
+            ...YYYYYYYYYYYYYYYYYYYY.
+            """),
+        walk: SpriteGrid(art: """
+            ...QQQQQQQQQQQQQQQQ...
+            ..QQQQQQQQQQQQQQYQQQ..
+            .QQQQQQQQQQQQYQQQQQQQ.
+            .QQQQQQQQQQQQQQQQYQQQ.
+            .QQQQQQQQQQQQQYQQQQQQ.
+            .QQQQQQQQQQQQQQQQQQQQ.
+            .QQQQQQQQQQQQQQQQQQQQ.
+            .YYYYYYYYYYYYYYYYYYYY.
+            """),
+        walkLong: SpriteGrid(art: """
+            ...QQQQQQQQQQQQQQQQQ...
+            ..QQQQQQQQQQQQQQYQQQQ..
+            .QQQQQQQQQQQQYQQQQQQQQ.
+            .QQQQQQQQQQQQQQQQYQQQQ.
+            .QQQQQQQQQQQQQQQQQQQQQ.
+            .YYYYYYYYYYYYYYYYYYYYY.
+            """)
+    )
+
+    /// The dinosaur hood: gold spikes along the crown, little white teeth
+    /// along the brim, and sides that frame the face, so it reads as a hood.
+    static let dinosaurHood = HeadItem(grid: SpriteGrid(art: """
+        ......Y..YY..Y......
+        .....YYY.YY.YYY.....
+        ....FFFFFFFFFFFF....
+        ...FFFFFFFFFFFFFF...
+        ..FFFFFFFFFFFFFFFF..
+        ..FFFFFFFFFFFFFFFF..
+        ..FFUFUFUFFUFUFUFF..
+        ..FF............FF..
+        ..FF............FF..
+        ..FF............FF..
+        """), sitRow: 5)
 }

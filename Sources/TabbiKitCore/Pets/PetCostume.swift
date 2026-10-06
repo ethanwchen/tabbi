@@ -7,12 +7,22 @@ public enum PetOutfit: String, CaseIterable, Codable, Sendable {
     /// Scrub top in the recolorable `costumeBase` color.
     case scrubs
     case whiteCoat
+    /// A hoodie in the recolorable knit color, like the scarf and beanie.
+    case cozyHoodie
+    case superheroCape
+    /// A green hoodie with a spiky hood, the one outfit with a head part.
+    case dinosaurHoodie
+    case wizardRobe
 
     public var displayName: String {
         switch self {
         case .none: "None"
         case .scrubs: "Scrubs"
         case .whiteCoat: "White Coat"
+        case .cozyHoodie: "Cozy Hoodie"
+        case .superheroCape: "Superhero Cape"
+        case .dinosaurHoodie: "Dinosaur Hoodie"
+        case .wizardRobe: "Wizard Robe"
         }
     }
 }

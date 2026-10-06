@@ -136,13 +136,17 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 
 1. Add a case to `PetOutfit` or `PetAccessory` (with its `slot` and `displayName`).
 2. Draw it in `CostumeArt` using costume roles only: a `BodyItem` for each body family plus its two walking torsos, a `FaceItem` with its `eyeRow`, or a `HeadItem` with its `sitRow`.
+   A body item that sticks up out of the silhouette (the dinosaur's back spikes, the cape's collar) sets `rise`, the rows every one of its grids starts above the body's top row.
 3. Map the case to its art in `PetComposer`.
+   An outfit with a head part (the dinosaur hood) returns it from `outfitHood`; it is placed like a hat, moves with the head, and any hat is worn over it.
 4. Run `swift test` and review `contact-*.png` (every item on every breed) and `strip-<item>.png` (every breed through the key frames of every animation) from `PetGallery`.
    `PetCostumeFitTests` compares each dressed frame of every animation with the same frame undressed, for every item and breed, so new items and new breeds are covered with no new expectations:
    every item shows and keeps a one-pixel margin inside the frame, head and face items keep the same offset from the nose in every frame, and hats rest on the skull without covering an eye (items with `coversEyes` must hide at least one).
-   Face items must reach across every breed's eye rows.
+   Face items must reach across every breed's eye rows, and no outfit, hood included, may cover an eye in any frame.
 
 ![Every face item on every breed](images/contact-face.png)
+
+![Every outfit and neck item on every breed](images/contact-body.png)
 
 ## Animations
 

@@ -107,6 +107,24 @@ final class PetCostumeFitTests: XCTestCase {
         }
     }
 
+    /// Outfits, hoods included, leave the face alone on every breed and
+    /// in every frame where the plain pet's eyes show.
+    func testOutfitsNeverCoverAnEye() {
+        for breed in PetBreed.allCases {
+            for animation in PetAnimation.allCases {
+                let plain = PetComposer.clip(animation, for: breed).frames
+                for outfit in PetOutfit.allCases where outfit != .none {
+                    let dressed = PetComposer.clip(animation, for: breed, outfit: outfit).frames
+                    for (index, frame) in dressed.enumerated() {
+                        let eyes = points(of: .eye, in: plain[index].canvas) + points(of: .eyeLight, in: plain[index].canvas)
+                        let shown = points(of: .eye, in: frame.canvas) + points(of: .eyeLight, in: frame.canvas)
+                        XCTAssertEqual(shown, eyes, "\(outfit) covers an eye on \(breed), \(animation) \(index + 1)")
+                    }
+                }
+            }
+        }
+    }
+
     /// Face items sit on the eyes whatever the eye shape: glasses ring them,
     /// shades hide them completely.
     func testFaceItemsSitOnTheEyesOfEveryBreed() throws {
