@@ -60,8 +60,8 @@ enum WalkArt {
             """),
     ]
 
-    /// British Shorthair torso: the cat torso with a taupe, ticked back over
-    /// pale sides.
+    /// British Shorthair torso: the cat torso with a silver, faintly ticked
+    /// back over pale sides.
     static let roundCatTorso = SpriteGrid(art: """
         ...SSSSSsSSSSSSsSSSS..
         ..SSSSsSSSSSsSSSSSsSS.
@@ -72,7 +72,7 @@ enum WalkArt {
         ..ccSSSSSSSSSSSSSSSSS.
         """)
 
-    /// The British Shorthair's thick tail, ringed with dark bands.
+    /// The British Shorthair's thick tail, with subtle pale taupe rings.
     static let roundCatTail = [
         SpriteGrid(art: """
             .tt
@@ -121,6 +121,26 @@ enum WalkArt {
             .B..
             B...
             B...
+            """),
+    ]
+
+    /// The Scottish Fold's thick plush tail, held high with a shaded tip.
+    static let foldCatTail = [
+        SpriteGrid(art: """
+            .tt
+            .BB
+            .BB
+            BB.
+            BB.
+            BB.
+            """),
+        SpriteGrid(art: """
+            ..tt
+            .BB.
+            .BB.
+            BB..
+            BB..
+            BB..
             """),
     ]
 

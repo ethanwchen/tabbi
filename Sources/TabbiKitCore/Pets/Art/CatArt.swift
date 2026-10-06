@@ -21,8 +21,8 @@ enum CatArt {
         ....SSBBBBBBBBSS....
         """)
 
-    /// British Shorthair: small rounded ears set wide, a taupe crown with
-    /// faint ticking, and full round cheeks around a white muzzle and chin.
+    /// British Shorthair: small rounded ears set wide, a faint silver crown
+    /// with subtle ticking, and full round cheeks around a white muzzle and chin.
     static let headRound = SpriteGrid(art: """
         ....................
         .ee..............ee.
@@ -37,13 +37,13 @@ enum CatArt {
         BBBBBBmmmmmmmmBBBBBB
         BBBBBmmmmmmmmmmBBBBB
         .BBBBBmmmmmmmmBBBBB.
-        ..BBBBBmmmmmmBBBBB..
-        ....BBBBmmmmBBBB....
+        .BBBBBBmmmmmmBBBBBB.
+        ...BBBBBmmmmBBBBB...
         """)
 
-    /// British Shorthair face: big round 3x3 blue eyes, each with a white
-    /// highlight and a tall pupil drawn in the outline color (blinking clears
-    /// it with the rest of the eye), and a small nose over a "u" smile.
+    /// British Shorthair face: the shared cat eyes (2x3, a highlight in the
+    /// top corner) in blue and the shared nose and "w" mouth, with
+    /// rosy cheeks.
     static let faceRound = SpriteGrid(art: """
         ....................
         ....................
@@ -52,11 +52,11 @@ enum CatArt {
         ....................
         ....................
         ....................
-        ....LOE......LOE....
-        ....EOE......EOE....
-        ....EEE..NN..EEE....
-        ..P.....R..R.....P..
-        .........RR.........
+        ....LE........LE....
+        ....EE........EE....
+        ....EE........EE....
+        ..PP...R.NN.R...PP..
+        ........R..R........
         ....................
         ....................
         ....................
@@ -94,21 +94,22 @@ enum CatArt {
         ....pppp....pppp....
         """)
 
-    /// British Shorthair sitting body, the same 20x11 frame as `bodySit` so
-    /// every costume fits: taupe flanks with faint ticking, full haunches,
-    /// a white chest and paws, and a thick tail ringed with dark bands.
+    /// British Shorthair sitting body: the `bodySit` frame (so every costume
+    /// fits) widened a column to the right for a plump, round belly that sits
+    /// centered under the head, with faint ticking on the flanks, a white
+    /// chest and paws, and a thick ringed tail split off at column 18.
     static let bodyRound = SpriteGrid(art: """
-        .....SBBBBBBBBS.....
-        ....SBBccccccBBS....
-        ....SBccccccccBS..tt
-        ...SSBccccccccBSS.SS
-        ...SsBBccccccBBsS.tt
-        ...SSBBBccccBBBSS.SS
-        ...SsBBBBBBBBBBsS.tt
-        ..SSSBBBBBBBBBBSSSSS
-        ..SsSBBBBBBBBBBSsSS.
-        ..SSBpppBBBBpppBSS..
-        ...Spppp....ppppS...
+        .....SBBBBBBBBS......
+        ....SBBccccccBBS.....
+        ...SSBccccccccBSS..tt
+        ..SSBBccccccccBBSS.SS
+        ..SsBBBccccccBBBsS.tt
+        ..SSBBBBccccBBBBSS.SS
+        ..SsBBBBBBBBBBBBsS.tt
+        ..SSBBBBBBBBBBBBSSSSS
+        ..SSsBBBBBBBBBBsSSS..
+        ..SSBpppBBBBpppBSS...
+        ...Spppp....ppppS....
         """)
 
     /// Sphynx: big bat-like ears flaring out from a narrow crown, forehead
@@ -167,5 +168,44 @@ enum CatArt {
         ...BBSBBBBBBBBSBBB..
         ...SBppSBBBBSppBSS..
         ....pppp....pppp....
+        """)
+
+    /// Scottish Fold: a round owl-like head with small ears folded forward
+    /// and down over the crown (a shade crease under each flap), wide full
+    /// cheeks, and a pale muzzle. It wears the shared cat face.
+    static let headFold = SpriteGrid(art: """
+        ....................
+        ......BBBBBBBB......
+        ..eeeeBBBBBBBBeeee..
+        .eeeeeeBBBBBBeeeeee.
+        .SeeeeSBBBBBBSeeeeS.
+        BBSSSSBBBBBBBBSSSSBB
+        BBBBBBBBBBBBBBBBBBBB
+        BBBBBBBBBBBBBBBBBBBB
+        BBBBBBBBBBBBBBBBBBBB
+        BBBBBBBmmmmmmBBBBBBB
+        BBBBBBmmmmmmmmBBBBBB
+        BBBBBBmmmmmmmmBBBBBB
+        .BBBBBBmmmmmmBBBBBB.
+        ..BBBBBBBBBBBBBBBB..
+        ....SSBBBBBBBBSS....
+        """)
+
+    /// Scottish Fold sitting body: as plump as the British Shorthair's (the
+    /// same 21-wide frame, centered under the head, so every costume fits)
+    /// in a plain plush coat with a pale chest and a thick tail split off
+    /// at column 18.
+    static let bodyFold = SpriteGrid(art: """
+        .....BBBBBBBBBB......
+        ....BBBccccccBBB.....
+        ...BBBccccccccBBB..tt
+        ..SBBBccccccccBBBS.BB
+        ..SBBBBccccccBBBBS.BB
+        ..SBBBBBccccBBBBBS.BB
+        ..SBBBBBBBBBBBBBBS.BB
+        ..SSBBBBBBBBBBBBSSBBB
+        ..SSSBBBBBBBBBBSSSS..
+        ..SSBpppBBBBpppBSS...
+        ...Spppp....ppppS....
         """)
 }

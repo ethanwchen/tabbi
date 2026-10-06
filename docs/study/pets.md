@@ -3,7 +3,7 @@
 A study-buddy cat or dog lives in the notch.
 This document explains how pet sprites are drawn, composed, and rendered, and how to add a breed.
 
-Status: the sprite format, palettes, pattern zones, renderer, all nine cat breeds, all eight dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate, yawn, hop, typing, coffee, wave, groom, tail swish, nap, play), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
+Status: the sprite format, palettes, pattern zones, renderer, all ten cat breeds, all eight dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate, yawn, hop, typing, coffee, wave, groom, tail swish, nap, play), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
 
 ![All cat breeds sitting, on black at 4x](images/cats-sitting.png)
 
@@ -180,7 +180,7 @@ Each frame is the sitting composition in a `PetPose`, so every breed and costume
 | `lift` | Raises the whole pet off the baseline, for hops |
 
 Eye states live in `EffectArt` as 4x3 grids centered on the 2x3 open eye.
-A 3-wide open eye (the British Shorthair's) gets the spare pixel on its cheek side, and a pupil drawn in the outline color inside an eye is cleared with it.
+A 3-wide open eye (the Sphynx's) gets the spare pixel on its cheek side, and a pupil drawn in the outline color inside an eye is cleared with it.
 The composer finds the open eyes on the face's eye row, clears them so the head's fur shows through, and stamps the new state, so a new face only needs its open-eyed version.
 Sleepy eyes also close the mouth: blush pixels below the cheek row (the eye row + 3) are cleared, so a dog's panting tongue tucks away and its nose-colored mouth corners read as a closed "w".
 Draw a tongue with the blush role below the cheek row and it will hide itself during sleep.
@@ -198,7 +198,7 @@ The waving arm grows from the left shoulder (3 px in and 4 px down the body) and
 The grooming leg rises straight from just above the floor to the mouth, found like an open mouth, so it lines up on every head.
 
 A swinging tail is bent from its base by `TailArt`, so every breed keeps its own tail (the Sphynx's whip, the British Shorthair's rings, the Poodle's pom, the Shih Tzu's plume).
-Dogs draw the tail as its own grid; cats and the dachshund draw it into the sitting body, so the composer cuts it out at the body's tail column first (`SitLayout.tailColumn`: 17 for cats, 23 for the dachshund).
+Dogs draw the tail as its own grid; cats and the dachshund draw it into the sitting body, so the composer cuts it out at the body's tail column first (`SitLayout.tailColumn`: 17 for cats, 18 for the British Shorthair and the Scottish Fold, whose plump bodies are a column wider, and 23 for the dachshund).
 The base row stays put and each row above leans a little further, never more than a pixel past the row below, so the tail stays one connected stroke.
 The swing is cut down to the room left in the frame, which keeps the dachshund's tail, near the right edge, to a 1 px flick.
 The corgi and French bulldog have no tail, so `TailArt.nub` pops out past the haunch and bobs instead.
@@ -267,7 +267,7 @@ Pets walk toward the left; mirror the frames to walk right.
 
 - Torsos: `catTorso` and `dogTorso` share one size (22x7, so torso costumes fit both), and `longTorso` (23x6) sits lower on shorter legs for the dachshund.
   The cat torso carries stripe and calico patch zones; the dog torso carries the beagle saddle.
-  The British Shorthair walks on `roundCatTorso`, the same size with a taupe back, and swings the ringed `roundCatTail`.
+  The British Shorthair walks on `roundCatTorso`, the same size with a silver back and faint ticking, and swings the subtly ringed `roundCatTail`.
 - Tails: two sway positions per family; the tail swings once per half cycle so it never flickers.
   Stubby-tailed breeds (`hasTail == false`) skip it.
 - Legs: `WalkArt.leg(height:lean:far:)` generates every leg, with the paw zone on the bottom row.
@@ -378,12 +378,13 @@ It goes by "British Shorthair" until the user names it, and the Closet asks them
 
 What makes this cat recognizable, and where each part lives:
 
-- Coloring (`PetBreed.palette`): pale silver-beige fur, a taupe shade for the crown, back and flanks, a dark taupe accent for ticking and tail rings, a white muzzle, chin, chest and paws, a pink-tan nose, and clear blue eyes with white highlights.
-- Head (`CatArt.headRound`): small rounded ears set wide apart, a taupe crown with faint ticking that runs down the forehead, and full cheeks around the white muzzle.
-- Face (`CatArt.faceRound`): big, open 3x3 eyes (a blue iris around a tall dark pupil, with a white highlight in the top corner) and a small "u" smile under the nose.
+- Coloring (`PetBreed.palette`): soft white-silver fur, a faint silver shade for the crown, back and flanks, a pale taupe accent for subtle ticking and tail rings, a white muzzle, chin, chest and paws, a pink-tan nose, and clear blue eyes with white highlights.
+- Head (`CatArt.headRound`): small rounded ears set wide apart, a faint silver crown with subtle ticking that runs down the forehead, and full cheeks around the white muzzle.
+- Face (`CatArt.faceRound`): the same 2x3 eyes as every other cat (a white highlight at the top left) in clear blue, the shared nose and "w" mouth, and rosy cheeks.
   The maintainer asked for open, cute blue eyes rather than the photo's half-lidded look, so this is the one place the sprite departs from the reference.
-- Body (`CatArt.bodyRound`, `WalkArt.roundCatTorso`, `WalkArt.roundCatTail`): taupe flanks and back with ticking, full haunches, and a thick tail ringed with dark bands.
-  These grids have the same size as the plain cat's, so every costume fits without new art.
+- Body (`CatArt.bodyRound`, `WalkArt.roundCatTorso`, `WalkArt.roundCatTail`): silver flanks and back with faint ticking, full haunches, and a thick tail with subtle pale taupe rings.
+  The sitting body is one column wider than the plain cat's `bodySit` for a plump belly that stays centered under the head, so every costume still fits without new art; its tail splits off at column 18 instead of 17.
+  The walking torso and tail have the same size as the plain cat's.
 
 ![Every animation frame for the British Shorthair](images/animations-britishShorthair.png)
 
@@ -402,6 +403,19 @@ The Sphynx is hairless, so its look comes from shape and shading instead of mark
 - Coloring (`PetBreed.palette`): pink-beige skin, a deeper pink-tan for wrinkles, a lighter chest and muzzle, and a warm dark outline.
 
 ![Every animation frame for the Sphynx](images/animations-sphynx.png)
+
+### The Scottish Fold
+
+The Scottish Fold is all roundness, so its look comes from its folded ears and a plush silhouette:
+
+- Head (`CatArt.headFold`): a round dome with no ear tips above it; each small ear lies folded forward and down over the crown as a lighter flap with a shade crease under it, and full cheeks give it an owl-like face.
+- Face (`CatArt.faceOpen`): the shared cat face, so its eyes are the same 2x3 eyes with a top-left highlight as every other cat's, in copper gold.
+- Body (`CatArt.bodyFold`, `WalkArt.catTorso`, `WalkArt.foldCatTail`): the British Shorthair's plump 21-wide frame in a plain plush coat with a pale chest and paws, and a thick tail with a shaded tip. Walking, it uses the plain cat torso with its stripe and patch zones painted as fur.
+- Coloring (`PetBreed.palette`): a soft blue-gray coat with lighter ear flaps, a pale muzzle and chest, a rosy nose, and pink cheeks. Fur is recolorable like every breed.
+
+![Every animation frame for the Scottish Fold](images/animations-scottishFold.png)
+
+![Every costume on the Scottish Fold](images/costumes-scottishFold.png)
 
 ### The Poodle
 
@@ -456,7 +470,7 @@ This also protects user recolors.
 ## Body shapes
 
 Breeds that share a silhouette share all of their art and differ only in palette and pattern.
-Cats look alike enough that three shapes cover all nine breeds.
+Cats look alike enough that four shapes cover all ten breeds.
 Dogs need more, because their ears and snouts are what make them recognizable at notch size:
 
 | Shape | Breeds | What sets it apart |
@@ -464,6 +478,7 @@ Dogs need more, because their ears and snouts are what make them recognizable at
 | `cat` | most cats | pointed ears, tabby stripe zones |
 | `roundCat` | British Shorthair | small wide-set ears, round cheeks, big blue eyes, stocky body, ringed tail |
 | `sphynxCat` | Sphynx | big flared ears, wrinkled brow and neck, lemon eyes, lean body, thin whip tail |
+| `foldCat` | Scottish Fold | small ears folded forward and down, round owl-like head, plush body, thick plain tail |
 | `floppyDog` | Labrador, Beagle | hanging ears beside a rounded skull |
 | `fluffyDog` | Golden Retriever | long feathered ears |
 | `batEaredDog` | French Bulldog | big rounded bat ears, broad face |

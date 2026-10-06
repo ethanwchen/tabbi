@@ -77,42 +77,55 @@ final class PetProfileTests: XCTestCase {
         XCTAssertLessThan(ringCount(PetComposer.sitting(.grayTabby)), 3, "plain cats keep their plain tail")
     }
 
-    func testTheBritishShorthairHasOpenBlueEyesThatStillClose() {
+    func testTheBritishShorthairHasTheSharedCatEyesInBlue() {
         let palette = PetBreed.britishShorthair.palette
         XCTAssertGreaterThan(Int(palette[.eye].blue), Int(palette[.eye].red) + 80, "a clear blue iris")
         XCTAssertGreaterThan(palette[.eyeLight].luminance, 0.9, "a white highlight")
 
-        // Open eyes: one highlight per eye, each beside a dark pupil and
-        // above the blue iris.
-        func highlights(_ canvas: PetCanvas) -> [(x: Int, y: Int)] {
+        // The eye and highlight pixels land exactly where every plain cat's
+        // do: a 2x3 eye with the highlight at its top left.
+        func eyePixels(_ canvas: PetCanvas) -> [String] {
             (0..<canvas.height).flatMap { y in
-                (0..<canvas.width).filter { canvas[$0, y] == .eyeLight }.map { (x: $0, y: y) }
-            }
-        }
-        let clips = PetClipSet(profile: PetProfile(name: "", breed: .britishShorthair))
-        for animation in [PetAnimation.idle, .sit, .walk, .alert] {
-            for frame in clips[animation].frames {
-                let sparkles = highlights(frame.canvas)
-                XCTAssertEqual(sparkles.count, 2, "\(animation)")
-                for sparkle in sparkles {
-                    XCTAssertEqual(frame.canvas[sparkle.x + 1, sparkle.y], .outline, "pupil beside the highlight")
-                    XCTAssertEqual(frame.canvas[sparkle.x, sparkle.y + 1], .eye, "iris below the highlight")
+                (0..<canvas.width).compactMap { x in
+                    let role = canvas[x, y]
+                    return role == .eye || role == .eyeLight ? "\(x),\(y),\(role!.symbol)" : nil
                 }
             }
         }
-        // Blinking and sleeping close the whole eye, pupil included.
-        for animation in [PetAnimation.blink, .sleep] {
-            for frame in clips[animation].frames {
-                XCTAssertTrue(highlights(frame.canvas).isEmpty, "\(animation)")
+        let reference = eyePixels(PetComposer.sitting(.orangeTabby))
+        XCTAssertEqual(reference.count, 12)
+        XCTAssertEqual(eyePixels(PetComposer.sitting(.britishShorthair)), reference)
+        let clips = PetClipSet(profile: PetProfile(name: "", breed: .britishShorthair))
+        let tabby = PetClipSet(profile: PetProfile(name: "", breed: .orangeTabby))
+        for animation in PetAnimation.allCases {
+            for (frame, plain) in zip(clips[animation].frames, tabby[animation].frames) {
+                XCTAssertEqual(eyePixels(frame.canvas), eyePixels(plain.canvas), "\(animation)")
             }
         }
-        let open = PetComposer.sitting(.britishShorthair)
-        let blink = PetComposer.sitting(.britishShorthair, pose: PetPose(eyes: .closed))
-        for sparkle in highlights(open) {
-            for y in sparkle.y..<sparkle.y + 2 {
-                XCTAssertNotEqual(blink[sparkle.x + 1, y], .outline, "no pupil left floating in a closed eye")
-            }
+    }
+
+    func testTheBritishShorthairHasASoftWhiteSilverCoat() {
+        let palette = PetBreed.britishShorthair.palette
+        XCTAssertGreaterThan(palette[.furBase].luminance, 0.8, "a white-silver base")
+        XCTAssertGreaterThan(palette[.furShade].luminance, 0.6, "ticking stays faint")
+        XCTAssertLessThan(palette[.furAccent].luminance, palette[.furShade].luminance, "tail rings still show")
+        XCTAssertNotEqual(palette[.furBase], PetBreed.whiteCat.palette[.furBase], "still not the white cat")
+    }
+
+    func testTheBritishShorthairSitsPlumpAndCenteredUnderItsHead() {
+        // The first solid run across the belly, outline included: the
+        // British Shorthair's is wider than a plain cat's but shares its
+        // center, so the body sits square under the head and costumes.
+        func belly(_ canvas: PetCanvas) -> ClosedRange<Int> {
+            let y = 25
+            let start = (0..<canvas.width).first { canvas[$0, y] != nil }!
+            let end = (start..<canvas.width).first { canvas[$0, y] == nil }! - 1
+            return start...end
         }
+        let plump = belly(PetComposer.sitting(.britishShorthair))
+        let plain = belly(PetComposer.sitting(.orangeTabby))
+        XCTAssertGreaterThanOrEqual(plump.count, plain.count + 2)
+        XCTAssertEqual(plump.lowerBound + plump.upperBound, plain.lowerBound + plain.upperBound)
     }
 
     func testStarterMatchesTheChosenSpecies() {
