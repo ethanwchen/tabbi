@@ -68,6 +68,9 @@ public enum PetItem: Hashable, Codable, Sendable, CustomStringConvertible {
         case .accessory(.frogHat): 160
         case .accessory(.cowboyHat): 220
         case .accessory(.witchHat): 320
+        case .accessory(.coolSunglasses): 140
+        case .accessory(.pirateHat): 240
+        case .accessory(.blindfoldedSorcerer): 400
         }
     }
 

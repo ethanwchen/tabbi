@@ -92,13 +92,32 @@ final class PetCostumeFitTests: XCTestCase {
             for accessory in PetAccessory.allCases where accessory.slot == .head {
                 let dressed = PetComposer.sitting(breed, accessories: [accessory])
                 let label = "\(accessory) on \(breed)"
-                XCTAssertEqual(points(of: .eye, in: dressed) + points(of: .eyeLight, in: dressed), eyes,
-                               "covers an eye: \(label)")
+                let shownEyes = points(of: .eye, in: dressed) + points(of: .eyeLight, in: dressed)
+                if accessory.coversEyes {
+                    XCTAssertLessThan(shownEyes.count * 2, eyes.count + 1, "leaves both eyes showing: \(label)")
+                } else {
+                    XCTAssertEqual(shownEyes, eyes, "covers an eye: \(label)")
+                }
                 let item = try XCTUnwrap(bounds(costumePixels(dressed, over: plain)), label)
                 XCTAssertLessThan(item.minY, eyeTop - 2, "sits too low to read as a hat: \(label)")
                 // Hats rest on the skull: each one covers the head or sits right on it.
                 XCTAssertTrue(costumePixels(dressed, over: plain).contains { plain[$0.x, $0.y] != nil || plain[$0.x, $0.y + 1] != nil },
                               "floats above the head: \(label)")
+            }
+        }
+    }
+
+    /// Face items sit on the eyes whatever the eye shape: glasses ring them,
+    /// shades hide them completely.
+    func testFaceItemsSitOnTheEyesOfEveryBreed() throws {
+        for breed in PetBreed.allCases {
+            let plain = PetComposer.sitting(breed)
+            let eyes = points(of: .eye, in: plain) + points(of: .eyeLight, in: plain)
+            let eyeRows = try XCTUnwrap(eyes.map(\.y).min())...(try XCTUnwrap(eyes.map(\.y).max()))
+            for accessory in PetAccessory.allCases where accessory.slot == .face {
+                let item = try XCTUnwrap(bounds(costumePixels(PetComposer.sitting(breed, accessories: [accessory]), over: plain)))
+                XCTAssertTrue(item.minY <= eyeRows.lowerBound && item.maxY >= eyeRows.upperBound - 1,
+                              "\(accessory) misses the eyes on \(breed)")
             }
         }
     }

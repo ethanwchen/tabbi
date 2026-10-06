@@ -123,16 +123,24 @@ public enum PetComposer {
         if let item = outfitArt(outfit), let (grid, x, y) = bodyItem(item) {
             canvas.stamp(grid, x: x, y: y)
         }
+        func stampFace(_ item: CostumeArt.FaceItem) {
+            canvas.stamp(layout.family == .cat ? item.cat : item.dog, x: headX, y: headY + layout.eyeRow - item.eyeRow)
+        }
+        func stampHead(_ item: CostumeArt.HeadItem) {
+            canvas.stamp(item.grid, x: headX, y: headY + layout.skullTop - item.sitRow)
+        }
         for accessory in PetAccessory.wearable(accessories) {
             switch accessoryArt(accessory) {
             case .body(let item):
                 guard let (grid, x, y) = bodyItem(item) else { continue }
                 canvas.stamp(grid, x: x, y: y)
-            case .glasses:
-                let glasses = layout.family == .cat ? CostumeArt.glassesCat : CostumeArt.glassesDog
-                canvas.stamp(glasses, x: headX, y: headY + layout.eyeRow - 1)
+            case .face(let item):
+                stampFace(item)
             case .head(let item):
-                canvas.stamp(item.grid, x: headX, y: headY + layout.skullTop - item.sitRow)
+                stampHead(item)
+            case .mask(let head, let face):
+                stampFace(face)
+                stampHead(head)
             }
         }
         let anchor = PetPoint(x: headX + layout.head.width - 1, y: headY + layout.skullTop - pose.lift)
@@ -175,15 +183,18 @@ public enum PetComposer {
 
     private enum AccessoryArt {
         case body(CostumeArt.BodyItem)
-        case glasses
+        case face(CostumeArt.FaceItem)
         case head(CostumeArt.HeadItem)
+        /// A head item worn with a face piece, such as a hat and an eyepatch.
+        case mask(CostumeArt.HeadItem, CostumeArt.FaceItem)
     }
 
     private static func accessoryArt(_ accessory: PetAccessory) -> AccessoryArt {
         switch accessory {
         case .stethoscope: .body(CostumeArt.stethoscope)
         case .scarf: .body(CostumeArt.scarf)
-        case .roundGlasses: .glasses
+        case .roundGlasses: .face(CostumeArt.roundGlasses)
+        case .coolSunglasses: .face(CostumeArt.coolSunglasses)
         case .surgicalCap: .head(CostumeArt.surgicalCap)
         case .headMirror: .head(CostumeArt.headMirror)
         case .graduationCap: .head(CostumeArt.graduationCap)
@@ -198,6 +209,8 @@ public enum PetComposer {
         case .flowerCrown: .head(CostumeArt.flowerCrown)
         case .frogHat: .head(CostumeArt.frogHat)
         case .ninjaHeadband: .head(CostumeArt.ninjaHeadband)
+        case .pirateHat: .mask(CostumeArt.pirateHat, CostumeArt.eyepatch)
+        case .blindfoldedSorcerer: .mask(CostumeArt.spikyHair, CostumeArt.blindfold)
         }
     }
 

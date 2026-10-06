@@ -46,14 +46,26 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
     case flowerCrown
     case frogHat
     case ninjaHeadband
+    case coolSunglasses
+    /// A tricorn hat with an eyepatch over one eye.
+    case pirateHat
+    /// Spiky white hair and a dark blindfold over both eyes.
+    case blindfoldedSorcerer
 
     public var slot: PetAccessorySlot {
         switch self {
         case .stethoscope, .scarf: .neck
-        case .roundGlasses: .face
+        case .roundGlasses, .coolSunglasses: .face
         case .surgicalCap, .headMirror, .graduationCap, .beanie, .tinyCrown, .partyHat, .chefHat, .wizardHat,
-             .bunnyEars, .witchHat, .cowboyHat, .flowerCrown, .frogHat, .ninjaHeadband: .head
+             .bunnyEars, .witchHat, .cowboyHat, .flowerCrown, .frogHat, .ninjaHeadband, .pirateHat,
+             .blindfoldedSorcerer: .head
         }
+    }
+
+    /// Head items that also cover an eye (an eyepatch, a blindfold). They
+    /// take the face slot too, so glasses never pile on top of them.
+    public var coversEyes: Bool {
+        self == .pirateHat || self == .blindfoldedSorcerer
     }
 
     public var displayName: String {
@@ -75,15 +87,26 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
         case .flowerCrown: "Flower Crown"
         case .frogHat: "Frog Hat"
         case .ninjaHeadband: "Ninja Headband"
+        case .coolSunglasses: "Cool Sunglasses"
+        case .pirateHat: "Pirate Hat"
+        case .blindfoldedSorcerer: "Blindfolded Sorcerer"
         }
     }
 
     /// `accessories` reduced to what can actually be worn together: one per
-    /// slot (the last one listed wins, like putting on a new hat), sorted in
-    /// drawing order. Keeps stored profiles valid even if edited by hand.
+    /// slot, and no face item under one that covers the eyes (the last one
+    /// listed wins, like putting on a new hat), sorted in drawing order.
+    /// Keeps stored profiles valid even if edited by hand.
     public static func wearable(_ accessories: [PetAccessory]) -> [PetAccessory] {
-        var bySlot: [PetAccessorySlot: PetAccessory] = [:]
-        for accessory in accessories { bySlot[accessory.slot] = accessory }
-        return bySlot.sorted { $0.key < $1.key }.map(\.value)
+        var worn: [PetAccessory] = []
+        for accessory in accessories {
+            worn.removeAll { $0.clashes(with: accessory) }
+            worn.append(accessory)
+        }
+        return worn.sorted { $0.slot < $1.slot }
+    }
+
+    private func clashes(with other: PetAccessory) -> Bool {
+        slot == other.slot || (coversEyes && other.slot == .face) || (other.coversEyes && slot == .face)
     }
 }

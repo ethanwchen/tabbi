@@ -16,6 +16,14 @@ enum CostumeArt {
         let walkLong: SpriteGrid
     }
 
+    /// A face item, one grid for cat faces and one for dog faces, and the
+    /// grid row that lands on the head's eye row.
+    struct FaceItem {
+        let cat: SpriteGrid
+        let dog: SpriteGrid
+        let eyeRow: Int
+    }
+
     /// A hat-like item and the grid row that lands on the head's skull top.
     struct HeadItem {
         let grid: SpriteGrid
@@ -207,25 +215,23 @@ enum CostumeArt {
 
     // MARK: Face
 
-    /// Round glasses ringing the cat face's eyes. Dark frames read on every
-    /// fur color except the darkest, where the warm rim still frames the face.
-    static let glassesCat = SpriteGrid(art: """
+    /// Round glasses ringing the eyes. Dark frames read on every fur color
+    /// except the darkest, where the warm rim still frames the face. The dog
+    /// lenses are wider than the closer-set eyes so the frames never touch
+    /// the pupils and blur into them.
+    static let roundGlasses = FaceItem(cat: SpriteGrid(art: """
         ...QQQQ......QQQQ...
         ..Q....Q....Q....Q..
         ..Q....QQQQQQ....Q..
         ..Q....Q....Q....Q..
         ...QQQQ......QQQQ...
-        """)
-
-    /// The same glasses for the closer-set dog eyes. Lenses are wider than
-    /// the eyes so the frames never touch the pupils and blur into them.
-    static let glassesDog = SpriteGrid(art: """
+        """), dog: SpriteGrid(art: """
         ....QQQQ....QQQQ....
         ...Q....Q..Q....Q...
         ...Q....QQQQ....Q...
         ...Q....Q..Q....Q...
         ....QQQQ....QQQQ....
-        """)
+        """), eyeRow: 1)
 
     // MARK: Head
 
@@ -376,4 +382,73 @@ extension CostumeArt {
         ...QQQQQMZMMQQQQQQQ.
         .................Q.Q
         """), sitRow: 0)
+}
+
+// MARK: - Fun face and mask items
+
+extension CostumeArt {
+    /// Wide dark shades with a white glint on each lens. The lenses cover
+    /// the eyes completely, which is the whole joke.
+    static let coolSunglasses = FaceItem(cat: SpriteGrid(art: """
+        .QQQQQQQQQQQQQQQQQQ.
+        ..QZZQQQ....QZZQQQ..
+        ..QZQQQQ....QZQQQQ..
+        ...QQQQ......QQQQ...
+        """), dog: SpriteGrid(art: """
+        ...QQQQQQQQQQQQQQ...
+        ....QZQQQ..QZQQQ....
+        ....QQQQQ..QQQQQ....
+        .....QQQ....QQQ.....
+        """), eyeRow: 1)
+
+    /// A navy tricorn with upturned sides, a white skull badge, and gold
+    /// trim along the brim.
+    static let pirateHat = HeadItem(grid: SpriteGrid(art: """
+        ........QQQQ........
+        .QQ...QQQQQQQQ...QQ.
+        .QQQQQQQQUUQQQQQQQQ.
+        ..QQQQQQQUUQQQQQQQ..
+        ...YYYYYYYYYYYYYY...
+        """), sitRow: 4)
+
+    /// An eyepatch over the right eye, its strap running up under the hat.
+    static let eyepatch = FaceItem(cat: SpriteGrid(art: """
+        .....QQ.............
+        .......QQQ..........
+        ..........QQQQQQ....
+        ............QQQQQ...
+        ............QQQQQ...
+        .............QQQ....
+        """), dog: SpriteGrid(art: """
+        ....................
+        .......QQQ..........
+        ..........QQQQ......
+        ...........QQQQ.....
+        ...........QQQQ.....
+        ............QQ......
+        """), eyeRow: 3)
+
+    /// Spiky white hair standing straight up, shaded on one side of each
+    /// spike, with a fringe that falls onto the blindfold.
+    static let spikyHair = HeadItem(grid: SpriteGrid(art: """
+        ...U.....U....U.....
+        ...UU...UU...UUU..U.
+        ...UUV.UUUV.UUUUVUU.
+        ..UUUUVUUUUVUUUUUUV.
+        .UUUUUUUUUUUUUUUUUU.
+        .UUUUUUUUUUUUUUUUUU.
+        .UUVUUUUVUUUUVUUUUU.
+        ..UV.UUV..UUV..UV...
+        """), sitRow: 5)
+
+    /// A dark blindfold tied over both eyes, open under the nose bridge.
+    static let blindfold = FaceItem(cat: SpriteGrid(art: """
+        .QQQQQQQQQQQQQQQQQQ.
+        .QQQQQQQQQQQQQQQQQQ.
+        ..QQQQQQ....QQQQQQ..
+        """), dog: SpriteGrid(art: """
+        .QQQQQQQQQQQQQQQQQQ.
+        .QQQQQQQQQQQQQQQQQQ.
+        ..QQQQQQ....QQQQQQ..
+        """), eyeRow: 0)
 }

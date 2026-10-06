@@ -120,8 +120,10 @@ Costume art lives in `Art/CostumeArt.swift` and is anchored to the pose layout i
 
 - Body items (outfits, stethoscope, scarf) have one grid per body family (cat, dog, long dog), the same size as that family's body and stamped at the same origin.
   They also have two walking grids: `walk` over the shared cat and dog walking torso, and `walkLong` over the dachshund's.
-- Glasses have a cat and a dog grid, stamped one row above each head's eye row.
+- Face items (glasses, sunglasses) are a `FaceItem`: a cat and a dog grid plus an `eyeRow`, the grid row that lands on each head's eye row.
   Dog eyes sit close together, so the dog lenses are wider than the eyes; frames touching the pupils blur into them.
+- A head item can bring a face piece along (the pirate hat's eyepatch, the sorcerer's blindfold).
+  Such items set `coversEyes`, and `PetAccessory.wearable` lets them replace whatever is in the face slot, and the other way round, so glasses never pile onto an eyepatch.
 - Hats are 20 wide like every head.
   Each declares a `sitRow`, the grid row that lands on the head's `skullTop` (the row just below the top of the skull, so hats rest on the head instead of floating).
 
@@ -133,11 +135,14 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 ### Adding a costume item
 
 1. Add a case to `PetOutfit` or `PetAccessory` (with its `slot` and `displayName`).
-2. Draw it in `CostumeArt` using costume roles only: a `BodyItem` for each body family plus its two walking torsos, or a `HeadItem` with its `sitRow`.
+2. Draw it in `CostumeArt` using costume roles only: a `BodyItem` for each body family plus its two walking torsos, a `FaceItem` with its `eyeRow`, or a `HeadItem` with its `sitRow`.
 3. Map the case to its art in `PetComposer`.
 4. Run `swift test` and review `contact-*.png` (every item on every breed) and `strip-<item>.png` (every breed through the key frames of every animation) from `PetGallery`.
    `PetCostumeFitTests` compares each dressed frame of every animation with the same frame undressed, for every item and breed, so new items and new breeds are covered with no new expectations:
-   every item shows and keeps a one-pixel margin inside the frame, head and face items keep the same offset from the nose in every frame, and hats rest on the skull without covering an eye.
+   every item shows and keeps a one-pixel margin inside the frame, head and face items keep the same offset from the nose in every frame, and hats rest on the skull without covering an eye (items with `coversEyes` must hide at least one).
+   Face items must reach across every breed's eye rows.
+
+![Every face item on every breed](images/contact-face.png)
 
 ## Animations
 
