@@ -32,11 +32,14 @@ public enum PetBodyShape: String, CaseIterable, Codable, Sendable {
     case longDog
     /// Curly coat, a round topknot, and long pom-tipped ears (Poodle).
     case poodleDog
+    /// Long flowing coat, a tied topknot, and a flat face with big round
+    /// eyes (Shih Tzu).
+    case shihTzuDog
 
     public var species: PetSpecies {
         switch self {
         case .cat, .roundCat, .sphynxCat: .cat
-        case .floppyDog, .fluffyDog, .batEaredDog, .pointyEaredDog, .longDog, .poodleDog: .dog
+        case .floppyDog, .fluffyDog, .batEaredDog, .pointyEaredDog, .longDog, .poodleDog, .shihTzuDog: .dog
         }
     }
 }
@@ -60,6 +63,7 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
     case dachshund
     case beagle
     case poodle
+    case shihTzu
 
     public var species: PetSpecies { bodyShape.species }
 
@@ -74,6 +78,7 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
         case .corgi: .pointyEaredDog
         case .dachshund: .longDog
         case .poodle: .poodleDog
+        case .shihTzu: .shihTzuDog
         }
     }
 
@@ -104,6 +109,7 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
         case .dachshund: "Dachshund"
         case .beagle: "Beagle"
         case .poodle: "Poodle"
+        case .shihTzu: "Shih Tzu"
         }
     }
 
@@ -174,6 +180,12 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
             // nose and eyes.
             return PetPalette([.furBase: c("#EDB27A"), .furShade: c("#CC8A52"), .furAccent: c("#F8D2A6"),
                                .belly: c("#FBE3C6"), .nose: c("#3A2622"), .outline: c("#3A2214")])
+        case .shihTzu:
+            // Gold and white: a white coat and beard, a gold topknot, mask,
+            // and ears, and big dark eyes with a bright catchlight.
+            return PetPalette([.furBase: c("#F8F2EA"), .furShade: c("#DCCDBC"), .furAccent: c("#D9A35C"),
+                               .belly: c("#FFFFFF"), .eye: c("#2A1A14"), .eyeLight: c("#FFFFFF"),
+                               .nose: c("#2E2224"), .outline: c("#3A2A22")])
         }
     }
 
@@ -212,6 +224,8 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
             return PetPattern([.ears: .furAccent, .mask: .belly, .patchA: .furSpot, .paws: .belly, .tailTip: .belly])
         case .poodle:
             return PetPattern([.chest: .furAccent, .muzzle: .belly])
+        case .shihTzu:
+            return PetPattern([.ears: .furAccent, .mask: .furAccent, .tailTip: .furAccent])
         }
     }
 }

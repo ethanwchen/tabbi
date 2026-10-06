@@ -3,7 +3,7 @@
 A study-buddy cat or dog lives in the notch.
 This document explains how pet sprites are drawn, composed, and rendered, and how to add a breed.
 
-Status: the sprite format, palettes, pattern zones, renderer, all nine cat breeds, all seven dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
+Status: the sprite format, palettes, pattern zones, renderer, all nine cat breeds, all eight dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
 
 ![All cat breeds sitting, on black at 4x](images/cats-sitting.png)
 
@@ -347,6 +347,20 @@ The Poodle is all curls, so its look comes from a bumpy silhouette and dotted te
 
 ![Every animation frame for the Poodle](images/animations-poodle.png)
 
+### The Shih Tzu
+
+The Shih Tzu reads by its topknot, its flat face, and a coat that falls to the floor:
+
+- Head (`DogArt.headShihTzu`): a gold topknot puff tied with a dark band, a white blaze between gold eye patches, a white beard that widens below the chin, and long gold ears that hang past it, set apart from the face by an outline.
+- Face (`DogArt.faceShihTzu`): big round 3x3 eyes with a catchlight, a button nose right between them (the flat face), and the tip of a tongue.
+- Body (`DogArt.bodyShihTzu`, `WalkArt.shihTzuTorso`): a long white coat drawn in `furShade` strands that flares out at the floor and hides all but the tips of the paws; walking, it ends in a fringe over the legs.
+- Tail (`DogArt.tailPlume`, `WalkArt.shihTzuTail`): a plume curled up over the back with a gold tip.
+- Coloring (`PetBreed.palette`): gold and white by default; the gold is `furAccent` on the ears, mask, and tail tip.
+- The tie is drawn in the outline role, so a cap that covers the topknot never changes the face. Hats sit on the skull below it (`skullTop` 5).
+- Party: the server catalog has no Shih Tzu, so it is sent as `pomeranian`, the nearest small long-coated breed there, and drawn back as a Shih Tzu.
+
+![Every animation frame for the Shih Tzu](images/animations-shihTzu.png)
+
 ### Recoloring fur
 
 `furAccent` means different things per breed: darker stripes on a tabby, lighter feathering on a golden's chest.
@@ -388,6 +402,7 @@ Dogs need more, because their ears and snouts are what make them recognizable at
 | `pointyEaredDog` | Corgi | tall pointed ears, fox-like face |
 | `longDog` | Dachshund | long snout and a long low body behind the head |
 | `poodleDog` | Poodle | round curly topknot, long curly ears, dotted curl texture, pom tail |
+| `shihTzuDog` | Shih Tzu | tied topknot, flat face with big round eyes, long ears and beard, floor-length coat |
 
 Dog heads have different heights, so the shared dog face is stamped on each head's eye row.
 The dog mouth is drawn in the nose color, not the outline, because on dark breeds the outline becomes a light rim that would look noisy on the muzzle.

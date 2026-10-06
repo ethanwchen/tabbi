@@ -183,13 +183,15 @@ final class PetBreedTests: XCTestCase {
     func testCatalogHasEveryCatAndDogBreed() {
         XCTAssertEqual(PetBreed.breeds(of: .cat).count, 9)
         XCTAssertEqual(PetBreed.breeds(of: .dog), [
-            .goldenRetriever, .labrador, .frenchBulldog, .corgi, .dachshund, .beagle, .poodle,
+            .goldenRetriever, .labrador, .frenchBulldog, .corgi, .dachshund, .beagle, .poodle, .shihTzu,
         ])
     }
 
     func testDogsUseDistinctSilhouettesWhereColorAloneIsNotEnough() {
         // Each of these breeds must be recognizable by shape, not just color.
-        let shapes: [PetBreed] = [.goldenRetriever, .labrador, .frenchBulldog, .corgi, .dachshund, .poodle]
+        let shapes: [PetBreed] = [
+            .goldenRetriever, .labrador, .frenchBulldog, .corgi, .dachshund, .poodle, .shihTzu,
+        ]
         let silhouettes = shapes.map { breed in PetComposer.sitting(breed).pixels.map { $0 != nil } }
         XCTAssertEqual(Set(silhouettes).count, shapes.count)
     }
@@ -223,6 +225,25 @@ final class PetBreedTests: XCTestCase {
         // The pom tail reaches past the golden's plain tail.
         let reach = try XCTUnwrap(poodle.opaqueBounds).maxX
         XCTAssertGreaterThan(reach, try XCTUnwrap(PetComposer.sitting(.goldenRetriever).opaqueBounds).maxX)
+    }
+
+    func testShihTzuHasAFlowingCoatATopknotAndBigRoundEyes() throws {
+        let shihTzu = PetComposer.sitting(.shihTzu)
+        let golden = PetComposer.sitting(.goldenRetriever)
+        // The coat falls to the floor, so the bottom row is wider than a
+        // dog sitting on its paws.
+        let floor = PetComposer.frameSize - 1
+        let width: (PetCanvas) -> Int = { canvas in (0..<canvas.width).filter { canvas[$0, floor] != nil }.count }
+        XCTAssertGreaterThan(width(shihTzu), width(golden))
+        // The topknot sits above every floppy-eared dog's skull.
+        let top = try XCTUnwrap(shihTzu.opaqueBounds).minY
+        for other in [PetBreed.goldenRetriever, .labrador, .beagle] {
+            XCTAssertLessThan(top, try XCTUnwrap(PetComposer.sitting(other).opaqueBounds).minY, "\(other)")
+        }
+        // Big round eyes: more eye than the shared dog face.
+        XCTAssertGreaterThan(shihTzu.pixels.filter { $0 == .eye }.count, golden.pixels.filter { $0 == .eye }.count)
+        // Gold and white: a gold mask and ears over a white coat.
+        XCTAssertTrue(Set(shihTzu.pixels.compactMap { $0 }).isSuperset(of: [.furBase, .furAccent, .belly]))
     }
 
     func testDarkDogsStillGetTheWarmRim() {

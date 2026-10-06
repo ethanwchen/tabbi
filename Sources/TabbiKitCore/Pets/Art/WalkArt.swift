@@ -155,6 +155,36 @@ enum WalkArt {
             """),
     ]
 
+    /// Shih Tzu torso: a long coat that hangs in strands, with a fringe that
+    /// leaves the legs half hidden.
+    static let shihTzuTorso = SpriteGrid(art: """
+        ...BBBBBBBBBBBBBBBBB..
+        ..BBBBBBBBBBBBBBBBBBB.
+        .cBBBBBBBBBBBBBBBBBBBB
+        .ccBBSBBBBSBBBBSBBBBSB
+        .ccBSBBBSBBBBSBBBBSBBB
+        .cBSBBBSBBBBSBBBBSBBSB
+        ..SB.SB.SBSB.SBS.BSBS.
+        """)
+
+    /// The Shih Tzu's plume, curled over the back and swaying between steps.
+    static let shihTzuTail = [
+        SpriteGrid(art: """
+            .ttt.
+            tttA.
+            tAt..
+            .B...
+            BB...
+            """),
+        SpriteGrid(art: """
+            ..ttt
+            .tttA
+            .tAt.
+            .B...
+            BB...
+            """),
+    ]
+
     static let dogTail = [
         SpriteGrid(art: """
             ..t

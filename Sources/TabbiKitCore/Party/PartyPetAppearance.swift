@@ -80,6 +80,9 @@ public enum PartyPetAppearance {
         case .dachshund: "dachshund"
         case .beagle: "beagle"
         case .poodle: "poodle"
+        // The server catalog has no Shih Tzu; its nearest small long-coated
+        // toy breed is the Pomeranian, which friends' apps draw back as a Shih Tzu.
+        case .shihTzu: "pomeranian"
         }
     }
 
@@ -104,7 +107,6 @@ public enum PartyPetAppearance {
         "border-collie": .labrador,
         "samoyed": .goldenRetriever,
         "chihuahua": .frenchBulldog,
-        "pomeranian": .goldenRetriever,
         "dalmatian": .labrador,
         "bernese": .goldenRetriever,
     ]
