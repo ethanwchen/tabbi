@@ -46,19 +46,33 @@ public struct PetPose: Hashable, Sendable {
         case mug(raise: Int)
     }
 
+    /// A front paw lifted off the floor, beside the head or to the face.
+    public enum Gesture: Hashable, Sendable {
+        /// Waving hello: `swing` 0 leans the paw out, 1 brings it back in.
+        case wave(swing: Int)
+        /// Grooming: `reach` 0 holds the paw at the chest, 1 at the mouth
+        /// for a lick, 2 up over the cheek to wash the face.
+        case groom(reach: Int)
+    }
+
     public var eyes: Eyes
     public var mouth: Mouth
     public var prop: Prop?
+    public var gesture: Gesture?
     /// Pixels the head sinks into the shoulders (breathing, dozing);
     /// negative tips it back (a yawn).
     public var headDrop: Int
     /// Pixels the whole pet rises off the baseline (hops).
     public var lift: Int
 
-    public init(eyes: Eyes = .open, mouth: Mouth = .closed, prop: Prop? = nil, headDrop: Int = 0, lift: Int = 0) {
+    public init(
+        eyes: Eyes = .open, mouth: Mouth = .closed, prop: Prop? = nil, gesture: Gesture? = nil,
+        headDrop: Int = 0, lift: Int = 0
+    ) {
         self.eyes = eyes
         self.mouth = mouth
         self.prop = prop
+        self.gesture = gesture
         self.headDrop = headDrop
         self.lift = lift
     }
@@ -101,12 +115,18 @@ public enum PetAnimation: String, CaseIterable, Codable, Sendable {
     /// Sipping a tiny coffee: steam curls up while the pet holds the mug,
     /// then it raises it for a slow, happy sip. Loops, for breaks.
     case coffee
+    /// A friendly wave: one front paw goes up beside the head and swings
+    /// back and forth a few times with happy eyes.
+    case wave
+    /// Grooming: a few licks of a raised paw, then a wipe over the cheek,
+    /// eyes closed in concentration.
+    case groom
 
     /// Whether the clip repeats forever or stops on its last frame.
     public var loops: Bool {
         switch self {
         case .idle, .sit, .sleep, .walk, .typing, .coffee: true
-        case .blink, .stretch, .peekIn, .peekOut, .alert, .celebrate, .yawn, .hop: false
+        case .blink, .stretch, .peekIn, .peekOut, .alert, .celebrate, .yawn, .hop, .wave, .groom: false
         }
     }
 }
@@ -350,6 +370,38 @@ extension PetComposer {
                 }
                 return PetFrame(canvas: canvas, duration: duration)
             }
+
+        case .wave:
+            // Up goes the paw, three swings out and back, and down again.
+            let steps: [(PetPose, TimeInterval)] = [
+                (PetPose(gesture: .wave(swing: 1)), 0.12),
+                (PetPose(eyes: .happy, gesture: .wave(swing: 0)), 0.22),
+                (PetPose(eyes: .happy, gesture: .wave(swing: 1)), 0.18),
+                (PetPose(eyes: .happy, gesture: .wave(swing: 0)), 0.22),
+                (PetPose(eyes: .happy, gesture: .wave(swing: 1)), 0.18),
+                (PetPose(eyes: .happy, gesture: .wave(swing: 0)), 0.3),
+                (PetPose(eyes: .happy), 0.25),
+                (PetPose(), 0.2),
+            ]
+            frames = steps.map { frame($0.0, $0.1) }
+
+        case .groom:
+            // Lift the paw, three quick licks, two strokes over the cheek
+            // with the head bent into them, then a contented look.
+            let steps: [(PetPose, TimeInterval)] = [
+                (PetPose(gesture: .groom(reach: 0)), 0.15),
+                (PetPose(eyes: .closed, mouth: .open, gesture: .groom(reach: 1)), 0.18),
+                (PetPose(eyes: .closed, gesture: .groom(reach: 0)), 0.12),
+                (PetPose(eyes: .closed, mouth: .open, gesture: .groom(reach: 1)), 0.18),
+                (PetPose(eyes: .closed, gesture: .groom(reach: 0)), 0.12),
+                (PetPose(eyes: .closed, mouth: .open, gesture: .groom(reach: 1)), 0.18),
+                (PetPose(eyes: .closed, gesture: .groom(reach: 2), headDrop: 1), 0.28),
+                (PetPose(eyes: .closed, gesture: .groom(reach: 1), headDrop: 1), 0.2),
+                (PetPose(eyes: .closed, gesture: .groom(reach: 2), headDrop: 1), 0.28),
+                (PetPose(eyes: .happy), 0.4),
+                (PetPose(), 0.2),
+            ]
+            frames = steps.map { frame($0.0, $0.1) }
 
         case .peekIn, .peekOut:
             // Dangling from the notch by the front paws: the head lowers into

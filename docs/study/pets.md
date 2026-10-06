@@ -3,7 +3,7 @@
 A study-buddy cat or dog lives in the notch.
 This document explains how pet sprites are drawn, composed, and rendered, and how to add a breed.
 
-Status: the sprite format, palettes, pattern zones, renderer, all nine cat breeds, all eight dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate, yawn, hop, typing, coffee), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
+Status: the sprite format, palettes, pattern zones, renderer, all nine cat breeds, all eight dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate, yawn, hop, typing, coffee, wave, groom), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
 
 ![All cat breeds sitting, on black at 4x](images/cats-sitting.png)
 
@@ -164,7 +164,7 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 ## Animations
 
 `PetComposer.clip(_:for:outfit:accessories:)` builds a `PetClip`: a list of `PetFrame`s, each with its own `duration` in seconds.
-`clip.frame(at: elapsed)` picks the frame to show; looping clips (idle, sit, sleep, walk, typing, coffee) wrap around, one-shot clips (blink, stretch, peek, alert, celebrate, yawn, hop) hold their last frame until `PetAnimator.advance(to:)` sees the clip's duration has passed and moves the pet on.
+`clip.frame(at: elapsed)` picks the frame to show; looping clips (idle, sit, sleep, walk, typing, coffee) wrap around, one-shot clips (blink, stretch, peek, alert, celebrate, yawn, hop, wave, groom) hold their last frame until `PetAnimator.advance(to:)` sees the clip's duration has passed and moves the pet on.
 
 Front-facing animations are not drawn frame by frame.
 Each frame is the sitting composition in a `PetPose`, so every breed and costume animates without extra art:
@@ -175,6 +175,7 @@ Each frame is the sitting composition in a `PetPose`, so every breed and costume
 | `mouth` | `.closed` (the face as drawn), `.open` (a small "o"), `.wide` (a big yawn with the tongue showing) |
 | `headDrop` | Sinks the head (and its hat and glasses) into the shoulders, for breathing and dozing; -1 tips it back for a yawn |
 | `prop` | Something held in front of the pet: `.laptop(tap:)` (a paw lifted to type, -1 left, 1 right, 0 resting) or `.mug(raise:)` (0 in the lap, 1 on the way up, 2 at the mouth) |
+| `gesture` | The left front paw lifted off the floor: `.wave(swing:)` (0 leans out from the head, 1 swings back in beside the cheek) or `.groom(reach:)` (0 just under the chin, 1 under the tongue for a lick, 2 up over the left cheek to wash) |
 | `lift` | Raises the whole pet off the baseline, for hops |
 
 Eye states live in `EffectArt` as 4x3 grids centered on the 2x3 open eye.
@@ -186,6 +187,11 @@ Draw a tongue with the blush role below the cheek row and it will hide itself du
 Props come from `PropArt` and are drawn in front of the pet with their own outline and the breed's paw zone, so they read on fur of any color.
 The laptop stands on the floor, centered under the head, with the paws resting over the lid's top edge; the mug is centered on the mouth (found like an open mouth, below) and rises from the lap to cover the mouth for a sip.
 The mug's steam curls over the chest, so it is line art in the mouth role, which turns dark on light fur and light on dark fur.
+
+Gestures come from `PawArt`: a forearm in plain fur ending in a paw-zone paw, outlined all round except where it meets the body, so it reads over the head and chest of any breed.
+A gesturing pet lifts its left front paw off the floor (`PawArt.liftingLeftPaw`): the paw shape touching the floor furthest left is found from the body art, its floor run is cleared (a Poodle's cuff with it), paw pixels tucked against fur turn into a fold of shaded fur, and a leg standing free (the dachshund's) goes entirely.
+The waving arm grows from the left shoulder (3 px in and 4 px down the body) and holds the paw beside the head, clear of the eyes.
+The grooming leg rises straight from just above the floor to the mouth, found like an open mouth, so it lines up on every head.
 
 Open mouths are found from the art too: `EffectArt.mouth(_:in:)` centers a 4-wide mouth on the nose's top row, on the first row below the nose, so it covers any face's own mouth lines or tongue.
 Its corners are the muzzle zone, which hides what was drawn there.
@@ -204,6 +210,8 @@ When the row under the nose carries nose-colored mouth corners (most dogs), a ro
 | hop | Happy eyes, a crouch, a 3 px hop and a smaller 2 px one, each landing in a squash with dust puffs beside the paws, then back to sitting; about 1.2 s and no heart, so it reads as plain joy rather than a finished session |
 | typing | Alternating paw taps over a tiny laptop (120 ms up, 100 ms down), then a pause with the head bent to read the screen (1.2 s); loops while a focus session runs |
 | coffee | A mug in the lap with steam curling (four 450 ms frames), raised to the mouth for a 900 ms sip with closed eyes, lowered with a happy "ahh"; about 3.9 s, loops for breaks |
+| wave | The left paw goes up beside the head and swings out and back three times with happy eyes (220 ms out, 180 ms in), then comes down; about 1.7 s |
+| groom | The left leg lifts to the chin, three licks (the paw rises under an open mouth for 180 ms, drops for 120 ms) with the eyes shut, two strokes over the left cheek with the head bent into them, then a contented look; about 2.3 s |
 | walk | Four 150 ms steps of a trot, side-on (see below) |
 | stretch | A side-on play bow: down in three steps, a held bow with happy eyes and a tail wag, then back up (see below) |
 
@@ -212,7 +220,7 @@ The peek legs come from `EffectArt.hangingLeg`, drawn behind the head with the b
 
 ![Every animation frame for the orange tabby](images/animations-cat.png)
 
-`PetGallery` also writes `yawn.png`, `hop.png`, `typing.png` and `coffee.png`, every breed through every frame of each move, one row per breed:
+`PetGallery` also writes `yawn.png`, `hop.png`, `typing.png`, `coffee.png`, `wave.png` and `groom.png`, every breed through every frame of each move, one row per breed:
 
 ![The yawn for every breed](images/yawn.png)
 
@@ -221,6 +229,10 @@ The peek legs come from `EffectArt.hangingLeg`, drawn behind the head with the b
 ![Typing on a tiny laptop for every breed](images/typing.png)
 
 ![Sipping coffee for every breed](images/coffee.png)
+
+![Waving for every breed](images/wave.png)
+
+![Grooming for every breed](images/groom.png)
 
 ### Walking
 

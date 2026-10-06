@@ -174,7 +174,7 @@ try writeSheet(stretchCells, columns: 9, title: "Stretch (play bow)",
 
 // Animation checks: every breed through every frame of the newer moves,
 // one row per breed, so each move is reviewed across all head shapes.
-for animation in [PetAnimation.yawn, .hop, .typing, .coffee] {
+for animation in [PetAnimation.yawn, .hop, .typing, .coffee, .wave, .groom] {
     var cells: [Cell] = []
     var columns = 1
     for breed in PetBreed.allCases {

@@ -62,7 +62,9 @@ public enum PetComposer {
         }
         switch stance {
         case .sitting:
-            canvas.stamp(layout.body, x: layout.bodyX, y: layout.bodyY, pattern: pattern)
+            // A gesturing pet lifts its left front paw off the floor.
+            let body = pose.gesture == nil ? layout.body : PawArt.liftingLeftPaw(layout.body)
+            canvas.stamp(body, x: layout.bodyX, y: layout.bodyY, pattern: pattern)
             if breed.hasTail, let tail = layout.tail {
                 canvas.stamp(tail.grid, x: tail.x, y: tail.y, pattern: pattern)
             }
@@ -157,6 +159,9 @@ public enum PetComposer {
             mugTop = stampProp(prop, on: &canvas, layout: layout, headX: headX, headY: headY, pattern: pattern)
             mugTop?.y -= pose.lift
         }
+        if stance == .sitting, let gesture = pose.gesture {
+            stampGesture(gesture, on: &canvas, layout: layout, headX: headX, headY: headY, pattern: pattern)
+        }
         let anchor = PetPoint(x: headX + layout.head.width - 1, y: headY + layout.skullTop - pose.lift)
         return Composed(canvas: canvas.outlined().shifted(x: 0, y: -pose.lift), headTopRight: anchor, mugTop: mugTop)
     }
@@ -192,6 +197,37 @@ public enum PetComposer {
             canvas.stamp(PropArt.mugPaw, x: x + 4, y: y + 1, pattern: pattern)
             canvas.stamp(PropArt.mug, x: x, y: y)
             return PetPoint(x: x, y: y)
+        }
+    }
+
+    /// Draws the lifted front paw in front of the sitting pet. The wave
+    /// grows from the left shoulder and holds the paw beside the head; the
+    /// grooming paw rises from the chest to the mouth (found from the face
+    /// art, like an open mouth) or over the left cheek.
+    private static func stampGesture(
+        _ gesture: PetPose.Gesture, on canvas: inout PetCanvas, layout: SitLayout, headX: Int, headY: Int,
+        pattern: PetPattern
+    ) {
+        let shoulder = PetPoint(x: layout.bodyX + 3, y: layout.bodyY + 4)
+        switch gesture {
+        case .wave(let swing):
+            let arm = PawArt.wave[min(max(swing, 0), PawArt.wave.count - 1)]
+            canvas.stamp(arm, x: shoulder.x - 8, y: shoulder.y - arm.height + 1, pattern: pattern)
+        case .groom(let reach):
+            guard let (_, mouth) = EffectArt.mouth(.open, in: layout.face) else { return }
+            let mouthX = headX + mouth.x + 2
+            let mouthY = headY + layout.faceRow + mouth.y
+            // Just under the tongue to lick it; lower at rest; up and to the
+            // side over the cheek to wash.
+            let (x, y) = switch reach {
+            case ...0: (mouthX - 4, mouthY + 4)
+            case 1: (mouthX - 4, mouthY + 2)
+            default: (mouthX - 8, mouthY - 3)
+            }
+            // The whole front leg is lifted, so it reaches down to just
+            // above the floor where the paw stood.
+            let knee = layout.bodyY + layout.body.height - 2
+            canvas.stamp(PawArt.groom(height: knee - y + 1), x: x, y: y, pattern: pattern)
         }
     }
 

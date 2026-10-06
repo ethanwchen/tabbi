@@ -307,6 +307,66 @@ final class PetAnimationTests: XCTestCase {
         }
     }
 
+    /// Opaque pixels on the floor row in the frame's left half: a lifted
+    /// left front paw leaves fewer there.
+    private func leftFloorPixels(_ canvas: PetCanvas) -> Int {
+        (0..<canvas.width / 2).filter { canvas[$0, baseline] != nil }.count
+    }
+
+    func testWaveLiftsAPawBesideTheHeadAndSwingsItBackAndForth() throws {
+        for breed in PetBreed.allCases {
+            let clip = PetComposer.clip(.wave, for: breed, outfit: .whiteCoat)
+            XCTAssertFalse(clip.loops)
+            let sitting = PetComposer.sitting(breed, outfit: .whiteCoat)
+            XCTAssertEqual(clip.frames.last?.canvas, sitting, "settles back: \(breed)")
+            let out = PetComposer.sitting(breed, pose: PetPose(eyes: .happy, gesture: .wave(swing: 0)), outfit: .whiteCoat)
+            let back = PetComposer.sitting(breed, pose: PetPose(eyes: .happy, gesture: .wave(swing: 1)), outfit: .whiteCoat)
+            XCTAssertNotEqual(out, back, "\(breed)")
+            // Out, in, out, in, out: at least three swings out with a swing
+            // back between each.
+            let swings = clip.frames.map(\.canvas).filter { $0 == out || $0 == back }
+            XCTAssertGreaterThanOrEqual(swings.filter { $0 == out }.count, 3, "\(breed)")
+            XCTAssertTrue(zip(swings, swings.dropFirst()).allSatisfy { $0 != $1 }, "swings alternate: \(breed)")
+            XCTAssertLessThan(leftFloorPixels(out), leftFloorPixels(sitting), "the paw leaves the floor: \(breed)")
+            for frame in clip.frames {
+                let canvas = frame.canvas
+                XCTAssertEqual(try XCTUnwrap(canvas.opaqueBounds).maxY, baseline, "\(breed)")
+                let edges = (0...baseline).flatMap { [canvas[0, $0], canvas[baseline, $0], canvas[$0, 0]] }
+                XCTAssertTrue(edges.allSatisfy { $0 == nil || $0 == .outline }, "nothing clipped: \(breed)")
+            }
+        }
+    }
+
+    func testGroomLicksTheRaisedPawThenWashesTheFace() throws {
+        for breed in PetBreed.allCases {
+            let clip = PetComposer.clip(.groom, for: breed, accessories: [.scarf])
+            XCTAssertFalse(clip.loops)
+            let sitting = PetComposer.sitting(breed, accessories: [.scarf])
+            XCTAssertEqual(clip.frames.last?.canvas, sitting, "settles back: \(breed)")
+            let lick = PetComposer.sitting(breed, pose: PetPose(eyes: .closed, mouth: .open, gesture: .groom(reach: 1)),
+                                           accessories: [.scarf])
+            let canvases = clip.frames.map(\.canvas)
+            XCTAssertEqual(canvases.filter { $0 == lick }.count, 3, "three licks: \(breed)")
+            XCTAssertLessThan(leftFloorPixels(lick), leftFloorPixels(sitting), "the paw leaves the floor: \(breed)")
+            // Each lick is a separate stroke: the paw comes down in between.
+            for (index, canvas) in canvases.enumerated() where canvas == lick && index + 1 < canvases.count {
+                XCTAssertNotEqual(canvases[index + 1], lick, "\(breed)")
+            }
+            // The wash bends the head into the paw; the eyes stay shut while
+            // the paw is up.
+            let wash = PetComposer.sitting(breed, pose: PetPose(eyes: .closed, gesture: .groom(reach: 2), headDrop: 1),
+                                           accessories: [.scarf])
+            XCTAssertTrue(canvases.contains(wash), "\(breed)")
+            XCTAssertNotEqual(wash, lick)
+            for frame in clip.frames[1..<(clip.frames.count - 2)] {
+                XCTAssertFalse(frame.canvas.pixels.contains(.eyeLight), "eyes shut while grooming: \(breed)")
+            }
+            for frame in clip.frames {
+                XCTAssertEqual(try XCTUnwrap(frame.canvas.opaqueBounds).maxY, baseline, "\(breed)")
+            }
+        }
+    }
+
     func testCanvasShiftAndFlip() {
         var canvas = PetCanvas(width: 3, height: 3)
         canvas[0, 0] = .eye
