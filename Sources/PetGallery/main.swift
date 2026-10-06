@@ -244,3 +244,47 @@ for notchScale in [1, 2] {
     try writeSheet(notchCells, columns: 8, title: "", scale: notchScale,
                    to: outputDirectory.appendingPathComponent("notch-size-\(notchScale)x.png"))
 }
+
+// Costume x breed contact sheets: every item on every breed, one row per
+// item, grouped by where it is worn, so fit problems on any head or body
+// shape stand out side by side.
+let contactGroups: [(String, [(String, PetOutfit, [PetAccessory])])] = [
+    ("body", PetOutfit.allCases.dropFirst().map { ($0.displayName, $0, []) }
+        + PetAccessory.allCases.filter { $0.slot == .neck }.map { ($0.displayName, .none, [$0]) }),
+    ("face", PetAccessory.allCases.filter { $0.slot == .face }.map { ($0.displayName, .none, [$0]) }),
+    ("head", PetAccessory.allCases.filter { $0.slot == .head }.map { ($0.displayName, .none, [$0]) }),
+]
+for (slot, items) in contactGroups {
+    var cells: [Cell] = []
+    for (row, (name, outfit, accessories)) in items.enumerated() {
+        for (column, breed) in PetBreed.allCases.enumerated() {
+            let label = column == 0 ? name : row == 0 ? breed.displayName : ""
+            cells.append(Cell(label: label, canvas: PetComposer.sitting(breed, outfit: outfit, accessories: accessories),
+                              palette: breed.palette.withVisibleRim()))
+        }
+    }
+    try writeSheet(cells, columns: PetBreed.allCases.count, title: "Costume x breed: \(slot)", scale: 3,
+                   to: outputDirectory.appendingPathComponent("contact-\(slot).png"))
+}
+
+// Costume animation strips: each item on every breed through the key
+// frames of every animation (breathing, blink, doze, both walk steps, the
+// deepest bow, hanging, and the top of each hop).
+let keyFrames: [(PetAnimation, Int)] = [
+    (.idle, 1), (.blink, 0), (.sleep, 0), (.walk, 0), (.walk, 1), (.stretch, 3), (.peekIn, 5), (.alert, 1), (.celebrate, 2),
+]
+for (name, outfit, accessories) in contactGroups.flatMap(\.1) {
+    var cells: [Cell] = []
+    for breed in PetBreed.allCases {
+        let clips = Dictionary(uniqueKeysWithValues: PetAnimation.allCases.map {
+            ($0, PetComposer.clip($0, for: breed, outfit: outfit, accessories: accessories))
+        })
+        for (index, (animation, frame)) in keyFrames.enumerated() {
+            cells.append(Cell(label: index == 0 ? breed.displayName : "\(animation.rawValue) \(frame + 1)",
+                              canvas: clips[animation]!.frames[frame].canvas, palette: breed.palette.withVisibleRim()))
+        }
+    }
+    let slug = name.lowercased().replacingOccurrences(of: " ", with: "-")
+    try writeSheet(cells, columns: keyFrames.count, title: "Animations in \(name)", scale: 3,
+                   to: outputDirectory.appendingPathComponent("strip-\(slug).png"))
+}

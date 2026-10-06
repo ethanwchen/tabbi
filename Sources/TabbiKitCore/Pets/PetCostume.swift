@@ -36,12 +36,18 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
     case headMirror
     case graduationCap
     case beanie
+    case tinyCrown
+    case partyHat
+    case chefHat
+    case wizardHat
+    case bunnyEars
 
     public var slot: PetAccessorySlot {
         switch self {
         case .stethoscope, .scarf: .neck
         case .roundGlasses: .face
-        case .surgicalCap, .headMirror, .graduationCap, .beanie: .head
+        case .surgicalCap, .headMirror, .graduationCap, .beanie, .tinyCrown, .partyHat, .chefHat, .wizardHat,
+             .bunnyEars: .head
         }
     }
 
@@ -54,6 +60,11 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
         case .headMirror: "Head Mirror"
         case .graduationCap: "Graduation Cap"
         case .beanie: "Beanie"
+        case .tinyCrown: "Tiny Crown"
+        case .partyHat: "Party Hat"
+        case .chefHat: "Chef Hat"
+        case .wizardHat: "Wizard Hat"
+        case .bunnyEars: "Bunny Ears"
         }
     }
 

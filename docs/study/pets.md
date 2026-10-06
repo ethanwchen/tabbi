@@ -133,7 +133,9 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 1. Add a case to `PetOutfit` or `PetAccessory` (with its `slot` and `displayName`).
 2. Draw it in `CostumeArt` using costume roles only: a `BodyItem` for each body family plus its two walking torsos, or a `HeadItem` with its `sitRow`.
 3. Map the case to its art in `PetComposer`.
-4. Run `swift test` (the costume tests check every breed for clipping and covered eyes) and review `costumes-*.png` and `fit-*.png` from `PetGallery`.
+4. Run `swift test` and review `contact-*.png` (every item on every breed) and `strip-<item>.png` (every breed through the key frames of every animation) from `PetGallery`.
+   `PetCostumeFitTests` compares each dressed frame of every animation with the same frame undressed, for every item and breed, so new items and new breeds are covered with no new expectations:
+   every item shows and keeps a one-pixel margin inside the frame, head and face items keep the same offset from the nose in every frame, and hats rest on the skull without covering an eye.
 
 ## Animations
 

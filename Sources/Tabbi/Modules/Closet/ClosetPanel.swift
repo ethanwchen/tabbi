@@ -230,17 +230,7 @@ private struct ClosetWardrobe: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.s - Theme.Spacing.xxs) {
-            LazyVGrid(columns: columns, spacing: Theme.Spacing.s - Theme.Spacing.xxs) {
-                ForEach(PetCloset.wardrobe, id: \.id) { item in
-                    ClosetItemTile(item: item, state: store.closet.state(of: item),
-                                   model: thumbnailModel) {
-                        withMotion(Theme.Motion.snappy) { _ = store.tap(item) }
-                    } onHover: { inside in
-                        if inside { hovered = item } else if hovered == item { hovered = nil }
-                        store.tryOn(hovered)
-                    }
-                }
-            }
+            scrollingGrid
             footer
         }
         // Closing the notch or switching to Look mid-hover sends no hover
@@ -248,6 +238,34 @@ private struct ClosetWardrobe: View {
         .onDisappear {
             hovered = nil
             store.tryOn(nil)
+        }
+    }
+
+    private var grid: some View {
+        LazyVGrid(columns: columns, spacing: Theme.Spacing.s - Theme.Spacing.xxs) {
+            ForEach(PetCloset.wardrobe, id: \.id) { item in
+                ClosetItemTile(item: item, state: store.closet.state(of: item),
+                               model: thumbnailModel) {
+                    withMotion(Theme.Motion.snappy) { _ = store.tap(item) }
+                } onHover: { inside in
+                    if inside { hovered = item } else if hovered == item { hovered = nil }
+                    store.tryOn(hovered)
+                }
+            }
+        }
+    }
+
+    /// The wardrobe grows with every new item, so it scrolls. `ImageRenderer`
+    /// draws a `ScrollView` blank, so snapshots show the top rows clipped.
+    @ViewBuilder private var scrollingGrid: some View {
+        if RunMode.current.isSnapshot {
+            Color.clear
+                .overlay(alignment: .top) { grid }
+                .clipped()
+        } else {
+            ScrollView(.vertical) { grid }
+                .scrollIndicators(.automatic)
+                .scrollBounceBehavior(.basedOnSize)
         }
     }
 

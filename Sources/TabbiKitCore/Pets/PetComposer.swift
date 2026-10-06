@@ -188,6 +188,11 @@ public enum PetComposer {
         case .headMirror: .head(CostumeArt.headMirror)
         case .graduationCap: .head(CostumeArt.graduationCap)
         case .beanie: .head(CostumeArt.beanie)
+        case .tinyCrown: .head(CostumeArt.tinyCrown)
+        case .partyHat: .head(CostumeArt.partyHat)
+        case .chefHat: .head(CostumeArt.chefHat)
+        case .wizardHat: .head(CostumeArt.wizardHat)
+        case .bunnyEars: .head(CostumeArt.bunnyEars)
         }
     }
 
