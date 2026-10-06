@@ -216,6 +216,17 @@ public struct ClaudeAskConversation: Equatable, Sendable {
         return question
     }
 
+    /// When the last question failed because the CLI no longer has this
+    /// chat's session (it deletes old ones), drops the session and returns
+    /// the question so it can be sent again as a fresh session. `nil` for
+    /// any other failure, so it never retries more than once.
+    public mutating func takeQuestionForLostSession() -> ClaudeAskQuestion? {
+        guard sessionID != nil, case .failed(.process(let detail)) = phase,
+              detail.localizedCaseInsensitiveContains("No conversation found") else { return nil }
+        sessionID = nil
+        return takeRetryQuestion()
+    }
+
     /// Starts a new chat with a new `chatID`. Message ids keep increasing.
     public mutating func reset(at now: Date = Date()) {
         chatID = UUID()

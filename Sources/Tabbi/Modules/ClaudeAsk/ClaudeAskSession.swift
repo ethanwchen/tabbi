@@ -316,6 +316,10 @@ final class ClaudeAskSession: ObservableObject {
 
     /// Reopens a saved chat; the next question continues its CLI session.
     func open(_ chat: ClaudeAskChat) {
+        guard chat.id != conversation.chatID else {
+            isShowingHistory = false
+            return
+        }
         // Stopping a running answer saves what arrived before switching.
         stop()
         invalidateRun()
@@ -357,21 +361,30 @@ final class ClaudeAskSession: ObservableObject {
         guard generation == self.generation else { return }
         let wasStreaming = conversation.isStreaming
         change(&conversation)
-        if wasStreaming && !conversation.isStreaming { exchangeEnded() }
+        guard wasStreaming && !conversation.isStreaming else { return }
+        // The CLI deletes old sessions; such a chat goes on as a new one.
+        if let question = conversation.takeQuestionForLostSession() {
+            send(question)
+        } else {
+            exchangeEnded()
+        }
     }
 
-    /// Saves the chat once an exchange ends, with its screenshots. Runs that
-    /// save nothing delete the answered question's screenshots instead; a
-    /// failed one keeps them for Retry until the chat is left.
+    /// Saves the chat once an exchange ends, with its screenshots. The last
+    /// question's screenshots that the saved chat leaves out (all of them in
+    /// runs that save nothing) are deleted; a failed question keeps them for
+    /// Retry until the chat is left.
     private func exchangeEnded() {
-        if let history, let chat = conversation.savedChat() {
+        let chat = history == nil ? nil : conversation.savedChat()
+        if let history, let chat {
             try? attachmentStore.keep(chat.messages.flatMap(\.attachments), in: chat.id)
             try? history.save(chat)
             reloadHistory()
-        } else if history == nil, conversation.failure == nil,
-                  let question = conversation.messages.last(where: { $0.role == .user }) {
-            attachmentStore.discard(question.attachments)
         }
+        guard conversation.failure == nil,
+              let question = conversation.messages.last(where: { $0.role == .user }) else { return }
+        let kept = Set(chat?.messages.flatMap(\.attachments).map(\.id) ?? [])
+        attachmentStore.discard(question.attachments.filter { !kept.contains($0.id) })
     }
 
     /// Deletes screenshots of the current chat that were never saved, such
