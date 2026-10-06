@@ -572,40 +572,16 @@ private struct SpotifyEmptyState: View {
     let actions: [Action]
 
     var body: some View {
-        VStack(spacing: Theme.Spacing.s) {
-            ZStack {
-                Circle().fill(NowPlayingModule.descriptor.accentColor.opacity(0.14))
-                if let symbol {
-                    Image(systemName: symbol)
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(NowPlayingModule.descriptor.accentColor)
-                } else {
-                    Spinner(tint: NowPlayingModule.descriptor.accentColor, size: 16, lineWidth: 2.5)
-                }
-            }
-            .frame(width: 40, height: 40)
-
-            VStack(spacing: Theme.Spacing.xxs) {
-                Text(title)
-                    .font(Theme.Typography.title)
-                    .foregroundStyle(Theme.Palette.primaryText)
-                Text(message)
-                    .font(Theme.Typography.body)
-                    .foregroundStyle(Theme.Palette.secondaryText)
-                    .multilineTextAlignment(.center)
-            }
-            .lineLimit(2)
-
+        StatusMessage(symbol: symbol, tint: NowPlayingModule.descriptor.accentColor,
+                      title: title, message: message) {
             if !actions.isEmpty {
                 HStack(spacing: Theme.Spacing.s) {
                     ForEach(actions.indices, id: \.self) { index in
                         SpotifyActionButton(action: actions[index])
                     }
                 }
-                .padding(.top, Theme.Spacing.xs)
             }
         }
-        .frame(maxWidth: 360)
     }
 }
 

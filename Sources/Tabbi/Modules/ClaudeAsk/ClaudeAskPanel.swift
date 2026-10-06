@@ -730,26 +730,14 @@ private struct EmptyChatView: View {
     ]
 
     var body: some View {
-        VStack(spacing: Theme.Spacing.s) {
-            Image(systemName: "sparkles")
-                .font(.system(size: 20, weight: .semibold))
-                .foregroundStyle(accent)
-            VStack(spacing: Theme.Spacing.xxs) {
-                Text("Ask Claude anything")
-                    .font(Theme.Typography.title)
-                    .foregroundStyle(Theme.Palette.primaryText)
-                Text("Quick answers right here. Claude can't see your files.")
-                    .font(Theme.Typography.caption)
-                    .foregroundStyle(Theme.Palette.tertiaryText)
-            }
+        StatusMessage(symbol: "sparkles", tint: accent, title: "Ask Claude anything",
+                      message: "Quick answers right here. Claude can't see your files.") {
             HStack(spacing: Theme.Spacing.s) {
                 ForEach(Self.examples, id: \.self) { prompt in
                     PillButton(title: prompt, help: "Ask “\(prompt)”") { onPick(prompt) }
                 }
             }
-            .padding(.top, Theme.Spacing.xs)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
@@ -758,27 +746,14 @@ private struct EmptyChatView: View {
 /// The panel looks again each time it opens.
 private struct ClaudeMissingView: View {
     var body: some View {
-        VStack(spacing: Theme.Spacing.s) {
-            Image(systemName: "sparkles")
-                .font(.system(size: 20, weight: .semibold))
-                .foregroundStyle(AskClaudeModule.descriptor.accentColor)
-            VStack(spacing: Theme.Spacing.xs) {
-                Text("Set up Claude to ask questions")
-                    .font(Theme.Typography.title)
-                    .foregroundStyle(Theme.Palette.primaryText)
-                Text("Claude is an AI helper that answers questions right here. Connections shows you how to add it.")
-                    .font(Theme.Typography.caption)
-                    .foregroundStyle(Theme.Palette.secondaryText)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .frame(maxWidth: 340)
-            }
+        StatusMessage(symbol: "sparkles", tint: AskClaudeModule.descriptor.accentColor,
+                      title: "Set up Claude to ask questions",
+                      message: "Claude is an AI helper that answers questions right here. "
+                          + "Connections shows you how to add it.") {
             PillButton(title: "Set up Claude", symbol: "link", help: "Open Connections to set up Claude") {
                 ConnectionsStore.shared.showHub()
             }
-            .padding(.top, Theme.Spacing.xs)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

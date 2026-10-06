@@ -809,20 +809,7 @@ private struct ScheduleAccessMessage: View {
     var body: some View {
         let state = Self.state(for: situation)
         Card {
-            VStack(spacing: Theme.Spacing.s) {
-                Image(systemName: state.symbol)
-                    .font(.system(size: 20, weight: .semibold))
-                    .foregroundStyle(accent)
-                    .frame(height: 22)
-                Text(state.title)
-                    .font(Theme.Typography.title)
-                    .foregroundStyle(Theme.Palette.primaryText)
-                Text(state.detail)
-                    .font(Theme.Typography.caption)
-                    .foregroundStyle(Theme.Palette.secondaryText)
-                    .multilineTextAlignment(.center)
-                    .lineLimit(2)
-                    .frame(maxWidth: 340)
+            StatusMessage(symbol: state.symbol, tint: accent, title: state.title, message: state.detail) {
                 if let action = state.action {
                     Button { perform(action) } label: {
                         Text(state.actionTitle)
@@ -839,7 +826,6 @@ private struct ScheduleAccessMessage: View {
                     .motion(Theme.Motion.snappy, value: hovering)
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 
