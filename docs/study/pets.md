@@ -138,7 +138,7 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 1. Add a case to `PetOutfit` or `PetAccessory` (with its `slot` and `displayName`), and give it a price in `PetItem.cost`, a Closet shelf in `PetItem.theme` (Study, Cozy, Fantasy, Seasonal or Silly) and the catalog `release` that adds it.
    Items from `PetItem.latestRelease` wear a "New" badge in the Closet until the user owns them.
 2. Draw it in `CostumeArt` using costume roles only: a `BodyItem` for each body family plus its two walking torsos, a `FaceItem` with its `eyeRow`, or a `HeadItem` with its `sitRow`.
-   A body item that sticks up out of the silhouette (the dinosaur's back spikes, the cape's collar) sets `rise`, the rows every one of its grids starts above the body's top row.
+   A body item that sticks up out of the silhouette (the dinosaur's back spikes, the cape streaming up behind a walking pet) sets `rise`, the rows every one of its grids starts above the body's top row.
 3. Map the case to its art in `PetComposer`.
    An outfit with a head part (the dinosaur hood) returns it from `outfitHood`; it is placed like a hat, moves with the head, and any hat is worn over it.
 4. Run `swift test` and review `contact-*.png` (every item on every breed) and `strip-<item>.png` (every breed through the key frames of every animation) from `PetGallery`.
