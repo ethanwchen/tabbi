@@ -123,4 +123,24 @@ final class TodayLocalPlanTests: XCTestCase {
             XCTAssertFalse(block.start < call.end.addingTimeInterval(600) && call.start.addingTimeInterval(-600) < block.end)
         }
     }
+
+    func testTheDemoPlanKeepsRoundTimesAtAnOddHour() {
+        let now = at(18, 37).addingTimeInterval(23)
+        let plan = TodayPlanSettings().sampleLocalPlan(
+            now: now, events: [], tasks: [item("Write report"), item("Email Sam")],
+            progress: [anki], calendar: calendar, locale: locale)
+
+        XCTAssertFalse(plan.blocks.isEmpty)
+        for block in plan.blocks.map(\.block) {
+            XCTAssertGreaterThanOrEqual(block.start, now, "nothing in the past")
+            for date in [block.start, block.end] {
+                let parts = calendar.dateComponents([.minute, .second], from: date)
+                XCTAssertEqual(parts.second, 0)
+                XCTAssertEqual((parts.minute ?? 1) % 5, 0, "\(date) is off the five-minute marks")
+            }
+        }
+        for gap in plan.breaks {
+            XCTAssertEqual(calendar.component(.minute, from: gap.start) % 5, 0)
+        }
+    }
 }

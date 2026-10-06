@@ -63,14 +63,18 @@ public extension TodayPlanSettings {
     }
 
     /// Demo mode's plan: `events` are samples placed around `now`, so the
-    /// day is planned as if it were 9:40 am (with the samples moved along)
+    /// day is planned as if it were about 9:40 am (with the samples moved along)
     /// and then moved back to `now`. A snapshot taken in the evening still
     /// shows a full, realistic day around the sample calendar.
     func sampleLocalPlan(now: Date, events: [UpcomingEvent], tasks: [PlannerItem],
                          sharedTasks: [ProvidedTask] = [], progress: [ProgressItem] = [],
                          calendar: Calendar = .current, locale: Locale = .current) -> SchedulePlan {
-        let morning = calendar.date(bySettingHour: 9, minute: 40, second: 0, of: now) ?? now
-        let offset = morning.timeIntervalSince(now)
+        // The move is whole slots, so blocks planned on five-minute marks
+        // still land on them once moved back to an odd `now`.
+        let target = calendar.date(bySettingHour: 9, minute: 40, second: 0, of: now) ?? now
+        let slot = TimeInterval(DayPlanner.slotMinutes * 60)
+        let offset = (target.timeIntervalSince(now) / slot).rounded(.down) * slot
+        let morning = now.addingTimeInterval(offset)
         let moved = events.map { event in
             var event = event
             event.start += offset
