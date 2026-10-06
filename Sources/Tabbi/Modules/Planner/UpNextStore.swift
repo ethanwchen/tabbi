@@ -116,7 +116,7 @@ final class UpNextStore: ObservableObject {
         if !isDemo { access = Self.currentAccess() }
         guard !isDemo, access == .notDetermined else { return access }
         // The result is re-read from EventKit, which is the source of truth.
-        _ = try? await eventStore.requestFullAccessToEvents()
+        await ConnectionProbes.requestCalendarAccess(eventStore)
         access = Self.currentAccess()
         reload()
         if isWatched { startUpdates() }

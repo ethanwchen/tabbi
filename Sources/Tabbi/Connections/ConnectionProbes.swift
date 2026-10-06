@@ -77,6 +77,17 @@ struct ConnectionProbes: Sendable {
         Bundle.main.object(forInfoDictionaryKey: "NSCalendarsFullAccessUsageDescription") != nil
     }
 
+    /// The one way Tabbi asks for calendar access (Connections, onboarding,
+    /// Today, Plan my day and Schedule all come through here), so no path can
+    /// reach EventKit's prompt in a build without a usage description.
+    /// Returns false when it couldn't ask.
+    @discardableResult
+    static func requestCalendarAccess(_ store: EKEventStore) async -> Bool {
+        guard canAskForCalendar else { return false }
+        _ = try? await store.requestFullAccessToEvents()
+        return true
+    }
+
     private static func calendar() -> CalendarConnectionState {
         let access = calendarAccess()
         guard access == .fullAccess else { return CalendarConnectionState(access: access, canAsk: canAskForCalendar) }

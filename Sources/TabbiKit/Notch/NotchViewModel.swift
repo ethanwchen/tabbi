@@ -65,7 +65,8 @@ public final class NotchViewModel: ObservableObject {
     /// put the caret in its main field (Today's "Add a task") and the user can
     /// type right away. Opening by pointer leaves focus alone, since a focused
     /// field pins the notch open after the pointer leaves. Switching tabs
-    /// clears it, so only the tab the shortcut opened on takes the caret.
+    /// clears it, so only the tab the shortcut opened on takes the caret, and
+    /// that tab takes it once through `consumeKeyboardOpen()`.
     @Published public private(set) var openedFromKeyboard = false
 
     /// A larger open canvas the selected tab asked for (Ask Claude's large
@@ -152,8 +153,18 @@ public final class NotchViewModel: ObservableObject {
         phase = .open
     }
 
+    /// True once after the global shortcut opened the notch, then false, so
+    /// a tab's view that appears again later (back from Settings, the large
+    /// chat view or a takeover) doesn't grab the caret a second time.
+    public func consumeKeyboardOpen() -> Bool {
+        guard openedFromKeyboard else { return false }
+        openedFromKeyboard = false
+        return true
+    }
+
     public func close() {
         isPinned = false
+        openedFromKeyboard = false
         requestedOpenSize = nil
         showsMoreTabs = false
         phase = .closed
