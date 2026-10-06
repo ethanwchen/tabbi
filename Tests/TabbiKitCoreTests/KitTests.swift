@@ -257,10 +257,27 @@ final class KitLibraryTests: XCTestCase {
         XCTAssertEqual(kit.layout().enabled, [.study, .planner, .spotify, .claudeAsk, .closet],
                        "timer, to-do, music and Claude, in that order, plus the pet's paw beside the tabs")
         XCTAssertEqual(kit.issues(), [])
-        XCTAssertNil(kit.defaults.resolvedTicker, "every preview stays on, so a module added later shows its own")
         XCTAssertNil(FocusSettings.kitMix(of: kit.defaults), "Essentials keeps the user's focus sound (Off by default)")
         XCTAssertEqual(StudyMethodMenu(kit: kit.defaults).startingKind, .timer,
                        "a plain countdown first, so 5, 10 and 25 minutes are one click away")
+    }
+
+    func testBundledKitsKeepUsageStatsOffTheClosedNotch() throws {
+        for kit in KitLibrary.bundled.kits {
+            let kinds = try XCTUnwrap(kit.defaults.resolvedTicker, "\(kit.id) lists its previews explicitly")
+            XCTAssertEqual(kinds, Set(TickerKind.builtIn), "\(kit.id) shows every built-in preview")
+            XCTAssertFalse(kinds.contains(.claudeUsage), "\(kit.id) leaves Claude usage off")
+            XCTAssertFalse(kinds.contains(.highlights(from: .system)), "\(kit.id) leaves CPU and GPU off")
+
+            // Adding Claude Usage later keeps its preview off until the
+            // user turns it on in Settings.
+            var settings = AppSettings.default
+            settings.apply(kit)
+            settings.modules.setEnabled(.claudeUsage, true)
+            XCTAssertFalse(settings.showsPreview(.claudeUsage))
+            settings.notchPreview.setEnabled(.claudeUsage, true)
+            XCTAssertTrue(settings.showsPreview(.claudeUsage))
+        }
     }
 
     func testEssentialsAnswersAddTasksButNeverTabs() throws {

@@ -117,6 +117,29 @@ enum SnapshotRenderer {
             shots.append(Shot("open-pet-shortcut", withPaw))
         }
 
+        // Ask Claude's chat history, rendered after the others because the
+        // list showing is session state.
+        if layout.order.contains(.claudeAsk) {
+            var withAsk = layout
+            _ = withAsk.setEnabled(.claudeAsk, true)
+            let model = NotchViewModel(geometry: geometry, layout: withAsk)
+            model.open(.claudeAsk)
+            shots.append(Shot("open-claudeAsk-history", model))
+            // The large chat view the tab can grow into.
+            let large = NotchViewModel(geometry: geometry, layout: withAsk)
+            large.open(.claudeAsk)
+            large.requestOpenSize(ClaudeAskPanel.largeSize)
+            shots.append(Shot("open-claudeAsk-large", large))
+            // A screenshot waiting to be sent, one sent with an answered
+            // question, and the Screen Recording priming screen shown
+            // before the system is asked.
+            for name in ["open-claudeAsk-screenshot", "open-claudeAsk-screenshot-sent", "open-claudeAsk-screen-access"] {
+                let model = NotchViewModel(geometry: geometry, layout: withAsk)
+                model.open(.claudeAsk)
+                shots.append(Shot(name, model))
+            }
+        }
+
         shots += headerShots(geometry: geometry, catalog: services.settings.catalog)
 
         // First-run setup in the notch, one shot per step of the active kit.
@@ -235,17 +258,22 @@ enum SnapshotRenderer {
     private static func renderNotchShots(_ shots: [Shot], services: AppServices,
                                          closet: ClosetModule?, to folder: URL) {
         let firstSection = closet?.store.section
+        let askClaude = services.modules.module(AskClaudeModule.self)?.session
         for shot in shots {
             let (name, model) = (shot.name, shot.model)
             services.onboarding.show(shot.onboarding)
+            askClaude?.isShowingHistory = name == "open-claudeAsk-history"
+            askClaude?.showForSnapshot(name == "open-claudeAsk-screenshot" ? .pendingScreenshot
+                : name == "open-claudeAsk-screenshot-sent" ? .sentScreenshot
+                : name == "open-claudeAsk-screen-access" ? .screenAccess : .chat)
             if let firstSection { closet?.store.section = name == "open-closet-look" ? .look : firstSection }
             model.themeID = Theme.current.id
             let view = NotchView(content: ModuleViews.notchContent(services: services))
                 .environmentObject(model)
                 .environment(\.drawsLiquidGlass, false)
                 .environment(\.loaderRevealDelay, 0) // rendered the moment it appears
-                .frame(width: Theme.Layout.expandedSize.width + 40,
-                       height: Theme.Layout.expandedSize.height + 24, alignment: .top)
+                .frame(width: model.openSize.width + 40,
+                       height: model.openSize.height + 24, alignment: .top)
                 .background(Color(white: 0.16)) // stand-in for a desktop
             let renderer = ImageRenderer(content: view)
             renderer.scale = 2

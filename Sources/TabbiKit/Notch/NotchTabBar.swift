@@ -284,11 +284,12 @@ private struct HeaderShortcutButton: View {
 
 public extension NotchHeaderLayout {
     /// The header of the open notch on `geometry` showing `layout`, with
-    /// `title` measured in the active theme's title type. A display without
-    /// a notch reserves no cutout.
+    /// `title` measured in the active theme's title type, across an open
+    /// notch `canvasWidth` wide. A display without a notch reserves no cutout.
     @MainActor
-    static func openNotch(geometry: NotchGeometry, layout: ModuleLayout, title: String) -> NotchHeaderLayout {
-        NotchHeaderLayout(canvasWidth: Theme.Layout.expandedSize.width,
+    static func openNotch(geometry: NotchGeometry, layout: ModuleLayout, title: String,
+                          canvasWidth: CGFloat = Theme.Layout.expandedSize.width) -> NotchHeaderLayout {
+        NotchHeaderLayout(canvasWidth: canvasWidth,
                           notchSize: geometry.hasHardwareNotch ? geometry.notchSize : nil,
                           headerHeight: headerHeight(for: geometry),
                           tabCount: layout.tabs.count, shortcutCount: layout.headerShortcuts.count,

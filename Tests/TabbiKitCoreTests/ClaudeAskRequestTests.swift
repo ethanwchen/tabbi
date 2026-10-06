@@ -41,8 +41,8 @@ final class ClaudeAskRequestTests: XCTestCase {
 
     func testDemoConversationIsAFinishedExchangeThatCanFollowUp() {
         let demo = ClaudeAskConversation.demo
-        XCTAssertEqual(demo.messages.map(\.role), [.user, .assistant])
-        XCTAssertEqual(demo.messages.last?.status, .complete)
+        XCTAssertEqual(demo.messages.map(\.role), [.user, .assistant, .user, .assistant])
+        XCTAssertTrue(demo.messages.allSatisfy { $0.status == .complete })
         XCTAssertFalse(demo.messages.last?.text.isEmpty ?? true)
         XCTAssertEqual(demo.phase, .idle)
         XCTAssertNotNil(demo.sessionID)

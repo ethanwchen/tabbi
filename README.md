@@ -94,8 +94,9 @@ Tabbi asks for a permission only when the tab that needs it is first used.
 | Automation: Spotify, Music | Now Playing, focus mode | Read the current track, control playback and start a focus playlist. |
 | Calendars | Today, Schedule | Show your events and add the planned blocks you accept. Events never leave your Mac. |
 | Notifications | Today, Focus | Tell you when a timer ends while the notch is closed. |
+| Screen Recording | Ask Claude | Attach a screenshot to a question. The image goes only to your local `claude` CLI. |
 
-Claude Usage and Ask Claude need no system permission.
+Claude Usage needs no system permission.
 Plan my day plans on your Mac without Claude.
 Refine with Claude and Wrap up send your task titles and today's events to Claude through the CLI, only when you press them.
 Claude Usage reads token counts from `~/.claude/projects` read-only.

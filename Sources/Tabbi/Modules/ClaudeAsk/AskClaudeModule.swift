@@ -1,6 +1,7 @@
 import Combine
 import SwiftUI
 import TabbiKitCore
+import TabbiKit
 
 /// Ask Claude: a quick question to the local `claude` CLI, answered in the notch.
 @MainActor
@@ -10,11 +11,12 @@ final class AskClaudeModule: NotchModule {
         summary: "Ask Claude a quick question from the notch.", category: .ai,
         accent: .claude, permissions: [.claudeCLI]
     )
-    private let session: ClaudeAskSession
+    /// Internal so snapshot runs can show the history list.
+    let session: ClaudeAskSession
     private var cancellables: Set<AnyCancellable> = []
 
     init(context: ModuleContext) {
-        session = ClaudeAskSession(runMode: context.runMode)
+        session = ClaudeAskSession(runMode: context.runMode, storage: context.storage)
         // A new `claude` path in Settings must take effect live, not on the
         // next launch.
         context.settings.$appliedClaudePathOverride
@@ -25,5 +27,9 @@ final class AskClaudeModule: NotchModule {
 
     func makePanel() -> AnyView {
         AnyView(ClaudeAskPanel(session: session))
+    }
+
+    func makeSettingsPane() -> SettingsPane? {
+        .claudeAsk(session)
     }
 }

@@ -58,12 +58,20 @@ public final class NotchController {
 
     // MARK: Layout
 
-    private func layoutPanel() {
+    /// Sizes the transparent panel for the current open size. It grows
+    /// before a larger canvas springs open and only shrinks when `shrink`
+    /// says so (a screen change), so giving the canvas back is never cut
+    /// off mid-animation. Pointer events outside the shape pass through.
+    private func layoutPanel(shrink: Bool = true) {
         let g = model.geometry
-        let size = CGSize(
-            width: Theme.Layout.expandedSize.width + Self.canvasMargin.width * 2,
-            height: Theme.Layout.expandedSize.height + Self.canvasMargin.height
+        var size = CGSize(
+            width: model.openSize.width + Self.canvasMargin.width * 2,
+            height: model.openSize.height + Self.canvasMargin.height
         )
+        if !shrink {
+            size.width = max(size.width, panel.frame.width)
+            size.height = max(size.height, panel.frame.height)
+        }
         panel.setFrame(
             CGRect(x: g.centerX - size.width / 2, y: g.screenFrame.maxY - size.height,
                    width: size.width, height: size.height),
@@ -189,6 +197,9 @@ public final class NotchController {
         guard model.isOpen, event.window === panel else { return false }
         let editingText = panel.firstResponder is NSTextView
         switch event.keyCode {
+        case 53 where model.isEnlarged: // esc gives a larger canvas back first, even while typing
+            model.requestOpenSize(nil)
+            return true
         case 53 where !editingText: // esc (text fields handle it themselves, e.g. to clear)
             model.close()
             return true
@@ -248,6 +259,14 @@ public final class NotchController {
                 guard let self, phase != .open, self.revealed else { return }
                 self.revealed = false
                 self.updateVisibility()
+            }
+            .store(in: &cancellables)
+
+        model.$requestedOpenSize
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                // Published before the change lands, so read the new size next turn.
+                Task { @MainActor in self?.layoutPanel(shrink: false) }
             }
             .store(in: &cancellables)
 
