@@ -252,13 +252,15 @@ public final class NotchController {
             }
             .store(in: &cancellables)
 
-        // Closing the notch ends a shortcut reveal over a fullscreen app.
+        // Closing the notch ends a shortcut reveal (over a fullscreen app, or
+        // of a notch the mode hides) and puts a hover or hidden notch away.
         model.$phase
             .removeDuplicates()
             .sink { [weak self] phase in
-                guard let self, phase != .open, self.revealed else { return }
+                guard let self, phase != .open else { return }
                 self.revealed = false
-                self.updateVisibility()
+                // Published before the change lands, so read `isOpen` next turn.
+                Task { @MainActor in self.updateVisibility() }
             }
             .store(in: &cancellables)
 
@@ -301,7 +303,7 @@ public final class NotchController {
             .store(in: &cancellables)
 
         inputs.settings
-            .map(\.hideInFullscreen)
+            .map { VisibilityChoice(hideInFullscreen: $0.hideInFullscreen, mode: $0.notchMode) }
             .removeDuplicates()
             .dropFirst()
             .sink { [weak self] _ in self?.updateVisibility() }
@@ -343,7 +345,8 @@ public final class NotchController {
             .store(in: &cancellables)
     }
 
-    /// The shortcut also brings the notch back while a fullscreen app hides it.
+    /// The shortcut also brings the notch back while a fullscreen app or the
+    /// notch mode hides it.
     private func hotkeyPressed() {
         if !panel.isVisible && displayID != nil && !model.isOpen {
             revealed = true
@@ -381,9 +384,12 @@ public final class NotchController {
     /// notch (or nothing, on a notchless screen) and a fullscreen app untouched.
     private func updateVisibility() {
         let shown = displayID != nil && NotchVisibility.isShown(
+            mode: settings.notchMode,
             hideInFullscreen: settings.hideInFullscreen,
             fullscreenAppActive: fullscreenAppActive,
-            revealed: revealed
+            revealed: revealed,
+            pointerNear: false,
+            isOpen: model.isOpen
         )
         guard shown != panel.isVisible else { return }
         if shown {
@@ -437,4 +443,10 @@ public final class NotchController {
 private struct DisplayChoice: Equatable {
     var preference: DisplayPreference
     var showOnExternalDisplays: Bool
+}
+
+/// The settings that decide whether the closed notch is drawn.
+private struct VisibilityChoice: Equatable {
+    var hideInFullscreen: Bool
+    var mode: NotchMode
 }
