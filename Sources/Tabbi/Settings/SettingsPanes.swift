@@ -237,11 +237,10 @@ struct ModulesSettingsPane: View {
             KitSection()
 
             Section {
-                ForEach(store.settings.modules.tabs) { module in
+                // One Form row that draws its own rows: a grouped Form ignores
+                // `onMove` on macOS, so the list handles the drag itself.
+                TabReorderList(layout: $store.settings.modules) { module in
                     tabRow(module)
-                }
-                .onMove { source, destination in
-                    store.settings.modules.moveTabs(fromOffsets: source, toOffset: destination)
                 }
                 // Header shortcuts (the Closet's paw) sit last and don't drag:
                 // the notch always draws them at the far right.
@@ -251,7 +250,7 @@ struct ModulesSettingsPane: View {
             } header: {
                 Text("Your tabs")
             } footer: {
-                SectionFooter("Drag to reorder. At least one tab stays.")
+                SectionFooter("Drag to reorder, or select a tab and press Option-Up or Option-Down. At least one tab stays.")
             }
 
             Section {
@@ -587,11 +586,7 @@ private struct TabRow: View {
         let canRemove = layout.canDisable(module.id)
         let isHeaderShortcut = module.headerShortcut != nil
         HStack(spacing: 10) {
-            Image(systemName: "line.3.horizontal")
-                .font(.system(size: 12, weight: .medium))
-                .foregroundStyle(.tertiary)
-                .opacity(isHeaderShortcut ? 0 : 1)
-                .help(isHeaderShortcut ? "" : "Drag to reorder")
+            DragHandle(isHidden: isHeaderShortcut)
             ModuleIcon(module: module)
             VStack(alignment: .leading, spacing: 2) {
                 Text(module.title)
@@ -610,6 +605,137 @@ private struct TabRow: View {
             RemoveTabButton(title: module.title, canRemove: canRemove) { layout.remove(module.id) }
         }
         .contentShape(Rectangle())
+    }
+}
+
+/// The grip at the start of a tab row. The whole row drags; the grip says so
+/// with an open hand on hover. The paw's row keeps the space but no grip.
+private struct DragHandle: View {
+    let isHidden: Bool
+    @State private var isHovering = false
+
+    var body: some View {
+        Image(systemName: "line.3.horizontal")
+            .font(.system(size: 12, weight: .medium))
+            .foregroundStyle(isHovering ? AnyShapeStyle(.secondary) : AnyShapeStyle(.tertiary))
+            .frame(width: 16, height: 24)
+            .contentShape(Rectangle())
+            .opacity(isHidden ? 0 : 1)
+            .onHover { inside in
+                guard !isHidden, inside != isHovering else { return }
+                isHovering = inside
+                if inside { NSCursor.openHand.push() } else { NSCursor.pop() }
+            }
+            .onDisappear { if isHovering { NSCursor.pop() } }
+            .help(isHidden ? "" : "Drag to reorder")
+            .accessibilityHidden(true)
+    }
+}
+
+/// The user's tabs as rows that reorder by dragging (mouse or trackpad), by
+/// Option-Up and Option-Down on the selected row, and by VoiceOver's Move up
+/// and Move down actions. While a row is lifted the others slide aside live
+/// and an outline marks where it will land; the move is saved on release,
+/// so the notch's tab bar follows at once.
+private struct TabReorderList<Row: View>: View {
+    @Binding var layout: ModuleLayout
+    @ViewBuilder let row: (ModuleID) -> Row
+    @EnvironmentObject private var store: SettingsStore
+    @State private var drag: (module: ModuleID, geometry: RowReorderDrag)?
+    @FocusState private var focused: ModuleID?
+
+    /// Every row is this tall, so a drag maps the pointer onto slots.
+    private static var rowHeight: CGFloat { 36 }
+    private static var space: String { "TabReorderList" }
+
+    var body: some View {
+        let tabs = layout.tabs
+        VStack(spacing: 0) {
+            ForEach(Array(tabs.enumerated()), id: \.element) { index, module in
+                let isLifted = drag?.module == module
+                row(module)
+                    .frame(height: Self.rowHeight)
+                    .padding(.horizontal, 4)
+                    .background(rowBackground(isLifted: isLifted, isFocused: focused == module))
+                    .overlay(alignment: .bottom) {
+                        if drag == nil, index < tabs.count - 1 {
+                            Divider()
+                                .padding(.horizontal, 4)
+                                // Full width like the Form's own separators,
+                                // which a Divider in a row would inset to the title.
+                                .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
+                        }
+                    }
+                    .offset(y: CGFloat(drag?.geometry.offset(at: index) ?? 0))
+                    .zIndex(isLifted ? 1 : 0)
+                    .animation(isLifted ? nil : Motion.snappy, value: drag?.geometry)
+                    .gesture(reorderGesture(for: module, at: index, count: tabs.count))
+                    .focusable()
+                    .focusEffectDisabled()
+                    .focused($focused, equals: module)
+                    .onKeyPress(keys: [.upArrow, .downArrow], phases: [.down, .repeat]) { press in
+                        guard press.modifiers.contains(.option) else { return .ignored }
+                        step(module, by: press.key == .upArrow ? -1 : 1)
+                        return .handled
+                    }
+                    .accessibilityElement(children: .contain)
+                    .accessibilityAction(named: "Move up") { step(module, by: -1) }
+                    .accessibilityAction(named: "Move down") { step(module, by: 1) }
+            }
+        }
+        .background(alignment: .top) { dropIndicator }
+        .coordinateSpace(name: Self.space)
+        .padding(.horizontal, -4)
+    }
+
+    /// An outline over the slot the lifted row lands in on release.
+    @ViewBuilder
+    private var dropIndicator: some View {
+        if let geometry = drag?.geometry, geometry.movesRow {
+            RoundedRectangle(cornerRadius: 6, style: .continuous)
+                .strokeBorder(Color.accentColor, style: StrokeStyle(lineWidth: 1.5, dash: [4, 3]))
+                .background(RoundedRectangle(cornerRadius: 6, style: .continuous).fill(Color.accentColor.opacity(0.08)))
+                .frame(height: Self.rowHeight)
+                .offset(y: CGFloat(geometry.target) * Self.rowHeight)
+                .transition(.opacity)
+        }
+    }
+
+    private func rowBackground(isLifted: Bool, isFocused: Bool) -> some View {
+        RoundedRectangle(cornerRadius: 6, style: .continuous)
+            .fill(isLifted ? AnyShapeStyle(.background) : AnyShapeStyle(Color.accentColor.opacity(isFocused ? 0.12 : 0)))
+            .shadow(color: .black.opacity(isLifted ? 0.25 : 0), radius: 6, y: 2)
+    }
+
+    private func reorderGesture(for module: ModuleID, at index: Int, count: Int) -> some Gesture {
+        DragGesture(minimumDistance: 4, coordinateSpace: .named(Self.space))
+            .onChanged { value in
+                if drag?.module != module {
+                    drag = (module, RowReorderDrag(from: index, count: count, rowHeight: Double(Self.rowHeight)))
+                    focused = module
+                    NSCursor.closedHand.push()
+                }
+                drag?.geometry.translation = value.translation.height
+            }
+            .onEnded { _ in
+                guard let finished = drag else { return }
+                NSCursor.pop()
+                withMotion(Motion.snappy) {
+                    // Clear the offsets and apply the move together so rows settle in one motion.
+                    drag = nil
+                    if finished.geometry.movesRow {
+                        layout.moveTab(finished.module, to: finished.geometry.target)
+                    }
+                }
+            }
+    }
+
+    private func step(_ module: ModuleID, by offset: Int) {
+        guard layout.canMoveTab(module, by: offset) else { return }
+        withMotion(Motion.snappy) { layout.moveTab(module, by: offset) }
+        let title = store.catalog.descriptor(for: module).title
+        let position = (layout.tabs.firstIndex(of: module) ?? 0) + 1
+        AccessibilityNotification.Announcement("\(title) moved to position \(position) of \(layout.tabs.count)").post()
     }
 }
 
