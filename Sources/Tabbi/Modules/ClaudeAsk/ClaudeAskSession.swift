@@ -70,13 +70,19 @@ final class ClaudeAskSession: ObservableObject {
         history = savesNothing ? nil : ClaudeAskHistory(storage: storage)
         preferencesStorage = savesNothing ? nil : ClaudeAskPreferencesStorage()
         preferences = preferencesStorage?.load() ?? ClaudeAskPreferences()
-        // One staging folder per edition, so two editions never clear each
-        // other's captures.
-        let staging = FileManager.default.temporaryDirectory
+        // The live app has one staging folder per edition, cleared at launch
+        // for captures a previous run left behind. Demo and snapshot runs
+        // stage in a folder of their own per process, so they can never
+        // clear a capture the live app is still waiting to send.
+        let editionStaging = FileManager.default.temporaryDirectory
             .appendingPathComponent("Ask Claude Screenshots", isDirectory: true)
             .appendingPathComponent(storage.root.lastPathComponent, isDirectory: true)
+        let staging = savesNothing
+            ? editionStaging.appendingPathComponent("Sample Runs", isDirectory: true)
+                .appendingPathComponent(UUID().uuidString, isDirectory: true)
+            : editionStaging
         attachmentStore = ClaudeAskAttachmentStore(stagingDirectory: staging, history: history)
-        attachmentStore.clearStaging()
+        if !savesNothing { attachmentStore.clearStaging() }
         // Demo history has a question asked about a sample screenshot.
         let capture = isDemo ? ClaudeAskScreenCapture.demoCapture() : nil
         let screenshot = capture.map { ClaudeAskAttachment(pixelWidth: $0.pixelWidth, pixelHeight: $0.pixelHeight) }
@@ -116,6 +122,13 @@ final class ClaudeAskSession: ObservableObject {
         let generation = generation
         let sessionID = conversation.sessionID
         let images = question.attachments.compactMap { attachmentStore.data(for: $0, in: conversation.chatID) }
+
+        // Never send a question without a screenshot its thumbnail promised.
+        guard images.count == question.attachments.count else {
+            conversation.fail(.process(detail: "A screenshot for this question is gone. Ask again without it."))
+            exchangeEnded()
+            return true
+        }
 
         if isDemo {
             conversation.apply(.result(ClaudeResult(
@@ -268,8 +281,9 @@ final class ClaudeAskSession: ObservableObject {
     }
 
     private func stage(_ capture: ClaudeAskScreenCapture.Capture) {
-        guard pendingAttachments.count < Self.maxPendingAttachments,
-              let attachment = try? attachmentStore.stage(pngData: capture.pngData, pixelWidth: capture.pixelWidth,
+        // A full tray is not a failed capture; the Attach button is already off.
+        guard pendingAttachments.count < Self.maxPendingAttachments else { return }
+        guard let attachment = try? attachmentStore.stage(pngData: capture.pngData, pixelWidth: capture.pixelWidth,
                                                           pixelHeight: capture.pixelHeight) else {
             captureFailed = true
             return
