@@ -164,7 +164,7 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
             // Blue-gray: a soft gray coat with a paler muzzle and chest,
             // big copper-gold eyes, a rosy nose, and pink cheeks.
             return PetPalette([.furBase: c("#A3A8B3"), .furShade: c("#888D99"), .furAccent: c("#BCC0C9"),
-                               .belly: c("#E6E8EC"), .eye: c("#E0A030"), .eyeLight: c("#FFF6DC"),
+                               .belly: c("#E6E8EC"), .eye: c("#C67818"), .eyeLight: c("#FFF6DC"),
                                .nose: c("#D58C90"), .blush: c("#F59AA8"), .outline: c("#2A2B31")])
         case .goldenRetriever:
             return PetPalette([.furBase: c("#E6AE52"), .furShade: c("#C98C36"), .furAccent: c("#F3CB82"),
