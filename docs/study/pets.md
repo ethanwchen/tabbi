@@ -267,7 +267,7 @@ Pets walk toward the left; mirror the frames to walk right.
 
 - Torsos: `catTorso` and `dogTorso` share one size (22x7, so torso costumes fit both), and `longTorso` (23x6) sits lower on shorter legs for the dachshund.
   The cat torso carries stripe and calico patch zones; the dog torso carries the beagle saddle.
-  The British Shorthair walks on `roundCatTorso`, the same size with a taupe back, and swings the ringed `roundCatTail`.
+  The British Shorthair walks on `roundCatTorso`, the same size with a silver back and faint ticking, and swings the subtly ringed `roundCatTail`.
 - Tails: two sway positions per family; the tail swings once per half cycle so it never flickers.
   Stubby-tailed breeds (`hasTail == false`) skip it.
 - Legs: `WalkArt.leg(height:lean:far:)` generates every leg, with the paw zone on the bottom row.
@@ -379,11 +379,12 @@ It goes by "British Shorthair" until the user names it, and the Closet asks them
 What makes this cat recognizable, and where each part lives:
 
 - Coloring (`PetBreed.palette`): soft white-silver fur, a faint silver shade for the crown, back and flanks, a pale taupe accent for subtle ticking and tail rings, a white muzzle, chin, chest and paws, a pink-tan nose, and clear blue eyes with white highlights.
-- Head (`CatArt.headRound`): small rounded ears set wide apart, a taupe crown with faint ticking that runs down the forehead, and full cheeks around the white muzzle.
+- Head (`CatArt.headRound`): small rounded ears set wide apart, a faint silver crown with subtle ticking that runs down the forehead, and full cheeks around the white muzzle.
 - Face (`CatArt.faceRound`): the same 2x3 eyes as every other cat (a white highlight at the top left) in clear blue, the shared nose and "w" mouth, and rosy cheeks.
   The maintainer asked for open, cute blue eyes rather than the photo's half-lidded look, so this is the one place the sprite departs from the reference.
-- Body (`CatArt.bodyRound`, `WalkArt.roundCatTorso`, `WalkArt.roundCatTail`): taupe flanks and back with ticking, full haunches, and a thick tail ringed with dark bands.
-  These grids have the same size as the plain cat's, so every costume fits without new art.
+- Body (`CatArt.bodyRound`, `WalkArt.roundCatTorso`, `WalkArt.roundCatTail`): silver flanks and back with faint ticking, full haunches, and a thick tail with subtle pale taupe rings.
+  The sitting body is one column wider than the plain cat's `bodySit` for a plump belly that stays centered under the head, so every costume still fits without new art; its tail splits off at column 18 instead of 17.
+  The walking torso and tail have the same size as the plain cat's.
 
 ![Every animation frame for the British Shorthair](images/animations-britishShorthair.png)
 
