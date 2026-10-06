@@ -255,12 +255,14 @@ public enum PetComposer {
 
         init(_ shape: PetBodyShape) {
             switch shape {
-            case .cat, .roundCat:
+            case .cat, .roundCat, .sphynxCat:
                 family = .cat
                 (bodyX, bodyY, tail) = (6, 20, nil)
-                (body, head, face) = shape == .roundCat
-                    ? (CatArt.bodyRound, CatArt.headRound, CatArt.faceRound)
-                    : (CatArt.bodySit, CatArt.head, CatArt.faceOpen)
+                (body, head, face) = switch shape {
+                case .roundCat: (CatArt.bodyRound, CatArt.headRound, CatArt.faceRound)
+                case .sphynxCat: (CatArt.bodySphynx, CatArt.headSphynx, CatArt.faceSphynx)
+                default: (CatArt.bodySit, CatArt.head, CatArt.faceOpen)
+                }
                 (headX, headY, faceRow, eyeRow, skullTop) = (6, 7, 0, 7, 3)
             case .longDog:
                 family = .longDog
@@ -314,9 +316,11 @@ public enum PetComposer {
             self.family = family
             switch family {
             case .cat:
-                (torso, tails) = shape == .roundCat
-                    ? (WalkArt.roundCatTorso, WalkArt.roundCatTail)
-                    : (WalkArt.catTorso, WalkArt.catTail)
+                (torso, tails) = switch shape {
+                case .roundCat: (WalkArt.roundCatTorso, WalkArt.roundCatTail)
+                case .sphynxCat: (WalkArt.sphynxTorso, WalkArt.sphynxTail)
+                default: (WalkArt.catTorso, WalkArt.catTail)
+                }
                 (torsoY, tailX) = (20, 26)
                 (legHeight, backHip, chinRow) = (4, 22, 24)
             case .dog:

@@ -219,7 +219,8 @@ try writeSheet(recolorCells, columns: 5, title: "Recolors (fur, scrubs, knits)",
 
 // Breed close-up: one breed through every animation frame and every look, at
 // 4x and at notch size (24 and 32 pt on a 2x display), for art direction.
-let focusBreed = PetBreed.britishShorthair
+// `swift run PetGallery out/ sphynx` picks another breed than the default cat.
+let focusBreed = arguments.dropFirst().first.flatMap(PetBreed.init(rawValue:)) ?? .britishShorthair
 var focusCells: [Cell] = []
 for animation in PetAnimation.allCases {
     let clip = PetComposer.clip(animation, for: focusBreed)
@@ -236,12 +237,12 @@ let focusLooks = looks.map { label, outfit, accessories in
 }
 try writeSheet(focusLooks, columns: 5, title: "Costumes on \(focusBreed.displayName)",
                to: outputDirectory.appendingPathComponent("costumes-\(focusBreed.rawValue).png"))
-let notchCells = PetBreed.breeds(of: .cat).map { breed in
+let notchCells = PetBreed.breeds(of: focusBreed.species).map { breed in
     Cell(label: "", canvas: PetComposer.sitting(breed), palette: breed.palette.withVisibleRim())
 } + focusCells.filter { !$0.label.hasPrefix("walk") && !$0.label.hasPrefix("stretch") }.prefix(8)
     .map { Cell(label: "", canvas: $0.canvas, palette: $0.palette) }
 for notchScale in [1, 2] {
-    try writeSheet(notchCells, columns: 8, title: "", scale: notchScale,
+    try writeSheet(notchCells, columns: max(8, PetBreed.breeds(of: focusBreed.species).count), title: "", scale: notchScale,
                    to: outputDirectory.appendingPathComponent("notch-size-\(notchScale)x.png"))
 }
 

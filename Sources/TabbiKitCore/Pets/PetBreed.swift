@@ -18,6 +18,8 @@ public enum PetBodyShape: String, CaseIterable, Codable, Sendable {
     case cat
     /// Cat body with the round-cheeked, small-eared head.
     case roundCat
+    /// Hairless cat with big flared ears and a wrinkled brow (Sphynx).
+    case sphynxCat
     /// Hanging ears on a rounded skull (Labrador, Beagle).
     case floppyDog
     /// Long feathered ears (Golden Retriever).
@@ -31,7 +33,7 @@ public enum PetBodyShape: String, CaseIterable, Codable, Sendable {
 
     public var species: PetSpecies {
         switch self {
-        case .cat, .roundCat: .cat
+        case .cat, .roundCat, .sphynxCat: .cat
         case .floppyDog, .fluffyDog, .batEaredDog, .pointyEaredDog, .longDog: .dog
         }
     }
@@ -48,6 +50,7 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
     case calico
     case siamese
     case britishShorthair
+    case sphynx
     case goldenRetriever
     case labrador
     case frenchBulldog
@@ -61,6 +64,7 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
         switch self {
         case .orangeTabby, .grayTabby, .blackCat, .whiteCat, .tuxedo, .calico, .siamese: .cat
         case .britishShorthair: .roundCat
+        case .sphynx: .sphynxCat
         case .goldenRetriever: .fluffyDog
         case .labrador, .beagle: .floppyDog
         case .frenchBulldog: .batEaredDog
@@ -88,6 +92,7 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
         case .calico: "Calico"
         case .siamese: "Siamese"
         case .britishShorthair: "British Shorthair"
+        case .sphynx: "Sphynx"
         case .goldenRetriever: "Golden Retriever"
         case .labrador: "Labrador"
         case .frenchBulldog: "French Bulldog"
@@ -132,6 +137,12 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
             return PetPalette([.furBase: c("#D6CEC3"), .furShade: c("#ADA398"), .furAccent: c("#756D66"),
                                .belly: c("#F8F5EF"), .eye: c("#3F86D6"), .eyeLight: c("#FFFFFF"),
                                .nose: c("#D29A8A"), .blush: c("#E6B3AC"), .outline: c("#3A3330")])
+        case .sphynx:
+            // Hairless pink-beige skin with deeper shade for wrinkles, a
+            // rosy blush, and big green-gold eyes.
+            return PetPalette([.furBase: c("#F1CDB8"), .furShade: c("#D9A891"), .furAccent: c("#E6B8A2"),
+                               .belly: c("#F8DCCB"), .eye: c("#7DB83A"), .eyeLight: c("#FFFFFF"),
+                               .nose: c("#D9868A"), .blush: c("#F29A9C"), .outline: c("#4A2C2A")])
         case .goldenRetriever:
             return PetPalette([.furBase: c("#E6AE52"), .furShade: c("#C98C36"), .furAccent: c("#F3CB82"),
                                .belly: c("#F7DCA8"), .nose: c("#3A2622"), .outline: c("#3A2214")])
@@ -175,6 +186,8 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
         case .britishShorthair:
             return PetPattern([.muzzle: .belly, .chest: .belly, .paws: .belly, .ears: .furShade,
                                .mask: .furShade, .stripes: .furShade, .tailTip: .furAccent])
+        case .sphynx:
+            return PetPattern([.chest: .belly, .muzzle: .belly])
         case .goldenRetriever:
             return PetPattern([.chest: .furAccent, .muzzle: .furAccent])
         case .labrador:

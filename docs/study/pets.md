@@ -3,7 +3,7 @@
 A study-buddy cat or dog lives in the notch.
 This document explains how pet sprites are drawn, composed, and rendered, and how to add a breed.
 
-Status: the sprite format, palettes, pattern zones, renderer, all eight cat breeds, all six dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
+Status: the sprite format, palettes, pattern zones, renderer, all nine cat breeds, all six dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
 
 ![All cat breeds sitting, on black at 4x](images/cats-sitting.png)
 
@@ -12,7 +12,8 @@ Status: the sprite format, palettes, pattern zones, renderer, all eight cat bree
 ## Look at the art
 
 ```sh
-swift run PetGallery /tmp/petgallery   # writes contact sheets as PNGs at 4x
+swift run PetGallery /tmp/petgallery          # writes contact sheets as PNGs at 4x
+swift run PetGallery /tmp/petgallery sphynx   # close-up sheets for one breed (default: British Shorthair)
 ```
 
 Sheets are drawn on pure black, exactly like the notch.
@@ -323,6 +324,17 @@ What makes this cat recognizable, and where each part lives:
 `PetProfile.defaultName(for:)` gives cats no name and dogs "Biscuit", and `hasDefaultName` tells these (and "Mochi", the starter name in earlier versions) apart from a name the user chose, so switching species only renames a pet that still has a default name.
 A kit can still pick another starter (`moduleSettings.closet.pet`), and a pet that is already saved never changes.
 
+### The Sphynx
+
+The Sphynx is hairless, so its look comes from shape and shading instead of markings:
+
+- Head (`CatArt.headSphynx`): big ears flaring out from a narrow crown with pink insides, short shade lines across the brow for wrinkles, and sharp cheekbones over a narrow muzzle.
+- Face (`CatArt.faceSphynx`): large 3x3 lemon-shaped green eyes with a slit pupil and a white highlight, rosy cheeks, and a small "w" mouth.
+- Body (`CatArt.bodySphynx`, `WalkArt.sphynxTorso`, `WalkArt.sphynxTail`): a lean chest with neck wrinkles, bony haunches, and a one-pixel whip tail.
+- Coloring (`PetBreed.palette`): pink-beige skin, a deeper pink-tan for wrinkles, a lighter chest and muzzle, and a warm dark outline.
+
+![Every animation frame for the Sphynx](images/animations-sphynx.png)
+
 ### Recoloring fur
 
 `furAccent` means different things per breed: darker stripes on a tabby, lighter feathering on a golden's chest.
@@ -350,13 +362,14 @@ This also protects user recolors.
 ## Body shapes
 
 Breeds that share a silhouette share all of their art and differ only in palette and pattern.
-Cats look alike enough that two shapes cover all eight breeds.
+Cats look alike enough that three shapes cover all nine breeds.
 Dogs need more, because their ears and snouts are what make them recognizable at notch size:
 
 | Shape | Breeds | What sets it apart |
 | --- | --- | --- |
 | `cat` | most cats | pointed ears, tabby stripe zones |
 | `roundCat` | British Shorthair | small wide-set ears, round cheeks, big blue eyes, stocky body, ringed tail |
+| `sphynxCat` | Sphynx | big flared ears, wrinkled brow and neck, lemon eyes, lean body, thin whip tail |
 | `floppyDog` | Labrador, Beagle | hanging ears beside a rounded skull |
 | `fluffyDog` | Golden Retriever | long feathered ears |
 | `batEaredDog` | French Bulldog | big rounded bat ears, broad face |

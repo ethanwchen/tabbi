@@ -181,7 +181,7 @@ final class PetRendererTests: XCTestCase {
 
 final class PetBreedTests: XCTestCase {
     func testCatalogHasEveryCatAndDogBreed() {
-        XCTAssertEqual(PetBreed.breeds(of: .cat).count, 8)
+        XCTAssertEqual(PetBreed.breeds(of: .cat).count, 9)
         XCTAssertEqual(PetBreed.breeds(of: .dog), [
             .goldenRetriever, .labrador, .frenchBulldog, .corgi, .dachshund, .beagle,
         ])
@@ -192,6 +192,22 @@ final class PetBreedTests: XCTestCase {
         let shapes: [PetBreed] = [.goldenRetriever, .labrador, .frenchBulldog, .corgi, .dachshund]
         let silhouettes = shapes.map { breed in PetComposer.sitting(breed).pixels.map { $0 != nil } }
         XCTAssertEqual(Set(silhouettes).count, shapes.count)
+    }
+
+    func testSphynxHasItsOwnHairlessSilhouette() {
+        // The big flared ears must set the Sphynx apart by shape, not only
+        // by its pink skin.
+        let sphynx = PetComposer.sitting(.sphynx)
+        let silhouette = sphynx.pixels.map { $0 != nil }
+        for other in PetBreed.breeds(of: .cat) where other != .sphynx {
+            XCTAssertNotEqual(PetComposer.sitting(other).pixels.map { $0 != nil }, silhouette, "\(other)")
+        }
+        // Hairless: no stripes, spots, or a dark mask, and visible pink blush.
+        let roles = Set(sphynx.pixels.compactMap { $0 })
+        XCTAssertFalse(roles.contains(.furAccent))
+        XCTAssertFalse(roles.contains(.furSpot))
+        XCTAssertTrue(roles.contains(.blush))
+        XCTAssertTrue(roles.contains(.furShade), "wrinkles are hinted with shading")
     }
 
     func testDarkDogsStillGetTheWarmRim() {

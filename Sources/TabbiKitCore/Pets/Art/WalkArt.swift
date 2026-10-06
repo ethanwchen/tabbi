@@ -92,6 +92,38 @@ enum WalkArt {
             """),
     ]
 
+    /// Sphynx torso: lean, with wrinkle lines over the shoulders and a
+    /// slim belly line.
+    static let sphynxTorso = SpriteGrid(art: """
+        ...BBBBBBBBBBBBBBBBB..
+        ..BBBSBBSBBBBBBBBBBBB.
+        .BBBSBBSBBBBBBBBBBBBBB
+        .BBBBBBBBBBBBBBBBBBBBB
+        .cBBBBBBBBBBBBBBBBBBBS
+        .cccBBBBBBBBBBBBBBBBSS
+        ..ccSSSSSSSSSSSSSSSS..
+        """)
+
+    /// The Sphynx's thin whip tail, held high with a curled tip.
+    static let sphynxTail = [
+        SpriteGrid(art: """
+            .tt
+            ..t
+            .B.
+            .B.
+            B..
+            B..
+            """),
+        SpriteGrid(art: """
+            .tt.
+            .t..
+            .B..
+            .B..
+            B...
+            B...
+            """),
+    ]
+
     static let dogTail = [
         SpriteGrid(art: """
             ..t
