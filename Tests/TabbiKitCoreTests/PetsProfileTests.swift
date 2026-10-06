@@ -296,6 +296,16 @@ final class PetUnlockTests: XCTestCase {
         XCTAssertEqual(PetPointsLedger(earned: -5).balance, 0)
     }
 
+    func testOldSaveGetsTheScarfItBoughtRefundedOnce() throws {
+        let old = Data(#"{"earned": 100, "spent": 60, "purchased": ["accessory.scarf", "accessory.beanie"]}"#.utf8)
+        let ledger = try JSONDecoder().decode(PetPointsLedger.self, from: old)
+        XCTAssertEqual(ledger.balance, 70)
+        XCTAssertEqual(ledger.purchased, [.accessory(.beanie)])
+
+        let reloaded = try JSONDecoder().decode(PetPointsLedger.self, from: JSONEncoder().encode(ledger))
+        XCTAssertEqual(reloaded.balance, 70, "the refund applies once")
+    }
+
     func testProfileIsRestrictedToOwnedItems() throws {
         var ledger = PetPointsLedger()
         ledger.recordStudy(minutes: 200, completed: true)

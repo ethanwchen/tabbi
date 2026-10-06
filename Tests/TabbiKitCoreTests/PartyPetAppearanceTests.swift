@@ -111,10 +111,24 @@ final class PartyPetAppearanceTests: XCTestCase {
         XCTAssertEqual(PartyPetAppearance.update(for: scrubbed).costume, "scrubs")
     }
 
+    func testPlayfulItemsReachFriends() {
+        let crowned = PetProfile(name: "Kit", breed: .tuxedo, accessories: [.bowTie, .coolSunglasses, .tinyCrown])
+        let update = PartyPetAppearance.update(for: crowned)
+        XCTAssertEqual(update.costume, "none")
+        XCTAssertEqual(update.accessories, ["bow", "sunglasses", "crown"])
+        XCTAssertEqual(PartyPetAppearance.pet(for: profile(from: update)).accessories, [.bowTie, .coolSunglasses, .tinyCrown])
+
+        let pirate = PetProfile(name: "Kit", breed: .beagle, accessories: [.partyHat, .pirateHat])
+        let pirateUpdate = PartyPetAppearance.update(for: pirate)
+        XCTAssertEqual(pirateUpdate.costume, "pirate")
+        XCTAssertEqual(pirateUpdate.accessories, [])
+        XCTAssertEqual(PartyPetAppearance.pet(for: profile(from: pirateUpdate)).accessories, [.pirateHat])
+    }
+
     func testUnknownServerValuesFallBackInsteadOfFailing() {
         let pet = PartyPetAppearance.pet(for: PartyProfile(
             code: "K7QW2MZD", name: "Ana", petName: "", species: "dragon", breed: "wyvern",
-            colors: ["nope", "#123456"], costume: "pirate", accessories: ["halo", "glasses"]
+            colors: ["nope", "#123456"], costume: "santa", accessories: ["halo", "glasses"]
         ))
         XCTAssertEqual(pet.breed, PetProfile.starter(.cat).breed)
         XCTAssertEqual(pet.name, pet.breed.displayName)

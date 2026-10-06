@@ -246,7 +246,7 @@ private struct ClosetWardrobe: View {
         LazyVStack(alignment: .leading, spacing: Theme.Spacing.s) {
             ForEach(PetCloset.shelves, id: \.theme) { shelf in
                 VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-                    ClosetShelfTitle(theme: shelf.theme, items: shelf.items, closet: store.closet)
+                    ClosetShelfTitle(theme: shelf.theme)
                     LazyVGrid(columns: columns, spacing: Theme.Spacing.s - Theme.Spacing.xxs) {
                         ForEach(shelf.items, id: \.id) { item in tile(item) }
                     }
@@ -321,23 +321,16 @@ private struct ClosetWardrobe: View {
     }
 }
 
-/// A shelf's theme name and how many of its items the pet owns.
+/// A shelf's theme name.
 private struct ClosetShelfTitle: View {
     let theme: PetItemTheme
-    let items: [PetItem]
-    let closet: PetCloset
 
     var body: some View {
-        HStack(spacing: Theme.Spacing.xs) {
-            Text(theme.displayName)
-                .foregroundStyle(Theme.Palette.secondaryText)
-            Text("\(items.filter { closet.state(of: $0).isOwned }.count) of \(items.count)")
-                .foregroundStyle(Theme.Palette.tertiaryText)
-                .monospacedDigit()
-        }
-        .font(.system(size: 9.5, weight: .semibold, design: .rounded))
-        .frame(height: 12)
-        .padding(.leading, Theme.Spacing.xxs)
+        Text(theme.displayName)
+            .foregroundStyle(Theme.Palette.secondaryText)
+            .font(.system(size: 9.5, weight: .semibold, design: .rounded))
+            .frame(height: 12)
+            .padding(.leading, Theme.Spacing.xxs)
     }
 }
 

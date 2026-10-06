@@ -173,16 +173,23 @@ public struct PetPointsLedger: Hashable, Codable, Sendable {
         PetItem.allCases.first { !owns($0) }
     }
 
+    /// What older builds charged for items that are free now. A save that
+    /// still lists one gets its points back once: the re-encoded save no
+    /// longer lists free items.
+    static let refundedPrices: [PetItem: Int] = [.accessory(.scarf): 30]
+
     // Unknown item ids (from a newer build) are skipped instead of failing.
     private enum CodingKeys: String, CodingKey { case earned, spent, purchased }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let ids = try container.decodeIfPresent([String].self, forKey: .purchased) ?? []
+        let items = Set(ids.compactMap(PetItem.init(id:)))
+        let refund = items.filter(\.isFree).reduce(0) { $0 + (Self.refundedPrices[$1] ?? 0) }
         self.init(
             earned: try container.decodeIfPresent(Int.self, forKey: .earned) ?? 0,
-            spent: try container.decodeIfPresent(Int.self, forKey: .spent) ?? 0,
-            purchased: Set(ids.compactMap(PetItem.init(id:)))
+            spent: (try container.decodeIfPresent(Int.self, forKey: .spent) ?? 0) - refund,
+            purchased: items
         )
     }
 
