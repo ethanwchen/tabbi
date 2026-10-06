@@ -58,6 +58,7 @@ When a rule and a feature disagree, remove or hide the feature.
 - The closed shape matches the hardware notch; wings hug it with no gap.
 - Each wing shows at most one glyph and one short value ("18m", "5h 86%"), and the two wings are balanced in width.
 - The tab bar stays readable with up to 9 tabs: icons and titles keep one size, the selection uses `controlBackground`, and no tab is clipped.
+- The tab's title beside the notch shows whole: a slightly long one ("Claude Usage" beside a 185pt notch) shrinks to no less than 88% before it truncates, and it is dropped before it could collide with the gear.
 - The pet shortcut (the paw) sits at the far right of the tab row, vertically centered with the tabs, with the same hover treatment as a tab.
 
 ## Pets and gamification
