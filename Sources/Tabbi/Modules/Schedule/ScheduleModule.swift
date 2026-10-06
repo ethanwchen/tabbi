@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 import TabbiKitCore
 import TabbiKit
@@ -7,7 +8,8 @@ extension ModuleID {
 }
 
 /// Schedule: today's calendar and planned blocks on a timeline, with what is
-/// on now and what is free. Opt in from Add More; no kit turns it on.
+/// on now and what is free, and a Plan button that fills the free time with
+/// other modules' open tasks and reviews. Opt in from Add More; no kit turns it on.
 @MainActor
 final class ScheduleModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
@@ -17,9 +19,22 @@ final class ScheduleModule: NotchModule {
     )
     /// Internal so app tests can check what Schedule shows.
     let store: ScheduleStore
+    private var cancellables: Set<AnyCancellable> = []
 
     init(context: ModuleContext) {
         store = ScheduleStore(runMode: context.runMode)
+        // Plan uses Today's planning settings, so a kit sizes reviews and
+        // buffers the same way in both places.
+        store.planSettings = TodayPlanSettings(kit: context.activeKit?.defaults)
+        context.kitApplied
+            .sink { [store] in store.planSettings = TodayPlanSettings(kit: $0.kit.defaults) }
+            .store(in: &cancellables)
+        context.providers.$snapshot
+            .sink { [store] snapshot in
+                store.sharedTasks = snapshot.openTasks
+                store.progress = snapshot.progress
+            }
+            .store(in: &cancellables)
     }
 
     func makePanel() -> AnyView {

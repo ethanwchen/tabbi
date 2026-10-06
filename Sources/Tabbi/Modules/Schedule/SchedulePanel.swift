@@ -5,7 +5,8 @@ import TabbiKit
 /// The Schedule panel: a header with the Day/Week switch, the date and the
 /// free time, then either today's timeline (events, planned blocks,
 /// now-line) with a line under it for what is on now or the block tapped,
-/// or the week's seven days stacked on the same clock hours.
+/// or the week's seven days stacked on the same clock hours. Plan puts a
+/// proposal on the timeline, which the strip under it adds or skips.
 struct SchedulePanel: View {
     @ObservedObject var store: ScheduleStore
 
@@ -21,16 +22,23 @@ struct SchedulePanel: View {
                     .frame(maxHeight: .infinity)
                     .transition(.opacity)
             } else {
-                ScheduleTimeline(layout: layout, now: store.now, selectedID: store.selectedID) { store.select($0) }
+                ScheduleTimeline(layout: layout, now: store.now, selectedID: store.selectedID,
+                                 isDrafting: store.draft != nil) { store.select($0) }
                     .frame(maxHeight: .infinity)
-                ScheduleDetailStrip(layout: layout, now: store.now, selected: store.selectedItem,
-                                    join: { store.join($0) }, close: { store.select(nil) })
+                if let draft = store.draft, store.selectedItem.map({ $0.kind == .proposed }) ?? true {
+                    SchedulePlanStrip(draft: draft, selected: store.selectedItem, writeFailed: store.writeFailed,
+                                      store: store)
+                } else {
+                    ScheduleDetailStrip(layout: layout, now: store.now, selected: store.selectedItem,
+                                        join: { store.join($0) }, close: { store.select(nil) })
+                }
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .motion(Theme.Motion.content, value: store.emptySituation)
         .motion(Theme.Motion.content, value: store.mode)
         .motion(Theme.Motion.snappy, value: store.selectedID)
+        .motion(Theme.Motion.content, value: store.draft)
         .onAppear { store.setVisible(true) }
         .onDisappear { store.setVisible(false) }
     }
@@ -63,6 +71,13 @@ private struct ScheduleHeader: View {
                     }
                     freeTime(layout.freeMinutes, suffix: "free", none: "No free time left",
                              help: "Free time left in your working day, with a buffer around each event")
+                    if store.draft == nil, layout.freeMinutes > 0 {
+                        SchedulePillButton(title: "Plan", symbol: "wand.and.stars", isProminent: true,
+                                           help: "Fill today's free time with your open tasks and reviews. "
+                                               + "Planned on this Mac, nothing is added until you say so") {
+                            store.planDay()
+                        }
+                    }
                 } else {
                     freeTime(store.weekLayout.freeMinutes, suffix: "free this week", none: "No free time this week",
                              help: "Free working time over the next seven days, with a buffer around each event")
@@ -251,9 +266,9 @@ private struct ScheduleWeekRow: View {
                     let laneHeight = (height - CGFloat(placed.lanes - 1)) / CGFloat(placed.lanes)
                     let color = blockColor(placed.item)
                     let block = RoundedRectangle(cornerRadius: 2, style: .continuous)
-                    block.fill(color.opacity(placed.item.kind == .planned ? 0.35 : 0.7))
+                    block.fill(color.opacity(placed.item.kind == .event ? 0.7 : 0.35))
                         .overlay {
-                            if placed.item.kind == .planned {
+                            if placed.item.kind != .event {
                                 block.strokeBorder(color, style: StrokeStyle(lineWidth: 1, dash: [2, 1.5]))
                             }
                         }
@@ -289,7 +304,7 @@ private struct ScheduleWeekRow: View {
     }
 
     private func blockColor(_ item: ScheduleItem) -> Color {
-        if item.kind == .planned { return accent }
+        if item.kind != .event { return accent }
         guard let color = item.calendarColor else { return Theme.Palette.secondaryText }
         return Color(.sRGB, red: color.red, green: color.green, blue: color.blue)
     }
@@ -301,6 +316,8 @@ private struct ScheduleTimeline: View {
     let layout: ScheduleDayLayout
     let now: Date
     let selectedID: ScheduleItem.ID?
+    /// While a plan is on offer, everything else steps back.
+    let isDrafting: Bool
     let select: (ScheduleItem.ID) -> Void
 
     private static let labelHeight: CGFloat = 16
@@ -341,7 +358,8 @@ private struct ScheduleTimeline: View {
                         let laneHeight = (trackHeight - CGFloat(placed.lanes - 1) * Self.laneGap)
                             / CGFloat(placed.lanes)
                         ScheduleBlock(item: placed.item, isPast: placed.item.end <= now,
-                                      isSelected: placed.id == selectedID, height: laneHeight) {
+                                      isSelected: placed.id == selectedID,
+                                      isDimmed: isDrafting && placed.item.kind != .proposed, height: laneHeight) {
                             select(placed.id)
                         }
                         .frame(width: max(width * placed.width - 1, 3), height: laneHeight)
@@ -360,11 +378,13 @@ private struct ScheduleTimeline: View {
 }
 
 /// One event or planned block. Events take their calendar's color; planned
-/// blocks are outlined in the module's accent.
+/// blocks are outlined in the module's accent, and proposed ones are filled
+/// with it more strongly so they stand out until added or skipped.
 private struct ScheduleBlock: View {
     let item: ScheduleItem
     let isPast: Bool
     let isSelected: Bool
+    let isDimmed: Bool
     let height: CGFloat
     let action: () -> Void
     @State private var hovering = false
@@ -398,28 +418,40 @@ private struct ScheduleBlock: View {
                 }
             }
             // An opaque base keeps the hour lines from showing through.
-            .background(shape.fill(color.opacity(hovering || isSelected ? 0.42 : 0.28)))
+            .background(shape.fill(color.opacity(fillOpacity)))
             .background(shape.fill(Theme.Palette.background))
             .overlay {
-                if item.kind == .planned {
-                    shape.strokeBorder(color.opacity(0.9), style: StrokeStyle(lineWidth: 1, dash: [3, 2]))
+                switch item.kind {
+                case .planned: shape.strokeBorder(color.opacity(0.9), style: StrokeStyle(lineWidth: 1, dash: [3, 2]))
+                case .proposed: shape.strokeBorder(color, lineWidth: 1)
+                case .event: EmptyView()
                 }
             }
             .overlay {
                 if isSelected { shape.strokeBorder(Theme.Palette.primaryText, lineWidth: 1.5) }
             }
             .clipShape(shape)
-            .opacity(isPast && !isSelected ? 0.5 : 1)
+            .opacity(isPast && !isSelected ? 0.5 : isDimmed ? 0.55 : 1)
             .contentShape(shape)
         }
         .buttonStyle(.plain)
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
-        .help("\(ScheduleFormat.title(item)), \(ScheduleFormat.range(item.start, item.end))")
+        .help(help)
+    }
+
+    private var fillOpacity: Double {
+        let base = item.kind == .proposed ? 0.4 : 0.28
+        return hovering || isSelected ? base + 0.14 : base
+    }
+
+    private var help: String {
+        let text = "\(ScheduleFormat.title(item)), \(ScheduleFormat.range(item.start, item.end))"
+        return item.kind == .proposed ? "Proposed: \(text). Click to add or skip it" : text
     }
 
     private var color: Color {
-        if item.kind == .planned { return accent }
+        if item.kind != .event { return accent }
         guard let color = item.calendarColor else { return Theme.Palette.secondaryText }
         return Color(.sRGB, red: color.red, green: color.green, blue: color.blue)
     }
@@ -476,7 +508,9 @@ private struct ScheduleDetailStrip: View {
         .lineLimit(1)
         .frame(maxWidth: .infinity, alignment: .leading)
         if let link = item.meetingLink {
-            ScheduleJoinButton(link: link) { join(link) }
+            SchedulePillButton(title: "Join", symbol: "video.fill", help: "Join \(link.provider.displayName) call") {
+                join(link)
+            }
         }
         IconButton(symbol: "xmark", size: 22, help: "Close details", action: close)
     }
@@ -514,36 +548,115 @@ private struct ScheduleDetailStrip: View {
 
     private func detailLine(_ item: ScheduleItem) -> String {
         var parts = [ScheduleFormat.range(item.start, item.end), ScheduleFormat.duration(minutes: item.minutes)]
-        if item.kind == .planned { parts.append(item.reason ?? "Planned with \(Edition.current.name)") }
+        if item.kind != .event { parts.append(item.reason ?? "Planned with \(Edition.current.name)") }
         return parts.joined(separator: ", ")
     }
 
     private func blockColor(_ item: ScheduleItem) -> Color {
         guard item.kind == .event, let color = item.calendarColor else {
-            return item.kind == .planned ? accent : Theme.Palette.secondaryText
+            return item.kind == .event ? Theme.Palette.secondaryText : accent
         }
         return Color(.sRGB, red: color.red, green: color.green, blue: color.blue)
     }
 }
 
-/// A small "Join" pill for an event with a video-call link.
-private struct ScheduleJoinButton: View {
-    let link: MeetingLink
+/// Under the timeline while a plan is on offer: the selected proposed
+/// block with its reason, or what the plan offers in all, with the buttons
+/// that add or skip it.
+private struct SchedulePlanStrip: View {
+    let draft: ScheduleDraft
+    let selected: ScheduleItem?
+    let writeFailed: Bool
+    @ObservedObject var store: ScheduleStore
+
+    var body: some View {
+        Card(padding: Theme.Spacing.s) {
+            HStack(spacing: Theme.Spacing.s) {
+                if let selected {
+                    block(selected)
+                } else {
+                    overview
+                }
+            }
+            .frame(maxWidth: .infinity, minHeight: 28, alignment: .leading)
+        }
+    }
+
+    @ViewBuilder
+    private func block(_ item: ScheduleItem) -> some View {
+        RoundedRectangle(cornerRadius: 1.5, style: .continuous)
+            .fill(accent)
+            .frame(width: 3, height: 28)
+        VStack(alignment: .leading, spacing: 0) {
+            Text(ScheduleFormat.title(item))
+                .font(Theme.Typography.bodyEmphasis)
+                .foregroundStyle(Theme.Palette.primaryText)
+            Text(failureOr([ScheduleFormat.range(item.start, item.end), ScheduleFormat.duration(minutes: item.minutes),
+                            item.reason].compactMap { $0 }.joined(separator: ", ")))
+                .font(Theme.Typography.caption.monospacedDigit())
+                .foregroundStyle(writeFailed ? Theme.Palette.danger : Theme.Palette.secondaryText)
+        }
+        .lineLimit(1)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        SchedulePillButton(title: "Skip", help: "Leave this block out of the plan") { store.skip(item.id) }
+        SchedulePillButton(title: "Add", symbol: "plus", isProminent: true,
+                           help: "Add this block to your calendar") { store.add(item.id) }
+    }
+
+    @ViewBuilder
+    private var overview: some View {
+        Image(systemName: "wand.and.stars")
+            .font(.system(size: 12, weight: .semibold))
+            .foregroundStyle(accent)
+            .frame(width: 16)
+        Text(failureOr(draft.summary))
+            .font(Theme.Typography.body.monospacedDigit())
+            .foregroundStyle(writeFailed ? Theme.Palette.danger : Theme.Palette.secondaryText)
+            .lineLimit(1)
+            .truncationMode(.tail)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .help(draft.unplacedDetail ?? "Click a block to add or skip just that one")
+        if draft.isEmpty {
+            SchedulePillButton(title: "OK", help: "Close the plan") { store.discardPlan() }
+        } else {
+            SchedulePillButton(title: "Discard", help: "Close the plan without adding anything") { store.discardPlan() }
+            SchedulePillButton(title: "Add all", symbol: "plus", isProminent: true,
+                               help: "Add every proposed block to your calendar") { store.add() }
+        }
+    }
+
+    private func failureOr(_ text: String) -> String {
+        writeFailed ? "Couldn't add to your calendar. Try again" : text
+    }
+}
+
+/// A small capsule button: tinted with the accent, or filled with it for
+/// the one action that matters most.
+private struct SchedulePillButton: View {
+    let title: String
+    var symbol: String?
+    var isProminent = false
+    let help: String
     let action: () -> Void
     @State private var hovering = false
 
     var body: some View {
         Button(action: action) {
-            Label("Join", systemImage: "video.fill")
-                .font(Theme.Typography.caption)
-                .foregroundStyle(accent)
-                .padding(.horizontal, Theme.Spacing.s)
-                .frame(height: 22)
-                .background(Capsule().fill(accent.opacity(hovering ? 0.28 : 0.16)))
-                .contentShape(Capsule())
+            HStack(spacing: Theme.Spacing.xxs) {
+                if let symbol { Image(systemName: symbol).font(.system(size: 10, weight: .bold)) }
+                Text(title)
+            }
+            .font(Theme.Typography.caption)
+            .foregroundStyle(isProminent ? Theme.Palette.background : accent)
+            .padding(.horizontal, Theme.Spacing.s)
+            .frame(height: 22)
+            .background(Capsule().fill(isProminent ? accent.opacity(hovering ? 1 : 0.88)
+                                                   : accent.opacity(hovering ? 0.28 : 0.16)))
+            .contentShape(Capsule())
+            .fixedSize()
         }
         .buttonStyle(.plain)
-        .help("Join \(link.provider.displayName) call")
+        .help(help)
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }

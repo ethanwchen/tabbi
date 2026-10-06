@@ -14,8 +14,13 @@ import TabbiKitCore
 ///
 /// In demo mode it shows `ScheduleSampleData` seen from 11:20 and never
 /// touches EventKit; `TABBI_SCHEDULE_PREVIEW=notAsked|denied|freeDay` renders
-/// the empty states instead, `selected` a block's details and `week` the
-/// Week view.
+/// the empty states instead, `selected` a block's details, `week` the Week
+/// view, and `plan` or `plan-selected` the Plan button's proposal.
+///
+/// Plan offers the rest of today planned on device (`ScheduleDraft`, no
+/// Claude): other modules' open tasks and review goals, placed in the free
+/// time. The blocks show on the timeline until the user adds or skips them;
+/// added ones are written to the default calendar as planned by Tabbi.
 @MainActor
 final class ScheduleStore: ObservableObject {
     enum Access: Equatable {
@@ -45,6 +50,16 @@ final class ScheduleStore: ObservableObject {
     @Published private(set) var now: Date
     /// The item whose details show under the timeline.
     @Published var selectedID: ScheduleItem.ID?
+    /// The plan on offer, from Plan until every block is added or skipped.
+    @Published private(set) var draft: ScheduleDraft?
+    /// True when the last Add didn't reach the calendar; the draft stays.
+    @Published private(set) var writeFailed = false
+
+    /// Open tasks and goals other modules share, which Plan schedules.
+    var sharedTasks: [ProvidedTask] = []
+    var progress: [ProgressItem] = []
+    /// Review sizing, buffer and end of day, from the kit's planner section.
+    var planSettings = TodayPlanSettings()
 
     private let isDemo: Bool
     private lazy var eventStore = EKEventStore()
@@ -66,28 +81,37 @@ final class ScheduleStore: ObservableObject {
             default: .granted
             }
             now = ScheduleSampleData.now(on: date)
-            let showsDay = preview == nil || preview == "selected" || preview == "week"
+            let showsDay = preview != "notAsked" && preview != "denied" && preview != "freeDay"
             items = showsDay ? ScheduleSampleData.weekItems(from: date) : []
             selectedID = preview == "selected" ? "demo-deck" : nil
             mode = preview == "week" ? .week : .day
+            if preview == "plan" || preview == "plan-selected" {
+                planDay()
+                if preview == "plan-selected" { selectedID = draft?.items.first?.id }
+            }
         } else {
             now = date
             access = Self.currentAccess()
         }
     }
 
+    /// The calendar plus any blocks on offer.
+    var shownItems: [ScheduleItem] {
+        items + (draft?.items ?? [])
+    }
+
     /// The Day view's layout for the current items and clock.
     var dayLayout: ScheduleDayLayout {
-        ScheduleDayLayout(day: now, now: now, items: items)
+        ScheduleDayLayout(day: now, now: now, items: shownItems)
     }
 
     /// The Week view's layout: today and the six days after it.
     var weekLayout: ScheduleWeekLayout {
-        ScheduleWeekLayout(now: now, days: Self.dayCount, items: items)
+        ScheduleWeekLayout(now: now, days: Self.dayCount, items: shownItems)
     }
 
     var selectedItem: ScheduleItem? {
-        selectedID.flatMap { id in items.first { $0.id == id } }
+        selectedID.flatMap { id in shownItems.first { $0.id == id } }
     }
 
     /// Why there's no timeline to show, or nil when there is one.
@@ -135,6 +159,51 @@ final class ScheduleStore: ObservableObject {
         selectedID = selectedID == id ? nil : id
     }
 
+    /// Plans the rest of today around the calendar and shows the blocks on
+    /// the timeline. Demo mode plans its sample tasks around the demo day.
+    func planDay() {
+        if !isDemo { now = Date() }
+        selectedID = nil
+        writeFailed = false
+        draft = ScheduleDraft.plan(now: now, items: items, sharedTasks: isDemo ? ScheduleSampleData.tasks : sharedTasks,
+                                   progress: isDemo ? [] : progress, settings: planSettings)
+    }
+
+    /// Writes one offered block (every one when `id` is nil) to the calendar.
+    func add(_ id: ScheduleItem.ID? = nil) {
+        guard var draft else { return }
+        do {
+            let written = try draft.add(id, now: isDemo ? now : Date(), events: items.map(\.upcomingEvent),
+                                        writer: isDemo ? DryRunPlanWriter(logs: false) : EventKitPlanWriter(store: eventStore))
+            if isDemo {
+                // Nothing reloads in demo mode, so show the blocks as planned here.
+                items += written.map {
+                    ScheduleItem(id: "demo-added-\($0.start.timeIntervalSinceReferenceDate)", title: $0.title,
+                                 start: $0.start, end: $0.end, kind: .planned)
+                }
+            }
+            writeFailed = false
+            settle(draft)
+            reload()
+        } catch {
+            writeFailed = true
+        }
+    }
+
+    /// Takes one offered block off the timeline.
+    func skip(_ id: ScheduleItem.ID) {
+        guard var draft else { return }
+        draft.skip(id)
+        settle(draft)
+    }
+
+    /// Drops the whole offer; nothing was written.
+    func discardPlan() {
+        selectedID = nil
+        writeFailed = false
+        draft = nil
+    }
+
     func openPrivacySettings() {
         NSWorkspace.shared.open(Self.privacySettingsURL)
     }
@@ -151,6 +220,14 @@ final class ScheduleStore: ObservableObject {
 
     /// Days the store reads: the Week view's seven, the first one today.
     private static let dayCount = 7
+
+    private func settle(_ draft: ScheduleDraft) {
+        if let selectedID, !draft.items.contains(where: { $0.id == selectedID }),
+           !items.contains(where: { $0.id == selectedID }) {
+            self.selectedID = nil
+        }
+        self.draft = draft.isSettled ? nil : draft
+    }
 
     private static func currentAccess() -> Access {
         guard ConnectionProbes.canAskForCalendar else { return .unavailable }
@@ -173,7 +250,7 @@ final class ScheduleStore: ObservableObject {
         guard let end = calendar.date(byAdding: .day, value: Self.dayCount, to: startOfDay) else { return }
         let predicate = eventStore.predicateForEvents(withStart: startOfDay, end: end, calendars: nil)
         items = eventStore.events(matching: predicate).map(Self.item)
-        if let selectedID, !items.contains(where: { $0.id == selectedID }) { self.selectedID = nil }
+        if let selectedID, !shownItems.contains(where: { $0.id == selectedID }) { self.selectedID = nil }
         hasAccounts = eventStore.calendars(for: .event).contains { Self.syncsFromAccount($0.source) }
     }
 

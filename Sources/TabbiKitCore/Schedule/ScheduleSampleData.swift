@@ -75,6 +75,16 @@ public enum ScheduleSampleData {
         return result
     }
 
+    /// Open tasks for the demo's Plan button, as other modules would share
+    /// them. Around the demo day they fill the afternoon gap and leave the
+    /// last one over, so the proposal shows a didn't-fit line too.
+    public static let tasks: [ProvidedTask] = [
+        ProvidedTask(id: "demo-pr", source: "planner", title: "Review PR #142", estimatedMinutes: 30),
+        ProvidedTask(id: "demo-email", source: "planner", title: "Reply to Priya", estimatedMinutes: 15),
+        ProvidedTask(id: "demo-notes", source: "planner", title: "Prep beta review notes", estimatedMinutes: 45),
+        ProvidedTask(id: "demo-roadmap", source: "planner", title: "Outline the Q4 roadmap", estimatedMinutes: 60),
+    ]
+
     static func time(_ minutes: Int, on date: Date, calendar: Calendar) -> Date {
         calendar.date(byAdding: .minute, value: minutes, to: calendar.startOfDay(for: date)) ?? date
     }

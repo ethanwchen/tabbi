@@ -8,6 +8,8 @@ public struct ScheduleItem: Identifiable, Hashable, Sendable {
         case event
         /// A focus, review or study block from Plan my day.
         case planned
+        /// A block the planner offers that isn't on the calendar yet.
+        case proposed
     }
 
     public let id: String
