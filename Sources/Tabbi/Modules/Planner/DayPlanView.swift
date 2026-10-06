@@ -15,6 +15,7 @@ struct DayPlanView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
         .motion(Theme.Motion.content, value: plan.phase)
+        .motion(Theme.Motion.content, value: plan.isRefining)
     }
 
     @ViewBuilder
@@ -35,14 +36,10 @@ struct DayPlanView: View {
                                     dismiss: { withMotion(Theme.Motion.snappy) { plan.dismiss(block.id) } })
                         .transition(.motionRow(from: .leading))
                 }
+                .disabled(plan.isRefining)
+                .opacity(plan.isRefining ? 0.5 : 1)
                 Spacer(minLength: Theme.Spacing.xs)
-                Text(DayPlanFormat.footer(proposal))
-                    .font(Theme.Typography.caption)
-                    .foregroundStyle(Theme.Palette.tertiaryText)
-                    .lineLimit(1)
-                    .contentTransition(.numericText())
-                    // Lines up with the time column.
-                    .padding(.leading, Theme.Spacing.s + 20 + Theme.Spacing.s)
+                DayPlanFooter(plan: plan, proposal: proposal)
             }
         case .noFreeTime:
             PlannerMessage(symbol: "moon.stars.fill", tint: TodayModule.descriptor.accentColor,
@@ -83,7 +80,7 @@ private struct DayPlanHeader: View {
             Image(systemName: "sparkles")
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(TodayModule.descriptor.accentColor)
-                .symbolEffect(.pulse, isActive: plan.phase == .planning)
+                .symbolEffect(.pulse, isActive: plan.phase == .planning || plan.isRefining)
                 .frame(width: 20)
             Text(title)
                 .font(Theme.Typography.title)
@@ -106,6 +103,8 @@ private struct DayPlanHeader: View {
                                   help: "Add every block to your default calendar") {
                     withMotion(Theme.Motion.snappy) { plan.add() }
                 }
+                .disabled(plan.isRefining)
+                .opacity(plan.isRefining ? 0.5 : 1)
                 .transition(.motionPop)
             }
         }
@@ -123,6 +122,47 @@ private struct DayPlanHeader: View {
 
     /// Nothing to discard, so the way out reads as "Done".
     private var isFinal: Bool { plan.phase == .noFreeTime }
+}
+
+// MARK: Footer
+
+/// The caption under the rows (where blocks go, what happened so far) and
+/// the optional "Refine with Claude", offered once per on-device plan.
+private struct DayPlanFooter: View {
+    @ObservedObject var plan: DayPlanStore
+    let proposal: DayPlanProposal
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.s) {
+            Text(caption)
+                .font(Theme.Typography.caption)
+                .foregroundStyle(plan.refineFailed ? Theme.Palette.warning : Theme.Palette.tertiaryText)
+                .lineLimit(1)
+                .contentTransition(.numericText())
+                .frame(maxWidth: .infinity, alignment: .leading)
+            if showsRefine {
+                PlannerPillButton(title: "Refine", symbol: "wand.and.stars",
+                                  help: "Refine with Claude: ask Claude for suggestions on this plan (optional)") {
+                    plan.refine()
+                }
+                .transition(.opacity)
+            }
+        }
+        .frame(height: 20)
+        // Lines up with the time column.
+        .padding(.leading, Theme.Spacing.s + 20 + Theme.Spacing.s)
+        .padding(.trailing, Theme.Spacing.s)
+    }
+
+    private var caption: String {
+        if plan.isRefining { return "Claude is looking over this plan…" }
+        if plan.refineFailed { return "Claude couldn't refine it. This plan still works." }
+        return DayPlanFormat.footer(proposal)
+    }
+
+    private var showsRefine: Bool {
+        plan.canRefine && !plan.isRefining && !plan.refineFailed && proposal.refinement == nil
+    }
 }
 
 // MARK: Rows
@@ -296,7 +336,12 @@ enum DayPlanFormat {
         var parts: [String] = []
         if proposal.addedCount > 0 { parts.append("\(proposal.addedCount) added to your calendar") }
         if proposal.skippedCount > 0 { parts.append("\(proposal.skippedCount) no longer fit") }
-        return parts.isEmpty ? "Blocks go to your default calendar." : parts.joined(separator: " · ")
+        guard parts.isEmpty else { return parts.joined(separator: " · ") }
+        switch proposal.refinement {
+        case .changed: return "Refined with Claude."
+        case .unchanged: return "Claude suggests no changes."
+        case nil: return "Blocks go to your calendar."
+        }
     }
 }
 

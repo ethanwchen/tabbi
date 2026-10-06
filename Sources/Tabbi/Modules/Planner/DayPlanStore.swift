@@ -61,6 +61,13 @@ final class DayPlanStore: ObservableObject {
     @Published private(set) var phase: Phase = .idle
     /// True when the last Add didn't reach the calendar; the proposal stays.
     @Published private(set) var writeFailed = false
+    /// True when the on-device plan can get a second look from Claude
+    /// ("Refine with Claude"): the plan is local and the CLI is installed.
+    @Published private(set) var canRefine = false
+    /// Waiting for Claude's refinement; the local plan stays on screen.
+    @Published private(set) var isRefining = false
+    /// Claude's refinement didn't come back usable; the local plan stays.
+    @Published private(set) var refineFailed = false
 
     var isActive: Bool { phase != .idle }
 
@@ -87,10 +94,13 @@ final class DayPlanStore: ObservableObject {
         // Lets demo snapshots render each state: `TABBI_PLANNER_PREVIEW=plan`.
         // Demo only, so a preview proposal can never reach the real calendar.
         guard isDemo else { return }
+        canRefine = settings.planMode == .local
         switch environment["TABBI_PLANNER_PREVIEW"] {
-        case "plan": phase = .proposal(sampleProposal(
-            tasks: PlannerDay.sample(on: PlannerDayKey(date: Date()), kind: settings.sampleDay).items,
-            sharedTasks: [], progress: [AnkiSummary.demo().progressItem()]))
+        case "plan", "plan-refining":
+            phase = .proposal(sampleProposal(
+                tasks: PlannerDay.sample(on: PlannerDayKey(date: Date()), kind: settings.sampleDay).items,
+                sharedTasks: [], progress: [AnkiSummary.demo().progressItem()]))
+            isRefining = canRefine && environment["TABBI_PLANNER_PREVIEW"] == "plan-refining"
         case "planning": phase = .planning
         case "plan-failed": phase = .failed(.claudeFailed)
         case "plan-calendar-off": phase = .failed(.calendarOff)
@@ -112,6 +122,7 @@ final class DayPlanStore: ObservableObject {
         writeFailed = false
         phase = .planning
         let generation = generation
+        if !isDemo { checkRefineAvailable() }
 
         if isDemo {
             task = Task { [weak self] in
@@ -136,6 +147,38 @@ final class DayPlanStore: ObservableObject {
 
     func openPrivacySettings() { upNext.openPrivacySettings() }
 
+    /// Asks Claude for suggestions on the local plan's blocks still on offer.
+    /// Optional by design: whatever happens, the local plan stays usable,
+    /// and Claude's answer is validated like any plan before it replaces it.
+    func refine() {
+        guard canRefine, !isRefining, case .proposal(let proposal) = phase, proposal.refinement == nil else { return }
+        invalidateRun()
+        isRefining = true
+        refineFailed = false
+        let generation = generation
+        let blocks = proposal.pending
+
+        task = Task { [weak self] in
+            guard let self else { return }
+            let refined: [PlanBlock]?
+            if self.isDemo {
+                // Demo mode never runs the CLI: Claude agrees with the sample plan.
+                try? await Task.sleep(for: .seconds(1.2))
+                refined = blocks
+            } else {
+                refined = await self.refinedBlocks(blocks)
+            }
+            guard generation == self.generation, case .proposal(var current) = self.phase else { return }
+            self.isRefining = false
+            if let refined, !refined.isEmpty {
+                current.refine(with: refined)
+                self.phase = .proposal(current)
+            } else if !Task.isCancelled {
+                self.refineFailed = true
+            }
+        }
+    }
+
     /// Discards the proposal (or stops waiting) and shows the checklist again.
     func cancel() {
         invalidateRun()
@@ -144,14 +187,14 @@ final class DayPlanStore: ObservableObject {
     }
 
     func dismiss(_ id: PlanBlock.ID) {
-        guard case .proposal(var proposal) = phase else { return }
+        guard !isRefining, case .proposal(var proposal) = phase else { return }
         proposal.dismiss(id)
         settle(proposal)
     }
 
     /// Adds one block, or every remaining block when `id` is nil.
     func add(_ id: PlanBlock.ID? = nil) {
-        guard case .proposal(var proposal) = phase else { return }
+        guard !isRefining, case .proposal(var proposal) = phase else { return }
         do {
             // Re-read the calendar: meetings may have arrived since the plan was made.
             try proposal.add(id.map { [$0] }, now: Date(), events: upNext.todayEvents(),
@@ -191,6 +234,33 @@ final class DayPlanStore: ObservableObject {
         generation += 1
         task?.cancel()
         task = nil
+        isRefining = false
+        refineFailed = false
+    }
+
+    /// Looks for the `claude` CLI off the main thread while a local plan is
+    /// worked out, so "Refine with Claude" only shows when it can work.
+    private func checkRefineAvailable() {
+        guard settings.planMode == .local else {
+            canRefine = false
+            return
+        }
+        Task { [weak self] in
+            let found = await Task.detached(priority: .utility, operation: { ClaudeCLI.locate() }).value != nil
+            self?.canRefine = found
+        }
+    }
+
+    /// Claude's refinement of `blocks` on today's calendar as it is now, or
+    /// nil when Claude is missing or its answer isn't usable.
+    private func refinedBlocks(_ blocks: [PlanBlock]) async -> [PlanBlock]? {
+        let context = DayPlanContext(now: Date(), events: upNext.todayEvents(), tasks: lastTasks,
+                                     sharedWork: lastSharedWork, dayEndHour: settings.dayEndHour)
+        guard let executable = await Task.detached(priority: .userInitiated, operation: { ClaudeCLI.locate() }).value,
+              let text = await Self.answer(executable: executable,
+                                           prompt: DayPlanner.refinePrompt(for: context, plan: blocks))
+        else { return nil }
+        return try? DayPlanner.refinement(from: text, context: context, plan: blocks)
     }
 
     private func publish(_ generation: Int, _ phase: Phase) {

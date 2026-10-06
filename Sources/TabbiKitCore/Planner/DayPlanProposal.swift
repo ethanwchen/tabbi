@@ -38,7 +38,9 @@ public struct DayPlanProposal: Equatable, Sendable {
     public private(set) var skippedCount = 0
     /// Planned rests between blocks (`StudyDayPlan.breaks`); empty for
     /// Claude's plans.
-    public let breaks: [DateInterval]
+    public private(set) var breaks: [DateInterval]
+    /// What "Refine with Claude" did to this proposal, once it has run.
+    public private(set) var refinement: PlanRefinement?
 
     public init(blocks: [PlanBlock], breaks: [DateInterval] = []) {
         pending = blocks.sorted { ($0.start, $0.end) < ($1.start, $1.end) }
@@ -66,6 +68,25 @@ public struct DayPlanProposal: Equatable, Sendable {
     /// Removes a block the user doesn't want.
     public mutating func dismiss(_ id: PlanBlock.ID) {
         pending.removeAll { $0.id == id }
+    }
+
+    /// Replaces the blocks still on offer with Claude's `blocks` (from
+    /// `DayPlanner.refinement`). The same blocks leave the proposal as it
+    /// was and record `.unchanged`; an empty answer changes nothing. The
+    /// local plan's breaks only stay where they still sit between blocks.
+    public mutating func refine(with blocks: [PlanBlock]) {
+        guard !blocks.isEmpty else { return }
+        let refined = blocks.sorted { ($0.start, $0.end) < ($1.start, $1.end) }
+        guard refined.map(\.interval) != pending.map(\.interval)
+                || refined.map(\.title) != pending.map(\.title) else {
+            refinement = .unchanged
+            return
+        }
+        pending = refined
+        breaks = breaks.filter { rest in
+            pending.contains { $0.end == rest.start } && pending.contains { $0.start == rest.end }
+        }
+        refinement = .changed
     }
 
     /// Writes the given pending blocks (all of them when `ids` is nil) and
