@@ -21,8 +21,8 @@ enum CatArt {
         ....SSBBBBBBBBSS....
         """)
 
-    /// British Shorthair: small rounded ears set wide, a taupe crown with
-    /// faint ticking, and full round cheeks around a white muzzle and chin.
+    /// British Shorthair: small rounded ears set wide, a faint silver crown
+    /// with subtle ticking, and full round cheeks around a white muzzle and chin.
     static let headRound = SpriteGrid(art: """
         ....................
         .ee..............ee.
