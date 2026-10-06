@@ -583,57 +583,61 @@ extension CostumeArt {
     )
 
     /// A red cape fastened with a gold clasp at the collar. From the front it
-    /// drapes over the shoulders and falls past both sides of the body; from
-    /// the side it streams back over the rump.
+    /// drapes over the shoulders and falls past both sides of the body, its
+    /// crimson lining showing; from the side it streams back over the rump
+    /// with a fold running into a swallowtail, so it never reads as a saddle.
     static let superheroCape = BodyItem(
         cat: SpriteGrid(art: """
             ....................
             ....................
             ....................
             ...HHHHH.YY.HHHHH...
-            ..HHH..........HHH..
-            ..HH............HH..
-            ..HH............HH..
-            .HHH............HHH.
-            .HHH............HHH.
-            .HHH............HHH.
+            ..HHX..........XHH..
+            ..HX............XH..
+            ..HX............XH..
+            .HHX............XHH.
+            .HHX............XHH.
+            .HHX............XHH.
             .HHY............YHH.
             """),
         dog: SpriteGrid(art: """
             ....................
             ....................
             ...HHHHH.YY.HHHHH...
-            ..HHH..........HHH..
-            ..HH............HH..
-            .HHH............HHH.
-            .HHH............HHH.
-            .HHH............HHH.
-            .HHH............HHH.
+            ..HHX..........XHH..
+            ..HX............XH..
+            .HHX............XHH.
+            .HHX............XHH.
+            .HHX............XHH.
+            .HHX............XHH.
             .HHY............YHH.
             """),
         longDog: SpriteGrid(art: """
-            .................HHH....
             ........................
-            ........YHHHHHHHHHHH....
-            .........HHHHHHHHHHHHH..
-            ..........HHHHHHHHHHHHH.
-            ............HHHHHHH.HH..
+            ........YHHHHHH.........
+            .........HXHHHHHHHHH....
+            .........HHXXHHHHHHHHHH.
+            .........HHHHHXXXHHH....
+            ..........XHHHHHHHXHHHH.
+            ............XXXXXXXX....
             """),
         walk: SpriteGrid(art: """
             ..............HHH.......
-            ...........HHHHHHHHHH...
-            ..........HHHHHHHHHHHHH.
-            ...........HHHHHHHHHHHH.
-            .............HHHHHHH.HH.
-            ...............HHH......
+            ..............YHHHHH....
+            ..............HXHHHHHH..
+            ..............HHXXHHHHHH
+            ..............HHHHXXXH..
+            ..............XHHHHHHXHH
+            ...............XXXXXX...
             """),
         walkLong: SpriteGrid(art: """
             ...............HHH......
-            ............HHHHHHHHHH..
-            ...........HHHHHHHHHHHHH
-            ............HHHHHHHHHHHH
-            ..............HHHHHHH.HH
-            ................HHH.....
+            ..............YHHHHH....
+            .............HHXHHHHHH..
+            .............HHHHXXHHHHH
+            .............HHHHHHXXH..
+            ..............XHHHHHHXHH
+            ................XXXXXX..
             """),
         rise: 1
     )

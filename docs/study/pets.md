@@ -65,6 +65,7 @@ Parse errors report the 1-based row and column of the problem.
 | `H` | heart | celebration heart |
 | `F` | leaf | frog hat, flower crown vine |
 | `I` | leather | cowboy hat |
+| `X` | crimson | superhero cape folds, lining and hem (uppercase; lowercase `x` erases) |
 
 ### Special cells
 
@@ -145,9 +146,13 @@ Accessories are drawn after the face and before the automatic outline, so hats g
    every item shows and keeps a one-pixel margin inside the frame, head and face items keep the same offset from the nose in every frame, and hats rest on the skull without covering an eye (items with `coversEyes` must hide at least one).
    Face items must reach across every breed's eye rows, and no outfit, hood included, may cover an eye in any frame.
 
+![Every head item on every breed](images/contact-head.png)
+
 ![Every face item on every breed](images/contact-face.png)
 
 ![Every outfit and neck item on every breed](images/contact-body.png)
+
+![Every breed in the superhero cape through every animation](images/strip-superhero-cape.png)
 
 ## Animations
 

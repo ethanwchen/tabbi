@@ -146,6 +146,8 @@ public enum PetPaletteRole: String, CaseIterable, Codable, Sendable {
     case leaf
     /// Warm brown leather: the cowboy hat.
     case leather
+    /// Deep red folds and hems on heart-red cloth: the superhero cape.
+    case crimson
 
     /// The grid character for this role.
     public var symbol: Character {
@@ -175,6 +177,7 @@ public enum PetPaletteRole: String, CaseIterable, Codable, Sendable {
         case .heart: "H"
         case .leaf: "F"
         case .leather: "I"
+        case .crimson: "X"
         }
     }
 
@@ -287,6 +290,7 @@ public struct PetPalette: Hashable, Codable, Sendable {
         .heart: PetColor(hex: "#FF5C7A")!,
         .leaf: PetColor(hex: "#6CC46A")!,
         .leather: PetColor(hex: "#A8683A")!,
+        .crimson: PetColor(hex: "#B8304C")!,
     ]
 
     public static let base = PetPalette([:])
