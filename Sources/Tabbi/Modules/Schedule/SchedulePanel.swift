@@ -685,9 +685,9 @@ private struct SchedulePlanStrip: View {
             .font(.system(size: 12, weight: .semibold))
             .foregroundStyle(accent)
             .frame(width: 16)
-        Text(failureOr(draft.summary))
+        Text(failureOr(overviewText))
             .font(Theme.Typography.body.monospacedDigit())
-            .foregroundStyle(writeFailed ? Theme.Palette.danger : Theme.Palette.secondaryText)
+            .foregroundStyle(writeFailed || store.refineFailed ? Theme.Palette.danger : Theme.Palette.secondaryText)
             .lineLimit(1)
             .truncationMode(.tail)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -695,9 +695,28 @@ private struct SchedulePlanStrip: View {
         if draft.isEmpty {
             SchedulePillButton(title: "OK", help: "Close the plan") { store.discardPlan() }
         } else {
+            if store.canRefine || store.isRefining {
+                SchedulePillButton(title: "Refine", symbol: "wand.and.stars",
+                                   help: "Refine with Claude: suggest a better order or lengths for this plan") {
+                    store.refine()
+                }
+                .disabled(store.isRefining)
+            }
             SchedulePillButton(title: "Discard", help: "Close the plan without adding anything") { store.discardPlan() }
             SchedulePillButton(title: "Add all", symbol: "plus", isProminent: true,
                                help: "Add every proposed block to your calendar") { store.add() }
+                .disabled(store.isRefining)
+        }
+    }
+
+    /// The summary, or where "Refine with Claude" stands.
+    private var overviewText: String {
+        if store.isRefining { return "Claude is looking over this plan..." }
+        if store.refineFailed { return "Claude couldn't refine this plan" }
+        return switch draft.refinement {
+        case .changed: "Refined with Claude: \(draft.summary)"
+        case .unchanged: "Claude suggests no changes"
+        case nil: draft.summary
         }
     }
 
@@ -721,6 +740,7 @@ private struct SchedulePillButton: View {
     let help: String
     let action: () -> Void
     @State private var hovering = false
+    @Environment(\.isEnabled) private var isEnabled
 
     var body: some View {
         Button(action: action) {
@@ -736,6 +756,7 @@ private struct SchedulePillButton: View {
                                                    : accent.opacity(hovering ? 0.28 : 0.16)))
             .contentShape(Capsule())
             .fixedSize()
+            .opacity(isEnabled ? 1 : 0.45)
         }
         .buttonStyle(.plain)
         .help(help)

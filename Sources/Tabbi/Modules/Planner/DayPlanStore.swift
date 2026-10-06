@@ -257,8 +257,9 @@ final class DayPlanStore: ObservableObject {
         let context = DayPlanContext(now: Date(), events: upNext.todayEvents(), tasks: lastTasks,
                                      sharedWork: lastSharedWork, dayEndHour: settings.dayEndHour)
         guard let executable = await Task.detached(priority: .userInitiated, operation: { ClaudeCLI.locate() }).value,
-              let text = await Self.answer(executable: executable,
-                                           prompt: DayPlanner.refinePrompt(for: context, plan: blocks))
+              let text = await DayPlanner.answer(executable: executable,
+                                                prompt: DayPlanner.refinePrompt(for: context, plan: blocks),
+                                                timeout: Self.timeout)
         else { return nil }
         return try? DayPlanner.refinement(from: text, context: context, plan: blocks)
     }
@@ -295,35 +296,10 @@ final class DayPlanStore: ObservableObject {
         guard let executable = await Task.detached(priority: .userInitiated, operation: { ClaudeCLI.locate() }).value else {
             return .failed(.claudeNotFound)
         }
-        guard let text = await Self.answer(executable: executable, prompt: DayPlanner.prompt(for: context)),
+        guard let text = await DayPlanner.answer(executable: executable, prompt: DayPlanner.prompt(for: context),
+                                                   timeout: Self.timeout),
               let blocks = try? DayPlanner.proposal(from: text, context: context)
         else { return Task.isCancelled ? .idle : .failed(.claudeFailed) }
         return blocks.isEmpty ? .noFreeTime : .proposal(DayPlanProposal(blocks: blocks))
-    }
-
-    /// The final result text of one `claude -p` run, or nil on error or timeout.
-    private static func answer(executable: URL, prompt: String) async -> String? {
-        await withTaskGroup(of: String?.self) { group in
-            group.addTask {
-                var text: String?
-                do {
-                    let events = ClaudeCLI.stream(executable: executable, prompt: prompt,
-                                                  extraArguments: DayPlanner.extraArguments())
-                    for try await event in events {
-                        if case .result(let result) = event, !result.isError { text = result.text }
-                    }
-                } catch {
-                    // A successful result followed by a non-zero exit still counts.
-                }
-                return text
-            }
-            group.addTask {
-                try? await Task.sleep(for: timeout)
-                return nil
-            }
-            let first = await group.next() ?? nil
-            group.cancelAll()
-            return first
-        }
     }
 }

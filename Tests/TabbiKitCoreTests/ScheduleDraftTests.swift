@@ -139,6 +139,60 @@ struct ScheduleDraftTests {
         #expect(draft.summary == "3 blocks, 1 h 30 min. 1 didn't fit")
     }
 
+    // MARK: Refine with Claude
+
+    @Test func refiningReplacesTheOfferAndExplainsClaudesBlocks() throws {
+        var draft = Self.draft(tasks: [Self.task("Write spec", 60), Self.task("Inbox", 15)])
+        #expect(draft.canRefine)
+        let suggested = PlanBlock(start: Self.at(10), end: Self.at(11), title: "Write spec")
+        draft.refine(with: [suggested])
+        #expect(draft.refinement == .changed)
+        #expect(!draft.canRefine)
+        let item = try #require(draft.items.first)
+        #expect(draft.items.count == 1)
+        #expect(item.kind == .proposed)
+        #expect(item.start == Self.at(10))
+        #expect(item.reason == "Suggested by Claude")
+        #expect(draft.summary == "1 block, 1 h")
+
+        let writer = RecordingWriter()
+        try draft.add(item.id, now: Self.at(9), events: [], writer: writer)
+        #expect(writer.written.map(\.start) == [Self.at(10)])
+        #expect(draft.isSettled)
+    }
+
+    @Test func anUnchangedRefinementKeepsTheLocalReasons() {
+        var draft = Self.draft(tasks: [Self.task("Write spec", 60)])
+        let before = draft.items
+        draft.refine(with: draft.proposal.pending)
+        #expect(draft.refinement == .unchanged)
+        #expect(draft.items == before)
+        #expect(!draft.canRefine)
+    }
+
+    @Test func workClaudeFitsInNoLongerCountsAsLeftOut() {
+        var draft = Self.draft(now: Self.at(16), tasks: [Self.task("Write spec", 60), Self.task("Big", 120)])
+        let left = try! #require(draft.unplaced.first?.work.title)
+        draft.refine(with: [PlanBlock(start: Self.at(16), end: Self.at(17), title: left)])
+        #expect(draft.unplaced.isEmpty)
+        #expect(!draft.summary.contains("didn't fit"))
+    }
+
+    @Test func theRefineContextSeesTheCalendarAndAllTheWork() {
+        let meeting = ScheduleItem(id: "standup", title: "Standup", start: Self.at(9, 30), end: Self.at(10))
+        let draft = Self.draft(now: Self.at(16), items: [meeting],
+                               tasks: [Self.task("Write spec", 60), Self.task("Big", 120)])
+        let context = draft.refineContext(now: Self.at(16), items: [meeting] + draft.items, calendar: Self.calendar)
+        #expect(context.events.map(\.id) == ["standup"])
+        #expect(Set(context.sharedWork) == ["Write spec", "Big"])
+        #expect(context.tasks.isEmpty)
+    }
+
+    @Test func weekPlansAreNotRefined() {
+        let draft = Self.weekDraft(tasks: [Self.task("Write spec", 60)])
+        #expect(!draft.canRefine)
+    }
+
     // MARK: Week
 
     private static func weekDraft(now: Date = at(9), items: [ScheduleItem] = [], tasks: [ProvidedTask],

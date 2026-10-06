@@ -57,10 +57,15 @@ public struct ScheduleDraft: Equatable, Sendable {
         return ScheduleDraft(week: week)
     }
 
-    /// Blocks still on offer, as proposed items for the timeline.
+    /// Blocks still on offer, as proposed items for the timeline. Blocks
+    /// Claude suggested in place of the local ones say so as their reason.
     public var items: [ScheduleItem] {
-        let pending = Set(proposal.pending.map(\.id))
-        return plan.blocks.filter { pending.contains($0.id) }.map { scheduled in
+        let local = Dictionary(plan.blocks.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+        return proposal.pending.map { block in
+            guard let scheduled = local[block.id] else {
+                return ScheduleItem(id: block.id.uuidString, title: block.title, start: block.start, end: block.end,
+                                    kind: .proposed, reason: "Suggested by Claude")
+            }
             var item = ScheduleItem(scheduled: scheduled)
             item.kind = .proposed
             if scheduled.parts > 1 { item.title += " (\(scheduled.part) of \(scheduled.parts))" }
@@ -68,8 +73,36 @@ public struct ScheduleDraft: Equatable, Sendable {
         }
     }
 
-    /// Work the plan left out, and why.
-    public var unplaced: [UnplacedWork] { plan.unplaced }
+    /// What "Refine with Claude" did to this plan, once it has run.
+    public var refinement: PlanRefinement? { proposal.refinement }
+
+    /// True while a day plan still has blocks on offer and hasn't been
+    /// refined yet. Week plans span days Claude's day prompt can't see.
+    public var canRefine: Bool { !isWeek && !proposal.pending.isEmpty && proposal.refinement == nil }
+
+    /// The day Claude refines: the calendar as `items` show it now and the
+    /// plan's work (placed or not), so Claude can also fit in what didn't fit.
+    public func refineContext(now: Date, items: [ScheduleItem], settings: TodayPlanSettings = TodayPlanSettings(),
+                              calendar: Calendar = .current) -> DayPlanContext {
+        var work: [String] = []
+        for title in plan.blocks.map(\.block.title) + plan.unplaced.map(\.work.title) where !work.contains(title) {
+            work.append(title)
+        }
+        return DayPlanContext(now: now, events: items.filter { $0.kind != .proposed }.map(\.upcomingEvent),
+                              tasks: [], sharedWork: work, calendar: calendar, dayEndHour: settings.dayEndHour)
+    }
+
+    /// Replaces the blocks still on offer with Claude's (from
+    /// `DayPlanner.refinement`); see `DayPlanProposal.refine(with:)`.
+    public mutating func refine(with blocks: [PlanBlock]) {
+        proposal.refine(with: blocks)
+    }
+
+    /// Work the plan left out, and why; a refined plan may have found room.
+    public var unplaced: [UnplacedWork] {
+        guard proposal.refinement == .changed else { return plan.unplaced }
+        return plan.unplaced.filter { work in !proposal.pending.contains { $0.title == work.work.title } }
+    }
 
     /// True when the plan had nothing to offer in the first place.
     public var isEmpty: Bool { plan.blocks.isEmpty }

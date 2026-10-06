@@ -53,3 +53,33 @@ public extension DayPlanner {
     /// A refined plan may keep every local block, even past `maximumBlocks`.
     private static func refineLimit(_ plan: [PlanBlock]) -> Int { max(maximumBlocks, plan.count) }
 }
+
+public extension DayPlanner {
+    /// The final result text of one `claude -p` run with the planner's
+    /// arguments, or nil on an error or after `timeout`. Plan my day and the
+    /// Schedule's Refine both ask Claude this way.
+    static func answer(executable: URL, prompt: String, timeout: Duration = .seconds(60)) async -> String? {
+        await withTaskGroup(of: String?.self) { group in
+            group.addTask {
+                var text: String?
+                do {
+                    let events = ClaudeCLI.stream(executable: executable, prompt: prompt,
+                                                  extraArguments: extraArguments())
+                    for try await event in events {
+                        if case .result(let result) = event, !result.isError { text = result.text }
+                    }
+                } catch {
+                    // A successful result followed by a non-zero exit still counts.
+                }
+                return text
+            }
+            group.addTask {
+                try? await Task.sleep(for: timeout)
+                return nil
+            }
+            let first = await group.next() ?? nil
+            group.cancelAll()
+            return first
+        }
+    }
+}
