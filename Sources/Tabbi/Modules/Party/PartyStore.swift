@@ -39,6 +39,8 @@ final class PartyStore: ObservableObject {
     private var snapshotServer: URL?
     private let repository: PartySettingsRepository?
     private let credentials: any PartyCredentialStore
+    /// Replaces HTTPS in tests; nil talks to the server.
+    private let transport: (any PartyTransport)?
     private let defaults = UserDefaults.standard
     private var account: PartyAccount?
     private var tracker: PartyPresenceTracker
@@ -55,14 +57,22 @@ final class PartyStore: ObservableObject {
     private var heartbeatTask: Task<Void, Never>?
     private var refreshTask: Task<Void, Never>?
     private var clockTask: Task<Void, Never>?
+    private var nameSyncTask: Task<Void, Never>?
+    /// Writes a name edited in Party back to the app-wide name.
+    private var saveName: ((String) -> Void)?
+    /// True when `TABBI_PARTY_NAME` picked the name a local snapshot renders as.
+    private var pinsName = false
     private var cancellables: Set<AnyCancellable> = []
 
     private static let trackerKey = "party.presence"
 
     /// - Parameter environment: the snapshot-only knobs, such as
     ///   `TABBI_PARTY_PREVIEW` and a local `TABBI_PARTY_SERVER`.
-    init(runMode: RunMode, environment: [String: String] = ProcessInfo.processInfo.environment) {
+    ///   `transport` replaces HTTPS (tests).
+    init(runMode: RunMode, environment: [String: String] = ProcessInfo.processInfo.environment,
+         transport: (any PartyTransport)? = nil) {
         isDemo = runMode.isDemo
+        self.transport = transport
         isSnapshot = runMode.isSnapshot
         if isDemo {
             repository = nil
@@ -79,6 +89,7 @@ final class PartyStore: ObservableObject {
             // the given user (or a new one) and render what the server returns.
             repository = nil
             snapshotServer = local.server
+            pinsName = environment["TABBI_PARTY_NAME"] != nil
             let settings = PartySettings(serverText: local.server.absoluteString,
                                          name: environment["TABBI_PARTY_NAME"] ?? "Sam")
             self.settings = settings
@@ -116,6 +127,40 @@ final class PartyStore: ObservableObject {
             .sink { [weak self] profile in self?.update(pet: profile) }
             .store(in: &cancellables)
     }
+
+    /// Makes the app-wide name (`AppSettings.displayName`) the name friends
+    /// see: Party shows and syncs whatever `names` publishes, and a name
+    /// edited in Party (its pane, onboarding, Connections) goes back
+    /// through `save`, so there is one name to change.
+    func follow(name names: AnyPublisher<String, Never>, save: @escaping (String) -> Void) {
+        saveName = save
+        names
+            .removeDuplicates()
+            .sink { [weak self] name in self?.nameDidChange(name) }
+            .store(in: &cancellables)
+    }
+
+    private func nameDidChange(_ name: String) {
+        guard name != settings.name, !pinsName else { return }
+        let old = settings
+        settings.name = name
+        repository?.save(settings)
+        if settings.cleanedName != old.cleanedName { scheduleNameSync() }
+    }
+
+    /// Syncs a new name once typing pauses, since General saves the name
+    /// on every keystroke and each sync is a request.
+    private func scheduleNameSync() {
+        nameSyncTask?.cancel()
+        guard isRunning, !isDemo else { return }
+        nameSyncTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: Self.nanoseconds(Self.nameSyncDelay))
+            guard !Task.isCancelled else { return }
+            self?.connect()
+        }
+    }
+
+    private static let nameSyncDelay: TimeInterval = 1
 
     /// `TABBI_PARTY_SERVER` for a `--snapshot` run, with the optional
     /// `TABBI_PARTY_TOKEN` and `TABBI_PARTY_CODE` of the user to
@@ -159,6 +204,7 @@ final class PartyStore: ObservableObject {
         NSWorkspace.shared.notificationCenter.removeObserver(self)
         connectTask?.cancel()
         refreshTask?.cancel()
+        nameSyncTask?.cancel()
         sendOfflineOnce()
     }
 
@@ -182,20 +228,22 @@ final class PartyStore: ObservableObject {
     // MARK: Settings
 
     /// Applies edited settings: a new server starts over with that server's
-    /// identity, a new name syncs, and the invisible toggle sends one
-    /// heartbeat (`offline`, or the current status when coming back).
+    /// identity, a new name becomes the app-wide name and syncs, and the
+    /// invisible toggle sends one heartbeat (`offline`, or the current
+    /// status when coming back).
     func update(_ new: PartySettings) {
         let old = settings
         guard new != old else { return }
         settings = new
         repository?.save(new)
+        if new.name != old.name { saveName?(new.name) }
         guard !isDemo else { return }
         if new.serverURL != old.serverURL || new.serverIssue != old.serverIssue {
             state.reset(settings: new)
             rebuildAccount()
             return
         }
-        if new.cleanedName != old.cleanedName { connect() }
+        if new.cleanedName != old.cleanedName { scheduleNameSync() }
         if new.invisible != old.invisible, tracker.setInvisible(new.invisible) {
             saveTracker()
             sendHeartbeat()
@@ -338,7 +386,7 @@ final class PartyStore: ObservableObject {
             account = nil
             return
         }
-        account = PartyAccount(server: server, credentials: credentials)
+        account = PartyAccount(server: server, transport: transport, credentials: credentials)
         connect()
     }
 

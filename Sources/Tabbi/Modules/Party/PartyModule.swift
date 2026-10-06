@@ -16,12 +16,15 @@ final class PartyModule: NotchModule {
         network: [ModuleNetworkAccess(host: PartyServer.productionURL.host() ?? "", purpose: "your presence and parties")],
         setup: [.party]
     )
-    private let store: PartyStore
+    let store: PartyStore
 
     init(context: ModuleContext) {
         store = PartyStore(runMode: context.runMode)
         store.followFocus(from: context.providers.$snapshot.map(\.focus).eraseToAnyPublisher())
         store.follow(pet: context.studyPet.profiles)
+        let settings = context.settings
+        store.follow(name: settings.$settings.map(\.displayName).eraseToAnyPublisher(),
+                     save: { [weak settings] name in settings?.settings.displayName = name })
         shareConnection(pet: context.studyPet)
     }
 
