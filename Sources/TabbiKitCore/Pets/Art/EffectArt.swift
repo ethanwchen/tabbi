@@ -21,6 +21,14 @@ enum EffectArt {
         .EE.
         """)
 
+    /// Squeezed shut, as in a yawn: a ">" that points at the nose (mirrored
+    /// for the right eye).
+    static let eyesSqueezed = SpriteGrid(art: """
+        EE..
+        ..EE
+        EE..
+        """)
+
     /// Happy "^" arches.
     static let eyesHappy = SpriteGrid(art: """
         .EE.
@@ -57,6 +65,79 @@ enum EffectArt {
         .Z.
         """)
 
+    /// Dust kicked up beside the paws when a hop lands.
+    static let dustLeft = SpriteGrid(art: """
+        Z...
+        ..Z.
+        .ZZZ
+        """)
+
+    static let dustRight = SpriteGrid(art: """
+        ...Z
+        .Z..
+        ZZZ.
+        """)
+
+    /// A small "o": the mouth starting (and ending) a yawn. Four wide and
+    /// centered under the nose, so it covers any face's own mouth; the
+    /// corners are muzzle fur, hiding mouth lines or a tongue drawn there.
+    static let mouthOpen = SpriteGrid(art: """
+        mRRm
+        mPPm
+        .mm.
+        """)
+
+    /// The yawn at its widest: a dark mouth with the tongue at the bottom.
+    static let mouthWide = SpriteGrid(art: """
+        mRRm
+        ROOR
+        RPPR
+        mRRm
+        """)
+
+    /// The same two mouths for a face whose mouth hangs from the nose: a
+    /// row of muzzle hides that line, then a shorter opening ends on the chin.
+    static let mouthOpenBelowNose = SpriteGrid(art: """
+        mmmm
+        mRRm
+        mPPm
+        """)
+
+    static let mouthWideBelowNose = SpriteGrid(art: """
+        mmmm
+        mRRm
+        RPPR
+        mRRm
+        """)
+
+    /// Where an open mouth goes on `face`: four pixels wide, centered on
+    /// the nose's top row, on the first row below the nose. Found from the
+    /// art, so new faces need no numbers. When a face draws its mouth line
+    /// in the nose color right under the nose (most dogs), that row is
+    /// painted over with muzzle and the mouth opens one row lower, so it
+    /// never merges into a dark nose. Nil when closed or without a nose.
+    static func mouth(_ mouth: PetPose.Mouth, in face: SpriteGrid) -> (grid: SpriteGrid, origin: PetPoint)? {
+        guard mouth != .closed else { return nil }
+        let isNose: (Int, Int) -> Bool = { face[$0, $1] == .role(.nose) }
+        guard let top = (0..<face.height).first(where: { y in (0..<face.width).contains { isNose($0, y) } })
+        else { return nil }
+        let columns = (0..<face.width).filter { isNose($0, top) }
+        let center = (columns[0] + columns[columns.count - 1] + 1) / 2
+        var row = top + 1
+        while row < face.height, isNose(center - 1, row) || isNose(center, row) { row += 1 }
+        // A mouth line in the nose color right under the nose means the
+        // mouth hangs from it: open below a row of muzzle, a little shorter
+        // so it still ends on the chin.
+        let hangs = row < face.height && (0..<face.width).contains { isNose($0, row) }
+        let shape = switch (mouth, hangs) {
+        case (.wide, false): mouthWide
+        case (.wide, true): mouthWideBelowNose
+        case (_, false): mouthOpen
+        case (_, true): mouthOpenBelowNose
+        }
+        return (shape, PetPoint(x: center - 2, y: row))
+    }
+
     /// A front leg reaching up to the top edge, paw first, for hanging out of
     /// the notch. Drawn behind the head, so only the upper part shows.
     static func hangingLeg(length: Int) -> SpriteGrid {
@@ -87,6 +168,7 @@ enum EffectArt {
         case .closed: overlay = eyesClosed
         case .sleepy: overlay = eyesSleepy
         case .happy: overlay = eyesHappy
+        case .squeezed: overlay = eyesSqueezed
         }
         var result = face
         if eyes == .sleepy {
@@ -109,11 +191,11 @@ enum EffectArt {
             }
             // The overlay's spare pixel goes toward the cheek: left of a left
             // eye, right of a right eye.
-            let isRightEye = width > 2 && left * 2 + width > face.width
-            let start = isRightEye ? left : left - 1
+            let isRightEye = left * 2 + width > face.width
+            let start = isRightEye && width > 2 ? left : left - 1
             for y in 0..<overlay.height {
                 for x in 0..<overlay.width where overlay[x, y] != .empty {
-                    let fx = start + x, fy = eyeRow + y
+                    let fx = start + (isRightEye ? overlay.width - 1 - x : x), fy = eyeRow + y
                     if fx >= 0, fx < face.width, fy < face.height { result[fx, fy] = overlay[x, y] }
                 }
             }

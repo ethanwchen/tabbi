@@ -3,7 +3,7 @@
 A study-buddy cat or dog lives in the notch.
 This document explains how pet sprites are drawn, composed, and rendered, and how to add a breed.
 
-Status: the sprite format, palettes, pattern zones, renderer, all nine cat breeds, all eight dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
+Status: the sprite format, palettes, pattern zones, renderer, all nine cat breeds, all eight dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate, yawn, hop), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
 
 ![All cat breeds sitting, on black at 4x](images/cats-sitting.png)
 
@@ -164,15 +164,16 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 ## Animations
 
 `PetComposer.clip(_:for:outfit:accessories:)` builds a `PetClip`: a list of `PetFrame`s, each with its own `duration` in seconds.
-`clip.frame(at: elapsed)` picks the frame to show; looping clips (idle, sit, sleep, walk) wrap around, one-shot clips (blink, stretch, peek, alert, celebrate) hold their last frame until `PetAnimator.advance(to:)` sees the clip's duration has passed and moves the pet on.
+`clip.frame(at: elapsed)` picks the frame to show; looping clips (idle, sit, sleep, walk) wrap around, one-shot clips (blink, stretch, peek, alert, celebrate, yawn, hop) hold their last frame until `PetAnimator.advance(to:)` sees the clip's duration has passed and moves the pet on.
 
 Front-facing animations are not drawn frame by frame.
 Each frame is the sitting composition in a `PetPose`, so every breed and costume animates without extra art:
 
 | Pose field | Effect |
 | --- | --- |
-| `eyes` | `.open`, `.closed` (blink), `.sleepy` (soft curves), `.happy` ("^" arches) |
-| `headDrop` | Sinks the head (and its hat and glasses) into the shoulders, for breathing and dozing |
+| `eyes` | `.open`, `.closed` (blink), `.sleepy` (soft curves), `.happy` ("^" arches), `.squeezed` ("> <", mirrored for the right eye) |
+| `mouth` | `.closed` (the face as drawn), `.open` (a small "o"), `.wide` (a big yawn with the tongue showing) |
+| `headDrop` | Sinks the head (and its hat and glasses) into the shoulders, for breathing and dozing; -1 tips it back for a yawn |
 | `lift` | Raises the whole pet off the baseline, for hops |
 
 Eye states live in `EffectArt` as 4x3 grids centered on the 2x3 open eye.
@@ -180,6 +181,10 @@ A 3-wide open eye (the British Shorthair's) gets the spare pixel on its cheek si
 The composer finds the open eyes on the face's eye row, clears them so the head's fur shows through, and stamps the new state, so a new face only needs its open-eyed version.
 Sleepy eyes also close the mouth: blush pixels below the cheek row (the eye row + 3) are cleared, so a dog's panting tongue tucks away and its nose-colored mouth corners read as a closed "w".
 Draw a tongue with the blush role below the cheek row and it will hide itself during sleep.
+
+Open mouths are found from the art too: `EffectArt.mouth(_:in:)` centers a 4-wide mouth on the nose's top row, on the first row below the nose, so it covers any face's own mouth lines or tongue.
+Its corners are the muzzle zone, which hides what was drawn there.
+When the row under the nose carries nose-colored mouth corners (most dogs), a row of muzzle covers them and a shorter mouth opens one row lower, so it never merges into a dark nose and still ends on the chin.
 
 | Animation | Frames |
 | --- | --- |
@@ -190,6 +195,8 @@ Draw a tongue with the blush role below the cheek row and it will hide itself du
 | peekIn / peekOut | The pet dangles from the notch by its front paws: the head lowers into view from beyond the top edge, bounces 1 px, and rests with its chin on row 20; peekOut is the same frames reversed |
 | alert | Two hops (2 px, then 1 px) and a hold; every frame has a `bubbleAnchor` at the top-right of the head for the app's speech bubble |
 | celebrate | Happy eyes, a 3 px hop, a heart floating up beside the head, and sparkles |
+| yawn | Head tips back 1 px, eyes squeeze shut ("> <") and the mouth opens to a small "o", then wide with the tongue showing (held 900 ms), closes, and settles through sleepy eyes back to sitting; about 2.6 s |
+| hop | Happy eyes, a crouch, a 3 px hop and a smaller 2 px one, each landing in a squash with dust puffs beside the paws, then back to sitting; about 1.2 s and no heart, so it reads as plain joy rather than a finished session |
 | walk | Four 150 ms steps of a trot, side-on (see below) |
 | stretch | A side-on play bow: down in three steps, a held bow with happy eyes and a tail wag, then back up (see below) |
 
@@ -197,6 +204,12 @@ Effects (the "z", heart, and sparkles) use the `effect` and `heart` roles and ar
 The peek legs come from `EffectArt.hangingLeg`, drawn behind the head with the breed's paw zone.
 
 ![Every animation frame for the orange tabby](images/animations-cat.png)
+
+`PetGallery` also writes `yawn.png` and `hop.png`, every breed through every frame of each move, one row per breed:
+
+![The yawn for every breed](images/yawn.png)
+
+![The hop for every breed](images/hop.png)
 
 ### Walking
 

@@ -22,16 +22,31 @@ public struct PetPose: Hashable, Sendable {
         case sleepy
         /// Celebrating: "^" arches.
         case happy
+        /// Squeezed shut: "> <", for a yawn.
+        case squeezed
+    }
+
+    /// The mouth, drawn over the face's own mouth when it opens.
+    public enum Mouth: Hashable, Sendable {
+        /// The face as drawn: a closed smile or a panting tongue.
+        case closed
+        /// A small round "o", the start and end of a yawn.
+        case open
+        /// A big yawn with the tongue showing.
+        case wide
     }
 
     public var eyes: Eyes
-    /// Pixels the head sinks into the shoulders (breathing, dozing).
+    public var mouth: Mouth
+    /// Pixels the head sinks into the shoulders (breathing, dozing);
+    /// negative tips it back (a yawn).
     public var headDrop: Int
     /// Pixels the whole pet rises off the baseline (hops).
     public var lift: Int
 
-    public init(eyes: Eyes = .open, headDrop: Int = 0, lift: Int = 0) {
+    public init(eyes: Eyes = .open, mouth: Mouth = .closed, headDrop: Int = 0, lift: Int = 0) {
         self.eyes = eyes
+        self.mouth = mouth
         self.headDrop = headDrop
         self.lift = lift
     }
@@ -62,12 +77,18 @@ public enum PetAnimation: String, CaseIterable, Codable, Sendable {
     case alert
     /// A happy hop with a rising heart when a session is done.
     case celebrate
+    /// A slow, sleepy yawn: the head tips back, the eyes squeeze shut and
+    /// the mouth opens wide, then the pet settles back down.
+    case yawn
+    /// Two springy hops with happy eyes and dust puffs on landing: plain
+    /// joy, with no heart (that is `celebrate`, for a finished session).
+    case hop
 
     /// Whether the clip repeats forever or stops on its last frame.
     public var loops: Bool {
         switch self {
         case .idle, .sit, .sleep, .walk: true
-        case .blink, .stretch, .peekIn, .peekOut, .alert, .celebrate: false
+        case .blink, .stretch, .peekIn, .peekOut, .alert, .celebrate, .yawn, .hop: false
         }
     }
 }
@@ -238,6 +259,49 @@ extension PetComposer {
                     canvas = canvas.adding(EffectArt.sparkle, at: PetPoint(x: 1, y: index - 1))
                 }
                 return PetFrame(canvas: canvas, duration: step.1)
+            }
+
+        case .yawn:
+            // Tip back and open up slowly, hold the big yawn, then close
+            // with a contented squint before the eyes open again.
+            frames = [
+                frame(PetPose(), 0.25),
+                frame(PetPose(eyes: .squeezed, mouth: .open, headDrop: -1), 0.18),
+                frame(PetPose(eyes: .squeezed, mouth: .wide, headDrop: -1), 0.9),
+                frame(PetPose(eyes: .squeezed, mouth: .open, headDrop: -1), 0.16),
+                frame(PetPose(eyes: .sleepy), 0.45),
+                frame(PetPose(eyes: .sleepy, headDrop: 1), 0.35),
+                frame(PetPose(), 0.3),
+            ]
+
+        case .hop:
+            // Crouch, spring up, squash on landing with a puff of dust, and
+            // again a little lower. Short frames keep it bouncy.
+            let steps: [(PetPose, Bool, TimeInterval)] = [
+                (PetPose(eyes: .happy, headDrop: 1), false, 0.1),
+                (PetPose(eyes: .happy, lift: 2), false, 0.06),
+                (PetPose(eyes: .happy, lift: 3), false, 0.12),
+                (PetPose(eyes: .happy, lift: 2), false, 0.06),
+                (PetPose(eyes: .happy, headDrop: 1), true, 0.1),
+                (PetPose(eyes: .happy, lift: 2), false, 0.08),
+                (PetPose(eyes: .happy, lift: 1), false, 0.06),
+                (PetPose(eyes: .happy, headDrop: 1), true, 0.1),
+                (PetPose(eyes: .happy), false, 0.35),
+                (PetPose(), false, 0.2),
+            ]
+            frames = steps.map { value, dust, duration in
+                var canvas = pose(value).canvas
+                // Puffs on the floor just outside the paws (the bottom row,
+                // so a wide tail higher up doesn't push them away).
+                let floor = frameSize - 1 - value.lift
+                let paws = (0..<frameSize).filter { canvas[$0, floor] != nil }
+                if dust, let left = paws.first, let right = paws.last {
+                    let y = frameSize - EffectArt.dustLeft.height
+                    canvas = canvas
+                        .adding(EffectArt.dustLeft, at: PetPoint(x: left - EffectArt.dustLeft.width, y: y))
+                        .adding(EffectArt.dustRight, at: PetPoint(x: right + 1, y: y))
+                }
+                return PetFrame(canvas: canvas, duration: duration)
             }
 
         case .peekIn, .peekOut:

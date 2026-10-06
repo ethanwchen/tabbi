@@ -214,6 +214,52 @@ final class PetAnimationTests: XCTestCase {
         }
     }
 
+    func testYawnOpensTheMouthWideWithEyesSqueezedAndSettlesBack() throws {
+        let mouth: (PetCanvas) -> Int = { $0.pixels.filter { $0 == .mouth }.count }
+        for breed in PetBreed.allCases {
+            let clip = PetComposer.clip(.yawn, for: breed, accessories: [.graduationCap])
+            XCTAssertFalse(clip.loops)
+            let sitting = PetComposer.sitting(breed, accessories: [.graduationCap])
+            XCTAssertEqual(clip.frames.first?.canvas, sitting, "starts from sitting: \(breed)")
+            XCTAssertEqual(clip.frames.last?.canvas, sitting, "and settles back: \(breed)")
+            for frame in clip.frames {
+                XCTAssertEqual(try XCTUnwrap(frame.canvas.opaqueBounds).maxY, baseline, "\(breed)")
+                XCTAssertTrue((0..<PetComposer.frameSize).allSatisfy { frame.canvas[$0, 0] == nil },
+                              "tipping the head back clips nothing: \(breed)")
+            }
+            // The longest frame is the big yawn: eyes shut, mouth open, tongue out.
+            let wide = try XCTUnwrap(clip.frames.max { $0.duration < $1.duration }).canvas
+            XCTAssertFalse(wide.pixels.contains(.eyeLight), "squeezed shut: \(breed)")
+            XCTAssertGreaterThan(mouth(wide), mouth(sitting) + 3, "the mouth opens: \(breed)")
+            XCTAssertTrue(wide.pixels.contains(.blush), "\(breed)")
+        }
+    }
+
+    func testHopBouncesTwiceWithDustAndLandsSitting() throws {
+        for breed in PetBreed.allCases {
+            let clip = PetComposer.clip(.hop, for: breed, outfit: .whiteCoat, accessories: [.graduationCap])
+            XCTAssertFalse(clip.loops)
+            let bottoms = try clip.frames.map { frame in
+                try XCTUnwrap(frame.canvas.pixels.enumerated().filter { $0.element != nil && $0.element != .effect }
+                    .map { $0.offset / PetComposer.frameSize }.max())
+            }
+            // Airborne, down, airborne again, down: two separate hops.
+            let airborne = bottoms.map { $0 < baseline }
+            let takeoffs = zip([false] + airborne, airborne).filter { !$0 && $1 }.count
+            XCTAssertEqual(takeoffs, 2, "\(breed)")
+            XCTAssertEqual(clip.frames.last?.canvas,
+                           PetComposer.sitting(breed, outfit: .whiteCoat, accessories: [.graduationCap]), "\(breed)")
+            let landings = clip.frames.filter { $0.canvas.pixels.contains(.effect) }
+            XCTAssertEqual(landings.count, 2, "a dust puff on each landing: \(breed)")
+            XCTAssertFalse(clip.frames.contains { $0.canvas.pixels.contains(.heart) }, "no heart: \(breed)")
+            for frame in clip.frames {
+                XCTAssertTrue((0..<PetComposer.frameSize).allSatisfy {
+                    frame.canvas[$0, 0] == nil || frame.canvas[$0, 0] == .outline
+                }, "the cap never clips off the top: \(breed)")
+            }
+        }
+    }
+
     func testCanvasShiftAndFlip() {
         var canvas = PetCanvas(width: 3, height: 3)
         canvas[0, 0] = .eye

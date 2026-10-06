@@ -172,6 +172,25 @@ for (breed, name, outfit, accessories) in stretchRuns {
 try writeSheet(stretchCells, columns: 9, title: "Stretch (play bow)",
                to: outputDirectory.appendingPathComponent("stretch.png"))
 
+// Animation checks: every breed through every frame of the newer moves,
+// one row per breed, so each move is reviewed across all head shapes.
+for animation in [PetAnimation.yawn, .hop] {
+    var cells: [Cell] = []
+    var columns = 1
+    for breed in PetBreed.allCases {
+        let clip = PetComposer.clip(animation, for: breed)
+        columns = clip.frames.count
+        for (index, frame) in clip.frames.enumerated() {
+            cells.append(Cell(label: "\(breed.displayName) \(index + 1)", canvas: frame.canvas,
+                              palette: breed.palette.withVisibleRim()))
+        }
+    }
+    let timing = PetComposer.clip(animation, for: .orangeTabby).frames.map { "\(Int($0.duration * 1000))" }
+    try writeSheet(cells, columns: columns,
+                   title: "\(animation.rawValue.capitalized) (\(timing.joined(separator: ", ")) ms)",
+                   to: outputDirectory.appendingPathComponent("\(animation.rawValue).png"))
+}
+
 // Recolor check: user overrides through PetProfile, so the real palette path
 // (breed, then overrides, then the warm rim) is what gets reviewed.
 func hex(_ value: String) -> PetColor { PetColor(hex: value)! }

@@ -119,6 +119,9 @@ public enum PetComposer {
         canvas.stamp(layout.head, x: headX, y: headY, pattern: pattern)
         let face = EffectArt.face(layout.face, eyeRow: layout.eyeRow - layout.faceRow, eyes: pose.eyes)
         canvas.stamp(face, x: headX, y: headY + layout.faceRow, pattern: pattern)
+        if let (grid, origin) = EffectArt.mouth(pose.mouth, in: layout.face) {
+            canvas.stamp(grid, x: headX + origin.x, y: headY + layout.faceRow + origin.y, pattern: pattern)
+        }
 
         func stampFace(_ item: CostumeArt.FaceItem) {
             canvas.stamp(layout.family == .cat ? item.cat : item.dog, x: headX, y: headY + layout.eyeRow - item.eyeRow)
