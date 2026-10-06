@@ -12,10 +12,14 @@ import Foundation
 /// }
 /// ```
 ///
-/// Every key is optional. Kits without the section keep the Claude planner,
-/// so nothing here is specific to medicine; a study kit opts in.
+/// Every key is optional. Kits without the section plan on device with
+/// `SchedulePlanner`, so nothing here is specific to medicine; a study kit
+/// opts in to study blocks.
 public struct TodayPlanSettings: Hashable, Sendable {
     public enum PlanMode: String, Hashable, Sendable, CaseIterable {
+        /// Plan on device with `SchedulePlanner`: the checklist, shared
+        /// tasks and review goals, with breaks and a reason per block.
+        case local
         /// Ask the local `claude` CLI to schedule the checklist.
         case claude
         /// Plan on device with `StudyDayPlanner`: review blocks, study
@@ -42,7 +46,7 @@ public struct TodayPlanSettings: Hashable, Sendable {
     public var sampleDay: PlannerSampleDay
 
     public init(
-        planMode: PlanMode = .claude,
+        planMode: PlanMode = .local,
         studyMethod: StudyMethod = .pomodoro,
         reviewsFirst: Bool = true,
         eventBufferMinutes: Int = 10,

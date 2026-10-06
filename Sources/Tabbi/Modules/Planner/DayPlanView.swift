@@ -23,9 +23,9 @@ struct DayPlanView: View {
         case .idle:
             EmptyView()
         case .planning:
-            DayPlanShimmer(help: plan.settings.planMode == .study
-                           ? "Fitting reviews and study blocks around today's events"
-                           : "Claude is fitting your tasks around today's events")
+            DayPlanShimmer(help: plan.settings.planMode == .claude
+                           ? "Claude is fitting your tasks around today's events"
+                           : "Fitting your work and breaks around today's events")
                 .transition(.opacity)
         case .proposal(let proposal):
             VStack(alignment: .leading, spacing: 0) {
@@ -268,7 +268,7 @@ private struct DayPlanShimmer: View {
 /// Time labels for proposal rows, in the user's clock style.
 enum DayPlanFormat {
     /// Fits "10:45–11:30" in the caption font.
-    static let rangeWidth: CGFloat = 64
+    static let rangeWidth: CGFloat = 76
 
     /// Review and study blocks get a symbol; Claude's focus blocks don't.
     static func symbol(for kind: PlanBlockKind) -> String? {

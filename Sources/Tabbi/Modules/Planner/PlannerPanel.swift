@@ -53,9 +53,7 @@ struct PlannerPanel: View {
                                 } else if hasPlannableWork {
                                     // Nothing to schedule until there's an open task.
                                     PlannerPillButton(title: "Plan my day", symbol: "sparkles", height: 28,
-                                                      help: store.planSettings.planMode == .study
-                                                          ? "Fit reviews, study blocks and breaks around today's calendar"
-                                                          : "Let Claude fit your open tasks around today's calendar") {
+                                                      help: store.planSettings.planMode.planHelp) {
                                         store.planMyDay()
                                     }
                                     .transition(.motionPop)
@@ -113,6 +111,17 @@ struct PlannerPanel: View {
 /// The checklist with what other modules share for today (say, Anki
 /// reviews) above it, or the fresh-day message while both are empty.
 /// Observes `ProviderHub` here so its updates don't re-render the panel.
+extension TodayPlanSettings.PlanMode {
+    /// What Plan my day does, for its tooltips.
+    var planHelp: String {
+        switch self {
+        case .local: "Fit your open tasks, reviews and breaks around today's calendar"
+        case .claude: "Let Claude fit your open tasks around today's calendar"
+        case .study: "Fit reviews, study blocks and breaks around today's calendar"
+        }
+    }
+}
+
 private struct PlannerChecklist: View {
     @ObservedObject var store: PlannerStore
     @ObservedObject var providers: ProviderHub
@@ -207,9 +216,7 @@ private struct PlannerHeader: View {
                 if isEvening {
                     if hasPlannableWork {
                         IconButton(symbol: "sparkles", size: 20,
-                                   help: store.planSettings.planMode == .study
-                                       ? "Plan my day: fit reviews, study blocks and breaks around today's calendar"
-                                       : "Plan my day: fit your open tasks around today's calendar") {
+                                   help: "Plan my day: \(store.planSettings.planMode.planHelp.lowercased())") {
                             store.planMyDay()
                         }
                     }
