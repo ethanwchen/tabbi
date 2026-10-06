@@ -23,6 +23,8 @@ final class PlannerStore: ObservableObject {
     /// Unfinished work other modules share (say, Anki reviews), which Plan
     /// My Day schedules along with the checklist. See `followSharedWork`.
     @Published private(set) var sharedWork: [String] = []
+    /// Other modules' open tasks with their estimates, for the local planner.
+    private(set) var sharedTasks: [ProvidedTask] = []
     /// Other modules' goals for today (say, Anki reviews), which the study
     /// planner turns into review blocks.
     private(set) var sharedProgress: [ProgressItem] = []
@@ -126,6 +128,13 @@ final class PlannerStore: ObservableObject {
             }
             .store(in: &cancellables)
         snapshots
+            .map { $0.openTasks.filter { $0.source != module } }
+            .removeDuplicates()
+            .sink { [weak self] tasks in
+                MainActor.assumeIsolated { self?.sharedTasks = tasks }
+            }
+            .store(in: &cancellables)
+        snapshots
             .map { $0.plannableWork(excluding: module) }
             .removeDuplicates()
             .sink { [weak self] work in
@@ -138,7 +147,7 @@ final class PlannerStore: ObservableObject {
     func planMyDay() {
         review.close()
         refreshDay()
-        plan.plan(tasks: items, sharedWork: sharedWork, progress: sharedProgress)
+        plan.plan(tasks: items, sharedWork: sharedWork, sharedTasks: sharedTasks, progress: sharedProgress)
     }
 
     /// Opens the End-of-Day Review of today's list, the focus sessions in

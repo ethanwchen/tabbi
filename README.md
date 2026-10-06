@@ -92,12 +92,13 @@ Tabbi asks for a permission only when the tab that needs it is first used.
 | Permission | Asked by | Why |
 | --- | --- | --- |
 | Automation: Spotify, Music | Now Playing, focus mode | Read the current track, control playback and start a focus playlist. |
-| Calendars | Today | Show your next events and add the Plan my day blocks you accept. Events never leave your Mac. |
+| Calendars | Today, Schedule | Show your events and add the planned blocks you accept. Events never leave your Mac. |
 | Notifications | Today, Focus | Tell you when a timer ends while the notch is closed. |
 | Screen Recording | Ask Claude | Attach a screenshot to a question. The image goes only to your local `claude` CLI. |
 
 Claude Usage needs no system permission.
-Plan my day and Wrap up send your task titles and today's events to Claude through the CLI, only when you press them.
+Plan my day plans on your Mac without Claude.
+Refine with Claude and Wrap up send your task titles and today's events to Claude through the CLI, only when you press them.
 Claude Usage reads token counts from `~/.claude/projects` read-only.
 
 </details>
@@ -107,7 +108,7 @@ Claude Usage reads token counts from `~/.claude/projects` read-only.
 
 **Do I need Claude Code?**
 No.
-Only the Claude tabs and Plan my day in the Essentials kit use it, and they show a setup hint until the `claude` command is found.
+Only the Claude tabs, Wrap up and the optional Refine with Claude use it, and the Claude tabs show a setup hint until the `claude` command is found.
 
 **Why the `claude` CLI and not an API key?**
 So Tabbi never handles your credentials, and your usage stays on the plan you already have.

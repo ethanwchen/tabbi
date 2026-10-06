@@ -20,9 +20,9 @@ final class TodayPlanSettingsTests: XCTestCase {
 
     // MARK: - Reading the kit
 
-    func testKitsWithoutASectionKeepTheClaudePlanner() {
+    func testKitsWithoutASectionPlanOnDevice() {
         XCTAssertEqual(TodayPlanSettings(kit: nil), TodayPlanSettings())
-        XCTAssertEqual(TodayPlanSettings(kit: KitDefaults()).planMode, .claude)
+        XCTAssertEqual(TodayPlanSettings(kit: KitDefaults()).planMode, .local)
     }
 
     func testReadsEveryKey() {
@@ -50,7 +50,7 @@ final class TodayPlanSettingsTests: XCTestCase {
             "upNextEvents": .string(" "), "dayEndHour": .number(30), "sampleDay": .string("pirate"),
         ], studyMethod: "nope"))
         let defaults = TodayPlanSettings()
-        XCTAssertEqual(settings.planMode, .claude)
+        XCTAssertEqual(settings.planMode, .local)
         XCTAssertEqual(settings.studyMethod, defaults.studyMethod)
         XCTAssertTrue(settings.reviewsFirst)
         XCTAssertEqual(settings.eventBufferMinutes, 0)

@@ -80,7 +80,7 @@ final class KitSettingsSchemaTests: XCTestCase {
         XCTAssertEqual(kit.issues(), [
             .unknownModuleSettings("chess"),
             .unknownField("moduleSettings.closet.coachLines.cheer"),
-            .invalidModuleSetting(path: "moduleSettings.planner.planMode", expected: #"one of "claude", "study""#),
+            .invalidModuleSetting(path: "moduleSettings.planner.planMode", expected: #"one of "local", "claude", "study""#),
             .unknownField("moduleSettings.planner.reviewsFrist"),
             .invalidModuleSetting(path: "moduleSettings.study.dailyGoalMinutes", expected: "a number from 15 to 720"),
         ])

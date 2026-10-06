@@ -168,8 +168,8 @@ public enum DayPlanner {
     }
 
     /// The prompt for `claude -p`. Times are local 24-hour `HH:mm` so Claude
-    /// never has to reason about time zones.
-    public static func prompt(for context: DayPlanContext) -> String {
+    /// never has to reason about time zones. `limit` caps the blocks asked for.
+    public static func prompt(for context: DayPlanContext, limit: Int = maximumBlocks) -> String {
         let clock = clockFormatter(context.calendar)
         func range(_ start: Date, _ end: Date) -> String { "\(clock.string(from: start))-\(clock.string(from: end))" }
 
@@ -194,7 +194,7 @@ public enum DayPlanner {
         Unfinished tasks:
         \(tasks.isEmpty ? "- none" : tasks.joined(separator: "\n"))
 
-        Propose at most \(maximumBlocks) focused time blocks that fit entirely inside the free time. \
+        Propose at most \(limit) focused time blocks that fit entirely inside the free time. \
         Each block is \(minimumBlockMinutes) to 120 minutes, starts on a 5-minute mark, and blocks never overlap. \
         Prefer the most important tasks first and leave short breaks. \
         Titles are at most \(maximumTitleLength) characters, a shortened form of the task's words \
@@ -257,8 +257,9 @@ public enum DayPlanner {
     /// start in the past, or run past `dayEnd`), keeping its longest piece.
     /// Blocks are then ordered, overlaps between blocks are trimmed off the
     /// later one, anything shorter than `minimumBlockMinutes` is dropped,
-    /// and the list is capped at `maximumBlocks`.
-    public static func validate(_ blocks: [PlanBlock], context: DayPlanContext) -> [PlanBlock] {
+    /// and the list is capped at `limit`.
+    public static func validate(_ blocks: [PlanBlock], context: DayPlanContext,
+                                limit: Int = maximumBlocks) -> [PlanBlock] {
         let minimum = TimeInterval(minimumBlockMinutes * 60)
         let clipped = blocks.compactMap { block -> PlanBlock? in
             let pieces = context.gaps.compactMap { $0.intersection(with: block.interval) }
@@ -273,7 +274,7 @@ public enum DayPlanner {
             if let previous = accepted.last, block.start < previous.end { block.start = previous.end }
             guard block.end.timeIntervalSince(block.start) >= minimum else { continue }
             accepted.append(block)
-            if accepted.count == maximumBlocks { break }
+            if accepted.count == limit { break }
         }
         return accepted
     }
