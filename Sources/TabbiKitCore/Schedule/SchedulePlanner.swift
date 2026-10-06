@@ -203,7 +203,9 @@ public struct ScheduleWeekPlan: Hashable, Sendable {
 /// event and its buffer, on the five-minute grid. Long work is split into
 /// blocks of at most `maximumBlockMinutes`, each followed by its break, and
 /// the day stops at `maximumFocusMinutes`. Everything that doesn't fit is
-/// listed with the reason.
+/// listed with the reason. Work already on the calendar in the planned
+/// days (a block added from an earlier plan, or an event of the same
+/// title) is left out, so planning again never books it twice.
 public enum SchedulePlanner {
     /// Shortest block worth planning.
     public static let minimumBlockMinutes = DayPlanner.minimumBlockMinutes
@@ -223,8 +225,10 @@ public enum SchedulePlanner {
         calendar: Calendar = .current,
         locale: Locale = .current
     ) -> SchedulePlan {
-        var pending = ordered(work, preferences: preferences)
-        var plan = plan(day: calendar.startOfDay(for: now), now: now, events: events, pending: &pending,
+        let day = calendar.startOfDay(for: now)
+        let window = DateInterval(start: day, end: calendar.date(byAdding: .day, value: 1, to: day) ?? day)
+        var pending = ordered(notScheduled(work, events: events, in: window), preferences: preferences)
+        var plan = plan(day: day, now: now, events: events, pending: &pending,
                         preferences: preferences, calendar: calendar, locale: locale)
         plan.unplaced = pending.map { UnplacedWork(work: $0.work, minutes: $0.minutesLeft,
                                                    reason: $0.reason ?? "No free time left today") }
@@ -242,8 +246,10 @@ public enum SchedulePlanner {
         calendar: Calendar = .current,
         locale: Locale = .current
     ) -> ScheduleWeekPlan {
-        var pending = ordered(work, preferences: preferences)
         let first = calendar.startOfDay(for: now)
+        let window = DateInterval(start: first,
+                                  end: calendar.date(byAdding: .day, value: max(days, 1), to: first) ?? first)
+        var pending = ordered(notScheduled(work, events: events, in: window), preferences: preferences)
         let plans = (0..<max(days, 1)).compactMap { offset -> SchedulePlan? in
             guard let day = calendar.date(byAdding: .day, value: offset, to: first) else { return nil }
             // A reason only explains the final day's leftovers.
@@ -289,6 +295,16 @@ public enum SchedulePlanner {
         var placed = 0
         /// Why the last attempt left it out, once one did.
         var reason: String?
+    }
+
+    /// `work` without what a timed event in `window` already covers,
+    /// matched by title (case and spacing aside).
+    static func notScheduled(_ work: [ScheduleWork], events: [UpcomingEvent], in window: DateInterval) -> [ScheduleWork] {
+        func key(_ title: String) -> String? { PlannerDay.normalized(title)?.lowercased() }
+        let booked = Set(events
+            .filter { !$0.isAllDay && $0.end > $0.start && $0.start < window.end && $0.end > window.start }
+            .compactMap { key($0.title) })
+        return work.filter { key($0.title).map { !booked.contains($0) } ?? true }
     }
 
     /// Review queues first (or last), then work with a due time, earliest

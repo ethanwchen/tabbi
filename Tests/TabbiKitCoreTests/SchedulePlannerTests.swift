@@ -310,4 +310,33 @@ final class SchedulePlannerTests: XCTestCase {
         XCTAssertEqual(week.days[1].blocks.first?.block.start, at(9, day: 1))
         XCTAssertLessThanOrEqual(week.days[1].blocks.first!.block.end, at(12, day: 1))
     }
+
+    // MARK: - Already on the calendar
+
+    func testWorkAlreadyOnTodaysCalendarIsNotPlannedAgain() {
+        // Added from an earlier plan this morning, so it's past but done for today.
+        let events = [event("Write the spec", at(9), at(10)), event("Standup", at(10), at(10, 30)),
+                      event("Gym", at(0), at(0), allDay: true)]
+        let work = [task("write  the SPEC", 60), task("Email Ana", 30), task("Gym", 30)]
+        let result = plan(now: at(11), events: events, work: work)
+        XCTAssertEqual(result.blocks.map(\.block.title), ["Email Ana", "Gym"])
+        XCTAssertTrue(result.unplaced.isEmpty)
+    }
+
+    func testEventOnAnotherDayDoesNotHideTodaysWork() {
+        let events = [event("Write the spec", at(9, day: 1), at(10, day: 1))]
+        let result = plan(now: at(9), events: events, work: [task("Write the spec", 60)])
+        XCTAssertEqual(result.blocks.map(\.block.title), ["Write the spec"])
+    }
+
+    func testWeekSkipsWorkBookedLaterInTheWeek() {
+        let events = [event("Write the spec", at(14, day: 3), at(15, day: 3))]
+        let work = [task("Write the spec", 60), task("Email Ana", 30)]
+        let inWeek = SchedulePlanner.planWeek(now: at(9), days: 7, events: events, work: work,
+                                              calendar: calendar, locale: locale)
+        XCTAssertEqual(inWeek.days.flatMap { $0.blocks.map(\.block.title) }, ["Email Ana"])
+        let shorter = SchedulePlanner.planWeek(now: at(9), days: 2, events: events, work: work,
+                                               calendar: calendar, locale: locale)
+        XCTAssertEqual(shorter.days.flatMap { $0.blocks.map(\.block.title) }, ["Write the spec", "Email Ana"])
+    }
 }
