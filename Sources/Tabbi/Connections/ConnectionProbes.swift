@@ -82,6 +82,7 @@ struct ConnectionProbes: Sendable {
     /// reach EventKit's prompt in a build without a usage description.
     /// Returns false when it couldn't ask.
     @discardableResult
+    @MainActor
     static func requestCalendarAccess(_ store: EKEventStore) async -> Bool {
         guard canAskForCalendar else { return false }
         _ = try? await store.requestFullAccessToEvents()

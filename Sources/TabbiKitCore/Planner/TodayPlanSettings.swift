@@ -28,8 +28,10 @@ public struct TodayPlanSettings: Hashable, Sendable {
     }
 
     public var planMode: PlanMode
-    /// The method whose block and break lengths study blocks use.
-    public var studyMethod: StudyMethod
+    /// The kit's study method, whose block and break lengths study blocks
+    /// and the local planner's blocks use; nil when the kit picks none, so
+    /// everyday kits plan longer work blocks (see `schedulePreferences`).
+    public var studyMethod: StudyMethod?
     public var reviewsFirst: Bool
     public var eventBufferMinutes: Int
     /// Title for study blocks once every open task has one, e.g. "Study block".
@@ -47,7 +49,7 @@ public struct TodayPlanSettings: Hashable, Sendable {
 
     public init(
         planMode: PlanMode = .local,
-        studyMethod: StudyMethod = .pomodoro,
+        studyMethod: StudyMethod? = nil,
         reviewsFirst: Bool = true,
         eventBufferMinutes: Int = 10,
         studyBlockTitle: String = "Study block",
@@ -75,7 +77,7 @@ public struct TodayPlanSettings: Hashable, Sendable {
         let defaults = TodayPlanSettings()
         self.init(
             planMode: section?["planMode"]?.stringValue.flatMap(PlanMode.init(rawValue:)) ?? defaults.planMode,
-            studyMethod: StudyMethodMenu.kitStartingKind(of: kit).map(StudyMethod.preset) ?? defaults.studyMethod,
+            studyMethod: StudyMethodMenu.kitStartingKind(of: kit).map(StudyMethod.preset),
             reviewsFirst: section?["reviewsFirst"]?.boolValue ?? defaults.reviewsFirst,
             eventBufferMinutes: section?["eventBufferMinutes"]?.numberValue.flatMap { Self.wholeNumber($0, upTo: 240) }
                 ?? defaults.eventBufferMinutes,
@@ -108,7 +110,7 @@ public struct TodayPlanSettings: Hashable, Sendable {
 
     /// Block lengths and wording for `StudyDayPlanner`.
     public var preferences: StudyDayPreferences {
-        StudyDayPreferences(method: studyMethod, reviewsFirst: reviewsFirst,
+        StudyDayPreferences(method: studyMethod ?? .pomodoro, reviewsFirst: reviewsFirst,
                             eventBufferMinutes: eventBufferMinutes, studyTitle: studyBlockTitle)
     }
 

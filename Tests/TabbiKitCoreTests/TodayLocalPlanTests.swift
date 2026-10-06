@@ -69,6 +69,41 @@ final class TodayLocalPlanTests: XCTestCase {
         XCTAssertEqual(preferences.workdayEndMinute, 21 * 60 + 30)
     }
 
+    // MARK: - Block lengths
+
+    func testBlocksFollowTheKitsStudyMethod() throws {
+        let medicine = try KitLibrary.loadBundled("medicine")
+        let preferences = TodayPlanSettings(kit: medicine.defaults).schedulePreferences(now: at(8), calendar: calendar)
+        XCTAssertEqual(preferences.defaultTaskMinutes, 25)
+        XCTAssertEqual(preferences.maximumBlockMinutes, 25)
+        XCTAssertEqual(preferences.breakMinutes, 5)
+        XCTAssertEqual(preferences.longBreakMinutes, 15)
+        XCTAssertEqual(preferences.longBreakEvery, 4)
+
+        let fiftyTwo = TodayPlanSettings(studyMethod: .fiftyTwoSeventeen).schedulePreferences(now: at(8), calendar: calendar)
+        XCTAssertEqual(fiftyTwo.maximumBlockMinutes, 52)
+        XCTAssertEqual(fiftyTwo.breakMinutes, 17)
+    }
+
+    func testKitsWithoutARhythmKeepEverydayBlocks() throws {
+        let everyday = SchedulePreferences()
+        let essentials = try KitLibrary.loadBundled("essentials")
+        for settings in [TodayPlanSettings(), TodayPlanSettings(kit: essentials.defaults)] {
+            let preferences = settings.schedulePreferences(now: at(8), calendar: calendar)
+            XCTAssertEqual(preferences.maximumBlockMinutes, everyday.maximumBlockMinutes)
+            XCTAssertEqual(preferences.defaultTaskMinutes, everyday.defaultTaskMinutes)
+            XCTAssertEqual(preferences.breakMinutes, everyday.breakMinutes)
+        }
+    }
+
+    func testAPomodoroKitPlansLongWorkInPomodoros() {
+        let task = ProvidedTask(id: "essay", source: "study", title: "Essay draft", estimatedMinutes: 60)
+        let plan = TodayPlanSettings(studyMethod: .pomodoro, eventBufferMinutes: 0)
+            .localPlan(now: at(9), events: [], tasks: [], sharedTasks: [task], calendar: calendar, locale: locale)
+        XCTAssertEqual(plan.blocks.map { Int($0.block.end.timeIntervalSince($0.block.start) / 60) }, [25, 20, 15])
+        XCTAssertEqual(plan.blocks.map(\.block.start), [at(9), at(9, 30), at(9, 55)], "a 5 min break after each")
+    }
+
     func testAnEarlyEndOfDayMovesTheStartBack() {
         let preferences = TodayPlanSettings(dayEndHour: 8).schedulePreferences(now: at(5), calendar: calendar)
         XCTAssertEqual(preferences.workdayEndMinute, 8 * 60)

@@ -72,7 +72,7 @@ final class TodayPlanSettingsTests: XCTestCase {
         let medicine = try KitLibrary.loadBundled("medicine")
         let settings = TodayPlanSettings(kit: medicine.defaults)
         XCTAssertEqual(settings.planMode, .study)
-        XCTAssertEqual(settings.studyMethod.kind, StudyMethodMenu(kit: medicine.defaults).startingKind)
+        XCTAssertEqual(settings.studyMethod?.kind, StudyMethodMenu(kit: medicine.defaults).startingKind)
         XCTAssertTrue(settings.reviewsFirst)
         XCTAssertEqual(settings.dayEndHour, 21, "study days run into the evening")
         XCTAssertEqual(settings.sampleDay, .medicine, "demo shows a med student's day")
