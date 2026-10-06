@@ -21,12 +21,14 @@ final class OnboardingStore: ObservableObject {
 
     var isActive: Bool { flow != nil }
 
-    /// Starts the flow on the kit step, from the current tabs and kit, so
-    /// re-running it from Settings begins where the user is now.
+    /// Starts the flow from the current tabs and kit, so re-running it from
+    /// Settings begins where the user is now. It opens on the name step on
+    /// the first run, and on a re-run only while no name is set.
     func start() {
         let current = settings.settings
         flow = OnboardingFlow(catalog: settings.catalog, layout: current.modules, kit: settings.activeKit,
-                              answers: current.hasChosenKit ? current.kitAnswers : [:])
+                              answers: current.hasChosenKit ? current.kitAnswers : [:],
+                              asksName: !current.hasChosenKit || current.cleanedDisplayName == nil)
     }
 
     /// Shows `flow` as it is, without applying anything; for snapshots.
@@ -71,7 +73,7 @@ private extension OnboardingFlow.Stage {
     var appliesChoices: Bool {
         switch self {
         case .setup, .finished: true
-        case .kit, .question, .modules: false
+        case .name, .kit, .question, .modules: false
         }
     }
 }

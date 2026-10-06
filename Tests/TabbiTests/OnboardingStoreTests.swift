@@ -18,11 +18,13 @@ final class OnboardingStoreTests: XCTestCase {
                              integratesWithSystem: false)
     }
 
-    func testStartsOnTheKitStepWithTheCurrentTabs() {
+    func testStartsOnTheNameStepThenTheKitWithTheCurrentTabs() {
         let settings = makeSettings()
         let store = OnboardingStore(settings: settings)
         XCTAssertFalse(store.isActive)
         store.start()
+        XCTAssertEqual(store.flow?.stage, .name)
+        store.update { $0.next() }
         XCTAssertEqual(store.flow?.stage, .kit)
         XCTAssertEqual(store.flow?.layout, settings.settings.modules)
         XCTAssertEqual(store.flow?.kit?.id, "essentials")
@@ -88,6 +90,33 @@ final class OnboardingStoreTests: XCTestCase {
         XCTAssertTrue(applications.isEmpty, "starter tasks would be added again")
         XCTAssertFalse(settings.settings.modules.isEnabled(.spotify))
         XCTAssertNil(settings.lastKitSwitch)
+    }
+
+    func testTheNameTypedDuringSetupIsTheAppWideName() {
+        let settings = makeSettings()
+        let store = OnboardingStore(settings: settings)
+        store.start()
+        // The name step's field writes the app-wide name as it is typed.
+        settings.settings.displayName = "Ana"
+        store.update { $0.next() }
+        store.finish()
+        XCTAssertEqual(settings.settings.cleanedDisplayName, "Ana")
+    }
+
+    func testRerunAsksTheNameOnlyWhileNoneIsSet() {
+        let settings = makeSettings()
+        let store = OnboardingStore(settings: settings)
+        store.start()
+        store.finish()
+
+        store.start()
+        XCTAssertEqual(store.flow?.stage, .name, "skipped the first time, so asked again")
+        store.finish()
+
+        settings.settings.displayName = "Ana"
+        store.start()
+        XCTAssertEqual(store.flow?.stage, .kit)
+        XCTAssertFalse(store.flow?.stages.contains(.name) ?? true)
     }
 
     func testRerunWithAnotherKitSwitchesKitsUndoably() throws {
