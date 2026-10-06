@@ -291,12 +291,24 @@ final class SettingsRepositoryTests: XCTestCase {
         XCTAssertTrue(settings.notchPreview.isEnabled)
         XCTAssertEqual(settings.notchPreview.enabledKinds, Set(TickerKind.allCases))
         XCTAssertEqual(settings.notchPreview.interval, .medium)
+        XCTAssertEqual(settings.displayName, "")
+        XCTAssertNil(settings.cleanedDisplayName, "no name until the user gives one")
+    }
+
+    func testDisplayNameIsKeptAsTypedAndCleanedForUse() {
+        var settings = AppSettings(modules: .default)
+        settings.displayName = "  Ada\u{200B} King, Countess of Lovelace "
+        XCTAssertEqual(settings.displayName, "  Ada\u{200B} King, Countess of Lovelace ")
+        XCTAssertEqual(settings.cleanedDisplayName, "Ada King, Countess of Lo")
+        settings.displayName = " \n "
+        XCTAssertNil(settings.cleanedDisplayName)
     }
 
     func testRoundTripsEveryField() {
         var modules = ModuleLayout(order: [.claudeAsk, .planner], disabled: [])
         modules.setEnabled(.spotify, false)
         let settings = AppSettings(
+            displayName: "  Ada ",
             kitID: "medicine",
             hasChosenKit: true,
             kitAnswers: ["stage": ["clinical"], "anki": ["yes", "no"]],

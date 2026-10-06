@@ -2,6 +2,10 @@ import Foundation
 
 /// Every user preference Tabbi has, as one value.
 public struct AppSettings: Equatable, Sendable {
+    /// The user's name, kept as typed so the field round-trips. Party shows
+    /// it to friends and Tabbi greets the user with it; `cleanedDisplayName`
+    /// is the form they use. Blank means no name yet.
+    public var displayName: String
     /// The kit the user (or edition) picked. Its layout seeds `modules`, and
     /// "reset to kit defaults" goes back to it.
     public var kitID: String
@@ -47,6 +51,7 @@ public struct AppSettings: Equatable, Sendable {
     /// - Parameter modules: the tab layout; there is no default because
     ///   the modules a build has come from its module registry.
     public init(
+        displayName: String = "",
         kitID: String = KitLibrary.defaultKitID,
         hasChosenKit: Bool = false,
         kitAnswers: KitAnswers = [:],
@@ -65,6 +70,7 @@ public struct AppSettings: Equatable, Sendable {
         notchPreview: NotchPreviewSettings = .default,
         themeID: ThemeID = ThemeCatalog.defaultID
     ) {
+        self.displayName = displayName
         self.kitID = kitID
         self.hasChosenKit = hasChosenKit
         self.kitAnswers = kitAnswers
@@ -83,6 +89,10 @@ public struct AppSettings: Equatable, Sendable {
         self.notchPreview = notchPreview
         self.themeID = themeID
     }
+
+    /// The name as Party and greetings use it (`DisplayName.cleaned`), or
+    /// nil when the user has not given one.
+    public var cleanedDisplayName: String? { DisplayName.cleaned(displayName) }
 
     /// Whether the closed-notch preview may show `kind`: the user's preview
     /// choices, minus items whose module is turned off, since clicking one
@@ -151,6 +161,7 @@ public struct AppSettings: Equatable, Sendable {
     /// the live activity items `kit` picks (all of them without a kit or when
     /// it names none). Launch at login is kept: it is a system login item the
     /// user turned on deliberately, and turning it off silently would surprise.
+    /// So is the user's name, which is who they are rather than a preference.
     /// Tabs, theme and the Claude location belong to other sections.
     public mutating func resetGeneral(to kit: KitManifest?, catalog: ModuleCatalog) {
         let fresh = AppSettings(modules: modules)
@@ -205,6 +216,7 @@ public struct AppSettings: Equatable, Sendable {
 /// doesn't know, so they come back where they were in a build that has them.
 public struct SettingsRepository {
     enum Key {
+        static let displayName = "settings.displayName"
         static let kitID = "settings.kit"
         static let hasChosenKit = "settings.kit.chosen"
         static let kitAnswers = "settings.kit.answers"
@@ -265,6 +277,7 @@ public struct SettingsRepository {
                          catalog: catalog)
         }
         return AppSettings(
+            displayName: defaults.string(forKey: Key.displayName) ?? fallback.displayName,
             kitID: kit?.id ?? defaultKitID,
             hasChosenKit: bool(Key.hasChosenKit) ?? false,
             kitAnswers: (defaults.dictionary(forKey: Key.kitAnswers) as? [String: [String]])?
@@ -301,6 +314,7 @@ public struct SettingsRepository {
         // run its migrations again after the user goes back to it.
         defaults.set(max(SettingsSchema.current, SettingsSchema.storedVersion(in: defaults)),
                      forKey: SettingsSchema.versionKey)
+        defaults.set(settings.displayName, forKey: Key.displayName)
         defaults.set(settings.kitID, forKey: Key.kitID)
         defaults.set(settings.hasChosenKit, forKey: Key.hasChosenKit)
         // Sorted so the stored value is stable across saves.

@@ -73,6 +73,13 @@ public enum SettingsSchema {
                 defaults.set(PanelSize.regular.rawValue, forKey: key)
             }
         },
+        // 5 -> 6: the user's name becomes one app-wide setting. Until now it
+        // only lived in Party's settings, so a name chosen there is adopted.
+        Migration(version: 6) { defaults in
+            guard defaults.object(forKey: SettingsRepository.Key.displayName) == nil,
+                  let name = PartySettingsRepository(defaults: defaults).load().cleanedName else { return }
+            defaults.set(name, forKey: SettingsRepository.Key.displayName)
+        },
     ]
 
     /// The version this build writes.

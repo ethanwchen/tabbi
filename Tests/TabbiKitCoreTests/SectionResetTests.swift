@@ -78,6 +78,15 @@ final class SectionResetTests: XCTestCase {
         XCTAssertFalse(settings.usesGeneralDefaults(of: essentials, catalog: catalog))
     }
 
+    func testGeneralResetKeepsTheUsersName() {
+        var settings = customized()
+        settings.displayName = "Ada"
+        XCTAssertTrue(AppSettings(displayName: "Ada", modules: .default).usesGeneralDefaults(of: nil, catalog: catalog),
+                      "a name alone is nothing to reset")
+        settings.resetGeneral(to: medicine, catalog: catalog)
+        XCTAssertEqual(settings.displayName, "Ada")
+    }
+
     func testLookDefaultIsTheKitsThemeOrTheAppDefault() {
         XCTAssertEqual(AppSettings.defaultTheme(for: medicine), ThemeID.cozy)
         XCTAssertEqual(AppSettings.defaultTheme(for: essentials), ThemeID.midnight)
