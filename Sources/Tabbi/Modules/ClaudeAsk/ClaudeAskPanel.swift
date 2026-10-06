@@ -590,16 +590,9 @@ private struct HistoryList: View {
             // As tall as Clear All, so the line stays put when it goes.
             .frame(height: 26)
             if session.savedChats.isEmpty {
-                VStack(spacing: Theme.Spacing.xxs) {
-                    Text("No saved chats")
-                        .font(Theme.Typography.bodyEmphasis)
-                        .foregroundStyle(Theme.Palette.secondaryText)
-                    Text("Chats are saved here once Claude answers.")
-                        .font(Theme.Typography.caption)
-                        .foregroundStyle(Theme.Palette.tertiaryText)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .transition(.opacity)
+                StatusMessage(symbol: "clock.arrow.circlepath", tint: accent, title: "No saved chats",
+                              message: "Chats are saved here once Claude answers.")
+                    .transition(.opacity)
             } else if ClaudeAskPanel.isSnapshot {
                 rows
                     .frame(maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .top)

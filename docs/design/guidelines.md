@@ -80,6 +80,7 @@ When a rule and a feature disagree, remove or hide the feature.
 - Every panel designs its empty, loading, unavailable and error states.
   An empty state is one line of guidance and at most one action ("Connect Calendar to see your day"), never a blank area or a raw error.
   Draw a whole-panel state with the shared `StatusMessage` (`TabbiKit/Components`): the module's glyph in a soft accent badge (a spinner while something is on its way), a title, one line of guidance and the action, so every tab's empty and loading states look alike.
+  An empty list inside a panel (Ask Claude's saved chats) uses it too, with the glyph of the button that opened the list.
 - A figure that is still loading shows a placeholder bar the size of the figure (`.redacted(reason: .placeholder)`), and one caption says what is coming.
   A plain "-" means the value is unknown or not reported, never that it is on its way.
 - Copy is sentence case, short and friendly; say what to do, not what went wrong inside.
