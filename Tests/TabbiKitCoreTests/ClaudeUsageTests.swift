@@ -332,6 +332,8 @@ final class ClaudeUsageFormatTests: XCTestCase {
         XCTAssertEqual(ClaudeUsageFormat.modelName("claude-sonnet-4-20250514"), "Sonnet 4")
         XCTAssertEqual(ClaudeUsageFormat.modelName("claude-3-5-sonnet-20241022"), "Sonnet 3.5")
         XCTAssertEqual(ClaudeUsageFormat.modelName("claude-opus-4-6[1m]"), "Opus 4.6")
+        XCTAssertEqual(ClaudeUsageFormat.modelName("claude-opus-5-5"), "Opus 5.5")
+        XCTAssertEqual(ClaudeUsageFormat.modelName("claude-fable-5-1"), "Fable 5.1")
         XCTAssertEqual(ClaudeUsageFormat.modelName("gpt-x"), "gpt-x")
     }
 }

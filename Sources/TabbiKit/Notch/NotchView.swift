@@ -150,8 +150,10 @@ private struct OpenNotchContent: View {
                 Color.clear.frame(width: header.trailingZone.minX - header.leadingZone.maxX)
                 HStack(spacing: NotchHeaderLayout.Metrics().trailingSpacing) {
                     if let titleFrame = header.titleFrame {
+                        // The title type, shrunk only as far as the layout allows.
                         Text(title)
-                            .font(Theme.Typography.title)
+                            .font(.system(size: 13 * header.titleScale, weight: .semibold,
+                                          design: Theme.Typography.design))
                             .foregroundStyle(Theme.Palette.secondaryText)
                             .lineLimit(1)
                             .truncationMode(.tail)

@@ -147,6 +147,46 @@ final class ClaudeAskConversationTests: XCTestCase {
         XCTAssertNotNil(conversation.failure)
     }
 
+    func testALostSessionIsAskedAgainWithTheChatSoFar() throws {
+        var conversation = ClaudeAskConversation(restoring: ClaudeAskChat(
+            id: UUID(), createdAt: Date(), updatedAt: Date(), sessionID: "gone",
+            messages: [.init(role: .user, text: "Retry policy?"), .init(role: .assistant, text: "Back off and retry.")]
+        ))
+        conversation.begin(prompt: "And jitter?")
+        XCTAssertEqual(conversation.outgoingPrompt("And jitter?"), "And jitter?", "the session still has the chat")
+        conversation.fail(.process(detail: "No conversation found with session ID: gone"))
+        let question = try XCTUnwrap(conversation.takeQuestionForLostSession())
+
+        conversation.begin(prompt: question.text)
+        let seeded = conversation.outgoingPrompt(question.text)
+        XCTAssertTrue(seeded.contains("Me: Retry policy?\n\nYou: Back off and retry."), seeded)
+        XCTAssertTrue(seeded.hasSuffix("And jitter?"), seeded)
+        XCTAssertEqual(conversation.messages.last(where: { $0.role == .user })?.text, "And jitter?",
+                       "the bubble shows only what the user typed")
+
+        conversation.apply(.result(ClaudeResult(text: "Add randomness.", sessionID: "fresh", isError: false)))
+        conversation.begin(prompt: "Thanks")
+        XCTAssertEqual(conversation.outgoingPrompt("Thanks"), "Thanks", "the new session carries on by itself")
+    }
+
+    func testANewChatSendsTheQuestionAsTyped() {
+        var conversation = ClaudeAskConversation()
+        conversation.begin(prompt: "Hi")
+        XCTAssertEqual(conversation.outgoingPrompt("Hi"), "Hi")
+    }
+
+    func testTheSeedKeepsTheLatestExchangesWithinTheLimit() {
+        var conversation = ClaudeAskConversation(restoring: ClaudeAskChat(
+            id: UUID(), createdAt: Date(), updatedAt: Date(), sessionID: nil,
+            messages: [.init(role: .user, text: String(repeating: "a", count: 50)), .init(role: .assistant, text: "old"),
+                       .init(role: .user, text: "recent"), .init(role: .assistant, text: "latest")]
+        ))
+        conversation.begin(prompt: "Next")
+        let seeded = conversation.outgoingPrompt("Next", transcriptLimit: 30)
+        XCTAssertTrue(seeded.contains("Me: recent\n\nYou: latest"), seeded)
+        XCTAssertFalse(seeded.contains("You: old"), "a whole exchange goes, never half of one")
+    }
+
     func testOtherFailuresKeepTheSession() {
         var conversation = ClaudeAskConversation()
         conversation.begin(prompt: "ok")

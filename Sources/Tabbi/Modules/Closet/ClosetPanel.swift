@@ -265,18 +265,23 @@ private struct ClosetWardrobe: View {
         }
     }
 
-    /// The wardrobe grows with every new item, so it scrolls. `ImageRenderer`
-    /// draws a `ScrollView` blank, so snapshots show the top rows clipped.
+    /// The wardrobe grows with every new item, so it scrolls, and the rows
+    /// fade out at the bottom edge to say so. `ImageRenderer` draws a
+    /// `ScrollView` blank, so snapshots show the top rows clipped.
     @ViewBuilder private var scrollingGrid: some View {
-        if RunMode.current.isSnapshot {
-            Color.clear
-                .overlay(alignment: .top) { grid }
-                .clipped()
-        } else {
-            ScrollView(.vertical) { grid }
-                .scrollIndicators(.automatic)
-                .scrollBounceBehavior(.basedOnSize)
+        Group {
+            if RunMode.current.isSnapshot {
+                Color.clear
+                    .overlay(alignment: .top) { grid }
+                    .clipped()
+            } else {
+                ScrollView(.vertical) { grid }
+                    .scrollIndicators(.automatic)
+                    .scrollBounceBehavior(.basedOnSize)
+                    .contentMargins(.bottom, Theme.Spacing.m, for: .scrollContent)
+            }
         }
+        .edgeFade(.bottom)
     }
 
     /// Thumbnails show each item alone on the pet, so the item reads clearly.
@@ -328,7 +333,7 @@ private struct ClosetShelfTitle: View {
     var body: some View {
         Text(theme.displayName)
             .foregroundStyle(Theme.Palette.secondaryText)
-            .font(.system(size: 9.5, weight: .semibold, design: .rounded))
+            .font(.system(size: 10, weight: .semibold, design: .rounded))
             .frame(height: 12)
             .padding(.leading, Theme.Spacing.xxs)
     }
@@ -395,7 +400,7 @@ private struct ClosetItemTile: View {
                 Label("\(item.cost)", systemImage: "lock.fill").foregroundStyle(Theme.Palette.tertiaryText)
             }
         }
-        .font(.system(size: 9.5, weight: .semibold, design: .rounded).monospacedDigit())
+        .font(.system(size: 10, weight: .semibold, design: .rounded).monospacedDigit())
         .labelStyle(ClosetTightLabelStyle())
         .frame(height: 12)
     }
@@ -410,16 +415,14 @@ private struct ClosetItemTile: View {
     }
 }
 
-/// A tiny accent tag on items fresh in the catalog.
+/// A small accent dot on items fresh in the catalog, like an unread mark;
+/// the tile's tooltip says "New".
 private struct ClosetNewBadge: View {
     var body: some View {
-        Text("NEW")
-            .font(.system(size: 6.5, weight: .heavy, design: .rounded))
-            .tracking(0.3)
-            .foregroundStyle(Theme.Palette.background)
-            .padding(.horizontal, Theme.Spacing.xs)
-            .frame(height: 10)
-            .background(Capsule().fill(accent))
+        Circle()
+            .fill(accent)
+            .frame(width: 6, height: 6)
+            .padding(Theme.Spacing.xxs)
             .allowsHitTesting(false)
     }
 }
@@ -428,7 +431,7 @@ private struct ClosetNewBadge: View {
 private struct ClosetTightLabelStyle: LabelStyle {
     func makeBody(configuration: Configuration) -> some View {
         HStack(spacing: Theme.Spacing.xxs) {
-            configuration.icon.font(.system(size: 7.5, weight: .bold))
+            configuration.icon.font(.system(size: 8, weight: .bold))
             configuration.title
         }
     }

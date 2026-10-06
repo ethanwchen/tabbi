@@ -73,6 +73,10 @@ public struct ScheduleDayLayout: Hashable, Sendable {
         /// group needs (at most `maximumLanes`).
         public var lane: Int
         public var lanes: Int
+        /// How much of the width the item's label may use: its own width,
+        /// stretched over the free track after it up to the next item in its
+        /// row, so a short block still gets a readable title.
+        public var labelWidth: Double
 
         public var id: String { item.id }
     }
@@ -161,12 +165,14 @@ public struct ScheduleDayLayout: Hashable, Sendable {
     /// form a group, and each takes the first row free at its start.
     static func place(_ items: [ScheduleItem], in range: DateInterval) -> [Placed] {
         var result: [Placed] = []
+        var groups: [Int] = []
         var group: [Placed] = []
         var groupEnd = Date.distantPast
         var laneEnds: [Date] = []
         func closeGroup() {
             let lanes = (group.map(\.lane).max() ?? 0) + 1
             result += group.map { var placed = $0; placed.lanes = lanes; return placed }
+            groups += Array(repeating: (groups.last ?? -1) + 1, count: group.count)
             group = []
             laneEnds = []
         }
@@ -181,9 +187,22 @@ public struct ScheduleDayLayout: Hashable, Sendable {
             if lane < laneEnds.count { laneEnds[lane] = max(laneEnds[lane], item.end) } else { laneEnds.append(item.end) }
             groupEnd = max(groupEnd, item.end)
             group.append(Placed(item: item, x: start.timeIntervalSince(range.start) / range.duration,
-                                width: max(end.timeIntervalSince(start), 0) / range.duration, lane: lane, lanes: 1))
+                                width: max(end.timeIntervalSince(start), 0) / range.duration, lane: lane, lanes: 1,
+                                labelWidth: 0))
         }
         if !group.isEmpty { closeGroup() }
+        // A label runs until the next item that shares its row: a later one in
+        // the same lane of its group, or the first of any later group, which
+        // spans every row.
+        for index in result.indices {
+            let placed = result[index]
+            let next = result.indices
+                .filter { $0 > index && (groups[$0] > groups[index] || result[$0].lane == placed.lane) }
+                .map { result[$0].x }
+                .filter { $0 >= placed.x }
+                .min() ?? 1
+            result[index].labelWidth = max(placed.width, next - placed.x)
+        }
         return result
     }
 

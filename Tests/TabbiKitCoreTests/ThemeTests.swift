@@ -19,6 +19,9 @@ final class ThemeCatalogTests: XCTestCase {
         }
     }
 
+    /// WCAG AA for every text level, metadata included: the panel text is
+    /// 10.5 to 13pt, so 4.5:1 applies. Secondary keeps a clear step above
+    /// tertiary so the hierarchy still reads.
     func testTextKeepsReadableContrastOnEveryCard() {
         for theme in ThemeCatalog.all {
             let palette = theme.palette
@@ -27,8 +30,9 @@ final class ThemeCatalogTests: XCTestCase {
             let card = palette.surfaceHover.composited(over: body)
             func contrast(_ text: ThemeColor) -> Double { text.composited(over: card).contrast(with: card) }
             XCTAssertGreaterThanOrEqual(contrast(palette.primaryText), 7, "\(theme.name) primary")
-            XCTAssertGreaterThanOrEqual(contrast(palette.secondaryText), 4.5, "\(theme.name) secondary")
-            XCTAssertGreaterThanOrEqual(contrast(palette.tertiaryText), 2.5, "\(theme.name) tertiary")
+            XCTAssertGreaterThanOrEqual(contrast(palette.secondaryText), 6, "\(theme.name) secondary")
+            XCTAssertGreaterThanOrEqual(contrast(palette.tertiaryText), 4.5, "\(theme.name) tertiary")
+            XCTAssertGreaterThan(contrast(palette.secondaryText), contrast(palette.tertiaryText) + 1, "\(theme.name) hierarchy")
         }
     }
 
@@ -61,6 +65,7 @@ final class ThemeCatalogTests: XCTestCase {
         func contrast(_ text: ThemeColor) -> Double { text.composited(over: brightest).contrast(with: brightest) }
         XCTAssertGreaterThanOrEqual(contrast(palette.primaryText), 7)
         XCTAssertGreaterThanOrEqual(contrast(palette.secondaryText), 4.5)
+        XCTAssertGreaterThanOrEqual(contrast(palette.tertiaryText), 4.5)
     }
 
     func testGentleMotionPlaysEveryTokenSlowerAndCalmer() {

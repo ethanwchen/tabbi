@@ -550,13 +550,8 @@ private struct SyncButton: View {
 
 struct AnkiLoadingView: View {
     var body: some View {
-        HStack(spacing: Theme.Spacing.s) {
-            Spinner(tint: accent)
-            Text("Looking for Anki…")
-                .font(Theme.Typography.body)
-                .foregroundStyle(Theme.Palette.secondaryText)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        StatusMessage(symbol: nil, tint: accent, title: "Looking for Anki…",
+                      message: "Your cards due today show up here.")
     }
 }
 
@@ -775,7 +770,7 @@ private struct SetupStep: View {
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
             Text("\(number)")
-                .font(.system(size: 9.5, weight: .bold, design: .rounded))
+                .font(.system(size: 10, weight: .bold, design: .rounded))
                 .foregroundStyle(accent)
                 .frame(width: 16, height: 16)
                 .background(Circle().fill(accent.opacity(0.16)))

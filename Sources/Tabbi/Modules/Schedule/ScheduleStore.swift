@@ -167,7 +167,7 @@ final class ScheduleStore: ObservableObject {
         guard !isDemo, access == .notDetermined else { return }
         Task {
             // The result is re-read from EventKit, which is the source of truth.
-            _ = try? await eventStore.requestFullAccessToEvents()
+            await ConnectionProbes.requestCalendarAccess(eventStore)
             access = Self.currentAccess()
             reload()
             if isVisible { startUpdates() }

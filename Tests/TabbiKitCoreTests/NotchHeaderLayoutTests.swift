@@ -124,4 +124,19 @@ final class NotchHeaderLayoutTests: XCTestCase {
         XCTAssertNil(crowded.titleFrame, "the title goes before anything collides")
         XCTAssertEqual(crowded.shortcutFrames.count, 3)
     }
+
+    func testASlightlyLongTitleShrinksInsteadOfTruncating() throws {
+        // "Claude Usage" in the 13pt title type, beside a 14"/16" MacBook Pro notch.
+        let header = layout(tabs: 4, notch: CGSize(width: 185, height: 32), title: 87.4)
+        let title = try XCTUnwrap(header.titleFrame)
+        XCTAssertLessThan(header.titleScale, 1)
+        XCTAssertGreaterThanOrEqual(header.titleScale, NotchHeaderLayout.Metrics().minTitleScale)
+        XCTAssertGreaterThanOrEqual(title.width, 87.4 * header.titleScale - 0.5, "the shrunk title fits whole")
+
+        XCTAssertEqual(layout(tabs: 4, notch: CGSize(width: 185, height: 32), title: 40).titleScale, 1,
+                       "a title that fits keeps its full size")
+        let long = layout(tabs: 4, notch: CGSize(width: 210, height: 32), title: 120)
+        XCTAssertEqual(long.titleScale, NotchHeaderLayout.Metrics().minTitleScale,
+                       "a much longer title stops shrinking and truncates")
+    }
 }

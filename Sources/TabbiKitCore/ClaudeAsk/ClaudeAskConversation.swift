@@ -227,6 +227,37 @@ public struct ClaudeAskConversation: Equatable, Sendable {
         return takeRetryQuestion()
     }
 
+    /// What to send the CLI for the question just begun. With a session to
+    /// resume the CLI already has the chat, so it is just `prompt`. Without
+    /// one (the CLI deleted the session of a reopened chat, or the chat never
+    /// had one), the earlier exchanges go first, so a fresh session still
+    /// answers in context. The oldest exchanges are left out past
+    /// `transcriptLimit` characters (the latest one always goes).
+    public func outgoingPrompt(_ prompt: String, transcriptLimit: Int = 24_000) -> String {
+        guard sessionID == nil, let earlier = savedChat()?.messages, !earlier.isEmpty else { return prompt }
+        // A saved chat is question and answer pairs; whole pairs are kept.
+        var lines: [String] = []
+        var length = 0
+        for start in stride(from: earlier.count - (earlier.count.isMultiple(of: 2) ? 2 : 1), through: 0, by: -2) {
+            let exchange = earlier[start..<min(start + 2, earlier.count)].map {
+                "\($0.role == .user ? "Me" : "You"): \($0.text)"
+            }
+            let size = exchange.reduce(0) { $0 + $1.count }
+            guard length + size <= transcriptLimit || lines.isEmpty else { break }
+            lines.insert(contentsOf: exchange, at: 0)
+            length += size
+        }
+        return """
+        We talked earlier in this chat, but that session is no longer available. Here is what we said:
+
+        \(lines.joined(separator: "\n\n"))
+
+        Continue from there. My new message:
+
+        \(prompt)
+        """
+    }
+
     /// Starts a new chat with a new `chatID`. Message ids keep increasing.
     public mutating func reset(at now: Date = Date()) {
         chatID = UUID()

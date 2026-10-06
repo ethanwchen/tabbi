@@ -39,7 +39,7 @@ public enum ThemeCatalog {
         palette: ThemePalette(
             surface: ThemeColor(white: 1, opacity: 0.07), surfaceHover: ThemeColor(white: 1, opacity: 0.12),
             stroke: ThemeColor(white: 1, opacity: 0.08), primaryText: ThemeColor(white: 1),
-            secondaryText: ThemeColor(white: 1, opacity: 0.62), tertiaryText: ThemeColor(white: 1, opacity: 0.38),
+            secondaryText: ThemeColor(white: 1, opacity: 0.62), tertiaryText: ThemeColor(white: 1, opacity: 0.48),
             success: green, warning: amber, danger: red))
 
     public static let graphite = AppTheme(
@@ -50,8 +50,8 @@ public enum ThemeCatalog {
             surfaceHover: ThemeColor(red: 0.78, green: 0.82, blue: 0.90, opacity: 0.15),
             stroke: ThemeColor(red: 0.78, green: 0.82, blue: 0.90, opacity: 0.12),
             primaryText: ThemeColor(red: 0.94, green: 0.95, blue: 0.97),
-            secondaryText: ThemeColor(red: 0.88, green: 0.90, blue: 0.94, opacity: 0.64),
-            tertiaryText: ThemeColor(red: 0.88, green: 0.90, blue: 0.94, opacity: 0.40),
+            secondaryText: ThemeColor(red: 0.88, green: 0.90, blue: 0.94, opacity: 0.72),
+            tertiaryText: ThemeColor(red: 0.88, green: 0.90, blue: 0.94, opacity: 0.60),
             success: green, warning: amber, danger: red),
         typeface: .standard)
 
@@ -65,7 +65,7 @@ public enum ThemeCatalog {
             glow: ThemeColor(red: 0.28, green: 0.50, blue: 0.98, opacity: 0.26),
             surface: ThemeColor(white: 1, opacity: 0.08), surfaceHover: ThemeColor(white: 1, opacity: 0.14),
             stroke: ThemeColor(white: 1, opacity: 0.14), primaryText: ThemeColor(white: 1),
-            secondaryText: ThemeColor(white: 1, opacity: 0.66), tertiaryText: ThemeColor(white: 1, opacity: 0.40),
+            secondaryText: ThemeColor(white: 1, opacity: 0.78), tertiaryText: ThemeColor(white: 1, opacity: 0.64),
             success: green, warning: amber, danger: red),
         typeface: .standard, controls: .glass, surfaces: .glass)
 
@@ -77,8 +77,8 @@ public enum ThemeCatalog {
             surfaceHover: ThemeColor(red: 0.70, green: 0.80, blue: 1.00, opacity: 0.14),
             stroke: ThemeColor(red: 0.35, green: 0.95, blue: 1.00, opacity: 0.22),
             primaryText: ThemeColor(white: 1),
-            secondaryText: ThemeColor(red: 0.85, green: 0.92, blue: 1.00, opacity: 0.68),
-            tertiaryText: ThemeColor(red: 0.85, green: 0.92, blue: 1.00, opacity: 0.42),
+            secondaryText: ThemeColor(red: 0.85, green: 0.92, blue: 1.00, opacity: 0.70),
+            tertiaryText: ThemeColor(red: 0.85, green: 0.92, blue: 1.00, opacity: 0.57),
             success: ThemeColor(red: 0.20, green: 1.00, blue: 0.60),
             warning: ThemeColor(red: 1.00, green: 0.85, blue: 0.20),
             danger: ThemeColor(red: 1.00, green: 0.25, blue: 0.55)),
@@ -89,7 +89,7 @@ public enum ThemeCatalog {
         palette: ThemePalette(
             surface: ThemeColor(white: 1, opacity: 0.07), surfaceHover: ThemeColor(white: 1, opacity: 0.12),
             stroke: ThemeColor(white: 1, opacity: 0.10), primaryText: ThemeColor(white: 1),
-            secondaryText: ThemeColor(white: 1, opacity: 0.62), tertiaryText: ThemeColor(white: 1, opacity: 0.38),
+            secondaryText: ThemeColor(white: 1, opacity: 0.62), tertiaryText: ThemeColor(white: 1, opacity: 0.48),
             success: ThemeColor(white: 0.92), warning: ThemeColor(white: 0.78),
             // Errors keep a soft red: losing them would hide real problems.
             danger: ThemeColor(red: 0.95, green: 0.55, blue: 0.53)),
@@ -122,7 +122,7 @@ public enum ThemeCatalog {
             glow: glow,
             surface: tint.opacity(0.08), surfaceHover: tint.opacity(0.14), stroke: tint.opacity(0.10),
             primaryText: tint.mixed(with: ThemeColor(white: 1), by: 0.4),
-            secondaryText: tint.opacity(0.66), tertiaryText: tint.opacity(0.42),
+            secondaryText: tint.opacity(0.74), tertiaryText: tint.opacity(0.60),
             success: ThemeColor(red: 0.62, green: 0.82, blue: 0.58),
             warning: ThemeColor(red: 0.98, green: 0.78, blue: 0.45),
             danger: ThemeColor(red: 0.96, green: 0.52, blue: 0.50))

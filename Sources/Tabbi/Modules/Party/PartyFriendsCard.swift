@@ -56,13 +56,7 @@ struct PartyFriendsCard: View {
         } else {
             scrollingRows
                 // Rows fade out at the bottom edge instead of being cut off.
-                .mask {
-                    VStack(spacing: 0) {
-                        Color.black
-                        LinearGradient(colors: [.black, .clear], startPoint: .top, endPoint: .bottom)
-                            .frame(height: Self.fadeHeight)
-                    }
-                }
+                .edgeFade(.bottom, length: Self.fadeHeight)
         }
     }
 

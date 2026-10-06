@@ -51,6 +51,14 @@ public enum TickerFormat {
         }
     }
 
+    /// The name beside the pet in the closed notch: only one the user chose.
+    /// A pet still going by a name the app gave it (its breed, "Biscuit")
+    /// shows no name, so "British Shorthair" doesn't stretch the notch to
+    /// its widest; the tooltip still names it.
+    public static func petLabel(_ pet: TickerPet) -> String? {
+        pet.profile.hasDefaultName ? nil : pet.profile.name
+    }
+
     /// Shown after the name while the pet sleeps.
     public static let petSleeping = "zzz"
 }

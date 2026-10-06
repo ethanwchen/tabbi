@@ -160,7 +160,7 @@ final class ClaudeUsageStore: ObservableObject {
         )
         let today = ClaudeUsagePeriod(models: [
             ClaudeModelUsage(
-                model: "claude-opus-4-5-20251101",
+                model: "claude-opus-5-5",
                 tokens: ClaudeTokenUsage(input: 18_400, output: 96_300, cacheRead: 1_642_000, cacheCreation: 212_500),
                 messages: 214
             ),
@@ -172,7 +172,7 @@ final class ClaudeUsageStore: ObservableObject {
         ])
         let week = ClaudeUsagePeriod(models: [
             ClaudeModelUsage(
-                model: "claude-opus-4-5-20251101",
+                model: "claude-opus-5-5",
                 tokens: ClaudeTokenUsage(input: 96_000, output: 512_000, cacheRead: 9_870_000, cacheCreation: 1_204_000),
                 messages: 1_318
             ),

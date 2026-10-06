@@ -7,17 +7,22 @@ public extension TodayPlanSettings {
     /// When a planned day starts, unless the kit's day ends earlier.
     static let workdayStartMinute = 9 * 60
 
-    /// The local planner's preferences for the day containing `now`:
-    /// everyday block and break lengths, working hours from 9:00 until
-    /// `DayPlanner.dayEnd` (so planning late still leaves a couple of
-    /// hours), and the kit's event buffer and review order.
+    /// The local planner's preferences for the day containing `now`: the
+    /// kit's study method block and break lengths (everyday ones when it
+    /// has none, or only a plain timer with no breaks), working hours from 9:00 until `DayPlanner.dayEnd` (so
+    /// planning late still leaves a couple of hours), and the kit's event
+    /// buffer and review order.
     func schedulePreferences(now: Date, calendar: Calendar = .current) -> SchedulePreferences {
         let end = DayPlanner.dayEnd(now: now, calendar: calendar, endHour: dayEndHour)
         let parts = calendar.dateComponents([.hour, .minute], from: end)
         let endMinute = (parts.hour ?? dayEndHour) * 60 + (parts.minute ?? 0)
         // An early kit end hour moves the start back too, so the day never collapses.
         let startMinute = min(Self.workdayStartMinute, max(endMinute - 2 * 60, 0))
-        return SchedulePreferences(workdayStartMinute: startMinute, workdayEndMinute: endMinute,
+        guard let studyMethod, studyMethod.hasBreaks else {
+            return SchedulePreferences(workdayStartMinute: startMinute, workdayEndMinute: endMinute,
+                                       eventBufferMinutes: eventBufferMinutes, reviewsFirst: reviewsFirst)
+        }
+        return SchedulePreferences(method: studyMethod, workdayStartMinute: startMinute, workdayEndMinute: endMinute,
                                    eventBufferMinutes: eventBufferMinutes, reviewsFirst: reviewsFirst)
     }
 

@@ -364,8 +364,7 @@ final class ConnectionsStore: ObservableObject {
         guard !isDemo else { return }
         switch permission {
         case .calendar:
-            guard ConnectionProbes.canAskForCalendar else { break }
-            _ = try? await EKEventStore().requestFullAccessToEvents()
+            await ConnectionProbes.requestCalendarAccess(EKEventStore())
         case .notifications:
             guard ConnectionProbes.isAppBundle else { break }
             _ = try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound])

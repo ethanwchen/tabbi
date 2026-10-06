@@ -81,7 +81,7 @@ struct PlannerPanel: View {
         .task {
             // Opened by the global shortcut: the caret waits in "Add a task",
             // once the notch panel has become key.
-            guard notch.openedFromKeyboard, store.canEdit else { return }
+            guard store.canEdit, notch.consumeKeyboardOpen() else { return }
             try? await Task.sleep(for: .milliseconds(80))
             focus = .add
         }

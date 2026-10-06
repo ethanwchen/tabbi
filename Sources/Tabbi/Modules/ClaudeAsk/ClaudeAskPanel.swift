@@ -275,13 +275,7 @@ private struct MessageList: View {
             .scrollIndicators(.never)
             .defaultScrollAnchor(.bottom)
             // Older messages fade out under the header instead of being cut off.
-            .mask(
-                VStack(spacing: 0) {
-                    LinearGradient(colors: [.clear, .black], startPoint: .top, endPoint: .bottom)
-                        .frame(height: Theme.Spacing.m)
-                    Color.black
-                }
-            )
+            .edgeFade(.top)
             // Follows streamed text and the taller stopped/failed rows that replace it.
             .onChange(of: conversation.messages.last?.text) {
                 proxy.scrollTo(Self.bottomID, anchor: .bottom)
@@ -596,37 +590,21 @@ private struct HistoryList: View {
             // As tall as Clear All, so the line stays put when it goes.
             .frame(height: 26)
             if session.savedChats.isEmpty {
-                VStack(spacing: Theme.Spacing.xxs) {
-                    Text("No saved chats")
-                        .font(Theme.Typography.bodyEmphasis)
-                        .foregroundStyle(Theme.Palette.secondaryText)
-                    Text("Chats are saved here once Claude answers.")
-                        .font(Theme.Typography.caption)
-                        .foregroundStyle(Theme.Palette.tertiaryText)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .transition(.opacity)
+                StatusMessage(symbol: "clock.arrow.circlepath", tint: accent, title: "No saved chats",
+                              message: "Chats are saved here once Claude answers.")
+                    .transition(.opacity)
             } else if ClaudeAskPanel.isSnapshot {
                 rows
                     .frame(maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .top)
                     .clipped()
-                    .mask(bottomFade)
+                    .edgeFade(.bottom)
             } else {
                 ScrollView { rows }
                     .scrollIndicators(.never)
-                    .mask(bottomFade)
+                    .edgeFade(.bottom)
             }
         }
         .motion(Theme.Motion.snappy, value: session.savedChats.map(\.id))
-    }
-
-    /// Older chats fade out above the input bar instead of being cut off.
-    private var bottomFade: some View {
-        VStack(spacing: 0) {
-            Color.black
-            LinearGradient(colors: [.black, .clear], startPoint: .top, endPoint: .bottom)
-                .frame(height: Theme.Spacing.m)
-        }
     }
 
     private var rows: some View {
@@ -730,26 +708,14 @@ private struct EmptyChatView: View {
     ]
 
     var body: some View {
-        VStack(spacing: Theme.Spacing.s) {
-            Image(systemName: "sparkles")
-                .font(.system(size: 20, weight: .semibold))
-                .foregroundStyle(accent)
-            VStack(spacing: Theme.Spacing.xxs) {
-                Text("Ask Claude anything")
-                    .font(Theme.Typography.title)
-                    .foregroundStyle(Theme.Palette.primaryText)
-                Text("Quick answers right here. Claude can't see your files.")
-                    .font(Theme.Typography.caption)
-                    .foregroundStyle(Theme.Palette.tertiaryText)
-            }
+        StatusMessage(symbol: "sparkles", tint: accent, title: "Ask Claude anything",
+                      message: "Quick answers right here. Claude can't see your files.") {
             HStack(spacing: Theme.Spacing.s) {
                 ForEach(Self.examples, id: \.self) { prompt in
                     PillButton(title: prompt, help: "Ask “\(prompt)”") { onPick(prompt) }
                 }
             }
-            .padding(.top, Theme.Spacing.xs)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
@@ -758,27 +724,14 @@ private struct EmptyChatView: View {
 /// The panel looks again each time it opens.
 private struct ClaudeMissingView: View {
     var body: some View {
-        VStack(spacing: Theme.Spacing.s) {
-            Image(systemName: "sparkles")
-                .font(.system(size: 20, weight: .semibold))
-                .foregroundStyle(AskClaudeModule.descriptor.accentColor)
-            VStack(spacing: Theme.Spacing.xs) {
-                Text("Set up Claude to ask questions")
-                    .font(Theme.Typography.title)
-                    .foregroundStyle(Theme.Palette.primaryText)
-                Text("Claude is an AI helper that answers questions right here. Connections shows you how to add it.")
-                    .font(Theme.Typography.caption)
-                    .foregroundStyle(Theme.Palette.secondaryText)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .frame(maxWidth: 340)
-            }
+        StatusMessage(symbol: "sparkles", tint: AskClaudeModule.descriptor.accentColor,
+                      title: "Set up Claude to ask questions",
+                      message: "Claude is an AI helper that answers questions right here. "
+                          + "Connections shows you how to add it.") {
             PillButton(title: "Set up Claude", symbol: "link", help: "Open Connections to set up Claude") {
                 ConnectionsStore.shared.showHub()
             }
-            .padding(.top, Theme.Spacing.xs)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
