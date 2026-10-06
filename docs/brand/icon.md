@@ -3,7 +3,9 @@
 Tabbi's mascot is the maintainer's British Shorthair, a shaded silver cat with round blue eyes, who lives in the tabs on your MacBook notch.
 The icon has to say that in one glance: this particular cat, a nod to tabs, and a hint that this is a tool for getting things done.
 
-The icon is drawn entirely in code by `scripts/make-icon.swift` (CoreGraphics, vector shapes, no source art).
+The icon art is `docs/brand/source/tabbi-cover.png`, a flat cover illustration of the cat generated with the ip-as-logo recipe (see Cover art below).
+`scripts/make-icon.swift` masks it into the macOS squircle with the drop shadow and glass rim, and still draws the monochrome glyph in code.
+Without the cover file it falls back to the code-drawn cat described in History.
 
 ## Research
 
@@ -186,6 +188,16 @@ Round 8 (`rounds/r8.png`, `rounds/r8-dock.png`, `rounds/r8-variants.png`):
   The Light, Dark and Tinted appearances keep the round eye; Tinted turns it a mid grey with the same dark pupil and white catch lights.
   `Resources/AppIcon.icns`, the 1024 px assets and the glyph were regenerated from this round.
 
+## Cover art
+
+The cover follows the same recipe as the Tapir app icon: the [ip-as-logo](https://github.com/s1dashu/ip-as-logo-skill) skill's prompt skeleton, rendered once by OpenAI GPT Image 2 at 1024 px.
+The subject is the maintainer's British Shorthair as a chubby kitten face: pale silver-cream fur, taupe tabby stripes on the forehead and ear tips, the banded tail peeking in, round blue eyes and a small pink nose, emerging from the lower left of a muted golden yellow ground.
+It was candidate A3 of five (navy, rose, yellow, and two whole-body loaf poses).
+The exact prompt is saved beside it as `tabbi-cover.prompt.txt`.
+The image is used as generated, with no retouching.
+
+Tinted renders the cover in luminance only; Default, Light and Dark use it unchanged, since an `.icns` cannot carry appearances anyway.
+
 ## Assets
 
 `scripts/make-icon.swift` writes these to `docs/brand/assets/` on every default run.
@@ -227,7 +239,7 @@ Every other image that shows the icon is made from the assets above, so after a 
 | `docs/images/icon.png` (README) | `sips -Z 256 docs/brand/assets/tabbi-icon-1024.png --out docs/images/icon.png` |
 | `docs/images/social-preview.png` | `swift docs/make-screenshots.swift`, which places `docs/images/icon.png` beside the name (it also rewrites the other README screenshots, whose clocks differ on every run) |
 | `docs/images/install/gatekeeper-steps.png` | `swift docs/images/install/render-gatekeeper-steps.swift`, which reads `Resources/AppIcon.icns` |
-| The DMG window background | `packaging/dmg/render-background.swift` at build time. Its palette mirrors the icon: the navy ground, the fur-coloured checkmark wink and arrow (from the pink-tan nose to the pale fur), a round blue eye in the notch, and label pills in the shaded silver-beige |
+| The DMG window background | `packaging/dmg/render-background.swift` at build time. Its palette mirrors the cover icon: the golden ground, the cat's two blue eyes and pink nose peeking out of the notch, and a taupe arrow in the tabby stripes' colour. The ground is light enough that Finder's black labels need no backing pills |
 | `docs/images/install/dmg-window.png` | A screenshot of the real installer: `scripts/make-dmg.sh`, mount the DMG, then `screencapture -l <window id>` of its Finder window. For an icon-only change it can be repainted in place: the background art sits at (112, 140) in the 2x capture, so add the new minus the old `background@2x.png` there, draw the 1024 px asset at 258 px over the new background for the Finder icon, and the iconset's `icon_16x16@2x.png` for the title bar |
 | `docs/images/install/move-prompt.png`, `settings-about.png` | Screenshots of the running app. For an icon-only change the icon can be repainted in place: both show it on a flat surface, at 128 and 200 px with its 824/1024 body at the same spot, so the new 1024 px asset drawn into that rect matches a fresh capture |
 
