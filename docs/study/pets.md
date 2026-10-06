@@ -334,6 +334,7 @@ To draw, call `animator.advance(to: now)` and then `clipSet.frame(for: animator.
 - `PetPlayer` (an `ObservableObject`) owns the clip set and the animator.
   Features drive it with `send(.nudge)`, `send(.celebrate)`, and so on, and `update(profile:)` swaps the look in place.
 - The closed notch's pet (`NotchPetWing`) maps the shared `PetMood` to an activity with `PetAnimator.Activity(mood)`, so it types on its laptop while the shared focus clock runs a focus phase, sips coffee on breaks, and yawns when a long focus stretch ends.
+  It seeds the animator's activity start from `TickerPet.moodSince` (when the running phase began), so a wing rebuilt mid-session still counts the whole stretch.
   Snapshot runs render it as `closed-pet-studying.png`, `closed-pet-break.png` and `closed-pet-asleep.png` (whichever differ from the pet's current mood in `closed-pet.png`).
 - `PetView(player:pixelSize:)` is a fixed square of 32 sprite pixels (32 pt at the default `pixelSize` of 1, 24 pt at 0.75).
   A `TimelineView` with `PetFrameSchedule` redraws exactly at each `nextChange`, so an idle pet redraws a few times a second and a hidden or hanging pet not at all.
