@@ -3,8 +3,8 @@ import TabbiKitCore
 import TabbiKit
 
 /// The Focus tab: a large countdown dial on the left (the panel's primary
-/// element), and on the right what this session is for, what focus mode
-/// does while it runs, and the timer controls.
+/// element), and on the right one card with what this session is for and
+/// what focus mode does while it runs, then the timer controls.
 struct FocusPanel: View {
     @ObservedObject var store: FocusStore
     /// Focus mode, whose sound and Do Not Disturb settings the panel shows.
@@ -17,8 +17,7 @@ struct FocusPanel: View {
             FocusDial(store: store)
                 .frame(width: 176)
             VStack(spacing: Theme.Spacing.s) {
-                FocusTaskCard(store: store, providers: providers)
-                FocusModeCard(controller: focusMode)
+                FocusSessionCard(store: store, focusMode: focusMode, providers: providers)
                 FocusControls(store: store)
             }
         }
@@ -61,44 +60,54 @@ private struct FocusDial: View {
     }
 }
 
-/// What this session is for: the task linked from Today, or a hint.
-private struct FocusTaskCard: View {
+/// What this session is for (the task linked from Today, or the timer's
+/// status) and, under it, what focus mode does while it runs: one unit,
+/// so the column has one card above the controls, as in Study.
+private struct FocusSessionCard: View {
     @ObservedObject var store: FocusStore
+    let focusMode: FocusController
     @ObservedObject var providers: ProviderHub
 
     var body: some View {
         Card {
-            VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-                HStack(spacing: Theme.Spacing.xs) {
-                    Text(heading)
-                        .foregroundStyle(Theme.Palette.tertiaryText)
-                    Spacer(minLength: Theme.Spacing.s)
-                    if store.timer.completedFocusCount > 0 {
-                        Text(sessionsDone)
-                            .foregroundStyle(Theme.Palette.tertiaryText)
-                            .monospacedDigit()
-                    }
-                }
-                .font(Theme.Typography.caption)
-                if let linkedTitle, store.timer.phase == .focus {
-                    Label {
-                        Text(linkedTitle)
-                    } icon: {
-                        Image(systemName: "scope").foregroundStyle(accent)
-                    }
-                    .font(Theme.Typography.title)
-                    .foregroundStyle(Theme.Palette.primaryText)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
-                    .help("Focusing on: \(linkedTitle)")
-                } else {
-                    Text(FocusTimerFormat.status(store.timer))
-                        .font(Theme.Typography.title)
-                        .foregroundStyle(Theme.Palette.secondaryText)
-                        .lineLimit(1)
-                }
+            VStack(alignment: .leading, spacing: Theme.Spacing.m) {
+                task
+                FocusModeRow(controller: focusMode)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        }
+    }
+
+    private var task: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+            HStack(spacing: Theme.Spacing.xs) {
+                Text(heading)
+                    .foregroundStyle(Theme.Palette.tertiaryText)
+                Spacer(minLength: Theme.Spacing.s)
+                if store.timer.completedFocusCount > 0 {
+                    Text(sessionsDone)
+                        .foregroundStyle(Theme.Palette.tertiaryText)
+                        .monospacedDigit()
+                }
+            }
+            .font(Theme.Typography.caption)
+            if let linkedTitle, store.timer.phase == .focus {
+                Label {
+                    Text(linkedTitle)
+                } icon: {
+                    Image(systemName: "scope").foregroundStyle(accent)
+                }
+                .font(Theme.Typography.title)
+                .foregroundStyle(Theme.Palette.primaryText)
+                .lineLimit(1)
+                .truncationMode(.tail)
+                .help("Focusing on: \(linkedTitle)")
+            } else {
+                Text(FocusTimerFormat.status(store.timer))
+                    .font(Theme.Typography.title)
+                    .foregroundStyle(Theme.Palette.secondaryText)
+                    .lineLimit(1)
+            }
         }
     }
 
@@ -120,20 +129,18 @@ private struct FocusTaskCard: View {
 }
 
 /// What focus mode does while a focus phase runs, from Settings › Focus.
-private struct FocusModeCard: View {
+private struct FocusModeRow: View {
     @ObservedObject var controller: FocusController
 
     var body: some View {
         let settings = controller.settings
-        Card {
-            HStack(spacing: Theme.Spacing.m) {
-                FocusModeItem(symbol: "waveform", title: "Sound", value: settings.mix.summary,
-                              isOn: !settings.mix.isOff)
-                FocusModeItem(symbol: "moon.fill", title: "Do Not Disturb",
-                              value: settings.doNotDisturb ? "On" : "Off", isOn: settings.doNotDisturb)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
+        HStack(spacing: Theme.Spacing.m) {
+            FocusModeItem(symbol: "waveform", title: "Sound", value: settings.mix.summary,
+                          isOn: !settings.mix.isOff)
+            FocusModeItem(symbol: "moon.fill", title: "Do Not Disturb",
+                          value: settings.doNotDisturb ? "On" : "Off", isOn: settings.doNotDisturb)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .help("Change focus sound and Do Not Disturb in Settings > Tabs > Options")
     }
 }
