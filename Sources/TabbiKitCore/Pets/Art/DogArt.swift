@@ -163,4 +163,113 @@ enum DogArt {
         ....pp.pp.......pp.pp...
         ...ppp.ppp.....ppp.ppp..
         """)
+
+    /// Poodle: a round curly topknot over a teddy face, with long curly ears
+    /// that end in round poms. Shade dots (`S`) and highlights (`A`) are the
+    /// curls; the smooth muzzle stays plain so the face reads at notch size.
+    static let headPoodle = SpriteGrid(art: """
+        ......AA.AA.AA......
+        .....BAABAABAAB.....
+        ....BBBBBBBBBBBB....
+        ...BBSBBSBBSBBSBB...
+        ..eeSBSSBSSBSSBSee..
+        .eee.BBBBBBBBBB.eee.
+        eAee.BBBBBBBBBB.eeAe
+        eeSe.BBBBBBBBBB.eSee
+        eeee.BBBBBBBBBB.eeee
+        eAee.BBBBBBBBBB.eeAe
+        eeSe.BBBBBBBBBB.eSee
+        eeee.BBmmmmmmBB.eeee
+        eAee.BmmmmmmmmB.eeAe
+        eeSe..mmmmmmmm..eSee
+        .eee..SmmmmmmS..eee.
+        ..e....SSSSSS....e..
+        """)
+
+    /// Poodle sitting: a curly coat with a fluffy chest and pom bracelets
+    /// at the paws.
+    static let bodyPoodle = SpriteGrid(art: """
+        .....BBBBBBBBBB.....
+        ....BBAccccccABB....
+        ...BABccccccccBAB...
+        ...BSBccccccccBSB...
+        ..BBBABccccccBABBB..
+        ..ABSSBBccccBBSSBA..
+        ..BBASBBBBBBBBSABB..
+        ..BSBSBABBBBABSBSB..
+        ..ABBSBBSBBSBBSBBA..
+        ..SBppSBBBBBBSppBS..
+        ..ApppA......ApppA..
+        """)
+
+    /// The poodle's tail: a short stem curving up from the rump to a round
+    /// pom that stands clear of the haunch.
+    static let tailPom = SpriteGrid(art: """
+        ..tt.
+        .tAtt
+        .tttt
+        ..tt.
+        .B...
+        B....
+        """)
+
+    /// Shih Tzu: a gold topknot tied with a dark band above a white blaze, a
+    /// gold mask around big round eyes, a flat face, and a long white beard
+    /// framed by ears that hang past the chin, set apart by an outline. The
+    /// band is outline, not nose, so a cap that hides it leaves the face intact.
+    static let headShihTzu = SpriteGrid(art: """
+        ........AAAA........
+        .......AAAAAA.......
+        ........SOOS........
+        .....BBBBBBBBBB.....
+        ...BBBBBBBBBBBBBB...
+        ..eBBffBBBBBBffBBe..
+        .ee.ffffBBBBffff.ee.
+        eee.ffffBBBBffff.eee
+        eee.ffffBBBBffff.eee
+        eee.ffffBmmBffff.eee
+        eee.SfffmmmmfffS.eee
+        eee.SmmmmmmmmmmS.eee
+        eee.mmmmmmmmmmmm.eee
+        eee.mmmmmmmmmmmm.eee
+        .ee..mmmmmmmmmm..ee.
+        .ee...mmmmmmmm...ee.
+        ..e....mm..mm....e..
+        """)
+
+    /// The Shih Tzu's flat face: big round eyes and a button nose right
+    /// between them, with the tip of a tongue under it.
+    static let faceShihTzu = SpriteGrid(art: """
+        .....LEE....LEE.....
+        .....EEE....EEE.....
+        .....EEE.NN.EEE.....
+        ....PP..NNNN..PP....
+        ....................
+        .........PP.........
+        """)
+
+    /// Shih Tzu sitting: a long flowing coat that falls to the floor in
+    /// strands, with only the tips of the paws peeking out.
+    static let bodyShihTzu = SpriteGrid(art: """
+        .....BBBBBBBBBB.....
+        ....BBBccccccBBB....
+        ...BBBccccccccBBB...
+        ...BBBccccccccBBB...
+        ..BBSBBccccccBBSBB..
+        ..BBSBBBccccBBBSBB..
+        ..BSBBBBBBBBBBBBSB..
+        .BBSBBSBBBBBBSBBSBB.
+        .BSBBSBBBBBBBBSBBSB.
+        BSBBSBBpp..ppBBSBBSB
+        SB.SB.Sppp..pppS.BS.
+        """)
+
+    /// The Shih Tzu's plumed tail, curled up over the back.
+    static let tailPlume = SpriteGrid(art: """
+        .ttt.
+        tttAt
+        tAt.t
+        .B...
+        B....
+        """)
 }

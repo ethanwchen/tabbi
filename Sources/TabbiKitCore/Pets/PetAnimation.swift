@@ -22,16 +22,66 @@ public struct PetPose: Hashable, Sendable {
         case sleepy
         /// Celebrating: "^" arches.
         case happy
+        /// Squeezed shut: "> <", for a yawn.
+        case squeezed
+    }
+
+    /// The mouth, drawn over the face's own mouth when it opens.
+    public enum Mouth: Hashable, Sendable {
+        /// The face as drawn: a closed smile or a panting tongue.
+        case closed
+        /// A small round "o", the start and end of a yawn.
+        case open
+        /// A big yawn with the tongue showing.
+        case wide
+    }
+
+    /// Something held in front of the sitting pet for the study moments.
+    public enum Prop: Hashable, Sendable {
+        /// Typing on a tiny laptop. `tap` lifts the left (-1) or right (1)
+        /// paw off the keys; 0 rests both.
+        case laptop(tap: Int)
+        /// A coffee mug in both paws. `raise` is 0 at the chest, 1 on the
+        /// way up, 2 at the mouth for a sip.
+        case mug(raise: Int)
+        /// A toy on the floor in front: a ball of yarn for cats, a ball for
+        /// dogs. `roll` moves it that many pixels to the left as it rolls
+        /// away, `bounce` lifts a ball off the floor, and `bat` puts the
+        /// left front paw on top of it.
+        case toy(roll: Int, bounce: Int, bat: Bool)
+    }
+
+    /// A front paw lifted off the floor, beside the head or to the face.
+    public enum Gesture: Hashable, Sendable {
+        /// Waving hello: `swing` 0 leans the paw out, 1 brings it back in.
+        case wave(swing: Int)
+        /// Grooming: `reach` 0 holds the paw at the chest, 1 at the mouth
+        /// for a lick, 2 up over the cheek to wash the face.
+        case groom(reach: Int)
     }
 
     public var eyes: Eyes
-    /// Pixels the head sinks into the shoulders (breathing, dozing).
+    public var mouth: Mouth
+    public var prop: Prop?
+    public var gesture: Gesture?
+    /// Pixels the tip of a sitting pet's tail leans out to the side (0 at
+    /// rest), for the tail swish. Tailless breeds wiggle a stub instead.
+    public var tailSwing: Int
+    /// Pixels the head sinks into the shoulders (breathing, dozing);
+    /// negative tips it back (a yawn).
     public var headDrop: Int
     /// Pixels the whole pet rises off the baseline (hops).
     public var lift: Int
 
-    public init(eyes: Eyes = .open, headDrop: Int = 0, lift: Int = 0) {
+    public init(
+        eyes: Eyes = .open, mouth: Mouth = .closed, prop: Prop? = nil, gesture: Gesture? = nil,
+        tailSwing: Int = 0, headDrop: Int = 0, lift: Int = 0
+    ) {
         self.eyes = eyes
+        self.mouth = mouth
+        self.prop = prop
+        self.gesture = gesture
+        self.tailSwing = tailSwing
         self.headDrop = headDrop
         self.lift = lift
     }
@@ -62,12 +112,41 @@ public enum PetAnimation: String, CaseIterable, Codable, Sendable {
     case alert
     /// A happy hop with a rising heart when a session is done.
     case celebrate
+    /// A slow, sleepy yawn: the head tips back, the eyes squeeze shut and
+    /// the mouth opens wide, then the pet settles back down.
+    case yawn
+    /// Two springy hops with happy eyes and dust puffs on landing: plain
+    /// joy, with no heart (that is `celebrate`, for a finished session).
+    case hop
+    /// Typing away on a tiny laptop, with a pause now and then to read the
+    /// screen: the pet studying along while a focus session runs. Loops.
+    case typing
+    /// Sipping a tiny coffee: steam curls up while the pet holds the mug,
+    /// then it raises it for a slow, happy sip. Loops, for breaks.
+    case coffee
+    /// A friendly wave: one front paw goes up beside the head and swings
+    /// back and forth a few times with happy eyes.
+    case wave
+    /// Grooming: a few licks of a raised paw, then a wipe over the cheek,
+    /// eyes closed in concentration.
+    case groom
+    /// A lazy tail swish while sitting: the tail sweeps out to the side and
+    /// back twice. Tailless breeds wiggle a stub by the haunch.
+    case tailSwish
+    /// A deep nap curled up on the floor: lying down with the head resting
+    /// on the tail wrapped round in front, the back rising with each slow
+    /// breath while "z"s drift up. Loops; `sleep` is the sitting doze.
+    case nap
+    /// Playing: a pat sends a ball of yarn (cats) or a ball (dogs) rolling
+    /// away, the pet watches it, and it comes back to be caught. A ball
+    /// bounces on the way.
+    case play
 
     /// Whether the clip repeats forever or stops on its last frame.
     public var loops: Bool {
         switch self {
-        case .idle, .sit, .sleep, .walk: true
-        case .blink, .stretch, .peekIn, .peekOut, .alert, .celebrate: false
+        case .idle, .sit, .sleep, .walk, .typing, .coffee, .nap: true
+        case .blink, .stretch, .peekIn, .peekOut, .alert, .celebrate, .yawn, .hop, .wave, .groom, .tailSwish, .play: false
         }
     }
 }
@@ -196,6 +275,26 @@ extension PetComposer {
                 PetFrame(canvas: breathing.canvas.adding(EffectArt.zLarge, at: large), duration: 0.8),
             ]
 
+        case .nap:
+            // Slower than the sitting doze: a deep breath every two seconds,
+            // with a "z" rising from the ear and drifting off like `sleep`.
+            func curled(_ breath: Int) -> Composed {
+                compose(breed, pose: PetPose(eyes: .sleepy), outfit: outfit, accessories: accessories,
+                        stance: .curled(breath: breath))
+            }
+            let resting = curled(0)
+            let breathing = curled(1)
+            let top = resting.headTopRight
+            let small = PetPoint(x: top.x + 3, y: top.y - 2)
+            let large = PetPoint(x: frameSize - 4, y: top.y - 9)
+            frames = [
+                PetFrame(canvas: resting.canvas, duration: 1),
+                PetFrame(canvas: breathing.canvas.adding(EffectArt.zSmall, at: small), duration: 1),
+                PetFrame(canvas: resting.canvas.adding(EffectArt.zSmall, at: small)
+                    .adding(EffectArt.zLarge, at: large), duration: 1),
+                PetFrame(canvas: breathing.canvas.adding(EffectArt.zLarge, at: large), duration: 1),
+            ]
+
         case .walk:
             frames = WalkArt.cycle.indices.map { step in
                 let composed = compose(breed, pose: PetPose(), outfit: outfit, accessories: accessories,
@@ -240,6 +339,140 @@ extension PetComposer {
                 return PetFrame(canvas: canvas, duration: step.1)
             }
 
+        case .yawn:
+            // Tip back and open up slowly, hold the big yawn, then close
+            // with a contented squint before the eyes open again.
+            frames = [
+                frame(PetPose(), 0.25),
+                frame(PetPose(eyes: .squeezed, mouth: .open, headDrop: -1), 0.18),
+                frame(PetPose(eyes: .squeezed, mouth: .wide, headDrop: -1), 0.9),
+                frame(PetPose(eyes: .squeezed, mouth: .open, headDrop: -1), 0.16),
+                frame(PetPose(eyes: .sleepy), 0.45),
+                frame(PetPose(eyes: .sleepy, headDrop: 1), 0.35),
+                frame(PetPose(), 0.3),
+            ]
+
+        case .hop:
+            // Crouch, spring up, squash on landing with a puff of dust, and
+            // again a little lower. Short frames keep it bouncy.
+            let steps: [(PetPose, Bool, TimeInterval)] = [
+                (PetPose(eyes: .happy, headDrop: 1), false, 0.1),
+                (PetPose(eyes: .happy, lift: 2), false, 0.06),
+                (PetPose(eyes: .happy, lift: 3), false, 0.12),
+                (PetPose(eyes: .happy, lift: 2), false, 0.06),
+                (PetPose(eyes: .happy, headDrop: 1), true, 0.1),
+                (PetPose(eyes: .happy, lift: 2), false, 0.08),
+                (PetPose(eyes: .happy, lift: 1), false, 0.06),
+                (PetPose(eyes: .happy, headDrop: 1), true, 0.1),
+                (PetPose(eyes: .happy), false, 0.35),
+                (PetPose(), false, 0.2),
+            ]
+            frames = steps.map { value, dust, duration in
+                var canvas = pose(value).canvas
+                // Puffs on the floor just outside the paws (the bottom row,
+                // so a wide tail higher up doesn't push them away).
+                let floor = frameSize - 1 - value.lift
+                let paws = (0..<frameSize).filter { canvas[$0, floor] != nil }
+                if dust, let left = paws.first, let right = paws.last {
+                    let y = frameSize - EffectArt.dustLeft.height
+                    canvas = canvas
+                        .adding(EffectArt.dustLeft, at: PetPoint(x: left - EffectArt.dustLeft.width, y: y))
+                        .adding(EffectArt.dustRight, at: PetPoint(x: right + 1, y: y))
+                }
+                return PetFrame(canvas: canvas, duration: duration)
+            }
+
+        case .typing:
+            // A burst of alternating taps, then a pause to read the screen.
+            let taps: [(Int, Int, TimeInterval)] = [
+                (-1, 0, 0.12), (0, 0, 0.1), (1, 0, 0.12), (0, 0, 0.1), (-1, 0, 0.12), (0, 0, 0.1),
+                (1, 0, 0.12), (0, 0, 0.1), (-1, 0, 0.12), (0, 1, 0.7), (0, 1, 0.5),
+            ]
+            frames = taps.map { tap, drop, duration in
+                frame(PetPose(prop: .laptop(tap: tap), headDrop: drop), duration)
+            }
+
+        case .coffee:
+            // Hold the mug while the steam curls, then a slow sip with the
+            // eyes closed, and a happy "ahh" on the way back down.
+            let steps: [(Int, PetPose.Eyes, Int?, TimeInterval)] = [
+                (0, .open, 0, 0.45), (0, .open, 1, 0.45), (0, .open, 0, 0.45), (0, .open, 1, 0.45),
+                (1, .open, nil, 0.12), (2, .closed, nil, 0.9), (1, .happy, nil, 0.12),
+                (0, .happy, 0, 0.5), (0, .open, 1, 0.45),
+            ]
+            frames = steps.map { raise, eyes, steam, duration in
+                let composed = pose(PetPose(eyes: eyes, prop: .mug(raise: raise)))
+                var canvas = composed.canvas
+                if let steam, let top = composed.mugTop {
+                    let wisp = PropArt.steam[steam]
+                    // Painted over the chest, not behind the pet like other effects.
+                    canvas.stamp(wisp, x: top.x + 1, y: top.y - wisp.height)
+                }
+                return PetFrame(canvas: canvas, duration: duration)
+            }
+
+        case .wave:
+            // Up goes the paw, three swings out and back, and down again.
+            let steps: [(PetPose, TimeInterval)] = [
+                (PetPose(gesture: .wave(swing: 1)), 0.12),
+                (PetPose(eyes: .happy, gesture: .wave(swing: 0)), 0.22),
+                (PetPose(eyes: .happy, gesture: .wave(swing: 1)), 0.18),
+                (PetPose(eyes: .happy, gesture: .wave(swing: 0)), 0.22),
+                (PetPose(eyes: .happy, gesture: .wave(swing: 1)), 0.18),
+                (PetPose(eyes: .happy, gesture: .wave(swing: 0)), 0.3),
+                (PetPose(eyes: .happy), 0.25),
+                (PetPose(), 0.2),
+            ]
+            frames = steps.map { frame($0.0, $0.1) }
+
+        case .groom:
+            // Lift the paw, three quick licks, two strokes over the cheek
+            // with the head bent into them, then a contented look.
+            let steps: [(PetPose, TimeInterval)] = [
+                (PetPose(gesture: .groom(reach: 0)), 0.15),
+                (PetPose(eyes: .closed, mouth: .open, gesture: .groom(reach: 1)), 0.18),
+                (PetPose(eyes: .closed, gesture: .groom(reach: 0)), 0.12),
+                (PetPose(eyes: .closed, mouth: .open, gesture: .groom(reach: 1)), 0.18),
+                (PetPose(eyes: .closed, gesture: .groom(reach: 0)), 0.12),
+                (PetPose(eyes: .closed, mouth: .open, gesture: .groom(reach: 1)), 0.18),
+                (PetPose(eyes: .closed, gesture: .groom(reach: 2), headDrop: 1), 0.28),
+                (PetPose(eyes: .closed, gesture: .groom(reach: 1), headDrop: 1), 0.2),
+                (PetPose(eyes: .closed, gesture: .groom(reach: 2), headDrop: 1), 0.28),
+                (PetPose(eyes: .happy), 0.4),
+                (PetPose(), 0.2),
+            ]
+            frames = steps.map { frame($0.0, $0.1) }
+
+        case .tailSwish:
+            // Two lazy sweeps out and back, the first slower, holding at the
+            // far end the way a content cat's tail hangs before it returns.
+            let steps: [(Int, TimeInterval)] = [
+                (0, 0.2), (1, 0.14), (2, 0.4), (1, 0.14), (0, 0.3),
+                (1, 0.12), (2, 0.3), (1, 0.12), (0, 0.35),
+            ]
+            frames = steps.map { frame(PetPose(tailSwing: $0.0), $0.1) }
+
+        case .play:
+            // Eye the toy, crouch, and pat it: it rolls away (a ball bounces
+            // as it goes) and comes back to be caught.
+            let ball = breed.species == .dog
+            let steps: [(PetPose.Prop, PetPose.Eyes, Int, TimeInterval)] = [
+                (.toy(roll: 0, bounce: 0, bat: false), .open, 0, 0.35),
+                (.toy(roll: 0, bounce: 0, bat: false), .open, 1, 0.2),
+                (.toy(roll: 0, bounce: 0, bat: true), .open, 1, 0.16),
+                (.toy(roll: 3, bounce: 0, bat: false), .happy, 0, 0.1),
+                (.toy(roll: 7, bounce: ball ? 2 : 0, bat: false), .happy, 0, 0.1),
+                (.toy(roll: 10, bounce: 0, bat: false), .open, 0, 0.45),
+                (.toy(roll: 6, bounce: ball ? 3 : 0, bat: false), .open, 0, 0.12),
+                (.toy(roll: 2, bounce: ball ? 1 : 0, bat: false), .open, 1, 0.12),
+                (.toy(roll: 0, bounce: 0, bat: true), .happy, 1, 0.4),
+                (.toy(roll: 0, bounce: 0, bat: false), .happy, 0, 0.3),
+                (.toy(roll: 0, bounce: 0, bat: false), .open, 0, 0.2),
+            ]
+            frames = steps.map { toy, eyes, drop, duration in
+                frame(PetPose(eyes: eyes, prop: toy, headDrop: drop), duration)
+            }
+
         case .peekIn, .peekOut:
             // Dangling from the notch by the front paws: the head lowers into
             // view from beyond the top edge and settles with a tiny bounce,
@@ -259,6 +492,9 @@ extension PetComposer {
 extension PetComposer {
     /// Where the chin rests once a peeking pet is fully out of the notch.
     static let hangingChinRow = 20
+    /// Where the chin rests on a pet curled up asleep: on the tail that
+    /// wraps along the floor in front of it.
+    static let curledChinRow = 27
 }
 
 extension PetCanvas {

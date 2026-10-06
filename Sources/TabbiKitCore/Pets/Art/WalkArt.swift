@@ -92,6 +92,99 @@ enum WalkArt {
             """),
     ]
 
+    /// Sphynx torso: lean, with wrinkle lines over the shoulders and a
+    /// slim belly line.
+    static let sphynxTorso = SpriteGrid(art: """
+        ...BBBBBBBBBBBBBBBBB..
+        ..BBBSBBSBBBBBBBBBBBB.
+        .BBBSBBSBBBBBBBBBBBBBB
+        .BBBBBBBBBBBBBBBBBBBBB
+        .cBBBBBBBBBBBBBBBBBBBS
+        .cccBBBBBBBBBBBBBBBBSS
+        ..ccSSSSSSSSSSSSSSSS..
+        """)
+
+    /// The Sphynx's thin whip tail, held high with a curled tip.
+    static let sphynxTail = [
+        SpriteGrid(art: """
+            .tt
+            ..t
+            .B.
+            .B.
+            B..
+            B..
+            """),
+        SpriteGrid(art: """
+            .tt.
+            .t..
+            .B..
+            .B..
+            B...
+            B...
+            """),
+    ]
+
+    /// Poodle torso: the dog torso covered in curls, with a fluffy chest.
+    static let poodleTorso = SpriteGrid(art: """
+        ...BBSBBBSBBBBSBBBSB..
+        ..BSBBBABBBSBBBABBBSB.
+        .ABBBSBBBSBBBSBBBSBBBB
+        .cABBBBSBBBBBBSBBBBSBB
+        .ccBSBBBBBSBBBBBBSBBBB
+        .cccBBBSBBBBBSBBBBBBBS
+        ..ccSSSSSSSSSSSSSSSSS.
+        """)
+
+    /// The poodle's pom tail, held high and bobbing between steps.
+    static let poodleTail = [
+        SpriteGrid(art: """
+            .tt.
+            tAtt
+            tttt
+            .tt.
+            .B..
+            BB..
+            """),
+        SpriteGrid(art: """
+            ..tt
+            .tAt
+            .ttt
+            ..tt
+            .B..
+            BB..
+            """),
+    ]
+
+    /// Shih Tzu torso: a long coat that hangs in strands, with a fringe that
+    /// leaves the legs half hidden.
+    static let shihTzuTorso = SpriteGrid(art: """
+        ...BBBBBBBBBBBBBBBBB..
+        ..BBBBBBBBBBBBBBBBBBB.
+        .cBBBBBBBBBBBBBBBBBBBB
+        .ccBBSBBBBSBBBBSBBBBSB
+        .ccBSBBBSBBBBSBBBBSBBB
+        .cBSBBBSBBBBSBBBBSBBSB
+        ..SB.SB.SBSB.SBS.BSBS.
+        """)
+
+    /// The Shih Tzu's plume, curled over the back and swaying between steps.
+    static let shihTzuTail = [
+        SpriteGrid(art: """
+            .ttt.
+            tttA.
+            tAt..
+            .B...
+            BB...
+            """),
+        SpriteGrid(art: """
+            ..ttt
+            .tttA
+            .tAt.
+            .B...
+            BB...
+            """),
+    ]
+
     static let dogTail = [
         SpriteGrid(art: """
             ..t

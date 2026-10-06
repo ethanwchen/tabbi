@@ -3,7 +3,7 @@
 A study-buddy cat or dog lives in the notch.
 This document explains how pet sprites are drawn, composed, and rendered, and how to add a breed.
 
-Status: the sprite format, palettes, pattern zones, renderer, all eight cat breeds, all six dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
+Status: the sprite format, palettes, pattern zones, renderer, all nine cat breeds, all eight dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate, yawn, hop, typing, coffee, wave, groom, tail swish, nap, play), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
 
 ![All cat breeds sitting, on black at 4x](images/cats-sitting.png)
 
@@ -12,7 +12,8 @@ Status: the sprite format, palettes, pattern zones, renderer, all eight cat bree
 ## Look at the art
 
 ```sh
-swift run PetGallery /tmp/petgallery   # writes contact sheets as PNGs at 4x
+swift run PetGallery /tmp/petgallery          # writes contact sheets as PNGs at 4x
+swift run PetGallery /tmp/petgallery sphynx   # close-up sheets for one breed (default: British Shorthair)
 ```
 
 Sheets are drawn on pure black, exactly like the notch.
@@ -163,15 +164,19 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 ## Animations
 
 `PetComposer.clip(_:for:outfit:accessories:)` builds a `PetClip`: a list of `PetFrame`s, each with its own `duration` in seconds.
-`clip.frame(at: elapsed)` picks the frame to show; looping clips (idle, sit, sleep, walk) wrap around, one-shot clips (blink, stretch, peek, alert, celebrate) hold their last frame until `PetAnimator.advance(to:)` sees the clip's duration has passed and moves the pet on.
+`clip.frame(at: elapsed)` picks the frame to show; looping clips (idle, sit, sleep, walk, typing, coffee, nap) wrap around, one-shot clips (blink, stretch, peek, alert, celebrate, yawn, hop, wave, groom, tailSwish, play) hold their last frame until `PetAnimator.advance(to:)` sees the clip's duration has passed and moves the pet on.
 
 Front-facing animations are not drawn frame by frame.
 Each frame is the sitting composition in a `PetPose`, so every breed and costume animates without extra art:
 
 | Pose field | Effect |
 | --- | --- |
-| `eyes` | `.open`, `.closed` (blink), `.sleepy` (soft curves), `.happy` ("^" arches) |
-| `headDrop` | Sinks the head (and its hat and glasses) into the shoulders, for breathing and dozing |
+| `eyes` | `.open`, `.closed` (blink), `.sleepy` (soft curves), `.happy` ("^" arches), `.squeezed` ("> <", mirrored for the right eye) |
+| `mouth` | `.closed` (the face as drawn), `.open` (a small "o"), `.wide` (a big yawn with the tongue showing) |
+| `headDrop` | Sinks the head (and its hat and glasses) into the shoulders, for breathing and dozing; -1 tips it back for a yawn |
+| `prop` | Something held in front of the pet: `.laptop(tap:)` (a paw lifted to type, -1 left, 1 right, 0 resting) or `.mug(raise:)` (0 in the lap, 1 on the way up, 2 at the mouth), or `.toy(roll:bounce:bat:)` (a toy on the floor, `roll` px to the left of its spot, `bounce` px off the floor, with the left paw on top when `bat` is set) |
+| `gesture` | The left front paw lifted off the floor: `.wave(swing:)` (0 leans out from the head, 1 swings back in beside the cheek) or `.groom(reach:)` (0 just under the chin, 1 under the tongue for a lick, 2 up over the left cheek to wash) |
+| `tailSwing` | Pixels the tip of the tail leans out to the side, 0 at rest; tailless breeds pop out a stub by the haunch instead, raised `tailSwing` px |
 | `lift` | Raises the whole pet off the baseline, for hops |
 
 Eye states live in `EffectArt` as 4x3 grids centered on the 2x3 open eye.
@@ -179,6 +184,28 @@ A 3-wide open eye (the British Shorthair's) gets the spare pixel on its cheek si
 The composer finds the open eyes on the face's eye row, clears them so the head's fur shows through, and stamps the new state, so a new face only needs its open-eyed version.
 Sleepy eyes also close the mouth: blush pixels below the cheek row (the eye row + 3) are cleared, so a dog's panting tongue tucks away and its nose-colored mouth corners read as a closed "w".
 Draw a tongue with the blush role below the cheek row and it will hide itself during sleep.
+
+Props come from `PropArt` and are drawn in front of the pet with their own outline and the breed's paw zone, so they read on fur of any color.
+The laptop stands on the floor, centered under the head, with the paws resting over the lid's top edge; the mug is centered on the mouth (found like an open mouth, below) and rises from the lap to cover the mouth for a sip.
+The mug's steam curls over the chest, so it is line art in the mouth role, which turns dark on light fur and light on dark fur.
+The toy is a ball of yarn for cats (in the knit accessory colors, so it follows a recolored scarf) and a red ball with a gold band for dogs, 7x7 and round so it never reads as a box.
+It starts on the floor between the front paws, centered under the head, and rolls to the left, the only side with room (the tail is on the right), stopping at the frame edge; every 2 px rolled it swaps to its mirrored winding or turned band, so it reads as rolling.
+Batting lifts the left front paw off the floor and lays an outlined paw over the toy's top-left edge, so the paw shows against the toy instead of merging into same-colored fur.
+
+Gestures come from `PawArt`: a forearm in plain fur ending in a paw-zone paw, outlined all round except where it meets the body, so it reads over the head and chest of any breed.
+A gesturing pet lifts its left front paw off the floor (`PawArt.liftingLeftPaw`): the paw shape touching the floor furthest left is found from the body art, its floor run is cleared (a Poodle's cuff with it), paw pixels tucked against fur turn into a fold of shaded fur, and a leg standing free (the dachshund's) goes entirely.
+The waving arm grows from the left shoulder (3 px in and 4 px down the body) and holds the paw beside the head, clear of the eyes.
+The grooming leg rises straight from just above the floor to the mouth, found like an open mouth, so it lines up on every head.
+
+A swinging tail is bent from its base by `TailArt`, so every breed keeps its own tail (the Sphynx's whip, the British Shorthair's rings, the Poodle's pom, the Shih Tzu's plume).
+Dogs draw the tail as its own grid; cats and the dachshund draw it into the sitting body, so the composer cuts it out at the body's tail column first (`SitLayout.tailColumn`: 17 for cats, 23 for the dachshund).
+The base row stays put and each row above leans a little further, never more than a pixel past the row below, so the tail stays one connected stroke.
+The swing is cut down to the room left in the frame, which keeps the dachshund's tail, near the right edge, to a 1 px flick.
+The corgi and French bulldog have no tail, so `TailArt.nub` pops out past the haunch and bobs instead.
+
+Open mouths are found from the art too: `EffectArt.mouth(_:in:)` centers a 4-wide mouth on the nose's top row, on the first row below the nose, so it covers any face's own mouth lines or tongue.
+Its corners are the muzzle zone, which hides what was drawn there.
+When the row under the nose carries nose-colored mouth corners (most dogs), a row of muzzle covers them and a shorter mouth opens one row lower, so it never merges into a dark nose and still ends on the chin.
 
 | Animation | Frames |
 | --- | --- |
@@ -189,6 +216,15 @@ Draw a tongue with the blush role below the cheek row and it will hide itself du
 | peekIn / peekOut | The pet dangles from the notch by its front paws: the head lowers into view from beyond the top edge, bounces 1 px, and rests with its chin on row 20; peekOut is the same frames reversed |
 | alert | Two hops (2 px, then 1 px) and a hold; every frame has a `bubbleAnchor` at the top-right of the head for the app's speech bubble |
 | celebrate | Happy eyes, a 3 px hop, a heart floating up beside the head, and sparkles |
+| yawn | Head tips back 1 px, eyes squeeze shut ("> <") and the mouth opens to a small "o", then wide with the tongue showing (held 900 ms), closes, and settles through sleepy eyes back to sitting; about 2.6 s |
+| hop | Happy eyes, a crouch, a 3 px hop and a smaller 2 px one, each landing in a squash with dust puffs beside the paws, then back to sitting; about 1.2 s and no heart, so it reads as plain joy rather than a finished session |
+| typing | Alternating paw taps over a tiny laptop (120 ms up, 100 ms down), then a pause with the head bent to read the screen (1.2 s); loops while a focus session runs |
+| coffee | A mug in the lap with steam curling (four 450 ms frames), raised to the mouth for a 900 ms sip with closed eyes, lowered with a happy "ahh"; about 3.9 s, loops for breaks |
+| wave | The left paw goes up beside the head and swings out and back three times with happy eyes (220 ms out, 180 ms in), then comes down; about 1.7 s |
+| groom | The left leg lifts to the chin, three licks (the paw rises under an open mouth for 180 ms, drops for 120 ms) with the eyes shut, two strokes over the left cheek with the head bent into them, then a contented look; about 2.3 s |
+| tailSwish | The tail sweeps out to the side and back twice, the first sweep slower (400 ms held at the far end) and the second quicker, everything else still; about 2.1 s |
+| nap | A deeper sleep than `sleep`, curled up on the floor (see below): sleepy eyes, the back swelling a pixel on each slow breath, and "z"s drifting up like `sleep`; four 1 s frames, loops |
+| play | Eyes the toy (350 ms), crouches, and pats it (160 ms); it rolls away with happy eyes (a ball bounces 2 px), is watched for 450 ms, rolls back (a ball bounces 3 px, then 1 px) and is caught under the paw (400 ms), then a happy look; about 2.5 s |
 | walk | Four 150 ms steps of a trot, side-on (see below) |
 | stretch | A side-on play bow: down in three steps, a held bow with happy eyes and a tail wag, then back up (see below) |
 
@@ -197,9 +233,33 @@ The peek legs come from `EffectArt.hangingLeg`, drawn behind the head with the b
 
 ![Every animation frame for the orange tabby](images/animations-cat.png)
 
+`PetGallery` also writes `yawn.png`, `hop.png`, `typing.png`, `coffee.png`, `wave.png`, `groom.png`, `tailSwish.png`, `nap.png` and `play.png`, every breed through every frame of each move, one row per breed:
+
+![The yawn for every breed](images/yawn.png)
+
+![The hop for every breed](images/hop.png)
+
+![Typing on a tiny laptop for every breed](images/typing.png)
+
+![Sipping coffee for every breed](images/coffee.png)
+
+![Waving for every breed](images/wave.png)
+
+![Grooming for every breed](images/groom.png)
+
+![The tail swish for every breed](images/tailSwish.png)
+
+![The curled-up nap for every breed](images/nap.png)
+
+![Playing with yarn or a ball for every breed](images/play.png)
+
+`notch-moves-1x.png` and `notch-moves-2x.png` show the key frame of each of those moves for every breed at the size the closed notch draws it (one row per breed, in the order above), because a move that only reads at 4x is not done:
+
+![The key frame of every newer move for every breed at notch size on a 2x display](images/notch-moves-2x.png)
+
 ### Walking
 
-The walk and the stretch are the two animations that are not sitting poses.
+The walk, the stretch and the nap are the animations that are not sitting poses.
 It is drawn chibi-style: the usual front-facing head sits in front of a side-on torso, so the face, glasses, and hats need no walking art and stay readable at notch size.
 Pets walk toward the left; mirror the frames to walk right.
 
@@ -216,6 +276,11 @@ Pets walk toward the left; mirror the frames to walk right.
   On contact steps the torso and head sink one pixel onto the bent legs, which gives the walk its bounce.
 
 Torso costumes are stamped right after the torso, before the head, because the head is in front of the body when walking.
+
+The nap reuses the walking pieces too: the torso (with its torso costumes, but no upright tail) lies on the floor where the legs would be, and the head rests at its front with the chin on row 27.
+On a breath the middle of the back is laid a pixel higher, so it swells without leaving a gap under the belly.
+`TailArt.wrapped(length:)` draws the tail coming round from under the rump and running along the floor in front of the body, its tip curling up before the chin; it is outlined on its own layer, so it stays apart from fur of the same color behind it.
+Tailless breeds (corgi, French bulldog) lie with their chest showing instead.
 `PetComposer.WalkLayout` holds the per-family positions (torso origin, hips, tail, and the chin row the head rests on).
 
 ![The walk cycle for every breed and four looks](images/walk.png)
@@ -244,7 +309,7 @@ The pet is always in one `Place`, and each place has a resting animation:
 
 | Place | Rests in |
 | --- | --- |
-| `beside` | `idle` with a `blink` every 2.5-6 s (random), or `sleep` while asleep |
+| `beside` | `sleep` while asleep; awake, it follows the `Activity`: `typing` while `studying`, `coffee` while `onBreak`, and `idle` with a `blink` every 2.5-6 s (random) while `free` |
 | `hanging` | The held last frame of `peekIn` |
 | `hidden` | Nothing; `playback` is nil |
 
@@ -255,6 +320,7 @@ The pet is always in one `Place`, and each place has a resting animation:
 | `sleep` / `wake` | Beside only; a running alert, celebration, or stretch finishes first. Waking plays `stretch`, then idles; a nudge still interrupts it |
 | `peekIn` / `peekOut` | Hidden to hanging and back |
 | `appear` / `disappear` | Cut straight to beside (awake) or hidden |
+| `activity(_:)` | Switches what the pet rests in. Leaving `studying` after at least `PetAnimator.longSession` (45 min) of focus plays `yawn` first; a running alert, celebration, or stretch finishes first, and the yawn follows it |
 
 When a one-shot clip ends, the next animation starts at the exact moment the clip ended, not at the next tick, so timing never drifts with the frame rate and jumping ahead lands in the same state as ticking.
 Peek transitions can't be interrupted: an event that arrives mid-climb is kept (latest wins) and applied as the transition ends.
@@ -267,6 +333,9 @@ To draw, call `animator.advance(to: now)` and then `clipSet.frame(for: animator.
 
 - `PetPlayer` (an `ObservableObject`) owns the clip set and the animator.
   Features drive it with `send(.nudge)`, `send(.celebrate)`, and so on, and `update(profile:)` swaps the look in place.
+- The closed notch's pet (`NotchPetWing`) maps the shared `PetMood` to an activity with `PetAnimator.Activity(mood)`, so it types on its laptop while the shared focus clock runs a focus phase, sips coffee on breaks, and yawns when a long focus stretch ends.
+  It seeds the animator's activity start from `TickerPet.moodSince` (when the running phase began), so a wing rebuilt mid-session still counts the whole stretch.
+  Snapshot runs render it as `closed-pet-studying.png`, `closed-pet-break.png` and `closed-pet-asleep.png` (whichever differ from the pet's current mood in `closed-pet.png`).
 - `PetView(player:pixelSize:)` is a fixed square of 32 sprite pixels (32 pt at the default `pixelSize` of 1, 24 pt at 0.75).
   A `TimelineView` with `PetFrameSchedule` redraws exactly at each `nextChange`, so an idle pet redraws a few times a second and a hidden or hanging pet not at all.
 - Frames are rendered at a whole number of device pixels per sprite pixel and drawn without interpolation; they are pixel-perfect whenever `pixelSize` times the display scale is a whole number.
@@ -323,6 +392,43 @@ What makes this cat recognizable, and where each part lives:
 `PetProfile.defaultName(for:)` gives cats no name and dogs "Biscuit", and `hasDefaultName` tells these (and "Mochi", the starter name in earlier versions) apart from a name the user chose, so switching species only renames a pet that still has a default name.
 A kit can still pick another starter (`moduleSettings.closet.pet`), and a pet that is already saved never changes.
 
+### The Sphynx
+
+The Sphynx is hairless, so its look comes from shape and shading instead of markings:
+
+- Head (`CatArt.headSphynx`): big ears flaring out from a narrow crown with pink insides, short shade lines across the brow for wrinkles, and sharp cheekbones over a narrow muzzle.
+- Face (`CatArt.faceSphynx`): large 3x3 lemon-shaped green eyes with a slit pupil and a white highlight, rosy cheeks, and a small "w" mouth.
+- Body (`CatArt.bodySphynx`, `WalkArt.sphynxTorso`, `WalkArt.sphynxTail`): a lean chest with neck wrinkles, bony haunches, and a one-pixel whip tail.
+- Coloring (`PetBreed.palette`): pink-beige skin, a deeper pink-tan for wrinkles, a lighter chest and muzzle, and a warm dark outline.
+
+![Every animation frame for the Sphynx](images/animations-sphynx.png)
+
+### The Poodle
+
+The Poodle is all curls, so its look comes from a bumpy silhouette and dotted texture:
+
+- Head (`DogArt.headPoodle`): a round topknot with a scalloped top and a shade line where it meets the forehead, a teddy face with a smooth cream muzzle, and long curly ears set apart from the face by an outline.
+- Body (`DogArt.bodyPoodle`, `WalkArt.poodleTorso`): curls drawn as `furShade` and `furAccent` dots over the coat, a fluffy light chest, and pom bracelets around the paws.
+- Tail (`DogArt.tailPom`, `WalkArt.poodleTail`): a short stem curving up to a round pom that stands clear of the haunch.
+- Coloring (`PetBreed.palette`): apricot by default. The curls are `furShade` and `furAccent`, so a fur tint recolors the whole coat and keeps the texture.
+- Hats sit on the shade line under the topknot (`skullTop` 4), so even the graduation cap stays inside the frame mid-hop.
+
+![Every animation frame for the Poodle](images/animations-poodle.png)
+
+### The Shih Tzu
+
+The Shih Tzu reads by its topknot, its flat face, and a coat that falls to the floor:
+
+- Head (`DogArt.headShihTzu`): a gold topknot puff tied with a dark band, a white blaze between gold eye patches, a white beard that widens below the chin, and long gold ears that hang past it, set apart from the face by an outline.
+- Face (`DogArt.faceShihTzu`): big round 3x3 eyes with a catchlight, a button nose right between them (the flat face), and the tip of a tongue.
+- Body (`DogArt.bodyShihTzu`, `WalkArt.shihTzuTorso`): a long white coat drawn in `furShade` strands that flares out at the floor and hides all but the tips of the paws; walking, it ends in a fringe over the legs.
+- Tail (`DogArt.tailPlume`, `WalkArt.shihTzuTail`): a plume curled up over the back with a gold tip.
+- Coloring (`PetBreed.palette`): gold and white by default; the gold is `furAccent` on the ears, mask, and tail tip.
+- The tie is drawn in the outline role, so a cap that covers the topknot never changes the face. Hats sit on the skull below it (`skullTop` 5).
+- Party: the server catalog has no Shih Tzu, so it is sent as `pomeranian`, the nearest small long-coated breed there, and drawn back as a Shih Tzu.
+
+![Every animation frame for the Shih Tzu](images/animations-shihTzu.png)
+
 ### Recoloring fur
 
 `furAccent` means different things per breed: darker stripes on a tabby, lighter feathering on a golden's chest.
@@ -350,18 +456,21 @@ This also protects user recolors.
 ## Body shapes
 
 Breeds that share a silhouette share all of their art and differ only in palette and pattern.
-Cats look alike enough that two shapes cover all eight breeds.
+Cats look alike enough that three shapes cover all nine breeds.
 Dogs need more, because their ears and snouts are what make them recognizable at notch size:
 
 | Shape | Breeds | What sets it apart |
 | --- | --- | --- |
 | `cat` | most cats | pointed ears, tabby stripe zones |
 | `roundCat` | British Shorthair | small wide-set ears, round cheeks, big blue eyes, stocky body, ringed tail |
+| `sphynxCat` | Sphynx | big flared ears, wrinkled brow and neck, lemon eyes, lean body, thin whip tail |
 | `floppyDog` | Labrador, Beagle | hanging ears beside a rounded skull |
 | `fluffyDog` | Golden Retriever | long feathered ears |
 | `batEaredDog` | French Bulldog | big rounded bat ears, broad face |
 | `pointyEaredDog` | Corgi | tall pointed ears, fox-like face |
 | `longDog` | Dachshund | long snout and a long low body behind the head |
+| `poodleDog` | Poodle | round curly topknot, long curly ears, dotted curl texture, pom tail |
+| `shihTzuDog` | Shih Tzu | tied topknot, flat face with big round eyes, long ears and beard, floor-length coat |
 
 Dog heads have different heights, so the shared dog face is stamped on each head's eye row.
 The dog mouth is drawn in the nose color, not the outline, because on dark breeds the outline becomes a light rim that would look noisy on the muzzle.

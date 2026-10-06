@@ -84,6 +84,27 @@ final class PetPresenceTests: XCTestCase {
         XCTAssertEqual(TickerKind.pet.module, .closet)
     }
 
+    func testAPetDrawnAnewMidBlockStillYawnsWhenALongBlockEnds() throws {
+        let block = PetAnimator.longSession + 5 * 60
+        let focus = ProvidedFocus(source: .study, phase: .focus, clock: .countdown(endsAt: start.addingTimeInterval(block)),
+                                  phaseLength: block)
+        let sources = TickerSources(focus: focus, pet: PetPresence(profile: profile, lastActive: start))
+        let rebuiltAt = start.addingTimeInterval(block - 60)
+        guard case .pet(let pet) = try XCTUnwrap(sources.items(at: rebuiltAt).last) else { return XCTFail("no pet") }
+        XCTAssertEqual(pet.mood, .studying)
+        XCTAssertEqual(pet.moodSince, start, "the phase start, not the moment the pet came into view")
+
+        let clips = PetClipSet(profile: profile)
+        var animator = PetAnimator(durations: clips.durations, activity: .init(pet.mood),
+                                   activitySince: pet.moodSince?.timeIntervalSinceReferenceDate,
+                                   at: rebuiltAt.timeIntervalSinceReferenceDate)
+        let breakAt = start.addingTimeInterval(block).timeIntervalSinceReferenceDate
+        animator.send(.activity(.onBreak), at: breakAt)
+        XCTAssertEqual(animator.playback, .init(animation: .yawn, startedAt: breakAt))
+        let quiet = TickerSources(pet: PetPresence(profile: profile, lastActive: start)).items(at: rebuiltAt)
+        XCTAssertEqual(quiet.last, .pet(TickerPet(profile: profile, mood: .asleep)), "no phase running, nothing to count from")
+    }
+
     func testTickerWakesWhenThePetFallsAsleep() {
         let sources = TickerSources(pet: PetPresence(profile: profile, lastActive: start))
         XCTAssertEqual(sources.nextChange(after: minutes(1)), minutes(20))

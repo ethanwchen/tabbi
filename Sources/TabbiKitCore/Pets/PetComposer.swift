@@ -29,6 +29,8 @@ public enum PetComposer {
         var canvas: PetCanvas
         /// Top-right corner of the head's skull, in frame pixels.
         var headTopRight: PetPoint
+        /// Top-left corner of a held mug, where its steam rises from.
+        var mugTop: PetPoint?
     }
 
     /// How the body under the head is drawn.
@@ -43,6 +45,10 @@ public enum PetComposer {
         /// pixels while the front paws slide forward and the rump stays up.
         /// `wag` picks the tail position.
         case stretching(depth: Int, wag: Int)
+        /// Curled up asleep on the floor: the walking torso lying down with
+        /// no legs, the head resting at its front and the tail wrapped round
+        /// under the chin. `breath` 1 raises the back a pixel.
+        case curled(breath: Int)
     }
 
     static func compose(
@@ -60,9 +66,24 @@ public enum PetComposer {
         }
         switch stance {
         case .sitting:
-            canvas.stamp(layout.body, x: layout.bodyX, y: layout.bodyY, pattern: pattern)
+            // A gesturing pet lifts its left front paw off the floor.
+            var body = pose.liftsLeftPaw ? PawArt.liftingLeftPaw(layout.body) : layout.body
+            let swing = max(pose.tailSwing, 0)
+            if swing > 0, let column = layout.tailColumn {
+                // A tail drawn into the body is cut out and bent on its own.
+                let (rest, tail) = TailArt.split(body, at: column)
+                body = rest
+                let room = frameSize - 1 - layout.bodyX
+                canvas.stamp(TailArt.swung(tail, by: swing, room: room), x: layout.bodyX, y: layout.bodyY, pattern: pattern)
+            }
+            canvas.stamp(body, x: layout.bodyX, y: layout.bodyY, pattern: pattern)
             if breed.hasTail, let tail = layout.tail {
-                canvas.stamp(tail.grid, x: tail.x, y: tail.y, pattern: pattern)
+                let room = frameSize - 1 - tail.x
+                canvas.stamp(TailArt.swung(tail.grid, by: swing, room: room), x: tail.x, y: tail.y, pattern: pattern)
+            } else if !breed.hasTail, swing > 0 {
+                // No tail to swish: a stub pops out past the haunch and bobs.
+                let haunch = layout.bodyX + layout.body.width - 1
+                canvas.stamp(TailArt.nub, x: haunch, y: layout.bodyY + 7 - swing, pattern: pattern)
             }
         case .hanging:
             // A hanging pet's chin always rests on the same row, whatever the head.
@@ -115,10 +136,37 @@ public enum PetComposer {
             bodyItem = { _ in nil }
             headX = walk.headX
             headY = walk.chinRow + 1 - layout.head.height + depth + pose.headDrop
+        case .curled(let breath):
+            let walk = WalkLayout(breed.bodyShape, layout.family)
+            // The torso drops onto the floor where the legs were; on a
+            // breath the middle of the back swells up a pixel.
+            let torso = walkingTorso(breed, walk, outfit: outfit, accessories: accessories, wag: nil)
+            let floor = walk.legHeight
+            canvas.lay(torso) { _ in floor }
+            if breath > 0 {
+                let back = (walk.torsoX + 4)...(walk.torsoX + walk.torso.width - 4)
+                canvas.lay(torso) { x in back.contains(x) ? floor - 1 : floor }
+            }
+            bodyItem = { _ in nil }
+            headX = walk.headX
+            headY = curledChinRow + 1 - layout.head.height + pose.headDrop
         }
         canvas.stamp(layout.head, x: headX, y: headY, pattern: pattern)
         let face = EffectArt.face(layout.face, eyeRow: layout.eyeRow - layout.faceRow, eyes: pose.eyes)
         canvas.stamp(face, x: headX, y: headY + layout.faceRow, pattern: pattern)
+        if let (grid, origin) = EffectArt.mouth(pose.mouth, in: layout.face) {
+            canvas.stamp(grid, x: headX + origin.x, y: headY + layout.faceRow + origin.y, pattern: pattern)
+        }
+        if case .curled = stance, breed.hasTail {
+            // The tail comes round from the rump and runs along the floor
+            // in front, under the chin, tip curling up by the cheek.
+            let walk = WalkLayout(breed.bodyShape, layout.family)
+            let left = headX + 2
+            let tail = TailArt.wrapped(length: walk.torsoX + walk.torso.width - left)
+            var layer = PetCanvas(width: frameSize, height: frameSize)
+            layer.stamp(tail, x: left, y: frameSize - 1 - tail.height, pattern: pattern)
+            canvas.lay(layer.outlined()) { _ in 0 }
+        }
 
         func stampFace(_ item: CostumeArt.FaceItem) {
             canvas.stamp(layout.family == .cat ? item.cat : item.dog, x: headX, y: headY + layout.eyeRow - item.eyeRow)
@@ -147,19 +195,113 @@ public enum PetComposer {
                 stampHead(head)
             }
         }
+        var mugTop: PetPoint?
+        if stance == .sitting, let prop = pose.prop {
+            mugTop = stampProp(prop, on: &canvas, layout: layout, headX: headX, headY: headY, pattern: pattern)
+            mugTop?.y -= pose.lift
+        }
+        if stance == .sitting, let gesture = pose.gesture {
+            stampGesture(gesture, on: &canvas, layout: layout, headX: headX, headY: headY, pattern: pattern)
+        }
         let anchor = PetPoint(x: headX + layout.head.width - 1, y: headY + layout.skullTop - pose.lift)
-        return Composed(canvas: canvas.outlined().shifted(x: 0, y: -pose.lift), headTopRight: anchor)
+        return Composed(canvas: canvas.outlined().shifted(x: 0, y: -pose.lift), headTopRight: anchor, mugTop: mugTop)
+    }
+
+    /// Draws a held prop in front of the sitting pet, centered under the
+    /// head so it lines up on every body shape. The laptop stands on the
+    /// floor; the mug rises from the chest to the mouth, found from the
+    /// face art like an open mouth; a toy rolls away to the left along the
+    /// floor. Returns the mug's top-left corner.
+    private static func stampProp(
+        _ prop: PetPose.Prop, on canvas: inout PetCanvas, layout: SitLayout, headX: Int, headY: Int,
+        pattern: PetPattern
+    ) -> PetPoint? {
+        let center = headX + layout.head.width / 2
+        switch prop {
+        case .laptop(let tap):
+            let lidY = frameSize - 1 - PropArt.laptop.height
+            canvas.stamp(PropArt.laptop, x: center - PropArt.laptop.width / 2, y: lidY)
+            // Resting paws hang over the lid's edge; a tapping paw lifts off it.
+            let pawY = lidY - 1
+            canvas.stamp(PropArt.paw, x: center - 7, y: pawY - (tap < 0 ? 2 : 0), pattern: pattern)
+            canvas.stamp(PropArt.paw, x: center + 1, y: pawY - (tap > 0 ? 2 : 0), pattern: pattern)
+            return nil
+        case .mug(let raise):
+            guard let (_, mouth) = EffectArt.mouth(.open, in: layout.face) else { return nil }
+            let mouthX = headX + mouth.x + 2
+            let sipY = headY + layout.faceRow + mouth.y - 1
+            // Held in the lap, low enough that the steam rises over the chest.
+            let lapY = headY + layout.head.height + 3
+            let y = lapY + (sipY - lapY) * min(max(raise, 0), 2) / 2
+            let x = mouthX - 3
+            // Paws first, so the mug's handle shows over the right one.
+            canvas.stamp(PropArt.mugPaw, x: x - 3, y: y + 1, pattern: pattern)
+            canvas.stamp(PropArt.mugPaw, x: x + 4, y: y + 1, pattern: pattern)
+            canvas.stamp(PropArt.mug, x: x, y: y)
+            return PetPoint(x: x, y: y)
+        case .toy(let roll, let bounce, let bat):
+            // Cats play with yarn, dogs with a ball. Each pixel rolled turns
+            // the winding or the band, so the toy reads as rolling.
+            let art = layout.family == .cat ? PropArt.yarn : PropArt.ball
+            let toy = art[(roll / 2) % art.count]
+            let x = toyX(roll: roll, center: center)
+            let y = frameSize - toy.height - max(bounce, 0)
+            canvas.stamp(toy, x: x, y: y)
+            if bat {
+                // The lifted left paw, outlined all round, presses on the
+                // toy's top; the leg it hangs from is hidden behind the toy.
+                canvas.stamp(PropArt.paw, x: x - 1, y: y - 1, pattern: pattern)
+            }
+            return nil
+        }
+    }
+
+    /// Left edge of the toy `roll` pixels after it starts rolling away from
+    /// its spot on the floor, centered under the head; it stops at the edge.
+    private static func toyX(roll: Int, center: Int) -> Int {
+        max(0, center - PropArt.ball[0].width / 2 - max(roll, 0))
+    }
+
+    /// Draws the lifted front paw in front of the sitting pet. The wave
+    /// grows from the left shoulder and holds the paw beside the head; the
+    /// grooming paw rises from the chest to the mouth (found from the face
+    /// art, like an open mouth) or over the left cheek.
+    private static func stampGesture(
+        _ gesture: PetPose.Gesture, on canvas: inout PetCanvas, layout: SitLayout, headX: Int, headY: Int,
+        pattern: PetPattern
+    ) {
+        let shoulder = PetPoint(x: layout.bodyX + 3, y: layout.bodyY + 4)
+        switch gesture {
+        case .wave(let swing):
+            let arm = PawArt.wave[min(max(swing, 0), PawArt.wave.count - 1)]
+            canvas.stamp(arm, x: shoulder.x - 8, y: shoulder.y - arm.height + 1, pattern: pattern)
+        case .groom(let reach):
+            guard let (_, mouth) = EffectArt.mouth(.open, in: layout.face) else { return }
+            let mouthX = headX + mouth.x + 2
+            let mouthY = headY + layout.faceRow + mouth.y
+            // Just under the tongue to lick it; lower at rest; up and to the
+            // side over the cheek to wash.
+            let (x, y) = switch reach {
+            case ...0: (mouthX - 4, mouthY + 4)
+            case 1: (mouthX - 4, mouthY + 2)
+            default: (mouthX - 8, mouthY - 3)
+            }
+            // The whole front leg is lifted, so it reaches down to just
+            // above the floor where the paw stood.
+            let knee = layout.bodyY + layout.body.height - 2
+            canvas.stamp(PawArt.groom(height: knee - y + 1), x: x, y: y, pattern: pattern)
+        }
     }
 
     /// The walking torso with its tail and torso costumes, on its own frame
     /// canvas so a stance can bend it before laying it over the legs. The
     /// torso is behind the head, so torso costumes go on here, before it.
     private static func walkingTorso(
-        _ breed: PetBreed, _ walk: WalkLayout, outfit: PetOutfit, accessories: [PetAccessory], wag: Int
+        _ breed: PetBreed, _ walk: WalkLayout, outfit: PetOutfit, accessories: [PetAccessory], wag: Int?
     ) -> PetCanvas {
         var canvas = PetCanvas(width: frameSize, height: frameSize)
         canvas.stamp(walk.torso, x: walk.torsoX, y: walk.torsoY, pattern: breed.pattern)
-        if breed.hasTail {
+        if breed.hasTail, let wag {
             let tail = walk.tails[wag % walk.tails.count]
             canvas.stamp(tail, x: walk.tailX, y: walk.torsoY - tail.height, pattern: breed.pattern)
         }
@@ -241,6 +383,9 @@ public enum PetComposer {
         let bodyX: Int
         let bodyY: Int
         let tail: (grid: SpriteGrid, x: Int, y: Int)?
+        /// First body column of a tail drawn into the sitting body, so the
+        /// tail swish can bend it on its own.
+        let tailColumn: Int?
         let head: SpriteGrid
         let headX: Int
         let headY: Int
@@ -255,30 +400,44 @@ public enum PetComposer {
 
         init(_ shape: PetBodyShape) {
             switch shape {
-            case .cat, .roundCat:
+            case .cat, .roundCat, .sphynxCat:
                 family = .cat
-                (bodyX, bodyY, tail) = (6, 20, nil)
-                (body, head, face) = shape == .roundCat
-                    ? (CatArt.bodyRound, CatArt.headRound, CatArt.faceRound)
-                    : (CatArt.bodySit, CatArt.head, CatArt.faceOpen)
+                (bodyX, bodyY, tail, tailColumn) = (6, 20, nil, 17)
+                (body, head, face) = switch shape {
+                case .roundCat: (CatArt.bodyRound, CatArt.headRound, CatArt.faceRound)
+                case .sphynxCat: (CatArt.bodySphynx, CatArt.headSphynx, CatArt.faceSphynx)
+                default: (CatArt.bodySit, CatArt.head, CatArt.faceOpen)
+                }
                 (headX, headY, faceRow, eyeRow, skullTop) = (6, 7, 0, 7, 3)
             case .longDog:
                 family = .longDog
-                (body, bodyX, bodyY, tail) = (DogArt.bodyLong, 6, 21, nil)
+                (body, bodyX, bodyY, tail, tailColumn) = (DogArt.bodyLong, 6, 21, nil, 23)
                 (head, headX, headY, face) = (DogArt.headLong, 2, 8, DogArt.faceLongSnout)
                 (faceRow, eyeRow, skullTop) = (4, 4, 1)
-            case .floppyDog, .fluffyDog, .batEaredDog, .pointyEaredDog:
+            case .floppyDog, .fluffyDog, .batEaredDog, .pointyEaredDog, .poodleDog, .shihTzuDog:
                 family = .dog
-                (body, bodyX, bodyY) = (DogArt.bodySit, 6, 20)
-                tail = (DogArt.tailUp, 23, 24)
+                tailColumn = nil
+                (body, bodyX, bodyY) = switch shape {
+                case .poodleDog: (DogArt.bodyPoodle, 6, 20)
+                case .shihTzuDog: (DogArt.bodyShihTzu, 6, 20)
+                default: (DogArt.bodySit, 6, 20)
+                }
+                tail = switch shape {
+                case .poodleDog: (DogArt.tailPom, 24, 21)
+                case .shihTzuDog: (DogArt.tailPlume, 24, 21)
+                default: (DogArt.tailUp, 23, 24)
+                }
                 let (grid, eyes, skull): (SpriteGrid, Int, Int) = switch shape {
                 case .fluffyDog: (DogArt.headFluffy, 4, 1)
                 case .batEaredDog: (DogArt.headBatEared, 8, 5)
                 case .pointyEaredDog: (DogArt.headPointyEared, 8, 5)
+                case .poodleDog: (DogArt.headPoodle, 8, 4)
+                case .shihTzuDog: (DogArt.headShihTzu, 7, 5)
                 default: (DogArt.headFloppy, 4, 1)
                 }
                 // Dog heads differ in height; all rest their chin on the neck.
-                (head, headX, headY, face) = (grid, 6, 21 - grid.height, DogArt.faceOpen)
+                let dogFace = shape == .shihTzuDog ? DogArt.faceShihTzu : DogArt.faceOpen
+                (head, headX, headY, face) = (grid, 6, 21 - grid.height, dogFace)
                 (faceRow, eyeRow, skullTop) = (eyes, eyes, skull)
             }
         }
@@ -314,13 +473,20 @@ public enum PetComposer {
             self.family = family
             switch family {
             case .cat:
-                (torso, tails) = shape == .roundCat
-                    ? (WalkArt.roundCatTorso, WalkArt.roundCatTail)
-                    : (WalkArt.catTorso, WalkArt.catTail)
+                (torso, tails) = switch shape {
+                case .roundCat: (WalkArt.roundCatTorso, WalkArt.roundCatTail)
+                case .sphynxCat: (WalkArt.sphynxTorso, WalkArt.sphynxTail)
+                default: (WalkArt.catTorso, WalkArt.catTail)
+                }
                 (torsoY, tailX) = (20, 26)
                 (legHeight, backHip, chinRow) = (4, 22, 24)
             case .dog:
-                (torso, torsoY, tails, tailX) = (WalkArt.dogTorso, 20, WalkArt.dogTail, 26)
+                (torso, tails) = switch shape {
+                case .poodleDog: (WalkArt.poodleTorso, WalkArt.poodleTail)
+                case .shihTzuDog: (WalkArt.shihTzuTorso, WalkArt.shihTzuTail)
+                default: (WalkArt.dogTorso, WalkArt.dogTail)
+                }
+                (torsoY, tailX) = (20, 26)
                 (legHeight, backHip, chinRow) = (4, 22, 24)
             case .longDog:
                 (torso, torsoY, tails, tailX) = (WalkArt.longTorso, 22, WalkArt.longTail, 27)
@@ -331,6 +497,16 @@ public enum PetComposer {
         func pick(_ item: CostumeArt.BodyItem) -> SpriteGrid {
             family == .longDog ? item.walkLong : item.walk
         }
+    }
+}
+
+extension PetPose {
+    /// Whether the left front paw is up (a gesture, or batting a toy), so
+    /// the sitting body must not also show it on the floor.
+    fileprivate var liftsLeftPaw: Bool {
+        if gesture != nil { return true }
+        if case .toy(_, _, true) = prop { return true }
+        return false
     }
 }
 

@@ -1,9 +1,10 @@
 import SwiftUI
 import TabbiKitCore
 
-/// The study pet in the closed notch's leading wing: alive while the user
-/// studies or just did, curled up asleep once no session has run for a
-/// while (`PetPresence.sleepAfter`).
+/// The study pet in the closed notch's leading wing: typing on its laptop
+/// while the user focuses, sipping coffee on breaks, idling while a session
+/// ran recently, and curled up asleep once none has for a while
+/// (`PetPresence.sleepAfter`).
 ///
 /// Owns its own `PetPlayer`, kept for as long as the pet stays on screen,
 /// so mood changes play the real fall-asleep and stretch-awake clips
@@ -21,7 +22,9 @@ struct NotchPetWing: View {
 
     init(pet: TickerPet) {
         self.pet = pet
-        _player = StateObject(wrappedValue: PetPlayer(profile: pet.profile, asleep: pet.mood == .asleep))
+        _player = StateObject(wrappedValue: PetPlayer(
+            profile: pet.profile, asleep: pet.mood == .asleep, activity: PetAnimator.Activity(pet.mood),
+            activitySince: pet.moodSince))
     }
 
     var body: some View {
@@ -31,6 +34,9 @@ struct NotchPetWing: View {
             // line its fur up with the inset the trailing text keeps.
             .offset(x: -3, y: -3)
             .onChange(of: pet.profile) { _, profile in player.update(profile: profile) }
-            .onChange(of: pet.mood == .asleep) { _, asleep in player.send(asleep ? .sleep : .wake) }
+            .onChange(of: pet.mood) { _, mood in
+                player.send(.activity(PetAnimator.Activity(mood)))
+                player.send(mood == .asleep ? .sleep : .wake)
+            }
     }
 }
