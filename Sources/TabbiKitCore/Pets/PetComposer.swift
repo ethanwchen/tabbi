@@ -402,7 +402,8 @@ public enum PetComposer {
             switch shape {
             case .cat, .roundCat, .sphynxCat:
                 family = .cat
-                (bodyX, bodyY, tail, tailColumn) = (6, 20, nil, 17)
+                // The British Shorthair's plump body is a column wider, so its tail starts one later.
+                (bodyX, bodyY, tail, tailColumn) = (6, 20, nil, shape == .roundCat ? 18 : 17)
                 (body, head, face) = switch shape {
                 case .roundCat: (CatArt.bodyRound, CatArt.headRound, CatArt.faceRound)
                 case .sphynxCat: (CatArt.bodySphynx, CatArt.headSphynx, CatArt.faceSphynx)

@@ -198,7 +198,7 @@ The waving arm grows from the left shoulder (3 px in and 4 px down the body) and
 The grooming leg rises straight from just above the floor to the mouth, found like an open mouth, so it lines up on every head.
 
 A swinging tail is bent from its base by `TailArt`, so every breed keeps its own tail (the Sphynx's whip, the British Shorthair's rings, the Poodle's pom, the Shih Tzu's plume).
-Dogs draw the tail as its own grid; cats and the dachshund draw it into the sitting body, so the composer cuts it out at the body's tail column first (`SitLayout.tailColumn`: 17 for cats, 23 for the dachshund).
+Dogs draw the tail as its own grid; cats and the dachshund draw it into the sitting body, so the composer cuts it out at the body's tail column first (`SitLayout.tailColumn`: 17 for cats, 18 for the British Shorthair, whose plump body is a column wider, and 23 for the dachshund).
 The base row stays put and each row above leans a little further, never more than a pixel past the row below, so the tail stays one connected stroke.
 The swing is cut down to the room left in the frame, which keeps the dachshund's tail, near the right edge, to a 1 px flick.
 The corgi and French bulldog have no tail, so `TailArt.nub` pops out past the haunch and bobs instead.

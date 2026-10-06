@@ -112,6 +112,22 @@ final class PetProfileTests: XCTestCase {
         XCTAssertNotEqual(palette[.furBase], PetBreed.whiteCat.palette[.furBase], "still not the white cat")
     }
 
+    func testTheBritishShorthairSitsPlumpAndCenteredUnderItsHead() {
+        // The first solid run across the belly, outline included: the
+        // British Shorthair's is wider than a plain cat's but shares its
+        // center, so the body sits square under the head and costumes.
+        func belly(_ canvas: PetCanvas) -> ClosedRange<Int> {
+            let y = 25
+            let start = (0..<canvas.width).first { canvas[$0, y] != nil }!
+            let end = (start..<canvas.width).first { canvas[$0, y] == nil }! - 1
+            return start...end
+        }
+        let plump = belly(PetComposer.sitting(.britishShorthair))
+        let plain = belly(PetComposer.sitting(.orangeTabby))
+        XCTAssertGreaterThanOrEqual(plump.count, plain.count + 2)
+        XCTAssertEqual(plump.lowerBound + plump.upperBound, plain.lowerBound + plain.upperBound)
+    }
+
     func testStarterMatchesTheChosenSpecies() {
         for species in PetSpecies.allCases {
             let starter = PetProfile.starter(species)

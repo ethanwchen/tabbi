@@ -37,8 +37,8 @@ enum CatArt {
         BBBBBBmmmmmmmmBBBBBB
         BBBBBmmmmmmmmmmBBBBB
         .BBBBBmmmmmmmmBBBBB.
-        ..BBBBBmmmmmmBBBBB..
-        ....BBBBmmmmBBBB....
+        .BBBBBBmmmmmmBBBBBB.
+        ...BBBBBmmmmBBBBB...
         """)
 
     /// British Shorthair face: the shared cat eyes (2x3, a highlight in the
@@ -94,21 +94,22 @@ enum CatArt {
         ....pppp....pppp....
         """)
 
-    /// British Shorthair sitting body, the same 20x11 frame as `bodySit` so
-    /// every costume fits: taupe flanks with faint ticking, full haunches,
-    /// a white chest and paws, and a thick tail ringed with dark bands.
+    /// British Shorthair sitting body: the `bodySit` frame (so every costume
+    /// fits) widened a column to the right for a plump, round belly that sits
+    /// centered under the head, with faint ticking on the flanks, a white
+    /// chest and paws, and a thick ringed tail split off at column 18.
     static let bodyRound = SpriteGrid(art: """
-        .....SBBBBBBBBS.....
-        ....SBBccccccBBS....
-        ....SBccccccccBS..tt
-        ...SSBccccccccBSS.SS
-        ...SsBBccccccBBsS.tt
-        ...SSBBBccccBBBSS.SS
-        ...SsBBBBBBBBBBsS.tt
-        ..SSSBBBBBBBBBBSSSSS
-        ..SsSBBBBBBBBBBSsSS.
-        ..SSBpppBBBBpppBSS..
-        ...Spppp....ppppS...
+        .....SBBBBBBBBS......
+        ....SBBccccccBBS.....
+        ...SSBccccccccBSS..tt
+        ..SSBBccccccccBBSS.SS
+        ..SsBBBccccccBBBsS.tt
+        ..SSBBBBccccBBBBSS.SS
+        ..SsBBBBBBBBBBBBsS.tt
+        ..SSBBBBBBBBBBBBSSSSS
+        ..SSsBBBBBBBBBBsSSS..
+        ..SSBpppBBBBpppBSS...
+        ...Spppp....ppppS....
         """)
 
     /// Sphynx: big bat-like ears flaring out from a narrow crown, forehead
