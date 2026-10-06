@@ -475,12 +475,13 @@ extension CostumeArt {
         .MMM............MMM.
         """), sitRow: 5)
 
-    /// Chunky over-ear headphones: a navy band over the crown and big
-    /// red cups with metal grilles over the ears.
+    /// Chunky over-ear headphones: a red band over the crown and big
+    /// red cups with metal grilles over the ears. The band matches the
+    /// cups so it stays readable on dark fur, where navy disappeared.
     static let chunkyHeadphones = HeadItem(grid: SpriteGrid(art: """
-        ....QQQQQQQQQQQQ....
-        ...Q............Q...
-        ..Q..............Q..
+        ....HHHHHHHHHHHH....
+        ...H............H...
+        ..H..............H..
         HHHH............HHHH
         HMMH............HMMH
         HMMH............HMMH

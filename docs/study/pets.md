@@ -146,6 +146,7 @@ Accessories are drawn after the face and before the automatic outline, so hats g
    every item shows and keeps a one-pixel margin inside the frame, head and face items keep the same offset from the nose in every frame, and hats rest on the skull without covering an eye (items with `coversEyes` must hide at least one).
    Face items must reach across every breed's eye rows, and no outfit, hood included, may cover an eye in any frame.
    Leave a column of fur between an item and the eyes where you can: the black cat's eyes are green, so a green hood flap right beside them swallows the eyes.
+   Check thin lines against dark fur too: a 1px navy headphone band disappeared on the Labrador, dachshund and black cat, so it now matches the red cups.
 
 ![Every head item on every breed](images/contact-head.png)
 
@@ -156,6 +157,8 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 ![Every breed in the superhero cape through every animation](images/strip-superhero-cape.png)
 
 ![Every breed in the dinosaur hoodie through every animation](images/strip-dinosaur-hoodie.png)
+
+![Every breed in the chunky headphones through every animation](images/strip-chunky-headphones.png)
 
 ## Animations
 
