@@ -6,7 +6,8 @@ import TabbiKit
 /// free time, then either today's timeline (events, planned blocks,
 /// now-line) with a line under it for what is on now or the block tapped,
 /// or the week's seven days stacked on the same clock hours. Plan puts a
-/// proposal on the timeline, which the strip under it adds or skips.
+/// proposal for the day (or, from the Week view, the week) on the
+/// timeline, which the strip under it adds or skips.
 struct SchedulePanel: View {
     @ObservedObject var store: ScheduleStore
 
@@ -18,9 +19,14 @@ struct SchedulePanel: View {
                 ScheduleAccessMessage(situation: situation, store: store)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if store.mode == .week {
-                ScheduleWeek(layout: store.weekLayout, now: store.now)
+                ScheduleWeek(layout: store.weekLayout, now: store.now, selectedID: store.selectedID,
+                             isDrafting: store.draft != nil) { store.select($0) }
                     .frame(maxHeight: .infinity)
                     .transition(.opacity)
+                if let draft = store.draft {
+                    SchedulePlanStrip(draft: draft, selected: store.selectedItem.flatMap { $0.kind == .proposed ? $0 : nil },
+                                      writeFailed: store.writeFailed, store: store)
+                }
             } else {
                 ScheduleTimeline(layout: layout, now: store.now, selectedID: store.selectedID,
                                  isDrafting: store.draft != nil) { store.select($0) }
@@ -79,8 +85,16 @@ private struct ScheduleHeader: View {
                         }
                     }
                 } else {
-                    freeTime(store.weekLayout.freeMinutes, suffix: "free this week", none: "No free time this week",
+                    let freeMinutes = store.weekLayout.freeMinutes
+                    freeTime(freeMinutes, suffix: "free this week", none: "No free time this week",
                              help: "Free working time over the next seven days, with a buffer around each event")
+                    if store.draft == nil, freeMinutes > 0 {
+                        SchedulePillButton(title: "Plan", symbol: "wand.and.stars", isProminent: true,
+                                           help: "Spread your open tasks and reviews over the week's free time. "
+                                               + "Planned on this Mac, nothing is added until you say so") {
+                            store.planWeek()
+                        }
+                    }
                 }
             }
         }
@@ -156,6 +170,10 @@ private struct ScheduleModePill: View {
 private struct ScheduleWeek: View {
     let layout: ScheduleWeekLayout
     let now: Date
+    let selectedID: ScheduleItem.ID?
+    /// While a plan is on offer, everything else steps back.
+    let isDrafting: Bool
+    let select: (ScheduleItem.ID) -> Void
 
     private static let labelWidth: CGFloat = 48
     private static let freeWidth: CGFloat = 64
@@ -172,7 +190,8 @@ private struct ScheduleWeek: View {
                         .frame(height: Self.axisHeight)
                     ForEach(layout.days) { day in
                         ScheduleWeekRow(day: day, now: now, hourMarks: hourMarks, labelWidth: Self.labelWidth,
-                                        freeWidth: Self.freeWidth)
+                                        freeWidth: Self.freeWidth, selectedID: selectedID, isDrafting: isDrafting,
+                                        select: select)
                             .frame(height: rowHeight)
                     }
                 }
@@ -224,6 +243,9 @@ private struct ScheduleWeekRow: View {
     let hourMarks: [Double]
     let labelWidth: CGFloat
     let freeWidth: CGFloat
+    let selectedID: ScheduleItem.ID?
+    let isDrafting: Bool
+    let select: (ScheduleItem.ID) -> Void
 
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
@@ -264,17 +286,13 @@ private struct ScheduleWeekRow: View {
                 }
                 ForEach(day.placed) { placed in
                     let laneHeight = (height - CGFloat(placed.lanes - 1)) / CGFloat(placed.lanes)
-                    let color = blockColor(placed.item)
-                    let block = RoundedRectangle(cornerRadius: 2, style: .continuous)
-                    block.fill(color.opacity(placed.item.kind == .event ? 0.7 : 0.35))
-                        .overlay {
-                            if placed.item.kind != .event {
-                                block.strokeBorder(color, style: StrokeStyle(lineWidth: 1, dash: [2, 1.5]))
-                            }
-                        }
-                        .opacity(placed.item.end <= now ? 0.45 : 1)
-                        .frame(width: max(width * placed.width - 1, 2), height: laneHeight)
-                        .offset(x: width * placed.x + 0.5, y: CGFloat(placed.lane) * (laneHeight + 1))
+                    ScheduleWeekBlock(item: placed.item, isPast: placed.item.end <= now,
+                                      isSelected: placed.item.id == selectedID,
+                                      isDimmed: isDrafting && placed.item.kind != .proposed) {
+                        select(placed.item.id)
+                    }
+                    .frame(width: max(width * placed.width - 1, 2), height: laneHeight)
+                    .offset(x: width * placed.x + 0.5, y: CGFloat(placed.lane) * (laneHeight + 1))
                 }
                 if day.isToday, let nowX = day.position(of: now) {
                     Rectangle()
@@ -302,8 +320,52 @@ private struct ScheduleWeekRow: View {
         let name = day.date.formatted(.dateTime.weekday(.wide).month(.abbreviated).day())
         return "\(name): " + parts.joined(separator: ", ")
     }
+}
 
-    private func blockColor(_ item: ScheduleItem) -> Color {
+/// One item on a week row: busy time in its calendar's color, a planned
+/// block dashed in the accent, or a proposed block filled with it, which
+/// can be clicked to add or skip.
+private struct ScheduleWeekBlock: View {
+    let item: ScheduleItem
+    let isPast: Bool
+    let isSelected: Bool
+    let isDimmed: Bool
+    let action: () -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        let shape = RoundedRectangle(cornerRadius: 2, style: .continuous)
+        let block = shape.fill(color.opacity(fillOpacity))
+            .overlay {
+                switch item.kind {
+                case .planned: shape.strokeBorder(color, style: StrokeStyle(lineWidth: 1, dash: [2, 1.5]))
+                case .proposed: shape.strokeBorder(isSelected ? Theme.Palette.primaryText : color,
+                                                   lineWidth: isSelected ? 1.5 : 1)
+                case .event: EmptyView()
+                }
+            }
+            .opacity(isPast ? 0.45 : isDimmed ? 0.55 : 1)
+        if item.kind == .proposed {
+            Button(action: action) { block.contentShape(shape) }
+                .buttonStyle(.plain)
+                .onHover { hovering = $0 }
+                .motion(Theme.Motion.snappy, value: hovering)
+                .help("Proposed: \(ScheduleFormat.title(item)), \(ScheduleFormat.range(item.start, item.end)). "
+                    + "Click to add or skip it")
+        } else {
+            block
+        }
+    }
+
+    private var fillOpacity: Double {
+        switch item.kind {
+        case .event: 0.7
+        case .planned: 0.35
+        case .proposed: hovering || isSelected ? 0.75 : 0.55
+        }
+    }
+
+    private var color: Color {
         if item.kind != .event { return accent }
         guard let color = item.calendarColor else { return Theme.Palette.secondaryText }
         return Color(.sRGB, red: color.red, green: color.green, blue: color.blue)

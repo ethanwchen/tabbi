@@ -10,10 +10,27 @@ import Foundation
 public struct ScheduleDraft: Equatable, Sendable {
     public let plan: SchedulePlan
     public private(set) var proposal: DayPlanProposal
+    /// True when the plan covers the coming week rather than today.
+    public let isWeek: Bool
+    /// The day (midnight) each block of a week plan was planned on.
+    private let blockDays: [PlanBlock.ID: Date]
 
     public init(plan: SchedulePlan) {
         self.plan = plan
         proposal = plan.proposal
+        isWeek = false
+        blockDays = [:]
+    }
+
+    /// A week plan as one draft: every day's blocks and breaks, and what
+    /// didn't fit anywhere in the week.
+    public init(week: ScheduleWeekPlan) {
+        plan = SchedulePlan(day: week.days.first?.day ?? .distantPast, blocks: week.days.flatMap(\.blocks),
+                            breaks: week.days.flatMap(\.breaks), unplaced: week.unplaced)
+        proposal = plan.proposal
+        isWeek = true
+        blockDays = Dictionary(week.days.flatMap { day in day.blocks.map { ($0.id, day.day) } },
+                               uniquingKeysWith: { first, _ in first })
     }
 
     /// Plans the rest of the day containing `now` around `items` (the
@@ -26,6 +43,18 @@ public struct ScheduleDraft: Equatable, Sendable {
         let plan = settings.localPlan(now: now, events: events, tasks: [], sharedTasks: sharedTasks,
                                       progress: progress, calendar: calendar, locale: locale)
         return ScheduleDraft(plan: plan)
+    }
+
+    /// Spreads the same work over today and the `days - 1` days after it,
+    /// each day's free time in turn, so what doesn't fit today lands on the
+    /// next day with room.
+    public static func planWeek(now: Date, days: Int = 7, items: [ScheduleItem], sharedTasks: [ProvidedTask],
+                                progress: [ProgressItem], settings: TodayPlanSettings = TodayPlanSettings(),
+                                calendar: Calendar = .current, locale: Locale = .current) -> ScheduleDraft {
+        let events = items.filter { $0.kind != .proposed }.map(\.upcomingEvent)
+        let week = settings.localWeekPlan(now: now, days: days, events: events, tasks: [], sharedTasks: sharedTasks,
+                                          progress: progress, calendar: calendar, locale: locale)
+        return ScheduleDraft(week: week)
     }
 
     /// Blocks still on offer, as proposed items for the timeline.
@@ -56,7 +85,8 @@ public struct ScheduleDraft: Equatable, Sendable {
     }
 
     /// One line on what the draft offers: "3 blocks, 1 h 30 min. 1 didn't
-    /// fit", or why there's nothing to offer.
+    /// fit" ("5 blocks over 3 days, ..." for a week), or why there's
+    /// nothing to offer.
     public var summary: String {
         guard !isEmpty else {
             if let first = unplaced.first {
@@ -66,7 +96,10 @@ public struct ScheduleDraft: Equatable, Sendable {
             return "Nothing to plan: no open tasks or reviews"
         }
         let count = proposal.pending.count
-        var text = "\(count) \(count == 1 ? "block" : "blocks"), \(ScheduleFormat.duration(minutes: pendingMinutes))"
+        var text = "\(count) \(count == 1 ? "block" : "blocks")"
+        let days = Set(proposal.pending.compactMap { blockDays[$0.id] }).count
+        if days > 1 { text += " over \(days) days" }
+        text += ", \(ScheduleFormat.duration(minutes: pendingMinutes))"
         if !unplaced.isEmpty { text += ". \(unplaced.count) didn't fit" }
         return text
     }

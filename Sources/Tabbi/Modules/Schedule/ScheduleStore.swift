@@ -15,12 +15,15 @@ import TabbiKitCore
 /// In demo mode it shows `ScheduleSampleData` seen from 11:20 and never
 /// touches EventKit; `TABBI_SCHEDULE_PREVIEW=notAsked|denied|freeDay` renders
 /// the empty states instead, `selected` a block's details, `week` the Week
-/// view, and `plan` or `plan-selected` the Plan button's proposal.
+/// view, `plan` or `plan-selected` the Plan button's proposal, and
+/// `plan-week` the Week view's.
 ///
 /// Plan offers the rest of today planned on device (`ScheduleDraft`, no
 /// Claude): other modules' open tasks and review goals, placed in the free
 /// time. The blocks show on the timeline until the user adds or skips them;
 /// added ones are written to the default calendar as planned by Tabbi.
+/// Plan week spreads the same work over the free time of the next seven
+/// days.
 @MainActor
 final class ScheduleStore: ObservableObject {
     enum Access: Equatable {
@@ -84,11 +87,12 @@ final class ScheduleStore: ObservableObject {
             let showsDay = preview != "notAsked" && preview != "denied" && preview != "freeDay"
             items = showsDay ? ScheduleSampleData.weekItems(from: date) : []
             selectedID = preview == "selected" ? "demo-deck" : nil
-            mode = preview == "week" ? .week : .day
+            mode = preview == "week" || preview == "plan-week" ? .week : .day
             if preview == "plan" || preview == "plan-selected" {
                 planDay()
                 if preview == "plan-selected" { selectedID = draft?.items.first?.id }
             }
+            if preview == "plan-week" { planWeek() }
         } else {
             now = date
             access = Self.currentAccess()
@@ -162,11 +166,18 @@ final class ScheduleStore: ObservableObject {
     /// Plans the rest of today around the calendar and shows the blocks on
     /// the timeline. Demo mode plans its sample tasks around the demo day.
     func planDay() {
-        if !isDemo { now = Date() }
-        selectedID = nil
-        writeFailed = false
+        startPlanning()
         draft = ScheduleDraft.plan(now: now, items: items, sharedTasks: isDemo ? ScheduleSampleData.tasks : sharedTasks,
                                    progress: isDemo ? [] : progress, settings: planSettings)
+    }
+
+    /// Spreads the same work over the free time of today and the next six
+    /// days, for the Week view. Demo mode plans a longer sample list.
+    func planWeek() {
+        startPlanning()
+        draft = ScheduleDraft.planWeek(now: now, days: Self.dayCount, items: items,
+                                       sharedTasks: isDemo ? ScheduleSampleData.weekTasks : sharedTasks,
+                                       progress: isDemo ? [] : progress, settings: planSettings)
     }
 
     /// Writes one offered block (every one when `id` is nil) to the calendar.
@@ -220,6 +231,12 @@ final class ScheduleStore: ObservableObject {
 
     /// Days the store reads: the Week view's seven, the first one today.
     private static let dayCount = 7
+
+    private func startPlanning() {
+        if !isDemo { now = Date() }
+        selectedID = nil
+        writeFailed = false
+    }
 
     private func settle(_ draft: ScheduleDraft) {
         if let selectedID, !draft.items.contains(where: { $0.id == selectedID }),

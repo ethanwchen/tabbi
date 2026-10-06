@@ -85,6 +85,14 @@ public enum ScheduleSampleData {
         ProvidedTask(id: "demo-roadmap", source: "planner", title: "Outline the Q4 roadmap", estimatedMinutes: 60),
     ]
 
+    /// The demo's open tasks for planning the week: today's, plus larger
+    /// pieces of work that spill over into the next days.
+    public static let weekTasks: [ProvidedTask] = tasks + [
+        ProvidedTask(id: "demo-doc", source: "planner", title: "Write the sync design doc", estimatedMinutes: 180),
+        ProvidedTask(id: "demo-study", source: "planner", title: "Study for the AWS exam", estimatedMinutes: 120),
+        ProvidedTask(id: "demo-backlog", source: "planner", title: "Clean up the backlog", estimatedMinutes: 45),
+    ]
+
     static func time(_ minutes: Int, on date: Date, calendar: Calendar) -> Date {
         calendar.date(byAdding: .minute, value: minutes, to: calendar.startOfDay(for: date)) ?? date
     }

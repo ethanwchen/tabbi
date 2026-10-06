@@ -50,6 +50,18 @@ public extension TodayPlanSettings {
                                 calendar: calendar, locale: locale)
     }
 
+    /// Today and the `days - 1` days after it planned around `events`:
+    /// unfinished work spread over each day's free time in turn, with the
+    /// usual working hours every day (planning late doesn't stretch them).
+    func localWeekPlan(now: Date, days: Int = 7, events: [UpcomingEvent], tasks: [PlannerItem],
+                       sharedTasks: [ProvidedTask] = [], progress: [ProgressItem] = [],
+                       calendar: Calendar = .current, locale: Locale = .current) -> ScheduleWeekPlan {
+        SchedulePlanner.planWeek(now: now, days: days, events: events,
+                                 work: localWork(tasks: tasks, sharedTasks: sharedTasks, progress: progress),
+                                 preferences: schedulePreferences(now: calendar.startOfDay(for: now), calendar: calendar),
+                                 calendar: calendar, locale: locale)
+    }
+
     /// Demo mode's plan: `events` are samples placed around `now`, so the
     /// day is planned as if it were 9:40 am (with the samples moved along)
     /// and then moved back to `now`. A snapshot taken in the evening still
