@@ -97,15 +97,25 @@ struct ScheduleDayLayoutTests {
 
     @Test func statusIsTheItemUnderWay() {
         let layout = Self.layout([Self.item("long", Self.at(10), Self.at(12)), Self.item("short", Self.at(10), Self.at(11))])
-        #expect(layout.status(at: Self.at(10, 30), calendar: Self.calendar) == .busy(layout.placed.first { $0.id == "short" }!.item))
+        #expect(layout.status(at: Self.at(10, 30)) == .busy(layout.placed.first { $0.id == "short" }!.item))
     }
 
     @Test func statusIsFreeUntilTheNextItem() {
         let next = Self.item("lunch", Self.at(12, 30), Self.at(13, 30))
         let layout = Self.layout([next])
-        #expect(layout.status(at: Self.at(11), calendar: Self.calendar) == .free(until: Self.at(12, 30), next: next))
-        #expect(layout.status(at: Self.at(14), calendar: Self.calendar) == .free(until: nil, next: nil))
-        #expect(layout.status(at: Self.at(18, 30), calendar: Self.calendar) == .dayOver)
+        #expect(layout.status(at: Self.at(11)) == .free(until: Self.at(12, 30), next: next))
+        #expect(layout.status(at: Self.at(14)) == .free(until: nil, next: nil))
+        #expect(layout.status(at: Self.at(18, 30)) == .dayOver)
+    }
+
+    @Test func planningHoursKeepTheEveningOpen() {
+        // Plan my day stretches the day to two hours after now, so the layout does too.
+        let now = Self.at(18, 10)
+        let preferences = TodayPlanSettings().schedulePreferences(now: now, calendar: Self.calendar)
+        let layout = ScheduleDayLayout(day: Self.day, now: now, items: [], preferences: preferences,
+                                       calendar: Self.calendar)
+        #expect(layout.freeMinutes == 120)
+        #expect(layout.status(at: now) == .free(until: nil, next: nil))
     }
 
     @Test func plannedMarkerInTheNotesMakesAPlannedItem() {
@@ -146,7 +156,7 @@ struct ScheduleDayLayoutTests {
         #expect(items.contains { $0.kind == .planned })
         #expect(layout.allDay.count == 1)
         #expect(layout.placed.contains { $0.lanes == 2 })
-        if case .busy = layout.status(at: now, calendar: Self.calendar) {} else {
+        if case .busy = layout.status(at: now) {} else {
             Issue.record("The demo should be in a block at 11:20")
         }
     }

@@ -94,6 +94,6 @@ public enum ScheduleSampleData {
     ]
 
     static func time(_ minutes: Int, on date: Date, calendar: Calendar) -> Date {
-        calendar.date(byAdding: .minute, value: minutes, to: calendar.startOfDay(for: date)) ?? date
+        SchedulePlanner.clockTime(minutes, on: date, calendar: calendar)
     }
 }

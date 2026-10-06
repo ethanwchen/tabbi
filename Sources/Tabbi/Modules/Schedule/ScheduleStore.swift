@@ -124,12 +124,14 @@ final class ScheduleStore: ObservableObject {
 
     /// The Day view's layout for the current items and clock.
     var dayLayout: ScheduleDayLayout {
-        ScheduleDayLayout(day: now, now: now, items: shownItems)
+        ScheduleDayLayout(day: now, now: now, items: shownItems,
+                          preferences: planSettings.schedulePreferences(now: now))
     }
 
     /// The Week view's layout: today and the six days after it.
     var weekLayout: ScheduleWeekLayout {
-        ScheduleWeekLayout(now: now, days: Self.dayCount, items: shownItems)
+        ScheduleWeekLayout(now: now, days: Self.dayCount, items: shownItems,
+                           preferences: planSettings.schedulePreferences(now: Calendar.current.startOfDay(for: now)))
     }
 
     var selectedItem: ScheduleItem? {

@@ -103,6 +103,8 @@ public struct ScheduleDayLayout: Hashable, Sendable {
     /// Free time left in the working day after `now`, buffers kept, on the
     /// planner's five-minute grid.
     public var freeMinutes: Int
+    /// When the working day ends, after which an empty rest of the day is over.
+    public var workEnd: Date
 
     public init(day: Date, now: Date, items: [ScheduleItem],
                 preferences: SchedulePreferences = SchedulePreferences(), calendar: Calendar = .current) {
@@ -111,17 +113,15 @@ public struct ScheduleDayLayout: Hashable, Sendable {
         let timed = items
             .filter { !$0.isAllDay && $0.end > $0.start && $0.end > midnight && $0.start < nextMidnight }
             .sorted { ($0.start, $0.end, $0.id) < ($1.start, $1.end, $1.id) }
-        func time(_ minutes: Int) -> Date {
-            calendar.date(byAdding: .minute, value: minutes, to: midnight) ?? midnight
-        }
-        let workStart = time(preferences.workdayStartMinute)
-        let workEnd = time(preferences.workdayEndMinute)
+        let workStart = SchedulePlanner.clockTime(preferences.workdayStartMinute, on: midnight, calendar: calendar)
+        let workEnd = SchedulePlanner.clockTime(preferences.workdayEndMinute, on: midnight, calendar: calendar)
         let first = max(min(timed.first?.start ?? workStart, workStart), midnight)
         let last = min(max(timed.map(\.end).max() ?? workEnd, workEnd), nextMidnight)
         let start = Self.hour(first, roundingUp: false, calendar: calendar)
         var end = Self.hour(last, roundingUp: true, calendar: calendar)
         if end <= start { end = start.addingTimeInterval(3_600) }
         self.day = midnight
+        self.workEnd = workEnd
         self.range = DateInterval(start: start, end: end)
         var hours: [Date] = []
         var mark = start
@@ -147,15 +147,12 @@ public struct ScheduleDayLayout: Hashable, Sendable {
 
     /// What is on at `now`: the item under way (the one ending soonest when
     /// several are), else the free time until the next one.
-    public func status(at now: Date, preferences: SchedulePreferences = SchedulePreferences(),
-                       calendar: Calendar = .current) -> Status {
+    public func status(at now: Date) -> Status {
         let items = placed.map(\.item)
         if let current = items.filter({ $0.start <= now && now < $0.end }).min(by: { $0.end < $1.end }) {
             return .busy(current)
         }
         let next = items.filter { $0.start > now }.min { $0.start < $1.start }
-        let workEnd = calendar.date(byAdding: .minute, value: preferences.workdayEndMinute,
-                                    to: calendar.startOfDay(for: day)) ?? range.end
         if next == nil, now >= workEnd { return .dayOver }
         return .free(until: next?.start, next: next)
     }
@@ -317,9 +314,7 @@ public struct ScheduleWeekLayout: Hashable, Sendable {
         let events = timed.map(\.upcomingEvent)
         let today = first
         days = midnights.map { midnight in
-            func time(_ minutes: Int) -> Date {
-                calendar.date(byAdding: .minute, value: minutes, to: midnight) ?? midnight
-            }
+            func time(_ minutes: Int) -> Date { SchedulePlanner.clockTime(minutes, on: midnight, calendar: calendar) }
             let range = DateInterval(start: time(startMinute), end: max(time(endMinute), time(startMinute)))
             let next = calendar.date(byAdding: .day, value: 1, to: midnight) ?? midnight.addingTimeInterval(86_400)
             let dayItems = timed.filter { $0.end > range.start && $0.start < range.end }

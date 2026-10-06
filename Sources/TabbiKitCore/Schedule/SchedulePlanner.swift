@@ -272,12 +272,9 @@ public enum SchedulePlanner {
         preferences: SchedulePreferences = SchedulePreferences(),
         calendar: Calendar = .current
     ) -> [DateInterval] {
-        let midnight = calendar.startOfDay(for: day)
-        func time(_ minutes: Int) -> Date {
-            calendar.date(byAdding: .minute, value: minutes, to: midnight) ?? midnight
-        }
-        let start = max(floorSlot(time(preferences.workdayStartMinute)), DayPlanner.nextSlot(onOrAfter: now))
-        let end = floorSlot(time(preferences.workdayEndMinute))
+        let start = max(floorSlot(clockTime(preferences.workdayStartMinute, on: day, calendar: calendar)),
+                        DayPlanner.nextSlot(onOrAfter: now))
+        let end = floorSlot(clockTime(preferences.workdayEndMinute, on: day, calendar: calendar))
         guard end > start else { return [] }
         let buffer = TimeInterval(preferences.eventBufferMinutes) * minute
         let busy = events
@@ -424,6 +421,8 @@ public enum SchedulePlanner {
     static func pieceToPlace(want: TimeInterval, left: TimeInterval, usable: [DateInterval],
                              minimum: TimeInterval) -> DateInterval? {
         guard want >= minimum else { return nil }
+        var want = want
+        if left - want > 0, left - want < minimum, left - minimum >= minimum { want = left - minimum }
         if let gap = usable.first(where: { $0.duration >= want }) {
             return DateInterval(start: gap.start, duration: want)
         }
@@ -452,6 +451,18 @@ public enum SchedulePlanner {
     }
 
     // MARK: - Helpers
+
+    /// The wall-clock time `minutes` after midnight on the day containing
+    /// `day` (24:00 is the next midnight), so working hours keep their
+    /// clock times on a daylight saving change.
+    public static func clockTime(_ minutes: Int, on day: Date, calendar: Calendar = .current) -> Date {
+        let midnight = calendar.startOfDay(for: day)
+        guard minutes < 24 * 60 else {
+            return calendar.date(byAdding: .day, value: 1, to: midnight) ?? midnight.addingTimeInterval(86_400)
+        }
+        let minutes = max(minutes, 0)
+        return calendar.date(bySettingHour: minutes / 60, minute: minutes % 60, second: 0, of: midnight) ?? midnight
+    }
 
     /// `intervals` with every interval in `busy` cut out, dropping pieces
     /// shorter than a block.

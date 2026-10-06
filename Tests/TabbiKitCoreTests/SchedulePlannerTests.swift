@@ -43,10 +43,10 @@ final class SchedulePlannerTests: XCTestCase {
         let midnight = calendar.startOfDay(for: plan.day)
         for block in blocks {
             XCTAssertGreaterThanOrEqual(block.start, now, file: file, line: line)
-            XCTAssertGreaterThanOrEqual(block.start, midnight.addingTimeInterval(TimeInterval(preferences.workdayStartMinute * 60)),
-                                        file: file, line: line)
-            XCTAssertLessThanOrEqual(block.end, midnight.addingTimeInterval(TimeInterval(preferences.workdayEndMinute * 60)),
-                                     file: file, line: line)
+            XCTAssertGreaterThanOrEqual(block.start, SchedulePlanner.clockTime(preferences.workdayStartMinute, on: midnight,
+                                                                               calendar: calendar), file: file, line: line)
+            XCTAssertLessThanOrEqual(block.end, SchedulePlanner.clockTime(preferences.workdayEndMinute, on: midnight,
+                                                                          calendar: calendar), file: file, line: line)
             XCTAssertGreaterThanOrEqual(block.end.timeIntervalSince(block.start), 15 * 60, file: file, line: line)
             for event in events where !event.isAllDay {
                 XCTAssertFalse(block.start < event.end.addingTimeInterval(buffer)
@@ -62,6 +62,12 @@ final class SchedulePlannerTests: XCTestCase {
         let events = [event("Standup", at(10), at(10, 30)), event("Holiday", at(0), at(23, 59), allDay: true)]
         let free = SchedulePlanner.freeTime(day: at(0), now: at(7), events: events, calendar: calendar)
         XCTAssertEqual(free, [DateInterval(start: at(9), end: at(9, 50)), DateInterval(start: at(10, 40), end: at(18))])
+    }
+
+    func testFreeTimeKeepsClockHoursOnADaylightSavingChange() {
+        // Clocks go back at 2:00 on 2026-11-01 in Los Angeles.
+        let free = SchedulePlanner.freeTime(day: at(0, day: 27), now: at(7, day: 27), events: [], calendar: calendar)
+        XCTAssertEqual(free, [DateInterval(start: at(9, day: 27), end: at(18, day: 27))])
     }
 
     func testFreeTimeStartsOnTheNextSlotAfterNow() {
@@ -201,6 +207,14 @@ final class SchedulePlannerTests: XCTestCase {
         XCTAssertEqual(result.blocks.map { Int($0.block.end.timeIntervalSince($0.block.start) / 60) }, [90, 60])
         XCTAssertEqual(result.blocks.map(\.part), [1, 2])
         XCTAssertEqual(result.blocks.map(\.parts), [2, 2])
+    }
+
+    func testWorkJustOverTheLongestBlockSplitsWithoutASliver() {
+        for (minutes, lengths) in [(95, [80, 15]), (100, [85, 15])] {
+            let result = plan(now: at(9), work: [task("Thesis", minutes)])
+            XCTAssertEqual(result.blocks.map { Int($0.block.end.timeIntervalSince($0.block.start) / 60) }, lengths)
+            XCTAssertTrue(result.unplaced.isEmpty, "\(minutes) min left some out")
+        }
     }
 
     func testWorkFitsWholeInALaterGapBeforeItSplits() {

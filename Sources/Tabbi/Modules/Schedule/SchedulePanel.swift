@@ -234,8 +234,7 @@ private struct ScheduleWeek: View {
     }
 
     private static func hourLabel(_ minute: Int) -> String {
-        let date = Calendar.current.date(byAdding: .minute, value: minute,
-                                         to: Calendar.current.startOfDay(for: Date())) ?? Date()
+        let date = SchedulePlanner.clockTime(minute, on: Date())
         return date.formatted(.dateTime.hour())
     }
 }
