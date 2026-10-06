@@ -367,6 +367,34 @@ final class PetAnimationTests: XCTestCase {
         }
     }
 
+    func testTailSwishSweepsTheTailOutTwiceAndLeavesTheRestOfThePetStill() throws {
+        for breed in PetBreed.allCases {
+            let clip = PetComposer.clip(.tailSwish, for: breed, accessories: [.scarf])
+            XCTAssertFalse(clip.loops)
+            let sitting = PetComposer.sitting(breed, accessories: [.scarf])
+            XCTAssertEqual(clip.frames.first?.canvas, sitting, "starts sitting: \(breed)")
+            XCTAssertEqual(clip.frames.last?.canvas, sitting, "settles back: \(breed)")
+            let out = PetComposer.sitting(breed, pose: PetPose(tailSwing: 2), accessories: [.scarf])
+            let restRight = try XCTUnwrap(sitting.opaqueBounds).maxX
+            XCTAssertGreaterThan(try XCTUnwrap(out.opaqueBounds).maxX, restRight, "the tail reaches out: \(breed)")
+            // Two sweeps: runs of frames with the tail out, with a return to
+            // sitting between them.
+            let canvases = clip.frames.map(\.canvas)
+            let sweeps = zip(canvases, canvases.dropFirst()).filter { $0 == sitting && $1 != sitting }.count
+            XCTAssertEqual(sweeps, 2, "\(breed)")
+            XCTAssertTrue(canvases.contains(out), "\(breed)")
+            for canvas in canvases {
+                // Only the tail moves: the head, face, paws and scarf hold still.
+                for y in 0...baseline {
+                    for x in 0..<16 { XCTAssertEqual(canvas[x, y], sitting[x, y], "\(breed) at \(x),\(y)") }
+                }
+                XCTAssertEqual(try XCTUnwrap(canvas.opaqueBounds).maxY, baseline, "\(breed)")
+                let edge = (0...baseline).map { canvas[baseline, $0] }
+                XCTAssertTrue(edge.allSatisfy { $0 == nil || $0 == .outline }, "nothing clipped: \(breed)")
+            }
+        }
+    }
+
     func testCanvasShiftAndFlip() {
         var canvas = PetCanvas(width: 3, height: 3)
         canvas[0, 0] = .eye

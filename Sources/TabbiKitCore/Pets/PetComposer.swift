@@ -63,10 +63,23 @@ public enum PetComposer {
         switch stance {
         case .sitting:
             // A gesturing pet lifts its left front paw off the floor.
-            let body = pose.gesture == nil ? layout.body : PawArt.liftingLeftPaw(layout.body)
+            var body = pose.gesture == nil ? layout.body : PawArt.liftingLeftPaw(layout.body)
+            let swing = max(pose.tailSwing, 0)
+            if swing > 0, let column = layout.tailColumn {
+                // A tail drawn into the body is cut out and bent on its own.
+                let (rest, tail) = TailArt.split(body, at: column)
+                body = rest
+                let room = frameSize - 1 - layout.bodyX
+                canvas.stamp(TailArt.swung(tail, by: swing, room: room), x: layout.bodyX, y: layout.bodyY, pattern: pattern)
+            }
             canvas.stamp(body, x: layout.bodyX, y: layout.bodyY, pattern: pattern)
             if breed.hasTail, let tail = layout.tail {
-                canvas.stamp(tail.grid, x: tail.x, y: tail.y, pattern: pattern)
+                let room = frameSize - 1 - tail.x
+                canvas.stamp(TailArt.swung(tail.grid, by: swing, room: room), x: tail.x, y: tail.y, pattern: pattern)
+            } else if !breed.hasTail, swing > 0 {
+                // No tail to swish: a stub pops out past the haunch and bobs.
+                let haunch = layout.bodyX + layout.body.width - 1
+                canvas.stamp(TailArt.nub, x: haunch, y: layout.bodyY + 7 - swing, pattern: pattern)
             }
         case .hanging:
             // A hanging pet's chin always rests on the same row, whatever the head.
@@ -321,6 +334,9 @@ public enum PetComposer {
         let bodyX: Int
         let bodyY: Int
         let tail: (grid: SpriteGrid, x: Int, y: Int)?
+        /// First body column of a tail drawn into the sitting body, so the
+        /// tail swish can bend it on its own.
+        let tailColumn: Int?
         let head: SpriteGrid
         let headX: Int
         let headY: Int
@@ -337,7 +353,7 @@ public enum PetComposer {
             switch shape {
             case .cat, .roundCat, .sphynxCat:
                 family = .cat
-                (bodyX, bodyY, tail) = (6, 20, nil)
+                (bodyX, bodyY, tail, tailColumn) = (6, 20, nil, 17)
                 (body, head, face) = switch shape {
                 case .roundCat: (CatArt.bodyRound, CatArt.headRound, CatArt.faceRound)
                 case .sphynxCat: (CatArt.bodySphynx, CatArt.headSphynx, CatArt.faceSphynx)
@@ -346,11 +362,12 @@ public enum PetComposer {
                 (headX, headY, faceRow, eyeRow, skullTop) = (6, 7, 0, 7, 3)
             case .longDog:
                 family = .longDog
-                (body, bodyX, bodyY, tail) = (DogArt.bodyLong, 6, 21, nil)
+                (body, bodyX, bodyY, tail, tailColumn) = (DogArt.bodyLong, 6, 21, nil, 23)
                 (head, headX, headY, face) = (DogArt.headLong, 2, 8, DogArt.faceLongSnout)
                 (faceRow, eyeRow, skullTop) = (4, 4, 1)
             case .floppyDog, .fluffyDog, .batEaredDog, .pointyEaredDog, .poodleDog, .shihTzuDog:
                 family = .dog
+                tailColumn = nil
                 (body, bodyX, bodyY) = switch shape {
                 case .poodleDog: (DogArt.bodyPoodle, 6, 20)
                 case .shihTzuDog: (DogArt.bodyShihTzu, 6, 20)

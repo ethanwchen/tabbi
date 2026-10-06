@@ -3,7 +3,7 @@
 A study-buddy cat or dog lives in the notch.
 This document explains how pet sprites are drawn, composed, and rendered, and how to add a breed.
 
-Status: the sprite format, palettes, pattern zones, renderer, all nine cat breeds, all eight dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate, yawn, hop, typing, coffee, wave, groom), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
+Status: the sprite format, palettes, pattern zones, renderer, all nine cat breeds, all eight dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate, yawn, hop, typing, coffee, wave, groom, tail swish), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
 
 ![All cat breeds sitting, on black at 4x](images/cats-sitting.png)
 
@@ -164,7 +164,7 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 ## Animations
 
 `PetComposer.clip(_:for:outfit:accessories:)` builds a `PetClip`: a list of `PetFrame`s, each with its own `duration` in seconds.
-`clip.frame(at: elapsed)` picks the frame to show; looping clips (idle, sit, sleep, walk, typing, coffee) wrap around, one-shot clips (blink, stretch, peek, alert, celebrate, yawn, hop, wave, groom) hold their last frame until `PetAnimator.advance(to:)` sees the clip's duration has passed and moves the pet on.
+`clip.frame(at: elapsed)` picks the frame to show; looping clips (idle, sit, sleep, walk, typing, coffee) wrap around, one-shot clips (blink, stretch, peek, alert, celebrate, yawn, hop, wave, groom, tailSwish) hold their last frame until `PetAnimator.advance(to:)` sees the clip's duration has passed and moves the pet on.
 
 Front-facing animations are not drawn frame by frame.
 Each frame is the sitting composition in a `PetPose`, so every breed and costume animates without extra art:
@@ -176,6 +176,7 @@ Each frame is the sitting composition in a `PetPose`, so every breed and costume
 | `headDrop` | Sinks the head (and its hat and glasses) into the shoulders, for breathing and dozing; -1 tips it back for a yawn |
 | `prop` | Something held in front of the pet: `.laptop(tap:)` (a paw lifted to type, -1 left, 1 right, 0 resting) or `.mug(raise:)` (0 in the lap, 1 on the way up, 2 at the mouth) |
 | `gesture` | The left front paw lifted off the floor: `.wave(swing:)` (0 leans out from the head, 1 swings back in beside the cheek) or `.groom(reach:)` (0 just under the chin, 1 under the tongue for a lick, 2 up over the left cheek to wash) |
+| `tailSwing` | Pixels the tip of the tail leans out to the side, 0 at rest; tailless breeds pop out a stub by the haunch instead, raised `tailSwing` px |
 | `lift` | Raises the whole pet off the baseline, for hops |
 
 Eye states live in `EffectArt` as 4x3 grids centered on the 2x3 open eye.
@@ -192,6 +193,12 @@ Gestures come from `PawArt`: a forearm in plain fur ending in a paw-zone paw, ou
 A gesturing pet lifts its left front paw off the floor (`PawArt.liftingLeftPaw`): the paw shape touching the floor furthest left is found from the body art, its floor run is cleared (a Poodle's cuff with it), paw pixels tucked against fur turn into a fold of shaded fur, and a leg standing free (the dachshund's) goes entirely.
 The waving arm grows from the left shoulder (3 px in and 4 px down the body) and holds the paw beside the head, clear of the eyes.
 The grooming leg rises straight from just above the floor to the mouth, found like an open mouth, so it lines up on every head.
+
+A swinging tail is bent from its base by `TailArt`, so every breed keeps its own tail (the Sphynx's whip, the British Shorthair's rings, the Poodle's pom, the Shih Tzu's plume).
+Dogs draw the tail as its own grid; cats and the dachshund draw it into the sitting body, so the composer cuts it out at the body's tail column first (`SitLayout.tailColumn`: 17 for cats, 23 for the dachshund).
+The base row stays put and each row above leans a little further, never more than a pixel past the row below, so the tail stays one connected stroke.
+The swing is cut down to the room left in the frame, which keeps the dachshund's tail, near the right edge, to a 1 px flick.
+The corgi and French bulldog have no tail, so `TailArt.nub` pops out past the haunch and bobs instead.
 
 Open mouths are found from the art too: `EffectArt.mouth(_:in:)` centers a 4-wide mouth on the nose's top row, on the first row below the nose, so it covers any face's own mouth lines or tongue.
 Its corners are the muzzle zone, which hides what was drawn there.
@@ -212,6 +219,7 @@ When the row under the nose carries nose-colored mouth corners (most dogs), a ro
 | coffee | A mug in the lap with steam curling (four 450 ms frames), raised to the mouth for a 900 ms sip with closed eyes, lowered with a happy "ahh"; about 3.9 s, loops for breaks |
 | wave | The left paw goes up beside the head and swings out and back three times with happy eyes (220 ms out, 180 ms in), then comes down; about 1.7 s |
 | groom | The left leg lifts to the chin, three licks (the paw rises under an open mouth for 180 ms, drops for 120 ms) with the eyes shut, two strokes over the left cheek with the head bent into them, then a contented look; about 2.3 s |
+| tailSwish | The tail sweeps out to the side and back twice, the first sweep slower (400 ms held at the far end) and the second quicker, everything else still; about 2.1 s |
 | walk | Four 150 ms steps of a trot, side-on (see below) |
 | stretch | A side-on play bow: down in three steps, a held bow with happy eyes and a tail wag, then back up (see below) |
 
@@ -220,7 +228,7 @@ The peek legs come from `EffectArt.hangingLeg`, drawn behind the head with the b
 
 ![Every animation frame for the orange tabby](images/animations-cat.png)
 
-`PetGallery` also writes `yawn.png`, `hop.png`, `typing.png`, `coffee.png`, `wave.png` and `groom.png`, every breed through every frame of each move, one row per breed:
+`PetGallery` also writes `yawn.png`, `hop.png`, `typing.png`, `coffee.png`, `wave.png`, `groom.png` and `tailSwish.png`, every breed through every frame of each move, one row per breed:
 
 ![The yawn for every breed](images/yawn.png)
 
@@ -233,6 +241,8 @@ The peek legs come from `EffectArt.hangingLeg`, drawn behind the head with the b
 ![Waving for every breed](images/wave.png)
 
 ![Grooming for every breed](images/groom.png)
+
+![The tail swish for every breed](images/tailSwish.png)
 
 ### Walking
 

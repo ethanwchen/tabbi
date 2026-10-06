@@ -59,6 +59,9 @@ public struct PetPose: Hashable, Sendable {
     public var mouth: Mouth
     public var prop: Prop?
     public var gesture: Gesture?
+    /// Pixels the tip of a sitting pet's tail leans out to the side (0 at
+    /// rest), for the tail swish. Tailless breeds wiggle a stub instead.
+    public var tailSwing: Int
     /// Pixels the head sinks into the shoulders (breathing, dozing);
     /// negative tips it back (a yawn).
     public var headDrop: Int
@@ -67,12 +70,13 @@ public struct PetPose: Hashable, Sendable {
 
     public init(
         eyes: Eyes = .open, mouth: Mouth = .closed, prop: Prop? = nil, gesture: Gesture? = nil,
-        headDrop: Int = 0, lift: Int = 0
+        tailSwing: Int = 0, headDrop: Int = 0, lift: Int = 0
     ) {
         self.eyes = eyes
         self.mouth = mouth
         self.prop = prop
         self.gesture = gesture
+        self.tailSwing = tailSwing
         self.headDrop = headDrop
         self.lift = lift
     }
@@ -121,12 +125,15 @@ public enum PetAnimation: String, CaseIterable, Codable, Sendable {
     /// Grooming: a few licks of a raised paw, then a wipe over the cheek,
     /// eyes closed in concentration.
     case groom
+    /// A lazy tail swish while sitting: the tail sweeps out to the side and
+    /// back twice. Tailless breeds wiggle a stub by the haunch.
+    case tailSwish
 
     /// Whether the clip repeats forever or stops on its last frame.
     public var loops: Bool {
         switch self {
         case .idle, .sit, .sleep, .walk, .typing, .coffee: true
-        case .blink, .stretch, .peekIn, .peekOut, .alert, .celebrate, .yawn, .hop, .wave, .groom: false
+        case .blink, .stretch, .peekIn, .peekOut, .alert, .celebrate, .yawn, .hop, .wave, .groom, .tailSwish: false
         }
     }
 }
@@ -402,6 +409,15 @@ extension PetComposer {
                 (PetPose(), 0.2),
             ]
             frames = steps.map { frame($0.0, $0.1) }
+
+        case .tailSwish:
+            // Two lazy sweeps out and back, the first slower, holding at the
+            // far end the way a content cat's tail hangs before it returns.
+            let steps: [(Int, TimeInterval)] = [
+                (0, 0.2), (1, 0.14), (2, 0.4), (1, 0.14), (0, 0.3),
+                (1, 0.12), (2, 0.3), (1, 0.12), (0, 0.35),
+            ]
+            frames = steps.map { frame(PetPose(tailSwing: $0.0), $0.1) }
 
         case .peekIn, .peekOut:
             // Dangling from the notch by the front paws: the head lowers into
