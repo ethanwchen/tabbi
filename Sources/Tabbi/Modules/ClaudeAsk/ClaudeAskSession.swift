@@ -121,6 +121,7 @@ final class ClaudeAskSession: ObservableObject {
         generation += 1
         let generation = generation
         let sessionID = conversation.sessionID
+        let outgoing = conversation.outgoingPrompt(prompt)
         let images = question.attachments.compactMap { attachmentStore.data(for: $0, in: conversation.chatID) }
 
         // Never send a question without a screenshot its thumbnail promised.
@@ -152,7 +153,7 @@ final class ClaudeAskSession: ObservableObject {
                 // so there is a single path.
                 let events = ClaudeCLI.stream(
                     executable: executable,
-                    inputLine: try ClaudeAskRequest.inputLine(prompt: prompt, images: images),
+                    inputLine: try ClaudeAskRequest.inputLine(prompt: outgoing, images: images),
                     extraArguments: ClaudeAskRequest.extraArguments(resuming: sessionID)
                 )
                 for try await event in events {
@@ -362,7 +363,8 @@ final class ClaudeAskSession: ObservableObject {
         let wasStreaming = conversation.isStreaming
         change(&conversation)
         guard wasStreaming && !conversation.isStreaming else { return }
-        // The CLI deletes old sessions; such a chat goes on as a new one.
+        // The CLI deletes old sessions; such a chat goes on as a new one,
+        // seeded with what was said so far.
         if let question = conversation.takeQuestionForLostSession() {
             send(question)
         } else {
