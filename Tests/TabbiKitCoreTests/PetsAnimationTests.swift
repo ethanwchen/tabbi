@@ -395,6 +395,35 @@ final class PetAnimationTests: XCTestCase {
         }
     }
 
+    func testNapCurlsUpLowOnTheFloorBreathingWithTheTailWrappedInFront() throws {
+        for breed in PetBreed.allCases {
+            let clip = PetComposer.clip(.nap, for: breed, accessories: [.graduationCap, .scarf])
+            XCTAssertTrue(clip.loops, "naps until woken: \(breed)")
+            let sleeping = PetComposer.clip(.sleep, for: breed, accessories: [.graduationCap, .scarf])
+            let sittingTop = try XCTUnwrap(sleeping.frames[0].canvas.opaqueBounds).minY
+            let canvases = clip.frames.map(\.canvas)
+            for canvas in canvases {
+                let bounds = try XCTUnwrap(canvas.opaqueBounds)
+                XCTAssertEqual(bounds.maxY, baseline, "lies on the floor: \(breed)")
+                XCTAssertGreaterThan(bounds.minY, 0, "the cap is not clipped: \(breed)")
+                XCTAssertFalse(canvas.pixels.contains(.eyeLight), "eyes shut: \(breed)")
+                let edge = (0...baseline).map { canvas[baseline, $0] }
+                XCTAssertTrue(edge.allSatisfy { $0 == nil || $0 == .outline || $0 == .effect }, "\(breed)")
+            }
+            // Lower than the sitting doze, so the two sleeps look different.
+            let pet = canvases[0].pixels.enumerated().filter { $0.element != nil && $0.element != .effect }
+            let napTop = try XCTUnwrap(pet.map { $0.offset / PetComposer.frameSize }.min())
+            XCTAssertGreaterThan(napTop, sittingTop + 2, "\(breed)")
+            // The back rises on a breath, and "z"s drift up.
+            XCTAssertGreaterThan(Set(canvases.map { $0.removingEffects() }).count, 1, "breathes: \(breed)")
+            XCTAssertTrue(canvases.contains { $0.pixels.contains(.effect) }, "\(breed)")
+            if breed.hasTail {
+                // The tail runs along the floor right out in front, under the chin.
+                XCTAssertNotNil(canvases[0][4, baseline - 1], "tail tip: \(breed)")
+            }
+        }
+    }
+
     func testCanvasShiftAndFlip() {
         var canvas = PetCanvas(width: 3, height: 3)
         canvas[0, 0] = .eye
@@ -411,5 +440,12 @@ private extension PetCanvas {
     /// The highest opaque row within `columns`, or the canvas height if empty.
     func opaqueTop(inColumns columns: Range<Int>) -> Int {
         (0..<height).first { y in columns.contains { self[$0, y] != nil } } ?? height
+    }
+
+    /// The pet alone, with floating effects ("z"s) cleared.
+    func removingEffects() -> PetCanvas {
+        var copy = self
+        for y in 0..<height { for x in 0..<width where copy[x, y] == .effect { copy[x, y] = nil } }
+        return copy
     }
 }

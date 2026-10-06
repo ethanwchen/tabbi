@@ -45,4 +45,23 @@ enum TailArt {
         tt
         BB
         """)
+
+    /// A tail wrapped round a curled-up pet, `length` wide: it comes from
+    /// under the rump on the right and runs along the floor in front of the
+    /// body, its tip curling up on the left. It has no outline of its own;
+    /// the composer outlines it on its own layer so it stands apart from
+    /// fur of the same color behind it.
+    static func wrapped(length: Int) -> SpriteGrid {
+        let length = max(length, 8)
+        var grid = SpriteGrid(width: length, height: 3)
+        for x in 0..<length {
+            // Faint rings every few pixels; plain fur on unstriped breeds.
+            let fur: SpriteCell = x > 3 && x % 4 == 1 ? .zone(.stripes) : .role(.furBase)
+            if x >= 3, x < length - 2 { grid[x, 1] = fur }
+            if x >= 2 { grid[x, 2] = x < 3 ? .zone(.tailTip) : fur }
+        }
+        // The tip curls up in front of the chin.
+        for (x, y) in [(1, 0), (2, 0), (0, 1), (1, 1), (2, 1), (1, 2)] { grid[x, y] = .zone(.tailTip) }
+        return grid
+    }
 }

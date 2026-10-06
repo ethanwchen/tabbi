@@ -45,6 +45,10 @@ public enum PetComposer {
         /// pixels while the front paws slide forward and the rump stays up.
         /// `wag` picks the tail position.
         case stretching(depth: Int, wag: Int)
+        /// Curled up asleep on the floor: the walking torso lying down with
+        /// no legs, the head resting at its front and the tail wrapped round
+        /// under the chin. `breath` 1 raises the back a pixel.
+        case curled(breath: Int)
     }
 
     static func compose(
@@ -132,12 +136,36 @@ public enum PetComposer {
             bodyItem = { _ in nil }
             headX = walk.headX
             headY = walk.chinRow + 1 - layout.head.height + depth + pose.headDrop
+        case .curled(let breath):
+            let walk = WalkLayout(breed.bodyShape, layout.family)
+            // The torso drops onto the floor where the legs were; on a
+            // breath the middle of the back swells up a pixel.
+            let torso = walkingTorso(breed, walk, outfit: outfit, accessories: accessories, wag: nil)
+            let floor = walk.legHeight
+            canvas.lay(torso) { _ in floor }
+            if breath > 0 {
+                let back = (walk.torsoX + 4)...(walk.torsoX + walk.torso.width - 4)
+                canvas.lay(torso) { x in back.contains(x) ? floor - 1 : floor }
+            }
+            bodyItem = { _ in nil }
+            headX = walk.headX
+            headY = curledChinRow + 1 - layout.head.height + pose.headDrop
         }
         canvas.stamp(layout.head, x: headX, y: headY, pattern: pattern)
         let face = EffectArt.face(layout.face, eyeRow: layout.eyeRow - layout.faceRow, eyes: pose.eyes)
         canvas.stamp(face, x: headX, y: headY + layout.faceRow, pattern: pattern)
         if let (grid, origin) = EffectArt.mouth(pose.mouth, in: layout.face) {
             canvas.stamp(grid, x: headX + origin.x, y: headY + layout.faceRow + origin.y, pattern: pattern)
+        }
+        if case .curled = stance, breed.hasTail {
+            // The tail comes round from the rump and runs along the floor
+            // in front, under the chin, tip curling up by the cheek.
+            let walk = WalkLayout(breed.bodyShape, layout.family)
+            let left = headX + 2
+            let tail = TailArt.wrapped(length: walk.torsoX + walk.torso.width - left)
+            var layer = PetCanvas(width: frameSize, height: frameSize)
+            layer.stamp(tail, x: left, y: frameSize - 1 - tail.height, pattern: pattern)
+            canvas.lay(layer.outlined()) { _ in 0 }
         }
 
         func stampFace(_ item: CostumeArt.FaceItem) {
@@ -248,11 +276,11 @@ public enum PetComposer {
     /// canvas so a stance can bend it before laying it over the legs. The
     /// torso is behind the head, so torso costumes go on here, before it.
     private static func walkingTorso(
-        _ breed: PetBreed, _ walk: WalkLayout, outfit: PetOutfit, accessories: [PetAccessory], wag: Int
+        _ breed: PetBreed, _ walk: WalkLayout, outfit: PetOutfit, accessories: [PetAccessory], wag: Int?
     ) -> PetCanvas {
         var canvas = PetCanvas(width: frameSize, height: frameSize)
         canvas.stamp(walk.torso, x: walk.torsoX, y: walk.torsoY, pattern: breed.pattern)
-        if breed.hasTail {
+        if breed.hasTail, let wag {
             let tail = walk.tails[wag % walk.tails.count]
             canvas.stamp(tail, x: walk.tailX, y: walk.torsoY - tail.height, pattern: breed.pattern)
         }

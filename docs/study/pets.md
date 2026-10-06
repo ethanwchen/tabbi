@@ -3,7 +3,7 @@
 A study-buddy cat or dog lives in the notch.
 This document explains how pet sprites are drawn, composed, and rendered, and how to add a breed.
 
-Status: the sprite format, palettes, pattern zones, renderer, all nine cat breeds, all eight dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate, yawn, hop, typing, coffee, wave, groom, tail swish), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
+Status: the sprite format, palettes, pattern zones, renderer, all nine cat breeds, all eight dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate, yawn, hop, typing, coffee, wave, groom, tail swish, nap), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
 
 ![All cat breeds sitting, on black at 4x](images/cats-sitting.png)
 
@@ -164,7 +164,7 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 ## Animations
 
 `PetComposer.clip(_:for:outfit:accessories:)` builds a `PetClip`: a list of `PetFrame`s, each with its own `duration` in seconds.
-`clip.frame(at: elapsed)` picks the frame to show; looping clips (idle, sit, sleep, walk, typing, coffee) wrap around, one-shot clips (blink, stretch, peek, alert, celebrate, yawn, hop, wave, groom, tailSwish) hold their last frame until `PetAnimator.advance(to:)` sees the clip's duration has passed and moves the pet on.
+`clip.frame(at: elapsed)` picks the frame to show; looping clips (idle, sit, sleep, walk, typing, coffee, nap) wrap around, one-shot clips (blink, stretch, peek, alert, celebrate, yawn, hop, wave, groom, tailSwish) hold their last frame until `PetAnimator.advance(to:)` sees the clip's duration has passed and moves the pet on.
 
 Front-facing animations are not drawn frame by frame.
 Each frame is the sitting composition in a `PetPose`, so every breed and costume animates without extra art:
@@ -220,6 +220,7 @@ When the row under the nose carries nose-colored mouth corners (most dogs), a ro
 | wave | The left paw goes up beside the head and swings out and back three times with happy eyes (220 ms out, 180 ms in), then comes down; about 1.7 s |
 | groom | The left leg lifts to the chin, three licks (the paw rises under an open mouth for 180 ms, drops for 120 ms) with the eyes shut, two strokes over the left cheek with the head bent into them, then a contented look; about 2.3 s |
 | tailSwish | The tail sweeps out to the side and back twice, the first sweep slower (400 ms held at the far end) and the second quicker, everything else still; about 2.1 s |
+| nap | A deeper sleep than `sleep`, curled up on the floor (see below): sleepy eyes, the back swelling a pixel on each slow breath, and "z"s drifting up like `sleep`; four 1 s frames, loops |
 | walk | Four 150 ms steps of a trot, side-on (see below) |
 | stretch | A side-on play bow: down in three steps, a held bow with happy eyes and a tail wag, then back up (see below) |
 
@@ -228,7 +229,7 @@ The peek legs come from `EffectArt.hangingLeg`, drawn behind the head with the b
 
 ![Every animation frame for the orange tabby](images/animations-cat.png)
 
-`PetGallery` also writes `yawn.png`, `hop.png`, `typing.png`, `coffee.png`, `wave.png`, `groom.png` and `tailSwish.png`, every breed through every frame of each move, one row per breed:
+`PetGallery` also writes `yawn.png`, `hop.png`, `typing.png`, `coffee.png`, `wave.png`, `groom.png`, `tailSwish.png` and `nap.png`, every breed through every frame of each move, one row per breed:
 
 ![The yawn for every breed](images/yawn.png)
 
@@ -244,9 +245,11 @@ The peek legs come from `EffectArt.hangingLeg`, drawn behind the head with the b
 
 ![The tail swish for every breed](images/tailSwish.png)
 
+![The curled-up nap for every breed](images/nap.png)
+
 ### Walking
 
-The walk and the stretch are the two animations that are not sitting poses.
+The walk, the stretch and the nap are the animations that are not sitting poses.
 It is drawn chibi-style: the usual front-facing head sits in front of a side-on torso, so the face, glasses, and hats need no walking art and stay readable at notch size.
 Pets walk toward the left; mirror the frames to walk right.
 
@@ -263,6 +266,11 @@ Pets walk toward the left; mirror the frames to walk right.
   On contact steps the torso and head sink one pixel onto the bent legs, which gives the walk its bounce.
 
 Torso costumes are stamped right after the torso, before the head, because the head is in front of the body when walking.
+
+The nap reuses the walking pieces too: the torso (with its torso costumes, but no upright tail) lies on the floor where the legs would be, and the head rests at its front with the chin on row 27.
+On a breath the middle of the back is laid a pixel higher, so it swells without leaving a gap under the belly.
+`TailArt.wrapped(length:)` draws the tail coming round from under the rump and running along the floor in front of the body, its tip curling up before the chin; it is outlined on its own layer, so it stays apart from fur of the same color behind it.
+Tailless breeds (corgi, French bulldog) lie with their chest showing instead.
 `PetComposer.WalkLayout` holds the per-family positions (torso origin, hips, tail, and the chin row the head rests on).
 
 ![The walk cycle for every breed and four looks](images/walk.png)

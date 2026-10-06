@@ -128,11 +128,15 @@ public enum PetAnimation: String, CaseIterable, Codable, Sendable {
     /// A lazy tail swish while sitting: the tail sweeps out to the side and
     /// back twice. Tailless breeds wiggle a stub by the haunch.
     case tailSwish
+    /// A deep nap curled up on the floor: lying down with the head resting
+    /// on the tail wrapped round in front, the back rising with each slow
+    /// breath while "z"s drift up. Loops; `sleep` is the sitting doze.
+    case nap
 
     /// Whether the clip repeats forever or stops on its last frame.
     public var loops: Bool {
         switch self {
-        case .idle, .sit, .sleep, .walk, .typing, .coffee: true
+        case .idle, .sit, .sleep, .walk, .typing, .coffee, .nap: true
         case .blink, .stretch, .peekIn, .peekOut, .alert, .celebrate, .yawn, .hop, .wave, .groom, .tailSwish: false
         }
     }
@@ -260,6 +264,26 @@ extension PetComposer {
                 PetFrame(canvas: dozing.canvas.adding(EffectArt.zSmall, at: small)
                     .adding(EffectArt.zLarge, at: large), duration: 0.8),
                 PetFrame(canvas: breathing.canvas.adding(EffectArt.zLarge, at: large), duration: 0.8),
+            ]
+
+        case .nap:
+            // Slower than the sitting doze: a deep breath every two seconds,
+            // with a "z" rising from the ear and drifting off like `sleep`.
+            func curled(_ breath: Int) -> Composed {
+                compose(breed, pose: PetPose(eyes: .sleepy), outfit: outfit, accessories: accessories,
+                        stance: .curled(breath: breath))
+            }
+            let resting = curled(0)
+            let breathing = curled(1)
+            let top = resting.headTopRight
+            let small = PetPoint(x: top.x + 3, y: top.y - 2)
+            let large = PetPoint(x: frameSize - 4, y: top.y - 9)
+            frames = [
+                PetFrame(canvas: resting.canvas, duration: 1),
+                PetFrame(canvas: breathing.canvas.adding(EffectArt.zSmall, at: small), duration: 1),
+                PetFrame(canvas: resting.canvas.adding(EffectArt.zSmall, at: small)
+                    .adding(EffectArt.zLarge, at: large), duration: 1),
+                PetFrame(canvas: breathing.canvas.adding(EffectArt.zLarge, at: large), duration: 1),
             ]
 
         case .walk:
@@ -438,6 +462,9 @@ extension PetComposer {
 extension PetComposer {
     /// Where the chin rests once a peeking pet is fully out of the notch.
     static let hangingChinRow = 20
+    /// Where the chin rests on a pet curled up asleep: on the tail that
+    /// wraps along the floor in front of it.
+    static let curledChinRow = 27
 }
 
 extension PetCanvas {
