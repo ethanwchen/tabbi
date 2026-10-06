@@ -170,7 +170,8 @@ private struct StudyMethodCard: View {
                         HStack(spacing: Theme.Spacing.xs) {
                             Text(methodInfo.name)
                                 .foregroundStyle(Theme.Palette.primaryText)
-                            if !session.method.nameIsRhythm {
+                            // The Timer's length row already shows its length.
+                            if !session.method.nameIsRhythm, session.method.kind != .timer {
                                 Text(session.method.rhythmLabel)
                                     .foregroundStyle(accent)
                                     .monospacedDigit()
