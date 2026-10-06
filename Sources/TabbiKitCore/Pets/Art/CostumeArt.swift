@@ -778,7 +778,7 @@ extension CostumeArt {
         ..FFFFFFFFFFFFFFFF..
         ..FFUFUFUFFUFUFUFF..
         ..FF............FF..
-        ..FF............FF..
-        ..FF............FF..
+        ..F..............F..
+        ..F..............F..
         """), sitRow: 5)
 }
