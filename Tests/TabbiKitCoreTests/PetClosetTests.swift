@@ -6,34 +6,34 @@ final class PetClosetTests: XCTestCase {
         PetCloset(save: PetSave(profile: profile, ledger: PetPointsLedger(earned: earned, purchased: purchased)))
     }
 
-    func testWardrobeListsEveryPaidItemCheapestFirst() {
+    func testWardrobeListsEveryItemCheapestFirst() {
         XCTAssertFalse(PetCloset.wardrobe.contains(.outfit(.none)))
         XCTAssertEqual(PetCloset.wardrobe.count, PetItem.allCases.count - 1)
         XCTAssertEqual(PetCloset.wardrobe.map(\.cost), PetCloset.wardrobe.map(\.cost).sorted())
     }
 
     func testItemStatesFollowOwnershipWearingAndBalance() {
-        var closet = closet(earned: 100, purchased: [.accessory(.scarf)])
-        XCTAssertEqual(closet.state(of: .accessory(.scarf)), .owned)
-        closet.tap(.accessory(.scarf))
-        XCTAssertEqual(closet.state(of: .accessory(.scarf)), .wearing)
+        var closet = closet(earned: 100, purchased: [.accessory(.beanie)])
+        XCTAssertEqual(closet.state(of: .accessory(.beanie)), .owned)
+        closet.tap(.accessory(.beanie))
+        XCTAssertEqual(closet.state(of: .accessory(.beanie)), .wearing)
         XCTAssertEqual(closet.state(of: .outfit(.scrubs)), .affordable)
-        XCTAssertEqual(closet.state(of: .accessory(.stethoscope)), .locked(missing: 20))
+        XCTAssertEqual(closet.state(of: .accessory(.stethoscope)), .locked(missing: 30))
     }
 
     func testTappingToggleBuysAndRefuses() {
         var closet = closet(earned: 100)
         XCTAssertEqual(closet.tap(.accessory(.beanie)), .boughtAndWore)
-        XCTAssertEqual(closet.balance, 55)
+        XCTAssertEqual(closet.balance, 70)
         XCTAssertEqual(closet.profile.accessories, [.beanie])
 
         XCTAssertEqual(closet.tap(.accessory(.beanie)), .tookOff)
         XCTAssertEqual(closet.profile.accessories, [])
         XCTAssertEqual(closet.tap(.accessory(.beanie)), .wore)
-        XCTAssertEqual(closet.balance, 55, "wearing an owned item is free")
+        XCTAssertEqual(closet.balance, 70, "wearing an owned item is free")
 
         let before = closet.save
-        XCTAssertEqual(closet.tap(.outfit(.whiteCoat)), .needsPoints(missing: 245))
+        XCTAssertEqual(closet.tap(.outfit(.whiteCoat)), .needsPoints(missing: 250))
         XCTAssertEqual(closet.save, before, "a refused tap changes nothing")
     }
 
@@ -135,7 +135,7 @@ final class PetClosetTests: XCTestCase {
     func testNextUnlockReportsTheGap() throws {
         var closet = closet(earned: 10)
         let next = try XCTUnwrap(closet.nextUnlock)
-        XCTAssertEqual(next.item, .accessory(.scarf))
+        XCTAssertEqual(next.item, .accessory(.beanie))
         XCTAssertEqual(next.missing, 20)
         closet.recordStudy(minutes: 25, completed: true)
         XCTAssertEqual(closet.nextUnlock?.missing, 0)
@@ -156,5 +156,48 @@ final class PetClosetTests: XCTestCase {
         XCTAssertTrue(states.contains(.owned))
         XCTAssertTrue(states.contains(.affordable))
         XCTAssertTrue(states.contains { if case .locked = $0 { true } else { false } })
+    }
+
+    func testFreeStartersAreOwnedFromTheStart() {
+        var closet = closet()
+        for item in PetCloset.wardrobe where item.isFree {
+            XCTAssertEqual(closet.state(of: item), .owned, item.id)
+        }
+        XCTAssertEqual(closet.tap(.accessory(.partyHat)), .wore)
+        XCTAssertEqual(closet.profile.accessories, [.partyHat])
+        XCTAssertEqual(closet.balance, 0)
+    }
+
+    func testShelvesGroupEveryItemOnceByThemeCheapestFirst() {
+        XCTAssertEqual(PetCloset.shelves.map(\.theme), PetItemTheme.allCases)
+        let shelved = PetCloset.shelves.flatMap(\.items)
+        XCTAssertEqual(Set(shelved), Set(PetCloset.wardrobe))
+        XCTAssertEqual(shelved.count, PetCloset.wardrobe.count)
+        for shelf in PetCloset.shelves {
+            XCTAssertTrue(shelf.items.allSatisfy { $0.theme == shelf.theme })
+            XCTAssertEqual(shelf.items.map(\.cost), shelf.items.map(\.cost).sorted(), shelf.theme.displayName)
+            XCTAssertGreaterThanOrEqual(shelf.items.count, 3, "\(shelf.theme.displayName) is too thin to be a shelf")
+        }
+        XCTAssertEqual(PetItem.outfit(.whiteCoat).theme, .study)
+        XCTAssertEqual(PetItem.accessory(.blindfoldedSorcerer).theme, .fantasy)
+        XCTAssertEqual(PetItem.outfit(.dinosaurHoodie).theme, .silly)
+    }
+
+    func testCozySeasonalAndSillyShelvesStartWithAFreeItem() {
+        let starters = PetCloset.shelves.compactMap { shelf in shelf.items.first.flatMap { $0.isFree ? shelf.theme : nil } }
+        XCTAssertEqual(starters, [.cozy, .seasonal, .silly])
+    }
+
+    func testNewBadgeShowsOnFreshItemsUntilOwned() throws {
+        XCTAssertFalse(PetItem.accessory(.scarf).isNew, "the med set shipped first")
+        XCTAssertFalse(PetItem.outfit(.scrubs).isNew)
+        XCTAssertTrue(PetItem.accessory(.wizardHat).isNew)
+        XCTAssertTrue(PetItem.outfit(.dinosaurHoodie).isNew)
+
+        var closet = closet(earned: 300)
+        XCTAssertTrue(closet.isNew(.accessory(.wizardHat)))
+        XCTAssertFalse(closet.isNew(.accessory(.partyHat)), "free starters are already owned")
+        XCTAssertEqual(closet.tap(.accessory(.wizardHat)), .boughtAndWore)
+        XCTAssertFalse(closet.isNew(.accessory(.wizardHat)), "the badge goes once the item is unlocked")
     }
 }

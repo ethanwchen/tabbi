@@ -43,41 +43,41 @@ public enum PetItem: Hashable, Codable, Sendable, CustomStringConvertible {
 
     public var description: String { id }
 
-    /// Price in study points. Cozy basics come first so a new user unlocks
-    /// something after their first real session; the white coat and the
-    /// graduation cap are long-term goals.
+    /// Price in study points (1 per focused minute, 35 for a finished
+    /// 25 minute block). One starter per playful theme is free, so a new pet
+    /// can dress up right away; the first focus block unlocks the beanie,
+    /// small items take an evening or two, and the showpieces (the
+    /// sorcerer, the graduation cap) are long-term goals. Every price is
+    /// distinct, so the shop order never depends on ids.
     public var cost: Int {
         switch self {
-        case .outfit(.none): 0
-        case .accessory(.scarf): 30
-        case .accessory(.beanie): 45
-        case .accessory(.roundGlasses): 60
-        case .outfit(.scrubs): 90
-        case .accessory(.stethoscope): 120
+        case .outfit(.none), .accessory(.scarf), .accessory(.partyHat), .accessory(.bowTie): 0
+        case .accessory(.beanie): 30
+        case .accessory(.roundGlasses): 45
+        case .accessory(.ninjaHeadband): 60
+        case .accessory(.bunnyEars): 75
+        case .accessory(.coolSunglasses): 90
+        case .outfit(.scrubs): 100
+        case .accessory(.flowerCrown): 110
+        case .accessory(.frogHat): 120
+        case .accessory(.stethoscope): 130
+        case .accessory(.cowboyHat): 140
         case .accessory(.surgicalCap): 150
-        case .accessory(.headMirror): 200
-        case .outfit(.whiteCoat): 300
+        case .accessory(.chefHat): 160
+        case .outfit(.cozyHoodie): 180
+        case .accessory(.chunkyHeadphones): 200
+        case .accessory(.headMirror): 220
+        case .accessory(.witchHat): 240
+        case .accessory(.pirateHat): 260
+        case .accessory(.tinyCrown): 280
+        case .accessory(.wizardHat): 300
+        case .outfit(.whiteCoat): 320
+        case .outfit(.superheroCape): 340
+        case .outfit(.dinosaurHoodie): 360
+        case .outfit(.wizardRobe): 400
+        case .accessory(.astronautHelmet): 420
+        case .accessory(.blindfoldedSorcerer): 450
         case .accessory(.graduationCap): 500
-        case .accessory(.partyHat): 110
-        case .accessory(.bunnyEars): 140
-        case .accessory(.chefHat): 180
-        case .accessory(.tinyCrown): 260
-        case .accessory(.wizardHat): 350
-        case .accessory(.flowerCrown): 120
-        case .accessory(.ninjaHeadband): 130
-        case .accessory(.frogHat): 160
-        case .accessory(.cowboyHat): 220
-        case .accessory(.witchHat): 320
-        case .accessory(.coolSunglasses): 140
-        case .accessory(.pirateHat): 240
-        case .accessory(.blindfoldedSorcerer): 400
-        case .accessory(.bowTie): 100
-        case .accessory(.chunkyHeadphones): 170
-        case .accessory(.astronautHelmet): 380
-        case .outfit(.cozyHoodie): 160
-        case .outfit(.superheroCape): 280
-        case .outfit(.dinosaurHoodie): 300
-        case .outfit(.wizardRobe): 360
         }
     }
 

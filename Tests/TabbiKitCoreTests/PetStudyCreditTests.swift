@@ -119,7 +119,7 @@ final class PetStudyCreditTests: XCTestCase {
         done.advance(to: t0.addingTimeInterval(25 * 60))
         let award = try XCTUnwrap(closet.credit(from: running().shared, to: done.shared, at: t0.addingTimeInterval(25 * 60)))
         XCTAssertEqual(closet.balance, 55)
-        XCTAssertEqual(award.unlocked, [.accessory(.scarf), .accessory(.beanie)])
+        XCTAssertEqual(award.unlocked, [.accessory(.beanie), .accessory(.roundGlasses)])
         XCTAssertTrue(award.isLevelUp)
 
         var next = done
@@ -128,7 +128,8 @@ final class PetStudyCreditTests: XCTestCase {
         let first = next
         next.advance(to: t0.addingTimeInterval(55 * 60))
         let second = try XCTUnwrap(closet.credit(from: first.shared, to: next.shared, at: t0.addingTimeInterval(55 * 60)))
-        XCTAssertEqual(second.unlocked, [.accessory(.roundGlasses), .outfit(.scrubs)], "only newly affordable items")
+        XCTAssertEqual(second.unlocked, [.accessory(.ninjaHeadband), .accessory(.bunnyEars), .accessory(.coolSunglasses)],
+                       "only newly affordable items")
     }
 
     func testSwitchingToAnotherClockOnlySetsANewBaseline() throws {

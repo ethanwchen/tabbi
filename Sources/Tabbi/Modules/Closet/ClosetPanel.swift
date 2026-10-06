@@ -241,17 +241,27 @@ private struct ClosetWardrobe: View {
         }
     }
 
+    /// One shelf per theme: a small title, then its items cheapest first.
     private var grid: some View {
-        LazyVGrid(columns: columns, spacing: Theme.Spacing.s - Theme.Spacing.xxs) {
-            ForEach(PetCloset.wardrobe, id: \.id) { item in
-                ClosetItemTile(item: item, state: store.closet.state(of: item),
-                               model: thumbnailModel) {
-                    withMotion(Theme.Motion.snappy) { _ = store.tap(item) }
-                } onHover: { inside in
-                    if inside { hovered = item } else if hovered == item { hovered = nil }
-                    store.tryOn(hovered)
+        LazyVStack(alignment: .leading, spacing: Theme.Spacing.s) {
+            ForEach(PetCloset.shelves, id: \.theme) { shelf in
+                VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+                    ClosetShelfTitle(theme: shelf.theme, items: shelf.items, closet: store.closet)
+                    LazyVGrid(columns: columns, spacing: Theme.Spacing.s - Theme.Spacing.xxs) {
+                        ForEach(shelf.items, id: \.id) { item in tile(item) }
+                    }
                 }
             }
+        }
+    }
+
+    private func tile(_ item: PetItem) -> some View {
+        ClosetItemTile(item: item, state: store.closet.state(of: item), isNew: store.closet.isNew(item),
+                       model: thumbnailModel) {
+            withMotion(Theme.Motion.snappy) { _ = store.tap(item) }
+        } onHover: { inside in
+            if inside { hovered = item } else if hovered == item { hovered = nil }
+            store.tryOn(hovered)
         }
     }
 
@@ -311,9 +321,31 @@ private struct ClosetWardrobe: View {
     }
 }
 
+/// A shelf's theme name and how many of its items the pet owns.
+private struct ClosetShelfTitle: View {
+    let theme: PetItemTheme
+    let items: [PetItem]
+    let closet: PetCloset
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.xs) {
+            Text(theme.displayName)
+                .foregroundStyle(Theme.Palette.secondaryText)
+            Text("\(items.filter { closet.state(of: $0).isOwned }.count) of \(items.count)")
+                .foregroundStyle(Theme.Palette.tertiaryText)
+                .monospacedDigit()
+        }
+        .font(.system(size: 9.5, weight: .semibold, design: .rounded))
+        .frame(height: 12)
+        .padding(.leading, Theme.Spacing.xxs)
+    }
+}
+
 private struct ClosetItemTile: View {
     let item: PetItem
     let state: PetClosetItemState
+    /// Fresh in the catalog and not unlocked yet.
+    let isNew: Bool
     let model: PetProfile
     let action: () -> Void
     let onHover: (Bool) -> Void
@@ -333,6 +365,9 @@ private struct ClosetItemTile: View {
             }
             .frame(maxWidth: .infinity)
             .frame(height: 50)
+            .overlay(alignment: .topTrailing) {
+                if isNew { ClosetNewBadge().padding(Theme.Spacing.xxs) }
+            }
             .background(
                 RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
                     .fill(state == .wearing ? accent.opacity(0.14)
@@ -376,9 +411,23 @@ private struct ClosetItemTile: View {
         switch state {
         case .wearing: "\(item.displayName): click to take off"
         case .owned: "\(item.displayName): click to wear"
-        case .affordable: "\(item.displayName): unlock for \(item.cost) points"
-        case .locked(let missing): "\(item.displayName): \(item.cost) points, \(missing) more to go"
+        case .affordable: "\(isNew ? "New: " : "")\(item.displayName): unlock for \(item.cost) points"
+        case .locked(let missing): "\(isNew ? "New: " : "")\(item.displayName): \(item.cost) points, \(missing) more to go"
         }
+    }
+}
+
+/// A tiny accent tag on items fresh in the catalog.
+private struct ClosetNewBadge: View {
+    var body: some View {
+        Text("NEW")
+            .font(.system(size: 6.5, weight: .heavy, design: .rounded))
+            .tracking(0.3)
+            .foregroundStyle(Theme.Palette.background)
+            .padding(.horizontal, Theme.Spacing.xs)
+            .frame(height: 10)
+            .background(Capsule().fill(accent))
+            .allowsHitTesting(false)
     }
 }
 

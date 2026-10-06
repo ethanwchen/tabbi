@@ -42,9 +42,21 @@ public struct PetCloset: Hashable, Sendable {
 
     // MARK: Wardrobe
 
-    /// The items the wardrobe grid shows, cheapest first. "No outfit" is not
-    /// a tile; tapping the worn outfit takes it off instead.
-    public static let wardrobe: [PetItem] = PetItem.allCases.filter { !$0.isFree }
+    /// The items the wardrobe grid shows, cheapest first, free starters
+    /// included. "No outfit" is not a tile; tapping the worn outfit takes it
+    /// off instead.
+    public static let wardrobe: [PetItem] = PetItem.allCases.filter { $0 != .outfit(.none) }
+
+    /// The wardrobe grouped by theme in shelf order, each shelf cheapest
+    /// first. Together the shelves hold every wardrobe item once.
+    public static let shelves: [(theme: PetItemTheme, items: [PetItem])] =
+        PetItemTheme.allCases.map { ($0, $0.items) }.filter { !$0.items.isEmpty }
+
+    /// Whether the tile shows a "New" badge: fresh in the catalog and not
+    /// owned yet, so the badge goes away once the item is unlocked.
+    public func isNew(_ item: PetItem) -> Bool {
+        item.isNew && !save.ledger.owns(item)
+    }
 
     public func state(of item: PetItem) -> PetClosetItemState {
         if save.ledger.owns(item) {
@@ -168,11 +180,12 @@ public struct PetCloset: Hashable, Sendable {
 
 extension PetCloset {
     /// The `TABBI_DEMO=1` closet: a dressed cat a few sessions in, with
-    /// some items owned, two affordable, and the rest still to earn.
+    /// the free starters and two buys owned, two items affordable, and the
+    /// rest still to earn.
     public static var demo: PetCloset {
         let ledger = PetPointsLedger(
-            earned: 260, spent: 135,
-            purchased: [.accessory(.scarf), .accessory(.beanie), .accessory(.roundGlasses)]
+            earned: 160, spent: 75,
+            purchased: [.accessory(.beanie), .accessory(.roundGlasses)]
         )
         let profile = PetProfile(name: "Mochi", breed: .britishShorthair, accessories: [.scarf, .roundGlasses])
         return PetCloset(save: PetSave(profile: profile, ledger: ledger))
