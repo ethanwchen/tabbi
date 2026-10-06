@@ -56,6 +56,7 @@ struct Palette {
     var irisDeep = RGB(0x3F86D6)        // the top of the iris, the pet sprite's eye blue
     var eye = RGB(0x2B2622)             // pupil, eye rim and the checkmark wink
     var nose = RGB(0xD29A8A)            // pink-tan nose
+    var monochrome = false              // luminance only (Tinted); applies to the cover art too
 
     /// Candidate ground: deep navy, so the pale cat glows and the icon echoes the black notch.
     static let navy = Palette(ground: RGB(0x24335F), groundDeep: RGB(0x0D1430),
@@ -75,7 +76,8 @@ struct Palette {
                                 topLight: RGB(0x4A4A4A), topLightAlpha: 0.45,
                                 fur: RGB(0xE6E6E6), furShade: RGB(0xBDBDBD), back: RGB(0x9A9A9A),
                                 ticking: RGB(0x6E6E6E), white: RGB(0xFFFFFF), innerEar: RGB(0xD2D2D2),
-                                iris: RGB(0xA6A6A6), irisDeep: RGB(0x8C8C8C), eye: RGB(0x161616), nose: RGB(0x8C8C8C))
+                                iris: RGB(0xA6A6A6), irisDeep: RGB(0x8C8C8C), eye: RGB(0x161616), nose: RGB(0x8C8C8C),
+                                monochrome: true)
 }
 
 let candidatePalettes: [String: Palette] = ["navy": .navy, "blush": .blush]
@@ -390,6 +392,32 @@ func drawFaceSmall(_ ctx: CGContext) {
     fill(ctx, ellipse(512, 752, 84, 56), brand.nose.cg())
 }
 
+// MARK: - Cover art
+
+/// The shipped icon art: the British Shorthair cover generated with the ip-as-logo
+/// recipe (see docs/brand/icon.md). When it exists it fills the squircle in place of
+/// the code-drawn cat; the squircle mask, drop shadow and glass rim stay the same.
+let coverArt: CGImage? = {
+    let url = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+        .appendingPathComponent("docs/brand/source/tabbi-cover.png")
+    return NSImage(contentsOf: url)?.cgImage(forProposedRect: nil, context: nil, hints: nil)
+}()
+
+/// Draws the cover art over the icon body. The context is y-down, so the image is
+/// flipped back locally. Tinted keeps luminance only, like the drawn cat.
+func drawCoverArt(_ ctx: CGContext, _ art: CGImage) {
+    ctx.saveGState()
+    ctx.translateBy(x: 0, y: bodyRect.maxY + bodyRect.minY)
+    ctx.scaleBy(x: 1, y: -1)
+    ctx.draw(art, in: bodyRect)
+    if brand.monochrome {
+        ctx.setBlendMode(.saturation)
+        ctx.setFillColor(CGColor(gray: 0.5, alpha: 1))
+        ctx.fill(bodyRect)
+    }
+    ctx.restoreGState()
+}
+
 // MARK: - Icon
 
 /// Draws the icon into a context whose user space is 1024×1024, y-down.
@@ -407,7 +435,11 @@ func drawIcon(in ctx: CGContext) {
     ctx.saveGState()
     ctx.addPath(body)
     ctx.clip()
-    drawCat(ctx)
+    if let art = coverArt {
+        drawCoverArt(ctx, art)
+    } else {
+        drawCat(ctx)
+    }
     // A faint rim of light along the edge, like the glass edge on macOS 26 icons. At
     // small sizes it would only lighten the outer pixel ring, so it is left out.
     if isSmallRender {

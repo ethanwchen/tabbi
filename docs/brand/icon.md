@@ -3,7 +3,9 @@
 Tabbi's mascot is the maintainer's British Shorthair, a shaded silver cat with round blue eyes, who lives in the tabs on your MacBook notch.
 The icon has to say that in one glance: this particular cat, a nod to tabs, and a hint that this is a tool for getting things done.
 
-The icon is drawn entirely in code by `scripts/make-icon.swift` (CoreGraphics, vector shapes, no source art).
+The icon art is `docs/brand/source/tabbi-cover.png`, a flat cover illustration of the cat generated with the ip-as-logo recipe (see Cover art below).
+`scripts/make-icon.swift` masks it into the macOS squircle with the drop shadow and glass rim, and still draws the monochrome glyph in code.
+Without the cover file it falls back to the code-drawn cat described in History.
 
 ## Research
 
@@ -185,6 +187,16 @@ Round 8 (`rounds/r8.png`, `rounds/r8-dock.png`, `rounds/r8-variants.png`):
 - Verdict: cute and clear at every size.
   The Light, Dark and Tinted appearances keep the round eye; Tinted turns it a mid grey with the same dark pupil and white catch lights.
   `Resources/AppIcon.icns`, the 1024 px assets and the glyph were regenerated from this round.
+
+## Cover art
+
+The cover follows the same recipe as the Tapir app icon: the [ip-as-logo](https://github.com/s1dashu/ip-as-logo-skill) skill's prompt skeleton, rendered once by OpenAI GPT Image 2 at 1024 px.
+The subject is the maintainer's British Shorthair as a chubby kitten face: pale silver-cream fur, taupe tabby stripes on the forehead and ear tips, the banded tail peeking in, round blue eyes and a small pink nose, emerging from the lower left of a muted golden yellow ground.
+It was candidate A3 of five (navy, rose, yellow, and two whole-body loaf poses).
+The exact prompt is saved beside it as `tabbi-cover.prompt.txt`.
+The image is used as generated, with no retouching.
+
+Tinted renders the cover in luminance only; Default, Light and Dark use it unchanged, since an `.icns` cannot carry appearances anyway.
 
 ## Assets
 
