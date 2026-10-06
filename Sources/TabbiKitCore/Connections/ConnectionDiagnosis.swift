@@ -182,6 +182,7 @@ extension AnkiConnectionState {
 extension CalendarConnectionState {
     public var diagnosis: ConnectionDiagnosis {
         let accessAnswer = switch access {
+        case .notDetermined where !canAsk: "No. This copy of Tabbi can't ask for it."
         case .notDetermined: "Not yet. Your Mac hasn't asked you."
         case .denied: "No. It's turned off in System Settings."
         case .restricted: "No. A setting on this Mac blocks it."
@@ -203,7 +204,7 @@ extension CalendarConnectionState {
         }
         // Account names can be email addresses, so only counts go to support.
         return ConnectionDiagnosis(kind: .calendar, status: connectionStatus, checks: checks,
-                                   technical: "calendar.\(access.rawValue) accounts=\(count) google=\(hasGoogleAccount)")
+                                   technical: "calendar.\(access.rawValue)\(canAsk ? "" : ".cannotAsk") accounts=\(count) google=\(hasGoogleAccount)")
     }
 }
 
@@ -269,7 +270,10 @@ extension NotificationAccess {
 extension FocusShortcutsState {
     public var diagnosis: ConnectionDiagnosis {
         let checks: [ConnectionCheck]
-        if couldNotList {
+        if !isTurnedOn {
+            checks = [ConnectionCheck("Is Do Not Disturb turned on in Tabbi?", .failed,
+                                      "No. Click Turn on, or switch it on in Settings under Focus.")]
+        } else if couldNotList {
             checks = [ConnectionCheck("Can Tabbi see your shortcuts?", .failed,
                                       "No. The Shortcuts app didn't answer. Click Check again.")]
         } else if let installed {
@@ -284,7 +288,7 @@ extension FocusShortcutsState {
             checks = ConnectionCheck.chain([("Is the \u{201C}\(onName)\u{201D} shortcut there?", nil, "")])
         }
         // Says which shortcut is missing without repeating the user's names.
-        let technical = couldNotList ? "doNotDisturb.listFailed" : installed.map { "doNotDisturb.on=\($0.contains(onName)) off=\($0.contains(offName))" }
+        let technical = !isTurnedOn ? "doNotDisturb.off" : couldNotList ? "doNotDisturb.listFailed" : installed.map { "doNotDisturb.on=\($0.contains(onName)) off=\($0.contains(offName))" }
             ?? "doNotDisturb.checking"
         return ConnectionDiagnosis(kind: .doNotDisturb, status: connectionStatus, checks: checks, technical: technical)
     }

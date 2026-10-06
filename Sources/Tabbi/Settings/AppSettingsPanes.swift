@@ -3,23 +3,18 @@ import SwiftUI
 import TabbiKitCore
 import TabbiKit
 
-/// The Settings window's own panes. Enabled modules' panes sit between
-/// `leading` and `trailing`.
+/// The Settings window's five sections, in toolbar order. A module's own
+/// settings (Focus, Pet Coach, Party) open from its row in Tabs, so the
+/// toolbar stays the same whichever tabs are on.
 enum AppSettingsPane: String, CaseIterable {
-    case general, appearance, modules, connections, preview, shortcuts, claude, about
-
-    static let leading: [AppSettingsPane] = [.general, .appearance, .modules, .connections, .preview, .shortcuts]
-    static let trailing: [AppSettingsPane] = [.claude, .about]
+    case general, tabs, look, connections, about
 
     var title: String {
         switch self {
         case .general: "General"
-        case .appearance: "Appearance"
-        case .modules: "Modules"
+        case .tabs: "Tabs"
+        case .look: "Look"
         case .connections: "Connections"
-        case .preview: "Preview"
-        case .shortcuts: "Shortcuts"
-        case .claude: "Claude"
         case .about: "About"
         }
     }
@@ -27,60 +22,65 @@ enum AppSettingsPane: String, CaseIterable {
     var symbol: String {
         switch self {
         case .general: "gearshape"
-        case .appearance: "paintpalette"
-        case .modules: "square.grid.2x2"
+        case .tabs: "square.grid.2x2"
+        case .look: "paintpalette"
         case .connections: "link"
-        case .preview: "rectangle.topthird.inset.filled"
-        case .shortcuts: "keyboard"
-        case .claude: "terminal"
         case .about: "info.circle"
         }
     }
 
     @MainActor
-    var view: AnyView {
+    func view(moduleOptions: @escaping ModuleOptions) -> AnyView {
         switch self {
         case .general: AnyView(GeneralSettingsPane())
-        case .appearance: AnyView(AppearanceSettingsPane())
-        case .modules: AnyView(ModulesSettingsPane())
+        case .tabs: AnyView(ModulesSettingsPane(moduleOptions: moduleOptions))
+        case .look: AnyView(AppearanceSettingsPane())
         case .connections: AnyView(ConnectionsSettingsPane())
-        case .preview: AnyView(PreviewSettingsPane())
-        case .shortcuts: AnyView(ShortcutsSettingsPane())
-        case .claude: AnyView(ClaudeSettingsPane())
         case .about: AnyView(AboutSettingsPane())
         }
     }
 
-    /// The toolbar's panes for a layout: the window's own, with the enabled
-    /// modules' panes (in canonical module order) in between, each reading
-    /// the settings store from its environment. Modules that share a pane
-    /// (Today and Focus) return the same id; it shows once, in the first
-    /// one's place.
+    /// The window's panes, each reading the settings store from its environment.
     @MainActor
-    static func panes(settings: SettingsStore, modules: ModuleRegistry, onboarding: OnboardingStore?,
-                      enabled: [ModuleID]) -> [SettingsPane] {
-        let enabled = Set(enabled)
-        var seen: Set<String> = []
-        let modulePanes = modules.modules
-            .filter { enabled.contains($0.id) }
-            .compactMap { $0.makeSettingsPane() }
-            .filter { seen.insert($0.id).inserted }
-        func own(_ panes: [AppSettingsPane]) -> [SettingsPane] {
-            panes.map { pane in
-                // The Claude and Connections panes check the Mac when shown;
-                // let that finish in snapshots.
-                SettingsPane(id: pane.rawValue, title: pane.title, symbol: pane.symbol, view: pane.view,
-                             settleTime: [.claude, .connections].contains(pane) ? .seconds(2) : .milliseconds(300))
-            }
+    static func panes(settings: SettingsStore, modules: ModuleRegistry, onboarding: OnboardingStore?) -> [SettingsPane] {
+        let environment = PaneEnvironment(settings: settings, modules: modules, onboarding: onboarding)
+        let moduleOptions = self.moduleOptions(settings: settings, modules: modules, onboarding: onboarding)
+        return allCases.map { pane in
+            // Connections checks the Mac when shown; let that finish in snapshots.
+            environment.wrap(SettingsPane(id: pane.rawValue, title: pane.title, symbol: pane.symbol,
+                                          view: pane.view(moduleOptions: moduleOptions),
+                                          settleTime: pane == .connections ? .seconds(2) : .milliseconds(300)))
         }
-        return (own(leading) + modulePanes + own(trailing)).map { pane in
-            SettingsPane(id: pane.id, title: pane.title, symbol: pane.symbol,
-                         view: AnyView(pane.view.environmentObject(settings)
-                                         .environment(\.moduleCatalog, settings.catalog)
-                                         .environment(\.modulesUseKitDefaults, { modules.usesKitDefaults(of: $0) })
-                                         .environment(\.runSetup, onboarding.map { store in { @MainActor @Sendable in store.start() } })),
-                         settleTime: pane.settleTime)
-        }
+    }
+
+    /// Looks up a module's own settings, made fresh each time so they always
+    /// follow the module's current state.
+    @MainActor
+    static func moduleOptions(settings: SettingsStore, modules: ModuleRegistry, onboarding: OnboardingStore?) -> ModuleOptions {
+        let environment = PaneEnvironment(settings: settings, modules: modules, onboarding: onboarding)
+        return { id in modules[id]?.makeSettingsPane().map(environment.wrap) }
+    }
+}
+
+/// A module's own settings by id, or nil when it has none.
+typealias ModuleOptions = @MainActor (ModuleID) -> SettingsPane?
+
+/// What every Settings pane reads from its environment.
+@MainActor
+private struct PaneEnvironment {
+    let settings: SettingsStore
+    let modules: ModuleRegistry
+    let onboarding: OnboardingStore?
+
+    func wrap(_ pane: SettingsPane) -> SettingsPane {
+        let modules = modules
+        let onboarding = onboarding
+        return SettingsPane(id: pane.id, title: pane.title, symbol: pane.symbol,
+                            view: AnyView(pane.view.environmentObject(settings)
+                                            .environment(\.moduleCatalog, settings.catalog)
+                                            .environment(\.modulesUseKitDefaults, { modules.usesKitDefaults(of: $0) })
+                                            .environment(\.runSetup, onboarding.map { store in { @MainActor @Sendable in store.start() } })),
+                            settleTime: pane.settleTime)
     }
 }
 
@@ -112,21 +112,12 @@ private struct RunSetupKey: EnvironmentKey {
 }
 
 extension SettingsWindowController {
-    /// The app's Settings window, following the enabled modules.
-    /// - Parameter onboarding: offers Run Setup Again in the Kit section.
+    /// The app's Settings window.
+    /// - Parameter onboarding: offers Run Setup Again in Tabs.
     convenience init(settings: SettingsStore, modules: ModuleRegistry, onboarding: OnboardingStore? = nil) {
-        // `$settings` emits before the new value is stored, so read the
-        // layout from the emission.
-        let updates = settings.$settings
-            .map(\.modules.enabled)
-            .removeDuplicates()
-            .dropFirst()
-            .map { AppSettingsPane.panes(settings: settings, modules: modules, onboarding: onboarding, enabled: $0) }
-            .eraseToAnyPublisher()
         self.init(
-            panes: AppSettingsPane.panes(settings: settings, modules: modules, onboarding: onboarding,
-                                         enabled: settings.settings.modules.enabled),
-            updates: updates,
+            panes: AppSettingsPane.panes(settings: settings, modules: modules, onboarding: onboarding),
+            updates: Empty().eraseToAnyPublisher(),
             autosaveName: "TabbiSettings"
         )
     }

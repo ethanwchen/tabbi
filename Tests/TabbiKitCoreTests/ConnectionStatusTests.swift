@@ -109,6 +109,20 @@ final class ConnectionStatusTests: XCTestCase {
         }
     }
 
+    func testCalendarNeverOffersConnectWhenThisCopyCannotAsk() {
+        // macOS terminates a build without a calendar usage description
+        // when it asks, so there is no Connect button to press.
+        let status = CalendarConnectionState(access: .notDetermined, canAsk: false).connectionStatus
+        XCTAssertEqual(status.light, .needsStep)
+        XCTAssertNotEqual(status.action, .askPermission(.calendar))
+        XCTAssertEqual(status.headline, "This copy can't use the calendar")
+        let diagnosis = CalendarConnectionState(access: .notDetermined, canAsk: false).diagnosis
+        XCTAssertEqual(diagnosis.firstFailure?.answer, "No. This copy of Tabbi can't ask for it.")
+        // Once access is decided, the usual states apply.
+        XCTAssertEqual(CalendarConnectionState(access: .denied, canAsk: false).connectionStatus.action,
+                       .openSettings(.calendarPrivacy))
+    }
+
     func testCalendarWithoutAccountsGuidesToAddOne() {
         let status = CalendarConnectionState(access: .fullAccess, accounts: []).connectionStatus
         XCTAssertEqual(status.light, .needsStep)

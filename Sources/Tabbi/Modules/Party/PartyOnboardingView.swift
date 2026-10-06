@@ -257,7 +257,7 @@ private struct PartySetupFriendsCard: View {
             }
         case .invalidServer(let message):
             self.message(symbol: "exclamationmark.triangle.fill", title: "Check the party server",
-                         detail: message + " Fix it in Settings > Party.")
+                         detail: message + " Fix it in Settings > Tabs > Party > Options.")
         }
     }
 

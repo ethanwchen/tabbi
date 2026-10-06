@@ -259,7 +259,8 @@ final class KitLibraryTests: XCTestCase {
         XCTAssertEqual(kit.issues(), [])
         XCTAssertNil(kit.defaults.resolvedTicker, "every preview stays on, so a module added later shows its own")
         XCTAssertNil(FocusSettings.kitMix(of: kit.defaults), "Essentials keeps the user's focus sound (Off by default)")
-        XCTAssertEqual(StudyMethodMenu(kit: kit.defaults).startingKind, .pomodoro)
+        XCTAssertEqual(StudyMethodMenu(kit: kit.defaults).startingKind, .timer,
+                       "a plain countdown first, so 5, 10 and 25 minutes are one click away")
     }
 
     func testEssentialsAnswersAddTasksButNeverTabs() throws {

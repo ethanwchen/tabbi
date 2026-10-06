@@ -38,6 +38,8 @@ final class StudyStore: ObservableObject {
     @Published private(set) var menu: StudyMethodMenu
     /// The user's own lengths for the Custom method.
     @Published private(set) var custom: StudyCustomRhythm
+    /// How long the plain Timer counts down.
+    @Published private(set) var timer: StudyTimerLength
     /// Minutes a day to aim for, set by the kit; shared with Today as progress.
     @Published private(set) var goal: StudyDailyGoal
     /// Cards reviewed today from the modules that share a card goal (Anki),
@@ -77,6 +79,7 @@ final class StudyStore: ObservableObject {
     private static let sessionKey = "study.session"
     private static let deepFocusKey = "study.deepFocus"
     private static let customKey = "study.custom"
+    private static let timerKey = "study.timerMinutes"
 
     /// - Parameters:
     ///   - menu: the active kit's methods; a saved session on a method the
@@ -100,6 +103,7 @@ final class StudyStore: ObservableObject {
         self.goal = goal
         if isDemo {
             custom = Self.demoCustom
+            timer = .standard
             let now = Date()
             let session = Self.demoSession(StudySnapshotState.current, now: now)
             self.session = session
@@ -113,17 +117,21 @@ final class StudyStore: ObservableObject {
         let custom = defaults.data(forKey: Self.customKey)
             .flatMap { try? JSONDecoder().decode(StudyCustomRhythm.self, from: $0) } ?? .standard
         self.custom = custom
-        var saved = defaults.data(forKey: Self.sessionKey)
+        let timer = (defaults.object(forKey: Self.timerKey) as? Int).map(StudyTimerLength.init(minutes:)) ?? .standard
+        self.timer = timer
+        // A snapshot run starts on the kit's method, as a new user would, so
+        // the PNGs never depend on what this Mac happens to have saved.
+        var saved = (isSnapshot ? nil : defaults.data(forKey: Self.sessionKey))
             .flatMap { try? JSONDecoder().decode(StudySession.self, from: $0) }
-            ?? StudySession(method: .preset(menu.startingKind, custom: custom))
+            ?? StudySession(method: .preset(menu.startingKind, custom: custom, timer: timer))
         // A phase may have ended while the app wasn't running; catch up quietly.
         let launch = Date()
         saved.advance(to: launch)
         if let kind = menu.replacement(for: saved, kitApplied: false) {
-            saved.switchMethod(to: .preset(kind, custom: custom), at: launch)
+            saved.switchMethod(to: .preset(kind, custom: custom, timer: timer), at: launch)
         }
         // A snapshot of one method shows it fresh, as a new user would see it.
-        if let kind = StudySnapshotState.current?.demoMethod { saved = StudySession(method: .preset(kind, custom: custom)) }
+        if let kind = StudySnapshotState.current?.demoMethod { saved = StudySession(method: .preset(kind, custom: custom, timer: timer)) }
         session = saved
         pet = PetPlayer(profile: petProfile, asleep: StudyPetCue.isDozing(saved))
         deepFocus = defaults.bool(forKey: Self.deepFocusKey)
@@ -164,8 +172,8 @@ final class StudyStore: ObservableObject {
             .store(in: &cancellables)
     }
 
-    /// The kit's methods for the picker, with Custom on the user's lengths.
-    var methods: [StudyMethod] { menu.methods(custom: custom) }
+    /// The kit's methods for the picker, with Custom and the Timer on the user's lengths.
+    var methods: [StudyMethod] { menu.methods(custom: custom, timer: timer) }
 
     var readout: StudyDialReadout { StudyTimerFormat.readout(session, at: now) }
     var progress: Double? { session.progress(at: now) }
@@ -231,7 +239,7 @@ final class StudyStore: ObservableObject {
     func choose(_ kind: StudyMethodKind) {
         guard kind != session.method.kind else { return }
         catchUp()
-        change { $0.switchMethod(to: .preset(kind, custom: custom), at: now) }
+        change { $0.switchMethod(to: .preset(kind, custom: custom, timer: timer), at: now) }
     }
 
     /// Saves new Custom lengths. A session on Custom keeps its round and
@@ -246,6 +254,26 @@ final class StudyStore: ObservableObject {
         change { $0.retune(to: rhythm.method, at: now) }
     }
 
+    /// Saves a new Timer length. A session on the Timer takes it on at once;
+    /// one already counting keeps at least a minute (`StudySession.retune`).
+    func setTimer(_ length: StudyTimerLength) {
+        guard length != timer else { return }
+        timer = length
+        if !isDemo, !isSnapshot { defaults.set(length.minutes, forKey: Self.timerKey) }
+        catchUp()
+        change { $0.retune(to: length.method, at: now) }
+    }
+
+    /// A Timer length chip: saves the length and, when no countdown has
+    /// started yet, starts one, so a common length is a single click. A
+    /// running or paused countdown only takes on the new length.
+    func startTimer(_ length: StudyTimerLength) {
+        setTimer(length)
+        catchUp()
+        guard session.method.kind == .timer, session.runState == .idle else { return }
+        change { $0.start(at: now) }
+    }
+
     /// Follows a new kit: the picker offers its methods, and a stopped
     /// timer moves to its starting method. A running block is never cut short.
     /// - Parameter kitApplied: true when the user just picked or reset the
@@ -255,7 +283,7 @@ final class StudyStore: ObservableObject {
         if goal != self.goal { self.goal = goal }
         catchUp()
         guard let kind = menu.replacement(for: session, kitApplied: kitApplied) else { return }
-        change { $0.switchMethod(to: .preset(kind, custom: custom), at: now) }
+        change { $0.switchMethod(to: .preset(kind, custom: custom, timer: timer), at: now) }
     }
 
     /// Today's study minutes, finished stretches and points, for Wrap Up.

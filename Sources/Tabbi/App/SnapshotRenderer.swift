@@ -161,6 +161,19 @@ enum SnapshotRenderer {
             print(url.path)
         }
 
+        // Each enabled module's own settings, as the sheet Tabs opens them in.
+        let moduleOptions = AppSettingsPane.moduleOptions(settings: services.settings, modules: services.modules,
+                                                          onboarding: services.onboarding)
+        var optionPanes: Set<String> = []
+        for module in services.settings.settings.modules.enabled {
+            guard let pane = moduleOptions(module), optionPanes.insert(pane.id).inserted else { continue }
+            try? await Task.sleep(for: pane.settleTime)
+            guard let png = await sheetSnapshot(ModuleOptionsSheet(pane: pane, done: {})) else { continue }
+            let url = outputDirectory.appendingPathComponent("settings-tabs-\(pane.id).png")
+            try? png.write(to: url)
+            print(url.path)
+        }
+
         let kitID = services.settings.settings.kitID
         // The same questions as the sheet Settings shows when switching kits.
         if let kit = services.settings.kits[kitID], !kit.onboarding.isEmpty,

@@ -55,17 +55,19 @@ public enum ThemeCatalog {
             success: green, warning: amber, danger: red),
         typeface: .standard)
 
-    /// An opaque black body like the Dynamic Island, with Liquid Glass only
-    /// on small floating controls.
+    /// An opaque black body (so the panel still meets the hardware notch)
+    /// lit by a cool blue glow, with frosted glass cards and Liquid Glass
+    /// controls on top of it.
     public static let liquidGlass = AppTheme(
-        id: .liquidGlass, name: "Liquid Glass", summary: "Black body, glass controls on macOS 26.",
+        id: .liquidGlass, name: "Liquid Glass", summary: "Frosted glass cards over a cool blue glow.",
         family: .classic,
         palette: ThemePalette(
+            glow: ThemeColor(red: 0.28, green: 0.50, blue: 0.98, opacity: 0.26),
             surface: ThemeColor(white: 1, opacity: 0.08), surfaceHover: ThemeColor(white: 1, opacity: 0.14),
             stroke: ThemeColor(white: 1, opacity: 0.14), primaryText: ThemeColor(white: 1),
             secondaryText: ThemeColor(white: 1, opacity: 0.66), tertiaryText: ThemeColor(white: 1, opacity: 0.40),
             success: green, warning: amber, danger: red),
-        typeface: .standard, controls: .glass)
+        typeface: .standard, controls: .glass, surfaces: .glass)
 
     public static let neon = AppTheme(
         id: .neon, name: "Neon", summary: "Vivid accents with a violet glow.", family: .classic,

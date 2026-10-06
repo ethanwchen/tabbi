@@ -21,7 +21,7 @@ Three ideas drive every design decision:
 
 | Kit | Status | For |
 | --- | --- | --- |
-| Essentials | Shipping | Everyone, and the default: timer, to-do, music and Ask Claude. Everything else is one click away in Settings > Modules > Add More. |
+| Essentials | Shipping | Everyone, and the default: timer, to-do, music and Ask Claude. Everything else is one click away in Settings > Tabs > Add more. |
 | Med School | In progress | Medical students: Essentials plus Anki, with evidence-based study methods and a study pet. |
 | Tech | Planned | Developers and CS students. |
 | Law | Planned | LSAT takers and law students. |

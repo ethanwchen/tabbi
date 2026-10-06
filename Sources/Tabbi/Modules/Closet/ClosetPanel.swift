@@ -214,7 +214,7 @@ private struct ClosetPointsChip: View {
         .frame(height: 22)
         .background(Capsule().fill(Theme.Palette.surface))
         .overlay(Capsule().strokeBorder(Theme.Palette.stroke, lineWidth: 0.5))
-        .help("Study points: 1 for every focused minute, plus a bonus for finishing a session")
+        .help("Points: 1 for every focused minute, plus a bonus for finishing a session")
         .motion(Theme.Motion.snappy, value: balance)
     }
 }

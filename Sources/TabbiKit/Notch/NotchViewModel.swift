@@ -17,6 +17,7 @@ public final class NotchViewModel: ObservableObject {
         didSet {
             UserDefaults.standard.set(selected.rawValue, forKey: Self.selectedKey)
             showsMoreTabs = false
+            if selected != oldValue { openedFromKeyboard = false }
             // Direction drives the slide transition between modules, in the
             // header's visual order: the tabs, then the shortcuts at the far right.
             let order = layout.tabs + layout.headerShortcuts
@@ -55,6 +56,13 @@ public final class NotchViewModel: ObservableObject {
             if showsTakeover { phase = .open }
         }
     }
+
+    /// True when the global shortcut opened the notch, so the open tab can
+    /// put the caret in its main field (Today's "Add a task") and the user can
+    /// type right away. Opening by pointer leaves focus alone, since a focused
+    /// field pins the notch open after the pointer leaves. Switching tabs
+    /// clears it, so only the tab the shortcut opened on takes the caret.
+    @Published public private(set) var openedFromKeyboard = false
 
     private static let selectedKey = "selectedModule"
 
@@ -99,8 +107,9 @@ public final class NotchViewModel: ObservableObject {
         notch.width + (preview.map { NotchPreviewLayout.wingWidth(for: $0) * 2 } ?? 0)
     }
 
-    public func open(_ module: ModuleID? = nil) {
+    public func open(_ module: ModuleID? = nil, fromKeyboard: Bool = false) {
         if let module { selected = layout.resolvedSelection(module) }
+        openedFromKeyboard = fromKeyboard
         // A takeover waits for the user, not the pointer.
         if showsTakeover { isPinned = true }
         phase = .open
@@ -123,8 +132,8 @@ public final class NotchViewModel: ObservableObject {
         open(preview?.module)
     }
 
-    public func toggle() {
-        isOpen ? close() : open()
+    public func toggle(fromKeyboard: Bool = false) {
+        isOpen ? close() : open(fromKeyboard: fromKeyboard)
     }
 
     public func selectNext() {

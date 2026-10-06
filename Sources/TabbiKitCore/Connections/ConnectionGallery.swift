@@ -43,7 +43,9 @@ extension ConnectionKind {
             let lists: [Set<String>?] = [[], [on], [off], [on, off]]
             let unknown = [FocusShortcutsState(onName: on, offName: off, installed: nil),
                            FocusShortcutsState(onName: on, offName: off, installed: nil, couldNotList: true)]
-            return (unknown + lists.map { FocusShortcutsState(onName: on, offName: off, installed: $0) }).map(\.diagnosis)
+            let turnedOff = FocusShortcutsState(onName: on, offName: off, installed: [on, off], isTurnedOn: false)
+            return ([turnedOff] + unknown + lists.map { FocusShortcutsState(onName: on, offName: off, installed: $0) })
+                .map(\.diagnosis)
         case .claude:
             let states: [ClaudeConnectionState] = [.checking, .notInstalled, .signedOut, .ready]
             return states.map(\.diagnosis)

@@ -2,8 +2,8 @@ import AppKit
 import Combine
 import SwiftUI
 
-/// One toolbar pane of the Settings window: the app's own panes and those
-/// enabled modules contribute (`NotchModule.makeSettingsPane()`) alike.
+/// A pane of settings: one of the Settings window's toolbar sections, or
+/// a module's own settings (`NotchModule.makeSettingsPane()`).
 public struct SettingsPane {
     /// Unique among all panes; also names the snapshot (`settings-<id>.png`).
     public let id: String

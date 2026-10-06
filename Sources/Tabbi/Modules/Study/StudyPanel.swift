@@ -23,7 +23,7 @@ struct StudyPanel: View {
                     show(kind == .custom ? .custom : nil)
                 }
             case .info(let kind, let back):
-                StudyMethodInfoView(method: .preset(kind, custom: store.custom), isCurrent: kind == store.session.method.kind,
+                StudyMethodInfoView(method: .preset(kind, custom: store.custom, timer: store.timer), isCurrent: kind == store.session.method.kind,
                                     use: { store.choose(kind); show(nil) },
                                     close: { show(back) })
             case .sounds:
@@ -181,16 +181,22 @@ private struct StudyMethodCard: View {
                             Spacer(minLength: 0)
                         }
                         .font(Theme.Typography.title)
-                        Text(methodInfo.tagline)
-                            .font(Theme.Typography.caption)
-                            .foregroundStyle(Theme.Palette.secondaryText)
-                            .lineLimit(1)
+                        if session.method.kind != .timer {
+                            Text(methodInfo.tagline)
+                                .font(Theme.Typography.caption)
+                                .foregroundStyle(Theme.Palette.secondaryText)
+                                .lineLimit(1)
+                        }
                     }
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .help("Change the study method")
+                .help("Change the timer method")
                 .onHover { hovering = $0 }
+                if session.method.kind == .timer {
+                    StudyTimerLengthRow(length: store.timer, isCounting: session.runState != .idle,
+                                        set: store.setTimer, start: store.startTimer)
+                }
                 Spacer(minLength: Theme.Spacing.xs)
                 StudyDeepFocusRow(store: store, focus: focusMode, openMixer: sounds)
                 Spacer(minLength: Theme.Spacing.xs)
@@ -203,6 +209,60 @@ private struct StudyMethodCard: View {
                 .strokeBorder(Theme.Palette.stroke.opacity(hovering ? 2 : 0), lineWidth: 1)
         )
         .motion(Theme.Motion.snappy, value: hovering)
+    }
+}
+
+/// The Timer's lengths: one click starts a common one, and a stepper sets
+/// any other, so a custom length needs no extra screen.
+private struct StudyTimerLengthRow: View {
+    let length: StudyTimerLength
+    let isCounting: Bool
+    let set: (StudyTimerLength) -> Void
+    let start: (StudyTimerLength) -> Void
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.xs) {
+            ForEach(StudyTimerLength.presets, id: \.self) { minutes in
+                StudyTimerChip(title: "\(minutes) min", isOn: length.minutes == minutes,
+                               help: isCounting ? "Change the countdown to \(minutes) minutes, or to a minute from now if that time has passed"
+                                                 : "Start a \(minutes) minute countdown") {
+                    start(StudyTimerLength(minutes: minutes))
+                }
+            }
+            Spacer(minLength: 0)
+            IconButton(symbol: "minus", help: "A shorter timer") { set(length.stepped(up: false)) }
+                .disabled(!length.canStep(up: false))
+            IconButton(symbol: "plus", help: "A longer timer") { set(length.stepped(up: true)) }
+                .disabled(!length.canStep(up: true))
+        }
+        .padding(.top, Theme.Spacing.xxs)
+    }
+}
+
+/// One of the Timer's one-click lengths, filled with the accent when picked.
+private struct StudyTimerChip: View {
+    let title: String
+    let isOn: Bool
+    let help: String
+    let action: () -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .font(Theme.Typography.caption.weight(.semibold))
+                .monospacedDigit()
+                .foregroundStyle(isOn ? Theme.Palette.background : Theme.Palette.secondaryText)
+                .padding(.horizontal, Theme.Spacing.s)
+                .frame(height: 22)
+                .background(Capsule().fill(isOn ? accent : (hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface)))
+                .contentShape(Capsule())
+        }
+        .buttonStyle(.tactile(.pill))
+        .help(help)
+        .onHover { hovering = $0 }
+        .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: isOn)
     }
 }
 
@@ -224,8 +284,8 @@ private struct StudyDeepFocusRow: View {
     }
 
     private var help: String {
-        store.deepFocus ? "Deep focus is on: study blocks bring \(summary). Click to turn it off"
-             : "Turn on deep focus: study blocks bring \(summary)"
+        store.deepFocus ? "Deep focus is on: focus blocks bring \(summary). Click to turn it off"
+             : "Turn on deep focus: focus blocks bring \(summary)"
     }
 
     /// The focus mode effects that study blocks apply, e.g. "Rain + Fireplace, a playlist and Do Not Disturb".
@@ -243,7 +303,7 @@ private struct StudyDeepFocusRow: View {
     }
 }
 
-/// Today's study minutes, finished stretches and the points they earned
+/// Today's focus minutes, finished blocks and the points they earned
 /// for the pet.
 private struct StudyTodayRow: View {
     let today: StudyDayTally
@@ -257,13 +317,13 @@ private struct StudyTodayRow: View {
             Label("\(StudyTimerFormat.studied(minutes: today.minutes)) of \(StudyTimerFormat.studied(minutes: goal.minutes))",
                   systemImage: metGoal ? "checkmark.seal.fill" : "clock")
                 .foregroundStyle(metGoal ? accent : Theme.Palette.secondaryText)
-                .help(metGoal ? "Daily study goal met" : "Time studied today, out of your daily goal")
+                .help(metGoal ? "Daily focus goal met" : "Focus time today, out of your daily goal")
             Label("\(today.sessions) done", systemImage: "checkmark.circle")
-                .help("Study stretches finished today")
+                .help("Focus blocks finished today")
             Spacer(minLength: 0)
             Label(StudyTimerFormat.points(today.points), systemImage: "star.fill")
                 .foregroundStyle(today.points > 0 ? accent : Theme.Palette.tertiaryText)
-                .help("Study points earned today; spend them on your pet's wardrobe")
+                .help("Points earned today; spend them on your pet's wardrobe")
         }
         .labelStyle(StudyTodayLabelStyle())
         .font(Theme.Typography.caption)
@@ -376,7 +436,8 @@ struct StudyMethodTile: View {
     }
 }
 
-/// The primary action, then pause (Flowtime only), skip and reset.
+/// The primary action, then pause (Flowtime only), skip (not for the
+/// Timer, which has no breaks) and reset.
 private struct StudyControls: View {
     @ObservedObject var store: StudyStore
 
@@ -397,10 +458,14 @@ private struct StudyControls: View {
                 }
             }
             Group {
-                IconButton(symbol: "forward.end.fill", help: skipHelp) {
-                    withMotion(Theme.Motion.snappy) { store.skip() }
+                // The Timer has nothing to skip to; reset stops it.
+                if session.method.hasBreaks {
+                    IconButton(symbol: "forward.end.fill", help: skipHelp) {
+                        withMotion(Theme.Motion.snappy) { store.skip() }
+                    }
                 }
-                IconButton(symbol: "arrow.counterclockwise", help: "Reset to a fresh session") {
+                IconButton(symbol: "arrow.counterclockwise",
+                           help: session.method.hasBreaks ? "Reset to a fresh session" : "Stop and reset the timer") {
                     withMotion(Theme.Motion.snappy) { store.reset() }
                 }
             }
@@ -422,7 +487,9 @@ private struct StudyControls: View {
         case .running:
             return primarySymbol == "pause.fill" ? "Pause the timer" : "End this stretch and take a sized break"
         case .paused: return "Resume the timer"
-        case .idle: return session.phase.isBreak ? "Start the break" : "Start studying"
+        case .idle:
+            if session.method.kind == .timer { return "Start the countdown" }
+            return session.phase.isBreak ? "Start the break" : "Start studying"
         }
     }
 

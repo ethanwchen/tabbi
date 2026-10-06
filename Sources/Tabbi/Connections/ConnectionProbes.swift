@@ -44,15 +44,7 @@ struct ConnectionProbes: Sendable {
     /// The same handshake the Anki tab makes, mapped through the same rules.
     private static func anki() async -> AnkiConnectionState {
         let client = AnkiConnectClient(isAnkiRunning: { await MainActor.run { runningAnki() != nil } })
-        let error: AnkiConnectError?
-        do {
-            // Tabbi sends no key, so every call after the handshake fails.
-            error = try await client.connect().requireAPIKey ? .apiKeyRequired : nil
-        } catch let failure as AnkiConnectError {
-            error = failure
-        } catch {
-            return .problem(.transport(error.localizedDescription))
-        }
+        let error = await client.checkAccess()
         return await MainActor.run {
             AnkiConnectionState.resolve(error: error, isInstalled: installedURL(of: .anki) != nil,
                                         launchedAt: runningAnki()?.launchDate, now: Date())
@@ -87,7 +79,7 @@ struct ConnectionProbes: Sendable {
 
     private static func calendar() -> CalendarConnectionState {
         let access = calendarAccess()
-        guard access == .fullAccess else { return CalendarConnectionState(access: access) }
+        guard access == .fullAccess else { return CalendarConnectionState(access: access, canAsk: canAskForCalendar) }
         var accounts: [String] = []
         for calendar in EKEventStore().calendars(for: .event) where !accounts.contains(calendar.source.title) {
             accounts.append(calendar.source.title)
@@ -162,8 +154,12 @@ struct ConnectionProbes: Sendable {
     // MARK: Do Not Disturb
 
     /// Lists the user's shortcuts and looks for the two that Focus runs.
+    /// With Do Not Disturb off there is nothing to list: Tabbi won't run them.
     private static func focusShortcuts() async -> FocusShortcutsState {
         let (onName, offName) = focusShortcutNames()
+        guard FocusSettingsRepository().load().doNotDisturb else {
+            return FocusShortcutsState(onName: onName, offName: offName, installed: nil, isTurnedOn: false)
+        }
         let output = await Task.detached(priority: .userInitiated) {
             run(FocusShortcutRunner.systemExecutable, ["list"])
         }.value

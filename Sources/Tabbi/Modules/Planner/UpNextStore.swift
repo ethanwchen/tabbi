@@ -172,10 +172,7 @@ final class UpNextStore: ObservableObject {
     }
 
     private static func currentAccess() -> Access {
-        // Without a usage description macOS terminates the app on request.
-        guard Bundle.main.object(forInfoDictionaryKey: "NSCalendarsFullAccessUsageDescription") != nil else {
-            return .unavailable
-        }
+        guard ConnectionProbes.canAskForCalendar else { return .unavailable }
         switch EKEventStore.authorizationStatus(for: .event) {
         case .fullAccess: return .granted
         case .notDetermined: return .notDetermined

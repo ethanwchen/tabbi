@@ -7,6 +7,7 @@ import TabbiKit
 /// its current state.
 struct ConnectionsSettingsPane: View {
     @EnvironmentObject private var settings: SettingsStore
+    @State private var showsMore = false
 
     var body: some View {
         let kinds = ConnectionKind.relevant(to: settings.settings.modules.enabled)
@@ -16,16 +17,23 @@ struct ConnectionsSettingsPane: View {
             } header: {
                 Text("Apps and permissions")
             } footer: {
-                Text("Fixed something in another app? Come back here and the light updates by itself.")
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                SectionFooter("Fixed something in another app? Come back here and the light updates by itself.")
+            }
+            // The only advanced setting here is where claude lives.
+            if kinds.contains(.claude) {
+                Section {
+                    MoreOptionsToggle(isExpanded: $showsMore)
+                }
+                if showsMore {
+                    ClaudeLocationSection()
+                }
             }
         }
         .formStyle(.grouped)
+        .motion(Motion.snappy, value: showsMore)
         .connectionsHost(watching: kinds)
         // Matches the other panes' width; scrolls when many tabs are on.
-        .frame(width: 500, height: 444)
+        .frame(width: paneWidth, height: 520)
     }
 }
 
@@ -273,6 +281,7 @@ extension ConnectionAction {
         case .setUp: "Set up \(kind.title)"
         case .copyFriendCode: "Copy your friend code to send to a friend"
         case .testDoNotDisturb: "Turn Do Not Disturb on for a moment, then off again"
+        case .turnOnDoNotDisturb: "Turn on Do Not Disturb whenever the focus timer runs"
         }
     }
 }

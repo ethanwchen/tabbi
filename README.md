@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/images/hero.gif" alt="The closed notch with a pixel cat opens into the Study tab (a Pomodoro timer at 15:14), then switches to Today, Anki, Party and the pet's Closet before closing again" width="100%">
+  <img src="docs/images/hero.gif" alt="The closed notch with a pixel cat opens into the Timer tab (a Pomodoro timer at 15:14), then switches to Today, Anki, Party and the pet's Closet before closing again" width="100%">
 </p>
 
 Click the notch and it opens into a small panel of tabs.
@@ -47,7 +47,7 @@ Macs without a notch get a small virtual one at the top of the screen.
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/images/study.png" alt="Study tab"><br><b>Study.</b> A session timer in the study method you pick, with points for the pet.</td>
+    <td width="50%"><img src="docs/images/study.png" alt="Timer tab"><br><b>Timer.</b> Quick 5, 10 or 25 minute countdowns, or a study method like Pomodoro, with points for the pet.</td>
     <td width="50%"><img src="docs/images/today.png" alt="Today tab"><br><b>Today.</b> Your checklist, what's next on the calendar and a focus timer.</td>
   </tr>
   <tr>
@@ -73,7 +73,7 @@ Closed, the notch stays black and shows one quiet live activity beside it: your 
 ## Kits
 
 A kit is a premade set of tabs for one kind of user.
-Tabbi ships Essentials and Med School, adds any other tab from **Add More**, and you can switch, reset or import kits in **Settings > Modules**.
+Tabbi ships Essentials and Med School, adds any other tab from **Add more**, and you can switch, reset or import kits in **Settings > Tabs**.
 Kits are small JSON files, and [docs/kits.md](docs/kits.md) shows how to write your own.
 
 ## Privacy

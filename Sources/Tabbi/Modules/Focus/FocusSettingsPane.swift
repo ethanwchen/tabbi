@@ -158,7 +158,7 @@ struct FocusSettingsPane: View {
                         Text("Presets")
                     }
                     .fixedSize()
-                    .help("Pick a cozy study playlist")
+                    .help("Pick a cozy focus playlist")
                 }
             } label: {
                 Text("Playlist")

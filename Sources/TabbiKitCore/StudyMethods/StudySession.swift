@@ -68,7 +68,8 @@ public struct StudyPhaseRecord: Codable, Hashable, Sendable {
 ///
 /// Flow mirrors the Today panel's focus timer: when focus (or review) ends,
 /// the next phase starts on its own; when a break ends, the next focus phase
-/// waits idle so the timer never runs on while the user is away.
+/// waits idle so the timer never runs on while the user is away. The plain
+/// Timer has no breaks: its countdown ends into a fresh idle one.
 /// Open-ended Flowtime focus ends with `stopFocus(at:)`; Anki sprint focus
 /// ends when `recordReviewedToday(_:at:)` reaches the card goal.
 public struct StudySession: Codable, Hashable, Sendable {
@@ -219,10 +220,11 @@ public struct StudySession: Codable, Hashable, Sendable {
     /// Ends the current phase early and moves on.
     ///
     /// The next phase keeps running if the clock was running, so skipping a
-    /// break while in flow drops straight into the next focus phase.
+    /// break while in flow drops straight into the next focus phase. A
+    /// method without breaks (the plain Timer) just stops.
     public mutating func skip(at now: Date) {
         let wasRunning = isRunning
-        endPhase(at: now, outcome: .skipped, startNext: wasRunning)
+        endPhase(at: now, outcome: .skipped, startNext: wasRunning && method.hasBreaks)
     }
 
     /// Ends an open-ended Flowtime focus phase and starts its proportional
@@ -274,7 +276,8 @@ public struct StudySession: Codable, Hashable, Sendable {
     public mutating func advance(to now: Date) -> [StudyPhaseRecord] {
         var ended: [StudyPhaseRecord] = []
         while let endsAt, endsAt <= now {
-            if let record = endPhase(at: endsAt, outcome: .completed, startNext: phase != .shortBreak && phase != .longBreak) {
+            // A break, or a Timer's countdown, ends into an idle phase that waits for the user.
+            if let record = endPhase(at: endsAt, outcome: .completed, startNext: !phase.isBreak && method.hasBreaks) {
                 ended.append(record)
             }
         }

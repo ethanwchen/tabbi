@@ -213,6 +213,9 @@ final class StudyMethodTests: XCTestCase {
         XCTAssertEqual(StudyMethodInfo.info(for: .questionBlock).evidenceLevel, .strong)
         XCTAssertEqual(StudyMethodInfo.info(for: .fiftyTwoSeventeen).evidenceLevel, .weak)
         XCTAssertEqual(StudyMethodInfo.info(for: .ultradian).evidenceLevel, .weak)
+        // A plain countdown is not a study method, so it carries no rating.
+        XCTAssertNil(StudyMethodInfo.info(for: .timer).evidenceLevel)
+        XCTAssertTrue(StudyMethodInfo.all.filter { $0.kind != .timer }.allSatisfy { $0.evidenceLevel != nil })
         XCTAssertEqual(StudyMethod.pomodoro.info.name, "Pomodoro")
         XCTAssertEqual(Set(StudyEvidenceLevel.allCases.map(\.label)).count, 3)
         XCTAssertTrue(StudyMethodInfo.footnote.contains("conventions"))

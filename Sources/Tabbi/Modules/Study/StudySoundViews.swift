@@ -35,7 +35,7 @@ struct StudySoundRow: View {
             return chip.isSelected(in: settings) ? "Blend: \(settings.mix.summary). Open the mixer"
                                                  : "Blend up to \(FocusMix.maxLayers) sounds and set levels"
         case .playlist:
-            guard settings.playlist != nil else { return "Pick a study playlist to start with focus" }
+            guard settings.playlist != nil else { return "Pick a playlist to start with focus" }
             let name = FocusPlaylistPreset.matching(settings.playlistText)?.name ?? "your playlist"
             return "Plays \(name) with focus. Change it in the mixer"
         default:
@@ -295,7 +295,7 @@ private struct StudyPlaylistList: View {
                 .padding(.bottom, Theme.Spacing.xxs)
             if hasCustom {
                 StudyPlaylistRow(name: "Your playlist", detail: focus.settings.playlist?.source.displayName ?? "",
-                                 isOn: true, help: "The link from Settings › Focus; picking a preset replaces it") {}
+                                 isOn: true, help: "The link from the Focus options in Settings > Tabs; picking a preset replaces it") {}
             }
             ForEach(FocusPlaylistPreset.all.prefix(hasCustom ? 5 : 6)) { preset in
                 let isOn = preset == current

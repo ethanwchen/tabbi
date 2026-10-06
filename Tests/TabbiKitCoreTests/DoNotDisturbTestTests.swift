@@ -69,4 +69,19 @@ final class DoNotDisturbTestTests: XCTestCase {
         let missing = FocusShortcutsState(onName: "On", offName: "Off", installed: ["On"]).connectionStatus
         XCTAssertNil(missing.suggestion, "Nothing to test until both shortcuts exist")
     }
+
+    func testATurnedOffSwitchIsNeverConnected() {
+        // Both shortcuts exist, but Tabbi won't run them while the switch is off.
+        let off = FocusShortcutsState(onName: "On", offName: "Off", installed: ["On", "Off"], isTurnedOn: false)
+        XCTAssertFalse(off.connectionStatus.isConnected)
+        XCTAssertEqual(off.connectionStatus.headline, "Do Not Disturb is off")
+        XCTAssertEqual(off.connectionStatus.action, .turnOnDoNotDisturb)
+        XCTAssertNil(off.connectionStatus.suggestion, "Nothing to test while it is off")
+        XCTAssertEqual(ConnectionAction.turnOnDoNotDisturb.title, "Turn on")
+        XCTAssertEqual(off.diagnosis.firstFailure?.question, "Is Do Not Disturb turned on in Tabbi?")
+        XCTAssertEqual(off.diagnosis.technical, "doNotDisturb.off")
+        // Off wins even before the shortcuts are listed.
+        let unlisted = FocusShortcutsState(onName: "On", offName: "Off", installed: nil, isTurnedOn: false)
+        XCTAssertEqual(unlisted.connectionStatus.light, .notSetUp)
+    }
 }

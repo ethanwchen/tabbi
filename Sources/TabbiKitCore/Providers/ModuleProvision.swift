@@ -56,9 +56,14 @@ public struct ProgressItem: Identifiable, Hashable, Sendable {
     public var unit: String
     /// What a click on the goal does, beyond opening its module.
     public var action: ProvidedAction?
+    /// A goal the user aims for rather than work that is due (a daily focus
+    /// time goal, not cards due). The closed notch shows it only once the
+    /// day has some progress, so a fresh day never opens on "120 min left"
+    /// for a goal the user may not even know about.
+    public var waitsForStart: Bool
 
     public init(id: String, source: ModuleID, title: String, completed: Int, target: Int, unit: String,
-                action: ProvidedAction? = nil) {
+                action: ProvidedAction? = nil, waitsForStart: Bool = false) {
         self.id = id
         self.source = source
         self.title = title
@@ -66,10 +71,14 @@ public struct ProgressItem: Identifiable, Hashable, Sendable {
         self.target = target
         self.unit = unit
         self.action = action
+        self.waitsForStart = waitsForStart
     }
 
     public var remaining: Int { max(target - completed, 0) }
     public var isComplete: Bool { remaining == 0 }
+    /// Whether the closed notch has something worth saying about this goal:
+    /// work left, and for a goal that `waitsForStart`, some already done.
+    public var showsBesideNotch: Bool { !isComplete && (completed > 0 || !waitsForStart) }
     /// Share of the goal done, clamped to 0...1; a goal of 0 counts as done.
     public var fraction: Double {
         target > 0 ? min(max(Double(completed) / Double(target), 0), 1) : 1

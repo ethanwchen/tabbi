@@ -36,7 +36,9 @@ public struct StudyMethodInfo: Hashable, Sendable {
     public let howTo: String
     /// One or two sentences on what the evidence does and does not show.
     public let evidence: String
-    public let evidenceLevel: StudyEvidenceLevel
+    /// The badge rating, or nil for a plain tool that is not a study method
+    /// (the Timer), which shows no rating or evidence note at all.
+    public let evidenceLevel: StudyEvidenceLevel?
 
     /// Shared footnote under every popover.
     public static let footnote = "Interval lengths are conventions. What research supports is regular breaks, testing yourself, and spacing reviews over days."
@@ -105,6 +107,15 @@ public struct StudyMethodInfo: Hashable, Sendable {
                 howTo: "Set your own focus and break lengths, and optionally a longer break every few rounds. Pick a rhythm you will actually stick to.",
                 evidence: "No interval is proven best. Taking regular breaks at all is what has support.",
                 evidenceLevel: .mixed
+            )
+        case .timer:
+            return StudyMethodInfo(
+                kind: kind,
+                name: "Timer",
+                tagline: "One countdown, no breaks",
+                howTo: "Pick 5, 10 or 25 minutes, or step to any length, and press Start. The timer counts down once and stops. Handy for a quick task, a break or the kettle.",
+                evidence: "A plain countdown is a tool, not a study method. Setting a short, fixed time can make a task easier to start.",
+                evidenceLevel: nil
             )
         }
     }

@@ -165,6 +165,19 @@ final class SettingsStore: ObservableObject {
         apply(kit, answers: settings.kitAnswers, kind: .reset)
     }
 
+    /// True when General's settings are already how a fresh install has them.
+    var usesGeneralDefaults: Bool {
+        settings.usesGeneralDefaults(of: activeKit, catalog: catalog)
+    }
+
+    /// General's "Reset to Defaults"; keeps tabs, theme and launch at login.
+    func resetGeneral() {
+        settings.resetGeneral(to: activeKit, catalog: catalog)
+    }
+
+    /// The theme Look's "Reset to Default" picks: the active kit's.
+    var defaultTheme: ThemeID { AppSettings.defaultTheme(for: activeKit) }
+
     /// What switching to `kit` with `answers` would change, for the sheet
     /// Settings shows before applying an imported kit.
     func preview(of kit: KitManifest, answers: KitAnswers = [:]) -> KitChangePreview {

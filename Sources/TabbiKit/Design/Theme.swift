@@ -124,14 +124,7 @@ public struct Card<Content: View>: View {
     public var body: some View {
         content
             .padding(padding)
-            .background(
-                RoundedRectangle(cornerRadius: Theme.Radius.m, style: .continuous)
-                    .fill(Theme.Palette.surface)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: Theme.Radius.m, style: .continuous)
-                    .strokeBorder(Theme.Palette.stroke, lineWidth: 0.5)
-            )
+            .surfaceBackground(RoundedRectangle(cornerRadius: Theme.Radius.m, style: .continuous))
     }
 }
 
@@ -188,6 +181,15 @@ public extension View {
     }
 }
 
+public extension View {
+    /// The background of a content surface (`Card`) in the active theme:
+    /// the flat palette surface with a hairline stroke, or frosted glass
+    /// when the theme's `surfaces` is `.glass` (see `GlassSheen`).
+    func surfaceBackground(_ shape: some InsettableShape) -> some View {
+        modifier(SurfaceBackground(shape: shape))
+    }
+}
+
 public extension EnvironmentValues {
     /// False where Liquid Glass can't be drawn, such as `ImageRenderer`
     /// snapshots, so glass controls show their material fallback instead.
@@ -239,12 +241,86 @@ private struct ControlBackground<S: Shape>: ViewModifier {
 
     /// The light catching the top edge of a glass control.
     private var rim: some View {
-        shape.stroke(LinearGradient(colors: [.white.opacity(0.32), .white.opacity(0.06)],
+        shape.stroke(LinearGradient(colors: [Color(GlassSheen.standard.rimTop), Color(GlassSheen.standard.rimBottom)],
                                     startPoint: .top, endPoint: .bottom), lineWidth: 0.75)
             .allowsHitTesting(false)
     }
 
     private func solid(_ content: Content) -> some View {
         content.background(shape.fill(fill))
+    }
+}
+
+private struct SurfaceBackground<S: InsettableShape>: ViewModifier {
+    let shape: S
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @Environment(\.drawsLiquidGlass) private var drawsLiquidGlass
+
+    func body(content: Content) -> some View {
+        switch Theme.current.surfaces {
+        case .flat:
+            content
+                .background(shape.fill(Theme.Palette.surface))
+                .overlay(shape.strokeBorder(Theme.Palette.stroke, lineWidth: 0.5))
+        case .glass:
+            glass(content)
+        }
+    }
+
+    @ViewBuilder
+    private func glass(_ content: Content) -> some View {
+        let live = drawsLiquidGlass && !reduceTransparency
+        if #available(macOS 26, *), live {
+            content
+                .background(GlassSheenView(shape: shape))
+                .glassEffect(.regular, in: shape)
+                .overlay(GlassRim(shape: shape))
+        } else if live {
+            content
+                .background {
+                    ZStack {
+                        shape.fill(.ultraThinMaterial)
+                        GlassSheenView(shape: shape)
+                    }
+                }
+                .overlay(GlassRim(shape: shape))
+        } else {
+            // Snapshots and Reduce Transparency: the drawn sheen alone.
+            content
+                .background(GlassSheenView(shape: shape))
+                .overlay(GlassRim(shape: shape))
+        }
+    }
+}
+
+/// The painted light of a glass surface: a top-lit fill and a soft glint
+/// near the top-leading corner.
+private struct GlassSheenView<S: Shape>: View {
+    let shape: S
+
+    var body: some View {
+        let sheen = GlassSheen.standard
+        shape
+            .fill(LinearGradient(colors: [Color(sheen.fillTop), Color(sheen.fillBottom)],
+                                 startPoint: .top, endPoint: .bottom))
+            .overlay(
+                shape.fill(EllipticalGradient(colors: [Color(sheen.glint), Color(sheen.glint.opacity(0))],
+                                              center: UnitPoint(x: 0.15, y: 0),
+                                              startRadiusFraction: 0, endRadiusFraction: 0.55))
+            )
+            .allowsHitTesting(false)
+    }
+}
+
+/// The rim of a glass surface, lit from above.
+private struct GlassRim<S: InsettableShape>: View {
+    let shape: S
+
+    var body: some View {
+        let sheen = GlassSheen.standard
+        shape
+            .strokeBorder(LinearGradient(colors: [Color(sheen.rimTop), Color(sheen.rimBottom)],
+                                         startPoint: .top, endPoint: .bottom), lineWidth: 0.75)
+            .allowsHitTesting(false)
     }
 }

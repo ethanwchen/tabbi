@@ -54,7 +54,9 @@ final class ClosetStore: ObservableObject {
     init(storage: EditionStorage, runMode: RunMode, starter: PetProfile = .starter(.cat),
          celebrations: CelebrationCenter? = nil) {
         let isDemo = runMode.isDemo
-        let url = isDemo ? nil : ClosetStore.saveURL(in: storage)
+        // A snapshot run neither reads nor writes the save on this Mac, so
+        // it shows a fresh install's starter pet wherever it runs.
+        let url = isDemo || runMode.isSnapshot ? nil : ClosetStore.saveURL(in: storage)
         var unreadable = false
         var saved = true
         var closet = PetCloset.demo

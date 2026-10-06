@@ -2,7 +2,7 @@
 
 On the first launch the notch opens on setup and stays open until it ends.
 Everything happens inside the notch, with no extra window, and every step can be skipped.
-**Run Setup Again** in **Settings > Modules** starts the same flow from the current kit and tabs.
+**Run Setup Again** in **Settings > Tabs** (under More options) starts the same flow from the current kit and tabs.
 
 ## The flow
 
@@ -16,7 +16,7 @@ Everything happens inside the notch, with no extra window, and every step can be
 | Your pet | Closet | Cat or dog, a breed from sprite tiles, a fur color and a name. |
 | Connect Anki | Anki | The Anki tab's own connection guide, checked again while visible, then today's due cards. |
 | Calendar access | Today | What Today does with the calendar, one **Allow Access** button, and a live Up next preview. |
-| Study method | Study | The kit's methods as one-tap tiles, with each method's rhythm and evidence. |
+| Your timer | Timer | The kit's methods as one-tap tiles, with each method's rhythm and evidence. |
 | Study parties | Party | The pet's public name, visibility, the friend code and an Add-a-friend field. |
 
 The kit and tabs are applied as soon as the flow leaves the tab step, so the setup steps build on what was picked.

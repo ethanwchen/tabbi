@@ -20,10 +20,15 @@ struct AppearanceSettingsPane: View {
         Form {
             family(.classic, title: "Classic")
             family(.cozy, title: "Cozy", footer: footer)
+            ResetToDefaultsRow(isAtDefaults: store.settings.themeID == store.defaultTheme,
+                               help: "Go back to \(ThemeCatalog.resolve(store.defaultTheme).name), the theme \(store.activeKit?.name ?? "Tabbi") starts with",
+                               title: "Reset to Default") {
+                store.settings.themeID = store.defaultTheme
+            }
         }
         .formStyle(.grouped)
         .scrollDisabled(true)
-        .frame(width: paneWidth, height: 400)
+        .frame(width: paneWidth, height: 464)
     }
 
     private func family(_ family: ThemeFamily, title: String, footer: String? = nil) -> some View {

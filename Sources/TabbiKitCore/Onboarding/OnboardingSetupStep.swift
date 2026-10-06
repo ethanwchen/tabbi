@@ -38,7 +38,7 @@ public extension OnboardingSetupStep {
     /// Ask for calendar access, so Today can plan around events.
     static let calendar = OnboardingSetupStep("calendar", title: "Calendar access", symbol: "calendar", rank: 30)
     /// Pick the study rhythm the Study timer starts with.
-    static let studyMethod = OnboardingSetupStep("studyMethod", title: "Study method", symbol: "timer", rank: 40)
+    static let studyMethod = OnboardingSetupStep("studyMethod", title: "Your timer", symbol: "timer", rank: 40)
     /// Pick a display name and the server study parties meet on.
     static let party = OnboardingSetupStep("party", title: "Study parties", symbol: "person.3.fill", rank: 50)
 }

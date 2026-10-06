@@ -91,7 +91,7 @@ Themes live in `Sources/TabbiKitCore/Themes/ThemeCatalog.swift`.
 [docs/design/themes.md](docs/design/themes.md) explains what a theme controls and the rules every theme keeps.
 
 1. Add a `ThemeID` constant in `AppTheme.swift`.
-2. Declare the theme in `ThemeCatalog` with a name, a one-line summary, a `family` (`.classic` or `.cozy`, which picks its group in Settings > Appearance) and a `ThemePalette`.
+2. Declare the theme in `ThemeCatalog` with a name, a one-line summary, a `family` (`.classic` or `.cozy`, which picks its group in Settings > Look) and a `ThemePalette`.
    Cozy themes can reuse `cozyPalette(glow:tint:)`.
 3. Choose its `accents` (`original`, `monochrome`, `vivid` or `pastel`), `typeface`, `motion` and `controls` (`glass` draws Liquid Glass on macOS 26, a translucent material on macOS 14 and 15, and a solid surface when Reduce Transparency is on).
 4. Add it to `ThemeCatalog.all` in picker order, update the order in `ThemeTests`, and add the id to the `theme` row in [docs/kits.md](docs/kits.md).

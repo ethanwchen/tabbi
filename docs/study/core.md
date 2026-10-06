@@ -152,9 +152,11 @@ It is `Codable`, so a running session persists the exact method it started with.
 | `.ankiSprint(cards:)` | Card goal (default 100) | 5 min | Suggest a break every `sprintBreakCards` (200) or `sprintBreakInterval` (30 min) |
 | `.questionBlock` | 60 min, 40 questions | 10 min | 60 min `review` phase after each block |
 | `.custom(focus:breakLength:longBreak:)` | User | User | Lengths clamped to 1 min...4 h |
+| `.timer(_:)` | User (`StudyTimerLength`, 10 min by default) | None | One countdown that stops when it ends; a 5, 10 or 25 min chip starts it in one click, or a stepper sets any length |
 
 - `StudyMethod.presets` lists every kind once, in picker order; `preset(_:)` looks one up.
 - `nextPhase(after:completedFocusCount:)` gives the next `StudyPhaseKind`: focus, then `review` when the method has one, then `shortBreak` or `longBreak`, then focus.
+  A method without breaks (`hasBreaks` false, the Timer) goes from focus to a fresh idle focus.
 - `duration(of:workedBeforeBreak:)` is the wall-clock length of a phase, or `nil` for open-ended and card-goal focus.
   Proportional breaks use `workedBeforeBreak`.
 - `sprintGoal(reviewDue:learnDue:)` defaults a sprint to today's reviews plus learning cards, the work that should come before new cards.
@@ -296,7 +298,7 @@ In the app, `PetCoachController` (`Modules/PetCoach`) runs while the Closet modu
 It plays each nudge in `PetCoachOverlayWindow`, a transparent, non-activating panel hung below the menu bar at the notch's right edge.
 The window ignores the mouse except while the pointer is over the bubble.
 Run the app with `TABBI_COACH_PREVIEW=1` to play one nudge at launch, `TABBI_COACH_PREVIEW=celebrate` to play a level-up celebration, or `TABBI_COACH_PREVIEW=glance` to play the silent glance.
-Settings › Pet Coach (shown with the Closet module) turns nudges on or off and edits the distracting apps: suggestion chips plus any app picked from the Applications folder.
+The Closet row's Options in Settings > Tabs (Pet Coach) turns nudges on or off and edits the distracting apps: suggestion chips plus any app picked from the Applications folder.
 Turning nudges off stops sampling and ends any open episode, so turning them back on starts fresh.
 Turning the coach off (the Closet module) does the same, and the save keeps cooldowns and snooze but never an open episode, so the next focus phase after a relaunch gets its full grace period.
 

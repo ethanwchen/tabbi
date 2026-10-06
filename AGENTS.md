@@ -40,8 +40,9 @@ Judge them against the design rules below before you call the work done.
   `FocusMix` through AVAudioEngine; Study can reuse it) and `Settings/`
   (the toolbar `SettingsWindowController`, which shows whatever
   `SettingsPane`s the app hands it, and the `HotkeyRecorder` shortcut
-  field). The app's own panes and their order live in
-  `Sources/Tabbi/Settings/AppSettingsPanes.swift`. Everything here is `public`. Reuse it; add new
+  field). The app's five sections (General, Tabs, Look, Connections,
+  About) live in `Sources/Tabbi/Settings/AppSettingsPanes.swift`; keep it
+  at five and tuck rare settings under More options. Everything here is `public`. Reuse it; add new
   shared components here, not inside a module.
 - `Sources/Tabbi/Modules/ModuleViews.swift` - hooks the shared notch up
   to the app: the closed notch's live-activity wings, `notchContent`
@@ -52,15 +53,15 @@ Judge them against the design rules below before you call the work done.
   `OnboardingStore` runs the pure `OnboardingFlow` (`TabbiKitCore/Onboarding`)
   and applies the kit and tabs once the tab step is done; its views fill the
   open notch through `NotchContent.takeover` (a `NotchTakeover`) while
-  `NotchViewModel.showsTakeover` is on. Settings > Modules re-runs it.
+  `NotchViewModel.showsTakeover` is on. Settings > Tabs re-runs it.
 - `Sources/Tabbi/Modules/<Module>/` - one folder per module: a store
   (`ObservableObject`), SwiftUI views, and a `NotchModule` class (its own
   `static let descriptor` with id, title, symbol, category, accent and
-  permissions, `init(context:)`, a panel, an optional Settings toolbar pane
-  from `makeSettingsPane()`, and `start()`/`stop()`). The pane and the
-  lifecycle follow the module's on/off switch. Modules that share a pane
-  return the same id and it shows once: Today and Focus both offer the
-  Focus pane, since both show the focus timer.
+  permissions, `init(context:)`, a panel, optional settings from
+  `makeSettingsPane()`, which open from the module's Options button in
+  Settings > Tabs, and `start()`/`stop()`). The lifecycle follows the
+  module's on/off switch. Modules can share a pane: Today and Focus both
+  offer the Focus pane, since both show the focus timer.
 - `Sources/Tabbi/Modules/ModuleContext.swift` - what every module gets
   in `init(context:)`: its id, the edition, read access to settings and the
   active kit (`kitApplied` fires when the user switches to, resets or
@@ -175,7 +176,7 @@ A new vertical is its own files plus one line in `ModuleList.swift`.
    Log what the user did in `context.activityLog`: the fixture records a `problem.solved` activity of its own kind when the problem is solved.
 5. Add `<Module>Module.self,` at the end of `ModuleList.all`.
    A kit can now list the module id in `modules` and in its `ticker` field; until that line exists, kit validation reports both as unknown.
-6. Optionally return a Settings pane from `makeSettingsPane()`.
+6. Optionally return a Settings pane from `makeSettingsPane()`; it opens from the module's Options button in Settings > Tabs.
    A kit that ships with the app is a separate change: its JSON file, named after its id and with a `pickerOrder`, in `Sources/TabbiKitCore/Kits/Bundled`, which `KitLibrary.bundled` lists (see `docs/kits.md`).
 
 The module itself needs no edits to `AppServices`, the ticker, Today, `Theme`, layouts or the catalog.

@@ -32,10 +32,10 @@ public enum StudyTimerFormat {
         return String(format: "%d:%02d", minutes, secs)
     }
 
-    /// Phase name, e.g. "Focus", "Review", "Break", "Long break".
+    /// Phase name, e.g. "Focus", "Timer", "Review", "Break", "Long break".
     public static func phaseName(_ phase: StudyPhaseKind, method: StudyMethod) -> String {
         switch phase {
-        case .focus: method.cardGoal == nil ? "Focus" : "Sprint"
+        case .focus: method.kind == .timer ? "Timer" : method.cardGoal == nil ? "Focus" : "Sprint"
         case .review: "Review"
         case .shortBreak: "Break"
         case .longBreak: "Long break"
@@ -62,8 +62,11 @@ public enum StudyTimerFormat {
     }
 
     /// Where the session stands, e.g. "Round 2 of 4" for a method with a long
-    /// break, "3 rounds done", or nil before the first round finishes.
+    /// break, "3 rounds done", or nil before the first round finishes and
+    /// for the Timer, which has no rounds.
     public static func roundLabel(_ session: StudySession) -> String? {
+        // A plain countdown has no rounds to count.
+        guard session.method.hasBreaks else { return nil }
         let done = session.completedFocusCount
         if let every = session.method.longBreak?.every {
             // Count the round in progress; after a long break start a new set.
@@ -84,7 +87,9 @@ public enum StudyTimerFormat {
             return "Resume"
         case .idle:
             switch session.phase {
-            case .focus: return session.method.cardGoal == nil ? "Start focus" : "Start sprint"
+            case .focus:
+                if session.method.kind == .timer { return "Start timer" }
+                return session.method.cardGoal == nil ? "Start focus" : "Start sprint"
             case .review: return "Start review"
             case .shortBreak, .longBreak: return "Start break"
             }
