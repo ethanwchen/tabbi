@@ -16,7 +16,7 @@ import TabbiKitCore
 /// touches EventKit; `TABBI_SCHEDULE_PREVIEW=notAsked|denied|freeDay` renders
 /// the empty states instead, `selected` a block's details, `week` the Week
 /// view, `plan` or `plan-selected` the Plan button's proposal, and
-/// `plan-week` the Week view's.
+/// `plan-week` or `plan-week-selected` the Week view's.
 ///
 /// Plan offers the rest of today planned on device (`ScheduleDraft`, no
 /// Claude): other modules' open tasks and review goals, placed in the free
@@ -87,12 +87,15 @@ final class ScheduleStore: ObservableObject {
             let showsDay = preview != "notAsked" && preview != "denied" && preview != "freeDay"
             items = showsDay ? ScheduleSampleData.weekItems(from: date) : []
             selectedID = preview == "selected" ? "demo-deck" : nil
-            mode = preview == "week" || preview == "plan-week" ? .week : .day
+            mode = preview?.hasPrefix("week") == true || preview?.hasPrefix("plan-week") == true ? .week : .day
             if preview == "plan" || preview == "plan-selected" {
                 planDay()
                 if preview == "plan-selected" { selectedID = draft?.items.first?.id }
             }
-            if preview == "plan-week" { planWeek() }
+            if preview?.hasPrefix("plan-week") == true {
+                planWeek()
+                if preview == "plan-week-selected" { selectedID = draft?.items.last?.id }
+            }
         } else {
             now = date
             access = Self.currentAccess()

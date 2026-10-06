@@ -14,7 +14,15 @@ struct SchedulePanel: View {
     var body: some View {
         let layout = store.dayLayout
         VStack(spacing: Theme.Spacing.s) {
-            ScheduleHeader(store: store, layout: layout)
+            if store.mode == .week, store.emptySituation == nil, let draft = store.draft {
+                // The week needs every point of height for its seven rows,
+                // so a plan on offer takes the header's place, not a card's.
+                SchedulePlanStrip(draft: draft, selected: store.selectedItem.flatMap { $0.kind == .proposed ? $0 : nil },
+                                  writeFailed: store.writeFailed, store: store, isInline: true)
+                    .transition(.opacity)
+            } else {
+                ScheduleHeader(store: store, layout: layout)
+            }
             if let situation = store.emptySituation {
                 ScheduleAccessMessage(situation: situation, store: store)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -23,10 +31,6 @@ struct SchedulePanel: View {
                              isDrafting: store.draft != nil) { store.select($0) }
                     .frame(maxHeight: .infinity)
                     .transition(.opacity)
-                if let draft = store.draft {
-                    SchedulePlanStrip(draft: draft, selected: store.selectedItem.flatMap { $0.kind == .proposed ? $0 : nil },
-                                      writeFailed: store.writeFailed, store: store)
-                }
             } else {
                 ScheduleTimeline(layout: layout, now: store.now, selectedID: store.selectedID,
                                  isDrafting: store.draft != nil) { store.select($0) }
@@ -630,18 +634,27 @@ private struct SchedulePlanStrip: View {
     let selected: ScheduleItem?
     let writeFailed: Bool
     @ObservedObject var store: ScheduleStore
+    /// Drawn in the header row, without a card of its own (the Week view).
+    var isInline = false
 
     var body: some View {
-        Card(padding: Theme.Spacing.s) {
-            HStack(spacing: Theme.Spacing.s) {
-                if let selected {
-                    block(selected)
-                } else {
-                    overview
-                }
-            }
-            .frame(maxWidth: .infinity, minHeight: 28, alignment: .leading)
+        if isInline {
+            content
+                .padding(.horizontal, Theme.Spacing.xxs)
+        } else {
+            Card(padding: Theme.Spacing.s) { content }
         }
+    }
+
+    private var content: some View {
+        HStack(spacing: Theme.Spacing.s) {
+            if let selected {
+                block(selected)
+            } else {
+                overview
+            }
+        }
+        .frame(maxWidth: .infinity, minHeight: isInline ? 24 : 28, alignment: .leading)
     }
 
     @ViewBuilder
@@ -653,7 +666,8 @@ private struct SchedulePlanStrip: View {
             Text(ScheduleFormat.title(item))
                 .font(Theme.Typography.bodyEmphasis)
                 .foregroundStyle(Theme.Palette.primaryText)
-            Text(failureOr([ScheduleFormat.range(item.start, item.end), ScheduleFormat.duration(minutes: item.minutes),
+            Text(failureOr([dayText(item.start), ScheduleFormat.range(item.start, item.end),
+                            ScheduleFormat.duration(minutes: item.minutes),
                             item.reason].compactMap { $0 }.joined(separator: ", ")))
                 .font(Theme.Typography.caption.monospacedDigit())
                 .foregroundStyle(writeFailed ? Theme.Palette.danger : Theme.Palette.secondaryText)
@@ -685,6 +699,12 @@ private struct SchedulePlanStrip: View {
             SchedulePillButton(title: "Add all", symbol: "plus", isProminent: true,
                                help: "Add every proposed block to your calendar") { store.add() }
         }
+    }
+
+    /// The block's day when it isn't today, as the week plan spans seven.
+    private func dayText(_ date: Date) -> String? {
+        Calendar.current.isDate(date, inSameDayAs: store.now)
+            ? nil : date.formatted(.dateTime.weekday(.abbreviated).day())
     }
 
     private func failureOr(_ text: String) -> String {
