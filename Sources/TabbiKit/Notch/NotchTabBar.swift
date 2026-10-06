@@ -238,8 +238,8 @@ public struct NotchHeaderShortcuts: View {
 
 /// One header shortcut, sized like a tab so it lines up with the tab row: a
 /// control surface like the Settings button that takes the module's accent
-/// while its page is open, and a small
-/// wiggle on hover (skipped with Reduce Motion).
+/// while its page is open, the same press feedback as the tabs and the gear,
+/// and a small wiggle on hover (skipped with Reduce Motion).
 private struct HeaderShortcutButton: View {
     let module: ModuleID
     /// Letter key that opens it, shown in the tooltip.
@@ -266,12 +266,13 @@ private struct HeaderShortcutButton: View {
                     SpringKeyframe(-4, duration: 0.1)
                     SpringKeyframe(0, duration: 0.16)
                 }
-                .frame(width: 28, height: 24)
+                .frame(width: NotchHeaderLayout.Metrics().shortcutWidth,
+                       height: NotchHeaderLayout.Metrics().controlHeight)
                 .controlBackground(Capsule(), hovering: hovering,
                                    tint: isSelected ? descriptor.accentColor.opacity(0.16) : nil)
                 .contentShape(Capsule())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile)
         .help(key.map { "\(label) (\($0.uppercased()))" } ?? label)
         .accessibilityLabel(label)
         .onHover { inside in

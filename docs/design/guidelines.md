@@ -70,6 +70,9 @@ When a rule and a feature disagree, remove or hide the feature.
 - Breeds share one canvas size, baseline and animation timing, so swapping a breed never shifts the layout.
 - Reactions follow what the user did (a block finished, cards reviewed) and are immediate; nothing idles or nags in the closed notch.
 - Points, streaks and the shop stay off the primary surfaces of everyday tabs.
+- The paw at the far right of the header is sized and colored like a tab (a 28 by 24 capsule from `NotchHeaderLayout.Metrics`), takes the pet's accent on hover and while the Closet is open, and gives the same press feedback (`.tactile`) as the tabs and the gear beside it.
+- The sprite audit sheets in `docs/design/pets/` show every breed in every animation (the middle frame), every outfit and every accessory at 3x on the notch black.
+  Use them to check a new breed or costume against the rest: same canvas, same baseline, nothing clipped at the canvas edges, and the face never hidden by a hat.
 
 ## States and copy
 
