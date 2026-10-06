@@ -35,16 +35,22 @@ final class PetCostumeFitTests: XCTestCase {
         animation == .peekIn || animation == .peekOut
     }
 
-    /// A held mug can hide a neck item, and a curled-up pet tucks its chest
-    /// under its chin, so a body item may be out of sight there.
-    private func hidesTheChest(_ animation: PetAnimation) -> Bool {
-        animation == .coffee || animation == .nap
+    /// A held mug or a chin tucked in for a nap can hide a neck item.
+    private func hidesTheNeck(_ animation: PetAnimation, _ accessories: [PetAccessory]) -> Bool {
+        (animation == .coffee || animation == .nap) && accessories.contains { $0.slot == .neck }
     }
 
-    /// A raised mug or a waving paw passes in front of the head, so what
-    /// shows of a hat or of the nose there can't say where the hat sits.
-    private func coversTheHead(_ animation: PetAnimation) -> Bool {
-        animation == .coffee || animation == .wave
+    /// A curled-up pet lies on the bottom row, and so does what it wears
+    /// on its neck and body.
+    private func liesOnTheFloor(_ animation: PetAnimation, _ outfit: PetOutfit, _ accessories: [PetAccessory]) -> Bool {
+        animation == .nap && (outfit != .none || accessories.contains { $0.slot == .neck })
+    }
+
+    /// A raised mug or a waving paw can pass in front of the head; in a
+    /// frame where it hides part of the item or of the nose, what shows
+    /// can't say where the item sits.
+    private func isCovered(_ animation: PetAnimation, item: Int, nose: Int, sitting: (item: Int, nose: Int)) -> Bool {
+        (animation == .coffee || animation == .wave) && (item < sitting.item || nose < sitting.nose)
     }
 
     func testEveryItemShowsAndStaysInsideTheFrameInEveryAnimation() {
@@ -59,12 +65,11 @@ final class PetCostumeFitTests: XCTestCase {
                     for (index, frame) in dressed.enumerated() {
                         let label = "\(look.name) on \(breed), \(animation) \(index + 1)"
                         let pixels = costumePixels(frame.canvas, over: plain[index].canvas)
-                        if !hidesTheChest(animation) {
+                        if !hidesTheNeck(animation, look.accessories) {
                             XCTAssertFalse(pixels.isEmpty, "not visible: \(label)")
                         }
-                        // A one-pixel margin leaves room for the costume's
-                        // outline; a curled-up pet lies on the bottom row.
-                        let floor = animation == .nap ? edge + 1 : edge
+                        // A one-pixel margin leaves room for the costume's outline.
+                        let floor = liesOnTheFloor(animation, look.outfit, look.accessories) ? edge + 1 : edge
                         XCTAssertFalse(pixels.contains { $0.x == 0 || $0.y == 0 || $0.x == edge || $0.y == floor },
                                        "clipped at the frame edge: \(label)")
                     }
@@ -76,15 +81,20 @@ final class PetCostumeFitTests: XCTestCase {
     func testHeadAndFaceItemsMoveWithTheHeadInEveryFrame() throws {
         let items = PetAccessory.allCases.filter { $0.slot != .neck }
         for breed in PetBreed.allCases {
+            let plainSitting = PetComposer.sitting(breed)
             for accessory in items {
+                let sitting = (item: costumePixels(PetComposer.sitting(breed, accessories: [accessory]), over: plainSitting).count,
+                               nose: points(of: .nose, in: plainSitting).count)
                 var offset: PetPoint?
-                for animation in PetAnimation.allCases where !coversTheHead(animation) {
+                for animation in PetAnimation.allCases {
                     let plain = PetComposer.clip(animation, for: breed).frames
                     let dressed = PetComposer.clip(animation, for: breed, accessories: [accessory]).frames
                     for (index, frame) in dressed.enumerated() {
                         let label = "\(accessory) on \(breed), \(animation) \(index + 1)"
-                        guard let item = bounds(costumePixels(frame.canvas, over: plain[index].canvas)),
-                              let nose = bounds(points(of: .nose, in: frame.canvas)) else { continue }
+                        let itemPixels = costumePixels(frame.canvas, over: plain[index].canvas)
+                        let nosePixels = points(of: .nose, in: frame.canvas)
+                        guard let item = bounds(itemPixels), let nose = bounds(nosePixels),
+                              !isCovered(animation, item: itemPixels.count, nose: nosePixels.count, sitting: sitting) else { continue }
                         // A sliding frame that clips the item can't show where it sits.
                         if isSliding(animation), item.minY == 0 { continue }
                         let here = PetPoint(x: item.minX - nose.minX, y: item.minY - nose.minY)
@@ -115,7 +125,9 @@ final class PetCostumeFitTests: XCTestCase {
                     XCTAssertEqual(shownEyes, eyes, "covers an eye: \(label)")
                 }
                 let item = try XCTUnwrap(bounds(costumePixels(dressed, over: plain)), label)
-                XCTAssertLessThanOrEqual(item.minY, eyeTop - 2, "sits too low to read as a hat: \(label)")
+                // The Shih Tzu's topknot takes the crown, so its hats sit a row lower.
+                let hatLine = breed == .shihTzu ? eyeTop - 1 : eyeTop - 2
+                XCTAssertLessThan(item.minY, hatLine, "sits too low to read as a hat: \(label)")
                 // Hats rest on the skull: each one covers the head or sits right on it.
                 XCTAssertTrue(costumePixels(dressed, over: plain).contains { plain[$0.x, $0.y] != nil || plain[$0.x, $0.y + 1] != nil },
                               "floats above the head: \(label)")
