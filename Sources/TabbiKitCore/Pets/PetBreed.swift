@@ -30,11 +30,13 @@ public enum PetBodyShape: String, CaseIterable, Codable, Sendable {
     case pointyEaredDog
     /// Long snout and a long low body (Dachshund).
     case longDog
+    /// Curly coat, a round topknot, and long pom-tipped ears (Poodle).
+    case poodleDog
 
     public var species: PetSpecies {
         switch self {
         case .cat, .roundCat, .sphynxCat: .cat
-        case .floppyDog, .fluffyDog, .batEaredDog, .pointyEaredDog, .longDog: .dog
+        case .floppyDog, .fluffyDog, .batEaredDog, .pointyEaredDog, .longDog, .poodleDog: .dog
         }
     }
 }
@@ -57,6 +59,7 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
     case corgi
     case dachshund
     case beagle
+    case poodle
 
     public var species: PetSpecies { bodyShape.species }
 
@@ -70,6 +73,7 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
         case .frenchBulldog: .batEaredDog
         case .corgi: .pointyEaredDog
         case .dachshund: .longDog
+        case .poodle: .poodleDog
         }
     }
 
@@ -99,6 +103,7 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
         case .corgi: "Corgi"
         case .dachshund: "Dachshund"
         case .beagle: "Beagle"
+        case .poodle: "Poodle"
         }
     }
 
@@ -164,6 +169,11 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
             return PetPalette([.furBase: c("#D58F48"), .furShade: c("#B57234"), .furAccent: c("#A9652C"),
                                .furSpot: c("#332D31"), .belly: c("#FFF8EE"), .nose: c("#2E2224"),
                                .outline: c("#3A1E10")])
+        case .poodle:
+            // Apricot curls with lighter tips, a cream muzzle, and a dark
+            // nose and eyes.
+            return PetPalette([.furBase: c("#EDB27A"), .furShade: c("#CC8A52"), .furAccent: c("#F8D2A6"),
+                               .belly: c("#FBE3C6"), .nose: c("#3A2622"), .outline: c("#3A2214")])
         }
     }
 
@@ -200,6 +210,8 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
             return PetPattern([.patchA: .belly, .paws: .belly])
         case .beagle:
             return PetPattern([.ears: .furAccent, .mask: .belly, .patchA: .furSpot, .paws: .belly, .tailTip: .belly])
+        case .poodle:
+            return PetPattern([.chest: .furAccent, .muzzle: .belly])
         }
     }
 }

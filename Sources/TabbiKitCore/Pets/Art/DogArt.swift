@@ -163,4 +163,53 @@ enum DogArt {
         ....pp.pp.......pp.pp...
         ...ppp.ppp.....ppp.ppp..
         """)
+
+    /// Poodle: a round curly topknot over a teddy face, with long curly ears
+    /// that end in round poms. Shade dots (`S`) and highlights (`A`) are the
+    /// curls; the smooth muzzle stays plain so the face reads at notch size.
+    static let headPoodle = SpriteGrid(art: """
+        ......AA.AA.AA......
+        .....BAABAABAAB.....
+        ....BBBBBBBBBBBB....
+        ...BBSBBSBBSBBSBB...
+        ..eeSBSSBSSBSSBSee..
+        .eee.BBBBBBBBBB.eee.
+        eAee.BBBBBBBBBB.eeAe
+        eeSe.BBBBBBBBBB.eSee
+        eeee.BBBBBBBBBB.eeee
+        eAee.BBBBBBBBBB.eeAe
+        eeSe.BBBBBBBBBB.eSee
+        eeee.BBmmmmmmBB.eeee
+        eAee.BmmmmmmmmB.eeAe
+        eeSe..mmmmmmmm..eSee
+        .eee..SmmmmmmS..eee.
+        ..e....SSSSSS....e..
+        """)
+
+    /// Poodle sitting: a curly coat with a fluffy chest and pom bracelets
+    /// at the paws.
+    static let bodyPoodle = SpriteGrid(art: """
+        .....BBBBBBBBBB.....
+        ....BBAccccccABB....
+        ...BABccccccccBAB...
+        ...BSBccccccccBSB...
+        ..BBBABccccccBABBB..
+        ..ABSSBBccccBBSSBA..
+        ..BBASBBBBBBBBSABB..
+        ..BSBSBABBBBABSBSB..
+        ..ABBSBBSBBSBBSBBA..
+        ..SBppSBBBBBBSppBS..
+        ..ApppA......ApppA..
+        """)
+
+    /// The poodle's tail: a short stem curving up from the rump to a round
+    /// pom that stands clear of the haunch.
+    static let tailPom = SpriteGrid(art: """
+        ..tt.
+        .tAtt
+        .tttt
+        ..tt.
+        .B...
+        B....
+        """)
 }

@@ -269,14 +269,16 @@ public enum PetComposer {
                 (body, bodyX, bodyY, tail) = (DogArt.bodyLong, 6, 21, nil)
                 (head, headX, headY, face) = (DogArt.headLong, 2, 8, DogArt.faceLongSnout)
                 (faceRow, eyeRow, skullTop) = (4, 4, 1)
-            case .floppyDog, .fluffyDog, .batEaredDog, .pointyEaredDog:
+            case .floppyDog, .fluffyDog, .batEaredDog, .pointyEaredDog, .poodleDog:
                 family = .dog
-                (body, bodyX, bodyY) = (DogArt.bodySit, 6, 20)
-                tail = (DogArt.tailUp, 23, 24)
+                let poodle = shape == .poodleDog
+                (body, bodyX, bodyY) = (poodle ? DogArt.bodyPoodle : DogArt.bodySit, 6, 20)
+                tail = poodle ? (DogArt.tailPom, 24, 21) : (DogArt.tailUp, 23, 24)
                 let (grid, eyes, skull): (SpriteGrid, Int, Int) = switch shape {
                 case .fluffyDog: (DogArt.headFluffy, 4, 1)
                 case .batEaredDog: (DogArt.headBatEared, 8, 5)
                 case .pointyEaredDog: (DogArt.headPointyEared, 8, 5)
+                case .poodleDog: (DogArt.headPoodle, 8, 4)
                 default: (DogArt.headFloppy, 4, 1)
                 }
                 // Dog heads differ in height; all rest their chin on the neck.
@@ -324,7 +326,9 @@ public enum PetComposer {
                 (torsoY, tailX) = (20, 26)
                 (legHeight, backHip, chinRow) = (4, 22, 24)
             case .dog:
-                (torso, torsoY, tails, tailX) = (WalkArt.dogTorso, 20, WalkArt.dogTail, 26)
+                (torso, tails) = shape == .poodleDog
+                    ? (WalkArt.poodleTorso, WalkArt.poodleTail) : (WalkArt.dogTorso, WalkArt.dogTail)
+                (torsoY, tailX) = (20, 26)
                 (legHeight, backHip, chinRow) = (4, 22, 24)
             case .longDog:
                 (torso, torsoY, tails, tailX) = (WalkArt.longTorso, 22, WalkArt.longTail, 27)

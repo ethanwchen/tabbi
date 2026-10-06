@@ -79,6 +79,7 @@ public enum PartyPetAppearance {
         case .corgi: "corgi"
         case .dachshund: "dachshund"
         case .beagle: "beagle"
+        case .poodle: "poodle"
         }
     }
 
@@ -99,7 +100,6 @@ public enum PartyPetAppearance {
         "german-shepherd": .corgi,
         "shiba-inu": .corgi,
         "husky": .corgi,
-        "poodle": .goldenRetriever,
         "pug": .frenchBulldog,
         "border-collie": .labrador,
         "samoyed": .goldenRetriever,

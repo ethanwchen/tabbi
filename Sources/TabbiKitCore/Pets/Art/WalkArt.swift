@@ -124,6 +124,37 @@ enum WalkArt {
             """),
     ]
 
+    /// Poodle torso: the dog torso covered in curls, with a fluffy chest.
+    static let poodleTorso = SpriteGrid(art: """
+        ...BBSBBBSBBBBSBBBSB..
+        ..BSBBBABBBSBBBABBBSB.
+        .ABBBSBBBSBBBSBBBSBBBB
+        .cABBBBSBBBBBBSBBBBSBB
+        .ccBSBBBBBSBBBBBBSBBBB
+        .cccBBBSBBBBBSBBBBBBBS
+        ..ccSSSSSSSSSSSSSSSSS.
+        """)
+
+    /// The poodle's pom tail, held high and bobbing between steps.
+    static let poodleTail = [
+        SpriteGrid(art: """
+            .tt.
+            tAtt
+            tttt
+            .tt.
+            .B..
+            BB..
+            """),
+        SpriteGrid(art: """
+            ..tt
+            .tAt
+            .ttt
+            ..tt
+            .B..
+            BB..
+            """),
+    ]
+
     static let dogTail = [
         SpriteGrid(art: """
             ..t

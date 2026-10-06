@@ -3,7 +3,7 @@
 A study-buddy cat or dog lives in the notch.
 This document explains how pet sprites are drawn, composed, and rendered, and how to add a breed.
 
-Status: the sprite format, palettes, pattern zones, renderer, all nine cat breeds, all six dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
+Status: the sprite format, palettes, pattern zones, renderer, all nine cat breeds, all seven dog breeds, every costume, the front-facing animations (idle, blink, sit, sleep, peek in and out, alert, celebrate), the walk cycle, the stretch, the animation state machine, and the app's `PetView` exist.
 
 ![All cat breeds sitting, on black at 4x](images/cats-sitting.png)
 
@@ -335,6 +335,18 @@ The Sphynx is hairless, so its look comes from shape and shading instead of mark
 
 ![Every animation frame for the Sphynx](images/animations-sphynx.png)
 
+### The Poodle
+
+The Poodle is all curls, so its look comes from a bumpy silhouette and dotted texture:
+
+- Head (`DogArt.headPoodle`): a round topknot with a scalloped top and a shade line where it meets the forehead, a teddy face with a smooth cream muzzle, and long curly ears set apart from the face by an outline.
+- Body (`DogArt.bodyPoodle`, `WalkArt.poodleTorso`): curls drawn as `furShade` and `furAccent` dots over the coat, a fluffy light chest, and pom bracelets around the paws.
+- Tail (`DogArt.tailPom`, `WalkArt.poodleTail`): a short stem curving up to a round pom that stands clear of the haunch.
+- Coloring (`PetBreed.palette`): apricot by default. The curls are `furShade` and `furAccent`, so a fur tint recolors the whole coat and keeps the texture.
+- Hats sit on the shade line under the topknot (`skullTop` 4), so even the graduation cap stays inside the frame mid-hop.
+
+![Every animation frame for the Poodle](images/animations-poodle.png)
+
 ### Recoloring fur
 
 `furAccent` means different things per breed: darker stripes on a tabby, lighter feathering on a golden's chest.
@@ -375,6 +387,7 @@ Dogs need more, because their ears and snouts are what make them recognizable at
 | `batEaredDog` | French Bulldog | big rounded bat ears, broad face |
 | `pointyEaredDog` | Corgi | tall pointed ears, fox-like face |
 | `longDog` | Dachshund | long snout and a long low body behind the head |
+| `poodleDog` | Poodle | round curly topknot, long curly ears, dotted curl texture, pom tail |
 
 Dog heads have different heights, so the shared dog face is stamped on each head's eye row.
 The dog mouth is drawn in the nose color, not the outline, because on dark breeds the outline becomes a light rim that would look noisy on the muzzle.

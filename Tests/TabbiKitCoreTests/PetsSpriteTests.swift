@@ -183,13 +183,13 @@ final class PetBreedTests: XCTestCase {
     func testCatalogHasEveryCatAndDogBreed() {
         XCTAssertEqual(PetBreed.breeds(of: .cat).count, 9)
         XCTAssertEqual(PetBreed.breeds(of: .dog), [
-            .goldenRetriever, .labrador, .frenchBulldog, .corgi, .dachshund, .beagle,
+            .goldenRetriever, .labrador, .frenchBulldog, .corgi, .dachshund, .beagle, .poodle,
         ])
     }
 
     func testDogsUseDistinctSilhouettesWhereColorAloneIsNotEnough() {
         // Each of these breeds must be recognizable by shape, not just color.
-        let shapes: [PetBreed] = [.goldenRetriever, .labrador, .frenchBulldog, .corgi, .dachshund]
+        let shapes: [PetBreed] = [.goldenRetriever, .labrador, .frenchBulldog, .corgi, .dachshund, .poodle]
         let silhouettes = shapes.map { breed in PetComposer.sitting(breed).pixels.map { $0 != nil } }
         XCTAssertEqual(Set(silhouettes).count, shapes.count)
     }
@@ -208,6 +208,21 @@ final class PetBreedTests: XCTestCase {
         XCTAssertFalse(roles.contains(.furSpot))
         XCTAssertTrue(roles.contains(.blush))
         XCTAssertTrue(roles.contains(.furShade), "wrinkles are hinted with shading")
+    }
+
+    func testPoodleHasACurlyCoatATopknotAndAPomTail() throws {
+        let poodle = PetComposer.sitting(.poodle)
+        // Curls are light and dark dots over the base coat.
+        let roles = Set(poodle.pixels.compactMap { $0 })
+        XCTAssertTrue(roles.isSuperset(of: [.furBase, .furShade, .furAccent]))
+        // The topknot makes it the tallest of the floppy-eared dogs.
+        let top = try XCTUnwrap(poodle.opaqueBounds).minY
+        for other in [PetBreed.goldenRetriever, .labrador, .beagle] {
+            XCTAssertLessThan(top, try XCTUnwrap(PetComposer.sitting(other).opaqueBounds).minY, "\(other)")
+        }
+        // The pom tail reaches past the golden's plain tail.
+        let reach = try XCTUnwrap(poodle.opaqueBounds).maxX
+        XCTAssertGreaterThan(reach, try XCTUnwrap(PetComposer.sitting(.goldenRetriever).opaqueBounds).maxX)
     }
 
     func testDarkDogsStillGetTheWarmRim() {
