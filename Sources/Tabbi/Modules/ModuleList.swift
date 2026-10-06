@@ -17,6 +17,7 @@ enum ModuleList {
         AnkiModule.self,
         PartyModule.self,
         ClosetModule.self,
+        ScheduleModule.self,
     ]
 
     /// The listed modules' descriptors, for layouts, kits and the tab bar.

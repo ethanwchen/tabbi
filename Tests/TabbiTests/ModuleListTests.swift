@@ -24,7 +24,7 @@ final class ModuleListTests: XCTestCase {
         // Modules a kit doesn't list are appended in this order, so it is
         // user-visible in Settings. New modules go at the end.
         XCTAssertEqual(ModuleList.catalog.ids, [.spotify, .system, .claudeUsage, .planner, .claudeAsk,
-                                                .focus, .study, .anki, .party, .closet])
+                                                .focus, .study, .anki, .party, .closet, .schedule])
     }
 
     func testClaudeModulesDeclareTheCLIRequirement() {
