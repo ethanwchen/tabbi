@@ -119,6 +119,17 @@ final class PetPresenceTests: XCTestCase {
         XCTAssertEqual(TickerFormat.petSummary(pet), "\(profile.name) is napping until your next session")
     }
 
+    func testClosedNotchNamesOnlyAPetTheUserNamed() {
+        var pet = TickerPet(profile: .starter(.cat), mood: .awake)
+        XCTAssertNil(TickerFormat.petLabel(pet), "an unnamed cat goes by its long breed name")
+        pet.profile = .starter(.dog)
+        XCTAssertNil(TickerFormat.petLabel(pet), "Biscuit is the app's name, not the user's")
+        pet.profile.rename("Pip")
+        XCTAssertEqual(TickerFormat.petLabel(pet), "Pip")
+        XCTAssertEqual(TickerFormat.petSummary(TickerPet(profile: .starter(.cat), mood: .awake)),
+                       "British Shorthair is keeping you company", "the tooltip still names it")
+    }
+
     // MARK: Providers
 
     func testSnapshotKeepsTheFirstPetInTabOrder() {

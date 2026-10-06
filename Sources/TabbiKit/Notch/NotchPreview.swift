@@ -102,9 +102,11 @@ struct NotchPreview: View {
                 .previewText()
         case .pet(let pet):
             HStack(spacing: Theme.Spacing.xs) {
-                Text(pet.profile.name)
-                    .foregroundStyle(pet.mood == .asleep ? Theme.Palette.secondaryText : Theme.Palette.primaryText)
-                    .truncationMode(.tail)
+                if let name = TickerFormat.petLabel(pet) {
+                    Text(name)
+                        .foregroundStyle(pet.mood == .asleep ? Theme.Palette.secondaryText : Theme.Palette.primaryText)
+                        .truncationMode(.tail)
+                }
                 if pet.mood == .asleep {
                     Text(TickerFormat.petSleeping)
                         .foregroundStyle(Theme.Palette.tertiaryText)

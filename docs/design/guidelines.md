@@ -64,6 +64,7 @@ When a rule and a feature disagree, remove or hide the feature.
 ## Pets and gamification
 
 - The pet is a companion, not a billboard: it sits in the wing or a corner, never over a module's hero.
+- In the closed notch the pet shows only a name the user chose; a pet still going by its breed name shows none, so the wings stay compact.
 - Sprites draw at whole-pixel scale (nearest neighbor), so every breed and costume stays crisp at notch size.
 - Breeds share one canvas size, baseline and animation timing, so swapping a breed never shifts the layout.
 - Reactions follow what the user did (a block finished, cards reviewed) and are immediate; nothing idles or nags in the closed notch.

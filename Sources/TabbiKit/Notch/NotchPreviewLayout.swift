@@ -42,8 +42,8 @@ public enum NotchPreviewLayout {
             content = textWidth(highlight.text)
         case .pet(let pet):
             // Measured asleep too, so the wing doesn't jump when the pet dozes off.
-            content = max(textWidth(pet.profile.name) + Theme.Spacing.xs + textWidth(TickerFormat.petSleeping),
-                          NotchPetWing.side)
+            let name = TickerFormat.petLabel(pet).map { textWidth($0) + Theme.Spacing.xs } ?? 0
+            content = max(name + textWidth(TickerFormat.petSleeping), NotchPetWing.side)
         case .party(let party):
             content = max(partyPetsWidth(count: party.pets.count), textWidth(TickerFormat.partySize(party.memberCount)))
         }
