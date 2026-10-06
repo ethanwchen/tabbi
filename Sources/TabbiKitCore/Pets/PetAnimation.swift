@@ -36,17 +36,29 @@ public struct PetPose: Hashable, Sendable {
         case wide
     }
 
+    /// Something held in front of the sitting pet for the study moments.
+    public enum Prop: Hashable, Sendable {
+        /// Typing on a tiny laptop. `tap` lifts the left (-1) or right (1)
+        /// paw off the keys; 0 rests both.
+        case laptop(tap: Int)
+        /// A coffee mug in both paws. `raise` is 0 at the chest, 1 on the
+        /// way up, 2 at the mouth for a sip.
+        case mug(raise: Int)
+    }
+
     public var eyes: Eyes
     public var mouth: Mouth
+    public var prop: Prop?
     /// Pixels the head sinks into the shoulders (breathing, dozing);
     /// negative tips it back (a yawn).
     public var headDrop: Int
     /// Pixels the whole pet rises off the baseline (hops).
     public var lift: Int
 
-    public init(eyes: Eyes = .open, mouth: Mouth = .closed, headDrop: Int = 0, lift: Int = 0) {
+    public init(eyes: Eyes = .open, mouth: Mouth = .closed, prop: Prop? = nil, headDrop: Int = 0, lift: Int = 0) {
         self.eyes = eyes
         self.mouth = mouth
+        self.prop = prop
         self.headDrop = headDrop
         self.lift = lift
     }
@@ -83,11 +95,17 @@ public enum PetAnimation: String, CaseIterable, Codable, Sendable {
     /// Two springy hops with happy eyes and dust puffs on landing: plain
     /// joy, with no heart (that is `celebrate`, for a finished session).
     case hop
+    /// Typing away on a tiny laptop, with a pause now and then to read the
+    /// screen: the pet studying along while a focus session runs. Loops.
+    case typing
+    /// Sipping a tiny coffee: steam curls up while the pet holds the mug,
+    /// then it raises it for a slow, happy sip. Loops, for breaks.
+    case coffee
 
     /// Whether the clip repeats forever or stops on its last frame.
     public var loops: Bool {
         switch self {
-        case .idle, .sit, .sleep, .walk: true
+        case .idle, .sit, .sleep, .walk, .typing, .coffee: true
         case .blink, .stretch, .peekIn, .peekOut, .alert, .celebrate, .yawn, .hop: false
         }
     }
@@ -300,6 +318,35 @@ extension PetComposer {
                     canvas = canvas
                         .adding(EffectArt.dustLeft, at: PetPoint(x: left - EffectArt.dustLeft.width, y: y))
                         .adding(EffectArt.dustRight, at: PetPoint(x: right + 1, y: y))
+                }
+                return PetFrame(canvas: canvas, duration: duration)
+            }
+
+        case .typing:
+            // A burst of alternating taps, then a pause to read the screen.
+            let taps: [(Int, Int, TimeInterval)] = [
+                (-1, 0, 0.12), (0, 0, 0.1), (1, 0, 0.12), (0, 0, 0.1), (-1, 0, 0.12), (0, 0, 0.1),
+                (1, 0, 0.12), (0, 0, 0.1), (-1, 0, 0.12), (0, 1, 0.7), (0, 1, 0.5),
+            ]
+            frames = taps.map { tap, drop, duration in
+                frame(PetPose(prop: .laptop(tap: tap), headDrop: drop), duration)
+            }
+
+        case .coffee:
+            // Hold the mug while the steam curls, then a slow sip with the
+            // eyes closed, and a happy "ahh" on the way back down.
+            let steps: [(Int, PetPose.Eyes, Int?, TimeInterval)] = [
+                (0, .open, 0, 0.45), (0, .open, 1, 0.45), (0, .open, 0, 0.45), (0, .open, 1, 0.45),
+                (1, .open, nil, 0.12), (2, .closed, nil, 0.9), (1, .happy, nil, 0.12),
+                (0, .happy, 0, 0.5), (0, .open, 1, 0.45),
+            ]
+            frames = steps.map { raise, eyes, steam, duration in
+                let composed = pose(PetPose(eyes: eyes, prop: .mug(raise: raise)))
+                var canvas = composed.canvas
+                if let steam, let top = composed.mugTop {
+                    let wisp = PropArt.steam[steam]
+                    // Painted over the chest, not behind the pet like other effects.
+                    canvas.stamp(wisp, x: top.x + 1, y: top.y - wisp.height)
                 }
                 return PetFrame(canvas: canvas, duration: duration)
             }

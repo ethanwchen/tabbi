@@ -29,6 +29,8 @@ public enum PetComposer {
         var canvas: PetCanvas
         /// Top-right corner of the head's skull, in frame pixels.
         var headTopRight: PetPoint
+        /// Top-left corner of a held mug, where its steam rises from.
+        var mugTop: PetPoint?
     }
 
     /// How the body under the head is drawn.
@@ -150,8 +152,47 @@ public enum PetComposer {
                 stampHead(head)
             }
         }
+        var mugTop: PetPoint?
+        if stance == .sitting, let prop = pose.prop {
+            mugTop = stampProp(prop, on: &canvas, layout: layout, headX: headX, headY: headY, pattern: pattern)
+            mugTop?.y -= pose.lift
+        }
         let anchor = PetPoint(x: headX + layout.head.width - 1, y: headY + layout.skullTop - pose.lift)
-        return Composed(canvas: canvas.outlined().shifted(x: 0, y: -pose.lift), headTopRight: anchor)
+        return Composed(canvas: canvas.outlined().shifted(x: 0, y: -pose.lift), headTopRight: anchor, mugTop: mugTop)
+    }
+
+    /// Draws a held prop in front of the sitting pet, centered under the
+    /// head so it lines up on every body shape. The laptop stands on the
+    /// floor; the mug rises from the chest to the mouth, found from the
+    /// face art like an open mouth. Returns the mug's top-left corner.
+    private static func stampProp(
+        _ prop: PetPose.Prop, on canvas: inout PetCanvas, layout: SitLayout, headX: Int, headY: Int,
+        pattern: PetPattern
+    ) -> PetPoint? {
+        let center = headX + layout.head.width / 2
+        switch prop {
+        case .laptop(let tap):
+            let lidY = frameSize - 1 - PropArt.laptop.height
+            canvas.stamp(PropArt.laptop, x: center - PropArt.laptop.width / 2, y: lidY)
+            // Resting paws hang over the lid's edge; a tapping paw lifts off it.
+            let pawY = lidY - 1
+            canvas.stamp(PropArt.paw, x: center - 7, y: pawY - (tap < 0 ? 2 : 0), pattern: pattern)
+            canvas.stamp(PropArt.paw, x: center + 1, y: pawY - (tap > 0 ? 2 : 0), pattern: pattern)
+            return nil
+        case .mug(let raise):
+            guard let (_, mouth) = EffectArt.mouth(.open, in: layout.face) else { return nil }
+            let mouthX = headX + mouth.x + 2
+            let sipY = headY + layout.faceRow + mouth.y - 1
+            // Held in the lap, low enough that the steam rises over the chest.
+            let lapY = headY + layout.head.height + 3
+            let y = lapY + (sipY - lapY) * min(max(raise, 0), 2) / 2
+            let x = mouthX - 3
+            // Paws first, so the mug's handle shows over the right one.
+            canvas.stamp(PropArt.mugPaw, x: x - 3, y: y + 1, pattern: pattern)
+            canvas.stamp(PropArt.mugPaw, x: x + 4, y: y + 1, pattern: pattern)
+            canvas.stamp(PropArt.mug, x: x, y: y)
+            return PetPoint(x: x, y: y)
+        }
     }
 
     /// The walking torso with its tail and torso costumes, on its own frame

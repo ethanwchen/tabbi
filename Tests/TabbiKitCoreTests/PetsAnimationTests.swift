@@ -260,6 +260,53 @@ final class PetAnimationTests: XCTestCase {
         }
     }
 
+    func testTypingTapsAlternatePawsOnALaptopAndPausesToRead() throws {
+        for breed in PetBreed.allCases {
+            let clip = PetComposer.clip(.typing, for: breed, accessories: [.roundGlasses])
+            XCTAssertTrue(clip.loops, "plays for the whole focus session")
+            for frame in clip.frames {
+                XCTAssertEqual(try XCTUnwrap(frame.canvas.opaqueBounds).maxY, baseline, "\(breed)")
+                XCTAssertTrue(frame.canvas.pixels.contains(.metal), "the laptop is always there: \(breed)")
+                XCTAssertTrue(frame.canvas.pixels.contains(.eyeLight), "eyes on the screen: \(breed)")
+            }
+            // Taps lift one paw at a time, so the tapping frames differ from
+            // each other and from resting, and taps come in quick frames.
+            let resting = PetComposer.sitting(breed, pose: PetPose(prop: .laptop(tap: 0)), accessories: [.roundGlasses])
+            let left = PetComposer.sitting(breed, pose: PetPose(prop: .laptop(tap: -1)), accessories: [.roundGlasses])
+            let right = PetComposer.sitting(breed, pose: PetPose(prop: .laptop(tap: 1)), accessories: [.roundGlasses])
+            XCTAssertEqual(Set([resting, left, right]).count, 3, "\(breed)")
+            let canvases = clip.frames.map(\.canvas)
+            XCTAssertTrue(canvases.contains(left) && canvases.contains(right), "both paws type: \(breed)")
+            XCTAssertTrue(clip.frames.filter { $0.canvas == left || $0.canvas == right }.allSatisfy { $0.duration < 0.2 })
+            // The longest frame is the pause, reading with the head bent.
+            let pause = try XCTUnwrap(clip.frames.max { $0.duration < $1.duration })
+            XCTAssertGreaterThanOrEqual(pause.duration, 0.5)
+            XCTAssertNotEqual(pause.canvas, resting, "reading nods the head: \(breed)")
+        }
+    }
+
+    func testCoffeeRaisesTheMugToTheMouthForASipWithSteamBetweenSips() throws {
+        let mugTop: (PetCanvas) -> Int? = { canvas in
+            canvas.pixels.enumerated().filter { $0.element == .accessoryBase }.map { $0.offset / canvas.width }.min()
+        }
+        for breed in PetBreed.allCases {
+            let clip = PetComposer.clip(.coffee, for: breed)
+            XCTAssertTrue(clip.loops, "plays for the whole break")
+            let resting = try XCTUnwrap(mugTop(clip.frames[0].canvas), "a mug in the lap: \(breed)")
+            for frame in clip.frames {
+                XCTAssertEqual(try XCTUnwrap(frame.canvas.opaqueBounds).maxY, baseline, "\(breed)")
+                XCTAssertNotNil(mugTop(frame.canvas), "the mug never leaves the paws: \(breed)")
+            }
+            // The longest frame is the sip: mug up at the mouth, eyes closed.
+            let sip = try XCTUnwrap(clip.frames.max { $0.duration < $1.duration }).canvas
+            XCTAssertLessThanOrEqual(try XCTUnwrap(mugTop(sip)), resting - 4, "raised to the mouth: \(breed)")
+            XCTAssertFalse(sip.pixels.contains(.eyeLight), "eyes closed while sipping: \(breed)")
+            // Steam curls above the mug while it rests in the lap.
+            let plain = PetComposer.sitting(breed, pose: PetPose(prop: .mug(raise: 0)))
+            XCTAssertTrue(clip.frames.contains { $0.canvas != plain && mugTop($0.canvas) == resting }, "\(breed)")
+        }
+    }
+
     func testCanvasShiftAndFlip() {
         var canvas = PetCanvas(width: 3, height: 3)
         canvas[0, 0] = .eye
