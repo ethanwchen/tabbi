@@ -14,7 +14,7 @@ final class AskClaudeModule: NotchModule {
     private var cancellables: Set<AnyCancellable> = []
 
     init(context: ModuleContext) {
-        session = ClaudeAskSession(runMode: context.runMode)
+        session = ClaudeAskSession(runMode: context.runMode, storage: context.storage)
         // A new `claude` path in Settings must take effect live, not on the
         // next launch.
         context.settings.$appliedClaudePathOverride

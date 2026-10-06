@@ -2,13 +2,13 @@ import Foundation
 
 /// One bubble in the Ask Claude panel.
 public struct ClaudeAskMessage: Identifiable, Equatable, Sendable {
-    public enum Role: Equatable, Sendable {
+    public enum Role: String, Codable, Equatable, Sendable {
         case user
         case assistant
     }
 
     /// Lifecycle of an assistant answer. User messages are always `.complete`.
-    public enum Status: Equatable, Sendable {
+    public enum Status: String, Codable, Equatable, Sendable {
         case streaming
         case complete
         /// The user pressed stop; `text` holds whatever arrived before that.
@@ -56,6 +56,10 @@ public struct ClaudeAskConversation: Equatable, Sendable {
     public private(set) var phase: Phase = .idle
     /// Session to pass to `--resume` so follow-ups keep context.
     public private(set) var sessionID: String?
+    /// Names this chat in the history; `reset()` starts a new one.
+    public private(set) var chatID: UUID
+    /// When this chat began, kept when it is saved and restored.
+    public private(set) var startedAt: Date
 
     /// Text of assistant messages the CLI has already finalized in this run.
     private var committedText = ""
@@ -63,7 +67,44 @@ public struct ClaudeAskConversation: Equatable, Sendable {
     private var partialText = ""
     private var nextID = 0
 
-    public init() {}
+    public init(chatID: UUID = UUID(), startedAt: Date = Date()) {
+        self.chatID = chatID
+        self.startedAt = startedAt
+    }
+
+    /// Reopens a saved chat so the next question continues it (with
+    /// `--resume` when the chat has a session).
+    public init(restoring chat: ClaudeAskChat) {
+        self.init(chatID: chat.id, startedAt: chat.createdAt)
+        sessionID = chat.sessionID
+        for message in chat.messages {
+            append(message.role, message.text, message.status)
+        }
+    }
+
+    /// The chat as it should be saved, or `nil` while there is nothing worth
+    /// keeping. A failed exchange is left out (its question can be retried,
+    /// not reread) and an answer still streaming is saved as stopped, so a
+    /// restored chat never shows a spinner that nothing drives.
+    public func savedChat(updatedAt: Date = Date()) -> ClaudeAskChat? {
+        var kept: [ClaudeAskChat.Message] = []
+        var pendingQuestion: ClaudeAskChat.Message?
+        for message in messages {
+            switch message.role {
+            case .user:
+                pendingQuestion = ClaudeAskChat.Message(role: .user, text: message.text)
+            case .assistant:
+                guard let question = pendingQuestion, message.status != .failed else { continue }
+                let status: ClaudeAskMessage.Status = message.status == .streaming ? .stopped : message.status
+                guard status != .stopped || !message.text.isEmpty else { continue }
+                kept += [question, ClaudeAskChat.Message(role: .assistant, text: message.text, status: status)]
+                pendingQuestion = nil
+            }
+        }
+        guard !kept.isEmpty else { return nil }
+        return ClaudeAskChat(id: chatID, createdAt: startedAt, updatedAt: updatedAt,
+                             sessionID: sessionID, messages: kept)
+    }
 
     public var isStreaming: Bool { phase == .streaming }
     public var isEmpty: Bool { messages.isEmpty }
@@ -157,8 +198,10 @@ public struct ClaudeAskConversation: Equatable, Sendable {
         return prompt
     }
 
-    /// Starts a new chat. Message ids keep increasing.
-    public mutating func reset() {
+    /// Starts a new chat with a new `chatID`. Message ids keep increasing.
+    public mutating func reset(at now: Date = Date()) {
+        chatID = UUID()
+        startedAt = now
         messages = []
         phase = .idle
         sessionID = nil
