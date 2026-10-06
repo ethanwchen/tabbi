@@ -193,6 +193,11 @@ public enum PetComposer {
         case .chefHat: .head(CostumeArt.chefHat)
         case .wizardHat: .head(CostumeArt.wizardHat)
         case .bunnyEars: .head(CostumeArt.bunnyEars)
+        case .witchHat: .head(CostumeArt.witchHat)
+        case .cowboyHat: .head(CostumeArt.cowboyHat)
+        case .flowerCrown: .head(CostumeArt.flowerCrown)
+        case .frogHat: .head(CostumeArt.frogHat)
+        case .ninjaHeadband: .head(CostumeArt.ninjaHeadband)
         }
     }
 

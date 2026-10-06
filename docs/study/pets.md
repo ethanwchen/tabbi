@@ -63,6 +63,8 @@ Parse errors report the 1-based row and column of the problem.
 | `M` | metal | stethoscope chest piece, head mirror |
 | `Z` | effect | sleep "z", sparkles, speech bubble |
 | `H` | heart | celebration heart |
+| `F` | leaf | frog hat, flower crown vine |
+| `I` | leather | cowboy hat |
 
 ### Special cells
 
