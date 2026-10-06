@@ -118,11 +118,10 @@ public enum MusicScript {
             artworkURL: nil,
             duration: max(number(fields[5]) ?? 0, 0)
         )
-        let repeatMode = fields[8].trimmingCharacters(in: .whitespaces)
         var playback = SpotifyPlayback(
             state: state, track: track, position: 0,
             isShuffling: fields[7].trimmingCharacters(in: .whitespaces) == "true",
-            isRepeating: repeatMode == "one" || repeatMode == "all",
+            repeatMode: MediaRepeatMode(scriptValue: fields[8]),
             volume: MediaVolume.parse(fields[9])
         )
         playback.position = playback.clampedPosition(number(fields[6]) ?? 0)

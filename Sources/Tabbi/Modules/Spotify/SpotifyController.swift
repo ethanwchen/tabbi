@@ -49,6 +49,8 @@ final class SpotifyController: NSObject, ObservableObject {
     private var volumeInFlight: Set<MediaSource> = []
     /// The level before the speaker button muted each app, for unmuting.
     private var volumesBeforeMute: [MediaSource: Int] = [:]
+    /// Shuffle and repeat changes per app that the player may not show yet.
+    private var pendingModes: [MediaSource: PendingMediaModes] = [:]
 
     init(runMode: RunMode) {
         isDemo = runMode.isDemo
@@ -108,6 +110,24 @@ final class SpotifyController: NSObject, ObservableObject {
         let target = playback.clampedPosition(seconds)
         applyOptimistic(playback.seeking(to: target), to: source)
         send(source.seekScript(to: target), to: source)
+    }
+
+    /// Turns shuffle on or off in the active app.
+    func toggleShuffle() {
+        guard let source, let playback = currentStatus.playback, playback.track != nil else { return }
+        let isOn = !playback.isShuffling
+        expectModes(source) { $0.adding(shuffle: isOn, at: $1) }
+        applyOptimistic(playback.settingShuffle(isOn), to: source)
+        sendModeChange(source.setShuffleScript(isOn), to: source)
+    }
+
+    /// Steps the active app's repeat mode: off, all, then (in Music) one.
+    func cycleRepeat() {
+        guard let source, let playback = currentStatus.playback, playback.track != nil else { return }
+        let mode = source.repeatMode(after: playback.repeatMode)
+        expectModes(source) { $0.adding(repeatMode: mode, at: $1) }
+        applyOptimistic(playback.settingRepeat(mode), to: source)
+        sendModeChange(source.setRepeatScript(mode), to: source)
     }
 
     /// Sets the active app's own volume (0 ... 100). Safe to call for every
@@ -182,9 +202,13 @@ final class SpotifyController: NSObject, ObservableObject {
         Task {
             let result = await Self.run(source.readStateScript, on: source)
             guard current == generations[source] else { return }
-            record(source, SpotifyStatus.resolve(source: source, isRunning: Self.isRunning(source),
-                                                 isInstalled: Self.isInstalled(source),
-                                                 read: result, previous: latestStatus(source)))
+            var status = SpotifyStatus.resolve(source: source, isRunning: Self.isRunning(source),
+                                               isInstalled: Self.isInstalled(source),
+                                               read: result, previous: latestStatus(source))
+            if case .connected(let playback) = status, let pending = pendingModes[source] {
+                status = .connected(pending.applied(to: playback, at: Date()))
+            }
+            record(source, status)
         }
     }
 
@@ -214,6 +238,26 @@ final class SpotifyController: NSObject, ObservableObject {
             if case .failure(.permissionDenied) = result {
                 record(source, .permissionDenied)
             }
+            refresh(source)
+        }
+    }
+
+    private func expectModes(_ source: MediaSource,
+                             _ update: (PendingMediaModes, Date) -> PendingMediaModes) {
+        let now = Date()
+        pendingModes[source] = update(pendingModes[source] ?? PendingMediaModes(deadline: now), now)
+    }
+
+    /// Sends a shuffle or repeat change, then reads the player again once
+    /// the change has settled, so the buttons end on the player's real state
+    /// (Spotify applies these a moment after the command returns).
+    private func sendModeChange(_ script: String, to source: MediaSource) {
+        send(script, to: source)
+        guard !isDemo else { return }
+        Task { [weak self] in
+            try? await Task.sleep(for: .seconds(PendingMediaModes.settleTime + 0.1))
+            guard let self, let pending = pendingModes[source], !pending.isActive(at: Date()) else { return }
+            pendingModes[source] = nil
             refresh(source)
         }
     }

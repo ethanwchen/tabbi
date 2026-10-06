@@ -22,7 +22,7 @@ final class SpotifyScriptTests: XCTestCase {
         XCTAssertEqual(try XCTUnwrap(playback.track?.duration), 243.96, accuracy: 0.0001)
         XCTAssertEqual(playback.position, 87.25, accuracy: 0.0001)
         XCTAssertTrue(playback.isShuffling)
-        XCTAssertFalse(playback.isRepeating)
+        XCTAssertEqual(playback.repeatMode, .off)
     }
 
     func testOddCharactersInTitlesSurvive() throws {
@@ -38,7 +38,7 @@ final class SpotifyScriptTests: XCTestCase {
         XCTAssertEqual(playback.track?.artist, "Sigur Rós, Björk")
         XCTAssertEqual(playback.track?.album, "Ágætis byrjun \u{2014} Remaster")
         XCTAssertNil(playback.track?.artworkURL)
-        XCTAssertTrue(playback.isRepeating)
+        XCTAssertEqual(playback.repeatMode, .all)
     }
 
     func testEmptyTitleFieldsAreKept() throws {
@@ -63,7 +63,7 @@ final class SpotifyScriptTests: XCTestCase {
     func testStopped() {
         XCTAssertEqual(
             SpotifyScript.parse("stopped\n"),
-            SpotifyPlayback(state: .stopped, track: nil, position: 0, isShuffling: false, isRepeating: false)
+            SpotifyPlayback(state: .stopped, track: nil, position: 0, isShuffling: false, repeatMode: .off)
         )
     }
 
@@ -95,7 +95,7 @@ final class SpotifyPlaybackTests: XCTestCase {
         SpotifyPlayback(
             state: state,
             track: SpotifyTrack(id: "id", title: "t", artist: "a", album: "b", artworkURL: nil, duration: duration),
-            position: position, isShuffling: false, isRepeating: false
+            position: position, isShuffling: false, repeatMode: .off
         )
     }
 

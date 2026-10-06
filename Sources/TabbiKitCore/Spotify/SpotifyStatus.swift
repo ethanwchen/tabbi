@@ -65,7 +65,7 @@ public enum SpotifyStatus: Equatable, Sendable {
 extension SpotifyPlayback {
     /// Spotify is running with no track loaded.
     public static let nothingPlaying = SpotifyPlayback(
-        state: .stopped, track: nil, position: 0, isShuffling: false, isRepeating: false
+        state: .stopped, track: nil, position: 0, isShuffling: false, repeatMode: .off
     )
 
     /// Optimistic result of `playpause`, shown before Spotify confirms it.

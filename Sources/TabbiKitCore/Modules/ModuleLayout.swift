@@ -131,6 +131,35 @@ public struct ModuleLayout: Equatable, Sendable {
         order = order.map { disabled.contains($0) || headerKeys[$0] != nil ? $0 : next.next() ?? $0 }
     }
 
+    /// Moves the tab `module` so it lands at `index` among `tabs`: what a
+    /// drag that drops a row onto a slot hands over. Library modules and
+    /// header shortcuts keep their slots. Returns whether anything moved.
+    @discardableResult
+    public mutating func moveTab(_ module: ModuleID, to index: Int) -> Bool {
+        let list = tabs
+        guard let from = list.firstIndex(of: module) else { return false }
+        let target = min(max(index, 0), list.count - 1)
+        guard target != from else { return false }
+        moveTabs(fromOffsets: [from], toOffset: target > from ? target + 1 : target)
+        return true
+    }
+
+    /// Moves the tab `module` one slot earlier (`-1`) or later (`1`), or by
+    /// any `offset`, stopping at either end: keyboard and VoiceOver moves.
+    /// Returns whether anything moved.
+    @discardableResult
+    public mutating func moveTab(_ module: ModuleID, by offset: Int) -> Bool {
+        guard let from = tabs.firstIndex(of: module) else { return false }
+        return moveTab(module, to: from + offset)
+    }
+
+    /// Whether `moveTab(_:by:)` would move `module`: false for a header
+    /// shortcut, a library module or a tab already at that end.
+    public func canMoveTab(_ module: ModuleID, by offset: Int) -> Bool {
+        guard offset != 0, let from = tabs.firstIndex(of: module) else { return false }
+        return tabs.indices.contains(from + offset)
+    }
+
     /// Moves modules with the same semantics as SwiftUI's `onMove`.
     public mutating func move(fromOffsets source: IndexSet, toOffset destination: Int) {
         let moving = source.filter(order.indices.contains).map { order[$0] }

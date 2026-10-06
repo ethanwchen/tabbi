@@ -28,7 +28,7 @@ final class MediaVolumeTests: XCTestCase {
         XCTAssertEqual(MediaVolume.parse("140"), 100)
         XCTAssertNil(MediaVolume.parse("loud"))
         XCTAssertEqual(SpotifyPlayback(state: .paused, track: nil, position: 0, isShuffling: false,
-                                       isRepeating: false, volume: 300).volume, 100)
+                                       repeatMode: .off, volume: 300).volume, 100)
     }
 
     func testSliderMapsPointerToVolume() {
