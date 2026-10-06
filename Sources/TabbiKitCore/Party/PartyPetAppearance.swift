@@ -4,14 +4,15 @@ import Foundation
 ///
 /// The server catalog (`backend/shared/catalog.json`) is wider than the
 /// pixel art: it knows 36 breeds and 20 costumes, the app draws 14 breeds,
-/// two outfits and seven accessories. So the mapping is lossy by design:
+/// six outfits and 23 accessories. So the mapping is lossy by design:
 /// - Breeds the app cannot draw fall back to the drawn breed with the
 ///   closest body, and the sender's colors still make the pet look like theirs.
 /// - `colors` carries the sender's effective colors for `colorRoles`, in that
 ///   order, so a recolored pet looks the same to friends.
-/// - The server has no neck/head accessory slots for the stethoscope,
-///   surgical cap and graduation cap, but does have them as costumes, so one
-///   of them rides in `costume` when no outfit is worn.
+/// - The server has no accessory ids for the stethoscope, the surgical,
+///   graduation, chef, pirate, witch and astronaut hats and the bunny ears,
+///   but does have them as costumes, so one of them rides in `costume` when
+///   no outfit is worn.
 ///
 /// Only appearance goes through here; nothing about cards or decks.
 public enum PartyPetAppearance {
@@ -121,6 +122,10 @@ public enum PartyPetAppearance {
         case .none: "none"
         case .scrubs: "scrubs"
         case .whiteCoat: "white-coat"
+        // The server has no dinosaur, so friends see the plain hoodie.
+        case .cozyHoodie, .dinosaurHoodie: "hoodie"
+        case .superheroCape: "superhero"
+        case .wizardRobe: "wizard"
         }
     }
 
@@ -131,12 +136,17 @@ public enum PartyPetAppearance {
     /// Accessories the server has as accessories.
     private static let wireAccessories: [(accessory: PetAccessory, wire: String)] = [
         (.roundGlasses, "glasses"), (.scarf, "scarf"), (.beanie, "beanie"),
+        (.coolSunglasses, "sunglasses"), (.chunkyHeadphones, "headphones"), (.bowTie, "bow"),
+        (.tinyCrown, "crown"), (.flowerCrown, "flower"), (.partyHat, "party-hat"),
     ]
 
     /// Accessories the server only has as costumes, in preference order.
-    /// The head mirror has no server id and stays local.
+    /// The rest (the head mirror, the wizard hat, whose `wizard` is the robe,
+    /// and the playful hats the server lacks) have no server id and stay local.
     private static let costumeAccessories: [(accessory: PetAccessory, wire: String)] = [
         (.stethoscope, "stethoscope"), (.surgicalCap, "surgical-cap"), (.graduationCap, "graduation"),
+        (.chefHat, "chef"), (.pirateHat, "pirate"), (.witchHat, "witch"),
+        (.astronautHelmet, "astronaut"), (.bunnyEars, "bunny"),
     ]
 
     /// The server takes `#RRGGBB` only.

@@ -63,6 +63,9 @@ Parse errors report the 1-based row and column of the problem.
 | `M` | metal | stethoscope chest piece, head mirror |
 | `Z` | effect | sleep "z", sparkles, speech bubble |
 | `H` | heart | celebration heart |
+| `F` | leaf | frog hat, flower crown vine |
+| `I` | leather | cowboy hat |
+| `X` | crimson | superhero cape folds, lining and hem (uppercase; lowercase `x` erases) |
 
 ### Special cells
 
@@ -110,7 +113,7 @@ After stamping, `PetCanvas.outlined()` adds a one-pixel outline around the whole
 
 ![Every costume on a dog](images/costumes-dog.png)
 
-A pet wears one `PetOutfit` (`none`, `scrubs`, `whiteCoat`) and accessories (`PetAccessory`).
+A pet wears one `PetOutfit` (`none`, `scrubs`, `whiteCoat`, `cozyHoodie`, `superheroCape`, `dinosaurHoodie`, `wizardRobe`) and accessories (`PetAccessory`).
 Each accessory has a slot (neck, face, or head); a pet wears at most one per slot.
 `PetAccessory.wearable(_:)` keeps the last item listed per slot and sorts them in drawing order, so hats always land on top.
 
@@ -118,8 +121,10 @@ Costume art lives in `Art/CostumeArt.swift` and is anchored to the pose layout i
 
 - Body items (outfits, stethoscope, scarf) have one grid per body family (cat, dog, long dog), the same size as that family's body and stamped at the same origin.
   They also have two walking grids: `walk` over the shared cat and dog walking torso, and `walkLong` over the dachshund's.
-- Glasses have a cat and a dog grid, stamped one row above each head's eye row.
+- Face items (glasses, sunglasses) are a `FaceItem`: a cat and a dog grid plus an `eyeRow`, the grid row that lands on each head's eye row.
   Dog eyes sit close together, so the dog lenses are wider than the eyes; frames touching the pupils blur into them.
+- A head item can bring a face piece along (the pirate hat's eyepatch, the sorcerer's blindfold).
+  Such items set `coversEyes`, and `PetAccessory.wearable` lets them replace whatever is in the face slot, and the other way round, so glasses never pile onto an eyepatch.
 - Hats are 20 wide like every head.
   Each declares a `sitRow`, the grid row that lands on the head's `skullTop` (the row just below the top of the skull, so hats rest on the head instead of floating).
 
@@ -130,10 +135,30 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 
 ### Adding a costume item
 
-1. Add a case to `PetOutfit` or `PetAccessory` (with its `slot` and `displayName`).
-2. Draw it in `CostumeArt` using costume roles only: a `BodyItem` for each body family plus its two walking torsos, or a `HeadItem` with its `sitRow`.
+1. Add a case to `PetOutfit` or `PetAccessory` (with its `slot` and `displayName`), and give it a price in `PetItem.cost`, a Closet shelf in `PetItem.theme` (Study, Cozy, Fantasy, Seasonal or Silly) and the catalog `release` that adds it.
+   Items from `PetItem.latestRelease` wear a "New" badge in the Closet until the user owns them.
+2. Draw it in `CostumeArt` using costume roles only: a `BodyItem` for each body family plus its two walking torsos, a `FaceItem` with its `eyeRow`, or a `HeadItem` with its `sitRow`.
+   A body item that sticks up out of the silhouette (the dinosaur's back spikes, the cape streaming up behind a walking pet) sets `rise`, the rows every one of its grids starts above the body's top row.
 3. Map the case to its art in `PetComposer`.
-4. Run `swift test` (the costume tests check every breed for clipping and covered eyes) and review `costumes-*.png` and `fit-*.png` from `PetGallery`.
+   An outfit with a head part (the dinosaur hood) returns it from `outfitHood`; it is placed like a hat, moves with the head, and any hat is worn over it.
+4. Run `swift test` and review `contact-*.png` (every item on every breed) and `strip-<item>.png` (every breed through the key frames of every animation) from `PetGallery`.
+   `PetCostumeFitTests` compares each dressed frame of every animation with the same frame undressed, for every item and breed, so new items and new breeds are covered with no new expectations:
+   every item shows and keeps a one-pixel margin inside the frame, head and face items keep the same offset from the nose in every frame, and hats rest on the skull without covering an eye (items with `coversEyes` must hide at least one).
+   Face items must reach across every breed's eye rows, and no outfit, hood included, may cover an eye in any frame.
+   Leave a column of fur between an item and the eyes where you can: the black cat's eyes are green, so a green hood flap right beside them swallows the eyes.
+   Check thin lines against dark fur too: a 1px navy headphone band disappeared on the Labrador, dachshund and black cat, so it now matches the red cups.
+
+![Every head item on every breed](images/contact-head.png)
+
+![Every face item on every breed](images/contact-face.png)
+
+![Every outfit and neck item on every breed](images/contact-body.png)
+
+![Every breed in the superhero cape through every animation](images/strip-superhero-cape.png)
+
+![Every breed in the dinosaur hoodie through every animation](images/strip-dinosaur-hoodie.png)
+
+![Every breed in the chunky headphones through every animation](images/strip-chunky-headphones.png)
 
 ## Animations
 
@@ -262,9 +287,10 @@ Its initializer and editing methods keep it valid at all times:
 - `tintFur(_:)` recolors all fur from one picked color, and `tintFur(nil)` returns the fur to the breed colors without touching costume colors.
 - A pet still called by its breed name follows breed changes, so it never keeps a stale breed name; a name the user chose stays.
 
-Costume items are earned with study points; breeds and colors are always free.
+Costume items are earned with study points, apart from a few free starters (the scarf, the party hat and the bow tie); breeds and colors are always free.
 `PetItem` wraps an outfit or accessory with a stable string id (`outfit.scrubs`, `accessory.beanie`) and a `cost`.
-Cozy basics are cheap so the first finished 25-minute session unlocks the scarf; the white coat and the graduation cap are long-term goals.
+Cozy basics are cheap so the first finished 25-minute session unlocks the beanie; the sorcerer and the graduation cap are long-term goals.
+A save from an older build that bought an item that is free now gets its price back once (`PetPointsLedger.refundedPrices`).
 
 `PetPointsRules` turns a session into points: one point per full minute, nothing under 5 minutes, and a 10-point bonus for completing a session of at least 25 minutes.
 `PetPointsLedger` stores lifetime `earned` and `spent` points plus the purchased items; `balance` is the difference, so it can never drift.

@@ -7,12 +7,22 @@ public enum PetOutfit: String, CaseIterable, Codable, Sendable {
     /// Scrub top in the recolorable `costumeBase` color.
     case scrubs
     case whiteCoat
+    /// A hoodie in the recolorable knit color, like the scarf and beanie.
+    case cozyHoodie
+    case superheroCape
+    /// A green hoodie with a spiky hood, the one outfit with a head part.
+    case dinosaurHoodie
+    case wizardRobe
 
     public var displayName: String {
         switch self {
         case .none: "None"
         case .scrubs: "Scrubs"
         case .whiteCoat: "White Coat"
+        case .cozyHoodie: "Cozy Hoodie"
+        case .superheroCape: "Superhero Cape"
+        case .dinosaurHoodie: "Dinosaur Hoodie"
+        case .wizardRobe: "Wizard Robe"
         }
     }
 }
@@ -36,13 +46,39 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
     case headMirror
     case graduationCap
     case beanie
+    case tinyCrown
+    case partyHat
+    case chefHat
+    case wizardHat
+    case bunnyEars
+    case witchHat
+    case cowboyHat
+    case flowerCrown
+    case frogHat
+    case ninjaHeadband
+    case coolSunglasses
+    /// A tricorn hat with an eyepatch over one eye.
+    case pirateHat
+    /// Spiky white hair and a dark blindfold over both eyes.
+    case blindfoldedSorcerer
+    case astronautHelmet
+    case chunkyHeadphones
+    case bowTie
 
     public var slot: PetAccessorySlot {
         switch self {
-        case .stethoscope, .scarf: .neck
-        case .roundGlasses: .face
-        case .surgicalCap, .headMirror, .graduationCap, .beanie: .head
+        case .stethoscope, .scarf, .bowTie: .neck
+        case .roundGlasses, .coolSunglasses: .face
+        case .surgicalCap, .headMirror, .graduationCap, .beanie, .tinyCrown, .partyHat, .chefHat, .wizardHat,
+             .bunnyEars, .witchHat, .cowboyHat, .flowerCrown, .frogHat, .ninjaHeadband, .pirateHat,
+             .blindfoldedSorcerer, .astronautHelmet, .chunkyHeadphones: .head
         }
+    }
+
+    /// Head items that also cover an eye (an eyepatch, a blindfold). They
+    /// take the face slot too, so glasses never pile on top of them.
+    public var coversEyes: Bool {
+        self == .pirateHat || self == .blindfoldedSorcerer
     }
 
     public var displayName: String {
@@ -54,15 +90,39 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
         case .headMirror: "Head Mirror"
         case .graduationCap: "Graduation Cap"
         case .beanie: "Beanie"
+        case .tinyCrown: "Tiny Crown"
+        case .partyHat: "Party Hat"
+        case .chefHat: "Chef Hat"
+        case .wizardHat: "Wizard Hat"
+        case .bunnyEars: "Bunny Ears"
+        case .witchHat: "Witch Hat"
+        case .cowboyHat: "Cowboy Hat"
+        case .flowerCrown: "Flower Crown"
+        case .frogHat: "Frog Hat"
+        case .ninjaHeadband: "Ninja Headband"
+        case .coolSunglasses: "Cool Sunglasses"
+        case .pirateHat: "Pirate Hat"
+        case .blindfoldedSorcerer: "Blindfolded Sorcerer"
+        case .astronautHelmet: "Astronaut Helmet"
+        case .chunkyHeadphones: "Chunky Headphones"
+        case .bowTie: "Bow Tie"
         }
     }
 
     /// `accessories` reduced to what can actually be worn together: one per
-    /// slot (the last one listed wins, like putting on a new hat), sorted in
-    /// drawing order. Keeps stored profiles valid even if edited by hand.
+    /// slot, and no face item under one that covers the eyes (the last one
+    /// listed wins, like putting on a new hat), sorted in drawing order.
+    /// Keeps stored profiles valid even if edited by hand.
     public static func wearable(_ accessories: [PetAccessory]) -> [PetAccessory] {
-        var bySlot: [PetAccessorySlot: PetAccessory] = [:]
-        for accessory in accessories { bySlot[accessory.slot] = accessory }
-        return bySlot.sorted { $0.key < $1.key }.map(\.value)
+        var worn: [PetAccessory] = []
+        for accessory in accessories {
+            worn.removeAll { $0.clashes(with: accessory) }
+            worn.append(accessory)
+        }
+        return worn.sorted { $0.slot < $1.slot }
+    }
+
+    private func clashes(with other: PetAccessory) -> Bool {
+        slot == other.slot || (coversEyes && other.slot == .face) || (other.coversEyes && slot == .face)
     }
 }

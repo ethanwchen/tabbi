@@ -11,6 +11,16 @@ final class PetCostumeTests: XCTestCase {
         XCTAssertEqual(PetAccessory.wearable([]), [])
     }
 
+    func testItemsThatCoverTheEyesReplaceGlassesAndTheOtherWayRound() {
+        XCTAssertEqual(PetAccessory.wearable([.scarf, .coolSunglasses, .pirateHat]), [.scarf, .pirateHat])
+        XCTAssertEqual(PetAccessory.wearable([.blindfoldedSorcerer, .roundGlasses]), [.roundGlasses])
+        XCTAssertEqual(PetAccessory.wearable([.roundGlasses, .wizardHat]), [.roundGlasses, .wizardHat],
+                       "a plain hat still goes with glasses")
+        var pet = PetProfile(name: "Pixel", breed: .calico, accessories: [.coolSunglasses])
+        pet.wear(.blindfoldedSorcerer)
+        XCTAssertEqual(pet.accessories, [.blindfoldedSorcerer])
+    }
+
     func testEveryItemChangesTheLookOfEveryBreed() {
         for breed in PetBreed.allCases {
             let plain = PetComposer.sitting(breed)

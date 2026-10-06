@@ -56,7 +56,7 @@ public enum PetComposer {
         // Layer order: body (pattern applied while stamping), head, face,
         // outfit, accessories. Later layers paint over earlier ones.
         var bodyItem: (CostumeArt.BodyItem) -> (SpriteGrid, Int, Int)? = { item in
-            (layout.pick(item), layout.bodyX, layout.bodyY)
+            (layout.pick(item), layout.bodyX, layout.bodyY - item.rise)
         }
         switch stance {
         case .sitting:
@@ -120,19 +120,31 @@ public enum PetComposer {
         let face = EffectArt.face(layout.face, eyeRow: layout.eyeRow - layout.faceRow, eyes: pose.eyes)
         canvas.stamp(face, x: headX, y: headY + layout.faceRow, pattern: pattern)
 
+        func stampFace(_ item: CostumeArt.FaceItem) {
+            canvas.stamp(layout.family == .cat ? item.cat : item.dog, x: headX, y: headY + layout.eyeRow - item.eyeRow)
+        }
+        func stampHead(_ item: CostumeArt.HeadItem) {
+            canvas.stamp(item.grid, x: headX, y: headY + layout.skullTop - item.sitRow)
+        }
         if let item = outfitArt(outfit), let (grid, x, y) = bodyItem(item) {
             canvas.stamp(grid, x: x, y: y)
+        }
+        // An outfit's hood goes under any hat, which is worn over it.
+        if let hood = outfitHood(outfit) {
+            stampHead(hood)
         }
         for accessory in PetAccessory.wearable(accessories) {
             switch accessoryArt(accessory) {
             case .body(let item):
                 guard let (grid, x, y) = bodyItem(item) else { continue }
                 canvas.stamp(grid, x: x, y: y)
-            case .glasses:
-                let glasses = layout.family == .cat ? CostumeArt.glassesCat : CostumeArt.glassesDog
-                canvas.stamp(glasses, x: headX, y: headY + layout.eyeRow - 1)
+            case .face(let item):
+                stampFace(item)
             case .head(let item):
-                canvas.stamp(item.grid, x: headX, y: headY + layout.skullTop - item.sitRow)
+                stampHead(item)
+            case .mask(let head, let face):
+                stampFace(face)
+                stampHead(head)
             }
         }
         let anchor = PetPoint(x: headX + layout.head.width - 1, y: headY + layout.skullTop - pose.lift)
@@ -152,7 +164,7 @@ public enum PetComposer {
             canvas.stamp(tail, x: walk.tailX, y: walk.torsoY - tail.height, pattern: breed.pattern)
         }
         for item in bodyItems(outfit: outfit, accessories: accessories) {
-            canvas.stamp(walk.pick(item), x: walk.torsoX, y: walk.torsoY)
+            canvas.stamp(walk.pick(item), x: walk.torsoX, y: walk.torsoY - item.rise)
         }
         return canvas
     }
@@ -170,24 +182,51 @@ public enum PetComposer {
         case .none: nil
         case .scrubs: CostumeArt.scrubs
         case .whiteCoat: CostumeArt.whiteCoat
+        case .cozyHoodie: CostumeArt.cozyHoodie
+        case .superheroCape: CostumeArt.superheroCape
+        case .dinosaurHoodie: CostumeArt.dinosaurHoodie
+        case .wizardRobe: CostumeArt.wizardRobe
         }
+    }
+
+    /// The head part of an outfit, drawn like a hat that moves with the head.
+    private static func outfitHood(_ outfit: PetOutfit) -> CostumeArt.HeadItem? {
+        outfit == .dinosaurHoodie ? CostumeArt.dinosaurHood : nil
     }
 
     private enum AccessoryArt {
         case body(CostumeArt.BodyItem)
-        case glasses
+        case face(CostumeArt.FaceItem)
         case head(CostumeArt.HeadItem)
+        /// A head item worn with a face piece, such as a hat and an eyepatch.
+        case mask(CostumeArt.HeadItem, CostumeArt.FaceItem)
     }
 
     private static func accessoryArt(_ accessory: PetAccessory) -> AccessoryArt {
         switch accessory {
         case .stethoscope: .body(CostumeArt.stethoscope)
         case .scarf: .body(CostumeArt.scarf)
-        case .roundGlasses: .glasses
+        case .bowTie: .body(CostumeArt.bowTie)
+        case .roundGlasses: .face(CostumeArt.roundGlasses)
+        case .coolSunglasses: .face(CostumeArt.coolSunglasses)
         case .surgicalCap: .head(CostumeArt.surgicalCap)
         case .headMirror: .head(CostumeArt.headMirror)
         case .graduationCap: .head(CostumeArt.graduationCap)
         case .beanie: .head(CostumeArt.beanie)
+        case .tinyCrown: .head(CostumeArt.tinyCrown)
+        case .partyHat: .head(CostumeArt.partyHat)
+        case .chefHat: .head(CostumeArt.chefHat)
+        case .wizardHat: .head(CostumeArt.wizardHat)
+        case .bunnyEars: .head(CostumeArt.bunnyEars)
+        case .witchHat: .head(CostumeArt.witchHat)
+        case .cowboyHat: .head(CostumeArt.cowboyHat)
+        case .flowerCrown: .head(CostumeArt.flowerCrown)
+        case .frogHat: .head(CostumeArt.frogHat)
+        case .ninjaHeadband: .head(CostumeArt.ninjaHeadband)
+        case .pirateHat: .mask(CostumeArt.pirateHat, CostumeArt.eyepatch)
+        case .blindfoldedSorcerer: .mask(CostumeArt.spikyHair, CostumeArt.blindfold)
+        case .astronautHelmet: .head(CostumeArt.astronautHelmet)
+        case .chunkyHeadphones: .head(CostumeArt.chunkyHeadphones)
         }
     }
 

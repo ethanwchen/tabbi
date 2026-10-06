@@ -316,7 +316,8 @@ The ticker turns it into a `.pet` item (`TickerKind.pet`, last in rotation), and
 
 `PetCloset` holds the Closet tab's editing rules over one `PetSave`, so every edit leaves a save that is valid to persist.
 
-- `wardrobe` lists every paid item, cheapest first; "no outfit" is not a tile, because tapping the worn outfit takes it off.
+- `wardrobe` lists every item, free starters included, cheapest first; "no outfit" is not a tile, because tapping the worn outfit takes it off.
+- `shelves` groups the wardrobe by `PetItemTheme` (Study, Cozy, Fantasy, Seasonal, Silly), and `isNew(_:)` shows the "New" badge on items from the latest release the user does not own yet.
 - `state(of:)` is `wearing`, `owned`, `affordable`, or `locked(missing:)`.
 - `tap(_:)` toggles owned items, buys and wears affordable ones, and changes nothing for locked ones.
 - `wearing(_:on:)` dresses a profile without checking ownership, for hover "try it on" previews.

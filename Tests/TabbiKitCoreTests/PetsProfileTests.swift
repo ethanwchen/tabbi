@@ -230,9 +230,12 @@ final class PetUnlockTests: XCTestCase {
     func testCatalogCoversEveryItemCheapestFirst() {
         let items = PetItem.allCases
         XCTAssertEqual(items.count, PetOutfit.allCases.count + PetAccessory.allCases.count)
-        XCTAssertEqual(items.first, .outfit(.none))
         XCTAssertEqual(items.map(\.cost), items.map(\.cost).sorted())
-        XCTAssertEqual(items.filter(\.isFree), [.outfit(.none)], "only 'no outfit' is free")
+        XCTAssertEqual(Set(items.filter(\.isFree)),
+                       [.outfit(.none), .accessory(.scarf), .accessory(.partyHat), .accessory(.bowTie)],
+                       "no outfit plus one free starter per playful theme")
+        let prices = items.filter { !$0.isFree }.map(\.cost)
+        XCTAssertEqual(Set(prices).count, prices.count, "every paid item has its own price")
         XCTAssertEqual(items.last, .accessory(.graduationCap), "graduation is the long-term goal")
     }
 
@@ -258,13 +261,13 @@ final class PetUnlockTests: XCTestCase {
 
     func testFirstFocusBlockUnlocksTheFirstItem() throws {
         var ledger = PetPointsLedger()
-        XCTAssertEqual(ledger.nextUnlock, .accessory(.scarf))
+        XCTAssertEqual(ledger.nextUnlock, .accessory(.beanie))
         XCTAssertEqual(ledger.recordStudy(minutes: 25, completed: true), 35)
-        XCTAssertTrue(ledger.canBuy(.accessory(.scarf)))
-        try ledger.buy(.accessory(.scarf))
+        XCTAssertTrue(ledger.canBuy(.accessory(.beanie)))
+        try ledger.buy(.accessory(.beanie))
         XCTAssertEqual(ledger.balance, 5)
         XCTAssertEqual(ledger.earned, 35)
-        XCTAssertEqual(ledger.nextUnlock, .accessory(.beanie))
+        XCTAssertEqual(ledger.nextUnlock, .accessory(.roundGlasses))
     }
 
     func testPurchasesAreRefusedWithAReason() throws {
@@ -272,12 +275,12 @@ final class PetUnlockTests: XCTestCase {
         ledger.recordStudy(minutes: 50, completed: true)
 
         XCTAssertThrowsError(try ledger.buy(.outfit(.scrubs))) { error in
-            XCTAssertEqual(error as? PetPurchaseError, .notEnoughPoints(missing: 30))
+            XCTAssertEqual(error as? PetPurchaseError, .notEnoughPoints(missing: 40))
         }
         XCTAssertEqual(ledger.balance, 60, "a refused purchase costs nothing")
 
-        try ledger.buy(.accessory(.roundGlasses))
-        XCTAssertThrowsError(try ledger.buy(.accessory(.roundGlasses))) { error in
+        try ledger.buy(.accessory(.ninjaHeadband))
+        XCTAssertThrowsError(try ledger.buy(.accessory(.ninjaHeadband))) { error in
             XCTAssertEqual(error as? PetPurchaseError, .alreadyOwned)
         }
         XCTAssertThrowsError(try ledger.buy(.outfit(.none))) { error in
@@ -291,6 +294,16 @@ final class PetUnlockTests: XCTestCase {
         XCTAssertEqual(ledger.balance, 0)
         XCTAssertEqual(ledger.purchased, [.accessory(.beanie)], "free items are never stored")
         XCTAssertEqual(PetPointsLedger(earned: -5).balance, 0)
+    }
+
+    func testOldSaveGetsTheScarfItBoughtRefundedOnce() throws {
+        let old = Data(#"{"earned": 100, "spent": 60, "purchased": ["accessory.scarf", "accessory.beanie"]}"#.utf8)
+        let ledger = try JSONDecoder().decode(PetPointsLedger.self, from: old)
+        XCTAssertEqual(ledger.balance, 70)
+        XCTAssertEqual(ledger.purchased, [.accessory(.beanie)])
+
+        let reloaded = try JSONDecoder().decode(PetPointsLedger.self, from: JSONEncoder().encode(ledger))
+        XCTAssertEqual(reloaded.balance, 70, "the refund applies once")
     }
 
     func testProfileIsRestrictedToOwnedItems() throws {
@@ -331,12 +344,12 @@ final class PetSaveTests: XCTestCase {
         let json = """
         {"version": 1,
          "profile": {"name": "Rex", "breed": "beagle", "outfit": "whiteCoat", "accessories": ["graduationCap"]},
-         "ledger": {"earned": 40, "spent": 30, "purchased": ["accessory.scarf", "accessory.fromTheFuture"]}}
+         "ledger": {"earned": 40, "spent": 30, "purchased": ["accessory.beanie", "accessory.fromTheFuture"]}}
         """
         let save = try PetSave.decode(Data(json.utf8))
         XCTAssertEqual(save.profile.outfit, .none)
         XCTAssertEqual(save.profile.accessories, [])
-        XCTAssertEqual(save.ledger.purchased, [.accessory(.scarf)])
+        XCTAssertEqual(save.ledger.purchased, [.accessory(.beanie)])
         XCTAssertEqual(save.ledger.balance, 10)
     }
 
