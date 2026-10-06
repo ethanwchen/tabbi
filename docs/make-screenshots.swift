@@ -256,6 +256,7 @@ write(compose(notch("closed-pet", in: medicine), canvasWidth: 1200, cropHeight: 
 let tiles = [
     ("open-spotify", productivity, "now-playing"),
     ("open-planner", productivity, "today"),
+    ("open-schedule", productivity, "schedule"),
     ("open-claudeUsage", productivity, "claude-usage"),
     ("open-system", productivity, "system"),
     ("open-claudeAsk", productivity, "ask-claude"),

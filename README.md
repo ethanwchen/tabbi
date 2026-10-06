@@ -24,9 +24,9 @@ A kit picks the tabs: Essentials for a focus timer, your day, music and Claude, 
 More tabs are one click away in Settings.
 
 - **Focus and study timers** in the study method you pick, with focus sounds and Do Not Disturb.
-- **Today:** a checklist, your next meetings and a Plan my day that fits work into free time.
+- **Today and Schedule:** a checklist, your next meetings and a Plan my day that fits work into free time, on your Mac with no AI needed.
+- **Now Playing and Ask Claude:** music controls, and Claude in the notch with screenshots, a bigger view and chat history.
 - **Anki, Party and a pet:** cards due, studying with friends and a cat or dog that cheers you on.
-- **Now Playing, System and Claude:** music controls, CPU and memory, Claude limits and quick questions.
 - **Eight themes,** from hardware-black Midnight to warm Cozy, and setup that happens right in the notch.
 - **Private by design:** no account, no telemetry, and Claude only through your own `claude` CLI.
 
@@ -45,22 +45,34 @@ Macs without a notch get a small virtual one at the top of the screen.
 
 ## Tabs
 
+Essentials opens with four tabs, plus a paw for your pet.
+Med School adds Anki.
+
 <table>
   <tr>
     <td width="50%"><img src="docs/images/study.png" alt="Timer tab"><br><b>Timer.</b> Quick 5, 10 or 25 minute countdowns, or a study method like Pomodoro, with points for the pet.</td>
-    <td width="50%"><img src="docs/images/today.png" alt="Today tab"><br><b>Today.</b> Your checklist, what's next on the calendar and a focus timer.</td>
+    <td width="50%"><img src="docs/images/today.png" alt="Today tab"><br><b>Today.</b> Your to-do list, what's next on the calendar and Plan my day.</td>
   </tr>
   <tr>
-    <td><img src="docs/images/anki.png" alt="Anki tab"><br><b>Anki.</b> Cards due today in your decks, through AnkiConnect on your Mac; click a deck to study it.</td>
-    <td><img src="docs/images/party.png" alt="Party tab"><br><b>Party.</b> Study with friends and see who is focusing.</td>
+    <td><img src="docs/images/now-playing.png" alt="Now Playing tab"><br><b>Now Playing.</b> Spotify and Apple Music, with artwork, shuffle and repeat.</td>
+    <td><img src="docs/images/ask-claude.png" alt="Ask Claude tab"><br><b>Ask Claude.</b> Type a question and press Return; attach a screenshot or open a bigger view.</td>
   </tr>
   <tr>
+    <td><img src="docs/images/anki.png" alt="Anki tab"><br><b>Anki.</b> Cards due today in your decks, through AnkiConnect; click a deck to study it.</td>
     <td><img src="docs/images/closet.png" alt="Closet, the pet page"><br><b>Closet.</b> Tap the paw to dress up your pet with what your study points unlock.</td>
-    <td><img src="docs/images/now-playing.png" alt="Now Playing tab"><br><b>Now Playing.</b> Spotify and Apple Music, with artwork and controls.</td>
+  </tr>
+</table>
+
+More tabs are in **Settings > Tabs > Add more**:
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/images/schedule.png" alt="Schedule tab"><br><b>Schedule.</b> Your day and week as a timeline, planned on your Mac.</td>
+    <td width="50%"><img src="docs/images/party.png" alt="Party tab"><br><b>Party.</b> Study with friends and see who is focusing.</td>
   </tr>
   <tr>
     <td><img src="docs/images/claude-usage.png" alt="Claude Usage tab"><br><b>Claude Usage.</b> Your 5-hour and weekly limits and today's tokens.</td>
-    <td><img src="docs/images/onboarding.png" alt="First-run setup in the notch"><br><b>Setup.</b> Pick a kit, then connect only what its tabs need.</td>
+    <td><img src="docs/images/system.png" alt="System tab"><br><b>System.</b> CPU, GPU and memory at a glance.</td>
   </tr>
 </table>
 
