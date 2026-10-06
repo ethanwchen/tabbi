@@ -130,6 +130,13 @@ enum SnapshotRenderer {
             large.open(.claudeAsk)
             large.requestOpenSize(ClaudeAskPanel.largeSize)
             shots.append(Shot("open-claudeAsk-large", large))
+            // A screenshot waiting to be sent, and the Screen Recording
+            // priming screen shown before the system is asked.
+            for name in ["open-claudeAsk-screenshot", "open-claudeAsk-screen-access"] {
+                let model = NotchViewModel(geometry: geometry, layout: withAsk)
+                model.open(.claudeAsk)
+                shots.append(Shot(name, model))
+            }
         }
 
         shots += headerShots(geometry: geometry, catalog: services.settings.catalog)
@@ -255,6 +262,8 @@ enum SnapshotRenderer {
             let (name, model) = (shot.name, shot.model)
             services.onboarding.show(shot.onboarding)
             askClaude?.isShowingHistory = name == "open-claudeAsk-history"
+            askClaude?.showForSnapshot(name == "open-claudeAsk-screenshot" ? .pendingScreenshot
+                : name == "open-claudeAsk-screen-access" ? .screenAccess : .chat)
             if let firstSection { closet?.store.section = name == "open-closet-look" ? .look : firstSection }
             model.themeID = Theme.current.id
             let view = NotchView(content: ModuleViews.notchContent(services: services))

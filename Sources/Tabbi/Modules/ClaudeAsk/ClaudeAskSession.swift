@@ -1,3 +1,4 @@
+import AppKit
 import Foundation
 import SwiftUI
 import TabbiKitCore
@@ -6,6 +7,9 @@ import TabbiKitCore
 /// folds its stream into a `ClaudeAskConversation`, and supports stop,
 /// retry, and New chat. Finished exchanges are saved to the chat history
 /// on this Mac (live runs only), and a saved chat can be reopened.
+/// Screenshots attached to a question go with it to the CLI's stdin and
+/// are kept with the saved chat; a capture whose chat is never saved is
+/// deleted once it is answered.
 @MainActor
 final class ClaudeAskSession: ObservableObject {
     @Published private(set) var conversation: ClaudeAskConversation
@@ -21,14 +25,31 @@ final class ClaudeAskSession: ObservableObject {
     @Published var preferences: ClaudeAskPreferences {
         didSet { if preferences != oldValue { preferencesStorage?.save(preferences) } }
     }
+    /// Screenshots waiting to go with the next question.
+    @Published private(set) var pendingAttachments: [ClaudeAskAttachment] = []
+    /// True while a screenshot is being taken.
+    @Published private(set) var isCapturing = false
+    /// True while the panel explains why Screen Recording is needed,
+    /// before the system is asked.
+    @Published var isAskingScreenAccess = false
+    /// Set when a capture failed, cleared by the next attempt or question.
+    @Published private(set) var captureFailed = false
+
+    /// Enough for a before and after; more would mostly cost tokens.
+    static let maxPendingAttachments = 3
 
     /// True with `TABBI_DEMO=1`: shows a sample chat and never runs the CLI.
     let isDemo: Bool
+    private let isSnapshot: Bool
 
     /// Nil in demo and snapshot runs, which save nothing.
     private let history: ClaudeAskHistory?
     /// Nil in demo and snapshot runs, which keep preferences in memory.
     private let preferencesStorage: ClaudeAskPreferencesStorage?
+    private let attachmentStore: ClaudeAskAttachmentStore
+    /// Thumbnails by attachment id. A capture's image is cached when it is
+    /// staged, so it still shows after an unsaved file is discarded.
+    private var thumbnails: [UUID: NSImage] = [:]
     private var task: Task<Void, Never>?
     /// Bumped on every ask, stop, and New chat so a superseded run can't
     /// write into the conversation after it was cancelled.
@@ -39,10 +60,18 @@ final class ClaudeAskSession: ObservableObject {
 
     init(runMode: RunMode, storage: EditionStorage) {
         isDemo = runMode.isDemo
+        isSnapshot = runMode.isSnapshot
         let savesNothing = runMode.isDemo || runMode.isSnapshot
         history = savesNothing ? nil : ClaudeAskHistory(storage: storage)
         preferencesStorage = savesNothing ? nil : ClaudeAskPreferencesStorage()
         preferences = preferencesStorage?.load() ?? ClaudeAskPreferences()
+        // One staging folder per edition, so two editions never clear each
+        // other's captures.
+        let staging = FileManager.default.temporaryDirectory
+            .appendingPathComponent("Ask Claude Screenshots", isDirectory: true)
+            .appendingPathComponent(storage.root.lastPathComponent, isDirectory: true)
+        attachmentStore = ClaudeAskAttachmentStore(stagingDirectory: staging, history: history)
+        attachmentStore.clearStaging()
         if isDemo {
             let samples = ClaudeAskChat.demoHistory(now: Date())
             conversation = samples.first.map(ClaudeAskConversation.init(restoring:)) ?? .demo
@@ -55,13 +84,27 @@ final class ClaudeAskSession: ObservableObject {
 
     var isStreaming: Bool { conversation.isStreaming }
 
-    /// Sends `prompt`, continuing the current chat when there is one.
+    /// Sends `prompt` with the pending screenshots, continuing the current
+    /// chat when there is one.
     func ask(_ prompt: String) {
+        let question = ClaudeAskQuestion(text: prompt, attachments: pendingAttachments)
+        guard send(question) else { return }
+        pendingAttachments = []
+    }
+
+    /// Returns false when there was nothing to send.
+    @discardableResult
+    private func send(_ question: ClaudeAskQuestion) -> Bool {
+        guard !isStreaming else { return false }
         isShowingHistory = false
-        guard let prompt = conversation.begin(prompt: prompt) else { return }
+        captureFailed = false
+        guard let prompt = conversation.begin(prompt: question.text, attachments: question.attachments) else {
+            return false
+        }
         generation += 1
         let generation = generation
         let sessionID = conversation.sessionID
+        let images = question.attachments.compactMap { attachmentStore.data(for: $0, in: conversation.chatID) }
 
         if isDemo {
             conversation.apply(.result(ClaudeResult(
@@ -69,7 +112,8 @@ final class ClaudeAskSession: ObservableObject {
                 sessionID: sessionID,
                 isError: false
             )))
-            return
+            exchangeEnded()
+            return true
         }
 
         task = Task { [weak self] in
@@ -78,12 +122,15 @@ final class ClaudeAskSession: ObservableObject {
                 return
             }
             guard !Task.isCancelled else { return }
-            let events = ClaudeCLI.stream(
-                executable: executable,
-                prompt: prompt,
-                extraArguments: ClaudeAskRequest.extraArguments(resuming: sessionID)
-            )
             do {
+                // Every question goes in as a stream-json message, the one
+                // way the CLI takes images; text-only questions use it too
+                // so there is a single path.
+                let events = ClaudeCLI.stream(
+                    executable: executable,
+                    inputLine: try ClaudeAskRequest.inputLine(prompt: prompt, images: images),
+                    extraArguments: ClaudeAskRequest.extraArguments(resuming: sessionID)
+                )
                 for try await event in events {
                     self?.update(generation) { $0.apply(event) }
                 }
@@ -96,6 +143,7 @@ final class ClaudeAskSession: ObservableObject {
                 }
             }
         }
+        return true
     }
 
     /// Stops the answer in progress, keeping what has arrived so far.
@@ -103,13 +151,101 @@ final class ClaudeAskSession: ObservableObject {
         guard isStreaming else { return }
         invalidateRun()
         conversation.cancel()
-        saveConversation()
+        exchangeEnded()
     }
 
-    /// Sends the failed question again.
+    /// Sends the failed question again, with its screenshots.
     func retry() {
-        guard let question = conversation.takeRetryQuestion() else { return }
-        ask(question.text)
+        guard !isStreaming, let question = conversation.takeRetryQuestion() else { return }
+        send(question)
+    }
+
+    // MARK: - Screenshots
+
+    /// Takes a screenshot for the next question, first explaining Screen
+    /// Recording when Tabbi isn't allowed yet. Demo runs attach a sample.
+    func attachScreenshot() {
+        guard !isCapturing, pendingAttachments.count < Self.maxPendingAttachments else { return }
+        captureFailed = false
+        if isDemo {
+            if let capture = ClaudeAskScreenCapture.demoCapture() { stage(capture) }
+            return
+        }
+        guard ClaudeAskScreenCapture.hasAccess else {
+            isShowingHistory = false
+            isAskingScreenAccess = true
+            return
+        }
+        isAskingScreenAccess = false
+        isCapturing = true
+        Task { [weak self] in
+            let capture = try? await ClaudeAskScreenCapture.captureDisplay()
+            guard let self else { return }
+            isCapturing = false
+            if let capture { stage(capture) } else { captureFailed = true }
+        }
+    }
+
+    /// From the priming screen: puts Tabbi in the Screen Recording list
+    /// (the system asks the first time) and opens that Settings pane.
+    func openScreenRecordingSettings() {
+        ClaudeAskScreenCapture.requestAccess()
+        NSWorkspace.shared.open(ClaudeAskScreenCapture.settingsURL)
+    }
+
+    /// Called when the panel shows again: once access was granted, the
+    /// priming screen gives way to the capture the user asked for.
+    func recheckScreenAccess() {
+        guard !isDemo, !isSnapshot, isAskingScreenAccess, ClaudeAskScreenCapture.hasAccess else { return }
+        attachScreenshot()
+    }
+
+    /// Takes a screenshot off the next question and deletes its file.
+    func removePending(_ attachment: ClaudeAskAttachment) {
+        pendingAttachments.removeAll { $0.id == attachment.id }
+        attachmentStore.discard([attachment])
+        thumbnails[attachment.id] = nil
+    }
+
+    /// The image for a thumbnail, from the cache or the file on disk.
+    func thumbnail(for attachment: ClaudeAskAttachment) -> NSImage? {
+        if let cached = thumbnails[attachment.id] { return cached }
+        guard let url = attachmentStore.url(for: attachment, in: conversation.chatID),
+              let image = NSImage(contentsOf: url) else { return nil }
+        thumbnails[attachment.id] = image
+        return image
+    }
+
+    /// What a `--snapshot` shot of the panel shows besides the chat.
+    enum SnapshotState {
+        case chat
+        /// A sample screenshot waiting to go with the next question.
+        case pendingScreenshot
+        /// The Screen Recording priming screen.
+        case screenAccess
+    }
+
+    /// Snapshot runs only: puts the panel in `state` for the next shot.
+    func showForSnapshot(_ state: SnapshotState) {
+        guard isSnapshot else { return }
+        isAskingScreenAccess = state == .screenAccess
+        let wantsPending = state == .pendingScreenshot
+        if wantsPending, pendingAttachments.isEmpty, let capture = ClaudeAskScreenCapture.demoCapture() {
+            stage(capture)
+        } else if !wantsPending {
+            for attachment in pendingAttachments { removePending(attachment) }
+        }
+    }
+
+    private func stage(_ capture: ClaudeAskScreenCapture.Capture) {
+        guard pendingAttachments.count < Self.maxPendingAttachments,
+              let attachment = try? attachmentStore.stage(pngData: capture.pngData, pixelWidth: capture.pixelWidth,
+                                                          pixelHeight: capture.pixelHeight) else {
+            captureFailed = true
+            return
+        }
+        thumbnails[attachment.id] = NSImage(data: capture.pngData)
+        pendingAttachments.append(attachment)
     }
 
     /// Looks up `claude` ahead of the first question (the panel calls this
@@ -128,6 +264,8 @@ final class ClaudeAskSession: ObservableObject {
     /// Clears the chat; the next question starts a fresh CLI session.
     func newChat() {
         invalidateRun()
+        leaveConversation()
+        for attachment in pendingAttachments { removePending(attachment) }
         conversation.reset()
         isShowingHistory = false
     }
@@ -137,6 +275,7 @@ final class ClaudeAskSession: ObservableObject {
         // Stopping a running answer saves what arrived before switching.
         stop()
         invalidateRun()
+        leaveConversation()
         conversation = ClaudeAskConversation(restoring: chat)
         isShowingHistory = false
     }
@@ -147,6 +286,7 @@ final class ClaudeAskSession: ObservableObject {
         try? history?.delete(chat.id)
         if conversation.chatID == chat.id {
             invalidateRun()
+            leaveConversation()
             conversation.reset()
         }
         reloadHistory(removing: [chat.id])
@@ -156,6 +296,7 @@ final class ClaudeAskSession: ObservableObject {
     func deleteAllChats() {
         try? history?.deleteAll()
         invalidateRun()
+        leaveConversation()
         conversation.reset()
         reloadHistory(removing: Set(savedChats.map(\.id)))
     }
@@ -172,15 +313,29 @@ final class ClaudeAskSession: ObservableObject {
         guard generation == self.generation else { return }
         let wasStreaming = conversation.isStreaming
         change(&conversation)
-        if wasStreaming && !conversation.isStreaming { saveConversation() }
+        if wasStreaming && !conversation.isStreaming { exchangeEnded() }
     }
 
-    /// Saves the chat once an exchange ends. A chat with nothing finished
-    /// yet (or only failures) is not written.
-    private func saveConversation() {
-        guard let history, let chat = conversation.savedChat() else { return }
-        try? history.save(chat)
-        reloadHistory()
+    /// Saves the chat once an exchange ends, with its screenshots. Runs that
+    /// save nothing delete the answered question's screenshots instead; a
+    /// failed one keeps them for Retry until the chat is left.
+    private func exchangeEnded() {
+        if let history, let chat = conversation.savedChat() {
+            try? attachmentStore.keep(chat.messages.flatMap(\.attachments), in: chat.id)
+            try? history.save(chat)
+            reloadHistory()
+        } else if history == nil, conversation.failure == nil,
+                  let question = conversation.messages.last(where: { $0.role == .user }) {
+            attachmentStore.discard(question.attachments)
+        }
+    }
+
+    /// Deletes screenshots of the current chat that were never saved, such
+    /// as those of a failed question, before it is replaced.
+    private func leaveConversation() {
+        let attachments = conversation.messages.flatMap(\.attachments)
+        attachmentStore.discard(attachments)
+        for attachment in attachments { thumbnails[attachment.id] = nil }
     }
 
     /// Rereads the saved chats; demo runs, which have no files, drop

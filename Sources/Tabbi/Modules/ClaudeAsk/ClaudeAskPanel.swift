@@ -33,7 +33,9 @@ struct ClaudeAskPanel: View {
                     .transition(.opacity)
             } else {
                 Group {
-                    if session.isShowingHistory {
+                    if session.isAskingScreenAccess {
+                        ScreenAccessView(session: session, accent: accent)
+                    } else if session.isShowingHistory {
                         HistoryList(session: session, accent: accent)
                     } else if conversation.isEmpty {
                         EmptyChatView(accent: accent) { send($0) }
@@ -50,7 +52,14 @@ struct ClaudeAskPanel: View {
         .motion(Theme.Motion.content, value: conversation.isEmpty)
         .motion(Theme.Motion.content, value: session.isShowingHistory)
         .motion(Theme.Motion.content, value: session.isClaudeMissing)
-        .onAppear { session.prepare() }
+        .motion(Theme.Motion.content, value: session.isAskingScreenAccess)
+        .onAppear {
+            session.prepare()
+            session.recheckScreenAccess()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+            session.recheckScreenAccess()
+        }
         .task {
             // Wait for the notch panel to become key before focusing.
             try? await Task.sleep(for: .milliseconds(80))
@@ -71,9 +80,15 @@ struct ClaudeAskPanel: View {
     }
 
     private var inputBar: some View {
-        HStack(spacing: Theme.Spacing.s) {
+        // Bottom-aligned: with screenshots above the text, the buttons stay
+        // level with the line being typed.
+        HStack(alignment: .bottom, spacing: Theme.Spacing.s) {
             InputField(text: $draft, focused: $fieldFocused, accent: accent, maxLines: isLarge ? 6 : 3,
-                       help: fieldHelp, onSubmit: { expand in send(draft, expand: expand) })
+                       help: fieldHelp, onSubmit: { expand in send(draft, expand: expand) }) {
+                PendingAttachments(session: session)
+            } trailing: {
+                AttachButton(session: session)
+            }
             if session.isStreaming {
                 IconButton(symbol: "stop.fill", size: 32, help: "Stop answering") { session.stop() }
                     .transition(.motionPop)
@@ -138,8 +153,9 @@ struct ClaudeAskPanel: View {
 }
 
 /// The rounded question field. Return sends, Command-Return sends and opens
-/// the large view, and Shift-Return adds a line.
-private struct InputField: View {
+/// the large view, and Shift-Return adds a line. `top` sits above the text
+/// (the screenshots to send) and `trailing` at its right edge.
+private struct InputField<Top: View, Trailing: View>: View {
     @Binding var text: String
     var focused: FocusState<Bool>.Binding
     let accent: Color
@@ -148,14 +164,25 @@ private struct InputField: View {
     let help: String
     /// Called with true for Command-Return.
     let onSubmit: (_ expand: Bool) -> Void
+    @ViewBuilder let top: () -> Top
+    @ViewBuilder let trailing: () -> Trailing
     @State private var hovering = false
 
     var body: some View {
         Card(padding: 0) {
-            field
-                .padding(.horizontal, Theme.Spacing.m)
+            HStack(alignment: .bottom, spacing: Theme.Spacing.xs) {
+                VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+                    top()
+                    field
+                        .frame(maxWidth: .infinity, minHeight: 16, alignment: .leading)
+                }
+                .padding(.leading, Theme.Spacing.m)
                 .padding(.vertical, Theme.Spacing.s)
-                .frame(maxWidth: .infinity, minHeight: 32, alignment: .leading)
+                trailing()
+                    .padding(.trailing, Theme.Spacing.xs)
+                    .padding(.bottom, Theme.Spacing.xs)
+            }
+            .frame(maxWidth: .infinity, minHeight: 32, alignment: .leading)
         }
         .overlay(
             RoundedRectangle(cornerRadius: Theme.Radius.m, style: .continuous)
@@ -273,7 +300,7 @@ private struct MessageList: View {
     private func row(for message: ClaudeAskMessage, isLast: Bool) -> some View {
         switch message.role {
         case .user:
-            UserBubble(text: message.text, accent: accent)
+            UserBubble(session: session, message: message, accent: accent)
         case .assistant:
             if message.status == .failed {
                 FailureRow(failure: isLast ? session.conversation.failure : nil,
@@ -286,13 +313,28 @@ private struct MessageList: View {
 }
 
 private struct UserBubble: View {
-    let text: String
+    let session: ClaudeAskSession
+    let message: ClaudeAskMessage
     let accent: Color
 
     var body: some View {
+        VStack(alignment: .trailing, spacing: Theme.Spacing.xs) {
+            if !message.attachments.isEmpty {
+                HStack(spacing: Theme.Spacing.xs) {
+                    ForEach(message.attachments) { attachment in
+                        AttachmentThumbnail(image: session.thumbnail(for: attachment), attachment: attachment, height: 56)
+                    }
+                }
+            }
+            bubble
+        }
+        .frame(maxWidth: .infinity, alignment: .trailing)
+    }
+
+    private var bubble: some View {
         HStack {
             Spacer(minLength: 72)
-            Text(text)
+            Text(message.text)
                 .font(Theme.Typography.body)
                 .foregroundStyle(Theme.Palette.primaryText)
                 .fixedSize(horizontal: false, vertical: true)
@@ -741,7 +783,7 @@ private struct ClaudeMissingView: View {
 }
 
 /// A small capsule text button with a hover state.
-private struct PillButton: View {
+struct PillButton: View {
     let title: String
     var symbol: String?
     /// Replaces the text color, e.g. for a confirmation.
