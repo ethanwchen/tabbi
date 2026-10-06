@@ -12,8 +12,11 @@ final class ClaudeAskSession: ObservableObject {
     /// True when the last lookup found no `claude` executable, so the panel
     /// can explain setup before the user types a question.
     @Published private(set) var isClaudeMissing = false
-    /// Saved chats, the most recently answered first.
+    /// Saved chats, the most recently answered first. Demo runs keep a
+    /// sample list in memory.
     @Published private(set) var savedChats: [ClaudeAskChat] = []
+    /// True while the panel lists saved chats instead of the conversation.
+    @Published var isShowingHistory = false
 
     /// True with `TABBI_DEMO=1`: shows a sample chat and never runs the CLI.
     let isDemo: Bool
@@ -30,15 +33,22 @@ final class ClaudeAskSession: ObservableObject {
 
     init(runMode: RunMode, storage: EditionStorage) {
         isDemo = runMode.isDemo
-        conversation = isDemo ? .demo : ClaudeAskConversation()
         history = runMode.isDemo || runMode.isSnapshot ? nil : ClaudeAskHistory(storage: storage)
-        savedChats = history?.chats() ?? []
+        if isDemo {
+            let samples = ClaudeAskChat.demoHistory(now: Date())
+            conversation = samples.first.map(ClaudeAskConversation.init(restoring:)) ?? .demo
+            savedChats = samples
+        } else {
+            conversation = ClaudeAskConversation()
+            savedChats = history?.chats() ?? []
+        }
     }
 
     var isStreaming: Bool { conversation.isStreaming }
 
     /// Sends `prompt`, continuing the current chat when there is one.
     func ask(_ prompt: String) {
+        isShowingHistory = false
         guard let prompt = conversation.begin(prompt: prompt) else { return }
         generation += 1
         let generation = generation
@@ -110,27 +120,35 @@ final class ClaudeAskSession: ObservableObject {
     func newChat() {
         invalidateRun()
         conversation.reset()
+        isShowingHistory = false
     }
 
     /// Reopens a saved chat; the next question continues its CLI session.
     func open(_ chat: ClaudeAskChat) {
+        // Stopping a running answer saves what arrived before switching.
+        stop()
         invalidateRun()
         conversation = ClaudeAskConversation(restoring: chat)
+        isShowingHistory = false
     }
 
-    /// Removes a chat from the history. The chat on screen stays, so
-    /// deleting the open chat clears it too rather than saving it again.
+    /// Removes a chat from the history. Deleting the open chat clears it
+    /// too, rather than saving it again with its next answer.
     func delete(_ chat: ClaudeAskChat) {
         try? history?.delete(chat.id)
-        if conversation.chatID == chat.id { newChat() }
-        reloadHistory()
+        if conversation.chatID == chat.id {
+            invalidateRun()
+            conversation.reset()
+        }
+        reloadHistory(removing: [chat.id])
     }
 
     /// Removes every saved chat and starts a new one.
     func deleteAllChats() {
         try? history?.deleteAll()
-        newChat()
-        reloadHistory()
+        invalidateRun()
+        conversation.reset()
+        reloadHistory(removing: Set(savedChats.map(\.id)))
     }
 
     // MARK: - Helpers
@@ -156,8 +174,14 @@ final class ClaudeAskSession: ObservableObject {
         reloadHistory()
     }
 
-    private func reloadHistory() {
-        savedChats = history?.chats() ?? []
+    /// Rereads the saved chats; demo runs, which have no files, drop
+    /// `removing` from the sample list instead.
+    private func reloadHistory(removing removed: Set<UUID> = []) {
+        if let history {
+            savedChats = history.chats()
+        } else {
+            savedChats.removeAll { removed.contains($0.id) }
+        }
     }
 
     /// Locates `claude` off the main thread (the login-shell fallback blocks).

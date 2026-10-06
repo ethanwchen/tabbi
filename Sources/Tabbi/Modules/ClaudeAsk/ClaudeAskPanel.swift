@@ -27,7 +27,9 @@ struct ClaudeAskPanel: View {
                     .transition(.opacity)
             } else {
                 Group {
-                    if conversation.isEmpty {
+                    if session.isShowingHistory {
+                        HistoryList(session: session, accent: accent)
+                    } else if conversation.isEmpty {
                         EmptyChatView(accent: accent) { send($0) }
                     } else {
                         MessageList(session: session, accent: accent)
@@ -40,6 +42,7 @@ struct ClaudeAskPanel: View {
             }
         }
         .motion(Theme.Motion.content, value: conversation.isEmpty)
+        .motion(Theme.Motion.content, value: session.isShowingHistory)
         .motion(Theme.Motion.content, value: session.isClaudeMissing)
         .onAppear { session.prepare() }
         .task {
@@ -71,6 +74,13 @@ struct ClaudeAskPanel: View {
                     .opacity(canSend ? 1 : 0.45)
                     .transition(.motionPop)
             }
+            if session.isShowingHistory || !session.savedChats.isEmpty {
+                IconButton(symbol: session.isShowingHistory ? "xmark" : "clock.arrow.circlepath", size: 32,
+                           help: session.isShowingHistory ? "Back to the chat" : "Chat history") {
+                    session.isShowingHistory.toggle()
+                }
+                .transition(.motionPop)
+            }
             if !conversation.isEmpty {
                 IconButton(symbol: "square.and.pencil", size: 32, help: "New chat") {
                     session.newChat()
@@ -81,6 +91,8 @@ struct ClaudeAskPanel: View {
             }
         }
         .motion(Theme.Motion.snappy, value: session.isStreaming)
+        .motion(Theme.Motion.snappy, value: session.isShowingHistory)
+        .motion(Theme.Motion.snappy, value: session.savedChats.isEmpty)
     }
 
     private func send(_ prompt: String) {
@@ -390,6 +402,151 @@ private struct FailureRow: View {
     }
 }
 
+// MARK: - History
+
+/// Saved chats, newest first: open one to continue it, or delete it.
+/// The first line says where they live and offers Clear All.
+private struct HistoryList: View {
+    @ObservedObject var session: ClaudeAskSession
+    let accent: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+            HStack(spacing: Theme.Spacing.s) {
+                Label("Chats stay on this Mac", systemImage: "lock.fill")
+                    .font(Theme.Typography.caption)
+                    .foregroundStyle(Theme.Palette.tertiaryText)
+                    .help("Saved chats are kept only on this Mac and never uploaded")
+                Spacer(minLength: Theme.Spacing.s)
+                if !session.savedChats.isEmpty {
+                    ClearAllButton { session.deleteAllChats() }
+                        .transition(.opacity)
+                }
+            }
+            // As tall as Clear All, so the line stays put when it goes.
+            .frame(height: 26)
+            if session.savedChats.isEmpty {
+                VStack(spacing: Theme.Spacing.xxs) {
+                    Text("No saved chats")
+                        .font(Theme.Typography.bodyEmphasis)
+                        .foregroundStyle(Theme.Palette.secondaryText)
+                    Text("Chats are saved here once Claude answers.")
+                        .font(Theme.Typography.caption)
+                        .foregroundStyle(Theme.Palette.tertiaryText)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .transition(.opacity)
+            } else if ClaudeAskPanel.isSnapshot {
+                rows
+                    .frame(maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .top)
+                    .clipped()
+                    .mask(bottomFade)
+            } else {
+                ScrollView { rows }
+                    .scrollIndicators(.never)
+                    .mask(bottomFade)
+            }
+        }
+        .motion(Theme.Motion.snappy, value: session.savedChats.map(\.id))
+    }
+
+    /// Older chats fade out above the input bar instead of being cut off.
+    private var bottomFade: some View {
+        VStack(spacing: 0) {
+            Color.black
+            LinearGradient(colors: [.black, .clear], startPoint: .top, endPoint: .bottom)
+                .frame(height: Theme.Spacing.m)
+        }
+    }
+
+    private var rows: some View {
+        // One clock for every row, so a list that stays open past midnight
+        // relabels together.
+        let now = Date()
+        return LazyVStack(spacing: Theme.Spacing.xxs) {
+            ForEach(session.savedChats) { chat in
+                HistoryRow(chat: chat, date: chat.dateLabel(now: now),
+                           isOpen: chat.id == session.conversation.chatID, accent: accent,
+                           open: { session.open(chat) }, delete: { session.delete(chat) })
+                    .transition(.motionRow(from: .top))
+            }
+        }
+    }
+}
+
+private struct HistoryRow: View {
+    let chat: ClaudeAskChat
+    let date: String
+    let isOpen: Bool
+    let accent: Color
+    let open: () -> Void
+    let delete: () -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.s) {
+            Button(action: open) {
+                HStack(spacing: Theme.Spacing.s) {
+                    Circle()
+                        .fill(isOpen ? accent : .clear)
+                        .frame(width: 6, height: 6)
+                    Text(chat.title)
+                        .font(Theme.Typography.body)
+                        .foregroundStyle(Theme.Palette.primaryText)
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                    Spacer(minLength: Theme.Spacing.s)
+                    Text(date)
+                        .font(Theme.Typography.caption)
+                        .foregroundStyle(Theme.Palette.tertiaryText)
+                        .monospacedDigit()
+                        .lineLimit(1)
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .help(isOpen ? "This chat is open" : "Open this chat and continue it")
+            IconButton(symbol: "trash", size: 22, help: "Delete this chat", action: delete)
+                .opacity(hovering ? 1 : 0)
+                .allowsHitTesting(hovering)
+        }
+        .padding(.leading, Theme.Spacing.s)
+        .padding(.trailing, Theme.Spacing.xxs)
+        .frame(height: 28)
+        .background(
+            RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
+                .fill(hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface)
+        )
+        .onHover { hovering = $0 }
+        .motion(Theme.Motion.snappy, value: hovering)
+    }
+}
+
+/// Clear All asks once more before deleting: the first click turns it into
+/// a warning, and it settles back if the second never comes.
+private struct ClearAllButton: View {
+    let action: () -> Void
+    @State private var armed = false
+
+    var body: some View {
+        PillButton(title: armed ? "Delete All Chats?" : "Clear All", symbol: armed ? "trash" : nil,
+                   tint: armed ? Theme.Palette.warning : nil,
+                   help: armed ? "Click again to delete every saved chat" : "Delete every saved chat") {
+            if armed {
+                armed = false
+                action()
+            } else {
+                armed = true
+                Task {
+                    try? await Task.sleep(for: .seconds(3))
+                    armed = false
+                }
+            }
+        }
+        .motion(Theme.Motion.snappy, value: armed)
+    }
+}
+
 // MARK: - Empty and setup states
 
 private struct EmptyChatView: View {
@@ -459,6 +616,8 @@ private struct ClaudeMissingView: View {
 private struct PillButton: View {
     let title: String
     var symbol: String?
+    /// Replaces the text color, e.g. for a confirmation.
+    var tint: Color?
     let help: String
     let action: () -> Void
     @State private var hovering = false
@@ -472,7 +631,7 @@ private struct PillButton: View {
                 Text(title).lineLimit(1)
             }
             .font(Theme.Typography.caption)
-            .foregroundStyle(hovering ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
+            .foregroundStyle(tint ?? (hovering ? Theme.Palette.primaryText : Theme.Palette.secondaryText))
             .padding(.horizontal, Theme.Spacing.m)
             .padding(.vertical, Theme.Spacing.s - Theme.Spacing.xxs)
             .background(Capsule().fill(hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface))

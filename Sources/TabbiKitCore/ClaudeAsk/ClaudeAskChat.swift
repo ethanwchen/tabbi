@@ -127,3 +127,59 @@ public final class ClaudeAskHistory {
         return decoder
     }()
 }
+
+extension ClaudeAskChat {
+    /// When the chat was last answered, as a history row shows it: the time
+    /// today, "Yesterday", the weekday within the past week, then the date
+    /// (with the year once it is another year).
+    public func dateLabel(now: Date, calendar: Calendar = .current, locale: Locale = .current) -> String {
+        let day = calendar.startOfDay(for: updatedAt)
+        let today = calendar.startOfDay(for: now)
+        let daysAgo = calendar.dateComponents([.day], from: day, to: today).day ?? 0
+        let template: String
+        switch daysAgo {
+        case ..<1: template = "jmm"
+        case 1: return "Yesterday"
+        case 2..<7: template = "EEEE"
+        default:
+            let sameYear = calendar.component(.year, from: updatedAt) == calendar.component(.year, from: now)
+            template = sameYear ? "MMMd" : "yMMMd"
+        }
+        let formatter = DateFormatter()
+        formatter.calendar = calendar
+        formatter.timeZone = calendar.timeZone
+        formatter.locale = locale
+        formatter.setLocalizedDateFormatFromTemplate(template)
+        return formatter.string(from: updatedAt)
+    }
+
+    /// Sample saved chats for `TABBI_DEMO=1`, newest first. The first is
+    /// the demo conversation, which the panel opens on launch.
+    public static func demoHistory(now: Date) -> [ClaudeAskChat] {
+        let hour: TimeInterval = 3600
+        func chat(_ question: String, _ answer: String, hoursAgo: Double, session: String) -> ClaudeAskChat {
+            let date = now.addingTimeInterval(-hoursAgo * hour)
+            return ClaudeAskChat(
+                id: UUID(), createdAt: date, updatedAt: date, sessionID: session,
+                messages: [Message(role: .user, text: question), Message(role: .assistant, text: answer)]
+            )
+        }
+        var current = ClaudeAskConversation.demo.savedChat(updatedAt: now.addingTimeInterval(-0.2 * hour))
+        current?.createdAt = now.addingTimeInterval(-0.2 * hour)
+        return [current].compactMap { $0 } + [
+            chat("Explain the difference between a mutex and a semaphore",
+                 "A **mutex** lets one thread in at a time and is released by the thread that took it. "
+                     + "A **semaphore** counts, so up to *n* threads can hold it.",
+                 hoursAgo: 5, session: "demo-session-2"),
+            chat("Write a polite reminder about the overdue invoice",
+                 "Hi Sam, a quick reminder that invoice 1042 was due last Friday. Could you take a look this week?",
+                 hoursAgo: 28, session: "demo-session-3"),
+            chat("Quick dinner ideas with chickpeas and spinach",
+                 "- Chickpea and spinach curry\n- Crispy chickpeas over garlicky spinach\n- A warm salad with feta",
+                 hoursAgo: 80, session: "demo-session-4"),
+            chat("Summarize the main ideas of spaced repetition",
+                 "Review just before you would forget, and stretch the gap each time you remember.",
+                 hoursAgo: 24 * 12, session: "demo-session-5"),
+        ]
+    }
+}

@@ -117,6 +117,16 @@ enum SnapshotRenderer {
             shots.append(Shot("open-pet-shortcut", withPaw))
         }
 
+        // Ask Claude's chat history, rendered after the others because the
+        // list showing is session state.
+        if layout.order.contains(.claudeAsk) {
+            var withAsk = layout
+            _ = withAsk.setEnabled(.claudeAsk, true)
+            let model = NotchViewModel(geometry: geometry, layout: withAsk)
+            model.open(.claudeAsk)
+            shots.append(Shot("open-claudeAsk-history", model))
+        }
+
         shots += headerShots(geometry: geometry, catalog: services.settings.catalog)
 
         // First-run setup in the notch, one shot per step of the active kit.
@@ -235,9 +245,11 @@ enum SnapshotRenderer {
     private static func renderNotchShots(_ shots: [Shot], services: AppServices,
                                          closet: ClosetModule?, to folder: URL) {
         let firstSection = closet?.store.section
+        let askClaude = services.modules.module(AskClaudeModule.self)?.session
         for shot in shots {
             let (name, model) = (shot.name, shot.model)
             services.onboarding.show(shot.onboarding)
+            askClaude?.isShowingHistory = name == "open-claudeAsk-history"
             if let firstSection { closet?.store.section = name == "open-closet-look" ? .look : firstSection }
             model.themeID = Theme.current.id
             let view = NotchView(content: ModuleViews.notchContent(services: services))

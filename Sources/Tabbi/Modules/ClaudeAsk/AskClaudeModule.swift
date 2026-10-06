@@ -10,7 +10,8 @@ final class AskClaudeModule: NotchModule {
         summary: "Ask Claude a quick question from the notch.", category: .ai,
         accent: .claude, permissions: [.claudeCLI]
     )
-    private let session: ClaudeAskSession
+    /// Internal so snapshot runs can show the history list.
+    let session: ClaudeAskSession
     private var cancellables: Set<AnyCancellable> = []
 
     init(context: ModuleContext) {
