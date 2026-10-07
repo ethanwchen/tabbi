@@ -17,7 +17,9 @@ struct PartyPanel: View {
         content
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .overlay(alignment: .bottom) { notice }
+            .overlay(alignment: .top) { celebration }
             .motion(Theme.Motion.content, value: phase)
+            .motion(Theme.Motion.snappy, value: store.celebration)
             .motion(Theme.Motion.snappy, value: store.notice)
             .onAppear { store.setVisible(true) }
             .onChange(of: focus) { _, field in notch.isPinned = field != nil }
@@ -81,6 +83,28 @@ struct PartyPanel: View {
         default:
             error.isTransient ? error.message + " Trying again in the background." : error.message
         }
+    }
+
+    @ViewBuilder
+    private var celebration: some View {
+        if let celebration = store.celebration {
+            PartyCelebrationBanner(celebration: celebration, pets: celebratingPets) {
+                store.clearCelebration()
+            }
+            .padding(.horizontal, Theme.Spacing.s)
+            .padding(.top, Theme.Spacing.s)
+            .transition(.motionRow(from: .top))
+        }
+    }
+
+    /// The members' pets as friends see them, mine first; just mine when
+    /// the party is gone.
+    private var celebratingPets: [PetProfile] {
+        let members = store.state.party?.members ?? []
+        let mine = members.filter { $0.profile.code == store.state.friendCode }
+        let others = members.filter { $0.profile.code != store.state.friendCode }
+        let pets = (mine + others).map { PartyPetAppearance.pet(for: $0.profile) }
+        return pets.isEmpty ? [store.pet] : pets
     }
 
     @ViewBuilder

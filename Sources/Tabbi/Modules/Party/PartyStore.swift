@@ -33,6 +33,9 @@ final class PartyStore: ObservableObject {
     @Published private(set) var pending: PartyAction?
     /// The last action's failure, shown once under the control that caused it.
     @Published private(set) var notice: String?
+    /// The "Great job, team!" moment after a shared session ran to its end,
+    /// while it is up (`PartyTeamCelebration.displayDuration`).
+    @Published private(set) var celebration: PartyTeamCelebration?
 
     let isDemo: Bool
     /// A `--snapshot` render: stays offline so no user is ever registered,
@@ -63,6 +66,7 @@ final class PartyStore: ObservableObject {
     /// Moves `now` to the shared session's end, so the Timer tab and the
     /// closed notch drop it on time even while the panel is hidden.
     private var sessionEndTask: Task<Void, Never>?
+    private var celebrationTask: Task<Void, Never>?
     /// Writes a name edited in Party back to the app-wide name.
     private var saveName: ((String) -> Void)?
     /// True when `TABBI_PARTY_NAME` picked the name a local snapshot renders as.
@@ -87,6 +91,8 @@ final class PartyStore: ObservableObject {
             let scenario = environment["TABBI_PARTY_PREVIEW"].flatMap(PartyDemoScenario.init) ?? .hosting
             state = .demo(scenario, now: Date())
             tracker = PartyPresenceTracker()
+            // Stays up (no timer) so the snapshot can catch it.
+            if scenario == .celebrating { celebration = .demo(now: Date()) }
             return
         }
         if isSnapshot, let local = Self.localSnapshotServer(environment) {
@@ -378,6 +384,22 @@ final class PartyStore: ObservableObject {
             .map { $0?.session }
             .compactMap { tracker.observe($0, at: Date()) }
             .eraseToAnyPublisher()
+    }
+
+    /// Shows `celebration` at the top of the panel, then lets it go.
+    func celebrate(_ celebration: PartyTeamCelebration) {
+        self.celebration = celebration
+        celebrationTask?.cancel()
+        celebrationTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: Self.nanoseconds(celebration.endsAt.timeIntervalSinceNow))
+            guard !Task.isCancelled, self?.celebration == celebration else { return }
+            self?.celebration = nil
+        }
+    }
+
+    func clearCelebration() {
+        celebrationTask?.cancel()
+        celebration = nil
     }
 
     func clearNotice() {

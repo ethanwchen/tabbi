@@ -27,18 +27,28 @@ final class PartyModule: NotchModule {
         store.follow(name: settings.$settings.map(\.displayName).eraseToAnyPublisher(),
                      save: { [weak settings] name in settings?.settings.displayName = name })
         shareConnection(pet: context.studyPet)
-        let pet = context.studyPet, log = context.activityLog
-        completionSubscription = store.completedSessions.sink { completion in
-            MainActor.assumeIsolated { _ = Self.finish(completion, pet: pet, log: log) }
+        let pet = context.studyPet, log = context.activityLog, celebrations = context.celebrations
+        completionSubscription = store.completedSessions.sink { [weak store] completion in
+            MainActor.assumeIsolated {
+                guard let store else { return }
+                _ = Self.finish(completion, pet: pet, log: log, party: store)
+                celebrations.celebrate(.burst, style: .confetti, accent: Self.descriptor.accentColor,
+                                       from: Self.descriptor.id)
+            }
         }
     }
 
     /// A shared session ran to its end with me in it: the pet earns the
-    /// shared points and the activity log records the focus stretch.
+    /// shared points, the activity log records the focus stretch, and the
+    /// Party panel says "Great job, team!" with the points earned.
     @discardableResult
-    static func finish(_ completion: PartySessionCompletion, pet: ClosetStore, log: ActivityLog) -> PetStudyAward? {
+    static func finish(_ completion: PartySessionCompletion, pet: ClosetStore, log: ActivityLog,
+                       party: PartyStore? = nil, at date: Date = Date()) -> PetStudyAward? {
         if let record = completion.activityRecord(source: descriptor.id) { log.record(record) }
-        return pet.credit(completion)
+        let award = pet.credit(completion)
+        party?.celebrate(PartyTeamCelebration(completion: completion, points: award?.points ?? 0,
+                                              petName: pet.profile.name, date: date))
+        return award
     }
 
     /// Lets the Connections hub show Party's row and start it from its
