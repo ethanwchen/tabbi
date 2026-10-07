@@ -48,4 +48,26 @@ final class PartySessionRewardAppTests: XCTestCase {
         party.clearCelebration()
         XCTAssertNil(party.celebration)
     }
+
+    func testAFinishedSharedSessionHandsTheMessageToTheNotification() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let pet = ClosetStore(storage: EditionStorage(root: root), runMode: .live)
+        let end = Date()
+        let completion = PartySessionCompletion(method: "pomodoro", joinedAt: end.addingTimeInterval(-25 * 60),
+                                                endedAt: end, friendCount: 1, hostName: nil)
+        var notified: [PartyTeamCelebration] = []
+        let award = try XCTUnwrap(PartyModule.finish(completion, pet: pet, log: ActivityLog(repository: nil),
+                                                     notify: { notified.append($0) }, at: end))
+
+        XCTAssertEqual(notified.count, 1)
+        XCTAssertEqual(notified.first?.title, "Great job, team!")
+        XCTAssertEqual(notified.first?.points, award.points)
+        XCTAssertTrue(notified.first?.detail.hasSuffix("25 min with 1 friend") ?? false)
+    }
+
+    func testDemoAndSnapshotRunsPostNoNotifications() {
+        XCTAssertNil(PartyNotifications.make(runMode: .demo))
+        XCTAssertNil(PartyNotifications.make(runMode: RunMode(isDemo: false, isSnapshot: true)))
+    }
 }

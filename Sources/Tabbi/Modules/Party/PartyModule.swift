@@ -18,9 +18,13 @@ final class PartyModule: NotchModule {
     )
     let store: PartyStore
     private var completionSubscription: AnyCancellable?
+    /// Kept alive here: the notification center holds its delegate weakly.
+    private let notifications: PartyNotifications?
 
     init(context: ModuleContext) {
         store = PartyStore(runMode: context.runMode)
+        let notifications = PartyNotifications.make(runMode: context.runMode)
+        self.notifications = notifications
         store.followFocus(from: context.providers.$snapshot.map(\.focus).eraseToAnyPublisher())
         store.follow(pet: context.studyPet.profiles)
         let settings = context.settings
@@ -31,7 +35,10 @@ final class PartyModule: NotchModule {
         completionSubscription = store.completedSessions.sink { [weak store] completion in
             MainActor.assumeIsolated {
                 guard let store else { return }
-                _ = Self.finish(completion, pet: pet, log: log, party: store)
+                // A closed or hidden notch shows no banner or confetti, so
+                // macOS tells the user instead.
+                let notify = celebrations.isShowing ? nil : notifications?.post
+                _ = Self.finish(completion, pet: pet, log: log, party: store, notify: notify)
                 celebrations.celebrate(.burst, style: .confetti, accent: Self.descriptor.accentColor,
                                        from: Self.descriptor.id)
             }
@@ -40,14 +47,18 @@ final class PartyModule: NotchModule {
 
     /// A shared session ran to its end with me in it: the pet earns the
     /// shared points, the activity log records the focus stretch, and the
-    /// Party panel says "Great job, team!" with the points earned.
+    /// Party panel says "Great job, team!" with the points earned. `notify`
+    /// gets the same message when the notch can't show it.
     @discardableResult
     static func finish(_ completion: PartySessionCompletion, pet: ClosetStore, log: ActivityLog,
-                       party: PartyStore? = nil, at date: Date = Date()) -> PetStudyAward? {
+                       party: PartyStore? = nil, notify: ((PartyTeamCelebration) -> Void)? = nil,
+                       at date: Date = Date()) -> PetStudyAward? {
         if let record = completion.activityRecord(source: descriptor.id) { log.record(record) }
         let award = pet.credit(completion)
-        party?.celebrate(PartyTeamCelebration(completion: completion, points: award?.points ?? 0,
-                                              petName: pet.profile.name, date: date))
+        let celebration = PartyTeamCelebration(completion: completion, points: award?.points ?? 0,
+                                               petName: pet.profile.name, date: date)
+        party?.celebrate(celebration)
+        notify?(celebration)
         return award
     }
 
