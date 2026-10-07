@@ -14,7 +14,7 @@ public enum PanelSize: String, CaseIterable, Sendable {
     /// panel was first designed for.
     public var canvasSize: CGSize {
         switch self {
-        case .compact: CGSize(width: 480, height: 208)
+        case .compact: CGSize(width: 480, height: 224)
         case .regular: CGSize(width: 560, height: 236)
         case .large: CGSize(width: 640, height: 272)
         }

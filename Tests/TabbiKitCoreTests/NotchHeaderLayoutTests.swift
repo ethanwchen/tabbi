@@ -110,19 +110,29 @@ final class NotchHeaderLayoutTests: XCTestCase {
         XCTAssertLessThan(try XCTUnwrap(header.titleFrame).maxX, header.gearFrame.minX)
     }
 
-    func testLongTitleTruncatesAndATooNarrowOneIsDropped() throws {
+    func testATitleShowsWholeOrNotAtAll() throws {
         let notch = CGSize(width: 210, height: 32)
-        let long = layout(tabs: 4, notch: notch, title: 120)
-        let title = try XCTUnwrap(long.titleFrame)
-        XCTAssertLessThan(title.width, 120, "a long title truncates")
-        XCTAssertGreaterThanOrEqual(title.minX, long.trailingZone.minX)
-
         let short = layout(tabs: 4, notch: notch, title: 30)
         XCTAssertEqual(short.titleFrame?.width, 30, "a short title shows whole")
+        XCTAssertEqual(short.titleScale, 1)
+
+        let long = layout(tabs: 4, notch: notch, title: 120)
+        XCTAssertNil(long.titleFrame, "a title that can't fit whole is dropped, not clipped")
+        XCTAssertEqual(long.titleScale, 1)
 
         let crowded = layout(tabs: 4, notch: notch, shortcuts: 3, title: 120)
         XCTAssertNil(crowded.titleFrame, "the title goes before anything collides")
         XCTAssertEqual(crowded.shortcutFrames.count, 3)
+    }
+
+    func testCompactCanvasDropsTitlesThatWouldClip() {
+        // "Now Playing" (about 76pt) beside a 14"/16" MacBook Pro notch on the
+        // Compact canvas, where the regular canvas fits it.
+        let notch = CGSize(width: 185, height: 32)
+        let compact = NotchHeaderLayout(canvasWidth: PanelSize.compact.canvasSize.width, notchSize: notch,
+                                        headerHeight: 32, tabCount: 4, shortcutCount: 1, titleWidth: 76)
+        XCTAssertNil(compact.titleFrame)
+        XCTAssertNotNil(layout(tabs: 4, notch: notch, title: 76).titleFrame)
     }
 
     func testASlightlyLongTitleShrinksInsteadOfTruncating() throws {
@@ -135,8 +145,5 @@ final class NotchHeaderLayoutTests: XCTestCase {
 
         XCTAssertEqual(layout(tabs: 4, notch: CGSize(width: 185, height: 32), title: 40).titleScale, 1,
                        "a title that fits keeps its full size")
-        let long = layout(tabs: 4, notch: CGSize(width: 210, height: 32), title: 120)
-        XCTAssertEqual(long.titleScale, NotchHeaderLayout.Metrics().minTitleScale,
-                       "a much longer title stops shrinking and truncates")
     }
 }
