@@ -370,6 +370,16 @@ final class PartyStore: ObservableObject {
             .eraseToAnyPublisher()
     }
 
+    /// Shared sessions that ran to their end with me in them, once each
+    /// (`PartySessionTracker`), so the module can pay and log them.
+    var completedSessions: AnyPublisher<PartySessionCompletion, Never> {
+        var tracker = PartySessionTracker()
+        return provided
+            .map { $0?.session }
+            .compactMap { tracker.observe($0, at: Date()) }
+            .eraseToAnyPublisher()
+    }
+
     func clearNotice() {
         notice = nil
     }

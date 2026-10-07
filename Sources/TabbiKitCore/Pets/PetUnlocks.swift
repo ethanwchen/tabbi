@@ -116,6 +116,22 @@ public enum PetPointsRules {
         let bonus = completed && minutes >= bonusMinutes ? completionBonus : 0
         return minutes * pointsPerMinute + bonus
     }
+
+    /// Finishing a Party shared session with friends earns this much on top
+    /// of what the same session earns solo, per friend who studied along.
+    public static let sharedBonusPerFriend = 5
+    /// The most a shared session's team bonus adds, so a big party is not
+    /// worth far more than a small one.
+    public static let maxSharedBonus = 15
+
+    /// Points for a Party shared session that ran to its end with the user
+    /// in it: a completed solo session's points, plus the team bonus when
+    /// at least one friend was there. Too short a stay earns nothing.
+    public static func sharedPoints(forMinutes minutes: Int, friends: Int) -> Int {
+        let solo = points(forMinutes: minutes, completed: true)
+        guard solo > 0 else { return 0 }
+        return solo + min(max(friends, 0) * sharedBonusPerFriend, maxSharedBonus)
+    }
 }
 
 /// Why a purchase was refused.
@@ -157,6 +173,15 @@ public struct PetPointsLedger: Hashable, Codable, Sendable {
     @discardableResult
     public mutating func recordStudy(minutes: Int, completed: Bool) -> Int {
         let points = PetPointsRules.points(forMinutes: minutes, completed: completed)
+        earned += points
+        return points
+    }
+
+    /// Credits a finished Party shared session (`PetPointsRules.sharedPoints`)
+    /// and returns the points it earned.
+    @discardableResult
+    public mutating func recordSharedSession(minutes: Int, friends: Int) -> Int {
+        let points = PetPointsRules.sharedPoints(forMinutes: minutes, friends: friends)
         earned += points
         return points
     }

@@ -17,6 +17,7 @@ final class PartyModule: NotchModule {
         setup: [.party]
     )
     let store: PartyStore
+    private var completionSubscription: AnyCancellable?
 
     init(context: ModuleContext) {
         store = PartyStore(runMode: context.runMode)
@@ -26,6 +27,18 @@ final class PartyModule: NotchModule {
         store.follow(name: settings.$settings.map(\.displayName).eraseToAnyPublisher(),
                      save: { [weak settings] name in settings?.settings.displayName = name })
         shareConnection(pet: context.studyPet)
+        let pet = context.studyPet, log = context.activityLog
+        completionSubscription = store.completedSessions.sink { completion in
+            MainActor.assumeIsolated { _ = Self.finish(completion, pet: pet, log: log) }
+        }
+    }
+
+    /// A shared session ran to its end with me in it: the pet earns the
+    /// shared points and the activity log records the focus stretch.
+    @discardableResult
+    static func finish(_ completion: PartySessionCompletion, pet: ClosetStore, log: ActivityLog) -> PetStudyAward? {
+        if let record = completion.activityRecord(source: descriptor.id) { log.record(record) }
+        return pet.credit(completion)
     }
 
     /// Lets the Connections hub show Party's row and start it from its

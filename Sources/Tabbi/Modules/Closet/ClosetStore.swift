@@ -109,6 +109,17 @@ final class ClosetStore: ObservableObject {
         awards.send(award)
     }
 
+    /// Pays a Party shared session that ran to its end with the user in it
+    /// and makes the pet celebrate. Party shows the award in its own
+    /// celebration, so the coach is not told. Nil when nothing was earned.
+    @discardableResult
+    func credit(_ session: PartySessionCompletion) -> PetStudyAward? {
+        guard let award = closet.credit(session) else { return nil }
+        persist()
+        preview.send(.celebrate)
+        return award
+    }
+
     /// `~/Library/Application Support/<edition>/Pet/pet.json`.
     static func saveURL(in storage: EditionStorage) -> URL {
         storage.file("pet.json", in: "Pet")
