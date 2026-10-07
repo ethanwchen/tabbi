@@ -94,6 +94,46 @@ final class NotchHeaderLayoutTests: XCTestCase {
         XCTAssertNil(layout(tabs: 3, notch: CGSize(width: 185, height: 32)).moreListTop)
     }
 
+    func testHiddenTabsKeepTheirOrderAndMarkMoreWhileOpen() {
+        let header = layout(tabs: 8, notch: CGSize(width: 185, height: 32))
+        let tabs = ["now", "system", "usage", "today", "ask", "focus", "anki", "party"]
+        XCTAssertEqual(header.overflowTabs(tabs), Array(tabs[header.visibleTabCount...]))
+        XCTAssertEqual(header.overflowTabs(tabs).count + header.visibleTabCount, tabs.count)
+        XCTAssertEqual(header.overflowSelection(in: tabs, selected: "party"), "party",
+                       "an open hidden tab selects the more button")
+        XCTAssertNil(header.overflowSelection(in: tabs, selected: "now"), "a visible tab keeps its own pill")
+        XCTAssertNil(header.overflowSelection(in: tabs, selected: nil))
+        let roomy = layout(tabs: 3, notch: nil)
+        XCTAssertEqual(roomy.overflowTabs(["a", "b", "c"]), [])
+        XCTAssertNil(roomy.overflowSelection(in: ["a", "b", "c"], selected: "c"))
+    }
+
+    func testOverflowFollowsThePanelWidth() {
+        // Five tabs (Med School) fit on Regular and Large, while Compact moves
+        // the last two behind "more" and keeps the gear and paw.
+        let notch = CGSize(width: 185, height: 32)
+        func header(_ size: PanelSize, tabs: Int) -> NotchHeaderLayout {
+            NotchHeaderLayout(canvasWidth: size.canvasSize.width, notchSize: notch, headerHeight: 32,
+                              tabCount: tabs, shortcutCount: 1, titleWidth: 76)
+        }
+        XCTAssertFalse(header(.compact, tabs: 4).hasOverflow)
+        XCTAssertFalse(header(.regular, tabs: 5).hasOverflow)
+        XCTAssertFalse(header(.large, tabs: 5).hasOverflow)
+        let compact = header(.compact, tabs: 5)
+        XCTAssertTrue(compact.hasOverflow)
+        XCTAssertEqual(compact.visibleTabCount, 3)
+        XCTAssertEqual(compact.shortcutFrames.count, 1)
+        XCTAssertLessThan(compact.gearFrame.maxX, compact.shortcutFrames[0].minX)
+        for size in PanelSize.allCases {
+            for tabs in 1...12 {
+                let shown = header(size, tabs: tabs)
+                XCTAssertGreaterThan(shown.visibleTabCount, 0, "\(size), \(tabs) tabs")
+                XCTAssertEqual(shown.hasOverflow, shown.visibleTabCount < tabs, "\(size), \(tabs) tabs")
+                XCTAssertGreaterThanOrEqual(header(.large, tabs: tabs).visibleTabCount, shown.visibleTabCount)
+            }
+        }
+    }
+
     func testNotchlessDisplayFitsMoreTabs() {
         let notched = layout(tabs: 7, notch: CGSize(width: 185, height: 32))
         let notchless = layout(tabs: 7, notch: nil)

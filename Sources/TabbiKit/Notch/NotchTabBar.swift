@@ -37,8 +37,7 @@ public struct NotchTabBar: View {
                 }
             }
             if header.hasOverflow {
-                let hidden = Array(tabs.dropFirst(header.visibleTabCount))
-                MoreTabsButton(selected: hidden.contains(model.selected) ? model.selected : nil,
+                MoreTabsButton(selected: header.overflowSelection(in: tabs, selected: model.selected),
                                isOpen: model.showsMoreTabs, namespace: selection) {
                     model.showsMoreTabs.toggle()
                 }
@@ -106,7 +105,7 @@ public struct NotchMoreTabsMenu: View {
 
     public var body: some View {
         VStack(spacing: 0) {
-            ForEach(model.layout.tabs.dropFirst(header.visibleTabCount), id: \.self) { module in
+            ForEach(header.overflowTabs(model.layout.tabs), id: \.self) { module in
                 MoreTabRow(module: module, shortcut: model.layout.shortcut(for: module),
                            isSelected: model.selected == module) {
                     model.selected = module

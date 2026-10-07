@@ -76,6 +76,17 @@ public struct NotchHeaderLayout: Equatable, Sendable {
     public var visibleTabCount: Int { tabFrames.count }
     public var hasOverflow: Bool { moreFrame != nil }
 
+    /// The tabs behind the "more" button, in their usual order.
+    public func overflowTabs<Tab>(_ tabs: [Tab]) -> [Tab] {
+        Array(tabs.dropFirst(visibleTabCount))
+    }
+
+    /// The open tab when it sits behind the "more" button, which then wears
+    /// the selection so the open page is always marked in the row.
+    public func overflowSelection<Tab: Equatable>(in tabs: [Tab], selected: Tab?) -> Tab? {
+        selected.flatMap { overflowTabs(tabs).contains($0) ? $0 : nil }
+    }
+
     /// Every control's frame, for checking that none meets the cutout.
     public var controlFrames: [CGRect] {
         tabFrames + [moreFrame, titleFrame, gearFrame].compactMap { $0 } + shortcutFrames
