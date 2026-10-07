@@ -346,7 +346,15 @@ public final class NotchController {
             .map { VisibilityChoice(hideInFullscreen: $0.hideInFullscreen, mode: $0.notchMode) }
             .removeDuplicates()
             .dropFirst()
-            .sink { [weak self] _ in self?.updateVisibility() }
+            .sink { [weak self] _ in
+                // `$settings` publishes before the change lands, so read the
+                // new settings next turn. The pointer is re-tested under the
+                // new mode, so a stale hover state never lingers.
+                Task { @MainActor in
+                    self?.updatePointerNear()
+                    self?.updateVisibility()
+                }
+            }
             .store(in: &cancellables)
 
         inputs.preview
