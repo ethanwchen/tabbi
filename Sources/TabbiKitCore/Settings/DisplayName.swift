@@ -18,6 +18,20 @@ public enum DisplayName {
         return String(trimmed.prefix(maxLength)).trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
+    /// "Good morning, Ana" for the hour of `date`: morning from 4 am, afternoon
+    /// from noon, evening from 5 pm. Nil without a name, so callers keep their
+    /// own wording rather than greeting nobody.
+    public static func greeting(for name: String?, at date: Date, calendar: Calendar = .current) -> String? {
+        guard let name = name.flatMap(cleaned) else { return nil }
+        let hour = calendar.component(.hour, from: date)
+        let part = switch hour {
+        case 4..<12: "morning"
+        case 12..<17: "afternoon"
+        default: "evening"
+        }
+        return "Good \(part), \(name)"
+    }
+
     /// Zero-width and direction marks a name could hide behind.
     private static let invisibleScalars: Set<UInt32> = [
         0x00AD, 0x200B, 0x200C, 0x200D, 0x200E, 0x200F, 0x2060, 0xFEFF,

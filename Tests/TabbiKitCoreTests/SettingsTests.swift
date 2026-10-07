@@ -304,6 +304,22 @@ final class SettingsRepositoryTests: XCTestCase {
         XCTAssertNil(settings.cleanedDisplayName)
     }
 
+    func testGreetingFollowsTheHourAndNeedsAName() {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "UTC")!
+        func at(_ hour: Int) -> Date {
+            calendar.date(from: DateComponents(year: 2026, month: 10, day: 6, hour: hour, minute: 30))!
+        }
+        XCTAssertEqual(DisplayName.greeting(for: " Ana ", at: at(4), calendar: calendar), "Good morning, Ana")
+        XCTAssertEqual(DisplayName.greeting(for: "Ana", at: at(11), calendar: calendar), "Good morning, Ana")
+        XCTAssertEqual(DisplayName.greeting(for: "Ana", at: at(12), calendar: calendar), "Good afternoon, Ana")
+        XCTAssertEqual(DisplayName.greeting(for: "Ana", at: at(17), calendar: calendar), "Good evening, Ana")
+        XCTAssertEqual(DisplayName.greeting(for: "Ana", at: at(2), calendar: calendar), "Good evening, Ana",
+                       "late at night is still evening, not morning")
+        XCTAssertNil(DisplayName.greeting(for: nil, at: at(9), calendar: calendar))
+        XCTAssertNil(DisplayName.greeting(for: " \u{200B} ", at: at(9), calendar: calendar), "no greeting for a blank name")
+    }
+
     func testRoundTripsEveryField() {
         var modules = ModuleLayout(order: [.claudeAsk, .planner], disabled: [])
         modules.setEnabled(.spotify, false)
