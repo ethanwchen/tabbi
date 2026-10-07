@@ -25,6 +25,11 @@ public final class NotchController {
     /// The shortcut brought the notch back over a fullscreen app until it closes.
     private var revealed = false
     private var fullscreenCheckTask: Task<Void, Never>?
+    /// The pointer is reaching for a `.showOnHover` notch.
+    private var pointerNear = false
+    /// Whether the panel is meant to be on screen. It stays ordered in for
+    /// the length of the fade out, so `panel.isVisible` lags behind this.
+    private var isShown = false
 
     /// Extra room around the open notch, so the open spring's stretch past
     /// its final size is never cut off by the panel's edge.
@@ -144,7 +149,8 @@ public final class NotchController {
     }
 
     private func pointerMoved() {
-        guard panel.isVisible else { return }
+        updatePointerNear()
+        guard isShown else { return }
         let inside = hitRect.insetBy(dx: -4, dy: -4).contains(NSEvent.mouseLocation)
         panel.ignoresMouseEvents = !inside
         guard inside != pointerInside else { return }
@@ -170,6 +176,28 @@ public final class NotchController {
     }
 
     private var settings: AppSettings { inputs.currentSettings() }
+
+    /// The hardware notch's rect (or where it would be on a notchless
+    /// screen) in screen coordinates, which the hover zone grows from.
+    private var closedNotchRect: CGRect {
+        let g = model.geometry
+        return CGRect(x: g.centerX - g.notchSize.width / 2, y: g.screenFrame.maxY - g.notchSize.height,
+                      width: g.notchSize.width, height: g.notchSize.height)
+    }
+
+    /// Brings a `.showOnHover` notch out when the pointer reaches the
+    /// top-center hot zone and puts it away once the pointer leaves it and
+    /// the drawn shape.
+    private func updatePointerNear() {
+        let near = settings.notchMode == .showOnHover && NotchVisibility.isPointerNear(
+            NSEvent.mouseLocation,
+            hoverZone: NotchVisibility.hoverZone(closedNotch: closedNotchRect),
+            drawnShape: isShown ? hitRect : nil
+        )
+        guard near != pointerNear else { return }
+        pointerNear = near
+        updateVisibility()
+    }
 
     /// Opens the notch once the pointer has rested on it for `hoverOpenDelay`,
     /// so merely passing over the menu bar doesn't pop it open.
@@ -252,13 +280,15 @@ public final class NotchController {
             }
             .store(in: &cancellables)
 
-        // Closing the notch ends a shortcut reveal over a fullscreen app.
+        // Closing the notch ends a shortcut reveal (over a fullscreen app, or
+        // of a notch the mode hides) and puts a hover or hidden notch away.
         model.$phase
             .removeDuplicates()
             .sink { [weak self] phase in
-                guard let self, phase != .open, self.revealed else { return }
+                guard let self, phase != .open else { return }
                 self.revealed = false
-                self.updateVisibility()
+                // Published before the change lands, so read `isOpen` next turn.
+                Task { @MainActor in self.updateVisibility() }
             }
             .store(in: &cancellables)
 
@@ -301,10 +331,30 @@ public final class NotchController {
             .store(in: &cancellables)
 
         inputs.settings
-            .map(\.hideInFullscreen)
+            .map(\.notchMode)
+            .removeDuplicates()
+            .sink { [weak self] mode in self?.model.notchMode = mode }
+            .store(in: &cancellables)
+
+        inputs.settings
+            .map(\.hotkey)
+            .removeDuplicates()
+            .sink { [weak self] hotkey in self?.model.hotkey = hotkey }
+            .store(in: &cancellables)
+
+        inputs.settings
+            .map { VisibilityChoice(hideInFullscreen: $0.hideInFullscreen, mode: $0.notchMode) }
             .removeDuplicates()
             .dropFirst()
-            .sink { [weak self] _ in self?.updateVisibility() }
+            .sink { [weak self] _ in
+                // `$settings` publishes before the change lands, so read the
+                // new settings next turn. The pointer is re-tested under the
+                // new mode, so a stale hover state never lingers.
+                Task { @MainActor in
+                    self?.updatePointerNear()
+                    self?.updateVisibility()
+                }
+            }
             .store(in: &cancellables)
 
         inputs.preview
@@ -343,9 +393,10 @@ public final class NotchController {
             .store(in: &cancellables)
     }
 
-    /// The shortcut also brings the notch back while a fullscreen app hides it.
+    /// The shortcut also brings the notch back while a fullscreen app or the
+    /// notch mode hides it.
     private func hotkeyPressed() {
-        if !panel.isVisible && displayID != nil && !model.isOpen {
+        if !isShown && displayID != nil && !model.isOpen {
             revealed = true
             updateVisibility()
         }
@@ -381,20 +432,50 @@ public final class NotchController {
     /// notch (or nothing, on a notchless screen) and a fullscreen app untouched.
     private func updateVisibility() {
         let shown = displayID != nil && NotchVisibility.isShown(
+            mode: settings.notchMode,
             hideInFullscreen: settings.hideInFullscreen,
             fullscreenAppActive: fullscreenAppActive,
-            revealed: revealed
+            revealed: revealed,
+            pointerNear: pointerNear,
+            isOpen: model.isOpen
         )
-        guard shown != panel.isVisible else { return }
+        guard shown != isShown else { return }
+        isShown = shown
         if shown {
+            if !panel.isVisible { panel.alphaValue = 0 }
             panel.orderFrontRegardless()
+            fade(to: 1)
         } else {
             model.close()
             model.setHovering(false)
             pointerInside = false
-            panel.orderOut(nil)
+            panel.ignoresMouseEvents = true
+            fade(to: 0) { [weak self] in
+                guard let self, !self.isShown else { return }
+                self.panel.orderOut(nil)
+            }
         }
     }
+
+    /// Fades the panel in or out, or jumps straight there under Reduce Motion.
+    private func fade(to alpha: CGFloat, completion: (@MainActor @Sendable () -> Void)? = nil) {
+        guard !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion else {
+            panel.alphaValue = alpha
+            completion?()
+            return
+        }
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = Self.fadeDuration
+            context.timingFunction = CAMediaTimingFunction(name: .easeOut)
+            panel.animator().alphaValue = alpha
+        } completionHandler: {
+            MainActor.assumeIsolated { completion?() }
+        }
+    }
+
+    /// Long enough to read as the notch arriving, short enough that the
+    /// pointer never waits for it.
+    private static let fadeDuration: TimeInterval = 0.18
 
     /// Checks now and twice more as the Space switch animation settles,
     /// since the window list lags behind the notification (mid-animation it
@@ -437,4 +518,10 @@ public final class NotchController {
 private struct DisplayChoice: Equatable {
     var preference: DisplayPreference
     var showOnExternalDisplays: Bool
+}
+
+/// The settings that decide whether the closed notch is drawn.
+private struct VisibilityChoice: Equatable {
+    var hideInFullscreen: Bool
+    var mode: NotchMode
 }

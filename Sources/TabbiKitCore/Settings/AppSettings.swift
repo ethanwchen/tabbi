@@ -30,6 +30,9 @@ public struct AppSettings: Equatable, Sendable {
     public var showOnExternalDisplays: Bool
     /// When on, the notch steps aside while an app is fullscreen on its screen.
     public var hideInFullscreen: Bool
+    /// Whether the closed notch is always drawn, only on hover, or only
+    /// after the global shortcut (see `NotchVisibility.isShown`).
+    public var notchMode: NotchMode
     public var notchPreview: NotchPreviewSettings
     /// The look of the open panel. Kept as saved even when this build lacks
     /// it (a theme from a newer Tabbi); `ThemeCatalog.resolve` draws the
@@ -55,6 +58,7 @@ public struct AppSettings: Equatable, Sendable {
         preferredDisplay: DisplayPreference = .builtIn,
         showOnExternalDisplays: Bool = true,
         hideInFullscreen: Bool = true,
+        notchMode: NotchMode = .default,
         notchPreview: NotchPreviewSettings = .default,
         themeID: ThemeID = ThemeCatalog.defaultID
     ) {
@@ -71,6 +75,7 @@ public struct AppSettings: Equatable, Sendable {
         self.preferredDisplay = preferredDisplay
         self.showOnExternalDisplays = showOnExternalDisplays
         self.hideInFullscreen = hideInFullscreen
+        self.notchMode = notchMode
         self.notchPreview = notchPreview
         self.themeID = themeID
     }
@@ -152,6 +157,7 @@ public struct AppSettings: Equatable, Sendable {
         preferredDisplay = fresh.preferredDisplay
         showOnExternalDisplays = fresh.showOnExternalDisplays
         hideInFullscreen = fresh.hideInFullscreen
+        notchMode = fresh.notchMode
         notchPreview = fresh.notchPreview
         if let kinds = kit?.defaults.resolvedTicker(catalog: catalog) {
             notchPreview.disabledKinds = Set(TickerKind.all(in: catalog)).subtracting(kinds)
@@ -208,6 +214,7 @@ public struct SettingsRepository {
         static let preferredDisplay = "settings.preferredDisplay"
         static let showOnExternalDisplays = "settings.showOnExternalDisplays"
         static let hideInFullscreen = "settings.hideInFullscreen"
+        static let notchMode = "settings.notchMode"
         static let previewEnabled = "settings.preview.enabled"
         static let previewDisabledKinds = "settings.preview.disabledKinds"
         static let previewInterval = "settings.preview.interval"
@@ -267,6 +274,7 @@ public struct SettingsRepository {
                 .flatMap(DisplayPreference.init(storageValue:)) ?? fallback.preferredDisplay,
             showOnExternalDisplays: bool(Key.showOnExternalDisplays) ?? fallback.showOnExternalDisplays,
             hideInFullscreen: bool(Key.hideInFullscreen) ?? fallback.hideInFullscreen,
+            notchMode: defaults.string(forKey: Key.notchMode).flatMap(NotchMode.init(rawValue:)) ?? fallback.notchMode,
             notchPreview: NotchPreviewSettings(
                 isEnabled: bool(Key.previewEnabled) ?? fallback.notchPreview.isEnabled,
                 // Unknown raw values (a kind removed in a later version) are dropped.
@@ -311,6 +319,7 @@ public struct SettingsRepository {
         defaults.set(settings.preferredDisplay.storageValue, forKey: Key.preferredDisplay)
         defaults.set(settings.showOnExternalDisplays, forKey: Key.showOnExternalDisplays)
         defaults.set(settings.hideInFullscreen, forKey: Key.hideInFullscreen)
+        defaults.set(settings.notchMode.rawValue, forKey: Key.notchMode)
         defaults.set(settings.notchPreview.isEnabled, forKey: Key.previewEnabled)
         // Sorted so the stored value is stable across saves.
         defaults.set(settings.notchPreview.disabledKinds.map(\.rawValue).sorted(), forKey: Key.previewDisabledKinds)

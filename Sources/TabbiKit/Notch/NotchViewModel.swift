@@ -50,6 +50,11 @@ public final class NotchViewModel: ObservableObject {
     /// The active theme's id. `NotchView` re-keys the open panel by it, so a
     /// theme switch redraws every view with the new `Theme` tokens.
     @Published public var themeID: ThemeID = Theme.current.id
+    /// The user's notch mode and global shortcut (mirrored from settings),
+    /// so the right-click menu checks the current mode and names the
+    /// shortcut that brings a hidden notch back.
+    @Published public var notchMode: NotchMode = .default
+    @Published public var hotkey: Hotkey = .default
     /// True while the app's takeover (first-run onboarding) fills the open
     /// notch in place of the tabs; tab keys and swipes do nothing meanwhile.
     @Published public var showsTakeover = false {

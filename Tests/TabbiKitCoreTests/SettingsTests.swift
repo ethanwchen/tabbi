@@ -286,6 +286,7 @@ final class SettingsRepositoryTests: XCTestCase {
         XCTAssertEqual(settings.preferredDisplay, .builtIn)
         XCTAssertTrue(settings.showOnExternalDisplays)
         XCTAssertTrue(settings.hideInFullscreen)
+        XCTAssertEqual(settings.notchMode, .alwaysVisible)
         XCTAssertTrue(settings.notchPreview.isEnabled)
         XCTAssertEqual(settings.notchPreview.enabledKinds, Set(TickerKind.allCases))
         XCTAssertEqual(settings.notchPreview.interval, .medium)
@@ -308,6 +309,7 @@ final class SettingsRepositoryTests: XCTestCase {
             preferredDisplay: .specific(5),
             showOnExternalDisplays: false,
             hideInFullscreen: false,
+            notchMode: .showOnHover,
             notchPreview: NotchPreviewSettings(isEnabled: false, disabledKinds: [.tasks, .claudeUsage], interval: .long),
             themeID: .sakura
         )
@@ -337,7 +339,9 @@ final class SettingsRepositoryTests: XCTestCase {
         defaults.set("screen:nope", forKey: "settings.preferredDisplay")
         defaults.set(false, forKey: "settings.hapticsEnabled")
         defaults.set("loud", forKey: "settings.celebrationSoundEnabled")
+        defaults.set("sometimes", forKey: "settings.notchMode")
         let settings = SettingsRepository(defaults: defaults).load()
+        XCTAssertEqual(settings.notchMode, .alwaysVisible)
         XCTAssertFalse(settings.openOnHover)
         XCTAssertEqual(settings.hotkey, .default)
         XCTAssertEqual(settings.preferredDisplay, .builtIn)

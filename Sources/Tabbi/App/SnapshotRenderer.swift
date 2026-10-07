@@ -187,6 +187,15 @@ enum SnapshotRenderer {
             try? png.write(to: url)
             print(url.path)
         }
+        // General with the notch hidden, whose caption shows the way back.
+        let notchMode = services.settings.settings.notchMode
+        services.settings.settings.notchMode = .hidden
+        if let png = await settingsWindow.snapshot(of: AppSettingsPane.general.rawValue) {
+            let url = outputDirectory.appendingPathComponent("settings-general-notch-hidden.png")
+            try? png.write(to: url)
+            print(url.path)
+        }
+        services.settings.settings.notchMode = notchMode
 
         // Each enabled module's own settings, as the sheet Tabs opens them in.
         let moduleOptions = AppSettingsPane.moduleOptions(settings: services.settings, modules: services.modules,

@@ -23,6 +23,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
         AppUpdater.shared.start()
+        MainMenu.install()
         let services = AppServices(settings: settings)
         self.services = services
         InstallHygiene.whenAnotherCopyLaunches { [weak services] in services?.openSettings() }

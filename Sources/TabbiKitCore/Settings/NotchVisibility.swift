@@ -65,10 +65,4 @@ public enum NotchVisibility {
                               in screens: [DisplayPreference.Screen]) -> DisplayPreference.Screen? {
         preference.resolve(in: showOnExternalDisplays ? screens : screens.filter(\.isBuiltIn))
     }
-
-    /// Whether the panel is shown. `revealed` is the user asking for it with
-    /// the global shortcut, which brings it back over a fullscreen app.
-    public static func isShown(hideInFullscreen: Bool, fullscreenAppActive: Bool, revealed: Bool) -> Bool {
-        revealed || !(hideInFullscreen && fullscreenAppActive)
-    }
 }
