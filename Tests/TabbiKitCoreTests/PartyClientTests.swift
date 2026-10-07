@@ -311,6 +311,18 @@ final class PartyServerAndCodeTests: XCTestCase {
         XCTAssertNil(PartyCode.friendCode("K7QW2MZO"), "O is not in the alphabet")
         XCTAssertNil(PartyCode.partyCode("K7QW2MZD"), "a friend code is not a party code")
     }
+
+    func testFindingACodeInPastedText() {
+        let friend = PartyCode.friendCodeLength
+        XCTAssertEqual(PartyCode.find(in: "  k7qw-2mzd\n", length: friend), "K7QW2MZD")
+        XCTAssertEqual(PartyCode.find(in: "Add me on Tabbi: k7qw-2mzd.", length: friend), "K7QW2MZD")
+        XCTAssertEqual(PartyCode.find(in: "My code is K7QW 2MZD", length: friend), "K7QW2MZD",
+                       "a code split by a space")
+        XCTAssertEqual(PartyCode.find(in: "Join party Q4RT8M now", length: PartyCode.partyCodeLength), "Q4RT8M")
+        XCTAssertNil(PartyCode.find(in: "K7QW2MZD or Q4RT8MXY", length: friend), "two codes: no guessing")
+        XCTAssertNil(PartyCode.find(in: "Hello there friend", length: friend))
+        XCTAssertNil(PartyCode.find(in: "", length: friend))
+    }
 }
 
 final class PartyHeartbeatScheduleTests: XCTestCase {

@@ -127,8 +127,11 @@ struct PartyTextButton: View {
 }
 
 /// A code in monospaced type with a copy button that confirms with a check.
+/// `showsLabel` spells out "Copy" beside the icon where there is room, so
+/// sharing my friend code reads as an explicit action.
 struct PartyCopyCode: View {
     let code: String
+    var showsLabel = false
     let help: String
     @State private var copied = false
     @State private var hovering = false
@@ -148,6 +151,12 @@ struct PartyCopyCode: View {
                     .foregroundStyle(copied ? Theme.Palette.success : PartyStyle.accent)
                     .frame(width: 10)
                     .contentTransition(.symbolEffect(.replace))
+                if showsLabel {
+                    Text(copied ? "Copied" : "Copy")
+                        .font(Theme.Typography.caption)
+                        .foregroundStyle(copied ? Theme.Palette.success : PartyStyle.accent)
+                        .contentTransition(.opacity)
+                }
             }
             .lineLimit(1)
             .fixedSize()
@@ -177,7 +186,9 @@ enum PartyField: Hashable {
 
 /// A one-line field for a friend or party code: Return submits, Esc clears.
 /// It's cleared after a well-formed code is submitted; a malformed one
-/// stays so the store's notice can explain it.
+/// stays so the store's notice can explain it. While empty it offers a
+/// Paste button that pulls the code out of whatever was copied (often a
+/// whole message) and leaves it ready to submit.
 struct PartyCodeField: View {
     let placeholder: String
     let symbol: String
@@ -217,7 +228,10 @@ struct PartyCodeField: View {
                         if text.isEmpty { focus.wrappedValue = nil } else { text = "" }
                     }
             }
-            if !text.isEmpty {
+            if text.isEmpty {
+                PartyPasteButton(action: paste)
+                    .transition(.opacity)
+            } else {
                 Button(action: send) {
                     Image(systemName: "arrow.right.circle.fill")
                         .font(.system(size: 14))
@@ -249,10 +263,48 @@ struct PartyCodeField: View {
         .motion(Theme.Motion.snappy, value: text.isEmpty)
     }
 
+    /// Fills the field from the clipboard: the code it finds, grouped as
+    /// it is shown elsewhere, or the raw text so Return can explain what is
+    /// wrong with it.
+    private func paste() {
+        guard let pasted = NSPasteboard.general.string(forType: .string)?
+            .trimmingCharacters(in: .whitespacesAndNewlines), !pasted.isEmpty else { return }
+        if let code = PartyCode.find(in: pasted, length: length) {
+            text = PartyStyle.display(code: code)
+        } else {
+            text = String(pasted.prefix(40))
+        }
+        focus.wrappedValue = field
+    }
+
     private func send() {
         let draft = text
         guard !draft.trimmingCharacters(in: .whitespaces).isEmpty else { return }
         submit(draft)
         if PartyCode.normalize(draft, length: length) != nil { text = "" }
+    }
+}
+
+/// The quiet "Paste" capsule inside an empty code field.
+private struct PartyPasteButton: View {
+    let action: () -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        Button(action: action) {
+            Text("Paste")
+                .font(Theme.Typography.caption)
+                .foregroundStyle(hovering ? PartyStyle.accent : Theme.Palette.secondaryText)
+                .lineLimit(1)
+                .fixedSize()
+                .padding(.horizontal, Theme.Spacing.s)
+                .frame(height: 16)
+                .background(Capsule().fill(hovering ? PartyStyle.accent.opacity(0.16) : Theme.Palette.surface))
+                .contentShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .help("Paste a code you copied")
+        .onHover { hovering = $0 }
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
