@@ -41,20 +41,38 @@ private struct PartyRoom: View {
 
     private var header: some View {
         HStack(spacing: Theme.Spacing.s) {
-            Text("Party")
-                .font(Theme.Typography.title)
-                .foregroundStyle(Theme.Palette.primaryText)
-            PartyCopyCode(code: party.code, help: "The party code. Click to copy it, then send it to friends.")
-            Text("\(party.members.count) of \(party.maxMembers)")
-                .font(Theme.Typography.caption.monospacedDigit())
-                .foregroundStyle(Theme.Palette.tertiaryText)
-                .help("Members in this party")
+            // On a narrow panel the title goes first (the code says it's a
+            // party), then the count shortens, so nothing truncates.
+            ViewThatFits(in: .horizontal) {
+                headerLabels(title: true, count: "\(party.members.count) of \(party.maxMembers)")
+                headerLabels(title: false, count: "\(party.members.count) of \(party.maxMembers)")
+                headerLabels(title: false, count: "\(party.members.count)/\(party.maxMembers)")
+            }
             Spacer(minLength: Theme.Spacing.s)
             PartyTextButton(title: "Leave", isBusy: store.pending == .leaveParty,
                             help: store.state.isHost && party.members.count > 1
                                 ? "Leave the party; the next member becomes host" : "Leave the party") {
                 store.leaveParty()
             }
+            .fixedSize()
+        }
+    }
+
+    private func headerLabels(title: Bool, count: String) -> some View {
+        HStack(spacing: Theme.Spacing.s) {
+            if title {
+                Text("Party")
+                    .font(Theme.Typography.title)
+                    .foregroundStyle(Theme.Palette.primaryText)
+                    .fixedSize()
+            }
+            PartyCopyCode(code: party.code, help: "The party code. Click to copy it, then send it to friends.")
+                .fixedSize()
+            Text(count)
+                .font(Theme.Typography.caption.monospacedDigit())
+                .foregroundStyle(Theme.Palette.tertiaryText)
+                .fixedSize()
+                .help("Members in this party")
         }
     }
 
@@ -167,28 +185,27 @@ private struct PartySessionBar: View {
 
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
+            // A narrow panel drops the row's label before anything truncates.
             if let session = party.session, session.phaseEndsAt > store.now {
-                running(session)
+                ViewThatFits(in: .horizontal) {
+                    running(session, labeled: true)
+                    running(session, labeled: false)
+                }
             } else if store.state.isHost {
-                Text(party.session == nil ? "Focus together" : "Focus again")
-                    .font(Theme.Typography.bodyEmphasis)
-                    .foregroundStyle(Theme.Palette.secondaryText)
-                    .fixedSize()
-                Spacer(minLength: Theme.Spacing.s)
-                ForEach(Self.lengths, id: \.self) { minutes in
-                    PartyPillButton(title: "\(minutes) min", symbol: minutes == Self.lengths[0] ? "play.fill" : nil,
-                                    isProminent: minutes == Self.lengths[0], isBusy: store.pending == .session,
-                                    help: "Start a \(minutes)-minute focus session for everyone in the party") {
-                        store.startSession(minutes: minutes)
-                    }
+                ViewThatFits(in: .horizontal) {
+                    startButtons(labeled: true)
+                    startButtons(labeled: false)
                 }
             } else {
                 Image(systemName: "hourglass")
                     .font(.system(size: 11, weight: .semibold))
                     .foregroundStyle(Theme.Palette.tertiaryText)
-                Text("Waiting for \(hostName) to start a session")
-                    .font(Theme.Typography.body)
-                    .foregroundStyle(Theme.Palette.secondaryText)
+                ViewThatFits(in: .horizontal) {
+                    Text("Waiting for \(hostName) to start a session")
+                    Text("Waiting for \(hostName)")
+                }
+                .font(Theme.Typography.body)
+                .foregroundStyle(Theme.Palette.secondaryText)
                 Spacer(minLength: 0)
             }
         }
@@ -196,34 +213,59 @@ private struct PartySessionBar: View {
         .frame(height: 24)
     }
 
-    @ViewBuilder
-    private func running(_ session: PartySession) -> some View {
-        let total = max(session.phaseEndsAt.timeIntervalSince(session.startedAt), 1)
-        let left = max(session.phaseEndsAt.timeIntervalSince(store.now), 0)
-        Image(systemName: "timer")
-            .font(.system(size: 11, weight: .semibold))
-            .foregroundStyle(PartyStyle.accent)
-        Text(Self.clock(left))
-            .font(Theme.Typography.metricSmall)
-            .foregroundStyle(Theme.Palette.primaryText)
-            .contentTransition(.numericText(countsDown: true))
-        Text("shared focus")
-            .font(Theme.Typography.caption)
-            .foregroundStyle(Theme.Palette.tertiaryText)
-            .fixedSize()
-        GeometryReader { proxy in
-            ZStack(alignment: .leading) {
-                Capsule().fill(Theme.Palette.surface)
-                Capsule().fill(PartyStyle.accent)
-                    .frame(width: proxy.size.width * (1 - left / total))
+    private func startButtons(labeled: Bool) -> some View {
+        HStack(spacing: Theme.Spacing.s) {
+            if labeled {
+                Text(party.session == nil ? "Focus together" : "Focus again")
+                    .font(Theme.Typography.bodyEmphasis)
+                    .foregroundStyle(Theme.Palette.secondaryText)
+                    .fixedSize()
+            }
+            Spacer(minLength: Theme.Spacing.s)
+            ForEach(Self.lengths, id: \.self) { minutes in
+                PartyPillButton(title: "\(minutes) min", symbol: minutes == Self.lengths[0] ? "play.fill" : nil,
+                                isProminent: minutes == Self.lengths[0], isBusy: store.pending == .session,
+                                help: "Start a \(minutes)-minute focus session for everyone in the party") {
+                    store.startSession(minutes: minutes)
+                }
+                .fixedSize()
             }
         }
-        .frame(height: 4)
-        .help("\(PartyRoster.minutesLeft(left)) in the party's shared session")
-        if store.state.isHost {
-            PartyTextButton(title: "End", isBusy: store.pending == .session,
-                            help: "End the shared session for everyone") {
-                store.endSession()
+    }
+
+    private func running(_ session: PartySession, labeled: Bool) -> some View {
+        let total = max(session.phaseEndsAt.timeIntervalSince(session.startedAt), 1)
+        let left = max(session.phaseEndsAt.timeIntervalSince(store.now), 0)
+        return HStack(spacing: Theme.Spacing.s) {
+            Image(systemName: "timer")
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(PartyStyle.accent)
+            Text(Self.clock(left))
+                .font(Theme.Typography.metricSmall)
+                .foregroundStyle(Theme.Palette.primaryText)
+                .contentTransition(.numericText(countsDown: true))
+                .fixedSize()
+            if labeled {
+                Text("shared focus")
+                    .font(Theme.Typography.caption)
+                    .foregroundStyle(Theme.Palette.tertiaryText)
+                    .fixedSize()
+            }
+            GeometryReader { proxy in
+                ZStack(alignment: .leading) {
+                    Capsule().fill(Theme.Palette.surface)
+                    Capsule().fill(PartyStyle.accent)
+                        .frame(width: proxy.size.width * (1 - left / total))
+                }
+            }
+            .frame(minWidth: 32, maxWidth: .infinity, minHeight: 4, maxHeight: 4)
+            .help("\(PartyRoster.minutesLeft(left)) in the party's shared session")
+            if store.state.isHost {
+                PartyTextButton(title: "End", isBusy: store.pending == .session,
+                                help: "End the shared session for everyone") {
+                    store.endSession()
+                }
+                .fixedSize()
             }
         }
     }

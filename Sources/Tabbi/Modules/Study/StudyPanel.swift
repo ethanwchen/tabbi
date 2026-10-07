@@ -313,20 +313,12 @@ private struct StudyTodayRow: View {
     let goal: StudyDailyGoal
 
     var body: some View {
-        let metGoal = today.minutes >= goal.minutes
-        HStack(spacing: Theme.Spacing.s) {
-            Text("Today")
-                .foregroundStyle(Theme.Palette.tertiaryText)
-            Label("\(StudyTimerFormat.studied(minutes: today.minutes)) of \(StudyTimerFormat.studied(minutes: goal.minutes))",
-                  systemImage: metGoal ? "checkmark.seal.fill" : "clock")
-                .foregroundStyle(metGoal ? accent : Theme.Palette.secondaryText)
-                .help(metGoal ? "Daily focus goal met" : "Focus time today, out of your daily goal")
-            Label("\(today.sessions) done", systemImage: "checkmark.circle")
-                .help("Focus blocks finished today")
-            Spacer(minLength: 0)
-            Label(StudyTimerFormat.points(today.points), systemImage: "star.fill")
-                .foregroundStyle(today.points > 0 ? accent : Theme.Palette.tertiaryText)
-                .help("Points earned today; spend them on your pet's wardrobe")
+        // A narrow panel drops the "Today" label, then the goal, so every
+        // number stays whole.
+        ViewThatFits(in: .horizontal) {
+            row(showsTitle: true, showsGoal: true)
+            row(showsTitle: false, showsGoal: true)
+            row(showsTitle: false, showsGoal: false)
         }
         .labelStyle(StudyTodayLabelStyle())
         .font(Theme.Typography.caption)
@@ -335,6 +327,31 @@ private struct StudyTodayRow: View {
         .lineLimit(1)
         .contentTransition(.numericText())
         .motion(Theme.Motion.content, value: today)
+    }
+
+    private func row(showsTitle: Bool, showsGoal: Bool) -> some View {
+        let metGoal = today.minutes >= goal.minutes
+        let studied = StudyTimerFormat.studied(minutes: today.minutes)
+        return HStack(spacing: Theme.Spacing.s) {
+            if showsTitle {
+                Text("Today")
+                    .foregroundStyle(Theme.Palette.tertiaryText)
+                    .fixedSize()
+            }
+            Label(showsGoal ? "\(studied) of \(StudyTimerFormat.studied(minutes: goal.minutes))" : studied,
+                  systemImage: metGoal ? "checkmark.seal.fill" : "clock")
+                .foregroundStyle(metGoal ? accent : Theme.Palette.secondaryText)
+                .fixedSize()
+                .help(metGoal ? "Daily focus goal met" : "Focus time today, out of your daily goal")
+            Label("\(today.sessions) done", systemImage: "checkmark.circle")
+                .fixedSize()
+                .help("Focus blocks finished today")
+            Spacer(minLength: 0)
+            Label(StudyTimerFormat.points(today.points), systemImage: "star.fill")
+                .foregroundStyle(today.points > 0 ? accent : Theme.Palette.tertiaryText)
+                .fixedSize()
+                .help("Points earned today; spend them on your pet's wardrobe")
+        }
     }
 }
 
