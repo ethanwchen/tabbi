@@ -55,13 +55,11 @@ private struct AnkiDeckView: View {
 
     var body: some View {
         VStack(spacing: Theme.Spacing.s) {
-            HStack(spacing: Theme.Spacing.s) {
-                if !showsAllDecks {
-                    DueCard(summary: summary)
-                        .frame(width: 240)
-                        .transition(.motionRow(from: .leading))
-                }
-                DecksCard(store: store, top: summary.topDecks, outline: summary.deckOutline, showsAll: $showsAllDecks)
+            // On a narrow panel the ring card drops its queue names, so
+            // the deck names beside it stay readable.
+            ViewThatFits(in: .horizontal) {
+                cards(compactRing: false)
+                cards(compactRing: true)
             }
             .frame(maxHeight: .infinity)
             AnkiFooter(store: store, summary: summary)
@@ -73,12 +71,28 @@ private struct AnkiDeckView: View {
             if count <= DecksCard.collapsedCount { showsAllDecks = false }
         }
     }
+
+    private func cards(compactRing: Bool) -> some View {
+        HStack(spacing: Theme.Spacing.s) {
+            if !showsAllDecks {
+                DueCard(summary: summary, isCompact: compactRing)
+                    .frame(width: compactRing ? nil : 240)
+                    .fixedSize(horizontal: compactRing, vertical: false)
+                    .transition(.motionRow(from: .leading))
+            }
+            DecksCard(store: store, top: summary.topDecks, outline: summary.deckOutline, showsAll: $showsAllDecks)
+                .frame(minWidth: compactRing ? 0 : DecksCard.minWidth, idealWidth: DecksCard.minWidth, maxWidth: .infinity)
+        }
+    }
 }
 
 /// Cards due today inside a ring of reviewed versus due, with the
 /// new / learning / review split beside it.
 struct DueCard: View {
     let summary: AnkiSummary
+    /// Shows only each queue's dot and count (the names move to the
+    /// tooltip), for a panel too narrow for the full split.
+    var isCompact = false
 
     private static let diameter: CGFloat = 92
     private static let lineWidth: CGFloat = 7
@@ -88,16 +102,22 @@ struct DueCard: View {
             HStack(spacing: Theme.Spacing.m) {
                 ring
                 VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-                    QueueRow(title: "New", count: summary.newDue, color: Queue.new)
-                    QueueRow(title: "Learning", count: summary.learnDue, color: Queue.learning)
-                    QueueRow(title: "Review", count: summary.reviewDue, color: Queue.review)
+                    QueueRow(title: "New", count: summary.newDue, color: Queue.new, showsTitle: !isCompact)
+                    QueueRow(title: "Learning", count: summary.learnDue, color: Queue.learning, showsTitle: !isCompact)
+                    QueueRow(title: "Review", count: summary.reviewDue, color: Queue.review, showsTitle: !isCompact)
                     Rectangle()
                         .fill(Theme.Palette.stroke)
                         .frame(height: 0.5)
                         .padding(.vertical, Theme.Spacing.xxs)
                     HStack(spacing: Theme.Spacing.xs) {
-                        Text("Done")
-                            .foregroundStyle(Theme.Palette.tertiaryText)
+                        if isCompact {
+                            Image(systemName: "checkmark")
+                                .font(.system(size: 9, weight: .bold))
+                                .foregroundStyle(Theme.Palette.tertiaryText)
+                        } else {
+                            Text("Done")
+                                .foregroundStyle(Theme.Palette.tertiaryText)
+                        }
                         Spacer(minLength: 0)
                         Text("\(summary.reviewedToday)")
                             .foregroundStyle(Theme.Palette.secondaryText)
@@ -146,16 +166,19 @@ private struct QueueRow: View {
     let title: String
     let count: Int
     let color: Color
+    var showsTitle = true
 
     var body: some View {
         HStack(spacing: Theme.Spacing.xs) {
             Circle()
                 .fill(color)
                 .frame(width: 6, height: 6)
-            Text(title)
-                .foregroundStyle(Theme.Palette.secondaryText)
-                .lineLimit(1)
-                .fixedSize()
+            if showsTitle {
+                Text(title)
+                    .foregroundStyle(Theme.Palette.secondaryText)
+                    .lineLimit(1)
+                    .fixedSize()
+            }
             Spacer(minLength: Theme.Spacing.s)
             Text("\(count)")
                 .foregroundStyle(count > 0 ? Theme.Palette.primaryText : Theme.Palette.tertiaryText)
@@ -176,6 +199,9 @@ private struct DecksCard: View {
     @Binding var showsAll: Bool
 
     static let collapsedCount = 4
+    /// The narrowest the card gets beside the full ring card before the
+    /// ring card drops its queue names.
+    static let minWidth: CGFloat = 240
 
     var body: some View {
         Card(padding: Theme.Spacing.s) {
@@ -448,6 +474,8 @@ private struct AnkiFooter: View {
                     ForEach([14, 10, 7], id: \.self) { days in
                         ReviewHeatmap(history: Array(summary.history.suffix(days)))
                     }
+                    // On a narrow panel the streak alone stays.
+                    Color.clear.frame(width: 0, height: 0)
                 }
                 Spacer(minLength: Theme.Spacing.xs)
                 SyncButton(isSyncing: store.isSyncing, action: store.sync)
