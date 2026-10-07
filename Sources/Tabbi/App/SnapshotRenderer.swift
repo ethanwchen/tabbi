@@ -103,6 +103,19 @@ enum SnapshotRenderer {
             shots.append(Shot("open-\(module.rawValue)", model))
         }
 
+        // Every tab again at the other panel sizes, so each one can be
+        // reviewed in the narrower Compact canvas and the roomier Large one.
+        for size in PanelSize.allCases where size != .default {
+            for module in layout.order {
+                var withModule = layout
+                _ = withModule.setEnabled(module, true)
+                let model = NotchViewModel(geometry: geometry, layout: withModule)
+                model.panelSize = size
+                model.open(module)
+                shots.append(Shot("open-\(size.rawValue)-\(module.rawValue)", model))
+            }
+        }
+
         // The Closet's second section, rendered after the others because
         // the open section is store state.
         if layout.order.contains(.closet) {

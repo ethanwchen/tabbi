@@ -35,6 +35,13 @@ struct GeneralSettingsPane: View {
                     Text(notchModeCaption)
                 }
                 .help("Choose when the notch is drawn. The shortcut always opens it.")
+                Picker("Panel size", selection: $store.settings.panelSize) {
+                    ForEach(PanelSize.allCases, id: \.self) { size in
+                        Text(size.title).tag(size)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .help("Choose how big the open notch is. Every tab uses the same size.")
                 Toggle(isOn: $store.settings.openOnHover) {
                     Text("Open on hover")
                     Text("Opens the notch when the pointer rests on it.")
@@ -68,7 +75,7 @@ struct GeneralSettingsPane: View {
         }
         .formStyle(.grouped)
         .scrollDisabled(!showsMore)
-        .frame(width: paneWidth, height: showsMore ? 692 : 572)
+        .frame(width: paneWidth, height: showsMore ? 728 : 608)
         .motion(Motion.snappy, value: showsMore)
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didChangeScreenParametersNotification)) { _ in
             screens = DisplayOption.connectedScreens()

@@ -46,6 +46,7 @@ public final class NotchController {
             screenFrame: CGRect(x: 0, y: 0, width: 1440, height: 900), centerX: 720
         )
         model = NotchViewModel(geometry: geometry, layout: settings.modules)
+        model.panelSize = settings.panelSize
         panel = NotchPanel(contentRect: .zero)
 
         let root = NotchView(content: content)
@@ -297,6 +298,19 @@ public final class NotchController {
             .sink { [weak self] _ in
                 // Published before the change lands, so read the new size next turn.
                 Task { @MainActor in self?.layoutPanel(shrink: false) }
+            }
+            .store(in: &cancellables)
+
+        inputs.settings
+            .map(\.panelSize)
+            .removeDuplicates()
+            .dropFirst()
+            .sink { [weak self] size in
+                guard let self else { return }
+                self.model.panelSize = size
+                // An open notch springs to its new size, so the panel only
+                // grows then; a closed one fits the new size right away.
+                self.layoutPanel(shrink: !self.model.isOpen)
             }
             .store(in: &cancellables)
 

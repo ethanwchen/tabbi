@@ -54,6 +54,9 @@ public final class NotchViewModel: ObservableObject {
     /// so the right-click menu checks the current mode and names the
     /// shortcut that brings a hidden notch back.
     @Published public var notchMode: NotchMode = .default
+    /// The user's panel size (mirrored from settings): the open canvas every
+    /// tab shares, before any larger one a tab asks for.
+    @Published public var panelSize: PanelSize = .default
     @Published public var hotkey: Hotkey = .default
     /// True while the app's takeover (first-run onboarding) fills the open
     /// notch in place of the tabs; tab keys and swipes do nothing meanwhile.
@@ -75,7 +78,7 @@ public final class NotchViewModel: ObservableObject {
     @Published public private(set) var openedFromKeyboard = false
 
     /// A larger open canvas the selected tab asked for (Ask Claude's large
-    /// chat view), or nil for the usual `Theme.Layout.expandedSize`. It
+    /// chat view), or nil for the usual `panelSize` canvas. It
     /// lasts until the tab gives it back, Esc, another tab or closing.
     @Published public private(set) var requestedOpenSize: CGSize?
 
@@ -102,7 +105,7 @@ public final class NotchViewModel: ObservableObject {
     /// the usual one. It stays centered under the notch, so the header
     /// keeps clear of the camera at either size.
     public var openSize: CGSize {
-        let base = Theme.Layout.expandedSize
+        let base = panelSize.canvasSize
         guard let requested = requestedOpenSize else { return base }
         let screen = geometry.screenFrame.size
         let fit = CGSize(width: screen.width - Self.screenMargin.width * 2,

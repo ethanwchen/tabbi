@@ -126,7 +126,8 @@ private struct OpenNotchContent: View {
     var body: some View {
         if model.showsTakeover, let takeover = content.takeover {
             // The takeover's header keeps to the same camera-safe zones as the tabs.
-            let header = NotchHeaderLayout.openNotch(geometry: model.geometry, layout: model.layout, title: "")
+            let header = NotchHeaderLayout.openNotch(geometry: model.geometry, layout: model.layout, title: "",
+                                                     canvasWidth: model.openSize.width)
             VStack(spacing: 0) {
                 HStack(spacing: 0) {
                     takeover.leading()
@@ -136,7 +137,7 @@ private struct OpenNotchContent: View {
                         .frame(width: header.trailingZone.width, alignment: .trailing)
                 }
                 .padding(.leading, header.leadingZone.minX)
-                .frame(width: Theme.Layout.expandedSize.width,
+                .frame(width: model.openSize.width,
                        height: NotchHeaderLayout.headerHeight(for: model.geometry), alignment: .leading)
 
                 takeover.body()
