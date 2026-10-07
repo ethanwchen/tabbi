@@ -23,7 +23,9 @@ import TabbiKitCore
 /// render a local worker's real data instead (see `localSnapshotServer`).
 @MainActor
 final class PartyStore: ObservableObject {
-    @Published private(set) var state: PartyState
+    @Published private(set) var state: PartyState {
+        didSet { scheduleSessionEnd() }
+    }
     @Published private(set) var settings: PartySettings
     /// The moment countdowns measure against; ticks while the panel shows.
     @Published private(set) var now = Date()
@@ -58,6 +60,9 @@ final class PartyStore: ObservableObject {
     private var refreshTask: Task<Void, Never>?
     private var clockTask: Task<Void, Never>?
     private var nameSyncTask: Task<Void, Never>?
+    /// Moves `now` to the shared session's end, so the Timer tab and the
+    /// closed notch drop it on time even while the panel is hidden.
+    private var sessionEndTask: Task<Void, Never>?
     /// Writes a name edited in Party back to the app-wide name.
     private var saveName: ((String) -> Void)?
     /// True when `TABBI_PARTY_NAME` picked the name a local snapshot renders as.
@@ -183,6 +188,7 @@ final class PartyStore: ObservableObject {
     func start() {
         guard !isRunning else { return }
         isRunning = true
+        scheduleSessionEnd()
         guard !isDemo, !isSnapshot || snapshotServer != nil else { return }
         if snapshotServer != nil {
             // Nothing calls `onAppear` in an offscreen render; load as if open.
@@ -343,6 +349,25 @@ final class PartyStore: ObservableObject {
             let party = try await account.perform { try await $0.endSession() }
             store.state.didFetchParty(.success(party))
         }
+    }
+
+    /// Steps out of the shared session while it goes on for the others.
+    /// Only on this Mac: the server keeps the session for the party.
+    func leaveSession() {
+        state.leaveSession()
+    }
+
+    func rejoinSession() {
+        state.rejoinSession()
+    }
+
+    /// The party and its shared session for other modules, republished
+    /// when either changes (and when the session runs out).
+    var provided: AnyPublisher<ProvidedParty?, Never> {
+        $state.combineLatest($now)
+            .map { state, now in state.provided(at: now) }
+            .removeDuplicates()
+            .eraseToAnyPublisher()
     }
 
     func clearNotice() {
@@ -521,6 +546,16 @@ final class PartyStore: ObservableObject {
             case .friends: state.didFetchFriends(.failure(error))
             case .party: state.didFetchParty(.failure(error))
             }
+        }
+    }
+
+    private func scheduleSessionEnd() {
+        sessionEndTask?.cancel()
+        guard let end = state.session(at: Date())?.endsAt else { return }
+        sessionEndTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: Self.nanoseconds(end.timeIntervalSinceNow))
+            guard !Task.isCancelled else { return }
+            self?.now = Date()
         }
     }
 

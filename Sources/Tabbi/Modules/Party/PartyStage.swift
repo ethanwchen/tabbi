@@ -267,6 +267,14 @@ private struct PartySessionBar: View {
                 }
                 .fixedSize()
             }
+        } else if store.state.hasLeftSession(at: store.now) {
+            PartyTextButton(title: "Rejoin", help: "Count this session for you again") {
+                store.rejoinSession()
+            }
+        } else {
+            PartyTextButton(title: "Step out", help: "Step out of this session; it goes on for the others") {
+                store.leaveSession()
+            }
         }
     }
 

@@ -82,6 +82,8 @@ public enum PartyDemoScenario: String, CaseIterable, Sendable {
     case hosting
     /// A friend hosts and hasn't started a session: I wait.
     case guest
+    /// A friend hosts and their shared session is running: I'm in it.
+    case member
     /// A full party of eight with no session, so I can start one.
     case crowded
     /// Not in a party; friends are around and one party is joinable.
@@ -104,10 +106,10 @@ extension PartyState {
         switch scenario {
         case .hosting:
             return base
-        case .guest:
+        case .guest, .member:
             let host = party.members[1].profile.code
             party.host = host
-            party.session = nil
+            if scenario == .guest { party.session = nil }
             party.members = party.members.map { member in
                 var member = member
                 member.host = member.profile.code == host

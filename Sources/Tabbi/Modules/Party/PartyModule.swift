@@ -66,10 +66,14 @@ final class PartyModule: NotchModule {
         .party(store: store)
     }
 
-    /// The party I'm in, so the closed notch can show members' pets by mine.
+    /// The party I'm in, so the closed notch can show members' pets by mine,
+    /// and its shared session: in the Timer tab, and as the shared focus
+    /// clock, so the closed notch counts it down for every member.
     var provision: AnyPublisher<ModuleProvision, Never>? {
-        store.$state
-            .map { ModuleProvision(party: $0.provided) }
+        store.provided
+            .map { party in
+                ModuleProvision(focus: party?.session?.focus(by: Self.descriptor.id), party: party)
+            }
             .removeDuplicates()
             .eraseToAnyPublisher()
     }
