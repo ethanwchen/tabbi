@@ -67,6 +67,8 @@ final class PartyStore: ObservableObject {
     /// closed notch drop it on time even while the panel is hidden.
     private var sessionEndTask: Task<Void, Never>?
     private var celebrationTask: Task<Void, Never>?
+    /// What the store showed before `showCelebrationForSnapshot(_:)`.
+    private var beforeSnapshot: (state: PartyState, celebration: PartyTeamCelebration?)?
     /// Writes a name edited in Party back to the app-wide name.
     private var saveName: ((String) -> Void)?
     /// True when `TABBI_PARTY_NAME` picked the name a local snapshot renders as.
@@ -400,6 +402,22 @@ final class PartyStore: ObservableObject {
     func clearCelebration() {
         celebrationTask?.cancel()
         celebration = nil
+    }
+
+    /// Snapshot runs only: shows the team celebrating a session that just
+    /// ended (`PartyDemoScenario.celebrating`) for the next shot, or puts
+    /// back what the store showed before.
+    func showCelebrationForSnapshot(_ isShowing: Bool) {
+        guard isSnapshot else { return }
+        if isShowing {
+            if beforeSnapshot == nil { beforeSnapshot = (state, celebration) }
+            celebrationTask?.cancel()
+            state = .demo(.celebrating, now: now)
+            celebration = .demo(now: now)
+        } else if let before = beforeSnapshot {
+            (state, celebration) = before
+            beforeSnapshot = nil
+        }
     }
 
     func clearNotice() {

@@ -24,6 +24,27 @@ final class StreamingProcessTests: XCTestCase {
         }
     }
 
+    /// Output still being read when the process exits is never lost to the
+    /// exit (the Claude CLI's last lines were, under load).
+    func testOutputPrintedRightBeforeExitIsNeverDropped() async throws {
+        let sh = sh
+        let runs = try await withThrowingTaskGroup(of: [String].self) { group in
+            for _ in 0..<100 {
+                group.addTask {
+                    var lines: [String] = []
+                    for try await line in StreamingProcess.lines(executable: sh, arguments: ["-c", "seq 1 3000"]) {
+                        lines.append(line)
+                    }
+                    return lines
+                }
+            }
+            return try await group.reduce(into: []) { $0.append($1) }
+        }
+        let expected = (1...3000).map(String.init)
+        XCTAssertEqual(runs.count, 100)
+        XCTAssertEqual(runs.filter { $0 != expected }.map(\.count), [])
+    }
+
     func testLineBufferSplitsAcrossChunks() {
         let buffer = LineBuffer()
         XCTAssertEqual(buffer.append(Data("ab".utf8)), [])

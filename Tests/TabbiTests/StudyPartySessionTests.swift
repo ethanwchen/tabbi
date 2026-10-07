@@ -40,4 +40,37 @@ final class StudyPartySessionTests: XCTestCase {
         XCTAssertNil(store.partySession)
         XCTAssertTrue(store.session.isRunning)
     }
+
+    func testASnapshotShotStandsInForTheFollowedSessionAndGivesItBack() {
+        let store = StudyStore(storage: EditionStorage(root: folder), runMode: RunMode(isDemo: false, isSnapshot: true))
+        store.followParty(from: CurrentValueSubject<ProviderSnapshot, Never>(ProviderSnapshot()))
+        let now = Date()
+        let session = PartyState.demo(.member, now: now).session(at: now)
+        XCTAssertNotNil(session)
+
+        store.showForSnapshot(partySession: session)
+        XCTAssertEqual(store.partySession, session)
+        store.showForSnapshot(partySession: nil)
+        XCTAssertNil(store.partySession, "The next shot shows what the provider snapshot does")
+    }
+}
+
+/// The Party tab's celebration shot shows a session that just ended, then
+/// puts the party back as it was for the other shots.
+@MainActor
+final class PartyCelebrationSnapshotTests: XCTestCase {
+    func testTheCelebrationShotShowsTheEndedSessionThenRestoresTheParty() {
+        let store = PartyStore(runMode: RunMode(isDemo: true, isSnapshot: true), environment: [:])
+        let before = store.state
+        XCTAssertNotNil(before.party?.session)
+        XCTAssertNil(store.celebration)
+
+        store.showCelebrationForSnapshot(true)
+        XCTAssertEqual(store.celebration?.title, "Great job, team!")
+        XCTAssertNil(store.state.party?.session, "The session it celebrates has ended")
+
+        store.showCelebrationForSnapshot(false)
+        XCTAssertNil(store.celebration)
+        XCTAssertEqual(store.state, before)
+    }
 }

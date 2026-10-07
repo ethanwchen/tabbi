@@ -43,6 +43,11 @@ final class StudyModule: NotchModule {
         AnyView(StudyPanel(store: store, focusMode: focusMode))
     }
 
+    /// Snapshot runs only: the Timer in a party's shared session.
+    func showForSnapshot(partySession session: ProvidedPartySession?) {
+        store.showForSnapshot(partySession: session)
+    }
+
     /// Onboarding's study method step: pick the timer's method in one tap.
     func makeSetupView(for step: OnboardingSetupStep, done: @escaping () -> Void) -> AnyView? {
         step == .studyMethod ? AnyView(StudyMethodSetupView(store: store)) : nil

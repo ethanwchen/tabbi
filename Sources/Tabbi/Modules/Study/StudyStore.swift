@@ -58,6 +58,9 @@ final class StudyStore: ObservableObject {
             if StudyPetCue.isDozing(session) { pet.send(partySession == nil ? .sleep : .wake) }
         }
     }
+    /// The party session the provider snapshot shows, which a snapshot shot
+    /// can stand in for.
+    private var followedPartySession: ProvidedPartySession?
     /// Whether an Anki sprint has a card count to follow; the demo's sample
     /// sprint always does.
     var canCountCards: Bool { isDemo || cardsReviewedToday != nil }
@@ -352,9 +355,20 @@ final class StudyStore: ObservableObject {
             .map(\.party?.session)
             .removeDuplicates()
             .sink { [weak self] session in
-                MainActor.assumeIsolated { self?.partySession = session }
+                MainActor.assumeIsolated {
+                    self?.followedPartySession = session
+                    self?.partySession = session
+                }
             }
             .store(in: &cancellables)
+    }
+
+    /// Snapshot runs only: shows `session` as the party's shared session
+    /// for the next shot, as if Party were on and the user in it; nil puts
+    /// back the session the snapshot follows.
+    func showForSnapshot(partySession session: ProvidedPartySession?) {
+        guard isSnapshot else { return }
+        partySession = session ?? followedPartySession
     }
 
     // MARK: Private

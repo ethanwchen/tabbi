@@ -37,19 +37,23 @@ public enum StreamingProcess {
             process.standardInput = stdin ?? FileHandle.nullDevice
 
             let buffer = LineBuffer()
+            // Finishes once stdout reaches its end and the process has
+            // exited, in either order: finishing on exit alone could drop
+            // lines the reader took just before it.
+            let done = DispatchGroup()
+            done.enter()
+            done.enter()
             stdout.fileHandleForReading.readabilityHandler = { handle in
                 let data = handle.availableData
                 if data.isEmpty {
                     handle.readabilityHandler = nil
+                    done.leave()
                     return
                 }
                 for line in buffer.append(data) { continuation.yield(line) }
             }
-
-            process.terminationHandler = { process in
-                stdout.fileHandleForReading.readabilityHandler = nil
-                let rest = stdout.fileHandleForReading.readDataToEndOfFile()
-                for line in buffer.append(rest) { continuation.yield(line) }
+            process.terminationHandler = { _ in done.leave() }
+            done.notify(queue: .global(qos: .userInitiated)) {
                 if let last = buffer.flush() { continuation.yield(last) }
 
                 if process.terminationReason == .exit && process.terminationStatus == 0 {

@@ -116,6 +116,18 @@ enum SnapshotRenderer {
             }
         }
 
+        // The Timer in a party's shared session and the team's celebration
+        // when one ends, rendered after the others because both are store
+        // state. Both show as if Party were on, which no bundled kit does.
+        for (module, name) in [(ModuleID.study, "open-study-party"), (.party, "open-party-celebrating")]
+        where layout.order.contains(module) {
+            var withModule = layout
+            _ = withModule.setEnabled(module, true)
+            let model = NotchViewModel(geometry: geometry, layout: withModule)
+            model.open(module)
+            shots.append(Shot(name, model))
+        }
+
         // The Closet's second section, rendered after the others because
         // the open section is store state.
         if layout.order.contains(.closet) {
@@ -282,6 +294,10 @@ enum SnapshotRenderer {
                                          closet: ClosetModule?, to folder: URL) {
         let firstSection = closet?.store.section
         let askClaude = services.modules.module(AskClaudeModule.self)?.session
+        let timer = services.modules.module(StudyModule.self)
+        let party = services.modules.module(PartyModule.self)?.store
+        let now = Date()
+        let partySession = PartyState.demo(.member, now: now).session(at: now)
         for shot in shots {
             let (name, model) = (shot.name, shot.model)
             services.onboarding.show(shot.onboarding)
@@ -289,6 +305,8 @@ enum SnapshotRenderer {
             askClaude?.showForSnapshot(name == "open-claudeAsk-screenshot" ? .pendingScreenshot
                 : name == "open-claudeAsk-screenshot-sent" ? .sentScreenshot
                 : name == "open-claudeAsk-screen-access" ? .screenAccess : .chat)
+            timer?.showForSnapshot(partySession: name == "open-study-party" ? partySession : nil)
+            party?.showCelebrationForSnapshot(name == "open-party-celebrating")
             if let firstSection { closet?.store.section = name == "open-closet-look" ? .look : firstSection }
             model.themeID = Theme.current.id
             let view = NotchView(content: ModuleViews.notchContent(services: services))
@@ -309,6 +327,8 @@ enum SnapshotRenderer {
             print(url.path)
         }
         services.onboarding.show(nil)
+        timer?.showForSnapshot(partySession: nil)
+        party?.showCelebrationForSnapshot(false)
     }
 
     /// The review Settings shows before applying an imported kit: another
