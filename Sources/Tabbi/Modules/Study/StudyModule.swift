@@ -28,6 +28,7 @@ final class StudyModule: NotchModule {
                            petProfile: context.studyPet.profile, celebrations: context.celebrations,
                            runMode: context.runMode)
         store.followCards(from: context.providers.$snapshot)
+        store.followParty(from: context.providers.$snapshot)
         store.follow(pet: context.studyPet.profiles)
         context.kitApplied
             .sink { [store] application in
