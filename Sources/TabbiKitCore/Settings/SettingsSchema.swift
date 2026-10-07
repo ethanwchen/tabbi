@@ -62,6 +62,17 @@ public enum SettingsSchema {
                 defaults.removeObject(forKey: SettingsRepository.Key.kitAnswers)
             }
         },
+        // 4 -> 5: the open notch gets a size setting. Everyone who already
+        // uses Tabbi has had the Regular panel, so record that, and a later
+        // change of the default for new installs leaves their panel as it is.
+        Migration(version: 5) { defaults in
+            let key = SettingsRepository.Key.panelSize
+            let hasSettings = defaults.object(forKey: SettingsRepository.Key.kitID) != nil
+                || defaults.object(forKey: SettingsRepository.Key.moduleOrder) != nil
+            if hasSettings, defaults.object(forKey: key) == nil {
+                defaults.set(PanelSize.regular.rawValue, forKey: key)
+            }
+        },
     ]
 
     /// The version this build writes.

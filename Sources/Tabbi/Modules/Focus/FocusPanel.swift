@@ -133,22 +133,31 @@ private struct FocusModeRow: View {
     @ObservedObject var controller: FocusController
 
     var body: some View {
-        let settings = controller.settings
-        HStack(spacing: Theme.Spacing.m) {
-            FocusModeItem(symbol: "waveform", title: "Sound", value: settings.mix.summary,
-                          isOn: !settings.mix.isOff)
-            FocusModeItem(symbol: "moon.fill", title: "Do Not Disturb",
-                          value: settings.doNotDisturb ? "On" : "Off", isOn: settings.doNotDisturb)
+        // A narrow panel (Compact) drops the names and keeps each glyph and value.
+        ViewThatFits(in: .horizontal) {
+            items(showsTitles: true)
+            items(showsTitles: false)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .help("Change focus sound and Do Not Disturb in Settings > Tabs > Options")
     }
+
+    private func items(showsTitles: Bool) -> some View {
+        let settings = controller.settings
+        return HStack(spacing: Theme.Spacing.m) {
+            FocusModeItem(symbol: "waveform", title: showsTitles ? "Sound" : nil,
+                          value: settings.mix.summary, isOn: !settings.mix.isOff)
+            FocusModeItem(symbol: "moon.fill", title: showsTitles ? "Do Not Disturb" : nil,
+                          value: settings.doNotDisturb ? "On" : "Off", isOn: settings.doNotDisturb)
+                .fixedSize()
+        }
+    }
 }
 
-/// One focus mode setting: a glyph, its name, and its value.
+/// One focus mode setting: a glyph, its name (left out when space is short), and its value.
 private struct FocusModeItem: View {
     let symbol: String
-    let title: String
+    let title: String?
     let value: String
     let isOn: Bool
 
@@ -158,8 +167,11 @@ private struct FocusModeItem: View {
                 .font(.system(size: 11, weight: .semibold))
                 .foregroundStyle(isOn ? accent : Theme.Palette.tertiaryText)
                 .frame(width: 16)
-            Text(title)
-                .foregroundStyle(Theme.Palette.tertiaryText)
+            if let title {
+                Text(title)
+                    .foregroundStyle(Theme.Palette.tertiaryText)
+                    .fixedSize()
+            }
             Text(value)
                 .foregroundStyle(isOn ? Theme.Palette.secondaryText : Theme.Palette.tertiaryText)
                 .lineLimit(1)

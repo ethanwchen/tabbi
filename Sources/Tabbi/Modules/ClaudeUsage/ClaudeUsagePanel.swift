@@ -115,7 +115,8 @@ private struct TodayCard: View {
                     Spacer(minLength: 0)
                     row("Messages", value: "\(stats.today.messages)")
                     row("Top model", value: stats.today.topModel.map(ClaudeUsageFormat.modelName) ?? "None yet")
-                    row("Last 7 days", value: ClaudeUsageFormat.compactTokens(stats.lastSevenDays.tokens.total) + " tokens")
+                    let week = ClaudeUsageFormat.compactTokens(stats.lastSevenDays.tokens.total)
+                    row("Last 7 days", value: week + " tokens", short: week)
                 } else {
                     Spacer(minLength: 0)
                     HStack(spacing: Theme.Spacing.s) {
@@ -133,15 +134,22 @@ private struct TodayCard: View {
         .motion(Theme.Motion.content, value: stats)
     }
 
-    private func row(_ title: String, value: String) -> some View {
+    /// The title stays whole; on the narrow Compact panel the value falls
+    /// back to `short` (the figure without its unit) instead of clipping.
+    private func row(_ title: String, value: String, short: String? = nil) -> some View {
         HStack {
             Text(title)
                 .foregroundStyle(Theme.Palette.secondaryText)
+                .fixedSize()
+                .layoutPriority(1)
             Spacer(minLength: Theme.Spacing.s)
-            Text(value)
-                .foregroundStyle(Theme.Palette.primaryText)
-                .monospacedDigit()
-                .lineLimit(1)
+            ViewThatFits(in: .horizontal) {
+                Text(value)
+                if let short { Text(short) }
+            }
+            .foregroundStyle(Theme.Palette.primaryText)
+            .monospacedDigit()
+            .lineLimit(1)
         }
         .font(Theme.Typography.body)
     }

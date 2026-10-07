@@ -22,4 +22,10 @@ public struct TodayTally: Hashable, Sendable {
         if doneCount == totalCount { return "All \(totalCount) done" }
         return "\(doneCount) of \(totalCount) done"
     }
+
+    /// The summary for a narrow header (Compact panel), e.g. "3/6".
+    public var shortSummary: String {
+        if totalCount == 0 { return "Nothing planned" }
+        return "\(doneCount)/\(totalCount)"
+    }
 }

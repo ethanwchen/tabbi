@@ -1,6 +1,7 @@
 import XCTest
 import AppKit
 import TabbiKit
+import TabbiKitCore
 @testable import Tabbi
 
 /// Tabbi has no visible menu bar, so its hidden main menu is the only way the
@@ -34,10 +35,14 @@ final class MainMenuTests: XCTestCase {
         }
     }
 
-    func testAppMenuComesFirstAndAddsNoShortcuts() {
+    func testAppMenuComesFirstWithOnlyQuit() throws {
         let menu = MainMenu.make()
         XCTAssertEqual(menu.items.last?.submenu?.title, "Edit")
-        XCTAssertEqual(menu.items.first?.submenu?.items.count, 0)
+        let appItems = try XCTUnwrap(menu.items.first?.submenu?.items)
+        XCTAssertEqual(appItems.map(\.title), ["Quit \(Edition.current.name)"])
+        XCTAssertEqual(appItems.first?.keyEquivalent, "q")
+        XCTAssertEqual(appItems.first?.keyEquivalentModifierMask.intersection(.deviceIndependentFlagsMask), .command)
+        XCTAssertEqual(appItems.first?.action, #selector(NSApplication.terminate(_:)))
     }
 
     func testThePanelPassesShortcutsToTheMainMenu() throws {

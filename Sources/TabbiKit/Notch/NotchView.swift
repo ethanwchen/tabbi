@@ -115,6 +115,21 @@ private struct ThemeGlow: View {
     }
 }
 
+/// The header's gap under the hardware notch (the camera). Clicking the
+/// notch opened the panel, so clicking it again closes it.
+private struct NotchCloseZone: View {
+    @EnvironmentObject private var model: NotchViewModel
+    let width: CGFloat
+
+    var body: some View {
+        Color.clear
+            .frame(width: width)
+            .contentShape(Rectangle())
+            .onTapGesture { model.close() }
+            .help("Close")
+    }
+}
+
 /// Header (tabs left of the notch; title, Settings and the header shortcuts
 /// such as the pet's paw right of it) above the module panel,
 /// or the app's takeover (first-run setup) in their place while it runs.
@@ -126,17 +141,18 @@ private struct OpenNotchContent: View {
     var body: some View {
         if model.showsTakeover, let takeover = content.takeover {
             // The takeover's header keeps to the same camera-safe zones as the tabs.
-            let header = NotchHeaderLayout.openNotch(geometry: model.geometry, layout: model.layout, title: "")
+            let header = NotchHeaderLayout.openNotch(geometry: model.geometry, layout: model.layout, title: "",
+                                                     canvasWidth: model.openSize.width)
             VStack(spacing: 0) {
                 HStack(spacing: 0) {
                     takeover.leading()
                         .frame(width: header.leadingZone.width, alignment: .leading)
-                    Color.clear.frame(width: header.trailingZone.minX - header.leadingZone.maxX)
+                    NotchCloseZone(width: header.trailingZone.minX - header.leadingZone.maxX)
                     takeover.trailing()
                         .frame(width: header.trailingZone.width, alignment: .trailing)
                 }
                 .padding(.leading, header.leadingZone.minX)
-                .frame(width: Theme.Layout.expandedSize.width,
+                .frame(width: model.openSize.width,
                        height: NotchHeaderLayout.headerHeight(for: model.geometry), alignment: .leading)
 
                 takeover.body()
@@ -164,7 +180,7 @@ private struct OpenNotchContent: View {
             HStack(spacing: 0) {
                 NotchTabBar(header: header, celebrations: content.celebrations)
                     .frame(width: header.leadingZone.width, alignment: .leading)
-                Color.clear.frame(width: header.trailingZone.minX - header.leadingZone.maxX)
+                NotchCloseZone(width: header.trailingZone.minX - header.leadingZone.maxX)
                 HStack(spacing: NotchHeaderLayout.Metrics().trailingSpacing) {
                     if let titleFrame = header.titleFrame {
                         // The title type, shrunk only as far as the layout allows.

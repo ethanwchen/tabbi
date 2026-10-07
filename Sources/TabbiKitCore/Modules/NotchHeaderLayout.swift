@@ -10,8 +10,8 @@ import Foundation
 /// first tighten (narrower buttons, then no gaps, never below `minTabWidth`),
 /// and only then the last ones move behind a "more" button. On the right the
 /// title first shrinks a little (so "Claude Usage" stays whole beside a
-/// standard notch), then truncates, and is dropped before it could collide
-/// with anything.
+/// standard notch) and is dropped when it still doesn't fit, so it never
+/// shows clipped or collides with anything.
 ///
 /// Frames are in the open canvas's coordinates: x from its left edge, y from
 /// its top edge, the same space as `cutout`.
@@ -36,11 +36,8 @@ public struct NotchHeaderLayout: Equatable, Sendable {
         public var shortcutSpacing: CGFloat = 2
         /// Gap between the title, the gear and the shortcuts.
         public var trailingSpacing: CGFloat = 8
-        /// A title squeezed narrower than this is dropped instead of shown as
-        /// a lone ellipsis.
-        public var minTitleWidth: CGFloat = 40
-        /// How far a title that is a little too long may shrink before it
-        /// truncates; 0.88 keeps the 13pt title above 11pt.
+        /// How far a title that is a little too long may shrink to fit; past
+        /// that it is dropped. 0.88 keeps the 13pt title above 11pt.
         public var minTitleScale: CGFloat = 0.88
         /// Gap above the overflow list, below both the "more" button and the cutout.
         public var moreListGap: CGFloat = 4
@@ -67,8 +64,9 @@ public struct NotchHeaderLayout: Equatable, Sendable {
     public let moreListTop: CGFloat?
     /// The tab title, nil when it was dropped to make room.
     public let titleFrame: CGRect?
-    /// The type scale that fits the title in `titleFrame`: 1 when it fits at
-    /// full size, never below `Metrics.minTitleScale` (past that it truncates).
+    /// The type scale that fits the title whole in `titleFrame`: 1 when it
+    /// fits at full size, never below `Metrics.minTitleScale` (past that the
+    /// title is dropped).
     public let titleScale: CGFloat
     public let gearFrame: CGRect
     /// One frame per header shortcut, the last at the far right.
@@ -77,6 +75,17 @@ public struct NotchHeaderLayout: Equatable, Sendable {
     /// How many tabs show in the row; tabs from this index on overflow.
     public var visibleTabCount: Int { tabFrames.count }
     public var hasOverflow: Bool { moreFrame != nil }
+
+    /// The tabs behind the "more" button, in their usual order.
+    public func overflowTabs<Tab>(_ tabs: [Tab]) -> [Tab] {
+        Array(tabs.dropFirst(visibleTabCount))
+    }
+
+    /// The open tab when it sits behind the "more" button, which then wears
+    /// the selection so the open page is always marked in the row.
+    public func overflowSelection<Tab: Equatable>(in tabs: [Tab], selected: Tab?) -> Tab? {
+        selected.flatMap { overflowTabs(tabs).contains($0) ? $0 : nil }
+    }
 
     /// Every control's frame, for checking that none meets the cutout.
     public var controlFrames: [CGRect] {
@@ -131,12 +140,16 @@ public struct NotchHeaderLayout: Equatable, Sendable {
         right -= metrics.gearSize
         gearFrame = row(right, metrics.gearSize, height: metrics.gearSize)
         self.shortcutFrames = shortcutFrames
+        // The title shows whole, shrunk a little if needed, or not at all:
+        // the selected tab already names the page, so a clipped "Now..." only
+        // adds noise.
         let titleRoom = right - metrics.trailingSpacing - trailingZone.minX
         let shownTitle = min(titleWidth.rounded(.up), titleRoom)
-        titleFrame = titleWidth > 0 && shownTitle >= min(metrics.minTitleWidth, titleWidth.rounded(.up))
-            ? row(right - metrics.trailingSpacing - shownTitle, shownTitle) : nil
         // A point of slack, since type doesn't shrink exactly in proportion.
-        titleScale = titleWidth > shownTitle ? max((shownTitle - 1) / titleWidth, metrics.minTitleScale) : 1
+        let scale = titleWidth > shownTitle ? (shownTitle - 1) / titleWidth : 1
+        titleFrame = titleWidth > 0 && scale >= metrics.minTitleScale
+            ? row(right - metrics.trailingSpacing - shownTitle, shownTitle) : nil
+        titleScale = titleFrame == nil ? 1 : scale
     }
 
     private static func fitTabs(_ count: Int, in room: CGFloat,

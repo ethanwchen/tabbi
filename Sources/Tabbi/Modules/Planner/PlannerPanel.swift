@@ -191,20 +191,12 @@ private struct PlannerHeader: View {
             PlannerProgressRing(progress: tally.progress)
                 .frame(width: 16, height: 16)
                 .frame(width: 20)
-            Text(store.day.date.startDate().formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day()))
-                .font(Theme.Typography.title)
-                .foregroundStyle(Theme.Palette.primaryText)
-            Spacer(minLength: Theme.Spacing.s)
-            if store.problem == .saveFailed {
-                Label("Not saved", systemImage: "exclamationmark.triangle.fill")
-                    .font(Theme.Typography.caption)
-                    .foregroundStyle(Theme.Palette.warning)
-                    .help("The last change couldn't be written to disk")
+            // A narrow panel (Compact) shortens the date, then the count, instead of truncating them.
+            ViewThatFits(in: .horizontal) {
+                dateAndCount(.dateTime.weekday(.abbreviated).month(.abbreviated).day(), tally.summary)
+                dateAndCount(.dateTime.weekday(.abbreviated).month(.abbreviated).day(), tally.shortSummary)
+                dateAndCount(.dateTime.weekday(.abbreviated).day(), tally.shortSummary)
             }
-            Text(tally.summary)
-                .font(Theme.Typography.caption.monospacedDigit())
-                .foregroundStyle(Theme.Palette.secondaryText)
-                .contentTransition(.numericText())
             if store.day.doneCount > 0, store.canEdit {
                 IconButton(symbol: "checkmark.circle.badge.xmark", size: 20, help: "Clear completed tasks") {
                     withMotion(Theme.Motion.snappy) { store.clearCompleted() }
@@ -231,6 +223,28 @@ private struct PlannerHeader: View {
         .frame(height: 20)
         .padding(.horizontal, Theme.Spacing.s)
         .motion(Theme.Motion.snappy, value: tally)
+    }
+
+    private func dateAndCount(_ date: Date.FormatStyle, _ count: String) -> some View {
+        HStack(spacing: Theme.Spacing.s) {
+            Text(store.day.date.startDate().formatted(date))
+                .font(Theme.Typography.title)
+                .foregroundStyle(Theme.Palette.primaryText)
+                .fixedSize()
+            Spacer(minLength: Theme.Spacing.s)
+            if store.problem == .saveFailed {
+                Label("Not saved", systemImage: "exclamationmark.triangle.fill")
+                    .font(Theme.Typography.caption)
+                    .foregroundStyle(Theme.Palette.warning)
+                    .fixedSize()
+                    .help("The last change couldn't be written to disk")
+            }
+            Text(count)
+                .font(Theme.Typography.caption.monospacedDigit())
+                .foregroundStyle(Theme.Palette.secondaryText)
+                .fixedSize()
+                .contentTransition(.numericText())
+        }
     }
 }
 
@@ -302,10 +316,13 @@ private struct PlannerAddField: View {
                 .frame(width: 20)
             ZStack(alignment: .leading) {
                 if text.isEmpty {
-                    Text("Add a task…")
-                        .font(Theme.Typography.body)
-                        .foregroundStyle(Theme.Palette.tertiaryText)
-                        .allowsHitTesting(false)
+                    ViewThatFits(in: .horizontal) {
+                        Text("Add a task…")
+                        Text("Add…")
+                    }
+                    .font(Theme.Typography.body)
+                    .foregroundStyle(Theme.Palette.tertiaryText)
+                    .allowsHitTesting(false)
                 }
                 // Hidden until used: AppKit-backed fields don't render in
                 // snapshots, and the placeholder above stands in for them.

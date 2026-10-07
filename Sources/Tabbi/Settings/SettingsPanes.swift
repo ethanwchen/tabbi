@@ -35,6 +35,13 @@ struct GeneralSettingsPane: View {
                     Text(notchModeCaption)
                 }
                 .help("Choose when the notch is drawn. The shortcut always opens it.")
+                Picker("Panel size", selection: $store.settings.panelSize) {
+                    ForEach(PanelSize.allCases, id: \.self) { size in
+                        Text(size.title).tag(size)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .help("Choose how big the open notch is. Every tab uses the same size.")
                 Toggle(isOn: $store.settings.openOnHover) {
                     Text("Open on hover")
                     Text("Opens the notch when the pointer rests on it.")
@@ -65,10 +72,22 @@ struct GeneralSettingsPane: View {
             ResetToDefaultsRow(isAtDefaults: store.usesGeneralDefaults,
                                help: "Put General back the way a new install has it. Launch at login stays as it is.",
                                reset: store.resetGeneral)
+
+            Section {
+                HStack {
+                    Text("Closes the notch until you open \(Edition.current.name) again.")
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    // Command-Q itself lives in the hidden app menu, so it
+                    // also works while the notch is open.
+                    Button("Quit \(Edition.current.name)") { NSApp.terminate(nil) }
+                        .help("Quit \(Edition.current.name) (\u{2318}Q)")
+                }
+            }
         }
         .formStyle(.grouped)
         .scrollDisabled(!showsMore)
-        .frame(width: paneWidth, height: showsMore ? 692 : 572)
+        .frame(width: paneWidth, height: showsMore ? 780 : 660)
         .motion(Motion.snappy, value: showsMore)
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didChangeScreenParametersNotification)) { _ in
             screens = DisplayOption.connectedScreens()

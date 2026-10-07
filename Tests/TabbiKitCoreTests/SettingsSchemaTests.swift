@@ -104,6 +104,26 @@ final class SettingsSchemaTests: XCTestCase {
         }
     }
 
+    func testVersionFourInstallKeepsTheRegularPanel() {
+        defaults.set(4, forKey: SettingsSchema.versionKey)
+        defaults.set("essentials", forKey: "settings.kit")
+        XCTAssertEqual(SettingsRepository(defaults: defaults).load().panelSize, .regular)
+        XCTAssertEqual(defaults.string(forKey: "settings.panelSize"), "regular", "recorded on disk by the step")
+    }
+
+    func testPanelSizeStepLeavesAFreshInstallAndASavedSizeAlone() {
+        SettingsSchema.migrate(defaults)
+        XCTAssertNil(defaults.object(forKey: "settings.panelSize"), "a fresh install takes the default")
+
+        let suite = "TabbiTests.\(UUID().uuidString)"
+        let saved = UserDefaults(suiteName: suite)!
+        defer { saved.removePersistentDomain(forName: suite) }
+        saved.set(4, forKey: SettingsSchema.versionKey)
+        saved.set("essentials", forKey: "settings.kit")
+        saved.set("compact", forKey: "settings.panelSize")
+        XCTAssertEqual(SettingsRepository(defaults: saved).load().panelSize, .compact)
+    }
+
     func testCurrentKitsAreNotMovedByTheRetiredKitStep() {
         defaults.set(3, forKey: SettingsSchema.versionKey)
         defaults.set("medicine", forKey: "settings.kit")

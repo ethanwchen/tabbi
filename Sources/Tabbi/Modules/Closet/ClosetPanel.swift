@@ -14,10 +14,10 @@ struct ClosetPanel: View {
                 .frame(width: 164)
             Card {
                 VStack(alignment: .leading, spacing: Theme.Spacing.s) {
-                    HStack(spacing: Theme.Spacing.s) {
-                        ClosetSectionPicker(selection: $store.section)
-                        Spacer(minLength: 0)
-                        ClosetPointsChip(balance: store.closet.balance)
+                    // The Compact panel has no room for "pts" beside the pills.
+                    ViewThatFits(in: .horizontal) {
+                        header(showsUnit: true)
+                        header(showsUnit: false)
                     }
                     switch store.section {
                     case .wardrobe: ClosetWardrobe(store: store)
@@ -26,6 +26,14 @@ struct ClosetPanel: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             }
+        }
+    }
+
+    private func header(showsUnit: Bool) -> some View {
+        HStack(spacing: Theme.Spacing.s) {
+            ClosetSectionPicker(selection: $store.section)
+            Spacer(minLength: 0)
+            ClosetPointsChip(balance: store.closet.balance, showsUnit: showsUnit)
         }
     }
 }
@@ -178,7 +186,7 @@ private struct ClosetPill: View {
         Button(action: action) {
             HStack(spacing: Theme.Spacing.xs) {
                 Image(systemName: symbol).font(.system(size: 9.5, weight: .bold))
-                Text(title).lineLimit(1)
+                Text(title).lineLimit(1).fixedSize()
             }
             .font(Theme.Typography.caption)
             .foregroundStyle(isSelected ? accent : hovering ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
@@ -197,6 +205,7 @@ private struct ClosetPill: View {
 /// The study-points balance.
 private struct ClosetPointsChip: View {
     let balance: Int
+    var showsUnit = true
 
     var body: some View {
         HStack(spacing: Theme.Spacing.xs) {
@@ -206,9 +215,11 @@ private struct ClosetPointsChip: View {
                 .font(Theme.Typography.caption.monospacedDigit())
                 .foregroundStyle(Theme.Palette.primaryText)
                 .contentTransition(.numericText())
-            Text("pts")
-                .font(Theme.Typography.caption)
-                .foregroundStyle(Theme.Palette.tertiaryText)
+            if showsUnit {
+                Text("pts")
+                    .font(Theme.Typography.caption)
+                    .foregroundStyle(Theme.Palette.tertiaryText)
+            }
         }
         .padding(.horizontal, Theme.Spacing.s)
         .frame(height: 22)
@@ -302,11 +313,12 @@ private struct ClosetWardrobe: View {
                 Text("\(next.item.displayName) unlocks at \(next.item.cost)")
                     .foregroundStyle(Theme.Palette.tertiaryText)
             } else if let next = store.closet.nextUnlock {
-                Text("Next unlock").foregroundStyle(Theme.Palette.tertiaryText)
-                Text(next.item.displayName).foregroundStyle(Theme.Palette.secondaryText)
-                Text(next.missing == 0 ? "ready to unlock" : "\(next.missing) pts to go")
-                    .foregroundStyle(next.missing == 0 ? accent : Theme.Palette.tertiaryText)
-                    .monospacedDigit()
+                // The Compact panel drops the "Next unlock" label before the
+                // item name or its status would clip.
+                ViewThatFits(in: .horizontal) {
+                    nextUnlock(next, labeled: true)
+                    nextUnlock(next, labeled: false)
+                }
             } else {
                 Text("Everything unlocked. Dress up as you like.").foregroundStyle(Theme.Palette.tertiaryText)
             }
@@ -314,6 +326,16 @@ private struct ClosetWardrobe: View {
         .font(Theme.Typography.caption)
         .lineLimit(1)
         .frame(height: 12)
+    }
+
+    private func nextUnlock(_ next: (item: PetItem, missing: Int), labeled: Bool) -> some View {
+        HStack(spacing: Theme.Spacing.xs) {
+            if labeled { Text("Next unlock").foregroundStyle(Theme.Palette.tertiaryText) }
+            Text(next.item.displayName).foregroundStyle(Theme.Palette.secondaryText)
+            Text(next.missing == 0 ? "ready to unlock" : "\(next.missing) pts to go")
+                .foregroundStyle(next.missing == 0 ? accent : Theme.Palette.tertiaryText)
+                .monospacedDigit()
+        }
     }
 
     private func detail(for item: PetItem) -> String {

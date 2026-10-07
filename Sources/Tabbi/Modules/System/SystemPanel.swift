@@ -63,7 +63,13 @@ struct SystemPanel: View {
             history: monitor.memoryHistory.elements,
             help: memory.map { "Memory in use: \(SystemFormat.memory($0))" } ?? "Memory in use and memory pressure"
         ) {
-            if let memory { Text("of \(SystemFormat.gigabytes(memory.totalBytes)) GB") }
+            if let memory {
+                // The narrow Compact card drops the "of" before the title would clip.
+                ViewThatFits(in: .horizontal) {
+                    Text("of \(SystemFormat.gigabytes(memory.totalBytes)) GB")
+                    Text("\(SystemFormat.gigabytes(memory.totalBytes)) GB")
+                }
+            }
         } footer: {
             PressureBar(memory: memory)
         }
@@ -94,6 +100,8 @@ private struct MetricCard<Accessory: View, Footer: View>: View {
                         .foregroundStyle(accent)
                     Text(title)
                         .foregroundStyle(Theme.Palette.secondaryText)
+                        .fixedSize()
+                        .layoutPriority(1)
                     Spacer(minLength: Theme.Spacing.xs)
                     accessory
                         .foregroundStyle(Theme.Palette.tertiaryText)

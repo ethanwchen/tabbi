@@ -65,20 +65,15 @@ private struct ScheduleHeader: View {
     var body: some View {
         HStack(alignment: .center, spacing: Theme.Spacing.s) {
             ScheduleModePicker(selection: store.mode) { store.show($0) }
-            Text(dateText)
-                .font(Theme.Typography.caption)
-                .foregroundStyle(Theme.Palette.tertiaryText)
-                .lineLimit(1)
-            Spacer(minLength: Theme.Spacing.s)
+                .fixedSize()
+            // A narrow panel drops the all-day event, then shortens the date.
+            ViewThatFits(in: .horizontal) {
+                dateAndAllDay(dateText, showsAllDay: true)
+                dateAndAllDay(dateText, showsAllDay: false)
+                dateAndAllDay(shortDateText, showsAllDay: false)
+            }
             if store.emptySituation == nil {
                 if store.mode == .day {
-                    ForEach(layout.allDay.prefix(1)) { item in
-                        Label(ScheduleFormat.title(item), systemImage: "sun.max")
-                            .font(Theme.Typography.caption)
-                            .foregroundStyle(Theme.Palette.secondaryText)
-                            .lineLimit(1)
-                            .help("All day: \(ScheduleFormat.title(item))")
-                    }
                     freeTime(layout.freeMinutes, suffix: "free", none: "No free time left",
                              help: "Free time left in your working day, with a buffer around each event")
                     if store.draft == nil, layout.freeMinutes > 0 {
@@ -103,6 +98,34 @@ private struct ScheduleHeader: View {
             }
         }
         .padding(.horizontal, Theme.Spacing.xxs)
+    }
+
+    private func dateAndAllDay(_ date: String, showsAllDay: Bool) -> some View {
+        HStack(spacing: Theme.Spacing.s) {
+            Text(date)
+                .font(Theme.Typography.caption)
+                .foregroundStyle(Theme.Palette.tertiaryText)
+                .lineLimit(1)
+                .fixedSize()
+            Spacer(minLength: 0)
+            if showsAllDay, store.emptySituation == nil, store.mode == .day {
+                ForEach(layout.allDay.prefix(1)) { item in
+                    Label(ScheduleFormat.title(item), systemImage: "sun.max")
+                        .font(Theme.Typography.caption)
+                        .foregroundStyle(Theme.Palette.secondaryText)
+                        .lineLimit(1)
+                        .fixedSize()
+                        .help("All day: \(ScheduleFormat.title(item))")
+                }
+            }
+        }
+    }
+
+    /// "Wed 7" for a day, "Oct 7" for the week starting today.
+    private var shortDateText: String {
+        store.mode == .week
+            ? store.now.formatted(.dateTime.month(.abbreviated).day())
+            : store.now.formatted(.dateTime.weekday(.abbreviated).day())
     }
 
     private var dateText: String {

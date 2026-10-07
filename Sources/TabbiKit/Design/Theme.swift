@@ -94,9 +94,10 @@ public enum Theme {
     }
 
     public enum Layout {
-        /// Size of the open notch. Every module panel gets the same canvas so
-        /// switching tabs never resizes the notch.
-        public static let expandedSize = CGSize(width: 560, height: 236)
+        /// Size of the open notch at the default Regular `PanelSize`. Every
+        /// module panel gets the same canvas so switching tabs never resizes
+        /// the notch; the user's panel size picks which one.
+        public static let expandedSize = PanelSize.regular.canvasSize
         /// Horizontal inset for content inside the open notch.
         public static let contentInset: CGFloat = 20
         /// Width of each "wing" beside the hardware notch when a module shows a
