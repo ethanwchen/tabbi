@@ -24,6 +24,18 @@ final class TodayTallyTests: XCTestCase {
         XCTAssertEqual(TodayTally(day: day, shared: []).summary, "All 2 done")
     }
 
+    func testShortSummaryCountsDoneOfTotal() throws {
+        var day = PlannerDay(date: oct1)
+        XCTAssertEqual(TodayTally(day: day, shared: []).shortSummary, "Nothing planned")
+        let first = try XCTUnwrap(day.add("One"))
+        day.add("Two")
+        XCTAssertEqual(TodayTally(day: day, shared: []).shortSummary, "0/2")
+        day.toggle(first.id)
+        XCTAssertEqual(TodayTally(day: day, shared: reviews(0, of: 80)).shortSummary, "1/3")
+        day.toggle(day.items[1].id)
+        XCTAssertEqual(TodayTally(day: day, shared: []).shortSummary, "2/2")
+    }
+
     func testPendingReviewsCountAsOneOpenItem() throws {
         var day = PlannerDay(date: oct1)
         let task = try XCTUnwrap(day.add("Pathology lecture notes"))
