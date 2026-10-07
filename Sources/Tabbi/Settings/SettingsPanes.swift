@@ -26,6 +26,15 @@ struct GeneralSettingsPane: View {
                         .font(.callout)
                         .foregroundStyle(.secondary)
                 }
+                Picker(selection: $store.settings.notchMode) {
+                    ForEach(NotchMode.allCases, id: \.self) { mode in
+                        Text(mode.title).tag(mode)
+                    }
+                } label: {
+                    Text("Notch")
+                    Text(notchModeCaption)
+                }
+                .help("Choose when the notch is drawn. The shortcut always opens it.")
                 Toggle(isOn: $store.settings.openOnHover) {
                     Text("Open on hover")
                     Text("Opens the notch when the pointer rests on it.")
@@ -59,7 +68,7 @@ struct GeneralSettingsPane: View {
         }
         .formStyle(.grouped)
         .scrollDisabled(!showsMore)
-        .frame(width: paneWidth, height: showsMore ? 640 : 520)
+        .frame(width: paneWidth, height: showsMore ? 692 : 572)
         .motion(Motion.snappy, value: showsMore)
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didChangeScreenParametersNotification)) { _ in
             screens = DisplayOption.connectedScreens()
@@ -112,6 +121,15 @@ struct GeneralSettingsPane: View {
     /// Routes through the store so the toggle only flips once macOS accepted it.
     private var launchAtLogin: Binding<Bool> {
         Binding(get: { store.settings.launchAtLogin }, set: { store.setLaunchAtLogin($0) })
+    }
+
+    /// Says what the chosen mode does, and in Hidden mode how to get back.
+    private var notchModeCaption: String {
+        switch store.settings.notchMode {
+        case .alwaysVisible: "Always drawn around the hardware notch."
+        case .showOnHover: "Appears when the pointer reaches the top center."
+        case .hidden: "Out of sight. Press \(store.settings.hotkey.displayString) to open it."
+        }
     }
 
     private var launchAtLoginCaption: String? {

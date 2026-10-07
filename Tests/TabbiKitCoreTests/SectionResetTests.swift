@@ -19,6 +19,7 @@ final class SectionResetTests: XCTestCase {
         settings.preferredDisplay = .main
         settings.showOnExternalDisplays = false
         settings.hideInFullscreen = false
+        settings.notchMode = .hidden
         settings.notchPreview.isEnabled = false
         settings.notchPreview.interval = .long
         settings.notchPreview.setEnabled(.focus, false)
@@ -41,6 +42,7 @@ final class SectionResetTests: XCTestCase {
         XCTAssertEqual(settings.preferredDisplay, .builtIn)
         XCTAssertEqual(settings.showOnExternalDisplays, fresh.showOnExternalDisplays)
         XCTAssertEqual(settings.hideInFullscreen, fresh.hideInFullscreen)
+        XCTAssertEqual(settings.notchMode, .alwaysVisible)
         XCTAssertTrue(settings.notchPreview.isEnabled)
         XCTAssertEqual(settings.notchPreview.interval, NotchPreviewSettings.default.interval)
         XCTAssertTrue(settings.usesGeneralDefaults(of: medicine, catalog: catalog))

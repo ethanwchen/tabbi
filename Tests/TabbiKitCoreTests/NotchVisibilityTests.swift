@@ -100,11 +100,69 @@ final class NotchVisibilityTests: XCTestCase {
         XCTAssertFalse(isFullscreen([.init(ownerPID: 7, layer: 0, bounds: display)], on: .zero))
     }
 
+    private func isShown(_ mode: NotchMode = .alwaysVisible, hideInFullscreen: Bool = true,
+                         fullscreen: Bool = false, revealed: Bool = false,
+                         pointerNear: Bool = false, isOpen: Bool = false) -> Bool {
+        NotchVisibility.isShown(mode: mode, hideInFullscreen: hideInFullscreen, fullscreenAppActive: fullscreen,
+                                revealed: revealed, pointerNear: pointerNear, isOpen: isOpen)
+    }
+
     func testTheShortcutRevealsTheNotchOverAFullscreenApp() {
-        XCTAssertFalse(NotchVisibility.isShown(hideInFullscreen: true, fullscreenAppActive: true, revealed: false))
-        XCTAssertTrue(NotchVisibility.isShown(hideInFullscreen: true, fullscreenAppActive: true, revealed: true))
-        XCTAssertTrue(NotchVisibility.isShown(hideInFullscreen: false, fullscreenAppActive: true, revealed: false))
-        XCTAssertTrue(NotchVisibility.isShown(hideInFullscreen: true, fullscreenAppActive: false, revealed: false))
+        XCTAssertFalse(isShown(fullscreen: true))
+        XCTAssertTrue(isShown(fullscreen: true, revealed: true))
+        XCTAssertTrue(isShown(hideInFullscreen: false, fullscreen: true))
+        XCTAssertTrue(isShown())
+    }
+
+    func testAlwaysVisibleIsDrawnWithoutThePointer() {
+        XCTAssertTrue(isShown(.alwaysVisible))
+    }
+
+    func testShowOnHoverIsDrawnOnlyWhileThePointerIsNearOrTheNotchIsOpen() {
+        XCTAssertFalse(isShown(.showOnHover))
+        XCTAssertTrue(isShown(.showOnHover, pointerNear: true))
+        XCTAssertTrue(isShown(.showOnHover, isOpen: true), "an open notch stays until it closes")
+        XCTAssertTrue(isShown(.showOnHover, revealed: true))
+    }
+
+    func testHiddenIgnoresThePointerAndShowsOnlyForTheShortcut() {
+        XCTAssertFalse(isShown(.hidden))
+        XCTAssertFalse(isShown(.hidden, pointerNear: true))
+        XCTAssertTrue(isShown(.hidden, revealed: true))
+        XCTAssertTrue(isShown(.hidden, isOpen: true))
+    }
+
+    func testAFullscreenAppHidesTheNotchInEveryModeUnlessRevealed() {
+        for mode in NotchMode.allCases {
+            XCTAssertFalse(isShown(mode, fullscreen: true, pointerNear: true, isOpen: true), "\(mode)")
+            XCTAssertTrue(isShown(mode, fullscreen: true, revealed: true), "\(mode)")
+        }
+    }
+
+    func testHoverZoneWidensTheClosedNotchAndReachesTheTop() {
+        // A 200x32 notch at the top of a 900 pt tall screen.
+        let notch = CGRect(x: 620, y: 868, width: 200, height: 32)
+        let zone = NotchVisibility.hoverZone(closedNotch: notch)
+        XCTAssertEqual(zone.maxY, notch.maxY)
+        XCTAssertEqual(zone.minX, notch.minX - NotchVisibility.hoverZoneMargin.width)
+        XCTAssertEqual(zone.maxX, notch.maxX + NotchVisibility.hoverZoneMargin.width)
+        XCTAssertEqual(zone.minY, notch.minY - NotchVisibility.hoverZoneMargin.height)
+        XCTAssertTrue(NotchVisibility.hoverZone(closedNotch: .zero).isNull)
+    }
+
+    func testThePointerStaysNearOnTheDrawnShapeButNotBesideAHiddenOne() {
+        let zone = NotchVisibility.hoverZone(closedNotch: CGRect(x: 620, y: 868, width: 200, height: 32))
+        let wing = CGPoint(x: 880, y: 890) // beside the notch, on a preview wing
+        let shape = CGRect(x: 540, y: 868, width: 360, height: 32)
+        XCTAssertTrue(NotchVisibility.isPointerNear(CGPoint(x: 720, y: 899), hoverZone: zone, drawnShape: nil))
+        XCTAssertFalse(NotchVisibility.isPointerNear(wing, hoverZone: zone, drawnShape: nil))
+        XCTAssertTrue(NotchVisibility.isPointerNear(wing, hoverZone: zone, drawnShape: shape))
+        XCTAssertFalse(NotchVisibility.isPointerNear(CGPoint(x: 720, y: 500), hoverZone: zone, drawnShape: shape))
+    }
+
+    func testModesKeepTheirStoredNames() {
+        XCTAssertEqual(NotchMode.allCases.map(\.rawValue), ["always", "hover", "hidden"])
+        XCTAssertEqual(NotchMode.default, .alwaysVisible)
     }
 
     func testExternalDisplaysCanBeExcluded() {

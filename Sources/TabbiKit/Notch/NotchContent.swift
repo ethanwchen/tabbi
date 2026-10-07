@@ -24,6 +24,9 @@ public struct NotchContent {
     /// `NotchViewModel.showsTakeover` is true, such as first-run onboarding;
     /// nil when the app has nothing of the kind.
     public var takeover: NotchTakeover?
+    /// Saves the notch mode the user picks from the right-click menu; nil
+    /// leaves those items out.
+    public var setNotchMode: ((NotchMode) -> Void)?
     /// Checks for a newer version of the app; nil hides "Check for Updates…"
     /// (development builds, demo and snapshot runs).
     public var checkForUpdates: (() -> Void)?
@@ -42,6 +45,7 @@ public struct NotchContent {
         nowPlayingTrailing: @escaping () -> AnyView,
         openSettings: @escaping () -> Void,
         takeover: NotchTakeover? = nil,
+        setNotchMode: ((NotchMode) -> Void)? = nil,
         checkForUpdates: (() -> Void)? = nil,
         celebrations: CelebrationCenter? = nil,
         runAction: ModuleActionRunner = ModuleActionRunner { _, _ in }
@@ -53,6 +57,7 @@ public struct NotchContent {
         self.nowPlayingTrailing = nowPlayingTrailing
         self.openSettings = openSettings
         self.takeover = takeover
+        self.setNotchMode = setNotchMode
         self.checkForUpdates = checkForUpdates
         self.celebrations = celebrations
         self.runAction = runAction

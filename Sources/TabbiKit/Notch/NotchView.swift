@@ -50,6 +50,23 @@ public struct NotchView: View {
                 Button(content.catalog.descriptor(for: module).title) { model.open(module) }
             }
             Divider()
+            if let setNotchMode = content.setNotchMode {
+                Picker("Notch", selection: Binding(get: { model.notchMode }, set: { mode in
+                    if mode != .alwaysVisible { model.close() }
+                    setNotchMode(mode)
+                })) {
+                    ForEach(NotchMode.allCases, id: \.self) { Text($0.title).tag($0) }
+                }
+                // The way back is in the item itself: the shortcut opens a
+                // hidden notch, and Settings is one item away once it does.
+                if model.notchMode != .hidden {
+                    Button("Hide \(content.appName) Until I Press \(model.hotkey.displayString)") {
+                        model.close()
+                        setNotchMode(.hidden)
+                    }
+                }
+                Divider()
+            }
             Button("Settings…") {
                 model.close()
                 content.openSettings()
