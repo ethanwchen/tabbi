@@ -1,12 +1,14 @@
 import AppKit
+import TabbiKitCore
 
 /// The app's hidden main menu.
 ///
 /// Tabbi is an accessory app, so macOS never shows a menu bar for it, but
 /// AppKit still routes standard key equivalents (Command-C, Command-V and the
 /// rest) through `NSApp.mainMenu`. Without one, text fields in the notch and
-/// in Settings could not copy, paste or undo. Every item targets the first
-/// responder, so whichever field has the caret handles it.
+/// in Settings could not copy, paste or undo. Every Edit item targets the
+/// first responder, so whichever field has the caret handles it. The app
+/// menu holds only Quit, so Command-Q works from the notch and Settings.
 @MainActor
 enum MainMenu {
     /// One standard text editing command.
@@ -36,12 +38,16 @@ enum MainMenu {
         NSApp.mainMenu = make()
     }
 
-    /// An app menu (required first, left empty so nothing else changes) and
-    /// the Edit menu.
+    /// The app menu (required first, with only Quit) and the Edit menu.
     static func make() -> NSMenu {
         let menu = NSMenu(title: "Main Menu")
         let appItem = NSMenuItem()
-        appItem.submenu = NSMenu(title: "Tabbi")
+        let appMenu = NSMenu(title: Edition.current.name)
+        let quit = NSMenuItem(title: "Quit \(Edition.current.name)",
+                              action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        quit.target = NSApplication.shared
+        appMenu.addItem(quit)
+        appItem.submenu = appMenu
         menu.addItem(appItem)
 
         let edit = NSMenu(title: "Edit")
