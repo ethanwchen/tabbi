@@ -331,6 +331,18 @@ public final class NotchController {
             .store(in: &cancellables)
 
         inputs.settings
+            .map(\.notchMode)
+            .removeDuplicates()
+            .sink { [weak self] mode in self?.model.notchMode = mode }
+            .store(in: &cancellables)
+
+        inputs.settings
+            .map(\.hotkey)
+            .removeDuplicates()
+            .sink { [weak self] hotkey in self?.model.hotkey = hotkey }
+            .store(in: &cancellables)
+
+        inputs.settings
             .map { VisibilityChoice(hideInFullscreen: $0.hideInFullscreen, mode: $0.notchMode) }
             .removeDuplicates()
             .dropFirst()

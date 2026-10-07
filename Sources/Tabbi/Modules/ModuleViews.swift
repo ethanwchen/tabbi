@@ -35,6 +35,7 @@ enum ModuleViews {
             nowPlayingTrailing: { AnyView(compactTrailing(services: services)) },
             openSettings: { services.openSettings() },
             takeover: OnboardingViews.takeover(store: services.onboarding, modules: services.modules),
+            setNotchMode: { services.settings.settings.notchMode = $0 },
             checkForUpdates: AppUpdater.shared.isAvailable ? { AppUpdater.shared.checkForUpdates() } : nil,
             celebrations: services.celebrations,
             runAction: ModuleActionRunner { [weak services] module, action in
