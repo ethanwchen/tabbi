@@ -32,6 +32,10 @@ public struct PartyState: Equatable, Sendable {
     public private(set) var party: Party?
     /// The last refresh failed; what's on screen may be out of date.
     public private(set) var staleError: PartyError?
+    /// The start of the shared session I stepped out of, so it stops
+    /// counting for me while it goes on for everyone else; a new session
+    /// (another start) includes me again.
+    public private(set) var leftSessionStart: Date?
 
     public init(settings: PartySettings) {
         connection = settings.serverIssue.map(Connection.invalidServer) ?? .connecting
@@ -77,7 +81,42 @@ public struct PartyState: Equatable, Sendable {
         return ProvidedParty(pets: [mine] + others)
     }
 
+    /// The shared session I'm in at `now`: the party's session while it
+    /// runs, unless I stepped out of it. Members who are offline don't
+    /// count as company.
+    public func session(at now: Date) -> ProvidedPartySession? {
+        guard let party, let session = party.session, session.phaseEndsAt > now,
+              leftSessionStart != session.startedAt else { return nil }
+        let friends = companions.filter { PartyRoster.status($0.presence, online: $0.online) != .offline }
+        let host = isHost ? nil : party.members.first { $0.host }?.profile.name ?? "The host"
+        return ProvidedPartySession(method: session.method, startedAt: session.startedAt, endsAt: session.phaseEndsAt,
+                                    friendCount: friends.count, hostName: host)
+    }
+
+    /// The party and its shared session for other modules at `now`.
+    public func provided(at now: Date) -> ProvidedParty? {
+        provided.map { ProvidedParty(pets: $0.pets, session: session(at: now)) }
+    }
+
     // MARK: Transitions
+
+    /// Steps out of the running shared session without ending it for the
+    /// others. The host ends it instead (`endSession` on the server).
+    public mutating func leaveSession() {
+        guard let started = party?.session?.startedAt else { return }
+        leftSessionStart = started
+    }
+
+    /// Back into a shared session I stepped out of.
+    public mutating func rejoinSession() {
+        leftSessionStart = nil
+    }
+
+    /// Whether I stepped out of the session that is running now.
+    public func hasLeftSession(at now: Date) -> Bool {
+        guard let session = party?.session, session.phaseEndsAt > now else { return false }
+        return leftSessionStart == session.startedAt
+    }
 
     /// Starts over after the server setting changed: drops everything that
     /// belonged to the old server.

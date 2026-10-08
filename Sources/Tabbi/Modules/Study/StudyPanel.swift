@@ -31,21 +31,32 @@ struct StudyPanel: View {
             case .custom:
                 StudyCustomEditor(store: store) { show(nil) }
             case nil:
-                HStack(spacing: Theme.Spacing.s) {
-                    StudyDial(store: store)
-                        .frame(width: 176)
-                    VStack(spacing: Theme.Spacing.s) {
-                        StudyMethodCard(store: store, focusMode: focusMode, choose: { show(.picker) },
-                                        info: { show(.info(store.session.method.kind, from: nil)) },
-                                        sounds: { show(.sounds) }, edit: { show(.custom) })
-                        StudyControls(store: store)
-                    }
+                if let party = store.partySession {
+                    StudyPartySessionView(store: store, session: party)
+                        .transition(.opacity)
+                } else {
+                    timer
                 }
             }
         }
         .transition(.opacity)
+        .motion(Theme.Motion.snappy, value: store.partySession == nil)
         .onAppear { store.setVisible(true) }
         .onDisappear { store.setVisible(false) }
+    }
+
+    /// The user's own timer: the dial, then the method and its controls.
+    private var timer: some View {
+        HStack(spacing: Theme.Spacing.s) {
+            StudyDial(store: store)
+                .frame(width: 176)
+            VStack(spacing: Theme.Spacing.s) {
+                StudyMethodCard(store: store, focusMode: focusMode, choose: { show(.picker) },
+                                info: { show(.info(store.session.method.kind, from: nil)) },
+                                sounds: { show(.sounds) }, edit: { show(.custom) })
+                StudyControls(store: store)
+            }
+        }
     }
 
     private func show(_ next: StudyPanelOverlay?) {
@@ -132,6 +143,98 @@ private struct StudyDial: View {
     /// Open-ended Flowtime has no finish line, so its ring stays a quiet track.
     private var ringColor: Color {
         store.progress == nil ? Theme.Palette.tertiaryText : accent
+    }
+}
+
+/// A party's shared session in place of the user's own timer: time left
+/// in the ring, then the method, who started it and who is in it. Stepping
+/// out or ending it stays in the Party tab, which owns the party, so the
+/// own timer comes back here once the session ends or the user steps out.
+private struct StudyPartySessionView: View {
+    @ObservedObject var store: StudyStore
+    let session: ProvidedPartySession
+
+    var body: some View {
+        let remaining = session.remaining(at: store.now)
+        HStack(spacing: Theme.Spacing.s) {
+            Card(padding: 0) {
+                ProgressRing(progress: progress(remaining), tint: accent, lineWidth: 6) {
+                    VStack(spacing: Theme.Spacing.xxs) {
+                        Text(StudyTimerFormat.clock(remaining))
+                            .font(.system(size: 30, weight: .semibold, design: .rounded).monospacedDigit())
+                            .foregroundStyle(Theme.Palette.primaryText)
+                            .contentTransition(.numericText(countsDown: true))
+                        Text("Focus")
+                            .font(Theme.Typography.caption)
+                            .foregroundStyle(Theme.Palette.tertiaryText)
+                    }
+                }
+                .frame(width: 128, height: 128)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+            .help("Shared focus: \(StudyTimerFormat.clock(remaining)) left")
+            .overlay(alignment: .bottomTrailing) {
+                PetView(player: store.pet)
+                    .padding(Theme.Spacing.xs)
+                    .help("\(store.pet.profile.name) is studying with the party")
+            }
+            .frame(width: 176)
+            .motion(Theme.Motion.content, value: progress(remaining))
+            VStack(spacing: Theme.Spacing.s) {
+                Card {
+                    VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+                        HStack(spacing: Theme.Spacing.xs) {
+                            Text("Party session")
+                            Spacer(minLength: Theme.Spacing.s)
+                            Label(session.companyLine, systemImage: "person.2.fill")
+                                .labelStyle(StudyTodayLabelStyle())
+                                .help(session.friendCount == 0 ? "Everyone else has stepped out" : "Friends in this session now")
+                        }
+                        .font(Theme.Typography.caption)
+                        .foregroundStyle(Theme.Palette.tertiaryText)
+                        Text(session.methodName)
+                            .font(Theme.Typography.title)
+                            .foregroundStyle(Theme.Palette.primaryText)
+                            .lineLimit(1)
+                        Text(startedBy)
+                            .font(Theme.Typography.caption)
+                            .foregroundStyle(Theme.Palette.secondaryText)
+                            .lineLimit(1)
+                        Text("Ends at \(session.endsAt.formatted(date: .omitted, time: .shortened))")
+                            .font(Theme.Typography.caption)
+                            .foregroundStyle(Theme.Palette.tertiaryText)
+                            .monospacedDigit()
+                            .lineLimit(1)
+                        Spacer(minLength: Theme.Spacing.xs)
+                        StudyTodayRow(today: store.today, goal: store.goal)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                }
+                HStack(spacing: Theme.Spacing.xs) {
+                    Image(systemName: "person.3.fill")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(accent)
+                    Text(session.isHost ? "End it for everyone in the Party tab" : "Step out in the Party tab anytime")
+                        .font(Theme.Typography.caption)
+                        .foregroundStyle(Theme.Palette.tertiaryText)
+                        .lineLimit(1)
+                    Spacer(minLength: 0)
+                }
+                .frame(height: 28)
+                .help(session.isHost ? "The session runs for the whole party until it ends or you end it"
+                                     : "Stepping out keeps the session going for the others; your own timer comes back here")
+            }
+        }
+    }
+
+    /// How far the shared phase has run, so the ring fills as it does.
+    private func progress(_ remaining: TimeInterval) -> Double {
+        session.length > 0 ? 1 - remaining / session.length : 0
+    }
+
+    private var startedBy: String {
+        if let host = session.hostName { return "\(host) started it for the party" }
+        return "You started it for the party"
     }
 }
 

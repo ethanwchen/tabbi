@@ -43,6 +43,11 @@ final class TodayModule: NotchModule {
             .removeDuplicates()
             .sink { [store] in store.focusClockOwner = $0 }
             .store(in: &cancellables)
+        settings.$settings
+            .map(\.cleanedDisplayName)
+            .removeDuplicates()
+            .sink { [store] in store.displayName = $0 }
+            .store(in: &cancellables)
         context.kitApplied
             .sink { [weak self, store] application in
                 // Also when re-applying the same kit, which may have been re-imported.

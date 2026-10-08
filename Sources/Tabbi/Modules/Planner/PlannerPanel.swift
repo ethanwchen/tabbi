@@ -39,7 +39,7 @@ struct PlannerPanel: View {
                     VStack(spacing: Theme.Spacing.s) {
                         PlannerHeader(store: store, providers: providers, isEvening: isEvening,
                                       hasPlannableWork: hasPlannableWork)
-                        content
+                        content(at: context.date)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                         if store.canEdit {
                             HStack(spacing: Theme.Spacing.s) {
@@ -94,7 +94,7 @@ struct PlannerPanel: View {
     }
 
     @ViewBuilder
-    private var content: some View {
+    private func content(at date: Date) -> some View {
         if case .unreadable(let fileName) = store.problem {
             PlannerMessage(
                 symbol: "exclamationmark.triangle.fill",
@@ -103,14 +103,11 @@ struct PlannerPanel: View {
                 detail: "\(fileName) is damaged, so it's left untouched."
             )
         } else {
-            PlannerChecklist(store: store, providers: providers, focus: $focus)
+            PlannerChecklist(store: store, providers: providers, focus: $focus, date: date)
         }
     }
 }
 
-/// The checklist with what other modules share for today (say, Anki
-/// reviews) above it, or the fresh-day message while both are empty.
-/// Observes `ProviderHub` here so its updates don't re-render the panel.
 extension TodayPlanSettings.PlanMode {
     /// What Plan my day does, for its tooltips.
     var planHelp: String {
@@ -122,10 +119,16 @@ extension TodayPlanSettings.PlanMode {
     }
 }
 
+/// The checklist with what other modules share for today (say, Anki
+/// reviews) above it, or the fresh-day message while both are empty, which
+/// greets the user by name when they gave one. Observes `ProviderHub` here
+/// so its updates don't re-render the panel.
 private struct PlannerChecklist: View {
     @ObservedObject var store: PlannerStore
     @ObservedObject var providers: ProviderHub
     var focus: FocusState<PlannerField?>.Binding
+    /// Now, from the panel's minute timeline, so the greeting follows the hour.
+    let date: Date
 
     var body: some View {
         let shared = providers.snapshot.sharedTodayItems(excluding: .planner)
@@ -133,7 +136,7 @@ private struct PlannerChecklist: View {
             PlannerMessage(
                 symbol: "checklist",
                 tint: TodayModule.descriptor.accentColor,
-                title: "A fresh day",
+                title: DisplayName.greeting(for: store.displayName, at: date) ?? "A fresh day",
                 detail: "Add a few things you want to get done today."
             )
         } else {

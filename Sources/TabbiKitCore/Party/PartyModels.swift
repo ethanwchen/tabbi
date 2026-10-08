@@ -336,4 +336,17 @@ public enum PartyCode {
 
     public static func friendCode(_ text: String) -> String? { normalize(text, length: friendCodeLength) }
     public static func partyCode(_ text: String) -> String? { normalize(text, length: partyCodeLength) }
+
+    /// The code in pasted text, which is often a whole message such as
+    /// "Add me on Tabbi: k7qw-2mzd." Tries the text itself, then each word,
+    /// then each pair of neighboring words (a code split by a space).
+    /// Returns `nil` unless exactly one distinct code of `length` is found,
+    /// so a paste never guesses between two candidates.
+    public static func find(in text: String, length: Int) -> String? {
+        if let code = normalize(text, length: length) { return code }
+        let words = text.split { !$0.isLetter && !$0.isNumber && $0 != "-" }.map(String.init)
+        let pairs = zip(words, words.dropFirst()).map { $0 + $1 }
+        let found = Set((words + pairs).compactMap { normalize($0, length: length) })
+        return found.count == 1 ? found.first : nil
+    }
 }

@@ -141,6 +141,38 @@ final class OnboardingFlowTests: XCTestCase {
         XCTAssertEqual(flow.answers, answers, "re-picking the active kit keeps its answers")
     }
 
+    func testAskingTheNameOpensOnTheNameStepBeforeTheKit() {
+        var flow = OnboardingFlow(catalog: catalog, layout: ModuleLayout(catalog: catalog), asksName: true)
+        XCTAssertEqual(flow.stage, .name)
+        XCTAssertEqual(flow.stages.prefix(2), [.name, .kit])
+        XCTAssertEqual(flow.stageIndex, 0)
+        XCTAssertFalse(flow.canGoBack, "the name step is the first one")
+        flow.next()
+        XCTAssertEqual(flow.stage, .kit, "skipping the name moves on to the kits")
+        XCTAssertTrue(flow.canGoBack)
+        flow.back()
+        XCTAssertEqual(flow.stage, .name)
+        flow.next()
+        flow.choose(essentials)
+        XCTAssertEqual(flow.stage, .question("day"))
+        XCTAssertEqual(flow.stages.first, .name, "picking a kit keeps the name step in the progress")
+    }
+
+    func testPickingAKitFromTheNameStepAnswersTheKitStep() {
+        var flow = OnboardingFlow(catalog: catalog, layout: ModuleLayout(catalog: catalog), asksName: true)
+        flow.choose(essentials)
+        XCTAssertEqual(flow.stage, .question("day"))
+        var scratch = OnboardingFlow(catalog: catalog, layout: ModuleLayout(catalog: catalog), asksName: true)
+        scratch.startFromScratch()
+        XCTAssertEqual(scratch.stage, .modules)
+    }
+
+    func testNotAskingTheNameStartsOnTheKit() {
+        let flow = flow()
+        XCTAssertFalse(flow.stages.contains(.name))
+        XCTAssertEqual(flow.stage, .kit)
+    }
+
     func testBundledModulesWithSetupStepsMatchTheFixture() {
         XCTAssertEqual(catalog.descriptor(for: .closet).setup, [.pet])
         XCTAssertEqual(catalog.descriptor(for: .system).setup, [])

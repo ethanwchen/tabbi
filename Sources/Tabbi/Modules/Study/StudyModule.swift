@@ -28,6 +28,7 @@ final class StudyModule: NotchModule {
                            petProfile: context.studyPet.profile, celebrations: context.celebrations,
                            runMode: context.runMode)
         store.followCards(from: context.providers.$snapshot)
+        store.followParty(from: context.providers.$snapshot)
         store.follow(pet: context.studyPet.profiles)
         context.kitApplied
             .sink { [store] application in
@@ -40,6 +41,11 @@ final class StudyModule: NotchModule {
 
     func makePanel() -> AnyView {
         AnyView(StudyPanel(store: store, focusMode: focusMode))
+    }
+
+    /// Snapshot runs only: the Timer in a party's shared session.
+    func showForSnapshot(partySession session: ProvidedPartySession?) {
+        store.showForSnapshot(partySession: session)
     }
 
     /// Onboarding's study method step: pick the timer's method in one tap.

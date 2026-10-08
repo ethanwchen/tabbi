@@ -47,6 +47,9 @@ final class PlannerStore: ObservableObject {
     /// School kit). While set, Today shows that clock instead of the
     /// Pomodoro, so the layout has one timer.
     @Published var focusClockOwner: ModuleID?
+    /// The app-wide name from Settings > General, which the fresh-day
+    /// message greets. Nil while the user hasn't given one.
+    @Published var displayName: String?
     /// Plan My Day; its proposal replaces the checklist while active.
     private(set) lazy var plan = DayPlanStore(upNext: upNext, settings: planSettings, runMode: runMode)
     /// The End-of-Day Review; its card replaces the checklist while open.

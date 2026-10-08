@@ -71,6 +71,18 @@ extension PetCloset {
         return award
     }
 
+    /// Credits a Party shared session that ran to its end with the user in
+    /// it (`PetPointsRules.sharedPoints`), and returns the award to
+    /// celebrate. The shared clock never counts completions, so this is the
+    /// only way a shared session pays. Nil when the stay was too short.
+    public mutating func credit(_ session: PartySessionCompletion) -> PetStudyAward? {
+        let before = Set(PetCloset.wardrobe.filter { state(of: $0) == .affordable })
+        let points = save.ledger.recordSharedSession(minutes: session.minutes, friends: session.friendCount)
+        guard points > 0 else { return nil }
+        let unlocked = PetCloset.wardrobe.filter { state(of: $0) == .affordable && !before.contains($0) }
+        return PetStudyAward(completedSessions: 1, minutes: session.minutes, points: points, unlocked: unlocked)
+    }
+
     /// A focus phase under way in `old` that `new` left without completing
     /// it: skipped to the break, or reset to idle.
     private static func focusWasCutShort(_ old: ProvidedFocus, by new: ProvidedFocus) -> Bool {

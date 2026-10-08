@@ -45,6 +45,22 @@ final class StudyStore: ObservableObject {
     /// Cards reviewed today from the modules that share a card goal (Anki),
     /// or nil when none does; an Anki sprint counts its cards from this.
     @Published private(set) var cardsReviewedToday: Int?
+    /// The party's shared session while the user is in it: the panel shows
+    /// it in place of the user's own timer, which comes back once the
+    /// session ends or the user steps out of it in the Party tab.
+    @Published private(set) var partySession: ProvidedPartySession? {
+        didSet {
+            guard (oldValue == nil) != (partySession == nil) else { return }
+            catchUp()
+            updateTicker()
+            // The pet studies along with the party, and dozes again after
+            // it when the user's own timer is stopped.
+            if StudyPetCue.isDozing(session) { pet.send(partySession == nil ? .sleep : .wake) }
+        }
+    }
+    /// The party session the provider snapshot shows, which a snapshot shot
+    /// can stand in for.
+    private var followedPartySession: ProvidedPartySession?
     /// Whether an Anki sprint has a card count to follow; the demo's sample
     /// sprint always does.
     var canCountCards: Bool { isDemo || cardsReviewedToday != nil }
@@ -332,6 +348,29 @@ final class StudyStore: ObservableObject {
             .store(in: &cancellables)
     }
 
+    /// Shows the party's shared session from the provider snapshot, so the
+    /// Timer never needs the Party module. The demo follows it too.
+    func followParty(from snapshots: some Publisher<ProviderSnapshot, Never>) {
+        snapshots
+            .map(\.party?.session)
+            .removeDuplicates()
+            .sink { [weak self] session in
+                MainActor.assumeIsolated {
+                    self?.followedPartySession = session
+                    self?.partySession = session
+                }
+            }
+            .store(in: &cancellables)
+    }
+
+    /// Snapshot runs only: shows `session` as the party's shared session
+    /// for the next shot, as if Party were on and the user in it; nil puts
+    /// back the session the snapshot follows.
+    func showForSnapshot(partySession session: ProvidedPartySession?) {
+        guard isSnapshot else { return }
+        partySession = session ?? followedPartySession
+    }
+
     // MARK: Private
 
     private func receiveCards(_ count: Int?) {
@@ -391,7 +430,7 @@ final class StudyStore: ObservableObject {
 
     /// Ticks once a second, only while the panel is visible and the clock runs.
     private func updateTicker() {
-        guard isVisible, session.isRunning, !isDemo else {
+        guard isVisible, session.isRunning || partySession != nil, !isDemo else {
             ticker?.invalidate()
             ticker = nil
             return

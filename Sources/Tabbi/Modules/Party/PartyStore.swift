@@ -23,7 +23,9 @@ import TabbiKitCore
 /// render a local worker's real data instead (see `localSnapshotServer`).
 @MainActor
 final class PartyStore: ObservableObject {
-    @Published private(set) var state: PartyState
+    @Published private(set) var state: PartyState {
+        didSet { scheduleSessionEnd() }
+    }
     @Published private(set) var settings: PartySettings
     /// The moment countdowns measure against; ticks while the panel shows.
     @Published private(set) var now = Date()
@@ -31,6 +33,9 @@ final class PartyStore: ObservableObject {
     @Published private(set) var pending: PartyAction?
     /// The last action's failure, shown once under the control that caused it.
     @Published private(set) var notice: String?
+    /// The "Great job, team!" moment after a shared session ran to its end,
+    /// while it is up (`PartyTeamCelebration.displayDuration`).
+    @Published private(set) var celebration: PartyTeamCelebration?
 
     let isDemo: Bool
     /// A `--snapshot` render: stays offline so no user is ever registered,
@@ -39,6 +44,8 @@ final class PartyStore: ObservableObject {
     private var snapshotServer: URL?
     private let repository: PartySettingsRepository?
     private let credentials: any PartyCredentialStore
+    /// Replaces HTTPS in tests; nil talks to the server.
+    private let transport: (any PartyTransport)?
     private let defaults = UserDefaults.standard
     private var account: PartyAccount?
     private var tracker: PartyPresenceTracker
@@ -55,14 +62,28 @@ final class PartyStore: ObservableObject {
     private var heartbeatTask: Task<Void, Never>?
     private var refreshTask: Task<Void, Never>?
     private var clockTask: Task<Void, Never>?
+    private var nameSyncTask: Task<Void, Never>?
+    /// Moves `now` to the shared session's end, so the Timer tab and the
+    /// closed notch drop it on time even while the panel is hidden.
+    private var sessionEndTask: Task<Void, Never>?
+    private var celebrationTask: Task<Void, Never>?
+    /// What the store showed before `showCelebrationForSnapshot(_:)`.
+    private var beforeSnapshot: (state: PartyState, celebration: PartyTeamCelebration?)?
+    /// Writes a name edited in Party back to the app-wide name.
+    private var saveName: ((String) -> Void)?
+    /// True when `TABBI_PARTY_NAME` picked the name a local snapshot renders as.
+    private var pinsName = false
     private var cancellables: Set<AnyCancellable> = []
 
     private static let trackerKey = "party.presence"
 
     /// - Parameter environment: the snapshot-only knobs, such as
     ///   `TABBI_PARTY_PREVIEW` and a local `TABBI_PARTY_SERVER`.
-    init(runMode: RunMode, environment: [String: String] = ProcessInfo.processInfo.environment) {
+    ///   `transport` replaces HTTPS (tests).
+    init(runMode: RunMode, environment: [String: String] = ProcessInfo.processInfo.environment,
+         transport: (any PartyTransport)? = nil) {
         isDemo = runMode.isDemo
+        self.transport = transport
         isSnapshot = runMode.isSnapshot
         if isDemo {
             repository = nil
@@ -72,6 +93,8 @@ final class PartyStore: ObservableObject {
             let scenario = environment["TABBI_PARTY_PREVIEW"].flatMap(PartyDemoScenario.init) ?? .hosting
             state = .demo(scenario, now: Date())
             tracker = PartyPresenceTracker()
+            // Stays up (no timer) so the snapshot can catch it.
+            if scenario == .celebrating { celebration = .demo(now: Date()) }
             return
         }
         if isSnapshot, let local = Self.localSnapshotServer(environment) {
@@ -79,6 +102,7 @@ final class PartyStore: ObservableObject {
             // the given user (or a new one) and render what the server returns.
             repository = nil
             snapshotServer = local.server
+            pinsName = environment["TABBI_PARTY_NAME"] != nil
             let settings = PartySettings(serverText: local.server.absoluteString,
                                          name: environment["TABBI_PARTY_NAME"] ?? "Sam")
             self.settings = settings
@@ -117,6 +141,40 @@ final class PartyStore: ObservableObject {
             .store(in: &cancellables)
     }
 
+    /// Makes the app-wide name (`AppSettings.displayName`) the name friends
+    /// see: Party shows and syncs whatever `names` publishes, and a name
+    /// edited in Party (its pane, onboarding, Connections) goes back
+    /// through `save`, so there is one name to change.
+    func follow(name names: AnyPublisher<String, Never>, save: @escaping (String) -> Void) {
+        saveName = save
+        names
+            .removeDuplicates()
+            .sink { [weak self] name in self?.nameDidChange(name) }
+            .store(in: &cancellables)
+    }
+
+    private func nameDidChange(_ name: String) {
+        guard name != settings.name, !pinsName else { return }
+        let old = settings
+        settings.name = name
+        repository?.save(settings)
+        if settings.cleanedName != old.cleanedName { scheduleNameSync() }
+    }
+
+    /// Syncs a new name once typing pauses, since General saves the name
+    /// on every keystroke and each sync is a request.
+    private func scheduleNameSync() {
+        nameSyncTask?.cancel()
+        guard isRunning, !isDemo else { return }
+        nameSyncTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: Self.nanoseconds(Self.nameSyncDelay))
+            guard !Task.isCancelled else { return }
+            self?.connect()
+        }
+    }
+
+    private static let nameSyncDelay: TimeInterval = 1
+
     /// `TABBI_PARTY_SERVER` for a `--snapshot` run, with the optional
     /// `TABBI_PARTY_TOKEN` and `TABBI_PARTY_CODE` of the user to
     /// render as. Only plain-http servers count, which `PartyServer.parse`
@@ -138,6 +196,7 @@ final class PartyStore: ObservableObject {
     func start() {
         guard !isRunning else { return }
         isRunning = true
+        scheduleSessionEnd()
         guard !isDemo, !isSnapshot || snapshotServer != nil else { return }
         if snapshotServer != nil {
             // Nothing calls `onAppear` in an offscreen render; load as if open.
@@ -159,6 +218,7 @@ final class PartyStore: ObservableObject {
         NSWorkspace.shared.notificationCenter.removeObserver(self)
         connectTask?.cancel()
         refreshTask?.cancel()
+        nameSyncTask?.cancel()
         sendOfflineOnce()
     }
 
@@ -182,20 +242,22 @@ final class PartyStore: ObservableObject {
     // MARK: Settings
 
     /// Applies edited settings: a new server starts over with that server's
-    /// identity, a new name syncs, and the invisible toggle sends one
-    /// heartbeat (`offline`, or the current status when coming back).
+    /// identity, a new name becomes the app-wide name and syncs, and the
+    /// invisible toggle sends one heartbeat (`offline`, or the current
+    /// status when coming back).
     func update(_ new: PartySettings) {
         let old = settings
         guard new != old else { return }
         settings = new
         repository?.save(new)
+        if new.name != old.name { saveName?(new.name) }
         guard !isDemo else { return }
         if new.serverURL != old.serverURL || new.serverIssue != old.serverIssue {
             state.reset(settings: new)
             rebuildAccount()
             return
         }
-        if new.cleanedName != old.cleanedName { connect() }
+        if new.cleanedName != old.cleanedName { scheduleNameSync() }
         if new.invisible != old.invisible, tracker.setInvisible(new.invisible) {
             saveTracker()
             sendHeartbeat()
@@ -297,6 +359,67 @@ final class PartyStore: ObservableObject {
         }
     }
 
+    /// Steps out of the shared session while it goes on for the others.
+    /// Only on this Mac: the server keeps the session for the party.
+    func leaveSession() {
+        state.leaveSession()
+    }
+
+    func rejoinSession() {
+        state.rejoinSession()
+    }
+
+    /// The party and its shared session for other modules, republished
+    /// when either changes (and when the session runs out).
+    var provided: AnyPublisher<ProvidedParty?, Never> {
+        $state.combineLatest($now)
+            .map { state, now in state.provided(at: now) }
+            .removeDuplicates()
+            .eraseToAnyPublisher()
+    }
+
+    /// Shared sessions that ran to their end with me in them, once each
+    /// (`PartySessionTracker`), so the module can pay and log them.
+    var completedSessions: AnyPublisher<PartySessionCompletion, Never> {
+        var tracker = PartySessionTracker()
+        return provided
+            .map { $0?.session }
+            .compactMap { tracker.observe($0, at: Date()) }
+            .eraseToAnyPublisher()
+    }
+
+    /// Shows `celebration` at the top of the panel, then lets it go.
+    func celebrate(_ celebration: PartyTeamCelebration) {
+        self.celebration = celebration
+        celebrationTask?.cancel()
+        celebrationTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: Self.nanoseconds(celebration.endsAt.timeIntervalSinceNow))
+            guard !Task.isCancelled, self?.celebration == celebration else { return }
+            self?.celebration = nil
+        }
+    }
+
+    func clearCelebration() {
+        celebrationTask?.cancel()
+        celebration = nil
+    }
+
+    /// Snapshot runs only: shows the team celebrating a session that just
+    /// ended (`PartyDemoScenario.celebrating`) for the next shot, or puts
+    /// back what the store showed before.
+    func showCelebrationForSnapshot(_ isShowing: Bool) {
+        guard isSnapshot else { return }
+        if isShowing {
+            if beforeSnapshot == nil { beforeSnapshot = (state, celebration) }
+            celebrationTask?.cancel()
+            state = .demo(.celebrating, now: now)
+            celebration = .demo(now: now)
+        } else if let before = beforeSnapshot {
+            (state, celebration) = before
+            beforeSnapshot = nil
+        }
+    }
+
     func clearNotice() {
         notice = nil
     }
@@ -338,7 +461,7 @@ final class PartyStore: ObservableObject {
             account = nil
             return
         }
-        account = PartyAccount(server: server, credentials: credentials)
+        account = PartyAccount(server: server, transport: transport, credentials: credentials)
         connect()
     }
 
@@ -473,6 +596,16 @@ final class PartyStore: ObservableObject {
             case .friends: state.didFetchFriends(.failure(error))
             case .party: state.didFetchParty(.failure(error))
             }
+        }
+    }
+
+    private func scheduleSessionEnd() {
+        sessionEndTask?.cancel()
+        guard let end = state.session(at: Date())?.endsAt else { return }
+        sessionEndTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: Self.nanoseconds(end.timeIntervalSinceNow))
+            guard !Task.isCancelled else { return }
+            self?.now = Date()
         }
     }
 

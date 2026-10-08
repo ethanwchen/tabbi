@@ -137,14 +137,77 @@ public struct ProvidedPartyPet: Identifiable, Hashable, Sendable {
     }
 }
 
+/// A party's shared focus session as the user takes part in it: one
+/// countdown the host started for everyone. The Timer tab shows it and the
+/// shared focus clock (`focus`) counts it in the closed notch, so neither
+/// needs to know about the Party module.
+public struct ProvidedPartySession: Hashable, Sendable {
+    /// The study method id the host picked, e.g. `pomodoro`.
+    public var method: String
+    public var startedAt: Date
+    public var endsAt: Date
+    /// The other members in the session: "with 2 friends".
+    public var friendCount: Int
+    /// Who started it, for "Maya's session"; nil when I did.
+    public var hostName: String?
+
+    public init(method: String, startedAt: Date, endsAt: Date, friendCount: Int, hostName: String? = nil) {
+        self.method = method
+        self.startedAt = startedAt
+        self.endsAt = endsAt
+        self.friendCount = max(friendCount, 0)
+        self.hostName = hostName
+    }
+
+    /// Whether I started the session (and so can end it for everyone).
+    public var isHost: Bool { hostName == nil }
+
+    /// The full length of the shared phase.
+    public var length: TimeInterval { max(endsAt.timeIntervalSince(startedAt), 0) }
+
+    /// Time left at `now`, never negative.
+    public func remaining(at now: Date) -> TimeInterval { max(endsAt.timeIntervalSince(now), 0) }
+
+    /// The method's display name, e.g. "Pomodoro"; "Focus" for an id this
+    /// version doesn't know.
+    public var methodName: String {
+        StudyMethodKind(rawValue: method).map { StudyMethodInfo.info(for: $0).name } ?? "Focus"
+    }
+
+    /// "with 2 friends", "with 1 friend", or "on your own" once everyone
+    /// else has left.
+    public var companyLine: String {
+        switch friendCount {
+        case 0: "on your own"
+        case 1: "with 1 friend"
+        default: "with \(friendCount) friends"
+        }
+    }
+
+    /// The label the shared focus clock carries.
+    public static let label = "Party focus"
+
+    /// The session as the shared focus clock: a focus countdown to its end.
+    /// It never counts completions, since Party awards a finished shared
+    /// session itself, so the pet's ledger never pays it twice.
+    public func focus(by source: ModuleID) -> ProvidedFocus {
+        ProvidedFocus(source: source, phase: .focus, label: Self.label, clock: .countdown(endsAt: endsAt),
+                      phaseLength: length)
+    }
+}
+
 /// The study party the user is in, so the closed notch can show the other
 /// members' pets beside the user's own. The `PartySource` role.
 public struct ProvidedParty: Hashable, Sendable {
     /// The user's pet first, then the other members' in roster order.
     public var pets: [ProvidedPartyPet]
+    /// The host's shared focus session while it runs and the user is in
+    /// it, so the Timer tab can show it; nil otherwise.
+    public var session: ProvidedPartySession?
 
-    public init(pets: [ProvidedPartyPet]) {
+    public init(pets: [ProvidedPartyPet], session: ProvidedPartySession? = nil) {
         self.pets = pets
+        self.session = session
     }
 
     /// Everyone in the party, the user included.

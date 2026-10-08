@@ -17,9 +17,9 @@ struct PartyFriendsCard: View {
                     .padding(.leading, Theme.Spacing.xs)
                 list
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                PartyCodeField(placeholder: "Add a friend by code", symbol: "person.badge.plus",
+                PartyCodeField(placeholder: "Friend's code", symbol: "person.badge.plus",
                                length: PartyCode.friendCodeLength, field: .friendCode, focus: focus,
-                               help: "Type a friend's \(PartyCode.friendCodeLength)-character code and press Return") {
+                               help: "Type or paste a friend's \(PartyCode.friendCodeLength)-character code and press Return") {
                     store.addFriend(code: $0)
                 }
             }
@@ -42,7 +42,8 @@ struct PartyFriendsCard: View {
             }
             Spacer(minLength: Theme.Spacing.xs)
             if let code = state.friendCode {
-                PartyCopyCode(code: code, help: "Your friend code. Click to copy it, then send it to a friend.")
+                PartyCopyCode(code: code, showsLabel: true,
+                              help: "Your friend code. Copy it and send it to a friend.")
             }
         }
     }

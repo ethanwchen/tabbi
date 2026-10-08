@@ -3,8 +3,9 @@ import Foundation
 /// The steps of first-run onboarding inside the notch, as plain state so the
 /// order and the skipping rules are testable without a window.
 ///
-/// The user picks a kit (or starts from scratch), answers the kit's own
-/// questions, turns tabs on or off and reorders them, and then sees only the
+/// The user says what to call them (on the first run), picks a kit (or
+/// starts from scratch), answers the kit's own questions, turns tabs on or
+/// off and reorders them, and then sees only the
 /// setup steps the enabled modules declare (`ModuleDescriptor.setup`), each
 /// asked once. Every step can be skipped and `finish()` ends the flow from
 /// anywhere, so onboarding never stands between the user and the notch.
@@ -12,6 +13,8 @@ import Foundation
 public struct OnboardingFlow: Equatable, Sendable {
     /// Where the flow is.
     public enum Stage: Hashable, Sendable {
+        /// Say what to call the user; the caller saves the name as it is typed.
+        case name
         /// Pick a kit or start from scratch.
         case kit
         /// One of the chosen kit's onboarding questions, by id.
@@ -34,24 +37,29 @@ public struct OnboardingFlow: Equatable, Sendable {
     public private(set) var layout: ModuleLayout
     /// True once the user picked Start from Scratch on the kit step.
     public private(set) var startedFromScratch = false
+    /// True when the flow opens on the name step.
+    public let asksName: Bool
 
     /// - Parameters:
     ///   - layout: the tabs to start from (the current ones when re-running).
     ///   - kit: the kit to preselect, such as the edition's or the active one.
     ///   - answers: the answers to preselect when re-running with that kit.
-    public init(catalog: ModuleCatalog, layout: ModuleLayout, kit: KitManifest? = nil, answers: KitAnswers = [:]) {
+    ///   - asksName: open on the name step before the kit step.
+    public init(catalog: ModuleCatalog, layout: ModuleLayout, kit: KitManifest? = nil, answers: KitAnswers = [:],
+                asksName: Bool = false) {
         self.catalog = catalog
         self.layout = layout
         self.kit = kit
         self.answers = answers
-        stage = .kit
+        self.asksName = asksName
+        stage = asksName ? .name : .kit
     }
 
     /// Every stage the flow will go through for the current choices, from
-    /// the kit step to the last setup step. It changes as the user picks a
+    /// the name (or kit) step to the last setup step. It changes as the user picks a
     /// kit or switches tabs, so the progress dots always count what is left.
     public var stages: [Stage] {
-        [.kit] + (kit?.onboarding.map { .question($0.id) } ?? []) + [.modules] + setupSteps.map { .setup($0.id) }
+        (asksName ? [.name] : []) + [.kit] + (kit?.onboarding.map { .question($0.id) } ?? []) + [.modules] + setupSteps.map { .setup($0.id) }
     }
 
     /// The setup steps the enabled tabs need: each step once, by rank, ties
@@ -81,11 +89,12 @@ public struct OnboardingFlow: Equatable, Sendable {
         stage == .finished ? stages.count : stages.firstIndex(of: stage) ?? 0
     }
 
-    public var canGoBack: Bool { stage != .kit && stage != .finished }
+    public var canGoBack: Bool { stage != stages.first && stage != .finished }
 
     /// Picks `kit` and moves on. Picking a different kit than before starts
     /// over from its tabs and clears earlier answers; picking the same one
-    /// again keeps what the user already changed.
+    /// again keeps what the user already changed. It answers the kit step,
+    /// so the flow moves on from there even if it was on the name step.
     public mutating func choose(_ kit: KitManifest) {
         if kit != self.kit || startedFromScratch {
             self.kit = kit
@@ -93,6 +102,7 @@ public struct OnboardingFlow: Equatable, Sendable {
             layout = kit.layout(catalog: catalog)
         }
         startedFromScratch = false
+        stage = .kit
         next()
     }
 
@@ -106,6 +116,7 @@ public struct OnboardingFlow: Equatable, Sendable {
             layout = ModuleLayout(order: ids, disabled: Set(ids.dropFirst()), catalog: catalog)
         }
         startedFromScratch = true
+        stage = .kit
         next()
     }
 

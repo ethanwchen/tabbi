@@ -140,6 +140,35 @@ final class SettingsSchemaTests: XCTestCase {
         }
     }
 
+    // MARK: The app-wide name
+
+    func testVersionFiveAdoptsTheNameChosenInParty() throws {
+        defaults.set(5, forKey: SettingsSchema.versionKey)
+        PartySettingsRepository(defaults: defaults).save(PartySettings(name: "  Ada  "))
+        XCTAssertEqual(SettingsRepository(defaults: defaults).load().displayName, "Ada")
+        XCTAssertEqual(defaults.string(forKey: "settings.displayName"), "Ada", "migrated on disk")
+        XCTAssertEqual(PartySettingsRepository(defaults: defaults).load().name, "  Ada  ", "Party's settings are left alone")
+    }
+
+    func testVersionFiveWithoutAPartyNameStartsWithNoName() {
+        defaults.set(5, forKey: SettingsSchema.versionKey)
+        PartySettingsRepository(defaults: defaults).save(PartySettings(name: " "))
+        XCTAssertEqual(SettingsRepository(defaults: defaults).load().displayName, "")
+        XCTAssertNil(defaults.object(forKey: "settings.displayName"))
+    }
+
+    func testTheNameStepKeepsANameAlreadySaved() {
+        defaults.set(5, forKey: SettingsSchema.versionKey)
+        defaults.set("Grace", forKey: "settings.displayName")
+        PartySettingsRepository(defaults: defaults).save(PartySettings(name: "Ada"))
+        XCTAssertEqual(SettingsRepository(defaults: defaults).load().displayName, "Grace")
+    }
+
+    func testAnUpgradeFromBeforeVersionsAdoptsThePartyName() {
+        PartySettingsRepository(defaults: defaults).save(PartySettings(name: "Ada"))
+        XCTAssertEqual(SettingsRepository(defaults: defaults).load().displayName, "Ada")
+    }
+
     // MARK: Modules this build doesn't know
 
     func testStoredOrderPutsUnknownIdsBackAfterTheirPredecessor() {

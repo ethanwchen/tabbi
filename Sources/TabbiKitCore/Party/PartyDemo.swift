@@ -82,6 +82,11 @@ public enum PartyDemoScenario: String, CaseIterable, Sendable {
     case hosting
     /// A friend hosts and hasn't started a session: I wait.
     case guest
+    /// A friend hosts and their shared session is running: I'm in it.
+    case member
+    /// A friend's shared session just ran to its end with me in it: the
+    /// team celebrates (`PartyTeamCelebration.demo`).
+    case celebrating
     /// A full party of eight with no session, so I can start one.
     case crowded
     /// Not in a party; friends are around and one party is joinable.
@@ -104,10 +109,10 @@ extension PartyState {
         switch scenario {
         case .hosting:
             return base
-        case .guest:
+        case .guest, .member, .celebrating:
             let host = party.members[1].profile.code
             party.host = host
-            party.session = nil
+            if scenario != .member { party.session = nil }
             party.members = party.members.map { member in
                 var member = member
                 member.host = member.profile.code == host
@@ -142,5 +147,17 @@ extension PartyState {
         case .invalidServer:
             return PartyState(settings: PartySettings(serverText: "http://tabbi.example.com"))
         }
+    }
+}
+
+extension PartyTeamCelebration {
+    /// The celebration the `celebrating` demo scenario shows: a 25-minute
+    /// session with two friends, just finished.
+    public static func demo(now: Date) -> PartyTeamCelebration {
+        let completion = PartySessionCompletion(method: "pomodoro", joinedAt: now.addingTimeInterval(-25 * 60),
+                                                endedAt: now, friendCount: 2, hostName: "Maya")
+        return PartyTeamCelebration(completion: completion,
+                                    points: PetPointsRules.sharedPoints(forMinutes: 25, friends: 2),
+                                    petName: "Mochi", date: now)
     }
 }

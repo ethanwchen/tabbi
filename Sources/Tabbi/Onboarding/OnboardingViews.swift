@@ -11,7 +11,7 @@ enum OnboardingViews {
         NotchTakeover(
             leading: { AnyView(OnboardingTitle().environmentObject(store)) },
             trailing: { AnyView(OnboardingProgress().environmentObject(store)) },
-            body: { AnyView(OnboardingBody(modules: modules).environmentObject(store)) }
+            body: { AnyView(OnboardingBody(modules: modules).environmentObject(store).environmentObject(store.settings)) }
         )
     }
 }
@@ -38,7 +38,9 @@ private struct OnboardingTitle: View {
 
     private func heading(_ flow: OnboardingFlow) -> (String, String) {
         switch flow.stage {
-        case .kit, .finished: ("sparkles", "Welcome to \(Edition.current.name)")
+        case .name: ("sparkles", "Welcome to \(Edition.current.name)")
+        case .kit, .finished: flow.asksName ? ("square.stack.3d.up.fill", "Pick a kit")
+                                            : ("sparkles", "Welcome to \(Edition.current.name)")
         case .question: (flow.kit?.symbol ?? "sparkles", "Set up \(flow.kit?.name ?? "your kit")")
         case .modules: ("square.grid.2x2.fill", "Your tabs")
         case .setup: (flow.currentSetupStep?.symbol ?? "gearshape.fill", flow.currentSetupStep?.title ?? "Setup")
@@ -105,6 +107,8 @@ private struct OnboardingBody: View {
     @ViewBuilder
     private func step(_ flow: OnboardingFlow, setup: AnyView?) -> some View {
         switch flow.stage {
+        case .name:
+            NameStep { store.update { $0.next() } }
         case .kit, .finished:
             KitStep(flow: flow)
         case .question:
@@ -130,6 +134,7 @@ private struct OnboardingBody: View {
 /// answer) on the right.
 private struct OnboardingFooter: View {
     @EnvironmentObject private var store: OnboardingStore
+    @EnvironmentObject private var settings: SettingsStore
     let flow: OnboardingFlow
     /// True when the setup step is drawn by its module (and so has
     /// something to keep), false for the pointer-to-the-tab fallback.
@@ -160,6 +165,7 @@ private struct OnboardingFooter: View {
     private var forwardIsPrimary: Bool {
         switch flow.stage {
         case .modules: true
+        case .name: settings.settings.cleanedDisplayName != nil
         case .question: flow.currentQuestion?.allowsMultiple == true
         case .setup: hasSetupView
         default: false
@@ -173,6 +179,7 @@ private struct OnboardingFooter: View {
 
     private var forwardHelp: String {
         switch flow.stage {
+        case .name: forwardIsPrimary ? "Keep this name" : "Go on without a name"
         case .kit, .finished: "Keep the \(flow.kit?.name ?? "suggested") kit"
         case .question: "Leave this question unanswered"
         case .modules: isLastStep ? "Start with these tabs" : "Keep these tabs and set up what they need"
@@ -182,6 +189,7 @@ private struct OnboardingFooter: View {
 
     private var hint: String {
         switch flow.stage {
+        case .name: "You can change it any time in Settings > General."
         case .kit, .finished: "A kit is a set of tabs. You can change them any time."
         case .question: flow.currentQuestion?.allowsMultiple == true ? "Pick any that fit." : "One tap moves on."
         case .modules: "Click a tab to turn it on or off. Drag to reorder."
@@ -259,6 +267,78 @@ private struct OnboardingTile<Label: View>: View {
         .help(help)
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
+    }
+}
+
+/// The name step: one field for what to call the user, saved to the
+/// app-wide name as it is typed. Return moves on.
+private struct NameStep: View {
+    @EnvironmentObject private var settings: SettingsStore
+    let submit: () -> Void
+    @FocusState private var focused: Bool
+
+    var body: some View {
+        Card {
+            HStack(spacing: Theme.Spacing.l) {
+                Image(systemName: "person.crop.circle.fill")
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundStyle(Theme.Palette.primaryText)
+                    .frame(width: 44, height: 44)
+                    .background(Circle().fill(Theme.Palette.primaryText.opacity(0.12)))
+                VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+                    VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+                        Text("What should we call you?")
+                            .font(Theme.Typography.title)
+                            .foregroundStyle(Theme.Palette.primaryText)
+                        Text("Friends see it in Party, and \(Edition.current.name) uses it to greet you.")
+                            .font(Theme.Typography.caption)
+                            .foregroundStyle(Theme.Palette.secondaryText)
+                            .lineLimit(1)
+                    }
+                    field
+                        .font(Theme.Typography.bodyEmphasis)
+                        .padding(.horizontal, Theme.Spacing.s)
+                        .frame(width: 220, height: 28, alignment: .leading)
+                        .background(
+                            RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
+                                .fill(Theme.Palette.surfaceHover)
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
+                                .strokeBorder(focused ? Theme.Palette.secondaryText : Theme.Palette.stroke, lineWidth: 0.5)
+                        )
+                        .help("Your name, up to \(DisplayName.maxLength) characters")
+                }
+                Spacer(minLength: 0)
+            }
+            .frame(maxHeight: .infinity)
+        }
+    }
+
+    /// `ImageRenderer` (used by `--snapshot`) can't draw a `TextField`, so
+    /// snapshots get a static stand-in.
+    @ViewBuilder private var field: some View {
+        if RunMode.current.isSnapshot {
+            let name = settings.settings.displayName
+            Text(name.isEmpty ? "Your name" : name)
+                .foregroundStyle(name.isEmpty ? Theme.Palette.tertiaryText : Theme.Palette.primaryText)
+        } else {
+            TextField("Your name", text: name, prompt: Text("Your name").foregroundStyle(Theme.Palette.tertiaryText))
+                .textFieldStyle(.plain)
+                .foregroundStyle(Theme.Palette.primaryText)
+                .focused($focused)
+                .onSubmit(submit)
+                .onAppear { focused = true }
+        }
+    }
+
+    /// Kept as typed, capped at the length every use allows, like the
+    /// field in Settings > General.
+    private var name: Binding<String> {
+        Binding(
+            get: { settings.settings.displayName },
+            set: { settings.settings.displayName = String($0.prefix(DisplayName.maxLength)) }
+        )
     }
 }
 

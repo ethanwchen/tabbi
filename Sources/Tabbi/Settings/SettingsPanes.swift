@@ -10,6 +10,34 @@ let paneWidth: CGFloat = 500
 
 // MARK: General
 
+/// The app-wide name, first in General so it is easy to find. Saves as the
+/// user types; Party shows it to friends and Tabbi greets the user with it.
+private struct YourNameRow: View {
+    @EnvironmentObject private var store: SettingsStore
+
+    var body: some View {
+        LabeledContent {
+            TextField("Your name", text: name, prompt: Text("Your name"))
+                .labelsHidden()
+                .textFieldStyle(.roundedBorder)
+                .multilineTextAlignment(.leading)
+                .frame(width: 160)
+                .help("Your name, up to \(DisplayName.maxLength) characters")
+        } label: {
+            Text("Your name")
+            Text("Shown to friends in Party and used to greet you.")
+        }
+    }
+
+    /// Kept as typed, capped at the length every use allows.
+    private var name: Binding<String> {
+        Binding(
+            get: { store.settings.displayName },
+            set: { store.settings.displayName = String($0.prefix(DisplayName.maxLength)) }
+        )
+    }
+}
+
 struct GeneralSettingsPane: View {
     @EnvironmentObject private var store: SettingsStore
     @State private var screens = DisplayOption.connectedScreens()
@@ -17,6 +45,10 @@ struct GeneralSettingsPane: View {
 
     var body: some View {
         Form {
+            Section {
+                YourNameRow()
+            }
+
             Section {
                 Toggle("Launch at login", isOn: launchAtLogin)
                     .disabled(!LaunchAtLogin.isAvailable && store.integratesWithSystem)
@@ -87,7 +119,7 @@ struct GeneralSettingsPane: View {
         }
         .formStyle(.grouped)
         .scrollDisabled(!showsMore)
-        .frame(width: paneWidth, height: showsMore ? 780 : 660)
+        .frame(width: paneWidth, height: showsMore ? 840 : 720)
         .motion(Motion.snappy, value: showsMore)
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didChangeScreenParametersNotification)) { _ in
             screens = DisplayOption.connectedScreens()
