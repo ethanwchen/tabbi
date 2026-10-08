@@ -102,6 +102,29 @@ public struct NotchView: View {
     }
 }
 
+public extension EnvironmentValues {
+    /// How much the open notch magnifies its panels (`PanelSize.contentScale`):
+    /// 1 at Compact and Regular, more at Large. Panels already grow with it;
+    /// read it only for what a transform can't scale, such as the pixel
+    /// size of an image you render yourself.
+    @Entry var panelScale: CGFloat = 1
+}
+
+private extension View {
+    /// Fills the proposed space with this view laid out in that space divided
+    /// by `scale` and drawn `scale` times larger, so type, icons, controls and
+    /// spacing all grow together. A scale of 1 leaves the layout as it was,
+    /// and the view keeps its identity (and state) when the scale changes.
+    func scaledToPanel(_ scale: CGFloat) -> some View {
+        GeometryReader { proxy in
+            self
+                .frame(width: proxy.size.width / scale, height: proxy.size.height / scale)
+                .scaleEffect(scale, anchor: .topLeading)
+        }
+        .environment(\.panelScale, scale)
+    }
+}
+
 /// The theme's soft color rising from the bottom of the open panel. The top
 /// stays black so the panel still meets the hardware notch seamlessly, and
 /// the closed notch never shows it.
@@ -156,7 +179,7 @@ private struct OpenNotchContent: View {
                        height: NotchHeaderLayout.headerHeight(for: model.geometry), alignment: .leading)
 
                 takeover.body()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .scaledToPanel(model.panelSize.contentScale)
                     .padding(.horizontal, Theme.Layout.contentInset + Theme.Layout.openTopRadius)
                     .padding(.top, Theme.Spacing.s)
                     .padding(.bottom, Theme.Spacing.l)
@@ -211,7 +234,7 @@ private struct OpenNotchContent: View {
                     .id(model.selected)
                     .transition(.tabSwitch(forward: model.movingForward, reduceMotion: reduceMotion))
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .scaledToPanel(model.panelSize.contentScale)
             .clipped()
             .padding(.horizontal, Theme.Layout.contentInset + Theme.Layout.openTopRadius)
             .padding(.top, Theme.Spacing.s)

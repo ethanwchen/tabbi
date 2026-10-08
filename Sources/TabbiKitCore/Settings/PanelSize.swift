@@ -22,6 +22,20 @@ public enum PanelSize: String, CaseIterable, Sendable {
         }
     }
 
+    /// How much every panel's type, icons, controls and spacing grow at this
+    /// size. Panels are designed once, at Regular, and the open notch lays
+    /// them out in its canvas divided by this factor and draws them that
+    /// much larger, so Large reads larger instead of looking empty while
+    /// still leaving lists a little more room. Compact keeps Regular's type
+    /// and adapts its layouts instead. 9/8 keeps the 4pt grid on whole
+    /// pixels of a Retina screen (4pt becomes 9px).
+    public var contentScale: CGFloat {
+        switch self {
+        case .compact, .regular: 1
+        case .large: 9.0 / 8.0
+        }
+    }
+
     /// The name Settings shows.
     public var title: String {
         switch self {
