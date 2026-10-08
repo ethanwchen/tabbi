@@ -11,10 +11,12 @@ public enum PanelSize: String, CaseIterable, Sendable {
     public static let `default`: PanelSize = .regular
 
     /// The open notch's canvas, header included. Regular is the size every
-    /// panel was first designed for.
+    /// panel was first designed for. Compact is only a little narrower, so
+    /// five tabs still fit left of a 14" MacBook Pro notch at the 24pt
+    /// minimum hit target; it saves its room in height and type instead.
     public var canvasSize: CGSize {
         switch self {
-        case .compact: CGSize(width: 480, height: 224)
+        case .compact: CGSize(width: 512, height: 224)
         case .regular: CGSize(width: 560, height: 236)
         case .large: CGSize(width: 640, height: 272)
         }

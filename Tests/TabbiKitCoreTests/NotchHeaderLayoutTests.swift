@@ -109,19 +109,21 @@ final class NotchHeaderLayoutTests: XCTestCase {
     }
 
     func testOverflowFollowsThePanelWidth() {
-        // Five tabs (Med School) fit on Regular and Large, while Compact moves
-        // the last two behind "more" and keeps the gear and paw.
+        // Five tabs (Med School) fit at every size beside a 14"/16" MacBook
+        // Pro notch; past that Compact shows four and moves the rest behind
+        // "more", keeping the gear and paw.
         let notch = CGSize(width: 185, height: 32)
         func header(_ size: PanelSize, tabs: Int) -> NotchHeaderLayout {
             NotchHeaderLayout(canvasWidth: size.canvasSize.width, notchSize: notch, headerHeight: 32,
                               tabCount: tabs, shortcutCount: 1, titleWidth: 76)
         }
-        XCTAssertFalse(header(.compact, tabs: 4).hasOverflow)
-        XCTAssertFalse(header(.regular, tabs: 5).hasOverflow)
-        XCTAssertFalse(header(.large, tabs: 5).hasOverflow)
-        let compact = header(.compact, tabs: 5)
+        for size in PanelSize.allCases {
+            XCTAssertFalse(header(size, tabs: 5).hasOverflow, "\(size)")
+            XCTAssertGreaterThanOrEqual(header(size, tabs: 5).tabWidth, NotchHeaderLayout.Metrics().minTabWidth)
+        }
+        let compact = header(.compact, tabs: 8)
         XCTAssertTrue(compact.hasOverflow)
-        XCTAssertEqual(compact.visibleTabCount, 3)
+        XCTAssertEqual(compact.visibleTabCount, 4)
         XCTAssertEqual(compact.shortcutFrames.count, 1)
         XCTAssertLessThan(compact.gearFrame.maxX, compact.shortcutFrames[0].minX)
         for size in PanelSize.allCases {
