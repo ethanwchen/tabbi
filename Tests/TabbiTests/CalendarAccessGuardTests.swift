@@ -8,6 +8,14 @@ import TabbiKitCore
 /// must notice that and report the calendar as unavailable instead of asking.
 @MainActor
 final class CalendarAccessGuardTests: XCTestCase {
+    /// Xcode 27's `xctest` host declares a calendar usage description of its
+    /// own, so there the guard rightly lets requests through; skip rather
+    /// than fail, and rather than show a real calendar prompt.
+    override func setUp() async throws {
+        try XCTSkipIf(ConnectionProbes.canAskForCalendar,
+                      "The test host declares NSCalendarsFullAccessUsageDescription")
+    }
+
     func testTheTestBundleHasNoUsageDescription() {
         XCTAssertFalse(ConnectionProbes.canAskForCalendar)
     }

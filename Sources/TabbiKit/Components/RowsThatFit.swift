@@ -4,14 +4,21 @@ import SwiftUI
 /// height it's offered, so a card designed for the Regular panel drops its
 /// last rows on a shorter one (Compact) instead of being clipped at the
 /// panel's edges. With room for every row it is a plain `VStack`.
-public struct RowsThatFit<Data: RandomAccessCollection, Row: View>: View where Data.Element: Identifiable {
+///
+/// An optional header sits above the rows and is told how many rows show,
+/// so it can offer a way to the rows that didn't fit (Anki's "All N").
+public struct RowsThatFit<Data: RandomAccessCollection, Header: View, Row: View>: View where Data.Element: Identifiable {
     let data: Data
     let spacing: CGFloat
+    let header: (_ shown: Int) -> Header
     let row: (Data.Element) -> Row
 
-    public init(_ data: Data, spacing: CGFloat = 0, @ViewBuilder row: @escaping (Data.Element) -> Row) {
+    public init(_ data: Data, spacing: CGFloat = 0,
+                @ViewBuilder header: @escaping (_ shown: Int) -> Header,
+                @ViewBuilder row: @escaping (Data.Element) -> Row) {
         self.data = data
         self.spacing = spacing
+        self.header = header
         self.row = row
     }
 
@@ -21,9 +28,16 @@ public struct RowsThatFit<Data: RandomAccessCollection, Row: View>: View where D
         ViewThatFits(in: .vertical) {
             ForEach(Array(stride(from: data.count, through: 1, by: -1)), id: \.self) { count in
                 VStack(spacing: spacing) {
+                    header(count)
                     ForEach(data.prefix(count)) { row($0) }
                 }
             }
         }
+    }
+}
+
+public extension RowsThatFit where Header == EmptyView {
+    init(_ data: Data, spacing: CGFloat = 0, @ViewBuilder row: @escaping (Data.Element) -> Row) {
+        self.init(data, spacing: spacing, header: { _ in EmptyView() }, row: row)
     }
 }
