@@ -7,11 +7,12 @@
 //          swift scripts/make-icon.swift --dock <file.png>   compare it with Apple's icons in a Dock row
 //          swift scripts/make-icon.swift --variants <file.png>  every appearance and the glyph
 //          swift scripts/make-icon.swift --preview <file.png>
+//          swift scripts/make-icon.swift --glyph                  only the glyph in docs/brand/assets
 //
 // Add --ground <navy|blush> to a review mode to try a candidate background. The
 // default build always uses the shipped palette.
 // The default run also writes docs/brand/assets: the icon at 1024 px in its default,
-// light, dark and tinted appearances, and the monochrome glyph as PDF and PNG.
+// light, dark and tinted appearances, and the colour glyph as PDF and PNG.
 //
 // The icon is drawn from code (no binary source art) so it stays reproducible and
 // reviewable. Every size in the .iconset is rendered natively rather than downscaled
@@ -561,38 +562,107 @@ func writePNG(_ image: CGImage, to url: URL) {
 
 // MARK: - Glyph and variants
 
-/// A one-colour Tabbi mark for small UI (menus, onboarding, the website favicon):
-/// the British Shorthair's round head with its chubby jowls and small folder-tab
-/// ears, with the round open eye, the checkmark wink and the nose cut out.
-/// It is a single path, so it renders the same as a bitmap and as vector PDF, and
-/// works as an AppKit template image.
-func glyphPath() -> CGPath {
-    var shape: CGPath = ellipse(512, 560, 700, 600)
-    for side in [-1.0, 1.0] as [CGFloat] {
-        shape = shape.union(ellipse(512 + side * 196, 640, 400, 360))
-        shape = shape.union(tabPath(baseCenter: CGPoint(x: 512 + side * 222, y: 390), baseWidth: 250,
-                                    topWidth: 150, height: 200, radius: 50, angle: side * 0.26))
-    }
-    // The open eye is a round hole with its catch light left standing, so it stays
-    // wide open and friendly in one colour.
-    let eye = ellipse(392, 590, 150, 160).subtracting(ellipse(362, 562, 50, 50))
-    let check = CGMutablePath()
-    check.addLines(between: [CGPoint(x: 560, y: 580), CGPoint(x: 610, y: 632), CGPoint(x: 700, y: 530)])
-    let cuts = eye
-        .union(check.copy(strokingWithWidth: 64, lineCap: .round, lineJoin: .round, miterLimit: 10))
-        .union(ellipse(512, 706, 84, 56))
-    // The ears reach higher than the jowls reach low, so lift the mark to centre it.
-    var lift = CGAffineTransform(translationX: 0, y: -10)
-    return shape.subtracting(cuts).copy(using: &lift)!
+/// The colours of the glyph, sampled from the cover art (`tabbi-cover.prompt.txt`):
+/// cream fur, taupe stripes and ears, round blue eyes and a pink nose, plus a deeper
+/// taupe outline so the pale face holds its shape on white as well as on black.
+enum GlyphColor {
+    static let fur = RGB(0xE4DED6)
+    static let taupe = RGB(0x8E8379)
+    static let outline = RGB(0x5E554E)
+    static let eye = RGB(0x3D8BFF)
+    static let nose = RGB(0xF09EA6)
 }
 
-/// The glyph in black on a transparent square of `pixels`.
+/// The glyph's ears: blunt rounded triangles set wide apart on the corners of the head
+/// and leaning out, like the cover's.
+func glyphEar(side: CGFloat) -> CGPath {
+    let p = CGMutablePath()
+    let outer = CGPoint(x: 512 + side * 420, y: 500), tip = CGPoint(x: 512 + side * 360, y: 92)
+    let inner = CGPoint(x: 512 + side * 90, y: 250)
+    p.move(to: CGPoint(x: (outer.x + inner.x) / 2, y: (outer.y + inner.y) / 2))
+    p.addArc(tangent1End: outer, tangent2End: tip, radius: 60)
+    p.addArc(tangent1End: tip, tangent2End: inner, radius: 70)
+    p.addArc(tangent1End: inner, tangent2End: outer, radius: 60)
+    p.closeSubpath()
+    return p
+}
+
+/// The glyph's head: one big, very round face, a little wider than tall.
+func glyphHead() -> CGPath { ellipse(512, 580, 880, 760) }
+
+/// The outline of the whole mark: the head and both ears as one shape.
+func glyphSilhouette() -> CGPath {
+    glyphHead().union(glyphEar(side: -1)).union(glyphEar(side: 1))
+}
+
+/// A round-capped stripe from `a` to `b`, as a filled shape.
+func glyphStripe(_ a: CGPoint, _ b: CGPoint, width: CGFloat) -> CGPath {
+    let line = CGMutablePath()
+    line.move(to: a)
+    line.addLine(to: b)
+    return line.copy(strokingWithWidth: width, lineCap: .round, lineJoin: .round, miterLimit: 10)
+}
+
+/// The Tabbi mark for small UI (menus, onboarding, the website favicon): the cover's
+/// British Shorthair reduced to a face that reads at 16 to 32 pt. A round cream head
+/// with taupe ears, three taupe stripes on the forehead and two on each cheek, two
+/// round blue eyes and a pink nose. Every feature is at least about 1.5 px at 16 px
+/// (64 units per pixel), so the eyes and nose stay distinct dots and the stripes stay
+/// visible bands; anything finer, like the cover's whiskerless mouth, is left out.
+/// Drawn in a 1024 unit, y-down space.
+func drawGlyph(_ ctx: CGContext) {
+    let head = glyphHead()
+    let silhouette = glyphSilhouette()
+    for side in [-1.0, 1.0] as [CGFloat] {
+        fill(ctx, glyphEar(side: side), GlyphColor.taupe.cg())
+    }
+    fill(ctx, head, GlyphColor.fur.cg())
+
+    ctx.saveGState()
+    ctx.addPath(head)
+    ctx.clip()
+    // Three forehead stripes, fanning out a little, running in from the crown.
+    for (dx, lean) in [(-128.0, -26.0), (0.0, 0.0), (128.0, 26.0)] as [(CGFloat, CGFloat)] {
+        fill(ctx, glyphStripe(CGPoint(x: 512 + dx + lean, y: 160), CGPoint(x: 512 + dx, y: 372), width: 78),
+             GlyphColor.taupe.cg())
+    }
+    // Two short stripes on each cheek, running in from the side of the face.
+    for side in [-1.0, 1.0] as [CGFloat] {
+        for (y, length) in [(590.0, 100.0), (680.0, 76.0)] as [(CGFloat, CGFloat)] {
+            fill(ctx, glyphStripe(CGPoint(x: 512 + side * 470, y: y - 14), CGPoint(x: 512 + side * (440 - length), y: y),
+                                  width: 60),
+                 GlyphColor.taupe.cg())
+        }
+    }
+    ctx.restoreGState()
+
+    // Round blue eyes set wide, and a small pink nose between and below them.
+    for side in [-1.0, 1.0] as [CGFloat] {
+        fill(ctx, ellipse(512 + side * 168, 600, 124, 124), GlyphColor.eye.cg())
+    }
+    let nose = CGMutablePath()
+    let left = CGPoint(x: 438, y: 664), right = CGPoint(x: 586, y: 664), bottom = CGPoint(x: 512, y: 740)
+    nose.move(to: CGPoint(x: 512, y: 664))
+    nose.addArc(tangent1End: right, tangent2End: bottom, radius: 26)
+    nose.addArc(tangent1End: bottom, tangent2End: left, radius: 30)
+    nose.addArc(tangent1End: left, tangent2End: right, radius: 26)
+    nose.closeSubpath()
+    fill(ctx, nose, GlyphColor.nose.cg())
+
+    ctx.addPath(silhouette)
+    ctx.setStrokeColor(GlyphColor.outline.cg())
+    ctx.setLineWidth(36)
+    ctx.setLineJoin(.round)
+    ctx.strokePath()
+}
+
+/// The glyph on a transparent square of `pixels`.
 func renderGlyph(pixels: Int) -> CGImage {
     let ctx = makeContext(pixels, pixels)
     let scale = CGFloat(pixels) / canvas
     ctx.translateBy(x: 0, y: CGFloat(pixels))
     ctx.scaleBy(x: scale, y: -scale)
-    fill(ctx, glyphPath(), CGColor(gray: 0, alpha: 1))
+    drawGlyph(ctx)
     return ctx.makeImage()!
 }
 
@@ -606,7 +676,7 @@ func writeGlyphPDF(to url: URL) {
     ctx.beginPDFPage(nil)
     ctx.translateBy(x: 0, y: canvas)
     ctx.scaleBy(x: 1, y: -1)
-    fill(ctx, glyphPath(), CGColor(gray: 0, alpha: 1))
+    drawGlyph(ctx)
     ctx.endPDFPage()
     ctx.closePDF()
 
@@ -647,13 +717,7 @@ func variantsSheet() -> CGImage {
                 if column < appearances.count {
                     image = render(pixels: px, palette: appearances[column].palette)
                 } else {
-                    // The glyph is black ink; on the dark desktop it is drawn as a template would be, in white.
-                    let mask = renderGlyph(pixels: px)
-                    let tile = makeContext(px, px)
-                    tile.clip(to: CGRect(x: 0, y: 0, width: px, height: px), mask: mask)
-                    tile.setFillColor(CGColor(gray: gray > 0.5 ? 0.1 : 0.95, alpha: 1))
-                    tile.fill(CGRect(x: 0, y: 0, width: px, height: px))
-                    image = tile.makeImage()!
+                    image = renderGlyph(pixels: px)
                 }
                 let size = CGFloat(px)
                 ctx.draw(image, in: CGRect(x: x, y: y0 + 52, width: size, height: size))
@@ -672,6 +736,11 @@ func exportBrandAssets(to folder: URL) throws {
         let file = name == "default" ? "tabbi-icon-1024.png" : "tabbi-icon-\(name)-1024.png"
         writePNG(render(pixels: 1024, palette: palette), to: folder.appendingPathComponent(file))
     }
+    exportGlyph(to: folder)
+}
+
+/// Writes the glyph as PDF and as a 256 px PNG.
+func exportGlyph(to folder: URL) {
     writeGlyphPDF(to: folder.appendingPathComponent("tabbi-glyph.pdf"))
     writePNG(renderGlyph(pixels: 256), to: folder.appendingPathComponent("tabbi-glyph-256.png"))
 }
@@ -705,6 +774,12 @@ if let path = option("--dock") {
 if let path = option("--variants") {
     writePNG(variantsSheet(), to: URL(fileURLWithPath: path))
     print(path)
+    exit(0)
+}
+if args.contains("--glyph") {
+    let assets = root.appendingPathComponent("docs/brand/assets")
+    exportGlyph(to: assets)
+    print(assets.path)
     exit(0)
 }
 if let path = option("--preview") {
