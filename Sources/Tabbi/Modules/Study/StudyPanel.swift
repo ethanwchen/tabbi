@@ -379,11 +379,21 @@ private struct StudyDeepFocusRow: View {
     let openMixer: () -> Void
 
     var body: some View {
+        // A narrow panel (Compact) shortens the switch's name instead of
+        // truncating it; the tooltip still says what it does.
+        ViewThatFits(in: .horizontal) {
+            row(title: "Deep focus")
+            row(title: "Deep")
+        }
+    }
+
+    private func row(title: String) -> some View {
         let isOn = store.deepFocus
-        HStack(spacing: Theme.Spacing.s) {
-            StudyCapsuleToggle(title: "Deep focus", symbol: "moon", isOn: isOn, help: help) {
+        return HStack(spacing: Theme.Spacing.s) {
+            StudyCapsuleToggle(title: title, symbol: "moon", isOn: isOn, help: help) {
                 store.setDeepFocus(!isOn)
             }
+            .fixedSize()
             Spacer(minLength: 0)
             StudySoundRow(focus: focus, isActive: isOn, openMixer: openMixer)
         }

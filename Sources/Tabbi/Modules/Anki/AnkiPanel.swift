@@ -230,7 +230,9 @@ private struct DecksCard: View {
                 } else if showsAll {
                     scrollingRows
                 } else {
-                    rows(top.prefix(Self.collapsedCount).map { AnkiDeckOutlineRow(deck: $0, depth: 0, title: $0.name) })
+                    // A shorter panel (Compact) lists fewer decks instead of clipping the card.
+                    RowsThatFit(top.prefix(Self.collapsedCount).map { AnkiDeckOutlineRow(deck: $0, depth: 0, title: $0.name) },
+                                spacing: Theme.Spacing.xxs, row: row)
                     Spacer(minLength: 0)
                 }
             }
@@ -255,14 +257,16 @@ private struct DecksCard: View {
 
     private func rows(_ rows: [AnkiDeckOutlineRow]) -> some View {
         VStack(spacing: Theme.Spacing.xxs) {
-            ForEach(rows) { row in
-                let deck = row.deck
-                DeckRow(row: row, isOpening: store.opening?.deck == deck.name,
-                        isFavorite: store.favorite?.matches(deck) == true,
-                        toggleFavorite: { store.toggleFavorite(deck) }) {
-                    store.startReviews(deck: deck.name)
-                }
-            }
+            ForEach(rows, content: row)
+        }
+    }
+
+    private func row(_ row: AnkiDeckOutlineRow) -> some View {
+        let deck = row.deck
+        return DeckRow(row: row, isOpening: store.opening?.deck == deck.name,
+                       isFavorite: store.favorite?.matches(deck) == true,
+                       toggleFavorite: { store.toggleFavorite(deck) }) {
+            store.startReviews(deck: deck.name)
         }
     }
 }

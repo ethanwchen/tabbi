@@ -14,7 +14,12 @@ struct ClaudeUsagePanel: View {
             VStack(spacing: Theme.Spacing.s) {
                 HStack(spacing: Theme.Spacing.l) {
                     limitsArea(now: context.date)
-                    TodayCard(stats: store.stats)
+                    // A shorter panel (Compact) packs the card's lines closer
+                    // instead of clipping it.
+                    ViewThatFits(in: .vertical) {
+                        TodayCard(stats: store.stats, spacing: Theme.Spacing.s)
+                        TodayCard(stats: store.stats, spacing: Theme.Spacing.xs)
+                    }
                 }
                 .frame(maxHeight: .infinity)
                 UsageFooter(store: store, now: context.date)
@@ -94,10 +99,12 @@ private struct UsageRing: View {
 /// Today's local usage from Claude Code transcripts.
 private struct TodayCard: View {
     let stats: ClaudeLocalStats?
+    /// The gap between the card's lines.
+    let spacing: CGFloat
 
     var body: some View {
         Card {
-            VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+            VStack(alignment: .leading, spacing: spacing) {
                 Text("Today")
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.tertiaryText)
