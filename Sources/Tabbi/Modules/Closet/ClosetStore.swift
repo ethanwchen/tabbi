@@ -26,6 +26,11 @@ final class ClosetStore: ObservableObject {
     /// notch uses to show the pet awake or asleep.
     @Published private(set) var presence: PetPresence
 
+    /// When the user last changed the pet's look on this Mac, so Sign in
+    /// with Apple sync can tell the newest look across Macs. Nil until an
+    /// edit since launch.
+    private(set) var lookChangedAt: Date?
+
     /// Points earned from study sessions, as they are credited, so the
     /// coach can send the pet out to celebrate.
     let awards = PassthroughSubject<PetStudyAward, Never>()
@@ -165,7 +170,9 @@ final class ClosetStore: ObservableObject {
     }
 
     private func edit<Result>(_ change: (inout PetCloset) -> Result) -> Result {
+        let before = closet.profile
         let result = change(&closet)
+        if closet.profile != before { lookChangedAt = .now }
         if presence.profile != closet.profile { presence.profile = closet.profile }
         refreshPreview()
         persist()
@@ -191,6 +198,21 @@ final class ClosetStore: ObservableObject {
         closet = PetCloset(save: save)
         presence.profile = starter
         refreshPreview()
+    }
+
+    /// The save on every change, for Sign in with Apple sync.
+    var saves: AnyPublisher<PetSave, Never> {
+        $closet.map(\.save).removeDuplicates().eraseToAnyPublisher()
+    }
+
+    /// Takes on the save a sync merged (the account's look, points and
+    /// unlocks) and keeps it, like any edit.
+    func adoptSynced(_ save: PetSave) {
+        guard save != closet.save else { return }
+        closet = PetCloset(save: save)
+        if presence.profile != closet.profile { presence.profile = closet.profile }
+        refreshPreview()
+        persist()
     }
 
     private func persist() {

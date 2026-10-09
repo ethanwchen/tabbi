@@ -270,4 +270,65 @@ final class SyncStateTests: XCTestCase {
         XCTAssertEqual(state.signedIn(to: "K7QW2MZD"), state)
         XCTAssertEqual(state.signedIn(to: "B3NX9QRT"), SyncState(device: "a", account: "B3NX9QRT"))
     }
+
+    func testSigningOutKeepsWhatWasSyncedAndSigningBackInGoesOn() throws {
+        let session = SyncSession(name: "  Ana  ", signedInAt: Date(timeIntervalSince1970: 1_800_000_000))
+        XCTAssertEqual(session.name, "Ana")
+        XCTAssertNil(SyncSession(name: " ", signedInAt: .distantPast).name)
+        let synced = SyncState(device: "a", account: "K7QW2MZD", adopted: SyncDocument(unlocks: ["x"]), revision: 4)
+            .signedIn(to: "K7QW2MZD", session: session)
+        XCTAssertTrue(synced.isSignedIn)
+        XCTAssertEqual(try SyncState.decode(synced.encoded()), synced)
+
+        let out = synced.signedOut()
+        XCTAssertFalse(out.isSignedIn)
+        XCTAssertEqual(out.adopted, synced.adopted)
+        XCTAssertEqual(out.revision, 4)
+        XCTAssertEqual(out.signedIn(to: "K7QW2MZD", session: session), synced)
+    }
+
+    func testForgettingADeletedAccountKeepsOnlyTheDevice() {
+        let state = SyncState(device: "a", account: "K7QW2MZD", adopted: SyncDocument(unlocks: ["x"]), revision: 4,
+                              session: SyncSession(signedInAt: .distantPast))
+        XCTAssertEqual(state.forgettingAccount(), SyncState(device: "a"))
+    }
+
+    /// A state saved before sign-in sessions were kept reads as signed out.
+    func testAStateWithoutASessionReadsAsSignedOut() throws {
+        let data = Data(#"{"schemaVersion":1,"device":"a","adopted":{"tallies":{},"unlocks":[],"studyDays":[],"longestStreak":0},"revision":0}"#.utf8)
+        XCTAssertFalse(try SyncState.decode(data).isSignedIn)
+    }
+}
+
+final class SyncOutcomeFoldingTests: XCTestCase {
+    private let now = Date(timeIntervalSince1970: 1_800_000_000)
+
+    /// Points earned while a round was in flight are kept on top of what
+    /// the round pulled from another Mac, and the next round pushes them.
+    func testAChangeDuringARoundIsFoldedOnTopOfIt() async throws {
+        let server = FakeSyncServer()
+        server.seed(SyncDocument(tallies: ["b": SyncTally(earned: 50)]))
+        let base = SyncState(device: "a")
+        let profile = PetProfile(name: "Mochi", breed: .britishShorthair)
+        let sent = PetSave(profile: profile, ledger: PetPointsLedger(earned: 10))
+        let client = SyncClient(transport: server, token: "t")
+        let outcome = try await SyncRound.run(SyncLocalProgress(save: sent, lookChangedAt: now), state: base,
+                                              client: client, now: now)
+        XCTAssertEqual(outcome.save.ledger.earned, 60)
+
+        var current = sent
+        current.ledger = PetPointsLedger(earned: 15)
+        let folded = outcome.folding(SyncLocalProgress(save: current, lookChangedAt: now, studyDays: ["2026-10-08"]),
+                                     base: base)
+        XCTAssertFalse(folded.pushed)
+        XCTAssertEqual(folded.save.ledger.earned, 65, "the other Mac's 50 plus this Mac's 15")
+        XCTAssertEqual(folded.state.revision, outcome.state.revision)
+        XCTAssertTrue(folded.document.studyDays.contains("2026-10-08"))
+
+        let next = try await SyncRound.run(SyncLocalProgress(save: folded.save), state: folded.state,
+                                           client: client, now: now)
+        XCTAssertTrue(next.pushed)
+        XCTAssertEqual(server.document?.earned, 65)
+        XCTAssertEqual(next.save.ledger.earned, 65)
+    }
 }

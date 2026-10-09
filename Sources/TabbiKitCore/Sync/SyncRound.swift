@@ -19,20 +19,48 @@ public struct SyncState: Codable, Hashable, Sendable {
     public var adopted: SyncDocument
     public var revision: Int
     public var lastSyncedAt: Date?
+    /// Set while this Mac is signed in; nil when signed out, which keeps
+    /// the rest so signing back in goes on where it left off.
+    public var session: SyncSession?
 
     public init(device: String = UUID().uuidString, account: String? = nil,
-                adopted: SyncDocument = .empty, revision: Int = 0, lastSyncedAt: Date? = nil) {
+                adopted: SyncDocument = .empty, revision: Int = 0, lastSyncedAt: Date? = nil,
+                session: SyncSession? = nil) {
         self.device = device
         self.account = account
         self.adopted = adopted
         self.revision = revision
         self.lastSyncedAt = lastSyncedAt
+        self.session = session
     }
+
+    public var isSignedIn: Bool { session != nil }
 
     /// This state for syncing with `account`: unchanged when it is the
     /// account last synced, otherwise a fresh start that keeps the device id.
     public func signedIn(to account: String) -> SyncState {
         account == self.account ? self : SyncState(device: device, account: account)
+    }
+
+    /// Signed in to `account` with `session`, as `signedIn(to:)` keeps or
+    /// resets what was synced before.
+    public func signedIn(to account: String, session: SyncSession) -> SyncState {
+        var state = signedIn(to: account)
+        state.session = session
+        return state
+    }
+
+    /// Signed out: the adopted document stays, so signing back in to the
+    /// same account never counts this Mac's points twice.
+    public func signedOut() -> SyncState {
+        var state = self
+        state.session = nil
+        return state
+    }
+
+    /// After the account was deleted: nothing of it is kept but the device id.
+    public func forgettingAccount() -> SyncState {
+        SyncState(device: device)
     }
 
     public func encoded() throws -> Data {
@@ -46,6 +74,19 @@ public struct SyncState: Codable, Hashable, Sendable {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         return try schema.decode(SyncState.self, from: data, using: decoder)
+    }
+}
+
+/// Who is signed in on this Mac. The name is only what Apple shared on
+/// the first sign-in; it stays on this Mac and is never sent anywhere.
+public struct SyncSession: Codable, Hashable, Sendable {
+    public var name: String?
+    public var signedInAt: Date
+
+    public init(name: String? = nil, signedInAt: Date) {
+        let trimmed = name?.trimmingCharacters(in: .whitespacesAndNewlines)
+        self.name = trimmed?.isEmpty == false ? trimmed : nil
+        self.signedInAt = signedInAt
     }
 }
 
@@ -73,6 +114,21 @@ public struct SyncOutcome: Hashable, Sendable {
     public var state: SyncState
     /// False when the server already had everything this Mac had.
     public var pushed: Bool
+
+    /// This outcome for a pet that changed while the round ran (`local`,
+    /// with `base` the state the round started from): the change goes on
+    /// top of the merged document, so neither it nor what the round pulled
+    /// is lost. The server does not have the change yet, so `pushed` is
+    /// false and the caller syncs again.
+    public func folding(_ local: SyncLocalProgress, base: SyncState) -> SyncOutcome {
+        var document = base.adopted
+            .recording(local.save, changedAt: SyncRound.lookChange(of: local, since: base), device: base.device)
+            .merged(with: self.document)
+        document.addStudyDays(local.studyDays)
+        var state = self.state
+        state.adopted = document
+        return SyncOutcome(document: document, save: document.applied(to: local.save), state: state, pushed: false)
+    }
 }
 
 /// One sync: pull, fold this Mac's progress in, merge, and push when the
@@ -112,7 +168,7 @@ public enum SyncRound {
 
     /// When the local look counts as chosen: nil when it is still the
     /// adopted one, so a look another Mac chose since then wins.
-    private static func lookChange(of local: SyncLocalProgress, since state: SyncState) -> Date? {
+    static func lookChange(of local: SyncLocalProgress, since state: SyncState) -> Date? {
         guard local.save.profile != state.adopted.pet?.profile else { return nil }
         return local.lookChangedAt ?? Date(timeIntervalSince1970: 0)
     }
