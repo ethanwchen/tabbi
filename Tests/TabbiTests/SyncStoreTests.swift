@@ -69,6 +69,32 @@ final class SyncStoreTests: XCTestCase {
         XCTAssertEqual(relaunched.name, "Ana")
     }
 
+    /// An event item the maintainer granted the account (the launch week
+    /// cap) reaches a signed-in Mac through sync, with Party off, once per
+    /// launch rather than on every round.
+    func testSyncHandsTheAccountsGrantsToThePetOnce() async throws {
+        let server = FakeAccountServer()
+        let cap = PetLimitedEdition.launchWeekCap.item
+        server.grantedItems = [cap.id, "accessory.fromANewerBuild"]
+        let pet = petStore(earned: 0)
+        let store = makeStore(server: server, credentials: InMemoryPartyCredentialStore(), pet: pet)
+        await store.signIn(identityToken: "jwt", authorizationCode: nil, name: nil)
+        await waitUntilSynced(store)
+
+        XCTAssertEqual(pet.closet.save.ledger.granted, [cap])
+        XCTAssertEqual(pet.closet.save.ledger.spent, 0, "a grant costs no points")
+        XCTAssertEqual(server.grantsFetchedWith, ["t-acct"])
+
+        let before = server.requestCount
+        pet.rename("Mochi")
+        store.syncNow()
+        for _ in 0..<200 where server.requestCount == before || store.isSyncing {
+            try? await Task.sleep(nanoseconds: 10_000_000)
+        }
+        XCTAssertGreaterThan(server.requestCount, before, "another round ran")
+        XCTAssertEqual(server.grantsFetchedWith.count, 1, "later rounds don't ask again")
+    }
+
     func testSigningOutKeepsThePetAndDropsTheAccountIdentity() async throws {
         let server = FakeAccountServer()
         let credentials = InMemoryPartyCredentialStore()
@@ -228,6 +254,11 @@ private final class FakeAccountServer: PartyTransport, @unchecked Sendable {
     var refuseSignIn = false
     var failDelete = false
     var accountGone = false
+    /// The limited edition item ids `GET /v1/grants` returns.
+    var grantedItems: [String] = []
+    private var grantFetches: [String?] = []
+    /// The bearer token of each `GET /v1/grants`.
+    var grantsFetchedWith: [String?] { lock.withLock { grantFetches } }
 
     var document: SyncDocument? {
         get { lock.withLock { stored } }
@@ -261,6 +292,10 @@ private final class FakeAccountServer: PartyTransport, @unchecked Sendable {
             case ("POST", "/v1/auth/signout"):
                 signedOut = request.token
                 return Self.reply(#"{"ok":true}"#)
+            case ("GET", "/v1/grants"):
+                grantFetches.append(request.token)
+                let items = grantedItems.map { "\"\($0)\"" }.joined(separator: ",")
+                return Self.reply(#"{"ok":true,"items":[\#(items)]}"#)
             case ("DELETE", "/v1/me"):
                 if failDelete { return Self.reply(#"{"ok":false,"error":"server_error","message":"no"}"#, 500) }
                 deleted = request.token

@@ -99,4 +99,6 @@ On launch the Closet replays the whole activity log into the milestones, so a mi
 With Sign in with Apple, limited items travel in the account's `unlocks` like bought items, but come back as granted, so they never count as spent points on another Mac.
 Event items come from the Tabbi server: the maintainer grants them per friend code (or to everyone registered in a window, such as the launch week) through the admin routes in [the API doc](study/backend-api.md#limited-edition-grants-maintainer), and `PartyClient.grants()` reads them from `GET /v1/grants`.
 That route answers for any friends token, so a signed-out Party identity gets its items as well as a signed-in account.
+The app asks it once per launch, wake and identity: Party after it connects (signed in or not), and sync after its first round on a signed-in Mac, so a grant arrives even with Party off.
+New items celebrate in the Closet like a milestone unlock.
 The server's list of grantable ids is `backend/shared/limited-items.json`, which `PetLimitedTests` holds to `PetLimitedEdition`.

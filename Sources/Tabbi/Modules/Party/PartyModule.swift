@@ -19,6 +19,7 @@ final class PartyModule: NotchModule {
     let store: PartyStore
     private var completionSubscription: AnyCancellable?
     private var identitySubscription: AnyCancellable?
+    private var grantsSubscription: AnyCancellable?
     /// The Apple account, which owns the Party data once signed in.
     private let account: SyncStore
     /// Kept alive here: the notification center holds its delegate weakly.
@@ -39,6 +40,9 @@ final class PartyModule: NotchModule {
             MainActor.assumeIsolated { store?.identityDidChange() }
         }
         let pet = context.studyPet, log = context.activityLog, celebrations = context.celebrations
+        grantsSubscription = store.grants.sink { [weak pet] items in
+            MainActor.assumeIsolated { _ = pet?.applyGrants(items) }
+        }
         completionSubscription = store.completedSessions.sink { [weak store] completion in
             MainActor.assumeIsolated {
                 guard let store else { return }

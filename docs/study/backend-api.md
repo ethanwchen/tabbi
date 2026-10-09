@@ -482,6 +482,7 @@ Errors: `no_account` (403), `revision_required` (428, no `If-Match`), `invalid_r
 Any user, signed in with Apple or not, so a Party identity without an account gets its items too.
 `200 {"ok": true, "items": ["accessory.backwardsCap"]}`: the ids of the limited edition items the maintainer granted, oldest grant first (`[]` when there are none).
 The app adds each id it knows to the Closet as a granted item and never takes one back, so a later revoke only stops new Macs from getting it.
+It asks once per launch, wake and identity (Party after it connects, sync after its first round when signed in), so a grant shows up on the next launch or wake.
 
 ### Operator routes
 
