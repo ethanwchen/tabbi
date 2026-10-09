@@ -4,12 +4,15 @@ import TabbiKitCore
 
 extension SharedServices {
     /// The one `CelebrationCenter`, so every module shares its frequency
-    /// limits. Snapshot runs celebrate nothing; haptics and sound follow Settings.
+    /// limits. Snapshot runs celebrate nothing; haptics and sound follow
+    /// Settings, and sounds hush while focus mode holds Do Not Disturb.
     func celebrations(settings: SettingsStore, runMode: RunMode) -> CelebrationCenter {
-        resolve {
+        let focusMode = resolve { FocusController(runMode: runMode) }
+        return resolve {
             CelebrationCenter(isEnabled: !runMode.isSnapshot,
                               hapticsEnabled: { [weak settings] in settings?.settings.hapticsEnabled ?? false },
-                              soundEnabled: { [weak settings] in settings?.settings.celebrationSoundEnabled ?? false })
+                              soundEnabled: { [weak settings] in settings?.settings.celebrationSoundEnabled ?? false },
+                              isHushed: { [weak focusMode] in focusMode?.holdsDoNotDisturb ?? false })
         }
     }
 }

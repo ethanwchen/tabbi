@@ -78,6 +78,29 @@ final class CelebrationCenterTests: XCTestCase {
         XCTAssertEqual(center.cheer?.id, 3)
     }
 
+    func testDoNotDisturbHushesEverySoundButKeepsTheRest() {
+        var played: [CelebrationSound] = []
+        var taps = 0
+        var hushed = true
+        let center = CelebrationCenter(hapticsEnabled: { true }, soundEnabled: { true }, isHushed: { hushed },
+                                       playSound: { played.append($0) }, performHaptic: { _ in taps += 1 },
+                                       now: { [unowned self] in clock })
+
+        // The pet still cheers, a block start still taps: only sound stops.
+        XCTAssertNotNil(center.cheer(.crown))
+        center.play(.focusStarted)
+        center.stageAppeared()
+        XCTAssertEqual(center.celebrate(.milestone, style: .sparkles, accent: .pink), .milestone)
+        XCTAssertEqual(center.current?.tier, .milestone)
+        XCTAssertEqual(played, [])
+        XCTAssertEqual(taps, 3)
+
+        // Once Do Not Disturb is off, the next one is heard again.
+        hushed = false
+        center.play(.focusStarted)
+        XCTAssertEqual(played.count, 1)
+    }
+
     func testSnapshotRunsNeverCheer() {
         let center = center(isEnabled: false)
         XCTAssertNil(center.cheer(.dance))

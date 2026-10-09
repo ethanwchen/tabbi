@@ -27,6 +27,9 @@ final class FocusController: ObservableObject {
     }
     /// True during a focus phase (sound and Do Not Disturb applied).
     @Published private(set) var isFocusing = false
+    /// True while a focus phase has Do Not Disturb on, so celebrations
+    /// stay silent. Tabbi can't read the system's Focus state, only its own.
+    var holdsDoNotDisturb: Bool { isFocusing && settings.doNotDisturb }
     /// True while Settings is previewing the sound outside a focus phase.
     @Published private(set) var isPreviewing = false
 

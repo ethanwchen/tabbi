@@ -20,6 +20,9 @@ import TabbiKitCore
 /// the ticker shows in place of whatever it was showing. A goal reached
 /// while a panel is open waits for the notch to close, so its crown is
 /// still seen.
+///
+/// While Do Not Disturb is on, everything still plays except the sounds:
+/// the pet and the particles are silent, and a haptic is only felt.
 @MainActor
 public final class CelebrationCenter: ObservableObject {
     /// The latest admitted celebration; stages play it once when it changes.
@@ -40,6 +43,7 @@ public final class CelebrationCenter: ObservableObject {
     private let isEnabled: Bool
     private let hapticsEnabled: () -> Bool
     private let soundEnabled: () -> Bool
+    private let isHushed: () -> Bool
     private let playSound: @MainActor (CelebrationSound) -> Void
     private let performHaptic: @MainActor (NSHapticFeedbackManager.FeedbackPattern) -> Void
     private let now: () -> Date
@@ -48,11 +52,13 @@ public final class CelebrationCenter: ObservableObject {
     ///   - isEnabled: false for snapshot runs, which play and tap nothing.
     ///   - hapticsEnabled: read at each celebration, so it follows Settings.
     ///   - soundEnabled: read at each celebration, so it follows Settings.
+    ///   - isHushed: true while Do Not Disturb is on; read at each sound.
     ///   - playSound: plays a cue; tests pass their own to hear nothing.
     ///   - performHaptic: taps the trackpad; tests pass their own.
     ///   - now: the clock the pacer measures against; tests pass their own.
     public init(isEnabled: Bool = true, hapticsEnabled: @escaping () -> Bool = { true },
                 soundEnabled: @escaping () -> Bool = { false },
+                isHushed: @escaping () -> Bool = { false },
                 playSound: @escaping @MainActor (CelebrationSound) -> Void = CelebrationCenter.play,
                 performHaptic: @escaping @MainActor (NSHapticFeedbackManager.FeedbackPattern) -> Void
                     = CelebrationCenter.perform,
@@ -60,6 +66,7 @@ public final class CelebrationCenter: ObservableObject {
         self.isEnabled = isEnabled
         self.hapticsEnabled = hapticsEnabled
         self.soundEnabled = soundEnabled
+        self.isHushed = isHushed
         self.playSound = playSound
         self.performHaptic = performHaptic
         self.now = now
@@ -84,7 +91,7 @@ public final class CelebrationCenter: ObservableObject {
         }
         current = Celebration(tier: admitted, style: style, accent: accent, date: now())
         tapHaptic()
-        if let sound = CelebrationSound.cue(for: admitted, isEnabled: soundEnabled(), eventHasSound: hasOwnSound) {
+        if let sound = CelebrationSound.cue(for: admitted, isEnabled: soundAllowed, eventHasSound: hasOwnSound) {
             playSound(sound)
         }
         return admitted
@@ -109,7 +116,7 @@ public final class CelebrationCenter: ObservableObject {
         let cheer = PetCheer(kind: kind, id: (self.cheer?.id ?? 0) + 1, startedAt: now())
         self.cheer = cheer
         tapHaptic()
-        if let sound = CelebrationSound.cue(for: .burst, isEnabled: soundEnabled(), eventHasSound: hasOwnSound) {
+        if let sound = CelebrationSound.cue(for: .burst, isEnabled: soundAllowed, eventHasSound: hasOwnSound) {
             playSound(sound)
         }
         return cheer
@@ -122,8 +129,11 @@ public final class CelebrationCenter: ObservableObject {
     public func play(_ cue: SessionCue) {
         guard isEnabled else { return }
         tapHaptic(cue == .focusStarted ? .generic : .levelChange)
-        if let sound = cue.sound(isEnabled: soundEnabled()) { playSound(sound) }
+        if let sound = cue.sound(isEnabled: soundAllowed) { playSound(sound) }
     }
+
+    /// Settings allow sounds and Do Not Disturb is off.
+    private var soundAllowed: Bool { soundEnabled() && !isHushed() }
 
     private func tapHaptic(_ pattern: NSHapticFeedbackManager.FeedbackPattern = .levelChange) {
         guard hapticsEnabled() else { return }
