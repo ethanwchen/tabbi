@@ -155,3 +155,31 @@ final class CodexUsageLogTests: XCTestCase {
         XCTAssertTrue(CodexUsageLog.defaultRoot(environment: [:]).path.hasSuffix("/.codex/sessions"))
     }
 }
+
+final class AIUsageSourceTests: XCTestCase {
+    func testFollowsCodexAndOtherwiseStaysOnClaudeCode() {
+        XCTAssertEqual(AIUsageSource.source(for: .codexCLI), .codex)
+        // Only Claude Code and Codex keep usage on the Mac; every other
+        // choice (and none) keeps the tab on Claude Code.
+        for provider in [nil, .claudeCLI, .geminiCLI, .anthropic, .openAI, .gemini, .ollama] as [AIProviderID?] {
+            XCTAssertEqual(AIUsageSource.source(for: provider), .claudeCode, "\(String(describing: provider))")
+        }
+    }
+
+    func testOnlyClaudeCodeSpendsUsageOnARefresh() {
+        XCTAssertTrue(AIUsageSource.claudeCode.probesLimits)
+        XCTAssertFalse(AIUsageSource.codex.probesLimits)
+    }
+
+    func testHighlightNamesTheSource() {
+        let snapshot = ClaudeRateLimitSnapshot(
+            status: "allowed",
+            fiveHour: ClaudeUsageWindow(utilization: 0.9, resetsAt: nil),
+            sevenDay: ClaudeUsageWindow(utilization: 0.2, resetsAt: nil)
+        )
+        let codex = ClaudeUsageHighlights.highlights(for: snapshot, at: Date(), usage: .codex)
+        XCTAssertEqual(codex.map(\.summary), ["Codex usage 5h 90%"])
+        let claude = ClaudeUsageHighlights.highlights(for: snapshot, at: Date())
+        XCTAssertEqual(claude.map(\.summary), ["Claude usage 5h 90%"])
+    }
+}

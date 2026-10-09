@@ -17,8 +17,8 @@ struct ClaudeUsagePanel: View {
                     // A shorter panel (Compact) packs the card's lines closer
                     // instead of clipping it.
                     ViewThatFits(in: .vertical) {
-                        TodayCard(stats: store.stats, spacing: Theme.Spacing.s)
-                        TodayCard(stats: store.stats, spacing: Theme.Spacing.xs)
+                        TodayCard(stats: store.stats, source: store.source, spacing: Theme.Spacing.s)
+                        TodayCard(stats: store.stats, source: store.source, spacing: Theme.Spacing.xs)
                     }
                 }
                 .frame(maxHeight: .infinity)
@@ -31,7 +31,7 @@ struct ClaudeUsagePanel: View {
     @ViewBuilder
     private func limitsArea(now: Date) -> some View {
         if store.cliStatus == .missing && store.limits == nil {
-            CLIMissingCard()
+            CLIMissingCard(source: store.source)
         } else {
             let snapshot = store.limits?.snapshot
             HStack(spacing: Theme.Spacing.xs) {
@@ -96,16 +96,17 @@ private struct UsageRing: View {
     }
 }
 
-/// Today's local usage from Claude Code transcripts.
+/// Today's local usage from Claude Code transcripts or Codex logs.
 private struct TodayCard: View {
     let stats: ClaudeLocalStats?
+    let source: AIUsageSource
     /// The gap between the card's lines.
     let spacing: CGFloat
 
     var body: some View {
         Card {
             VStack(alignment: .leading, spacing: spacing) {
-                Text("Today")
+                Text("Today in \(source.toolName)")
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.tertiaryText)
                 if let stats {
@@ -118,7 +119,7 @@ private struct TodayCard: View {
                             .font(Theme.Typography.body)
                             .foregroundStyle(Theme.Palette.secondaryText)
                     }
-                    .help("Input, output, and cache tokens across all Claude Code sessions since midnight")
+                    .help("Input, output, and cache tokens across all \(source.toolName) sessions since midnight")
                     Spacer(minLength: 0)
                     row("Messages", value: "\(stats.today.messages)")
                     row("Top model", value: stats.today.topModel.map(ClaudeUsageFormat.modelName) ?? "None yet")
@@ -128,7 +129,7 @@ private struct TodayCard: View {
                     Spacer(minLength: 0)
                     HStack(spacing: Theme.Spacing.s) {
                         Spinner(tint: ClaudeUsageModule.descriptor.accentColor)
-                        Text("Reading Claude Code sessions…")
+                        Text("Reading \(source.toolName) sessions…")
                             .font(Theme.Typography.body)
                             .foregroundStyle(Theme.Palette.secondaryText)
                     }
@@ -162,22 +163,25 @@ private struct TodayCard: View {
     }
 }
 
-/// Shown in place of the rings when the `claude` CLI can't be found.
+/// Shown in place of the rings when the source's CLI can't be found.
 private struct CLIMissingCard: View {
+    let source: AIUsageSource
+
     var body: some View {
         Card {
             VStack(alignment: .leading, spacing: Theme.Spacing.s) {
-                Label("Claude Code not found", systemImage: "terminal")
+                Label("\(source.toolName) not found", systemImage: "terminal")
                     .font(Theme.Typography.title)
                     .foregroundStyle(Theme.Palette.primaryText)
-                Text("Install Claude Code and sign in to see your live 5-hour and weekly limits.")
+                Text(explanation)
                     .font(Theme.Typography.body)
                     .foregroundStyle(Theme.Palette.secondaryText)
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)
-                (Text("Installed elsewhere? Set ")
-                    + Text(ClaudeCLI.overrideVariable).font(.system(size: 10.5, weight: .medium, design: .monospaced))
-                    + Text(" to its path."))
+                (Text(source == .codex ? "Tabbi reads " : "Installed elsewhere? Set ")
+                    + Text(source == .codex ? "~/.codex/sessions" : ClaudeCLI.overrideVariable)
+                        .font(.system(size: 10.5, weight: .medium, design: .monospaced))
+                    + Text(source == .codex ? " and sends nothing." : " to its path."))
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.tertiaryText)
                     .fixedSize(horizontal: false, vertical: true)
@@ -185,6 +189,13 @@ private struct CLIMissingCard: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
         .frame(width: 228)
+    }
+
+    private var explanation: String {
+        switch source {
+        case .claudeCode: "Install Claude Code and sign in to see your live 5-hour and weekly limits."
+        case .codex: "Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits."
+        }
     }
 }
 
@@ -205,7 +216,7 @@ private struct UsageFooter: View {
                 .truncationMode(.tail)
             Spacer(minLength: Theme.Spacing.s)
             if store.cliStatus != .missing {
-                RefreshButton(isFetching: store.isFetching, action: store.refresh)
+                RefreshButton(isFetching: store.isFetching, source: store.source, action: store.refresh)
             }
         }
         .font(Theme.Typography.caption.monospacedDigit())
@@ -215,15 +226,18 @@ private struct UsageFooter: View {
     }
 
     private var status: String {
-        if store.isFetching { return "Checking limits…" }
+        if store.isFetching {
+            return store.source == .codex ? "Reading Codex logs…" : "Checking limits…"
+        }
         let updated = store.limits.map { ClaudeUsageFormat.updatedDescription(fetchedAt: $0.fetchedAt, now: now) }
         if let error = store.probeError {
             return updated.map { "Refresh failed · \($0)" } ?? error
         }
         if let updated { return updated }
         switch store.cliStatus {
-        case .locating: return "Looking for Claude Code…"
+        case .locating: return "Looking for \(store.source.toolName)…"
         case .missing: return "Showing local stats only"
+        case .available where store.source == .codex: return "No limits in your Codex logs yet"
         case .available: return "Not checked yet · refresh to load your live limits"
         }
     }
@@ -233,11 +247,14 @@ private struct UsageFooter: View {
 /// button is invisible on its circular background, so only the glyph turns.
 private struct RefreshButton: View {
     let isFetching: Bool
+    let source: AIUsageSource
     let action: () -> Void
 
     var body: some View {
         IconButton(symbol: "arrow.clockwise", size: 24,
-                   help: "Check live limits (sends a tiny request with your claude CLI)",
+                   help: source.probesLimits
+                       ? "Check live limits (sends a tiny request with your claude CLI)"
+                       : "Read the latest Codex logs (sends nothing)",
                    action: action)
             .spinning(isFetching)
         .disabled(isFetching)

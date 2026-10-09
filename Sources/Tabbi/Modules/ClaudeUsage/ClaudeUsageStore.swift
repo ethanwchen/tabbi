@@ -2,13 +2,16 @@ import Foundation
 import TabbiKitCore
 import SwiftUI
 
-/// State for the Claude Usage panel: live subscription limits from the
-/// user's `claude` CLI plus local token stats from session transcripts.
+/// State for the Usage panel: live subscription limits from the user's
+/// `claude` CLI plus local token stats from session transcripts, or, while
+/// the Codex CLI is the chosen AI (`source`), both read from Codex's own
+/// session logs.
 ///
-/// Each live probe spends a sliver of the user's own usage, so probes only
+/// Each live Claude probe spends a sliver of the user's own usage, so probes only
 /// run on the refresh button or when the panel opens with a snapshot older
 /// than `ClaudeLimitsRecord.staleAfter`; never on a timer. The last snapshot
-/// is persisted so the panel is instant on launch.
+/// is persisted so the panel is instant on launch. Codex logs its limits
+/// itself, so for Codex a refresh only re-reads the logs.
 @MainActor
 final class ClaudeUsageStore: ObservableObject {
     enum CLIStatus: Equatable {
@@ -25,6 +28,8 @@ final class ClaudeUsageStore: ObservableObject {
     @Published private(set) var probeError: String?
     /// nil until the first transcript scan finishes.
     @Published private(set) var stats: ClaudeLocalStats?
+    /// Whose logs the panel shows; follows the chosen AI.
+    @Published private(set) var source: AIUsageSource
 
     private static let defaultsKey = "claudeUsage.limitsRecord"
 
@@ -34,32 +39,79 @@ final class ClaudeUsageStore: ObservableObject {
     private var statusTask: Task<Void, Never>?
     private var probeTask: Task<Void, Never>?
     private var scanTask: Task<Void, Never>?
+    private var codexTask: Task<Void, Never>?
+    private let codexRoot: URL
+    /// The Claude probe's last snapshot, kept while Codex is shown so
+    /// switching back is instant.
+    private var claudeLimits: ClaudeLimitsRecord?
     /// A scan was requested while one was running; run another when it ends.
     private var rescanPending = false
 
-    init(storage: EditionStorage, runMode: RunMode) {
+    /// `codexRoot` is where Codex keeps its sessions; tests point it at a
+    /// temporary folder.
+    init(storage: EditionStorage, runMode: RunMode, source: AIUsageSource = .claudeCode,
+         codexRoot: URL = CodexUsageLog.defaultRoot(),
+         environment: [String: String] = ProcessInfo.processInfo.environment) {
         isDemo = runMode.isDemo
+        self.source = source
+        self.codexRoot = codexRoot
         scanner = ClaudeUsageLogScanner(indexURL: ClaudeUsageLogScanner.indexURL(in: storage))
         if isDemo {
+            // TABBI_USAGE_PREVIEW=codex renders the Codex panel.
+            if environment["TABBI_USAGE_PREVIEW"] == "codex" { self.source = .codex }
             loadDemoData()
             return
         }
-        limits = ClaudeLimitsRecord(encoded: defaults.data(forKey: Self.defaultsKey))
-        updateCLIStatus()
-        // Warm the stats so the first open is instant; later scans are incremental.
-        scanLocalStats()
+        claudeLimits = ClaudeLimitsRecord(encoded: defaults.data(forKey: Self.defaultsKey))
+        load()
+    }
+
+    /// Called when the chosen AI changes, so the panel shows its logs.
+    func setSource(_ newSource: AIUsageSource) {
+        guard !isDemo, newSource != source else { return }
+        source = newSource
+        probeError = nil
+        stats = nil
+        isFetching = (newSource == .codex ? codexTask : probeTask) != nil
+        load()
+    }
+
+    /// Shows what is already known for `source` and starts reading the rest.
+    private func load() {
+        switch source {
+        case .claudeCode:
+            limits = claudeLimits
+            updateCLIStatus()
+            // Warm the stats so the first open is instant; later scans are incremental.
+            scanLocalStats()
+        case .codex:
+            limits = nil
+            updateCLIStatus()
+            readCodexLogs()
+        }
     }
 
     /// Called when the panel becomes visible.
     func panelDidAppear() {
         guard !isDemo else { return }
-        scanLocalStats()
-        if ClaudeLimitsRecord.shouldRefreshOnOpen(limits, now: Date()) { refresh() }
+        switch source {
+        case .claudeCode:
+            scanLocalStats()
+            if ClaudeLimitsRecord.shouldRefreshOnOpen(limits, now: Date()) { refresh() }
+        case .codex:
+            readCodexLogs()
+        }
     }
 
-    /// Probes the CLI for live limits. No-op while a probe is running.
+    /// Probes the CLI for live limits, or re-reads the Codex logs. No-op
+    /// while a probe is running.
     func refresh() {
-        guard !isDemo, probeTask == nil else { return }
+        guard !isDemo else { return }
+        guard source.probesLimits else {
+            readCodexLogs()
+            return
+        }
+        guard probeTask == nil else { return }
         isFetching = true
         probeTask = Task { [weak self] in
             let executable = await Self.locateCLI()
@@ -76,35 +128,65 @@ final class ClaudeUsageStore: ObservableObject {
 
     /// Called when the user changes the `claude` path in Settings.
     func claudePathDidChange() {
-        guard !isDemo else { return }
+        guard !isDemo, source == .claudeCode else { return }
         updateCLIStatus()
     }
 
-    /// Cancels the previous lookup so a slow one for an old path can't win.
+    /// Cancels the previous lookup so a slow one for an old path (or the
+    /// other source) can't win.
     private func updateCLIStatus() {
         statusTask?.cancel()
+        cliStatus = .locating
+        let source = source
         statusTask = Task { [weak self] in
-            let url = await Self.locateCLI()
+            let url = await Self.locateCLI(for: source)
             guard !Task.isCancelled else { return }
             self?.cliStatus = url == nil ? .missing : .available
         }
     }
 
     /// Off the main thread: a cache miss may consult the login shell.
-    private static func locateCLI() async -> URL? {
-        await Task.detached(priority: .utility) { ClaudeExecutableResolver.shared.resolve() }.value
+    private static func locateCLI(for source: AIUsageSource = .claudeCode) async -> URL? {
+        await Task.detached(priority: .utility) {
+            switch source {
+            case .claudeCode: ClaudeExecutableResolver.shared.resolve()
+            case .codex: AIProviderFactory.defaultLocate(.codexCLI)
+            }
+        }.value
+    }
+
+    /// Reads Codex's session logs off the main thread. Reading is free, so
+    /// it runs whenever the panel opens; a read already running is reused.
+    private func readCodexLogs() {
+        guard codexTask == nil else { return }
+        isFetching = true
+        codexTask = Task { [weak self, codexRoot] in
+            let usage = await Task.detached(priority: .utility) { CodexUsageLog.read(root: codexRoot) }.value
+            guard let self else { return }
+            codexTask = nil
+            isFetching = false
+            // The user may have switched back to Claude Code meanwhile.
+            guard source == .codex else { return }
+            limits = usage.limits
+            stats = usage.stats
+        }
     }
 
     private func finishProbe(_ outcome: Result<ClaudeRateLimitSnapshot, Error>, cliFound: Bool) {
         probeTask = nil
+        if case .success(let snapshot) = outcome {
+            let record = ClaudeLimitsRecord(snapshot: snapshot, fetchedAt: Date())
+            claudeLimits = record
+            defaults.set(record.encoded(), forKey: Self.defaultsKey)
+        }
+        // The user may have switched to Codex while the probe ran.
+        guard source == .claudeCode else { return }
         isFetching = false
         cliStatus = cliFound ? .available : .missing
         switch outcome {
-        case .success(let snapshot):
-            let record = ClaudeLimitsRecord(snapshot: snapshot, fetchedAt: Date())
-            limits = record
+        case .success:
+            limits = claudeLimits
             probeError = nil
-            defaults.set(record.encoded(), forKey: Self.defaultsKey)
         case .failure(let error):
             probeError = cliFound ? Self.describe(error) : nil
         }
@@ -120,7 +202,7 @@ final class ClaudeUsageStore: ObservableObject {
         scanTask = Task(priority: .utility) { [weak self, scanner] in
             let result = await scanner.scan()
             guard let self else { return }
-            stats = result
+            if source == .claudeCode { stats = result }
             scanTask = nil
             if rescanPending {
                 rescanPending = false
@@ -158,6 +240,10 @@ final class ClaudeUsageStore: ObservableObject {
             ),
             fetchedAt: now - 3 * 60
         )
+        if source == .codex {
+            loadCodexDemoStats()
+            return
+        }
         let today = ClaudeUsagePeriod(models: [
             ClaudeModelUsage(
                 model: "claude-opus-5-5",
@@ -180,6 +266,25 @@ final class ClaudeUsageStore: ObservableObject {
                 model: "claude-haiku-4-5-20251001",
                 tokens: ClaudeTokenUsage(input: 31_000, output: 64_000, cacheRead: 702_000, cacheCreation: 158_000),
                 messages: 297
+            ),
+        ])
+        stats = ClaudeLocalStats(today: today, lastSevenDays: week)
+    }
+
+    /// Codex turns: cached input is counted as cache reads, as in its logs.
+    private func loadCodexDemoStats() {
+        let today = ClaudeUsagePeriod(models: [
+            ClaudeModelUsage(
+                model: "gpt-5-codex",
+                tokens: ClaudeTokenUsage(input: 214_000, output: 38_600, cacheRead: 1_186_000, cacheCreation: 0),
+                messages: 96
+            ),
+        ])
+        let week = ClaudeUsagePeriod(models: [
+            ClaudeModelUsage(
+                model: "gpt-5-codex",
+                tokens: ClaudeTokenUsage(input: 1_320_000, output: 241_000, cacheRead: 7_480_000, cacheCreation: 0),
+                messages: 612
             ),
         ])
         stats = ClaudeLocalStats(today: today, lastSevenDays: week)

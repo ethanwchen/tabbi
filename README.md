@@ -67,7 +67,7 @@ More tabs are in **Settings > Tabs > Add more**:
     <td width="50%"><img src="docs/images/party.png" alt="Party tab"><br><b>Party.</b> Study with friends and see who is focusing.</td>
   </tr>
   <tr>
-    <td><img src="docs/images/claude-usage.png" alt="Claude Usage tab"><br><b>Claude Usage.</b> Your 5-hour and weekly limits and today's tokens.</td>
+    <td><img src="docs/images/claude-usage.png" alt="AI Usage tab"><br><b>AI Usage.</b> Your Claude Code or Codex 5-hour and weekly limits and today's tokens.</td>
     <td><img src="docs/images/system.png" alt="System tab"><br><b>System.</b> CPU, GPU and memory at a glance.</td>
   </tr>
 </table>
@@ -102,12 +102,12 @@ Tabbi asks for a permission only when the tab that needs it is first used.
 | Automation: Spotify, Music | Now Playing, focus mode | Read the current track, control playback and start a focus playlist. |
 | Calendars | Today, Schedule | Show your events and add the planned blocks you accept. Events never leave your Mac. |
 | Notifications | Today, Focus | Tell you when a timer ends while the notch is closed. |
-| Screen Recording | Ask Claude | Attach a screenshot to a question. The image goes only to your local `claude` CLI. |
+| Screen Recording | Ask AI | Attach a screenshot to a question. The image goes only to the AI you picked. |
 
-Claude Usage needs no system permission.
-Plan my day plans on your Mac without Claude.
-Refine with Claude and Wrap up send your task titles and today's events to Claude through the CLI, only when you press them.
-Claude Usage reads token counts from `~/.claude/projects` read-only.
+AI Usage needs no system permission.
+Plan my day plans on your Mac without an AI.
+Refine and Wrap up send your task titles and today's events to the AI you picked in Settings > Connections, only when you press them.
+AI Usage reads token counts from `~/.claude/projects`, or from `~/.codex/sessions` while Codex is your AI, read-only.
 
 </details>
 

@@ -46,7 +46,7 @@ public struct AICommandLineProvider: AIProvider {
         return AsyncThrowingStream { continuation in
             let task = Task {
                 var imageFolder: URL?
-                defer { imageFolder.map { try? FileManager.default.removeItem(at: $0) } }
+                let outcome: Error?
                 do {
                     guard let executable = locate() else { throw AIProviderError.notInstalled }
                     var imagePaths: [String] = []
@@ -82,12 +82,16 @@ public struct AICommandLineProvider: AIProvider {
                         // A complete answer followed by a non-zero exit still counts.
                     }
                     if !finished { continuation.yield(.finished(text: nil)) }
-                    continuation.finish()
+                    outcome = nil
                 } catch let failure as ProcessFailure {
-                    continuation.finish(throwing: AIProviderError.service(detail: Self.detail(failure, provider: id)))
+                    outcome = AIProviderError.service(detail: Self.detail(failure, provider: id))
                 } catch {
-                    continuation.finish(throwing: error)
+                    outcome = error
                 }
+                // The images go before the caller hears the run ended, so
+                // nothing of the user's is left behind once it has.
+                imageFolder.map { try? FileManager.default.removeItem(at: $0) }
+                continuation.finish(throwing: outcome)
             }
             continuation.onTermination = { _ in task.cancel() }
         }

@@ -14,7 +14,7 @@ This page says what differs, how to build and upload it, and what to enter in Ap
 | App Sandbox | no | yes (`packaging/Tabbi-AppStore.entitlements`) |
 | Updates | Sparkle | the App Store (Sparkle is not linked at all) |
 | Move to Applications, single instance, quarantine checks | InstallHygiene | left out (the App Store installs the app) |
-| Claude Usage | yes | compiled out (it reads the `claude` CLI) |
+| AI Usage | yes | compiled out (it reads the `claude` CLI and Codex logs) |
 | AI providers (Settings > Connections > AI) | Claude Code, Codex and Gemini CLI, the Anthropic, OpenAI and Gemini APIs, Ollama | the Anthropic, OpenAI and Gemini APIs with the user's key, and Ollama on `localhost` |
 | Ask AI | yes | yes, through the API providers and Ollama |
 | Plan my day and Refine | on the Mac, or with the picked AI | the same, with an API provider or Ollama |
@@ -24,7 +24,7 @@ This page says what differs, how to build and upload it, and what to enter in Ap
 | Party | yes | left out by the edition for now (one switch turns it on) |
 | Sign in with Apple and sync ([sync.md](sync.md)) | yes, with the Developer ID profile | yes, with the App Store profile (not in `--adhoc` builds) |
 
-The compile-time switch sits in these places: `Package.swift` (the define and the Sparkle dependency), `ModuleList.swift` (Claude Usage), `AIService.swift` (the sandboxed provider list), `AppDelegate.swift` (updater and install hygiene), `Edition+Current.swift` (the default edition) and a few spots in Settings and the snapshot renderer.
+The compile-time switch sits in these places: `Package.swift` (the define and the Sparkle dependency), `ModuleList.swift` (AI Usage), `AIService.swift` (the sandboxed provider list), `AppDelegate.swift` (updater and install hygiene), `Edition+Current.swift` (the default edition) and a few spots in Settings and the snapshot renderer.
 Everything else follows the edition at run time.
 `Edition.excludedModules` removes modules from the catalog, so kits, onboarding, Settings > Tabs and the closed-notch ticker never offer them, and a kit that lists one still applies without a warning.
 `Edition.runsLocalTools` is false for the App Store edition, which hides every feature that would start a helper program.
