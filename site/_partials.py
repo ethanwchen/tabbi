@@ -6,6 +6,7 @@ ORIGIN = 'https://tabbinotch.com'
 DOWNLOAD = 'https://github.com/ethanwchen/tabbi/releases/latest'
 GITHUB = 'https://github.com/ethanwchen/tabbi'
 ISSUES = 'https://github.com/ethanwchen/tabbi/issues'
+RELEASES = 'https://github.com/ethanwchen/tabbi/releases'
 SUPPORT_EMAIL = 'support@tabbinotch.com'
 
 # Links are root-relative and extensionless, the way Cloudflare Pages serves
@@ -47,7 +48,7 @@ def canonical(slug):
     return ORIGIN + '/' + slug.removesuffix('.html')
 
 
-def page(slug, title, description, body, hero=None, wide=False, indexable=True):
+def page(slug, title, description, body, hero=None, wide=False, indexable=True, head=''):
     def link(href, label):
         here = '/' + slug.removesuffix('.html')
         current = ' aria-current="page"' if href == here else ''
@@ -104,7 +105,7 @@ def page(slug, title, description, body, hero=None, wide=False, indexable=True):
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap">
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/styles.css">{head}
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -131,6 +132,7 @@ def page(slug, title, description, body, hero=None, wide=False, indexable=True):
       <a href="/support">Support</a>
       <a href="/privacy">Privacy</a>
       <a href="/terms">Terms</a>
+      <a href="{RELEASES}">What&rsquo;s new</a>
       <a href="{GITHUB}">GitHub</a>
       <a href="https://buymeacoffee.com/ethanpolar">Buy me a coffee</a>
     </nav>

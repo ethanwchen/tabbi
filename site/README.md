@@ -35,6 +35,7 @@ The build stops with an error when:
 
 - a page references an image or stylesheet that does not exist;
 - a local link or `#anchor` does not resolve;
+- a page has a script (the CSP blocks them all), or its JSON-LD does not parse;
 - a page and everything it loads (its stylesheet and images, counting both sizes of a `srcset`) passes 450 KB, which keeps the home page under about 600 KB with Google Fonts;
 - any output file is over 20 MB (Cloudflare Pages refuses files over 25 MB).
 
@@ -48,6 +49,8 @@ Pages themselves are not cached that way, so they always pick up the new names.
 
 `_headers` sets `X-Frame-Options: DENY`, `nosniff`, a strict referrer policy, a permissions policy, HSTS, and a CSP of `default-src 'none'` that allows only the site's own images and stylesheet and Google Fonts.
 Because of that CSP, pages cannot use inline `style` attributes or scripts.
+The home page's `SoftwareApplication` structured data is a `<script type="application/ld+json">` data block, which browsers never run, so the CSP leaves it alone.
+`--serve` sends the same `/*` headers from `_headers`, CSP included, so a preview breaks the same way production would.
 `build.py` wraps the contact address in `<!--email_off-->` so Cloudflare's email obfuscation, whose decoding script the CSP would block, leaves it readable.
 
 ## Images

@@ -6,13 +6,14 @@
 
 import hashlib
 import http.server
+import json
 import pathlib
 import re
 import shutil
 import sys
 from html.parser import HTMLParser
 
-from _partials import page, download_button, PAW, DOWNLOAD, GITHUB, ISSUES, SUPPORT_EMAIL
+from _partials import page, download_button, PAW, DOWNLOAD, GITHUB, ISSUES, ORIGIN, SUPPORT_EMAIL
 from _legal import PRIVACY, PRIVACY_HERO, TERMS, TERMS_HERO
 
 HERE = pathlib.Path(__file__).parent
@@ -116,6 +117,34 @@ HOME = f'''
         </div>
       </section>
 '''
+
+
+# Structured data for search engines. A script of type application/ld+json
+# is a data block: browsers never run it, so the CSP's default-src 'none'
+# does not block it (the preview server sends the same CSP, so a violation
+# would show up in the console).
+SOFTWARE_APP = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    'name': 'Tabbi',
+    'description': 'A cozy panel of tabs in your laptop notch: a focus timer, your day, music, Claude, Anki and a pet cat.',
+    'url': ORIGIN + '/',
+    'image': ORIGIN + '/img/icon-256.webp',
+    'screenshot': ORIGIN + '/img/social-preview.png',
+    'applicationCategory': 'ProductivityApplication',
+    'operatingSystem': 'macOS 14 or later',
+    'downloadUrl': DOWNLOAD,
+    'softwareHelp': ORIGIN + '/support',
+    'isAccessibleForFree': True,
+    'offers': {'@type': 'Offer', 'price': '0', 'priceCurrency': 'USD'},
+    'author': {'@type': 'Person', 'name': 'Ethan', 'url': ORIGIN + '/about'},
+}
+
+
+def json_ld(data):
+    # "<" is escaped so no string in the data can close the script element.
+    text = json.dumps(data, indent=2).replace('<', '\\u003c')
+    return '\n  <script type="application/ld+json">\n' + text + '\n  </script>'
 
 
 # --------------------------------------------------------------------------
@@ -253,6 +282,9 @@ pages = [
      NOT_FOUND, {'title': 'Nothing in this tab', 'subtitle': 'The cat looked everywhere and came back empty-pawed.'}, False, False),
 ]
 
+# Extra <head> markup per page.
+HEADS = {'index.html': json_ld(SOFTWARE_APP)}
+
 
 # --------------------------------------------------------------------------
 # Checks
@@ -312,12 +344,33 @@ def check_links():
         raise SystemExit('broken links:\n  ' + '\n  '.join(sorted(set(problems))))
 
 
+LD_RE = re.compile(r'<script type="application/ld\+json">(.*?)</script>', re.S)
+SCRIPT_RE = re.compile(r'<script(?![^>]*type="application/ld\+json")[^>]*>')
+
+
+def check_scripts():
+    """No page may carry a script the CSP would block, and every JSON-LD
+    block must parse and name its schema.org type."""
+    for html_file in sorted(OUT.glob('*.html')):
+        html = html_file.read_text()
+        if SCRIPT_RE.search(html):
+            raise SystemExit(f'{html_file.name}: has a script; the CSP blocks every script')
+        for block in LD_RE.findall(html):
+            try:
+                data = json.loads(block)
+            except ValueError as e:
+                raise SystemExit(f'{html_file.name}: JSON-LD does not parse: {e}')
+            if data.get('@context') != 'https://schema.org' or '@type' not in data:
+                raise SystemExit(f'{html_file.name}: JSON-LD needs a schema.org @context and an @type')
+
+
 # The whole home page should stay under about 600 KB. Google Fonts take
 # about 150 KB of that, so the site's own files get the rest.
 PAGE_BUDGET = 450 * 1024
 ASSET_RE = re.compile(r'/(?:img|assets)/[A-Za-z0-9._-]+')
-# Fetched only for link previews or a home screen icon, not by the page.
-NOT_LOADED_RE = re.compile(r'<meta [^>]*>|<link rel="apple-touch-icon"[^>]*>')
+# Fetched only for link previews, search results or a home screen icon, not
+# by the page.
+NOT_LOADED_RE = re.compile(r'<meta [^>]*>|<link rel="apple-touch-icon"[^>]*>|<script type="application/ld\+json">.*?</script>', re.S)
 
 
 def check_weight(stylesheet):
@@ -380,7 +433,7 @@ def build():
     fingerprints['/styles.css'] = fingerprint(HERE / 'styles.css', 'assets', css.encode())
 
     for slug, title, description, body, hero, wide, indexable in pages:
-        html = unobfuscate(page(slug, title, description, body, hero, wide, indexable))
+        html = unobfuscate(page(slug, title, description, body, hero, wide, indexable, HEADS.get(slug, '')))
         html = asset_sub(html)
 
         # A missing image should stop a build.
@@ -403,6 +456,7 @@ def build():
     )
 
     check_links()
+    check_scripts()
     check_weight(fingerprints['/styles.css'])
 
     biggest = max((f for f in OUT.rglob('*') if f.is_file()), key=lambda f: f.stat().st_size)
@@ -411,12 +465,34 @@ def build():
     print('copied _headers, favicon.ico, robots.txt, sitemap.xml and %d fingerprinted assets' % len(fingerprints))
 
 
+def site_headers():
+    """The `/*` block of _headers as (name, value) pairs."""
+    pairs, in_block = [], False
+    for line in (HERE / '_headers').read_text().splitlines():
+        if line and not line[0].isspace():
+            in_block = line.strip() == '/*'
+        elif in_block and ':' in line:
+            name, value = line.strip().split(':', 1)
+            pairs.append((name, value.strip()))
+    return pairs
+
+
+SITE_HEADERS = site_headers()
+
+
 class PagesHandler(http.server.SimpleHTTPRequestHandler):
     """Serves dist/ with Cloudflare Pages' rules: /support finds support.html,
     and anything missing gets 404.html with a 404 status."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(OUT), **kwargs)
+
+    def end_headers(self):
+        # The headers _headers sets for every path, CSP included, so a
+        # preview fails the same way production would.
+        for name, value in SITE_HEADERS:
+            self.send_header(name, value)
+        super().end_headers()
 
     def send_head(self):
         path = self.path.split('?', 1)[0].split('#', 1)[0]
