@@ -16,7 +16,7 @@ NAV = [
     ('/support', 'Support'),
 ]
 
-BRAND = '<img src="/img/glyph.png" width="34" height="34" alt="" class="mark">'
+BRAND = '<img src="/img/icon-512.webp" width="36" height="36" alt="" class="mark">'
 
 # A download arrow, drawn inline so it costs no request and takes the
 # button's text color in both themes.
@@ -79,9 +79,8 @@ def page(slug, title, description, body, hero=None, wide=False, indexable=True):
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{title_attr}</title>
   <meta name="description" content="{desc_attr}">{robots}{canonical_tag}
-  <meta name="color-scheme" content="light dark">
-  <meta name="theme-color" content="#F4D57E" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#2A231D" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#2A231D">
   <meta property="og:site_name" content="Tabbi">
   <meta property="og:title" content="{title_attr}">
   <meta property="og:description" content="{desc_attr}">
