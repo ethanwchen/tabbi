@@ -61,7 +61,7 @@ TABS = [
 HOME_HERO = {
     'home': True,
     'title': 'A little cat for your notch.',
-    'subtitle': 'Tabbi turns your MacBook notch into a cozy panel of tabs for focus, your day, music and study.',
+    'subtitle': 'Tabbi turns your laptop notch into a cozy panel of tabs for focus, your day, music and study.',
     'cta': f'''<div class="cta">{download_button()}</div>
         <p class="cta-note">Free, macOS 14+</p>''',
     'art': '''<div class="hero-art">
@@ -180,6 +180,21 @@ SUPPORT = f'''
 '''
 
 
+ABOUT = f'''
+      <div class="about">
+        <img class="about-cat" src="/img/glyph.png" width="96" height="96" alt="">
+        <p class="about-lead">Hi, I&rsquo;m Ethan.</p>
+        <p>I made Tabbi because I wanted my study tools in one cozy spot, right where I already look: the notch.</p>
+        <p>It&rsquo;s free and open source. No ads, no tracking, no account needed.</p>
+        <p>If Tabbi helps you focus, a star or a coffee means a lot.</p>
+        <div class="cta center">
+          <a class="btn" href="https://buymeacoffee.com/ethanpolar">Buy me a coffee</a>
+          <a class="btn soft" href="{GITHUB}">Star on GitHub</a>
+        </div>
+      </div>
+'''
+
+
 NOT_FOUND = '''
       <div class="lost">
         <img src="/img/glyph.png" width="128" height="128" alt="">
@@ -193,8 +208,11 @@ NOT_FOUND = '''
 
 pages = [
     ('index.html', 'Tabbi: a little cat for your notch',
-     'Tabbi turns your MacBook notch into a cozy panel of tabs: a focus timer, your day, music, Claude, Anki and a pet cat. Free and open source for macOS.',
+     'Tabbi turns your laptop notch into a cozy panel of tabs: a focus timer, your day, music, Claude, Anki and a pet cat. Free and open source for macOS.',
      HOME, HOME_HERO, True, True),
+    ('about.html', 'About | Tabbi',
+     'Who makes Tabbi, and why.',
+     ABOUT, {'title': 'About', 'subtitle': 'A small app made with care.'}, False, True),
     ('support.html', 'Support | Tabbi',
      'Help with installing and using Tabbi, answers to common questions, and how to reach a person.',
      SUPPORT, {'title': 'Support', 'subtitle': 'Answers to common questions, and how to reach a person.'}, False, True),

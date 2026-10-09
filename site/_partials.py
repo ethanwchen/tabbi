@@ -13,7 +13,9 @@ SUPPORT_EMAIL = 'support@tabbinotch.com'
 # /support. Writing the final form saves every click a redirect, and the
 # root-relative paths keep 404.html working at any depth.
 NAV = [
+    ('/about', 'About'),
     ('/support', 'Support'),
+    (DOWNLOAD, 'Download'),
 ]
 
 BRAND = '<img src="/img/icon-512.webp" width="36" height="36" alt="" class="mark">'
@@ -49,7 +51,8 @@ def page(slug, title, description, body, hero=None, wide=False, indexable=True):
     def link(href, label):
         here = '/' + slug.removesuffix('.html')
         current = ' aria-current="page"' if href == here else ''
-        return f'<a href="{href}"{current}>{label}</a>'
+        cls = ' class="nav-cta"' if href == DOWNLOAD else ''
+        return f'<a href="{href}"{current}{cls}>{label}</a>'
 
     nav = '\n        '.join(link(href, label) for href, label in NAV)
     hero_html = ''

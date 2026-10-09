@@ -92,6 +92,9 @@ nav.site a {
 }
 nav.site a:hover, nav.site a[aria-current='page'] { background: var(--chip); color: var(--on-ground); text-decoration: none; }
 
+nav.site a.nav-cta { background: var(--btn-bg); color: var(--btn-ink); margin-left: 6px; }
+nav.site a.nav-cta:hover { background: var(--btn-hover); color: var(--btn-ink); }
+
 /* --- hero -------------------------------------------------------------- */
 .hero { color: var(--on-ground); text-align: center; padding: 28px 0 40px; }
 .hero h1 {
@@ -191,6 +194,12 @@ main.home .wrap { max-width: 1120px; }
   .gh-card:hover, .gh-card:hover .gh-cat, .gh-card:hover .gh-arrow { transform: none; }
 }
 
+.about { text-align: center; max-width: 34rem; margin: 0 auto; font-size: 18px; line-height: 1.6; }
+.about p { margin: 0 0 12px; }
+.about-cat { display: block; margin: 0 auto 12px; }
+.about-lead { font-family: var(--head); font-weight: 600; font-size: 26px; color: var(--ink); }
+.about .cta { margin-top: 24px; }
+
 /* --- content pages ----------------------------------------------------- */
 .sheet {
   background: var(--card); border-radius: 36px; padding: 40px 44px 44px;
@@ -262,6 +271,8 @@ footer.site nav a:hover { background: var(--chip); color: var(--on-ground); text
   .wrap { padding: 0 16px; }
   header.site { padding: 10px 0; }
   .brand .name { font-size: 24px; }
+  nav.site a { padding: 0 11px; font-size: 15px; }
+  nav.site a.nav-cta { margin-left: 2px; }
   .hero { padding: 16px 0 30px; }
   .hero-home { padding: 0 0 48px; }
   .hero-art img { width: 200px; }
@@ -290,4 +301,10 @@ footer.site nav a:hover { background: var(--chip); color: var(--on-ground); text
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .btn, .faq summary::after { transition: none; }
+}
+
+/* The narrowest phones keep the icon as the home link and drop the word,
+   so the three tabs fit on one line. */
+@media (max-width: 400px) {
+  .brand .name { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 }
