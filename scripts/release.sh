@@ -357,38 +357,12 @@ notes="$out/release-notes.md"
 scripts/release-notes.sh "$version" "$name" > "$notes"
 
 # The appcast offers the zip: Sparkle installs from it without mounting
-# anything. A fresh folder per release holds just this version, so the feed
-# lists only the newest update, which is all Sparkle needs.
+# anything.
 appcast=
 signer=$(update_key_ok && update_signer || true)
 if [[ -n "$signer" ]]; then
     log "Writing the appcast (update key from the $signer)"
-    feed_dir="$out/appcast"
-    mkdir -p "$feed_dir"
-    cp "$zip" "$feed_dir/"
-    # A Markdown file named like the archive becomes the item's release notes.
-    cp "$notes" "$feed_dir/$(basename "${zip%.zip}").md"
-    # The feed is .../releases/latest/download/appcast.xml; the archives live
-    # under the release's own tag.
-    case "$feed_url" in
-        https://github.com/*/releases/latest/download/*)
-            download_prefix="${feed_url%%/releases/latest/download/*}/releases/download/v$version/" ;;
-        *) download_prefix="${feed_url%/*}/" ;;
-    esac
-    appcast_args=(--download-url-prefix "$download_prefix" --embed-release-notes --disable-signing-warning -o "$out/appcast.xml")
-    if [[ "$signer" == env ]]; then
-        report=$(printf '%s' "$SPARKLE_PRIVATE_KEY" | "$sparkle_bin/generate_appcast" --ed-key-file - "${appcast_args[@]}" "$feed_dir" 2>&1)
-    else
-        report=$("$sparkle_bin/generate_appcast" "${appcast_args[@]}" "$feed_dir" 2>&1)
-    fi
-    echo "$report" >&2
-    rm -rf "$feed_dir"
-    # generate_appcast only warns when the private key is not the app's
-    # SUPublicEDKey, but every installed copy would then reject the update.
-    if grep -q "does not match" <<<"$report"; then
-        rm -f "$out/appcast.xml"
-        fail "the private update key does not match SPARKLE_PUBLIC_KEY, so no copy of $name could install this update"
-    fi
+    SPARKLE_FEED_URL="$feed_url" scripts/make-appcast.sh "$zip" "$notes" "$out/appcast.xml" >/dev/null
     appcast="$out/appcast.xml"
 elif update_key_ok; then
     log "No appcast: the private update key is not in the keychain or SPARKLE_PRIVATE_KEY"

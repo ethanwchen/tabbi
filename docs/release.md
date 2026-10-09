@@ -90,6 +90,8 @@ Without `--publish`, the script builds everything in `build/release/` and upload
 - `Tabbi-<version>.zip`: the update that installed copies download.
 - `appcast.xml`: the update feed.
   Installed copies read it from `https://github.com/ethanwchen/tabbi/releases/latest/download/appcast.xml` (`SPARKLE_FEED_URL` in `packaging/updates.env`), so it always comes from the latest published release.
+  `scripts/make-appcast.sh` writes it: it lists only this version, points at the zip under the release's tag, embeds the notes and signs the zip with your update key.
+  It stops if that key does not match the public key in `packaging/updates.env`, because no installed copy could install the update.
 - `SHA256SUMS`: checksums of the DMG and the zip.
 - `release-notes.md`: the notes, written from the commit history by `scripts/release-notes.sh`.
   The draft release and the update window both show them.
