@@ -33,6 +33,8 @@ npx wrangler deploy
 There is no storage to create by hand: the Durable Object class and its SQLite storage are declared in `wrangler.toml` (`[[migrations]] new_sqlite_classes = ["Hub"]`) and created by the first deploy.
 Wrangler prints the base URL, `https://tabbi-friends.<your-subdomain>.workers.dev`.
 `GET /` answers `{"ok":true,"service":"tabbi-friends","version":1}` so you can check it is up.
+The tables in that storage are versioned in `src/hub.ts` (`MIGRATIONS`, recorded in a `schema_version` table): the Hub applies missing steps when it starts, so a deploy upgrades the database by itself.
+Add a schema change as a new step at the end and never edit a deployed one.
 
 ## Architecture
 

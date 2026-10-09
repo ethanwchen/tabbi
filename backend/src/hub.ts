@@ -17,6 +17,7 @@ import {
 } from "./lib";
 import { PROFILE_FIELDS, Profile, applyProfilePatch, defaultProfile, parseProfilePatch, sameProfile } from "./profile";
 import { json } from "./http";
+import { SYNC_PUT_PER_MIN, etag, parseIfMatch, readSyncDocument } from "./sync";
 import { PRESENCE_FIELDS, Presence, heartbeatSeconds, isOnline, parseHeartbeat, presenceChanged, publicPresence } from "./presence";
 import { STUDY_DAY_RETENTION_DAYS, rankEntries } from "./leaderboard";
 import { JOIN_FIELDS, PARTY_TOUCH_S, PartySession, SESSION_FIELDS, parseJoin, parseSession, partyExpired } from "./party";
@@ -87,6 +88,47 @@ CREATE TABLE IF NOT EXISTS party_members (
 );
 CREATE INDEX IF NOT EXISTS party_members_by_party ON party_members (party, joined_at);
 `;
+
+/** Sign in with Apple accounts and their sync documents. */
+const SYNC_SCHEMA = `
+-- An Apple account maps Apple's stable user id (sub) to one friends user. No email or name is stored.
+-- The refresh token from the authorization code exchange is kept only to revoke it when the account
+-- is deleted; it is null when the exchange was skipped (Apple secrets unset) or failed.
+CREATE TABLE apple_accounts (
+  apple_sub     TEXT PRIMARY KEY,
+  code          TEXT NOT NULL UNIQUE,
+  refresh_token TEXT,
+  created_at    INTEGER NOT NULL
+) WITHOUT ROWID;
+-- The app's sync document (see sync.ts), stored as sent, with a revision for optimistic concurrency.
+CREATE TABLE sync_documents (
+  code       TEXT PRIMARY KEY,
+  revision   INTEGER NOT NULL,
+  document   TEXT NOT NULL,
+  updated_at INTEGER NOT NULL
+) WITHOUT ROWID;
+`;
+
+/**
+ * Ordered schema steps; step i brings the database to version i + 1. Append new steps and never edit
+ * one that has been deployed. Step 1 is the original schema, written with IF NOT EXISTS so databases
+ * created before versioning (which have its tables but no recorded version) pass through it unchanged.
+ */
+const MIGRATIONS = [SCHEMA, SYNC_SCHEMA];
+
+/** Runs the steps a database has not had yet, each in its own transaction with its version bump. */
+export function migrate(storage: DurableObjectStorage): void {
+  const sql = storage.sql;
+  sql.exec("CREATE TABLE IF NOT EXISTS schema_version (version INTEGER NOT NULL)");
+  const row = sql.exec<{ version: number }>("SELECT version FROM schema_version").toArray()[0];
+  if (!row) sql.exec("INSERT INTO schema_version (version) VALUES (0)");
+  for (let v = row?.version ?? 0; v < MIGRATIONS.length; v++) {
+    storage.transactionSync(() => {
+      sql.exec(MIGRATIONS[v]);
+      sql.exec("UPDATE schema_version SET version = ?", v + 1);
+    });
+  }
+}
 
 /** Unchanged heartbeats are flushed to SQLite at most this often, so a restart loses little. */
 const PRESENCE_FLUSH_S = 600;
@@ -182,7 +224,7 @@ export class Hub extends DurableObject<Env> {
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
     this.sql = ctx.storage.sql;
-    this.sql.exec(SCHEMA);
+    migrate(ctx.storage);
   }
 
   async fetch(req: Request): Promise<Response> {
@@ -231,6 +273,11 @@ export class Hub extends DurableObject<Env> {
     if (path === "/v1/party/leave" && method === "POST") return this.leavePartyRoute(req, caller, now);
     if (path === "/v1/party/session" && method === "POST") return this.startSession(req, caller, now);
     if (path === "/v1/party/session" && method === "DELETE") return this.endSession(caller, now);
+
+    if (path === "/v1/sync" && method === "GET") return this.getSync(caller);
+    // Awaited here: putSync can throw before its first await, and a rejection that is only adopted by
+    // route's promise on a later tick is reported as unhandled by workerd.
+    if (path === "/v1/sync" && method === "PUT") return await this.putSync(req, caller, now);
 
     throw new HttpError(404, "not_found", "not found");
   }
@@ -311,6 +358,8 @@ export class Hub extends DurableObject<Env> {
       this.sql.exec("DELETE FROM friends WHERE a = ?", caller.code);
       this.sql.exec("DELETE FROM presence WHERE code = ?", caller.code);
       this.sql.exec("DELETE FROM study_days WHERE code = ?", caller.code);
+      this.sql.exec("DELETE FROM sync_documents WHERE code = ?", caller.code);
+      this.sql.exec("DELETE FROM apple_accounts WHERE code = ?", caller.code);
     });
     this.live.delete(caller.code);
     return json({ ok: true });
@@ -472,6 +521,51 @@ export class Hub extends DurableObject<Env> {
       profile: rowToProfile(u),
     })));
     return json({ ok: true, week: isoWeekKeyOfDay(today), from, to, entries });
+  }
+
+  // ---------- sync ----------
+
+  /** Sync belongs to Sign in with Apple accounts; an anonymous friends user has nothing to sync with. */
+  private requireAccount(caller: Caller): void {
+    const linked = this.sql.exec("SELECT 1 FROM apple_accounts WHERE code = ?", caller.code).toArray().length > 0;
+    if (!linked) throw new HttpError(403, "no_account", "sign in with Apple to sync");
+  }
+
+  /** GET /v1/sync: the caller's document and its revision (0 and `null` before the first write). */
+  private getSync(caller: Caller): Response {
+    this.requireAccount(caller);
+    const row = this.sql.exec<{ revision: number; document: string; updated_at: number }>(
+      "SELECT revision, document, updated_at FROM sync_documents WHERE code = ?", caller.code).toArray()[0];
+    const revision = row?.revision ?? 0;
+    return json(
+      { ok: true, revision, updatedAt: row?.updated_at ?? null, document: row ? JSON.parse(row.document) : null },
+      200, { ETag: etag(revision) },
+    );
+  }
+
+  /**
+   * PUT /v1/sync with `If-Match: <revision>`: replaces the document if the caller merged into the
+   * current revision, else 409 with the current revision (the app pulls, merges and retries).
+   */
+  private async putSync(req: Request, caller: Caller, now: number): Promise<Response> {
+    this.requireAccount(caller);
+    const expected = parseIfMatch(req.headers.get("If-Match"));
+    this.rateLimit("sync:" + caller.code, SYNC_PUT_PER_MIN, now);
+    const document = JSON.stringify(await readSyncDocument(req));
+    const current = this.sql.exec<{ revision: number }>(
+      "SELECT revision FROM sync_documents WHERE code = ?", caller.code).toArray()[0]?.revision ?? 0;
+    if (expected !== current) {
+      throw new HttpError(409, "revision_conflict", `the document is at revision ${current}; pull, merge and retry`,
+        { ETag: etag(current) });
+    }
+    const revision = current + 1;
+    this.sql.exec(
+      `INSERT INTO sync_documents (code, revision, document, updated_at) VALUES (?, ?, ?, ?)
+       ON CONFLICT (code) DO UPDATE SET revision = excluded.revision, document = excluded.document,
+         updated_at = excluded.updated_at`,
+      caller.code, revision, document, now,
+    );
+    return json({ ok: true, revision, updatedAt: now }, 200, { ETag: etag(revision) });
   }
 
   // ---------- parties ----------

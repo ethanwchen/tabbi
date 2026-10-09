@@ -13,6 +13,11 @@ Per user, identified only by a random secret token (stored as a SHA-256 hash) an
 - the friend codes you are friends with;
 - the party you are in, when you joined it, and, for the party itself, its 6-character code, its host, its last activity time and the shared session the host started (study method and phase end).
 
+Only if you choose to sign in with Apple, so your pet and progress follow you across your Macs:
+
+- Apple's stable, app-specific user id, linked to your friend code;
+- your sync document and when it last changed: the pet's look (species, breed, name, outfit), points earned and spent per Mac (each Mac is a random id), the ids of unlocked items, the calendar days you studied (at most 400) and your longest streak.
+
 Nothing else.
 Card content, deck names, note text, email addresses, device names and IP addresses are never accepted or stored.
 Requests carrying unexpected fields are rejected.
@@ -28,12 +33,13 @@ The Worker uses the client IP only in memory to rate-limit registration and bad 
 - There is no directory or search: nobody can find you without your friend code or a shared party code.
 
 You always see your own complete profile and presence.
+Your sync document and Apple account link are never shown to anyone, friends included.
 
 ## How to delete
 
 Leaving a party (`POST /v1/party/leave`) removes your membership; a party is deleted when its last member leaves or after 12 hours without activity.
 Removing a friend deletes the friendship in both directions.
-Deleting your account calls `DELETE /v1/me`, which erases your profile, presence, daily study minutes and friend list, removes you from your friends' lists, and takes you out of your party.
+Deleting your account calls `DELETE /v1/me`, which erases your profile, presence, daily study minutes, friend list, sync document and Apple account link, removes you from your friends' lists, and takes you out of your party.
 Your secret token stops working at once.
 
 ## No analytics, no third parties

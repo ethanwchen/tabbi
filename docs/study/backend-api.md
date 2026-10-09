@@ -15,7 +15,7 @@ Deployment, architecture and the free-tier math are in [`backend/README.md`](../
   Add `TABBI_PARTY_TOKEN` and `TABBI_PARTY_CODE` from a `POST /v1/register` reply to render as that user, with the friends and party you set up for it with `curl`.
   Only plain-http (local) servers are accepted there, so a snapshot never registers users on a deployed server.
 - Every route is under `/v1/` except the health check `GET /`.
-- Bodies are JSON objects (`Content-Type: application/json`), at most 4096 bytes.
+- Bodies are JSON objects (`Content-Type: application/json`), at most 4096 bytes (`PUT /v1/sync`: 65536 bytes).
   An empty body counts as `{}`.
   Any field not listed for a route is rejected with `unknown_field`, so never send extra keys.
 - Times are unix seconds (integers).
@@ -152,6 +152,8 @@ Auth column: "token" means `Authorization: Bearer <token>` is required.
 | `POST /v1/party/leave` | token | leave my party |
 | `POST /v1/party/session` | token, host | start or replace the shared session |
 | `DELETE /v1/party/session` | token, host | end the shared session |
+| `GET /v1/sync` | token, Apple account | my sync document and its revision |
+| `PUT /v1/sync` | token, Apple account | replace my sync document if I merged into the current revision |
 
 ### `GET /`
 
@@ -189,7 +191,7 @@ Errors: `invalid_json`, `unknown_field`, `invalid_field`, `body_too_large`.
 
 ### `DELETE /v1/me`
 
-Deletes the user, their friendships in both directions, presence, daily study minutes, and leaves their party.
+Deletes the user, their friendships in both directions, presence, daily study minutes, their sync document and Apple account link, and leaves their party.
 `200 {"ok": true}`.
 Afterwards the token is `unauthorized`; the app should drop it and its friend code.
 
@@ -334,6 +336,25 @@ Host only.
 Ends the shared session: `200 {"ok": true, "party": Party}` with `session: null`.
 Errors: `not_in_party` (404), `not_host` (403).
 
+### `GET /v1/sync`
+
+Only for users linked to a Sign in with Apple account; others get `403 no_account`.
+`200 {"ok": true, "revision": 3, "updatedAt": 1791504000, "document": SyncDocument}` with `ETag: "3"`.
+Before the first write it is `revision: 0`, `updatedAt: null` and `document: null`.
+
+The document is the app's `SyncDocument` (`Sources/TabbiKitCore/Sync`): a JSON object with an integer `schemaVersion`, the pet's look, points per Mac, unlock ids, study days and the longest streak.
+The server stores it as sent and never merges or reads its fields, so the app can extend the format without a server deploy.
+
+### `PUT /v1/sync`
+
+Header `If-Match: <revision>` (a bare number or the quoted `ETag`), the revision the app merged its local progress into (0 when `GET` had no document).
+Body: `{"document": SyncDocument}`, at most 65536 bytes; `document` must be an object with a positive integer `schemaVersion`.
+If the revision is current it replaces the document: `200 {"ok": true, "revision": 4, "updatedAt": 1791504060}` with `ETag: "4"`.
+Otherwise nothing is written and the reply is `409 revision_conflict` with the current revision in `ETag`: pull with `GET`, merge (the merge never loses progress), and retry with the new revision.
+Writes are limited to 20 per minute per user.
+
+Errors: `no_account` (403), `revision_required` (428, no `If-Match`), `invalid_revision` (400), `revision_conflict` (409), `invalid_json`, `unknown_field`, `invalid_field`, `body_too_large`, `rate_limited`.
+
 ## Errors common to all routes
 
 | HTTP | `error` | Meaning and what to do |
@@ -360,6 +381,8 @@ Keep to these intervals, and stop every timer whose data is not on screen.
 | `GET /v1/party` | every 30 s while I am in a party and the party view is visible; once when the notch opens otherwise |
 | `GET /v1/leaderboard` | once each time its view opens; no timer |
 | `GET /v1/me`, `PATCH /v1/me` | on launch and after the user edits their pet; not on a timer |
+| `GET /v1/sync` | on launch and on wake, and after a `409`; not on a timer |
+| `PUT /v1/sync` | after local progress changes, debounced (for example 30 s), and once on quit |
 
 A heartbeat whose status, method, phase and streak are unchanged is cheap but still a request, so do not send heartbeats for counters alone between scheduled ones.
 Countdowns (`phaseEndsAt`, party `session.phaseEndsAt`) run locally on the client.

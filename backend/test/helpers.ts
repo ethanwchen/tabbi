@@ -1,4 +1,5 @@
-import { SELF } from "cloudflare:test";
+import { SELF, runInDurableObject } from "cloudflare:test";
+import { env } from "cloudflare:workers";
 import { expect } from "vitest";
 
 export const BASE = "https://tabbi.test";
@@ -38,4 +39,14 @@ export function expectError(r: Reply, status: number, error: string) {
   expect(r.body.ok).toBe(false);
   expect(r.body.error).toBe(error);
   expect(typeof r.body.message).toBe("string");
+}
+
+/** The one Hub every request goes to. */
+export const hub = () => env.HUB.get(env.HUB.idFromName("hub"));
+
+/** Links a friends user to a made-up Apple account directly in storage, as POST /v1/auth/apple would. */
+export async function linkAppleAccount(code: string, sub = `apple.${code}`): Promise<void> {
+  await runInDurableObject(hub(), (_, state) => {
+    state.storage.sql.exec("INSERT INTO apple_accounts (apple_sub, code, refresh_token, created_at) VALUES (?, ?, NULL, 0)", sub, code);
+  });
 }
