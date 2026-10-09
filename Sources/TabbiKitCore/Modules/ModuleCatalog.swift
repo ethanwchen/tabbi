@@ -9,9 +9,14 @@ public struct ModuleCatalog: Equatable, Sendable {
     /// Ids that appeared more than once in the input, once each, in the
     /// order their first repeat appeared. Empty for a well-formed list.
     public let duplicateIDs: [ModuleID]
+    /// Modules this edition leaves out on purpose (`Edition.excludedModules`),
+    /// such as the Claude modules in the App Store edition. They are not in
+    /// `descriptors`, so layouts, Settings and the ticker never show them,
+    /// and kits that list them are not warned about an unknown module.
+    public let unavailableIDs: Set<ModuleID>
     private let index: [ModuleID: Int]
 
-    public init(_ descriptors: [ModuleDescriptor]) {
+    public init(_ descriptors: [ModuleDescriptor], unavailable: Set<ModuleID> = []) {
         var index: [ModuleID: Int] = [:]
         var unique: [ModuleDescriptor] = []
         var duplicates: [ModuleID] = []
@@ -26,11 +31,23 @@ public struct ModuleCatalog: Equatable, Sendable {
         self.descriptors = unique
         self.duplicateIDs = duplicates
         self.index = index
+        self.unavailableIDs = unavailable.subtracting(index.keys)
     }
 
     public static func == (lhs: ModuleCatalog, rhs: ModuleCatalog) -> Bool {
-        lhs.descriptors == rhs.descriptors
+        lhs.descriptors == rhs.descriptors && lhs.unavailableIDs == rhs.unavailableIDs
     }
+
+    /// This catalog without `ids`, which become `unavailableIDs`. An edition
+    /// uses it to leave modules out whether or not the build compiled them.
+    public func excluding(_ ids: some Sequence<ModuleID>) -> ModuleCatalog {
+        let excluded = unavailableIDs.union(ids)
+        return ModuleCatalog(descriptors.filter { !excluded.contains($0.id) }, unavailable: excluded)
+    }
+
+    /// Whether `id` is a module this edition leaves out, as opposed to one
+    /// no build of Tabbi knows (a typo or a newer kit).
+    public func isUnavailable(_ id: ModuleID) -> Bool { unavailableIDs.contains(id) }
 
     /// Every id, in canonical order.
     public var ids: [ModuleID] { descriptors.map(\.id) }

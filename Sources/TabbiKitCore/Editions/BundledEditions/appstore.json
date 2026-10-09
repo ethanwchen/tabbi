@@ -1,0 +1,12 @@
+{
+  "formatVersion": 1,
+  "id": "appstore",
+  "name": "Tabbi",
+  "bundleIdentifier": "dev.tabbi.Tabbi",
+  "defaultKitID": "essentials",
+  "distribution": "appStore",
+  "excludedModules": ["claudeUsage", "claudeAsk", "party"],
+  "infoPlist": {
+    "LSApplicationCategoryType": "public.app-category.productivity"
+  }
+}
