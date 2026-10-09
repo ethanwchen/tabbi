@@ -1,6 +1,7 @@
 import AppKit
 import Combine
 import EventKit
+import TabbiKit
 import TabbiKitCore
 
 /// Today's remaining calendar events for the Today panel's "Up next" card.
@@ -44,7 +45,12 @@ final class UpNextStore: ObservableObject {
     private var isPreviewWatching = false
     /// True while the panel or the closed-notch preview needs fresh events.
     private var isWatched: Bool { isVisible || isPreviewWatching }
-    private var ticker: Timer?
+    /// A wall-clock alarm, so the minute tick catches up right after the Mac wakes.
+    private lazy var ticker = WallClockAlarm { [weak self] in
+        guard let self, self.isWatched else { return }
+        self.reload()
+        self.scheduleTick()
+    }
     private var changeObserver: AnyCancellable?
 
     static let privacySettingsURL = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Calendars")!
@@ -229,26 +235,16 @@ final class UpNextStore: ObservableObject {
     }
 
     private func stopUpdates() {
-        ticker?.invalidate()
-        ticker = nil
+        ticker.cancel()
         changeObserver = nil
     }
 
     /// Fires just after the next whole minute, then reschedules itself, so the
     /// badges change in step with the clock instead of drifting.
     private func scheduleTick() {
-        ticker?.invalidate()
-        let interval = 60 - Date().timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: 60) + 0.05
-        let timer = Timer(timeInterval: interval, repeats: false) { [weak self] _ in
-            MainActor.assumeIsolated {
-                guard let self, self.isWatched else { return }
-                self.reload()
-                self.scheduleTick()
-            }
-        }
-        timer.tolerance = 1
-        RunLoop.main.add(timer, forMode: .common)
-        ticker = timer
+        let now = Date()
+        let interval = 60 - now.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: 60) + 0.05
+        ticker.schedule(at: now.addingTimeInterval(interval), tolerance: 1)
     }
 
     private static func upcomingEvent(from event: EKEvent) -> UpcomingEvent {

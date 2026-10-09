@@ -2,6 +2,7 @@
 
 What the whole-app quality pass found and fixed, newest first, one sentence per line.
 
+- The Today "Up next" card and the Schedule day view ran their minute tick on a plain `Timer`, so after the Mac woke the countdown badges and the now line stayed up to a minute behind; both now tick on the shared `WallClockAlarm` and catch up as soon as the Mac wakes.
 - The Focus and Study phase-end timers and the closed-notch ticker used plain `Timer`s, which count only awake time, so after the lid was closed through a phase end or a meeting start the notch sat at 0:00 or on the stale line for the rest of the old countdown; a shared `WallClockAlarm` now re-arms them on wake, so they catch up right away.
 - The Connections checkup for a Mac without Claude read "Claude is optional. Claude is an AI helper...", repeating its subject because the verdict joins headline and detail; the detail now opens with "It's an AI helper", and a test keeps every verdict from restating its headline.
 - In the Schedule day view the white now line ran straight through the current block's title and start time ("Draft the", "10:45"), because the dark halo meant to cut it around the text was too faint; a tight solid halo now breaks the line cleanly around each letter at every panel size.

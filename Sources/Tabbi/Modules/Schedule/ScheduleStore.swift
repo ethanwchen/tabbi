@@ -1,6 +1,7 @@
 import AppKit
 import Combine
 import EventKit
+import TabbiKit
 import TabbiKitCore
 
 /// The next seven days of calendar for the Schedule tab (today in the Day
@@ -76,7 +77,12 @@ final class ScheduleStore: ObservableObject {
     private let isDemo: Bool
     private lazy var eventStore = EKEventStore()
     private var isVisible = false
-    private var ticker: Timer?
+    /// A wall-clock alarm, so the minute tick catches up right after the Mac wakes.
+    private lazy var ticker = WallClockAlarm { [weak self] in
+        guard let self, self.isVisible else { return }
+        self.reload()
+        self.scheduleTick()
+    }
     private var changeObserver: AnyCancellable?
     private var refineTask: Task<Void, Never>?
 
@@ -372,26 +378,16 @@ final class ScheduleStore: ObservableObject {
     }
 
     private func stopUpdates() {
-        ticker?.invalidate()
-        ticker = nil
+        ticker.cancel()
         changeObserver = nil
     }
 
     /// Fires just after the next whole minute, then reschedules itself, so
     /// the now-line moves in step with the clock.
     private func scheduleTick() {
-        ticker?.invalidate()
-        let interval = 60 - Date().timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: 60) + 0.05
-        let timer = Timer(timeInterval: interval, repeats: false) { [weak self] _ in
-            MainActor.assumeIsolated {
-                guard let self, self.isVisible else { return }
-                self.reload()
-                self.scheduleTick()
-            }
-        }
-        timer.tolerance = 1
-        RunLoop.main.add(timer, forMode: .common)
-        ticker = timer
+        let now = Date()
+        let interval = 60 - now.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: 60) + 0.05
+        ticker.schedule(at: now.addingTimeInterval(interval), tolerance: 1)
     }
 
     private static func item(from event: EKEvent) -> ScheduleItem {
