@@ -59,5 +59,5 @@ All in `docs/images/`, rendered from the app's demo mode, so no personal data ap
 - `schedule.png`, `party.png`, `claude-usage.png`, `system.png`: the tabs in Add more.
 - `onboarding.png`: first-run setup in the notch.
 
-A short demo video for social posts, if rendered, is `docs/launch/video/tabbi-demo.mp4` (see [video-storyboard.md](video-storyboard.md)).
+A 20 second demo video for social posts is `docs/launch/video/tabbi-demo.mp4` (see [video-storyboard.md](video-storyboard.md)).
 All images and the icon may be used to write about Tabbi.

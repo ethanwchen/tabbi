@@ -12,7 +12,7 @@ It's called Tabbi. Click the notch and it opens into a cozy panel: a focus timer
 
 Free and open source.
 
-[attach: docs/launch/video/tabbi-demo.mp4, or docs/images/hero.gif]
+[attach: docs/launch/video/tabbi-demo.mp4]
 
 ## 2
 

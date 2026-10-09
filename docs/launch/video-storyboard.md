@@ -29,6 +29,12 @@ Shots use the snapshots named in brackets.
 ## Variants
 
 - `tabbi-demo.mp4`: 1920 x 1080, for X, LinkedIn and Product Hunt.
-- `tabbi-demo-square.mp4`: 1080 x 1080, for feeds that crop to a square, if needed.
+- `tabbi-demo-square.mp4`: 1080 x 1080, for feeds that crop to a square.
 
-Both go in `docs/launch/video/`.
+Both are in `docs/launch/video/` (H.264, 30 fps, about 2 MB and 1 MB).
+
+## Render
+
+`swift docs/make-screenshots.swift` renders fresh demo snapshots, rebuilds the README images and, when `ffmpeg` is installed (`brew install ffmpeg`), both videos.
+The timeline above lives in `renderDemoVideo` in that script, so a change to a shot or a caption is a change there and here.
+Re-render after any UI change on main, so the video matches the app people download.

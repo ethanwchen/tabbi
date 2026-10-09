@@ -9,8 +9,8 @@ Nothing goes out until Ethan says go.
 | Step | Who | Done when |
 | --- | --- | --- |
 | 1. Merge the launch README, images and these docs to `main`. | Agent opens the PR, Ethan merges | README on GitHub shows the hero GIF and badges. |
-| 2. Re-render images from `main` with `swift docs/make-screenshots.swift` and check every PNG. | Agent | `docs/images/` matches the current UI. |
-| 3. Render the demo video (see [video-storyboard.md](video-storyboard.md)). | Agent | `docs/launch/video/tabbi-demo.mp4` plays and loops cleanly. |
+| 2. Re-render the README images and demo videos from the final `main` with `swift docs/make-screenshots.swift` (needs `ffmpeg`) and check every PNG. | Agent | `docs/images/` matches the current UI. |
+| 3. Watch both videos in `docs/launch/video/` end to end (see [video-storyboard.md](video-storyboard.md)). | Ethan | Captions read with the sound off and the loop is seamless. |
 | 4. Cut the release: run the Release workflow (`.github/workflows/release.yml`, Developer ID signing, Publish on), check the draft, then publish it. | Ethan | https://github.com/ethanwchen/tabbi/releases/latest has a signed, notarized DMG. |
 | 5. Download the DMG on a clean Mac, install it, open it, pick a kit, run a timer. | Ethan | It opens with no Gatekeeper warning. |
 | 6. Check `brew install --cask ethanwchen/tap/tabbi` installs the same version. | Ethan | `brew info tabbi` shows the new version. |

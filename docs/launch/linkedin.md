@@ -1,7 +1,7 @@
 # LinkedIn post
 
 Post from Ethan's account.
-Attach `docs/launch/video/tabbi-demo.mp4` if it has been rendered, otherwise `docs/images/social-preview.png`.
+Attach `docs/launch/video/tabbi-demo.mp4`.
 Put the links in the post itself; LinkedIn may show fewer people a post with links, but a first comment with the link is easy to miss.
 
 ---

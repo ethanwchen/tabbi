@@ -52,7 +52,7 @@ Upload in this order (all in `docs/images/`, 1270 x 760 or larger works best):
 5. `closet.png` (the pet's Closet).
 6. `anki.png` (Anki).
 7. `now-playing.png` (Now Playing).
-8. The demo video, `docs/launch/video/tabbi-demo.mp4`, if it has been rendered (see [video-storyboard.md](video-storyboard.md)).
+8. The demo video, `docs/launch/video/tabbi-demo.mp4` (see [video-storyboard.md](video-storyboard.md)).
 
 Thumbnail: `docs/brand/assets/tabbi-icon-1024.png`.
 
