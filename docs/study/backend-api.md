@@ -265,6 +265,7 @@ Errors: `no_account` (403, an anonymous user would lose its only token), `unauth
 
 Sorted by name, case-insensitively.
 `party` is the friend's current (not expired) party; offer "Join" when `online` is true and `party` is not null.
+`size` counts only the members you would see in that party (no one you blocked or who blocked you, and no banned users).
 
 ### `POST /v1/friends`
 

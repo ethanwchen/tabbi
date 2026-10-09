@@ -548,16 +548,20 @@ export class Hub extends DurableObject<Env> {
 
   // ---------- friends ----------
 
+  /** Each friend's party size counts only the members the caller would see in that party's view. */
   private listFriends(caller: Caller, now: number): Response {
     const rows = this.sql.exec<UserRow & Partial<PresenceRow> & { since: number; party_code: string | null; party_size: number | null }>(
       `SELECT u.*, f.created_at AS since, p.status, p.method, p.phase_ends_at, p.session_minutes,
          p.today_minutes, p.streak_days, p.day, p.last_seen, pa.code AS party_code,
-         (SELECT COUNT(*) FROM party_members m2 WHERE m2.party = pa.code) AS party_size
+         (SELECT COUNT(*) FROM party_members m2 WHERE m2.party = pa.code
+            AND m2.code NOT IN (SELECT blocked FROM blocks WHERE blocker = ?)
+            AND m2.code NOT IN (SELECT blocker FROM blocks WHERE blocked = ?)
+            AND (m2.code = ? OR m2.code NOT IN (SELECT code FROM bans))) AS party_size
        FROM friends f JOIN users u ON u.code = f.b LEFT JOIN presence p ON p.code = f.b
          LEFT JOIN party_members m ON m.code = f.b
          LEFT JOIN parties pa ON pa.code = m.party AND pa.last_active > ?
        WHERE f.a = ? AND f.b NOT IN (SELECT code FROM bans) ORDER BY u.name COLLATE NOCASE, u.code`,
-      now - PARTY_IDLE_EXPIRY_S, caller.code,
+      caller.code, caller.code, caller.code, now - PARTY_IDLE_EXPIRY_S, caller.code,
     ).toArray();
     const friends = rows.map((r) => {
       const presence = this.live.get(r.code)?.presence ?? rowToPresence(r);

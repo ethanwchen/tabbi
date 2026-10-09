@@ -114,6 +114,20 @@ describe("blocks", () => {
     expect(codes((await partyOf(host)).members)).toEqual([host.code, a.code, b.code]);
   });
 
+  it("leaves hidden members out of a friend's party size", async () => {
+    const host = await register();
+    const a = await register();
+    const b = await register();
+    const party = await createParty(host);
+    await join(b, party);
+    await call("POST", "/v1/friends", { code: host.code }, a.token);
+    const sizeFor = async (u: { token: string }) => (await call("GET", "/v1/friends", undefined, u.token)).body.friends[0].party;
+    expect(await sizeFor(a)).toEqual({ code: party, size: 2 });
+    await block(a, b);
+    expect(await sizeFor(a)).toEqual({ code: party, size: 1 });
+    expect(codes((await partyOf(host)).members)).toEqual([host.code, b.code]);
+  });
+
   it("forgets blocks either way when a user is deleted", async () => {
     const a = await register();
     const b = await register();
