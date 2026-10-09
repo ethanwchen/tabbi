@@ -174,7 +174,7 @@ SUPPORT = f'''
       <h2>Common questions</h2>
 
 {faq('How do I install Tabbi?', f"""          <ol>
-            <li>Download <strong>Tabbi-&lt;version&gt;.dmg</strong> from the <a href="{DOWNLOAD}">latest release</a>.</li>
+            <li>Click <a href="{DOWNLOAD}">Download for Mac</a> to get <strong>Tabbi.dmg</strong>, the newest version.</li>
             <li>Open it and drag <strong>Tabbi</strong> onto the <strong>Applications</strong> folder.</li>
             <li>Open Tabbi from Applications. macOS asks once whether to open an app downloaded from the Internet: click <strong>Open</strong>.</li>
           </ol>

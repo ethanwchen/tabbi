@@ -3,7 +3,9 @@
 from html import escape
 
 ORIGIN = 'https://tabbinotch.com'
-DOWNLOAD = 'https://github.com/ethanwchen/tabbi/releases/latest'
+# The newest DMG itself: every release also uploads it as Tabbi.dmg (scripts/release.sh).
+DOWNLOAD = 'https://github.com/ethanwchen/tabbi/releases/latest/download/Tabbi.dmg'
+RELEASES = 'https://github.com/ethanwchen/tabbi/releases'
 GITHUB = 'https://github.com/ethanwchen/tabbi'
 ISSUES = 'https://github.com/ethanwchen/tabbi/issues'
 RELEASES = 'https://github.com/ethanwchen/tabbi/releases'
