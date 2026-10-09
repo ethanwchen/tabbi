@@ -2,6 +2,7 @@
 
 What the whole-app quality pass found and fixed, newest first, one sentence per line.
 
+- The System tab kept the notch redrawing every frame while it was open (about 35% of a core in a release build, the monitor showing up in its own CPU graph), because each once-a-second reading started a spring on the sparklines, core strip and memory bar and rolled the digits; readings now update without animation and the open System tab uses about 2%.
 - In demo mode (`TABBI_DEMO=1`) the Timer and Focus countdowns sat still ("17:57" for as long as the panel stayed open) although they read as running, because both stores skipped their once-a-second tick in demo runs as well as snapshot runs; demo clocks now count down while their panel shows, snapshot renders still keep the clock still, and Study no longer chimes during a snapshot render.
 - The Timer tab mixed two time styles in one label ("0 min of 4h", "45 min of 2h") and read the daily focus goal differently from Today and the closed notch ("1h 4m" against "1 h 4 min"); it now uses the shared goal format ("1 h 4 min of 4 h"), which still fits at the Compact panel size.
 - Every `swift test` run left about 40 empty preference files (`TabbiTests.<UUID>.plist`, `KitSwitchUndoTests.<UUID>.plist` and more) in the user's real ~/Library/Preferences, because tests opened named `UserDefaults` suites, which keep their plist even after the domain is removed, and over 30,000 had piled up; every test now uses `InMemoryDefaults`, which also keeps named domains (an old build's preferences) in memory.
