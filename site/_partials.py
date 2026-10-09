@@ -6,6 +6,7 @@ ORIGIN = 'https://tabbinotch.com'
 DOWNLOAD = 'https://github.com/ethanwchen/tabbi/releases/latest'
 GITHUB = 'https://github.com/ethanwchen/tabbi'
 ISSUES = 'https://github.com/ethanwchen/tabbi/issues'
+RELEASES = 'https://github.com/ethanwchen/tabbi/releases'
 SUPPORT_EMAIL = 'support@tabbinotch.com'
 
 # Links are root-relative and extensionless, the way Cloudflare Pages serves
@@ -18,7 +19,7 @@ NAV = [
     (DOWNLOAD, 'Download'),
 ]
 
-BRAND = '<img src="/img/icon-512.webp" width="36" height="36" alt="" class="mark">'
+BRAND = '<img src="/img/icon-256.webp" width="36" height="36" alt="" class="mark">'
 
 # A download arrow, drawn inline so it costs no request and takes the
 # button's text color in both themes.
@@ -47,7 +48,7 @@ def canonical(slug):
     return ORIGIN + '/' + slug.removesuffix('.html')
 
 
-def page(slug, title, description, body, hero=None, wide=False, indexable=True):
+def page(slug, title, description, body, hero=None, wide=False, indexable=True, head=''):
     def link(href, label):
         here = '/' + slug.removesuffix('.html')
         current = ' aria-current="page"' if href == here else ''
@@ -90,20 +91,20 @@ def page(slug, title, description, body, hero=None, wide=False, indexable=True):
   <meta property="og:type" content="website">
   <meta property="og:url" content="{url}">
   <meta property="og:image" content="{ORIGIN}/img/social-preview.png">
-  <meta property="og:image:width" content="1280">
-  <meta property="og:image:height" content="640">
-  <meta property="og:image:alt" content="The Tabbi notch open on its Timer tab, above the Tabbi icon and name">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The Tabbi icon and the line A little cat for your notch, beside a laptop with the Timer tab open in its notch">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{title_attr}">
   <meta name="twitter:description" content="{desc_attr}">
   <meta name="twitter:image" content="{ORIGIN}/img/social-preview.png">
+  <meta name="twitter:image:alt" content="The Tabbi icon and the line A little cat for your notch, beside a laptop with the Timer tab open in its notch">
   <link rel="icon" href="/favicon.ico" sizes="48x48">
   <link rel="icon" href="/img/favicon-64.png" type="image/png" sizes="64x64">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap">
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="preload" href="/fonts/fredoka-600.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/nunito.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/styles.css">{head}
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -130,6 +131,7 @@ def page(slug, title, description, body, hero=None, wide=False, indexable=True):
       <a href="/support">Support</a>
       <a href="/privacy">Privacy</a>
       <a href="/terms">Terms</a>
+      <a href="{RELEASES}">What&rsquo;s new</a>
       <a href="{GITHUB}">GitHub</a>
       <a href="https://buymeacoffee.com/ethanpolar">Buy me a coffee</a>
     </nav>

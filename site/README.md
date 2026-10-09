@@ -18,6 +18,8 @@ No framework, no JavaScript, no build dependencies.
 - `_headers` - security headers and caching for Cloudflare Pages.
 - `img/` - screenshots and icons, copied from `docs/images` and `docs/brand/assets` (see below).
 - `favicon.ico` - the icon at 16, 32 and 48 px.
+- `press/` - the press kit files; the build zips them into `/press/tabbi-press-kit.zip`, linked from the About page.
+- `_social-card.html` - the source of the Open Graph and Twitter card (not part of the site).
 - `deploy.sh` - builds and deploys to the Cloudflare Pages project `tabbi`.
 
 ## Build and preview
@@ -32,35 +34,52 @@ Links on the site are root-relative and extensionless (`/support`, `/privacy`) f
 
 The build stops with an error when:
 
-- a page references an image or stylesheet that does not exist;
+- a page references an image, font or stylesheet that does not exist;
 - a local link or `#anchor` does not resolve;
+- a page has a script (the CSP blocks them all), or its JSON-LD does not parse;
+- a page and everything it loads (its stylesheet, fonts and images, counting both sizes of a `srcset`) passes 500 KB, which keeps the home page under about 600 KB;
 - any output file is over 20 MB (Cloudflare Pages refuses files over 25 MB).
 
 ## Caching
 
-Every image and the stylesheet are copied into `dist` with a content hash in the name (`styles.<hash>.css`); image URLs inside the stylesheet are hashed too, and `_headers` serves `/img/*` and `/assets/*` as `immutable` for a year.
+Every image, font and the stylesheet are copied into `dist` with a content hash in the name (`styles.<hash>.css`); image URLs inside the stylesheet are hashed too, and `_headers` serves `/img/*` and `/assets/*` as `immutable` for a year.
 Changed bytes get a new URL, so a deploy never leaves visitors on a stale file.
 Pages themselves are not cached that way, so they always pick up the new names.
 
 ## Security headers
 
-`_headers` sets `X-Frame-Options: DENY`, `nosniff`, a strict referrer policy, a permissions policy, HSTS, and a CSP of `default-src 'none'` that allows only the site's own images and stylesheet and Google Fonts.
+`_headers` sets `X-Frame-Options: DENY`, `nosniff`, a strict referrer policy, a permissions policy, HSTS, and a CSP of `default-src 'none'` that allows only the site's own images, fonts and stylesheet.
 Because of that CSP, pages cannot use inline `style` attributes or scripts.
+The home page's `SoftwareApplication` structured data is a `<script type="application/ld+json">` data block, which browsers never run, so the CSP leaves it alone.
+`--serve` sends the same `/*` headers from `_headers`, CSP included, so a preview breaks the same way production would.
 `build.py` wraps the contact address in `<!--email_off-->` so Cloudflare's email obfuscation, whose decoding script the CSP would block, leaves it readable.
+
+## Fonts
+
+`fonts/` holds Fredoka and Nunito as WOFF2, served from the site so a visit sends nothing to Google or any other font service.
+They are Google Fonts' Latin files: Fredoka at weight 600 only (the only weight the site uses), and Nunito's variable font cut to weights 400 to 800 with `fonttools varLib.instancer nunito.woff2 wght=400:800`.
+Both are under the SIL Open Font License (`OFL-Fredoka.txt`, `OFL-Nunito.txt`).
+Every page preloads both, and `@font-face` uses `font-display: swap`.
+If a new weight or a non-Latin character appears in the copy, fetch and cut the files again.
 
 ## Images
 
-The home page shows four tabs; their screenshots are the app's own snapshot renders from `docs/images`, re-encoded as lossless WebP to halve their size (`study.png` is saved as `timer.webp`).
-`icon-512.webp`, `apple-touch-icon.png`, `favicon-64.png` and `favicon.ico` are resized from `docs/brand/assets/tabbi-icon-1024.png`.
+The home page shows four tabs; their screenshots are the app's own snapshot renders from `docs/images`, saved as WebP at quality 92 (`study.png` is saved as `timer.webp`), which looks the same as lossless at a quarter of the size.
+`_tab_shots.py` makes their navy wallpaper transparent first, so only the black notch panel sits on the brown card (it needs numpy and scipy).
+Each also has a 680 px copy (`today-680.webp`), and `srcset` lets small and 1x screens load that one.
+`icon-256.webp`, `apple-touch-icon.png`, `favicon-64.png` and `favicon.ico` are resized from `docs/brand/assets/tabbi-icon-1024.png`.
 `glyph.png` is `docs/brand/assets/tabbi-glyph-256.png`, used as the header mark and on the 404 page.
-`social-preview.png` is copied unchanged for Open Graph and Twitter cards.
-`notch-timer.webp`, the panel in the hero laptop, is `timer.webp` cropped to the open notch with the wallpaper made transparent, resized to 880 px wide.
+`social-preview.png` is the 1200x630 Open Graph and Twitter card: the hero's words, icon, laptop and pixel cat on the brown ground.
+It is `_social-card.html` rendered by Chromium at 1200x630 and scale 1 (it loads Fredoka and Nunito from `fonts/`, so render it from `site/` with file access allowed), then saved by Pillow as an optimized RGB PNG of about 190 KB.
+Render it again when the hero's words or the Timer screenshot change.
+`notch-timer.webp`, the panel in the hero laptop, is `timer.webp` cropped to the open notch with the wallpaper made transparent, resized to 880 px wide, at quality 92.
+`pixel-cat.png` is the app's gray tabby (`PetBreed.grayTabby`) at 1x: the `sit` and `blink` frames from `PetComposer.clip`, rendered by `PetRenderer`, cropped to 22x26 px and placed side by side.
+The stylesheet draws it at 2x or 3x with `image-rendering: pixelated`, peeking out from behind the hero laptop, and blinks it every five seconds unless the visitor prefers reduced motion.
+To export it again, a throwaway test in `Tests/TabbiKitCoreTests` can write those frames to PNG with `CGImageDestination`.
+The press kit in `press/` holds `tabbi-icon-1024.png` (`docs/brand/assets/tabbi-icon-1024.png`) and the four home page tabs as lossless PNGs from `docs/images` (`tabbi-timer.png` is `study.png`), each saved again by Pillow with `optimize=True`.
+Copy them again when the icon or those screenshots change; the About page shows the zip's size by itself.
 `grain.png` is a 160 px grayscale noise tile, drawn with Pillow, for the paper grain over the page.
-When the app's screenshots change, copy and convert them again, for example:
-
-```sh
-python3 -c "from PIL import Image; Image.open('docs/images/today.png').save('site/img/today.webp', lossless=True, method=6)"
-```
+When the app's screenshots change, run `python3 site/_tab_shots.py` from the repo root to cut and convert them again.
 
 ## Deploy
 
