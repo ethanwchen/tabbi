@@ -260,6 +260,11 @@ export function migrate(storage: DurableObjectStorage): void {
 
 /** Unchanged heartbeats are flushed to SQLite at most this often, so a restart loses little. */
 const PRESENCE_FLUSH_S = 600;
+/**
+ * The hourly alarm drops a user's live presence once their last heartbeat is this old. Every status
+ * shows offline long before (2.5 heartbeat intervals), so friends see the same thing from the row.
+ */
+export const LIVE_IDLE_S = 3600;
 
 interface UserRow extends Record<string, SqlStorageValue> {
   code: string;
@@ -370,6 +375,8 @@ export class Hub extends DurableObject<Env> {
   /** Statements run since rows were last added to `usage`; a cursor's counts are final once consumed. */
   private cursors: SqlStorageCursor<Record<string, SqlStorageValue>>[] = [];
   private windows = new Map<string, { end: number; count: number }>();
+  /** When ended rate-limit windows were last dropped from `windows`. */
+  private windowsPrunedAt = 0;
   /**
    * Live presence by friend code, plus when each entry was last written to SQLite. Heartbeats update
    * this map every time but write a row only on a visible change or every PRESENCE_FLUSH_S, which keeps
@@ -403,7 +410,9 @@ export class Hub extends DurableObject<Env> {
    * inactive user's study minutes their 28 days, which PRIVACY.md promises.
    */
   async alarm(): Promise<void> {
-    this.sweepRetention(nowS());
+    const now = nowS();
+    this.sweepRetention(now);
+    this.evictIdlePresence(now);
     this.tally();
     await this.ctx.storage.setAlarm(Date.now() + RETENTION_SWEEP_S * 1000);
   }
@@ -562,11 +571,13 @@ export class Hub extends DurableObject<Env> {
 
   /**
    * Fixed window per identity: one minute unless `windowS` says otherwise (a window starts at a
-   * multiple of its length). Ended windows are dropped lazily once the map grows large.
+   * multiple of its length). Once the map grows large, ended windows are dropped at most once a
+   * minute, so a busy minute with many identities does not scan the whole map on every request.
    */
   private rateLimit(id: string, perWindow: number, now: number, windowS = 60): void {
-    if (this.windows.size > 10_000) {
+    if (this.windows.size > 10_000 && now - this.windowsPrunedAt >= 60) {
       for (const [k, w] of this.windows) if (w.end <= now) this.windows.delete(k);
+      this.windowsPrunedAt = now;
     }
     const end = (Math.floor(now / windowS) + 1) * windowS;
     const w = this.windows.get(id);
@@ -1194,29 +1205,53 @@ export class Hub extends DurableObject<Env> {
     const newDay = prev !== null && prev.day !== next.day;
     if (!live || !prev || newDay || presenceChanged(prev, next) || now - flushedAt >= PRESENCE_FLUSH_S) {
       this.ctx.storage.transactionSync(() => {
-        this.sql.exec(
-          `INSERT OR REPLACE INTO presence
-             (code, status, method, phase_ends_at, session_minutes, today_minutes, streak_days, day, last_seen)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-          caller.code, next.status, next.method, next.phaseEndsAt, next.sessionMinutes, next.todayMinutes,
-          next.streakDays, next.day, next.lastSeen,
-        );
         if (newDay) {
           // Close out the previous day with its final count (it may not have been flushed yet).
           if (prev.todayMinutes > 0 && savedDay !== dayKey(prev)) this.saveStudyDay(caller.code, prev);
           this.sql.exec("DELETE FROM study_days WHERE code = ? AND day < ?",
             caller.code, utcDay(now - STUDY_DAY_RETENTION_DAYS * 86_400));
         }
-        // A zero count is skipped unless it corrects a count already saved for the same day.
-        if (savedDay !== dayKey(next) && (next.todayMinutes > 0 || savedDay?.startsWith(next.day + ":"))) {
-          this.saveStudyDay(caller.code, next);
-          savedDay = dayKey(next);
-        }
+        savedDay = this.persistPresence(caller.code, next, savedDay);
       });
       flushedAt = now;
     }
     this.live.set(caller.code, { presence: next, flushedAt, savedDay });
     return json({ ok: true, presence: next, heartbeatSeconds: heartbeatSeconds(next.status) });
+  }
+
+  /**
+   * Writes a user's presence row and, when they changed, the day's study minutes. Returns the
+   * `day:minutes` now saved. A zero count is skipped unless it corrects a count already saved for the
+   * same day.
+   */
+  private persistPresence(code: string, p: Presence, savedDay: string | null): string | null {
+    this.sql.exec(
+      `INSERT OR REPLACE INTO presence
+         (code, status, method, phase_ends_at, session_minutes, today_minutes, streak_days, day, last_seen)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      code, p.status, p.method, p.phaseEndsAt, p.sessionMinutes, p.todayMinutes, p.streakDays, p.day, p.lastSeen,
+    );
+    if (savedDay !== dayKey(p) && (p.todayMinutes > 0 || savedDay?.startsWith(p.day + ":"))) {
+      this.saveStudyDay(code, p);
+      return dayKey(p);
+    }
+    return savedDay;
+  }
+
+  /**
+   * Drops the live copy of users who stopped sending heartbeats LIVE_IDLE_S ago, writing first what is
+   * not saved yet (their last heartbeat and minutes), so memory holds only recently active users and
+   * nothing is lost. Run by the hourly alarm.
+   */
+  private evictIdlePresence(now: number): void {
+    this.ctx.storage.transactionSync(() => {
+      for (const [code, l] of this.live) {
+        if (now - l.presence.lastSeen < LIVE_IDLE_S) continue;
+        // Every heartbeat that was not written moved lastSeen past the last write.
+        if (l.presence.lastSeen > l.flushedAt) this.persistPresence(code, l.presence, l.savedDay);
+        this.live.delete(code);
+      }
+    });
   }
 
   private saveStudyDay(code: string, p: Presence): void {

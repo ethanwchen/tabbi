@@ -176,6 +176,7 @@ What the numbers say:
 - One Hub serves about 500 to 600 mixed requests per second before latency climbs, in line with Cloudflare's guidance of roughly 1,000 simple requests per second per object.
 - 50,000 registered users need about 142 requests per second in the busiest hour, a quarter of that, with a p99 of about 50 ms.
 - The Hub's in-memory state is about 0.6 KB per recently active user (live presence and a rate-limit window), so about 30 MB at 50,000 users, well inside an object's 128 MB.
+  The hourly alarm writes and then drops the live presence of users who have sent no heartbeat for an hour, and ended rate-limit windows are dropped at most once a minute, so memory follows the users active in the last hour rather than everyone seen since the last restart.
 - Row reads and writes are nowhere near a limit; at this scale requests are what cost money (below).
 
 ### Decision: one Hub until the busiest hour passes 300 requests per second

@@ -130,6 +130,7 @@ Countdowns do not need fast heartbeats: the client sends `phaseEndsAt` and frien
 
 The Hub keeps the live presence in memory and writes the SQLite row (1 row write) only when friends would see a change (status, study method, phase end or streak) or when the last write is 10 minutes old.
 Ticking minute counters alone never force a write.
+The hourly alarm writes what is still unsaved for users silent for an hour and drops them from memory.
 
 Budget for a heavy user who studies 4 hours in 25+5 minute pomodoros and has the app idle for another 4 hours:
 
