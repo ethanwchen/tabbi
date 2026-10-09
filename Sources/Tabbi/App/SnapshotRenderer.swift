@@ -6,10 +6,16 @@ import TabbiKit
 /// Renders every notch state and Settings pane to PNG without showing a window:
 ///
 ///     swift run Tabbi --snapshot ./snapshots [--kit medicine] [--theme <id>|all] [--edition <id>]
+///                                          [--scale <factor>] [--transparent]
 ///
 /// The notch renders in the kit's theme unless `--theme` names one; with
 /// `--theme all` every notch shot is rendered once per theme into a
 /// subfolder named after the theme id.
+///
+/// `--scale` sets the pixels per point of the notch shots (2 by default), and
+/// `--transparent` leaves out their stand-in desktop, so marketing images
+/// (`docs/appstore/make-media.swift`) can place the panel crisply at
+/// any size on a backdrop of their own.
 ///
 /// Used to review UI changes (by people and by agents) without Screen
 /// Recording permission. Live data sources run as usual, so panels show
@@ -36,7 +42,7 @@ enum SnapshotRenderer {
 
     /// - Parameter kitID: the kit whose tabs are rendered, as on first run.
     static func run(outputDirectory: URL, kitID: String = KitLibrary.defaultKitID, themes: ThemeSelection = .kit,
-                    settle: TimeInterval = 1.5) async {
+                    notchStyle: NotchStyle = NotchStyle(), settle: TimeInterval = 1.5) async {
         try? FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
         let services = AppServices(settings: .ephemeral(catalog: ModuleList.catalog(for: .current), kitID: kitID))
         let kitTheme = ThemeCatalog.resolve(services.settings.settings.themeID)
@@ -184,7 +190,7 @@ enum SnapshotRenderer {
         for (theme, folder) in themeFolders {
             Theme.apply(theme)
             try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
-            renderNotchShots(shots, services: services, closet: closet, to: folder)
+            renderNotchShots(shots, services: services, closet: closet, style: notchStyle, to: folder)
         }
         Theme.apply(kitTheme)
 
@@ -278,6 +284,13 @@ enum SnapshotRenderer {
         await renderConnectionSheets(to: outputDirectory)
     }
 
+    /// How the notch shots are drawn: pixels per point, and whether they sit
+    /// on the grey stand-in desktop or on nothing (transparent pixels).
+    struct NotchStyle {
+        var scale: CGFloat = 2
+        var transparent = false
+    }
+
     /// One notch shot: its file name, the notch state, and the onboarding
     /// flow showing in it, if any.
     private struct Shot {
@@ -320,7 +333,7 @@ enum SnapshotRenderer {
 
     /// Renders each notch shot in the active theme into `folder`.
     private static func renderNotchShots(_ shots: [Shot], services: AppServices,
-                                         closet: ClosetModule?, to folder: URL) {
+                                         closet: ClosetModule?, style: NotchStyle, to folder: URL) {
         let firstSection = closet?.store.section
         #if !APPSTORE
         let askClaude = services.modules.module(AskClaudeModule.self)?.session
@@ -359,9 +372,9 @@ enum SnapshotRenderer {
                 .environment(\.loaderRevealDelay, 0) // rendered the moment it appears
                 .frame(width: model.openSize.width + 40,
                        height: model.openSize.height + 24, alignment: .top)
-                .background(Color(white: 0.16)) // stand-in for a desktop
+                .background(style.transparent ? Color.clear : Color(white: 0.16)) // stand-in for a desktop
             let renderer = ImageRenderer(content: view)
-            renderer.scale = 2
+            renderer.scale = style.scale
             guard let image = renderer.nsImage,
                   let tiff = image.tiffRepresentation,
                   let png = NSBitmapImageRep(data: tiff)?.representation(using: .png, properties: [:])
