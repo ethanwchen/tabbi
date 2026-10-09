@@ -6,6 +6,7 @@
 
 import hashlib
 import http.server
+import io
 import json
 import pathlib
 import re
@@ -72,13 +73,18 @@ HOME_HERO = {
     'cta': f'''<div class="cta">{download_button()}</div>
         <p class="cta-note">Free, macOS 14+</p>''',
     'eyebrow': '<img class="hero-icon" src="/img/icon-256.webp" width="256" height="256" alt="The Tabbi app icon: a cream British Shorthair cat with blue eyes on a golden yellow square">',
-    # A drawn laptop with the real Timer panel hanging from its notch.
-    # notch-timer.webp is timer.webp cropped to the panel (see README).
-    # pixel-cat.png is the app's gray tabby sprite, sitting and blinking.
+    # A drawn laptop whose screen plays the app in use, rendered from its
+    # demo snapshots by _hero_video.py (see README). The source only matches
+    # without reduced motion, so then nothing loads and the poster stays.
+    # The animated WebP is for browsers without video; lazy, so others never
+    # fetch it. pixel-cat.png is the app's gray tabby sprite, sitting and blinking.
     'art': '''<div class="laptop">
         <span class="pixel-cat" aria-hidden="true"></span>
         <div class="laptop-screen">
-          <img class="laptop-panel" src="/img/notch-timer.webp" width="880" height="376" alt="Tabbi open in a laptop notch on its Timer tab: a Pomodoro ring at 15:14 with focus sounds">
+          <video class="laptop-video" autoplay muted loop playsinline disableremoteplayback poster="/img/hero-poster.webp" width="1200" height="750" aria-label="Tabbi in use: clicking the notch opens the Timer, then Today, where a task gets checked off and the pet cheers">
+            <source src="/img/hero.mp4" type="video/mp4" media="(prefers-reduced-motion: no-preference)">
+            <img src="/img/hero-fallback.webp" width="600" height="375" loading="lazy" alt="Tabbi in use: clicking the notch opens the Timer, then Today, where a task gets checked off and the pet cheers">
+          </video>
         </div>
         <div class="laptop-base"></div>
       </div>''',
@@ -378,7 +384,7 @@ class Refs(HTMLParser):
         a = dict(attrs)
         if 'id' in a:
             self.ids.add(a['id'])
-        for key in ('href', 'src'):
+        for key in ('href', 'src', 'poster'):
             value = a.get(key)
             if value and (value.startswith('/') or value.startswith('#')) and not value.startswith('//'):
                 self.refs.append(value)
@@ -462,17 +468,29 @@ ASSET_RE = re.compile(r'/(?:img|assets|fonts)/[A-Za-z0-9._-]+')
 # Fetched only for link previews, search results or a home screen icon, not
 # by the page.
 NOT_LOADED_RE = re.compile(r'<meta [^>]*>|<link rel="apple-touch-icon"[^>]*>|<script type="application/ld\+json">.*?</script>', re.S)
+# A video streams in after the page is up, so it has a budget of its own.
+# Its poster is part of the page; the rest (the clip and the fallback for
+# browsers without video, which others never fetch) is counted here.
+MEDIA_BUDGET = 2 * 1024 * 1024
+VIDEO_RE = re.compile(r'<video\b(?:[^>]*?\bposter="([^"]*)")?[^>]*>(.*?)</video>', re.S)
 
 
 def check_weight(stylesheet):
     """Every page, with its stylesheet and every image it can load (both
-    sizes of a srcset, so this is a ceiling), must fit PAGE_BUDGET."""
+    sizes of a srcset, so this is a ceiling), must fit PAGE_BUDGET, and
+    every file inside a video must fit MEDIA_BUDGET."""
     css = (OUT / stylesheet.lstrip('/')).read_text()
     css_assets = set(ASSET_RE.findall(css))
     report = []
     for html_file in sorted(OUT.glob('*.html')):
-        html = html_file.read_text()
-        assets = set(ASSET_RE.findall(NOT_LOADED_RE.sub('', html))) | css_assets
+        html = NOT_LOADED_RE.sub('', html_file.read_text())
+        for media in ASSET_RE.findall(''.join(inner for _poster, inner in VIDEO_RE.findall(html))):
+            size = (OUT / media.lstrip('/')).stat().st_size
+            report.append(f'{media.rsplit("/", 1)[1]} {size // 1024} KB')
+            if size > MEDIA_BUDGET:
+                raise SystemExit(f'{html_file.name}: {media} is {size // 1024} KB; a video\'s budget is {MEDIA_BUDGET // 1024} KB')
+        page = VIDEO_RE.sub(lambda m: m.group(1) or '', html)
+        assets = set(ASSET_RE.findall(page)) | css_assets
         total = len(html.encode()) + sum((OUT / a.lstrip('/')).stat().st_size for a in assets)
         report.append(f'{html_file.name} {total // 1024} KB')
         if total > PAGE_BUDGET:
@@ -509,7 +527,7 @@ def build():
     # hash in the name makes that promise true.
     fingerprints = {}
     for src in sorted((HERE / 'img').iterdir()):
-        if src.suffix in ('.png', '.gif', '.jpg', '.webp', '.svg'):
+        if src.suffix in ('.png', '.gif', '.jpg', '.webp', '.svg', '.mp4'):
             fingerprints['/img/' + src.name] = fingerprint(src, 'img')
     # Fonts land in /assets/ with the stylesheet, which is cached the same way.
     for src in sorted((HERE / 'fonts').glob('*.woff2')):
@@ -618,7 +636,29 @@ class PagesHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(body)
             return None
         self.path = '/' + str(target.relative_to(OUT))
+        # Safari plays a video only from a server that answers byte ranges,
+        # as Cloudflare Pages does.
+        ranged = RANGE_RE.fullmatch(self.headers.get('Range', ''))
+        if ranged and (ranged.group(1) or ranged.group(2)):
+            data = target.read_bytes()
+            first, last = ranged.groups()
+            if first:
+                start, end = int(first), min(int(last) if last else len(data) - 1, len(data) - 1)
+            else:
+                start, end = max(0, len(data) - int(last)), len(data) - 1
+            if start > end:
+                self.send_error(416)
+                return None
+            self.send_response(206)
+            self.send_header('Content-Type', self.guess_type(str(target)))
+            self.send_header('Content-Range', f'bytes {start}-{end}/{len(data)}')
+            self.send_header('Content-Length', str(end - start + 1))
+            self.end_headers()
+            return io.BytesIO(data[start:end + 1])
         return super().send_head()
+
+
+RANGE_RE = re.compile(r'bytes=(\d*)-(\d*)')
 
 
 if __name__ == '__main__':

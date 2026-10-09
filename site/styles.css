@@ -157,7 +157,8 @@ nav.site a.nav-cta:hover { background: var(--btn-hover); color: var(--btn-ink); 
 .hero-home .lede { font-size: 20px; max-width: 32ch; }
 .hero-home .cta { margin-top: 26px; }
 
-/* The laptop: drawn in CSS, with the real panel hanging from its notch.
+/* The laptop: drawn in CSS, its screen playing the app in use (or, under
+   reduced motion, its poster: the Timer open in the notch).
    80% leaves room for the base (112% of the screen) and the cat beside it,
    and 600px keeps it from crowding out the tabs below on tablets. */
 .laptop { position: relative; width: min(600px, 80%); margin: 0 auto; }
@@ -171,15 +172,8 @@ nav.site a.nav-cta:hover { background: var(--btn-hover); color: var(--btn-ink); 
     linear-gradient(180deg, #4A3A2E 0%, #6E5141 55%, #9A6F55 100%);
   box-shadow: 0 30px 50px -24px rgba(0, 0, 0, 0.6);
 }
-.laptop-screen::before {
-  content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-  width: 18%; height: 5.5%; background: #15110E; border-radius: 0 0 12px 12px;
-}
-.laptop-panel {
-  position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 1;
-  display: block; width: 55%; height: auto; border-radius: 0 0 22px 22px;
-  filter: drop-shadow(0 14px 18px rgba(58, 30, 12, 0.5));
-}
+/* The clip draws its own wallpaper and notch at the screen's 16:10. */
+.laptop-video { display: block; width: 100%; height: 100%; object-fit: cover; }
 .laptop-base {
   position: relative; z-index: 1; width: 112%; margin-left: -6%; height: 14px;
   background: #3A3029; border-radius: 0 0 16px 16px;
@@ -436,8 +430,6 @@ footer.site nav a:hover { background: var(--chip); color: var(--on-ground); text
   .hero-icon { width: 96px; }
   .hero-home .wrap { gap: 36px; }
   .laptop-screen { border-width: 6px; border-radius: 14px 14px 6px 6px; }
-  .laptop-screen::before { border-radius: 0 0 7px 7px; }
-  .laptop-panel { width: 60%; border-radius: 0 0 12px 12px; }
   .laptop-base { height: 9px; border-radius: 0 0 10px 10px; }
   .pixel-cat { right: -36px; bottom: 9px; width: 44px; height: 52px; }
   .tab-card { border-radius: 18px; }
