@@ -231,12 +231,14 @@ public struct PetCloset: Hashable, Sendable {
 
 extension PetCloset {
     /// The `TABBI_DEMO=1` closet: a dressed cat a few sessions in, with
-    /// the free starters and two buys owned, two items affordable, and the
-    /// rest still to earn.
+    /// the free starters and two buys owned, two items affordable, the rest
+    /// still to earn, and the launch week cap granted (with the milestones
+    /// part of the way, `PetMilestoneProgress.demo`).
     public static var demo: PetCloset {
         let ledger = PetPointsLedger(
             earned: 165, spent: 85,
-            purchased: [.accessory(.beanie), .accessory(.roundGlasses)]
+            purchased: [.accessory(.beanie), .accessory(.roundGlasses)],
+            granted: [PetLimitedEdition.launchWeekCap.item]
         )
         let profile = PetProfile(name: "Mochi", breed: .britishShorthair, accessories: [.scarf, .roundGlasses])
         return PetCloset(save: PetSave(profile: profile, ledger: ledger))

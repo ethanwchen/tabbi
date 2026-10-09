@@ -80,7 +80,9 @@ extension ModuleContext {
             let store = ClosetStore(storage: storage, runMode: runMode, starter: .starter(kit: activeKit?.defaults),
                                     celebrations: celebrations)
             store.follow(focus: providers.$snapshot.map(\.focus).eraseToAnyPublisher())
-            store.follow(activity: activityLog.recorded)
+            let today = PlannerDayKey(date: .now)
+            store.follow(activity: activityLog.recorded,
+                         history: activityLog.records(from: PlannerDayKey(date: .distantPast), through: today))
             store.follow(kits: kitApplied)
             return store
         }

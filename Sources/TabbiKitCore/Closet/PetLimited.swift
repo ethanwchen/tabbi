@@ -198,3 +198,21 @@ public struct PetMilestoneProgress: Hashable, Sendable {
         }
     }
 }
+
+extension PetMilestoneProgress {
+    /// The `TABBI_DEMO=1` progress: a 4 day streak and 31 hours focused, so
+    /// the Limited shelf shows milestones part of the way, and no Party
+    /// session yet.
+    public static func demo(today: Date, calendar: Calendar = .current) -> PetMilestoneProgress {
+        let start = calendar.startOfDay(for: today)
+        func record(daysAgo: Int, minutes: Double) -> ActivityRecord? {
+            guard let day = calendar.date(byAdding: .day, value: -daysAgo, to: start),
+                  let end = calendar.date(byAdding: .hour, value: 10, to: day) else { return nil }
+            return ActivityRecord(source: "focus", kind: .focusCompleted, start: end.addingTimeInterval(-minutes * 60),
+                                  end: end, quantity: minutes, unit: .minutes)
+        }
+        let earlier = (8...24).compactMap { record(daysAgo: $0 * 2, minutes: 100) }
+        let streak = (0..<4).compactMap { record(daysAgo: $0, minutes: 40) }
+        return PetMilestoneProgress(records: earlier + streak, calendar: calendar)
+    }
+}

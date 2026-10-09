@@ -192,4 +192,13 @@ final class PetLimitedTests: XCTestCase {
         XCTAssertEqual(progress.focusMinutes, 0)
         XCTAssertEqual(progress.studyDays, [])
     }
+
+    func testDemoProgressIsPartWayToEveryMilestone() {
+        let today = Date(timeIntervalSince1970: 1_800_000_000)
+        let progress = PetMilestoneProgress.demo(today: today, calendar: calendar)
+        XCTAssertEqual(progress.value(of: .weekStreak, today: today, calendar: calendar), 4)
+        XCTAssertEqual(progress.value(of: .fiftyHours, today: today, calendar: calendar), 31 * 60)
+        XCTAssertEqual(progress.value(of: .firstParty, today: today, calendar: calendar), 0)
+        XCTAssertFalse(PetMilestone.allCases.contains { progress.isReached($0, calendar: calendar) })
+    }
 }

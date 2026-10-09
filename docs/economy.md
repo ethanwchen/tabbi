@@ -95,3 +95,5 @@ A day with 5 or more focused minutes in total is a study day, the same floor tha
 The Flame Headband asks for more than the typical habit (5 study days a week), a week without a day off.
 The typical student focuses 3 x 25 = 75 minutes a day and 375 a week, so the Golden Laurel takes 3000 / 375 = 8 typical weeks, a long-term goal beyond every showpiece.
 Once given, a limited item stays owned (`PetPointsLedger.granted`), even if the log that earned it is gone or a grant is later withdrawn.
+On launch the Closet replays the whole activity log into the milestones, so a milestone reached before this feature shipped unlocks quietly, without paying any points again; new records after that unlock with a celebration.
+With Sign in with Apple, limited items travel in the account's `unlocks` like bought items, but come back as granted, so they never count as spent points on another Mac.

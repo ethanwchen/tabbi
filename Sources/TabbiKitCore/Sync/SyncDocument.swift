@@ -120,9 +120,12 @@ public struct SyncDocument: Codable, Hashable, Sendable {
     public var spent: Int { tallies.values.reduce(0) { $0 + $1.spent } }
 
     /// The account's ledger: every Mac's points and every unlock this build
-    /// knows.
+    /// knows. Limited edition items in `unlocks` (earned on any Mac, or
+    /// granted for an event by the server) come back as granted, not bought.
     public var ledger: PetPointsLedger {
-        PetPointsLedger(earned: earned, spent: spent, purchased: Set(unlocks.compactMap(PetItem.init(id:))))
+        let items = Set(unlocks.compactMap(PetItem.init(id:)))
+        return PetPointsLedger(earned: earned, spent: spent, purchased: items.filter { !$0.isLimited },
+                               granted: items.filter(\.isLimited))
     }
 
     // MARK: Streak
@@ -165,7 +168,7 @@ public struct SyncDocument: Codable, Hashable, Sendable {
 
         var local = SyncDocument(
             tallies: [device: mine],
-            unlocks: Set(save.ledger.purchased.map(\.id))
+            unlocks: Set(save.ledger.purchased.union(save.ledger.granted).map(\.id))
         )
         if let changedAt { local.pet = SyncedPet(profile: save.profile, updatedAt: changedAt) }
         return merged(with: local)
@@ -173,8 +176,11 @@ public struct SyncDocument: Codable, Hashable, Sendable {
 
     /// The local pet save updated to this document: the synced look (or the
     /// local one when nothing synced yet), the account's ledger, and the
-    /// local focus credit bookkeeping kept as it was.
+    /// local focus credit bookkeeping kept as it was. Limited edition items
+    /// this Mac holds stay, since a grant is never taken back.
     public func applied(to save: PetSave) -> PetSave {
+        var ledger = ledger
+        for item in save.ledger.granted { ledger.grant(item) }
         var updated = PetSave(profile: pet?.profile ?? save.profile, ledger: ledger)
         updated.version = save.version
         updated.creditedFocusCount = save.creditedFocusCount
