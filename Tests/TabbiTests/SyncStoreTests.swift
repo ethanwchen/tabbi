@@ -176,6 +176,40 @@ final class SyncStoreTests: XCTestCase {
         XCTAssertEqual(snapshot.accountSync.phase, .unavailable, "a snapshot build cannot sign in")
         XCTAssertFalse(snapshot.accountSync === demo.accountSync, "each app has its own account")
     }
+
+    /// Snapshots can render the signed-out row a release build shows, and
+    /// only a snapshot run can.
+    func testOnlySnapshotsCanShowTheSignInRowWithoutTheEntitlement() {
+        let types: [any NotchModule.Type] = [PartyModule.self, ClosetModule.self]
+        let settings = SettingsStore.ephemeral(catalog: ModuleList.catalog(of: types))
+        let snapshot = AppServices(settings: settings, moduleTypes: types, environment: [:],
+                                   arguments: ["Tabbi", "--snapshot", "out"])
+        snapshot.accountSync.showsSignInForSnapshot(true)
+        XCTAssertEqual(snapshot.accountSync.phase, .signedOut)
+        snapshot.accountSync.showsSignInForSnapshot(false)
+        XCTAssertEqual(snapshot.accountSync.phase, .unavailable)
+
+        let live = makeStore(server: FakeAccountServer(), credentials: InMemoryPartyCredentialStore(),
+                             pet: petStore(earned: 0), isAvailable: false)
+        live.showsSignInForSnapshot(true)
+        XCTAssertEqual(live.phase, .unavailable)
+    }
+
+    func testAFailedAppleSheetSaysSoAndStaysSignedOut() {
+        let store = makeStore(server: FakeAccountServer(), credentials: InMemoryPartyCredentialStore(),
+                              pet: petStore(earned: 0))
+        store.appleSignInFailed()
+        XCTAssertEqual(store.phase, .signedOut)
+        XCTAssertEqual(store.notice, "Couldn't sign in with Apple. Try again.")
+    }
+
+    func testTheAccountRowSaysWhenItLastSynced() {
+        let now = Date(timeIntervalSince1970: 1_800_000_000)
+        XCTAssertEqual(AccountSettingsRow.relative(now.addingTimeInterval(-20), now: now), "just now")
+        XCTAssertTrue(AccountSettingsRow.relative(now.addingTimeInterval(-4 * 60), now: now).contains("4"))
+        XCTAssertTrue(AccountSettingsRow.deleteMessage.contains("friend code"),
+                      "the confirmation says what is deleted")
+    }
 }
 
 /// The friends server's account routes: sign-in, sync and delete.

@@ -68,7 +68,7 @@ final class AppServices {
     /// menu), at `pane` when given.
     func openSettings(pane: String? = nil) {
         let controller = settingsWindow ?? SettingsWindowController(settings: settings, modules: modules,
-                                                                    onboarding: onboarding)
+                                                                    onboarding: onboarding, account: accountSync)
         settingsWindow = controller
         if let pane { controller.select(pane) }
         controller.present()

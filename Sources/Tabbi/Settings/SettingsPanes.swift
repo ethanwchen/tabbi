@@ -40,6 +40,7 @@ private struct YourNameRow: View {
 
 struct GeneralSettingsPane: View {
     @EnvironmentObject private var store: SettingsStore
+    @Environment(\.accountSync) private var account
     @State private var screens = DisplayOption.connectedScreens()
     @State private var showsMore = false
 
@@ -47,6 +48,9 @@ struct GeneralSettingsPane: View {
         Form {
             Section {
                 YourNameRow()
+                if let account {
+                    AccountSettingsRow(account: account)
+                }
             }
 
             Section {
@@ -119,7 +123,7 @@ struct GeneralSettingsPane: View {
         }
         .formStyle(.grouped)
         .scrollDisabled(!showsMore)
-        .frame(width: paneWidth, height: showsMore ? 840 : 720)
+        .frame(width: paneWidth, height: showsMore ? 896 : 776)
         .motion(Motion.snappy, value: showsMore)
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didChangeScreenParametersNotification)) { _ in
             screens = DisplayOption.connectedScreens()

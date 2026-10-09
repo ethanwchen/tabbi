@@ -48,6 +48,7 @@ final class SyncStore: ObservableObject {
     static let quitWait: TimeInterval = 2
 
     let isDemo: Bool
+    private let isSnapshot: Bool
     private let isAvailable: Bool
     private let pet: ClosetStore
     private let stateURL: URL?
@@ -79,6 +80,7 @@ final class SyncStore: ObservableObject {
          transport: ((URL) -> any PartyTransport)? = nil,
          studyDays: @escaping () -> Set<String> = { [] }, clock: @escaping () -> Date = Date.init) {
         isDemo = runMode.isDemo
+        isSnapshot = runMode.isSnapshot
         self.isAvailable = isAvailable
         self.pet = pet
         self.server = server
@@ -177,6 +179,19 @@ final class SyncStore: ObservableObject {
             phase = before
             notice = Self.message(for: error, signingIn: true)
         }
+    }
+
+    /// Lets a snapshot run render the signed-out row a release build shows
+    /// (`true`) and then the unavailable one again; does nothing elsewhere.
+    func showsSignInForSnapshot(_ shows: Bool) {
+        guard isSnapshot, !isDemo, !state.isSignedIn else { return }
+        phase = shows ? .signedOut : .unavailable
+    }
+
+    /// Apple's sheet failed before anything reached the server.
+    func appleSignInFailed() {
+        guard !isDemo else { return }
+        notice = "Couldn't sign in with Apple. Try again."
     }
 
     /// Signs out: this Mac keeps its pet and progress, and Party goes back
