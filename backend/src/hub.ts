@@ -272,6 +272,7 @@ export class Hub extends DurableObject<Env> {
     if (path === "/v1/me" && method === "GET") return json({ ok: true, profile: caller.profile });
     if (path === "/v1/me" && method === "PATCH") return this.updateProfile(req, caller, false);
     if (path === "/v1/me" && method === "DELETE") return await this.deleteMe(caller);
+    if (path === "/v1/auth/signout" && method === "POST") return await this.signOut(caller);
 
     if (path === "/v1/friends" && method === "GET") return this.listFriends(caller, now);
     if (path === "/v1/friends" && method === "POST") return this.addFriend(req, caller, now);
@@ -615,6 +616,19 @@ export class Hub extends DurableObject<Env> {
     const { token, code, newAccount } = result!;
     const profile = rowToProfile(this.sql.exec<UserRow>("SELECT * FROM users WHERE code = ?", code).one());
     return json({ ok: true, token, code, profile, newAccount });
+  }
+
+  /**
+   * POST /v1/auth/signout: the caller's token stops working; the account and every other Mac's token
+   * stay. A per-Mac token is deleted. The first Mac's token lives on the user row, so it is replaced by
+   * the hash of a token nobody holds. An anonymous user is refused, since it would lose its only token.
+   */
+  private async signOut(caller: Caller): Promise<Response> {
+    this.requireAccount(caller);
+    const retired = await sha256Hex(newToken());
+    this.sql.exec("DELETE FROM device_tokens WHERE token_hash = ?", caller.tokenHash);
+    this.sql.exec("UPDATE users SET token_hash = ? WHERE token_hash = ?", retired, caller.tokenHash);
+    return json({ ok: true });
   }
 
   private hasAppleAccount(code: string): boolean {

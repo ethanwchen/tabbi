@@ -84,6 +84,10 @@ final class SyncStoreTests: XCTestCase {
         XCTAssertNil(credentials.load(for: serverURL), "Party starts an identity of its own")
         XCTAssertEqual(pet.closet.save.ledger.earned, 20)
         XCTAssertEqual(makeStore(server: server, credentials: credentials, pet: pet).phase, .signedOut)
+        for _ in 0..<200 where server.signedOutWith == nil {
+            try? await Task.sleep(nanoseconds: 10_000_000)
+        }
+        XCTAssertEqual(server.signedOutWith, "t-acct", "the server retires this Mac's token")
     }
 
     func testDeletingTheAccountDeletesItOnTheServerAndKeepsThePet() async throws {
@@ -220,6 +224,7 @@ private final class FakeAccountServer: PartyTransport, @unchecked Sendable {
     private var requests = 0
     private var bearer: String?
     private var deleted: String?
+    private var signedOut: String?
     var refuseSignIn = false
     var failDelete = false
     var accountGone = false
@@ -230,6 +235,7 @@ private final class FakeAccountServer: PartyTransport, @unchecked Sendable {
     }
     var signInBearer: String? { lock.withLock { bearer } }
     var deletedWith: String? { lock.withLock { deleted } }
+    var signedOutWith: String? { lock.withLock { signedOut } }
     var requestCount: Int { lock.withLock { requests } }
 
     func send(_ request: PartyHTTPRequest, timeout: TimeInterval) async throws -> PartyHTTPResponse {
@@ -252,6 +258,9 @@ private final class FakeAccountServer: PartyTransport, @unchecked Sendable {
                     .flatMap { try? SyncDocument.decode($0) }
                 revision += 1
                 return Self.reply(#"{"ok":true,"revision":\#(revision),"updatedAt":1791504060}"#)
+            case ("POST", "/v1/auth/signout"):
+                signedOut = request.token
+                return Self.reply(#"{"ok":true}"#)
             case ("DELETE", "/v1/me"):
                 if failDelete { return Self.reply(#"{"ok":false,"error":"server_error","message":"no"}"#, 500) }
                 deleted = request.token

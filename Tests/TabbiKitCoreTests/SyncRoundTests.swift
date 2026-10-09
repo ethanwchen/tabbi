@@ -28,6 +28,8 @@ private final class FakeSyncServer: PartyTransport, @unchecked Sendable {
         switch (request.method, request.path) {
         case ("POST", "/v1/auth/apple"):
             return Self.reply(signInReply)
+        case ("POST", "/v1/auth/signout"):
+            return Self.reply(#"{"ok":true}"#)
         case ("GET", "/v1/sync"):
             let pull = lock.withLock { () -> Int in pulls += 1; return pulls }
             if let pushed = beforePull?(pull) { seed(pushed) }
@@ -96,6 +98,21 @@ final class SyncClientTests: XCTestCase {
         XCTAssertEqual(pull.revision, 1)
         XCTAssertEqual(pull.document, document)
         XCTAssertEqual(pull.updatedAt, Date(timeIntervalSince1970: 1_791_504_000))
+    }
+
+    func testSignOutSendsTheTokenAndNeedsOne() async throws {
+        let server = FakeSyncServer()
+        try await SyncClient(transport: server, token: "t-mac").signOut()
+        let request = try XCTUnwrap(server.requests.last)
+        XCTAssertEqual(request.method, "POST")
+        XCTAssertEqual(request.path, "/v1/auth/signout")
+        XCTAssertEqual(request.token, "t-mac")
+        do {
+            try await SyncClient(transport: server).signOut()
+            XCTFail("expected unauthorized")
+        } catch {
+            XCTAssertEqual(error as? PartyError, .unauthorized)
+        }
     }
 
     func testSyncRoutesNeedAToken() async {

@@ -93,6 +93,14 @@ public struct SyncClient: Sendable {
         return try PartyClient.decode(try await send(try authorized(request)), as: PushReply.self).revision
     }
 
+    /// `POST /v1/auth/signout`: this Mac's token stops working on the
+    /// server, so signing out leaves nothing behind that could still act as
+    /// the account. The account and the other Macs stay signed in.
+    public func signOut() async throws {
+        let response = try await send(try authorized(PartyHTTPRequest(method: "POST", path: "/v1/auth/signout")))
+        _ = try PartyClient.decode(response, as: OKReply.self)
+    }
+
     // MARK: Plumbing
 
     private func authorized(_ request: PartyHTTPRequest) throws -> PartyHTTPRequest {
@@ -154,3 +162,5 @@ private struct PullReply: Decodable {
 private struct PushReply: Decodable {
     let revision: Int
 }
+
+private struct OKReply: Decodable {}

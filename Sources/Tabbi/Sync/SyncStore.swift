@@ -198,11 +198,19 @@ final class SyncStore: ObservableObject {
     }
 
     /// Signs out: this Mac keeps its pet and progress, and Party goes back
-    /// to an identity of its own.
+    /// to an identity of its own. The server is asked to retire this Mac's
+    /// token too, so nothing left behind can still act as the account; that
+    /// is best effort, and signing out works offline all the same.
     func signOut() {
         guard !isDemo, state.isSignedIn else { return }
         cancelSync()
-        if let server = server() { try? credentials.delete(for: server) }
+        if let server = server() {
+            if let token = credentials.load(for: server)?.token {
+                let client = SyncClient(transport: transport(server), token: token)
+                Task { try? await client.signOut() }
+            }
+            try? credentials.delete(for: server)
+        }
         state = state.signedOut()
         persist()
         settleSignedOut()

@@ -282,6 +282,40 @@ describe("DELETE /v1/me with an Apple account", () => {
   });
 });
 
+describe("POST /v1/auth/signout", () => {
+  it("stops a second Mac's token and leaves the account and the first Mac working", async () => {
+    const mac1 = await register();
+    await signIn({ identityToken: await identityToken("sub.signout.2") }, mac1.token);
+    const mac2 = (await signIn({ identityToken: await identityToken("sub.signout.2") })).body;
+
+    expect((await call("POST", "/v1/auth/signout", undefined, mac2.token)).body).toEqual({ ok: true });
+    expectError(await call("GET", "/v1/me", undefined, mac2.token), 401, "unauthorized");
+    expect((await call("GET", "/v1/sync", undefined, mac1.token)).status).toBe(200);
+    expect(appleCalls.some((c) => c.url === APPLE_REVOKE_URL)).toBe(false);
+  });
+
+  it("stops the first Mac's token, and signing in again on that Mac adopts the same account", async () => {
+    const mac1 = await register();
+    await signIn({ identityToken: await identityToken("sub.signout.1") }, mac1.token);
+    const mac2 = (await signIn({ identityToken: await identityToken("sub.signout.1") })).body;
+
+    expect((await call("POST", "/v1/auth/signout", undefined, mac1.token)).status).toBe(200);
+    expectError(await call("GET", "/v1/me", undefined, mac1.token), 401, "unauthorized");
+    expect((await call("GET", "/v1/me", undefined, mac2.token)).body.profile.code).toBe(mac1.code);
+
+    const again = await signIn({ identityToken: await identityToken("sub.signout.1") });
+    expect(again.body).toMatchObject({ code: mac1.code, newAccount: false });
+    expect((await call("GET", "/v1/me", undefined, again.body.token)).status).toBe(200);
+  });
+
+  it("refuses an anonymous user, whose token is its only one", async () => {
+    const anon = await register();
+    expectError(await call("POST", "/v1/auth/signout", undefined, anon.token), 403, "no_account");
+    expect((await call("GET", "/v1/me", undefined, anon.token)).status).toBe(200);
+    expectError(await call("POST", "/v1/auth/signout"), 401, "unauthorized");
+  });
+});
+
 // ---------- the helpers on their own ----------
 
 describe("apple helpers", () => {

@@ -142,6 +142,7 @@ Auth column: "token" means `Authorization: Bearer <token>` is required.
 | `GET /v1/catalog` | none | the shared catalog |
 | `POST /v1/register` | none or token | create a user, or update the profile of an existing one |
 | `POST /v1/auth/apple` | none or token | sign in with Apple: link or adopt the account's friend code |
+| `POST /v1/auth/signout` | token, Apple account | sign this Mac out: its token stops working |
 | `GET /v1/me` | token | my profile |
 | `PATCH /v1/me` | token | update my profile |
 | `DELETE /v1/me` | token | delete me and everything about me |
@@ -221,6 +222,14 @@ That needs the Worker secrets `APPLE_TEAM_ID`, `APPLE_KEY_ID` and `APPLE_PRIVATE
 Sign-ins are limited to 10 per minute per IP.
 
 Errors: `invalid_identity_token` (401, the token is malformed, expired, not Apple's or not for Tabbi; ask the user to sign in again), `apple_unavailable` (503, Apple's keys could not be fetched; retry), `invalid_json`, `unknown_field`, `invalid_field`, `rate_limited`.
+
+### `POST /v1/auth/signout`
+
+No body.
+The caller's token stops working (`unauthorized` from then on); the account, its sync document and every other Mac's token stay.
+`200 {"ok": true}`.
+The app sends it when the user signs out, then drops the token and its friend code; signing in again on that Mac adopts the account with a new token.
+Errors: `no_account` (403, an anonymous user would lose its only token), `unauthorized`, `rate_limited`.
 
 ### `GET /v1/friends`
 
@@ -408,6 +417,7 @@ Keep to these intervals, and stop every timer whose data is not on screen.
 | `GET /v1/party` | every 30 s while I am in a party and the party view is visible; once when the notch opens otherwise |
 | `GET /v1/leaderboard` | once each time its view opens; no timer |
 | `POST /v1/auth/apple` | once, when the user taps Sign in with Apple; never on a timer |
+| `POST /v1/auth/signout` | once, when the user taps Sign Out |
 | `GET /v1/me`, `PATCH /v1/me` | on launch and after the user edits their pet; not on a timer |
 | `GET /v1/sync` | on launch and on wake, and after a `409`; not on a timer |
 | `PUT /v1/sync` | after local progress changes, debounced (for example 30 s), and once on quit |

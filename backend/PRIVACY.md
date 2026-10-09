@@ -46,6 +46,7 @@ Removing a friend deletes the friendship in both directions.
 Deleting your account calls `DELETE /v1/me`, which erases your profile, presence, daily study minutes, friend list, sync document and Apple account link, removes you from your friends' lists, and takes you out of your party.
 If you signed in with Apple, it then revokes the app's Sign in with Apple grant with Apple.
 Your secret token, and the token of every other Mac you signed in on, stops working at once.
+Signing out on one Mac (`POST /v1/auth/signout`) deletes that Mac's token on the server; your account and other Macs stay signed in.
 Signing in with Apple on a Mac that already had a friend code of its own moves that code's friends and study minutes to your account and deletes the old code.
 
 ## No analytics, no third parties
