@@ -24,6 +24,7 @@ import {
 } from "./apple";
 import { PRESENCE_FIELDS, Presence, heartbeatSeconds, isOnline, parseHeartbeat, presenceChanged, publicPresence } from "./presence";
 import { STUDY_DAY_RETENTION_DAYS, rankEntries } from "./leaderboard";
+import { MAX_BLOCKS } from "./moderation";
 import { JOIN_FIELDS, PARTY_TOUCH_S, PartySession, SESSION_FIELDS, parseJoin, parseSession, partyExpired } from "./party";
 
 export interface Env extends AppleSecrets {
@@ -121,12 +122,25 @@ CREATE TABLE sync_documents (
 ) WITHOUT ROWID;
 `;
 
+/** Moderation: blocks between users. */
+const MODERATION_SCHEMA = `
+-- A block hides two users from each other (friends, parties, leaderboard) and stops the blocked user
+-- from adding the blocker or joining a party they host. Stored one way: only the blocker can lift it.
+CREATE TABLE blocks (
+  blocker    TEXT NOT NULL,
+  blocked    TEXT NOT NULL,
+  created_at INTEGER NOT NULL,
+  PRIMARY KEY (blocker, blocked)
+) WITHOUT ROWID;
+CREATE INDEX blocks_by_blocked ON blocks (blocked);
+`;
+
 /**
  * Ordered schema steps; step i brings the database to version i + 1. Append new steps and never edit
  * one that has been deployed. Step 1 is the original schema, written with IF NOT EXISTS so databases
  * created before versioning (which have its tables but no recorded version) pass through it unchanged.
  */
-const MIGRATIONS = [SCHEMA, SYNC_SCHEMA];
+const MIGRATIONS = [SCHEMA, SYNC_SCHEMA, MODERATION_SCHEMA];
 
 /** Runs the steps a database has not had yet, each in its own transaction with its version bump. */
 export function migrate(storage: DurableObjectStorage): void {
@@ -279,6 +293,11 @@ export class Hub extends DurableObject<Env> {
     const friendPath = /^\/v1\/friends\/([^/]+)$/.exec(path);
     if (friendPath && method === "DELETE") return this.removeFriend(caller, friendPath[1]);
 
+    if (path === "/v1/blocks" && method === "GET") return this.listBlocks(caller);
+    if (path === "/v1/blocks" && method === "POST") return this.block(req, caller, now);
+    const blockPath = /^\/v1\/blocks\/([^/]+)$/.exec(path);
+    if (blockPath && method === "DELETE") return this.unblock(caller, blockPath[1]);
+
     if (path === "/v1/presence" && method === "POST") return this.heartbeat(req, caller, now);
     if (path === "/v1/leaderboard" && method === "GET") return this.leaderboard(caller, now);
 
@@ -397,6 +416,8 @@ export class Hub extends DurableObject<Env> {
     this.sql.exec("DELETE FROM sync_documents WHERE code = ?", code);
     this.sql.exec("DELETE FROM apple_accounts WHERE code = ?", code);
     this.sql.exec("DELETE FROM device_tokens WHERE code = ?", code);
+    this.sql.exec("DELETE FROM blocks WHERE blocker = ?", code);
+    this.sql.exec("DELETE FROM blocks WHERE blocked = ?", code);
     this.live.delete(code);
   }
 
@@ -437,6 +458,9 @@ export class Hub extends DurableObject<Env> {
     if (code === caller.code) throw new HttpError(400, "self_friend", "you cannot add yourself");
     const row = this.sql.exec<UserRow>("SELECT * FROM users WHERE code = ?", code).toArray()[0];
     if (!row) throw new HttpError(404, "unknown_code", "no one has that code");
+    if (this.hasBlocked(caller.code, code)) throw new HttpError(409, "blocked", "you blocked them; unblock them first");
+    // A blocked user is told the code is unknown, so a block is never revealed.
+    if (this.hasBlocked(code, caller.code)) throw new HttpError(404, "unknown_code", "no one has that code");
     const already = this.sql.exec("SELECT 1 FROM friends WHERE a = ? AND b = ?", caller.code, code).toArray().length > 0;
     if (!already) {
       if (this.friendCount(caller.code) >= MAX_FRIENDS) {
@@ -466,6 +490,61 @@ export class Hub extends DurableObject<Env> {
 
   private friendCount(code: string): number {
     return this.sql.exec<{ n: number }>("SELECT COUNT(*) AS n FROM friends WHERE a = ?", code).one().n;
+  }
+
+  // ---------- blocks ----------
+
+  private hasBlocked(blocker: string, blocked: string): boolean {
+    return this.sql.exec("SELECT 1 FROM blocks WHERE blocker = ? AND blocked = ?", blocker, blocked).toArray().length > 0;
+  }
+
+  private blockedEitherWay(a: string, b: string): boolean {
+    return this.hasBlocked(a, b) || this.hasBlocked(b, a);
+  }
+
+  /** GET /v1/blocks: the users I blocked, newest first, with their current name and pet name. */
+  private listBlocks(caller: Caller): Response {
+    const rows = this.sql.exec<{ code: string; name: string; pet_name: string; created_at: number }>(
+      `SELECT u.code, u.name, u.pet_name, b.created_at FROM blocks b JOIN users u ON u.code = b.blocked
+       WHERE b.blocker = ? ORDER BY b.created_at DESC, u.code`,
+      caller.code,
+    ).toArray();
+    return json({ ok: true, blocks: rows.map((r) => ({ code: r.code, name: r.name, petName: r.pet_name, since: r.created_at })) });
+  }
+
+  /**
+   * POST /v1/blocks with `{ code }`: ends the friendship and hides us from each other. If we share a
+   * party, the blocked user leaves it when I host, I leave it when they host, and otherwise we just stop
+   * seeing each other in it. Blocking someone already blocked is a no-op success (`blocked: false`).
+   */
+  private async block(req: Request, caller: Caller, now: number): Promise<Response> {
+    const body = await readBody(req, ["code"]);
+    const code = parseFriendCode(body.code);
+    if (code === caller.code) throw new HttpError(400, "self_block", "you cannot block yourself");
+    const row = this.sql.exec<UserRow>("SELECT * FROM users WHERE code = ?", code).toArray()[0];
+    if (!row) throw new HttpError(404, "unknown_code", "no one has that code");
+    const already = this.hasBlocked(caller.code, code);
+    if (!already) {
+      const count = this.sql.exec<{ n: number }>("SELECT COUNT(*) AS n FROM blocks WHERE blocker = ?", caller.code).one().n;
+      if (count >= MAX_BLOCKS) throw new HttpError(409, "block_limit", `you already blocked ${MAX_BLOCKS} people`);
+      const mine = this.currentParty(caller.code, now);
+      const shared = mine !== null && mine === this.currentParty(code, now) ? mine : null;
+      const host = shared ? this.sql.exec<{ host: string }>("SELECT host FROM parties WHERE code = ?", shared).one().host : null;
+      this.ctx.storage.transactionSync(() => {
+        this.sql.exec("INSERT INTO blocks (blocker, blocked, created_at) VALUES (?, ?, ?)", caller.code, code, now);
+        this.sql.exec("DELETE FROM friends WHERE (a = ? AND b = ?) OR (a = ? AND b = ?)", caller.code, code, code, caller.code);
+        if (host === caller.code) this.leaveParty(code, now);
+        else if (host === code) this.leaveParty(caller.code, now);
+      });
+    }
+    return json({ ok: true, blocked: !already, block: { code, name: row.name, petName: row.pet_name } });
+  }
+
+  /** DELETE /v1/blocks/{code}: lifts my block. The friendship is not restored; either can add again. */
+  private unblock(caller: Caller, raw: string): Response {
+    const code = parseFriendCode(raw);
+    const unblocked = this.sql.exec("DELETE FROM blocks WHERE blocker = ? AND blocked = ?", caller.code, code).rowsWritten > 0;
+    return json({ ok: true, unblocked });
   }
 
   // ---------- presence ----------
@@ -641,8 +720,10 @@ export class Hub extends DurableObject<Env> {
    */
   private foldInto(from: string, to: string, now: number): void {
     const friends = this.sql.exec<{ b: string }>(
-      "SELECT b FROM friends WHERE a = ? AND b != ? AND b NOT IN (SELECT b FROM friends WHERE a = ?) ORDER BY created_at",
-      from, to, to).toArray();
+      `SELECT b FROM friends WHERE a = ? AND b != ? AND b NOT IN (SELECT b FROM friends WHERE a = ?)
+         AND b NOT IN (SELECT blocked FROM blocks WHERE blocker = ?) AND b NOT IN (SELECT blocker FROM blocks WHERE blocked = ?)
+       ORDER BY created_at`,
+      from, to, to, to, to).toArray();
     let count = this.friendCount(to);
     for (const { b } of friends) {
       if (count >= MAX_FRIENDS) break;
@@ -654,6 +735,21 @@ export class Hub extends DurableObject<Env> {
        ON CONFLICT (code, day) DO UPDATE SET minutes = MAX(minutes, excluded.minutes)`,
       to, from,
     );
+    // Blocks follow the user both ways, so signing in never lifts a block.
+    this.sql.exec(
+      `INSERT OR IGNORE INTO blocks (blocker, blocked, created_at)
+       SELECT ?, blocked, created_at FROM blocks WHERE blocker = ? AND blocked != ?`, to, from, to);
+    this.sql.exec(
+      `INSERT OR IGNORE INTO blocks (blocker, blocked, created_at)
+       SELECT blocker, ?, created_at FROM blocks WHERE blocked = ? AND blocker != ?`, to, from, to);
+    if (this.sql.exec("SELECT 1 FROM blocks WHERE blocker = ? OR blocked = ? LIMIT 1", to, to).toArray().length > 0) {
+      this.sql.exec(
+        `DELETE FROM friends WHERE a = ? AND (b IN (SELECT blocked FROM blocks WHERE blocker = ?)
+           OR b IN (SELECT blocker FROM blocks WHERE blocked = ?))`, to, to, to);
+      this.sql.exec(
+        `DELETE FROM friends WHERE b = ? AND (a IN (SELECT blocked FROM blocks WHERE blocker = ?)
+           OR a IN (SELECT blocker FROM blocks WHERE blocked = ?))`, to, to, to);
+    }
     this.purgeUser(from, now);
   }
 
@@ -707,7 +803,7 @@ export class Hub extends DurableObject<Env> {
   private getParty(caller: Caller, now: number): Response {
     const code = this.currentParty(caller.code, now);
     if (code) this.touchParty(code, now, false);
-    return json({ ok: true, party: code ? this.partyView(code, now) : null });
+    return json({ ok: true, party: code ? this.partyView(code, now, caller.code) : null });
   }
 
   /** POST /v1/party: creates a party with the caller as host, leaving any party they were in. */
@@ -722,7 +818,7 @@ export class Hub extends DurableObject<Env> {
       this.sql.exec("INSERT INTO parties (code, host, created_at, last_active) VALUES (?, ?, ?, ?)", code, caller.code, now, now);
       this.sql.exec("INSERT INTO party_members (code, party, joined_at) VALUES (?, ?, ?)", caller.code, code, now);
     });
-    return json({ ok: true, party: this.partyView(code, now) }, 201);
+    return json({ ok: true, party: this.partyView(code, now, caller.code) }, 201);
   }
 
   /**
@@ -744,9 +840,12 @@ export class Hub extends DurableObject<Env> {
       code = this.currentParty(friend, now);
       if (!code) throw new HttpError(404, "friend_not_in_party", "that friend is not in a party");
     }
+    const host = this.sql.exec<{ host: string }>("SELECT host FROM parties WHERE code = ?", code).one().host;
+    // A party whose host and the caller blocked each other looks like it does not exist.
+    if (this.blockedEitherWay(caller.code, host)) throw new HttpError(404, "party_not_found", "no active party has that code");
     if (this.currentParty(caller.code, now) === code) {
       this.touchParty(code, now, false);
-      return json({ ok: true, joined: false, party: this.partyView(code, now) });
+      return json({ ok: true, joined: false, party: this.partyView(code, now, caller.code) });
     }
     if (this.memberCount(code) >= MAX_PARTY_MEMBERS) {
       throw new HttpError(409, "party_full", `a party has at most ${MAX_PARTY_MEMBERS} members`);
@@ -757,7 +856,7 @@ export class Hub extends DurableObject<Env> {
       this.sql.exec("INSERT INTO party_members (code, party, joined_at) VALUES (?, ?, ?)", caller.code, party, now);
       this.touchParty(party, now, true);
     });
-    return json({ ok: true, joined: true, party: this.partyView(party, now) });
+    return json({ ok: true, joined: true, party: this.partyView(party, now, caller.code) });
   }
 
   /** POST /v1/party/leave. Leaving when not in a party is a no-op success (`left: false`). */
@@ -779,7 +878,7 @@ export class Hub extends DurableObject<Env> {
        WHERE code = ?`,
       session.method, session.phaseEndsAt, now, now, code,
     );
-    return json({ ok: true, party: this.partyView(code, now) });
+    return json({ ok: true, party: this.partyView(code, now, caller.code) });
   }
 
   /** DELETE /v1/party/session: the host ends the shared session. */
@@ -790,7 +889,7 @@ export class Hub extends DurableObject<Env> {
        WHERE code = ?`,
       now, code,
     );
-    return json({ ok: true, party: this.partyView(code, now) });
+    return json({ ok: true, party: this.partyView(code, now, caller.code) });
   }
 
   /** The caller's party, which they must host. */
@@ -866,16 +965,22 @@ export class Hub extends DurableObject<Env> {
     return true;
   }
 
-  /** The party as members see it: members in join order with profiles and presence. */
-  private partyView(code: string, now: number) {
+  /**
+   * The party as `viewer` sees it: members in join order with profiles and presence, leaving out anyone
+   * the viewer blocked or was blocked by.
+   */
+  private partyView(code: string, now: number, viewer: string) {
     const p = this.sql.exec<{
       host: string; created_at: number; last_active: number;
       session_method: string | null; session_phase_ends_at: number | null; session_started_at: number | null;
     }>("SELECT * FROM parties WHERE code = ?", code).one();
     const rows = this.sql.exec<UserRow & { joined_at: number }>(
       `SELECT u.*, m.joined_at FROM party_members m JOIN users u ON u.code = m.code
-       WHERE m.party = ? ORDER BY m.joined_at, m.rowid`,
-      code,
+       WHERE m.party = ?
+         AND m.code NOT IN (SELECT blocked FROM blocks WHERE blocker = ?)
+         AND m.code NOT IN (SELECT blocker FROM blocks WHERE blocked = ?)
+       ORDER BY m.joined_at, m.rowid`,
+      code, viewer, viewer,
     ).toArray();
     const session: PartySession | null = p.session_method !== null && p.session_phase_ends_at !== null && p.session_started_at !== null
       ? { method: p.session_method, phaseEndsAt: p.session_phase_ends_at, startedAt: p.session_started_at }

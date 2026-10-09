@@ -146,6 +146,25 @@ describe("POST /v1/auth/apple", () => {
     expect(board.find((e: any) => e.me).minutes).toBe(30);
   });
 
+  it("carries an anonymous user's blocks, both ways, into the account it folds into", async () => {
+    const mac1 = await register();
+    await signIn({ identityToken: await identityToken("sub.fold.blocks") }, mac1.token);
+    const mac2 = await register();
+    const pest = await register();
+    const blocker = await register();
+    await call("POST", "/v1/friends", { code: mac1.code }, pest.token);
+    await call("POST", "/v1/friends", { code: mac1.code }, blocker.token);
+    await call("POST", "/v1/blocks", { code: pest.code }, mac2.token);
+    await call("POST", "/v1/blocks", { code: mac2.code }, blocker.token);
+
+    const r = await signIn({ identityToken: await identityToken("sub.fold.blocks") }, mac2.token);
+    expect(r.body.code).toBe(mac1.code);
+    const blocks = (await call("GET", "/v1/blocks", undefined, r.body.token)).body.blocks;
+    expect(blocks.map((b: any) => b.code)).toEqual([pest.code]);
+    expect((await call("GET", "/v1/friends", undefined, r.body.token)).body.friends).toEqual([]);
+    expectError(await call("POST", "/v1/friends", { code: mac1.code }, blocker.token), 409, "blocked");
+  });
+
   it("does not fold or relink a caller that already belongs to another Apple ID", async () => {
     const mac = await register();
     await signIn({ identityToken: await identityToken("sub.first") }, mac.token);

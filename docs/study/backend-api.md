@@ -133,6 +133,7 @@ To show a countdown, use `phaseEndsAt` and count down locally; do not poll faste
 
 - `code`: 6 characters from the same alphabet as friend codes; share it to invite anyone, friend or not.
 - `members` are in join order; the first one is the longest-standing member.
+  Members I blocked, or who blocked me, are left out.
 - `session` is `null` unless the host started a shared session.
 - `expiresAt` is `lastActive + 43200`: a party disappears after 12 hours without activity.
   Creating, joining, leaving, changing the session and members' polls all count as activity (polls are recorded at most every 10 minutes, so `lastActive` may lag by that much).
@@ -154,6 +155,9 @@ Auth column: "token" means `Authorization: Bearer <token>` is required.
 | `GET /v1/friends` | token | my friends with profile, presence and party |
 | `POST /v1/friends` | token | add a friend by code |
 | `DELETE /v1/friends/{code}` | token | remove a friend |
+| `GET /v1/blocks` | token | the users I blocked |
+| `POST /v1/blocks` | token | block a user |
+| `DELETE /v1/blocks/{code}` | token | unblock a user |
 | `POST /v1/presence` | token | heartbeat |
 | `GET /v1/leaderboard` | token | this week's study minutes, me and my friends |
 | `GET /v1/party` | token | my party or `null` |
@@ -268,7 +272,8 @@ Errors:
 | --- | --- | --- |
 | 400 | `invalid_field` | not a valid friend code |
 | 400 | `self_friend` | that is my own code |
-| 404 | `unknown_code` | no user has that code |
+| 404 | `unknown_code` | no user has that code, or that user blocked me (a block is never revealed) |
+| 409 | `blocked` | I blocked that user; unblock them first |
 | 409 | `friend_limit` | I already have 50 friends |
 | 409 | `their_friend_limit` | they already have 50 friends |
 
@@ -276,6 +281,49 @@ Errors:
 
 Removes the friendship in both directions.
 `200 {"ok": true, "removed": true}`; `removed` is `false` if we were not friends.
+Errors: `invalid_field` for a malformed code.
+
+### `GET /v1/blocks`
+
+```
+{
+  "ok": true,
+  "blocks": [
+    { "code": "K7QW2MZD", "name": "Ben", "petName": "Mochi", "since": 1789000000 }
+  ]
+}
+```
+
+The users I blocked, newest first, with their current display name and pet name.
+A user who deletes their account drops out of the list.
+
+### `POST /v1/blocks`
+
+Body: `{"code": "K7QW2MZD"}`.
+A block hides two users from each other, whoever blocked whom:
+
+- the friendship ends in both directions, so neither sees the other in `GET /v1/friends` or `GET /v1/leaderboard`;
+- neither can add the other (`POST /v1/friends` answers the blocked user `404 unknown_code` and the blocker `409 blocked`);
+- neither can join a party the other hosts (`404 party_not_found`, as if it did not exist);
+- in a party both are in, the blocked user is removed when I host, I leave when they host, and otherwise the two of us are left out of each other's `members`.
+
+The blocked user is never told.
+`200 {"ok": true, "blocked": true, "block": {"code": "K7QW2MZD", "name": "Ben", "petName": "Mochi"}}`; `blocked` is `false` if I had already blocked them (a no-op success).
+
+Errors:
+
+| HTTP | `error` | Meaning |
+| --- | --- | --- |
+| 400 | `invalid_field` | not a valid friend code |
+| 400 | `self_block` | that is my own code |
+| 404 | `unknown_code` | no user has that code |
+| 409 | `block_limit` | I already blocked 1000 users |
+
+### `DELETE /v1/blocks/{code}`
+
+Lifts my block on that user; only the blocker can.
+The friendship is not restored: either of us can add the other again.
+`200 {"ok": true, "unblocked": true}`; `unblocked` is `false` if I had not blocked them.
 Errors: `invalid_field` for a malformed code.
 
 ### `POST /v1/presence`
@@ -350,7 +398,7 @@ Errors:
 | HTTP | `error` | Meaning |
 | --- | --- | --- |
 | 400 | `invalid_field` | neither or both fields, or a malformed code |
-| 404 | `party_not_found` | no active party has that code (it may have expired) |
+| 404 | `party_not_found` | no active party has that code (it may have expired), or its host and I blocked each other |
 | 403 | `not_friend` | that user is not my friend |
 | 409 | `friend_offline` | that friend is not online |
 | 404 | `friend_not_in_party` | that friend is not in a party |
