@@ -29,6 +29,6 @@ final class SettingsSectionsTests: XCTestCase {
         XCTAssertEqual(options(.focus)?.id, "focus", "Focus shares the same settings")
         XCTAssertEqual(options(.closet)?.id, "coach")
         XCTAssertEqual(options(.party)?.id, "party")
-        XCTAssertNil(options(.spotify), "Now Playing has nothing to set")
+        XCTAssertEqual(options(.spotify)?.id, "nowPlaying", "Now Playing offers the opt-in SoundCloud player")
     }
 }

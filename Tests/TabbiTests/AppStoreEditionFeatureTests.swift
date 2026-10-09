@@ -32,6 +32,16 @@ final class AppStoreEditionFeatureTests: XCTestCase {
         XCTAssertTrue(ScheduleModule(context: context(.schedule, edition: .tabbi)).store.claudeFound)
     }
 
+    func testTheAppStoreEditionNeverOffersSoundCloud() throws {
+        let appStoreModule = NowPlayingModule(context: context(.spotify, edition: try appStore))
+        XCTAssertFalse(appStoreModule.controller.allowsBrowsers, "no Automation of Safari or Chrome")
+        XCTAssertNil(appStoreModule.makeSettingsPane(), "so there is no SoundCloud switch to show")
+
+        let direct = NowPlayingModule(context: context(.spotify, edition: .tabbi))
+        XCTAssertTrue(direct.controller.allowsBrowsers)
+        XCTAssertEqual(direct.makeSettingsPane()?.id, "nowPlaying")
+    }
+
     func testTodayPlansOnDeviceWhenAKitAsksForClaude() throws {
         let settings = SettingsStore.ephemeral(catalog: ModuleList.catalog)
         let context = ModuleContext(id: .planner, edition: try appStore, settings: settings, providers: ProviderHub(),
