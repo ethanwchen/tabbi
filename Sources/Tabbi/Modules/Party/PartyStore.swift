@@ -77,6 +77,10 @@ final class PartyStore: ObservableObject {
     private var refreshTask: Task<Void, Never>?
     private var clockTask: Task<Void, Never>?
     private var nameSyncTask: Task<Void, Never>?
+    private var grantsTask: Task<Void, Never>?
+    /// The account whose grants were fetched, so reconnects (a new name or
+    /// pet) don't ask again until the identity changes or the Mac wakes.
+    private var grantsFetchedFor: PartyAccount?
     /// Moves `now` to the shared session's end, so the Timer tab and the
     /// closed notch drop it on time even while the panel is hidden.
     private var sessionEndTask: Task<Void, Never>?
@@ -249,6 +253,7 @@ final class PartyStore: ObservableObject {
         connectTask?.cancel()
         refreshTask?.cancel()
         nameSyncTask?.cancel()
+        grantsTask?.cancel()
         sendOfflineOnce()
     }
 
@@ -463,8 +468,9 @@ final class PartyStore: ObservableObject {
             .eraseToAnyPublisher()
     }
 
-    /// Shared sessions that ran to their end with me in them, once each
-    /// (`PartySessionTracker`), so the module can pay and log them.
+    /// My stays in shared sessions, once each as they end, whether the
+    /// session ran to its end or I left it early (`PartySessionTracker`),
+    /// so the module can pay and log them.
     var completedSessions: AnyPublisher<PartySessionCompletion, Never> {
         var tracker = PartySessionTracker()
         return provided
@@ -654,6 +660,7 @@ final class PartyStore: ObservableObject {
                 state.didConnect(profile)
                 sendHeartbeat()
                 scheduleRefresh()
+                fetchGrants()
             } catch {
                 guard let self, !Task.isCancelled, self.account === account else { return }
                 let error = Self.partyError(error)
@@ -724,6 +731,8 @@ final class PartyStore: ObservableObject {
 
     @objc private func didWake() {
         heartbeats.reset()
+        grantsFetchedFor = nil
+        if state.connection == .connected { fetchGrants() }
         if state.connection == .connected { sendHeartbeat() } else { connect() }
     }
 
@@ -732,6 +741,30 @@ final class PartyStore: ObservableObject {
         guard !isDemo, !isSnapshot, let data = try? JSONEncoder().encode(tracker) else { return }
         defaults.set(data, forKey: Self.trackerKey)
     }
+
+    // MARK: Grants
+
+    /// Asks the friends server once per identity (and after a wake) which
+    /// limited edition items it granted, such as the launch week cap, and
+    /// publishes them through `grants`. Best effort: a failure asks again
+    /// on the next connect.
+    private func fetchGrants() {
+        guard isRunning, let account, grantsFetchedFor !== account else { return }
+        grantsTask?.cancel()
+        grantsTask = Task { [weak self] in
+            guard let items = try? await account.perform({ try await $0.grants() }),
+                  let self, !Task.isCancelled, self.account === account else { return }
+            grantsFetchedFor = account
+            grantsSubject.send(items)
+        }
+    }
+
+    private let grantsSubject = PassthroughSubject<[String], Never>()
+
+    /// The limited edition item ids the friends server granted this
+    /// identity, signed in or not, each time they are fetched. The module
+    /// hands them to the Closet, which keeps the new ones.
+    var grants: AnyPublisher<[String], Never> { grantsSubject.eraseToAnyPublisher() }
 
     // MARK: Refresh
 

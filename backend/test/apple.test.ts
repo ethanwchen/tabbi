@@ -6,7 +6,7 @@ import {
   exchangeAuthorizationCode, resetAppleKeyCache, revokeRefreshToken, verifyIdentityToken,
 } from "../src/apple";
 import { MAX_DEVICE_TOKENS, sha256Hex } from "../src/lib";
-import { admin, call, expectError, freshIp, hub, pinClockToMinuteStart, register } from "./helpers";
+import { ADMIN_TOKEN, admin, call, expectError, freshIp, hub, pinClockToMinuteStart, register } from "./helpers";
 
 // ---------- a fake Apple ----------
 
@@ -163,6 +163,17 @@ describe("POST /v1/auth/apple", () => {
     await signIn({ identityToken: await identityToken("sub.again") }, mac.token);
     const r = await signIn({ identityToken: await identityToken("sub.again") }, mac.token);
     expect(r.body).toMatchObject({ token: mac.token, code: mac.code, newAccount: false });
+  });
+
+  it("folds an anonymous user's limited edition grants into the account", async () => {
+    const mac1 = await register();
+    await signIn({ identityToken: await identityToken("sub.fold.grants") }, mac1.token);
+    const mac2 = await register();
+    await call("POST", `/v1/admin/users/${mac2.code}/grants`, { item: "accessory.backwardsCap" }, ADMIN_TOKEN, freshIp());
+
+    const r = await signIn({ identityToken: await identityToken("sub.fold.grants") }, mac2.token);
+    expect(r.body.code).toBe(mac1.code);
+    expect((await call("GET", "/v1/grants", undefined, r.body.token)).body.items).toEqual(["accessory.backwardsCap"]);
   });
 
   it("folds a second Mac's anonymous user into the account: friends and study days move, the user is deleted", async () => {

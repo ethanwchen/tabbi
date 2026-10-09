@@ -19,6 +19,7 @@ final class PartyModule: NotchModule {
     let store: PartyStore
     private var completionSubscription: AnyCancellable?
     private var identitySubscription: AnyCancellable?
+    private var grantsSubscription: AnyCancellable?
     /// The Apple account, which owns the Party data once signed in.
     private let account: SyncStore
     /// Kept alive here: the notification center holds its delegate weakly.
@@ -39,6 +40,9 @@ final class PartyModule: NotchModule {
             MainActor.assumeIsolated { store?.identityDidChange() }
         }
         let pet = context.studyPet, log = context.activityLog, celebrations = context.celebrations
+        grantsSubscription = store.grants.sink { [weak pet] items in
+            MainActor.assumeIsolated { _ = pet?.applyGrants(items) }
+        }
         completionSubscription = store.completedSessions.sink { [weak store] completion in
             MainActor.assumeIsolated {
                 guard let store else { return }
@@ -46,22 +50,26 @@ final class PartyModule: NotchModule {
                 // macOS tells the user instead.
                 let notify = celebrations.isShowing ? nil : notifications?.post
                 _ = Self.finish(completion, pet: pet, log: log, party: store, notify: notify)
+                guard completion.finished else { return }
                 celebrations.celebrate(.burst, style: .confetti, accent: Self.descriptor.accentColor,
                                        from: Self.descriptor.id)
             }
         }
     }
 
-    /// A shared session ran to its end with me in it: the pet earns the
-    /// shared points, the activity log records the focus stretch, and the
-    /// Party panel says "Great job, team!" with the points earned. `notify`
-    /// gets the same message when the notch can't show it.
+    /// A stay in a shared session ended: the pet earns the shared points and
+    /// the activity log records the focus stretch. When the session ran to
+    /// its end with me in it, the Party panel also says "Great job, team!"
+    /// with the points earned, and `notify` gets the same message when the
+    /// notch can't show it. A stay cut short (I stepped out, or the host
+    /// ended it early) is paid quietly: the pet's hop is enough.
     @discardableResult
     static func finish(_ completion: PartySessionCompletion, pet: ClosetStore, log: ActivityLog,
                        party: PartyStore? = nil, notify: ((PartyTeamCelebration) -> Void)? = nil,
                        at date: Date = Date()) -> PetStudyAward? {
         if let record = completion.activityRecord(source: descriptor.id) { log.record(record) }
         let award = pet.credit(completion)
+        guard completion.finished else { return award }
         let celebration = PartyTeamCelebration(completion: completion, points: award?.points ?? 0,
                                                petName: pet.profile.name, date: date)
         party?.celebrate(celebration)

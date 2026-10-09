@@ -169,7 +169,8 @@ Auth column: "token" means `Authorization: Bearer <token>` is required.
 | `DELETE /v1/party/session` | token, host | end the shared session |
 | `GET /v1/sync` | token, Apple account | my sync document and its revision |
 | `PUT /v1/sync` | token, Apple account | replace my sync document if I merged into the current revision |
-| `/v1/admin/...` | admin token | the maintainer's report review, rename and ban, see [Moderation](#moderation-maintainer) |
+| `GET /v1/grants` | token | the limited edition items the maintainer granted me |
+| `/v1/admin/...` | admin token | the maintainer's report review, rename and ban, see [Moderation](#moderation-maintainer), and limited edition grants, see [Limited edition grants](#limited-edition-grants-maintainer) |
 
 ### `GET /`
 
@@ -476,6 +477,13 @@ Writes are limited to 20 per minute per user.
 
 Errors: `no_account` (403), `revision_required` (428, no `If-Match`), `invalid_revision` (400), `revision_conflict` (409), `invalid_json`, `unknown_field`, `invalid_field`, `body_too_large`, `rate_limited`.
 
+### `GET /v1/grants`
+
+Any user, signed in with Apple or not, so a Party identity without an account gets its items too.
+`200 {"ok": true, "items": ["accessory.backwardsCap"]}`: the ids of the limited edition items the maintainer granted, oldest grant first (`[]` when there are none).
+The app adds each id it knows to the Closet as a granted item and never takes one back, so a later revoke only stops new Macs from getting it.
+It asks once per launch, wake and identity (Party after it connects, sync after its first round when signed in), so a grant shows up on the next launch or wake.
+
 ### Operator routes
 
 `GET /v1/admin/export` and `POST /v1/admin/restore` are for whoever runs the server, never for the app; see [`../security.md`](../security.md).
@@ -545,6 +553,43 @@ curl -s -X POST -H "Authorization: Bearer $ADMIN_TOKEN" $TABBI/v1/admin/reports/
   Replies `{"ok": true, "banned": true}` (`false` if already banned).
 - Sign in with Apple carries a ban, held names and reports over when an anonymous user folds into an account; the account keeps both users' held names.
 - An account that inherits a ban this way leaves its party at once, just as a ban does; the next member becomes host.
+
+## Limited edition grants (maintainer)
+
+Limited edition items are free cosmetics that points cannot buy and that are never sold or tied to donations.
+Milestone items (a 7-day streak, 50 hours focused, a finished Party session) unlock in the app by themselves; event items, such as the backwards cap for launch-week users, are granted here.
+A grant names an item id from [`backend/shared/limited-items.json`](../../backend/shared/limited-items.json); any other id is `400 invalid_field`.
+Milestone ids are accepted too, to hand back an unlock a user lost.
+The same `ADMIN_TOKEN` rules as the moderation routes apply.
+
+| Method and path | Purpose |
+| --- | --- |
+| `GET /v1/admin/users/{code}/grants` | the items a user holds: `{ok, grants}` |
+| `POST /v1/admin/users/{code}/grants` | grant `{"item": id}` to one user: `{ok, granted, grants}` (`granted` is `false` if they already held it) |
+| `DELETE /v1/admin/users/{code}/grants/{item}` | undo a grant made by mistake: `{ok, revoked, grants}` |
+| `POST /v1/admin/grants` | grant `{"item", "registeredFrom", "registeredUntil"}` to every user whose friend code was created in `[registeredFrom, registeredUntil)` (unix seconds; the window must have started): `{ok, granted}` with the number of new grants |
+
+```sh
+export TABBI=https://tabbi-friends.drosophil-anki-friends-backend.workers.dev
+export ADMIN_TOKEN=...   # the secret you set
+
+# One user, by friend code
+curl -s -X POST -H "Authorization: Bearer $ADMIN_TOKEN" -H "Content-Type: application/json" \
+  -d '{"item": "accessory.backwardsCap"}' $TABBI/v1/admin/users/K7QW2MZD/grants
+
+# Everyone who joined in the launch week (unix seconds, end exclusive)
+curl -s -X POST -H "Authorization: Bearer $ADMIN_TOKEN" -H "Content-Type: application/json" \
+  -d '{"item": "accessory.backwardsCap", "registeredFrom": 1791158400, "registeredUntil": 1791763200}' \
+  $TABBI/v1/admin/grants
+
+# Check or undo
+curl -s -H "Authorization: Bearer $ADMIN_TOKEN" $TABBI/v1/admin/users/K7QW2MZD/grants
+curl -s -X DELETE -H "Authorization: Bearer $ADMIN_TOKEN" $TABBI/v1/admin/users/K7QW2MZD/grants/accessory.backwardsCap
+```
+
+Granting is idempotent, so running the launch-week command twice adds nothing.
+Each new grant is one row write; a cohort of 10,000 users costs 10,000 of the free plan's 100,000 daily row writes, so grant large cohorts once and early in the UTC day.
+Grants follow a user when an anonymous user signs in with Apple and folds into an account, and are deleted with the account.
 
 ## Errors common to all routes
 

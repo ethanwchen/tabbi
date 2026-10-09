@@ -31,6 +31,10 @@ final class ClosetStore: ObservableObject {
     /// edit since launch.
     private(set) var lookChangedAt: Date?
 
+    /// Progress toward the limited edition milestones, from the whole
+    /// activity log (`follow(activity:history:)`).
+    @Published private(set) var milestones: PetMilestoneProgress
+
     /// Points earned from study sessions, as they are credited, so the
     /// coach can send the pet out to celebrate.
     let awards = PassthroughSubject<PetStudyAward, Never>()
@@ -81,6 +85,7 @@ final class ClosetStore: ObservableObject {
         self.celebrations = celebrations
         saveIsUnreadable = unreadable
         hasSave = saved
+        milestones = isDemo ? .demo(today: .now) : PetMilestoneProgress()
         preview = PetPlayer(profile: closet.profile)
         presence = PetPresence(profile: closet.profile, lastActive: .now)
     }
@@ -98,8 +103,13 @@ final class ClosetStore: ObservableObject {
 
     /// Follows new activity records, so focus time cut short (Stop, Skip,
     /// or the Mac sleeping or Tabbi quitting mid-session) earns points
-    /// (`PetCloset.credit(_:)`), once per record.
-    func follow(activity: AnyPublisher<ActivityRecord, Never>) {
+    /// (`PetCloset.credit(_:)`), once per record, and study milestones
+    /// unlock their limited edition items. `history` is the log so far,
+    /// which counts toward the milestones without paying points again; a
+    /// milestone it already reached unlocks quietly.
+    func follow(activity: AnyPublisher<ActivityRecord, Never>, history: [ActivityRecord] = []) {
+        for record in history { milestones.add(record) }
+        if !closet.unlockMilestones(milestones).isEmpty { persist() }
         activitySubscription = activity
             .sink { [weak self] record in
                 MainActor.assumeIsolated { self?.recorded(record) }
@@ -107,9 +117,32 @@ final class ClosetStore: ObservableObject {
     }
 
     private func recorded(_ record: ActivityRecord) {
-        guard let award = closet.credit(record) else { return }
+        milestones.add(record)
+        let award = closet.credit(record)
+        let unlocked = closet.unlockMilestones(milestones)
+        guard award != nil || !unlocked.isEmpty else { return }
         persist()
-        celebrate(award)
+        if let award { celebrate(award) }
+        if !unlocked.isEmpty { celebrateLimited() }
+    }
+
+    /// A limited edition item just became the user's: the pet celebrates
+    /// and the panel sparkles, like a purchase.
+    private func celebrateLimited() {
+        preview.send(.celebrate)
+        celebrateUnlock(hasOwnSound: false)
+    }
+
+    /// Takes the limited edition items the Tabbi server granted (event items
+    /// such as the launch week cap, by item id) and celebrates new ones.
+    /// Returns the items that are new.
+    @discardableResult
+    func applyGrants(_ ids: some Sequence<String>) -> [PetItem] {
+        let granted = closet.applyGrants(ids)
+        guard !granted.isEmpty else { return [] }
+        persist()
+        celebrateLimited()
+        return granted
     }
 
     private func focusChanged(_ timer: ProvidedFocus?) {

@@ -299,6 +299,20 @@ final class PartyClientTests: XCTestCase {
         XCTAssertEqual(board.entries.first(where: \.me)?.profile.name, "Ben")
     }
 
+    func testGrantsListsLimitedItemIds() async throws {
+        let (client, transport) = self.client(["GET /v1/grants": .json(#"{"ok":true,"items":["accessory.backwardsCap"]}"#)])
+        let grants = try await client.grants()
+        XCTAssertEqual(grants, ["accessory.backwardsCap"])
+        XCTAssertEqual(transport.requests.last?.method, "GET")
+        XCTAssertEqual(transport.requests.last?.path, "/v1/grants")
+    }
+
+    func testNoGrantsDecodesAsEmpty() async throws {
+        let (client, _) = self.client(["GET /v1/grants": .json(#"{"ok":true,"items":[]}"#)])
+        let grants = try await client.grants()
+        XCTAssertEqual(grants, [])
+    }
+
     // MARK: Parties
 
     func testNoPartyDecodesAsNil() async throws {

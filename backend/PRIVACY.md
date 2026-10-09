@@ -14,6 +14,7 @@ Per user, identified only by a random secret token (stored as a SHA-256 hash) an
 - the friend codes you blocked, and when;
 - reports you send about another user: their friend code, their name and pet name at that moment, your friend code, the reason you picked, your optional note (up to 280 characters) and the time;
 - if the maintainer acts on a report: whether you are banned, and every name and pet name they replaced, so they cannot be set again;
+- the ids of limited edition pet items the maintainer gave you for free (for example the launch-week cap), and when;
 - the party you are in, when you joined it, and, for the party itself, its 6-character code, its host, its last activity time and the shared session the host started (study method and phase end).
 
 Only if you choose to sign in with Apple, so your pet and progress follow you across your Macs:
@@ -55,7 +56,7 @@ Leaving a party (`POST /v1/party/leave`) removes your membership; a party is del
 Removing a friend deletes the friendship in both directions.
 Unblocking someone deletes the block.
 A report stays until the account of the reporter or of the reported user is deleted.
-Deleting your account calls `DELETE /v1/me`, which erases your profile, presence, daily study minutes, friend list, sync document, Apple account link, blocks (yours, and others' blocks of you), reports by you or about you, and any ban or replaced name, removes you from your friends' lists, and takes you out of your party.
+Deleting your account calls `DELETE /v1/me`, which erases your profile, presence, daily study minutes, friend list, sync document, Apple account link, blocks (yours, and others' blocks of you), reports by you or about you, any ban or replaced name, and your limited edition items, removes you from your friends' lists, and takes you out of your party.
 If you signed in with Apple, it then revokes the app's Sign in with Apple grant with Apple.
 Your secret token, and the token of every other Mac you signed in on, stops working at once.
 Signing out on one Mac (`POST /v1/auth/signout`) deletes that Mac's token on the server; your account and other Macs stay signed in.

@@ -1,7 +1,8 @@
 import Foundation
 
 /// Anything the pet can wear, as one unlockable thing. Breeds and colors are
-/// always free; only costume items are earned with study points.
+/// always free; costume items are bought with study points, except limited
+/// edition items (`PetLimitedEdition`), which are earned or granted.
 ///
 /// Encoded as a stable string id (`"outfit.scrubs"`, `"accessory.beanie"`)
 /// so saved ledgers survive reordering the enums.
@@ -9,11 +10,18 @@ public enum PetItem: Hashable, Codable, Sendable, CustomStringConvertible {
     case outfit(PetOutfit)
     case accessory(PetAccessory)
 
-    /// Every item in shop order (cheapest first).
+    /// Every item: the shop in shop order (cheapest first), then the
+    /// limited edition items in `PetLimitedEdition.allCases` order.
     public static var allCases: [PetItem] {
         let all = PetOutfit.allCases.map(PetItem.outfit) + PetAccessory.allCases.map(PetItem.accessory)
-        return all.sorted { ($0.cost, $0.id) < ($1.cost, $1.id) }
+        return all.filter { !$0.isLimited }.sorted { ($0.cost, $0.id) < ($1.cost, $1.id) }
+            + PetLimitedEdition.allCases.map(\.item)
     }
+
+    /// The items points can buy (and the free starters), cheapest first:
+    /// every item but the limited edition ones. Prices and tiers are set
+    /// for these.
+    public static var shopItems: [PetItem] { allCases.filter { !$0.isLimited } }
 
     public var id: String {
         switch self {
@@ -44,44 +52,54 @@ public enum PetItem: Hashable, Codable, Sendable, CustomStringConvertible {
     public var description: String { id }
 
     /// Price in study points (1 per focused minute, 35 for a finished
-    /// 25 minute block). One starter per playful theme is free, so a new pet
-    /// can dress up right away; the first focus block unlocks the beanie,
-    /// small items take an evening or two, and the showpieces (the
-    /// sorcerer, the graduation cap) are long-term goals. Every price is
+    /// 25 minute block), set against a typical study habit of three blocks
+    /// a day, five days a week (`PetEconomy`, docs/economy.md). One starter
+    /// per playful theme is free, so a new pet can dress up right away.
+    /// Starters take one typical day or less (the first block buys the
+    /// beanie), mid-tier items two to five days, and the showpieces (the
+    /// sorcerer, the graduation cap) two to four weeks. Every price is
     /// distinct, so the shop order never depends on ids.
+    /// Limited edition items have no price (0) and are not for sale.
     public var cost: Int {
         switch self {
         case .outfit(.none), .accessory(.scarf), .accessory(.partyHat), .accessory(.bowTie): 0
-        case .accessory(.beanie): 30
-        case .accessory(.roundGlasses): 45
-        case .accessory(.ninjaHeadband): 60
+        case .accessory(.backwardsCap), .accessory(.flameHeadband), .accessory(.goldenLaurel),
+             .accessory(.teamMedal): 0
+        // Starters: up to one typical day (105).
+        case .accessory(.beanie): 35
+        case .accessory(.roundGlasses): 50
+        case .accessory(.ninjaHeadband): 65
         case .accessory(.bunnyEars): 75
         case .accessory(.coolSunglasses): 90
-        case .outfit(.scrubs): 100
-        case .accessory(.flowerCrown): 110
-        case .accessory(.frogHat): 120
-        case .accessory(.stethoscope): 130
-        case .accessory(.cowboyHat): 140
-        case .accessory(.surgicalCap): 150
-        case .accessory(.chefHat): 160
-        case .outfit(.cozyHoodie): 180
-        case .accessory(.chunkyHeadphones): 200
-        case .accessory(.headMirror): 220
-        case .accessory(.witchHat): 240
-        case .accessory(.pirateHat): 260
-        case .accessory(.tinyCrown): 280
-        case .accessory(.wizardHat): 300
-        case .outfit(.whiteCoat): 320
-        case .outfit(.superheroCape): 340
-        case .outfit(.dinosaurHoodie): 360
-        case .outfit(.wizardRobe): 400
-        case .accessory(.astronautHelmet): 420
-        case .accessory(.blindfoldedSorcerer): 450
-        case .accessory(.graduationCap): 500
+        case .accessory(.flowerCrown): 105
+        // Mid-tier: two to five typical days (210 to 525).
+        case .accessory(.frogHat): 210
+        case .outfit(.scrubs): 240
+        case .accessory(.stethoscope): 270
+        case .accessory(.cowboyHat): 300
+        case .accessory(.surgicalCap): 330
+        case .accessory(.chefHat): 360
+        case .outfit(.cozyHoodie): 390
+        case .accessory(.chunkyHeadphones): 420
+        case .accessory(.headMirror): 450
+        case .accessory(.witchHat): 480
+        case .accessory(.pirateHat): 520
+        // Showpieces: two to four typical weeks (1050 to 2100).
+        case .accessory(.tinyCrown): 1050
+        case .accessory(.wizardHat): 1150
+        case .outfit(.whiteCoat): 1250
+        case .outfit(.superheroCape): 1400
+        case .outfit(.dinosaurHoodie): 1500
+        case .outfit(.wizardRobe): 1650
+        case .accessory(.astronautHelmet): 1800
+        case .accessory(.blindfoldedSorcerer): 1950
+        case .accessory(.graduationCap): 2100
         }
     }
 
-    public var isFree: Bool { cost == 0 }
+    /// Owned from the start. Limited edition items cost nothing but are
+    /// never free: they have to be earned or granted.
+    public var isFree: Bool { cost == 0 && !isLimited }
 
     public init(from decoder: Decoder) throws {
         let raw = try decoder.singleValueContainer().decode(String.self)
@@ -124,12 +142,16 @@ public enum PetPointsRules {
     /// worth far more than a small one.
     public static let maxSharedBonus = 15
 
-    /// Points for a Party shared session that ran to its end with the user
-    /// in it: a completed solo session's points, plus the team bonus when
-    /// at least one friend was there. Too short a stay earns nothing.
-    public static func sharedPoints(forMinutes minutes: Int, friends: Int) -> Int {
-        let solo = points(forMinutes: minutes, completed: true)
-        guard solo > 0 else { return 0 }
+    /// Points for a stay in a Party shared session. One that ran to its end
+    /// with the user in it pays a completed solo session's points, plus the
+    /// team bonus when at least one friend was there. One cut short (the
+    /// user stepped out, or the host ended it early) pays the minutes
+    /// studied like a solo session cut short: no bonuses, so stepping out
+    /// and back in is never worth more than staying. Too short a stay
+    /// earns nothing.
+    public static func sharedPoints(forMinutes minutes: Int, friends: Int, finished: Bool = true) -> Int {
+        let solo = points(forMinutes: minutes, completed: finished)
+        guard solo > 0, finished else { return solo }
         return solo + min(max(friends, 0) * sharedBonusPerFriend, maxSharedBonus)
     }
 }
@@ -137,6 +159,8 @@ public enum PetPointsRules {
 /// Why a purchase was refused.
 public enum PetPurchaseError: Error, Equatable, Sendable {
     case alreadyOwned
+    /// A limited edition item, which is earned or granted instead.
+    case notForSale
     /// `missing` more points are needed.
     case notEnoughPoints(missing: Int)
 }
@@ -151,21 +175,34 @@ public struct PetPointsLedger: Hashable, Codable, Sendable {
     public private(set) var spent: Int
     /// Purchased items. Free items are owned implicitly and never stored.
     public private(set) var purchased: Set<PetItem>
+    /// Limited edition items earned from a milestone or granted for an
+    /// event. Kept for good once given, even if the log that earned one is
+    /// gone or a grant is later withdrawn.
+    public private(set) var granted: Set<PetItem>
 
-    public init(earned: Int = 0, spent: Int = 0, purchased: Set<PetItem> = []) {
+    public init(earned: Int = 0, spent: Int = 0, purchased: Set<PetItem> = [], granted: Set<PetItem> = []) {
         self.earned = max(0, earned)
-        self.purchased = purchased.filter { !$0.isFree }
+        self.purchased = purchased.filter { !$0.isFree && !$0.isLimited }
+        self.granted = granted.filter(\.isLimited)
         self.spent = min(max(0, spent), self.earned)
     }
 
     public var balance: Int { earned - spent }
 
     public func owns(_ item: PetItem) -> Bool {
-        item.isFree || purchased.contains(item)
+        item.isFree || purchased.contains(item) || granted.contains(item)
     }
 
     public func canBuy(_ item: PetItem) -> Bool {
-        !owns(item) && balance >= item.cost
+        !item.isLimited && !owns(item) && balance >= item.cost
+    }
+
+    /// Gives a limited edition item for free. Returns whether it is new;
+    /// shop items are never granted, so points stay the only way to them.
+    @discardableResult
+    public mutating func grant(_ item: PetItem) -> Bool {
+        guard item.isLimited else { return false }
+        return granted.insert(item).inserted
     }
 
     /// Credits a finished or abandoned study session and returns the points
@@ -177,25 +214,26 @@ public struct PetPointsLedger: Hashable, Codable, Sendable {
         return points
     }
 
-    /// Credits a finished Party shared session (`PetPointsRules.sharedPoints`)
+    /// Credits a stay in a Party shared session (`PetPointsRules.sharedPoints`)
     /// and returns the points it earned.
     @discardableResult
-    public mutating func recordSharedSession(minutes: Int, friends: Int) -> Int {
-        let points = PetPointsRules.sharedPoints(forMinutes: minutes, friends: friends)
+    public mutating func recordSharedSession(minutes: Int, friends: Int, finished: Bool = true) -> Int {
+        let points = PetPointsRules.sharedPoints(forMinutes: minutes, friends: friends, finished: finished)
         earned += points
         return points
     }
 
     public mutating func buy(_ item: PetItem) throws(PetPurchaseError) {
         guard !owns(item) else { throw .alreadyOwned }
+        guard !item.isLimited else { throw .notForSale }
         guard balance >= item.cost else { throw .notEnoughPoints(missing: item.cost - balance) }
         spent += item.cost
         purchased.insert(item)
     }
 
-    /// The cheapest item not yet owned, for a "next unlock" progress hint.
+    /// The cheapest shop item not yet owned, for a "next unlock" progress hint.
     public var nextUnlock: PetItem? {
-        PetItem.allCases.first { !owns($0) }
+        PetItem.shopItems.first { !owns($0) }
     }
 
     /// What older builds charged for items that are free now. A save that
@@ -204,17 +242,19 @@ public struct PetPointsLedger: Hashable, Codable, Sendable {
     static let refundedPrices: [PetItem: Int] = [.accessory(.scarf): 30]
 
     // Unknown item ids (from a newer build) are skipped instead of failing.
-    private enum CodingKeys: String, CodingKey { case earned, spent, purchased }
+    private enum CodingKeys: String, CodingKey { case earned, spent, purchased, granted }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let ids = try container.decodeIfPresent([String].self, forKey: .purchased) ?? []
         let items = Set(ids.compactMap(PetItem.init(id:)))
         let refund = items.filter(\.isFree).reduce(0) { $0 + (Self.refundedPrices[$1] ?? 0) }
+        let grantedIDs = try container.decodeIfPresent([String].self, forKey: .granted) ?? []
         self.init(
             earned: try container.decodeIfPresent(Int.self, forKey: .earned) ?? 0,
             spent: (try container.decodeIfPresent(Int.self, forKey: .spent) ?? 0) - refund,
-            purchased: items
+            purchased: items,
+            granted: Set(grantedIDs.compactMap(PetItem.init(id:)))
         )
     }
 
@@ -223,5 +263,8 @@ public struct PetPointsLedger: Hashable, Codable, Sendable {
         try container.encode(earned, forKey: .earned)
         try container.encode(spent, forKey: .spent)
         try container.encode(purchased.map(\.id).sorted(), forKey: .purchased)
+        if !granted.isEmpty {
+            try container.encode(granted.map(\.id).sorted(), forKey: .granted)
+        }
     }
 }

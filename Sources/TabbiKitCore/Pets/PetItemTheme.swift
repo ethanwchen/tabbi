@@ -24,9 +24,10 @@ public enum PetItemTheme: String, CaseIterable, Codable, Sendable {
         }
     }
 
-    /// The theme's items, cheapest first.
+    /// The theme's shop items, cheapest first. Limited edition items have
+    /// their own shelf (`PetCloset.limitedShelf`).
     public var items: [PetItem] {
-        PetItem.allCases.filter { $0 != .outfit(.none) && $0.theme == self }
+        PetItem.shopItems.filter { $0 != .outfit(.none) && $0.theme == self }
     }
 }
 
@@ -42,11 +43,12 @@ extension PetItem {
             }
         case .accessory(let accessory):
             switch accessory {
-            case .stethoscope, .roundGlasses, .surgicalCap, .headMirror, .graduationCap, .chunkyHeadphones: .study
-            case .scarf, .beanie, .chefHat: .cozy
+            case .stethoscope, .roundGlasses, .surgicalCap, .headMirror, .graduationCap, .chunkyHeadphones,
+                 .goldenLaurel: .study
+            case .scarf, .beanie, .chefHat, .backwardsCap: .cozy
             case .tinyCrown, .wizardHat, .pirateHat, .blindfoldedSorcerer, .astronautHelmet, .ninjaHeadband: .fantasy
             case .partyHat, .bunnyEars, .witchHat, .flowerCrown, .coolSunglasses: .seasonal
-            case .frogHat, .cowboyHat, .bowTie: .silly
+            case .frogHat, .cowboyHat, .bowTie, .flameHeadband, .teamMedal: .silly
             }
         }
     }
@@ -67,11 +69,13 @@ extension PetItem {
             case .tinyCrown, .partyHat, .chefHat, .wizardHat, .bunnyEars, .witchHat, .cowboyHat, .flowerCrown,
                  .frogHat, .ninjaHeadband, .coolSunglasses, .pirateHat, .blindfoldedSorcerer, .astronautHelmet,
                  .chunkyHeadphones, .bowTie: 2
+            case .backwardsCap, .flameHeadband, .goldenLaurel, .teamMedal: 3
             }
         }
     }
 
     public static let latestRelease = 2
 
-    public var isNew: Bool { release == PetItem.latestRelease }
+    /// Limited edition items never wear it: their shelf has its own badge.
+    public var isNew: Bool { release == PetItem.latestRelease && !isLimited }
 }
