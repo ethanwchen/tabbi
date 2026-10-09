@@ -12,6 +12,9 @@ public enum SpotifyStatus: Equatable, Sendable {
     case connecting
     /// The user denied Tabbi's Automation access to Spotify.
     case permissionDenied
+    /// A SoundCloud tab is open, but the browser won't run JavaScript from
+    /// Apple Events, which reading and controlling the web player needs.
+    case scriptingDisabled
     /// Connected. A `stopped` playback means nothing is loaded.
     case connected(SpotifyPlayback)
 
@@ -31,33 +34,40 @@ public enum SpotifyStatus: Equatable, Sendable {
     ///   - isInstalled: Only consulted when Spotify isn't running.
     ///   - read: The `source.readStateScript` result, or nil if no read was made.
     ///   - previous: The current status, kept when a read is inconclusive.
-    ///   - source: Which app's output format `read` is in.
+    ///   - source: Which player's output format `read` is in.
     public static func resolve(
-        source: MediaSource = .spotify,
+        source: NowPlayingSource = .spotify,
         isRunning: Bool,
         isInstalled: Bool,
         read: Result<String, SpotifyScriptError>?,
         previous: SpotifyStatus
     ) -> SpotifyStatus {
         guard isRunning else { return isInstalled ? .notRunning : .notInstalled }
+        let isApp = source.app != nil
+        // An app that answers is connected; a browser that doesn't show a
+        // SoundCloud tab is treated as if it weren't running.
+        let inconclusive: SpotifyStatus = isApp ? .connected(.nothingPlaying) : .notRunning
         switch read {
         case nil:
             switch previous {
-            case .connected, .permissionDenied, .connecting: return previous
-            case .notInstalled, .notRunning: return .connecting
+            case .connected, .permissionDenied, .scriptingDisabled, .connecting: return previous
+            // A running browser says nothing about SoundCloud until a read
+            // finds its tab, so it isn't "connecting" to anything yet.
+            case .notInstalled, .notRunning: return isApp ? .connecting : .notRunning
             }
         case .success(let output):
-            if let playback = source.parse(output) { return .connected(playback) }
+            if let status = source.status(forRead: output) { return status }
             // Garbled output (e.g. mid track change): keep what we had.
-            return previous.playback.map(SpotifyStatus.connected) ?? .connected(.nothingPlaying)
+            return previous.playback.map(SpotifyStatus.connected) ?? inconclusive
         case .failure(.permissionDenied):
             return .permissionDenied
         case .failure(.notRunning):
             return isInstalled ? .notRunning : .notInstalled
         case .failure(.other):
             // Spotify and Music error on `current track` right after launch,
-            // before anything is loaded. Treat it as nothing playing, not a failure.
-            return previous.playback.map(SpotifyStatus.connected) ?? .connected(.nothingPlaying)
+            // before anything is loaded. Treat it as nothing playing, not a
+            // failure. A browser error says nothing about a SoundCloud tab.
+            return previous.playback.map(SpotifyStatus.connected) ?? inconclusive
         }
     }
 }

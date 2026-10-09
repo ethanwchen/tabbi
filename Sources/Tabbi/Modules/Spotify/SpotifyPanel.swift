@@ -28,8 +28,8 @@ struct SpotifyPanel: View {
                     message: "Open \(MediaSource.names(controller.installedSources)) to see and control what's playing.",
                     actions: controller.installedSources.map { source in
                         .init(title: "Open \(source.displayName)", help: "Launch \(source.displayName)",
-                              icon: controller.appIcon(for: source),
-                              perform: { controller.open(source) })
+                              icon: controller.appIcon(for: .app(source)),
+                              perform: { controller.open(.app(source)) })
                     }
                 )
             case .notInstalled:
@@ -48,6 +48,15 @@ struct SpotifyPanel: View {
                     actions: [.init(title: "Open Settings", help: "Open Automation settings",
                                     perform: controller.openAutomationSettings)]
                 )
+            case .scriptingDisabled:
+                SpotifyEmptyState(
+                    symbol: "curlybraces", title: "Turn on JavaScript for SoundCloud",
+                    message: "In \(browser.displayName), choose \(browser.javaScriptSettingPath).",
+                    actions: [.init(title: "Show \(browser.displayName)",
+                                    help: "Bring \(browser.displayName) to the front",
+                                    icon: controller.appIcon(for: activeSource),
+                                    perform: { controller.open(activeSource) })]
+                )
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -56,8 +65,13 @@ struct SpotifyPanel: View {
         .onDisappear { controller.setPanelVisible(false) }
     }
 
-    private var activeSource: MediaSource { controller.source ?? .spotify }
+    private var activeSource: NowPlayingSource { controller.source ?? .spotify }
     private var sourceName: String { activeSource.displayName }
+    /// The browser SoundCloud plays in; Safari when the panel follows an app.
+    private var browser: SoundCloudBrowser {
+        if case .soundCloud(let browser) = activeSource { return browser }
+        return .safari
+    }
 }
 
 private extension SpotifyStatus {
@@ -70,6 +84,7 @@ private extension SpotifyStatus {
         case .connecting: 2
         case .permissionDenied: 3
         case .connected(let playback): playback.track == nil ? 4 : 5
+        case .scriptingDisabled: 6
         }
     }
 }
@@ -269,7 +284,7 @@ private struct SpotifyArtworkButton: View {
     }
 
     /// The player's own icon; a glyph on a dark disc if the icon is missing.
-    @ViewBuilder private func badge(for source: MediaSource) -> some View {
+    @ViewBuilder private func badge(for source: NowPlayingSource) -> some View {
         Group {
             if let icon = controller.appIcon(for: source) {
                 Image(nsImage: icon)
@@ -562,11 +577,11 @@ private struct SpotifyPlayPauseButton: View {
 }
 
 /// The heart beside the title: likes the current track (Music calls it
-/// Favorite). Only shown when the player reports whether the track is liked,
+/// Favorite, SoundCloud Like). Only shown when the player reports whether the track is liked,
 /// so it never appears where a click couldn't work.
 private struct SpotifyLikeButton: View {
     let isLiked: Bool
-    let source: MediaSource
+    let source: NowPlayingSource
     let action: () -> Void
     @State private var hovering = false
 
@@ -594,8 +609,8 @@ private struct SpotifyLikeButton: View {
         switch (source, isLiked) {
         case (.music, true): "Remove from Favorites"
         case (.music, false): "Add to Favorites"
-        case (_, true): "Remove from Liked Songs"
-        case (_, false): "Save to Liked Songs"
+        case (_, true): "Unlike"
+        case (_, false): "Like"
         }
     }
 
