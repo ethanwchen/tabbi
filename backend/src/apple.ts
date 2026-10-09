@@ -19,7 +19,7 @@ export const APPLE_REVOKE_URL = `${APPLE_ISSUER}/auth/revoke`;
 export const APPLE_AUTH_PER_MIN = 10;
 export const APPLE_AUTH_FIELDS = ["identityToken", "authorizationCode"] as const;
 
-/** Apple's keys rotate rarely; a token with an unknown key id refetches them, at most once a minute. */
+/** Apple's keys rotate rarely; an unknown key id or a failed fetch refetches them, at most once a minute. */
 const KEYS_TTL_S = 3600;
 const KEYS_REFETCH_S = 60;
 /** Allowed clock difference between Apple and the Worker when checking `exp` and `iat`. */
@@ -119,8 +119,13 @@ async function appleKey(kid: string, now: number): Promise<CryptoKey | null> {
   const fresh = keyCache !== null && now - keyCache.fetchedAt < KEYS_TTL_S;
   const cached = keyCache?.keys.get(kid);
   if (fresh && cached) return cached;
-  // An unknown key id refetches (Apple may have rotated), but not more than once a minute.
-  if (fresh && now - lastFetchAttempt < KEYS_REFETCH_S) return null;
+  // An unknown key id refetches (Apple may have rotated), and a failed fetch is retried, but neither more
+  // than once a minute, so sign-ins while Apple is down do not turn into a stream of requests to Apple.
+  if (now - lastFetchAttempt < KEYS_REFETCH_S) {
+    if (fresh) return null;
+    if (cached) return cached;
+    throw new HttpError(503, "apple_unavailable", "could not reach Apple, retry");
+  }
   try {
     keyCache = await fetchAppleKeys(now);
   } catch (e) {

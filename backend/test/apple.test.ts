@@ -328,6 +328,32 @@ describe("apple helpers", () => {
     expect(appleCalls).toEqual([]);
   });
 
+  it("ask Apple for keys at most once a minute while Apple is down", async () => {
+    keysUp = false;
+    const t = now();
+    const token = await identityToken("sub.outage");
+    for (const at of [t, t + 1, t + 59]) {
+      await expect(verifyIdentityToken(token, at)).rejects.toMatchObject({ status: 503, error: "apple_unavailable" });
+    }
+    expect(appleCalls.filter((c) => c.url === APPLE_KEYS_URL)).toHaveLength(1);
+    keysUp = true;
+    expect(await verifyIdentityToken(token, t + 60)).toBe("sub.outage");
+    expect(appleCalls.filter((c) => c.url === APPLE_KEYS_URL)).toHaveLength(2);
+  });
+
+  it("keep trusting expired cached keys while a refetch fails, without asking Apple again", async () => {
+    const t = now();
+    const token = await identityToken("sub.stale");
+    expect(await verifyIdentityToken(token, t)).toBe("sub.stale");
+    keysUp = false;
+    // An hour later the cache is stale; the failed refetch falls back to the cached key, and so does the next sign-in.
+    const later = t + 3600;
+    const lateToken = await identityToken("sub.stale", { iat: later, exp: later + 600 });
+    expect(await verifyIdentityToken(lateToken, later)).toBe("sub.stale");
+    expect(await verifyIdentityToken(lateToken, later + 10)).toBe("sub.stale");
+    expect(appleCalls.filter((c) => c.url === APPLE_KEYS_URL)).toHaveLength(2);
+  });
+
   it("verifies a token directly and never needs the email claim", async () => {
     expect(await verifyIdentityToken(await identityToken("sub.direct"), now())).toBe("sub.direct");
   });
