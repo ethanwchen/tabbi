@@ -45,7 +45,10 @@ Status of phase 0 from `docs/windows/plan.md`: the Mac app's shared pieces move 
   `SharedSchemaTests` keeps each schema's fields, limits and version range equal to the Swift decoders, and checks sample ids, names, bundle ids and icon names against both the schema patterns and `KitManifest.decode` or `Edition.decode`.
   The bundled kits, the edition and the catalog pass their schemas in a JSON Schema validator, and the tests were shown to fail on a changed limit, pattern, field name or reserved key.
 
+- Stream-json fixture for the TypeScript port: `shared/fixtures/claude-stream/stream-json.json` holds 34 raw `claude -p` lines (session start, rate limits with and without windows, text deltas, assistant messages with tool use and thinking, results, and malformed lines) with the event each parses to, and 13 Ask Claude exchanges as steps (ask, feed a line, the CLI exits, stop, retry, retry a lost session) with the chat after every step.
+  `ClaudeStreamGoldenTests` checks the parser and `ClaudeAskConversation` against it, and also replays the fixture's own inputs, which is what the port does; it was shown to fail on a one-string change.
+
 ## Next
 
-1. Logic fixtures for the TypeScript port: focus timer and study session sequences, the stream-json parser, Plan my day, ticker selection.
+1. Logic fixtures for the TypeScript port: focus timer and study session sequences, Plan my day, ticker selection.
 2. Snapshot comparison against `main`, pixel for pixel.
