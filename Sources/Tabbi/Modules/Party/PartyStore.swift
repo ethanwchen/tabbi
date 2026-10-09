@@ -65,7 +65,11 @@ final class PartyStore: ObservableObject {
     /// The study timer from the shared providers, for presence.
     private var focus: ProvidedFocus?
     /// My pet as friends should see it.
-    private(set) var pet = PetProfile.starter(.cat)
+    @Published private(set) var pet = PetProfile.starter(.cat)
+    /// The names the server refused on the last connect (say, a name a
+    /// maintainer replaced); `refusedNames` adds the ones the app's own
+    /// filter catches as they are typed.
+    @Published private var serverRefusedNames: PartyNameRefusal = []
     private var isRunning = false
 
     private var connectTask: Task<Void, Never>?
@@ -106,6 +110,7 @@ final class PartyStore: ObservableObject {
             // Stays up (no timer) so the snapshot can catch it.
             if scenario == .celebrating { celebration = .demo(now: Date()) }
             if scenario == .reporting { reporting = state.friends.first?.profile }
+            if scenario == .refusedName { serverRefusedNames = .name }
             return
         }
         if isSnapshot, let local = Self.localSnapshotServer(environment) {
@@ -169,7 +174,16 @@ final class PartyStore: ObservableObject {
         let old = settings
         settings.name = name
         repository?.save(settings)
-        if settings.cleanedName != old.cleanedName { scheduleNameSync() }
+        if settings.cleanedName != old.cleanedName {
+            serverRefusedNames.remove(.name)
+            scheduleNameSync()
+        }
+    }
+
+    /// My name or pet name that friends can't see, so Settings and
+    /// onboarding say so under the name; the rest of the profile syncs.
+    var refusedNames: PartyNameRefusal {
+        settings.refusedNames(for: pet).union(serverRefusedNames)
     }
 
     /// Syncs a new name once typing pauses, since General saves the name
@@ -265,10 +279,14 @@ final class PartyStore: ObservableObject {
         guard !isDemo else { return }
         if new.serverURL != old.serverURL || new.serverIssue != old.serverIssue {
             state.reset(settings: new)
+            serverRefusedNames = []
             rebuildAccount()
             return
         }
-        if new.cleanedName != old.cleanedName { scheduleNameSync() }
+        if new.cleanedName != old.cleanedName {
+            serverRefusedNames.remove(.name)
+            scheduleNameSync()
+        }
         if new.invisible != old.invisible, tracker.setInvisible(new.invisible) {
             saveTracker()
             sendHeartbeat()
@@ -278,6 +296,7 @@ final class PartyStore: ObservableObject {
     /// My pet changed (e.g. in the Closet): friends see it after the sync.
     func update(pet: PetProfile) {
         guard pet != self.pet else { return }
+        if pet.name != self.pet.name { serverRefusedNames.remove(.petName) }
         self.pet = pet
         if account != nil { connect() }
     }
@@ -288,6 +307,7 @@ final class PartyStore: ObservableObject {
     func identityDidChange() {
         guard !isDemo, repository != nil else { return }
         state.reset(settings: settings)
+        serverRefusedNames = []
         rebuildAccount()
     }
 
@@ -326,6 +346,7 @@ final class PartyStore: ObservableObject {
             guard let self else { return }
             pending = nil
             state.reset(settings: settings)
+            serverRefusedNames = []
             rebuildAccount()
         }
     }
@@ -621,7 +642,9 @@ final class PartyStore: ObservableObject {
         connectTask = Task { [weak self] in
             do {
                 let profile = try await account.connect(profile: update)
+                let refused = await account.refusedNames
                 guard let self, !Task.isCancelled, self.account === account else { return }
+                serverRefusedNames = refused
                 connectBackoff.reset()
                 state.didConnect(profile)
                 sendHeartbeat()

@@ -84,3 +84,45 @@ public enum SupportContact {
     /// The line both places show.
     public static let reportLine = "Report a problem: \(email)"
 }
+
+/// Which of my names the friends server refused (`name_not_allowed`,
+/// `pet_name_not_allowed`): one that fails `PartyNameFilter`, or one a
+/// maintainer replaced and holds. The app leaves it out of the profile so
+/// the rest still syncs, and asks for another.
+public struct PartyNameRefusal: OptionSet, Hashable, Sendable {
+    public let rawValue: Int
+    public init(rawValue: Int) { self.rawValue = rawValue }
+
+    public static let name = PartyNameRefusal(rawValue: 1 << 0)
+    public static let petName = PartyNameRefusal(rawValue: 1 << 1)
+
+    /// The refusal `error` stands for, or nil for any other error.
+    public init?(_ error: PartyError) {
+        switch error {
+        case .nameNotAllowed: self = .name
+        case .petNameNotAllowed: self = .petName
+        default: return nil
+        }
+    }
+
+    /// The friendly line shown under the name, or nil when nothing was refused.
+    public var message: String? {
+        switch (contains(.name), contains(.petName)) {
+        case (true, true): return "That name and your pet's name aren't allowed. Please pick others."
+        case (true, false): return "That name isn't allowed. Please pick another."
+        case (false, true): return "Your pet's name isn't allowed. Rename your pet in the Closet."
+        case (false, false): return nil
+        }
+    }
+}
+
+extension PartyProfileUpdate {
+    /// The same update without the refused names, so the server keeps the
+    /// ones it has.
+    public func removing(_ refused: PartyNameRefusal) -> PartyProfileUpdate {
+        var update = self
+        if refused.contains(.name) { update.name = nil }
+        if refused.contains(.petName) { update.petName = nil }
+        return update
+    }
+}

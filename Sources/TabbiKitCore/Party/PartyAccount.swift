@@ -37,6 +37,8 @@ public actor PartyAccount {
     private var loaded: PartyCredentials??
     /// The profile the server last returned.
     public private(set) var profile: PartyProfile?
+    /// The names the server refused on the last successful `connect`.
+    public private(set) var refusedNames: PartyNameRefusal = []
     /// The profile last sent, reused when the identity must be recreated.
     private var desiredProfile = PartyProfileUpdate()
     /// The registration in flight, shared by every call that needs it.
@@ -57,8 +59,29 @@ public actor PartyAccount {
     /// registers with it on first use, otherwise sends it with
     /// `PATCH /v1/me` (unchanged fields cost nothing). Call at launch and
     /// after the user edits their name or pet.
+    ///
+    /// A name the server refuses (`name_not_allowed`, `pet_name_not_allowed`,
+    /// for example one a maintainer replaced) is left out and the rest sent
+    /// again, so a refused name never takes Party offline; `refusedNames`
+    /// says which, so the app can ask for another.
     @discardableResult
     public func connect(profile update: PartyProfileUpdate) async throws -> PartyProfile {
+        var update = update
+        var refused: PartyNameRefusal = []
+        while true {
+            do {
+                let profile = try await sync(update)
+                refusedNames = refused
+                return profile
+            } catch let error as PartyError {
+                guard let refusal = PartyNameRefusal(error), !refused.contains(refusal) else { throw error }
+                refused.insert(refusal)
+                update = update.removing(refusal)
+            }
+        }
+    }
+
+    private func sync(_ update: PartyProfileUpdate) async throws -> PartyProfile {
         desiredProfile = update
         if credentials == nil {
             _ = try await register()

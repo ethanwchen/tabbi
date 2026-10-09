@@ -95,6 +95,9 @@ public enum PartyDemoScenario: String, CaseIterable, Sendable {
     case noFriends
     /// The default demo with the report card open about a friend.
     case reporting
+    /// The default demo after the server refused my name (say, one a
+    /// maintainer replaced), so Settings and onboarding ask for another.
+    case refusedName
     /// Waiting for the server's first answer.
     case connecting
     /// The server never answered.
@@ -111,7 +114,7 @@ extension PartyState {
         let base = demo(now: now, calendar: calendar)
         guard let me = base.profile, var party = base.party else { return base }
         switch scenario {
-        case .hosting, .reporting:
+        case .hosting, .reporting, .refusedName:
             return base
         case .guest, .member, .celebrating:
             let host = party.members[1].profile.code

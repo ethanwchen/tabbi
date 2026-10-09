@@ -56,11 +56,21 @@ public struct PartySettings: Codable, Equatable, Sendable {
     }
 
     /// The profile to sync: the cleaned name plus the pet's appearance.
-    /// It carries nothing about cards, decks or study content.
+    /// It carries nothing about cards, decks or study content. A name or
+    /// pet name that `PartyNameFilter` rejects is left out, since the
+    /// server would refuse it; `refusedNames(for:)` says which.
     public func profileUpdate(for pet: PetProfile) -> PartyProfileUpdate {
         var update = PartyPetAppearance.update(for: pet)
         update.name = cleanedName
-        return update
+        return update.removing(refusedNames(for: pet))
+    }
+
+    /// The names the server would refuse, known before any request.
+    public func refusedNames(for pet: PetProfile) -> PartyNameRefusal {
+        var refused: PartyNameRefusal = []
+        if let name = cleanedName, !PartyNameFilter.isAllowed(name) { refused.insert(.name) }
+        if !PartyNameFilter.isAllowed(pet.name) { refused.insert(.petName) }
+        return refused
     }
 
     private enum CodingKeys: String, CodingKey {

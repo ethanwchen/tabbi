@@ -8,8 +8,13 @@ private final class ModeratingFriendsServer: PartyTransport, @unchecked Sendable
     private let lock = NSLock()
     private var sent: [String] = []
     private let refusesReports: Bool
+    /// A name a maintainer replaced: `PATCH /v1/me` with it is refused.
+    private let heldName: String?
 
-    init(refusesReports: Bool = false) { self.refusesReports = refusesReports }
+    init(refusesReports: Bool = false, heldName: String? = nil) {
+        self.refusesReports = refusesReports
+        self.heldName = heldName
+    }
 
     var requests: [String] { lock.withLock { sent } }
 
@@ -24,6 +29,9 @@ private final class ModeratingFriendsServer: PartyTransport, @unchecked Sendable
             let token = String(repeating: "1", count: 64)
             return reply(#"{"ok":true,"token":"\#(token)","code":"CODE0001","profile":\#(profile)}"#, 201)
         case "PATCH /v1/me":
+            if let heldName, body.contains(#""name":"\#(heldName)""#) {
+                return reply(#"{"ok":false,"error":"name_not_allowed","message":"no"}"#, 400)
+            }
             return reply(#"{"ok":true,"profile":\#(profile)}"#)
         case "POST /v1/reports":
             return refusesReports
@@ -58,6 +66,27 @@ final class PartyModerationAppTests: XCTestCase {
         party.start()
         try await waitUntil { party.state.friendCode == "CODE0001" }
         return party
+    }
+
+    func testANameTheServerRefusesStaysOnlineAndAsksForAnother() async throws {
+        let server = ModeratingFriendsServer(heldName: "Rude")
+        let party = try await makeStore(server)
+        defer { party.stop() }
+
+        var held = party.settings
+        held.name = "Rude"
+        party.update(held)
+        XCTAssertEqual(party.refusedNames, [], "the app's own filter allows it")
+        try await waitUntil { party.refusedNames == .name }
+        XCTAssertEqual(party.state.connection, .connected, "a refused name never takes Party offline")
+        XCTAssertTrue(server.requests.contains { $0.hasPrefix("PATCH /v1/me") && !$0.contains(#""name""#) },
+                      "the rest of the profile syncs without the name")
+        XCTAssertEqual(party.refusedNames.message, "That name isn't allowed. Please pick another.")
+
+        var settings = party.settings
+        settings.name = "Bea"
+        party.update(settings)
+        XCTAssertEqual(party.refusedNames, [], "a new name clears the message at once")
     }
 
     func testReportingAndBlockingSendsBothAndClosesTheCard() async throws {

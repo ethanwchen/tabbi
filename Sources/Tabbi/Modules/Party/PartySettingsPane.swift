@@ -94,8 +94,28 @@ struct PartySettingsPane: View {
         } header: {
             Text("Profile")
         } footer: {
-            Footer("Friends see this name and the pet you dress in the Closet. Share your code so they can add you.")
+            if let issue = nameIssue {
+                Label(issue, systemImage: "exclamationmark.triangle.fill")
+                    .font(.callout)
+                    .foregroundStyle(.orange)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .fixedSize(horizontal: false, vertical: true)
+            } else {
+                Footer("Friends see this name and the pet you dress in the Closet. Share your code so they can add you.")
+            }
         }
+    }
+
+    /// What friends can't see, checked as the name is typed: the draft
+    /// through the app's filter, the saved name and pet name as the store
+    /// knows them (including names the server refused).
+    private var nameIssue: String? {
+        var refused = store.refusedNames
+        if name != store.settings.name {
+            refused.remove(.name)
+            refused.formUnion(PartySettings(name: name).refusedNames(for: store.pet).intersection(.name))
+        }
+        return refused.message
     }
 
     private var friendCodeText: String {
