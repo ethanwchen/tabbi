@@ -55,10 +55,17 @@ export function parseAppleAuth(body: Obj): AppleAuthRequest {
 
 // ---------- base64url ----------
 
+/**
+ * Decodes unpadded base64url, refusing any spelling other than the canonical one (nonzero unused bits in
+ * the last character). Otherwise one token could be written 16 ways with the same signature, and each
+ * spelling would pass the Hub's once-only check, which compares the token as sent.
+ */
 function base64UrlDecode(s: string): Uint8Array {
-  if (!/^[A-Za-z0-9_-]*$/.test(s)) throw new Error("not base64url");
+  if (!/^[A-Za-z0-9_-]*$/.test(s) || s.length % 4 === 1) throw new Error("not base64url");
   const b64 = s.replace(/-/g, "+").replace(/_/g, "/") + "=".repeat((4 - (s.length % 4)) % 4);
-  return Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+  const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+  if (base64UrlEncode(bytes) !== s) throw new Error("not canonical base64url");
+  return bytes;
 }
 
 function base64UrlEncode(bytes: Uint8Array): string {

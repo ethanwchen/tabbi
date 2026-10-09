@@ -360,6 +360,20 @@ describe("POST /v1/auth/apple", () => {
     expect(again.body).toMatchObject({ code: first.body.code, newAccount: false });
   });
 
+  it("refuses a used token whose signature is spelled differently but decodes to the same bytes", async () => {
+    const token = await identityToken("sub.replay.malleable");
+    expect((await signIn({ identityToken: token })).status).toBe(200);
+    // A 256-byte RS256 signature is 342 base64url characters, and the last one carries 4 unused bits, so
+    // 15 other characters there decode to the same signature. Each must count as the token already used.
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+    const last = alphabet.indexOf(token.slice(-1));
+    const twins = [...alphabet].filter((c, i) => i !== last && i >> 4 === last >> 4);
+    expect(twins).toHaveLength(15);
+    for (const c of twins) {
+      expectError(await signIn({ identityToken: token.slice(0, -1) + c }), 401, "invalid_identity_token");
+    }
+  });
+
   it("does not use up a token that fails verification, and forgets used tokens once they expire", async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     const t = now();
