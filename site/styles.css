@@ -164,6 +164,7 @@ nav.site a.nav-cta:hover { background: var(--btn-hover); color: var(--btn-ink); 
 .laptop { position: relative; width: min(600px, 80%); margin: 0 auto; }
 .laptop-screen {
   position: relative; z-index: 1; aspect-ratio: 16 / 10; overflow: hidden;
+  box-sizing: content-box; /* so the inside, where the clip plays, is 16:10 */
   border: 10px solid #15110E; border-radius: 20px 20px 8px 8px;
   background:
     radial-gradient(70% 90% at 12% 105%, rgba(242, 160, 166, 0.85), transparent 60%),
@@ -172,8 +173,13 @@ nav.site a.nav-cta:hover { background: var(--btn-hover); color: var(--btn-ink); 
     linear-gradient(180deg, #4A3A2E 0%, #6E5141 55%, #9A6F55 100%);
   box-shadow: 0 30px 50px -24px rgba(0, 0, 0, 0.6);
 }
-/* The clip draws its own wallpaper and notch at the screen's 16:10. */
-.laptop-video { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* The clip draws its own wallpaper and notch at the screen's 16:10. Safari
+   rounds the poster to whole pixels, so the clip's bottom-edge brown fills
+   the sliver that can leave. */
+.laptop-video {
+  position: absolute; inset: 0; display: block; width: 100%; height: 100%;
+  object-fit: cover; background: #775646;
+}
 .laptop-base {
   position: relative; z-index: 1; width: 112%; margin-left: -6%; height: 14px;
   background: #3A3029; border-radius: 0 0 16px 16px;
