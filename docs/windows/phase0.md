@@ -68,6 +68,12 @@ Status of phase 0 from `docs/windows/plan.md`: the Mac app's shared pieces move 
   They cover a full Pomodoro set to the long break, pauses, sleeping through phases, skips while idle, running and paused, a skipped focus that never earns the long break, both Flowtime break schemes, Anki sprints with baselines, pauses, rollovers and the suggested break, the question block's review, the plain Timer, resets and method switches, retuned Custom and Timer lengths, clamped methods, no-ops and quarter seconds.
   `StudySessionGoldenTests` checks the session against it and replays the fixture's own inputs; it was shown to fail on a one-string change.
 
+- Snapshots match `main` pixel for pixel.
+  Every notch shot was rendered from this branch and from the `main` commit it started from (`aa0854d`): the default kit, the Med School kit, every theme (`--theme all`) and a `TABBI_DEMO=1` run, 963 PNGs in all.
+  All 963 have identical pixels, with no differences to explain.
+  236 of the files differ in their encoded bytes but decode to the same pixels, which is why the comparison decodes them rather than comparing files.
+
 ## Next
 
-1. Snapshot comparison against `main`, pixel for pixel.
+Phase 0 is done, and its exit check (Mac snapshots and pet canvases unchanged) holds.
+Phase 1, the shell spike in `docs/windows/plan.md`, builds on the data and fixtures above.
