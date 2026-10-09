@@ -63,7 +63,9 @@ private struct ClosetPetCard: View {
     @FocusState private var nameFocused: Bool
 
     var body: some View {
-        Card {
+        // The content is centered, so the slim padding changes nothing on a
+        // roomy panel and keeps the 96 pt pet whole on a short one (Compact).
+        Card(padding: Theme.Spacing.s) {
             VStack(spacing: Theme.Spacing.xs) {
                 Spacer(minLength: 0)
                 PetView(player: store.preview, pixelSize: 3)

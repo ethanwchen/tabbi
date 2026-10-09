@@ -200,7 +200,8 @@ private struct CoreStrip: View {
 
     var body: some View {
         if perCore.isEmpty {
-            FooterCaption("Per-core load appears shortly")
+            // Short enough to stay whole in Compact's narrower cards.
+            FooterCaption("Measuring cores...")
         } else {
             HStack(alignment: .bottom, spacing: Theme.Spacing.xxs) {
                 ForEach(perCore.indices, id: \.self) { index in

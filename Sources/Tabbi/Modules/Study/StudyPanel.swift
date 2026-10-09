@@ -252,24 +252,40 @@ private struct StudyMethodCard: View {
     @State private var hovering = false
 
     var body: some View {
+        Card {
+            // A short panel (Compact) drops the "Method" caption and moves
+            // its round and buttons up beside the name, so the card keeps
+            // its edges instead of being clipped.
+            ViewThatFits(in: .vertical) {
+                content(showsCaption: true)
+                content(showsCaption: false)
+            }
+        }
+        .overlay(
+            RoundedRectangle(cornerRadius: Theme.Radius.m, style: .continuous)
+                .strokeBorder(Theme.Palette.stroke.opacity(hovering ? 2 : 0), lineWidth: 1)
+        )
+        .motion(Theme.Motion.snappy, value: hovering)
+    }
+
+    private func content(showsCaption: Bool) -> some View {
         let session = store.session
         let methodInfo = session.method.info
-        Card {
-            VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+        // The Timer's length row leaves Regular a hair short of the full
+        // gaps, which the spacers absorb there, so only the caption is
+        // what a shorter panel drops.
+        let gap = session.method.kind == .timer ? Theme.Spacing.xxs : Theme.Spacing.xs
+        return VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+            if showsCaption {
                 HStack(spacing: Theme.Spacing.xs) {
                     Text("Method")
                     Spacer(minLength: Theme.Spacing.s)
-                    if let round = StudyTimerFormat.roundLabel(session) {
-                        Text(round).monospacedDigit()
-                    }
-                    if session.method.kind == .custom {
-                        StudyEditButton(action: edit)
-                    }
-                    StudyInfoButton(method: session.method.kind, action: info)
-                        .padding(.trailing, -Theme.Spacing.xs)
+                    accessories
                 }
                 .font(Theme.Typography.caption)
                 .foregroundStyle(Theme.Palette.tertiaryText)
+            }
+            HStack(spacing: Theme.Spacing.xs) {
                 Button(action: choose) {
                     VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                         HStack(spacing: Theme.Spacing.xs) {
@@ -299,22 +315,36 @@ private struct StudyMethodCard: View {
                 .buttonStyle(.plain)
                 .help("Change the timer method")
                 .onHover { hovering = $0 }
-                if session.method.kind == .timer {
-                    StudyTimerLengthRow(length: store.timer, isCounting: session.runState != .idle,
-                                        set: store.setTimer, start: store.startTimer)
+                if !showsCaption {
+                    accessories
+                        .font(Theme.Typography.caption)
+                        .foregroundStyle(Theme.Palette.tertiaryText)
                 }
-                Spacer(minLength: Theme.Spacing.xs)
-                StudyDeepFocusRow(store: store, focus: focusMode, openMixer: sounds)
-                Spacer(minLength: Theme.Spacing.xs)
-                StudyTodayRow(today: store.today, goal: store.goal)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            if session.method.kind == .timer {
+                StudyTimerLengthRow(length: store.timer, isCounting: session.runState != .idle,
+                                    set: store.setTimer, start: store.startTimer)
+            }
+            Spacer(minLength: gap)
+            StudyDeepFocusRow(store: store, focus: focusMode, openMixer: sounds)
+            Spacer(minLength: gap)
+            StudyTodayRow(today: store.today, goal: store.goal)
         }
-        .overlay(
-            RoundedRectangle(cornerRadius: Theme.Radius.m, style: .continuous)
-                .strokeBorder(Theme.Palette.stroke.opacity(hovering ? 2 : 0), lineWidth: 1)
-        )
-        .motion(Theme.Motion.snappy, value: hovering)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+    }
+
+    /// The round, the Custom method's edit button and the (i), which sit in
+    /// the caption row or, without it, beside the method's name.
+    @ViewBuilder private var accessories: some View {
+        let session = store.session
+        if let round = StudyTimerFormat.roundLabel(session) {
+            Text(round).monospacedDigit()
+        }
+        if session.method.kind == .custom {
+            StudyEditButton(action: edit)
+        }
+        StudyInfoButton(method: session.method.kind, action: info)
+            .padding(.trailing, -Theme.Spacing.xs)
     }
 }
 
@@ -379,11 +409,21 @@ private struct StudyDeepFocusRow: View {
     let openMixer: () -> Void
 
     var body: some View {
+        // A narrow panel (Compact) shortens the switch's name instead of
+        // truncating it; the tooltip still says what it does.
+        ViewThatFits(in: .horizontal) {
+            row(title: "Deep focus")
+            row(title: "Deep")
+        }
+    }
+
+    private func row(title: String) -> some View {
         let isOn = store.deepFocus
-        HStack(spacing: Theme.Spacing.s) {
-            StudyCapsuleToggle(title: "Deep focus", symbol: "moon", isOn: isOn, help: help) {
+        return HStack(spacing: Theme.Spacing.s) {
+            StudyCapsuleToggle(title: title, symbol: "moon", isOn: isOn, help: help) {
                 store.setDeepFocus(!isOn)
             }
+            .fixedSize()
             Spacer(minLength: 0)
             StudySoundRow(focus: focus, isActive: isOn, openMixer: openMixer)
         }

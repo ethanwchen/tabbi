@@ -32,11 +32,10 @@ struct UpNextCard: View {
             let state = UpNextEmptyState(situation, upNextEvents: upNextEvents, appName: Edition.current.name)
             UpNextMessage(state: state) { perform($0) }
         } else {
-            VStack(spacing: 0) {
-                ForEach(store.events) { event in
-                    UpNextRow(event: event, now: store.now) { store.join($0) }
-                        .transition(.motionRow(from: .top))
-                }
+            // A shorter panel (Compact) lists fewer events instead of clipping the card.
+            RowsThatFit(store.events) { event in
+                UpNextRow(event: event, now: store.now) { store.join($0) }
+                    .transition(.motionRow(from: .top))
             }
         }
     }

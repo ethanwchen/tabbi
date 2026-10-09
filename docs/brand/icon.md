@@ -4,7 +4,7 @@ Tabbi's mascot is the maintainer's British Shorthair, a shaded silver cat with r
 The icon has to say that in one glance: this particular cat, a nod to tabs, and a hint that this is a tool for getting things done.
 
 The icon art is `docs/brand/source/tabbi-cover.png`, a flat cover illustration of the cat generated with the ip-as-logo recipe (see Cover art below).
-`scripts/make-icon.swift` masks it into the macOS squircle with the drop shadow and glass rim, and still draws the monochrome glyph in code.
+`scripts/make-icon.swift` masks it into the macOS squircle with the drop shadow and glass rim, and draws the small glyph of the same cat in code (see Glyph below).
 Without the cover file it falls back to the code-drawn cat described in History.
 
 ## Research
@@ -198,6 +198,20 @@ The image is used as generated, with no retouching.
 
 Tinted renders the cover in luminance only; Default, Light and Dark use it unchanged, since an `.icns` cannot carry appearances anyway.
 
+## Glyph
+
+The glyph is the cover cat cut down to a face that reads at 16 to 32 pt, drawn in code by `drawGlyph` in `scripts/make-icon.swift`.
+It replaced the one-colour winking cat of the code-drawn icon, which no longer looked like the app icon.
+
+- A big round cream head (`#E4DED6`), a little wider than tall, with blunt taupe ears (`#8E8379`) set wide apart and leaning out.
+- Three taupe stripes on the forehead, fanning out from the crown, and two short stripes running in from each cheek.
+- Two round blue eyes (`#3D8BFF`) set wide, and a small pink nose (`#F09EA6`), the cover's colours.
+- A deeper taupe outline (`#5E554E`) around the whole shape, so the pale face keeps its edge on white menus and on the black notch alike.
+
+Every feature is at least about one and a half pixels at 16 px (64 units per pixel), so the eyes and the nose stay separate dots and the stripes stay visible bands.
+The cover's mouth, tail and soft shading are left out: at 32 px and below they turn into noise.
+Because it carries the eye and nose colours, the glyph is not a template image; show it as is.
+
 ## Assets
 
 `scripts/make-icon.swift` writes these to `docs/brand/assets/` on every default run.
@@ -209,8 +223,8 @@ Other parts of the project (README, website, installer, onboarding) should use t
 | `tabbi-icon-light-1024.png` | Light appearance (blush ground), for dark pages and light marketing surfaces |
 | `tabbi-icon-dark-1024.png` | macOS 26 Dark appearance |
 | `tabbi-icon-tinted-1024.png` | macOS 26 Tinted appearance (luminance only) |
-| `tabbi-glyph.pdf` | Monochrome vector mark, for template images in menus and small UI |
-| `tabbi-glyph-256.png` | The same mark as a black PNG on transparent |
+| `tabbi-glyph.pdf` | The colour vector mark, for menus, onboarding and other small UI |
+| `tabbi-glyph-256.png` | The same mark as a PNG on transparent |
 
 ## Regenerating the icon
 
@@ -221,6 +235,7 @@ swift scripts/make-icon.swift --sheet /tmp/sheet.png --reference photo.png --cro
 swift scripts/make-icon.swift --sheet /tmp/sheet.png --ground blush  # try a candidate ground
 swift scripts/make-icon.swift --dock /tmp/dock.png          # beside Apple's icons in a Dock row
 swift scripts/make-icon.swift --variants /tmp/variants.png  # every appearance and the glyph
+swift scripts/make-icon.swift --glyph                       # only the glyph assets
 ```
 
 The default run renders every size of the `.iconset` natively (16 to 1024 px, with the small-size drawing at 32 px and below), builds `Resources/AppIcon.icns` with `iconutil`, and exports the assets above.

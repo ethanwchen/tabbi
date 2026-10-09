@@ -206,36 +206,46 @@ private struct DecksCard: View {
     var body: some View {
         Card(padding: Theme.Spacing.s) {
             VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-                HStack(spacing: Theme.Spacing.xs) {
-                    if let opening = store.opening, opening.phase == .launching {
-                        OpeningNotice(opening: opening)
-                    } else if let notice = store.openNotice {
-                        OpenNotice(outcome: notice)
-                    } else if let problem = store.problem {
-                        StaleNotice(problem: problem, updatedAt: store.updatedAt)
-                    } else {
-                        Text(showsAll ? "All decks with cards due" : "Top decks")
-                            .font(Theme.Typography.caption)
-                            .foregroundStyle(Theme.Palette.tertiaryText)
-                    }
-                    Spacer(minLength: Theme.Spacing.s)
-                    if outline.count > Self.collapsedCount {
-                        ExpandButton(showsAll: $showsAll, total: outline.count)
-                    }
-                }
-                .frame(height: 18)
-                .padding(.horizontal, Theme.Spacing.xs)
                 if top.isEmpty {
+                    header(expandable: false)
                     AllCaughtUp()
                 } else if showsAll {
+                    header(expandable: true)
                     scrollingRows
                 } else {
-                    rows(top.prefix(Self.collapsedCount).map { AnkiDeckOutlineRow(deck: $0, depth: 0, title: $0.name) })
+                    // A shorter panel (Compact) lists fewer decks instead of
+                    // clipping the card, and offers All N for the rest.
+                    RowsThatFit(top.prefix(Self.collapsedCount).map { AnkiDeckOutlineRow(deck: $0, depth: 0, title: $0.name) },
+                                spacing: Theme.Spacing.xxs,
+                                header: { shown in header(expandable: outline.count > shown) },
+                                row: row)
                     Spacer(minLength: 0)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
+    }
+
+    private func header(expandable: Bool) -> some View {
+        HStack(spacing: Theme.Spacing.xs) {
+            if let opening = store.opening, opening.phase == .launching {
+                OpeningNotice(opening: opening)
+            } else if let notice = store.openNotice {
+                OpenNotice(outcome: notice)
+            } else if let problem = store.problem {
+                StaleNotice(problem: problem, updatedAt: store.updatedAt)
+            } else {
+                Text(showsAll ? "All decks with cards due" : "Top decks")
+                    .font(Theme.Typography.caption)
+                    .foregroundStyle(Theme.Palette.tertiaryText)
+            }
+            Spacer(minLength: Theme.Spacing.s)
+            if expandable {
+                ExpandButton(showsAll: $showsAll, total: outline.count)
+            }
+        }
+        .frame(height: 18)
+        .padding(.horizontal, Theme.Spacing.xs)
     }
 
     /// `ImageRenderer` draws a `ScrollView` blank, so snapshots show the
@@ -255,14 +265,16 @@ private struct DecksCard: View {
 
     private func rows(_ rows: [AnkiDeckOutlineRow]) -> some View {
         VStack(spacing: Theme.Spacing.xxs) {
-            ForEach(rows) { row in
-                let deck = row.deck
-                DeckRow(row: row, isOpening: store.opening?.deck == deck.name,
-                        isFavorite: store.favorite?.matches(deck) == true,
-                        toggleFavorite: { store.toggleFavorite(deck) }) {
-                    store.startReviews(deck: deck.name)
-                }
-            }
+            ForEach(rows, content: row)
+        }
+    }
+
+    private func row(_ row: AnkiDeckOutlineRow) -> some View {
+        let deck = row.deck
+        return DeckRow(row: row, isOpening: store.opening?.deck == deck.name,
+                       isFavorite: store.favorite?.matches(deck) == true,
+                       toggleFavorite: { store.toggleFavorite(deck) }) {
+            store.startReviews(deck: deck.name)
         }
     }
 }
