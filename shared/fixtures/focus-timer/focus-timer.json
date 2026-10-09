@@ -1,0 +1,3194 @@
+{
+  "clocks" : [
+    {
+      "seconds" : -5,
+      "text" : "0:00"
+    },
+    {
+      "seconds" : 0,
+      "text" : "0:00"
+    },
+    {
+      "seconds" : 0.001,
+      "text" : "0:01"
+    },
+    {
+      "seconds" : 0.6,
+      "text" : "0:01"
+    },
+    {
+      "seconds" : 1,
+      "text" : "0:01"
+    },
+    {
+      "seconds" : 1.5,
+      "text" : "0:02"
+    },
+    {
+      "seconds" : 59,
+      "text" : "0:59"
+    },
+    {
+      "seconds" : 59.4,
+      "text" : "1:00"
+    },
+    {
+      "seconds" : 60,
+      "text" : "1:00"
+    },
+    {
+      "seconds" : 60.2,
+      "text" : "1:01"
+    },
+    {
+      "seconds" : 299.9,
+      "text" : "5:00"
+    },
+    {
+      "seconds" : 300,
+      "text" : "5:00"
+    },
+    {
+      "seconds" : 1499.25,
+      "text" : "25:00"
+    },
+    {
+      "seconds" : 1500,
+      "text" : "25:00"
+    },
+    {
+      "seconds" : 3000,
+      "text" : "50:00"
+    },
+    {
+      "seconds" : 3599.5,
+      "text" : "60:00"
+    },
+    {
+      "seconds" : 3600,
+      "text" : "60:00"
+    },
+    {
+      "seconds" : 5400,
+      "text" : "90:00"
+    }
+  ],
+  "schema" : "tabbi.focus-timer.golden",
+  "sequences" : [
+    {
+      "name" : "fresh-timer",
+      "steps" : [
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "advance",
+            "at" : 1790000000
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "idle"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : false,
+            "isRunning" : false,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "idle"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "25 min, no distractions"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "full-cycle-with-pause",
+      "steps" : [
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "start",
+            "at" : 1790000000
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001500,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790001500,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "advance",
+            "at" : 1790000600
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001500,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 600,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 900,
+            "shownTime" : 900
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790001500,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "15:00",
+            "phaseName" : "Focus",
+            "progress" : 0.4,
+            "remaining" : 900,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "pause",
+            "at" : 1790000600
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "paused",
+              "shown" : 900
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 600,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : false,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 900,
+            "shownTime" : 900
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "focusDuration" : 1500,
+            "pausedRemaining" : 900,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "paused"
+          },
+          "view" : {
+            "clock" : "15:00",
+            "phaseName" : "Focus",
+            "progress" : 0.4,
+            "remaining" : 900,
+            "status" : "Paused"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "advance",
+            "at" : 1790000700
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "paused",
+              "shown" : 900
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 600,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : false,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 900,
+            "shownTime" : 900
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "focusDuration" : 1500,
+            "pausedRemaining" : 900,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "paused"
+          },
+          "view" : {
+            "clock" : "15:00",
+            "phaseName" : "Focus",
+            "progress" : 0.4,
+            "remaining" : 900,
+            "status" : "Paused"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "start",
+            "at" : 1790000700
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001600,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 600,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 900,
+            "shownTime" : 900
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790001600,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "15:00",
+            "phaseName" : "Focus",
+            "progress" : 0.4,
+            "remaining" : 900,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "advance",
+            "at" : 1790001599
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001600,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 1499,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1,
+            "shownTime" : 1
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790001600,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "0:01",
+            "phaseName" : "Focus",
+            "progress" : 0.9993333333333333,
+            "remaining" : 1,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+            {
+              "activity" : {
+                "end" : 1790001600,
+                "kind" : "focus.completed",
+                "metadata" : {
+                  "method" : "pomodoro",
+                  "outcome" : "completed"
+                },
+                "quantity" : 25,
+                "start" : 1790000100,
+                "unit" : "min"
+              },
+              "body" : "Time for a 5-minute break.",
+              "endedAt" : 1790001600,
+              "phase" : "focus",
+              "title" : "Focus session done"
+            }
+          ],
+          "input" : {
+            "action" : "advance",
+            "at" : 1790001600
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001900,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 1,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Break",
+            "phase" : "rest",
+            "phaseLength" : 300,
+            "remaining" : 300,
+            "shownTime" : 300
+          },
+          "state" : {
+            "completedFocusCount" : 1,
+            "endsAt" : 1790001900,
+            "focusDuration" : 1500,
+            "phase" : "rest",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "5:00",
+            "phaseName" : "Break",
+            "progress" : 0,
+            "remaining" : 300,
+            "status" : "Step away for a bit"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "advance",
+            "at" : 1790001750
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001900,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 1,
+            "elapsed" : 150,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Break",
+            "phase" : "rest",
+            "phaseLength" : 300,
+            "remaining" : 150,
+            "shownTime" : 150
+          },
+          "state" : {
+            "completedFocusCount" : 1,
+            "endsAt" : 1790001900,
+            "focusDuration" : 1500,
+            "phase" : "rest",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "2:30",
+            "phaseName" : "Break",
+            "progress" : 0.5,
+            "remaining" : 150,
+            "status" : "Step away for a bit"
+          }
+        },
+        {
+          "completions" : [
+            {
+              "activity" : {
+                "end" : 1790001900,
+                "kind" : "break.taken",
+                "metadata" : {
+                  "method" : "pomodoro",
+                  "outcome" : "completed"
+                },
+                "quantity" : 5,
+                "start" : 1790001600,
+                "unit" : "min"
+              },
+              "body" : "Ready for another 25-minute focus session?",
+              "endedAt" : 1790001900,
+              "phase" : "rest",
+              "title" : "Break's over"
+            }
+          ],
+          "input" : {
+            "action" : "advance",
+            "at" : 1790001900
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "idle"
+            },
+            "completedFocusCount" : 1,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : false,
+            "isRunning" : false,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 1,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "idle"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "25 min, no distractions"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "start",
+            "at" : 1790002000
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790003500,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 1,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 1,
+            "endsAt" : 1790003500,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "Heads down"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "asleep-through-focus-and-break",
+      "steps" : [
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "start",
+            "at" : 1790000000
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001500,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790001500,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+            {
+              "activity" : {
+                "end" : 1790001500,
+                "kind" : "focus.completed",
+                "metadata" : {
+                  "method" : "pomodoro",
+                  "outcome" : "completed"
+                },
+                "quantity" : 25,
+                "start" : 1790000000,
+                "unit" : "min"
+              },
+              "body" : "Time for a 5-minute break.",
+              "endedAt" : 1790001500,
+              "phase" : "focus",
+              "title" : "Focus session done"
+            },
+            {
+              "activity" : {
+                "end" : 1790001800,
+                "kind" : "break.taken",
+                "metadata" : {
+                  "method" : "pomodoro",
+                  "outcome" : "completed"
+                },
+                "quantity" : 5,
+                "start" : 1790001500,
+                "unit" : "min"
+              },
+              "body" : "Ready for another 25-minute focus session?",
+              "endedAt" : 1790001800,
+              "phase" : "rest",
+              "title" : "Break's over"
+            }
+          ],
+          "input" : {
+            "action" : "advance",
+            "at" : 1790005000
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "idle"
+            },
+            "completedFocusCount" : 1,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : false,
+            "isRunning" : false,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 1,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "idle"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "25 min, no distractions"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "asleep-through-focus-only",
+      "steps" : [
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "start",
+            "at" : 1790000000
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001500,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790001500,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+            {
+              "activity" : {
+                "end" : 1790001500,
+                "kind" : "focus.completed",
+                "metadata" : {
+                  "method" : "pomodoro",
+                  "outcome" : "completed"
+                },
+                "quantity" : 25,
+                "start" : 1790000000,
+                "unit" : "min"
+              },
+              "body" : "Time for a 5-minute break.",
+              "endedAt" : 1790001500,
+              "phase" : "focus",
+              "title" : "Focus session done"
+            }
+          ],
+          "input" : {
+            "action" : "advance",
+            "at" : 1790001700
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001800,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 1,
+            "elapsed" : 200,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Break",
+            "phase" : "rest",
+            "phaseLength" : 300,
+            "remaining" : 100,
+            "shownTime" : 100
+          },
+          "state" : {
+            "completedFocusCount" : 1,
+            "endsAt" : 1790001800,
+            "focusDuration" : 1500,
+            "phase" : "rest",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "1:40",
+            "phaseName" : "Break",
+            "progress" : 0.6666666666666667,
+            "remaining" : 100,
+            "status" : "Step away for a bit"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "asleep-through-several-cycles",
+      "steps" : [
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "start",
+            "at" : 1790000000
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001500,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790001500,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+            {
+              "activity" : {
+                "end" : 1790001500,
+                "kind" : "focus.completed",
+                "metadata" : {
+                  "method" : "pomodoro",
+                  "outcome" : "completed"
+                },
+                "quantity" : 25,
+                "start" : 1790000000,
+                "unit" : "min"
+              },
+              "body" : "Time for a 5-minute break.",
+              "endedAt" : 1790001500,
+              "phase" : "focus",
+              "title" : "Focus session done"
+            },
+            {
+              "activity" : {
+                "end" : 1790001800,
+                "kind" : "break.taken",
+                "metadata" : {
+                  "method" : "pomodoro",
+                  "outcome" : "completed"
+                },
+                "quantity" : 5,
+                "start" : 1790001500,
+                "unit" : "min"
+              },
+              "body" : "Ready for another 25-minute focus session?",
+              "endedAt" : 1790001800,
+              "phase" : "rest",
+              "title" : "Break's over"
+            }
+          ],
+          "input" : {
+            "action" : "advance",
+            "at" : 1790001800
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "idle"
+            },
+            "completedFocusCount" : 1,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : false,
+            "isRunning" : false,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 1,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "idle"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "25 min, no distractions"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "start",
+            "at" : 1790001810
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790003310,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 1,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 1,
+            "endsAt" : 1790003310,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+            {
+              "activity" : {
+                "end" : 1790003310,
+                "kind" : "focus.completed",
+                "metadata" : {
+                  "method" : "pomodoro",
+                  "outcome" : "completed"
+                },
+                "quantity" : 25,
+                "start" : 1790001810,
+                "unit" : "min"
+              },
+              "body" : "Time for a 5-minute break.",
+              "endedAt" : 1790003310,
+              "phase" : "focus",
+              "title" : "Focus session done"
+            },
+            {
+              "activity" : {
+                "end" : 1790003610,
+                "kind" : "break.taken",
+                "metadata" : {
+                  "method" : "pomodoro",
+                  "outcome" : "completed"
+                },
+                "quantity" : 5,
+                "start" : 1790003310,
+                "unit" : "min"
+              },
+              "body" : "Ready for another 25-minute focus session?",
+              "endedAt" : 1790003610,
+              "phase" : "rest",
+              "title" : "Break's over"
+            }
+          ],
+          "input" : {
+            "action" : "advance",
+            "at" : 1790100000
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "idle"
+            },
+            "completedFocusCount" : 2,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : false,
+            "isRunning" : false,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 2,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "idle"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "25 min, no distractions"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "skip-while-running",
+      "steps" : [
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "start",
+            "at" : 1790000000
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001500,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790001500,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "skip",
+            "at" : 1790000300
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790000600,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Break",
+            "phase" : "rest",
+            "phaseLength" : 300,
+            "remaining" : 300,
+            "shownTime" : 300
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790000600,
+            "focusDuration" : 1500,
+            "phase" : "rest",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "5:00",
+            "phaseName" : "Break",
+            "progress" : 0,
+            "remaining" : 300,
+            "status" : "Step away for a bit"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "skip",
+            "at" : 1790000400
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001900,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790001900,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+            {
+              "activity" : {
+                "end" : 1790001900,
+                "kind" : "focus.completed",
+                "metadata" : {
+                  "method" : "pomodoro",
+                  "outcome" : "completed"
+                },
+                "quantity" : 25,
+                "start" : 1790000400,
+                "unit" : "min"
+              },
+              "body" : "Time for a 5-minute break.",
+              "endedAt" : 1790001900,
+              "phase" : "focus",
+              "title" : "Focus session done"
+            }
+          ],
+          "input" : {
+            "action" : "advance",
+            "at" : 1790001900
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790002200,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 1,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Break",
+            "phase" : "rest",
+            "phaseLength" : 300,
+            "remaining" : 300,
+            "shownTime" : 300
+          },
+          "state" : {
+            "completedFocusCount" : 1,
+            "endsAt" : 1790002200,
+            "focusDuration" : 1500,
+            "phase" : "rest",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "5:00",
+            "phaseName" : "Break",
+            "progress" : 0,
+            "remaining" : 300,
+            "status" : "Step away for a bit"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "skip-while-idle",
+      "steps" : [
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "skip",
+            "at" : 1790000000
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "idle"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : false,
+            "isRunning" : false,
+            "label" : "Break",
+            "phase" : "rest",
+            "phaseLength" : 300,
+            "remaining" : 300,
+            "shownTime" : 300
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "focusDuration" : 1500,
+            "phase" : "rest",
+            "restDuration" : 300,
+            "run" : "idle"
+          },
+          "view" : {
+            "clock" : "5:00",
+            "phaseName" : "Break",
+            "progress" : 0,
+            "remaining" : 300,
+            "status" : "Step away for a bit"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "start",
+            "at" : 1790000010
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790000310,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Break",
+            "phase" : "rest",
+            "phaseLength" : 300,
+            "remaining" : 300,
+            "shownTime" : 300
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790000310,
+            "focusDuration" : 1500,
+            "phase" : "rest",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "5:00",
+            "phaseName" : "Break",
+            "progress" : 0,
+            "remaining" : 300,
+            "status" : "Step away for a bit"
+          }
+        },
+        {
+          "completions" : [
+            {
+              "activity" : {
+                "end" : 1790000310,
+                "kind" : "break.taken",
+                "metadata" : {
+                  "method" : "pomodoro",
+                  "outcome" : "completed"
+                },
+                "quantity" : 5,
+                "start" : 1790000010,
+                "unit" : "min"
+              },
+              "body" : "Ready for another 25-minute focus session?",
+              "endedAt" : 1790000310,
+              "phase" : "rest",
+              "title" : "Break's over"
+            }
+          ],
+          "input" : {
+            "action" : "advance",
+            "at" : 1790000310
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "idle"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : false,
+            "isRunning" : false,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "idle"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "25 min, no distractions"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "skip",
+            "at" : 1790000320
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "idle"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : false,
+            "isRunning" : false,
+            "label" : "Break",
+            "phase" : "rest",
+            "phaseLength" : 300,
+            "remaining" : 300,
+            "shownTime" : 300
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "focusDuration" : 1500,
+            "phase" : "rest",
+            "restDuration" : 300,
+            "run" : "idle"
+          },
+          "view" : {
+            "clock" : "5:00",
+            "phaseName" : "Break",
+            "progress" : 0,
+            "remaining" : 300,
+            "status" : "Step away for a bit"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "skip",
+            "at" : 1790000330
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "idle"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : false,
+            "isRunning" : false,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "idle"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "25 min, no distractions"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "skip-while-paused",
+      "steps" : [
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "start",
+            "at" : 1790000000
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001500,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790001500,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "pause",
+            "at" : 1790000100
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "paused",
+              "shown" : 1400
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 100,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : false,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1400,
+            "shownTime" : 1400
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "focusDuration" : 1500,
+            "pausedRemaining" : 1400,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "paused"
+          },
+          "view" : {
+            "clock" : "23:20",
+            "phaseName" : "Focus",
+            "progress" : 0.06666666666666665,
+            "remaining" : 1400,
+            "status" : "Paused"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "skip",
+            "at" : 1790000200
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "idle"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : false,
+            "isRunning" : false,
+            "label" : "Break",
+            "phase" : "rest",
+            "phaseLength" : 300,
+            "remaining" : 300,
+            "shownTime" : 300
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "focusDuration" : 1500,
+            "phase" : "rest",
+            "restDuration" : 300,
+            "run" : "idle"
+          },
+          "view" : {
+            "clock" : "5:00",
+            "phaseName" : "Break",
+            "progress" : 0,
+            "remaining" : 300,
+            "status" : "Step away for a bit"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "reset-keeps-count",
+      "steps" : [
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "start",
+            "at" : 1790000000
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001500,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790001500,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+            {
+              "activity" : {
+                "end" : 1790001500,
+                "kind" : "focus.completed",
+                "metadata" : {
+                  "method" : "pomodoro",
+                  "outcome" : "completed"
+                },
+                "quantity" : 25,
+                "start" : 1790000000,
+                "unit" : "min"
+              },
+              "body" : "Time for a 5-minute break.",
+              "endedAt" : 1790001500,
+              "phase" : "focus",
+              "title" : "Focus session done"
+            }
+          ],
+          "input" : {
+            "action" : "advance",
+            "at" : 1790001500
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001800,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 1,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Break",
+            "phase" : "rest",
+            "phaseLength" : 300,
+            "remaining" : 300,
+            "shownTime" : 300
+          },
+          "state" : {
+            "completedFocusCount" : 1,
+            "endsAt" : 1790001800,
+            "focusDuration" : 1500,
+            "phase" : "rest",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "5:00",
+            "phaseName" : "Break",
+            "progress" : 0,
+            "remaining" : 300,
+            "status" : "Step away for a bit"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "reset",
+            "at" : 1790001600
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "idle"
+            },
+            "completedFocusCount" : 1,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : false,
+            "isRunning" : false,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 1,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "idle"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "25 min, no distractions"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "start",
+            "at" : 1790001700
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790003200,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 1,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 1,
+            "endsAt" : 1790003200,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "reset",
+            "at" : 1790001800
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "idle"
+            },
+            "completedFocusCount" : 1,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : false,
+            "isRunning" : false,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 1,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "idle"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "25 min, no distractions"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "no-ops",
+      "steps" : [
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "pause",
+            "at" : 1790000000
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "idle"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : false,
+            "isRunning" : false,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "idle"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "25 min, no distractions"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "start",
+            "at" : 1790000000
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001500,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790001500,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "start",
+            "at" : 1790000100
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001500,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 100,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1400,
+            "shownTime" : 1400
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790001500,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "23:20",
+            "phaseName" : "Focus",
+            "progress" : 0.06666666666666665,
+            "remaining" : 1400,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "pause",
+            "at" : 1790000200
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "paused",
+              "shown" : 1300
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 200,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : false,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1300,
+            "shownTime" : 1300
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "focusDuration" : 1500,
+            "pausedRemaining" : 1300,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "paused"
+          },
+          "view" : {
+            "clock" : "21:40",
+            "phaseName" : "Focus",
+            "progress" : 0.1333333333333333,
+            "remaining" : 1300,
+            "status" : "Paused"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "pause",
+            "at" : 1790000300
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "paused",
+              "shown" : 1300
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 200,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : false,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1300,
+            "shownTime" : 1300
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "focusDuration" : 1500,
+            "pausedRemaining" : 1300,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "paused"
+          },
+          "view" : {
+            "clock" : "21:40",
+            "phaseName" : "Focus",
+            "progress" : 0.1333333333333333,
+            "remaining" : 1300,
+            "status" : "Paused"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "advance",
+            "at" : 1790005000
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "paused",
+              "shown" : 1300
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 200,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : false,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1300,
+            "shownTime" : 1300
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "focusDuration" : 1500,
+            "pausedRemaining" : 1300,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "paused"
+          },
+          "view" : {
+            "clock" : "21:40",
+            "phaseName" : "Focus",
+            "progress" : 0.1333333333333333,
+            "remaining" : 1300,
+            "status" : "Paused"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "reset",
+            "at" : 1790005000
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "idle"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : false,
+            "isRunning" : false,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "idle"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "25 min, no distractions"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "reset",
+            "at" : 1790005001
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "idle"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : false,
+            "isRunning" : false,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "idle"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "25 min, no distractions"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "pause-after-end-without-advance",
+      "steps" : [
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "start",
+            "at" : 1790000000
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001500,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790001500,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "pause",
+            "at" : 1790002000
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "paused",
+              "shown" : 0
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 1500,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : false,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 0,
+            "shownTime" : 0
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "focusDuration" : 1500,
+            "pausedRemaining" : 0,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "paused"
+          },
+          "view" : {
+            "clock" : "0:00",
+            "phaseName" : "Focus",
+            "progress" : 1,
+            "remaining" : 0,
+            "status" : "Paused"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "advance",
+            "at" : 1790002000
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "paused",
+              "shown" : 0
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 1500,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : false,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 0,
+            "shownTime" : 0
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "focusDuration" : 1500,
+            "pausedRemaining" : 0,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "paused"
+          },
+          "view" : {
+            "clock" : "0:00",
+            "phaseName" : "Focus",
+            "progress" : 1,
+            "remaining" : 0,
+            "status" : "Paused"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "start",
+            "at" : 1790002100
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790002100,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 1500,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 0,
+            "shownTime" : 0
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790002100,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "0:00",
+            "phaseName" : "Focus",
+            "progress" : 1,
+            "remaining" : 0,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+            {
+              "activity" : {
+                "end" : 1790002100,
+                "kind" : "focus.completed",
+                "metadata" : {
+                  "method" : "pomodoro",
+                  "outcome" : "completed"
+                },
+                "quantity" : 25,
+                "start" : 1790000600,
+                "unit" : "min"
+              },
+              "body" : "Time for a 5-minute break.",
+              "endedAt" : 1790002100,
+              "phase" : "focus",
+              "title" : "Focus session done"
+            }
+          ],
+          "input" : {
+            "action" : "advance",
+            "at" : 1790002100
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790002400,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 1,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Break",
+            "phase" : "rest",
+            "phaseLength" : 300,
+            "remaining" : 300,
+            "shownTime" : 300
+          },
+          "state" : {
+            "completedFocusCount" : 1,
+            "endsAt" : 1790002400,
+            "focusDuration" : 1500,
+            "phase" : "rest",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "5:00",
+            "phaseName" : "Break",
+            "progress" : 0,
+            "remaining" : 300,
+            "status" : "Step away for a bit"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "fractional-seconds",
+      "steps" : [
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "start",
+            "at" : 1790000000.25
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001500.25,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790001500.25,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "pause",
+            "at" : 1790001499.5
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "paused",
+              "shown" : 0.75
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 1499.25,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : false,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 0.75,
+            "shownTime" : 0.75
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "focusDuration" : 1500,
+            "pausedRemaining" : 0.75,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "paused"
+          },
+          "view" : {
+            "clock" : "0:01",
+            "phaseName" : "Focus",
+            "progress" : 0.9995,
+            "remaining" : 0.75,
+            "status" : "Paused"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "start",
+            "at" : 1790001500
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001500.75,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 1499.25,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 0.75,
+            "shownTime" : 0.75
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790001500.75,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "0:01",
+            "phaseName" : "Focus",
+            "progress" : 0.9995,
+            "remaining" : 0.75,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "advance",
+            "at" : 1790001500.5
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001500.75,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 1499.75,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 0.25,
+            "shownTime" : 0.25
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790001500.75,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "0:01",
+            "phaseName" : "Focus",
+            "progress" : 0.9998333333333334,
+            "remaining" : 0.25,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+            {
+              "activity" : {
+                "end" : 1790001501,
+                "kind" : "focus.completed",
+                "metadata" : {
+                  "method" : "pomodoro",
+                  "outcome" : "completed"
+                },
+                "quantity" : 25,
+                "start" : 1790000001,
+                "unit" : "min"
+              },
+              "body" : "Time for a 5-minute break.",
+              "endedAt" : 1790001500.75,
+              "phase" : "focus",
+              "title" : "Focus session done"
+            }
+          ],
+          "input" : {
+            "action" : "advance",
+            "at" : 1790001500.75
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001800.75,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 1,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Break",
+            "phase" : "rest",
+            "phaseLength" : 300,
+            "remaining" : 300,
+            "shownTime" : 300
+          },
+          "state" : {
+            "completedFocusCount" : 1,
+            "endsAt" : 1790001800.75,
+            "focusDuration" : 1500,
+            "phase" : "rest",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "5:00",
+            "phaseName" : "Break",
+            "progress" : 0,
+            "remaining" : 300,
+            "status" : "Step away for a bit"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "custom-lengths",
+      "steps" : [
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "configure",
+            "at" : 1790000000,
+            "focusDuration" : 3000,
+            "restDuration" : 600
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "idle"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 3000,
+            "isActive" : false,
+            "isRunning" : false,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 3000,
+            "remaining" : 3000,
+            "shownTime" : 3000
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "focusDuration" : 3000,
+            "phase" : "focus",
+            "restDuration" : 600,
+            "run" : "idle"
+          },
+          "view" : {
+            "clock" : "50:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 3000,
+            "status" : "50 min, no distractions"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "start",
+            "at" : 1790000000
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790003000,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 3000,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 3000,
+            "remaining" : 3000,
+            "shownTime" : 3000
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790003000,
+            "focusDuration" : 3000,
+            "phase" : "focus",
+            "restDuration" : 600,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "50:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 3000,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+            {
+              "activity" : {
+                "end" : 1790003000,
+                "kind" : "focus.completed",
+                "metadata" : {
+                  "method" : "pomodoro",
+                  "outcome" : "completed"
+                },
+                "quantity" : 50,
+                "start" : 1790000000,
+                "unit" : "min"
+              },
+              "body" : "Time for a 10-minute break.",
+              "endedAt" : 1790003000,
+              "phase" : "focus",
+              "title" : "Focus session done"
+            }
+          ],
+          "input" : {
+            "action" : "advance",
+            "at" : 1790003000
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790003600,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 1,
+            "elapsed" : 0,
+            "focusLength" : 3000,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Break",
+            "phase" : "rest",
+            "phaseLength" : 600,
+            "remaining" : 600,
+            "shownTime" : 600
+          },
+          "state" : {
+            "completedFocusCount" : 1,
+            "endsAt" : 1790003600,
+            "focusDuration" : 3000,
+            "phase" : "rest",
+            "restDuration" : 600,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "10:00",
+            "phaseName" : "Break",
+            "progress" : 0,
+            "remaining" : 600,
+            "status" : "Step away for a bit"
+          }
+        },
+        {
+          "completions" : [
+            {
+              "activity" : {
+                "end" : 1790003600,
+                "kind" : "break.taken",
+                "metadata" : {
+                  "method" : "pomodoro",
+                  "outcome" : "completed"
+                },
+                "quantity" : 10,
+                "start" : 1790003000,
+                "unit" : "min"
+              },
+              "body" : "Ready for another 50-minute focus session?",
+              "endedAt" : 1790003600,
+              "phase" : "rest",
+              "title" : "Break's over"
+            }
+          ],
+          "input" : {
+            "action" : "advance",
+            "at" : 1790003600
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "idle"
+            },
+            "completedFocusCount" : 1,
+            "elapsed" : 0,
+            "focusLength" : 3000,
+            "isActive" : false,
+            "isRunning" : false,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 3000,
+            "remaining" : 3000,
+            "shownTime" : 3000
+          },
+          "state" : {
+            "completedFocusCount" : 1,
+            "focusDuration" : 3000,
+            "phase" : "focus",
+            "restDuration" : 600,
+            "run" : "idle"
+          },
+          "view" : {
+            "clock" : "50:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 3000,
+            "status" : "50 min, no distractions"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "lengths-clamped-to-one-second",
+      "steps" : [
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "configure",
+            "at" : 1790000000,
+            "focusDuration" : 0,
+            "restDuration" : -5
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "idle"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 1,
+            "isActive" : false,
+            "isRunning" : false,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1,
+            "remaining" : 1,
+            "shownTime" : 1
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "focusDuration" : 1,
+            "phase" : "focus",
+            "restDuration" : 1,
+            "run" : "idle"
+          },
+          "view" : {
+            "clock" : "0:01",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1,
+            "status" : "0 min, no distractions"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "start",
+            "at" : 1790000000
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790000001,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 1,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1,
+            "remaining" : 1,
+            "shownTime" : 1
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790000001,
+            "focusDuration" : 1,
+            "phase" : "focus",
+            "restDuration" : 1,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "0:01",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+            {
+              "activity" : {
+                "end" : 1790000001,
+                "kind" : "focus.completed",
+                "metadata" : {
+                  "method" : "pomodoro",
+                  "outcome" : "completed"
+                },
+                "quantity" : 0.016666666666666666,
+                "start" : 1790000000,
+                "unit" : "min"
+              },
+              "body" : "Time for a 0-minute break.",
+              "endedAt" : 1790000001,
+              "phase" : "focus",
+              "title" : "Focus session done"
+            }
+          ],
+          "input" : {
+            "action" : "advance",
+            "at" : 1790000001
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790000002,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 1,
+            "elapsed" : 0,
+            "focusLength" : 1,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Break",
+            "phase" : "rest",
+            "phaseLength" : 1,
+            "remaining" : 1,
+            "shownTime" : 1
+          },
+          "state" : {
+            "completedFocusCount" : 1,
+            "endsAt" : 1790000002,
+            "focusDuration" : 1,
+            "phase" : "rest",
+            "restDuration" : 1,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "0:01",
+            "phaseName" : "Break",
+            "progress" : 0,
+            "remaining" : 1,
+            "status" : "Step away for a bit"
+          }
+        },
+        {
+          "completions" : [
+            {
+              "activity" : {
+                "end" : 1790000002,
+                "kind" : "break.taken",
+                "metadata" : {
+                  "method" : "pomodoro",
+                  "outcome" : "completed"
+                },
+                "quantity" : 0.016666666666666666,
+                "start" : 1790000001,
+                "unit" : "min"
+              },
+              "body" : "Ready for another 0-minute focus session?",
+              "endedAt" : 1790000002,
+              "phase" : "rest",
+              "title" : "Break's over"
+            }
+          ],
+          "input" : {
+            "action" : "advance",
+            "at" : 1790000002
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "idle"
+            },
+            "completedFocusCount" : 1,
+            "elapsed" : 0,
+            "focusLength" : 1,
+            "isActive" : false,
+            "isRunning" : false,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1,
+            "remaining" : 1,
+            "shownTime" : 1
+          },
+          "state" : {
+            "completedFocusCount" : 1,
+            "focusDuration" : 1,
+            "phase" : "focus",
+            "restDuration" : 1,
+            "run" : "idle"
+          },
+          "view" : {
+            "clock" : "0:01",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1,
+            "status" : "0 min, no distractions"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "lengths-changed-mid-phase",
+      "steps" : [
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "start",
+            "at" : 1790000000
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001500,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 1500,
+            "shownTime" : 1500
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790001500,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "25:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 1500,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "advance",
+            "at" : 1790000600
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001500,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 600,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 1500,
+            "remaining" : 900,
+            "shownTime" : 900
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790001500,
+            "focusDuration" : 1500,
+            "phase" : "focus",
+            "restDuration" : 300,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "15:00",
+            "phaseName" : "Focus",
+            "progress" : 0.4,
+            "remaining" : 900,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "configure",
+            "at" : 1790000600,
+            "focusDuration" : 600,
+            "restDuration" : 120
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001500,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 0,
+            "focusLength" : 600,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 600,
+            "remaining" : 900,
+            "shownTime" : 900
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790001500,
+            "focusDuration" : 600,
+            "phase" : "focus",
+            "restDuration" : 120,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "15:00",
+            "phaseName" : "Focus",
+            "progress" : 0,
+            "remaining" : 900,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "configure",
+            "at" : 1790000600,
+            "focusDuration" : 2700,
+            "restDuration" : 900
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790001500,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 0,
+            "elapsed" : 1800,
+            "focusLength" : 2700,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Focus",
+            "phase" : "focus",
+            "phaseLength" : 2700,
+            "remaining" : 900,
+            "shownTime" : 900
+          },
+          "state" : {
+            "completedFocusCount" : 0,
+            "endsAt" : 1790001500,
+            "focusDuration" : 2700,
+            "phase" : "focus",
+            "restDuration" : 900,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "15:00",
+            "phaseName" : "Focus",
+            "progress" : 0.6666666666666667,
+            "remaining" : 900,
+            "status" : "Heads down"
+          }
+        },
+        {
+          "completions" : [
+            {
+              "activity" : {
+                "end" : 1790001500,
+                "kind" : "focus.completed",
+                "metadata" : {
+                  "method" : "pomodoro",
+                  "outcome" : "completed"
+                },
+                "quantity" : 45,
+                "start" : 1789998800,
+                "unit" : "min"
+              },
+              "body" : "Time for a 15-minute break.",
+              "endedAt" : 1790001500,
+              "phase" : "focus",
+              "title" : "Focus session done"
+            }
+          ],
+          "input" : {
+            "action" : "advance",
+            "at" : 1790001500
+          },
+          "provided" : {
+            "clock" : {
+              "endsAt" : 1790002400,
+              "kind" : "countdown"
+            },
+            "completedFocusCount" : 1,
+            "elapsed" : 0,
+            "focusLength" : 2700,
+            "isActive" : true,
+            "isRunning" : true,
+            "label" : "Break",
+            "phase" : "rest",
+            "phaseLength" : 900,
+            "remaining" : 900,
+            "shownTime" : 900
+          },
+          "state" : {
+            "completedFocusCount" : 1,
+            "endsAt" : 1790002400,
+            "focusDuration" : 2700,
+            "phase" : "rest",
+            "restDuration" : 900,
+            "run" : "running"
+          },
+          "view" : {
+            "clock" : "15:00",
+            "phaseName" : "Break",
+            "progress" : 0,
+            "remaining" : 900,
+            "status" : "Step away for a bit"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "pause",
+            "at" : 1790001600
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "paused",
+              "shown" : 800
+            },
+            "completedFocusCount" : 1,
+            "elapsed" : 100,
+            "focusLength" : 2700,
+            "isActive" : true,
+            "isRunning" : false,
+            "label" : "Break",
+            "phase" : "rest",
+            "phaseLength" : 900,
+            "remaining" : 800,
+            "shownTime" : 800
+          },
+          "state" : {
+            "completedFocusCount" : 1,
+            "focusDuration" : 2700,
+            "pausedRemaining" : 800,
+            "phase" : "rest",
+            "restDuration" : 900,
+            "run" : "paused"
+          },
+          "view" : {
+            "clock" : "13:20",
+            "phaseName" : "Break",
+            "progress" : 0.11111111111111116,
+            "remaining" : 800,
+            "status" : "Step away for a bit"
+          }
+        },
+        {
+          "completions" : [
+
+          ],
+          "input" : {
+            "action" : "configure",
+            "at" : 1790001600,
+            "focusDuration" : 1500,
+            "restDuration" : 300
+          },
+          "provided" : {
+            "clock" : {
+              "kind" : "paused",
+              "shown" : 800
+            },
+            "completedFocusCount" : 1,
+            "elapsed" : 0,
+            "focusLength" : 1500,
+            "isActive" : true,
+            "isRunning" : false,
+            "label" : "Break",
+            "phase" : "rest",
+            "phaseLength" : 300,
+            "remaining" : 800,
+            "shownTime" : 800
+          },
+          "state" : {
+            "completedFocusCount" : 1,
+            "focusDuration" : 1500,
+            "pausedRemaining" : 800,
+            "phase" : "rest",
+            "restDuration" : 300,
+            "run" : "paused"
+          },
+          "view" : {
+            "clock" : "13:20",
+            "phaseName" : "Break",
+            "progress" : 0,
+            "remaining" : 800,
+            "status" : "Step away for a bit"
+          }
+        }
+      ]
+    }
+  ],
+  "version" : 1
+}

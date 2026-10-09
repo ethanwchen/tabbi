@@ -48,7 +48,11 @@ Status of phase 0 from `docs/windows/plan.md`: the Mac app's shared pieces move 
 - Stream-json fixture for the TypeScript port: `shared/fixtures/claude-stream/stream-json.json` holds 34 raw `claude -p` lines (session start, rate limits with and without windows, text deltas, assistant messages with tool use and thinking, results, and malformed lines) with the event each parses to, and 13 Ask Claude exchanges as steps (ask, feed a line, the CLI exits, stop, retry, retry a lost session) with the chat after every step.
   `ClaudeStreamGoldenTests` checks the parser and `ClaudeAskConversation` against it, and also replays the fixture's own inputs, which is what the port does; it was shown to fail on a one-string change.
 
+- Focus timer fixture for the TypeScript port: `shared/fixtures/focus-timer/focus-timer.json` holds countdown readouts around their rounding edges, and 15 Pomodoro sequences as steps (start, pause, reset, skip, advance the clock, change the lengths), with the timer, what the focus card shows, the shared focus clock, and each finished phase's notification and activity record after every step.
+  They cover a full cycle with a pause, sleeping through one or more phases, skips while running, idle and paused, resets, no-ops, custom and clamped lengths, and lengths changed mid-phase.
+  `FocusTimerGoldenTests` checks the timer against it and replays the fixture's own inputs; it was shown to fail on a one-string change.
+
 ## Next
 
-1. Logic fixtures for the TypeScript port: focus timer and study session sequences, Plan my day, ticker selection.
+1. Logic fixtures for the TypeScript port: study session sequences, Plan my day, ticker selection.
 2. Snapshot comparison against `main`, pixel for pixel.
