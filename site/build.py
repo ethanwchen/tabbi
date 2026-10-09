@@ -14,7 +14,7 @@ import sys
 import zipfile
 from html.parser import HTMLParser
 
-from _partials import page, download_button, PAW, DOWNLOAD, GITHUB, ISSUES, ORIGIN, SUPPORT_EMAIL
+from _partials import page, download_button, PAW, DOWNLOAD, GITHUB, ISSUES, ORIGIN, SUGGESTIONS, SUPPORT_EMAIL
 from _legal import PRIVACY, PRIVACY_HERO, TERMS, TERMS_HERO
 
 HERE = pathlib.Path(__file__).parent
@@ -94,7 +94,7 @@ HOME = f'''
             <figcaption><strong>{name}</strong>{line}</figcaption>
           </figure>''' for img, label, name, line, alt in TABS) + '''
         </div>
-        <p class="more">And more fun tabs inside.</p>
+        <p class="more">And more fun tabs inside. Missing one? <a href="/suggest">Suggest a tab</a>.</p>
         <div class="card-pair">
           <a class="gh-card" href="''' + GITHUB + '''">
             <img class="gh-cat" src="/img/glyph.png" width="56" height="56" alt="">
@@ -268,6 +268,57 @@ ABOUT = f'''
 '''
 
 
+# --------------------------------------------------------------------------
+# Suggest
+# --------------------------------------------------------------------------
+
+# A plain form, no script: it posts to the friends backend, which answers with
+# a redirect to /thanks. The "website" field is a honeypot: people never see
+# it, bots fill it in, and the backend drops anything that arrives with it.
+SUGGEST_CATEGORIES = [
+    ('tab', 'A new tab'),
+    ('integration', 'An integration'),
+    ('improvement', 'An improvement'),
+    ('other', 'Something else'),
+]
+
+SUGGEST = f'''
+      <form class="suggest" action="{SUGGESTIONS}" method="post">
+        <div class="field">
+          <label for="category">What kind of idea?</label>
+          <select id="category" name="category">
+''' + '\n'.join(f'            <option value="{value}">{label}</option>' for value, label in SUGGEST_CATEGORIES) + '''
+          </select>
+        </div>
+        <div class="field">
+          <label for="message">Your idea</label>
+          <textarea id="message" name="message" rows="6" minlength="10" maxlength="2000" required placeholder="A tab for my plants, so I remember to water them."></textarea>
+        </div>
+        <div class="field">
+          <label for="email">Email <span class="optional">(optional)</span></label>
+          <input id="email" name="email" type="email" maxlength="254" autocomplete="email" aria-describedby="email-note">
+          <p class="note" id="email-note">Only to ask about or reply to this idea. Never a newsletter.</p>
+        </div>
+        <div class="hp" aria-hidden="true">
+          <label for="website">Leave this empty</label>
+          <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+        </div>
+        <button class="btn" type="submit">Send suggestion</button>
+      </form>
+'''
+
+THANKS = '''
+      <div class="lost">
+        <img src="/img/glyph.png" width="128" height="128" alt="">
+        <p class="measure">Every idea gets read. If you left an email, you may hear back.</p>
+        <div class="cta center">
+          <a class="btn" href="/">Back to the start</a>
+          <a class="btn soft" href="/suggest">Suggest another</a>
+        </div>
+      </div>
+'''
+
+
 NOT_FOUND = '''
       <div class="lost">
         <img src="/img/glyph.png" width="128" height="128" alt="">
@@ -295,6 +346,13 @@ pages = [
     ('terms.html', 'Terms of Use | Tabbi',
      'The terms for using the Tabbi app and its optional friends service.',
      TERMS, {'title': TERMS_HERO[0], 'subtitle': TERMS_HERO[1]}, False, True),
+    ('suggest.html', 'Suggest | Tabbi',
+     'Suggest a new tab, an integration or an improvement for Tabbi.',
+     SUGGEST, {'title': 'Suggest', 'subtitle': 'An idea for a new tab, an integration or something better? Tell the cat.'}, False, True),
+    # Where the suggestion backend redirects after a post.
+    ('thanks.html', 'Thank you | Tabbi',
+     'Your suggestion reached Tabbi.',
+     THANKS, {'title': 'Thank you!', 'subtitle': 'Your idea is in the cat&rsquo;s inbox.'}, False, False),
     # Cloudflare Pages serves 404.html for anything it cannot find.
     ('404.html', 'Not found | Tabbi',
      'That page is not here.',
@@ -381,6 +439,21 @@ def check_scripts():
                 raise SystemExit(f'{html_file.name}: JSON-LD does not parse: {e}')
             if data.get('@context') != 'https://schema.org' or '@type' not in data:
                 raise SystemExit(f'{html_file.name}: JSON-LD needs a schema.org @context and an @type')
+
+
+FORM_RE = re.compile(r'<form [^>]*action="([^"]+)"')
+
+
+def check_forms():
+    """Every form must post to an origin the CSP's form-action allows, or
+    the browser refuses to send it and the visitor's words are lost."""
+    csp = dict(SITE_HEADERS).get('Content-Security-Policy', '')
+    allowed = next((d.split()[1:] for d in csp.split(';') if d.split()[:1] == ['form-action']), [])
+    for html_file in sorted(OUT.glob('*.html')):
+        for action in FORM_RE.findall(html_file.read_text()):
+            origin = '/'.join(action.split('/')[:3]) if '://' in action else "'self'"
+            if origin not in allowed:
+                raise SystemExit(f'{html_file.name}: a form posts to {origin}, which form-action in _headers does not allow')
 
 
 # The whole home page should stay under about 600 KB, fonts included.
@@ -479,6 +552,7 @@ def build():
 
     check_links()
     check_scripts()
+    check_forms()
     check_weight(fingerprints['/styles.css'])
 
     biggest = max((f for f in OUT.rglob('*') if f.is_file()), key=lambda f: f.stat().st_size)
@@ -524,6 +598,11 @@ class PagesHandler(http.server.SimpleHTTPRequestHandler):
         # The headers _headers sets for every path, CSP included, so a
         # preview fails the same way production would.
         for name, value in SITE_HEADERS:
+            # WebKit applies upgrade-insecure-requests even to localhost, so
+            # over plain http every stylesheet, font and image would fail.
+            # Production is https, where the directive changes nothing.
+            if name == 'Content-Security-Policy':
+                value = value.replace('; upgrade-insecure-requests', '')
             self.send_header(name, value)
         super().end_headers()
 

@@ -10,7 +10,7 @@ No framework, no JavaScript, no build dependencies.
 
 ## Files
 
-- `build.py` - the home, support and 404 pages, the build and its checks.
+- `build.py` - the home, about, support, suggest, thank-you and 404 pages, the build and its checks.
   The home page is deliberately short: the cat, one line, one download button, a drawn laptop with the Timer panel in its notch, and four tabs.
 - `_partials.py` - the shared head, header and footer, plus the download and GitHub links.
 - `_legal.py` - the privacy policy and terms of use.
@@ -37,8 +37,22 @@ The build stops with an error when:
 - a page references an image, font or stylesheet that does not exist;
 - a local link or `#anchor` does not resolve;
 - a page has a script (the CSP blocks them all), or its JSON-LD does not parse;
+- a form posts to an origin the CSP's `form-action` does not allow;
 - a page and everything it loads (its stylesheet, fonts and images, counting both sizes of a `srcset`) passes 500 KB, which keeps the home page under about 600 KB;
 - any output file is over 20 MB (Cloudflare Pages refuses files over 25 MB).
+
+## Suggestions
+
+`/suggest` is a plain HTML form, no script, that posts to the friends backend's `/v1/suggestions` route (`SUGGESTIONS` in `_partials.py`).
+It sends `application/x-www-form-urlencoded` fields:
+
+- `category`: `tab`, `integration`, `improvement` or `other`;
+- `message`: 10 to 2000 characters, required;
+- `email`: optional, at most 254 characters, used only to reply about that idea;
+- `website`: a honeypot, hidden from people and out of the tab order. The backend should drop any post where it is not empty.
+
+The backend answers a good post with a `303` redirect to `https://tabbinotch.com/thanks`, which is not indexed.
+The privacy policy's "This website" section covers what happens to a suggestion.
 
 ## Caching
 
@@ -49,9 +63,11 @@ Pages themselves are not cached that way, so they always pick up the new names.
 ## Security headers
 
 `_headers` sets `X-Frame-Options: DENY`, `nosniff`, a strict referrer policy, a permissions policy, HSTS, and a CSP of `default-src 'none'` that allows only the site's own images, fonts and stylesheet.
+`form-action` allows the friends backend's origin, where the Suggest form posts, and `'self'`, because browsers check the backend's redirect to `/thanks` against it too.
 Because of that CSP, pages cannot use inline `style` attributes or scripts.
 The home page's `SoftwareApplication` structured data is a `<script type="application/ld+json">` data block, which browsers never run, so the CSP leaves it alone.
 `--serve` sends the same `/*` headers from `_headers`, CSP included, so a preview breaks the same way production would.
+The one exception is `upgrade-insecure-requests`, which it leaves out: WebKit applies it even to `localhost`, so over plain http Safari would load no stylesheet, font or image.
 `build.py` wraps the contact address in `<!--email_off-->` so Cloudflare's email obfuscation, whose decoding script the CSP would block, leaves it readable.
 
 ## Fonts
