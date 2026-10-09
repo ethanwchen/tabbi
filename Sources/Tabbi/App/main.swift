@@ -5,6 +5,9 @@ import TabbiKitCore
 MainActor.assumeIsolated {
     let app = NSApplication.shared
     let arguments = CommandLine.arguments
+    if let flag = arguments.firstIndex(of: L10n.localeFlag), arguments.indices.contains(flag + 1) {
+        L10n.use(language: arguments[flag + 1])
+    }
     if let flag = arguments.firstIndex(of: RunMode.snapshotFlag) {
         let path = arguments.indices.contains(flag + 1) ? arguments[flag + 1] : "snapshots"
         let kitFlag = arguments.firstIndex(of: "--kit")
