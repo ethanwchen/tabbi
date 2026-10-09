@@ -2,7 +2,7 @@ import Foundation
 
 /// The hand-drawn pet art, loaded from the `pets.v1` JSON files in
 /// `Pets/PetArt` (one per art family: cat, dog, costume, effect, paw, prop,
-/// tail, walk).
+/// tail, walk), and the breeds that color it (`breeds.json`).
 ///
 /// The art is data so the Mac app and the Windows port draw the very same
 /// pixels from one source: each grid is an array of text rows in the
@@ -19,6 +19,9 @@ enum PetArt {
     static let prop = load("prop")
     static let tail = load("tail")
     static let walk = load("walk")
+    /// The base palette, the body shapes and every breed's palette, pattern,
+    /// name and tail.
+    static let breeds = load("breeds")
 
     /// The version every art file declares in its `schema` key.
     static let schema = "pets.v1"
@@ -47,13 +50,27 @@ struct PetArtFile: Sendable {
     enum LoadError: Error, Equatable, CustomStringConvertible {
         case unsupportedSchema(String)
         case invalidGrid(name: String, reason: String)
+        /// A name, role, zone or color in the breed definitions that the
+        /// Swift types do not know, at `path` (such as `breeds[2].palette`).
+        case invalidValue(path: String, value: String)
 
         var description: String {
             switch self {
             case .unsupportedSchema(let schema): "Unsupported schema \"\(schema)\"; expected \"\(PetArt.schema)\""
             case let .invalidGrid(name, reason): "Grid \"\(name)\": \(reason)"
+            case let .invalidValue(path, value): "\(path): unknown value \"\(value)\""
             }
         }
+    }
+
+    /// One breed as the file defines it. `palette` holds only the colors the
+    /// breed sets; `PetPalette` fills the rest from the base palette.
+    struct BreedDefinition: Equatable, Sendable {
+        let name: String
+        let bodyShape: PetBodyShape
+        let hasTail: Bool
+        let palette: [PetPaletteRole: PetColor]
+        let pattern: [PetPatternZone: PetPaletteRole]
     }
 
     private(set) var grids: [String: SpriteGrid] = [:]
@@ -61,14 +78,21 @@ struct PetArtFile: Sendable {
     private(set) var bodyItems: [String: CostumeArt.BodyItem] = [:]
     private(set) var faceItems: [String: CostumeArt.FaceItem] = [:]
     private(set) var headItems: [String: CostumeArt.HeadItem] = [:]
+    private(set) var basePalette: [PetPaletteRole: PetColor] = [:]
+    private(set) var bodyShapes: [PetBodyShape: PetSpecies] = [:]
+    /// Breeds in file order, which is the order pickers list them in.
+    private(set) var breedOrder: [PetBreed] = []
+    private(set) var breeds: [PetBreed: BreedDefinition] = [:]
 
     func grid(_ name: String) -> SpriteGrid { lookUp(grids, name, "grid") }
     func sequence(_ name: String) -> [SpriteGrid] { lookUp(sequences, name, "sequence") }
     func bodyItem(_ name: String) -> CostumeArt.BodyItem { lookUp(bodyItems, name, "body item") }
     func faceItem(_ name: String) -> CostumeArt.FaceItem { lookUp(faceItems, name, "face item") }
     func headItem(_ name: String) -> CostumeArt.HeadItem { lookUp(headItems, name, "head item") }
+    func species(of shape: PetBodyShape) -> PetSpecies { lookUp(bodyShapes, shape, "body shape") }
+    func breed(_ breed: PetBreed) -> BreedDefinition { lookUp(breeds, breed, "breed") }
 
-    private func lookUp<Value>(_ table: [String: Value], _ name: String, _ kind: String) -> Value {
+    private func lookUp<Key, Value>(_ table: [Key: Value], _ name: Key, _ kind: String) -> Value {
         guard let value = table[name] else { preconditionFailure("No pet art \(kind) named \"\(name)\"") }
         return value
     }
@@ -111,7 +135,46 @@ struct PetArtFile: Sendable {
         for (name, item) in raw.headItems ?? [:] {
             file.headItems[name] = try CostumeArt.HeadItem(grid: parse(item.grid, "\(name).grid"), sitRow: item.sitRow)
         }
+        if let base = raw.basePalette {
+            file.basePalette = try colors(base, at: "basePalette")
+        }
+        for (name, shape) in raw.bodyShapes ?? [:] {
+            file.bodyShapes[try value(PetBodyShape(rawValue: name), name, at: "bodyShapes")] =
+                try value(PetSpecies(rawValue: shape.species), shape.species, at: "bodyShapes.\(name).species")
+        }
+        for (index, entry) in (raw.breeds ?? []).enumerated() {
+            let path = "breeds[\(index)]"
+            let breed = try value(PetBreed(rawValue: entry.id), entry.id, at: "\(path).id")
+            var pattern: [PetPatternZone: PetPaletteRole] = [:]
+            for (zone, role) in entry.pattern {
+                pattern[try value(PetPatternZone(rawValue: zone), zone, at: "\(path).pattern")] =
+                    try value(PetPaletteRole(rawValue: role), role, at: "\(path).pattern.\(zone)")
+            }
+            file.breedOrder.append(breed)
+            file.breeds[breed] = try BreedDefinition(
+                name: entry.name,
+                bodyShape: value(PetBodyShape(rawValue: entry.bodyShape), entry.bodyShape, at: "\(path).bodyShape"),
+                hasTail: entry.hasTail,
+                palette: colors(entry.palette, at: "\(path).palette"),
+                pattern: pattern
+            )
+        }
         return file
+    }
+
+    private static func value<Value>(_ parsed: Value?, _ raw: String, at path: String) throws -> Value {
+        guard let parsed else { throw LoadError.invalidValue(path: path, value: raw) }
+        return parsed
+    }
+
+    /// A `{ "role": "#RRGGBB" }` table.
+    private static func colors(_ raw: [String: String], at path: String) throws -> [PetPaletteRole: PetColor] {
+        var colors: [PetPaletteRole: PetColor] = [:]
+        for (role, hex) in raw {
+            colors[try value(PetPaletteRole(rawValue: role), role, at: path)] =
+                try value(PetColor(hex: hex), hex, at: "\(path).\(role)")
+        }
+        return colors
     }
 
     /// The file as written: grids are arrays of text rows.
@@ -137,5 +200,19 @@ struct PetArtFile: Sendable {
         let bodyItems: [String: BodyItem]?
         let faceItems: [String: FaceItem]?
         let headItems: [String: HeadItem]?
+        let basePalette: [String: String]?
+        let bodyShapes: [String: BodyShape]?
+        let breeds: [Breed]?
+
+        struct BodyShape: Decodable {
+            let species: String
+        }
+
+        struct Breed: Decodable {
+            let id, name, bodyShape: String
+            let hasTail: Bool
+            let palette: [String: String]
+            let pattern: [String: String]
+        }
     }
 }

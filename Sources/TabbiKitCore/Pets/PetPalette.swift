@@ -393,35 +393,8 @@ public struct PetPalette: Hashable, Codable, Sendable {
     static let darkMouthBackground = 0.08
 
     /// Shared, breed-independent colors: eyes, effects, the default costume.
-    static let baseColors: [PetPaletteRole: PetColor] = [
-        .outline: PetColor(hex: "#2A1A14")!,
-        .furBase: PetColor(hex: "#E9A25B")!,
-        .furShade: PetColor(hex: "#C87A3E")!,
-        .furAccent: PetColor(hex: "#A85A2A")!,
-        .furSpot: PetColor(hex: "#3A3036")!,
-        .belly: PetColor(hex: "#FFF1DC")!,
-        .eye: PetColor(hex: "#1E1420")!,
-        .pupil: PetColor(hex: "#1E1420")!,
-        .eyeLight: PetColor(hex: "#FFFFFF")!,
-        .nose: PetColor(hex: "#E77A8C")!,
-        .mouth: PetColor(hex: "#2A1A14")!,
-        .blush: PetColor(hex: "#FF9AAE")!,
-        .costumeBase: PetColor(hex: "#5BC0BE")!,
-        .costumeShade: PetColor(hex: "#3E9593")!,
-        .costumeTrim: PetColor(hex: "#E8FFFB")!,
-        .coat: PetColor(hex: "#F6F8FB")!,
-        .coatShade: PetColor(hex: "#C3CCD9")!,
-        .accessoryBase: PetColor(hex: "#E0607A")!,
-        .accessoryShade: PetColor(hex: "#B04460")!,
-        .ink: PetColor(hex: "#3F4A78")!,
-        .gold: PetColor(hex: "#F2C14E")!,
-        .metal: PetColor(hex: "#C9D3DD")!,
-        .effect: PetColor(hex: "#F4F1FF")!,
-        .heart: PetColor(hex: "#FF5C7A")!,
-        .leaf: PetColor(hex: "#6CC46A")!,
-        .leather: PetColor(hex: "#A8683A")!,
-        .crimson: PetColor(hex: "#B8304C")!,
-    ]
+    /// They are the `basePalette` in `Pets/PetArt/breeds.json`.
+    static let baseColors = PetArt.breeds.basePalette
 
     public static let base = PetPalette([:])
 

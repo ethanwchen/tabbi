@@ -80,6 +80,8 @@ Parse errors report the 1-based row and column of the problem.
 
 Shared body art marks regions whose color depends on the breed.
 Each breed's `PetPattern` maps a zone to a palette role.
+Breeds are data too: `PetArt/breeds.json` holds the base palette, the species of each body shape, and every breed's name, body shape, tail, palette (only the roles it changes) and pattern, in picker order.
+A new breed is an entry there plus a case in `PetBreed`, which names it in pet saves.
 Unmapped zones fall back to their default.
 
 | Symbol | Zone | Default |

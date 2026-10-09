@@ -1,0 +1,200 @@
+{
+  "schema": "pets.v1",
+  "basePalette": {
+    "outline": "#2A1A14",
+    "furBase": "#E9A25B",
+    "furShade": "#C87A3E",
+    "furAccent": "#A85A2A",
+    "furSpot": "#3A3036",
+    "belly": "#FFF1DC",
+    "eye": "#1E1420",
+    "pupil": "#1E1420",
+    "eyeLight": "#FFFFFF",
+    "nose": "#E77A8C",
+    "mouth": "#2A1A14",
+    "blush": "#FF9AAE",
+    "costumeBase": "#5BC0BE",
+    "costumeShade": "#3E9593",
+    "costumeTrim": "#E8FFFB",
+    "coat": "#F6F8FB",
+    "coatShade": "#C3CCD9",
+    "accessoryBase": "#E0607A",
+    "accessoryShade": "#B04460",
+    "ink": "#3F4A78",
+    "gold": "#F2C14E",
+    "metal": "#C9D3DD",
+    "effect": "#F4F1FF",
+    "heart": "#FF5C7A",
+    "leaf": "#6CC46A",
+    "leather": "#A8683A",
+    "crimson": "#B8304C"
+  },
+  "bodyShapes": {
+    "cat": { "species": "cat" },
+    "roundCat": { "species": "cat" },
+    "sphynxCat": { "species": "cat" },
+    "foldCat": { "species": "cat" },
+    "floppyDog": { "species": "dog" },
+    "fluffyDog": { "species": "dog" },
+    "batEaredDog": { "species": "dog" },
+    "pointyEaredDog": { "species": "dog" },
+    "longDog": { "species": "dog" },
+    "poodleDog": { "species": "dog" },
+    "shihTzuDog": { "species": "dog" }
+  },
+  "breeds": [
+    {
+      "id": "orangeTabby",
+      "name": "Orange Tabby",
+      "bodyShape": "cat",
+      "hasTail": true,
+      "palette": { "furBase": "#F2A65A", "furShade": "#D9823E", "furAccent": "#C0652B", "belly": "#FFE9CF" },
+      "pattern": { "stripes": "furAccent" }
+    },
+    {
+      "id": "grayTabby",
+      "name": "Gray Tabby",
+      "bodyShape": "cat",
+      "hasTail": true,
+      "palette": { "outline": "#23252B", "furBase": "#A9AFBA", "furShade": "#8A909C", "furAccent": "#5F6573", "belly": "#ECEEF2" },
+      "pattern": { "stripes": "furAccent" }
+    },
+    {
+      "id": "blackCat",
+      "name": "Black",
+      "note": "A faint lighter chest gives the solid coat a soft sheen instead of a flat blob.",
+      "bodyShape": "cat",
+      "hasTail": true,
+      "palette": { "furBase": "#2B2830", "furShade": "#1E1B22", "furAccent": "#3A3540", "belly": "#3A3540", "eye": "#5CC27A", "pupil": "#1F6B3A" },
+      "pattern": { "muzzle": "furBase", "chest": "furAccent" }
+    },
+    {
+      "id": "whiteCat",
+      "name": "White",
+      "bodyShape": "cat",
+      "hasTail": true,
+      "palette": { "outline": "#3A3038", "furBase": "#FAF7F2", "furShade": "#DCD6CF", "furAccent": "#EFE9E2", "belly": "#FFFFFF", "eye": "#3B6FB6" },
+      "pattern": { "muzzle": "belly", "chest": "belly" }
+    },
+    {
+      "id": "tuxedo",
+      "name": "Tuxedo",
+      "bodyShape": "cat",
+      "hasTail": true,
+      "palette": { "furBase": "#2B2830", "furShade": "#1E1B22", "furAccent": "#3A3540", "belly": "#F7F4EF", "eye": "#E8B838", "pupil": "#8A5A12" },
+      "pattern": { "muzzle": "belly", "chest": "belly", "paws": "belly", "mask": "belly" }
+    },
+    {
+      "id": "calico",
+      "name": "Calico",
+      "bodyShape": "cat",
+      "hasTail": true,
+      "palette": { "outline": "#3A2A22", "furBase": "#FBF6EE", "furShade": "#E2DACF", "furAccent": "#EE9A4D", "furSpot": "#3B3238", "belly": "#FFFFFF" },
+      "pattern": { "paws": "belly", "patchA": "furAccent", "patchB": "furSpot" }
+    },
+    {
+      "id": "siamese",
+      "name": "Siamese",
+      "bodyShape": "cat",
+      "hasTail": true,
+      "palette": { "outline": "#3A2A22", "furBase": "#F3E6D2", "furShade": "#DCCAB0", "furAccent": "#5A4034", "furSpot": "#8A6450", "belly": "#FBF4E8", "eye": "#3E8FD8" },
+      "pattern": { "muzzle": "furSpot", "paws": "furAccent", "tailTip": "furAccent", "ears": "furAccent", "mask": "furSpot" }
+    },
+    {
+      "id": "britishShorthair",
+      "name": "British Shorthair",
+      "note": "Shaded silver: a soft white-silver coat with a faintly ticked back and subtly ringed tail, white chin and chest, clear blue eyes, a pink-tan nose, and rosy cheeks.",
+      "bodyShape": "roundCat",
+      "hasTail": true,
+      "palette": { "outline": "#3A3330", "furBase": "#EEEBE7", "furShade": "#D8D2CB", "furAccent": "#A8A098", "belly": "#FFFFFF", "eye": "#3F86D6", "nose": "#D9998B", "blush": "#FB9FAA" },
+      "pattern": { "muzzle": "belly", "chest": "belly", "paws": "belly", "tailTip": "furAccent", "ears": "furShade", "mask": "furShade", "stripes": "furShade" }
+    },
+    {
+      "id": "sphynx",
+      "name": "Sphynx",
+      "note": "Hairless pink-beige skin with a gentle shade for wrinkles, a rosy blush, and big green-gold eyes.",
+      "bodyShape": "sphynxCat",
+      "hasTail": true,
+      "palette": { "outline": "#4A2C2A", "furBase": "#F1CDB8", "furShade": "#E0B29C", "furAccent": "#E6B8A2", "belly": "#F8DCCB", "eye": "#7DB83A", "nose": "#D9868A", "blush": "#F29A9C" },
+      "pattern": { "muzzle": "belly", "chest": "belly" }
+    },
+    {
+      "id": "scottishFold",
+      "name": "Scottish Fold",
+      "note": "Blue-gray: a soft gray coat with a paler muzzle and chest, big copper-gold eyes, a rosy nose, and pink cheeks.",
+      "bodyShape": "foldCat",
+      "hasTail": true,
+      "palette": { "outline": "#2A2B31", "furBase": "#A3A8B3", "furShade": "#888D99", "furAccent": "#BCC0C9", "belly": "#E6E8EC", "eye": "#C67818", "eyeLight": "#FFF6DC", "nose": "#D58C90", "blush": "#F59AA8" },
+      "pattern": { "muzzle": "belly", "chest": "belly", "paws": "belly", "tailTip": "furShade", "ears": "furAccent", "stripes": "furBase", "patchA": "furBase", "patchB": "furBase" }
+    },
+    {
+      "id": "goldenRetriever",
+      "name": "Golden Retriever",
+      "bodyShape": "fluffyDog",
+      "hasTail": true,
+      "palette": { "outline": "#3A2214", "furBase": "#E6AE52", "furShade": "#C98C36", "furAccent": "#F3CB82", "belly": "#F7DCA8", "nose": "#3A2622" },
+      "pattern": { "muzzle": "furAccent", "chest": "furAccent" }
+    },
+    {
+      "id": "labrador",
+      "name": "Labrador",
+      "bodyShape": "floppyDog",
+      "hasTail": true,
+      "palette": { "outline": "#26160E", "furBase": "#7C4D31", "furShade": "#623B25", "furAccent": "#8F5C3C", "belly": "#8F5C3C", "eye": "#2A1810", "nose": "#3A231C" },
+      "pattern": { "muzzle": "furBase", "chest": "furBase" }
+    },
+    {
+      "id": "frenchBulldog",
+      "name": "French Bulldog",
+      "note": "Drawn stubby-tailed, which also sets its silhouette apart.",
+      "bodyShape": "batEaredDog",
+      "hasTail": false,
+      "palette": { "outline": "#3A2A22", "furBase": "#F6F1EA", "furShade": "#D8CFC4", "furSpot": "#342E33", "belly": "#FFFFFF", "nose": "#2E2428" },
+      "pattern": { "ears": "furSpot", "patchB": "furSpot" }
+    },
+    {
+      "id": "corgi",
+      "name": "Corgi",
+      "note": "Drawn stubby-tailed, which also sets its silhouette apart.",
+      "bodyShape": "pointyEaredDog",
+      "hasTail": false,
+      "palette": { "outline": "#3A1E10", "furBase": "#E88D3C", "furShade": "#C76F28", "furAccent": "#F2A65A", "belly": "#FFF6EA", "nose": "#2E2224" },
+      "pattern": { "paws": "belly", "mask": "belly" }
+    },
+    {
+      "id": "dachshund",
+      "name": "Dachshund",
+      "note": "Black and tan: tan brow dots, muzzle, chest and paws, and the breed's warm dark brown eyes. An amber iris merged with the tan brow above it into one glowing orange block.",
+      "bodyShape": "longDog",
+      "hasTail": true,
+      "palette": { "furBase": "#302729", "furShade": "#221B1D", "furAccent": "#3E3337", "belly": "#C9803F", "eye": "#8A5632", "pupil": "#4A2A1A", "nose": "#1E1618" },
+      "pattern": { "paws": "belly", "patchA": "belly" }
+    },
+    {
+      "id": "beagle",
+      "name": "Beagle",
+      "bodyShape": "floppyDog",
+      "hasTail": true,
+      "palette": { "outline": "#3A1E10", "furBase": "#D58F48", "furShade": "#B57234", "furAccent": "#A9652C", "furSpot": "#332D31", "belly": "#FFF8EE", "nose": "#2E2224" },
+      "pattern": { "paws": "belly", "tailTip": "belly", "ears": "furAccent", "mask": "belly", "patchA": "furSpot" }
+    },
+    {
+      "id": "poodle",
+      "name": "Poodle",
+      "note": "Apricot curls with lighter tips, a cream muzzle, and a dark nose and eyes.",
+      "bodyShape": "poodleDog",
+      "hasTail": true,
+      "palette": { "outline": "#3A2214", "furBase": "#EDB27A", "furShade": "#CC8A52", "furAccent": "#F8D2A6", "belly": "#FBE3C6", "nose": "#3A2622" },
+      "pattern": { "muzzle": "belly", "chest": "furAccent" }
+    },
+    {
+      "id": "shihTzu",
+      "name": "Shih Tzu",
+      "note": "Gold and white: a white coat and beard, a gold topknot, mask, and ears, and big dark eyes with a bright catchlight over a warm brown iris, so they read as eyes, not dark glasses.",
+      "bodyShape": "shihTzuDog",
+      "hasTail": true,
+      "palette": { "outline": "#3A2A22", "furBase": "#F8F2EA", "furShade": "#DCCDBC", "furAccent": "#D9A35C", "belly": "#FFFFFF", "eye": "#7A4A2E", "pupil": "#2A1A14", "nose": "#2E2224" },
+      "pattern": { "tailTip": "furAccent", "ears": "furAccent", "mask": "furAccent" }
+    }
+  ]
+}

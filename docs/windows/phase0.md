@@ -15,10 +15,14 @@ Status of phase 0 from `docs/windows/plan.md`: the Mac app's shared pieces move 
   `PetArt` loads them, checking the schema version and every grid; the Swift in `Pets/Art/` only names the grids and generates the procedural pieces (legs, wrapped tails, the groom arm).
   `shared/schemas/pets.v1.schema.json` describes the format for the TypeScript port, and `PetArtTests` keeps its symbol pattern equal to the Swift sprite legend.
   The pet golden fixtures did not change, and the demo snapshots are pixel-identical to the commit before the move (the PNG bytes of 17 shots differ, their pixels do not).
+- Breeds are data: `PetArt/breeds.json` (also `pets.v1`) holds the base palette, the species of each body shape, and each breed's name, body shape, tail, palette and pattern, in picker order.
+  `PetBreed` and `PetBodyShape` keep only their cases (the ids pet saves store).
+  An export of every breed definition from the new data path is identical to one taken from the old Swift switches, and `PetArtTests` keeps the schema's role, zone and species lists equal to the Swift enums.
+  The pet golden fixtures (digests and palettes) did not change.
 
 ## Next
 
-1. Move the rest of the pet definitions to `pets.v1`: breed palettes and patterns, body shapes and animation timelines, again pinned by the pet golden fixtures.
+1. Move the pet animation timelines (`PetAnimation`) to `pets.v1`, again pinned by the pet golden fixtures.
 2. Themes and study methods to JSON, each pinned by a golden test written before the move.
 3. JSON Schema files for kits, editions and `catalog.json`.
 4. Logic fixtures for the TypeScript port: focus timer and study session sequences, the stream-json parser, Plan my day, ticker selection.

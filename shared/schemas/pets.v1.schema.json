@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://tabbi.app/schemas/pets.v1.schema.json",
   "title": "Tabbi pet art (pets.v1)",
-  "description": "One pet art file from Sources/TabbiKitCore/Pets/PetArt. Grids are text rows in the sprite legend of docs/study/pets.md: '.' or ' ' is transparent, 'x' erases lower layers, uppercase letters are palette roles and lowercase letters are breed pattern zones.",
+  "description": "One pet file from Sources/TabbiKitCore/Pets/PetArt: art (grids, sequences, costume items) or breeds (base palette, body shapes, breeds). Grids are text rows in the sprite legend of docs/study/pets.md: '.' or ' ' is transparent, 'x' erases lower layers, uppercase letters are palette roles and lowercase letters are breed pattern zones.",
   "type": "object",
   "required": ["schema"],
   "additionalProperties": false,
@@ -16,11 +16,7 @@
     "sequences": {
       "description": "Named runs of grids played in order, such as a swaying tail.",
       "type": "object",
-      "additionalProperties": {
-        "type": "array",
-        "minItems": 1,
-        "items": { "$ref": "#/$defs/grid" }
-      }
+      "additionalProperties": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/grid" } }
     },
     "bodyItems": {
       "description": "Outfits and neck items: one grid per body family, the same size as and stamped at the same origin as that family's body.",
@@ -64,9 +60,52 @@
         "type": "object",
         "required": ["grid", "sitRow"],
         "additionalProperties": false,
+        "properties": { "grid": { "$ref": "#/$defs/grid" }, "sitRow": { "type": "integer", "minimum": 0 } }
+      }
+    },
+    "basePalette": {
+      "description": "The color of every palette role before a breed or the user changes it: eyes, effects, the default costume.",
+      "allOf": [{ "$ref": "#/$defs/palette" }],
+      "required": ["outline", "furBase", "furShade", "furAccent", "furSpot", "belly", "eye", "pupil", "eyeLight", "nose", "mouth", "blush", "costumeBase", "costumeShade", "costumeTrim", "coat", "coatShade", "accessoryBase", "accessoryShade", "ink", "gold", "metal", "effect", "heart", "leaf", "leather", "crimson"]
+    },
+    "bodyShapes": {
+      "description": "The shared art families breeds are drawn on, and the species of each.",
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-zA-Z]+$" },
+      "additionalProperties": {
+        "type": "object",
+        "required": ["species"],
+        "additionalProperties": false,
+        "properties": { "species": { "enum": ["cat", "dog"] } }
+      }
+    },
+    "breeds": {
+      "description": "Every selectable breed, in picker order.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "bodyShape", "hasTail", "palette", "pattern"],
+        "additionalProperties": false,
         "properties": {
-          "grid": { "$ref": "#/$defs/grid" },
-          "sitRow": { "type": "integer", "minimum": 0 }
+          "id": {
+            "description": "Stable id stored in pet saves.",
+            "type": "string",
+            "pattern": "^[a-zA-Z]+$"
+          },
+          "name": { "description": "Shown in the breed picker.", "type": "string", "minLength": 1 },
+          "note": { "description": "Why the breed looks the way it does. Not shown.", "type": "string" },
+          "bodyShape": { "description": "A key of bodyShapes.", "type": "string" },
+          "hasTail": { "description": "Whether the breed shows a tail when sitting.", "type": "boolean" },
+          "palette": {
+            "description": "The colors this breed sets; other roles keep the base palette.",
+            "$ref": "#/$defs/palette"
+          },
+          "pattern": {
+            "description": "Which palette role each pattern zone becomes. Zones not listed are belly for muzzle and chest, furBase otherwise.",
+            "type": "object",
+            "propertyNames": { "$ref": "#/$defs/zone" },
+            "additionalProperties": { "$ref": "#/$defs/role" }
+          }
         }
       }
     }
@@ -77,6 +116,24 @@
       "type": "array",
       "minItems": 1,
       "items": { "type": "string", "minLength": 1, "pattern": "^[ .xOBSAKWEiLNRPCDTUVGJQYMZHFIXmcptefsab]+$" }
+    },
+    "role": {
+      "description": "A palette role: what a pixel means.",
+      "enum": ["outline", "furBase", "furShade", "furAccent", "furSpot", "belly", "eye", "pupil", "eyeLight", "nose", "mouth", "blush", "costumeBase", "costumeShade", "costumeTrim", "coat", "coatShade", "accessoryBase", "accessoryShade", "ink", "gold", "metal", "effect", "heart", "leaf", "leather", "crimson"]
+    },
+    "zone": {
+      "description": "A breed pattern zone inside shared body art.",
+      "enum": ["muzzle", "chest", "paws", "tailTip", "ears", "mask", "stripes", "patchA", "patchB"]
+    },
+    "color": {
+      "description": "sRGB as #RRGGBB, or #RRGGBBAA when not opaque.",
+      "type": "string",
+      "pattern": "^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$"
+    },
+    "palette": {
+      "type": "object",
+      "propertyNames": { "$ref": "#/$defs/role" },
+      "additionalProperties": { "$ref": "#/$defs/color" }
     }
   }
 }
