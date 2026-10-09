@@ -34,6 +34,7 @@ The build stops with an error when:
 
 - a page references an image or stylesheet that does not exist;
 - a local link or `#anchor` does not resolve;
+- a page and everything it loads (its stylesheet and images, counting both sizes of a `srcset`) passes 450 KB, which keeps the home page under about 600 KB with Google Fonts;
 - any output file is over 20 MB (Cloudflare Pages refuses files over 25 MB).
 
 ## Caching
@@ -50,11 +51,12 @@ Because of that CSP, pages cannot use inline `style` attributes or scripts.
 
 ## Images
 
-The home page shows four tabs; their screenshots are the app's own snapshot renders from `docs/images`, re-encoded as lossless WebP to halve their size (`study.png` is saved as `timer.webp`).
-`icon-512.webp`, `apple-touch-icon.png`, `favicon-64.png` and `favicon.ico` are resized from `docs/brand/assets/tabbi-icon-1024.png`.
+The home page shows four tabs; their screenshots are the app's own snapshot renders from `docs/images`, saved as WebP at quality 92 (`study.png` is saved as `timer.webp`), which looks the same as lossless at a quarter of the size.
+Each also has a 680 px copy (`today-680.webp`), and `srcset` lets small and 1x screens load that one.
+`icon-256.webp`, `apple-touch-icon.png`, `favicon-64.png` and `favicon.ico` are resized from `docs/brand/assets/tabbi-icon-1024.png`.
 `glyph.png` is `docs/brand/assets/tabbi-glyph-256.png`, used as the header mark and on the 404 page.
 `social-preview.png` is copied unchanged for Open Graph and Twitter cards.
-`notch-timer.webp`, the panel in the hero laptop, is `timer.webp` cropped to the open notch with the wallpaper made transparent, resized to 880 px wide.
+`notch-timer.webp`, the panel in the hero laptop, is `timer.webp` cropped to the open notch with the wallpaper made transparent, resized to 880 px wide, at quality 92.
 `pixel-cat.png` is the app's gray tabby (`PetBreed.grayTabby`) at 1x: the `sit` and `blink` frames from `PetComposer.clip`, rendered by `PetRenderer`, cropped to 22x26 px and placed side by side.
 The stylesheet draws it at 2x or 3x with `image-rendering: pixelated`, peeking out from behind the hero laptop, and blinks it every five seconds unless the visitor prefers reduced motion.
 To export it again, a throwaway test in `Tests/TabbiKitCoreTests` can write those frames to PNG with `CGImageDestination`.
@@ -62,7 +64,7 @@ To export it again, a throwaway test in `Tests/TabbiKitCoreTests` can write thos
 When the app's screenshots change, copy and convert them again, for example:
 
 ```sh
-python3 -c "from PIL import Image; Image.open('docs/images/today.png').save('site/img/today.webp', lossless=True, method=6)"
+python3 -c "from PIL import Image; im = Image.open('docs/images/today.png'); im.save('site/img/today.webp', quality=92, method=6); im.resize((680, 260), Image.LANCZOS).save('site/img/today-680.webp', quality=92, method=6)"
 ```
 
 ## Deploy

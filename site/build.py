@@ -58,13 +58,18 @@ TABS = [
      'The Party tab: friends\' pets sitting together with their study status'),
 ]
 
+# How wide a tab screenshot draws: one column under 600 px, two under 1000,
+# then four. The card crops the image to 1120 of its 1360 px, so each width
+# is scaled up by that 1.21 to ask for enough pixels.
+TAB_SIZES = '(max-width: 600px) calc(121vw - 60px), (max-width: 1000px) calc(60vw - 50px), 300px'
+
 HOME_HERO = {
     'home': True,
     'title': 'A little cat for your notch.',
     'subtitle': 'A cozy panel of tabs in your laptop notch.',
     'cta': f'''<div class="cta">{download_button()}</div>
         <p class="cta-note">Free, macOS 14+</p>''',
-    'eyebrow': '<img class="hero-icon" src="/img/icon-512.webp" width="512" height="512" alt="The Tabbi app icon: a cream British Shorthair cat with blue eyes on a golden yellow square">',
+    'eyebrow': '<img class="hero-icon" src="/img/icon-256.webp" width="256" height="256" alt="The Tabbi app icon: a cream British Shorthair cat with blue eyes on a golden yellow square">',
     # A drawn laptop with the real Timer panel hanging from its notch.
     # notch-timer.webp is timer.webp cropped to the panel (see README).
     # pixel-cat.png is the app's gray tabby sprite, sitting and blinking.
@@ -83,7 +88,7 @@ HOME = f'''
         <div class="tab-row">
 ''' + '\n'.join(f'''          <figure class="tab-card">
             <span class="tab-label" aria-hidden="true">{label}</span>
-            <img src="/img/{img}.webp" width="1360" height="520" loading="lazy" decoding="async" alt="{alt}">
+            <img src="/img/{img}.webp" srcset="/img/{img}-680.webp 680w, /img/{img}.webp 1360w" sizes="{TAB_SIZES}" width="1360" height="520" loading="lazy" decoding="async" alt="{alt}">
             <figcaption><strong>{name}</strong>{line}</figcaption>
           </figure>''' for img, label, name, line, alt in TABS) + '''
         </div>
@@ -307,17 +312,38 @@ def check_links():
         raise SystemExit('broken links:\n  ' + '\n  '.join(sorted(set(problems))))
 
 
+# The whole home page should stay under about 600 KB. Google Fonts take
+# about 150 KB of that, so the site's own files get the rest.
+PAGE_BUDGET = 450 * 1024
+ASSET_RE = re.compile(r'/(?:img|assets)/[A-Za-z0-9._-]+')
+# Fetched only for link previews or a home screen icon, not by the page.
+NOT_LOADED_RE = re.compile(r'<meta [^>]*>|<link rel="apple-touch-icon"[^>]*>')
+
+
+def check_weight(stylesheet):
+    """Every page, with its stylesheet and every image it can load (both
+    sizes of a srcset, so this is a ceiling), must fit PAGE_BUDGET."""
+    css = (OUT / stylesheet.lstrip('/')).read_text()
+    css_assets = set(ASSET_RE.findall(css))
+    report = []
+    for html_file in sorted(OUT.glob('*.html')):
+        html = html_file.read_text()
+        assets = set(ASSET_RE.findall(NOT_LOADED_RE.sub('', html))) | css_assets
+        total = len(html.encode()) + sum((OUT / a.lstrip('/')).stat().st_size for a in assets)
+        report.append(f'{html_file.name} {total // 1024} KB')
+        if total > PAGE_BUDGET:
+            raise SystemExit(f'{html_file.name} loads {total // 1024} KB of the site\'s own files; the budget is {PAGE_BUDGET // 1024} KB')
+    print('page weight:', ', '.join(report))
+
+
 # --------------------------------------------------------------------------
 # Build
 # --------------------------------------------------------------------------
 
-UNHASHED_RE = re.compile(r'/(?:img|assets)/[A-Za-z0-9._-]+')
-
-
 def unhashed(text):
     """Asset references that kept their plain name: files that did not exist
     when the fingerprints were built."""
-    return sorted({m for m in UNHASHED_RE.findall(text) if len(m.rsplit('/', 1)[1].split('.')) < 3})
+    return sorted({m for m in ASSET_RE.findall(text) if len(m.rsplit('/', 1)[1].split('.')) < 3})
 
 
 def fingerprint(src, folder, data=None):
@@ -377,6 +403,7 @@ def build():
     )
 
     check_links()
+    check_weight(fingerprints['/styles.css'])
 
     biggest = max((f for f in OUT.rglob('*') if f.is_file()), key=lambda f: f.stat().st_size)
     if biggest.stat().st_size > 20 * 1024 * 1024:

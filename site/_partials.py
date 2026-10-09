@@ -18,7 +18,7 @@ NAV = [
     (DOWNLOAD, 'Download'),
 ]
 
-BRAND = '<img src="/img/icon-512.webp" width="36" height="36" alt="" class="mark">'
+BRAND = '<img src="/img/icon-256.webp" width="36" height="36" alt="" class="mark">'
 
 # A download arrow, drawn inline so it costs no request and takes the
 # button's text color in both themes.
