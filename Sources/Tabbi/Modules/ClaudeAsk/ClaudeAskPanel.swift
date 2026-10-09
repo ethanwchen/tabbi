@@ -266,7 +266,6 @@ private struct SendButton: View {
 }
 
 // MARK: - Messages
-// MARK: - Messages
 
 private struct MessageList: View {
     @ObservedObject var session: ClaudeAskSession
