@@ -486,6 +486,8 @@ The same rules hold for the moderation routes below.
 - `GET /v1/admin/export` returns `{ok, exportedAt, schemaVersion, tables}`, where `tables` maps each table name to its rows.
 - `POST /v1/admin/restore` takes exactly one of `{"at": <unix seconds within the last 30 days>}` or `{"bookmark": "<undoBookmark>"}`, returns `{ok, undoBookmark}`, and restarts the Hub with the restored storage.
   Where point-in-time recovery is unavailable (local dev) it answers 501 `restore_unavailable`.
+- `DELETE /v1/admin/users/{code}` deletes a user as `DELETE /v1/me` does, without calling Apple, and returns `{ok, deleted}` (`false` if no such user).
+  It re-applies account deletions that a restore brought back.
 
 ## Moderation (maintainer)
 

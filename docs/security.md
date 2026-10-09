@@ -73,6 +73,20 @@ Two layers, both without extra Cloudflare products:
    `POST /v1/admin/restore` with `{"at": <unix seconds>}` brings the Hub back to that moment: the reply carries an `undoBookmark`, and the Hub restarts right after replying with the old state.
    To undo a restore, send `{"bookmark": "<undoBookmark>"}` to the same endpoint.
    Writes after the chosen moment are lost, so restore to just before the incident.
+   A restore also brings back accounts deleted after that moment (and their sign-out tokens, blocks and reports), which `PRIVACY.md` does not allow.
+   So take `GET /v1/admin/export` just before restoring and another right after; every friend code in the second but not the first was deleted in between.
+   Delete each again with `DELETE /v1/admin/users/{code}`, which erases it as `DELETE /v1/me` does (the Apple grant was already revoked the first time).
+   Do the same after rebuilding from an offsite export: re-apply deletions made after it was taken.
+
+   ```sh
+   TABBI=https://tabbi-friends.<subdomain>.workers.dev
+   before=$(curl -sf $TABBI/v1/admin/export -H "Authorization: Bearer $ADMIN_TOKEN" | jq -r '.tables.users[].code' | sort)
+   # ... restore, wait for the Hub to restart ...
+   after=$(curl -sf $TABBI/v1/admin/export -H "Authorization: Bearer $ADMIN_TOKEN" | jq -r '.tables.users[].code' | sort)
+   comm -13 <(echo "$before") <(echo "$after") | while read -r code; do
+     curl -sf -X DELETE $TABBI/v1/admin/users/$code -H "Authorization: Bearer $ADMIN_TOKEN"
+   done
+   ```
 
    ```sh
    curl -X POST https://tabbi-friends.<subdomain>.workers.dev/v1/admin/restore \
@@ -104,9 +118,12 @@ npx wrangler rollback              # back to the previous version
 npx wrangler rollback <version-id> # or to a specific one
 ```
 
-A rollback changes code only, not storage.
-Schema steps (`MIGRATIONS` in `src/hub.ts`) only add tables and columns, so older code keeps working on a newer database.
-If a bad deploy damaged data, roll back the code first, then restore storage to just before the deploy.
+A rollback changes code only, not storage, and the database keeps the schema version the newer code moved it to.
+Most schema steps (`MIGRATIONS` in `src/hub.ts`) only add tables and columns, so older code keeps working on a newer database.
+Step 6 is the exception: it rebuilds `name_holds` as one row per held name and drops its `name` and `pet_name` columns, so code from before step 6 fails (500) on name changes, admin renames and Sign in with Apple merges.
+To roll back past a deploy that ran step 6 (or any later step that changes a table's shape), roll back the code and then restore storage to just before that deploy, so the database matches the older code again.
+If a bad deploy damaged data, do the same: roll back the code first, then restore storage to just before the deploy.
+A new step that renames or drops something should say so here, so the next rollback knows it needs a restore.
 
 ## Monitoring
 

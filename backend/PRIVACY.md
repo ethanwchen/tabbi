@@ -64,6 +64,7 @@ Reports between that code and your account are deleted, since they would now be 
 
 Deleted data leaves the live service at once.
 Copies can remain in backups for up to 30 days: Cloudflare keeps a 30-day point-in-time history of the storage, and the operator keeps encrypted exports for at most 30 days, used only to recover from an outage or a mistake.
+If the service is ever restored from a backup, every account deleted after that backup is deleted again right away.
 
 ## No analytics, no third parties
 

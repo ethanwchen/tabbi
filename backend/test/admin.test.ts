@@ -80,6 +80,21 @@ describe("admin endpoints", () => {
     expect((await register()).code).toMatch(/^[A-HJ-NP-Z2-9]{8}$/);
   });
 
+  it("delete an account again, as DELETE /v1/me does, for deletions a restore brought back", async () => {
+    const gone = await register();
+    const friend = await register();
+    await call("POST", "/v1/friends", { code: gone.code }, friend.token);
+    expectError(await call("DELETE", `/v1/admin/users/${gone.code}`, undefined, friend.token, freshIp()), 404, "not_found");
+    const r = await call("DELETE", `/v1/admin/users/${gone.code.toLowerCase()}`, undefined, admin(), freshIp());
+    expect(r.body).toEqual({ ok: true, deleted: true });
+    expectError(await call("GET", "/v1/me", undefined, gone.token), 401, "unauthorized");
+    expect((await call("GET", "/v1/friends", undefined, friend.token)).body.friends).toEqual([]);
+    const dump = JSON.stringify((await call("GET", "/v1/admin/export", undefined, admin(), freshIp())).body.tables);
+    expect(dump).not.toContain(gone.code);
+    expect((await call("DELETE", `/v1/admin/users/${gone.code}`, undefined, admin(), freshIp())).body).toEqual({ ok: true, deleted: false });
+    expectError(await call("DELETE", "/v1/admin/users/nope", undefined, admin(), freshIp()), 400, "invalid_field");
+  });
+
   it("have no other routes", async () => {
     expectError(await call("GET", "/v1/admin/users", undefined, admin(), freshIp()), 404, "not_found");
     expectError(await call("POST", "/v1/admin/export", undefined, admin(), freshIp()), 404, "not_found");

@@ -171,11 +171,6 @@ CREATE TABLE name_holds (
 ) WITHOUT ROWID;
 `;
 
-/**
- * Ordered schema steps; step i brings the database to version i + 1. Append new steps and never edit
- * one that has been deployed. Step 1 is the original schema, written with IF NOT EXISTS so databases
- * created before versioning (which have its tables but no recorded version) pass through it unchanged.
- */
 /** Apple identity tokens already used to sign in, so none of them signs in twice. */
 const USED_IDENTITY_TOKENS_SCHEMA = `
 -- The SHA-256 of each identity token that signed in, kept until the token would expire anyway.
@@ -208,6 +203,11 @@ DROP TABLE name_holds;
 ALTER TABLE name_holds_by_value RENAME TO name_holds;
 `;
 
+/**
+ * Ordered schema steps; step i brings the database to version i + 1. Append new steps and never edit
+ * one that has been deployed. Step 1 is the original schema, written with IF NOT EXISTS so databases
+ * created before versioning (which have its tables but no recorded version) pass through it unchanged.
+ */
 const MIGRATIONS = [SCHEMA, SYNC_SCHEMA, MODERATION_SCHEMA, REPORTS_SCHEMA, USED_IDENTITY_TOKENS_SCHEMA, NAME_HOLDS_SCHEMA];
 
 /** Runs the steps a database has not had yet, each in its own transaction with its version bump. */
@@ -496,6 +496,8 @@ export class Hub extends DurableObject<Env> {
     }
     const dismiss = /^\/v1\/admin\/reports\/(\d+)\/dismiss$/.exec(path);
     if (dismiss && method === "POST") return this.dismissReport(Number(dismiss[1]), now);
+    const erase = /^\/v1\/admin\/users\/([^/]+)$/.exec(path);
+    if (erase && method === "DELETE") return this.adminDelete(erase[1], now);
     const user = /^\/v1\/admin\/users\/([^/]+)\/(rename|ban)$/.exec(path);
     if (user && user[2] === "rename" && method === "POST") return this.adminRename(user[1], now);
     if (user && user[2] === "ban" && method === "POST") return this.adminBan(user[1], now);
@@ -896,6 +898,17 @@ export class Hub extends DurableObject<Env> {
       this.resolveReportsAbout(row.code, "banned", now);
     });
     return json({ ok: true, banned });
+  }
+
+  /**
+   * DELETE /v1/admin/users/{code}: deletes the user as DELETE /v1/me does, for re-applying account
+   * deletions a restore brought back. Apple is not called: the grant was revoked at the first deletion.
+   */
+  private adminDelete(raw: string, now: number): Response {
+    const code = parseFriendCode(raw);
+    const deleted = this.userExists(code);
+    if (deleted) this.ctx.storage.transactionSync(() => this.purgeUser(code, now));
+    return json({ ok: true, deleted });
   }
 
   /** DELETE /v1/admin/users/{code}/ban: lifts a ban. Friendships come back as they were. */

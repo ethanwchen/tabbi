@@ -62,7 +62,8 @@ Add a schema change as a new step at the end and never edit a deployed one.
 - **Staging:** `npm run deploy:staging` deploys `tabbi-friends-staging` (the `staging` environment in `wrangler.toml`) with its own storage and secrets; `npm run deploy` deploys production.
 - **Backups:** Durable Object storage keeps 30 days of point-in-time history, which `POST /v1/admin/restore` restores; `GET /v1/admin/export` returns every table as JSON for an offsite copy. Both need `ADMIN_TOKEN`.
 - **Secrets:** rotate `ADMIN_TOKEN` with `wrangler secret put`, and the Apple key with `wrangler secret bulk` so its id and file change together.
-- **Rollback:** `npx wrangler rollback` returns to the previous version (code only; schema steps only add, so older code runs on a newer database).
+- **Rollback:** `npx wrangler rollback` returns to the previous version (code only). Rolling back past a deploy that changed a table's shape (schema step 6 rebuilt `name_holds`) also needs a storage restore to just before that deploy.
+- **Deletions after a restore:** a restore brings back accounts deleted since the chosen moment; re-delete them with `DELETE /v1/admin/users/{code}` (the docs show how to find them).
 - **Monitoring:** `npx wrangler tail --status error` and the dashboard's Metrics for requests, errors and free-plan usage.
 
 ## Architecture
