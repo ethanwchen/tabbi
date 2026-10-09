@@ -6,10 +6,16 @@ import TabbiKit
 /// Renders every notch state and Settings pane to PNG without showing a window:
 ///
 ///     swift run Tabbi --snapshot ./snapshots [--kit medicine] [--theme <id>|all] [--edition <id>]
+///                                          [--scale <factor>] [--transparent]
 ///
 /// The notch renders in the kit's theme unless `--theme` names one; with
 /// `--theme all` every notch shot is rendered once per theme into a
 /// subfolder named after the theme id.
+///
+/// `--scale` sets the pixels per point of the notch shots (2 by default), and
+/// `--transparent` leaves out their stand-in desktop, so marketing images
+/// (`docs/appstore/make-media.swift`) can place the panel crisply at
+/// any size on a backdrop of their own.
 ///
 /// Used to review UI changes (by people and by agents) without Screen
 /// Recording permission. Live data sources run as usual, so panels show
@@ -36,9 +42,9 @@ enum SnapshotRenderer {
 
     /// - Parameter kitID: the kit whose tabs are rendered, as on first run.
     static func run(outputDirectory: URL, kitID: String = KitLibrary.defaultKitID, themes: ThemeSelection = .kit,
-                    settle: TimeInterval = 1.5) async {
+                    notchStyle: NotchStyle = NotchStyle(), settle: TimeInterval = 1.5) async {
         try? FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
-        let services = AppServices(settings: .ephemeral(catalog: ModuleList.catalog, kitID: kitID))
+        let services = AppServices(settings: .ephemeral(catalog: ModuleList.catalog(for: .current), kitID: kitID))
         let kitTheme = ThemeCatalog.resolve(services.settings.settings.themeID)
         let themeFolders: [(AppTheme, URL)] = switch themes {
         case .kit: [(kitTheme, outputDirectory)]
@@ -85,6 +91,15 @@ enum SnapshotRenderer {
                     model.preview = .pet(pet)
                     shots.append(Shot("closed-pet-\(name)", model))
                 }
+                // A finished focus session: the pet hops among sparkles
+                // (stamped mid-cheer when rendered, see renderNotchShots).
+                let model = NotchViewModel(geometry: geometry, layout: layout)
+                model.preview = .pet(TickerPet(profile: pet.profile, mood: .onBreak))
+                shots.append(Shot("closed-pet-cheer", model))
+                // A goal reached: the pet hops in a tiny crown.
+                let crowned = NotchViewModel(geometry: geometry, layout: layout)
+                crowned.preview = .pet(TickerPet(profile: pet.profile, mood: .awake))
+                shots.append(Shot("closed-pet-crown", crowned))
             }
         }
         // One open shot per tab of the active kit.
@@ -142,6 +157,7 @@ enum SnapshotRenderer {
             shots.append(Shot("open-pet-shortcut", withPaw))
         }
 
+        #if !APPSTORE
         // Ask Claude's chat history, rendered after the others because the
         // list showing is session state.
         if layout.order.contains(.claudeAsk) {
@@ -164,6 +180,31 @@ enum SnapshotRenderer {
                 shots.append(Shot(name, model))
             }
         }
+        #endif
+
+        // Today stepped back to yesterday and ahead to tomorrow, rendered
+        // after the others because the day shown is store state.
+        if layout.order.contains(.planner) {
+            var withToday = layout
+            _ = withToday.setEnabled(.planner, true)
+            for name in ["open-planner-yesterday", "open-planner-tomorrow", "open-planner-tomorrow-plan"] {
+                let model = NotchViewModel(geometry: geometry, layout: withToday)
+                model.open(.planner)
+                shots.append(Shot(name, model))
+            }
+        }
+
+        // Schedule's Day view stepped back to yesterday and ahead to tomorrow,
+        // with a plan for tomorrow on offer.
+        if layout.order.contains(.schedule) {
+            var withSchedule = layout
+            _ = withSchedule.setEnabled(.schedule, true)
+            for name in ["open-schedule-yesterday", "open-schedule-tomorrow", "open-schedule-tomorrow-plan"] {
+                let model = NotchViewModel(geometry: geometry, layout: withSchedule)
+                model.open(.schedule)
+                shots.append(Shot(name, model))
+            }
+        }
 
         shots += headerShots(geometry: geometry, catalog: services.settings.catalog)
 
@@ -173,7 +214,7 @@ enum SnapshotRenderer {
         for (theme, folder) in themeFolders {
             Theme.apply(theme)
             try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
-            renderNotchShots(shots, services: services, closet: closet, to: folder)
+            renderNotchShots(shots, services: services, closet: closet, style: notchStyle, to: folder)
         }
         Theme.apply(kitTheme)
 
@@ -204,8 +245,16 @@ enum SnapshotRenderer {
             print(url.path)
         }
 
+        // Every costume on every body shape, and every pet animation frame by frame.
+        for (name, gallery) in [("pets-costumes", PetGallery.costumes()), ("pets-animations", PetGallery.animations())] {
+            guard let png = gallery.png(scale: 2) else { continue }
+            let url = outputDirectory.appendingPathComponent("\(name).png")
+            try? png.write(to: url)
+            print(url.path)
+        }
+
         let settingsWindow = SettingsWindowController(settings: services.settings, modules: services.modules,
-                                                      onboarding: services.onboarding)
+                                                      onboarding: services.onboarding, account: services.accountSync)
         for pane in settingsWindow.paneIDs {
             guard let png = await settingsWindow.snapshot(of: pane) else { continue }
             let url = outputDirectory.appendingPathComponent("settings-\(pane).png")
@@ -221,6 +270,16 @@ enum SnapshotRenderer {
             print(url.path)
         }
         services.settings.settings.notchMode = notchMode
+        // General as a release build shows it signed out, with Sign in with Apple.
+        if services.accountSync.phase == .unavailable {
+            services.accountSync.showsSignInForSnapshot(true)
+            if let png = await settingsWindow.snapshot(of: AppSettingsPane.general.rawValue) {
+                let url = outputDirectory.appendingPathComponent("settings-general-signed-out.png")
+                try? png.write(to: url)
+                print(url.path)
+            }
+            services.accountSync.showsSignInForSnapshot(false)
+        }
 
         // Each enabled module's own settings, as the sheet Tabs opens them in.
         let moduleOptions = AppSettingsPane.moduleOptions(settings: services.settings, modules: services.modules,
@@ -247,6 +306,13 @@ enum SnapshotRenderer {
         }
         await renderKitImportReview(services, to: outputDirectory)
         await renderConnectionSheets(to: outputDirectory)
+    }
+
+    /// How the notch shots are drawn: pixels per point, and whether they sit
+    /// on the grey stand-in desktop or on nothing (transparent pixels).
+    struct NotchStyle {
+        var scale: CGFloat = 2
+        var transparent = false
     }
 
     /// One notch shot: its file name, the notch state, and the onboarding
@@ -291,33 +357,56 @@ enum SnapshotRenderer {
 
     /// Renders each notch shot in the active theme into `folder`.
     private static func renderNotchShots(_ shots: [Shot], services: AppServices,
-                                         closet: ClosetModule?, to folder: URL) {
+                                         closet: ClosetModule?, style: NotchStyle, to folder: URL) {
         let firstSection = closet?.store.section
+        #if !APPSTORE
         let askClaude = services.modules.module(AskClaudeModule.self)?.session
+        #endif
         let timer = services.modules.module(StudyModule.self)
+        let today = services.modules.module(TodayModule.self)?.store
         let party = services.modules.module(PartyModule.self)?.store
+        let schedule = services.modules.module(ScheduleModule.self)
         let now = Date()
         let partySession = PartyState.demo(.member, now: now).session(at: now)
         for shot in shots {
             let (name, model) = (shot.name, shot.model)
             services.onboarding.show(shot.onboarding)
+            #if !APPSTORE
             askClaude?.isShowingHistory = name == "open-claudeAsk-history"
             askClaude?.showForSnapshot(name == "open-claudeAsk-screenshot" ? .pendingScreenshot
                 : name == "open-claudeAsk-screenshot-sent" ? .sentScreenshot
                 : name == "open-claudeAsk-screen-access" ? .screenAccess : .chat)
+            #endif
             timer?.showForSnapshot(partySession: name == "open-study-party" ? partySession : nil)
             party?.showCelebrationForSnapshot(name == "open-party-celebrating")
+            today?.showForSnapshot(name == "open-planner-yesterday" ? .yesterday
+                : name.hasPrefix("open-planner-tomorrow") ? .tomorrow : .today,
+                planning: name == "open-planner-tomorrow-plan")
+            schedule?.showForSnapshot(name == "open-schedule-yesterday" ? .yesterday
+                : name.hasPrefix("open-schedule-tomorrow") ? .tomorrow : .today,
+                planning: name == "open-schedule-tomorrow-plan")
             if let firstSection { closet?.store.section = name == "open-closet-look" ? .look : firstSection }
             model.themeID = Theme.current.id
+            if name == "closed-pet-cheer", case .pet(var pet) = model.preview {
+                // Mid first hop, with the sparkles out.
+                pet.cheer = PetCheer(kind: .dance, id: 1, startedAt: Date().addingTimeInterval(-0.45))
+                model.preview = .pet(pet)
+            }
+            if name == "closed-pet-crown", case .pet(var pet) = model.preview {
+                // Mid hop, crowned as `TickerSources.cheering` does it.
+                pet.cheer = PetCheer(kind: .crown, id: 1, startedAt: Date().addingTimeInterval(-0.45))
+                pet.profile.wear(.tinyCrown)
+                model.preview = .pet(pet)
+            }
             let view = NotchView(content: ModuleViews.notchContent(services: services))
                 .environmentObject(model)
                 .environment(\.drawsLiquidGlass, false)
                 .environment(\.loaderRevealDelay, 0) // rendered the moment it appears
                 .frame(width: model.openSize.width + 40,
                        height: model.openSize.height + 24, alignment: .top)
-                .background(Color(white: 0.16)) // stand-in for a desktop
+                .background(style.transparent ? Color.clear : Color(white: 0.16)) // stand-in for a desktop
             let renderer = ImageRenderer(content: view)
-            renderer.scale = 2
+            renderer.scale = style.scale
             guard let image = renderer.nsImage,
                   let tiff = image.tiffRepresentation,
                   let png = NSBitmapImageRep(data: tiff)?.representation(using: .png, properties: [:])
@@ -329,6 +418,8 @@ enum SnapshotRenderer {
         services.onboarding.show(nil)
         timer?.showForSnapshot(partySession: nil)
         party?.showCelebrationForSnapshot(false)
+        today?.show(.today)
+        schedule?.showForSnapshot(.today)
     }
 
     /// The review Settings shows before applying an imported kit: another

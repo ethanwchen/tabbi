@@ -4,111 +4,49 @@ import Foundation
 /// over a face, the sleep "z", and the celebration heart. Effects use the
 /// `effect` and `heart` roles and are painted after outlining, so they float
 /// free of the pet instead of growing a border.
+/// The grids are drawn in `Pets/PetArt/effect.json`.
 enum EffectArt {
     /// Eye states are 4x3, centered on a 2x3 open eye (one pixel of margin
     /// on each side), so they work for every face. A 3-wide eye keeps one
     /// pixel of margin on its cheek side.
-    static let eyesClosed = SpriteGrid(art: """
-        ....
-        ....
-        EEEE
-        """)
+    static let eyesClosed = PetArt.effect.grid("eyesClosed")
 
     /// Content, sleepy curve.
-    static let eyesSleepy = SpriteGrid(art: """
-        ....
-        E..E
-        .EE.
-        """)
+    static let eyesSleepy = PetArt.effect.grid("eyesSleepy")
 
     /// Squeezed shut, as in a yawn: a ">" that points at the nose (mirrored
     /// for the right eye).
-    static let eyesSqueezed = SpriteGrid(art: """
-        EE..
-        ..EE
-        EE..
-        """)
+    static let eyesSqueezed = PetArt.effect.grid("eyesSqueezed")
 
     /// Happy "^" arches.
-    static let eyesHappy = SpriteGrid(art: """
-        .EE.
-        E..E
-        ....
-        """)
+    static let eyesHappy = PetArt.effect.grid("eyesHappy")
 
-    static let zSmall = SpriteGrid(art: """
-        ZZZ
-        ..Z
-        .Z.
-        ZZZ
-        """)
+    static let zSmall = PetArt.effect.grid("zSmall")
 
-    static let zLarge = SpriteGrid(art: """
-        ZZZZ
-        ...Z
-        ..Z.
-        .Z..
-        ZZZZ
-        """)
+    static let zLarge = PetArt.effect.grid("zLarge")
 
-    static let heart = SpriteGrid(art: """
-        .H.H.
-        HHHHH
-        HHHHH
-        .HHH.
-        ..H..
-        """)
+    static let heart = PetArt.effect.grid("heart")
 
-    static let sparkle = SpriteGrid(art: """
-        .Z.
-        ZZZ
-        .Z.
-        """)
+    static let sparkle = PetArt.effect.grid("sparkle")
 
     /// Dust kicked up beside the paws when a hop lands.
-    static let dustLeft = SpriteGrid(art: """
-        Z...
-        ..Z.
-        .ZZZ
-        """)
+    static let dustLeft = PetArt.effect.grid("dustLeft")
 
-    static let dustRight = SpriteGrid(art: """
-        ...Z
-        .Z..
-        ZZZ.
-        """)
+    static let dustRight = PetArt.effect.grid("dustRight")
 
     /// A small "o": the mouth starting (and ending) a yawn. Four wide and
     /// centered under the nose, so it covers any face's own mouth; the
     /// corners are muzzle fur, hiding mouth lines or a tongue drawn there.
-    static let mouthOpen = SpriteGrid(art: """
-        mRRm
-        mPPm
-        .mm.
-        """)
+    static let mouthOpen = PetArt.effect.grid("mouthOpen")
 
     /// The yawn at its widest: a dark mouth with the tongue at the bottom.
-    static let mouthWide = SpriteGrid(art: """
-        mRRm
-        ROOR
-        RPPR
-        mRRm
-        """)
+    static let mouthWide = PetArt.effect.grid("mouthWide")
 
     /// The same two mouths for a face whose mouth hangs from the nose: a
     /// row of muzzle hides that line, then a shorter opening ends on the chin.
-    static let mouthOpenBelowNose = SpriteGrid(art: """
-        mmmm
-        mRRm
-        mPPm
-        """)
+    static let mouthOpenBelowNose = PetArt.effect.grid("mouthOpenBelowNose")
 
-    static let mouthWideBelowNose = SpriteGrid(art: """
-        mmmm
-        mRRm
-        RPPR
-        mRRm
-        """)
+    static let mouthWideBelowNose = PetArt.effect.grid("mouthWideBelowNose")
 
     /// Where an open mouth goes on `face`: four pixels wide, centered on
     /// the nose's top row, on the first row below the nose. Found from the
@@ -178,7 +116,7 @@ enum EffectArt {
         }
         // A pupil drawn in the outline color is part of the eye it sits in.
         let isEye: (SpriteCell) -> Bool = {
-            $0 == .role(.eye) || $0 == .role(.eyeLight) || $0 == .role(.outline)
+            $0 == .role(.eye) || $0 == .role(.pupil) || $0 == .role(.eyeLight) || $0 == .role(.outline)
         }
         // Left edges of each eye on the eye row; most eyes are 2 wide, a few 3.
         let lefts = (0..<face.width).filter { x in

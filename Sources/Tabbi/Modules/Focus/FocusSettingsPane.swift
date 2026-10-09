@@ -24,7 +24,7 @@ struct FocusSettingsPane: View {
         Form {
             soundSection
             playlistSection
-            doNotDisturbSection
+            if controller.offersDoNotDisturb { doNotDisturbSection }
         }
         .formStyle(.grouped)
         .scrollDisabled(true)
@@ -39,7 +39,7 @@ struct FocusSettingsPane: View {
     /// The grouped form doesn't report its content height, so add up the
     /// rows that come and go; the window follows the pane's size.
     private var height: CGFloat {
-        var height: CGFloat = 586
+        var height: CGFloat = controller.offersDoNotDisturb ? 586 : 586 - Self.doNotDisturbHeight
         if mix.layers.count > 1 { height += CGFloat(mix.layers.count) * 37 }
         if playlistStatus != nil { height += 40 }
         if testResult != nil { height += 40 }
@@ -204,6 +204,9 @@ struct FocusSettingsPane: View {
     }
 
     // MARK: Do Not Disturb
+
+    /// The section's height with its footer, left out where Do Not Disturb isn't offered.
+    private static let doNotDisturbHeight: CGFloat = 212
 
     private var doNotDisturbSection: some View {
         Section {

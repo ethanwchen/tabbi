@@ -25,6 +25,16 @@ final class TodayPlanSettingsTests: XCTestCase {
         XCTAssertEqual(TodayPlanSettings(kit: KitDefaults()).planMode, .local)
     }
 
+    func testWithoutClaudeAClaudeKitPlansOnDevice() {
+        let claude = TodayPlanSettings(kit: kit(["planMode": .string("claude"), "dayEndHour": .number(20)]))
+        XCTAssertEqual(claude.usable(withClaude: true), claude)
+        let local = claude.usable(withClaude: false)
+        XCTAssertEqual(local.planMode, .local)
+        XCTAssertEqual(local.dayEndHour, 20, "only the plan mode changes")
+        let study = TodayPlanSettings(kit: kit(["planMode": .string("study")]))
+        XCTAssertEqual(study.usable(withClaude: false), study)
+    }
+
     func testReadsEveryKey() {
         let settings = TodayPlanSettings(kit: kit([
             "planMode": .string("study"), "reviewsFirst": .bool(false), "eventBufferMinutes": .number(15),

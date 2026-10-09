@@ -22,6 +22,10 @@ final class AppServices {
     let onboarding: OnboardingStore
     /// Celebrations of real events, played over the open panel.
     let celebrations: CelebrationCenter
+    /// The pet's crown for goals reached today.
+    private let goalCrowns: GoalCrowns
+    /// The optional Sign in with Apple account that syncs the pet.
+    let accountSync: SyncStore
 
     private var cancellables: Set<AnyCancellable> = []
     /// Created on first use so launching never builds a window nobody opens.
@@ -29,6 +33,8 @@ final class AppServices {
 
     /// - Parameter moduleTypes: the modules to create, `ModuleList.all` in
     ///   the app; `settings` must resolve layouts against their catalog.
+    ///   Types missing from `settings.catalog` (the edition leaves them out)
+    ///   are never created, so they run no code at all.
     init(settings: SettingsStore, moduleTypes: [any NotchModule.Type] = ModuleList.all, edition: Edition = .current,
          environment: [String: String] = ProcessInfo.processInfo.environment,
          arguments: [String] = CommandLine.arguments) {
@@ -36,15 +42,20 @@ final class AppServices {
         let providers = ProviderHub()
         let shared = SharedServices()
         let runMode = RunMode(environment: environment, arguments: arguments)
-        modules = ModuleRegistry(moduleTypes.map { type in
+        let available = moduleTypes.filter { settings.catalog.contains($0.descriptor.id) }
+        modules = ModuleRegistry(available.map { type in
             type.init(context: ModuleContext(id: type.descriptor.id, edition: edition, settings: settings,
                                              providers: providers, shared: shared, runMode: runMode))
         })
         providers.attach(modules)
         self.providers = providers
-        ticker = TickerStore(settings: settings, providers: providers, preview: shared.closedNotchPreview)
-        onboarding = OnboardingStore(settings: settings)
         celebrations = shared.celebrations(settings: settings, runMode: runMode)
+        ticker = TickerStore(settings: settings, providers: providers, preview: shared.closedNotchPreview,
+                             celebrations: celebrations)
+        goalCrowns = GoalCrowns(providers: providers, celebrations: celebrations)
+        onboarding = OnboardingStore(settings: settings)
+        accountSync = ModuleContext(id: "account", edition: edition, settings: settings, providers: providers,
+                                    shared: shared, runMode: runMode).accountSync
         // `$settings` emits before the new value is stored, so read the
         // layout from the emission.
         settings.$settings
@@ -64,7 +75,7 @@ final class AppServices {
     /// menu), at `pane` when given.
     func openSettings(pane: String? = nil) {
         let controller = settingsWindow ?? SettingsWindowController(settings: settings, modules: modules,
-                                                                    onboarding: onboarding)
+                                                                    onboarding: onboarding, account: accountSync)
         settingsWindow = controller
         if let pane { controller.select(pane) }
         controller.present()

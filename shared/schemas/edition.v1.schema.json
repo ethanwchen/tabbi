@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tabbi.app/schemas/edition.v1.schema.json",
+  "title": "Tabbi edition (formatVersion 1)",
+  "description": "Sources/TabbiKitCore/Editions/BundledEditions/<id>.json: a branded build of the same app, which changes only its name, bundle id, preselected kit, icon and data folder. Read by Edition.decode(from:) and by scripts/assemble.sh. The file name must equal the id. The app ignores fields it doesn't read; this schema rejects them, since editions are written only in this repository.",
+  "type": "object",
+  "required": ["formatVersion", "id", "name", "bundleIdentifier", "defaultKitID"],
+  "additionalProperties": false,
+  "properties": {
+    "formatVersion": {
+      "description": "A build skips editions with a higher formatVersion than it reads.",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1
+    },
+    "id": { "description": "Lowercase slug, used by bundle.sh and --edition.", "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+    "name": {
+      "description": "The app's name and its Application Support folder: not empty, no slash, no leading dot, no surrounding whitespace.",
+      "type": "string",
+      "pattern": "^[^\\s./]([^/]*[^\\s/])?$"
+    },
+    "bundleIdentifier": { "description": "Reverse-DNS CFBundleIdentifier.", "type": "string", "pattern": "^[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)+$" },
+    "defaultKitID": { "description": "The kit a fresh install starts with.", "type": "string", "minLength": 1 },
+    "icon": { "description": "An .icns file name in Resources. Left out keeps AppIcon.icns.", "type": "string", "pattern": "^[^/.][^/]*\\.icns$" },
+    "infoPlist": {
+      "description": "Info.plist strings that replace the base plist's. The keys the edition's own fields set are not allowed.",
+      "type": "object",
+      "propertyNames": { "not": { "enum": ["CFBundleName", "CFBundleDisplayName", "CFBundleIdentifier", "TabbiEdition"] } },
+      "additionalProperties": { "type": "string" }
+    }
+  }
+}

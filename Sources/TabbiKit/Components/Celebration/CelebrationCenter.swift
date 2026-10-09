@@ -14,35 +14,61 @@ import TabbiKitCore
 /// allow it, plays a soft `CelebrationSound`. When the pacer
 /// says no while a panel is open, the event still gets the smallest tier: a
 /// `CelebrationNod` that bounces its module's tab.
+///
+/// With the notch closed, a finished focus session can still `cheer(_:)`:
+/// the pet beside the closed notch dances for a moment (`PetCheer`), which
+/// the ticker shows in place of whatever it was showing. A goal reached
+/// while a panel is open waits for the notch to close, so its crown is
+/// still seen.
+///
+/// While Do Not Disturb is on, everything still plays except the sounds:
+/// the pet and the particles are silent, and a haptic is only felt.
 @MainActor
 public final class CelebrationCenter: ObservableObject {
     /// The latest admitted celebration; stages play it once when it changes.
     @Published public private(set) var current: Celebration?
     /// The latest symbol-bounce fallback; the tab bar bounces a tab when it changes.
     @Published public private(set) var nod: CelebrationNod?
+    /// The latest pet cheer for the closed notch; the ticker shows it while
+    /// `PetCheer.isShowing(at:)`.
+    @Published public private(set) var cheer: PetCheer?
 
     private var pacer = CelebrationPacer()
     private var stages = 0
+    /// A cheer asked for while a panel was open, played once it closes.
+    private var waiting: (kind: PetCheer.Kind, since: Date)?
+    /// How long a waiting cheer stays worth playing: a goal reached an
+    /// hour before the panel closed is old news.
+    static let waitLimit: TimeInterval = 10 * 60
     private let isEnabled: Bool
     private let hapticsEnabled: () -> Bool
     private let soundEnabled: () -> Bool
+    private let isHushed: () -> Bool
     private let playSound: @MainActor (CelebrationSound) -> Void
+    private let performHaptic: @MainActor (NSHapticFeedbackManager.FeedbackPattern) -> Void
     private let now: () -> Date
 
     /// - Parameters:
     ///   - isEnabled: false for snapshot runs, which play and tap nothing.
     ///   - hapticsEnabled: read at each celebration, so it follows Settings.
     ///   - soundEnabled: read at each celebration, so it follows Settings.
+    ///   - isHushed: true while Do Not Disturb is on; read at each sound.
     ///   - playSound: plays a cue; tests pass their own to hear nothing.
+    ///   - performHaptic: taps the trackpad; tests pass their own.
     ///   - now: the clock the pacer measures against; tests pass their own.
     public init(isEnabled: Bool = true, hapticsEnabled: @escaping () -> Bool = { true },
                 soundEnabled: @escaping () -> Bool = { false },
+                isHushed: @escaping () -> Bool = { false },
                 playSound: @escaping @MainActor (CelebrationSound) -> Void = CelebrationCenter.play,
+                performHaptic: @escaping @MainActor (NSHapticFeedbackManager.FeedbackPattern) -> Void
+                    = CelebrationCenter.perform,
                 now: @escaping () -> Date = Date.init) {
         self.isEnabled = isEnabled
         self.hapticsEnabled = hapticsEnabled
         self.soundEnabled = soundEnabled
+        self.isHushed = isHushed
         self.playSound = playSound
+        self.performHaptic = performHaptic
         self.now = now
     }
 
@@ -64,14 +90,59 @@ public final class CelebrationCenter: ObservableObject {
             return nil
         }
         current = Celebration(tier: admitted, style: style, accent: accent, date: now())
-        if hapticsEnabled() {
-            // Only felt on a Force Touch trackpad with a finger on it.
-            NSHapticFeedbackManager.defaultPerformer.perform(.levelChange, performanceTime: .now)
-        }
-        if let sound = CelebrationSound.cue(for: admitted, isEnabled: soundEnabled(), eventHasSound: hasOwnSound) {
+        tapHaptic()
+        if let sound = CelebrationSound.cue(for: admitted, isEnabled: soundAllowed, eventHasSound: hasOwnSound) {
             playSound(sound)
         }
         return admitted
+    }
+
+    /// Has the pet beside the closed notch cheer for a real event, with a
+    /// light haptic and, when Settings allow it and the event played no
+    /// sound of its own, a soft sound. Returns the cheer, or nil in a
+    /// snapshot run and while an open panel is showing (that panel gets
+    /// `celebrate` instead). With `waitsForClose`, a cheer asked for while
+    /// a panel is open plays when the notch closes, within `waitLimit`.
+    /// Not paced: the events that cheer (a finished focus session, a goal
+    /// reached) are already minutes apart.
+    @discardableResult
+    public func cheer(_ kind: PetCheer.Kind, hasOwnSound: Bool = false, waitsForClose: Bool = false) -> PetCheer? {
+        guard isEnabled else { return nil }
+        guard !isShowing else {
+            if waitsForClose { waiting = (kind, now()) }
+            return nil
+        }
+        waiting = nil
+        let cheer = PetCheer(kind: kind, id: (self.cheer?.id ?? 0) + 1, startedAt: now())
+        self.cheer = cheer
+        tapHaptic()
+        if let sound = CelebrationSound.cue(for: .burst, isEnabled: soundAllowed, eventHasSound: hasOwnSound) {
+            playSound(sound)
+        }
+        return cheer
+    }
+
+    /// Marks a turning point of a session (a focus block starting, a break
+    /// running out) with a light tap and, when Settings allow it, the cue's
+    /// soft sound. Plays wherever the notch is, since it is too small to
+    /// need a stage, and never in a snapshot run.
+    public func play(_ cue: SessionCue) {
+        guard isEnabled else { return }
+        tapHaptic(cue == .focusStarted ? .generic : .levelChange)
+        if let sound = cue.sound(isEnabled: soundAllowed) { playSound(sound) }
+    }
+
+    /// Settings allow sounds and Do Not Disturb is off.
+    private var soundAllowed: Bool { soundEnabled() && !isHushed() }
+
+    private func tapHaptic(_ pattern: NSHapticFeedbackManager.FeedbackPattern = .levelChange) {
+        guard hapticsEnabled() else { return }
+        performHaptic(pattern)
+    }
+
+    /// Taps the trackpad; only felt on a Force Touch trackpad with a finger on it.
+    public static func perform(_ pattern: NSHapticFeedbackManager.FeedbackPattern) {
+        NSHapticFeedbackManager.defaultPerformer.perform(pattern, performanceTime: .now)
     }
 
     /// Plays `sound` as a quiet macOS system sound.
@@ -83,7 +154,22 @@ public final class CelebrationCenter: ObservableObject {
     }
 
     func stageAppeared() { stages += 1 }
-    func stageDisappeared() { stages = max(0, stages - 1) }
+    func stageDisappeared() {
+        stages = max(0, stages - 1)
+        guard stages == 0, waiting != nil else { return }
+        // On the next turn, so switching tabs (one stage leaving as the
+        // next arrives) never counts as the notch closing.
+        DispatchQueue.main.async { [weak self] in
+            MainActor.assumeIsolated { self?.playWaitingCheer() }
+        }
+    }
+
+    private func playWaitingCheer() {
+        guard !isShowing, let waiting else { return }
+        self.waiting = nil
+        guard now().timeIntervalSince(waiting.since) < Self.waitLimit else { return }
+        cheer(waiting.kind)
+    }
 }
 
 /// The smallest celebration tier: one bounce of the tab of the module whose

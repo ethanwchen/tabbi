@@ -33,9 +33,19 @@ final class PartyStore: ObservableObject {
     @Published private(set) var pending: PartyAction?
     /// The last action's failure, shown once under the control that caused it.
     @Published private(set) var notice: String?
+    /// The notice confirms an action (a report sent, someone blocked)
+    /// rather than saying what went wrong.
+    @Published private(set) var noticeConfirms = false
+    /// The friend or party member the report card is about, while it shows.
+    @Published private(set) var reporting: PartyProfile?
+    /// The people I blocked, for the Blocked list in Party options; nil
+    /// until `loadBlocked()` has an answer.
+    @Published private(set) var blocked: [PartyBlockedUser]?
     /// The "Great job, team!" moment after a shared session ran to its end,
     /// while it is up (`PartyTeamCelebration.displayDuration`).
     @Published private(set) var celebration: PartyTeamCelebration?
+    /// How the last "Delete my Party data" went, for Settings > Party.
+    @Published private(set) var deletionNotice: String?
 
     let isDemo: Bool
     /// A `--snapshot` render: stays offline so no user is ever registered,
@@ -55,7 +65,11 @@ final class PartyStore: ObservableObject {
     /// The study timer from the shared providers, for presence.
     private var focus: ProvidedFocus?
     /// My pet as friends should see it.
-    private(set) var pet = PetProfile.starter(.cat)
+    @Published private(set) var pet = PetProfile.starter(.cat)
+    /// The names the server refused on the last connect (say, a name a
+    /// maintainer replaced); `refusedNames` adds the ones the app's own
+    /// filter catches as they are typed.
+    @Published private var serverRefusedNames: PartyNameRefusal = []
     private var isRunning = false
 
     private var connectTask: Task<Void, Never>?
@@ -71,7 +85,9 @@ final class PartyStore: ObservableObject {
     private var beforeSnapshot: (state: PartyState, celebration: PartyTeamCelebration?)?
     /// Writes a name edited in Party back to the app-wide name.
     private var saveName: ((String) -> Void)?
-    /// True when `TABBI_PARTY_NAME` picked the name a local snapshot renders as.
+    /// True when `TABBI_PARTY_NAME` picked the name a local snapshot renders
+    /// as, or the refused-name demo keeps "Sam" so the app-wide name (empty
+    /// in a demo) doesn't clear the refusal it shows.
     private var pinsName = false
     private var cancellables: Set<AnyCancellable> = []
 
@@ -95,6 +111,11 @@ final class PartyStore: ObservableObject {
             tracker = PartyPresenceTracker()
             // Stays up (no timer) so the snapshot can catch it.
             if scenario == .celebrating { celebration = .demo(now: Date()) }
+            if scenario == .reporting { reporting = state.friends.first?.profile }
+            if scenario == .refusedName {
+                serverRefusedNames = .name
+                pinsName = true
+            }
             return
         }
         if isSnapshot, let local = Self.localSnapshotServer(environment) {
@@ -158,7 +179,16 @@ final class PartyStore: ObservableObject {
         let old = settings
         settings.name = name
         if !isSnapshot { repository?.save(settings) }
-        if settings.cleanedName != old.cleanedName { scheduleNameSync() }
+        if settings.cleanedName != old.cleanedName {
+            serverRefusedNames.remove(.name)
+            scheduleNameSync()
+        }
+    }
+
+    /// My name or pet name that friends can't see, so Settings and
+    /// onboarding say so under the name; the rest of the profile syncs.
+    var refusedNames: PartyNameRefusal {
+        settings.refusedNames(for: pet).union(serverRefusedNames)
     }
 
     /// Syncs a new name once typing pauses, since General saves the name
@@ -254,10 +284,14 @@ final class PartyStore: ObservableObject {
         guard !isDemo else { return }
         if new.serverURL != old.serverURL || new.serverIssue != old.serverIssue {
             state.reset(settings: new)
+            serverRefusedNames = []
             rebuildAccount()
             return
         }
-        if new.cleanedName != old.cleanedName { scheduleNameSync() }
+        if new.cleanedName != old.cleanedName {
+            serverRefusedNames.remove(.name)
+            scheduleNameSync()
+        }
         if new.invisible != old.invisible, tracker.setInvisible(new.invisible) {
             saveTracker()
             sendHeartbeat()
@@ -267,8 +301,59 @@ final class PartyStore: ObservableObject {
     /// My pet changed (e.g. in the Closet): friends see it after the sync.
     func update(pet: PetProfile) {
         guard pet != self.pet else { return }
+        if pet.name != self.pet.name { serverRefusedNames.remove(.petName) }
         self.pet = pet
         if account != nil { connect() }
+    }
+
+    /// The stored identity changed (signed in with Apple, signed out or
+    /// deleted the account, `SyncStore.identityChanged`): drop what the old
+    /// identity showed and reconnect as the new one.
+    func identityDidChange() {
+        guard !isDemo, repository != nil else { return }
+        state.reset(settings: settings)
+        serverRefusedNames = []
+        rebuildAccount()
+    }
+
+    /// Settings > Party's "Delete my Party data", for users without an
+    /// account (signed in, Delete Account in Settings > General does this):
+    /// `DELETE /v1/me` removes the profile, presence, friendships and party
+    /// memberships, and the local streak goes with them. While Party stays
+    /// on it then starts over with a new friend code. A failure keeps
+    /// everything and lands in `deletionNotice`.
+    func deletePartyData() {
+        guard pending == nil else { return }
+        deletionNotice = nil
+        if isDemo {
+            deletionNotice = "This is a demo. Nothing was deleted."
+            return
+        }
+        guard let account else { return }
+        // Nothing may use the old identity meanwhile: a heartbeat after the
+        // delete would register a new user before the user sees it went.
+        self.account = nil
+        connectTask?.cancel()
+        heartbeatTask?.cancel()
+        refreshTask?.cancel()
+        pending = .deleteData
+        Task { [weak self] in
+            do {
+                try await account.deleteAccount()
+                guard let self else { return }
+                tracker = PartyPresenceTracker()
+                tracker.setInvisible(settings.invisible)
+                saveTracker()
+                deletionNotice = "Your Party data was deleted."
+            } catch {
+                self?.deletionNotice = Self.partyError(error).message
+            }
+            guard let self else { return }
+            pending = nil
+            state.reset(settings: settings)
+            serverRefusedNames = []
+            rebuildAccount()
+        }
     }
 
     // MARK: Actions
@@ -422,12 +507,100 @@ final class PartyStore: ObservableObject {
 
     func clearNotice() {
         notice = nil
+        noticeConfirms = false
+    }
+
+    // MARK: Moderation
+
+    /// Blocks someone from a friend's or member's menu: the server ends the
+    /// friendship and hides us from each other, and they go from the panel
+    /// at once. The next party fetch says whether I'm still in the party
+    /// (I leave one they host).
+    func block(_ profile: PartyProfile) {
+        let code = profile.code
+        run(.block(code)) { store, account in
+            let (_, user) = try await account.perform { try await $0.block(code: code) }
+            store.didBlock(user)
+        }
+    }
+
+    private func didBlock(_ user: PartyBlockedUser) {
+        state.didBlock(code: user.code)
+        blocked = [user] + (blocked ?? []).filter { $0.code != user.code }
+        plan.invalidate(.friends)
+        plan.invalidate(.party)
+        confirm("Blocked \(user.name). Unblock them in Party options.")
+    }
+
+    /// Lifts a block from the Blocked list. The friendship stays ended.
+    /// The demo just takes them off its sample list.
+    func unblock(code: String) {
+        if isDemo {
+            blocked?.removeAll { $0.code == code }
+            return
+        }
+        run(.unblock(code)) { store, account in
+            _ = try await account.perform { try await $0.unblock(code: code) }
+            store.blocked?.removeAll { $0.code == code }
+        }
+    }
+
+    /// Fetches the Blocked list for Party options; the demo shows a sample.
+    func loadBlocked() {
+        if isDemo {
+            blocked = blocked ?? PartyBlockedUser.demo(now: Date())
+            return
+        }
+        guard let account else { return }
+        Task { [weak self] in
+            guard let list = try? await account.perform({ try await $0.blocks() }) else { return }
+            self?.blocked = list
+        }
+    }
+
+    /// Opens the report card for a friend or party member.
+    func beginReport(_ profile: PartyProfile) {
+        notice = nil
+        reporting = profile
+    }
+
+    func cancelReport() {
+        guard pending != .report else { return }
+        reporting = nil
+    }
+
+    /// Sends the report card, then blocks them too when asked. The card
+    /// stays open with the reason and note if sending fails.
+    func sendReport(reason: PartyReportReason, note: String, alsoBlock: Bool) {
+        guard let profile = reporting else { return }
+        if isDemo {
+            reporting = nil
+            confirm("This is a demo. No report was sent.")
+            return
+        }
+        let report = PartyReport(code: profile.code, reason: reason, note: note)
+        run(.report) { store, account in
+            _ = try await account.perform { try await $0.report(report) }
+            store.reporting = nil
+            if alsoBlock {
+                let (_, user) = try await account.perform { try await $0.block(code: profile.code) }
+                store.didBlock(user)
+                store.confirm("Thanks. Your report was sent and \(profile.name) is blocked.")
+            } else {
+                store.confirm("Thanks. Your report was sent.")
+            }
+        }
+    }
+
+    private func confirm(_ message: String) {
+        notice = message
+        noticeConfirms = true
     }
 
     /// Runs one panel action: one at a time, with its failure as `notice`.
     private func run(_ action: PartyAction, _ body: @escaping (PartyStore, PartyAccount) async throws -> Void) {
         guard pending == nil else { return }
-        notice = nil
+        clearNotice()
         if isDemo {
             notice = "This is a demo. Run without TABBI_DEMO to study with friends."
             return
@@ -474,7 +647,9 @@ final class PartyStore: ObservableObject {
         connectTask = Task { [weak self] in
             do {
                 let profile = try await account.connect(profile: update)
+                let refused = await account.refusedNames
                 guard let self, !Task.isCancelled, self.account === account else { return }
+                serverRefusedNames = refused
                 connectBackoff.reset()
                 state.didConnect(profile)
                 sendHeartbeat()
@@ -628,4 +803,8 @@ enum PartyAction: Hashable {
     case joinFriend(String)
     case leaveParty
     case session
+    case deleteData
+    case block(String)
+    case unblock(String)
+    case report
 }

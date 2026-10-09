@@ -81,6 +81,19 @@ final class PartyStateTests: XCTestCase {
         XCTAssertEqual(state.friends.map(\.profile.name), ["Ash", "Bea", "Olive"])
     }
 
+    func testBlockingHidesThemFromFriendsAndTheParty() {
+        var state = PartyState(settings: PartySettings())
+        state.didConnect(profile("ME", "Sam"))
+        state.didFetchFriends(.success([friend("A", "Ash"), friend("Z", "Zoe")]))
+        state.didFetchParty(.success(party(host: "ME", members: [("Z", "Zoe"), ("ME", "Sam"), ("A", "Ash")])))
+
+        state.didBlock(code: "Z")
+
+        XCTAssertEqual(state.friends.map(\.profile.name), ["Ash"])
+        XCTAssertEqual(state.party?.members.map(\.profile.name), ["Sam", "Ash"])
+        XCTAssertTrue(state.isHost)
+    }
+
     func testPartyMembershipHostAndCompanions() {
         var state = PartyState(settings: PartySettings())
         state.didConnect(profile("ME", "Sam"))

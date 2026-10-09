@@ -72,8 +72,8 @@ public struct DayReviewCount: Hashable, Codable, Sendable {
     public var count: Int
     /// Plural noun for the count, e.g. "cards".
     public var unit: String
-    /// The count in its unit, e.g. "84 cards" or "1 h 30 min".
-    public var amount: String { ProgressItem.amount(count, unit: unit) }
+    /// The count in its unit, e.g. "84 cards" or "1h 30m".
+    public var amount: String { DurationFormat.quantity(count, unit: unit) }
 
     public init(title: String, count: Int, unit: String) {
         self.title = title
@@ -166,7 +166,7 @@ public enum DayReviewer {
         calendar: Calendar = .current
     ) -> DayReview {
         let sessions = activity.filter {
-            $0.kind == .focusCompleted && $0.day(calendar: calendar) == day.date && countsAsDone($0)
+            $0.kind == .focusCompleted && $0.day(calendar: calendar) == day.date && $0.countsAsFinishedSession
         }
         let minutes = sessions.reduce(0) { $0 + ($1.quantity ?? $1.end.timeIntervalSince($1.start) / 60) }
         return DayReview(
@@ -180,15 +180,6 @@ public enum DayReviewer {
                 .filter { $0.target > 0 || $0.completed > 0 }
                 .map { DayReviewCount(title: $0.title, count: max($0.completed, 0), unit: $0.unit) }
         )
-    }
-
-    /// Whether a focus stretch counts as a finished session. Study logs
-    /// skipped and abandoned phases too; like its own tally, only phases
-    /// that ran out or were stopped at their normal end count. A record
-    /// without an outcome (a module that logs only finished stretches) does.
-    private static func countsAsDone(_ record: ActivityRecord) -> Bool {
-        guard let outcome = record.metadata[ActivityMetadata.outcome] else { return true }
-        return StudyPhaseOutcome(rawValue: outcome)?.countsAsDone ?? false
     }
 
     /// The figures under the summary, in order: study time and sessions (or
@@ -219,11 +210,9 @@ public enum DayReviewer {
         return stats
     }
 
-    /// "45m", "2h", "1h 15m".
+    /// "45 min", "2h", "1h 15m".
     static func duration(minutes: Int) -> String {
-        let minutes = max(minutes, 0)
-        guard minutes >= 60 else { return "\(minutes)m" }
-        return minutes % 60 == 0 ? "\(minutes / 60)h" : "\(minutes / 60)h \(minutes % 60)m"
+        DurationFormat.minutes(minutes)
     }
 
     private static func count(_ value: Int, _ noun: String) -> String {
@@ -393,4 +382,16 @@ public extension DayReview {
 
 private extension String {
     var capitalizedFirst: String { prefix(1).uppercased() + dropFirst() }
+}
+
+extension ActivityRecord {
+    /// Whether a focus stretch counts as a finished session. Study logs
+    /// skipped and abandoned phases too, and so does the Pomodoro when it is
+    /// stopped early; like Study's own tally, only phases that ran out or were
+    /// stopped at their normal end count. A record without an outcome (a
+    /// module that logs only finished stretches) does.
+    public var countsAsFinishedSession: Bool {
+        guard let outcome = metadata[ActivityMetadata.outcome] else { return true }
+        return StudyPhaseOutcome(rawValue: outcome)?.countsAsDone ?? false
+    }
 }

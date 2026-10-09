@@ -67,7 +67,8 @@ final class FocusStoreStorageTests: XCTestCase {
     }
 
     /// The Focus tab's tally counts today's finished focus stretches, not
-    /// the saved timer's all-time count, which never starts over.
+    /// the saved timer's all-time count, which never starts over, nor a
+    /// focus stopped early, which earns minutes but is no finished session.
     func testTheSessionTallyCountsOnlyTodaysPomodoros() throws {
         FocusTimerStorage(defaults: defaults)
             .save(FocusTimer(phase: .focus, runState: .idle, config: FocusTimerConfig(), completedFocusCount: 41))
@@ -76,10 +77,13 @@ final class FocusStoreStorageTests: XCTestCase {
         func focus(_ source: ModuleID, endingAt end: Date) -> ActivityRecord {
             ActivityRecord(source: source, kind: .focusCompleted, start: end.addingTimeInterval(-1500), end: end)
         }
+        let stopped = try XCTUnwrap(FocusStop(focused: 600, endedAt: now, outcome: .abandoned)
+            .activityRecord(source: FocusModule.descriptor.id))
         log.record([
             focus(FocusModule.descriptor.id, endingAt: now.addingTimeInterval(-86_400)),
             focus(FocusModule.descriptor.id, endingAt: now),
             focus(.study, endingAt: now),
+            stopped,
             ActivityRecord(source: FocusModule.descriptor.id, kind: .breakTaken, start: now.addingTimeInterval(-300), end: now),
         ])
 
@@ -88,5 +92,26 @@ final class FocusStoreStorageTests: XCTestCase {
 
         XCTAssertEqual(store.sessionsToday, 1)
         XCTAssertEqual(store.timer.completedFocusCount, 41, "the saved count is left as it is")
+    }
+
+    func testStoppingMidFocusLogsTheMinutesFocusedAndEndsTheSession() throws {
+        var timer = FocusTimer()
+        timer.start(at: Date().addingTimeInterval(-10 * 60))
+        FocusTimerStorage(defaults: defaults).save(timer)
+        let log = ActivityLog(repository: nil)
+        let store = FocusStore(activity: log, runMode: .live, defaults: defaults)
+
+        store.stop()
+
+        XCTAssertEqual(store.timer.runState, .idle)
+        XCTAssertEqual(store.timer.phase, .focus)
+        XCTAssertEqual(FocusTimerStorage(defaults: defaults).loadTimer().runState, .idle, "the stop is saved")
+        let logged = log.records(on: PlannerDayKey(date: Date()))
+        XCTAssertEqual(logged.map(\.kind), [.focusCompleted])
+        XCTAssertEqual(try XCTUnwrap(logged.first?.quantity), 10, accuracy: 0.1)
+        XCTAssertEqual(store.sessionsToday, 0, "a stopped focus is no finished session")
+
+        store.stop()
+        XCTAssertEqual(log.records(on: PlannerDayKey(date: Date())).count, 1, "a second stop credits nothing")
     }
 }

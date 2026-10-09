@@ -75,6 +75,19 @@ public extension UpcomingEvent {
         )
     }
 
+    /// Picks the events for a whole day the user looks back at or plans
+    /// ahead for: every timed event, earliest first, capped at `limit`.
+    /// Unlike `upNext` nothing is dropped for being over, since yesterday's
+    /// events are all over and tomorrow's haven't begun.
+    static func agenda(from events: [UpcomingEvent], limit: Int = 3) -> [UpcomingEvent] {
+        Array(
+            events
+                .filter { !$0.isAllDay }
+                .sorted { ($0.start, $0.end, $0.title, $0.id) < ($1.start, $1.end, $1.title, $1.id) }
+                .prefix(max(limit, 0))
+        )
+    }
+
     func timing(at now: Date) -> EventTiming {
         if start <= now { return .now }
         let minutes = Int((start.timeIntervalSince(now) / 60).rounded(.up))
@@ -84,16 +97,11 @@ public extension UpcomingEvent {
 
 /// Short strings for the "Up next" card.
 public enum UpcomingEventFormat {
-    /// Badge text: "now", "in 12 min", "in 1 h", "in 2 h 5 min".
+    /// Badge text: "now", "in 12 min", "in 1h", "in 2h 5m".
     public static func badge(_ timing: EventTiming) -> String {
         switch timing {
-        case .now:
-            return "now"
-        case .startsIn(let minutes) where minutes < 60:
-            return "in \(minutes) min"
-        case .startsIn(let minutes):
-            let hours = minutes / 60, rest = minutes % 60
-            return rest == 0 ? "in \(hours) h" : "in \(hours) h \(rest) min"
+        case .now: "now"
+        case .startsIn(let minutes): DurationFormat.countdown(minutes: minutes)
         }
     }
 
@@ -109,6 +117,12 @@ public enum UpcomingEventFormat {
         let uses12Hour = template.contains("a") || template.contains("h") || template.contains("K")
         formatter.dateFormat = uses12Hour ? "h:mm" : "HH:mm"
         return formatter.string(from: date)
+    }
+
+    /// How long the event runs ("30 min", "1h 30m"), which rows for another
+    /// day show where today's show how soon it starts.
+    public static func length(_ event: UpcomingEvent) -> String {
+        DurationFormat.minutes(Int((event.end.timeIntervalSince(event.start) / 60).rounded()))
     }
 
     /// Empty-title events (common for quick-adds) still need a readable row.

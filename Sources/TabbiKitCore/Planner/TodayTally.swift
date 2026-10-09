@@ -23,6 +23,11 @@ public struct TodayTally: Hashable, Sendable {
         return "\(doneCount) of \(totalCount) done"
     }
 
+    /// The caption for a day that hasn't started, e.g. "2 planned".
+    public var plannedSummary: String {
+        totalCount == 0 ? "Nothing planned" : "\(totalCount) planned"
+    }
+
     /// The summary for a narrow header (Compact panel), e.g. "3/6".
     public var shortSummary: String {
         if totalCount == 0 { return "Nothing planned" }

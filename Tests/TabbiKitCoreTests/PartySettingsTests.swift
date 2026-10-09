@@ -47,6 +47,33 @@ final class PartySettingsTests: XCTestCase {
         XCTAssertNil(PartySettings().profileUpdate(for: pet).name, "a blank name keeps the server's")
     }
 
+    func testNamesTheFilterRejectsAreLeftOutAndReported() throws {
+        let fine = PetProfile(name: "Mochi", breed: .calico)
+        let rude = PetProfile(name: "Sh1t", breed: .calico)
+
+        let settings = PartySettings(name: "F u c k")
+        XCTAssertEqual(settings.refusedNames(for: fine), .name)
+        XCTAssertNil(settings.profileUpdate(for: fine).name)
+        XCTAssertEqual(settings.profileUpdate(for: fine).petName, "Mochi")
+
+        XCTAssertEqual(PartySettings(name: "Cassandra").refusedNames(for: rude), .petName)
+        XCTAssertEqual(PartySettings(name: "Cassandra").profileUpdate(for: rude).name, "Cassandra")
+        XCTAssertNil(PartySettings(name: "Cassandra").profileUpdate(for: rude).petName)
+
+        XCTAssertEqual(PartySettings().refusedNames(for: fine), [], "a blank name is never refused")
+    }
+
+    func testRefusalMessagesSayWhichNameToChange() {
+        XCTAssertNil(PartyNameRefusal().message)
+        XCTAssertEqual(PartyNameRefusal.name.message, "That name isn't allowed. Please pick another.")
+        XCTAssertEqual(PartyNameRefusal.petName.message, "Your pet's name isn't allowed. Rename your pet in the Closet.")
+        XCTAssertEqual(PartyNameRefusal([.name, .petName]).message,
+                       "That name and your pet's name aren't allowed. Please pick others.")
+        XCTAssertEqual(PartyNameRefusal(.nameNotAllowed), .name)
+        XCTAssertEqual(PartyNameRefusal(.petNameNotAllowed), .petName)
+        XCTAssertNil(PartyNameRefusal(.banned))
+    }
+
     func testRepositoryRoundTripsAndToleratesMissingKeys() throws {
         let defaults = InMemoryDefaults()
         let repository = PartySettingsRepository(defaults: defaults)

@@ -46,10 +46,20 @@ final class FocusStore: ObservableObject {
     private var ticker: Timer?
     /// Catches up when the running phase ends, even if the Mac slept through it.
     private lazy var phaseEnd = WallClockAlarm { [weak self] in self?.catchUp() }
+    /// Saves the last-alive time while a session runs, so a crash ends it
+    /// close to when it really stopped.
+    private var heartbeat: Timer?
+    /// How often the heartbeat saves; a crash can cost at most this much.
+    static let heartbeatInterval: TimeInterval = 30
     private let notifications: FocusNotifications?
+    /// Ends the session when the Mac sleeps or Tabbi quits; live runs only.
+    private var interruptions: SessionInterruptions?
 
+    /// - Parameter interruptions: where sleep and quit are announced; tests
+    ///   pass centers of their own.
     init(activity: ActivityLog? = nil, focusMode: FocusController? = nil, celebrations: CelebrationCenter? = nil,
-         runMode: RunMode, defaults: UserDefaults = .standard) {
+         runMode: RunMode, defaults: UserDefaults = .standard,
+         interruptions: (workspace: NotificationCenter, app: NotificationCenter)? = nil) {
         self.activity = activity
         self.celebrations = celebrations
         storage = FocusTimerStorage(defaults: defaults)
@@ -76,9 +86,12 @@ final class FocusStore: ObservableObject {
         if let activity {
             storage.moveSessionLog { activity.record($0.activityRecords(source: FocusModule.descriptor.id)) }
         }
-        // A phase may have ended while the app wasn't running; catch up quietly.
-        record(timer.advance(to: Date()))
+        recoverAtLaunch()
         scheduleSideEffects(withdrawingPending: false)
+        let centers = interruptions ?? (NSWorkspace.shared.notificationCenter, .default)
+        self.interruptions = SessionInterruptions(workspace: centers.workspace, app: centers.app) { [weak self] in
+            self?.stop()
+        }
     }
 
     var remaining: TimeInterval { timer.remaining(at: now) }
@@ -106,7 +119,9 @@ final class FocusStore: ObservableObject {
             // is still undecided, so schedule it again once the user allows it.
             notifications?.requestAuthorizationIfNeeded { [weak self] in self?.rescheduleNotification() }
         }
+        let cue = SessionCue.start(wasIdle: timer.runState == .idle, isFocus: timer.phase == .focus)
         change { $0.start(at: now) }
+        if !isEphemeral, let cue, timer.isRunning { celebrations?.play(cue) }
     }
 
     func pause() {
@@ -114,14 +129,24 @@ final class FocusStore: ObservableObject {
         change { $0.pause(at: now) }
     }
 
-    func reset() {
+    /// Ends the session and banks the focus time so far: the activity log
+    /// gets the minutes, and the pet pays them from there
+    /// (`PetCloset.credit(_:)`). Also runs when the Mac sleeps or Tabbi
+    /// quits mid-session.
+    func stop() {
         catchUp()
-        change { $0.reset() }
+        var stopped: FocusStop?
+        change { stopped = $0.stop(at: now) }
+        record(stopped)
     }
 
+    /// Moves on to the next phase; a focus phase skipped part-way banks its
+    /// time like `stop()`.
     func skip() {
         catchUp()
-        change { $0.skip(at: now) }
+        var skipped: FocusStop?
+        change { skipped = $0.skip(at: now) }
+        record(skipped)
     }
 
     /// Links the timer to a checklist item, or clears the link with `nil`.
@@ -137,6 +162,31 @@ final class FocusStore: ObservableObject {
     }
 
     // MARK: Private
+
+    /// Settles what the last run left behind. Sleep and quit stop the
+    /// session themselves, so one still under way means Tabbi crashed or the
+    /// Mac lost power: it ends at the last heartbeat and is credited once,
+    /// since the timer is saved idle right away. Without a heartbeat (an
+    /// older build) a phase that ran out is just caught up quietly.
+    ///
+    /// The records are logged on the next main-queue turn, once every
+    /// module (the pet included) follows the activity log.
+    private func recoverAtLaunch() {
+        let now = Date()
+        var completions: [FocusPhaseCompletion]
+        var stopped: FocusStop?
+        if timer.runState != .idle, let lastAlive = storage.lastAlive {
+            (completions, stopped) = timer.recover(lastAlive: lastAlive, now: now)
+        } else {
+            completions = timer.advance(to: now)
+        }
+        storage.save(timer)
+        let config = timer.config
+        var records = completions.map { $0.activityRecord(config: config, source: FocusModule.descriptor.id) }
+        if let record = stopped?.activityRecord(source: FocusModule.descriptor.id) { records.append(record) }
+        guard !records.isEmpty, let activity else { return }
+        DispatchQueue.main.async { _ = activity.record(records) }
+    }
 
     /// Applies `edit`, then saves and reschedules the sound, notification, and ticker.
     private func change(_ edit: (inout FocusTimer) -> Void) {
@@ -158,13 +208,26 @@ final class FocusStore: ObservableObject {
         // Stale ends (the Mac was asleep) already got their notification; stay quiet.
         if !isEphemeral, let last = completions.last, now.timeIntervalSince(last.endedAt) < 60 {
             Self.playChime()
-            if last.phase == .focus {
-                celebrations?.celebrate(.burst, style: .confetti, accent: FocusModule.descriptor.accentColor,
-                                        from: FocusModule.descriptor.id, hasOwnSound: true)
+            if last.phase == .focus, let celebrations {
+                // Over the open panel a burst; beside the closed notch the pet dances.
+                if celebrations.isShowing {
+                    celebrations.celebrate(.burst, style: .confetti, accent: FocusModule.descriptor.accentColor,
+                                           from: FocusModule.descriptor.id, hasOwnSound: true)
+                } else {
+                    celebrations.cheer(.dance, hasOwnSound: true)
+                }
+            } else if let cue = SessionCue.phaseEnded(wasBreak: last.phase == .rest) {
+                celebrations?.play(cue)
             }
         }
         scheduleSideEffects(withdrawingPending: false)
         updateTicker()
+    }
+
+    /// Logs a focus phase cut short, which the pet pays from the log.
+    private func record(_ cutShort: FocusStop?) {
+        guard !isEphemeral, let record = cutShort?.activityRecord(source: FocusModule.descriptor.id) else { return }
+        activity?.record(record)
     }
 
     /// Logs every finished phase in the shared activity log, which the
@@ -189,6 +252,7 @@ final class FocusStore: ObservableObject {
     private func scheduleSideEffects(withdrawingPending: Bool) {
         guard !isEphemeral else { return }
         storage.save(timer)
+        updateHeartbeat()
 
         if withdrawingPending { notifications?.cancelPending() }
         guard let endsAt = timer.endsAt else {
@@ -197,6 +261,24 @@ final class FocusStore: ObservableObject {
         }
         notifications?.schedule(phaseEndingAt: endsAt, timer: timer)
         phaseEnd.schedule(at: endsAt, tolerance: 0.2)
+    }
+
+    /// Saves the last-alive time now and every `heartbeatInterval` while the
+    /// clock runs. A paused session needs none: its time focused is fixed.
+    private func updateHeartbeat() {
+        if timer.runState != .idle { storage.saveLastAlive(Date()) }
+        guard timer.isRunning else {
+            heartbeat?.invalidate()
+            heartbeat = nil
+            return
+        }
+        guard heartbeat == nil else { return }
+        let beat = Timer(timeInterval: Self.heartbeatInterval, repeats: true) { [weak self] _ in
+            MainActor.assumeIsolated { self?.storage.saveLastAlive(Date()) }
+        }
+        beat.tolerance = 5
+        RunLoop.main.add(beat, forMode: .common)
+        heartbeat = beat
     }
 
     /// Re-adds the pending phase-end notification, e.g. after permission was granted.

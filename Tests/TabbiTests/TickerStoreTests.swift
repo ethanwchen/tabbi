@@ -1,6 +1,7 @@
 import Combine
 import SwiftUI
 import XCTest
+import TabbiKit
 import TabbiKitCore
 @testable import Tabbi
 
@@ -61,5 +62,68 @@ final class TickerStoreTests: XCTestCase {
         ticker.setActive(true)
         settings.settings.notchPreview.isEnabled = false
         XCTAssertEqual(preview.watchedKinds, [])
+    }
+}
+
+/// A module with a pet to show, standing in for the Closet.
+@MainActor
+private final class PetModule: NotchModule {
+    nonisolated static let descriptor = ModuleDescriptor(
+        id: .closet, title: "Pet", symbol: "pawprint", category: .productivity,
+        accent: ModuleAccent(red: 0.5, green: 0.5, blue: 0.5)
+    )
+    static let presence = PetPresence(profile: .starter(.cat), lastActive: Date())
+
+    init(context: ModuleContext) {}
+
+    func makePanel() -> AnyView { AnyView(EmptyView()) }
+    var provision: AnyPublisher<ModuleProvision, Never>? {
+        Just(ModuleProvision(pet: Self.presence, highlights: [HighlightingModule.line])).eraseToAnyPublisher()
+    }
+}
+
+/// A finished focus session's cheer takes the closed notch for a moment.
+@MainActor
+final class TickerCheerTests: XCTestCase {
+    private func makeTicker(cheerStartedAt: Date) -> (TickerStore, CelebrationCenter) {
+        let settings = SettingsStore.ephemeral(catalog: ModuleCatalog([PetModule.descriptor]))
+        _ = settings.settings.modules.setEnabled(.closet, true)
+        let hub = ProviderHub()
+        let shared = SharedServices()
+        let module = PetModule(context: ModuleContext(
+            id: .closet, edition: .tabbi, settings: settings, providers: hub, shared: shared, runMode: .demo))
+        hub.attach(ModuleRegistry([module]))
+        hub.update(enabled: [.closet])
+        let center = CelebrationCenter(hapticsEnabled: { false }, now: { cheerStartedAt })
+        let ticker = TickerStore(settings: settings, providers: hub, preview: shared.closedNotchPreview,
+                                 celebrations: center)
+        return (ticker, center)
+    }
+
+    func testTheCheeringPetTakesTheNotch() {
+        let (ticker, center) = makeTicker(cheerStartedAt: Date())
+        let before = ticker.item
+        XCTAssertNotNil(before)
+        center.cheer(.dance, hasOwnSound: true)
+        guard case .pet(let pet) = ticker.item else {
+            return XCTFail("expected the cheering pet, got \(String(describing: ticker.item))")
+        }
+        XCTAssertEqual(pet.cheer?.kind, .dance)
+        XCTAssertEqual(pet.profile, PetModule.presence.profile)
+    }
+
+    func testAnOverCheerLeavesTheRotationAlone() {
+        let (ticker, center) = makeTicker(cheerStartedAt: Date().addingTimeInterval(-PetCheer.duration - 1))
+        let before = ticker.item
+        center.cheer(.dance)
+        XCTAssertEqual(ticker.item, before)
+    }
+
+    func testAnOpenNotchShowsNoCheerLater() {
+        let (ticker, center) = makeTicker(cheerStartedAt: Date())
+        ticker.setActive(false)
+        let before = ticker.item
+        center.cheer(.dance)
+        XCTAssertEqual(ticker.item, before, "the open notch hides the closed preview")
     }
 }

@@ -45,6 +45,23 @@ public struct FocusPhaseCompletion: Hashable, Sendable {
     }
 }
 
+/// A focus stretch the user ended before it ran out (stopped, or skipped to
+/// the break), reported so the app can credit the time actually focused
+/// (points, study minutes, activity log).
+public struct FocusStop: Hashable, Sendable {
+    /// Time the clock ran in the stopped focus phase, excluding pauses.
+    public let focused: TimeInterval
+    public let endedAt: Date
+    /// `abandoned` for a stop, `skipped` for a skip to the break.
+    public let outcome: StudyPhaseOutcome
+
+    public init(focused: TimeInterval, endedAt: Date, outcome: StudyPhaseOutcome = .abandoned) {
+        self.focused = focused
+        self.endedAt = endedAt
+        self.outcome = outcome
+    }
+}
+
 /// Pomodoro state machine for the Today panel's focus card.
 ///
 /// Time is derived from a wall-clock end date rather than a ticking counter,
@@ -140,15 +157,41 @@ public struct FocusTimer: Codable, Hashable, Sendable {
         runState = .idle
     }
 
-    /// Ends the current phase early and moves to the next one.
+    /// Ends the session: back to an idle focus phase at full length, like
+    /// `reset()`, and reports how long the focus phase under way ran so it
+    /// can be credited pro rata. Nil when nothing was focused (an idle
+    /// timer, or a break, which earns nothing).
+    ///
+    /// Call `advance(to:)` first so a phase that already ran out is credited
+    /// as completed rather than stopped.
+    @discardableResult
+    public mutating func stop(at now: Date) -> FocusStop? {
+        let stopped = focusCutShort(at: now, outcome: .abandoned)
+        reset()
+        return stopped
+    }
+
+    /// Ends the current phase early and moves to the next one, and reports
+    /// how long a focus phase under way ran, like `stop(at:)`.
     ///
     /// The next phase keeps running if the timer was running, so skipping a
     /// break while in flow drops straight into the next focus block. Skipped
     /// phases don't count as completed and produce no notification.
-    public mutating func skip(at now: Date) {
+    @discardableResult
+    public mutating func skip(at now: Date) -> FocusStop? {
+        let skipped = focusCutShort(at: now, outcome: .skipped)
         let wasRunning = isRunning
         phase = phase.next
         runState = wasRunning ? .running(endsAt: now.addingTimeInterval(phaseDuration)) : .idle
+        return skipped
+    }
+
+    /// The focus phase under way, as ended early at `now`; nil when idle or
+    /// on a break.
+    private func focusCutShort(at now: Date, outcome: StudyPhaseOutcome) -> FocusStop? {
+        let focused = phase == .focus && runState != .idle ? phaseDuration - remaining(at: now) : 0
+        guard focused > 0 else { return nil }
+        return FocusStop(focused: focused, endedAt: now, outcome: outcome)
     }
 
     /// Applies every phase end that has passed by `now` and reports them.
@@ -172,6 +215,24 @@ public struct FocusTimer: Codable, Hashable, Sendable {
             }
         }
         return completions
+    }
+
+    /// Settles a session that was under way when Tabbi stopped without
+    /// saying so (a crash, a force quit, power loss). Sleep and quit stop the
+    /// timer themselves, so a timer still running or paused at launch means
+    /// the app died, and the last moment it was known to be alive is the
+    /// fairest end: phases that ran out before `lastAlive` count as
+    /// completed, and the focus phase under way is stopped there and
+    /// credited pro rata, like `stop(at:)`.
+    ///
+    /// `lastAlive` is clamped to `now`, so a clock set back since then never
+    /// credits time from the future. Returns nothing for an idle timer.
+    public mutating func recover(lastAlive: Date, now: Date) -> (completions: [FocusPhaseCompletion], stop: FocusStop?) {
+        guard runState != .idle else { return ([], nil) }
+        let end = min(lastAlive, now)
+        let completions = advance(to: end)
+        let stopped = stop(at: end)
+        return (completions, stopped)
     }
 }
 

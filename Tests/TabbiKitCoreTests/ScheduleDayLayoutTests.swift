@@ -167,15 +167,53 @@ struct ScheduleDayLayoutTests {
         let locale = Locale(identifier: "en_US")
         let utc = TimeZone(identifier: "UTC")!
         #expect(ScheduleFormat.duration(minutes: 45) == "45 min")
-        #expect(ScheduleFormat.duration(minutes: 120) == "2 h")
-        #expect(ScheduleFormat.duration(minutes: 75) == "1 h 15 min")
+        #expect(ScheduleFormat.duration(minutes: 120) == "2h")
+        #expect(ScheduleFormat.duration(minutes: 75) == "1h 15m")
         #expect(ScheduleFormat.range(Self.at(10, 45), Self.at(12), locale: locale, timeZone: utc) == "10:45-12:00")
         let lunch = Self.item("Lunch", Self.at(12, 30), Self.at(13, 30))
         #expect(ScheduleFormat.status(.free(until: lunch.start, next: lunch), now: Self.at(11, 20), locale: locale,
-                                      timeZone: utc) == "Free for 1 h 10 min, then Lunch at 12:30")
+                                      timeZone: utc) == "Free for 1h 10m, then Lunch at 12:30")
         #expect(ScheduleFormat.status(.busy(lunch), now: Self.at(13), locale: locale, timeZone: utc)
             == "Now: Lunch, until 1:30")
         #expect(ScheduleFormat.title(Self.item("  ", Self.at(9), Self.at(10))) == "Untitled event")
+    }
+
+    @Test func summarizesAnotherDayWithoutANow() {
+        let locale = Locale(identifier: "en_US")
+        let utc = TimeZone(identifier: "UTC")!
+        let items = [
+            Self.item("Standup", Self.at(10), Self.at(10, 30)),
+            Self.item("Review", Self.at(14), Self.at(15)),
+            Self.item("Deck", Self.at(9, 15), Self.at(9, 45), kind: .planned),
+            Self.item("Offer", Self.at(16), Self.at(17), kind: .proposed),
+            Self.item("Holiday", Self.day, Self.at(24), allDay: true),
+        ]
+        let layout = Self.layout(items)
+        #expect(layout.eventCount == 2)
+        #expect(layout.plannedCount == 1)
+        // A day still to come says when it starts; a proposed block isn't on the calendar yet.
+        #expect(ScheduleFormat.daySummary(layout, isPast: false, locale: locale, timeZone: utc)
+            == "2 events, 1 planned block, the first at 9:15")
+        #expect(ScheduleFormat.daySummary(layout, isPast: true, locale: locale, timeZone: utc)
+            == "2 events, 1 planned block")
+        let single = Self.layout([Self.item("Standup", Self.at(10), Self.at(10, 30))])
+        #expect(ScheduleFormat.daySummary(single, isPast: true) == "1 event")
+        #expect(ScheduleFormat.daySummary(Self.layout([]), isPast: true) == "Nothing was on your calendar")
+        #expect(ScheduleFormat.daySummary(Self.layout([Self.item("Offer", Self.at(16), Self.at(17), kind: .proposed)]),
+                                          isPast: false) == "Nothing on your calendar yet")
+    }
+
+    @Test func sampleYesterdayIsAFullDayThatIsOver() {
+        let next = Self.calendar.date(byAdding: .day, value: 1, to: Self.day)!
+        let now = ScheduleSampleData.now(on: next, calendar: Self.calendar)
+        let items = ScheduleSampleData.yesterdayItems(before: next, calendar: Self.calendar)
+        #expect(!items.isEmpty)
+        #expect(items.allSatisfy { Self.calendar.isDate($0.start, inSameDayAs: Self.day) && $0.end <= next })
+        #expect(Set(items.map(\.id)).count == items.count)
+        let layout = ScheduleDayLayout(day: Self.day, now: now, items: items, calendar: Self.calendar)
+        #expect(layout.freeMinutes == 0)
+        #expect(layout.status(at: now) == .dayOver)
+        #expect(layout.eventCount > 0 && layout.plannedCount > 0)
     }
 
     @Test func sampleDayIsSeenFromLateMorning() {

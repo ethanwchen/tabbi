@@ -91,8 +91,9 @@ public enum SpriteCell: Hashable, Sendable {
 
 /// A rectangular text-drawn sprite layer.
 ///
-/// Art lives in Swift string literals so contributors can edit it in any text
-/// editor and review it in a diff:
+/// Art is plain text, one row per line, so contributors can edit it in any
+/// text editor and review it in a diff. The built-in art lives as arrays of
+/// rows in the `pets.v1` JSON files (`PetArt`); tests build grids inline:
 ///
 /// ```
 /// let ear = try SpriteGrid("""

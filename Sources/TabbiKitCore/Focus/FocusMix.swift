@@ -106,8 +106,9 @@ public struct FocusMix: Codable, Equatable, Sendable {
     }
 }
 
-/// Renders a `FocusMix` for the audio engine: per-layer crossfades, master
-/// volume, a 2 s fade in and out, and a soft clip on the sum.
+/// Renders a `FocusMix` for the audio engine: per-layer crossfades with each
+/// sound's loudness trim, master volume, a 2 s fade in and out, and a soft
+/// clip on the sum.
 ///
 /// Every sound's generator is created up front, so changing the mix, the
 /// volume or the transport never allocates; the render path is safe to run
@@ -166,7 +167,7 @@ public struct FocusMixer: Sendable {
         let gains = mix.gains
         let length = isSilent ? 0 : fadeSamples
         for (index, sound) in FocusSound.allCases.enumerated() {
-            let target = gains[sound] ?? 0
+            let target = (gains[sound] ?? 0) * sound.loudnessGain
             if layerGains[index].target != target {
                 layerGains[index].ramp(to: target, samples: length)
             }

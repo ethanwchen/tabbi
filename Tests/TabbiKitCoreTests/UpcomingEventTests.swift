@@ -28,6 +28,51 @@ final class UpcomingEventTests: XCTestCase {
         XCTAssertEqual(UpcomingEvent.upNext(from: events, at: now, limit: 0), [])
     }
 
+    func testAgendaKeepsEveryTimedEventOfTheDayEarliestFirst() {
+        let events = [
+            event("evening", start: 300, end: 360),
+            event("ended", start: -60, end: -1),
+            event("holiday", start: -600, end: 800, allDay: true),
+            event("morning", start: -200, end: -150),
+            event("soon", start: 12, end: 40),
+        ]
+        XCTAssertEqual(UpcomingEvent.agenda(from: events).map(\.id), ["morning", "ended", "soon"])
+        XCTAssertEqual(UpcomingEvent.agenda(from: events, limit: 5).map(\.id), ["morning", "ended", "soon", "evening"])
+        XCTAssertEqual(UpcomingEvent.agenda(from: events, limit: 0), [])
+    }
+
+    func testLengthReadsLikeOtherDurations() {
+        XCTAssertEqual(UpcomingEventFormat.length(event("a", start: 0, end: 30)), "30 min")
+        XCTAssertEqual(UpcomingEventFormat.length(event("b", start: 0, end: 90)), "1h 30m")
+        XCTAssertEqual(UpcomingEventFormat.length(event("c", start: 0, end: 120)), "2h")
+    }
+
+    func testOtherDaySamplesFallOnThatDayAtFixedHours() throws {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = try XCTUnwrap(TimeZone(identifier: "America/Chicago"))
+        let today = PlannerDayKey(date: now, calendar: calendar)
+        for kind in PlannerSampleDay.allCases {
+            for viewed in [PlannerViewedDay.yesterday, .tomorrow] {
+                let samples = UpcomingEvent.samples(viewed, now: now, kind: kind, calendar: calendar)
+                XCTAssertGreaterThanOrEqual(samples.count, 2, "\(viewed) \(kind)")
+                XCTAssertEqual(Set(samples.map(\.id)).count, samples.count, "ids are unique")
+                for sample in samples {
+                    XCTAssertEqual(PlannerDayKey(date: sample.start, calendar: calendar),
+                                   viewed.key(today: today, calendar: calendar))
+                    XCTAssertLessThan(sample.start, sample.end)
+                }
+                // Same events whatever the time of day, so the demo doesn't shift as the clock moves.
+                let later = UpcomingEvent.samples(viewed, now: now.addingTimeInterval(3600), kind: kind,
+                                                  calendar: calendar)
+                if PlannerDayKey(date: now.addingTimeInterval(3600), calendar: calendar) == today {
+                    XCTAssertEqual(later, samples)
+                }
+            }
+            XCTAssertEqual(UpcomingEvent.samples(.today, now: now, kind: kind),
+                           UpcomingEvent.samples(now: now, kind: kind))
+        }
+    }
+
     func testUpNextTreatsEventEndingExactlyNowAsOver() {
         XCTAssertEqual(UpcomingEvent.upNext(from: [event("edge", start: -30, end: 0)], at: now), [])
     }
@@ -60,8 +105,8 @@ final class UpcomingEventTests: XCTestCase {
         XCTAssertEqual(UpcomingEventFormat.badge(.now), "now")
         XCTAssertEqual(UpcomingEventFormat.badge(.startsIn(minutes: 1)), "in 1 min")
         XCTAssertEqual(UpcomingEventFormat.badge(.startsIn(minutes: 59)), "in 59 min")
-        XCTAssertEqual(UpcomingEventFormat.badge(.startsIn(minutes: 60)), "in 1 h")
-        XCTAssertEqual(UpcomingEventFormat.badge(.startsIn(minutes: 125)), "in 2 h 5 min")
+        XCTAssertEqual(UpcomingEventFormat.badge(.startsIn(minutes: 60)), "in 1h")
+        XCTAssertEqual(UpcomingEventFormat.badge(.startsIn(minutes: 125)), "in 2h 5m")
     }
 
     func testStartTimeFollowsLocaleClockWithoutDayPeriod() {

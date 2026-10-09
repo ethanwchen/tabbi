@@ -1,0 +1,308 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tabbi.app/schemas/pets.v1.schema.json",
+  "title": "Tabbi pet art (pets.v1)",
+  "description": "One pet file from Sources/TabbiKitCore/Pets/PetArt: art (grids, sequences, costume items), breeds (base palette, body shapes, breeds) or animations (timelines). Grids are text rows in the sprite legend of docs/study/pets.md: '.' or ' ' is transparent, 'x' erases lower layers, uppercase letters are palette roles and lowercase letters are breed pattern zones.",
+  "type": "object",
+  "required": ["schema"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "pets.v1" },
+    "grids": {
+      "description": "Named single grids.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/grid" }
+    },
+    "sequences": {
+      "description": "Named runs of grids played in order, such as a swaying tail.",
+      "type": "object",
+      "additionalProperties": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/grid" } }
+    },
+    "bodyItems": {
+      "description": "Outfits and neck items: one grid per body family, the same size as and stamped at the same origin as that family's body.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["cat", "dog", "longDog", "walk", "walkLong"],
+        "additionalProperties": false,
+        "properties": {
+          "cat": { "$ref": "#/$defs/grid" },
+          "dog": { "$ref": "#/$defs/grid" },
+          "longDog": { "$ref": "#/$defs/grid" },
+          "walk": { "description": "Over the cat and dog walking torso.", "$ref": "#/$defs/grid" },
+          "walkLong": { "description": "Over the dachshund walking torso.", "$ref": "#/$defs/grid" },
+          "rise": {
+            "description": "Rows every grid reaches above its body's top row. Defaults to 0.",
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "faceItems": {
+      "description": "Glasses and the like: a cat and a dog grid, and the grid row that lands on the head's eye row.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["cat", "dog", "eyeRow"],
+        "additionalProperties": false,
+        "properties": {
+          "cat": { "$ref": "#/$defs/grid" },
+          "dog": { "$ref": "#/$defs/grid" },
+          "eyeRow": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "headItems": {
+      "description": "Hats and the like, 20 wide like every head, and the grid row that lands on the head's skull top.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["grid", "sitRow"],
+        "additionalProperties": false,
+        "properties": { "grid": { "$ref": "#/$defs/grid" }, "sitRow": { "type": "integer", "minimum": 0 } }
+      }
+    },
+    "basePalette": {
+      "description": "The color of every palette role before a breed or the user changes it: eyes, effects, the default costume.",
+      "allOf": [{ "$ref": "#/$defs/palette" }],
+      "required": ["outline", "furBase", "furShade", "furAccent", "furSpot", "belly", "eye", "pupil", "eyeLight", "nose", "mouth", "blush", "costumeBase", "costumeShade", "costumeTrim", "coat", "coatShade", "accessoryBase", "accessoryShade", "ink", "gold", "metal", "effect", "heart", "leaf", "leather", "crimson"]
+    },
+    "bodyShapes": {
+      "description": "The shared art families breeds are drawn on, and the species of each.",
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-zA-Z]+$" },
+      "additionalProperties": {
+        "type": "object",
+        "required": ["species"],
+        "additionalProperties": false,
+        "properties": { "species": { "enum": ["cat", "dog"] } }
+      }
+    },
+    "breeds": {
+      "description": "Every selectable breed, in picker order.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "bodyShape", "hasTail", "palette", "pattern"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "description": "Stable id stored in pet saves.",
+            "type": "string",
+            "pattern": "^[a-zA-Z]+$"
+          },
+          "name": { "description": "Shown in the breed picker.", "type": "string", "minLength": 1 },
+          "note": { "description": "Why the breed looks the way it does. Not shown.", "type": "string" },
+          "bodyShape": { "description": "A key of bodyShapes.", "type": "string" },
+          "hasTail": { "description": "Whether the breed shows a tail when sitting.", "type": "boolean" },
+          "palette": {
+            "description": "The colors this breed sets; other roles keep the base palette.",
+            "$ref": "#/$defs/palette"
+          },
+          "pattern": {
+            "description": "Which palette role each pattern zone becomes. Zones not listed are belly for muzzle and chest, furBase otherwise.",
+            "type": "object",
+            "propertyNames": { "$ref": "#/$defs/zone" },
+            "additionalProperties": { "$ref": "#/$defs/role" }
+          }
+        }
+      }
+    },
+    "animations": {
+      "description": "How every animation plays, keyed by its id. A frame composes the pet in its pose and stance, moves it down by shiftY, paints its effects behind the pet, then its steam over the chest, then its dust.",
+      "type": "object",
+      "propertyNames": { "enum": ["idle", "blink", "sit", "sleep", "walk", "stretch", "peekIn", "peekOut", "alert", "celebrate", "yawn", "hop", "typing", "coffee", "wave", "groom", "tailSwish", "nap", "play"] },
+      "additionalProperties": { "$ref": "#/$defs/timeline" }
+    }
+  },
+  "$defs": {
+    "grid": {
+      "description": "Rows of equal width, top to bottom.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1, "pattern": "^[ .xOBSAKWEiLNRPCDTUVGJQYMZHFIXmcptefsab]+$" }
+    },
+    "role": {
+      "description": "A palette role: what a pixel means.",
+      "enum": ["outline", "furBase", "furShade", "furAccent", "furSpot", "belly", "eye", "pupil", "eyeLight", "nose", "mouth", "blush", "costumeBase", "costumeShade", "costumeTrim", "coat", "coatShade", "accessoryBase", "accessoryShade", "ink", "gold", "metal", "effect", "heart", "leaf", "leather", "crimson"]
+    },
+    "zone": {
+      "description": "A breed pattern zone inside shared body art.",
+      "enum": ["muzzle", "chest", "paws", "tailTip", "ears", "mask", "stripes", "patchA", "patchB"]
+    },
+    "color": {
+      "description": "sRGB as #RRGGBB, or #RRGGBBAA when not opaque.",
+      "type": "string",
+      "pattern": "^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$"
+    },
+    "palette": {
+      "type": "object",
+      "propertyNames": { "$ref": "#/$defs/role" },
+      "additionalProperties": { "$ref": "#/$defs/color" }
+    },
+    "timeline": {
+      "type": "object",
+      "required": ["loops", "frames"],
+      "additionalProperties": false,
+      "properties": {
+        "loops": { "description": "Whether the clip repeats forever or holds its last frame.", "type": "boolean" },
+        "still": {
+          "description": "The frame a still pet shows (Reduce Motion). Defaults to the first frame of a loop and the last of a one-shot clip.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "frames": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/frame" } }
+      }
+    },
+    "frame": {
+      "type": "object",
+      "required": ["duration"],
+      "additionalProperties": false,
+      "properties": {
+        "duration": { "description": "Seconds on screen.", "type": "number", "exclusiveMinimum": 0 },
+        "pose": { "$ref": "#/$defs/pose" },
+        "stance": { "$ref": "#/$defs/stance" },
+        "shiftY": { "description": "Rows the whole frame moves down (negative: up). Defaults to 0.", "type": "integer" },
+        "effects": {
+          "description": "Grids of the effect file painted behind the pet in order: they only fill transparent pixels.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/effect" }
+        },
+        "steam": {
+          "description": "Index into the prop file's steam sequence, stamped over the chest just above the mug when the pose holds one.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "dust": {
+          "description": "Dust puffs on the floor just outside the paws: the first and last filled pixel of the bottom row the paws stand on.",
+          "type": "boolean"
+        },
+        "bubble": { "description": "Point a speech bubble at the top-right corner of this frame's head.", "type": "boolean" }
+      }
+    },
+    "pose": {
+      "description": "Offsets from the plain sitting frame. Every key defaults to the plain pose.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "eyes": { "enum": ["open", "closed", "sleepy", "happy", "squeezed"] },
+        "mouth": { "enum": ["closed", "open", "wide"] },
+        "prop": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": ["kind"],
+              "additionalProperties": false,
+              "properties": {
+                "kind": { "const": "laptop" },
+                "tap": { "description": "-1 lifts the left paw off the keys, 1 the right, 0 rests both.", "enum": [-1, 0, 1] }
+              }
+            },
+            {
+              "type": "object",
+              "required": ["kind"],
+              "additionalProperties": false,
+              "properties": {
+                "kind": { "const": "mug" },
+                "raise": { "description": "0 at the chest, 1 on the way up, 2 at the mouth.", "enum": [0, 1, 2] }
+              }
+            },
+            {
+              "type": "object",
+              "required": ["kind"],
+              "additionalProperties": false,
+              "properties": {
+                "kind": { "const": "toy" },
+                "roll": { "description": "Pixels rolled away to the left.", "type": "integer", "minimum": 0 },
+                "bounce": { "description": "Pixels a ball lifts off the floor; yarn stays down.", "type": "integer", "minimum": 0 },
+                "bat": { "description": "The left front paw on top of the toy.", "type": "boolean" }
+              }
+            }
+          ]
+        },
+        "gesture": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": ["kind"],
+              "additionalProperties": false,
+              "properties": {
+                "kind": { "const": "wave" },
+                "swing": { "description": "0 leans the paw out, 1 brings it back in.", "enum": [0, 1] }
+              }
+            },
+            {
+              "type": "object",
+              "required": ["kind"],
+              "additionalProperties": false,
+              "properties": {
+                "kind": { "const": "groom" },
+                "reach": { "description": "0 at the chest, 1 at the mouth, 2 over the cheek.", "enum": [0, 1, 2] }
+              }
+            }
+          ]
+        },
+        "tailSwing": { "description": "Pixels the tail tip leans out to the side.", "type": "integer", "minimum": 0 },
+        "headDrop": { "description": "Pixels the head sinks into the shoulders; negative tips it back.", "type": "integer" },
+        "lift": { "description": "Pixels the whole pet rises off the floor.", "type": "integer", "minimum": 0 }
+      }
+    },
+    "stance": {
+      "description": "How the body is drawn. Defaults to sitting.",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["kind"],
+          "additionalProperties": false,
+          "properties": { "kind": { "enum": ["sitting", "hanging"] } }
+        },
+        {
+          "type": "object",
+          "required": ["kind"],
+          "additionalProperties": false,
+          "properties": {
+            "kind": { "const": "walking" },
+            "step": { "description": "Index into the four-step walk cycle.", "type": "integer", "minimum": 0, "maximum": 3 }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["kind"],
+          "additionalProperties": false,
+          "properties": {
+            "kind": { "const": "stretching" },
+            "depth": { "description": "Pixels the chest sinks into the bow.", "type": "integer", "minimum": 0 },
+            "wag": { "description": "The tail position.", "type": "integer", "minimum": 0 }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["kind"],
+          "additionalProperties": false,
+          "properties": {
+            "kind": { "const": "curled" },
+            "breath": { "description": "1 raises the back a pixel.", "enum": [0, 1] }
+          }
+        }
+      ]
+    },
+    "effect": {
+      "type": "object",
+      "required": ["grid", "x", "y"],
+      "additionalProperties": false,
+      "properties": {
+        "grid": { "description": "A grid name in the effect file.", "type": "string" },
+        "x": { "$ref": "#/$defs/coordinate" },
+        "y": { "$ref": "#/$defs/coordinate" }
+      }
+    },
+    "coordinate": {
+      "description": "A frame pixel, or pixels from the top-right corner of the head in the clip's first frame.",
+      "oneOf": [
+        { "type": "integer" },
+        { "type": "object", "required": ["head"], "additionalProperties": false, "properties": { "head": { "type": "integer" } } }
+      ]
+    }
+  }
+}

@@ -92,17 +92,20 @@ final class StudyTimerFormatTests: XCTestCase {
     func testStudiedMinutesLabel() {
         XCTAssertEqual(StudyTimerFormat.studied(minutes: -3), "0 min")
         XCTAssertEqual(StudyTimerFormat.studied(minutes: 45), "45 min")
-        XCTAssertEqual(StudyTimerFormat.studied(minutes: 60), "1 h")
-        XCTAssertEqual(StudyTimerFormat.studied(minutes: 125), "2 h 5 min")
+        XCTAssertEqual(StudyTimerFormat.studied(minutes: 60), "1h")
+        XCTAssertEqual(StudyTimerFormat.studied(minutes: 125), "2h 5m")
     }
 
-    /// The Timer tab's "45 min of 2 h" reads the daily goal the way Today and
-    /// the closed notch do, so one label never mixes "min" with "h".
-    func testStudiedMatchesTheSharedGoalFormat() {
+    /// The Timer tab's daily goal label reads the goal the way Today and
+    /// the closed notch do, and never mixes "min" with "h" ("0 min of 4h").
+    func testStudiedOfTheGoalKeepsOneStyle() {
         for minutes in [0, 45, 60, 64, 125, 240] {
             XCTAssertEqual(StudyTimerFormat.studied(minutes: minutes),
-                           ProgressItem.amount(minutes, unit: ProgressItem.minutesUnit))
+                           DurationFormat.quantity(minutes, unit: StudyDailyGoal.unit))
         }
+        XCTAssertEqual(StudyTimerFormat.studied(minutes: 0, of: 240), "0m of 4h")
+        XCTAssertEqual(StudyTimerFormat.studied(minutes: 64, of: 120), "1h 4m of 2h")
+        XCTAssertEqual(StudyTimerFormat.studied(minutes: 20, of: 45), "20 min of 45 min")
     }
 
     func testPointsLabel() {

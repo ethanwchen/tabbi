@@ -54,7 +54,7 @@ extension ProviderSnapshot {
             .map { task in
                 SharedTodayItem(
                     id: "\(task.source.rawValue)/task/\(task.id)", source: task.source, title: task.title,
-                    detail: task.estimatedMinutes.map { "\($0) min" }, fraction: nil, isDone: task.isDone
+                    detail: task.estimatedMinutes.map(DurationFormat.minutes), fraction: nil, isDone: task.isDone
                 )
             }
         return goals + tasks

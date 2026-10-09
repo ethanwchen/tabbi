@@ -155,6 +155,7 @@ It is `Codable`, so a running session persists the exact method it started with.
 | `.timer(_:)` | User (`StudyTimerLength`, 10 min by default) | None | One countdown that stops when it ends; a 5, 10 or 25 min chip starts it in one click, or a stepper sets any length |
 
 - `StudyMethod.presets` lists every kind once, in picker order; `preset(_:)` looks one up.
+  The presets, their copy and the Timer and Custom stepper limits are data in `study-methods.json` (`study-methods.v1`, described by `shared/schemas/study-methods.v1.schema.json`); the rules below are code.
 - `nextPhase(after:completedFocusCount:)` gives the next `StudyPhaseKind`: focus, then `review` when the method has one, then `shortBreak` or `longBreak`, then focus.
   A method without breaks (`hasBreaks` false, the Timer) goes from focus to a fresh idle focus.
 - `duration(of:workedBeforeBreak:)` is the wall-clock length of a phase, or `nil` for open-ended and card-goal focus.
@@ -164,7 +165,7 @@ It is `Codable`, so a running session persists the exact method it started with.
 
 ### Info popover copy
 
-`StudyMethodInfo.info(for:)` (or `method.info`) returns `name`, `tagline`, a 2 to 3 sentence `howTo`, a 1 to 2 sentence `evidence` note, and an `evidenceLevel` badge (`strong`, `mixed`, `weak`).
+`StudyMethodInfo.info(for:)` (or `method.info`) returns the copy in `study-methods.json`: `name`, `tagline`, a 2 to 3 sentence `howTo`, a 1 to 2 sentence `evidence` note, and an `evidenceLevel` badge (`strong`, `mixed`, `weak`).
 `StudyMethodInfo.footnote` goes under every popover.
 The copy follows the research notes and never claims an interval is proven: what research supports is regular breaks, self-testing, and spacing, so only the Anki sprint and question block (retrieval practice) are rated `strong`.
 

@@ -49,11 +49,19 @@ private struct PartySetupProfileCard: View {
                             .padding(.leading, Theme.Spacing.xs)
                     }
                 }
-                Text("Friends see your name, your pet and when you're studying. Nothing about your cards or decks leaves your Mac.")
-                    .font(Theme.Typography.caption)
-                    .foregroundStyle(Theme.Palette.secondaryText)
-                    .lineLimit(3)
-                    .fixedSize(horizontal: false, vertical: true)
+                if let issue = nameIssue {
+                    Label(issue, systemImage: "exclamationmark.triangle.fill")
+                        .font(Theme.Typography.caption)
+                        .foregroundStyle(Theme.Palette.warning)
+                        .lineLimit(3)
+                        .fixedSize(horizontal: false, vertical: true)
+                } else {
+                    Text("Friends see your name, your pet and when you're studying. Nothing about your cards or decks leaves your Mac.")
+                        .font(Theme.Typography.caption)
+                        .foregroundStyle(Theme.Palette.secondaryText)
+                        .lineLimit(3)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
                 Spacer(minLength: 0)
                 PartySetupVisibilityButton(invisible: store.settings.invisible) {
                     var settings = store.settings
@@ -63,6 +71,17 @@ private struct PartySetupProfileCard: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
+    }
+
+    /// A name friends can't see, checked as it is typed, in place of the
+    /// line about what is shared.
+    private var nameIssue: String? {
+        var refused = store.refusedNames
+        if isRenaming {
+            refused.remove(.name)
+            refused.formUnion(PartySettings(name: draft).refusedNames(for: store.pet).intersection(.name))
+        }
+        return refused.message
     }
 
     /// The name as friends will see it, or the server's until one is typed.
@@ -125,6 +144,8 @@ private struct PartySetupProfileCard: View {
             ("Online", Theme.Palette.success)
         case .connecting:
             ("Joining the party server", Theme.Palette.tertiaryText)
+        case .unreachable(.banned):
+            ("Not available", Theme.Palette.tertiaryText)
         case .unreachable, .invalidServer:
             ("Offline", Theme.Palette.warning)
         }
@@ -208,7 +229,7 @@ private struct PartySetupFriendsCard: View {
         Card(padding: Theme.Spacing.s) {
             VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                 HStack(spacing: Theme.Spacing.xs) {
-                    Text("Your friend code")
+                    Text("Your code")
                         .font(Theme.Typography.caption)
                         .foregroundStyle(Theme.Palette.tertiaryText)
                     Spacer(minLength: Theme.Spacing.xs)
@@ -249,6 +270,9 @@ private struct PartySetupFriendsCard: View {
         case .connecting:
             message(symbol: "antenna.radiowaves.left.and.right", title: "Joining the party server",
                     detail: "Signing you in so friends can find you. Your code shows here in a moment.")
+        case .unreachable(.banned):
+            message(symbol: "hand.raised.fill", title: "Party isn't available",
+                    detail: "This account can no longer use Party. Write to \(SupportContact.email) if that's a mistake.")
         case .unreachable:
             VStack(alignment: .leading, spacing: Theme.Spacing.s) {
                 message(symbol: "wifi.slash", title: "Can't reach the party server",

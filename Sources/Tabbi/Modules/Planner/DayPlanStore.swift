@@ -70,9 +70,13 @@ final class DayPlanStore: ObservableObject {
     @Published private(set) var refineFailed = false
 
     var isActive: Bool { phase != .idle }
+    /// The day being planned: today, or tomorrow when planning ahead.
+    @Published private(set) var target: PlannerViewedDay = .today
 
     private let upNext: UpNextStore
     private let isDemo: Bool
+    /// False in a build that can't run the `claude` CLI: Refine never shows.
+    private let usesClaude: Bool
     private var task: Task<Void, Never>?
     private var lastTasks: [PlannerItem] = []
     private var lastSharedWork: [String] = []
@@ -86,15 +90,16 @@ final class DayPlanStore: ObservableObject {
     /// Longest wait for Claude before showing the Retry message.
     private static let timeout: Duration = .seconds(60)
 
-    init(upNext: UpNextStore, settings: TodayPlanSettings, runMode: RunMode) {
+    init(upNext: UpNextStore, settings: TodayPlanSettings, usesClaude: Bool = true, runMode: RunMode) {
         self.upNext = upNext
         self.settings = settings
+        self.usesClaude = usesClaude
         let environment = ProcessInfo.processInfo.environment
         isDemo = runMode.isDemo
         // Lets demo snapshots render each state: `TABBI_PLANNER_PREVIEW=plan`.
         // Demo only, so a preview proposal can never reach the real calendar.
         guard isDemo else { return }
-        canRefine = settings.planMode == .local
+        canRefine = usesClaude && settings.planMode == .local
         switch environment["TABBI_PLANNER_PREVIEW"] {
         case "plan", "plan-refining":
             phase = .proposal(sampleProposal(
@@ -108,12 +113,15 @@ final class DayPlanStore: ObservableObject {
         }
     }
 
-    /// Starts planning the rest of today around `tasks` (unfinished ones
-    /// count) and what other modules share: `sharedWork` phrased for Claude
+    /// Starts planning the rest of today (or all of tomorrow, from the start
+    /// of the working day) around `tasks` (unfinished ones count) and what
+    /// other modules share: `sharedWork` phrased for Claude
     /// (`ProviderSnapshot.plannableWork`), `sharedTasks` with their estimates
     /// for the local planner, and `progress` as goals that become review blocks.
-    func plan(tasks: [PlannerItem], sharedWork: [String] = [], sharedTasks: [ProvidedTask] = [],
-              progress: [ProgressItem] = []) {
+    func plan(_ day: PlannerViewedDay = .today, tasks: [PlannerItem], sharedWork: [String] = [],
+              sharedTasks: [ProvidedTask] = [], progress: [ProgressItem] = []) {
+        guard day.planStart(now: Date()) != nil else { return }
+        target = day
         lastTasks = tasks
         lastSharedWork = sharedWork
         lastSharedTasks = sharedTasks
@@ -141,8 +149,19 @@ final class DayPlanStore: ObservableObject {
         }
     }
 
+    /// Demo only: shows the sample proposal for `day` at once, so a
+    /// snapshot can render a plan without waiting for the demo's delay.
+    func showSampleProposal(_ day: PlannerViewedDay, tasks: [PlannerItem]) {
+        guard isDemo, day.planStart(now: Date()) != nil else { return }
+        invalidateRun()
+        target = day
+        lastTasks = tasks
+        phase = .proposal(sampleProposal(tasks: tasks, sharedTasks: [], progress: []))
+    }
+
     func retry() {
-        plan(tasks: lastTasks, sharedWork: lastSharedWork, sharedTasks: lastSharedTasks, progress: lastProgress)
+        plan(target, tasks: lastTasks, sharedWork: lastSharedWork, sharedTasks: lastSharedTasks,
+             progress: lastProgress)
     }
 
     func openPrivacySettings() { upNext.openPrivacySettings() }
@@ -197,7 +216,7 @@ final class DayPlanStore: ObservableObject {
         guard !isRefining, case .proposal(var proposal) = phase else { return }
         do {
             // Re-read the calendar: meetings may have arrived since the plan was made.
-            try proposal.add(id.map { [$0] }, now: Date(), events: upNext.todayEvents(),
+            try proposal.add(id.map { [$0] }, now: Date(), events: upNext.planEvents(on: target),
                              writer: upNext.makePlanWriter())
             writeFailed = false
             settle(proposal)
@@ -213,6 +232,13 @@ final class DayPlanStore: ObservableObject {
     private func sampleProposal(tasks: [PlannerItem], sharedTasks: [ProvidedTask],
                                 progress: [ProgressItem]) -> DayPlanProposal {
         let now = Date()
+        if target != .today, let context = context(tasks: tasks, sharedWork: [], now: now) {
+            // Tomorrow's samples sit at fixed hours, so it plans as it is.
+            return settings.planMode == .study
+                ? DayPlanProposal(settings.studyPlan(context: context, progress: progress))
+                : settings.localPlan(now: context.now, events: context.events, tasks: tasks,
+                                     sharedTasks: sharedTasks, progress: progress).proposal
+        }
         switch settings.planMode {
         case .local:
             return settings.sampleLocalPlan(now: now, events: upNext.todayEvents(), tasks: tasks,
@@ -241,7 +267,7 @@ final class DayPlanStore: ObservableObject {
     /// Looks for the `claude` CLI off the main thread while a local plan is
     /// worked out, so "Refine with Claude" only shows when it can work.
     private func checkRefineAvailable() {
-        guard settings.planMode == .local else {
+        guard usesClaude, settings.planMode == .local else {
             canRefine = false
             return
         }
@@ -254,14 +280,22 @@ final class DayPlanStore: ObservableObject {
     /// Claude's refinement of `blocks` on today's calendar as it is now, or
     /// nil when Claude is missing or its answer isn't usable.
     private func refinedBlocks(_ blocks: [PlanBlock]) async -> [PlanBlock]? {
-        let context = DayPlanContext(now: Date(), events: upNext.todayEvents(), tasks: lastTasks,
-                                     sharedWork: lastSharedWork, dayEndHour: settings.dayEndHour)
-        guard let executable = await Task.detached(priority: .userInitiated, operation: { ClaudeCLI.locate() }).value,
+        guard let context = context(tasks: lastTasks, sharedWork: lastSharedWork, now: Date()),
+              let executable = await Task.detached(priority: .userInitiated, operation: { ClaudeCLI.locate() }).value,
               let text = await DayPlanner.answer(executable: executable,
                                                 prompt: DayPlanner.refinePrompt(for: context, plan: blocks),
                                                 timeout: Self.timeout)
         else { return nil }
         return try? DayPlanner.refinement(from: text, context: context, plan: blocks)
+    }
+
+    /// What planning `target` knows at `now`: its calendar, and where
+    /// planning starts (now today, the working day's start tomorrow).
+    private func context(tasks: [PlannerItem], sharedWork: [String], now: Date) -> DayPlanContext? {
+        guard let start = target.planStart(now: now) else { return nil }
+        return DayPlanContext(now: start, events: upNext.planEvents(on: target), tasks: tasks,
+                              sharedWork: sharedWork, dayEndHour: settings.dayEndHour,
+                              isPlanningAhead: target == .tomorrow)
     }
 
     private func publish(_ generation: Int, _ phase: Phase) {
@@ -277,9 +311,8 @@ final class DayPlanStore: ObservableObject {
         // Dry runs plan without meetings, which is enough to try the flow.
         case .unavailable: guard upNext.isPlanDryRun else { return .failed(.calendarUnavailable) }
         }
-        let context = DayPlanContext(now: Date(), events: upNext.todayEvents(), tasks: lastTasks,
-                                     sharedWork: lastSharedWork, dayEndHour: settings.dayEndHour)
-        guard context.hasFreeTime else { return .noFreeTime }
+        guard let context = context(tasks: lastTasks, sharedWork: lastSharedWork, now: Date()),
+              context.hasFreeTime else { return .noFreeTime }
 
         switch settings.planMode {
         case .local:
@@ -293,7 +326,7 @@ final class DayPlanStore: ObservableObject {
             break
         }
 
-        guard let executable = await Task.detached(priority: .userInitiated, operation: { ClaudeCLI.locate() }).value else {
+        guard usesClaude, let executable = await Task.detached(priority: .userInitiated, operation: { ClaudeCLI.locate() }).value else {
             return .failed(.claudeNotFound)
         }
         guard let text = await DayPlanner.answer(executable: executable, prompt: DayPlanner.prompt(for: context),

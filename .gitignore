@@ -11,3 +11,7 @@ DerivedData/
 # The website build output (site/build.py)
 site/dist/
 site/__pycache__/
+
+# The provisioning profiles: Developer ID for Sign in with Apple (docs/sync.md)
+# and Mac App Store (scripts/release-appstore.sh)
+packaging/*.provisionprofile

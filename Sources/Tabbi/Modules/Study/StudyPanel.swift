@@ -239,8 +239,8 @@ private struct StudyPartySessionView: View {
 }
 
 /// The method in use, its rhythm and round, the deep focus switch with
-/// the sound chips, and today's tally at the bottom. The name opens the
-/// picker, the (i) the method's info popover, and Mix or Playlist the mixer.
+/// the sound button, and today's tally at the bottom. The name opens the
+/// picker, the (i) the method's info popover, and the sound button the mixer.
 private struct StudyMethodCard: View {
     @ObservedObject var store: StudyStore
     let focusMode: FocusController
@@ -425,7 +425,8 @@ private struct StudyDeepFocusRow: View {
             }
             .fixedSize()
             Spacer(minLength: 0)
-            StudySoundRow(focus: focus, isActive: isOn, openMixer: openMixer)
+            StudySoundButton(focus: focus, isActive: isOn, openMixer: openMixer)
+                .layoutPriority(-1)
         }
     }
 
@@ -440,7 +441,7 @@ private struct StudyDeepFocusRow: View {
         var parts: [String] = []
         if !settings.mix.isOff { parts.append(settings.mix.summary.lowercased()) }
         if settings.playlist != nil { parts.append("your playlist") }
-        if settings.doNotDisturb { parts.append("Do Not Disturb") }
+        if focus.doNotDisturb { parts.append("Do Not Disturb") }
         switch parts.count {
         case 0: return "nothing yet; pick a sound"
         case 1: return parts[0]
@@ -481,7 +482,7 @@ private struct StudyTodayRow: View {
                     .foregroundStyle(Theme.Palette.tertiaryText)
                     .fixedSize()
             }
-            Label(showsGoal ? "\(studied) of \(StudyTimerFormat.studied(minutes: goal.minutes))" : studied,
+            Label(showsGoal ? StudyTimerFormat.studied(minutes: today.minutes, of: goal.minutes) : studied,
                   systemImage: metGoal ? "checkmark.seal.fill" : "clock")
                 .foregroundStyle(metGoal ? accent : Theme.Palette.secondaryText)
                 .fixedSize()
@@ -600,13 +601,13 @@ struct StudyMethodTile: View {
 }
 
 /// The primary action, then pause (Flowtime only), skip (not for the
-/// Timer, which has no breaks) and reset.
+/// Timer, which has no breaks) and stop.
 private struct StudyControls: View {
     @ObservedObject var store: StudyStore
 
     var body: some View {
         let session = store.session
-        // A fresh focus phase has nothing to skip or reset.
+        // A fresh focus phase has nothing to skip or stop.
         let isFresh = session.runState == .idle && session.phase == .focus
         let isFlowing = session.isRunning && session.phase == .focus && session.method.focus == .openEnded
         HStack(spacing: Theme.Spacing.xs) {
@@ -621,15 +622,14 @@ private struct StudyControls: View {
                 }
             }
             Group {
-                // The Timer has nothing to skip to; reset stops it.
+                // The Timer has nothing to skip to; Stop ends it.
                 if session.method.hasBreaks {
                     IconButton(symbol: "forward.end.fill", help: skipHelp) {
                         withMotion(Theme.Motion.snappy) { store.skip() }
                     }
                 }
-                IconButton(symbol: "arrow.counterclockwise",
-                           help: session.method.hasBreaks ? "Reset to a fresh session" : "Stop and reset the timer") {
-                    withMotion(Theme.Motion.snappy) { store.reset() }
+                IconButton(symbol: "stop.fill", help: "Stop and keep the time studied so far") {
+                    withMotion(Theme.Motion.snappy) { store.stop() }
                 }
             }
             .disabled(isFresh)

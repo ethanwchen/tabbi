@@ -11,12 +11,18 @@ MainActor.assumeIsolated {
         let kitID = kitFlag.flatMap { arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil }
         let themeFlag = arguments.firstIndex(of: "--theme")
         let theme = themeFlag.flatMap { arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil }
+        let scaleFlag = arguments.firstIndex(of: "--scale")
+        let scale = scaleFlag.flatMap { arguments.indices.contains($0 + 1) ? Double(arguments[$0 + 1]) : nil }
+        var notchStyle = SnapshotRenderer.NotchStyle()
+        if let scale, scale > 0 { notchStyle.scale = scale }
+        notchStyle.transparent = arguments.contains("--transparent")
         app.setActivationPolicy(.prohibited)
         Task { @MainActor in
             await SnapshotRenderer.run(
                 outputDirectory: URL(fileURLWithPath: path),
                 kitID: kitID ?? Edition.current.defaultKitID,
-                themes: SnapshotRenderer.ThemeSelection(argument: theme)
+                themes: SnapshotRenderer.ThemeSelection(argument: theme),
+                notchStyle: notchStyle
             )
             exit(0)
         }

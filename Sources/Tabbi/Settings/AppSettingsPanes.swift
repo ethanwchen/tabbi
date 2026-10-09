@@ -42,8 +42,9 @@ enum AppSettingsPane: String, CaseIterable {
 
     /// The window's panes, each reading the settings store from its environment.
     @MainActor
-    static func panes(settings: SettingsStore, modules: ModuleRegistry, onboarding: OnboardingStore?) -> [SettingsPane] {
-        let environment = PaneEnvironment(settings: settings, modules: modules, onboarding: onboarding)
+    static func panes(settings: SettingsStore, modules: ModuleRegistry, onboarding: OnboardingStore?,
+                      account: SyncStore? = nil) -> [SettingsPane] {
+        let environment = PaneEnvironment(settings: settings, modules: modules, onboarding: onboarding, account: account)
         let moduleOptions = self.moduleOptions(settings: settings, modules: modules, onboarding: onboarding)
         return allCases.map { pane in
             // Connections checks the Mac when shown; let that finish in snapshots.
@@ -71,6 +72,7 @@ private struct PaneEnvironment {
     let settings: SettingsStore
     let modules: ModuleRegistry
     let onboarding: OnboardingStore?
+    var account: SyncStore?
 
     func wrap(_ pane: SettingsPane) -> SettingsPane {
         let modules = modules
@@ -79,7 +81,8 @@ private struct PaneEnvironment {
                             view: AnyView(pane.view.environmentObject(settings)
                                             .environment(\.moduleCatalog, settings.catalog)
                                             .environment(\.modulesUseKitDefaults, { modules.usesKitDefaults(of: $0) })
-                                            .environment(\.runSetup, onboarding.map { store in { @MainActor @Sendable in store.start() } })),
+                                            .environment(\.runSetup, onboarding.map { store in { @MainActor @Sendable in store.start() } })
+                                            .environment(\.accountSync, account)),
                             settleTime: pane.settleTime)
     }
 }
@@ -111,12 +114,27 @@ private struct RunSetupKey: EnvironmentKey {
     static let defaultValue: (@MainActor @Sendable () -> Void)? = nil
 }
 
+private struct AccountSyncKey: EnvironmentKey {
+    static let defaultValue: SyncStore? = nil
+}
+
+extension EnvironmentValues {
+    /// The optional Sign in with Apple account General shows; nil hides the row.
+    var accountSync: SyncStore? {
+        get { self[AccountSyncKey.self] }
+        set { self[AccountSyncKey.self] = newValue }
+    }
+}
+
 extension SettingsWindowController {
     /// The app's Settings window.
-    /// - Parameter onboarding: offers Run Setup Again in Tabs.
-    convenience init(settings: SettingsStore, modules: ModuleRegistry, onboarding: OnboardingStore? = nil) {
+    /// - Parameters:
+    ///   - onboarding: offers Run Setup Again in Tabs.
+    ///   - account: the Account row in General.
+    convenience init(settings: SettingsStore, modules: ModuleRegistry, onboarding: OnboardingStore? = nil,
+                     account: SyncStore? = nil) {
         self.init(
-            panes: AppSettingsPane.panes(settings: settings, modules: modules, onboarding: onboarding),
+            panes: AppSettingsPane.panes(settings: settings, modules: modules, onboarding: onboarding, account: account),
             updates: Empty().eraseToAnyPublisher(),
             autosaveName: "TabbiSettings"
         )

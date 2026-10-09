@@ -5,15 +5,15 @@
 <h1 align="center">Tabbi</h1>
 
 <p align="center">
-  A cozy study and productivity companion that lives in your MacBook's notch.
+  A little cat for your laptop notch.
 </p>
 
 <p align="center">
-  <a href="https://github.com/ethanwchen/tabbi/releases/latest"><img src="https://img.shields.io/github/v/release/ethanwchen/tabbi?label=download&color=E8A15F" alt="Latest release"></a>
-  <img src="https://img.shields.io/badge/macOS-14%2B-555?logo=apple" alt="macOS 14 or later">
-  <img src="https://img.shields.io/badge/Swift-6-F05138?logo=swift&logoColor=white" alt="Swift 6">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-6B8E5A" alt="MIT License"></a>
+  <a href="https://github.com/ethanwchen/tabbi/releases/latest"><img src="https://img.shields.io/github/v/release/ethanwchen/tabbi?label=download&color=E8A15F" alt="Download the latest release"></a>
   <a href="https://buymeacoffee.com/ethanpolar"><img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-ethanpolar-F4D57E?logo=buymeacoffee&logoColor=2A231D" alt="Buy me a coffee"></a>
+  <img src="https://img.shields.io/badge/macOS-14%2B-555?logo=apple" alt="macOS 14 or later">
+  <a href="https://github.com/ethanwchen/tabbi/actions/workflows/ci.yml"><img src="https://github.com/ethanwchen/tabbi/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-6B8E5A" alt="MIT License"></a>
 </p>
 
 <p align="center">
@@ -21,28 +21,23 @@
 </p>
 
 Click the notch and it opens into a small panel of tabs.
-A kit picks the tabs: Essentials for a focus timer, your day, music and Claude, or Med School for study with Anki and a pet.
-More tabs are one click away in Settings.
+A pixel cat lives there too, and it cheers you on while you work.
 
-- **Focus and study timers** in the study method you pick, with focus sounds and Do Not Disturb.
-- **Today and Schedule:** a checklist, your next meetings and a Plan my day that fits work into free time, on your Mac with no AI needed.
-- **Now Playing and Ask Claude:** music controls, and Claude in the notch with screenshots, a bigger view and chat history.
-- **Anki, Party and a pet:** cards due, studying with friends and a cat or dog that cheers you on.
-- **Eight themes,** from hardware-black Midnight to warm Cozy, and setup that happens right in the notch.
-- **Private by design:** no account, no telemetry, and Claude only through your own `claude` CLI.
+- **Focus timer** with study methods like Pomodoro, focus sounds and Do Not Disturb.
+- **Today:** your to-do list, your next meeting and a Plan my day that fits work into free time.
+- **Now Playing and Ask Claude:** music controls, and Claude in the notch through your own `claude` CLI.
+- **Anki, study with friends and a pet** that earns outfits from your study points.
+- **Private by design:** no account needed, no analytics and no telemetry.
 
 ## Install
 
-1. Download `Tabbi-<version>.dmg` from the [latest release](https://github.com/ethanwchen/tabbi/releases/latest).
-2. Open it and drag **Tabbi** onto the **Applications** folder.
-3. Open Tabbi from Applications, then click the notch and pick a kit.
+1. Download Tabbi from [tabbinotch.com](https://tabbinotch.com) or the [latest release](https://github.com/ethanwchen/tabbi/releases/latest).
+2. Drag **Tabbi** into **Applications**, open it, then click the notch and pick a kit.
 
-Tabbi is signed and notarized, and it keeps itself up to date.
+Tabbi is free and open source, and it keeps itself up to date.
+It needs macOS 14 Sonoma or later, and a Mac without a notch gets a small virtual one at the top of the screen.
+Right-click the notch for **Settings** and **Quit Tabbi**.
 [docs/install.md](docs/install.md) covers Homebrew, updates, troubleshooting and uninstalling.
-Tabbi has no Dock icon and no menu bar item: right-click the notch for **Settings** and **Quit Tabbi**.
-
-Requires macOS 14 Sonoma or later.
-Macs without a notch get a small virtual one at the top of the screen.
 
 ## Tabs
 

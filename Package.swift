@@ -1,5 +1,15 @@
 // swift-tools-version: 6.0
+import Foundation
 import PackageDescription
+
+// The Mac App Store build (scripts/release-appstore.sh, docs/appstore.md):
+// `TABBI_APPSTORE=1 swift build` compiles the app with the APPSTORE flag and
+// leaves out what App Review refuses in a sandboxed app: Sparkle (not even
+// linked), install hygiene (it moves the app and reads a private API) and
+// the modules that run the claude CLI. Everything else is the same code.
+// Pass `--only-use-versions-from-resolved-file` too: without Sparkle the
+// manifest has no dependencies, and SwiftPM would delete Package.resolved.
+let appStore = ProcessInfo.processInfo.environment["TABBI_APPSTORE"] == "1"
 
 // The pure core and its tests use Swift 6, so data races there are errors.
 // The AppKit/SwiftUI targets keep Swift 5 mode, whose runtime does not trap
@@ -10,6 +20,16 @@ let coreSettings: [SwiftSetting] = [.swiftLanguageMode(.v6)]
 let swiftSettings: [SwiftSetting] = [
     .swiftLanguageMode(.v5),
     .enableUpcomingFeature("StrictConcurrency"),
+] + (appStore ? [.define("APPSTORE")] : [])
+
+/// Sources the App Store build leaves out, relative to Sources/Tabbi. Their
+/// few call sites sit behind `#if !APPSTORE`, and `ModuleList` drops the
+/// modules' lines.
+let appStoreExcludedSources = [
+    "Updates",
+    "InstallHygiene",
+    "Modules/ClaudeUsage",
+    "Modules/ClaudeAsk",
 ]
 
 let package = Package(
@@ -18,19 +38,24 @@ let package = Package(
     products: [
         .executable(name: "Tabbi", targets: ["Tabbi"]),
     ],
-    dependencies: [
-        // The one third-party dependency: secure in-place app updates (EdDSA
-        // signed archives, an installer that swaps the bundle and relaunches).
-        // Why it is worth it: docs/research/installer.md, section 3.
+    // The one third-party dependency: secure in-place app updates (EdDSA
+    // signed archives, an installer that swaps the bundle and relaunches).
+    // Why it is worth it: docs/research/installer.md, section 3. The App
+    // Store updates the app itself, so that build has none.
+    dependencies: appStore ? [] : [
         .package(url: "https://github.com/sparkle-project/Sparkle", exact: "2.10.0"),
     ],
     targets: [
         // Pure, testable logic: parsers, models, stores. No AppKit/SwiftUI.
         .target(
             name: "TabbiKitCore",
-            // Kit manifests and edition files ship as human-editable JSON
-            // (see docs/kits.md and Edition.swift).
-            resources: [.copy("Kits/Bundled"), .copy("Editions/BundledEditions")],
+            // Kit manifests, edition files, pet art and themes ship as
+            // human-editable JSON (see docs/kits.md, Edition.swift,
+            // PetArt.swift and ThemeCatalog.swift).
+            resources: [
+                .copy("Kits/Bundled"), .copy("Editions/BundledEditions"), .copy("Pets/PetArt"),
+                .copy("Themes/themes.json"), .copy("StudyMethods/study-methods.json"),
+            ],
             swiftSettings: coreSettings
         ),
         // Shared AppKit/SwiftUI: design system, notch window pieces, shared
@@ -43,7 +68,9 @@ let package = Package(
         // The app: modules, settings, system integrations, assembly.
         .executableTarget(
             name: "Tabbi",
-            dependencies: ["TabbiKitCore", "TabbiKit", .product(name: "Sparkle", package: "Sparkle")],
+            dependencies: ["TabbiKitCore", "TabbiKit"]
+                + (appStore ? [] : [.product(name: "Sparkle", package: "Sparkle")]),
+            exclude: appStore ? appStoreExcludedSources : [],
             swiftSettings: swiftSettings,
             // scripts/assemble.sh puts Sparkle.framework in Contents/Frameworks.
             linkerSettings: [.unsafeFlags(["-Xlinker", "-rpath", "-Xlinker", "@executable_path/../Frameworks"])]

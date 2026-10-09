@@ -9,11 +9,11 @@ import Foundation
 /// on decode, so a saved value can never make a zero-length countdown.
 public struct StudyTimerLength: Codable, Hashable, Sendable {
     /// Allowed lengths, in minutes.
-    public static let range = 1...180
+    public static let range = StudyMethodDefinitions.file.timer.minMinutes...StudyMethodDefinitions.file.timer.maxMinutes
     /// The one-click lengths the Timer offers.
-    public static let presets = [5, 10, 25]
-    /// Where a fresh Timer starts.
-    public static let standard = StudyTimerLength(minutes: 10)
+    public static let presets = StudyMethodDefinitions.file.timer.presetMinutes
+    /// Where a fresh Timer starts: the Timer preset's length.
+    public static let standard = StudyTimerLength(minutes: Int((StudyMethod.preset(.timer).duration(of: .focus) ?? 600) / 60))
 
     public let minutes: Int
 

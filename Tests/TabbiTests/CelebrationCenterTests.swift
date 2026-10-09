@@ -51,6 +51,62 @@ final class CelebrationCenterTests: XCTestCase {
         XCTAssertEqual(played.count, 1)
     }
 
+    func testAClosedNotchCheersThePetInstead() {
+        var played: [CelebrationSound] = []
+        var soundOn = true
+        let center = CelebrationCenter(hapticsEnabled: { false }, soundEnabled: { soundOn },
+                                       playSound: { played.append($0) }, now: { [unowned self] in clock })
+
+        // The Pomodoro already chimed, so the cheer adds no sound.
+        let first = center.cheer(.dance, hasOwnSound: true)
+        XCTAssertEqual(first, PetCheer(kind: .dance, id: 1, startedAt: clock))
+        XCTAssertEqual(center.cheer, first)
+        XCTAssertEqual(played, [])
+
+        // Cheers are not paced: the next finished session cheers again,
+        // and is a new value; without a sound of its own it plays a soft one.
+        clock += 60
+        XCTAssertEqual(center.cheer(.dance)?.id, 2)
+        XCTAssertEqual(played.map(\.name), ["Pop"])
+        soundOn = false
+        XCTAssertEqual(center.cheer(.dance)?.id, 3)
+        XCTAssertEqual(played.count, 1)
+
+        // With a panel open the panel's burst plays instead.
+        center.stageAppeared()
+        XCTAssertNil(center.cheer(.dance))
+        XCTAssertEqual(center.cheer?.id, 3)
+    }
+
+    func testDoNotDisturbHushesEverySoundButKeepsTheRest() {
+        var played: [CelebrationSound] = []
+        var taps = 0
+        var hushed = true
+        let center = CelebrationCenter(hapticsEnabled: { true }, soundEnabled: { true }, isHushed: { hushed },
+                                       playSound: { played.append($0) }, performHaptic: { _ in taps += 1 },
+                                       now: { [unowned self] in clock })
+
+        // The pet still cheers, a block start still taps: only sound stops.
+        XCTAssertNotNil(center.cheer(.crown))
+        center.play(.focusStarted)
+        center.stageAppeared()
+        XCTAssertEqual(center.celebrate(.milestone, style: .sparkles, accent: .pink), .milestone)
+        XCTAssertEqual(center.current?.tier, .milestone)
+        XCTAssertEqual(played, [])
+        XCTAssertEqual(taps, 3)
+
+        // Once Do Not Disturb is off, the next one is heard again.
+        hushed = false
+        center.play(.focusStarted)
+        XCTAssertEqual(played.count, 1)
+    }
+
+    func testSnapshotRunsNeverCheer() {
+        let center = center(isEnabled: false)
+        XCTAssertNil(center.cheer(.dance))
+        XCTAssertNil(center.cheer)
+    }
+
     func testSnapshotRunsNeverCelebrate() {
         let center = center(isEnabled: false)
         center.stageAppeared()
@@ -113,6 +169,62 @@ final class CelebrationCenterTests: XCTestCase {
         clock += 60
         center.celebrate(.burst, style: .confetti, accent: .teal)
         XCTAssertNil(center.nod, "without a source there is no tab to bounce")
+    }
+
+    func testACrownAskedForWithAPanelOpenWaitsForTheNotchToClose() {
+        let center = center()
+        center.stageAppeared()
+        XCTAssertNil(center.cheer(.crown, waitsForClose: true), "the open panel hides the pet")
+        XCTAssertNil(center.cheer)
+
+        // Switching tabs: one stage leaves as the next arrives.
+        center.stageDisappeared()
+        center.stageAppeared()
+        drainMainQueue()
+        XCTAssertNil(center.cheer, "the panel never closed")
+
+        clock += 30
+        center.stageDisappeared()
+        drainMainQueue()
+        XCTAssertEqual(center.cheer?.kind, .crown)
+        XCTAssertEqual(center.cheer?.startedAt, clock, "it starts as the notch closes")
+
+        // Played once: closing again later shows nothing new.
+        center.stageAppeared()
+        center.stageDisappeared()
+        drainMainQueue()
+        XCTAssertEqual(center.cheer?.id, 1)
+    }
+
+    func testAWaitingCrownIsDroppedWhenStaleOrNotAskedToWait() {
+        let center = center()
+        center.stageAppeared()
+        center.cheer(.dance)
+        center.stageDisappeared()
+        drainMainQueue()
+        XCTAssertNil(center.cheer, "a dance missed behind the panel does not wait")
+
+        center.stageAppeared()
+        center.cheer(.crown, waitsForClose: true)
+        clock += CelebrationCenter.waitLimit + 1
+        center.stageDisappeared()
+        drainMainQueue()
+        XCTAssertNil(center.cheer, "a goal reached long before the panel closed is old news")
+    }
+
+    func testNoCrownWaitsInASnapshotRun() {
+        let center = center(isEnabled: false)
+        center.stageAppeared()
+        center.cheer(.crown, waitsForClose: true)
+        center.stageDisappeared()
+        drainMainQueue()
+        XCTAssertNil(center.cheer)
+    }
+
+    private func drainMainQueue() {
+        let drained = expectation(description: "main queue")
+        DispatchQueue.main.async { drained.fulfill() }
+        wait(for: [drained], timeout: 1)
     }
 
     func testANodBouncesTheOpenTabWhenItsModuleHasNone() {

@@ -48,9 +48,14 @@ public struct TickerKind: RawRepresentable, Hashable, Codable, Sendable, Identif
 
     /// Every kind this build can show: the built-in ones, with the
     /// highlights of each module in `catalog` that declares a
-    /// `highlightTitle` in between, in catalog order.
+    /// `highlightTitle` in between, in catalog order. A built-in kind whose
+    /// module the edition leaves out (Party in the App Store edition) is
+    /// dropped, so Settings offers no preview that can never show.
     public static func all(in catalog: ModuleCatalog) -> [TickerKind] {
-        leading + catalog.descriptors.filter { $0.highlightTitle != nil }.map { highlights(from: $0.id) } + trailing
+        let highlights = catalog.descriptors.filter { $0.highlightTitle != nil }.map { highlights(from: $0.id) }
+        return (leading + highlights + trailing).filter { kind in
+            kind.module.map { !catalog.isUnavailable($0) } ?? true
+        }
     }
 
     public var isBuiltIn: Bool { Self.builtIn.contains(self) }
@@ -109,11 +114,14 @@ public struct TickerPet: Hashable, Sendable {
     /// with no phase running. A pet drawn anew mid-session reads it, so it
     /// still knows how long the user has been at it.
     public var moodSince: Date?
+    /// A celebration playing right now (a finished focus session), or nil.
+    public var cheer: PetCheer?
 
-    public init(profile: PetProfile, mood: PetMood, moodSince: Date? = nil) {
+    public init(profile: PetProfile, mood: PetMood, moodSince: Date? = nil, cheer: PetCheer? = nil) {
         self.profile = profile
         self.mood = mood
         self.moodSince = moodSince
+        self.cheer = cheer
     }
 }
 

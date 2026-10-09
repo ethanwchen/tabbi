@@ -80,6 +80,7 @@ extension ModuleContext {
             let store = ClosetStore(storage: storage, runMode: runMode, starter: .starter(kit: activeKit?.defaults),
                                     celebrations: celebrations)
             store.follow(focus: providers.$snapshot.map(\.focus).eraseToAnyPublisher())
+            store.follow(activity: activityLog.recorded)
             store.follow(kits: kitApplied)
             return store
         }

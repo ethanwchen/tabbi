@@ -22,8 +22,8 @@ public struct ThemeID: RawRepresentable, Hashable, Codable, Sendable, Expressibl
 }
 
 /// An sRGB color with opacity, in 0...1 components, so themes can live in
-/// pure code and be tested without SwiftUI.
-public struct ThemeColor: Hashable, Sendable {
+/// data (`themes.json`) and be tested without SwiftUI.
+public struct ThemeColor: Hashable, Sendable, Decodable {
     public var red: Double
     public var green: Double
     public var blue: Double
@@ -76,13 +76,29 @@ public struct ThemeColor: Hashable, Sendable {
     public init(_ accent: ModuleAccent) {
         self.init(red: accent.red, green: accent.green, blue: accent.blue)
     }
+
+    private enum CodingKeys: String, CodingKey { case white, red, green, blue, opacity }
+
+    /// Reads `themes.json`'s color form: `{"white": w}` for a gray, or
+    /// `red`, `green` and `blue`; `opacity` defaults to 1.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let opacity = try container.decodeIfPresent(Double.self, forKey: .opacity) ?? 1
+        if let white = try container.decodeIfPresent(Double.self, forKey: .white) {
+            self.init(white: white, opacity: opacity)
+        } else {
+            self.init(red: try container.decode(Double.self, forKey: .red),
+                      green: try container.decode(Double.self, forKey: .green),
+                      blue: try container.decode(Double.self, forKey: .blue), opacity: opacity)
+        }
+    }
 }
 
 /// The colors of the open panel. The panel body is always opaque and its top
 /// edge always black, so the open notch stays continuous with the hardware
 /// cutout (like the Dynamic Island); a theme adds a soft `glow` toward the
 /// bottom instead of repainting the whole panel.
-public struct ThemePalette: Hashable, Sendable {
+public struct ThemePalette: Hashable, Sendable, Decodable {
     /// The panel body. Opaque in every theme.
     public var background: ThemeColor
     /// A soft color that rises from the bottom edge of the panel; nil for a
@@ -118,7 +134,7 @@ public struct ThemePalette: Hashable, Sendable {
 
 /// How a theme treats each module's accent color, so one theme can mute or
 /// warm every module without the modules knowing.
-public enum AccentTreatment: String, Hashable, Sendable {
+public enum AccentTreatment: String, Hashable, Sendable, CaseIterable, Decodable {
     /// The module's own accent.
     case original
     /// Grayscale at the accent's brightness, lifted so it reads on black.
@@ -165,7 +181,7 @@ public enum AccentTreatment: String, Hashable, Sendable {
 }
 
 /// The type family a theme sets in.
-public enum ThemeTypeface: String, Hashable, Sendable {
+public enum ThemeTypeface: String, Hashable, Sendable, CaseIterable, Decodable {
     /// SF Pro Rounded, the Tabbi default.
     case rounded
     /// SF Pro, for the cooler themes.
@@ -173,7 +189,7 @@ public enum ThemeTypeface: String, Hashable, Sendable {
 }
 
 /// How lively a theme's animations are.
-public enum ThemeMotion: String, Hashable, Sendable {
+public enum ThemeMotion: String, Hashable, Sendable, CaseIterable, Decodable {
     case standard
     /// Slower, softer springs with less bounce, for the cozy themes.
     case gentle
@@ -190,7 +206,7 @@ public enum ThemeMotion: String, Hashable, Sendable {
 }
 
 /// What small floating controls (icon buttons, the tab bar selection) sit on.
-public enum ThemeControlStyle: String, Hashable, Sendable {
+public enum ThemeControlStyle: String, Hashable, Sendable, CaseIterable, Decodable {
     /// The palette's opaque surface colors.
     case solid
     /// Liquid Glass where the system offers it (see `ControlMaterial`).
@@ -219,7 +235,7 @@ public enum ControlMaterial: Hashable, Sendable {
 }
 
 /// What content surfaces (cards) are drawn as.
-public enum ThemeSurfaceStyle: String, Hashable, Sendable {
+public enum ThemeSurfaceStyle: String, Hashable, Sendable, CaseIterable, Decodable {
     /// The palette's flat surface color.
     case flat
     /// Frosted glass: a live material where the system can draw one, always
@@ -233,7 +249,7 @@ public enum ThemeSurfaceStyle: String, Hashable, Sendable {
 /// It is plain paint, so it shows the same in the live app, in
 /// `ImageRenderer` snapshots (which can't capture materials) and with
 /// Reduce Transparency on.
-public struct GlassSheen: Hashable, Sendable {
+public struct GlassSheen: Hashable, Sendable, Decodable {
     /// The fill at the top edge.
     public var fillTop: ThemeColor
     /// The fill at the bottom edge.
@@ -255,10 +271,8 @@ public struct GlassSheen: Hashable, Sendable {
     }
 
     /// Clear glass lit from above, tuned so white text stays legible on it.
-    public static let standard = GlassSheen(
-        fillTop: ThemeColor(white: 1, opacity: 0.12), fillBottom: ThemeColor(white: 1, opacity: 0.04),
-        glint: ThemeColor(white: 1, opacity: 0.08),
-        rimTop: ThemeColor(white: 1, opacity: 0.50), rimBottom: ThemeColor(white: 1, opacity: 0.08))
+    /// Read from `themes.json`.
+    public static var standard: GlassSheen { ThemeCatalog.file.glassSheen }
 
     /// The brightest the fill gets (top edge plus glint) over `base`, for
     /// checking text contrast.
@@ -268,7 +282,7 @@ public struct GlassSheen: Hashable, Sendable {
 }
 
 /// Which group a theme is listed under in the picker.
-public enum ThemeFamily: String, Hashable, Sendable {
+public enum ThemeFamily: String, Hashable, Sendable, CaseIterable, Decodable {
     /// Calm, hardware-black looks.
     case classic
     /// Warm, soft looks made for studying.
@@ -277,7 +291,7 @@ public enum ThemeFamily: String, Hashable, Sendable {
 
 /// A complete look for the open panel: colors, accent treatment, type,
 /// motion and controls. The closed notch is pure black in every theme.
-public struct AppTheme: Identifiable, Hashable, Sendable {
+public struct AppTheme: Identifiable, Hashable, Sendable, Decodable {
     public var id: ThemeID
     public var name: String
     /// One line for the picker.

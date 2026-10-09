@@ -61,8 +61,10 @@ private struct FocusDial: View {
 }
 
 /// What this session is for (the task linked from Today, or the timer's
-/// status) and, under it, what focus mode does while it runs: one unit,
-/// so the column has one card above the controls, as in Study.
+/// status) at the top and what focus mode does while it runs at the
+/// bottom: one unit, so the column has one card above the controls, as in
+/// Study. Pinning the two to the edges keeps the task near the top instead
+/// of floating in the middle of a tall card.
 private struct FocusSessionCard: View {
     @ObservedObject var store: FocusStore
     let focusMode: FocusController
@@ -70,8 +72,9 @@ private struct FocusSessionCard: View {
 
     var body: some View {
         Card {
-            VStack(alignment: .leading, spacing: Theme.Spacing.m) {
+            VStack(alignment: .leading, spacing: 0) {
                 task
+                Spacer(minLength: Theme.Spacing.m)
                 FocusModeRow(controller: focusMode)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
@@ -139,7 +142,8 @@ private struct FocusModeRow: View {
             items(showsTitles: false)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .help("Change focus sound and Do Not Disturb in Settings > Tabs > Options")
+        .help(controller.offersDoNotDisturb ? "Change focus sound and Do Not Disturb in Settings > Tabs > Options"
+                                            : "Change focus sound in Settings > Tabs > Options")
     }
 
     private func items(showsTitles: Bool) -> some View {
@@ -147,9 +151,11 @@ private struct FocusModeRow: View {
         return HStack(spacing: Theme.Spacing.m) {
             FocusModeItem(symbol: "waveform", title: showsTitles ? "Sound" : nil,
                           value: settings.mix.summary, isOn: !settings.mix.isOff)
-            FocusModeItem(symbol: "moon.fill", title: showsTitles ? "Do Not Disturb" : nil,
-                          value: settings.doNotDisturb ? "On" : "Off", isOn: settings.doNotDisturb)
-                .fixedSize()
+            if controller.offersDoNotDisturb {
+                FocusModeItem(symbol: "moon.fill", title: showsTitles ? "Do Not Disturb" : nil,
+                              value: settings.doNotDisturb ? "On" : "Off", isOn: settings.doNotDisturb)
+                    .fixedSize()
+            }
         }
     }
 }
@@ -181,13 +187,13 @@ private struct FocusModeItem: View {
     }
 }
 
-/// Start or pause (the primary action), then skip and reset.
+/// Start or pause (the primary action), then skip and stop.
 private struct FocusControls: View {
     @ObservedObject var store: FocusStore
 
     var body: some View {
         let timer = store.timer
-        // A fresh focus session has nothing to skip or reset.
+        // A fresh focus session has nothing to skip or stop.
         let isFresh = timer.runState == .idle && timer.phase == .focus
         HStack(spacing: Theme.Spacing.xs) {
             FocusPrimaryButton(title: primaryTitle, symbol: timer.isRunning ? "pause.fill" : "play.fill",
@@ -199,8 +205,8 @@ private struct FocusControls: View {
                 IconButton(symbol: "forward.end.fill", help: timer.phase == .focus ? "Skip to the break" : "Skip the break") {
                     withMotion(Theme.Motion.snappy) { store.skip() }
                 }
-                IconButton(symbol: "arrow.counterclockwise", help: "Reset to a fresh focus session") {
-                    withMotion(Theme.Motion.snappy) { store.reset() }
+                IconButton(symbol: "stop.fill", help: "Stop and keep the time focused so far") {
+                    withMotion(Theme.Motion.snappy) { store.stop() }
                 }
             }
             .disabled(isFresh)

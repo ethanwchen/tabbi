@@ -242,6 +242,24 @@ public struct StudySession: Codable, Hashable, Sendable {
         switchMethod(to: method, at: now)
     }
 
+    /// Settles a session that was under way when Tabbi stopped without
+    /// saying so (a crash, a force quit, power loss). Sleep and quit stop the
+    /// session themselves, so one still running or paused at launch means
+    /// the app died, and `lastAlive` (the last moment it was known to run)
+    /// is the fairest end: phases that ran out before it are logged as
+    /// completed, and the phase under way is logged as abandoned there with
+    /// the time it ran, like `reset(at:)`.
+    ///
+    /// `lastAlive` is clamped to `now`, so a clock set back since then never
+    /// credits time from the future. An idle session is left alone.
+    public mutating func recover(lastAlive: Date, now: Date) {
+        guard runState != .idle else { return }
+        let end = min(lastAlive, now)
+        advance(to: end)
+        guard runState != .idle else { return }
+        reset(at: end)
+    }
+
     /// Starts over with another method, logging the current phase as abandoned.
     public mutating func switchMethod(to newMethod: StudyMethod, at now: Date) {
         if let record = currentRecord(endingAt: now, outcome: .abandoned) { log.append(record) }

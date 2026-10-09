@@ -32,7 +32,9 @@ extension ModuleContext {
 /// the enabled modules provide is what it shows. The clock only runs while
 /// the notch is closed, and then only wakes when the screen can change: the
 /// next rotation turn, the next change `TickerSources.nextChange` predicts,
-/// or every second while a running focus clock is showing.
+/// or every second while a running focus clock is showing. A pet cheer from
+/// `CelebrationCenter` (a finished focus session) takes the notch for its
+/// two seconds, then the rotation carries on.
 @MainActor
 final class TickerStore: ObservableObject {
     /// The item beside the closed notch; nil keeps the notch plain black.
@@ -45,6 +47,8 @@ final class TickerStore: ObservableObject {
     private let catalog: ModuleCatalog
     private let preview: ClosedNotchPreview
     private var rotation: TickerRotation
+    /// The pet's latest cheer, shown while it lasts.
+    private var cheer: PetCheer?
     /// False while the notch is open, where the preview isn't visible.
     private var isActive = true
     /// More than one item can take a turn, so the rotation has a deadline.
@@ -54,7 +58,8 @@ final class TickerStore: ObservableObject {
     private lazy var alarm = WallClockAlarm { [weak self] in self?.refresh() }
     private var cancellables: Set<AnyCancellable> = []
 
-    init(settings store: SettingsStore, providers: ProviderHub, preview: ClosedNotchPreview) {
+    init(settings store: SettingsStore, providers: ProviderHub, preview: ClosedNotchPreview,
+         celebrations: CelebrationCenter? = nil) {
         settings = store.settings
         catalog = store.catalog
         self.preview = preview
@@ -65,6 +70,14 @@ final class TickerStore: ObservableObject {
             .removeDuplicates()
             .sink { [weak self] sources in
                 self?.sources = sources
+                self?.refresh()
+            }
+            .store(in: &cancellables)
+
+        celebrations?.$cheer
+            .compactMap { $0 }
+            .sink { [weak self] cheer in
+                self?.cheer = cheer
                 self?.refresh()
             }
             .store(in: &cancellables)
@@ -95,8 +108,9 @@ final class TickerStore: ObservableObject {
         let now = Date()
         if isActive {
             let items = sources.items(at: now, enabled: settings.showsPreview)
-            let next = rotation.update(items: items, at: now)
+            var next = rotation.update(items: items, at: now)
             rotates = items.count > 1 && next?.isPinned == false
+            if let cheering = sources.cheering(cheer, at: now, enabled: settings.showsPreview) { next = cheering }
             if next != item { item = next }
         }
         scheduleTimer(now: now)
@@ -108,6 +122,7 @@ final class TickerStore: ObservableObject {
             return
         }
         var wakes = [sources.nextChange(after: now, enabled: settings.showsPreview)]
+        if let cheer, cheer.isShowing(at: now) { wakes.append(cheer.endsAt) }
         if rotates, let shownSince = rotation.shownSince {
             wakes.append(shownSince.addingTimeInterval(rotation.interval))
         }

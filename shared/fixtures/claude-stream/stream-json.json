@@ -1,0 +1,1911 @@
+{
+  "conversations" : [
+    {
+      "name" : "streamed-answer",
+      "steps" : [
+        {
+          "input" : {
+            "action" : "begin",
+            "prompt" : "  What is spaced repetition?\n"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "What is spaced repetition?"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sent" : "What is spaced repetition?"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"system\",\"subtype\":\"init\",\"session_id\":\"7f1c2a90-0b6e-4c3f-9d1e-2a5b8c7d6e01\"}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "What is spaced repetition?"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sessionID" : "7f1c2a90-0b6e-4c3f-9d1e-2a5b8c7d6e01"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"rate_limit_event\",\"rate_limit_info\":{\"status\":\"allowed\",\"unifiedWindows\":{\"five_hour\":{\"utilization\":0.31,\"resetsAt\":1790912400}}}}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "What is spaced repetition?"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sessionID" : "7f1c2a90-0b6e-4c3f-9d1e-2a5b8c7d6e01"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"stream_event\",\"event\":{\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"Spaced \"}}}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "What is spaced repetition?"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : "Spaced "
+            }
+          ],
+          "phase" : "streaming",
+          "sessionID" : "7f1c2a90-0b6e-4c3f-9d1e-2a5b8c7d6e01"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"stream_event\",\"event\":{\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"repetition reviews \"}}}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "What is spaced repetition?"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : "Spaced repetition reviews "
+            }
+          ],
+          "phase" : "streaming",
+          "sessionID" : "7f1c2a90-0b6e-4c3f-9d1e-2a5b8c7d6e01"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"stream_event\",\"event\":{\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"cards just before you forget them.\"}}}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "What is spaced repetition?"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : "Spaced repetition reviews cards just before you forget them."
+            }
+          ],
+          "phase" : "streaming",
+          "sessionID" : "7f1c2a90-0b6e-4c3f-9d1e-2a5b8c7d6e01"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"assistant\",\"message\":{\"content\":[{\"type\":\"text\",\"text\":\"Spaced repetition reviews cards just before you forget them.\"}]}}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "What is spaced repetition?"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : "Spaced repetition reviews cards just before you forget them."
+            }
+          ],
+          "phase" : "streaming",
+          "sessionID" : "7f1c2a90-0b6e-4c3f-9d1e-2a5b8c7d6e01"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"result\":\"Spaced repetition reviews cards just before you forget them.\",\"session_id\":\"7f1c2a90-0b6e-4c3f-9d1e-2a5b8c7d6e01\"}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "What is spaced repetition?"
+            },
+            {
+              "role" : "assistant",
+              "status" : "complete",
+              "text" : "Spaced repetition reviews cards just before you forget them."
+            }
+          ],
+          "phase" : "idle",
+          "sessionID" : "7f1c2a90-0b6e-4c3f-9d1e-2a5b8c7d6e01"
+        }
+      ]
+    },
+    {
+      "name" : "tool-use-between-messages",
+      "steps" : [
+        {
+          "input" : {
+            "action" : "begin",
+            "prompt" : "Summarize my notes"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Summarize my notes"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sent" : "Summarize my notes"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"system\",\"subtype\":\"init\",\"session_id\":\"7f1c2a90-0b6e-4c3f-9d1e-2a5b8c7d6e01\"}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Summarize my notes"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sessionID" : "7f1c2a90-0b6e-4c3f-9d1e-2a5b8c7d6e01"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"stream_event\",\"event\":{\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"Let me read them.\"}}}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Summarize my notes"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : "Let me read them."
+            }
+          ],
+          "phase" : "streaming",
+          "sessionID" : "7f1c2a90-0b6e-4c3f-9d1e-2a5b8c7d6e01"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"assistant\",\"message\":{\"content\":[{\"type\":\"text\",\"text\":\"Let me read them.\"}]}}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Summarize my notes"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : "Let me read them."
+            }
+          ],
+          "phase" : "streaming",
+          "sessionID" : "7f1c2a90-0b6e-4c3f-9d1e-2a5b8c7d6e01"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"assistant\",\"message\":{\"content\":[{\"type\":\"tool_use\",\"id\":\"t\",\"name\":\"Read\",\"input\":{\"file_path\":\"/tmp/notes.md\"}}]}}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Summarize my notes"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : "Let me read them."
+            }
+          ],
+          "phase" : "streaming",
+          "sessionID" : "7f1c2a90-0b6e-4c3f-9d1e-2a5b8c7d6e01"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"user\",\"message\":{\"content\":[{\"type\":\"tool_result\",\"tool_use_id\":\"t\",\"content\":\"notes\"}]}}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Summarize my notes"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : "Let me read them."
+            }
+          ],
+          "phase" : "streaming",
+          "sessionID" : "7f1c2a90-0b6e-4c3f-9d1e-2a5b8c7d6e01"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"stream_event\",\"event\":{\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"They cover \"}}}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Summarize my notes"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : "Let me read them.\n\nThey cover "
+            }
+          ],
+          "phase" : "streaming",
+          "sessionID" : "7f1c2a90-0b6e-4c3f-9d1e-2a5b8c7d6e01"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"stream_event\",\"event\":{\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"the Krebs cycle.\"}}}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Summarize my notes"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : "Let me read them.\n\nThey cover the Krebs cycle."
+            }
+          ],
+          "phase" : "streaming",
+          "sessionID" : "7f1c2a90-0b6e-4c3f-9d1e-2a5b8c7d6e01"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"assistant\",\"message\":{\"content\":[{\"type\":\"text\",\"text\":\"They cover the Krebs cycle.\"}]}}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Summarize my notes"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : "Let me read them.\n\nThey cover the Krebs cycle."
+            }
+          ],
+          "phase" : "streaming",
+          "sessionID" : "7f1c2a90-0b6e-4c3f-9d1e-2a5b8c7d6e01"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"result\":\"They cover the Krebs cycle.\",\"session_id\":\"7f1c2a90-0b6e-4c3f-9d1e-2a5b8c7d6e01\"}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Summarize my notes"
+            },
+            {
+              "role" : "assistant",
+              "status" : "complete",
+              "text" : "They cover the Krebs cycle."
+            }
+          ],
+          "phase" : "idle",
+          "sessionID" : "7f1c2a90-0b6e-4c3f-9d1e-2a5b8c7d6e01"
+        }
+      ]
+    },
+    {
+      "name" : "empty-result-keeps-streamed-text",
+      "steps" : [
+        {
+          "input" : {
+            "action" : "begin",
+            "prompt" : "Hi"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Hi"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sent" : "Hi"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"stream_event\",\"event\":{\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"Hello\"}}}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Hi"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : "Hello"
+            }
+          ],
+          "phase" : "streaming"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"stream_event\",\"event\":{\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\" there\"}}}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Hi"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : "Hello there"
+            }
+          ],
+          "phase" : "streaming"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"result\":\"\",\"session_id\":\"s2\"}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Hi"
+            },
+            {
+              "role" : "assistant",
+              "status" : "complete",
+              "text" : "Hello there"
+            }
+          ],
+          "phase" : "idle",
+          "sessionID" : "s2"
+        }
+      ]
+    },
+    {
+      "name" : "error-result-summarized",
+      "steps" : [
+        {
+          "input" : {
+            "action" : "begin",
+            "prompt" : "Hi"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Hi"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sent" : "Hi"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"system\",\"subtype\":\"init\",\"session_id\":\"s3\"}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Hi"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sessionID" : "s3"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"stream_event\",\"event\":{\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"Hel\"}}}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Hi"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : "Hel"
+            }
+          ],
+          "phase" : "streaming",
+          "sessionID" : "s3"
+        },
+        {
+          "failure" : "The model is overloaded right now, please try again later. The model is overloaded right now, please try again later. The model is overload…",
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"result\",\"subtype\":\"error_during_execution\",\"is_error\":true,\"result\":\"\\n  The model is overloaded right now, please try again later. The model is overloaded right now, please try again later. The model is overloaded right now, please try again later. The model is overloaded right now, please try again later. \\nSecond line\",\"session_id\":\"s3\"}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Hi"
+            },
+            {
+              "role" : "assistant",
+              "status" : "failed",
+              "text" : "Hel"
+            }
+          ],
+          "phase" : "failed",
+          "sessionID" : "s3"
+        }
+      ]
+    },
+    {
+      "name" : "error-result-without-text",
+      "steps" : [
+        {
+          "input" : {
+            "action" : "begin",
+            "prompt" : "Hi"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Hi"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sent" : "Hi"
+        },
+        {
+          "failure" : "Claude couldn't finish this answer.",
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"result\",\"subtype\":\"error_during_execution\",\"is_error\":true}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Hi"
+            },
+            {
+              "role" : "assistant",
+              "status" : "failed",
+              "text" : ""
+            }
+          ],
+          "phase" : "failed"
+        }
+      ]
+    },
+    {
+      "name" : "stream-ends-without-result",
+      "steps" : [
+        {
+          "input" : {
+            "action" : "begin",
+            "prompt" : "Hi"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Hi"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sent" : "Hi"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"stream_event\",\"event\":{\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"Partial answer\"}}}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Hi"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : "Partial answer"
+            }
+          ],
+          "phase" : "streaming"
+        },
+        {
+          "input" : {
+            "action" : "finish"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Hi"
+            },
+            {
+              "role" : "assistant",
+              "status" : "complete",
+              "text" : "Partial answer"
+            }
+          ],
+          "phase" : "idle"
+        }
+      ]
+    },
+    {
+      "name" : "stream-ends-with-nothing",
+      "steps" : [
+        {
+          "input" : {
+            "action" : "begin",
+            "prompt" : "Hi"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Hi"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sent" : "Hi"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"system\",\"subtype\":\"init\",\"session_id\":\"s4\"}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Hi"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sessionID" : "s4"
+        },
+        {
+          "failure" : "Claude ended without answering.",
+          "input" : {
+            "action" : "finish"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Hi"
+            },
+            {
+              "role" : "assistant",
+              "status" : "failed",
+              "text" : ""
+            }
+          ],
+          "phase" : "failed",
+          "sessionID" : "s4"
+        }
+      ]
+    },
+    {
+      "name" : "user-stops",
+      "steps" : [
+        {
+          "input" : {
+            "action" : "begin",
+            "prompt" : "Write a long essay"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Write a long essay"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sent" : "Write a long essay"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"assistant\",\"message\":{\"content\":[{\"type\":\"text\",\"text\":\"First part.\"}]}}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Write a long essay"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : "First part."
+            }
+          ],
+          "phase" : "streaming"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"stream_event\",\"event\":{\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"Second\"}}}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Write a long essay"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : "First part.\n\nSecond"
+            }
+          ],
+          "phase" : "streaming"
+        },
+        {
+          "input" : {
+            "action" : "cancel"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Write a long essay"
+            },
+            {
+              "role" : "assistant",
+              "status" : "stopped",
+              "text" : "First part.\n\nSecond"
+            }
+          ],
+          "phase" : "idle"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"stream_event\",\"event\":{\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\" ignored\"}}}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Write a long essay"
+            },
+            {
+              "role" : "assistant",
+              "status" : "stopped",
+              "text" : "First part.\n\nSecond"
+            }
+          ],
+          "phase" : "idle"
+        },
+        {
+          "input" : {
+            "action" : "finish"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Write a long essay"
+            },
+            {
+              "role" : "assistant",
+              "status" : "stopped",
+              "text" : "First part.\n\nSecond"
+            }
+          ],
+          "phase" : "idle"
+        }
+      ]
+    },
+    {
+      "name" : "ignored-outside-an-exchange",
+      "steps" : [
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"system\",\"subtype\":\"init\",\"session_id\":\"early\"}"
+          },
+          "messages" : [
+
+          ],
+          "phase" : "idle"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"stream_event\",\"event\":{\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"early\"}}}"
+          },
+          "messages" : [
+
+          ],
+          "phase" : "idle"
+        },
+        {
+          "input" : {
+            "action" : "finish"
+          },
+          "messages" : [
+
+          ],
+          "phase" : "idle"
+        },
+        {
+          "input" : {
+            "action" : "cancel"
+          },
+          "messages" : [
+
+          ],
+          "phase" : "idle"
+        },
+        {
+          "input" : {
+            "action" : "begin",
+            "prompt" : "   "
+          },
+          "messages" : [
+
+          ],
+          "phase" : "idle"
+        },
+        {
+          "input" : {
+            "action" : "begin",
+            "prompt" : "Hi"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Hi"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sent" : "Hi"
+        },
+        {
+          "input" : {
+            "action" : "begin",
+            "prompt" : "Again"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Hi"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"result\":\"Hello\",\"session_id\":\"s5\"}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Hi"
+            },
+            {
+              "role" : "assistant",
+              "status" : "complete",
+              "text" : "Hello"
+            }
+          ],
+          "phase" : "idle",
+          "sessionID" : "s5"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"result\":\"Late\",\"session_id\":\"late\"}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Hi"
+            },
+            {
+              "role" : "assistant",
+              "status" : "complete",
+              "text" : "Hello"
+            }
+          ],
+          "phase" : "idle",
+          "sessionID" : "s5"
+        }
+      ]
+    },
+    {
+      "name" : "follow-up-keeps-session",
+      "steps" : [
+        {
+          "input" : {
+            "action" : "begin",
+            "prompt" : "First"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "First"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sent" : "First"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"system\",\"subtype\":\"init\",\"session_id\":\"s6\"}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "First"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sessionID" : "s6"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"result\":\"One\",\"session_id\":\"s6\"}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "First"
+            },
+            {
+              "role" : "assistant",
+              "status" : "complete",
+              "text" : "One"
+            }
+          ],
+          "phase" : "idle",
+          "sessionID" : "s6"
+        },
+        {
+          "input" : {
+            "action" : "begin",
+            "prompt" : "Second"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "First"
+            },
+            {
+              "role" : "assistant",
+              "status" : "complete",
+              "text" : "One"
+            },
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Second"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sent" : "Second",
+          "sessionID" : "s6"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"system\",\"subtype\":\"init\",\"session_id\":\"s6\"}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "First"
+            },
+            {
+              "role" : "assistant",
+              "status" : "complete",
+              "text" : "One"
+            },
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Second"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sessionID" : "s6"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"result\":\"Two\",\"session_id\":\"s7\"}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "First"
+            },
+            {
+              "role" : "assistant",
+              "status" : "complete",
+              "text" : "One"
+            },
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Second"
+            },
+            {
+              "role" : "assistant",
+              "status" : "complete",
+              "text" : "Two"
+            }
+          ],
+          "phase" : "idle",
+          "sessionID" : "s7"
+        }
+      ]
+    },
+    {
+      "name" : "new-question-after-failure",
+      "steps" : [
+        {
+          "input" : {
+            "action" : "begin",
+            "prompt" : "First"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "First"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sent" : "First"
+        },
+        {
+          "failure" : "No conversation found with session ID: s8",
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"result\",\"subtype\":\"error_during_execution\",\"is_error\":true,\"result\":\"No conversation found with session ID: s8\",\"session_id\":\"s8\"}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "First"
+            },
+            {
+              "role" : "assistant",
+              "status" : "failed",
+              "text" : ""
+            }
+          ],
+          "phase" : "failed",
+          "sessionID" : "s8"
+        },
+        {
+          "input" : {
+            "action" : "begin",
+            "prompt" : "Second"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "First"
+            },
+            {
+              "role" : "assistant",
+              "status" : "failed",
+              "text" : ""
+            },
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Second"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sent" : "Second",
+          "sessionID" : "s8"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"result\":\"Answer\"}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "First"
+            },
+            {
+              "role" : "assistant",
+              "status" : "failed",
+              "text" : ""
+            },
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Second"
+            },
+            {
+              "role" : "assistant",
+              "status" : "complete",
+              "text" : "Answer"
+            }
+          ],
+          "phase" : "idle",
+          "sessionID" : "s8"
+        }
+      ]
+    },
+    {
+      "name" : "retry-failed-question",
+      "steps" : [
+        {
+          "input" : {
+            "action" : "retry"
+          },
+          "messages" : [
+
+          ],
+          "phase" : "idle"
+        },
+        {
+          "input" : {
+            "action" : "begin",
+            "prompt" : "First"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "First"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sent" : "First"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"result\":\"One\",\"session_id\":\"s9\"}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "First"
+            },
+            {
+              "role" : "assistant",
+              "status" : "complete",
+              "text" : "One"
+            }
+          ],
+          "phase" : "idle",
+          "sessionID" : "s9"
+        },
+        {
+          "input" : {
+            "action" : "retry"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "First"
+            },
+            {
+              "role" : "assistant",
+              "status" : "complete",
+              "text" : "One"
+            }
+          ],
+          "phase" : "idle",
+          "sessionID" : "s9"
+        },
+        {
+          "input" : {
+            "action" : "begin",
+            "prompt" : "Second"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "First"
+            },
+            {
+              "role" : "assistant",
+              "status" : "complete",
+              "text" : "One"
+            },
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Second"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sent" : "Second",
+          "sessionID" : "s9"
+        },
+        {
+          "failure" : "API Error: 529 Overloaded",
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"result\",\"subtype\":\"error_during_execution\",\"is_error\":true,\"result\":\"API Error: 529 Overloaded\",\"session_id\":\"s9\"}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "First"
+            },
+            {
+              "role" : "assistant",
+              "status" : "complete",
+              "text" : "One"
+            },
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Second"
+            },
+            {
+              "role" : "assistant",
+              "status" : "failed",
+              "text" : ""
+            }
+          ],
+          "phase" : "failed",
+          "sessionID" : "s9"
+        },
+        {
+          "failure" : "API Error: 529 Overloaded",
+          "input" : {
+            "action" : "retryLostSession"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "First"
+            },
+            {
+              "role" : "assistant",
+              "status" : "complete",
+              "text" : "One"
+            },
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Second"
+            },
+            {
+              "role" : "assistant",
+              "status" : "failed",
+              "text" : ""
+            }
+          ],
+          "phase" : "failed",
+          "sessionID" : "s9"
+        },
+        {
+          "input" : {
+            "action" : "retry"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "First"
+            },
+            {
+              "role" : "assistant",
+              "status" : "complete",
+              "text" : "One"
+            }
+          ],
+          "phase" : "idle",
+          "sent" : "Second",
+          "sessionID" : "s9"
+        },
+        {
+          "input" : {
+            "action" : "retry"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "First"
+            },
+            {
+              "role" : "assistant",
+              "status" : "complete",
+              "text" : "One"
+            }
+          ],
+          "phase" : "idle",
+          "sessionID" : "s9"
+        },
+        {
+          "input" : {
+            "action" : "begin",
+            "prompt" : "Second"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "First"
+            },
+            {
+              "role" : "assistant",
+              "status" : "complete",
+              "text" : "One"
+            },
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Second"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sent" : "Second",
+          "sessionID" : "s9"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"result\":\"Two\",\"session_id\":\"s9\"}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "First"
+            },
+            {
+              "role" : "assistant",
+              "status" : "complete",
+              "text" : "One"
+            },
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Second"
+            },
+            {
+              "role" : "assistant",
+              "status" : "complete",
+              "text" : "Two"
+            }
+          ],
+          "phase" : "idle",
+          "sessionID" : "s9"
+        }
+      ]
+    },
+    {
+      "name" : "retry-lost-session",
+      "steps" : [
+        {
+          "input" : {
+            "action" : "begin",
+            "prompt" : "Continue the quiz"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Continue the quiz"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sent" : "Continue the quiz"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"system\",\"subtype\":\"init\",\"session_id\":\"gone\"}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Continue the quiz"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sessionID" : "gone"
+        },
+        {
+          "failure" : "No conversation found with session ID: gone",
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"result\",\"subtype\":\"error_during_execution\",\"is_error\":true,\"result\":\"No conversation found with session ID: gone\",\"session_id\":\"gone\"}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Continue the quiz"
+            },
+            {
+              "role" : "assistant",
+              "status" : "failed",
+              "text" : ""
+            }
+          ],
+          "phase" : "failed",
+          "sessionID" : "gone"
+        },
+        {
+          "input" : {
+            "action" : "retryLostSession"
+          },
+          "messages" : [
+
+          ],
+          "phase" : "idle",
+          "sent" : "Continue the quiz"
+        },
+        {
+          "input" : {
+            "action" : "begin",
+            "prompt" : "Continue the quiz"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Continue the quiz"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sent" : "Continue the quiz"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"system\",\"subtype\":\"init\",\"session_id\":\"s10\"}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Continue the quiz"
+            },
+            {
+              "role" : "assistant",
+              "status" : "streaming",
+              "text" : ""
+            }
+          ],
+          "phase" : "streaming",
+          "sessionID" : "s10"
+        },
+        {
+          "input" : {
+            "action" : "line",
+            "line" : "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"result\":\"Question 4: what does ATP stand for?\",\"session_id\":\"s10\"}"
+          },
+          "messages" : [
+            {
+              "role" : "user",
+              "status" : "complete",
+              "text" : "Continue the quiz"
+            },
+            {
+              "role" : "assistant",
+              "status" : "complete",
+              "text" : "Question 4: what does ATP stand for?"
+            }
+          ],
+          "phase" : "idle",
+          "sessionID" : "s10"
+        }
+      ]
+    }
+  ],
+  "lines" : [
+    {
+      "event" : {
+        "sessionID" : "7f1c2a90-0b6e-4c3f-9d1e-2a5b8c7d6e01",
+        "type" : "sessionStarted"
+      },
+      "line" : "{\"type\":\"system\",\"subtype\":\"init\",\"cwd\":\"/tmp\",\"session_id\":\"7f1c2a90-0b6e-4c3f-9d1e-2a5b8c7d6e01\",\"tools\":[\"Read\",\"Bash\"],\"model\":\"claude-sonnet-5-5\",\"permissionMode\":\"default\"}",
+      "name" : "system-init"
+    },
+    {
+      "event" : {
+        "type" : "sessionStarted"
+      },
+      "line" : "{\"type\":\"system\",\"subtype\":\"init\",\"cwd\":\"/tmp\"}",
+      "name" : "system-init-without-session"
+    },
+    {
+      "event" : {
+        "type" : "sessionStarted"
+      },
+      "line" : "{\"type\":\"system\",\"subtype\":\"init\",\"session_id\":5}",
+      "name" : "system-init-session-not-a-string"
+    },
+    {
+      "event" : {
+        "type" : "other"
+      },
+      "line" : "{\"type\":\"system\",\"subtype\":\"hook_response\",\"session_id\":\"s\"}",
+      "name" : "system-hook-is-other"
+    },
+    {
+      "event" : {
+        "fiveHour" : {
+          "resetsAt" : 1790912400,
+          "utilization" : 0.05
+        },
+        "sevenDay" : {
+          "resetsAt" : 1791460800,
+          "utilization" : 0.04
+        },
+        "status" : "allowed",
+        "type" : "rateLimit"
+      },
+      "line" : "{\"type\":\"rate_limit_event\",\"rate_limit_info\":{\"status\":\"allowed\",\"resetsAt\":1790912400,\"rateLimitType\":\"five_hour\",\"unifiedWindows\":{\"five_hour\":{\"utilization\":0.05,\"resetsAt\":1790912400},\"seven_day\":{\"utilization\":0.04,\"resetsAt\":1791460800}}},\"session_id\":\"s\"}",
+      "name" : "rate-limit-both-windows"
+    },
+    {
+      "event" : {
+        "status" : "allowed",
+        "type" : "rateLimit"
+      },
+      "line" : "{\"type\":\"rate_limit_event\",\"rate_limit_info\":{\"status\":\"allowed\"}}",
+      "name" : "rate-limit-without-windows"
+    },
+    {
+      "event" : {
+        "fiveHour" : {
+          "utilization" : 1
+        },
+        "sevenDay" : {
+          "resetsAt" : 1791460800.5,
+          "utilization" : 1.12
+        },
+        "status" : "allowed_warning",
+        "type" : "rateLimit"
+      },
+      "line" : "{\"type\":\"rate_limit_event\",\"rate_limit_info\":{\"status\":\"allowed_warning\",\"unifiedWindows\":{\"five_hour\":{\"utilization\":1},\"seven_day\":{\"utilization\":1.12,\"resetsAt\":1791460800.5}}}}",
+      "name" : "rate-limit-over-limit-integer-utilization"
+    },
+    {
+      "event" : {
+        "type" : "rateLimit"
+      },
+      "line" : "{\"type\":\"rate_limit_event\",\"rate_limit_info\":{\"unifiedWindows\":{\"five_hour\":{\"resetsAt\":1790912400},\"seven_day\":{\"utilization\":\"0.4\"}}}}",
+      "name" : "rate-limit-window-without-utilization"
+    },
+    {
+      "event" : {
+        "type" : "other"
+      },
+      "line" : "{\"type\":\"rate_limit_event\",\"session_id\":\"s\"}",
+      "name" : "rate-limit-without-info-is-other"
+    },
+    {
+      "event" : {
+        "text" : "Spaced ",
+        "type" : "textDelta"
+      },
+      "line" : "{\"type\":\"stream_event\",\"event\":{\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"Spaced \"}},\"session_id\":\"s\"}",
+      "name" : "text-delta"
+    },
+    {
+      "event" : {
+        "text" : "résumé\n\n- café → \"quoted\"",
+        "type" : "textDelta"
+      },
+      "line" : "{\"type\":\"stream_event\",\"event\":{\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"résumé\\n\\n- café → \\\"quoted\\\"\"}}}",
+      "name" : "text-delta-unicode-and-newlines"
+    },
+    {
+      "event" : {
+        "text" : "",
+        "type" : "textDelta"
+      },
+      "line" : "{\"type\":\"stream_event\",\"event\":{\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"\"}}}",
+      "name" : "text-delta-empty"
+    },
+    {
+      "event" : {
+        "type" : "other"
+      },
+      "line" : "{\"type\":\"stream_event\",\"event\":{\"type\":\"message_start\",\"message\":{\"id\":\"m\",\"content\":[]}}}",
+      "name" : "message-start-is-other"
+    },
+    {
+      "event" : {
+        "type" : "other"
+      },
+      "line" : "{\"type\":\"stream_event\",\"event\":{\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"{\\\"path\\\":\"}}}",
+      "name" : "tool-input-delta-is-other"
+    },
+    {
+      "event" : {
+        "text" : "Hello",
+        "type" : "assistantText"
+      },
+      "line" : "{\"type\":\"assistant\",\"message\":{\"id\":\"m\",\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"Hel\"},{\"type\":\"tool_use\",\"id\":\"t\",\"name\":\"Read\",\"input\":{}},{\"type\":\"text\",\"text\":\"lo\"}]},\"session_id\":\"s\"}",
+      "name" : "assistant-joins-text-blocks"
+    },
+    {
+      "event" : {
+        "text" : "Done.",
+        "type" : "assistantText"
+      },
+      "line" : "{\"type\":\"assistant\",\"message\":{\"content\":[{\"type\":\"thinking\",\"thinking\":\"Let me think.\"},{\"type\":\"text\",\"text\":\"Done.\"}]}}",
+      "name" : "assistant-thinking-then-text"
+    },
+    {
+      "event" : {
+        "type" : "other"
+      },
+      "line" : "{\"type\":\"assistant\",\"message\":{\"content\":[{\"type\":\"tool_use\",\"id\":\"t\",\"name\":\"Bash\",\"input\":{\"command\":\"ls\"}}]}}",
+      "name" : "assistant-only-tool-use-is-other"
+    },
+    {
+      "event" : {
+        "type" : "other"
+      },
+      "line" : "{\"type\":\"assistant\",\"message\":{\"role\":\"assistant\"}}",
+      "name" : "assistant-without-content-is-other"
+    },
+    {
+      "event" : {
+        "type" : "other"
+      },
+      "line" : "{\"type\":\"user\",\"message\":{\"role\":\"user\",\"content\":[{\"type\":\"tool_result\",\"tool_use_id\":\"t\",\"content\":\"ok\"}]}}",
+      "name" : "user-tool-result-is-other"
+    },
+    {
+      "event" : {
+        "isError" : false,
+        "sessionID" : "7f1c2a90-0b6e-4c3f-9d1e-2a5b8c7d6e01",
+        "text" : "Spaced repetition reviews cards just before you forget them.",
+        "type" : "result"
+      },
+      "line" : "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"duration_ms\":2310,\"num_turns\":1,\"result\":\"Spaced repetition reviews cards just before you forget them.\",\"session_id\":\"7f1c2a90-0b6e-4c3f-9d1e-2a5b8c7d6e01\",\"total_cost_usd\":0.0123}",
+      "name" : "result-success"
+    },
+    {
+      "event" : {
+        "isError" : false,
+        "sessionID" : "s1",
+        "text" : "",
+        "type" : "result"
+      },
+      "line" : "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"result\":\"\",\"session_id\":\"s1\"}",
+      "name" : "result-success-empty-text"
+    },
+    {
+      "event" : {
+        "isError" : true,
+        "sessionID" : "s1",
+        "type" : "result"
+      },
+      "line" : "{\"type\":\"result\",\"subtype\":\"error_max_turns\",\"session_id\":\"s1\"}",
+      "name" : "result-error-subtype"
+    },
+    {
+      "event" : {
+        "isError" : true,
+        "sessionID" : "s1",
+        "text" : "API Error: 529 Overloaded",
+        "type" : "result"
+      },
+      "line" : "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":true,\"result\":\"API Error: 529 Overloaded\",\"session_id\":\"s1\"}",
+      "name" : "result-is-error-overrides-subtype"
+    },
+    {
+      "event" : {
+        "isError" : true,
+        "text" : "done",
+        "type" : "result"
+      },
+      "line" : "{\"type\":\"result\",\"result\":\"done\"}",
+      "name" : "result-without-subtype-or-flag"
+    },
+    {
+      "event" : {
+        "isError" : false,
+        "text" : "partial",
+        "type" : "result"
+      },
+      "line" : "{\"type\":\"result\",\"subtype\":\"error_during_execution\",\"is_error\":false,\"result\":\"partial\"}",
+      "name" : "result-not-an-error-despite-subtype"
+    },
+    {
+      "event" : {
+        "sessionID" : "padded",
+        "type" : "sessionStarted"
+      },
+      "line" : "  {\"type\":\"system\",\"subtype\":\"init\",\"session_id\":\"padded\"}  ",
+      "name" : "padded-with-whitespace"
+    },
+    {
+      "event" : {
+        "type" : "other"
+      },
+      "line" : "",
+      "name" : "empty-line"
+    },
+    {
+      "event" : {
+        "type" : "other"
+      },
+      "line" : "Error: not logged in",
+      "name" : "plain-text"
+    },
+    {
+      "event" : {
+        "type" : "other"
+      },
+      "line" : "[{\"type\":\"result\"}]",
+      "name" : "json-array"
+    },
+    {
+      "event" : {
+        "type" : "other"
+      },
+      "line" : "\"result\"",
+      "name" : "json-string"
+    },
+    {
+      "event" : {
+        "type" : "other"
+      },
+      "line" : "{\"no\":\"type\"}",
+      "name" : "no-type"
+    },
+    {
+      "event" : {
+        "type" : "other"
+      },
+      "line" : "{\"type\":3}",
+      "name" : "type-not-a-string"
+    },
+    {
+      "event" : {
+        "type" : "other"
+      },
+      "line" : "{\"type\":\"control_request\",\"request\":{}}",
+      "name" : "unknown-type"
+    },
+    {
+      "event" : {
+        "type" : "other"
+      },
+      "line" : "{\"type\":\"result\",\"subtype\":\"succ",
+      "name" : "truncated-json"
+    }
+  ],
+  "schema" : "tabbi.claude-stream.golden",
+  "version" : 1
+}

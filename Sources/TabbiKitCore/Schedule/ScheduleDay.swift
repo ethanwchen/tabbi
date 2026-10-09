@@ -142,6 +142,11 @@ public struct ScheduleDayLayout: Hashable, Sendable {
         self.freeMinutes = free.reduce(0) { $0 + Int($1.duration / 60) }
     }
 
+    /// Timed events, planned and proposed blocks left out.
+    public var eventCount: Int { placed.filter { $0.item.kind == .event }.count }
+    /// Blocks planned with Tabbi earlier, already on the calendar.
+    public var plannedCount: Int { placed.filter { $0.item.kind == .planned }.count }
+
     /// Where `date` falls along the timeline (0 at its start, 1 at its end),
     /// or nil outside it.
     public func position(of date: Date) -> Double? {
@@ -215,12 +220,9 @@ public struct ScheduleDayLayout: Hashable, Sendable {
 
 /// The Schedule's words for times, lengths and what is on now.
 public enum ScheduleFormat {
-    /// "45 min", "2 h", "1 h 15 min".
+    /// "45 min", "2h", "1h 15m".
     public static func duration(minutes: Int) -> String {
-        let minutes = max(minutes, 0)
-        let hours = minutes / 60, rest = minutes % 60
-        if hours == 0 { return "\(rest) min" }
-        return rest == 0 ? "\(hours) h" : "\(hours) h \(rest) min"
+        DurationFormat.minutes(minutes)
     }
 
     /// "10:45-12:00" in the user's clock style, without AM/PM.
@@ -245,6 +247,25 @@ public enum ScheduleFormat {
         case .dayOver:
             return "Your working day is over"
         }
+    }
+
+    /// The line under the timeline on a day other than today, which has no
+    /// "now" to report: what the day held ("5 events, 2 planned blocks")
+    /// when it is over, or what it holds and when it starts when it is
+    /// still to come ("4 events, the first at 10:00").
+    public static func daySummary(_ layout: ScheduleDayLayout, isPast: Bool, locale: Locale = .current,
+                                  timeZone: TimeZone = .current) -> String {
+        let events = layout.eventCount, planned = layout.plannedCount
+        guard events + planned > 0 else {
+            return isPast ? "Nothing was on your calendar" : "Nothing on your calendar yet"
+        }
+        var parts: [String] = []
+        if events > 0 { parts.append(events == 1 ? "1 event" : "\(events) events") }
+        if planned > 0 { parts.append(planned == 1 ? "1 planned block" : "\(planned) planned blocks") }
+        let counts = parts.joined(separator: ", ")
+        let first = layout.placed.filter { $0.item.kind != .proposed }.map(\.item.start).min()
+        guard !isPast, let first else { return counts }
+        return counts + ", the first at " + UpcomingEventFormat.startTime(first, locale: locale, timeZone: timeZone)
     }
 
     /// Empty-title events (common for quick-adds) still need a label.

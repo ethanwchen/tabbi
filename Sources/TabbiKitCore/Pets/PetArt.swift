@@ -1,0 +1,230 @@
+import Foundation
+
+/// The hand-drawn pet art, loaded from the `pets.v1` JSON files in
+/// `Pets/PetArt` (one per art family: cat, dog, costume, effect, paw, prop,
+/// tail, walk), the breeds that color it (`breeds.json`) and the animation
+/// timelines that pose it (`animations.json`).
+///
+/// The art is data so the Mac app and the Windows port draw the very same
+/// pixels from one source: each grid is an array of text rows in the
+/// `SpriteCell` legend (see docs/study/pets.md), and costume items carry
+/// their anchors next to their grids. The format is described by
+/// `shared/schemas/pets.v1.schema.json`. The code that places the art
+/// (`PetComposer`) and picks what to play (`PetAnimator`) stays in Swift.
+enum PetArt {
+    static let cat = load("cat")
+    static let dog = load("dog")
+    static let costume = load("costume")
+    static let effect = load("effect")
+    static let paw = load("paw")
+    static let prop = load("prop")
+    static let tail = load("tail")
+    static let walk = load("walk")
+    /// The base palette, the body shapes and every breed's palette, pattern,
+    /// name and tail.
+    static let breeds = load("breeds")
+    /// How every animation plays: per frame the pose, stance, timing and
+    /// effects.
+    static let animations = load("animations")
+
+    /// The version every art file declares in its `schema` key.
+    static let schema = "pets.v1"
+
+    static let subdirectory = "PetArt"
+
+    /// Reads and checks one art file. The art ships inside the app, so a
+    /// missing or broken file is a build mistake: like `SpriteGrid(art:)`,
+    /// this stops with the reason instead of drawing a broken pet.
+    static func load(_ name: String) -> PetArtFile {
+        guard let url = KitResources.bundle?.url(forResource: name, withExtension: "json", subdirectory: subdirectory) else {
+            preconditionFailure("Missing pet art \(subdirectory)/\(name).json")
+        }
+        do {
+            return try PetArtFile.decode(Data(contentsOf: url))
+        } catch {
+            preconditionFailure("Invalid pet art \(name).json: \(error)")
+        }
+    }
+}
+
+/// One `pets.v1` file: named grids, named grid sequences (animation frames
+/// such as a swaying tail) and, in the costume file, the body, face and head
+/// items with their anchors; or the breeds; or the animation timelines.
+struct PetArtFile: Sendable {
+    enum LoadError: Error, Equatable, CustomStringConvertible {
+        case unsupportedSchema(String)
+        case invalidGrid(name: String, reason: String)
+        /// A name, role, zone or color in the breed definitions that the
+        /// Swift types do not know, at `path` (such as `breeds[2].palette`).
+        case invalidValue(path: String, value: String)
+
+        var description: String {
+            switch self {
+            case .unsupportedSchema(let schema): "Unsupported schema \"\(schema)\"; expected \"\(PetArt.schema)\""
+            case let .invalidGrid(name, reason): "Grid \"\(name)\": \(reason)"
+            case let .invalidValue(path, value): "\(path): unknown value \"\(value)\""
+            }
+        }
+    }
+
+    /// One breed as the file defines it. `palette` holds only the colors the
+    /// breed sets; `PetPalette` fills the rest from the base palette.
+    struct BreedDefinition: Equatable, Sendable {
+        let name: String
+        let bodyShape: PetBodyShape
+        let hasTail: Bool
+        let palette: [PetPaletteRole: PetColor]
+        let pattern: [PetPatternZone: PetPaletteRole]
+    }
+
+    private(set) var grids: [String: SpriteGrid] = [:]
+    private(set) var sequences: [String: [SpriteGrid]] = [:]
+    private(set) var bodyItems: [String: CostumeArt.BodyItem] = [:]
+    private(set) var faceItems: [String: CostumeArt.FaceItem] = [:]
+    private(set) var headItems: [String: CostumeArt.HeadItem] = [:]
+    private(set) var basePalette: [PetPaletteRole: PetColor] = [:]
+    private(set) var bodyShapes: [PetBodyShape: PetSpecies] = [:]
+    /// Breeds in file order, which is the order pickers list them in.
+    private(set) var breedOrder: [PetBreed] = []
+    private(set) var breeds: [PetBreed: BreedDefinition] = [:]
+    private(set) var animations: [PetAnimation: PetTimeline] = [:]
+
+    func grid(_ name: String) -> SpriteGrid { lookUp(grids, name, "grid") }
+    func sequence(_ name: String) -> [SpriteGrid] { lookUp(sequences, name, "sequence") }
+    func bodyItem(_ name: String) -> CostumeArt.BodyItem { lookUp(bodyItems, name, "body item") }
+    func faceItem(_ name: String) -> CostumeArt.FaceItem { lookUp(faceItems, name, "face item") }
+    func headItem(_ name: String) -> CostumeArt.HeadItem { lookUp(headItems, name, "head item") }
+    func species(of shape: PetBodyShape) -> PetSpecies { lookUp(bodyShapes, shape, "body shape") }
+    func breed(_ breed: PetBreed) -> BreedDefinition { lookUp(breeds, breed, "breed") }
+    func timeline(_ animation: PetAnimation) -> PetTimeline { lookUp(animations, animation, "animation") }
+
+    private func lookUp<Key, Value>(_ table: [Key: Value], _ name: Key, _ kind: String) -> Value {
+        guard let value = table[name] else { preconditionFailure("No pet art \(kind) named \"\(name)\"") }
+        return value
+    }
+
+    /// Parses a file, checking its schema version and every grid.
+    static func decode(_ data: Data) throws -> PetArtFile {
+        let raw = try JSONDecoder().decode(Raw.self, from: data)
+        guard raw.schema == PetArt.schema else { throw LoadError.unsupportedSchema(raw.schema) }
+        func parse(_ rows: [String], _ name: String) throws -> SpriteGrid {
+            do {
+                return try SpriteGrid(rows.joined(separator: "\n"))
+            } catch {
+                throw LoadError.invalidGrid(name: name, reason: "\(error)")
+            }
+        }
+        var file = PetArtFile()
+        for (name, rows) in raw.grids ?? [:] {
+            file.grids[name] = try parse(rows, name)
+        }
+        for (name, frames) in raw.sequences ?? [:] {
+            file.sequences[name] = try frames.enumerated().map { try parse($1, "\(name)[\($0)]") }
+        }
+        for (name, item) in raw.bodyItems ?? [:] {
+            file.bodyItems[name] = try CostumeArt.BodyItem(
+                cat: parse(item.cat, "\(name).cat"),
+                dog: parse(item.dog, "\(name).dog"),
+                longDog: parse(item.longDog, "\(name).longDog"),
+                walk: parse(item.walk, "\(name).walk"),
+                walkLong: parse(item.walkLong, "\(name).walkLong"),
+                rise: item.rise ?? 0
+            )
+        }
+        for (name, item) in raw.faceItems ?? [:] {
+            file.faceItems[name] = try CostumeArt.FaceItem(
+                cat: parse(item.cat, "\(name).cat"),
+                dog: parse(item.dog, "\(name).dog"),
+                eyeRow: item.eyeRow
+            )
+        }
+        for (name, item) in raw.headItems ?? [:] {
+            file.headItems[name] = try CostumeArt.HeadItem(grid: parse(item.grid, "\(name).grid"), sitRow: item.sitRow)
+        }
+        if let base = raw.basePalette {
+            file.basePalette = try colors(base, at: "basePalette")
+        }
+        for (name, shape) in raw.bodyShapes ?? [:] {
+            file.bodyShapes[try value(PetBodyShape(rawValue: name), name, at: "bodyShapes")] =
+                try value(PetSpecies(rawValue: shape.species), shape.species, at: "bodyShapes.\(name).species")
+        }
+        for (index, entry) in (raw.breeds ?? []).enumerated() {
+            let path = "breeds[\(index)]"
+            let breed = try value(PetBreed(rawValue: entry.id), entry.id, at: "\(path).id")
+            var pattern: [PetPatternZone: PetPaletteRole] = [:]
+            for (zone, role) in entry.pattern {
+                pattern[try value(PetPatternZone(rawValue: zone), zone, at: "\(path).pattern")] =
+                    try value(PetPaletteRole(rawValue: role), role, at: "\(path).pattern.\(zone)")
+            }
+            file.breedOrder.append(breed)
+            file.breeds[breed] = try BreedDefinition(
+                name: entry.name,
+                bodyShape: value(PetBodyShape(rawValue: entry.bodyShape), entry.bodyShape, at: "\(path).bodyShape"),
+                hasTail: entry.hasTail,
+                palette: colors(entry.palette, at: "\(path).palette"),
+                pattern: pattern
+            )
+        }
+        for (name, timeline) in raw.animations ?? [:] {
+            let path = "animations.\(name)"
+            file.animations[try value(PetAnimation(rawValue: name), name, at: "animations")] =
+                try PetTimeline(timeline, at: path)
+        }
+        return file
+    }
+
+    private static func value<Value>(_ parsed: Value?, _ raw: String, at path: String) throws -> Value {
+        guard let parsed else { throw LoadError.invalidValue(path: path, value: raw) }
+        return parsed
+    }
+
+    /// A `{ "role": "#RRGGBB" }` table.
+    private static func colors(_ raw: [String: String], at path: String) throws -> [PetPaletteRole: PetColor] {
+        var colors: [PetPaletteRole: PetColor] = [:]
+        for (role, hex) in raw {
+            colors[try value(PetPaletteRole(rawValue: role), role, at: path)] =
+                try value(PetColor(hex: hex), hex, at: "\(path).\(role)")
+        }
+        return colors
+    }
+
+    /// The file as written: grids are arrays of text rows.
+    private struct Raw: Decodable {
+        struct BodyItem: Decodable {
+            let cat, dog, longDog, walk, walkLong: [String]
+            let rise: Int?
+        }
+
+        struct FaceItem: Decodable {
+            let cat, dog: [String]
+            let eyeRow: Int
+        }
+
+        struct HeadItem: Decodable {
+            let grid: [String]
+            let sitRow: Int
+        }
+
+        let schema: String
+        let grids: [String: [String]]?
+        let sequences: [String: [[String]]]?
+        let bodyItems: [String: BodyItem]?
+        let faceItems: [String: FaceItem]?
+        let headItems: [String: HeadItem]?
+        let basePalette: [String: String]?
+        let bodyShapes: [String: BodyShape]?
+        let breeds: [Breed]?
+        let animations: [String: PetTimeline.Raw]?
+
+        struct BodyShape: Decodable {
+            let species: String
+        }
+
+        struct Breed: Decodable {
+            let id, name, bodyShape: String
+            let hasTail: Bool
+            let palette: [String: String]
+            let pattern: [String: String]
+        }
+    }
+}

@@ -112,6 +112,111 @@ final class FocusTimerTests: XCTestCase {
         XCTAssertEqual(timer.linkedItemID, item)
     }
 
+    func testStopEndsTheSessionAndReportsTimeFocusedExcludingPauses() {
+        let item = UUID()
+        var timer = FocusTimer(linkedItemID: item)
+        timer.start(at: t0)
+        timer.pause(at: at(300))
+        timer.start(at: at(900))
+        let stop = timer.stop(at: at(1500))
+        XCTAssertEqual(stop, FocusStop(focused: 900, endedAt: at(1500)))
+        XCTAssertEqual(timer.phase, .focus)
+        XCTAssertEqual(timer.runState, .idle)
+        XCTAssertEqual(timer.linkedItemID, item)
+        XCTAssertEqual(timer.completedFocusCount, 0)
+    }
+
+    func testStopWhilePausedCreditsTimeBeforeThePause() {
+        var timer = FocusTimer()
+        timer.start(at: t0)
+        timer.pause(at: at(600))
+        XCTAssertEqual(timer.stop(at: at(5000))?.focused, 600)
+    }
+
+    func testRecoveringAfterACrashStopsAtTheLastHeartbeat() {
+        var timer = FocusTimer()
+        timer.start(at: t0)
+        // Alive 10 minutes in, relaunched hours later.
+        let recovered = timer.recover(lastAlive: at(600), now: at(4 * 3600))
+        XCTAssertEqual(recovered.completions, [])
+        XCTAssertEqual(recovered.stop, FocusStop(focused: 600, endedAt: at(600)))
+        XCTAssertEqual(timer.runState, .idle)
+        XCTAssertEqual(timer.phase, .focus)
+        // Settled once: recovering again credits nothing.
+        XCTAssertNil(timer.recover(lastAlive: at(600), now: at(4 * 3600)).stop)
+    }
+
+    func testRecoveringCompletesAPhaseThatRanOutBeforeTheCrash() {
+        var timer = FocusTimer()
+        timer.start(at: t0)
+        // Crashed during the break that followed a finished focus phase.
+        let recovered = timer.recover(lastAlive: at(1600), now: at(3600))
+        XCTAssertEqual(recovered.completions, [FocusPhaseCompletion(phase: .focus, endedAt: at(1500))])
+        XCTAssertNil(recovered.stop, "the break earns nothing")
+        XCTAssertEqual(timer.completedFocusCount, 1)
+        XCTAssertEqual(timer.runState, .idle)
+        XCTAssertEqual(timer.phase, .focus)
+    }
+
+    func testRecoveringAPausedSessionCreditsTheTimeBeforeThePause() {
+        var timer = FocusTimer()
+        timer.start(at: t0)
+        timer.pause(at: at(420))
+        XCTAssertEqual(timer.recover(lastAlive: at(900), now: at(7200)).stop?.focused, 420)
+    }
+
+    func testRecoveringNeverCreditsTimeFromAClockSetBack() {
+        var timer = FocusTimer()
+        timer.start(at: t0)
+        // The heartbeat is later than now: the clock was set back since.
+        let recovered = timer.recover(lastAlive: at(1200), now: at(300))
+        XCTAssertEqual(recovered.stop, FocusStop(focused: 300, endedAt: at(300)))
+    }
+
+    func testRecoveringAnIdleTimerDoesNothing() {
+        var timer = FocusTimer()
+        let recovered = timer.recover(lastAlive: at(600), now: at(900))
+        XCTAssertEqual(recovered.completions, [])
+        XCTAssertNil(recovered.stop)
+        XCTAssertEqual(timer, FocusTimer())
+    }
+
+    func testStopCreditsNothingWhenIdleOrOnABreak() {
+        var idle = FocusTimer()
+        XCTAssertNil(idle.stop(at: t0))
+
+        var resting = FocusTimer()
+        resting.start(at: t0)
+        resting.advance(to: at(1600))
+        XCTAssertEqual(resting.phase, .rest)
+        XCTAssertNil(resting.stop(at: at(1700)))
+        XCTAssertEqual(resting.phase, .focus)
+        XCTAssertEqual(resting.runState, .idle)
+        XCTAssertEqual(resting.completedFocusCount, 1)
+    }
+
+    func testStopNeverCreditsMoreThanThePhaseLength() {
+        // Stopped without catching up first, long after the phase ran out.
+        var timer = FocusTimer()
+        timer.start(at: t0)
+        XCTAssertEqual(timer.stop(at: at(9000))?.focused, 1500)
+    }
+
+    func testStoppedFocusLogsMinutesWithoutCountingAsAFinishedSession() throws {
+        let record = try XCTUnwrap(FocusStop(focused: 600, endedAt: at(1000)).activityRecord(source: "focus"))
+        XCTAssertEqual(record.kind, .focusCompleted)
+        XCTAssertEqual(record.start, at(400))
+        XCTAssertEqual(record.end, at(1000))
+        XCTAssertEqual(record.quantity, 10)
+        XCTAssertEqual(record.unit, .minutes)
+
+        let day = PlannerDay(date: PlannerDayKey(date: at(1000)))
+        let review = DayReviewer.review(of: day, activity: [record])
+        XCTAssertEqual(review.focusSessions, 0)
+
+        XCTAssertNil(FocusStop(focused: 59, endedAt: at(1000)).activityRecord(source: "focus"))
+    }
+
     func testCustomConfigClampsToPositiveDurations() {
         let config = FocusTimerConfig(focusDuration: 50 * 60, restDuration: 0)
         XCTAssertEqual(config.focusDuration, 3000)

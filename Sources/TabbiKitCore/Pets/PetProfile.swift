@@ -20,6 +20,10 @@ public struct PetProfile: Hashable, Codable, Sendable {
     /// User colors layered over the breed palette. Only
     /// `PetPaletteRole.userEditable` roles are kept.
     public private(set) var paletteOverrides: [PetPaletteRole: PetColor]
+    /// The one fur color picked in the Closet, or nil for the breed's own
+    /// colors. Kept as the pick rather than as derived role colors, so the
+    /// breed's `furTones` apply at render time and follow breed changes.
+    public private(set) var furTint: PetColor?
     public var outfit: PetOutfit
     /// Always wearable: at most one per slot, in drawing order.
     public private(set) var accessories: [PetAccessory]
@@ -30,12 +34,14 @@ public struct PetProfile: Hashable, Codable, Sendable {
         name: String,
         breed: PetBreed,
         paletteOverrides: [PetPaletteRole: PetColor] = [:],
+        furTint: PetColor? = nil,
         outfit: PetOutfit = .none,
         accessories: [PetAccessory] = []
     ) {
         self.name = PetProfile.cleanName(name, breed: breed)
         self.breed = breed
         self.paletteOverrides = paletteOverrides.filter { PetPaletteRole.userEditable.contains($0.key) }
+        self.furTint = furTint
         self.outfit = outfit
         self.accessories = PetAccessory.wearable(accessories)
     }
@@ -81,15 +87,17 @@ public struct PetProfile: Hashable, Codable, Sendable {
         paletteOverrides[role] = color
     }
 
-    /// Recolors all fur from one picked color (see `PetPalette.furTint(_:)`),
-    /// or returns the fur to the breed colors with `nil`.
+    /// Recolors the fur from one picked color (see `PetBreed.furTones`), or
+    /// returns the fur to the breed colors with `nil`. Single fur role
+    /// colors set before are cleared, so the pick shows as a whole.
     public mutating func tintFur(_ color: PetColor?) {
-        let overrides = color.map { breed.palette.furTint($0) } ?? [:]
-        for role in PetPalette.tintableFurRoles { paletteOverrides[role] = overrides[role] }
+        furTint = color
+        for role in PetPalette.tintableFurRoles { paletteOverrides[role] = nil }
     }
 
     public mutating func resetColors() {
         paletteOverrides = [:]
+        furTint = nil
     }
 
     /// Puts an accessory on, replacing whatever was in the same slot.
@@ -110,10 +118,11 @@ public struct PetProfile: Hashable, Codable, Sendable {
 
     // MARK: Rendering
 
-    /// The colors to render with: breed defaults, then user overrides, then
-    /// the warm rim for dark fur so a recolored black pet never vanishes.
+    /// The colors to render with: breed defaults, the fur tint, then user
+    /// overrides, then the light rim for dark fur so a recolored black pet
+    /// never vanishes.
     public var palette: PetPalette {
-        breed.palette.applying(paletteOverrides).withVisibleRim()
+        breed.palette.applying(furTint.map(breed.furTint) ?? [:]).applying(paletteOverrides).withVisibleRim()
     }
 
     /// The pet sitting in its current outfit and accessories.
@@ -133,7 +142,7 @@ public struct PetProfile: Hashable, Codable, Sendable {
     // MARK: Codable
 
     private enum CodingKeys: String, CodingKey {
-        case name, breed, paletteOverrides, outfit, accessories
+        case name, breed, paletteOverrides, furTint, outfit, accessories
     }
 
     public init(from decoder: Decoder) throws {
@@ -147,12 +156,20 @@ public struct PetProfile: Hashable, Codable, Sendable {
         for (key, hex) in rawColors {
             if let role = PetPaletteRole(rawValue: key), let color = PetColor(hex: hex) { overrides[role] = color }
         }
+        var furTint = try? container.decodeIfPresent(PetColor.self, forKey: .furTint)
+        if !container.contains(.furTint), let legacy = overrides[.furBase] {
+            // Saves from before `furTint` stored a pick as the fur base plus
+            // two shades derived from it. Keep the pick, drop the stale shades.
+            furTint = legacy
+            for role in PetPalette.tintableFurRoles { overrides[role] = nil }
+        }
         let rawOutfit = try container.decodeIfPresent(String.self, forKey: .outfit) ?? ""
         let rawAccessories = try container.decodeIfPresent([String].self, forKey: .accessories) ?? []
         self.init(
             name: name,
             breed: breed,
             paletteOverrides: overrides,
+            furTint: furTint,
             outfit: PetOutfit(rawValue: rawOutfit) ?? .none,
             accessories: rawAccessories.compactMap(PetAccessory.init(rawValue:))
         )
@@ -166,6 +183,8 @@ public struct PetProfile: Hashable, Codable, Sendable {
             Dictionary(uniqueKeysWithValues: paletteOverrides.map { ($0.key.rawValue, $0.value) }),
             forKey: .paletteOverrides
         )
+        // Written even when nil, so a missing key always means an older save.
+        try container.encode(furTint, forKey: .furTint)
         try container.encode(outfit, forKey: .outfit)
         try container.encode(accessories, forKey: .accessories)
     }

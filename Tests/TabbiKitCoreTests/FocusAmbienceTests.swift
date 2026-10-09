@@ -80,11 +80,30 @@ final class FocusAmbienceTests: XCTestCase {
 
     func testCafeMurmurSitsInTheVoiceBandAndEbbs() {
         let cafe = samples(.cafe)
-        // Distant voices: energy around vowel formants, little above them.
-        XCTAssertGreaterThan(tilt(cafe, from: 500, to: 4000), 20)
+        // Distant voices: energy around vowel formants, much less above them,
+        // but a consonant hiss keeps it from sounding muffled or underwater.
+        let tilt = tilt(cafe, from: 500, to: 4000)
+        XCTAssertGreaterThan(tilt, 20)
+        XCTAssertLessThan(tilt, 45)
         // Talkers start and stop, so the level ebbs and flows.
         XCTAssertGreaterThan(
             Analysis.levelVariation(cafe, windowSeconds: 1),
             3 * Analysis.levelVariation(samples(.pink), windowSeconds: 1))
+    }
+
+    /// The old cafe sounded demonic: a few buzzy low voices whose pitch
+    /// growled under the murmur. Voices now sit above their fundamental, so
+    /// the band of a low male pitch stays below the vowel band.
+    func testCafeVoicesCarryNoLowGrowl() {
+        let cafe = samples(.cafe)
+        XCTAssertGreaterThan(tilt(cafe, from: 500, to: 120), 2)
+    }
+
+    /// A crowd that happens to sit close, or a lull when everyone pauses,
+    /// must not make one cafe noticeably louder than another.
+    func testCafeLevelIsSteadyWhoeverSitsNearby() {
+        for seed: UInt64 in [1, 7, 99] {
+            XCTAssertEqual(Analysis.rms(samples(.cafe, seed: seed)), NoiseGenerator.targetRMS, accuracy: 0.03, "seed \(seed)")
+        }
     }
 }

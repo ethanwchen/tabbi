@@ -58,7 +58,7 @@ public struct ProgressItem: Identifiable, Hashable, Sendable {
     public var action: ProvidedAction?
     /// A goal the user aims for rather than work that is due (a daily focus
     /// time goal, not cards due). The closed notch shows it only once the
-    /// day has some progress, so a fresh day never opens on "120 min left"
+    /// day has some progress, so a fresh day never opens on "2h left"
     /// for a goal the user may not even know about.
     public var waitsForStart: Bool
 
@@ -74,25 +74,15 @@ public struct ProgressItem: Identifiable, Hashable, Sendable {
         self.waitsForStart = waitsForStart
     }
 
-    /// The unit of a goal counted in minutes, such as a daily focus time goal.
-    public static let minutesUnit = "min"
-
     public var remaining: Int { max(target - completed, 0) }
-    /// What is left, e.g. "84 cards left" or "1 h 15 min left".
+    /// What is left, e.g. "84 cards left" or "1h 15m left".
     public var remainingText: String { "\(amount(remaining)) left" }
 
-    /// A count in this goal's unit, e.g. "320 cards". Minutes read as hours
-    /// from an hour up ("45 min", "2 h", "1 h 15 min"), so a two-hour goal
-    /// never shows as "120 min".
+    /// A count in this goal's unit through `DurationFormat.quantity`, e.g.
+    /// "320 cards". Minutes read as a duration ("45 min", "2h", "1h 15m"),
+    /// so a two-hour goal never shows as "120 min".
     public func amount(_ count: Int) -> String {
-        Self.amount(count, unit: unit)
-    }
-
-    /// `count` in `unit`, with minutes from an hour up read as hours.
-    public static func amount(_ count: Int, unit: String) -> String {
-        guard unit == minutesUnit, count >= 60 else { return "\(count.formatted()) \(unit)" }
-        let hours = count / 60, rest = count % 60
-        return rest == 0 ? "\(hours.formatted()) h" : "\(hours.formatted()) h \(rest) min"
+        DurationFormat.quantity(count, unit: unit)
     }
     public var isComplete: Bool { remaining == 0 }
     /// Whether the closed notch has something worth saying about this goal:

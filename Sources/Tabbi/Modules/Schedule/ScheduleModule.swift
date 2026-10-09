@@ -22,7 +22,7 @@ final class ScheduleModule: NotchModule {
     private var cancellables: Set<AnyCancellable> = []
 
     init(context: ModuleContext) {
-        store = ScheduleStore(runMode: context.runMode)
+        store = ScheduleStore(usesClaude: context.edition.runsLocalTools, runMode: context.runMode)
         // Plan uses Today's planning settings, so a kit sizes reviews and
         // buffers the same way in both places.
         store.planSettings = TodayPlanSettings(kit: context.activeKit?.defaults)
@@ -35,6 +35,11 @@ final class ScheduleModule: NotchModule {
                 store.progress = snapshot.progress
             }
             .store(in: &cancellables)
+    }
+
+    /// Sets the Day view's day, and a plan for it, for one snapshot.
+    func showForSnapshot(_ day: PlannerViewedDay, planning: Bool = false) {
+        store.showForSnapshot(day, planning: planning)
     }
 
     func makePanel() -> AnyView {

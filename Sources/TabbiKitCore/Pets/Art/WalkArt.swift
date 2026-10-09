@@ -5,233 +5,55 @@ import Foundation
 /// size. Pets walk toward the left; mirror the frame to walk right. Legs are
 /// generated so every body family steps with the same gait. See
 /// docs/study/pets.md.
+/// The grids are drawn in `Pets/PetArt/walk.json`.
 enum WalkArt {
     /// Cat torso, 22x7, stamped at `torsoOrigin`. The front half hides behind
     /// the head; stripes run over the back and the rump stays round. Zones `a` and `b` are
     /// the calico's orange and black patches.
-    static let catTorso = SpriteGrid(art: """
-        ...BBBBBBBBBBBsbbsBB..
-        ..BBBBBBBBBBBBBsbbsBB.
-        .BBBBBBBBBBBBaaBBBBsBB
-        .BBBBBBBBBBBaaaaBBBBBB
-        .cBBBBBBBBBBBaaBBBBBBB
-        .cccBBBBBBBBBBBBBBBBBS
-        ..ccSSSSSSSSSSSSSSSSS.
-        """)
+    static let catTorso = PetArt.walk.grid("catTorso")
 
     /// Dog torso, the same size as the cat's. Zone `a` is the beagle saddle.
-    static let dogTorso = SpriteGrid(art: """
-        ...BBBBBBBBBBaaaaaBB..
-        ..BBBBBBBBBBaaaaaaaBB.
-        .BBBBBBBBBBBaaaaaaaBBB
-        .BBBBBBBBBBBBaaaaaBBBB
-        .cBBBBBBBBBBBBBBBBBBBB
-        .cccBBBBBBBBBBBBBBBBBS
-        ..ccSSSSSSSSSSSSSSSSS.
-        """)
+    static let dogTorso = PetArt.walk.grid("dogTorso")
 
     /// Dachshund torso, 23x6: longer and lower, on short legs.
-    static let longTorso = SpriteGrid(art: """
-        ...BBBBBBBBBBBBBBBBBB..
-        ..BBBBBBBBBBBBBBBBBBBB.
-        .ccBBBBBBBBBBBBBBBBBBBB
-        .cccBBBBBBBBBBBBBBBBBBB
-        .ccccBBBBBBBBBBBBBBBBBS
-        ..SSSSSSSSSSSSSSSSSSSS.
-        """)
+    static let longTorso = PetArt.walk.grid("longTorso")
 
     /// The cat's tail held high, swaying a pixel between steps.
-    static let catTail = [
-        SpriteGrid(art: """
-            .tt
-            .tt
-            .BB
-            BB.
-            BB.
-            BB.
-            """),
-        SpriteGrid(art: """
-            ..tt
-            .tt.
-            .BB.
-            BB..
-            BB..
-            BB..
-            """),
-    ]
+    static let catTail = PetArt.walk.sequence("catTail")
 
     /// British Shorthair torso: the cat torso with a silver, faintly ticked
     /// back over pale sides.
-    static let roundCatTorso = SpriteGrid(art: """
-        ...SSSSSsSSSSSSsSSSS..
-        ..SSSSsSSSSSsSSSSSsSS.
-        .BBBBBBBBBBBBBBBBBBSSS
-        .BBBBBBBBBBBBBBBBBBBBS
-        .cBBBBBBBBBBBBBBBBBBBS
-        .cccBBBBBBBBBBBBBBBBBS
-        ..ccSSSSSSSSSSSSSSSSS.
-        """)
+    static let roundCatTorso = PetArt.walk.grid("roundCatTorso")
 
     /// The British Shorthair's thick tail, with subtle pale taupe rings.
-    static let roundCatTail = [
-        SpriteGrid(art: """
-            .tt
-            .SS
-            .tt
-            SS.
-            tt.
-            SS.
-            """),
-        SpriteGrid(art: """
-            ..tt
-            .SS.
-            .tt.
-            SS..
-            tt..
-            SS..
-            """),
-    ]
+    static let roundCatTail = PetArt.walk.sequence("roundCatTail")
 
     /// Sphynx torso: lean, with wrinkle lines over the shoulders and a
     /// slim belly line.
-    static let sphynxTorso = SpriteGrid(art: """
-        ...BBBBBBBBBBBBBBBBB..
-        ..BBBSBBSBBBBBBBBBBBB.
-        .BBBSBBSBBBBBBBBBBBBBB
-        .BBBBBBBBBBBBBBBBBBBBB
-        .cBBBBBBBBBBBBBBBBBBBS
-        .cccBBBBBBBBBBBBBBBBSS
-        ..ccSSSSSSSSSSSSSSSS..
-        """)
+    static let sphynxTorso = PetArt.walk.grid("sphynxTorso")
 
     /// The Sphynx's thin whip tail, held high with a curled tip.
-    static let sphynxTail = [
-        SpriteGrid(art: """
-            .tt
-            ..t
-            .B.
-            .B.
-            B..
-            B..
-            """),
-        SpriteGrid(art: """
-            .tt.
-            .t..
-            .B..
-            .B..
-            B...
-            B...
-            """),
-    ]
+    static let sphynxTail = PetArt.walk.sequence("sphynxTail")
 
     /// The Scottish Fold's thick plush tail, held high with a shaded tip.
-    static let foldCatTail = [
-        SpriteGrid(art: """
-            .tt
-            .BB
-            .BB
-            BB.
-            BB.
-            BB.
-            """),
-        SpriteGrid(art: """
-            ..tt
-            .BB.
-            .BB.
-            BB..
-            BB..
-            BB..
-            """),
-    ]
+    static let foldCatTail = PetArt.walk.sequence("foldCatTail")
 
     /// Poodle torso: the dog torso covered in curls, with a fluffy chest.
-    static let poodleTorso = SpriteGrid(art: """
-        ...BBSBBBSBBBBSBBBSB..
-        ..BSBBBABBBSBBBABBBSB.
-        .ABBBSBBBSBBBSBBBSBBBB
-        .cABBBBSBBBBBBSBBBBSBB
-        .ccBSBBBBBSBBBBBBSBBBB
-        .cccBBBSBBBBBSBBBBBBBS
-        ..ccSSSSSSSSSSSSSSSSS.
-        """)
+    static let poodleTorso = PetArt.walk.grid("poodleTorso")
 
     /// The poodle's pom tail, held high and bobbing between steps.
-    static let poodleTail = [
-        SpriteGrid(art: """
-            .tt.
-            tAtt
-            tttt
-            .tt.
-            .B..
-            BB..
-            """),
-        SpriteGrid(art: """
-            ..tt
-            .tAt
-            .ttt
-            ..tt
-            .B..
-            BB..
-            """),
-    ]
+    static let poodleTail = PetArt.walk.sequence("poodleTail")
 
     /// Shih Tzu torso: a long coat that hangs in strands, with a fringe that
     /// leaves the legs half hidden.
-    static let shihTzuTorso = SpriteGrid(art: """
-        ...BBBBBBBBBBBBBBBBB..
-        ..BBBBBBBBBBBBBBBBBBB.
-        .cBBBBBBBBBBBBBBBBBBBB
-        .ccBBSBBBBSBBBBSBBBBSB
-        .ccBSBBBSBBBBSBBBBSBBB
-        .cBSBBBSBBBBSBBBBSBBSB
-        ..SB.SB.SBSB.SBS.BSBS.
-        """)
+    static let shihTzuTorso = PetArt.walk.grid("shihTzuTorso")
 
     /// The Shih Tzu's plume, curled over the back and swaying between steps.
-    static let shihTzuTail = [
-        SpriteGrid(art: """
-            .ttt.
-            tttA.
-            tAt..
-            .B...
-            BB...
-            """),
-        SpriteGrid(art: """
-            ..ttt
-            .tttA
-            .tAt.
-            .B...
-            BB...
-            """),
-    ]
+    static let shihTzuTail = PetArt.walk.sequence("shihTzuTail")
 
-    static let dogTail = [
-        SpriteGrid(art: """
-            ..t
-            .tt
-            .B.
-            BB.
-            """),
-        SpriteGrid(art: """
-            ...t
-            ..tt
-            .BB.
-            BB..
-            """),
-    ]
+    static let dogTail = PetArt.walk.sequence("dogTail")
 
-    static let longTail = [
-        SpriteGrid(art: """
-            ..t
-            .t.
-            B..
-            """),
-        SpriteGrid(art: """
-            ...
-            .tt
-            B..
-            """),
-    ]
+    static let longTail = PetArt.walk.sequence("longTail")
 
     /// Where a leg's paw lands relative to its hip.
     enum Lean {

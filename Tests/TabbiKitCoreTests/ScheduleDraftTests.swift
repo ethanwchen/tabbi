@@ -49,7 +49,7 @@ struct ScheduleDraftTests {
         // 9:00 to 9:20 is free (10 min buffer before the standup), so the short task goes there.
         #expect(items.first?.start == Self.at(9))
         #expect(items.last?.start == Self.at(10, 10))
-        #expect(draft.summary == "2 blocks, 1 h 15 min")
+        #expect(draft.summary == "2 blocks, 1h 15m")
     }
 
     @Test func proposedItemsNeverBlockTheirOwnReplan() {
@@ -84,7 +84,7 @@ struct ScheduleDraftTests {
         #expect(one.summary == "Write spec didn't fit: No free time left today")
         let two = Self.draft(items: [busy], tasks: [Self.task("Write spec", 60), Self.task("Inbox", 15)])
         #expect(two.summary == "2 tasks didn't fit: No free time left today")
-        #expect(two.unplacedDetail == "Write spec, 1 h: No free time left today\nInbox, 15 min: No free time left today")
+        #expect(two.unplacedDetail == "Write spec, 1h: No free time left today\nInbox, 15 min: No free time left today")
 
         let partly = Self.draft(now: Self.at(16), tasks: [Self.task("Write spec", 60), Self.task("Big", 120)])
         #expect(partly.summary.hasSuffix(". 1 didn't fit"))
@@ -95,7 +95,7 @@ struct ScheduleDraftTests {
         let inbox = try! #require(draft.items.first { $0.title == "Inbox" })
         draft.skip(inbox.id)
         #expect(draft.items.map(\.title) == ["Write spec"])
-        #expect(draft.summary == "1 block, 1 h")
+        #expect(draft.summary == "1 block, 1h")
         draft.skip("unknown")
         #expect(draft.items.count == 1)
     }
@@ -136,7 +136,7 @@ struct ScheduleDraftTests {
         let afternoon = draft.items.allSatisfy { $0.start >= Self.at(15) }
         #expect(afternoon)
         #expect(draft.unplaced.map(\.work.title) == ["Outline the Q4 roadmap"])
-        #expect(draft.summary == "3 blocks, 1 h 30 min. 1 didn't fit")
+        #expect(draft.summary == "3 blocks, 1h 30m. 1 didn't fit")
     }
 
     // MARK: Refine with Claude
@@ -153,7 +153,7 @@ struct ScheduleDraftTests {
         #expect(item.kind == .proposed)
         #expect(item.start == Self.at(10))
         #expect(item.reason == "Suggested by Claude")
-        #expect(draft.summary == "1 block, 1 h")
+        #expect(draft.summary == "1 block, 1h")
 
         let writer = RecordingWriter()
         try draft.add(item.id, now: Self.at(9), events: [], writer: writer)
@@ -214,14 +214,14 @@ struct ScheduleDraftTests {
         #expect(draft.items.map(\.title) == ["Inbox", "Write spec"])
         #expect(draft.items.map(\.start) == [Self.at(16), Self.on(1, 9)])
         #expect(draft.unplaced.isEmpty)
-        #expect(draft.summary == "2 blocks over 2 days, 1 h 15 min")
+        #expect(draft.summary == "2 blocks over 2 days, 1h 15m")
     }
 
     @Test func weekPlanKeepsUsualHoursWhenPlanningLate() {
         // At 21:00 today's working day is over, so the work starts tomorrow at 9:00 and ends by 18:00.
         let draft = Self.weekDraft(now: Self.at(21), tasks: [Self.task("Write spec", 60)])
         #expect(draft.items.map(\.start) == [Self.on(1, 9)])
-        #expect(draft.summary == "1 block, 1 h")
+        #expect(draft.summary == "1 block, 1h")
     }
 
     @Test func weekPlanSpreadsLongWorkAcrossDays() {

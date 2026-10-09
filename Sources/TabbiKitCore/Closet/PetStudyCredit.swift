@@ -36,8 +36,10 @@ extension PetCloset {
     ///   baseline belongs to one clock (`PetSave.creditedFocusSource`): when
     ///   the shared clock switches to another module's, its count only sets
     ///   a new baseline, since one clock's total says nothing about another's.
-    /// - A focus phase cut short (skipped or reset) earns the minutes
-    ///   actually studied, without the bonus; short ones earn nothing.
+    /// - A focus phase cut short (skipped or stopped) earns the minutes
+    ///   actually studied, without the bonus; short ones earn nothing. A
+    ///   clock that `logsEarlyEnds` is paid from its activity record
+    ///   instead (`credit(_:)`), so only other clocks are paid here.
     ///
     /// Returns nil when nothing earned points.
     public mutating func credit(from old: ProvidedFocus?, to new: ProvidedFocus?, at now: Date) -> PetStudyAward? {
@@ -61,7 +63,7 @@ extension PetCloset {
             }
             award.completedSessions = count - credited
             award.minutes = minutes * award.completedSessions
-        } else if let old, old.source == new.source, Self.focusWasCutShort(old, by: new) {
+        } else if let old, !old.logsEarlyEnds, old.source == new.source, Self.focusWasCutShort(old, by: new) {
             let minutes = Int(old.elapsed(at: now) / 60)
             award.points = recordStudy(minutes: minutes, completed: false)
             award.minutes = minutes
@@ -69,6 +71,27 @@ extension PetCloset {
         guard award.points > 0 else { return nil }
         award.unlocked = PetCloset.wardrobe.filter { state(of: $0) == .affordable && !before.contains($0) }
         return award
+    }
+
+    /// Credits a focus phase cut short (stopped, skipped, or ended by sleep
+    /// or quit) from its activity record: the minutes actually studied,
+    /// without the completion bonus, like a cut-short clock. Paying from the
+    /// log rather than the shared clock means a stop is paid even when the
+    /// clock disappears or another module's takes its place, and each record
+    /// is paid once because the log only announces new ones.
+    ///
+    /// Nil for anything else (finished phases are paid from the clock's
+    /// completion count) and when nothing was earned.
+    public mutating func credit(_ record: ActivityRecord) -> PetStudyAward? {
+        guard record.kind == .focusCompleted, record.unit == .minutes, let quantity = record.quantity, quantity.isFinite,
+              let outcome = record.metadata[ActivityMetadata.outcome].flatMap(StudyPhaseOutcome.init(rawValue:)),
+              outcome == .skipped || outcome == .abandoned else { return nil }
+        let before = Set(PetCloset.wardrobe.filter { state(of: $0) == .affordable })
+        let minutes = Int(max(quantity, 0))
+        let points = recordStudy(minutes: minutes, completed: false)
+        guard points > 0 else { return nil }
+        let unlocked = PetCloset.wardrobe.filter { state(of: $0) == .affordable && !before.contains($0) }
+        return PetStudyAward(completedSessions: 0, minutes: minutes, points: points, unlocked: unlocked)
     }
 
     /// Credits a Party shared session that ran to its end with the user in

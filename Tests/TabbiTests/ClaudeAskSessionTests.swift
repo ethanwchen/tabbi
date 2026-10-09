@@ -1,3 +1,5 @@
+// The App Store build has no Ask Claude (see Package.swift).
+#if !APPSTORE
 import Foundation
 import XCTest
 import TabbiKitCore
@@ -104,3 +106,4 @@ final class ClaudeAskSessionTests: XCTestCase {
         XCTAssertEqual(session.conversation.messages.last?.status, .stopped)
     }
 }
+#endif

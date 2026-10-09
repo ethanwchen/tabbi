@@ -125,24 +125,29 @@ public extension KitManifest {
     }
 
     /// Values this build doesn't recognize, in the order they appear.
+    /// Modules the edition leaves out (`ModuleCatalog.unavailableIDs`) are
+    /// skipped quietly: the kit is fine, this edition just has no such tab.
     func issues(catalog: ModuleCatalog) -> [KitIssue] {
         var issues: [KitIssue] = []
         var seen = Set<ModuleID>()
+        func isUnknown(_ id: ModuleID) -> Bool { !catalog.contains(id) && !catalog.isUnavailable(id) }
         for entry in modules {
             if !seen.insert(entry.id).inserted {
                 issues.append(.duplicateModule(entry.id))
-            } else if !catalog.contains(entry.id) {
+            } else if isUnknown(entry.id) {
                 issues.append(.unknownModule(entry.id))
             }
         }
         let answerModules = onboarding.flatMap(\.options).flatMap { $0.enables + $0.disables }
             + [accent].compactMap { $0 }
-        for id in answerModules where !catalog.contains(id) && seen.insert(id).inserted {
+        for id in answerModules where isUnknown(id) && seen.insert(id).inserted {
             issues.append(.unknownModule(id))
         }
         let previews = Set(TickerKind.all(in: catalog))
-        issues += Self.unknown(defaults.ticker ?? []) { previews.contains(TickerKind(rawValue: $0)) ? $0 : nil }
-            .map(KitIssue.unknownTickerKind)
+        issues += Self.unknown(defaults.ticker ?? []) {
+            previews.contains(TickerKind(rawValue: $0)) || catalog.isUnavailable(ModuleID($0)) ? $0 : nil
+        }
+        .map(KitIssue.unknownTickerKind)
         if let theme = defaults.theme, ThemeCatalog.id(forKitValue: theme) == nil {
             issues.append(.unknownTheme(theme))
         }
@@ -165,7 +170,7 @@ public extension KitManifest {
     private func moduleSettingsIssues(catalog: ModuleCatalog) -> [KitIssue] {
         defaults.moduleSettings.keys.sorted().flatMap { key -> [KitIssue] in
             let id = ModuleID(rawValue: key)
-            guard catalog.contains(id) else { return [.unknownModuleSettings(id)] }
+            guard catalog.contains(id) else { return catalog.isUnavailable(id) ? [] : [.unknownModuleSettings(id)] }
             guard let schema = catalog.descriptor(for: id).kitSettings,
                   let section = defaults.moduleSettings[key] else { return [] }
             return schema.issues(in: section, at: "moduleSettings.\(key)")

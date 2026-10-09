@@ -4,10 +4,12 @@ import TabbiKitCore
 import TabbiKit
 
 extension SettingsPane {
-    /// Settings › Party: the profile friends see, going invisible, and the
-    /// friends server.
-    @MainActor static func party(store: PartyStore) -> SettingsPane {
-        SettingsPane(id: "party", title: "Party", symbol: "person.2", view: AnyView(PartySettingsPane(store: store)))
+    /// Settings › Party: the profile friends see, going invisible, the
+    /// friends server, and deleting the Party data. `account` is the Apple
+    /// account, which owns that data once signed in.
+    @MainActor static func party(store: PartyStore, account: SyncStore) -> SettingsPane {
+        SettingsPane(id: "party", title: "Party", symbol: "person.2",
+                     view: AnyView(PartySettingsPane(store: store, account: account)))
     }
 }
 
@@ -17,7 +19,9 @@ extension SettingsPane {
 /// `PartyStore.update(_:)`, which saves it and syncs the server.
 struct PartySettingsPane: View {
     @ObservedObject var store: PartyStore
+    @ObservedObject var account: SyncStore
     @State private var name = ""
+    @State private var confirmsDelete = false
     @State private var server = ""
     @FocusState private var focused: Field?
 
@@ -31,12 +35,16 @@ struct PartySettingsPane: View {
         Form {
             profileSection
             privacySection
+            blockedSection
             serverSection
+            dataSection
         }
         .formStyle(.grouped)
         .scrollDisabled(true)
-        .frame(width: 500, height: 528)
+        .frame(width: 500, height: height)
+        .motion(Motion.content, value: height)
         .onAppear {
+            store.loadBlocked()
             name = store.settings.name
             server = store.settings.serverText
         }
@@ -49,6 +57,13 @@ struct PartySettingsPane: View {
             if old == .name { commitName() }
             if old == .server { commitServer() }
         }
+    }
+
+    /// The grouped form doesn't report its content height, so add up the
+    /// Blocked rows, which come and go; the window follows the pane's size.
+    private var height: CGFloat {
+        let rows = max(store.blocked?.count ?? 0, 1)
+        return 790 + CGFloat(rows - 1) * 44
     }
 
     // MARK: Profile
@@ -79,8 +94,29 @@ struct PartySettingsPane: View {
         } header: {
             Text("Profile")
         } footer: {
-            SectionFooter("Friends see this name and the pet you dress in the Closet. Share your code so they can add you.")
+            if let issue = nameIssue {
+                Label(issue, systemImage: "exclamationmark.triangle.fill")
+                    .font(.callout)
+                    .foregroundStyle(.orange)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, 10)
+            } else {
+                SectionFooter("Friends see this name and the pet you dress in the Closet. Share your code so they can add you.")
+            }
         }
+    }
+
+    /// What friends can't see, checked as the name is typed: the draft
+    /// through the app's filter, the saved name and pet name as the store
+    /// knows them (including names the server refused).
+    private var nameIssue: String? {
+        var refused = store.refusedNames
+        if name != store.settings.name {
+            refused.remove(.name)
+            refused.formUnion(PartySettings(name: name).refusedNames(for: store.pet).intersection(.name))
+        }
+        return refused.message
     }
 
     private var friendCodeText: String {
@@ -123,6 +159,41 @@ struct PartySettingsPane: View {
                     settings.invisible = value
                     store.update(settings)
                 })
+    }
+
+    // MARK: Blocked
+
+    /// The people I blocked, each with Unblock, and the support address.
+    /// Blocking and reporting start from a right-click on someone in Party.
+    private var blockedSection: some View {
+        Section {
+            if let blocked = store.blocked, !blocked.isEmpty {
+                ForEach(blocked) { user in
+                    BlockedRow(user: user, isUnblocking: store.pending == .unblock(user.code),
+                               isEnabled: store.pending == nil) {
+                        store.unblock(code: user.code)
+                    }
+                }
+            } else {
+                Text(store.blocked == nil ? emptyBlockedText : "No one is blocked.")
+                    .foregroundStyle(.secondary)
+            }
+        } header: {
+            Text("Blocked")
+        } footer: {
+            VStack(alignment: .leading, spacing: 8) {
+                SectionFooter("Blocked people can't see you, add you or join your parties. To block or report someone, right-click them in Party.")
+                Link(SupportContact.reportLine, destination: SupportContact.mailURL)
+                    .font(.callout)
+                    .help("Email the \(Edition.current.name) team about a person or a problem")
+            }
+        }
+    }
+
+    /// Before the list arrives: still connecting, or offline.
+    private var emptyBlockedText: String {
+        if case .connected = store.state.connection { return "Loading…" }
+        return "Connect to the friends server to see who you blocked."
     }
 
     // MARK: Server
@@ -203,6 +274,8 @@ struct PartySettingsPane: View {
             return ("Can't use this server", message, "exclamationmark.triangle.fill", .orange)
         case .connecting:
             return ("Connecting…", host, "", .secondary)
+        case .unreachable(.banned):
+            return ("Not available", PartyError.banned.message, "hand.raised.fill", .secondary)
         case .unreachable(let error):
             return ("Can't reach the server", error.message, "wifi.slash", .orange)
         case .connected:
@@ -213,10 +286,73 @@ struct PartySettingsPane: View {
         }
     }
 
+    // MARK: Your data
+
+    /// Signed out, Party's anonymous identity is all the server keeps, so
+    /// it can be deleted here. Signed in, it belongs to the Apple account
+    /// and goes with Delete Account in Settings > General.
+    private var dataSection: some View {
+        Section {
+            if account.isSignedIn {
+                LabeledContent {
+                    EmptyView()
+                } label: {
+                    Text("Your Party data")
+                    Text("It belongs to your Apple Account. Delete Account in General removes it.")
+                }
+            } else {
+                LabeledContent {
+                    Button("Delete…", role: .destructive) { confirmsDelete = true }
+                        .disabled(store.pending != nil || store.isDemo)
+                        .help("Delete your friend code, friends and parties from the friends server")
+                } label: {
+                    Text("Delete my Party data")
+                    Text(store.pending == .deleteData ? "Deleting…" : store.deletionNotice
+                        ?? "Removes your profile, friends and parties from the server.")
+                }
+            }
+        } header: {
+            Text("Your data")
+        }
+        .confirmationDialog("Delete your Party data?", isPresented: $confirmsDelete) {
+            Button("Delete", role: .destructive, action: store.deletePartyData)
+                .help("Delete your Party data from the friends server")
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text(Self.deleteMessage)
+        }
+    }
+
+    static let deleteMessage = "This deletes your friend code, your profile and pet as friends see them, your friends list, your party memberships and your study streak from the friends server. Friends will no longer see you. Your pet and points stay on this Mac. If Party stays on, you get a new friend code."
+
     private func commitServer() {
         var settings = store.settings
         settings.serverText = server.trimmingCharacters(in: .whitespacesAndNewlines)
         store.update(settings)
         server = settings.serverText
+    }
+}
+
+/// Someone on the Blocked list: their name, their pet and when, with Unblock.
+private struct BlockedRow: View {
+    let user: PartyBlockedUser
+    let isUnblocking: Bool
+    let isEnabled: Bool
+    let unblock: () -> Void
+
+    var body: some View {
+        LabeledContent {
+            Button(isUnblocking ? "Unblocking…" : "Unblock", action: unblock)
+                .disabled(!isEnabled)
+                .help("Let \(user.name) find you again. You won't be friends until one of you adds the other.")
+        } label: {
+            Text(user.name)
+            Text(detail)
+        }
+    }
+
+    private var detail: String {
+        guard let since = user.since else { return "With \(user.petName)" }
+        return "With \(user.petName), blocked \(since.formatted(.relative(presentation: .named)))"
     }
 }

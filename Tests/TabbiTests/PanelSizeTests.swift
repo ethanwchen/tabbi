@@ -56,6 +56,7 @@ final class PanelSizeTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(large.height, regular.height)
     }
 
+    #if !APPSTORE
     func testALargerCanvasRequestStillGrowsACompactPanel() {
         let model = makeModel(.compact)
         model.open()
@@ -64,4 +65,5 @@ final class PanelSizeTests: XCTestCase {
         model.requestOpenSize(nil)
         XCTAssertEqual(model.size, PanelSize.compact.canvasSize)
     }
+    #endif
 }

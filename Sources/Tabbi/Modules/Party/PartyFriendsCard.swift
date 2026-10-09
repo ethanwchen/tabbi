@@ -107,7 +107,7 @@ struct PartyFriendsCard: View {
 }
 
 /// One friend: their pet, name, what they're doing, and Join when they're
-/// in a party I'm not in. Right-click to remove.
+/// in a party I'm not in. Right-click to remove, report or block.
 private struct PartyFriendRow: View {
     let friend: PartyFriend
     @ObservedObject var store: PartyStore
@@ -148,6 +148,7 @@ private struct PartyFriendRow: View {
             Button("Remove \(friend.profile.name)", role: .destructive) {
                 store.removeFriend(code: friend.profile.code)
             }
+            PartyModerationMenu(profile: friend.profile, store: store)
         }
     }
 
@@ -177,6 +178,6 @@ private struct PartyFriendRow: View {
         if let presence = friend.presence, presence.streakDays > 1 {
             parts.append("\(presence.streakDays)-day streak")
         }
-        return parts.joined(separator: " · ") + ". Right-click to remove."
+        return parts.joined(separator: " · ") + ". Right-click to remove, report or block."
     }
 }

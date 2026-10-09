@@ -28,9 +28,9 @@ struct NotchPreview: View {
                 .frame(width: wing, alignment: edge.trailing)
         }
         .id(item.kind)
-        .transition(.asymmetric(
-            insertion: .opacity.combined(with: .offset(y: 6)),
-            removal: .opacity.combined(with: .offset(y: -6))
+        .transition(AsymmetricTransition(
+            insertion: .motionRow(from: .bottom),
+            removal: .motionRow(from: .top)
         ))
         .help(NotchPreviewLayout.summary(for: item))
     }

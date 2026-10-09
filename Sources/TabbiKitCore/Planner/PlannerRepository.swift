@@ -12,8 +12,14 @@ public final class PlannerRepository {
     /// The folder in an edition's storage, `Application Support/<edition>/Planner`.
     public static let folderName = "Planner"
 
-    /// The day file format. Version 1 added the `schemaVersion` key.
-    public static let schema = VersionedJSON(current: 1)
+    /// The day file format. Version 1 added the `schemaVersion` key; version
+    /// 2 added `isPlannedAhead`, false for every older file because each one
+    /// was created by `open` with its carry-over already taken in.
+    public static let schema = VersionedJSON(current: 2, migrations: [
+        .init(version: 2) { object in
+            if object["isPlannedAhead"] == nil { object["isPlannedAhead"] = false }
+        },
+    ])
 
     public init(directory: URL, fileManager: FileManager = .default) {
         self.directory = directory
@@ -37,7 +43,7 @@ public final class PlannerRepository {
         guard fileManager.fileExists(atPath: url.path) else { return nil }
         let day = try Self.schema.decode(PlannerDay.self, from: Data(contentsOf: url), using: Self.decoder)
         // The file name is authoritative; a copied file must not masquerade as another day.
-        return day.date == date ? day : PlannerDay(date: date, items: day.items)
+        return day.date == date ? day : PlannerDay(date: date, items: day.items, isPlannedAhead: day.isPlannedAhead)
     }
 
     public func save(_ day: PlannerDay) throws {
@@ -56,34 +62,51 @@ public final class PlannerRepository {
             .sorted()
     }
 
-    /// Loads `date`, creating it on first open by carrying over unfinished
-    /// items from the most recent earlier day that has a file. The new day is
-    /// saved immediately so carry-over happens exactly once.
+    /// Loads `date` as today. On its first open the day takes in the
+    /// unfinished items of the most recent earlier day that has a file,
+    /// ahead of anything planned for it in advance, and is saved right away
+    /// so carry-over happens exactly once.
     public func open(_ date: PlannerDayKey) throws -> PlannerDay {
+        let (day, isNew) = try opening(date)
+        if isNew { try save(day) }
+        return day
+    }
+
+    /// What `open` returns, without creating or updating the day's file: a
+    /// snapshot run shows today's list but must leave no trace on disk.
+    public func preview(_ date: PlannerDayKey) throws -> PlannerDay {
+        try opening(date).day
+    }
+
+    /// `date` as today, and whether it took in carry-over just now (so `open`
+    /// saves it): a day already opened comes back as it was saved.
+    private func opening(_ date: PlannerDayKey) throws -> (day: PlannerDay, isNew: Bool) {
+        let existing = try load(date)
+        if let existing, !existing.isPlannedAhead { return (existing, false) }
+        var day = existing ?? PlannerDay(date: date)
+        day.takeCarryOver(from: try mostRecentDay(before: date))
+        return (day, true)
+    }
+
+    /// Loads a day other than today to look at or plan, without creating a
+    /// file: yesterday's list as it was left, or tomorrow's plan so far (an
+    /// empty planned-ahead day until the first task is added and saved).
+    public func peek(_ date: PlannerDayKey, today: PlannerDayKey) throws -> PlannerDay {
         if let existing = try load(date) { return existing }
-        let day = try carryingOver(to: date)
-        try save(day)
-        return day
+        return PlannerDay(date: date, isPlannedAhead: date > today)
     }
 
-    /// What `open` returns, without creating the day's file: a snapshot run
-    /// shows today's list but must leave no trace on disk.
-    public func peek(_ date: PlannerDayKey) throws -> PlannerDay {
-        try load(date) ?? carryingOver(to: date)
-    }
-
-    /// A new `date` with the unfinished items of the most recent earlier day
-    /// that has a readable file.
-    private func carryingOver(to date: PlannerDayKey) throws -> PlannerDay {
-        var day = PlannerDay(date: date)
-        // Walk back past corrupt files rather than failing the whole day.
+    /// The latest readable day before `date`, walking back past corrupt
+    /// files rather than failing the whole day. A day planned ahead but never
+    /// opened first takes in its own predecessor (in memory), so skipping it
+    /// loses none of the older leftovers.
+    private func mostRecentDay(before date: PlannerDayKey) throws -> PlannerDay? {
         for previous in try savedDays().reversed() where previous < date {
-            if let source = try? load(previous) {
-                day = source.carryingOver(to: date)
-                break
-            }
+            guard var source = try? load(previous) else { continue }
+            if source.isPlannedAhead { source.takeCarryOver(from: try mostRecentDay(before: previous)) }
+            return source
         }
-        return day
+        return nil
     }
 
     private static let encoder: JSONEncoder = {

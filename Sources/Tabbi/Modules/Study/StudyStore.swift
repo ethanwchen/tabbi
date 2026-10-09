@@ -71,7 +71,7 @@ final class StudyStore: ObservableObject {
     /// Snapshot runs read the saved session but never write it back, so
     /// rendering with another kit can't change the user's method.
     private let isSnapshot: Bool
-    private let defaults = UserDefaults.standard
+    private let defaults: UserDefaults
     private var cancellables: Set<AnyCancellable> = []
     private var isVisible = false
     /// False while the Study module is turned off, so a session left
@@ -80,6 +80,11 @@ final class StudyStore: ObservableObject {
     private var ticker: Timer?
     /// Catches up when the running phase ends, even if the Mac slept through it.
     private lazy var phaseEnd = WallClockAlarm { [weak self] in self?.catchUp() }
+    /// Saves the last-alive time while a session runs, so a crash ends it
+    /// close to when it really stopped.
+    private var heartbeat: Timer?
+    /// Ends the session when the Mac sleeps or Tabbi quits; live runs only.
+    private var interruptions: SessionInterruptions?
     private let logURL: URL?
     /// Set when the log on disk could not be read: new stretches are still
     /// logged in memory, but the file is never overwritten, so nothing is lost.
@@ -97,6 +102,8 @@ final class StudyStore: ObservableObject {
     private static let deepFocusKey = "study.deepFocus"
     private static let customKey = "study.custom"
     private static let timerKey = "study.timerMinutes"
+    /// The last moment a session under way was known to run (`Date`).
+    static let lastAliveKey = "study.lastAlive"
 
     /// - Parameters:
     ///   - menu: the active kit's methods; a saved session on a method the
@@ -107,10 +114,16 @@ final class StudyStore: ObservableObject {
     ///   - petProfile: the study pet's look now; `follow(pet:)` keeps it
     ///     current. Demo runs show their own sample pet.
     ///   - celebrations: plays a paw print burst when a block finishes
-    ///     while the panel shows; nil in tests.
+    ///     while the panel shows, or a pet cheer beside the closed notch.
+    ///   - defaults: where the session and settings are saved; tests pass
+    ///     a suite of their own.
+    ///   - interruptions: where sleep and quit are announced; tests pass
+    ///     centers of their own.
     init(menu: StudyMethodMenu = .all, goal: StudyDailyGoal = .standard, storage: EditionStorage,
          activity: ActivityLog? = nil, focusMode: FocusController? = nil, petProfile: PetProfile = .starter(.cat),
-         celebrations: CelebrationCenter? = nil, runMode: RunMode) {
+         celebrations: CelebrationCenter? = nil, runMode: RunMode, defaults: UserDefaults = .standard,
+         interruptions: (workspace: NotificationCenter, app: NotificationCenter)? = nil) {
+        self.defaults = defaults
         isDemo = runMode.isDemo
         self.focusMode = focusMode
         self.celebrations = celebrations
@@ -141,9 +154,19 @@ final class StudyStore: ObservableObject {
         var saved = (isSnapshot ? nil : defaults.data(forKey: Self.sessionKey))
             .flatMap { try? JSONDecoder().decode(StudySession.self, from: $0) }
             ?? StudySession(method: .preset(menu.startingKind, custom: custom, timer: timer))
-        // A phase may have ended while the app wasn't running; catch up quietly.
+        // Sleep and quit stop a session under way, so one still under way
+        // means Tabbi crashed or the Mac lost power: it ends at the last
+        // heartbeat. Without one (an older build, or a snapshot run, which
+        // never recovers) a phase that ran out is caught up quietly.
         let launch = Date()
-        saved.advance(to: launch)
+        if !isSnapshot, let lastAlive = defaults.object(forKey: Self.lastAliveKey) as? Date {
+            saved.recover(lastAlive: lastAlive, now: launch)
+        } else {
+            saved.advance(to: launch)
+        }
+        // What the recovery logged reaches the activity log on the next
+        // main-queue turn, once every module (the pet included) follows it.
+        let recovered = isSnapshot ? [] : saved.takeLog()
         if let kind = menu.replacement(for: saved, kitApplied: false) {
             saved.switchMethod(to: .preset(kind, custom: custom, timer: timer), at: launch)
         }
@@ -160,7 +183,16 @@ final class StudyStore: ObservableObject {
             log = StudyLog()
             logIsUnreadable = true
         }
+        record(recovered, deferringActivity: true)
         scheduleSideEffects()
+        if !isSnapshot {
+            // An idle session keeps its rounds; only one under way ends.
+            let centers = interruptions ?? (NSWorkspace.shared.notificationCenter, .default)
+            self.interruptions = SessionInterruptions(workspace: centers.workspace, app: centers.app) { [weak self] in
+                guard let self, session.runState != .idle else { return }
+                stop()
+            }
+        }
 
         // Rolls the shared day tally over at midnight even while the panel is hidden.
         NotificationCenter.default.publisher(for: .NSCalendarDayChanged)
@@ -233,8 +265,16 @@ final class StudyStore: ObservableObject {
         } else if session.isRunning {
             change { $0.pause(at: now) }
         } else {
-            change { $0.start(at: now) }
+            start()
         }
+    }
+
+    /// Starts or resumes the clock, with a light start cue for a new
+    /// focus block.
+    private func start() {
+        let cue = SessionCue.start(wasIdle: session.runState == .idle, isFocus: session.phase == .focus)
+        change { $0.start(at: now) }
+        if !isDemo, !isSnapshot, let cue, session.isRunning { celebrations?.play(cue) }
     }
 
     func pause() {
@@ -247,7 +287,11 @@ final class StudyStore: ObservableObject {
         change { $0.skip(at: now) }
     }
 
-    func reset() {
+    /// Ends the session and banks the time so far: the phase is logged as
+    /// abandoned with the minutes it ran, which the pet pays from the
+    /// activity log (`PetCloset.credit(_:)`). Also runs when the Mac sleeps
+    /// or Tabbi quits mid-session.
+    func stop() {
         catchUp()
         change { $0.reset(at: now) }
     }
@@ -288,7 +332,7 @@ final class StudyStore: ObservableObject {
         setTimer(length)
         catchUp()
         guard session.method.kind == .timer, session.runState == .idle else { return }
-        change { $0.start(at: now) }
+        start()
     }
 
     /// Follows a new kit: the picker offers its methods, and a stopped
@@ -406,6 +450,7 @@ final class StudyStore: ObservableObject {
         // Stale ends (the Mac was asleep) stay quiet, and so do demo and snapshot runs.
         if !isDemo, !isSnapshot, let last = ended.last, now.timeIntervalSince(last.endedAt) < 60 {
             Self.playChime()
+            if !isSnapshot, let cue = SessionCue.phaseEnded(wasBreak: last.phase.isBreak) { celebrations?.play(cue) }
         }
         scheduleSideEffects()
         updateTicker()
@@ -417,6 +462,8 @@ final class StudyStore: ObservableObject {
         guard !isDemo, !isSnapshot else { return }
         collectLog()
         if let data = try? JSONEncoder().encode(session) { defaults.set(data, forKey: Self.sessionKey) }
+
+        updateHeartbeat()
 
         guard let endsAt = session.endsAt else {
             phaseEnd.cancel()
@@ -448,13 +495,13 @@ final class StudyStore: ObservableObject {
         focusMode?.activityChanged(FocusActivity(session, deepFocus: deepFocus && isEnabled), from: .study)
     }
 
-    /// Plays the pet's reaction to a session change. A celebration that
-    /// would happen out of sight waits for the panel to show; one in view
-    /// also scatters paw prints over the panel.
+    /// Plays the pet's reaction to a session change. A celebration in view
+    /// scatters paw prints over the panel; one with the notch closed makes
+    /// the pet beside it cheer; one behind another tab waits for this panel.
     private func reactPet(from old: StudySession) {
         for event in StudyPetCue.events(from: old, to: session) {
             if event == .celebrate, !isVisible {
-                celebrationPending = true
+                if !cheerBesideClosedNotch() { celebrationPending = true }
             } else {
                 pet.send(event)
                 if event == .celebrate {
@@ -465,12 +512,53 @@ final class StudyStore: ObservableObject {
         }
     }
 
+    /// Asks the pet beside the closed notch to cheer for the block that just
+    /// finished. A block that ended a while ago (the Mac was busy or asleep)
+    /// stays quiet. A block that ran out already chimes, so the cheer only
+    /// adds its soft sound to one the user ended (a Flowtime stretch).
+    /// Returns whether the cheer plays; it doesn't with a panel open.
+    private func cheerBesideClosedNotch() -> Bool {
+        guard !isDemo, !isSnapshot, let celebrations,
+              let block = session.log.last(where: { !$0.phase.isBreak }),
+              Date().timeIntervalSince(block.endedAt) < 60 else { return false }
+        return celebrations.cheer(.dance, hasOwnSound: block.outcome != .stopped) != nil
+    }
+
+    /// Saves the last-alive time now and every `FocusStore.heartbeatInterval`
+    /// while the clock runs. A paused session needs none: its time is fixed.
+    private func updateHeartbeat() {
+        if session.runState != .idle { defaults.set(Date(), forKey: Self.lastAliveKey) }
+        guard session.isRunning else {
+            heartbeat?.invalidate()
+            heartbeat = nil
+            return
+        }
+        guard heartbeat == nil else { return }
+        let beat = Timer(timeInterval: FocusStore.heartbeatInterval, repeats: true) { [weak self] _ in
+            MainActor.assumeIsolated { self?.defaults.set(Date(), forKey: Self.lastAliveKey) }
+        }
+        beat.tolerance = 5
+        RunLoop.main.add(beat, forMode: .common)
+        heartbeat = beat
+    }
+
     /// Drains the session's phase records into the persisted log and the
     /// shared activity log.
     private func collectLog() {
         guard !session.log.isEmpty else { return }
-        let records = session.takeLog()
-        activity?.record(records.compactMap { $0.activityRecord(source: StudyModule.descriptor.id) })
+        record(session.takeLog())
+    }
+
+    /// Adds `records` to the persisted log and the shared activity log,
+    /// optionally on the next main-queue turn.
+    private func record(_ records: [StudyPhaseRecord], deferringActivity: Bool = false) {
+        guard !records.isEmpty else { return }
+        let activities = records.compactMap { $0.activityRecord(source: StudyModule.descriptor.id) }
+        if deferringActivity, let activity {
+            DispatchQueue.main.async { _ = activity.record(activities) }
+        } else {
+            activity?.record(activities)
+        }
         var updated = log
         updated.record(records)
         if updated != log {

@@ -23,25 +23,53 @@ enum ModuleViews {
     }
 
     /// Hooks the shared `NotchView` up to this app: registered module panels
-    /// (each a stage for celebrations), the music wings, the Settings window
+    /// (each a stage for celebrations, with the user's pet in their empty
+    /// and error states), the music wings, the Settings window
     /// and first-run onboarding.
     @MainActor
     static func notchContent(services: AppServices) -> NotchContent {
         NotchContent(
             appName: Edition.current.name,
             catalog: services.settings.catalog,
-            panel: { AnyView(services.modules.panel(for: $0).celebrationStage(services.celebrations)) },
+            panel: { id in
+                AnyView(StatusPetProvider(providers: services.providers) {
+                    services.modules.panel(for: id).celebrationStage(services.celebrations)
+                })
+            },
             nowPlayingLeading: { AnyView(compactLeading(services: services)) },
             nowPlayingTrailing: { AnyView(compactTrailing(services: services)) },
             openSettings: { services.openSettings() },
-            takeover: OnboardingViews.takeover(store: services.onboarding, modules: services.modules),
+            takeover: OnboardingViews.takeover(store: services.onboarding, modules: services.modules,
+                                               providers: services.providers),
             setNotchMode: { services.settings.settings.notchMode = $0 },
-            checkForUpdates: AppUpdater.shared.isAvailable ? { AppUpdater.shared.checkForUpdates() } : nil,
+            checkForUpdates: checkForUpdates,
             celebrations: services.celebrations,
             runAction: ModuleActionRunner { [weak services] module, action in
                 services?.modules.perform(action, on: module)
             }
         )
+    }
+
+    /// "Check for Updates…" in the notch's context menu, while the updater
+    /// runs. The App Store build has none: the App Store updates the app.
+    @MainActor
+    private static var checkForUpdates: (() -> Void)? {
+        #if APPSTORE
+        nil
+        #else
+        AppUpdater.shared.isAvailable ? { AppUpdater.shared.checkForUpdates() } : nil
+        #endif
+    }
+
+    /// Hands panels (and onboarding) the shared pet (`ProviderSnapshot.pet`)
+    /// as `statusPet`, following it as the user restyles or turns it off.
+    struct StatusPetProvider<Content: View>: View {
+        @ObservedObject var providers: ProviderHub
+        @ViewBuilder let content: Content
+
+        var body: some View {
+            content.environment(\.statusPet, providers.snapshot.pet?.profile)
+        }
     }
 
     /// Feeds `NotchController` the settings, hotkey recorder and ticker

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tabbi.app/schemas/catalog.v1.schema.json",
+  "title": "Tabbi Party catalog (catalog.v1)",
+  "description": "backend/shared/catalog.json: the values the Party server accepts in profiles and presence, and its limits. The Worker imports it, GET /v1/catalog serves it, and clients bundle it so pickers offer only valid values (docs/study/backend-api.md). A newer catalog may add fields; clients ignore the ones they don't read.",
+  "type": "object",
+  "required": ["version", "species", "breeds", "costumes", "accessories", "statuses", "studyMethods", "heartbeatSeconds", "limits"],
+  "properties": {
+    "version": { "description": "The catalog's revision. A client whose copy is older can fetch GET /v1/catalog.", "type": "integer", "minimum": 1 },
+    "species": { "$ref": "#/$defs/ids" },
+    "breeds": {
+      "description": "The breeds of each species, keyed by a species id. A profile's breed must belong to its species; the first is the default.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/ids" }
+    },
+    "costumes": { "description": "Includes none, the default.", "$ref": "#/$defs/ids" },
+    "accessories": { "$ref": "#/$defs/ids" },
+    "statuses": { "description": "Presence statuses.", "$ref": "#/$defs/ids" },
+    "studyMethods": { "description": "Values of a presence's method.", "$ref": "#/$defs/ids" },
+    "heartbeatSeconds": {
+      "description": "Recommended seconds between heartbeats, keyed by status. A user stays online until 2.5 intervals pass without one; offline has no interval, since it ends presence at once.",
+      "type": "object",
+      "additionalProperties": { "type": "integer", "minimum": 1 }
+    },
+    "limits": {
+      "type": "object",
+      "required": ["nameMaxLength", "petNameMaxLength", "maxColors", "maxAccessories", "maxFriends", "maxPartyMembers", "partyIdleExpirySeconds"],
+      "properties": {
+        "nameMaxLength": { "$ref": "#/$defs/count" },
+        "petNameMaxLength": { "$ref": "#/$defs/count" },
+        "maxColors": { "description": "Colors in a profile, each #RRGGBB.", "$ref": "#/$defs/count" },
+        "maxAccessories": { "description": "Distinct accessories in a profile.", "$ref": "#/$defs/count" },
+        "maxFriends": { "$ref": "#/$defs/count" },
+        "maxPartyMembers": { "$ref": "#/$defs/count" },
+        "partyIdleExpirySeconds": { "description": "A party with no activity for this long ends.", "$ref": "#/$defs/count" }
+      },
+      "additionalProperties": { "type": "integer" }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+    "ids": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "count": { "type": "integer", "minimum": 1 }
+  }
+}

@@ -237,7 +237,7 @@ final class DayReviewTests: XCTestCase {
         let review = DayReviewer.review(of: PlannerDay(date: oct1), activity: [],
                                         study: StudyDayTally(minutes: 50, sessions: 1, points: 60), calendar: calendar)
         XCTAssertFalse(review.isEmpty)
-        XCTAssertEqual(DayReviewer.fallbackSummary(for: review), "You put in 50m of study today. Rest up and start fresh tomorrow.")
+        XCTAssertEqual(DayReviewer.fallbackSummary(for: review), "You put in 50 min of study today. Rest up and start fresh tomorrow.")
     }
 
     func testPromptMentionsStudyAndSharedGoalsOnlyWhenPresent() {
