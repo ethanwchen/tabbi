@@ -276,7 +276,7 @@ Modules listed only in `modules` stay optional: an older version skips them with
 
 ## For developers
 
-The format is defined by `KitManifest` in [`Sources/TabbiKitCore/Kits`](../Sources/TabbiKitCore/Kits):
+The format is defined by `KitManifest` in [`Sources/TabbiKitCore/Kits`](../Sources/TabbiKitCore/Kits), and described for other tools by the JSON Schema [`shared/schemas/kit.v1.schema.json`](../shared/schemas/kit.v1.schema.json), which `SharedSchemaTests` keeps in step with it:
 
 - `KitManifest.decode(from:)` parses and validates a file, including the `KitLimits` caps, and throws a `KitError`.
 - `issues(catalog:)` lists the non-fatal `KitIssue` warnings, including fields the format doesn't read (`unknownFields`) and old field names (`KitDefaults.legacyFields`, see `KitLegacyField`), which decoding has already moved into their module's section.

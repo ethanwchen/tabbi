@@ -7,6 +7,10 @@ See `docs/windows/plan.md` (section 3) for why, and `docs/windows/phase0.md` for
   `pets.v1.schema.json` describes the pet art, breeds and animation timelines in `Sources/TabbiKitCore/Pets/PetArt/`.
   `themes.v1.schema.json` describes the themes in `Sources/TabbiKitCore/Themes/themes.json`.
   `study-methods.v1.schema.json` describes the study methods in `Sources/TabbiKitCore/StudyMethods/study-methods.json`.
+  `kit.v1.schema.json` describes kit files (`formatVersion` 1), bundled in `Sources/TabbiKitCore/Kits/Bundled` or imported; see `docs/kits.md`.
+  `edition.v1.schema.json` describes the edition files in `Sources/TabbiKitCore/Editions/BundledEditions`.
+  `catalog.v1.schema.json` describes the Party catalog, `backend/shared/catalog.json`.
+  `SharedSchemaTests` keeps the kit and edition schemas' fields, limits and patterns equal to the Swift decoders, and the catalog schema equal to the catalog's fields.
 - `fixtures/` holds golden fixtures written by the Swift tests.
   Each port checks its own output against them, so drift between the apps fails a test.
 
@@ -17,3 +21,10 @@ TABBI_RECORD_FIXTURES=1 swift test --filter 'PetGoldenFrameTests|ThemeGoldenTest
 ```
 
 Review the diff before committing it: every changed line is a pixel, color or timing that changed for users.
+
+To check a data file against its schema, use any JSON Schema (draft 2020-12) validator, for example:
+
+```sh
+python3 -c 'import json, sys, jsonschema; jsonschema.validate(json.load(open(sys.argv[2])), json.load(open(sys.argv[1])))' \
+  shared/schemas/kit.v1.schema.json Sources/TabbiKitCore/Kits/Bundled/medicine.json
+```

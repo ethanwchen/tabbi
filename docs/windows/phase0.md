@@ -40,8 +40,12 @@ Status of phase 0 from `docs/windows/plan.md`: the Mac app's shared pieces move 
   `shared/schemas/study-methods.v1.schema.json` describes the format, and `StudyMethodFileTests` keeps its enums equal to Swift.
   The Med School kit's demo snapshots, plus the Study picker, Custom lengths, three info popovers and five running methods, match the commit before, apart from live clocks (a ring tip and a count-up second) and the pet's idle breath; the one other differing shot matched pixel for pixel when re-rendered.
 
+- Kits, editions and the Party catalog, which were already data, have JSON Schema files: `shared/schemas/kit.v1.schema.json`, `edition.v1.schema.json` and `catalog.v1.schema.json`.
+  The kit schema accepts only kits the Mac app loads (apart from the 64 KB file limit and bundled ids, which a schema can't express), and leaves to `KitValidation` what the app only warns about: unknown modules, previews, themes and fields, and module settings that don't fit.
+  `SharedSchemaTests` keeps each schema's fields, limits and version range equal to the Swift decoders, and checks sample ids, names, bundle ids and icon names against both the schema patterns and `KitManifest.decode` or `Edition.decode`.
+  The bundled kits, the edition and the catalog pass their schemas in a JSON Schema validator, and the tests were shown to fail on a changed limit, pattern, field name or reserved key.
+
 ## Next
 
-1. JSON Schema files for kits, editions and `catalog.json`.
-2. Logic fixtures for the TypeScript port: focus timer and study session sequences, the stream-json parser, Plan my day, ticker selection.
-3. Snapshot comparison against `main`, pixel for pixel.
+1. Logic fixtures for the TypeScript port: focus timer and study session sequences, the stream-json parser, Plan my day, ticker selection.
+2. Snapshot comparison against `main`, pixel for pixel.
