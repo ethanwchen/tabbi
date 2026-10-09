@@ -61,8 +61,10 @@ private struct FocusDial: View {
 }
 
 /// What this session is for (the task linked from Today, or the timer's
-/// status) and, under it, what focus mode does while it runs: one unit,
-/// so the column has one card above the controls, as in Study.
+/// status) at the top and what focus mode does while it runs at the
+/// bottom: one unit, so the column has one card above the controls, as in
+/// Study. Pinning the two to the edges keeps the task near the top instead
+/// of floating in the middle of a tall card.
 private struct FocusSessionCard: View {
     @ObservedObject var store: FocusStore
     let focusMode: FocusController
@@ -70,8 +72,9 @@ private struct FocusSessionCard: View {
 
     var body: some View {
         Card {
-            VStack(alignment: .leading, spacing: Theme.Spacing.m) {
+            VStack(alignment: .leading, spacing: 0) {
                 task
+                Spacer(minLength: Theme.Spacing.m)
                 FocusModeRow(controller: focusMode)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)

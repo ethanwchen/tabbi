@@ -296,8 +296,8 @@ final class ClaudeUsageFormatTests: XCTestCase {
     }
 
     func testDuration() {
-        XCTAssertEqual(ClaudeUsageFormat.duration(30), "<1m")
-        XCTAssertEqual(ClaudeUsageFormat.duration(14 * 60), "14m")
+        XCTAssertEqual(ClaudeUsageFormat.duration(30), "<1 min")
+        XCTAssertEqual(ClaudeUsageFormat.duration(14 * 60), "14 min")
         XCTAssertEqual(ClaudeUsageFormat.duration(2 * 3600 + 13 * 60 + 5), "2h 14m")
         XCTAssertEqual(ClaudeUsageFormat.duration(3 * 3600), "3h")
     }

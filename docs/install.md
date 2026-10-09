@@ -11,7 +11,7 @@ Installing it takes about a minute, and it keeps itself up to date after that.
 
 ## Install
 
-1. Download **Tabbi-&lt;version&gt;.dmg** from the [latest release](https://github.com/ethanwchen/notchdeck/releases/latest).
+1. Download **Tabbi-&lt;version&gt;.dmg** from the [latest release](https://github.com/ethanwchen/tabbi/releases/latest).
 2. Open the downloaded file.
    A window like this one appears:
 
@@ -66,17 +66,13 @@ Update checks download a small file from GitHub, where Tabbi's releases are publ
 
 ## Install with Homebrew
 
-If you use [Homebrew](https://brew.sh), you can install Tabbi from the Terminal instead:
-
-```sh
-brew install --cask tabbi
-```
-
-Until Tabbi is listed in Homebrew's main catalog, use the project's own tap:
+If you use [Homebrew](https://brew.sh), you can install Tabbi from the project's own tap in the Terminal instead:
 
 ```sh
 brew install --cask ethanwchen/tap/tabbi
 ```
+
+Naming the tap this way also tells Homebrew to trust it, which newer versions of Homebrew ask for before they load a cask from outside their main catalog.
 
 Tabbi updates itself, so `brew upgrade` leaves it alone; that is expected.
 
@@ -148,29 +144,4 @@ If you installed with Homebrew, `brew uninstall --cask tabbi` removes the app, a
 
 ## For maintainers: publishing a release
 
-Releases are built by `scripts/release.sh`, either on your Mac or with the **Release** GitHub Actions workflow (Actions > Release > Run workflow).
-The script explains each missing step when you run it, and [research/installer.md](research/installer.md) has the background and sources.
-
-One-time setup on your Mac:
-
-1. Install your **Developer ID Application** certificate (Apple Developer Program, Certificates, IDs & Profiles) in the login keychain.
-   `security find-identity -v -p codesigning` should list it.
-   With more than one, set `DEVELOPER_ID` in `packaging/signing.env`.
-2. Store notarization credentials once: `xcrun notarytool store-credentials notchdeck`.
-   It asks for your Apple ID, team id and an app-specific password and keeps them in the keychain; the scripts never see them.
-3. Create the update signing key once with `.build/artifacts/sparkle/Sparkle/bin/generate_keys` (after `swift build`).
-   The private key stays in your keychain; never commit it.
-   Paste the public key it prints into `SPARKLE_PUBLIC_KEY` in `packaging/updates.env`.
-
-Each release:
-
-1. Set the version (`CFBundleShortVersionString`) in `Resources/Info.plist` and commit.
-2. Run `scripts/release.sh`.
-   It builds a universal app, signs, notarizes and staples it and the DMG, and writes the zip, `appcast.xml`, release notes from git, `SHA256SUMS` and the Homebrew cask to `build/release/`.
-3. Create the GitHub Release `v<version>` with the release notes and upload the DMG, the zip, `appcast.xml` and `SHA256SUMS`.
-   Installed copies find the update through the latest release's `appcast.xml`.
-4. Copy `build/release/tabbi.rb` to `Casks/tabbi.rb` in `ethanwchen/homebrew-tap`; once Tabbi meets Homebrew's notability rules, submit it to `homebrew/cask`.
-
-The workflow does steps 2 and 3 (as a draft release) from these repository secrets, documented at the top of `.github/workflows/release.yml`: `DEVELOPER_ID_P12`, `DEVELOPER_ID_P12_PASSWORD`, `NOTARY_APPLE_ID`, `NOTARY_TEAM_ID`, `NOTARY_PASSWORD` and `SPARKLE_PRIVATE_KEY`.
-
-Without a Developer ID, `scripts/release.sh --adhoc` still builds everything for testing, but macOS blocks its first launch on other Macs (see "Something went wrong?" above), so never publish it.
+[release.md](release.md) lists every step to ship a release, from the one-time setup to the Homebrew cask.

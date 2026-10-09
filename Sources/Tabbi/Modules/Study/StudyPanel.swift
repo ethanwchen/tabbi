@@ -239,8 +239,8 @@ private struct StudyPartySessionView: View {
 }
 
 /// The method in use, its rhythm and round, the deep focus switch with
-/// the sound chips, and today's tally at the bottom. The name opens the
-/// picker, the (i) the method's info popover, and Mix or Playlist the mixer.
+/// the sound button, and today's tally at the bottom. The name opens the
+/// picker, the (i) the method's info popover, and the sound button the mixer.
 private struct StudyMethodCard: View {
     @ObservedObject var store: StudyStore
     let focusMode: FocusController
@@ -425,7 +425,8 @@ private struct StudyDeepFocusRow: View {
             }
             .fixedSize()
             Spacer(minLength: 0)
-            StudySoundRow(focus: focus, isActive: isOn, openMixer: openMixer)
+            StudySoundButton(focus: focus, isActive: isOn, openMixer: openMixer)
+                .layoutPriority(-1)
         }
     }
 

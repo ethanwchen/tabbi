@@ -63,7 +63,7 @@ final class StudyDailyGoalTests: XCTestCase {
         let snapshot = ProviderSnapshot([(.study, ModuleProvision(progress: [item]))])
         let row = snapshot.sharedTodayItems(excluding: .planner).first
         XCTAssertEqual(row?.source, .study)
-        XCTAssertEqual(row?.detail, "75 min left")
+        XCTAssertEqual(row?.detail, "1h 15m left")
         XCTAssertEqual(row?.isDone, false)
         XCTAssertEqual(snapshot.plannableWork(excluding: .planner), ["Focus time (75 min left)"])
         XCTAssertNil(snapshot.cardsReviewedToday(excluding: .anki), "study minutes are not cards")
