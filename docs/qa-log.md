@@ -2,6 +2,7 @@
 
 What the whole-app quality pass found and fixed, newest first, one sentence per line.
 
+- VoiceOver read raw symbol names for the notch's icon-only controls ("checklist" and "cpu" for tabs, "gearshape.fill" for Settings, "Clear Night" for Wrap up, "Facetime Video Call" for joining a meeting), Today's task checkboxes had no name at all, Closet tiles read only "100" or "On", Anki deck rows read "AnKing Step 1, 30, 12, 186" and a Party friend's Join button never said whose party; each now has a real name (and a value such as "Done" or "30 new, 12 learning, 186 review"), checked against the accessibility tree of a running demo build.
 - The Claude Usage panel showed today's message count without digit grouping ("3800", and "12345" on a busy day) beside compact token counts like "374M"; it now follows the Mac's number format ("3,846").
 - Two Anki connection verdicts still stuttered on their subject ("Anki isn't on this Mac. Anki is a free flashcard app.", "Anki said no to Tabbi. Anki asked whether..."), which the earlier two-word check missed; they now read "It's a free flashcard app" and "When Anki asked whether to let Tabbi in, the answer was no", and the test now flags a detail that opens with the headline's first word.
 - A snapshot run (`--snapshot`) rewrote Party's saved presence (focus time and streak) in the app's preferences, although snapshot runs must leave no trace; Party now saves neither its presence nor its settings while rendering snapshots (a small fix in the Party store, owned by the Party agent).

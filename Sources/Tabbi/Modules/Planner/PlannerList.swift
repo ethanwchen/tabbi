@@ -124,7 +124,7 @@ private struct PlannerRow: View {
 
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
-            PlannerCheckbox(isOn: item.isDone) {
+            PlannerCheckbox(title: item.title, isOn: item.isDone) {
                 withMotion(Theme.Motion.snappy) { store.toggle(item.id) }
             }
             .disabled(!store.canEdit)
@@ -293,6 +293,8 @@ private struct PlannerSharedCheck: View {
 
 /// Round checkbox whose check draws on with a small bounce, filled with the module accent.
 private struct PlannerCheckbox: View {
+    /// The task's title, which VoiceOver reads as the checkbox's name.
+    let title: String
     let isOn: Bool
     let action: () -> Void
     @State private var hovering = false
@@ -306,6 +308,8 @@ private struct PlannerCheckbox: View {
         }
         .buttonStyle(.tactile)
         .help(isOn ? "Mark as not done" : "Mark as done")
+        .accessibilityLabel(title)
+        .accessibilityValue(isOn ? "Done" : "Not done")
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }
@@ -340,6 +344,7 @@ private struct PlannerFocusToggle: View {
                 }
                 .buttonStyle(.plain)
                 .help(isLinked ? "Stop focusing on this task" : "Focus on this task")
+                .accessibilityLabel(isLinked ? "Stop focusing on this task" : "Focus on this task")
                 .onHover { hovering = $0 }
             } else if isLinked {
                 Image(systemName: "scope")
@@ -369,6 +374,7 @@ private struct PlannerDeleteButton: View {
         }
         .buttonStyle(.plain)
         .help("Delete task")
+        .accessibilityLabel("Delete task")
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }

@@ -210,6 +210,9 @@ private struct TabButton: View {
         }
         .buttonStyle(.tactile)
         .help(shortcut.map { "\(descriptor.title) (\($0))" } ?? descriptor.title)
+        // The tab shows only its symbol, so name it for VoiceOver.
+        .accessibilityLabel(descriptor.title)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
         .onHover { hovering = $0 }
     }
 }

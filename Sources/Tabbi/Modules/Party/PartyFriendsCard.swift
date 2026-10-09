@@ -164,6 +164,8 @@ private struct PartyFriendRow: View {
                             help: "Join \(friend.profile.name)'s party") {
                 store.join(friend: friend.profile.code)
             }
+            // The row's own tooltip hides this one from VoiceOver, so name whose party.
+            .accessibilityLabel("Join \(friend.profile.name)'s party")
         }
     }
 

@@ -155,6 +155,8 @@ public struct IconButton: View {
         }
         .buttonStyle(.tactile)
         .help(help)
+        // VoiceOver would otherwise read the symbol's name ("gearshape.fill").
+        .accessibilityLabel(help)
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }

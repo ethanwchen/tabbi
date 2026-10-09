@@ -404,6 +404,9 @@ private struct ClosetItemTile: View {
         }
         .buttonStyle(.plain)
         .help(help)
+        // The tile shows only a sprite and a price, so name the item for VoiceOver.
+        .accessibilityLabel(item.displayName)
+        .accessibilityValue(accessibilityState)
         .onHover { inside in
             hovering = inside
             onHover(inside)
@@ -427,6 +430,15 @@ private struct ClosetItemTile: View {
         .font(.system(size: 10, weight: .semibold, design: .rounded).monospacedDigit())
         .labelStyle(ClosetTightLabelStyle())
         .frame(height: 12)
+    }
+
+    private var accessibilityState: String {
+        switch state {
+        case .wearing: "Wearing"
+        case .owned: "Owned"
+        case .affordable: "\(isNew ? "New, " : "")unlock for \(item.cost) points"
+        case .locked(let missing): "\(isNew ? "New, " : "")\(item.cost) points, \(missing) more to go"
+        }
     }
 
     private var help: String {
