@@ -83,12 +83,13 @@ final class PetProfileTests: XCTestCase {
         XCTAssertGreaterThan(palette[.eyeLight].luminance, 0.9, "a white highlight")
 
         // The eye and highlight pixels land exactly where every plain cat's
-        // do: a 2x3 eye with the highlight at its top left.
+        // do: a 2x3 eye with the highlight at its top left
+        // over the pupil and a row of iris.
         func eyePixels(_ canvas: PetCanvas) -> [String] {
             (0..<canvas.height).flatMap { y in
                 (0..<canvas.width).compactMap { x in
                     let role = canvas[x, y]
-                    return role == .eye || role == .eyeLight ? "\(x),\(y),\(role!.symbol)" : nil
+                    return role == .eye || role == .pupil || role == .eyeLight ? "\(x),\(y),\(role!.symbol)" : nil
                 }
             }
         }

@@ -104,7 +104,8 @@ public struct PetColor: Hashable, Codable, Sendable, CustomStringConvertible {
 /// roles; a palette turns roles into colors. That is what makes every breed,
 /// costume, and user recolor work from the same hand-drawn art.
 ///
-/// Each role has a single uppercase character used in sprite text grids.
+/// Each role has a single character used in sprite text grids: uppercase,
+/// except `pupil`, which took the last free letter in lowercase.
 public enum PetPaletteRole: String, CaseIterable, Codable, Sendable {
     case outline
     case furBase
@@ -113,7 +114,13 @@ public enum PetPaletteRole: String, CaseIterable, Codable, Sendable {
     /// Second marking color (calico black patches, beagle saddle).
     case furSpot
     case belly
+    /// The iris: the eye's own color (green, blue, copper, or dark brown).
+    /// Closed and happy eye lines use it too, so they read on dark fur.
     case eye
+    /// The dark center of an open eye. Without it a colored eye is a flat
+    /// block of color that stares; with it every breed gets a soft, friendly
+    /// look. Kept near-black for every breed.
+    case pupil
     case eyeLight
     case nose
     /// Cat mouth lines. Resolved against the fur around them (see
@@ -159,6 +166,8 @@ public enum PetPaletteRole: String, CaseIterable, Codable, Sendable {
         case .furSpot: "K"
         case .belly: "W"
         case .eye: "E"
+        // The alphabet ran out of uppercase letters; `i` is not a zone.
+        case .pupil: "i"
         case .eyeLight: "L"
         case .nose: "N"
         case .mouth: "R"
@@ -272,6 +281,7 @@ public struct PetPalette: Hashable, Codable, Sendable {
         .furSpot: PetColor(hex: "#3A3036")!,
         .belly: PetColor(hex: "#FFF1DC")!,
         .eye: PetColor(hex: "#1E1420")!,
+        .pupil: PetColor(hex: "#1E1420")!,
         .eyeLight: PetColor(hex: "#FFFFFF")!,
         .nose: PetColor(hex: "#E77A8C")!,
         .mouth: PetColor(hex: "#2A1A14")!,

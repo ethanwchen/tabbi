@@ -47,7 +47,8 @@ Parse errors report the 1-based row and column of the problem.
 | `A` | furAccent | stripes, points |
 | `K` | furSpot | second marking color (calico black) |
 | `W` | belly | light fur |
-| `E` | eye | pupils |
+| `E` | eye | iris, and the lines of closed eyes |
+| `i` | pupil | dark center of an open eye (lowercase: the uppercase letters ran out) |
 | `L` | eyeLight | eye highlight |
 | `N` | nose | nose (and dog mouths) |
 | `R` | mouth | cat mouth lines; dark on light fur, warm rim on dark fur (picked per pixel from the 4 neighbors) |
@@ -180,7 +181,8 @@ Each frame is the sitting composition in a `PetPose`, so every breed and costume
 | `lift` | Raises the whole pet off the baseline, for hops |
 
 Eye states live in `EffectArt` as 4x3 grids centered on the 2x3 open eye.
-A 3-wide open eye (the Sphynx's) gets the spare pixel on its cheek side, and a pupil drawn in the outline color inside an eye is cleared with it.
+A 3-wide open eye (the Sphynx's) gets the spare pixel on its cheek side, and the pupil inside an eye is cleared with it.
+An open eye is a highlight at the top left, the pupil under and beside it, and a bottom row of iris, so colored eyes look soft instead of staring.
 The composer finds the open eyes on the face's eye row, clears them so the head's fur shows through, and stamps the new state, so a new face only needs its open-eyed version.
 Sleepy eyes also close the mouth: blush pixels below the cheek row (the eye row + 3) are cleared, so a dog's panting tongue tucks away and its nose-colored mouth corners read as a closed "w".
 Draw a tongue with the blush role below the cheek row and it will hide itself during sleep.

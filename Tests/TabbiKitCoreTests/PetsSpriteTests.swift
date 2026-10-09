@@ -339,3 +339,42 @@ final class PetBreedTests: XCTestCase {
         XCTAssertEqual(Set(looks.map { $0.map { $0?.hex ?? "-" } }).count, PetBreed.allCases.count)
     }
 }
+
+final class PetEyeTests: XCTestCase {
+    /// Every open eye has a highlight, an iris, and a dark pupil, so no breed
+    /// stares out of flat blocks of color.
+    func testEveryBreedHasAPupilAndAWhiteHighlight() {
+        for breed in PetBreed.allCases {
+            let palette = breed.palette.withVisibleRim()
+            let pixels = PetComposer.sitting(breed).pixels
+            XCTAssertTrue(pixels.contains(.pupil), "\(breed)")
+            XCTAssertTrue(pixels.contains(.eyeLight), "\(breed)")
+            XCTAssertGreaterThan(palette[.eyeLight].luminance, 0.9, "a white catchlight: \(breed)")
+            XCTAssertLessThan(palette[.pupil].luminance, palette[.eye].luminance + 0.001,
+                              "the pupil is never lighter than the iris: \(breed)")
+            XCTAssertLessThan(palette[.pupil].luminance, 0.15, "a dark pupil: \(breed)")
+        }
+    }
+
+    /// Dark coats get a tinted pupil, so the eye keeps its shape instead of
+    /// melting into black fur.
+    func testPupilsStandOutFromDarkFur() {
+        for breed in [PetBreed.blackCat, .tuxedo, .dachshund] {
+            let palette = breed.palette
+            XCTAssertNotEqual(palette[.pupil], PetPalette.base[.pupil], "\(breed)")
+            XCTAssertGreaterThan(palette[.pupil].luminance, palette[.furBase].luminance, "\(breed)")
+        }
+    }
+
+    /// Closed, sleepy, happy, and squeezed eyes clear the whole open eye,
+    /// pupil included, so no dark pixel is left behind.
+    func testClosedEyesLeaveNoPupilBehind() {
+        for breed in PetBreed.allCases {
+            for eyes in [PetPose.Eyes.closed, .sleepy, .happy, .squeezed] {
+                let canvas = PetComposer.sitting(breed, pose: PetPose(eyes: eyes))
+                XCTAssertFalse(canvas.pixels.contains(.pupil), "\(breed) \(eyes)")
+                XCTAssertFalse(canvas.pixels.contains(.eyeLight), "\(breed) \(eyes)")
+            }
+        }
+    }
+}

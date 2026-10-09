@@ -56,9 +56,9 @@ final class PetCostumeTests: XCTestCase {
     func testCostumesNeverCoverTheEyes() {
         // Eyes carry the character; glasses frame them and hats sit above them.
         for breed in PetBreed.allCases {
-            let eyes = PetComposer.sitting(breed).pixels.filter { $0 == .eye || $0 == .eyeLight }.count
+            let eyes = PetComposer.sitting(breed).pixels.filter { $0 == .eye || $0 == .pupil || $0 == .eyeLight }.count
             let dressed = PetComposer.sitting(breed, outfit: .whiteCoat, accessories: [.roundGlasses, .beanie])
-            XCTAssertEqual(dressed.pixels.filter { $0 == .eye || $0 == .eyeLight }.count, eyes, "\(breed)")
+            XCTAssertEqual(dressed.pixels.filter { $0 == .eye || $0 == .pupil || $0 == .eyeLight }.count, eyes, "\(breed)")
         }
     }
 
