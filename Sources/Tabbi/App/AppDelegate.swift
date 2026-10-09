@@ -48,6 +48,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             services.onboarding.start()
         }
         services.accountSync.start()
+        #if !APPSTORE
+        if RunMode.current == .live {
+            // Asked once the notch is up, so the prompt never holds up launch.
+            let report = CrashHandler.takePendingReport(in: EditionStorage(edition: edition))
+            DispatchQueue.main.async { CrashReportFlow.live.run(with: report) }
+        }
+        #endif
     }
 
     /// With no Dock icon or menu bar item, opening the app again (from Finder,
