@@ -182,7 +182,7 @@ SUPPORT = f'''
             The first time, a short welcome inside the notch helps you pick your tabs.</p>
           <p>With Homebrew you can run <code>brew install --cask ethanwchen/tap/tabbi</code> instead.</p>""", 'install')}
 
-{faq('macOS says it cannot verify Tabbi, or will not open it', """          <p>Releases downloaded from GitHub are signed by the developer and notarized by Apple, so they open normally.
+{faq('What if macOS will not open Tabbi?', """          <p>Releases downloaded from GitHub are signed by the developer and notarized by Apple, so they open normally.
             The warning appears only for a copy built without a Developer ID, such as a test build.
             To open one anyway:</p>
           <ol>

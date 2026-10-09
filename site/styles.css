@@ -353,7 +353,7 @@ main li::marker { color: var(--gold-deep); font-weight: 800; }
 .faq summary {
   cursor: pointer; list-style: none; position: relative;
   padding: 17px 56px 17px 24px; font-family: var(--head); font-weight: 600; font-size: 18px; color: var(--ink);
-  border-radius: 22px;
+  border-radius: 22px; text-wrap: balance;
 }
 .faq summary::-webkit-details-marker { display: none; }
 .faq summary::after {
