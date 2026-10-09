@@ -17,6 +17,7 @@ No item can be bought with money, and nothing in the shop mentions payments.
 | Finishing a focus block of 25 minutes or more | +10 completion bonus |
 | A Party shared session that runs to its end | the same as a finished block, plus a team bonus |
 | Party team bonus | +5 per friend who studied along, at most +15 |
+| A Party stay cut short (you stepped out, or the host ended it early) | the minutes studied, without either bonus |
 
 So one finished 25 minute block pays 25 + 10 = 35 points.
 A block stopped early pays the minutes studied, without the bonus.
@@ -35,6 +36,12 @@ That gives:
 
 A student who studies more (say six blocks a day) simply gets there twice as fast.
 A Party session with two friends pays 35 + 10 = 45 points for the same 25 minutes.
+
+Party pays every member the same way, host or not: each member's Tabbi tracks its own stay in the shared session.
+A member who joins late is paid from when they joined, and still gets both bonuses if they stay to the end (the completion bonus only for a stay of 25 minutes or more).
+A member who steps out is paid the minutes studied until then, and is paid again from when they rejoin.
+A stay cut short gets no bonuses, so stepping out and back in is never worth more than staying (for example, leaving at minute 10 of 25 with three friends pays 10 + (15 + 15) = 40, while staying pays 25 + 10 + 15 = 50).
+Every stay is also logged as study minutes in the activity log: a finished one as a completed session, a cut-short one as minutes only.
 
 ## Price tiers
 

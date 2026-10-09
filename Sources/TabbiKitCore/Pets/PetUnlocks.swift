@@ -129,12 +129,16 @@ public enum PetPointsRules {
     /// worth far more than a small one.
     public static let maxSharedBonus = 15
 
-    /// Points for a Party shared session that ran to its end with the user
-    /// in it: a completed solo session's points, plus the team bonus when
-    /// at least one friend was there. Too short a stay earns nothing.
-    public static func sharedPoints(forMinutes minutes: Int, friends: Int) -> Int {
-        let solo = points(forMinutes: minutes, completed: true)
-        guard solo > 0 else { return 0 }
+    /// Points for a stay in a Party shared session. One that ran to its end
+    /// with the user in it pays a completed solo session's points, plus the
+    /// team bonus when at least one friend was there. One cut short (the
+    /// user stepped out, or the host ended it early) pays the minutes
+    /// studied like a solo session cut short: no bonuses, so stepping out
+    /// and back in is never worth more than staying. Too short a stay
+    /// earns nothing.
+    public static func sharedPoints(forMinutes minutes: Int, friends: Int, finished: Bool = true) -> Int {
+        let solo = points(forMinutes: minutes, completed: finished)
+        guard solo > 0, finished else { return solo }
         return solo + min(max(friends, 0) * sharedBonusPerFriend, maxSharedBonus)
     }
 }
@@ -182,11 +186,11 @@ public struct PetPointsLedger: Hashable, Codable, Sendable {
         return points
     }
 
-    /// Credits a finished Party shared session (`PetPointsRules.sharedPoints`)
+    /// Credits a stay in a Party shared session (`PetPointsRules.sharedPoints`)
     /// and returns the points it earned.
     @discardableResult
-    public mutating func recordSharedSession(minutes: Int, friends: Int) -> Int {
-        let points = PetPointsRules.sharedPoints(forMinutes: minutes, friends: friends)
+    public mutating func recordSharedSession(minutes: Int, friends: Int, finished: Bool = true) -> Int {
+        let points = PetPointsRules.sharedPoints(forMinutes: minutes, friends: friends, finished: finished)
         earned += points
         return points
     }

@@ -463,8 +463,9 @@ final class PartyStore: ObservableObject {
             .eraseToAnyPublisher()
     }
 
-    /// Shared sessions that ran to their end with me in them, once each
-    /// (`PartySessionTracker`), so the module can pay and log them.
+    /// My stays in shared sessions, once each as they end, whether the
+    /// session ran to its end or I left it early (`PartySessionTracker`),
+    /// so the module can pay and log them.
     var completedSessions: AnyPublisher<PartySessionCompletion, Never> {
         var tracker = PartySessionTracker()
         return provided
