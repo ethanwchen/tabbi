@@ -236,7 +236,7 @@ final class SchedulePlannerTests: XCTestCase {
         let result = plan(now: at(9), work: [task("A", 90), task("B", 60)], preferences: preferences)
         XCTAssertEqual(result.focusMinutes, 120)
         XCTAssertEqual(result.unplaced.map(\.minutes), [30])
-        XCTAssertEqual(result.unplaced.first?.reason, "Over your 2 h focus limit")
+        XCTAssertEqual(result.unplaced.first?.reason, "Over your 2h focus limit")
     }
 
     func testOverflowListsWhatDidNotFit() {

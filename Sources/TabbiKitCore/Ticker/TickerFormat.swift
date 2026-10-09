@@ -19,9 +19,9 @@ public enum TickerFormat {
         count == 1 ? "1 task left" : "\(count) tasks left"
     }
 
-    /// "84 cards left": what remains of a shared goal, in its own unit.
+    /// "84 cards left" or "1h 15m left": what remains of a shared goal, in its own unit.
     public static func progressLeft(_ item: ProgressItem) -> String {
-        "\(item.remaining) \(item.unit) left"
+        DurationFormat.quantity(item.remaining, unit: item.unit) + " left"
     }
 
     /// Focus countdown, e.g. "18:42", matching the focus card's clock.

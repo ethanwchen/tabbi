@@ -63,14 +63,9 @@ public enum ClaudeUsageFormat {
         return "resets " + resetsAt.formatted(style)
     }
 
-    /// Short duration rounded up to the minute: "<1m", "14m", "2h 14m", "3h".
+    /// Short duration rounded up to the minute: "<1 min", "14 min", "2h 14m", "3h".
     public static func duration(_ seconds: TimeInterval) -> String {
-        let minutes = Int((seconds / 60).rounded(.up))
-        if seconds < 60 { return "<1m" }
-        let hours = minutes / 60
-        let rest = minutes % 60
-        if hours == 0 { return "\(rest)m" }
-        return rest == 0 ? "\(hours)h" : "\(hours)h \(rest)m"
+        DurationFormat.seconds(seconds)
     }
 
     /// "Updated just now", "Updated 3m ago", "Updated 2h ago", "Updated 3d ago".

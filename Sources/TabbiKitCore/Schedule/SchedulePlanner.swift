@@ -357,7 +357,7 @@ public enum SchedulePlanner {
             while pending[index].minutesLeft > 0 {
                 let left = TimeInterval(pending[index].minutesLeft) * minute
                 guard focusLeft >= minimum else {
-                    pending[index].reason = "Over your \(hours(preferences.maximumFocusMinutes)) focus limit"
+                    pending[index].reason = "Over your \(DurationFormat.minutes(preferences.maximumFocusMinutes)) focus limit"
                     break
                 }
                 let want = min(left, TimeInterval(preferences.maximumBlockMinutes) * minute, floorDuration(focusLeft))
@@ -488,9 +488,4 @@ public enum SchedulePlanner {
     static func ceilSlot(_ date: Date) -> Date { DayPlanner.nextSlot(onOrAfter: date) }
 
     static func floorDuration(_ duration: TimeInterval) -> TimeInterval { (duration / slot).rounded(.down) * slot }
-
-    /// "6 h" or "4 h 30 min".
-    static func hours(_ minutes: Int) -> String {
-        minutes % 60 == 0 ? "\(minutes / 60) h" : minutes < 60 ? "\(minutes) min" : "\(minutes / 60) h \(minutes % 60) min"
-    }
 }

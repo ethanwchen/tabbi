@@ -217,11 +217,9 @@ public enum DayReviewer {
         return stats
     }
 
-    /// "45m", "2h", "1h 15m".
+    /// "45 min", "2h", "1h 15m".
     static func duration(minutes: Int) -> String {
-        let minutes = max(minutes, 0)
-        guard minutes >= 60 else { return "\(minutes)m" }
-        return minutes % 60 == 0 ? "\(minutes / 60)h" : "\(minutes / 60)h \(minutes % 60)m"
+        DurationFormat.minutes(minutes)
     }
 
     private static func count(_ value: Int, _ noun: String) -> String {

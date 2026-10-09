@@ -215,12 +215,9 @@ public struct ScheduleDayLayout: Hashable, Sendable {
 
 /// The Schedule's words for times, lengths and what is on now.
 public enum ScheduleFormat {
-    /// "45 min", "2 h", "1 h 15 min".
+    /// "45 min", "2h", "1h 15m".
     public static func duration(minutes: Int) -> String {
-        let minutes = max(minutes, 0)
-        let hours = minutes / 60, rest = minutes % 60
-        if hours == 0 { return "\(rest) min" }
-        return rest == 0 ? "\(hours) h" : "\(hours) h \(rest) min"
+        DurationFormat.minutes(minutes)
     }
 
     /// "10:45-12:00" in the user's clock style, without AM/PM.
