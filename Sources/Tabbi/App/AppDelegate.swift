@@ -21,6 +21,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             // Before any store opens a file: adopts NotchDeck's data once.
             LegacyDataMigration.tabbi(storage: EditionStorage(edition: edition)).runIfNeeded()
         }
+        #if !APPSTORE
+        // The App Store build relies on Apple's crash reports instead.
+        if RunMode.current == .live {
+            CrashHandler.install(in: EditionStorage(edition: edition), environment: Feedback.environment)
+        }
+        #endif
         let settings = SettingsStore(catalog: ModuleList.catalog(for: edition), defaultKitID: edition.defaultKitID, kitStore: .standard(for: edition))
         #if !APPSTORE
         guard InstallHygiene.settle(settings: settings) == .proceed else {
