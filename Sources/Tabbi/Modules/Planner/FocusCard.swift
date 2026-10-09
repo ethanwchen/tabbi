@@ -43,8 +43,8 @@ struct FocusCard: View {
                         IconButton(symbol: "forward.end.fill", size: 20, help: skipHelp) {
                             withMotion(Theme.Motion.snappy) { store.skip() }
                         }
-                        IconButton(symbol: "arrow.counterclockwise", size: 20, help: "Reset to a fresh focus session") {
-                            withMotion(Theme.Motion.snappy) { store.reset() }
+                        IconButton(symbol: "stop.fill", size: 20, help: "Stop and keep the time focused so far") {
+                            withMotion(Theme.Motion.snappy) { store.stop() }
                         }
                     }
                     .transition(.motionPop)

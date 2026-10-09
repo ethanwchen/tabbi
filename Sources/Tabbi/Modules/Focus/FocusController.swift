@@ -27,6 +27,9 @@ final class FocusController: ObservableObject {
     }
     /// True during a focus phase (sound and Do Not Disturb applied).
     @Published private(set) var isFocusing = false
+    /// True while a focus phase has Do Not Disturb on, so celebrations
+    /// stay silent. Tabbi can't read the system's Focus state, only its own.
+    var holdsDoNotDisturb: Bool { isFocusing && settings.doNotDisturb }
     /// True while Settings is previewing the sound outside a focus phase.
     @Published private(set) var isPreviewing = false
 
@@ -202,13 +205,18 @@ final class FocusController: ObservableObject {
         engine.play()
     }
 
-    /// What demo mode and snapshots show: a cozy blend and a playlist.
+    /// What demo mode and snapshots show: a cozy blend saved as a preset
+    /// (with a second preset and a free slot beside it) and a playlist.
     private static let sampleSettings = FocusSettings(
-        mix: FocusMix([.init(sound: .rain), .init(sound: .fireplace, level: 0.6)]),
+        mix: sampleMix,
+        presets: FocusMixPresets([FocusMixPreset(name: "Cozy", mix: sampleMix),
+                                  FocusMixPreset(name: "Deep work", mix: .single(.brown))]),
         volume: 0.45,
         playlistText: "https://open.spotify.com/playlist/0vvXsWCC9xrXsKd4FyS8kM",
         doNotDisturb: true
     )
+
+    private static let sampleMix = FocusMix([.init(sound: .rain), .init(sound: .fireplace, level: 0.6)])
 
     // MARK: - AppleScript
 

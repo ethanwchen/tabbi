@@ -187,13 +187,13 @@ private struct FocusModeItem: View {
     }
 }
 
-/// Start or pause (the primary action), then skip and reset.
+/// Start or pause (the primary action), then skip and stop.
 private struct FocusControls: View {
     @ObservedObject var store: FocusStore
 
     var body: some View {
         let timer = store.timer
-        // A fresh focus session has nothing to skip or reset.
+        // A fresh focus session has nothing to skip or stop.
         let isFresh = timer.runState == .idle && timer.phase == .focus
         HStack(spacing: Theme.Spacing.xs) {
             FocusPrimaryButton(title: primaryTitle, symbol: timer.isRunning ? "pause.fill" : "play.fill",
@@ -205,8 +205,8 @@ private struct FocusControls: View {
                 IconButton(symbol: "forward.end.fill", help: timer.phase == .focus ? "Skip to the break" : "Skip the break") {
                     withMotion(Theme.Motion.snappy) { store.skip() }
                 }
-                IconButton(symbol: "arrow.counterclockwise", help: "Reset to a fresh focus session") {
-                    withMotion(Theme.Motion.snappy) { store.reset() }
+                IconButton(symbol: "stop.fill", help: "Stop and keep the time focused so far") {
+                    withMotion(Theme.Motion.snappy) { store.stop() }
                 }
             }
             .disabled(isFresh)

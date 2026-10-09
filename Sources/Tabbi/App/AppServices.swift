@@ -22,6 +22,8 @@ final class AppServices {
     let onboarding: OnboardingStore
     /// Celebrations of real events, played over the open panel.
     let celebrations: CelebrationCenter
+    /// The pet's crown for goals reached today.
+    private let goalCrowns: GoalCrowns
     /// The optional Sign in with Apple account that syncs the pet.
     let accountSync: SyncStore
 
@@ -47,9 +49,11 @@ final class AppServices {
         })
         providers.attach(modules)
         self.providers = providers
-        ticker = TickerStore(settings: settings, providers: providers, preview: shared.closedNotchPreview)
-        onboarding = OnboardingStore(settings: settings)
         celebrations = shared.celebrations(settings: settings, runMode: runMode)
+        ticker = TickerStore(settings: settings, providers: providers, preview: shared.closedNotchPreview,
+                             celebrations: celebrations)
+        goalCrowns = GoalCrowns(providers: providers, celebrations: celebrations)
+        onboarding = OnboardingStore(settings: settings)
         accountSync = ModuleContext(id: "account", edition: edition, settings: settings, providers: providers,
                                     shared: shared, runMode: runMode).accountSync
         // `$settings` emits before the new value is stored, so read the

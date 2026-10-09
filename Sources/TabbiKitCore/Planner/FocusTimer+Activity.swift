@@ -13,3 +13,20 @@ extension FocusPhaseCompletion {
         )
     }
 }
+
+extension FocusStop {
+    /// The activity record for a focus phase stopped or skipped early: the
+    /// minutes actually focused, ending when it was cut short. Its outcome
+    /// (`abandoned` or `skipped`) adds study time without counting as a
+    /// finished session. Nil under `StudyPhaseRecord.minimumLoggedDuration`, like a
+    /// start tapped by mistake.
+    public func activityRecord(source: ModuleID) -> ActivityRecord? {
+        guard focused.isFinite, focused >= StudyPhaseRecord.minimumLoggedDuration else { return nil }
+        return ActivityRecord(
+            source: source, kind: .focusCompleted,
+            start: endedAt.addingTimeInterval(-focused), end: endedAt,
+            quantity: focused / 60, unit: .minutes,
+            metadata: [ActivityMetadata.method: "pomodoro", ActivityMetadata.outcome: outcome.rawValue]
+        )
+    }
+}

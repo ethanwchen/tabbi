@@ -17,7 +17,7 @@ final class StudyTimerChipTests: XCTestCase {
     private func idleTimer() -> StudyStore {
         let store = StudyStore(storage: EditionStorage(root: folder), runMode: RunMode(isDemo: false, isSnapshot: true))
         store.choose(.timer)
-        store.reset()
+        store.stop()
         return store
     }
 

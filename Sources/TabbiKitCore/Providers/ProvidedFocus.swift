@@ -44,6 +44,12 @@ public struct ProvidedFocus: Hashable, Sendable {
     /// The user asked for deep focus with this clock (Study's switch), so
     /// followers such as the pet coach save their nudges for it.
     public var isDeep: Bool
+    /// The module logs a focus phase cut short (stopped, skipped, or ended
+    /// by sleep or quit) in the activity log, with its minutes, so the pet
+    /// pays that time from the log (`PetCloset.credit(_:)`) rather than from
+    /// this clock going idle, which can't tell a stop from another module's
+    /// clock taking over.
+    public var logsEarlyEnds: Bool
 
     public init(
         source: ModuleID,
@@ -53,7 +59,8 @@ public struct ProvidedFocus: Hashable, Sendable {
         phaseLength: TimeInterval?,
         focusLength: TimeInterval? = nil,
         completedFocusCount: Int = 0,
-        isDeep: Bool = false
+        isDeep: Bool = false,
+        logsEarlyEnds: Bool = false
     ) {
         self.source = source
         self.phase = phase
@@ -63,6 +70,7 @@ public struct ProvidedFocus: Hashable, Sendable {
         self.focusLength = focusLength ?? (phase == .focus ? phaseLength : nil)
         self.completedFocusCount = max(completedFocusCount, 0)
         self.isDeep = isDeep
+        self.logsEarlyEnds = logsEarlyEnds
     }
 
     public var isRunning: Bool {
@@ -120,7 +128,9 @@ public struct ProvidedFocus: Hashable, Sendable {
 }
 
 extension FocusTimer {
-    /// The timer as the shared focus clock (`ModuleProvision.focus`).
+    /// The timer as the shared focus clock (`ModuleProvision.focus`). Its
+    /// owner logs a focus phase cut short (`FocusStop.activityRecord`), so
+    /// the clock says so.
     public func provided(by source: ModuleID) -> ProvidedFocus {
         let clock: ProvidedFocus.Clock = switch runState {
         case .idle: .idle
@@ -128,6 +138,7 @@ extension FocusTimer {
         case .paused(let remaining): .paused(shown: remaining)
         }
         return ProvidedFocus(source: source, phase: phase, clock: clock, phaseLength: phaseDuration,
-                             focusLength: config.focusDuration, completedFocusCount: completedFocusCount)
+                             focusLength: config.focusDuration, completedFocusCount: completedFocusCount,
+                             logsEarlyEnds: true)
     }
 }

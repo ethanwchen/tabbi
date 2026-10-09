@@ -68,4 +68,24 @@ final class FocusStoreStorageTests: XCTestCase {
         let day = PlannerDayKey(date: legacy.sessions[0].endedAt)
         XCTAssertEqual(try repository.records(on: day).map(\.kind), [.focusCompleted])
     }
+
+    func testStoppingMidFocusLogsTheMinutesFocusedAndEndsTheSession() throws {
+        var timer = FocusTimer()
+        timer.start(at: Date().addingTimeInterval(-10 * 60))
+        FocusTimerStorage(defaults: defaults).save(timer)
+        let log = ActivityLog(repository: nil)
+        let store = FocusStore(activity: log, runMode: .live, defaults: defaults)
+
+        store.stop()
+
+        XCTAssertEqual(store.timer.runState, .idle)
+        XCTAssertEqual(store.timer.phase, .focus)
+        XCTAssertEqual(FocusTimerStorage(defaults: defaults).loadTimer().runState, .idle, "the stop is saved")
+        let logged = log.records(on: PlannerDayKey(date: Date()))
+        XCTAssertEqual(logged.map(\.kind), [.focusCompleted])
+        XCTAssertEqual(try XCTUnwrap(logged.first?.quantity), 10, accuracy: 0.1)
+
+        store.stop()
+        XCTAssertEqual(log.records(on: PlannerDayKey(date: Date())).count, 1, "a second stop credits nothing")
+    }
 }

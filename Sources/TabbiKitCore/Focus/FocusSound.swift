@@ -34,6 +34,36 @@ public enum FocusSound: String, CaseIterable, Codable, Sendable, Identifiable {
         case .cafe: "cup.and.saucer"
         }
     }
+
+    /// Gain in dB that brings this sound to `loudnessTarget`.
+    ///
+    /// Every generator renders at the same RMS, but equal RMS is not equal
+    /// loudness: the ear is far more sensitive to white noise's treble than
+    /// to brown noise's rumble, so white sounded about 8 dB louder than
+    /// brown or the fireplace. Each trim comes from the sound's measured
+    /// integrated loudness (ITU-R BS.1770, K-weighted and gated) and is
+    /// re-checked by `FocusLoudnessTests`, so switching sounds or blending
+    /// them never jumps in level.
+    public var loudnessTrimDecibels: Float {
+        switch self {
+        case .brown: 2.0
+        case .pink: -3.8
+        case .white: -6.2
+        case .rain: -4.2
+        case .fireplace: 2.6
+        case .cafe: -2.3
+        }
+    }
+
+    /// Integrated loudness, in LUFS at full volume, that every sound is
+    /// trimmed to: the middle of the raw sounds' spread, so the trims stay
+    /// within a few dB and the quiet ones need little headroom.
+    public static let loudnessTarget: Float = -17
+
+    /// `loudnessTrimDecibels` as a linear amplitude factor.
+    public var loudnessGain: Float {
+        pow(10, loudnessTrimDecibels / 20)
+    }
 }
 
 /// Renders any `FocusSound`, sample by sample, at about
