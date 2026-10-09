@@ -207,6 +207,17 @@ public struct PetClip: Hashable, Sendable {
         frames[frameIndex(at: elapsed)]
     }
 
+    /// The one frame a still pet shows for this clip under Reduce Motion: a
+    /// one-shot clip's last frame, where it settles (the alert keeps its
+    /// bubble, celebrate its heart), and a loop's first, except that sleep
+    /// and nap hold the frame with both "z"s, so a frozen pet reads as asleep.
+    public var stillFrame: PetFrame {
+        switch animation {
+        case .sleep, .nap: frames[min(2, frames.count - 1)]
+        default: loops ? frames[0] : frames[frames.count - 1]
+        }
+    }
+
     /// When the shown frame next changes, in seconds since the clip started,
     /// strictly after `elapsed`. A one-shot clip's last boundary is its end;
     /// after that (and for single-frame loops) nothing changes, so nil. Lets

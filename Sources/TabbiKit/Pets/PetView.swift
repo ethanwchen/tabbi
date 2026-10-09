@@ -8,6 +8,10 @@ import TabbiKitCore
 /// placement never jumps between frames (hops and peeks happen inside it).
 /// Each frame is rendered at an integer device-pixel scale and drawn with
 /// interpolation off, keeping edges sharp on any display.
+///
+/// Under Reduce Motion the pet holds still: it shows one pose per state
+/// (resting, asleep, typing, an alert with its bubble) and only changes
+/// when the state does.
 public struct PetView: View {
     @ObservedObject var player: PetPlayer
     /// Points per sprite pixel. 1 makes a 32 pt pet, which reads clearly
@@ -15,6 +19,7 @@ public struct PetView: View {
     var pixelSize: CGFloat = 1
 
     @Environment(\.displayScale) private var displayScale
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     public init(player: PetPlayer, pixelSize: CGFloat = 1) {
         self.player = player
@@ -24,8 +29,8 @@ public struct PetView: View {
     private var side: CGFloat { CGFloat(PetComposer.frameSize) * pixelSize }
 
     public var body: some View {
-        TimelineView(player.schedule) { context in
-            if let frame = player.frame(at: context.date) {
+        TimelineView(player.schedule(still: reduceMotion)) { context in
+            if let frame = reduceMotion ? player.stillFrame(at: context.date) : player.frame(at: context.date) {
                 PetFrameView(frame: frame, palette: player.palette, pixelSize: pixelSize,
                              displayScale: displayScale)
             }
