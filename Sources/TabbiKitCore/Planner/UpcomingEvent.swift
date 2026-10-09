@@ -84,16 +84,11 @@ public extension UpcomingEvent {
 
 /// Short strings for the "Up next" card.
 public enum UpcomingEventFormat {
-    /// Badge text: "now", "in 12 min", "in 1 h", "in 2 h 5 min".
+    /// Badge text: "now", "in 12 min", "in 1h", "in 2h 5m".
     public static func badge(_ timing: EventTiming) -> String {
         switch timing {
-        case .now:
-            return "now"
-        case .startsIn(let minutes) where minutes < 60:
-            return "in \(minutes) min"
-        case .startsIn(let minutes):
-            let hours = minutes / 60, rest = minutes % 60
-            return rest == 0 ? "in \(hours) h" : "in \(hours) h \(rest) min"
+        case .now: "now"
+        case .startsIn(let minutes): DurationFormat.countdown(minutes: minutes)
         }
     }
 

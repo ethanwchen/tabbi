@@ -319,11 +319,9 @@ enum DayPlanFormat {
         }
     }
 
-    /// "5m", "17m", "1h 30m": short, since it shares the row with the title.
+    /// "5 min", "17 min", "1h 30m", the same style as every other duration.
     static func breakLength(_ rest: DateInterval) -> String {
-        let minutes = Int((rest.duration / 60).rounded())
-        guard minutes >= 60 else { return "\(minutes)m" }
-        return minutes % 60 == 0 ? "\(minutes / 60)h" : "\(minutes / 60)h \(minutes % 60)m"
+        DurationFormat.minutes(Int((rest.duration / 60).rounded()))
     }
 
     static func range(_ block: PlanBlock) -> String {

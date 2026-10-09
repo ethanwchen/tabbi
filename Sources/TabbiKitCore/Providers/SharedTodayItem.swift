@@ -44,8 +44,8 @@ extension ProviderSnapshot {
                 SharedTodayItem(
                     id: "\(item.source.rawValue)/progress/\(item.id)", source: item.source, title: item.title,
                     detail: item.isComplete
-                        ? "\(item.target.formatted()) \(item.unit)"
-                        : "\(item.remaining.formatted()) \(item.unit) left",
+                        ? DurationFormat.quantity(item.target, unit: item.unit)
+                        : DurationFormat.quantity(item.remaining, unit: item.unit) + " left",
                     fraction: item.fraction, isDone: item.isComplete, action: item.action
                 )
             }
@@ -54,7 +54,7 @@ extension ProviderSnapshot {
             .map { task in
                 SharedTodayItem(
                     id: "\(task.source.rawValue)/task/\(task.id)", source: task.source, title: task.title,
-                    detail: task.estimatedMinutes.map { "\($0) min" }, fraction: nil, isDone: task.isDone
+                    detail: task.estimatedMinutes.map(DurationFormat.minutes), fraction: nil, isDone: task.isDone
                 )
             }
         return goals + tasks
