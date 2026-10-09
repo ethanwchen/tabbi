@@ -2,73 +2,53 @@ import SwiftUI
 import TabbiKitCore
 import TabbiKit
 
-/// The focus-sound chips beside the deep focus switch: off, four sounds,
-/// Mix and Playlist. They edit the shared focus settings, so the Focus
-/// timer plays the same sound; Mix and Playlist open the in-notch mixer.
-struct StudySoundRow: View {
+/// The one focus-sound button beside the deep focus switch: it names what
+/// plays (a sound, a blend, a playlist) and opens the in-notch mixer, so the
+/// Timer panel keeps a single control for sound. It reads the shared focus
+/// settings, which the Focus timer plays too.
+struct StudySoundButton: View {
     @ObservedObject var focus: FocusController
-    /// Whether study blocks play the sound; the chips dim while it's off.
+    /// Whether study blocks play the sound; the button dims while it's off.
     let isActive: Bool
     let openMixer: () -> Void
-
-    var body: some View {
-        HStack(spacing: Theme.Spacing.xxs) {
-            ForEach(StudySoundChip.allCases) { chip in
-                StudySoundChipButton(chip: chip, isOn: chip.isSelected(in: focus.settings),
-                                     isActive: isActive, help: help(for: chip)) {
-                    if chip.opensMixer {
-                        openMixer()
-                    } else {
-                        withMotion(Theme.Motion.snappy) { focus.settings = chip.applying(to: focus.settings) }
-                    }
-                }
-            }
-        }
-    }
-
-    private func help(for chip: StudySoundChip) -> String {
-        let settings = focus.settings
-        switch chip {
-        case .off:
-            return "No focus sound"
-        case .mix:
-            return chip.isSelected(in: settings) ? "Blend: \(settings.mix.summary). Open the mixer"
-                                                 : "Blend up to \(FocusMix.maxLayers) sounds and set levels"
-        case .playlist:
-            guard settings.playlist != nil else { return "Pick a playlist to start with focus" }
-            let name = FocusPlaylistPreset.matching(settings.playlistText)?.name ?? "your playlist"
-            return "Plays \(name) with focus. Change it in the mixer"
-        default:
-            return "Play \(chip.title.lowercased()) during deep focus"
-        }
-    }
-}
-
-/// One round chip in the sound row.
-private struct StudySoundChipButton: View {
-    let chip: StudySoundChip
-    let isOn: Bool
-    let isActive: Bool
-    let help: String
-    let action: () -> Void
     @State private var hovering = false
 
     var body: some View {
-        Button(action: action) {
-            Image(systemName: chip.symbolName)
-                .font(.system(size: 10, weight: .semibold))
-                .foregroundStyle(isOn ? studyAccent.opacity(isActive ? 1 : 0.7)
-                                      : (hovering ? Theme.Palette.primaryText : Theme.Palette.tertiaryText))
-                .frame(width: 22, height: 22)
-                .background(Circle().fill(isOn ? studyAccent.opacity(hovering ? 0.30 : 0.20)
-                                               : (hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface)))
-                .contentShape(Circle())
+        let settings = focus.settings
+        let label = StudySoundLabel(settings)
+        Button(action: openMixer) {
+            HStack(spacing: Theme.Spacing.xxs) {
+                Image(systemName: label.symbolName)
+                    .font(.system(size: 9, weight: .bold))
+                    .contentTransition(.symbolEffect(.replace))
+                Text(label.title)
+                    .font(Theme.Typography.caption.weight(.semibold))
+                    .lineLimit(1)
+                    .contentTransition(.opacity)
+                if label.addsPlaylist {
+                    Image(systemName: "music.note")
+                        .font(.system(size: 8, weight: .bold))
+                }
+            }
+            .foregroundStyle(foreground(isOn: label.isOn))
+            .padding(.horizontal, Theme.Spacing.s)
+            .frame(height: 20)
+            .background(Capsule().fill(label.isOn ? studyAccent.opacity(hovering ? 0.30 : 0.20)
+                                                  : (hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface)))
+            .overlay(Capsule().strokeBorder(Theme.Palette.stroke.opacity(label.isOn ? 0 : 1), lineWidth: 1))
+            .contentShape(Capsule())
         }
         .buttonStyle(.plain)
-        .help(help)
+        .help(StudySoundLabel.help(for: settings,
+                                   playlistName: FocusPlaylistPreset.matching(settings.playlistText)?.name))
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
-        .motion(Theme.Motion.snappy, value: isOn)
+        .motion(Theme.Motion.snappy, value: label)
+    }
+
+    private func foreground(isOn: Bool) -> Color {
+        if isOn { return studyAccent.opacity(isActive || hovering ? 1 : 0.7) }
+        return hovering ? Theme.Palette.primaryText : Theme.Palette.secondaryText
     }
 }
 
@@ -258,7 +238,7 @@ private struct StudyLevelSlider: View {
             .contentShape(Rectangle())
             .gesture(
                 DragGesture(minimumDistance: 0).onChanged { value in
-                    action(StudySoundChip.level(atX: value.location.x, width: width))
+                    action(StudySoundLabel.level(atX: value.location.x, width: width))
                 }
             )
         }
