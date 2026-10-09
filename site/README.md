@@ -65,6 +65,7 @@ If a new weight or a non-Latin character appears in the copy, fetch and cut the 
 ## Images
 
 The home page shows four tabs; their screenshots are the app's own snapshot renders from `docs/images`, saved as WebP at quality 92 (`study.png` is saved as `timer.webp`), which looks the same as lossless at a quarter of the size.
+`_tab_shots.py` makes their navy wallpaper transparent first, so only the black notch panel sits on the brown card (it needs numpy and scipy).
 Each also has a 680 px copy (`today-680.webp`), and `srcset` lets small and 1x screens load that one.
 `icon-256.webp`, `apple-touch-icon.png`, `favicon-64.png` and `favicon.ico` are resized from `docs/brand/assets/tabbi-icon-1024.png`.
 `glyph.png` is `docs/brand/assets/tabbi-glyph-256.png`, used as the header mark and on the 404 page.
@@ -78,11 +79,7 @@ To export it again, a throwaway test in `Tests/TabbiKitCoreTests` can write thos
 The press kit in `press/` holds `tabbi-icon-1024.png` (`docs/brand/assets/tabbi-icon-1024.png`) and the four home page tabs as lossless PNGs from `docs/images` (`tabbi-timer.png` is `study.png`), each saved again by Pillow with `optimize=True`.
 Copy them again when the icon or those screenshots change; the About page shows the zip's size by itself.
 `grain.png` is a 160 px grayscale noise tile, drawn with Pillow, for the paper grain over the page.
-When the app's screenshots change, copy and convert them again, for example:
-
-```sh
-python3 -c "from PIL import Image; im = Image.open('docs/images/today.png'); im.save('site/img/today.webp', quality=92, method=6); im.resize((680, 260), Image.LANCZOS).save('site/img/today-680.webp', quality=92, method=6)"
-```
+When the app's screenshots change, run `python3 site/_tab_shots.py` from the repo root to cut and convert them again.
 
 ## Deploy
 
