@@ -87,16 +87,13 @@ struct ClaudeAskPanel: View {
                        help: fieldHelp, onSubmit: { expand in send(draft, expand: expand) }) {
                 PendingAttachments(session: session)
             } trailing: {
-                AttachButton(session: session)
-            }
-            if session.isStreaming {
-                IconButton(symbol: "stop.fill", size: 32, help: "Stop answering") { session.stop() }
-                    .transition(.motionPop)
-            } else {
-                IconButton(symbol: "arrow.up", size: 32, help: "Send (Return)") { send(draft) }
-                    .disabled(!canSend)
-                    .opacity(canSend ? 1 : 0.45)
-                    .transition(.motionPop)
+                // Send lives inside the field, like any chat, so the row
+                // beside it holds only the chat's own actions.
+                HStack(spacing: Theme.Spacing.xs) {
+                    AttachButton(session: session)
+                    SendButton(isStreaming: session.isStreaming, canSend: canSend, accent: accent,
+                               send: { send(draft) }, stop: { session.stop() })
+                }
             }
             if session.isShowingHistory || !session.savedChats.isEmpty {
                 IconButton(symbol: session.isShowingHistory ? "xmark" : "clock.arrow.circlepath", size: 32,
@@ -232,6 +229,43 @@ private struct InputField<Top: View, Trailing: View>: View {
     }
 }
 
+/// The field's primary action: an accent circle with an arrow once there is
+/// something to send, a quiet one before that, and Stop while Claude answers.
+private struct SendButton: View {
+    let isStreaming: Bool
+    let canSend: Bool
+    let accent: Color
+    let send: () -> Void
+    let stop: () -> Void
+    @State private var hovering = false
+
+    private var isActive: Bool { isStreaming || canSend }
+
+    var body: some View {
+        Button(action: isStreaming ? stop : send) {
+            Image(systemName: isStreaming ? "stop.fill" : "arrow.up")
+                .font(.system(size: 11, weight: .bold))
+                .foregroundStyle(isActive ? Theme.Palette.background : Theme.Palette.tertiaryText)
+                .frame(width: 24, height: 24)
+                .background(Circle().fill(fill))
+                .contentShape(Circle())
+                .contentTransition(.symbolEffect(.replace))
+        }
+        .buttonStyle(.plain)
+        .disabled(!isActive)
+        .help(isStreaming ? "Stop answering" : "Send (Return)")
+        .onHover { hovering = $0 }
+        .motion(Theme.Motion.snappy, value: isActive)
+        .motion(Theme.Motion.snappy, value: hovering)
+    }
+
+    private var fill: Color {
+        guard isActive else { return Theme.Palette.stroke }
+        return hovering ? accent.opacity(0.85) : accent
+    }
+}
+
+// MARK: - Messages
 // MARK: - Messages
 
 private struct MessageList: View {
@@ -246,6 +280,7 @@ private struct MessageList: View {
             rows
                 .frame(maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .bottom)
                 .clipped()
+                .edgeFade(.top, length: Theme.Spacing.xl)
         } else {
             scrollingList
         }
@@ -275,7 +310,7 @@ private struct MessageList: View {
             .scrollIndicators(.never)
             .defaultScrollAnchor(.bottom)
             // Older messages fade out under the header instead of being cut off.
-            .edgeFade(.top)
+            .edgeFade(.top, length: Theme.Spacing.xl)
             // Follows streamed text and the taller stopped/failed rows that replace it.
             .onChange(of: conversation.messages.last?.text) {
                 proxy.scrollTo(Self.bottomID, anchor: .bottom)
