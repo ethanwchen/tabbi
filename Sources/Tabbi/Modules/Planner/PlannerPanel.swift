@@ -3,7 +3,8 @@ import TabbiKitCore
 import TabbiKit
 
 /// The Today panel: the checklist (date and progress header, items, add
-/// field) on the left, swapped for the Plan My Day proposal or the
+/// field) on the left, which the header's arrows step to yesterday or
+/// tomorrow, swapped for the Plan My Day proposal or the
 /// End-of-Day Review while one is open; an "Up next" calendar card above a
 /// compact focus timer on the right. Keeps the notch pinned open while any
 /// field is focused so it doesn't close under the cursor mid-typing.
@@ -41,7 +42,21 @@ struct PlannerPanel: View {
                                       hasPlannableWork: hasPlannableWork)
                         content(at: context.date)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        if store.canEdit {
+                        if store.viewing == .yesterday {
+                            PlannerLeftoversBar(store: store)
+                        } else if store.viewing == .tomorrow, store.canEdit {
+                            HStack(spacing: Theme.Spacing.s) {
+                                PlannerAddField(store: store, focus: $focus)
+                                if store.hasPlannableTomorrow {
+                                    PlannerPillButton(title: PlannerViewedDay.tomorrow.planTitle, symbol: "sparkles",
+                                                      isProminent: isEvening, height: 28,
+                                                      help: store.planSettings.planMode.planHelp(for: .tomorrow)) {
+                                        store.planTomorrow()
+                                    }
+                                    .transition(.motionPop)
+                                }
+                            }
+                        } else if store.canEdit {
                             HStack(spacing: Theme.Spacing.s) {
                                 PlannerAddField(store: store, focus: $focus)
                                 if isEvening {
@@ -68,7 +83,7 @@ struct PlannerPanel: View {
                 if let owner = store.focusClockOwner {
                     SharedFocusCard(owner: owner, providers: providers)
                 } else {
-                    FocusCard(store: store.focus, items: store.items)
+                    FocusCard(store: store.focus, items: store.day.items)
                 }
             }
             .frame(width: Self.sideColumnWidth)
@@ -88,6 +103,8 @@ struct PlannerPanel: View {
         .onChange(of: focus) { _, field in notch.isPinned = field != nil }
         .onDisappear {
             notch.isPinned = false
+            // Today is what the panel opens on, unless a plan for tomorrow is waiting.
+            store.panelClosed()
             store.upNext.setVisible(false)
             store.focus.setVisible(false, viewer: .today)
         }
@@ -95,11 +112,11 @@ struct PlannerPanel: View {
 
     @ViewBuilder
     private func content(at date: Date) -> some View {
-        if case .unreadable(let fileName) = store.problem {
+        if case .unreadable(let fileName) = store.shownProblem {
             PlannerMessage(
                 symbol: "exclamationmark.triangle.fill",
                 tint: Theme.Palette.warning,
-                title: "Couldn't read today's list",
+                title: "Couldn't read \(store.viewing.title?.lowercased() ?? "today")'s list",
                 detail: "\(fileName) is damaged, so it's left untouched."
             )
         } else {
@@ -110,11 +127,15 @@ struct PlannerPanel: View {
 
 extension TodayPlanSettings.PlanMode {
     /// What Plan my day does, for its tooltips.
-    var planHelp: String {
-        switch self {
-        case .local: "Fit your open tasks, reviews and breaks around today's calendar"
-        case .claude: "Let Claude fit your open tasks around today's calendar"
-        case .study: "Fit reviews, study blocks and breaks around today's calendar"
+    var planHelp: String { planHelp(for: .today) }
+
+    /// What planning `day` does, for its tooltips.
+    func planHelp(for day: PlannerViewedDay) -> String {
+        let calendar = day == .tomorrow ? "tomorrow's calendar" : "today's calendar"
+        return switch self {
+        case .local: "Fit your open tasks, reviews and breaks around \(calendar)"
+        case .claude: "Let Claude fit your open tasks around \(calendar)"
+        case .study: "Fit reviews, study blocks and breaks around \(calendar)"
         }
     }
 }
@@ -131,14 +152,32 @@ private struct PlannerChecklist: View {
     let date: Date
 
     var body: some View {
-        let shared = providers.snapshot.sharedTodayItems(excluding: .planner)
+        // Other modules share what's on for today only.
+        let shared = store.viewing == .today ? providers.snapshot.sharedTodayItems(excluding: .planner) : []
         if store.items.isEmpty, shared.isEmpty {
-            PlannerMessage(
-                symbol: "checklist",
-                tint: TodayModule.descriptor.accentColor,
-                title: DisplayName.greeting(for: store.displayName, at: date) ?? "A fresh day",
-                detail: "Add a few things you want to get done today."
-            )
+            switch store.viewing {
+            case .yesterday:
+                PlannerMessage(
+                    symbol: "clock.arrow.circlepath",
+                    tint: Theme.Palette.secondaryText,
+                    title: "Nothing listed yesterday",
+                    detail: "Each day's list shows up here the day after."
+                )
+            case .today:
+                PlannerMessage(
+                    symbol: "checklist",
+                    tint: TodayModule.descriptor.accentColor,
+                    title: DisplayName.greeting(for: store.displayName, at: date) ?? "A fresh day",
+                    detail: "Add a few things you want to get done today."
+                )
+            case .tomorrow:
+                PlannerMessage(
+                    symbol: "sunrise.fill",
+                    tint: TodayModule.descriptor.accentColor,
+                    title: "Plan tomorrow",
+                    detail: "Add what you want to get done. Today's unfinished tasks join them in the morning."
+                )
+            }
         } else {
             PlannerList(store: store, shared: shared, focus: focus)
         }
@@ -189,24 +228,34 @@ private struct PlannerHeader: View {
     let hasPlannableWork: Bool
 
     var body: some View {
-        let tally = TodayTally(day: store.day, shared: providers.snapshot.sharedTodayItems(excluding: .planner))
+        let isToday = store.viewing == .today
+        let tally = TodayTally(day: store.shownDay,
+                               shared: isToday ? providers.snapshot.sharedTodayItems(excluding: .planner) : [])
         HStack(spacing: Theme.Spacing.s) {
             PlannerProgressRing(progress: tally.progress)
                 .frame(width: 16, height: 16)
                 .frame(width: 20)
             // A narrow panel (Compact) shortens the date, then the count, instead of truncating them.
             ViewThatFits(in: .horizontal) {
-                dateAndCount(.dateTime.weekday(.abbreviated).month(.abbreviated).day(), tally.summary)
-                dateAndCount(.dateTime.weekday(.abbreviated).month(.abbreviated).day(), tally.shortSummary)
-                dateAndCount(.dateTime.weekday(.abbreviated).day(), tally.shortSummary)
+                if isToday {
+                    dateAndCount(.dateTime.weekday(.abbreviated).month(.abbreviated).day(), tally.summary)
+                    dateAndCount(.dateTime.weekday(.abbreviated).month(.abbreviated).day(), tally.shortSummary)
+                    dateAndCount(.dateTime.weekday(.abbreviated).day(), tally.shortSummary)
+                } else {
+                    // "Yesterday" names the day; its date is a quiet extra.
+                    dateAndCount(.dateTime.month(.abbreviated).day(), summary(tally))
+                    dateAndCount(.dateTime.month(.abbreviated).day(), shortSummary(tally))
+                    dateAndCount(nil, summary(tally))
+                    dateAndCount(nil, shortSummary(tally))
+                }
             }
-            if store.day.doneCount > 0, store.canEdit {
+            if store.shownDay.doneCount > 0, store.canEdit {
                 IconButton(symbol: "checkmark.circle.badge.xmark", size: 20, help: "Clear completed tasks") {
                     withMotion(Theme.Motion.snappy) { store.clearCompleted() }
                 }
                 .transition(.motionPop)
             }
-            if store.canEdit {
+            if isToday, store.canEdit {
                 // The action that isn't the bottom row's pill right now.
                 if isEvening {
                     if hasPlannableWork {
@@ -228,14 +277,41 @@ private struct PlannerHeader: View {
         .motion(Theme.Motion.snappy, value: tally)
     }
 
-    private func dateAndCount(_ date: Date.FormatStyle, _ count: String) -> some View {
-        HStack(spacing: Theme.Spacing.s) {
-            Text(store.day.date.startDate().formatted(date))
+    /// "3 of 5 done" for today and yesterday; tomorrow hasn't started, so
+    /// it counts what's planned.
+    private func summary(_ tally: TodayTally) -> String {
+        store.viewing == .tomorrow && tally.doneCount == 0 ? tally.plannedSummary : tally.summary
+    }
+
+    private func shortSummary(_ tally: TodayTally) -> String {
+        store.viewing == .tomorrow && tally.doneCount == 0 ? tally.plannedSummary : tally.shortSummary
+    }
+
+    /// The day stepper and the count. Today shows its date; yesterday and
+    /// tomorrow say which they are, then the date while it fits (`date`
+    /// nil drops it).
+    private func dateAndCount(_ date: Date.FormatStyle?, _ count: String) -> some View {
+        let day = store.shownDay.date.startDate()
+        return HStack(spacing: Theme.Spacing.s) {
+            DayStepper(viewing: store.viewing, show: { store.show($0) }) {
+                HStack(spacing: Theme.Spacing.xs) {
+                    if let title = store.viewing.title {
+                        Text(title)
+                            .foregroundStyle(Theme.Palette.primaryText)
+                        if let date {
+                            Text(day.formatted(date))
+                                .foregroundStyle(Theme.Palette.tertiaryText)
+                        }
+                    } else if let date {
+                        Text(day.formatted(date))
+                            .foregroundStyle(Theme.Palette.primaryText)
+                    }
+                }
                 .font(Theme.Typography.title)
-                .foregroundStyle(Theme.Palette.primaryText)
                 .fixedSize()
+            }
             Spacer(minLength: Theme.Spacing.s)
-            if store.problem == .saveFailed {
+            if store.shownProblem == .saveFailed {
                 Label("Not saved", systemImage: "exclamationmark.triangle.fill")
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.warning)
@@ -320,6 +396,7 @@ private struct PlannerAddField: View {
             ZStack(alignment: .leading) {
                 if text.isEmpty {
                     ViewThatFits(in: .horizontal) {
+                        if store.viewing == .tomorrow { Text("Add a task for tomorrow…") }
                         Text("Add a task…")
                         Text("Add…")
                     }

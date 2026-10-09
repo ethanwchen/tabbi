@@ -182,6 +182,30 @@ enum SnapshotRenderer {
         }
         #endif
 
+        // Today stepped back to yesterday and ahead to tomorrow, rendered
+        // after the others because the day shown is store state.
+        if layout.order.contains(.planner) {
+            var withToday = layout
+            _ = withToday.setEnabled(.planner, true)
+            for name in ["open-planner-yesterday", "open-planner-tomorrow", "open-planner-tomorrow-plan"] {
+                let model = NotchViewModel(geometry: geometry, layout: withToday)
+                model.open(.planner)
+                shots.append(Shot(name, model))
+            }
+        }
+
+        // Schedule's Day view stepped back to yesterday and ahead to tomorrow,
+        // with a plan for tomorrow on offer.
+        if layout.order.contains(.schedule) {
+            var withSchedule = layout
+            _ = withSchedule.setEnabled(.schedule, true)
+            for name in ["open-schedule-yesterday", "open-schedule-tomorrow", "open-schedule-tomorrow-plan"] {
+                let model = NotchViewModel(geometry: geometry, layout: withSchedule)
+                model.open(.schedule)
+                shots.append(Shot(name, model))
+            }
+        }
+
         shots += headerShots(geometry: geometry, catalog: services.settings.catalog)
 
         // First-run setup in the notch, one shot per step of the active kit.
@@ -339,7 +363,9 @@ enum SnapshotRenderer {
         let askClaude = services.modules.module(AskClaudeModule.self)?.session
         #endif
         let timer = services.modules.module(StudyModule.self)
+        let today = services.modules.module(TodayModule.self)?.store
         let party = services.modules.module(PartyModule.self)?.store
+        let schedule = services.modules.module(ScheduleModule.self)
         let now = Date()
         let partySession = PartyState.demo(.member, now: now).session(at: now)
         for shot in shots {
@@ -353,6 +379,12 @@ enum SnapshotRenderer {
             #endif
             timer?.showForSnapshot(partySession: name == "open-study-party" ? partySession : nil)
             party?.showCelebrationForSnapshot(name == "open-party-celebrating")
+            today?.showForSnapshot(name == "open-planner-yesterday" ? .yesterday
+                : name.hasPrefix("open-planner-tomorrow") ? .tomorrow : .today,
+                planning: name == "open-planner-tomorrow-plan")
+            schedule?.showForSnapshot(name == "open-schedule-yesterday" ? .yesterday
+                : name.hasPrefix("open-schedule-tomorrow") ? .tomorrow : .today,
+                planning: name == "open-schedule-tomorrow-plan")
             if let firstSection { closet?.store.section = name == "open-closet-look" ? .look : firstSection }
             model.themeID = Theme.current.id
             if name == "closed-pet-cheer", case .pet(var pet) = model.preview {
@@ -386,6 +418,8 @@ enum SnapshotRenderer {
         services.onboarding.show(nil)
         timer?.showForSnapshot(partySession: nil)
         party?.showCelebrationForSnapshot(false)
+        today?.show(.today)
+        schedule?.showForSnapshot(.today)
     }
 
     /// The review Settings shows before applying an imported kit: another

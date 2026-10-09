@@ -11,6 +11,10 @@ import TabbiKitCore
 /// database changes. The closed-notch meeting preview keeps it refreshing the
 /// same way while it's on; while neither needs events nothing runs.
 ///
+/// While the checklist shows yesterday or tomorrow, the card lists that
+/// whole day instead (`show(_:)`); `events` stays today's, which the
+/// closed-notch meeting preview reads.
+///
 /// With `TABBI_DEMO=1` it shows `UpcomingEvent.samples` and never touches
 /// EventKit.
 @MainActor
@@ -36,9 +40,20 @@ final class UpNextStore: ObservableObject {
     @Published private(set) var hasAccounts = true
     /// The moment badges are measured against; advances once a minute while visible.
     @Published private(set) var now = Date()
+    /// The day the card lists. Today unless the checklist steps away.
+    @Published private(set) var viewing: PlannerViewedDay = .today
+    /// The first few timed events of the day `viewing` names when it isn't
+    /// today, earliest first.
+    @Published private(set) var otherEvents: [UpcomingEvent] = []
+    /// How many timed events that other day has in all.
+    @Published private(set) var otherEventCount = 0
+
+    /// The events the card lists for the day it shows.
+    var shownEvents: [UpcomingEvent] { viewing == .today ? events : otherEvents }
 
     private let isDemo: Bool
     private var demoEvents: [UpcomingEvent]
+    private var sampleDay: PlannerSampleDay
     private lazy var eventStore = EKEventStore()
     private var isVisible = false
     private var isPreviewWatching = false
@@ -54,6 +69,7 @@ final class UpNextStore: ObservableObject {
     init(sampleDay: PlannerSampleDay = .work, runMode: RunMode) {
         let environment = ProcessInfo.processInfo.environment
         isDemo = runMode.isDemo
+        self.sampleDay = sampleDay
         if isDemo {
             let start = Date()
             // Lets demo snapshots render each empty state:
@@ -98,16 +114,24 @@ final class UpNextStore: ObservableObject {
         Task { _ = await ensureAccess() }
     }
 
+    /// Lists `day` in the card: today's next events, or all of yesterday
+    /// or tomorrow. Follows the checklist's day stepper.
+    func show(_ day: PlannerViewedDay) {
+        guard day != viewing else { return }
+        viewing = day
+        reloadOtherDay()
+    }
+
     /// Every event today (not just the next few), for Plan My Day. Empty
     /// without calendar access.
-    func todayEvents() -> [UpcomingEvent] {
-        if isDemo { return demoEvents }
-        guard access == .granted else { return [] }
-        let calendar = Calendar.current
-        let startOfDay = calendar.startOfDay(for: Date())
-        guard let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) else { return [] }
-        let predicate = eventStore.predicateForEvents(withStart: startOfDay, end: endOfDay, calendars: nil)
-        return eventStore.events(matching: predicate).map(Self.upcomingEvent)
+    func todayEvents() -> [UpcomingEvent] { planEvents(on: .today) }
+
+    /// Every event on `day`, for Plan My Day (tomorrow's when planning
+    /// ahead). Demo mode returns that day's samples. Empty without access.
+    func planEvents(on day: PlannerViewedDay) -> [UpcomingEvent] {
+        guard isDemo else { return events(on: day) }
+        guard day != .today else { return demoEvents }
+        return demoEvents.isEmpty ? [] : UpcomingEvent.samples(day, now: Date(), kind: sampleDay)
     }
 
     /// Asks for calendar access when it was never requested, then reports
@@ -149,8 +173,11 @@ final class UpNextStore: ObservableObject {
         case .notDetermined: .notAsked
         case .denied: .denied
         case .unavailable: .unavailable
-        case .granted: UpNextEmptyState.granted(upcoming: events.count, eventsToday: eventsToday,
-                                                hasAccounts: hasAccounts)
+        case .granted:
+            viewing == .today
+                ? UpNextEmptyState.granted(upcoming: events.count, eventsToday: eventsToday, hasAccounts: hasAccounts)
+                : UpNextEmptyState.granted(on: viewing, upcoming: otherEvents.count, eventsThatDay: otherEventCount,
+                                           hasAccounts: hasAccounts)
         }
     }
 
@@ -184,6 +211,7 @@ final class UpNextStore: ObservableObject {
     /// Does nothing outside demo mode or while previewing an empty state.
     func showSampleDay(_ kind: PlannerSampleDay) {
         guard isDemo, !demoEvents.isEmpty else { return }
+        sampleDay = kind
         demoEvents = UpcomingEvent.samples(now: Date(), kind: kind)
         eventsToday = demoEvents.filter { !$0.isAllDay }.count
         reload()
@@ -191,6 +219,7 @@ final class UpNextStore: ObservableObject {
 
     private func reload() {
         now = Date()
+        defer { reloadOtherDay() }
         if isDemo {
             events = UpcomingEvent.upNext(from: demoEvents, at: now)
             return
@@ -200,14 +229,34 @@ final class UpNextStore: ObservableObject {
             eventsToday = 0
             return
         }
-        let calendar = Calendar.current
-        let startOfDay = calendar.startOfDay(for: now)
-        guard let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) else { return }
-        let predicate = eventStore.predicateForEvents(withStart: startOfDay, end: endOfDay, calendars: nil)
-        let today = eventStore.events(matching: predicate).map(Self.upcomingEvent)
+        let today = events(on: .today)
         events = UpcomingEvent.upNext(from: today, at: now)
         eventsToday = today.filter { !$0.isAllDay }.count
         hasAccounts = eventStore.calendars(for: .event).contains { Self.syncsFromAccount($0.source) }
+    }
+
+    /// Reads the day `viewing` names when it isn't today. Demo mode lists
+    /// that day's samples, unless an empty state is being previewed.
+    private func reloadOtherDay() {
+        let all: [UpcomingEvent] = switch viewing {
+        case .today: []
+        case _ where isDemo: demoEvents.isEmpty ? [] : UpcomingEvent.samples(viewing, now: Date(), kind: sampleDay)
+        case _ where access == .granted: events(on: viewing)
+        default: []
+        }
+        otherEvents = UpcomingEvent.agenda(from: all)
+        otherEventCount = all.filter { !$0.isAllDay }.count
+    }
+
+    /// Every event on `day`, read from EventKit. Empty without access.
+    private func events(on day: PlannerViewedDay) -> [UpcomingEvent] {
+        guard !isDemo, access == .granted else { return [] }
+        let calendar = Calendar.current
+        let today = PlannerDayKey(date: Date(), calendar: calendar)
+        let startOfDay = day.key(today: today, calendar: calendar).startDate(calendar: calendar)
+        guard let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) else { return [] }
+        let predicate = eventStore.predicateForEvents(withStart: startOfDay, end: endOfDay, calendars: nil)
+        return eventStore.events(matching: predicate).map(Self.upcomingEvent)
     }
 
     /// Local and birthday calendars live only on this Mac; subscribed ones

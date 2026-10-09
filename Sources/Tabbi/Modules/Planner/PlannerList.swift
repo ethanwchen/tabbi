@@ -62,13 +62,15 @@ struct PlannerList: View {
     }
 
     private var rows: some View {
-        VStack(spacing: 0) {
+        let leftovers = Set(store.leftovers.map(\.id))
+        return VStack(spacing: 0) {
             ForEach(shared) { item in
                 PlannerSharedRow(item: item)
             }
             ForEach(Array(store.items.enumerated()), id: \.element.id) { index, item in
                 let isDragged = drag?.id == item.id
-                PlannerRow(item: item, store: store, focus: focus, isLifted: isDragged)
+                PlannerRow(item: item, store: store, focus: focus, isLifted: isDragged,
+                           isLeftover: leftovers.contains(item.id))
                     .offset(y: offset(at: index))
                     .zIndex(isDragged ? 1 : 0)
                     .animation(isDragged ? nil : Theme.Motion.snappy, value: drag)
@@ -111,13 +113,17 @@ struct PlannerList: View {
 
 /// One checklist row: checkbox, title (double-click to rename), and focus and
 /// delete buttons that appear on hover. The focus target keeps a small scope
-/// glyph so it's clear which task the timer is for.
+/// glyph so it's clear which task the timer is for. Looking back at
+/// yesterday, an unfinished row offers to move to today, or says it's
+/// already there.
 private struct PlannerRow: View {
     let item: PlannerItem
     @ObservedObject var store: PlannerStore
     var focus: FocusState<PlannerField?>.Binding
     /// True while this row is being dragged to a new position.
     var isLifted = false
+    /// An unfinished task of yesterday's that isn't on today's list yet.
+    var isLeftover = false
     @State private var hovering = false
     @State private var draft = ""
     /// Shows the rename field. Kept apart from focus because `FocusState`
@@ -158,7 +164,21 @@ private struct PlannerRow: View {
 
             // Rows link to the Pomodoro, which isn't offered while another
             // module owns the timer.
-            if !isRenaming, store.focusClockOwner == nil {
+            if store.viewing == .yesterday, !item.isDone {
+                if isLeftover {
+                    PlannerMoveToTodayButton(isVisible: hovering) {
+                        withMotion(Theme.Motion.snappy) { store.moveToToday([item.id]) }
+                    }
+                } else {
+                    Text("On today")
+                        .font(Theme.Typography.caption)
+                        .foregroundStyle(Theme.Palette.tertiaryText)
+                        .fixedSize()
+                        .help("This task is on today's list")
+                }
+            }
+
+            if !isRenaming, store.focusClockOwner == nil, store.viewing == .today {
                 PlannerFocusToggle(item: item, focusStore: store.focus,
                                    showsButton: hovering && store.canEdit)
             }
@@ -354,6 +374,29 @@ private struct PlannerFocusToggle: View {
             }
         }
         .transition(.motionPop)
+        .motion(Theme.Motion.snappy, value: hovering)
+    }
+}
+
+/// Moves one of yesterday's leftovers to today. Shown on hover, like delete.
+private struct PlannerMoveToTodayButton: View {
+    let isVisible: Bool
+    let action: () -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: "arrow.uturn.forward")
+                .font(.system(size: 9, weight: .bold))
+                .foregroundStyle(hovering ? TodayModule.descriptor.accentColor : Theme.Palette.tertiaryText)
+                .frame(width: 20, height: 20)
+                .background(Circle().fill(hovering ? TodayModule.descriptor.accentColor.opacity(0.16) : .clear))
+                .contentShape(Circle())
+        }
+        .buttonStyle(.plain)
+        .opacity(isVisible || hovering ? 1 : 0)
+        .help("Move to today")
+        .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }
 }

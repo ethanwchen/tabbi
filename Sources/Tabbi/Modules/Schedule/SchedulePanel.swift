@@ -2,8 +2,9 @@ import SwiftUI
 import TabbiKitCore
 import TabbiKit
 
-/// The Schedule panel: a header with the Day/Week switch, the date and the
-/// free time, then either today's timeline (events, planned blocks,
+/// The Schedule panel: a header with the Day/Week switch, the date (which
+/// steps to yesterday and tomorrow in the Day view) and the free time, then
+/// either the day's timeline (events, planned blocks,
 /// now-line) with a line under it for what is on now or the block tapped,
 /// or the week's seven days stacked on the same clock hours. Plan puts a
 /// proposal for the day (or, from the Week view, the week) on the
@@ -32,14 +33,16 @@ struct SchedulePanel: View {
                     .frame(maxHeight: .infinity)
                     .transition(.opacity)
             } else {
-                ScheduleTimeline(layout: layout, now: store.now, selectedID: store.selectedID,
-                                 isDrafting: store.draft != nil) { store.select($0) }
+                // Another day has no now-line, and yesterday isn't greyed out as past.
+                ScheduleTimeline(layout: layout, now: store.viewing == .today ? store.now : nil,
+                                 selectedID: store.selectedID, isDrafting: store.draft != nil) { store.select($0) }
                     .frame(maxHeight: .infinity)
                 if let draft = store.draft, store.selectedItem.map({ $0.kind == .proposed }) ?? true {
                     SchedulePlanStrip(draft: draft, selected: store.selectedItem, writeFailed: store.writeFailed,
                                       store: store)
                 } else {
-                    ScheduleDetailStrip(layout: layout, now: store.now, selected: store.selectedItem,
+                    ScheduleDetailStrip(layout: layout, now: store.now, viewing: store.viewing,
+                                        selected: store.selectedItem,
                                         join: { store.join($0) }, close: { store.select(nil) })
                 }
             }
@@ -47,6 +50,7 @@ struct SchedulePanel: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .motion(Theme.Motion.content, value: store.emptySituation)
         .motion(Theme.Motion.content, value: store.mode)
+        .motion(Theme.Motion.content, value: store.viewing)
         .motion(Theme.Motion.snappy, value: store.selectedID)
         .motion(Theme.Motion.content, value: store.draft)
         .onAppear { store.setVisible(true) }
@@ -57,7 +61,8 @@ struct SchedulePanel: View {
 private var accent: Color { ScheduleModule.descriptor.accentColor }
 
 /// The Day/Week switch and the date, then what's free: the all-day event
-/// and free time left today, or the free time across the week.
+/// and free time left in the day shown, or the free time across the week.
+/// In the Day view the date steps to yesterday and tomorrow.
 private struct ScheduleHeader: View {
     @ObservedObject var store: ScheduleStore
     let layout: ScheduleDayLayout
@@ -74,13 +79,20 @@ private struct ScheduleHeader: View {
             }
             if store.emptySituation == nil {
                 if store.mode == .day {
-                    freeTime(layout.freeMinutes, suffix: "free", none: "No free time left",
-                             help: "Free time left in your working day, with a buffer around each event")
-                    if store.draft == nil, layout.freeMinutes > 0 {
-                        SchedulePillButton(title: "Plan", symbol: "wand.and.stars", isProminent: true,
-                                           help: "Fill today's free time with your open tasks and reviews. "
-                                               + "Planned on this Mac, nothing is added until you say so") {
-                            store.planDay()
+                    // Yesterday is over: its line under the timeline says what it held.
+                    if store.viewing != .yesterday {
+                        let day = store.viewing == .today ? "today" : "tomorrow"
+                        freeTime(layout.freeMinutes, suffix: "free",
+                                 none: store.viewing == .today ? "No free time left" : "No free time",
+                                 help: store.viewing == .today
+                                     ? "Free time left in your working day, with a buffer around each event"
+                                     : "Free time in tomorrow's working day, with a buffer around each event")
+                        if store.draft == nil, layout.freeMinutes > 0 {
+                            SchedulePillButton(title: "Plan", symbol: "wand.and.stars", isProminent: true,
+                                               help: "Fill \(day)'s free time with your open tasks and reviews. "
+                                                   + "Planned on this Mac, nothing is added until you say so") {
+                                store.planDay()
+                            }
                         }
                     }
                 } else {
@@ -100,13 +112,16 @@ private struct ScheduleHeader: View {
         .padding(.horizontal, Theme.Spacing.xxs)
     }
 
-    private func dateAndAllDay(_ date: String, showsAllDay: Bool) -> some View {
+    private func dateAndAllDay(_ date: String?, showsAllDay: Bool) -> some View {
         HStack(spacing: Theme.Spacing.s) {
-            Text(date)
-                .font(Theme.Typography.caption)
-                .foregroundStyle(Theme.Palette.tertiaryText)
-                .lineLimit(1)
-                .fixedSize()
+            if store.mode == .day, store.emptySituation == nil {
+                DayStepper(viewing: store.viewing, yesterdayHelp: "Show yesterday's calendar",
+                           tomorrowHelp: "Show tomorrow's calendar", show: { store.show($0) }) {
+                    dateLabel(date)
+                }
+            } else {
+                dateLabel(date)
+            }
             Spacer(minLength: 0)
             if showsAllDay, store.emptySituation == nil, store.mode == .day {
                 ForEach(layout.allDay.prefix(1)) { item in
@@ -121,18 +136,37 @@ private struct ScheduleHeader: View {
         }
     }
 
-    /// "Wed 7" for a day, "Oct 7" for the week starting today.
-    private var shortDateText: String {
-        store.mode == .week
-            ? store.now.formatted(.dateTime.month(.abbreviated).day())
-            : store.now.formatted(.dateTime.weekday(.abbreviated).day())
+    /// "Tomorrow" or "Yesterday" names another day, followed by its date
+    /// while it fits (`date` nil drops it); today and the week show only
+    /// their date.
+    private func dateLabel(_ date: String?) -> some View {
+        HStack(spacing: Theme.Spacing.xs) {
+            if store.mode == .day, let title = store.viewing.title {
+                Text(title)
+                    .foregroundStyle(Theme.Palette.primaryText)
+            }
+            if let date {
+                Text(date)
+                    .foregroundStyle(Theme.Palette.tertiaryText)
+            }
+        }
+        .font(Theme.Typography.caption)
+        .lineLimit(1)
+        .fixedSize()
+    }
+
+    /// "Wed 7" for a day, "Oct 7" for the week starting today; nothing for
+    /// yesterday or tomorrow, whose name is enough.
+    private var shortDateText: String? {
+        if store.mode == .week { return store.now.formatted(.dateTime.month(.abbreviated).day()) }
+        return store.viewing == .today ? store.shownDay.formatted(.dateTime.weekday(.abbreviated).day()) : nil
     }
 
     private var dateText: String {
         let now = store.now
         guard store.mode == .week,
               let last = Calendar.current.date(byAdding: .day, value: 6, to: now) else {
-            return now.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day())
+            return store.shownDay.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day())
         }
         return now.formatted(.dateTime.month(.abbreviated).day()) + " - "
             + last.formatted(.dateTime.month(.abbreviated).day())
@@ -402,7 +436,8 @@ private struct ScheduleWeekBlock: View {
 /// rows where they overlap, with a line at the current time.
 private struct ScheduleTimeline: View {
     let layout: ScheduleDayLayout
-    let now: Date
+    /// Nil on a day other than today: no now-line and nothing faded as past.
+    let now: Date?
     let selectedID: ScheduleItem.ID?
     /// While a plan is on offer, everything else steps back.
     let isDrafting: Bool
@@ -423,7 +458,7 @@ private struct ScheduleTimeline: View {
                 // Every hour when there's room for its label, else every other one.
                 let labelEvery = hourWidth >= 34 ? 1 : 2
                 ZStack(alignment: .topLeading) {
-                    if let nowX = layout.position(of: now) {
+                    if let now, let nowX = layout.position(of: now) {
                         // The past is dimmed so what's left of the day stands out.
                         Rectangle()
                             .fill(Theme.Palette.background.opacity(0.35))
@@ -449,7 +484,7 @@ private struct ScheduleTimeline: View {
                         let laneHeight = (trackHeight - CGFloat(placed.lanes - 1) * Self.laneGap)
                             / CGFloat(placed.lanes)
                         let y = Self.labelHeight + CGFloat(placed.lane) * (laneHeight + Self.laneGap)
-                        ScheduleBlock(item: placed.item, isPast: placed.item.end <= now,
+                        ScheduleBlock(item: placed.item, isPast: isPast(placed.item),
                                       isSelected: placed.id == selectedID,
                                       isDimmed: isDrafting && placed.item.kind != .proposed) {
                             select(placed.id)
@@ -458,7 +493,7 @@ private struct ScheduleTimeline: View {
                         .offset(x: width * placed.x + 0.5, y: y)
                     }
                     // Under the labels, so the line never cuts through a title.
-                    if let nowX = layout.position(of: now) {
+                    if let now, let nowX = layout.position(of: now) {
                         ScheduleNowLine(height: trackHeight + 4)
                             .offset(x: width * nowX - 3, y: Self.labelHeight - 4)
                             .allowsHitTesting(false)
@@ -475,7 +510,7 @@ private struct ScheduleTimeline: View {
                                                canShowTime: width * placed.width >= 48)
                                 .frame(width: labelWidth, height: laneHeight,
                                        alignment: laneHeight >= 20 ? .topLeading : .leading)
-                                .opacity(ScheduleBlock.opacity(isPast: placed.item.end <= now,
+                                .opacity(ScheduleBlock.opacity(isPast: isPast(placed.item),
                                                                isSelected: placed.id == selectedID,
                                                                isDimmed: isDrafting && placed.item.kind != .proposed))
                                 .offset(x: width * placed.x + 0.5 + inset,
@@ -486,6 +521,10 @@ private struct ScheduleTimeline: View {
                 }
             }
         }
+    }
+
+    private func isPast(_ item: ScheduleItem) -> Bool {
+        now.map { item.end <= $0 } ?? false
     }
 }
 
@@ -601,6 +640,7 @@ private struct ScheduleNowLine: View {
 private struct ScheduleDetailStrip: View {
     let layout: ScheduleDayLayout
     let now: Date
+    let viewing: PlannerViewedDay
     let selected: ScheduleItem?
     let join: (MeetingLink) -> Void
     let close: () -> Void
@@ -641,20 +681,23 @@ private struct ScheduleDetailStrip: View {
         IconButton(symbol: "xmark", size: 22, help: "Close details", action: close)
     }
 
+    /// What is on now, or on another day what that day holds.
     private var status: some View {
         let status = layout.status(at: now)
         return HStack(spacing: Theme.Spacing.s) {
-            Image(systemName: symbol(status))
+            Image(systemName: viewing == .yesterday ? "clock.arrow.circlepath"
+                : viewing == .tomorrow ? "sunrise" : symbol(status))
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(accent)
                 .frame(width: 16)
-            Text(ScheduleFormat.status(status, now: now))
+            Text(viewing == .today ? ScheduleFormat.status(status, now: now)
+                : ScheduleFormat.daySummary(layout, isPast: viewing == .yesterday))
                 .font(Theme.Typography.body.monospacedDigit())
                 .foregroundStyle(Theme.Palette.secondaryText)
                 .lineLimit(1)
                 .truncationMode(.middle)
             Spacer(minLength: 0)
-            if layout.placed.isEmpty {
+            if layout.placed.isEmpty, viewing == .today {
                 Text("Nothing on your calendar today")
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.tertiaryText)

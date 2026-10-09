@@ -52,6 +52,58 @@ public extension PlannerDay {
         }
         return PlannerDay(date: date, items: items)
     }
+
+    /// The sample list for `viewed`, counted from `today`, so stepping
+    /// through days in demo mode reads naturally: yesterday mostly done,
+    /// with one leftover already carried to today (it shares the id of
+    /// today's first open item) and two still waiting to be moved, and
+    /// tomorrow with a couple of tasks planned ahead.
+    static func sample(
+        _ viewed: PlannerViewedDay,
+        today: PlannerDayKey,
+        kind: PlannerSampleDay = .work,
+        calendar: Calendar = .current
+    ) -> PlannerDay {
+        let date = viewed.key(today: today, calendar: calendar)
+        let start = date.startDate(calendar: calendar)
+        func at(_ hour: Int, _ minute: Int) -> Date {
+            start.addingTimeInterval(TimeInterval(hour * 3600 + minute * 60))
+        }
+        func item(_ number: Int, _ title: String, _ created: Date, _ completed: Date? = nil) -> PlannerItem {
+            PlannerItem(id: UUID(uuidString: String(format: "00000000-0000-4000-8000-%012d", number))!,
+                        title: title, isDone: completed != nil, createdAt: created, completedAt: completed)
+        }
+        switch (viewed, kind) {
+        case (.today, _):
+            return sample(on: date, kind: kind, calendar: calendar)
+        case (.yesterday, .work):
+            return PlannerDay(date: date, items: [
+                item(101, "Prep slides for the design standup", at(8, 30), at(9, 20)),
+                item(3, "Ship notch planner beta", at(8, 35)),
+                item(102, "Write the Q3 product update", at(8, 40)),
+                item(103, "Expense the client dinner", at(8, 50), at(13, 10)),
+                item(104, "Call the dentist", at(9, 0)),
+            ])
+        case (.yesterday, .medicine):
+            return PlannerDay(date: date, items: [
+                item(101, "Anki: cardio deck", at(7, 30), at(8, 45)),
+                item(3, "UWorld cardio Qs", at(7, 35)),
+                item(102, "Review the ECG handout", at(7, 40)),
+                item(103, "Pathology lecture notes", at(7, 45), at(14, 20)),
+                item(104, "Pick up the white coat", at(7, 50)),
+            ])
+        case (.tomorrow, .work):
+            return PlannerDay(date: date, items: [
+                item(201, "Draft the offsite agenda", at(-6, 10)),
+                item(202, "1:1 notes for Sam", at(-6, 15)),
+            ], isPlannedAhead: true)
+        case (.tomorrow, .medicine):
+            return PlannerDay(date: date, items: [
+                item(201, "Pre-read: renal physiology", at(-6, 10)),
+                item(202, "Book the OSCE practice room", at(-6, 15)),
+            ], isPlannedAhead: true)
+        }
+    }
 }
 
 public extension UpcomingEvent {
@@ -121,5 +173,59 @@ public extension UpcomingEvent {
                 calendarColor: personal
             ),
         ]
+    }
+
+    /// Demo events for the day `viewed` names: `samples(now:kind:)` for
+    /// today, and a plain workday at fixed hours for yesterday and tomorrow,
+    /// so stepping the Today panel shows a believable calendar either way.
+    static func samples(
+        _ viewed: PlannerViewedDay,
+        now: Date,
+        kind: PlannerSampleDay = .work,
+        calendar: Calendar = .current
+    ) -> [UpcomingEvent] {
+        guard viewed != .today else { return samples(now: now, kind: kind) }
+        let today = PlannerDayKey(date: now, calendar: calendar)
+        let start = viewed.key(today: today, calendar: calendar).startDate(calendar: calendar)
+        let prefix = viewed == .yesterday ? "demo-yesterday" : "demo-tomorrow"
+        func event(_ id: String, _ title: String, _ hour: Int, _ minute: Int, minutes: Int,
+                   _ color: EventColor, link: MeetingLink? = nil) -> UpcomingEvent {
+            let begins = calendar.date(bySettingHour: hour, minute: minute, second: 0, of: start) ?? start
+            return UpcomingEvent(id: "\(prefix)-\(id)", title: title, start: begins,
+                                 end: begins.addingTimeInterval(TimeInterval(minutes * 60)),
+                                 calendarColor: color, meetingLink: link)
+        }
+        let work = EventColor(red: 0.20, green: 0.55, blue: 0.98)
+        let personal = EventColor(red: 0.98, green: 0.62, blue: 0.20)
+        let school = EventColor(red: 0.36, green: 0.78, blue: 0.47)
+        let clinical = EventColor(red: 0.93, green: 0.35, blue: 0.38)
+        let zoom = MeetingLink(provider: .zoom, url: URL(string: "https://zoom.us/j/5551234567")!)
+        switch (viewed, kind) {
+        case (.yesterday, .work):
+            return [
+                event("standup", "Design standup", 9, 30, minutes: 30, work, link: zoom),
+                event("lunch", "Lunch with Priya", 12, 30, minutes: 60, personal),
+                event("roadmap", "Roadmap review", 15, 0, minutes: 45, work),
+            ]
+        case (.yesterday, .medicine):
+            return [
+                event("lecture", "Pathology lecture", 8, 0, minutes: 90, school),
+                event("rounds", "Ward rounds", 13, 0, minutes: 120, clinical),
+            ]
+        case (.tomorrow, .work):
+            return [
+                event("standup", "Design standup", 9, 30, minutes: 30, work, link: zoom),
+                event("offsite", "Offsite planning", 11, 0, minutes: 60, work),
+                event("one-on-one", "1:1 with Sam", 14, 0, minutes: 30, work),
+                event("gym", "Gym", 18, 0, minutes: 60, personal),
+            ]
+        case (.tomorrow, .medicine):
+            return [
+                event("lecture", "Renal physiology lecture", 8, 0, minutes: 90, school),
+                event("osce", "OSCE practice", 13, 30, minutes: 60, clinical),
+            ]
+        case (.today, _):
+            return samples(now: now, kind: kind)
+        }
     }
 }
