@@ -19,11 +19,14 @@ final class PartyModule: NotchModule {
     let store: PartyStore
     private var completionSubscription: AnyCancellable?
     private var identitySubscription: AnyCancellable?
+    /// The Apple account, which owns the Party data once signed in.
+    private let account: SyncStore
     /// Kept alive here: the notification center holds its delegate weakly.
     private let notifications: PartyNotifications?
 
     init(context: ModuleContext) {
         store = PartyStore(runMode: context.runMode)
+        account = context.accountSync
         let notifications = PartyNotifications.make(runMode: context.runMode)
         self.notifications = notifications
         store.followFocus(from: context.providers.$snapshot.map(\.focus).eraseToAnyPublisher())
@@ -101,7 +104,7 @@ final class PartyModule: NotchModule {
     }
 
     func makeSettingsPane() -> SettingsPane? {
-        .party(store: store)
+        .party(store: store, account: account)
     }
 
     /// The party I'm in, so the closed notch can show members' pets by mine,

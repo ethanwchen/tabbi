@@ -36,6 +36,8 @@ final class PartyStore: ObservableObject {
     /// The "Great job, team!" moment after a shared session ran to its end,
     /// while it is up (`PartyTeamCelebration.displayDuration`).
     @Published private(set) var celebration: PartyTeamCelebration?
+    /// How the last "Delete my Party data" went, for Settings > Party.
+    @Published private(set) var deletionNotice: String?
 
     let isDemo: Bool
     /// A `--snapshot` render: stays offline so no user is ever registered,
@@ -278,6 +280,45 @@ final class PartyStore: ObservableObject {
         guard !isDemo, repository != nil else { return }
         state.reset(settings: settings)
         rebuildAccount()
+    }
+
+    /// Settings > Party's "Delete my Party data", for users without an
+    /// account (signed in, Delete Account in Settings > General does this):
+    /// `DELETE /v1/me` removes the profile, presence, friendships and party
+    /// memberships, and the local streak goes with them. While Party stays
+    /// on it then starts over with a new friend code. A failure keeps
+    /// everything and lands in `deletionNotice`.
+    func deletePartyData() {
+        guard pending == nil else { return }
+        deletionNotice = nil
+        if isDemo {
+            deletionNotice = "This is a demo. Nothing was deleted."
+            return
+        }
+        guard let account else { return }
+        // Nothing may use the old identity meanwhile: a heartbeat after the
+        // delete would register a new user before the user sees it went.
+        self.account = nil
+        connectTask?.cancel()
+        heartbeatTask?.cancel()
+        refreshTask?.cancel()
+        pending = .deleteData
+        Task { [weak self] in
+            do {
+                try await account.deleteAccount()
+                guard let self else { return }
+                tracker = PartyPresenceTracker()
+                tracker.setInvisible(settings.invisible)
+                saveTracker()
+                deletionNotice = "Your Party data was deleted."
+            } catch {
+                self?.deletionNotice = Self.partyError(error).message
+            }
+            guard let self else { return }
+            pending = nil
+            state.reset(settings: settings)
+            rebuildAccount()
+        }
     }
 
     // MARK: Actions
@@ -636,4 +677,5 @@ enum PartyAction: Hashable {
     case joinFriend(String)
     case leaveParty
     case session
+    case deleteData
 }
