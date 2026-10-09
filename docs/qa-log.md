@@ -2,6 +2,7 @@
 
 What the whole-app quality pass found and fixed, newest first, one sentence per line.
 
+- At the Compact panel size the Study sound mixer cut every noise name ("Brown n...", "Pink noi...", "Cafe m...") beside its icon, and the method info header cut "Use Question block" to "Use Question..."; the tiles now all drop their icons when a name would not fit, and the button shortens to "Use" beside the method name.
 - At the Compact panel size the Anki tab's "Add AnkiConnect to Anki" setup card overflowed the canvas (its explanation was pinned at two lines), clipping the card's top and bottom edges, and the API key and blocked-app steps cut "click Config" to "clic..."; the explanation now gives up a line first (full text in its tooltip) and the step reads "In Anki, choose Tools › Add-ons › AnkiConnect › Config".
 - At the Compact panel size Today's "Up next" card in its first-run "See what's next" and "Add your calendar" states was too tall, so the whole Today panel overflowed and clipped the add field and focus card; the card's explanation now gives up a line when space is short, with the full text in its tooltip.
 - At the Compact panel size the End-of-Day Review overflowed the canvas (the summary was pinned at three lines), clipping its last Done row and the top of the Up next and focus cards; the summary now gives up a line when space is short, with the full text in its tooltip.
