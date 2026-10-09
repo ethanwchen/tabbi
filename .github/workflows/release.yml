@@ -55,9 +55,19 @@ jobs:
           # from the history since the last tag, so this needs all of it.
           fetch-depth: 0
 
+      # The runner image's default Xcode can lag behind the newest one it
+      # ships, and Tabbi builds with a recent Swift. Use the newest stable
+      # Xcode on the image (betas and release candidates are skipped).
+      - name: Select the newest Xcode
+        run: |
+          xcode=$(find /Applications -maxdepth 1 -name 'Xcode_*.app' | grep -E '/Xcode_[0-9]+(\.[0-9]+)*\.app$' | sort -V | tail -n 1 || true)
+          if [[ -n "$xcode" ]]; then sudo xcode-select -s "$xcode"; fi
+          xcode-select -p
+
       - name: Toolchain
         run: |
           sw_vers
+          xcodebuild -version
           swift --version
 
       # A keychain of its own, made the default so codesign finds the

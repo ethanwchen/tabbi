@@ -22,6 +22,15 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      # The runner image's default Xcode can lag behind the newest one it
+      # ships, and Tabbi builds with a recent Swift. Use the newest stable
+      # Xcode on the image (betas and release candidates are skipped).
+      - name: Select the newest Xcode
+        run: |
+          xcode=$(find /Applications -maxdepth 1 -name 'Xcode_*.app' | grep -E '/Xcode_[0-9]+(\.[0-9]+)*\.app$' | sort -V | tail -n 1 || true)
+          if [[ -n "$xcode" ]]; then sudo xcode-select -s "$xcode"; fi
+          xcode-select -p
+
       - name: Toolchain
         run: |
           sw_vers
@@ -142,6 +151,15 @@ jobs:
             ~/Library/Caches/org.swift.swiftpm
           key: spm-${{ runner.os }}-${{ hashFiles('Package.resolved') }}
           restore-keys: spm-${{ runner.os }}-
+
+      # The runner image's default Xcode can lag behind the newest one it
+      # ships, and Tabbi builds with a recent Swift. Use the newest stable
+      # Xcode on the image (betas and release candidates are skipped).
+      - name: Select the newest Xcode
+        run: |
+          xcode=$(find /Applications -maxdepth 1 -name 'Xcode_*.app' | grep -E '/Xcode_[0-9]+(\.[0-9]+)*\.app$' | sort -V | tail -n 1 || true)
+          if [[ -n "$xcode" ]]; then sudo xcode-select -s "$xcode"; fi
+          xcode-select -p
 
       # CI has no Developer ID, so it checks the ad-hoc path of the release
       # build: universal binary, strip, signing, zip, DMG and appcast.
