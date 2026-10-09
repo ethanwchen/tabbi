@@ -36,14 +36,17 @@ public struct NotchView: View {
         .frame(width: model.size.width, height: model.size.height, alignment: .top)
         .clipShape(shape)
         .contentShape(shape)
-        .onTapGesture {
-            guard !model.isOpen else { return }
-            // A preview with a one-click action (Anki's "Study <deck>") runs
-            // it, and the panel opens on its module to show how it goes.
-            if let preview = model.preview, let action = preview.action {
-                content.runAction(action, from: preview.module)
+        .onTapGesture(perform: openFromClosed)
+        .overlay {
+            // The closed notch is a bare shape (or a preview's icon and text),
+            // so VoiceOver would find nothing to press; give it a button.
+            if !model.isOpen {
+                Color.clear
+                    .accessibilityElement()
+                    .accessibilityLabel("Open \(content.appName)")
+                    .accessibilityAddTraits(.isButton)
+                    .accessibilityAction { openFromClosed() }
             }
-            model.openFromClosedClick()
         }
         .contextMenu {
             ForEach(model.layout.enabled) { module in
@@ -100,6 +103,16 @@ public struct NotchView: View {
         }
         return Motion.adapted(animation, reduceMotion: reduceMotion)
     }
+
+    private func openFromClosed() {
+        guard !model.isOpen else { return }
+        // A preview with a one-click action (Anki's "Study <deck>") runs
+        // it, and the panel opens on its module to show how it goes.
+        if let preview = model.preview, let action = preview.action {
+            content.runAction(action, from: preview.module)
+        }
+        model.openFromClosedClick()
+    }
 }
 
 public extension EnvironmentValues {
@@ -150,6 +163,12 @@ private struct NotchCloseZone: View {
             .contentShape(Rectangle())
             .onTapGesture { model.close() }
             .help("Close")
+            // A bare shape has no role, so VoiceOver would skip it; read it as
+            // the panel's Close button instead.
+            .accessibilityElement()
+            .accessibilityLabel("Close")
+            .accessibilityAddTraits(.isButton)
+            .accessibilityAction { model.close() }
     }
 }
 

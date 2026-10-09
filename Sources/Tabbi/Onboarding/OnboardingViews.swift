@@ -81,6 +81,8 @@ private struct OnboardingProgress: View {
             }
         }
         .help("Step \(flow.stageIndex + 1) of \(flow.stages.count)")
+        .accessibilityElement()
+        .accessibilityLabel("Step \(flow.stageIndex + 1) of \(flow.stages.count)")
     }
 
     private var skip: some View {

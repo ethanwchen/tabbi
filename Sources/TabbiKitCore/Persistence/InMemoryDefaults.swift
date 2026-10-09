@@ -7,7 +7,7 @@ import Foundation
 /// write, so a store built on it can load another run's kit. A suite also
 /// leaves a plist in ~/Library/Preferences, even after its domain is removed.
 /// These values start empty and are never shared or written anywhere.
-public final class InMemoryDefaults: UserDefaults, @unchecked Sendable {
+public final class InMemoryDefaults: UserDefaults {
     private let lock = NSLock()
     private var values: [String: Any] = [:]
 
