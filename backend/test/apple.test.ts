@@ -5,7 +5,7 @@ import {
   APPLE_AUTH_PER_MIN, APPLE_CLIENT_ID, APPLE_ISSUER, APPLE_KEYS_URL, APPLE_REVOKE_URL, APPLE_TOKEN_URL, appleSecrets,
   exchangeAuthorizationCode, resetAppleKeyCache, revokeRefreshToken, verifyIdentityToken,
 } from "../src/apple";
-import { call, expectError, freshIp, hub, register } from "./helpers";
+import { call, expectError, freshIp, hub, pinClockToMinuteStart, register } from "./helpers";
 
 // ---------- a fake Apple ----------
 
@@ -67,6 +67,7 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.restoreAllMocks();
+  vi.useRealTimers();
 });
 
 const signIn = (body: Record<string, unknown>, token?: string, ip = freshIp()) => call("POST", "/v1/auth/apple", body, token, ip);
@@ -242,11 +243,12 @@ describe("POST /v1/auth/apple", () => {
   });
 
   it("is rate limited per IP", async () => {
+    pinClockToMinuteStart();
     const ip = freshIp();
     for (let i = 0; i < APPLE_AUTH_PER_MIN; i++) await signIn({ identityToken: "x.y.z" }, undefined, ip);
     const r = await signIn({ identityToken: "x.y.z" }, undefined, ip);
     expectError(r, 429, "rate_limited");
-    expect(r.headers.get("Retry-After")).toMatch(/^\d+$/);
+    expect(r.headers.get("Retry-After")).toBe("60");
   });
 });
 

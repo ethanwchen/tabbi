@@ -1,8 +1,8 @@
 import { env, runInDurableObject } from "cloudflare:test";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import catalog from "../shared/catalog.json";
 import type { Hub } from "../src/hub";
-import { call, expectError, register } from "./helpers";
+import { call, expectError, pinClockToMinuteStart, register } from "./helpers";
 
 const now = () => Math.floor(Date.now() / 1000);
 
@@ -22,6 +22,8 @@ async function storedPresence(code: string) {
 async function friends(a: { token: string }, b: { code: string }) {
   await call("POST", "/v1/friends", { code: b.code }, a.token);
 }
+
+beforeEach(pinClockToMinuteStart);
 
 afterEach(() => {
   vi.useRealTimers();

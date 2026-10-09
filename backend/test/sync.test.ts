@@ -1,9 +1,9 @@
 import { SELF, runInDurableObject } from "cloudflare:test";
 import { env } from "cloudflare:workers";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { migrate } from "../src/hub";
 import { MAX_SYNC_BYTES, SYNC_PUT_PER_MIN } from "../src/sync";
-import { BASE, Reply, call, expectError, hub, linkAppleAccount, register } from "./helpers";
+import { BASE, Reply, call, expectError, hub, linkAppleAccount, pinClockToMinuteStart, register } from "./helpers";
 
 const DOC = {
   schemaVersion: 1,
@@ -106,13 +106,15 @@ describe("PUT /v1/sync", () => {
   });
 
   it("rate limits writes per user", async () => {
-    const a = await signedIn();
-    for (let i = 0; i < SYNC_PUT_PER_MIN; i++) expect((await put(a.token, DOC, String(i))).status).toBe(200);
-    const limited = await put(a.token, DOC, String(SYNC_PUT_PER_MIN));
-    // The limit may roll over with the minute; then the write goes through instead.
-    if (limited.status !== 200) {
+    pinClockToMinuteStart();
+    try {
+      const a = await signedIn();
+      for (let i = 0; i < SYNC_PUT_PER_MIN; i++) expect((await put(a.token, DOC, String(i))).status).toBe(200);
+      const limited = await put(a.token, DOC, String(SYNC_PUT_PER_MIN));
       expectError(limited, 429, "rate_limited");
-      expect(Number(limited.headers.get("Retry-After"))).toBeGreaterThan(0);
+      expect(limited.headers.get("Retry-After")).toBe("60");
+    } finally {
+      vi.useRealTimers();
     }
   });
 
