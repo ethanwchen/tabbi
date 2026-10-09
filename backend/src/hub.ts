@@ -234,6 +234,13 @@ CREATE TABLE suggestions (
 CREATE INDEX suggestions_by_created_at ON suggestions (created_at);
 `;
 
+/** Which Tabbi a suggestion came from, when the app opened the Suggest form (see suggestions.ts). */
+const SUGGESTION_APP_SCHEMA = `
+ALTER TABLE suggestions ADD COLUMN app_version TEXT;
+ALTER TABLE suggestions ADD COLUMN macos TEXT;
+ALTER TABLE suggestions ADD COLUMN edition TEXT;
+`;
+
 /**
  * Ordered schema steps; step i brings the database to version i + 1. Append new steps and never edit
  * one that has been deployed. Step 1 is the original schema, written with IF NOT EXISTS so databases
@@ -241,7 +248,7 @@ CREATE INDEX suggestions_by_created_at ON suggestions (created_at);
  */
 const MIGRATIONS = [
   SCHEMA, SYNC_SCHEMA, MODERATION_SCHEMA, REPORTS_SCHEMA, USED_IDENTITY_TOKENS_SCHEMA, NAME_HOLDS_SCHEMA, GRANTS_SCHEMA,
-  SUGGESTIONS_SCHEMA,
+  SUGGESTIONS_SCHEMA, SUGGESTION_APP_SCHEMA,
 ];
 
 /** Runs the steps a database has not had yet, each in its own transaction with its version bump. */
@@ -710,8 +717,10 @@ export class Hub extends DurableObject<Env> {
       if (suggestion) {
         const today = this.sql.exec<{ n: number }>("SELECT COUNT(*) AS n FROM suggestions WHERE created_at > ?", now - 86_400).one().n;
         if (today >= MAX_SUGGESTIONS_PER_DAY) throw new HttpError(503, "inbox_full", "the inbox takes no more suggestions today");
-        this.sql.exec("INSERT INTO suggestions (category, message, email, created_at) VALUES (?, ?, ?, ?)",
-          suggestion.category, suggestion.message, suggestion.email, now);
+        this.sql.exec(
+          "INSERT INTO suggestions (category, message, email, app_version, macos, edition, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+          suggestion.category, suggestion.message, suggestion.email, suggestion.appVersion, suggestion.macos, suggestion.edition, now,
+        );
       }
       if (form) return new Response(null, { status: 303, headers: { Location: THANKS_URL, "Cache-Control": "no-store" } });
       return json({ ok: true }, 201);
@@ -724,11 +733,17 @@ export class Hub extends DurableObject<Env> {
   /** GET /v1/admin/suggestions[?before=id]: a page of suggestions, newest first; `before` pages further back. */
   private adminSuggestions(before: string | null): Response {
     if (before !== null && !/^\d{1,15}$/.test(before)) throw new HttpError(400, "invalid_field", "invalid before");
-    const rows = this.sql.exec<{ id: number; category: string; message: string; email: string | null; created_at: number }>(
+    const rows = this.sql.exec<{
+      id: number; category: string; message: string; email: string | null;
+      app_version: string | null; macos: string | null; edition: string | null; created_at: number;
+    }>(
       "SELECT * FROM suggestions WHERE id < ? ORDER BY id DESC LIMIT ?", before === null ? Number.MAX_SAFE_INTEGER : Number(before),
       ADMIN_SUGGESTIONS_PAGE,
     ).toArray();
-    const suggestions = rows.map((r) => ({ id: r.id, createdAt: r.created_at, category: r.category, message: r.message, email: r.email }));
+    const suggestions = rows.map((r) => ({
+      id: r.id, createdAt: r.created_at, category: r.category, message: r.message, email: r.email,
+      appVersion: r.app_version, macos: r.macos, edition: r.edition,
+    }));
     return json({ ok: true, suggestions, more: rows.length === ADMIN_SUGGESTIONS_PAGE });
   }
 

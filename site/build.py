@@ -281,6 +281,10 @@ ABOUT = f'''
 # A plain form, no script: it posts to the friends backend, which answers with
 # a redirect to /thanks. The "website" field is a honeypot: people never see
 # it, bots fill it in, and the backend drops anything that arrives with it.
+# "version", "macos" and "edition" say which Tabbi a bug report is about when
+# the app opened the page (FeedbackLink in TabbiKitCore); left empty, the
+# backend stores none.
+SUGGEST_APP_FACTS = ['version', 'macos', 'edition']
 SUGGEST_CATEGORIES = [
     ('tab', 'A new tab'),
     ('integration', 'An integration'),
@@ -309,6 +313,7 @@ SUGGEST = f'''
           <label for="website">Leave this empty</label>
           <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
         </div>
+''' + '\n'.join(f'        <input type="hidden" name="{name}" value="">' for name in SUGGEST_APP_FACTS) + '''
         <button class="btn" type="submit">Send suggestion</button>
       </form>
 '''

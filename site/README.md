@@ -52,6 +52,7 @@ It sends `application/x-www-form-urlencoded` fields:
 - `message`: 10 to 2000 characters, required;
 - `email`: optional, at most 254 characters, used only to reply about that idea;
 - `website`: a honeypot, hidden from people and out of the tab order. The backend should drop any post where it is not empty.
+- `version`, `macos` and `edition`: hidden, the Tabbi version, macOS version and edition id when the app opened the page (`FeedbackLink` in `TabbiKitCore`), each at most 32 letters, digits, spaces and `. _ - ( )`. Empty means none.
 
 The backend answers a good post with a `303` redirect to `https://tabbinotch.com/thanks`, which is not indexed.
 The privacy policy's "This website" section covers what happens to a suggestion.

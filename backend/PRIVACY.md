@@ -40,6 +40,7 @@ Logs never contain tokens, friend or party codes, names, request contents or IP 
 ## Suggestions from the website
 
 The website's Suggest form sends the service an idea: its category, the message and, only if you add one, an email address to reply to, with the time it arrived.
+When you open the form from Tabbi, it also carries the Tabbi version, the macOS version and the edition, so a bug report says where it happened.
 A suggestion is not linked to a friend code, an account or an IP address.
 Only the maintainer reads it, uses the email only to ask about or reply to that idea, and deletes it when it is no longer needed, at the latest after 365 days.
 

@@ -2,12 +2,14 @@ import { SELF, runDurableObjectAlarm, runInDurableObject } from "cloudflare:test
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   ADMIN_SUGGESTIONS_PAGE, MAX_SUGGESTIONS_PER_DAY, MAX_SUGGESTION_MESSAGE, SUGGESTIONS_PER_DAY, SUGGESTIONS_PER_MIN,
-  SUGGESTION_RETENTION_DAYS, THANKS_URL, cleanEmail, cleanMessage, parseSuggestion,
+  SUGGESTION_RETENTION_DAYS, THANKS_URL, cleanAppFact, cleanEmail, cleanMessage, parseSuggestion,
 } from "../src/suggestions";
 import { migrate } from "../src/hub";
 import { BASE, admin, call, expectError, freshIp, hub, pinClockToMinuteStart, register } from "./helpers";
 
 const IDEA = "A tab for my plants, so I remember to water them.";
+/** What a suggestion without the app's facts stores for them. */
+const NO_APP = { appVersion: null, macos: null, edition: null };
 
 /** Posts the website's form the way a browser does, without following the redirect. */
 function postForm(fields: Record<string, string> | string, ip = freshIp()) {
@@ -32,7 +34,7 @@ afterEach(() => vi.useRealTimers());
 describe("parseSuggestion", () => {
   it("accepts the four categories of the website form", () => {
     for (const category of ["tab", "integration", "improvement", "other"]) {
-      expect(parseSuggestion({ category, message: IDEA })).toEqual({ category, message: IDEA, email: null });
+      expect(parseSuggestion({ category, message: IDEA })).toEqual({ category, message: IDEA, email: null, ...NO_APP });
     }
     expect(() => parseSuggestion({ category: "new tab", message: IDEA })).toThrow("invalid category");
     expect(() => parseSuggestion({ message: IDEA })).toThrow("category is required");
@@ -59,6 +61,19 @@ describe("parseSuggestion", () => {
       expect(() => cleanEmail(bad)).toThrow("invalid email");
     }
   });
+
+  it("takes the app version, macOS version and edition the app fills in, in the shape the app cleans them to", () => {
+    expect(parseSuggestion({ category: "other", message: IDEA, version: "1.4.0 (52)", macos: "15.1.0", edition: "tabbi" }))
+      .toEqual({ category: "other", message: IDEA, email: null, appVersion: "1.4.0 (52)", macos: "15.1.0", edition: "tabbi" });
+    expect(parseSuggestion({ category: "other", message: IDEA, version: "", macos: " ", edition: "" })).toEqual({
+      category: "other", message: IDEA, email: null, ...NO_APP,
+    });
+    expect(cleanAppFact(" development ", "version")).toBe("development");
+    expect(cleanAppFact("x".repeat(32), "version")).toHaveLength(32);
+    for (const bad of ["x".repeat(33), "1.4<script>", "15.1\nmore", "a&b=c", "ada@example.org", 15]) {
+      expect(() => cleanAppFact(bad, "macos")).toThrow("invalid macos");
+    }
+  });
 });
 
 describe("POST /v1/suggestions", () => {
@@ -68,8 +83,18 @@ describe("POST /v1/suggestions", () => {
     expect(res.status).toBe(303);
     expect(res.headers.get("Location")).toBe(THANKS_URL);
     expect(await stored(message)).toEqual([
-      { id: expect.any(Number), createdAt: Math.floor(Date.now() / 1000), category: "tab", message, email: "ada@example.org" },
+      { id: expect.any(Number), createdAt: Math.floor(Date.now() / 1000), category: "tab", message, email: "ada@example.org", ...NO_APP },
     ]);
+  });
+
+  it("stores the app's facts the form carries when the app opened it", async () => {
+    const message = `${IDEA} (from the app)`;
+    const res = await postForm({ category: "other", message, email: "", website: "", version: "1.4.0 (52)", macos: "15.1.0", edition: "tabbi" });
+    expect(res.status).toBe(303);
+    expect((await stored(message))[0]).toMatchObject({ appVersion: "1.4.0 (52)", macos: "15.1.0", edition: "tabbi", email: null });
+    const page = await postForm({ category: "other", message, version: "1.4.0", macos: "15.1.0; rm -rf" });
+    expect(page.status).toBe(400);
+    expect(await page.text()).toContain("invalid macos");
   });
 
   it("stores a JSON post sent with CORS and answers JSON", async () => {
@@ -191,6 +216,31 @@ describe("suggestions for the maintainer", () => {
   });
 });
 
+describe("schema step 9", () => {
+  it("adds the app's facts to suggestions stored before them, as null", async () => {
+    await runInDurableObject(hub(), (_, state) => {
+      const sql = state.storage.sql;
+      sql.exec("DROP TABLE suggestions");
+      sql.exec("UPDATE schema_version SET version = 7");
+      migrate(state.storage);
+      sql.exec("DELETE FROM suggestions");
+    });
+    await runInDurableObject(hub(), (_, state) => {
+      const sql = state.storage.sql;
+      sql.exec("ALTER TABLE suggestions DROP COLUMN app_version");
+      sql.exec("ALTER TABLE suggestions DROP COLUMN macos");
+      sql.exec("ALTER TABLE suggestions DROP COLUMN edition");
+      sql.exec("INSERT INTO suggestions (category, message, email, created_at) VALUES ('tab', 'Kept from before', NULL, 1)");
+      sql.exec("UPDATE schema_version SET version = 8");
+      migrate(state.storage);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 9 }]);
+      expect(sql.exec("SELECT message, app_version, macos, edition FROM suggestions").toArray())
+        .toEqual([{ message: "Kept from before", app_version: null, macos: null, edition: null }]);
+      sql.exec("DELETE FROM suggestions");
+    });
+  });
+});
+
 describe("schema step 8", () => {
   it("adds the suggestions table to a database at version 7 and keeps its data", async () => {
     const user = await register({ name: "Kept" });
@@ -199,7 +249,7 @@ describe("schema step 8", () => {
       sql.exec("DROP TABLE suggestions");
       sql.exec("UPDATE schema_version SET version = 7");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 8 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 9 }]);
       expect(sql.exec("SELECT name FROM users WHERE code = ?", user.code).toArray()).toEqual([{ name: "Kept" }]);
       expect(sql.exec("SELECT * FROM suggestions").toArray()).toEqual([]);
     });
