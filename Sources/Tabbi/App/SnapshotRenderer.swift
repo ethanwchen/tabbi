@@ -204,6 +204,14 @@ enum SnapshotRenderer {
             print(url.path)
         }
 
+        // Every costume on every body shape, and every pet animation frame by frame.
+        for (name, gallery) in [("pets-costumes", PetGallery.costumes()), ("pets-animations", PetGallery.animations())] {
+            guard let png = gallery.png(scale: 2) else { continue }
+            let url = outputDirectory.appendingPathComponent("\(name).png")
+            try? png.write(to: url)
+            print(url.path)
+        }
+
         let settingsWindow = SettingsWindowController(settings: services.settings, modules: services.modules,
                                                       onboarding: services.onboarding)
         for pane in settingsWindow.paneIDs {
