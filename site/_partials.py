@@ -90,13 +90,14 @@ def page(slug, title, description, body, hero=None, wide=False, indexable=True):
   <meta property="og:type" content="website">
   <meta property="og:url" content="{url}">
   <meta property="og:image" content="{ORIGIN}/img/social-preview.png">
-  <meta property="og:image:width" content="1280">
-  <meta property="og:image:height" content="640">
-  <meta property="og:image:alt" content="The Tabbi notch open on its Timer tab, above the Tabbi icon and name">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The Tabbi icon and the line A little cat for your notch, beside a laptop with the Timer tab open in its notch">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{title_attr}">
   <meta name="twitter:description" content="{desc_attr}">
   <meta name="twitter:image" content="{ORIGIN}/img/social-preview.png">
+  <meta name="twitter:image:alt" content="The Tabbi icon and the line A little cat for your notch, beside a laptop with the Timer tab open in its notch">
   <link rel="icon" href="/favicon.ico" sizes="48x48">
   <link rel="icon" href="/img/favicon-64.png" type="image/png" sizes="64x64">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">

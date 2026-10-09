@@ -18,6 +18,7 @@ No framework, no JavaScript, no build dependencies.
 - `_headers` - security headers and caching for Cloudflare Pages.
 - `img/` - screenshots and icons, copied from `docs/images` and `docs/brand/assets` (see below).
 - `favicon.ico` - the icon at 16, 32 and 48 px.
+- `_social-card.html` - the source of the Open Graph and Twitter card (not part of the site).
 - `deploy.sh` - builds and deploys to the Cloudflare Pages project `tabbi`.
 
 ## Build and preview
@@ -55,7 +56,9 @@ The home page shows four tabs; their screenshots are the app's own snapshot rend
 Each also has a 680 px copy (`today-680.webp`), and `srcset` lets small and 1x screens load that one.
 `icon-256.webp`, `apple-touch-icon.png`, `favicon-64.png` and `favicon.ico` are resized from `docs/brand/assets/tabbi-icon-1024.png`.
 `glyph.png` is `docs/brand/assets/tabbi-glyph-256.png`, used as the header mark and on the 404 page.
-`social-preview.png` is copied unchanged for Open Graph and Twitter cards.
+`social-preview.png` is the 1200x630 Open Graph and Twitter card: the hero's words, icon, laptop and pixel cat on the brown ground.
+It is `_social-card.html` rendered by Chromium at 1200x630 and scale 1 (it loads Fredoka and Nunito from Google Fonts, so render it online), then saved by Pillow as an optimized RGB PNG of about 190 KB.
+Render it again when the hero's words or the Timer screenshot change.
 `notch-timer.webp`, the panel in the hero laptop, is `timer.webp` cropped to the open notch with the wallpaper made transparent, resized to 880 px wide, at quality 92.
 `pixel-cat.png` is the app's gray tabby (`PetBreed.grayTabby`) at 1x: the `sit` and `blink` frames from `PetComposer.clip`, rendered by `PetRenderer`, cropped to 22x26 px and placed side by side.
 The stylesheet draws it at 2x or 3x with `image-rendering: pixelated`, peeking out from behind the hero laptop, and blinks it every five seconds unless the visitor prefers reduced motion.
