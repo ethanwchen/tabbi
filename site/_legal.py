@@ -17,19 +17,19 @@ MAIL = f'<a href="mailto:{SUPPORT_EMAIL}">{SUPPORT_EMAIL}</a>'
 # Privacy
 # --------------------------------------------------------------------------
 
-PRIVACY_HERO = ('Privacy Policy', 'What stays on your Mac, what the optional friends service keeps, and how to delete it.')
+PRIVACY_HERO = ('Privacy Policy', 'What stays on your Mac, what the optional friends service and account keep, and how to delete them.')
 
 PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
 
       <div class="card">
         <h2>The short version</h2>
         <ul>
-          <li>Tabbi has no accounts, no analytics, no advertising and no telemetry.</li>
+          <li>Tabbi works without an account, and has no analytics, no advertising and no telemetry.</li>
           <li>Your tasks, calendar, activity history, Claude chats and settings stay on your Mac.</li>
           <li>Claude features run through the <code>claude</code> command already installed on your Mac. Tabbi never reads your credentials.</li>
-          <li>Only the optional Party tab talks to a Tabbi server, and it stores a nickname and study stats, never your email, real name or IP address.</li>
+          <li>Only the optional Party tab and the optional Sign in with Apple talk to a Tabbi server. They store a nickname, your pet and study stats, never your email, real name or IP address.</li>
           <li>We do not sell or share personal information, and we do not use it to train anything.</li>
-          <li>You can delete your Party data at any time: see <a href="#deleting">Deleting your data</a>.</li>
+          <li>You can delete your Party data or your account at any time, inside the app: see <a href="#deleting">Deleting your data</a>.</li>
         </ul>
       </div>
 
@@ -75,7 +75,32 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
       <p class="measure"><strong>Who can see it.</strong> Friends see your profile, presence, whether you are in a party, and your weekly minutes.
         Members of your party see the profile and presence of everyone in it, including people who are not their friends.
         There is no directory or search. <strong>Go invisible</strong> in the Party options shows you as offline to friends.</p>
-      <h2 id="deleting">4. Deleting your data</h2>
+
+      <h2 id="account">4. The optional account (Sign in with Apple)</h2>
+      <p class="measure">Tabbi works fully without an account.
+        If you choose <strong>Sign in with Apple</strong> in <strong>Settings &gt; General</strong>, your pet and progress sync across the Macs you sign in on, and your Party friend code and friends follow you.
+        Tabbi asks Apple only for your name, never your email address. Your name stays on your Mac, to greet you in Settings, and is never sent to our server.
+        On top of the friends service data above, the server stores:</p>
+      <div class="scroller">
+        <table>
+          <thead>
+            <tr><th>What</th><th>Details</th><th>Kept</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Apple link</td><td>Apple's stable user id for Tabbi (an opaque id, not your email or Apple Account name), linked to your friend code.</td><td>Until you delete your account</td></tr>
+            <tr><td>Apple refresh token</td><td>Kept only so we can revoke Tabbi's Sign in with Apple access when you delete your account. It is never used to read anything from Apple.</td><td>Until you delete your account</td></tr>
+            <tr><td>Mac tokens</td><td>One random secret token per Mac you signed in on, stored as a one-way hash.</td><td>Until you delete your account</td></tr>
+            <tr><td>Sync document</td><td>Your pet's look (species, breed, name, outfit), points earned and spent on each Mac (each Mac is a random id, not its name), the items you unlocked, the days you studied (at most the last 400) and your longest streak.</td><td>Until you delete your account</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="measure">Your calendar, tasks, activity history, Claude chats and settings are never synced.
+        Nobody but you can see your sync document or Apple link, friends included.
+        To check a sign-in, and to revoke it when you delete your account, the server talks to Apple and sends only the token or code Apple gave the app.
+        If you sign in on a Mac that already had a friend code of its own, its friends and study minutes move to your account and the old code is deleted.
+        <strong>Sign Out</strong> stops syncing on that Mac and keeps your pet and progress there.</p>
+
+      <h2 id="deleting">5. Deleting your data</h2>
       <p class="measure"><strong>On your Mac.</strong> Everything Tabbi keeps locally is yours to delete. Quit Tabbi, drag it to the Trash, and delete
         <code>~/Library/Application Support/Tabbi</code> and Tabbi's preferences
         (the <a href="{GITHUB}/blob/main/docs/install.md#uninstall">install guide</a> lists every folder).
@@ -87,45 +112,51 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
         <li><strong>Turn Party off</strong> in <strong>Settings &gt; Tabs</strong> to stop sending anything. Friends then see you as offline.</li>
         <li>Daily study minutes are deleted automatically after 28 days.</li>
       </ul>
-      <p class="measure"><strong>Party, everything.</strong> To delete your whole Party profile, email {MAIL} with your friend code (it is shown in the Party tab).
+      <p class="measure"><strong>Party, everything.</strong> Without an account, open <strong>Settings open <strong>Settings &gt; Party</strong> and choose <strong>Delete my Party data</strong>gt; Tabs</strong>, click <strong>Options</strong> next to Party, and choose <strong>Delete my Party data</strong>.
+        The server erases your friend code, profile, presence, study minutes and friend list at once, removes you from your friends' lists and your party, and invalidates your secret token.
+        Your pet and points stay on your Mac, and if Party stays on, you get a new friend code.</p>
+      <p class="measure"><strong>Your account.</strong> When signed in, open <strong>Settings &gt; General</strong> and choose <strong>Delete Account</strong>.
+        The server erases everything above at once: your Party data, your sync document, your Apple link and the tokens of every Mac you signed in on.
+        It then revokes Tabbi's Sign in with Apple access with Apple. Your pet and progress stay on the Mac you deleted from.</p>
+      <p class="measure"><strong>By email.</strong> If you can no longer use the app, email {MAIL} with your friend code (it is shown in the Party tab).
         To make sure the request is yours, we may ask you to change your Party nickname to a word we send you.
-        We then erase your profile, presence, study minutes and friend list, remove you from your friends' lists and your party, and invalidate your secret token.
-        We do this within 30 days, usually much sooner, and confirm by email.</p>
+        We then delete the same data within 30 days, usually much sooner, and confirm by email.</p>
 
-      <h2>5. This website</h2>
+      <h2>6. This website</h2>
       <p class="measure">tabbinotch.com has no cookies, no analytics and no scripts.
         It is hosted on Cloudflare Pages, which processes the requests your browser makes, including your IP address, to serve and protect the site.
         Its fonts load from Google Fonts, so Google receives your IP address and browser details when you visit.
         If you email us, we use your message and address only to reply, and delete the thread when it is no longer needed.</p>
 
-      <h2>6. Why we are allowed to</h2>
-      <p class="measure">Where the GDPR or UK GDPR applies, we process friends-service data to provide the feature you turned on (Article 6(1)(b)) and in our legitimate interest in keeping the service secure and free of abuse (Article 6(1)(f)).
+      <h2>7. Why we are allowed to</h2>
+      <p class="measure">Where the GDPR or UK GDPR applies, we process friends-service and account data to provide the features you turned on (Article 6(1)(b)) and in our legitimate interest in keeping the service secure and free of abuse (Article 6(1)(f)).
         We answer email on the basis of our legitimate interest in helping you.</p>
 
-      <h2>7. Who else is involved</h2>
+      <h2>8. Who else is involved</h2>
       <p class="measure">We use Cloudflare to host the friends service and this website, and Google Fonts for the website's typeface.
+        If you sign in with Apple, Apple checks the sign-in and, when you delete your account, revokes it.
         We do not sell, rent or share personal information with anyone else, and nothing is used for advertising or to train machine-learning models.
         We would disclose data only if the law required it, and the friends service holds very little to disclose.
         Cloudflare's network is global, so data may be processed outside your country, under Cloudflare's standard contractual clauses where those apply.</p>
 
-      <h2>8. Your rights</h2>
+      <h2>9. Your rights</h2>
       <p class="measure">Wherever you live, you can ask us to tell you what we hold about you, correct it, give you a copy, or delete it, and you can object to how we use it. Email {MAIL}; we answer within 30 days. <a href="#deleting">Deleting your data</a> explains deletion step by step.
-        You can change your nickname and pet in the app yourself, at any time.</p>
+        You can change your nickname and pet, and delete your Party data or account, in the app yourself, at any time.</p>
       <h3>Europe and the UK</h3>
       <p class="measure">Under the GDPR and UK GDPR you have the rights of access, rectification, erasure, restriction, portability and objection, and the right to complain to your local data protection authority.</p>
       <h3>California</h3>
       <p class="measure">Under the CCPA as amended by the CPRA you have the right to know, delete and correct personal information, and to not be treated differently for using these rights.
         We do not sell or share personal information as those laws define it, and we do not use sensitive personal information.</p>
 
-      <h2>9. Security</h2>
-      <p class="measure">Traffic to the friends service is encrypted with HTTPS, your secret token is stored only as a hash, and the service keeps the minimum it needs.
+      <h2>10. Security</h2>
+      <p class="measure">Traffic to the friends service is encrypted with HTTPS, your secret tokens are stored only as hashes, and the service keeps the minimum it needs.
         No system is perfectly secure; if we learn of a breach affecting you, we will say so on this site and on GitHub as quickly as we can.</p>
 
-      <h2>10. Children</h2>
+      <h2>11. Children</h2>
       <p class="measure">Tabbi is not directed at children under 13, and we do not knowingly collect their personal information.
         If you believe a child has used Party, email us and we will delete their data.</p>
 
-      <h2>11. Changes</h2>
+      <h2>12. Changes</h2>
       <p class="measure">If this policy changes, we will update the date at the top and keep the history in the
         <a href="{GITHUB}">Tabbi repository</a>. We will not start collecting new kinds of personal data without saying so here first.</p>
 '''

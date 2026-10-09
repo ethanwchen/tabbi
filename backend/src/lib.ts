@@ -115,8 +115,8 @@ export type Obj = Record<string, unknown>;
 const invalid = (field: string) => new HttpError(400, "invalid_field", `invalid ${field}`);
 
 /** Parses a JSON object body and rejects any key outside `allowed`. An empty body is `{}`. */
-export function parseBodyObject(raw: string, allowed: readonly string[]): Obj {
-  if (new TextEncoder().encode(raw).byteLength > MAX_BODY_BYTES) throw new HttpError(413, "body_too_large", "body too large");
+export function parseBodyObject(raw: string, allowed: readonly string[], maxBytes = MAX_BODY_BYTES): Obj {
+  if (new TextEncoder().encode(raw).byteLength > maxBytes) throw new HttpError(413, "body_too_large", "body too large");
   let body: unknown;
   try {
     body = raw.trim() === "" ? {} : JSON.parse(raw);
@@ -132,10 +132,10 @@ export function parseBodyObject(raw: string, allowed: readonly string[]): Obj {
   return body as Obj;
 }
 
-export async function readBody(req: Request, allowed: readonly string[]): Promise<Obj> {
+export async function readBody(req: Request, allowed: readonly string[], maxBytes = MAX_BODY_BYTES): Promise<Obj> {
   const len = req.headers.get("content-length");
-  if (len && Number(len) > MAX_BODY_BYTES) throw new HttpError(413, "body_too_large", "body too large");
-  return parseBodyObject(await req.text(), allowed);
+  if (len && Number(len) > maxBytes) throw new HttpError(413, "body_too_large", "body too large");
+  return parseBodyObject(await req.text(), allowed, maxBytes);
 }
 
 /** Strips control and invisible characters, trims, caps the length. Empty becomes `undefined`. */

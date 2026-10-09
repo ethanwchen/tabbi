@@ -4,10 +4,12 @@ import TabbiKitCore
 import TabbiKit
 
 extension SettingsPane {
-    /// Settings › Party: the profile friends see, going invisible, and the
-    /// friends server.
-    @MainActor static func party(store: PartyStore) -> SettingsPane {
-        SettingsPane(id: "party", title: "Party", symbol: "person.2", view: AnyView(PartySettingsPane(store: store)))
+    /// Settings › Party: the profile friends see, going invisible, the
+    /// friends server, and deleting the Party data. `account` is the Apple
+    /// account, which owns that data once signed in.
+    @MainActor static func party(store: PartyStore, account: SyncStore) -> SettingsPane {
+        SettingsPane(id: "party", title: "Party", symbol: "person.2",
+                     view: AnyView(PartySettingsPane(store: store, account: account)))
     }
 }
 
@@ -17,7 +19,9 @@ extension SettingsPane {
 /// `PartyStore.update(_:)`, which saves it and syncs the server.
 struct PartySettingsPane: View {
     @ObservedObject var store: PartyStore
+    @ObservedObject var account: SyncStore
     @State private var name = ""
+    @State private var confirmsDelete = false
     @State private var server = ""
     @FocusState private var focused: Field?
 
@@ -32,10 +36,11 @@ struct PartySettingsPane: View {
             profileSection
             privacySection
             serverSection
+            dataSection
         }
         .formStyle(.grouped)
         .scrollDisabled(true)
-        .frame(width: 500, height: 528)
+        .frame(width: 500, height: 640)
         .onAppear {
             name = store.settings.name
             server = store.settings.serverText
@@ -213,6 +218,45 @@ struct PartySettingsPane: View {
         }
     }
 
+    // MARK: Your data
+
+    /// Signed out, Party's anonymous identity is all the server keeps, so
+    /// it can be deleted here. Signed in, it belongs to the Apple account
+    /// and goes with Delete Account in Settings > General.
+    private var dataSection: some View {
+        Section {
+            if account.isSignedIn {
+                LabeledContent {
+                    EmptyView()
+                } label: {
+                    Text("Your Party data")
+                    Text("It belongs to your Apple Account. Delete Account in General removes it.")
+                }
+            } else {
+                LabeledContent {
+                    Button("Delete…", role: .destructive) { confirmsDelete = true }
+                        .disabled(store.pending != nil || store.isDemo)
+                        .help("Delete your friend code, friends and parties from the friends server")
+                } label: {
+                    Text("Delete my Party data")
+                    Text(store.pending == .deleteData ? "Deleting…" : store.deletionNotice
+                        ?? "Removes your profile, friends and parties from the server.")
+                }
+            }
+        } header: {
+            Text("Your data")
+        }
+        .confirmationDialog("Delete your Party data?", isPresented: $confirmsDelete) {
+            Button("Delete", role: .destructive, action: store.deletePartyData)
+                .help("Delete your Party data from the friends server")
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text(Self.deleteMessage)
+        }
+    }
+
+    static let deleteMessage = "This deletes your friend code, your profile and pet as friends see them, your friends list, your party memberships and your study streak from the friends server. Friends will no longer see you. Your pet and points stay on this Mac. If Party stays on, you get a new friend code."
+
     private func commitServer() {
         var settings = store.settings
         settings.serverText = server.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -230,6 +274,7 @@ private struct Footer: View {
         Text(text)
             .font(.callout)
             .foregroundStyle(.secondary)
+            .multilineTextAlignment(.leading)
             .frame(maxWidth: .infinity, alignment: .leading)
             .fixedSize(horizontal: false, vertical: true)
     }

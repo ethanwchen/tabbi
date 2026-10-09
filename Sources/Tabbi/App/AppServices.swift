@@ -22,6 +22,8 @@ final class AppServices {
     let onboarding: OnboardingStore
     /// Celebrations of real events, played over the open panel.
     let celebrations: CelebrationCenter
+    /// The optional Sign in with Apple account that syncs the pet.
+    let accountSync: SyncStore
 
     private var cancellables: Set<AnyCancellable> = []
     /// Created on first use so launching never builds a window nobody opens.
@@ -45,6 +47,8 @@ final class AppServices {
         ticker = TickerStore(settings: settings, providers: providers, preview: shared.closedNotchPreview)
         onboarding = OnboardingStore(settings: settings)
         celebrations = shared.celebrations(settings: settings, runMode: runMode)
+        accountSync = ModuleContext(id: "account", edition: edition, settings: settings, providers: providers,
+                                    shared: shared, runMode: runMode).accountSync
         // `$settings` emits before the new value is stored, so read the
         // layout from the emission.
         settings.$settings
@@ -64,7 +68,7 @@ final class AppServices {
     /// menu), at `pane` when given.
     func openSettings(pane: String? = nil) {
         let controller = settingsWindow ?? SettingsWindowController(settings: settings, modules: modules,
-                                                                    onboarding: onboarding)
+                                                                    onboarding: onboarding, account: accountSync)
         settingsWindow = controller
         if let pane { controller.select(pane) }
         controller.present()
