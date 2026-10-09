@@ -255,7 +255,7 @@ ABOUT = f'''
         </div>
         <div class="press" id="press">
           <h2>Press kit</h2>
-          <p>Tabbi is a free, open source app for macOS 14 or later. It turns the laptop notch into a cozy panel of tabs: a focus timer, your day, music, Claude, Anki and a pet cat. Everything stays on your Mac. The kit has the icon and four screenshots.</p>
+          <p>Tabbi is a free, open source app for macOS 14 or later. It turns the laptop notch into a cozy panel of tabs: a focus timer, your day, music, Claude, Anki and a pet cat. It has no ads and no tracking. The kit has the icon and four screenshots.</p>
           <div class="cta center">
             <a class="btn soft" href="/press/{PRESS_KIT}" download>Download ({PRESS_MB} ZIP)</a>
           </div>
