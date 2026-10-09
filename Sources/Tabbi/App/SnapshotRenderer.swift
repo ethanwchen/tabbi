@@ -38,7 +38,7 @@ enum SnapshotRenderer {
     static func run(outputDirectory: URL, kitID: String = KitLibrary.defaultKitID, themes: ThemeSelection = .kit,
                     settle: TimeInterval = 1.5) async {
         try? FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
-        let services = AppServices(settings: .ephemeral(catalog: ModuleList.catalog, kitID: kitID))
+        let services = AppServices(settings: .ephemeral(catalog: ModuleList.catalog(for: .current), kitID: kitID))
         let kitTheme = ThemeCatalog.resolve(services.settings.settings.themeID)
         let themeFolders: [(AppTheme, URL)] = switch themes {
         case .kit: [(kitTheme, outputDirectory)]

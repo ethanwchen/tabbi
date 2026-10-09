@@ -29,6 +29,8 @@ final class AppServices {
 
     /// - Parameter moduleTypes: the modules to create, `ModuleList.all` in
     ///   the app; `settings` must resolve layouts against their catalog.
+    ///   Types missing from `settings.catalog` (the edition leaves them out)
+    ///   are never created, so they run no code at all.
     init(settings: SettingsStore, moduleTypes: [any NotchModule.Type] = ModuleList.all, edition: Edition = .current,
          environment: [String: String] = ProcessInfo.processInfo.environment,
          arguments: [String] = CommandLine.arguments) {
@@ -36,7 +38,8 @@ final class AppServices {
         let providers = ProviderHub()
         let shared = SharedServices()
         let runMode = RunMode(environment: environment, arguments: arguments)
-        modules = ModuleRegistry(moduleTypes.map { type in
+        let available = moduleTypes.filter { settings.catalog.contains($0.descriptor.id) }
+        modules = ModuleRegistry(available.map { type in
             type.init(context: ModuleContext(id: type.descriptor.id, edition: edition, settings: settings,
                                              providers: providers, shared: shared, runMode: runMode))
         })

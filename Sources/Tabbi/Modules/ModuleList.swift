@@ -28,4 +28,11 @@ enum ModuleList {
     static func catalog(of modules: [any NotchModule.Type]) -> ModuleCatalog {
         ModuleCatalog(modules.map { $0.descriptor })
     }
+
+    /// The modules `edition` offers: `catalog` without its excluded modules.
+    /// The app resolves settings, kits and the tab bar against it, and
+    /// `AppServices` only creates the modules it contains.
+    static func catalog(for edition: Edition) -> ModuleCatalog {
+        edition.catalog(from: catalog)
+    }
 }

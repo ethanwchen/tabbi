@@ -90,4 +90,22 @@ final class ModuleListTests: XCTestCase {
         XCTAssertEqual(store.settings.modules.enabled, KitLibrary.bundled.kit("medicine")?
             .layout(catalog: ModuleList.catalog).enabled)
     }
+
+    /// The App Store edition runs without its excluded modules: they get no
+    /// tab, no Settings row and no instance, so none of their code runs.
+    func testAppStoreEditionNeitherShowsNorCreatesExcludedModules() throws {
+        let edition = try XCTUnwrap(Edition.named("appstore"))
+        let catalog = ModuleList.catalog(for: edition)
+        XCTAssertEqual(catalog.unavailableIDs, Set(edition.excludedModules))
+        for kit in KitLibrary.bundled.kits {
+            let store = SettingsStore.ephemeral(catalog: catalog, kitID: kit.id)
+            let services = AppServices(settings: store, edition: edition,
+                                       environment: ["TABBI_DEMO": "1"], arguments: ["--snapshot", "out"])
+            XCTAssertEqual(services.modules.catalog.ids, catalog.ids, kit.id)
+            XCTAssertEqual(Set(store.settings.modules.order), Set(catalog.ids), kit.id)
+            for id in edition.excludedModules {
+                XCTAssertNil(services.modules[id], "\(kit.id) created \(id)")
+            }
+        }
+    }
 }

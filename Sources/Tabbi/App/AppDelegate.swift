@@ -17,7 +17,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             // Before any store opens a file: adopts NotchDeck's data once.
             LegacyDataMigration.tabbi(storage: EditionStorage(edition: edition)).runIfNeeded()
         }
-        let settings = SettingsStore(catalog: ModuleList.catalog, defaultKitID: edition.defaultKitID, kitStore: .standard(for: edition))
+        let settings = SettingsStore(catalog: ModuleList.catalog(for: edition), defaultKitID: edition.defaultKitID, kitStore: .standard(for: edition))
         guard InstallHygiene.settle(settings: settings) == .proceed else {
             NSApp.terminate(nil)
             return
