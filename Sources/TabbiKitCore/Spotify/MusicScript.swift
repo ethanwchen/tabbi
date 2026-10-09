@@ -11,7 +11,12 @@ public enum MusicScript {
     /// Returns `stopped`, or every field below separated by U+001F:
     /// state, persistent id, name, artist, album, duration (s), position (s),
     /// shuffle enabled, song repeat (`off` / `one` / `all`), sound volume
-    /// (0 ... 100, or -1 when unreadable).
+    /// (0 ... 100, or -1 when unreadable), favorited (`true` / `false`, or
+    /// empty when the track can't be favorited, e.g. a radio stream).
+    ///
+    /// Favorited is read by its raw code `pLov`, which Music kept when it
+    /// renamed the term from `loved` to `favorited`, so the script compiles
+    /// on every Music version.
     ///
     /// Radio streams and some cloud tracks report `missing value` for
     /// duration, position, artist, or album; concatenating that would turn
@@ -30,6 +35,7 @@ public enum MusicScript {
         set d to 0
         set p to 0
         set v to -1
+        set fav to ""
         try
             set pid to (persistent ID of t) as text
         end try
@@ -51,8 +57,11 @@ public enum MusicScript {
         try
             set v to sound volume
         end try
+        try
+            set fav to («class pLov» of t) as text
+        end try
         return ps & sep & pid & sep & nm & sep & ar & sep & al & sep & d & sep & p & sep & ¬
-            (shuffle enabled as text) & sep & (song repeat as text) & sep & v
+            (shuffle enabled as text) & sep & (song repeat as text) & sep & v & sep & fav
     end tell
     """
 
@@ -67,14 +76,25 @@ public enum MusicScript {
     /// a track change between the request and the read can never store one
     /// track's cover under another track's id.
     public static func readArtwork(forTrackID trackID: String) -> String? {
-        guard trackID.hasPrefix(trackIDPrefix) else { return nil }
-        let persistentID = trackID.dropFirst(trackIDPrefix.count)
-        guard !persistentID.isEmpty, persistentID.allSatisfy(\.isHexDigit) else { return nil }
+        guard let persistentID = persistentID(fromTrackID: trackID) else { return nil }
         return """
         tell application id "\(bundleIdentifier)"
             if (persistent ID of current track) is not "\(persistentID)" then return missing value
             if (count of artworks of current track) is 0 then return missing value
             return raw data of artwork 1 of current track
+        end tell
+        """
+    }
+
+    /// Favorites or unfavorites the current track. Pinned to `trackID` like
+    /// `readArtwork`, so a click never favorites a song that started just
+    /// after it. Nil for ids without a persistent ID (streams).
+    public static func setFavorite(_ isFavorite: Bool, forTrackID trackID: String) -> String? {
+        guard let persistentID = persistentID(fromTrackID: trackID) else { return nil }
+        return """
+        tell application id "\(bundleIdentifier)"
+            if (persistent ID of current track) is not "\(persistentID)" then return
+            set «class pLov» of current track to \(isFavorite)
         end tell
         """
     }
@@ -87,6 +107,15 @@ public enum MusicScript {
     public static func seek(to seconds: TimeInterval) -> String {
         let value = String(format: "%.3f", locale: Locale(identifier: "en_US_POSIX"), max(seconds, 0))
         return command("set player position to \(value)")
+    }
+
+    /// The persistent ID inside a track id `parse` made, or nil when the id
+    /// came from a title (streams) and so names no particular track.
+    private static func persistentID(fromTrackID trackID: String) -> Substring? {
+        guard trackID.hasPrefix(trackIDPrefix) else { return nil }
+        let persistentID = trackID.dropFirst(trackIDPrefix.count)
+        guard !persistentID.isEmpty, persistentID.allSatisfy(\.isHexDigit) else { return nil }
+        return persistentID
     }
 
     private static func command(_ body: String) -> String {
@@ -105,7 +134,7 @@ public enum MusicScript {
             guard state == .stopped else { return nil }
             return .nothingPlaying
         }
-        guard fields.count == 10 else { return nil }
+        guard fields.count == 11, let favorited = favorite(fields[10]) else { return nil }
 
         let persistentID = fields[1].trimmingCharacters(in: .whitespaces)
         // Streams without a persistent ID still need a stable-ish identity
@@ -116,7 +145,9 @@ public enum MusicScript {
             artist: fields[3],
             album: fields[4],
             artworkURL: nil,
-            duration: max(number(fields[5]) ?? 0, 0)
+            duration: max(number(fields[5]) ?? 0, 0),
+            // Only a track with a persistent ID can be favorited by script.
+            isFavorite: persistentID.isEmpty ? nil : favorited
         )
         var playback = SpotifyPlayback(
             state: state, track: track, position: 0,
@@ -135,6 +166,17 @@ public enum MusicScript {
         case "playing", "fast forwarding", "rewinding": .playing
         case "paused": .paused
         case "stopped": .stopped
+        default: nil
+        }
+    }
+
+    /// The favorited field: `true`, `false`, or empty for unknown. Anything
+    /// else means the record isn't Music's, so the outer optional is nil.
+    private static func favorite(_ text: String) -> Bool?? {
+        switch text.trimmingCharacters(in: .whitespacesAndNewlines) {
+        case "true": .some(true)
+        case "false": .some(false)
+        case "": .some(nil)
         default: nil
         }
     }

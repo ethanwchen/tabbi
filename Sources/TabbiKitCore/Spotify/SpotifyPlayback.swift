@@ -17,15 +17,20 @@ public struct SpotifyTrack: Equatable, Sendable {
     public var artworkURL: URL?
     /// Track length in seconds (Spotify reports milliseconds). Zero when unknown.
     public var duration: TimeInterval
+    /// Whether the user liked (Music: favorited) the track. Nil when the
+    /// player can't say or can't like this track, so the panel hides its
+    /// heart instead of showing a control that does nothing.
+    public var isFavorite: Bool?
 
     public init(id: String, title: String, artist: String, album: String,
-                artworkURL: URL?, duration: TimeInterval) {
+                artworkURL: URL?, duration: TimeInterval, isFavorite: Bool? = nil) {
         self.id = id
         self.title = title
         self.artist = artist
         self.album = album
         self.artworkURL = artworkURL
         self.duration = duration
+        self.isFavorite = isFavorite
     }
 }
 

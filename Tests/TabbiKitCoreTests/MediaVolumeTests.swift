@@ -9,13 +9,13 @@ final class MediaVolumeTests: XCTestCase {
     func testBothPlayersReportTheirVolume() throws {
         let spotify = record(["playing", "id", "t", "a", "b", "", "200000", "1", "false", "false", "73\n"])
         XCTAssertEqual(try XCTUnwrap(SpotifyScript.parse(spotify)).volume, 73)
-        let music = record(["playing", "A", "t", "a", "b", "10", "1", "false", "off", "0"])
+        let music = record(["playing", "A", "t", "a", "b", "10", "1", "false", "off", "0", ""])
         XCTAssertEqual(try XCTUnwrap(MusicScript.parse(music)).volume, 0)
     }
 
     func testUnreadableVolumeIsUnknownNotSilent() throws {
         // Music's script falls back to -1 when `sound volume` can't be read.
-        let music = record(["playing", "A", "t", "a", "b", "10", "1", "false", "off", "-1"])
+        let music = record(["playing", "A", "t", "a", "b", "10", "1", "false", "off", "-1", ""])
         XCTAssertNil(try XCTUnwrap(MusicScript.parse(music)).volume)
         let spotify = record(["playing", "id", "t", "a", "b", "", "200000", "1", "false", "false", ""])
         XCTAssertNil(try XCTUnwrap(SpotifyScript.parse(spotify)).volume)
