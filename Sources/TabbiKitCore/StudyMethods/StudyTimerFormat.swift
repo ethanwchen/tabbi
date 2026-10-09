@@ -101,12 +101,10 @@ public enum StudyTimerFormat {
         }
     }
 
-    /// Time studied as a short label: "0 min", "45 min", "1h 5m".
+    /// Time studied as a short label: "0 min", "45 min", "1 h 5 min", read
+    /// the way Today and the closed notch show the same daily goal.
     public static func studied(minutes: Int) -> String {
-        let minutes = max(minutes, 0)
-        guard minutes >= 60 else { return "\(minutes) min" }
-        let rest = minutes % 60
-        return rest == 0 ? "\(minutes / 60)h" : "\(minutes / 60)h \(rest)m"
+        ProgressItem.amount(max(minutes, 0), unit: ProgressItem.minutesUnit)
     }
 
     /// Points as a signed label for a day's tally: "+79 pts", "+1 pt", "0 pts".

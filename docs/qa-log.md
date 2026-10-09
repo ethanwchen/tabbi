@@ -2,6 +2,7 @@
 
 What the whole-app quality pass found and fixed, newest first, one sentence per line.
 
+- The Timer tab mixed two time styles in one label ("0 min of 4h", "45 min of 2h") and read the daily focus goal differently from Today and the closed notch ("1h 4m" against "1 h 4 min"); it now uses the shared goal format ("1 h 4 min of 4 h"), which still fits at the Compact panel size.
 - Every `swift test` run left about 40 empty preference files (`TabbiTests.<UUID>.plist`, `KitSwitchUndoTests.<UUID>.plist` and more) in the user's real ~/Library/Preferences, because tests opened named `UserDefaults` suites, which keep their plist even after the domain is removed, and over 30,000 had piled up; every test now uses `InMemoryDefaults`, which also keeps named domains (an old build's preferences) in memory.
 - A live snapshot run (`--snapshot`) had Claude Usage scan the user's Claude Code transcripts and save its scan index into Tabbi's data folder; snapshot runs now read the transcripts without saving an index, and can never probe the `claude` CLI for limits (which spends a sliver of the user's usage).
 - A live snapshot run (`--snapshot`) created today's Today list file in the user's data folder (carrying yesterday's unfinished tasks over at render time), although snapshot runs must leave no trace; Today now shows the same list in a snapshot without writing it, which a run with an empty home folder confirms.
