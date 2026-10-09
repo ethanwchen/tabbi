@@ -1,0 +1,191 @@
+"""
+The legal pages, as structured HTML.
+
+These are drafts written against what Tabbi actually does (see
+backend/PRIVACY.md and the README's Privacy section), not legal advice.
+Have a professional read them before relying on them; site/README.md says
+the same at the top.
+"""
+
+from _partials import GITHUB, SUPPORT_EMAIL
+
+EFFECTIVE = '8 October 2026'
+
+MAIL = f'<a href="mailto:{SUPPORT_EMAIL}">{SUPPORT_EMAIL}</a>'
+
+# --------------------------------------------------------------------------
+# Privacy
+# --------------------------------------------------------------------------
+
+PRIVACY_HERO = ('Privacy Policy', 'What stays on your Mac, what the optional friends service keeps, and how to delete it.')
+
+PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
+
+      <div class="card">
+        <h2>The short version</h2>
+        <ul>
+          <li>Tabbi has no accounts, no analytics, no advertising and no telemetry.</li>
+          <li>Your tasks, calendar, activity history, Claude chats and settings stay on your Mac.</li>
+          <li>Claude features run through the <code>claude</code> command already installed on your Mac. Tabbi never reads your credentials.</li>
+          <li>Only the optional Party tab talks to a Tabbi server, and it stores a nickname and study stats, never your email, real name or IP address.</li>
+          <li>We do not sell or share personal information, and we do not use it to train anything.</li>
+          <li>You can delete your Party data at any time: see <a href="#deleting">Deleting your data</a>.</li>
+        </ul>
+      </div>
+
+      <h2>1. Who we are</h2>
+      <p class="measure">Tabbi is a free, open-source macOS app made by Ethan Chen ("we", "us"), who also runs the friends service and this website and is the controller of the little personal data described here.
+        Contact {MAIL} about anything in this policy.</p>
+
+      <h2 id="mac">2. What stays on your Mac</h2>
+      <p class="measure">Most of Tabbi never leaves your computer. We cannot see any of the following, because it is never sent to us:</p>
+      <ul class="measure">
+        <li><strong>Tasks, plans and settings</strong> are files in <code>~/Library/Application Support/Tabbi</code> and Tabbi's preferences.</li>
+        <li><strong>Calendar events</strong> are read through macOS, with your permission, to show what is next and to plan your day. Plan my day runs on your Mac. Events never leave it, except as described for Claude below.</li>
+        <li><strong>Activity history</strong> (focus sessions, breaks, cards reviewed, tasks done) is a log on your Mac that powers streaks, points and your pet.</li>
+        <li><strong>Claude features</strong> (Ask Claude, Refine with Claude, Wrap up) run the <code>claude</code> command-line tool you installed yourself. What you type, a screenshot you attach, or, when you press Refine or Wrap up, your task titles and today's events, are passed to that tool, which sends them to Anthropic under your own Anthropic account and Anthropic's terms. Tabbi never reads your credentials or the keychain. Chat history is saved on your Mac. Claude Usage reads token counts from <code>~/.claude/projects</code>, read-only.</li>
+        <li><strong>Anki</strong> data comes from Anki on your own Mac through AnkiConnect, a local connection that does not leave the computer.</li>
+        <li><strong>Spotify and Apple Music</strong> are controlled through Apple Events, with your permission. Album artwork is downloaded from the address the music app provides (for Spotify, its image server), which, like any web request, shows that server your IP address.</li>
+        <li><strong>Screenshots</strong> for Ask Claude use Screen Recording permission and go only to your local <code>claude</code> command.</li>
+      </ul>
+      <p class="measure"><strong>Updates.</strong> Once a day Tabbi downloads its release feed from GitHub to check for a new version. Nothing about you is sent, though GitHub sees the request like any web server. You can turn this off in <strong>Settings &gt; About</strong>.</p>
+
+      <h2 id="friends">3. The friends service (Party)</h2>
+      <p class="measure">Party is optional and off unless you turn it on.
+        When it is on, Tabbi talks to a small server we run on Cloudflare so you can see which friends are studying, study together in a party, and compare weekly study minutes.
+        You are identified only by a random secret token (we store a one-way hash of it) and a public 8-character friend code.
+        The server stores:</p>
+      <div class="scroller">
+        <table>
+          <thead>
+            <tr><th>What</th><th>Details</th><th>Kept</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Profile</td><td>A display name of your choice (any nickname works), your pet's name, species, breed, colors, costume and accessories, points and level, and when your friend code was created.</td><td>Until you delete it</td></tr>
+            <tr><td>Presence</td><td>From the last heartbeat: studying, on a break, idle or offline; the study method; when the current phase ends; minutes this session and today; your streak; your local calendar day.</td><td>Overwritten by each heartbeat; deleted with your profile</td></tr>
+            <tr><td>Study minutes</td><td>Minutes per local calendar day, for the weekly leaderboard.</td><td>28 days</td></tr>
+            <tr><td>Friends</td><td>The friend codes you are friends with.</td><td>Until either of you removes the friendship</td></tr>
+            <tr><td>Party</td><td>The party you are in and when you joined; for the party itself, its code, host, last activity and the shared session.</td><td>Until the last member leaves, or 12 hours without activity</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="measure"><strong>Never collected:</strong> email addresses, real names, passwords, device names, card or deck content, note text, and IP addresses. The server rejects requests that carry anything else.
+        Your local calendar day (for example 2026-10-02) can hint at your time zone; it is used only to count minutes toward the right day.
+        Cloudflare, which hosts the server, sees connection details like any web host. The server uses your IP address only in memory, to limit abuse, and never stores it.</p>
+      <p class="measure"><strong>Who can see it.</strong> Friends see your profile, presence, whether you are in a party, and your weekly minutes.
+        Members of your party see the profile and presence of everyone in it, including people who are not their friends.
+        There is no directory or search. <strong>Go invisible</strong> in the Party options shows you as offline to friends.</p>
+      <h2 id="deleting">4. Deleting your data</h2>
+      <p class="measure"><strong>On your Mac.</strong> Everything Tabbi keeps locally is yours to delete. Quit Tabbi, drag it to the Trash, and delete
+        <code>~/Library/Application Support/Tabbi</code> and Tabbi's preferences
+        (the <a href="{GITHUB}/blob/main/docs/install.md#uninstall">install guide</a> lists every folder).
+        Ask Claude chats can also be deleted one by one, or all at once, inside the app.</p>
+      <p class="measure"><strong>Party, in the app.</strong></p>
+      <ul class="measure">
+        <li><strong>Leave a party</strong> from the Party tab. Your membership is removed at once, and a party is deleted when its last member leaves or after 12 hours without activity.</li>
+        <li><strong>Remove a friend</strong> from their card in the Party tab. The friendship is deleted on both sides.</li>
+        <li><strong>Turn Party off</strong> in <strong>Settings &gt; Tabs</strong> to stop sending anything. Friends then see you as offline.</li>
+        <li>Daily study minutes are deleted automatically after 28 days.</li>
+      </ul>
+      <p class="measure"><strong>Party, everything.</strong> To delete your whole Party profile, email {MAIL} with your friend code (it is shown in the Party tab).
+        To make sure the request is yours, we may ask you to change your Party nickname to a word we send you.
+        We then erase your profile, presence, study minutes and friend list, remove you from your friends' lists and your party, and invalidate your secret token.
+        We do this within 30 days, usually much sooner, and confirm by email.</p>
+
+      <h2>5. This website</h2>
+      <p class="measure">tabbinotch.com has no cookies, no analytics and no scripts.
+        It is hosted on Cloudflare Pages, which processes the requests your browser makes, including your IP address, to serve and protect the site.
+        Its fonts load from Google Fonts, so Google receives your IP address and browser details when you visit.
+        If you email us, we use your message and address only to reply, and delete the thread when it is no longer needed.</p>
+
+      <h2>6. Why we are allowed to</h2>
+      <p class="measure">Where the GDPR or UK GDPR applies, we process friends-service data to provide the feature you turned on (Article 6(1)(b)) and in our legitimate interest in keeping the service secure and free of abuse (Article 6(1)(f)).
+        We answer email on the basis of our legitimate interest in helping you.</p>
+
+      <h2>7. Who else is involved</h2>
+      <p class="measure">We use Cloudflare to host the friends service and this website, and Google Fonts for the website's typeface.
+        We do not sell, rent or share personal information with anyone else, and nothing is used for advertising or to train machine-learning models.
+        We would disclose data only if the law required it, and the friends service holds very little to disclose.
+        Cloudflare's network is global, so data may be processed outside your country, under Cloudflare's standard contractual clauses where those apply.</p>
+
+      <h2>8. Your rights</h2>
+      <p class="measure">Wherever you live, you can ask us to tell you what we hold about you, correct it, give you a copy, or delete it, and you can object to how we use it. Email {MAIL}; we answer within 30 days. <a href="#deleting">Deleting your data</a> explains deletion step by step.
+        You can change your nickname and pet in the app yourself, at any time.</p>
+      <h3>Europe and the UK</h3>
+      <p class="measure">Under the GDPR and UK GDPR you have the rights of access, rectification, erasure, restriction, portability and objection, and the right to complain to your local data protection authority.</p>
+      <h3>California</h3>
+      <p class="measure">Under the CCPA as amended by the CPRA you have the right to know, delete and correct personal information, and to not be treated differently for using these rights.
+        We do not sell or share personal information as those laws define it, and we do not use sensitive personal information.</p>
+
+      <h2>9. Security</h2>
+      <p class="measure">Traffic to the friends service is encrypted with HTTPS, your secret token is stored only as a hash, and the service keeps the minimum it needs.
+        No system is perfectly secure; if we learn of a breach affecting you, we will say so on this site and on GitHub as quickly as we can.</p>
+
+      <h2>10. Children</h2>
+      <p class="measure">Tabbi is not directed at children under 13, and we do not knowingly collect their personal information.
+        If you believe a child has used Party, email us and we will delete their data.</p>
+
+      <h2>11. Changes</h2>
+      <p class="measure">If this policy changes, we will update the date at the top and keep the history in the
+        <a href="{GITHUB}">Tabbi repository</a>. We will not start collecting new kinds of personal data without saying so here first.</p>
+'''
+
+# --------------------------------------------------------------------------
+# Terms
+# --------------------------------------------------------------------------
+
+TERMS_HERO = ('Terms of Use', 'Short, because Tabbi is free and open source.')
+
+TERMS = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
+
+      <div class="card">
+        <h2>The short version</h2>
+        <ul>
+          <li>Tabbi is free and open source under the MIT License.</li>
+          <li>It comes as is, with no warranty.</li>
+          <li>Be decent in Party: no offensive names, no abuse of the service.</li>
+        </ul>
+      </div>
+
+      <h2>1. Who these terms are with</h2>
+      <p class="measure">These terms are between you and Ethan Chen ("we", "us"), who makes Tabbi and runs the friends service and this website.
+        By using Tabbi, the friends service or tabbinotch.com you agree to them. If you do not agree, please do not use them.</p>
+
+      <h2>2. The app and its license</h2>
+      <p class="measure">The Tabbi app and its source code are licensed under the <a href="{GITHUB}/blob/main/LICENSE">MIT License</a>.
+        That license, not these terms, governs what you may do with the code: use, copy, modify and distribute it, keeping the copyright and license notice.
+        These terms add only what the license does not cover: the friends service and the website.</p>
+      <p class="measure">The name Tabbi and the cat icon identify this project. Please do not use them in a way that suggests your fork or product is the official Tabbi.</p>
+
+      <h2>3. Other services</h2>
+      <p class="measure">Some tabs work with software and services from others: Claude (through your own <code>claude</code> command and Anthropic account), Anki and AnkiConnect, Spotify, Apple Music and your calendar.
+        Their own terms apply to your use of them, and we are not responsible for them.</p>
+
+      <h2>4. The friends service</h2>
+      <p class="measure">Party uses a free server we run. While using it, you agree not to:</p>
+      <ul class="measure">
+        <li>choose a display name or pet name that is hateful, harassing, sexually explicit or impersonates someone;</li>
+        <li>harass other people, or join parties you were not invited to in order to disrupt them;</li>
+        <li>overload, probe, scrape or attack the service, or get around its limits;</li>
+        <li>use it for anything unlawful.</li>
+      </ul>
+      <p class="measure">We may remove names, friendships or parties, or block a user, when we believe these terms were broken.
+        The service is offered for free and may change, be limited or stop at any time; we will try to give notice on GitHub first.
+        The <a href="/privacy#friends">privacy policy</a> explains what it stores and how to delete it.</p>
+
+      <h2>5. No warranty</h2>
+      <p class="measure">Tabbi, the friends service and this website are provided "as is" and "as available", without warranties of any kind, express or implied, including merchantability, fitness for a particular purpose and non-infringement.
+        Timers, reminders, plans and Claude's answers can be wrong or late. Do not rely on Tabbi for anything where a missed alert or a wrong answer could cause harm.</p>
+
+      <h2>6. Limitation of liability</h2>
+      <p class="measure">To the fullest extent the law allows, we are not liable for any indirect, incidental, special, consequential or punitive damages, or for lost data, profits or time, arising from your use of Tabbi, the friends service or this website.
+        Because all of them are free, our total liability for any claim is limited to 50 US dollars.
+        Some places do not allow these limits, so they may not apply to you, and nothing here limits rights you have by law that cannot be waived.</p>
+
+      <h2>7. Changes</h2>
+      <p class="measure">We may update these terms. When we do, we will change the date at the top and keep the history in the <a href="{GITHUB}">Tabbi repository</a>.
+        If you keep using Tabbi after a change, the new terms apply.</p>
+
+      <h2>8. Contact</h2>
+      <p class="measure">Questions about these terms: {MAIL}.</p>
+'''

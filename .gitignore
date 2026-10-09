@@ -7,3 +7,7 @@ snapshots-*/
 DerivedData/
 .DS_Store
 .gnhf/
+
+# The website build output (site/build.py)
+site/dist/
+site/__pycache__/
