@@ -45,6 +45,19 @@ public struct FocusPhaseCompletion: Hashable, Sendable {
     }
 }
 
+/// A focus stretch the user ended before it ran out, reported so the app can
+/// credit the time actually focused (points, study minutes, activity log).
+public struct FocusStop: Hashable, Sendable {
+    /// Time the clock ran in the stopped focus phase, excluding pauses.
+    public let focused: TimeInterval
+    public let endedAt: Date
+
+    public init(focused: TimeInterval, endedAt: Date) {
+        self.focused = focused
+        self.endedAt = endedAt
+    }
+}
+
 /// Pomodoro state machine for the Today panel's focus card.
 ///
 /// Time is derived from a wall-clock end date rather than a ticking counter,
@@ -138,6 +151,21 @@ public struct FocusTimer: Codable, Hashable, Sendable {
     public mutating func reset() {
         phase = .focus
         runState = .idle
+    }
+
+    /// Ends the session: back to an idle focus phase at full length, like
+    /// `reset()`, and reports how long the focus phase under way ran so it
+    /// can be credited pro rata. Nil when nothing was focused (an idle
+    /// timer, or a break, which earns nothing).
+    ///
+    /// Call `advance(to:)` first so a phase that already ran out is credited
+    /// as completed rather than stopped.
+    @discardableResult
+    public mutating func stop(at now: Date) -> FocusStop? {
+        let focused = phase == .focus && runState != .idle ? phaseDuration - remaining(at: now) : 0
+        reset()
+        guard focused > 0 else { return nil }
+        return FocusStop(focused: focused, endedAt: now)
     }
 
     /// Ends the current phase early and moves to the next one.

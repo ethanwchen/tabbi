@@ -601,13 +601,13 @@ struct StudyMethodTile: View {
 }
 
 /// The primary action, then pause (Flowtime only), skip (not for the
-/// Timer, which has no breaks) and reset.
+/// Timer, which has no breaks) and stop.
 private struct StudyControls: View {
     @ObservedObject var store: StudyStore
 
     var body: some View {
         let session = store.session
-        // A fresh focus phase has nothing to skip or reset.
+        // A fresh focus phase has nothing to skip or stop.
         let isFresh = session.runState == .idle && session.phase == .focus
         let isFlowing = session.isRunning && session.phase == .focus && session.method.focus == .openEnded
         HStack(spacing: Theme.Spacing.xs) {
@@ -622,15 +622,14 @@ private struct StudyControls: View {
                 }
             }
             Group {
-                // The Timer has nothing to skip to; reset stops it.
+                // The Timer has nothing to skip to; Stop ends it.
                 if session.method.hasBreaks {
                     IconButton(symbol: "forward.end.fill", help: skipHelp) {
                         withMotion(Theme.Motion.snappy) { store.skip() }
                     }
                 }
-                IconButton(symbol: "arrow.counterclockwise",
-                           help: session.method.hasBreaks ? "Reset to a fresh session" : "Stop and reset the timer") {
-                    withMotion(Theme.Motion.snappy) { store.reset() }
+                IconButton(symbol: "stop.fill", help: "Stop and keep the time studied so far") {
+                    withMotion(Theme.Motion.snappy) { store.stop() }
                 }
             }
             .disabled(isFresh)

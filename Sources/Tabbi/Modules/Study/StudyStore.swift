@@ -246,7 +246,10 @@ final class StudyStore: ObservableObject {
         change { $0.skip(at: now) }
     }
 
-    func reset() {
+    /// Ends the session and banks the time so far: the phase is logged as
+    /// abandoned with the minutes it ran, and the pet's points follow from
+    /// the shared clock going idle mid-focus.
+    func stop() {
         catchUp()
         change { $0.reset(at: now) }
     }

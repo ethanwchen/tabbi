@@ -106,9 +106,15 @@ final class FocusStore: ObservableObject {
         change { $0.pause(at: now) }
     }
 
-    func reset() {
+    /// Ends the session and banks the focus time so far: the activity log
+    /// gets the minutes, and the pet's points follow from the shared clock
+    /// going idle mid-focus (`PetCloset.credit(from:to:at:)`).
+    func stop() {
         catchUp()
-        change { $0.reset() }
+        var stopped: FocusStop?
+        change { stopped = $0.stop(at: now) }
+        guard !isEphemeral, let record = stopped?.activityRecord(source: FocusModule.descriptor.id) else { return }
+        activity?.record(record)
     }
 
     func skip() {
