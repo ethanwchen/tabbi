@@ -217,6 +217,7 @@ Store `token` and `code` in place of the old ones.
 - An Apple ID that already has an account returns its friend code with a new token for this Mac (`newAccount: false`).
   If the caller had an anonymous user, its friends (up to the friend limit) and study minutes move to the account and the anonymous user is deleted, so the app must switch to the returned token.
   A caller that already is the account gets its own token back.
+  An account keeps the tokens of its 20 most recent sign-ins besides the first Mac's; a 21st sign-in retires the oldest of them, and that Mac gets `unauthorized` and signs in again.
 
 The authorization code is exchanged for an Apple refresh token, which is kept only to revoke it on `DELETE /v1/me`.
 That needs the Worker secrets `APPLE_TEAM_ID`, `APPLE_KEY_ID` and `APPLE_PRIVATE_KEY`; without them, or when Apple refuses the code, the exchange is skipped, logged, and sign-in still succeeds.

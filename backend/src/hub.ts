@@ -13,7 +13,7 @@
 import { DurableObject } from "cloudflare:workers";
 import { AdminSecrets, exportTables, isAdminToken, notFound, parseRestore } from "./admin";
 import {
-  AUTH_FAILURES_PER_MIN, HttpError, MAX_FRIENDS, MAX_PARTY_MEMBERS, PARTY_IDLE_EXPIRY_S, RATE_LIMIT_PER_MIN, REGISTER_PER_MIN, FRIEND_CODE_RE, TOKEN_RE,
+  AUTH_FAILURES_PER_MIN, HttpError, MAX_DEVICE_TOKENS, MAX_FRIENDS, MAX_PARTY_MEMBERS, PARTY_IDLE_EXPIRY_S, RATE_LIMIT_PER_MIN, REGISTER_PER_MIN, FRIEND_CODE_RE, TOKEN_RE,
   clientKey, isoWeekDays, isoWeekKeyOfDay, newCode, newToken, nowS, parseFriendCode, readBody, sha256Hex, utcDay,
 } from "./lib";
 import { PROFILE_FIELDS, Profile, applyProfilePatch, defaultProfile, parseProfilePatch, sameProfile } from "./profile";
@@ -671,6 +671,11 @@ export class Hub extends DurableObject<Env> {
           return;
         }
         if (caller && !this.hasAppleAccount(caller.code)) this.foldInto(caller.code, linked, now);
+        this.sql.exec(
+          `DELETE FROM device_tokens WHERE token_hash IN (SELECT token_hash FROM device_tokens WHERE code = ?
+           ORDER BY created_at DESC, token_hash LIMIT -1 OFFSET ?)`,
+          linked, MAX_DEVICE_TOKENS - 1,
+        );
         this.sql.exec("INSERT INTO device_tokens (token_hash, code, created_at) VALUES (?, ?, ?)", freshHash, linked, now);
         result = { token: freshToken, code: linked, newAccount: false };
         return;

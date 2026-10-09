@@ -17,7 +17,7 @@ Only if you choose to sign in with Apple, so your pet and progress follow you ac
 
 - Apple's stable, app-specific user id, linked to your friend code;
 - an Apple refresh token, kept only so the service can revoke your Sign in with Apple grant when you delete your account (it is never used to read anything from Apple);
-- one secret token per Mac you signed in on (stored as SHA-256 hashes);
+- one secret token per Mac you signed in on (stored as SHA-256 hashes; only the 20 most recent sign-ins are kept, so a Mac you no longer use is dropped over time);
 - a SHA-256 hash of each Apple sign-in token, kept only until that token expires (about ten minutes) so it cannot be used twice;
 - your sync document and when it last changed: the pet's look (species, breed, name, outfit), points earned and spent per Mac (each Mac is a random id), the ids of unlocked items, the calendar days you studied (at most 400) and your longest streak.
 

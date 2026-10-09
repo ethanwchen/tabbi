@@ -16,6 +16,7 @@ What it defends against:
   The app does not bind tokens to a nonce, since the token goes straight from AuthenticationServices to the Worker over TLS; a token stolen before the app uses it is the remaining gap, and it lasts at most the token's ten minutes.
 - **Abuse and cost.** Bodies are capped (4096 bytes, 65536 for sync) while streaming, unknown fields are rejected, every text field is length-limited and stripped of control characters, and registrations, sign-ins and requests per token are rate-limited in the Hub's memory.
   Requests are the binding free-plan limit, so rate limits also protect everyone else's quota.
+  An account keeps at most 20 Mac tokens besides the first Mac's, oldest out first, so signing in over and over cannot grow storage.
 - **Data exposure.** There is no directory or search: a profile is visible only to mutual friends and party members, and sync documents only to their owner.
   Error replies carry a stable code and a short English message, never stack traces or internal values.
 - **Operator mistakes.** Schema changes are append-only versioned steps, deploys can be rolled back, and storage can be restored to any point in the last 30 days.
@@ -24,6 +25,7 @@ The Worker logs only what an operator needs: unexpected errors, Apple key and to
 It never logs tokens, names, request bodies or IP addresses.
 
 The Tabbi app talks to the service only through `PartyClient` and `SyncClient` in `Sources/TabbiKitCore`, keeps its tokens in the Keychain (`PartyCredentialStore`), and never logs them.
+It allows plain `http://` only for `localhost`, so a token never crosses the network unencrypted, and URLSession drops the `Authorization` header when a reply redirects.
 
 ## Secrets
 

@@ -5,7 +5,7 @@ import {
   APPLE_AUTH_PER_MIN, APPLE_CLIENT_ID, APPLE_ISSUER, APPLE_KEYS_URL, APPLE_REVOKE_URL, APPLE_TOKEN_URL, appleSecrets,
   exchangeAuthorizationCode, resetAppleKeyCache, revokeRefreshToken, verifyIdentityToken,
 } from "../src/apple";
-import { sha256Hex } from "../src/lib";
+import { MAX_DEVICE_TOKENS, sha256Hex } from "../src/lib";
 import { call, expectError, freshIp, hub, pinClockToMinuteStart, register } from "./helpers";
 
 // ---------- a fake Apple ----------
@@ -83,6 +83,12 @@ async function storedAccounts(code: string) {
       "SELECT apple_sub, refresh_token FROM apple_accounts WHERE code = ?", code).toArray());
 }
 
+/** How many per-Mac tokens an account has, not counting the first Mac's. */
+async function deviceTokenCount(code: string) {
+  return runInDurableObject(hub(), (_, state) =>
+    state.storage.sql.exec<{ n: number }>("SELECT COUNT(*) AS n FROM device_tokens WHERE code = ?", code).one().n);
+}
+
 /** Whether the Hub still keeps this identity token as used. */
 async function isKeptAsUsed(token: string) {
   const hash = await sha256Hex(token);
@@ -130,6 +136,26 @@ describe("POST /v1/auth/apple", () => {
     expect(r.body.token).not.toBe(mac1.token);
     expect((await call("GET", "/v1/me", undefined, r.body.token)).body.profile.code).toBe(mac1.code);
     expect((await call("GET", "/v1/me", undefined, mac1.token)).status).toBe(200);
+  });
+
+  it("keeps at most MAX_DEVICE_TOKENS Mac tokens besides the first Mac's, dropping the oldest", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(Date.now());
+    const mac1 = await register();
+    await signIn({ identityToken: await identityToken("sub.many.macs") }, mac1.token);
+    const macs: string[] = [];
+    for (let i = 0; i <= MAX_DEVICE_TOKENS; i++) {
+      // A second apart, so "oldest" is well defined.
+      vi.setSystemTime(Date.now() + 1000);
+      const r = await signIn({ identityToken: await identityToken("sub.many.macs") });
+      expect(r.status).toBe(200);
+      macs.push(r.body.token);
+    }
+    expect(await deviceTokenCount(mac1.code)).toBe(MAX_DEVICE_TOKENS);
+    expectError(await call("GET", "/v1/me", undefined, macs[0]), 401, "unauthorized");
+    for (const token of [mac1.token, macs[1], macs[MAX_DEVICE_TOKENS]]) {
+      expect((await call("GET", "/v1/me", undefined, token)).status).toBe(200);
+    }
   });
 
   it("returns the caller's own token when the caller is already the account", async () => {

@@ -44,6 +44,12 @@ export const REGISTER_PER_MIN = 10;
  */
 export const AUTH_FAILURES_PER_MIN = 60;
 export const MAX_BODY_BYTES = 4096;
+/**
+ * Mac tokens kept per account besides the first Mac's. Each sign-in to an existing account adds one,
+ * so the oldest goes once there are more: a Mac that was wiped never signs out, and an account signing
+ * in over and over must not grow storage without bound.
+ */
+export const MAX_DEVICE_TOKENS = 20;
 
 export const DEFAULT_NAME = "student";
 export const DEFAULT_PET_NAME = "buddy";
