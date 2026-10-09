@@ -95,4 +95,36 @@ for framework in "$(dirname "$bin")"/*.framework; do
     mkdir -p "$app/Contents/Frameworks"
     ditto "$framework" "$app/Contents/Frameworks/$(basename "$framework")"
 done
+
+# The widget extension (docs/widget.md), built beside the app's binary. Its
+# Info.plist carries the app's versions, which macOS and App Store Connect
+# expect to match; release scripts that change the app's build number change
+# the extension's too. The extension reads the pet art from its own copy of
+# TabbiKitCore's resource bundle, since a sandboxed process loads resources
+# from its own bundle.
+widget_bin="$(dirname "$bin")/TabbiWidget"
+[[ -x "$widget_bin" ]] || { echo "error: $widget_bin not found (swift build builds it with the app)" >&2; exit 1; }
+appex="$app/Contents/PlugIns/TabbiWidget.appex"
+mkdir -p "$appex/Contents/MacOS" "$appex/Contents/Resources"
+cp "$widget_bin" "$appex/Contents/MacOS/TabbiWidget"
+cp -R "$app/Contents/Resources/Tabbi_TabbiKitCore.bundle" "$appex/Contents/Resources/"
+if $app_store; then
+    # Every bundle in an upload needs its own id.
+    plutil -replace CFBundleIdentifier -string "$bundle_id.Widget.Tabbi-TabbiKitCore" \
+        "$appex/Contents/Resources/Tabbi_TabbiKitCore.bundle/Contents/Info.plist"
+fi
+widget_plist="$appex/Contents/Info.plist"
+plutil -create xml1 "$widget_plist"
+plutil -replace CFBundleIdentifier -string "$bundle_id.Widget" "$widget_plist"
+plutil -replace CFBundleExecutable -string TabbiWidget "$widget_plist"
+plutil -replace CFBundleName -string TabbiWidget "$widget_plist"
+plutil -replace CFBundleDisplayName -string "$name" "$widget_plist"
+plutil -replace CFBundlePackageType -string 'XPC!' "$widget_plist"
+plutil -replace CFBundleInfoDictionaryVersion -string 6.0 "$widget_plist"
+plutil -replace CFBundleSupportedPlatforms -json '["MacOSX"]' "$widget_plist"
+for key in CFBundleShortVersionString CFBundleVersion LSMinimumSystemVersion; do
+    plutil -replace "$key" -string "$(plutil -extract "$key" raw -o - "$plist")" "$widget_plist"
+done
+plutil -replace NSExtension -json '{"NSExtensionPointIdentifier":"com.apple.widgetkit-extension"}' "$widget_plist"
+plutil -lint -s "$widget_plist"
 echo "$app"

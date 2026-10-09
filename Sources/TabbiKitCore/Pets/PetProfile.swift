@@ -190,10 +190,13 @@ public struct PetProfile: Hashable, Codable, Sendable {
     }
 
     /// Trims whitespace, collapses inner runs, and caps the length. An empty
-    /// name falls back to the breed name so the pet is never nameless.
+    /// name falls back to the breed name so the pet is never nameless. A
+    /// breed name is never cut, so a saved default name ("British Shorthair")
+    /// reads back whole.
     static func cleanName(_ raw: String, breed: PetBreed) -> String {
         let words = raw.split(whereSeparator: \.isWhitespace)
         let joined = words.joined(separator: " ")
+        if PetBreed.allCases.contains(where: { $0.displayName == joined }) { return joined }
         let capped = String(joined.prefix(maxNameLength)).trimmingCharacters(in: .whitespaces)
         return capped.isEmpty ? breed.displayName : capped
     }

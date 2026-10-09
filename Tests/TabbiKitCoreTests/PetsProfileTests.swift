@@ -24,6 +24,14 @@ final class PetProfileTests: XCTestCase {
         XCTAssertFalse(PetProfile(name: "Earl Grey", breed: .britishShorthair).hasDefaultName)
     }
 
+    func testTheStarterCatKeepsItsWholeBreedNameAfterASave() throws {
+        let starter = PetProfile.starter(.cat)
+        let reloaded = try JSONDecoder().decode(PetProfile.self, from: JSONEncoder().encode(starter))
+        XCTAssertEqual(reloaded.name, "British Shorthair")
+        XCTAssertTrue(reloaded.hasDefaultName)
+        XCTAssertEqual(reloaded, starter)
+    }
+
     func testAnExistingSavedPetKeepsItsBreedAndName() throws {
         let old = Data(#"{"name": "Mochi", "breed": "orangeTabby", "outfit": "none", "accessories": []}"#.utf8)
         let profile = try JSONDecoder().decode(PetProfile.self, from: old)
