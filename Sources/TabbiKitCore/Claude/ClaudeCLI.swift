@@ -27,44 +27,18 @@ public enum ClaudeCLI {
         fileManager: FileManager = .default,
         loginShellLookup: () -> String? = ClaudeCLI.lookupInLoginShell
     ) -> URL? {
-        for override in [pathOverride, environment[overrideVariable]].compactMap({ $0 })
-        where fileManager.isExecutableFile(atPath: override) {
-            return URL(fileURLWithPath: override)
-        }
-        let home = fileManager.homeDirectoryForCurrentUser.path
-        let candidates = [
-            "\(home)/.local/bin/claude",
-            "\(home)/.claude/local/claude",
-            "\(home)/.local/share/fnm/aliases/default/bin/claude",
-            "\(home)/.volta/bin/claude",
-            "/opt/homebrew/bin/claude",
-            "/usr/local/bin/claude",
-        ]
-        if let hit = candidates.first(where: { fileManager.isExecutableFile(atPath: $0) }) {
-            return URL(fileURLWithPath: hit)
-        }
-        if let path = loginShellLookup(), fileManager.isExecutableFile(atPath: path) {
-            return URL(fileURLWithPath: path)
-        }
-        return nil
+        AIExecutableLocator.locate(
+            "claude",
+            pathOverride: pathOverride,
+            environment: environment,
+            fileManager: fileManager,
+            loginShellLookup: { _ in loginShellLookup() }
+        )
     }
 
     /// Asks the user's login shell where `claude` is. Blocking; call off the main thread.
     public static func lookupInLoginShell() -> String? {
-        let shell = ProcessInfo.processInfo.environment["SHELL"] ?? "/bin/zsh"
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: shell)
-        process.arguments = ["-lc", "command -v claude"]
-        let pipe = Pipe()
-        process.standardOutput = pipe
-        process.standardError = FileHandle.nullDevice
-        do { try process.run() } catch { return nil }
-        let deadline = Date().addingTimeInterval(5)
-        while process.isRunning && Date() < deadline { usleep(50_000) }
-        if process.isRunning { process.terminate(); return nil }
-        let output = String(data: pipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8)?
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-        return (output?.hasPrefix("/") == true) ? output : nil
+        AIExecutableLocator.lookupInLoginShell("claude")
     }
 
     /// Runs `claude -p` with stream-json output and yields parsed events.
