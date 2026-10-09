@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { MAX_BLOCKS } from "../src/moderation";
 import { env, runInDurableObject } from "cloudflare:test";
 import { migrate } from "../src/hub";
-import { call, expectError, hub, register } from "./helpers";
+import { admin, call, expectError, hub, register } from "./helpers";
 
 const codes = (list: { profile: { code: string } }[]) => list.map((x) => x.profile.code);
 const friendsOf = async (u: { token: string }) => codes((await call("GET", "/v1/friends", undefined, u.token)).body.friends);
@@ -42,6 +42,27 @@ describe("blocks", () => {
     await block(a, b);
     expectError(await call("POST", "/v1/friends", { code: a.code }, b.token), 404, "unknown_code");
     expectError(await call("POST", "/v1/friends", { code: b.code }, a.token), 409, "blocked");
+  });
+
+  it("answers a blocked user's block and report like an unknown code, so neither reveals the block", async () => {
+    const a = await register({ name: "Ana" });
+    const b = await register();
+    await block(a, b);
+    expectError(await block(b, a), 404, "unknown_code");
+    expectError(await call("POST", "/v1/reports", { code: a.code, reason: "spam" }, b.token), 404, "unknown_code");
+    expect(await blocksOf(b)).toEqual([]);
+    // The blocker can still block again (a no-op) and report.
+    expect((await block(a, b)).body.blocked).toBe(false);
+    expect((await call("POST", "/v1/reports", { code: b.code, reason: "spam" }, a.token)).status).toBe(201);
+  });
+
+  it("answers a block or report of a banned user like an unknown code", async () => {
+    const a = await register();
+    const b = await register();
+    expect((await admin("POST", `/users/${b.code}/ban`)).body.banned).toBe(true);
+    expectError(await block(a, b), 404, "unknown_code");
+    expectError(await call("POST", "/v1/reports", { code: b.code, reason: "spam" }, a.token), 404, "unknown_code");
+    expectError(await call("POST", "/v1/friends", { code: b.code }, a.token), 404, "unknown_code");
   });
 
   it("drops the blocked user from the leaderboard", async () => {

@@ -604,11 +604,8 @@ export class Hub extends DurableObject<Env> {
     const code = parseFriendCode(body.code);
     if (code === caller.code) throw new HttpError(400, "self_friend", "you cannot add yourself");
     this.requireNotBanned(caller);
-    const row = this.sql.exec<UserRow>("SELECT * FROM users WHERE code = ?", code).toArray()[0];
-    if (!row || this.isBanned(code)) throw new HttpError(404, "unknown_code", "no one has that code");
     if (this.hasBlocked(caller.code, code)) throw new HttpError(409, "blocked", "you blocked them; unblock them first");
-    // A blocked user is told the code is unknown, so a block is never revealed.
-    if (this.hasBlocked(code, caller.code)) throw new HttpError(404, "unknown_code", "no one has that code");
+    const row = this.knownUser(caller, code);
     const already = this.sql.exec("SELECT 1 FROM friends WHERE a = ? AND b = ?", caller.code, code).toArray().length > 0;
     if (!already) {
       if (this.friendCount(caller.code) >= MAX_FRIENDS) {
@@ -650,6 +647,18 @@ export class Hub extends DurableObject<Env> {
     return this.hasBlocked(a, b) || this.hasBlocked(b, a);
   }
 
+  /**
+   * The user a friend, block or report request names. A banned user, or one who blocked the caller,
+   * answers `404 unknown_code` exactly like a code no one has, so no route reveals a block or a ban.
+   */
+  private knownUser(caller: Caller, code: string): UserRow {
+    const row = this.sql.exec<UserRow>("SELECT * FROM users WHERE code = ?", code).toArray()[0];
+    if (!row || this.isBanned(code) || this.hasBlocked(code, caller.code)) {
+      throw new HttpError(404, "unknown_code", "no one has that code");
+    }
+    return row;
+  }
+
   /** GET /v1/blocks: the users I blocked, newest first, with their current name and pet name. */
   private listBlocks(caller: Caller): Response {
     const rows = this.sql.exec<{ code: string; name: string; pet_name: string; created_at: number }>(
@@ -669,9 +678,10 @@ export class Hub extends DurableObject<Env> {
     const body = await readBody(req, ["code"]);
     const code = parseFriendCode(body.code);
     if (code === caller.code) throw new HttpError(400, "self_block", "you cannot block yourself");
-    const row = this.sql.exec<UserRow>("SELECT * FROM users WHERE code = ?", code).toArray()[0];
-    if (!row) throw new HttpError(404, "unknown_code", "no one has that code");
     const already = this.hasBlocked(caller.code, code);
+    // Re-blocking someone I already blocked is answered from my own list, so it reveals nothing new.
+    const row = (already ? this.sql.exec<UserRow>("SELECT * FROM users WHERE code = ?", code).toArray()[0] : undefined)
+      ?? this.knownUser(caller, code);
     if (!already) {
       const count = this.sql.exec<{ n: number }>("SELECT COUNT(*) AS n FROM blocks WHERE blocker = ?", caller.code).one().n;
       if (count >= MAX_BLOCKS) throw new HttpError(409, "block_limit", `you already blocked ${MAX_BLOCKS} people`);
@@ -736,8 +746,7 @@ export class Hub extends DurableObject<Env> {
     const code = parseFriendCode(body.code);
     const { reason, note } = parseReport(body);
     if (code === caller.code) throw new HttpError(400, "self_report", "you cannot report yourself");
-    const row = this.sql.exec<UserRow>("SELECT * FROM users WHERE code = ?", code).toArray()[0];
-    if (!row) throw new HttpError(404, "unknown_code", "no one has that code");
+    const row = this.knownUser(caller, code);
     this.rateLimit("report:" + caller.code, REPORTS_PER_MIN, now);
     const open = this.sql.exec<{ id: number }>(
       "SELECT id FROM reports WHERE reporter = ? AND reported = ? AND resolved_at IS NULL", caller.code, code).toArray()[0];

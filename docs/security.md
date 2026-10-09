@@ -20,6 +20,7 @@ What it defends against:
 - **Data exposure.** There is no directory or search: a profile is visible only to mutual friends and party members, and sync documents only to their owner.
   Error replies carry a stable code and a short English message, never stack traces or internal values.
 - **Abuse by other users.** Users can block each other and report a name or behaviour; reports are capped (5 a minute, 20 a day per user) and wait for the maintainer, who can rename or ban through the admin routes.
+  A user who blocked you, or a banned user, answers every friend, block and report request with the same `404 unknown_code` as a code no one has, so no route reveals a block or a ban.
   A banned user disappears from friend lists, parties and leaderboards, and a ban follows the user through Sign in with Apple.
 - **Operator mistakes.** Schema changes are append-only versioned steps, deploys can be rolled back, and storage can be restored to any point in the last 30 days.
 

@@ -324,7 +324,7 @@ Errors:
 | --- | --- | --- |
 | 400 | `invalid_field` | not a valid friend code |
 | 400 | `self_block` | that is my own code |
-| 404 | `unknown_code` | no user has that code |
+| 404 | `unknown_code` | no user has that code, that user blocked me, or that user is banned (as for `POST /v1/friends`, so no route reveals a block or a ban) |
 | 409 | `block_limit` | I already blocked 1000 users |
 
 ### `DELETE /v1/blocks/{code}`
@@ -350,7 +350,7 @@ Errors:
 | --- | --- | --- |
 | 400 | `invalid_field` | not a valid friend code, an unknown reason, or a note over 280 characters |
 | 400 | `self_report` | that is my own code |
-| 404 | `unknown_code` | no user has that code |
+| 404 | `unknown_code` | no user has that code, that user blocked me, or that user is banned |
 | 429 | `rate_limited` | more than 5 reports in a minute; wait for `Retry-After` seconds |
 | 429 | `report_limit` | 20 reports in the last 24 hours |
 
