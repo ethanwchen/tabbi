@@ -92,18 +92,25 @@ private struct SpotifyNowPlaying: View {
                 .background { glow }
 
             VStack(alignment: .leading, spacing: 0) {
-                VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-                    SpotifyMarqueeText(text: track?.title.isEmpty == false ? track!.title : "Unknown track",
-                                       isActive: hoveringTitle)
-                        .font(Theme.Typography.title)
-                        .foregroundStyle(Theme.Palette.primaryText)
-                    SpotifyMarqueeText(text: subtitle, isActive: hoveringTitle)
-                        .font(Theme.Typography.body)
-                        .foregroundStyle(Theme.Palette.secondaryText)
+                HStack(alignment: .center, spacing: Theme.Spacing.s) {
+                    VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+                        SpotifyMarqueeText(text: track?.title.isEmpty == false ? track!.title : "Unknown track",
+                                           isActive: hoveringTitle)
+                            .font(Theme.Typography.title)
+                            .foregroundStyle(Theme.Palette.primaryText)
+                        SpotifyMarqueeText(text: subtitle, isActive: hoveringTitle)
+                            .font(Theme.Typography.body)
+                            .foregroundStyle(Theme.Palette.secondaryText)
+                    }
+                    .contentShape(Rectangle())
+                    .onHover { hoveringTitle = $0 }
+                    .help(helpText)
+
+                    if let isFavorite = track?.isFavorite {
+                        SpotifyLikeButton(isLiked: isFavorite, source: controller.source ?? .spotify,
+                                          action: controller.toggleFavorite)
+                    }
                 }
-                .contentShape(Rectangle())
-                .onHover { hoveringTitle = $0 }
-                .help(helpText)
 
                 Spacer(minLength: Theme.Spacing.s)
 
@@ -551,6 +558,50 @@ private struct SpotifyPlayPauseButton: View {
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
         .motion(Theme.Motion.snappy, value: isPlaying)
+    }
+}
+
+/// The heart beside the title: likes the current track (Music calls it
+/// Favorite). Only shown when the player reports whether the track is liked,
+/// so it never appears where a click couldn't work.
+private struct SpotifyLikeButton: View {
+    let isLiked: Bool
+    let source: MediaSource
+    let action: () -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: isLiked ? "heart.fill" : "heart")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(foreground)
+                .contentTransition(.symbolEffect(.replace))
+                .frame(width: 24, height: 24)
+                .background(Circle().fill(hovering ? Theme.Palette.surfaceHover : .clear))
+                .contentShape(Circle())
+        }
+        .buttonStyle(.tactile)
+        .help(help)
+        .onHover { hovering = $0 }
+        .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: isLiked)
+        .accessibilityLabel(source == .music ? "Favorite" : "Like")
+        .accessibilityValue(isLiked ? "On" : "Off")
+        .accessibilityHint(help)
+    }
+
+    private var help: String {
+        switch (source, isLiked) {
+        case (.music, true): "Remove from Favorites"
+        case (.music, false): "Add to Favorites"
+        case (_, true): "Remove from Liked Songs"
+        case (_, false): "Save to Liked Songs"
+        }
+    }
+
+    private var foreground: Color {
+        if isLiked { return NowPlayingModule.descriptor.accentColor }
+        return hovering ? Theme.Palette.primaryText : Theme.Palette.tertiaryText
     }
 }
 

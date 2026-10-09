@@ -129,6 +129,14 @@ final class MusicScriptTests: XCTestCase {
         XCTAssertNil(stream.settingFavorite(true).track?.isFavorite, "no optimistic heart where there is none")
     }
 
+    func testDemoTrackShowsAWorkingHeart() throws {
+        let track = try XCTUnwrap(SpotifyPlayback.demo.track)
+        XCTAssertEqual(track.isFavorite, true, "demo shots show the like button")
+        XCTAssertNotNil(MediaSource.music.setFavoriteScript(false, for: track),
+                        "the demo track is a Music track the heart can act on")
+        XCTAssertEqual(SpotifyPlayback.demo.settingFavorite(false).track?.isFavorite, false)
+    }
+
     func testStatusResolvesWithTheSourcesParser() {
         let output = record(["playing", "A", "Teardrop", "a", "b", "10", "1", "false", "off", "64", ""])
         let status = SpotifyStatus.resolve(source: .music, isRunning: true, isInstalled: true,

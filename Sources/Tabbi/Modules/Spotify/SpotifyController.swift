@@ -56,8 +56,8 @@ final class SpotifyController: NSObject, ObservableObject {
         isDemo = runMode.isDemo
         super.init()
         if isDemo {
-            record(.music, .notRunning)
-            record(.spotify, .connected(.demo))
+            record(.spotify, .notRunning)
+            record(.music, .connected(.demo))
             return
         }
         let workspace = NSWorkspace.shared.notificationCenter
@@ -128,6 +128,16 @@ final class SpotifyController: NSObject, ObservableObject {
         expectModes(source) { $0.adding(repeatMode: mode, at: $1) }
         applyOptimistic(playback.settingRepeat(mode), to: source)
         sendModeChange(source.setRepeatScript(mode), to: source)
+    }
+
+    /// Likes or unlikes the current track. Does nothing where the player
+    /// can't, which is also where the panel hides the heart.
+    func toggleFavorite() {
+        guard let source, let playback = currentStatus.playback, let track = playback.track,
+              let isFavorite = track.isFavorite,
+              let script = source.setFavoriteScript(!isFavorite, for: track) else { return }
+        applyOptimistic(playback.settingFavorite(!isFavorite), to: source)
+        send(script, to: source)
     }
 
     /// Sets the active app's own volume (0 ... 100). Safe to call for every

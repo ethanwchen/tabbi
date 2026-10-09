@@ -86,16 +86,18 @@ public struct SpotifyPlayback: Equatable, Sendable {
 
 extension SpotifyPlayback {
     /// Sample state for `TABBI_DEMO=1` snapshots and screenshots. Has no
-    /// artwork URL so demo mode never touches the network.
+    /// artwork URL so demo mode never touches the network. A favorited Music
+    /// track, so demo shots show the like button.
     public static let demo = SpotifyPlayback(
         state: .playing,
         track: SpotifyTrack(
-            id: "spotify:track:demo",
+            id: MusicScript.trackIDPrefix + "5A1D3E0C7B92F416",
             title: "Midnight City",
             artist: "M83",
             album: "Hurry Up, We're Dreaming",
             artworkURL: nil,
-            duration: 243.96
+            duration: 243.96,
+            isFavorite: true
         ),
         position: 87.4,
         isShuffling: true,
