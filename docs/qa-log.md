@@ -2,6 +2,7 @@
 
 What the whole-app quality pass found and fixed, newest first, one sentence per line.
 
+- Two Anki connection verdicts still stuttered on their subject ("Anki isn't on this Mac. Anki is a free flashcard app.", "Anki said no to Tabbi. Anki asked whether..."), which the earlier two-word check missed; they now read "It's a free flashcard app" and "When Anki asked whether to let Tabbi in, the answer was no", and the test now flags a detail that opens with the headline's first word.
 - A snapshot run (`--snapshot`) rewrote Party's saved presence (focus time and streak) in the app's preferences, although snapshot runs must leave no trace; Party now saves neither its presence nor its settings while rendering snapshots (a small fix in the Party store, owned by the Party agent).
 - Settings > General read the login item from macOS only at launch, so after the user approved or removed Tabbi in System Settings > Login Items the "Launch at login" toggle and its "Allow Tabbi in System Settings" note stayed stale until a relaunch; both now refresh whenever Settings opens or Tabbi comes back to the front.
 - The Today "Up next" card and the Schedule day view ran their minute tick on a plain `Timer`, so after the Mac woke the countdown badges and the now line stayed up to a minute behind; both now tick on the shared `WallClockAlarm` and catch up as soon as the Mac wakes.

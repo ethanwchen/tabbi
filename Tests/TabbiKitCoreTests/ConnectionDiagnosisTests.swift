@@ -129,8 +129,10 @@ final class ConnectionDiagnosisTests: XCTestCase {
     func testVerdictDetailDoesNotRestateTheHeadlineSubject() {
         for diagnosis in everyDiagnosis {
             let status = diagnosis.status
-            let headline = status.headline.split(separator: " ").prefix(2)
-            let detail = status.detail.split(separator: " ").prefix(2)
+            // "Anki isn't on this Mac. Anki is a free flashcard app." stutters
+            // as much as a repeated phrase, so even the first word counts.
+            let headline = status.headline.split(separator: " ").first
+            let detail = status.detail.split(separator: " ").first
             XCTAssertNotEqual(headline, detail, diagnosis.verdict)
         }
     }
