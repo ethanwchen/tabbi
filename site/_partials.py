@@ -128,6 +128,7 @@ def page(slug, title, description, body, hero=None, wide=False, indexable=True):
       <a href="/privacy">Privacy</a>
       <a href="/terms">Terms</a>
       <a href="{GITHUB}">GitHub</a>
+      <a href="https://buymeacoffee.com/ethanpolar">Buy me a coffee</a>
     </nav>
     <p class="made">Made with care by <a href="https://www.linkedin.com/in/ethanwchen/">Ethan</a>
       <span class="socials">
