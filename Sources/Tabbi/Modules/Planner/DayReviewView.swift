@@ -3,7 +3,7 @@ import TabbiKitCore
 import TabbiKit
 
 /// The End-of-Day Review, shown in place of the checklist: a header with
-/// Done, Claude's short summary (a shimmer until it arrives) over today's
+/// Done, the AI's short summary (a shimmer until it arrives) over today's
 /// focus time, and what got done beside what carries over to tomorrow.
 struct DayReviewView: View {
     @ObservedObject var store: DayReviewStore
@@ -175,7 +175,7 @@ private struct DayReviewStats: View {
 }
 
 /// Two placeholder lines where the summary goes, with the shared skeleton
-/// shimmer while Claude writes.
+/// shimmer while the AI writes.
 private struct DayReviewShimmer: View {
     private static let widths: [CGFloat] = [0.92, 0.6]
 
@@ -189,6 +189,6 @@ private struct DayReviewShimmer: View {
         .shimmering()
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Writing a summary")
-        .help("Claude is writing a short summary of your day")
+        .help("Writing a short summary of your day")
     }
 }

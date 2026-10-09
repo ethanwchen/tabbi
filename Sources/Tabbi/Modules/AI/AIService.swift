@@ -15,13 +15,18 @@ final class AIService: ObservableObject {
     private let settings: SettingsStore
     private let keys: any AIKeyStore
     private let factory: AIProviderFactory
+    /// The provider demo mode names in its sample copy, since a demo run
+    /// shows AI answers without anyone having picked a provider.
+    private let sampleProvider: AIProviderID?
     private var cancellable: AnyCancellable?
 
     /// `factory` replaces the real one in tests (a mocked transport or
     /// process runner); it must use the same `keys`.
-    init(settings: SettingsStore, keys: any AIKeyStore, sandboxed: Bool, factory: AIProviderFactory? = nil) {
+    init(settings: SettingsStore, keys: any AIKeyStore, sandboxed: Bool, factory: AIProviderFactory? = nil,
+         sampleProvider: AIProviderID? = nil) {
         self.settings = settings
         self.keys = keys
+        self.sampleProvider = sampleProvider
         self.factory = factory ?? AIProviderFactory(keys: keys, sandboxed: sandboxed)
         setupState = self.factory.setupState(for: settings.settings.ai)
         cancellable = settings.$settings
@@ -43,6 +48,18 @@ final class AIService: ObservableObject {
     nonisolated func isInstalled(_ id: AIProviderID) async -> Bool {
         guard id.isCommandLineTool else { return true }
         return await Task.detached(priority: .userInitiated) { AIProviderFactory.defaultLocate(id) != nil }.value
+    }
+
+    /// The assistant's name for running text ("Refine with Gemini"), or
+    /// "AI" while no provider is picked.
+    var assistantName: String { (setupState.provider ?? sampleProvider)?.assistantName ?? "AI" }
+
+    /// The provider when it can answer right now: picked, with its key
+    /// saved and, for a command line tool, installed. Nil otherwise, so a
+    /// feature can fall back or show its setup state before sending anything.
+    func readyProvider() async -> (id: AIProviderID, provider: any AIProvider)? {
+        guard case .ready(let id) = setupState, let provider else { return nil }
+        return await isInstalled(id) ? (id, provider) : nil
     }
 
     func hasKey(for id: AIProviderID) -> Bool { keys.hasKey(for: id) }
@@ -72,7 +89,8 @@ extension ModuleContext {
             #else
             let sandboxed = false
             #endif
-            return AIService(settings: settings, keys: keys, sandboxed: sandboxed)
+            return AIService(settings: settings, keys: keys, sandboxed: sandboxed,
+                             sampleProvider: runMode.isDemo ? .claudeCLI : nil)
         }
     }
 }

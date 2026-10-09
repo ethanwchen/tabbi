@@ -137,7 +137,7 @@ final class ClaudeAskSessionTests: XCTestCase {
     func testAHostedAPIGetsTheWholeChatAsMessages() async throws {
         let keys = InMemoryAIKeyStore([.anthropic: "sk-test"])
         let sent = SentRequests()
-        let ai = makeAI(.anthropic, keys: keys) { request in
+        let ai = makeAI(.anthropic, keys: keys, transport: { request in
             sent.append(request)
             let lines = [
                 #"data: {"type":"content_block_delta","delta":{"type":"text_delta","text":"Add "}}"#,
@@ -148,7 +148,7 @@ final class ClaudeAskSessionTests: XCTestCase {
                 for line in lines { continuation.yield(line) }
                 continuation.finish()
             })
-        }
+        })
         let session = makeSession(ai)
         session.open(savedChat(sessionID: "claude-code-session"))
         session.ask("And what about jitter?")
@@ -167,9 +167,9 @@ final class ClaudeAskSessionTests: XCTestCase {
 
     func testAProviderErrorShowsItsOwnWords() async {
         let keys = InMemoryAIKeyStore([.gemini: "bad"])
-        let ai = makeAI(.gemini, keys: keys) { _ in
+        let ai = makeAI(.gemini, keys: keys, transport: { _ in
             AIHTTPResponse(status: 403, lines: AsyncThrowingStream { $0.finish() })
-        }
+        })
         let session = makeSession(ai)
         session.ask("Hi")
         await waitUntil { !session.isStreaming }

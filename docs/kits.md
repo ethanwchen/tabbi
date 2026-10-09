@@ -179,7 +179,7 @@ Today (`planner`) reads these `moduleSettings.planner` keys, all optional:
 
 | Key | Type | Meaning |
 | --- | --- | --- |
-| `planMode` | string | `local` (default) plans on device, without Claude or the network: review blocks for other modules' goals first, then the checklist and other modules' tasks, with breaks between blocks and a short reason for each. `claude` asks the local `claude` CLI to plan the day instead. `study` also plans on device: review blocks for other modules' goals (such as Anki reviews), study blocks the length of the kit's `study.method`, and breaks. |
+| `planMode` | string | `local` (default) plans on device, without Claude or the network: review blocks for other modules' goals first, then the checklist and other modules' tasks, with breaks between blocks and a short reason for each. `claude` asks the AI the user picked in Settings > Connections (Claude, Codex, Gemini or Ollama) to plan the day instead, and shows a setup message until one is picked. `study` also plans on device: review blocks for other modules' goals (such as Anki reviews), study blocks the length of the kit's `study.method`, and breaks. |
 | `reviewsFirst` | bool | Schedule review blocks in the first free time (default `true`), or last. |
 | `eventBufferMinutes` | number | Free time kept clear before and after each calendar event (default 10). |
 | `studyBlockTitle` | string | Title for study blocks once every open task has one (default "Study block"). |

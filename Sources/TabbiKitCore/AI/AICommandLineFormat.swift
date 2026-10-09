@@ -37,6 +37,7 @@ public enum AICommandLineFormat {
             if !model.isEmpty { arguments += ["--model", model] }
             if let system = request.system, !system.isEmpty { arguments += ["--system-prompt", system] }
             if let resume { arguments += ["--resume", resume] }
+            if let schema = request.responseSchema, !schema.isEmpty { arguments += ["--json-schema", schema] }
             let last = request.messages.last
             let input = try claudeInputLine(prompt: prompt(for: request), images: last?.images ?? [])
             return Invocation(arguments: arguments, input: input)

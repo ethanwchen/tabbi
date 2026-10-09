@@ -51,7 +51,7 @@ final class PlannerStore: ObservableObject {
     /// message greets. Nil while the user hasn't given one.
     @Published var displayName: String?
     /// Plan My Day; its proposal replaces the checklist while active.
-    private(set) lazy var plan = DayPlanStore(upNext: upNext, settings: planSettings, usesClaude: usesClaude,
+    private(set) lazy var plan = DayPlanStore(upNext: upNext, settings: planSettings, ai: ai,
                                               runMode: runMode)
     /// The End-of-Day Review; its card replaces the checklist while open.
     let review: DayReviewStore
@@ -67,23 +67,23 @@ final class PlannerStore: ObservableObject {
 
     private let repository: PlannerRepository?
     private let runMode: RunMode
-    /// Whether Plan my day and Wrap up may ask the `claude` CLI
-    /// (`Edition.runsLocalTools`).
-    private let usesClaude: Bool
+    /// The AI the user picked, which Plan my day and Wrap up may ask.
+    /// Nil turns both off.
+    private let ai: AIService?
     /// Where checked-off tasks are logged, as Today's.
     private let activity: ActivityLog?
     private var cancellables: Set<AnyCancellable> = []
 
     init(focus: FocusStore, storage: EditionStorage, planSettings: TodayPlanSettings = TodayPlanSettings(),
-         activity: ActivityLog? = nil, usesClaude: Bool = true, runMode: RunMode) {
+         activity: ActivityLog? = nil, ai: AIService? = nil, runMode: RunMode) {
         self.focus = focus
         self.activity = activity
         self.runMode = runMode
-        self.usesClaude = usesClaude
+        self.ai = ai
         self.planSettings = planSettings
         upNext = UpNextStore(sampleDay: planSettings.sampleDay, runMode: runMode)
         review = DayReviewStore(storage: storage, studyPreview: planSettings.planMode == .study,
-                                sampleDay: planSettings.sampleDay, usesClaude: usesClaude, runMode: runMode)
+                                sampleDay: planSettings.sampleDay, ai: ai, runMode: runMode)
         let today = PlannerDayKey(date: Date())
         if runMode.isDemo {
             repository = nil

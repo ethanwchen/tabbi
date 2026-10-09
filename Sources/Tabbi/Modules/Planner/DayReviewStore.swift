@@ -2,12 +2,12 @@ import Foundation
 import TabbiKitCore
 
 /// Drives the End-of-Day Review: shows today's numbers at once, asks the
-/// local `claude` CLI for a short encouraging summary (falling back to a
+/// AI the user picked for a short encouraging summary (falling back to a
 /// local line), and saves the review when the user taps Done. The review
 /// card replaces the checklist inline.
 ///
-/// With `TABBI_DEMO=1` it shows `DayReview.sample` and never runs the
-/// CLI or touches disk.
+/// With `TABBI_DEMO=1` it shows `DayReview.sample` and never asks an AI
+/// or touches disk.
 @MainActor
 final class DayReviewStore: ObservableObject {
     /// The open review, or nil while the checklist shows.
@@ -20,25 +20,24 @@ final class DayReviewStore: ObservableObject {
     var isSummarizing: Bool { review != nil && review?.summary == nil }
 
     private let isDemo: Bool
-    /// False in a build that can't run the `claude` CLI: the local line
-    /// shows at once.
-    private let usesClaude: Bool
+    /// The AI the user picked. Nil (tests) shows the local line at once.
+    private let ai: AIService?
     private let repository: DayReviewRepository?
     private var task: Task<Void, Never>?
     /// Bumped on every open and close so a superseded run can't publish.
     private var generation = 0
 
-    /// Longest wait for Claude before using the local summary.
+    /// Longest wait for the AI before using the local summary.
     private static let timeout: Duration = .seconds(30)
 
     /// `studyPreview` makes the demo previews a study day's wrap-up, with
     /// the demo Anki reviews and a sample study tally; `sampleDay` picks
     /// the demo day reviewed.
     init(storage: EditionStorage, studyPreview: Bool = false, sampleDay: PlannerSampleDay = .work,
-         usesClaude: Bool = true, runMode: RunMode) {
+         ai: AIService? = nil, runMode: RunMode) {
         let environment = ProcessInfo.processInfo.environment
         isDemo = runMode.isDemo
-        self.usesClaude = usesClaude
+        self.ai = ai
         repository = isDemo ? nil : DayReviewRepository(storage: storage)
         // Lets demo snapshots render each state: `TABBI_PLANNER_PREVIEW=review`.
         guard isDemo else { return }
@@ -69,8 +68,8 @@ final class DayReviewStore: ObservableObject {
         if isDemo {
             var sample = DayReview.sample(on: day.date, kind: sampleDay, study: study ?? (isStudyDay ? .sample : nil),
                                          progress: progress)
-            // Without Claude the local line shows at once, so there's no wait to preview.
-            guard usesClaude else {
+            // Without an AI the local line shows at once, so there's no wait to preview.
+            guard ai != nil else {
                 review = sample
                 return
             }
@@ -85,14 +84,16 @@ final class DayReviewStore: ObservableObject {
         }
 
         var review = DayReviewer.review(of: day, activity: activity, study: study, progress: progress)
-        guard usesClaude else {
+        // Nothing is sent before a provider is picked and set up: the
+        // local line shows at once instead of a shimmer.
+        guard let ai, ai.setupState.isReady else {
             review.summary = DayReviewer.fallbackSummary(for: review)
             self.review = review
             return
         }
         self.review = review
         task = Task { [weak self] in
-            let summary = await Self.summary(for: review)
+            let summary = await Self.summary(for: review, from: ai)
             self?.publish(generation, summary: summary ?? DayReviewer.fallbackSummary(for: review))
         }
     }
@@ -100,7 +101,7 @@ final class DayReviewStore: ObservableObject {
     /// Saves the review and closes the card. Stays open if the file can't be written.
     func done() {
         guard var review else { return }
-        // Done before Claude answered: keep the local line rather than nothing.
+        // Done before the AI answered: keep the local line rather than nothing.
         if review.summary == nil { review.summary = DayReviewer.fallbackSummary(for: review) }
         do {
             try repository?.save(review)
@@ -132,33 +133,11 @@ final class DayReviewStore: ObservableObject {
         review?.summary = summary
     }
 
-    /// Claude's cleaned-up summary, or nil when the CLI is missing, fails, or times out.
-    private static func summary(for review: DayReview) async -> String? {
-        guard let executable = await Task.detached(priority: .userInitiated, operation: { ClaudeCLI.locate() }).value else {
-            return nil
-        }
-        let prompt = DayReviewer.prompt(for: review)
-        return await withTaskGroup(of: String?.self) { group in
-            group.addTask {
-                var text: String?
-                do {
-                    let events = ClaudeCLI.stream(executable: executable, prompt: prompt,
-                                                  extraArguments: DayReviewer.extraArguments())
-                    for try await event in events {
-                        if case .result(let result) = event, !result.isError { text = result.text }
-                    }
-                } catch {
-                    // A successful result followed by a non-zero exit still counts.
-                }
-                return text.flatMap(DayReviewer.summary(from:))
-            }
-            group.addTask {
-                try? await Task.sleep(for: timeout)
-                return nil
-            }
-            let first = await group.next() ?? nil
-            group.cancelAll()
-            return first
-        }
+    /// The AI's cleaned-up summary, or nil when it can't answer, fails, or times out.
+    private static func summary(for review: DayReview, from ai: AIService) async -> String? {
+        guard let provider = await ai.readyProvider()?.provider,
+              let text = try? await provider.answer(.prompt(DayReviewer.prompt(for: review)), timeout: timeout)
+        else { return nil }
+        return DayReviewer.summary(from: text)
     }
 }

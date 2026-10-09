@@ -39,24 +39,30 @@ public struct AIRequest: Hashable, Sendable {
     public var maxTokens: Int
     /// A CLI session to continue (from `AIStreamEvent.sessionStarted`).
     public var resumeSessionID: String?
+    /// A JSON Schema the answer must follow, where the provider can enforce
+    /// one (Claude Code's `--json-schema`). Others only get the prompt's
+    /// own instructions, so the caller still parses the answer leniently.
+    public var responseSchema: String?
 
     public init(
         system: String? = nil,
         messages: [AIMessage],
         model: String = "",
         maxTokens: Int = 4096,
-        resumeSessionID: String? = nil
+        resumeSessionID: String? = nil,
+        responseSchema: String? = nil
     ) {
         self.system = system
         self.messages = messages
         self.model = model
         self.maxTokens = maxTokens
         self.resumeSessionID = resumeSessionID
+        self.responseSchema = responseSchema
     }
 
     /// A one-shot prompt, as Plan my day and Day review send.
-    public static func prompt(_ text: String, model: String = "") -> AIRequest {
-        AIRequest(messages: [.user(text)], model: model)
+    public static func prompt(_ text: String, model: String = "", responseSchema: String? = nil) -> AIRequest {
+        AIRequest(messages: [.user(text)], model: model, responseSchema: responseSchema)
     }
 
     /// The model to send to `provider`.

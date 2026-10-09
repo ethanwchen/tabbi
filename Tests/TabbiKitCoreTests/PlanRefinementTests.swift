@@ -96,4 +96,48 @@ final class PlanRefinementTests: XCTestCase {
         XCTAssertNil(proposal.refinement)
         XCTAssertEqual(proposal.pending.count, 2)
     }
+
+    // MARK: Asking the provider
+
+    func testTheAnswerComesFromWhicheverProviderIsPicked() async {
+        let answer = #"{"blocks":[{"start":"10:00","end":"10:45","title":"Deck"}]}"#
+        let provider = StubProvider(id: .gemini) { _ in [.textDelta(answer), .finished(text: nil)] }
+        let text = await DayPlanner.answer(from: provider, prompt: "Plan my day")
+        XCTAssertEqual(text, answer)
+        XCTAssertEqual(provider.requests.first?.responseSchema, DayPlanner.jsonSchema)
+        XCTAssertEqual(provider.requests.first?.messages.last?.text, "Plan my day")
+    }
+
+    func testAProviderErrorGivesNoAnswer() async {
+        let provider = StubProvider(id: .openAI) { _ in throw AIProviderError.invalidAPIKey }
+        let text = await DayPlanner.answer(from: provider, prompt: "Plan my day")
+        XCTAssertNil(text)
+    }
+}
+
+/// Answers each request with `events`, recording what it was asked.
+private final class StubProvider: AIProvider, @unchecked Sendable {
+    let id: AIProviderID
+    private let events: (AIRequest) throws -> [AIStreamEvent]
+    private let lock = NSLock()
+    private var received: [AIRequest] = []
+
+    init(id: AIProviderID, events: @escaping (AIRequest) throws -> [AIStreamEvent]) {
+        self.id = id
+        self.events = events
+    }
+
+    var requests: [AIRequest] { lock.withLock { received } }
+
+    func stream(_ request: AIRequest) -> AsyncThrowingStream<AIStreamEvent, Error> {
+        lock.withLock { received.append(request) }
+        return AsyncThrowingStream { continuation in
+            do {
+                for event in try events(request) { continuation.yield(event) }
+                continuation.finish()
+            } catch {
+                continuation.finish(throwing: error)
+            }
+        }
+    }
 }

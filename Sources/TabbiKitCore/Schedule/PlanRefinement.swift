@@ -1,22 +1,22 @@
 import Foundation
 
-/// The outcome of "Refine with Claude" on an on-device plan.
+/// The outcome of "Refine" on an on-device plan.
 public enum PlanRefinement: Hashable, Sendable {
-    /// Claude moved, resized, retitled or dropped blocks.
+    /// The AI moved, resized, retitled or dropped blocks.
     case changed
-    /// Claude found nothing to improve.
+    /// The AI found nothing to improve.
     case unchanged
 }
 
-/// "Refine with Claude": an optional second look at the local planner's
-/// proposal. Claude gets the same day, free time and tasks as a plain Plan
-/// my day request plus the local plan as the starting point, and its answer
-/// goes through the same parser and validator, so a refined plan still never
+/// "Refine": an optional second look at the local planner's proposal by
+/// the AI the user picked. It gets the same day, free time and tasks as a
+/// plain Plan my day request plus the local plan as the starting point, and
+/// its answer goes through the same parser and validator, so a refined plan still never
 /// overlaps an event or starts in the past.
 public extension DayPlanner {
     /// The prompt for refining `plan` (the blocks still on offer) on
     /// `context`'s day. Blocks name their task id where they work on a
-    /// checklist item, so Claude can keep the link.
+    /// checklist item, so the AI can keep the link.
     static func refinePrompt(for context: DayPlanContext, plan: [PlanBlock]) -> String {
         let clock = clockFormatter(context.calendar)
         let keys = Dictionary(uniqueKeysWithValues: context.taskKeys.map { ($0.task.id, $0.key) })
@@ -36,7 +36,7 @@ public extension DayPlanner {
         """
     }
 
-    /// Claude's refinement of `plan`, validated against `context`. Blocks
+    /// The AI's refinement of `plan`, validated against `context`. Blocks
     /// keep the kind (reviews, study) of the local block for the same task,
     /// or with the same title, so the proposal still marks them.
     static func refinement(from text: String, context: DayPlanContext, plan: [PlanBlock]) throws -> [PlanBlock] {
@@ -55,31 +55,15 @@ public extension DayPlanner {
 }
 
 public extension DayPlanner {
-    /// The final result text of one `claude -p` run with the planner's
-    /// arguments, or nil on an error or after `timeout`. Plan my day and the
-    /// Schedule's Refine both ask Claude this way.
-    static func answer(executable: URL, prompt: String, timeout: Duration = .seconds(60)) async -> String? {
-        await withTaskGroup(of: String?.self) { group in
-            group.addTask {
-                var text: String?
-                do {
-                    let events = ClaudeCLI.stream(executable: executable, prompt: prompt,
-                                                  extraArguments: extraArguments())
-                    for try await event in events {
-                        if case .result(let result) = event, !result.isError { text = result.text }
-                    }
-                } catch {
-                    // A successful result followed by a non-zero exit still counts.
-                }
-                return text
-            }
-            group.addTask {
-                try? await Task.sleep(for: timeout)
-                return nil
-            }
-            let first = await group.next() ?? nil
-            group.cancelAll()
-            return first
-        }
+    /// What Plan my day and the Schedule's Refine send: the prompt alone,
+    /// with the plan's JSON Schema for a provider that can enforce it.
+    static func request(prompt: String) -> AIRequest {
+        .prompt(prompt, responseSchema: jsonSchema)
+    }
+
+    /// `provider`'s whole answer to `prompt`, or nil on an error or after
+    /// `timeout`. Plan my day and the Schedule's Refine both ask this way.
+    static func answer(from provider: any AIProvider, prompt: String, timeout: Duration = .seconds(60)) async -> String? {
+        try? await provider.answer(request(prompt: prompt), timeout: timeout)
     }
 }

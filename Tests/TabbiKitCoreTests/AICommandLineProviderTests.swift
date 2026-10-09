@@ -84,6 +84,16 @@ final class AICommandLineFormatTests: XCTestCase {
         XCTAssertFalse(input.contains("What is 2+2?"))
     }
 
+    func testPlanMyDayHandsClaudeItsSchemaAndOtherToolsOnlyThePrompt() throws {
+        let request = DayPlanner.request(prompt: "Plan my day")
+        XCTAssertEqual(request.responseSchema, DayPlanner.jsonSchema)
+        let claude = try AICommandLineFormat.invocation(for: .claudeCLI, request).arguments
+        XCTAssertEqual(claude[try XCTUnwrap(claude.firstIndex(of: "--json-schema")) + 1], DayPlanner.jsonSchema)
+        XCTAssertFalse(try AICommandLineFormat.invocation(for: .claudeCLI, .prompt("Hi")).arguments.contains("--json-schema"))
+        XCTAssertFalse(try AICommandLineFormat.invocation(for: .codexCLI, request).arguments.contains("--json-schema"))
+        XCTAssertFalse(try AICommandLineFormat.invocation(for: .geminiCLI, request).arguments.contains("--json-schema"))
+    }
+
     func testANewRunOfAChatWritesOutTheHistory() {
         let prompt = AICommandLineFormat.prompt(for: chat())
         XCTAssertTrue(prompt.contains("User: What is 2+2?\n\nAssistant: 4."))

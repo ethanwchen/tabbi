@@ -20,7 +20,8 @@ public struct TodayPlanSettings: Hashable, Sendable {
         /// Plan on device with `SchedulePlanner`: the checklist, shared
         /// tasks and review goals, with breaks and a reason per block.
         case local
-        /// Ask the local `claude` CLI to schedule the checklist.
+        /// Ask the AI the user picked to schedule the checklist. The raw
+        /// value predates other providers and stays for kit files.
         case claude
         /// Plan on device with `StudyDayPlanner`: review blocks, study
         /// blocks of the kit's study method length, and breaks.
@@ -87,16 +88,6 @@ public struct TodayPlanSettings: Hashable, Sendable {
             dayEndHour: section?["dayEndHour"]?.numberValue.flatMap { Self.wholeNumber($0, upTo: 24) } ?? defaults.dayEndHour,
             sampleDay: section?["sampleDay"]?.stringValue.flatMap(PlannerSampleDay.init(rawValue:)) ?? defaults.sampleDay
         )
-    }
-
-    /// These settings for a build that can or can't run the `claude` CLI
-    /// (`Edition.runsLocalTools`): without it a kit's `claude` plan mode
-    /// plans on device instead, so Plan my day never asks for Claude.
-    public func usable(withClaude claude: Bool) -> TodayPlanSettings {
-        guard !claude, planMode == .claude else { return self }
-        var settings = self
-        settings.planMode = .local
-        return settings
     }
 
     /// The keys `init(kit:)` reads, for `TodayModule`'s descriptor.

@@ -16,14 +16,14 @@ import TabbiKitCore
 /// touches EventKit; `TABBI_SCHEDULE_PREVIEW=notAsked|denied|freeDay` renders
 /// the empty states instead, `selected` a block's details, `week` the Week
 /// view, `plan` or `plan-selected` the Plan button's proposal, and
-/// `plan-refining` the day plan waiting for Claude, and `plan-week` or
+/// `plan-refining` the day plan waiting for the AI, and `plan-week` or
 /// `plan-week-selected` the Week view's.
 ///
 /// Plan offers the rest of today planned on device (`ScheduleDraft`, no
-/// Claude): other modules' open tasks and review goals, placed in the free
+/// AI): other modules' open tasks and review goals, placed in the free
 /// time. The blocks show on the timeline until the user adds or skips them;
 /// added ones are written to the default calendar as planned by Tabbi.
-/// When the `claude` CLI is installed, Refine offers the day plan to Claude
+/// When the AI the user picked can answer, Refine offers it the day plan
 /// for suggestions; that is optional and the local plan stays usable.
 /// Plan week spreads the same work over the free time of the next seven
 /// days.
@@ -60,12 +60,12 @@ final class ScheduleStore: ObservableObject {
     @Published private(set) var draft: ScheduleDraft?
     /// True when the last Add didn't reach the calendar; the draft stays.
     @Published private(set) var writeFailed = false
-    /// Waiting for Claude's suggestions on the day plan; Add and Skip wait too.
+    /// Waiting for the AI's suggestions on the day plan; Add and Skip wait too.
     @Published private(set) var isRefining = false
-    /// Claude's suggestions didn't come back usable; the local plan stays.
+    /// The AI's suggestions didn't come back usable; the local plan stays.
     @Published private(set) var refineFailed = false
-    /// Whether the `claude` CLI was found the last time Plan ran.
-    @Published private(set) var claudeFound = false
+    /// Whether the picked AI could answer the last time Plan ran.
+    @Published private(set) var aiReady = false
 
     /// Open tasks and goals other modules share, which Plan schedules.
     var sharedTasks: [ProvidedTask] = []
@@ -74,8 +74,8 @@ final class ScheduleStore: ObservableObject {
     var planSettings = TodayPlanSettings()
 
     private let isDemo: Bool
-    /// False in a build that can't run the `claude` CLI: Refine never shows.
-    private let usesClaude: Bool
+    /// The AI the user picked, which Refine asks. Nil (tests) hides Refine.
+    private let ai: AIService?
     private lazy var eventStore = EKEventStore()
     private var isVisible = false
     private var ticker: Timer?
@@ -85,9 +85,9 @@ final class ScheduleStore: ObservableObject {
     static let privacySettingsURL = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Calendars")!
     static let internetAccountsURL = URL(string: "x-apple.systempreferences:com.apple.Internet-Accounts-Settings.extension")!
 
-    init(usesClaude: Bool = true, runMode: RunMode) {
+    init(ai: AIService? = nil, runMode: RunMode) {
         isDemo = runMode.isDemo
-        self.usesClaude = usesClaude
+        self.ai = ai
         let date = Date()
         if isDemo {
             let preview = ProcessInfo.processInfo.environment["TABBI_SCHEDULE_PREVIEW"]
@@ -101,7 +101,7 @@ final class ScheduleStore: ObservableObject {
             items = showsDay ? ScheduleSampleData.weekItems(from: date) : []
             selectedID = preview == "selected" ? "demo-deck" : nil
             mode = preview?.hasPrefix("week") == true || preview?.hasPrefix("plan-week") == true ? .week : .day
-            claudeFound = usesClaude
+            aiReady = ai != nil
             if preview == "plan" || preview == "plan-selected" || preview == "plan-refining" {
                 planDay()
                 isRefining = preview == "plan-refining"
@@ -117,8 +117,10 @@ final class ScheduleStore: ObservableObject {
         }
     }
 
-    /// True when the day plan on offer can get a second look from Claude.
-    var canRefine: Bool { claudeFound && draft?.canRefine == true }
+    /// True when the day plan on offer can get a second look from the AI.
+    var canRefine: Bool { aiReady && draft?.canRefine == true }
+    /// The picked AI's name for the panel's copy ("Refine with Gemini").
+    var assistantName: String { ai?.assistantName ?? "AI" }
 
     /// The calendar plus any blocks on offer.
     var shownItems: [ScheduleItem] {
@@ -183,7 +185,7 @@ final class ScheduleStore: ObservableObject {
     }
 
     func select(_ id: ScheduleItem.ID?) {
-        // Offered blocks may change while Claude refines them.
+        // Offered blocks may change while the AI refines them.
         if isRefining, let id, draft?.items.contains(where: { $0.id == id }) == true { return }
         selectedID = selectedID == id ? nil : id
     }
@@ -192,7 +194,7 @@ final class ScheduleStore: ObservableObject {
     /// the timeline. Demo mode plans its sample tasks around the demo day.
     func planDay() {
         startPlanning()
-        if !isDemo { checkClaude() }
+        if !isDemo { checkAI() }
         draft = ScheduleDraft.plan(now: now, items: items, sharedTasks: isDemo ? ScheduleSampleData.tasks : sharedTasks,
                                    progress: isDemo ? [] : progress, settings: planSettings)
     }
@@ -242,8 +244,8 @@ final class ScheduleStore: ObservableObject {
         draft = nil
     }
 
-    /// Asks Claude for suggestions on the day plan's blocks still on offer.
-    /// Claude's answer is validated like any plan (never over an event or in
+    /// Asks the AI for suggestions on the day plan's blocks still on offer.
+    /// Its answer is validated like any plan (never over an event or in
     /// the past) before it replaces them; on failure the local plan stays.
     func refine() {
         guard canRefine, !isRefining, let draft else { return }
@@ -255,11 +257,13 @@ final class ScheduleStore: ObservableObject {
         refineTask = Task { [weak self, isDemo] in
             let refined: [PlanBlock]?
             if isDemo {
-                // Demo mode never runs the CLI: Claude agrees with the sample plan.
+                // Demo mode never asks an AI: it agrees with the sample plan.
                 try? await Task.sleep(for: .seconds(1.2))
                 refined = blocks
+            } else if let self {
+                refined = await self.refinedBlocks(blocks, context: context)
             } else {
-                refined = await Self.refinedBlocks(blocks, context: context)
+                return
             }
             guard let self, !Task.isCancelled, var current = self.draft else { return }
             self.isRefining = false
@@ -303,21 +307,21 @@ final class ScheduleStore: ObservableObject {
         refineFailed = false
     }
 
-    /// Looks for the `claude` CLI off the main thread while the plan shows,
-    /// so Refine only appears when it can work.
-    private func checkClaude() {
-        guard usesClaude else { return }
+    /// Checks off the main thread whether the picked AI can answer while
+    /// the plan shows, so Refine only appears when it can work.
+    private func checkAI() {
+        guard let ai else { return }
         Task { [weak self] in
-            let found = await Task.detached(priority: .utility, operation: { ClaudeCLI.locate() }).value != nil
-            self?.claudeFound = found
+            let ready = await ai.readyProvider() != nil
+            self?.aiReady = ready
         }
     }
 
-    /// Claude's refinement of `blocks`, or nil when Claude is missing or its
+    /// The AI's refinement of `blocks`, or nil when it can't answer or its
     /// answer isn't usable.
-    private nonisolated static func refinedBlocks(_ blocks: [PlanBlock], context: DayPlanContext) async -> [PlanBlock]? {
-        guard let executable = await Task.detached(priority: .userInitiated, operation: { ClaudeCLI.locate() }).value,
-              let text = await DayPlanner.answer(executable: executable,
+    private func refinedBlocks(_ blocks: [PlanBlock], context: DayPlanContext) async -> [PlanBlock]? {
+        guard let provider = await ai?.readyProvider()?.provider,
+              let text = await DayPlanner.answer(from: provider,
                                                 prompt: DayPlanner.refinePrompt(for: context, plan: blocks))
         else { return nil }
         return try? DayPlanner.refinement(from: text, context: context, plan: blocks)

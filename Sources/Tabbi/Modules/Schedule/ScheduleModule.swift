@@ -22,7 +22,7 @@ final class ScheduleModule: NotchModule {
     private var cancellables: Set<AnyCancellable> = []
 
     init(context: ModuleContext) {
-        store = ScheduleStore(usesClaude: context.edition.runsLocalTools, runMode: context.runMode)
+        store = ScheduleStore(ai: context.ai, runMode: context.runMode)
         // Plan uses Today's planning settings, so a kit sizes reviews and
         // buffers the same way in both places.
         store.planSettings = TodayPlanSettings(kit: context.activeKit?.defaults)
