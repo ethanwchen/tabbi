@@ -122,6 +122,26 @@ describe("blocks", () => {
     expect(codes((await partyOf(c)).members)).toEqual([c.code]);
   });
 
+  it("removes members the new host blocked, or was blocked by, when the host leaves", async () => {
+    const host = await register();
+    const a = await register();
+    const b = await register();
+    const c = await register();
+    const d = await register();
+    const party = await createParty(host);
+    for (const u of [a, b, c, d]) await join(u, party);
+    await block(a, b);
+    await block(c, a);
+    await call("POST", "/v1/party/leave", undefined, host.token);
+    // a takes over as the longest-standing member; b and c could no longer stay in a's party.
+    const view = await partyOf(a);
+    expect(view.host).toBe(a.code);
+    expect(codes(view.members)).toEqual([a.code, d.code]);
+    expect(await partyOf(b)).toBeNull();
+    expect(await partyOf(c)).toBeNull();
+    expect(codes((await partyOf(d)).members)).toEqual([a.code, d.code]);
+  });
+
   it("hides two members from each other in someone else's party", async () => {
     const host = await register();
     const a = await register();

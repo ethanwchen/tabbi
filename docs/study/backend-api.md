@@ -439,6 +439,8 @@ Errors:
 Body: empty or `{}`.
 `200 {"ok": true, "left": true}`; `left` is `false` if I was not in a party.
 If the host leaves, the longest-standing member becomes host; when the last member leaves, the party is deleted.
+Members who blocked the new host, or whom the new host blocked, leave the party at the same time, so a party never holds both sides of a block with its host.
+The same applies when Sign in with Apple carries blocks into an account that is in a party.
 
 ### `POST /v1/party/session`
 

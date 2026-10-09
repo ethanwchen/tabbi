@@ -204,6 +204,22 @@ describe("POST /v1/auth/apple", () => {
     expectError(await call("POST", "/v1/friends", { code: mac1.code }, blocker.token), 409, "blocked");
   });
 
+  it("enforces carried blocks in the account's party when it folds an anonymous user in", async () => {
+    const mac1 = await register();
+    await signIn({ identityToken: await identityToken("sub.fold.party") }, mac1.token);
+    const mac2 = await register();
+    const pest = await register();
+    const party = (await call("POST", "/v1/party", undefined, mac1.token)).body.party.code;
+    await call("POST", "/v1/party/join", { code: party }, pest.token);
+    await call("POST", "/v1/blocks", { code: pest.code }, mac2.token);
+
+    const r = await signIn({ identityToken: await identityToken("sub.fold.party") }, mac2.token);
+    expect(r.body.code).toBe(mac1.code);
+    expect((await call("GET", "/v1/party", undefined, pest.token)).body.party).toBeNull();
+    const members = (await call("GET", "/v1/party", undefined, r.body.token)).body.party.members;
+    expect(members.map((m: any) => m.profile.code)).toEqual([mac1.code]);
+  });
+
   it("carries a ban and reports into the account it folds into", async () => {
     const mac1 = await register();
     await signIn({ identityToken: await identityToken("sub.fold.ban") }, mac1.token);

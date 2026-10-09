@@ -1140,6 +1140,9 @@ export class Hub extends DurableObject<Env> {
       "INSERT OR IGNORE INTO name_holds (code, kind, value, created_at) SELECT ?, kind, value, created_at FROM name_holds WHERE code = ?",
       to, from);
     this.purgeUser(from, now);
+    // Blocks the account just inherited apply to its party as they would to a fresh block.
+    const party = this.sql.exec<{ party: string }>("SELECT party FROM party_members WHERE code = ?", to).toArray()[0]?.party;
+    if (party) this.dropMembersBlockedWithHost(party);
   }
 
   // ---------- sync ----------
@@ -1337,7 +1340,8 @@ export class Hub extends DurableObject<Env> {
 
   /**
    * Removes a user from their party (call inside a transaction). The last member leaving deletes the
-   * party; a leaving host hands over to the longest-standing member. Returns whether they were in one.
+   * party; a leaving host hands over to the longest-standing member, and members who blocked the new
+   * host or were blocked by them leave too. Returns whether the user was in one.
    */
   private leaveParty(user: string, now: number): boolean {
     const row = this.sql.exec<{ party: string }>("SELECT party FROM party_members WHERE code = ?", user).toArray()[0];
@@ -1352,8 +1356,23 @@ export class Hub extends DurableObject<Env> {
         "UPDATE parties SET host = CASE WHEN host = ? THEN ? ELSE host END, last_active = ? WHERE code = ?",
         user, next.code, now, row.party,
       );
+      this.dropMembersBlockedWithHost(row.party);
     }
     return true;
+  }
+
+  /**
+   * Removes the members of a party who blocked its host or were blocked by them (call inside a
+   * transaction), so a party never holds both sides of a block with the host, as POST /v1/blocks and
+   * joining already guarantee. Needed when the host changes or an account inherits blocks.
+   */
+  private dropMembersBlockedWithHost(party: string): void {
+    this.sql.exec(
+      `DELETE FROM party_members WHERE party = ?1 AND code IN (
+         SELECT blocked FROM blocks WHERE blocker = (SELECT host FROM parties WHERE code = ?1)
+         UNION SELECT blocker FROM blocks WHERE blocked = (SELECT host FROM parties WHERE code = ?1))`,
+      party,
+    );
   }
 
   /**
