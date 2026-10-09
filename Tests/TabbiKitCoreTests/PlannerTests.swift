@@ -108,6 +108,18 @@ final class PlannerDayTests: XCTestCase {
         XCTAssertEqual(yesterday.unfinished(missingFrom: today), [left])
     }
 
+    func testUnfinishedMissingFromSkipsTitlesTheOtherDayAlreadyHas() throws {
+        let now = Date(timeIntervalSince1970: 1_790_000_000)
+        var yesterday = PlannerDay(date: PlannerDayKey(rawValue: "2026-09-30")!)
+        yesterday.add("Call the dentist", now: now)
+        var today = PlannerDay(date: PlannerDayKey(rawValue: "2026-10-01")!)
+        today.add("call the DENTIST", now: now)
+
+        // Exactly what `adopt` would add, so a leftover is never offered and then skipped.
+        XCTAssertEqual(yesterday.unfinished(missingFrom: today), [])
+        XCTAssertEqual(today.adopt(yesterday.items), [])
+    }
+
     func testAdoptKeepsIdentityAndSkipsDuplicates() throws {
         let now = Date(timeIntervalSince1970: 1_790_000_000)
         var yesterday = PlannerDay(date: PlannerDayKey(rawValue: "2026-09-30")!)
@@ -324,6 +336,32 @@ final class PlannerSampleDataTests: XCTestCase {
         }
     }
 
+    func testYesterdaySampleLeavesOneTaskCarriedAndTwoToMove() {
+        for kind in PlannerSampleDay.allCases {
+            let today = PlannerDay.sample(.today, today: oct1, kind: kind)
+            let yesterday = PlannerDay.sample(.yesterday, today: oct1, kind: kind)
+            XCTAssertEqual(yesterday.date.rawValue, "2026-09-30")
+            XCTAssertEqual(yesterday.unfinished(missingFrom: today).count, 2)
+            XCTAssertEqual(yesterday.items.filter { !$0.isDone }.count, 3)
+            XCTAssertEqual(today, PlannerDay.sample(on: oct1, kind: kind))
+        }
+    }
+
+    func testTomorrowSampleIsPlannedAheadTheDayBefore() {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "America/Los_Angeles")!
+        for kind in PlannerSampleDay.allCases {
+            let tomorrow = PlannerDay.sample(.tomorrow, today: oct1, kind: kind, calendar: calendar)
+            XCTAssertEqual(tomorrow.date.rawValue, "2026-10-02")
+            XCTAssertTrue(tomorrow.isPlannedAhead)
+            XCTAssertFalse(tomorrow.items.isEmpty)
+            XCTAssertEqual(tomorrow.doneCount, 0)
+            for item in tomorrow.items {
+                XCTAssertEqual(PlannerDayKey(date: item.createdAt, calendar: calendar), oct1)
+            }
+        }
+    }
+
     func testSampleIsStable() {
         XCTAssertEqual(PlannerDay.sample(on: oct1), PlannerDay.sample(on: oct1))
     }
@@ -351,5 +389,29 @@ final class PlannerStarterTaskTests: XCTestCase {
         XCTAssertTrue(day.removeUntouched(added))
         XCTAssertEqual(day.items.map(\.title), ["Mine", "Read", "Write the essay"])
         XCTAssertFalse(day.removeUntouched(added), "nothing left to take back")
+    }
+}
+
+final class PlannerViewedDayTests: XCTestCase {
+    private let oct1 = PlannerDayKey(rawValue: "2026-10-01")!
+
+    func testStepsOneDayEitherSideOfToday() {
+        XCTAssertEqual(PlannerViewedDay.yesterday.key(today: oct1).rawValue, "2026-09-30")
+        XCTAssertEqual(PlannerViewedDay.today.key(today: oct1), oct1)
+        XCTAssertEqual(PlannerViewedDay.tomorrow.key(today: oct1).rawValue, "2026-10-02")
+        XCTAssertEqual(PlannerViewedDay.today.previous, .yesterday)
+        XCTAssertEqual(PlannerViewedDay.today.next, .tomorrow)
+        XCTAssertEqual(PlannerViewedDay.yesterday.next, .today)
+        XCTAssertNil(PlannerViewedDay.yesterday.previous)
+        XCTAssertNil(PlannerViewedDay.tomorrow.next)
+    }
+
+    func testOnlyYesterdayIsReadOnlyAndOnlyTodayGoesUntitled() {
+        XCTAssertFalse(PlannerViewedDay.yesterday.isEditable)
+        XCTAssertTrue(PlannerViewedDay.today.isEditable)
+        XCTAssertTrue(PlannerViewedDay.tomorrow.isEditable)
+        XCTAssertNil(PlannerViewedDay.today.title)
+        XCTAssertEqual(PlannerViewedDay.yesterday.title, "Yesterday")
+        XCTAssertEqual(PlannerViewedDay.tomorrow.title, "Tomorrow")
     }
 }

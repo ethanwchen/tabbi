@@ -52,6 +52,58 @@ public extension PlannerDay {
         }
         return PlannerDay(date: date, items: items)
     }
+
+    /// The sample list for `viewed`, counted from `today`, so stepping
+    /// through days in demo mode reads naturally: yesterday mostly done,
+    /// with one leftover already carried to today (it shares the id of
+    /// today's first open item) and two still waiting to be moved, and
+    /// tomorrow with a couple of tasks planned ahead.
+    static func sample(
+        _ viewed: PlannerViewedDay,
+        today: PlannerDayKey,
+        kind: PlannerSampleDay = .work,
+        calendar: Calendar = .current
+    ) -> PlannerDay {
+        let date = viewed.key(today: today, calendar: calendar)
+        let start = date.startDate(calendar: calendar)
+        func at(_ hour: Int, _ minute: Int) -> Date {
+            start.addingTimeInterval(TimeInterval(hour * 3600 + minute * 60))
+        }
+        func item(_ number: Int, _ title: String, _ created: Date, _ completed: Date? = nil) -> PlannerItem {
+            PlannerItem(id: UUID(uuidString: String(format: "00000000-0000-4000-8000-%012d", number))!,
+                        title: title, isDone: completed != nil, createdAt: created, completedAt: completed)
+        }
+        switch (viewed, kind) {
+        case (.today, _):
+            return sample(on: date, kind: kind, calendar: calendar)
+        case (.yesterday, .work):
+            return PlannerDay(date: date, items: [
+                item(101, "Prep slides for the design standup", at(8, 30), at(9, 20)),
+                item(3, "Ship notch planner beta", at(8, 35)),
+                item(102, "Write the Q3 product update", at(8, 40)),
+                item(103, "Expense the client dinner", at(8, 50), at(13, 10)),
+                item(104, "Call the dentist", at(9, 0)),
+            ])
+        case (.yesterday, .medicine):
+            return PlannerDay(date: date, items: [
+                item(101, "Anki: cardio deck", at(7, 30), at(8, 45)),
+                item(3, "UWorld cardio Qs", at(7, 35)),
+                item(102, "Review the ECG handout", at(7, 40)),
+                item(103, "Pathology lecture notes", at(7, 45), at(14, 20)),
+                item(104, "Pick up the white coat", at(7, 50)),
+            ])
+        case (.tomorrow, .work):
+            return PlannerDay(date: date, items: [
+                item(201, "Draft the offsite agenda", at(-6, 10)),
+                item(202, "1:1 notes for Sam", at(-6, 15)),
+            ], isPlannedAhead: true)
+        case (.tomorrow, .medicine):
+            return PlannerDay(date: date, items: [
+                item(201, "Pre-read: renal physiology", at(-6, 10)),
+                item(202, "Book the OSCE practice room", at(-6, 15)),
+            ], isPlannedAhead: true)
+        }
+    }
 }
 
 public extension UpcomingEvent {

@@ -190,11 +190,13 @@ public struct PlannerDay: Hashable, Codable, Sendable {
         items.removeAll(where: \.isDone)
     }
 
-    /// This day's unfinished items that `other` doesn't list (by id), in
-    /// order: what looking back at yesterday offers to move to today.
+    /// This day's unfinished items that `other` doesn't list (by id or by
+    /// title, ignoring case), in order: what looking back at yesterday
+    /// offers to move to today, and exactly what `adopt` would add there.
     public func unfinished(missingFrom other: PlannerDay) -> [PlannerItem] {
-        let present = Set(other.items.map(\.id))
-        return items.filter { !$0.isDone && !present.contains($0.id) }
+        let ids = Set(other.items.map(\.id))
+        let titles = Set(other.items.map { $0.title.lowercased() })
+        return items.filter { !$0.isDone && !ids.contains($0.id) && !titles.contains($0.title.lowercased()) }
     }
 
     /// Appends `incoming` items as they are (same id, title and creation
