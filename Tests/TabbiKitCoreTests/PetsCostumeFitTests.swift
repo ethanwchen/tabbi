@@ -79,7 +79,8 @@ final class PetCostumeFitTests: XCTestCase {
     }
 
     func testHeadAndFaceItemsMoveWithTheHeadInEveryFrame() throws {
-        let items = PetAccessory.allCases.filter { $0.slot != .neck }
+        // Neck and back items follow the body instead.
+        let items = PetAccessory.allCases.filter { $0.slot == .head || $0.slot == .face }
         for breed in PetBreed.allCases {
             let plainSitting = PetComposer.sitting(breed)
             for accessory in items {

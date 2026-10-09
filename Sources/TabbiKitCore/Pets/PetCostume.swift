@@ -28,11 +28,14 @@ public enum PetOutfit: String, CaseIterable, Codable, Sendable {
 }
 
 /// Where an accessory sits. A pet wears at most one accessory per slot, and
-/// slots are drawn in declaration order so hats always land on top.
+/// slots are drawn in declaration order so hats always land on top. The
+/// back slot is the exception: it goes on a layer under the whole pet.
 public enum PetAccessorySlot: Int, CaseIterable, Comparable, Codable, Sendable {
     case neck
     case face
     case head
+    /// Worn behind the pet (wings), so it is drawn first and never covers it.
+    case back
 
     public static func < (lhs: Self, rhs: Self) -> Bool { lhs.rawValue < rhs.rawValue }
 }
@@ -73,6 +76,9 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
     case goldenLaurel
     /// A gold medal on a red ribbon, for finishing a Party session.
     case teamMedal
+    // Animated shop items, each looping a few frames on the item clock.
+    /// White feathered wings that flap behind the pet.
+    case angelWings
 
     public var slot: PetAccessorySlot {
         switch self {
@@ -82,6 +88,7 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
              .bunnyEars, .witchHat, .cowboyHat, .flowerCrown, .frogHat, .ninjaHeadband, .pirateHat,
              .blindfoldedSorcerer, .astronautHelmet, .chunkyHeadphones, .backwardsCap, .flameHeadband,
              .goldenLaurel: .head
+        case .angelWings: .back
         }
     }
 
@@ -120,6 +127,7 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
         case .flameHeadband: "Flame Headband"
         case .goldenLaurel: "Golden Laurel"
         case .teamMedal: "Team Medal"
+        case .angelWings: "Angel Wings"
         }
     }
 

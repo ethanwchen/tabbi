@@ -15,10 +15,14 @@ final class PetItemLoopTests: XCTestCase {
         }
     }
 
-    func testItemsWithAnEffectAreTheOnesThatAnimate() {
+    /// Limited items animate exactly when they carry an effect; in the
+    /// shop, the animated showpieces.
+    func testItemsWithAnEffectAndAnimatedShowpiecesAreTheOnesThatAnimate() {
+        let animatedShopItems: Set<PetItem> = [.accessory(.angelWings)]
         for item in PetItem.allCases {
-            XCTAssertEqual(item.loopFrameCount > 1, item.effect != nil, "\(item)")
+            XCTAssertEqual(item.loopFrameCount > 1, item.effect != nil || animatedShopItems.contains(item), "\(item)")
         }
+        XCTAssertEqual(PetItem.accessory(.angelWings).loopFrameCount, 4)
         XCTAssertEqual(PetItem.accessory(.flameHeadband).loopFrameCount, 4)
         XCTAssertEqual(PetItem.accessory(.goldenLaurel).loopFrameCount, 12)
         XCTAssertEqual(PetItem.accessory(.teamMedal).loopFrameCount, 8)
@@ -26,8 +30,8 @@ final class PetItemLoopTests: XCTestCase {
 
     /// Every loop starts on the still frame and moves a few pixels of the
     /// item, sitting and walking, on every body shape.
-    func testAnimatedItemsMoveSubtlyOnEveryBodyShape() {
-        for item in PetItem.allCases where item.loopFrameCount > 1 {
+    func testEffectItemsMoveSubtlyOnEveryBodyShape() {
+        for item in PetItem.allCases where item.effect != nil {
             let (outfit, accessories) = outfitAndAccessories(item)
             for breed in PetGallery.bodyShapeBreeds {
                 for animation in [PetAnimation.idle, .walk] {
@@ -40,6 +44,32 @@ final class PetItemLoopTests: XCTestCase {
                     }
                     XCTAssertTrue(changed.contains { $0 > 0 }, "moves: \(label)")
                     XCTAssertLessThanOrEqual(changed.max() ?? 0, 6, "stays subtle: \(label)")
+                }
+            }
+        }
+    }
+
+    /// Wings go on the layer behind the pet: in every animation and every
+    /// tick of the flap, each pixel of the bare pet stays as it was, the
+    /// wings show around it, and they move.
+    func testWingsFlapBehindThePetOnEveryBodyShape() {
+        for breed in PetGallery.bodyShapeBreeds {
+            for animation in PetAnimation.allCases {
+                let bare = PetComposer.clip(animation, for: breed)
+                let winged = PetComposer.clip(animation, for: breed, accessories: [.angelWings])
+                for (index, (plain, frame)) in zip(bare.frames, winged.frames).enumerated() {
+                    let label = "\(breed) \(animation) frame \(index)"
+                    let ticks = frame.itemFrames.isEmpty ? [frame.canvas] : frame.itemFrames
+                    for canvas in ticks {
+                        let covered = zip(plain.canvas.pixels, canvas.pixels).filter { $0 != nil && $0 != $1 }.count
+                        XCTAssertEqual(covered, 0, "nothing in front of the pet: \(label)")
+                    }
+                    // Hanging from the notch, the body (and the wings) are out of view.
+                    guard animation != .peekIn, animation != .peekOut else { continue }
+                    XCTAssertTrue(ticks.allSatisfy { $0.pixels.contains(.coat) && $0 != plain.canvas },
+                                  "wings show: \(label)")
+                    XCTAssertEqual(ticks.count, 4, "flaps: \(label)")
+                    XCTAssertGreaterThan(Set(ticks).count, 1, "flaps: \(label)")
                 }
             }
         }

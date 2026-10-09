@@ -46,7 +46,8 @@ extension PetItem {
             case .stethoscope, .roundGlasses, .surgicalCap, .headMirror, .graduationCap, .chunkyHeadphones,
                  .goldenLaurel: .study
             case .scarf, .beanie, .chefHat, .backwardsCap: .cozy
-            case .tinyCrown, .wizardHat, .pirateHat, .blindfoldedSorcerer, .astronautHelmet, .ninjaHeadband: .fantasy
+            case .tinyCrown, .wizardHat, .pirateHat, .blindfoldedSorcerer, .astronautHelmet, .ninjaHeadband,
+                 .angelWings: .fantasy
             case .partyHat, .bunnyEars, .witchHat, .flowerCrown, .coolSunglasses: .seasonal
             case .frogHat, .cowboyHat, .bowTie, .flameHeadband, .teamMedal: .silly
             }
@@ -69,12 +70,12 @@ extension PetItem {
             case .tinyCrown, .partyHat, .chefHat, .wizardHat, .bunnyEars, .witchHat, .cowboyHat, .flowerCrown,
                  .frogHat, .ninjaHeadband, .coolSunglasses, .pirateHat, .blindfoldedSorcerer, .astronautHelmet,
                  .chunkyHeadphones, .bowTie: 2
-            case .backwardsCap, .flameHeadband, .goldenLaurel, .teamMedal: 3
+            case .backwardsCap, .flameHeadband, .goldenLaurel, .teamMedal, .angelWings: 3
             }
         }
     }
 
-    public static let latestRelease = 2
+    public static let latestRelease = 3
 
     /// Limited edition items never wear it: their shelf has its own badge.
     public var isNew: Bool { release == PetItem.latestRelease && !isLimited }

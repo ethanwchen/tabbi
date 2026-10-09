@@ -92,6 +92,22 @@
         }
       }
     },
+    "backItems": {
+      "description": "Items worn behind the pet, such as wings: per body family, a loop of grids and their offset from that family's body origin (the walking torso's for walk and walkLong). They are outlined on a layer of their own under the outlined pet, so they may reach past the body.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["cat", "dog", "longDog", "walk", "walkLong"],
+        "additionalProperties": false,
+        "properties": {
+          "cat": { "$ref": "#/$defs/backPlacement" },
+          "dog": { "$ref": "#/$defs/backPlacement" },
+          "longDog": { "$ref": "#/$defs/backPlacement" },
+          "walk": { "description": "Behind the cat and dog walking torso.", "$ref": "#/$defs/backPlacement" },
+          "walkLong": { "description": "Behind the dachshund walking torso.", "$ref": "#/$defs/backPlacement" }
+        }
+      }
+    },
     "basePalette": {
       "description": "The color of every palette role before a breed or the user changes it: eyes, effects, the default costume.",
       "allOf": [{ "$ref": "#/$defs/palette" }],
@@ -151,6 +167,17 @@
       "type": "array",
       "minItems": 1,
       "items": { "type": "string", "minLength": 1, "pattern": "^[ .xOBSAKWEiLNRPCDTUVGJQYMZHFIXmcptefsab]+$" }
+    },
+    "backPlacement": {
+      "description": "A back item for one body family: x and y offset the grids' top-left corner from the family's body origin, and frames is the item's loop, one tick of itemFrameDuration each, all the size of the first. The first frame is the still that Reduce Motion shows. Every family has the same number of frames.",
+      "type": "object",
+      "required": ["x", "y", "frames"],
+      "additionalProperties": false,
+      "properties": {
+        "x": { "type": "integer" },
+        "y": { "type": "integer" },
+        "frames": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/grid" } }
+      }
     },
     "role": {
       "description": "A palette role: what a pixel means.",

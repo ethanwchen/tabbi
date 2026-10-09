@@ -205,13 +205,13 @@ final class PetClosetTests: XCTestCase {
     func testNewBadgeShowsOnFreshItemsUntilOwned() throws {
         XCTAssertFalse(PetItem.accessory(.scarf).isNew, "the med set shipped first")
         XCTAssertFalse(PetItem.outfit(.scrubs).isNew)
-        XCTAssertTrue(PetItem.accessory(.wizardHat).isNew)
-        XCTAssertTrue(PetItem.outfit(.dinosaurHoodie).isNew)
+        XCTAssertFalse(PetItem.accessory(.wizardHat).isNew, "the second batch is no longer the latest")
+        XCTAssertTrue(PetItem.accessory(.angelWings).isNew)
+        XCTAssertFalse(PetItem.accessory(.goldenLaurel).isNew, "limited items have their own badge")
 
-        var closet = closet(earned: 1150)
-        XCTAssertTrue(closet.isNew(.accessory(.wizardHat)))
-        XCTAssertFalse(closet.isNew(.accessory(.partyHat)), "free starters are already owned")
-        XCTAssertEqual(closet.tap(.accessory(.wizardHat)), .boughtAndWore)
-        XCTAssertFalse(closet.isNew(.accessory(.wizardHat)), "the badge goes once the item is unlocked")
+        var closet = closet(earned: 2000)
+        XCTAssertTrue(closet.isNew(.accessory(.angelWings)))
+        XCTAssertEqual(closet.tap(.accessory(.angelWings)), .boughtAndWore)
+        XCTAssertFalse(closet.isNew(.accessory(.angelWings)), "the badge goes once the item is unlocked")
     }
 }

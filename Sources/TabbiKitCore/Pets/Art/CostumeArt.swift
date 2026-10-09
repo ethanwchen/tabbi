@@ -58,6 +58,31 @@ enum CostumeArt {
         }
     }
 
+    /// An item worn behind the pet, such as wings: drawn and outlined on a
+    /// layer of its own under the outlined pet, so the pet's outline keeps
+    /// it apart from the fur and it may reach out past the body.
+    struct BackItem {
+        /// Where the item goes for one body family: its loop of grids, the
+        /// first the still, and the offset of their top-left corner from
+        /// the family's body origin (the walking torso's when walking).
+        struct Placement {
+            let x: Int
+            let y: Int
+            let frames: [SpriteGrid]
+        }
+
+        let cat: Placement
+        let dog: Placement
+        let longDog: Placement
+        /// Behind the cat and dog walking torso (`WalkArt.catTorso`).
+        let walk: Placement
+        /// Behind the dachshund walking torso (`WalkArt.longTorso`).
+        let walkLong: Placement
+
+        /// Frames in the item's loop, the same for every body family.
+        var frameCount: Int { cat.frames.count }
+    }
+
     // MARK: Outfits
 
     static let scrubs = PetArt.costume.bodyItem("scrubs")
@@ -218,4 +243,13 @@ extension CostumeArt {
 
     /// A gold medal with a glint, hung from a crimson ribbon around the neck.
     static let teamMedal = PetArt.costume.bodyItem("teamMedal")
+}
+
+// MARK: - Back items
+
+extension CostumeArt {
+    /// White feathered wings that rise from behind the shoulders and flap:
+    /// spread, raised, spread, lowered. From the front both show beside the
+    /// body; walking, the near wing stands up off the back.
+    static let angelWings = PetArt.costume.backItem("angelWings")
 }

@@ -310,7 +310,8 @@ extension PetComposer {
             }
         }
         func finish(_ step: PetTimeline.Frame, _ composed: Composed) -> PetCanvas {
-            var canvas = composed.canvas.shifted(x: 0, y: step.shiftY)
+            let pet = composed.canvas.shifted(x: 0, y: step.shiftY)
+            var canvas = pet
             for effect in step.effects {
                 let grid = PetArt.effect.grid(effect.grid)
                 canvas = canvas.adding(grid, at: PetPoint(x: place(effect.x, from: head.x), y: place(effect.y, from: head.y)))
@@ -331,6 +332,11 @@ extension PetComposer {
                         .adding(EffectArt.dustLeft, at: PetPoint(x: left - EffectArt.dustLeft.width, y: y))
                         .adding(EffectArt.dustRight, at: PetPoint(x: right + 1, y: y))
                 }
+            }
+            // Wings go behind the pet and its effects: a "z" or a heart
+            // floats in front of them.
+            if let back = composed.back {
+                canvas = canvas.over(back.shifted(x: 0, y: step.shiftY), ringing: canvas.added(over: pet))
             }
             return canvas
         }
@@ -358,16 +364,35 @@ extension PetComposer {
 }
 
 extension PetCanvas {
+    /// The pixels this canvas has where `base` is transparent: what was
+    /// added over it, such as effects.
+    func added(over base: PetCanvas) -> PetCanvas {
+        var added = PetCanvas(width: width, height: height)
+        for y in 0..<height {
+            for x in 0..<width where base[x, y] == nil { added[x, y] = self[x, y] }
+        }
+        return added
+    }
+
+    /// `over(layer)`, with an outline ring cut into `layer` around the
+    /// pixels of `floating`, so a light "z" stays readable on white wings.
+    func over(_ layer: PetCanvas, ringing floating: PetCanvas) -> PetCanvas {
+        var ringed = layer
+        for y in 0..<height {
+            for x in 0..<width where floating[x, y] == nil && layer[x, y] != nil && self[x, y] == nil {
+                let around = [floating[x - 1, y], floating[x + 1, y], floating[x, y - 1], floating[x, y + 1]]
+                if around.contains(where: { $0 != nil }) { ringed[x, y] = .outline }
+            }
+        }
+        return over(ringed)
+    }
+
     /// A copy with an effect painted behind the pet (no outline): effect
     /// pixels only fill transparent space, so a heart or "z" drifting past
     /// a hat never hides part of the pet.
     func adding(_ grid: SpriteGrid, at point: PetPoint) -> PetCanvas {
         var effect = PetCanvas(width: width, height: height)
         effect.stamp(grid, x: point.x, y: point.y)
-        var copy = self
-        for y in 0..<height {
-            for x in 0..<width where copy[x, y] == nil { copy[x, y] = effect[x, y] }
-        }
-        return copy
+        return over(effect)
     }
 }

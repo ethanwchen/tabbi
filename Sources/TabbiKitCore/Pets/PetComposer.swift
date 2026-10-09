@@ -12,7 +12,7 @@ public enum PetComposer {
     public static func sitting(
         _ breed: PetBreed, outfit: PetOutfit = .none, accessories: [PetAccessory] = []
     ) -> PetCanvas {
-        compose(breed, pose: PetPose(), outfit: outfit, accessories: accessories).canvas
+        compose(breed, pose: PetPose(), outfit: outfit, accessories: accessories).picture
     }
 
     /// The sitting pet in `pose`: an eye state, a head nod, and a hop, all
@@ -20,17 +20,24 @@ public enum PetComposer {
     public static func sitting(
         _ breed: PetBreed, pose: PetPose, outfit: PetOutfit = .none, accessories: [PetAccessory] = []
     ) -> PetCanvas {
-        compose(breed, pose: pose, outfit: outfit, accessories: accessories).canvas
+        compose(breed, pose: pose, outfit: outfit, accessories: accessories).picture
     }
 
     /// A composed, outlined frame plus where the head ended up, so effects
     /// and the speech-bubble anchor can be placed relative to it.
     struct Composed {
+        /// The pet, without what it wears behind it.
         var canvas: PetCanvas
+        /// The outlined layer of back items (wings), or nil when none is
+        /// worn. Kept apart so effects can float in front of it.
+        var back: PetCanvas?
         /// Top-right corner of the head's skull, in frame pixels.
         var headTopRight: PetPoint
         /// Top-left corner of a held mug, where its steam rises from.
         var mugTop: PetPoint?
+
+        /// The pet over its back layer.
+        var picture: PetCanvas { back.map { canvas.over($0) } ?? canvas }
     }
 
     /// How the body under the head is drawn.
@@ -67,8 +74,17 @@ public enum PetComposer {
         var bodyItem: (CostumeArt.BodyItem) -> (SpriteGrid, Int, Int)? = { item in
             (layout.pick(item.frame(phase)), layout.bodyX, layout.bodyY - item.rise)
         }
+        // Back items (wings) go on a layer of their own under the pet,
+        // placed from the body origin and moved with the body.
+        let behind = backItems(accessories)
+        var back = PetCanvas(width: frameSize, height: frameSize)
         switch stance {
         case .sitting:
+            for item in behind {
+                let placement = layout.pick(item)
+                back.stamp(placement.frames[phase % item.frameCount], x: layout.bodyX + placement.x,
+                           y: layout.bodyY + placement.y)
+            }
             // A gesturing pet lifts its left front paw off the floor.
             var body = pose.liftsLeftPaw ? PawArt.liftingLeftPaw(layout.body) : layout.body
             let swing = max(pose.tailSwing, 0)
@@ -110,6 +126,7 @@ public enum PetComposer {
             }
             // The tail sways once per half cycle, not every step, so it doesn't flicker.
             canvas.lay(walkingTorso(breed, walk, outfit: outfit, accessories: accessories, wag: index / 2, phase: phase)) { _ in sink }
+            back.lay(walkingBack(behind, walk, phase: phase)) { _ in sink }
             bodyItem = { _ in nil }
             headX = walk.headX
             headY = walk.chinRow + 1 - layout.head.height + sink + pose.headDrop
@@ -128,9 +145,11 @@ public enum PetComposer {
             // Bow the torso: columns toward the chest sink, the rump stays put.
             let torso = walkingTorso(breed, walk, outfit: outfit, accessories: accessories, wag: wag, phase: phase)
             let pivot = walk.torsoX + walk.torso.width * 2 / 3
-            canvas.lay(torso) { x in
+            let bow = { (x: Int) in
                 x >= pivot ? 0 : min(depth, Int((Double(depth * (pivot - x)) / Double(pivot - walk.torsoX)).rounded()))
             }
+            canvas.lay(torso, drop: bow)
+            back.lay(walkingBack(behind, walk, phase: phase), drop: bow)
             // The forearms lie in front of the lowered chest.
             for (x, far) in [(walk.frontHip + 3, true), (walk.frontHip, false)] {
                 canvas.stamp(WalkArt.reachingLeg(height: height, reach: reach, far: far),
@@ -146,6 +165,7 @@ public enum PetComposer {
             let torso = walkingTorso(breed, walk, outfit: outfit, accessories: accessories, wag: nil, phase: phase)
             let floor = walk.legHeight
             canvas.lay(torso) { _ in floor }
+            back.lay(walkingBack(behind, walk, phase: phase)) { _ in floor }
             if breath > 0 {
                 let back = (walk.torsoX + 4)...(walk.torsoX + walk.torso.width - 4)
                 canvas.lay(torso) { x in back.contains(x) ? floor - 1 : floor }
@@ -196,6 +216,8 @@ public enum PetComposer {
             case .mask(let head, let face):
                 stampFace(face)
                 stampHead(head)
+            case .back:
+                continue
             }
         }
         var mugTop: PetPoint?
@@ -207,7 +229,11 @@ public enum PetComposer {
             stampGesture(gesture, on: &canvas, layout: layout, headX: headX, headY: headY, pattern: pattern)
         }
         let anchor = PetPoint(x: headX + layout.head.width - 1, y: headY + layout.skullTop - pose.lift)
-        return Composed(canvas: canvas.outlined().shifted(x: 0, y: -pose.lift), headTopRight: anchor, mugTop: mugTop)
+        // The back layer is outlined on its own and goes under the outlined
+        // pet, whose outline keeps wings apart from fur of any color.
+        return Composed(canvas: canvas.outlined().shifted(x: 0, y: -pose.lift),
+                        back: behind.isEmpty ? nil : back.outlined().shifted(x: 0, y: -pose.lift),
+                        headTopRight: anchor, mugTop: mugTop)
     }
 
     /// Draws a held prop in front of the sitting pet, centered under the
@@ -316,6 +342,24 @@ public enum PetComposer {
         return canvas
     }
 
+    /// The back items worn, on their own frame canvas placed from the
+    /// walking torso, so a stance can move them with it.
+    private static func walkingBack(_ items: [CostumeArt.BackItem], _ walk: WalkLayout, phase: Int) -> PetCanvas {
+        var canvas = PetCanvas(width: frameSize, height: frameSize)
+        for item in items {
+            let placement = walk.pick(item)
+            canvas.stamp(placement.frames[phase % item.frameCount], x: walk.torsoX + placement.x,
+                         y: walk.torsoY + placement.y)
+        }
+        return canvas
+    }
+
+    private static func backItems(_ accessories: [PetAccessory]) -> [CostumeArt.BackItem] {
+        PetAccessory.wearable(accessories).compactMap { accessory in
+            if case .back(let item) = accessoryArt(accessory) { item } else { nil }
+        }
+    }
+
     /// The outfit and neck items worn, in drawing order.
     private static func bodyItems(outfit: PetOutfit, accessories: [PetAccessory]) -> [CostumeArt.BodyItem] {
         let neck = PetAccessory.wearable(accessories).compactMap { accessory -> CostumeArt.BodyItem? in
@@ -332,6 +376,7 @@ public enum PetComposer {
             switch accessoryArt(accessory) {
             case .body(let item): counts.append(item.frameCount)
             case .head(let item), .mask(let item, _): counts.append(item.frameCount)
+            case .back(let item): counts.append(item.frameCount)
             case .face: break
             }
         }
@@ -363,6 +408,8 @@ public enum PetComposer {
         case head(CostumeArt.HeadItem)
         /// A head item worn with a face piece, such as a hat and an eyepatch.
         case mask(CostumeArt.HeadItem, CostumeArt.FaceItem)
+        /// Drawn on the layer behind the pet.
+        case back(CostumeArt.BackItem)
     }
 
     private static func accessoryArt(_ accessory: PetAccessory) -> AccessoryArt {
@@ -394,6 +441,7 @@ public enum PetComposer {
         case .backwardsCap: .head(CostumeArt.backwardsCap)
         case .flameHeadband: .head(CostumeArt.flameHeadband)
         case .goldenLaurel: .head(CostumeArt.goldenLaurel)
+        case .angelWings: .back(CostumeArt.angelWings)
         }
     }
 
@@ -478,6 +526,14 @@ public enum PetComposer {
             case .longDog: item.longDog
             }
         }
+
+        func pick(_ item: CostumeArt.BackItem) -> CostumeArt.BackItem.Placement {
+            switch family {
+            case .cat: item.cat
+            case .dog: item.dog
+            case .longDog: item.longDog
+            }
+        }
     }
 
     /// Where every part of a walking pet goes for one body family. The head
@@ -527,6 +583,10 @@ public enum PetComposer {
         func pick(_ item: CostumeArt.BodyItem) -> SpriteGrid {
             family == .longDog ? item.walkLong : item.walk
         }
+
+        func pick(_ item: CostumeArt.BackItem) -> CostumeArt.BackItem.Placement {
+            family == .longDog ? item.walkLong : item.walk
+        }
     }
 }
 
@@ -541,6 +601,15 @@ extension PetPose {
 }
 
 extension PetCanvas {
+    /// A copy whose transparent pixels show `layer` from behind.
+    func over(_ layer: PetCanvas) -> PetCanvas {
+        var copy = self
+        for y in 0..<height {
+            for x in 0..<width where copy[x, y] == nil { copy[x, y] = layer[x, y] }
+        }
+        return copy
+    }
+
     /// Paints the opaque pixels of `layer` over this canvas, moving each
     /// column down by `drop(x)` pixels: a plain offset, or a bend.
     fileprivate mutating func lay(_ layer: PetCanvas, drop: (Int) -> Int) {

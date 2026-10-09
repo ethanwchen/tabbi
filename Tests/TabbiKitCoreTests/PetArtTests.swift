@@ -72,6 +72,31 @@ final class PetArtTests: XCTestCase {
         XCTAssertEqual(try PetArtFile.decode(Data(#"{"schema": "pets.v1"}"#.utf8)).itemFrameDuration, nil)
     }
 
+    func testBackItemsReadTheirPlacementsAndLoops() throws {
+        func family(_ x: Int, _ frames: String) -> String { #"{"x": \#(x), "y": -2, "frames": \#(frames)}"# }
+        let wings = [("cat", -5), ("dog", -4), ("longDog", 12), ("walk", 11), ("walkLong", 10)]
+            .map { #""\#($0.0)": \#(family($0.1, #"[["UU"], ["VV"]]"#))"# }.joined(separator: ", ")
+        let file = try PetArtFile.decode(Data(#"{"schema": "pets.v1", "backItems": {"wings": {\#(wings)}}}"#.utf8))
+        let item = file.backItem("wings")
+        XCTAssertEqual(item.frameCount, 2)
+        XCTAssertEqual(item.dog.x, -4)
+        XCTAssertEqual(item.walkLong.y, -2)
+        XCTAssertEqual(item.walk.frames, try [SpriteGrid("UU"), SpriteGrid("VV")])
+
+        let uneven = wings.replacingOccurrences(of: #""walk": \#(family(11, #"[["UU"], ["VV"]]"#))"#,
+                                                with: #""walk": \#(family(11, #"[["UU"]]"#))"#)
+        XCTAssertThrowsError(try PetArtFile.decode(Data(#"{"schema": "pets.v1", "backItems": {"wings": {\#(uneven)}}}"#.utf8))) {
+            XCTAssertEqual($0 as? PetArtFile.LoadError,
+                           .invalidGrid(name: "wings.walk", reason: "1 frames differ from the cat's 2"))
+        }
+        let resized = wings.replacingOccurrences(of: #""dog": \#(family(-4, #"[["UU"], ["VV"]]"#))"#,
+                                                 with: #""dog": \#(family(-4, #"[["UU"], ["V"]]"#))"#)
+        XCTAssertThrowsError(try PetArtFile.decode(Data(#"{"schema": "pets.v1", "backItems": {"wings": {\#(resized)}}}"#.utf8))) {
+            XCTAssertEqual($0 as? PetArtFile.LoadError,
+                           .invalidGrid(name: "wings.dog.frames[1]", reason: "1x1 differs from the item's 2x1 still grid"))
+        }
+    }
+
     func testRejectsALoopFrameOfAnotherSize() {
         let json = #"{"schema": "pets.v1", "headItems": {"glint": {"grid": ["YY"], "sitRow": 0, "frames": [["Y"]]}}}"#
         XCTAssertThrowsError(try PetArtFile.decode(Data(json.utf8))) { error in

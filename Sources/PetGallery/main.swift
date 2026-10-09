@@ -295,6 +295,7 @@ let contactGroups: [(String, [(String, PetOutfit, [PetAccessory])])] = [
         + PetAccessory.allCases.filter { $0.slot == .neck }.map { ($0.displayName, .none, [$0]) }),
     ("face", PetAccessory.allCases.filter { $0.slot == .face }.map { ($0.displayName, .none, [$0]) }),
     ("head", PetAccessory.allCases.filter { $0.slot == .head }.map { ($0.displayName, .none, [$0]) }),
+    ("back", PetAccessory.allCases.filter { $0.slot == .back }.map { ($0.displayName, .none, [$0]) }),
 ]
 for (slot, items) in contactGroups {
     var cells: [Cell] = []
