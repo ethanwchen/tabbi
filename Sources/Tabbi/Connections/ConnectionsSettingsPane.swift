@@ -12,10 +12,11 @@ struct ConnectionsSettingsPane: View {
 
     var body: some View {
         let enabled = settings.settings.modules.enabled
-        let kinds = ConnectionKind.relevant(to: enabled, localTools: Edition.current.runsLocalTools)
         // The AI choice shows while a tab with AI features is on.
         let aiChoice = enabled.contains(where: AIService.featureModules.contains) ? ai : nil
         let model = aiChoice?.setupState.provider
+        let kinds = ConnectionKind.relevant(to: enabled, localTools: Edition.current.runsLocalTools,
+                                            usesClaudeCode: model == .claudeCLI)
         Form {
             // First, so Ask's Choose AI button lands on it.
             if let aiChoice {

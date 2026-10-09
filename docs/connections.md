@@ -21,7 +21,8 @@ In the app, `Sources/Tabbi/Connections` holds `ConnectionsStore` (one per app, `
 `ConnectionsList` is the embeddable list of rows: the Settings pane shows it for every relevant row, and onboarding or a tab's empty state can show it for just the rows it needs.
 The container around it applies `.connectionsHost(watching:)` once with the same rows, which opens their sheets and keeps only those rows checked while shown.
 A tab whose problem takes more than one click calls `ConnectionsStore.shared.showHub()`, which opens Settings at Connections (the app installs `hubPresenter` at launch).
-Today's Up next card and Plan my day do this when the calendar can't be reached from the notch or Claude is missing, and Ask Claude does it when Claude is missing, each with a single "Connect calendar" or "Set up Claude" button.
+Today's Up next card and Plan my day do this when the calendar can't be reached from the notch or no AI is set up, and Ask AI does it when no AI is set up, each with a single button such as "Connect calendar" or "Set up AI".
+Both land on the AI section at the top of Connections, where the user picks which AI answers (Claude Code, Codex, Gemini CLI, the Anthropic, OpenAI or Gemini API with their own key, or Ollama).
 The store checks only while a list is on screen, once when it appears and again each time Tabbi becomes active.
 
 ## Walkthroughs and priming screens
@@ -89,7 +90,8 @@ Each outcome is one plain sentence that names the shortcut to fix; the shortcuts
 | Do Not Disturb | `shortcuts list` contains the two Tabbi Focus shortcuts | Show me how, then Test |
 | Party | A chosen name and the server connection | Set up (name and pet), then the friend code to share |
 
-Claude is optional: its row says so in one sentence, and Tabbi never asks for a key or reads credentials.
+Claude is optional: its row shows while the Usage tab is on or Claude Code is the chosen AI, and Tabbi never reads Claude Code's credentials.
+API keys for the other AIs are typed by the user into the AI section and kept in the Keychain.
 
 ## Research notes
 

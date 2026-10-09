@@ -113,7 +113,7 @@ extension TodayPlanSettings.PlanMode {
     var planHelp: String {
         switch self {
         case .local: "Fit your open tasks, reviews and breaks around today's calendar"
-        case .claude: "Let Claude fit your open tasks around today's calendar"
+        case .claude: "Let your AI fit your open tasks around today's calendar"
         case .study: "Fit reviews, study blocks and breaks around today's calendar"
         }
     }
