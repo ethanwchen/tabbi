@@ -445,6 +445,17 @@ footer.site nav a:hover { background: var(--chip); color: var(--on-ground); text
 @media (max-width: 520px) {
   .brand .name { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 }
+/* Below 640px the six footer links wrap unevenly (5 + 1, 4 + 2, 3 + 2 + 1).
+   A zero-height break after the third link keeps them in two even rows. */
+@media (max-width: 639px) {
+  footer.site nav { gap: 0 4px; }
+  footer.site nav::after { content: ''; flex-basis: 100%; order: 1; }
+  footer.site nav a { padding: 0 10px; }
+  footer.site nav a:nth-child(n+4) { order: 2; }
+}
+
 @media (max-width: 350px) {
   nav.site a { padding: 0 8px; font-size: 14px; }
+  footer.site nav { gap: 0; }
+  footer.site nav a { padding: 0 8px; font-size: 14px; }
 }
