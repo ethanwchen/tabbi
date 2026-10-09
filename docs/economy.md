@@ -97,3 +97,6 @@ The typical student focuses 3 x 25 = 75 minutes a day and 375 a week, so the Gol
 Once given, a limited item stays owned (`PetPointsLedger.granted`), even if the log that earned it is gone or a grant is later withdrawn.
 On launch the Closet replays the whole activity log into the milestones, so a milestone reached before this feature shipped unlocks quietly, without paying any points again; new records after that unlock with a celebration.
 With Sign in with Apple, limited items travel in the account's `unlocks` like bought items, but come back as granted, so they never count as spent points on another Mac.
+Event items come from the Tabbi server: the maintainer grants them per friend code (or to everyone registered in a window, such as the launch week) through the admin routes in [the API doc](study/backend-api.md#limited-edition-grants-maintainer), and `PartyClient.grants()` reads them from `GET /v1/grants`.
+That route answers for any friends token, so a signed-out Party identity gets its items as well as a signed-in account.
+The server's list of grantable ids is `backend/shared/limited-items.json`, which `PetLimitedTests` holds to `PetLimitedEdition`.

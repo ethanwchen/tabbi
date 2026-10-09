@@ -173,6 +173,13 @@ public struct PartyClient: Sendable {
         return PartyLeaderboard(week: reply.week, from: reply.from, to: reply.to, entries: reply.entries)
     }
 
+    /// `GET /v1/grants`: the ids of the limited edition items the maintainer
+    /// gave this user for free (`PetCloset.applyGrants` takes them). Works for
+    /// an anonymous Party identity as well as a signed-in account.
+    public func grants() async throws -> [String] {
+        try await send("GET", "/v1/grants", as: GrantsReply.self).items
+    }
+
     // MARK: Parties
 
     /// `GET /v1/party`: my party, or `nil`.
@@ -343,6 +350,10 @@ private struct LeaderboardReply: Decodable {
     let from: String
     let to: String
     let entries: [PartyLeaderboardEntry]
+}
+
+private struct GrantsReply: Decodable {
+    let items: [String]
 }
 
 private struct OptionalPartyReply: Decodable {

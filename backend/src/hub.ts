@@ -18,6 +18,7 @@ import {
 } from "./lib";
 import { PROFILE_FIELDS, Profile, applyProfilePatch, defaultProfile, parseProfilePatch, sameProfile } from "./profile";
 import { json } from "./http";
+import { readCohort, readGrant, parseGrantItem } from "./grants";
 import { SYNC_PUT_PER_MIN, etag, parseIfMatch, readSyncDocument } from "./sync";
 import {
   APPLE_AUTH_FIELDS, APPLE_AUTH_PER_MIN, AppleSecrets, exchangeAuthorizationCode, parseAppleAuth, revokeRefreshToken,
@@ -203,12 +204,25 @@ DROP TABLE name_holds;
 ALTER TABLE name_holds_by_value RENAME TO name_holds;
 `;
 
+/** Limited edition items the maintainer granted (see grants.ts). */
+const GRANTS_SCHEMA = `
+-- One limited edition item id a user holds, as in accessory.backwardsCap. Free: never bought.
+CREATE TABLE grants (
+  code       TEXT NOT NULL,
+  item       TEXT NOT NULL,
+  created_at INTEGER NOT NULL,
+  PRIMARY KEY (code, item)
+) WITHOUT ROWID;
+`;
+
 /**
  * Ordered schema steps; step i brings the database to version i + 1. Append new steps and never edit
  * one that has been deployed. Step 1 is the original schema, written with IF NOT EXISTS so databases
  * created before versioning (which have its tables but no recorded version) pass through it unchanged.
  */
-const MIGRATIONS = [SCHEMA, SYNC_SCHEMA, MODERATION_SCHEMA, REPORTS_SCHEMA, USED_IDENTITY_TOKENS_SCHEMA, NAME_HOLDS_SCHEMA];
+const MIGRATIONS = [
+  SCHEMA, SYNC_SCHEMA, MODERATION_SCHEMA, REPORTS_SCHEMA, USED_IDENTITY_TOKENS_SCHEMA, NAME_HOLDS_SCHEMA, GRANTS_SCHEMA,
+];
 
 /** Runs the steps a database has not had yet, each in its own transaction with its version bump. */
 export function migrate(storage: DurableObjectStorage): void {
@@ -422,6 +436,8 @@ export class Hub extends DurableObject<Env> {
     if (path === "/v1/party/session" && method === "POST") return this.startSession(req, caller, now);
     if (path === "/v1/party/session" && method === "DELETE") return this.endSession(caller, now);
 
+    if (path === "/v1/grants" && method === "GET") return this.listGrants(caller);
+
     if (path === "/v1/sync" && method === "GET") return this.getSync(caller);
     // Awaited here: putSync can throw before its first await, and a rejection that is only adopted by
     // route's promise on a later tick is reported as unhandled by workerd.
@@ -502,6 +518,12 @@ export class Hub extends DurableObject<Env> {
     if (user && user[2] === "rename" && method === "POST") return this.adminRename(user[1], now);
     if (user && user[2] === "ban" && method === "POST") return this.adminBan(user[1], now);
     if (user && user[2] === "ban" && method === "DELETE") return this.adminUnban(user[1]);
+    if (path === "/v1/admin/grants" && method === "POST") return await this.adminGrantCohort(req, now);
+    const grants = /^\/v1\/admin\/users\/([^/]+)\/grants$/.exec(path);
+    if (grants && method === "GET") return this.adminListGrants(grants[1]);
+    if (grants && method === "POST") return await this.adminGrant(req, grants[1], now);
+    const grant = /^\/v1\/admin\/users\/([^/]+)\/grants\/([^/]+)$/.exec(path);
+    if (grant && method === "DELETE") return this.adminRevoke(grant[1], decodeURIComponent(grant[2]));
     throw notFound();
   }
 
@@ -600,6 +622,7 @@ export class Hub extends DurableObject<Env> {
     this.sql.exec("DELETE FROM reports WHERE reporter = ? OR reported = ?", code, code);
     this.sql.exec("DELETE FROM bans WHERE code = ?", code);
     this.sql.exec("DELETE FROM name_holds WHERE code = ?", code);
+    this.sql.exec("DELETE FROM grants WHERE code = ?", code);
     this.live.delete(code);
   }
 
@@ -918,6 +941,56 @@ export class Hub extends DurableObject<Env> {
     return json({ ok: true, unbanned });
   }
 
+  /** GET /v1/admin/users/{code}/grants: the limited edition items the user holds. */
+  private adminListGrants(raw: string): Response {
+    return json({ ok: true, grants: this.grantsOf(this.adminTarget(raw).code) });
+  }
+
+  /** POST /v1/admin/users/{code}/grants with `{ item }`: gives the user the item; granting it again is a no-op. */
+  private async adminGrant(req: Request, raw: string, now: number): Promise<Response> {
+    const item = await readGrant(req);
+    const row = this.adminTarget(raw);
+    const granted = this.sql.exec("INSERT OR IGNORE INTO grants (code, item, created_at) VALUES (?, ?, ?)",
+      row.code, item, now).rowsWritten > 0;
+    return json({ ok: true, granted, grants: this.grantsOf(row.code) });
+  }
+
+  /**
+   * POST /v1/admin/grants with `{ item, registeredFrom, registeredUntil }`: gives the item to every user
+   * whose friend code was created in that window, such as the launch week. Users who hold it are skipped.
+   */
+  private async adminGrantCohort(req: Request, now: number): Promise<Response> {
+    const { item, registeredFrom, registeredUntil } = await readCohort(req, now);
+    const granted = this.sql.exec(
+      `INSERT OR IGNORE INTO grants (code, item, created_at)
+       SELECT code, ?, ? FROM users WHERE created_at >= ? AND created_at < ?`,
+      item, now, registeredFrom, registeredUntil,
+    ).rowsWritten;
+    return json({ ok: true, granted });
+  }
+
+  /**
+   * DELETE /v1/admin/users/{code}/grants/{item}: undoes a grant made by mistake. Macs that already
+   * fetched it keep the item (the app never takes a grant back); new Macs will not get it.
+   */
+  private adminRevoke(raw: string, item: string): Response {
+    const code = this.adminTarget(raw).code;
+    const revoked = this.sql.exec("DELETE FROM grants WHERE code = ? AND item = ?", code, parseGrantItem(item)).rowsWritten > 0;
+    return json({ ok: true, revoked, grants: this.grantsOf(code) });
+  }
+
+  private grantsOf(code: string): string[] {
+    return this.sql.exec<{ item: string }>("SELECT item FROM grants WHERE code = ? ORDER BY created_at, item", code)
+      .toArray().map((r) => r.item);
+  }
+
+  // ---------- grants ----------
+
+  /** GET /v1/grants: the caller's limited edition items, for signed-in accounts and anonymous users alike. */
+  private listGrants(caller: Caller): Response {
+    return json({ ok: true, items: this.grantsOf(caller.code) });
+  }
+
   // ---------- presence ----------
 
   private presenceOf(code: string): Presence | null {
@@ -1152,6 +1225,7 @@ export class Hub extends DurableObject<Env> {
     this.sql.exec(
       "INSERT OR IGNORE INTO name_holds (code, kind, value, created_at) SELECT ?, kind, value, created_at FROM name_holds WHERE code = ?",
       to, from);
+    this.sql.exec("INSERT OR IGNORE INTO grants (code, item, created_at) SELECT ?, item, created_at FROM grants WHERE code = ?", to, from);
     this.purgeUser(from, now);
     // An inherited ban takes the account out of its party, as banning it would; blocks the account just
     // inherited apply to its party as they would to a fresh block.

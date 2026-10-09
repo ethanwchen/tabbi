@@ -23,6 +23,34 @@ final class PetLimitedTests: XCTestCase {
 
     // MARK: Catalog
 
+    private struct ServerLimitedItem: Decodable {
+        var id: String
+        var source: String
+        var event: String?
+        var milestone: String?
+    }
+
+    /// The server grants exactly the limited items the app can show, with the same source, so an admin
+    /// grant always lands on a real item and never on a shop item.
+    func testServerGrantListMatchesTheLimitedEditions() throws {
+        let url = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("backend/shared/limited-items.json")
+        struct File: Decodable { var items: [ServerLimitedItem] }
+        let server = try JSONDecoder().decode(File.self, from: Data(contentsOf: url)).items
+        XCTAssertEqual(server.map(\.id), PetLimitedEdition.allCases.map(\.item.id))
+        for (entry, edition) in zip(server, PetLimitedEdition.allCases) {
+            switch edition.source {
+            case .event(let id):
+                XCTAssertEqual(entry.source, "event", entry.id)
+                XCTAssertEqual(entry.event, id, entry.id)
+            case .milestone(let milestone):
+                XCTAssertEqual(entry.source, "milestone", entry.id)
+                XCTAssertEqual(entry.milestone, milestone.rawValue, entry.id)
+            }
+        }
+    }
+
     func testLimitedItemsAreNeverSoldOrFree() {
         for edition in PetLimitedEdition.allCases {
             let item = edition.item

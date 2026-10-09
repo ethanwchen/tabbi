@@ -44,7 +44,7 @@ npx wrangler secret put APPLE_KEY_ID        # the key's Key ID
 npx wrangler secret put APPLE_PRIVATE_KEY   # the whole AuthKey_<KeyID>.p8 file, pasted as is
 ```
 
-To turn on the operator endpoints (reviewing reports, renaming and banning users, backup export and point-in-time restore), set an admin token of at least 32 characters, kept out of the repo:
+To turn on the operator endpoints (reviewing reports, renaming and banning users, granting limited edition items, backup export and point-in-time restore), set an admin token of at least 32 characters, kept out of the repo:
 
 ```sh
 openssl rand -hex 32 | npx wrangler secret put ADMIN_TOKEN
