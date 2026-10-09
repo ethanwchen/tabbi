@@ -48,33 +48,52 @@ private struct OnboardingTitle: View {
     }
 }
 
-/// One dot per step (the current one long), then Skip Setup.
+/// One dot per step (the current one long), then Skip Setup. A kit with
+/// many steps narrows the dots, then drops them, so the label never wraps
+/// inside the camera-safe zone.
 private struct OnboardingProgress: View {
     @EnvironmentObject private var store: OnboardingStore
     @State private var hovering = false
 
     var body: some View {
         if let flow = store.flow {
-            HStack(spacing: Theme.Spacing.m) {
-                HStack(spacing: Theme.Spacing.xs) {
-                    ForEach(Array(flow.stages.enumerated()), id: \.offset) { index, _ in
-                        Capsule()
-                            .fill(index <= flow.stageIndex ? Theme.Palette.primaryText : Theme.Palette.tertiaryText.opacity(0.5))
-                            .frame(width: index == flow.stageIndex ? 12 : 5, height: 5)
-                    }
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: Theme.Spacing.m) {
+                    dots(flow, dot: 5, spacing: Theme.Spacing.xs)
+                    skip
                 }
-                .help("Step \(flow.stageIndex + 1) of \(flow.stages.count)")
-                Button { store.finish() } label: {
-                    Text("Skip Setup")
-                        .font(Theme.Typography.caption)
-                        .foregroundStyle(hovering ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
+                HStack(spacing: Theme.Spacing.s) {
+                    dots(flow, dot: 4, spacing: 3)
+                    skip
                 }
-                .buttonStyle(.plain)
-                .onHover { hovering = $0 }
-                .help("Start using \(Edition.current.name) with what you picked so far. Settings can run setup again.")
+                skip
             }
             .motion(Theme.Motion.snappy, value: flow.stageIndex)
         }
+    }
+
+    private func dots(_ flow: OnboardingFlow, dot: CGFloat, spacing: CGFloat) -> some View {
+        HStack(spacing: spacing) {
+            ForEach(Array(flow.stages.enumerated()), id: \.offset) { index, _ in
+                Capsule()
+                    .fill(index <= flow.stageIndex ? Theme.Palette.primaryText : Theme.Palette.tertiaryText.opacity(0.5))
+                    .frame(width: index == flow.stageIndex ? 12 : dot, height: dot)
+            }
+        }
+        .help("Step \(flow.stageIndex + 1) of \(flow.stages.count)")
+    }
+
+    private var skip: some View {
+        Button { store.finish() } label: {
+            Text("Skip Setup")
+                .font(Theme.Typography.caption)
+                .foregroundStyle(hovering ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
+                .lineLimit(1)
+                .fixedSize()
+        }
+        .buttonStyle(.plain)
+        .onHover { hovering = $0 }
+        .help("Start using \(Edition.current.name) with what you picked so far. Settings can run setup again.")
     }
 }
 
