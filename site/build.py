@@ -45,27 +45,33 @@ def unobfuscate(html):
 # Home
 # --------------------------------------------------------------------------
 
-# (image, name, line, alt). The screenshots are the app's own snapshot
+# (image, label, name, line, alt). The screenshots are the app's own snapshot
 # renders from docs/images, so the site shows exactly what the app draws.
 TABS = [
-    ('timer', 'Timer', 'Pomodoro and quick timers, with focus sounds.',
+    ('timer', 'Focus', 'Timer', 'Pomodoro and quick timers, with focus sounds.',
      'The Timer tab: a Pomodoro ring at 15:14 with focus sounds and today\'s total'),
-    ('today', 'Today', 'Your to-dos and what is next on the calendar.',
+    ('today', 'Today', 'Today', 'Your to-dos and what is next on the calendar.',
      'The Today tab: a checklist on the left and upcoming meetings on the right'),
-    ('closet', 'Closet', 'Dress up your cat with the points you earn.',
+    ('closet', 'Closet', 'Closet', 'Dress up your cat with the points you earn.',
      'The Closet: a pixel cat with costumes and accessories to choose from'),
-    ('party', 'Party', 'Study with friends, pets side by side.',
+    ('party', 'Party', 'Party', 'Study with friends, pets side by side.',
      'The Party tab: friends\' pets sitting together with their study status'),
 ]
 
 HOME_HERO = {
     'home': True,
     'title': 'A little cat for your notch.',
-    'subtitle': 'Tabbi turns your MacBook notch into a cozy panel of tabs for focus, your day, music and study.',
+    'subtitle': 'A cozy panel of tabs in your laptop notch.',
     'cta': f'''<div class="cta">{download_button()}</div>
         <p class="cta-note">Free, macOS 14+</p>''',
-    'art': '''<div class="hero-art">
-        <img src="/img/icon-512.webp" width="512" height="512" alt="The Tabbi app icon: a cream British Shorthair cat with blue eyes on a golden yellow square">
+    'eyebrow': '<img class="hero-icon" src="/img/icon-512.webp" width="512" height="512" alt="The Tabbi app icon: a cream British Shorthair cat with blue eyes on a golden yellow square">',
+    # A drawn laptop with the real Timer panel hanging from its notch.
+    # notch-timer.webp is timer.webp cropped to the panel (see README).
+    'art': '''<div class="laptop">
+        <div class="laptop-screen">
+          <img class="laptop-panel" src="/img/notch-timer.webp" width="880" height="376" alt="Tabbi open in a laptop notch on its Timer tab: a Pomodoro ring at 15:14 with focus sounds">
+        </div>
+        <div class="laptop-base"></div>
       </div>''',
 }
 
@@ -74,9 +80,10 @@ HOME = f'''
         <h2 id="tabs-title" class="tabs-title">{PAW}<span>Click the notch, pick a tab</span></h2>
         <div class="tab-row">
 ''' + '\n'.join(f'''          <figure class="tab-card">
+            <span class="tab-label" aria-hidden="true">{label}</span>
             <img src="/img/{img}.webp" width="1360" height="520" loading="lazy" decoding="async" alt="{alt}">
             <figcaption><strong>{name}</strong>{line}</figcaption>
-          </figure>''' for img, name, line, alt in TABS) + '''
+          </figure>''' for img, label, name, line, alt in TABS) + '''
         </div>
         <p class="more">And more fun tabs inside.</p>
         <div class="card-pair">
@@ -180,6 +187,21 @@ SUPPORT = f'''
 '''
 
 
+ABOUT = f'''
+      <div class="about">
+        <img class="about-cat" src="/img/glyph.png" width="96" height="96" alt="">
+        <p class="about-lead">Hi, it&rsquo;s Ethan.</p>
+        <p>I made Tabbi because I wanted my study tools in one cozy spot, right where I already look: the notch.</p>
+        <p>It&rsquo;s free and open source. No ads, no tracking, no account needed.</p>
+        <p>If Tabbi helps you focus, a star or a coffee means a lot.</p>
+        <div class="cta center">
+          <a class="btn" href="https://buymeacoffee.com/ethanpolar">Buy me a coffee</a>
+          <a class="btn soft" href="{GITHUB}">Star on GitHub</a>
+        </div>
+      </div>
+'''
+
+
 NOT_FOUND = '''
       <div class="lost">
         <img src="/img/glyph.png" width="128" height="128" alt="">
@@ -193,8 +215,11 @@ NOT_FOUND = '''
 
 pages = [
     ('index.html', 'Tabbi: a little cat for your notch',
-     'Tabbi turns your MacBook notch into a cozy panel of tabs: a focus timer, your day, music, Claude, Anki and a pet cat. Free and open source for macOS.',
+     'Tabbi turns your laptop notch into a cozy panel of tabs: a focus timer, your day, music, Claude, Anki and a pet cat. Free and open source for macOS.',
      HOME, HOME_HERO, True, True),
+    ('about.html', 'About | Tabbi',
+     'Who makes Tabbi, and why.',
+     ABOUT, {'title': 'About', 'subtitle': 'A small app made with care.'}, False, True),
     ('support.html', 'Support | Tabbi',
      'Help with installing and using Tabbi, answers to common questions, and how to reach a person.',
      SUPPORT, {'title': 'Support', 'subtitle': 'Answers to common questions, and how to reach a person.'}, False, True),
@@ -273,11 +298,21 @@ def check_links():
 # Build
 # --------------------------------------------------------------------------
 
-def fingerprint(src, folder):
-    digest = hashlib.sha256(src.read_bytes()).hexdigest()[:8]
+UNHASHED_RE = re.compile(r'/(?:img|assets)/[A-Za-z0-9._-]+')
+
+
+def unhashed(text):
+    """Asset references that kept their plain name: files that did not exist
+    when the fingerprints were built."""
+    return sorted({m for m in UNHASHED_RE.findall(text) if len(m.rsplit('/', 1)[1].split('.')) < 3})
+
+
+def fingerprint(src, folder, data=None):
+    data = src.read_bytes() if data is None else data
+    digest = hashlib.sha256(data).hexdigest()[:8]
     hashed = f'{src.stem}.{digest}{src.suffix}'
     (OUT / folder).mkdir(exist_ok=True)
-    shutil.copy(src, OUT / folder / hashed)
+    (OUT / folder / hashed).write_bytes(data)
     return f'/{folder}/{hashed}'
 
 
@@ -293,20 +328,25 @@ def build():
     for src in sorted((HERE / 'img').iterdir()):
         if src.suffix in ('.png', '.gif', '.jpg', '.webp', '.svg'):
             fingerprints['/img/' + src.name] = fingerprint(src, 'img')
-    fingerprints['/styles.css'] = fingerprint(HERE / 'styles.css', 'assets')
 
-    asset_re = re.compile('|'.join(re.escape(k) for k in sorted(fingerprints, key=len, reverse=True)))
+    def asset_sub(text):
+        asset_re = re.compile('|'.join(re.escape(k) for k in sorted(fingerprints, key=len, reverse=True)))
+        return asset_re.sub(lambda m: fingerprints[m.group(0)], text)
+
+    # The stylesheet points at images too (the paper grain), so its image
+    # URLs are hashed first and its own hash covers them.
+    css = asset_sub((HERE / 'styles.css').read_text())
+    if unhashed(css):
+        raise SystemExit('styles.css: references files that do not exist: ' + ', '.join(unhashed(css)))
+    fingerprints['/styles.css'] = fingerprint(HERE / 'styles.css', 'assets', css.encode())
 
     for slug, title, description, body, hero, wide, indexable in pages:
         html = unobfuscate(page(slug, title, description, body, hero, wide, indexable))
-        html = asset_re.sub(lambda m: fingerprints[m.group(0)], html)
+        html = asset_sub(html)
 
-        # An unhashed reference is a file that did not exist when the
-        # fingerprints were built. A missing image should stop a build.
-        unhashed = [m for m in re.findall(r'/(?:img|assets)/[A-Za-z0-9._-]+', html)
-                    if len(m.rsplit('/', 1)[1].split('.')) < 3]
-        if unhashed:
-            raise SystemExit(f'{slug}: references files that do not exist: ' + ', '.join(sorted(set(unhashed))))
+        # A missing image should stop a build.
+        if unhashed(html):
+            raise SystemExit(f'{slug}: references files that do not exist: ' + ', '.join(unhashed(html)))
 
         (OUT / slug).write_text(html)
         print('wrote', slug)

@@ -4,6 +4,7 @@
  * A warm brown ground, cream words, golden buttons, a pink paw, and very
  * round corners. Never black: the notch in the screenshots is the only
  * black on the page. One palette, whatever the visitor's appearance.
+ * Motion only plays under prefers-reduced-motion: no-preference.
  */
 
 :root {
@@ -16,7 +17,10 @@
   --ink-3: #BFB3A6;
   --on-ground: #FBF7F0;
   --on-ground-2: #DCD1C3;
+  /* Taupe passes only for large text and borders (4.18:1 on the ground);
+     small text uses the lighter --taupe-text (5.46:1, 4.75:1 on a card). */
   --taupe: #8E8379;
+  --taupe-text: #A39888;
   --link: #8AB8FF;
   --blue: #3D8BFF;
   --pink: #F2A0A6;
@@ -24,6 +28,9 @@
   --btn-bg: #F4D57E;
   --btn-ink: #2A231D;
   --btn-hover: #FBE3A0;
+  --btn-edge: #C9A951;
+  --soft-edge: #251E18;
+  --notch: #1F1A15;
   --chip: rgba(255, 255, 255, 0.08);
   --shadow: 0 2px 4px rgba(0, 0, 0, 0.25), 0 12px 32px rgba(0, 0, 0, 0.3);
   --head: 'Fredoka', 'Nunito', ui-rounded, system-ui, sans-serif;
@@ -43,6 +50,12 @@ body {
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   overflow-wrap: break-word;
+}
+/* A little paper grain over everything. */
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: 50; pointer-events: none;
+  background: url('/img/grain.png') repeat; background-size: 160px 160px;
+  opacity: 0.05; mix-blend-mode: overlay;
 }
 /* Short pages (404) still put the footer at the bottom of the window. */
 main { flex: 1 0 auto; }
@@ -76,21 +89,29 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 }
 
 /* --- header ------------------------------------------------------------ */
-header.site { padding: 14px 0; }
+/* The tabs hang from the top edge like the notch, with the brand at the left. */
+header.site { padding: 0 0 8px; }
 header.site .wrap {
   max-width: 1120px;
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px;
 }
-.brand { display: flex; align-items: center; gap: 10px; color: var(--on-ground); }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--on-ground); justify-self: start; }
 .brand:hover { text-decoration: none; }
 .brand .mark { display: block; border-radius: 9px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); }
 .brand .name { font-family: var(--head); font-size: 26px; font-weight: 600; letter-spacing: -0.2px; }
-nav.site { display: flex; gap: 4px; }
+nav.site {
+  display: flex; gap: 2px; padding: 6px;
+  background: var(--notch); border-radius: 0 0 22px 22px;
+}
 nav.site a {
   font-weight: 800; font-size: 16px; color: var(--on-ground-2);
   display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 999px;
 }
-nav.site a:hover, nav.site a[aria-current='page'] { background: var(--chip); color: var(--on-ground); text-decoration: none; }
+nav.site a:hover { background: var(--chip); color: var(--on-ground); text-decoration: none; }
+nav.site a[aria-current='page'] { background: var(--ink); color: var(--btn-ink); }
+
+nav.site a.nav-cta { background: var(--btn-bg); color: var(--btn-ink); margin-left: 4px; box-shadow: 0 4px 0 var(--btn-edge); }
+nav.site a.nav-cta:hover { background: var(--btn-hover); color: var(--btn-ink); }
 
 /* --- hero -------------------------------------------------------------- */
 .hero { color: var(--on-ground); text-align: center; padding: 28px 0 40px; }
@@ -100,15 +121,55 @@ nav.site a:hover, nav.site a[aria-current='page'] { background: var(--chip); col
 }
 .hero .lede { font-size: 19px; line-height: 1.55; color: var(--on-ground-2); margin: 0 auto; max-width: 36ch; font-weight: 600; }
 
-.hero-home { padding: 8px 0 72px; }
-.hero-home .wrap { display: flex; flex-direction: column; align-items: center; }
-.hero-home .hero-art { order: -1; margin-bottom: 18px; }
-.hero-art img {
-  display: block; width: 280px; height: auto;
-  filter: drop-shadow(0 22px 30px rgba(120, 88, 30, 0.28));
+.hero-home { padding: 24px 0 72px; }
+.hero-home .wrap { max-width: 1120px; display: flex; flex-direction: column; align-items: center; gap: 44px; }
+.hero-icon {
+  display: block; width: 120px; height: auto; margin: 0 auto 16px;
+  filter: drop-shadow(0 14px 20px rgba(120, 88, 30, 0.3));
 }
-.hero-home h1 { font-size: clamp(2.5rem, 6.4vw, 4.2rem); }
+.hero-home h1 { font-size: clamp(2.5rem, 6.4vw, 4.2rem); margin-bottom: 14px; }
 .hero-home .lede { font-size: 20px; max-width: 32ch; }
+.hero-home .cta { margin-top: 26px; }
+
+/* The laptop: drawn in CSS, with the real panel hanging from its notch.
+   89% leaves room for the base, which is 112% of the screen. */
+.laptop { width: min(720px, 89%); margin: 0 auto; }
+.laptop-screen {
+  position: relative; aspect-ratio: 16 / 10; overflow: hidden;
+  border: 10px solid #15110E; border-radius: 20px 20px 8px 8px;
+  background:
+    radial-gradient(70% 90% at 12% 105%, rgba(242, 160, 166, 0.85), transparent 60%),
+    radial-gradient(60% 80% at 92% 100%, rgba(244, 213, 126, 0.75), transparent 62%),
+    radial-gradient(50% 50% at 80% 10%, rgba(242, 160, 166, 0.25), transparent 70%),
+    linear-gradient(180deg, #4A3A2E 0%, #6E5141 55%, #9A6F55 100%);
+  box-shadow: 0 30px 50px -24px rgba(0, 0, 0, 0.6);
+}
+.laptop-screen::before {
+  content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 18%; height: 5.5%; background: #15110E; border-radius: 0 0 12px 12px;
+}
+.laptop-panel {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 1;
+  display: block; width: 55%; height: auto; border-radius: 0 0 22px 22px;
+  filter: drop-shadow(0 14px 18px rgba(58, 30, 12, 0.5));
+}
+.laptop-base {
+  position: relative; width: 112%; margin-left: -6%; height: 14px;
+  background: #3A3029; border-radius: 0 0 16px 16px;
+  box-shadow: inset 0 2px 0 rgba(251, 247, 240, 0.07), 0 18px 30px -12px rgba(0, 0, 0, 0.55);
+}
+
+/* Wide windows put the words beside the laptop, so all of it fits above the fold. */
+@media (min-width: 1000px) {
+  .hero-home { padding: 36px 0 80px; }
+  .hero-home .wrap { flex-direction: row; gap: 48px; text-align: left; }
+  .hero-home .hero-copy { flex: 0 0 470px; }
+  .hero-home h1 { font-size: 3.1rem; }
+  .hero-home .hero-icon { margin-left: 0; }
+  .hero-home .lede { margin: 0; }
+  .hero-home .cta { justify-content: flex-start; }
+  .hero-home .laptop { flex: 1 1 auto; width: auto; max-width: 620px; margin: 0 36px 0 0; }
+}
 
 .cta { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 30px; }
 .btn {
@@ -116,13 +177,21 @@ nav.site a:hover, nav.site a[aria-current='page'] { background: var(--chip); col
   min-height: 62px; padding: 0 36px; border-radius: 999px;
   background: var(--btn-bg); color: var(--btn-ink);
   font-family: var(--head); font-weight: 600; font-size: 21px;
-  box-shadow: 0 10px 24px rgba(74, 63, 54, 0.25);
-  transition: transform 0.15s ease, background 0.15s ease;
+  box-shadow: 0 4px 0 var(--btn-edge);
 }
-.btn:hover { background: var(--btn-hover); color: var(--btn-ink); text-decoration: none; transform: translateY(-2px); }
+.btn:hover { background: var(--btn-hover); color: var(--btn-ink); text-decoration: none; }
 .btn .ico { flex-shrink: 0; }
-.btn.soft { background: var(--card-2); color: var(--ink); box-shadow: none; }
+.btn.soft { background: var(--card-2); color: var(--ink); box-shadow: 0 4px 0 var(--soft-edge); }
 .btn.soft:hover { background: var(--line); color: var(--ink); }
+
+/* Toy buttons: they lift on hover and press down on click. */
+@media (prefers-reduced-motion: no-preference) {
+  .btn, nav.site a.nav-cta { transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease; }
+  .btn:hover, nav.site a.nav-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--btn-edge); }
+  .btn.soft:hover { box-shadow: 0 6px 0 var(--soft-edge); }
+  .btn:active, nav.site a.nav-cta:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--btn-edge); }
+  .btn.soft:active { box-shadow: 0 2px 0 var(--soft-edge); }
+}
 .cta-note { font-size: 15px; font-weight: 800; color: var(--on-ground-2); margin: 14px 0 0; }
 
 /* --- home tabs --------------------------------------------------------- */
@@ -134,10 +203,23 @@ main.home .wrap { max-width: 1120px; }
   font-size: clamp(1.4rem, 3vw, 1.75rem); margin: 0 0 24px; color: var(--on-ground);
 }
 .paw { color: var(--pink); flex-shrink: 0; }
-.tab-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+.tab-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px 20px; }
+/* Sticker cards: a slight tilt each way, straightening up on hover. */
 .tab-card {
-  margin: 0; background: var(--card); border-radius: 28px; padding: 10px 10px 18px;
-  box-shadow: var(--shadow);
+  position: relative; margin: 0; background: var(--card); border-radius: 28px; padding: 10px 10px 18px;
+  border: 1px solid rgba(251, 247, 240, 0.06); box-shadow: var(--shadow);
+  transform: rotate(1.2deg);
+}
+.tab-card:nth-child(even) { transform: rotate(-1.2deg); }
+@media (prefers-reduced-motion: no-preference) {
+  .tab-card { transition: transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .tab-card:hover, .tab-card:nth-child(even):hover { transform: translateY(-4px) rotate(0deg); }
+}
+.tab-label {
+  position: absolute; z-index: 1; top: -11px; left: 22px;
+  padding: 1px 12px; border-radius: 999px; background: var(--pink); color: var(--btn-ink);
+  font-family: var(--head); font-weight: 600; font-size: 14px; line-height: 1.5;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 /* Trim the wallpaper either side of the notch so the panel gets the width. */
 .tab-card img {
@@ -176,7 +258,7 @@ main.home .wrap { max-width: 1120px; }
 .gh-text { display: flex; flex-direction: column; gap: 2px; text-align: left; }
 .gh-text strong { font-family: var(--head); font-weight: 600; font-size: 18px; }
 .gh-text span { font-size: 14px; font-weight: 600; color: var(--ink-3); }
-.gh-arrow { flex: none; margin-left: 6px; font-size: 20px; font-weight: 800; color: var(--taupe); transition: transform 0.25s ease; }
+.gh-arrow { flex: none; margin-left: 6px; font-size: 20px; font-weight: 800; color: var(--taupe-text); transition: transform 0.25s ease; }
 .gh-card:hover .gh-arrow { transform: translateX(3px); }
 .socials { display: inline-flex; gap: 2px; margin-left: 6px; vertical-align: middle; }
 .made a.social {
@@ -190,6 +272,12 @@ main.home .wrap { max-width: 1120px; }
   .gh-card, .gh-cat, .gh-arrow, .coffee-card .steam { transition: none; }
   .gh-card:hover, .gh-card:hover .gh-cat, .gh-card:hover .gh-arrow { transform: none; }
 }
+
+.about { text-align: center; max-width: 34rem; margin: 0 auto; font-size: 18px; line-height: 1.6; }
+.about p { margin: 0 0 12px; }
+.about-cat { display: block; margin: 0 auto 12px; }
+.about-lead { font-family: var(--head); font-weight: 600; font-size: 26px; color: var(--ink); }
+.about .cta { margin-top: 24px; }
 
 /* --- content pages ----------------------------------------------------- */
 .sheet {
@@ -260,11 +348,20 @@ footer.site nav a:hover { background: var(--chip); color: var(--on-ground); text
 @media (max-width: 600px) {
   body { font-size: 16px; }
   .wrap { padding: 0 16px; }
-  header.site { padding: 10px 0; }
+  header.site { padding: 0 0 6px; }
   .brand .name { font-size: 24px; }
+  nav.site a { padding: 0 11px; font-size: 15px; }
+  nav.site a.nav-cta { margin-left: 2px; }
   .hero { padding: 16px 0 30px; }
   .hero-home { padding: 0 0 48px; }
-  .hero-art img { width: 200px; }
+  .hero-icon { width: 96px; }
+  .hero-home .wrap { gap: 36px; }
+  .laptop-screen { border-width: 6px; border-radius: 14px 14px 6px 6px; }
+  .laptop-screen::before { border-radius: 0 0 7px 7px; }
+  .laptop-panel { width: 60%; border-radius: 0 0 12px 12px; }
+  .laptop-base { height: 9px; border-radius: 0 0 10px 10px; }
+  .tab-card { border-radius: 18px; }
+  .tab-card img { border-radius: 12px; }
   .hero-home .lede { font-size: 18px; }
   .btn { width: 100%; min-height: 58px; font-size: 20px; padding: 0 24px; }
   .tab-row { grid-template-columns: 1fr; gap: 16px; }
@@ -289,5 +386,11 @@ footer.site nav a:hover { background: var(--chip); color: var(--on-ground); text
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .btn, .faq summary::after { transition: none; }
+  .faq summary::after { transition: none; }
+}
+
+/* The narrowest phones keep the icon as the home link and drop the word,
+   so the three tabs fit on one line. */
+@media (max-width: 400px) {
+  .brand .name { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 }
