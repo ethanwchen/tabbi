@@ -255,6 +255,8 @@ private struct ClosetPointsChip: View {
 private struct ClosetWardrobe: View {
     @ObservedObject var store: ClosetStore
     @State private var hovered: PetItem?
+    /// The tile the grid scrolls to when the footer's next unlock is clicked.
+    @State private var shown: PetItem?
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: Theme.Spacing.s - Theme.Spacing.xxs),
                                 count: 5)
@@ -263,6 +265,12 @@ private struct ClosetWardrobe: View {
         VStack(alignment: .leading, spacing: Theme.Spacing.s - Theme.Spacing.xxs) {
             scrollingGrid
             footer
+        }
+        // A try-on started from the footer ends when the pointer leaves.
+        .onHover { inside in
+            guard !inside, hovered != nil else { return }
+            hovered = nil
+            store.tryOn(nil)
         }
         // Closing the notch or switching to Look mid-hover sends no hover
         // exit, so drop the try-on here or it would greet the next visit.
@@ -279,7 +287,7 @@ private struct ClosetWardrobe: View {
                 VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                     ClosetShelfTitle(theme: shelf.theme)
                     LazyVGrid(columns: columns, spacing: Theme.Spacing.s - Theme.Spacing.xxs) {
-                        ForEach(shelf.items, id: \.id) { item in tile(item) }
+                        ForEach(shelf.items, id: \.id) { item in tile(item).id(item.id) }
                     }
                 }
             }
@@ -306,10 +314,17 @@ private struct ClosetWardrobe: View {
                     .overlay(alignment: .top) { grid }
                     .clipped()
             } else {
-                ScrollView(.vertical) { grid }
-                    .scrollIndicators(.automatic)
-                    .scrollBounceBehavior(.basedOnSize)
-                    .contentMargins(.bottom, Theme.Spacing.m, for: .scrollContent)
+                ScrollViewReader { proxy in
+                    ScrollView(.vertical) { grid }
+                        .scrollIndicators(.automatic)
+                        .scrollBounceBehavior(.basedOnSize)
+                        .contentMargins(.bottom, Theme.Spacing.m, for: .scrollContent)
+                        .onChange(of: shown) { _, item in
+                            guard let item else { return }
+                            withMotion(Theme.Motion.content) { proxy.scrollTo(item.id, anchor: .center) }
+                            shown = nil
+                        }
+                }
             }
         }
         .edgeFade(.bottom)
@@ -330,18 +345,22 @@ private struct ClosetWardrobe: View {
             } else if let next = store.closet.nextUnlock, store.closet.save.ledger.earned == 0 {
                 // A brand-new pet: explain where points come from.
                 Text("Focus to earn points").foregroundStyle(Theme.Palette.secondaryText)
-                ViewThatFits(in: .horizontal) {
-                    Text("\(next.item.displayName) unlocks after \(PetEconomy.studyToEarn(next.item.cost))")
-                    Text("\(next.item.displayName) unlocks at \(next.item.cost)")
+                showButton(next.item) {
+                    ViewThatFits(in: .horizontal) {
+                        Text("\(next.item.displayName) unlocks after \(PetEconomy.studyToEarn(next.item.cost))")
+                        Text("\(next.item.displayName) unlocks at \(next.item.cost)")
+                    }
+                    .foregroundStyle(Theme.Palette.tertiaryText)
                 }
-                .foregroundStyle(Theme.Palette.tertiaryText)
             } else if let next = store.closet.nextUnlock {
                 // The Compact panel drops the "Next unlock" label, then the
                 // study time, before the item name or its status would clip.
-                ViewThatFits(in: .horizontal) {
-                    nextUnlock(next, labeled: true, inStudyTime: true)
-                    nextUnlock(next, labeled: false, inStudyTime: true)
-                    nextUnlock(next, labeled: false, inStudyTime: false)
+                showButton(next.item) {
+                    ViewThatFits(in: .horizontal) {
+                        nextUnlock(next, labeled: true, inStudyTime: true)
+                        nextUnlock(next, labeled: false, inStudyTime: true)
+                        nextUnlock(next, labeled: false, inStudyTime: false)
+                    }
                 }
             } else {
                 Text("Everything unlocked. Dress up as you like.").foregroundStyle(Theme.Palette.tertiaryText)
@@ -350,6 +369,16 @@ private struct ClosetWardrobe: View {
         .font(Theme.Typography.caption)
         .lineLimit(1)
         .frame(height: 12)
+    }
+
+    /// The next unlock can sit on a shelf out of view, so clicking it in
+    /// the footer scrolls its tile into view and tries it on the pet.
+    private func showButton(_ item: PetItem, @ViewBuilder label: () -> some View) -> some View {
+        ClosetFooterLink(label: label(), help: "Show \(item.displayName) and try it on") {
+            hovered = item
+            store.tryOn(item)
+            shown = item
+        }
     }
 
     /// Says what the next item asks of you: the points still missing and,
@@ -383,6 +412,23 @@ private struct ClosetWardrobe: View {
         case .locked(let missing): "\(item.cost) pts, \(PetEconomy.studyToEarn(missing)) to go"
         case .unearned: item.limitedEdition?.howToEarn ?? "Limited edition"
         }
+    }
+}
+
+/// A footer line that acts as a quiet link: it brightens on hover.
+private struct ClosetFooterLink<Label: View>: View {
+    let label: Label
+    let help: String
+    let action: () -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        Button(action: action) { label }
+            .buttonStyle(.plain)
+            .brightness(hovering ? 0.25 : 0)
+            .help(help)
+            .onHover { hovering = $0 }
+            .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
