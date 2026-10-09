@@ -1,0 +1,18 @@
+{
+  "about": "Names the filter in shared/name-filter.json must allow and block. The backend tests and the app's TabbiKitCore tests both run every case, so the two filters stay in agreement.",
+  "allowed": [
+    "student", "buddy", "Maya", "Mochi", "Cassandra", "Dick Van Dyke", "Dick", "Scunthorpe", "Penistone",
+    "Essex", "Sussex", "Hancock", "Peacock", "Cocktail", "Titus", "Analise", "Cumberbatch", "Assassin",
+    "Bassett", "Glasses", "Arsenal", "Therapist", "Grape", "Raccoon", "Spice", "Shiitake", "Matsushita",
+    "Pornthip", "Nazira", "Wankel", "Fukuoka", "Sniggers", "Mike Hunt", "Dr. Pepper", "J.R.R. Tolkien",
+    "Maya2024", "Zoë", "Björk", "小明", "Nguyễn", "O'Brien", "Anne-Marie",
+    "Kitty", "Bitsy", "Shih Tzu"
+  ],
+  "blocked": [
+    "fuck", "FUCK", "Fuuuuck", "f.u.c.k", "f u c k", "fUcK", "Motherfucker", "phuck fuck",
+    "Sh1thead", "$hit", "5hit", "shits", "Bull Shit Man", "BigCunt", "c u n t", "cunts", "Cvnt Cunt",
+    "a$$", "Ass", "asses", "Asshole", "a s s h o l e", "Dickhead", "Dick Head", "b1tch", "biiitch",
+    "N1gger", "niggas", "nigg@", "wh0re", "s1ut", "Sluts", "K1ke", "p0rn", "porno", "rapist", "Nazi",
+    "ѕhit", "fück", "ｆｕｃｋ", "SuperSlut", "kys", "Pussy", "x x x"
+  ]
+}

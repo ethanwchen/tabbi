@@ -79,6 +79,11 @@ When writing a profile, every field is optional.
 An omitted, `null` or empty-text field keeps its current value (so a name cannot be blanked).
 Changing `species` without a `breed` switches to the first breed of the new species.
 
+Names pass a filter, because friends and party members see them.
+A `name` or `petName` with a slur or an explicit term is refused with `name_not_allowed` or `pet_name_not_allowed` (400), and nothing is saved.
+The terms and the reading rules live in `backend/shared/name-filter.json`: accents, case, look-alike letters, leetspeak, separators and repeated letters are seen through, and short terms only match whole words, so names like Cassandra or Scunthorpe pass.
+The app runs the same filter (`PartyNameFilter`) for instant feedback, and `backend/shared/name-filter-cases.json` holds both to the same cases.
+
 ### Presence
 
 What a user is doing right now, as reported by their last heartbeat.
@@ -180,7 +185,7 @@ With a valid token it creates nothing and applies the body like `PATCH /v1/me`:
 `200 {"ok": true, "code": "K7QW2MZD", "profile": Profile}`.
 This makes registration safe to retry; if the reply to a first registration was lost, the app has no token yet and simply registers again.
 
-Errors: `invalid_json`, `unknown_field`, `invalid_field`, `body_too_large`, `rate_limited`, `unauthorized` (a token was sent but is unknown), `unavailable`.
+Errors: `invalid_json`, `unknown_field`, `invalid_field`, `name_not_allowed`, `pet_name_not_allowed`, `body_too_large`, `rate_limited`, `unauthorized` (a token was sent but is unknown), `unavailable`.
 
 ### `GET /v1/me`
 
@@ -192,7 +197,7 @@ Body: any profile fields.
 `200 {"ok": true, "profile": Profile}` with the full updated profile.
 Unchanged profiles cost no storage write, so it is fine to send the whole profile.
 
-Errors: `invalid_json`, `unknown_field`, `invalid_field`, `body_too_large`.
+Errors: `invalid_json`, `unknown_field`, `invalid_field`, `name_not_allowed`, `pet_name_not_allowed`, `body_too_large`.
 
 ### `DELETE /v1/me`
 

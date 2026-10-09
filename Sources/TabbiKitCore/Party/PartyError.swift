@@ -27,6 +27,9 @@ public enum PartyError: Error, Hashable, Sendable {
     case partyFull
     case notInParty
     case notHost
+    /// The display name or pet name failed the name filter (`PartyNameFilter`).
+    case nameNotAllowed
+    case petNameNotAllowed
     /// Any other error code the server returned.
     case server(code: String, status: Int)
     /// The reply was not the JSON we expected.
@@ -52,6 +55,8 @@ public enum PartyError: Error, Hashable, Sendable {
         case "party_full": return .partyFull
         case "not_in_party": return .notInParty
         case "not_host": return .notHost
+        case "name_not_allowed": return .nameNotAllowed
+        case "pet_name_not_allowed": return .petNameNotAllowed
         default: return status >= 500 ? .serverUnavailable : .server(code: code, status: status)
         }
     }
@@ -85,6 +90,8 @@ public enum PartyError: Error, Hashable, Sendable {
         case .partyFull: return "That party is full."
         case .notInParty: return "You're not in a party anymore."
         case .notHost: return "Only the host can change the session."
+        case .nameNotAllowed: return "That name isn't allowed. Please pick another."
+        case .petNameNotAllowed: return "That pet name isn't allowed. Please pick another."
         case .server: return "The party server reported a problem."
         case .invalidResponse: return "Unexpected reply from the party server."
         case .transport: return "Couldn't reach the party server."
