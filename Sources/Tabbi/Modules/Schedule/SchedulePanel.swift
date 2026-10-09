@@ -579,6 +579,10 @@ private struct ScheduleBlockLabel: View {
         }
         .padding(.top, height >= 20 ? 3 : 0)
         // A dark halo keeps the title readable where the now line passes behind it.
+        // One soft shadow lets the line show through the glyphs, so a tight
+        // one stacked under it cuts the line cleanly around each letter.
+        .shadow(color: Theme.Palette.background, radius: 0.5)
+        .shadow(color: Theme.Palette.background, radius: 0.5)
         .shadow(color: Theme.Palette.background.opacity(0.9), radius: 1.5)
     }
 }
