@@ -56,10 +56,11 @@ enum DogArt {
     /// pom that stands clear of the haunch.
     static let tailPom = PetArt.dog.grid("tailPom")
 
-    /// Shih Tzu: a gold topknot tied with a dark band above a white blaze, a
-    /// gold mask around big round eyes, a flat face, and a long white beard
-    /// framed by ears that hang past the chin, set apart by an outline. The
-    /// band is outline, not nose, so a cap that hides it leaves the face intact.
+    /// Shih Tzu: a topknot tied with a band, a mask around big round eyes, a
+    /// flat face, and a long beard stained around the mouth (the muzzle
+    /// zone), framed by ears that hang past the chin, set apart by an
+    /// outline. The band is outline, not nose, so a cap that hides it leaves
+    /// the face intact.
     static let headShihTzu = PetArt.dog.grid("headShihTzu")
 
     /// The Shih Tzu's flat face: big round eyes and a button nose right

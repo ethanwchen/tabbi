@@ -438,11 +438,11 @@ The Poodle is all curls, so its look comes from a bumpy silhouette and dotted te
 
 The Shih Tzu reads by its topknot, its flat face, and a coat that falls to the floor:
 
-- Head (`DogArt.headShihTzu`): a gold topknot puff tied with a dark band, a white blaze between gold eye patches, a white beard that widens below the chin, and long gold ears that hang past it, set apart from the face by an outline.
+- Head (`DogArt.headShihTzu`): a topknot puff tied with a band, a slightly lighter mask around the eyes so they read on the dark face, a beard that widens below the chin with a brown stain around the mouth (the `muzzle` zone), and long ears that hang past it, set apart from the face by an outline.
 - Face (`DogArt.faceShihTzu`): big round 3x3 eyes with a catchlight, a button nose right between them (the flat face), and the tip of a tongue.
-- Body (`DogArt.bodyShihTzu`, `WalkArt.shihTzuTorso`): a long white coat drawn in `furShade` strands that flares out at the floor and hides all but the tips of the paws; walking, it ends in a fringe over the legs.
-- Tail (`DogArt.tailPlume`, `WalkArt.shihTzuTail`): a plume curled up over the back with a gold tip.
-- Coloring (`PetBreed.palette`): gold and white by default; the gold is `furAccent` on the ears, mask, and tail tip.
+- Body (`DogArt.bodyShihTzu`, `WalkArt.shihTzuTorso`): a long coat drawn in `furShade` strands that flares out at the floor and hides all but the tips of the paws; walking, it ends in a fringe over the legs.
+- Tail (`DogArt.tailPlume`, `WalkArt.shihTzuTail`): a plume curled up over the back.
+- Coloring (`PetBreed.palette`): black by default, with the faintly lighter `furAccent` on the topknot and mask and the mouth stain in `furSpot`. A fur tint recolors the coat like any solid breed's and leaves the brown stain as it is.
 - The tie is drawn in the outline role, so a cap that covers the topknot never changes the face. Hats sit on the skull below it (`skullTop` 5).
 - Party: the server catalog has no Shih Tzu, so it is sent as `pomeranian`, the nearest small long-coated breed there, and drawn back as a Shih Tzu.
 

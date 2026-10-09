@@ -287,7 +287,7 @@ public struct PetFurTone: Hashable, Sendable {
     public static let pick = PetFurTone(step: 0)
 
     /// The pick as a marking on white fur (calico patches, a pied French
-    /// Bulldog, Shih Tzu gold): never so light that it melts into the white.
+    /// Bulldog): never so light that it melts into the white.
     public static let marking = PetFurTone(step: 0, maxLightness: 0.82)
 
     /// Shading, stripes, points: a deeper, slightly calmer version of the pick.

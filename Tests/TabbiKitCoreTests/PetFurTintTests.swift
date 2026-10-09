@@ -56,13 +56,13 @@ final class PetFurTintTests: XCTestCase {
 
     func testWhiteMarkingsStayWhite() {
         // Bibs, muzzles, and paws drawn in the breed's white belly keep it.
-        for breed in [PetBreed.tuxedo, .calico, .britishShorthair, .corgi, .beagle, .frenchBulldog, .shihTzu] {
+        for breed in [PetBreed.tuxedo, .calico, .britishShorthair, .corgi, .beagle, .frenchBulldog] {
             for pick in PetCloset.furSwatches {
                 XCTAssertEqual(tinted(breed, pick)[.belly], breed.palette[.belly], "\(breed) \(pick)")
             }
         }
         // White-coated pied breeds keep the white coat; the pick colors the patches.
-        for breed in [PetBreed.calico, .frenchBulldog, .shihTzu] {
+        for breed in [PetBreed.calico, .frenchBulldog] {
             for pick in PetCloset.furSwatches {
                 XCTAssertEqual(tinted(breed, pick)[.furBase], breed.palette[.furBase], "\(breed) \(pick)")
             }
@@ -71,13 +71,26 @@ final class PetFurTintTests: XCTestCase {
 
     func testPatchesOnWhiteStayVisible() {
         let markings: [(PetBreed, PetPaletteRole)] = [(.calico, .furAccent), (.calico, .furSpot),
-                                                       (.frenchBulldog, .furSpot), (.shihTzu, .furAccent)]
+                                                       (.frenchBulldog, .furSpot)]
         for (breed, role) in markings {
             for pick in PetCloset.furSwatches {
                 let palette = tinted(breed, pick)
                 XCTAssertGreaterThan(palette[.furBase].oklch.lightness - palette[role].oklch.lightness, 0.1,
                                      "\(breed) \(role) \(pick)")
             }
+        }
+    }
+
+    func testShihTzuKeepsItsMouthStainOnEverySwatch() {
+        // The black Shih Tzu's coat follows the pick; the brown stain around
+        // its mouth is part of the breed and never changes.
+        let stain = PetBreed.shihTzu.palette[.furSpot]
+        XCTAssertLessThan(PetBreed.shihTzu.palette[.furBase].luminance, 0.05, "black by default")
+        XCTAssertEqual(PetBreed.shihTzu.pattern.role(for: .muzzle), .furSpot)
+        for pick in PetCloset.furSwatches {
+            let palette = tinted(.shihTzu, pick)
+            XCTAssertEqual(palette[.furBase], pick, "\(pick)")
+            XCTAssertEqual(palette[.furSpot], stain, "\(pick)")
         }
     }
 
