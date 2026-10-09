@@ -27,9 +27,11 @@ public struct SyncedPet: Codable, Hashable, Sendable {
     public var profile: PetProfile
     public var updatedAt: Date
 
+    /// `updatedAt` is kept to whole seconds, as the stored ISO 8601 date
+    /// holds it, so a copy that went through the server compares equal.
     public init(profile: PetProfile, updatedAt: Date) {
         self.profile = profile
-        self.updatedAt = updatedAt
+        self.updatedAt = Date(timeIntervalSince1970: updatedAt.timeIntervalSince1970.rounded(.down))
     }
 
     /// The later of the two. Equal times pick the same side on every Mac
