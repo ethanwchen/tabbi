@@ -33,6 +33,7 @@ import {
   ADMIN_SUGGESTIONS_PAGE, MAX_SUGGESTIONS_PER_DAY, SUGGESTIONS_PER_DAY, SUGGESTIONS_PER_MIN, SUGGESTION_RETENTION_DAYS, THANKS_URL,
   formErrorPage, isFormPost, parseSuggestion, readSuggestionBody,
 } from "./suggestions";
+import { activeCounts, signupsByDay, signupsSince } from "./stats";
 import { JOIN_FIELDS, PARTY_TOUCH_S, PartySession, SESSION_FIELDS, parseJoin, parseSession, partyExpired } from "./party";
 
 export interface Env extends AppleSecrets, AdminSecrets {
@@ -529,6 +530,7 @@ export class Hub extends DurableObject<Env> {
       return json({ ok: true, exportedAt: now, schemaVersion: version, tables: exportTables(this.sql) });
     }
     if (path === "/v1/admin/restore" && method === "POST") return await this.restore(req, now);
+    if (path === "/v1/admin/stats" && method === "GET") return this.adminStats(now);
     if (path === "/v1/admin/reports" && method === "GET") {
       const status = new URL(req.url).searchParams.get("status") ?? "open";
       if (status !== "open" && status !== "all") throw new HttpError(400, "invalid_field", "status must be open or all");
@@ -572,6 +574,38 @@ export class Hub extends DurableObject<Env> {
     console.log("admin: restoring storage to " + ("at" in target ? `time ${target.at}` : "a bookmark"));
     setTimeout(() => this.ctx.abort("restoring a backup"), 100);
     return json({ ok: true, undoBookmark });
+  }
+
+  /**
+   * GET /v1/admin/stats: aggregate counts (see stats.ts). Each call scans the users and presence tables
+   * once, so it reads about two rows per user; fine for a maintainer's occasional look, not for polling.
+   */
+  private adminStats(now: number): Response {
+    const count = (query: string, ...args: SqlStorageValue[]) => this.sql.exec<{ n: number }>(query, ...args).one().n;
+    const live = [...this.live.values()].map((l) => ({ lastSeen: l.presence.lastSeen, flushedAt: l.flushedAt }));
+    const signups = new Map(this.sql.exec<{ day: string; n: number }>(
+      "SELECT strftime('%Y-%m-%d', created_at, 'unixepoch') AS day, COUNT(*) AS n FROM users WHERE created_at >= ? GROUP BY day",
+      signupsSince(now),
+    ).toArray().map((r) => [r.day, r.n]));
+    return json({
+      ok: true,
+      at: now,
+      users: {
+        total: count("SELECT COUNT(*) AS n FROM users"),
+        signedIn: count("SELECT COUNT(*) AS n FROM apple_accounts"),
+        banned: count("SELECT COUNT(*) AS n FROM bans"),
+      },
+      active: activeCounts((since) => count("SELECT COUNT(*) AS n FROM presence WHERE last_seen >= ?", since), live, now),
+      signups: signupsByDay(signups, now),
+      parties: {
+        open: count("SELECT COUNT(*) AS n FROM parties WHERE last_active > ?", now - PARTY_IDLE_EXPIRY_S),
+        members: count(
+          "SELECT COUNT(*) AS n FROM party_members m JOIN parties p ON p.code = m.party WHERE p.last_active > ?",
+          now - PARTY_IDLE_EXPIRY_S,
+        ),
+      },
+      suggestions: count("SELECT COUNT(*) AS n FROM suggestions"),
+    });
   }
 
   // ---------- suggestions ----------

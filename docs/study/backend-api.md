@@ -171,7 +171,7 @@ Auth column: "token" means `Authorization: Bearer <token>` is required.
 | `PUT /v1/sync` | token, Apple account | replace my sync document if I merged into the current revision |
 | `GET /v1/grants` | token | the limited edition items the maintainer granted me |
 | `POST /v1/suggestions` | none | the website's Suggest form: send the maintainer an idea |
-| `/v1/admin/...` | admin token | the maintainer's report review, rename and ban, see [Moderation](#moderation-maintainer), limited edition grants, see [Limited edition grants](#limited-edition-grants-maintainer), and the suggestions inbox, see [Suggestions](#suggestions-maintainer) |
+| `/v1/admin/...` | admin token | the maintainer's report review, rename and ban, see [Moderation](#moderation-maintainer), limited edition grants, see [Limited edition grants](#limited-edition-grants-maintainer), the suggestions inbox, see [Suggestions](#suggestions-maintainer), and aggregate counts, see [Stats](#stats-maintainer) |
 
 ### `GET /`
 
@@ -632,6 +632,34 @@ curl -s -X DELETE -H "Authorization: Bearer $ADMIN_TOKEN" $TABBI/v1/admin/sugges
 
 Each suggestion is `{"id": 42, "createdAt": 1789000000, "category": "tab", "message": "...", "email": null}`.
 Nothing ties a suggestion to a friend code, an IP address or anything else.
+
+## Stats (maintainer)
+
+`GET /v1/admin/stats` returns aggregate counts, so the maintainer can see how the service is used without the app sending anything for it.
+Every number is counted from rows the service already keeps to work; the reply never contains a friend code, a name or any other per-user value.
+The same `ADMIN_TOKEN` rules as the moderation routes apply.
+
+```json
+{
+  "ok": true,
+  "at": 1789000000,
+  "users": {"total": 1204, "signedIn": 311, "banned": 2},
+  "active": {"day": 240, "week": 610, "month": 902},
+  "signups": [{"day": "2026-09-10", "users": 14}, "... one entry per UTC day ...", {"day": "2026-10-09", "users": 9}],
+  "parties": {"open": 12, "members": 31},
+  "suggestions": 4
+}
+```
+
+- `users.total` counts friend codes (every Mac or account that turned on the Party tab and has not deleted its account), `signedIn` the ones linked to Sign in with Apple, `banned` the banned ones.
+- `active` counts users whose last presence heartbeat is at most 24 hours, 7 days or 30 days old.
+  The app sends heartbeats only while the Party tab is on, so these are active Party users, not everyone who runs Tabbi.
+- `signups` lists new friend codes per UTC day for the last 30 days, oldest first, with zero days included.
+  An anonymous user who later signs in with Apple on a Mac that already has an account folds into that account and stops counting.
+- `parties` counts parties that have not expired and their members; `suggestions` counts suggestions waiting in the inbox.
+
+Each call reads about two rows per user (one scan of `users` and one of `presence`), so check it now and then rather than polling it.
+`npm run stats` in `backend/` prints these numbers next to the GitHub release download counts; see [`../ops.md`](../ops.md#product-metrics).
 
 ## Errors common to all routes
 

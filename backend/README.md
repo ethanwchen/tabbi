@@ -64,6 +64,7 @@ Add a schema change as a new step at the end and never edit a deployed one.
 - **Secrets:** rotate `ADMIN_TOKEN` with `wrangler secret put`, and the Apple key with `wrangler secret bulk` so its id and file change together.
 - **Rollback:** `npx wrangler rollback` returns to the previous version (code only). Rolling back past a deploy that changed a table's shape (schema step 6 rebuilt `name_holds`) also needs a storage restore to just before that deploy.
 - **Deletions after a restore:** a restore brings back accounts deleted since the chosen moment; re-delete them with `DELETE /v1/admin/users/{code}` (the docs show how to find them).
+- **Usage:** `TABBI_ADMIN_TOKEN=... npm run stats` prints the aggregate counts from `GET /v1/admin/stats` (users, sign-ins, daily, weekly and monthly active users, sign-ups per day) and the GitHub release download counts; see [`../docs/ops.md`](../docs/ops.md#product-metrics).
 - **Monitoring:** `npx wrangler tail --status error` and the dashboard's Metrics for requests, errors and free-plan usage.
 
 ## Architecture

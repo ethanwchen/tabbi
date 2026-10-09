@@ -73,6 +73,13 @@ Deleted data leaves the live service at once.
 Copies can remain in backups for up to 30 days: Cloudflare keeps a 30-day point-in-time history of the storage, and the operator keeps encrypted exports for at most 30 days, used only to recover from an outage or a mistake.
 If the service is ever restored from a backup, every account deleted after that backup is deleted again right away.
 
+## Aggregate counts
+
+The maintainer can see a few totals the service counts from the data above, so they know how many people use it: how many friend codes and Apple sign-ins exist, how many users sent a heartbeat in the last day, week and month, how many new friend codes were created on each of the last 30 days, how many parties are open, and how many suggestions wait.
+These are counts only: they never name or identify anyone, and nothing is stored or sent for them.
+The app sends nothing extra; Tabbi has no tracking, analytics or telemetry of any kind.
+The number of installs comes from GitHub's public download count for each release, not from the app.
+
 ## No analytics, no third parties
 
 The service uses no analytics, no tracking, no advertising and no third-party services.
