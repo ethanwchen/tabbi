@@ -40,7 +40,8 @@ final class FocusStore: ObservableObject {
     private var viewers: Set<FocusViewer> = []
     private var isVisible: Bool { !viewers.isEmpty }
     private var ticker: Timer?
-    private var phaseEndTimer: Timer?
+    /// Catches up when the running phase ends, even if the Mac slept through it.
+    private lazy var phaseEnd = WallClockAlarm { [weak self] in self?.catchUp() }
     private let notifications: FocusNotifications?
 
     init(activity: ActivityLog? = nil, focusMode: FocusController? = nil, celebrations: CelebrationCenter? = nil,
@@ -173,17 +174,13 @@ final class FocusStore: ObservableObject {
         guard !isEphemeral else { return }
         storage.save(timer)
 
-        phaseEndTimer?.invalidate()
-        phaseEndTimer = nil
         if withdrawingPending { notifications?.cancelPending() }
-        guard let endsAt = timer.endsAt else { return }
-        notifications?.schedule(phaseEndingAt: endsAt, timer: timer)
-        let fire = Timer(fire: endsAt, interval: 0, repeats: false) { [weak self] _ in
-            MainActor.assumeIsolated { self?.catchUp() }
+        guard let endsAt = timer.endsAt else {
+            phaseEnd.cancel()
+            return
         }
-        fire.tolerance = 0.2
-        RunLoop.main.add(fire, forMode: .common)
-        phaseEndTimer = fire
+        notifications?.schedule(phaseEndingAt: endsAt, timer: timer)
+        phaseEnd.schedule(at: endsAt, tolerance: 0.2)
     }
 
     /// Re-adds the pending phase-end notification, e.g. after permission was granted.

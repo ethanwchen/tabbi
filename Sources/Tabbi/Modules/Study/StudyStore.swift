@@ -78,7 +78,8 @@ final class StudyStore: ObservableObject {
     /// running in a hidden tab never holds focus mode on.
     private var isEnabled = false
     private var ticker: Timer?
-    private var phaseEndTimer: Timer?
+    /// Catches up when the running phase ends, even if the Mac slept through it.
+    private lazy var phaseEnd = WallClockAlarm { [weak self] in self?.catchUp() }
     private let logURL: URL?
     /// Set when the log on disk could not be read: new stretches are still
     /// logged in memory, but the file is never overwritten, so nothing is lost.
@@ -417,15 +418,11 @@ final class StudyStore: ObservableObject {
         collectLog()
         if let data = try? JSONEncoder().encode(session) { defaults.set(data, forKey: Self.sessionKey) }
 
-        phaseEndTimer?.invalidate()
-        phaseEndTimer = nil
-        guard let endsAt = session.endsAt else { return }
-        let fire = Timer(fire: endsAt, interval: 0, repeats: false) { [weak self] _ in
-            MainActor.assumeIsolated { self?.catchUp() }
+        guard let endsAt = session.endsAt else {
+            phaseEnd.cancel()
+            return
         }
-        fire.tolerance = 0.2
-        RunLoop.main.add(fire, forMode: .common)
-        phaseEndTimer = fire
+        phaseEnd.schedule(at: endsAt, tolerance: 0.2)
     }
 
     /// Ticks once a second, only while the panel is visible and the clock runs.
