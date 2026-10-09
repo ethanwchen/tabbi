@@ -443,9 +443,9 @@ footer.site nav a:hover { background: var(--chip); color: var(--on-ground); text
   .faq summary::after { transition: none; }
 }
 
-/* Phones keep the icon as the home link and drop the word,
-   so the three tabs fit on one line, centered. */
-@media (max-width: 520px) {
+/* The narrowest phones keep the icon as the home link and drop the word,
+   so the three tabs fit on one line. */
+@media (max-width: 420px) {
   .brand .name { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 }
 /* Below 640px the six footer links wrap unevenly (5 + 1, 4 + 2, 3 + 2 + 1).
