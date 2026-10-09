@@ -161,3 +161,11 @@ extension PartyTeamCelebration {
                                     petName: "Mochi", date: now)
     }
 }
+
+extension PartyBlockedUser {
+    /// The Blocked list for `TABBI_DEMO=1` and snapshots: one person,
+    /// blocked a few days ago, so the list and its Unblock button show.
+    public static func demo(now: Date) -> [PartyBlockedUser] {
+        [PartyBlockedUser(code: "R7LEY5TV", name: "Riley", petName: "Noodle", since: now.addingTimeInterval(-3 * 86_400))]
+    }
+}

@@ -77,7 +77,13 @@ public struct PartyClient: Sendable {
 
     /// `GET /v1/me`.
     public func me() async throws -> PartyProfile {
-        try await send("GET", "/v1/me", as: ProfileReply.self).profile
+        try await standing().profile
+    }
+
+    /// `GET /v1/me` with whether the maintainer banned this user.
+    public func standing() async throws -> PartyStanding {
+        let reply = try await send("GET", "/v1/me", as: ProfileReply.self)
+        return PartyStanding(profile: reply.profile, banned: reply.banned ?? false)
     }
 
     /// `PATCH /v1/me`: unchanged fields cost nothing, so sending the whole
@@ -111,6 +117,39 @@ public struct PartyClient: Sendable {
     public func removeFriend(code: String) async throws -> Bool {
         let code = try Self.validCode(PartyCode.friendCode(code))
         return try await send("DELETE", "/v1/friends/\(code)", as: RemoveFriendReply.self).removed
+    }
+
+    // MARK: Moderation
+
+    /// `GET /v1/blocks`: the users I blocked, newest first.
+    public func blocks() async throws -> [PartyBlockedUser] {
+        try await send("GET", "/v1/blocks", as: BlocksReply.self).blocks
+    }
+
+    /// `POST /v1/blocks`: ends the friendship and hides us from each other
+    /// on the server. `blocked` is false when I had already blocked them.
+    @discardableResult
+    public func block(code: String) async throws -> (blocked: Bool, user: PartyBlockedUser) {
+        let code = try Self.validCode(PartyCode.friendCode(code))
+        let reply = try await send("POST", "/v1/blocks", body: ["code": code], as: BlockReply.self)
+        return (reply.blocked, reply.block)
+    }
+
+    /// `DELETE /v1/blocks/{code}`. The friendship is not restored. Returns
+    /// false if I had not blocked them.
+    @discardableResult
+    public func unblock(code: String) async throws -> Bool {
+        let code = try Self.validCode(PartyCode.friendCode(code))
+        return try await send("DELETE", "/v1/blocks/\(code)", as: UnblockReply.self).unblocked
+    }
+
+    /// `POST /v1/reports`. Returns false when it updated my earlier report
+    /// about the same user instead of adding one.
+    @discardableResult
+    public func report(_ report: PartyReport) async throws -> Bool {
+        let code = try Self.validCode(PartyCode.friendCode(report.code))
+        let body = ReportBody(code: code, reason: report.reason.rawValue, note: report.sentNote)
+        return try await send("POST", "/v1/reports", body: body, as: ReportReply.self).created
     }
 
     // MARK: Presence
@@ -271,6 +310,7 @@ private struct RegisterReply: Decodable {
 
 private struct ProfileReply: Decodable {
     let profile: PartyProfile
+    let banned: Bool?
 }
 
 private struct FriendsReply: Decodable {
@@ -313,4 +353,27 @@ private struct LeaveReply: Decodable {
 private struct SessionBody: Encodable {
     let method: String
     let phaseEndsAt: Date
+}
+
+private struct BlocksReply: Decodable {
+    let blocks: [PartyBlockedUser]
+}
+
+private struct BlockReply: Decodable {
+    let blocked: Bool
+    let block: PartyBlockedUser
+}
+
+private struct UnblockReply: Decodable {
+    let unblocked: Bool
+}
+
+private struct ReportBody: Encodable {
+    let code: String
+    let reason: String
+    let note: String?
+}
+
+private struct ReportReply: Decodable {
+    let created: Bool
 }

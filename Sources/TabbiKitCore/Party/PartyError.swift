@@ -30,6 +30,15 @@ public enum PartyError: Error, Hashable, Sendable {
     /// The display name or pet name failed the name filter (`PartyNameFilter`).
     case nameNotAllowed
     case petNameNotAllowed
+    case selfBlock
+    case blockLimit
+    /// I blocked that user; unblock them before adding them.
+    case blocked
+    case selfReport
+    /// 20 reports in the last 24 hours.
+    case reportLimit
+    /// The maintainer banned this user from Party.
+    case banned
     /// Any other error code the server returned.
     case server(code: String, status: Int)
     /// The reply was not the JSON we expected.
@@ -57,6 +66,12 @@ public enum PartyError: Error, Hashable, Sendable {
         case "not_host": return .notHost
         case "name_not_allowed": return .nameNotAllowed
         case "pet_name_not_allowed": return .petNameNotAllowed
+        case "self_block": return .selfBlock
+        case "block_limit": return .blockLimit
+        case "blocked": return .blocked
+        case "self_report": return .selfReport
+        case "report_limit": return .reportLimit
+        case "banned": return .banned
         default: return status >= 500 ? .serverUnavailable : .server(code: code, status: status)
         }
     }
@@ -92,6 +107,12 @@ public enum PartyError: Error, Hashable, Sendable {
         case .notHost: return "Only the host can change the session."
         case .nameNotAllowed: return "That name isn't allowed. Please pick another."
         case .petNameNotAllowed: return "That pet name isn't allowed. Please pick another."
+        case .selfBlock: return "That's your own code."
+        case .blockLimit: return "You've blocked too many people. Unblock someone first."
+        case .blocked: return "You blocked them. Unblock them in Party options first."
+        case .selfReport: return "That's your own code."
+        case .reportLimit: return "You've sent a lot of reports today. Try again tomorrow."
+        case .banned: return "Party is no longer available for this account."
         case .server: return "The party server reported a problem."
         case .invalidResponse: return "Unexpected reply from the party server."
         case .transport: return "Couldn't reach the party server."

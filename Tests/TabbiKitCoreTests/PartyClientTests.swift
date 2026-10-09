@@ -156,6 +156,110 @@ final class PartyClientTests: XCTestCase {
         XCTAssertEqual(transport.requests.last?.path, "/v1/friends/B3NX9QRT")
     }
 
+    // MARK: Moderation
+
+    func testStandingReadsTheBanFlag() async throws {
+        let (client, _) = self.client(["GET /v1/me": .json(#"{"ok":true,"profile":\#(Fixture.ben),"banned":true}"#)])
+        let standing = try await client.standing()
+        XCTAssertTrue(standing.banned)
+        XCTAssertEqual(standing.profile.name, "Ben")
+
+        let (unbanned, _) = self.client(["GET /v1/me": .json(#"{"ok":true,"profile":\#(Fixture.ben)}"#)])
+        let fine = try await unbanned.standing()
+        XCTAssertFalse(fine.banned)
+    }
+
+    func testBlocksListDecodesNamesAndDates() async throws {
+        let (client, _) = self.client([
+            "GET /v1/blocks": .json(#"{"ok":true,"blocks":[{"code":"B3NX9QRT","name":"Ben","petName":"Biscuit","since":1789000000}]}"#),
+        ])
+        let blocks = try await client.blocks()
+        XCTAssertEqual(blocks, [PartyBlockedUser(code: "B3NX9QRT", name: "Ben", petName: "Biscuit",
+                                                 since: Date(timeIntervalSince1970: 1_789_000_000))])
+    }
+
+    func testBlockNormalizesTheCodeAndReadsTheReply() async throws {
+        let (client, transport) = self.client([
+            "POST /v1/blocks": .json(#"{"ok":true,"blocked":true,"block":{"code":"B3NX9QRT","name":"Ben","petName":"Biscuit"}}"#),
+        ])
+        let reply = try await client.block(code: "b3nx-9qrt")
+        XCTAssertTrue(reply.blocked)
+        XCTAssertEqual(reply.user.name, "Ben")
+        XCTAssertNil(reply.user.since)
+        XCTAssertEqual(transport.lastBody as? [String: String], ["code": "B3NX9QRT"])
+    }
+
+    func testBlockErrorsAreTyped() async {
+        let cases: [(String, Int, PartyError)] = [
+            ("self_block", 400, .selfBlock),
+            ("unknown_code", 404, .unknownCode),
+            ("block_limit", 409, .blockLimit),
+        ]
+        for (code, status, expected) in cases {
+            let (client, _) = self.client(["POST /v1/blocks": .json(Fixture.error(code), status: status)])
+            await assertThrows(expected) { try await client.block(code: "B3NX9QRT") }
+        }
+        let (client, transport) = self.client([:])
+        await assertThrows(.invalidRequest("invalid_field")) { try await client.block(code: "nope") }
+        XCTAssertTrue(transport.requests.isEmpty)
+    }
+
+    func testUnblockUsesTheCodeInThePath() async throws {
+        let (client, transport) = self.client(["DELETE /v1/blocks/B3NX9QRT": .json(#"{"ok":true,"unblocked":true}"#)])
+        let unblocked = try await client.unblock(code: "b3nx9qrt")
+        XCTAssertTrue(unblocked)
+        XCTAssertEqual(transport.requests.last?.path, "/v1/blocks/B3NX9QRT")
+    }
+
+    func testReportSendsTheReasonCodeAndATrimmedNote() async throws {
+        let (client, transport) = self.client(["POST /v1/reports": .json(#"{"ok":true,"created":true}"#, status: 201)])
+        let created = try await client.report(PartyReport(code: "b3nx9qrt", reason: .inappropriateName, note: "  rude pet name \n"))
+        XCTAssertTrue(created)
+        XCTAssertEqual(transport.lastBody as? [String: String],
+                       ["code": "B3NX9QRT", "reason": "inappropriate_name", "note": "rude pet name"])
+    }
+
+    func testReportLeavesOutAnEmptyNoteAndCutsALongOne() async throws {
+        let (client, transport) = self.client(["POST /v1/reports": .json(#"{"ok":true,"created":false}"#)])
+        let created = try await client.report(PartyReport(code: "B3NX9QRT", reason: .spam, note: "   "))
+        XCTAssertFalse(created)
+        XCTAssertNil(transport.lastBody["note"])
+        XCTAssertEqual(transport.lastBody["reason"] as? String, "spam")
+
+        let long = PartyReport(code: "B3NX9QRT", reason: .other, note: String(repeating: "a", count: 400))
+        XCTAssertEqual(long.sentNote?.count, PartyReport.noteLimit)
+    }
+
+    func testReportErrorsAreTyped() async {
+        let cases: [(String, Int, PartyError)] = [
+            ("self_report", 400, .selfReport),
+            ("unknown_code", 404, .unknownCode),
+            ("report_limit", 429, .reportLimit),
+        ]
+        for (code, status, expected) in cases {
+            let (client, _) = self.client(["POST /v1/reports": .json(Fixture.error(code), status: status)])
+            await assertThrows(expected) { try await client.report(PartyReport(code: "B3NX9QRT", reason: .harassment)) }
+        }
+    }
+
+    func testBannedAndBlockedErrorsAreTyped() async {
+        let (banned, _) = self.client(["POST /v1/party": .json(Fixture.error("banned"), status: 403)])
+        await assertThrows(.banned) { try await banned.createParty() }
+        let (blocked, _) = self.client(["POST /v1/friends": .json(Fixture.error("blocked"), status: 409)])
+        await assertThrows(.blocked) { try await blocked.addFriend(code: "B3NX9QRT") }
+    }
+
+    func testDemoBlockedListUsesValidCodes() {
+        let blocked = PartyBlockedUser.demo(now: Date())
+        XCTAssertFalse(blocked.isEmpty)
+        XCTAssertTrue(blocked.allSatisfy { PartyCode.friendCode($0.code) == $0.code })
+    }
+
+    func testReportReasonsMatchTheServerCodes() {
+        XCTAssertEqual(PartyReportReason.allCases.map(\.rawValue), ["inappropriate_name", "harassment", "spam", "other"])
+        XCTAssertEqual(PartyReportReason.allCases.map(\.title), ["Inappropriate name", "Harassment", "Spam", "Other"])
+    }
+
     // MARK: Presence and leaderboard
 
     func testHeartbeatSendsWholeSecondsAndOmitsUnsetCounters() async throws {
