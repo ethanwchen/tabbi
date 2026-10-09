@@ -11,3 +11,6 @@ DerivedData/
 # The website build output (site/build.py)
 site/dist/
 site/__pycache__/
+
+# The Mac App Store provisioning profile (scripts/release-appstore.sh)
+packaging/*.provisionprofile
