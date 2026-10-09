@@ -2,6 +2,9 @@
 
 What the whole-app quality pass found and fixed, newest first, one sentence per line.
 
+- At the Compact panel size Today's "Up next" card in its first-run "See what's next" and "Add your calendar" states was too tall, so the whole Today panel overflowed and clipped the add field and focus card; the card's explanation now gives up a line when space is short, with the full text in its tooltip.
+- At the Compact panel size the End-of-Day Review overflowed the canvas (the summary was pinned at three lines), clipping its last Done row and the top of the Up next and focus cards; the summary now gives up a line when space is short, with the full text in its tooltip.
+- At the Compact panel size the Plan my day header squeezed "Your plan" to "You..."; the header now tightens its gaps and drops the "Add all" icon first, so the title stays whole.
 - Today, the closed notch and Plan my day showed the daily focus time goal in raw minutes ("120 min left", "176 min left" beside the notch); goals counted in minutes now read as hours from an hour up ("2 h left", "2 h 56 min left"), and so does the End-of-Day Review.
 - VoiceOver found nothing to press on the notch: the closed notch now has an "Open Tabbi" button, the camera gap that closes the open panel is a "Close" button (it was an unlabeled shape), and the onboarding progress dots read "Step 1 of 7".
 - `swift build -c release` (what `scripts/bundle.sh` runs) warned that `InMemoryDefaults` restated `UserDefaults`' unavailable `Sendable` conformance, while debug builds were silent; the explicit conformance is gone.

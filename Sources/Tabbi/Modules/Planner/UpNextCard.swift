@@ -153,7 +153,9 @@ private struct UpNextMessage: View {
                 .font(Theme.Typography.caption)
                 .foregroundStyle(Theme.Palette.secondaryText)
                 .lineLimit(3)
-                .fixedSize(horizontal: false, vertical: true)
+                // Not fixed in height: in a short canvas (Compact) it gives up a
+                // line rather than push the panel past its edges.
+                .help(state.detail)
             if let action = state.action {
                 PlannerPillButton(title: state.actionTitle, help: state.actionHelp) { perform(action) }
                     .padding(.top, Theme.Spacing.xxs)
