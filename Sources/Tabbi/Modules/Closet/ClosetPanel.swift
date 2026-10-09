@@ -522,6 +522,7 @@ private struct ClosetItemTile: View {
         case .owned: "Owned"
         case .affordable: "\(isNew ? "New, " : "")unlock for \(item.cost) points"
         case .locked(let missing): "\(isNew ? "New, " : "")\(item.cost) points, \(missing) more to go"
+        case .unearned: "Limited edition, not earned yet. \(item.limitedEdition?.howToEarn ?? "")"
         }
     }
 
