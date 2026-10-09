@@ -3,8 +3,10 @@ import Combine
 import EventKit
 import TabbiKitCore
 
-/// The next seven days of calendar for the Schedule tab (today in the Day
-/// view, all of them in the Week view), read through EventKit (Google and
+/// Yesterday and the next seven days of calendar for the Schedule tab
+/// (today in the Day view, which steps back to yesterday and ahead to
+/// tomorrow, and the seven days from today in the Week view), read through
+/// EventKit (Google and
 /// other accounts come in through macOS Internet Accounts).
 ///
 /// Calendar access is only requested from the panel, never at launch.
@@ -21,7 +23,9 @@ import TabbiKitCore
 ///
 /// Plan offers the rest of today planned on device (`ScheduleDraft`, no
 /// Claude): other modules' open tasks and review goals, placed in the free
-/// time. The blocks show on the timeline until the user adds or skips them;
+/// time, or all of tomorrow's working day when the Day view shows tomorrow,
+/// so it can be planned the evening before. The blocks show on the
+/// timeline until the user adds or skips them;
 /// added ones are written to the default calendar as planned by Tabbi.
 /// When the `claude` CLI is installed, Refine offers the day plan to Claude
 /// for suggestions; that is optional and the local plan stays usable.
@@ -46,7 +50,10 @@ final class ScheduleStore: ObservableObject {
 
     @Published private(set) var access: Access
     @Published var mode: Mode = .day
-    /// Events and planned blocks from today through the next six days,
+    /// The day the Day view shows. Today unless the user stepped away; it
+    /// goes back to today when the panel closes.
+    @Published private(set) var viewing: PlannerViewedDay = .today
+    /// Events and planned blocks from yesterday through the next six days,
     /// all-day ones included.
     @Published private(set) var items: [ScheduleItem] = []
     /// Whether any calendar syncs from an online account, so an empty day can
@@ -98,7 +105,8 @@ final class ScheduleStore: ObservableObject {
             }
             now = ScheduleSampleData.now(on: date)
             let showsDay = preview != "notAsked" && preview != "denied" && preview != "freeDay"
-            items = showsDay ? ScheduleSampleData.weekItems(from: date) : []
+            items = showsDay ? ScheduleSampleData.yesterdayItems(before: date) + ScheduleSampleData.weekItems(from: date)
+                : []
             selectedID = preview == "selected" ? "demo-deck" : nil
             mode = preview?.hasPrefix("week") == true || preview?.hasPrefix("plan-week") == true ? .week : .day
             claudeFound = usesClaude
@@ -118,17 +126,26 @@ final class ScheduleStore: ObservableObject {
     }
 
     /// True when the day plan on offer can get a second look from Claude.
-    var canRefine: Bool { claudeFound && draft?.canRefine == true }
+    /// Claude's day prompt plans from now, so a plan for tomorrow stays local.
+    var canRefine: Bool { claudeFound && viewing == .today && draft?.canRefine == true }
 
     /// The calendar plus any blocks on offer.
     var shownItems: [ScheduleItem] {
         items + (draft?.items ?? [])
     }
 
-    /// The Day view's layout for the current items and clock.
+    /// Midnight of the day the Day view shows.
+    var shownDay: Date {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: now)
+        return calendar.date(byAdding: .day, value: viewing.rawValue, to: today) ?? today
+    }
+
+    /// The Day view's layout for the day shown and the current clock.
+    /// Another day keeps the usual working hours, as the Week view does.
     var dayLayout: ScheduleDayLayout {
-        ScheduleDayLayout(day: now, now: now, items: shownItems,
-                          preferences: planSettings.schedulePreferences(now: now))
+        ScheduleDayLayout(day: shownDay, now: now, items: shownItems,
+                          preferences: planSettings.schedulePreferences(now: viewing == .today ? now : shownDay))
     }
 
     /// The Week view's layout: today and the six days after it.
@@ -162,6 +179,7 @@ final class ScheduleStore: ObservableObject {
         } else {
             stopUpdates()
             if !isDemo { selectedID = nil }
+            show(.today)
         }
     }
 
@@ -182,18 +200,38 @@ final class ScheduleStore: ObservableObject {
         self.mode = mode
     }
 
+    /// Steps the Day view to yesterday, today or tomorrow. A plan on offer
+    /// belongs to the day it was made for, so it goes away.
+    func show(_ day: PlannerViewedDay) {
+        guard day != viewing else { return }
+        discardPlan()
+        viewing = day
+    }
+
+    /// Sets the day shown, and a plan on offer for it, for one snapshot.
+    /// Without calendar access there is no stepper, so it stays on today.
+    func showForSnapshot(_ day: PlannerViewedDay, planning: Bool = false) {
+        show(emptySituation == nil ? day : .today)
+        mode = .day
+        selectedID = nil
+        if planning, emptySituation == nil { planDay() } else { discardPlan() }
+    }
+
     func select(_ id: ScheduleItem.ID?) {
         // Offered blocks may change while Claude refines them.
         if isRefining, let id, draft?.items.contains(where: { $0.id == id }) == true { return }
         selectedID = selectedID == id ? nil : id
     }
 
-    /// Plans the rest of today around the calendar and shows the blocks on
-    /// the timeline. Demo mode plans its sample tasks around the demo day.
+    /// Plans the rest of today (or all of tomorrow's working day, when the
+    /// Day view shows tomorrow) around the calendar and shows the blocks on
+    /// the timeline. Yesterday is over, so there is nothing to plan there.
+    /// Demo mode plans its sample tasks around the demo day.
     func planDay() {
+        guard viewing != .yesterday else { return }
         startPlanning()
-        if !isDemo { checkClaude() }
-        draft = ScheduleDraft.plan(now: now, items: items, sharedTasks: isDemo ? ScheduleSampleData.tasks : sharedTasks,
+        if !isDemo, viewing == .today { checkClaude() }
+        draft = ScheduleDraft.plan(now: viewing == .today ? now : shownDay, items: items, sharedTasks: isDemo ? ScheduleSampleData.tasks : sharedTasks,
                                    progress: isDemo ? [] : progress, settings: planSettings)
     }
 
@@ -349,8 +387,9 @@ final class ScheduleStore: ObservableObject {
         }
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: now)
-        guard let end = calendar.date(byAdding: .day, value: Self.dayCount, to: startOfDay) else { return }
-        let predicate = eventStore.predicateForEvents(withStart: startOfDay, end: end, calendars: nil)
+        guard let start = calendar.date(byAdding: .day, value: -1, to: startOfDay),
+              let end = calendar.date(byAdding: .day, value: Self.dayCount, to: startOfDay) else { return }
+        let predicate = eventStore.predicateForEvents(withStart: start, end: end, calendars: nil)
         items = eventStore.events(matching: predicate).map(Self.item)
         if let selectedID, !shownItems.contains(where: { $0.id == selectedID }) { self.selectedID = nil }
         hasAccounts = eventStore.calendars(for: .event).contains { Self.syncsFromAccount($0.source) }

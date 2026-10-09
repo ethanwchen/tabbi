@@ -293,7 +293,7 @@ private struct PlannerHeader: View {
     private func dateAndCount(_ date: Date.FormatStyle?, _ count: String) -> some View {
         let day = store.shownDay.date.startDate()
         return HStack(spacing: Theme.Spacing.s) {
-            PlannerDayStepper(store: store) {
+            DayStepper(viewing: store.viewing, show: { store.show($0) }) {
                 HStack(spacing: Theme.Spacing.xs) {
                     if let title = store.viewing.title {
                         Text(title)

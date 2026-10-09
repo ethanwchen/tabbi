@@ -5,39 +5,44 @@ import TabbiKit
 /// The header's day title between two small arrows that step to yesterday
 /// and tomorrow. Clicking the title of another day goes back to today. An
 /// arrow with nowhere to go stays in place, dimmed, so the title never shifts.
-struct PlannerDayStepper<Title: View>: View {
-    @ObservedObject var store: PlannerStore
+/// Today steps its checklist with it and Schedule its Day view.
+struct DayStepper<Title: View>: View {
+    let viewing: PlannerViewedDay
+    /// Tooltips of the arrows that leave today, naming what they show.
+    var yesterdayHelp = "Show yesterday's list"
+    var tomorrowHelp = "Plan tomorrow"
+    let show: (PlannerViewedDay) -> Void
     @ViewBuilder var title: Title
 
     var body: some View {
         HStack(spacing: Theme.Spacing.xxs) {
-            arrow("chevron.left", to: store.viewing.previous, help: "Show yesterday's list")
-            if store.viewing == .today {
+            arrow("chevron.left", to: viewing.previous, help: yesterdayHelp)
+            if viewing == .today {
                 title
             } else {
                 Button { step(to: .today) } label: { title }
                     .buttonStyle(.plain)
                     .help("Back to today")
             }
-            arrow("chevron.right", to: store.viewing.next, help: "Plan tomorrow")
+            arrow("chevron.right", to: viewing.next, help: tomorrowHelp)
         }
     }
 
     private func arrow(_ symbol: String, to day: PlannerViewedDay?, help: String) -> some View {
-        PlannerStepArrow(symbol: symbol, help: day == .today ? "Back to today" : help) {
+        DayStepArrow(symbol: symbol, help: day == .today ? "Back to today" : help) {
             if let day { step(to: day) }
         }
         .disabled(day == nil)
     }
 
     private func step(to day: PlannerViewedDay) {
-        withMotion(Theme.Motion.snappy) { store.show(day) }
+        withMotion(Theme.Motion.snappy) { show(day) }
     }
 }
 
 /// A chevron with a round hover background, quieter than `IconButton` so it
 /// reads as part of the title.
-private struct PlannerStepArrow: View {
+private struct DayStepArrow: View {
     let symbol: String
     let help: String
     let action: () -> Void
