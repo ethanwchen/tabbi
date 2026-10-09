@@ -248,7 +248,7 @@ ABOUT = f'''
         <p class="about-lead">Hi, it&rsquo;s Ethan.</p>
         <p>I made Tabbi because I wanted my study tools in one cozy spot, right where I already look: the notch.</p>
         <p>It&rsquo;s free and open source. No ads, no tracking, no account needed.</p>
-        <p>If Tabbi helps you focus, a star or a coffee means a lot.</p>
+        <p>If Tabbi helps you focus, a&nbsp;star or a&nbsp;coffee means a lot.</p>
         <div class="cta center">
           <a class="btn" href="https://buymeacoffee.com/ethanpolar">Buy me a coffee</a>
           <a class="btn soft" href="{GITHUB}">Star on GitHub</a>

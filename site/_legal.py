@@ -17,7 +17,7 @@ MAIL = f'<a href="mailto:{SUPPORT_EMAIL}">{SUPPORT_EMAIL}</a>'
 # Privacy
 # --------------------------------------------------------------------------
 
-PRIVACY_HERO = ('Privacy Policy', 'What stays on your Mac, what the optional friends service and account keep, and how to delete them.')
+PRIVACY_HERO = ('Privacy Policy', 'What stays on your Mac, what leaves it, and how to delete it.')
 
 PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
 
