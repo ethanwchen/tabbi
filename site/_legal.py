@@ -9,7 +9,7 @@ the same at the top.
 
 from _partials import GITHUB, SUPPORT_EMAIL
 
-EFFECTIVE = '8 October 2026'
+EFFECTIVE = '9 October 2026'
 
 MAIL = f'<a href="mailto:{SUPPORT_EMAIL}">{SUPPORT_EMAIL}</a>'
 
@@ -28,6 +28,7 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
           <li>Your tasks, calendar, activity history, Claude chats and settings stay on your Mac.</li>
           <li>Claude features run through the <code>claude</code> command already installed on your Mac. Tabbi never reads your credentials.</li>
           <li>Only the optional Party tab and the optional Sign in with Apple talk to a Tabbi server. They store a nickname, your pet and study stats, never your email, real name or IP address.</li>
+          <li>The one exception is a crash report, which Tabbi sends only if you say yes after a crash.</li>
           <li>We do not sell or share personal information, and we do not use it to train anything.</li>
           <li>You can delete your Party data or your account at any time, inside the app: see <a href="#deleting">Deleting your data</a>.</li>
         </ul>
@@ -49,6 +50,8 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
         <li><strong>Screenshots</strong> for Ask Claude use Screen Recording permission and go only to your local <code>claude</code> command.</li>
       </ul>
       <p class="measure"><strong>Updates.</strong> Once a day Tabbi downloads its release feed from GitHub to check for a new version. Nothing about you is sent, though GitHub sees the request like any web server. You can turn this off in <strong>Settings &gt; About</strong>.</p>
+      <p class="measure"><strong>Crash reports.</strong> After a crash, Tabbi asks before sending a report, which holds only the Tabbi and macOS versions, the edition, the crash type and the app's stack trace, never your content, names, tasks or tokens; we keep it at most 90 days.
+        The Mac App Store edition sends none and relies on Apple's crash reports.</p>
 
       <h2 id="friends">3. The friends service (Party)</h2>
       <p class="measure">Party is optional and off unless you turn it on.
@@ -139,6 +142,7 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
 
       <h2>7. Why we are allowed to</h2>
       <p class="measure">Where the GDPR or UK GDPR applies, we process friends-service and account data to provide the features you turned on (Article 6(1)(b)) and in our legitimate interest in keeping the service secure and free of abuse (Article 6(1)(f)).
+        Crash reports are sent only with your consent (Article 6(1)(a)).
         We answer email on the basis of our legitimate interest in helping you.</p>
 
       <h2>8. Who else is involved</h2>
