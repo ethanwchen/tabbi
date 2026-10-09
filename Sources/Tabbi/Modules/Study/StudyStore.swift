@@ -113,7 +113,7 @@ final class StudyStore: ObservableObject {
     ///   - petProfile: the study pet's look now; `follow(pet:)` keeps it
     ///     current. Demo runs show their own sample pet.
     ///   - celebrations: plays a paw print burst when a block finishes
-    ///     while the panel shows; nil in tests.
+    ///     while the panel shows, or a pet cheer beside the closed notch.
     ///   - defaults: where the session and settings are saved; tests pass
     ///     a suite of their own.
     ///   - interruptions: where sleep and quit are announced; tests pass
@@ -497,13 +497,13 @@ final class StudyStore: ObservableObject {
         focusMode?.activityChanged(FocusActivity(session, deepFocus: deepFocus && isEnabled), from: .study)
     }
 
-    /// Plays the pet's reaction to a session change. A celebration that
-    /// would happen out of sight waits for the panel to show; one in view
-    /// also scatters paw prints over the panel.
+    /// Plays the pet's reaction to a session change. A celebration in view
+    /// scatters paw prints over the panel; one with the notch closed makes
+    /// the pet beside it cheer; one behind another tab waits for this panel.
     private func reactPet(from old: StudySession) {
         for event in StudyPetCue.events(from: old, to: session) {
             if event == .celebrate, !isVisible {
-                celebrationPending = true
+                if !cheerBesideClosedNotch() { celebrationPending = true }
             } else {
                 pet.send(event)
                 if event == .celebrate {
@@ -512,6 +512,18 @@ final class StudyStore: ObservableObject {
                 }
             }
         }
+    }
+
+    /// Asks the pet beside the closed notch to cheer for the block that just
+    /// finished. A block that ended a while ago (the Mac was busy or asleep)
+    /// stays quiet. A block that ran out already chimes, so the cheer only
+    /// adds its soft sound to one the user ended (a Flowtime stretch).
+    /// Returns whether the cheer plays; it doesn't with a panel open.
+    private func cheerBesideClosedNotch() -> Bool {
+        guard !isDemo, !isSnapshot, let celebrations,
+              let block = session.log.last(where: { !$0.phase.isBreak }),
+              Date().timeIntervalSince(block.endedAt) < 60 else { return false }
+        return celebrations.cheer(.dance, hasOwnSound: block.outcome != .stopped) != nil
     }
 
     /// Saves the last-alive time now and every `FocusStore.heartbeatInterval`
