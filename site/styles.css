@@ -77,8 +77,11 @@ h1, h2, h3 { font-family: var(--head); font-weight: 600; line-height: 1.2; text-
 p, li, figcaption { text-wrap: pretty; }
 code {
   font-family: ui-monospace, 'SF Mono', Menlo, monospace;
-  font-size: 0.86em; background: var(--card-2); padding: 0.1em 0.45em; border-radius: 7px;
+  /* A dark see-through chip shows on the ground, a card and a card inside a card. */
+  font-size: 0.86em; background: rgba(0, 0, 0, 0.24); padding: 0.1em 0.45em; border-radius: 7px;
   overflow-wrap: anywhere;
+  /* A path that wraps gets rounded ends and padding on every line. */
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
 }
 
 a { color: var(--link); text-decoration: none; }
