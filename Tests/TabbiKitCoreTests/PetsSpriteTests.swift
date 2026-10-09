@@ -73,6 +73,19 @@ final class PetPaletteTests: XCTestCase {
         XCTAssertGreaterThan(mask, palette[PetBreed.siamese.pattern.role(for: .ears)].luminance)
     }
 
+    func testCalicoPatchesAreBigEnoughToReadAsCalico() {
+        let palette = PetBreed.calico.palette
+        let orange = palette[.furAccent], black = palette[.furSpot]
+        // Sitting shows head and body; walking hides the front half behind the head.
+        let canvases = [(PetComposer.sitting(.calico), 32), (PetComposer.clip(.walk, for: .calico).frames[0].canvas, 24)]
+        for (canvas, minimum) in canvases {
+            let colors = canvas.colors(using: palette)
+            // Both patches cover a real share of the white coat, not a speck on an ear.
+            XCTAssertGreaterThanOrEqual(colors.filter { $0 == orange }.count, minimum)
+            XCTAssertGreaterThanOrEqual(colors.filter { $0 == black }.count, minimum)
+        }
+    }
+
     func testRoleSymbolsAreUniqueAndRoundTrip() {
         let symbols = PetPaletteRole.allCases.map(\.symbol) + PetPatternZone.allCases.map(\.symbol)
         XCTAssertEqual(Set(symbols).count, symbols.count)
