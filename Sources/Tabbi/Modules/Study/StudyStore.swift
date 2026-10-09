@@ -264,8 +264,16 @@ final class StudyStore: ObservableObject {
         } else if session.isRunning {
             change { $0.pause(at: now) }
         } else {
-            change { $0.start(at: now) }
+            start()
         }
+    }
+
+    /// Starts or resumes the clock, with a light start cue for a new
+    /// focus block.
+    private func start() {
+        let cue = SessionCue.start(wasIdle: session.runState == .idle, isFocus: session.phase == .focus)
+        change { $0.start(at: now) }
+        if !isDemo, !isSnapshot, let cue, session.isRunning { celebrations?.play(cue) }
     }
 
     func pause() {
@@ -323,7 +331,7 @@ final class StudyStore: ObservableObject {
         setTimer(length)
         catchUp()
         guard session.method.kind == .timer, session.runState == .idle else { return }
-        change { $0.start(at: now) }
+        start()
     }
 
     /// Follows a new kit: the picker offers its methods, and a stopped
@@ -441,6 +449,7 @@ final class StudyStore: ObservableObject {
         // Stale ends (the Mac was asleep) stay quiet.
         if !isDemo, let last = ended.last, now.timeIntervalSince(last.endedAt) < 60 {
             Self.playChime()
+            if !isSnapshot, let cue = SessionCue.phaseEnded(wasBreak: last.phase.isBreak) { celebrations?.play(cue) }
         }
         scheduleSideEffects()
         updateTicker()

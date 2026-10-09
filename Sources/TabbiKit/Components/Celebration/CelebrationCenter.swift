@@ -41,6 +41,7 @@ public final class CelebrationCenter: ObservableObject {
     private let hapticsEnabled: () -> Bool
     private let soundEnabled: () -> Bool
     private let playSound: @MainActor (CelebrationSound) -> Void
+    private let performHaptic: @MainActor (NSHapticFeedbackManager.FeedbackPattern) -> Void
     private let now: () -> Date
 
     /// - Parameters:
@@ -48,15 +49,19 @@ public final class CelebrationCenter: ObservableObject {
     ///   - hapticsEnabled: read at each celebration, so it follows Settings.
     ///   - soundEnabled: read at each celebration, so it follows Settings.
     ///   - playSound: plays a cue; tests pass their own to hear nothing.
+    ///   - performHaptic: taps the trackpad; tests pass their own.
     ///   - now: the clock the pacer measures against; tests pass their own.
     public init(isEnabled: Bool = true, hapticsEnabled: @escaping () -> Bool = { true },
                 soundEnabled: @escaping () -> Bool = { false },
                 playSound: @escaping @MainActor (CelebrationSound) -> Void = CelebrationCenter.play,
+                performHaptic: @escaping @MainActor (NSHapticFeedbackManager.FeedbackPattern) -> Void
+                    = CelebrationCenter.perform,
                 now: @escaping () -> Date = Date.init) {
         self.isEnabled = isEnabled
         self.hapticsEnabled = hapticsEnabled
         self.soundEnabled = soundEnabled
         self.playSound = playSound
+        self.performHaptic = performHaptic
         self.now = now
     }
 
@@ -110,10 +115,24 @@ public final class CelebrationCenter: ObservableObject {
         return cheer
     }
 
-    private func tapHaptic() {
+    /// Marks a turning point of a session (a focus block starting, a break
+    /// running out) with a light tap and, when Settings allow it, the cue's
+    /// soft sound. Plays wherever the notch is, since it is too small to
+    /// need a stage, and never in a snapshot run.
+    public func play(_ cue: SessionCue) {
+        guard isEnabled else { return }
+        tapHaptic(cue == .focusStarted ? .generic : .levelChange)
+        if let sound = cue.sound(isEnabled: soundEnabled()) { playSound(sound) }
+    }
+
+    private func tapHaptic(_ pattern: NSHapticFeedbackManager.FeedbackPattern = .levelChange) {
         guard hapticsEnabled() else { return }
-        // Only felt on a Force Touch trackpad with a finger on it.
-        NSHapticFeedbackManager.defaultPerformer.perform(.levelChange, performanceTime: .now)
+        performHaptic(pattern)
+    }
+
+    /// Taps the trackpad; only felt on a Force Touch trackpad with a finger on it.
+    public static func perform(_ pattern: NSHapticFeedbackManager.FeedbackPattern) {
+        NSHapticFeedbackManager.defaultPerformer.perform(pattern, performanceTime: .now)
     }
 
     /// Plays `sound` as a quiet macOS system sound.

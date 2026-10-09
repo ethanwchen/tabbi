@@ -111,7 +111,9 @@ final class FocusStore: ObservableObject {
             // is still undecided, so schedule it again once the user allows it.
             notifications?.requestAuthorizationIfNeeded { [weak self] in self?.rescheduleNotification() }
         }
+        let cue = SessionCue.start(wasIdle: timer.runState == .idle, isFocus: timer.phase == .focus)
         change { $0.start(at: now) }
+        if !isEphemeral, let cue, timer.isRunning { celebrations?.play(cue) }
     }
 
     func pause() {
@@ -206,6 +208,8 @@ final class FocusStore: ObservableObject {
                 } else {
                     celebrations.cheer(.dance, hasOwnSound: true)
                 }
+            } else if let cue = SessionCue.phaseEnded(wasBreak: last.phase == .rest) {
+                celebrations?.play(cue)
             }
         }
         scheduleSideEffects(withdrawingPending: false)
