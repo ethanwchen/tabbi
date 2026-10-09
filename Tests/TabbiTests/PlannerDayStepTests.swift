@@ -152,6 +152,37 @@ final class PlannerDayStepTests: XCTestCase {
         XCTAssertNil(store.viewing.planStart(now: Date()))
     }
 
+    func testClosingThePanelKeepsAPlanForTomorrowAndOtherwiseReturnsToToday() {
+        let store = makeStore(runMode: .demo)
+        store.show(.tomorrow)
+        store.panelClosed()
+        XCTAssertEqual(store.viewing, .today)
+
+        store.show(.tomorrow)
+        store.planTomorrow()
+        store.panelClosed()
+        XCTAssertEqual(store.viewing, .tomorrow, "the plan waits on tomorrow for the next open")
+        XCTAssertEqual(store.plan.target, .tomorrow)
+        XCTAssertTrue(store.plan.isActive)
+
+        store.plan.cancel()
+        store.panelClosed()
+        XCTAssertEqual(store.viewing, .today)
+    }
+
+    func testAnUnreadableTodayDoesNotPullTomorrowsEditsBackToToday() throws {
+        try FileManager.default.createDirectory(at: repository.directory, withIntermediateDirectories: true)
+        try Data("garbage".utf8).write(to: repository.fileURL(for: today))
+        let store = makeStore()
+        XCTAssertEqual(store.problem, .unreadable(fileName: "\(today.rawValue).json"))
+
+        store.show(.tomorrow)
+        XCTAssertTrue(store.add("Planned"))
+        XCTAssertEqual(store.viewing, .tomorrow)
+        XCTAssertEqual(try repository.load(tomorrow)?.items.map(\.title), ["Planned"])
+        XCTAssertEqual(try Data(contentsOf: repository.fileURL(for: today)), Data("garbage".utf8))
+    }
+
     func testAnUnreadableTomorrowIsNeverOverwritten() throws {
         try FileManager.default.createDirectory(at: repository.directory, withIntermediateDirectories: true)
         try Data("garbage".utf8).write(to: repository.fileURL(for: tomorrow))

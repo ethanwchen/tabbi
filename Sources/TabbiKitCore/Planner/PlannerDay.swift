@@ -222,11 +222,15 @@ public struct PlannerDay: Hashable, Codable, Sendable {
     /// Takes in the unfinished items of `previous` (the day before) ahead of
     /// what was planned for this day, and marks the day as started. Items
     /// keep their identity and creation date so history stays traceable.
+    /// The planned items stay exactly as they are (a task already checked
+    /// off stays done, two with the same title both stay); a leftover whose
+    /// id or title is already planned is not taken in again.
     public mutating func takeCarryOver(from previous: PlannerDay?) {
+        let leftovers = previous?.unfinished(missingFrom: self) ?? []
         let planned = items
         items = []
-        if let previous { adopt(previous.items.filter { !$0.isDone }) }
-        adopt(planned)
+        adopt(leftovers)
+        items += planned
         isPlannedAhead = false
     }
 

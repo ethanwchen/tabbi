@@ -20,9 +20,7 @@ struct DayStepper<Title: View>: View {
             if viewing == .today {
                 title
             } else {
-                Button { step(to: .today) } label: { title }
-                    .buttonStyle(.plain)
-                    .help("Back to today")
+                DayTitleButton(action: { step(to: .today) }, label: { title })
             }
             arrow("chevron.right", to: viewing.next, help: tomorrowHelp)
         }
@@ -62,6 +60,28 @@ private struct DayStepArrow: View {
         .buttonStyle(.plain)
         .help(isEnabled ? help : "")
         .onHover { hovering = $0 && isEnabled }
+        .motion(Theme.Motion.snappy, value: hovering)
+    }
+}
+
+/// Another day's title, which goes back to today. It lights up on hover
+/// like the arrows beside it, so it reads as clickable.
+private struct DayTitleButton<Label: View>: View {
+    let action: () -> Void
+    @ViewBuilder var label: Label
+    @State private var hovering = false
+
+    var body: some View {
+        Button(action: action) {
+            label
+                .padding(.horizontal, Theme.Spacing.xxs)
+                .frame(height: 20)
+                .background(Capsule().fill(hovering ? Theme.Palette.surfaceHover : .clear))
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .help("Back to today")
+        .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }
 }

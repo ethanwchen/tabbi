@@ -155,11 +155,25 @@ final class PlannerStore: ObservableObject {
     func refreshDay() {
         let today = PlannerDayKey(date: Date())
         guard repository != nil, today != day.date || problem.isUnreadable else { return }
+        let isNewDay = today != day.date
         load(today)
-        // A plan for what was tomorrow is about the wrong day now.
-        if plan.target != .today { plan.cancel() }
-        viewing = .today
+        if isNewDay {
+            // A plan for what was tomorrow is about the wrong day now.
+            if plan.target != .today { plan.cancel() }
+            viewing = .today
+        }
         loadOtherDay()
+    }
+
+    /// Puts the panel back on today for the next time it opens. A plan for
+    /// tomorrow that is still running or on offer keeps tomorrow on screen
+    /// instead, so closing the notch never throws it away.
+    func panelClosed() {
+        if plan.isActive && plan.target != .today && viewing == plan.target {
+            refreshDay()
+            return
+        }
+        show(.today)
     }
 
     /// Shows `viewed` in the checklist, reading its list fresh. Plan my day

@@ -103,8 +103,8 @@ struct PlannerPanel: View {
         .onChange(of: focus) { _, field in notch.isPinned = field != nil }
         .onDisappear {
             notch.isPinned = false
-            // Today is what the panel opens on, every time.
-            store.show(.today)
+            // Today is what the panel opens on, unless a plan for tomorrow is waiting.
+            store.panelClosed()
             store.upNext.setVisible(false)
             store.focus.setVisible(false, viewer: .today)
         }

@@ -263,11 +263,31 @@ final class PlannerRepositoryTests: XCTestCase {
         plan.add("write REPORT", now: now)
         try repository.save(plan)
 
+        // The planned "write REPORT" stands in for the leftover of that name.
         let opened = try repository.open(tomorrow)
-        XCTAssertEqual(opened.items.map(\.title), ["Write report", "Call the dentist"])
-        XCTAssertEqual(opened.items.first?.id, open.id)
+        XCTAssertEqual(opened.items.map(\.title), ["Call the dentist", "write REPORT"])
+        XCTAssertFalse(opened.items.contains { $0.id == open.id })
         XCTAssertFalse(opened.isPlannedAhead)
         XCTAssertEqual(try repository.load(tomorrow), opened)
+    }
+
+    func testPlannedTasksKeepTheirStateWhenTheDayComes() throws {
+        let tomorrow = oct1.adding(days: 1)
+        var today = try repository.open(oct1)
+        let leftover = try XCTUnwrap(today.add("Write report", now: now))
+        try repository.save(today)
+
+        var plan = try repository.peek(tomorrow, today: oct1)
+        let done = try XCTUnwrap(plan.add("Book flights", now: now))
+        plan.toggle(done.id, now: now)
+        let first = try XCTUnwrap(plan.add("Stretch", now: now))
+        let second = try XCTUnwrap(plan.add("Stretch", now: now))
+        try repository.save(plan)
+
+        let opened = try repository.open(tomorrow)
+        XCTAssertEqual(opened.items.map(\.id), [leftover.id, done.id, first.id, second.id])
+        XCTAssertEqual(opened.items.map(\.isDone), [false, true, false, false])
+        XCTAssertNotNil(opened.items[1].completedAt)
     }
 
     func testPlannedAheadDayTakesInLeftoversOnlyOnce() throws {
