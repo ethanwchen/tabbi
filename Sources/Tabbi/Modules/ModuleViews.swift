@@ -23,14 +23,19 @@ enum ModuleViews {
     }
 
     /// Hooks the shared `NotchView` up to this app: registered module panels
-    /// (each a stage for celebrations), the music wings, the Settings window
+    /// (each a stage for celebrations, with the user's pet in their empty
+    /// and error states), the music wings, the Settings window
     /// and first-run onboarding.
     @MainActor
     static func notchContent(services: AppServices) -> NotchContent {
         NotchContent(
             appName: Edition.current.name,
             catalog: services.settings.catalog,
-            panel: { AnyView(services.modules.panel(for: $0).celebrationStage(services.celebrations)) },
+            panel: { id in
+                AnyView(StatusPetProvider(providers: services.providers) {
+                    services.modules.panel(for: id).celebrationStage(services.celebrations)
+                })
+            },
             nowPlayingLeading: { AnyView(compactLeading(services: services)) },
             nowPlayingTrailing: { AnyView(compactTrailing(services: services)) },
             openSettings: { services.openSettings() },
@@ -42,6 +47,17 @@ enum ModuleViews {
                 services?.modules.perform(action, on: module)
             }
         )
+    }
+
+    /// Hands panels the shared pet (`ProviderSnapshot.pet`) for their
+    /// `StatusMessage`s, following it as the user restyles or turns it off.
+    private struct StatusPetProvider<Content: View>: View {
+        @ObservedObject var providers: ProviderHub
+        @ViewBuilder let content: Content
+
+        var body: some View {
+            content.environment(\.statusPet, providers.snapshot.pet?.profile)
+        }
     }
 
     /// Feeds `NotchController` the settings, hotkey recorder and ticker
