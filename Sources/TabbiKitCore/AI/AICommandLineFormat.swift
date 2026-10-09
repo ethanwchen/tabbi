@@ -3,7 +3,7 @@ import Foundation
 /// How Tabbi runs each command line tool and reads its output, kept pure so
 /// the flags and decoders are unit tested.
 ///
-/// Every tool runs non-interactively in a fresh temporary folder (so no
+/// Every tool runs non-interactively in a temporary folder (so no
 /// project instructions are picked up) with its tools turned off or
 /// read-only, answers in JSON lines, and exits.
 public enum AICommandLineFormat {
@@ -45,7 +45,9 @@ public enum AICommandLineFormat {
         case .codexCLI:
             var arguments = ["exec", "--json", "--skip-git-repo-check", "--sandbox", "read-only"]
             if !model.isEmpty { arguments += ["--model", model] }
-            for path in imagePaths { arguments += ["--image", path] }
+            // `--image` takes several values, so a separate value would
+            // also swallow `resume` and the session id; `=` ends it.
+            for path in imagePaths { arguments.append("--image=\(path)") }
             if let resume { arguments += ["resume", resume] }
             // After `--`, a question that starts with `-` is never a flag.
             return Invocation(arguments: arguments + ["--", promptWithSystem(for: request)])

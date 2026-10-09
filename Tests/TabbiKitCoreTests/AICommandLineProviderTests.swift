@@ -109,7 +109,7 @@ final class AICommandLineFormatTests: XCTestCase {
         )
         XCTAssertEqual(invocation.arguments, [
             "exec", "--json", "--skip-git-repo-check", "--sandbox", "read-only",
-            "--model", "gpt-5", "--image", "run/image-1.png", "resume", "t1", "--", "-v",
+            "--model", "gpt-5", "--image=run/image-1.png", "resume", "t1", "--", "-v",
         ])
         XCTAssertNil(invocation.input)
     }
@@ -227,6 +227,27 @@ final class AICommandLineProviderTests: XCTestCase {
         XCTAssertEqual(run.executable, Self.executable)
         XCTAssertEqual(run.workingDirectory, folder)
         XCTAssertTrue(run.environment["PATH"]?.hasPrefix("/opt/homebrew/bin:") == true)
+    }
+
+    func testCodexAndGeminiRunInAnEmptyFolderOfTheirOwn() async throws {
+        let temporary = FileManager.default.temporaryDirectory
+        XCTAssertEqual(AICommandLineProvider.defaultWorkingDirectory(for: .claudeCLI), temporary)
+        let codex = AICommandLineProvider.defaultWorkingDirectory(for: .codexCLI)
+        let gemini = AICommandLineProvider.defaultWorkingDirectory(for: .geminiCLI)
+        XCTAssertNotEqual(codex, gemini)
+        XCTAssertEqual(codex.deletingLastPathComponent().deletingLastPathComponent().standardizedFileURL, temporary.standardizedFileURL)
+
+        let recorder = Recorder()
+        let provider = AICommandLineProvider(
+            id: .geminiCLI,
+            locate: { Self.executable },
+            runner: replay([#"{"type":"result","status":"success"}"#], recorder: recorder)
+        )
+        _ = try await provider.answer(.prompt("Hi"))
+        let run = try XCTUnwrap(recorder.runs.first)
+        XCTAssertEqual(run.workingDirectory, gemini)
+        var isFolder: ObjCBool = false
+        XCTAssertTrue(FileManager.default.fileExists(atPath: gemini.path, isDirectory: &isFolder) && isFolder.boolValue)
     }
 
     func testImagesAreWrittenForTheRunAndRemovedAfter() async throws {

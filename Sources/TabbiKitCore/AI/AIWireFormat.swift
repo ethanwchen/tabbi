@@ -88,12 +88,14 @@ public enum AIWireFormat {
         return [
             "model": model,
             "stream": true,
-            "max_completion_tokens": request.maxTokens,
+            "max_completion_tokens": request.maxTokens + reasoningHeadroom(for: .openAI, model: model),
             "messages": system + messages,
         ]
     }
 
     private static func geminiBody(_ request: AIRequest) -> [String: Any] {
+        let model = request.resolvedModel(for: .gemini)
+        let maxOutputTokens = request.maxTokens + reasoningHeadroom(for: .gemini, model: model)
         var body: [String: Any] = [
             "contents": request.messages.map { message -> [String: Any] in
                 let images: [[String: Any]] = message.images.map {
@@ -103,10 +105,30 @@ public enum AIWireFormat {
                 let role = message.role == .user ? "user" : "model"
                 return ["role": role, "parts": images + [["text": message.text]]]
             },
-            "generationConfig": ["maxOutputTokens": request.maxTokens],
+            "generationConfig": ["maxOutputTokens": maxOutputTokens],
         ]
         if let system = request.system { body["system_instruction"] = ["parts": [["text": system]]] }
         return body
+    }
+
+    /// Extra output tokens for a model that reasons before it answers.
+    /// OpenAI's reasoning models and Gemini's thinking models count their
+    /// reasoning toward the output limit, so without room for it a long
+    /// answer (Plan my day's JSON) could be cut off or never start. Only
+    /// the tokens used are billed. Older models get none, since some
+    /// refuse a limit above what they can write.
+    static func reasoningHeadroom(for provider: AIProviderID, model: String) -> Int {
+        let model = model.lowercased()
+        switch provider {
+        case .openAI:
+            let reasons = ["o1", "o3", "o4", "gpt-5"].contains { model.hasPrefix($0) }
+            return reasons ? 8192 : 0
+        case .gemini:
+            let thinks = model.hasPrefix("gemini-") && !model.hasPrefix("gemini-1.") && !model.hasPrefix("gemini-2.0")
+            return thinks ? 8192 : 0
+        default:
+            return 0
+        }
     }
 
     private static func ollamaBody(_ request: AIRequest, model: String) -> [String: Any] {
@@ -123,7 +145,9 @@ public enum AIWireFormat {
 
     /// The events in one line of `provider`'s streaming response. Blank
     /// lines, `event:` names, keep-alives and unknown shapes yield nothing;
-    /// an error the provider reports mid-stream throws `AIProviderError`.
+    /// an error the provider reports mid-stream throws `AIProviderError`,
+    /// and so does an answer the token limit cut off (`cutOff`), so a
+    /// feature never takes half an answer for a whole one.
     public static func events(fromLine line: String, provider: AIProviderID) throws -> [AIStreamEvent] {
         let payload: String
         if provider == .ollama {
@@ -141,6 +165,10 @@ public enum AIWireFormat {
         switch provider {
         case .anthropic:
             switch object["type"] as? String {
+            case "message_delta":
+                let stop = (object["delta"] as? [String: Any])?["stop_reason"] as? String
+                if stop == "max_tokens" { throw AIProviderError.cutOff }
+                return []
             case "content_block_delta":
                 let delta = object["delta"] as? [String: Any]
                 guard delta?["type"] as? String == "text_delta", let text = delta?["text"] as? String else { return [] }
@@ -152,10 +180,12 @@ public enum AIWireFormat {
             }
         case .openAI:
             let choices = object["choices"] as? [[String: Any]] ?? []
+            if choices.contains(where: { $0["finish_reason"] as? String == "length" }) { throw AIProviderError.cutOff }
             let text = choices.compactMap { ($0["delta"] as? [String: Any])?["content"] as? String }.joined()
             return text.isEmpty ? [] : [.textDelta(text)]
         case .gemini:
             let candidates = object["candidates"] as? [[String: Any]] ?? []
+            if candidates.contains(where: { $0["finishReason"] as? String == "MAX_TOKENS" }) { throw AIProviderError.cutOff }
             let parts = candidates.compactMap { ($0["content"] as? [String: Any])?["parts"] as? [[String: Any]] }
             // Thinking models stream their thoughts as parts marked `thought`.
             let text = parts.joined().filter { $0["thought"] as? Bool != true }.compactMap { $0["text"] as? String }.joined()
@@ -163,7 +193,10 @@ public enum AIWireFormat {
         case .ollama:
             let text = (object["message"] as? [String: Any])?["content"] as? String ?? ""
             var events: [AIStreamEvent] = text.isEmpty ? [] : [.textDelta(text)]
-            if object["done"] as? Bool == true { events.append(.finished(text: nil)) }
+            if object["done"] as? Bool == true {
+                if object["done_reason"] as? String == "length" { throw AIProviderError.cutOff }
+                events.append(.finished(text: nil))
+            }
             return events
         case .claudeCLI, .codexCLI, .geminiCLI:
             return []

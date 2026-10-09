@@ -26,10 +26,11 @@ public struct AICommandLineProvider: AIProvider {
 
     /// `workingDirectory` stays the same across runs because Claude Code
     /// and Gemini CLI keep sessions per folder, and a chat resumes there.
+    /// It defaults to `defaultWorkingDirectory(for:)`.
     public init(
         id: AIProviderID,
         locate: Locator? = nil,
-        workingDirectory: URL = FileManager.default.temporaryDirectory,
+        workingDirectory: URL? = nil,
         runner: @escaping Runner = AICommandLineProvider.process
     ) {
         guard case .cli(let executable) = id.transport else {
@@ -37,8 +38,22 @@ public struct AICommandLineProvider: AIProvider {
         }
         self.id = id
         self.locate = locate ?? { AIExecutableLocator.locate(executable) }
-        self.workingDirectory = workingDirectory
+        self.workingDirectory = workingDirectory ?? Self.defaultWorkingDirectory(for: id)
         self.runner = runner
+    }
+
+    /// Where each tool runs. Codex and Gemini CLI can read their folder
+    /// (Gemini lists it in its first prompt), so they get an empty one of
+    /// their own instead of the shared temporary folder, whose file names
+    /// would otherwise go to the provider. Claude Code runs with no tools
+    /// at all and stays in the temporary folder, where its earlier chats
+    /// were started and still resume.
+    public static func defaultWorkingDirectory(for id: AIProviderID) -> URL {
+        let temporary = FileManager.default.temporaryDirectory
+        guard id != .claudeCLI else { return temporary }
+        return temporary
+            .appendingPathComponent("tabbi-ai", isDirectory: true)
+            .appendingPathComponent(id.rawValue, isDirectory: true)
     }
 
     public func stream(_ request: AIRequest) -> AsyncThrowingStream<AIStreamEvent, Error> {
@@ -49,6 +64,7 @@ public struct AICommandLineProvider: AIProvider {
                 let outcome: Error?
                 do {
                     guard let executable = locate() else { throw AIProviderError.notInstalled }
+                    try FileManager.default.createDirectory(at: workingDirectory, withIntermediateDirectories: true)
                     var imagePaths: [String] = []
                     let images = request.messages.last?.images ?? []
                     if id != .claudeCLI, !images.isEmpty {

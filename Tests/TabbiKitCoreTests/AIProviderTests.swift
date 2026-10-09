@@ -158,6 +158,39 @@ final class AIWireFormatTests: XCTestCase {
         }
     }
 
+    func testReasoningModelsGetRoomToThinkBeforeTheAnswer() throws {
+        func limit(_ provider: AIProviderID, _ model: String) throws -> Int? {
+            let json = try body(AIWireFormat.urlRequest(for: provider, AIRequest(messages: [.user("Hi")], model: model, maxTokens: 100), apiKey: "k"))
+            return provider == .gemini
+                ? (json["generationConfig"] as? [String: Any])?["maxOutputTokens"] as? Int
+                : json["max_completion_tokens"] as? Int
+        }
+        XCTAssertEqual(try limit(.openAI, "gpt-5-mini"), 8292)
+        XCTAssertEqual(try limit(.openAI, "o4-mini"), 8292)
+        XCTAssertEqual(try limit(.openAI, "gpt-4o"), 100)
+        XCTAssertEqual(try limit(.gemini, ""), 8292, "the default flash model thinks")
+        XCTAssertEqual(try limit(.gemini, "gemini-2.0-flash"), 100)
+        XCTAssertEqual(try limit(.gemini, "gemma-3-27b-it"), 100)
+        let anthropic = try body(AIWireFormat.urlRequest(for: .anthropic, chat, apiKey: "k"))
+        XCTAssertEqual(anthropic["max_tokens"] as? Int, 100)
+    }
+
+    func testAnAnswerCutOffByTheTokenLimitIsAnError() {
+        let lines: [(AIProviderID, String)] = [
+            (.anthropic, #"data: {"type":"message_delta","delta":{"stop_reason":"max_tokens"}}"#),
+            (.openAI, #"data: {"choices":[{"delta":{},"finish_reason":"length"}]}"#),
+            (.gemini, #"data: {"candidates":[{"content":{"parts":[{"text":"x"}]},"finishReason":"MAX_TOKENS"}]}"#),
+            (.ollama, #"{"message":{"role":"assistant","content":""},"done":true,"done_reason":"length"}"#),
+        ]
+        for (provider, line) in lines {
+            XCTAssertThrowsError(try AIWireFormat.events(fromLine: line, provider: provider), "\(provider)") {
+                XCTAssertEqual($0 as? AIProviderError, .cutOff)
+            }
+        }
+        XCTAssertEqual(try AIWireFormat.events(fromLine: #"data: {"type":"message_delta","delta":{"stop_reason":"end_turn"}}"#, provider: .anthropic), [])
+        XCTAssertEqual(AIProviderError.cutOff.message(for: .openAI), "OpenAI API stopped before the answer was complete. Try a shorter question.")
+    }
+
     func testHTTPStatusErrors() {
         let body = Data(#"{"error":{"message":"Quota exceeded"}}"#.utf8)
         XCTAssertEqual(AIWireFormat.error(status: 401, body: body), .invalidAPIKey)

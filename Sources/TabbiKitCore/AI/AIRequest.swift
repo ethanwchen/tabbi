@@ -97,6 +97,8 @@ public enum AIProviderError: Error, Hashable, Sendable {
     case unreachable(detail: String?)
     /// The provider answered with an error of its own.
     case service(detail: String)
+    /// The answer reached the output token limit before it was complete.
+    case cutOff
 
     /// A sentence for the error state, naming `provider`.
     public func message(for provider: AIProviderID) -> String {
@@ -116,6 +118,8 @@ public enum AIProviderError: Error, Hashable, Sendable {
                 : "Could not reach \(provider.displayName). Check your connection."
         case .service(let detail):
             detail
+        case .cutOff:
+            "\(provider.displayName) stopped before the answer was complete. Try a shorter question."
         }
     }
 }
