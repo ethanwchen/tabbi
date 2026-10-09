@@ -21,8 +21,8 @@
      small text uses the lighter --taupe-text (5.46:1, 4.75:1 on a card). */
   --taupe: #8E8379;
   --taupe-text: #A39888;
-  --link: #8AB8FF;
-  --blue: #3D8BFF;
+  --link: #F4D57E;
+  --link-line: #8A7346;
   --pink: #F2A0A6;
   --gold-deep: #EBC15A;
   --btn-bg: #F4D57E;
@@ -70,8 +70,13 @@ code {
 }
 
 a { color: var(--link); text-decoration: none; }
-a:hover { text-decoration: underline; text-underline-offset: 3px; }
-:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 8px; }
+/* Links inside running text keep a quiet underline, so they never rely on color alone. */
+:where(p, li, dd) a:not([class]) {
+  text-decoration: underline; text-underline-offset: 3px;
+  text-decoration-thickness: 1px; text-decoration-color: var(--link-line);
+}
+:where(p, li, dd) a:not([class]):hover { text-decoration-color: currentColor; }
+:focus-visible { outline: 3px solid var(--link); outline-offset: 3px; border-radius: 8px; }
 
 .skip {
   position: absolute; left: -9999px;

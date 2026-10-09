@@ -50,7 +50,7 @@ def unobfuscate(html):
 # (image, label, name, line, alt). The screenshots are the app's own snapshot
 # renders from docs/images, so the site shows exactly what the app draws.
 TABS = [
-    ('timer', 'Focus', 'Timer', 'Pomodoro and quick timers, with focus sounds.',
+    ('timer', 'Timer', 'Timer', 'Pomodoro and quick timers, with focus sounds.',
      'The Timer tab: a Pomodoro ring at 15:14 with focus sounds and today\'s total'),
     ('today', 'Today', 'Today', 'Your to-dos and what is next on the calendar.',
      'The Today tab: a checklist on the left and upcoming meetings on the right'),
