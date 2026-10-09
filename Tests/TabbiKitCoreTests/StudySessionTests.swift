@@ -166,6 +166,57 @@ final class StudySessionTests: XCTestCase {
         XCTAssertEqual(session.log.last?.activeDuration, 2 * minute)
     }
 
+    // MARK: Crash recovery
+
+    func testRecoverEndsTheRunningPhaseAtTheLastHeartbeat() {
+        var session = StudySession(method: .pomodoro)
+        session.start(at: t0)
+        session.recover(lastAlive: at(12), now: at(90))
+        XCTAssertEqual(session.runState, .idle)
+        XCTAssertEqual(session.phase, .focus)
+        XCTAssertEqual(session.log.map(\.outcome), [.abandoned])
+        XCTAssertEqual(session.log.first?.activeDuration, 12 * minute)
+        XCTAssertEqual(session.log.first?.endedAt, at(12))
+    }
+
+    func testRecoverCompletesPhasesThatRanOutBeforeTheHeartbeat() {
+        var session = StudySession(method: .pomodoro)
+        session.start(at: t0)
+        session.recover(lastAlive: at(27), now: at(90))
+        XCTAssertEqual(session.runState, .idle)
+        XCTAssertEqual(session.log.map(\.phase), [.focus, .shortBreak])
+        XCTAssertEqual(session.log.map(\.outcome), [.completed, .abandoned])
+        XCTAssertEqual(session.log.last?.activeDuration, 2 * minute)
+    }
+
+    func testRecoverCreditsAPausedPhaseUpToThePause() {
+        var session = StudySession(method: .pomodoro)
+        session.start(at: t0)
+        session.pause(at: at(8))
+        session.recover(lastAlive: at(40), now: at(90))
+        XCTAssertEqual(session.runState, .idle)
+        XCTAssertEqual(session.log.first?.activeDuration, 8 * minute)
+    }
+
+    func testRecoverNeverCreditsTimeFromAClockSetBack() {
+        var session = StudySession(method: .pomodoro)
+        session.start(at: t0)
+        // The heartbeat claims 20 minutes, but the clock now reads 5.
+        session.recover(lastAlive: at(20), now: at(5))
+        XCTAssertEqual(session.log.first?.activeDuration, 5 * minute)
+    }
+
+    func testRecoverLeavesAnIdleSessionAlone() {
+        var session = StudySession(method: .pomodoro)
+        session.start(at: t0)
+        session.advance(to: at(31))
+        _ = session.takeLog()
+        XCTAssertEqual(session.runState, .idle)
+        let before = session
+        session.recover(lastAlive: at(40), now: at(90))
+        XCTAssertEqual(session, before, "the finished round is kept")
+    }
+
     func testResetWhileIdleLogsNothing() {
         var session = StudySession(method: .pomodoro)
         session.reset(at: t0)

@@ -71,7 +71,7 @@ final class StudyStore: ObservableObject {
     /// Snapshot runs read the saved session but never write it back, so
     /// rendering with another kit can't change the user's method.
     private let isSnapshot: Bool
-    private let defaults = UserDefaults.standard
+    private let defaults: UserDefaults
     private var cancellables: Set<AnyCancellable> = []
     private var isVisible = false
     /// False while the Study module is turned off, so a session left
@@ -79,6 +79,9 @@ final class StudyStore: ObservableObject {
     private var isEnabled = false
     private var ticker: Timer?
     private var phaseEndTimer: Timer?
+    /// Saves the last-alive time while a session runs, so a crash ends it
+    /// close to when it really stopped.
+    private var heartbeat: Timer?
     /// Ends the session when the Mac sleeps or Tabbi quits; live runs only.
     private var interruptions: SessionInterruptions?
     private let logURL: URL?
@@ -98,6 +101,8 @@ final class StudyStore: ObservableObject {
     private static let deepFocusKey = "study.deepFocus"
     private static let customKey = "study.custom"
     private static let timerKey = "study.timerMinutes"
+    /// The last moment a session under way was known to run (`Date`).
+    static let lastAliveKey = "study.lastAlive"
 
     /// - Parameters:
     ///   - menu: the active kit's methods; a saved session on a method the
@@ -109,9 +114,15 @@ final class StudyStore: ObservableObject {
     ///     current. Demo runs show their own sample pet.
     ///   - celebrations: plays a paw print burst when a block finishes
     ///     while the panel shows; nil in tests.
+    ///   - defaults: where the session and settings are saved; tests pass
+    ///     a suite of their own.
+    ///   - interruptions: where sleep and quit are announced; tests pass
+    ///     centers of their own.
     init(menu: StudyMethodMenu = .all, goal: StudyDailyGoal = .standard, storage: EditionStorage,
          activity: ActivityLog? = nil, focusMode: FocusController? = nil, petProfile: PetProfile = .starter(.cat),
-         celebrations: CelebrationCenter? = nil, runMode: RunMode) {
+         celebrations: CelebrationCenter? = nil, runMode: RunMode, defaults: UserDefaults = .standard,
+         interruptions: (workspace: NotificationCenter, app: NotificationCenter)? = nil) {
+        self.defaults = defaults
         isDemo = runMode.isDemo
         self.focusMode = focusMode
         self.celebrations = celebrations
@@ -142,9 +153,19 @@ final class StudyStore: ObservableObject {
         var saved = (isSnapshot ? nil : defaults.data(forKey: Self.sessionKey))
             .flatMap { try? JSONDecoder().decode(StudySession.self, from: $0) }
             ?? StudySession(method: .preset(menu.startingKind, custom: custom, timer: timer))
-        // A phase may have ended while the app wasn't running; catch up quietly.
+        // Sleep and quit stop a session under way, so one still under way
+        // means Tabbi crashed or the Mac lost power: it ends at the last
+        // heartbeat. Without one (an older build, or a snapshot run, which
+        // never recovers) a phase that ran out is caught up quietly.
         let launch = Date()
-        saved.advance(to: launch)
+        if !isSnapshot, let lastAlive = defaults.object(forKey: Self.lastAliveKey) as? Date {
+            saved.recover(lastAlive: lastAlive, now: launch)
+        } else {
+            saved.advance(to: launch)
+        }
+        // What the recovery logged reaches the activity log on the next
+        // main-queue turn, once every module (the pet included) follows it.
+        let recovered = isSnapshot ? [] : saved.takeLog()
         if let kind = menu.replacement(for: saved, kitApplied: false) {
             saved.switchMethod(to: .preset(kind, custom: custom, timer: timer), at: launch)
         }
@@ -161,10 +182,12 @@ final class StudyStore: ObservableObject {
             log = StudyLog()
             logIsUnreadable = true
         }
+        record(recovered, deferringActivity: true)
         scheduleSideEffects()
         if !isSnapshot {
             // An idle session keeps its rounds; only one under way ends.
-            interruptions = SessionInterruptions { [weak self] in
+            let centers = interruptions ?? (NSWorkspace.shared.notificationCenter, .default)
+            self.interruptions = SessionInterruptions(workspace: centers.workspace, app: centers.app) { [weak self] in
                 guard let self, session.runState != .idle else { return }
                 stop()
             }
@@ -430,6 +453,8 @@ final class StudyStore: ObservableObject {
         collectLog()
         if let data = try? JSONEncoder().encode(session) { defaults.set(data, forKey: Self.sessionKey) }
 
+        updateHeartbeat()
+
         phaseEndTimer?.invalidate()
         phaseEndTimer = nil
         guard let endsAt = session.endsAt else { return }
@@ -480,12 +505,41 @@ final class StudyStore: ObservableObject {
         }
     }
 
+    /// Saves the last-alive time now and every `FocusStore.heartbeatInterval`
+    /// while the clock runs. A paused session needs none: its time is fixed.
+    private func updateHeartbeat() {
+        if session.runState != .idle { defaults.set(Date(), forKey: Self.lastAliveKey) }
+        guard session.isRunning else {
+            heartbeat?.invalidate()
+            heartbeat = nil
+            return
+        }
+        guard heartbeat == nil else { return }
+        let beat = Timer(timeInterval: FocusStore.heartbeatInterval, repeats: true) { [weak self] _ in
+            MainActor.assumeIsolated { self?.defaults.set(Date(), forKey: Self.lastAliveKey) }
+        }
+        beat.tolerance = 5
+        RunLoop.main.add(beat, forMode: .common)
+        heartbeat = beat
+    }
+
     /// Drains the session's phase records into the persisted log and the
     /// shared activity log.
     private func collectLog() {
         guard !session.log.isEmpty else { return }
-        let records = session.takeLog()
-        activity?.record(records.compactMap { $0.activityRecord(source: StudyModule.descriptor.id) })
+        record(session.takeLog())
+    }
+
+    /// Adds `records` to the persisted log and the shared activity log,
+    /// optionally on the next main-queue turn.
+    private func record(_ records: [StudyPhaseRecord], deferringActivity: Bool = false) {
+        guard !records.isEmpty else { return }
+        let activities = records.compactMap { $0.activityRecord(source: StudyModule.descriptor.id) }
+        if deferringActivity, let activity {
+            DispatchQueue.main.async { _ = activity.record(activities) }
+        } else {
+            activity?.record(activities)
+        }
         var updated = log
         updated.record(records)
         if updated != log {
