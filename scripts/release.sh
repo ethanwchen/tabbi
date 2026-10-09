@@ -368,7 +368,12 @@ elif update_key_ok; then
     log "No appcast: the private update key is not in the keychain or SPARKLE_PRIVATE_KEY"
 fi
 
-(cd "$out" && shasum -a 256 "$(basename "$dmg")" "$(basename "$zip")" > SHA256SUMS)
+# A copy under a name that never changes, so the website's Download button can
+# link straight to the newest DMG: releases/latest/download/<name>.dmg.
+latest_dmg="$out/$name.dmg"
+cp "$dmg" "$latest_dmg"
+
+(cd "$out" && shasum -a 256 "$(basename "$dmg")" "$(basename "$latest_dmg")" "$(basename "$zip")" > SHA256SUMS)
 
 # The Homebrew cask for this DMG. Only a notarized release belongs in a cask:
 # Homebrew turns away apps that fail Gatekeeper.
@@ -382,7 +387,7 @@ if $publish; then
     # A draft creates no tag yet: publishing it tags $commit.
     release_url=$(gh release create "$tag" --repo "$repo" --draft --target "$commit" \
         --title "$name $version" --notes-file "$notes" \
-        "$dmg" "$zip" "$appcast" "$out/SHA256SUMS")
+        "$dmg" "$latest_dmg" "$zip" "$appcast" "$out/SHA256SUMS")
 fi
 
 size() { du -sh "$1" | cut -f1 | tr -d ' '; }
@@ -390,6 +395,7 @@ cat <<EOF
 
 Built $name $version, build $build_number ($($adhoc && echo "ad-hoc signed, not notarized" || echo "Developer ID signed, notarized and stapled")):
   $dmg  ($(size "$dmg"))
+  $latest_dmg  (same DMG, stable name for the website)
   $zip  ($(size "$zip"))
   $out/SHA256SUMS
   $notes${appcast:+
