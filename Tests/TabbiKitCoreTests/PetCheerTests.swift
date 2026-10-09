@@ -52,4 +52,23 @@ final class PetCheerTests: XCTestCase {
         XCTAssertNil(sources(pet: false).cheering(cheer(), at: start) { _ in true })
         XCTAssertNil(sources().cheering(cheer(), at: start) { $0 != .pet })
     }
+
+    func testACrownCheerPutsATinyCrownOnThePet() {
+        var hatted = PetProfile.starter(.cat)
+        hatted.wear(.wizardHat)
+        let sources = TickerSources(isMusicPlaying: false, focus: nil,
+                                    pet: PetPresence(profile: hatted, lastActive: start))
+        let crown = PetCheer(kind: .crown, id: 1, startedAt: start)
+        guard case .pet(let pet) = sources.cheering(crown, at: start, enabled: { _ in true }) else {
+            return XCTFail("expected the pet")
+        }
+        XCTAssertTrue(pet.profile.isWearing(.accessory(.tinyCrown)))
+        XCTAssertFalse(pet.profile.isWearing(.accessory(.wizardHat)), "the crown takes the hat's place for now")
+
+        guard case .pet(let dancing) = sources.cheering(cheer(), at: start, enabled: { _ in true }) else {
+            return XCTFail("expected the pet")
+        }
+        XCTAssertEqual(dancing.profile, hatted, "a dance keeps the pet's own look")
+        XCTAssertNil(sources.cheering(crown, at: crown.endsAt) { _ in true }, "the crown comes off with the cheer")
+    }
 }

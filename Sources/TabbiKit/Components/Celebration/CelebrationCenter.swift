@@ -17,7 +17,9 @@ import TabbiKitCore
 ///
 /// With the notch closed, a finished focus session can still `cheer(_:)`:
 /// the pet beside the closed notch dances for a moment (`PetCheer`), which
-/// the ticker shows in place of whatever it was showing.
+/// the ticker shows in place of whatever it was showing. A goal reached
+/// while a panel is open waits for the notch to close, so its crown is
+/// still seen.
 @MainActor
 public final class CelebrationCenter: ObservableObject {
     /// The latest admitted celebration; stages play it once when it changes.
@@ -30,6 +32,11 @@ public final class CelebrationCenter: ObservableObject {
 
     private var pacer = CelebrationPacer()
     private var stages = 0
+    /// A cheer asked for while a panel was open, played once it closes.
+    private var waiting: (kind: PetCheer.Kind, since: Date)?
+    /// How long a waiting cheer stays worth playing: a goal reached an
+    /// hour before the panel closed is old news.
+    static let waitLimit: TimeInterval = 10 * 60
     private let isEnabled: Bool
     private let hapticsEnabled: () -> Bool
     private let soundEnabled: () -> Bool
@@ -82,11 +89,18 @@ public final class CelebrationCenter: ObservableObject {
     /// light haptic and, when Settings allow it and the event played no
     /// sound of its own, a soft sound. Returns the cheer, or nil in a
     /// snapshot run and while an open panel is showing (that panel gets
-    /// `celebrate` instead). Not paced: the events that cheer (a finished
-    /// focus session) are already minutes apart.
+    /// `celebrate` instead). With `waitsForClose`, a cheer asked for while
+    /// a panel is open plays when the notch closes, within `waitLimit`.
+    /// Not paced: the events that cheer (a finished focus session, a goal
+    /// reached) are already minutes apart.
     @discardableResult
-    public func cheer(_ kind: PetCheer.Kind, hasOwnSound: Bool = false) -> PetCheer? {
-        guard isEnabled, !isShowing else { return nil }
+    public func cheer(_ kind: PetCheer.Kind, hasOwnSound: Bool = false, waitsForClose: Bool = false) -> PetCheer? {
+        guard isEnabled else { return nil }
+        guard !isShowing else {
+            if waitsForClose { waiting = (kind, now()) }
+            return nil
+        }
+        waiting = nil
         let cheer = PetCheer(kind: kind, id: (self.cheer?.id ?? 0) + 1, startedAt: now())
         self.cheer = cheer
         tapHaptic()
@@ -111,7 +125,22 @@ public final class CelebrationCenter: ObservableObject {
     }
 
     func stageAppeared() { stages += 1 }
-    func stageDisappeared() { stages = max(0, stages - 1) }
+    func stageDisappeared() {
+        stages = max(0, stages - 1)
+        guard stages == 0, waiting != nil else { return }
+        // On the next turn, so switching tabs (one stage leaving as the
+        // next arrives) never counts as the notch closing.
+        DispatchQueue.main.async { [weak self] in
+            MainActor.assumeIsolated { self?.playWaitingCheer() }
+        }
+    }
+
+    private func playWaitingCheer() {
+        guard !isShowing, let waiting else { return }
+        self.waiting = nil
+        guard now().timeIntervalSince(waiting.since) < Self.waitLimit else { return }
+        cheer(waiting.kind)
+    }
 }
 
 /// The smallest celebration tier: one bounce of the tab of the module whose

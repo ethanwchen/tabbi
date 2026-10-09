@@ -2,7 +2,7 @@ import Foundation
 
 /// A short moment where the pet beside the closed notch celebrates a real
 /// event: a little dance with a sparkle burst when a focus session
-/// finishes.
+/// finishes, or a tiny crown when a goal for today is reached.
 ///
 /// It takes the closed notch over for `duration` (about two seconds), even
 /// when the ticker was showing something else, and then the ticker carries
@@ -12,6 +12,9 @@ public struct PetCheer: Hashable, Sendable {
     public enum Kind: String, Hashable, Sendable {
         /// A focus session finished: two happy hops with sparkles.
         case dance
+        /// A goal for today was reached (Anki reviews, a daily focus time
+        /// goal): one hop, wearing a tiny crown while the cheer lasts.
+        case crown
     }
 
     public let kind: Kind
@@ -41,13 +44,15 @@ public struct PetCheer: Hashable, Sendable {
 
 public extension TickerSources {
     /// The closed-notch item while `cheer` plays at `now`: the pet in its
-    /// current mood, cheering. Nil when the cheer is over or there is no
+    /// current mood, cheering (and, for `.crown`, wearing the Closet's Tiny
+    /// Crown in place of its hat). Nil when the cheer is over or there is no
     /// pet to show (the Closet is off or the user hid the pet preview), so
     /// the ticker's normal rotation keeps the notch.
     func cheering(_ cheer: PetCheer?, at now: Date, enabled: (TickerKind) -> Bool) -> TickerItem? {
         guard let cheer, cheer.isShowing(at: now), enabled(.pet),
               case .pet(var pet) = items(at: now, enabled: [.pet]).first else { return nil }
         pet.cheer = cheer
+        if cheer.kind == .crown { pet.profile.wear(.tinyCrown) }
         return .pet(pet)
     }
 }

@@ -90,6 +90,10 @@ enum SnapshotRenderer {
                 let model = NotchViewModel(geometry: geometry, layout: layout)
                 model.preview = .pet(TickerPet(profile: pet.profile, mood: .onBreak))
                 shots.append(Shot("closed-pet-cheer", model))
+                // A goal reached: the pet hops in a tiny crown.
+                let crowned = NotchViewModel(geometry: geometry, layout: layout)
+                crowned.preview = .pet(TickerPet(profile: pet.profile, mood: .awake))
+                shots.append(Shot("closed-pet-crown", crowned))
             }
         }
         // One open shot per tab of the active kit.
@@ -341,6 +345,12 @@ enum SnapshotRenderer {
             if name == "closed-pet-cheer", case .pet(var pet) = model.preview {
                 // Mid first hop, with the sparkles out.
                 pet.cheer = PetCheer(kind: .dance, id: 1, startedAt: Date().addingTimeInterval(-0.45))
+                model.preview = .pet(pet)
+            }
+            if name == "closed-pet-crown", case .pet(var pet) = model.preview {
+                // Mid hop, crowned as `TickerSources.cheering` does it.
+                pet.cheer = PetCheer(kind: .crown, id: 1, startedAt: Date().addingTimeInterval(-0.45))
+                pet.profile.wear(.tinyCrown)
                 model.preview = .pet(pet)
             }
             let view = NotchView(content: ModuleViews.notchContent(services: services))

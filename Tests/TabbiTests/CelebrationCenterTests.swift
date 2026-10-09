@@ -148,6 +148,62 @@ final class CelebrationCenterTests: XCTestCase {
         XCTAssertNil(center.nod, "without a source there is no tab to bounce")
     }
 
+    func testACrownAskedForWithAPanelOpenWaitsForTheNotchToClose() {
+        let center = center()
+        center.stageAppeared()
+        XCTAssertNil(center.cheer(.crown, waitsForClose: true), "the open panel hides the pet")
+        XCTAssertNil(center.cheer)
+
+        // Switching tabs: one stage leaves as the next arrives.
+        center.stageDisappeared()
+        center.stageAppeared()
+        drainMainQueue()
+        XCTAssertNil(center.cheer, "the panel never closed")
+
+        clock += 30
+        center.stageDisappeared()
+        drainMainQueue()
+        XCTAssertEqual(center.cheer?.kind, .crown)
+        XCTAssertEqual(center.cheer?.startedAt, clock, "it starts as the notch closes")
+
+        // Played once: closing again later shows nothing new.
+        center.stageAppeared()
+        center.stageDisappeared()
+        drainMainQueue()
+        XCTAssertEqual(center.cheer?.id, 1)
+    }
+
+    func testAWaitingCrownIsDroppedWhenStaleOrNotAskedToWait() {
+        let center = center()
+        center.stageAppeared()
+        center.cheer(.dance)
+        center.stageDisappeared()
+        drainMainQueue()
+        XCTAssertNil(center.cheer, "a dance missed behind the panel does not wait")
+
+        center.stageAppeared()
+        center.cheer(.crown, waitsForClose: true)
+        clock += CelebrationCenter.waitLimit + 1
+        center.stageDisappeared()
+        drainMainQueue()
+        XCTAssertNil(center.cheer, "a goal reached long before the panel closed is old news")
+    }
+
+    func testNoCrownWaitsInASnapshotRun() {
+        let center = center(isEnabled: false)
+        center.stageAppeared()
+        center.cheer(.crown, waitsForClose: true)
+        center.stageDisappeared()
+        drainMainQueue()
+        XCTAssertNil(center.cheer)
+    }
+
+    private func drainMainQueue() {
+        let drained = expectation(description: "main queue")
+        DispatchQueue.main.async { drained.fulfill() }
+        wait(for: [drained], timeout: 1)
+    }
+
     func testANodBouncesTheOpenTabWhenItsModuleHasNone() {
         let nod = CelebrationNod(id: 1, source: .focus)
         XCTAssertEqual(nod.tab(enabled: [.planner, .focus], selected: .planner), .focus)

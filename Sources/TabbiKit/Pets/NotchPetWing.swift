@@ -5,7 +5,8 @@ import TabbiKitCore
 /// while the user focuses, sipping coffee on breaks, idling while a session
 /// ran recently, and curled up asleep once none has for a while
 /// (`PetPresence.sleepAfter`). When a focus session finishes it cheers
-/// (`PetCheer`): two happy hops with a few sparkles.
+/// (`PetCheer`): two happy hops with a few sparkles. When a goal for today
+/// is reached it hops once in a tiny crown, which the ticker puts on it.
 ///
 /// Owns its own `PetPlayer`, kept for as long as the pet stays on screen,
 /// so mood changes play the real fall-asleep and stretch-awake clips
@@ -62,7 +63,7 @@ struct NotchPetWing: View {
             .task(id: pet.cheer) { await dance() }
     }
 
-    /// Plays the cheer's two hops. The animator lets the celebration finish
+    /// Plays the cheer's hops: two for a dance, one for a crown. The animator lets the celebration finish
     /// before any mood change (the break that just began) takes over.
     private func dance() async {
         guard let cheer = pet.cheer, cheer.isShowing(at: .now) else { return }
@@ -70,6 +71,7 @@ struct NotchPetWing: View {
             cheered = cheer.id
             player.send(.celebrate)
         }
+        guard cheer.kind == .dance else { return }
         let wait = cheer.startedAt.addingTimeInterval(Self.secondHop).timeIntervalSinceNow
         guard wait > 0 else { return }
         try? await Task.sleep(for: .seconds(wait))
