@@ -73,3 +73,14 @@ public struct PartyStanding: Hashable, Sendable {
         self.banned = banned
     }
 }
+
+/// Where people report a problem, abuse in Party included. Party options
+/// and Settings > About both show it, so a contact point is always one
+/// click away (App Review Guideline 1.2).
+public enum SupportContact {
+    public static let email = "support@tabbinotch.com"
+    /// Opens a new message to `email` in the user's mail app.
+    public static let mailURL = URL(string: "mailto:\(email)")!
+    /// The line both places show.
+    public static let reportLine = "Report a problem: \(email)"
+}

@@ -121,6 +121,9 @@ final class PartyModerationAppTests: XCTestCase {
 
         party.loadBlocked()
         XCTAssertEqual(party.blocked?.count, 1, "the demo shows a sample Blocked list")
+        party.unblock(code: party.blocked?.first?.code ?? "")
+        XCTAssertEqual(party.blocked, [], "Unblock in the demo empties its sample list")
+        XCTAssertNil(party.pending)
     }
 
     private func waitUntil(timeout: TimeInterval = 5, _ condition: () -> Bool) async throws {

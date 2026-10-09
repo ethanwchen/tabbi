@@ -35,13 +35,16 @@ struct PartySettingsPane: View {
         Form {
             profileSection
             privacySection
+            blockedSection
             serverSection
             dataSection
         }
         .formStyle(.grouped)
         .scrollDisabled(true)
-        .frame(width: 500, height: 640)
+        .frame(width: 500, height: height)
+        .motion(Motion.content, value: height)
         .onAppear {
+            store.loadBlocked()
             name = store.settings.name
             server = store.settings.serverText
         }
@@ -54,6 +57,13 @@ struct PartySettingsPane: View {
             if old == .name { commitName() }
             if old == .server { commitServer() }
         }
+    }
+
+    /// The grouped form doesn't report its content height, so add up the
+    /// Blocked rows, which come and go; the window follows the pane's size.
+    private var height: CGFloat {
+        let rows = max(store.blocked?.count ?? 0, 1)
+        return 790 + CGFloat(rows - 1) * 44
     }
 
     // MARK: Profile
@@ -128,6 +138,41 @@ struct PartySettingsPane: View {
                     settings.invisible = value
                     store.update(settings)
                 })
+    }
+
+    // MARK: Blocked
+
+    /// The people I blocked, each with Unblock, and the support address.
+    /// Blocking and reporting start from a right-click on someone in Party.
+    private var blockedSection: some View {
+        Section {
+            if let blocked = store.blocked, !blocked.isEmpty {
+                ForEach(blocked) { user in
+                    BlockedRow(user: user, isUnblocking: store.pending == .unblock(user.code),
+                               isEnabled: store.pending == nil) {
+                        store.unblock(code: user.code)
+                    }
+                }
+            } else {
+                Text(store.blocked == nil ? emptyBlockedText : "No one is blocked.")
+                    .foregroundStyle(.secondary)
+            }
+        } header: {
+            Text("Blocked")
+        } footer: {
+            VStack(alignment: .leading, spacing: 8) {
+                Footer("Blocked people can't see you, add you or join your parties. To block or report someone, right-click them in Party.")
+                Link(SupportContact.reportLine, destination: SupportContact.mailURL)
+                    .font(.callout)
+                    .help("Email the \(Edition.current.name) team about a person or a problem")
+            }
+        }
+    }
+
+    /// Before the list arrives: still connecting, or offline.
+    private var emptyBlockedText: String {
+        if case .connected = store.state.connection { return "Loading…" }
+        return "Connect to the friends server to see who you blocked."
     }
 
     // MARK: Server
@@ -262,6 +307,30 @@ struct PartySettingsPane: View {
         settings.serverText = server.trimmingCharacters(in: .whitespacesAndNewlines)
         store.update(settings)
         server = settings.serverText
+    }
+}
+
+/// Someone on the Blocked list: their name, their pet and when, with Unblock.
+private struct BlockedRow: View {
+    let user: PartyBlockedUser
+    let isUnblocking: Bool
+    let isEnabled: Bool
+    let unblock: () -> Void
+
+    var body: some View {
+        LabeledContent {
+            Button(isUnblocking ? "Unblocking…" : "Unblock", action: unblock)
+                .disabled(!isEnabled)
+                .help("Let \(user.name) find you again. You won't be friends until one of you adds the other.")
+        } label: {
+            Text(user.name)
+            Text(detail)
+        }
+    }
+
+    private var detail: String {
+        guard let since = user.since else { return "With \(user.petName)" }
+        return "With \(user.petName), blocked \(since.formatted(.relative(presentation: .named)))"
     }
 }
 

@@ -507,7 +507,12 @@ final class PartyStore: ObservableObject {
     }
 
     /// Lifts a block from the Blocked list. The friendship stays ended.
+    /// The demo just takes them off its sample list.
     func unblock(code: String) {
+        if isDemo {
+            blocked?.removeAll { $0.code == code }
+            return
+        }
         run(.unblock(code)) { store, account in
             _ = try await account.perform { try await $0.unblock(code: code) }
             store.blocked?.removeAll { $0.code == code }

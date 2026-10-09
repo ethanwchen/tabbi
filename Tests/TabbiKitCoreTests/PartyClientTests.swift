@@ -230,6 +230,12 @@ final class PartyClientTests: XCTestCase {
         XCTAssertEqual(long.sentNote?.count, PartyReport.noteLimit)
     }
 
+    func testTheSupportContactOpensAMailToTheSupportAddress() {
+        XCTAssertEqual(SupportContact.mailURL.scheme, "mailto")
+        XCTAssertEqual(SupportContact.mailURL.absoluteString, "mailto:support@tabbinotch.com")
+        XCTAssertEqual(SupportContact.reportLine, "Report a problem: support@tabbinotch.com")
+    }
+
     func testReportErrorsAreTyped() async {
         let cases: [(String, Int, PartyError)] = [
             ("self_report", 400, .selfReport),
