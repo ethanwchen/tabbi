@@ -10,8 +10,8 @@ No framework, no JavaScript, no build dependencies.
 
 ## Files
 
-- `build.py` - the home, support and 404 pages, the build and its checks.
-  The home page is deliberately short: the cat, one line, one download button, a drawn laptop with the Timer panel in its notch, and four tabs.
+- `build.py` - the home, about, support, suggest, thank-you and 404 pages, the build and its checks.
+  The home page is deliberately short: the cat, one line, one download button, a drawn laptop playing the app in use, and four tabs.
 - `_partials.py` - the shared head, header and footer, plus the download and GitHub links.
 - `_legal.py` - the privacy policy and terms of use.
 - `styles.css` - the one stylesheet, one warm brown palette.
@@ -20,6 +20,7 @@ No framework, no JavaScript, no build dependencies.
 - `favicon.ico` - the icon at 16, 32 and 48 px.
 - `press/` - the press kit files; the build zips them into `/press/tabbi-press-kit.zip`, linked from the About page.
 - `_social-card.html` - the source of the Open Graph and Twitter card (not part of the site).
+- `_hero_video.py` - renders the hero animation from the app's demo snapshots (see Hero animation).
 - `deploy.sh` - builds and deploys to the Cloudflare Pages project `tabbi`.
 
 ## Build and preview
@@ -37,8 +38,23 @@ The build stops with an error when:
 - a page references an image, font or stylesheet that does not exist;
 - a local link or `#anchor` does not resolve;
 - a page has a script (the CSP blocks them all), or its JSON-LD does not parse;
-- a page and everything it loads (its stylesheet, fonts and images, counting both sizes of a `srcset`) passes 500 KB, which keeps the home page under about 600 KB;
+- a form posts to an origin the CSP's `form-action` does not allow;
+- a page and everything it loads (its stylesheet, fonts and images, counting both sizes of a `srcset` and a video's poster) passes 500 KB, which keeps the home page under about 600 KB;
+- a file inside a `<video>` (the clip, or its fallback image) passes 2 MB;
 - any output file is over 20 MB (Cloudflare Pages refuses files over 25 MB).
+
+## Suggestions
+
+`/suggest` is a plain HTML form, no script, that posts to the friends backend's `/v1/suggestions` route (`SUGGESTIONS` in `_partials.py`).
+It sends `application/x-www-form-urlencoded` fields:
+
+- `category`: `tab`, `integration`, `improvement` or `other`;
+- `message`: 10 to 2000 characters, required;
+- `email`: optional, at most 254 characters, used only to reply about that idea;
+- `website`: a honeypot, hidden from people and out of the tab order. The backend should drop any post where it is not empty.
+
+The backend answers a good post with a `303` redirect to `https://tabbinotch.com/thanks`, which is not indexed.
+The privacy policy's "This website" section covers what happens to a suggestion.
 
 ## Caching
 
@@ -49,9 +65,13 @@ Pages themselves are not cached that way, so they always pick up the new names.
 ## Security headers
 
 `_headers` sets `X-Frame-Options: DENY`, `nosniff`, a strict referrer policy, a permissions policy, HSTS, and a CSP of `default-src 'none'` that allows only the site's own images, fonts and stylesheet.
+`form-action` allows the friends backend's origin, where the Suggest form posts, and `'self'`, because browsers check the backend's redirect to `/thanks` against it too.
 Because of that CSP, pages cannot use inline `style` attributes or scripts.
 The home page's `SoftwareApplication` structured data is a `<script type="application/ld+json">` data block, which browsers never run, so the CSP leaves it alone.
+`media-src 'self'` lets the hero play its own video.
 `--serve` sends the same `/*` headers from `_headers`, CSP included, so a preview breaks the same way production would.
+It also answers byte ranges, as Cloudflare Pages does, since Safari plays no video from a server that does not.
+The one exception is `upgrade-insecure-requests`, which it leaves out: WebKit applies it even to `localhost`, so over plain http Safari would load no stylesheet, font or image.
 `build.py` wraps the contact address in `<!--email_off-->` so Cloudflare's email obfuscation, whose decoding script the CSP would block, leaves it readable.
 
 ## Fonts
@@ -72,7 +92,7 @@ Each also has a 680 px copy (`today-680.webp`), and `srcset` lets small and 1x s
 `social-preview.png` is the 1200x630 Open Graph and Twitter card: the hero's words, icon, laptop and pixel cat on the brown ground.
 It is `_social-card.html` rendered by Chromium at 1200x630 and scale 1 (it loads Fredoka and Nunito from `fonts/`, so render it from `site/` with file access allowed), then saved by Pillow as an optimized RGB PNG of about 190 KB.
 Render it again when the hero's words or the Timer screenshot change.
-`notch-timer.webp`, the panel in the hero laptop, is `timer.webp` cropped to the open notch with the wallpaper made transparent, resized to 880 px wide, at quality 92.
+`notch-timer.webp`, the panel in the social card's laptop, is `timer.webp` cropped to the open notch with the wallpaper made transparent, resized to 880 px wide, at quality 92.
 `pixel-cat.png` is the app's gray tabby (`PetBreed.grayTabby`) at 1x: the `sit` and `blink` frames from `PetComposer.clip`, rendered by `PetRenderer`, cropped to 22x26 px and placed side by side.
 The stylesheet draws it at 2x or 3x with `image-rendering: pixelated`, peeking out from behind the hero laptop, and blinks it every five seconds unless the visitor prefers reduced motion.
 To export it again, a throwaway test in `Tests/TabbiKitCoreTests` can write those frames to PNG with `CGImageDestination`.
@@ -80,6 +100,22 @@ The press kit in `press/` holds `tabbi-icon-1024.png` (`docs/brand/assets/tabbi-
 Copy them again when the icon or those screenshots change; the About page shows the zip's size by itself.
 `grain.png` is a 160 px grayscale noise tile, drawn with Pillow, for the paper grain over the page.
 When the app's screenshots change, run `python3 site/_tab_shots.py` from the repo root to cut and convert them again.
+
+## Hero animation
+
+The hero laptop's screen plays `hero.mp4`, a nine second loop of Tabbi in use: the pointer clicks the notch, the panel springs open on the Timer, which ticks, the pointer switches to Today and checks off a task, the panel closes and the pet cheers in the notch.
+`_hero_video.py` renders it from the app's own demo snapshots (`TABBI_DEMO=1 swift run Tabbi --snapshot <dir> --scale 3 --transparent`), so the panels are the app's real pixels.
+On top of them it draws the wallpaper (the same gradients as `.laptop-screen`), the notch opening and closing with a spring, the pointer, the ticking digits and the check in SF Rounded, the sparkles and the camera's zooms.
+It needs Pillow, numpy, scipy and ffmpeg, and runs from the repo root:
+
+```sh
+python3 site/_hero_video.py               # renders the snapshots first
+python3 site/_hero_video.py <snapshot-dir> # or reuses a --scale 3 render
+```
+
+It writes `img/hero.mp4` (1200x750 H.264, about 500 KB), `img/hero-poster.webp` (the open Timer) and `img/hero-fallback.webp` (an animated WebP at 600 px for browsers without video, which load it lazily so others never fetch it).
+The `<video>` is muted, autoplays, loops and plays inline, and its `<source>` only matches under `prefers-reduced-motion: no-preference`, so a visitor who prefers reduced motion downloads no video and sees the poster.
+Render it again when the Timer, Today or the pet's look changes; the script checks the snapshot layout it expects (the digits it redraws) and stops if that moved.
 
 ## Deploy
 
