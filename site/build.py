@@ -379,10 +379,9 @@ def check_scripts():
                 raise SystemExit(f'{html_file.name}: JSON-LD needs a schema.org @context and an @type')
 
 
-# The whole home page should stay under about 600 KB. Google Fonts take
-# about 150 KB of that, so the site's own files get the rest.
-PAGE_BUDGET = 450 * 1024
-ASSET_RE = re.compile(r'/(?:img|assets)/[A-Za-z0-9._-]+')
+# The whole home page should stay under about 600 KB, fonts included.
+PAGE_BUDGET = 500 * 1024
+ASSET_RE = re.compile(r'/(?:img|assets|fonts)/[A-Za-z0-9._-]+')
 # Fetched only for link previews, search results or a home screen icon, not
 # by the page.
 NOT_LOADED_RE = re.compile(r'<meta [^>]*>|<link rel="apple-touch-icon"[^>]*>|<script type="application/ld\+json">.*?</script>', re.S)
@@ -435,6 +434,9 @@ def build():
     for src in sorted((HERE / 'img').iterdir()):
         if src.suffix in ('.png', '.gif', '.jpg', '.webp', '.svg'):
             fingerprints['/img/' + src.name] = fingerprint(src, 'img')
+    # Fonts land in /assets/ with the stylesheet, which is cached the same way.
+    for src in sorted((HERE / 'fonts').glob('*.woff2')):
+        fingerprints['/fonts/' + src.name] = fingerprint(src, 'assets')
 
     def asset_sub(text):
         asset_re = re.compile('|'.join(re.escape(k) for k in sorted(fingerprints, key=len, reverse=True)))

@@ -37,6 +37,18 @@
   color-scheme: dark;
 }
 
+/* Fredoka and Nunito (SIL Open Font License, see fonts/) are served from
+   this site, so a visit sends nothing to a font service. Latin only:
+   Fredoka at 600, Nunito variable from 400 to 800. */
+@font-face {
+  font-family: 'Fredoka'; font-style: normal; font-weight: 600; font-display: swap;
+  src: url('/fonts/fredoka-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Nunito'; font-style: normal; font-weight: 400 800; font-display: swap;
+  src: url('/fonts/nunito.woff2') format('woff2');
+}
+
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 

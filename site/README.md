@@ -34,25 +34,33 @@ Links on the site are root-relative and extensionless (`/support`, `/privacy`) f
 
 The build stops with an error when:
 
-- a page references an image or stylesheet that does not exist;
+- a page references an image, font or stylesheet that does not exist;
 - a local link or `#anchor` does not resolve;
 - a page has a script (the CSP blocks them all), or its JSON-LD does not parse;
-- a page and everything it loads (its stylesheet and images, counting both sizes of a `srcset`) passes 450 KB, which keeps the home page under about 600 KB with Google Fonts;
+- a page and everything it loads (its stylesheet, fonts and images, counting both sizes of a `srcset`) passes 500 KB, which keeps the home page under about 600 KB;
 - any output file is over 20 MB (Cloudflare Pages refuses files over 25 MB).
 
 ## Caching
 
-Every image and the stylesheet are copied into `dist` with a content hash in the name (`styles.<hash>.css`); image URLs inside the stylesheet are hashed too, and `_headers` serves `/img/*` and `/assets/*` as `immutable` for a year.
+Every image, font and the stylesheet are copied into `dist` with a content hash in the name (`styles.<hash>.css`); image URLs inside the stylesheet are hashed too, and `_headers` serves `/img/*` and `/assets/*` as `immutable` for a year.
 Changed bytes get a new URL, so a deploy never leaves visitors on a stale file.
 Pages themselves are not cached that way, so they always pick up the new names.
 
 ## Security headers
 
-`_headers` sets `X-Frame-Options: DENY`, `nosniff`, a strict referrer policy, a permissions policy, HSTS, and a CSP of `default-src 'none'` that allows only the site's own images and stylesheet and Google Fonts.
+`_headers` sets `X-Frame-Options: DENY`, `nosniff`, a strict referrer policy, a permissions policy, HSTS, and a CSP of `default-src 'none'` that allows only the site's own images, fonts and stylesheet.
 Because of that CSP, pages cannot use inline `style` attributes or scripts.
 The home page's `SoftwareApplication` structured data is a `<script type="application/ld+json">` data block, which browsers never run, so the CSP leaves it alone.
 `--serve` sends the same `/*` headers from `_headers`, CSP included, so a preview breaks the same way production would.
 `build.py` wraps the contact address in `<!--email_off-->` so Cloudflare's email obfuscation, whose decoding script the CSP would block, leaves it readable.
+
+## Fonts
+
+`fonts/` holds Fredoka and Nunito as WOFF2, served from the site so a visit sends nothing to Google or any other font service.
+They are Google Fonts' Latin files: Fredoka at weight 600 only (the only weight the site uses), and Nunito's variable font cut to weights 400 to 800 with `fonttools varLib.instancer nunito.woff2 wght=400:800`.
+Both are under the SIL Open Font License (`OFL-Fredoka.txt`, `OFL-Nunito.txt`).
+Every page preloads both, and `@font-face` uses `font-display: swap`.
+If a new weight or a non-Latin character appears in the copy, fetch and cut the files again.
 
 ## Images
 
@@ -61,7 +69,7 @@ Each also has a 680 px copy (`today-680.webp`), and `srcset` lets small and 1x s
 `icon-256.webp`, `apple-touch-icon.png`, `favicon-64.png` and `favicon.ico` are resized from `docs/brand/assets/tabbi-icon-1024.png`.
 `glyph.png` is `docs/brand/assets/tabbi-glyph-256.png`, used as the header mark and on the 404 page.
 `social-preview.png` is the 1200x630 Open Graph and Twitter card: the hero's words, icon, laptop and pixel cat on the brown ground.
-It is `_social-card.html` rendered by Chromium at 1200x630 and scale 1 (it loads Fredoka and Nunito from Google Fonts, so render it online), then saved by Pillow as an optimized RGB PNG of about 190 KB.
+It is `_social-card.html` rendered by Chromium at 1200x630 and scale 1 (it loads Fredoka and Nunito from `fonts/`, so render it from `site/` with file access allowed), then saved by Pillow as an optimized RGB PNG of about 190 KB.
 Render it again when the hero's words or the Timer screenshot change.
 `notch-timer.webp`, the panel in the hero laptop, is `timer.webp` cropped to the open notch with the wallpaper made transparent, resized to 880 px wide, at quality 92.
 `pixel-cat.png` is the app's gray tabby (`PetBreed.grayTabby`) at 1x: the `sit` and `blink` frames from `PetComposer.clip`, rendered by `PetRenderer`, cropped to 22x26 px and placed side by side.
