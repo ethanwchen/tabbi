@@ -45,16 +45,20 @@ public struct FocusPhaseCompletion: Hashable, Sendable {
     }
 }
 
-/// A focus stretch the user ended before it ran out, reported so the app can
-/// credit the time actually focused (points, study minutes, activity log).
+/// A focus stretch the user ended before it ran out (stopped, or skipped to
+/// the break), reported so the app can credit the time actually focused
+/// (points, study minutes, activity log).
 public struct FocusStop: Hashable, Sendable {
     /// Time the clock ran in the stopped focus phase, excluding pauses.
     public let focused: TimeInterval
     public let endedAt: Date
+    /// `abandoned` for a stop, `skipped` for a skip to the break.
+    public let outcome: StudyPhaseOutcome
 
-    public init(focused: TimeInterval, endedAt: Date) {
+    public init(focused: TimeInterval, endedAt: Date, outcome: StudyPhaseOutcome = .abandoned) {
         self.focused = focused
         self.endedAt = endedAt
+        self.outcome = outcome
     }
 }
 
@@ -162,21 +166,32 @@ public struct FocusTimer: Codable, Hashable, Sendable {
     /// as completed rather than stopped.
     @discardableResult
     public mutating func stop(at now: Date) -> FocusStop? {
-        let focused = phase == .focus && runState != .idle ? phaseDuration - remaining(at: now) : 0
+        let stopped = focusCutShort(at: now, outcome: .abandoned)
         reset()
-        guard focused > 0 else { return nil }
-        return FocusStop(focused: focused, endedAt: now)
+        return stopped
     }
 
-    /// Ends the current phase early and moves to the next one.
+    /// Ends the current phase early and moves to the next one, and reports
+    /// how long a focus phase under way ran, like `stop(at:)`.
     ///
     /// The next phase keeps running if the timer was running, so skipping a
     /// break while in flow drops straight into the next focus block. Skipped
     /// phases don't count as completed and produce no notification.
-    public mutating func skip(at now: Date) {
+    @discardableResult
+    public mutating func skip(at now: Date) -> FocusStop? {
+        let skipped = focusCutShort(at: now, outcome: .skipped)
         let wasRunning = isRunning
         phase = phase.next
         runState = wasRunning ? .running(endsAt: now.addingTimeInterval(phaseDuration)) : .idle
+        return skipped
+    }
+
+    /// The focus phase under way, as ended early at `now`; nil when idle or
+    /// on a break.
+    private func focusCutShort(at now: Date, outcome: StudyPhaseOutcome) -> FocusStop? {
+        let focused = phase == .focus && runState != .idle ? phaseDuration - remaining(at: now) : 0
+        guard focused > 0 else { return nil }
+        return FocusStop(focused: focused, endedAt: now, outcome: outcome)
     }
 
     /// Applies every phase end that has passed by `now` and reports them.

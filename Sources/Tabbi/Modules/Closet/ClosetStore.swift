@@ -36,6 +36,7 @@ final class ClosetStore: ObservableObject {
     let awards = PassthroughSubject<PetStudyAward, Never>()
 
     private var focusSubscription: AnyCancellable?
+    private var activitySubscription: AnyCancellable?
     private var kitSubscription: AnyCancellable?
     private var lastFocus: ProvidedFocus?
     private let saveURL: URL?
@@ -95,6 +96,22 @@ final class ClosetStore: ObservableObject {
             }
     }
 
+    /// Follows new activity records, so focus time cut short (Stop, Skip,
+    /// or the Mac sleeping or Tabbi quitting mid-session) earns points
+    /// (`PetCloset.credit(_:)`), once per record.
+    func follow(activity: AnyPublisher<ActivityRecord, Never>) {
+        activitySubscription = activity
+            .sink { [weak self] record in
+                MainActor.assumeIsolated { self?.recorded(record) }
+            }
+    }
+
+    private func recorded(_ record: ActivityRecord) {
+        guard let award = closet.credit(record) else { return }
+        persist()
+        celebrate(award)
+    }
+
     private func focusChanged(_ timer: ProvidedFocus?) {
         let now = Date()
         presence.observe(timer, at: now)
@@ -109,6 +126,10 @@ final class ClosetStore: ObservableObject {
         // is still paid on the next launch.
         if hasSave ? closet.save != before : award != nil || timer?.isActive == true { persist() }
         guard let award else { return }
+        celebrate(award)
+    }
+
+    private func celebrate(_ award: PetStudyAward) {
         preview.send(.celebrate)
         if award.isLevelUp { celebrateUnlock(hasOwnSound: award.completedSessions > 0) }
         awards.send(award)

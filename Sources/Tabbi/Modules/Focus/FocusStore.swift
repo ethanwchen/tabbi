@@ -116,20 +116,23 @@ final class FocusStore: ObservableObject {
     }
 
     /// Ends the session and banks the focus time so far: the activity log
-    /// gets the minutes, and the pet's points follow from the shared clock
-    /// going idle mid-focus (`PetCloset.credit(from:to:at:)`). Also runs
-    /// when the Mac sleeps or Tabbi quits mid-session.
+    /// gets the minutes, and the pet pays them from there
+    /// (`PetCloset.credit(_:)`). Also runs when the Mac sleeps or Tabbi
+    /// quits mid-session.
     func stop() {
         catchUp()
         var stopped: FocusStop?
         change { stopped = $0.stop(at: now) }
-        guard !isEphemeral, let record = stopped?.activityRecord(source: FocusModule.descriptor.id) else { return }
-        activity?.record(record)
+        record(stopped)
     }
 
+    /// Moves on to the next phase; a focus phase skipped part-way banks its
+    /// time like `stop()`.
     func skip() {
         catchUp()
-        change { $0.skip(at: now) }
+        var skipped: FocusStop?
+        change { skipped = $0.skip(at: now) }
+        record(skipped)
     }
 
     /// Links the timer to a checklist item, or clears the link with `nil`.
@@ -173,6 +176,12 @@ final class FocusStore: ObservableObject {
         }
         scheduleSideEffects(withdrawingPending: false)
         updateTicker()
+    }
+
+    /// Logs a focus phase cut short, which the pet pays from the log.
+    private func record(_ cutShort: FocusStop?) {
+        guard !isEphemeral, let record = cutShort?.activityRecord(source: FocusModule.descriptor.id) else { return }
+        activity?.record(record)
     }
 
     /// Logs every finished phase in the shared activity log, which the

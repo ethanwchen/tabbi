@@ -76,7 +76,7 @@ final class PetStudyCreditTests: XCTestCase {
         var skipped = old
         skipped.skip(at: now)
 
-        let award = try XCTUnwrap(closet.credit(from: old.shared, to: skipped.shared, at: now))
+        let award = try XCTUnwrap(closet.credit(from: old.unlogged, to: skipped.unlogged, at: now))
         XCTAssertEqual(award.completedSessions, 0)
         XCTAssertEqual(award.minutes, 12)
         XCTAssertEqual(award.points, 12)
@@ -88,7 +88,7 @@ final class PetStudyCreditTests: XCTestCase {
         paused.pause(at: t0.addingTimeInterval(9 * 60))
         var reset = paused
         reset.reset()
-        XCTAssertEqual(closet.credit(from: paused.shared, to: reset.shared, at: t0.addingTimeInterval(60 * 60))?.points, 9,
+        XCTAssertEqual(closet.credit(from: paused.unlogged, to: reset.unlogged, at: t0.addingTimeInterval(60 * 60))?.points, 9,
                        "time spent paused doesn't count")
     }
 
@@ -97,19 +97,72 @@ final class PetStudyCreditTests: XCTestCase {
         let old = running()
         var reset = old
         reset.reset()
-        XCTAssertNil(closet.credit(from: old.shared, to: reset.shared, at: t0.addingTimeInterval(3 * 60)), "under the minimum")
+        XCTAssertNil(closet.credit(from: old.unlogged, to: reset.unlogged, at: t0.addingTimeInterval(3 * 60)), "under the minimum")
 
         var paused = old
         paused.pause(at: t0.addingTimeInterval(10 * 60))
-        XCTAssertNil(closet.credit(from: old.shared, to: paused.shared, at: t0.addingTimeInterval(10 * 60)), "pausing is not ending")
+        XCTAssertNil(closet.credit(from: old.unlogged, to: paused.unlogged, at: t0.addingTimeInterval(10 * 60)), "pausing is not ending")
 
         var onBreak = old
         onBreak.advance(to: t0.addingTimeInterval(25 * 60))
         var skippedBreak = onBreak
         skippedBreak.skip(at: t0.addingTimeInterval(26 * 60))
         closet = self.closet(credited: 1)
-        XCTAssertNil(closet.credit(from: onBreak.shared, to: skippedBreak.shared, at: t0.addingTimeInterval(26 * 60)), "skipping a break")
-        XCTAssertNil(closet.credit(from: old.shared, to: nil, at: t0.addingTimeInterval(10 * 60)), "the timer going away")
+        XCTAssertNil(closet.credit(from: onBreak.unlogged, to: skippedBreak.unlogged, at: t0.addingTimeInterval(26 * 60)), "skipping a break")
+        XCTAssertNil(closet.credit(from: old.unlogged, to: nil, at: t0.addingTimeInterval(10 * 60)), "the timer going away")
+        XCTAssertEqual(closet.balance, 0)
+    }
+
+    func testAClockThatLogsItsEarlyEndsIsPaidFromTheLogOnce() throws {
+        var closet = closet()
+        var timer = running()
+        let before = timer
+        let now = t0.addingTimeInterval(14 * 60 + 30)
+        let stop = try XCTUnwrap(timer.stop(at: now))
+
+        XCTAssertNil(closet.credit(from: before.shared, to: timer.shared, at: now), "the clock going idle pays nothing")
+        let record = try XCTUnwrap(stop.activityRecord(source: .focus))
+        let award = try XCTUnwrap(closet.credit(record))
+        XCTAssertEqual(award.completedSessions, 0)
+        XCTAssertEqual(award.minutes, 14)
+        XCTAssertEqual(award.points, 14, "minutes studied, no completion bonus")
+        XCTAssertEqual(closet.balance, 14)
+    }
+
+    func testASkipIsLoggedAndPaidLikeAStop() throws {
+        var closet = closet()
+        var timer = running()
+        let skip = try XCTUnwrap(timer.skip(at: t0.addingTimeInterval(20 * 60)))
+        XCTAssertEqual(timer.phase, .rest)
+        let record = try XCTUnwrap(skip.activityRecord(source: .focus))
+        XCTAssertEqual(record.metadata[ActivityMetadata.outcome], "skipped")
+        XCTAssertEqual(closet.credit(record)?.points, 20)
+        XCTAssertNil(timer.skip(at: t0.addingTimeInterval(21 * 60)), "skipping the break banks nothing")
+    }
+
+    func testAStudyStopIsPaidFromItsRecordAfterItsClockIsGone() throws {
+        // Study's clock disappears when the session goes idle, so the
+        // record is the only trace of the time studied.
+        var closet = closet()
+        let record = ActivityRecord(source: .study, kind: .focusCompleted, start: t0, end: t0.addingTimeInterval(18 * 60),
+                                    quantity: 18, unit: .minutes,
+                                    metadata: [ActivityMetadata.outcome: StudyPhaseOutcome.abandoned.rawValue])
+        XCTAssertEqual(closet.credit(record)?.minutes, 18)
+        XCTAssertEqual(closet.balance, 18)
+    }
+
+    func testOnlyCutShortFocusRecordsArePaid() {
+        var closet = closet()
+        func record(_ kind: ActivityKind, outcome: String?, minutes: Double = 20) -> ActivityRecord {
+            ActivityRecord(source: .focus, kind: kind, start: t0, end: t0.addingTimeInterval(minutes * 60),
+                           quantity: minutes, unit: .minutes,
+                           metadata: outcome.map { [ActivityMetadata.outcome: $0] } ?? [:])
+        }
+        XCTAssertNil(closet.credit(record(.focusCompleted, outcome: "completed")), "paid from the completion count")
+        XCTAssertNil(closet.credit(record(.focusCompleted, outcome: "stopped")), "a Flowtime stop is a completion")
+        XCTAssertNil(closet.credit(record(.focusCompleted, outcome: nil)), "Party's own sessions pay through Party")
+        XCTAssertNil(closet.credit(record(.breakTaken, outcome: "skipped")), "breaks earn nothing")
+        XCTAssertNil(closet.credit(record(.focusCompleted, outcome: "abandoned", minutes: 3)), "under the minimum")
         XCTAssertEqual(closet.balance, 0)
     }
 

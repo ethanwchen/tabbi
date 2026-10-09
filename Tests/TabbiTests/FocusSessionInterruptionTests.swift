@@ -45,6 +45,7 @@ final class FocusSessionInterruptionTests: XCTestCase {
         let store = FocusStore(activity: log, runMode: .live, defaults: defaults, interruptions: (workspace, app))
         let closet = ClosetStore(storage: EditionStorage(root: folder), runMode: .live, starter: .starter(.cat))
         closet.follow(focus: store.$timer.map { $0.provided(by: FocusModule.descriptor.id) }.eraseToAnyPublisher())
+        closet.follow(activity: log.recorded)
         return (store, log, closet)
     }
 
@@ -64,7 +65,7 @@ final class FocusSessionInterruptionTests: XCTestCase {
         XCTAssertEqual(logged.map(\.kind), [.focusCompleted])
         XCTAssertEqual(try XCTUnwrap(logged.first?.quantity), 10, accuracy: 0.1)
         let paid = closet.closet.balance
-        XCTAssertGreaterThan(paid, balance, "the pet is paid for the minutes focused")
+        XCTAssertEqual(paid, balance + 10, "the pet is paid for the minutes focused, once")
         let save = try XCTUnwrap(PetSave.load(from: ClosetStore.saveURL(in: EditionStorage(root: folder))))
         XCTAssertEqual(save.ledger.balance, paid, "the points are on disk before the Mac sleeps")
 
@@ -111,5 +112,19 @@ final class FocusSessionInterruptionTests: XCTestCase {
 
         XCTAssertEqual(store.timer, before)
         XCTAssertTrue(log.records(on: today).isEmpty)
+    }
+
+    func testSkippingMidFocusLogsTheMinutesAndPaysThemOnce() throws {
+        saveTimer(minutesAgo: 8)
+        let (store, log, closet) = launch()
+        let balance = closet.closet.balance
+
+        store.skip()
+
+        XCTAssertEqual(store.timer.phase, .rest)
+        let logged = try XCTUnwrap(log.records(on: today).first)
+        XCTAssertEqual(logged.metadata[ActivityMetadata.outcome], "skipped")
+        XCTAssertEqual(try XCTUnwrap(logged.quantity), 8, accuracy: 0.1)
+        XCTAssertEqual(closet.closet.balance, balance + 8, "paid from the log, not again from the clock")
     }
 }

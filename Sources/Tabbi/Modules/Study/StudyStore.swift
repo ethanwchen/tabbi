@@ -256,8 +256,8 @@ final class StudyStore: ObservableObject {
     }
 
     /// Ends the session and banks the time so far: the phase is logged as
-    /// abandoned with the minutes it ran, and the pet's points follow from
-    /// the shared clock going idle mid-focus. Also runs when the Mac sleeps
+    /// abandoned with the minutes it ran, which the pet pays from the
+    /// activity log (`PetCloset.credit(_:)`). Also runs when the Mac sleeps
     /// or Tabbi quits mid-session.
     func stop() {
         catchUp()

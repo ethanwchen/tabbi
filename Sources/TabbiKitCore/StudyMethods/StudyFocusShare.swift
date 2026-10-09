@@ -29,7 +29,9 @@ extension StudySession {
             phaseLength: phaseDuration,
             focusLength: isFocus ? phaseDuration : method.duration(of: .focus) ?? lastFocusWorked,
             completedFocusCount: completedFocusCount,
-            isDeep: isDeep
+            isDeep: isDeep,
+            // Every phase that ends early is logged (`StudyPhaseRecord`).
+            logsEarlyEnds: true
         )
     }
 }
