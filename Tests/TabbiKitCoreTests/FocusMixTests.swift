@@ -102,7 +102,7 @@ final class FocusMixTests: XCTestCase {
         XCTAssertLessThan(start, 0.01, "starts from silence")
         XCTAssertGreaterThan(middle, settled * 0.3)
         XCTAssertLessThan(middle, settled * 0.8)
-        XCTAssertEqual(settled, NoiseGenerator.targetRMS, accuracy: 0.03)
+        XCTAssertEqual(settled, NoiseGenerator.targetRMS * FocusSound.brown.loudnessGain, accuracy: 0.03)
         // Brown noise moves slowly; a click at the start would be a large step.
         XCTAssertLessThan(maxStep(Array(x[0..<second])), 0.02)
     }
@@ -117,7 +117,7 @@ final class FocusMixTests: XCTestCase {
         let second = Int(rate)
         let early = Analysis.rms(Array(fade[0..<second / 10]))
         let late = Analysis.rms(Array(fade[(19 * second / 10)...]))
-        XCTAssertGreaterThan(early, 0.15)
+        XCTAssertGreaterThan(early, 0.75 * NoiseGenerator.targetRMS * FocusSound.pink.loudnessGain)
         XCTAssertLessThan(late, 0.005)
         XCTAssertTrue(render(&mixer, seconds: 0.1).allSatisfy { $0 == 0 })
     }
@@ -141,7 +141,7 @@ final class FocusMixTests: XCTestCase {
         // Brown's step size is tiny; white's is huge. The crossfade must
         // start brown-like (no instant switch) and end fully white.
         XCTAssertLessThan(maxStep(Array(crossfade[0..<Int(rate) / 100])), maxStep(brown) * 1.2)
-        XCTAssertEqual(Analysis.rms(after), NoiseGenerator.targetRMS, accuracy: 0.02)
+        XCTAssertEqual(Analysis.rms(after), NoiseGenerator.targetRMS * FocusSound.white.loudnessGain, accuracy: 0.02)
         let brightness = Analysis.decibels(
             Analysis.power(of: after, near: 8_000) / Analysis.power(of: after, near: 250))
         XCTAssertEqual(brightness, 0, accuracy: 2, "only white noise remains")
@@ -151,7 +151,10 @@ final class FocusMixTests: XCTestCase {
         var mixer = playingMixer(FocusMix([.init(sound: .brown), .init(sound: .pink), .init(sound: .white)]))
         _ = render(&mixer, seconds: 2.2)
         let x = render(&mixer, seconds: 3)
-        XCTAssertEqual(Analysis.rms(x), NoiseGenerator.targetRMS, accuracy: 0.02)
+        // Each layer plays at 1/sqrt(3) of its trimmed level, so their powers
+        // average the three trimmed sounds.
+        let trimmedPower = [FocusSound.brown, .pink, .white].reduce(Float(0)) { $0 + $1.loudnessGain * $1.loudnessGain } / 3
+        XCTAssertEqual(Analysis.rms(x), NoiseGenerator.targetRMS * trimmedPower.squareRoot(), accuracy: 0.02)
         XCTAssertLessThanOrEqual(Analysis.peak(x), 1)
     }
 

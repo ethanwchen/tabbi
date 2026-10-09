@@ -11,6 +11,10 @@ The recipes follow the layered approach in Andy Farnell's book "Designing Sound"
 
 Every sound is calibrated to the same RMS level (`NoiseGenerator.targetRMS`), so layers mix predictably, and `FocusAmbienceTests` checks the level and character of each one.
 
+Equal RMS is not equal loudness: the ear hears white noise's treble far more than brown noise's rumble, so at the same RMS white sounded about 8 dB louder than brown or the fireplace.
+The mixer therefore trims each sound by `FocusSound.loudnessTrimDecibels` so all of them play at the same integrated loudness (ITU-R BS.1770, K-weighted and gated), and switching sounds or blending them never jumps in level.
+`FocusLoudnessTests` measures that loudness through the mixer and fails if a sound drifts more than 1 LU from the target.
+
 ### Cafe
 
 The cafe is built to sound like people, not like a machine:

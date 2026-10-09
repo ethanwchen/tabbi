@@ -66,4 +66,34 @@ enum FocusSignalAnalysis {
         let variance = levels.reduce(0) { $0 + ($1 - average) * ($1 - average) } / Double(levels.count)
         return variance.squareRoot() / average
     }
+
+    /// Integrated loudness in LUFS per ITU-R BS.1770-4: K-weighting (a high
+    /// shelf for the head's acoustic effect plus a 38 Hz high-pass), mean
+    /// square over 400 ms blocks with 75% overlap, then the -70 LUFS absolute
+    /// gate and the -10 LU relative gate. Coefficients are the standard's
+    /// for 48 kHz, which is the rate every focus sound test renders at.
+    static func loudness(_ x: [Float]) -> Double {
+        precondition(sampleRate == 48_000)
+        func biquad(_ x: [Double], b: [Double], a: [Double]) -> [Double] {
+            var x1 = 0.0, x2 = 0.0, y1 = 0.0, y2 = 0.0
+            return x.map { v in
+                let y = b[0] * v + b[1] * x1 + b[2] * x2 - a[1] * y1 - a[2] * y2
+                x2 = x1; x1 = v; y2 = y1; y1 = y
+                return y
+            }
+        }
+        let shelf = biquad(x.map(Double.init),
+                           b: [1.53512485958697, -2.69169618940638, 1.19839281085285],
+                           a: [1, -1.69065929318241, 0.73248077421585])
+        let weighted = biquad(shelf, b: [1, -2, 1], a: [1, -1.99004745483398, 0.99007225036621])
+        let block = Int(sampleRate * 0.4), hop = block / 4
+        let powers = stride(from: 0, through: weighted.count - block, by: hop).map { start in
+            weighted[start..<start + block].reduce(0) { $0 + $1 * $1 } / Double(block)
+        }
+        func lufs(_ power: Double) -> Double { -0.691 + 10 * log10(power) }
+        func gatedMean(_ values: [Double]) -> Double { values.reduce(0, +) / Double(max(values.count, 1)) }
+        let audible = powers.filter { lufs($0) > -70 }
+        let relativeGate = lufs(gatedMean(audible)) - 10
+        return lufs(gatedMean(audible.filter { lufs($0) > relativeGate }))
+    }
 }
