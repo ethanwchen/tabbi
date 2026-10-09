@@ -319,4 +319,60 @@ final class PetAnimatorTests: XCTestCase {
         XCTAssertEqual(PetAnimator.Activity(.awake), .free)
         XCTAssertEqual(PetAnimator.Activity(.asleep), .free)
     }
+
+    // MARK: Reduce Motion
+
+    func testStillFrameIsWhereEachClipSettles() {
+        for animation in PetAnimation.allCases {
+            let clip = clips[animation]
+            switch animation {
+            case .sleep, .nap:
+                XCTAssertEqual(clip.stillFrame, clip.frames[2], "\(animation) holds the frame with both z's")
+                XCTAssertGreaterThan(clip.stillFrame.canvas.pixels.compactMap { $0 }.count,
+                                     clip.frames[0].canvas.pixels.compactMap { $0 }.count)
+            default:
+                XCTAssertEqual(clip.stillFrame, animation.loops ? clip.frames.first : clip.frames.last,
+                               "\(animation)")
+            }
+        }
+        XCTAssertNotNil(clips[.alert].stillFrame.bubbleAnchor, "a still alert keeps its bubble")
+    }
+
+    func testStillPetShowsOnePosePerStateAndIgnoresBlinks() {
+        var pet = animator()
+        XCTAssertEqual(clips.stillFrame(for: pet), clips[.idle].frames[0])
+        XCTAssertNil(clips.nextStillChange(for: pet, after: 0), "a resting still pet waits for events")
+
+        // Blinks never change the still picture.
+        var time: TimeInterval = 0
+        while pet.playback?.animation != .blink, time < 10 {
+            time += 0.05
+            pet.advance(to: time)
+        }
+        XCTAssertEqual(pet.playback?.animation, .blink)
+        XCTAssertEqual(clips.stillFrame(for: pet), clips[.idle].frames[0])
+        XCTAssertNil(clips.nextStillChange(for: pet, after: time))
+
+        pet.send(.activity(.studying), at: 20)
+        XCTAssertEqual(clips.stillFrame(for: pet), clips[.typing].frames[0])
+        pet.send(.activity(.onBreak), at: 21)
+        XCTAssertEqual(clips.stillFrame(for: pet), clips[.coffee].frames[0])
+        pet.send(.sleep, at: 22)
+        XCTAssertEqual(clips.stillFrame(for: pet), clips[.sleep].frames[2])
+        XCTAssertNil(clips.stillFrame(for: animator(.hidden)), "nothing to draw inside the notch")
+        XCTAssertEqual(clips.stillFrame(for: animator(.hanging)), clips[.peekIn].frames.last)
+    }
+
+    func testStillAlertHoldsItsPoseUntilTheClipEndsThenRests() throws {
+        var pet = animator(asleep: true)
+        pet.send(.nudge, at: 5)
+        let alert = clips[.alert]
+        XCTAssertEqual(clips.stillFrame(for: pet), alert.frames.last)
+        let end = try XCTUnwrap(clips.nextStillChange(for: pet, after: 5))
+        XCTAssertEqual(end, 5 + alert.duration, accuracy: 1e-9)
+
+        pet.advance(to: end)
+        XCTAssertEqual(clips.stillFrame(for: pet), clips[.idle].frames[0], "the nudge woke the pet")
+        XCTAssertNil(clips.nextStillChange(for: pet, after: end))
+    }
 }
