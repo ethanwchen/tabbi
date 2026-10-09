@@ -341,6 +341,22 @@ final class PetBreedTests: XCTestCase {
         XCTAssertTrue(Set(shihTzu.pixels.compactMap { $0 }).isSuperset(of: [.furBase, .furAccent, .belly]))
     }
 
+    func testShihTzuTongueSitsInAMouthWithBrownEyes() {
+        let shihTzu = PetComposer.sitting(.shihTzu)
+        // The tongue is framed by mouth corners instead of floating alone
+        // in the white beard.
+        let framedTongue = (1..<shihTzu.width - 1).contains { x in
+            (0..<shihTzu.height).contains { y in
+                shihTzu[x, y] == .blush && (shihTzu[x - 1, y] == .nose || shihTzu[x + 1, y] == .nose)
+            }
+        }
+        XCTAssertTrue(framedTongue)
+        // A brown iris under a darker pupil, so the eyes do not read as one
+        // black block like dark glasses.
+        let palette = PetBreed.shihTzu.palette
+        XCTAssertGreaterThan(palette[.eye].luminance, palette[.pupil].luminance + 0.05)
+    }
+
     func testDarkDogsStillGetTheLightRim() {
         XCTAssertEqual(PetBreed.dachshund.palette.withVisibleRim()[.outline], PetBreed.dachshund.palette.rim)
     }

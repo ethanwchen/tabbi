@@ -201,9 +201,11 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
                                .belly: c("#FBE3C6"), .nose: c("#3A2622"), .outline: c("#3A2214")])
         case .shihTzu:
             // Gold and white: a white coat and beard, a gold topknot, mask,
-            // and ears, and big dark eyes with a bright catchlight.
+            // and ears, and big dark eyes with a bright catchlight over a
+            // warm brown iris, so they read as eyes, not dark glasses.
             return PetPalette([.furBase: c("#F8F2EA"), .furShade: c("#DCCDBC"), .furAccent: c("#D9A35C"),
-                               .belly: c("#FFFFFF"), .eye: c("#2A1A14"), .eyeLight: c("#FFFFFF"),
+                               .belly: c("#FFFFFF"), .eye: c("#7A4A2E"), .pupil: c("#2A1A14"),
+                               .eyeLight: c("#FFFFFF"),
                                .nose: c("#2E2224"), .outline: c("#3A2A22")])
         }
     }
