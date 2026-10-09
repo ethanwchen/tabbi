@@ -196,12 +196,16 @@ mkdir -p "$out"
 app=$(scripts/assemble.sh "$bin" "$out" "$edition")
 name=$(/usr/libexec/PlistBuddy -c "Print :CFBundleName" "$app/Contents/Info.plist")
 executable="$app/Contents/MacOS/$(/usr/libexec/PlistBuddy -c "Print :CFBundleExecutable" "$app/Contents/Info.plist")"
+widget="$app/Contents/PlugIns/TabbiWidget.appex"
 plutil -replace CFBundleVersion -string "$build_number" "$app/Contents/Info.plist"
+plutil -replace CFBundleVersion -string "$build_number" "$widget/Contents/Info.plist"
 
 # Local symbols are only useful to a debugger; stripping them roughly halves the binary.
 # The linker's ad-hoc signature goes first, or strip warns that it breaks it.
 codesign --remove-signature "$executable"
 strip -x "$executable"
+codesign --remove-signature "$widget/Contents/MacOS/TabbiWidget"
+strip -x "$widget/Contents/MacOS/TabbiWidget"
 
 # The signing entitlements: the sandbox file plus, for the App Store, the
 # application and team identifiers, which must match the embedded profile.
@@ -220,9 +224,12 @@ else
 fi
 
 log "Signing ($($adhoc && echo ad-hoc || echo Apple Distribution))"
+# The widget extension first, with its own sandbox entitlements (docs/widget.md).
 if $adhoc; then
+    codesign --force --sign - --timestamp=none --entitlements packaging/TabbiWidget.entitlements "$widget"
     codesign --force --sign - --timestamp=none --entitlements "$signing_entitlements" "$app"
 else
+    codesign --force --sign "$app_identity" --timestamp --entitlements packaging/TabbiWidget.entitlements "$widget"
     codesign --force --sign "$app_identity" --timestamp --entitlements "$signing_entitlements" "$app"
 fi
 codesign --verify --strict --deep --verbose=2 "$app"

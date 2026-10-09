@@ -75,6 +75,20 @@ let package = Package(
             // scripts/assemble.sh puts Sparkle.framework in Contents/Frameworks.
             linkerSettings: [.unsafeFlags(["-Xlinker", "-rpath", "-Xlinker", "@executable_path/../Frameworks"])]
         ),
+        // The desktop and Notification Center widget (docs/widget.md).
+        // scripts/assemble.sh wraps this binary in
+        // Tabbi.app/Contents/PlugIns/TabbiWidget.appex. An app extension
+        // starts in Foundation's NSExtensionMain, which hands control to the
+        // @main WidgetBundle; Xcode links every extension this way, and
+        // without it the process exits before WidgetKit asks for widgets.
+        .executableTarget(
+            name: "TabbiWidget",
+            dependencies: ["TabbiKitCore"],
+            swiftSettings: swiftSettings + [.unsafeFlags(["-application-extension"])],
+            linkerSettings: [
+                .unsafeFlags(["-Xlinker", "-e", "-Xlinker", "_NSExtensionMain", "-Xlinker", "-application_extension"]),
+            ]
+        ),
         // Renders pet sprite contact sheets for art review: `swift run PetGallery out/`.
         .executableTarget(
             name: "PetGallery",

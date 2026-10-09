@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Entitlements for the widget extension, Tabbi.app/Contents/PlugIns/
+  TabbiWidget.appex (docs/widget.md). Every edition and every signing
+  (ad-hoc, Developer ID, App Store) uses this file.
+  - app-sandbox: macOS only runs a widget extension in the App Sandbox.
+  - application-groups: the shared container the app writes the widget's
+    state into. The team-prefixed form needs no provisioning profile on
+    macOS, for Developer ID and App Store builds alike.
+-->
+<plist version="1.0">
+<dict>
+    <key>com.apple.security.app-sandbox</key>
+    <true/>
+    <key>com.apple.security.application-groups</key>
+    <array>
+        <string>B9VRALHV8S.dev.tabbi.Tabbi</string>
+    </array>
+</dict>
+</plist>

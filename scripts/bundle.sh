@@ -19,5 +19,8 @@ swift build -c "$config"
 bin="$(swift build -c "$config" --show-bin-path)/Tabbi"
 app=$(scripts/assemble.sh "$bin" build "$edition")
 # Ad-hoc signature: required on Apple Silicon and gives TCC a stable identity.
+# The widget extension goes first, with its own sandbox entitlements.
+codesign --force --sign - --entitlements packaging/TabbiWidget.entitlements \
+    "$app/Contents/PlugIns/TabbiWidget.appex" >/dev/null
 codesign --force --sign - "$app" >/dev/null
 echo "$app"
