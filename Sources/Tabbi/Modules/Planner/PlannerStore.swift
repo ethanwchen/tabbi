@@ -90,6 +90,11 @@ final class PlannerStore: ObservableObject {
     var hasPlannableWork: Bool {
         planSettings.planMode == .study || day.items.contains { !$0.isDone } || !sharedWork.isEmpty
     }
+    /// Whether Plan tomorrow has anything to schedule: tomorrow's open
+    /// tasks, or study blocks for a study kit.
+    var hasPlannableTomorrow: Bool {
+        viewing == .tomorrow && (planSettings.planMode == .study || shownDay.items.contains { !$0.isDone })
+    }
     /// Whether the shown list can change: not yesterday's, which is a
     /// record, and not while its file is unreadable, so a bad file is never
     /// overwritten.
@@ -151,6 +156,8 @@ final class PlannerStore: ObservableObject {
         let today = PlannerDayKey(date: Date())
         guard repository != nil, today != day.date || problem.isUnreadable else { return }
         load(today)
+        // A plan for what was tomorrow is about the wrong day now.
+        if plan.target != .today { plan.cancel() }
         viewing = .today
         loadOtherDay()
     }
@@ -159,10 +166,8 @@ final class PlannerStore: ObservableObject {
     /// and Wrap up close, since both are about today.
     func show(_ viewed: PlannerViewedDay) {
         refreshDay()
-        if viewed != .today {
-            plan.cancel()
-            review.close()
-        }
+        if viewed != .today || plan.target != .today { plan.cancel() }
+        if viewed != .today { review.close() }
         viewing = viewed
         loadOtherDay()
     }
@@ -205,6 +210,23 @@ final class PlannerStore: ObservableObject {
         review.close()
         show(.today)
         plan.plan(tasks: day.items, sharedWork: sharedWork, sharedTasks: sharedTasks, progress: sharedProgress)
+    }
+
+    /// Schedules tomorrow's list around tomorrow's calendar from the start
+    /// of the working day, so the evening can set up the next one. Other
+    /// modules' shared work is today's, so it stays out of this plan.
+    func planTomorrow() {
+        review.close()
+        show(.tomorrow)
+        guard canEdit else { return }
+        plan.plan(.tomorrow, tasks: shownDay.items)
+    }
+
+    /// Snapshot runs only: shows `viewed`, with its sample plan open when
+    /// `planning` (demo data, so nothing reaches the calendar).
+    func showForSnapshot(_ viewed: PlannerViewedDay, planning: Bool = false) {
+        show(viewed)
+        if planning { plan.showSampleProposal(viewed, tasks: shownDay.items) }
     }
 
     /// Opens the End-of-Day Review of today's list, the focus sessions in

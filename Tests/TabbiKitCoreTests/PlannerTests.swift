@@ -415,6 +415,21 @@ final class PlannerViewedDayTests: XCTestCase {
         XCTAssertEqual(PlannerViewedDay.tomorrow.title, "Tomorrow")
     }
 
+    func testPlanStartsNowTodayAtTheWorkingDayTomorrowAndNeverYesterday() {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "Europe/Berlin")!
+        // The night before the October clock change, at 11 pm.
+        let now = calendar.date(from: DateComponents(year: 2026, month: 10, day: 24, hour: 23))!
+        XCTAssertEqual(PlannerViewedDay.today.planStart(now: now, calendar: calendar), now)
+        XCTAssertNil(PlannerViewedDay.yesterday.planStart(now: now, calendar: calendar))
+        XCTAssertEqual(PlannerViewedDay.tomorrow.planStart(now: now, calendar: calendar),
+                       calendar.date(from: DateComponents(year: 2026, month: 10, day: 25, hour: 9)))
+        XCTAssertEqual(PlannerViewedDay.tomorrow.planStart(now: now, calendar: calendar, startHour: 7),
+                       calendar.date(from: DateComponents(year: 2026, month: 10, day: 25, hour: 7)))
+        XCTAssertEqual(PlannerViewedDay.today.planTitle, "Plan my day")
+        XCTAssertEqual(PlannerViewedDay.tomorrow.planTitle, "Plan tomorrow")
+    }
+
     func testCalendarCardIsCaptionedForTheDayItLists() {
         XCTAssertEqual(PlannerViewedDay.today.calendarTitle, "Up next")
         XCTAssertEqual(PlannerViewedDay.yesterday.calendarTitle, "Yesterday's calendar")

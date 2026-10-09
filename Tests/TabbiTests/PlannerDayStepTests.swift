@@ -124,6 +124,34 @@ final class PlannerDayStepTests: XCTestCase {
         XCTAssertFalse(store.review.isActive, "another day closes today's wrap-up")
     }
 
+    func testPlanTomorrowPlansTomorrowsListAroundTomorrowsCalendar() async throws {
+        let store = makeStore(runMode: .demo)
+        store.show(.tomorrow)
+        XCTAssertTrue(store.hasPlannableTomorrow)
+        let tasks = store.items
+        store.planTomorrow()
+        XCTAssertEqual(store.viewing, .tomorrow, "planning ahead stays on tomorrow")
+        XCTAssertEqual(store.plan.target, .tomorrow)
+        XCTAssertEqual(store.plan.phase, .planning)
+
+        store.showForSnapshot(.tomorrow, planning: true)
+        guard case .proposal(let proposal) = store.plan.phase else { return XCTFail("\(store.plan.phase)") }
+        XCTAssertFalse(proposal.pending.isEmpty)
+        XCTAssertTrue(proposal.pending.allSatisfy { PlannerDayKey(date: $0.start) == tomorrow })
+        let linked = Set(proposal.pending.compactMap(\.linkedTaskID))
+        XCTAssertFalse(linked.isEmpty)
+        XCTAssertTrue(linked.isSubset(of: Set(tasks.map(\.id))), "blocks work on tomorrow's tasks")
+        let events = store.upNext.planEvents(on: .tomorrow)
+        XCTAssertTrue(proposal.pending.allSatisfy { block in
+            !events.contains { !$0.isAllDay && $0.start < block.end && block.start < $0.end }
+        }, "no block overlaps tomorrow's events")
+
+        store.show(.today)
+        XCTAssertFalse(store.plan.isActive, "tomorrow's plan doesn't follow onto today")
+        store.show(.yesterday)
+        XCTAssertNil(store.viewing.planStart(now: Date()))
+    }
+
     func testAnUnreadableTomorrowIsNeverOverwritten() throws {
         try FileManager.default.createDirectory(at: repository.directory, withIntermediateDirectories: true)
         try Data("garbage".utf8).write(to: repository.fileURL(for: tomorrow))

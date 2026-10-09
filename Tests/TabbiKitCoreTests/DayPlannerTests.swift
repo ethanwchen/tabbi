@@ -103,6 +103,28 @@ final class DayPlannerTests: XCTestCase {
         XCTAssertNil(blocks[0].linkedTaskID)
     }
 
+    func testPlanningTomorrowAheadStartsAtTheWorkingDayAndLandsOnThatDay() throws {
+        // 9 pm on Oct 1, planning Oct 2.
+        let start = try XCTUnwrap(PlannerViewedDay.tomorrow.planStart(now: at(21), calendar: calendar))
+        let nine = calendar.date(from: DateComponents(year: 2026, month: 10, day: 2, hour: 9))!
+        XCTAssertEqual(start, nine)
+        let meeting = event("Standup", nine.addingTimeInterval(3600), nine.addingTimeInterval(5400))
+        let context = DayPlanContext(now: start, events: [meeting], tasks: [taskA], calendar: calendar,
+                                     isPlanningAhead: true)
+        XCTAssertEqual(context.dayEnd, nine.addingTimeInterval(9 * 3600), "a full day, ending at 6 pm")
+        XCTAssertEqual(context.gaps.first, DateInterval(start: nine, end: meeting.start))
+
+        let prompt = DayPlanner.prompt(for: context)
+        XCTAssertTrue(prompt.contains("day tomorrow, ahead of time. The day starts at 09:00"))
+        XCTAssertFalse(prompt.contains("It is now"))
+        XCTAssertTrue(prompt.contains("- 10:00-10:30 Standup"))
+
+        let blocks = try DayPlanner.proposal(from: #"[{"start":"09:00","end":"09:45","title":"Ship","task":"t1"}]"#,
+                                             context: context)
+        XCTAssertEqual(blocks.first?.start, nine, "HH:mm resolves on the planned day, not tonight")
+        XCTAssertEqual(blocks.first?.linkedTaskID, taskA.id)
+    }
+
     func testPromptSaysNoneForEmptySections() {
         let prompt = DayPlanner.prompt(for: DayPlanContext(now: at(23), events: [], tasks: [], calendar: calendar))
         XCTAssertEqual(prompt.components(separatedBy: "- none").count - 1, 3)

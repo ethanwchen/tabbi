@@ -39,7 +39,12 @@ public struct PlanBlock: Identifiable, Hashable, Sendable {
 /// Built once per request so the prompt, the parser (which resolves `HH:mm`
 /// and short task ids), and the validator all agree on the same day and gaps.
 public struct DayPlanContext: Sendable {
+    /// When planning starts: the current time today, or the start of the
+    /// working day when planning ahead.
     public let now: Date
+    /// True when planning tomorrow ahead of time (`PlannerViewedDay.planStart`),
+    /// so the prompt speaks of a whole day rather than the rest of one.
+    public let isPlanningAhead: Bool
     public let events: [UpcomingEvent]
     /// Unfinished checklist items, in list order.
     public let tasks: [PlannerItem]
@@ -55,8 +60,10 @@ public struct DayPlanContext: Sendable {
 
     /// `dayEndHour` is when planned work usually stops (see `DayPlanner.dayEnd`).
     public init(now: Date, events: [UpcomingEvent], tasks: [PlannerItem], sharedWork: [String] = [],
-                calendar: Calendar = .current, dayEndHour: Int = DayPlanner.defaultDayEndHour) {
+                calendar: Calendar = .current, dayEndHour: Int = DayPlanner.defaultDayEndHour,
+                isPlanningAhead: Bool = false) {
         self.now = now
+        self.isPlanningAhead = isPlanningAhead
         self.events = events
         self.tasks = tasks.filter { !$0.isDone }
         self.sharedWork = sharedWork.compactMap(PlannerDay.normalized)
@@ -120,6 +127,10 @@ public enum DayPlanner {
         ["--model", model, "--tools", "", "--strict-mcp-config", "--json-schema", jsonSchema]
     }
 
+    /// Where a day planned ahead starts (9 am): planning tomorrow the
+    /// evening before has no "now" on that day to start from.
+    public static let defaultDayStartHour = 9
+
     /// Usual end of the planned day; kits can move it (study days run later).
     public static let defaultDayEndHour = 18
     /// The latest a planned day can end.
@@ -181,8 +192,12 @@ public enum DayPlanner {
         let tasks = context.taskKeys.map { "- \($0.key): \($0.task.title)" }
             + context.sharedWorkKeys.map { "- \($0.key): \($0.work)" }
 
+        let opening = context.isPlanningAhead
+            ? "You plan someone's day tomorrow, ahead of time. The day starts at \(clock.string(from: context.now))."
+            : "You plan the rest of someone's day. It is now \(clock.string(from: context.now))."
+
         return """
-        You plan the rest of someone's day. It is now \(clock.string(from: context.now)). \
+        \(opening) \
         Planned work should end by \(clock.string(from: context.dayEnd)).
 
         Calendar events (fixed, do not move or overlap):

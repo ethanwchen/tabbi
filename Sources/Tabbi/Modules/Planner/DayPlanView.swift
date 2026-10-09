@@ -25,8 +25,8 @@ struct DayPlanView: View {
             EmptyView()
         case .planning:
             DayPlanShimmer(help: plan.settings.planMode == .claude
-                           ? "Claude is fitting your tasks around today's events"
-                           : "Fitting your work and breaks around today's events")
+                           ? "Claude is fitting your tasks around \(plan.target.eventsName)"
+                           : "Fitting your work and breaks around \(plan.target.eventsName)")
                 .transition(.opacity)
         case .proposal(let proposal):
             VStack(alignment: .leading, spacing: 0) {
@@ -44,7 +44,9 @@ struct DayPlanView: View {
         case .noFreeTime:
             PlannerMessage(symbol: "moon.stars.fill", tint: TodayModule.descriptor.accentColor,
                            title: "Nothing left to plan",
-                           detail: "There's no free time worth a block before the evening.")
+                           detail: plan.target == .tomorrow
+                               ? "Tomorrow has no free time worth a block before the evening."
+                               : "There's no free time worth a block before the evening.")
                 .frame(maxHeight: .infinity)
         case .failed(let failure):
             PlannerMessage(symbol: "exclamationmark.triangle.fill", tint: Theme.Palette.warning,
@@ -68,6 +70,11 @@ struct DayPlanView: View {
             .frame(maxHeight: .infinity)
         }
     }
+}
+
+private extension PlannerViewedDay {
+    /// The planned day's calendar, for the shimmer's tooltip.
+    var eventsName: String { self == .tomorrow ? "tomorrow's events" : "today's events" }
 }
 
 // MARK: Header
@@ -114,9 +121,9 @@ private struct DayPlanHeader: View {
 
     private var title: String {
         switch plan.phase {
-        case .planning: "Planning your day…"
-        case .proposal: "Your plan"
-        default: "Plan my day"
+        case .planning: plan.target == .tomorrow ? "Planning tomorrow…" : "Planning your day…"
+        case .proposal: plan.target == .tomorrow ? "Tomorrow" : "Your plan"
+        default: plan.target.planTitle
         }
     }
 

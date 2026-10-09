@@ -187,7 +187,7 @@ enum SnapshotRenderer {
         if layout.order.contains(.planner) {
             var withToday = layout
             _ = withToday.setEnabled(.planner, true)
-            for name in ["open-planner-yesterday", "open-planner-tomorrow"] {
+            for name in ["open-planner-yesterday", "open-planner-tomorrow", "open-planner-tomorrow-plan"] {
                 let model = NotchViewModel(geometry: geometry, layout: withToday)
                 model.open(.planner)
                 shots.append(Shot(name, model))
@@ -366,8 +366,9 @@ enum SnapshotRenderer {
             #endif
             timer?.showForSnapshot(partySession: name == "open-study-party" ? partySession : nil)
             party?.showCelebrationForSnapshot(name == "open-party-celebrating")
-            today?.show(name == "open-planner-yesterday" ? .yesterday
-                : name == "open-planner-tomorrow" ? .tomorrow : .today)
+            today?.showForSnapshot(name == "open-planner-yesterday" ? .yesterday
+                : name.hasPrefix("open-planner-tomorrow") ? .tomorrow : .today,
+                planning: name == "open-planner-tomorrow-plan")
             if let firstSection { closet?.store.section = name == "open-closet-look" ? .look : firstSection }
             model.themeID = Theme.current.id
             if name == "closed-pet-cheer", case .pet(var pet) = model.preview {

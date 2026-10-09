@@ -43,4 +43,22 @@ public enum PlannerViewedDay: Int, CaseIterable, Hashable, Sendable {
     /// Whether the list can be changed here. Yesterday is a record of what
     /// happened: its leftovers move to today, but it isn't edited.
     public var isEditable: Bool { self != .yesterday }
+
+    /// Where Plan my day starts planning this day: `now` for today, the
+    /// start of the working day (`startHour`) for tomorrow, so it can be
+    /// planned the evening before. Nil for yesterday, which is over.
+    public func planStart(now: Date, calendar: Calendar = .current,
+                          startHour: Int = DayPlanner.defaultDayStartHour) -> Date? {
+        switch self {
+        case .yesterday: return nil
+        case .today: return now
+        case .tomorrow:
+            let start = key(today: PlannerDayKey(date: now, calendar: calendar), calendar: calendar)
+                .startDate(calendar: calendar)
+            return calendar.date(bySettingHour: min(max(startHour, 0), 23), minute: 0, second: 0, of: start)
+        }
+    }
+
+    /// The Plan my day button's title for this day.
+    public var planTitle: String { self == .tomorrow ? "Plan tomorrow" : "Plan my day" }
 }

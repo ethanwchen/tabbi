@@ -45,7 +45,17 @@ struct PlannerPanel: View {
                         if store.viewing == .yesterday {
                             PlannerLeftoversBar(store: store)
                         } else if store.viewing == .tomorrow, store.canEdit {
-                            PlannerAddField(store: store, focus: $focus)
+                            HStack(spacing: Theme.Spacing.s) {
+                                PlannerAddField(store: store, focus: $focus)
+                                if store.hasPlannableTomorrow {
+                                    PlannerPillButton(title: PlannerViewedDay.tomorrow.planTitle, symbol: "sparkles",
+                                                      isProminent: isEvening, height: 28,
+                                                      help: store.planSettings.planMode.planHelp(for: .tomorrow)) {
+                                        store.planTomorrow()
+                                    }
+                                    .transition(.motionPop)
+                                }
+                            }
                         } else if store.canEdit {
                             HStack(spacing: Theme.Spacing.s) {
                                 PlannerAddField(store: store, focus: $focus)
@@ -117,11 +127,15 @@ struct PlannerPanel: View {
 
 extension TodayPlanSettings.PlanMode {
     /// What Plan my day does, for its tooltips.
-    var planHelp: String {
-        switch self {
-        case .local: "Fit your open tasks, reviews and breaks around today's calendar"
-        case .claude: "Let Claude fit your open tasks around today's calendar"
-        case .study: "Fit reviews, study blocks and breaks around today's calendar"
+    var planHelp: String { planHelp(for: .today) }
+
+    /// What planning `day` does, for its tooltips.
+    func planHelp(for day: PlannerViewedDay) -> String {
+        let calendar = day == .tomorrow ? "tomorrow's calendar" : "today's calendar"
+        return switch self {
+        case .local: "Fit your open tasks, reviews and breaks around \(calendar)"
+        case .claude: "Let Claude fit your open tasks around \(calendar)"
+        case .study: "Fit reviews, study blocks and breaks around \(calendar)"
         }
     }
 }

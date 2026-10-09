@@ -124,9 +124,14 @@ final class UpNextStore: ObservableObject {
 
     /// Every event today (not just the next few), for Plan My Day. Empty
     /// without calendar access.
-    func todayEvents() -> [UpcomingEvent] {
-        if isDemo { return demoEvents }
-        return events(on: .today)
+    func todayEvents() -> [UpcomingEvent] { planEvents(on: .today) }
+
+    /// Every event on `day`, for Plan My Day (tomorrow's when planning
+    /// ahead). Demo mode returns that day's samples. Empty without access.
+    func planEvents(on day: PlannerViewedDay) -> [UpcomingEvent] {
+        guard isDemo else { return events(on: day) }
+        guard day != .today else { return demoEvents }
+        return demoEvents.isEmpty ? [] : UpcomingEvent.samples(day, now: Date(), kind: sampleDay)
     }
 
     /// Asks for calendar access when it was never requested, then reports
