@@ -304,7 +304,7 @@ main.home .wrap { max-width: 1120px; }
 .gh-mark { flex: none; width: 30px; color: var(--ink); }
 .gh-text { flex: 1; display: flex; flex-direction: column; gap: 2px; text-align: left; }
 .gh-text strong { font-family: var(--head); font-weight: 600; font-size: 18px; }
-.gh-text span { font-size: 14px; font-weight: 600; color: var(--ink-3); }
+.gh-text span { font-size: 14px; font-weight: 600; color: var(--ink-3); text-wrap: pretty; }
 .gh-arrow { flex: none; margin-left: 6px; font-size: 20px; font-weight: 800; color: var(--taupe-text); transition: transform 0.25s ease; }
 .gh-card:hover .gh-arrow { transform: translateX(3px); }
 .socials { display: inline-flex; gap: 2px; margin-left: 6px; vertical-align: middle; }
