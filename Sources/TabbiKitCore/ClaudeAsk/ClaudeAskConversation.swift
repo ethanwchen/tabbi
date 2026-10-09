@@ -24,14 +24,19 @@ public struct ClaudeAskMessage: Identifiable, Equatable, Sendable {
     public internal(set) var status: Status
     /// Screenshots sent with a question; always empty on answers.
     public let attachments: [ClaudeAskAttachment]
+    /// Who was asked for this answer, so a failed answer names the provider
+    /// that failed even after the user picks another one. `nil` on questions
+    /// and on answers restored from the history.
+    public let provider: AIProviderID?
 
     public init(id: Int, role: Role, text: String, status: Status = .complete,
-                attachments: [ClaudeAskAttachment] = []) {
+                attachments: [ClaudeAskAttachment] = [], provider: AIProviderID? = nil) {
         self.id = id
         self.role = role
         self.text = text
         self.status = status
         self.attachments = attachments
+        self.provider = provider
     }
 }
 
@@ -148,12 +153,14 @@ public struct ClaudeAskConversation: Equatable, Sendable {
     /// Starts a new exchange. Returns the trimmed prompt to send, or `nil` if
     /// the prompt is blank or an answer is still streaming. A screenshot
     /// always comes with a question, so `attachments` alone sends nothing.
+    /// `provider` is who will be asked (`nil` while none is picked).
     @discardableResult
-    public mutating func begin(prompt: String, attachments: [ClaudeAskAttachment] = []) -> String? {
+    public mutating func begin(prompt: String, attachments: [ClaudeAskAttachment] = [],
+                               provider: AIProviderID? = nil) -> String? {
         let trimmed = prompt.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty, !isStreaming else { return nil }
         append(.user, trimmed, .complete, attachments: attachments)
-        append(.assistant, "", .streaming)
+        append(.assistant, "", .streaming, provider: provider)
         committedText = ""
         partialText = ""
         phase = .streaming
@@ -324,8 +331,9 @@ public struct ClaudeAskConversation: Equatable, Sendable {
     }
 
     private mutating func append(_ role: ClaudeAskMessage.Role, _ text: String, _ status: ClaudeAskMessage.Status,
-                                 attachments: [ClaudeAskAttachment] = []) {
-        messages.append(ClaudeAskMessage(id: nextID, role: role, text: text, status: status, attachments: attachments))
+                                 attachments: [ClaudeAskAttachment] = [], provider: AIProviderID? = nil) {
+        messages.append(ClaudeAskMessage(id: nextID, role: role, text: text, status: status,
+                                         attachments: attachments, provider: provider))
         nextID += 1
     }
 

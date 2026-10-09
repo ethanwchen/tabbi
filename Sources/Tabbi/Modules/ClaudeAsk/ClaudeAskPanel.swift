@@ -341,7 +341,7 @@ private struct MessageList: View {
         case .assistant:
             if message.status == .failed {
                 FailureRow(failure: isLast ? session.conversation.failure : nil,
-                           assistant: session.ai.setupState.provider?.assistantName ?? "The AI",
+                           assistant: message.provider?.assistantName ?? "The AI",
                            onRetry: isLast ? { session.retry() } : nil)
             } else {
                 AssistantBubble(message: message, accent: accent)

@@ -234,6 +234,17 @@ final class ClaudeAskConversationTests: XCTestCase {
         XCTAssertEqual(conversation.failure, .process(detail: "Gemini ended without answering."))
     }
 
+    func testEachAnswerRemembersWhoWasAsked() {
+        var conversation = ClaudeAskConversation()
+        conversation.begin(prompt: "Hi", provider: .ollama)
+        conversation.fail(.process(detail: "Ollama is not running."))
+        conversation.begin(prompt: "Again", provider: .gemini)
+        let answers = conversation.messages.filter { $0.role == .assistant }
+        XCTAssertEqual(answers.map(\.provider), [.ollama, .gemini])
+        XCTAssertEqual(answers.first?.status, .failed)
+        XCTAssertNil(conversation.messages.first?.provider, "questions name no provider")
+    }
+
     func testTheSessionsToolIsSavedAndRestored() throws {
         var conversation = ClaudeAskConversation()
         conversation.begin(prompt: "Hi")

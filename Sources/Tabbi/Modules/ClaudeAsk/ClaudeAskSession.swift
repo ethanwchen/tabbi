@@ -120,7 +120,8 @@ final class ClaudeAskSession: ObservableObject {
         guard !isStreaming else { return false }
         isShowingHistory = false
         captureFailed = false
-        guard let prompt = conversation.begin(prompt: question.text, attachments: question.attachments) else {
+        guard let prompt = conversation.begin(prompt: question.text, attachments: question.attachments,
+                                              provider: ai.provider?.id) else {
             return false
         }
         generation += 1

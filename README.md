@@ -25,7 +25,7 @@ A pixel cat lives there too, and it cheers you on while you work.
 
 - **Focus timer** with study methods like Pomodoro, focus sounds and Do Not Disturb.
 - **Today:** your to-do list, your next meeting and a Plan my day that fits work into free time.
-- **Now Playing and Ask Claude:** music controls, and Claude in the notch through your own `claude` CLI.
+- **Now Playing and Ask AI:** music controls, and Claude, Codex, Gemini or a free local Ollama model in the notch.
 - **Anki, study with friends and a pet** that earns outfits from your study points.
 - **Private by design:** no account needed, no analytics and no telemetry.
 
@@ -51,7 +51,7 @@ Med School adds Anki.
   </tr>
   <tr>
     <td><img src="docs/images/now-playing.png" alt="Now Playing tab"><br><b>Now Playing.</b> Spotify and Apple Music, with artwork, shuffle and repeat.</td>
-    <td><img src="docs/images/ask-claude.png" alt="Ask Claude tab"><br><b>Ask Claude.</b> Type a question and press Return; attach a screenshot or open a bigger view.</td>
+    <td><img src="docs/images/ask-claude.png" alt="Ask AI tab"><br><b>Ask AI.</b> Pick Claude, Codex, Gemini or Ollama, type a question and press Return; attach a screenshot or open a bigger view.</td>
   </tr>
   <tr>
     <td><img src="docs/images/anki.png" alt="Anki tab"><br><b>Anki.</b> Cards due today in your decks, through AnkiConnect; click a deck to study it.</td>
