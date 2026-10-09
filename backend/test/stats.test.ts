@@ -60,7 +60,7 @@ describe("GET /v1/admin/stats", () => {
 
   it("returns only aggregate counts", async () => {
     const body = await stats();
-    expect(Object.keys(body).sort()).toEqual(["active", "at", "ok", "parties", "signups", "suggestions", "users"]);
+    expect(Object.keys(body).sort()).toEqual(["active", "at", "hub", "ok", "parties", "signups", "suggestions", "users"]);
     expect(body.at).toBe(nowS());
     expect(JSON.stringify(body)).not.toMatch(/"code"|"name"|"token"/);
   });
@@ -102,5 +102,42 @@ describe("GET /v1/admin/stats", () => {
 
     advance(30 * DAY);
     expect((await stats()).active).toEqual({ day: 0, week: 0, month: 0 });
+  });
+
+  it("counts this instance's requests and SQLite rows, which is what a route costs", async () => {
+    const user = await register();
+    const usage = async () => (await stats()).hub as { since: number; requests: number; rowsRead: number; rowsWritten: number };
+    // The difference between two stats calls is the cost of the requests in between plus one stats call.
+    const a = await usage();
+    const b = await usage();
+    const statsCall = { requests: b.requests - a.requests, rowsRead: b.rowsRead - a.rowsRead, rowsWritten: b.rowsWritten - a.rowsWritten };
+    expect(statsCall.requests).toBe(1);
+    expect(statsCall.rowsWritten).toBe(0);
+    const cost = async (run: () => Promise<unknown>) => {
+      const before = await usage();
+      await run();
+      const after = await usage();
+      return {
+        requests: after.requests - before.requests - statsCall.requests,
+        rowsRead: after.rowsRead - before.rowsRead - statsCall.rowsRead,
+        rowsWritten: after.rowsWritten - before.rowsWritten - statsCall.rowsWritten,
+      };
+    };
+    expect(b.since).toBeLessThanOrEqual(nowS());
+
+    // The first heartbeat writes the presence row; an unchanged one a minute later writes nothing.
+    const first = await cost(() => heartbeat(user.token));
+    expect(first.requests).toBe(1);
+    expect(first.rowsWritten).toBeGreaterThan(0);
+    advance(60);
+    const steady = await cost(() => heartbeat(user.token));
+    expect(steady).toMatchObject({ requests: 1, rowsWritten: 0 });
+    expect(steady.rowsRead).toBeGreaterThan(0);
+    expect(steady.rowsRead).toBeLessThanOrEqual(4); // the token lookup through its index
+
+    // Starting a session is visible to friends, so it writes the presence row right away, and the
+    // day's new study minutes with it.
+    const changed = await cost(() => call("POST", "/v1/presence", { status: "studying", method: "pomodoro", todayMinutes: 5 }, user.token));
+    expect(changed).toMatchObject({ requests: 1, rowsWritten: 2 });
   });
 });

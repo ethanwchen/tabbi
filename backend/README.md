@@ -65,6 +65,7 @@ Add a schema change as a new step at the end and never edit a deployed one.
 - **Rollback:** `npx wrangler rollback` returns to the previous version (code only). Rolling back past a deploy that changed a table's shape (schema step 6 rebuilt `name_holds`) also needs a storage restore to just before that deploy.
 - **Deletions after a restore:** a restore brings back accounts deleted since the chosen moment; re-delete them with `DELETE /v1/admin/users/{code}` (the docs show how to find them).
 - **Usage:** `TABBI_ADMIN_TOKEN=... npm run stats` prints the aggregate counts from `GET /v1/admin/stats` (users, sign-ins, daily, weekly and monthly active users, sign-ups per day) and the GitHub release download counts; see [`../docs/ops.md`](../docs/ops.md#product-metrics).
+- **Capacity:** `npm run loadtest` simulates 10,000 to 50,000 users against `wrangler dev` (never production) and reports throughput, latency and SQLite rows per request; see [`../docs/ops.md`](../docs/ops.md#load-test).
 - **Monitoring:** a free uptime check on `GET /v1/health` (it also fails during a burst of server errors), structured logs in Workers Logs (no tokens, codes or IP addresses), and the dashboard's Metrics for requests, errors and plan usage; see [`../docs/ops.md`](../docs/ops.md#monitoring).
 
 ## Architecture
@@ -119,6 +120,7 @@ Duration is billed per object while it is in memory, at 128 MB.
 One object that stays warm all day costs 86,400 s x 0.128 GB = 11,059 GB-s, under the 13,000 GB-s allowance.
 Two always-warm objects would need 22,118 GB-s and exceed it, so per-user or per-party objects are ruled out on the free plan.
 A single object handles hundreds of requests per second, far above the roughly 1.2 requests per second that 100,000 requests per day average out to, so throughput is not the bottleneck.
+Measured with `npm run loadtest`, one Hub serves about 500 to 600 mixed requests per second, enough for the busiest hour of about 50,000 registered users four times over; the numbers, the Paid plan costs and when to shard are in [`../docs/ops.md`](../docs/ops.md#scale).
 
 ### Presence: adaptive heartbeats, write on change
 

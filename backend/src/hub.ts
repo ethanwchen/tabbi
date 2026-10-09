@@ -350,8 +350,25 @@ interface Caller {
   profile: Profile;
 }
 
+/** What this Hub instance has served since it started (it starts over after an eviction or deploy). */
+export interface HubUsage {
+  since: number;
+  requests: number;
+  rowsRead: number;
+  rowsWritten: number;
+}
+
 export class Hub extends DurableObject<Env> {
-  private sql: SqlStorage;
+  /** SQLite, through `tracked` so every statement's rows count toward `usage`. */
+  private sql: Pick<SqlStorage, "exec">;
+  /**
+   * Requests and SQLite rows read and written since this instance started, shown by GET /v1/admin/stats.
+   * Rows are what Cloudflare bills a SQLite Durable Object for, so this measures a route's cost (the
+   * load test in scripts/loadtest.ts reads it) and shows production use without the dashboard.
+   */
+  private usage: HubUsage = { since: nowS(), requests: 0, rowsRead: 0, rowsWritten: 0 };
+  /** Statements run since rows were last added to `usage`; a cursor's counts are final once consumed. */
+  private cursors: SqlStorageCursor<Record<string, SqlStorageValue>>[] = [];
   private windows = new Map<string, { end: number; count: number }>();
   /**
    * Live presence by friend code, plus when each entry was last written to SQLite. Heartbeats update
@@ -366,7 +383,14 @@ export class Hub extends DurableObject<Env> {
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
-    this.sql = ctx.storage.sql;
+    const sql = ctx.storage.sql;
+    this.sql = {
+      exec: <T extends Record<string, SqlStorageValue>>(query: string, ...bindings: unknown[]) => {
+        const cursor = sql.exec<T>(query, ...bindings);
+        this.cursors.push(cursor);
+        return cursor;
+      },
+    };
     migrate(ctx.storage);
     ctx.blockConcurrencyWhile(async () => {
       if ((await ctx.storage.getAlarm()) === null) await ctx.storage.setAlarm(Date.now() + RETENTION_SWEEP_S * 1000);
@@ -380,6 +404,7 @@ export class Hub extends DurableObject<Env> {
    */
   async alarm(): Promise<void> {
     this.sweepRetention(nowS());
+    this.tally();
     await this.ctx.storage.setAlarm(Date.now() + RETENTION_SWEEP_S * 1000);
   }
 
@@ -405,6 +430,7 @@ export class Hub extends DurableObject<Env> {
   }
 
   async fetch(req: Request): Promise<Response> {
+    this.usage.requests++;
     try {
       return await this.route(req);
     } catch (e) {
@@ -412,7 +438,21 @@ export class Hub extends DurableObject<Env> {
       this.recordFailure(nowS());
       logEvent("error", "hub_exception", { route: routeOf(new URL(req.url).pathname), ...errorFields(e) });
       return json({ ok: false, error: "internal", message: "internal error" }, 500);
+    } finally {
+      this.tally();
     }
+  }
+
+  /**
+   * Adds the rows of the statements run so far to `usage`. Every statement's cursor is consumed in the
+   * same synchronous step that runs it, so no request has an unfinished cursor when another one ends.
+   */
+  private tally(): void {
+    for (const c of this.cursors) {
+      this.usage.rowsRead += c.rowsRead;
+      this.usage.rowsWritten += c.rowsWritten;
+    }
+    this.cursors = [];
   }
 
   private recordFailure(now: number): void {
@@ -632,7 +672,14 @@ export class Hub extends DurableObject<Env> {
         ),
       },
       suggestions: count("SELECT COUNT(*) AS n FROM suggestions"),
+      hub: this.currentUsage(),
     });
+  }
+
+  /** `usage` including this request's statements so far (the stats queries above count too). */
+  private currentUsage(): HubUsage {
+    this.tally();
+    return { ...this.usage };
   }
 
   // ---------- suggestions ----------

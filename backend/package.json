@@ -10,7 +10,8 @@
     "deploy:staging": "wrangler deploy --env staging",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "stats": "node scripts/stats.ts"
+    "stats": "node scripts/stats.ts",
+    "loadtest": "node scripts/loadtest.ts"
   },
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.22.0",

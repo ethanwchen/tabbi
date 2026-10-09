@@ -648,7 +648,8 @@ The same `ADMIN_TOKEN` rules as the moderation routes apply.
   "active": {"day": 240, "week": 610, "month": 902},
   "signups": [{"day": "2026-09-10", "users": 14}, "... one entry per UTC day ...", {"day": "2026-10-09", "users": 9}],
   "parties": {"open": 12, "members": 31},
-  "suggestions": 4
+  "suggestions": 4,
+  "hub": {"since": 1788990000, "requests": 52113, "rowsRead": 640122, "rowsWritten": 2210}
 }
 ```
 
@@ -658,6 +659,8 @@ The same `ADMIN_TOKEN` rules as the moderation routes apply.
 - `signups` lists new friend codes per UTC day for the last 30 days, oldest first, with zero days included.
   An anonymous user who later signs in with Apple on a Mac that already has an account folds into that account and stops counting.
 - `parties` counts parties that have not expired and their members; `suggestions` counts suggestions waiting in the inbox.
+- `hub` is what the Hub has served since it last started (a deploy or an eviction starts it over): requests and the SQLite rows they read and wrote, which is what Cloudflare bills for.
+  The load test uses it to measure rows per request; see [`../ops.md`](../ops.md#scale).
 
 Each call reads about two rows per user (one scan of `users` and one of `presence`), so check it now and then rather than polling it.
 `npm run stats` in `backend/` prints these numbers next to the GitHub release download counts; see [`../ops.md`](../ops.md#product-metrics).

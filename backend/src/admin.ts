@@ -51,7 +51,7 @@ export async function parseRestore(req: Request, now: number): Promise<RestoreTa
 }
 
 /** Every application table, in a stable order; SQLite's and Cloudflare's internal tables are skipped. */
-export function exportTables(sql: SqlStorage): Record<string, Record<string, SqlStorageValue>[]> {
+export function exportTables(sql: Pick<SqlStorage, "exec">): Record<string, Record<string, SqlStorageValue>[]> {
   const names = sql.exec<{ name: string }>(
     "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite\\_%' ESCAPE '\\' AND name NOT LIKE '\\_cf\\_%' ESCAPE '\\' ORDER BY name",
   ).toArray().map((r) => r.name);
