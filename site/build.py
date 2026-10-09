@@ -267,7 +267,7 @@ ABOUT = f'''
 NOT_FOUND = '''
       <div class="lost">
         <img src="/img/glyph.png" width="128" height="128" alt="">
-        <p class="measure">That page is not here. It may have moved, or the link may have been wrong to begin with.</p>
+        <p class="measure">This page may have moved, or the link was wrong.</p>
         <div class="cta center">
           <a class="btn" href="/">Back to the start</a>
           <a class="btn soft" href="/support">Get help</a>

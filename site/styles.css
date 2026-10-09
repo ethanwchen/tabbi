@@ -142,7 +142,7 @@ nav.site a.nav-cta:hover { background: var(--btn-hover); color: var(--btn-ink); 
   font-size: clamp(2.3rem, 5.4vw, 3.6rem); font-weight: 600; letter-spacing: -0.5px; line-height: 1.08;
   margin: 0 0 18px; color: var(--on-ground);
 }
-.hero .lede { font-size: 19px; line-height: 1.55; color: var(--on-ground-2); margin: 0 auto; max-width: 36ch; font-weight: 600; }
+.hero .lede { font-size: 19px; line-height: 1.55; color: var(--on-ground-2); margin: 0 auto; max-width: 36ch; font-weight: 600; text-wrap: balance; }
 
 .hero-home { padding: 24px 0 72px; }
 .hero-home .wrap { max-width: 1120px; display: flex; flex-direction: column; align-items: center; gap: 44px; }
@@ -375,7 +375,7 @@ tbody tr:last-child td { border-bottom: none; }
 
 .lost { display: flex; flex-direction: column; align-items: center; text-align: center; }
 .lost img { width: 128px; height: 128px; margin: 4px 0 10px; }
-.lost p { margin: 0; }
+.lost p { margin: 0; text-wrap: balance; }
 .lost .cta { margin-top: 22px; }
 
 /* --- footer ------------------------------------------------------------ */
