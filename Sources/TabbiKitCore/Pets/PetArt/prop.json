@@ -1,0 +1,88 @@
+{
+  "schema": "pets.v1",
+  "grids": {
+    "laptop": [
+      ".OOOOOOOOOOOO.",
+      "OMMMMMMMMMMMMO",
+      "OMMMMMMMMMMMMO",
+      "OMMMMMHHMMMMMO",
+      "OMMMMMMMMMMMMO",
+      "OVVVVVVVVVVVVO",
+      "OOOOOOOOOOOOOO"
+    ],
+    "paw": [
+      ".OOOO.",
+      "OppppO",
+      "OppppO",
+      ".OOOO."
+    ],
+    "mug": [
+      "OOOOO..",
+      "OGGGOOO",
+      "OGGGO.O",
+      "OGGGOOO",
+      "OJJJO..",
+      ".OOO..."
+    ],
+    "mugPaw": [
+      ".OO.",
+      "OppO",
+      "OppO",
+      ".OO."
+    ]
+  },
+  "sequences": {
+    "steam": [
+      [
+        ".R.",
+        "R..",
+        ".R."
+      ],
+      [
+        "R..",
+        ".R.",
+        "..R"
+      ]
+    ],
+    "yarn": [
+      [
+        "..OOO..",
+        ".OGJGO.",
+        "OGJGGJO",
+        "OJGGJGO",
+        "OGGJGGO",
+        ".OJGGO.",
+        "..OOO.."
+      ],
+      [
+        "..OOO..",
+        ".OGJGO.",
+        "OJGGJGO",
+        "OGJGGJO",
+        "OGGJGGO",
+        ".OGGJO.",
+        "..OOO.."
+      ]
+    ],
+    "ball": [
+      [
+        "..OOO..",
+        ".OZHHO.",
+        "OZHHHHO",
+        "OYYYYYO",
+        "OHHHHHO",
+        ".OHHHO.",
+        "..OOO.."
+      ],
+      [
+        "..OOO..",
+        ".OZYHO.",
+        "OZHYHHO",
+        "OHHYHHO",
+        "OHHYHHO",
+        ".OHYHO.",
+        "..OOO.."
+      ]
+    ]
+  }
+}

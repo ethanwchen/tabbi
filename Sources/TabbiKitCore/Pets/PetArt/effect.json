@@ -1,0 +1,82 @@
+{
+  "schema": "pets.v1",
+  "grids": {
+    "eyesClosed": [
+      "....",
+      "....",
+      "EEEE"
+    ],
+    "eyesSleepy": [
+      "....",
+      "E..E",
+      ".EE."
+    ],
+    "eyesSqueezed": [
+      "EE..",
+      "..EE",
+      "EE.."
+    ],
+    "eyesHappy": [
+      ".EE.",
+      "E..E",
+      "...."
+    ],
+    "zSmall": [
+      "ZZZ",
+      "..Z",
+      ".Z.",
+      "ZZZ"
+    ],
+    "zLarge": [
+      "ZZZZ",
+      "...Z",
+      "..Z.",
+      ".Z..",
+      "ZZZZ"
+    ],
+    "heart": [
+      ".H.H.",
+      "HHHHH",
+      "HHHHH",
+      ".HHH.",
+      "..H.."
+    ],
+    "sparkle": [
+      ".Z.",
+      "ZZZ",
+      ".Z."
+    ],
+    "dustLeft": [
+      "Z...",
+      "..Z.",
+      ".ZZZ"
+    ],
+    "dustRight": [
+      "...Z",
+      ".Z..",
+      "ZZZ."
+    ],
+    "mouthOpen": [
+      "mRRm",
+      "mPPm",
+      ".mm."
+    ],
+    "mouthWide": [
+      "mRRm",
+      "ROOR",
+      "RPPR",
+      "mRRm"
+    ],
+    "mouthOpenBelowNose": [
+      "mmmm",
+      "mRRm",
+      "mPPm"
+    ],
+    "mouthWideBelowNose": [
+      "mmmm",
+      "mRRm",
+      "RPPR",
+      "mRRm"
+    ]
+  }
+}

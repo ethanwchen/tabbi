@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tabbi.app/schemas/pets.v1.schema.json",
+  "title": "Tabbi pet art (pets.v1)",
+  "description": "One pet art file from Sources/TabbiKitCore/Pets/PetArt. Grids are text rows in the sprite legend of docs/study/pets.md: '.' or ' ' is transparent, 'x' erases lower layers, uppercase letters are palette roles and lowercase letters are breed pattern zones.",
+  "type": "object",
+  "required": ["schema"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "pets.v1" },
+    "grids": {
+      "description": "Named single grids.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/grid" }
+    },
+    "sequences": {
+      "description": "Named runs of grids played in order, such as a swaying tail.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 1,
+        "items": { "$ref": "#/$defs/grid" }
+      }
+    },
+    "bodyItems": {
+      "description": "Outfits and neck items: one grid per body family, the same size as and stamped at the same origin as that family's body.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["cat", "dog", "longDog", "walk", "walkLong"],
+        "additionalProperties": false,
+        "properties": {
+          "cat": { "$ref": "#/$defs/grid" },
+          "dog": { "$ref": "#/$defs/grid" },
+          "longDog": { "$ref": "#/$defs/grid" },
+          "walk": { "description": "Over the cat and dog walking torso.", "$ref": "#/$defs/grid" },
+          "walkLong": { "description": "Over the dachshund walking torso.", "$ref": "#/$defs/grid" },
+          "rise": {
+            "description": "Rows every grid reaches above its body's top row. Defaults to 0.",
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "faceItems": {
+      "description": "Glasses and the like: a cat and a dog grid, and the grid row that lands on the head's eye row.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["cat", "dog", "eyeRow"],
+        "additionalProperties": false,
+        "properties": {
+          "cat": { "$ref": "#/$defs/grid" },
+          "dog": { "$ref": "#/$defs/grid" },
+          "eyeRow": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "headItems": {
+      "description": "Hats and the like, 20 wide like every head, and the grid row that lands on the head's skull top.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["grid", "sitRow"],
+        "additionalProperties": false,
+        "properties": {
+          "grid": { "$ref": "#/$defs/grid" },
+          "sitRow": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "grid": {
+      "description": "Rows of equal width, top to bottom.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1, "pattern": "^[ .xOBSAKWEiLNRPCDTUVGJQYMZHFIXmcptefsab]+$" }
+    }
+  }
+}

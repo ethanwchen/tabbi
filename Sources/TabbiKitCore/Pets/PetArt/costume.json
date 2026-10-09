@@ -1,0 +1,723 @@
+{
+  "schema": "pets.v1",
+  "bodyItems": {
+    "scrubs": {
+      "cat": [
+        "....................",
+        "....................",
+        "....CCCT....TCCC....",
+        "...CCCCCT..TCCCCC...",
+        "...CCCCCCTTCCCCCC...",
+        "...DCDCCCCCCTTTCD...",
+        "...DCDCCCCCCCCCCD...",
+        "...DDDDDDDDDDDDDD..."
+      ],
+      "dog": [
+        "....................",
+        "....CCCT....TCCC....",
+        "...CCCCCT..TCCCCC...",
+        "...CCCCCCTTCCCCCC...",
+        "..DCCDCCCCCCTTTCCD..",
+        "..DCCDCCCCCCCCCCCD..",
+        "..DDDDDDDDDDDDDDDD.."
+      ],
+      "longDog": [
+        "........................",
+        "....CCCCCCCCCCCCCCCCCC..",
+        "...CTCCDCCCCCCCCCCCCCCC.",
+        "...CCTCDCCCCCCCCCCCCCCC.",
+        "...DDDDDDDDDDDDDDDDDDDD."
+      ],
+      "walk": [
+        "...CCCCCCCCCCCCCC.....",
+        "..CCCCCCCCCCCCCCCD....",
+        ".TCCCCCCCCCCCCCCCD....",
+        ".TCCCCCCCCCCCCCCCD....",
+        ".CCCCCCCCCCCCCCCCD....",
+        ".DDDDDDDDDDDDDDDDD...."
+      ],
+      "walkLong": [
+        "...CCCCCCCCCCCCCCCC....",
+        "..CCCCCCCCCCCCCCCCCD...",
+        ".TCCCCCCCCCCCCCCCCCD...",
+        ".TCCCCCCCCCCCCCCCCCD...",
+        ".DDDDDDDDDDDDDDDDDDD..."
+      ]
+    },
+    "whiteCoat": {
+      "cat": [
+        "....................",
+        "....................",
+        "....UUUU....UUUU....",
+        "...UUUUUV..VUUUUU...",
+        "...UUUUUUVVUUUUUU...",
+        "...VUUUUUUVUUQUUV...",
+        "...VUUUUUUVUVVVUV...",
+        "...VUUUUUUVUUUUUV...",
+        "...VVVVVVVVVVVVVV..."
+      ],
+      "dog": [
+        "....................",
+        "....UUUU....UUUU....",
+        "...UUUUUV..VUUUUU...",
+        "...UUUUUUVVUUUUUU...",
+        "..VUUUUUUUVUUQUUUV..",
+        "..VUUUUUUUVUVVVUUV..",
+        "..VUUUUUUUVUUUUUUV..",
+        "..VVVVVVVVVVVVVVVV.."
+      ],
+      "longDog": [
+        "........................",
+        "....UUUUUUUUUUUUUUUUUU..",
+        "...UVUUVUUUUUUUUUUUUUUU.",
+        "...UUVUVUUUUUUUUUUUUUUU.",
+        "...UUUUVUUUUUUUUUUUUUUU.",
+        "...VVVVVVVVVVVVVVVVVVVV."
+      ],
+      "walk": [
+        "...UUUUUUUUUUUUUUU....",
+        "..UUUUUUUUUUUUUUUUV...",
+        ".UUUUUUUUUUUUUUUUUV...",
+        ".UUUUUUUUUUUUUUUUUV...",
+        ".UUUUUUUUUUUUUUUUUV...",
+        ".UUUUUUUUUUUUUUUUUV...",
+        ".VVVVVVVVVVVVVVVVVV..."
+      ],
+      "walkLong": [
+        "...UUUUUUUUUUUUUUUUU...",
+        "..UUUUUUUUUUUUUUUUUUV..",
+        ".UUUUUUUUUUUUUUUUUUUV..",
+        ".UUUUUUUUUUUUUUUUUUUV..",
+        ".UUUUUUUUUUUUUUUUUUUV..",
+        ".VVVVVVVVVVVVVVVVVVVV.."
+      ]
+    },
+    "stethoscope": {
+      "cat": [
+        "....................",
+        "....................",
+        ".....G........G.....",
+        ".....G........G.....",
+        "......G......G......",
+        ".......GGGGGG.......",
+        "........MMMM........",
+        "........MZMM........"
+      ],
+      "dog": [
+        "....................",
+        ".....G........G.....",
+        ".....G........G.....",
+        "......G......G......",
+        ".......GGGGGG.......",
+        "........MMMM........",
+        "........MZMM........"
+      ],
+      "longDog": [
+        "........................",
+        "...G.....G..............",
+        "...G.....G..............",
+        "....GGGGG...............",
+        ".....MMMM...............",
+        ".....MZMM..............."
+      ],
+      "walk": [
+        "..............G.......",
+        "..............G.......",
+        ".............G........",
+        "............G.........",
+        "......................",
+        "...MMMM...............",
+        "...MZMM..............."
+      ],
+      "walkLong": [
+        "..............G........",
+        ".............G.........",
+        "............G..........",
+        ".......................",
+        "...MMMM................",
+        "...MZMM................"
+      ]
+    },
+    "scarf": {
+      "cat": [
+        "....................",
+        "....GGGGGGGGGGGG....",
+        "...JJJJJJJJJJJJJJ...",
+        "..........GGG.......",
+        "..........JJJ.......",
+        "..........GGG.......",
+        "..........G.G......."
+      ],
+      "dog": [
+        "....GGGGGGGGGGGG....",
+        "...JJJJJJJJJJJJJJ...",
+        "..........GGG.......",
+        "..........JJJ.......",
+        "..........GGG.......",
+        "..........G.G......."
+      ],
+      "longDog": [
+        "...GGGGGGG..............",
+        "..JJJJJJJJJ.............",
+        "......GGG...............",
+        "......JJJ...............",
+        "......G.G..............."
+      ],
+      "walk": [
+        ".............GGJ......",
+        ".............GGJGGG...",
+        ".............GGJJJJG..",
+        ".............GGJ.G.G..",
+        ".............GGJ......",
+        ".............GGJ......"
+      ],
+      "walkLong": [
+        ".............GGJ.......",
+        ".............GGJGGG....",
+        ".............GGJJJJG...",
+        ".............GGJ.G.G...",
+        ".............GGJ......."
+      ]
+    },
+    "bowTie": {
+      "cat": [
+        "....................",
+        "....................",
+        "......HH....HH......",
+        "......HHHJJHHH......",
+        "......HH....HH......"
+      ],
+      "dog": [
+        "....................",
+        "......HH....HH......",
+        "......HHHJJHHH......",
+        "......HH....HH......"
+      ],
+      "longDog": [
+        "........................",
+        "..HH....HH..............",
+        "..HHHJJHHH..............",
+        "..HH....HH.............."
+      ],
+      "walk": [
+        "......................",
+        "......................",
+        "......................",
+        "......................",
+        "......................",
+        "..HH.HH...............",
+        "..HHJHH...............",
+        "..HH.HH..............."
+      ],
+      "walkLong": [
+        ".......................",
+        ".......................",
+        ".......................",
+        ".......................",
+        "..HH.HH................",
+        "..HHJHH................",
+        "..HH.HH................"
+      ]
+    },
+    "cozyHoodie": {
+      "cat": [
+        "....................",
+        "....................",
+        "....GJJJJJJJJJJG....",
+        "...GGGGGGMGGGGGGG...",
+        "...GGGGGGMGGGGGGG...",
+        "...GGGGGGMGGGGGGG...",
+        "...GGJJJJMJJJJGGG...",
+        "...GGGJJJMJJJGGGG...",
+        "...JJJJJJJJJJJJJJ..."
+      ],
+      "dog": [
+        "....................",
+        "....GJJJJJJJJJJG....",
+        "...GGGGGGMGGGGGGG...",
+        "...GGGGGGMGGGGGGG...",
+        "..GGGGGGGMGGGGGGGG..",
+        "..GGGJJJJMJJJJGGGG..",
+        "..GGGGJJJMJJJGGGGG..",
+        "..JJJJJJJJJJJJJJJJ.."
+      ],
+      "longDog": [
+        "........................",
+        "....GGGGGGJJJJGGGGGGGG..",
+        "...JMGGGGJGGGGJGGGGGGGG.",
+        "...JMGGGGGJJJJGGGGGGGGG.",
+        "...JJJJJJJJJJJJJJJJJJJJ."
+      ],
+      "walk": [
+        "...GGGGGGGGGGJJJJGG...",
+        "..GGGGGGGGGGJGGGGJGG..",
+        ".GGGGGGGGGGGGJJJJGGGG.",
+        ".GGGGGGGGGGGGGGGGGGGG.",
+        ".GGGGGGGGGGGGGGGGGGGG.",
+        ".JJJJJJJJJJJJJJJJJJJJ."
+      ],
+      "walkLong": [
+        "...GGGGGGGGGGGJJJJGGG..",
+        "..GGGGGGGGGGGJGGGGJGGG.",
+        ".GGGGGGGGGGGGGJJJJGGGG.",
+        ".GGGGGGGGGGGGGGGGGGGGG.",
+        ".JJJJJJJJJJJJJJJJJJJJJ."
+      ]
+    },
+    "superheroCape": {
+      "cat": [
+        "....................",
+        "....................",
+        "....................",
+        "....................",
+        "....................",
+        "....................",
+        "....................",
+        "...HHHHH.YY.HHHHH...",
+        "..HHX..........XHH..",
+        "..HX............XH..",
+        "..HX............XH..",
+        ".HHX............XHH.",
+        ".HHX............XHH.",
+        ".HHX............XHH.",
+        ".HHY............YHH."
+      ],
+      "dog": [
+        "....................",
+        "....................",
+        "....................",
+        "....................",
+        "....................",
+        "....................",
+        "...HHHHH.YY.HHHHH...",
+        "..HHX..........XHH..",
+        "..HX............XH..",
+        ".HHX............XHH.",
+        ".HHX............XHH.",
+        ".HHX............XHH.",
+        ".HHX............XHH.",
+        ".HHY............YHH."
+      ],
+      "longDog": [
+        "........................",
+        "........................",
+        "........................",
+        "........................",
+        "........................",
+        "........YHHHHHH.........",
+        ".........HXHHHHHHHHH....",
+        ".........HHXXHHHHHHHHHH.",
+        ".........HHHHHXXXHHH....",
+        "..........XHHHHHHHXHHHH.",
+        "............XXXXXXXX...."
+      ],
+      "walk": [
+        "......................H.",
+        "....................HHHH",
+        "..................HHHHH.",
+        "................HHHHHHHX",
+        "..............HHHHHHHXX.",
+        "..............YHHHHXXX..",
+        "..............HHHXX.....",
+        "..............XX........"
+      ],
+      "walkLong": [
+        "......................H.",
+        "....................HHHH",
+        "..................HHHHH.",
+        "................HHHHHHHX",
+        "..............HHHHHHHXX.",
+        "..............YHHHHXXX..",
+        "..............HHHXX.....",
+        "..............XX........"
+      ],
+      "rise": 5
+    },
+    "dinosaurHoodie": {
+      "cat": [
+        "....................",
+        "....................",
+        "....................",
+        "....................",
+        "....FFFFYYYYFFFF....",
+        "...FFFFYYYYYYFFFF...",
+        "...FFFFYYYYYYFFFF...",
+        "...FFFFYYYYYYFFFF...",
+        "...FFFFFYYYYFFFFF...",
+        "...FFFFFFFFFFFFFF..."
+      ],
+      "dog": [
+        "....................",
+        "....................",
+        "....................",
+        "....FFFFYYYYFFFF....",
+        "...FFFFYYYYYYFFFF...",
+        "...FFFFYYYYYYFFFF...",
+        "..FFFFFYYYYYYFFFFF..",
+        "..FFFFFFYYYYFFFFFF..",
+        "..FFFFFFFFFFFFFFFF.."
+      ],
+      "longDog": [
+        "..............Y..Y..Y...",
+        ".............YY.YY.YY...",
+        "........................",
+        "....FFFFFFFFFFFFFFFFFF..",
+        "...YYYYFFFFFFFFFFFFFFFF.",
+        "...YYYYFFFFFFFFFFFFFFFF.",
+        "...FFFFFFFFFFFFFFFFFFFF."
+      ],
+      "walk": [
+        "...............Y..Y...",
+        "..............YY.YY...",
+        "...FFFFFFFFFFFFFFFF...",
+        "..FFFFFFFFFFFFFFFFFF..",
+        ".FFFFFFFFFFFFFFFFFFFF.",
+        ".FFFFFFFFFFFFFFFFFFFF.",
+        ".YYYYFFFFFFFFFFFFFFFF.",
+        ".YYYYYFFFFFFFFFFFFFFF."
+      ],
+      "walkLong": [
+        "...............Y..Y....",
+        "..............YY.YY....",
+        "...FFFFFFFFFFFFFFFFFF..",
+        "..FFFFFFFFFFFFFFFFFFFF.",
+        ".YYYFFFFFFFFFFFFFFFFFF.",
+        ".YYYYFFFFFFFFFFFFFFFFF.",
+        ".FFFFFFFFFFFFFFFFFFFFF."
+      ],
+      "rise": 2
+    },
+    "wizardRobe": {
+      "cat": [
+        "....................",
+        "....................",
+        "....QQQY....YQQQ....",
+        "...QQYQQY..YQQQQQ...",
+        "...QQQQQQYYQQQQYQ...",
+        "...QQQQQQQYQQQQQQ...",
+        "...QQYQQQQYQQQQQQ...",
+        "..QQQQQQQQYQQQQYQQ..",
+        "..QQQQQQQQYQQQQQQQ..",
+        "..YYYYYYYYYYYYYYYY.."
+      ],
+      "dog": [
+        "....................",
+        "....QQQY....YQQQ....",
+        "...QQYQQY..YQQQQQ...",
+        "...QQQQQQYYQQQQYQ...",
+        "..QQQQQQQQYQQQQQQQ..",
+        "..QQQYQQQQYQQQQQQQ..",
+        "..QQQQQQQQYQQQQYQQ..",
+        "..QQQQQQQQYQQQQQQQ..",
+        "..YYYYYYYYYYYYYYYYY."
+      ],
+      "longDog": [
+        "........................",
+        "....QQQQQQQQQQQQQQQQQQ..",
+        "...QQQYQQQQQYQQQQQQYQQQ.",
+        "...QQQYQQYQQQQQQYQQQQQQ.",
+        "...YYYYYYYYYYYYYYYYYYYY."
+      ],
+      "walk": [
+        "...QQQQQQQQQQQQQQQQ...",
+        "..QQQQQQQQQQQQQQYQQQ..",
+        ".QQQQQQQQQQQQYQQQQQQQ.",
+        ".QQQQQQQQQQQQQQQQYQQQ.",
+        ".QQQQQQQQQQQQQYQQQQQQ.",
+        ".QQQQQQQQQQQQQQQQQQQQ.",
+        ".QQQQQQQQQQQQQQQQQQQQ.",
+        ".YYYYYYYYYYYYYYYYYYYY."
+      ],
+      "walkLong": [
+        "...QQQQQQQQQQQQQQQQQ...",
+        "..QQQQQQQQQQQQQQYQQQQ..",
+        ".QQQQQQQQQQQQYQQQQQQQQ.",
+        ".QQQQQQQQQQQQQQQQYQQQQ.",
+        ".QQQQQQQQQQQQQQQQQQQQQ.",
+        ".YYYYYYYYYYYYYYYYYYYYY."
+      ]
+    }
+  },
+  "faceItems": {
+    "roundGlasses": {
+      "cat": [
+        "...QQQQ......QQQQ...",
+        "..Q....Q....Q....Q..",
+        "..Q....QQQQQQ....Q..",
+        "..Q....Q....Q....Q..",
+        "...QQQQ......QQQQ..."
+      ],
+      "dog": [
+        "....QQQQ....QQQQ....",
+        "...Q....Q..Q....Q...",
+        "...Q....QQQQ....Q...",
+        "...Q....Q..Q....Q...",
+        "....QQQQ....QQQQ...."
+      ],
+      "eyeRow": 1
+    },
+    "coolSunglasses": {
+      "cat": [
+        ".QQQQQQQQQQQQQQQQQQ.",
+        "..QZZQQQ....QZZQQQ..",
+        "..QZQQQQ....QZQQQQ..",
+        "...QQQQ......QQQQ..."
+      ],
+      "dog": [
+        "...QQQQQQQQQQQQQQ...",
+        "....QZQQQ..QZQQQ....",
+        "....QQQQQ..QQQQQ....",
+        ".....QQQ....QQQ....."
+      ],
+      "eyeRow": 1
+    },
+    "eyepatch": {
+      "cat": [
+        ".....QQ.............",
+        ".......QQQ..........",
+        "..........QQQQQQ....",
+        "............QQQQQ...",
+        "............QQQQQ...",
+        ".............QQQ...."
+      ],
+      "dog": [
+        "....................",
+        ".......QQQ..........",
+        "..........QQQQ......",
+        "...........QQQQ.....",
+        "...........QQQQ.....",
+        "............QQQ....."
+      ],
+      "eyeRow": 3
+    },
+    "blindfold": {
+      "cat": [
+        ".QQQQQQQQQQQQQQQQQQ.",
+        ".QQQQQQQQQQQQQQQQQQ.",
+        "..QQQQQQ....QQQQQQ.."
+      ],
+      "dog": [
+        ".QQQQQQQQQQQQQQQQQQ.",
+        ".QQQQQQQQQQQQQQQQQQ.",
+        "..QQQQQQ....QQQQQQ.."
+      ],
+      "eyeRow": 0
+    }
+  },
+  "headItems": {
+    "surgicalCap": {
+      "grid": [
+        "......CCCCCCCC......",
+        ".....CCTCCCCCTCC....",
+        "....CCCCCCTCCCCCC...",
+        "....CTCCCCCCCCTCC...",
+        "....DDDDDDDDDDDDD..."
+      ],
+      "sitRow": 4
+    },
+    "beanie": {
+      "grid": [
+        ".........JJ.........",
+        ".......GGGGGG.......",
+        ".....GGGGGGGGGG.....",
+        "....GGGGGGGGGGGG....",
+        "....JGJGJGJGJGJG....",
+        "....JJJJJJJJJJJJ...."
+      ],
+      "sitRow": 4
+    },
+    "graduationCap": {
+      "grid": [
+        "........QQQQ........",
+        "....QQQQQQQQQQQQ....",
+        ".QQQQQQQQYQQQQQQQQQ.",
+        "....QQQQQQQQQQQQY...",
+        "......QQQQQQQQ..Y...",
+        "......QQQQQQQQ..YY.."
+      ],
+      "sitRow": 5
+    },
+    "headMirror": {
+      "grid": [
+        "......MMMM..........",
+        ".....MZMMMM.........",
+        ".....MMQQMM.........",
+        ".....MMQQMM.........",
+        ".....MMMMMM.........",
+        "...QQQMMMMQQQQQQQ..."
+      ],
+      "sitRow": 4
+    },
+    "tinyCrown": {
+      "grid": [
+        "......Y..YY..Y......",
+        "......YY.YY.YY......",
+        "......YYYYYYYY......",
+        "......YYHYYHYY......",
+        "......QQQQQQQQ......"
+      ],
+      "sitRow": 4
+    },
+    "partyHat": {
+      "grid": [
+        ".........HH.........",
+        ".........HH.........",
+        ".........CC.........",
+        "........CYCC........",
+        "........CCCC........",
+        ".......CCCCYC.......",
+        "......YYYYYYYY......"
+      ],
+      "sitRow": 5
+    },
+    "chefHat": {
+      "grid": [
+        ".....UUU.UU.UUU.....",
+        "....UUUUUUUUUUUU....",
+        "....UUUVUUUUVUUU....",
+        "....VUUUUUUUUUUV....",
+        ".....VUUUUUUUUV.....",
+        ".....UUUUUUUUUU.....",
+        ".....VVVVVVVVVV....."
+      ],
+      "sitRow": 5
+    },
+    "wizardHat": {
+      "grid": [
+        "............QQ......",
+        "..........QQQ.......",
+        ".........QQQQ.......",
+        "........QQQYQ.......",
+        "........QQYYYQ......",
+        "......QQQQQYQQ......",
+        "...QQQQQQQQQQQQQQ..."
+      ],
+      "sitRow": 5
+    },
+    "bunnyEars": {
+      "grid": [
+        ".....UU......UU.....",
+        "....UPPU....UPPU....",
+        "....UPPU....UPPU....",
+        "....UPPU....UPPU....",
+        ".....UU......UU.....",
+        "....GGGGGGGGGGGG...."
+      ],
+      "sitRow": 5
+    },
+    "witchHat": {
+      "grid": [
+        "...........QQ.......",
+        ".........QQQ........",
+        "........QQQQ........",
+        ".......QQQQQQ.......",
+        "......QQQQQQQQ......",
+        ".....HHHHYYHHHH.....",
+        ".QQQQQQQQQQQQQQQQQQ."
+      ],
+      "sitRow": 5
+    },
+    "cowboyHat": {
+      "grid": [
+        "......III..III......",
+        "......IIIIIIII......",
+        ".I....IIIIIIII....I.",
+        ".II...QQQQQQQQ...II.",
+        "..IIIIIIIIIIIIIIII..",
+        "....IIIIIIIIIIII...."
+      ],
+      "sitRow": 4
+    },
+    "flowerCrown": {
+      "grid": [
+        ".....H...ZZ...H.....",
+        "....HYH.ZYYZ.HYH....",
+        "...FFHFFFZZFFFHFF..."
+      ],
+      "sitRow": 2
+    },
+    "frogHat": {
+      "grid": [
+        "....FFFF....FFFF....",
+        "...FUUUUF..FUUUUF...",
+        "...FUQQUF..FUQQUF...",
+        "...FFFFFFFFFFFFFF...",
+        "...FFFFQFFFFQFFFF...",
+        "...FFFFFQQQQFFFFF..."
+      ],
+      "sitRow": 4
+    },
+    "ninjaHeadband": {
+      "grid": [
+        "...QQQQQMMMMQQQQQ...",
+        "...QQQQQMZMMQQQQQQQ.",
+        ".................Q.Q"
+      ],
+      "sitRow": 0
+    },
+    "pirateHat": {
+      "grid": [
+        "........QQQQ........",
+        ".QQ...QQQQQQQQ...QQ.",
+        ".QQQQQQQQUUQQQQQQQQ.",
+        "..QQQQQQQUUQQQQQQQ..",
+        "...YYYYYYYYYYYYYY..."
+      ],
+      "sitRow": 4
+    },
+    "spikyHair": {
+      "grid": [
+        "...U.....U....U.....",
+        "...UU...UU...UUU..U.",
+        "...UUV.UUUV.UUUUVUU.",
+        "..UUUUVUUUUVUUUUUUV.",
+        ".UUUUUUUUUUUUUUUUUU.",
+        ".UUUUUUUUUUUUUUUUUU.",
+        ".UUVUUUUVUUUUVUUUUU.",
+        "..UV.UUV..UUV..UV..."
+      ],
+      "sitRow": 5
+    },
+    "astronautHelmet": {
+      "grid": [
+        ".........H..........",
+        ".......UUMUUU.......",
+        ".....UUUUUUUUUV.....",
+        "....UUQQQQQQQQUV....",
+        "...UUQZZQQQQQQQUV...",
+        "...UUQZQQQQQQQQUV...",
+        "..MMMMMMMMMMMMMMMM..",
+        ".MQM............MQM.",
+        ".MMM............MMM."
+      ],
+      "sitRow": 5
+    },
+    "chunkyHeadphones": {
+      "grid": [
+        "....HHHHHHHHHHHH....",
+        "...H............H...",
+        "..H..............H..",
+        "HHHH............HHHH",
+        "HMMH............HMMH",
+        "HMMH............HMMH",
+        "HHHH............HHHH"
+      ],
+      "sitRow": 1
+    },
+    "dinosaurHood": {
+      "grid": [
+        "......Y..YY..Y......",
+        ".....YYY.YY.YYY.....",
+        "....FFFFFFFFFFFF....",
+        "...FFFFFFFFFFFFFF...",
+        "..FFFFFFFFFFFFFFFF..",
+        "..FFFFFFFFFFFFFFFF..",
+        "..FFUFUFUFFUFUFUFF..",
+        "..FF............FF..",
+        "..F..............F..",
+        "..F..............F.."
+      ],
+      "sitRow": 5
+    }
+  }
+}

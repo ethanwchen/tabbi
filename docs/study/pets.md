@@ -21,17 +21,17 @@ Do not commit the output folder; curated sheets live in `docs/study/images/`.
 
 ## Sprite format
 
-Art is plain text inside Swift string literals (`Sources/TabbiKitCore/Pets/Art/`).
+Art is plain text in the `pets.v1` JSON files in `Sources/TabbiKitCore/Pets/PetArt/` (one per family: cat, dog, costume, effect, paw, prop, tail, walk), each grid an array of rows; the Swift in `Pets/Art/` names the grids and generates the procedural pieces (legs, wrapped tails).
 Each character is one pixel.
 A grid never stores a color, only what the pixel *means*; palettes turn meanings into colors.
 That is what lets one drawing serve every breed, user recolor, and costume color.
 
-```swift
-static let ear = SpriteGrid(art: """
-    .ee.
-    ePPe
-    eBBe
-    """)
+```json
+"ear": [
+  ".ee.",
+  "ePPe",
+  "eBBe"
+]
 ```
 
 All rows of a grid must be the same width.
@@ -119,7 +119,7 @@ A pet wears one `PetOutfit` (`none`, `scrubs`, `whiteCoat`, `cozyHoodie`, `super
 Each accessory has a slot (neck, face, or head); a pet wears at most one per slot.
 `PetAccessory.wearable(_:)` keeps the last item listed per slot and sorts them in drawing order, so hats always land on top.
 
-Costume art lives in `Art/CostumeArt.swift` and is anchored to the pose layout instead of per-breed positions:
+Costume art lives in `PetArt/costume.json` (with its anchors: `rise`, `eyeRow`, `sitRow`) and is anchored to the pose layout instead of per-breed positions:
 
 - Body items (outfits, stethoscope, scarf) have one grid per body family (cat, dog, long dog), the same size as that family's body and stamped at the same origin.
   They also have two walking grids: `walk` over the shared cat and dog walking torso, and `walkLong` over the dachshund's.
@@ -265,7 +265,7 @@ The walk, the stretch and the nap are the animations that are not sitting poses.
 It is drawn chibi-style: the usual front-facing head sits in front of a side-on torso, so the face, glasses, and hats need no walking art and stay readable at notch size.
 Pets walk toward the left; mirror the frames to walk right.
 
-`Art/WalkArt.swift` holds the walking pieces:
+`PetArt/walk.json` and `Art/WalkArt.swift` hold the walking pieces:
 
 - Torsos: `catTorso` and `dogTorso` share one size (22x7, so torso costumes fit both), and `longTorso` (23x6) sits lower on shorter legs for the dachshund.
   The cat torso carries stripe and calico patch zones; the dog torso carries the beagle saddle.

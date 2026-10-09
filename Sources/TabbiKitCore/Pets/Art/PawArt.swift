@@ -5,54 +5,20 @@ import Foundation
 /// the head and chest of any breed, and anchored to the shoulder, so every
 /// body shape uses the same art. The forearm is plain fur and the paw is
 /// the paw zone, so white mittens and dark points follow the breed.
+/// The grids are drawn in `Pets/PetArt/paw.json`.
 enum PawArt {
     /// The waving arm: index 0 leans out from the head, 1 swings back in
     /// beside the cheek. Column 8 of the bottom row is the shoulder; the
     /// forearm stays open there so it grows out of the body instead of
     /// being cut off by an outline.
-    static let wave = [
-        SpriteGrid(art: """
-            .OOOO......
-            OppppO.....
-            OppppO.....
-            OppppO.....
-            .OBBBO.....
-            ..OBBBO....
-            ..OBBBO....
-            ...OBBBO...
-            ...OBBBO...
-            ....OBBBO..
-            ....OBBBO..
-            .....OBBBO.
-            ......OBBB.
-            """),
-        SpriteGrid(art: """
-            ....OOOO...
-            ...OppppO..
-            ...OppppO..
-            ...OppppO..
-            ....OBBBO..
-            ....OBBBO..
-            ....OBBBO..
-            .....OBBBO.
-            .....OBBBO.
-            .....OBBBO.
-            .....OBBBO.
-            ......OBBBO
-            ......OBBB.
-            """),
-    ]
+    static let wave = PetArt.paw.sequence("wave")
 
     /// The arm folded up in front of the chest with the paw at the top, for
     /// licking it and washing the face, `height` rows tall so it reaches
     /// down to the chest from wherever the paw is. The forearm ends open at
     /// the bottom, where it meets the chest.
     static func groom(height: Int) -> SpriteGrid {
-        let paw = SpriteGrid(art: """
-            .OOOO.
-            OppppO
-            OppppO
-            """)
+        let paw = PetArt.paw.grid("groomPaw")
         var arm = SpriteGrid(width: paw.width, height: max(paw.height + 1, height))
         for y in 0..<arm.height {
             for x in 0..<arm.width {
