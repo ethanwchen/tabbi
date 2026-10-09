@@ -69,7 +69,7 @@ The extension is signed on its own, before the app, with `packaging/TabbiWidget.
 | Local | `scripts/bundle.sh` | ad-hoc, with the widget entitlements |
 | Direct download | `scripts/release.sh` | Developer ID, Hardened Runtime, the widget entitlements |
 | Direct, `--adhoc` | `scripts/release.sh --adhoc` | ad-hoc, with the widget entitlements |
-| Mac App Store | `scripts/release-appstore.sh` | Apple Distribution, the widget entitlements |
+| Mac App Store | `scripts/release-appstore.sh` | Apple Distribution, the widget entitlements, its own embedded profile |
 
 The app is signed with the same app group in all three of its entitlements files (`Tabbi.entitlements`, `Tabbi-SignInWithApple.entitlements` and `Tabbi-AppStore.entitlements`), and `bundle.sh` signs the local build with `Tabbi.entitlements` too.
 Without it, macOS 15 and later may ask the user before an app may write to another app's group container.
@@ -87,6 +87,16 @@ An ad-hoc signed app with the entitlement writes the shared file with no prompt.
 `log show --last 5m --predicate 'process == "chronod"' | grep -i tabbi` shows what `chronod` asked the extension for and any error.
 Two copies of the app with the same bundle id (an installed release and a local build) compete for the same extension id, so test a local build with the installed copy quit, or give the copy its own ids.
 
-## Still to do
+## The App Store edition
 
-- The App Store edition: App Store Connect expects the extension to embed its own provisioning profile for the App ID `dev.tabbi.Tabbi.Widget` with the app group, and `release-appstore.sh` does not embed one yet.
+App Store Connect expects every executable bundle to embed its own provisioning profile, so the extension has one next to the app's.
+`scripts/release-appstore.sh` checks both before building and embeds the widget's as `TabbiWidget.appex/Contents/embedded.provisionprofile`:
+
+1. In the Apple Developer portal, register the App ID `dev.tabbi.Tabbi.Widget` (explicit, macOS).
+   It needs no capabilities: the team-prefixed app group is granted by the team id, not by the profile.
+2. Create a **Mac App Store Connect** profile for it with the Apple Distribution certificate.
+3. Save it as `packaging/TabbiWidget-AppStore.provisionprofile` (gitignored), or point `WIDGET_PROFILE` at it.
+
+The script signs the extension with `packaging/TabbiWidget.entitlements` plus the application and team identifiers from that profile, as it does for the app.
+It refuses a profile for another bundle id, a development or Developer ID profile, and an expired one.
+The direct download needs no profile for the extension.

@@ -23,7 +23,10 @@
 #                       "Mac Installer Distribution") identity.
 #   APPSTORE_PROFILE    the App Store provisioning profile, by default
 #                       packaging/Tabbi-AppStore.provisionprofile (gitignored).
-# When an identity or the profile is missing, the script stops before building
+#   WIDGET_PROFILE      the widget extension's App Store provisioning profile,
+#                       by default packaging/TabbiWidget-AppStore.provisionprofile
+#                       (gitignored).
+# When an identity or a profile is missing, the script stops before building
 # and says how to set it up.
 #
 # --adhoc builds without certificates or a profile (contributors, CI, and the
@@ -48,9 +51,12 @@ fail() { echo "error: $*" >&2; exit 1; }
 edition=appstore
 entitlements=packaging/Tabbi-AppStore.entitlements
 profile=${APPSTORE_PROFILE:-packaging/Tabbi-AppStore.provisionprofile}
+widget_profile=${WIDGET_PROFILE:-packaging/TabbiWidget-AppStore.provisionprofile}
 app_identity=${APPSTORE_IDENTITY:-}
 installer_identity=${INSTALLER_IDENTITY:-}
 bundle_id=$(plutil -extract bundleIdentifier raw -o - "Sources/TabbiKitCore/Editions/BundledEditions/$edition.json")
+# scripts/assemble.sh gives the widget extension this id.
+widget_bundle_id=$bundle_id.Widget
 out=build/appstore
 work=$(mktemp -d -t tabbi-appstore)
 trap 'rm -rf "$work"' EXIT
@@ -77,14 +83,38 @@ has_identity() {
     security find-identity -v -p "$2" 2>/dev/null | grep -qF "\"$1\""
 }
 
-# A value from the provisioning profile's plist, or nothing.
+# A value from the app's provisioning profile (or, with a second argument,
+# from that decoded profile plist), or nothing.
 profile_value() {
-    plutil -extract "$1" raw -o - "$work/profile.plist" 2>/dev/null || true
+    plutil -extract "$1" raw -o - "${2:-$work/profile.plist}" 2>/dev/null || true
+}
+
+# Decodes a provisioning profile ($1) into a plist ($2) and prints why it
+# cannot sign the given bundle id ($3) for the Mac App Store, or nothing.
+profile_problem_for() {
+    local file=$1 plist=$2 id=$3 app_id team expires
+    if [[ ! -f "$file" ]]; then
+        echo "not found at $file"
+    elif ! security cms -D -i "$file" -o "$plist" 2>/dev/null; then
+        echo "$file is not a provisioning profile"
+    else
+        app_id=$(profile_value Entitlements.com\\.apple\\.application-identifier "$plist")
+        team=$(profile_value Entitlements.com\\.apple\\.developer\\.team-identifier "$plist")
+        expires=$(profile_value ExpirationDate "$plist")
+        if [[ "$app_id" != "$team.$id" ]]; then
+            echo "$file is for ${app_id:-an unknown app}, not $id"
+        elif [[ "$(profile_value ProvisionsAllDevices "$plist")" == true || -n "$(profile_value ProvisionedDevices "$plist")" ]]; then
+            echo "$file is a development or Developer ID profile, not a Mac App Store one"
+        elif [[ -n "$expires" && "$expires" < "$(date -u +%Y-%m-%dT%H:%M:%SZ)" ]]; then
+            echo "$file expired on $expires"
+        fi
+    fi
 }
 
 # Fails early, before the slow build, with the setup steps that are missing.
 preflight() {
     local identity_ok=true installer_ok=true profile_ok=true profile_problem=
+    local widget_ok=true widget_problem=
     if [[ -n "$app_identity" ]]; then
         has_identity "$app_identity" codesigning || identity_ok=false
     else
@@ -97,39 +127,21 @@ preflight() {
         installer_identity=$(find_identity INSTALLER_IDENTITY basic "3rd Party Mac Developer Installer" "Mac Installer Distribution")
         [[ -n "$installer_identity" ]] || installer_ok=false
     fi
-    if [[ ! -f "$profile" ]]; then
-        profile_ok=false
-        profile_problem="not found at $profile"
-    elif ! security cms -D -i "$profile" -o "$work/profile.plist" 2>/dev/null; then
-        profile_ok=false
-        profile_problem="$profile is not a provisioning profile"
-    else
-        local app_id team expires
-        app_id=$(profile_value Entitlements.com\\.apple\\.application-identifier)
-        team=$(profile_value Entitlements.com\\.apple\\.developer\\.team-identifier)
-        expires=$(profile_value ExpirationDate)
-        if [[ "$app_id" != "$team.$bundle_id" ]]; then
-            profile_ok=false
-            profile_problem="$profile is for ${app_id:-an unknown app}, not $bundle_id"
-        elif [[ "$(profile_value ProvisionsAllDevices)" == true || -n "$(profile_value ProvisionedDevices)" ]]; then
-            profile_ok=false
-            profile_problem="$profile is a development or Developer ID profile, not a Mac App Store one"
-        elif [[ -n "$expires" && "$expires" < "$(date -u +%Y-%m-%dT%H:%M:%SZ)" ]]; then
-            profile_ok=false
-            profile_problem="$profile expired on $expires"
-        elif [[ -z "$(profile_value Entitlements.com\\.apple\\.developer\\.applesignin)" ]]; then
-            profile_ok=false
-            profile_problem="$profile does not grant Sign in with Apple"
-        fi
+    profile_problem=$(profile_problem_for "$profile" "$work/profile.plist" "$bundle_id")
+    if [[ -z "$profile_problem" && -z "$(profile_value Entitlements.com\\.apple\\.developer\\.applesignin)" ]]; then
+        profile_problem="$profile does not grant Sign in with Apple"
     fi
-    $identity_ok && $installer_ok && $profile_ok && return 0
+    [[ -z "$profile_problem" ]] || profile_ok=false
+    widget_problem=$(profile_problem_for "$widget_profile" "$work/widget-profile.plist" "$widget_bundle_id")
+    [[ -z "$widget_problem" ]] || widget_ok=false
+    $identity_ok && $installer_ok && $profile_ok && $widget_ok && return 0
 
     mark() { $1 && echo "done" || echo "missing"; }
     cat >&2 <<EOF
 
 The App Store build of Tabbi is signed with an Apple Distribution certificate
-around an App Store provisioning profile, and its installer package with an
-installer certificate. This needs three one-time setup steps (docs/appstore.md):
+around App Store provisioning profiles, and its installer package with an
+installer certificate. This needs four one-time setup steps (docs/appstore.md):
 
   1. Apple Distribution certificate ($(mark $identity_ok))
      ${APPSTORE_IDENTITY:+Looked for: $APPSTORE_IDENTITY
@@ -151,6 +163,14 @@ installer certificate. This needs three one-time setup steps (docs/appstore.md):
      certificate, download it and save it as
        $profile
      (the file is gitignored) or point APPSTORE_PROFILE at it.
+
+  4. Mac App Store provisioning profile for the widget ($(mark $widget_ok))
+     ${widget_problem:+Problem: $widget_problem
+     }Register the App ID $widget_bundle_id (Identifiers, macOS, no
+     capabilities needed), then create a Mac App Store Connect profile for it
+     with the same certificate, download it and save it as
+       $widget_profile
+     (the file is gitignored) or point WIDGET_PROFILE at it.
 
 To build without certificates (to check the sandboxed app on this Mac), run:
   scripts/release-appstore.sh --adhoc
@@ -211,25 +231,31 @@ strip -x "$widget/Contents/MacOS/TabbiWidget"
 # application and team identifiers, which must match the embedded profile.
 # Without a profile macOS refuses to launch an app that claims Sign in with
 # Apple, so the ad-hoc build leaves it out (its Account row says so).
+# The widget extension gets the same identifiers from its own profile.
 signing_entitlements="$work/Tabbi.entitlements"
 cp "$entitlements" "$signing_entitlements"
+widget_entitlements="$work/TabbiWidget.entitlements"
+cp packaging/TabbiWidget.entitlements "$widget_entitlements"
 if $adhoc; then
     plutil -remove com\\.apple\\.developer\\.applesignin "$signing_entitlements"
 else
     cp "$profile" "$app/Contents/embedded.provisionprofile"
+    cp "$widget_profile" "$widget/Contents/embedded.provisionprofile"
     for key in com.apple.application-identifier com.apple.developer.team-identifier; do
         value=$(profile_value "Entitlements.${key//./\\.}")
         plutil -replace "${key//./\\.}" -string "$value" "$signing_entitlements"
+        value=$(profile_value "Entitlements.${key//./\\.}" "$work/widget-profile.plist")
+        plutil -replace "${key//./\\.}" -string "$value" "$widget_entitlements"
     done
 fi
 
 log "Signing ($($adhoc && echo ad-hoc || echo Apple Distribution))"
 # The widget extension first, with its own sandbox entitlements (docs/widget.md).
 if $adhoc; then
-    codesign --force --sign - --timestamp=none --entitlements packaging/TabbiWidget.entitlements "$widget"
+    codesign --force --sign - --timestamp=none --entitlements "$widget_entitlements" "$widget"
     codesign --force --sign - --timestamp=none --entitlements "$signing_entitlements" "$app"
 else
-    codesign --force --sign "$app_identity" --timestamp --entitlements packaging/TabbiWidget.entitlements "$widget"
+    codesign --force --sign "$app_identity" --timestamp --entitlements "$widget_entitlements" "$widget"
     codesign --force --sign "$app_identity" --timestamp --entitlements "$signing_entitlements" "$app"
 fi
 codesign --verify --strict --deep --verbose=2 "$app"
