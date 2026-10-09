@@ -1059,7 +1059,9 @@ export class Hub extends DurableObject<Env> {
         `DELETE FROM friends WHERE b = ? AND (a IN (SELECT blocked FROM blocks WHERE blocker = ?)
            OR a IN (SELECT blocker FROM blocks WHERE blocked = ?))`, to, to, to);
     }
-    // Reports, bans and name holds follow the user too, so signing in never lifts a ban.
+    // Reports, bans and name holds follow the user too, so signing in never lifts a ban. Reports between
+    // the two are dropped: once they are one user, they would be reports about oneself.
+    this.sql.exec("DELETE FROM reports WHERE (reporter = ? AND reported = ?) OR (reporter = ? AND reported = ?)", from, to, to, from);
     this.sql.exec("UPDATE reports SET reporter = ? WHERE reporter = ?", to, from);
     this.sql.exec("UPDATE reports SET reported = ? WHERE reported = ?", to, from);
     this.sql.exec("INSERT OR IGNORE INTO bans (code, created_at) SELECT ?, created_at FROM bans WHERE code = ?", to, from);

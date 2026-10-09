@@ -60,6 +60,7 @@ If you signed in with Apple, it then revokes the app's Sign in with Apple grant 
 Your secret token, and the token of every other Mac you signed in on, stops working at once.
 Signing out on one Mac (`POST /v1/auth/signout`) deletes that Mac's token on the server; your account and other Macs stay signed in.
 Signing in with Apple on a Mac that already had a friend code of its own moves that code's friends, blocks, reports, any ban and study minutes to your account and deletes the old code.
+Reports between that code and your account are deleted, since they would now be about yourself.
 
 Deleted data leaves the live service at once.
 Copies can remain in backups for up to 30 days: Cloudflare keeps a 30-day point-in-time history of the storage, and the operator keeps encrypted exports for at most 30 days, used only to recover from an outage or a mistake.

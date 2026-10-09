@@ -219,6 +219,20 @@ describe("POST /v1/auth/apple", () => {
     expect(reports.find((x: any) => x.reporter.code === reporter.code).reported.code).toBe(mac1.code);
   });
 
+  it("drops reports between the anonymous user and the account it folds into instead of making self-reports", async () => {
+    const mac1 = await register({ name: "Account" });
+    await signIn({ identityToken: await identityToken("sub.fold.selfreport") }, mac1.token);
+    const mac2 = await register({ name: "Anon" });
+    await call("POST", "/v1/reports", { code: mac1.code, reason: "spam" }, mac2.token);
+    await call("POST", "/v1/reports", { code: mac2.code, reason: "other" }, mac1.token);
+
+    const r = await signIn({ identityToken: await identityToken("sub.fold.selfreport") }, mac2.token);
+    expect(r.body.code).toBe(mac1.code);
+    const reports = (await admin("GET", "/reports?status=all")).body.reports;
+    expect(reports.filter((x: any) => x.reporter.code === x.reported.code)).toEqual([]);
+    expect(reports.filter((x: any) => [mac1.code, mac2.code].includes(x.reporter.code))).toEqual([]);
+  });
+
   it("does not fold or relink a caller that already belongs to another Apple ID", async () => {
     const mac = await register();
     await signIn({ identityToken: await identityToken("sub.first") }, mac.token);
