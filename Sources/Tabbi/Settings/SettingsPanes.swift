@@ -1147,6 +1147,11 @@ struct AboutSettingsPane: View {
                 .help(Self.repository.absoluteString)
             }
             .padding(.top, 20)
+            Link(destination: SupportContact.mailURL) {
+                Label(SupportContact.reportLine, systemImage: "envelope")
+            }
+            .help("Email the \(Edition.current.name) team about a bug, a person in Party or anything else")
+            .padding(.top, 8)
             UpdatesSettingsSection()
                 .padding(.top, 16)
             Text("Released under the MIT License.")

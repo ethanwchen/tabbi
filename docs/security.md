@@ -19,6 +19,8 @@ What it defends against:
   An account keeps at most 20 Mac tokens besides the first Mac's, oldest out first, so signing in over and over cannot grow storage.
 - **Data exposure.** There is no directory or search: a profile is visible only to mutual friends and party members, and sync documents only to their owner.
   Error replies carry a stable code and a short English message, never stack traces or internal values.
+- **Abuse by other users.** Users can block each other and report a name or behaviour; reports are capped (5 a minute, 20 a day per user) and wait for the maintainer, who can rename or ban through the admin routes.
+  A banned user disappears from friend lists, parties and leaderboards, and a ban follows the user through Sign in with Apple.
 - **Operator mistakes.** Schema changes are append-only versioned steps, deploys can be rolled back, and storage can be restored to any point in the last 30 days.
 
 The Worker logs only what an operator needs: unexpected errors, Apple key and token exchange failures (status codes and Apple's error code), and admin restores.
@@ -32,7 +34,7 @@ It allows plain `http://` only for `localhost`, so a token never crosses the net
 | Secret | What it is for | Without it |
 | --- | --- | --- |
 | `APPLE_TEAM_ID`, `APPLE_KEY_ID`, `APPLE_PRIVATE_KEY` | exchanging Sign in with Apple codes and revoking the grant on Delete Account | sign-in still works; the Worker logs that it skipped the exchange and the revoke |
-| `ADMIN_TOKEN` | the operator endpoints `GET /v1/admin/export` and `POST /v1/admin/restore` | they do not exist (404) |
+| `ADMIN_TOKEN` | the operator endpoints under `/v1/admin/`: reports, rename, ban, export and restore | they do not exist (404) |
 
 Secrets live only in Cloudflare (`wrangler secret put`), never in the repository or `wrangler.toml`.
 Staging has its own set: add `--env staging` to every command below.

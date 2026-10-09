@@ -119,17 +119,31 @@ final class PetClosetTests: XCTestCase {
         closet.cycleBreed(by: 1)
         XCTAssertEqual(closet.furTint, pink)
         XCTAssertEqual(closet.profile.palette[.furShade],
-                       closet.profile.breed.palette.furTint(pink)[.furShade],
-                       "shading is re-derived from the new breed")
+                       closet.profile.breed.furTint(pink)[.furShade],
+                       "shading follows the new breed's tones")
 
         closet.tintFur(nil)
         XCTAssertNil(closet.furTint)
         XCTAssertEqual(closet.profile.palette[.furBase], closet.profile.breed.palette[.furBase])
     }
 
+    func testRetiredSwatchesMoveToTheirReplacements() throws {
+        // Every swatch earlier builds offered still lands on a current one.
+        let earlier = ["#F2A65A", "#C98B5B", "#8A5A3C", "#3B3434", "#9AA3AD", "#F4ECE0", "#E58FA8", "#8FB8E8"]
+        for hex in earlier {
+            var profile = PetProfile(name: "Pip", breed: .orangeTabby)
+            profile.tintFur(try XCTUnwrap(PetColor(hex: hex)))
+            let closet = PetCloset(save: PetSave(profile: profile))
+            XCTAssertTrue(PetCloset.furSwatches.contains(try XCTUnwrap(closet.furTint)), hex)
+        }
+    }
+
     func testSwatchesAreDistinct() {
         XCTAssertEqual(Set(PetCloset.furSwatches).count, PetCloset.furSwatches.count)
         XCTAssertGreaterThanOrEqual(PetCloset.furSwatches.count, 6)
+        let names = PetCloset.furSwatches.compactMap(PetCloset.name(ofSwatch:))
+        XCTAssertEqual(Set(names).count, PetCloset.furSwatches.count, "every swatch has its own name")
+        XCTAssertNil(PetCloset.name(ofSwatch: PetColor(hex: "#123456")!))
     }
 
     func testNextUnlockReportsTheGap() throws {

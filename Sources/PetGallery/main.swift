@@ -88,6 +88,28 @@ for species in PetSpecies.allCases {
                    to: outputDirectory.appendingPathComponent("breeds-\(species.rawValue).png"))
 }
 
+// Fur swatches: every breed in its own colors and in every Closet swatch,
+// through the real picker path (PetCloset.tintFur), at 8x so each pixel of
+// a recolor can be judged, and at notch size. `swift run PetGallery out/ fur`
+// stops after these sheets.
+for species in PetSpecies.allCases {
+    var cells: [Cell] = []
+    for breed in PetBreed.breeds(of: species) {
+        for (column, tint) in ([nil] + PetCloset.furSwatches).enumerated() {
+            var closet = PetCloset(save: PetSave(profile: PetProfile(name: "", breed: breed)))
+            closet.tintFur(tint)
+            let label = column == 0 ? breed.displayName : tint?.hex ?? ""
+            cells.append(Cell(label: label, canvas: closet.profile.sittingCanvas(), palette: closet.profile.palette))
+        }
+    }
+    let columns = PetCloset.furSwatches.count + 1
+    try writeSheet(cells, columns: columns, title: "Fur swatches: \(species.displayName)s", scale: 8,
+                   to: outputDirectory.appendingPathComponent("fur-\(species.rawValue).png"))
+    try writeSheet(cells.map { Cell(label: "", canvas: $0.canvas, palette: $0.palette) }, columns: columns,
+                   title: "", scale: 2, to: outputDirectory.appendingPathComponent("fur-\(species.rawValue)-2x.png"))
+}
+if arguments.dropFirst().first == "fur" { exit(0) }
+
 // Costumes: every item alone on two breeds, plus full looks.
 let looks: [(String, PetOutfit, [PetAccessory])] = [
     ("None", .none, []),

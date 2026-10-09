@@ -93,12 +93,19 @@ public enum PartyDemoScenario: String, CaseIterable, Sendable {
     case lobby
     /// Just registered: no friends and no party yet.
     case noFriends
+    /// The default demo with the report card open about a friend.
+    case reporting
+    /// The default demo after the server refused my name (say, one a
+    /// maintainer replaced), so Settings and onboarding ask for another.
+    case refusedName
     /// Waiting for the server's first answer.
     case connecting
     /// The server never answered.
     case unreachable
     /// The server setting can't be used.
     case invalidServer
+    /// The maintainer banned this account.
+    case banned
 }
 
 extension PartyState {
@@ -107,7 +114,7 @@ extension PartyState {
         let base = demo(now: now, calendar: calendar)
         guard let me = base.profile, var party = base.party else { return base }
         switch scenario {
-        case .hosting:
+        case .hosting, .reporting, .refusedName:
             return base
         case .guest, .member, .celebrating:
             let host = party.members[1].profile.code
@@ -146,6 +153,10 @@ extension PartyState {
             return state
         case .invalidServer:
             return PartyState(settings: PartySettings(serverText: "http://tabbi.example.com"))
+        case .banned:
+            var state = PartyState(settings: PartySettings())
+            state.didFailToConnect(.banned)
+            return state
         }
     }
 }
@@ -159,5 +170,13 @@ extension PartyTeamCelebration {
         return PartyTeamCelebration(completion: completion,
                                     points: PetPointsRules.sharedPoints(forMinutes: 25, friends: 2),
                                     petName: "Mochi", date: now)
+    }
+}
+
+extension PartyBlockedUser {
+    /// The Blocked list for `TABBI_DEMO=1` and snapshots: one person,
+    /// blocked a few days ago, so the list and its Unblock button show.
+    public static func demo(now: Date) -> [PartyBlockedUser] {
+        [PartyBlockedUser(code: "R7LEY5TV", name: "Riley", petName: "Noodle", since: now.addingTimeInterval(-3 * 86_400))]
     }
 }

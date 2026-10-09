@@ -64,3 +64,9 @@ export async function linkAppleAccount(code: string, sub = `apple.${code}`): Pro
     state.storage.sql.exec("INSERT INTO apple_accounts (apple_sub, code, refresh_token, created_at) VALUES (?, ?, NULL, 0)", sub, code);
   });
 }
+
+/** The ADMIN_TOKEN binding in vitest.config.ts, random for each run. */
+export const ADMIN_TOKEN = env.ADMIN_TOKEN as string;
+
+/** A maintainer call to /v1/admin/..., from a fresh IP so the per-IP authentication failure limit never leaks between tests. */
+export const admin = (method: string, path: string, token = ADMIN_TOKEN) => call(method, "/v1/admin" + path, undefined, token, freshIp());

@@ -16,11 +16,13 @@ struct PartyPanel: View {
     var body: some View {
         content
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .overlay { report }
             .overlay(alignment: .bottom) { notice }
             .overlay(alignment: .top) { celebration }
             .motion(Theme.Motion.content, value: phase)
             .motion(Theme.Motion.snappy, value: store.celebration)
             .motion(Theme.Motion.snappy, value: store.notice)
+            .motion(Theme.Motion.snappy, value: store.reporting)
             .onAppear { store.setVisible(true) }
             .onChange(of: focus) { _, field in notch.isPinned = field != nil }
             .onDisappear {
@@ -59,6 +61,14 @@ struct PartyPanel: View {
             PartyMessage(symbol: nil, pet: store.pet, title: "Joining the party server…",
                          detail: "Signing you in so friends can find you.")
                 .transition(.opacity)
+        case .unreachable(.banned):
+            PartyMessage(symbol: "hand.raised.fill", title: "Party isn't available",
+                         detail: "This account can no longer use Party. If you think that's a mistake, write to \(SupportContact.email).") {
+                PartyPillButton(title: "Email Support", symbol: "envelope", help: "Write to \(SupportContact.email)") {
+                    NSWorkspace.shared.open(SupportContact.mailURL)
+                }
+            }
+            .transition(.opacity)
         case .unreachable(let error):
             PartyMessage(symbol: "wifi.slash", title: "Can't reach the party server",
                          detail: Self.unreachableDetail(error)) {
@@ -108,11 +118,20 @@ struct PartyPanel: View {
     }
 
     @ViewBuilder
+    private var report: some View {
+        if let profile = store.reporting, store.state.connection == .connected {
+            PartyReportCard(profile: profile, store: store, focus: $focus)
+                .id(profile.code)
+                .transition(.opacity.combined(with: .scale(scale: 0.98)))
+        }
+    }
+
+    @ViewBuilder
     private var notice: some View {
         if let notice = store.notice {
             HStack(spacing: Theme.Spacing.xs) {
-                Image(systemName: "exclamationmark.circle.fill")
-                    .foregroundStyle(Theme.Palette.warning)
+                Image(systemName: store.noticeConfirms ? "checkmark.circle.fill" : "exclamationmark.circle.fill")
+                    .foregroundStyle(store.noticeConfirms ? Theme.Palette.success : Theme.Palette.warning)
                 Text(notice)
                     .foregroundStyle(Theme.Palette.primaryText)
                     .lineLimit(1)
