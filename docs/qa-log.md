@@ -2,6 +2,7 @@
 
 What the whole-app quality pass found and fixed, newest first, one sentence per line.
 
+- Today, the closed notch and Plan my day showed the daily focus time goal in raw minutes ("120 min left", "176 min left" beside the notch); goals counted in minutes now read as hours from an hour up ("2 h left", "2 h 56 min left"), and so does the End-of-Day Review.
 - VoiceOver found nothing to press on the notch: the closed notch now has an "Open Tabbi" button, the camera gap that closes the open panel is a "Close" button (it was an unlabeled shape), and the onboarding progress dots read "Step 1 of 7".
 - `swift build -c release` (what `scripts/bundle.sh` runs) warned that `InMemoryDefaults` restated `UserDefaults`' unavailable `Sendable` conformance, while debug builds were silent; the explicit conformance is gone.
 - In first-run setup for a kit with many steps (Med School has nine), "Skip Setup" wrapped onto two lines beside the progress dots; the dots now narrow, then drop, so the label always stays on one line.

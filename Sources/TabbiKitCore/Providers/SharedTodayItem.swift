@@ -44,8 +44,8 @@ extension ProviderSnapshot {
                 SharedTodayItem(
                     id: "\(item.source.rawValue)/progress/\(item.id)", source: item.source, title: item.title,
                     detail: item.isComplete
-                        ? "\(item.target.formatted()) \(item.unit)"
-                        : "\(item.remaining.formatted()) \(item.unit) left",
+                        ? item.amount(item.target)
+                        : item.remainingText,
                     fraction: item.fraction, isDone: item.isComplete, action: item.action
                 )
             }
@@ -69,7 +69,7 @@ extension ProviderSnapshot {
     public func plannableWork(excluding module: ModuleID) -> [String] {
         let goals = progress
             .filter { $0.source != module && !$0.isComplete }
-            .map { "\($0.title) (\($0.remaining.formatted()) \($0.unit) left)" }
+            .map { "\($0.title) (\($0.remainingText))" }
         let tasks = openTasks
             .filter { $0.source != module }
             .map { task in task.estimatedMinutes.map { "\(task.title) (about \($0) min)" } ?? task.title }

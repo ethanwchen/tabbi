@@ -18,7 +18,7 @@ public struct StudyDailyGoal: Codable, Hashable, Sendable {
     /// The progress item's id, stable so Today updates the same row.
     public static let progressID = "minutes"
     /// The unit the progress item counts in.
-    public static let unit = "min"
+    public static let unit = ProgressItem.minutesUnit
 
     public let minutes: Int
 

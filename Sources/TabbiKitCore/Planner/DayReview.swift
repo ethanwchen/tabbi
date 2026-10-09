@@ -72,6 +72,8 @@ public struct DayReviewCount: Hashable, Codable, Sendable {
     public var count: Int
     /// Plural noun for the count, e.g. "cards".
     public var unit: String
+    /// The count in its unit, e.g. "84 cards" or "1 h 30 min".
+    public var amount: String { ProgressItem.amount(count, unit: unit) }
 
     public init(title: String, count: Int, unit: String) {
         self.title = title
@@ -207,8 +209,8 @@ public enum DayReviewer {
             stats.append(DayReviewStat(symbol: "scope", text: text, help: "Focus sessions completed today"))
         }
         for goal in review.progress {
-            stats.append(DayReviewStat(symbol: "checkmark.circle", text: "\(goal.count) \(goal.unit)",
-                                       help: "\(goal.title): \(goal.count) \(goal.unit) done today"))
+            stats.append(DayReviewStat(symbol: "checkmark.circle", text: goal.amount,
+                                       help: "\(goal.title): \(goal.amount) done today"))
         }
         if let points = review.study?.points {
             stats.append(DayReviewStat(symbol: "star.fill", text: "\(points) pts",
@@ -260,7 +262,7 @@ public enum DayReviewer {
         if let study = review.study {
             lines.append("Studied: \(study.minutes) minutes over \(study.sessions) sessions, \(study.points) points earned")
         }
-        lines += review.progress.map { "\($0.title): \($0.count) \($0.unit) done" }
+        lines += review.progress.map { "\($0.title): \($0.amount) done" }
         return lines.map { "\n" + $0 }.joined()
     }
 
