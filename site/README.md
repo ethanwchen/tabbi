@@ -11,10 +11,10 @@ No framework, no JavaScript, no build dependencies.
 ## Files
 
 - `build.py` - the home, support and 404 pages, the build and its checks.
-  The home page is deliberately short: the cat, one line, one download button and four tabs.
+  The home page is deliberately short: the cat, one line, one download button, a drawn laptop with the Timer panel in its notch, and four tabs.
 - `_partials.py` - the shared head, header and footer, plus the download and GitHub links.
 - `_legal.py` - the privacy policy and terms of use.
-- `styles.css` - the one stylesheet, light and dark.
+- `styles.css` - the one stylesheet, one warm brown palette.
 - `_headers` - security headers and caching for Cloudflare Pages.
 - `img/` - screenshots and icons, copied from `docs/images` and `docs/brand/assets` (see below).
 - `favicon.ico` - the icon at 16, 32 and 48 px.
@@ -38,7 +38,7 @@ The build stops with an error when:
 
 ## Caching
 
-Every image and the stylesheet are copied into `dist` with a content hash in the name (`styles.<hash>.css`), and `_headers` serves `/img/*` and `/assets/*` as `immutable` for a year.
+Every image and the stylesheet are copied into `dist` with a content hash in the name (`styles.<hash>.css`); image URLs inside the stylesheet are hashed too, and `_headers` serves `/img/*` and `/assets/*` as `immutable` for a year.
 Changed bytes get a new URL, so a deploy never leaves visitors on a stale file.
 Pages themselves are not cached that way, so they always pick up the new names.
 
@@ -54,6 +54,8 @@ The home page shows four tabs; their screenshots are the app's own snapshot rend
 `icon-512.webp`, `apple-touch-icon.png`, `favicon-64.png` and `favicon.ico` are resized from `docs/brand/assets/tabbi-icon-1024.png`.
 `glyph.png` is `docs/brand/assets/tabbi-glyph-256.png`, used as the header mark and on the 404 page.
 `social-preview.png` is copied unchanged for Open Graph and Twitter cards.
+`notch-timer.webp`, the panel in the hero laptop, is `timer.webp` cropped to the open notch with the wallpaper made transparent, resized to 880 px wide.
+`grain.png` is a 160 px grayscale noise tile, drawn with Pillow, for the paper grain over the page.
 When the app's screenshots change, copy and convert them again, for example:
 
 ```sh
