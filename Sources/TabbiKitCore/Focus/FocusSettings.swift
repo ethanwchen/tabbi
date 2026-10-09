@@ -16,6 +16,8 @@ public struct FocusSettings: Codable, Equatable, Sendable {
 
     /// The generated focus sound. Empty means Off.
     public var mix: FocusMix
+    /// Blends the user saved by name. Kits never touch them.
+    public var presets: FocusMixPresets
     /// Master volume for the generated sound, 0...1.
     public var volume: Float {
         didSet { volume = Self.clampVolume(volume) }
@@ -30,6 +32,7 @@ public struct FocusSettings: Codable, Equatable, Sendable {
 
     public init(
         mix: FocusMix = .off,
+        presets: FocusMixPresets = .empty,
         volume: Float = 0.5,
         playlistText: String = "",
         doNotDisturb: Bool = false,
@@ -37,6 +40,7 @@ public struct FocusSettings: Codable, Equatable, Sendable {
         offShortcut: String = FocusSettings.suggestedOffShortcut
     ) {
         self.mix = mix
+        self.presets = presets
         self.volume = Self.clampVolume(volume)
         self.playlistText = playlistText
         self.doNotDisturb = doNotDisturb
@@ -91,6 +95,12 @@ public struct FocusSettings: Codable, Equatable, Sendable {
         ]), maxCount: FocusMix.maxLayers),
     ])
 
+    /// Switches to the preset in `slot`; an empty slot changes nothing.
+    public mutating func apply(preset slot: Int) {
+        guard presets.slots.indices.contains(slot), let preset = presets.slots[slot] else { return }
+        mix = preset.mix
+    }
+
     /// True when applying `kit` would leave these settings unchanged.
     public func usesDefaults(of kit: KitDefaults) -> Bool {
         applying(kit) == self
@@ -109,7 +119,7 @@ public struct FocusSettings: Codable, Equatable, Sendable {
     // Decoding falls back per field, so one bad or missing value (say, from
     // an older version) never resets the rest.
     private enum CodingKeys: String, CodingKey {
-        case mix, volume, playlistText, doNotDisturb, onShortcut, offShortcut
+        case mix, presets, volume, playlistText, doNotDisturb, onShortcut, offShortcut
     }
 
     public init(from decoder: Decoder) throws {
@@ -120,6 +130,7 @@ public struct FocusSettings: Codable, Equatable, Sendable {
         }
         self.init(
             mix: value(.mix, fallback.mix),
+            presets: value(.presets, fallback.presets),
             volume: value(.volume, fallback.volume),
             playlistText: value(.playlistText, fallback.playlistText),
             doNotDisturb: value(.doNotDisturb, fallback.doNotDisturb),

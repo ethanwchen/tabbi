@@ -116,13 +116,13 @@ struct StudySoundMixer: View {
 
     private var blend: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-            HStack {
+            HStack(spacing: Theme.Spacing.s) {
                 Text("Blend")
-                Spacer()
-                Text("Up to \(FocusMix.maxLayers) sounds").monospacedDigit()
+                    .font(Theme.Typography.caption)
+                    .foregroundStyle(Theme.Palette.tertiaryText)
+                Spacer(minLength: 0)
+                StudyMixPresetRow(focus: focus)
             }
-            .font(Theme.Typography.caption)
-            .foregroundStyle(Theme.Palette.tertiaryText)
             .padding(.bottom, Theme.Spacing.xxs)
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: Theme.Spacing.xs), count: 3),
                       spacing: Theme.Spacing.xs) {
@@ -149,6 +149,150 @@ struct StudySoundMixer: View {
             .disabled(mix.isOff)
             .opacity(mix.isOff ? 0.4 : 1)
         }
+    }
+}
+
+/// The saved blends: three tiny chips beside "Blend". An empty slot (+)
+/// saves the current blend with one tap; a preset applies with a tap, and a
+/// long press or right-click renames or deletes it. The chip of the preset
+/// playing now is lit.
+private struct StudyMixPresetRow: View {
+    @ObservedObject var focus: FocusController
+    @State private var renaming: Int?
+    @State private var draft = ""
+    @FocusState private var fieldFocused: Bool
+
+    var body: some View {
+        let presets = focus.settings.presets
+        let active = presets.slot(matching: focus.settings.mix)
+        HStack(spacing: Theme.Spacing.xxs) {
+            ForEach(presets.slots.indices, id: \.self) { slot in
+                if renaming == slot {
+                    renameField(slot)
+                } else if let preset = presets.slots[slot] {
+                    StudyMixPresetChip(name: preset.name, isOn: slot == active,
+                                       help: "Play \(preset.mix.summary). Long-press or right-click to rename or delete",
+                                       apply: { withMotion(Theme.Motion.snappy) { focus.settings.apply(preset: slot) } },
+                                       rename: { beginRename(slot, name: preset.name) },
+                                       delete: { withMotion(Theme.Motion.snappy) { focus.settings.presets.delete(slot) } })
+                } else {
+                    StudyMixPresetSaveButton(canSave: !focus.settings.mix.isOff) {
+                        withMotion(Theme.Motion.snappy) { _ = focus.settings.presets.save(focus.settings.mix, into: slot) }
+                    }
+                }
+            }
+        }
+        .onChange(of: fieldFocused) { _, focused in
+            if !focused { commitRename() }
+        }
+    }
+
+    private func renameField(_ slot: Int) -> some View {
+        HStack(spacing: Theme.Spacing.xxs) {
+            TextField("", text: $draft)
+                .textFieldStyle(.plain)
+                .font(Theme.Typography.caption.weight(.semibold))
+                .foregroundStyle(Theme.Palette.primaryText)
+                .focused($fieldFocused)
+                .frame(width: 64)
+                .onAppear { fieldFocused = true }
+                .onSubmit { fieldFocused = false }
+                // Esc keeps the old name.
+                .onExitCommand { renaming = nil }
+                .onChange(of: draft) { _, text in
+                    if text.count > FocusMixPreset.maxNameLength { draft = String(text.prefix(FocusMixPreset.maxNameLength)) }
+                }
+            IconButton(symbol: "trash", help: "Delete this preset") {
+                renaming = nil
+                withMotion(Theme.Motion.snappy) { focus.settings.presets.delete(slot) }
+            }
+            .frame(width: 16, height: 16)
+        }
+        .padding(.leading, Theme.Spacing.s)
+        .frame(height: 18)
+        .background(Capsule().fill(Theme.Palette.surfaceHover))
+        .overlay(Capsule().strokeBorder(studyAccent.opacity(0.6), lineWidth: 1))
+    }
+
+    private func beginRename(_ slot: Int, name: String) {
+        draft = name
+        renaming = slot
+    }
+
+    private func commitRename() {
+        guard let slot = renaming else { return }
+        renaming = nil
+        focus.settings.presets.rename(slot, to: draft)
+    }
+}
+
+/// A saved blend: its name in a capsule, lit while it is the blend playing.
+private struct StudyMixPresetChip: View {
+    let name: String
+    let isOn: Bool
+    let help: String
+    let apply: () -> Void
+    let rename: () -> Void
+    let delete: () -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        Text(name)
+            .font(Theme.Typography.caption.weight(.semibold))
+            .lineLimit(1)
+            .truncationMode(.tail)
+            // Hugs the name, cut short past 64 pt so three chips always fit.
+            .frame(maxWidth: 64)
+            .fixedSize()
+            .foregroundStyle(isOn ? Theme.Palette.background
+                                  : (hovering ? Theme.Palette.primaryText : Theme.Palette.secondaryText))
+            .padding(.horizontal, Theme.Spacing.s)
+            .frame(height: 18)
+            .background(Capsule().fill(isOn ? studyAccent.opacity(hovering ? 1 : 0.88)
+                                            : (hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface)))
+            .overlay(Capsule().strokeBorder(Theme.Palette.stroke.opacity(isOn ? 0 : 1), lineWidth: 1))
+            .contentShape(Capsule())
+            .onTapGesture(perform: apply)
+            .onLongPressGesture(minimumDuration: 0.5, perform: rename)
+            .contextMenu {
+                Button("Rename", action: rename)
+                Button("Delete", role: .destructive, action: delete)
+            }
+            .help(help)
+            .onHover { hovering = $0 }
+            .motion(Theme.Motion.snappy, value: hovering)
+            .motion(Theme.Motion.snappy, value: isOn)
+            .accessibilityElement()
+            .accessibilityLabel("Preset \(name)")
+            .accessibilityAddTraits(isOn ? [.isButton, .isSelected] : .isButton)
+            .accessibilityAction(.default, apply)
+            .accessibilityAction(named: "Rename", rename)
+            .accessibilityAction(named: "Delete", delete)
+    }
+}
+
+/// An empty preset slot: a dashed + that saves the current blend there.
+private struct StudyMixPresetSaveButton: View {
+    let canSave: Bool
+    let save: () -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        Button(action: save) {
+            Image(systemName: "plus")
+                .font(.system(size: 8, weight: .bold))
+                .foregroundStyle(hovering && canSave ? Theme.Palette.primaryText : Theme.Palette.tertiaryText)
+                .frame(width: 24, height: 18)
+                .background(Capsule().fill(hovering && canSave ? Theme.Palette.surfaceHover : .clear))
+                .overlay(Capsule().strokeBorder(Theme.Palette.stroke, style: StrokeStyle(lineWidth: 1, dash: [2, 2])))
+                .contentShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .disabled(!canSave)
+        .opacity(canSave ? 1 : 0.5)
+        .help(canSave ? "Save this blend as a preset" : "Pick a sound, then save the blend here")
+        .onHover { hovering = $0 }
+        .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
