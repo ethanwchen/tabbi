@@ -83,12 +83,13 @@ final class PetProfileTests: XCTestCase {
         XCTAssertGreaterThan(palette[.eyeLight].luminance, 0.9, "a white highlight")
 
         // The eye and highlight pixels land exactly where every plain cat's
-        // do: a 2x3 eye with the highlight at its top left.
+        // do: a 2x3 eye with the highlight at its top left
+        // over the pupil and a row of iris.
         func eyePixels(_ canvas: PetCanvas) -> [String] {
             (0..<canvas.height).flatMap { y in
                 (0..<canvas.width).compactMap { x in
                     let role = canvas[x, y]
-                    return role == .eye || role == .eyeLight ? "\(x),\(y),\(role!.symbol)" : nil
+                    return role == .eye || role == .pupil || role == .eyeLight ? "\(x),\(y),\(role!.symbol)" : nil
                 }
             }
         }
@@ -152,10 +153,10 @@ final class PetProfileTests: XCTestCase {
         XCTAssertEqual(profile.palette, PetBreed.orangeTabby.palette)
     }
 
-    func testRecoloringFurDarkAddsTheWarmRim() {
+    func testRecoloringFurDarkAddsTheLightRim() {
         var profile = PetProfile(name: "Pip", breed: .whiteCat)
         profile.setColor(PetColor(hex: "#151217")!, for: .furBase)
-        XCTAssertEqual(profile.palette[.outline], PetPalette.warmRim)
+        XCTAssertEqual(profile.palette[.outline], profile.palette.rim)
     }
 
     func testFurTintKeepsEachBreedsLightAndDarkMarkings() {
@@ -186,7 +187,7 @@ final class PetProfileTests: XCTestCase {
         var profile = PetProfile(name: "Pip", breed: .goldenRetriever)
         profile.setColor(pink, for: .costumeBase)
         profile.tintFur(PetColor(hex: "#1C1719")!)
-        XCTAssertEqual(profile.palette[.outline], PetPalette.warmRim, "black fur still gets the warm rim")
+        XCTAssertEqual(profile.palette[.outline], profile.palette.rim, "black fur still gets the light rim")
 
         profile.tintFur(nil)
         XCTAssertEqual(profile.paletteOverrides, [.costumeBase: pink])

@@ -104,7 +104,8 @@ public struct PetColor: Hashable, Codable, Sendable, CustomStringConvertible {
 /// roles; a palette turns roles into colors. That is what makes every breed,
 /// costume, and user recolor work from the same hand-drawn art.
 ///
-/// Each role has a single uppercase character used in sprite text grids.
+/// Each role has a single character used in sprite text grids: uppercase,
+/// except `pupil`, which took the last free letter in lowercase.
 public enum PetPaletteRole: String, CaseIterable, Codable, Sendable {
     case outline
     case furBase
@@ -113,7 +114,13 @@ public enum PetPaletteRole: String, CaseIterable, Codable, Sendable {
     /// Second marking color (calico black patches, beagle saddle).
     case furSpot
     case belly
+    /// The iris: the eye's own color (green, blue, copper, or dark brown).
+    /// Closed and happy eye lines use it too, so they read on dark fur.
     case eye
+    /// The dark center of an open eye. Without it a colored eye is a flat
+    /// block of color that stares; with it every breed gets a soft, friendly
+    /// look. Kept near-black for every breed.
+    case pupil
     case eyeLight
     case nose
     /// Cat mouth lines. Resolved against the fur around them (see
@@ -159,6 +166,8 @@ public enum PetPaletteRole: String, CaseIterable, Codable, Sendable {
         case .furSpot: "K"
         case .belly: "W"
         case .eye: "E"
+        // The alphabet ran out of uppercase letters; `i` is not a zone.
+        case .pupil: "i"
         case .eyeLight: "L"
         case .nose: "N"
         case .mouth: "R"
@@ -244,21 +253,32 @@ public struct PetPalette: Hashable, Codable, Sendable {
     }
 
     /// A copy whose outline stays visible on the black notch. Dark fur with a
-    /// dark outline would vanish, so the outline becomes a warm light rim.
+    /// dark outline would vanish, so the outline becomes a soft light rim.
     /// Applied after user overrides, so recoloring a pet black is still safe.
     public func withVisibleRim() -> PetPalette {
         guard self[.furBase].luminance < PetPalette.darkFurThreshold,
               self[.outline].luminance < PetPalette.rimMinimumLuminance else { return self }
         var copy = self
-        copy[.outline] = PetPalette.warmRim
+        copy[.outline] = rim
         return copy
+    }
+
+    /// The light rim (and mouth color) for dark fur: the fur's own hue at a
+    /// soft mid tone with little saturation. A fixed tan rim read as a harsh
+    /// brown frame around a black cat; a rim in the coat's own hue reads as
+    /// a gentle sheen on the fur while still parting it from the black notch.
+    public var rim: PetColor {
+        let fur = self[.furBase].hsl
+        return PetColor(hue: fur.hue, saturation: min(fur.saturation, PetPalette.rimMaximumSaturation),
+                        lightness: PetPalette.rimLightness)
     }
 
     /// Fur darker than this needs a rim (about #555 gray).
     static let darkFurThreshold = 0.09
     /// Outlines at least this bright already read on black.
     static let rimMinimumLuminance = 0.12
-    public static let warmRim = PetColor(hex: "#9C7A68")!
+    static let rimLightness = 0.5
+    static let rimMaximumSaturation = 0.14
     /// Fur around a mouth darker than this (on average) gets a rim-colored
     /// mouth instead of the dark one.
     static let darkMouthBackground = 0.15
@@ -272,6 +292,7 @@ public struct PetPalette: Hashable, Codable, Sendable {
         .furSpot: PetColor(hex: "#3A3036")!,
         .belly: PetColor(hex: "#FFF1DC")!,
         .eye: PetColor(hex: "#1E1420")!,
+        .pupil: PetColor(hex: "#1E1420")!,
         .eyeLight: PetColor(hex: "#FFFFFF")!,
         .nose: PetColor(hex: "#E77A8C")!,
         .mouth: PetColor(hex: "#2A1A14")!,

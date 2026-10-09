@@ -178,7 +178,7 @@ enum EffectArt {
         }
         // A pupil drawn in the outline color is part of the eye it sits in.
         let isEye: (SpriteCell) -> Bool = {
-            $0 == .role(.eye) || $0 == .role(.eyeLight) || $0 == .role(.outline)
+            $0 == .role(.eye) || $0 == .role(.pupil) || $0 == .role(.eyeLight) || $0 == .role(.outline)
         }
         // Left edges of each eye on the eye row; most eyes are 2 wide, a few 3.
         let lefts = (0..<face.width).filter { x in

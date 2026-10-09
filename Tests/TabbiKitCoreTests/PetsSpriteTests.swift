@@ -34,9 +34,9 @@ final class PetPaletteTests: XCTestCase {
         XCTAssertEqual(try JSONDecoder().decode(PetPalette.self, from: data), palette)
     }
 
-    func testDarkFurGetsAWarmRimSoItNeverVanishesOnBlack() {
+    func testDarkFurGetsALightRimSoItNeverVanishesOnBlack() {
         let black = PetPalette([.furBase: PetColor(hex: "#1A1A1A")!, .outline: PetColor(hex: "#000000")!])
-        XCTAssertEqual(black.withVisibleRim()[.outline], PetPalette.warmRim)
+        XCTAssertEqual(black.withVisibleRim()[.outline], black.rim)
 
         let orange = PetPalette([.furBase: PetColor(hex: "#F2A65A")!, .outline: PetColor(hex: "#2A1A14")!])
         XCTAssertEqual(orange.withVisibleRim(), orange)
@@ -56,10 +56,34 @@ final class PetPaletteTests: XCTestCase {
         // The tuxedo is black fur with a white muzzle: a rim-colored mouth would smudge it.
         XCTAssertEqual(mouthColors(.tuxedo), [dark])
         XCTAssertEqual(mouthColors(.orangeTabby), [dark])
-        // A dark mouth vanishes into black fur or a Siamese mask.
-        XCTAssertEqual(mouthColors(.blackCat), [PetPalette.warmRim])
-        XCTAssertEqual(mouthColors(.siamese), [PetPalette.warmRim])
+        // A dark mouth vanishes into black fur.
+        XCTAssertEqual(mouthColors(.blackCat), [PetBreed.blackCat.palette.rim])
+        // The Siamese mask is a soft mid-brown, light enough for the dark mouth.
+        XCTAssertEqual(mouthColors(.siamese), [dark])
         XCTAssertEqual(mouthColors(.blackCat, tint: PetColor(hex: "#F4F0EA")!), [dark], "recolors adapt too")
+    }
+
+    func testSiameseMaskIsSofterThanItsPointsSoTheFaceStaysReadable() {
+        let palette = PetBreed.siamese.palette
+        let maskRole = PetBreed.siamese.pattern.role(for: .muzzle)
+        XCTAssertEqual(PetBreed.siamese.pattern.role(for: .mask), maskRole, "one even mask, no dark diamond on top")
+        let mask = palette[maskRole].luminance
+        // Darker than the cream coat, lighter than the seal ears, paws and tail.
+        XCTAssertLessThan(mask, palette[.furBase].luminance)
+        XCTAssertGreaterThan(mask, palette[PetBreed.siamese.pattern.role(for: .ears)].luminance)
+    }
+
+    func testCalicoPatchesAreBigEnoughToReadAsCalico() {
+        let palette = PetBreed.calico.palette
+        let orange = palette[.furAccent], black = palette[.furSpot]
+        // Sitting shows head and body; walking hides the front half behind the head.
+        let canvases = [(PetComposer.sitting(.calico), 32), (PetComposer.clip(.walk, for: .calico).frames[0].canvas, 24)]
+        for (canvas, minimum) in canvases {
+            let colors = canvas.colors(using: palette)
+            // Both patches cover a real share of the white coat, not a speck on an ear.
+            XCTAssertGreaterThanOrEqual(colors.filter { $0 == orange }.count, minimum)
+            XCTAssertGreaterThanOrEqual(colors.filter { $0 == black }.count, minimum)
+        }
     }
 
     func testRoleSymbolsAreUniqueAndRoundTrip() {
@@ -317,8 +341,52 @@ final class PetBreedTests: XCTestCase {
         XCTAssertTrue(Set(shihTzu.pixels.compactMap { $0 }).isSuperset(of: [.furBase, .furAccent, .belly]))
     }
 
-    func testDarkDogsStillGetTheWarmRim() {
-        XCTAssertEqual(PetBreed.dachshund.palette.withVisibleRim()[.outline], PetPalette.warmRim)
+    func testShihTzuTongueSitsInAMouthWithBrownEyes() {
+        let shihTzu = PetComposer.sitting(.shihTzu)
+        // The tongue is framed by mouth corners instead of floating alone
+        // in the white beard.
+        let framedTongue = (1..<shihTzu.width - 1).contains { x in
+            (0..<shihTzu.height).contains { y in
+                shihTzu[x, y] == .blush && (shihTzu[x - 1, y] == .nose || shihTzu[x + 1, y] == .nose)
+            }
+        }
+        XCTAssertTrue(framedTongue)
+        // A brown iris under a darker pupil, so the eyes do not read as one
+        // black block like dark glasses.
+        let palette = PetBreed.shihTzu.palette
+        XCTAssertGreaterThan(palette[.eye].luminance, palette[.pupil].luminance + 0.05)
+    }
+
+    func testDarkDogsStillGetTheLightRim() {
+        XCTAssertEqual(PetBreed.dachshund.palette.withVisibleRim()[.outline], PetBreed.dachshund.palette.rim)
+    }
+
+    func testTheRimIsASoftSheenInTheCoatsOwnHue() {
+        for breed in [PetBreed.blackCat, .tuxedo, .dachshund] {
+            let palette = breed.palette
+            let rim = palette.withVisibleRim()[.outline]
+            // Bright enough to part the coat from the black notch...
+            XCTAssertGreaterThan(rim.luminance, 0.15, "\(breed)")
+            XCTAssertGreaterThan(rim.luminance, palette[.furBase].luminance * 4, "\(breed)")
+            // ...but a gentle mid tone, not a bright frame that outshines the face.
+            XCTAssertLessThan(rim.luminance, palette[.eyeLight].luminance / 3, "\(breed)")
+            // A muted sheen, not a colored frame: no channel strays far from the others.
+            let channels = [Int(rim.red), Int(rim.green), Int(rim.blue)]
+            XCTAssertLessThan(channels.max()! - channels.min()!, 40, "\(breed)")
+        }
+        // A cool black cat gets a cool rim; the old fixed tan rim was redder than it was blue.
+        let blackCatRim = PetBreed.blackCat.palette.rim
+        XCTAssertGreaterThan(blackCatRim.blue, blackCatRim.red)
+        // A recolored navy pet gets a blue-gray rim, not a brown one.
+        let navy = PetPalette([.furBase: PetColor(hex: "#14203A")!]).rim
+        XCTAssertGreaterThan(navy.blue, navy.red)
+    }
+
+    func testBlackCatChestHasASoftSheenSoTheCoatIsNotAFlatBlob() {
+        let breed = PetBreed.blackCat
+        let chest = breed.palette[breed.pattern.role(for: .chest)]
+        XCTAssertGreaterThan(chest.luminance, breed.palette[.furBase].luminance)
+        XCTAssertLessThan(chest.luminance, 0.06, "still reads as a black cat")
     }
 
     func testEveryBreedSitsInsideTheFrameWithAMargin() throws {
@@ -337,5 +405,68 @@ final class PetBreedTests: XCTestCase {
             PetComposer.sitting(breed).colors(using: breed.palette.withVisibleRim())
         }
         XCTAssertEqual(Set(looks.map { $0.map { $0?.hex ?? "-" } }).count, PetBreed.allCases.count)
+    }
+}
+
+final class PetEyeTests: XCTestCase {
+    /// Every open eye has a highlight, an iris, and a dark pupil, so no breed
+    /// stares out of flat blocks of color.
+    func testEveryBreedHasAPupilAndAWhiteHighlight() {
+        for breed in PetBreed.allCases {
+            let palette = breed.palette.withVisibleRim()
+            let pixels = PetComposer.sitting(breed).pixels
+            XCTAssertTrue(pixels.contains(.pupil), "\(breed)")
+            XCTAssertTrue(pixels.contains(.eyeLight), "\(breed)")
+            XCTAssertGreaterThan(palette[.eyeLight].luminance, 0.9, "a white catchlight: \(breed)")
+            XCTAssertLessThan(palette[.pupil].luminance, palette[.eye].luminance + 0.001,
+                              "the pupil is never lighter than the iris: \(breed)")
+            XCTAssertLessThan(palette[.pupil].luminance, 0.15, "a dark pupil: \(breed)")
+        }
+    }
+
+    /// Dark coats get a tinted pupil, so the eye keeps its shape instead of
+    /// melting into black fur.
+    func testPupilsStandOutFromDarkFur() {
+        for breed in [PetBreed.blackCat, .tuxedo, .dachshund] {
+            let palette = breed.palette
+            XCTAssertNotEqual(palette[.pupil], PetPalette.base[.pupil], "\(breed)")
+            XCTAssertGreaterThan(palette[.pupil].luminance, palette[.furBase].luminance, "\(breed)")
+        }
+    }
+
+    /// The black and tan dachshund has dark brown eyes under tan brow dots.
+    /// An iris as light as the tan merged with the brow into one glowing block.
+    func testDachshundEyesStayDarkerThanItsTanBrows() {
+        let palette = PetBreed.dachshund.palette
+        XCTAssertLessThan(palette[.eye].luminance * 2, palette[.belly].luminance)
+    }
+
+    /// No breed looks out through a thin slit: every pupil is at least two
+    /// pixels wide somewhere, which reads as a soft, friendly eye.
+    func testPupilsAreRoundNotSlits() {
+        for breed in PetBreed.allCases {
+            let canvas = PetComposer.sitting(breed)
+            var widest = 0
+            for y in 0..<canvas.height {
+                var run = 0
+                for x in 0..<canvas.width {
+                    run = canvas[x, y] == .pupil ? run + 1 : 0
+                    widest = max(widest, run)
+                }
+            }
+            XCTAssertGreaterThanOrEqual(widest, 2, "\(breed)")
+        }
+    }
+
+    /// Closed, sleepy, happy, and squeezed eyes clear the whole open eye,
+    /// pupil included, so no dark pixel is left behind.
+    func testClosedEyesLeaveNoPupilBehind() {
+        for breed in PetBreed.allCases {
+            for eyes in [PetPose.Eyes.closed, .sleepy, .happy, .squeezed] {
+                let canvas = PetComposer.sitting(breed, pose: PetPose(eyes: eyes))
+                XCTAssertFalse(canvas.pixels.contains(.pupil), "\(breed) \(eyes)")
+                XCTAssertFalse(canvas.pixels.contains(.eyeLight), "\(breed) \(eyes)")
+            }
+        }
     }
 }

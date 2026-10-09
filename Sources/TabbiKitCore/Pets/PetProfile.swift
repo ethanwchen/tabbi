@@ -111,7 +111,7 @@ public struct PetProfile: Hashable, Codable, Sendable {
     // MARK: Rendering
 
     /// The colors to render with: breed defaults, then user overrides, then
-    /// the warm rim for dark fur so a recolored black pet never vanishes.
+    /// the light rim for dark fur so a recolored black pet never vanishes.
     public var palette: PetPalette {
         breed.palette.applying(paletteOverrides).withVisibleRim()
     }

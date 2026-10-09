@@ -112,7 +112,7 @@ public struct PetCanvas: Hashable, Sendable {
     /// Resolves roles to colors, row-major, nil for transparent pixels.
     ///
     /// `mouth` pixels depend on what they sit on: the palette's dark mouth
-    /// on light fur, the warm rim on dark fur. One face grid then works on a
+    /// on light fur, the light rim on dark fur. One face grid then works on a
     /// tuxedo's white muzzle, a black cat, a Siamese mask, and any recolor.
     public func colors(using palette: PetPalette) -> [PetColor?] {
         var colors = pixels.map { $0.map { palette[$0] } }
@@ -122,7 +122,7 @@ public struct PetCanvas: Hashable, Sendable {
                     .compactMap { $0 }.filter { $0 != .mouth }.map { palette[$0].luminance }
                 guard !around.isEmpty else { continue }
                 if around.reduce(0, +) / Double(around.count) < PetPalette.darkMouthBackground {
-                    colors[y * width + x] = PetPalette.warmRim
+                    colors[y * width + x] = palette.rim
                 }
             }
         }

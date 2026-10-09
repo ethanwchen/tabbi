@@ -5,7 +5,7 @@ final class PetAnimationTests: XCTestCase {
     private let baseline = PetComposer.frameSize - 1
 
     private func eyePixels(_ canvas: PetCanvas) -> Int {
-        canvas.pixels.filter { $0 == .eye || $0 == .eyeLight }.count
+        canvas.pixels.filter { $0 == .eye || $0 == .pupil || $0 == .eyeLight }.count
     }
 
     private func petPixels(_ canvas: PetCanvas) -> Int {
