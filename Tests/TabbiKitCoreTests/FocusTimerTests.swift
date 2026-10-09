@@ -133,6 +133,54 @@ final class FocusTimerTests: XCTestCase {
         XCTAssertEqual(timer.stop(at: at(5000))?.focused, 600)
     }
 
+    func testRecoveringAfterACrashStopsAtTheLastHeartbeat() {
+        var timer = FocusTimer()
+        timer.start(at: t0)
+        // Alive 10 minutes in, relaunched hours later.
+        let recovered = timer.recover(lastAlive: at(600), now: at(4 * 3600))
+        XCTAssertEqual(recovered.completions, [])
+        XCTAssertEqual(recovered.stop, FocusStop(focused: 600, endedAt: at(600)))
+        XCTAssertEqual(timer.runState, .idle)
+        XCTAssertEqual(timer.phase, .focus)
+        // Settled once: recovering again credits nothing.
+        XCTAssertNil(timer.recover(lastAlive: at(600), now: at(4 * 3600)).stop)
+    }
+
+    func testRecoveringCompletesAPhaseThatRanOutBeforeTheCrash() {
+        var timer = FocusTimer()
+        timer.start(at: t0)
+        // Crashed during the break that followed a finished focus phase.
+        let recovered = timer.recover(lastAlive: at(1600), now: at(3600))
+        XCTAssertEqual(recovered.completions, [FocusPhaseCompletion(phase: .focus, endedAt: at(1500))])
+        XCTAssertNil(recovered.stop, "the break earns nothing")
+        XCTAssertEqual(timer.completedFocusCount, 1)
+        XCTAssertEqual(timer.runState, .idle)
+        XCTAssertEqual(timer.phase, .focus)
+    }
+
+    func testRecoveringAPausedSessionCreditsTheTimeBeforeThePause() {
+        var timer = FocusTimer()
+        timer.start(at: t0)
+        timer.pause(at: at(420))
+        XCTAssertEqual(timer.recover(lastAlive: at(900), now: at(7200)).stop?.focused, 420)
+    }
+
+    func testRecoveringNeverCreditsTimeFromAClockSetBack() {
+        var timer = FocusTimer()
+        timer.start(at: t0)
+        // The heartbeat is later than now: the clock was set back since.
+        let recovered = timer.recover(lastAlive: at(1200), now: at(300))
+        XCTAssertEqual(recovered.stop, FocusStop(focused: 300, endedAt: at(300)))
+    }
+
+    func testRecoveringAnIdleTimerDoesNothing() {
+        var timer = FocusTimer()
+        let recovered = timer.recover(lastAlive: at(600), now: at(900))
+        XCTAssertEqual(recovered.completions, [])
+        XCTAssertNil(recovered.stop)
+        XCTAssertEqual(timer, FocusTimer())
+    }
+
     func testStopCreditsNothingWhenIdleOrOnABreak() {
         var idle = FocusTimer()
         XCTAssertNil(idle.stop(at: t0))

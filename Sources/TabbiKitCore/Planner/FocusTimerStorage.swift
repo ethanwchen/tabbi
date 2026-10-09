@@ -8,6 +8,7 @@ import Foundation
 public struct FocusTimerStorage {
     public static let timerKey = "focus.timer"
     public static let sessionLogKey = "focus.sessionLog"
+    public static let lastAliveKey = "focus.lastAlive"
     static let legacyTimerKey = "planner.focusTimer"
     static let legacySessionLogKey = "planner.focusSessions"
 
@@ -30,6 +31,17 @@ public struct FocusTimerStorage {
 
     public func save(_ timer: FocusTimer) {
         if let data = try? Self.timerSchema.encode(timer) { defaults.set(data, forKey: Self.timerKey) }
+    }
+
+    /// The last moment Tabbi was known to be alive with a session under way,
+    /// so a launch after a crash can end that session there. Nil from builds
+    /// that never saved one.
+    public var lastAlive: Date? {
+        defaults.object(forKey: Self.lastAliveKey) as? Date
+    }
+
+    public func saveLastAlive(_ date: Date) {
+        defaults.set(date, forKey: Self.lastAliveKey)
     }
 
     /// Hands the session log an older build saved to `move`, and removes it

@@ -216,6 +216,24 @@ public struct FocusTimer: Codable, Hashable, Sendable {
         }
         return completions
     }
+
+    /// Settles a session that was under way when Tabbi stopped without
+    /// saying so (a crash, a force quit, power loss). Sleep and quit stop the
+    /// timer themselves, so a timer still running or paused at launch means
+    /// the app died, and the last moment it was known to be alive is the
+    /// fairest end: phases that ran out before `lastAlive` count as
+    /// completed, and the focus phase under way is stopped there and
+    /// credited pro rata, like `stop(at:)`.
+    ///
+    /// `lastAlive` is clamped to `now`, so a clock set back since then never
+    /// credits time from the future. Returns nothing for an idle timer.
+    public mutating func recover(lastAlive: Date, now: Date) -> (completions: [FocusPhaseCompletion], stop: FocusStop?) {
+        guard runState != .idle else { return ([], nil) }
+        let end = min(lastAlive, now)
+        let completions = advance(to: end)
+        let stopped = stop(at: end)
+        return (completions, stopped)
+    }
 }
 
 /// Short strings for the focus timer in Today and the Focus tab.

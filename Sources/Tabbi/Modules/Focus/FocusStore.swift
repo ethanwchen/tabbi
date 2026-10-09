@@ -41,6 +41,11 @@ final class FocusStore: ObservableObject {
     private var isVisible: Bool { !viewers.isEmpty }
     private var ticker: Timer?
     private var phaseEndTimer: Timer?
+    /// Saves the last-alive time while a session runs, so a crash ends it
+    /// close to when it really stopped.
+    private var heartbeat: Timer?
+    /// How often the heartbeat saves; a crash can cost at most this much.
+    static let heartbeatInterval: TimeInterval = 30
     private let notifications: FocusNotifications?
     /// Ends the session when the Mac sleeps or Tabbi quits; live runs only.
     private var interruptions: SessionInterruptions?
@@ -74,8 +79,7 @@ final class FocusStore: ObservableObject {
         if let activity {
             storage.moveSessionLog { activity.record($0.activityRecords(source: FocusModule.descriptor.id)) }
         }
-        // A phase may have ended while the app wasn't running; catch up quietly.
-        record(timer.advance(to: Date()))
+        recoverAtLaunch()
         scheduleSideEffects(withdrawingPending: false)
         let centers = interruptions ?? (NSWorkspace.shared.notificationCenter, .default)
         self.interruptions = SessionInterruptions(workspace: centers.workspace, app: centers.app) { [weak self] in
@@ -149,6 +153,31 @@ final class FocusStore: ObservableObject {
 
     // MARK: Private
 
+    /// Settles what the last run left behind. Sleep and quit stop the
+    /// session themselves, so one still under way means Tabbi crashed or the
+    /// Mac lost power: it ends at the last heartbeat and is credited once,
+    /// since the timer is saved idle right away. Without a heartbeat (an
+    /// older build) a phase that ran out is just caught up quietly.
+    ///
+    /// The records are logged on the next main-queue turn, once every
+    /// module (the pet included) follows the activity log.
+    private func recoverAtLaunch() {
+        let now = Date()
+        var completions: [FocusPhaseCompletion]
+        var stopped: FocusStop?
+        if timer.runState != .idle, let lastAlive = storage.lastAlive {
+            (completions, stopped) = timer.recover(lastAlive: lastAlive, now: now)
+        } else {
+            completions = timer.advance(to: now)
+        }
+        storage.save(timer)
+        let config = timer.config
+        var records = completions.map { $0.activityRecord(config: config, source: FocusModule.descriptor.id) }
+        if let record = stopped?.activityRecord(source: FocusModule.descriptor.id) { records.append(record) }
+        guard !records.isEmpty, let activity else { return }
+        DispatchQueue.main.async { _ = activity.record(records) }
+    }
+
     /// Applies `edit`, then saves and reschedules the sound, notification, and ticker.
     private func change(_ edit: (inout FocusTimer) -> Void) {
         var updated = timer
@@ -197,6 +226,7 @@ final class FocusStore: ObservableObject {
     private func scheduleSideEffects(withdrawingPending: Bool) {
         guard !isEphemeral else { return }
         storage.save(timer)
+        updateHeartbeat()
 
         phaseEndTimer?.invalidate()
         phaseEndTimer = nil
@@ -209,6 +239,24 @@ final class FocusStore: ObservableObject {
         fire.tolerance = 0.2
         RunLoop.main.add(fire, forMode: .common)
         phaseEndTimer = fire
+    }
+
+    /// Saves the last-alive time now and every `heartbeatInterval` while the
+    /// clock runs. A paused session needs none: its time focused is fixed.
+    private func updateHeartbeat() {
+        if timer.runState != .idle { storage.saveLastAlive(Date()) }
+        guard timer.isRunning else {
+            heartbeat?.invalidate()
+            heartbeat = nil
+            return
+        }
+        guard heartbeat == nil else { return }
+        let beat = Timer(timeInterval: Self.heartbeatInterval, repeats: true) { [weak self] _ in
+            MainActor.assumeIsolated { self?.storage.saveLastAlive(Date()) }
+        }
+        beat.tolerance = 5
+        RunLoop.main.add(beat, forMode: .common)
+        heartbeat = beat
     }
 
     /// Re-adds the pending phase-end notification, e.g. after permission was granted.

@@ -75,6 +75,42 @@ final class FocusSessionInterruptionTests: XCTestCase {
         XCTAssertEqual(closet.closet.balance, paid)
     }
 
+    /// Waits for the records the store logs on the next main-queue turn.
+    private func drainMainQueue() {
+        let drained = expectation(description: "main queue drained")
+        DispatchQueue.main.async { drained.fulfill() }
+        wait(for: [drained], timeout: 1)
+    }
+
+    func testRelaunchingAfterACrashCreditsTheSessionUpToTheLastHeartbeatOnce() throws {
+        saveTimer(minutesAgo: 30)
+        FocusTimerStorage(defaults: defaults).saveLastAlive(Date().addingTimeInterval(-18 * 60))
+        let (store, log, closet) = launch()
+        let balance = closet.closet.balance
+        drainMainQueue()
+
+        XCTAssertEqual(store.timer.runState, .idle, "the crashed session is not resumed")
+        XCTAssertEqual(FocusTimerStorage(defaults: defaults).loadTimer().runState, .idle, "the recovery is saved")
+        let logged = log.records(on: today)
+        XCTAssertEqual(logged.map(\.kind), [.focusCompleted])
+        XCTAssertEqual(try XCTUnwrap(logged.first?.quantity), 12, accuracy: 0.1, "credited up to the heartbeat")
+        let paid = closet.closet.balance
+        XCTAssertEqual(paid, balance + 12)
+
+        // Crashing again before anything else happens credits nothing more.
+        let (_, relaunchedLog, relaunchedCloset) = launch()
+        drainMainQueue()
+        XCTAssertTrue(relaunchedLog.records(on: today).isEmpty)
+        XCTAssertEqual(relaunchedCloset.closet.balance, paid)
+    }
+
+    func testRunningSessionsSaveAHeartbeat() throws {
+        let (store, _, _) = launch()
+        let before = Date()
+        store.start()
+        XCTAssertGreaterThanOrEqual(try XCTUnwrap(FocusTimerStorage(defaults: defaults).lastAlive), before)
+    }
+
     func testQuittingWhilePausedCreditsTheTimeFocusedBeforeThePause() throws {
         saveTimer(minutesAgo: 12, paused: true)
         let (store, log, closet) = launch()
