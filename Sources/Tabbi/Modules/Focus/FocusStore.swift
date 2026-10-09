@@ -42,9 +42,14 @@ final class FocusStore: ObservableObject {
     private var ticker: Timer?
     private var phaseEndTimer: Timer?
     private let notifications: FocusNotifications?
+    /// Ends the session when the Mac sleeps or Tabbi quits; live runs only.
+    private var interruptions: SessionInterruptions?
 
+    /// - Parameter interruptions: where sleep and quit are announced; tests
+    ///   pass centers of their own.
     init(activity: ActivityLog? = nil, focusMode: FocusController? = nil, celebrations: CelebrationCenter? = nil,
-         runMode: RunMode, defaults: UserDefaults = .standard) {
+         runMode: RunMode, defaults: UserDefaults = .standard,
+         interruptions: (workspace: NotificationCenter, app: NotificationCenter)? = nil) {
         self.activity = activity
         self.celebrations = celebrations
         storage = FocusTimerStorage(defaults: defaults)
@@ -72,6 +77,10 @@ final class FocusStore: ObservableObject {
         // A phase may have ended while the app wasn't running; catch up quietly.
         record(timer.advance(to: Date()))
         scheduleSideEffects(withdrawingPending: false)
+        let centers = interruptions ?? (NSWorkspace.shared.notificationCenter, .default)
+        self.interruptions = SessionInterruptions(workspace: centers.workspace, app: centers.app) { [weak self] in
+            self?.stop()
+        }
     }
 
     var remaining: TimeInterval { timer.remaining(at: now) }
@@ -108,7 +117,8 @@ final class FocusStore: ObservableObject {
 
     /// Ends the session and banks the focus time so far: the activity log
     /// gets the minutes, and the pet's points follow from the shared clock
-    /// going idle mid-focus (`PetCloset.credit(from:to:at:)`).
+    /// going idle mid-focus (`PetCloset.credit(from:to:at:)`). Also runs
+    /// when the Mac sleeps or Tabbi quits mid-session.
     func stop() {
         catchUp()
         var stopped: FocusStop?

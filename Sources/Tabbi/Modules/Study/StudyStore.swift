@@ -79,6 +79,8 @@ final class StudyStore: ObservableObject {
     private var isEnabled = false
     private var ticker: Timer?
     private var phaseEndTimer: Timer?
+    /// Ends the session when the Mac sleeps or Tabbi quits; live runs only.
+    private var interruptions: SessionInterruptions?
     private let logURL: URL?
     /// Set when the log on disk could not be read: new stretches are still
     /// logged in memory, but the file is never overwritten, so nothing is lost.
@@ -160,6 +162,13 @@ final class StudyStore: ObservableObject {
             logIsUnreadable = true
         }
         scheduleSideEffects()
+        if !isSnapshot {
+            // An idle session keeps its rounds; only one under way ends.
+            interruptions = SessionInterruptions { [weak self] in
+                guard let self, session.runState != .idle else { return }
+                stop()
+            }
+        }
 
         // Rolls the shared day tally over at midnight even while the panel is hidden.
         NotificationCenter.default.publisher(for: .NSCalendarDayChanged)
@@ -248,7 +257,8 @@ final class StudyStore: ObservableObject {
 
     /// Ends the session and banks the time so far: the phase is logged as
     /// abandoned with the minutes it ran, and the pet's points follow from
-    /// the shared clock going idle mid-focus.
+    /// the shared clock going idle mid-focus. Also runs when the Mac sleeps
+    /// or Tabbi quits mid-session.
     func stop() {
         catchUp()
         change { $0.reset(at: now) }
