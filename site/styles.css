@@ -294,6 +294,10 @@ main.home .wrap { max-width: 1120px; }
 .about-cat { display: block; margin: 0 auto 12px; }
 .about-lead { font-family: var(--head); font-weight: 600; font-size: 26px; color: var(--ink); }
 .about .cta { margin-top: 24px; }
+.press { margin-top: 48px; padding-top: 32px; border-top: 2px dashed var(--line); }
+.press h2 { margin: 0 0 8px; }
+.press p { font-size: 16px; color: var(--ink-2); }
+.press .cta { margin-top: 16px; }
 
 /* --- content pages ----------------------------------------------------- */
 .sheet {

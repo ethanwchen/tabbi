@@ -18,6 +18,7 @@ No framework, no JavaScript, no build dependencies.
 - `_headers` - security headers and caching for Cloudflare Pages.
 - `img/` - screenshots and icons, copied from `docs/images` and `docs/brand/assets` (see below).
 - `favicon.ico` - the icon at 16, 32 and 48 px.
+- `press/` - the press kit files; the build zips them into `/press/tabbi-press-kit.zip`, linked from the About page.
 - `_social-card.html` - the source of the Open Graph and Twitter card (not part of the site).
 - `deploy.sh` - builds and deploys to the Cloudflare Pages project `tabbi`.
 
@@ -66,6 +67,8 @@ Render it again when the hero's words or the Timer screenshot change.
 `pixel-cat.png` is the app's gray tabby (`PetBreed.grayTabby`) at 1x: the `sit` and `blink` frames from `PetComposer.clip`, rendered by `PetRenderer`, cropped to 22x26 px and placed side by side.
 The stylesheet draws it at 2x or 3x with `image-rendering: pixelated`, peeking out from behind the hero laptop, and blinks it every five seconds unless the visitor prefers reduced motion.
 To export it again, a throwaway test in `Tests/TabbiKitCoreTests` can write those frames to PNG with `CGImageDestination`.
+The press kit in `press/` holds `tabbi-icon-1024.png` (`docs/brand/assets/tabbi-icon-1024.png`) and the four home page tabs as lossless PNGs from `docs/images` (`tabbi-timer.png` is `study.png`), each saved again by Pillow with `optimize=True`.
+Copy them again when the icon or those screenshots change; the About page shows the zip's size by itself.
 `grain.png` is a 160 px grayscale noise tile, drawn with Pillow, for the paper grain over the page.
 When the app's screenshots change, copy and convert them again, for example:
 

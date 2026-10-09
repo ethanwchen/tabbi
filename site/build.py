@@ -11,6 +11,7 @@ import pathlib
 import re
 import shutil
 import sys
+import zipfile
 from html.parser import HTMLParser
 
 from _partials import page, download_button, PAW, DOWNLOAD, GITHUB, ISSUES, ORIGIN, SUPPORT_EMAIL
@@ -234,6 +235,13 @@ SUPPORT = f'''
 '''
 
 
+# The press kit: the icon at 1024 px and the four tabs from the home page,
+# as lossless PNGs, zipped by the build.
+PRESS = HERE / 'press'
+PRESS_KIT = 'tabbi-press-kit.zip'
+PRESS_MB = f"{sum(f.stat().st_size for f in PRESS.glob('*.png')) / 1e6:.1f} MB"
+
+
 ABOUT = f'''
       <div class="about">
         <img class="about-cat" src="/img/glyph.png" width="96" height="96" alt="">
@@ -244,6 +252,13 @@ ABOUT = f'''
         <div class="cta center">
           <a class="btn" href="https://buymeacoffee.com/ethanpolar">Buy me a coffee</a>
           <a class="btn soft" href="{GITHUB}">Star on GitHub</a>
+        </div>
+        <div class="press" id="press">
+          <h2>Press kit</h2>
+          <p>Tabbi is a free, open source app for macOS 14 or later. It turns the laptop notch into a cozy panel of tabs: a focus timer, your day, music, Claude, Anki and a pet cat. Everything stays on your Mac. The kit has the icon and four screenshots.</p>
+          <div class="cta center">
+            <a class="btn soft" href="/press/{PRESS_KIT}" download>Download ({PRESS_MB} ZIP)</a>
+          </div>
         </div>
       </div>
 '''
@@ -445,6 +460,7 @@ def build():
 
     shutil.copy(HERE / '_headers', OUT / '_headers')
     shutil.copy(HERE / 'favicon.ico', OUT / 'favicon.ico')
+    write_press_kit()
     (OUT / 'robots.txt').write_text('User-agent: *\nAllow: /\n\nSitemap: https://tabbinotch.com/sitemap.xml\n')
     urls = ''.join(
         f'  <url><loc>https://tabbinotch.com/{"" if slug == "index.html" else slug.removesuffix(".html")}</loc></url>\n'
@@ -462,7 +478,18 @@ def build():
     biggest = max((f for f in OUT.rglob('*') if f.is_file()), key=lambda f: f.stat().st_size)
     if biggest.stat().st_size > 20 * 1024 * 1024:
         raise SystemExit(f'{biggest} is over 20 MB; Cloudflare Pages refuses files over 25 MB')
-    print('copied _headers, favicon.ico, robots.txt, sitemap.xml and %d fingerprinted assets' % len(fingerprints))
+    print('copied _headers, favicon.ico, robots.txt, sitemap.xml, the press kit and %d fingerprinted assets' % len(fingerprints))
+
+
+def write_press_kit():
+    """Zips site/press into one download. PNGs are already compressed, so
+    they are stored, and fixed timestamps keep the zip's bytes stable."""
+    (OUT / 'press').mkdir()
+    with zipfile.ZipFile(OUT / 'press' / PRESS_KIT, 'w', zipfile.ZIP_STORED) as z:
+        for src in sorted(PRESS.glob('*.png')):
+            info = zipfile.ZipInfo(f'tabbi-press-kit/{src.name}', (2026, 1, 1, 0, 0, 0))
+            info.external_attr = 0o644 << 16  # readable files once unzipped
+            z.writestr(info, src.read_bytes())
 
 
 def site_headers():
