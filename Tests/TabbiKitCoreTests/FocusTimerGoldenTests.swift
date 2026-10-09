@@ -220,7 +220,7 @@ struct FocusTimerGoldenFixture: Codable, Equatable {
         return state
     }
 
-    private static func provided(_ focus: ProvidedFocus, at now: Date) -> Provided {
+    static func provided(_ focus: ProvidedFocus, at now: Date) -> Provided {
         let clock: Provided.Clock = switch focus.clock {
         case .idle: Provided.Clock(kind: "idle")
         case .countdown(let endsAt): Provided.Clock(kind: "countdown", endsAt: endsAt.timeIntervalSince1970)

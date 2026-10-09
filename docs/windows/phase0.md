@@ -63,7 +63,11 @@ Status of phase 0 from `docs/windows/plan.md`: the Mac app's shared pieces move 
   Found along the way: the study-day planner and the Claude prompt treat a goal that waits for a start (Study's daily study-time goal) as work, so a Med School day plans a review block named "Study time", while the on-device planner leaves such goals out.
   The fixture records today's behavior; a fix belongs to the Today module and re-records it.
 
+- Study session fixture for the TypeScript port: `shared/fixtures/study-session/study-session.json` holds the Study tab's clock, studied-time and points labels, and 18 `StudySession` sequences as steps (start, pause, skip, end a Flowtime stretch, reset, switch or retune the method, feed Anki's reviewed-today count, advance the clock, collect the log).
+  After every step it records the session, what the tab shows (dial value and caption, round label, primary button, whether the pet dozes and which pet events the step caused, what deep focus asks of focus mode), the shared focus clock, and each logged phase with its activity record.
+  They cover a full Pomodoro set to the long break, pauses, sleeping through phases, skips while idle, running and paused, a skipped focus that never earns the long break, both Flowtime break schemes, Anki sprints with baselines, pauses, rollovers and the suggested break, the question block's review, the plain Timer, resets and method switches, retuned Custom and Timer lengths, clamped methods, no-ops and quarter seconds.
+  `StudySessionGoldenTests` checks the session against it and replays the fixture's own inputs; it was shown to fail on a one-string change.
+
 ## Next
 
-1. Logic fixture for the TypeScript port: study session sequences.
-2. Snapshot comparison against `main`, pixel for pixel.
+1. Snapshot comparison against `main`, pixel for pixel.
