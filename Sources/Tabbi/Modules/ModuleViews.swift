@@ -39,7 +39,8 @@ enum ModuleViews {
             nowPlayingLeading: { AnyView(compactLeading(services: services)) },
             nowPlayingTrailing: { AnyView(compactTrailing(services: services)) },
             openSettings: { services.openSettings() },
-            takeover: OnboardingViews.takeover(store: services.onboarding, modules: services.modules),
+            takeover: OnboardingViews.takeover(store: services.onboarding, modules: services.modules,
+                                               providers: services.providers),
             setNotchMode: { services.settings.settings.notchMode = $0 },
             checkForUpdates: AppUpdater.shared.isAvailable ? { AppUpdater.shared.checkForUpdates() } : nil,
             celebrations: services.celebrations,
@@ -49,9 +50,9 @@ enum ModuleViews {
         )
     }
 
-    /// Hands panels the shared pet (`ProviderSnapshot.pet`) for their
-    /// `StatusMessage`s, following it as the user restyles or turns it off.
-    private struct StatusPetProvider<Content: View>: View {
+    /// Hands panels (and onboarding) the shared pet (`ProviderSnapshot.pet`)
+    /// as `statusPet`, following it as the user restyles or turns it off.
+    struct StatusPetProvider<Content: View>: View {
         @ObservedObject var providers: ProviderHub
         @ViewBuilder let content: Content
 

@@ -7,11 +7,15 @@ import TabbiKit
 /// in the panel canvas.
 enum OnboardingViews {
     @MainActor
-    static func takeover(store: OnboardingStore, modules: ModuleRegistry) -> NotchTakeover {
+    static func takeover(store: OnboardingStore, modules: ModuleRegistry, providers: ProviderHub) -> NotchTakeover {
         NotchTakeover(
             leading: { AnyView(OnboardingTitle().environmentObject(store)) },
             trailing: { AnyView(OnboardingProgress().environmentObject(store)) },
-            body: { AnyView(OnboardingBody(modules: modules).environmentObject(store).environmentObject(store.settings)) }
+            body: {
+                AnyView(ModuleViews.StatusPetProvider(providers: providers) {
+                    OnboardingBody(modules: modules).environmentObject(store).environmentObject(store.settings)
+                })
+            }
         )
     }
 }
@@ -271,20 +275,18 @@ private struct OnboardingTile<Label: View>: View {
 }
 
 /// The name step: one field for what to call the user, saved to the
-/// app-wide name as it is typed. Return moves on.
+/// app-wide name as it is typed. Return moves on. The pet greets the user
+/// beside it, so the first thing Tabbi shows is its cat, not a form.
 private struct NameStep: View {
     @EnvironmentObject private var settings: SettingsStore
+    @Environment(\.statusPet) private var pet
     let submit: () -> Void
     @FocusState private var focused: Bool
 
     var body: some View {
         Card {
             HStack(spacing: Theme.Spacing.l) {
-                Image(systemName: "person.crop.circle.fill")
-                    .font(.system(size: 20, weight: .semibold))
-                    .foregroundStyle(Theme.Palette.primaryText)
-                    .frame(width: 44, height: 44)
-                    .background(Circle().fill(Theme.Palette.primaryText.opacity(0.12)))
+                GreetingPet(profile: pet ?? .starter(.cat))
                 VStack(alignment: .leading, spacing: Theme.Spacing.s) {
                     VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                         Text("What should we call you?")
@@ -339,6 +341,29 @@ private struct NameStep: View {
             get: { settings.settings.displayName },
             set: { settings.settings.displayName = String($0.prefix(DisplayName.maxLength)) }
         )
+    }
+}
+
+/// The user's pet (the starter cat until they pick one), drawn large and
+/// hopping hello once when the step appears.
+private struct GreetingPet: View {
+    let profile: PetProfile
+    @StateObject private var player: PetPlayer
+
+    /// Two points per sprite pixel: a 64 pt pet, crisp on every display.
+    private static let pixelSize: CGFloat = 2
+
+    init(profile: PetProfile) {
+        self.profile = profile
+        // A fixed seed keeps snapshots stable.
+        _player = StateObject(wrappedValue: PetPlayer(profile: profile, seed: 7))
+    }
+
+    var body: some View {
+        PetView(player: player, pixelSize: Self.pixelSize)
+            .help("Hi! I'm \(profile.name).")
+            .onAppear { if !RunMode.current.isSnapshot { player.send(.nudge) } }
+            .onChange(of: profile) { _, profile in player.update(profile: profile) }
     }
 }
 
