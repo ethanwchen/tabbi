@@ -38,7 +38,7 @@ enum SnapshotRenderer {
     static func run(outputDirectory: URL, kitID: String = KitLibrary.defaultKitID, themes: ThemeSelection = .kit,
                     settle: TimeInterval = 1.5) async {
         try? FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
-        let services = AppServices(settings: .ephemeral(catalog: ModuleList.catalog, kitID: kitID))
+        let services = AppServices(settings: .ephemeral(catalog: ModuleList.catalog(for: .current), kitID: kitID))
         let kitTheme = ThemeCatalog.resolve(services.settings.settings.themeID)
         let themeFolders: [(AppTheme, URL)] = switch themes {
         case .kit: [(kitTheme, outputDirectory)]
@@ -142,6 +142,7 @@ enum SnapshotRenderer {
             shots.append(Shot("open-pet-shortcut", withPaw))
         }
 
+        #if !APPSTORE
         // Ask Claude's chat history, rendered after the others because the
         // list showing is session state.
         if layout.order.contains(.claudeAsk) {
@@ -164,6 +165,7 @@ enum SnapshotRenderer {
                 shots.append(Shot(name, model))
             }
         }
+        #endif
 
         shots += headerShots(geometry: geometry, catalog: services.settings.catalog)
 
@@ -311,7 +313,9 @@ enum SnapshotRenderer {
     private static func renderNotchShots(_ shots: [Shot], services: AppServices,
                                          closet: ClosetModule?, to folder: URL) {
         let firstSection = closet?.store.section
+        #if !APPSTORE
         let askClaude = services.modules.module(AskClaudeModule.self)?.session
+        #endif
         let timer = services.modules.module(StudyModule.self)
         let party = services.modules.module(PartyModule.self)?.store
         let now = Date()
@@ -319,10 +323,12 @@ enum SnapshotRenderer {
         for shot in shots {
             let (name, model) = (shot.name, shot.model)
             services.onboarding.show(shot.onboarding)
+            #if !APPSTORE
             askClaude?.isShowingHistory = name == "open-claudeAsk-history"
             askClaude?.showForSnapshot(name == "open-claudeAsk-screenshot" ? .pendingScreenshot
                 : name == "open-claudeAsk-screenshot-sent" ? .sentScreenshot
                 : name == "open-claudeAsk-screen-access" ? .screenAccess : .chat)
+            #endif
             timer?.showForSnapshot(partySession: name == "open-study-party" ? partySession : nil)
             party?.showCelebrationForSnapshot(name == "open-party-celebrating")
             if let firstSection { closet?.store.section = name == "open-closet-look" ? .look : firstSection }

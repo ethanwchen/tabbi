@@ -74,6 +74,8 @@ final class ScheduleStore: ObservableObject {
     var planSettings = TodayPlanSettings()
 
     private let isDemo: Bool
+    /// False in a build that can't run the `claude` CLI: Refine never shows.
+    private let usesClaude: Bool
     private lazy var eventStore = EKEventStore()
     private var isVisible = false
     private var ticker: Timer?
@@ -83,8 +85,9 @@ final class ScheduleStore: ObservableObject {
     static let privacySettingsURL = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Calendars")!
     static let internetAccountsURL = URL(string: "x-apple.systempreferences:com.apple.Internet-Accounts-Settings.extension")!
 
-    init(runMode: RunMode) {
+    init(usesClaude: Bool = true, runMode: RunMode) {
         isDemo = runMode.isDemo
+        self.usesClaude = usesClaude
         let date = Date()
         if isDemo {
             let preview = ProcessInfo.processInfo.environment["TABBI_SCHEDULE_PREVIEW"]
@@ -98,7 +101,7 @@ final class ScheduleStore: ObservableObject {
             items = showsDay ? ScheduleSampleData.weekItems(from: date) : []
             selectedID = preview == "selected" ? "demo-deck" : nil
             mode = preview?.hasPrefix("week") == true || preview?.hasPrefix("plan-week") == true ? .week : .day
-            claudeFound = true
+            claudeFound = usesClaude
             if preview == "plan" || preview == "plan-selected" || preview == "plan-refining" {
                 planDay()
                 isRefining = preview == "plan-refining"
@@ -303,6 +306,7 @@ final class ScheduleStore: ObservableObject {
     /// Looks for the `claude` CLI off the main thread while the plan shows,
     /// so Refine only appears when it can work.
     private func checkClaude() {
+        guard usesClaude else { return }
         Task { [weak self] in
             let found = await Task.detached(priority: .utility, operation: { ClaudeCLI.locate() }).value != nil
             self?.claudeFound = found

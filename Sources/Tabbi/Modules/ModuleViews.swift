@@ -42,12 +42,23 @@ enum ModuleViews {
             takeover: OnboardingViews.takeover(store: services.onboarding, modules: services.modules,
                                                providers: services.providers),
             setNotchMode: { services.settings.settings.notchMode = $0 },
-            checkForUpdates: AppUpdater.shared.isAvailable ? { AppUpdater.shared.checkForUpdates() } : nil,
+            checkForUpdates: checkForUpdates,
             celebrations: services.celebrations,
             runAction: ModuleActionRunner { [weak services] module, action in
                 services?.modules.perform(action, on: module)
             }
         )
+    }
+
+    /// "Check for Updates…" in the notch's context menu, while the updater
+    /// runs. The App Store build has none: the App Store updates the app.
+    @MainActor
+    private static var checkForUpdates: (() -> Void)? {
+        #if APPSTORE
+        nil
+        #else
+        AppUpdater.shared.isAvailable ? { AppUpdater.shared.checkForUpdates() } : nil
+        #endif
     }
 
     /// Hands panels (and onboarding) the shared pet (`ProviderSnapshot.pet`)

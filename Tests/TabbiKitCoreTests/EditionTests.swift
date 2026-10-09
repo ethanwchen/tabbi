@@ -35,17 +35,58 @@ final class EditionTests: XCTestCase {
 
     func testEveryEditionFileLoadsUnderItsOwnNameAndStartsWithABundledKit() throws {
         let files = Edition.bundledFileURLs
-        XCTAssertEqual(files.map { $0.deletingPathExtension().lastPathComponent }, ["tabbi"])
+        XCTAssertEqual(files.map { $0.deletingPathExtension().lastPathComponent }, ["appstore", "tabbi"])
         for file in files {
             XCTAssertNoThrow(try Edition.load(from: file), file.lastPathComponent)
         }
         XCTAssertEqual(Edition.builtIn.count, files.count, "an edition file failed to load")
         XCTAssertEqual(Edition.builtIn.first, .tabbi)
-        XCTAssertEqual(Set(Edition.builtIn.map(\.bundleIdentifier)).count, Edition.builtIn.count)
-        XCTAssertEqual(Set(Edition.builtIn.map(\.name)).count, Edition.builtIn.count)
+        // Editions on the same channel are separate apps and must not share
+        // an identity; the App Store build is the same app as Tabbi.
+        for distribution in [Edition.Distribution.direct, .appStore] {
+            let editions = Edition.builtIn.filter { $0.distribution == distribution }
+            XCTAssertEqual(Set(editions.map(\.bundleIdentifier)).count, editions.count)
+            XCTAssertEqual(Set(editions.map(\.name)).count, editions.count)
+        }
         for edition in Edition.builtIn {
             XCTAssertNotNil(KitLibrary.bundled[edition.defaultKitID], edition.id)
         }
+    }
+
+    func testTheDirectDownloadKeepsEveryModule() {
+        XCTAssertEqual(Edition.tabbi.distribution, .direct)
+        XCTAssertFalse(Edition.tabbi.isAppStore)
+        XCTAssertTrue(Edition.tabbi.runsLocalTools)
+        XCTAssertEqual(Edition.tabbi.excludedModules, [])
+        let catalog = ModuleCatalog([.unknown(.planner), .unknown(.claudeAsk)])
+        XCTAssertEqual(Edition.tabbi.catalog(from: catalog), catalog)
+    }
+
+    func testTheAppStoreEditionIsTabbiWithoutTheCLIModulesAndParty() throws {
+        let appStore = try XCTUnwrap(Edition.named("appstore"))
+        XCTAssertTrue(appStore.isAppStore)
+        XCTAssertFalse(appStore.runsLocalTools, "a sandboxed build can't run the claude CLI or Shortcuts")
+        XCTAssertEqual(appStore.name, Edition.tabbi.name)
+        XCTAssertEqual(appStore.bundleIdentifier, Edition.tabbi.bundleIdentifier)
+        XCTAssertEqual(appStore.defaultKitID, KitLibrary.defaultKitID)
+        XCTAssertEqual(Set(appStore.excludedModules), [.claudeUsage, .claudeAsk, .party])
+        XCTAssertEqual(appStore.infoPlist["LSApplicationCategoryType"], "public.app-category.productivity")
+        XCTAssertEqual(Edition.resolve(infoDictionary: [Edition.infoKey: "appstore"]), appStore)
+    }
+
+    func testAnAppStoreBuildWithoutAnEditionKeyRunsAsTheAppStoreEdition() throws {
+        let appStore = try XCTUnwrap(Edition.named("appstore"))
+        XCTAssertEqual(Edition.resolve(infoDictionary: nil, fallback: appStore), appStore)
+        XCTAssertEqual(Edition.resolve(infoDictionary: [Edition.infoKey: "tabbi"], fallback: appStore), .tabbi)
+    }
+
+    func testExcludedModulesAndDistributionAreRead() throws {
+        let custom = try decode(edition(#", "distribution": "appStore", "excludedModules": ["anki"]"#))
+        XCTAssertEqual(custom.distribution, .appStore)
+        XCTAssertEqual(custom.excludedModules, [.anki])
+        let plain = try decode(edition(""))
+        XCTAssertEqual(plain.distribution, .direct)
+        XCTAssertEqual(plain.excludedModules, [])
     }
 
     func testANewEditionIsJustAFile() throws {
@@ -67,6 +108,9 @@ final class EditionTests: XCTestCase {
             #"{"formatVersion": 1, "id": "x", "name": "X", "bundleIdentifier": "a.b", "defaultKitID": "s", "icon": "../x.icns"}"#,
             #"{"formatVersion": 1, "id": "x", "name": "X", "bundleIdentifier": "a.b", "defaultKitID": "s", "infoPlist": {"CFBundleIdentifier": "c.d"}}"#,
             #"{"id": "x", "name": "X", "bundleIdentifier": "a.b", "defaultKitID": "s"}"#,
+            #"{"formatVersion": 1, "id": "x", "name": "X", "bundleIdentifier": "a.b", "defaultKitID": "s", "distribution": "beta"}"#,
+            #"{"formatVersion": 1, "id": "x", "name": "X", "bundleIdentifier": "a.b", "defaultKitID": "s", "excludedModules": ["../x"]}"#,
+            #"{"formatVersion": 1, "id": "x", "name": "X", "bundleIdentifier": "a.b", "defaultKitID": "s", "excludedModules": "anki"}"#,
             "not json",
         ]
         for json in bad {

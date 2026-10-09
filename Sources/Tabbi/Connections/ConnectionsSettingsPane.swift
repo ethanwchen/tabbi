@@ -10,7 +10,8 @@ struct ConnectionsSettingsPane: View {
     @State private var showsMore = false
 
     var body: some View {
-        let kinds = ConnectionKind.relevant(to: settings.settings.modules.enabled)
+        let kinds = ConnectionKind.relevant(to: settings.settings.modules.enabled,
+                                            localTools: Edition.current.runsLocalTools)
         Form {
             Section {
                 ConnectionsList(kinds: kinds)

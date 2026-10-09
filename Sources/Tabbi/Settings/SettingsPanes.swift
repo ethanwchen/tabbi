@@ -14,6 +14,7 @@ let paneWidth: CGFloat = 500
 /// user types; Party shows it to friends and Tabbi greets the user with it.
 private struct YourNameRow: View {
     @EnvironmentObject private var store: SettingsStore
+    @Environment(\.moduleCatalog) private var catalog
 
     var body: some View {
         LabeledContent {
@@ -25,7 +26,10 @@ private struct YourNameRow: View {
                 .help("Your name, up to \(DisplayName.maxLength) characters")
         } label: {
             Text("Your name")
-            Text("Shown to friends in Party and used to greet you.")
+            // Editions without Party (the App Store) only greet with it.
+            Text(catalog.contains(PartyModule.descriptor.id)
+                 ? "Shown to friends in Party and used to greet you."
+                 : "Used to greet you.")
         }
     }
 
@@ -1168,8 +1172,10 @@ struct AboutSettingsPane: View {
             }
             .help("Email the \(Edition.current.name) team about a bug, a person in Party or anything else")
             .padding(.top, 8)
+            #if !APPSTORE
             UpdatesSettingsSection()
                 .padding(.top, 16)
+            #endif
             Text("Released under the MIT License.")
                 .font(.caption)
                 .foregroundStyle(.tertiary)

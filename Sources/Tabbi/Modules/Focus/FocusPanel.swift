@@ -142,7 +142,8 @@ private struct FocusModeRow: View {
             items(showsTitles: false)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .help("Change focus sound and Do Not Disturb in Settings > Tabs > Options")
+        .help(controller.offersDoNotDisturb ? "Change focus sound and Do Not Disturb in Settings > Tabs > Options"
+                                            : "Change focus sound in Settings > Tabs > Options")
     }
 
     private func items(showsTitles: Bool) -> some View {
@@ -150,9 +151,11 @@ private struct FocusModeRow: View {
         return HStack(spacing: Theme.Spacing.m) {
             FocusModeItem(symbol: "waveform", title: showsTitles ? "Sound" : nil,
                           value: settings.mix.summary, isOn: !settings.mix.isOff)
-            FocusModeItem(symbol: "moon.fill", title: showsTitles ? "Do Not Disturb" : nil,
-                          value: settings.doNotDisturb ? "On" : "Off", isOn: settings.doNotDisturb)
-                .fixedSize()
+            if controller.offersDoNotDisturb {
+                FocusModeItem(symbol: "moon.fill", title: showsTitles ? "Do Not Disturb" : nil,
+                              value: settings.doNotDisturb ? "On" : "Off", isOn: settings.doNotDisturb)
+                    .fixedSize()
+            }
         }
     }
 }
