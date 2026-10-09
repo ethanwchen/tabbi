@@ -14,7 +14,7 @@ public struct PetPoint: Hashable, Sendable {
 /// How the sitting pet holds itself in one frame. Poses are small offsets
 /// from the plain sitting frame, so every costume follows along for free.
 public struct PetPose: Hashable, Sendable {
-    public enum Eyes: Hashable, Sendable {
+    public enum Eyes: String, CaseIterable, Hashable, Sendable {
         case open
         /// A quick blink: flat lines.
         case closed
@@ -27,7 +27,7 @@ public struct PetPose: Hashable, Sendable {
     }
 
     /// The mouth, drawn over the face's own mouth when it opens.
-    public enum Mouth: Hashable, Sendable {
+    public enum Mouth: String, CaseIterable, Hashable, Sendable {
         /// The face as drawn: a closed smile or a panting tongue.
         case closed
         /// A small round "o", the start and end of a yawn.
@@ -46,8 +46,8 @@ public struct PetPose: Hashable, Sendable {
         case mug(raise: Int)
         /// A toy on the floor in front: a ball of yarn for cats, a ball for
         /// dogs. `roll` moves it that many pixels to the left as it rolls
-        /// away, `bounce` lifts a ball off the floor, and `bat` puts the
-        /// left front paw on top of it.
+        /// away, `bounce` lifts a ball off the floor (yarn stays down), and
+        /// `bat` puts the left front paw on top of it.
         case toy(roll: Int, bounce: Int, bat: Bool)
     }
 
@@ -143,12 +143,10 @@ public enum PetAnimation: String, CaseIterable, Codable, Sendable {
     case play
 
     /// Whether the clip repeats forever or stops on its last frame.
-    public var loops: Bool {
-        switch self {
-        case .idle, .sit, .sleep, .walk, .typing, .coffee, .nap: true
-        case .blink, .stretch, .peekIn, .peekOut, .alert, .celebrate, .yawn, .hop, .wave, .groom, .tailSwish, .play: false
-        }
-    }
+    public var loops: Bool { timeline.loops }
+
+    /// How the animation plays, from `animations.json`.
+    var timeline: PetTimeline { PetArt.animations.timeline(self) }
 }
 
 /// One frame of an animation.
@@ -212,10 +210,7 @@ public struct PetClip: Hashable, Sendable {
     /// bubble, celebrate its heart), and a loop's first, except that sleep
     /// and nap hold the frame with both "z"s, so a frozen pet reads as asleep.
     public var stillFrame: PetFrame {
-        switch animation {
-        case .sleep, .nap: frames[min(2, frames.count - 1)]
-        default: loops ? frames[0] : frames[frames.count - 1]
-        }
+        frames[min(animation.timeline.stillIndex, frames.count - 1)]
     }
 
     /// When the shown frame next changes, in seconds since the clip started,
@@ -245,256 +240,54 @@ public struct PetClip: Hashable, Sendable {
 }
 
 extension PetComposer {
-    /// Builds `animation` for a dressed breed. Composition is cheap (a few
-    /// 32x32 grids), but callers that play clips repeatedly should keep the
-    /// result instead of rebuilding it every frame.
+    /// Builds `animation` for a dressed breed from its timeline in
+    /// `animations.json`. Composition is cheap (a few 32x32 grids), but
+    /// callers that play clips repeatedly should keep the result instead of
+    /// rebuilding it every frame.
     public static func clip(
         _ animation: PetAnimation, for breed: PetBreed,
         outfit: PetOutfit = .none, accessories: [PetAccessory] = []
     ) -> PetClip {
-        func pose(_ pose: PetPose) -> Composed {
-            compose(breed, pose: pose, outfit: outfit, accessories: accessories)
+        let timeline = animation.timeline
+        let composed = timeline.frames.map {
+            compose(breed, pose: $0.pose, outfit: outfit, accessories: accessories, stance: $0.stance)
         }
-        func frame(_ value: PetPose, _ duration: TimeInterval) -> PetFrame {
-            PetFrame(canvas: pose(value).canvas, duration: duration)
+        // Effects placed by the head follow the clip's first frame, so a
+        // drifting "z" doesn't bob with each breath.
+        let head = composed[0].headTopRight
+        func place(_ coordinate: PetTimeline.Coordinate, from origin: Int) -> Int {
+            switch coordinate {
+            case .frame(let value): value
+            case .head(let offset): origin + offset
+            }
         }
-
-        let frames: [PetFrame]
-        switch animation {
-        case .sit:
-            frames = [frame(PetPose(), 1)]
-
-        case .idle:
-            // Inhale holds a little longer than exhale, like real breathing.
-            frames = [frame(PetPose(), 1.1), frame(PetPose(headDrop: 1), 0.9)]
-
-        case .blink:
-            frames = [frame(PetPose(eyes: .closed), 0.14)]
-
-        case .sleep:
-            let dozing = pose(PetPose(eyes: .sleepy, headDrop: 2))
-            let breathing = pose(PetPose(eyes: .sleepy, headDrop: 1))
-            let top = dozing.headTopRight
-            // A small "z" appears by the ear, grows, and drifts up and away.
-            let small = PetPoint(x: top.x + 3, y: top.y - 2)
-            let large = PetPoint(x: frameSize - 4, y: top.y - 9)
-            frames = [
-                PetFrame(canvas: dozing.canvas, duration: 0.8),
-                PetFrame(canvas: breathing.canvas.adding(EffectArt.zSmall, at: small), duration: 0.8),
-                PetFrame(canvas: dozing.canvas.adding(EffectArt.zSmall, at: small)
-                    .adding(EffectArt.zLarge, at: large), duration: 0.8),
-                PetFrame(canvas: breathing.canvas.adding(EffectArt.zLarge, at: large), duration: 0.8),
-            ]
-
-        case .nap:
-            // Slower than the sitting doze: a deep breath every two seconds,
-            // with a "z" rising from the ear and drifting off like `sleep`.
-            func curled(_ breath: Int) -> Composed {
-                compose(breed, pose: PetPose(eyes: .sleepy), outfit: outfit, accessories: accessories,
-                        stance: .curled(breath: breath))
+        let frames = zip(timeline.frames, composed).map { step, composed in
+            var canvas = composed.canvas.shifted(x: 0, y: step.shiftY)
+            for effect in step.effects {
+                let grid = PetArt.effect.grid(effect.grid)
+                canvas = canvas.adding(grid, at: PetPoint(x: place(effect.x, from: head.x), y: place(effect.y, from: head.y)))
             }
-            let resting = curled(0)
-            let breathing = curled(1)
-            let top = resting.headTopRight
-            let small = PetPoint(x: top.x + 3, y: top.y - 2)
-            let large = PetPoint(x: frameSize - 4, y: top.y - 9)
-            frames = [
-                PetFrame(canvas: resting.canvas, duration: 1),
-                PetFrame(canvas: breathing.canvas.adding(EffectArt.zSmall, at: small), duration: 1),
-                PetFrame(canvas: resting.canvas.adding(EffectArt.zSmall, at: small)
-                    .adding(EffectArt.zLarge, at: large), duration: 1),
-                PetFrame(canvas: breathing.canvas.adding(EffectArt.zLarge, at: large), duration: 1),
-            ]
-
-        case .walk:
-            frames = WalkArt.cycle.indices.map { step in
-                let composed = compose(breed, pose: PetPose(), outfit: outfit, accessories: accessories,
-                                       stance: .walking(step: step))
-                return PetFrame(canvas: composed.canvas, duration: 0.15)
+            if let steam = step.steam, let top = composed.mugTop {
+                let wisp = PropArt.steam[steam]
+                // Painted over the chest, not behind the pet like other effects.
+                canvas.stamp(wisp, x: top.x + 1, y: top.y - wisp.height)
             }
-
-        case .stretch:
-            // Ease down into the bow, hold it with a tail wag and happy
-            // eyes, then rise back up.
-            let steps: [(Int, Int, PetPose.Eyes, TimeInterval)] = [
-                (0, 0, .open, 0.15), (1, 0, .open, 0.1), (2, 0, .happy, 0.1), (3, 0, .happy, 0.35),
-                (3, 1, .happy, 0.35), (3, 0, .happy, 0.35), (2, 0, .open, 0.1), (1, 0, .open, 0.1), (0, 0, .open, 0.3),
-            ]
-            frames = steps.map { depth, wag, eyes, duration in
-                let composed = compose(breed, pose: PetPose(eyes: eyes), outfit: outfit, accessories: accessories,
-                                       stance: .stretching(depth: depth, wag: wag))
-                return PetFrame(canvas: composed.canvas, duration: duration)
-            }
-
-        case .alert:
-            // Two hops, the second smaller, then hold so the bubble can be read.
-            frames = [(0, 0.06), (2, 0.1), (0, 0.08), (1, 0.08), (0, 0.6)].map { lift, duration in
-                let composed = pose(PetPose(lift: lift))
-                return PetFrame(canvas: composed.canvas, duration: duration,
-                                bubbleAnchor: PetPoint(x: composed.headTopRight.x, y: composed.headTopRight.y))
-            }
-
-        case .celebrate:
-            let lifts: [(Int, TimeInterval)] = [(0, 0.08), (2, 0.08), (3, 0.16), (2, 0.08), (0, 0.1), (0, 0.3), (0, 0.4)]
-            frames = lifts.enumerated().map { index, step in
-                var canvas = pose(PetPose(eyes: .happy, lift: step.0)).canvas
-                // The heart pops in at the top of the hop and floats up
-                // beside the head; sparkles twinkle on the other side.
-                if index >= 2 {
-                    let heartY = 8 - (index - 2) * 2
-                    canvas = canvas.adding(EffectArt.heart, at: PetPoint(x: frameSize - EffectArt.heart.width, y: heartY))
-                }
-                if index == 2 || index == 4 {
-                    canvas = canvas.adding(EffectArt.sparkle, at: PetPoint(x: 1, y: index - 1))
-                }
-                return PetFrame(canvas: canvas, duration: step.1)
-            }
-
-        case .yawn:
-            // Tip back and open up slowly, hold the big yawn, then close
-            // with a contented squint before the eyes open again.
-            frames = [
-                frame(PetPose(), 0.25),
-                frame(PetPose(eyes: .squeezed, mouth: .open, headDrop: -1), 0.18),
-                frame(PetPose(eyes: .squeezed, mouth: .wide, headDrop: -1), 0.9),
-                frame(PetPose(eyes: .squeezed, mouth: .open, headDrop: -1), 0.16),
-                frame(PetPose(eyes: .sleepy), 0.45),
-                frame(PetPose(eyes: .sleepy, headDrop: 1), 0.35),
-                frame(PetPose(), 0.3),
-            ]
-
-        case .hop:
-            // Crouch, spring up, squash on landing with a puff of dust, and
-            // again a little lower. Short frames keep it bouncy.
-            let steps: [(PetPose, Bool, TimeInterval)] = [
-                (PetPose(eyes: .happy, headDrop: 1), false, 0.1),
-                (PetPose(eyes: .happy, lift: 2), false, 0.06),
-                (PetPose(eyes: .happy, lift: 3), false, 0.12),
-                (PetPose(eyes: .happy, lift: 2), false, 0.06),
-                (PetPose(eyes: .happy, headDrop: 1), true, 0.1),
-                (PetPose(eyes: .happy, lift: 2), false, 0.08),
-                (PetPose(eyes: .happy, lift: 1), false, 0.06),
-                (PetPose(eyes: .happy, headDrop: 1), true, 0.1),
-                (PetPose(eyes: .happy), false, 0.35),
-                (PetPose(), false, 0.2),
-            ]
-            frames = steps.map { value, dust, duration in
-                var canvas = pose(value).canvas
+            if step.dust {
                 // Puffs on the floor just outside the paws (the bottom row,
                 // so a wide tail higher up doesn't push them away).
-                let floor = frameSize - 1 - value.lift
+                let floor = frameSize - 1 - step.pose.lift
                 let paws = (0..<frameSize).filter { canvas[$0, floor] != nil }
-                if dust, let left = paws.first, let right = paws.last {
+                if let left = paws.first, let right = paws.last {
                     let y = frameSize - EffectArt.dustLeft.height
                     canvas = canvas
                         .adding(EffectArt.dustLeft, at: PetPoint(x: left - EffectArt.dustLeft.width, y: y))
                         .adding(EffectArt.dustRight, at: PetPoint(x: right + 1, y: y))
                 }
-                return PetFrame(canvas: canvas, duration: duration)
             }
-
-        case .typing:
-            // A burst of alternating taps, then a pause to read the screen.
-            let taps: [(Int, Int, TimeInterval)] = [
-                (-1, 0, 0.12), (0, 0, 0.1), (1, 0, 0.12), (0, 0, 0.1), (-1, 0, 0.12), (0, 0, 0.1),
-                (1, 0, 0.12), (0, 0, 0.1), (-1, 0, 0.12), (0, 1, 0.7), (0, 1, 0.5),
-            ]
-            frames = taps.map { tap, drop, duration in
-                frame(PetPose(prop: .laptop(tap: tap), headDrop: drop), duration)
-            }
-
-        case .coffee:
-            // Hold the mug while the steam curls, then a slow sip with the
-            // eyes closed, and a happy "ahh" on the way back down.
-            let steps: [(Int, PetPose.Eyes, Int?, TimeInterval)] = [
-                (0, .open, 0, 0.45), (0, .open, 1, 0.45), (0, .open, 0, 0.45), (0, .open, 1, 0.45),
-                (1, .open, nil, 0.12), (2, .closed, nil, 0.9), (1, .happy, nil, 0.12),
-                (0, .happy, 0, 0.5), (0, .open, 1, 0.45),
-            ]
-            frames = steps.map { raise, eyes, steam, duration in
-                let composed = pose(PetPose(eyes: eyes, prop: .mug(raise: raise)))
-                var canvas = composed.canvas
-                if let steam, let top = composed.mugTop {
-                    let wisp = PropArt.steam[steam]
-                    // Painted over the chest, not behind the pet like other effects.
-                    canvas.stamp(wisp, x: top.x + 1, y: top.y - wisp.height)
-                }
-                return PetFrame(canvas: canvas, duration: duration)
-            }
-
-        case .wave:
-            // Up goes the paw, three swings out and back, and down again.
-            let steps: [(PetPose, TimeInterval)] = [
-                (PetPose(gesture: .wave(swing: 1)), 0.12),
-                (PetPose(eyes: .happy, gesture: .wave(swing: 0)), 0.22),
-                (PetPose(eyes: .happy, gesture: .wave(swing: 1)), 0.18),
-                (PetPose(eyes: .happy, gesture: .wave(swing: 0)), 0.22),
-                (PetPose(eyes: .happy, gesture: .wave(swing: 1)), 0.18),
-                (PetPose(eyes: .happy, gesture: .wave(swing: 0)), 0.3),
-                (PetPose(eyes: .happy), 0.25),
-                (PetPose(), 0.2),
-            ]
-            frames = steps.map { frame($0.0, $0.1) }
-
-        case .groom:
-            // Lift the paw, three quick licks, two strokes over the cheek
-            // with the head bent into them, then a contented look.
-            let steps: [(PetPose, TimeInterval)] = [
-                (PetPose(gesture: .groom(reach: 0)), 0.15),
-                (PetPose(eyes: .closed, mouth: .open, gesture: .groom(reach: 1)), 0.18),
-                (PetPose(eyes: .closed, gesture: .groom(reach: 0)), 0.12),
-                (PetPose(eyes: .closed, mouth: .open, gesture: .groom(reach: 1)), 0.18),
-                (PetPose(eyes: .closed, gesture: .groom(reach: 0)), 0.12),
-                (PetPose(eyes: .closed, mouth: .open, gesture: .groom(reach: 1)), 0.18),
-                (PetPose(eyes: .closed, gesture: .groom(reach: 2), headDrop: 1), 0.28),
-                (PetPose(eyes: .closed, gesture: .groom(reach: 1), headDrop: 1), 0.2),
-                (PetPose(eyes: .closed, gesture: .groom(reach: 2), headDrop: 1), 0.28),
-                (PetPose(eyes: .happy), 0.4),
-                (PetPose(), 0.2),
-            ]
-            frames = steps.map { frame($0.0, $0.1) }
-
-        case .tailSwish:
-            // Two lazy sweeps out and back, the first slower, holding at the
-            // far end the way a content cat's tail hangs before it returns.
-            let steps: [(Int, TimeInterval)] = [
-                (0, 0.2), (1, 0.14), (2, 0.4), (1, 0.14), (0, 0.3),
-                (1, 0.12), (2, 0.3), (1, 0.12), (0, 0.35),
-            ]
-            frames = steps.map { frame(PetPose(tailSwing: $0.0), $0.1) }
-
-        case .play:
-            // Eye the toy, crouch, and pat it: it rolls away (a ball bounces
-            // as it goes) and comes back to be caught.
-            let ball = breed.species == .dog
-            let steps: [(PetPose.Prop, PetPose.Eyes, Int, TimeInterval)] = [
-                (.toy(roll: 0, bounce: 0, bat: false), .open, 0, 0.35),
-                (.toy(roll: 0, bounce: 0, bat: false), .open, 1, 0.2),
-                (.toy(roll: 0, bounce: 0, bat: true), .open, 1, 0.16),
-                (.toy(roll: 3, bounce: 0, bat: false), .happy, 0, 0.1),
-                (.toy(roll: 7, bounce: ball ? 2 : 0, bat: false), .happy, 0, 0.1),
-                (.toy(roll: 10, bounce: 0, bat: false), .open, 0, 0.45),
-                (.toy(roll: 6, bounce: ball ? 3 : 0, bat: false), .open, 0, 0.12),
-                (.toy(roll: 2, bounce: ball ? 1 : 0, bat: false), .open, 1, 0.12),
-                (.toy(roll: 0, bounce: 0, bat: true), .happy, 1, 0.4),
-                (.toy(roll: 0, bounce: 0, bat: false), .happy, 0, 0.3),
-                (.toy(roll: 0, bounce: 0, bat: false), .open, 0, 0.2),
-            ]
-            frames = steps.map { toy, eyes, drop, duration in
-                frame(PetPose(eyes: eyes, prop: toy, headDrop: drop), duration)
-            }
-
-        case .peekIn, .peekOut:
-            // Dangling from the notch by the front paws: the head lowers into
-            // view from beyond the top edge and settles with a tiny bounce,
-            // chin on `hangingChinRow`.
-            let hanging = compose(breed, pose: PetPose(), outfit: outfit, accessories: accessories, stance: .hanging)
-            let hidden = -(hangingChinRow + 2)
-            let steps: [(Int, TimeInterval)] = [(hidden, 0.08), (-14, 0.08), (-8, 0.08), (-3, 0.1), (1, 0.1), (0, 0.5)]
-            let sliding = steps.map { offset, duration in
-                PetFrame(canvas: hanging.canvas.shifted(x: 0, y: offset), duration: duration)
-            }
-            frames = animation == .peekIn ? sliding : sliding.reversed()
+            return PetFrame(
+                canvas: canvas, duration: step.duration,
+                bubbleAnchor: step.bubble ? composed.headTopRight : nil
+            )
         }
         return PetClip(animation: animation, frames: frames)
     }

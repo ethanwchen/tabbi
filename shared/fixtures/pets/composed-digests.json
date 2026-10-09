@@ -1,0 +1,6847 @@
+{
+  "dresses" : [
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3765879bd505e237810bf55544cc706fa2cf18addffc7474b8e19098d0d09f95"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "c5b82eb4013f3f574e251e35fa3533c0cba66c8c1a544116a1d1c1d95f9d6011"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "50be2eae554cda1089aaf7a44cb24da4193c59ee7d72628bcbb83f5f35599592"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "cozyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "7d18765f5af5b7b2daa58b886eaadb2bb6988c50340f18a808533bb768eb579e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "superheroCape"
+      },
+      "frameCount" : 125,
+      "sha256" : "dd6e0b6874f8408d48d36787bd38631fc766ce6f5b7733ddd31f40a6bb898107"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "63849864b26d21e542f0b45c0f75818a5a1f70c6931b478f41c9abfc52059655"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "ab3a8ac0960ccf72b200beb4d237b6a789226f857f7ced20d079554e5b2aa4ee"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1948ce953fece1bfcff2c114a800ed8336e006a7fd9ef917973540ce1e5ad138"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "68d84649771986541465e7f2172882251a8d530d6aaa46a1d53eac64a806772c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "roundGlasses"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "927f4dfb9060f22516c21cdb345860d875c7e00eef4f705354a83fd9fcd362b3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "surgicalCap"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "59c36d91a46f34ad55b8249e9f1c40e2b868252c5f2bc6129650a55277d829c2"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "headMirror"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e8910d85d340f379adc6b728ceda938271ed1e5ca18d2a8c6cf38c353857043a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "graduationCap"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d1cd25ac55a33530f52f6f3534ab62e3e8475cf3cdc7980643ff6ec94f746b89"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "beanie"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e5e9092d77d46af8ae394f70bc021cb9f2ec9c34048b62505966f1eed4b18493"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "tinyCrown"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "bc6c4498d095d706370e9e4f03f16d1534d466f9d770998e600a63fbcc38d5b4"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "partyHat"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "908cb895a324b4cf904e58ddebf086a93d8dc531259f14a62842ffaa3c6cb682"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chefHat"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7c1b1f8ec1b6177b0907c0b9add39858c2881a33678bc832808daf8ab33051e0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "wizardHat"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4c80a818b5fac798e8fd604ba27f103cb5f5abd473dd5ecbe1eacb5646a0f5a6"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bunnyEars"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "81492cdf497862ff8e7742391e7f85b32ba5646389d95d97e3891c7a770221b5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "witchHat"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "27b82436b7de44ef498cf84461cf63c8db5c23598c71d21f1366612c0bc24b39"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cowboyHat"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a6bbb734188b2180720c65c1c573854874fc3b64bd62d723378c9cd4ef9c4a27"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flowerCrown"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "5027f55176c9f89e013ec82cf642906235bbcc109886bd3fd3d7735b0434a0b4"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "frogHat"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "2ea6a48d1e370c313b5eff24766377e18963cc9c481ec08da49017433f13f34c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "ninjaHeadband"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ad4143749475c93b1968238ac9e917e0d8757a54ae899cbbce791227a05eaa79"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "coolSunglasses"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "73416e57f8248bbdde104d505d63f7c30773d32880cc5cb0e639fc2179a189fb"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pirateHat"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ea7dec5896ee75e9697d4cabec9688f21f603287aa5bfae208ea78a294af4c2d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "dceacee7110bcc964e30d160e34ab25fd6e813c3c7b5d59da5100181d94fe553"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "astronautHelmet"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c2271ec826ac6c626436eb5c2adcc9fdd5456af6257579ee6e425fabad80b209"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c3f9808cfffda4f8c922b325f73d7d49fac79980c04b0e9f47b1d28c68ef44fa"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c85d2febe86f102c4789acb928d6ed663c3fb6cc6c1e8cfdbbb13bedc6c103c7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope",
+          "roundGlasses",
+          "surgicalCap"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "83326f92319210041ba5aa679929bfc42614ae151300cfd0cd4cf80b94c9e941"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie",
+          "coolSunglasses",
+          "headMirror"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "20a6f07b8afa7f1e6c0c632aa014d0194d3e48da4be302f33cc36db30c497c06"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf",
+          "pirateHat"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "98e732f894149cb29392cf87da19e6f4e4c4ac10ec52f893a738a42404177c1b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones",
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "da1f6c51bf6184f492fb8a595560f4787a9669273a92f4b534b3ca47401ca424"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3765879bd505e237810bf55544cc706fa2cf18addffc7474b8e19098d0d09f95"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "c5b82eb4013f3f574e251e35fa3533c0cba66c8c1a544116a1d1c1d95f9d6011"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "50be2eae554cda1089aaf7a44cb24da4193c59ee7d72628bcbb83f5f35599592"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "cozyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "7d18765f5af5b7b2daa58b886eaadb2bb6988c50340f18a808533bb768eb579e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "superheroCape"
+      },
+      "frameCount" : 125,
+      "sha256" : "dd6e0b6874f8408d48d36787bd38631fc766ce6f5b7733ddd31f40a6bb898107"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "63849864b26d21e542f0b45c0f75818a5a1f70c6931b478f41c9abfc52059655"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "ab3a8ac0960ccf72b200beb4d237b6a789226f857f7ced20d079554e5b2aa4ee"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1948ce953fece1bfcff2c114a800ed8336e006a7fd9ef917973540ce1e5ad138"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "68d84649771986541465e7f2172882251a8d530d6aaa46a1d53eac64a806772c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "roundGlasses"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "927f4dfb9060f22516c21cdb345860d875c7e00eef4f705354a83fd9fcd362b3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "surgicalCap"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "59c36d91a46f34ad55b8249e9f1c40e2b868252c5f2bc6129650a55277d829c2"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "headMirror"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e8910d85d340f379adc6b728ceda938271ed1e5ca18d2a8c6cf38c353857043a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "graduationCap"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d1cd25ac55a33530f52f6f3534ab62e3e8475cf3cdc7980643ff6ec94f746b89"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "beanie"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e5e9092d77d46af8ae394f70bc021cb9f2ec9c34048b62505966f1eed4b18493"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "tinyCrown"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "bc6c4498d095d706370e9e4f03f16d1534d466f9d770998e600a63fbcc38d5b4"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "partyHat"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "908cb895a324b4cf904e58ddebf086a93d8dc531259f14a62842ffaa3c6cb682"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chefHat"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7c1b1f8ec1b6177b0907c0b9add39858c2881a33678bc832808daf8ab33051e0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "wizardHat"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4c80a818b5fac798e8fd604ba27f103cb5f5abd473dd5ecbe1eacb5646a0f5a6"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bunnyEars"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "81492cdf497862ff8e7742391e7f85b32ba5646389d95d97e3891c7a770221b5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "witchHat"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "27b82436b7de44ef498cf84461cf63c8db5c23598c71d21f1366612c0bc24b39"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cowboyHat"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a6bbb734188b2180720c65c1c573854874fc3b64bd62d723378c9cd4ef9c4a27"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flowerCrown"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "5027f55176c9f89e013ec82cf642906235bbcc109886bd3fd3d7735b0434a0b4"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "frogHat"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "2ea6a48d1e370c313b5eff24766377e18963cc9c481ec08da49017433f13f34c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "ninjaHeadband"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ad4143749475c93b1968238ac9e917e0d8757a54ae899cbbce791227a05eaa79"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "coolSunglasses"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "73416e57f8248bbdde104d505d63f7c30773d32880cc5cb0e639fc2179a189fb"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pirateHat"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ea7dec5896ee75e9697d4cabec9688f21f603287aa5bfae208ea78a294af4c2d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "dceacee7110bcc964e30d160e34ab25fd6e813c3c7b5d59da5100181d94fe553"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "astronautHelmet"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c2271ec826ac6c626436eb5c2adcc9fdd5456af6257579ee6e425fabad80b209"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c3f9808cfffda4f8c922b325f73d7d49fac79980c04b0e9f47b1d28c68ef44fa"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c85d2febe86f102c4789acb928d6ed663c3fb6cc6c1e8cfdbbb13bedc6c103c7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope",
+          "roundGlasses",
+          "surgicalCap"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "83326f92319210041ba5aa679929bfc42614ae151300cfd0cd4cf80b94c9e941"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie",
+          "coolSunglasses",
+          "headMirror"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "20a6f07b8afa7f1e6c0c632aa014d0194d3e48da4be302f33cc36db30c497c06"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf",
+          "pirateHat"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "98e732f894149cb29392cf87da19e6f4e4c4ac10ec52f893a738a42404177c1b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones",
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "da1f6c51bf6184f492fb8a595560f4787a9669273a92f4b534b3ca47401ca424"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c7e3c104dcd5742f068c37158eaaf26fc82e9bbb52301103b31861b15d1ba4a4"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "blackCat",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "61173d2cf31bce090d5e40cd708826040f3ec4e25620904b5682768c0fd93aa6"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "blackCat",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "cd682f6bbf5fe1c9793e82f852039b96e791f0643909cd1be3034540312f4852"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "blackCat",
+        "outfit" : "cozyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "85dc89dfad1c94afea69417f3380cd428f563be85e03910a272b83ed6d88437b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "blackCat",
+        "outfit" : "superheroCape"
+      },
+      "frameCount" : 125,
+      "sha256" : "6c9044d4c7bae0f8e7d3769e25f8514fc3cfff86529e15809ed6189706ec160f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "blackCat",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "f6df6bca0144320fcd0989d1cd943723653afde6a34c966a378de4de9ca2f96c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "blackCat",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "7492ee93c81e127b2e820d25c754497c42aeb124290a3adb9d7a2462943ad675"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "786751face4202d8e8d90eb6db586cad56d6232f917c86061c26ab2d5045c1cd"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "07059f704714d4c6e0bb8038aeaf07e13355e055ef3b71641c19b5ded20508a7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "roundGlasses"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "acf178ef3b00f3860ec361c1a4bb8fbb5c64ce9b7c4a7e19fb98955c68687c6b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "surgicalCap"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1630277b5273d247e03b8a974a6ffba9b071c9ade6ce22b4467eb2b4f539f2a4"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "headMirror"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b5c9fdcd343802321322a1539f696851c4a2197ab20838182708a3b607b115d5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "graduationCap"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "301771ae092513999f4bdf0d456f0115c4f6766d28f09f683d2ff9eed32fbffc"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "beanie"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "2bb13c60914f34cea93b1906b7d3f3a059eb6e9e3a8262038ff1d38bbcf5771c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "tinyCrown"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3fcd1bfecb8c2264ac76548e906139e934899bf5d07c4d8cc0f314509209122d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "partyHat"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "474cc9892cd91f131be313c43c705fb5350866d90cc56b997eb7ca4df821bc75"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chefHat"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "849439dcfa058086a2d0120a805e57161b869f0f8c01f5245cfecddb827898fa"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "wizardHat"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3fe697add45a49250e0184ed6f71fc6b67be0a7f6e46052912b9a6893838bc47"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bunnyEars"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e57d8565034f0d626352adbdc4fde046155ad8ce0a88ed4abb94ed5f411b5f9b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "witchHat"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7013155ddc7f531d81c631df3c5f83f8bfcdf216687ce29794ea154363786689"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cowboyHat"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e56243f1a51d9a865d1a44b9ac36e799e5c92c2f97d700b329e9e764a7cb79f7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flowerCrown"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "99413d88231567e7f0b9554626c09a6047c896db8f6b37b20795d0c2f91fe516"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "frogHat"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b8daced1f6073407d0a2c34831e53639024334e655ef587c4f7e8b037eda8da6"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "ninjaHeadband"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1f612b42ed2385d83af6fbb556b166d25156a5007d66ab906ecf48258eebc342"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "coolSunglasses"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "45703c180924c13bd5a274d733c274033a67fa7f70cbb2b49a827b2c5554ad1f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pirateHat"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "2782ff3934ee30297608da8e22d41c22ce6d8fed94f5e1583fb2128850fd760b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "9a8dd23e11b4e623f2a019584ba27aa61850a228e5346ab21d25ef4cd46081f2"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "astronautHelmet"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "36ed74c6fc778183ca64ba5a2528fa9fd5940eaf50c6d5e38860cfb55ec0d136"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e4f2427c0284f2d8e6d6658675dd720e0bfd69fa74cef544e8177333eacf32d5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "934fc2dc51c7d094c58e34c61c2882dc12d4ea6cddd4f271f54965b8b6b0a813"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope",
+          "roundGlasses",
+          "surgicalCap"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "9fcb046be6827dede16d56137d17da580f9d028a0327ba609d25407b0087ce32"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie",
+          "coolSunglasses",
+          "headMirror"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "a81686cf344d71bc5dc44f03281e0c938f405b3a8d12c529683ac658a8372a5e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf",
+          "pirateHat"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "744e06602598d356b01edb1ae00671f5f990ca7fbb0e1c55ca996a202d7f6723"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones",
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "53982e05a45fd5359e3c22655d8f3393c292c347d604961c6613c536998a59af"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ab3cb37fdc187cd371752625a8a14bf21cb1f5fcb9edb507c18d471782edfce3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "e95310a50ebbe67855187db020111cf9bd3744caa566f991ad189d449fb99cb3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "6b10485588cc8d1f1aa032d756461f5390fb57d277d653409cfd95441ffef0db"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "cozyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "73e9d5651ed6eca40a51fdc6a3e2f47614b8a430d69f07ef63201610f8710d0d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "superheroCape"
+      },
+      "frameCount" : 125,
+      "sha256" : "99c2b2a39003f08038034d472453d4f0f11e529cfeb7b71e1059a5f1035d47fd"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "1a558b185393d6df2f77fc3c7d339014d0f09d16ce8f7810aefbffa0619d56f4"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "1ff609d5706ae7d7df9ef2cd92a5767b000887e7d53bc5c38bf5f750f4a8e901"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "86b1841855c959d800d1ff80d9fd02a2b01d45ee00f375f13b093223ffccaeb2"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d237ce5ee7bd02cbddbfe9059a6f2fca1263ffb90b9d60102afde32ce64c5494"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "roundGlasses"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "71f925cfd4a3007f8f81686aa951891b2f4c30f2d1ec993d37fb62829cb89281"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "surgicalCap"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "2fe90e8014b2c3b99e921f2800e95e1acda35330cb5124646ae6f9bbf984817a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "headMirror"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "715ad65f4a5acb8b3373a48e85c1cfe715f879adc6d6be3e0f32a394cec77d9e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "graduationCap"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b9bf7e128ae24ca6a9dfdad6a92d6e9e37ad74ec0f9f41c1586660094df4aa8f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "beanie"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0801ceb10479adc78a81d240946294f0c8b721569b0c632c7737a7f18415328f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "tinyCrown"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "707cfe2fcb8851783e4f7b942996c9f4b8593ab2bb93d8ccbacecd42145e7d9d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "partyHat"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "586a4fc4140ab8a1d0e2f54af9377d4b61943080db480242d8d877aa1f7cb0cc"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chefHat"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d83b8a559d7d36e535d20a486b2bd79b14ded5aa313a33d64670ba0263ebef6a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "wizardHat"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "5b39e1af248dfa33603b4c1fbd081d7d44d7d75cf17b045a8a6227b97ff6f2e2"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bunnyEars"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d7ed83f6d0e0dcfccb4e8a381a97abce9f2a6fc307dacdcc077d0b40605e3285"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "witchHat"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b3a8f1a4f8082196f21c641078fdad6afa39f2218e663698590c5dff198b0586"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cowboyHat"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "9b13bac0885ff707ac03dc2783ac2338590dfeee8b8bb5a2e649fedc15588f82"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flowerCrown"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "6f45e7cff94e0929d7d2b56781cd4b9700725d405b0fc9528d406ba7478ba9b5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "frogHat"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8afee3c39b3eb270724e3f173ff90c2509862bcf924393a76b58ad34000dfa9c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "ninjaHeadband"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "9e9a1d67d7bed197dbbbda370469366a5cd4aa3ee665657accb72c156594d7e2"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "coolSunglasses"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3e0a3b3973a8e136087028f82578dbd2aa7e6bd649746fe76497af6b84c7b4a3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pirateHat"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c11f7c86706595bf293a98f252c7570f293de5c6cb666229e4028536686b4b0a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c27c27f3345192cc697dfec23c252d32e4719ac2707133f95bdc6170576ff77e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "astronautHelmet"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "fad619e97c019e1088f533e16409b6242c20655f49b43a56c2a79b61995b09ff"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0446bb7bd90be7ee306d31098697b29577ef0ecb06a4dd70e06296af0de0866d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "aa1b888bda9a2312a6d1111756dad5f66482ef4562849cb7e21d5da2d90242d3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope",
+          "roundGlasses",
+          "surgicalCap"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "98b73f671265d2303b2ed6c1b559f7d804293ac25c5555c64f0785612127978b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie",
+          "coolSunglasses",
+          "headMirror"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "5eb218487581125b0a5b37b05d3e6e2f587221fc6866b50bf23f49be559e048d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf",
+          "pirateHat"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "a3146757e3253e38b9ee56b550c105de1f9388ccce6bff1ddd4381e896bdf31c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones",
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "1f3a27d4310bc54723bbac7db1290567366272f4a4008d894e0894d86998fc2b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "be74c26bba181f54fe47ec537f9d353ffe936939de07be0af6dabfb80398eda9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "73ce016da640cf7b8f790f3395b1a0decc1423d0a922733674f5100cbf635a43"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "8ff2db660b01ce44b79e8c09a4481f040a3ab4514b172512000f2c1754552317"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "cozyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "135414e73b00a46001e275fd7b39f545b25ba87f07eac614727d8924cb385610"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "superheroCape"
+      },
+      "frameCount" : 125,
+      "sha256" : "c15ce6e5cca58b486adbab7b0a3ed31afb38c6b547e8f7cebdf0a63c21310d58"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "59a67be2f198dd1cc25ab9517f8194727c3bed9b02852a7ec7fc00cf8c350700"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "ccf9ac72a958af34a787e714a4799c175cea540ae9de342667d584ca776a577c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "83d126c7b8eebbfebe160dff9114bc816fa1c84e127a0d7e5d2139e3a903dd26"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b366149d5abf81dec223e44246888a073810410765396401cf2c3fdf5086f9b1"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "roundGlasses"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "530cb966555d2315d0c8cdb5001202aaf171f2bbf0498d3b9fedc43ef1f9ce1c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "surgicalCap"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d0310c3223373af52b7dcd135c2f52f5f07b42454e2511867b3758eadec7880b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "headMirror"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d30f409a10c07f5544b2f3f04b46c92edeaf9623843736e4bcd1947aa476c3d0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "graduationCap"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "718d0a1603597be6c4733d401b03397615e5c8d21dcf403c397da471c9ddb691"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "beanie"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8de56c41254a84ec32d4058aca265934f99a683b4c43d0967164f734a2240c73"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "tinyCrown"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "bf0708865aad99d803f40021b1d4c135ccfeb600096967b43829c4fd4fcb46fc"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "partyHat"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "00743b84fe8b5d91e43ada0adc42ec020fb738a5b73d01990605df43555b8520"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chefHat"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "159d989c271c04235d2223da5284376cbada2d6f414369ee363ea9d12ae61e71"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "wizardHat"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "6d91acdefb9b9c7bf16ab0d9c85363c20f47ccb4b514365adb31b8c866c68aca"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bunnyEars"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "2c4b47e40ba286956228e9014ae07dfd79ee61cf1e95d519fcfb15b2be0dad51"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "witchHat"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c07498e690ddbdfc3ddc31a027cf3cda8dc8d538f004ed49e00a5f3aa3dc62dc"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cowboyHat"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8dd4aebd6af3a8467e81019568646255803655472546ea839ebedbf8e1684f5a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flowerCrown"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "62d43a255abdccab74dfe451de174457c8290d8f924b8952edd47acc0567aa54"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "frogHat"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d5271c2029f376201f5ecb047db61eb7744dce66fcba1a750a4ceeb59eff42b9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "ninjaHeadband"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d5bd61d4d67660a4336c5116cdc2580cc4891e5e5b4f998db6ca64464e36b8ea"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "coolSunglasses"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "077d0780dfa039b56e4e2a0e98c326b67322f753ad41b96e6ec9b9836f1003de"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pirateHat"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4983ed9834f8396e6f635d71f7233f09559850cec632321b06ab76b36bd39d98"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "789ba1e6816cdb51a7b67a36193312eed1ca1922a5aa89d941fffcd27f5126eb"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "astronautHelmet"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "81dcc86313ae7280be60de2a060496ec46256e15646b6bf3dcfd643701678258"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "fe6d033b3c751601f802ad2ace056e1703dc19720b1425166d56ef9b300e68dd"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "6bba9e09ddfd61625beaf516e12b6dc7d3a68cbae972da78d9b50216220b3aa7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope",
+          "roundGlasses",
+          "surgicalCap"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "883b9946146e77bebad10bbb091286638d45880a52c846725d728db39bd7b376"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie",
+          "coolSunglasses",
+          "headMirror"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "225b94f08e8ae606493c70eb65c82669f067ed883459ec4dfca63647a6ebfb3b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf",
+          "pirateHat"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "e63dce76ff58f85f5855c0f5fa7e58fb81440f4e5836dcd4a52fa4f1d11fa931"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones",
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "6d0db47eee2b96b5ddad88c3d7c569500863c795cd9ba4af55b9ff7a61fe7940"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "bc744ce3d846a1dfd2536efcb4040e417cd6a40649b753ad941017a6a2b30389"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "calico",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "ea0a0dda441f3cd28d493685da7321163875e185131174f47e05ecdc52eeab58"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "calico",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "4ea68e696bf090f097f194845a4e14dd6388bd624264effa5f0e0772b642ab7e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "calico",
+        "outfit" : "cozyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "c85b129b60b81695564f0ef3c0285c6880a9c35a4b798641197a5d713e78853b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "calico",
+        "outfit" : "superheroCape"
+      },
+      "frameCount" : 125,
+      "sha256" : "aa0b5d9eb852b72705f134f68bbdfb0604325513b6b8d48da7e0f7f325397de9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "calico",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "eb5b21ac8ba3ad245d03606768b6ef6a5af49aceff046475faf3bf882834588b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "calico",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "7c6d65851660333e8039f06e602e6e879460b169b3556eb289de5203f9c65a7a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4c91fb5b70faea8a872d25bf881ec862256c856799c7c107e5bdb42b80a74018"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "77319a4b5c484860c9372f662b3673d46907577aaf8da5cff2a017e98afa5917"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "roundGlasses"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3601ab8d19ed93fca3a309a801bef6e41765c106fb8b8b1edcfaebf95a32cb87"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "surgicalCap"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "61c61309c7ef73e002578976472c7d7bc89e605d494c4a403d5bbdbb996599c9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "headMirror"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "cbe7623eac5489736eda62598dd33bdaee542c9cde6e7e9856d4cd16f688331c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "graduationCap"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "df3d94b2f55f8ccb6a30b59bc91d3298510751b2881da0807ce190d198c16798"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "beanie"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d417bdfb9f3fbf1e93ed17b2f5213edb06402112a5255619a4159b5225d045ad"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "tinyCrown"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c69034fd1e8827c98e31e8438929575dce8a47e35c11c1c625c41ff939cf03c2"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "partyHat"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4bf7012e9609d82baf57dabf5aba2b4fa49e96233b479be6a9595d09caa5f14f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chefHat"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3ae9ba46317f3f345b3e7a9f5dffb75b6327aeb14614749c0dfd9778e778c7f0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "wizardHat"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "905ed46c251c052ed25d1e538cd80f05b2ca5464b5c746967d9f573c06c4eb2d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bunnyEars"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "cdd53b1fa1bc7b4c6a7a40e45b71f9a73ce921ba616e061444771ce6bd3d54a5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "witchHat"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ec6f75379de8b0be68ee44ccc7ad99204df770b7a0d223024c6435b722aaa47e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cowboyHat"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "294a5af5d43a245dbf60996e419c8dc5c4b2acf0ebddc2a9c4043749a5ddbf2f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flowerCrown"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "175b3a0b1bfe46a4d02d70930783c7c07fcad205b5171fe50e997f60da5d4acb"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "frogHat"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "db16da1b97798e252e70bede35f3e439e4457165bf98e973a95b76b7e7998abd"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "ninjaHeadband"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1630c682ac5b41c69d981ceb02b0daef2e6cadcdf47a96a96b5da9508529a19a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "coolSunglasses"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "14163932d063cf3bfa2ca303e657c01c68d17e8800d8fd2a47d5d6938b4c7186"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pirateHat"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "224df60db2c911338ef11ca426317243727dd96f0b93a9d6e316e09f430f23a8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "2a2be7d67c9af6bc98cab582dc0aed58183eff0f2536704e80e775d1fbd4f60a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "astronautHelmet"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "686c9ed0e8b5d215603da2f651dccaea594acf1642a4af9634a8f476267a7290"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "17489a7df1be1d8fff3e3858fc680ac07300ffc8b219bd3d3a56c16b5f0d030b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "cf6058cc13033569545fc489101242aa3e412d6432be5927f291b31fd0bfb97f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope",
+          "roundGlasses",
+          "surgicalCap"
+        ],
+        "breed" : "calico",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "c1e6859bbad7024d5fdc520edc563236d5a2fdcb244d32390eb60a29aa9d5ec1"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie",
+          "coolSunglasses",
+          "headMirror"
+        ],
+        "breed" : "calico",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "da6585729f03aa17408300c5422935b0379f1403608c0944bd942494b248d59e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf",
+          "pirateHat"
+        ],
+        "breed" : "calico",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "c7dea3b163714b22f6f0e2584270514ed3fdcc0150e2e7219061aac47b8c7052"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones",
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "calico",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "8ad743aa95c9d34c103aaffa884270233fd0526a5d37f1610c0a8a4d4de3c406"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8572ce2a5805e06ede99ecf9e828c38de57aa8f5b394789c6975181a52cb44fa"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "2760929786038cc6f130aae38b59491f5092e34846fc61eb86d56051834148cb"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "d0a12b34e454b8915d4d22e346fc920de15347a05d722935e92f5ba8b110b019"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "outfit" : "cozyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "ed52af983bece60bd9ad9c2c744b9370ee8e81f46ac47dedb5274e48ff698e80"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "outfit" : "superheroCape"
+      },
+      "frameCount" : 125,
+      "sha256" : "e232c25ad3df3a2489aee763b5a0eb355addeb2bc0de2cb85f3db28687e0e9af"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "f60c6b95427c0b15fc4e70a38a5ef5e9dad78765727414c98a6aeb4758b28003"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "b92686c2ba62de52f3fb558555017b34fb2661a5ea2fb3e21199fa657f6101d6"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "82c0489614c4e67c2d03b1d8f2d5e04d16345d7e9e6594f617981cb02419387a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3c681ee8ae2505799430d36da4b9f9ce0fe08c99cd216b49a57e5eeb241cbaeb"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "roundGlasses"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4ead0453dfa523cdbbf3f7afc1db9aac283979973872a881555ebe9434385859"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "surgicalCap"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3731b4a5e49b0884893410aeed4783fa2f1a676633f26bffe4aad359e9a53a48"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "headMirror"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "fb247cc9e7bd1d0462d7e25e2094c99bcacbb6693f99fe92e2422c3b8932f11c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "graduationCap"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8b13c773e584abd1d2014f514656293217fb0cb4d7c6ae0e0f7f18fa90bcd27e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "beanie"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "fd49389d99b0f4bff82505e56cc750f7da18e44b9d023340d7f806627fd8a148"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "tinyCrown"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "72b4bf40374d371054397b00afe1d4958739d77d328b2c9748ee6b317c1b40e3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "partyHat"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "6113bcd7e80d75f547114934f9f23bc5b55fb0c10ece5b84b605461e29698bfe"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chefHat"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a69774d09496095c72f825fd94d322fa736216cc7ffe96893328c9257b8844b9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "wizardHat"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "04f39cb4326b2f3155fe4ee177ca2cc605ae5d63de6f905c6a4b048064528744"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bunnyEars"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "59b2a450dae511d864f62b5bf3c7f3cab1aaba8aaee8dda1243705d019c7c302"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "witchHat"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8d37c68a5c0815387a9a8e7bce11ecc6c9ddfe5755661f3d7dfb7335daacfc07"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cowboyHat"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7da825bbbb96170b09a36d25ec436d68fdc9dda25530fe97681b59c7c470c26d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flowerCrown"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b2147580891cd7e87d4d50040b7debf2a4cd89922691feeb917d416be5312cc8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "frogHat"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a525aef5f594367851fff072a812139b89046728d5db874449ae32dade6c3244"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "ninjaHeadband"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8b80f871ad33e80631b5aca8f322d1b8544f4ece17b2aadec95fc1dd15b232c3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "coolSunglasses"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "dbc55c9fba68ff2442540792e2a02d374c600d725eed3f4b98f96b305530ce23"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pirateHat"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "9fa5b030c72c6d9a44b5531747bea97ddfbb6dbcfebc2b6199b6634bc1bfefec"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d1c42350d2ff3e38a1b0b7da8a2a9716829aa3881bee678cebe61c4f3e260ad8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "astronautHelmet"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7b399af1800aa3dc2c105c7d655df1339785c7c61b85d595a2a13be78e607d8e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e76bea21082fafcb36dd8690f236e0f90824bd7f802691d7ff3758c24d5b81aa"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "41ac1823ab93508c0fa5936cd5b8a5b1d131b83f1382b7599707440aacf744d7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope",
+          "roundGlasses",
+          "surgicalCap"
+        ],
+        "breed" : "siamese",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "2d383ed42432722173ec197357f395b22e5c502005ea87977b603bdaaadb974a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie",
+          "coolSunglasses",
+          "headMirror"
+        ],
+        "breed" : "siamese",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "2c02b63df17fb38c0598edf1ecfbfe7bbf3b7c349b72c0dcb82c58c5c2a4ec5b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf",
+          "pirateHat"
+        ],
+        "breed" : "siamese",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "2f1d3f2520eefbcebf5fa1c6c35e9678fe21dd57209820c3577358145aa2dc93"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones",
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "siamese",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "c084ff8fdaaae5d31d9d7f99e5cd976b43cb3bf92241f937f0c04251fe45b754"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1c41015d42365fcb0cd2b3439c9e3cc1ddd6519b374ac49f59ad8178c0e556f4"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "cd70f8bce711c7fd480ece429834890b61566d452fcad60761faf0e1390b6435"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "860c6dd37f84f179f350d36aa357b508d0e2025d7f07e3bcf1e6b18915af83b3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "cozyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "ddd8e4adfa20514631ce03e65c48cfbfb1f3d6374447e2c2295046665a0b2b3f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "superheroCape"
+      },
+      "frameCount" : 125,
+      "sha256" : "19ff6ff2eff30718fc541de8344fcc2b5a7dbe9ab47ca89068fb531145d1273c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "5bbebaf068b837cdb60627c40c5dff1259679154792d76884855954301a516c8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "44b2e461fc6bf7ab11ae9315d60469978f9f25733962c5538ee0bb979294e0a0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c75ef55ed46d7ceaf13ce38a24e5a2aeeb99b2616cd13c90d199a45e75fd209f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "776289d13abfd571201c4c4e81b1faffa77985e6ce8fbc91c3313e3871fce2ef"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "roundGlasses"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "5419b409d3d25a51268b19e42a837eba166f9e1ca6af3d1a61d197a81297e8c5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "surgicalCap"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "29e414e90f282f5719077755f9e4c5cfa8080c518f104cbed52814b54aed6631"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "headMirror"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "34db10ce4b9168741ffa8ef32a4b5091e3a3dc22ed853a83bfa89e9ebf413092"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "graduationCap"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "09c605d183585e5e14576de3c0edad02424b7796e007b58e0e3415b654138766"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "beanie"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ba1e6aa731cf85fdcbc046ab030d02c99ff7929d19ed8404064e0fc3f2df4932"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "tinyCrown"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "35cfd8d17a4d61023b788c710e53fce9ec95a1e6800a4feb4a4ca3f1f4465a63"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "partyHat"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "40eae1064e7e18e984cc2d31bf52f81e86e90b59d506e3e421115c54dea12207"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chefHat"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e7e5893c19c0446f97c87669f7b49d18b5e17256f862503c979bfd3d6a3bde86"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "wizardHat"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "52c8e3a0bc703c650a686179c70e45acbc9c9f5a717697f0cdfce97aaadf7a37"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bunnyEars"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "df458c0c106e77381dea4bd467b7f6a3d7a49c21fc9e351c3ad16f9448cafd64"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "witchHat"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f12e55149cb617a04fe66fcc227cdf52d816666b9bd428b05e3a6e8311a7b937"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cowboyHat"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "69333143d8781c8239b95900cdc1613d53721faf6462c466b79ab4434b06d98f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flowerCrown"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "60ea25e363f0c6044fa25318a1d2e5b6cf4912c09570446038ea6d8f23446d82"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "frogHat"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "30b82b05457642cbb83c318af7642929aff28d04fe987e90943deedf3863b837"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "ninjaHeadband"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "5e762925d17aed0345ac4b2cce36b8cb572f8e4a3ef1c4f227cbbb5a6f620dd7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "coolSunglasses"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "fc029c7418724ac489999095787eae981713878002782cbf9008e875f35d472f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pirateHat"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7eb67e2f99a78812b1c251143afedd1b282211d6e36239caed8ca344cbb8c46f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "07c16800b9e9e5c1f52d7abb9984eff80d75b8cd0466291070b863d4f42cdd99"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "astronautHelmet"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a623869c7eb4a4876e891b9bf4c838d193f598761cf29bf9379d4798ae168b98"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "bd0e50e3033a47216bf0231496d78ebd4d2c40804e4114aac7ecaf626c5697e5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "bf726a4621b6e5bfb368f45887b9ddad5b168bec1e7848aeb1bfe120a8598ab8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope",
+          "roundGlasses",
+          "surgicalCap"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "ec359ea5b580b307b9b4e202d5bd0ca7ea0dc0fcf1cae285879f6bfbab9fb59d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie",
+          "coolSunglasses",
+          "headMirror"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "678e998820219874d7e8766bec4a6ae10beb910c747a790b8af60939ec672435"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf",
+          "pirateHat"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "094007b9c2cc3fa6e23d08abf3ad0db7e6b7e4e77115a6e69589242e7479d59a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones",
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "2ab8193a6dd4afcb018f4f80b532904520f5675014f1d41b3f138e8f16bb03b4"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "6a6dac639ff8cd7064e795432522b340f6c97d913cc42272ce9022e4d421fcd8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "sphynx",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "b5738cbc181fd81de695a4231281b092bc0a43afc5ef46a32650ff3245d0bc09"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "sphynx",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "049529562c5c3ddef9932b2dd9f6912377a11a9a766c161a8451a11c4beca448"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "sphynx",
+        "outfit" : "cozyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "235193163309f0527fed2ec3e1d873c92783e804cf2b0b339172d500aabdff75"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "sphynx",
+        "outfit" : "superheroCape"
+      },
+      "frameCount" : 125,
+      "sha256" : "566b6bade536d4b2893acf2d3e1ebcde2438a2da9c5b942f646edff4a324addd"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "sphynx",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "bc3e9d34901706a008cd722e37a01066930704925313ea11ee43376a855fa7b0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "sphynx",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "cedee15f25d641e97c50336b868d9860806d18c0b45ad5e59366899dcf7d5a72"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ad844691136568c6fcf26e50d3df67ef68b013a82b68fb3a4839b85d0b373b50"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "be7dc9d435a26972d09aa8f96160c6dc174f7afe7b72a1ba13c0513988865bd1"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "roundGlasses"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "37400ad8fcdb2d9b6462c8e52848419c81deadae747ceba1b9e517e2449f5a04"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "surgicalCap"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1384ae9455150e3c6d7fdefbb1bccf8bf46a4254af68ea19baa4ce7641109305"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "headMirror"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "29188f21ff29c5d318d7c87e93224266580b36424d4b871e6449e7023e5fd951"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "graduationCap"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "977a5a22e5a43418f84d0d5106623b711b91c70234297993e9b1219a6fe162e3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "beanie"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8d9cabef74502c38eab9c58774126a2fe6bd12e4ccd1a229c9e9ec40632fdb47"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "tinyCrown"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "930c24c2112310d8f8d968a23e94965d0386941aa8d4c696bcd801a2521664aa"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "partyHat"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ccd95bc8d988403873299e65ca59a69fef1e0edb849ed6173a5fd7c8d1fe0d36"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chefHat"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "63b1c5c7fb2054b73cc9a21d0710af8624f76e3c907d2e6bb7980e685e84484e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "wizardHat"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8d114bba2ce48141722accc4aafb39f109cebf55e2a3dea5573e9d7fd3b561af"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bunnyEars"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "da770364c8f1fba24c8e938f4caee19736edac91e8c14588d0fb1cc5c23e9d9f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "witchHat"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1c6f6084ba6fa26fa4fcfdd51326281bcac1337d89123d6c2b4bd37a6248841a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cowboyHat"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ca726c8fc17770e2f830726702f1e5e2cbf346a389f2e1af244e2d442c471a44"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flowerCrown"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0463f42c5a2e3eb8ab8e9d4053d07803e46fd8a88424b5a5d2b3791801b10d38"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "frogHat"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8e20d5f3f1bd6069c2b37960ee1eb99879b28e2e483f65746307e8417a79fe81"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "ninjaHeadband"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d153b3a8f21e479f0efd91d7050fad7fad327ee130409e05b4c55d13e7fc6174"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "coolSunglasses"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "aca5227514bf91d3646c5f501889690734b47f9b29bac4669ee6b80c12341e72"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pirateHat"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "6015fce774fe465dbd989752dff0483fb8d05546a9698b50c064c158c5a2c143"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "eeea070c2cafee706e92fdcdc1e0d877432d21c9beffbe428a4521708a398935"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "astronautHelmet"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "87a10ddd965b7089cb57cc394a09e52d60270aaa4952bbbc01a42acdec6a0b9d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "6e52c90bc3994578905455e8afa8bb52272606fa755f1ce63ceb7450890253eb"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e7b170723aeae45230703a992fa34d83e42580d024fc8cd073941b287d9414e3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope",
+          "roundGlasses",
+          "surgicalCap"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "695f4c4c3b723e903591f9aa1ee8a71a1349e0aadd5589f78699a8024272ba88"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie",
+          "coolSunglasses",
+          "headMirror"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "cfa15027ecca8cb7f907463b3193961171f1714da9be06b5c2ed8d65918dc6c1"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf",
+          "pirateHat"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "5e1932eefee84819740e1e8c28831b00bfc589a93df28235473318500b20f34d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones",
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "4b890425d75243980e06068eb4da525a14bc0bb5f53c7b0aff55e14d0b4701e6"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "6f11b4a38629d823c5d465ebf2d19385b95327b453068bd1aeb9b9d5f2bb3ce6"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "18b0202cebb0d10d4c8cb915b739e39558a78cd650305fa16d17b8601c1db479"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "6384febc2d92a45e3a57f55f2004c25232b9604ad04989bfb74dee3a7f6e4a4f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "cozyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "d2e4e0764f29cc6aa68ff5ccaec1b8d7707e7fc5bb4a4fbda8a8cc9b685474ee"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "superheroCape"
+      },
+      "frameCount" : 125,
+      "sha256" : "c78d2f898ffa2ca2e8d53bf2a520bb74da1681a34174161a3d596118ac26ed1f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "0e458781440755c33971dd1ae5e0a212ef9ec87c81ed81f5b17b136bc35fb36e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "ab81f92834bc9f0ef9e7988213bf9e94ce6b0172f331ba5395a11f285fc9f9fc"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b2ecf6da6de78aa493500875b6014647c09428624f4453e567bdbd7568fe9766"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b0385473694f355188829a8b7100520c9d5d070926771285c53483132da3ea27"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "roundGlasses"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "6454d91c35a89a8b3099d9bc989a4f9a42df0e7470a421f2688924394459db89"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "surgicalCap"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "189046a04867c1bb74476d7e82ee94d716210037db05b2852b4c6f728d9c3796"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "headMirror"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "675158395129a6096c48f62e7bd140fecee479b69900f3aec9d859a61765dc8f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "graduationCap"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "9ae0186a01418290f77659a0aa41dfa13dacdeb3197bcc499b06d56bc362c72e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "beanie"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "30923867c106d94468d744a07487f5c82fa9d482b0f784ba81f0b0402c62c851"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "tinyCrown"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "466a59c967d66272d064c9db712c9336bc661160ca7fd8163741b16a60ca121d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "partyHat"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4c476d60b8f34c436375345ad02e4c72140a19e5c75d0b4e2590c7266cc9a83e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chefHat"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d852000b2873d5fc29deff5334c9ed8bb8422108cc717ec8954044329e39b9b6"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "wizardHat"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d67631157cc22a1389b90a607628e69bfc2c35f9e4eeb846da3a760cee8fbd83"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bunnyEars"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0cc87918d289823168a026a8f7b28083b464c5081dcbd303bf5e45c660b6c0ef"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "witchHat"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "78a4c0f7654d1332c59232f4cfdc8ba3389e9d0f9501c71c54a89f393dbd3844"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cowboyHat"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "99307c63657aff29092f44e751bf979303d8e96aa6fd3dd8a6c270f3163b3a43"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flowerCrown"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f8e78bb204bc36baf4be9814814648f199da754ce0b8b54f7213843e5a9d6a3b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "frogHat"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "42e2e959da74b0453306c98b82c9f8c3953aad4925221ef762cdf32393380152"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "ninjaHeadband"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d9570a300cb986840090957144f2d08ccd02c688f9bc4b3514a7817e25ee97e0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "coolSunglasses"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "6de0aa0148f7f808d071ab1a7ed2116daa17d17bbcc38a65fbd0767e58abd535"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pirateHat"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "182c624343037e46e5ae8c5bfdf8cf500507db03bd6695972e4691acd48b74b9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "168110bd56059d0e8833bf6c44c1ee6eb6277a6bfa0639a31985bb25863734a0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "astronautHelmet"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f8bfcfa9fcafcfcba0bf00690c01ca1f4298163732072374867d33f61b2d8dcb"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d7d4ba62665492c7668279d7d09eb4e6c358996430a18159923d34507d5f8142"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a49938d0919573d6c5ece109783c0afaff2a4d590323e440e33e3930dd2c1ef1"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope",
+          "roundGlasses",
+          "surgicalCap"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "89ee4609e66b0dfb37dd9d22afe4631e5065cd1461597a15ecb5ecd079e41b26"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie",
+          "coolSunglasses",
+          "headMirror"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "0b78fc05522bfc5f6ed8a57f3536e1cd2617c102f6947620a1685dfee225b582"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf",
+          "pirateHat"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "b708f0b9e6ef71df1e326205ab6ac9f6433e98dfbe0b067cab9525b340dbac3e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones",
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "c6a88639d54c679a39b17ad1c6e480890d612cff16b941526eb751e5e2ec39c8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "542520c7ef98fc68f6fe9bbe0db9ffc6b9eb28d9c1a1ecab3b4295343e98a04a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "918385acc6ae8b62315e5b3d8fb505afc3125f33fb3c718ffd95a1a9323bc328"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "075270cab914808459721832f7178fc3218568c0ca8dc338d25f389f0dc8e199"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "cozyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "b813bc6512376fde807104ee2667c71a3c2db92bbf342ba7a2b0b3e8d620ae4c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "superheroCape"
+      },
+      "frameCount" : 125,
+      "sha256" : "0e52327a2b0ca4711f4f6452902a905e34eea75e149c50e1671d3055e7a0fa41"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "aa01262b853c30c8cb275be43f5ab09552bb4bb90aae6e237ba492f50a438658"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "208ee5a2fd36b5cac7db7a8822abdc9cde46a0f3ec20c837e9b8f25d5ccd6bc4"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "04334fed60cfaf2d65ffdb9b4076702e4192439c718db5da2164b8ce99b32445"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "825c39325532091853acfef2f6094c9e53b757416aa095b69e6898df456a8a2c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "roundGlasses"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "6279d9d1184e927f17fa792297f4aafa6805ebb9917acc836e52101709dd2ada"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "surgicalCap"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "9d996081c28ed515d04bf59af727df2903f953b79547a53119a170b198e56bda"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "headMirror"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8394f8d451d5f0d4f496d510a6142712e4812e210fdc7af86e09104264a3c092"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "graduationCap"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "10cd50c4444d60402cc35d6d93ff7823ccadaa89fc6425ce674e9772f6890e0b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "beanie"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "668273720b27d3192e4a292b5e7308594769a6dd43190834e1eb3afc91ea14be"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "tinyCrown"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a702b33e960ccb4d885fbc001fbd9e017a13a107fb5ea4cda49cb6bbc44880dd"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "partyHat"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "fc6e903f70470ed4330e4472260d26f87cd30630930623e17de37eba1caf0ddf"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chefHat"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0afc5039d62a2ae7d5352e1a6023ea7c914ab7f12ff00bffc5bf7c559e1dcaec"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "wizardHat"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "262a85251c5d51613f6769d2782d80a6f80e07f488734af83a7c5710154673d3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bunnyEars"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "31e6efdaa8040ffa7c65b6316a0651c5f12b1f7c8e435480af084cb6c71d6a7e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "witchHat"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f455b46df7c86263f0aeaba03526c3aadb700db97a7eca871b5d46d601165227"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cowboyHat"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7077a8bd90947b4afa9c71975181e1c304dd1f3e3931bf1830d1548c50396f80"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flowerCrown"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0d5f30983c8c3f27b205c1d26c4b9ead4c16bf8609b84ad315a3be81314bd583"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "frogHat"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8f9ea07f09f5dab00e91647d11f4c6b20a9a12a3dbd51ace86d94af224a7ba29"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "ninjaHeadband"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7aca66a329e420090920f2e3f9e3d1469ef0a7d94c06e2fad5647cf08b73d014"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "coolSunglasses"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f28c29626f644202255bdd6b8671c15ae0392b876e7201c06e3faa23c92b4f04"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pirateHat"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "89e0d3ae9ac87d6b05de750ef68e66cb1c84dde2b75f9f5800d2fa120e6fd42e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "00e47edd4a7a9fcc55255de90d88f6189b8e47c752b0296660ca0c0b452110a1"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "astronautHelmet"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "9a16871a1ac0305eca0694491d76daa2adc45ed75d04990a425c2fe066689331"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "80d68a3912333cdd732c9d3deec26fd731762cfeea40db75528d8942d158b16e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "73a2795b63e8b4deb9d0efabd159d689dbc71d227d70347c2854dc61965e67b9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope",
+          "roundGlasses",
+          "surgicalCap"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "4ea50e0d7f31f9a9276feb725f0bae97bff44aba929f22032bab3c468d8bad1d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie",
+          "coolSunglasses",
+          "headMirror"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "a80d5bf18d85de3a3675ec555aa55c8ae42c639dfd24d9c4f6cab7584c9417b3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf",
+          "pirateHat"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "7b2bc6da30abc64c53e4bd07aba60c66e3fbd750781d28188f66218d696aba08"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones",
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "2c6fb5a5bbdd1a5b2ab51670c022a935ff1086a42d85eab2e263205750a89888"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "cf4c92cf41247179428285198d152320bb6e4cbf1b72d62635d8e24d3e06bf1e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "labrador",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "adba68924d0674f68e78683e046d72139a51fa899d2f8a099c981e5ee6b4b653"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "labrador",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "9db9a8f8909ea7f66313e1d54afaad1506af2b5807325cf91436792443312fcb"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "labrador",
+        "outfit" : "cozyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "1dcaf03395dc3d32adb7924e68aaf1a94c03e945bad556f3e0648650c88e8cf2"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "labrador",
+        "outfit" : "superheroCape"
+      },
+      "frameCount" : 125,
+      "sha256" : "83d7c3b7e0b0b5a286e7008e4e6ef187e76bdda36728a2a88b296651ce655f4e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "labrador",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "830578ecc9d60103464c10ca54d02c2530655cde83073044e424030d44656cc3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "labrador",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "631682ffdb9b55056d535a25ed67738d6afd81ffb1db578551c1c9d8d181db65"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "17b04df1c68595f54264c713a54ee8fc757b1bf28d12208a699ac6dadc89e384"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "008295ad7632bfc8c3746a92e5a95407087d48b8201607550f12c1c0aa700f68"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "roundGlasses"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a5e68ca6af9fd3a3ea805bbb4e59787b7d1919752b9285a44a9b86fc15145fa2"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "surgicalCap"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "30c2857bc8d678a9d6e1fb5aec2bb04a284089a20e40fc89c02a20e4e98ddf2a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "headMirror"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c15f5a584bb70efcfbb7c4a086c8fc793c86c0e84bc378523689cfb603a8425b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "graduationCap"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "72dfc70f3711f91ec5b405c73702481c67b3c9d92a9e07b0902657fb81bf871b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "beanie"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "9f2a296538f7e449a1f2209d58d83c7f8c72c7e1c923deada8d74eed3308d177"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "tinyCrown"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "dd3b581573c234173dc4fd39053cbb74b149bc4955284c2db7b005a140c9316a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "partyHat"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "95b1f764c184eb1e3d505512f8d484b82819e8b1cf9ed6761b5156a557c41c11"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chefHat"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "969e1254b21fc5818b90960b2a3ea039b3aa3f9505b37a02cc02dfc0c5bcffac"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "wizardHat"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f48fb5c600f91091f99999c7393e3fc93ebe42dba89a2a56bd3656f0e7a0a5d3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bunnyEars"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3d323cb704b671d4d9572cdbe0855f5e1eb9016d63867ebe7c37dd4006ed9ee3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "witchHat"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "61008bb3a6ef04a3b92191f56bba05bcf6333b6267d636e0b35e96146aa01e10"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cowboyHat"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "af751928fb81208b7e420c538b07d313e1115cf2814a7c9651e1235ee53873c9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flowerCrown"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "87694c167f2f27de51ec13b18c96f24c407fdc66248ad6e6f33a6b26f9fae994"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "frogHat"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f790ce2bebf2cf8d9100496fb043e36a44be1cdf7f0a139726e715a7b441c9d8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "ninjaHeadband"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a153037314a113867132b18ad4a772cb9fe483a08748232f57d4e8b9506f34eb"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "coolSunglasses"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "25ed615c0519dfee1c2098c79e1edbcdd9c51e4df4d5d01f0ccb9559a40e931a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pirateHat"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "72fe39410255cfd069bccce03d78890a623174891ddab50c46c10fba7021bc06"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "033fb1e3e4a4011f8a9c1180323bead34b7bc84d37a4af1256aaf2b4e57bf84e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "astronautHelmet"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "aa5fc0f2576c8b08d891ae66665cedb1d1fdc166a431b3145246d992cc00660d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "89f84f1fed7e94049c13667c786a8821e6d524131538ca3814f2c2c1f02ce107"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ddf83b5de737b00af9589fcf9773b7b50baacf6d19faccbc73369beba9e3fb3e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope",
+          "roundGlasses",
+          "surgicalCap"
+        ],
+        "breed" : "labrador",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "2a75488c51f9f7248b4eb237ec53fa50a8b96c1f271131a2c9701bb13eb5ff21"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie",
+          "coolSunglasses",
+          "headMirror"
+        ],
+        "breed" : "labrador",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "9594e48b373604196ad395efcf2900ce1ddd75b83852bd420251032079e46163"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf",
+          "pirateHat"
+        ],
+        "breed" : "labrador",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "b672ffa275626b1459f31f64649cbfd652557b2ce0981809c778f50f070b12e2"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones",
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "labrador",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "55e00a41b1a7a0f3058857831202d7a9963dde6456db37b9ab62597871cef736"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1491e13e905a92fff87d94c854b7ffaae559127027c26e534bf0cc7f1707606c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "d9d86782c50da446d6199f878845808d17f59cd19c44af846636d2bc00e2a117"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "00dc7521afbcd5784c0dc64d850dc3c21513b14e153443fe1726918fab970346"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "cozyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "030f60f8267548792646c7f22d7a9b46a5714bd5df753daf1f9ca6417562930c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "superheroCape"
+      },
+      "frameCount" : 125,
+      "sha256" : "7563e42ba3ade3317ecb5f7d09ed1d67a9c2ca44f15e3c5fa5fe44fd38511d6f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "cc96f0de1be9cd9ce18905d516db793d3e72a3c2675068ea061f050d216c7f88"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "fee2edcb9163e8c84834b04ed535568feacfa5b2a3df5717020b9b9eeaa9d0d4"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4e40aa1b94bb956b7efa88c229e200e9d43e672da1516d22beb60ac9b05c959b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3fe6c77eb47d0087281908f4009247518f037234f0c997430badd6740c7d7d21"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "roundGlasses"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "32f537c87668125b1f5c22806a9f20c9bbb13f08c5d2226b79ae4b472c638865"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "surgicalCap"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ef422f9c7276d25cb90187ce125bcbd3554a136ad9c7a1b3e6fe88b9017d968a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "headMirror"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0fe9607797cd1adafd8aa97a5a0ca6c18eb3a5f03f75e88a893553468307fb80"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "graduationCap"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e01bbe91371a04ecbe6c62d76c666d440bb98878372112c8eb1ab4c5785524a9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "beanie"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ea8f90c003e20c1d0969aa5fc9453c17196b8668403dc0d7b77ca81f3a53347b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "tinyCrown"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "782bf455b40a4797ac094fcfe586536be5cad2383b449b0edac804ae72faeac6"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "partyHat"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "5d716f2283e292473cba98da1956c80edbca256da4d803febbe28c5ab832b8ec"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chefHat"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "198ef9b72799eb002c9a4a2f9290df21227f769b9dd64da33ddb85673616ce2a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "wizardHat"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7d65d0f8c9ab34b5de18e04bcf6395e541283c152dc77004ce405c14b4fece55"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bunnyEars"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "367e62aff3b4c739ef3489e2a13d9402331060fa71d4e2d240bc0520581b3b70"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "witchHat"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "821f9bc00c4573fc1068f7bcde9b7b6a54a94ee872be397eae766182262b7e00"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cowboyHat"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "911297d803c55e1ce4b2219961a9c3c5e758406c4f0365f3a1873bbcf5f7db54"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flowerCrown"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "2f1193344f3ef56518ffe5cf16b65496525ac4a6267fc76aace3e07296437071"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "frogHat"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8457a212700c17dc63469535b4d975ffc3c0a09289119e98c2713450b2cd434f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "ninjaHeadband"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "88d1046c9e330d72dea35d20bf76787b29be67d5bccd5ecfb183f8d4fbd71951"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "coolSunglasses"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f5200b41250dce8503a0b5557c4882d1988969c3cf741a7ee712fa239dc8cdfe"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pirateHat"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3c7c8c5281dc77429f6474fc6906534addbeaf79230c75ad63d820d6846caf20"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e75c9afad032918ba1f0c56761f350286f0e05d6d381f03c10e28037f2f4da28"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "astronautHelmet"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d1dfd02161b779c62c0936684a871efe696ec1eeb0c76587f275fddf3b475d2a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "76fa309c6f52dcceceb2f355dc2b3581dfd0c7cf41af4e7a468df3676b5f8bb9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7687d2c6548cb9a071572f626f07c2cd24c04f2fedd827d3110be08097b486a3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope",
+          "roundGlasses",
+          "surgicalCap"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "42aa817cdcdb9d2f79ac64adf5a8e514a21565b9e659513212302e7a690b8a3d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie",
+          "coolSunglasses",
+          "headMirror"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "ad619399de64b479d819405000767b1b454fef7a970257065a8a22e6284db3bd"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf",
+          "pirateHat"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "49ebb7926277a6e7dfd50fc9367631e1dfecb6847d96a9c7dbd3b4e162f1d277"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones",
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "622c23a6f3c821ae8262082cb2e5d3163c75d4efb5668c8b800814f9dff575ab"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "dc56ae3d333cd9f3765a34f0ae726afbf5500eda3df8dc0237fe5b912cb14d54"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "corgi",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "81046e3c635dd0b025c57b7d5b4dfe76b56697f4063c4a747637907d3a768979"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "corgi",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "126c3070f8fb5a9bc550598fc968d9781cb2fc168f535891157f147bb65448c1"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "corgi",
+        "outfit" : "cozyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "2faf134c6a54910db010e287e64d039b16f99532f8e97de4dc45347cdb7738da"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "corgi",
+        "outfit" : "superheroCape"
+      },
+      "frameCount" : 125,
+      "sha256" : "dbcfe6ef3eda54742580cf600cfd1ecca4e42a6a7f71dbae4312c5ab69b93f1b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "corgi",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "f252e415fec947c5adcf1c9e18e2248605982cbe5086a123daabff935a8c0729"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "corgi",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "84b3afad64a89172e81a0cdf5ec835a48a5eba8dd4deb1010269e1cf34434838"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "25e8cd10c087a1170474ad0412b42f8551eb7bbc7e15f045771a86e7c4739d3e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d1534aae039662e51178a917347caf201ef0e7f4dd3317f1d9bffad207a75c81"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "roundGlasses"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "929266077d8151246a369bdf0190b8ed81ed4d5e79f06484ec090b8be8efc6b0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "surgicalCap"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4a6c468cc2d909cfc56a06b526a2d8e207280bbf7a2e1f197ee236b6122a752b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "headMirror"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "6b2fee9cacbc0f4e2982265e2168892dd67f85f69621f38fed5998e1d2012991"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "graduationCap"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ef9d535e41686a9947de5d0c9f5d8994bae47d47da1fb2a453e5ed76a50827b7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "beanie"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4804e4de9a50b6b6a7b4f4bb259236135091f982bcd1dfda330bbff42de1b5bd"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "tinyCrown"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "9ed5e88e6c980a4e4019423bb0597ddd85367dabaedb566e1137f0eca2342ac3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "partyHat"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f0ee278ca0ce0510c0fdda047e5e13814a770277a190ddedcb32dda0ae2f4d03"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chefHat"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ad945c7ebb53e80827d3369fbd8d82510a07d01e022bd5c8b0d231c23886a4cf"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "wizardHat"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f7dd73f4158cb84717fc6b757132eae0cd1b26ef6d9a1a7a7eaa22d22a7d7024"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bunnyEars"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b7273b0e587584db9fcc6843a776e95274d72a086065ee2c12aba0329c494970"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "witchHat"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3c366303d31e0358778d47fc56c3c82a6a967eb76354f860a4de58bae2cafe9f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cowboyHat"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "db8bad86fad82a244680c313b8d7fc9d3658015f247704614b7aaa84086f5ff5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flowerCrown"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8dbe638c24f58e44f9d73e32bc839e58fbef34643458794934b425661cc03bce"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "frogHat"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e0feec942933c106df460466cf16d0702ce4b35450f9f414ef9b7f813d5c83bd"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "ninjaHeadband"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "27d4137a8c4b8f7e5673586fb32af61fd0ea1c7a05ad226ecde86b30e4590a05"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "coolSunglasses"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "cf2c849005d3c5e260c050b9cffdc8577a14ab84a9e2e513cef09a42ee051e88"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pirateHat"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "6857255c106a420769be741e941f819a98499a18fcce0d5b0d4eb936796e3a99"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c838e0da9034e2b44e30753dfd078018af330e8ed04f23783784371c404281cc"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "astronautHelmet"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "dd3a1b828a1ce214cde31f7a866737161eba3639d2122b0e1e86ec11d70b4e4a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "377d7af2238732297ef425af798e64fafa420c89912bfd732d17b74888e5b880"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "65725268a9c1c98740d097ed1d3b58910c0bf59db036968fae980a2f410dc229"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope",
+          "roundGlasses",
+          "surgicalCap"
+        ],
+        "breed" : "corgi",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "993081873b77fef38642a325373052ccbb0025e7bf8e886ab83255bb91f186f3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie",
+          "coolSunglasses",
+          "headMirror"
+        ],
+        "breed" : "corgi",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "2311cae5be350a0332d086aa91788f19983a278f2dc03424280d59dbd7cbc627"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf",
+          "pirateHat"
+        ],
+        "breed" : "corgi",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "118c752f5bc97931580042a5e738eadc4856c095abffc63ac04849e9a2ae35eb"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones",
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "corgi",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "87551296af2e5c8c306574b35fd4695326fecc19b1698fde25a17a37120c37b6"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0eeea5d360fdf3648b4e64bbb84270a608982e08709df940f84cd74d6ced9cb3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "dachshund",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "70f6b38ddd9be2e9fabd5e4d85b79c50334f67b776451d4b6b4e512f78d5f65b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "dachshund",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "64d2b1ddb4d6ebb08f94121a2babbfe76364ddae5de1255a5a1da07145ef8c45"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "dachshund",
+        "outfit" : "cozyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "0b54b02da6a61f98da0e7a5b3d8bc0dc9d25bbe9640d704d5d4f4ba39451dcb1"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "dachshund",
+        "outfit" : "superheroCape"
+      },
+      "frameCount" : 125,
+      "sha256" : "5caff3491d27bb4c8aeaeaadfcf1982160fb08cb3b6222452ca8c39c066c652c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "dachshund",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "a1199309972df8dd21bb1e051a943aed0a4219cba4bd89da5a597a8bc49fc478"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "dachshund",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "f03a0f7d8138b9fa0b987a0f5b11b95bee89d4929ad3adbbeca4421ac19395ed"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "46987de08fdcd77285a26f1d1fbdfec47efe0f6f6c8e2c81ee5f2582b044f699"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "83261f89e492ed82661e6e558b86df30d7238a11bd0a4a6f4a6a3e000078fac1"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "roundGlasses"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "bfd18658b477c437a5dbfe749a50291916dd1cf3fc5d1c66eb6460db94e2fccf"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "surgicalCap"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "df65e3c3ea05ecdad791cdfd22b2e1d3a632515bb87fb71d1bf58b56be890f9f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "headMirror"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3ac2955935876b71d8513c278885231862824cc83bfbd224f69b3feac5b1d82b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "graduationCap"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ebf2905974cc59133c73b9fee7d1e0cdf3d449faca33e9c93ef411eb0465d9a8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "beanie"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "49e8eda6be0c7750868e675fef8702d6c703f24a02b91a546f1fe9a1ae365a11"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "tinyCrown"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "efa45982fb53b3175e10937239d7c15974a876d1583cc16009efab8f41059264"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "partyHat"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ea0a531a0785c8e48717cdf708f8a640d031af90f51d48454503db2cad8f67cb"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chefHat"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c32f48c1c771395ed5b27db5aafbd145cb2ddda4f3fbabb9d21f86060765ee1a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "wizardHat"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ea0c897cf0234b2bc4bfde8d5330b4a12eb3486ddebb43047a735492681c7132"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bunnyEars"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "9ba4a9a01342d23a796bd434e86e3a138c3d2116013b7dbbc8ccf587fbea46c8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "witchHat"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4f3dce193e928dded7e35e4b7525a62670ad4fa37516f988d22cd22a04e1f8f4"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cowboyHat"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ed94c30065c85e13a7f06dbb43e3100c6aba13ad65af20d502527b459c34195c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flowerCrown"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "cd2016dd50874dd62a6fd1b0521d642a22f78c7081cee978edb6e738e78f44dd"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "frogHat"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "5440d7503fc9e70b20b7d3dac079016b09bf0a569fd911ce18b32797bfe421b9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "ninjaHeadband"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "01ee83511ee56f243a4d7c5c027a4fc81af2003621c1cd4bee62e2a2b3e4600d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "coolSunglasses"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "67e39fdba587d873788325f91054d3d4379aae52f94ac8e00feae353f1dc1f0b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pirateHat"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b452f6d33508a285ccac01a6379d8cf7134f123d33224eaa4564e6af72d8a014"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f4d8351d80f8289a4ee4e5726bf2858576a975c15ccaa2c5c310b396d37a7cd9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "astronautHelmet"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "efa585c5ef285154de6ca29970c0a2523174123ce434d3bc404950acf5405f1a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "6939464b2352c6b2e4c396f2684c253df2f5095baf8e1d73c6773431ea0a7bce"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1cbde3533159f94b1332b0ee17a661080fe3eb91805e33798d9e0e3fef9a0bd2"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope",
+          "roundGlasses",
+          "surgicalCap"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "f197bf3e66656cf07c85a7e4f6fecfe2966d01ec01b49fdcd6fdc80f13e8a4c7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie",
+          "coolSunglasses",
+          "headMirror"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "e00b63632dd1cb2a301e0881eedf813f9003ab311f648e89cda27d22ad4509e6"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf",
+          "pirateHat"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "a70961fdfe67cef97e6994439803cb3c2bd4761d56c0b6dcf75964099b3957bd"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones",
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "9e51a52631b8c2c55332c75f5dc53d856276ff38284907b1d96e7e39e0bd97b7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ebfb1c32c87503f47f011abcdbecd1e355542f0b0cadc2559acf468c94f652fe"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "beagle",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "97edbdb266a6ebe7f72f7937ee384629cea99115464b273bdcaf4d6cba898609"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "beagle",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "4eaa1b821787df0c145530a771c35b4800d6e519986b14f587409aae0574b725"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "beagle",
+        "outfit" : "cozyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "3f27207630815a429a3853362ebf22ad093144f142d1d82391a509d3475c6be1"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "beagle",
+        "outfit" : "superheroCape"
+      },
+      "frameCount" : 125,
+      "sha256" : "3c7733f36ae196a5d17707c9e789471410d5756a8270bdf0561ec9fd8056e287"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "beagle",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "3e7a9ff99837a862f4da2c5a03d2a711e936165038e239f8a2b5f35283c05f7f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "beagle",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "5580b3f1af96f209f548d3da80ba34a114c44950a1bdee87a9e95c2139d8ec07"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "74bea5c14efeb1e64602d1530c24988bbb5a7e2d63847d858a9c3ca4efbc6671"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "66535192e09ccf248fa0f9fea24cb4acd1287a376ca67107af520b04d21e8a69"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "roundGlasses"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a6c58f4562b992a68a319b9b505bf72b250411becf2a3b805ecb1849ea6c1cb7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "surgicalCap"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8dd83b0cc5f1aedc709bd9738a4d3441db7363735a29a0575a1a9f1c9f38a814"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "headMirror"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "46447f446e2b28c9bd15580df75b97477bb7f4f91f03829fe41b71ec48c3a805"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "graduationCap"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8f94b67f824537457d62e00ad3e6bc59fb878274faf86c2113ee49be80864358"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "beanie"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "fb262af287766f49541c95df7dc72dc972bd212a2baa1cb75f7ab266968ce0fd"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "tinyCrown"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "658cc5bf389250d80e8ad551f99dd23e75ad89065351ea2bff43342645b2e4de"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "partyHat"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c1371c9d7d08f76fa182b976808ee870a6706bb4ed3ada09dfe7d918cc71809e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chefHat"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "9469546e3fd60a20fac9993a8212da63556a73f51f39516b9e9c5facb2751780"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "wizardHat"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3a7faff34f125674ab1e056d0b82f8c3fe4c868f3e9d1c1e381736001ee0529e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bunnyEars"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "48f05e2f55cbc814e455653d809848a05a213cdc7d8d9022b076ef68b9e779b7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "witchHat"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4eeabb1bf55c1ea98f0ba5db7a95314347cb21470d06b368f6e89f24723f079c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cowboyHat"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d5dd765bfb357988af56b5139766d702337220218af5bbb1ccffdc8007f647a0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flowerCrown"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "94db68747909ecc7c5e5c611182fd4a2c325ecddfb6623a842275bcaaf69764c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "frogHat"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "735b6c67f14f35fa58d0ea6aa575f0216c2f0903fa8ba89239a57c996fe7f75b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "ninjaHeadband"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "9f702733a8449424f707eb5f1b74118922becd8f4e17b267a0c3fc5d04ef4727"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "coolSunglasses"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a5e55373016544c342566c4d4ba25d06c046903e453b3ed7a6b6aa939e47a315"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pirateHat"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "48ec63a249bebffba3987068231aa5c66295a32e740c4b4314f08bb2385c4506"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e5043c08f7284d227b195622e13a0889665bc11588fd5ad0d1c5a48e8b5520f9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "astronautHelmet"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "748d530559d3a7d1aeeb7eeb29bd797ec29a849c08cf07a635f3cce8e52e6cd5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "00c67a815e9721463d8cb418875493c000871cdaa2eeba9f239d986966383b8b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d5f9c2bb407c13ee442b2109182ea3cd5a10add9a70cfee2f415c805d4aa8195"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope",
+          "roundGlasses",
+          "surgicalCap"
+        ],
+        "breed" : "beagle",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "12b30156090c4d18eb72405637f76d2d246504a65fb904b4bb85365d918cbf8f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie",
+          "coolSunglasses",
+          "headMirror"
+        ],
+        "breed" : "beagle",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "323da248521559763734590b00261f86546b7f3e3372a2ef9f0a736c24555291"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf",
+          "pirateHat"
+        ],
+        "breed" : "beagle",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "c9063f32c93c398f5b95502a6ebcddf2fe1b3a67c4c50d016f7299534b79a1d9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones",
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "beagle",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "3649f0497723b68e6b5bf1436859f822f55d5f0c440c1cf98abb2b809e251070"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b080a8c400888637becb3595566e22bd2d86eb31ef70283c7731616f2822da09"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "poodle",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "e305c3b6b6b892e59ee23884c613ebc3b710844c119b1e26e2c7080703a26dbd"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "poodle",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "feab9cf23bbacd438d8e2ab731d1554784c7ef487af3ba8e60d16c895f41e1e1"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "poodle",
+        "outfit" : "cozyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "28fc0019117a454b31a52c5b3728027ca0cd9cf1518fbd5bcc1ec210a17bc225"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "poodle",
+        "outfit" : "superheroCape"
+      },
+      "frameCount" : 125,
+      "sha256" : "6018f27c748dc960949b25c8aefb037ae9198b08c2afae4fdfd5b1178e02e728"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "poodle",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "d2030deec7006ff08b31e61c10d0e7d27273248fc2791c9f631dd92183291640"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "poodle",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "e2d09f2f171d5108445d93654d8410fe61d14d7d3cd3ad0ecb3292999ce8d358"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "fab06fc1fe30768c4761a2b760af00d7f6ecc42d2561ece0dc0774e7c8b537eb"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e3852a8d4b12a8f4274ee4228dd66775de8bb2750d002955308161ca1c6cabb1"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "roundGlasses"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3e7080432fb285777c1c4dc18a82fbafe06b9630ee6e219e9dec7af7b6222ffb"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "surgicalCap"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "dfec3aff5110b401439018c9aad4e557484a98bfbd3b05ce2946dbce2be9b112"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "headMirror"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "de5daf1f9353772f8b250a095d08f43a4eb391c329df2b810034b8d20f944344"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "graduationCap"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b4d646d02b8d2e66c5eaa3127f44916657ae214f3992acbfe60803cc44985845"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "beanie"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8cf3309905fa6c625b2f92c8920953d79c7c3dd9e8ac039b98808956441034e6"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "tinyCrown"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a73b9a39c7c131e25bd4b1d2ec30e0675b53bb9553b570c6f1695f5b418c991f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "partyHat"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "99f149c84f4bb84e499fc0a9d29017129722643ee9cb5e384587a78d65cddcf8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chefHat"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "59c6145ed400ff8a0c54c7fbcf76edde88109494ad20e0b06c2713885ceb6599"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "wizardHat"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d495dc8f43b5fb5e8ae21ccb9f7c1e8e5cdc4080dc36a058d001837a8c155c15"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bunnyEars"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "2bee57eb8e6aad4d65218b35ba81ada8299723ed6bd685cb811902245961608e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "witchHat"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "08b7a73aa76c3f0b162c2268072793c66ae8f5ed0010389026c567071fd40436"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cowboyHat"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4002cce61f113de336ff1f9dbe26f27226c97f56aa1be314e7adc0db987f2eca"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flowerCrown"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c1979c531a792e37c994ee638f801969d4129020ba4db688af00beaf8b72aeb6"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "frogHat"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e78f63ef1e4a3a24a07501dac21eca70517b3590c1dc50fe7cd87b8a2a81c4f3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "ninjaHeadband"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a4bc486606a45289442dc2f1891df760c8009b3d17c7285fbc22c50106e7938d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "coolSunglasses"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "eb20f8b87d3ca20272ed12845fb800b2172c96a7ed18cc2aea970b51572c5a31"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pirateHat"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "61cdb2d4a3d4ec3d80ba6209405a3474463766bb79048001d612c155b7b1e143"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d7306223873615793d518fb661fbccf9858e09f69e4a9341eee4a1da779f7190"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "astronautHelmet"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "53da2db52493341b2fa72d7ef1724d372efc59f0516f37ddceeb9a4a4a75815d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "952b244b4ed1bd444afcdb2419d4559c15954ef46410aa6b5915720ce4a14061"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "2509173602d2a817a219878b2aec62cf1ac5edb206ba9ef54f863cfb9d08bc16"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope",
+          "roundGlasses",
+          "surgicalCap"
+        ],
+        "breed" : "poodle",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "ac86e5d113d79c422e8729a273214372f38d5b3f09aadcdee88ff47f74f4bafd"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie",
+          "coolSunglasses",
+          "headMirror"
+        ],
+        "breed" : "poodle",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "2f94014ed241f214e44137856b42a5522401d62265312b7704fc5f7e18019fbb"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf",
+          "pirateHat"
+        ],
+        "breed" : "poodle",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "011d02442a9242d573526aaad8188b6c1f69a040baf3ebf9bb9f2e167233f204"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones",
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "poodle",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "d064e22b839c2d186924190fdc0afabdb3994de2177c36caad00bd9ca03f0224"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a65d39779e5ed16b2a677c5d84e3c69876fe8e2c1439c0ca66e284c9ff322b34"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "1f6d9c87d997c6f6d030190e7113497e63bffae973cfed340eb6817a52fc4ced"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "491c54e380d66ee8ebed32b26ee5067c937fbe45ed8df5c46a2965953d205752"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "cozyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "d84fb827e356d70664074604536891cac8cdb1c62448399e2333ecf9451b0880"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "superheroCape"
+      },
+      "frameCount" : 125,
+      "sha256" : "8cf779c8d5deb932b82cee8aed765f4928262df23b9353898ff35e0246c2ba8e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "4e690b086e5e2efec87d869ab912e66c03a8bc27fb79af31fe3b3335fb975d20"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "44d0f21dbefe13e46759be95d77d6db6cd27ae23f8f6898454b24253fbcaee02"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a5af9010b2290d30ac60573d915a561182444e63cb22f5708807b9429530b3a0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "9877c9f63a23d4d6573143eb66b79f295ecae8a1bd5056934ab12985f8085e4e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "roundGlasses"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "16912f1a6b19e063099aadaf609442f2a5150006bd19a77ff63b9975f23eda6d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "surgicalCap"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1ffe2cb6e50ea5e9b9dc1baf39fbd7b80db5e8d4d161fdf0907e1886d236f55c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "headMirror"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3f85fe72a8d718991b8c372e2e40f8cc95b5d8ce7ce50c5fc386c9d5b0b4abc8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "graduationCap"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "45945e77d744375548b927b5b7aa6cc92808ee4a35f799448b1d2624a531fd59"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "beanie"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "62174e53739e540c9dc1535139a2007c6512ff675aaa3729cfd401c39836ca71"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "tinyCrown"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "5182f3d67e6d74b4b0c3ef3260f08eed0dcad4af947dff5d2554d6f4dfad5078"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "partyHat"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c3bda4a8ca7b7af622c67886d624380fee5e060b9338f4e4ffa79c3c8a277d84"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chefHat"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "2ecb4a293705672dde5a99f9933a15f30155fe03c50e02f479b731924141778e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "wizardHat"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "26ca83732e9ca5a444d55492898eb435902f50f9f52fcf692b83b0545ec066d5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bunnyEars"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "61531a2f3f7416ceefc3b9320023b72f693184f16c9e69a683ca83b403b45a61"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "witchHat"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e7ce711b6fb10a28248de229432afe717d7762e5f21b6410453f54ab950b0f60"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cowboyHat"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7c55f057717feb7ce71eab6ae866ea9fbd7f6442c6cb875d4f5ada0f7454f132"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flowerCrown"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8c1585c74acf984e53439eaf7b8b50e0d2f888b551d3cf91b11cc22900a8ad5d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "frogHat"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d5701e0d8ca7d7fccf8d41dd7ac76952095f2c360732c14aeb1e67e82b172791"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "ninjaHeadband"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b6e1a90082d1f67225295ba18f6726badc9f812310ebaeec61a6b84abae42550"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "coolSunglasses"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "fa10af972f884004f918e97400942023883b1cd0c41faf32ecd7baa235656640"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pirateHat"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "12ccb16c2c38f4908bfe1277dbfe7e7f47c311c674b39322660bc99403134234"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "616243028917da4415628b1f281cc40661c86e13ca1b5afab1e403c09bf0ae9e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "astronautHelmet"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d1a3646b319a10d13e4e363fe51888c2851d1ba68960c3e1061dbebb55a4f407"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8d14414071d9aa56698d7e7cb76d5f955d2544646f38d648b86f7c6a1c84e6ee"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a7d6f6651e5317264bbdaea60d41aaad63585c6730cdefa2675a0187727eabad"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "stethoscope",
+          "roundGlasses",
+          "surgicalCap"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "scrubs"
+      },
+      "frameCount" : 125,
+      "sha256" : "1d435042e97f78a6ebb0d40939d64518ada085ceb5c9efe5346ad81635368429"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "bowTie",
+          "coolSunglasses",
+          "headMirror"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "whiteCoat"
+      },
+      "frameCount" : 125,
+      "sha256" : "47fc95e4bfdb94e20eb1eb73a1622e69182b292310aec5bbe40c79b402e94542"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "scarf",
+          "pirateHat"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "dinosaurHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "b2c59ffd0afe2a7673d9746bb8d368bc26fb826a8817604f299c9832285185f5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "chunkyHeadphones",
+          "blindfoldedSorcerer"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "wizardRobe"
+      },
+      "frameCount" : 125,
+      "sha256" : "a6a751da110b34646fcea3c3c435a7fc149866e0a175ff1e6c9836d376425736"
+    }
+  ],
+  "frameSize" : 32,
+  "schema" : "tabbi.pets.golden",
+  "version" : 1
+}

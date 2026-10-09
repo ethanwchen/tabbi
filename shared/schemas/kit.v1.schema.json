@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tabbi.app/schemas/kit.v1.schema.json",
+  "title": "Tabbi kit (formatVersion 1)",
+  "description": "A kit file: the bundled kits in Sources/TabbiKitCore/Kits/Bundled and any kit a user imports. Documented in docs/kits.md. The Mac app (KitManifest.decode(from:)) loads every file this schema accepts, except files above 64 KB and imported kits that reuse a bundled kit's id. The schema is a little stricter than the app: it rejects null for optional fields, and it counts characters where Swift counts grapheme clusters. Problems the app only warns about and skips are allowed here and left to KitValidation: unknown or duplicate modules, ticker previews and themes, duplicate question or answer ids, module settings that don't match the module's declared keys, and fields the format doesn't read, so kits written for newer versions still load.",
+  "type": "object",
+  "required": ["formatVersion", "id", "name", "modules"],
+  "properties": {
+    "formatVersion": {
+      "description": "How to read the file. Bumped only for changes older versions would misread.",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1
+    },
+    "version": { "description": "The author's own version, shown but never compared.", "type": "string", "maxLength": 32 },
+    "requires": {
+      "description": "What the kit can't work without. Importing refuses a kit that requires a module this build lacks.",
+      "type": "object",
+      "properties": { "modules": { "type": "array", "items": { "$ref": "#/$defs/moduleID" } } }
+    },
+    "id": {
+      "description": "Stable slug saved in settings; never changes once shared. A bundled kit's file is named after it.",
+      "type": "string",
+      "pattern": "^[a-z0-9-]{1,64}$"
+    },
+    "name": { "description": "Shown in the kit picker.", "$ref": "#/$defs/name" },
+    "summary": { "description": "One line under the name. Defaults to empty.", "type": "string", "maxLength": 160 },
+    "symbol": { "description": "SF Symbol beside the name. Defaults to square.grid.2x2.", "type": "string" },
+    "accent": { "description": "Module whose accent tints the symbol. Defaults to the first enabled tab.", "$ref": "#/$defs/moduleID" },
+    "modules": {
+      "description": "The tabs, in order.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "items": {
+        "oneOf": [
+          { "description": "A tab that starts on.", "$ref": "#/$defs/moduleID" },
+          {
+            "description": "A tab that may start off, offered in Settings to add.",
+            "type": "object",
+            "required": ["id"],
+            "properties": {
+              "id": { "$ref": "#/$defs/moduleID" },
+              "enabled": { "description": "Defaults to true.", "type": "boolean" }
+            }
+          }
+        ]
+      }
+    },
+    "defaults": { "$ref": "#/$defs/defaults" },
+    "onboarding": {
+      "description": "Questions first-run setup asks, applied in order, so a later answer wins.",
+      "type": "array",
+      "maxItems": 10,
+      "items": { "$ref": "#/$defs/question" }
+    },
+    "starterTasks": { "description": "Added to Today when the kit is picked.", "$ref": "#/$defs/tasks" },
+    "pickerOrder": {
+      "description": "Bundled kits only: place in the kit picker, lowest first; kits without one follow by id.",
+      "type": "integer"
+    }
+  },
+  "$defs": {
+    "moduleID": {
+      "description": "A module id such as planner or study. Ids this build doesn't know are kept and reported, not refused.",
+      "type": "string"
+    },
+    "name": { "type": "string", "maxLength": 80, "pattern": "\\S" },
+    "tasks": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 120 } },
+    "anyValue": { "description": "Any JSON value." },
+    "defaults": {
+      "description": "Settings the kit starts with. A field left out keeps the user's setting.",
+      "type": "object",
+      "properties": {
+        "ticker": {
+          "description": "Closed-notch previews: built-in TickerKind values and ids of modules whose highlights show. Left out shows them all.",
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "theme": { "description": "A theme id from themes.json, or a legacyKitThemes value such as notch.", "type": "string" },
+        "moduleSettings": {
+          "description": "Each module's own section, keyed by module id. A module declares its keys (KitSettingsSchema) and reads them leniently.",
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/anyValue" }
+        },
+        "studyMethods": { "description": "Old name of moduleSettings.study.methods, still read with a warning.", "deprecated": true, "$ref": "#/$defs/anyValue" },
+        "studyMethod": { "description": "Old name of moduleSettings.study.method, still read with a warning.", "deprecated": true, "$ref": "#/$defs/anyValue" },
+        "focusSounds": { "description": "Old name of moduleSettings.focus.sounds, still read with a warning.", "deprecated": true, "$ref": "#/$defs/anyValue" },
+        "pet": { "description": "Old name of moduleSettings.closet.pet, still read with a warning.", "deprecated": true, "$ref": "#/$defs/anyValue" }
+      }
+    },
+    "question": {
+      "type": "object",
+      "required": ["id", "prompt", "options"],
+      "properties": {
+        "id": { "description": "Unique within the kit.", "type": "string" },
+        "prompt": { "type": "string", "maxLength": 160 },
+        "allowsMultiple": { "description": "Defaults to false.", "type": "boolean" },
+        "options": { "type": "array", "minItems": 1, "maxItems": 8, "items": { "$ref": "#/$defs/answer" } }
+      }
+    },
+    "answer": {
+      "type": "object",
+      "required": ["id", "label"],
+      "properties": {
+        "id": { "description": "Unique within the question.", "type": "string" },
+        "label": { "type": "string", "maxLength": 80 },
+        "symbol": { "description": "SF Symbol beside the label.", "type": "string" },
+        "enables": { "type": "array", "items": { "$ref": "#/$defs/moduleID" } },
+        "disables": { "type": "array", "items": { "$ref": "#/$defs/moduleID" } },
+        "tasks": { "$ref": "#/$defs/tasks" }
+      }
+    }
+  }
+}

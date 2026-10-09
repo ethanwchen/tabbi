@@ -1,0 +1,238 @@
+{
+  "schema": "pets.v1",
+  "animations": {
+    "idle": {
+      "loops": true,
+      "frames": [
+        { "duration": 1.1 },
+        { "duration": 0.9, "pose": { "headDrop": 1 } }
+      ]
+    },
+    "blink": {
+      "loops": false,
+      "frames": [
+        { "duration": 0.14, "pose": { "eyes": "closed" } }
+      ]
+    },
+    "sit": {
+      "loops": true,
+      "frames": [
+        { "duration": 1 }
+      ]
+    },
+    "sleep": {
+      "loops": true,
+      "still": 2,
+      "frames": [
+        { "duration": 0.8, "pose": { "eyes": "sleepy", "headDrop": 2 } },
+        { "duration": 0.8, "pose": { "eyes": "sleepy", "headDrop": 1 },
+          "effects": [{ "grid": "zSmall", "x": { "head": 3 }, "y": { "head": -2 } }] },
+        { "duration": 0.8, "pose": { "eyes": "sleepy", "headDrop": 2 },
+          "effects": [{ "grid": "zSmall", "x": { "head": 3 }, "y": { "head": -2 } }, { "grid": "zLarge", "x": 28, "y": { "head": -9 } }] },
+        { "duration": 0.8, "pose": { "eyes": "sleepy", "headDrop": 1 },
+          "effects": [{ "grid": "zLarge", "x": 28, "y": { "head": -9 } }] }
+      ]
+    },
+    "walk": {
+      "loops": true,
+      "frames": [
+        { "duration": 0.15, "stance": { "kind": "walking", "step": 0 } },
+        { "duration": 0.15, "stance": { "kind": "walking", "step": 1 } },
+        { "duration": 0.15, "stance": { "kind": "walking", "step": 2 } },
+        { "duration": 0.15, "stance": { "kind": "walking", "step": 3 } }
+      ]
+    },
+    "stretch": {
+      "loops": false,
+      "frames": [
+        { "duration": 0.15, "stance": { "kind": "stretching", "depth": 0, "wag": 0 } },
+        { "duration": 0.1, "stance": { "kind": "stretching", "depth": 1, "wag": 0 } },
+        { "duration": 0.1, "pose": { "eyes": "happy" }, "stance": { "kind": "stretching", "depth": 2, "wag": 0 } },
+        { "duration": 0.35, "pose": { "eyes": "happy" }, "stance": { "kind": "stretching", "depth": 3, "wag": 0 } },
+        { "duration": 0.35, "pose": { "eyes": "happy" }, "stance": { "kind": "stretching", "depth": 3, "wag": 1 } },
+        { "duration": 0.35, "pose": { "eyes": "happy" }, "stance": { "kind": "stretching", "depth": 3, "wag": 0 } },
+        { "duration": 0.1, "stance": { "kind": "stretching", "depth": 2, "wag": 0 } },
+        { "duration": 0.1, "stance": { "kind": "stretching", "depth": 1, "wag": 0 } },
+        { "duration": 0.3, "stance": { "kind": "stretching", "depth": 0, "wag": 0 } }
+      ]
+    },
+    "peekIn": {
+      "loops": false,
+      "frames": [
+        { "duration": 0.08, "stance": { "kind": "hanging" }, "shiftY": -22 },
+        { "duration": 0.08, "stance": { "kind": "hanging" }, "shiftY": -14 },
+        { "duration": 0.08, "stance": { "kind": "hanging" }, "shiftY": -8 },
+        { "duration": 0.1, "stance": { "kind": "hanging" }, "shiftY": -3 },
+        { "duration": 0.1, "stance": { "kind": "hanging" }, "shiftY": 1 },
+        { "duration": 0.5, "stance": { "kind": "hanging" }, "shiftY": 0 }
+      ]
+    },
+    "peekOut": {
+      "loops": false,
+      "frames": [
+        { "duration": 0.5, "stance": { "kind": "hanging" }, "shiftY": 0 },
+        { "duration": 0.1, "stance": { "kind": "hanging" }, "shiftY": 1 },
+        { "duration": 0.1, "stance": { "kind": "hanging" }, "shiftY": -3 },
+        { "duration": 0.08, "stance": { "kind": "hanging" }, "shiftY": -8 },
+        { "duration": 0.08, "stance": { "kind": "hanging" }, "shiftY": -14 },
+        { "duration": 0.08, "stance": { "kind": "hanging" }, "shiftY": -22 }
+      ]
+    },
+    "alert": {
+      "loops": false,
+      "frames": [
+        { "duration": 0.06, "bubble": true },
+        { "duration": 0.1, "pose": { "lift": 2 }, "bubble": true },
+        { "duration": 0.08, "bubble": true },
+        { "duration": 0.08, "pose": { "lift": 1 }, "bubble": true },
+        { "duration": 0.6, "bubble": true }
+      ]
+    },
+    "celebrate": {
+      "loops": false,
+      "frames": [
+        { "duration": 0.08, "pose": { "eyes": "happy" } },
+        { "duration": 0.08, "pose": { "eyes": "happy", "lift": 2 } },
+        { "duration": 0.16, "pose": { "eyes": "happy", "lift": 3 },
+          "effects": [{ "grid": "heart", "x": 27, "y": 8 }, { "grid": "sparkle", "x": 1, "y": 1 }] },
+        { "duration": 0.08, "pose": { "eyes": "happy", "lift": 2 },
+          "effects": [{ "grid": "heart", "x": 27, "y": 6 }] },
+        { "duration": 0.1, "pose": { "eyes": "happy" },
+          "effects": [{ "grid": "heart", "x": 27, "y": 4 }, { "grid": "sparkle", "x": 1, "y": 3 }] },
+        { "duration": 0.3, "pose": { "eyes": "happy" },
+          "effects": [{ "grid": "heart", "x": 27, "y": 2 }] },
+        { "duration": 0.4, "pose": { "eyes": "happy" },
+          "effects": [{ "grid": "heart", "x": 27, "y": 0 }] }
+      ]
+    },
+    "yawn": {
+      "loops": false,
+      "frames": [
+        { "duration": 0.25 },
+        { "duration": 0.18, "pose": { "eyes": "squeezed", "mouth": "open", "headDrop": -1 } },
+        { "duration": 0.9, "pose": { "eyes": "squeezed", "mouth": "wide", "headDrop": -1 } },
+        { "duration": 0.16, "pose": { "eyes": "squeezed", "mouth": "open", "headDrop": -1 } },
+        { "duration": 0.45, "pose": { "eyes": "sleepy" } },
+        { "duration": 0.35, "pose": { "eyes": "sleepy", "headDrop": 1 } },
+        { "duration": 0.3 }
+      ]
+    },
+    "hop": {
+      "loops": false,
+      "frames": [
+        { "duration": 0.1, "pose": { "eyes": "happy", "headDrop": 1 } },
+        { "duration": 0.06, "pose": { "eyes": "happy", "lift": 2 } },
+        { "duration": 0.12, "pose": { "eyes": "happy", "lift": 3 } },
+        { "duration": 0.06, "pose": { "eyes": "happy", "lift": 2 } },
+        { "duration": 0.1, "pose": { "eyes": "happy", "headDrop": 1 }, "dust": true },
+        { "duration": 0.08, "pose": { "eyes": "happy", "lift": 2 } },
+        { "duration": 0.06, "pose": { "eyes": "happy", "lift": 1 } },
+        { "duration": 0.1, "pose": { "eyes": "happy", "headDrop": 1 }, "dust": true },
+        { "duration": 0.35, "pose": { "eyes": "happy" } },
+        { "duration": 0.2 }
+      ]
+    },
+    "typing": {
+      "loops": true,
+      "frames": [
+        { "duration": 0.12, "pose": { "prop": { "kind": "laptop", "tap": -1 } } },
+        { "duration": 0.1, "pose": { "prop": { "kind": "laptop", "tap": 0 } } },
+        { "duration": 0.12, "pose": { "prop": { "kind": "laptop", "tap": 1 } } },
+        { "duration": 0.1, "pose": { "prop": { "kind": "laptop", "tap": 0 } } },
+        { "duration": 0.12, "pose": { "prop": { "kind": "laptop", "tap": -1 } } },
+        { "duration": 0.1, "pose": { "prop": { "kind": "laptop", "tap": 0 } } },
+        { "duration": 0.12, "pose": { "prop": { "kind": "laptop", "tap": 1 } } },
+        { "duration": 0.1, "pose": { "prop": { "kind": "laptop", "tap": 0 } } },
+        { "duration": 0.12, "pose": { "prop": { "kind": "laptop", "tap": -1 } } },
+        { "duration": 0.7, "pose": { "prop": { "kind": "laptop", "tap": 0 }, "headDrop": 1 } },
+        { "duration": 0.5, "pose": { "prop": { "kind": "laptop", "tap": 0 }, "headDrop": 1 } }
+      ]
+    },
+    "coffee": {
+      "loops": true,
+      "frames": [
+        { "duration": 0.45, "pose": { "prop": { "kind": "mug", "raise": 0 } }, "steam": 0 },
+        { "duration": 0.45, "pose": { "prop": { "kind": "mug", "raise": 0 } }, "steam": 1 },
+        { "duration": 0.45, "pose": { "prop": { "kind": "mug", "raise": 0 } }, "steam": 0 },
+        { "duration": 0.45, "pose": { "prop": { "kind": "mug", "raise": 0 } }, "steam": 1 },
+        { "duration": 0.12, "pose": { "prop": { "kind": "mug", "raise": 1 } } },
+        { "duration": 0.9, "pose": { "eyes": "closed", "prop": { "kind": "mug", "raise": 2 } } },
+        { "duration": 0.12, "pose": { "eyes": "happy", "prop": { "kind": "mug", "raise": 1 } } },
+        { "duration": 0.5, "pose": { "eyes": "happy", "prop": { "kind": "mug", "raise": 0 } }, "steam": 0 },
+        { "duration": 0.45, "pose": { "prop": { "kind": "mug", "raise": 0 } }, "steam": 1 }
+      ]
+    },
+    "wave": {
+      "loops": false,
+      "frames": [
+        { "duration": 0.12, "pose": { "gesture": { "kind": "wave", "swing": 1 } } },
+        { "duration": 0.22, "pose": { "eyes": "happy", "gesture": { "kind": "wave", "swing": 0 } } },
+        { "duration": 0.18, "pose": { "eyes": "happy", "gesture": { "kind": "wave", "swing": 1 } } },
+        { "duration": 0.22, "pose": { "eyes": "happy", "gesture": { "kind": "wave", "swing": 0 } } },
+        { "duration": 0.18, "pose": { "eyes": "happy", "gesture": { "kind": "wave", "swing": 1 } } },
+        { "duration": 0.3, "pose": { "eyes": "happy", "gesture": { "kind": "wave", "swing": 0 } } },
+        { "duration": 0.25, "pose": { "eyes": "happy" } },
+        { "duration": 0.2 }
+      ]
+    },
+    "groom": {
+      "loops": false,
+      "frames": [
+        { "duration": 0.15, "pose": { "gesture": { "kind": "groom", "reach": 0 } } },
+        { "duration": 0.18, "pose": { "eyes": "closed", "mouth": "open", "gesture": { "kind": "groom", "reach": 1 } } },
+        { "duration": 0.12, "pose": { "eyes": "closed", "gesture": { "kind": "groom", "reach": 0 } } },
+        { "duration": 0.18, "pose": { "eyes": "closed", "mouth": "open", "gesture": { "kind": "groom", "reach": 1 } } },
+        { "duration": 0.12, "pose": { "eyes": "closed", "gesture": { "kind": "groom", "reach": 0 } } },
+        { "duration": 0.18, "pose": { "eyes": "closed", "mouth": "open", "gesture": { "kind": "groom", "reach": 1 } } },
+        { "duration": 0.28, "pose": { "eyes": "closed", "gesture": { "kind": "groom", "reach": 2 }, "headDrop": 1 } },
+        { "duration": 0.2, "pose": { "eyes": "closed", "gesture": { "kind": "groom", "reach": 1 }, "headDrop": 1 } },
+        { "duration": 0.28, "pose": { "eyes": "closed", "gesture": { "kind": "groom", "reach": 2 }, "headDrop": 1 } },
+        { "duration": 0.4, "pose": { "eyes": "happy" } },
+        { "duration": 0.2 }
+      ]
+    },
+    "tailSwish": {
+      "loops": false,
+      "frames": [
+        { "duration": 0.2 },
+        { "duration": 0.14, "pose": { "tailSwing": 1 } },
+        { "duration": 0.4, "pose": { "tailSwing": 2 } },
+        { "duration": 0.14, "pose": { "tailSwing": 1 } },
+        { "duration": 0.3 },
+        { "duration": 0.12, "pose": { "tailSwing": 1 } },
+        { "duration": 0.3, "pose": { "tailSwing": 2 } },
+        { "duration": 0.12, "pose": { "tailSwing": 1 } },
+        { "duration": 0.35 }
+      ]
+    },
+    "nap": {
+      "loops": true,
+      "still": 2,
+      "frames": [
+        { "duration": 1, "pose": { "eyes": "sleepy" }, "stance": { "kind": "curled", "breath": 0 } },
+        { "duration": 1, "pose": { "eyes": "sleepy" }, "stance": { "kind": "curled", "breath": 1 },
+          "effects": [{ "grid": "zSmall", "x": { "head": 3 }, "y": { "head": -2 } }] },
+        { "duration": 1, "pose": { "eyes": "sleepy" }, "stance": { "kind": "curled", "breath": 0 },
+          "effects": [{ "grid": "zSmall", "x": { "head": 3 }, "y": { "head": -2 } }, { "grid": "zLarge", "x": 28, "y": { "head": -9 } }] },
+        { "duration": 1, "pose": { "eyes": "sleepy" }, "stance": { "kind": "curled", "breath": 1 },
+          "effects": [{ "grid": "zLarge", "x": 28, "y": { "head": -9 } }] }
+      ]
+    },
+    "play": {
+      "loops": false,
+      "frames": [
+        { "duration": 0.35, "pose": { "prop": { "kind": "toy", "roll": 0 } } },
+        { "duration": 0.2, "pose": { "prop": { "kind": "toy", "roll": 0 }, "headDrop": 1 } },
+        { "duration": 0.16, "pose": { "prop": { "kind": "toy", "roll": 0, "bat": true }, "headDrop": 1 } },
+        { "duration": 0.1, "pose": { "eyes": "happy", "prop": { "kind": "toy", "roll": 3 } } },
+        { "duration": 0.1, "pose": { "eyes": "happy", "prop": { "kind": "toy", "roll": 7, "bounce": 2 } } },
+        { "duration": 0.45, "pose": { "prop": { "kind": "toy", "roll": 10 } } },
+        { "duration": 0.12, "pose": { "prop": { "kind": "toy", "roll": 6, "bounce": 3 } } },
+        { "duration": 0.12, "pose": { "prop": { "kind": "toy", "roll": 2, "bounce": 1 }, "headDrop": 1 } },
+        { "duration": 0.4, "pose": { "eyes": "happy", "prop": { "kind": "toy", "roll": 0, "bat": true }, "headDrop": 1 } },
+        { "duration": 0.3, "pose": { "eyes": "happy", "prop": { "kind": "toy", "roll": 0 } } },
+        { "duration": 0.2, "pose": { "prop": { "kind": "toy", "roll": 0 } } }
+      ]
+    }
+  }
+}

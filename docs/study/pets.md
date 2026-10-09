@@ -21,17 +21,17 @@ Do not commit the output folder; curated sheets live in `docs/study/images/`.
 
 ## Sprite format
 
-Art is plain text inside Swift string literals (`Sources/TabbiKitCore/Pets/Art/`).
+Art is plain text in the `pets.v1` JSON files in `Sources/TabbiKitCore/Pets/PetArt/` (one per family: cat, dog, costume, effect, paw, prop, tail, walk), each grid an array of rows; the Swift in `Pets/Art/` names the grids and generates the procedural pieces (legs, wrapped tails).
 Each character is one pixel.
 A grid never stores a color, only what the pixel *means*; palettes turn meanings into colors.
 That is what lets one drawing serve every breed, user recolor, and costume color.
 
-```swift
-static let ear = SpriteGrid(art: """
-    .ee.
-    ePPe
-    eBBe
-    """)
+```json
+"ear": [
+  ".ee.",
+  "ePPe",
+  "eBBe"
+]
 ```
 
 All rows of a grid must be the same width.
@@ -80,6 +80,8 @@ Parse errors report the 1-based row and column of the problem.
 
 Shared body art marks regions whose color depends on the breed.
 Each breed's `PetPattern` maps a zone to a palette role.
+Breeds are data too: `PetArt/breeds.json` holds the base palette, the species of each body shape, and every breed's name, body shape, tail, palette (only the roles it changes) and pattern, in picker order.
+A new breed is an entry there plus a case in `PetBreed`, which names it in pet saves.
 Unmapped zones fall back to their default.
 
 | Symbol | Zone | Default |
@@ -119,7 +121,7 @@ A pet wears one `PetOutfit` (`none`, `scrubs`, `whiteCoat`, `cozyHoodie`, `super
 Each accessory has a slot (neck, face, or head); a pet wears at most one per slot.
 `PetAccessory.wearable(_:)` keeps the last item listed per slot and sorts them in drawing order, so hats always land on top.
 
-Costume art lives in `Art/CostumeArt.swift` and is anchored to the pose layout instead of per-breed positions:
+Costume art lives in `PetArt/costume.json` (with its anchors: `rise`, `eyeRow`, `sitRow`) and is anchored to the pose layout instead of per-breed positions:
 
 - Body items (outfits, stethoscope, scarf) have one grid per body family (cat, dog, long dog), the same size as that family's body and stamped at the same origin.
   They also have two walking grids: `walk` over the shared cat and dog walking torso, and `walkLong` over the dachshund's.
@@ -165,6 +167,7 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 ## Animations
 
 `PetComposer.clip(_:for:outfit:accessories:)` builds a `PetClip`: a list of `PetFrame`s, each with its own `duration` in seconds.
+The timelines are data: `Pets/PetArt/animations.json` (`pets.v1`) lists, for every animation, whether it loops, the frame a still pet holds, and per frame the duration, pose, stance, effects (a "z", a heart), steam, dust and speech bubble.
 `clip.frame(at: elapsed)` picks the frame to show; looping clips (idle, sit, sleep, walk, typing, coffee, nap) wrap around, one-shot clips (blink, stretch, peek, alert, celebrate, yawn, hop, wave, groom, tailSwish, play) hold their last frame until `PetAnimator.advance(to:)` sees the clip's duration has passed and moves the pet on.
 
 Front-facing animations are not drawn frame by frame.
@@ -175,7 +178,7 @@ Each frame is the sitting composition in a `PetPose`, so every breed and costume
 | `eyes` | `.open`, `.closed` (blink), `.sleepy` (soft curves), `.happy` ("^" arches), `.squeezed` ("> <", mirrored for the right eye) |
 | `mouth` | `.closed` (the face as drawn), `.open` (a small "o"), `.wide` (a big yawn with the tongue showing) |
 | `headDrop` | Sinks the head (and its hat and glasses) into the shoulders, for breathing and dozing; -1 tips it back for a yawn |
-| `prop` | Something held in front of the pet: `.laptop(tap:)` (a paw lifted to type, -1 left, 1 right, 0 resting) or `.mug(raise:)` (0 in the lap, 1 on the way up, 2 at the mouth), or `.toy(roll:bounce:bat:)` (a toy on the floor, `roll` px to the left of its spot, `bounce` px off the floor, with the left paw on top when `bat` is set) |
+| `prop` | Something held in front of the pet: `.laptop(tap:)` (a paw lifted to type, -1 left, 1 right, 0 resting) or `.mug(raise:)` (0 in the lap, 1 on the way up, 2 at the mouth), or `.toy(roll:bounce:bat:)` (a toy on the floor, `roll` px to the left of its spot, `bounce` px off the floor for a ball (yarn stays down), with the left paw on top when `bat` is set) |
 | `gesture` | The left front paw lifted off the floor: `.wave(swing:)` (0 leans out from the head, 1 swings back in beside the cheek) or `.groom(reach:)` (0 just under the chin, 1 under the tongue for a lick, 2 up over the left cheek to wash) |
 | `tailSwing` | Pixels the tip of the tail leans out to the side, 0 at rest; tailless breeds pop out a stub by the haunch instead, raised `tailSwing` px |
 | `lift` | Raises the whole pet off the baseline, for hops |
@@ -265,7 +268,7 @@ The walk, the stretch and the nap are the animations that are not sitting poses.
 It is drawn chibi-style: the usual front-facing head sits in front of a side-on torso, so the face, glasses, and hats need no walking art and stay readable at notch size.
 Pets walk toward the left; mirror the frames to walk right.
 
-`Art/WalkArt.swift` holds the walking pieces:
+`PetArt/walk.json` and `Art/WalkArt.swift` hold the walking pieces:
 
 - Torsos: `catTorso` and `dogTorso` share one size (22x7, so torso costumes fit both), and `longTorso` (23x6) sits lower on shorter legs for the dachshund.
   The cat torso carries stripe and calico patch zones; the dog torso carries the beagle saddle.

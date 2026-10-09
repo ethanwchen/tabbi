@@ -1,0 +1,44 @@
+{
+  "schema": "pets.v1",
+  "grids": {
+    "groomPaw": [
+      ".OOOO.",
+      "OppppO",
+      "OppppO"
+    ]
+  },
+  "sequences": {
+    "wave": [
+      [
+        ".OOOO......",
+        "OppppO.....",
+        "OppppO.....",
+        "OppppO.....",
+        ".OBBBO.....",
+        "..OBBBO....",
+        "..OBBBO....",
+        "...OBBBO...",
+        "...OBBBO...",
+        "....OBBBO..",
+        "....OBBBO..",
+        ".....OBBBO.",
+        "......OBBB."
+      ],
+      [
+        "....OOOO...",
+        "...OppppO..",
+        "...OppppO..",
+        "...OppppO..",
+        "....OBBBO..",
+        "....OBBBO..",
+        "....OBBBO..",
+        ".....OBBBO.",
+        ".....OBBBO.",
+        ".....OBBBO.",
+        ".....OBBBO.",
+        "......OBBBO",
+        "......OBBB."
+      ]
+    ]
+  }
+}

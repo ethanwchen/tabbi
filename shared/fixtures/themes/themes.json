@@ -1,0 +1,1106 @@
+{
+  "accentSamples" : [
+    {
+      "base" : {
+        "blue" : 0.34,
+        "green" : 0.47,
+        "opacity" : 1,
+        "red" : 0.85
+      },
+      "treated" : {
+        "monochrome" : {
+          "blue" : 0.77752,
+          "green" : 0.77752,
+          "opacity" : 1,
+          "red" : 0.77752
+        },
+        "original" : {
+          "blue" : 0.34,
+          "green" : 0.47,
+          "opacity" : 1,
+          "red" : 0.85
+        },
+        "pastel" : {
+          "blue" : 0.522,
+          "green" : 0.6345,
+          "opacity" : 1,
+          "red" : 0.9025
+        },
+        "vivid" : {
+          "blue" : 0,
+          "green" : 0.2549019607843136,
+          "opacity" : 1,
+          "red" : 1
+        }
+      }
+    },
+    {
+      "base" : {
+        "blue" : 0.42,
+        "green" : 0.5,
+        "opacity" : 1,
+        "red" : 1
+      },
+      "treated" : {
+        "monochrome" : {
+          "blue" : 0.8061520000000001,
+          "green" : 0.8061520000000001,
+          "opacity" : 1,
+          "red" : 0.8061520000000001
+        },
+        "original" : {
+          "blue" : 0.42,
+          "green" : 0.5,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "pastel" : {
+          "blue" : 0.574,
+          "green" : 0.6539999999999999,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "vivid" : {
+          "blue" : 0,
+          "green" : 0.13793103448275862,
+          "opacity" : 1,
+          "red" : 1
+        }
+      }
+    },
+    {
+      "base" : {
+        "blue" : 0.26,
+        "green" : 0.62,
+        "opacity" : 1,
+        "red" : 1
+      },
+      "treated" : {
+        "monochrome" : {
+          "blue" : 0.827032,
+          "green" : 0.827032,
+          "opacity" : 1,
+          "red" : 0.827032
+        },
+        "original" : {
+          "blue" : 0.26,
+          "green" : 0.62,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "pastel" : {
+          "blue" : 0.47,
+          "green" : 0.732,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "vivid" : {
+          "blue" : 0,
+          "green" : 0.48648648648648646,
+          "opacity" : 1,
+          "red" : 1
+        }
+      }
+    },
+    {
+      "base" : {
+        "blue" : 0.62,
+        "green" : 0.42,
+        "opacity" : 1,
+        "red" : 1
+      },
+      "treated" : {
+        "monochrome" : {
+          "blue" : 0.796488,
+          "green" : 0.796488,
+          "opacity" : 1,
+          "red" : 0.796488
+        },
+        "original" : {
+          "blue" : 0.62,
+          "green" : 0.42,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "pastel" : {
+          "blue" : 0.704,
+          "green" : 0.602,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "vivid" : {
+          "blue" : 0.3448275862068965,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 1
+        }
+      }
+    },
+    {
+      "base" : {
+        "blue" : 1,
+        "green" : 0.55,
+        "opacity" : 1,
+        "red" : 0.66
+      },
+      "treated" : {
+        "monochrome" : {
+          "blue" : 0.8036760000000001,
+          "green" : 0.8036760000000001,
+          "opacity" : 1,
+          "red" : 0.8036760000000001
+        },
+        "original" : {
+          "blue" : 1,
+          "green" : 0.55,
+          "opacity" : 1,
+          "red" : 0.66
+        },
+        "pastel" : {
+          "blue" : 0.951,
+          "green" : 0.6865,
+          "opacity" : 1,
+          "red" : 0.779
+        },
+        "vivid" : {
+          "blue" : 1,
+          "green" : 0.35,
+          "opacity" : 1,
+          "red" : 0.5088888888888888
+        }
+      }
+    },
+    {
+      "base" : {
+        "blue" : 1,
+        "green" : 0.62,
+        "opacity" : 1,
+        "red" : 0.36
+      },
+      "treated" : {
+        "monochrome" : {
+          "blue" : 0.784232,
+          "green" : 0.784232,
+          "opacity" : 1,
+          "red" : 0.784232
+        },
+        "original" : {
+          "blue" : 1,
+          "green" : 0.62,
+          "opacity" : 1,
+          "red" : 0.36
+        },
+        "pastel" : {
+          "blue" : 0.951,
+          "green" : 0.732,
+          "opacity" : 1,
+          "red" : 0.584
+        },
+        "vivid" : {
+          "blue" : 1,
+          "green" : 0.4359375,
+          "opacity" : 1,
+          "red" : 0.05
+        }
+      }
+    },
+    {
+      "base" : {
+        "blue" : 0.38,
+        "green" : 0.84,
+        "opacity" : 1,
+        "red" : 0.12
+      },
+      "treated" : {
+        "monochrome" : {
+          "blue" : 0.778912,
+          "green" : 0.778912,
+          "opacity" : 1,
+          "red" : 0.778912
+        },
+        "original" : {
+          "blue" : 0.38,
+          "green" : 0.84,
+          "opacity" : 1,
+          "red" : 0.12
+        },
+        "pastel" : {
+          "blue" : 0.548,
+          "green" : 0.875,
+          "opacity" : 1,
+          "red" : 0.428
+        },
+        "vivid" : {
+          "blue" : 0.36111111111111116,
+          "green" : 1,
+          "opacity" : 1,
+          "red" : 0
+        }
+      }
+    },
+    {
+      "base" : {
+        "blue" : 1,
+        "green" : 0.78,
+        "opacity" : 1,
+        "red" : 0.35
+      },
+      "treated" : {
+        "monochrome" : {
+          "blue" : 0.8206040000000001,
+          "green" : 0.8206040000000001,
+          "opacity" : 1,
+          "red" : 0.8206040000000001
+        },
+        "original" : {
+          "blue" : 1,
+          "green" : 0.78,
+          "opacity" : 1,
+          "red" : 0.35
+        },
+        "pastel" : {
+          "blue" : 0.951,
+          "green" : 0.836,
+          "opacity" : 1,
+          "red" : 0.5774999999999999
+        },
+        "vivid" : {
+          "blue" : 1,
+          "green" : 0.6615384615384616,
+          "opacity" : 1,
+          "red" : 0
+        }
+      }
+    },
+    {
+      "base" : {
+        "blue" : 0.76,
+        "green" : 0.84,
+        "opacity" : 1,
+        "red" : 0.3
+      },
+      "treated" : {
+        "monochrome" : {
+          "blue" : 0.817768,
+          "green" : 0.817768,
+          "opacity" : 1,
+          "red" : 0.817768
+        },
+        "original" : {
+          "blue" : 0.76,
+          "green" : 0.84,
+          "opacity" : 1,
+          "red" : 0.3
+        },
+        "pastel" : {
+          "blue" : 0.795,
+          "green" : 0.875,
+          "opacity" : 1,
+          "red" : 0.5449999999999999
+        },
+        "vivid" : {
+          "blue" : 0.8518518518518519,
+          "green" : 1,
+          "opacity" : 1,
+          "red" : 0
+        }
+      }
+    },
+    {
+      "base" : {
+        "blue" : 0.3,
+        "green" : 0.8,
+        "opacity" : 1,
+        "red" : 0.98
+      },
+      "treated" : {
+        "monochrome" : {
+          "blue" : 0.8687280000000002,
+          "green" : 0.8687280000000002,
+          "opacity" : 1,
+          "red" : 0.8687280000000002
+        },
+        "original" : {
+          "blue" : 0.3,
+          "green" : 0.8,
+          "opacity" : 1,
+          "red" : 0.98
+        },
+        "pastel" : {
+          "blue" : 0.496,
+          "green" : 0.849,
+          "opacity" : 1,
+          "red" : 0.987
+        },
+        "vivid" : {
+          "blue" : 0,
+          "green" : 0.7352941176470589,
+          "opacity" : 1,
+          "red" : 1
+        }
+      }
+    },
+    {
+      "base" : {
+        "blue" : 0.5,
+        "green" : 0.5,
+        "opacity" : 1,
+        "red" : 0.5
+      },
+      "treated" : {
+        "monochrome" : {
+          "blue" : 0.75,
+          "green" : 0.75,
+          "opacity" : 1,
+          "red" : 0.75
+        },
+        "original" : {
+          "blue" : 0.5,
+          "green" : 0.5,
+          "opacity" : 1,
+          "red" : 0.5
+        },
+        "pastel" : {
+          "blue" : 0.626,
+          "green" : 0.6539999999999999,
+          "opacity" : 1,
+          "red" : 0.675
+        },
+        "vivid" : {
+          "blue" : 1,
+          "green" : 1,
+          "opacity" : 1,
+          "red" : 1
+        }
+      }
+    },
+    {
+      "base" : {
+        "blue" : 0.6,
+        "green" : 0.1,
+        "opacity" : 1,
+        "red" : 0.1
+      },
+      "treated" : {
+        "monochrome" : {
+          "blue" : 0.6128,
+          "green" : 0.6128,
+          "opacity" : 1,
+          "red" : 0.6128
+        },
+        "original" : {
+          "blue" : 0.6,
+          "green" : 0.1,
+          "opacity" : 1,
+          "red" : 0.1
+        },
+        "pastel" : {
+          "blue" : 0.691,
+          "green" : 0.394,
+          "opacity" : 1,
+          "red" : 0.41500000000000004
+        },
+        "vivid" : {
+          "blue" : 1,
+          "green" : 0.39999999999999997,
+          "opacity" : 1,
+          "red" : 0.39999999999999997
+        }
+      }
+    },
+    {
+      "base" : {
+        "blue" : 0,
+        "green" : 0,
+        "opacity" : 1,
+        "red" : 0
+      },
+      "treated" : {
+        "monochrome" : {
+          "blue" : 0.55,
+          "green" : 0.55,
+          "opacity" : 1,
+          "red" : 0.55
+        },
+        "original" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
+        },
+        "pastel" : {
+          "blue" : 0.301,
+          "green" : 0.32899999999999996,
+          "opacity" : 1,
+          "red" : 0.35
+        },
+        "vivid" : {
+          "blue" : 1,
+          "green" : 1,
+          "opacity" : 1,
+          "red" : 1
+        }
+      }
+    }
+  ],
+  "defaultTheme" : "midnight",
+  "glassSheen" : {
+    "fillBottom" : {
+      "blue" : 1,
+      "green" : 1,
+      "opacity" : 0.04,
+      "red" : 1
+    },
+    "fillTop" : {
+      "blue" : 1,
+      "green" : 1,
+      "opacity" : 0.12,
+      "red" : 1
+    },
+    "glint" : {
+      "blue" : 1,
+      "green" : 1,
+      "opacity" : 0.08,
+      "red" : 1
+    },
+    "rimBottom" : {
+      "blue" : 1,
+      "green" : 1,
+      "opacity" : 0.08,
+      "red" : 1
+    },
+    "rimTop" : {
+      "blue" : 1,
+      "green" : 1,
+      "opacity" : 0.5,
+      "red" : 1
+    }
+  },
+  "legacyKitThemes" : {
+    "notch" : "midnight"
+  },
+  "schema" : "tabbi.themes.golden",
+  "themes" : [
+    {
+      "accents" : "original",
+      "controls" : "solid",
+      "family" : "classic",
+      "id" : "midnight",
+      "motion" : "standard",
+      "name" : "Midnight",
+      "palette" : {
+        "background" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
+        },
+        "danger" : {
+          "blue" : 0.36,
+          "green" : 0.38,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "primaryText" : {
+          "blue" : 1,
+          "green" : 1,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "secondaryText" : {
+          "blue" : 1,
+          "green" : 1,
+          "opacity" : 0.62,
+          "red" : 1
+        },
+        "stroke" : {
+          "blue" : 1,
+          "green" : 1,
+          "opacity" : 0.08,
+          "red" : 1
+        },
+        "success" : {
+          "blue" : 0.48,
+          "green" : 0.85,
+          "opacity" : 1,
+          "red" : 0.3
+        },
+        "surface" : {
+          "blue" : 1,
+          "green" : 1,
+          "opacity" : 0.07,
+          "red" : 1
+        },
+        "surfaceHover" : {
+          "blue" : 1,
+          "green" : 1,
+          "opacity" : 0.12,
+          "red" : 1
+        },
+        "tertiaryText" : {
+          "blue" : 1,
+          "green" : 1,
+          "opacity" : 0.48,
+          "red" : 1
+        },
+        "warning" : {
+          "blue" : 0.28,
+          "green" : 0.74,
+          "opacity" : 1,
+          "red" : 1
+        }
+      },
+      "summary" : "Hardware black, calm and crisp.",
+      "surfaces" : "flat",
+      "typeface" : "rounded"
+    },
+    {
+      "accents" : "original",
+      "controls" : "solid",
+      "family" : "classic",
+      "id" : "graphite",
+      "motion" : "standard",
+      "name" : "Graphite",
+      "palette" : {
+        "background" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
+        },
+        "danger" : {
+          "blue" : 0.36,
+          "green" : 0.38,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "glow" : {
+          "blue" : 0.42,
+          "green" : 0.38,
+          "opacity" : 0.24,
+          "red" : 0.36
+        },
+        "primaryText" : {
+          "blue" : 0.97,
+          "green" : 0.95,
+          "opacity" : 1,
+          "red" : 0.94
+        },
+        "secondaryText" : {
+          "blue" : 0.94,
+          "green" : 0.9,
+          "opacity" : 0.72,
+          "red" : 0.88
+        },
+        "stroke" : {
+          "blue" : 0.9,
+          "green" : 0.82,
+          "opacity" : 0.12,
+          "red" : 0.78
+        },
+        "success" : {
+          "blue" : 0.48,
+          "green" : 0.85,
+          "opacity" : 1,
+          "red" : 0.3
+        },
+        "surface" : {
+          "blue" : 0.9,
+          "green" : 0.82,
+          "opacity" : 0.09,
+          "red" : 0.78
+        },
+        "surfaceHover" : {
+          "blue" : 0.9,
+          "green" : 0.82,
+          "opacity" : 0.15,
+          "red" : 0.78
+        },
+        "tertiaryText" : {
+          "blue" : 0.94,
+          "green" : 0.9,
+          "opacity" : 0.6,
+          "red" : 0.88
+        },
+        "warning" : {
+          "blue" : 0.28,
+          "green" : 0.74,
+          "opacity" : 1,
+          "red" : 1
+        }
+      },
+      "summary" : "Cool gray surfaces and plain SF type.",
+      "surfaces" : "flat",
+      "typeface" : "standard"
+    },
+    {
+      "accents" : "original",
+      "controls" : "glass",
+      "family" : "classic",
+      "id" : "liquidGlass",
+      "motion" : "standard",
+      "name" : "Liquid Glass",
+      "palette" : {
+        "background" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
+        },
+        "danger" : {
+          "blue" : 0.36,
+          "green" : 0.38,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "glow" : {
+          "blue" : 0.98,
+          "green" : 0.5,
+          "opacity" : 0.26,
+          "red" : 0.28
+        },
+        "primaryText" : {
+          "blue" : 1,
+          "green" : 1,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "secondaryText" : {
+          "blue" : 1,
+          "green" : 1,
+          "opacity" : 0.78,
+          "red" : 1
+        },
+        "stroke" : {
+          "blue" : 1,
+          "green" : 1,
+          "opacity" : 0.14,
+          "red" : 1
+        },
+        "success" : {
+          "blue" : 0.48,
+          "green" : 0.85,
+          "opacity" : 1,
+          "red" : 0.3
+        },
+        "surface" : {
+          "blue" : 1,
+          "green" : 1,
+          "opacity" : 0.08,
+          "red" : 1
+        },
+        "surfaceHover" : {
+          "blue" : 1,
+          "green" : 1,
+          "opacity" : 0.14,
+          "red" : 1
+        },
+        "tertiaryText" : {
+          "blue" : 1,
+          "green" : 1,
+          "opacity" : 0.64,
+          "red" : 1
+        },
+        "warning" : {
+          "blue" : 0.28,
+          "green" : 0.74,
+          "opacity" : 1,
+          "red" : 1
+        }
+      },
+      "summary" : "Frosted glass cards over a cool blue glow.",
+      "surfaces" : "glass",
+      "typeface" : "standard"
+    },
+    {
+      "accents" : "vivid",
+      "controls" : "solid",
+      "family" : "classic",
+      "id" : "neon",
+      "motion" : "standard",
+      "name" : "Neon",
+      "palette" : {
+        "background" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
+        },
+        "danger" : {
+          "blue" : 0.55,
+          "green" : 0.25,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "glow" : {
+          "blue" : 0.95,
+          "green" : 0.18,
+          "opacity" : 0.22,
+          "red" : 0.55
+        },
+        "primaryText" : {
+          "blue" : 1,
+          "green" : 1,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "secondaryText" : {
+          "blue" : 1,
+          "green" : 0.92,
+          "opacity" : 0.7,
+          "red" : 0.85
+        },
+        "stroke" : {
+          "blue" : 1,
+          "green" : 0.95,
+          "opacity" : 0.22,
+          "red" : 0.35
+        },
+        "success" : {
+          "blue" : 0.6,
+          "green" : 1,
+          "opacity" : 1,
+          "red" : 0.2
+        },
+        "surface" : {
+          "blue" : 1,
+          "green" : 0.8,
+          "opacity" : 0.08,
+          "red" : 0.7
+        },
+        "surfaceHover" : {
+          "blue" : 1,
+          "green" : 0.8,
+          "opacity" : 0.14,
+          "red" : 0.7
+        },
+        "tertiaryText" : {
+          "blue" : 1,
+          "green" : 0.92,
+          "opacity" : 0.57,
+          "red" : 0.85
+        },
+        "warning" : {
+          "blue" : 0.2,
+          "green" : 0.85,
+          "opacity" : 1,
+          "red" : 1
+        }
+      },
+      "summary" : "Vivid accents with a violet glow.",
+      "surfaces" : "flat",
+      "typeface" : "rounded"
+    },
+    {
+      "accents" : "monochrome",
+      "controls" : "solid",
+      "family" : "classic",
+      "id" : "monochrome",
+      "motion" : "standard",
+      "name" : "Monochrome",
+      "palette" : {
+        "background" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
+        },
+        "danger" : {
+          "blue" : 0.53,
+          "green" : 0.55,
+          "opacity" : 1,
+          "red" : 0.95
+        },
+        "primaryText" : {
+          "blue" : 1,
+          "green" : 1,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "secondaryText" : {
+          "blue" : 1,
+          "green" : 1,
+          "opacity" : 0.62,
+          "red" : 1
+        },
+        "stroke" : {
+          "blue" : 1,
+          "green" : 1,
+          "opacity" : 0.1,
+          "red" : 1
+        },
+        "success" : {
+          "blue" : 0.92,
+          "green" : 0.92,
+          "opacity" : 1,
+          "red" : 0.92
+        },
+        "surface" : {
+          "blue" : 1,
+          "green" : 1,
+          "opacity" : 0.07,
+          "red" : 1
+        },
+        "surfaceHover" : {
+          "blue" : 1,
+          "green" : 1,
+          "opacity" : 0.12,
+          "red" : 1
+        },
+        "tertiaryText" : {
+          "blue" : 1,
+          "green" : 1,
+          "opacity" : 0.48,
+          "red" : 1
+        },
+        "warning" : {
+          "blue" : 0.78,
+          "green" : 0.78,
+          "opacity" : 1,
+          "red" : 0.78
+        }
+      },
+      "summary" : "Grayscale everything, no distractions.",
+      "surfaces" : "flat",
+      "typeface" : "standard"
+    },
+    {
+      "accents" : "pastel",
+      "controls" : "solid",
+      "family" : "cozy",
+      "id" : "cozy",
+      "motion" : "gentle",
+      "name" : "Cozy",
+      "palette" : {
+        "background" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
+        },
+        "danger" : {
+          "blue" : 0.5,
+          "green" : 0.52,
+          "opacity" : 1,
+          "red" : 0.96
+        },
+        "glow" : {
+          "blue" : 0.42,
+          "green" : 0.6,
+          "opacity" : 0.18,
+          "red" : 0.96
+        },
+        "primaryText" : {
+          "blue" : 0.904,
+          "green" : 0.958,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "secondaryText" : {
+          "blue" : 0.84,
+          "green" : 0.93,
+          "opacity" : 0.74,
+          "red" : 1
+        },
+        "stroke" : {
+          "blue" : 0.84,
+          "green" : 0.93,
+          "opacity" : 0.1,
+          "red" : 1
+        },
+        "success" : {
+          "blue" : 0.58,
+          "green" : 0.82,
+          "opacity" : 1,
+          "red" : 0.62
+        },
+        "surface" : {
+          "blue" : 0.84,
+          "green" : 0.93,
+          "opacity" : 0.08,
+          "red" : 1
+        },
+        "surfaceHover" : {
+          "blue" : 0.84,
+          "green" : 0.93,
+          "opacity" : 0.14,
+          "red" : 1
+        },
+        "tertiaryText" : {
+          "blue" : 0.84,
+          "green" : 0.93,
+          "opacity" : 0.6,
+          "red" : 1
+        },
+        "warning" : {
+          "blue" : 0.45,
+          "green" : 0.78,
+          "opacity" : 1,
+          "red" : 0.98
+        }
+      },
+      "summary" : "Warm cream and peach, soft and gentle.",
+      "surfaces" : "flat",
+      "typeface" : "rounded"
+    },
+    {
+      "accents" : "pastel",
+      "controls" : "solid",
+      "family" : "cozy",
+      "id" : "sakura",
+      "motion" : "gentle",
+      "name" : "Sakura",
+      "palette" : {
+        "background" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
+        },
+        "danger" : {
+          "blue" : 0.5,
+          "green" : 0.52,
+          "opacity" : 1,
+          "red" : 0.96
+        },
+        "glow" : {
+          "blue" : 0.68,
+          "green" : 0.52,
+          "opacity" : 0.18,
+          "red" : 0.98
+        },
+        "primaryText" : {
+          "blue" : 0.964,
+          "green" : 0.946,
+          "opacity" : 1,
+          "red" : 1
+        },
+        "secondaryText" : {
+          "blue" : 0.94,
+          "green" : 0.91,
+          "opacity" : 0.74,
+          "red" : 1
+        },
+        "stroke" : {
+          "blue" : 0.94,
+          "green" : 0.91,
+          "opacity" : 0.1,
+          "red" : 1
+        },
+        "success" : {
+          "blue" : 0.58,
+          "green" : 0.82,
+          "opacity" : 1,
+          "red" : 0.62
+        },
+        "surface" : {
+          "blue" : 0.94,
+          "green" : 0.91,
+          "opacity" : 0.08,
+          "red" : 1
+        },
+        "surfaceHover" : {
+          "blue" : 0.94,
+          "green" : 0.91,
+          "opacity" : 0.14,
+          "red" : 1
+        },
+        "tertiaryText" : {
+          "blue" : 0.94,
+          "green" : 0.91,
+          "opacity" : 0.6,
+          "red" : 1
+        },
+        "warning" : {
+          "blue" : 0.45,
+          "green" : 0.78,
+          "opacity" : 1,
+          "red" : 0.98
+        }
+      },
+      "summary" : "Cherry blossom pink on warm black.",
+      "surfaces" : "flat",
+      "typeface" : "rounded"
+    },
+    {
+      "accents" : "pastel",
+      "controls" : "solid",
+      "family" : "cozy",
+      "id" : "forest",
+      "motion" : "gentle",
+      "name" : "Forest",
+      "palette" : {
+        "background" : {
+          "blue" : 0,
+          "green" : 0,
+          "opacity" : 1,
+          "red" : 0
+        },
+        "danger" : {
+          "blue" : 0.5,
+          "green" : 0.52,
+          "opacity" : 1,
+          "red" : 0.96
+        },
+        "glow" : {
+          "blue" : 0.46,
+          "green" : 0.68,
+          "opacity" : 0.18,
+          "red" : 0.42
+        },
+        "primaryText" : {
+          "blue" : 0.952,
+          "green" : 1,
+          "opacity" : 1,
+          "red" : 0.952
+        },
+        "secondaryText" : {
+          "blue" : 0.92,
+          "green" : 1,
+          "opacity" : 0.74,
+          "red" : 0.92
+        },
+        "stroke" : {
+          "blue" : 0.92,
+          "green" : 1,
+          "opacity" : 0.1,
+          "red" : 0.92
+        },
+        "success" : {
+          "blue" : 0.58,
+          "green" : 0.82,
+          "opacity" : 1,
+          "red" : 0.62
+        },
+        "surface" : {
+          "blue" : 0.92,
+          "green" : 1,
+          "opacity" : 0.08,
+          "red" : 0.92
+        },
+        "surfaceHover" : {
+          "blue" : 0.92,
+          "green" : 1,
+          "opacity" : 0.14,
+          "red" : 0.92
+        },
+        "tertiaryText" : {
+          "blue" : 0.92,
+          "green" : 1,
+          "opacity" : 0.6,
+          "red" : 0.92
+        },
+        "warning" : {
+          "blue" : 0.45,
+          "green" : 0.78,
+          "opacity" : 1,
+          "red" : 0.98
+        }
+      },
+      "summary" : "Mossy sage greens, quiet as a walk.",
+      "surfaces" : "flat",
+      "typeface" : "rounded"
+    }
+  ],
+  "version" : 1
+}

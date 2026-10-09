@@ -1,11 +1,19 @@
 import Foundation
 
-/// Every theme Tabbi ships, in picker order.
+/// Every theme Tabbi ships, in picker order, loaded from `themes.json`.
+///
+/// The themes are data so the Mac app and the Windows port draw the same
+/// colors from one source; `shared/schemas/themes.v1.schema.json` describes
+/// the format. What a theme does with them (accent treatments, gentle
+/// motion, glass) stays in code, pinned for both apps by
+/// `shared/fixtures/themes/themes.json`.
 public enum ThemeCatalog {
-    /// Used when nothing (settings or kit) picks a theme.
-    public static let defaultID: ThemeID = .midnight
+    static let file = ThemeFile.load()
 
-    public static let all: [AppTheme] = [midnight, graphite, liquidGlass, neon, monochrome, cozy, sakura, forest]
+    /// Used when nothing (settings or kit) picks a theme.
+    public static let defaultID: ThemeID = file.defaultTheme
+
+    public static let all: [AppTheme] = file.themes
 
     /// The theme with `id`, or nil when this build doesn't have it.
     public static func theme(_ id: ThemeID) -> AppTheme? {
@@ -15,7 +23,7 @@ public enum ThemeCatalog {
     /// The theme with `id`, falling back to the default so an unknown saved
     /// id (from a newer build) still draws something sensible.
     public static func resolve(_ id: ThemeID) -> AppTheme {
-        theme(id) ?? midnight
+        theme(id) ?? named(defaultID)
     }
 
     /// The theme a kit's `theme` field names, or nil for an id this build
@@ -26,105 +34,123 @@ public enum ThemeCatalog {
         return theme(id)?.id
     }
 
-    static let legacyKitIDs: [String: ThemeID] = ["notch": .midnight]
-
-    // Status colors shared by the classic themes.
-    private static let green = ThemeColor(red: 0.30, green: 0.85, blue: 0.48)
-    private static let amber = ThemeColor(red: 1.00, green: 0.74, blue: 0.28)
-    private static let red = ThemeColor(red: 1.00, green: 0.38, blue: 0.36)
+    static let legacyKitIDs: [String: ThemeID] = file.legacyKitThemes
 
     /// White text and surfaces on black: the original Tabbi look.
-    public static let midnight = AppTheme(
-        id: .midnight, name: "Midnight", summary: "Hardware black, calm and crisp.", family: .classic,
-        palette: ThemePalette(
-            surface: ThemeColor(white: 1, opacity: 0.07), surfaceHover: ThemeColor(white: 1, opacity: 0.12),
-            stroke: ThemeColor(white: 1, opacity: 0.08), primaryText: ThemeColor(white: 1),
-            secondaryText: ThemeColor(white: 1, opacity: 0.62), tertiaryText: ThemeColor(white: 1, opacity: 0.48),
-            success: green, warning: amber, danger: red))
-
-    public static let graphite = AppTheme(
-        id: .graphite, name: "Graphite", summary: "Cool gray surfaces and plain SF type.", family: .classic,
-        palette: ThemePalette(
-            glow: ThemeColor(red: 0.36, green: 0.38, blue: 0.42, opacity: 0.24),
-            surface: ThemeColor(red: 0.78, green: 0.82, blue: 0.90, opacity: 0.09),
-            surfaceHover: ThemeColor(red: 0.78, green: 0.82, blue: 0.90, opacity: 0.15),
-            stroke: ThemeColor(red: 0.78, green: 0.82, blue: 0.90, opacity: 0.12),
-            primaryText: ThemeColor(red: 0.94, green: 0.95, blue: 0.97),
-            secondaryText: ThemeColor(red: 0.88, green: 0.90, blue: 0.94, opacity: 0.72),
-            tertiaryText: ThemeColor(red: 0.88, green: 0.90, blue: 0.94, opacity: 0.60),
-            success: green, warning: amber, danger: red),
-        typeface: .standard)
-
+    public static let midnight = named(.midnight)
+    public static let graphite = named(.graphite)
     /// An opaque black body (so the panel still meets the hardware notch)
     /// lit by a cool blue glow, with frosted glass cards and Liquid Glass
     /// controls on top of it.
-    public static let liquidGlass = AppTheme(
-        id: .liquidGlass, name: "Liquid Glass", summary: "Frosted glass cards over a cool blue glow.",
-        family: .classic,
-        palette: ThemePalette(
-            glow: ThemeColor(red: 0.28, green: 0.50, blue: 0.98, opacity: 0.26),
-            surface: ThemeColor(white: 1, opacity: 0.08), surfaceHover: ThemeColor(white: 1, opacity: 0.14),
-            stroke: ThemeColor(white: 1, opacity: 0.14), primaryText: ThemeColor(white: 1),
-            secondaryText: ThemeColor(white: 1, opacity: 0.78), tertiaryText: ThemeColor(white: 1, opacity: 0.64),
-            success: green, warning: amber, danger: red),
-        typeface: .standard, controls: .glass, surfaces: .glass)
-
-    public static let neon = AppTheme(
-        id: .neon, name: "Neon", summary: "Vivid accents with a violet glow.", family: .classic,
-        palette: ThemePalette(
-            glow: ThemeColor(red: 0.55, green: 0.18, blue: 0.95, opacity: 0.22),
-            surface: ThemeColor(red: 0.70, green: 0.80, blue: 1.00, opacity: 0.08),
-            surfaceHover: ThemeColor(red: 0.70, green: 0.80, blue: 1.00, opacity: 0.14),
-            stroke: ThemeColor(red: 0.35, green: 0.95, blue: 1.00, opacity: 0.22),
-            primaryText: ThemeColor(white: 1),
-            secondaryText: ThemeColor(red: 0.85, green: 0.92, blue: 1.00, opacity: 0.70),
-            tertiaryText: ThemeColor(red: 0.85, green: 0.92, blue: 1.00, opacity: 0.57),
-            success: ThemeColor(red: 0.20, green: 1.00, blue: 0.60),
-            warning: ThemeColor(red: 1.00, green: 0.85, blue: 0.20),
-            danger: ThemeColor(red: 1.00, green: 0.25, blue: 0.55)),
-        accents: .vivid)
-
-    public static let monochrome = AppTheme(
-        id: .monochrome, name: "Monochrome", summary: "Grayscale everything, no distractions.", family: .classic,
-        palette: ThemePalette(
-            surface: ThemeColor(white: 1, opacity: 0.07), surfaceHover: ThemeColor(white: 1, opacity: 0.12),
-            stroke: ThemeColor(white: 1, opacity: 0.10), primaryText: ThemeColor(white: 1),
-            secondaryText: ThemeColor(white: 1, opacity: 0.62), tertiaryText: ThemeColor(white: 1, opacity: 0.48),
-            success: ThemeColor(white: 0.92), warning: ThemeColor(white: 0.78),
-            // Errors keep a soft red: losing them would hide real problems.
-            danger: ThemeColor(red: 0.95, green: 0.55, blue: 0.53)),
-        accents: .monochrome, typeface: .standard)
-
+    public static let liquidGlass = named(.liquidGlass)
+    public static let neon = named(.neon)
+    public static let monochrome = named(.monochrome)
     /// The study default: cream text, peach glow, sage and honey status
     /// colors, pastel accents and gentle motion.
-    public static let cozy = AppTheme(
-        id: .cozy, name: "Cozy", summary: "Warm cream and peach, soft and gentle.", family: .cozy,
-        palette: cozyPalette(glow: ThemeColor(red: 0.96, green: 0.60, blue: 0.42, opacity: 0.18),
-                             tint: ThemeColor(red: 1.00, green: 0.93, blue: 0.84)),
-        accents: .pastel, motion: .gentle)
+    public static let cozy = named(.cozy)
+    public static let sakura = named(.sakura)
+    public static let forest = named(.forest)
 
-    public static let sakura = AppTheme(
-        id: .sakura, name: "Sakura", summary: "Cherry blossom pink on warm black.", family: .cozy,
-        palette: cozyPalette(glow: ThemeColor(red: 0.98, green: 0.52, blue: 0.68, opacity: 0.18),
-                             tint: ThemeColor(red: 1.00, green: 0.91, blue: 0.94)),
-        accents: .pastel, motion: .gentle)
+    /// A theme `themes.json` must have; `ThemeFile` checks the file has
+    /// every id `ThemeID` names.
+    private static func named(_ id: ThemeID) -> AppTheme {
+        guard let theme = theme(id) else { preconditionFailure("themes.json has no theme \"\(id)\"") }
+        return theme
+    }
+}
 
-    public static let forest = AppTheme(
-        id: .forest, name: "Forest", summary: "Mossy sage greens, quiet as a walk.", family: .cozy,
-        palette: cozyPalette(glow: ThemeColor(red: 0.42, green: 0.68, blue: 0.46, opacity: 0.18),
-                             tint: ThemeColor(red: 0.92, green: 1.00, blue: 0.92)),
-        accents: .pastel, motion: .gentle)
+/// `themes.json`: the themes in picker order, the default, the kit values
+/// that predate themes, and the glass sheen of glass surfaces.
+struct ThemeFile: Decodable, Sendable {
+    enum LoadError: Error, Equatable, CustomStringConvertible {
+        case unsupportedSchema(String)
+        case duplicateTheme(ThemeID)
+        case unknownTheme(path: String, id: ThemeID)
+        case componentOutOfRange(path: String, value: Double)
 
-    /// The cozy themes share one structure: surfaces and text tinted toward
-    /// `tint`, a colored `glow`, and soft status colors.
-    private static func cozyPalette(glow: ThemeColor, tint: ThemeColor) -> ThemePalette {
-        ThemePalette(
-            glow: glow,
-            surface: tint.opacity(0.08), surfaceHover: tint.opacity(0.14), stroke: tint.opacity(0.10),
-            primaryText: tint.mixed(with: ThemeColor(white: 1), by: 0.4),
-            secondaryText: tint.opacity(0.74), tertiaryText: tint.opacity(0.60),
-            success: ThemeColor(red: 0.62, green: 0.82, blue: 0.58),
-            warning: ThemeColor(red: 0.98, green: 0.78, blue: 0.45),
-            danger: ThemeColor(red: 0.96, green: 0.52, blue: 0.50))
+        var description: String {
+            switch self {
+            case .unsupportedSchema(let schema): "Unsupported schema \"\(schema)\"; expected \"\(ThemeFile.schemaName)\""
+            case .duplicateTheme(let id): "Theme \"\(id)\" is defined twice"
+            case let .unknownTheme(path, id): "\(path): no theme \"\(id)\""
+            case let .componentOutOfRange(path, value): "\(path): \(value) is outside 0...1"
+            }
+        }
+    }
+
+    static let schemaName = "themes.v1"
+
+    /// The ids Swift names (`ThemeID.midnight` and so on), which the file
+    /// must define.
+    static let requiredIDs: [ThemeID] = [.midnight, .graphite, .liquidGlass, .neon, .monochrome, .cozy, .sakura, .forest]
+
+    let schema: String
+    let defaultTheme: ThemeID
+    let legacyKitThemes: [String: ThemeID]
+    let glassSheen: GlassSheen
+    let themes: [AppTheme]
+
+    /// Reads the bundled file. It ships inside the app, so a missing or
+    /// broken file is a build mistake: this stops with the reason instead of
+    /// drawing with made-up colors.
+    static func load() -> ThemeFile {
+        guard let url = KitResources.bundle?.url(forResource: "themes", withExtension: "json") else {
+            preconditionFailure("Missing themes.json")
+        }
+        do {
+            return try decode(Data(contentsOf: url))
+        } catch {
+            preconditionFailure("Invalid themes.json: \(error)")
+        }
+    }
+
+    /// Parses and checks a file: its schema version, unique ids, every id it
+    /// or Swift refers to, and color components in 0...1.
+    static func decode(_ data: Data) throws -> ThemeFile {
+        let file = try JSONDecoder().decode(ThemeFile.self, from: data)
+        guard file.schema == schemaName else { throw LoadError.unsupportedSchema(file.schema) }
+        var ids = Set<ThemeID>()
+        for theme in file.themes where !ids.insert(theme.id).inserted {
+            throw LoadError.duplicateTheme(theme.id)
+        }
+        func check(_ id: ThemeID, _ path: String) throws {
+            guard ids.contains(id) else { throw LoadError.unknownTheme(path: path, id: id) }
+        }
+        try check(file.defaultTheme, "defaultTheme")
+        for (value, id) in file.legacyKitThemes.sorted(by: { $0.key < $1.key }) {
+            try check(id, "legacyKitThemes.\(value)")
+        }
+        for id in requiredIDs {
+            try check(id, "themes")
+        }
+        func check(_ color: ThemeColor, _ path: String) throws {
+            for (name, value) in [("red", color.red), ("green", color.green), ("blue", color.blue), ("opacity", color.opacity)]
+            where !(0...1).contains(value) {
+                throw LoadError.componentOutOfRange(path: "\(path).\(name)", value: value)
+            }
+        }
+        let sheen = file.glassSheen
+        for (name, color) in [("fillTop", sheen.fillTop), ("fillBottom", sheen.fillBottom), ("glint", sheen.glint),
+                              ("rimTop", sheen.rimTop), ("rimBottom", sheen.rimBottom)] {
+            try check(color, "glassSheen.\(name)")
+        }
+        for (index, theme) in file.themes.enumerated() {
+            for (role, color) in theme.palette.roles {
+                try check(color, "themes[\(index)].palette.\(role)")
+            }
+        }
+        return file
+    }
+}
+
+extension ThemePalette {
+    /// Every color by its `themes.json` key, in declaration order; `glow`
+    /// only when set.
+    var roles: [(String, ThemeColor)] {
+        [("background", background)] + (glow.map { [("glow", $0)] } ?? []) + [
+            ("surface", surface), ("surfaceHover", surfaceHover), ("stroke", stroke),
+            ("primaryText", primaryText), ("secondaryText", secondaryText), ("tertiaryText", tertiaryText),
+            ("success", success), ("warning", warning), ("danger", danger),
+        ]
     }
 }

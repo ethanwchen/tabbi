@@ -1,0 +1,109 @@
+{
+  "schema": "study-methods.v1",
+  "phaseMinutes": {"min": 1, "max": 240},
+  "footnote": "Interval lengths are conventions. What research supports is regular breaks, testing yourself, and spacing reviews over days.",
+  "evidenceLevels": {
+    "strong": "Well supported",
+    "mixed": "Some evidence",
+    "weak": "Mostly convention"
+  },
+  "ankiSprint": {"breakAfterCards": 200, "breakAfterMinutes": 30},
+  "timer": {
+    "minMinutes": 1,
+    "maxMinutes": 180,
+    "presetMinutes": [5, 10, 25]
+  },
+  "custom": {
+    "longBreak": {"minutes": 15, "every": 4},
+    "fields": {
+      "focus": {"min": 5, "max": 180, "step": 5},
+      "shortBreak": {"min": 1, "max": 60, "step": 1},
+      "longBreak": {"min": 5, "max": 60, "step": 5},
+      "longBreakEvery": {"min": 2, "max": 8, "step": 1}
+    }
+  },
+  "methods": [
+    {
+      "kind": "pomodoro",
+      "focus": {"minutes": 25},
+      "break": {"minutes": 5},
+      "longBreak": {"minutes": 15, "every": 4},
+      "name": "Pomodoro",
+      "tagline": "25 min focus, 5 min break",
+      "howTo": "Work on one thing for 25 minutes, then take a 5-minute break away from the screen. After four rounds, take a longer 15-minute break. Short, fixed rounds make it easy to start.",
+      "evidence": "In one study, scheduled breaks beat ad-hoc breaks for mood and efficiency (Biwer et al., 2023). The 25-minute length itself is a convention.",
+      "evidenceLevel": "mixed"
+    },
+    {
+      "kind": "fiftyTwoSeventeen",
+      "focus": {"minutes": 52},
+      "break": {"minutes": 17},
+      "name": "52 / 17",
+      "tagline": "52 min focus, 17 min break",
+      "howTo": "Focus for 52 minutes, then take a full 17-minute break. Use the break to actually rest: stand up, move, get water. Good for longer reading or question blocks.",
+      "evidence": "This ratio comes from a 2014 productivity-app blog post about its users, not from a study of learning. Treat it as a preset, not a finding.",
+      "evidenceLevel": "weak"
+    },
+    {
+      "kind": "ultradian",
+      "focus": {"minutes": 90},
+      "break": {"minutes": 20},
+      "name": "Ultradian",
+      "tagline": "90 min deep block, 20 min rest",
+      "howTo": "Do one deep 90-minute block, then rest for about 20 minutes. Best for hard work like a dense lecture or a long practice block. Do at most 3 or 4 of these a day.",
+      "evidence": "Strict 90-minute daytime cycles have little evidence. Studies of expert practice do support capping deep work at about 4 hours a day (Ericsson et al., 1993).",
+      "evidenceLevel": "weak"
+    },
+    {
+      "kind": "flowtime",
+      "focus": "openEnded",
+      "break": {"flowtime": "tiered"},
+      "name": "Flowtime",
+      "tagline": "Study until focus slips, break scales",
+      "howTo": "Start the timer and study until your focus starts to slip, then stop. Your break scales with how long you worked: 5 minutes after up to 25, 8 after up to 50, 10 after that.",
+      "evidence": "In a 2025 comparison, Flowtime did no better or worse overall than Pomodoro or self-chosen breaks (Smits et al., 2025).",
+      "evidenceLevel": "mixed"
+    },
+    {
+      "kind": "ankiSprint",
+      "focus": {"cards": 100},
+      "break": {"minutes": 5},
+      "name": "Anki sprint",
+      "tagline": "Clear a card goal, not a clock",
+      "howTo": "Pick a number of cards, for example 100, and go through them without stopping. The timer counts cards answered in Anki and ends when you hit the goal. Do your due reviews before adding new cards.",
+      "evidence": "Spaced retrieval, what Anki does, is one of the best-supported study techniques (Dunlosky et al., 2013). Links between Anki use and exam scores are correlational.",
+      "evidenceLevel": "strong"
+    },
+    {
+      "kind": "questionBlock",
+      "focus": {"minutes": 60},
+      "break": {"minutes": 10},
+      "review": {"minutes": 60},
+      "questionCount": 40,
+      "name": "Question block",
+      "tagline": "40 questions in 60 min, then review",
+      "howTo": "Do a timed block of practice questions, up to 40 in 60 minutes, as on a real board exam. Then spend at least as long reviewing every explanation, including the ones you got right.",
+      "evidence": "Testing yourself, then checking answers, is among the best-supported ways to learn (Roediger & Karpicke, 2006; Dunlosky et al., 2013).",
+      "evidenceLevel": "strong"
+    },
+    {
+      "kind": "custom",
+      "focus": {"minutes": 30},
+      "break": {"minutes": 5},
+      "name": "Custom",
+      "tagline": "Your own focus and break lengths",
+      "howTo": "Set your own focus and break lengths, and optionally a longer break every few rounds. Pick a rhythm you will actually stick to.",
+      "evidence": "No interval is proven best. Taking regular breaks at all is what has support.",
+      "evidenceLevel": "mixed"
+    },
+    {
+      "kind": "timer",
+      "focus": {"minutes": 10},
+      "break": "none",
+      "name": "Timer",
+      "tagline": "One countdown, no breaks",
+      "howTo": "Pick 5, 10 or 25 minutes, or step to any length, and press Start. The timer counts down once and stops. Handy for a quick task, a break or the kettle.",
+      "evidence": "A plain countdown is a tool, not a study method. Setting a short, fixed time can make a task easier to start."
+    }
+  ]
+}

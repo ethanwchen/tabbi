@@ -1,0 +1,3220 @@
+{
+  "constants" : {
+    "maxPartyPets" : 4,
+    "meetingHorizon" : 3600,
+    "petSleepAfter" : 1200,
+    "pinLeadTime" : 300
+  },
+  "kinds" : [
+    {
+      "kind" : "meeting",
+      "module" : "planner",
+      "position" : "leading"
+    },
+    {
+      "kind" : "nowPlaying",
+      "module" : "spotify",
+      "position" : "leading"
+    },
+    {
+      "kind" : "focus",
+      "position" : "leading"
+    },
+    {
+      "kind" : "tasks",
+      "module" : "planner",
+      "position" : "leading"
+    },
+    {
+      "kind" : "progress",
+      "position" : "leading"
+    },
+    {
+      "kind" : "party",
+      "module" : "party",
+      "position" : "trailing"
+    },
+    {
+      "kind" : "pet",
+      "module" : "closet",
+      "position" : "trailing"
+    }
+  ],
+  "rotations" : [
+    {
+      "interval" : 8,
+      "name" : "nothing-to-show",
+      "steps" : [
+        {
+          "at" : 1790000000,
+          "items" : [
+
+          ]
+        }
+      ]
+    },
+    {
+      "interval" : 8,
+      "name" : "holds-each-item-then-wraps",
+      "steps" : [
+        {
+          "at" : 1790000000,
+          "currentKind" : "tasks",
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "progress",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "tasks",
+          "shownSince" : 1790000000
+        },
+        {
+          "at" : 1790000007.75,
+          "currentKind" : "tasks",
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "progress",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "tasks",
+          "shownSince" : 1790000000
+        },
+        {
+          "at" : 1790000008,
+          "currentKind" : "progress",
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "progress",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "progress",
+          "shownSince" : 1790000008
+        },
+        {
+          "at" : 1790000016,
+          "currentKind" : "pet",
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "progress",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "pet",
+          "shownSince" : 1790000016
+        },
+        {
+          "at" : 1790000024,
+          "currentKind" : "tasks",
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "progress",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "tasks",
+          "shownSince" : 1790000024
+        }
+      ]
+    },
+    {
+      "interval" : 8,
+      "name" : "single-item-restarts-its-hold",
+      "steps" : [
+        {
+          "at" : 1790000000,
+          "currentKind" : "nowPlaying",
+          "items" : [
+            {
+              "kind" : "nowPlaying",
+              "pinned" : false
+            }
+          ],
+          "shown" : "nowPlaying",
+          "shownSince" : 1790000000
+        },
+        {
+          "at" : 1790000008,
+          "currentKind" : "nowPlaying",
+          "items" : [
+            {
+              "kind" : "nowPlaying",
+              "pinned" : false
+            }
+          ],
+          "shown" : "nowPlaying",
+          "shownSince" : 1790000008
+        },
+        {
+          "at" : 1790000009,
+          "currentKind" : "nowPlaying",
+          "items" : [
+            {
+              "kind" : "nowPlaying",
+              "pinned" : false
+            }
+          ],
+          "shown" : "nowPlaying",
+          "shownSince" : 1790000008
+        }
+      ]
+    },
+    {
+      "interval" : 8,
+      "name" : "vanished-item-hands-over-to-its-successor",
+      "steps" : [
+        {
+          "at" : 1790000000,
+          "currentKind" : "meeting",
+          "items" : [
+            {
+              "kind" : "meeting",
+              "pinned" : false
+            },
+            {
+              "kind" : "focus",
+              "pinned" : false
+            },
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "meeting",
+          "shownSince" : 1790000000
+        },
+        {
+          "at" : 1790000008,
+          "currentKind" : "focus",
+          "items" : [
+            {
+              "kind" : "meeting",
+              "pinned" : false
+            },
+            {
+              "kind" : "focus",
+              "pinned" : false
+            },
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "focus",
+          "shownSince" : 1790000008
+        },
+        {
+          "at" : 1790000009,
+          "currentKind" : "tasks",
+          "items" : [
+            {
+              "kind" : "meeting",
+              "pinned" : false
+            },
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "tasks",
+          "shownSince" : 1790000009
+        },
+        {
+          "at" : 1790000010,
+          "currentKind" : "pet",
+          "items" : [
+            {
+              "kind" : "meeting",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "pet",
+          "shownSince" : 1790000010
+        }
+      ]
+    },
+    {
+      "interval" : 8,
+      "name" : "vanished-last-item-wraps-to-first",
+      "steps" : [
+        {
+          "at" : 1790000000,
+          "currentKind" : "tasks",
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "tasks",
+          "shownSince" : 1790000000
+        },
+        {
+          "at" : 1790000008,
+          "currentKind" : "pet",
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "pet",
+          "shownSince" : 1790000008
+        },
+        {
+          "at" : 1790000009,
+          "currentKind" : "tasks",
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            }
+          ],
+          "shown" : "tasks",
+          "shownSince" : 1790000009
+        }
+      ]
+    },
+    {
+      "interval" : 8,
+      "name" : "vanished-item-and-successors-fall-back-to-first",
+      "steps" : [
+        {
+          "at" : 1790000000,
+          "currentKind" : "focus",
+          "items" : [
+            {
+              "kind" : "focus",
+              "pinned" : false
+            },
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "focus",
+          "shownSince" : 1790000000
+        },
+        {
+          "at" : 1790000008,
+          "currentKind" : "tasks",
+          "items" : [
+            {
+              "kind" : "focus",
+              "pinned" : false
+            },
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "tasks",
+          "shownSince" : 1790000008
+        },
+        {
+          "at" : 1790000009,
+          "currentKind" : "pet",
+          "items" : [
+            {
+              "kind" : "focus",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "pet",
+          "shownSince" : 1790000009
+        },
+        {
+          "at" : 1790000010,
+          "currentKind" : "nowPlaying",
+          "items" : [
+            {
+              "kind" : "nowPlaying",
+              "pinned" : false
+            },
+            {
+              "kind" : "party",
+              "pinned" : false
+            }
+          ],
+          "shown" : "nowPlaying",
+          "shownSince" : 1790000010
+        }
+      ]
+    },
+    {
+      "interval" : 8,
+      "name" : "new-item-joins-in-order",
+      "steps" : [
+        {
+          "at" : 1790000000,
+          "currentKind" : "tasks",
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "tasks",
+          "shownSince" : 1790000000
+        },
+        {
+          "at" : 1790000004,
+          "currentKind" : "tasks",
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "progress",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "tasks",
+          "shownSince" : 1790000000
+        },
+        {
+          "at" : 1790000008,
+          "currentKind" : "progress",
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "progress",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "progress",
+          "shownSince" : 1790000008
+        }
+      ]
+    },
+    {
+      "interval" : 8,
+      "name" : "pinned-meeting-holds-then-rotation-resumes",
+      "steps" : [
+        {
+          "at" : 1790000000,
+          "currentKind" : "tasks",
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "tasks",
+          "shownSince" : 1790000000
+        },
+        {
+          "at" : 1790000002,
+          "currentKind" : "meeting",
+          "items" : [
+            {
+              "kind" : "meeting",
+              "pinned" : true
+            },
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "meeting",
+          "shownSince" : 1790000002
+        },
+        {
+          "at" : 1790000030,
+          "currentKind" : "meeting",
+          "items" : [
+            {
+              "kind" : "meeting",
+              "pinned" : true
+            },
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "meeting",
+          "shownSince" : 1790000002
+        },
+        {
+          "at" : 1790000031,
+          "currentKind" : "tasks",
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "tasks",
+          "shownSince" : 1790000031
+        },
+        {
+          "at" : 1790000038,
+          "currentKind" : "tasks",
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "tasks",
+          "shownSince" : 1790000031
+        },
+        {
+          "at" : 1790000039,
+          "currentKind" : "pet",
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "pet",
+          "shownSince" : 1790000039
+        }
+      ]
+    },
+    {
+      "interval" : 8,
+      "name" : "unpinned-meeting-rotates",
+      "steps" : [
+        {
+          "at" : 1790000000,
+          "currentKind" : "meeting",
+          "items" : [
+            {
+              "kind" : "meeting",
+              "pinned" : false
+            },
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            }
+          ],
+          "shown" : "meeting",
+          "shownSince" : 1790000000
+        },
+        {
+          "at" : 1790000008,
+          "currentKind" : "tasks",
+          "items" : [
+            {
+              "kind" : "meeting",
+              "pinned" : false
+            },
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            }
+          ],
+          "shown" : "tasks",
+          "shownSince" : 1790000008
+        },
+        {
+          "at" : 1790000016,
+          "currentKind" : "meeting",
+          "items" : [
+            {
+              "kind" : "meeting",
+              "pinned" : true
+            },
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            }
+          ],
+          "shown" : "meeting",
+          "shownSince" : 1790000016
+        },
+        {
+          "at" : 1790000017,
+          "currentKind" : "meeting",
+          "items" : [
+            {
+              "kind" : "meeting",
+              "pinned" : false
+            },
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            }
+          ],
+          "shown" : "meeting",
+          "shownSince" : 1790000016
+        }
+      ]
+    },
+    {
+      "interval" : 8,
+      "name" : "pinned-highlight-holds-the-notch",
+      "steps" : [
+        {
+          "at" : 1790000000,
+          "currentKind" : "qbank",
+          "items" : [
+            {
+              "kind" : "claudeUsage",
+              "pinned" : false
+            },
+            {
+              "kind" : "qbank",
+              "pinned" : true
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "qbank",
+          "shownSince" : 1790000000
+        },
+        {
+          "at" : 1790000020,
+          "currentKind" : "qbank",
+          "items" : [
+            {
+              "kind" : "claudeUsage",
+              "pinned" : false
+            },
+            {
+              "kind" : "qbank",
+              "pinned" : true
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "qbank",
+          "shownSince" : 1790000000
+        },
+        {
+          "at" : 1790000021,
+          "currentKind" : "pet",
+          "items" : [
+            {
+              "kind" : "claudeUsage",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "pet",
+          "shownSince" : 1790000021
+        }
+      ]
+    },
+    {
+      "interval" : 8,
+      "name" : "interval-changes-apply-to-the-item-on-screen",
+      "steps" : [
+        {
+          "at" : 1790000000,
+          "currentKind" : "tasks",
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "tasks",
+          "shownSince" : 1790000000
+        },
+        {
+          "at" : 1790000008,
+          "currentKind" : "tasks",
+          "interval" : 20,
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "tasks",
+          "shownSince" : 1790000000
+        },
+        {
+          "at" : 1790000027,
+          "currentKind" : "pet",
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "pet",
+          "shownSince" : 1790000027
+        },
+        {
+          "at" : 1790000028,
+          "currentKind" : "tasks",
+          "interval" : 0,
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "tasks",
+          "shownSince" : 1790000028
+        },
+        {
+          "at" : 1790000028.5,
+          "currentKind" : "pet",
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "pet",
+          "shownSince" : 1790000028.5
+        },
+        {
+          "at" : 1790000029,
+          "currentKind" : "tasks",
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "tasks",
+          "shownSince" : 1790000029
+        }
+      ]
+    },
+    {
+      "interval" : 0,
+      "name" : "interval-clamped-to-one-second",
+      "steps" : [
+        {
+          "at" : 1790000000,
+          "currentKind" : "tasks",
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "tasks",
+          "shownSince" : 1790000000
+        },
+        {
+          "at" : 1790000000.75,
+          "currentKind" : "tasks",
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "tasks",
+          "shownSince" : 1790000000
+        },
+        {
+          "at" : 1790000001,
+          "currentKind" : "pet",
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "pet",
+          "shownSince" : 1790000001
+        }
+      ]
+    },
+    {
+      "interval" : 8,
+      "name" : "everything-disappearing-clears-the-rotation",
+      "steps" : [
+        {
+          "at" : 1790000000,
+          "currentKind" : "tasks",
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "tasks",
+          "shownSince" : 1790000000
+        },
+        {
+          "at" : 1790000008,
+          "currentKind" : "pet",
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "pet",
+          "shownSince" : 1790000008
+        },
+        {
+          "at" : 1790000009,
+          "items" : [
+
+          ]
+        },
+        {
+          "at" : 1790000010,
+          "currentKind" : "tasks",
+          "items" : [
+            {
+              "kind" : "tasks",
+              "pinned" : false
+            },
+            {
+              "kind" : "pet",
+              "pinned" : false
+            }
+          ],
+          "shown" : "tasks",
+          "shownSince" : 1790000010
+        }
+      ]
+    }
+  ],
+  "schema" : "tabbi.ticker.golden",
+  "selections" : [
+    {
+      "name" : "nothing",
+      "reads" : [
+        {
+          "at" : 1790000000,
+          "items" : [
+
+          ]
+        }
+      ],
+      "sources" : {
+        "events" : [
+
+        ],
+        "highlights" : [
+
+        ],
+        "isMusicPlaying" : false,
+        "progress" : [
+
+        ],
+        "tasksRemaining" : 0
+      }
+    },
+    {
+      "name" : "everything-in-rotation-order",
+      "reads" : [
+        {
+          "at" : 1790000000,
+          "items" : [
+            {
+              "isPinned" : false,
+              "kind" : "meeting",
+              "meeting" : {
+                "canJoin" : true,
+                "countdown" : "in 30 min",
+                "summary" : "Standup in 30 min",
+                "timing" : {
+                  "kind" : "startsIn",
+                  "minutes" : 30
+                },
+                "title" : "Standup"
+              },
+              "module" : "planner"
+            },
+            {
+              "isPinned" : false,
+              "kind" : "nowPlaying",
+              "module" : "spotify"
+            },
+            {
+              "focus" : {
+                "clock" : "10:00",
+                "countsUp" : false,
+                "isRunning" : true,
+                "label" : "Focus",
+                "phase" : "focus",
+                "source" : "planner",
+                "summary" : "Focus 10:00",
+                "time" : 600
+              },
+              "isPinned" : false,
+              "kind" : "focus",
+              "module" : "planner"
+            },
+            {
+              "isPinned" : false,
+              "kind" : "tasks",
+              "module" : "planner",
+              "tasks" : {
+                "remaining" : 3,
+                "text" : "3 tasks left"
+              }
+            },
+            {
+              "action" : {
+                "id" : "study:Pharm",
+                "title" : "Study Pharm Sketchy"
+              },
+              "isPinned" : false,
+              "kind" : "progress",
+              "module" : "anki",
+              "progress" : {
+                "id" : "reviews",
+                "remaining" : 84,
+                "source" : "anki",
+                "text" : "84 cards left",
+                "title" : "Anki reviews",
+                "unit" : "cards"
+              }
+            },
+            {
+              "highlight" : {
+                "expiresAt" : 1790007200,
+                "id" : "5h",
+                "isPinned" : false,
+                "priority" : 1,
+                "source" : "claudeUsage",
+                "summary" : "Claude usage 5h 86%",
+                "text" : "5h 86%",
+                "tone" : "accent"
+              },
+              "isPinned" : false,
+              "kind" : "claudeUsage",
+              "module" : "claudeUsage"
+            },
+            {
+              "highlight" : {
+                "id" : "daily",
+                "isPinned" : false,
+                "priority" : 0,
+                "source" : "leetcode",
+                "summary" : "LeetCode daily, 1 problem left",
+                "symbol" : "chevron.left.forwardslash.chevron.right",
+                "text" : "1 problem left",
+                "tone" : "primary"
+              },
+              "isPinned" : false,
+              "kind" : "leetcode",
+              "module" : "leetcode"
+            },
+            {
+              "isPinned" : false,
+              "kind" : "party",
+              "module" : "party",
+              "party" : {
+                "memberCount" : 2,
+                "pets" : [
+                  {
+                    "id" : "me",
+                    "isAway" : false,
+                    "name" : "Me",
+                    "pet" : {
+                      "breed" : "britishShorthair",
+                      "name" : "Mochi"
+                    }
+                  },
+                  {
+                    "id" : "maya",
+                    "isAway" : false,
+                    "name" : "Maya",
+                    "pet" : {
+                      "breed" : "corgi",
+                      "name" : "Corgi"
+                    }
+                  }
+                ],
+                "size" : "2 in party"
+              }
+            },
+            {
+              "isPinned" : false,
+              "kind" : "pet",
+              "module" : "closet",
+              "pet" : {
+                "breed" : "britishShorthair",
+                "mood" : "studying",
+                "moodSince" : 1789999100,
+                "name" : "Mochi",
+                "summary" : "Mochi is studying with you"
+              }
+            }
+          ],
+          "nextChange" : 1790000060
+        },
+        {
+          "at" : 1790000000,
+          "enabled" : [
+            "meeting",
+            "tasks",
+            "claudeUsage",
+            "pet"
+          ],
+          "items" : [
+            {
+              "isPinned" : false,
+              "kind" : "meeting",
+              "meeting" : {
+                "canJoin" : true,
+                "countdown" : "in 30 min",
+                "summary" : "Standup in 30 min",
+                "timing" : {
+                  "kind" : "startsIn",
+                  "minutes" : 30
+                },
+                "title" : "Standup"
+              },
+              "module" : "planner"
+            },
+            {
+              "isPinned" : false,
+              "kind" : "tasks",
+              "module" : "planner",
+              "tasks" : {
+                "remaining" : 3,
+                "text" : "3 tasks left"
+              }
+            },
+            {
+              "highlight" : {
+                "expiresAt" : 1790007200,
+                "id" : "5h",
+                "isPinned" : false,
+                "priority" : 1,
+                "source" : "claudeUsage",
+                "summary" : "Claude usage 5h 86%",
+                "text" : "5h 86%",
+                "tone" : "accent"
+              },
+              "isPinned" : false,
+              "kind" : "claudeUsage",
+              "module" : "claudeUsage"
+            },
+            {
+              "isPinned" : false,
+              "kind" : "pet",
+              "module" : "closet",
+              "pet" : {
+                "breed" : "britishShorthair",
+                "mood" : "studying",
+                "moodSince" : 1789999100,
+                "name" : "Mochi",
+                "summary" : "Mochi is studying with you"
+              }
+            }
+          ],
+          "nextChange" : 1790000060
+        },
+        {
+          "at" : 1790000000,
+          "enabled" : [
+            "leetcode",
+            "party"
+          ],
+          "items" : [
+            {
+              "highlight" : {
+                "id" : "daily",
+                "isPinned" : false,
+                "priority" : 0,
+                "source" : "leetcode",
+                "summary" : "LeetCode daily, 1 problem left",
+                "symbol" : "chevron.left.forwardslash.chevron.right",
+                "text" : "1 problem left",
+                "tone" : "primary"
+              },
+              "isPinned" : false,
+              "kind" : "leetcode",
+              "module" : "leetcode"
+            },
+            {
+              "isPinned" : false,
+              "kind" : "party",
+              "module" : "party",
+              "party" : {
+                "memberCount" : 2,
+                "pets" : [
+                  {
+                    "id" : "me",
+                    "isAway" : false,
+                    "name" : "Me",
+                    "pet" : {
+                      "breed" : "britishShorthair",
+                      "name" : "Mochi"
+                    }
+                  },
+                  {
+                    "id" : "maya",
+                    "isAway" : false,
+                    "name" : "Maya",
+                    "pet" : {
+                      "breed" : "corgi",
+                      "name" : "Corgi"
+                    }
+                  }
+                ],
+                "size" : "2 in party"
+              }
+            }
+          ]
+        },
+        {
+          "at" : 1790000000,
+          "enabled" : [
+
+          ],
+          "items" : [
+
+          ]
+        },
+        {
+          "at" : 1790000600,
+          "items" : [
+            {
+              "isPinned" : false,
+              "kind" : "meeting",
+              "meeting" : {
+                "canJoin" : true,
+                "countdown" : "in 20 min",
+                "summary" : "Standup in 20 min",
+                "timing" : {
+                  "kind" : "startsIn",
+                  "minutes" : 20
+                },
+                "title" : "Standup"
+              },
+              "module" : "planner"
+            },
+            {
+              "isPinned" : false,
+              "kind" : "nowPlaying",
+              "module" : "spotify"
+            },
+            {
+              "focus" : {
+                "clock" : "0:00",
+                "countsUp" : false,
+                "isRunning" : true,
+                "label" : "Focus",
+                "phase" : "focus",
+                "source" : "planner",
+                "summary" : "Focus 0:00",
+                "time" : 0
+              },
+              "isPinned" : false,
+              "kind" : "focus",
+              "module" : "planner"
+            },
+            {
+              "isPinned" : false,
+              "kind" : "tasks",
+              "module" : "planner",
+              "tasks" : {
+                "remaining" : 3,
+                "text" : "3 tasks left"
+              }
+            },
+            {
+              "action" : {
+                "id" : "study:Pharm",
+                "title" : "Study Pharm Sketchy"
+              },
+              "isPinned" : false,
+              "kind" : "progress",
+              "module" : "anki",
+              "progress" : {
+                "id" : "reviews",
+                "remaining" : 84,
+                "source" : "anki",
+                "text" : "84 cards left",
+                "title" : "Anki reviews",
+                "unit" : "cards"
+              }
+            },
+            {
+              "highlight" : {
+                "expiresAt" : 1790007200,
+                "id" : "5h",
+                "isPinned" : false,
+                "priority" : 1,
+                "source" : "claudeUsage",
+                "summary" : "Claude usage 5h 86%",
+                "text" : "5h 86%",
+                "tone" : "accent"
+              },
+              "isPinned" : false,
+              "kind" : "claudeUsage",
+              "module" : "claudeUsage"
+            },
+            {
+              "highlight" : {
+                "id" : "daily",
+                "isPinned" : false,
+                "priority" : 0,
+                "source" : "leetcode",
+                "summary" : "LeetCode daily, 1 problem left",
+                "symbol" : "chevron.left.forwardslash.chevron.right",
+                "text" : "1 problem left",
+                "tone" : "primary"
+              },
+              "isPinned" : false,
+              "kind" : "leetcode",
+              "module" : "leetcode"
+            },
+            {
+              "isPinned" : false,
+              "kind" : "party",
+              "module" : "party",
+              "party" : {
+                "memberCount" : 2,
+                "pets" : [
+                  {
+                    "id" : "me",
+                    "isAway" : false,
+                    "name" : "Me",
+                    "pet" : {
+                      "breed" : "britishShorthair",
+                      "name" : "Mochi"
+                    }
+                  },
+                  {
+                    "id" : "maya",
+                    "isAway" : false,
+                    "name" : "Maya",
+                    "pet" : {
+                      "breed" : "corgi",
+                      "name" : "Corgi"
+                    }
+                  }
+                ],
+                "size" : "2 in party"
+              }
+            },
+            {
+              "isPinned" : false,
+              "kind" : "pet",
+              "module" : "closet",
+              "pet" : {
+                "breed" : "britishShorthair",
+                "mood" : "studying",
+                "moodSince" : 1789999100,
+                "name" : "Mochi",
+                "summary" : "Mochi is studying with you"
+              }
+            }
+          ],
+          "nextChange" : 1790000660
+        },
+        {
+          "at" : 1790007200,
+          "items" : [
+            {
+              "isPinned" : false,
+              "kind" : "nowPlaying",
+              "module" : "spotify"
+            },
+            {
+              "focus" : {
+                "clock" : "0:00",
+                "countsUp" : false,
+                "isRunning" : true,
+                "label" : "Focus",
+                "phase" : "focus",
+                "source" : "planner",
+                "summary" : "Focus 0:00",
+                "time" : 0
+              },
+              "isPinned" : false,
+              "kind" : "focus",
+              "module" : "planner"
+            },
+            {
+              "isPinned" : false,
+              "kind" : "tasks",
+              "module" : "planner",
+              "tasks" : {
+                "remaining" : 3,
+                "text" : "3 tasks left"
+              }
+            },
+            {
+              "action" : {
+                "id" : "study:Pharm",
+                "title" : "Study Pharm Sketchy"
+              },
+              "isPinned" : false,
+              "kind" : "progress",
+              "module" : "anki",
+              "progress" : {
+                "id" : "reviews",
+                "remaining" : 84,
+                "source" : "anki",
+                "text" : "84 cards left",
+                "title" : "Anki reviews",
+                "unit" : "cards"
+              }
+            },
+            {
+              "highlight" : {
+                "id" : "daily",
+                "isPinned" : false,
+                "priority" : 0,
+                "source" : "leetcode",
+                "summary" : "LeetCode daily, 1 problem left",
+                "symbol" : "chevron.left.forwardslash.chevron.right",
+                "text" : "1 problem left",
+                "tone" : "primary"
+              },
+              "isPinned" : false,
+              "kind" : "leetcode",
+              "module" : "leetcode"
+            },
+            {
+              "isPinned" : false,
+              "kind" : "party",
+              "module" : "party",
+              "party" : {
+                "memberCount" : 2,
+                "pets" : [
+                  {
+                    "id" : "me",
+                    "isAway" : false,
+                    "name" : "Me",
+                    "pet" : {
+                      "breed" : "britishShorthair",
+                      "name" : "Mochi"
+                    }
+                  },
+                  {
+                    "id" : "maya",
+                    "isAway" : false,
+                    "name" : "Maya",
+                    "pet" : {
+                      "breed" : "corgi",
+                      "name" : "Corgi"
+                    }
+                  }
+                ],
+                "size" : "2 in party"
+              }
+            },
+            {
+              "isPinned" : false,
+              "kind" : "pet",
+              "module" : "closet",
+              "pet" : {
+                "breed" : "britishShorthair",
+                "mood" : "studying",
+                "moodSince" : 1790005700,
+                "name" : "Mochi",
+                "summary" : "Mochi is studying with you"
+              }
+            }
+          ]
+        }
+      ],
+      "sources" : {
+        "events" : [
+          {
+            "end" : 1790002700,
+            "id" : "standup",
+            "isAllDay" : false,
+            "meetingLink" : {
+              "provider" : "zoom",
+              "url" : "https://example.zoom.us/j/123456789"
+            },
+            "start" : 1790001800,
+            "title" : "Standup"
+          }
+        ],
+        "focus" : {
+          "clock" : {
+            "endsAt" : 1790000600,
+            "kind" : "countdown"
+          },
+          "label" : "Focus",
+          "phase" : "focus",
+          "phaseLength" : 1500,
+          "source" : "planner"
+        },
+        "highlights" : [
+          {
+            "expiresAt" : 1790007200,
+            "id" : "5h",
+            "isPinned" : false,
+            "priority" : 1,
+            "source" : "claudeUsage",
+            "summary" : "Claude usage 5h 86%",
+            "text" : "5h 86%",
+            "tone" : "accent"
+          },
+          {
+            "id" : "daily",
+            "isPinned" : false,
+            "priority" : 0,
+            "source" : "leetcode",
+            "summary" : "LeetCode daily, 1 problem left",
+            "symbol" : "chevron.left.forwardslash.chevron.right",
+            "text" : "1 problem left",
+            "tone" : "primary"
+          }
+        ],
+        "isMusicPlaying" : true,
+        "party" : [
+          {
+            "id" : "me",
+            "isAway" : false,
+            "name" : "Me",
+            "pet" : {
+              "breed" : "britishShorthair",
+              "name" : "Mochi"
+            }
+          },
+          {
+            "id" : "maya",
+            "isAway" : false,
+            "name" : "Maya",
+            "pet" : {
+              "breed" : "corgi",
+              "name" : ""
+            }
+          }
+        ],
+        "pet" : {
+          "lastActive" : 1789999940,
+          "pet" : {
+            "breed" : "britishShorthair",
+            "name" : "Mochi"
+          }
+        },
+        "progress" : [
+          {
+            "completed" : 120,
+            "id" : "done",
+            "source" : "study",
+            "target" : 120,
+            "title" : "Study goal",
+            "unit" : "min",
+            "waitsForStart" : false
+          },
+          {
+            "action" : {
+              "id" : "study:Pharm",
+              "title" : "Study Pharm Sketchy"
+            },
+            "completed" : 16,
+            "id" : "reviews",
+            "source" : "anki",
+            "target" : 100,
+            "title" : "Anki reviews",
+            "unit" : "cards",
+            "waitsForStart" : false
+          }
+        ],
+        "tasksRemaining" : 3
+      }
+    },
+    {
+      "name" : "meeting-countdown-and-pin",
+      "reads" : [
+        {
+          "at" : 1790000000,
+          "items" : [
+            {
+              "isPinned" : false,
+              "kind" : "meeting",
+              "meeting" : {
+                "canJoin" : false,
+                "countdown" : "in 6 min",
+                "summary" : "Design review in 6 min",
+                "timing" : {
+                  "kind" : "startsIn",
+                  "minutes" : 6
+                },
+                "title" : "Design review"
+              },
+              "module" : "planner"
+            }
+          ],
+          "nextChange" : 1790000030.5
+        },
+        {
+          "at" : 1790000030,
+          "items" : [
+            {
+              "isPinned" : false,
+              "kind" : "meeting",
+              "meeting" : {
+                "canJoin" : false,
+                "countdown" : "in 6 min",
+                "summary" : "Design review in 6 min",
+                "timing" : {
+                  "kind" : "startsIn",
+                  "minutes" : 6
+                },
+                "title" : "Design review"
+              },
+              "module" : "planner"
+            }
+          ],
+          "nextChange" : 1790000030.5
+        },
+        {
+          "at" : 1790000030.5,
+          "items" : [
+            {
+              "isPinned" : true,
+              "kind" : "meeting",
+              "meeting" : {
+                "canJoin" : false,
+                "countdown" : "in 5 min",
+                "summary" : "Design review in 5 min",
+                "timing" : {
+                  "kind" : "startsIn",
+                  "minutes" : 5
+                },
+                "title" : "Design review"
+              },
+              "module" : "planner"
+            }
+          ],
+          "nextChange" : 1790000090.5
+        },
+        {
+          "at" : 1790000031,
+          "items" : [
+            {
+              "isPinned" : true,
+              "kind" : "meeting",
+              "meeting" : {
+                "canJoin" : false,
+                "countdown" : "in 5 min",
+                "summary" : "Design review in 5 min",
+                "timing" : {
+                  "kind" : "startsIn",
+                  "minutes" : 5
+                },
+                "title" : "Design review"
+              },
+              "module" : "planner"
+            }
+          ],
+          "nextChange" : 1790000090.5
+        },
+        {
+          "at" : 1790000270.5,
+          "items" : [
+            {
+              "isPinned" : true,
+              "kind" : "meeting",
+              "meeting" : {
+                "canJoin" : false,
+                "countdown" : "in 1 min",
+                "summary" : "Design review in 1 min",
+                "timing" : {
+                  "kind" : "startsIn",
+                  "minutes" : 1
+                },
+                "title" : "Design review"
+              },
+              "module" : "planner"
+            }
+          ],
+          "nextChange" : 1790000330.5
+        },
+        {
+          "at" : 1790000330,
+          "items" : [
+            {
+              "isPinned" : true,
+              "kind" : "meeting",
+              "meeting" : {
+                "canJoin" : false,
+                "countdown" : "in 1 min",
+                "summary" : "Design review in 1 min",
+                "timing" : {
+                  "kind" : "startsIn",
+                  "minutes" : 1
+                },
+                "title" : "Design review"
+              },
+              "module" : "planner"
+            }
+          ],
+          "nextChange" : 1790000330.5
+        },
+        {
+          "at" : 1790000330.5,
+          "items" : [
+            {
+              "isPinned" : true,
+              "kind" : "meeting",
+              "meeting" : {
+                "canJoin" : false,
+                "countdown" : "now",
+                "summary" : "Design review now",
+                "timing" : {
+                  "kind" : "now"
+                },
+                "title" : "Design review"
+              },
+              "module" : "planner"
+            }
+          ],
+          "nextChange" : 1790001800
+        },
+        {
+          "at" : 1790001800,
+          "items" : [
+
+          ]
+        },
+        {
+          "at" : 1790000000,
+          "enabled" : [
+            "focus"
+          ],
+          "items" : [
+
+          ]
+        }
+      ],
+      "sources" : {
+        "events" : [
+          {
+            "end" : 1790001800,
+            "id" : "review",
+            "isAllDay" : false,
+            "start" : 1790000330.5,
+            "title" : "Design review"
+          }
+        ],
+        "highlights" : [
+
+        ],
+        "isMusicPlaying" : false,
+        "progress" : [
+
+        ],
+        "tasksRemaining" : 0
+      }
+    },
+    {
+      "name" : "meeting-horizon-and-all-day",
+      "reads" : [
+        {
+          "at" : 1790000000,
+          "items" : [
+
+          ],
+          "nextChange" : 1790000060
+        },
+        {
+          "at" : 1790000059,
+          "items" : [
+
+          ],
+          "nextChange" : 1790000060
+        },
+        {
+          "at" : 1790000060,
+          "items" : [
+            {
+              "isPinned" : false,
+              "kind" : "meeting",
+              "meeting" : {
+                "canJoin" : false,
+                "countdown" : "in 1h",
+                "summary" : "1:1 with Sam in 1h",
+                "timing" : {
+                  "kind" : "startsIn",
+                  "minutes" : 60
+                },
+                "title" : "1:1 with Sam"
+              },
+              "module" : "planner"
+            }
+          ],
+          "nextChange" : 1790000120
+        },
+        {
+          "at" : 1790003660,
+          "items" : [
+            {
+              "isPinned" : true,
+              "kind" : "meeting",
+              "meeting" : {
+                "canJoin" : false,
+                "countdown" : "now",
+                "summary" : "1:1 with Sam now",
+                "timing" : {
+                  "kind" : "now"
+                },
+                "title" : "1:1 with Sam"
+              },
+              "module" : "planner"
+            }
+          ],
+          "nextChange" : 1790005400
+        }
+      ],
+      "sources" : {
+        "events" : [
+          {
+            "end" : 1790080000,
+            "id" : "offsite",
+            "isAllDay" : true,
+            "start" : 1789996400,
+            "title" : "Offsite"
+          },
+          {
+            "end" : 1789999940,
+            "id" : "over",
+            "isAllDay" : false,
+            "start" : 1789998200,
+            "title" : "Earlier call"
+          },
+          {
+            "end" : 1790005400,
+            "id" : "later",
+            "isAllDay" : false,
+            "start" : 1790003660,
+            "title" : "1:1 with Sam"
+          }
+        ],
+        "highlights" : [
+
+        ],
+        "isMusicPlaying" : false,
+        "progress" : [
+
+        ],
+        "tasksRemaining" : 0
+      }
+    },
+    {
+      "name" : "imminent-beats-under-way",
+      "reads" : [
+        {
+          "at" : 1790000000,
+          "items" : [
+            {
+              "isPinned" : true,
+              "kind" : "meeting",
+              "meeting" : {
+                "canJoin" : true,
+                "countdown" : "in 3 min",
+                "summary" : "Standup in 3 min",
+                "timing" : {
+                  "kind" : "startsIn",
+                  "minutes" : 3
+                },
+                "title" : "Standup"
+              },
+              "module" : "planner"
+            }
+          ],
+          "nextChange" : 1790000060
+        },
+        {
+          "at" : 1790000179,
+          "items" : [
+            {
+              "isPinned" : true,
+              "kind" : "meeting",
+              "meeting" : {
+                "canJoin" : true,
+                "countdown" : "in 1 min",
+                "summary" : "Standup in 1 min",
+                "timing" : {
+                  "kind" : "startsIn",
+                  "minutes" : 1
+                },
+                "title" : "Standup"
+              },
+              "module" : "planner"
+            }
+          ],
+          "nextChange" : 1790000180
+        },
+        {
+          "at" : 1790000180,
+          "items" : [
+            {
+              "isPinned" : true,
+              "kind" : "meeting",
+              "meeting" : {
+                "canJoin" : false,
+                "countdown" : "in 1 min",
+                "summary" : "Untitled event in 1 min",
+                "timing" : {
+                  "kind" : "startsIn",
+                  "minutes" : 1
+                },
+                "title" : "Untitled event"
+              },
+              "module" : "planner"
+            }
+          ],
+          "nextChange" : 1790000240
+        },
+        {
+          "at" : 1790000600,
+          "items" : [
+            {
+              "isPinned" : true,
+              "kind" : "meeting",
+              "meeting" : {
+                "canJoin" : false,
+                "countdown" : "now",
+                "summary" : "Deep work now",
+                "timing" : {
+                  "kind" : "now"
+                },
+                "title" : "Deep work"
+              },
+              "module" : "planner"
+            }
+          ],
+          "nextChange" : 1790001080
+        }
+      ],
+      "sources" : {
+        "events" : [
+          {
+            "end" : 1790003600,
+            "id" : "block",
+            "isAllDay" : false,
+            "start" : 1789999400,
+            "title" : "Deep work"
+          },
+          {
+            "end" : 1790001080,
+            "id" : "standup",
+            "isAllDay" : false,
+            "meetingLink" : {
+              "provider" : "zoom",
+              "url" : "https://example.zoom.us/j/123456789"
+            },
+            "start" : 1790000180,
+            "title" : "Standup"
+          },
+          {
+            "end" : 1790000600,
+            "id" : "quick",
+            "isAllDay" : false,
+            "start" : 1790000240,
+            "title" : "   "
+          }
+        ],
+        "highlights" : [
+
+        ],
+        "isMusicPlaying" : false,
+        "progress" : [
+
+        ],
+        "tasksRemaining" : 0
+      }
+    },
+    {
+      "name" : "meeting-an-hour-out",
+      "reads" : [
+        {
+          "at" : 1790000000,
+          "items" : [
+            {
+              "isPinned" : false,
+              "kind" : "meeting",
+              "meeting" : {
+                "canJoin" : false,
+                "countdown" : "in 1h",
+                "summary" : "Lunch in 1h",
+                "timing" : {
+                  "kind" : "startsIn",
+                  "minutes" : 60
+                },
+                "title" : "Lunch"
+              },
+              "module" : "planner"
+            }
+          ],
+          "nextChange" : 1790000060
+        },
+        {
+          "at" : 1790000001,
+          "items" : [
+            {
+              "isPinned" : false,
+              "kind" : "meeting",
+              "meeting" : {
+                "canJoin" : false,
+                "countdown" : "in 1h",
+                "summary" : "Lunch in 1h",
+                "timing" : {
+                  "kind" : "startsIn",
+                  "minutes" : 60
+                },
+                "title" : "Lunch"
+              },
+              "module" : "planner"
+            }
+          ],
+          "nextChange" : 1790000060
+        },
+        {
+          "at" : 1790000059.75,
+          "items" : [
+            {
+              "isPinned" : false,
+              "kind" : "meeting",
+              "meeting" : {
+                "canJoin" : false,
+                "countdown" : "in 1h",
+                "summary" : "Lunch in 1h",
+                "timing" : {
+                  "kind" : "startsIn",
+                  "minutes" : 60
+                },
+                "title" : "Lunch"
+              },
+              "module" : "planner"
+            }
+          ],
+          "nextChange" : 1790000060
+        }
+      ],
+      "sources" : {
+        "events" : [
+          {
+            "end" : 1790007200,
+            "id" : "far",
+            "isAllDay" : false,
+            "start" : 1790003600,
+            "title" : "Lunch"
+          }
+        ],
+        "highlights" : [
+
+        ],
+        "isMusicPlaying" : false,
+        "progress" : [
+
+        ],
+        "tasksRemaining" : 0
+      }
+    },
+    {
+      "name" : "focus-idle-is-hidden",
+      "reads" : [
+        {
+          "at" : 1790000000,
+          "items" : [
+
+          ]
+        }
+      ],
+      "sources" : {
+        "events" : [
+
+        ],
+        "focus" : {
+          "clock" : {
+            "kind" : "idle"
+          },
+          "label" : "Focus",
+          "phase" : "focus",
+          "phaseLength" : 1500,
+          "source" : "focus"
+        },
+        "highlights" : [
+
+        ],
+        "isMusicPlaying" : false,
+        "progress" : [
+
+        ],
+        "tasksRemaining" : 0
+      }
+    },
+    {
+      "name" : "focus-paused-break",
+      "reads" : [
+        {
+          "at" : 1790000000,
+          "items" : [
+            {
+              "focus" : {
+                "clock" : "3:10",
+                "countsUp" : false,
+                "isRunning" : false,
+                "label" : "Long break",
+                "phase" : "rest",
+                "source" : "study",
+                "summary" : "Long break 3:10 (paused)",
+                "time" : 190
+              },
+              "isPinned" : false,
+              "kind" : "focus",
+              "module" : "study"
+            }
+          ]
+        },
+        {
+          "at" : 1790000600,
+          "items" : [
+            {
+              "focus" : {
+                "clock" : "3:10",
+                "countsUp" : false,
+                "isRunning" : false,
+                "label" : "Long break",
+                "phase" : "rest",
+                "source" : "study",
+                "summary" : "Long break 3:10 (paused)",
+                "time" : 190
+              },
+              "isPinned" : false,
+              "kind" : "focus",
+              "module" : "study"
+            }
+          ]
+        }
+      ],
+      "sources" : {
+        "events" : [
+
+        ],
+        "focus" : {
+          "clock" : {
+            "kind" : "paused",
+            "shown" : 190
+          },
+          "label" : "Long break",
+          "phase" : "rest",
+          "phaseLength" : 900,
+          "source" : "study"
+        },
+        "highlights" : [
+
+        ],
+        "isMusicPlaying" : false,
+        "progress" : [
+
+        ],
+        "tasksRemaining" : 0
+      }
+    },
+    {
+      "name" : "focus-counting-up",
+      "reads" : [
+        {
+          "at" : 1790000000,
+          "items" : [
+            {
+              "focus" : {
+                "clock" : "12:05",
+                "countsUp" : true,
+                "isRunning" : true,
+                "label" : "Review",
+                "phase" : "focus",
+                "source" : "study",
+                "summary" : "Review 12:05 so far",
+                "time" : 725
+              },
+              "isPinned" : false,
+              "kind" : "focus",
+              "module" : "study"
+            }
+          ]
+        },
+        {
+          "at" : 1790000000.5,
+          "items" : [
+            {
+              "focus" : {
+                "clock" : "12:06",
+                "countsUp" : true,
+                "isRunning" : true,
+                "label" : "Review",
+                "phase" : "focus",
+                "source" : "study",
+                "summary" : "Review 12:06 so far",
+                "time" : 725.5
+              },
+              "isPinned" : false,
+              "kind" : "focus",
+              "module" : "study"
+            }
+          ]
+        }
+      ],
+      "sources" : {
+        "events" : [
+
+        ],
+        "focus" : {
+          "clock" : {
+            "kind" : "countUp",
+            "since" : 1789999275
+          },
+          "label" : "Review",
+          "phase" : "focus",
+          "source" : "study"
+        },
+        "highlights" : [
+
+        ],
+        "isMusicPlaying" : false,
+        "progress" : [
+
+        ],
+        "tasksRemaining" : 0
+      }
+    },
+    {
+      "name" : "focus-countdown-running-out",
+      "reads" : [
+        {
+          "at" : 1790000000,
+          "items" : [
+            {
+              "focus" : {
+                "clock" : "0:01",
+                "countsUp" : false,
+                "isRunning" : true,
+                "label" : "Focus",
+                "phase" : "focus",
+                "source" : "planner",
+                "summary" : "Focus 0:01",
+                "time" : 0.25
+              },
+              "isPinned" : false,
+              "kind" : "focus",
+              "module" : "planner"
+            }
+          ],
+          "nextChange" : 1790000000.25
+        },
+        {
+          "at" : 1790000000.25,
+          "items" : [
+            {
+              "focus" : {
+                "clock" : "0:00",
+                "countsUp" : false,
+                "isRunning" : true,
+                "label" : "Focus",
+                "phase" : "focus",
+                "source" : "planner",
+                "summary" : "Focus 0:00",
+                "time" : 0
+              },
+              "isPinned" : false,
+              "kind" : "focus",
+              "module" : "planner"
+            }
+          ]
+        },
+        {
+          "at" : 1790000060,
+          "items" : [
+            {
+              "focus" : {
+                "clock" : "0:00",
+                "countsUp" : false,
+                "isRunning" : true,
+                "label" : "Focus",
+                "phase" : "focus",
+                "source" : "planner",
+                "summary" : "Focus 0:00",
+                "time" : 0
+              },
+              "isPinned" : false,
+              "kind" : "focus",
+              "module" : "planner"
+            }
+          ]
+        }
+      ],
+      "sources" : {
+        "events" : [
+
+        ],
+        "focus" : {
+          "clock" : {
+            "endsAt" : 1790000000.25,
+            "kind" : "countdown"
+          },
+          "label" : "Focus",
+          "phase" : "focus",
+          "phaseLength" : 1500,
+          "source" : "planner"
+        },
+        "highlights" : [
+
+        ],
+        "isMusicPlaying" : false,
+        "progress" : [
+
+        ],
+        "tasksRemaining" : 0
+      }
+    },
+    {
+      "name" : "tasks-and-first-unfinished-goal",
+      "reads" : [
+        {
+          "at" : 1790000000,
+          "items" : [
+            {
+              "isPinned" : false,
+              "kind" : "tasks",
+              "module" : "planner",
+              "tasks" : {
+                "remaining" : 1,
+                "text" : "1 task left"
+              }
+            },
+            {
+              "isPinned" : false,
+              "kind" : "progress",
+              "module" : "qbank",
+              "progress" : {
+                "id" : "questions",
+                "remaining" : 28,
+                "source" : "qbank",
+                "text" : "28 questions left",
+                "title" : "Questions",
+                "unit" : "questions"
+              }
+            }
+          ]
+        },
+        {
+          "at" : 1790000000,
+          "enabled" : [
+            "progress"
+          ],
+          "items" : [
+            {
+              "isPinned" : false,
+              "kind" : "progress",
+              "module" : "qbank",
+              "progress" : {
+                "id" : "questions",
+                "remaining" : 28,
+                "source" : "qbank",
+                "text" : "28 questions left",
+                "title" : "Questions",
+                "unit" : "questions"
+              }
+            }
+          ]
+        }
+      ],
+      "sources" : {
+        "events" : [
+
+        ],
+        "highlights" : [
+
+        ],
+        "isMusicPlaying" : false,
+        "progress" : [
+          {
+            "completed" : 0,
+            "id" : "nothing-due",
+            "source" : "anki",
+            "target" : 0,
+            "title" : "Anki reviews",
+            "unit" : "cards",
+            "waitsForStart" : false
+          },
+          {
+            "completed" : 0,
+            "id" : "minutes",
+            "source" : "study",
+            "target" : 120,
+            "title" : "Study goal",
+            "unit" : "min",
+            "waitsForStart" : true
+          },
+          {
+            "completed" : 3,
+            "id" : "over",
+            "source" : "leetcode",
+            "target" : 2,
+            "title" : "Problems",
+            "unit" : "problems",
+            "waitsForStart" : false
+          },
+          {
+            "completed" : 12,
+            "id" : "questions",
+            "source" : "qbank",
+            "target" : 40,
+            "title" : "Questions",
+            "unit" : "questions",
+            "waitsForStart" : false
+          }
+        ],
+        "tasksRemaining" : 1
+      }
+    },
+    {
+      "name" : "started-goal-shows",
+      "reads" : [
+        {
+          "at" : 1790000000,
+          "items" : [
+            {
+              "isPinned" : false,
+              "kind" : "progress",
+              "module" : "study",
+              "progress" : {
+                "id" : "minutes",
+                "remaining" : 115,
+                "source" : "study",
+                "text" : "1h 55m left",
+                "title" : "Study goal",
+                "unit" : "min"
+              }
+            }
+          ]
+        }
+      ],
+      "sources" : {
+        "events" : [
+
+        ],
+        "highlights" : [
+
+        ],
+        "isMusicPlaying" : false,
+        "progress" : [
+          {
+            "completed" : 5,
+            "id" : "minutes",
+            "source" : "study",
+            "target" : 120,
+            "title" : "Study goal",
+            "unit" : "min",
+            "waitsForStart" : true
+          }
+        ],
+        "tasksRemaining" : 0
+      }
+    },
+    {
+      "name" : "highlights-priority-pins-and-expiry",
+      "reads" : [
+        {
+          "at" : 1790000000,
+          "items" : [
+            {
+              "highlight" : {
+                "expiresAt" : 1790000300,
+                "id" : "5h",
+                "isPinned" : false,
+                "priority" : 3,
+                "source" : "claudeUsage",
+                "summary" : "Claude usage 5h 100%",
+                "text" : "5h 100%",
+                "tone" : "danger"
+              },
+              "isPinned" : false,
+              "kind" : "claudeUsage",
+              "module" : "claudeUsage"
+            },
+            {
+              "highlight" : {
+                "id" : "streak",
+                "isPinned" : false,
+                "priority" : 1,
+                "source" : "leetcode",
+                "summary" : "12 day streak",
+                "text" : "Streak 12",
+                "tone" : "secondary"
+              },
+              "isPinned" : false,
+              "kind" : "leetcode",
+              "module" : "leetcode"
+            },
+            {
+              "highlight" : {
+                "expiresAt" : 1790003600,
+                "id" : "deadline",
+                "isPinned" : true,
+                "priority" : 1,
+                "source" : "qbank",
+                "summary" : "Practice exam starts in 1 hour",
+                "symbol" : "exclamationmark.circle",
+                "text" : "Exam in 1 h",
+                "tone" : "accent"
+              },
+              "isPinned" : true,
+              "kind" : "qbank",
+              "module" : "qbank"
+            }
+          ],
+          "nextChange" : 1790000300
+        },
+        {
+          "at" : 1790000300,
+          "items" : [
+            {
+              "highlight" : {
+                "expiresAt" : 1790000900,
+                "id" : "weekly",
+                "isPinned" : false,
+                "priority" : 1,
+                "source" : "claudeUsage",
+                "summary" : "Claude usage 7d 81%",
+                "text" : "7d 81%",
+                "tone" : "accent"
+              },
+              "isPinned" : false,
+              "kind" : "claudeUsage",
+              "module" : "claudeUsage"
+            },
+            {
+              "highlight" : {
+                "id" : "streak",
+                "isPinned" : false,
+                "priority" : 1,
+                "source" : "leetcode",
+                "summary" : "12 day streak",
+                "text" : "Streak 12",
+                "tone" : "secondary"
+              },
+              "isPinned" : false,
+              "kind" : "leetcode",
+              "module" : "leetcode"
+            },
+            {
+              "highlight" : {
+                "expiresAt" : 1790003600,
+                "id" : "deadline",
+                "isPinned" : true,
+                "priority" : 1,
+                "source" : "qbank",
+                "summary" : "Practice exam starts in 1 hour",
+                "symbol" : "exclamationmark.circle",
+                "text" : "Exam in 1 h",
+                "tone" : "accent"
+              },
+              "isPinned" : true,
+              "kind" : "qbank",
+              "module" : "qbank"
+            }
+          ],
+          "nextChange" : 1790000900
+        },
+        {
+          "at" : 1790000900,
+          "items" : [
+            {
+              "highlight" : {
+                "id" : "streak",
+                "isPinned" : false,
+                "priority" : 1,
+                "source" : "leetcode",
+                "summary" : "12 day streak",
+                "text" : "Streak 12",
+                "tone" : "secondary"
+              },
+              "isPinned" : false,
+              "kind" : "leetcode",
+              "module" : "leetcode"
+            },
+            {
+              "highlight" : {
+                "expiresAt" : 1790003600,
+                "id" : "deadline",
+                "isPinned" : true,
+                "priority" : 1,
+                "source" : "qbank",
+                "summary" : "Practice exam starts in 1 hour",
+                "symbol" : "exclamationmark.circle",
+                "text" : "Exam in 1 h",
+                "tone" : "accent"
+              },
+              "isPinned" : true,
+              "kind" : "qbank",
+              "module" : "qbank"
+            }
+          ],
+          "nextChange" : 1790003600
+        },
+        {
+          "at" : 1790003600,
+          "items" : [
+            {
+              "highlight" : {
+                "id" : "streak",
+                "isPinned" : false,
+                "priority" : 1,
+                "source" : "leetcode",
+                "summary" : "12 day streak",
+                "text" : "Streak 12",
+                "tone" : "secondary"
+              },
+              "isPinned" : false,
+              "kind" : "leetcode",
+              "module" : "leetcode"
+            }
+          ]
+        },
+        {
+          "at" : 1790000000,
+          "enabled" : [
+            "claudeUsage",
+            "leetcode"
+          ],
+          "items" : [
+            {
+              "highlight" : {
+                "expiresAt" : 1790000300,
+                "id" : "5h",
+                "isPinned" : false,
+                "priority" : 3,
+                "source" : "claudeUsage",
+                "summary" : "Claude usage 5h 100%",
+                "text" : "5h 100%",
+                "tone" : "danger"
+              },
+              "isPinned" : false,
+              "kind" : "claudeUsage",
+              "module" : "claudeUsage"
+            },
+            {
+              "highlight" : {
+                "id" : "streak",
+                "isPinned" : false,
+                "priority" : 1,
+                "source" : "leetcode",
+                "summary" : "12 day streak",
+                "text" : "Streak 12",
+                "tone" : "secondary"
+              },
+              "isPinned" : false,
+              "kind" : "leetcode",
+              "module" : "leetcode"
+            }
+          ],
+          "nextChange" : 1790000300
+        }
+      ],
+      "sources" : {
+        "events" : [
+
+        ],
+        "highlights" : [
+          {
+            "expiresAt" : 1790000900,
+            "id" : "weekly",
+            "isPinned" : false,
+            "priority" : 1,
+            "source" : "claudeUsage",
+            "summary" : "Claude usage 7d 81%",
+            "text" : "7d 81%",
+            "tone" : "accent"
+          },
+          {
+            "expiresAt" : 1790000300,
+            "id" : "5h",
+            "isPinned" : false,
+            "priority" : 3,
+            "source" : "claudeUsage",
+            "summary" : "Claude usage 5h 100%",
+            "text" : "5h 100%",
+            "tone" : "danger"
+          },
+          {
+            "id" : "streak",
+            "isPinned" : false,
+            "priority" : 1,
+            "source" : "leetcode",
+            "summary" : "12 day streak",
+            "text" : "Streak 12",
+            "tone" : "secondary"
+          },
+          {
+            "id" : "tie",
+            "isPinned" : false,
+            "priority" : 1,
+            "source" : "leetcode",
+            "summary" : "Same priority, later",
+            "text" : "Tie",
+            "tone" : "primary"
+          },
+          {
+            "expiresAt" : 1790003600,
+            "id" : "deadline",
+            "isPinned" : true,
+            "priority" : 1,
+            "source" : "qbank",
+            "summary" : "Practice exam starts in 1 hour",
+            "symbol" : "exclamationmark.circle",
+            "text" : "Exam in 1 h",
+            "tone" : "accent"
+          }
+        ],
+        "isMusicPlaying" : false,
+        "progress" : [
+
+        ],
+        "tasksRemaining" : 0
+      }
+    },
+    {
+      "name" : "pet-dozes-off",
+      "reads" : [
+        {
+          "at" : 1790000000,
+          "items" : [
+            {
+              "isPinned" : false,
+              "kind" : "pet",
+              "module" : "closet",
+              "pet" : {
+                "breed" : "britishShorthair",
+                "mood" : "awake",
+                "name" : "Mochi",
+                "summary" : "Mochi is keeping you company"
+              }
+            }
+          ],
+          "nextChange" : 1790000600
+        },
+        {
+          "at" : 1790000599,
+          "items" : [
+            {
+              "isPinned" : false,
+              "kind" : "pet",
+              "module" : "closet",
+              "pet" : {
+                "breed" : "britishShorthair",
+                "mood" : "awake",
+                "name" : "Mochi",
+                "summary" : "Mochi is keeping you company"
+              }
+            }
+          ],
+          "nextChange" : 1790000600
+        },
+        {
+          "at" : 1790000600,
+          "items" : [
+            {
+              "isPinned" : false,
+              "kind" : "pet",
+              "module" : "closet",
+              "pet" : {
+                "breed" : "britishShorthair",
+                "mood" : "asleep",
+                "name" : "Mochi",
+                "summary" : "Mochi is napping until your next session"
+              }
+            }
+          ]
+        },
+        {
+          "at" : 1790000000,
+          "enabled" : [
+            "meeting"
+          ],
+          "items" : [
+
+          ]
+        }
+      ],
+      "sources" : {
+        "events" : [
+
+        ],
+        "highlights" : [
+
+        ],
+        "isMusicPlaying" : false,
+        "pet" : {
+          "lastActive" : 1789999400,
+          "pet" : {
+            "breed" : "britishShorthair",
+            "name" : "Mochi"
+          }
+        },
+        "progress" : [
+
+        ],
+        "tasksRemaining" : 0
+      }
+    },
+    {
+      "name" : "pet-studying-with-user-name",
+      "reads" : [
+        {
+          "at" : 1790000000,
+          "items" : [
+            {
+              "focus" : {
+                "clock" : "20:00",
+                "countsUp" : false,
+                "isRunning" : true,
+                "label" : "Focus",
+                "phase" : "focus",
+                "source" : "study",
+                "summary" : "Focus 20:00",
+                "time" : 1200
+              },
+              "isPinned" : false,
+              "kind" : "focus",
+              "module" : "study"
+            },
+            {
+              "isPinned" : false,
+              "kind" : "pet",
+              "module" : "closet",
+              "pet" : {
+                "breed" : "orangeTabby",
+                "label" : "Pip",
+                "mood" : "studying",
+                "moodSince" : 1789998200,
+                "name" : "Pip",
+                "summary" : "Pip is studying with you"
+              }
+            }
+          ],
+          "nextChange" : 1790001200
+        },
+        {
+          "at" : 1790001300,
+          "items" : [
+            {
+              "focus" : {
+                "clock" : "0:00",
+                "countsUp" : false,
+                "isRunning" : true,
+                "label" : "Focus",
+                "phase" : "focus",
+                "source" : "study",
+                "summary" : "Focus 0:00",
+                "time" : 0
+              },
+              "isPinned" : false,
+              "kind" : "focus",
+              "module" : "study"
+            },
+            {
+              "isPinned" : false,
+              "kind" : "pet",
+              "module" : "closet",
+              "pet" : {
+                "breed" : "orangeTabby",
+                "label" : "Pip",
+                "mood" : "studying",
+                "moodSince" : 1789998300,
+                "name" : "Pip",
+                "summary" : "Pip is studying with you"
+              }
+            }
+          ]
+        }
+      ],
+      "sources" : {
+        "events" : [
+
+        ],
+        "focus" : {
+          "clock" : {
+            "endsAt" : 1790001200,
+            "kind" : "countdown"
+          },
+          "label" : "Focus",
+          "phase" : "focus",
+          "phaseLength" : 3000,
+          "source" : "study"
+        },
+        "highlights" : [
+
+        ],
+        "isMusicPlaying" : false,
+        "pet" : {
+          "lastActive" : 1789992800,
+          "pet" : {
+            "breed" : "orangeTabby",
+            "name" : "  Pip  "
+          }
+        },
+        "progress" : [
+
+        ],
+        "tasksRemaining" : 0
+      }
+    },
+    {
+      "name" : "pet-on-counting-break",
+      "reads" : [
+        {
+          "at" : 1790000000,
+          "items" : [
+            {
+              "focus" : {
+                "clock" : "3:30",
+                "countsUp" : false,
+                "isRunning" : true,
+                "label" : "Break",
+                "phase" : "rest",
+                "source" : "planner",
+                "summary" : "Break 3:30",
+                "time" : 210
+              },
+              "isPinned" : false,
+              "kind" : "focus",
+              "module" : "planner"
+            },
+            {
+              "isPinned" : false,
+              "kind" : "pet",
+              "module" : "closet",
+              "pet" : {
+                "breed" : "goldenRetriever",
+                "mood" : "onBreak",
+                "moodSince" : 1789999910,
+                "name" : "Golden Retriever",
+                "summary" : "Golden Retriever is on a break with you"
+              }
+            }
+          ]
+        }
+      ],
+      "sources" : {
+        "events" : [
+
+        ],
+        "focus" : {
+          "clock" : {
+            "kind" : "countUp",
+            "since" : 1789999910
+          },
+          "label" : "Break",
+          "phase" : "rest",
+          "phaseLength" : 300,
+          "source" : "planner"
+        },
+        "highlights" : [
+
+        ],
+        "isMusicPlaying" : false,
+        "pet" : {
+          "lastActive" : 1789992800,
+          "pet" : {
+            "breed" : "goldenRetriever",
+            "name" : ""
+          }
+        },
+        "progress" : [
+
+        ],
+        "tasksRemaining" : 0
+      }
+    },
+    {
+      "name" : "pet-awake-while-paused",
+      "reads" : [
+        {
+          "at" : 1790000000,
+          "items" : [
+            {
+              "focus" : {
+                "clock" : "10:00",
+                "countsUp" : false,
+                "isRunning" : false,
+                "label" : "Focus",
+                "phase" : "focus",
+                "source" : "planner",
+                "summary" : "Focus 10:00 (paused)",
+                "time" : 600
+              },
+              "isPinned" : false,
+              "kind" : "focus",
+              "module" : "planner"
+            },
+            {
+              "isPinned" : false,
+              "kind" : "pet",
+              "module" : "closet",
+              "pet" : {
+                "breed" : "beagle",
+                "mood" : "awake",
+                "name" : "Biscuit",
+                "summary" : "Biscuit is keeping you company"
+              }
+            }
+          ]
+        }
+      ],
+      "sources" : {
+        "events" : [
+
+        ],
+        "focus" : {
+          "clock" : {
+            "kind" : "paused",
+            "shown" : 600
+          },
+          "label" : "Focus",
+          "phase" : "focus",
+          "phaseLength" : 1500,
+          "source" : "planner"
+        },
+        "highlights" : [
+
+        ],
+        "isMusicPlaying" : false,
+        "pet" : {
+          "lastActive" : 1789992800,
+          "pet" : {
+            "breed" : "beagle",
+            "name" : "Biscuit"
+          }
+        },
+        "progress" : [
+
+        ],
+        "tasksRemaining" : 0
+      }
+    },
+    {
+      "name" : "party-alone-is-hidden",
+      "reads" : [
+        {
+          "at" : 1790000000,
+          "items" : [
+
+          ]
+        }
+      ],
+      "sources" : {
+        "events" : [
+
+        ],
+        "highlights" : [
+
+        ],
+        "isMusicPlaying" : false,
+        "party" : [
+          {
+            "id" : "me",
+            "isAway" : false,
+            "name" : "Me",
+            "pet" : {
+              "breed" : "britishShorthair",
+              "name" : "Mochi"
+            }
+          }
+        ],
+        "progress" : [
+
+        ],
+        "tasksRemaining" : 0
+      }
+    },
+    {
+      "name" : "party-capped-at-four-pets",
+      "reads" : [
+        {
+          "at" : 1790000000,
+          "items" : [
+            {
+              "isPinned" : false,
+              "kind" : "party",
+              "module" : "party",
+              "party" : {
+                "memberCount" : 6,
+                "pets" : [
+                  {
+                    "id" : "me",
+                    "isAway" : false,
+                    "name" : "Me",
+                    "pet" : {
+                      "breed" : "orangeTabby",
+                      "name" : "Pip"
+                    }
+                  },
+                  {
+                    "id" : "maya",
+                    "isAway" : false,
+                    "name" : "Maya",
+                    "pet" : {
+                      "breed" : "dachshund",
+                      "name" : "Noodle"
+                    }
+                  },
+                  {
+                    "id" : "jo",
+                    "isAway" : true,
+                    "name" : "Jo",
+                    "pet" : {
+                      "breed" : "siamese",
+                      "name" : "Siamese"
+                    }
+                  },
+                  {
+                    "id" : "lee",
+                    "isAway" : false,
+                    "name" : "Lee",
+                    "pet" : {
+                      "breed" : "poodle",
+                      "name" : "Biscuit"
+                    }
+                  }
+                ],
+                "size" : "6 in party"
+              }
+            }
+          ]
+        }
+      ],
+      "sources" : {
+        "events" : [
+
+        ],
+        "highlights" : [
+
+        ],
+        "isMusicPlaying" : false,
+        "party" : [
+          {
+            "id" : "me",
+            "isAway" : false,
+            "name" : "Me",
+            "pet" : {
+              "breed" : "orangeTabby",
+              "name" : "  Pip  "
+            }
+          },
+          {
+            "id" : "maya",
+            "isAway" : false,
+            "name" : "Maya",
+            "pet" : {
+              "breed" : "dachshund",
+              "name" : "Noodle"
+            }
+          },
+          {
+            "id" : "jo",
+            "isAway" : true,
+            "name" : "Jo",
+            "pet" : {
+              "breed" : "siamese",
+              "name" : ""
+            }
+          },
+          {
+            "id" : "lee",
+            "isAway" : false,
+            "name" : "Lee",
+            "pet" : {
+              "breed" : "poodle",
+              "name" : "Biscuit"
+            }
+          },
+          {
+            "id" : "ana",
+            "isAway" : false,
+            "name" : "Ana",
+            "pet" : {
+              "breed" : "calico",
+              "name" : "Mochi"
+            }
+          },
+          {
+            "id" : "kai",
+            "isAway" : false,
+            "name" : "Kai",
+            "pet" : {
+              "breed" : "tuxedo",
+              "name" : "Pepper"
+            }
+          }
+        ],
+        "progress" : [
+
+        ],
+        "tasksRemaining" : 0
+      }
+    }
+  ],
+  "version" : 1
+}

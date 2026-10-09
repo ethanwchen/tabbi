@@ -1,0 +1,201 @@
+{
+  "schema": "pets.v1",
+  "grids": {
+    "catTorso": [
+      "...BBBBBBbbbBBsbbsBB..",
+      "..BBBBBBbbbbbBBsbbsbB.",
+      ".BBBBBBBBbbBaaaBbbbsbB",
+      ".BBBBBBBBBBaaaaaBbbbbB",
+      ".cBBBBBBBBBBaaaaBBbbBB",
+      ".cccBBBBBBBBBBBBBBBBBS",
+      "..ccSSSSSSSSSSSSSSSSS."
+    ],
+    "dogTorso": [
+      "...BBBBBBBBBBaaaaaBB..",
+      "..BBBBBBBBBBaaaaaaaBB.",
+      ".BBBBBBBBBBBaaaaaaaBBB",
+      ".BBBBBBBBBBBBaaaaaBBBB",
+      ".cBBBBBBBBBBBBBBBBBBBB",
+      ".cccBBBBBBBBBBBBBBBBBS",
+      "..ccSSSSSSSSSSSSSSSSS."
+    ],
+    "longTorso": [
+      "...BBBBBBBBBBBBBBBBBB..",
+      "..BBBBBBBBBBBBBBBBBBBB.",
+      ".ccBBBBBBBBBBBBBBBBBBBB",
+      ".cccBBBBBBBBBBBBBBBBBBB",
+      ".ccccBBBBBBBBBBBBBBBBBS",
+      "..SSSSSSSSSSSSSSSSSSSS."
+    ],
+    "roundCatTorso": [
+      "...SSSSSsSSSSSSsSSSS..",
+      "..SSSSsSSSSSsSSSSSsSS.",
+      ".BBBBBBBBBBBBBBBBBBSSS",
+      ".BBBBBBBBBBBBBBBBBBBBS",
+      ".cBBBBBBBBBBBBBBBBBBBS",
+      ".cccBBBBBBBBBBBBBBBBBS",
+      "..ccSSSSSSSSSSSSSSSSS."
+    ],
+    "sphynxTorso": [
+      "...BBBBBBBBBBBBBBBBB..",
+      "..BBBSBBSBBBBBBBBBBBB.",
+      ".BBBSBBSBBBBBBBBBBBBBB",
+      ".BBBBBBBBBBBBBBBBBBBBB",
+      ".cBBBBBBBBBBBBBBBBBBBS",
+      ".cccBBBBBBBBBBBBBBBBSS",
+      "..ccSSSSSSSSSSSSSSSS.."
+    ],
+    "poodleTorso": [
+      "...BBSBBBSBBBBSBBBSB..",
+      "..BSBBBABBBSBBBABBBSB.",
+      ".ABBBSBBBSBBBSBBBSBBBB",
+      ".cABBBBSBBBBBBSBBBBSBB",
+      ".ccBSBBBBBSBBBBBBSBBBB",
+      ".cccBBBSBBBBBSBBBBBBBS",
+      "..ccSSSSSSSSSSSSSSSSS."
+    ],
+    "shihTzuTorso": [
+      "...BBBBBBBBBBBBBBBBB..",
+      "..BBBBBBBBBBBBBBBBBBB.",
+      ".cBBBBBBBBBBBBBBBBBBBB",
+      ".ccBBSBBBBSBBBBSBBBBSB",
+      ".ccBSBBBSBBBBSBBBBSBBB",
+      ".cBSBBBSBBBBSBBBBSBBSB",
+      "..SB.SB.SBSB.SBS.BSBS."
+    ]
+  },
+  "sequences": {
+    "catTail": [
+      [
+        ".tt",
+        ".tt",
+        ".BB",
+        "BB.",
+        "BB.",
+        "BB."
+      ],
+      [
+        "..tt",
+        ".tt.",
+        ".BB.",
+        "BB..",
+        "BB..",
+        "BB.."
+      ]
+    ],
+    "roundCatTail": [
+      [
+        ".tt",
+        ".SS",
+        ".tt",
+        "SS.",
+        "tt.",
+        "SS."
+      ],
+      [
+        "..tt",
+        ".SS.",
+        ".tt.",
+        "SS..",
+        "tt..",
+        "SS.."
+      ]
+    ],
+    "sphynxTail": [
+      [
+        ".tt",
+        "..t",
+        ".B.",
+        ".B.",
+        "B..",
+        "B.."
+      ],
+      [
+        ".tt.",
+        ".t..",
+        ".B..",
+        ".B..",
+        "B...",
+        "B..."
+      ]
+    ],
+    "foldCatTail": [
+      [
+        ".tt",
+        ".BB",
+        ".BB",
+        "BB.",
+        "BB.",
+        "BB."
+      ],
+      [
+        "..tt",
+        ".BB.",
+        ".BB.",
+        "BB..",
+        "BB..",
+        "BB.."
+      ]
+    ],
+    "poodleTail": [
+      [
+        ".tt.",
+        "tAtt",
+        "tttt",
+        ".tt.",
+        ".B..",
+        "BB.."
+      ],
+      [
+        "..tt",
+        ".tAt",
+        ".ttt",
+        "..tt",
+        ".B..",
+        "BB.."
+      ]
+    ],
+    "shihTzuTail": [
+      [
+        ".ttt.",
+        "tttA.",
+        "tAt..",
+        ".B...",
+        "BB..."
+      ],
+      [
+        "..ttt",
+        ".tttA",
+        ".tAt.",
+        ".B...",
+        "BB..."
+      ]
+    ],
+    "dogTail": [
+      [
+        "..t",
+        ".tt",
+        ".B.",
+        "BB."
+      ],
+      [
+        "...t",
+        "..tt",
+        ".BB.",
+        "BB.."
+      ]
+    ],
+    "longTail": [
+      [
+        "..t",
+        ".t.",
+        "B.."
+      ],
+      [
+        "...",
+        ".tt",
+        "B.."
+      ]
+    ]
+  }
+}

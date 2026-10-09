@@ -241,11 +241,13 @@ public enum PetComposer {
             return PetPoint(x: x, y: y)
         case .toy(let roll, let bounce, let bat):
             // Cats play with yarn, dogs with a ball. Each pixel rolled turns
-            // the winding or the band, so the toy reads as rolling.
-            let art = layout.family == .cat ? PropArt.yarn : PropArt.ball
+            // the winding or the band, so the toy reads as rolling. Only a
+            // ball bounces; yarn stays on the floor.
+            let yarn = layout.family == .cat
+            let art = yarn ? PropArt.yarn : PropArt.ball
             let toy = art[(roll / 2) % art.count]
             let x = toyX(roll: roll, center: center)
-            let y = frameSize - toy.height - max(bounce, 0)
+            let y = frameSize - toy.height - (yarn ? 0 : max(bounce, 0))
             canvas.stamp(toy, x: x, y: y)
             if bat {
                 // The lifted left paw, outlined all round, presses on the

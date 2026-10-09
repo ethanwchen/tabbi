@@ -1,0 +1,554 @@
+{
+  "customFields" : {
+    "focus" : {
+      "max" : 180,
+      "min" : 5,
+      "step" : 5
+    },
+    "longBreak" : {
+      "max" : 60,
+      "min" : 5,
+      "step" : 5
+    },
+    "longBreakEvery" : {
+      "max" : 8,
+      "min" : 2,
+      "step" : 1
+    },
+    "shortBreak" : {
+      "max" : 60,
+      "min" : 1,
+      "step" : 1
+    }
+  },
+  "customStandard" : {
+    "focus" : 30,
+    "longBreak" : 15,
+    "longBreakEvery" : 4,
+    "shortBreak" : 5
+  },
+  "customStandardHasLongBreak" : false,
+  "defaultSprintCards" : 100,
+  "evidenceLabels" : {
+    "mixed" : "Some evidence",
+    "strong" : "Well supported",
+    "weak" : "Mostly convention"
+  },
+  "flowtimeBreaks" : [
+    {
+      "breakSeconds" : {
+        "fifth" : 60,
+        "tiered" : 300
+      },
+      "workedSeconds" : 0
+    },
+    {
+      "breakSeconds" : {
+        "fifth" : 60,
+        "tiered" : 300
+      },
+      "workedSeconds" : 59
+    },
+    {
+      "breakSeconds" : {
+        "fifth" : 60,
+        "tiered" : 300
+      },
+      "workedSeconds" : 60
+    },
+    {
+      "breakSeconds" : {
+        "fifth" : 60,
+        "tiered" : 300
+      },
+      "workedSeconds" : 300
+    },
+    {
+      "breakSeconds" : {
+        "fifth" : 120,
+        "tiered" : 300
+      },
+      "workedSeconds" : 450
+    },
+    {
+      "breakSeconds" : {
+        "fifth" : 300,
+        "tiered" : 300
+      },
+      "workedSeconds" : 1500
+    },
+    {
+      "breakSeconds" : {
+        "fifth" : 300,
+        "tiered" : 480
+      },
+      "workedSeconds" : 1501
+    },
+    {
+      "breakSeconds" : {
+        "fifth" : 600,
+        "tiered" : 480
+      },
+      "workedSeconds" : 3000
+    },
+    {
+      "breakSeconds" : {
+        "fifth" : 600,
+        "tiered" : 600
+      },
+      "workedSeconds" : 3001
+    },
+    {
+      "breakSeconds" : {
+        "fifth" : 660,
+        "tiered" : 600
+      },
+      "workedSeconds" : 3150
+    },
+    {
+      "breakSeconds" : {
+        "fifth" : 1080,
+        "tiered" : 600
+      },
+      "workedSeconds" : 5400
+    },
+    {
+      "breakSeconds" : {
+        "fifth" : 2880,
+        "tiered" : 600
+      },
+      "workedSeconds" : 14400
+    }
+  ],
+  "footnote" : "Interval lengths are conventions. What research supports is regular breaks, testing yourself, and spacing reviews over days.",
+  "maximumPhaseSeconds" : 14400,
+  "methods" : [
+    {
+      "breakRule" : "fixed",
+      "evidence" : "In one study, scheduled breaks beat ad-hoc breaks for mood and efficiency (Biwer et al., 2023). The 25-minute length itself is a convention.",
+      "evidenceLevel" : "mixed",
+      "focusSeconds" : 1500,
+      "focusTarget" : "duration",
+      "hasBreaks" : true,
+      "howTo" : "Work on one thing for 25 minutes, then take a 5-minute break away from the screen. After four rounds, take a longer 15-minute break. Short, fixed rounds make it easy to start.",
+      "howToSentencePrefixes" : [
+        "Work on one thing for 25 minutes, then take a 5-minute break away from the screen.",
+        "Work on one thing for 25 minutes, then take a 5-minute break away from the screen. After four rounds, take a longer 15-minute break.",
+        "Work on one thing for 25 minutes, then take a 5-minute break away from the screen. After four rounds, take a longer 15-minute break. Short, fixed rounds make it easy to start."
+      ],
+      "kind" : "pomodoro",
+      "longBreakEvery" : 4,
+      "longBreakSeconds" : 900,
+      "name" : "Pomodoro",
+      "nameIsRhythm" : false,
+      "phaseSeconds" : {
+        "focus" : 1500,
+        "longBreak" : 900,
+        "shortBreak" : 300
+      },
+      "phaseSequence" : [
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "longBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "longBreak",
+        "focus"
+      ],
+      "rhythmLabel" : "25/5",
+      "tagline" : "25 min focus, 5 min break"
+    },
+    {
+      "breakRule" : "fixed",
+      "evidence" : "This ratio comes from a 2014 productivity-app blog post about its users, not from a study of learning. Treat it as a preset, not a finding.",
+      "evidenceLevel" : "weak",
+      "focusSeconds" : 3120,
+      "focusTarget" : "duration",
+      "hasBreaks" : true,
+      "howTo" : "Focus for 52 minutes, then take a full 17-minute break. Use the break to actually rest: stand up, move, get water. Good for longer reading or question blocks.",
+      "howToSentencePrefixes" : [
+        "Focus for 52 minutes, then take a full 17-minute break.",
+        "Focus for 52 minutes, then take a full 17-minute break. Use the break to actually rest: stand up, move, get water.",
+        "Focus for 52 minutes, then take a full 17-minute break. Use the break to actually rest: stand up, move, get water. Good for longer reading or question blocks."
+      ],
+      "kind" : "fiftyTwoSeventeen",
+      "name" : "52 / 17",
+      "nameIsRhythm" : true,
+      "phaseSeconds" : {
+        "focus" : 3120,
+        "longBreak" : 1020,
+        "shortBreak" : 1020
+      },
+      "phaseSequence" : [
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus"
+      ],
+      "rhythmLabel" : "52/17",
+      "tagline" : "52 min focus, 17 min break"
+    },
+    {
+      "breakRule" : "fixed",
+      "evidence" : "Strict 90-minute daytime cycles have little evidence. Studies of expert practice do support capping deep work at about 4 hours a day (Ericsson et al., 1993).",
+      "evidenceLevel" : "weak",
+      "focusSeconds" : 5400,
+      "focusTarget" : "duration",
+      "hasBreaks" : true,
+      "howTo" : "Do one deep 90-minute block, then rest for about 20 minutes. Best for hard work like a dense lecture or a long practice block. Do at most 3 or 4 of these a day.",
+      "howToSentencePrefixes" : [
+        "Do one deep 90-minute block, then rest for about 20 minutes.",
+        "Do one deep 90-minute block, then rest for about 20 minutes. Best for hard work like a dense lecture or a long practice block.",
+        "Do one deep 90-minute block, then rest for about 20 minutes. Best for hard work like a dense lecture or a long practice block. Do at most 3 or 4 of these a day."
+      ],
+      "kind" : "ultradian",
+      "name" : "Ultradian",
+      "nameIsRhythm" : false,
+      "phaseSeconds" : {
+        "focus" : 5400,
+        "longBreak" : 1200,
+        "shortBreak" : 1200
+      },
+      "phaseSequence" : [
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus"
+      ],
+      "rhythmLabel" : "90/20",
+      "tagline" : "90 min deep block, 20 min rest"
+    },
+    {
+      "breakRule" : "proportional:tiered",
+      "evidence" : "In a 2025 comparison, Flowtime did no better or worse overall than Pomodoro or self-chosen breaks (Smits et al., 2025).",
+      "evidenceLevel" : "mixed",
+      "focusTarget" : "openEnded",
+      "hasBreaks" : true,
+      "howTo" : "Start the timer and study until your focus starts to slip, then stop. Your break scales with how long you worked: 5 minutes after up to 25, 8 after up to 50, 10 after that.",
+      "howToSentencePrefixes" : [
+        "Start the timer and study until your focus starts to slip, then stop.",
+        "Start the timer and study until your focus starts to slip, then stop. Your break scales with how long you worked: 5 minutes after up to 25, 8 after up to 50, 10 after that."
+      ],
+      "kind" : "flowtime",
+      "name" : "Flowtime",
+      "nameIsRhythm" : false,
+      "phaseSeconds" : {
+        "longBreak" : 300,
+        "shortBreak" : 300
+      },
+      "phaseSequence" : [
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus"
+      ],
+      "rhythmLabel" : "Open",
+      "tagline" : "Study until focus slips, break scales"
+    },
+    {
+      "breakRule" : "fixed",
+      "cardGoal" : 100,
+      "evidence" : "Spaced retrieval, what Anki does, is one of the best-supported study techniques (Dunlosky et al., 2013). Links between Anki use and exam scores are correlational.",
+      "evidenceLevel" : "strong",
+      "focusTarget" : "cards",
+      "hasBreaks" : true,
+      "howTo" : "Pick a number of cards, for example 100, and go through them without stopping. The timer counts cards answered in Anki and ends when you hit the goal. Do your due reviews before adding new cards.",
+      "howToSentencePrefixes" : [
+        "Pick a number of cards, for example 100, and go through them without stopping.",
+        "Pick a number of cards, for example 100, and go through them without stopping. The timer counts cards answered in Anki and ends when you hit the goal.",
+        "Pick a number of cards, for example 100, and go through them without stopping. The timer counts cards answered in Anki and ends when you hit the goal. Do your due reviews before adding new cards."
+      ],
+      "kind" : "ankiSprint",
+      "name" : "Anki sprint",
+      "nameIsRhythm" : false,
+      "phaseSeconds" : {
+        "longBreak" : 300,
+        "shortBreak" : 300
+      },
+      "phaseSequence" : [
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus"
+      ],
+      "rhythmLabel" : "100 cards",
+      "tagline" : "Clear a card goal, not a clock"
+    },
+    {
+      "breakRule" : "fixed",
+      "evidence" : "Testing yourself, then checking answers, is among the best-supported ways to learn (Roediger & Karpicke, 2006; Dunlosky et al., 2013).",
+      "evidenceLevel" : "strong",
+      "focusSeconds" : 3600,
+      "focusTarget" : "duration",
+      "hasBreaks" : true,
+      "howTo" : "Do a timed block of practice questions, up to 40 in 60 minutes, as on a real board exam. Then spend at least as long reviewing every explanation, including the ones you got right.",
+      "howToSentencePrefixes" : [
+        "Do a timed block of practice questions, up to 40 in 60 minutes, as on a real board exam.",
+        "Do a timed block of practice questions, up to 40 in 60 minutes, as on a real board exam. Then spend at least as long reviewing every explanation, including the ones you got right."
+      ],
+      "kind" : "questionBlock",
+      "name" : "Question block",
+      "nameIsRhythm" : false,
+      "phaseSeconds" : {
+        "focus" : 3600,
+        "longBreak" : 600,
+        "review" : 3600,
+        "shortBreak" : 600
+      },
+      "phaseSequence" : [
+        "focus",
+        "review",
+        "shortBreak",
+        "focus",
+        "review",
+        "shortBreak",
+        "focus",
+        "review",
+        "shortBreak",
+        "focus",
+        "review",
+        "shortBreak",
+        "focus",
+        "review",
+        "shortBreak",
+        "focus",
+        "review",
+        "shortBreak",
+        "focus",
+        "review",
+        "shortBreak",
+        "focus",
+        "review",
+        "shortBreak",
+        "focus"
+      ],
+      "questionCount" : 40,
+      "reviewSeconds" : 3600,
+      "rhythmLabel" : "60+60/10",
+      "tagline" : "40 questions in 60 min, then review"
+    },
+    {
+      "breakRule" : "fixed",
+      "evidence" : "No interval is proven best. Taking regular breaks at all is what has support.",
+      "evidenceLevel" : "mixed",
+      "focusSeconds" : 1800,
+      "focusTarget" : "duration",
+      "hasBreaks" : true,
+      "howTo" : "Set your own focus and break lengths, and optionally a longer break every few rounds. Pick a rhythm you will actually stick to.",
+      "howToSentencePrefixes" : [
+        "Set your own focus and break lengths, and optionally a longer break every few rounds.",
+        "Set your own focus and break lengths, and optionally a longer break every few rounds. Pick a rhythm you will actually stick to."
+      ],
+      "kind" : "custom",
+      "name" : "Custom",
+      "nameIsRhythm" : false,
+      "phaseSeconds" : {
+        "focus" : 1800,
+        "longBreak" : 300,
+        "shortBreak" : 300
+      },
+      "phaseSequence" : [
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus",
+        "shortBreak",
+        "focus"
+      ],
+      "rhythmLabel" : "30/5",
+      "tagline" : "Your own focus and break lengths"
+    },
+    {
+      "breakRule" : "none",
+      "evidence" : "A plain countdown is a tool, not a study method. Setting a short, fixed time can make a task easier to start.",
+      "focusSeconds" : 600,
+      "focusTarget" : "duration",
+      "hasBreaks" : false,
+      "howTo" : "Pick 5, 10 or 25 minutes, or step to any length, and press Start. The timer counts down once and stops. Handy for a quick task, a break or the kettle.",
+      "howToSentencePrefixes" : [
+        "Pick 5, 10 or 25 minutes, or step to any length, and press Start.",
+        "Pick 5, 10 or 25 minutes, or step to any length, and press Start. The timer counts down once and stops.",
+        "Pick 5, 10 or 25 minutes, or step to any length, and press Start. The timer counts down once and stops. Handy for a quick task, a break or the kettle."
+      ],
+      "kind" : "timer",
+      "name" : "Timer",
+      "nameIsRhythm" : false,
+      "phaseSeconds" : {
+        "focus" : 600
+      },
+      "phaseSequence" : [
+        "focus",
+        "focus",
+        "focus",
+        "focus",
+        "focus",
+        "focus",
+        "focus",
+        "focus",
+        "focus"
+      ],
+      "rhythmLabel" : "10 min",
+      "tagline" : "One countdown, no breaks"
+    }
+  ],
+  "minimumPhaseSeconds" : 60,
+  "schema" : "tabbi.study-methods.golden",
+  "sprintBreakCards" : 200,
+  "sprintBreakSeconds" : 1800,
+  "sprintGoals" : [
+    {
+      "goal" : 100,
+      "learnDue" : 0,
+      "reviewDue" : 0
+    },
+    {
+      "goal" : 15,
+      "learnDue" : 3,
+      "reviewDue" : 12
+    },
+    {
+      "goal" : 7,
+      "learnDue" : 7,
+      "reviewDue" : 0
+    },
+    {
+      "goal" : 100,
+      "learnDue" : 0,
+      "reviewDue" : -5
+    },
+    {
+      "goal" : 290,
+      "learnDue" : 40,
+      "reviewDue" : 250
+    }
+  ],
+  "timerMaxMinutes" : 180,
+  "timerMinMinutes" : 1,
+  "timerPresetMinutes" : [
+    5,
+    10,
+    25
+  ],
+  "timerStandardMinutes" : 10,
+  "timerSteps" : [
+    {
+      "down" : 1,
+      "minutes" : 1,
+      "up" : 2
+    },
+    {
+      "down" : 1,
+      "minutes" : 2,
+      "up" : 3
+    },
+    {
+      "down" : 8,
+      "minutes" : 9,
+      "up" : 10
+    },
+    {
+      "down" : 9,
+      "minutes" : 10,
+      "up" : 15
+    },
+    {
+      "down" : 10,
+      "minutes" : 11,
+      "up" : 15
+    },
+    {
+      "down" : 20,
+      "minutes" : 23,
+      "up" : 25
+    },
+    {
+      "down" : 20,
+      "minutes" : 25,
+      "up" : 30
+    },
+    {
+      "down" : 175,
+      "minutes" : 179,
+      "up" : 180
+    },
+    {
+      "down" : 175,
+      "minutes" : 180,
+      "up" : 180
+    }
+  ],
+  "version" : 1
+}

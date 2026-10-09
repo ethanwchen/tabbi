@@ -3,6 +3,7 @@ import Foundation
 /// The sitting tail bending out to the side for the tail swish. Every breed
 /// keeps its own tail art (a whip, a ringed tail, a pom, a plume): the tail
 /// is bent from its base, so no breed needs swish frames of its own.
+/// The grids are drawn in `Pets/PetArt/tail.json`.
 enum TailArt {
     /// `body` cut in two at `column`: the body without the tail, and the tail
     /// alone on a grid of the same size, for tails drawn into the sitting
@@ -41,10 +42,7 @@ enum TailArt {
 
     /// A stub tail peeking out by the haunch for breeds without a tail (a
     /// corgi, a French bulldog), which wiggle it instead of swishing.
-    static let nub = SpriteGrid(art: """
-        tt
-        BB
-        """)
+    static let nub = PetArt.tail.grid("nub")
 
     /// A tail wrapped round a curled-up pet, `length` wide: it comes from
     /// under the rump on the right and runs along the floor in front of the

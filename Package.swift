@@ -49,9 +49,13 @@ let package = Package(
         // Pure, testable logic: parsers, models, stores. No AppKit/SwiftUI.
         .target(
             name: "TabbiKitCore",
-            // Kit manifests and edition files ship as human-editable JSON
-            // (see docs/kits.md and Edition.swift).
-            resources: [.copy("Kits/Bundled"), .copy("Editions/BundledEditions")],
+            // Kit manifests, edition files, pet art and themes ship as
+            // human-editable JSON (see docs/kits.md, Edition.swift,
+            // PetArt.swift and ThemeCatalog.swift).
+            resources: [
+                .copy("Kits/Bundled"), .copy("Editions/BundledEditions"), .copy("Pets/PetArt"),
+                .copy("Themes/themes.json"), .copy("StudyMethods/study-methods.json"),
+            ],
             swiftSettings: coreSettings
         ),
         // Shared AppKit/SwiftUI: design system, notch window pieces, shared
