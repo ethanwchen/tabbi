@@ -44,8 +44,24 @@ npx wrangler secret put APPLE_KEY_ID        # the key's Key ID
 npx wrangler secret put APPLE_PRIVATE_KEY   # the whole AuthKey_<KeyID>.p8 file, pasted as is
 ```
 
+To turn on the operator endpoints (backup export and point-in-time restore), set an admin token of at least 32 characters:
+
+```sh
+openssl rand -hex 32 | npx wrangler secret put ADMIN_TOKEN
+```
+
 The tables in that storage are versioned in `src/hub.ts` (`MIGRATIONS`, recorded in a `schema_version` table): the Hub applies missing steps when it starts, so a deploy upgrades the database by itself.
 Add a schema change as a new step at the end and never edit a deployed one.
+
+## Operations
+
+[`../docs/security.md`](../docs/security.md) covers the threat model and how to run the service; in short:
+
+- **Staging:** `npm run deploy:staging` deploys `tabbi-friends-staging` (the `staging` environment in `wrangler.toml`) with its own storage and secrets; `npm run deploy` deploys production.
+- **Backups:** Durable Object storage keeps 30 days of point-in-time history, which `POST /v1/admin/restore` restores; `GET /v1/admin/export` returns every table as JSON for an offsite copy. Both need `ADMIN_TOKEN`.
+- **Secrets:** rotate `ADMIN_TOKEN` with `wrangler secret put`, and the Apple key with `wrangler secret bulk` so its id and file change together.
+- **Rollback:** `npx wrangler rollback` returns to the previous version (code only; schema steps only add, so older code runs on a newer database).
+- **Monitoring:** `npx wrangler tail --status error` and the dashboard's Metrics for requests, errors and free-plan usage.
 
 ## Architecture
 

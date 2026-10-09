@@ -11,6 +11,7 @@
  * alive, and keeping them out of SQLite saves a billed row write on every request.
  */
 import { DurableObject } from "cloudflare:workers";
+import { AdminSecrets, exportTables, isAdminToken, notFound, parseRestore } from "./admin";
 import {
   AUTH_FAILURES_PER_MIN, HttpError, MAX_FRIENDS, MAX_PARTY_MEMBERS, PARTY_IDLE_EXPIRY_S, RATE_LIMIT_PER_MIN, REGISTER_PER_MIN, FRIEND_CODE_RE, TOKEN_RE,
   clientKey, isoWeekDays, isoWeekKeyOfDay, newCode, newToken, nowS, parseFriendCode, readBody, sha256Hex, utcDay,
@@ -26,7 +27,7 @@ import { PRESENCE_FIELDS, Presence, heartbeatSeconds, isOnline, parseHeartbeat, 
 import { STUDY_DAY_RETENTION_DAYS, rankEntries } from "./leaderboard";
 import { JOIN_FIELDS, PARTY_TOUCH_S, PartySession, SESSION_FIELDS, parseJoin, parseSession, partyExpired } from "./party";
 
-export interface Env extends AppleSecrets {
+export interface Env extends AppleSecrets, AdminSecrets {
   HUB: DurableObjectNamespace<Hub>;
 }
 
@@ -271,6 +272,7 @@ export class Hub extends DurableObject<Env> {
     }
 
     if (path === "/v1/auth/apple" && method === "POST") return await this.signInWithApple(req, now);
+    if (path.startsWith("/v1/admin/")) return await this.admin(req, path, method, now);
 
     const caller = await this.authenticate(req, now);
 
@@ -344,6 +346,44 @@ export class Hub extends DurableObject<Env> {
     const minute = Math.floor(now / 60);
     const w = this.windows.get(id);
     if (w && w.minute === minute && w.count >= perMinute) throw rateLimited(minute, now);
+  }
+
+  // ---------- admin ----------
+
+  /** Operator routes (see admin.ts). Anything short of a valid admin token is a plain 404. */
+  private async admin(req: Request, path: string, method: string, now: number): Promise<Response> {
+    const failures = "authfail:" + clientKey(req);
+    this.checkLimit(failures, AUTH_FAILURES_PER_MIN, now);
+    if (!(await isAdminToken(bearer(req), this.env.ADMIN_TOKEN))) {
+      this.rateLimit(failures, Infinity, now);
+      throw notFound();
+    }
+    if (path === "/v1/admin/export" && method === "GET") {
+      const version = this.sql.exec<{ version: number }>("SELECT version FROM schema_version").one().version;
+      return json({ ok: true, exportedAt: now, schemaVersion: version, tables: exportTables(this.sql) });
+    }
+    if (path === "/v1/admin/restore" && method === "POST") return await this.restore(req, now);
+    throw notFound();
+  }
+
+  /**
+   * Point-in-time recovery: the storage goes back to the requested time or bookmark when the object
+   * next starts, and the object restarts right after replying. The reply carries a bookmark of the
+   * state just before the restore, which a later restore can return to.
+   */
+  private async restore(req: Request, now: number): Promise<Response> {
+    const target = await parseRestore(req, now);
+    let undoBookmark: string;
+    try {
+      const bookmark = "bookmark" in target ? target.bookmark : await this.ctx.storage.getBookmarkForTime(target.at * 1000);
+      undoBookmark = await this.ctx.storage.onNextSessionRestoreBookmark(bookmark);
+    } catch (e) {
+      console.error(e);
+      throw new HttpError(501, "restore_unavailable", "point-in-time recovery is not available here");
+    }
+    console.log("admin: restoring storage to " + ("at" in target ? `time ${target.at}` : "a bookmark"));
+    setTimeout(() => this.ctx.abort("restoring a backup"), 100);
+    return json({ ok: true, undoBookmark });
   }
 
   // ---------- profile ----------

@@ -11,3 +11,13 @@ class_name = "Hub"
 [[migrations]]
 tag = "v1"
 new_sqlite_classes = ["Hub"]
+
+# Staging: `npx wrangler deploy --env staging` deploys a separate Worker, tabbi-friends-staging, with
+# its own Durable Object, storage and secrets, so a change can be tried before production.
+# Bindings are not inherited by environments, so the Durable Object binding is repeated here.
+[env.staging]
+name = "tabbi-friends-staging"
+
+[[env.staging.durable_objects.bindings]]
+name = "HUB"
+class_name = "Hub"

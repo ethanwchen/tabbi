@@ -391,6 +391,16 @@ Writes are limited to 20 per minute per user.
 
 Errors: `no_account` (403), `revision_required` (428, no `If-Match`), `invalid_revision` (400), `revision_conflict` (409), `invalid_json`, `unknown_field`, `invalid_field`, `body_too_large`, `rate_limited`.
 
+### Operator routes
+
+`GET /v1/admin/export` and `POST /v1/admin/restore` are for whoever runs the server, never for the app; see [`../security.md`](../security.md).
+They need `Authorization: Bearer <ADMIN_TOKEN>` (a Worker secret of at least 32 characters) and answer 404 `not_found` to anything else, including when no admin token is set.
+A wrong admin token counts as a failed authentication.
+
+- `GET /v1/admin/export` returns `{ok, exportedAt, schemaVersion, tables}`, where `tables` maps each table name to its rows.
+- `POST /v1/admin/restore` takes exactly one of `{"at": <unix seconds within the last 30 days>}` or `{"bookmark": "<undoBookmark>"}`, returns `{ok, undoBookmark}`, and restarts the Hub with the restored storage.
+  Where point-in-time recovery is unavailable (local dev) it answers 501 `restore_unavailable`.
+
 ## Errors common to all routes
 
 | HTTP | `error` | Meaning and what to do |
