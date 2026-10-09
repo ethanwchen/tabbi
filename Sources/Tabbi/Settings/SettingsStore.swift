@@ -18,6 +18,10 @@ final class SettingsStore: ObservableObject {
     /// Why the last launch-at-login change failed, for the Settings window.
     @Published private(set) var launchAtLoginError: String?
 
+    /// True while the login item waits for approval in System Settings,
+    /// as of the last `refreshLaunchAtLogin()`.
+    @Published private(set) var launchAtLoginNeedsApproval = false
+
     /// False when another app already owns `settings.hotkey`; set by whoever
     /// registers the shortcut so the Settings window can explain it.
     @Published var hotkeyIsRegistered = true
@@ -94,6 +98,8 @@ final class SettingsStore: ObservableObject {
     private let defaultKitID: String
     /// False for snapshot stores, which must never touch the real login item.
     let integratesWithSystem: Bool
+    /// The login item the "Launch at login" toggle registers.
+    let loginItem: LaunchAtLogin
 
     /// - Parameter defaultKitID: the kit used before the user picks one,
     ///   e.g. a branded edition's kit.
@@ -102,7 +108,8 @@ final class SettingsStore: ObservableObject {
         defaults: UserDefaults = .standard,
         defaultKitID: String = KitLibrary.defaultKitID,
         kitStore: ImportedKitStore? = .standard(),
-        integratesWithSystem: Bool = true
+        integratesWithSystem: Bool = true,
+        loginItem: LaunchAtLogin = .system
     ) {
         let kits = KitLibrary.installed(imported: kitStore?.load() ?? [])
         let repository = SettingsRepository(defaults: defaults, catalog: catalog, kits: kits, defaultKitID: defaultKitID)
@@ -112,14 +119,19 @@ final class SettingsStore: ObservableObject {
         self.defaultKitID = defaultKitID
         self.repository = repository
         self.integratesWithSystem = integratesWithSystem
-        var settings = repository.load()
-        if integratesWithSystem, LaunchAtLogin.isAvailable {
-            // The user may have removed the login item in System Settings.
-            settings.launchAtLogin = LaunchAtLogin.isEnabled
-            repository.save(settings)
-        }
-        self.settings = settings
+        self.loginItem = loginItem
+        self.settings = repository.load()
+        refreshLaunchAtLogin()
         apply()
+    }
+
+    /// Reads the login item back from the system, since the user may have
+    /// removed or approved it in System Settings since Tabbi last looked.
+    func refreshLaunchAtLogin() {
+        guard integratesWithSystem, loginItem.isAvailable else { return }
+        let status = loginItem.status()
+        if settings.launchAtLogin != (status != .off) { settings.launchAtLogin = status != .off }
+        launchAtLoginNeedsApproval = status == .needsApproval
     }
 
     /// A store backed by in-memory defaults, so snapshots always render the
@@ -272,12 +284,13 @@ final class SettingsStore: ObservableObject {
             return
         }
         do {
-            try LaunchAtLogin.setEnabled(enabled)
+            try loginItem.setEnabled(enabled)
             launchAtLoginError = nil
         } catch {
             launchAtLoginError = error.localizedDescription
         }
-        settings.launchAtLogin = LaunchAtLogin.isEnabled
+        settings.launchAtLogin = loginItem.isEnabled
+        refreshLaunchAtLogin()
     }
 
     private func apply() {

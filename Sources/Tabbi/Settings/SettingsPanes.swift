@@ -51,7 +51,7 @@ struct GeneralSettingsPane: View {
 
             Section {
                 Toggle("Launch at login", isOn: launchAtLogin)
-                    .disabled(!LaunchAtLogin.isAvailable && store.integratesWithSystem)
+                    .disabled(!store.loginItem.isAvailable && store.integratesWithSystem)
                     .help("Start \(Edition.current.name) automatically when you log in")
                 if let caption = launchAtLoginCaption {
                     Text(caption)
@@ -124,6 +124,11 @@ struct GeneralSettingsPane: View {
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didChangeScreenParametersNotification)) { _ in
             screens = DisplayOption.connectedScreens()
         }
+        // Login Items may have changed in System Settings meanwhile.
+        .onAppear { store.refreshLaunchAtLogin() }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+            store.refreshLaunchAtLogin()
+        }
     }
 
     @ViewBuilder
@@ -186,10 +191,10 @@ struct GeneralSettingsPane: View {
     private var launchAtLoginCaption: String? {
         if let error = store.launchAtLoginError { return error }
         guard store.integratesWithSystem else { return nil }
-        if !LaunchAtLogin.isAvailable {
+        if !store.loginItem.isAvailable {
             return "Available when \(Edition.current.name) runs as an app bundle."
         }
-        if LaunchAtLogin.needsApproval {
+        if store.launchAtLoginNeedsApproval {
             return "Allow \(Edition.current.name) in System Settings › General › Login Items."
         }
         return nil
