@@ -542,6 +542,7 @@ curl -s -X POST -H "Authorization: Bearer $ADMIN_TOKEN" $TABBI/v1/admin/reports/
   Their data stays, so a ban can be lifted with `DELETE /v1/admin/users/{code}/ban`, which brings their friendships back as they were.
   Replies `{"ok": true, "banned": true}` (`false` if already banned).
 - Sign in with Apple carries a ban, held names and reports over when an anonymous user folds into an account; the account keeps both users' held names.
+- An account that inherits a ban this way leaves its party at once, just as a ban does; the next member becomes host.
 
 ## Errors common to all routes
 

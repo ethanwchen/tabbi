@@ -235,6 +235,23 @@ describe("POST /v1/auth/apple", () => {
     expect(reports.find((x: any) => x.reporter.code === reporter.code).reported.code).toBe(mac1.code);
   });
 
+  it("takes the account out of its party when a folded-in ban carries over, as banning it would", async () => {
+    const mac1 = await register();
+    await signIn({ identityToken: await identityToken("sub.fold.banparty") }, mac1.token);
+    const mac2 = await register();
+    const friend = await register();
+    const party = (await call("POST", "/v1/party", undefined, mac1.token)).body.party.code;
+    await call("POST", "/v1/party/join", { code: party }, friend.token);
+    await admin("POST", `/users/${mac2.code}/ban`);
+
+    const r = await signIn({ identityToken: await identityToken("sub.fold.banparty") }, mac2.token);
+    expect(r.body.code).toBe(mac1.code);
+    expect((await call("GET", "/v1/party", undefined, r.body.token)).body.party).toBeNull();
+    const view = (await call("GET", "/v1/party", undefined, friend.token)).body.party;
+    expect(view.host).toBe(friend.code);
+    expect(view.members.map((m: any) => m.profile.code)).toEqual([friend.code]);
+  });
+
   it("keeps both users' replaced names held when it folds an anonymous user into an account", async () => {
     const mac1 = await register({ name: "Account Bad" });
     await signIn({ identityToken: await identityToken("sub.fold.holds") }, mac1.token);

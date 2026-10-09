@@ -1140,7 +1140,12 @@ export class Hub extends DurableObject<Env> {
       "INSERT OR IGNORE INTO name_holds (code, kind, value, created_at) SELECT ?, kind, value, created_at FROM name_holds WHERE code = ?",
       to, from);
     this.purgeUser(from, now);
-    // Blocks the account just inherited apply to its party as they would to a fresh block.
+    // An inherited ban takes the account out of its party, as banning it would; blocks the account just
+    // inherited apply to its party as they would to a fresh block.
+    if (this.isBanned(to)) {
+      this.leaveParty(to, now);
+      return;
+    }
     const party = this.sql.exec<{ party: string }>("SELECT party FROM party_members WHERE code = ?", to).toArray()[0]?.party;
     if (party) this.dropMembersBlockedWithHost(party);
   }
