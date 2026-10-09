@@ -1,4 +1,5 @@
-// The App Store build has no Ask Claude (see Package.swift).
+// These tests drive a stand-in claude CLI, which the sandboxed App Store
+// build never runs; AppStoreEditionFeatureTests covers Ask there.
 #if !APPSTORE
 import Foundation
 import XCTest

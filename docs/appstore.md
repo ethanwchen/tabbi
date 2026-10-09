@@ -14,18 +14,27 @@ This page says what differs, how to build and upload it, and what to enter in Ap
 | App Sandbox | no | yes (`packaging/Tabbi-AppStore.entitlements`) |
 | Updates | Sparkle | the App Store (Sparkle is not linked at all) |
 | Move to Applications, single instance, quarantine checks | InstallHygiene | left out (the App Store installs the app) |
-| Claude Usage, Ask Claude | yes | compiled out (they run the `claude` CLI) |
-| Plan my day | on the Mac, or with Claude | on the Mac only, no Refine with Claude |
-| Wrap up (day review) | local summary, refined by Claude | local summary only |
+| Claude Usage | yes | compiled out (it reads the `claude` CLI) |
+| AI providers (Settings > Connections > AI) | Claude Code, Codex and Gemini CLI, the Anthropic, OpenAI and Gemini APIs, Ollama | the Anthropic, OpenAI and Gemini APIs with the user's key, and Ollama on `localhost` |
+| Ask AI | yes | yes, through the API providers and Ollama |
+| Plan my day and Refine | on the Mac, or with the picked AI | the same, with an API provider or Ollama |
+| Wrap up (day review) | local summary, refined by the picked AI | the same, with an API provider or Ollama |
 | Do Not Disturb during focus | through Shortcuts | hidden (it runs `/usr/bin/shortcuts`) |
-| Settings > Connections | all rows | no Claude or Do Not Disturb rows |
+| Settings > Connections | all rows | no command line tools in the AI picker, no Claude or Do Not Disturb rows |
 | Party | yes | left out by the edition for now (one switch turns it on) |
 | Sign in with Apple and sync ([sync.md](sync.md)) | yes, with the Developer ID profile | yes, with the App Store profile (not in `--adhoc` builds) |
 
-The compile-time switch sits in these places: `Package.swift` (the define and the Sparkle dependency), `ModuleList.swift` (the Claude modules), `AppDelegate.swift` (updater and install hygiene), `Edition+Current.swift` (the default edition) and a few spots in Settings and the snapshot renderer.
+The compile-time switch sits in these places: `Package.swift` (the define and the Sparkle dependency), `ModuleList.swift` (Claude Usage), `AIService.swift` (the sandboxed provider list), `AppDelegate.swift` (updater and install hygiene), `Edition+Current.swift` (the default edition) and a few spots in Settings and the snapshot renderer.
 Everything else follows the edition at run time.
-`Edition.excludedModules` removes modules from the catalog, so kits, onboarding, Settings > Tabs and the closed-notch ticker never offer them, and a kit that lists one (Essentials lists Ask Claude) still applies without a warning.
+`Edition.excludedModules` removes modules from the catalog, so kits, onboarding, Settings > Tabs and the closed-notch ticker never offer them, and a kit that lists one still applies without a warning.
 `Edition.runsLocalTools` is false for the App Store edition, which hides every feature that would start a helper program.
+
+### AI in the sandbox
+
+A sandboxed app cannot start the `claude`, `codex` or `gemini` command line tools, so the AI picker in Settings > Connections offers only the providers that need no helper program: the Anthropic, OpenAI and Gemini APIs (the user pastes their own key, which Tabbi keeps in the Keychain) and Ollama on `localhost:11434` (free and offline).
+All of them go through the `network.client` entitlement the app already has.
+A command line tool saved by a direct download counts as no choice here, so Ask shows its setup state instead of failing.
+Nothing is sent anywhere until the user picks a provider: a fresh install starts with None, Ask shows "Choose an AI to ask questions", and Plan my day and Wrap up stay on the Mac.
 
 Party comes back by removing `"party"` from `excludedModules` in `appstore.json`.
 Party now has reporting, blocking and a name filter (App Review guideline 1.2), so the remaining work before turning it on is a sandboxed run of Party, a privacy label that declares the display name and party activity it shares, and reviewer notes on how to report and block someone.
@@ -103,6 +112,7 @@ What the label does not need to list:
 - Calendar events, tasks, focus history and study tallies stay on the Mac in the app's container.
 - Album artwork is loaded from the music service's image host (`i.scdn.co`) without any identifier of the user.
 - AnkiConnect is reached on `localhost` only.
+- Questions in Ask AI and the text Plan my day and Wrap up send go only to the AI provider the user picks, with the user's own key (Anthropic, OpenAI or Google) or to Ollama on the Mac. Tabbi has no server in between and does not collect them; the provider's own privacy policy applies.
 - There is no analytics, advertising or crash reporting.
 
 When Party comes back, add its display name and study presence (Name or Other User Content, and Product Interaction) to the label.
@@ -117,6 +127,7 @@ When Party comes back, add its display name and study presence (Name or Other Us
 > Settings open from the gear button at the right of the panel's header.
 > Calendar access is optional and only used to show today's events in the Today tab.
 > Automation access to Music or Spotify is optional and only used to show and control what is playing.
+> Ask AI and the optional AI help in Today stay off until the user picks an AI in Settings > Connections. They use the user's own API key (Anthropic, OpenAI or Google Gemini) or Ollama running on the Mac; to try them, pick Ollama with a local model, or paste a key.
 > No account is needed.
 > Signing in with Apple (Settings > General > Account) is optional and only syncs the pet and study streaks between the user's Macs.
 > Delete Account in the same place deletes everything the server holds and revokes the Sign in with Apple grant.

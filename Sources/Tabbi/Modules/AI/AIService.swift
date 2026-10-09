@@ -84,13 +84,14 @@ extension ModuleContext {
             let keys: any AIKeyStore = runMode.isEphemeral
                 ? InMemoryAIKeyStore()
                 : KeychainAIKeyStore(service: edition.bundleIdentifier + ".ai")
+            // The demo names Claude, through a provider this build can run.
             #if APPSTORE
-            let sandboxed = true
+            let (sandboxed, sample) = (true, AIProviderID.anthropic)
             #else
-            let sandboxed = false
+            let (sandboxed, sample) = (false, AIProviderID.claudeCLI)
             #endif
             return AIService(settings: settings, keys: keys, sandboxed: sandboxed,
-                             sampleProvider: runMode.isDemo ? .claudeCLI : nil)
+                             sampleProvider: runMode.isDemo ? sample : nil)
         }
     }
 }

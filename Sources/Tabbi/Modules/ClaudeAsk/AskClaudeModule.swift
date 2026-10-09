@@ -10,7 +10,7 @@ final class AskClaudeModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
         id: .claudeAsk, title: "Ask AI", symbol: "sparkles",
         summary: "Ask Claude, Gemini or another AI a quick question.", category: .ai,
-        accent: .claude, permissions: [.claudeCLI],
+        accent: .claude, permissions: [],
         network: AIProviderID.allNetworkAccess
     )
     /// Internal so snapshot runs can show the history list.

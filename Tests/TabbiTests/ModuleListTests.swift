@@ -24,7 +24,7 @@ final class ModuleListTests: XCTestCase {
         // Modules a kit doesn't list are appended in this order, so it is
         // user-visible in Settings. New modules go at the end.
         #if APPSTORE
-        XCTAssertEqual(ModuleList.catalog.ids, [.spotify, .system, .planner,
+        XCTAssertEqual(ModuleList.catalog.ids, [.spotify, .system, .planner, .claudeAsk,
                                                 .focus, .study, .anki, .party, .closet, .schedule])
         #else
         XCTAssertEqual(ModuleList.catalog.ids, [.spotify, .system, .claudeUsage, .planner, .claudeAsk,
@@ -32,13 +32,14 @@ final class ModuleListTests: XCTestCase {
         #endif
     }
 
-    #if !APPSTORE
-    func testClaudeModulesDeclareTheCLIRequirement() {
-        XCTAssertTrue(AskClaudeModule.descriptor.permissions.contains(.claudeCLI))
+    func testOnlyClaudeUsageRequiresTheClaudeCLI() {
+        // Ask answers through whichever AI the user picks, API keys included.
+        XCTAssertEqual(AskClaudeModule.descriptor.permissions, [])
+        #if !APPSTORE
         XCTAssertTrue(ClaudeUsageModule.descriptor.permissions.contains(.claudeCLI))
+        #endif
         XCTAssertEqual(SystemModule.descriptor.permissions, [])
     }
-    #endif
 
     func testModulesThatUseTheNetworkDeclareTheirHosts() {
         let declared = Dictionary(uniqueKeysWithValues: ModuleList.catalog.descriptors.map {
@@ -48,9 +49,7 @@ final class ModuleListTests: XCTestCase {
         XCTAssertEqual(declared[.anki], [URLSessionAnkiConnectTransport.defaultEndpoint.host()!])
         XCTAssertEqual(declared[.party], [PartyServer.productionURL.host()!])
         // Ask sends questions to the provider the user picks.
-        #if !APPSTORE
         XCTAssertEqual(declared[.claudeAsk], Set(AIProviderID.allNetworkAccess.map(\.host)))
-        #endif
         for id in ModuleList.catalog.ids where ![.spotify, .anki, .party, .claudeAsk].contains(id) {
             XCTAssertEqual(declared[id], [], "\(id) declares a host but makes no network calls")
         }

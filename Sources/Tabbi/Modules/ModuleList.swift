@@ -4,7 +4,7 @@ import TabbiKitCore
 /// Settings lists modules a kit doesn't mention). Adding a module means
 /// adding its line here; titles, symbols, accents, layouts and kit
 /// validation all read the catalog built from this list. The App Store build
-/// (`APPSTORE`) has no modules that run the claude CLI; editions can leave
+/// (`APPSTORE`) has no Claude Usage, which reads the claude CLI; editions can leave
 /// out more through `Edition.excludedModules`.
 @MainActor
 enum ModuleList {
@@ -13,7 +13,7 @@ enum ModuleList {
         SystemModule.self,
         claudeUsage,
         TodayModule.self,
-        askClaude,
+        AskClaudeModule.self,
         FocusModule.self,
         StudyModule.self,
         AnkiModule.self,
@@ -22,16 +22,15 @@ enum ModuleList {
         ScheduleModule.self,
     ] as [(any NotchModule.Type)?]).compactMap { $0 }
 
-    // The modules that run the claude CLI, which a sandboxed app cannot.
-    // The App Store build leaves them out; its catalog knows them as
-    // unavailable, so kits that list them apply without a warning.
+    // Claude Usage reads the claude CLI, which a sandboxed app cannot run.
+    // The App Store build leaves it out; its catalog knows it as
+    // unavailable, so kits that list it apply without a warning. Ask stays:
+    // there it answers through the API and Ollama providers.
     #if APPSTORE
     private static let claudeUsage: (any NotchModule.Type)? = nil
-    private static let askClaude: (any NotchModule.Type)? = nil
-    private static let compiledOut: [ModuleID] = [.claudeUsage, .claudeAsk]
+    private static let compiledOut: [ModuleID] = [.claudeUsage]
     #else
     private static let claudeUsage: (any NotchModule.Type)? = ClaudeUsageModule.self
-    private static let askClaude: (any NotchModule.Type)? = AskClaudeModule.self
     private static let compiledOut: [ModuleID] = []
     #endif
 

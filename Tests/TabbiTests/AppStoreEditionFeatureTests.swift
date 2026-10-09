@@ -34,6 +34,22 @@ final class AppStoreEditionFeatureTests: XCTestCase {
         XCTAssertTrue(TodayModule(context: context(.planner, edition: try appStore)).store.plan.canRefine)
     }
 
+    func testTheAppStoreEditionOffersAskThroughSandboxedProvidersOnly() throws {
+        let edition = try appStore
+        XCTAssertTrue(ModuleList.catalog(for: edition).contains(.claudeAsk))
+        let store = SettingsStore.ephemeral(catalog: ModuleList.catalog(for: edition))
+        let ai = AIService(settings: store, keys: InMemoryAIKeyStore(), sandboxed: true)
+        XCTAssertEqual(ai.availableProviders, [.anthropic, .openAI, .gemini, .ollama])
+        // A Claude Code choice saved before (say, by the direct download)
+        // counts as no choice, so Ask shows its setup state and sends nothing.
+        store.settings.ai.provider = .claudeCLI
+        XCTAssertEqual(ai.setupState, .notChosen)
+        XCTAssertNil(ai.provider)
+        store.settings.ai.provider = .ollama
+        XCTAssertEqual(ai.setupState, .ready(.ollama))
+        XCTAssertNotNil(ai.provider)
+    }
+
     func testWrapUpShowsTheLocalSummaryAtOnceWithoutAnAI() {
         let review = DayReviewStore(storage: EditionStorage(root: FileManager.default.temporaryDirectory),
                                     ai: nil, runMode: .demo)

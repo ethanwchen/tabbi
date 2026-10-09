@@ -157,8 +157,7 @@ enum SnapshotRenderer {
             shots.append(Shot("open-pet-shortcut", withPaw))
         }
 
-        #if !APPSTORE
-        // Ask Claude's chat history, rendered after the others because the
+        // Ask AI's chat history, rendered after the others because the
         // list showing is session state.
         if layout.order.contains(.claudeAsk) {
             var withAsk = layout
@@ -180,7 +179,6 @@ enum SnapshotRenderer {
                 shots.append(Shot(name, model))
             }
         }
-        #endif
 
         shots += headerShots(geometry: geometry, catalog: services.settings.catalog)
 
@@ -247,9 +245,10 @@ enum SnapshotRenderer {
             print(url.path)
         }
         services.settings.settings.notchMode = notchMode
-        // Connections with an API provider waiting for its key, and with a
-        // command line tool picked.
-        for (name, provider) in [("api-key", AIProviderID.gemini), ("cli", .claudeCLI)] {
+        // Connections with an API provider waiting for its key, a command
+        // line tool and Ollama picked, as far as this build offers them.
+        let aiShots = [("api-key", AIProviderID.gemini), ("cli", .claudeCLI), ("local", .ollama)]
+        for (name, provider) in aiShots where services.ai.availableProviders.contains(provider) {
             services.settings.settings.ai.provider = provider
             if let png = await settingsWindow.snapshot(of: AppSettingsPane.connections.rawValue) {
                 let url = outputDirectory.appendingPathComponent("settings-connections-ai-\(name).png")
@@ -347,9 +346,7 @@ enum SnapshotRenderer {
     private static func renderNotchShots(_ shots: [Shot], services: AppServices,
                                          closet: ClosetModule?, style: NotchStyle, to folder: URL) {
         let firstSection = closet?.store.section
-        #if !APPSTORE
         let askClaude = services.modules.module(AskClaudeModule.self)?.session
-        #endif
         let timer = services.modules.module(StudyModule.self)
         let party = services.modules.module(PartyModule.self)?.store
         let now = Date()
@@ -357,12 +354,10 @@ enum SnapshotRenderer {
         for shot in shots {
             let (name, model) = (shot.name, shot.model)
             services.onboarding.show(shot.onboarding)
-            #if !APPSTORE
             askClaude?.isShowingHistory = name == "open-claudeAsk-history"
             askClaude?.showForSnapshot(name == "open-claudeAsk-screenshot" ? .pendingScreenshot
                 : name == "open-claudeAsk-screenshot-sent" ? .sentScreenshot
                 : name == "open-claudeAsk-screen-access" ? .screenAccess : .chat)
-            #endif
             timer?.showForSnapshot(partySession: name == "open-study-party" ? partySession : nil)
             party?.showCelebrationForSnapshot(name == "open-party-celebrating")
             if let firstSection { closet?.store.section = name == "open-closet-look" ? .look : firstSection }

@@ -29,7 +29,6 @@ let appStoreExcludedSources = [
     "Updates",
     "InstallHygiene",
     "Modules/ClaudeUsage",
-    "Modules/ClaudeAsk",
 ]
 
 let package = Package(
