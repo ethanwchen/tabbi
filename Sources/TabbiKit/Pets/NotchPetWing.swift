@@ -63,7 +63,8 @@ struct NotchPetWing: View {
             .task(id: pet.cheer) { await dance() }
     }
 
-    /// Plays the cheer's hops: two for a dance, one for a crown. The animator lets the celebration finish
+    /// Plays the cheer's hops: two for a dance, one for a crown, and only
+    /// one with Reduce Motion on. The animator lets the celebration finish
     /// before any mood change (the break that just began) takes over.
     private func dance() async {
         guard let cheer = pet.cheer, cheer.isShowing(at: .now) else { return }
@@ -71,7 +72,7 @@ struct NotchPetWing: View {
             cheered = cheer.id
             player.send(.celebrate)
         }
-        guard cheer.kind == .dance else { return }
+        guard cheer.kind == .dance, !reduceMotion else { return }
         let wait = cheer.startedAt.addingTimeInterval(Self.secondHop).timeIntervalSinceNow
         guard wait > 0 else { return }
         try? await Task.sleep(for: .seconds(wait))

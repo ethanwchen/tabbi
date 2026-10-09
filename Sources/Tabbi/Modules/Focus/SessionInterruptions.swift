@@ -8,8 +8,8 @@ import Combine
 ///
 /// The handler runs synchronously on the main actor before the Mac sleeps
 /// or the app exits, so what it saves (the stopped timer, the activity
-/// record, and the pet's points, which follow the shared clock through the
-/// provider snapshot on the same call) is on disk by then.
+/// record, and the pet's points, which the Closet pays from that record on
+/// the same call) is on disk by then.
 @MainActor
 final class SessionInterruptions {
     private let subscription: AnyCancellable
