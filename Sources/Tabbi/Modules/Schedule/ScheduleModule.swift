@@ -15,7 +15,9 @@ final class ScheduleModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
         id: .schedule, title: "Schedule", symbol: "calendar.day.timeline.left",
         summary: "Your day on a timeline, with the free time in between.", category: .productivity,
-        accent: ModuleAccent(red: 1.00, green: 0.50, blue: 0.42), permissions: [.calendars]
+        accent: ModuleAccent(red: 1.00, green: 0.50, blue: 0.42), permissions: [.calendars],
+        // Refine asks the AI the user picks.
+        network: AIProviderID.allNetworkAccess
     )
     /// Internal so app tests can check what Schedule shows.
     let store: ScheduleStore

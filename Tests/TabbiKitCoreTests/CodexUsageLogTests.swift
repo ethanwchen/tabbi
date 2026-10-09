@@ -18,7 +18,7 @@ private func turnContext(model: String, at timestamp: String = "2026-10-08T09:00
 /// A `token_count` event as current Codex versions write it.
 private func tokenCount(
     at timestamp: String, input: Int, cached: Int = 0, output: Int,
-    limits: String? = #"{"primary":{"used_percent":42.0,"window_minutes":300,"resets_at":1791540000},"secondary":{"used_percent":76.5,"window_minutes":10080,"resets_at":1791900000}}"#
+    limits: String? = #"{"primary":{"used_percent":42.0,"window_minutes":300,"resets_at":1791561600},"secondary":{"used_percent":76.5,"window_minutes":10080,"resets_at":1791900000}}"#
 ) -> String {
     let total = input + output
     let info = #"{"total_token_usage":{"input_tokens":\#(input),"cached_input_tokens":\#(cached),"output_tokens":\#(output),"reasoning_output_tokens":0,"total_tokens":\#(total)},"last_token_usage":{"input_tokens":1,"output_tokens":1,"total_tokens":2},"model_context_window":272000}"#
@@ -85,12 +85,12 @@ final class CodexUsageLogTests: XCTestCase {
 
         let limits = try XCTUnwrap(usage.limits)
         XCTAssertEqual(limits.fetchedAt, date("2026-10-09T11:00:00Z"))
-        XCTAssertEqual(limits.snapshot.fiveHour, ClaudeUsageWindow(utilization: 0.42, resetsAt: Date(timeIntervalSince1970: 1_791_540_000)))
+        XCTAssertEqual(limits.snapshot.fiveHour, ClaudeUsageWindow(utilization: 0.42, resetsAt: Date(timeIntervalSince1970: 1_791_561_600)))
         XCTAssertEqual(limits.snapshot.sevenDay?.utilization ?? 0, 0.765, accuracy: 0.0001)
     }
 
     func testReadsOlderLimitShapes() throws {
-        let relative = #"{"primary":{"used_percent":30,"window_minutes":299,"resets_in_seconds":600},"secondary":null}"#
+        let relative = #"{"primary":{"used_percent":30,"window_minutes":299,"resets_in_seconds":10800},"secondary":null}"#
         let flat = #"{"primary_used_percent":55,"secondary_used_percent":12,"primary_to_secondary_ratio_percent":20}"#
 
         let relativeUsage = CodexUsageLog.summarize(
@@ -98,7 +98,7 @@ final class CodexUsageLogTests: XCTestCase {
             now: now, calendar: utc
         )
         let fiveHour = try XCTUnwrap(relativeUsage.limits?.snapshot.fiveHour)
-        XCTAssertEqual(fiveHour.resetsAt, date("2026-10-09T10:10:00Z"))
+        XCTAssertEqual(fiveHour.resetsAt, date("2026-10-09T13:00:00Z"))
         XCTAssertNil(relativeUsage.limits?.snapshot.sevenDay)
 
         let flatUsage = CodexUsageLog.summarize(
@@ -107,6 +107,27 @@ final class CodexUsageLogTests: XCTestCase {
         )
         XCTAssertEqual(flatUsage.limits?.snapshot.fiveHour, ClaudeUsageWindow(utilization: 0.55, resetsAt: nil))
         XCTAssertEqual(flatUsage.limits?.snapshot.sevenDay, ClaudeUsageWindow(utilization: 0.12, resetsAt: nil))
+    }
+
+    func testWindowsThatHaveResetSinceTheLastSessionAreEmpty() throws {
+        // The 5-hour window reset at 10:00 and the weekly one is still running.
+        let resetFiveHour = #"{"primary":{"used_percent":95,"window_minutes":300,"resets_at":1791540000},"secondary":{"used_percent":60,"window_minutes":10080,"resets_at":1791900000}}"#
+        let usage = CodexUsageLog.summarize(
+            sessions: [session(tokenCount(at: "2026-10-09T08:00:00Z", input: 1, output: 1, limits: resetFiveHour))],
+            now: now, calendar: utc
+        )
+        let snapshot = try XCTUnwrap(usage.limits?.snapshot)
+        XCTAssertEqual(snapshot.fiveHour, ClaudeUsageWindow(utilization: 0, resetsAt: nil))
+        XCTAssertEqual(snapshot.sevenDay, ClaudeUsageWindow(utilization: 0.6, resetsAt: Date(timeIntervalSince1970: 1_791_900_000)))
+
+        // Old logs have no reset time: a window is over once its length has passed.
+        let flat = #"{"primary_used_percent":90,"secondary_used_percent":40}"#
+        let flatUsage = CodexUsageLog.summarize(
+            sessions: [session(tokenCount(at: "2026-10-09T06:00:00Z", input: 1, output: 1, limits: flat))],
+            now: now, calendar: utc
+        )
+        XCTAssertEqual(flatUsage.limits?.snapshot.fiveHour, ClaudeUsageWindow(utilization: 0, resetsAt: nil))
+        XCTAssertEqual(flatUsage.limits?.snapshot.sevenDay, ClaudeUsageWindow(utilization: 0.4, resetsAt: nil))
     }
 
     func testAPIKeySessionsHaveTokensButNoLimits() {

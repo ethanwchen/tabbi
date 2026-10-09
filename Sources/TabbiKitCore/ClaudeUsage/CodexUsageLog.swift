@@ -86,7 +86,24 @@ public enum CodexUsageLog {
                 }
             }
         }
+        if let fetchedAt = latest?.fetchedAt, let snapshot = latest?.snapshot {
+            // Codex only logs limits when it runs, so a window that has reset
+            // since the last session is empty now.
+            latest?.snapshot = ClaudeRateLimitSnapshot(
+                status: snapshot.status,
+                fiveHour: current(snapshot.fiveHour, length: 5 * 3600, fetchedAt: fetchedAt, now: now),
+                sevenDay: current(snapshot.sevenDay, length: 7 * 86400, fetchedAt: fetchedAt, now: now))
+        }
         return CodexUsage(limits: latest, stats: ClaudeLocalStats.aggregate(records, now: now, calendar: calendar))
+    }
+
+    /// `window` as of `now`: empty once its reset time has passed, or, for
+    /// old logs with no reset time, once a whole window has gone by.
+    private static func current(_ window: ClaudeUsageWindow?, length: TimeInterval,
+                                fetchedAt: Date, now: Date) -> ClaudeUsageWindow? {
+        guard let window else { return nil }
+        let hasReset = window.resetsAt.map { $0 <= now } ?? (now.timeIntervalSince(fetchedAt) >= length)
+        return hasReset ? ClaudeUsageWindow(utilization: 0, resetsAt: nil) : window
     }
 
     private static func difference(_ lhs: ClaudeTokenUsage, _ rhs: ClaudeTokenUsage) -> ClaudeTokenUsage {

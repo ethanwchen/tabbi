@@ -48,9 +48,12 @@ final class ModuleListTests: XCTestCase {
         XCTAssertEqual(declared[.spotify], ["i.scdn.co"])
         XCTAssertEqual(declared[.anki], [URLSessionAnkiConnectTransport.defaultEndpoint.host()!])
         XCTAssertEqual(declared[.party], [PartyServer.productionURL.host()!])
-        // Ask sends questions to the provider the user picks.
-        XCTAssertEqual(declared[.claudeAsk], Set(AIProviderID.allNetworkAccess.map(\.host)))
-        for id in ModuleList.catalog.ids where ![.spotify, .anki, .party, .claudeAsk].contains(id) {
+        // Ask, Plan my day, Wrap up and Refine send to the provider the user picks.
+        let aiModules: [ModuleID] = [.claudeAsk, .planner, .schedule]
+        for id in aiModules {
+            XCTAssertEqual(declared[id], Set(AIProviderID.allNetworkAccess.map(\.host)), "\(id)")
+        }
+        for id in ModuleList.catalog.ids where ![.spotify, .anki, .party].contains(id) && !aiModules.contains(id) {
             XCTAssertEqual(declared[id], [], "\(id) declares a host but makes no network calls")
         }
         for descriptor in ModuleList.catalog.descriptors {
