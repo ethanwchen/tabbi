@@ -46,6 +46,9 @@ jobs:
       - name: Writing style
         run: scripts/check-style.sh
 
+      - name: Script tests
+        run: for test in scripts/tests/*.sh; do "$test"; done
+
       # The tests are built with the same flags as the app, so the test step
       # below reuses this build instead of compiling everything again.
       - name: Build (warnings are errors)
