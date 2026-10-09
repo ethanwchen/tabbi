@@ -220,10 +220,11 @@ describe("schema step 3", () => {
       sql.exec("DROP TABLE used_identity_tokens");
       sql.exec("DROP TABLE grants");
       sql.exec("DROP TABLE suggestions");
+      sql.exec("DROP TABLE crashes");
       sql.exec("UPDATE schema_version SET version = 2");
       sql.exec("INSERT INTO friends (a, b, created_at) VALUES ('AAAAAAAA', 'BBBBBBBB', 0)");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 9 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 10 }]);
       expect(sql.exec("SELECT * FROM blocks").toArray()).toEqual([]);
       expect(sql.exec("SELECT a FROM friends").toArray()).toEqual([{ a: "AAAAAAAA" }]);
     });

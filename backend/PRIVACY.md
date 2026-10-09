@@ -44,6 +44,14 @@ When you open the form from Tabbi, it also carries the Tabbi version, the macOS 
 A suggestion is not linked to a friend code, an account or an IP address.
 Only the maintainer reads it, uses the email only to ask about or reply to that idea, and deletes it when it is no longer needed, at the latest after 365 days.
 
+## Crash reports
+
+Tabbi sends a crash report only when you agree to it after a crash, or after you chose to always send them.
+A report holds the Tabbi version, the macOS version, the edition, the type of crash, and the names and stack frames of the app's threads, with the time it arrived.
+It never holds what you typed, names, tasks, tokens or file paths in your home folder, and the service refuses a report that does.
+A report is not linked to a friend code, an account or an IP address.
+Only the maintainer reads it, to fix the crash, and deletes it when it is no longer needed, at the latest after 90 days.
+
 ## Who can see it
 
 - **Friends** (friendship is mutual and needs your friend code) see your profile, your presence (shown as `offline` once heartbeats stop), whether you are in a party with its code and size, and your weekly study minutes on the leaderboard.

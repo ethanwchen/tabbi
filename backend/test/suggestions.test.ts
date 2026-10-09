@@ -221,6 +221,7 @@ describe("schema step 9", () => {
     await runInDurableObject(hub(), (_, state) => {
       const sql = state.storage.sql;
       sql.exec("DROP TABLE suggestions");
+      sql.exec("DROP TABLE crashes");
       sql.exec("UPDATE schema_version SET version = 7");
       migrate(state.storage);
       sql.exec("DELETE FROM suggestions");
@@ -230,10 +231,11 @@ describe("schema step 9", () => {
       sql.exec("ALTER TABLE suggestions DROP COLUMN app_version");
       sql.exec("ALTER TABLE suggestions DROP COLUMN macos");
       sql.exec("ALTER TABLE suggestions DROP COLUMN edition");
+      sql.exec("DROP TABLE crashes");
       sql.exec("INSERT INTO suggestions (category, message, email, created_at) VALUES ('tab', 'Kept from before', NULL, 1)");
       sql.exec("UPDATE schema_version SET version = 8");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 9 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 10 }]);
       expect(sql.exec("SELECT message, app_version, macos, edition FROM suggestions").toArray())
         .toEqual([{ message: "Kept from before", app_version: null, macos: null, edition: null }]);
       sql.exec("DELETE FROM suggestions");
@@ -247,9 +249,10 @@ describe("schema step 8", () => {
     await runInDurableObject(hub(), (_, state) => {
       const sql = state.storage.sql;
       sql.exec("DROP TABLE suggestions");
+      sql.exec("DROP TABLE crashes");
       sql.exec("UPDATE schema_version SET version = 7");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 9 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 10 }]);
       expect(sql.exec("SELECT name FROM users WHERE code = ?", user.code).toArray()).toEqual([{ name: "Kept" }]);
       expect(sql.exec("SELECT * FROM suggestions").toArray()).toEqual([]);
     });

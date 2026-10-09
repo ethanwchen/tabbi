@@ -34,6 +34,9 @@ import {
   ADMIN_SUGGESTIONS_PAGE, MAX_SUGGESTIONS_PER_DAY, SUGGESTIONS_PER_DAY, SUGGESTIONS_PER_MIN, SUGGESTION_RETENTION_DAYS, THANKS_URL,
   formErrorPage, isFormPost, parseSuggestion, readSuggestionBody,
 } from "./suggestions";
+import {
+  ADMIN_CRASHES_PAGE, CRASHES_PER_DAY, CRASHES_PER_MIN, CRASH_RETENTION_DAYS, MAX_CRASHES_PER_DAY, parseCrash, readCrashBody,
+} from "./crashes";
 import { activeCounts, signupsByDay, signupsSince } from "./stats";
 import { JOIN_FIELDS, PARTY_TOUCH_S, PartySession, SESSION_FIELDS, parseJoin, parseSession, partyExpired } from "./party";
 
@@ -241,6 +244,22 @@ ALTER TABLE suggestions ADD COLUMN macos TEXT;
 ALTER TABLE suggestions ADD COLUMN edition TEXT;
 `;
 
+/** Crash reports the app sent with the person's consent (see crashes.ts). Not linked to any user. */
+const CRASHES_SCHEMA = `
+-- One crash: the app's facts, the signal or exception type, and the threads as JSON.
+CREATE TABLE crashes (
+  id          INTEGER PRIMARY KEY,
+  app_version TEXT NOT NULL,
+  macos       TEXT NOT NULL,
+  edition     TEXT NOT NULL,
+  kind        TEXT NOT NULL,
+  name        TEXT NOT NULL,
+  threads     TEXT NOT NULL,
+  created_at  INTEGER NOT NULL
+);
+CREATE INDEX crashes_by_created_at ON crashes (created_at);
+`;
+
 /**
  * Ordered schema steps; step i brings the database to version i + 1. Append new steps and never edit
  * one that has been deployed. Step 1 is the original schema, written with IF NOT EXISTS so databases
@@ -248,7 +267,7 @@ ALTER TABLE suggestions ADD COLUMN edition TEXT;
  */
 const MIGRATIONS = [
   SCHEMA, SYNC_SCHEMA, MODERATION_SCHEMA, REPORTS_SCHEMA, USED_IDENTITY_TOKENS_SCHEMA, NAME_HOLDS_SCHEMA, GRANTS_SCHEMA,
-  SUGGESTIONS_SCHEMA, SUGGESTION_APP_SCHEMA,
+  SUGGESTIONS_SCHEMA, SUGGESTION_APP_SCHEMA, CRASHES_SCHEMA,
 ];
 
 /** Runs the steps a database has not had yet, each in its own transaction with its version bump. */
@@ -425,8 +444,8 @@ export class Hub extends DurableObject<Env> {
   }
 
   /**
-   * Deletes every expired party, study minutes past their retention, spent identity token hashes and old
-   * suggestions.
+   * Deletes every expired party, study minutes past their retention, spent identity token hashes, old
+   * suggestions and old crash reports.
    * Study minutes have no index by day, so that scan runs once per UTC day (again after an eviction,
    * which is harmless) rather than every hour.
    */
@@ -438,6 +457,7 @@ export class Hub extends DurableObject<Env> {
       this.sql.exec("DELETE FROM parties WHERE last_active <= ?", idleSince);
       this.sql.exec("DELETE FROM used_identity_tokens WHERE expires_at < ?", now);
       this.sql.exec("DELETE FROM suggestions WHERE created_at < ?", now - SUGGESTION_RETENTION_DAYS * 86_400);
+      this.sql.exec("DELETE FROM crashes WHERE created_at < ?", now - CRASH_RETENTION_DAYS * 86_400);
       if (this.studyDaysSweptOn !== today) {
         this.sql.exec("DELETE FROM study_days WHERE day < ?", utcDay(now - STUDY_DAY_RETENTION_DAYS * 86_400));
       }
@@ -509,6 +529,7 @@ export class Hub extends DurableObject<Env> {
 
     if (path === "/v1/auth/apple" && method === "POST") return await this.signInWithApple(req, now);
     if (path === "/v1/suggestions" && method === "POST") return await this.suggest(req, now);
+    if (path === "/v1/crashes" && method === "POST") return await this.reportCrash(req, now);
     if (path.startsWith("/v1/admin/")) return await this.admin(req, path, method, now);
 
     const caller = await this.authenticate(req, now);
@@ -633,6 +654,9 @@ export class Hub extends DurableObject<Env> {
     if (path === "/v1/admin/suggestions" && method === "GET") return this.adminSuggestions(new URL(req.url).searchParams.get("before"));
     const suggestion = /^\/v1\/admin\/suggestions\/(\d+)$/.exec(path);
     if (suggestion && method === "DELETE") return this.adminDeleteSuggestion(Number(suggestion[1]));
+    if (path === "/v1/admin/crashes" && method === "GET") return this.adminCrashes(new URL(req.url).searchParams.get("before"));
+    const crash = /^\/v1\/admin\/crashes\/(\d+)$/.exec(path);
+    if (crash && method === "DELETE") return this.adminDeleteCrash(Number(crash[1]));
     const grants = /^\/v1\/admin\/users\/([^/]+)\/grants$/.exec(path);
     if (grants && method === "GET") return this.adminListGrants(grants[1]);
     if (grants && method === "POST") return await this.adminGrant(req, grants[1], now);
@@ -750,6 +774,44 @@ export class Hub extends DurableObject<Env> {
   /** DELETE /v1/admin/suggestions/{id}: removes a suggestion once it has been read or answered. */
   private adminDeleteSuggestion(id: number): Response {
     return json({ ok: true, deleted: this.sql.exec("DELETE FROM suggestions WHERE id = ?", id).rowsWritten > 0 });
+  }
+
+  // ---------- crash reports ----------
+
+  /** POST /v1/crashes (see crashes.ts): stores one validated crash report. */
+  private async reportCrash(req: Request, now: number): Promise<Response> {
+    const client = clientKey(req);
+    this.rateLimit("crash:" + client, CRASHES_PER_MIN, now);
+    this.rateLimit("crashday:" + client, CRASHES_PER_DAY, now, 86_400);
+    const crash = parseCrash(await readCrashBody(req));
+    const today = this.sql.exec<{ n: number }>("SELECT COUNT(*) AS n FROM crashes WHERE created_at > ?", now - 86_400).one().n;
+    if (today >= MAX_CRASHES_PER_DAY) throw new HttpError(503, "inbox_full", "no more crash reports are taken today");
+    this.sql.exec(
+      "INSERT INTO crashes (app_version, macos, edition, kind, name, threads, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      crash.appVersion, crash.macos, crash.edition, crash.kind, crash.name, JSON.stringify(crash.threads), now,
+    );
+    return json({ ok: true }, 201);
+  }
+
+  /** GET /v1/admin/crashes[?before=id]: a page of crash reports, newest first; `before` pages further back. */
+  private adminCrashes(before: string | null): Response {
+    if (before !== null && !/^\d{1,15}$/.test(before)) throw new HttpError(400, "invalid_field", "invalid before");
+    const rows = this.sql.exec<{
+      id: number; app_version: string; macos: string; edition: string; kind: string; name: string; threads: string; created_at: number;
+    }>(
+      "SELECT * FROM crashes WHERE id < ? ORDER BY id DESC LIMIT ?", before === null ? Number.MAX_SAFE_INTEGER : Number(before),
+      ADMIN_CRASHES_PAGE,
+    ).toArray();
+    const crashes = rows.map((r) => ({
+      id: r.id, createdAt: r.created_at, appVersion: r.app_version, macos: r.macos, edition: r.edition,
+      kind: r.kind, name: r.name, threads: JSON.parse(r.threads),
+    }));
+    return json({ ok: true, crashes, more: rows.length === ADMIN_CRASHES_PAGE });
+  }
+
+  /** DELETE /v1/admin/crashes/{id}: removes a crash report once it has been looked into. */
+  private adminDeleteCrash(id: number): Response {
+    return json({ ok: true, deleted: this.sql.exec("DELETE FROM crashes WHERE id = ?", id).rowsWritten > 0 });
   }
 
   // ---------- profile ----------
