@@ -18,8 +18,31 @@ What makes a plain SwiftPM binary a working widget extension:
 - The extension's `Info.plist` (written by `assemble.sh`) has `CFBundlePackageType` `XPC!`, `NSExtension` with `NSExtensionPointIdentifier` `com.apple.widgetkit-extension`, the bundle id `<app id>.Widget`, and the app's version and build numbers, which macOS and App Store Connect expect to match the app's.
 - The extension runs in the App Sandbox (macOS runs no widget outside it), so it loads the pet art from its own copy of `Tabbi_TabbiKitCore.bundle` in `TabbiWidget.appex/Contents/Resources`.
 
+The views live in the `TabbiWidgetUI` library target, apart from the extension, so `Tests/TabbiWidgetUITests` can render them.
+The extension itself only reads the shared state and builds the timeline.
+
 An Xcode project driven from the scripts would work too, but it would duplicate the package's targets and settings in a second build system.
 The SwiftPM target keeps one build, one set of compiler settings and the existing scripts.
+
+## What it shows and when it updates
+
+The app writes a `WidgetState` (`TabbiKitCore/Widget/WidgetState.swift`) as versioned JSON into the App Group container, `WidgetState.appGroup`.
+It holds the pet as dressed in the Closet, today's focus minutes, the streak and the running clock.
+Before the app has written one, the widget shows the starter cat with no focus yet, and the gallery shows sample data.
+
+- Small: the pet, a streak badge, and the running clock or today's minutes.
+- Medium: the pet and its name on a tile, the clock or today's minutes, and chips for the streak and (while a timer runs) today's minutes.
+- A running clock is WidgetKit's live date text (`Text(timerInterval:)`), so it counts every second with no reloads.
+  A paused clock shows its frozen time.
+- Colors are the site's warm palette: a cream card in light mode and a cocoa one in dark mode.
+- A click opens Tabbi.
+
+The timeline has an entry now, one when a countdown ends and one at the next midnight, with the `.atEnd` policy.
+Each entry works its values out from the state at its own date (`minutes(at:)`, `streak(at:)`, `timer(at:)`), so minutes reset at midnight and a finished countdown goes away even while the app is not running.
+Everything else reloads only when the app writes a change; `WidgetStateFile.write` reports whether anything changed.
+
+`swift test --filter TabbiWidgetUITests` renders every state at the real widget sizes in light and dark mode.
+Set `TABBI_WIDGET_SNAPSHOTS=<folder>` to also write the PNGs there and look at them.
 
 ## Signing
 
@@ -50,3 +73,5 @@ Two copies of the app with the same bundle id (an installed release and a local 
 ## Still to do
 
 - The App Store edition: App Store Connect expects the extension to embed its own provisioning profile for the App ID `dev.tabbi.Tabbi.Widget` with the app group, and `release-appstore.sh` does not embed one yet.
+- The app side: a writer that fills `WidgetState` from the focus clock, the Closet pet and the activity log, and calls `WidgetCenter.reloadTimelines` when `write` reports a change.
+  The app's own entitlements need the same app group.

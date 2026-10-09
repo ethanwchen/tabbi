@@ -83,6 +83,10 @@ public struct WidgetState: Hashable, Codable, Sendable {
     public static let schema = VersionedJSON(current: 1)
     /// The file's name inside the App Group container.
     public static let fileName = "WidgetState.json"
+    /// The App Group the app and the widget share (both entitlements files
+    /// list it). The team-prefixed form needs no provisioning profile for a
+    /// Developer ID build on macOS.
+    public static let appGroup = "B9VRALHV8S.dev.tabbi.Tabbi"
 
     // MARK: Shown at a date
 
@@ -152,6 +156,12 @@ public struct WidgetState: Hashable, Codable, Sendable {
     }
 
     // MARK: Sample
+
+    /// What the widget shows before the app has written anything: the
+    /// starter cat with no focus yet.
+    public static func empty(at now: Date = Date(), calendar: Calendar = .current) -> WidgetState {
+        WidgetState(pet: .starter(.cat), day: PlannerDayKey(date: now, calendar: calendar))
+    }
 
     /// Demo and widget gallery data: the starter cat on a five day streak,
     /// mid-way through a focus block.
