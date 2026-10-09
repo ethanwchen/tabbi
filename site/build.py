@@ -561,6 +561,7 @@ def build():
         print('wrote', slug)
 
     shutil.copy(HERE / '_headers', OUT / '_headers')
+    write_function_facts()
     shutil.copy(HERE / 'favicon.ico', OUT / 'favicon.ico')
     write_press_kit()
     (OUT / 'robots.txt').write_text('User-agent: *\nAllow: /\n\nSitemap: https://tabbinotch.com/sitemap.xml\n')
@@ -608,6 +609,18 @@ def site_headers():
 
 
 SITE_HEADERS = site_headers()
+
+
+def write_function_facts():
+    """Writes _generated.mjs for the Pages Function that serves /suggest
+    (functions/suggest.js): the `/*` headers, which Cloudflare Pages does not
+    apply to a Function's response, and the form's hidden app facts, so the
+    page and the Function cannot drift apart."""
+    (HERE / '_generated.mjs').write_text(
+        '// Written by build.py from _headers and SUGGEST_APP_FACTS. Do not edit.\n'
+        f'export const SITE_HEADERS = {json.dumps(SITE_HEADERS)};\n'
+        f'export const SUGGEST_APP_FACTS = {json.dumps(SUGGEST_APP_FACTS)};\n'
+    )
 
 
 class PagesHandler(http.server.SimpleHTTPRequestHandler):
