@@ -206,21 +206,21 @@ SUPPORT = f'''
           <p>To study together, one of you starts a party and shares its 6-character party code. Anyone with that code can join while there is room, so share it only with people you want to study with.</p>
           <p>Want a break from being seen? Turn on <strong>Go invisible</strong> in the Party options and friends see you as offline.</p>""", 'party')}
 
-{faq('Do I need an account? How do I sync my pet across Macs?', """          <p>No. Everything in Tabbi works without an account.
-            If you use Tabbi on more than one Mac, you can choose <strong>Sign in with Apple</strong> in <strong>Settings &gt; General</strong> on each of them.
-            Your pet, points, unlocked items and streaks then sync between them, and your Party friend code and friends follow you.</p>
-          <p>Tabbi asks Apple only for your name, which stays on your Mac, never your email.
+{faq('Do I need an account?', """          <p>No. Everything in Tabbi works without one.
+            To sync your pet across Macs, choose <strong>Sign in with Apple</strong> in <strong>Settings &gt; General</strong> on each of them.
+            Your pet, points, unlocked items and streaks then sync, and your Party friend code and friends follow you.</p>
+          <p>Tabbi asks Apple only for your name, which stays on your Mac. It never gets your email.
             Your calendar, tasks, activity history, Claude chats and settings are never synced.
-            Signing in on a Mac that already has progress adds it to your account; nothing is overwritten.
+            Signing in on a Mac that already has progress adds it to your account, so nothing is overwritten.
             <strong>Sign Out</strong> stops syncing on that Mac and keeps your pet there.
             The <a href="/privacy#account">privacy policy</a> lists exactly what the account stores.</p>""", 'account')}
 
-{faq('How do I delete my account or my Party data?', f"""          <p>Party keeps only a nickname, your pet's look, your study status and minutes, your friend list and your party. It never has your email or real name. See the <a href="/privacy#friends">privacy policy</a> for the full list and <a href="/privacy#deleting">Deleting your data</a> for every option.</p>
+{faq('How do I delete my account or Party data?', f"""          <p>Party keeps only a nickname, your pet's look, your study status and minutes, your friend list and your party. It never has your email or real name. See the <a href="/privacy#friends">privacy policy</a> for the full list and <a href="/privacy#deleting">Deleting your data</a> for every option.</p>
           <ul>
             <li><strong>Leave a party</strong> from the Party tab. A party is deleted when its last member leaves, or after 12 hours without activity.</li>
             <li><strong>Remove a friend</strong> from their card in the Party tab. That deletes the friendship on both sides.</li>
-            <li><strong>Delete your Party data</strong>: without an account, open <strong>Settings open <strong>Settings &gt; Party</strong> and choose <strong>Delete my Party data</strong>gt; Tabs</strong>, click <strong>Options</strong> next to Party, and choose <strong>Delete my Party data</strong>. Your profile, status, study minutes, friend list and party are erased from the server at once, and your pet stays on your Mac.</li>
-            <li><strong>Delete your account</strong>: when signed in with Apple, open <strong>Settings &gt; General</strong> and choose <strong>Delete Account</strong>. That erases your Party data, your synced pet and progress, and your Apple link from the server, and revokes Tabbi's Sign in with Apple access. Your pet stays on the Mac you deleted from.</li>
+            <li><strong>Delete your Party data</strong>: without an account, open <strong>Settings &gt; Tabs</strong>, click <strong>Options</strong> next to Party, and choose <strong>Delete my Party data</strong>. Your profile, status, study minutes, friend list and party are erased from the server at once. Your pet stays on your Mac.</li>
+            <li><strong>Delete your account</strong>: when signed in, open <strong>Settings &gt; General</strong> and choose <strong>Delete Account</strong>. That erases your Party data, your synced pet and progress, and your Apple link from the server, and revokes Tabbi's Sign in with Apple access. Your pet stays on the Mac you deleted from.</li>
             <li>Cannot open the app? Email <a href="mailto:{SUPPORT_EMAIL}">{SUPPORT_EMAIL}</a> with your friend code. To make sure the request is yours, we may ask you to change your Party nickname to a word we send you. We then delete the same data and confirm by email.</li>
           </ul>
           <p>Daily study minutes are deleted automatically after 28 days either way.</p>""", 'delete-party')}

@@ -112,7 +112,7 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
         <li><strong>Turn Party off</strong> in <strong>Settings &gt; Tabs</strong> to stop sending anything. Friends then see you as offline.</li>
         <li>Daily study minutes are deleted automatically after 28 days.</li>
       </ul>
-      <p class="measure"><strong>Party, everything.</strong> Without an account, open <strong>Settings open <strong>Settings &gt; Party</strong> and choose <strong>Delete my Party data</strong>gt; Tabs</strong>, click <strong>Options</strong> next to Party, and choose <strong>Delete my Party data</strong>.
+      <p class="measure"><strong>Party, everything.</strong> Without an account, open <strong>Settings &gt; Tabs</strong>, click <strong>Options</strong> next to Party, and choose <strong>Delete my Party data</strong>.
         The server erases your friend code, profile, presence, study minutes and friend list at once, removes you from your friends' lists and your party, and invalidates your secret token.
         Your pet and points stay on your Mac, and if Party stays on, you get a new friend code.</p>
       <p class="measure"><strong>Your account.</strong> When signed in, open <strong>Settings &gt; General</strong> and choose <strong>Delete Account</strong>.
