@@ -206,6 +206,7 @@ Afterwards the token, and every other Mac's token for the same friend code, is `
 Body: `{"identityToken": "<JWT>", "authorizationCode": "<code>"}` from `ASAuthorizationAppleIDCredential` (the code is optional).
 Send the Mac's current friends token as Bearer if it has one; omit the header otherwise.
 The server checks the identity token's RS256 signature against Apple's keys (`https://appleid.apple.com/auth/keys`, cached), its issuer (`https://appleid.apple.com`), audience (`dev.tabbi.Tabbi`) and expiry, and reads only `sub` (never the email).
+Each identity token is accepted once: sending the same token again (a replay, or a retry after a lost reply) is `401 invalid_identity_token`, and the app asks Apple for a new one by signing in again.
 
 `200 {"ok": true, "token": "<64 hex>", "code": "K7QW2MZD", "profile": Profile, "newAccount": true}`.
 Store `token` and `code` in place of the old ones.
@@ -221,7 +222,7 @@ The authorization code is exchanged for an Apple refresh token, which is kept on
 That needs the Worker secrets `APPLE_TEAM_ID`, `APPLE_KEY_ID` and `APPLE_PRIVATE_KEY`; without them, or when Apple refuses the code, the exchange is skipped, logged, and sign-in still succeeds.
 Sign-ins are limited to 10 per minute per IP.
 
-Errors: `invalid_identity_token` (401, the token is malformed, expired, not Apple's or not for Tabbi; ask the user to sign in again), `apple_unavailable` (503, Apple's keys could not be fetched; the server asks Apple again at most once a minute, so retry after a minute), `invalid_json`, `unknown_field`, `invalid_field`, `rate_limited`.
+Errors: `invalid_identity_token` (401, the token is malformed, expired, already used, not Apple's or not for Tabbi; ask the user to sign in again), `apple_unavailable` (503, Apple's keys could not be fetched; the server asks Apple again at most once a minute, so retry after a minute), `invalid_json`, `unknown_field`, `invalid_field`, `rate_limited`.
 
 ### `POST /v1/auth/signout`
 

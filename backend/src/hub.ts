@@ -21,7 +21,7 @@ import { json } from "./http";
 import { SYNC_PUT_PER_MIN, etag, parseIfMatch, readSyncDocument } from "./sync";
 import {
   APPLE_AUTH_FIELDS, APPLE_AUTH_PER_MIN, AppleSecrets, exchangeAuthorizationCode, parseAppleAuth, revokeRefreshToken,
-  verifyIdentityToken,
+  invalidToken, verifyIdentityToken,
 } from "./apple";
 import { PRESENCE_FIELDS, Presence, heartbeatSeconds, isOnline, parseHeartbeat, presenceChanged, publicPresence } from "./presence";
 import { STUDY_DAY_RETENTION_DAYS, rankEntries } from "./leaderboard";
@@ -127,7 +127,17 @@ CREATE TABLE sync_documents (
  * one that has been deployed. Step 1 is the original schema, written with IF NOT EXISTS so databases
  * created before versioning (which have its tables but no recorded version) pass through it unchanged.
  */
-const MIGRATIONS = [SCHEMA, SYNC_SCHEMA];
+/** Apple identity tokens already used to sign in, so none of them signs in twice. */
+const USED_IDENTITY_TOKENS_SCHEMA = `
+-- The SHA-256 of each identity token that signed in, kept until the token would expire anyway.
+CREATE TABLE used_identity_tokens (
+  token_hash TEXT PRIMARY KEY,
+  expires_at INTEGER NOT NULL
+) WITHOUT ROWID;
+CREATE INDEX used_identity_tokens_by_expiry ON used_identity_tokens (expires_at);
+`;
+
+const MIGRATIONS = [SCHEMA, SYNC_SCHEMA, USED_IDENTITY_TOKENS_SCHEMA];
 
 /** Runs the steps a database has not had yet, each in its own transaction with its version bump. */
 export function migrate(storage: DurableObjectStorage): void {
@@ -635,7 +645,11 @@ export class Hub extends DurableObject<Env> {
       if (e instanceof HttpError && e.status === 401) return null;
       throw e;
     }) : null;
-    const sub = await verifyIdentityToken(body.identityToken, now);
+    const identityHash = await sha256Hex(body.identityToken);
+    const { sub, reusableUntil } = await verifyIdentityToken(body.identityToken, now);
+    // Claimed before Apple is asked about the code, with no await between the check and the insert, so
+    // two copies of one token racing each other cannot both get through.
+    this.claimIdentityToken(identityHash, reusableUntil, now);
     const refreshToken = body.authorizationCode
       ? await exchangeAuthorizationCode(body.authorizationCode, this.env, now)
       : null;
@@ -685,6 +699,18 @@ export class Hub extends DurableObject<Env> {
     this.sql.exec("DELETE FROM device_tokens WHERE token_hash = ?", caller.tokenHash);
     this.sql.exec("UPDATE users SET token_hash = ? WHERE token_hash = ?", retired, caller.tokenHash);
     return json({ ok: true });
+  }
+
+  /**
+   * Accepts an identity token once: a second sign-in with the same token is refused, even with a fresh
+   * IP or after the first one failed later on (the user signs in with Apple again, which mints a new
+   * token). Hashes are dropped once their token has expired, so the table stays small.
+   */
+  private claimIdentityToken(hash: string, reusableUntil: number, now: number): void {
+    this.sql.exec("DELETE FROM used_identity_tokens WHERE expires_at < ?", now);
+    const used = this.sql.exec("SELECT 1 FROM used_identity_tokens WHERE token_hash = ?", hash).toArray().length > 0;
+    if (used) throw invalidToken("already used");
+    this.sql.exec("INSERT INTO used_identity_tokens (token_hash, expires_at) VALUES (?, ?)", hash, reusableUntil);
   }
 
   private hasAppleAccount(code: string): boolean {

@@ -148,16 +148,32 @@ describe("schema migrations", () => {
       sql.exec("DROP TABLE sync_documents");
       sql.exec("DROP TABLE apple_accounts");
       sql.exec("DROP TABLE device_tokens");
+      sql.exec("DROP TABLE used_identity_tokens");
       sql.exec("DROP TABLE schema_version");
       sql.exec(`INSERT INTO users (code, token_hash, name, pet_name, species, breed, colors, costume, accessories, points, level, created_at)
         VALUES ('AAAAAAAA', 'h', 'n', 'p', 'cat', 'tabby', '[]', 'none', '[]', 5, 1, 0)`);
       migrate(state.storage);
-      expect(sql.exec<{ version: number }>("SELECT version FROM schema_version").one().version).toBe(2);
+      expect(sql.exec<{ version: number }>("SELECT version FROM schema_version").one().version).toBe(3);
       expect(sql.exec<{ points: number }>("SELECT points FROM users WHERE code = 'AAAAAAAA'").one().points).toBe(5);
       expect(sql.exec("SELECT * FROM sync_documents").toArray()).toEqual([]);
+      expect(sql.exec("SELECT * FROM used_identity_tokens").toArray()).toEqual([]);
       // Running again is a no-op.
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 2 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 3 }]);
+    });
+  });
+
+  it("adds the used identity token table to a version 2 database and keeps its accounts", async () => {
+    const stub = env.HUB.get(env.HUB.idFromName("version-2"));
+    await runInDurableObject(stub, (_, state) => {
+      const sql = state.storage.sql;
+      sql.exec("DROP TABLE used_identity_tokens");
+      sql.exec("UPDATE schema_version SET version = 2");
+      sql.exec("INSERT INTO apple_accounts (apple_sub, code, refresh_token, created_at) VALUES ('s', 'BBBBBBBB', NULL, 0)");
+      migrate(state.storage);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 3 }]);
+      expect(sql.exec("SELECT apple_sub FROM apple_accounts").toArray()).toEqual([{ apple_sub: "s" }]);
+      expect(sql.exec("SELECT * FROM used_identity_tokens").toArray()).toEqual([]);
     });
   });
 });

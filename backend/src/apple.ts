@@ -2,8 +2,9 @@
 //
 // The app sends the identity token (a JWT that Apple signs with RS256) and the one-time authorization
 // code it got from AuthenticationServices. The token proves who the user is: its signature is checked
-// against Apple's published keys (cached), and its issuer, audience and expiry against this app. The
-// code is exchanged for a refresh token only so the account's Apple tokens can be revoked when the user
+// against Apple's published keys (cached), and its issuer, audience and expiry against this app, and
+// the Hub accepts each token once (see `VerifiedIdentity.reusableUntil`), so a copied token cannot open
+// a second session. The code is exchanged for a refresh token only so the account's Apple tokens can be revoked when the user
 // deletes their account, as Apple requires. That needs a client secret, a short JWT signed with the Sign
 // in with Apple key (ES256) from the Worker secrets; without them the exchange and revoke are skipped.
 import { HttpError, Obj } from "./lib";
@@ -138,14 +139,26 @@ async function appleKey(kid: string, now: number): Promise<CryptoKey | null> {
 
 // ---------- identity token ----------
 
-const invalidToken = (why: string) => new HttpError(401, "invalid_identity_token", `invalid identity token: ${why}`);
+export const invalidToken = (why: string) => new HttpError(401, "invalid_identity_token", `invalid identity token: ${why}`);
+
+/** What a verified identity token says. */
+export interface VerifiedIdentity {
+  /** Apple's stable user id. */
+  sub: string;
+  /**
+   * The last second (Unix) at which the token would still verify. Until then the Hub keeps the token's
+   * hash, so the same token is refused if it is sent again (a replay); after it, the token is expired.
+   */
+  reusableUntil: number;
+}
 
 /**
- * Verifies an identity token from Sign in with Apple and returns Apple's stable user id (`sub`).
- * Checks the RS256 signature against Apple's keys, then `iss`, `aud` (this app), `exp` and `iat`.
+ * Verifies an identity token from Sign in with Apple and returns Apple's stable user id (`sub`) and how
+ * long the token stays valid. Checks the RS256 signature against Apple's keys, then `iss`, `aud` (this
+ * app), `exp` and `iat`. It is stateless; refusing a token that was already used is up to the caller.
  * The token's email claims, if any, are never read.
  */
-export async function verifyIdentityToken(token: string, now: number): Promise<string> {
+export async function verifyIdentityToken(token: string, now: number): Promise<VerifiedIdentity> {
   const parts = token.split(".");
   if (parts.length !== 3) throw invalidToken("not a JWT");
   let header: { alg?: unknown; kid?: unknown };
@@ -170,7 +183,7 @@ export async function verifyIdentityToken(token: string, now: number): Promise<s
   if (typeof claims.exp !== "number" || claims.exp + CLOCK_SKEW_S <= now) throw invalidToken("expired");
   if (typeof claims.iat === "number" && claims.iat - CLOCK_SKEW_S > now) throw invalidToken("issued in the future");
   if (typeof claims.sub !== "string" || claims.sub.length === 0 || claims.sub.length > 255) throw invalidToken("no subject");
-  return claims.sub;
+  return { sub: claims.sub, reusableUntil: claims.exp + CLOCK_SKEW_S };
 }
 
 // ---------- client secret, code exchange and revoke ----------

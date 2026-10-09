@@ -5,6 +5,7 @@ import {
   APPLE_AUTH_PER_MIN, APPLE_CLIENT_ID, APPLE_ISSUER, APPLE_KEYS_URL, APPLE_REVOKE_URL, APPLE_TOKEN_URL, appleSecrets,
   exchangeAuthorizationCode, resetAppleKeyCache, revokeRefreshToken, verifyIdentityToken,
 } from "../src/apple";
+import { sha256Hex } from "../src/lib";
 import { call, expectError, freshIp, hub, pinClockToMinuteStart, register } from "./helpers";
 
 // ---------- a fake Apple ----------
@@ -31,11 +32,15 @@ beforeAll(async () => {
 
 const now = () => Math.floor(Date.now() / 1000);
 
-/** An identity token as Apple would sign it; `claims` and `header` override the defaults. */
+/**
+ * An identity token as Apple would sign it; `claims` and `header` override the defaults. Each one is
+ * unique, as Apple's are (they carry per-sign-in claims such as `c_hash` and `auth_time`).
+ */
 async function identityToken(sub: string, claims: Record<string, unknown> = {}, opts: { kid?: string; key?: CryptoKey; alg?: string } = {}) {
   const header = encode({ alg: opts.alg ?? "RS256", kid: opts.kid ?? "apple-key-1" });
   const payload = encode({
-    iss: APPLE_ISSUER, aud: APPLE_CLIENT_ID, exp: now() + 600, iat: now(), sub, email: "never-read@example.com", ...claims,
+    iss: APPLE_ISSUER, aud: APPLE_CLIENT_ID, exp: now() + 600, iat: now(), sub, email: "never-read@example.com",
+    c_hash: crypto.randomUUID(), ...claims,
   });
   const sig = await crypto.subtle.sign("RSASSA-PKCS1-v1_5", opts.key ?? signingKey.privateKey, new TextEncoder().encode(`${header}.${payload}`));
   return `${header}.${payload}.${b64url(new Uint8Array(sig))}`;
@@ -76,6 +81,13 @@ async function storedAccounts(code: string) {
   return runInDurableObject(hub(), (_, state) =>
     state.storage.sql.exec<{ apple_sub: string; refresh_token: string | null }>(
       "SELECT apple_sub, refresh_token FROM apple_accounts WHERE code = ?", code).toArray());
+}
+
+/** Whether the Hub still keeps this identity token as used. */
+async function isKeptAsUsed(token: string) {
+  const hash = await sha256Hex(token);
+  return runInDurableObject(hub(), (_, state) =>
+    state.storage.sql.exec("SELECT 1 FROM used_identity_tokens WHERE token_hash = ?", hash).toArray().length > 0);
 }
 
 /** Reads the claims of a JWT without verifying it. */
@@ -231,6 +243,37 @@ describe("POST /v1/auth/apple", () => {
     expect(again.body).toMatchObject({ code: r.body.code, newAccount: false });
   });
 
+  it("accepts each identity token once, so a copied token cannot open a second session", async () => {
+    const token = await identityToken("sub.replay");
+    const first = await signIn({ identityToken: token, authorizationCode: "code-1" });
+    expect(first.status).toBe(200);
+    // From another IP and with or without a caller token, the same token is refused before Apple is asked.
+    const exchanges = appleCalls.filter((c) => c.url === APPLE_TOKEN_URL).length;
+    expectError(await signIn({ identityToken: token, authorizationCode: "code-1" }), 401, "invalid_identity_token");
+    expectError(await signIn({ identityToken: token }, (await register()).token), 401, "invalid_identity_token");
+    expect(appleCalls.filter((c) => c.url === APPLE_TOKEN_URL)).toHaveLength(exchanges);
+    // A new token for the same Apple ID still signs in.
+    const again = await signIn({ identityToken: await identityToken("sub.replay") });
+    expect(again.body).toMatchObject({ code: first.body.code, newAccount: false });
+  });
+
+  it("does not use up a token that fails verification, and forgets used tokens once they expire", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    const t = now();
+    const refused = await identityToken("sub.unused", { aud: "com.other.app" });
+    expectError(await signIn({ identityToken: refused }), 401, "invalid_identity_token");
+    expect(await isKeptAsUsed(refused)).toBe(false);
+    const used = await identityToken("sub.unused", { exp: t + 600 });
+    expect((await signIn({ identityToken: used })).status).toBe(200);
+    expect(await isKeptAsUsed(used)).toBe(true);
+    // At its expiry plus the allowed clock skew it would no longer verify, and the next sign-in drops it.
+    vi.setSystemTime((t + 660) * 1000);
+    expectError(await signIn({ identityToken: used }), 401, "invalid_identity_token");
+    vi.setSystemTime((t + 661) * 1000);
+    expect((await signIn({ identityToken: await identityToken("sub.unused.2") })).status).toBe(200);
+    expect(await isKeptAsUsed(used)).toBe(false);
+  });
+
   it("is 503 when Apple's keys cannot be fetched", async () => {
     keysUp = false;
     expectError(await signIn({ identityToken: await identityToken("sub.down") }), 503, "apple_unavailable");
@@ -339,25 +382,27 @@ describe("apple helpers", () => {
     }
     expect(appleCalls.filter((c) => c.url === APPLE_KEYS_URL)).toHaveLength(1);
     keysUp = true;
-    expect(await verifyIdentityToken(token, t + 60)).toBe("sub.outage");
+    expect(await verifyIdentityToken(token, t + 60)).toMatchObject({ sub: "sub.outage" });
     expect(appleCalls.filter((c) => c.url === APPLE_KEYS_URL)).toHaveLength(2);
   });
 
   it("keep trusting expired cached keys while a refetch fails, without asking Apple again", async () => {
     const t = now();
     const token = await identityToken("sub.stale");
-    expect(await verifyIdentityToken(token, t)).toBe("sub.stale");
+    expect(await verifyIdentityToken(token, t)).toMatchObject({ sub: "sub.stale" });
     keysUp = false;
     // An hour later the cache is stale; the failed refetch falls back to the cached key, and so does the next sign-in.
     const later = t + 3600;
     const lateToken = await identityToken("sub.stale", { iat: later, exp: later + 600 });
-    expect(await verifyIdentityToken(lateToken, later)).toBe("sub.stale");
-    expect(await verifyIdentityToken(lateToken, later + 10)).toBe("sub.stale");
+    expect(await verifyIdentityToken(lateToken, later)).toMatchObject({ sub: "sub.stale" });
+    expect(await verifyIdentityToken(lateToken, later + 10)).toMatchObject({ sub: "sub.stale" });
     expect(appleCalls.filter((c) => c.url === APPLE_KEYS_URL)).toHaveLength(2);
   });
 
   it("verifies a token directly and never needs the email claim", async () => {
-    expect(await verifyIdentityToken(await identityToken("sub.direct"), now())).toBe("sub.direct");
+    const t = now();
+    const token = await identityToken("sub.direct", { exp: t + 600 });
+    expect(await verifyIdentityToken(token, t)).toEqual({ sub: "sub.direct", reusableUntil: t + 660 });
   });
 
   it("accept a private key with escaped newlines", async () => {

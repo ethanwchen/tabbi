@@ -12,6 +12,8 @@ What it defends against:
 - **Account takeover.** A user is a random 256-bit token; only its SHA-256 hash is stored, so a leaked database cannot be replayed as tokens.
   Guessing is refused per client (60 failed authentications per minute per IPv4 address or IPv6 /64), and the check comes before any lookup.
 - **Forged Apple sign-ins.** Identity tokens are verified against Apple's published keys (RS256 only), with issuer, audience (the app's bundle id) and expiry checked.
+  Each identity token signs in once: the Hub keeps its SHA-256 hash until it expires, so a copied token (from a proxy, a crash log or a retried request) cannot open a second session.
+  The app does not bind tokens to a nonce, since the token goes straight from AuthenticationServices to the Worker over TLS; a token stolen before the app uses it is the remaining gap, and it lasts at most the token's ten minutes.
 - **Abuse and cost.** Bodies are capped (4096 bytes, 65536 for sync) while streaming, unknown fields are rejected, every text field is length-limited and stripped of control characters, and registrations, sign-ins and requests per token are rate-limited in the Hub's memory.
   Requests are the binding free-plan limit, so rate limits also protect everyone else's quota.
 - **Data exposure.** There is no directory or search: a profile is visible only to mutual friends and party members, and sync documents only to their owner.
