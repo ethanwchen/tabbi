@@ -11,6 +11,9 @@ Per user, identified only by a random secret token (stored as a SHA-256 hash) an
 - presence from the last heartbeat: status (`studying`, `break`, `idle` or `offline`), the study method id (for example `pomodoro`), when the current phase ends, minutes in the current session, minutes studied today, the study streak in days, your local calendar day, and the time of the last heartbeat;
 - study minutes per local calendar day, kept for 28 days, for the weekly leaderboard;
 - the friend codes you are friends with;
+- the friend codes you blocked, and when;
+- reports you send about another user: their friend code, their name and pet name at that moment, your friend code, the reason you picked, your optional note (up to 280 characters) and the time;
+- if the maintainer acts on a report: whether you are banned, and the name and pet name they replaced, so they cannot be set again;
 - the party you are in, when you joined it, and, for the party itself, its 6-character code, its host, its last activity time and the shared session the host started (study method and phase end).
 
 Only if you choose to sign in with Apple, so your pet and progress follow you across your Macs:
@@ -35,6 +38,12 @@ The Worker uses the client IP only in memory to rate-limit registration, sign-in
 - **Party members** see the profile and presence of everyone in the same party, including members who are not their friends.
   Anyone who has a party's code can join it while it has room, so share party codes only with people you want to study with.
 - There is no directory or search: nobody can find you without your friend code or a shared party code.
+- **Blocking** someone ends your friendship and hides the two of you from each other in friend lists, parties and the leaderboard.
+  They cannot add you again or join a party you host, and they are not told that you blocked them.
+  Only you see your blocked list, and you can unblock someone at any time.
+- **Reports** are read only by the maintainer who runs the service, to decide whether to rename or ban someone.
+  The person you report is not told who reported them, or that they were reported.
+- **Banned** users keep their data but disappear from everyone else's friend lists, parties and leaderboards, and cannot change their name or join parties.
 
 You always see your own complete profile and presence.
 Your sync document and Apple account link are never shown to anyone, friends included.
@@ -43,11 +52,13 @@ Your sync document and Apple account link are never shown to anyone, friends inc
 
 Leaving a party (`POST /v1/party/leave`) removes your membership; a party is deleted when its last member leaves or after 12 hours without activity.
 Removing a friend deletes the friendship in both directions.
-Deleting your account calls `DELETE /v1/me`, which erases your profile, presence, daily study minutes, friend list, sync document and Apple account link, removes you from your friends' lists, and takes you out of your party.
+Unblocking someone deletes the block.
+A report stays until the account of the reporter or of the reported user is deleted.
+Deleting your account calls `DELETE /v1/me`, which erases your profile, presence, daily study minutes, friend list, sync document, Apple account link, blocks (yours, and others' blocks of you), reports by you or about you, and any ban or replaced name, removes you from your friends' lists, and takes you out of your party.
 If you signed in with Apple, it then revokes the app's Sign in with Apple grant with Apple.
 Your secret token, and the token of every other Mac you signed in on, stops working at once.
 Signing out on one Mac (`POST /v1/auth/signout`) deletes that Mac's token on the server; your account and other Macs stay signed in.
-Signing in with Apple on a Mac that already had a friend code of its own moves that code's friends and study minutes to your account and deletes the old code.
+Signing in with Apple on a Mac that already had a friend code of its own moves that code's friends, blocks, reports, any ban and study minutes to your account and deletes the old code.
 
 ## No analytics, no third parties
 

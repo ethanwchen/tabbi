@@ -86,7 +86,7 @@ private struct PartyRoom: View {
             HStack(alignment: .bottom, spacing: spacing) {
                 ForEach(party.members) { member in
                     PartyMemberView(member: member, isMe: member.profile.code == store.state.friendCode,
-                                    width: width, now: store.now)
+                                    width: width, store: store)
                 }
             }
             .frame(width: proxy.size.width, height: proxy.size.height)
@@ -98,12 +98,15 @@ private struct PartyRoom: View {
 }
 
 /// One member: their pet with name and status underneath. Narrow columns
-/// (a crowded party) get the smaller pet and only the countdown.
+/// (a crowded party) get the smaller pet and only the countdown. Others
+/// can be reported or blocked with a right-click.
 private struct PartyMemberView: View {
     let member: PartyMember
     let isMe: Bool
     let width: CGFloat
-    let now: Date
+    @ObservedObject var store: PartyStore
+
+    private var now: Date { store.now }
 
     private var roomy: Bool { width >= 60 }
 
@@ -140,7 +143,11 @@ private struct PartyMemberView: View {
         }
         .lineLimit(1)
         .frame(width: width)
+        .contentShape(Rectangle())
         .help(help(status))
+        .contextMenu {
+            if !isMe { PartyModerationMenu(profile: member.profile, store: store) }
+        }
     }
 
     private var crown: some View {
@@ -170,7 +177,7 @@ private struct PartyMemberView: View {
         if let minutes = member.presence?.todayMinutes, minutes > 0 {
             parts.append("\(PartyRoster.duration(minutes: minutes)) today")
         }
-        return parts.joined(separator: " · ")
+        return parts.joined(separator: " · ") + (isMe ? "" : ". Right-click to report or block.")
     }
 }
 

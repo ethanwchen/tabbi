@@ -182,6 +182,7 @@ struct PartyCopyCode: View {
 enum PartyField: Hashable {
     case friendCode
     case partyCode
+    case reportNote
 }
 
 /// A one-line field for a friend or party code: Return submits, Esc clears.

@@ -19,7 +19,7 @@ This page says what differs, how to build and upload it, and what to enter in Ap
 | Wrap up (day review) | local summary, refined by Claude | local summary only |
 | Do Not Disturb during focus | through Shortcuts | hidden (it runs `/usr/bin/shortcuts`) |
 | Settings > Connections | all rows | no Claude or Do Not Disturb rows |
-| Party | yes | left out by the edition until it has moderation |
+| Party | yes | left out by the edition for now (one switch turns it on) |
 | Sign in with Apple and sync ([sync.md](sync.md)) | yes, with the Developer ID profile | yes, with the App Store profile (not in `--adhoc` builds) |
 
 The compile-time switch sits in these places: `Package.swift` (the define and the Sparkle dependency), `ModuleList.swift` (the Claude modules), `AppDelegate.swift` (updater and install hygiene), `Edition+Current.swift` (the default edition) and a few spots in Settings and the snapshot renderer.
@@ -27,7 +27,8 @@ Everything else follows the edition at run time.
 `Edition.excludedModules` removes modules from the catalog, so kits, onboarding, Settings > Tabs and the closed-notch ticker never offer them, and a kit that lists one (Essentials lists Ask Claude) still applies without a warning.
 `Edition.runsLocalTools` is false for the App Store edition, which hides every feature that would start a helper program.
 
-Party comes back by removing `"party"` from `excludedModules` in `appstore.json`, once it has reporting, blocking and a name filter (App Review guideline 1.2).
+Party comes back by removing `"party"` from `excludedModules` in `appstore.json`.
+Party now has reporting, blocking and a name filter (App Review guideline 1.2), so the remaining work before turning it on is a sandboxed run of Party, a privacy label that declares the display name and party activity it shares, and reviewer notes on how to report and block someone.
 
 ## Build and upload
 

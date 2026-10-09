@@ -11,6 +11,12 @@ private final class FakeFriendsServer: PartyTransport, @unchecked Sendable {
     /// Delays each register reply, to overlap concurrent calls.
     var registerDelay: UInt64 = 0
     var unreachable = false
+    /// Answers `PATCH /v1/me` the way the server does for a banned user.
+    var banned = false
+    /// Names the server refuses (a maintainer's name hold), as `name_not_allowed`.
+    var heldNames: Set<String> = []
+    /// Pet names it refuses, as `pet_name_not_allowed`.
+    var heldPetNames: Set<String> = []
 
     init(validTokens: Set<String> = []) { self.validTokens = validTokens }
 
@@ -28,6 +34,13 @@ private final class FakeFriendsServer: PartyTransport, @unchecked Sendable {
         lock.withLock { sent.append(request) }
         if unreachable { throw PartyError.unreachable }
         let route = "\(request.method) \(request.path)"
+        let fields = request.body.flatMap { try? JSONSerialization.jsonObject(with: $0) } as? [String: Any]
+        if let name = fields?["name"] as? String, heldNames.contains(name) {
+            return reply(#"{"ok":false,"error":"name_not_allowed","message":"no"}"#, 400)
+        }
+        if let petName = fields?["petName"] as? String, heldPetNames.contains(petName) {
+            return reply(#"{"ok":false,"error":"pet_name_not_allowed","message":"no"}"#, 400)
+        }
         if route == "POST /v1/register" {
             if registerDelay > 0 { try await Task.sleep(nanoseconds: registerDelay) }
             let n: Int = lock.withLock {
@@ -45,7 +58,8 @@ private final class FakeFriendsServer: PartyTransport, @unchecked Sendable {
         switch route {
         case "GET /v1/me", "PATCH /v1/me":
             let name = (request.body.flatMap { try? JSONSerialization.jsonObject(with: $0) } as? [String: Any])?["name"] as? String ?? "Ana"
-            return reply(#"{"ok":true,"profile":\#(Self.profile(code: code, name: name))}"#)
+            let flag = banned ? #","banned":true"# : ""
+            return reply(#"{"ok":true,"profile":\#(Self.profile(code: code, name: name))\#(flag)}"#)
         case "GET /v1/friends":
             return reply(#"{"ok":true,"friends":[]}"#)
         case "DELETE /v1/me":
@@ -90,6 +104,59 @@ final class PartyAccountTests: XCTestCase {
         XCTAssertEqual(profile.code, FakeFriendsServer.code(7))
         XCTAssertEqual(fake.requests, ["PATCH /v1/me"])
         XCTAssertEqual(fake.registerCount, 0)
+    }
+
+    func testConnectThrowsBannedWhenTheServerSaysSo() async throws {
+        let token = FakeFriendsServer.token(7)
+        let fake = FakeFriendsServer(validTokens: [token])
+        fake.banned = true
+        let store = InMemoryPartyCredentialStore([server: PartyCredentials(token: token, code: FakeFriendsServer.code(7))])
+        let account = PartyAccount(server: server, transport: fake, credentials: store)
+
+        do {
+            try await account.connect(profile: PartyProfileUpdate(name: "Ben"))
+            XCTFail("expected banned")
+        } catch {
+            XCTAssertEqual(error as? PartyError, .banned)
+        }
+        // The identity stays: an unban later lets the same friend code back in.
+        XCTAssertEqual(store.load(for: server)?.code, FakeFriendsServer.code(7))
+        XCTAssertEqual(fake.requests, ["PATCH /v1/me"])
+    }
+
+    func testARefusedNameIsLeftOutSoTheRestStillSyncs() async throws {
+        let token = FakeFriendsServer.token(7)
+        let fake = FakeFriendsServer(validTokens: [token])
+        fake.heldNames = ["Rude"]
+        fake.heldPetNames = ["Worse"]
+        let store = InMemoryPartyCredentialStore([server: PartyCredentials(token: token, code: FakeFriendsServer.code(7))])
+        let account = PartyAccount(server: server, transport: fake, credentials: store)
+
+        let profile = try await account.connect(profile: PartyProfileUpdate(name: "Rude", petName: "Worse", breed: "tabby"))
+
+        XCTAssertEqual(profile.name, "Ana", "the server keeps the name it has")
+        XCTAssertEqual(fake.requests, ["PATCH /v1/me", "PATCH /v1/me", "PATCH /v1/me"])
+        let refused = await account.refusedNames
+        XCTAssertEqual(refused, [.name, .petName])
+
+        fake.heldNames = []
+        try await account.connect(profile: PartyProfileUpdate(name: "Ana"))
+        let cleared = await account.refusedNames
+        XCTAssertEqual(cleared, [], "a name the server takes clears the refusal")
+    }
+
+    func testARefusedNameOnRegisterStillRegisters() async throws {
+        let fake = FakeFriendsServer()
+        fake.heldNames = ["Rude"]
+        let account = PartyAccount(server: server, transport: fake, credentials: InMemoryPartyCredentialStore())
+
+        let profile = try await account.connect(profile: PartyProfileUpdate(name: "Rude"))
+
+        XCTAssertEqual(profile.name, "Studier")
+        XCTAssertEqual(fake.requests, ["POST /v1/register", "POST /v1/register"])
+        XCTAssertEqual(fake.registerCount, 1)
+        let refused = await account.refusedNames
+        XCTAssertEqual(refused, .name)
     }
 
     func testRevokedTokenRegistersAgainWithTheLastProfileAndRetriesOnce() async throws {

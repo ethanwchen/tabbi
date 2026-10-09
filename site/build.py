@@ -205,6 +205,10 @@ SUPPORT = f'''
             Friendship is always mutual, and nobody can find you without your code: there is no directory or search.</p>
           <p>To study together, one of you starts a party and shares its 6-character party code. Anyone with that code can join while there is room, so share it only with people you want to study with.</p>
           <p>Want a break from being seen? Turn on <strong>Go invisible</strong> in the Party options and friends see you as offline.</p>""", 'party')}
+{faq('How do I block or report someone in Party?', f"""          <p>Right-click their row in your friends list or their pet in a party, then choose <strong>Block</strong> or <strong>Report</strong>.</p>
+          <p><strong>Blocking</strong> ends the friendship and hides the two of you from each other everywhere in Party. They cannot add you again or join a party you host, and they are not told. Unblock someone any time from the <strong>Blocked</strong> list in the Party options.</p>
+          <p><strong>Reporting</strong> sends us their current name and pet, a reason and an optional note, and offers to block them too. We review every report and can rename or ban an account. A banned account cannot change its name or join parties, and no one else sees it.</p>
+          <p>For anything else, email <a href="mailto:{SUPPORT_EMAIL}">{SUPPORT_EMAIL}</a>.</p>""", 'party-safety')}
 
 {faq('Do I need an account?', """          <p>No. Everything in Tabbi works without one.
             To sync your pet across Macs, choose <strong>Sign in with Apple</strong> in <strong>Settings &gt; General</strong> on each of them.
@@ -219,8 +223,8 @@ SUPPORT = f'''
           <ul>
             <li><strong>Leave a party</strong> from the Party tab. A party is deleted when its last member leaves, or after 12 hours without activity.</li>
             <li><strong>Remove a friend</strong> from their card in the Party tab. That deletes the friendship on both sides.</li>
-            <li><strong>Delete your Party data</strong>: without an account, open <strong>Settings &gt; Tabs</strong>, click <strong>Options</strong> next to Party, and choose <strong>Delete my Party data</strong>. Your profile, status, study minutes, friend list and party are erased from the server at once. Your pet stays on your Mac.</li>
-            <li><strong>Delete your account</strong>: when signed in, open <strong>Settings &gt; General</strong> and choose <strong>Delete Account</strong>. That erases your Party data, your synced pet and progress, and your Apple link from the server, and revokes Tabbi's Sign in with Apple access. Your pet stays on the Mac you deleted from.</li>
+            <li><strong>Delete your Party data</strong>: without an account, open <strong>Settings &gt; Tabs</strong>, click <strong>Options</strong> next to Party, and choose <strong>Delete my Party data</strong>. Your profile, status, study minutes, friend list and party are erased from the server at once, and your pet stays on your Mac.</li>
+            <li><strong>Delete your account</strong>: when signed in with Apple, open <strong>Settings &gt; General</strong> and choose <strong>Delete Account</strong>. That erases your Party data, your synced pet and progress, and your Apple link from the server, and revokes Tabbi's Sign in with Apple access. Your pet stays on the Mac you deleted from.</li>
             <li>Cannot open the app? Email <a href="mailto:{SUPPORT_EMAIL}">{SUPPORT_EMAIL}</a> with your friend code. To make sure the request is yours, we may ask you to change your Party nickname to a word we send you. We then delete the same data and confirm by email.</li>
           </ul>
           <p>Daily study minutes are deleted automatically after 28 days either way.</p>""", 'delete-party')}

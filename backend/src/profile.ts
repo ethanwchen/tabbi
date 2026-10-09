@@ -3,6 +3,7 @@ import {
   BREEDS, COSTUMES, DEFAULT_NAME, DEFAULT_PET_NAME, HttpError, MAX_NAME, MAX_PET_NAME, Obj, SPECIES,
   cleanText, int, oneOf, parseAccessories, parseColors,
 } from "./lib";
+import { isNameAllowed } from "./names";
 
 /** What friends and party members see of a user. */
 export interface Profile {
@@ -44,9 +45,15 @@ export function defaultProfile(code: string): Profile {
 export function parseProfilePatch(body: Obj): ProfilePatch {
   const p: ProfilePatch = {};
   const name = cleanText(body.name, "name", MAX_NAME);
-  if (name !== undefined) p.name = name;
+  if (name !== undefined) {
+    if (!isNameAllowed(name)) throw new HttpError(400, "name_not_allowed", "That name isn't allowed. Please pick another.");
+    p.name = name;
+  }
   const petName = cleanText(body.petName, "petName", MAX_PET_NAME);
-  if (petName !== undefined) p.petName = petName;
+  if (petName !== undefined) {
+    if (!isNameAllowed(petName)) throw new HttpError(400, "pet_name_not_allowed", "That pet name isn't allowed. Please pick another.");
+    p.petName = petName;
+  }
   if (body.species !== undefined) p.species = oneOf(body.species, SPECIES, "species");
   if (body.breed !== undefined) {
     // Checked against the species after merging, see `applyProfilePatch`.
