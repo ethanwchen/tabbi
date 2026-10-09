@@ -229,4 +229,24 @@ final class PetLimitedTests: XCTestCase {
         XCTAssertEqual(progress.value(of: .firstParty, today: today, calendar: calendar), 0)
         XCTAssertFalse(PetMilestone.allCases.contains { progress.isReached($0, calendar: calendar) })
     }
+
+    // MARK: Shelf progress
+
+    func testShelfProgressCountsInEachMilestonesUnit() {
+        let today = Date(timeIntervalSince1970: 1_800_000_000)
+        let progress = PetMilestoneProgress.demo(today: today, calendar: calendar)
+        let streak = progress.progress(of: .streakFlame, today: today, calendar: calendar)
+        XCTAssertEqual(streak?.label, "4/7 days")
+        XCTAssertEqual(streak?.fraction ?? 0, 4.0 / 7, accuracy: 0.001)
+        XCTAssertEqual(progress.progress(of: .focusLaurel, today: today, calendar: calendar)?.label, "31/50 h")
+        XCTAssertEqual(progress.progress(of: .partyMedal, today: today, calendar: calendar)?.label, "0/1 session")
+        XCTAssertNil(progress.progress(of: .launchWeekCap, today: today, calendar: calendar))
+    }
+
+    func testShelfProgressNeverShowsTheGoalEarlyOrPastIt() {
+        XCTAssertEqual(PetMilestone.fiftyHours.progress(value: 50 * 60 - 1).label, "49/50 h")
+        XCTAssertEqual(PetMilestone.fiftyHours.progress(value: 99_999).label, "50/50 h")
+        XCTAssertEqual(PetMilestone.weekStreak.progress(value: -3).fraction, 0)
+        XCTAssertEqual(PetMilestone.firstParty.progress(value: 4).fraction, 1)
+    }
 }

@@ -143,7 +143,7 @@ enum SnapshotRenderer {
             shots.append(Shot(name, model))
         }
 
-        // The Closet's second section, rendered after the others because
+        // The Closet's other sections, rendered after the others because
         // the open section is store state.
         if layout.order.contains(.closet) {
             var withCloset = layout
@@ -151,6 +151,9 @@ enum SnapshotRenderer {
             let model = NotchViewModel(geometry: geometry, layout: withCloset)
             model.open(.closet)
             shots.append(Shot("open-closet-look", model))
+            let limited = NotchViewModel(geometry: geometry, layout: withCloset)
+            limited.open(.closet)
+            shots.append(Shot("open-closet-limited", limited))
             // The pet's paw at the far right of the header while another tab is open.
             let withPaw = NotchViewModel(geometry: geometry, layout: withCloset)
             withPaw.open(withCloset.tabs.first)
@@ -385,7 +388,10 @@ enum SnapshotRenderer {
             schedule?.showForSnapshot(name == "open-schedule-yesterday" ? .yesterday
                 : name.hasPrefix("open-schedule-tomorrow") ? .tomorrow : .today,
                 planning: name == "open-schedule-tomorrow-plan")
-            if let firstSection { closet?.store.section = name == "open-closet-look" ? .look : firstSection }
+            if let firstSection {
+                closet?.store.section = name == "open-closet-look" ? .look
+                    : name == "open-closet-limited" ? .limited : firstSection
+            }
             model.themeID = Theme.current.id
             if name == "closed-pet-cheer", case .pet(var pet) = model.preview {
                 // Mid first hop, with the sparkles out.

@@ -216,3 +216,39 @@ extension PetMilestoneProgress {
         return PetMilestoneProgress(records: earlier + streak, calendar: calendar)
     }
 }
+
+/// How far a limited item is from being earned, as the Limited shelf shows
+/// it: a fraction for the tile's progress bar and a short count in the
+/// milestone's own unit.
+public struct PetLimitedProgress: Hashable, Sendable {
+    public var value: Int
+    public var goal: Int
+    /// The tile label, such as "4/7 days" or "31/50 h".
+    public var label: String
+
+    public var fraction: Double { goal > 0 ? min(1, Double(value) / Double(goal)) : 0 }
+}
+
+extension PetMilestone {
+    /// The progress label for `value` (capped at the goal). Hours round
+    /// down, so the label never shows the goal before it is reached.
+    public func progress(value: Int) -> PetLimitedProgress {
+        let value = max(0, min(value, goal))
+        let label = switch self {
+        case .weekStreak: "\(value)/\(goal) days"
+        case .fiftyHours: "\(value / 60)/\(goal / 60) h"
+        case .firstParty: "\(value)/\(goal) session"
+        }
+        return PetLimitedProgress(value: value, goal: goal, label: label)
+    }
+}
+
+extension PetMilestoneProgress {
+    /// The Limited shelf's progress for `edition`, or nil for an event item,
+    /// which has nothing to count: it is granted, not earned step by step.
+    public func progress(of edition: PetLimitedEdition, today: Date,
+                         calendar: Calendar = .current) -> PetLimitedProgress? {
+        guard let milestone = edition.milestone else { return nil }
+        return milestone.progress(value: value(of: milestone, today: today, calendar: calendar))
+    }
+}
