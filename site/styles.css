@@ -115,7 +115,7 @@ header.site .wrap {
 .brand { display: flex; align-items: center; gap: 10px; color: var(--on-ground); justify-self: start; flex-shrink: 0; }
 .brand .mark { flex-shrink: 0; width: 36px; height: 36px; }
 .brand:hover { text-decoration: none; }
-.brand .mark { display: block; border-radius: 9px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); }
+.brand .mark { display: block; flex: none; max-width: none; border-radius: 9px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); }
 .brand .name { font-family: var(--head); font-size: 26px; font-weight: 600; letter-spacing: -0.2px; }
 nav.site {
   display: flex; gap: 2px; padding: 6px;
@@ -394,7 +394,7 @@ footer.site nav a:hover { background: var(--chip); color: var(--on-ground); text
   nav.site a { padding: 0 11px; font-size: 15px; }
   nav.site a.nav-cta { margin-left: 2px; }
   .hero { padding: 16px 0 30px; }
-  .hero-home { padding: 0 0 48px; }
+  .hero-home { padding: 12px 0 48px; }
   .hero-icon { width: 96px; }
   .hero-home .wrap { gap: 36px; }
   .laptop-screen { border-width: 6px; border-radius: 14px 14px 6px 6px; }
@@ -431,9 +431,11 @@ footer.site nav a:hover { background: var(--chip); color: var(--on-ground); text
   .faq summary::after { transition: none; }
 }
 
-/* The narrowest phones keep the icon as the home link and drop the word,
-   so the three tabs fit on one line. */
-@media (max-width: 400px) {
-  nav.site a { padding: 0 9px; font-size: 14.5px; }
+/* Phones keep the icon as the home link and drop the word,
+   so the three tabs fit on one line, centered. */
+@media (max-width: 520px) {
   .brand .name { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+@media (max-width: 350px) {
+  nav.site a { padding: 0 8px; font-size: 14px; }
 }
