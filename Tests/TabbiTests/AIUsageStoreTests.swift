@@ -42,6 +42,16 @@ final class AIUsageStoreTests: XCTestCase {
         XCTAssertEqual(store.stats?.today.tokens.total, 0)
     }
 
+    func testCodexFolderNamesTheFolderItReads() {
+        let home = FileManager.default.homeDirectoryForCurrentUser
+        let store = ClaudeUsageStore(storage: EditionStorage(root: root), runMode: .demo,
+                                     codexRoot: home.appendingPathComponent("work/codex/sessions"))
+        XCTAssertEqual(store.codexFolder, "~/work/codex/sessions")
+        let elsewhere = ClaudeUsageStore(storage: EditionStorage(root: root), runMode: .demo,
+                                         codexRoot: URL(fileURLWithPath: "/opt/codex/sessions"))
+        XCTAssertEqual(elsewhere.codexFolder, "/opt/codex/sessions")
+    }
+
     func testDemoPreviewShowsCodexSampleData() {
         let store = ClaudeUsageStore(storage: EditionStorage(root: root), runMode: .demo,
                                      environment: ["TABBI_USAGE_PREVIEW": "codex"])

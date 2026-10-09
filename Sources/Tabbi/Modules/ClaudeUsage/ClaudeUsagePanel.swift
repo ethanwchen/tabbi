@@ -31,7 +31,7 @@ struct ClaudeUsagePanel: View {
     @ViewBuilder
     private func limitsArea(now: Date) -> some View {
         if store.cliStatus == .missing && store.limits == nil {
-            CLIMissingCard(source: store.source)
+            CLIMissingCard(source: store.source, codexFolder: store.codexFolder)
         } else {
             let snapshot = store.limits?.snapshot
             HStack(spacing: Theme.Spacing.xs) {
@@ -166,6 +166,7 @@ private struct TodayCard: View {
 /// Shown in place of the rings when the source's CLI can't be found.
 private struct CLIMissingCard: View {
     let source: AIUsageSource
+    let codexFolder: String
 
     var body: some View {
         Card {
@@ -179,11 +180,14 @@ private struct CLIMissingCard: View {
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)
                 (Text(source == .codex ? "Tabbi reads " : "Installed elsewhere? Set ")
-                    + Text(source == .codex ? "~/.codex/sessions" : ClaudeCLI.overrideVariable)
+                    + Text(source == .codex ? codexFolder : ClaudeCLI.overrideVariable)
                         .font(.system(size: 10.5, weight: .medium, design: .monospaced))
                     + Text(source == .codex ? " and sends nothing." : " to its path."))
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.tertiaryText)
+                    // A long CODEX_HOME folder shortens in the middle.
+                    .lineLimit(2)
+                    .truncationMode(.middle)
                     .fixedSize(horizontal: false, vertical: true)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)

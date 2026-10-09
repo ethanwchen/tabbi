@@ -41,6 +41,9 @@ final class ClaudeUsageStore: ObservableObject {
     private var scanTask: Task<Void, Never>?
     private var codexTask: Task<Void, Never>?
     private let codexRoot: URL
+    /// Where Codex's sessions are read from, as the panel shows it
+    /// (`~/.codex/sessions`, or the folder under `CODEX_HOME`).
+    var codexFolder: String { (codexRoot.path as NSString).abbreviatingWithTildeInPath }
     /// The Claude probe's last snapshot, kept while Codex is shown so
     /// switching back is instant.
     private var claudeLimits: ClaudeLimitsRecord?
@@ -164,9 +167,10 @@ final class ClaudeUsageStore: ObservableObject {
             let usage = await Task.detached(priority: .utility) { CodexUsageLog.read(root: codexRoot) }.value
             guard let self else { return }
             codexTask = nil
-            isFetching = false
-            // The user may have switched back to Claude Code meanwhile.
+            // The user may have switched back to Claude Code meanwhile, and
+            // its probe may still be running.
             guard source == .codex else { return }
+            isFetching = false
             limits = usage.limits
             stats = usage.stats
         }
