@@ -461,7 +461,7 @@ Costume and knit colors are recolored per role with `setColor(_:for:)`.
 
 `PetPalette` holds one color per role.
 Breeds define a default palette; a pet profile applies user overrides on top with `applying(_:)`.
-Always render through `withVisibleRim()`: when the fur is dark and the outline is too, the outline becomes a warm light rim (`PetPalette.warmRim`) so black and tuxedo cats never vanish on the black notch.
+Always render through `withVisibleRim()`: when the fur is dark and the outline is too, the outline becomes a soft light rim (`PetPalette.rim`: the fur's own hue at a muted mid tone) so black and tuxedo cats never vanish on the black notch, and the rim reads as a gentle sheen rather than a frame.
 This also protects user recolors.
 
 ## Rendering

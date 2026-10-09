@@ -253,21 +253,32 @@ public struct PetPalette: Hashable, Codable, Sendable {
     }
 
     /// A copy whose outline stays visible on the black notch. Dark fur with a
-    /// dark outline would vanish, so the outline becomes a warm light rim.
+    /// dark outline would vanish, so the outline becomes a soft light rim.
     /// Applied after user overrides, so recoloring a pet black is still safe.
     public func withVisibleRim() -> PetPalette {
         guard self[.furBase].luminance < PetPalette.darkFurThreshold,
               self[.outline].luminance < PetPalette.rimMinimumLuminance else { return self }
         var copy = self
-        copy[.outline] = PetPalette.warmRim
+        copy[.outline] = rim
         return copy
+    }
+
+    /// The light rim (and mouth color) for dark fur: the fur's own hue at a
+    /// soft mid tone with little saturation. A fixed tan rim read as a harsh
+    /// brown frame around a black cat; a rim in the coat's own hue reads as
+    /// a gentle sheen on the fur while still parting it from the black notch.
+    public var rim: PetColor {
+        let fur = self[.furBase].hsl
+        return PetColor(hue: fur.hue, saturation: min(fur.saturation, PetPalette.rimMaximumSaturation),
+                        lightness: PetPalette.rimLightness)
     }
 
     /// Fur darker than this needs a rim (about #555 gray).
     static let darkFurThreshold = 0.09
     /// Outlines at least this bright already read on black.
     static let rimMinimumLuminance = 0.12
-    public static let warmRim = PetColor(hex: "#9C7A68")!
+    static let rimLightness = 0.5
+    static let rimMaximumSaturation = 0.14
     /// Fur around a mouth darker than this (on average) gets a rim-colored
     /// mouth instead of the dark one.
     static let darkMouthBackground = 0.15

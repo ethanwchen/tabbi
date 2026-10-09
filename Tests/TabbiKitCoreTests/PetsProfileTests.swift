@@ -153,10 +153,10 @@ final class PetProfileTests: XCTestCase {
         XCTAssertEqual(profile.palette, PetBreed.orangeTabby.palette)
     }
 
-    func testRecoloringFurDarkAddsTheWarmRim() {
+    func testRecoloringFurDarkAddsTheLightRim() {
         var profile = PetProfile(name: "Pip", breed: .whiteCat)
         profile.setColor(PetColor(hex: "#151217")!, for: .furBase)
-        XCTAssertEqual(profile.palette[.outline], PetPalette.warmRim)
+        XCTAssertEqual(profile.palette[.outline], profile.palette.rim)
     }
 
     func testFurTintKeepsEachBreedsLightAndDarkMarkings() {
@@ -187,7 +187,7 @@ final class PetProfileTests: XCTestCase {
         var profile = PetProfile(name: "Pip", breed: .goldenRetriever)
         profile.setColor(pink, for: .costumeBase)
         profile.tintFur(PetColor(hex: "#1C1719")!)
-        XCTAssertEqual(profile.palette[.outline], PetPalette.warmRim, "black fur still gets the warm rim")
+        XCTAssertEqual(profile.palette[.outline], profile.palette.rim, "black fur still gets the light rim")
 
         profile.tintFur(nil)
         XCTAssertEqual(profile.paletteOverrides, [.costumeBase: pink])

@@ -34,9 +34,9 @@ final class PetPaletteTests: XCTestCase {
         XCTAssertEqual(try JSONDecoder().decode(PetPalette.self, from: data), palette)
     }
 
-    func testDarkFurGetsAWarmRimSoItNeverVanishesOnBlack() {
+    func testDarkFurGetsALightRimSoItNeverVanishesOnBlack() {
         let black = PetPalette([.furBase: PetColor(hex: "#1A1A1A")!, .outline: PetColor(hex: "#000000")!])
-        XCTAssertEqual(black.withVisibleRim()[.outline], PetPalette.warmRim)
+        XCTAssertEqual(black.withVisibleRim()[.outline], black.rim)
 
         let orange = PetPalette([.furBase: PetColor(hex: "#F2A65A")!, .outline: PetColor(hex: "#2A1A14")!])
         XCTAssertEqual(orange.withVisibleRim(), orange)
@@ -57,7 +57,7 @@ final class PetPaletteTests: XCTestCase {
         XCTAssertEqual(mouthColors(.tuxedo), [dark])
         XCTAssertEqual(mouthColors(.orangeTabby), [dark])
         // A dark mouth vanishes into black fur.
-        XCTAssertEqual(mouthColors(.blackCat), [PetPalette.warmRim])
+        XCTAssertEqual(mouthColors(.blackCat), [PetBreed.blackCat.palette.rim])
         // The Siamese mask is a soft mid-brown, light enough for the dark mouth.
         XCTAssertEqual(mouthColors(.siamese), [dark])
         XCTAssertEqual(mouthColors(.blackCat, tint: PetColor(hex: "#F4F0EA")!), [dark], "recolors adapt too")
@@ -328,8 +328,36 @@ final class PetBreedTests: XCTestCase {
         XCTAssertTrue(Set(shihTzu.pixels.compactMap { $0 }).isSuperset(of: [.furBase, .furAccent, .belly]))
     }
 
-    func testDarkDogsStillGetTheWarmRim() {
-        XCTAssertEqual(PetBreed.dachshund.palette.withVisibleRim()[.outline], PetPalette.warmRim)
+    func testDarkDogsStillGetTheLightRim() {
+        XCTAssertEqual(PetBreed.dachshund.palette.withVisibleRim()[.outline], PetBreed.dachshund.palette.rim)
+    }
+
+    func testTheRimIsASoftSheenInTheCoatsOwnHue() {
+        for breed in [PetBreed.blackCat, .tuxedo, .dachshund] {
+            let palette = breed.palette
+            let rim = palette.withVisibleRim()[.outline]
+            // Bright enough to part the coat from the black notch...
+            XCTAssertGreaterThan(rim.luminance, 0.15, "\(breed)")
+            XCTAssertGreaterThan(rim.luminance, palette[.furBase].luminance * 4, "\(breed)")
+            // ...but a gentle mid tone, not a bright frame that outshines the face.
+            XCTAssertLessThan(rim.luminance, palette[.eyeLight].luminance / 3, "\(breed)")
+            // A muted sheen, not a colored frame: no channel strays far from the others.
+            let channels = [Int(rim.red), Int(rim.green), Int(rim.blue)]
+            XCTAssertLessThan(channels.max()! - channels.min()!, 40, "\(breed)")
+        }
+        // A cool black cat gets a cool rim; the old fixed tan rim was redder than it was blue.
+        let blackCatRim = PetBreed.blackCat.palette.rim
+        XCTAssertGreaterThan(blackCatRim.blue, blackCatRim.red)
+        // A recolored navy pet gets a blue-gray rim, not a brown one.
+        let navy = PetPalette([.furBase: PetColor(hex: "#14203A")!]).rim
+        XCTAssertGreaterThan(navy.blue, navy.red)
+    }
+
+    func testBlackCatChestHasASoftSheenSoTheCoatIsNotAFlatBlob() {
+        let breed = PetBreed.blackCat
+        let chest = breed.palette[breed.pattern.role(for: .chest)]
+        XCTAssertGreaterThan(chest.luminance, breed.palette[.furBase].luminance)
+        XCTAssertLessThan(chest.luminance, 0.06, "still reads as a black cat")
     }
 
     func testEveryBreedSitsInsideTheFrameWithAMargin() throws {

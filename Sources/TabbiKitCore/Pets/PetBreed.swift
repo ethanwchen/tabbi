@@ -211,7 +211,8 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
         case .orangeTabby, .grayTabby:
             return PetPattern([.stripes: .furAccent])
         case .blackCat:
-            return PetPattern([.muzzle: .furBase, .chest: .furBase])
+            // A faint lighter chest gives the solid coat a soft sheen instead of a flat blob.
+            return PetPattern([.muzzle: .furBase, .chest: .furAccent])
         case .whiteCat:
             return PetPattern([.muzzle: .belly, .chest: .belly])
         case .tuxedo:
