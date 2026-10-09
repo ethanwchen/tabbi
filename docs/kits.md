@@ -5,8 +5,8 @@ Tabbi ships two kits, and anyone can write their own as a small JSON file and sh
 
 | Kit | Id | Tabs |
 | --- | --- | --- |
-| Essentials | `essentials` | Study (the timer), Today (the to-do list), Now Playing, Ask Claude |
-| Med School | `medicine` | Study, Today, Anki, Now Playing, Ask Claude |
+| Essentials | `essentials` | Study (the timer), Today (the to-do list), Now Playing, Ask AI |
+| Med School | `medicine` | Study, Today, Anki, Now Playing, Ask AI |
 
 Essentials is the default for every new user, and Med School is Essentials plus Anki, with study methods, a daily study goal, a focus sound and a study pet tuned for med school.
 Both keep the notch to a few tabs on purpose, and both also turn on the Closet, which opens from the paw at the far right of the header rather than taking a tab.
@@ -110,7 +110,7 @@ So a kit only needs to list the tabs it starts with; the rest stay available.
 | `system` | System (CPU and GPU) |
 | `claudeUsage` | Claude Usage |
 | `planner` | Today (calendar, tasks, focus timer; with `study` on, it shows the Timer tab's clock instead of its own) |
-| `claudeAsk` | Ask Claude |
+| `claudeAsk` | Ask AI |
 | `focus` | Focus (the same timer as Today's, with focus mode, as its own tab) |
 | `study` | Study timer and study methods |
 | `anki` | Anki reviews |

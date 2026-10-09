@@ -3,12 +3,13 @@ import SwiftUI
 import TabbiKitCore
 import TabbiKit
 
-/// Ask Claude: a quick question to the local `claude` CLI, answered in the notch.
+/// Ask AI: a quick question to the AI the user picked in Connections
+/// (Claude first among them), answered in the notch.
 @MainActor
 final class AskClaudeModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
-        id: .claudeAsk, title: "Ask Claude", symbol: "sparkles",
-        summary: "Ask Claude a quick question from the notch.", category: .ai,
+        id: .claudeAsk, title: "Ask AI", symbol: "sparkles",
+        summary: "Ask Claude, Gemini or another AI a quick question.", category: .ai,
         accent: .claude, permissions: [.claudeCLI],
         network: AIProviderID.allNetworkAccess
     )

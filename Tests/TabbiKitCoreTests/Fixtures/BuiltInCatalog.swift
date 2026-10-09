@@ -19,7 +19,7 @@ extension ModuleCatalog {
                          accent: ModuleAccent(red: 0.66, green: 0.55, blue: 1.00),
                          permissions: [.calendars, .notifications], kitSettings: TodayPlanSettings.kitSchema,
                          setup: [.calendar]),
-        ModuleDescriptor(id: .claudeAsk, title: "Ask Claude", symbol: "sparkles", category: .ai,
+        ModuleDescriptor(id: .claudeAsk, title: "Ask AI", symbol: "sparkles", category: .ai,
                          accent: .claude, permissions: [.claudeCLI]),
         ModuleDescriptor(id: .focus, title: "Focus", symbol: "hourglass", category: .productivity,
                          accent: ModuleAccent(red: 0.30, green: 0.84, blue: 0.76), permissions: [.notifications],
