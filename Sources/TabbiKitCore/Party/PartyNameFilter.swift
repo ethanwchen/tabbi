@@ -56,7 +56,7 @@ public enum PartyNameFilter {
             for allowed in rules.allow { joined = joined.replacingOccurrences(of: allowed, with: "") }
             let joinedRuns = runs(joined)
             if anywhere.contains(where: { contains(joinedRuns, $0) }) { return false }
-            let candidates = plainWords + words(of: camelSplit, choice: choice) + [plainWords.joined()]
+            let candidates = plainWords + words(of: camelSplit, choice: choice) + [wholeName(plainWords)]
             if candidates.contains(where: { word in blockedWords.contains { isWord(word, $0) } }) { return false }
         }
         return true
@@ -103,6 +103,14 @@ public enum PartyNameFilter {
     }
 
     // MARK: - Reading text
+
+    /// The words joined into one, so a term split across words (`sh it`) still
+    /// matches as a whole word. A last initial is left out, so a first name and
+    /// an initial (`Ana L.`) do not read as one word.
+    private static func wholeName(_ words: [String]) -> String {
+        guard words.count > 1, let last = words.last, last.count == 1 else { return words.joined() }
+        return words.dropLast().joined()
+    }
 
     private static func isMark(_ scalar: Unicode.Scalar) -> Bool {
         switch scalar.properties.generalCategory {

@@ -63,6 +63,15 @@ function words(text: string, choice: number): string[] {
 }
 
 /**
+ * The words joined into one, so a term split across words (`sh it`) still matches as a whole word. A last
+ * initial is left out, so a first name and an initial (`Ana L.`) do not read as one word.
+ */
+function wholeName(ws: string[]): string {
+  const last = ws[ws.length - 1];
+  return (ws.length > 1 && last.length === 1 ? ws.slice(0, -1) : ws).join("");
+}
+
+/**
  * True when `name` contains none of the blocked terms, read through accents, case, look-alike letters,
  * leetspeak, separators and repeated letters. Ordinary names that merely contain a short term (Cassandra,
  * Scunthorpe, Dick Van Dyke) pass, because short terms only match whole words.
@@ -75,7 +84,7 @@ export function isNameAllowed(name: string): boolean {
     let joined = plainWords.join("");
     for (const allowed of ALLOW) joined = joined.replaceAll(allowed, "");
     if (ANYWHERE.some((term) => contains(runs(joined), term))) return false;
-    const candidates = [...plainWords, ...words(camelSplit, choice), plainWords.join("")];
+    const candidates = [...plainWords, ...words(camelSplit, choice), wholeName(plainWords)];
     if (candidates.some((w) => WORDS.some((term) => isWord(w, term)))) return false;
   }
   return true;
