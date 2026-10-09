@@ -33,6 +33,9 @@ The service never stores your name or email from Apple: the app asks Apple only 
 To check a sign-in and to revoke it on deletion, the Worker talks to Apple (`appleid.apple.com`); it sends Apple only the token or code the app received from Apple.
 Cloudflare, which hosts the Worker, sees connection metadata like any web host.
 The Worker uses the client IP only in memory to rate-limit registration, sign-ins and bad tokens, and never writes it to storage.
+For troubleshooting, the Worker keeps short log lines at Cloudflare for up to 7 days: the kind of request (for example `POST /v1/friends/:id`, with every code and id removed), its status and duration, and the name of any internal error.
+It logs every failed request and a random 1 in 100 of the rest.
+Logs never contain tokens, friend or party codes, names, request contents or IP addresses.
 
 ## Suggestions from the website
 

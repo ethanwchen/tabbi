@@ -18,6 +18,7 @@ import {
 } from "./lib";
 import { PROFILE_FIELDS, Profile, applyProfilePatch, defaultProfile, parseProfilePatch, sameProfile } from "./profile";
 import { json } from "./http";
+import { errorFields, logEvent, routeOf } from "./log";
 import { readCohort, readGrant, parseGrantItem } from "./grants";
 import { SYNC_PUT_PER_MIN, etag, parseIfMatch, readSyncDocument } from "./sync";
 import {
@@ -332,6 +333,9 @@ interface LivePresence {
 
 /** How often the alarm deletes data past its retention (see `Hub.alarm`). */
 export const RETENTION_SWEEP_S = 3600;
+/** GET /v1/health reports `degraded` once this many requests failed with a 500 within HEALTH_WINDOW_S. */
+export const HEALTH_MAX_FAILURES = 5;
+export const HEALTH_WINDOW_S = 600;
 
 function rateLimited(end: number, now: number): HttpError {
   const retry = Math.max(1, end - now);
@@ -355,6 +359,8 @@ export class Hub extends DurableObject<Env> {
    * row writes far below the free-tier allowance. Entries missing here are read from SQLite.
    */
   private live = new Map<string, LivePresence>();
+  /** When recent requests failed with an unexpected exception (500), newest last; see health(). */
+  private failures: number[] = [];
   /** The UTC day the retention sweep last deleted old study minutes on. */
   private studyDaysSweptOn: string | null = null;
 
@@ -403,9 +409,28 @@ export class Hub extends DurableObject<Env> {
       return await this.route(req);
     } catch (e) {
       if (e instanceof HttpError) return json({ ok: false, error: e.error, message: e.message }, e.status, e.headers);
-      console.error(e);
+      this.recordFailure(nowS());
+      logEvent("error", "hub_exception", { route: routeOf(new URL(req.url).pathname), ...errorFields(e) });
       return json({ ok: false, error: "internal", message: "internal error" }, 500);
     }
+  }
+
+  private recordFailure(now: number): void {
+    this.failures.push(now);
+    if (this.failures.length > HEALTH_MAX_FAILURES) this.failures.shift();
+  }
+
+  /**
+   * GET /v1/health, for an external uptime check: it answers only after reading SQLite, so a 200 means
+   * the Worker, the Hub and its storage all work. It turns into 503 `degraded` while HEALTH_MAX_FAILURES
+   * requests failed with a 500 in the last HEALTH_WINDOW_S, so the same free uptime monitor also alerts
+   * on a burst of server errors. Failures are counted in memory and start from zero after a restart.
+   */
+  private health(now: number): Response {
+    this.sql.exec("SELECT version FROM schema_version").one();
+    const recent = this.failures.filter((t) => t > now - HEALTH_WINDOW_S).length;
+    if (recent >= HEALTH_MAX_FAILURES) return json({ ok: false, error: "degraded", message: "recent requests failed" }, 503);
+    return json({ ok: true });
   }
 
   private async route(req: Request): Promise<Response> {
@@ -413,6 +438,8 @@ export class Hub extends DurableObject<Env> {
     const path = url.pathname.replace(/\/+$/, "") || "/";
     const method = req.method.toUpperCase();
     const now = nowS();
+
+    if (path === "/v1/health" && method === "GET") return this.health(now);
 
     if (path === "/v1/register" && method === "POST") {
       const token = bearer(req);
@@ -568,10 +595,10 @@ export class Hub extends DurableObject<Env> {
       const bookmark = "bookmark" in target ? target.bookmark : await this.ctx.storage.getBookmarkForTime(target.at * 1000);
       undoBookmark = await this.ctx.storage.onNextSessionRestoreBookmark(bookmark);
     } catch (e) {
-      console.error(e);
+      logEvent("error", "restore_unavailable", errorFields(e));
       throw new HttpError(501, "restore_unavailable", "point-in-time recovery is not available here");
     }
-    console.log("admin: restoring storage to " + ("at" in target ? `time ${target.at}` : "a bookmark"));
+    logEvent("warn", "admin_restore", "at" in target ? { at: target.at } : { bookmark: true });
     setTimeout(() => this.ctx.abort("restoring a backup"), 100);
     return json({ ok: true, undoBookmark });
   }

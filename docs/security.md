@@ -131,9 +131,7 @@ A new step that renames or drops something should say so here, so the next rollb
   Tail output includes request URLs and headers, so treat it as sensitive and do not share or save it.
 - The Cloudflare dashboard (Workers and Pages, `tabbi-friends`, Metrics) shows requests, errors, CPU time and Durable Object usage against the free-plan limits.
   Watch requests per day (100,000) and Durable Object rows written (100,000): past them, calls fail until 00:00 UTC.
-- Cloudflare Notifications can email when the Worker's error rate rises or usage nears a limit.
-
-Workers Logs (persisted logs) are off: turning them on keeps Worker logs at Cloudflare, which `PRIVACY.md` would then have to say.
+- An external uptime check on `GET /v1/health` alerts on outages and bursts of server errors, and Workers Logs keep structured log lines without tokens, codes or IP addresses; see [`ops.md`](ops.md#monitoring).
 
 ## Staging
 

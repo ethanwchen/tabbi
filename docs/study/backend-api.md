@@ -14,7 +14,7 @@ Deployment, architecture and the free-tier math are in [`backend/README.md`](../
 - To see the Party tab render a local worker's real data, run `TABBI_PARTY_SERVER=http://localhost:8787 swift run Tabbi --snapshot snapshots-live --kit medicine`.
   Add `TABBI_PARTY_TOKEN` and `TABBI_PARTY_CODE` from a `POST /v1/register` reply to render as that user, with the friends and party you set up for it with `curl`.
   Only plain-http (local) servers are accepted there, so a snapshot never registers users on a deployed server.
-- Every route is under `/v1/` except the health check `GET /`.
+- Every route is under `/v1/` except the shallow health check `GET /`, which the Worker answers without touching storage.
 - Bodies are JSON objects (`Content-Type: application/json`), at most 4096 bytes (`PUT /v1/sync`: 65536 bytes).
   An empty body counts as `{}`.
   Any field not listed for a route is rejected with `unknown_field`, so never send extra keys.
@@ -145,6 +145,7 @@ Auth column: "token" means `Authorization: Bearer <token>` is required.
 | Method and path | Auth | Purpose |
 | --- | --- | --- |
 | `GET /` | none | health check |
+| `GET /v1/health` | none | deep health check for uptime monitors: 200 once the Hub has read its storage, 503 `degraded` after a burst of server errors, see [`ops.md`](../ops.md#health-check) |
 | `GET /v1/catalog` | none | the shared catalog |
 | `POST /v1/register` | none or token | create a user, or update the profile of an existing one |
 | `POST /v1/auth/apple` | none or token | sign in with Apple: link or adopt the account's friend code |
