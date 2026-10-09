@@ -51,6 +51,39 @@ final class CelebrationCenterTests: XCTestCase {
         XCTAssertEqual(played.count, 1)
     }
 
+    func testAClosedNotchCheersThePetInstead() {
+        var played: [CelebrationSound] = []
+        var soundOn = true
+        let center = CelebrationCenter(hapticsEnabled: { false }, soundEnabled: { soundOn },
+                                       playSound: { played.append($0) }, now: { [unowned self] in clock })
+
+        // The Pomodoro already chimed, so the cheer adds no sound.
+        let first = center.cheer(.dance, hasOwnSound: true)
+        XCTAssertEqual(first, PetCheer(kind: .dance, id: 1, startedAt: clock))
+        XCTAssertEqual(center.cheer, first)
+        XCTAssertEqual(played, [])
+
+        // Cheers are not paced: the next finished session cheers again,
+        // and is a new value; without a sound of its own it plays a soft one.
+        clock += 60
+        XCTAssertEqual(center.cheer(.dance)?.id, 2)
+        XCTAssertEqual(played.map(\.name), ["Pop"])
+        soundOn = false
+        XCTAssertEqual(center.cheer(.dance)?.id, 3)
+        XCTAssertEqual(played.count, 1)
+
+        // With a panel open the panel's burst plays instead.
+        center.stageAppeared()
+        XCTAssertNil(center.cheer(.dance))
+        XCTAssertEqual(center.cheer?.id, 3)
+    }
+
+    func testSnapshotRunsNeverCheer() {
+        let center = center(isEnabled: false)
+        XCTAssertNil(center.cheer(.dance))
+        XCTAssertNil(center.cheer)
+    }
+
     func testSnapshotRunsNeverCelebrate() {
         let center = center(isEnabled: false)
         center.stageAppeared()

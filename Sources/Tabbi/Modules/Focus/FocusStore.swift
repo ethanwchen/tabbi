@@ -198,9 +198,14 @@ final class FocusStore: ObservableObject {
         // Stale ends (the Mac was asleep) already got their notification; stay quiet.
         if !isEphemeral, let last = completions.last, now.timeIntervalSince(last.endedAt) < 60 {
             Self.playChime()
-            if last.phase == .focus {
-                celebrations?.celebrate(.burst, style: .confetti, accent: FocusModule.descriptor.accentColor,
-                                        from: FocusModule.descriptor.id, hasOwnSound: true)
+            if last.phase == .focus, let celebrations {
+                // Over the open panel a burst; beside the closed notch the pet dances.
+                if celebrations.isShowing {
+                    celebrations.celebrate(.burst, style: .confetti, accent: FocusModule.descriptor.accentColor,
+                                           from: FocusModule.descriptor.id, hasOwnSound: true)
+                } else {
+                    celebrations.cheer(.dance, hasOwnSound: true)
+                }
             }
         }
         scheduleSideEffects(withdrawingPending: false)

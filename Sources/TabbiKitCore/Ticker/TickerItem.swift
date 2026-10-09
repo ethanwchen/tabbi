@@ -114,11 +114,14 @@ public struct TickerPet: Hashable, Sendable {
     /// with no phase running. A pet drawn anew mid-session reads it, so it
     /// still knows how long the user has been at it.
     public var moodSince: Date?
+    /// A celebration playing right now (a finished focus session), or nil.
+    public var cheer: PetCheer?
 
-    public init(profile: PetProfile, mood: PetMood, moodSince: Date? = nil) {
+    public init(profile: PetProfile, mood: PetMood, moodSince: Date? = nil, cheer: PetCheer? = nil) {
         self.profile = profile
         self.mood = mood
         self.moodSince = moodSince
+        self.cheer = cheer
     }
 }
 

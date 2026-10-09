@@ -85,6 +85,11 @@ enum SnapshotRenderer {
                     model.preview = .pet(pet)
                     shots.append(Shot("closed-pet-\(name)", model))
                 }
+                // A finished focus session: the pet hops among sparkles
+                // (stamped mid-cheer when rendered, see renderNotchShots).
+                let model = NotchViewModel(geometry: geometry, layout: layout)
+                model.preview = .pet(TickerPet(profile: pet.profile, mood: .onBreak))
+                shots.append(Shot("closed-pet-cheer", model))
             }
         }
         // One open shot per tab of the active kit.
@@ -333,6 +338,11 @@ enum SnapshotRenderer {
             party?.showCelebrationForSnapshot(name == "open-party-celebrating")
             if let firstSection { closet?.store.section = name == "open-closet-look" ? .look : firstSection }
             model.themeID = Theme.current.id
+            if name == "closed-pet-cheer", case .pet(var pet) = model.preview {
+                // Mid first hop, with the sparkles out.
+                pet.cheer = PetCheer(kind: .dance, id: 1, startedAt: Date().addingTimeInterval(-0.45))
+                model.preview = .pet(pet)
+            }
             let view = NotchView(content: ModuleViews.notchContent(services: services))
                 .environmentObject(model)
                 .environment(\.drawsLiquidGlass, false)
