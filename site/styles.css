@@ -167,6 +167,13 @@ main.home .wrap { max-width: 1120px; }
 .gh-text span { font-size: 14px; font-weight: 600; color: var(--ink-3); }
 .gh-arrow { flex: none; margin-left: 6px; font-size: 20px; font-weight: 800; color: var(--taupe); transition: transform 0.25s ease; }
 .gh-card:hover .gh-arrow { transform: translateX(3px); }
+.socials { display: inline-flex; gap: 2px; margin-left: 6px; vertical-align: middle; }
+.made a.social {
+  display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 999px;
+  color: var(--on-ground-2); text-decoration: none; transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+.made a.social:hover { background: var(--chip); color: var(--on-ground); transform: translateY(-1px); }
+@media (prefers-reduced-motion: reduce) { .made a.social, .made a.social:hover { transition: none; transform: none; } }
 .made a { color: var(--on-ground); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--taupe); }
 @media (prefers-reduced-motion: reduce) {
   .gh-card, .gh-cat, .gh-arrow { transition: none; }
