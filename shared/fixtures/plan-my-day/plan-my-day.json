@@ -5423,21 +5423,21 @@
             {
               "kind" : "focus",
               "minutes" : 20,
-              "reason" : "Over your 6 h focus limit",
+              "reason" : "Over your 6h focus limit",
               "title" : "Grant draft",
               "workID" : "projects/grant"
             },
             {
               "kind" : "focus",
               "minutes" : 105,
-              "reason" : "Over your 6 h focus limit",
+              "reason" : "Over your 6h focus limit",
               "title" : "Slides",
               "workID" : "projects/slides"
             },
             {
               "kind" : "focus",
               "minutes" : 15,
-              "reason" : "Over your 6 h focus limit",
+              "reason" : "Over your 6h focus limit",
               "title" : "Email",
               "workID" : "projects/email"
             }

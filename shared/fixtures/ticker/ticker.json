@@ -1791,8 +1791,8 @@
               "kind" : "meeting",
               "meeting" : {
                 "canJoin" : false,
-                "countdown" : "in 1 h",
-                "summary" : "1:1 with Sam in 1 h",
+                "countdown" : "in 1h",
+                "summary" : "1:1 with Sam in 1h",
                 "timing" : {
                   "kind" : "startsIn",
                   "minutes" : 60
@@ -1995,8 +1995,8 @@
               "kind" : "meeting",
               "meeting" : {
                 "canJoin" : false,
-                "countdown" : "in 1 h",
-                "summary" : "Lunch in 1 h",
+                "countdown" : "in 1h",
+                "summary" : "Lunch in 1h",
                 "timing" : {
                   "kind" : "startsIn",
                   "minutes" : 60
@@ -2016,8 +2016,8 @@
               "kind" : "meeting",
               "meeting" : {
                 "canJoin" : false,
-                "countdown" : "in 1 h",
-                "summary" : "Lunch in 1 h",
+                "countdown" : "in 1h",
+                "summary" : "Lunch in 1h",
                 "timing" : {
                   "kind" : "startsIn",
                   "minutes" : 60
@@ -2037,8 +2037,8 @@
               "kind" : "meeting",
               "meeting" : {
                 "canJoin" : false,
-                "countdown" : "in 1 h",
-                "summary" : "Lunch in 1 h",
+                "countdown" : "in 1h",
+                "summary" : "Lunch in 1h",
                 "timing" : {
                   "kind" : "startsIn",
                   "minutes" : 60
@@ -2443,7 +2443,7 @@
                 "id" : "minutes",
                 "remaining" : 115,
                 "source" : "study",
-                "text" : "115 min left",
+                "text" : "1h 55m left",
                 "title" : "Study goal",
                 "unit" : "min"
               }

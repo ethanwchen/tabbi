@@ -892,7 +892,7 @@
         },
         "primaryText" : {
           "blue" : 0.904,
-          "green" : 0.9580000000000001,
+          "green" : 0.958,
           "opacity" : 1,
           "red" : 1
         },
@@ -971,7 +971,7 @@
         },
         "primaryText" : {
           "blue" : 0.964,
-          "green" : 0.9460000000000001,
+          "green" : 0.946,
           "opacity" : 1,
           "red" : 1
         },
@@ -1049,10 +1049,10 @@
           "red" : 0.42
         },
         "primaryText" : {
-          "blue" : 0.9520000000000001,
+          "blue" : 0.952,
           "green" : 1,
           "opacity" : 1,
-          "red" : 0.9520000000000001
+          "red" : 0.952
         },
         "secondaryText" : {
           "blue" : 0.92,
