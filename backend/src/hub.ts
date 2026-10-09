@@ -17,11 +17,16 @@ import {
 } from "./lib";
 import { PROFILE_FIELDS, Profile, applyProfilePatch, defaultProfile, parseProfilePatch, sameProfile } from "./profile";
 import { json } from "./http";
+import { SYNC_PUT_PER_MIN, etag, parseIfMatch, readSyncDocument } from "./sync";
+import {
+  APPLE_AUTH_FIELDS, APPLE_AUTH_PER_MIN, AppleSecrets, exchangeAuthorizationCode, parseAppleAuth, revokeRefreshToken,
+  verifyIdentityToken,
+} from "./apple";
 import { PRESENCE_FIELDS, Presence, heartbeatSeconds, isOnline, parseHeartbeat, presenceChanged, publicPresence } from "./presence";
 import { STUDY_DAY_RETENTION_DAYS, rankEntries } from "./leaderboard";
 import { JOIN_FIELDS, PARTY_TOUCH_S, PartySession, SESSION_FIELDS, parseJoin, parseSession, partyExpired } from "./party";
 
-export interface Env {
+export interface Env extends AppleSecrets {
   HUB: DurableObjectNamespace<Hub>;
 }
 
@@ -87,6 +92,55 @@ CREATE TABLE IF NOT EXISTS party_members (
 );
 CREATE INDEX IF NOT EXISTS party_members_by_party ON party_members (party, joined_at);
 `;
+
+/** Sign in with Apple accounts and their sync documents. */
+const SYNC_SCHEMA = `
+-- An Apple account maps Apple's stable user id (sub) to one friends user. No email or name is stored.
+-- The refresh token from the authorization code exchange is kept only to revoke it when the account
+-- is deleted; it is null when the exchange was skipped (Apple secrets unset) or failed.
+CREATE TABLE apple_accounts (
+  apple_sub     TEXT PRIMARY KEY,
+  code          TEXT NOT NULL UNIQUE,
+  refresh_token TEXT,
+  created_at    INTEGER NOT NULL
+) WITHOUT ROWID;
+-- More tokens for a user, one per Mac that signed in to an existing account, so each Mac has its own
+-- secret and none of them is ever sent back. users.token_hash stays the first Mac's token.
+CREATE TABLE device_tokens (
+  token_hash TEXT PRIMARY KEY,
+  code       TEXT NOT NULL,
+  created_at INTEGER NOT NULL
+) WITHOUT ROWID;
+CREATE INDEX device_tokens_by_code ON device_tokens (code);
+-- The app's sync document (see sync.ts), stored as sent, with a revision for optimistic concurrency.
+CREATE TABLE sync_documents (
+  code       TEXT PRIMARY KEY,
+  revision   INTEGER NOT NULL,
+  document   TEXT NOT NULL,
+  updated_at INTEGER NOT NULL
+) WITHOUT ROWID;
+`;
+
+/**
+ * Ordered schema steps; step i brings the database to version i + 1. Append new steps and never edit
+ * one that has been deployed. Step 1 is the original schema, written with IF NOT EXISTS so databases
+ * created before versioning (which have its tables but no recorded version) pass through it unchanged.
+ */
+const MIGRATIONS = [SCHEMA, SYNC_SCHEMA];
+
+/** Runs the steps a database has not had yet, each in its own transaction with its version bump. */
+export function migrate(storage: DurableObjectStorage): void {
+  const sql = storage.sql;
+  sql.exec("CREATE TABLE IF NOT EXISTS schema_version (version INTEGER NOT NULL)");
+  const row = sql.exec<{ version: number }>("SELECT version FROM schema_version").toArray()[0];
+  if (!row) sql.exec("INSERT INTO schema_version (version) VALUES (0)");
+  for (let v = row?.version ?? 0; v < MIGRATIONS.length; v++) {
+    storage.transactionSync(() => {
+      sql.exec(MIGRATIONS[v]);
+      sql.exec("UPDATE schema_version SET version = ?", v + 1);
+    });
+  }
+}
 
 /** Unchanged heartbeats are flushed to SQLite at most this often, so a restart loses little. */
 const PRESENCE_FLUSH_S = 600;
@@ -182,7 +236,7 @@ export class Hub extends DurableObject<Env> {
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
     this.sql = ctx.storage.sql;
-    this.sql.exec(SCHEMA);
+    migrate(ctx.storage);
   }
 
   async fetch(req: Request): Promise<Response> {
@@ -211,11 +265,14 @@ export class Hub extends DurableObject<Env> {
       return this.register(req, now);
     }
 
+    if (path === "/v1/auth/apple" && method === "POST") return await this.signInWithApple(req, now);
+
     const caller = await this.authenticate(req, now);
 
     if (path === "/v1/me" && method === "GET") return json({ ok: true, profile: caller.profile });
     if (path === "/v1/me" && method === "PATCH") return this.updateProfile(req, caller, false);
-    if (path === "/v1/me" && method === "DELETE") return this.deleteMe(caller);
+    if (path === "/v1/me" && method === "DELETE") return await this.deleteMe(caller);
+    if (path === "/v1/auth/signout" && method === "POST") return await this.signOut(caller);
 
     if (path === "/v1/friends" && method === "GET") return this.listFriends(caller, now);
     if (path === "/v1/friends" && method === "POST") return this.addFriend(req, caller, now);
@@ -232,6 +289,11 @@ export class Hub extends DurableObject<Env> {
     if (path === "/v1/party/session" && method === "POST") return this.startSession(req, caller, now);
     if (path === "/v1/party/session" && method === "DELETE") return this.endSession(caller, now);
 
+    if (path === "/v1/sync" && method === "GET") return this.getSync(caller);
+    // Awaited here: putSync can throw before its first await, and a rejection that is only adopted by
+    // route's promise on a later tick is reported as unhandled by workerd.
+    if (path === "/v1/sync" && method === "PUT") return await this.putSync(req, caller, now);
+
     throw new HttpError(404, "not_found", "not found");
   }
 
@@ -246,7 +308,9 @@ export class Hub extends DurableObject<Env> {
     }
     const tokenHash = await sha256Hex(token);
     this.rateLimit("t:" + tokenHash, RATE_LIMIT_PER_MIN, now);
-    const row = this.sql.exec<UserRow>("SELECT * FROM users WHERE token_hash = ?", tokenHash).toArray()[0];
+    const row = this.sql.exec<UserRow>("SELECT * FROM users WHERE token_hash = ?", tokenHash).toArray()[0]
+      ?? this.sql.exec<UserRow>(
+        "SELECT u.* FROM device_tokens d JOIN users u ON u.code = d.code WHERE d.token_hash = ?", tokenHash).toArray()[0];
     if (!row) throw new HttpError(401, "unauthorized", "missing or invalid token");
     return { code: row.code, tokenHash, profile: rowToProfile(row) };
   }
@@ -270,19 +334,25 @@ export class Hub extends DurableObject<Env> {
 
   private async register(req: Request, now: number): Promise<Response> {
     const patch = parseProfilePatch(await readBody(req, PROFILE_FIELDS));
+    const token = newToken();
+    const profile = this.insertUser(await sha256Hex(token), patch, now);
+    return json({ ok: true, token, code: profile.code, profile }, 201);
+  }
+
+  /** Creates a user with a fresh friend code. Synchronous, so it can run inside a transaction. */
+  private insertUser(tokenHash: string, patch: ReturnType<typeof parseProfilePatch>, now: number): Profile {
     let code = newCode(8);
     for (let i = 0; i < 20 && this.userExists(code); i++) code = newCode(8);
     if (this.userExists(code)) throw new HttpError(503, "unavailable", "could not allocate a code, retry");
     const profile = applyProfilePatch(defaultProfile(code), patch);
-    const token = newToken();
     this.sql.exec(
       `INSERT INTO users (code, token_hash, name, pet_name, species, breed, colors, costume, accessories, points, level, created_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      code, await sha256Hex(token), profile.name, profile.petName, profile.species, profile.breed,
+      code, tokenHash, profile.name, profile.petName, profile.species, profile.breed,
       JSON.stringify(profile.colors), profile.costume, JSON.stringify(profile.accessories),
       profile.points, profile.level, now,
     );
-    return json({ ok: true, token, code, profile }, 201);
+    return profile;
   }
 
   /** PATCH /v1/me, and POST /v1/register with a valid token (idempotent re-register). */
@@ -301,19 +371,33 @@ export class Hub extends DurableObject<Env> {
     return json(isRegister ? { ok: true, code: caller.code, profile: next } : { ok: true, profile: next });
   }
 
-  private deleteMe(caller: Caller): Response {
+  /**
+   * DELETE /v1/me: deletes everything about the user (every Mac's token stops working) and, for a Sign
+   * in with Apple account, revokes its Apple refresh token. The data is gone before Apple is called, so
+   * deletion never depends on Apple; `appleRevoked` says whether the revoke went through.
+   */
+  private async deleteMe(caller: Caller): Promise<Response> {
     const now = nowS();
-    this.ctx.storage.transactionSync(() => {
-      this.leaveParty(caller.code, now);
-      this.sql.exec("DELETE FROM users WHERE code = ?", caller.code);
-      // Both directions via the primary key: the reverse rows are found through my own friend list.
-      this.sql.exec("DELETE FROM friends WHERE b = ? AND a IN (SELECT b FROM friends WHERE a = ?)", caller.code, caller.code);
-      this.sql.exec("DELETE FROM friends WHERE a = ?", caller.code);
-      this.sql.exec("DELETE FROM presence WHERE code = ?", caller.code);
-      this.sql.exec("DELETE FROM study_days WHERE code = ?", caller.code);
-    });
-    this.live.delete(caller.code);
-    return json({ ok: true });
+    const account = this.sql.exec<{ refresh_token: string | null }>(
+      "SELECT refresh_token FROM apple_accounts WHERE code = ?", caller.code).toArray()[0];
+    this.ctx.storage.transactionSync(() => this.purgeUser(caller.code, now));
+    const appleRevoked = account?.refresh_token ? await revokeRefreshToken(account.refresh_token, this.env, now) : false;
+    return json(account ? { ok: true, appleRevoked } : { ok: true });
+  }
+
+  /** Deletes a user and all their rows (call inside a transaction). */
+  private purgeUser(code: string, now: number): void {
+    this.leaveParty(code, now);
+    this.sql.exec("DELETE FROM users WHERE code = ?", code);
+    // Both directions via the primary key: the reverse rows are found through my own friend list.
+    this.sql.exec("DELETE FROM friends WHERE b = ? AND a IN (SELECT b FROM friends WHERE a = ?)", code, code);
+    this.sql.exec("DELETE FROM friends WHERE a = ?", code);
+    this.sql.exec("DELETE FROM presence WHERE code = ?", code);
+    this.sql.exec("DELETE FROM study_days WHERE code = ?", code);
+    this.sql.exec("DELETE FROM sync_documents WHERE code = ?", code);
+    this.sql.exec("DELETE FROM apple_accounts WHERE code = ?", code);
+    this.sql.exec("DELETE FROM device_tokens WHERE code = ?", code);
+    this.live.delete(code);
   }
 
   private userExists(code: string): boolean {
@@ -472,6 +556,149 @@ export class Hub extends DurableObject<Env> {
       profile: rowToProfile(u),
     })));
     return json({ ok: true, week: isoWeekKeyOfDay(today), from, to, entries });
+  }
+
+  // ---------- Sign in with Apple ----------
+
+  /**
+   * POST /v1/auth/apple with `{ identityToken, authorizationCode? }` and, optionally, the caller's
+   * anonymous friends token as Bearer. Maps Apple's `sub` to one friends user:
+   * - a known account returns a new token of its own for this Mac (the same friend code, friends and
+   *   sync document follow the user). An anonymous caller is folded into it: its friends and study
+   *   days move to the account, then the anonymous user is deleted, since the app drops its token.
+   * - a new account links the caller's anonymous user (same token and friend code), or, without one,
+   *   creates a user.
+   * The authorization code's refresh token is stored only to revoke it on deletion.
+   */
+  private async signInWithApple(req: Request, now: number): Promise<Response> {
+    this.rateLimit("apple:" + (req.headers.get("CF-Connecting-IP") ?? "unknown"), APPLE_AUTH_PER_MIN, now);
+    const body = parseAppleAuth(await readBody(req, APPLE_AUTH_FIELDS));
+    const callerToken = bearer(req);
+    // A token that no longer resolves (its user was deleted) signs in as if there were none.
+    const live = callerToken ? await this.authenticate(req, now).catch((e: unknown) => {
+      if (e instanceof HttpError && e.status === 401) return null;
+      throw e;
+    }) : null;
+    const sub = await verifyIdentityToken(body.identityToken, now);
+    const refreshToken = body.authorizationCode
+      ? await exchangeAuthorizationCode(body.authorizationCode, this.env, now)
+      : null;
+    const freshToken = newToken();
+    const freshHash = await sha256Hex(freshToken);
+
+    // No awaits from here on: the state read below cannot change before it is written.
+    let result: { token: string; code: string; newAccount: boolean } | null = null;
+    this.ctx.storage.transactionSync(() => {
+      // The caller may have been deleted while this request waited on Apple.
+      const caller = live && this.sql.exec("SELECT 1 FROM users WHERE code = ?", live.code).toArray().length > 0
+        ? live : null;
+      const linked = this.sql.exec<{ code: string }>(
+        "SELECT code FROM apple_accounts WHERE apple_sub = ?", sub).toArray()[0]?.code;
+      if (linked) {
+        if (refreshToken) this.sql.exec("UPDATE apple_accounts SET refresh_token = ? WHERE apple_sub = ?", refreshToken, sub);
+        if (caller && callerToken && caller.code === linked) {
+          result = { token: callerToken, code: linked, newAccount: false };
+          return;
+        }
+        if (caller && !this.hasAppleAccount(caller.code)) this.foldInto(caller.code, linked, now);
+        this.sql.exec("INSERT INTO device_tokens (token_hash, code, created_at) VALUES (?, ?, ?)", freshHash, linked, now);
+        result = { token: freshToken, code: linked, newAccount: false };
+        return;
+      }
+      // A caller already linked to another Apple ID keeps that account; this Apple ID gets a new user.
+      const code = caller && callerToken && !this.hasAppleAccount(caller.code)
+        ? caller.code
+        : this.insertUser(freshHash, {}, now).code;
+      this.sql.exec("INSERT INTO apple_accounts (apple_sub, code, refresh_token, created_at) VALUES (?, ?, ?, ?)",
+        sub, code, refreshToken, now);
+      result = { token: code === caller?.code ? callerToken! : freshToken, code, newAccount: true };
+    });
+    const { token, code, newAccount } = result!;
+    const profile = rowToProfile(this.sql.exec<UserRow>("SELECT * FROM users WHERE code = ?", code).one());
+    return json({ ok: true, token, code, profile, newAccount });
+  }
+
+  /**
+   * POST /v1/auth/signout: the caller's token stops working; the account and every other Mac's token
+   * stay. A per-Mac token is deleted. The first Mac's token lives on the user row, so it is replaced by
+   * the hash of a token nobody holds. An anonymous user is refused, since it would lose its only token.
+   */
+  private async signOut(caller: Caller): Promise<Response> {
+    this.requireAccount(caller);
+    const retired = await sha256Hex(newToken());
+    this.sql.exec("DELETE FROM device_tokens WHERE token_hash = ?", caller.tokenHash);
+    this.sql.exec("UPDATE users SET token_hash = ? WHERE token_hash = ?", retired, caller.tokenHash);
+    return json({ ok: true });
+  }
+
+  private hasAppleAccount(code: string): boolean {
+    return this.sql.exec("SELECT 1 FROM apple_accounts WHERE code = ?", code).toArray().length > 0;
+  }
+
+  /**
+   * Moves an anonymous user's friends (up to the friend limit) and study days (the larger count per day)
+   * to an account, then deletes the anonymous user (call inside a transaction).
+   */
+  private foldInto(from: string, to: string, now: number): void {
+    const friends = this.sql.exec<{ b: string }>(
+      "SELECT b FROM friends WHERE a = ? AND b != ? AND b NOT IN (SELECT b FROM friends WHERE a = ?) ORDER BY created_at",
+      from, to, to).toArray();
+    let count = this.friendCount(to);
+    for (const { b } of friends) {
+      if (count >= MAX_FRIENDS) break;
+      this.sql.exec("INSERT OR IGNORE INTO friends (a, b, created_at) VALUES (?, ?, ?), (?, ?, ?)", to, b, now, b, to, now);
+      count++;
+    }
+    this.sql.exec(
+      `INSERT INTO study_days (code, day, minutes) SELECT ?, day, minutes FROM study_days WHERE code = ? AND true
+       ON CONFLICT (code, day) DO UPDATE SET minutes = MAX(minutes, excluded.minutes)`,
+      to, from,
+    );
+    this.purgeUser(from, now);
+  }
+
+  // ---------- sync ----------
+
+  /** Sync belongs to Sign in with Apple accounts; an anonymous friends user has nothing to sync with. */
+  private requireAccount(caller: Caller): void {
+    if (!this.hasAppleAccount(caller.code)) throw new HttpError(403, "no_account", "sign in with Apple to sync");
+  }
+
+  /** GET /v1/sync: the caller's document and its revision (0 and `null` before the first write). */
+  private getSync(caller: Caller): Response {
+    this.requireAccount(caller);
+    const row = this.sql.exec<{ revision: number; document: string; updated_at: number }>(
+      "SELECT revision, document, updated_at FROM sync_documents WHERE code = ?", caller.code).toArray()[0];
+    const revision = row?.revision ?? 0;
+    return json(
+      { ok: true, revision, updatedAt: row?.updated_at ?? null, document: row ? JSON.parse(row.document) : null },
+      200, { ETag: etag(revision) },
+    );
+  }
+
+  /**
+   * PUT /v1/sync with `If-Match: <revision>`: replaces the document if the caller merged into the
+   * current revision, else 409 with the current revision (the app pulls, merges and retries).
+   */
+  private async putSync(req: Request, caller: Caller, now: number): Promise<Response> {
+    this.requireAccount(caller);
+    const expected = parseIfMatch(req.headers.get("If-Match"));
+    this.rateLimit("sync:" + caller.code, SYNC_PUT_PER_MIN, now);
+    const document = JSON.stringify(await readSyncDocument(req));
+    const current = this.sql.exec<{ revision: number }>(
+      "SELECT revision FROM sync_documents WHERE code = ?", caller.code).toArray()[0]?.revision ?? 0;
+    if (expected !== current) {
+      throw new HttpError(409, "revision_conflict", `the document is at revision ${current}; pull, merge and retry`,
+        { ETag: etag(current) });
+    }
+    const revision = current + 1;
+    this.sql.exec(
+      `INSERT INTO sync_documents (code, revision, document, updated_at) VALUES (?, ?, ?, ?)
+       ON CONFLICT (code) DO UPDATE SET revision = excluded.revision, document = excluded.document,
+         updated_at = excluded.updated_at`,
+      caller.code, revision, document, now,
+    );
+    return json({ ok: true, revision, updatedAt: now }, 200, { ETag: etag(revision) });
   }
 
   // ---------- parties ----------

@@ -1,6 +1,7 @@
 #!/usr/bin/env swift
 // Builds the README screenshots and the GitHub social preview in docs/images
-// from the app's demo snapshots.
+// from the app's demo snapshots, and the launch demo videos in
+// docs/launch/video when ffmpeg is installed.
 //
 //     swift docs/make-screenshots.swift                         # render demo snapshots, then compose
 //     swift docs/make-screenshots.swift <essentials> <medicine>  # compose from existing snapshot folders
@@ -401,7 +402,7 @@ func socialPreview(notch: Bitmap, icon: Bitmap) -> Bitmap {
         let name = NSAttributedString(string: "Tabbi", attributes: [
             .font: roundedFont(size: 60, weight: .bold), .foregroundColor: NSColor.white,
         ])
-        let pitch = NSAttributedString(string: "A cozy study and productivity companion in your MacBook's notch.", attributes: [
+        let pitch = NSAttributedString(string: "A little cat for your laptop notch.", attributes: [
             .font: roundedFont(size: 26, weight: .medium), .foregroundColor: NSColor(white: 1, alpha: 0.72),
         ])
         let iconSide: CGFloat = 76
@@ -426,3 +427,136 @@ write(
     socialPreview(notch: notch("open-study", in: medicine), icon: Bitmap(contentsOf: outputDirectory.appendingPathComponent("icon.png"))),
     as: "social-preview"
 )
+
+// MARK: - Demo video
+
+/// One caption line in the app's rounded type, centered on `centerY` (from the bottom).
+func drawCaption(_ text: String, size: CGFloat, alpha: CGFloat, centerY: CGFloat, in context: CGContext, width: CGFloat) {
+    guard alpha > 0 else { return }
+    let graphics = NSGraphicsContext(cgContext: context, flipped: false)
+    NSGraphicsContext.saveGraphicsState()
+    NSGraphicsContext.current = graphics
+    defer { NSGraphicsContext.restoreGraphicsState() }
+    let caption = NSAttributedString(string: text, attributes: [
+        .font: roundedFont(size: size, weight: .semibold), .foregroundColor: NSColor(white: 1, alpha: 0.9 * alpha),
+    ])
+    let captionSize = caption.size()
+    caption.draw(at: CGPoint(x: (width - captionSize.width) / 2, y: centerY - captionSize.height / 2))
+}
+
+/// Opacity of a caption shown from `start` to `end` seconds, with short fades.
+func captionAlpha(at time: Double, from start: Double, to end: Double) -> CGFloat {
+    let fade = 0.3
+    guard time >= start, time < end else { return 0 }
+    return ease(CGFloat(min(1, (time - start) / fade, (end - time) / fade)))
+}
+
+/// Renders the storyboard in docs/launch/video-storyboard.md: the closed notch
+/// with the pet, open into Timer, cut through Today, Anki, Party and the
+/// Closet, close again, then the icon and link. The last frame matches the
+/// first, so the video loops cleanly. Frames go straight to ffmpeg as raw RGBA.
+func renderDemoVideo(from folder: URL, width: Int, height: Int, scale: CGFloat, captionSize: CGFloat, to url: URL) {
+    let fps = 30
+    let duration = 20.0
+    let size = CGSize(width: width, height: height)
+    var wallpaper = Bitmap(width: width, height: height)
+    wallpaper.withContext { drawWallpaper(in: $0, size: size) }
+    let wallpaperImage = wallpaper.cgImage()
+    let closed = notch("closed-pet", in: folder).cgImage()
+    let shots: [(snapshot: String, start: Double, end: Double, caption: String)] = [
+        ("open-study", 3.0, 6.0, "A focus timer that never hides behind a window."),
+        ("open-planner", 6.0, 9.0, "Your tasks and what's next, at a glance."),
+        ("open-anki", 9.0, 12.0, "Anki cards due, one click to study."),
+        ("open-party", 12.0, 15.0, "Study with friends."),
+        ("open-closet", 15.0, 17.5, "Your cat earns outfits as you study."),
+    ]
+    let pages = shots.map { notch($0.snapshot, in: folder).cgImage() }
+    let icon = Bitmap(contentsOf: outputDirectory.appendingPathComponent("icon.png")).cgImage()
+    // The open panel ends about 470 of the snapshot's 520 pixels down; captions
+    // sit a little above the middle of the space below it.
+    let panelBottom = size.height - 470 * scale
+    let captionY = panelBottom * 0.58
+
+    let process = Process()
+    process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+    process.arguments = [
+        "ffmpeg", "-loglevel", "error", "-y", "-f", "rawvideo", "-pix_fmt", "rgba", "-s", "\(width)x\(height)",
+        "-r", "\(fps)", "-i", "-", "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p",
+        "-movflags", "+faststart", url.path,
+    ]
+    let pipe = Pipe()
+    process.standardInput = pipe
+    do { try process.run() } catch { fail("could not run ffmpeg: \(error)") }
+
+    func draw(_ image: CGImage, alpha: CGFloat, scale layerScale: CGFloat, in context: CGContext) {
+        guard alpha > 0 else { return }
+        let w = CGFloat(image.width) * layerScale
+        let h = CGFloat(image.height) * layerScale
+        context.setAlpha(alpha)
+        context.draw(image, in: CGRect(x: (size.width - w) / 2, y: size.height - h, width: w, height: h))
+        context.setAlpha(1)
+    }
+
+    var canvas = Bitmap(width: width, height: height)
+    for index in 0..<Int(duration * Double(fps)) {
+        let time = Double(index) / Double(fps)
+        canvas.withContext { context in
+            context.interpolationQuality = .high
+            context.draw(wallpaperImage, in: CGRect(origin: .zero, size: size))
+            switch time {
+            case ..<2.5:
+                // Slow push in on the closed notch.
+                draw(closed, alpha: 1, scale: scale * (1 + 0.06 * ease(CGFloat(time / 2.5))), in: context)
+                drawCaption("A little cat for your laptop notch.", size: captionSize,
+                            alpha: captionAlpha(at: time, from: 0.2, to: 2.5), centerY: captionY, in: context, width: size.width)
+            case ..<3.0, 17.5..<18.0:
+                // The notch grows from the camera housing, or shrinks back.
+                let opening = time < 3.0
+                let progress = CGFloat((time - (opening ? 2.5 : 17.5)) / 0.5)
+                let t = ease(opening ? progress : 1 - progress)
+                draw(closed, alpha: max(0, 1 - 4 * t), scale: scale * (opening ? 1.06 : 1), in: context)
+                draw(opening ? pages[0] : pages[pages.count - 1], alpha: t, scale: scale * (0.5 + 0.5 * t), in: context)
+            case ..<17.5:
+                let shot = shots.lastIndex { time >= $0.start } ?? 0
+                draw(pages[shot], alpha: 1, scale: scale, in: context)
+                drawCaption(shots[shot].caption, size: captionSize,
+                            alpha: captionAlpha(at: time, from: shots[shot].start, to: shots[shot].end),
+                            centerY: captionY, in: context, width: size.width)
+            default:
+                // The closed notch with the icon and the link, fading out
+                // before the end so the loop starts on the same frame.
+                draw(closed, alpha: 1, scale: scale, in: context)
+                let alpha = captionAlpha(at: time, from: 18.2, to: 19.8)
+                let iconSide = captionSize * 2.2
+                context.setAlpha(alpha)
+                context.draw(icon, in: CGRect(
+                    x: (size.width - iconSide) / 2, y: captionY + captionSize * 0.9, width: iconSide, height: iconSide
+                ))
+                context.setAlpha(1)
+                drawCaption("Free and open source. tabbinotch.com", size: captionSize,
+                            alpha: alpha, centerY: captionY, in: context, width: size.width)
+            }
+        }
+        pipe.fileHandleForWriting.write(Data(canvas.pixels))
+    }
+    try? pipe.fileHandleForWriting.close()
+    process.waitUntilExit()
+    guard process.terminationStatus == 0 else { fail("ffmpeg could not write \(url.path)") }
+    print(url.path)
+}
+
+let videoDirectory = root.appendingPathComponent("docs/launch/video")
+let ffmpegCheck = Process()
+ffmpegCheck.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+ffmpegCheck.arguments = ["ffmpeg", "-version"]
+ffmpegCheck.standardOutput = FileHandle.nullDevice
+ffmpegCheck.standardError = FileHandle.nullDevice
+if (try? ffmpegCheck.run()) != nil, ({ ffmpegCheck.waitUntilExit(); return ffmpegCheck.terminationStatus == 0 })() {
+    try? FileManager.default.createDirectory(at: videoDirectory, withIntermediateDirectories: true)
+    renderDemoVideo(from: medicine, width: 1920, height: 1080, scale: 1.3, captionSize: 46,
+                    to: videoDirectory.appendingPathComponent("tabbi-demo.mp4"))
+    renderDemoVideo(from: medicine, width: 1080, height: 1080, scale: 0.86, captionSize: 38,
+                    to: videoDirectory.appendingPathComponent("tabbi-demo-square.mp4"))
+} else {
+    print("make-screenshots: ffmpeg not found, skipping the demo videos")
+}

@@ -41,6 +41,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if !settings.settings.hasChosenKit {
             services.onboarding.start()
         }
+        services.accountSync.start()
     }
 
     /// With no Dock icon or menu bar item, opening the app again (from Finder,
@@ -51,6 +52,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationWillTerminate(_ notification: Notification) {
+        services?.accountSync.flushOnQuit()
         services?.modules.stopAll()
     }
 }

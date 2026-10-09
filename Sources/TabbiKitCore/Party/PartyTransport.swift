@@ -8,12 +8,16 @@ public struct PartyHTTPRequest: Hashable, Sendable {
     public var body: Data?
     /// The bearer token, when the route needs one.
     public var token: String?
+    /// Extra headers, such as the `If-Match` revision a sync push needs.
+    public var headers: [String: String]
 
-    public init(method: String, path: String, body: Data? = nil, token: String? = nil) {
+    public init(method: String, path: String, body: Data? = nil, token: String? = nil,
+                headers: [String: String] = [:]) {
         self.method = method
         self.path = path
         self.body = body
         self.token = token
+        self.headers = headers
     }
 }
 
@@ -56,6 +60,9 @@ public struct URLSessionPartyTransport: PartyTransport {
         if let body = request.body {
             urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = body
+        }
+        for (name, value) in request.headers {
+            urlRequest.setValue(value, forHTTPHeaderField: name)
         }
         if let token = request.token {
             urlRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")

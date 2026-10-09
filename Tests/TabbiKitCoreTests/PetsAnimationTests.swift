@@ -5,7 +5,7 @@ final class PetAnimationTests: XCTestCase {
     private let baseline = PetComposer.frameSize - 1
 
     private func eyePixels(_ canvas: PetCanvas) -> Int {
-        canvas.pixels.filter { $0 == .eye || $0 == .eyeLight }.count
+        canvas.pixels.filter { $0 == .eye || $0 == .pupil || $0 == .eyeLight }.count
     }
 
     private func petPixels(_ canvas: PetCanvas) -> Int {
@@ -179,6 +179,25 @@ final class PetAnimationTests: XCTestCase {
                 XCTAssertEqual(eyePixels(a.canvas), eyePixels(b.canvas), "\(breed)")
                 XCTAssertEqual(a.canvas.pixels.filter { $0 == .nose }.count,
                                b.canvas.pixels.filter { $0 == .nose }.count, "\(breed)")
+            }
+        }
+    }
+
+    func testWalkingScarfWrapsTheNeckAsABandNotAThinStroke() throws {
+        for breed in PetBreed.allCases {
+            let plain = PetComposer.clip(.walk, for: breed)
+            let dressed = PetComposer.clip(.walk, for: breed, accessories: [.scarf])
+            for (index, (a, b)) in zip(plain.frames, dressed.frames).enumerated() {
+                let size = PetComposer.frameSize
+                let changed = (0..<size).flatMap { y in (0..<size).map { (x: $0, y: y) } }
+                    .filter { a.canvas[$0.x, $0.y] != b.canvas[$0.x, $0.y] }
+                let xs = changed.map(\.x), ys = changed.map(\.y)
+                let label = "\(breed) frame \(index)"
+                XCTAssertGreaterThanOrEqual(changed.count, 12, "the scarf is easy to see: \(label)")
+                // A band around the neck spans several rows; the old diagonal stroke spanned three.
+                XCTAssertGreaterThanOrEqual(try XCTUnwrap(ys.max()) - XCTUnwrap(ys.min()), 4, label)
+                XCTAssertLessThanOrEqual(try XCTUnwrap(xs.max()) - XCTUnwrap(xs.min()), 8,
+                                         "the scarf stays at the neck: \(label)")
             }
         }
     }

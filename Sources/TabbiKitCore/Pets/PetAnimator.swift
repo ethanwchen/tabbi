@@ -44,6 +44,28 @@ public struct PetClipSet: Hashable, Sendable {
         let blink = animator.nextBlinkAt.flatMap { $0 > time ? $0 : nil }
         return [boundary, blink].compactMap { $0 }.min()
     }
+
+    /// The still picture for `animator` under Reduce Motion: the playing
+    /// clip's `stillFrame`, with blinks drawn as the idle pose they
+    /// interrupt, so only real state changes (asleep, typing, an alert)
+    /// change the picture. Nil while the pet is inside the notch.
+    /// `animator` must already be advanced to the time drawn.
+    public func stillFrame(for animator: PetAnimator) -> PetFrame? {
+        guard let playback = animator.playback else { return nil }
+        return self[playback.animation == .blink ? .idle : playback.animation].stillFrame
+    }
+
+    /// The next moment after `time` when `stillFrame(for:)` can change: the
+    /// end of a one-shot clip (alert, celebrate, stretch, yawn, a peek),
+    /// after which the pet rests again. Nil while it rests, since a still
+    /// pet only changes on events. `animator` must already be advanced to
+    /// `time`.
+    public func nextStillChange(for animator: PetAnimator, after time: TimeInterval) -> TimeInterval? {
+        guard let playback = animator.playback, !playback.animation.loops, playback.animation != .blink
+        else { return nil }
+        let end = playback.startedAt + self[playback.animation].duration
+        return end > time ? end : nil
+    }
 }
 
 /// Decides which animation the pet plays and since when.

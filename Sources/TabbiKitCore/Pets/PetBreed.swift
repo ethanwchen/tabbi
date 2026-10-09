@@ -134,19 +134,22 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
                                .belly: c("#ECEEF2"), .outline: c("#23252B")])
         case .blackCat:
             return PetPalette([.furBase: c("#2B2830"), .furShade: c("#1E1B22"), .furAccent: c("#3A3540"),
-                               .belly: c("#3A3540"), .eye: c("#2F8F4E"), .eyeLight: c("#E9FFE0")])
+                               .belly: c("#3A3540"), .eye: c("#5CC27A"), .pupil: c("#1F6B3A"),
+                               .eyeLight: c("#FFFFFF")])
         case .whiteCat:
             return PetPalette([.furBase: c("#FAF7F2"), .furShade: c("#DCD6CF"), .furAccent: c("#EFE9E2"),
                                .belly: c("#FFFFFF"), .eye: c("#3B6FB6"), .outline: c("#3A3038")])
         case .tuxedo:
             return PetPalette([.furBase: c("#2B2830"), .furShade: c("#1E1B22"), .furAccent: c("#3A3540"),
-                               .belly: c("#F7F4EF"), .eye: c("#D9A92B"), .eyeLight: c("#FFF6D6")])
+                               .belly: c("#F7F4EF"), .eye: c("#E8B838"), .pupil: c("#8A5A12"),
+                               .eyeLight: c("#FFFFFF")])
         case .calico:
             return PetPalette([.furBase: c("#FBF6EE"), .furShade: c("#E2DACF"), .furAccent: c("#EE9A4D"), .furSpot: c("#3B3238"),
                                .belly: c("#FFFFFF"), .outline: c("#3A2A22")])
         case .siamese:
             return PetPalette([.furBase: c("#F3E6D2"), .furShade: c("#DCCAB0"), .furAccent: c("#5A4034"),
-                               .belly: c("#FBF4E8"), .eye: c("#3E8FD8"), .outline: c("#3A2A22")])
+                               .furSpot: c("#8A6450"), .belly: c("#FBF4E8"), .eye: c("#3E8FD8"),
+                               .outline: c("#3A2A22")])
         case .britishShorthair:
             // Shaded silver: a soft white-silver coat with a faintly ticked
             // back and subtly ringed tail, white chin and chest, clear blue
@@ -155,9 +158,9 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
                                .belly: c("#FFFFFF"), .eye: c("#3F86D6"), .eyeLight: c("#FFFFFF"),
                                .nose: c("#D9998B"), .blush: c("#FB9FAA"), .outline: c("#3A3330")])
         case .sphynx:
-            // Hairless pink-beige skin with deeper shade for wrinkles, a
+            // Hairless pink-beige skin with a gentle shade for wrinkles, a
             // rosy blush, and big green-gold eyes.
-            return PetPalette([.furBase: c("#F1CDB8"), .furShade: c("#D9A891"), .furAccent: c("#E6B8A2"),
+            return PetPalette([.furBase: c("#F1CDB8"), .furShade: c("#E0B29C"), .furAccent: c("#E6B8A2"),
                                .belly: c("#F8DCCB"), .eye: c("#7DB83A"), .eyeLight: c("#FFFFFF"),
                                .nose: c("#D9868A"), .blush: c("#F29A9C"), .outline: c("#4A2C2A")])
         case .scottishFold:
@@ -171,7 +174,7 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
                                .belly: c("#F7DCA8"), .nose: c("#3A2622"), .outline: c("#3A2214")])
         case .labrador:
             return PetPalette([.furBase: c("#7C4D31"), .furShade: c("#623B25"), .furAccent: c("#8F5C3C"),
-                               .belly: c("#8F5C3C"), .eye: c("#2A1810"), .eyeLight: c("#FFE7C8"),
+                               .belly: c("#8F5C3C"), .eye: c("#2A1810"), .eyeLight: c("#FFFFFF"),
                                .nose: c("#3A231C"), .outline: c("#26160E")])
         case .frenchBulldog:
             return PetPalette([.furBase: c("#F6F1EA"), .furShade: c("#D8CFC4"), .furSpot: c("#342E33"),
@@ -180,8 +183,12 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
             return PetPalette([.furBase: c("#E88D3C"), .furShade: c("#C76F28"), .furAccent: c("#F2A65A"),
                                .belly: c("#FFF6EA"), .nose: c("#2E2224"), .outline: c("#3A1E10")])
         case .dachshund:
+            // Black and tan: tan brow dots, muzzle, chest and paws, and the
+            // breed's warm dark brown eyes. An amber iris merged with the tan
+            // brow above it into one glowing orange block.
             return PetPalette([.furBase: c("#302729"), .furShade: c("#221B1D"), .furAccent: c("#3E3337"),
-                               .belly: c("#C9803F"), .eye: c("#A0602F"), .eyeLight: c("#FFE7C8"),
+                               .belly: c("#C9803F"), .eye: c("#8A5632"), .pupil: c("#4A2A1A"),
+                               .eyeLight: c("#FFFFFF"),
                                .nose: c("#1E1618")])
         case .beagle:
             return PetPalette([.furBase: c("#D58F48"), .furShade: c("#B57234"), .furAccent: c("#A9652C"),
@@ -194,9 +201,11 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
                                .belly: c("#FBE3C6"), .nose: c("#3A2622"), .outline: c("#3A2214")])
         case .shihTzu:
             // Gold and white: a white coat and beard, a gold topknot, mask,
-            // and ears, and big dark eyes with a bright catchlight.
+            // and ears, and big dark eyes with a bright catchlight over a
+            // warm brown iris, so they read as eyes, not dark glasses.
             return PetPalette([.furBase: c("#F8F2EA"), .furShade: c("#DCCDBC"), .furAccent: c("#D9A35C"),
-                               .belly: c("#FFFFFF"), .eye: c("#2A1A14"), .eyeLight: c("#FFFFFF"),
+                               .belly: c("#FFFFFF"), .eye: c("#7A4A2E"), .pupil: c("#2A1A14"),
+                               .eyeLight: c("#FFFFFF"),
                                .nose: c("#2E2224"), .outline: c("#3A2A22")])
         }
     }
@@ -207,7 +216,8 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
         case .orangeTabby, .grayTabby:
             return PetPattern([.stripes: .furAccent])
         case .blackCat:
-            return PetPattern([.muzzle: .furBase, .chest: .furBase])
+            // A faint lighter chest gives the solid coat a soft sheen instead of a flat blob.
+            return PetPattern([.muzzle: .furBase, .chest: .furAccent])
         case .whiteCat:
             return PetPattern([.muzzle: .belly, .chest: .belly])
         case .tuxedo:
@@ -215,8 +225,8 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
         case .calico:
             return PetPattern([.patchA: .furAccent, .patchB: .furSpot, .paws: .belly])
         case .siamese:
-            return PetPattern([.ears: .furAccent, .mask: .furAccent, .paws: .furAccent, .tailTip: .furAccent,
-                               .muzzle: .furAccent])
+            return PetPattern([.ears: .furAccent, .mask: .furSpot, .paws: .furAccent, .tailTip: .furAccent,
+                               .muzzle: .furSpot])
         case .britishShorthair:
             return PetPattern([.muzzle: .belly, .chest: .belly, .paws: .belly, .ears: .furShade,
                                .mask: .furShade, .stripes: .furShade, .tailTip: .furAccent])

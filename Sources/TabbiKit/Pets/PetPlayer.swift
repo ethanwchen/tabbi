@@ -61,17 +61,30 @@ public final class PetPlayer: ObservableObject {
         return clips.frame(for: animator.playback, at: time)
     }
 
+    /// The still picture to draw at `date` under Reduce Motion (see
+    /// `PetClipSet.stillFrame(for:)`), or nil while the pet is inside the notch.
+    public func stillFrame(at date: Date) -> PetFrame? {
+        animator.advance(to: date.timeIntervalSinceReferenceDate)
+        return clips.stillFrame(for: animator)
+    }
+
     /// Redraw dates for `TimelineView`: exactly when the frame changes, so an
-    /// idle pet costs a few redraws a second instead of a 60 Hz loop.
-    public var schedule: PetFrameSchedule { PetFrameSchedule(animator: animator, clips: clips) }
+    /// idle pet costs a few redraws a second instead of a 60 Hz loop. A
+    /// `still` schedule follows `stillFrame(at:)` instead: it only wakes when
+    /// a one-shot clip ends.
+    public func schedule(still: Bool = false) -> PetFrameSchedule {
+        PetFrameSchedule(animator: animator, clips: clips, still: still)
+    }
 }
 
 /// A `TimelineSchedule` that yields one date per frame change, simulated on
-/// a copy of the animator. It ends when the picture holds (hidden, or
-/// hanging from the notch); the next event publishes a fresh schedule.
+/// a copy of the animator. It ends when the picture holds (hidden, hanging
+/// from the notch, or any resting pet when `still`); the next event
+/// publishes a fresh schedule.
 public struct PetFrameSchedule: TimelineSchedule {
     let animator: PetAnimator
     let clips: PetClipSet
+    let still: Bool
 
     /// Redraw a hair after each change so rounding can't show the old frame.
     private static let lag: TimeInterval = 0.001
@@ -83,7 +96,10 @@ public struct PetFrameSchedule: TimelineSchedule {
             guard let date = next else { return nil }
             let time = date.timeIntervalSinceReferenceDate
             animator.advance(to: time)
-            next = clips.nextChange(for: animator, after: time)
+            let change = still
+                ? clips.nextStillChange(for: animator, after: time)
+                : clips.nextChange(for: animator, after: time)
+            next = change
                 .map { Date(timeIntervalSinceReferenceDate: $0 + Self.lag) }
             return date
         }

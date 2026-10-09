@@ -47,7 +47,8 @@ Parse errors report the 1-based row and column of the problem.
 | `A` | furAccent | stripes, points |
 | `K` | furSpot | second marking color (calico black) |
 | `W` | belly | light fur |
-| `E` | eye | pupils |
+| `E` | eye | iris, and the lines of closed eyes |
+| `i` | pupil | dark center of an open eye (lowercase: the uppercase letters ran out) |
 | `L` | eyeLight | eye highlight |
 | `N` | nose | nose (and dog mouths) |
 | `R` | mouth | cat mouth lines; dark on light fur, warm rim on dark fur (picked per pixel from the 4 neighbors) |
@@ -93,7 +94,7 @@ Unmapped zones fall back to their default.
 | `a` | patchA | furBase |
 | `b` | patchB | furBase |
 
-For example, the tuxedo maps paws, muzzle, chest, and mask to `belly`, and the Siamese maps ears, mask, muzzle, paws, and tail tip to `furAccent`.
+For example, the tuxedo maps paws, muzzle, chest, and mask to `belly`, and the Siamese maps ears, paws, and tail tip to dark `furAccent` points and its mask and muzzle to a softer `furSpot` brown.
 
 ## Composition
 
@@ -180,7 +181,8 @@ Each frame is the sitting composition in a `PetPose`, so every breed and costume
 | `lift` | Raises the whole pet off the baseline, for hops |
 
 Eye states live in `EffectArt` as 4x3 grids centered on the 2x3 open eye.
-A 3-wide open eye (the Sphynx's) gets the spare pixel on its cheek side, and a pupil drawn in the outline color inside an eye is cleared with it.
+A 3-wide open eye (the Sphynx's) gets the spare pixel on its cheek side, and the pupil inside an eye is cleared with it.
+An open eye is a highlight at the top left, the pupil under and beside it, and a bottom row of iris, so colored eyes look soft instead of staring.
 The composer finds the open eyes on the face's eye row, clears them so the head's fur shows through, and stamps the new state, so a new face only needs its open-eyed version.
 Sleepy eyes also close the mouth: blush pixels below the cheek row (the eye row + 3) are cleared, so a dog's panting tongue tucks away and its nose-colored mouth corners read as a closed "w".
 Draw a tongue with the blush role below the cheek row and it will hide itself during sleep.
@@ -459,7 +461,7 @@ Costume and knit colors are recolored per role with `setColor(_:for:)`.
 
 `PetPalette` holds one color per role.
 Breeds define a default palette; a pet profile applies user overrides on top with `applying(_:)`.
-Always render through `withVisibleRim()`: when the fur is dark and the outline is too, the outline becomes a warm light rim (`PetPalette.warmRim`) so black and tuxedo cats never vanish on the black notch.
+Always render through `withVisibleRim()`: when the fur is dark and the outline is too, the outline becomes a soft light rim (`PetPalette.rim`: the fur's own hue at a muted mid tone) so black and tuxedo cats never vanish on the black notch, and the rim reads as a gentle sheen rather than a frame.
 This also protects user recolors.
 
 ## Rendering

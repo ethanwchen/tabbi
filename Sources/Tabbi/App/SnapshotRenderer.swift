@@ -206,8 +206,16 @@ enum SnapshotRenderer {
             print(url.path)
         }
 
+        // Every costume on every body shape, and every pet animation frame by frame.
+        for (name, gallery) in [("pets-costumes", PetGallery.costumes()), ("pets-animations", PetGallery.animations())] {
+            guard let png = gallery.png(scale: 2) else { continue }
+            let url = outputDirectory.appendingPathComponent("\(name).png")
+            try? png.write(to: url)
+            print(url.path)
+        }
+
         let settingsWindow = SettingsWindowController(settings: services.settings, modules: services.modules,
-                                                      onboarding: services.onboarding)
+                                                      onboarding: services.onboarding, account: services.accountSync)
         for pane in settingsWindow.paneIDs {
             guard let png = await settingsWindow.snapshot(of: pane) else { continue }
             let url = outputDirectory.appendingPathComponent("settings-\(pane).png")
@@ -223,6 +231,16 @@ enum SnapshotRenderer {
             print(url.path)
         }
         services.settings.settings.notchMode = notchMode
+        // General as a release build shows it signed out, with Sign in with Apple.
+        if services.accountSync.phase == .unavailable {
+            services.accountSync.showsSignInForSnapshot(true)
+            if let png = await settingsWindow.snapshot(of: AppSettingsPane.general.rawValue) {
+                let url = outputDirectory.appendingPathComponent("settings-general-signed-out.png")
+                try? png.write(to: url)
+                print(url.path)
+            }
+            services.accountSync.showsSignInForSnapshot(false)
+        }
 
         // Each enabled module's own settings, as the sheet Tabs opens them in.
         let moduleOptions = AppSettingsPane.moduleOptions(settings: services.settings, modules: services.modules,

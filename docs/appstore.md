@@ -20,6 +20,7 @@ This page says what differs, how to build and upload it, and what to enter in Ap
 | Do Not Disturb during focus | through Shortcuts | hidden (it runs `/usr/bin/shortcuts`) |
 | Settings > Connections | all rows | no Claude or Do Not Disturb rows |
 | Party | yes | left out by the edition until it has moderation |
+| Sign in with Apple and sync ([sync.md](sync.md)) | yes, with the Developer ID profile | yes, with the App Store profile (not in `--adhoc` builds) |
 
 The compile-time switch sits in these places: `Package.swift` (the define and the Sparkle dependency), `ModuleList.swift` (the Claude modules), `AppDelegate.swift` (updater and install hygiene), `Edition+Current.swift` (the default edition) and a few spots in Settings and the snapshot renderer.
 Everything else follows the edition at run time.
@@ -49,14 +50,15 @@ It ad-hoc signs the app with the sandbox entitlements, so it runs sandboxed on t
 The team is the Individual team `B9VRALHV8S`, and the bundle id is `dev.tabbi.Tabbi` (the same as the direct download).
 In the Apple Developer portal, under Certificates, Identifiers & Profiles:
 
-1. Identifiers: make sure the App ID `dev.tabbi.Tabbi` exists (explicit, macOS).
-   Turn on Sign in with Apple there once the sync feature is in the App Store build.
+1. Identifiers: make sure the App ID `dev.tabbi.Tabbi` exists (explicit, macOS) and has Sign in with Apple turned on (the same capability the direct download uses, see [sync.md](sync.md)).
 2. Certificates: create an **Apple Distribution** certificate (it signs the app) and a **Mac Installer Distribution** certificate (it signs the package; Keychain Access shows it as "3rd Party Mac Developer Installer").
    Install both in the login keychain with their private keys.
 3. Profiles: create a **Mac App Store Connect** distribution profile for `dev.tabbi.Tabbi` with the Apple Distribution certificate, download it, and save it as `packaging/Tabbi-AppStore.provisionprofile`.
+   Create it after turning on Sign in with Apple, or download it again afterwards: the script refuses a profile that does not grant the capability.
 4. App Store Connect: create the app (platform macOS, bundle id `dev.tabbi.Tabbi`, SKU `tabbi-mac`), and an API key under Users and Access > Integrations for `altool`.
 
-When sync ships in this build, add `com.apple.developer.applesignin` (an array with `Default`) to `packaging/Tabbi-AppStore.entitlements` and download the profile again after turning on the capability.
+`packaging/Tabbi-AppStore.entitlements` claims `com.apple.developer.applesignin`.
+The script signs with it for the App Store and leaves it out of `--adhoc` builds, since macOS does not launch an app that claims it without a matching profile; there the Account row in Settings > General says that sign-in is not available in this build.
 
 ## Sandbox check
 
@@ -67,6 +69,8 @@ Run this after changing entitlements, the edition or anything that touches files
 3. In a second Terminal, watch for denials: `/usr/bin/log stream --predicate 'sender == "Sandbox" AND eventMessage CONTAINS "Tabbi"'` (in zsh, plain `log` is a builtin).
 4. Open the notch, visit every tab, start and stop a focus session, open Music or Spotify, and open Settings.
 5. Data lands in `~/Library/Containers/dev.tabbi.Tabbi/Data/Library/Application Support/Tabbi`.
+
+Sign in with Apple needs the signed build: install the package from a TestFlight build to try it sandboxed.
 
 The last check (October 2026) found no sandbox denials and no process launches.
 Clicking the notch opened the panel and moving the pointer away closed it (global mouse monitors work), the hotkey uses `RegisterEventHotKey` (no permission needed), Today read the calendar through EventKit, and Now Playing reached Music through the Apple Events exception (macOS then asks for Automation permission, as it does for the direct download).
@@ -80,19 +84,27 @@ Clicking the notch opened the panel and moving the pointer away closed it (globa
 - Marketing URL: https://tabbinotch.com
 - Copyright: the maintainer's name and the year
 - Age rating: 4+ (no user-generated content while Party is out)
+- Sign-in information: not required (signing in is optional and only syncs the pet)
 - Pricing: free
 - Export compliance: the build sets `ITSAppUsesNonExemptEncryption` to `NO` (it only uses HTTPS through the system)
 
 ### Privacy nutrition label (draft)
 
-With Party and sync left out, the App Store edition collects no data, so the answer is **Data Not Collected**.
+Without an account, nothing leaves the Mac.
+The optional Sign in with Apple account stores a little on the Tabbi server ([backend/PRIVACY.md](../backend/PRIVACY.md) lists all of it), so the label declares:
 
-- Calendar events, tasks, focus history, study tallies and the pet's save stay on the Mac in the app's container.
+- Identifiers > User ID: Apple's app-specific user id, linked to the user, used for App Functionality.
+- User Content > Other User Content: the synced pet (look, name, outfit), its points and unlocks, the days the user studied and the longest streak, linked to the user, used for App Functionality.
+- Nothing is used for tracking, and no other data type is collected (the server never stores the name or email from Apple).
+
+What the label does not need to list:
+
+- Calendar events, tasks, focus history and study tallies stay on the Mac in the app's container.
 - Album artwork is loaded from the music service's image host (`i.scdn.co`) without any identifier of the user.
 - AnkiConnect is reached on `localhost` only.
 - There is no analytics, advertising or crash reporting.
 
-When sync ships in this build, revisit the label: an email address or Apple user id (Contact Info, Identifiers) linked to the user for App Functionality, and the synced pet and progress (Other User Content) linked to the user for App Functionality, none used for tracking.
+When Party comes back, add its display name and study presence (Name or Other User Content, and Product Interaction) to the label.
 
 ### Notes for the reviewer (draft)
 
@@ -104,7 +116,9 @@ When sync ships in this build, revisit the label: an email address or Apple user
 > Settings open from the gear button at the right of the panel's header.
 > Calendar access is optional and only used to show today's events in the Today tab.
 > Automation access to Music or Spotify is optional and only used to show and control what is playing.
-> No account or sign-in is needed, and the app sends no data anywhere.
+> No account is needed.
+> Signing in with Apple (Settings > General > Account) is optional and only syncs the pet and study streaks between the user's Macs.
+> Delete Account in the same place deletes everything the server holds and revokes the Sign in with Apple grant.
 
 ### Listing copy (draft)
 
@@ -130,7 +144,8 @@ Description:
 > Kits set Tabbi up for you in one step: Essentials for everyday work and Med School for long study days.
 > Pick only the tabs you want, in the order you want.
 >
-> Private by design: everything stays on your Mac, and there is no account, no tracking and no ads.
+> Private by design: no tracking, no ads, and no account needed.
+> Sign in with Apple if you want your pet and streaks on all your Macs; everything else stays on your Mac.
 > Macs without a notch get a small virtual one at the top of the screen.
 
 ### Screenshots

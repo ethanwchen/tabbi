@@ -117,6 +117,9 @@ preflight() {
         elif [[ -n "$expires" && "$expires" < "$(date -u +%Y-%m-%dT%H:%M:%SZ)" ]]; then
             profile_ok=false
             profile_problem="$profile expired on $expires"
+        elif [[ -z "$(profile_value Entitlements.com\\.apple\\.developer\\.applesignin)" ]]; then
+            profile_ok=false
+            profile_problem="$profile does not grant Sign in with Apple"
         fi
     fi
     $identity_ok && $installer_ok && $profile_ok && return 0
@@ -142,9 +145,10 @@ installer certificate. This needs three one-time setup steps (docs/appstore.md):
 
   3. Mac App Store provisioning profile ($(mark $profile_ok))
      ${profile_problem:+Problem: $profile_problem
-     }At https://developer.apple.com/account/resources/profiles create a
-     Mac App Store Connect profile for the App ID $bundle_id with your Apple
-     Distribution certificate, download it and save it as
+     }Turn on Sign in with Apple for the App ID $bundle_id (Identifiers),
+     then at https://developer.apple.com/account/resources/profiles create a
+     Mac App Store Connect profile for it with your Apple Distribution
+     certificate, download it and save it as
        $profile
      (the file is gitignored) or point APPSTORE_PROFILE at it.
 
@@ -201,9 +205,13 @@ strip -x "$executable"
 
 # The signing entitlements: the sandbox file plus, for the App Store, the
 # application and team identifiers, which must match the embedded profile.
+# Without a profile macOS refuses to launch an app that claims Sign in with
+# Apple, so the ad-hoc build leaves it out (its Account row says so).
 signing_entitlements="$work/Tabbi.entitlements"
 cp "$entitlements" "$signing_entitlements"
-if ! $adhoc; then
+if $adhoc; then
+    plutil -remove com\\.apple\\.developer\\.applesignin "$signing_entitlements"
+else
     cp "$profile" "$app/Contents/embedded.provisionprofile"
     for key in com.apple.application-identifier com.apple.developer.team-identifier; do
         value=$(profile_value "Entitlements.${key//./\\.}")

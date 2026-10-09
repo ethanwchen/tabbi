@@ -10,11 +10,11 @@ enum WalkArt {
     /// the head; stripes run over the back and the rump stays round. Zones `a` and `b` are
     /// the calico's orange and black patches.
     static let catTorso = SpriteGrid(art: """
-        ...BBBBBBBBBBBsbbsBB..
-        ..BBBBBBBBBBBBBsbbsBB.
-        .BBBBBBBBBBBBaaBBBBsBB
-        .BBBBBBBBBBBaaaaBBBBBB
-        .cBBBBBBBBBBBaaBBBBBBB
+        ...BBBBBBbbbBBsbbsBB..
+        ..BBBBBBbbbbbBBsbbsbB.
+        .BBBBBBBBbbBaaaBbbbsbB
+        .BBBBBBBBBBaaaaaBbbbbB
+        .cBBBBBBBBBBaaaaBBbbBB
         .cccBBBBBBBBBBBBBBBBBS
         ..ccSSSSSSSSSSSSSSSSS.
         """)

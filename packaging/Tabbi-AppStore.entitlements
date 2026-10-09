@@ -11,12 +11,12 @@
     distracting apps read files the user picks in an open panel.
   - temporary-exception.apple-events: Now Playing scripts Spotify and Music,
     which a sandboxed app may only send Apple Events to when listed here.
+  - applesignin: the optional account that syncs the pet across Macs
+    (docs/sync.md). The App Store profile must grant it.
   release-appstore.sh adds the application and team identifiers from the
   provisioning profile when it signs for the App Store; an ad-hoc build
-  (its adhoc option) leaves them out, since macOS refuses to launch
-  an app that claims them without a matching profile.
-  A build with Sign in with Apple also needs com.apple.developer.applesignin
-  (an array with "Default") and a profile that has the capability.
+  (its adhoc option) leaves them and applesignin out, since macOS refuses
+  to launch an app that claims them without a matching profile.
 -->
 <plist version="1.0">
 <dict>
@@ -32,6 +32,10 @@
     <array>
         <string>com.spotify.client</string>
         <string>com.apple.Music</string>
+    </array>
+    <key>com.apple.developer.applesignin</key>
+    <array>
+        <string>Default</string>
     </array>
 </dict>
 </plist>

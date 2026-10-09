@@ -15,7 +15,7 @@ Deployment, architecture and the free-tier math are in [`backend/README.md`](../
   Add `TABBI_PARTY_TOKEN` and `TABBI_PARTY_CODE` from a `POST /v1/register` reply to render as that user, with the friends and party you set up for it with `curl`.
   Only plain-http (local) servers are accepted there, so a snapshot never registers users on a deployed server.
 - Every route is under `/v1/` except the health check `GET /`.
-- Bodies are JSON objects (`Content-Type: application/json`), at most 4096 bytes.
+- Bodies are JSON objects (`Content-Type: application/json`), at most 4096 bytes (`PUT /v1/sync`: 65536 bytes).
   An empty body counts as `{}`.
   Any field not listed for a route is rejected with `unknown_field`, so never send extra keys.
 - Times are unix seconds (integers).
@@ -26,12 +26,15 @@ Deployment, architecture and the free-tier math are in [`backend/README.md`](../
 
 ### Identity and auth
 
-There are no accounts.
+There are no passwords, and an account is optional.
 `POST /v1/register` returns a secret `token` (64 hex characters) and a public 8-character friend `code`.
 Store the token in the Keychain; the server keeps only its SHA-256, so a lost token cannot be recovered.
 Send it on every other call as `Authorization: Bearer <token>`.
 The friend code is what users share; it uses `A-Z` and `2-9` without `I`, `O`, `0` and `1`.
 Codes are accepted in any case and with surrounding spaces, and the server returns them upper case.
+
+Signing in with Apple (`POST /v1/auth/apple`) is optional and only adds sync: it links the friend code to Apple's user id, so the same friend code, friends and sync document follow the user to every Mac they sign in on.
+Each Mac then has its own token for the same friend code.
 
 ### Shared catalog
 
@@ -138,6 +141,8 @@ Auth column: "token" means `Authorization: Bearer <token>` is required.
 | `GET /` | none | health check |
 | `GET /v1/catalog` | none | the shared catalog |
 | `POST /v1/register` | none or token | create a user, or update the profile of an existing one |
+| `POST /v1/auth/apple` | none or token | sign in with Apple: link or adopt the account's friend code |
+| `POST /v1/auth/signout` | token, Apple account | sign this Mac out: its token stops working |
 | `GET /v1/me` | token | my profile |
 | `PATCH /v1/me` | token | update my profile |
 | `DELETE /v1/me` | token | delete me and everything about me |
@@ -152,6 +157,8 @@ Auth column: "token" means `Authorization: Bearer <token>` is required.
 | `POST /v1/party/leave` | token | leave my party |
 | `POST /v1/party/session` | token, host | start or replace the shared session |
 | `DELETE /v1/party/session` | token, host | end the shared session |
+| `GET /v1/sync` | token, Apple account | my sync document and its revision |
+| `PUT /v1/sync` | token, Apple account | replace my sync document if I merged into the current revision |
 
 ### `GET /`
 
@@ -189,9 +196,40 @@ Errors: `invalid_json`, `unknown_field`, `invalid_field`, `body_too_large`.
 
 ### `DELETE /v1/me`
 
-Deletes the user, their friendships in both directions, presence, daily study minutes, and leaves their party.
+Deletes the user, their friendships in both directions, presence, daily study minutes, their sync document and Apple account link, and leaves their party.
 `200 {"ok": true}`.
-Afterwards the token is `unauthorized`; the app should drop it and its friend code.
+For a Sign in with Apple account it then revokes the account's Apple refresh token: `200 {"ok": true, "appleRevoked": true}`, or `false` when there was no refresh token, the Apple secrets are unset or Apple refused (the data is deleted either way).
+Afterwards the token, and every other Mac's token for the same friend code, is `unauthorized`; the app should drop it and its friend code.
+
+### `POST /v1/auth/apple`
+
+Body: `{"identityToken": "<JWT>", "authorizationCode": "<code>"}` from `ASAuthorizationAppleIDCredential` (the code is optional).
+Send the Mac's current friends token as Bearer if it has one; omit the header otherwise.
+The server checks the identity token's RS256 signature against Apple's keys (`https://appleid.apple.com/auth/keys`, cached), its issuer (`https://appleid.apple.com`), audience (`dev.tabbi.Tabbi`) and expiry, and reads only `sub` (never the email).
+
+`200 {"ok": true, "token": "<64 hex>", "code": "K7QW2MZD", "profile": Profile, "newAccount": true}`.
+Store `token` and `code` in place of the old ones.
+
+- A new Apple ID with a Bearer token links that user: `token` and `code` are the caller's own, so friends keep the same code.
+- A new Apple ID without one (or whose caller is already linked to another Apple ID) gets a new user.
+  A Bearer token that no longer resolves (its user was deleted) counts as no token.
+- An Apple ID that already has an account returns its friend code with a new token for this Mac (`newAccount: false`).
+  If the caller had an anonymous user, its friends (up to the friend limit) and study minutes move to the account and the anonymous user is deleted, so the app must switch to the returned token.
+  A caller that already is the account gets its own token back.
+
+The authorization code is exchanged for an Apple refresh token, which is kept only to revoke it on `DELETE /v1/me`.
+That needs the Worker secrets `APPLE_TEAM_ID`, `APPLE_KEY_ID` and `APPLE_PRIVATE_KEY`; without them, or when Apple refuses the code, the exchange is skipped, logged, and sign-in still succeeds.
+Sign-ins are limited to 10 per minute per IP.
+
+Errors: `invalid_identity_token` (401, the token is malformed, expired, not Apple's or not for Tabbi; ask the user to sign in again), `apple_unavailable` (503, Apple's keys could not be fetched; the server asks Apple again at most once a minute, so retry after a minute), `invalid_json`, `unknown_field`, `invalid_field`, `rate_limited`.
+
+### `POST /v1/auth/signout`
+
+No body.
+The caller's token stops working (`unauthorized` from then on); the account, its sync document and every other Mac's token stay.
+`200 {"ok": true}`.
+The app sends it when the user signs out, then drops the token and its friend code; signing in again on that Mac adopts the account with a new token.
+Errors: `no_account` (403, an anonymous user would lose its only token), `unauthorized`, `rate_limited`.
 
 ### `GET /v1/friends`
 
@@ -334,6 +372,25 @@ Host only.
 Ends the shared session: `200 {"ok": true, "party": Party}` with `session: null`.
 Errors: `not_in_party` (404), `not_host` (403).
 
+### `GET /v1/sync`
+
+Only for users linked to a Sign in with Apple account; others get `403 no_account`.
+`200 {"ok": true, "revision": 3, "updatedAt": 1791504000, "document": SyncDocument}` with `ETag: "3"`.
+Before the first write it is `revision: 0`, `updatedAt: null` and `document: null`.
+
+The document is the app's `SyncDocument` (`Sources/TabbiKitCore/Sync`): a JSON object with an integer `schemaVersion`, the pet's look, points per Mac, unlock ids, study days and the longest streak.
+The server stores it as sent and never merges or reads its fields, so the app can extend the format without a server deploy.
+
+### `PUT /v1/sync`
+
+Header `If-Match: <revision>` (a bare number or the quoted `ETag`), the revision the app merged its local progress into (0 when `GET` had no document).
+Body: `{"document": SyncDocument}`, at most 65536 bytes; `document` must be an object with a positive integer `schemaVersion`.
+If the revision is current it replaces the document: `200 {"ok": true, "revision": 4, "updatedAt": 1791504060}` with `ETag: "4"`.
+Otherwise nothing is written and the reply is `409 revision_conflict` with the current revision in `ETag`: pull with `GET`, merge (the merge never loses progress), and retry with the new revision.
+Writes are limited to 20 per minute per user.
+
+Errors: `no_account` (403), `revision_required` (428, no `If-Match`), `invalid_revision` (400), `revision_conflict` (409), `invalid_json`, `unknown_field`, `invalid_field`, `body_too_large`, `rate_limited`.
+
 ## Errors common to all routes
 
 | HTTP | `error` | Meaning and what to do |
@@ -359,7 +416,11 @@ Keep to these intervals, and stop every timer whose data is not on screen.
 | `GET /v1/friends` | when the friends panel opens, then every 60 s while it stays open |
 | `GET /v1/party` | every 30 s while I am in a party and the party view is visible; once when the notch opens otherwise |
 | `GET /v1/leaderboard` | once each time its view opens; no timer |
+| `POST /v1/auth/apple` | once, when the user taps Sign in with Apple; never on a timer |
+| `POST /v1/auth/signout` | once, when the user taps Sign Out |
 | `GET /v1/me`, `PATCH /v1/me` | on launch and after the user edits their pet; not on a timer |
+| `GET /v1/sync` | on launch and on wake, and after a `409`; not on a timer |
+| `PUT /v1/sync` | after local progress changes, debounced (for example 30 s), and once on quit |
 
 A heartbeat whose status, method, phase and streak are unchanged is cheap but still a request, so do not send heartbeats for counters alone between scheduled ones.
 Countdowns (`phaseEndsAt`, party `session.phaseEndsAt`) run locally on the client.
