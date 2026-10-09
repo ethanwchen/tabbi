@@ -23,15 +23,22 @@ final class ModuleListTests: XCTestCase {
     func testKeepsTheShippedTabOrder() {
         // Modules a kit doesn't list are appended in this order, so it is
         // user-visible in Settings. New modules go at the end.
+        #if APPSTORE
+        XCTAssertEqual(ModuleList.catalog.ids, [.spotify, .system, .planner,
+                                                .focus, .study, .anki, .party, .closet, .schedule])
+        #else
         XCTAssertEqual(ModuleList.catalog.ids, [.spotify, .system, .claudeUsage, .planner, .claudeAsk,
                                                 .focus, .study, .anki, .party, .closet, .schedule])
+        #endif
     }
 
+    #if !APPSTORE
     func testClaudeModulesDeclareTheCLIRequirement() {
         XCTAssertTrue(AskClaudeModule.descriptor.permissions.contains(.claudeCLI))
         XCTAssertTrue(ClaudeUsageModule.descriptor.permissions.contains(.claudeCLI))
         XCTAssertEqual(SystemModule.descriptor.permissions, [])
     }
+    #endif
 
     func testModulesThatUseTheNetworkDeclareTheirHosts() {
         let declared = Dictionary(uniqueKeysWithValues: ModuleList.catalog.descriptors.map {
@@ -58,7 +65,7 @@ final class ModuleListTests: XCTestCase {
         XCTAssertEqual(steps[.planner], [.calendar])
         XCTAssertEqual(steps[.study], [.studyMethod])
         XCTAssertEqual(steps[.party], [.party])
-        for id in [ModuleID.spotify, .system, .claudeUsage, .claudeAsk, .focus] {
+        for id in [ModuleID.spotify, .system, .claudeUsage, .claudeAsk, .focus].inThisBuild {
             XCTAssertEqual(steps[id], [], "\(id)")
         }
     }
@@ -77,10 +84,10 @@ final class ModuleListTests: XCTestCase {
     /// and the Closet takes no tab: Essentials keeps four tabs, Med School five.
     func testBundledKitsShowThePawBesideTheirTabs() throws {
         let essentials = try XCTUnwrap(KitLibrary.bundled.kit("essentials")).layout(catalog: ModuleList.catalog)
-        XCTAssertEqual(essentials.tabs, [.study, .planner, .spotify, .claudeAsk])
+        XCTAssertEqual(essentials.tabs, [.study, .planner, .spotify, .claudeAsk].inThisBuild)
         XCTAssertEqual(essentials.headerShortcuts, [.closet])
         let medicine = try XCTUnwrap(KitLibrary.bundled.kit("medicine")).layout(catalog: ModuleList.catalog)
-        XCTAssertEqual(medicine.tabs, [.study, .planner, .anki, .spotify, .claudeAsk])
+        XCTAssertEqual(medicine.tabs, [.study, .planner, .anki, .spotify, .claudeAsk].inThisBuild)
         XCTAssertEqual(medicine.headerShortcuts, [.closet])
     }
 
@@ -108,4 +115,11 @@ final class ModuleListTests: XCTestCase {
             }
         }
     }
+}
+
+extension Array where Element == ModuleID {
+    /// These ids without the modules this build leaves out, so a test reads
+    /// the same in the direct build and the App Store build (`APPSTORE`),
+    /// which has no Claude modules.
+    var inThisBuild: [ModuleID] { filter(ModuleList.catalog.contains) }
 }

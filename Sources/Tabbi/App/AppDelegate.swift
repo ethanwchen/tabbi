@@ -8,25 +8,33 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var notch: NotchController?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // The App Store installs, moves and updates the app itself, so its
+        // build has no install hygiene and no updater (see Package.swift).
+        #if !APPSTORE
         if InstallHygiene.isAnotherCopyRunning() {
             NSApp.terminate(nil)
             return
         }
+        #endif
         let edition = Edition.current
         if edition == .tabbi, RunMode.current == .live {
             // Before any store opens a file: adopts NotchDeck's data once.
             LegacyDataMigration.tabbi(storage: EditionStorage(edition: edition)).runIfNeeded()
         }
         let settings = SettingsStore(catalog: ModuleList.catalog(for: edition), defaultKitID: edition.defaultKitID, kitStore: .standard(for: edition))
+        #if !APPSTORE
         guard InstallHygiene.settle(settings: settings) == .proceed else {
             NSApp.terminate(nil)
             return
         }
         AppUpdater.shared.start()
+        #endif
         MainMenu.install()
         let services = AppServices(settings: settings)
         self.services = services
+        #if !APPSTORE
         InstallHygiene.whenAnotherCopyLaunches { [weak services] in services?.openSettings() }
+        #endif
         notch = NotchController(content: ModuleViews.notchContent(services: services),
                                 inputs: ModuleViews.notchInputs(services: services))
         // First run: the notch opens on setup and stays open until it ends.

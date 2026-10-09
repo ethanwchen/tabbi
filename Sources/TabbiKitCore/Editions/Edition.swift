@@ -118,9 +118,10 @@ public struct Edition: Sendable, Hashable, Identifiable, Decodable {
 
     /// The edition a running app belongs to, from its Info.plist. Builds
     /// without the key (or with an unknown id), such as `swift run`, are
-    /// the default edition, so development runs as Tabbi.
-    public static func resolve(infoDictionary: [String: Any]?) -> Edition {
-        (infoDictionary?[infoKey] as? String).flatMap(named) ?? .tabbi
+    /// `fallback`, by default Tabbi, so development runs as Tabbi. The App
+    /// Store build passes the App Store edition.
+    public static func resolve(infoDictionary: [String: Any]?, fallback: Edition = .tabbi) -> Edition {
+        (infoDictionary?[infoKey] as? String).flatMap(named) ?? fallback
     }
 
     /// Reads and checks one edition file.

@@ -72,6 +72,12 @@ final class EditionTests: XCTestCase {
         XCTAssertEqual(Edition.resolve(infoDictionary: [Edition.infoKey: "appstore"]), appStore)
     }
 
+    func testAnAppStoreBuildWithoutAnEditionKeyRunsAsTheAppStoreEdition() throws {
+        let appStore = try XCTUnwrap(Edition.named("appstore"))
+        XCTAssertEqual(Edition.resolve(infoDictionary: nil, fallback: appStore), appStore)
+        XCTAssertEqual(Edition.resolve(infoDictionary: [Edition.infoKey: "tabbi"], fallback: appStore), .tabbi)
+    }
+
     func testExcludedModulesAndDistributionAreRead() throws {
         let custom = try decode(edition(#", "distribution": "appStore", "excludedModules": ["anki"]"#))
         XCTAssertEqual(custom.distribution, .appStore)

@@ -21,14 +21,14 @@ final class ModuleLibraryWiringTests: XCTestCase {
 
     func testAFreshInstallRunsOnlyTheFourEssentialsTabsAndThePet() {
         XCTAssertEqual(services.settings.settings.kitID, "essentials")
-        XCTAssertEqual(services.settings.settings.modules.tabs, [.study, .planner, .spotify, .claudeAsk])
-        XCTAssertEqual(Set(services.modules.running), [.study, .planner, .spotify, .claudeAsk, .closet])
+        XCTAssertEqual(services.settings.settings.modules.tabs, [.study, .planner, .spotify, .claudeAsk].inThisBuild)
+        XCTAssertEqual(Set(services.modules.running), Set([.study, .planner, .spotify, .claudeAsk, .closet].inThisBuild))
     }
 
     func testAddingFromTheLibraryStartsTheModuleAsTheLastTab() {
         XCTAssertTrue(services.settings.settings.modules.available.contains(.system))
         services.settings.settings.modules.add(.system)
-        XCTAssertEqual(services.settings.settings.modules.tabs, [.study, .planner, .spotify, .claudeAsk, .system])
+        XCTAssertEqual(services.settings.settings.modules.tabs, [.study, .planner, .spotify, .claudeAsk, .system].inThisBuild)
         XCTAssertTrue(services.modules.running.contains(.system))
         XCTAssertFalse(services.settings.settings.modules.available.contains(.system))
     }
@@ -36,15 +36,17 @@ final class ModuleLibraryWiringTests: XCTestCase {
     func testRemovingATabStopsItAndReturnsItToTheLibrary() {
         services.settings.settings.modules.add(.system)
         services.settings.settings.modules.remove(.spotify)
-        XCTAssertEqual(services.settings.settings.modules.tabs, [.study, .planner, .claudeAsk, .system])
+        XCTAssertEqual(services.settings.settings.modules.tabs, [.study, .planner, .claudeAsk, .system].inThisBuild)
         XCTAssertFalse(services.modules.running.contains(.spotify))
         XCTAssertTrue(services.settings.settings.modules.available.contains(.spotify))
     }
 
-    func testTheLastTabCannotBeRemoved() {
-        for id in [ModuleID.study, .planner, .spotify, .closet] { services.settings.settings.modules.remove(id) }
-        XCTAssertFalse(services.settings.settings.modules.remove(.claudeAsk))
-        XCTAssertEqual(services.settings.settings.modules.enabled, [.claudeAsk])
-        XCTAssertEqual(services.modules.running, [.claudeAsk])
+    func testTheLastTabCannotBeRemoved() throws {
+        let enabled = services.settings.settings.modules.enabled
+        let last = try XCTUnwrap(enabled.last)
+        for id in enabled.dropLast() { XCTAssertTrue(services.settings.settings.modules.remove(id), "\(id)") }
+        XCTAssertFalse(services.settings.settings.modules.remove(last))
+        XCTAssertEqual(services.settings.settings.modules.enabled, [last])
+        XCTAssertEqual(services.modules.running, [last])
     }
 }
