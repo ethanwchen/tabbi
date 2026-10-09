@@ -55,6 +55,9 @@ The home page shows four tabs; their screenshots are the app's own snapshot rend
 `glyph.png` is `docs/brand/assets/tabbi-glyph-256.png`, used as the header mark and on the 404 page.
 `social-preview.png` is copied unchanged for Open Graph and Twitter cards.
 `notch-timer.webp`, the panel in the hero laptop, is `timer.webp` cropped to the open notch with the wallpaper made transparent, resized to 880 px wide.
+`pixel-cat.png` is the app's gray tabby (`PetBreed.grayTabby`) at 1x: the `sit` and `blink` frames from `PetComposer.clip`, rendered by `PetRenderer`, cropped to 22x26 px and placed side by side.
+The stylesheet draws it at 2x or 3x with `image-rendering: pixelated`, peeking out from behind the hero laptop, and blinks it every five seconds unless the visitor prefers reduced motion.
+To export it again, a throwaway test in `Tests/TabbiKitCoreTests` can write those frames to PNG with `CGImageDestination`.
 `grain.png` is a 160 px grayscale noise tile, drawn with Pillow, for the paper grain over the page.
 When the app's screenshots change, copy and convert them again, for example:
 

@@ -67,7 +67,9 @@ HOME_HERO = {
     'eyebrow': '<img class="hero-icon" src="/img/icon-512.webp" width="512" height="512" alt="The Tabbi app icon: a cream British Shorthair cat with blue eyes on a golden yellow square">',
     # A drawn laptop with the real Timer panel hanging from its notch.
     # notch-timer.webp is timer.webp cropped to the panel (see README).
+    # pixel-cat.png is the app's gray tabby sprite, sitting and blinking.
     'art': '''<div class="laptop">
+        <span class="pixel-cat" aria-hidden="true"></span>
         <div class="laptop-screen">
           <img class="laptop-panel" src="/img/notch-timer.webp" width="880" height="376" alt="Tabbi open in a laptop notch on its Timer tab: a Pomodoro ring at 15:14 with focus sounds">
         </div>
