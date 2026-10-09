@@ -219,15 +219,22 @@ struct DisplayOption: Identifiable, Equatable {
 }
 
 /// Explanatory text under a grouped section, aligned with the section's rows.
+/// A grouped `Form` trails its footers, so a wrapped footer would otherwise
+/// set its later lines flush right; this keeps every line leading, inset to
+/// line up with the section's header and its rows' text.
 struct SectionFooter: View {
-    let text: String
-    init(_ text: String) { self.text = text }
+    let text: AttributedString
+    init(_ text: String) { self.text = AttributedString(text) }
+    init(_ text: AttributedString) { self.text = text }
 
     var body: some View {
         Text(text)
             .font(.callout)
             .foregroundStyle(.secondary)
+            .multilineTextAlignment(.leading)
             .frame(maxWidth: .infinity, alignment: .leading)
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.horizontal, 10)
     }
 }
 

@@ -79,7 +79,7 @@ struct PartySettingsPane: View {
         } header: {
             Text("Profile")
         } footer: {
-            Footer("Friends see this name and the pet you dress in the Closet. Share your code so they can add you.")
+            SectionFooter("Friends see this name and the pet you dress in the Closet. Share your code so they can add you.")
         }
     }
 
@@ -112,7 +112,7 @@ struct PartySettingsPane: View {
         } header: {
             Text("Privacy")
         } footer: {
-            Footer("Only your name, pet, study status and minutes are shared. Nothing about your cards, decks or what you study ever leaves your Mac.")
+            SectionFooter("Only your name, pet, study status and minutes are shared. Nothing about your cards, decks or what you study ever leaves your Mac.")
         }
     }
 
@@ -161,7 +161,7 @@ struct PartySettingsPane: View {
         } header: {
             Text("Friends server")
         } footer: {
-            Footer("Friends only see each other on the same server. Change it only to run your own.")
+            SectionFooter("Friends only see each other on the same server. Change it only to run your own.")
         }
     }
 
@@ -218,19 +218,5 @@ struct PartySettingsPane: View {
         settings.serverText = server.trimmingCharacters(in: .whitespacesAndNewlines)
         store.update(settings)
         server = settings.serverText
-    }
-}
-
-/// Explanatory text under a grouped section, aligned with the section's rows.
-private struct Footer: View {
-    let text: String
-    init(_ text: String) { self.text = text }
-
-    var body: some View {
-        Text(text)
-            .font(.callout)
-            .foregroundStyle(.secondary)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .fixedSize(horizontal: false, vertical: true)
     }
 }

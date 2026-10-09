@@ -101,7 +101,7 @@ struct FocusSettingsPane: View {
                 .help(previewHelp)
             }
         } footer: {
-            Footer("Blend up to three, or pick none for silence. Made on your Mac; fades in with focus and out at your break.")
+            SectionFooter("Blend up to three, or pick none for silence. Made on your Mac; fades in with focus and out at your break.")
         }
     }
 
@@ -179,7 +179,7 @@ struct FocusSettingsPane: View {
         } header: {
             Text("Music")
         } footer: {
-            Footer("Starts with focus unless music is already playing, and pauses at your break.")
+            SectionFooter("Starts with focus unless music is already playing, and pauses at your break.")
         }
     }
 
@@ -225,7 +225,7 @@ struct FocusSettingsPane: View {
         } header: {
             Text("Do Not Disturb")
         } footer: {
-            Footer(guide)
+            SectionFooter(guide)
         }
     }
 
@@ -342,20 +342,5 @@ private struct SoundChip: View {
         if isOn { return "Remove \(sound.displayName.lowercased()) from the blend" }
         if !isEnabled { return "Blend up to \(FocusMix.maxLayers) sounds; remove one first" }
         return "Add \(sound.displayName.lowercased())"
-    }
-}
-
-/// Explanatory text under a section, matching the other panes' footers.
-private struct Footer: View {
-    let text: AttributedString
-    init(_ text: String) { self.text = AttributedString(text) }
-    init(_ text: AttributedString) { self.text = text }
-
-    var body: some View {
-        Text(text)
-            .font(.callout)
-            .foregroundStyle(.secondary)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .fixedSize(horizontal: false, vertical: true)
     }
 }
