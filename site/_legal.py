@@ -17,7 +17,7 @@ MAIL = f'<a href="mailto:{SUPPORT_EMAIL}">{SUPPORT_EMAIL}</a>'
 # Privacy
 # --------------------------------------------------------------------------
 
-PRIVACY_HERO = ('Privacy Policy', 'What stays on your Mac, what the optional friends service and account keep, and how to delete them.')
+PRIVACY_HERO = ('Privacy Policy', 'What stays on your Mac, what leaves it, and how to delete it.')
 
 PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
 
@@ -134,7 +134,6 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
       <h2>6. This website</h2>
       <p class="measure">tabbinotch.com has no cookies, no analytics and no scripts.
         It is hosted on Cloudflare Pages, which processes the requests your browser makes, including your IP address, to serve and protect the site.
-        Its fonts load from Google Fonts, so Google receives your IP address and browser details when you visit.
         If you email us, we use your message and address only to reply, and delete the thread when it is no longer needed.</p>
 
       <h2>7. Why we are allowed to</h2>
@@ -142,7 +141,7 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
         We answer email on the basis of our legitimate interest in helping you.</p>
 
       <h2>8. Who else is involved</h2>
-      <p class="measure">We use Cloudflare to host the friends service and this website, and Google Fonts for the website's typeface.
+      <p class="measure">We use Cloudflare to host the friends service and this website.
         If you sign in with Apple, Apple checks the sign-in and, when you delete your account, revokes it.
         We do not sell, rent or share personal information with anyone else, and nothing is used for advertising or to train machine-learning models.
         We would disclose data only if the law required it, and the friends service holds very little to disclose.

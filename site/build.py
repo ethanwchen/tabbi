@@ -6,13 +6,15 @@
 
 import hashlib
 import http.server
+import json
 import pathlib
 import re
 import shutil
 import sys
+import zipfile
 from html.parser import HTMLParser
 
-from _partials import page, download_button, PAW, DOWNLOAD, GITHUB, ISSUES, SUPPORT_EMAIL
+from _partials import page, download_button, PAW, DOWNLOAD, GITHUB, ISSUES, ORIGIN, SUPPORT_EMAIL
 from _legal import PRIVACY, PRIVACY_HERO, TERMS, TERMS_HERO
 
 HERE = pathlib.Path(__file__).parent
@@ -45,27 +47,40 @@ def unobfuscate(html):
 # Home
 # --------------------------------------------------------------------------
 
-# (image, name, line, alt). The screenshots are the app's own snapshot
+# (image, label, name, line, alt). The screenshots are the app's own snapshot
 # renders from docs/images, so the site shows exactly what the app draws.
 TABS = [
-    ('timer', 'Timer', 'Pomodoro and quick timers, with focus sounds.',
+    ('timer', 'Timer', 'Timer', 'Pomodoro and quick timers, with focus sounds.',
      'The Timer tab: a Pomodoro ring at 15:14 with focus sounds and today\'s total'),
-    ('today', 'Today', 'Your to-dos and what is next on the calendar.',
+    ('today', 'Today', 'Today', 'Your to-dos and what is next on the calendar.',
      'The Today tab: a checklist on the left and upcoming meetings on the right'),
-    ('closet', 'Closet', 'Dress up your cat with the points you earn.',
+    ('closet', 'Closet', 'Closet', 'Dress up your cat with the points you earn.',
      'The Closet: a pixel cat with costumes and accessories to choose from'),
-    ('party', 'Party', 'Study with friends, pets side by side.',
+    ('party', 'Party', 'Party', 'Study with friends, pets side by side.',
      'The Party tab: friends\' pets sitting together with their study status'),
 ]
+
+# How wide a tab screenshot draws: one column under 600 px, two under 1000,
+# then four. The card crops the image to 1120 of its 1360 px, so each width
+# is scaled up by that 1.21 to ask for enough pixels.
+TAB_SIZES = '(max-width: 600px) calc(121vw - 60px), (max-width: 1000px) calc(60vw - 50px), 300px'
 
 HOME_HERO = {
     'home': True,
     'title': 'A little cat for your notch.',
-    'subtitle': 'Tabbi turns your MacBook notch into a cozy panel of tabs for focus, your day, music and study.',
+    'subtitle': 'A cozy panel of tabs in your laptop notch.',
     'cta': f'''<div class="cta">{download_button()}</div>
         <p class="cta-note">Free, macOS 14+</p>''',
-    'art': '''<div class="hero-art">
-        <img src="/img/icon-512.webp" width="512" height="512" alt="The Tabbi app icon: a cream British Shorthair cat with blue eyes on a golden yellow square">
+    'eyebrow': '<img class="hero-icon" src="/img/icon-256.webp" width="256" height="256" alt="The Tabbi app icon: a cream British Shorthair cat with blue eyes on a golden yellow square">',
+    # A drawn laptop with the real Timer panel hanging from its notch.
+    # notch-timer.webp is timer.webp cropped to the panel (see README).
+    # pixel-cat.png is the app's gray tabby sprite, sitting and blinking.
+    'art': '''<div class="laptop">
+        <span class="pixel-cat" aria-hidden="true"></span>
+        <div class="laptop-screen">
+          <img class="laptop-panel" src="/img/notch-timer.webp" width="880" height="376" alt="Tabbi open in a laptop notch on its Timer tab: a Pomodoro ring at 15:14 with focus sounds">
+        </div>
+        <div class="laptop-base"></div>
       </div>''',
 }
 
@@ -74,14 +89,63 @@ HOME = f'''
         <h2 id="tabs-title" class="tabs-title">{PAW}<span>Click the notch, pick a tab</span></h2>
         <div class="tab-row">
 ''' + '\n'.join(f'''          <figure class="tab-card">
-            <img src="/img/{img}.webp" width="1360" height="520" loading="lazy" decoding="async" alt="{alt}">
+            <span class="tab-label" aria-hidden="true">{label}</span>
+            <img src="/img/{img}.webp" srcset="/img/{img}-680.webp 680w, /img/{img}.webp 1360w" sizes="{TAB_SIZES}" width="1360" height="520" loading="lazy" decoding="async" alt="{alt}">
             <figcaption><strong>{name}</strong>{line}</figcaption>
-          </figure>''' for img, name, line, alt in TABS) + '''
+          </figure>''' for img, label, name, line, alt in TABS) + '''
         </div>
-        <p class="more">Also Now Playing, Ask Claude, Anki, Schedule, Claude Usage and System.
-          Open source on <a href="''' + GITHUB + '''">GitHub</a>.</p>
+        <p class="more">And more fun tabs inside.</p>
+        <div class="card-pair">
+          <a class="gh-card" href="''' + GITHUB + '''">
+            <img class="gh-cat" src="/img/glyph.png" width="56" height="56" alt="">
+            <svg class="gh-mark" viewBox="0 0 16 16" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            <span class="gh-text"><strong>Open source on GitHub</strong><span>Free forever. Come say hi or leave a star.</span></span>
+            <span class="gh-arrow" aria-hidden="true">&rarr;</span>
+          </a>
+          <a class="gh-card coffee-card" href="https://buymeacoffee.com/ethanpolar">
+            <svg class="coffee-mark" viewBox="0 0 32 32" width="30" height="30" aria-hidden="true">
+              <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path class="steam s1" d="M11 4c-1.2 1.4 1.2 2.6 0 4"/>
+                <path class="steam s2" d="M16 3c-1.2 1.4 1.2 2.6 0 4"/>
+                <path class="steam s3" d="M21 4c-1.2 1.4 1.2 2.6 0 4"/>
+                <path d="M6 12h19v7a7 7 0 0 1-7 7h-5a7 7 0 0 1-7-7z"/>
+                <path d="M25 14h1.5a3.5 3.5 0 0 1 0 7H25"/>
+              </g>
+            </svg>
+            <span class="gh-text"><strong>Buy me a coffee</strong><span>Tabbi is free. A coffee keeps it purring.</span></span>
+            <span class="gh-arrow" aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
       </section>
 '''
+
+
+# Structured data for search engines. A script of type application/ld+json
+# is a data block: browsers never run it, so the CSP's default-src 'none'
+# does not block it (the preview server sends the same CSP, so a violation
+# would show up in the console).
+SOFTWARE_APP = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    'name': 'Tabbi',
+    'description': 'A cozy panel of tabs in your laptop notch: a focus timer, your day, music, Claude, Anki and a pet cat.',
+    'url': ORIGIN + '/',
+    'image': ORIGIN + '/img/icon-256.webp',
+    'screenshot': ORIGIN + '/img/social-preview.png',
+    'applicationCategory': 'ProductivityApplication',
+    'operatingSystem': 'macOS 14 or later',
+    'downloadUrl': DOWNLOAD,
+    'softwareHelp': ORIGIN + '/support',
+    'isAccessibleForFree': True,
+    'offers': {'@type': 'Offer', 'price': '0', 'priceCurrency': 'USD'},
+    'author': {'@type': 'Person', 'name': 'Ethan', 'url': ORIGIN + '/about'},
+}
+
+
+def json_ld(data):
+    # "<" is escaped so no string in the data can close the script element.
+    text = json.dumps(data, indent=2).replace('<', '\\u003c')
+    return '\n  <script type="application/ld+json">\n' + text + '\n  </script>'
 
 
 # --------------------------------------------------------------------------
@@ -118,7 +182,7 @@ SUPPORT = f'''
             The first time, a short welcome inside the notch helps you pick your tabs.</p>
           <p>With Homebrew you can run <code>brew install --cask ethanwchen/tap/tabbi</code> instead.</p>""", 'install')}
 
-{faq('macOS says it cannot verify Tabbi, or will not open it', """          <p>Releases downloaded from GitHub are signed by the developer and notarized by Apple, so they open normally.
+{faq('What if macOS will not open Tabbi?', """          <p>Releases downloaded from GitHub are signed by the developer and notarized by Apple, so they open normally.
             The warning appears only for a copy built without a Developer ID, such as a test build.
             To open one anyway:</p>
           <ol>
@@ -146,16 +210,16 @@ SUPPORT = f'''
           <p><strong>Reporting</strong> sends us their current name and pet, a reason and an optional note, and offers to block them too. We review every report and can rename or ban an account. A banned account cannot change its name or join parties, and no one else sees it.</p>
           <p>For anything else, email <a href="mailto:{SUPPORT_EMAIL}">{SUPPORT_EMAIL}</a>.</p>""", 'party-safety')}
 
-{faq('Do I need an account? How do I sync my pet across Macs?', """          <p>No. Everything in Tabbi works without an account.
-            If you use Tabbi on more than one Mac, you can choose <strong>Sign in with Apple</strong> in <strong>Settings &gt; General</strong> on each of them.
-            Your pet, points, unlocked items and streaks then sync between them, and your Party friend code and friends follow you.</p>
-          <p>Tabbi asks Apple only for your name, which stays on your Mac, never your email.
+{faq('Do I need an account?', """          <p>No. Everything in Tabbi works without one.
+            To sync your pet across Macs, choose <strong>Sign in with Apple</strong> in <strong>Settings &gt; General</strong> on each of them.
+            Your pet, points, unlocked items and streaks then sync, and your Party friend code and friends follow you.</p>
+          <p>Tabbi asks Apple only for your name, which stays on your Mac. It never gets your email.
             Your calendar, tasks, activity history, Claude chats and settings are never synced.
-            Signing in on a Mac that already has progress adds it to your account; nothing is overwritten.
+            Signing in on a Mac that already has progress adds it to your account, so nothing is overwritten.
             <strong>Sign Out</strong> stops syncing on that Mac and keeps your pet there.
             The <a href="/privacy#account">privacy policy</a> lists exactly what the account stores.</p>""", 'account')}
 
-{faq('How do I delete my account or my Party data?', f"""          <p>Party keeps only a nickname, your pet's look, your study status and minutes, your friend list and your party. It never has your email or real name. See the <a href="/privacy#friends">privacy policy</a> for the full list and <a href="/privacy#deleting">Deleting your data</a> for every option.</p>
+{faq('How do I delete my account or Party data?', f"""          <p>Party keeps only a nickname, your pet's look, your study status and minutes, your friend list and your party. It never has your email or real name. See the <a href="/privacy#friends">privacy policy</a> for the full list and <a href="/privacy#deleting">Deleting your data</a> for every option.</p>
           <ul>
             <li><strong>Leave a party</strong> from the Party tab. A party is deleted when its last member leaves, or after 12 hours without activity.</li>
             <li><strong>Remove a friend</strong> from their card in the Party tab. That deletes the friendship on both sides.</li>
@@ -175,10 +239,39 @@ SUPPORT = f'''
 '''
 
 
+# The press kit: the icon at 1024 px and the four tabs from the home page,
+# as lossless PNGs, zipped by the build.
+PRESS = HERE / 'press'
+PRESS_KIT = 'tabbi-press-kit.zip'
+PRESS_MB = f"{sum(f.stat().st_size for f in PRESS.glob('*.png')) / 1e6:.1f} MB"
+
+
+ABOUT = f'''
+      <div class="about">
+        <img class="about-cat" src="/img/glyph.png" width="96" height="96" alt="">
+        <p class="about-lead">Hi, it&rsquo;s Ethan.</p>
+        <p>I made Tabbi because I wanted my study tools in one cozy spot, right where I already look: the notch.</p>
+        <p>It&rsquo;s free and open source. No ads, no tracking, no account needed.</p>
+        <p>If Tabbi helps you focus, a&nbsp;star or a&nbsp;coffee means a lot.</p>
+        <div class="cta center">
+          <a class="btn" href="https://buymeacoffee.com/ethanpolar">Buy me a coffee</a>
+          <a class="btn soft" href="{GITHUB}">Star on GitHub</a>
+        </div>
+        <div class="press" id="press">
+          <h2>Press kit</h2>
+          <p>Tabbi is a free, open source app for macOS 14 or later. It turns the laptop notch into a cozy panel of tabs: a focus timer, your day, music, Claude, Anki and a pet cat. No ads, no tracking.</p>
+          <div class="cta center">
+            <a class="btn soft" href="/press/{PRESS_KIT}" download title="The icon and four screenshots">Download ({PRESS_MB} ZIP)</a>
+          </div>
+        </div>
+      </div>
+'''
+
+
 NOT_FOUND = '''
       <div class="lost">
         <img src="/img/glyph.png" width="128" height="128" alt="">
-        <p class="measure">That page is not here. It may have moved, or the link may have been wrong to begin with.</p>
+        <p class="measure">This page may have moved, or the link was wrong.</p>
         <div class="cta center">
           <a class="btn" href="/">Back to the start</a>
           <a class="btn soft" href="/support">Get help</a>
@@ -188,8 +281,11 @@ NOT_FOUND = '''
 
 pages = [
     ('index.html', 'Tabbi: a little cat for your notch',
-     'Tabbi turns your MacBook notch into a cozy panel of tabs: a focus timer, your day, music, Claude, Anki and a pet cat. Free and open source for macOS.',
+     'Tabbi turns your laptop notch into a cozy panel of tabs: a focus timer, your day, music, Claude, Anki and a pet cat. Free and open source for macOS.',
      HOME, HOME_HERO, True, True),
+    ('about.html', 'About | Tabbi',
+     'Who makes Tabbi, and why.',
+     ABOUT, {'title': 'About', 'subtitle': 'A small app made with care.'}, False, True),
     ('support.html', 'Support | Tabbi',
      'Help with installing and using Tabbi, answers to common questions, and how to reach a person.',
      SUPPORT, {'title': 'Support', 'subtitle': 'Answers to common questions, and how to reach a person.'}, False, True),
@@ -204,6 +300,9 @@ pages = [
      'That page is not here.',
      NOT_FOUND, {'title': 'Nothing in this tab', 'subtitle': 'The cat looked everywhere and came back empty-pawed.'}, False, False),
 ]
+
+# Extra <head> markup per page.
+HEADS = {'index.html': json_ld(SOFTWARE_APP)}
 
 
 # --------------------------------------------------------------------------
@@ -264,15 +363,66 @@ def check_links():
         raise SystemExit('broken links:\n  ' + '\n  '.join(sorted(set(problems))))
 
 
+LD_RE = re.compile(r'<script type="application/ld\+json">(.*?)</script>', re.S)
+SCRIPT_RE = re.compile(r'<script(?![^>]*type="application/ld\+json")[^>]*>')
+
+
+def check_scripts():
+    """No page may carry a script the CSP would block, and every JSON-LD
+    block must parse and name its schema.org type."""
+    for html_file in sorted(OUT.glob('*.html')):
+        html = html_file.read_text()
+        if SCRIPT_RE.search(html):
+            raise SystemExit(f'{html_file.name}: has a script; the CSP blocks every script')
+        for block in LD_RE.findall(html):
+            try:
+                data = json.loads(block)
+            except ValueError as e:
+                raise SystemExit(f'{html_file.name}: JSON-LD does not parse: {e}')
+            if data.get('@context') != 'https://schema.org' or '@type' not in data:
+                raise SystemExit(f'{html_file.name}: JSON-LD needs a schema.org @context and an @type')
+
+
+# The whole home page should stay under about 600 KB, fonts included.
+PAGE_BUDGET = 500 * 1024
+ASSET_RE = re.compile(r'/(?:img|assets|fonts)/[A-Za-z0-9._-]+')
+# Fetched only for link previews, search results or a home screen icon, not
+# by the page.
+NOT_LOADED_RE = re.compile(r'<meta [^>]*>|<link rel="apple-touch-icon"[^>]*>|<script type="application/ld\+json">.*?</script>', re.S)
+
+
+def check_weight(stylesheet):
+    """Every page, with its stylesheet and every image it can load (both
+    sizes of a srcset, so this is a ceiling), must fit PAGE_BUDGET."""
+    css = (OUT / stylesheet.lstrip('/')).read_text()
+    css_assets = set(ASSET_RE.findall(css))
+    report = []
+    for html_file in sorted(OUT.glob('*.html')):
+        html = html_file.read_text()
+        assets = set(ASSET_RE.findall(NOT_LOADED_RE.sub('', html))) | css_assets
+        total = len(html.encode()) + sum((OUT / a.lstrip('/')).stat().st_size for a in assets)
+        report.append(f'{html_file.name} {total // 1024} KB')
+        if total > PAGE_BUDGET:
+            raise SystemExit(f'{html_file.name} loads {total // 1024} KB of the site\'s own files; the budget is {PAGE_BUDGET // 1024} KB')
+    print('page weight:', ', '.join(report))
+
+
 # --------------------------------------------------------------------------
 # Build
 # --------------------------------------------------------------------------
 
-def fingerprint(src, folder):
-    digest = hashlib.sha256(src.read_bytes()).hexdigest()[:8]
+def unhashed(text):
+    """Asset references that kept their plain name: files that did not exist
+    when the fingerprints were built."""
+    return sorted({m for m in ASSET_RE.findall(text) if len(m.rsplit('/', 1)[1].split('.')) < 3})
+
+
+def fingerprint(src, folder, data=None):
+    data = src.read_bytes() if data is None else data
+    digest = hashlib.sha256(data).hexdigest()[:8]
     hashed = f'{src.stem}.{digest}{src.suffix}'
     (OUT / folder).mkdir(exist_ok=True)
-    shutil.copy(src, OUT / folder / hashed)
+    (OUT / folder / hashed).write_bytes(data)
     return f'/{folder}/{hashed}'
 
 
@@ -288,26 +438,35 @@ def build():
     for src in sorted((HERE / 'img').iterdir()):
         if src.suffix in ('.png', '.gif', '.jpg', '.webp', '.svg'):
             fingerprints['/img/' + src.name] = fingerprint(src, 'img')
-    fingerprints['/styles.css'] = fingerprint(HERE / 'styles.css', 'assets')
+    # Fonts land in /assets/ with the stylesheet, which is cached the same way.
+    for src in sorted((HERE / 'fonts').glob('*.woff2')):
+        fingerprints['/fonts/' + src.name] = fingerprint(src, 'assets')
 
-    asset_re = re.compile('|'.join(re.escape(k) for k in sorted(fingerprints, key=len, reverse=True)))
+    def asset_sub(text):
+        asset_re = re.compile('|'.join(re.escape(k) for k in sorted(fingerprints, key=len, reverse=True)))
+        return asset_re.sub(lambda m: fingerprints[m.group(0)], text)
+
+    # The stylesheet points at images too (the paper grain), so its image
+    # URLs are hashed first and its own hash covers them.
+    css = asset_sub((HERE / 'styles.css').read_text())
+    if unhashed(css):
+        raise SystemExit('styles.css: references files that do not exist: ' + ', '.join(unhashed(css)))
+    fingerprints['/styles.css'] = fingerprint(HERE / 'styles.css', 'assets', css.encode())
 
     for slug, title, description, body, hero, wide, indexable in pages:
-        html = unobfuscate(page(slug, title, description, body, hero, wide, indexable))
-        html = asset_re.sub(lambda m: fingerprints[m.group(0)], html)
+        html = unobfuscate(page(slug, title, description, body, hero, wide, indexable, HEADS.get(slug, '')))
+        html = asset_sub(html)
 
-        # An unhashed reference is a file that did not exist when the
-        # fingerprints were built. A missing image should stop a build.
-        unhashed = [m for m in re.findall(r'/(?:img|assets)/[A-Za-z0-9._-]+', html)
-                    if len(m.rsplit('/', 1)[1].split('.')) < 3]
-        if unhashed:
-            raise SystemExit(f'{slug}: references files that do not exist: ' + ', '.join(sorted(set(unhashed))))
+        # A missing image should stop a build.
+        if unhashed(html):
+            raise SystemExit(f'{slug}: references files that do not exist: ' + ', '.join(unhashed(html)))
 
         (OUT / slug).write_text(html)
         print('wrote', slug)
 
     shutil.copy(HERE / '_headers', OUT / '_headers')
     shutil.copy(HERE / 'favicon.ico', OUT / 'favicon.ico')
+    write_press_kit()
     (OUT / 'robots.txt').write_text('User-agent: *\nAllow: /\n\nSitemap: https://tabbinotch.com/sitemap.xml\n')
     urls = ''.join(
         f'  <url><loc>https://tabbinotch.com/{"" if slug == "index.html" else slug.removesuffix(".html")}</loc></url>\n'
@@ -319,11 +478,39 @@ def build():
     )
 
     check_links()
+    check_scripts()
+    check_weight(fingerprints['/styles.css'])
 
     biggest = max((f for f in OUT.rglob('*') if f.is_file()), key=lambda f: f.stat().st_size)
     if biggest.stat().st_size > 20 * 1024 * 1024:
         raise SystemExit(f'{biggest} is over 20 MB; Cloudflare Pages refuses files over 25 MB')
-    print('copied _headers, favicon.ico, robots.txt, sitemap.xml and %d fingerprinted assets' % len(fingerprints))
+    print('copied _headers, favicon.ico, robots.txt, sitemap.xml, the press kit and %d fingerprinted assets' % len(fingerprints))
+
+
+def write_press_kit():
+    """Zips site/press into one download. PNGs are already compressed, so
+    they are stored, and fixed timestamps keep the zip's bytes stable."""
+    (OUT / 'press').mkdir()
+    with zipfile.ZipFile(OUT / 'press' / PRESS_KIT, 'w', zipfile.ZIP_STORED) as z:
+        for src in sorted(PRESS.glob('*.png')):
+            info = zipfile.ZipInfo(f'tabbi-press-kit/{src.name}', (2026, 1, 1, 0, 0, 0))
+            info.external_attr = 0o644 << 16  # readable files once unzipped
+            z.writestr(info, src.read_bytes())
+
+
+def site_headers():
+    """The `/*` block of _headers as (name, value) pairs."""
+    pairs, in_block = [], False
+    for line in (HERE / '_headers').read_text().splitlines():
+        if line and not line[0].isspace():
+            in_block = line.strip() == '/*'
+        elif in_block and ':' in line:
+            name, value = line.strip().split(':', 1)
+            pairs.append((name, value.strip()))
+    return pairs
+
+
+SITE_HEADERS = site_headers()
 
 
 class PagesHandler(http.server.SimpleHTTPRequestHandler):
@@ -332,6 +519,13 @@ class PagesHandler(http.server.SimpleHTTPRequestHandler):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(OUT), **kwargs)
+
+    def end_headers(self):
+        # The headers _headers sets for every path, CSP included, so a
+        # preview fails the same way production would.
+        for name, value in SITE_HEADERS:
+            self.send_header(name, value)
+        super().end_headers()
 
     def send_head(self):
         path = self.path.split('?', 1)[0].split('#', 1)[0]
