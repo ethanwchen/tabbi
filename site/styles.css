@@ -419,11 +419,14 @@ footer.site nav a:hover { background: var(--chip); color: var(--on-ground); text
   .hero-home .lede { font-size: 18px; }
   .btn { width: 100%; min-height: 58px; font-size: 20px; padding: 0 24px; }
   .tab-row { grid-template-columns: 1fr; gap: 16px; }
-  .sheet { padding: 26px 20px 28px; border-radius: 28px; }
-  .card { padding: 20px; }
-  .faq summary { padding: 15px 46px 15px 18px; font-size: 17px; }
+  /* Cards nest inside the sheet, so their padding adds up twice: keep it
+     tight to leave a readable line for the text inside. */
+  .sheet { padding: 26px 16px 28px; border-radius: 28px; }
+  .card { padding: 18px 16px; border-radius: 22px; }
+  main ul, main ol { padding-left: 20px; }
+  .faq summary { padding: 15px 46px 15px 16px; font-size: 17px; }
   .faq summary::after { right: 20px; }
-  .faq-body { padding: 0 18px 6px; }
+  .faq-body { padding: 0 16px 6px; }
   main h2 { font-size: 22px; }
 
   /* Three columns do not fit a phone: each row becomes a small card of its
@@ -431,7 +434,7 @@ footer.site nav a:hover { background: var(--chip); color: var(--on-ground); text
   .scroller { background: none; overflow: visible; }
   .scroller thead { display: none; }
   .scroller table, .scroller tbody, .scroller tr, .scroller td { display: block; }
-  .scroller tr { background: var(--card-2); border-radius: 20px; padding: 16px 18px; margin-bottom: 10px; }
+  .scroller tr { background: var(--card-2); border-radius: 20px; padding: 16px; margin-bottom: 10px; }
   .scroller td, .scroller td:first-child, .scroller td:last-child { padding: 0; border: none; min-width: 0; white-space: normal; }
   .scroller td:first-child { font-size: 16.5px; margin-bottom: 4px; }
   .scroller td:last-child { margin-top: 8px; font-weight: 700; color: var(--ink); }
