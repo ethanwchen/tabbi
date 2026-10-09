@@ -84,12 +84,16 @@ extension ModuleContext {
             let keys: any AIKeyStore = runMode.isEphemeral
                 ? InMemoryAIKeyStore()
                 : KeychainAIKeyStore(service: edition.bundleIdentifier + ".ai")
-            // The demo names Claude, through a provider this build can run.
+            // Same rule as the Connections rows: an edition that can't run
+            // local tools offers only the API and Ollama providers. An App
+            // Store build is sandboxed whatever edition it resolves to.
             #if APPSTORE
-            let (sandboxed, sample) = (true, AIProviderID.anthropic)
+            let sandboxed = true
             #else
-            let (sandboxed, sample) = (false, AIProviderID.claudeCLI)
+            let sandboxed = !edition.runsLocalTools
             #endif
+            // The demo names Claude, through a provider this build can run.
+            let sample: AIProviderID = sandboxed ? .anthropic : .claudeCLI
             return AIService(settings: settings, keys: keys, sandboxed: sandboxed,
                              sampleProvider: runMode.isDemo ? sample : nil)
         }
