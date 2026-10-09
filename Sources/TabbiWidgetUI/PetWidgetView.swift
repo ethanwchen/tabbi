@@ -76,7 +76,8 @@ public struct PetWidgetView: View {
                 headline
                 Spacer(minLength: 8)
                 HStack(spacing: 8) {
-                    StatChip(symbol: "flame.fill", value: streakText, caption: "streak", tint: WidgetPalette.accent)
+                    StatChip(symbol: "flame.fill", value: streakText, caption: "streak",
+                             tint: streak > 0 ? WidgetPalette.accent : WidgetPalette.secondaryText)
                     if timer != nil {
                         StatChip(symbol: "clock.fill", value: minutesText, caption: "today",
                                  tint: WidgetPalette.secondaryText)
