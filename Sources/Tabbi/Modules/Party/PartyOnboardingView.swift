@@ -125,6 +125,8 @@ private struct PartySetupProfileCard: View {
             ("Online", Theme.Palette.success)
         case .connecting:
             ("Joining the party server", Theme.Palette.tertiaryText)
+        case .unreachable(.banned):
+            ("Not available", Theme.Palette.tertiaryText)
         case .unreachable, .invalidServer:
             ("Offline", Theme.Palette.warning)
         }
@@ -249,6 +251,9 @@ private struct PartySetupFriendsCard: View {
         case .connecting:
             message(symbol: "antenna.radiowaves.left.and.right", title: "Joining the party server",
                     detail: "Signing you in so friends can find you. Your code shows here in a moment.")
+        case .unreachable(.banned):
+            message(symbol: "hand.raised.fill", title: "Party isn't available",
+                    detail: "This account can no longer use Party. Write to \(SupportContact.email) if that's a mistake.")
         case .unreachable:
             VStack(alignment: .leading, spacing: Theme.Spacing.s) {
                 message(symbol: "wifi.slash", title: "Can't reach the party server",

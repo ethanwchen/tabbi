@@ -11,6 +11,8 @@ private final class FakeFriendsServer: PartyTransport, @unchecked Sendable {
     /// Delays each register reply, to overlap concurrent calls.
     var registerDelay: UInt64 = 0
     var unreachable = false
+    /// Answers `PATCH /v1/me` the way the server does for a banned user.
+    var banned = false
 
     init(validTokens: Set<String> = []) { self.validTokens = validTokens }
 
@@ -45,7 +47,8 @@ private final class FakeFriendsServer: PartyTransport, @unchecked Sendable {
         switch route {
         case "GET /v1/me", "PATCH /v1/me":
             let name = (request.body.flatMap { try? JSONSerialization.jsonObject(with: $0) } as? [String: Any])?["name"] as? String ?? "Ana"
-            return reply(#"{"ok":true,"profile":\#(Self.profile(code: code, name: name))}"#)
+            let flag = banned ? #","banned":true"# : ""
+            return reply(#"{"ok":true,"profile":\#(Self.profile(code: code, name: name))\#(flag)}"#)
         case "GET /v1/friends":
             return reply(#"{"ok":true,"friends":[]}"#)
         case "DELETE /v1/me":
@@ -90,6 +93,24 @@ final class PartyAccountTests: XCTestCase {
         XCTAssertEqual(profile.code, FakeFriendsServer.code(7))
         XCTAssertEqual(fake.requests, ["PATCH /v1/me"])
         XCTAssertEqual(fake.registerCount, 0)
+    }
+
+    func testConnectThrowsBannedWhenTheServerSaysSo() async throws {
+        let token = FakeFriendsServer.token(7)
+        let fake = FakeFriendsServer(validTokens: [token])
+        fake.banned = true
+        let store = InMemoryPartyCredentialStore([server: PartyCredentials(token: token, code: FakeFriendsServer.code(7))])
+        let account = PartyAccount(server: server, transport: fake, credentials: store)
+
+        do {
+            try await account.connect(profile: PartyProfileUpdate(name: "Ben"))
+            XCTFail("expected banned")
+        } catch {
+            XCTAssertEqual(error as? PartyError, .banned)
+        }
+        // The identity stays: an unban later lets the same friend code back in.
+        XCTAssertEqual(store.load(for: server)?.code, FakeFriendsServer.code(7))
+        XCTAssertEqual(fake.requests, ["PATCH /v1/me"])
     }
 
     func testRevokedTokenRegistersAgainWithTheLastProfileAndRetriesOnce() async throws {

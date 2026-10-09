@@ -89,7 +89,14 @@ public struct PartyClient: Sendable {
     /// `PATCH /v1/me`: unchanged fields cost nothing, so sending the whole
     /// profile after every pet edit is fine.
     public func updateProfile(_ update: PartyProfileUpdate) async throws -> PartyProfile {
-        try await send("PATCH", "/v1/me", body: update, as: ProfileReply.self).profile
+        try await updateStanding(update).profile
+    }
+
+    /// `PATCH /v1/me` with whether the maintainer banned this user, which
+    /// the server reports there as it does on `GET /v1/me`.
+    public func updateStanding(_ update: PartyProfileUpdate) async throws -> PartyStanding {
+        let reply = try await send("PATCH", "/v1/me", body: update, as: ProfileReply.self)
+        return PartyStanding(profile: reply.profile, banned: reply.banned ?? false)
     }
 
     /// `DELETE /v1/me`: deletes the user and everything about them.

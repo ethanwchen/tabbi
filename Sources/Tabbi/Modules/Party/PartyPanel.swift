@@ -61,6 +61,14 @@ struct PartyPanel: View {
             PartyMessage(symbol: nil, pet: store.pet, title: "Joining the party server…",
                          detail: "Signing you in so friends can find you.")
                 .transition(.opacity)
+        case .unreachable(.banned):
+            PartyMessage(symbol: "hand.raised.fill", title: "Party isn't available",
+                         detail: "This account can no longer use Party. If you think that's a mistake, write to \(SupportContact.email).") {
+                PartyPillButton(title: "Email Support", symbol: "envelope", help: "Write to \(SupportContact.email)") {
+                    NSWorkspace.shared.open(SupportContact.mailURL)
+                }
+            }
+            .transition(.opacity)
         case .unreachable(let error):
             PartyMessage(symbol: "wifi.slash", title: "Can't reach the party server",
                          detail: Self.unreachableDetail(error)) {

@@ -64,9 +64,12 @@ public actor PartyAccount {
             _ = try await register()
             if let profile { return profile }
         }
-        let fresh = try await perform { try await $0.updateProfile(update) }
-        profile = fresh
-        return fresh
+        let standing = try await perform { try await $0.updateStanding(update) }
+        profile = standing.profile
+        // A banned user's calls still work, but Party has nothing left to
+        // offer them, so the tab says so instead of showing an empty room.
+        if standing.banned { throw PartyError.banned }
+        return standing.profile
     }
 
     /// Runs `call` with the current token, registering first when there is

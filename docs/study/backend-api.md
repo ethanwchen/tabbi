@@ -200,7 +200,7 @@ Errors: `invalid_json`, `unknown_field`, `invalid_field`, `name_not_allowed`, `p
 ### `PATCH /v1/me`
 
 Body: any profile fields.
-`200 {"ok": true, "profile": Profile}` with the full updated profile.
+`200 {"ok": true, "profile": Profile}` with the full updated profile, plus `"banned": true` like `GET /v1/me`, so the app learns of a ban when it connects.
 Unchanged profiles cost no storage write, so it is fine to send the whole profile.
 
 Errors: `invalid_json`, `unknown_field`, `invalid_field`, `name_not_allowed`, `pet_name_not_allowed`, `banned`, `body_too_large`.

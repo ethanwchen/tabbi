@@ -101,6 +101,8 @@ public enum PartyDemoScenario: String, CaseIterable, Sendable {
     case unreachable
     /// The server setting can't be used.
     case invalidServer
+    /// The maintainer banned this account.
+    case banned
 }
 
 extension PartyState {
@@ -148,6 +150,10 @@ extension PartyState {
             return state
         case .invalidServer:
             return PartyState(settings: PartySettings(serverText: "http://tabbi.example.com"))
+        case .banned:
+            var state = PartyState(settings: PartySettings())
+            state.didFailToConnect(.banned)
+            return state
         }
     }
 }

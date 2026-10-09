@@ -253,6 +253,8 @@ struct PartySettingsPane: View {
             return ("Can't use this server", message, "exclamationmark.triangle.fill", .orange)
         case .connecting:
             return ("Connecting…", host, "", .secondary)
+        case .unreachable(.banned):
+            return ("Not available", PartyError.banned.message, "hand.raised.fill", .secondary)
         case .unreachable(let error):
             return ("Can't reach the server", error.message, "wifi.slash", .orange)
         case .connected:

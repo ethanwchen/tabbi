@@ -180,7 +180,8 @@ describe("admin routes", () => {
     const me = await call("GET", "/v1/me", undefined, b.token);
     expect(me.body).toMatchObject({ banned: true, profile: { name: "Rude" } });
     expectError(await call("PATCH", "/v1/me", { name: "Other" }, b.token), 403, "banned");
-    expect((await call("PATCH", "/v1/me", { name: "Rude", points: 3 }, b.token)).status).toBe(200);
+    expect((await call("PATCH", "/v1/me", { name: "Rude", points: 3 }, b.token)).body)
+      .toMatchObject({ banned: true, profile: { name: "Rude", points: 3 } });
     expectError(await call("POST", "/v1/party", undefined, b.token), 403, "banned");
     expectError(await call("POST", "/v1/party/join", { code: party }, b.token), 403, "banned");
     expectError(await call("POST", "/v1/friends", { code: c.code }, b.token), 403, "banned");
@@ -188,6 +189,7 @@ describe("admin routes", () => {
     expect((await admin("DELETE", `/users/${b.code}/ban`)).body).toEqual({ ok: true, unbanned: true });
     expect((await admin("DELETE", `/users/${b.code}/ban`)).body.unbanned).toBe(false);
     expect((await call("GET", "/v1/me", undefined, b.token)).body.banned).toBeUndefined();
+    expect((await call("PATCH", "/v1/me", {}, b.token)).body.banned).toBeUndefined();
     expect(codes((await call("GET", "/v1/friends", undefined, a.token)).body.friends)).toEqual([b.code]);
     expect((await call("POST", "/v1/party/join", { code: party }, b.token)).body.joined).toBe(true);
   });

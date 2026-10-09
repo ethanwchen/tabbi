@@ -428,7 +428,9 @@ export class Hub extends DurableObject<Env> {
         JSON.stringify(next.accessories), next.points, next.level, caller.code,
       );
     }
-    return json(isRegister ? { ok: true, code: caller.code, profile: next } : { ok: true, profile: next });
+    if (isRegister) return json({ ok: true, code: caller.code, profile: next });
+    // Like GET /v1/me, so the app learns of a ban on its connect PATCH without another request.
+    return json(this.isBanned(caller.code) ? { ok: true, profile: next, banned: true } : { ok: true, profile: next });
   }
 
   /**
