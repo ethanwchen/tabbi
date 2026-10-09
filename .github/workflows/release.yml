@@ -2,9 +2,10 @@ name: Release
 
 # Builds a Tabbi release with scripts/release.sh: a universal (arm64 + x86_64)
 # app, Developer ID signed and notarized, its DMG, the update zip, the Sparkle
-# appcast, release notes, checksums and the Homebrew cask. The repository is
-# private for now, so this only runs when started by hand
-# (Actions tab > Release > Run workflow).
+# appcast, release notes, checksums and the Homebrew cask. It only runs when
+# started by hand (Actions tab > Release > Run workflow). With "publish" on it
+# creates a DRAFT GitHub Release (scripts/release.sh --publish), which reaches
+# nobody until it is published by hand. docs/release.md has the whole process.
 #
 # Developer ID releases need these repository secrets (Settings > Secrets and
 # variables > Actions):
@@ -87,20 +88,22 @@ jobs:
           security set-key-partition-list -S apple-tool:,apple: -s -k "$keychain_password" "$KEYCHAIN" >/dev/null
           security list-keychains -d user -s "$KEYCHAIN"
           security default-keychain -d user -s "$KEYCHAIN"
-          xcrun notarytool store-credentials notchdeck \
+          xcrun notarytool store-credentials tabbi \
             --apple-id "$NOTARY_APPLE_ID" --team-id "$NOTARY_TEAM_ID" --password "$NOTARY_PASSWORD" \
             --keychain "$KEYCHAIN"
 
       - name: Build the release
         env:
           SIGNING: ${{ inputs.signing }}
+          PUBLISH: ${{ inputs.publish && inputs.signing == 'developer-id' }}
           SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
+          # For --publish, which creates the draft release with gh.
+          GH_TOKEN: ${{ github.token }}
         run: |
-          if [[ "$SIGNING" == adhoc ]]; then
-            scripts/release.sh --adhoc
-          else
-            scripts/release.sh
-          fi
+          args=()
+          [[ "$SIGNING" == adhoc ]] && args+=(--adhoc)
+          [[ "$PUBLISH" == true ]] && args+=(--publish)
+          scripts/release.sh ${args[@]+"${args[@]}"}
           echo "VERSION=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' Resources/Info.plist)" >> "$GITHUB_ENV"
 
       - name: Upload the build
@@ -115,18 +118,6 @@ jobs:
             build/release/release-notes.md
             build/release/SHA256SUMS
             build/release/*.rb
-
-      # A draft, so nothing reaches users (or the update feed, which follows
-      # the latest published release) until it is published by hand.
-      - name: Create a draft release
-        if: inputs.publish && inputs.signing == 'developer-id'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          cd build/release
-          gh release create "v$VERSION" --draft --target "$GITHUB_SHA" \
-            --title "Tabbi $VERSION" --notes-file release-notes.md \
-            ./*.dmg ./*.zip appcast.xml SHA256SUMS
 
       - name: Remove the signing keychain
         if: always() && inputs.signing == 'developer-id'
