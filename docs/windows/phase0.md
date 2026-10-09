@@ -52,7 +52,12 @@ Status of phase 0 from `docs/windows/plan.md`: the Mac app's shared pieces move 
   They cover a full cycle with a pause, sleeping through one or more phases, skips while running, idle and paused, resets, no-ops, custom and clamped lengths, and lengths changed mid-phase.
   `FocusTimerGoldenTests` checks the timer against it and replays the fixture's own inputs; it was shown to fail on a one-string change.
 
+- Ticker fixture for the TypeScript port: `shared/fixtures/ticker/ticker.json` holds 19 sets of ticker sources (meetings, music, the shared focus clock, tasks, goals, module highlights, the pet and the party) read at chosen moments with chosen kinds turned on, each with the items the closed notch can show, their display strings and the next moment they can change.
+  They cover the meeting pin and horizon edges, minute rounding, an imminent meeting beating one under way, idle, paused and counting-up clocks, goals that wait for a start, highlight priority, ties, pins and expiry, every pet mood, and the party cap.
+  It also holds 13 rotation sequences: holding and wrapping, vanished items handing over, new items joining, pins holding the notch, and interval changes.
+  `TickerGoldenTests` checks `TickerSources` and `TickerRotation` against it and replays the fixture's own inputs; it was shown to fail on a one-string change.
+
 ## Next
 
-1. Logic fixtures for the TypeScript port: study session sequences, Plan my day, ticker selection.
+1. Logic fixtures for the TypeScript port: study session sequences, Plan my day.
 2. Snapshot comparison against `main`, pixel for pixel.

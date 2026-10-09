@@ -14,12 +14,13 @@ See `docs/windows/plan.md` (section 3) for why, and `docs/windows/phase0.md` for
 - `fixtures/` holds golden fixtures written by the Swift tests.
   Each port checks its own output against them, so drift between the apps fails a test.
   `pets/`, `themes/` and `study-methods/` pin the data files above; `claude-stream/` pins how the `claude` CLI's stream-json lines are parsed and folded into an Ask Claude chat;
-  `focus-timer/` pins the shared Pomodoro: its steps, readouts, shared focus clock and logged activity.
+  `focus-timer/` pins the shared Pomodoro: its steps, readouts, shared focus clock and logged activity;
+  `ticker/` pins which items the closed notch can show, when it next has to look again, and which one the rotation picks.
 
 Fixtures are regenerated only on purpose, after an intended change:
 
 ```sh
-TABBI_RECORD_FIXTURES=1 swift test --filter 'PetGoldenFrameTests|ThemeGoldenTests|StudyMethodGoldenTests|ClaudeStreamGoldenTests|FocusTimerGoldenTests'
+TABBI_RECORD_FIXTURES=1 swift test --filter 'PetGoldenFrameTests|ThemeGoldenTests|StudyMethodGoldenTests|ClaudeStreamGoldenTests|FocusTimerGoldenTests|TickerGoldenTests'
 ```
 
 Review the diff before committing it: every changed line is a pixel, color or timing that changed for users.
