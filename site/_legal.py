@@ -182,10 +182,14 @@ TERMS = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
         Because all of them are free, our total liability for any claim is limited to 50 US dollars.
         Some places do not allow these limits, so they may not apply to you, and nothing here limits rights you have by law that cannot be waived.</p>
 
-      <h2>7. Changes</h2>
+      <h2>7. Governing law</h2>
+      <p class="measure">These terms are governed by the laws of the State of New York, United States, without regard to its conflict of law rules.
+        Any dispute that cannot be settled informally will be heard in the state or federal courts located in New York, New York, unless the law where you live gives you the right to bring it there.</p>
+
+      <h2>8. Changes</h2>
       <p class="measure">We may update these terms. When we do, we will change the date at the top and keep the history in the <a href="{GITHUB}">Tabbi repository</a>.
         If you keep using Tabbi after a change, the new terms apply.</p>
 
-      <h2>8. Contact</h2>
+      <h2>9. Contact</h2>
       <p class="measure">Questions about these terms: {MAIL}.</p>
 '''
