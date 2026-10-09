@@ -2,10 +2,8 @@ import Foundation
 
 /// The friends server Tabbi talks to.
 public enum PartyServer {
-    /// The deployed friends worker, used until the user enters another.
-    /// It still runs under its old `studynotch-friends` name until the
-    /// maintainer deploys the renamed `tabbi-friends` worker and updates this.
-    public static let productionURL = URL(string: "https://studynotch-friends.drosophil-anki-friends-backend.workers.dev")!
+    /// The deployed `tabbi-friends` worker, used until the user enters another.
+    public static let productionURL = URL(string: "https://tabbi-friends.drosophil-anki-friends-backend.workers.dev")!
     /// `npm run dev` in `backend/`.
     public static let localDevURL = URL(string: "http://localhost:8787")!
 
@@ -57,7 +55,8 @@ public struct PartyClient: Sendable {
 
     /// Service names a friends server answers `GET /` with: the current
     /// `tabbi-friends` worker and the `studynotch-friends` deployment from
-    /// before the rename, which serves the same contract.
+    /// before the rename, which serves the same contract, so a server field
+    /// still pointing at the old deployment keeps working.
     public static let serviceNames: Set<String> = ["tabbi-friends", "studynotch-friends"]
 
     /// `GET /`: true when the server answers as a friends server.
