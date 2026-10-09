@@ -197,6 +197,21 @@ enum SnapshotRenderer {
             }
         }
 
+        // Now Playing following SoundCloud in Safari, playing and with
+        // JavaScript from Apple Events turned off, rendered after the others
+        // because the player shown is store state.
+        #if !APPSTORE
+        if layout.order.contains(.spotify) {
+            var withNowPlaying = layout
+            _ = withNowPlaying.setEnabled(.spotify, true)
+            for name in ["open-spotify-soundcloud", "open-spotify-soundcloud-javascript-off"] {
+                let model = NotchViewModel(geometry: geometry, layout: withNowPlaying)
+                model.open(.spotify)
+                shots.append(Shot(name, model))
+            }
+        }
+        #endif
+
         // Schedule's Day view stepped back to yesterday and ahead to tomorrow,
         // with a plan for tomorrow on offer.
         if layout.order.contains(.schedule) {
@@ -369,6 +384,7 @@ enum SnapshotRenderer {
         let today = services.modules.module(TodayModule.self)?.store
         let party = services.modules.module(PartyModule.self)?.store
         let schedule = services.modules.module(ScheduleModule.self)
+        let nowPlaying = services.modules.module(NowPlayingModule.self)
         let now = Date()
         let partySession = PartyState.demo(.member, now: now).session(at: now)
         for shot in shots {
@@ -388,6 +404,8 @@ enum SnapshotRenderer {
             schedule?.showForSnapshot(name == "open-schedule-yesterday" ? .yesterday
                 : name.hasPrefix("open-schedule-tomorrow") ? .tomorrow : .today,
                 planning: name == "open-schedule-tomorrow-plan")
+            nowPlaying?.showForSnapshot(name == "open-spotify-soundcloud" ? .soundCloud
+                : name == "open-spotify-soundcloud-javascript-off" ? .soundCloudJavaScriptOff : .players)
             if let firstSection {
                 closet?.store.section = name == "open-closet-look" ? .look
                     : name == "open-closet-limited" ? .limited : firstSection
@@ -426,6 +444,7 @@ enum SnapshotRenderer {
         party?.showCelebrationForSnapshot(false)
         today?.show(.today)
         schedule?.showForSnapshot(.today)
+        nowPlaying?.showForSnapshot(.players)
     }
 
     /// The review Settings shows before applying an imported kit: another

@@ -142,8 +142,11 @@ private struct SpotifyNowPlaying: View {
         .task(id: track?.id) { await artwork.load(track, from: controller) }
     }
 
+    /// Artist and album. SoundCloud tracks have no album, and the badge on
+    /// the cover is the browser's, so they name SoundCloud there instead.
     private var subtitle: String {
-        [playback.track?.artist, playback.track?.album]
+        let album = controller.source?.app == nil ? controller.source?.displayName : playback.track?.album
+        return [playback.track?.artist, album]
             .compactMap { $0 }.filter { !$0.isEmpty }
             .joined(separator: " · ")
     }

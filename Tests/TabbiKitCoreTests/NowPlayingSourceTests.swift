@@ -141,4 +141,14 @@ final class NowPlayingSourceTests: XCTestCase {
         idle.update(safari, status: .scriptingDisabled, at: t0)
         XCTAssertEqual(idle.status, .scriptingDisabled, "the hint beats an app with nothing loaded")
     }
+
+    func testSoundCloudSampleHasAWorkingHeartAndNoVolume() throws {
+        let playback = SpotifyPlayback.soundCloudDemo
+        let track = try XCTUnwrap(playback.track)
+        let source = NowPlayingSource.soundCloud(.safari)
+        XCTAssertEqual(track.isFavorite, false, "the sample is signed in, so its heart shows")
+        XCTAssertNotNil(source.setFavoriteScript(true, for: track), "the heart can like the sample track")
+        XCTAssertNil(playback.volume, "SoundCloud has no volume to show")
+        XCTAssertTrue(playback.isPlaying)
+    }
 }

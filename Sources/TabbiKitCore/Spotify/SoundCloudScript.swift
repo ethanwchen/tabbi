@@ -325,3 +325,24 @@ public enum SoundCloudScript {
         return value
     }
 }
+
+extension SpotifyPlayback {
+    /// Sample SoundCloud state for snapshots: a signed-in listener's tab, so
+    /// the heart shows. Like every SoundCloud track it has no album and no
+    /// volume, and no artwork URL so a snapshot never touches the network.
+    public static let soundCloudDemo = SpotifyPlayback(
+        state: .playing,
+        track: SpotifyTrack(
+            id: SoundCloudScript.trackIDPrefix + "/odesza/a-moment-apart",
+            title: "A Moment Apart",
+            artist: "ODESZA",
+            album: "",
+            artworkURL: nil,
+            duration: 234,
+            isFavorite: false
+        ),
+        position: 61,
+        isShuffling: false,
+        repeatMode: .off
+    )
+}

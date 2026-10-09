@@ -75,6 +75,8 @@ final class SpotifyController: NSObject, ObservableObject {
     private var volumesBeforeMute: [NowPlayingSource: Int] = [:]
     /// Shuffle and repeat changes per app that the player may not show yet.
     private var pendingModes: [NowPlayingSource: PendingMediaModes] = [:]
+    /// What a snapshot run shows instead of the players' real state.
+    private var snapshotOverride: (source: NowPlayingSource, status: SpotifyStatus)?
 
     init(runMode: RunMode, allowsBrowsers: Bool) {
         isDemo = runMode.isDemo
@@ -101,6 +103,29 @@ final class SpotifyController: NSObject, ObservableObject {
             )
         }
         refresh()
+    }
+
+    // MARK: - Snapshots
+
+    /// The panel states a snapshot run renders beyond the players' own.
+    enum SnapshotState {
+        /// Whatever the players report (the demo track in demo runs).
+        case players
+        /// A SoundCloud tab playing in Safari.
+        case soundCloud
+        /// Safari with a SoundCloud tab that won't run JavaScript.
+        case soundCloudJavaScriptOff
+    }
+
+    /// Shows `state` in the panel, so snapshots cover SoundCloud on any Mac.
+    func showForSnapshot(_ state: SnapshotState) {
+        let source = NowPlayingSource.soundCloud(.safari)
+        switch state {
+        case .players: snapshotOverride = nil
+        case .soundCloud: snapshotOverride = (source, .connected(.soundCloudDemo))
+        case .soundCloudJavaScriptOff: snapshotOverride = (source, .scriptingDisabled)
+        }
+        publish()
     }
 
     // MARK: - Panel visibility
@@ -353,8 +378,8 @@ final class SpotifyController: NSObject, ObservableObject {
     }
 
     private func publish() {
-        let selected = tracker.selected
-        let shown = selected.map(latestStatus) ?? tracker.status
+        let selected = snapshotOverride?.source ?? tracker.selected
+        let shown = snapshotOverride?.status ?? selected.map(latestStatus) ?? tracker.status
         if source != selected { source = selected }
         if status != shown { status = shown }
         let installed = tracker.installedSources
@@ -412,7 +437,7 @@ final class SpotifyController: NSObject, ObservableObject {
     }
 
     private func tick() {
-        guard let source, let clock = clocks[source] else { return }
+        guard snapshotOverride == nil, let source, let clock = clocks[source] else { return }
         let playback = clock.playback(at: Date())
         if status.playback != playback { status = .connected(playback) }
     }

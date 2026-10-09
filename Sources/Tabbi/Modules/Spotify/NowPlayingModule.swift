@@ -22,6 +22,11 @@ final class NowPlayingModule: NotchModule {
         controller = SpotifyController(runMode: context.runMode, allowsBrowsers: !context.edition.isAppStore)
     }
 
+    /// Shows a SoundCloud state in the panel for a snapshot run.
+    func showForSnapshot(_ state: SpotifyController.SnapshotState) {
+        controller.showForSnapshot(state)
+    }
+
     func makePanel() -> AnyView {
         AnyView(SpotifyPanel(controller: controller))
     }
