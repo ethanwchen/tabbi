@@ -219,6 +219,19 @@ describe("POST /v1/auth/apple", () => {
     expect(reports.find((x: any) => x.reporter.code === reporter.code).reported.code).toBe(mac1.code);
   });
 
+  it("keeps both users' replaced names held when it folds an anonymous user into an account", async () => {
+    const mac1 = await register({ name: "Account Bad" });
+    await signIn({ identityToken: await identityToken("sub.fold.holds") }, mac1.token);
+    await admin("POST", `/users/${mac1.code}/rename`);
+    const mac2 = await register({ name: "Anon Bad" });
+    await admin("POST", `/users/${mac2.code}/rename`);
+
+    const r = await signIn({ identityToken: await identityToken("sub.fold.holds") }, mac2.token);
+    expect(r.body.code).toBe(mac1.code);
+    expectError(await call("PATCH", "/v1/me", { name: "Account Bad" }, r.body.token), 400, "name_not_allowed");
+    expectError(await call("PATCH", "/v1/me", { name: "Anon Bad" }, r.body.token), 400, "name_not_allowed");
+  });
+
   it("drops reports between the anonymous user and the account it folds into instead of making self-reports", async () => {
     const mac1 = await register({ name: "Account" });
     await signIn({ identityToken: await identityToken("sub.fold.selfreport") }, mac1.token);

@@ -533,12 +533,13 @@ curl -s -X POST -H "Authorization: Bearer $ADMIN_TOKEN" $TABBI/v1/admin/reports/
 ```
 
 - **Rename** for a bad name: the name and pet name become `student` and `buddy`, and the user cannot set the old ones again (`name_not_allowed`, `pet_name_not_allowed`).
+  Every rename adds to what is held, so a second rename keeps the first one's names held too.
   Replies `{"ok": true, "profile": Profile}`.
 - **Ban** for harassment or repeated abuse: the user leaves their party and disappears from everyone else's friend lists, parties and leaderboards.
   They cannot change their name or pet name, add friends, or create or join a party (`403 banned`), and `GET /v1/me` says `"banned": true`.
   Their data stays, so a ban can be lifted with `DELETE /v1/admin/users/{code}/ban`, which brings their friendships back as they were.
   Replies `{"ok": true, "banned": true}` (`false` if already banned).
-- Sign in with Apple carries a ban, a rename and reports over when an anonymous user folds into an account.
+- Sign in with Apple carries a ban, held names and reports over when an anonymous user folds into an account; the account keeps both users' held names.
 
 ## Errors common to all routes
 

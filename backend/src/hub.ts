@@ -186,7 +186,29 @@ CREATE TABLE used_identity_tokens (
 CREATE INDEX used_identity_tokens_by_expiry ON used_identity_tokens (expires_at);
 `;
 
-const MIGRATIONS = [SCHEMA, SYNC_SCHEMA, MODERATION_SCHEMA, REPORTS_SCHEMA, USED_IDENTITY_TOKENS_SCHEMA];
+/**
+ * Name holds become one row per replaced name, so a second rename or an account fold adds to what a
+ * user cannot set again instead of overwriting it. Only names that were not the placeholders are held; the
+ * placeholders are written out (not DEFAULT_NAME) because a shipped step must never change.
+ */
+const NAME_HOLDS_SCHEMA = `
+-- One name (kind 'name') or pet name (kind 'pet') a maintainer replaced; the user cannot set it again.
+CREATE TABLE name_holds_by_value (
+  code       TEXT NOT NULL,
+  kind       TEXT NOT NULL CHECK (kind IN ('name', 'pet')),
+  value      TEXT NOT NULL,
+  created_at INTEGER NOT NULL,
+  PRIMARY KEY (code, kind, value)
+) WITHOUT ROWID;
+INSERT OR IGNORE INTO name_holds_by_value (code, kind, value, created_at)
+  SELECT code, 'name', name, created_at FROM name_holds WHERE name != 'student';
+INSERT OR IGNORE INTO name_holds_by_value (code, kind, value, created_at)
+  SELECT code, 'pet', pet_name, created_at FROM name_holds WHERE pet_name != 'buddy';
+DROP TABLE name_holds;
+ALTER TABLE name_holds_by_value RENAME TO name_holds;
+`;
+
+const MIGRATIONS = [SCHEMA, SYNC_SCHEMA, MODERATION_SCHEMA, REPORTS_SCHEMA, USED_IDENTITY_TOKENS_SCHEMA, NAME_HOLDS_SCHEMA];
 
 /** Runs the steps a database has not had yet, each in its own transaction with its version bump. */
 export function migrate(storage: DurableObjectStorage): void {
@@ -692,14 +714,14 @@ export class Hub extends DurableObject<Env> {
     const petChanged = next.petName !== caller.profile.petName;
     if (!nameChanged && !petChanged) return;
     this.requireNotBanned(caller);
-    const hold = this.sql.exec<{ name: string; pet_name: string }>(
-      "SELECT name, pet_name FROM name_holds WHERE code = ?", caller.code).toArray()[0];
-    if (!hold) return;
-    const same = (a: string, b: string) => a.localeCompare(b, undefined, { sensitivity: "base" }) === 0;
-    if (nameChanged && same(next.name, hold.name)) {
+    const holds = this.sql.exec<{ kind: string; value: string }>(
+      "SELECT kind, value FROM name_holds WHERE code = ?", caller.code).toArray();
+    const held = (kind: string, value: string) => holds.some((h) =>
+      h.kind === kind && h.value.localeCompare(value, undefined, { sensitivity: "base" }) === 0);
+    if (nameChanged && held("name", next.name)) {
       throw new HttpError(400, "name_not_allowed", "That name isn't allowed. Please pick another.");
     }
-    if (petChanged && same(next.petName, hold.pet_name)) {
+    if (petChanged && held("pet", next.petName)) {
       throw new HttpError(400, "pet_name_not_allowed", "That pet name isn't allowed. Please pick another.");
     }
   }
@@ -805,10 +827,9 @@ export class Hub extends DurableObject<Env> {
     const row = this.adminTarget(raw);
     this.ctx.storage.transactionSync(() => {
       if (row.name !== DEFAULT_NAME || row.pet_name !== DEFAULT_PET_NAME) {
-        this.sql.exec(
-          `INSERT INTO name_holds (code, name, pet_name, created_at) VALUES (?, ?, ?, ?)
-           ON CONFLICT (code) DO UPDATE SET name = excluded.name, pet_name = excluded.pet_name, created_at = excluded.created_at`,
-          row.code, row.name, row.pet_name, now);
+        const hold = "INSERT OR IGNORE INTO name_holds (code, kind, value, created_at) VALUES (?, ?, ?, ?)";
+        if (row.name !== DEFAULT_NAME) this.sql.exec(hold, row.code, "name", row.name, now);
+        if (row.pet_name !== DEFAULT_PET_NAME) this.sql.exec(hold, row.code, "pet", row.pet_name, now);
         this.sql.exec("UPDATE users SET name = ?, pet_name = ? WHERE code = ?", DEFAULT_NAME, DEFAULT_PET_NAME, row.code);
       }
       this.resolveReportsAbout(row.code, "renamed", now);
@@ -1070,7 +1091,7 @@ export class Hub extends DurableObject<Env> {
     this.sql.exec("UPDATE reports SET reported = ? WHERE reported = ?", to, from);
     this.sql.exec("INSERT OR IGNORE INTO bans (code, created_at) SELECT ?, created_at FROM bans WHERE code = ?", to, from);
     this.sql.exec(
-      "INSERT OR IGNORE INTO name_holds (code, name, pet_name, created_at) SELECT ?, name, pet_name, created_at FROM name_holds WHERE code = ?",
+      "INSERT OR IGNORE INTO name_holds (code, kind, value, created_at) SELECT ?, kind, value, created_at FROM name_holds WHERE code = ?",
       to, from);
     this.purgeUser(from, now);
   }
