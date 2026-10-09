@@ -109,12 +109,14 @@ struct StudySoundMixer: View {
                 .lineLimit(1)
                 .contentTransition(.opacity)
             Spacer(minLength: Theme.Spacing.s)
-            StudyCapsuleToggle(title: "Do Not Disturb", symbol: "bell.slash",
-                               isOn: focus.settings.doNotDisturb,
-                               help: focus.settings.doNotDisturb
-                                   ? "Leave notifications on while studying"
-                                   : "Turn on Do Not Disturb during deep focus (runs your Focus shortcuts)") {
-                focus.settings.doNotDisturb.toggle()
+            if focus.offersDoNotDisturb {
+                StudyCapsuleToggle(title: "Do Not Disturb", symbol: "bell.slash",
+                                   isOn: focus.settings.doNotDisturb,
+                                   help: focus.settings.doNotDisturb
+                                       ? "Leave notifications on while studying"
+                                       : "Turn on Do Not Disturb during deep focus (runs your Focus shortcuts)") {
+                    focus.settings.doNotDisturb.toggle()
+                }
             }
             IconButton(symbol: focus.isPreviewing ? "stop.fill" : "play.fill", help: previewHelp) {
                 focus.setPreviewing(!focus.isPreviewing)

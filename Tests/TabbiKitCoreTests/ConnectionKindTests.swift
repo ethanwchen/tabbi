@@ -20,6 +20,12 @@ final class ConnectionKindTests: XCTestCase {
         XCTAssertEqual(ConnectionKind.relevant(to: [.planner]), [.calendar, .notifications, .doNotDisturb, .claude])
     }
 
+    func testABuildWithoutLocalToolsHidesClaudeAndDoNotDisturb() {
+        XCTAssertEqual(ConnectionKind.relevant(to: [.planner], localTools: false), [.calendar, .notifications])
+        XCTAssertEqual(ConnectionKind.relevant(to: [.claudeAsk, .claudeUsage], localTools: false), [])
+        XCTAssertEqual(ConnectionKind.allCases.filter(\.needsLocalTools), [.doNotDisturb, .claude])
+    }
+
     func testEveryRowExplainsWhatItUnlocksInPlainWords() {
         let banned = ["CLI", "API", "localhost", "port", "error", "JSON", "Automation", "\u{2014}"]
         for kind in ConnectionKind.allCases {

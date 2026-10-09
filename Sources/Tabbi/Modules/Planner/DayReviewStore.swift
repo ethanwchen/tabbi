@@ -20,6 +20,9 @@ final class DayReviewStore: ObservableObject {
     var isSummarizing: Bool { review != nil && review?.summary == nil }
 
     private let isDemo: Bool
+    /// False in a build that can't run the `claude` CLI: the local line
+    /// shows at once.
+    private let usesClaude: Bool
     private let repository: DayReviewRepository?
     private var task: Task<Void, Never>?
     /// Bumped on every open and close so a superseded run can't publish.
@@ -32,9 +35,10 @@ final class DayReviewStore: ObservableObject {
     /// the demo Anki reviews and a sample study tally; `sampleDay` picks
     /// the demo day reviewed.
     init(storage: EditionStorage, studyPreview: Bool = false, sampleDay: PlannerSampleDay = .work,
-         runMode: RunMode) {
+         usesClaude: Bool = true, runMode: RunMode) {
         let environment = ProcessInfo.processInfo.environment
         isDemo = runMode.isDemo
+        self.usesClaude = usesClaude
         repository = isDemo ? nil : DayReviewRepository(storage: storage)
         // Lets demo snapshots render each state: `TABBI_PLANNER_PREVIEW=review`.
         guard isDemo else { return }
@@ -65,6 +69,11 @@ final class DayReviewStore: ObservableObject {
         if isDemo {
             var sample = DayReview.sample(on: day.date, kind: sampleDay, study: study ?? (isStudyDay ? .sample : nil),
                                          progress: progress)
+            // Without Claude the local line shows at once, so there's no wait to preview.
+            guard usesClaude else {
+                review = sample
+                return
+            }
             let summary = sample.summary
             sample.summary = nil
             review = sample
@@ -75,7 +84,12 @@ final class DayReviewStore: ObservableObject {
             return
         }
 
-        let review = DayReviewer.review(of: day, activity: activity, study: study, progress: progress)
+        var review = DayReviewer.review(of: day, activity: activity, study: study, progress: progress)
+        guard usesClaude else {
+            review.summary = DayReviewer.fallbackSummary(for: review)
+            self.review = review
+            return
+        }
         self.review = review
         task = Task { [weak self] in
             let summary = await Self.summary(for: review)

@@ -72,10 +72,15 @@ public enum ConnectionKind: String, CaseIterable, Identifiable, Hashable, Sendab
         }
     }
 
-    /// The connections the enabled modules use, in row order.
-    public static func relevant(to enabled: some Sequence<ModuleID>) -> [ConnectionKind] {
+    /// Whether the connection runs a helper program (the `claude` CLI or
+    /// Shortcuts), which a sandboxed build can't (`Edition.runsLocalTools`).
+    public var needsLocalTools: Bool { self == .claude || self == .doNotDisturb }
+
+    /// The connections the enabled modules use, in row order, leaving out
+    /// those that need helper programs when `localTools` is false.
+    public static func relevant(to enabled: some Sequence<ModuleID>, localTools: Bool = true) -> [ConnectionKind] {
         let enabled = Set(enabled)
-        return allCases.filter { !enabled.isDisjoint(with: $0.modules) }
+        return allCases.filter { !enabled.isDisjoint(with: $0.modules) && (localTools || !$0.needsLocalTools) }
     }
 
     /// A believable spread of states for demo mode and snapshots: most

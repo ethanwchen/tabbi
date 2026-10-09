@@ -72,6 +72,12 @@ public struct Edition: Sendable, Hashable, Identifiable, Decodable {
     /// Whether this is the sandboxed Mac App Store build.
     public var isAppStore: Bool { distribution == .appStore }
 
+    /// Whether the app may run helper programs on this Mac: the `claude` CLI
+    /// (Plan my day with Claude, Refine, the Wrap up summary) and Shortcuts
+    /// (Do Not Disturb). A sandboxed App Store build can't, so those features
+    /// are hidden there rather than failing.
+    public var runsLocalTools: Bool { distribution == .direct }
+
     /// The modules this edition offers: `catalog` without `excludedModules`,
     /// which it remembers as unavailable so kits naming them raise no warning.
     public func catalog(from catalog: ModuleCatalog) -> ModuleCatalog {

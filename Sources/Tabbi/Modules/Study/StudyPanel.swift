@@ -440,7 +440,7 @@ private struct StudyDeepFocusRow: View {
         var parts: [String] = []
         if !settings.mix.isOff { parts.append(settings.mix.summary.lowercased()) }
         if settings.playlist != nil { parts.append("your playlist") }
-        if settings.doNotDisturb { parts.append("Do Not Disturb") }
+        if focus.doNotDisturb { parts.append("Do Not Disturb") }
         switch parts.count {
         case 0: return "nothing yet; pick a sound"
         case 1: return parts[0]

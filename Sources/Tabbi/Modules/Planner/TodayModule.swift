@@ -23,9 +23,11 @@ final class TodayModule: NotchModule {
 
     init(context: ModuleContext) {
         let settings = context.settings
+        let usesClaude = context.edition.runsLocalTools
+        let planSettings = { (kit: KitDefaults?) in TodayPlanSettings(kit: kit).usable(withClaude: usesClaude) }
         store = PlannerStore(focus: context.focusTimer, storage: context.storage,
-                             planSettings: TodayPlanSettings(kit: context.activeKit?.defaults),
-                             activity: context.activityLog, runMode: context.runMode)
+                             planSettings: planSettings(context.activeKit?.defaults),
+                             activity: context.activityLog, usesClaude: usesClaude, runMode: context.runMode)
         providers = context.providers
         focusMode = context.focusMode
         store.followSharedWork(from: context.providers.$snapshot, excluding: context.id)
@@ -35,7 +37,7 @@ final class TodayModule: NotchModule {
             .map(\.kitID)
             .removeDuplicates()
             .sink { [store] id in
-                store.planSettings = TodayPlanSettings(kit: settings.kits.kit(id)?.defaults)
+                store.planSettings = planSettings(settings.kits.kit(id)?.defaults)
             }
             .store(in: &cancellables)
         settings.$settings
@@ -51,7 +53,7 @@ final class TodayModule: NotchModule {
         context.kitApplied
             .sink { [weak self, store] application in
                 // Also when re-applying the same kit, which may have been re-imported.
-                store.planSettings = TodayPlanSettings(kit: application.kit.defaults)
+                store.planSettings = planSettings(application.kit.defaults)
                 switch application.kind {
                 case .switched:
                     self?.starterTasksAdded = store.addStarterTasks(application.kit.starterTasks(answers: application.answers))

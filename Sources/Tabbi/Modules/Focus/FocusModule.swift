@@ -85,5 +85,7 @@ extension ModuleContext {
     /// Focus mode (sound, playlist, Do Not Disturb), which follows the
     /// Pomodoro and Study's deep focus blocks alike. One per app, since it
     /// owns the audio engine and the saved focus settings.
-    var focusMode: FocusController { shared.resolve { FocusController(runMode: runMode) } }
+    var focusMode: FocusController { shared.resolve {
+        FocusController(runMode: runMode, offersDoNotDisturb: edition.runsLocalTools)
+    } }
 }

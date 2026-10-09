@@ -227,6 +227,8 @@ struct SectionFooter: View {
         Text(text)
             .font(.callout)
             .foregroundStyle(.secondary)
+            // Grouped form footers center wrapped lines otherwise.
+            .multilineTextAlignment(.leading)
             .frame(maxWidth: .infinity, alignment: .leading)
     }
 }

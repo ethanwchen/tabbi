@@ -121,5 +121,5 @@ extension Array where Element == ModuleID {
     /// These ids without the modules this build leaves out, so a test reads
     /// the same in the direct build and the App Store build (`APPSTORE`),
     /// which has no Claude modules.
-    var inThisBuild: [ModuleID] { filter(ModuleList.catalog.contains) }
+    @MainActor var inThisBuild: [ModuleID] { filter(ModuleList.catalog.contains) }
 }

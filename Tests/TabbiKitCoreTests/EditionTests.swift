@@ -56,6 +56,7 @@ final class EditionTests: XCTestCase {
     func testTheDirectDownloadKeepsEveryModule() {
         XCTAssertEqual(Edition.tabbi.distribution, .direct)
         XCTAssertFalse(Edition.tabbi.isAppStore)
+        XCTAssertTrue(Edition.tabbi.runsLocalTools)
         XCTAssertEqual(Edition.tabbi.excludedModules, [])
         let catalog = ModuleCatalog([.unknown(.planner), .unknown(.claudeAsk)])
         XCTAssertEqual(Edition.tabbi.catalog(from: catalog), catalog)
@@ -64,6 +65,7 @@ final class EditionTests: XCTestCase {
     func testTheAppStoreEditionIsTabbiWithoutTheCLIModulesAndParty() throws {
         let appStore = try XCTUnwrap(Edition.named("appstore"))
         XCTAssertTrue(appStore.isAppStore)
+        XCTAssertFalse(appStore.runsLocalTools, "a sandboxed build can't run the claude CLI or Shortcuts")
         XCTAssertEqual(appStore.name, Edition.tabbi.name)
         XCTAssertEqual(appStore.bundleIdentifier, Edition.tabbi.bundleIdentifier)
         XCTAssertEqual(appStore.defaultKitID, KitLibrary.defaultKitID)

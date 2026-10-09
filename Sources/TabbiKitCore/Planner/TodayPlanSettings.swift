@@ -89,6 +89,16 @@ public struct TodayPlanSettings: Hashable, Sendable {
         )
     }
 
+    /// These settings for a build that can or can't run the `claude` CLI
+    /// (`Edition.runsLocalTools`): without it a kit's `claude` plan mode
+    /// plans on device instead, so Plan my day never asks for Claude.
+    public func usable(withClaude claude: Bool) -> TodayPlanSettings {
+        guard !claude, planMode == .claude else { return self }
+        var settings = self
+        settings.planMode = .local
+        return settings
+    }
+
     /// The keys `init(kit:)` reads, for `TodayModule`'s descriptor.
     public static let kitSchema = KitSettingsSchema([
         "planMode": .choice(PlanMode.allCases.map(\.rawValue)),
