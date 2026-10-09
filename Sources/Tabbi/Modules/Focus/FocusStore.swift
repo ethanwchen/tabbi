@@ -23,6 +23,8 @@ final class FocusStore: ObservableObject {
     }
     /// The moment the view measures against; advances every second while visible.
     @Published private(set) var now = Date()
+    /// Focus stretches the Pomodoro finished today, from the activity log.
+    @Published private(set) var sessionsToday = 0
 
     private let isDemo: Bool
     /// Demo or snapshot run: nothing is saved, scheduled, played or logged.
@@ -57,6 +59,7 @@ final class FocusStore: ObservableObject {
         isSnapshot = runMode.isSnapshot
         if isDemo {
             timer = Self.demoTimer(now: Date())
+            sessionsToday = 2
             notifications = nil
             return
         }
@@ -87,6 +90,7 @@ final class FocusStore: ObservableObject {
         let wasVisible = isVisible
         if visible { viewers.insert(viewer) } else { viewers.remove(viewer) }
         guard isVisible != wasVisible else { return }
+        if isVisible { countSessionsToday() }
         catchUp()
         updateTicker()
     }
@@ -168,6 +172,15 @@ final class FocusStore: ObservableObject {
     private func record(_ completions: [FocusPhaseCompletion]) {
         guard !isEphemeral, !completions.isEmpty else { return }
         activity?.record(completions.map { $0.activityRecord(config: timer.config, source: FocusModule.descriptor.id) })
+        countSessionsToday()
+    }
+
+    /// Recounts today's finished focus stretches. Runs when a panel appears
+    /// and after each one is logged, so a new day starts over at zero.
+    private func countSessionsToday() {
+        guard !isDemo, let activity else { return }
+        sessionsToday = FocusTimer.sessionsDone(in: activity.records(on: PlannerDayKey(date: Date())),
+                                                source: FocusModule.descriptor.id)
     }
 
     /// Saves the timer and arms the phase-end timer and notification. A user

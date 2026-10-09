@@ -161,4 +161,17 @@ final class FocusTimerTests: XCTestCase {
         XCTAssertEqual(timer.phase, .rest)
         XCTAssertEqual(FocusTimerFormat.status(timer), "Step away for a bit")
     }
+
+    func testSessionsDoneCountsOnlyTheSourcesFinishedFocusStretches() {
+        let config = FocusTimerConfig()
+        let records = [
+            FocusPhaseCompletion(phase: .focus, endedAt: at(1500)).activityRecord(config: config, source: .focus),
+            FocusPhaseCompletion(phase: .rest, endedAt: at(1800)).activityRecord(config: config, source: .focus),
+            FocusPhaseCompletion(phase: .focus, endedAt: at(3300)).activityRecord(config: config, source: .focus),
+            FocusPhaseCompletion(phase: .focus, endedAt: at(3300)).activityRecord(config: config, source: .study),
+        ]
+        XCTAssertEqual(FocusTimer.sessionsDone(in: records, source: .focus), 2)
+        XCTAssertEqual(FocusTimer.sessionsDone(in: [], source: .focus), 0)
+    }
 }
+

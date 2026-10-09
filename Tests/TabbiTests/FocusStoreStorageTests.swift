@@ -65,4 +65,28 @@ final class FocusStoreStorageTests: XCTestCase {
         let day = PlannerDayKey(date: legacy.sessions[0].endedAt)
         XCTAssertEqual(try repository.records(on: day).map(\.kind), [.focusCompleted])
     }
+
+    /// The Focus tab's tally counts today's finished focus stretches, not
+    /// the saved timer's all-time count, which never starts over.
+    func testTheSessionTallyCountsOnlyTodaysPomodoros() throws {
+        FocusTimerStorage(defaults: defaults)
+            .save(FocusTimer(phase: .focus, runState: .idle, config: FocusTimerConfig(), completedFocusCount: 41))
+        let log = ActivityLog(repository: ActivityLogRepository(directory: folder))
+        let now = Date()
+        func focus(_ source: ModuleID, endingAt end: Date) -> ActivityRecord {
+            ActivityRecord(source: source, kind: .focusCompleted, start: end.addingTimeInterval(-1500), end: end)
+        }
+        log.record([
+            focus(FocusModule.descriptor.id, endingAt: now.addingTimeInterval(-86_400)),
+            focus(FocusModule.descriptor.id, endingAt: now),
+            focus(.study, endingAt: now),
+            ActivityRecord(source: FocusModule.descriptor.id, kind: .breakTaken, start: now.addingTimeInterval(-300), end: now),
+        ])
+
+        let store = FocusStore(activity: log, runMode: .live, defaults: defaults)
+        store.setVisible(true, viewer: .focus)
+
+        XCTAssertEqual(store.sessionsToday, 1)
+        XCTAssertEqual(store.timer.completedFocusCount, 41, "the saved count is left as it is")
+    }
 }
