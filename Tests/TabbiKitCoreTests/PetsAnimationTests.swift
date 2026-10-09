@@ -183,6 +183,25 @@ final class PetAnimationTests: XCTestCase {
         }
     }
 
+    func testWalkingScarfWrapsTheNeckAsABandNotAThinStroke() throws {
+        for breed in PetBreed.allCases {
+            let plain = PetComposer.clip(.walk, for: breed)
+            let dressed = PetComposer.clip(.walk, for: breed, accessories: [.scarf])
+            for (index, (a, b)) in zip(plain.frames, dressed.frames).enumerated() {
+                let size = PetComposer.frameSize
+                let changed = (0..<size).flatMap { y in (0..<size).map { (x: $0, y: y) } }
+                    .filter { a.canvas[$0.x, $0.y] != b.canvas[$0.x, $0.y] }
+                let xs = changed.map(\.x), ys = changed.map(\.y)
+                let label = "\(breed) frame \(index)"
+                XCTAssertGreaterThanOrEqual(changed.count, 12, "the scarf is easy to see: \(label)")
+                // A band around the neck spans several rows; the old diagonal stroke spanned three.
+                XCTAssertGreaterThanOrEqual(try XCTUnwrap(ys.max()) - XCTUnwrap(ys.min()), 4, label)
+                XCTAssertLessThanOrEqual(try XCTUnwrap(xs.max()) - XCTUnwrap(xs.min()), 8,
+                                         "the scarf stays at the neck: \(label)")
+            }
+        }
+    }
+
     func testStretchBowsDownAndRisesBackToStanding() throws {
         for breed in PetBreed.allCases {
             let clip = PetComposer.clip(.stretch, for: breed, outfit: .scrubs, accessories: [.stethoscope, .beanie])
