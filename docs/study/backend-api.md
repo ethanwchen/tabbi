@@ -79,6 +79,11 @@ When writing a profile, every field is optional.
 An omitted, `null` or empty-text field keeps its current value (so a name cannot be blanked).
 Changing `species` without a `breed` switches to the first breed of the new species.
 
+Names pass a filter, because friends and party members see them.
+A `name` or `petName` with a slur or an explicit term is refused with `name_not_allowed` or `pet_name_not_allowed` (400), and nothing is saved.
+The terms and the reading rules live in `backend/shared/name-filter.json`: accents, case, look-alike letters, leetspeak, separators and repeated letters are seen through, and short terms only match whole words, so names like Cassandra or Scunthorpe pass.
+The app runs the same filter (`PartyNameFilter`) for instant feedback, and `backend/shared/name-filter-cases.json` holds both to the same cases.
+
 ### Presence
 
 What a user is doing right now, as reported by their last heartbeat.
@@ -128,6 +133,7 @@ To show a countdown, use `phaseEndsAt` and count down locally; do not poll faste
 
 - `code`: 6 characters from the same alphabet as friend codes; share it to invite anyone, friend or not.
 - `members` are in join order; the first one is the longest-standing member.
+  Members I blocked, or who blocked me, are left out.
 - `session` is `null` unless the host started a shared session.
 - `expiresAt` is `lastActive + 43200`: a party disappears after 12 hours without activity.
   Creating, joining, leaving, changing the session and members' polls all count as activity (polls are recorded at most every 10 minutes, so `lastActive` may lag by that much).
@@ -149,6 +155,10 @@ Auth column: "token" means `Authorization: Bearer <token>` is required.
 | `GET /v1/friends` | token | my friends with profile, presence and party |
 | `POST /v1/friends` | token | add a friend by code |
 | `DELETE /v1/friends/{code}` | token | remove a friend |
+| `GET /v1/blocks` | token | the users I blocked |
+| `POST /v1/blocks` | token | block a user |
+| `DELETE /v1/blocks/{code}` | token | unblock a user |
+| `POST /v1/reports` | token | report a user to the maintainer |
 | `POST /v1/presence` | token | heartbeat |
 | `GET /v1/leaderboard` | token | this week's study minutes, me and my friends |
 | `GET /v1/party` | token | my party or `null` |
@@ -159,6 +169,7 @@ Auth column: "token" means `Authorization: Bearer <token>` is required.
 | `DELETE /v1/party/session` | token, host | end the shared session |
 | `GET /v1/sync` | token, Apple account | my sync document and its revision |
 | `PUT /v1/sync` | token, Apple account | replace my sync document if I merged into the current revision |
+| `/v1/admin/...` | admin token | the maintainer's report review, rename and ban, see [Moderation](#moderation-maintainer) |
 
 ### `GET /`
 
@@ -180,19 +191,21 @@ With a valid token it creates nothing and applies the body like `PATCH /v1/me`:
 `200 {"ok": true, "code": "K7QW2MZD", "profile": Profile}`.
 This makes registration safe to retry; if the reply to a first registration was lost, the app has no token yet and simply registers again.
 
-Errors: `invalid_json`, `unknown_field`, `invalid_field`, `body_too_large`, `rate_limited`, `unauthorized` (a token was sent but is unknown), `unavailable`.
+Errors: `invalid_json`, `unknown_field`, `invalid_field`, `name_not_allowed`, `pet_name_not_allowed`, `body_too_large`, `rate_limited`, `unauthorized` (a token was sent but is unknown), `unavailable`.
 
 ### `GET /v1/me`
 
-`200 {"ok": true, "profile": Profile}`
+`200 {"ok": true, "profile": Profile}`, plus `"banned": true` when the maintainer banned this user (see [Moderation](#moderation-maintainer)).
 
 ### `PATCH /v1/me`
 
 Body: any profile fields.
-`200 {"ok": true, "profile": Profile}` with the full updated profile.
+`200 {"ok": true, "profile": Profile}` with the full updated profile, plus `"banned": true` like `GET /v1/me`, so the app learns of a ban when it connects.
 Unchanged profiles cost no storage write, so it is fine to send the whole profile.
 
-Errors: `invalid_json`, `unknown_field`, `invalid_field`, `body_too_large`.
+Errors: `invalid_json`, `unknown_field`, `invalid_field`, `name_not_allowed`, `pet_name_not_allowed`, `banned`, `body_too_large`.
+`name_not_allowed` and `pet_name_not_allowed` also answer a name the maintainer replaced, set again (compared ignoring case and accents).
+A banned user gets `403 banned` for any change of name or pet name; the other fields still save.
 
 ### `DELETE /v1/me`
 
@@ -263,7 +276,9 @@ Errors:
 | --- | --- | --- |
 | 400 | `invalid_field` | not a valid friend code |
 | 400 | `self_friend` | that is my own code |
-| 404 | `unknown_code` | no user has that code |
+| 404 | `unknown_code` | no user has that code, that user blocked me (a block is never revealed), or that user is banned |
+| 403 | `banned` | the maintainer banned me |
+| 409 | `blocked` | I blocked that user; unblock them first |
 | 409 | `friend_limit` | I already have 50 friends |
 | 409 | `their_friend_limit` | they already have 50 friends |
 
@@ -272,6 +287,69 @@ Errors:
 Removes the friendship in both directions.
 `200 {"ok": true, "removed": true}`; `removed` is `false` if we were not friends.
 Errors: `invalid_field` for a malformed code.
+
+### `GET /v1/blocks`
+
+```
+{
+  "ok": true,
+  "blocks": [
+    { "code": "K7QW2MZD", "name": "Ben", "petName": "Mochi", "since": 1789000000 }
+  ]
+}
+```
+
+The users I blocked, newest first, with their current display name and pet name.
+A user who deletes their account drops out of the list.
+
+### `POST /v1/blocks`
+
+Body: `{"code": "K7QW2MZD"}`.
+A block hides two users from each other, whoever blocked whom:
+
+- the friendship ends in both directions, so neither sees the other in `GET /v1/friends` or `GET /v1/leaderboard`;
+- neither can add the other (`POST /v1/friends` answers the blocked user `404 unknown_code` and the blocker `409 blocked`);
+- neither can join a party the other hosts (`404 party_not_found`, as if it did not exist);
+- in a party both are in, the blocked user is removed when I host, I leave when they host, and otherwise the two of us are left out of each other's `members`.
+
+The blocked user is never told.
+`200 {"ok": true, "blocked": true, "block": {"code": "K7QW2MZD", "name": "Ben", "petName": "Mochi"}}`; `blocked` is `false` if I had already blocked them (a no-op success).
+
+Errors:
+
+| HTTP | `error` | Meaning |
+| --- | --- | --- |
+| 400 | `invalid_field` | not a valid friend code |
+| 400 | `self_block` | that is my own code |
+| 404 | `unknown_code` | no user has that code |
+| 409 | `block_limit` | I already blocked 1000 users |
+
+### `DELETE /v1/blocks/{code}`
+
+Lifts my block on that user; only the blocker can.
+The friendship is not restored: either of us can add the other again.
+`200 {"ok": true, "unblocked": true}`; `unblocked` is `false` if I had not blocked them.
+Errors: `invalid_field` for a malformed code.
+
+### `POST /v1/reports`
+
+Body: `{"code": "K7QW2MZD", "reason": "harassment", "note": "optional, up to 280 characters"}`.
+`reason` is one of `inappropriate_name`, `harassment`, `spam` and `other`.
+Stores a report for the maintainer with the reported user's name and pet name as they are now, my friend code, the reason, the note and the time.
+The reported user is never told.
+A report does not hide anyone: the app offers to block as well.
+`201 {"ok": true, "created": true}`.
+Reporting the same user again while my first report is still open updates it instead (`200`, `created: false`).
+
+Errors:
+
+| HTTP | `error` | Meaning |
+| --- | --- | --- |
+| 400 | `invalid_field` | not a valid friend code, an unknown reason, or a note over 280 characters |
+| 400 | `self_report` | that is my own code |
+| 404 | `unknown_code` | no user has that code |
+| 429 | `rate_limited` | more than 5 reports in a minute; wait for `Retry-After` seconds |
+| 429 | `report_limit` | 20 reports in the last 24 hours |
 
 ### `POST /v1/presence`
 
@@ -329,6 +407,7 @@ Polling counts as party activity, which keeps the party alive while anyone has i
 Body: empty or `{}`.
 Creates a party with me as host and only member, leaving any party I was in.
 `201 {"ok": true, "party": Party}`.
+Errors: `banned` (403).
 
 ### `POST /v1/party/join`
 
@@ -345,11 +424,12 @@ Errors:
 | HTTP | `error` | Meaning |
 | --- | --- | --- |
 | 400 | `invalid_field` | neither or both fields, or a malformed code |
-| 404 | `party_not_found` | no active party has that code (it may have expired) |
+| 404 | `party_not_found` | no active party has that code (it may have expired), or its host and I blocked each other |
 | 403 | `not_friend` | that user is not my friend |
 | 409 | `friend_offline` | that friend is not online |
 | 404 | `friend_not_in_party` | that friend is not in a party |
 | 409 | `party_full` | the party already has 8 members |
+| 403 | `banned` | the maintainer banned me |
 
 ### `POST /v1/party/leave`
 
@@ -390,6 +470,61 @@ Otherwise nothing is written and the reply is `409 revision_conflict` with the c
 Writes are limited to 20 per minute per user.
 
 Errors: `no_account` (403), `revision_required` (428, no `If-Match`), `invalid_revision` (400), `revision_conflict` (409), `invalid_json`, `unknown_field`, `invalid_field`, `body_too_large`, `rate_limited`.
+
+## Moderation (maintainer)
+
+Reports wait on the server until the maintainer reads them; nothing happens to a reported user automatically.
+The `/v1/admin/` routes take the Worker secret `ADMIN_TOKEN` as Bearer token.
+Set it once with `npx wrangler secret put ADMIN_TOKEN` (a long random string, for example from `openssl rand -hex 32`); until it is set, every admin route answers `404 not_found`.
+A wrong token gets `401 unauthorized`, and each client IP gets at most 30 admin requests a minute.
+
+| Method and path | Purpose |
+| --- | --- |
+| `GET /v1/admin/reports` | open reports, newest first (at most 100); `?status=all` includes resolved ones |
+| `POST /v1/admin/reports/{id}/dismiss` | close a report without acting on the user |
+| `POST /v1/admin/users/{code}/rename` | replace the user's name and pet name with the placeholders `student` and `buddy` |
+| `POST /v1/admin/users/{code}/ban` | ban the user |
+| `DELETE /v1/admin/users/{code}/ban` | lift a ban |
+
+To review, read the open reports:
+
+```sh
+export TABBI=https://tabbi-friends.drosophil-anki-friends-backend.workers.dev
+export ADMIN_TOKEN=...   # the secret you set
+curl -s -H "Authorization: Bearer $ADMIN_TOKEN" $TABBI/v1/admin/reports | jq
+```
+
+Each report is:
+
+```
+{
+  "id": 12, "createdAt": 1789000000, "reason": "inappropriate_name", "note": "...",
+  "resolvedAt": null, "resolution": null,
+  "reporter": { "code": "AB34CD56", "name": "Ana" },
+  "reported": {
+    "code": "K7QW2MZD", "name": "name when reported", "petName": "pet name when reported",
+    "currentName": "Ben", "currentPetName": "Mochi", "banned": false, "openReports": 3
+  }
+}
+```
+
+`name` and `petName` are what the reporter saw; `currentName` and `currentPetName` are what the user is called now.
+Deleting an account removes every report by or about that user.
+Then act on the user, which closes every open report about them (`resolution` becomes `renamed` or `banned`), or dismiss a single report:
+
+```sh
+curl -s -X POST -H "Authorization: Bearer $ADMIN_TOKEN" $TABBI/v1/admin/users/K7QW2MZD/rename
+curl -s -X POST -H "Authorization: Bearer $ADMIN_TOKEN" $TABBI/v1/admin/users/K7QW2MZD/ban
+curl -s -X POST -H "Authorization: Bearer $ADMIN_TOKEN" $TABBI/v1/admin/reports/12/dismiss
+```
+
+- **Rename** for a bad name: the name and pet name become `student` and `buddy`, and the user cannot set the old ones again (`name_not_allowed`, `pet_name_not_allowed`).
+  Replies `{"ok": true, "profile": Profile}`.
+- **Ban** for harassment or repeated abuse: the user leaves their party and disappears from everyone else's friend lists, parties and leaderboards.
+  They cannot change their name or pet name, add friends, or create or join a party (`403 banned`), and `GET /v1/me` says `"banned": true`.
+  Their data stays, so a ban can be lifted with `DELETE /v1/admin/users/{code}/ban`, which brings their friendships back as they were.
+  Replies `{"ok": true, "banned": true}` (`false` if already banned).
+- Sign in with Apple carries a ban, a rename and reports over when an anonymous user folds into an account.
 
 ## Errors common to all routes
 

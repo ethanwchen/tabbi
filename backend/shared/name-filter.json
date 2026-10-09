@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "about": "Display names and pet names that other people see are checked against these terms, on the server (src/names.ts) and in the app (TabbiKitCore/Party/PartyNameFilter.swift), which must agree. Text is decomposed, stripped of accents, lowercased and passed through substitutions; a character listed under ambiguous is tried as each of its letters. Every other non-letter separates words, as does a change from lower to upper case; a run of single letters (f.u.c.k) joins into one word. A term matches with any of its letters repeated (fuuuck). anywhere terms match inside any word and across separators, so they must have no innocent superstrings; words terms match only a whole word (plus a plural s or es) or the whole joined name (without a last single-letter initial, so Ana L. passes). allow lists harmless words that contain an anywhere term; they are removed before the anywhere check. Terms are letters a-z only.",
+  "substitutions": {
+    "0": "o", "3": "e", "4": "a", "5": "s", "7": "t", "8": "b", "9": "g",
+    "@": "a", "$": "s", "+": "t", "€": "e",
+    "а": "a", "е": "e", "о": "o", "р": "p", "с": "c", "х": "x", "у": "y",
+    "і": "i", "ј": "j", "ѕ": "s", "к": "k", "м": "m", "т": "t",
+    "α": "a", "ο": "o", "ι": "i", "κ": "k", "ν": "v", "ρ": "p", "τ": "t", "υ": "u"
+  },
+  "ambiguous": { "1": "il", "!": "il", "|": "il" },
+  "anywhere": [
+    "arsehole", "asshole", "bastard", "bitch", "blowjob", "bullshit", "cocksucker", "dickhead", "dildo",
+    "faggot", "fuck", "handjob", "hentai", "hitler", "jizz", "killyourself", "milf", "nigga", "nigger",
+    "orgasm", "paedophile", "pedophile", "shithead", "wetback", "whore"
+  ],
+  "allow": ["niggard", "snigger"],
+  "words": [
+    "anal", "anus", "arse", "ass", "boob", "chink", "cock", "coon", "cum", "cunt", "fag", "gook", "kike",
+    "kkk", "kys", "nazi", "paedo", "paki", "pedo", "penis", "porn", "porno", "prick", "puta", "pussy", "rape", "rapist",
+    "retard", "retarded", "sex", "shit", "shitty", "slut", "spic", "tit", "titty", "titties", "tranny",
+    "twat", "vagina", "wank", "wanker", "xxx"
+  ]
+}

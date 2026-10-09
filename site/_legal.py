@@ -17,7 +17,7 @@ MAIL = f'<a href="mailto:{SUPPORT_EMAIL}">{SUPPORT_EMAIL}</a>'
 # Privacy
 # --------------------------------------------------------------------------
 
-PRIVACY_HERO = ('Privacy Policy', 'What stays on your Mac, what leaves it, and how to delete it.')
+PRIVACY_HERO = ('Privacy Policy', 'What stays on your Mac, what the optional friends service and account keep, and how to delete them.')
 
 PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
 
@@ -66,6 +66,9 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
             <tr><td>Study minutes</td><td>Minutes per local calendar day, for the weekly leaderboard.</td><td>28 days</td></tr>
             <tr><td>Friends</td><td>The friend codes you are friends with.</td><td>Until either of you removes the friendship</td></tr>
             <tr><td>Party</td><td>The party you are in and when you joined; for the party itself, its code, host, last activity and the shared session.</td><td>Until the last member leaves, or 12 hours without activity</td></tr>
+            <tr><td>Blocks</td><td>The friend codes you blocked, and when.</td><td>Until you unblock them</td></tr>
+            <tr><td>Reports</td><td>A report you send: the reported person's friend code, their name and pet name at that moment, your friend code, the reason, your optional note (up to 280 characters) and the time.</td><td>Until the reporter or the reported person deletes their data</td></tr>
+            <tr><td>Moderation</td><td>Whether a user is banned, and a name or pet name we replaced, so it cannot be set again.</td><td>Until that user deletes their data</td></tr>
           </tbody>
         </table>
       </div>
@@ -75,6 +78,12 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
       <p class="measure"><strong>Who can see it.</strong> Friends see your profile, presence, whether you are in a party, and your weekly minutes.
         Members of your party see the profile and presence of everyone in it, including people who are not their friends.
         There is no directory or search. <strong>Go invisible</strong> in the Party options shows you as offline to friends.</p>
+      <p class="measure"><strong>Blocking, reporting and bans.</strong> Right-click a friend or a party member in the Party tab to block or report them.
+        Blocking ends your friendship and hides the two of you from each other in friend lists, parties and the leaderboard.
+        They cannot add you again or join a party you host, and they are not told.
+        You can unblock someone from the Blocked list in the Party options.
+        Only we read reports, to decide whether to rename or ban someone, and the person you report is never told who reported them.
+        A banned user keeps their data but no one else sees them, and they cannot change their name or join parties.</p>
 
       <h2 id="account">4. The optional account (Sign in with Apple)</h2>
       <p class="measure">Tabbi works fully without an account.
@@ -113,7 +122,7 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
         <li>Daily study minutes are deleted automatically after 28 days.</li>
       </ul>
       <p class="measure"><strong>Party, everything.</strong> Without an account, open <strong>Settings &gt; Tabs</strong>, click <strong>Options</strong> next to Party, and choose <strong>Delete my Party data</strong>.
-        The server erases your friend code, profile, presence, study minutes and friend list at once, removes you from your friends' lists and your party, and invalidates your secret token.
+        The server erases your friend code, profile, presence, study minutes, friend list, blocks and reports by or about you at once, removes you from your friends' lists and your party, and invalidates your secret token.
         Your pet and points stay on your Mac, and if Party stays on, you get a new friend code.</p>
       <p class="measure"><strong>Your account.</strong> When signed in, open <strong>Settings &gt; General</strong> and choose <strong>Delete Account</strong>.
         The server erases everything above at once: your Party data, your sync document, your Apple link and the tokens of every Mac you signed in on.
@@ -125,6 +134,7 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
       <h2>6. This website</h2>
       <p class="measure">tabbinotch.com has no cookies, no analytics and no scripts.
         It is hosted on Cloudflare Pages, which processes the requests your browser makes, including your IP address, to serve and protect the site.
+        Its fonts load from Google Fonts, so Google receives your IP address and browser details when you visit.
         If you email us, we use your message and address only to reply, and delete the thread when it is no longer needed.</p>
 
       <h2>7. Why we are allowed to</h2>
@@ -132,7 +142,7 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
         We answer email on the basis of our legitimate interest in helping you.</p>
 
       <h2>8. Who else is involved</h2>
-      <p class="measure">We use Cloudflare to host the friends service and this website.
+      <p class="measure">We use Cloudflare to host the friends service and this website, and Google Fonts for the website's typeface.
         If you sign in with Apple, Apple checks the sign-in and, when you delete your account, revokes it.
         We do not sell, rent or share personal information with anyone else, and nothing is used for advertising or to train machine-learning models.
         We would disclose data only if the law required it, and the friends service holds very little to disclose.

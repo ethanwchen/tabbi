@@ -5,7 +5,7 @@ import {
   APPLE_AUTH_PER_MIN, APPLE_CLIENT_ID, APPLE_ISSUER, APPLE_KEYS_URL, APPLE_REVOKE_URL, APPLE_TOKEN_URL, appleSecrets,
   exchangeAuthorizationCode, resetAppleKeyCache, revokeRefreshToken, verifyIdentityToken,
 } from "../src/apple";
-import { call, expectError, freshIp, hub, register } from "./helpers";
+import { admin, call, expectError, freshIp, hub, register } from "./helpers";
 
 // ---------- a fake Apple ----------
 
@@ -144,6 +144,40 @@ describe("POST /v1/auth/apple", () => {
     expect(theirs).toEqual([mac1.code]);
     const board = (await call("GET", "/v1/leaderboard", undefined, r.body.token)).body.entries;
     expect(board.find((e: any) => e.me).minutes).toBe(30);
+  });
+
+  it("carries an anonymous user's blocks, both ways, into the account it folds into", async () => {
+    const mac1 = await register();
+    await signIn({ identityToken: await identityToken("sub.fold.blocks") }, mac1.token);
+    const mac2 = await register();
+    const pest = await register();
+    const blocker = await register();
+    await call("POST", "/v1/friends", { code: mac1.code }, pest.token);
+    await call("POST", "/v1/friends", { code: mac1.code }, blocker.token);
+    await call("POST", "/v1/blocks", { code: pest.code }, mac2.token);
+    await call("POST", "/v1/blocks", { code: mac2.code }, blocker.token);
+
+    const r = await signIn({ identityToken: await identityToken("sub.fold.blocks") }, mac2.token);
+    expect(r.body.code).toBe(mac1.code);
+    const blocks = (await call("GET", "/v1/blocks", undefined, r.body.token)).body.blocks;
+    expect(blocks.map((b: any) => b.code)).toEqual([pest.code]);
+    expect((await call("GET", "/v1/friends", undefined, r.body.token)).body.friends).toEqual([]);
+    expectError(await call("POST", "/v1/friends", { code: mac1.code }, blocker.token), 409, "blocked");
+  });
+
+  it("carries a ban and reports into the account it folds into", async () => {
+    const mac1 = await register();
+    await signIn({ identityToken: await identityToken("sub.fold.ban") }, mac1.token);
+    const mac2 = await register({ name: "Rude" });
+    const reporter = await register();
+    await call("POST", "/v1/reports", { code: mac2.code, reason: "harassment" }, reporter.token);
+    await admin("POST", `/users/${mac2.code}/ban`);
+
+    const r = await signIn({ identityToken: await identityToken("sub.fold.ban") }, mac2.token);
+    expect(r.body.code).toBe(mac1.code);
+    expect((await call("GET", "/v1/me", undefined, r.body.token)).body.banned).toBe(true);
+    const reports = (await admin("GET", "/reports?status=all")).body.reports;
+    expect(reports.find((x: any) => x.reporter.code === reporter.code).reported.code).toBe(mac1.code);
   });
 
   it("does not fold or relink a caller that already belongs to another Apple ID", async () => {

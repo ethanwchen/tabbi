@@ -185,6 +185,14 @@ public struct PartyState: Equatable, Sendable {
         friends.removeAll { $0.profile.code == code }
     }
 
+    /// I blocked someone: they go from my friends and my party's members
+    /// right away. The next party fetch says whether I'm still in it (I
+    /// leave a party they host).
+    public mutating func didBlock(code: String) {
+        didRemoveFriend(code: code)
+        party?.members.removeAll { $0.profile.code == code }
+    }
+
     private static func ordered(_ party: Party) -> Party {
         var party = party
         party.members = PartyRoster.sorted(party.members)
