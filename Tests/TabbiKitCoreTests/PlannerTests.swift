@@ -414,4 +414,10 @@ final class PlannerViewedDayTests: XCTestCase {
         XCTAssertEqual(PlannerViewedDay.yesterday.title, "Yesterday")
         XCTAssertEqual(PlannerViewedDay.tomorrow.title, "Tomorrow")
     }
+
+    func testCalendarCardIsCaptionedForTheDayItLists() {
+        XCTAssertEqual(PlannerViewedDay.today.calendarTitle, "Up next")
+        XCTAssertEqual(PlannerViewedDay.yesterday.calendarTitle, "Yesterday's calendar")
+        XCTAssertEqual(PlannerViewedDay.tomorrow.calendarTitle, "Tomorrow's calendar")
+    }
 }

@@ -150,4 +150,35 @@ final class PlannerDayStepTests: XCTestCase {
         XCTAssertEqual(store.items.last?.title, "Demo plan")
         XCTAssertFalse(FileManager.default.fileExists(atPath: folder.path))
     }
+
+    func testCalendarCardStepsWithTheChecklistAndKeepsTodayForThePreview() {
+        let store = makeStore(runMode: .demo)
+        let todayEvents = store.upNext.events
+        XCTAssertEqual(store.upNext.viewing, .today)
+        XCTAssertEqual(store.upNext.shownEvents, todayEvents)
+
+        store.show(.tomorrow)
+        XCTAssertEqual(store.upNext.viewing, .tomorrow)
+        XCTAssertFalse(store.upNext.shownEvents.isEmpty)
+        XCTAssertTrue(store.upNext.shownEvents.allSatisfy { PlannerDayKey(date: $0.start) == tomorrow })
+        XCTAssertNil(store.upNext.emptySituation)
+        // The closed-notch meeting preview still reads today's events.
+        XCTAssertEqual(store.upNext.events, todayEvents)
+
+        store.show(.yesterday)
+        XCTAssertTrue(store.upNext.shownEvents.allSatisfy { PlannerDayKey(date: $0.start) == yesterday })
+
+        store.show(.today)
+        XCTAssertEqual(store.upNext.shownEvents, todayEvents)
+    }
+
+    func testCalendarWithoutAccessExplainsItselfOnEveryDay() {
+        let store = UpNextStore(runMode: .live)
+        guard store.access != .granted else { return }
+        for day in PlannerViewedDay.allCases {
+            store.show(day)
+            XCTAssertNotNil(store.emptySituation, "\(day)")
+            XCTAssertTrue(store.shownEvents.isEmpty, "\(day)")
+        }
+    }
 }

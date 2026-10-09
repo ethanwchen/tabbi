@@ -174,4 +174,58 @@ public extension UpcomingEvent {
             ),
         ]
     }
+
+    /// Demo events for the day `viewed` names: `samples(now:kind:)` for
+    /// today, and a plain workday at fixed hours for yesterday and tomorrow,
+    /// so stepping the Today panel shows a believable calendar either way.
+    static func samples(
+        _ viewed: PlannerViewedDay,
+        now: Date,
+        kind: PlannerSampleDay = .work,
+        calendar: Calendar = .current
+    ) -> [UpcomingEvent] {
+        guard viewed != .today else { return samples(now: now, kind: kind) }
+        let today = PlannerDayKey(date: now, calendar: calendar)
+        let start = viewed.key(today: today, calendar: calendar).startDate(calendar: calendar)
+        let prefix = viewed == .yesterday ? "demo-yesterday" : "demo-tomorrow"
+        func event(_ id: String, _ title: String, _ hour: Int, _ minute: Int, minutes: Int,
+                   _ color: EventColor, link: MeetingLink? = nil) -> UpcomingEvent {
+            let begins = calendar.date(bySettingHour: hour, minute: minute, second: 0, of: start) ?? start
+            return UpcomingEvent(id: "\(prefix)-\(id)", title: title, start: begins,
+                                 end: begins.addingTimeInterval(TimeInterval(minutes * 60)),
+                                 calendarColor: color, meetingLink: link)
+        }
+        let work = EventColor(red: 0.20, green: 0.55, blue: 0.98)
+        let personal = EventColor(red: 0.98, green: 0.62, blue: 0.20)
+        let school = EventColor(red: 0.36, green: 0.78, blue: 0.47)
+        let clinical = EventColor(red: 0.93, green: 0.35, blue: 0.38)
+        let zoom = MeetingLink(provider: .zoom, url: URL(string: "https://zoom.us/j/5551234567")!)
+        switch (viewed, kind) {
+        case (.yesterday, .work):
+            return [
+                event("standup", "Design standup", 9, 30, minutes: 30, work, link: zoom),
+                event("lunch", "Lunch with Priya", 12, 30, minutes: 60, personal),
+                event("roadmap", "Roadmap review", 15, 0, minutes: 45, work),
+            ]
+        case (.yesterday, .medicine):
+            return [
+                event("lecture", "Pathology lecture", 8, 0, minutes: 90, school),
+                event("rounds", "Ward rounds", 13, 0, minutes: 120, clinical),
+            ]
+        case (.tomorrow, .work):
+            return [
+                event("standup", "Design standup", 9, 30, minutes: 30, work, link: zoom),
+                event("offsite", "Offsite planning", 11, 0, minutes: 60, work),
+                event("one-on-one", "1:1 with Sam", 14, 0, minutes: 30, work),
+                event("gym", "Gym", 18, 0, minutes: 60, personal),
+            ]
+        case (.tomorrow, .medicine):
+            return [
+                event("lecture", "Renal physiology lecture", 8, 0, minutes: 90, school),
+                event("osce", "OSCE practice", 13, 30, minutes: 60, clinical),
+            ]
+        case (.today, _):
+            return samples(now: now, kind: kind)
+        }
+    }
 }

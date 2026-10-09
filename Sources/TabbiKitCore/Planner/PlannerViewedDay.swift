@@ -30,6 +30,16 @@ public enum PlannerViewedDay: Int, CaseIterable, Hashable, Sendable {
         }
     }
 
+    /// The caption of the calendar card beside the list: what's next today,
+    /// or the whole of the other day.
+    public var calendarTitle: String {
+        switch self {
+        case .yesterday: "Yesterday's calendar"
+        case .today: "Up next"
+        case .tomorrow: "Tomorrow's calendar"
+        }
+    }
+
     /// Whether the list can be changed here. Yesterday is a record of what
     /// happened: its leftovers move to today, but it isn't edited.
     public var isEditable: Bool { self != .yesterday }

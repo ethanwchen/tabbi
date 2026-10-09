@@ -28,7 +28,10 @@ final class PlannerStore: ObservableObject {
     /// Why today's list can't be shown or saved.
     @Published private(set) var problem: Problem?
     /// The day the checklist shows. Back to today when the day changes.
-    @Published private(set) var viewing: PlannerViewedDay = .today
+    /// The calendar card beside the list steps along with it.
+    @Published private(set) var viewing: PlannerViewedDay = .today {
+        didSet { upNext.show(viewing) }
+    }
     /// Yesterday's or tomorrow's list while `viewing` names it.
     @Published private(set) var otherDay: PlannerDay?
     /// Why `otherDay` can't be shown or saved.
