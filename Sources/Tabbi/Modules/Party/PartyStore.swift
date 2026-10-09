@@ -85,7 +85,9 @@ final class PartyStore: ObservableObject {
     private var beforeSnapshot: (state: PartyState, celebration: PartyTeamCelebration?)?
     /// Writes a name edited in Party back to the app-wide name.
     private var saveName: ((String) -> Void)?
-    /// True when `TABBI_PARTY_NAME` picked the name a local snapshot renders as.
+    /// True when `TABBI_PARTY_NAME` picked the name a local snapshot renders
+    /// as, or the refused-name demo keeps "Sam" so the app-wide name (empty
+    /// in a demo) doesn't clear the refusal it shows.
     private var pinsName = false
     private var cancellables: Set<AnyCancellable> = []
 
@@ -110,7 +112,10 @@ final class PartyStore: ObservableObject {
             // Stays up (no timer) so the snapshot can catch it.
             if scenario == .celebrating { celebration = .demo(now: Date()) }
             if scenario == .reporting { reporting = state.friends.first?.profile }
-            if scenario == .refusedName { serverRefusedNames = .name }
+            if scenario == .refusedName {
+                serverRefusedNames = .name
+                pinsName = true
+            }
             return
         }
         if isSnapshot, let local = Self.localSnapshotServer(environment) {

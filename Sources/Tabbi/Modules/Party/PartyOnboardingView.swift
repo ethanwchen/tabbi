@@ -229,7 +229,7 @@ private struct PartySetupFriendsCard: View {
         Card(padding: Theme.Spacing.s) {
             VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                 HStack(spacing: Theme.Spacing.xs) {
-                    Text("Your friend code")
+                    Text("Your code")
                         .font(Theme.Typography.caption)
                         .foregroundStyle(Theme.Palette.tertiaryText)
                     Spacer(minLength: Theme.Spacing.xs)
