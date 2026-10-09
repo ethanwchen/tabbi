@@ -113,7 +113,7 @@ through Sparkle. This needs three one-time setup steps on this Mac:
 
   2. Notary credentials in the keychain ($(mark $profile_ok))
      Create an app-specific password at https://account.apple.com, then run:
-       xcrun notarytool store-credentials ${notary_profile:-notchdeck} --apple-id <your Apple ID> --team-id <TEAMID>
+       xcrun notarytool store-credentials ${notary_profile:-tabbi} --apple-id <your Apple ID> --team-id <TEAMID>
      notarytool asks for the password and keeps it in the keychain.
 
   3. Update signing key ($(mark $key_ok))

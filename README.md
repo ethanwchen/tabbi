@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/ethanwchen/notchdeck/releases/latest"><img src="https://img.shields.io/github/v/release/ethanwchen/notchdeck?label=download&color=E8A15F" alt="Latest release"></a>
+  <a href="https://github.com/ethanwchen/tabbi/releases/latest"><img src="https://img.shields.io/github/v/release/ethanwchen/tabbi?label=download&color=E8A15F" alt="Latest release"></a>
   <img src="https://img.shields.io/badge/macOS-14%2B-555?logo=apple" alt="macOS 14 or later">
   <img src="https://img.shields.io/badge/Swift-6-F05138?logo=swift&logoColor=white" alt="Swift 6">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-6B8E5A" alt="MIT License"></a>
@@ -32,7 +32,7 @@ More tabs are one click away in Settings.
 
 ## Install
 
-1. Download `Tabbi-<version>.dmg` from the [latest release](https://github.com/ethanwchen/notchdeck/releases/latest).
+1. Download `Tabbi-<version>.dmg` from the [latest release](https://github.com/ethanwchen/tabbi/releases/latest).
 2. Open it and drag **Tabbi** onto the **Applications** folder.
 3. Open Tabbi from Applications, then click the notch and pick a kit.
 
@@ -141,7 +141,7 @@ It is a small native app with no web views, and tabs only refresh while you can 
 ## Build from source
 
 ```sh
-git clone https://github.com/ethanwchen/notchdeck.git && cd notchdeck
+git clone https://github.com/ethanwchen/tabbi.git && cd tabbi
 scripts/run.sh                                   # build and launch build/Tabbi.app
 TABBI_DEMO=1 swift run Tabbi --snapshot snapshots   # render every panel to PNG with sample data
 ```

@@ -132,7 +132,7 @@ With a Developer ID none of this is needed, which is the real fix.
 ```sh
 # One time on the maintainer's Mac: store credentials in the login keychain.
 # notarytool prompts for the app-specific password; scripts never see it.
-xcrun notarytool store-credentials notchdeck \
+xcrun notarytool store-credentials tabbi \
   --apple-id you@example.com --team-id TEAMID
 # (or --key AuthKey_XXXX.p8 --key-id XXXX --issuer <issuer-uuid> for an App Store Connect API key, preferred in CI)
 
@@ -147,20 +147,20 @@ codesign --verify --strict --verbose=2 build/Tabbi.app
 
 # Notarize the app (as a zip) and staple it, then build, sign, notarize and staple the DMG.
 ditto -c -k --sequesterRsrc --keepParent build/Tabbi.app build/Tabbi.zip
-xcrun notarytool submit build/Tabbi.zip --keychain-profile notchdeck --wait
+xcrun notarytool submit build/Tabbi.zip --keychain-profile tabbi --wait
 xcrun stapler staple build/Tabbi.app
 dmgbuild -s packaging/dmg/settings.py "Tabbi" build/Tabbi.dmg
 codesign --timestamp --sign "Developer ID Application: Name (TEAMID)" build/Tabbi.dmg
-xcrun notarytool submit build/Tabbi.dmg --keychain-profile notchdeck --wait
+xcrun notarytool submit build/Tabbi.dmg --keychain-profile tabbi --wait
 xcrun stapler staple build/Tabbi.dmg
 spctl --assess --type execute -vvv build/Tabbi.app
 spctl --assess --type open --context context:primary-signature -vvv build/Tabbi.dmg
-# On failure: xcrun notarytool log <submission-id> --keychain-profile notchdeck
+# On failure: xcrun notarytool log <submission-id> --keychain-profile tabbi
 ```
 
 A zip cannot be stapled; staple the `.app` and the `.dmg`.
 Stats uses exactly `notarytool submit --keychain-profile ... --wait`, `stapler staple`, `spctl -a -t exec -vvv` (https://github.com/exelban/stats/blob/master/Makefile).
-The keychain profile name `notchdeck` predates the rename and is kept so the maintainer's stored credentials keep working.
+The keychain profile is named `tabbi`.
 Scripts must never read, print or store the credentials themselves; `--keychain-profile` keeps them in the keychain.
 
 ### Entitlements under the Hardened Runtime
@@ -355,7 +355,7 @@ lipo -archs .build/apple/Products/Release/Tabbi                     # x86_64 arm
 
 - `packaging/`: entitlements, `dmgbuild` settings and pinned requirements, the DMG background renderer and the Homebrew cask templates.
 - `scripts/make-dmg.sh <edition>`: renders the background, builds the DMG, signs, notarizes and staples it when a Developer ID is set up.
-- `scripts/release.sh`: universal build, strip, assemble, sign inside-out (Developer ID by default, `--adhoc` fallback), notarize, staple, DMG, appcast, release notes from git and checksums; fails with a friendly two-step setup message when the identity or the `notchdeck` notary profile is missing.
+- `scripts/release.sh`: universal build, strip, assemble, sign inside-out (Developer ID by default, `--adhoc` fallback), notarize, staple, DMG, appcast, release notes from git and checksums; fails with a friendly two-step setup message when the identity or the `tabbi` notary profile is missing.
 - `.github/workflows/release.yml`: `workflow_dispatch` only while the repo is private.
 - App: an install-hygiene folder (move to Applications, single instance, launch at login) that hands off to onboarding through one small call, and a Sparkle updater with "Check for Updates..." in Settings and the notch menu.
 - `docs/install.md`: the non-technical guide, with rendered images and an uninstall section.
@@ -405,7 +405,7 @@ lipo -archs .build/apple/Products/Release/Tabbi                     # x86_64 arm
 
 - `scripts/release.sh --adhoc` for Tabbi 0.1.0: the universal executable shrinks from 29.6 MB to 12.5 MB with `strip -x`; the app is 13 MB, the zip 5.8 MB and the DMG (ULFO) 6.9 MB.
 - `strip` keeps or re-adds the linker's ad-hoc signature, so `codesign` reports "replacing existing signature" when the app is signed; removing the signature before `strip` only silences strip's warning about it.
-- Without a Developer ID identity or the `notchdeck` notary profile, the script stops before the build and lists which of the two setup steps is missing.
+- Without a Developer ID identity or the `tabbi` notary profile, the script stops before the build and lists which of the two setup steps is missing.
 
 ## Measured: install hygiene (iteration 4)
 
