@@ -132,3 +132,19 @@ Description:
 >
 > Private by design: everything stays on your Mac, and there is no account, no tracking and no ads.
 > Macs without a notch get a small virtual one at the top of the screen.
+
+### Screenshots
+
+The five screenshots in [`appstore/screenshots`](appstore/screenshots) are 2880x1800 opaque JPEGs, a size App Store Connect accepts for Mac apps.
+Upload them in file name order: Today, Study, the pet's closet, Focus and Schedule.
+Each shows the open notch panel from the App Store edition's demo data on a soft wallpaper, with a short caption below it.
+Now Playing is left out on purpose, since its panel shows another company's app badge.
+
+To render them again after a UI change, run:
+
+```sh
+swift docs/appstore/make-screenshots.swift
+```
+
+The script renders demo snapshots of the Essentials and Med School kits with `--edition appstore`, so no tab the App Store build leaves out can appear, then composes the screenshots.
+To compose from snapshot folders you already rendered, pass the Essentials folder and then the Med School folder.
