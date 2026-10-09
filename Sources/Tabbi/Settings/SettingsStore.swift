@@ -122,13 +122,12 @@ final class SettingsStore: ObservableObject {
         apply()
     }
 
-    /// A store backed by a throwaway defaults suite, so snapshots always render
-    /// the kit's default layout regardless of the user's saved preferences.
+    /// A store backed by in-memory defaults, so snapshots always render the
+    /// kit's default layout regardless of the user's saved preferences or
+    /// what another snapshot or test run saves at the same time.
     static func ephemeral(catalog: ModuleCatalog, kitID: String = KitLibrary.defaultKitID) -> SettingsStore {
-        let suite = "Tabbi.ephemeral"
-        let defaults = UserDefaults(suiteName: suite) ?? .standard
-        defaults.removePersistentDomain(forName: suite)
-        return SettingsStore(catalog: catalog, defaults: defaults, defaultKitID: kitID, kitStore: nil, integratesWithSystem: false)
+        SettingsStore(catalog: catalog, defaults: InMemoryDefaults(), defaultKitID: kitID, kitStore: nil,
+                      integratesWithSystem: false)
     }
 
     // MARK: Kits
