@@ -12,6 +12,7 @@
   <a href="https://github.com/ethanwchen/tabbi/releases/latest"><img src="https://img.shields.io/github/v/release/ethanwchen/tabbi?label=download&color=E8A15F" alt="Download the latest release"></a>
   <a href="https://buymeacoffee.com/ethanpolar"><img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-ethanpolar-F4D57E?logo=buymeacoffee&logoColor=2A231D" alt="Buy me a coffee"></a>
   <img src="https://img.shields.io/badge/macOS-14%2B-555?logo=apple" alt="macOS 14 or later">
+  <a href="https://github.com/ethanwchen/tabbi/actions/workflows/ci.yml"><img src="https://github.com/ethanwchen/tabbi/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-6B8E5A" alt="MIT License"></a>
 </p>
 

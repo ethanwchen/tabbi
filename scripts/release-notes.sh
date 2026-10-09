@@ -7,9 +7,13 @@
 #
 # Only changes people notice are listed: feat commits under "New", fix under
 # "Fixed" and perf under "Faster", with the conventional-commit prefix
-# removed. Other commit types (docs, test, ci, chore, ...) and the scopes
-# that only concern people building Tabbi (packaging, release) are left out.
-# The notes come from commit messages, so CHANGELOG.md is never edited here.
+# and a trailing pull request number ("(#12)") removed. Other commit types
+# (docs, test, ci, chore, ...) and the scopes that only concern people
+# building Tabbi (packaging, release) are left out.
+# The first release (no earlier v* tag) gets a short welcome instead: its
+# history is the whole development of the app, which means nothing to someone
+# installing it. The notes come from commit messages, so CHANGELOG.md is never
+# edited here.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -18,10 +22,16 @@ name=${2:-Tabbi}
 
 # The release before this one: the newest v* tag that is not this version's.
 previous=$(git describe --tags --abbrev=0 --match 'v*' --exclude "v$version" HEAD 2>/dev/null || true)
-range=${previous:+$previous..}HEAD
+
+echo "## $name $version"
+if [[ -z "$previous" ]]; then
+    echo
+    echo "The first release of $name: a small panel of tabs in your MacBook notch."
+    exit 0
+fi
 
 # One line per commit: "<section>\t<text>", in history order (oldest first).
-entries=$(git log --no-merges --reverse --format=%s "$range" | awk '
+entries=$(git log --no-merges --reverse --format=%s "$previous..HEAD" | awk '
     {
         if (!match($0, /^[a-z]+(\([^)]*\))?!?: /)) next
         type = substr($0, 1, RLENGTH)
@@ -29,6 +39,7 @@ entries=$(git log --no-merges --reverse --format=%s "$range" | awk '
         sub(/[(!:].*/, "", type)
         if (scope ~ /^[a-z]+\((packaging|release)\)/) next
         text = substr($0, RLENGTH + 1)
+        sub(/ \(#[0-9]+\)$/, "", text)
         if (type == "feat") section = 1
         else if (type == "fix") section = 2
         else if (type == "perf") section = 3
@@ -37,7 +48,6 @@ entries=$(git log --no-merges --reverse --format=%s "$range" | awk '
         print section "\t" text
     }')
 
-echo "## $name $version"
 if [[ -z "$entries" ]]; then
     echo
     echo "Small improvements and fixes."
