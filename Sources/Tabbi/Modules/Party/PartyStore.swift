@@ -271,6 +271,15 @@ final class PartyStore: ObservableObject {
         if account != nil { connect() }
     }
 
+    /// The stored identity changed (signed in with Apple, signed out or
+    /// deleted the account, `SyncStore.identityChanged`): drop what the old
+    /// identity showed and reconnect as the new one.
+    func identityDidChange() {
+        guard !isDemo, repository != nil else { return }
+        state.reset(settings: settings)
+        rebuildAccount()
+    }
+
     // MARK: Actions
 
     /// Tries the server again now, after `unreachable` or a stale refresh.

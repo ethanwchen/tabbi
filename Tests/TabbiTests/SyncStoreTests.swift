@@ -163,6 +163,19 @@ final class SyncStoreTests: XCTestCase {
         XCTAssertEqual(server.requestCount, 0)
         XCTAssertFalse(FileManager.default.fileExists(atPath: folder.path))
     }
+
+    func testTheAppHasOneAccountThatSnapshotsShowAsUnavailable() {
+        let types: [any NotchModule.Type] = [PartyModule.self, ClosetModule.self]
+        let settings = SettingsStore.ephemeral(catalog: ModuleList.catalog(of: types))
+        let demo = AppServices(settings: settings, moduleTypes: types, environment: ["TABBI_DEMO": "1"], arguments: [])
+        XCTAssertEqual(demo.accountSync.phase, .signedIn)
+        XCTAssertEqual(demo.accountSync.name, "Sam Rivera")
+
+        let snapshot = AppServices(settings: settings, moduleTypes: types, environment: [:],
+                                   arguments: ["Tabbi", "--snapshot", "out"])
+        XCTAssertEqual(snapshot.accountSync.phase, .unavailable, "a snapshot build cannot sign in")
+        XCTAssertFalse(snapshot.accountSync === demo.accountSync, "each app has its own account")
+    }
 }
 
 /// The friends server's account routes: sign-in, sync and delete.

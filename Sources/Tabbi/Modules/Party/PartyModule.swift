@@ -18,6 +18,7 @@ final class PartyModule: NotchModule {
     )
     let store: PartyStore
     private var completionSubscription: AnyCancellable?
+    private var identitySubscription: AnyCancellable?
     /// Kept alive here: the notification center holds its delegate weakly.
     private let notifications: PartyNotifications?
 
@@ -31,6 +32,9 @@ final class PartyModule: NotchModule {
         store.follow(name: settings.$settings.map(\.displayName).eraseToAnyPublisher(),
                      save: { [weak settings] name in settings?.settings.displayName = name })
         shareConnection(pet: context.studyPet)
+        identitySubscription = context.accountSync.identityChanged.sink { [weak store] in
+            MainActor.assumeIsolated { store?.identityDidChange() }
+        }
         let pet = context.studyPet, log = context.activityLog, celebrations = context.celebrations
         completionSubscription = store.completedSessions.sink { [weak store] completion in
             MainActor.assumeIsolated {
