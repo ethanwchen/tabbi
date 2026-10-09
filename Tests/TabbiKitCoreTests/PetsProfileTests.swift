@@ -285,7 +285,7 @@ final class PetUnlockTests: XCTestCase {
         XCTAssertEqual(ledger.recordStudy(minutes: 25, completed: true), 35)
         XCTAssertTrue(ledger.canBuy(.accessory(.beanie)))
         try ledger.buy(.accessory(.beanie))
-        XCTAssertEqual(ledger.balance, 5)
+        XCTAssertEqual(ledger.balance, 0)
         XCTAssertEqual(ledger.earned, 35)
         XCTAssertEqual(ledger.nextUnlock, .accessory(.roundGlasses))
     }
@@ -295,18 +295,18 @@ final class PetUnlockTests: XCTestCase {
         ledger.recordStudy(minutes: 50, completed: true)
 
         XCTAssertThrowsError(try ledger.buy(.outfit(.scrubs))) { error in
-            XCTAssertEqual(error as? PetPurchaseError, .notEnoughPoints(missing: 40))
+            XCTAssertEqual(error as? PetPurchaseError, .notEnoughPoints(missing: 180))
         }
         XCTAssertEqual(ledger.balance, 60, "a refused purchase costs nothing")
 
-        try ledger.buy(.accessory(.ninjaHeadband))
-        XCTAssertThrowsError(try ledger.buy(.accessory(.ninjaHeadband))) { error in
+        try ledger.buy(.accessory(.roundGlasses))
+        XCTAssertThrowsError(try ledger.buy(.accessory(.roundGlasses))) { error in
             XCTAssertEqual(error as? PetPurchaseError, .alreadyOwned)
         }
         XCTAssertThrowsError(try ledger.buy(.outfit(.none))) { error in
             XCTAssertEqual(error as? PetPurchaseError, .alreadyOwned, "free items are always owned")
         }
-        XCTAssertEqual(ledger.balance, 0)
+        XCTAssertEqual(ledger.balance, 10)
     }
 
     func testLedgerNeverSpendsMoreThanEarned() {
@@ -328,7 +328,7 @@ final class PetUnlockTests: XCTestCase {
 
     func testProfileIsRestrictedToOwnedItems() throws {
         var ledger = PetPointsLedger()
-        ledger.recordStudy(minutes: 200, completed: true)
+        ledger.recordStudy(minutes: 270, completed: true)
         try ledger.buy(.accessory(.stethoscope))
 
         let profile = PetProfile(name: "Pip", breed: .labrador, outfit: .whiteCoat, accessories: [.stethoscope, .beanie])
@@ -342,7 +342,7 @@ final class PetUnlockTests: XCTestCase {
 final class PetSaveTests: XCTestCase {
     func testSaveRoundTripsThroughAFile() throws {
         var ledger = PetPointsLedger()
-        ledger.recordStudy(minutes: 120, completed: true)
+        ledger.recordStudy(minutes: 240, completed: true)
         try ledger.buy(.outfit(.scrubs))
         let profile = PetProfile(
             name: "Nori", breed: .siamese, paletteOverrides: [.costumeBase: PetColor(hex: "#7A5CFF")!],

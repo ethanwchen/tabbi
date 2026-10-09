@@ -201,7 +201,7 @@ extension PetCloset {
     /// rest still to earn.
     public static var demo: PetCloset {
         let ledger = PetPointsLedger(
-            earned: 160, spent: 75,
+            earned: 165, spent: 85,
             purchased: [.accessory(.beanie), .accessory(.roundGlasses)]
         )
         let profile = PetProfile(name: "Mochi", breed: .britishShorthair, accessories: [.scarf, .roundGlasses])

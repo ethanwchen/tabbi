@@ -44,40 +44,45 @@ public enum PetItem: Hashable, Codable, Sendable, CustomStringConvertible {
     public var description: String { id }
 
     /// Price in study points (1 per focused minute, 35 for a finished
-    /// 25 minute block). One starter per playful theme is free, so a new pet
-    /// can dress up right away; the first focus block unlocks the beanie,
-    /// small items take an evening or two, and the showpieces (the
-    /// sorcerer, the graduation cap) are long-term goals. Every price is
+    /// 25 minute block), set against a typical study habit of three blocks
+    /// a day, five days a week (`PetEconomy`, docs/economy.md). One starter
+    /// per playful theme is free, so a new pet can dress up right away.
+    /// Starters take one typical day or less (the first block buys the
+    /// beanie), mid-tier items two to five days, and the showpieces (the
+    /// sorcerer, the graduation cap) two to four weeks. Every price is
     /// distinct, so the shop order never depends on ids.
     public var cost: Int {
         switch self {
         case .outfit(.none), .accessory(.scarf), .accessory(.partyHat), .accessory(.bowTie): 0
-        case .accessory(.beanie): 30
-        case .accessory(.roundGlasses): 45
-        case .accessory(.ninjaHeadband): 60
+        // Starters: up to one typical day (105).
+        case .accessory(.beanie): 35
+        case .accessory(.roundGlasses): 50
+        case .accessory(.ninjaHeadband): 65
         case .accessory(.bunnyEars): 75
         case .accessory(.coolSunglasses): 90
-        case .outfit(.scrubs): 100
-        case .accessory(.flowerCrown): 110
-        case .accessory(.frogHat): 120
-        case .accessory(.stethoscope): 130
-        case .accessory(.cowboyHat): 140
-        case .accessory(.surgicalCap): 150
-        case .accessory(.chefHat): 160
-        case .outfit(.cozyHoodie): 180
-        case .accessory(.chunkyHeadphones): 200
-        case .accessory(.headMirror): 220
-        case .accessory(.witchHat): 240
-        case .accessory(.pirateHat): 260
-        case .accessory(.tinyCrown): 280
-        case .accessory(.wizardHat): 300
-        case .outfit(.whiteCoat): 320
-        case .outfit(.superheroCape): 340
-        case .outfit(.dinosaurHoodie): 360
-        case .outfit(.wizardRobe): 400
-        case .accessory(.astronautHelmet): 420
-        case .accessory(.blindfoldedSorcerer): 450
-        case .accessory(.graduationCap): 500
+        case .accessory(.flowerCrown): 105
+        // Mid-tier: two to five typical days (210 to 525).
+        case .accessory(.frogHat): 210
+        case .outfit(.scrubs): 240
+        case .accessory(.stethoscope): 270
+        case .accessory(.cowboyHat): 300
+        case .accessory(.surgicalCap): 330
+        case .accessory(.chefHat): 360
+        case .outfit(.cozyHoodie): 390
+        case .accessory(.chunkyHeadphones): 420
+        case .accessory(.headMirror): 450
+        case .accessory(.witchHat): 480
+        case .accessory(.pirateHat): 520
+        // Showpieces: two to four typical weeks (1050 to 2100).
+        case .accessory(.tinyCrown): 1050
+        case .accessory(.wizardHat): 1150
+        case .outfit(.whiteCoat): 1250
+        case .outfit(.superheroCape): 1400
+        case .outfit(.dinosaurHoodie): 1500
+        case .outfit(.wizardRobe): 1650
+        case .accessory(.astronautHelmet): 1800
+        case .accessory(.blindfoldedSorcerer): 1950
+        case .accessory(.graduationCap): 2100
         }
     }
 
