@@ -115,8 +115,10 @@ public struct PendingMediaModes: Equatable, Sendable {
 
 extension MediaSource {
     /// The script that likes or unlikes `track`, or nil when the app can't
-    /// do that for it. Music favorites by script; Spotify's scripting has
-    /// no like, so its heart stays hidden.
+    /// do that for it. Music favorites by script. Spotify's scripting has
+    /// no like, and saving to Liked Songs needs the Web API, which means a
+    /// registered client, the user's sign-in and calls to api.spotify.com,
+    /// so its heart stays hidden instead.
     public func setFavoriteScript(_ isFavorite: Bool, for track: SpotifyTrack) -> String? {
         guard track.isFavorite != nil else { return nil }
         switch self {
