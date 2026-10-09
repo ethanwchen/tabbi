@@ -183,8 +183,11 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
             return PetPalette([.furBase: c("#E88D3C"), .furShade: c("#C76F28"), .furAccent: c("#F2A65A"),
                                .belly: c("#FFF6EA"), .nose: c("#2E2224"), .outline: c("#3A1E10")])
         case .dachshund:
+            // Black and tan: tan brow dots, muzzle, chest and paws, and the
+            // breed's warm dark brown eyes. An amber iris merged with the tan
+            // brow above it into one glowing orange block.
             return PetPalette([.furBase: c("#302729"), .furShade: c("#221B1D"), .furAccent: c("#3E3337"),
-                               .belly: c("#C9803F"), .eye: c("#B8763A"), .pupil: c("#5A3418"),
+                               .belly: c("#C9803F"), .eye: c("#8A5632"), .pupil: c("#4A2A1A"),
                                .eyeLight: c("#FFFFFF"),
                                .nose: c("#1E1618")])
         case .beagle:

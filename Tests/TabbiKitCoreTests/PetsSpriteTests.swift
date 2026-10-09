@@ -418,6 +418,13 @@ final class PetEyeTests: XCTestCase {
         }
     }
 
+    /// The black and tan dachshund has dark brown eyes under tan brow dots.
+    /// An iris as light as the tan merged with the brow into one glowing block.
+    func testDachshundEyesStayDarkerThanItsTanBrows() {
+        let palette = PetBreed.dachshund.palette
+        XCTAssertLessThan(palette[.eye].luminance * 2, palette[.belly].luminance)
+    }
+
     /// No breed looks out through a thin slit: every pupil is at least two
     /// pixels wide somewhere, which reads as a soft, friendly eye.
     func testPupilsAreRoundNotSlits() {
