@@ -29,6 +29,10 @@ import { STUDY_DAY_RETENTION_DAYS, rankEntries } from "./leaderboard";
 import {
   ADMIN_REPORTS_PAGE, MAX_BLOCKS, MAX_REPORTS_PER_DAY, REPORTS_PER_MIN, REPORT_FIELDS, parseReport,
 } from "./moderation";
+import {
+  ADMIN_SUGGESTIONS_PAGE, MAX_SUGGESTIONS_PER_DAY, SUGGESTIONS_PER_DAY, SUGGESTIONS_PER_MIN, SUGGESTION_RETENTION_DAYS, THANKS_URL,
+  formErrorPage, isFormPost, parseSuggestion, readSuggestionBody,
+} from "./suggestions";
 import { JOIN_FIELDS, PARTY_TOUCH_S, PartySession, SESSION_FIELDS, parseJoin, parseSession, partyExpired } from "./party";
 
 export interface Env extends AppleSecrets, AdminSecrets {
@@ -215,6 +219,19 @@ CREATE TABLE grants (
 ) WITHOUT ROWID;
 `;
 
+/** The recommendations inbox (see suggestions.ts). Not linked to any user: the form needs no account. */
+const SUGGESTIONS_SCHEMA = `
+-- An idea sent through the website's Suggest form, with the optional address to reply to.
+CREATE TABLE suggestions (
+  id         INTEGER PRIMARY KEY,
+  category   TEXT NOT NULL,
+  message    TEXT NOT NULL,
+  email      TEXT,
+  created_at INTEGER NOT NULL
+);
+CREATE INDEX suggestions_by_created_at ON suggestions (created_at);
+`;
+
 /**
  * Ordered schema steps; step i brings the database to version i + 1. Append new steps and never edit
  * one that has been deployed. Step 1 is the original schema, written with IF NOT EXISTS so databases
@@ -222,6 +239,7 @@ CREATE TABLE grants (
  */
 const MIGRATIONS = [
   SCHEMA, SYNC_SCHEMA, MODERATION_SCHEMA, REPORTS_SCHEMA, USED_IDENTITY_TOKENS_SCHEMA, NAME_HOLDS_SCHEMA, GRANTS_SCHEMA,
+  SUGGESTIONS_SCHEMA,
 ];
 
 /** Runs the steps a database has not had yet, each in its own transaction with its version bump. */
@@ -314,8 +332,8 @@ interface LivePresence {
 /** How often the alarm deletes data past its retention (see `Hub.alarm`). */
 export const RETENTION_SWEEP_S = 3600;
 
-function rateLimited(minute: number, now: number): HttpError {
-  const retry = Math.max(1, (minute + 1) * 60 - now);
+function rateLimited(end: number, now: number): HttpError {
+  const retry = Math.max(1, end - now);
   return new HttpError(429, "rate_limited", "too many requests", { "Retry-After": String(retry) });
 }
 
@@ -329,7 +347,7 @@ interface Caller {
 
 export class Hub extends DurableObject<Env> {
   private sql: SqlStorage;
-  private windows = new Map<string, { minute: number; count: number }>();
+  private windows = new Map<string, { end: number; count: number }>();
   /**
    * Live presence by friend code, plus when each entry was last written to SQLite. Heartbeats update
    * this map every time but write a row only on a visible change or every PRESENCE_FLUSH_S, which keeps
@@ -359,7 +377,8 @@ export class Hub extends DurableObject<Env> {
   }
 
   /**
-   * Deletes every expired party, study minutes past their retention and spent identity token hashes.
+   * Deletes every expired party, study minutes past their retention, spent identity token hashes and old
+   * suggestions.
    * Study minutes have no index by day, so that scan runs once per UTC day (again after an eviction,
    * which is harmless) rather than every hour.
    */
@@ -370,6 +389,7 @@ export class Hub extends DurableObject<Env> {
       this.sql.exec("DELETE FROM party_members WHERE party IN (SELECT code FROM parties WHERE last_active <= ?)", idleSince);
       this.sql.exec("DELETE FROM parties WHERE last_active <= ?", idleSince);
       this.sql.exec("DELETE FROM used_identity_tokens WHERE expires_at < ?", now);
+      this.sql.exec("DELETE FROM suggestions WHERE created_at < ?", now - SUGGESTION_RETENTION_DAYS * 86_400);
       if (this.studyDaysSweptOn !== today) {
         this.sql.exec("DELETE FROM study_days WHERE day < ?", utcDay(now - STUDY_DAY_RETENTION_DAYS * 86_400));
       }
@@ -404,6 +424,7 @@ export class Hub extends DurableObject<Env> {
     }
 
     if (path === "/v1/auth/apple" && method === "POST") return await this.signInWithApple(req, now);
+    if (path === "/v1/suggestions" && method === "POST") return await this.suggest(req, now);
     if (path.startsWith("/v1/admin/")) return await this.admin(req, path, method, now);
 
     const caller = await this.authenticate(req, now);
@@ -471,23 +492,26 @@ export class Hub extends DurableObject<Env> {
     return { code: row.code, tokenHash, profile: rowToProfile(row) };
   }
 
-  /** Fixed one-minute window per identity. Old windows are dropped lazily when the minute rolls over. */
-  private rateLimit(id: string, perMinute: number, now: number): void {
-    const minute = Math.floor(now / 60);
+  /**
+   * Fixed window per identity: one minute unless `windowS` says otherwise (a window starts at a
+   * multiple of its length). Ended windows are dropped lazily once the map grows large.
+   */
+  private rateLimit(id: string, perWindow: number, now: number, windowS = 60): void {
     if (this.windows.size > 10_000) {
-      for (const [k, w] of this.windows) if (w.minute !== minute) this.windows.delete(k);
+      for (const [k, w] of this.windows) if (w.end <= now) this.windows.delete(k);
     }
+    const end = (Math.floor(now / windowS) + 1) * windowS;
     const w = this.windows.get(id);
-    const count = w && w.minute === minute ? w.count + 1 : 1;
-    this.windows.set(id, { minute, count });
-    if (count > perMinute) throw rateLimited(minute, now);
+    const count = w && w.end === end ? w.count + 1 : 1;
+    this.windows.set(id, { end, count });
+    if (count > perWindow) throw rateLimited(end, now);
   }
 
   /** Throws 429 if `id` has already used up this minute's window, without counting a request. */
   private checkLimit(id: string, perMinute: number, now: number): void {
-    const minute = Math.floor(now / 60);
+    const end = (Math.floor(now / 60) + 1) * 60;
     const w = this.windows.get(id);
-    if (w && w.minute === minute && w.count >= perMinute) throw rateLimited(minute, now);
+    if (w && w.end === end && w.count >= perMinute) throw rateLimited(end, now);
   }
 
   // ---------- admin ----------
@@ -519,6 +543,9 @@ export class Hub extends DurableObject<Env> {
     if (user && user[2] === "ban" && method === "POST") return this.adminBan(user[1], now);
     if (user && user[2] === "ban" && method === "DELETE") return this.adminUnban(user[1]);
     if (path === "/v1/admin/grants" && method === "POST") return await this.adminGrantCohort(req, now);
+    if (path === "/v1/admin/suggestions" && method === "GET") return this.adminSuggestions(new URL(req.url).searchParams.get("before"));
+    const suggestion = /^\/v1\/admin\/suggestions\/(\d+)$/.exec(path);
+    if (suggestion && method === "DELETE") return this.adminDeleteSuggestion(Number(suggestion[1]));
     const grants = /^\/v1\/admin\/users\/([^/]+)\/grants$/.exec(path);
     if (grants && method === "GET") return this.adminListGrants(grants[1]);
     if (grants && method === "POST") return await this.adminGrant(req, grants[1], now);
@@ -545,6 +572,50 @@ export class Hub extends DurableObject<Env> {
     console.log("admin: restoring storage to " + ("at" in target ? `time ${target.at}` : "a bookmark"));
     setTimeout(() => this.ctx.abort("restoring a backup"), 100);
     return json({ ok: true, undoBookmark });
+  }
+
+  // ---------- suggestions ----------
+
+  /**
+   * POST /v1/suggestions (see suggestions.ts). A form post is answered with a 303 redirect to the site's
+   * thank-you page, or an HTML page when it cannot be accepted; a JSON post with JSON. A filled-in
+   * honeypot gets the same success reply but is not stored.
+   */
+  private async suggest(req: Request, now: number): Promise<Response> {
+    const form = isFormPost(req);
+    try {
+      const client = clientKey(req);
+      this.rateLimit("suggest:" + client, SUGGESTIONS_PER_MIN, now);
+      this.rateLimit("suggestday:" + client, SUGGESTIONS_PER_DAY, now, 86_400);
+      const suggestion = parseSuggestion(await readSuggestionBody(req));
+      if (suggestion) {
+        const today = this.sql.exec<{ n: number }>("SELECT COUNT(*) AS n FROM suggestions WHERE created_at > ?", now - 86_400).one().n;
+        if (today >= MAX_SUGGESTIONS_PER_DAY) throw new HttpError(503, "inbox_full", "the inbox takes no more suggestions today");
+        this.sql.exec("INSERT INTO suggestions (category, message, email, created_at) VALUES (?, ?, ?, ?)",
+          suggestion.category, suggestion.message, suggestion.email, now);
+      }
+      if (form) return new Response(null, { status: 303, headers: { Location: THANKS_URL, "Cache-Control": "no-store" } });
+      return json({ ok: true }, 201);
+    } catch (e) {
+      if (form && e instanceof HttpError) return formErrorPage(e);
+      throw e;
+    }
+  }
+
+  /** GET /v1/admin/suggestions[?before=id]: a page of suggestions, newest first; `before` pages further back. */
+  private adminSuggestions(before: string | null): Response {
+    if (before !== null && !/^\d{1,15}$/.test(before)) throw new HttpError(400, "invalid_field", "invalid before");
+    const rows = this.sql.exec<{ id: number; category: string; message: string; email: string | null; created_at: number }>(
+      "SELECT * FROM suggestions WHERE id < ? ORDER BY id DESC LIMIT ?", before === null ? Number.MAX_SAFE_INTEGER : Number(before),
+      ADMIN_SUGGESTIONS_PAGE,
+    ).toArray();
+    const suggestions = rows.map((r) => ({ id: r.id, createdAt: r.created_at, category: r.category, message: r.message, email: r.email }));
+    return json({ ok: true, suggestions, more: rows.length === ADMIN_SUGGESTIONS_PAGE });
+  }
+
+  /** DELETE /v1/admin/suggestions/{id}: removes a suggestion once it has been read or answered. */
+  private adminDeleteSuggestion(id: number): Response {
+    return json({ ok: true, deleted: this.sql.exec("DELETE FROM suggestions WHERE id = ?", id).rowsWritten > 0 });
   }
 
   // ---------- profile ----------

@@ -34,6 +34,12 @@ To check a sign-in and to revoke it on deletion, the Worker talks to Apple (`app
 Cloudflare, which hosts the Worker, sees connection metadata like any web host.
 The Worker uses the client IP only in memory to rate-limit registration, sign-ins and bad tokens, and never writes it to storage.
 
+## Suggestions from the website
+
+The website's Suggest form sends the service an idea: its category, the message and, only if you add one, an email address to reply to, with the time it arrived.
+A suggestion is not linked to a friend code, an account or an IP address.
+Only the maintainer reads it, uses the email only to ask about or reply to that idea, and deletes it when it is no longer needed, at the latest after 365 days.
+
 ## Who can see it
 
 - **Friends** (friendship is mutual and needs your friend code) see your profile, your presence (shown as `offline` once heartbeats stop), whether you are in a party with its code and size, and your weekly study minutes on the leaderboard.

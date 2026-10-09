@@ -170,7 +170,8 @@ Auth column: "token" means `Authorization: Bearer <token>` is required.
 | `GET /v1/sync` | token, Apple account | my sync document and its revision |
 | `PUT /v1/sync` | token, Apple account | replace my sync document if I merged into the current revision |
 | `GET /v1/grants` | token | the limited edition items the maintainer granted me |
-| `/v1/admin/...` | admin token | the maintainer's report review, rename and ban, see [Moderation](#moderation-maintainer), and limited edition grants, see [Limited edition grants](#limited-edition-grants-maintainer) |
+| `POST /v1/suggestions` | none | the website's Suggest form: send the maintainer an idea |
+| `/v1/admin/...` | admin token | the maintainer's report review, rename and ban, see [Moderation](#moderation-maintainer), limited edition grants, see [Limited edition grants](#limited-edition-grants-maintainer), and the suggestions inbox, see [Suggestions](#suggestions-maintainer) |
 
 ### `GET /`
 
@@ -484,6 +485,29 @@ Any user, signed in with Apple or not, so a Party identity without an account ge
 The app adds each id it knows to the Closet as a granted item and never takes one back, so a later revoke only stops new Macs from getting it.
 It asks once per launch, wake and identity (Party after it connects, sync after its first round when signed in), so a grant shows up on the next launch or wake.
 
+### `POST /v1/suggestions`
+
+The website's Suggest page (`site/build.py`) posts here; the app never does.
+It takes no token, and its body is either the form's `application/x-www-form-urlencoded` fields or a JSON object (sent with CORS, like every route) with the same names:
+
+| Field | Rules |
+| --- | --- |
+| `category` | required: `tab` (a new tab), `integration`, `improvement` or `other` |
+| `message` | required: 10 to 2000 characters after trimming; line breaks are kept, other control and invisible characters removed |
+| `email` | optional: one address of at most 254 characters, only to reply about the idea; empty means none |
+| `website` | the honeypot: people never see it, so it must be empty or absent |
+
+Any other field, a repeated form field or a body over 32 KB is refused.
+A post whose `website` is filled in gets the success reply but is not stored.
+
+- A form post is answered `303 See Other` to `https://tabbinotch.com/thanks`.
+  When it cannot be accepted, the reply is a short HTML page with the HTTP status of the error, what went wrong and a link back to the form.
+- A JSON post is answered `201 {"ok": true}`, or with the usual JSON errors.
+- Any other content type is `415 unsupported_media_type`.
+
+Limits: 3 posts a minute and 20 a UTC day per client IP (`429 rate_limited` with `Retry-After`), and 500 stored suggestions per rolling 24 hours from everyone (`503 inbox_full`).
+Errors: `invalid_field`, `unknown_field`, `invalid_json`, `body_too_large`, `unsupported_media_type`, `rate_limited`, `inbox_full`.
+
 ### Operator routes
 
 `GET /v1/admin/export` and `POST /v1/admin/restore` are for whoever runs the server, never for the app; see [`../security.md`](../security.md).
@@ -590,6 +614,24 @@ curl -s -X DELETE -H "Authorization: Bearer $ADMIN_TOKEN" $TABBI/v1/admin/users/
 Granting is idempotent, so running the launch-week command twice adds nothing.
 Each new grant is one row write; a cohort of 10,000 users costs 10,000 of the free plan's 100,000 daily row writes, so grant large cohorts once and early in the UTC day.
 Grants follow a user when an anonymous user signs in with Apple and folds into an account, and are deleted with the account.
+
+## Suggestions (maintainer)
+
+Suggestions from the website wait in the inbox until the maintainer deletes them, and for at most 365 days.
+The same `ADMIN_TOKEN` rules as the moderation routes apply.
+
+| Method and path | Purpose |
+| --- | --- |
+| `GET /v1/admin/suggestions` | the newest 100 suggestions: `{ok, suggestions, more}`; `?before={id}` returns the 100 before that id when `more` is `true` |
+| `DELETE /v1/admin/suggestions/{id}` | delete a suggestion once it is read or answered: `{ok, deleted}` (`false` if no such id) |
+
+```sh
+curl -s -H "Authorization: Bearer $ADMIN_TOKEN" $TABBI/v1/admin/suggestions | jq '.suggestions[]'
+curl -s -X DELETE -H "Authorization: Bearer $ADMIN_TOKEN" $TABBI/v1/admin/suggestions/42
+```
+
+Each suggestion is `{"id": 42, "createdAt": 1789000000, "category": "tab", "message": "...", "email": null}`.
+Nothing ties a suggestion to a friend code, an IP address or anything else.
 
 ## Errors common to all routes
 
