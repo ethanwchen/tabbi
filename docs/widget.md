@@ -66,7 +66,7 @@ The extension is signed on its own, before the app, with `packaging/TabbiWidget.
 
 | Build | Script | Extension signature |
 | --- | --- | --- |
-| Local | `scripts/bundle.sh` | ad-hoc, with the widget entitlements |
+| Local | `scripts/bundle.sh` | ad-hoc (or `SIGN_IDENTITY`), with the widget entitlements |
 | Direct download | `scripts/release.sh` | Developer ID, Hardened Runtime, the widget entitlements |
 | Direct, `--adhoc` | `scripts/release.sh --adhoc` | ad-hoc, with the widget entitlements |
 | Mac App Store | `scripts/release-appstore.sh` | Apple Distribution, the widget entitlements, its own embedded profile |
@@ -76,10 +76,24 @@ Without it, macOS 15 and later may ask the user before an app may write to anoth
 
 An ad-hoc signed extension loads and renders in the widget gallery; WidgetKit does not require a Developer ID or a provisioning profile.
 An ad-hoc signed app with the entitlement writes the shared file with no prompt.
+An ad-hoc signed widget cannot read it, though.
+For a sandboxed process, macOS 15 and later only open a team-prefixed group container when the signature proves the team (the "team ID prefix" check), and an ad-hoc signature has no team.
+Any other process would get the "access data from other apps" prompt, but macOS never shows it for a widget, so the read is denied and the widget shows its empty state ("0 min, No focus yet") and the starter pet.
+The log says so:
+
+```
+tccd: Preventing prompt from Avocado widget ... for service kTCCServiceSystemPolicyAppData
+kernel: (Sandbox) System Policy: TabbiWidget(...) deny(1) file-read-data .../Group Containers/B9VRALHV8S.dev.tabbi.Tabbi/WidgetState.json
+```
+
+So the widget shows real data only in builds signed by team `B9VRALHV8S`: `release.sh` (Developer ID), `release-appstore.sh` (Apple Distribution), or a local build made with `SIGN_IDENTITY="Developer ID Application" scripts/bundle.sh`.
+A widget signed by team `B9VRALHV8S` passes that check (`containermanagerd: Signature passed strict scrutiny; test = team ID prefix`) and reads the file with no denial.
+`release.sh --adhoc` and a plain `bundle.sh` are fine for checking the layout in the gallery, which always shows the sample.
 
 ## Seeing it locally
 
 1. `scripts/bundle.sh` builds `build/Tabbi.app` with the extension inside.
+   Add `SIGN_IDENTITY="Developer ID Application"` to see the app's real data on the desktop and not only the gallery sample (see Signing).
 2. Open the app once from where it will stay (macOS registers an app's extensions when it launches or is registered with LaunchServices).
 3. Right-click the desktop, choose Edit Widgets and search for Tabbi.
 
