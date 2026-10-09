@@ -16,21 +16,17 @@ public struct StudyCustomRhythm: Codable, Hashable, Sendable {
         case longBreakEvery
 
         /// Allowed values, in minutes (or rounds for `longBreakEvery`).
-        public var range: ClosedRange<Int> {
-            switch self {
-            case .focus: 5...180
-            case .shortBreak: 1...60
-            case .longBreak: 5...60
-            case .longBreakEvery: 2...8
-            }
-        }
+        public var range: ClosedRange<Int> { stepper.min...stepper.max }
 
         /// How far one stepper click moves the value.
-        public var step: Int {
-            switch self {
-            case .focus, .longBreak: 5
-            case .shortBreak, .longBreakEvery: 1
+        public var step: Int { stepper.step }
+
+        /// The field's limits from `study-methods.json`, which defines every field.
+        private var stepper: StudyMethodFile.Stepper {
+            guard let stepper = StudyMethodDefinitions.file.custom.fields[rawValue] else {
+                preconditionFailure("study-methods.json has no custom field \"\(rawValue)\"")
             }
+            return stepper
         }
     }
 
@@ -41,8 +37,13 @@ public struct StudyCustomRhythm: Codable, Hashable, Sendable {
     public let longBreakEvery: Int
     public let hasLongBreak: Bool
 
-    public init(focusMinutes: Int, breakMinutes: Int, longBreakMinutes: Int = 15,
-                longBreakEvery: Int = 4, hasLongBreak: Bool = false) {
+    /// The long break a fresh rhythm keeps ready (15 min after every 4th
+    /// round), from `study-methods.json`.
+    public static let defaultLongBreakMinutes = Int(StudyMethodDefinitions.file.custom.longBreak.minutes)
+    public static let defaultLongBreakEvery = StudyMethodDefinitions.file.custom.longBreak.every
+
+    public init(focusMinutes: Int, breakMinutes: Int, longBreakMinutes: Int = defaultLongBreakMinutes,
+                longBreakEvery: Int = defaultLongBreakEvery, hasLongBreak: Bool = false) {
         self.focusMinutes = Self.clamp(focusMinutes, .focus)
         self.breakMinutes = Self.clamp(breakMinutes, .shortBreak)
         self.longBreakMinutes = Self.clamp(longBreakMinutes, .longBreak)
@@ -62,8 +63,12 @@ public struct StudyCustomRhythm: Codable, Hashable, Sendable {
         )
     }
 
-    /// 30 min focus, 5 min break, no long break.
-    public static let standard = StudyCustomRhythm(focusMinutes: 30, breakMinutes: 5)
+    /// The Custom preset's lengths (30 min focus, 5 min break), with no long break.
+    public static let standard: StudyCustomRhythm = {
+        let preset = StudyMethod.preset(.custom)
+        let minutes = { (phase: StudyPhaseKind) in Int((preset.duration(of: phase) ?? 0) / 60) }
+        return StudyCustomRhythm(focusMinutes: minutes(.focus), breakMinutes: minutes(.shortBreak))
+    }()
 
     /// The value of `field`.
     public subscript(field: Field) -> Int {

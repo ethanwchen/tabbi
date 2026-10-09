@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tabbi.app/schemas/study-methods.v1.schema.json",
+  "title": "Tabbi study methods (study-methods.v1)",
+  "description": "Sources/TabbiKitCore/StudyMethods/study-methods.json: every study method in picker order with its default parameters and info copy, the phase length limits, the Anki sprint break hint, and the limits of the Timer and Custom steppers. How a session moves between phases, Flowtime breaks and stepping are code, pinned by shared/fixtures/study-methods/study-methods.json. Lengths are minutes.",
+  "type": "object",
+  "required": ["schema", "phaseMinutes", "footnote", "evidenceLevels", "ankiSprint", "timer", "custom", "methods"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "study-methods.v1" },
+    "phaseMinutes": {
+      "description": "Every timed phase is clamped to this range, so no value makes a zero-length phase.",
+      "type": "object",
+      "required": ["min", "max"],
+      "additionalProperties": false,
+      "properties": { "min": { "type": "number", "exclusiveMinimum": 0 }, "max": { "type": "number", "exclusiveMinimum": 0 } }
+    },
+    "footnote": { "description": "Shown under every method's info popover.", "type": "string", "minLength": 1 },
+    "evidenceLevels": {
+      "description": "The badge text of each evidence rating.",
+      "type": "object",
+      "required": ["strong", "mixed", "weak"],
+      "additionalProperties": false,
+      "properties": {
+        "strong": { "type": "string", "minLength": 1 },
+        "mixed": { "type": "string", "minLength": 1 },
+        "weak": { "type": "string", "minLength": 1 }
+      }
+    },
+    "ankiSprint": {
+      "description": "A sprint suggests a break after this many cards or this long, whichever comes first.",
+      "type": "object",
+      "required": ["breakAfterCards", "breakAfterMinutes"],
+      "additionalProperties": false,
+      "properties": {
+        "breakAfterCards": { "type": "integer", "minimum": 1 },
+        "breakAfterMinutes": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    },
+    "timer": {
+      "description": "The plain Timer's stepper range and one-click lengths. Its starting length is the timer method's focus.",
+      "type": "object",
+      "required": ["minMinutes", "maxMinutes", "presetMinutes"],
+      "additionalProperties": false,
+      "properties": {
+        "minMinutes": { "type": "integer", "minimum": 1 },
+        "maxMinutes": { "type": "integer", "minimum": 1 },
+        "presetMinutes": { "type": "array", "items": { "type": "integer", "minimum": 1 } }
+      }
+    },
+    "custom": {
+      "description": "The Custom method's steppers. Its starting focus and break are the custom method's; longBreak is what switching the long break on starts with.",
+      "type": "object",
+      "required": ["longBreak", "fields"],
+      "additionalProperties": false,
+      "properties": {
+        "longBreak": { "$ref": "#/$defs/longBreak" },
+        "fields": {
+          "type": "object",
+          "required": ["focus", "shortBreak", "longBreak", "longBreakEvery"],
+          "additionalProperties": false,
+          "properties": {
+            "focus": { "$ref": "#/$defs/stepper" },
+            "shortBreak": { "$ref": "#/$defs/stepper" },
+            "longBreak": { "$ref": "#/$defs/stepper" },
+            "longBreakEvery": { "description": "Rounds, not minutes.", "$ref": "#/$defs/stepper" }
+          }
+        }
+      }
+    },
+    "methods": {
+      "description": "In picker order, one per kind.",
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": { "$ref": "#/$defs/method" }
+    }
+  },
+  "$defs": {
+    "kind": { "enum": ["pomodoro", "fiftyTwoSeventeen", "ultradian", "flowtime", "ankiSprint", "questionBlock", "custom", "timer"] },
+    "minutes": {
+      "type": "object",
+      "required": ["minutes"],
+      "additionalProperties": false,
+      "properties": { "minutes": { "type": "number", "exclusiveMinimum": 0 } }
+    },
+    "longBreak": {
+      "description": "Replaces every this-many-th regular break.",
+      "type": "object",
+      "required": ["minutes", "every"],
+      "additionalProperties": false,
+      "properties": { "minutes": { "type": "number", "exclusiveMinimum": 0 }, "every": { "type": "integer", "minimum": 2 } }
+    },
+    "stepper": {
+      "type": "object",
+      "required": ["min", "max", "step"],
+      "additionalProperties": false,
+      "properties": {
+        "min": { "type": "integer", "minimum": 1 },
+        "max": { "type": "integer", "minimum": 1 },
+        "step": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "focus": {
+      "description": "A timed phase, open-ended (stopped by the user, Flowtime), or a card goal (Anki sprint).",
+      "oneOf": [
+        { "const": "openEnded" },
+        { "$ref": "#/$defs/minutes" },
+        {
+          "type": "object",
+          "required": ["cards"],
+          "additionalProperties": false,
+          "properties": { "cards": { "type": "integer", "minimum": 1 } }
+        }
+      ]
+    },
+    "break": {
+      "description": "A fixed break, one that scales with the time worked (Flowtime), or none (the Timer stops when focus ends).",
+      "oneOf": [
+        { "const": "none" },
+        { "$ref": "#/$defs/minutes" },
+        {
+          "type": "object",
+          "required": ["flowtime"],
+          "additionalProperties": false,
+          "properties": { "flowtime": { "$ref": "#/$defs/flowtimeScheme" } }
+        }
+      ]
+    },
+    "flowtimeScheme": {
+      "description": "tiered: 5 min after up to 25 min of work, 8 after up to 50, otherwise 10. fifth: a fifth of the time worked in whole minutes, at least 1.",
+      "enum": ["tiered", "fifth"]
+    },
+    "evidenceLevel": { "enum": ["strong", "mixed", "weak"] },
+    "method": {
+      "type": "object",
+      "required": ["kind", "focus", "break", "name", "tagline", "howTo", "evidence"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "$ref": "#/$defs/kind" },
+        "focus": { "$ref": "#/$defs/focus" },
+        "break": { "$ref": "#/$defs/break" },
+        "longBreak": { "$ref": "#/$defs/longBreak" },
+        "review": { "description": "A review phase after each focus phase.", "$ref": "#/$defs/minutes" },
+        "questionCount": { "description": "Questions per block, shown as a target.", "type": "integer", "minimum": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "tagline": { "description": "One line for the method picker.", "type": "string", "minLength": 1 },
+        "howTo": { "description": "Plain-language instructions, sentences joined by \". \".", "type": "string", "minLength": 1 },
+        "evidence": { "description": "What the evidence does and does not show.", "type": "string", "minLength": 1 },
+        "evidenceLevel": { "description": "Absent for a plain tool that is not a study method (the Timer), which shows no rating.", "$ref": "#/$defs/evidenceLevel" }
+      }
+    }
+  }
+}

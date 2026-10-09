@@ -4,7 +4,8 @@ import Foundation
 ///
 /// Interval lengths are conventions rather than science (see
 /// `StudyMethodInfo`), so each kind is a preset of `StudyMethod` parameters
-/// and the engine treats every method the same way.
+/// and the engine treats every method the same way. The presets' parameters
+/// live in `study-methods.json`, which must define every case.
 public enum StudyMethodKind: String, Codable, CaseIterable, Hashable, Sendable {
     case pomodoro
     case fiftyTwoSeventeen
@@ -106,9 +107,9 @@ public struct StudyLongBreak: Codable, Hashable, Sendable {
 public struct StudyMethod: Codable, Hashable, Sendable, Identifiable {
     /// Shortest phase the engine accepts, so a bad custom value never makes a
     /// zero-length phase that would complete instantly.
-    public static let minimumPhase: TimeInterval = 60
+    public static let minimumPhase: TimeInterval = StudyMethodDefinitions.file.phaseMinutes.min * 60
     /// Longest timed phase accepted for a custom method (4 hours).
-    public static let maximumPhase: TimeInterval = 4 * 60 * 60
+    public static let maximumPhase: TimeInterval = StudyMethodDefinitions.file.phaseMinutes.max * 60
 
     public let kind: StudyMethodKind
     public let focus: StudyFocusTarget
@@ -152,44 +153,32 @@ public struct StudyMethod: Codable, Hashable, Sendable, Identifiable {
     // MARK: Presets
 
     /// 25 min focus, 5 min break, 15 min long break after every 4th focus.
-    public static let pomodoro = StudyMethod(
-        kind: .pomodoro,
-        focus: .duration(25 * 60),
-        breakRule: .fixed(5 * 60),
-        longBreak: StudyLongBreak(duration: 15 * 60, every: 4)
-    )
+    public static let pomodoro = preset(.pomodoro)
 
     /// 52 min focus, 17 min break.
-    public static let fiftyTwoSeventeen = StudyMethod(
-        kind: .fiftyTwoSeventeen,
-        focus: .duration(52 * 60),
-        breakRule: .fixed(17 * 60)
-    )
+    public static let fiftyTwoSeventeen = preset(.fiftyTwoSeventeen)
 
     /// 90 min deep block, 20 min rest.
-    public static let ultradian = StudyMethod(
-        kind: .ultradian,
-        focus: .duration(90 * 60),
-        breakRule: .fixed(20 * 60)
-    )
+    public static let ultradian = preset(.ultradian)
 
     /// Open-ended focus; the break scales with the time worked.
-    public static let flowtime = flowtime(scheme: .tiered)
+    public static let flowtime = preset(.flowtime)
 
     public static func flowtime(scheme: FlowtimeBreakScheme) -> StudyMethod {
         StudyMethod(kind: .flowtime, focus: .openEnded, breakRule: .proportional(scheme))
     }
 
     /// Default card goal when no due counts are known.
-    public static let defaultSprintCards = 100
+    public static let defaultSprintCards = preset(.ankiSprint).cardGoal ?? 1
     /// A sprint suggests a break after this many cards...
-    public static let sprintBreakCards = 200
+    public static let sprintBreakCards = StudyMethodDefinitions.file.ankiSprint.breakAfterCards
     /// ...or after this long, whichever comes first.
-    public static let sprintBreakInterval: TimeInterval = 30 * 60
+    public static let sprintBreakInterval: TimeInterval = StudyMethodDefinitions.file.ankiSprint.breakAfterMinutes * 60
 
-    /// Answer `cards` Anki cards, then take a 5 min break.
+    /// Answer `cards` Anki cards, then take the preset's break.
     public static func ankiSprint(cards: Int = defaultSprintCards) -> StudyMethod {
-        StudyMethod(kind: .ankiSprint, focus: .cards(cards), breakRule: .fixed(5 * 60))
+        let preset = preset(.ankiSprint)
+        return StudyMethod(kind: .ankiSprint, focus: .cards(cards), breakRule: preset.breakRule, longBreak: preset.longBreak)
     }
 
     /// Card goal that clears today's reviews and learning cards, the work
@@ -202,13 +191,7 @@ public struct StudyMethod: Codable, Hashable, Sendable, Identifiable {
 
     /// Up to 40 questions in 60 min (one board-exam block), then an equally
     /// long review of every explanation, then a 10 min break.
-    public static let questionBlock = StudyMethod(
-        kind: .questionBlock,
-        focus: .duration(60 * 60),
-        breakRule: .fixed(10 * 60),
-        review: 60 * 60,
-        questionCount: 40
-    )
+    public static let questionBlock = preset(.questionBlock)
 
     /// A user-defined rhythm. Lengths are clamped to 1 min...4 h.
     public static func custom(
@@ -225,15 +208,14 @@ public struct StudyMethod: Codable, Hashable, Sendable, Identifiable {
         StudyMethod(kind: .timer, focus: .duration(length), breakRule: .none)
     }
 
-    /// Every method in picker order, with default parameters.
-    public static let presets: [StudyMethod] = [
-        .pomodoro, .fiftyTwoSeventeen, .ultradian, .flowtime, .ankiSprint(), .questionBlock,
-        .custom(focus: 30 * 60, breakLength: 5 * 60), StudyTimerLength.standard.method,
-    ]
+    /// Every method in picker order, with default parameters, as
+    /// `study-methods.json` lists them.
+    public static let presets: [StudyMethod] = StudyMethodDefinitions.file.methods.map(\.method)
 
-    /// The default-parameter method for `kind`.
+    /// The default-parameter method for `kind`. `study-methods.json` defines
+    /// every kind, so the Pomodoro fallback is never used.
     public static func preset(_ kind: StudyMethodKind) -> StudyMethod {
-        presets.first { $0.kind == kind } ?? .pomodoro
+        presets.first { $0.kind == kind } ?? presets[0]
     }
 
     // MARK: Rules

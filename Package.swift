@@ -54,7 +54,7 @@ let package = Package(
             // PetArt.swift and ThemeCatalog.swift).
             resources: [
                 .copy("Kits/Bundled"), .copy("Editions/BundledEditions"), .copy("Pets/PetArt"),
-                .copy("Themes/themes.json"),
+                .copy("Themes/themes.json"), .copy("StudyMethods/study-methods.json"),
             ],
             swiftSettings: coreSettings
         ),

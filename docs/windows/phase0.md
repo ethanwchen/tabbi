@@ -33,9 +33,15 @@ Status of phase 0 from `docs/windows/plan.md`: the Mac app's shared pieces move 
   `shared/fixtures/themes/themes.json`, recorded from the Swift catalog before the move, pins every resolved color and what each accent treatment makes of every module accent; `ThemeGoldenTests` compares within 1e-9, because the old code computed the cozy text colors (`0.9580000000000001`) that the data writes as typed (`0.958`).
   `shared/schemas/themes.v1.schema.json` describes the format, and `ThemeFileTests` keeps its enums and palette roles equal to Swift.
 
+- Study methods are data: `Sources/TabbiKitCore/StudyMethods/study-methods.json` (`study-methods.v1`) holds every method in picker order (focus, break, long break, review phase, question count, and its info copy: name, tagline, how-to, evidence and rating), the info footnote, the evidence badge labels, the 1 min...4 h phase clamp, the Anki sprint's break hint, and the Timer and Custom stepper limits.
+  `StudyMethodFile` loads it and checks the schema version, one method per kind, lengths inside the clamp, positive counts, a label per rating, and that the Timer and Custom start on lengths their steppers can show.
+  The named presets (`StudyMethod.pomodoro` and so on), `StudyTimerLength.standard` and `StudyCustomRhythm.standard` read the data; the rules (`nextPhase`, phase lengths, Flowtime breaks, stepping, labels) stay in Swift.
+  `shared/fixtures/study-methods/study-methods.json`, recorded from the Swift methods before the move, pins every method's parameters, phase lengths, phase order over eight rounds, labels and copy, plus Flowtime breaks around every tier edge, sprint goals and Timer steps; `StudyMethodGoldenTests` compares exactly and was shown to fail on a one-value change.
+  `shared/schemas/study-methods.v1.schema.json` describes the format, and `StudyMethodFileTests` keeps its enums equal to Swift.
+  The Med School kit's demo snapshots, plus the Study picker, Custom lengths, three info popovers and five running methods, match the commit before, apart from live clocks (a ring tip and a count-up second) and the pet's idle breath; the one other differing shot matched pixel for pixel when re-rendered.
+
 ## Next
 
-1. Study methods to JSON, pinned by a golden test written before the move.
-2. JSON Schema files for kits, editions and `catalog.json`.
-3. Logic fixtures for the TypeScript port: focus timer and study session sequences, the stream-json parser, Plan my day, ticker selection.
-4. Snapshot comparison against `main`, pixel for pixel.
+1. JSON Schema files for kits, editions and `catalog.json`.
+2. Logic fixtures for the TypeScript port: focus timer and study session sequences, the stream-json parser, Plan my day, ticker selection.
+3. Snapshot comparison against `main`, pixel for pixel.

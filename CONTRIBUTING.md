@@ -125,15 +125,16 @@ The Focus pane, the Study sound chip and kit validation read `FocusSound.allCase
 
 ### Add a study method
 
-Study methods are presets of one engine in `Sources/TabbiKitCore/StudyMethods`.
+Study methods are presets of one engine in `Sources/TabbiKitCore/StudyMethods`, defined in `study-methods.json` so the Windows port offers the same ones.
 
-1. Add a case to `StudyMethodKind`.
-2. Add a preset to `StudyMethod` (focus target, break rule, optional long break and review phase) and list it in `StudyMethod.presets` in picker order.
-3. Write its copy in `StudyMethodInfo.info(for:)`: a name, a rhythm tagline, how to do it, and what the evidence says with an honest `evidenceLevel`.
+1. Add a case to `StudyMethodKind`, and add its id to the `kind` enum in `shared/schemas/study-methods.v1.schema.json` (with `minItems` and `maxItems` one higher).
+2. Add the method to `methods` in `study-methods.json`, in picker order: its focus (minutes, `"openEnded"` or cards), break (minutes, a Flowtime scheme or `"none"`), optional long break, review phase and question count.
+3. Write its copy beside them: a name, a rhythm tagline, how to do it, and what the evidence says with an honest `evidenceLevel`.
    Cite the source in the evidence text, and keep claims to what studies support.
 4. Add the id to the `study` methods in [docs/kits.md](docs/kits.md).
+5. Rerecord the golden fixture with `TABBI_RECORD_FIXTURES=1 swift test --filter StudyMethodGoldenTests` and check that its diff only adds the new method.
 
-`StudyMethodTests` checks that every kind has a preset.
+`StudyMethodFile` refuses a file that misses a kind, and `StudyMethodFileTests` keeps the schema's lists equal to the Swift enums.
 The Study tab, the onboarding study method step and kit validation pick the method up from there, and a kit offers it by listing its id in `study.methods`.
 Render `TABBI_STUDY_SNAPSHOT=method:<kind> swift run Tabbi --snapshot snapshots-study --kit medicine` to see it in the Study tab and in onboarding.
 
