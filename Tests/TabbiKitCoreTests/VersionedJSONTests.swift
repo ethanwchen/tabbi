@@ -113,10 +113,7 @@ final class VersionedJSONTests: XCTestCase {
     // MARK: Focus timer keys
 
     private func withDefaults(_ body: (UserDefaults) throws -> Void) throws {
-        let suite = "TabbiTests.\(UUID().uuidString)"
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
-        defer { defaults.removePersistentDomain(forName: suite) }
-        try body(defaults)
+        try body(InMemoryDefaults())
     }
 
     func testSettingsMigrationMovesTheFocusTimerOffThePlannerKeys() throws {

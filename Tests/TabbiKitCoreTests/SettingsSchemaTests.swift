@@ -2,16 +2,10 @@ import XCTest
 import TabbiKitCore
 
 final class SettingsSchemaTests: XCTestCase {
-    private var suiteName: String!
     private var defaults: UserDefaults!
 
     override func setUp() {
-        suiteName = "TabbiTests.\(UUID().uuidString)"
-        defaults = UserDefaults(suiteName: suiteName)
-    }
-
-    override func tearDown() {
-        defaults.removePersistentDomain(forName: suiteName)
+        defaults = InMemoryDefaults()
     }
 
     /// The catalog of an older build that has no Party module.
@@ -83,9 +77,7 @@ final class SettingsSchemaTests: XCTestCase {
 
     func testRetiredKitsMoveToEssentialsAndKeepTheirTabs() {
         for (retired, version) in [("productivity", 3), ("student", 3), ("productivity", 2), ("student", 0)] {
-            let suite = "TabbiTests.\(UUID().uuidString)"
-            let defaults = UserDefaults(suiteName: suite)!
-            defer { defaults.removePersistentDomain(forName: suite) }
+            let defaults = InMemoryDefaults()
             defaults.set(version, forKey: SettingsSchema.versionKey)
             defaults.set(retired, forKey: "settings.kit")
             defaults.set(true, forKey: "settings.kit.chosen")
@@ -115,9 +107,7 @@ final class SettingsSchemaTests: XCTestCase {
         SettingsSchema.migrate(defaults)
         XCTAssertNil(defaults.object(forKey: "settings.panelSize"), "a fresh install takes the default")
 
-        let suite = "TabbiTests.\(UUID().uuidString)"
-        let saved = UserDefaults(suiteName: suite)!
-        defer { saved.removePersistentDomain(forName: suite) }
+        let saved = InMemoryDefaults()
         saved.set(4, forKey: SettingsSchema.versionKey)
         saved.set("essentials", forKey: "settings.kit")
         saved.set("compact", forKey: "settings.panelSize")

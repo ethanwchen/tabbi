@@ -95,9 +95,7 @@ final class EditionTests: XCTestCase {
     }
 
     func testAFreshInstallStartsWithTheEditionsKit() throws {
-        let suite = "EditionTests.\(UUID().uuidString)"
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
-        defer { defaults.removePersistentDomain(forName: suite) }
+        let defaults = InMemoryDefaults()
         let lsat = try decode(edition(""))
         let repository = SettingsRepository(defaults: defaults, kits: .bundled, defaultKitID: lsat.defaultKitID)
         let settings = repository.load()

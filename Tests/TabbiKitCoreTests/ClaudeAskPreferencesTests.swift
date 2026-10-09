@@ -2,16 +2,10 @@ import XCTest
 import TabbiKitCore
 
 final class ClaudeAskPreferencesTests: XCTestCase {
-    private var suiteName: String!
     private var defaults: UserDefaults!
 
-    override func setUpWithError() throws {
-        suiteName = "ClaudeAskPreferencesTests-\(UUID().uuidString)"
-        defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
-    }
-
-    override func tearDownWithError() throws {
-        defaults.removePersistentDomain(forName: suiteName)
+    override func setUp() {
+        defaults = InMemoryDefaults()
     }
 
     // MARK: - When the large view opens

@@ -10,6 +10,7 @@ import Foundation
 public final class InMemoryDefaults: UserDefaults {
     private let lock = NSLock()
     private var values: [String: Any] = [:]
+    private var domains: [String: [String: Any]] = [:]
 
     public init() {
         // A nil suite name is the app's own domain, which every read and
@@ -31,6 +32,21 @@ public final class InMemoryDefaults: UserDefaults {
 
     override public func dictionaryRepresentation() -> [String: Any] {
         lock.withLock { values }
+    }
+
+    // Named domains (another app's or an old build's preferences) live here
+    // too, so nothing is written to or read from ~/Library/Preferences.
+
+    override public func persistentDomain(forName domainName: String) -> [String: Any]? {
+        lock.withLock { domains[domainName] }
+    }
+
+    override public func setPersistentDomain(_ domain: [String: Any], forName domainName: String) {
+        lock.withLock { domains[domainName] = domain }
+    }
+
+    override public func removePersistentDomain(forName domainName: String) {
+        lock.withLock { domains[domainName] = nil }
     }
 
     // The typed accessors go straight to the system's preferences store on

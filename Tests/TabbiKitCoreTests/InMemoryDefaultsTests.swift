@@ -34,6 +34,26 @@ final class InMemoryDefaultsTests: XCTestCase {
         XCTAssertNil(InMemoryDefaults().string(forKey: "settings.kit"))
     }
 
+    /// Named domains stay in this object: none is written to
+    /// ~/Library/Preferences, and the system's own domains are not read.
+    func testPersistentDomainsStayInMemory() throws {
+        let name = "dev.tabbi.tests.inMemory.\(UUID().uuidString)"
+        let defaults = InMemoryDefaults()
+        defaults.setPersistentDomain(["selectedModule": "study"], forName: name)
+        XCTAssertEqual(defaults.persistentDomain(forName: name) as? [String: String], ["selectedModule": "study"])
+        XCTAssertNil(UserDefaults.standard.persistentDomain(forName: name))
+        XCTAssertNil(InMemoryDefaults().persistentDomain(forName: name))
+        XCTAssertNil(defaults.persistentDomain(forName: UserDefaults.globalDomain))
+
+        let preferences = try FileManager.default.url(for: .libraryDirectory, in: .userDomainMask,
+                                                      appropriateFor: nil, create: false)
+            .appendingPathComponent("Preferences/\(name).plist")
+        XCTAssertFalse(FileManager.default.fileExists(atPath: preferences.path))
+
+        defaults.removePersistentDomain(forName: name)
+        XCTAssertNil(defaults.persistentDomain(forName: name))
+    }
+
     /// Settings saved and loaded through the repository survive in memory.
     func testSettingsRepositoryRoundTrips() {
         let defaults = InMemoryDefaults()

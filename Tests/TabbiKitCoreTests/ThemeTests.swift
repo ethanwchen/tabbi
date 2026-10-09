@@ -165,17 +165,10 @@ final class ControlMaterialTests: XCTestCase {
 
 final class ThemeSettingsTests: XCTestCase {
     private var defaults: UserDefaults!
-    private let suiteName = "ThemeSettingsTests"
 
     override func setUp() {
         super.setUp()
-        defaults = UserDefaults(suiteName: suiteName)
-        defaults.removePersistentDomain(forName: suiteName)
-    }
-
-    override func tearDown() {
-        defaults.removePersistentDomain(forName: suiteName)
-        super.tearDown()
+        defaults = InMemoryDefaults()
     }
 
     private func kit(theme: String?) throws -> KitManifest {

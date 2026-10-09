@@ -22,9 +22,7 @@ final class KitSwitchUndoTests: XCTestCase {
     }
 
     private func makeSettings() -> SettingsStore {
-        let suite = "KitSwitchUndoTests.\(UUID().uuidString)"
-        let defaults = UserDefaults(suiteName: suite)!
-        addTeardownBlock { defaults.removePersistentDomain(forName: suite) }
+        let defaults = InMemoryDefaults()
         return SettingsStore(catalog: ModuleList.catalog(of: moduleTypes), defaults: defaults,
                              kitStore: ImportedKitStore(directory: root.appendingPathComponent("Kits")),
                              integratesWithSystem: false)

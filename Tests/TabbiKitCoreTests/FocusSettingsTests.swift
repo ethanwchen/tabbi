@@ -66,8 +66,7 @@ final class FocusSettingsTests: XCTestCase {
     }
 
     func testRepositoryRoundTripsEveryField() throws {
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: "FocusSettingsTests.roundTrip"))
-        defaults.removePersistentDomain(forName: "FocusSettingsTests.roundTrip")
+        let defaults = InMemoryDefaults()
         let repository = FocusSettingsRepository(defaults: defaults)
         XCTAssertEqual(repository.load(), .default)
 
