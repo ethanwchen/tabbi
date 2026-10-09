@@ -60,8 +60,8 @@ final class UpcomingEventTests: XCTestCase {
         XCTAssertEqual(UpcomingEventFormat.badge(.now), "now")
         XCTAssertEqual(UpcomingEventFormat.badge(.startsIn(minutes: 1)), "in 1 min")
         XCTAssertEqual(UpcomingEventFormat.badge(.startsIn(minutes: 59)), "in 59 min")
-        XCTAssertEqual(UpcomingEventFormat.badge(.startsIn(minutes: 60)), "in 1 h")
-        XCTAssertEqual(UpcomingEventFormat.badge(.startsIn(minutes: 125)), "in 2 h 5 min")
+        XCTAssertEqual(UpcomingEventFormat.badge(.startsIn(minutes: 60)), "in 1h")
+        XCTAssertEqual(UpcomingEventFormat.badge(.startsIn(minutes: 125)), "in 2h 5m")
     }
 
     func testStartTimeFollowsLocaleClockWithoutDayPeriod() {

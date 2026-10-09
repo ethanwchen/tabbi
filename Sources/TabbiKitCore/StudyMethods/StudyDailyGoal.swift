@@ -18,7 +18,7 @@ public struct StudyDailyGoal: Codable, Hashable, Sendable {
     /// The progress item's id, stable so Today updates the same row.
     public static let progressID = "minutes"
     /// The unit the progress item counts in.
-    public static let unit = "min"
+    public static let unit = DurationFormat.minuteUnit
 
     public let minutes: Int
 
@@ -57,7 +57,7 @@ public struct StudyDailyGoal: Codable, Hashable, Sendable {
     }
 
     /// The day's study minutes against this goal, for `ModuleProvision.progress`.
-    /// Shown by Today as e.g. "Focus time, 75 min left", and beside the
+    /// Shown by Today as e.g. "Focus time, 1h 15m left", and beside the
     /// closed notch only once the day's first minutes are in.
     public func progressItem(for day: StudyDayTally, source: ModuleID = .study) -> ProgressItem {
         ProgressItem(id: Self.progressID, source: source, title: "Focus time",

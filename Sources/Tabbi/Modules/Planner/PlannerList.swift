@@ -30,9 +30,13 @@ struct PlannerList: View {
         // Plain stack while the rows fit, so nothing scrolls without need.
         ViewThatFits(in: .vertical) {
             rows
-            scrollingRows
-                // Fade the bottom edge so a cut-off row reads as "more below".
-                .edgeFade(.bottom, length: Self.fadeHeight)
+            // End on a whole row, then fade it, so the list reads as
+            // "more below" instead of showing a sliver of the next row.
+            GeometryReader { proxy in
+                scrollingRows
+                    .frame(height: RowViewport.height(fitting: proxy.size.height, rowHeight: Self.rowHeight))
+                    .edgeFade(.bottom, length: Self.fadeHeight)
+            }
         }
         .frame(maxHeight: .infinity, alignment: .top)
     }

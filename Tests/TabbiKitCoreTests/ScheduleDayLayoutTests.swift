@@ -167,12 +167,12 @@ struct ScheduleDayLayoutTests {
         let locale = Locale(identifier: "en_US")
         let utc = TimeZone(identifier: "UTC")!
         #expect(ScheduleFormat.duration(minutes: 45) == "45 min")
-        #expect(ScheduleFormat.duration(minutes: 120) == "2 h")
-        #expect(ScheduleFormat.duration(minutes: 75) == "1 h 15 min")
+        #expect(ScheduleFormat.duration(minutes: 120) == "2h")
+        #expect(ScheduleFormat.duration(minutes: 75) == "1h 15m")
         #expect(ScheduleFormat.range(Self.at(10, 45), Self.at(12), locale: locale, timeZone: utc) == "10:45-12:00")
         let lunch = Self.item("Lunch", Self.at(12, 30), Self.at(13, 30))
         #expect(ScheduleFormat.status(.free(until: lunch.start, next: lunch), now: Self.at(11, 20), locale: locale,
-                                      timeZone: utc) == "Free for 1 h 10 min, then Lunch at 12:30")
+                                      timeZone: utc) == "Free for 1h 10m, then Lunch at 12:30")
         #expect(ScheduleFormat.status(.busy(lunch), now: Self.at(13), locale: locale, timeZone: utc)
             == "Now: Lunch, until 1:30")
         #expect(ScheduleFormat.title(Self.item("  ", Self.at(9), Self.at(10))) == "Untitled event")

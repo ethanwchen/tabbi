@@ -28,16 +28,19 @@ enum MotionSnapshots {
             CelebrationGlow(glow, elapsed: elapsed)
         })))
         shots.append(("motion-press", AnyView(pressStates(accent: accent))))
+        // Ask Claude's loader, in its accent (spelled out, since the App Store
+        // build has no Ask Claude).
+        let pawTint = Theme.Palette.accent(.claude)
         let pawMoments = stride(from: 0.1, to: PawTrail.cycle, by: PawTrail.stepInterval).map { $0 }
         shots.append(("motion-loader-paws", AnyView(strip(pawMoments) { time in
-            PawTrailFrame(tint: AskClaudeModule.descriptor.accentColor, size: 40, time: time)
+            PawTrailFrame(tint: pawTint, size: 40, time: time)
         })))
         shots.append(("motion-loader-paws-in-context", AnyView(strip([1.06]) { time in
             // The Ask Claude bubble while Claude thinks, at full trail.
             Card(padding: 0) {
                 HStack(spacing: Theme.Spacing.s) {
                     Text("Thinking").foregroundStyle(Theme.Palette.tertiaryText)
-                    PawTrailFrame(tint: AskClaudeModule.descriptor.accentColor, size: 16, time: time)
+                    PawTrailFrame(tint: pawTint, size: 16, time: time)
                 }
                 .font(Theme.Typography.body)
                 .padding(.horizontal, Theme.Spacing.m)
@@ -46,7 +49,7 @@ enum MotionSnapshots {
             .fixedSize()
         })))
         shots.append(("motion-loader-paws-reduced", AnyView(strip([0, 0.4, 0.8]) { time in
-            PawTrailFrame(tint: AskClaudeModule.descriptor.accentColor, size: 40, time: time, reduceMotion: true)
+            PawTrailFrame(tint: pawTint, size: 40, time: time, reduceMotion: true)
         })))
         shots.append(("motion-check", AnyView(checkFrames())))
         shots.append(("motion-transitions", AnyView(transitionFrames())))

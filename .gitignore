@@ -12,5 +12,6 @@ DerivedData/
 site/dist/
 site/__pycache__/
 
-# The Developer ID provisioning profile for Sign in with Apple (docs/sync.md)
+# The provisioning profiles: Developer ID for Sign in with Apple (docs/sync.md)
+# and Mac App Store (scripts/release-appstore.sh)
 packaging/*.provisionprofile

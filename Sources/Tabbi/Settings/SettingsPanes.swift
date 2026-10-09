@@ -14,6 +14,7 @@ let paneWidth: CGFloat = 500
 /// user types; Party shows it to friends and Tabbi greets the user with it.
 private struct YourNameRow: View {
     @EnvironmentObject private var store: SettingsStore
+    @Environment(\.moduleCatalog) private var catalog
 
     var body: some View {
         LabeledContent {
@@ -25,7 +26,10 @@ private struct YourNameRow: View {
                 .help("Your name, up to \(DisplayName.maxLength) characters")
         } label: {
             Text("Your name")
-            Text("Shown to friends in Party and used to greet you.")
+            // Editions without Party (the App Store) only greet with it.
+            Text(catalog.contains(PartyModule.descriptor.id)
+                 ? "Shown to friends in Party and used to greet you."
+                 : "Used to greet you.")
         }
     }
 
@@ -107,23 +111,16 @@ struct GeneralSettingsPane: View {
 
             ResetToDefaultsRow(isAtDefaults: store.usesGeneralDefaults,
                                help: "Put General back the way a new install has it. Launch at login stays as it is.",
-                               reset: store.resetGeneral)
-
-            Section {
-                HStack {
-                    Text("Closes the notch until you open \(Edition.current.name) again.")
-                        .foregroundStyle(.secondary)
-                    Spacer()
-                    // Command-Q itself lives in the hidden app menu, so it
-                    // also works while the notch is open.
-                    Button("Quit \(Edition.current.name)") { NSApp.terminate(nil) }
-                        .help("Quit \(Edition.current.name) (\u{2318}Q)")
-                }
+                               reset: store.resetGeneral) {
+                // Command-Q itself lives in the hidden app menu, so it
+                // also works while the notch is open.
+                Button("Quit \(Edition.current.name)") { NSApp.terminate(nil) }
+                    .help("Quit \(Edition.current.name) and close the notch until you open it again (\u{2318}Q)")
             }
         }
         .formStyle(.grouped)
         .scrollDisabled(!showsMore)
-        .frame(width: paneWidth, height: showsMore ? 896 : 776)
+        .frame(width: paneWidth, height: showsMore ? 846 : 726)
         .motion(Motion.snappy, value: showsMore)
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didChangeScreenParametersNotification)) { _ in
             screens = DisplayOption.connectedScreens()
@@ -231,7 +228,12 @@ struct SectionFooter: View {
         Text(text)
             .font(.callout)
             .foregroundStyle(.secondary)
+            // Grouped forms align footers to the trailing edge, which leaves
+            // a wrapped second line hanging on the right.
+            .multilineTextAlignment(.leading)
             .frame(maxWidth: .infinity, alignment: .leading)
+            // Lines the text up with the section header and row titles.
+            .padding(.horizontal, 10)
     }
 }
 
@@ -262,24 +264,36 @@ struct MoreOptionsToggle: View {
 
 /// The last row of a Settings section: puts that section back to its
 /// defaults, says so for a moment afterwards, and stays disabled while there
-/// is nothing to reset.
-struct ResetToDefaultsRow: View {
+/// is nothing to reset. A pane can put one quiet action of its own at the
+/// leading edge (General's Quit), so the pane ends in one footer row.
+struct ResetToDefaultsRow<Leading: View>: View {
     let isAtDefaults: Bool
     let help: String
-    var title = "Reset to Defaults"
+    let title: String
     let reset: () -> Void
+    let leading: Leading
     @State private var didReset = false
+
+    init(isAtDefaults: Bool, help: String, title: String = "Reset to Defaults",
+         reset: @escaping () -> Void, @ViewBuilder leading: () -> Leading) {
+        self.isAtDefaults = isAtDefaults
+        self.help = help
+        self.title = title
+        self.reset = reset
+        self.leading = leading()
+    }
 
     var body: some View {
         Section {
             HStack {
+                leading
+                Spacer()
                 if didReset {
                     Label("Back to defaults", systemImage: "checkmark.circle.fill")
                         .font(.callout)
                         .foregroundStyle(.secondary)
                         .transition(.opacity)
                 }
-                Spacer()
                 Button(title) {
                     reset()
                     didReset = true
@@ -294,6 +308,12 @@ struct ResetToDefaultsRow: View {
             try? await Task.sleep(for: .seconds(3))
             didReset = false
         }
+    }
+}
+
+extension ResetToDefaultsRow where Leading == EmptyView {
+    init(isAtDefaults: Bool, help: String, title: String = "Reset to Defaults", reset: @escaping () -> Void) {
+        self.init(isAtDefaults: isAtDefaults, help: help, title: title, reset: reset) { EmptyView() }
     }
 }
 
@@ -1152,8 +1172,10 @@ struct AboutSettingsPane: View {
             }
             .help("Email the \(Edition.current.name) team about a bug, a person in Party or anything else")
             .padding(.top, 8)
+            #if !APPSTORE
             UpdatesSettingsSection()
                 .padding(.top, 16)
+            #endif
             Text("Released under the MIT License.")
                 .font(.caption)
                 .foregroundStyle(.tertiary)

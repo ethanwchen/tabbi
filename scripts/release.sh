@@ -4,7 +4,7 @@
 # packaged as a DMG (signed, notarized and stapled too) and a zip, with
 # checksums, release notes and a Sparkle appcast, in build/release/.
 #
-#   usage: scripts/release.sh [edition] [--adhoc]
+#   usage: scripts/release.sh [edition] [--adhoc] [--publish]
 #
 # edition defaults to tabbi. The version comes from CFBundleShortVersionString
 # in Resources/Info.plist.
@@ -21,8 +21,13 @@
 # update key's private half: from the login keychain, where generate_keys
 # keeps it, or from the SPARKLE_PRIVATE_KEY environment variable (CI secrets).
 # Its release notes (release-notes.md) come from git (scripts/release-notes.sh).
-# Upload the DMG, the zip, appcast.xml and SHA256SUMS to the GitHub Release
-# tagged v<version>; the feed URL points at the latest release's appcast.xml.
+#
+# --publish then creates a DRAFT GitHub Release v<version> with gh, in the
+# repository the feed URL names, with the DMG, the zip, appcast.xml and
+# SHA256SUMS attached. Nobody sees a draft, and the feed follows the latest
+# published release, so nothing reaches users until it is published by hand
+# on GitHub. Before building, it checks that gh is signed in, the tree is
+# clean, HEAD is pushed and there is no release v<version> yet.
 #
 # --adhoc builds without a Developer ID (contributors, CI): the app is ad-hoc
 # signed and not notarized, so Gatekeeper blocks its first launch on other Macs
@@ -39,9 +44,11 @@ cd "$(dirname "$0")/.."
 
 edition=tabbi
 adhoc=false
+publish=false
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --adhoc) adhoc=true; shift ;;
+        --publish) publish=true; shift ;;
         -h|--help) awk 'NR > 1 && !/^#/ { exit } NR > 1 { sub(/^# ?/, ""); print }' "$0"; exit 0 ;;
         -*) echo "error: unknown option $1" >&2; exit 64 ;;
         *) edition=$1; shift ;;
@@ -178,6 +185,33 @@ check_profile() {
 }
 
 sign_in_with_apple=false
+
+version=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" Resources/Info.plist)
+tag="v$version"
+
+# Fails early, before the slow build, when the draft release could not be made.
+# Sets repo (owner/name, from the feed URL) and commit.
+preflight_publish() {
+    $adhoc && fail "--publish needs a Developer ID build. An ad-hoc build is for testing and is never released."
+    [[ "$feed_url" =~ ^https://github\.com/([^/]+/[^/]+)/releases/ ]] \
+        || fail "SPARKLE_FEED_URL in $updates is not a GitHub Releases URL, so --publish does not know the repository."
+    repo=${BASH_REMATCH[1]}
+    command -v gh >/dev/null || fail "--publish needs the GitHub CLI. Run: brew install gh && gh auth login"
+    gh auth status --hostname github.com >/dev/null 2>&1 || fail "gh is not signed in to github.com. Run: gh auth login"
+    [[ -z "$(git status --porcelain)" ]] \
+        || fail "the working tree has uncommitted changes. Commit or remove them, so the release matches a commit."
+    commit=$(git rev-parse HEAD)
+    gh api "repos/$repo/commits/$commit" --silent >/dev/null 2>&1 \
+        || fail "commit ${commit:0:7} is not on github.com/$repo yet. Push it first."
+    if gh release view "$tag" --repo "$repo" >/dev/null 2>&1; then
+        fail "github.com/$repo already has a release $tag (perhaps a draft). Raise CFBundleShortVersionString in Resources/Info.plist, or delete that release."
+    fi
+}
+
+if $publish; then
+    preflight_publish
+fi
+
 if $adhoc; then
     log "Ad-hoc build: the app will not be notarized"
     [[ -f "$profile" ]] && log "Sign in with Apple: off (an ad-hoc signature cannot carry it)"
@@ -194,7 +228,6 @@ else
     fi
 fi
 
-version=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" Resources/Info.plist)
 # Sparkle offers an update when the appcast's build number is higher than the
 # running app's, so it must only ever grow: the commit count does.
 [[ $(git rev-parse --is-shallow-repository) == false ]] \
@@ -324,38 +357,12 @@ notes="$out/release-notes.md"
 scripts/release-notes.sh "$version" "$name" > "$notes"
 
 # The appcast offers the zip: Sparkle installs from it without mounting
-# anything. A fresh folder per release holds just this version, so the feed
-# lists only the newest update, which is all Sparkle needs.
+# anything.
 appcast=
 signer=$(update_key_ok && update_signer || true)
 if [[ -n "$signer" ]]; then
     log "Writing the appcast (update key from the $signer)"
-    feed_dir="$out/appcast"
-    mkdir -p "$feed_dir"
-    cp "$zip" "$feed_dir/"
-    # A Markdown file named like the archive becomes the item's release notes.
-    cp "$notes" "$feed_dir/$(basename "${zip%.zip}").md"
-    # The feed is .../releases/latest/download/appcast.xml; the archives live
-    # under the release's own tag.
-    case "$feed_url" in
-        https://github.com/*/releases/latest/download/*)
-            download_prefix="${feed_url%%/releases/latest/download/*}/releases/download/v$version/" ;;
-        *) download_prefix="${feed_url%/*}/" ;;
-    esac
-    appcast_args=(--download-url-prefix "$download_prefix" --embed-release-notes --disable-signing-warning -o "$out/appcast.xml")
-    if [[ "$signer" == env ]]; then
-        report=$(printf '%s' "$SPARKLE_PRIVATE_KEY" | "$sparkle_bin/generate_appcast" --ed-key-file - "${appcast_args[@]}" "$feed_dir" 2>&1)
-    else
-        report=$("$sparkle_bin/generate_appcast" "${appcast_args[@]}" "$feed_dir" 2>&1)
-    fi
-    echo "$report" >&2
-    rm -rf "$feed_dir"
-    # generate_appcast only warns when the private key is not the app's
-    # SUPublicEDKey, but every installed copy would then reject the update.
-    if grep -q "does not match" <<<"$report"; then
-        rm -f "$out/appcast.xml"
-        fail "the private update key does not match SPARKLE_PUBLIC_KEY, so no copy of $name could install this update"
-    fi
+    SPARKLE_FEED_URL="$feed_url" scripts/make-appcast.sh "$zip" "$notes" "$out/appcast.xml" >/dev/null
     appcast="$out/appcast.xml"
 elif update_key_ok; then
     log "No appcast: the private update key is not in the keychain or SPARKLE_PRIVATE_KEY"
@@ -367,6 +374,16 @@ fi
 # Homebrew turns away apps that fail Gatekeeper.
 cask=
 $adhoc || cask=$(scripts/make-cask.sh "$dmg")
+
+release_url=
+if $publish; then
+    [[ -n "$appcast" ]] || fail "no appcast was written, so installed copies would never hear of $version."
+    log "Creating the draft release $tag on github.com/$repo"
+    # A draft creates no tag yet: publishing it tags $commit.
+    release_url=$(gh release create "$tag" --repo "$repo" --draft --target "$commit" \
+        --title "$name $version" --notes-file "$notes" \
+        "$dmg" "$zip" "$appcast" "$out/SHA256SUMS")
+fi
 
 size() { du -sh "$1" | cut -f1 | tr -d ' '; }
 cat <<EOF
@@ -380,3 +397,11 @@ Built $name $version, build $build_number ($($adhoc && echo "ad-hoc signed, not 
   $cask}
   app: $(size "$app"), executable: $(size "$executable")
 EOF
+if [[ -n "$release_url" ]]; then
+    cat <<EOF
+
+Draft release (not public yet): $release_url
+Check the notes and the files there, then click Publish release. Publishing
+tags $tag and points the update feed at $version.
+EOF
+fi

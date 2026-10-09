@@ -58,7 +58,7 @@ public struct ProgressItem: Identifiable, Hashable, Sendable {
     public var action: ProvidedAction?
     /// A goal the user aims for rather than work that is due (a daily focus
     /// time goal, not cards due). The closed notch shows it only once the
-    /// day has some progress, so a fresh day never opens on "120 min left"
+    /// day has some progress, so a fresh day never opens on "2h left"
     /// for a goal the user may not even know about.
     public var waitsForStart: Bool
 

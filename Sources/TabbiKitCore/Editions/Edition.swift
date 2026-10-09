@@ -5,8 +5,13 @@ import Foundation
 /// Tabbi ships as one edition, `tabbi`; audiences are served by kits, not
 /// by separate apps. The mechanism stays for future branded builds: an
 /// edition only changes identity and first-run defaults (the app name,
-/// bundle id, which kit is preselected, and where its files live). Every
-/// edition contains every module, so its users can still switch to any kit.
+/// bundle id, which kit is preselected, and where its files live). An
+/// edition contains every module except its `excludedModules`, so its users
+/// can still switch to any kit: a kit's excluded modules are skipped.
+///
+/// The `appstore` edition is the Mac App Store build of Tabbi: the same app
+/// and bundle id as `tabbi`, sandboxed, without the modules that need the
+/// `claude` CLI and with Party off until it has moderation (docs/appstore.md).
 ///
 /// Editions are data: each is a `<id>.json` in `Editions/BundledEditions`,
 /// which the app reads through `builtIn` and `scripts/assemble.sh` reads to
@@ -32,15 +37,51 @@ public struct Edition: Sendable, Hashable, Identifiable, Decodable {
     /// descriptions that name the app. Used only by `assemble.sh`, which
     /// also sets the name, display name, bundle id and edition id itself.
     public let infoPlist: [String: String]
+    /// How the edition reaches users, which decides what it may do: a
+    /// direct download updates itself and can run helper programs, an App
+    /// Store build is sandboxed and can't.
+    public let distribution: Distribution
+    /// Modules this edition leaves out. Its catalog (`catalog(from:)`) drops
+    /// them, so no tab, Settings row, onboarding step or ticker preview
+    /// offers them, and kits that list them still apply cleanly. Removing an
+    /// id from the file turns the module back on, as long as the build
+    /// compiled it (see `ModuleList`).
+    public let excludedModules: [ModuleID]
+
+    /// Where an edition's builds are published.
+    public enum Distribution: String, Sendable, Hashable, Decodable {
+        /// Developer ID signed, notarized and self-updating (scripts/release.sh).
+        case direct
+        /// Sandboxed and submitted to the Mac App Store (scripts/release-appstore.sh).
+        case appStore
+    }
 
     public init(id: String, name: String, bundleIdentifier: String, defaultKitID: String,
-                icon: String? = nil, infoPlist: [String: String] = [:]) {
+                icon: String? = nil, infoPlist: [String: String] = [:],
+                distribution: Distribution = .direct, excludedModules: [ModuleID] = []) {
         self.id = id
         self.name = name
         self.bundleIdentifier = bundleIdentifier
         self.defaultKitID = defaultKitID
         self.icon = icon
         self.infoPlist = infoPlist
+        self.distribution = distribution
+        self.excludedModules = excludedModules
+    }
+
+    /// Whether this is the sandboxed Mac App Store build.
+    public var isAppStore: Bool { distribution == .appStore }
+
+    /// Whether the app may run helper programs on this Mac: the `claude` CLI
+    /// (Plan my day with Claude, Refine, the Wrap up summary) and Shortcuts
+    /// (Do Not Disturb). A sandboxed App Store build can't, so those features
+    /// are hidden there rather than failing.
+    public var runsLocalTools: Bool { distribution == .direct }
+
+    /// The modules this edition offers: `catalog` without `excludedModules`,
+    /// which it remembers as unavailable so kits naming them raise no warning.
+    public func catalog(from catalog: ModuleCatalog) -> ModuleCatalog {
+        catalog.excluding(excludedModules)
     }
 
     /// The edition file format this build reads. A file with a higher
@@ -83,9 +124,10 @@ public struct Edition: Sendable, Hashable, Identifiable, Decodable {
 
     /// The edition a running app belongs to, from its Info.plist. Builds
     /// without the key (or with an unknown id), such as `swift run`, are
-    /// the default edition, so development runs as Tabbi.
-    public static func resolve(infoDictionary: [String: Any]?) -> Edition {
-        (infoDictionary?[infoKey] as? String).flatMap(named) ?? .tabbi
+    /// `fallback`, by default Tabbi, so development runs as Tabbi. The App
+    /// Store build passes the App Store edition.
+    public static func resolve(infoDictionary: [String: Any]?, fallback: Edition = .tabbi) -> Edition {
+        (infoDictionary?[infoKey] as? String).flatMap(named) ?? fallback
     }
 
     /// Reads and checks one edition file.
@@ -129,6 +171,9 @@ public struct Edition: Sendable, Hashable, Identifiable, Decodable {
                 throw EditionError.invalid("icon \"\(icon)\" must be an .icns file name in Resources")
             }
         }
+        if let bad = edition.excludedModules.first(where: { $0.rawValue.wholeMatch(of: /[A-Za-z][A-Za-z0-9]*/) == nil }) {
+            throw EditionError.invalid("excludedModules has \"\(bad)\", which isn't a module id")
+        }
         let reserved: Set = ["CFBundleName", "CFBundleDisplayName", "CFBundleIdentifier", infoKey]
         if let key = edition.infoPlist.keys.sorted().first(where: reserved.contains) {
             throw EditionError.invalid("infoPlist can't set \(key); it comes from the edition's own fields")
@@ -137,7 +182,7 @@ public struct Edition: Sendable, Hashable, Identifiable, Decodable {
     }
 
     private enum CodingKeys: String, CodingKey {
-        case formatVersion, id, name, bundleIdentifier, defaultKitID, icon, infoPlist
+        case formatVersion, id, name, bundleIdentifier, defaultKitID, icon, infoPlist, distribution, excludedModules
     }
 
     public init(from decoder: Decoder) throws {
@@ -152,7 +197,9 @@ public struct Edition: Sendable, Hashable, Identifiable, Decodable {
             bundleIdentifier: try container.decode(String.self, forKey: .bundleIdentifier),
             defaultKitID: try container.decode(String.self, forKey: .defaultKitID),
             icon: try container.decodeIfPresent(String.self, forKey: .icon),
-            infoPlist: try container.decodeIfPresent([String: String].self, forKey: .infoPlist) ?? [:]
+            infoPlist: try container.decodeIfPresent([String: String].self, forKey: .infoPlist) ?? [:],
+            distribution: try container.decodeIfPresent(Distribution.self, forKey: .distribution) ?? .direct,
+            excludedModules: try container.decodeIfPresent([ModuleID].self, forKey: .excludedModules) ?? []
         )
     }
 }

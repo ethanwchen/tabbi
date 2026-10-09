@@ -32,6 +32,12 @@ final class FocusController: ObservableObject {
 
     /// False in demo and snapshot runs, where focus mode only shows sample settings.
     let isLive: Bool
+    /// Whether this build can switch Do Not Disturb, which runs Shortcuts
+    /// (`Edition.runsLocalTools`). Without it the switch is hidden and the
+    /// saved value is ignored.
+    let offersDoNotDisturb: Bool
+    /// Whether focus phases turn on Do Not Disturb, as views should show it.
+    var doNotDisturb: Bool { offersDoNotDisturb && settings.doNotDisturb }
 
     private let repository: FocusSettingsRepository
     private let shortcuts = FocusShortcutRunner()
@@ -52,8 +58,10 @@ final class FocusController: ObservableObject {
     private var shortcutRuns: Task<Void, Never>?
     private var observers: [NSObjectProtocol] = []
 
-    init(runMode: RunMode, repository: FocusSettingsRepository = FocusSettingsRepository()) {
+    init(runMode: RunMode, offersDoNotDisturb: Bool = true,
+         repository: FocusSettingsRepository = FocusSettingsRepository()) {
         isLive = !runMode.isEphemeral
+        self.offersDoNotDisturb = offersDoNotDisturb
         self.repository = repository
         settings = isLive ? repository.load() : Self.sampleSettings
         guard isLive else { return }
@@ -75,6 +83,7 @@ final class FocusController: ObservableObject {
             MainActor.assumeIsolated { self?.playerChanged(source, state: .stopped) }
         })
         // The Do Not Disturb row in Connections follows the switch and can flip it on.
+        guard offersDoNotDisturb else { return }
         ConnectionsStore.shared.follow(doNotDisturb: $settings.map(\.doNotDisturb).eraseToAnyPublisher(),
                                        turnOn: { [weak self] in self?.settings.doNotDisturb = true })
     }
@@ -111,6 +120,8 @@ final class FocusController: ObservableObject {
            Self.isRunning(source), playerStates[source] == nil {
             playerStates[source] = await Self.readState(of: source)
         }
+        var settings = settings
+        settings.doNotDisturb = doNotDisturb
         let actions = session.transition(to: activity, settings: settings) { [playerStates] source in
             Self.isRunning(source) && playerStates[source] == .playing
         }

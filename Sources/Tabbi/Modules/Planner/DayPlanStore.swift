@@ -73,6 +73,8 @@ final class DayPlanStore: ObservableObject {
 
     private let upNext: UpNextStore
     private let isDemo: Bool
+    /// False in a build that can't run the `claude` CLI: Refine never shows.
+    private let usesClaude: Bool
     private var task: Task<Void, Never>?
     private var lastTasks: [PlannerItem] = []
     private var lastSharedWork: [String] = []
@@ -86,15 +88,16 @@ final class DayPlanStore: ObservableObject {
     /// Longest wait for Claude before showing the Retry message.
     private static let timeout: Duration = .seconds(60)
 
-    init(upNext: UpNextStore, settings: TodayPlanSettings, runMode: RunMode) {
+    init(upNext: UpNextStore, settings: TodayPlanSettings, usesClaude: Bool = true, runMode: RunMode) {
         self.upNext = upNext
         self.settings = settings
+        self.usesClaude = usesClaude
         let environment = ProcessInfo.processInfo.environment
         isDemo = runMode.isDemo
         // Lets demo snapshots render each state: `TABBI_PLANNER_PREVIEW=plan`.
         // Demo only, so a preview proposal can never reach the real calendar.
         guard isDemo else { return }
-        canRefine = settings.planMode == .local
+        canRefine = usesClaude && settings.planMode == .local
         switch environment["TABBI_PLANNER_PREVIEW"] {
         case "plan", "plan-refining":
             phase = .proposal(sampleProposal(
@@ -241,7 +244,7 @@ final class DayPlanStore: ObservableObject {
     /// Looks for the `claude` CLI off the main thread while a local plan is
     /// worked out, so "Refine with Claude" only shows when it can work.
     private func checkRefineAvailable() {
-        guard settings.planMode == .local else {
+        guard usesClaude, settings.planMode == .local else {
             canRefine = false
             return
         }
@@ -293,7 +296,7 @@ final class DayPlanStore: ObservableObject {
             break
         }
 
-        guard let executable = await Task.detached(priority: .userInitiated, operation: { ClaudeCLI.locate() }).value else {
+        guard usesClaude, let executable = await Task.detached(priority: .userInitiated, operation: { ClaudeCLI.locate() }).value else {
             return .failed(.claudeNotFound)
         }
         guard let text = await DayPlanner.answer(executable: executable, prompt: DayPlanner.prompt(for: context),
