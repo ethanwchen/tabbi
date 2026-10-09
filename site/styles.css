@@ -138,8 +138,9 @@ nav.site a.nav-cta:hover { background: var(--btn-hover); color: var(--btn-ink); 
 .hero-home .cta { margin-top: 26px; }
 
 /* The laptop: drawn in CSS, with the real panel hanging from its notch.
-   89% leaves room for the base, which is 112% of the screen. */
-.laptop { position: relative; width: min(720px, 89%); margin: 0 auto; }
+   80% leaves room for the base (112% of the screen) and the cat beside it,
+   and 600px keeps it from crowding out the tabs below on tablets. */
+.laptop { position: relative; width: min(600px, 80%); margin: 0 auto; }
 .laptop-screen {
   position: relative; z-index: 1; aspect-ratio: 16 / 10; overflow: hidden;
   border: 10px solid #15110E; border-radius: 20px 20px 8px 8px;
@@ -183,13 +184,14 @@ nav.site a.nav-cta:hover { background: var(--btn-hover); color: var(--btn-ink); 
 /* Wide windows put the words beside the laptop, so all of it fits above the fold. */
 @media (min-width: 1000px) {
   .hero-home { padding: 36px 0 80px; }
-  .hero-home .wrap { flex-direction: row; gap: 48px; text-align: left; }
-  .hero-home .hero-copy { flex: 0 0 470px; }
-  .hero-home h1 { font-size: 3.1rem; }
+  .hero-home .wrap { flex-direction: row; gap: 40px; text-align: left; }
+  .hero-home .hero-copy { flex: 0 0 420px; }
+  .hero-home h1 { font-size: 3rem; }
   .hero-home .hero-icon { margin-left: 0; }
   .hero-home .lede { margin: 0; }
   .hero-home .cta { justify-content: flex-start; }
-  .hero-home .laptop { flex: 1 1 auto; width: auto; max-width: 620px; margin: 0 36px 0 0; }
+  /* The right margin is the cat's room: it peeks 56px past the lid. */
+  .hero-home .laptop { flex: 1 1 auto; width: auto; max-width: 620px; margin: 0 64px 0 0; }
 }
 
 .cta { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 30px; }
@@ -387,8 +389,6 @@ footer.site nav a:hover { background: var(--chip); color: var(--on-ground); text
   .laptop-screen::before { border-radius: 0 0 7px 7px; }
   .laptop-panel { width: 60%; border-radius: 0 0 12px 12px; }
   .laptop-base { height: 9px; border-radius: 0 0 10px 10px; }
-  /* A little narrower, so the cat beside it still fits on the screen. */
-  .laptop { width: 85%; }
   .pixel-cat { right: -36px; bottom: 9px; width: 44px; height: 52px; }
   .tab-card { border-radius: 18px; }
   .tab-card img { border-radius: 12px; }
