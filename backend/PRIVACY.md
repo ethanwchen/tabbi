@@ -33,6 +33,15 @@ The service never stores your name or email from Apple: the app asks Apple only 
 To check a sign-in and to revoke it on deletion, the Worker talks to Apple (`appleid.apple.com`); it sends Apple only the token or code the app received from Apple.
 Cloudflare, which hosts the Worker, sees connection metadata like any web host.
 The Worker uses the client IP only in memory to rate-limit registration, sign-ins and bad tokens, and never writes it to storage.
+For troubleshooting, the Worker keeps short log lines at Cloudflare for up to 7 days: the kind of request (for example `POST /v1/friends/:id`, with every code and id removed), its status and duration, and the name of any internal error.
+It logs every failed request and a random 1 in 100 of the rest.
+Logs never contain tokens, friend or party codes, names, request contents or IP addresses.
+
+## Suggestions from the website
+
+The website's Suggest form sends the service an idea: its category, the message and, only if you add one, an email address to reply to, with the time it arrived.
+A suggestion is not linked to a friend code, an account or an IP address.
+Only the maintainer reads it, uses the email only to ask about or reply to that idea, and deletes it when it is no longer needed, at the latest after 365 days.
 
 ## Who can see it
 
@@ -66,6 +75,13 @@ Reports between that code and your account are deleted, since they would now be 
 Deleted data leaves the live service at once.
 Copies can remain in backups for up to 30 days: Cloudflare keeps a 30-day point-in-time history of the storage, and the operator keeps encrypted exports for at most 30 days, used only to recover from an outage or a mistake.
 If the service is ever restored from a backup, every account deleted after that backup is deleted again right away.
+
+## Aggregate counts
+
+The maintainer can see a few totals the service counts from the data above, so they know how many people use it: how many friend codes and Apple sign-ins exist, how many users sent a heartbeat in the last day, week and month, how many new friend codes were created on each of the last 30 days, how many parties are open, and how many suggestions wait.
+These are counts only: they never name or identify anyone, and nothing is stored or sent for them.
+The app sends nothing extra; Tabbi has no tracking, analytics or telemetry of any kind.
+The number of installs comes from GitHub's public download count for each release, not from the app.
 
 ## No analytics, no third parties
 

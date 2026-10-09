@@ -18,6 +18,7 @@ import {
 } from "./lib";
 import { PROFILE_FIELDS, Profile, applyProfilePatch, defaultProfile, parseProfilePatch, sameProfile } from "./profile";
 import { json } from "./http";
+import { errorFields, logEvent, routeOf } from "./log";
 import { readCohort, readGrant, parseGrantItem } from "./grants";
 import { SYNC_PUT_PER_MIN, etag, parseIfMatch, readSyncDocument } from "./sync";
 import {
@@ -29,6 +30,11 @@ import { STUDY_DAY_RETENTION_DAYS, rankEntries } from "./leaderboard";
 import {
   ADMIN_REPORTS_PAGE, MAX_BLOCKS, MAX_REPORTS_PER_DAY, REPORTS_PER_MIN, REPORT_FIELDS, parseReport,
 } from "./moderation";
+import {
+  ADMIN_SUGGESTIONS_PAGE, MAX_SUGGESTIONS_PER_DAY, SUGGESTIONS_PER_DAY, SUGGESTIONS_PER_MIN, SUGGESTION_RETENTION_DAYS, THANKS_URL,
+  formErrorPage, isFormPost, parseSuggestion, readSuggestionBody,
+} from "./suggestions";
+import { activeCounts, signupsByDay, signupsSince } from "./stats";
 import { JOIN_FIELDS, PARTY_TOUCH_S, PartySession, SESSION_FIELDS, parseJoin, parseSession, partyExpired } from "./party";
 
 export interface Env extends AppleSecrets, AdminSecrets {
@@ -215,6 +221,19 @@ CREATE TABLE grants (
 ) WITHOUT ROWID;
 `;
 
+/** The recommendations inbox (see suggestions.ts). Not linked to any user: the form needs no account. */
+const SUGGESTIONS_SCHEMA = `
+-- An idea sent through the website's Suggest form, with the optional address to reply to.
+CREATE TABLE suggestions (
+  id         INTEGER PRIMARY KEY,
+  category   TEXT NOT NULL,
+  message    TEXT NOT NULL,
+  email      TEXT,
+  created_at INTEGER NOT NULL
+);
+CREATE INDEX suggestions_by_created_at ON suggestions (created_at);
+`;
+
 /**
  * Ordered schema steps; step i brings the database to version i + 1. Append new steps and never edit
  * one that has been deployed. Step 1 is the original schema, written with IF NOT EXISTS so databases
@@ -222,6 +241,7 @@ CREATE TABLE grants (
  */
 const MIGRATIONS = [
   SCHEMA, SYNC_SCHEMA, MODERATION_SCHEMA, REPORTS_SCHEMA, USED_IDENTITY_TOKENS_SCHEMA, NAME_HOLDS_SCHEMA, GRANTS_SCHEMA,
+  SUGGESTIONS_SCHEMA,
 ];
 
 /** Runs the steps a database has not had yet, each in its own transaction with its version bump. */
@@ -240,6 +260,11 @@ export function migrate(storage: DurableObjectStorage): void {
 
 /** Unchanged heartbeats are flushed to SQLite at most this often, so a restart loses little. */
 const PRESENCE_FLUSH_S = 600;
+/**
+ * The hourly alarm drops a user's live presence once their last heartbeat is this old. Every status
+ * shows offline long before (2.5 heartbeat intervals), so friends see the same thing from the row.
+ */
+export const LIVE_IDLE_S = 3600;
 
 interface UserRow extends Record<string, SqlStorageValue> {
   code: string;
@@ -313,9 +338,12 @@ interface LivePresence {
 
 /** How often the alarm deletes data past its retention (see `Hub.alarm`). */
 export const RETENTION_SWEEP_S = 3600;
+/** GET /v1/health reports `degraded` once this many requests failed with a 500 within HEALTH_WINDOW_S. */
+export const HEALTH_MAX_FAILURES = 5;
+export const HEALTH_WINDOW_S = 600;
 
-function rateLimited(minute: number, now: number): HttpError {
-  const retry = Math.max(1, (minute + 1) * 60 - now);
+function rateLimited(end: number, now: number): HttpError {
+  const retry = Math.max(1, end - now);
   return new HttpError(429, "rate_limited", "too many requests", { "Retry-After": String(retry) });
 }
 
@@ -327,21 +355,49 @@ interface Caller {
   profile: Profile;
 }
 
+/** What this Hub instance has served since it started (it starts over after an eviction or deploy). */
+export interface HubUsage {
+  since: number;
+  requests: number;
+  rowsRead: number;
+  rowsWritten: number;
+}
+
 export class Hub extends DurableObject<Env> {
-  private sql: SqlStorage;
-  private windows = new Map<string, { minute: number; count: number }>();
+  /** SQLite, through `tracked` so every statement's rows count toward `usage`. */
+  private sql: Pick<SqlStorage, "exec">;
+  /**
+   * Requests and SQLite rows read and written since this instance started, shown by GET /v1/admin/stats.
+   * Rows are what Cloudflare bills a SQLite Durable Object for, so this measures a route's cost (the
+   * load test in scripts/loadtest.ts reads it) and shows production use without the dashboard.
+   */
+  private usage: HubUsage = { since: nowS(), requests: 0, rowsRead: 0, rowsWritten: 0 };
+  /** Statements run since rows were last added to `usage`; a cursor's counts are final once consumed. */
+  private cursors: SqlStorageCursor<Record<string, SqlStorageValue>>[] = [];
+  private windows = new Map<string, { end: number; count: number }>();
+  /** When ended rate-limit windows were last dropped from `windows`. */
+  private windowsPrunedAt = 0;
   /**
    * Live presence by friend code, plus when each entry was last written to SQLite. Heartbeats update
    * this map every time but write a row only on a visible change or every PRESENCE_FLUSH_S, which keeps
    * row writes far below the free-tier allowance. Entries missing here are read from SQLite.
    */
   private live = new Map<string, LivePresence>();
+  /** When recent requests failed with an unexpected exception (500), newest last; see health(). */
+  private failures: number[] = [];
   /** The UTC day the retention sweep last deleted old study minutes on. */
   private studyDaysSweptOn: string | null = null;
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
-    this.sql = ctx.storage.sql;
+    const sql = ctx.storage.sql;
+    this.sql = {
+      exec: <T extends Record<string, SqlStorageValue>>(query: string, ...bindings: unknown[]) => {
+        const cursor = sql.exec<T>(query, ...bindings);
+        this.cursors.push(cursor);
+        return cursor;
+      },
+    };
     migrate(ctx.storage);
     ctx.blockConcurrencyWhile(async () => {
       if ((await ctx.storage.getAlarm()) === null) await ctx.storage.setAlarm(Date.now() + RETENTION_SWEEP_S * 1000);
@@ -354,12 +410,16 @@ export class Hub extends DurableObject<Env> {
    * inactive user's study minutes their 28 days, which PRIVACY.md promises.
    */
   async alarm(): Promise<void> {
-    this.sweepRetention(nowS());
+    const now = nowS();
+    this.sweepRetention(now);
+    this.evictIdlePresence(now);
+    this.tally();
     await this.ctx.storage.setAlarm(Date.now() + RETENTION_SWEEP_S * 1000);
   }
 
   /**
-   * Deletes every expired party, study minutes past their retention and spent identity token hashes.
+   * Deletes every expired party, study minutes past their retention, spent identity token hashes and old
+   * suggestions.
    * Study minutes have no index by day, so that scan runs once per UTC day (again after an eviction,
    * which is harmless) rather than every hour.
    */
@@ -370,6 +430,7 @@ export class Hub extends DurableObject<Env> {
       this.sql.exec("DELETE FROM party_members WHERE party IN (SELECT code FROM parties WHERE last_active <= ?)", idleSince);
       this.sql.exec("DELETE FROM parties WHERE last_active <= ?", idleSince);
       this.sql.exec("DELETE FROM used_identity_tokens WHERE expires_at < ?", now);
+      this.sql.exec("DELETE FROM suggestions WHERE created_at < ?", now - SUGGESTION_RETENTION_DAYS * 86_400);
       if (this.studyDaysSweptOn !== today) {
         this.sql.exec("DELETE FROM study_days WHERE day < ?", utcDay(now - STUDY_DAY_RETENTION_DAYS * 86_400));
       }
@@ -378,13 +439,47 @@ export class Hub extends DurableObject<Env> {
   }
 
   async fetch(req: Request): Promise<Response> {
+    this.usage.requests++;
     try {
       return await this.route(req);
     } catch (e) {
       if (e instanceof HttpError) return json({ ok: false, error: e.error, message: e.message }, e.status, e.headers);
-      console.error(e);
+      this.recordFailure(nowS());
+      logEvent("error", "hub_exception", { route: routeOf(new URL(req.url).pathname), ...errorFields(e) });
       return json({ ok: false, error: "internal", message: "internal error" }, 500);
+    } finally {
+      this.tally();
     }
+  }
+
+  /**
+   * Adds the rows of the statements run so far to `usage`. Every statement's cursor is consumed in the
+   * same synchronous step that runs it, so no request has an unfinished cursor when another one ends.
+   */
+  private tally(): void {
+    for (const c of this.cursors) {
+      this.usage.rowsRead += c.rowsRead;
+      this.usage.rowsWritten += c.rowsWritten;
+    }
+    this.cursors = [];
+  }
+
+  private recordFailure(now: number): void {
+    this.failures.push(now);
+    if (this.failures.length > HEALTH_MAX_FAILURES) this.failures.shift();
+  }
+
+  /**
+   * GET /v1/health, for an external uptime check: it answers only after reading SQLite, so a 200 means
+   * the Worker, the Hub and its storage all work. It turns into 503 `degraded` while HEALTH_MAX_FAILURES
+   * requests failed with a 500 in the last HEALTH_WINDOW_S, so the same free uptime monitor also alerts
+   * on a burst of server errors. Failures are counted in memory and start from zero after a restart.
+   */
+  private health(now: number): Response {
+    this.sql.exec("SELECT version FROM schema_version").one();
+    const recent = this.failures.filter((t) => t > now - HEALTH_WINDOW_S).length;
+    if (recent >= HEALTH_MAX_FAILURES) return json({ ok: false, error: "degraded", message: "recent requests failed" }, 503);
+    return json({ ok: true });
   }
 
   private async route(req: Request): Promise<Response> {
@@ -392,6 +487,8 @@ export class Hub extends DurableObject<Env> {
     const path = url.pathname.replace(/\/+$/, "") || "/";
     const method = req.method.toUpperCase();
     const now = nowS();
+
+    if (path === "/v1/health" && method === "GET") return this.health(now);
 
     if (path === "/v1/register" && method === "POST") {
       const token = bearer(req);
@@ -404,6 +501,7 @@ export class Hub extends DurableObject<Env> {
     }
 
     if (path === "/v1/auth/apple" && method === "POST") return await this.signInWithApple(req, now);
+    if (path === "/v1/suggestions" && method === "POST") return await this.suggest(req, now);
     if (path.startsWith("/v1/admin/")) return await this.admin(req, path, method, now);
 
     const caller = await this.authenticate(req, now);
@@ -471,23 +569,28 @@ export class Hub extends DurableObject<Env> {
     return { code: row.code, tokenHash, profile: rowToProfile(row) };
   }
 
-  /** Fixed one-minute window per identity. Old windows are dropped lazily when the minute rolls over. */
-  private rateLimit(id: string, perMinute: number, now: number): void {
-    const minute = Math.floor(now / 60);
-    if (this.windows.size > 10_000) {
-      for (const [k, w] of this.windows) if (w.minute !== minute) this.windows.delete(k);
+  /**
+   * Fixed window per identity: one minute unless `windowS` says otherwise (a window starts at a
+   * multiple of its length). Once the map grows large, ended windows are dropped at most once a
+   * minute, so a busy minute with many identities does not scan the whole map on every request.
+   */
+  private rateLimit(id: string, perWindow: number, now: number, windowS = 60): void {
+    if (this.windows.size > 10_000 && now - this.windowsPrunedAt >= 60) {
+      for (const [k, w] of this.windows) if (w.end <= now) this.windows.delete(k);
+      this.windowsPrunedAt = now;
     }
+    const end = (Math.floor(now / windowS) + 1) * windowS;
     const w = this.windows.get(id);
-    const count = w && w.minute === minute ? w.count + 1 : 1;
-    this.windows.set(id, { minute, count });
-    if (count > perMinute) throw rateLimited(minute, now);
+    const count = w && w.end === end ? w.count + 1 : 1;
+    this.windows.set(id, { end, count });
+    if (count > perWindow) throw rateLimited(end, now);
   }
 
   /** Throws 429 if `id` has already used up this minute's window, without counting a request. */
   private checkLimit(id: string, perMinute: number, now: number): void {
-    const minute = Math.floor(now / 60);
+    const end = (Math.floor(now / 60) + 1) * 60;
     const w = this.windows.get(id);
-    if (w && w.minute === minute && w.count >= perMinute) throw rateLimited(minute, now);
+    if (w && w.end === end && w.count >= perMinute) throw rateLimited(end, now);
   }
 
   // ---------- admin ----------
@@ -505,6 +608,7 @@ export class Hub extends DurableObject<Env> {
       return json({ ok: true, exportedAt: now, schemaVersion: version, tables: exportTables(this.sql) });
     }
     if (path === "/v1/admin/restore" && method === "POST") return await this.restore(req, now);
+    if (path === "/v1/admin/stats" && method === "GET") return this.adminStats(now);
     if (path === "/v1/admin/reports" && method === "GET") {
       const status = new URL(req.url).searchParams.get("status") ?? "open";
       if (status !== "open" && status !== "all") throw new HttpError(400, "invalid_field", "status must be open or all");
@@ -519,6 +623,9 @@ export class Hub extends DurableObject<Env> {
     if (user && user[2] === "ban" && method === "POST") return this.adminBan(user[1], now);
     if (user && user[2] === "ban" && method === "DELETE") return this.adminUnban(user[1]);
     if (path === "/v1/admin/grants" && method === "POST") return await this.adminGrantCohort(req, now);
+    if (path === "/v1/admin/suggestions" && method === "GET") return this.adminSuggestions(new URL(req.url).searchParams.get("before"));
+    const suggestion = /^\/v1\/admin\/suggestions\/(\d+)$/.exec(path);
+    if (suggestion && method === "DELETE") return this.adminDeleteSuggestion(Number(suggestion[1]));
     const grants = /^\/v1\/admin\/users\/([^/]+)\/grants$/.exec(path);
     if (grants && method === "GET") return this.adminListGrants(grants[1]);
     if (grants && method === "POST") return await this.adminGrant(req, grants[1], now);
@@ -539,12 +646,95 @@ export class Hub extends DurableObject<Env> {
       const bookmark = "bookmark" in target ? target.bookmark : await this.ctx.storage.getBookmarkForTime(target.at * 1000);
       undoBookmark = await this.ctx.storage.onNextSessionRestoreBookmark(bookmark);
     } catch (e) {
-      console.error(e);
+      logEvent("error", "restore_unavailable", errorFields(e));
       throw new HttpError(501, "restore_unavailable", "point-in-time recovery is not available here");
     }
-    console.log("admin: restoring storage to " + ("at" in target ? `time ${target.at}` : "a bookmark"));
+    logEvent("warn", "admin_restore", "at" in target ? { at: target.at } : { bookmark: true });
     setTimeout(() => this.ctx.abort("restoring a backup"), 100);
     return json({ ok: true, undoBookmark });
+  }
+
+  /**
+   * GET /v1/admin/stats: aggregate counts (see stats.ts). Each call scans the users and presence tables
+   * once, so it reads about two rows per user; fine for a maintainer's occasional look, not for polling.
+   */
+  private adminStats(now: number): Response {
+    const count = (query: string, ...args: SqlStorageValue[]) => this.sql.exec<{ n: number }>(query, ...args).one().n;
+    const live = [...this.live.values()].map((l) => ({ lastSeen: l.presence.lastSeen, flushedAt: l.flushedAt }));
+    const signups = new Map(this.sql.exec<{ day: string; n: number }>(
+      "SELECT strftime('%Y-%m-%d', created_at, 'unixepoch') AS day, COUNT(*) AS n FROM users WHERE created_at >= ? GROUP BY day",
+      signupsSince(now),
+    ).toArray().map((r) => [r.day, r.n]));
+    return json({
+      ok: true,
+      at: now,
+      users: {
+        total: count("SELECT COUNT(*) AS n FROM users"),
+        signedIn: count("SELECT COUNT(*) AS n FROM apple_accounts"),
+        banned: count("SELECT COUNT(*) AS n FROM bans"),
+      },
+      active: activeCounts((since) => count("SELECT COUNT(*) AS n FROM presence WHERE last_seen >= ?", since), live, now),
+      signups: signupsByDay(signups, now),
+      parties: {
+        open: count("SELECT COUNT(*) AS n FROM parties WHERE last_active > ?", now - PARTY_IDLE_EXPIRY_S),
+        members: count(
+          "SELECT COUNT(*) AS n FROM party_members m JOIN parties p ON p.code = m.party WHERE p.last_active > ?",
+          now - PARTY_IDLE_EXPIRY_S,
+        ),
+      },
+      suggestions: count("SELECT COUNT(*) AS n FROM suggestions"),
+      hub: this.currentUsage(),
+    });
+  }
+
+  /** `usage` including this request's statements so far (the stats queries above count too). */
+  private currentUsage(): HubUsage {
+    this.tally();
+    return { ...this.usage };
+  }
+
+  // ---------- suggestions ----------
+
+  /**
+   * POST /v1/suggestions (see suggestions.ts). A form post is answered with a 303 redirect to the site's
+   * thank-you page, or an HTML page when it cannot be accepted; a JSON post with JSON. A filled-in
+   * honeypot gets the same success reply but is not stored.
+   */
+  private async suggest(req: Request, now: number): Promise<Response> {
+    const form = isFormPost(req);
+    try {
+      const client = clientKey(req);
+      this.rateLimit("suggest:" + client, SUGGESTIONS_PER_MIN, now);
+      this.rateLimit("suggestday:" + client, SUGGESTIONS_PER_DAY, now, 86_400);
+      const suggestion = parseSuggestion(await readSuggestionBody(req));
+      if (suggestion) {
+        const today = this.sql.exec<{ n: number }>("SELECT COUNT(*) AS n FROM suggestions WHERE created_at > ?", now - 86_400).one().n;
+        if (today >= MAX_SUGGESTIONS_PER_DAY) throw new HttpError(503, "inbox_full", "the inbox takes no more suggestions today");
+        this.sql.exec("INSERT INTO suggestions (category, message, email, created_at) VALUES (?, ?, ?, ?)",
+          suggestion.category, suggestion.message, suggestion.email, now);
+      }
+      if (form) return new Response(null, { status: 303, headers: { Location: THANKS_URL, "Cache-Control": "no-store" } });
+      return json({ ok: true }, 201);
+    } catch (e) {
+      if (form && e instanceof HttpError) return formErrorPage(e);
+      throw e;
+    }
+  }
+
+  /** GET /v1/admin/suggestions[?before=id]: a page of suggestions, newest first; `before` pages further back. */
+  private adminSuggestions(before: string | null): Response {
+    if (before !== null && !/^\d{1,15}$/.test(before)) throw new HttpError(400, "invalid_field", "invalid before");
+    const rows = this.sql.exec<{ id: number; category: string; message: string; email: string | null; created_at: number }>(
+      "SELECT * FROM suggestions WHERE id < ? ORDER BY id DESC LIMIT ?", before === null ? Number.MAX_SAFE_INTEGER : Number(before),
+      ADMIN_SUGGESTIONS_PAGE,
+    ).toArray();
+    const suggestions = rows.map((r) => ({ id: r.id, createdAt: r.created_at, category: r.category, message: r.message, email: r.email }));
+    return json({ ok: true, suggestions, more: rows.length === ADMIN_SUGGESTIONS_PAGE });
+  }
+
+  /** DELETE /v1/admin/suggestions/{id}: removes a suggestion once it has been read or answered. */
+  private adminDeleteSuggestion(id: number): Response {
+    return json({ ok: true, deleted: this.sql.exec("DELETE FROM suggestions WHERE id = ?", id).rowsWritten > 0 });
   }
 
   // ---------- profile ----------
@@ -1015,29 +1205,53 @@ export class Hub extends DurableObject<Env> {
     const newDay = prev !== null && prev.day !== next.day;
     if (!live || !prev || newDay || presenceChanged(prev, next) || now - flushedAt >= PRESENCE_FLUSH_S) {
       this.ctx.storage.transactionSync(() => {
-        this.sql.exec(
-          `INSERT OR REPLACE INTO presence
-             (code, status, method, phase_ends_at, session_minutes, today_minutes, streak_days, day, last_seen)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-          caller.code, next.status, next.method, next.phaseEndsAt, next.sessionMinutes, next.todayMinutes,
-          next.streakDays, next.day, next.lastSeen,
-        );
         if (newDay) {
           // Close out the previous day with its final count (it may not have been flushed yet).
           if (prev.todayMinutes > 0 && savedDay !== dayKey(prev)) this.saveStudyDay(caller.code, prev);
           this.sql.exec("DELETE FROM study_days WHERE code = ? AND day < ?",
             caller.code, utcDay(now - STUDY_DAY_RETENTION_DAYS * 86_400));
         }
-        // A zero count is skipped unless it corrects a count already saved for the same day.
-        if (savedDay !== dayKey(next) && (next.todayMinutes > 0 || savedDay?.startsWith(next.day + ":"))) {
-          this.saveStudyDay(caller.code, next);
-          savedDay = dayKey(next);
-        }
+        savedDay = this.persistPresence(caller.code, next, savedDay);
       });
       flushedAt = now;
     }
     this.live.set(caller.code, { presence: next, flushedAt, savedDay });
     return json({ ok: true, presence: next, heartbeatSeconds: heartbeatSeconds(next.status) });
+  }
+
+  /**
+   * Writes a user's presence row and, when they changed, the day's study minutes. Returns the
+   * `day:minutes` now saved. A zero count is skipped unless it corrects a count already saved for the
+   * same day.
+   */
+  private persistPresence(code: string, p: Presence, savedDay: string | null): string | null {
+    this.sql.exec(
+      `INSERT OR REPLACE INTO presence
+         (code, status, method, phase_ends_at, session_minutes, today_minutes, streak_days, day, last_seen)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      code, p.status, p.method, p.phaseEndsAt, p.sessionMinutes, p.todayMinutes, p.streakDays, p.day, p.lastSeen,
+    );
+    if (savedDay !== dayKey(p) && (p.todayMinutes > 0 || savedDay?.startsWith(p.day + ":"))) {
+      this.saveStudyDay(code, p);
+      return dayKey(p);
+    }
+    return savedDay;
+  }
+
+  /**
+   * Drops the live copy of users who stopped sending heartbeats LIVE_IDLE_S ago, writing first what is
+   * not saved yet (their last heartbeat and minutes), so memory holds only recently active users and
+   * nothing is lost. Run by the hourly alarm.
+   */
+  private evictIdlePresence(now: number): void {
+    this.ctx.storage.transactionSync(() => {
+      for (const [code, l] of this.live) {
+        if (now - l.presence.lastSeen < LIVE_IDLE_S) continue;
+        // Every heartbeat that was not written moved lastSeen past the last write.
+        if (l.presence.lastSeen > l.flushedAt) this.persistPresence(code, l.presence, l.savedDay);
+        this.live.delete(code);
+      }
+    });
   }
 
   private saveStudyDay(code: string, p: Presence): void {

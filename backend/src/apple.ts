@@ -7,6 +7,7 @@
 // a second session. The code is exchanged for a refresh token only so the account's Apple tokens can be revoked when the user
 // deletes their account, as Apple requires. That needs a client secret, a short JWT signed with the Sign
 // in with Apple key (ES256) from the Worker secrets; without them the exchange and revoke are skipped.
+import { errorFields, logEvent } from "./log";
 import { HttpError, Obj } from "./lib";
 
 export const APPLE_ISSUER = "https://appleid.apple.com";
@@ -98,11 +99,11 @@ async function fetchAppleKeys(now: number): Promise<KeyCache> {
   try {
     res = await fetch(APPLE_KEYS_URL);
   } catch (e) {
-    console.error("apple: could not fetch keys", e);
+    logEvent("error", "apple_keys_unreachable", errorFields(e));
     throw new HttpError(503, "apple_unavailable", "could not reach Apple, retry");
   }
   if (!res.ok) {
-    console.error(`apple: keys request failed with ${res.status}`);
+    logEvent("error", "apple_keys_failed", { status: res.status });
     throw new HttpError(503, "apple_unavailable", "could not reach Apple, retry");
   }
   const body = (await res.json().catch(() => null)) as { keys?: unknown } | null;
@@ -116,7 +117,7 @@ async function fetchAppleKeys(now: number): Promise<KeyCache> {
         { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["verify"],
       ));
     } catch (e) {
-      console.error(`apple: skipping key ${k.kid}`, e);
+      logEvent("warn", "apple_key_skipped", { kid: k.kid.slice(0, 40), ...errorFields(e) });
     }
   }
   return { keys, fetchedAt: now };
@@ -237,7 +238,7 @@ async function postForm(url: string, form: Record<string, string>): Promise<Resp
 export async function exchangeAuthorizationCode(code: string, env: AppleSecrets, now: number): Promise<string | null> {
   const secrets = appleSecrets(env);
   if (!secrets) {
-    console.log("apple: secrets unset, skipping the authorization code exchange");
+    logEvent("warn", "apple_secrets_unset", { skipped: "code_exchange" });
     return null;
   }
   try {
@@ -246,12 +247,12 @@ export async function exchangeAuthorizationCode(code: string, env: AppleSecrets,
     });
     const body = (await res.json().catch(() => null)) as { refresh_token?: unknown; error?: unknown } | null;
     if (!res.ok || typeof body?.refresh_token !== "string") {
-      console.error(`apple: code exchange failed with ${res.status} ${String(body?.error ?? "")}`);
+      logEvent("error", "apple_code_exchange_failed", { status: res.status, appleError: String(body?.error ?? "").slice(0, 60) });
       return null;
     }
     return body.refresh_token;
   } catch (e) {
-    console.error("apple: code exchange failed", e);
+    logEvent("error", "apple_code_exchange_failed", errorFields(e));
     return null;
   }
 }
@@ -260,17 +261,17 @@ export async function exchangeAuthorizationCode(code: string, env: AppleSecrets,
 export async function revokeRefreshToken(token: string, env: AppleSecrets, now: number): Promise<boolean> {
   const secrets = appleSecrets(env);
   if (!secrets) {
-    console.log("apple: secrets unset, skipping the token revoke");
+    logEvent("warn", "apple_secrets_unset", { skipped: "revoke" });
     return false;
   }
   try {
     const res = await postForm(APPLE_REVOKE_URL, {
       client_id: APPLE_CLIENT_ID, client_secret: await clientSecret(secrets, now), token, token_type_hint: "refresh_token",
     });
-    if (!res.ok) console.error(`apple: revoke failed with ${res.status}`);
+    if (!res.ok) logEvent("error", "apple_revoke_failed", { status: res.status });
     return res.ok;
   } catch (e) {
-    console.error("apple: revoke failed", e);
+    logEvent("error", "apple_revoke_failed", errorFields(e));
     return false;
   }
 }

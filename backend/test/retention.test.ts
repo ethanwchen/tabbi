@@ -1,7 +1,7 @@
 import { runDurableObjectAlarm, runInDurableObject } from "cloudflare:test";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import catalog from "../shared/catalog.json";
-import { RETENTION_SWEEP_S, type Hub } from "../src/hub";
+import { LIVE_IDLE_S, RETENTION_SWEEP_S, type Hub } from "../src/hub";
 import { STUDY_DAY_RETENTION_DAYS } from "../src/leaderboard";
 import { utcDay } from "../src/lib";
 import { call, hub, pinClockToMinuteStart, register } from "./helpers";
@@ -70,5 +70,34 @@ describe("retention sweep", () => {
 
     expect(await runDurableObjectAlarm(hub())).toBe(true);
     expect(await rows("SELECT token_hash FROM used_identity_tokens WHERE token_hash IN ('old', 'new')")).toEqual([{ token_hash: "new" }]);
+  });
+
+  it("writes and drops the live presence of users who stopped sending heartbeats, and keeps active ones", async () => {
+    const a = await register();
+    const b = await register();
+    await call("POST", "/v1/presence", { status: "studying", todayMinutes: 10 }, a.token);
+    advance(120);
+    // Not written yet: only the minutes changed since the last write.
+    await call("POST", "/v1/presence", { status: "studying", todayMinutes: 12 }, a.token);
+    const lastSeen = nowS();
+    expect(await rows("SELECT last_seen, today_minutes FROM presence WHERE code = ?", a.code))
+      .toEqual([{ last_seen: lastSeen - 120, today_minutes: 10 }]);
+    advance(LIVE_IDLE_S - 60);
+    await call("POST", "/v1/presence", { status: "idle" }, b.token);
+    advance(60);
+
+    expect(await runDurableObjectAlarm(hub())).toBe(true);
+    const live = await runInDurableObject(hub(), (h: Hub) => (h as unknown as { live: Map<string, unknown> }).live);
+    expect(live.has(a.code)).toBe(false);
+    expect(live.has(b.code)).toBe(true);
+    expect(await rows("SELECT last_seen, today_minutes FROM presence WHERE code = ?", a.code))
+      .toEqual([{ last_seen: lastSeen, today_minutes: 12 }]);
+    expect(await rows("SELECT minutes FROM study_days WHERE code = ?", a.code)).toEqual([{ minutes: 12 }]);
+
+    // Back from the row, the user shows offline to friends with the minutes they studied.
+    await call("POST", "/v1/friends", { code: a.code }, b.token);
+    const { friends } = (await call("GET", "/v1/friends", undefined, b.token)).body;
+    expect(friends[0].profile.code).toBe(a.code);
+    expect(friends[0].presence).toMatchObject({ status: "offline", todayMinutes: 12, lastSeen });
   });
 });
