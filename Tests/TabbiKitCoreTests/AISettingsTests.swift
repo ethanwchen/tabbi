@@ -25,6 +25,23 @@ final class AISettingsTests: XCTestCase {
         XCTAssertEqual(settings.models, [:])
     }
 
+    func testSetupPagesAreOfficialHTTPSPages() {
+        XCTAssertEqual(AIProviderID.gemini.setupPage.host(), "aistudio.google.com")
+        XCTAssertEqual(AIProviderID.ollama.setupPage.host(), "ollama.com")
+        for id in AIProviderID.allCases {
+            XCTAssertEqual(id.setupPage.scheme, "https", "\(id)")
+            XCTAssertEqual(id.setupPageTitle, id.requiresAPIKey ? "Get a Key" : "Install")
+        }
+    }
+
+    func testSetupHintsCoverEveryProviderWithoutAKey() {
+        for id in AIProviderID.allCases {
+            XCTAssertEqual(id.setupHint(model: "m") == nil, id.requiresAPIKey, "\(id)")
+        }
+        XCTAssertEqual(AIProviderID.ollama.setupHint(model: AISettings().model(for: .ollama)),
+                       "With Ollama open, run ollama pull llama3.2 in Terminal once.")
+    }
+
     func testInMemoryKeysTrimAndBlankDeletes() {
         let keys = InMemoryAIKeyStore([.openAI: "  sk-1\n"])
         XCTAssertEqual(keys.key(for: .openAI), "sk-1")

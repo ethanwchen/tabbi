@@ -75,6 +75,38 @@ public enum AIProviderID: String, Codable, CaseIterable, Hashable, Sendable {
         }
     }
 
+    /// The official page with what setup needs: the API key page for a
+    /// hosted API, the install page for a tool or Ollama. Opened in the
+    /// browser, never fetched by Tabbi.
+    public var setupPage: URL {
+        let page = switch self {
+        case .claudeCLI: "https://docs.anthropic.com/en/docs/claude-code/setup"
+        case .codexCLI: "https://github.com/openai/codex"
+        case .geminiCLI: "https://github.com/google-gemini/gemini-cli"
+        case .anthropic: "https://console.anthropic.com/settings/keys"
+        case .openAI: "https://platform.openai.com/api-keys"
+        case .gemini: "https://aistudio.google.com/apikey"
+        case .ollama: "https://ollama.com/download"
+        }
+        return URL(string: page)!
+    }
+
+    /// The button that opens `setupPage`.
+    public var setupPageTitle: String { requiresAPIKey ? "Get a Key" : "Install" }
+
+    /// What to do once installed, for the providers whose setup is more
+    /// than an install or a key: the CLIs sign in on first run, and Ollama
+    /// needs the model downloaded once. `model` is the one Tabbi will ask for.
+    public func setupHint(model: String) -> String? {
+        switch self {
+        case .claudeCLI: "Run claude in Terminal once to sign in."
+        case .codexCLI: "Run codex in Terminal once to sign in."
+        case .geminiCLI: "Run gemini in Terminal once to sign in with Google."
+        case .anthropic, .openAI, .gemini: nil
+        case .ollama: "With Ollama open, run ollama pull \(model) in Terminal once."
+        }
+    }
+
     public var requiresAPIKey: Bool { transport == .api }
 
     public var isCommandLineTool: Bool {

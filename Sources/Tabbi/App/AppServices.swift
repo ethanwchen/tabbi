@@ -26,6 +26,8 @@ final class AppServices {
     private let goalCrowns: GoalCrowns
     /// The optional Sign in with Apple account that syncs the pet.
     let accountSync: SyncStore
+    /// The AI provider the user picked, which Settings > Connections chooses.
+    let ai: AIService
 
     private var cancellables: Set<AnyCancellable> = []
     /// Created on first use so launching never builds a window nobody opens.
@@ -56,6 +58,8 @@ final class AppServices {
         onboarding = OnboardingStore(settings: settings)
         accountSync = ModuleContext(id: "account", edition: edition, settings: settings, providers: providers,
                                     shared: shared, runMode: runMode).accountSync
+        ai = ModuleContext(id: "ai", edition: edition, settings: settings, providers: providers,
+                           shared: shared, runMode: runMode).ai
         // `$settings` emits before the new value is stored, so read the
         // layout from the emission.
         settings.$settings
@@ -75,7 +79,8 @@ final class AppServices {
     /// menu), at `pane` when given.
     func openSettings(pane: String? = nil) {
         let controller = settingsWindow ?? SettingsWindowController(settings: settings, modules: modules,
-                                                                    onboarding: onboarding, account: accountSync)
+                                                                    onboarding: onboarding, account: accountSync,
+                                                                    ai: ai)
         settingsWindow = controller
         if let pane { controller.select(pane) }
         controller.present()

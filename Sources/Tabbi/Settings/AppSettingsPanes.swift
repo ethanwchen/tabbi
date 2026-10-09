@@ -43,8 +43,9 @@ enum AppSettingsPane: String, CaseIterable {
     /// The window's panes, each reading the settings store from its environment.
     @MainActor
     static func panes(settings: SettingsStore, modules: ModuleRegistry, onboarding: OnboardingStore?,
-                      account: SyncStore? = nil) -> [SettingsPane] {
-        let environment = PaneEnvironment(settings: settings, modules: modules, onboarding: onboarding, account: account)
+                      account: SyncStore? = nil, ai: AIService? = nil) -> [SettingsPane] {
+        let environment = PaneEnvironment(settings: settings, modules: modules, onboarding: onboarding,
+                                          account: account, ai: ai)
         let moduleOptions = self.moduleOptions(settings: settings, modules: modules, onboarding: onboarding)
         return allCases.map { pane in
             // Connections checks the Mac when shown; let that finish in snapshots.
@@ -73,6 +74,7 @@ private struct PaneEnvironment {
     let modules: ModuleRegistry
     let onboarding: OnboardingStore?
     var account: SyncStore?
+    var ai: AIService?
 
     func wrap(_ pane: SettingsPane) -> SettingsPane {
         let modules = modules
@@ -82,7 +84,8 @@ private struct PaneEnvironment {
                                             .environment(\.moduleCatalog, settings.catalog)
                                             .environment(\.modulesUseKitDefaults, { modules.usesKitDefaults(of: $0) })
                                             .environment(\.runSetup, onboarding.map { store in { @MainActor @Sendable in store.start() } })
-                                            .environment(\.accountSync, account)),
+                                            .environment(\.accountSync, account)
+                                            .environment(\.aiService, ai)),
                             settleTime: pane.settleTime)
     }
 }
@@ -124,6 +127,16 @@ extension EnvironmentValues {
         get { self[AccountSyncKey.self] }
         set { self[AccountSyncKey.self] = newValue }
     }
+
+    /// The AI provider choice Connections shows; nil hides its section.
+    var aiService: AIService? {
+        get { self[AIServiceKey.self] }
+        set { self[AIServiceKey.self] = newValue }
+    }
+}
+
+private struct AIServiceKey: EnvironmentKey {
+    static let defaultValue: AIService? = nil
 }
 
 extension SettingsWindowController {
@@ -131,10 +144,12 @@ extension SettingsWindowController {
     /// - Parameters:
     ///   - onboarding: offers Run Setup Again in Tabs.
     ///   - account: the Account row in General.
+    ///   - ai: the AI provider choice in Connections.
     convenience init(settings: SettingsStore, modules: ModuleRegistry, onboarding: OnboardingStore? = nil,
-                     account: SyncStore? = nil) {
+                     account: SyncStore? = nil, ai: AIService? = nil) {
         self.init(
-            panes: AppSettingsPane.panes(settings: settings, modules: modules, onboarding: onboarding, account: account),
+            panes: AppSettingsPane.panes(settings: settings, modules: modules, onboarding: onboarding,
+                                         account: account, ai: ai),
             updates: Empty().eraseToAnyPublisher(),
             autosaveName: "TabbiSettings"
         )

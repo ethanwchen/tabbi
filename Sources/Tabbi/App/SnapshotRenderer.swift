@@ -230,7 +230,8 @@ enum SnapshotRenderer {
         }
 
         let settingsWindow = SettingsWindowController(settings: services.settings, modules: services.modules,
-                                                      onboarding: services.onboarding, account: services.accountSync)
+                                                      onboarding: services.onboarding, account: services.accountSync,
+                                                      ai: services.ai)
         for pane in settingsWindow.paneIDs {
             guard let png = await settingsWindow.snapshot(of: pane) else { continue }
             let url = outputDirectory.appendingPathComponent("settings-\(pane).png")
@@ -246,6 +247,17 @@ enum SnapshotRenderer {
             print(url.path)
         }
         services.settings.settings.notchMode = notchMode
+        // Connections with an API provider waiting for its key, and with a
+        // command line tool picked.
+        for (name, provider) in [("api-key", AIProviderID.gemini), ("cli", .claudeCLI)] {
+            services.settings.settings.ai.provider = provider
+            if let png = await settingsWindow.snapshot(of: AppSettingsPane.connections.rawValue) {
+                let url = outputDirectory.appendingPathComponent("settings-connections-ai-\(name).png")
+                try? png.write(to: url)
+                print(url.path)
+            }
+        }
+        services.settings.settings.ai.provider = nil
         // General as a release build shows it signed out, with Sign in with Apple.
         if services.accountSync.phase == .unavailable {
             services.accountSync.showsSignInForSnapshot(true)
