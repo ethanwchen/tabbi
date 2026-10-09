@@ -27,6 +27,8 @@ final class FocusStore: ObservableObject {
     private let isDemo: Bool
     /// Demo or snapshot run: nothing is saved, scheduled, played or logged.
     private let isEphemeral: Bool
+    /// Snapshot run: the clock never ticks. A demo's clock does, so it looks alive.
+    private let isSnapshot: Bool
     /// Starts and ends focus mode with the focus phases; nil in tests.
     private let focusMode: FocusController?
     private let storage: FocusTimerStorage
@@ -52,6 +54,7 @@ final class FocusStore: ObservableObject {
         self.focusMode = focusMode
         isDemo = runMode.isDemo
         isEphemeral = runMode.isEphemeral
+        isSnapshot = runMode.isSnapshot
         if isDemo {
             timer = Self.demoTimer(now: Date())
             notifications = nil
@@ -189,9 +192,10 @@ final class FocusStore: ObservableObject {
         notifications?.schedule(phaseEndingAt: endsAt, timer: timer)
     }
 
-    /// Ticks once a second, only while the panel is visible and the clock runs.
+    /// Ticks once a second, only while the panel is visible and the clock
+    /// runs. The demo ticks too, so its running timer counts down.
     private func updateTicker() {
-        guard isVisible, timer.isRunning, !isEphemeral else {
+        guard isVisible, timer.isRunning, !isSnapshot else {
             ticker?.invalidate()
             ticker = nil
             return

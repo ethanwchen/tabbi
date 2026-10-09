@@ -403,8 +403,8 @@ final class StudyStore: ObservableObject {
         now = Date()
         let ended = session.advance(to: now)
         guard !ended.isEmpty else { return }
-        // Stale ends (the Mac was asleep) stay quiet.
-        if !isDemo, let last = ended.last, now.timeIntervalSince(last.endedAt) < 60 {
+        // Stale ends (the Mac was asleep) stay quiet, and so do demo and snapshot runs.
+        if !isDemo, !isSnapshot, let last = ended.last, now.timeIntervalSince(last.endedAt) < 60 {
             Self.playChime()
         }
         scheduleSideEffects()
@@ -425,9 +425,10 @@ final class StudyStore: ObservableObject {
         phaseEnd.schedule(at: endsAt, tolerance: 0.2)
     }
 
-    /// Ticks once a second, only while the panel is visible and the clock runs.
+    /// Ticks once a second, only while the panel is visible and the clock
+    /// runs. The demo ticks too, so its running session counts down.
     private func updateTicker() {
-        guard isVisible, session.isRunning || partySession != nil, !isDemo else {
+        guard isVisible, session.isRunning || partySession != nil, !isSnapshot else {
             ticker?.invalidate()
             ticker = nil
             return
