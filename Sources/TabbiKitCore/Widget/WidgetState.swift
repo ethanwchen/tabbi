@@ -87,6 +87,8 @@ public struct WidgetState: Hashable, Codable, Sendable {
     /// list it). The team-prefixed form needs no provisioning profile for a
     /// Developer ID build on macOS.
     public static let appGroup = "B9VRALHV8S.dev.tabbi.Tabbi"
+    /// The widget's kind, which the app names to reload its timeline.
+    public static let widgetKind = "dev.tabbi.widget.pet"
 
     // MARK: Shown at a date
 

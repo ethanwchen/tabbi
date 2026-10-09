@@ -22,5 +22,6 @@ app=$(scripts/assemble.sh "$bin" build "$edition")
 # The widget extension goes first, with its own sandbox entitlements.
 codesign --force --sign - --entitlements packaging/TabbiWidget.entitlements \
     "$app/Contents/PlugIns/TabbiWidget.appex" >/dev/null
-codesign --force --sign - "$app" >/dev/null
+# The app's entitlements give it the App Group it shares with the widget.
+codesign --force --sign - --entitlements packaging/Tabbi.entitlements "$app" >/dev/null
 echo "$app"

@@ -9,6 +9,8 @@
   - personal-information.calendars: Today and Plan my day use EventKit.
   - files.user-selected.read-only: Import a Kit and the pet coach's
     distracting apps read files the user picks in an open panel.
+  - application-groups: the container the app shares with the desktop widget
+    (docs/widget.md).
   - temporary-exception.apple-events: Now Playing scripts Spotify and Music,
     which a sandboxed app may only send Apple Events to when listed here.
   - applesignin: the optional account that syncs the pet across Macs
@@ -28,6 +30,10 @@
     <true/>
     <key>com.apple.security.files.user-selected.read-only</key>
     <true/>
+    <key>com.apple.security.application-groups</key>
+    <array>
+        <string>B9VRALHV8S.dev.tabbi.Tabbi</string>
+    </array>
     <key>com.apple.security.temporary-exception.apple-events</key>
     <array>
         <string>com.spotify.client</string>

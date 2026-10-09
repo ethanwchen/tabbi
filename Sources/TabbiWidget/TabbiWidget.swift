@@ -13,7 +13,7 @@ struct TabbiWidgetBundle: WidgetBundle {
 
 /// The pet on the desktop and in Notification Center.
 struct TabbiPetWidget: Widget {
-    static let kind = "dev.tabbi.widget.pet"
+    static let kind = WidgetState.widgetKind
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: Self.kind, provider: PetTimelineProvider()) { entry in

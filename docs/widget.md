@@ -37,6 +37,19 @@ Before the app has written one, the widget shows the starter cat with no focus y
 - Colors are the site's warm palette: a cream card in light mode and a cocoa one in dark mode.
 - A click opens Tabbi.
 
+### Where the state comes from
+
+`WidgetStateWriter` (`Sources/Tabbi/Widget`) keeps the file in step with the app, created once by `AppServices`:
+
+- The pet is the Closet's (`context.studyPet`), so a new outfit or name reaches the widget.
+- The clock is the shared focus clock (`ProviderSnapshot.focus`), whichever module runs it.
+- Today's minutes and the streak come from the activity log: every `focus.completed` record counts, stopped stretches included, as in Wrap Up.
+  The streak walks back one day file at a time and stops at the first day without focus (`WidgetState.focusDays`).
+
+It writes when the clock starts, pauses or ends, the pet's look changes, or focus is logged, coalescing what one event changes into one write.
+When `WidgetStateFile.write` reports a change it calls `WidgetCenter.reloadTimelines(ofKind:)`, and only then.
+Demo and snapshot runs write nothing, so the real widget never shows sample data.
+
 The timeline has an entry now, one when a countdown ends and one at the next midnight, with the `.atEnd` policy.
 Each entry works its values out from the state at its own date (`minutes(at:)`, `streak(at:)`, `timer(at:)`), so minutes reset at midnight and a finished countdown goes away even while the app is not running.
 Everything else reloads only when the app writes a change; `WidgetStateFile.write` reports whether anything changed.
@@ -58,7 +71,11 @@ The extension is signed on its own, before the app, with `packaging/TabbiWidget.
 | Direct, `--adhoc` | `scripts/release.sh --adhoc` | ad-hoc, with the widget entitlements |
 | Mac App Store | `scripts/release-appstore.sh` | Apple Distribution, the widget entitlements |
 
+The app is signed with the same app group in all three of its entitlements files (`Tabbi.entitlements`, `Tabbi-SignInWithApple.entitlements` and `Tabbi-AppStore.entitlements`), and `bundle.sh` signs the local build with `Tabbi.entitlements` too.
+Without it, macOS 15 and later may ask the user before an app may write to another app's group container.
+
 An ad-hoc signed extension loads and renders in the widget gallery; WidgetKit does not require a Developer ID or a provisioning profile.
+An ad-hoc signed app with the entitlement writes the shared file with no prompt.
 
 ## Seeing it locally
 
@@ -73,5 +90,3 @@ Two copies of the app with the same bundle id (an installed release and a local 
 ## Still to do
 
 - The App Store edition: App Store Connect expects the extension to embed its own provisioning profile for the App ID `dev.tabbi.Tabbi.Widget` with the app group, and `release-appstore.sh` does not embed one yet.
-- The app side: a writer that fills `WidgetState` from the focus clock, the Closet pet and the activity log, and calls `WidgetCenter.reloadTimelines` when `write` reports a change.
-  The app's own entitlements need the same app group.
