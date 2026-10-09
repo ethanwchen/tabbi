@@ -9,7 +9,7 @@ Per user, identified only by a random secret token (stored as a SHA-256 hash) an
 
 - the profile: a display name (up to 24 characters, any nickname works), the pet's name (up to 24 characters), species, breed, up to 6 colors, costume, up to 4 accessories, points and level, and when the friend code was created;
 - presence from the last heartbeat: status (`studying`, `break`, `idle` or `offline`), the study method id (for example `pomodoro`), when the current phase ends, minutes in the current session, minutes studied today, the study streak in days, your local calendar day, and the time of the last heartbeat;
-- study minutes per local calendar day, kept for 28 days, for the weekly leaderboard;
+- study minutes per local calendar day, kept for 28 days (older days are deleted daily, whether or not you still use the service), for the weekly leaderboard;
 - the friend codes you are friends with;
 - the friend codes you blocked, and when;
 - reports you send about another user: their friend code, their name and pet name at that moment, your friend code, the reason you picked, your optional note (up to 280 characters) and the time;
@@ -51,7 +51,7 @@ Your sync document and Apple account link are never shown to anyone, friends inc
 
 ## How to delete
 
-Leaving a party (`POST /v1/party/leave`) removes your membership; a party is deleted when its last member leaves or after 12 hours without activity.
+Leaving a party (`POST /v1/party/leave`) removes your membership; a party is deleted when its last member leaves, or within an hour once it has had 12 hours without activity.
 Removing a friend deletes the friendship in both directions.
 Unblocking someone deletes the block.
 A report stays until the account of the reporter or of the reported user is deleted.

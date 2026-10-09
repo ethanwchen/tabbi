@@ -22,6 +22,7 @@ What it defends against:
 - **Abuse by other users.** Users can block each other and report a name or behaviour; reports are capped (5 a minute, 20 a day per user) and wait for the maintainer, who can rename or ban through the admin routes.
   A user who blocked you, or a banned user, answers every friend, block and report request with the same `404 unknown_code` as a code no one has, so no route reveals a block or a ban.
   A banned user disappears from friend lists, parties and leaderboards, and a ban follows the user through Sign in with Apple.
+- **Data kept too long.** An hourly Durable Object alarm deletes what is past its retention even when nobody touches it again: parties idle for 12 hours, study minutes older than 28 days (checked once a day) and spent Apple identity token hashes.
 - **Operator mistakes.** Schema changes are append-only versioned steps, deploys can be rolled back, and storage can be restored to any point in the last 30 days.
 
 The Worker logs only what an operator needs: unexpected errors, Apple key and token exchange failures (status codes and Apple's error code), and admin restores.

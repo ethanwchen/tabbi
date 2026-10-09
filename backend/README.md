@@ -81,10 +81,10 @@ app ──HTTPS──> Worker (tabbi-friends) ──> Durable Object "Hub" (one 
   A restart loses at most 10 minutes of minute counters and `lastSeen`, and the next heartbeat restores them.
 - Parties are a `parties` row (host, last activity, optional shared session) plus one `party_members` row per member, keyed by user so a user is in at most one party.
   Creating or joining a party leaves the previous one; a leaving host hands over to the longest-standing member, and the last member leaving deletes the party.
-  A party expires 12 h after its last activity (create, join, leave, session change, or a member's poll); expired parties are deleted when touched and swept when a new party is created.
+  A party expires 12 h after its last activity (create, join, leave, session change, or a member's poll); expired parties are deleted when touched, and an hourly retention sweep (a Durable Object alarm) deletes the ones nobody touches.
 - The weekly leaderboard sums a `study_days` row per user per local calendar day (the last `todayMinutes` the app reported for that day, written with the presence flushes and only when it changed).
   The app sends its local `day` with each heartbeat, so minutes count toward the day the student actually studied in their time zone.
-  The week is the current ISO week (Monday to Sunday) of the UTC calendar; live, not yet flushed counts are included, and rows are kept for 28 days.
+  The week is the current ISO week (Monday to Sunday) of the UTC calendar; live, not yet flushed counts are included, and rows are kept for 28 days: the same sweep deletes older ones once a day, also for users who stopped sending heartbeats.
 - Rate limits (60 requests per minute per token, 60 failed authentications, 10 registrations and 10 Apple sign-ins per minute per client) are counted in the Hub's memory.
   A client is an IPv4 address or an IPv6 /64 prefix, so rotating through one subscriber's IPv6 addresses does not reset a limit.
   With a single instance they are exact while it is alive, and they cost no storage writes.

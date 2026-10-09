@@ -297,6 +297,9 @@ interface LivePresence {
   savedDay: string | null;
 }
 
+/** How often the alarm deletes data past its retention (see `Hub.alarm`). */
+export const RETENTION_SWEEP_S = 3600;
+
 function rateLimited(minute: number, now: number): HttpError {
   const retry = Math.max(1, (minute + 1) * 60 - now);
   return new HttpError(429, "rate_limited", "too many requests", { "Retry-After": String(retry) });
@@ -319,11 +322,45 @@ export class Hub extends DurableObject<Env> {
    * row writes far below the free-tier allowance. Entries missing here are read from SQLite.
    */
   private live = new Map<string, LivePresence>();
+  /** The UTC day the retention sweep last deleted old study minutes on. */
+  private studyDaysSweptOn: string | null = null;
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
     this.sql = ctx.storage.sql;
     migrate(ctx.storage);
+    ctx.blockConcurrencyWhile(async () => {
+      if ((await ctx.storage.getAlarm()) === null) await ctx.storage.setAlarm(Date.now() + RETENTION_SWEEP_S * 1000);
+    });
+  }
+
+  /**
+   * Runs the retention sweep every RETENTION_SWEEP_S. Without it, data of users who stopped using the
+   * service would only expire when someone touched it: an idle party would outlive its 12 hours and an
+   * inactive user's study minutes their 28 days, which PRIVACY.md promises.
+   */
+  async alarm(): Promise<void> {
+    this.sweepRetention(nowS());
+    await this.ctx.storage.setAlarm(Date.now() + RETENTION_SWEEP_S * 1000);
+  }
+
+  /**
+   * Deletes every expired party, study minutes past their retention and spent identity token hashes.
+   * Study minutes have no index by day, so that scan runs once per UTC day (again after an eviction,
+   * which is harmless) rather than every hour.
+   */
+  private sweepRetention(now: number): void {
+    const today = utcDay(now);
+    this.ctx.storage.transactionSync(() => {
+      const idleSince = now - PARTY_IDLE_EXPIRY_S;
+      this.sql.exec("DELETE FROM party_members WHERE party IN (SELECT code FROM parties WHERE last_active <= ?)", idleSince);
+      this.sql.exec("DELETE FROM parties WHERE last_active <= ?", idleSince);
+      this.sql.exec("DELETE FROM used_identity_tokens WHERE expires_at < ?", now);
+      if (this.studyDaysSweptOn !== today) {
+        this.sql.exec("DELETE FROM study_days WHERE day < ?", utcDay(now - STUDY_DAY_RETENTION_DAYS * 86_400));
+      }
+    });
+    this.studyDaysSweptOn = today;
   }
 
   async fetch(req: Request): Promise<Response> {
