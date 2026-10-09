@@ -94,7 +94,7 @@ Unmapped zones fall back to their default.
 | `a` | patchA | furBase |
 | `b` | patchB | furBase |
 
-For example, the tuxedo maps paws, muzzle, chest, and mask to `belly`, and the Siamese maps ears, mask, muzzle, paws, and tail tip to `furAccent`.
+For example, the tuxedo maps paws, muzzle, chest, and mask to `belly`, and the Siamese maps ears, paws, and tail tip to dark `furAccent` points and its mask and muzzle to a softer `furSpot` brown.
 
 ## Composition
 

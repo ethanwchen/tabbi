@@ -148,7 +148,8 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
                                .belly: c("#FFFFFF"), .outline: c("#3A2A22")])
         case .siamese:
             return PetPalette([.furBase: c("#F3E6D2"), .furShade: c("#DCCAB0"), .furAccent: c("#5A4034"),
-                               .belly: c("#FBF4E8"), .eye: c("#3E8FD8"), .outline: c("#3A2A22")])
+                               .furSpot: c("#8A6450"), .belly: c("#FBF4E8"), .eye: c("#3E8FD8"),
+                               .outline: c("#3A2A22")])
         case .britishShorthair:
             // Shaded silver: a soft white-silver coat with a faintly ticked
             // back and subtly ringed tail, white chin and chest, clear blue
@@ -218,8 +219,8 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
         case .calico:
             return PetPattern([.patchA: .furAccent, .patchB: .furSpot, .paws: .belly])
         case .siamese:
-            return PetPattern([.ears: .furAccent, .mask: .furAccent, .paws: .furAccent, .tailTip: .furAccent,
-                               .muzzle: .furAccent])
+            return PetPattern([.ears: .furAccent, .mask: .furSpot, .paws: .furAccent, .tailTip: .furAccent,
+                               .muzzle: .furSpot])
         case .britishShorthair:
             return PetPattern([.muzzle: .belly, .chest: .belly, .paws: .belly, .ears: .furShade,
                                .mask: .furShade, .stripes: .furShade, .tailTip: .furAccent])

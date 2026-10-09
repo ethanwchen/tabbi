@@ -56,10 +56,21 @@ final class PetPaletteTests: XCTestCase {
         // The tuxedo is black fur with a white muzzle: a rim-colored mouth would smudge it.
         XCTAssertEqual(mouthColors(.tuxedo), [dark])
         XCTAssertEqual(mouthColors(.orangeTabby), [dark])
-        // A dark mouth vanishes into black fur or a Siamese mask.
+        // A dark mouth vanishes into black fur.
         XCTAssertEqual(mouthColors(.blackCat), [PetPalette.warmRim])
-        XCTAssertEqual(mouthColors(.siamese), [PetPalette.warmRim])
+        // The Siamese mask is a soft mid-brown, light enough for the dark mouth.
+        XCTAssertEqual(mouthColors(.siamese), [dark])
         XCTAssertEqual(mouthColors(.blackCat, tint: PetColor(hex: "#F4F0EA")!), [dark], "recolors adapt too")
+    }
+
+    func testSiameseMaskIsSofterThanItsPointsSoTheFaceStaysReadable() {
+        let palette = PetBreed.siamese.palette
+        let maskRole = PetBreed.siamese.pattern.role(for: .muzzle)
+        XCTAssertEqual(PetBreed.siamese.pattern.role(for: .mask), maskRole, "one even mask, no dark diamond on top")
+        let mask = palette[maskRole].luminance
+        // Darker than the cream coat, lighter than the seal ears, paws and tail.
+        XCTAssertLessThan(mask, palette[.furBase].luminance)
+        XCTAssertGreaterThan(mask, palette[PetBreed.siamese.pattern.role(for: .ears)].luminance)
     }
 
     func testRoleSymbolsAreUniqueAndRoundTrip() {
