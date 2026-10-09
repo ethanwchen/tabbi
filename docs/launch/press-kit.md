@@ -5,7 +5,7 @@
 Tabbi is a free, open source macOS app that turns the laptop notch into a small, clickable panel of tabs.
 Click the notch and it opens into a focus timer with study methods like Pomodoro, a Today tab with your to-do list, your next meeting and a planner that fits tasks into free time, music controls for Spotify and Apple Music, Anki, study sessions with friends, and Claude through the user's own `claude` CLI.
 A pixel cat lives beside the closed notch, cheers the user on while they focus, and earns outfits from study points.
-Tabbi has no account, no ads, no analytics and no telemetry, and it is made by Ethan, an independent developer.
+Tabbi needs no account, has no ads, no analytics and no telemetry, and it is made by Ethan, an independent developer.
 
 ## Facts
 
@@ -20,7 +20,7 @@ Tabbi has no account, no ads, no analytics and no telemetry, and it is made by E
 | Notch | Works on Macs with a notch; others get a small virtual one at the top of the screen |
 | Built with | Swift, SwiftUI and AppKit; Sparkle for updates |
 | Distribution | Signed and notarized DMG, and Homebrew (`brew install --cask ethanwchen/tap/tabbi`) |
-| Privacy | No account, no analytics, no telemetry. Network only where a tab needs it (album artwork, the optional friends server). Claude runs through the local `claude` CLI; Tabbi never reads credentials or the keychain. |
+| Privacy | No account needed, no analytics, no telemetry. Network only where a tab needs it (album artwork, the optional friends server). Claude runs through the local `claude` CLI; Tabbi never reads credentials or the keychain. |
 | Tabs | Timer, Today, Now Playing, Ask Claude, Anki, Closet (the pet), plus Schedule, Party, Claude Usage and System from Add more |
 | Kits | Essentials and Med School, plus custom kits as small JSON files |
 

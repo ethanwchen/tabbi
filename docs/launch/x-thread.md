@@ -40,7 +40,7 @@ There's also Anki, Spotify and Apple Music, and Claude through your own CLI.
 
 ## 5
 
-No account, no ads, no tracking.
+No account needed, no ads, no tracking.
 
 macOS 14 or later. No notch? You get a small virtual one.
 

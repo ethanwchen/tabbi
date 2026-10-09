@@ -46,7 +46,7 @@ Tabbi turns it into a small clickable panel of tabs:
 **Pricing**
 
 Free.
-No account, no ads, no analytics, no telemetry, no in-app purchase.
+No account needed, no ads, no analytics, no telemetry, no in-app purchase.
 There is an optional Buy me a coffee link on the website.
 
 **Trust**

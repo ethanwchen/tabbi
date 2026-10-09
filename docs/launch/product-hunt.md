@@ -31,7 +31,7 @@ Open source.
 (Product Hunt allows 260 characters. This is 217.)
 
 Tabbi turns your laptop notch into a cozy panel of tabs: a focus timer, your to-do list and next meeting, music controls, Claude, Anki and a pixel cat that cheers you on.
-Free, open source, no account and no tracking.
+Free, open source, no account needed and no tracking.
 
 ## Topics
 
@@ -76,7 +76,7 @@ And there is a pixel cat.
 It sits beside the notch, cheers you on while you focus, and earns outfits from your study points.
 
 Tabbi is free and open source.
-No account, no ads, no analytics.
+No account needed, no ads, no analytics.
 It only connects to the internet when a tab needs to (album art, or the friends server while Party is on).
 
 It needs macOS 14 or later.

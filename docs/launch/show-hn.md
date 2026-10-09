@@ -36,7 +36,7 @@ Some technical notes:
 - Every tab is a module behind one protocol, and a "kit" is a small JSON file that picks which tabs are on and in what order. Adding a module is its own folder plus one line in a list.
 - Modules share data through a provider snapshot instead of reaching into each other, so the closed-notch ticker and Today can show another tab's tasks without special cases.
 - There is a demo mode (`TABBI_DEMO=1`) and a snapshot renderer (`swift run Tabbi --snapshot out`) that draws every panel to PNG. All the screenshots in the README come from it.
-- No account, no analytics, no telemetry. Each module lists every host it connects to, and Tabbi shows that list before a kit turns a module on.
+- No account needed, no analytics, no telemetry. Each module lists every host it connects to, and Tabbi shows that list before a kit turns a module on.
 
 It is free and MIT licensed, signed and notarized, for macOS 14 and later.
 Macs without a notch get a small virtual one.

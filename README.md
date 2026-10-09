@@ -26,14 +26,14 @@ A pixel cat lives there too, and it cheers you on while you work.
 - **Today:** your to-do list, your next meeting and a Plan my day that fits work into free time.
 - **Now Playing and Ask Claude:** music controls, and Claude in the notch through your own `claude` CLI.
 - **Anki, study with friends and a pet** that earns outfits from your study points.
-- **Private by design:** no account, no analytics and no telemetry.
+- **Private by design:** no account needed, no analytics and no telemetry.
 
 ## Install
 
 1. Download Tabbi from [tabbinotch.com](https://tabbinotch.com) or the [latest release](https://github.com/ethanwchen/tabbi/releases/latest).
 2. Drag **Tabbi** into **Applications**, open it, then click the notch and pick a kit.
 
-Tabbi is free, open source, signed and notarized, and it keeps itself up to date.
+Tabbi is free and open source, and it keeps itself up to date.
 It needs macOS 14 Sonoma or later, and a Mac without a notch gets a small virtual one at the top of the screen.
 Right-click the notch for **Settings** and **Quit Tabbi**.
 [docs/install.md](docs/install.md) covers Homebrew, updates, troubleshooting and uninstalling.

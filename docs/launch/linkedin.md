@@ -18,7 +18,7 @@ There's also a little pixel cat that cheers you on and earns outfits as you stud
 A few things I cared about while building it:
 
 - Keep it simple. Fewer settings, good defaults.
-- Keep it private. No account, no ads, no tracking.
+- Keep it private. No account needed, no ads, no tracking.
 - Keep it open. The code is free on GitHub for anyone to read or build on.
 
 It works on macOS 14 or later, and Macs without a notch get a small virtual one.
