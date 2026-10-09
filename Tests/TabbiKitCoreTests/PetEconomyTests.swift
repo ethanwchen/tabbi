@@ -19,6 +19,19 @@ final class PetEconomyTests: XCTestCase {
         XCTAssertEqual(PetEconomy.typicalBlocks(toEarn: 0), 0)
     }
 
+    func testStudyToEarnSpeaksInBlocksThenDaysThenWeeks() {
+        XCTAssertEqual(PetEconomy.studyToEarn(0), "")
+        XCTAssertEqual(PetEconomy.studyToEarn(1), "1 focus block")
+        XCTAssertEqual(PetEconomy.studyToEarn(35), "1 focus block")
+        XCTAssertEqual(PetEconomy.studyToEarn(36), "2 focus blocks")
+        XCTAssertEqual(PetEconomy.studyToEarn(105), "3 focus blocks", "a day's points stay in blocks")
+        XCTAssertEqual(PetEconomy.studyToEarn(106), "about 2 study days")
+        XCTAssertEqual(PetEconomy.studyToEarn(525), "about 5 study days")
+        XCTAssertEqual(PetEconomy.studyToEarn(526), "about 2 weeks")
+        XCTAssertEqual(PetEconomy.typicalWeeks(toEarn: 1050), 2)
+        XCTAssertEqual(PetEconomy.studyToEarn(2100), "about 4 weeks", "the priciest item takes about a month")
+    }
+
     func testTiersDoNotOverlapAndLeaveGaps() {
         let ranges = PetPriceTier.allCases.map(\.priceRange)
         for (lower, upper) in zip(ranges, ranges.dropFirst()) {

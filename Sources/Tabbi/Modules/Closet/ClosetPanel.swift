@@ -330,14 +330,18 @@ private struct ClosetWardrobe: View {
             } else if let next = store.closet.nextUnlock, store.closet.save.ledger.earned == 0 {
                 // A brand-new pet: explain where points come from.
                 Text("Focus to earn points").foregroundStyle(Theme.Palette.secondaryText)
-                Text("\(next.item.displayName) unlocks at \(next.item.cost)")
-                    .foregroundStyle(Theme.Palette.tertiaryText)
-            } else if let next = store.closet.nextUnlock {
-                // The Compact panel drops the "Next unlock" label before the
-                // item name or its status would clip.
                 ViewThatFits(in: .horizontal) {
-                    nextUnlock(next, labeled: true)
-                    nextUnlock(next, labeled: false)
+                    Text("\(next.item.displayName) unlocks after \(PetEconomy.studyToEarn(next.item.cost))")
+                    Text("\(next.item.displayName) unlocks at \(next.item.cost)")
+                }
+                .foregroundStyle(Theme.Palette.tertiaryText)
+            } else if let next = store.closet.nextUnlock {
+                // The Compact panel drops the "Next unlock" label, then the
+                // study time, before the item name or its status would clip.
+                ViewThatFits(in: .horizontal) {
+                    nextUnlock(next, labeled: true, inStudyTime: true)
+                    nextUnlock(next, labeled: false, inStudyTime: true)
+                    nextUnlock(next, labeled: false, inStudyTime: false)
                 }
             } else {
                 Text("Everything unlocked. Dress up as you like.").foregroundStyle(Theme.Palette.tertiaryText)
@@ -348,14 +352,27 @@ private struct ClosetWardrobe: View {
         .frame(height: 12)
     }
 
-    private func nextUnlock(_ next: (item: PetItem, missing: Int), labeled: Bool) -> some View {
+    /// Says what the next item asks of you: the points still missing and,
+    /// when there is room, the study that earns them at a typical pace.
+    private func nextUnlock(_ next: (item: PetItem, missing: Int), labeled: Bool,
+                            inStudyTime: Bool) -> some View {
         HStack(spacing: Theme.Spacing.xs) {
             if labeled { Text("Next unlock").foregroundStyle(Theme.Palette.tertiaryText) }
             Text(next.item.displayName).foregroundStyle(Theme.Palette.secondaryText)
-            Text(next.missing == 0 ? "ready to unlock" : "\(next.missing) pts to go")
-                .foregroundStyle(next.missing == 0 ? accent : Theme.Palette.tertiaryText)
-                .monospacedDigit()
+            Group {
+                if next.missing == 0 {
+                    Text("ready to unlock")
+                } else if inStudyTime {
+                    Text("\(next.missing) pts, \(PetEconomy.studyToEarn(next.missing)) to go")
+                } else {
+                    Text("\(next.missing) pts to go")
+                }
+            }
+            .foregroundStyle(next.missing == 0 ? accent : Theme.Palette.tertiaryText)
+            .monospacedDigit()
         }
+        .help(next.missing == 0 ? "\(next.item.displayName) is ready to unlock"
+              : "\(next.missing) more points: \(PetEconomy.studyToEarn(next.missing)) at a typical study pace")
     }
 
     private func detail(for item: PetItem) -> String {
@@ -363,7 +380,7 @@ private struct ClosetWardrobe: View {
         case .wearing: "Click to take off"
         case .owned: "Click to wear"
         case .affordable: "Unlock for \(item.cost) pts"
-        case .locked(let missing): "\(item.cost) pts, \(missing) to go"
+        case .locked(let missing): "\(item.cost) pts, \(PetEconomy.studyToEarn(missing)) to go"
         case .unearned: item.limitedEdition?.howToEarn ?? "Limited edition"
         }
     }
@@ -467,7 +484,7 @@ private struct ClosetItemTile: View {
         case .wearing: "\(item.displayName): click to take off"
         case .owned: "\(item.displayName): click to wear"
         case .affordable: "\(isNew ? "New: " : "")\(item.displayName): unlock for \(item.cost) points"
-        case .locked(let missing): "\(isNew ? "New: " : "")\(item.displayName): \(item.cost) points, \(missing) more to go"
+        case .locked(let missing): "\(isNew ? "New: " : "")\(item.displayName): \(item.cost) points, \(missing) more to go (\(PetEconomy.studyToEarn(missing)))"
         case .unearned: "\(item.displayName), limited edition: \(item.limitedEdition?.howToEarn ?? "")"
         }
     }

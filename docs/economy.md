@@ -72,6 +72,14 @@ Every price is distinct, so the shop's cheapest-first order never depends on ids
 - Each tier has at least three items, and the shop lists cheaper tiers first.
 - Starters take one typical day, mid-tier items 2 to 5 days, showpieces 10 to 20 study days.
 
+## What the shop shows
+
+The shop states what the next item asks of you in study time, not just points (`PetEconomy.studyToEarn`).
+Up to a day's points it counts focus blocks ("1 focus block", "3 focus blocks"), up to a week's it counts study days ("about 4 study days"), and beyond that weeks ("about 3 weeks").
+Each count rounds up at the typical pace above.
+The Wardrobe footer says "Next unlock Pirate Hat 140 pts, 4 focus blocks to go", a brand-new pet reads "Beanie unlocks after 1 focus block", and hovering a locked item says how much study is left for it.
+The Compact panel drops the study time before anything would clip.
+
 ## Changing prices
 
 Older saves store points earned and spent, not prices, so changing a price never takes away an item someone owns.

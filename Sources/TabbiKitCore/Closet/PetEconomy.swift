@@ -38,6 +38,29 @@ public enum PetEconomy {
         guard points > 0 else { return 0 }
         return (points + pointsPerTypicalBlock - 1) / pointsPerTypicalBlock
     }
+
+    /// How many typical study weeks `points` take to earn, rounded up.
+    public static func typicalWeeks(toEarn points: Int) -> Int {
+        guard points > 0 else { return 0 }
+        return (points + pointsPerTypicalWeek - 1) / pointsPerTypicalWeek
+    }
+
+    /// The study it takes to earn `points`, in the unit a student plans in:
+    /// focus blocks within a day, study days within a week, weeks beyond.
+    /// The shop says "2 focus blocks to go" rather than a bare point count,
+    /// so it is clear what the next item asks of you. Empty for nothing to earn.
+    public static func studyToEarn(_ points: Int) -> String {
+        guard points > 0 else { return "" }
+        if points <= pointsPerTypicalDay {
+            let blocks = typicalBlocks(toEarn: points)
+            return blocks == 1 ? "1 focus block" : "\(blocks) focus blocks"
+        }
+        if points <= pointsPerTypicalWeek {
+            return "about \(typicalDays(toEarn: points)) study days"
+        }
+        // More than a week's points, so always at least two weeks.
+        return "about \(typicalWeeks(toEarn: points)) weeks"
+    }
 }
 
 /// How long an item takes to earn at the typical pace (`PetEconomy`).
