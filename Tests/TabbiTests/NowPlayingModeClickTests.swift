@@ -5,7 +5,7 @@ import TabbiKitCore
 import TabbiKit
 @testable import Tabbi
 
-/// Shuffle and repeat in the open notch take a click: the real notch view,
+/// Shuffle, repeat and the heart in the open notch take a click: the real notch view,
 /// hosted in the notch's own panel, gets a mouse down and up on each button
 /// and the player state changes. Events go straight to the window, so the
 /// system pointer never moves.
@@ -57,13 +57,22 @@ final class NowPlayingModeClickTests: XCTestCase {
         XCTAssertEqual(try playback?.isShuffling, before)
     }
 
-    func testClickingRepeatStepsThroughSpotifysModes() async throws {
+    func testClickingRepeatStepsThroughThePlayersModes() async throws {
+        let source = try XCTUnwrap(try controller.source)
         let start = try XCTUnwrap(playback).repeatMode
-        let next = MediaSource.spotify.repeatMode(after: start)
+        let next = source.repeatMode(after: start)
         try await click(control: 1)
         XCTAssertEqual(try playback?.repeatMode, next)
         try await click(control: 1)
-        XCTAssertEqual(try playback?.repeatMode, MediaSource.spotify.repeatMode(after: next))
+        XCTAssertEqual(try playback?.repeatMode, source.repeatMode(after: next))
+    }
+
+    func testClickingTheHeartTogglesTheFavorite() async throws {
+        let before = try XCTUnwrap(playback?.track?.isFavorite)
+        try await click(try likeButton())
+        XCTAssertEqual(try playback?.track?.isFavorite, !before)
+        try await click(try likeButton())
+        XCTAssertEqual(try playback?.track?.isFavorite, before)
     }
 
     // MARK: - Helpers
@@ -89,12 +98,32 @@ final class NowPlayingModeClickTests: XCTestCase {
         return controls.filter { abs($0.midY - play.midY) < 1 }.sorted { $0.minX < $1.minX }
     }
 
+    /// The heart: the only control right of the artwork and above the
+    /// transport row.
+    private func likeButton() throws -> CGRect {
+        let content = try XCTUnwrap(panel.contentView)
+        let controls = content.subviews
+            .filter { NSStringFromClass(type(of: $0)).contains("KeyViewProxy") }
+            .map(\.frame)
+        let artwork = try XCTUnwrap(controls.filter { $0.width >= 100 }.max { $0.width < $1.width })
+        let play = try XCTUnwrap(controls.filter { $0.width < 100 }.max { $0.width < $1.width })
+        let hearts = controls.filter {
+            $0.minX > artwork.maxX && abs($0.midY - play.midY) >= 1
+                && $0.midY > artwork.minY && $0.midY < artwork.maxY
+        }
+        XCTAssertEqual(hearts.count, 1, "one heart beside the title")
+        return try XCTUnwrap(hearts.first)
+    }
+
     /// Clicks the transport control at `index` (shuffle is 0, repeat is 1).
     private func click(control index: Int) async throws {
-        let content = try XCTUnwrap(panel.contentView)
         let controls = try transportControls()
         XCTAssertEqual(controls.count, 6, "shuffle, repeat, previous, play, next and volume")
-        let frame = try XCTUnwrap(controls.indices.contains(index) ? controls[index] : nil)
+        try await click(try XCTUnwrap(controls.indices.contains(index) ? controls[index] : nil))
+    }
+
+    private func click(_ frame: CGRect) async throws {
+        let content = try XCTUnwrap(panel.contentView)
         let center = content.convert(CGPoint(x: frame.midX, y: frame.midY), to: nil)
         for type in [NSEvent.EventType.leftMouseDown, .leftMouseUp] {
             let event = try XCTUnwrap(NSEvent.mouseEvent(

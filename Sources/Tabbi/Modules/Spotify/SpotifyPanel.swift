@@ -28,8 +28,8 @@ struct SpotifyPanel: View {
                     message: "Open \(MediaSource.names(controller.installedSources)) to see and control what's playing.",
                     actions: controller.installedSources.map { source in
                         .init(title: "Open \(source.displayName)", help: "Launch \(source.displayName)",
-                              icon: controller.appIcon(for: source),
-                              perform: { controller.open(source) })
+                              icon: controller.appIcon(for: .app(source)),
+                              perform: { controller.open(.app(source)) })
                     }
                 )
             case .notInstalled:
@@ -48,6 +48,15 @@ struct SpotifyPanel: View {
                     actions: [.init(title: "Open Settings", help: "Open Automation settings",
                                     perform: controller.openAutomationSettings)]
                 )
+            case .scriptingDisabled:
+                SpotifyEmptyState(
+                    symbol: "curlybraces", title: "Turn on JavaScript for SoundCloud",
+                    message: "In \(browser.displayName), choose \(browser.javaScriptSettingPath).",
+                    actions: [.init(title: "Show \(browser.displayName)",
+                                    help: "Bring \(browser.displayName) to the front",
+                                    icon: controller.appIcon(for: activeSource),
+                                    perform: { controller.open(activeSource) })]
+                )
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -56,8 +65,13 @@ struct SpotifyPanel: View {
         .onDisappear { controller.setPanelVisible(false) }
     }
 
-    private var activeSource: MediaSource { controller.source ?? .spotify }
+    private var activeSource: NowPlayingSource { controller.source ?? .spotify }
     private var sourceName: String { activeSource.displayName }
+    /// The browser SoundCloud plays in; Safari when the panel follows an app.
+    private var browser: SoundCloudBrowser {
+        if case .soundCloud(let browser) = activeSource { return browser }
+        return .safari
+    }
 }
 
 private extension SpotifyStatus {
@@ -70,6 +84,7 @@ private extension SpotifyStatus {
         case .connecting: 2
         case .permissionDenied: 3
         case .connected(let playback): playback.track == nil ? 4 : 5
+        case .scriptingDisabled: 6
         }
     }
 }
@@ -92,18 +107,25 @@ private struct SpotifyNowPlaying: View {
                 .background { glow }
 
             VStack(alignment: .leading, spacing: 0) {
-                VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-                    SpotifyMarqueeText(text: track?.title.isEmpty == false ? track!.title : "Unknown track",
-                                       isActive: hoveringTitle)
-                        .font(Theme.Typography.title)
-                        .foregroundStyle(Theme.Palette.primaryText)
-                    SpotifyMarqueeText(text: subtitle, isActive: hoveringTitle)
-                        .font(Theme.Typography.body)
-                        .foregroundStyle(Theme.Palette.secondaryText)
+                HStack(alignment: .center, spacing: Theme.Spacing.s) {
+                    VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+                        SpotifyMarqueeText(text: track?.title.isEmpty == false ? track!.title : "Unknown track",
+                                           isActive: hoveringTitle)
+                            .font(Theme.Typography.title)
+                            .foregroundStyle(Theme.Palette.primaryText)
+                        SpotifyMarqueeText(text: subtitle, isActive: hoveringTitle)
+                            .font(Theme.Typography.body)
+                            .foregroundStyle(Theme.Palette.secondaryText)
+                    }
+                    .contentShape(Rectangle())
+                    .onHover { hoveringTitle = $0 }
+                    .help(helpText)
+
+                    if let isFavorite = track?.isFavorite {
+                        SpotifyLikeButton(isLiked: isFavorite, source: controller.source ?? .spotify,
+                                          action: controller.toggleFavorite)
+                    }
                 }
-                .contentShape(Rectangle())
-                .onHover { hoveringTitle = $0 }
-                .help(helpText)
 
                 Spacer(minLength: Theme.Spacing.s)
 
@@ -120,8 +142,11 @@ private struct SpotifyNowPlaying: View {
         .task(id: track?.id) { await artwork.load(track, from: controller) }
     }
 
+    /// Artist and album. SoundCloud tracks have no album, and the badge on
+    /// the cover is the browser's, so they name SoundCloud there instead.
     private var subtitle: String {
-        [playback.track?.artist, playback.track?.album]
+        let album = controller.source?.app == nil ? controller.source?.displayName : playback.track?.album
+        return [playback.track?.artist, album]
             .compactMap { $0 }.filter { !$0.isEmpty }
             .joined(separator: " · ")
     }
@@ -262,7 +287,7 @@ private struct SpotifyArtworkButton: View {
     }
 
     /// The player's own icon; a glyph on a dark disc if the icon is missing.
-    @ViewBuilder private func badge(for source: MediaSource) -> some View {
+    @ViewBuilder private func badge(for source: NowPlayingSource) -> some View {
         Group {
             if let icon = controller.appIcon(for: source) {
                 Image(nsImage: icon)
@@ -551,6 +576,50 @@ private struct SpotifyPlayPauseButton: View {
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
         .motion(Theme.Motion.snappy, value: isPlaying)
+    }
+}
+
+/// The heart beside the title: likes the current track (Music calls it
+/// Favorite, SoundCloud Like). Only shown when the player reports whether the track is liked,
+/// so it never appears where a click couldn't work.
+private struct SpotifyLikeButton: View {
+    let isLiked: Bool
+    let source: NowPlayingSource
+    let action: () -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: isLiked ? "heart.fill" : "heart")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(foreground)
+                .contentTransition(.symbolEffect(.replace))
+                .frame(width: 24, height: 24)
+                .background(Circle().fill(hovering ? Theme.Palette.surfaceHover : .clear))
+                .contentShape(Circle())
+        }
+        .buttonStyle(.tactile)
+        .help(help)
+        .onHover { hovering = $0 }
+        .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.snappy, value: isLiked)
+        .accessibilityLabel(source == .music ? "Favorite" : "Like")
+        .accessibilityValue(isLiked ? "On" : "Off")
+        .accessibilityHint(help)
+    }
+
+    private var help: String {
+        switch (source, isLiked) {
+        case (.music, true): "Remove from Favorites"
+        case (.music, false): "Add to Favorites"
+        case (_, true): "Unlike"
+        case (_, false): "Like"
+        }
+    }
+
+    private var foreground: Color {
+        if isLiked { return NowPlayingModule.descriptor.accentColor }
+        return hovering ? Theme.Palette.primaryText : Theme.Palette.tertiaryText
     }
 }
 

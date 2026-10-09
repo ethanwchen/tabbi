@@ -50,7 +50,7 @@ Med School adds Anki.
     <td width="50%"><img src="docs/images/today.png" alt="Today tab"><br><b>Today.</b> Your to-do list, what's next on the calendar and Plan my day.</td>
   </tr>
   <tr>
-    <td><img src="docs/images/now-playing.png" alt="Now Playing tab"><br><b>Now Playing.</b> Spotify and Apple Music, with artwork, shuffle and repeat.</td>
+    <td><img src="docs/images/now-playing.png" alt="Now Playing tab"><br><b>Now Playing.</b> Spotify and Apple Music (or SoundCloud in Safari or Chrome, if you turn it on), with artwork, shuffle, repeat and a like button.</td>
     <td><img src="docs/images/ask-claude.png" alt="Ask Claude tab"><br><b>Ask Claude.</b> Type a question and press Return; attach a screenshot or open a bigger view.</td>
   </tr>
   <tr>
@@ -100,6 +100,7 @@ Tabbi asks for a permission only when the tab that needs it is first used.
 | Permission | Asked by | Why |
 | --- | --- | --- |
 | Automation: Spotify, Music | Now Playing, focus mode | Read the current track, control playback and start a focus playlist. |
+| Automation: Safari or Chrome | Now Playing, only once you turn on SoundCloud | Read and control the SoundCloud tab. |
 | Calendars | Today, Schedule | Show your events and add the planned blocks you accept. Events never leave your Mac. |
 | Notifications | Today, Focus | Tell you when a timer ends while the notch is closed. |
 | Screen Recording | Ask Claude | Attach a screenshot to a question. The image goes only to your local `claude` CLI. |
