@@ -114,9 +114,13 @@ For each release, after you publish it:
 
    ```sh
    brew tap ethanwchen/tap
+   brew trust ethanwchen/tap
    brew audit --cask --online ethanwchen/tap/tabbi
    brew install --cask ethanwchen/tap/tabbi
    ```
+
+   Homebrew 7 refuses to load a cask from a tap you have not trusted, which `brew trust` (or installing by the full name) takes care of.
+   The online audit checks that the DMG and the appcast can be downloaded, so run it only after the release is published.
 
 Tabbi updates itself, so the cask says `auto_updates true` and `brew upgrade` leaves installed copies alone.
 Once Tabbi meets Homebrew's notability rules, the same cask can be submitted to `homebrew/cask`, after which `brew install --cask tabbi` works.

@@ -88,6 +88,36 @@ jobs:
       - name: Build the site
         run: python3 site/build.py
 
+  cask:
+    name: Homebrew cask (style, audit)
+    runs-on: macos-26
+    timeout-minutes: 10
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: "1"
+      HOMEBREW_NO_ENV_HINTS: "1"
+    steps:
+      - uses: actions/checkout@v5
+
+      # The cask is written for a stand-in DMG and checked from a local tap,
+      # the way the ethanwchen/homebrew-tap copy is loaded. The audit stays
+      # offline: until a release is published, its DMG and appcast are 404.
+      - name: Write the cask into a local tap
+        run: |
+          dmg="$RUNNER_TEMP/Tabbi-0.1.0.dmg"
+          printf 'stand-in' > "$dmg"
+          brew tap-new --no-git tabbi-ci/check
+          tap=$(brew --repository tabbi-ci/check)
+          mkdir -p "$tap/Casks"
+          scripts/make-cask.sh "$dmg" "$tap/Casks/tabbi.rb"
+          # Homebrew 7 loads casks only from taps the user trusts.
+          if brew trust --help > /dev/null 2>&1; then brew trust tabbi-ci/check; fi
+
+      - name: brew style
+        run: brew style --cask tabbi-ci/check/tabbi
+
+      - name: brew audit
+        run: brew audit --cask --strict tabbi-ci/check/tabbi
+
   release-dry-run:
     name: Release dry run (ad-hoc)
     # The universal release build takes a while, so pull requests skip it;

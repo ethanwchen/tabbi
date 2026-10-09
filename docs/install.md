@@ -66,17 +66,13 @@ Update checks download a small file from GitHub, where Tabbi's releases are publ
 
 ## Install with Homebrew
 
-If you use [Homebrew](https://brew.sh), you can install Tabbi from the Terminal instead:
-
-```sh
-brew install --cask tabbi
-```
-
-Until Tabbi is listed in Homebrew's main catalog, use the project's own tap:
+If you use [Homebrew](https://brew.sh), you can install Tabbi from the project's own tap in the Terminal instead:
 
 ```sh
 brew install --cask ethanwchen/tap/tabbi
 ```
+
+Naming the tap this way also tells Homebrew to trust it, which newer versions of Homebrew ask for before they load a cask from outside their main catalog.
 
 Tabbi updates itself, so `brew upgrade` leaves it alone; that is expected.
 
