@@ -157,11 +157,55 @@ public struct PetFrame: Hashable, Sendable {
     /// Where a speech bubble's tail should point, in frame pixels; set on
     /// frames that want to say something (alert).
     public var bubbleAnchor: PetPoint?
+    /// The frame on each tick of the item clock while an animated costume
+    /// item plays its loop (wings flapping, a glint on gold), starting with
+    /// `canvas`, the still that Reduce Motion shows. Empty when nothing worn
+    /// moves in this frame.
+    public var itemFrames: [PetCanvas]
 
-    public init(canvas: PetCanvas, duration: TimeInterval, bubbleAnchor: PetPoint? = nil) {
+    public init(canvas: PetCanvas, duration: TimeInterval, bubbleAnchor: PetPoint? = nil, itemFrames: [PetCanvas] = []) {
         self.canvas = canvas
         self.duration = duration
         self.bubbleAnchor = bubbleAnchor
+        self.itemFrames = itemFrames
+    }
+
+    /// Seconds per tick of the item clock, the pet's own frame rate (a
+    /// walking step), so costume loops move in step with the pet.
+    public static let itemFrameDuration: TimeInterval = {
+        guard let duration = PetArt.costume.itemFrameDuration else {
+            preconditionFailure("costume.json sets no itemFrameDuration")
+        }
+        return duration
+    }()
+
+    /// The item clock's tick at `time`. It counts from a fixed moment (any
+    /// shared clock, such as the reference date), not from the clip's
+    /// start, so a cape keeps glimmering smoothly when the pet changes clip.
+    public static func itemTick(at time: TimeInterval) -> Int {
+        Int((time / itemFrameDuration).rounded(.down))
+    }
+
+    /// This frame as drawn at `time` on the item clock: `canvas` is the
+    /// item loop's frame for that tick.
+    public func atItemTime(_ time: TimeInterval) -> PetFrame {
+        guard !itemFrames.isEmpty else { return self }
+        var frame = self
+        frame.canvas = itemFrames[Self.itemTick(at: time) % itemFrames.count]
+        return frame
+    }
+
+    /// When the item loop next changes the picture after `time`, skipping
+    /// ticks that look the same (a glint that only shows now and then), or
+    /// nil when nothing worn moves in this frame.
+    public func nextItemChange(after time: TimeInterval) -> TimeInterval? {
+        guard !itemFrames.isEmpty else { return nil }
+        let tick = Self.itemTick(at: time)
+        let shown = itemFrames[tick % itemFrames.count]
+        for step in 1...itemFrames.count where itemFrames[(tick + step) % itemFrames.count] != shown {
+            return Double(tick + step) * Self.itemFrameDuration
+        }
+        return nil
     }
 }
 
@@ -249,19 +293,23 @@ extension PetComposer {
         outfit: PetOutfit = .none, accessories: [PetAccessory] = []
     ) -> PetClip {
         let timeline = animation.timeline
-        let composed = timeline.frames.map {
-            compose(breed, pose: $0.pose, outfit: outfit, accessories: accessories, stance: $0.stance)
+        let loop = itemLoopLength(outfit: outfit, accessories: accessories)
+        // One composed frame per tick of the item loop, so animated costume
+        // items stay anchored to every pose.
+        let phases = timeline.frames.map { step in
+            (0..<loop).map { compose(breed, pose: step.pose, outfit: outfit, accessories: accessories,
+                                     stance: step.stance, phase: $0) }
         }
         // Effects placed by the head follow the clip's first frame, so a
         // drifting "z" doesn't bob with each breath.
-        let head = composed[0].headTopRight
+        let head = phases[0][0].headTopRight
         func place(_ coordinate: PetTimeline.Coordinate, from origin: Int) -> Int {
             switch coordinate {
             case .frame(let value): value
             case .head(let offset): origin + offset
             }
         }
-        let frames = zip(timeline.frames, composed).map { step, composed in
+        func finish(_ step: PetTimeline.Frame, _ composed: Composed) -> PetCanvas {
             var canvas = composed.canvas.shifted(x: 0, y: step.shiftY)
             for effect in step.effects {
                 let grid = PetArt.effect.grid(effect.grid)
@@ -284,9 +332,17 @@ extension PetComposer {
                         .adding(EffectArt.dustRight, at: PetPoint(x: right + 1, y: y))
                 }
             }
+            return canvas
+        }
+        let frames = zip(timeline.frames, phases).map { step, phases in
+            let canvases = phases.map { finish(step, $0) }
+            // A frame where the moving item is out of sight (a hanging pet
+            // shows no body) holds still.
+            let moves = canvases.contains { $0 != canvases[0] }
             return PetFrame(
-                canvas: canvas, duration: step.duration,
-                bubbleAnchor: step.bubble ? composed.headTopRight : nil
+                canvas: canvases[0], duration: step.duration,
+                bubbleAnchor: step.bubble ? phases[0].headTopRight : nil,
+                itemFrames: moves ? canvases : []
             )
         }
         return PetClip(animation: animation, frames: frames)

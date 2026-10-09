@@ -18,6 +18,18 @@ enum CostumeArt {
         /// Rows every grid reaches above its body's top row, for parts that
         /// stick up out of the silhouette, such as spikes along the back.
         var rise = 0
+        /// The rest of an animated item's loop: these grids are the still
+        /// frame, shown under Reduce Motion, and the loop's first.
+        var moreFrames: [BodyItem] = []
+
+        /// Frames in the item's loop; 1 for an item that stays still.
+        var frameCount: Int { 1 + moreFrames.count }
+
+        /// The item as drawn on frame `phase` of the item clock.
+        func frame(_ phase: Int) -> BodyItem {
+            let index = phase % frameCount
+            return index == 0 ? self : moreFrames[index - 1]
+        }
     }
 
     /// A face item, one grid for cat faces and one for dog faces, and the
@@ -30,8 +42,20 @@ enum CostumeArt {
 
     /// A hat-like item and the grid row that lands on the head's skull top.
     struct HeadItem {
+        /// The still frame, shown under Reduce Motion, and the loop's first.
         let grid: SpriteGrid
         let sitRow: Int
+        /// The rest of an animated item's loop, each the size of `grid`.
+        var moreFrames: [SpriteGrid] = []
+
+        /// Frames in the item's loop; 1 for an item that stays still.
+        var frameCount: Int { 1 + moreFrames.count }
+
+        /// The grid drawn on frame `phase` of the item clock.
+        func grid(_ phase: Int) -> SpriteGrid {
+            let index = phase % frameCount
+            return index == 0 ? grid : moreFrames[index - 1]
+        }
     }
 
     // MARK: Outfits

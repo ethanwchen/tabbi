@@ -88,6 +88,9 @@ struct PetArtFile: Sendable {
     private(set) var breedOrder: [PetBreed] = []
     private(set) var breeds: [PetBreed: BreedDefinition] = [:]
     private(set) var animations: [PetAnimation: PetTimeline] = [:]
+    /// Seconds each frame of an animated costume item's loop stays on
+    /// screen (costume file only).
+    private(set) var itemFrameDuration: TimeInterval?
 
     func grid(_ name: String) -> SpriteGrid { lookUp(grids, name, "grid") }
     func sequence(_ name: String) -> [SpriteGrid] { lookUp(sequences, name, "sequence") }
@@ -122,14 +125,28 @@ struct PetArtFile: Sendable {
             file.sequences[name] = try frames.enumerated().map { try parse($1, "\(name)[\($0)]") }
         }
         for (name, item) in raw.bodyItems ?? [:] {
-            file.bodyItems[name] = try CostumeArt.BodyItem(
-                cat: parse(item.cat, "\(name).cat"),
-                dog: parse(item.dog, "\(name).dog"),
-                longDog: parse(item.longDog, "\(name).longDog"),
-                walk: parse(item.walk, "\(name).walk"),
-                walkLong: parse(item.walkLong, "\(name).walkLong"),
-                rise: item.rise ?? 0
-            )
+            func grids(_ frame: Raw.BodyFrame, _ path: String) throws -> CostumeArt.BodyItem {
+                try CostumeArt.BodyItem(
+                    cat: parse(frame.cat, "\(path).cat"),
+                    dog: parse(frame.dog, "\(path).dog"),
+                    longDog: parse(frame.longDog, "\(path).longDog"),
+                    walk: parse(frame.walk, "\(path).walk"),
+                    walkLong: parse(frame.walkLong, "\(path).walkLong"),
+                    rise: item.rise ?? 0
+                )
+            }
+            var body = try grids(item.still, name)
+            body.moreFrames = try (item.frames ?? []).enumerated().map { index, frame in
+                let path = "\(name).frames[\(index)]"
+                let grids = try grids(frame, path)
+                for (still, moving, family) in [(body.cat, grids.cat, "cat"), (body.dog, grids.dog, "dog"),
+                                                 (body.longDog, grids.longDog, "longDog"), (body.walk, grids.walk, "walk"),
+                                                 (body.walkLong, grids.walkLong, "walkLong")] {
+                    try sameSize(moving, as: still, "\(path).\(family)")
+                }
+                return grids
+            }
+            file.bodyItems[name] = body
         }
         for (name, item) in raw.faceItems ?? [:] {
             file.faceItems[name] = try CostumeArt.FaceItem(
@@ -139,7 +156,18 @@ struct PetArtFile: Sendable {
             )
         }
         for (name, item) in raw.headItems ?? [:] {
-            file.headItems[name] = try CostumeArt.HeadItem(grid: parse(item.grid, "\(name).grid"), sitRow: item.sitRow)
+            let grid = try parse(item.grid, "\(name).grid")
+            let frames = try (item.frames ?? []).enumerated().map { index, rows in
+                let path = "\(name).frames[\(index)]"
+                let frame = try parse(rows, path)
+                try sameSize(frame, as: grid, path)
+                return frame
+            }
+            file.headItems[name] = CostumeArt.HeadItem(grid: grid, sitRow: item.sitRow, moreFrames: frames)
+        }
+        if let duration = raw.itemFrameDuration {
+            guard duration > 0 else { throw LoadError.invalidValue(path: "itemFrameDuration", value: "\(duration)") }
+            file.itemFrameDuration = duration
         }
         if let base = raw.basePalette {
             file.basePalette = try colors(base, at: "basePalette")
@@ -173,6 +201,15 @@ struct PetArtFile: Sendable {
         return file
     }
 
+    /// Every frame of an item's loop is drawn over the same spot, so it
+    /// must be the size of the item's still grid.
+    private static func sameSize(_ frame: SpriteGrid, as still: SpriteGrid, _ name: String) throws {
+        guard frame.width == still.width, frame.height == still.height else {
+            throw LoadError.invalidGrid(name: name, reason: "\(frame.width)x\(frame.height) differs from the item's "
+                + "\(still.width)x\(still.height) still grid")
+        }
+    }
+
     private static func value<Value>(_ parsed: Value?, _ raw: String, at path: String) throws -> Value {
         guard let parsed else { throw LoadError.invalidValue(path: path, value: raw) }
         return parsed
@@ -190,9 +227,25 @@ struct PetArtFile: Sendable {
 
     /// The file as written: grids are arrays of text rows.
     private struct Raw: Decodable {
-        struct BodyItem: Decodable {
+        /// One frame of a body item: a grid per body family.
+        struct BodyFrame: Decodable {
             let cat, dog, longDog, walk, walkLong: [String]
+        }
+
+        struct BodyItem: Decodable {
+            let still: BodyFrame
             let rise: Int?
+            /// The rest of an animated item's loop, after `still`.
+            let frames: [BodyFrame]?
+
+            enum CodingKeys: CodingKey { case rise, frames }
+
+            init(from decoder: Decoder) throws {
+                still = try BodyFrame(from: decoder)
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                rise = try container.decodeIfPresent(Int.self, forKey: .rise)
+                frames = try container.decodeIfPresent([BodyFrame].self, forKey: .frames)
+            }
         }
 
         struct FaceItem: Decodable {
@@ -203,6 +256,8 @@ struct PetArtFile: Sendable {
         struct HeadItem: Decodable {
             let grid: [String]
             let sitRow: Int
+            /// The rest of an animated item's loop, after `grid`.
+            let frames: [[String]]?
         }
 
         let schema: String
@@ -215,6 +270,7 @@ struct PetArtFile: Sendable {
         let bodyShapes: [String: BodyShape]?
         let breeds: [Breed]?
         let animations: [String: PetTimeline.Raw]?
+        let itemFrameDuration: Double?
 
         struct BodyShape: Decodable {
             let species: String

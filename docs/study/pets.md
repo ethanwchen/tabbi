@@ -137,6 +137,18 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 
 ![Every breed in the study-day look](images/fit-study-day.png)
 
+### Animated items
+
+Some items move: the Flame Headband's flame flickers, a glint crosses the Golden Laurel, and the Team Medal sparkles now and then.
+An animated item lists the rest of its loop in `frames`, after its still grids: a head item gives grids the size of `grid`, a body item gives a grid per body family for each frame.
+The still is the loop's first frame and the picture Reduce Motion shows.
+Every frame lasts one tick of the item clock, `itemFrameDuration` in `costume.json` (150 ms, a walking step), so a slower move repeats a frame.
+The composer draws the item's frame for each tick on every pose (`PetFrame.itemFrames`), so it stays anchored like the still.
+The item clock counts from a fixed moment, not from the clip's start, so a loop runs on smoothly when the pet changes clip.
+`PetClipSet.nextChange` wakes the player on the next tick that looks different, so an item that glints now and then costs no redraws in between.
+`PetItem.loopFrameCount` says how many ticks an item's loop has, and `PetItemLoopTests` holds every animated item to moving a few pixels on every body shape.
+`swift run PetGallery <dir>` writes `loop-<item>.png` (every body shape through each tick, sitting and walking, at 6x) and `loop-<item>-2x.png` at notch size.
+
 ### Adding a costume item
 
 1. Add a case to `PetOutfit` or `PetAccessory` (with its `slot` and `displayName`), and give it a price in `PetItem.cost`, a Closet shelf in `PetItem.theme` (Study, Cozy, Fantasy, Seasonal or Silly) and the catalog `release` that adds it.

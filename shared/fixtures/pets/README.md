@@ -23,5 +23,6 @@ Run-length rows (`rle`): rows joined by `/`, each row a list of runs written as 
   `sitting` has the sitting frame of every breed, and of both pets in each outfit and each accessory.
 - `composed-digests.json`: one SHA-256 per dress over every frame of every animation, for every breed bare, in each outfit, in each accessory and in four full looks.
   The digest covers, for each animation in declaration order: the animation name and a 0 byte, the frame count as UInt32, then per frame the duration as Float64 bits, a bubble anchor flag byte, the anchor x and y as Int32 (0 when absent) and the 1,024 row-major symbol bytes.
+  A frame where an animated costume item moves (its `itemFrames`, one per tick of the item clock, `itemFrameDuration` in `costume.json`) then adds the item frame count as UInt32 and each item frame's 1,024 symbol bytes; frames that hold still add nothing.
   All integers are little-endian.
   `frameCount` is the total number of frames, a quick first check before comparing digests.

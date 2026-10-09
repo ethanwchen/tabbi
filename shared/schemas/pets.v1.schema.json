@@ -8,6 +8,11 @@
   "additionalProperties": false,
   "properties": {
     "schema": { "const": "pets.v1" },
+    "itemFrameDuration": {
+      "description": "Costume file: seconds each frame of an animated costume item's loop stays on screen, the pet's own frame rate.",
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
     "grids": {
       "description": "Named single grids.",
       "type": "object",
@@ -35,6 +40,22 @@
             "description": "Rows every grid reaches above its body's top row. Defaults to 0.",
             "type": "integer",
             "minimum": 0
+          },
+          "frames": {
+            "description": "The rest of an animated item's loop after its still grids, one tick of itemFrameDuration each. Every frame has a grid per body family, the size of the still grid for that family. The still is the loop's first frame and what Reduce Motion shows.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["cat", "dog", "longDog", "walk", "walkLong"],
+              "additionalProperties": false,
+              "properties": {
+                "cat": { "$ref": "#/$defs/grid" },
+                "dog": { "$ref": "#/$defs/grid" },
+                "longDog": { "$ref": "#/$defs/grid" },
+                "walk": { "$ref": "#/$defs/grid" },
+                "walkLong": { "$ref": "#/$defs/grid" }
+              }
+            }
           }
         }
       }
@@ -60,7 +81,15 @@
         "type": "object",
         "required": ["grid", "sitRow"],
         "additionalProperties": false,
-        "properties": { "grid": { "$ref": "#/$defs/grid" }, "sitRow": { "type": "integer", "minimum": 0 } }
+        "properties": {
+          "grid": { "$ref": "#/$defs/grid" },
+          "sitRow": { "type": "integer", "minimum": 0 },
+          "frames": {
+            "description": "The rest of an animated item's loop after grid, one tick of itemFrameDuration each and each the size of grid. grid is the loop's first frame and what Reduce Motion shows.",
+            "type": "array",
+            "items": { "$ref": "#/$defs/grid" }
+          }
+        }
       }
     },
     "basePalette": {

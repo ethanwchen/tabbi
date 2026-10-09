@@ -18,7 +18,9 @@ import XCTest
 ///   `PetAnimation.allCases` order, written as: animation name and a 0 byte,
 ///   the frame count (UInt32), then per frame the duration (Float64 bits),
 ///   a bubble anchor flag byte with x and y (Int32 each, 0 when absent) and
-///   the row-major symbol bytes. All integers are little-endian.
+///   the row-major symbol bytes. A frame where an animated costume item
+///   moves then adds its item frame count (UInt32) and each item frame's
+///   symbol bytes. All integers are little-endian.
 final class PetGoldenFrameTests: XCTestCase {
     func testComposedFrameDigestsMatchGoldenFixture() throws {
         try check(PetGoldenFixtures.digests(), file: "composed-digests.json")
@@ -141,6 +143,10 @@ enum PetGoldenFixtures {
                 append(Int32(frame.bubbleAnchor?.x ?? 0), to: &bytes)
                 append(Int32(frame.bubbleAnchor?.y ?? 0), to: &bytes)
                 bytes += symbols(frame.canvas)
+                if !frame.itemFrames.isEmpty {
+                    append(UInt32(frame.itemFrames.count), to: &bytes)
+                    for canvas in frame.itemFrames { bytes += symbols(canvas) }
+                }
             }
         }
         let hash = SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined()

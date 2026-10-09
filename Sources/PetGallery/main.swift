@@ -309,6 +309,36 @@ for (slot, items) in contactGroups {
                    to: outputDirectory.appendingPathComponent("contact-\(slot).png"))
 }
 
+// Item loops: every animated item on every body shape through each tick of
+// its loop, sitting (idle) and walking, at 6x for pixel review and at notch
+// size. The first column is the still frame Reduce Motion shows.
+for item in PetItem.allCases where item.loopFrameCount > 1 {
+    let (outfit, accessories): (PetOutfit, [PetAccessory]) = switch item {
+    case .outfit(let outfit): (outfit, [])
+    case .accessory(let accessory): (.none, [accessory])
+    }
+    var cells: [Cell] = []
+    for animation in [PetAnimation.idle, .walk] {
+        for breed in PetGallery.bodyShapeBreeds {
+            let frame = PetComposer.clip(animation, for: breed, outfit: outfit, accessories: accessories).frames[0]
+            let canvases = frame.itemFrames.isEmpty
+                ? Array(repeating: frame.canvas, count: item.loopFrameCount) : frame.itemFrames
+            for (tick, canvas) in canvases.enumerated() {
+                let label = tick == 0 ? "\(breed.displayName) \(animation.rawValue)" : "\(tick + 1)"
+                cells.append(Cell(label: label, canvas: canvas, palette: breed.palette.withVisibleRim()))
+            }
+        }
+    }
+    let slug = item.displayName.lowercased().replacingOccurrences(of: " ", with: "-")
+    let milliseconds = Int((PetFrame.itemFrameDuration * 1000).rounded())
+    for (loopScale, suffix) in [(6, ""), (2, "-2x")] {
+        try writeSheet(cells.map { suffix.isEmpty ? $0 : Cell(label: "", canvas: $0.canvas, palette: $0.palette) },
+                       columns: item.loopFrameCount, title: suffix.isEmpty
+                           ? "\(item.displayName) loop (\(item.loopFrameCount) x \(milliseconds) ms)" : "",
+                       scale: loopScale, to: outputDirectory.appendingPathComponent("loop-\(slug)\(suffix).png"))
+    }
+}
+
 // Costume animation strips: each item on every breed through the key
 // frames of every animation (breathing, blink, doze, both walk steps, the
 // deepest bow, hanging, and the top of each hop).
