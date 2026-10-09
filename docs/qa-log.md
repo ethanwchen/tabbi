@@ -2,6 +2,7 @@
 
 What the whole-app quality pass found and fixed, newest first, one sentence per line.
 
+- A live snapshot run (`--snapshot`) had Claude Usage scan the user's Claude Code transcripts and save its scan index into Tabbi's data folder; snapshot runs now read the transcripts without saving an index, and can never probe the `claude` CLI for limits (which spends a sliver of the user's usage).
 - A live snapshot run (`--snapshot`) created today's Today list file in the user's data folder (carrying yesterday's unfinished tasks over at render time), although snapshot runs must leave no trace; Today now shows the same list in a snapshot without writing it, which a run with an empty home folder confirms.
 - VoiceOver read raw symbol names for the notch's icon-only controls ("checklist" and "cpu" for tabs, "gearshape.fill" for Settings, "Clear Night" for Wrap up, "Facetime Video Call" for joining a meeting), Today's task checkboxes had no name at all, Closet tiles read only "100" or "On", Anki deck rows read "AnKing Step 1, 30, 12, 186" and a Party friend's Join button never said whose party; each now has a real name (and a value such as "Done" or "30 new, 12 learning, 186 review"), checked against the accessibility tree of a running demo build.
 - The Claude Usage panel showed today's message count without digit grouping ("3800", and "12345" on a busy day) beside compact token counts like "374M"; it now follows the Mac's number format ("3,846").
