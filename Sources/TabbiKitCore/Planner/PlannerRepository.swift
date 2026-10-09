@@ -61,6 +61,20 @@ public final class PlannerRepository {
     /// saved immediately so carry-over happens exactly once.
     public func open(_ date: PlannerDayKey) throws -> PlannerDay {
         if let existing = try load(date) { return existing }
+        let day = try carryingOver(to: date)
+        try save(day)
+        return day
+    }
+
+    /// What `open` returns, without creating the day's file: a snapshot run
+    /// shows today's list but must leave no trace on disk.
+    public func peek(_ date: PlannerDayKey) throws -> PlannerDay {
+        try load(date) ?? carryingOver(to: date)
+    }
+
+    /// A new `date` with the unfinished items of the most recent earlier day
+    /// that has a readable file.
+    private func carryingOver(to date: PlannerDayKey) throws -> PlannerDay {
         var day = PlannerDay(date: date)
         // Walk back past corrupt files rather than failing the whole day.
         for previous in try savedDays().reversed() where previous < date {
@@ -69,7 +83,6 @@ public final class PlannerRepository {
                 break
             }
         }
-        try save(day)
         return day
     }
 

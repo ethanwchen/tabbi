@@ -153,6 +153,22 @@ final class PlannerRepositoryTests: XCTestCase {
         XCTAssertEqual(try repository.open(oct1).items, [])
     }
 
+    func testPeekShowsTheCarriedOverDayWithoutCreatingItsFile() throws {
+        var yesterday = PlannerDay(date: PlannerDayKey(rawValue: "2026-09-30")!)
+        yesterday.add("Carry me", now: now)
+        try repository.save(yesterday)
+
+        XCTAssertEqual(try repository.peek(oct1).items.map(\.title), ["Carry me"])
+        XCTAssertNil(try repository.load(oct1))
+        XCTAssertEqual(try repository.savedDays(), [yesterday.date])
+
+        // Once the day exists, peek reads it as saved.
+        var today = try repository.open(oct1)
+        today.delete(today.items[0].id)
+        try repository.save(today)
+        XCTAssertEqual(try repository.peek(oct1).items, [])
+    }
+
     func testOpenIgnoresFutureDaysAndUnrelatedFiles() throws {
         var future = PlannerDay(date: PlannerDayKey(rawValue: "2026-10-05")!)
         future.add("From the future", now: now)
