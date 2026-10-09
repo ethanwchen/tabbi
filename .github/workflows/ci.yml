@@ -1,44 +1,116 @@
 name: CI
 
-# The repository is private for now, so CI only runs when started by hand
-# (Actions tab > CI > Run workflow).
 on:
+  push:
+    branches: [main]
+  pull_request:
   workflow_dispatch:
-  # Enable at public launch: uncomment to run on every push to main and every PR.
-  # push:
-  #   branches: [main]
-  # pull_request:
 
+# A newer push to the same branch or PR replaces the run in progress.
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 permissions:
   contents: read
 
 jobs:
-  build-and-test:
-    name: Build and test
+  app:
+    name: App (build, style, test)
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Toolchain
+        run: |
+          sw_vers
+          xcodebuild -version
+          swift --version
+
+      # Only the resolved dependencies (Sparkle's checkout and binary
+      # artifact) are cached. Restoring a whole .build from an older commit
+      # can leave stale objects behind, which costs more in flakiness than
+      # it saves in time.
+      - name: Cache SwiftPM dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            .build/artifacts
+            .build/checkouts
+            .build/repositories
+            ~/Library/Caches/org.swift.swiftpm
+          key: spm-${{ runner.os }}-${{ hashFiles('Package.resolved') }}
+          restore-keys: spm-${{ runner.os }}-
+
+      - name: Writing style
+        run: scripts/check-style.sh
+
+      # The tests are built with the same flags as the app, so the test step
+      # below reuses this build instead of compiling everything again.
+      - name: Build (warnings are errors)
+        run: swift build --build-tests -Xswiftc -warnings-as-errors
+
+      - name: Test
+        run: swift test --parallel -Xswiftc -warnings-as-errors
+
+  backend:
+    name: Backend (typecheck, test)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+
+  site:
+    name: Site build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      # The build fails on broken links, missing assets and oversized files.
+      - name: Build the site
+        run: python3 site/build.py
+
+  release-dry-run:
+    name: Release dry run (ad-hoc)
+    # The universal release build takes a while, so pull requests skip it;
+    # every push to main proves the release path still works.
+    if: github.event_name != 'pull_request'
     runs-on: macos-26
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v5
         with:
-          # The release build numbers the app by commit count, so it needs the full history.
+          # The release build numbers the app by commit count and writes
+          # release notes from the history, so it needs all of it.
           fetch-depth: 0
 
-      - name: Toolchain
-        run: |
-          sw_vers
-          swift --version
-
-      - name: Build (warnings are errors)
-        run: swift build -Xswiftc -warnings-as-errors
-
-      - name: Test
-        run: swift test
+      - name: Cache SwiftPM dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            .build/artifacts
+            .build/checkouts
+            .build/repositories
+            ~/Library/Caches/org.swift.swiftpm
+          key: spm-${{ runner.os }}-${{ hashFiles('Package.resolved') }}
+          restore-keys: spm-${{ runner.os }}-
 
       # CI has no Developer ID, so it checks the ad-hoc path of the release
-      # build: universal binary, strip, signing, zip and DMG.
-      - name: Release build (universal, ad-hoc signed, DMG)
+      # build: universal binary, strip, signing, zip, DMG and appcast.
+      - name: Release build (universal, ad-hoc signed)
         run: scripts/release.sh --adhoc
