@@ -44,6 +44,14 @@ npx wrangler secret put APPLE_KEY_ID        # the key's Key ID
 npx wrangler secret put APPLE_PRIVATE_KEY   # the whole AuthKey_<KeyID>.p8 file, pasted as is
 ```
 
+To review user reports, rename users and ban them, set an admin secret as well (a long random string, kept out of the repo):
+
+```sh
+openssl rand -hex 32 | npx wrangler secret put ADMIN_TOKEN
+```
+
+Until it is set, the admin routes answer 404. How to read reports and act on them is in [the API doc](../docs/study/backend-api.md#moderation-maintainer).
+
 The tables in that storage are versioned in `src/hub.ts` (`MIGRATIONS`, recorded in a `schema_version` table): the Hub applies missing steps when it starts, so a deploy upgrades the database by itself.
 Add a schema change as a new step at the end and never edit a deployed one.
 

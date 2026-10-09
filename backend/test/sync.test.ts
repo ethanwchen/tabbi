@@ -147,16 +147,19 @@ describe("schema migrations", () => {
       sql.exec("DROP TABLE apple_accounts");
       sql.exec("DROP TABLE device_tokens");
       sql.exec("DROP TABLE blocks");
+      sql.exec("DROP TABLE reports");
+      sql.exec("DROP TABLE bans");
+      sql.exec("DROP TABLE name_holds");
       sql.exec("DROP TABLE schema_version");
       sql.exec(`INSERT INTO users (code, token_hash, name, pet_name, species, breed, colors, costume, accessories, points, level, created_at)
         VALUES ('AAAAAAAA', 'h', 'n', 'p', 'cat', 'tabby', '[]', 'none', '[]', 5, 1, 0)`);
       migrate(state.storage);
-      expect(sql.exec<{ version: number }>("SELECT version FROM schema_version").one().version).toBe(3);
+      expect(sql.exec<{ version: number }>("SELECT version FROM schema_version").one().version).toBe(4);
       expect(sql.exec<{ points: number }>("SELECT points FROM users WHERE code = 'AAAAAAAA'").one().points).toBe(5);
       expect(sql.exec("SELECT * FROM sync_documents").toArray()).toEqual([]);
       // Running again is a no-op.
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 3 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 4 }]);
     });
   });
 });

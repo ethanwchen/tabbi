@@ -16,7 +16,7 @@ export default defineConfig(async () => ({
   plugins: [cloudflareTest({
     wrangler: { configPath: "./wrangler.toml" },
     miniflare: {
-      bindings: { APPLE_TEAM_ID: "TESTTEAM01", APPLE_KEY_ID: "TESTKEY001", APPLE_PRIVATE_KEY: await throwawayAppleKey() },
+      bindings: { ADMIN_TOKEN: "test-admin-secret", APPLE_TEAM_ID: "TESTTEAM01", APPLE_KEY_ID: "TESTKEY001", APPLE_PRIVATE_KEY: await throwawayAppleKey() },
     },
   })],
 }));

@@ -159,10 +159,13 @@ describe("schema step 3", () => {
     await runInDurableObject(stub, (_, state) => {
       const sql = state.storage.sql;
       sql.exec("DROP TABLE blocks");
+      sql.exec("DROP TABLE reports");
+      sql.exec("DROP TABLE bans");
+      sql.exec("DROP TABLE name_holds");
       sql.exec("UPDATE schema_version SET version = 2");
       sql.exec("INSERT INTO friends (a, b, created_at) VALUES ('AAAAAAAA', 'BBBBBBBB', 0)");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 3 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 4 }]);
       expect(sql.exec("SELECT * FROM blocks").toArray()).toEqual([]);
       expect(sql.exec("SELECT a FROM friends").toArray()).toEqual([{ a: "AAAAAAAA" }]);
     });

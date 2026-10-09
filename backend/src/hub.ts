@@ -12,7 +12,7 @@
  */
 import { DurableObject } from "cloudflare:workers";
 import {
-  HttpError, MAX_FRIENDS, MAX_PARTY_MEMBERS, PARTY_IDLE_EXPIRY_S, RATE_LIMIT_PER_MIN, REGISTER_PER_MIN, FRIEND_CODE_RE, TOKEN_RE,
+  DEFAULT_NAME, DEFAULT_PET_NAME, HttpError, MAX_FRIENDS, MAX_PARTY_MEMBERS, PARTY_IDLE_EXPIRY_S, RATE_LIMIT_PER_MIN, REGISTER_PER_MIN, FRIEND_CODE_RE, TOKEN_RE,
   isoWeekDays, isoWeekKeyOfDay, newCode, newToken, nowS, parseFriendCode, readBody, sha256Hex, utcDay,
 } from "./lib";
 import { PROFILE_FIELDS, Profile, applyProfilePatch, defaultProfile, parseProfilePatch, sameProfile } from "./profile";
@@ -24,10 +24,13 @@ import {
 } from "./apple";
 import { PRESENCE_FIELDS, Presence, heartbeatSeconds, isOnline, parseHeartbeat, presenceChanged, publicPresence } from "./presence";
 import { STUDY_DAY_RETENTION_DAYS, rankEntries } from "./leaderboard";
-import { MAX_BLOCKS } from "./moderation";
+import {
+  ADMIN_PER_MIN, ADMIN_REPORTS_PAGE, AdminSecrets, MAX_BLOCKS, MAX_REPORTS_PER_DAY, REPORTS_PER_MIN, REPORT_FIELDS,
+  adminNotFound, isAdminToken, parseReport,
+} from "./moderation";
 import { JOIN_FIELDS, PARTY_TOUCH_S, PartySession, SESSION_FIELDS, parseJoin, parseSession, partyExpired } from "./party";
 
-export interface Env extends AppleSecrets {
+export interface Env extends AppleSecrets, AdminSecrets {
   HUB: DurableObjectNamespace<Hub>;
 }
 
@@ -135,12 +138,45 @@ CREATE TABLE blocks (
 CREATE INDEX blocks_by_blocked ON blocks (blocked);
 `;
 
+/** Moderation: reports, bans and the names a maintainer took away. */
+const REPORTS_SCHEMA = `
+-- A user's report about another user. The reported user's name and pet name are copied as they were
+-- when reported, since they may change before a maintainer reads it. Open while resolved_at is null;
+-- resolution is dismissed, renamed or banned.
+CREATE TABLE reports (
+  id          INTEGER PRIMARY KEY,
+  reporter    TEXT NOT NULL,
+  reported    TEXT NOT NULL,
+  reason      TEXT NOT NULL,
+  note        TEXT,
+  name        TEXT NOT NULL,
+  pet_name    TEXT NOT NULL,
+  created_at  INTEGER NOT NULL,
+  resolved_at INTEGER,
+  resolution  TEXT
+);
+CREATE INDEX reports_by_reporter ON reports (reporter, created_at);
+CREATE INDEX reports_by_reported ON reports (reported);
+-- A banned user keeps their data but cannot set a name or join parties, and no one else sees them.
+CREATE TABLE bans (
+  code       TEXT PRIMARY KEY,
+  created_at INTEGER NOT NULL
+) WITHOUT ROWID;
+-- The name and pet name a maintainer replaced with placeholders; the user cannot set them again.
+CREATE TABLE name_holds (
+  code       TEXT PRIMARY KEY,
+  name       TEXT NOT NULL,
+  pet_name   TEXT NOT NULL,
+  created_at INTEGER NOT NULL
+) WITHOUT ROWID;
+`;
+
 /**
  * Ordered schema steps; step i brings the database to version i + 1. Append new steps and never edit
  * one that has been deployed. Step 1 is the original schema, written with IF NOT EXISTS so databases
  * created before versioning (which have its tables but no recorded version) pass through it unchanged.
  */
-const MIGRATIONS = [SCHEMA, SYNC_SCHEMA, MODERATION_SCHEMA];
+const MIGRATIONS = [SCHEMA, SYNC_SCHEMA, MODERATION_SCHEMA, REPORTS_SCHEMA];
 
 /** Runs the steps a database has not had yet, each in its own transaction with its version bump. */
 export function migrate(storage: DurableObjectStorage): void {
@@ -280,10 +316,13 @@ export class Hub extends DurableObject<Env> {
     }
 
     if (path === "/v1/auth/apple" && method === "POST") return await this.signInWithApple(req, now);
+    if (path.startsWith("/v1/admin/")) return await this.admin(req, path, method, now);
 
     const caller = await this.authenticate(req, now);
 
-    if (path === "/v1/me" && method === "GET") return json({ ok: true, profile: caller.profile });
+    if (path === "/v1/me" && method === "GET") {
+      return json(this.isBanned(caller.code) ? { ok: true, profile: caller.profile, banned: true } : { ok: true, profile: caller.profile });
+    }
     if (path === "/v1/me" && method === "PATCH") return this.updateProfile(req, caller, false);
     if (path === "/v1/me" && method === "DELETE") return await this.deleteMe(caller);
     if (path === "/v1/auth/signout" && method === "POST") return await this.signOut(caller);
@@ -297,6 +336,7 @@ export class Hub extends DurableObject<Env> {
     if (path === "/v1/blocks" && method === "POST") return this.block(req, caller, now);
     const blockPath = /^\/v1\/blocks\/([^/]+)$/.exec(path);
     if (blockPath && method === "DELETE") return this.unblock(caller, blockPath[1]);
+    if (path === "/v1/reports" && method === "POST") return await this.report(req, caller, now);
 
     if (path === "/v1/presence" && method === "POST") return this.heartbeat(req, caller, now);
     if (path === "/v1/leaderboard" && method === "GET") return this.leaderboard(caller, now);
@@ -378,6 +418,7 @@ export class Hub extends DurableObject<Env> {
   private async updateProfile(req: Request, caller: Caller, isRegister: boolean): Promise<Response> {
     const patch = parseProfilePatch(await readBody(req, PROFILE_FIELDS));
     const next = applyProfilePatch(caller.profile, patch);
+    this.checkNames(caller, next);
     // Write only on change: SQLite row writes are the scarce free-tier resource.
     if (!sameProfile(next, caller.profile)) {
       this.sql.exec(
@@ -418,6 +459,9 @@ export class Hub extends DurableObject<Env> {
     this.sql.exec("DELETE FROM device_tokens WHERE code = ?", code);
     this.sql.exec("DELETE FROM blocks WHERE blocker = ?", code);
     this.sql.exec("DELETE FROM blocks WHERE blocked = ?", code);
+    this.sql.exec("DELETE FROM reports WHERE reporter = ? OR reported = ?", code, code);
+    this.sql.exec("DELETE FROM bans WHERE code = ?", code);
+    this.sql.exec("DELETE FROM name_holds WHERE code = ?", code);
     this.live.delete(code);
   }
 
@@ -435,7 +479,7 @@ export class Hub extends DurableObject<Env> {
        FROM friends f JOIN users u ON u.code = f.b LEFT JOIN presence p ON p.code = f.b
          LEFT JOIN party_members m ON m.code = f.b
          LEFT JOIN parties pa ON pa.code = m.party AND pa.last_active > ?
-       WHERE f.a = ? ORDER BY u.name COLLATE NOCASE, u.code`,
+       WHERE f.a = ? AND f.b NOT IN (SELECT code FROM bans) ORDER BY u.name COLLATE NOCASE, u.code`,
       now - PARTY_IDLE_EXPIRY_S, caller.code,
     ).toArray();
     const friends = rows.map((r) => {
@@ -456,8 +500,9 @@ export class Hub extends DurableObject<Env> {
     const body = await readBody(req, ["code"]);
     const code = parseFriendCode(body.code);
     if (code === caller.code) throw new HttpError(400, "self_friend", "you cannot add yourself");
+    this.requireNotBanned(caller);
     const row = this.sql.exec<UserRow>("SELECT * FROM users WHERE code = ?", code).toArray()[0];
-    if (!row) throw new HttpError(404, "unknown_code", "no one has that code");
+    if (!row || this.isBanned(code)) throw new HttpError(404, "unknown_code", "no one has that code");
     if (this.hasBlocked(caller.code, code)) throw new HttpError(409, "blocked", "you blocked them; unblock them first");
     // A blocked user is told the code is unknown, so a block is never revealed.
     if (this.hasBlocked(code, caller.code)) throw new HttpError(404, "unknown_code", "no one has that code");
@@ -547,6 +592,196 @@ export class Hub extends DurableObject<Env> {
     return json({ ok: true, unblocked });
   }
 
+  // ---------- reports, bans and name holds ----------
+
+  private isBanned(code: string): boolean {
+    return this.sql.exec("SELECT 1 FROM bans WHERE code = ?", code).toArray().length > 0;
+  }
+
+  private requireNotBanned(caller: Caller): void {
+    if (this.isBanned(caller.code)) throw new HttpError(403, "banned", "this account can no longer use Party");
+  }
+
+  /**
+   * A banned user cannot change their name or pet name, and no one can set again a name a maintainer
+   * replaced. Unchanged names pass, so the app can keep sending the whole profile.
+   */
+  private checkNames(caller: Caller, next: Profile): void {
+    const nameChanged = next.name !== caller.profile.name;
+    const petChanged = next.petName !== caller.profile.petName;
+    if (!nameChanged && !petChanged) return;
+    this.requireNotBanned(caller);
+    const hold = this.sql.exec<{ name: string; pet_name: string }>(
+      "SELECT name, pet_name FROM name_holds WHERE code = ?", caller.code).toArray()[0];
+    if (!hold) return;
+    const same = (a: string, b: string) => a.localeCompare(b, undefined, { sensitivity: "base" }) === 0;
+    if (nameChanged && same(next.name, hold.name)) {
+      throw new HttpError(400, "name_not_allowed", "That name isn't allowed. Please pick another.");
+    }
+    if (petChanged && same(next.petName, hold.pet_name)) {
+      throw new HttpError(400, "pet_name_not_allowed", "That pet name isn't allowed. Please pick another.");
+    }
+  }
+
+  /**
+   * POST /v1/reports with `{ code, reason, note? }`: stores a report with the reported user's current
+   * name and pet name. A second report about the same user while the first is still open updates it
+   * (`created: false`), so the review queue holds one entry per reporter and user.
+   */
+  private async report(req: Request, caller: Caller, now: number): Promise<Response> {
+    const body = await readBody(req, REPORT_FIELDS);
+    const code = parseFriendCode(body.code);
+    const { reason, note } = parseReport(body);
+    if (code === caller.code) throw new HttpError(400, "self_report", "you cannot report yourself");
+    const row = this.sql.exec<UserRow>("SELECT * FROM users WHERE code = ?", code).toArray()[0];
+    if (!row) throw new HttpError(404, "unknown_code", "no one has that code");
+    this.rateLimit("report:" + caller.code, REPORTS_PER_MIN, now);
+    const open = this.sql.exec<{ id: number }>(
+      "SELECT id FROM reports WHERE reporter = ? AND reported = ? AND resolved_at IS NULL", caller.code, code).toArray()[0];
+    if (open) {
+      this.sql.exec("UPDATE reports SET reason = ?, note = ?, name = ?, pet_name = ?, created_at = ? WHERE id = ?",
+        reason, note, row.name, row.pet_name, now, open.id);
+      return json({ ok: true, created: false });
+    }
+    const today = this.sql.exec<{ n: number }>(
+      "SELECT COUNT(*) AS n FROM reports WHERE reporter = ? AND created_at > ?", caller.code, now - 86_400).one().n;
+    if (today >= MAX_REPORTS_PER_DAY) {
+      throw new HttpError(429, "report_limit", `at most ${MAX_REPORTS_PER_DAY} reports a day`);
+    }
+    this.sql.exec(
+      `INSERT INTO reports (reporter, reported, reason, note, name, pet_name, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      caller.code, code, reason, note, row.name, row.pet_name, now,
+    );
+    return json({ ok: true, created: true }, 201);
+  }
+
+  // ---------- admin ----------
+
+  /**
+   * The maintainer's routes under /v1/admin/, called with the ADMIN_TOKEN Worker secret as Bearer. They
+   * answer 404 while the secret is unset, and 401 to a wrong token.
+   */
+  private async admin(req: Request, path: string, method: string, now: number): Promise<Response> {
+    this.rateLimit("admin:" + (req.headers.get("CF-Connecting-IP") ?? "unknown"), ADMIN_PER_MIN, now);
+    if (!this.env.ADMIN_TOKEN) throw adminNotFound();
+    if (!(await isAdminToken(bearer(req), this.env))) throw new HttpError(401, "unauthorized", "missing or invalid admin token");
+
+    if (path === "/v1/admin/reports" && method === "GET") {
+      const status = new URL(req.url).searchParams.get("status") ?? "open";
+      if (status !== "open" && status !== "all") throw new HttpError(400, "invalid_field", "status must be open or all");
+      return this.adminReports(status === "open");
+    }
+    const dismiss = /^\/v1\/admin\/reports\/(\d+)\/dismiss$/.exec(path);
+    if (dismiss && method === "POST") return this.dismissReport(Number(dismiss[1]), now);
+    const user = /^\/v1\/admin\/users\/([^/]+)\/(rename|ban)$/.exec(path);
+    if (user && user[2] === "rename" && method === "POST") return this.adminRename(user[1], now);
+    if (user && user[2] === "ban" && method === "POST") return this.adminBan(user[1], now);
+    if (user && user[2] === "ban" && method === "DELETE") return this.adminUnban(user[1]);
+    throw adminNotFound();
+  }
+
+  /** GET /v1/admin/reports[?status=all]: open (or all) reports, newest first, with who is involved now. */
+  private adminReports(openOnly: boolean): Response {
+    const rows = this.sql.exec<{
+      id: number; reporter: string; reported: string; reason: string; note: string | null; name: string; pet_name: string;
+      created_at: number; resolved_at: number | null; resolution: string | null;
+      reporter_name: string | null; current_name: string | null; current_pet_name: string | null;
+      banned: number; open_reports: number;
+    }>(
+      `SELECT r.*, a.name AS reporter_name, u.name AS current_name, u.pet_name AS current_pet_name,
+         EXISTS (SELECT 1 FROM bans WHERE code = r.reported) AS banned,
+         (SELECT COUNT(*) FROM reports o WHERE o.reported = r.reported AND o.resolved_at IS NULL) AS open_reports
+       FROM reports r LEFT JOIN users a ON a.code = r.reporter LEFT JOIN users u ON u.code = r.reported
+       WHERE ? = 0 OR r.resolved_at IS NULL
+       ORDER BY r.created_at DESC, r.id DESC LIMIT ?`,
+      openOnly ? 1 : 0, ADMIN_REPORTS_PAGE,
+    ).toArray();
+    const reports = rows.map((r) => ({
+      id: r.id,
+      createdAt: r.created_at,
+      reason: r.reason,
+      note: r.note,
+      resolvedAt: r.resolved_at,
+      resolution: r.resolution,
+      reporter: { code: r.reporter, name: r.reporter_name },
+      reported: {
+        code: r.reported,
+        name: r.name,
+        petName: r.pet_name,
+        currentName: r.current_name,
+        currentPetName: r.current_pet_name,
+        banned: r.banned === 1,
+        openReports: r.open_reports,
+      },
+    }));
+    return json({ ok: true, reports });
+  }
+
+  /** POST /v1/admin/reports/{id}/dismiss: closes a report without acting on the user. */
+  private dismissReport(id: number, now: number): Response {
+    const done = this.sql.exec(
+      "UPDATE reports SET resolved_at = ?, resolution = 'dismissed' WHERE id = ? AND resolved_at IS NULL", now, id).rowsWritten > 0;
+    if (!done && this.sql.exec("SELECT 1 FROM reports WHERE id = ?", id).toArray().length === 0) {
+      throw new HttpError(404, "report_not_found", "no report has that id");
+    }
+    return json({ ok: true, dismissed: done });
+  }
+
+  /** The user an admin route acts on, or 404. */
+  private adminTarget(raw: string): UserRow {
+    const code = parseFriendCode(raw);
+    const row = this.sql.exec<UserRow>("SELECT * FROM users WHERE code = ?", code).toArray()[0];
+    if (!row) throw new HttpError(404, "unknown_code", "no one has that code");
+    return row;
+  }
+
+  private resolveReportsAbout(code: string, resolution: string, now: number): void {
+    this.sql.exec("UPDATE reports SET resolved_at = ?, resolution = ? WHERE reported = ? AND resolved_at IS NULL",
+      now, resolution, code);
+  }
+
+  /**
+   * POST /v1/admin/users/{code}/rename: replaces the name and pet name with the defaults new users get,
+   * holds the old ones so the user cannot set them again, and resolves open reports about the user.
+   */
+  private adminRename(raw: string, now: number): Response {
+    const row = this.adminTarget(raw);
+    this.ctx.storage.transactionSync(() => {
+      if (row.name !== DEFAULT_NAME || row.pet_name !== DEFAULT_PET_NAME) {
+        this.sql.exec(
+          `INSERT INTO name_holds (code, name, pet_name, created_at) VALUES (?, ?, ?, ?)
+           ON CONFLICT (code) DO UPDATE SET name = excluded.name, pet_name = excluded.pet_name, created_at = excluded.created_at`,
+          row.code, row.name, row.pet_name, now);
+        this.sql.exec("UPDATE users SET name = ?, pet_name = ? WHERE code = ?", DEFAULT_NAME, DEFAULT_PET_NAME, row.code);
+      }
+      this.resolveReportsAbout(row.code, "renamed", now);
+    });
+    return json({ ok: true, profile: { ...rowToProfile(row), name: DEFAULT_NAME, petName: DEFAULT_PET_NAME } });
+  }
+
+  /**
+   * POST /v1/admin/users/{code}/ban: the user leaves their party, disappears for everyone else and
+   * cannot set a name or join parties; their data stays, so the ban can be lifted.
+   */
+  private adminBan(raw: string, now: number): Response {
+    const row = this.adminTarget(raw);
+    let banned = false;
+    this.ctx.storage.transactionSync(() => {
+      banned = this.sql.exec("INSERT OR IGNORE INTO bans (code, created_at) VALUES (?, ?)", row.code, now).rowsWritten > 0;
+      this.leaveParty(row.code, now);
+      this.resolveReportsAbout(row.code, "banned", now);
+    });
+    return json({ ok: true, banned });
+  }
+
+  /** DELETE /v1/admin/users/{code}/ban: lifts a ban. Friendships come back as they were. */
+  private adminUnban(raw: string): Response {
+    const code = parseFriendCode(raw);
+    const unbanned = this.sql.exec("DELETE FROM bans WHERE code = ?", code).rowsWritten > 0;
+    return json({ ok: true, unbanned });
+  }
+
   // ---------- presence ----------
 
   private presenceOf(code: string): Presence | null {
@@ -616,7 +851,8 @@ export class Hub extends DurableObject<Env> {
     const from = days[0];
     const to = days[6];
     const users = this.sql.exec<UserRow>(
-      "SELECT * FROM users WHERE code = ? OR code IN (SELECT b FROM friends WHERE a = ?)", caller.code, caller.code,
+      `SELECT * FROM users WHERE code = ?
+         OR (code IN (SELECT b FROM friends WHERE a = ?) AND code NOT IN (SELECT code FROM bans))`, caller.code, caller.code,
     ).toArray();
     const perDay = new Map<string, Map<string, number>>(users.map((u) => [u.code, new Map()]));
     const rows = this.sql.exec<{ code: string; day: string; minutes: number }>(
@@ -750,6 +986,13 @@ export class Hub extends DurableObject<Env> {
         `DELETE FROM friends WHERE b = ? AND (a IN (SELECT blocked FROM blocks WHERE blocker = ?)
            OR a IN (SELECT blocker FROM blocks WHERE blocked = ?))`, to, to, to);
     }
+    // Reports, bans and name holds follow the user too, so signing in never lifts a ban.
+    this.sql.exec("UPDATE reports SET reporter = ? WHERE reporter = ?", to, from);
+    this.sql.exec("UPDATE reports SET reported = ? WHERE reported = ?", to, from);
+    this.sql.exec("INSERT OR IGNORE INTO bans (code, created_at) SELECT ?, created_at FROM bans WHERE code = ?", to, from);
+    this.sql.exec(
+      "INSERT OR IGNORE INTO name_holds (code, name, pet_name, created_at) SELECT ?, name, pet_name, created_at FROM name_holds WHERE code = ?",
+      to, from);
     this.purgeUser(from, now);
   }
 
@@ -809,6 +1052,7 @@ export class Hub extends DurableObject<Env> {
   /** POST /v1/party: creates a party with the caller as host, leaving any party they were in. */
   private async createParty(req: Request, caller: Caller, now: number): Promise<Response> {
     await readBody(req, []);
+    this.requireNotBanned(caller);
     this.sweepExpiredParties(now);
     let code = newCode(6);
     for (let i = 0; i < 20 && this.partyExists(code); i++) code = newCode(6);
@@ -828,6 +1072,7 @@ export class Hub extends DurableObject<Env> {
    */
   private async joinParty(req: Request, caller: Caller, now: number): Promise<Response> {
     const target = parseJoin(await readBody(req, JOIN_FIELDS));
+    this.requireNotBanned(caller);
     let code: string | null;
     if ("party" in target) {
       code = this.liveParty(target.party, now);
@@ -967,7 +1212,7 @@ export class Hub extends DurableObject<Env> {
 
   /**
    * The party as `viewer` sees it: members in join order with profiles and presence, leaving out anyone
-   * the viewer blocked or was blocked by.
+   * the viewer blocked or was blocked by, and banned users.
    */
   private partyView(code: string, now: number, viewer: string) {
     const p = this.sql.exec<{
@@ -979,8 +1224,9 @@ export class Hub extends DurableObject<Env> {
        WHERE m.party = ?
          AND m.code NOT IN (SELECT blocked FROM blocks WHERE blocker = ?)
          AND m.code NOT IN (SELECT blocker FROM blocks WHERE blocked = ?)
+         AND (m.code = ? OR m.code NOT IN (SELECT code FROM bans))
        ORDER BY m.joined_at, m.rowid`,
-      code, viewer, viewer,
+      code, viewer, viewer, viewer,
     ).toArray();
     const session: PartySession | null = p.session_method !== null && p.session_phase_ends_at !== null && p.session_started_at !== null
       ? { method: p.session_method, phaseEndsAt: p.session_phase_ends_at, startedAt: p.session_started_at }
