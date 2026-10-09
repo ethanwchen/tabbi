@@ -25,6 +25,14 @@ public struct PlannerDayKey: Hashable, Comparable, Codable, Sendable, CustomStri
         return calendar.date(from: DateComponents(year: parts.year, month: parts.month, day: parts.day))!
     }
 
+    /// The day `days` calendar days after this one (before it when
+    /// negative), so stepping across a daylight saving change or a month end
+    /// lands on the right date.
+    public func adding(days: Int, calendar: Calendar = .current) -> PlannerDayKey {
+        let start = startDate(calendar: calendar)
+        return PlannerDayKey(date: calendar.date(byAdding: .day, value: days, to: start) ?? start, calendar: calendar)
+    }
+
     public var description: String { rawValue }
 
     public static func < (lhs: Self, rhs: Self) -> Bool { lhs.rawValue < rhs.rawValue }
@@ -77,10 +85,28 @@ public struct PlannerItem: Identifiable, Hashable, Codable, Sendable {
 public struct PlannerDay: Hashable, Codable, Sendable {
     public let date: PlannerDayKey
     public private(set) var items: [PlannerItem]
+    /// Whether this day was started ahead of time (tasks added for tomorrow)
+    /// and hasn't yet taken in the unfinished items of the day before it.
+    /// `PlannerRepository.open` does that once, when the day comes, and
+    /// clears the flag.
+    public private(set) var isPlannedAhead: Bool
 
-    public init(date: PlannerDayKey, items: [PlannerItem] = []) {
+    public init(date: PlannerDayKey, items: [PlannerItem] = [], isPlannedAhead: Bool = false) {
         self.date = date
         self.items = items
+        self.isPlannedAhead = isPlannedAhead
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case date, items, isPlannedAhead
+    }
+
+    /// Lenient about `isPlannedAhead`, which older files don't have.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        date = try container.decode(PlannerDayKey.self, forKey: .date)
+        items = try container.decode([PlannerItem].self, forKey: .items)
+        isPlannedAhead = try container.decodeIfPresent(Bool.self, forKey: .isPlannedAhead) ?? false
     }
 
     public var doneCount: Int { items.lazy.filter(\.isDone).count }
@@ -164,10 +190,42 @@ public struct PlannerDay: Hashable, Codable, Sendable {
         items.removeAll(where: \.isDone)
     }
 
-    /// A fresh day seeded with this day's unfinished items, in order. Items
+    /// This day's unfinished items that `other` doesn't list (by id), in
+    /// order: what looking back at yesterday offers to move to today.
+    public func unfinished(missingFrom other: PlannerDay) -> [PlannerItem] {
+        let present = Set(other.items.map(\.id))
+        return items.filter { !$0.isDone && !present.contains($0.id) }
+    }
+
+    /// Appends `incoming` items as they are (same id, title and creation
+    /// date, unfinished), skipping any whose id or title (ignoring case) is
+    /// already on the list. Moving yesterday's leftovers to today and a
+    /// planned-ahead day taking in the day before both go through here, so
+    /// nothing is ever listed twice. Returns the items added.
+    @discardableResult
+    public mutating func adopt(_ incoming: [PlannerItem]) -> [PlannerItem] {
+        var ids = Set(items.map(\.id))
+        var titles = Set(items.map { $0.title.lowercased() })
+        var added: [PlannerItem] = []
+        for item in incoming where ids.insert(item.id).inserted && titles.insert(item.title.lowercased()).inserted {
+            var moved = item
+            moved.isDone = false
+            moved.completedAt = nil
+            items.append(moved)
+            added.append(moved)
+        }
+        return added
+    }
+
+    /// Takes in the unfinished items of `previous` (the day before) ahead of
+    /// what was planned for this day, and marks the day as started. Items
     /// keep their identity and creation date so history stays traceable.
-    public func carryingOver(to date: PlannerDayKey) -> PlannerDay {
-        PlannerDay(date: date, items: items.filter { !$0.isDone })
+    public mutating func takeCarryOver(from previous: PlannerDay?) {
+        let planned = items
+        items = []
+        if let previous { adopt(previous.items.filter { !$0.isDone }) }
+        adopt(planned)
+        isPlannedAhead = false
     }
 
     private func index(of id: PlannerItem.ID) -> Int? {
