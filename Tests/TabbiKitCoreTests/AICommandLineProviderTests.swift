@@ -101,7 +101,7 @@ final class AICommandLineFormatTests: XCTestCase {
         XCTAssertEqual(AICommandLineFormat.prompt(for: .prompt("Hi")), "Hi")
     }
 
-    func testCodexRunsReadOnlyAndKeepsThePromptOutOfFlagParsing() throws {
+    func testCodexRunsWithoutShellToolsAndKeepsThePromptOutOfFlagParsing() throws {
         let invocation = try AICommandLineFormat.invocation(
             for: .codexCLI,
             AIRequest(system: "Be brief.", messages: [.user("-v")], model: "gpt-5", resumeSessionID: "t1"),
@@ -109,6 +109,7 @@ final class AICommandLineFormatTests: XCTestCase {
         )
         XCTAssertEqual(invocation.arguments, [
             "exec", "--json", "--skip-git-repo-check", "--sandbox", "read-only",
+            "-c", "features.shell_tool=false", "-c", "features.unified_exec=false",
             "--model", "gpt-5", "--image=run/image-1.png", "resume", "t1", "--", "-v",
         ])
         XCTAssertNil(invocation.input)

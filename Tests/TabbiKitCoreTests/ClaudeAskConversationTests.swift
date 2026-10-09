@@ -246,6 +246,34 @@ final class ClaudeAskConversationTests: XCTestCase {
         XCTAssertEqual(restored.sessionID, "codex-1")
     }
 
+    func testAnotherProvidersAnswerDropsTheToolsSession() {
+        var conversation = ClaudeAskConversation()
+        conversation.begin(prompt: "Hi")
+        conversation.apply(.result(ClaudeResult(text: "Hello", sessionID: "s1", isError: false)))
+        conversation.begin(prompt: "And the API?")
+        conversation.apply(.textDelta("Sure"), from: .anthropic)
+        conversation.apply(.finished(text: nil), from: .anthropic)
+        XCTAssertNil(conversation.sessionID)
+        XCTAssertNil(conversation.sessionProvider)
+
+        conversation.begin(prompt: "Back to Claude Code")
+        let request = conversation.request(prompt: "Back to Claude Code", provider: .claudeCLI)
+        XCTAssertNil(request.resumeSessionID, "the old session never saw the API's exchange")
+        XCTAssertEqual(request.messages.map(\.text), ["Hi", "Hello", "And the API?", "Sure", "Back to Claude Code"])
+    }
+
+    func testTheSameToolsAnswerKeepsItsSession() {
+        var conversation = ClaudeAskConversation()
+        conversation.begin(prompt: "Hi")
+        conversation.apply(.sessionStarted("codex-1"), from: .codexCLI)
+        conversation.apply(.finished(text: "Hello"), from: .codexCLI)
+        conversation.begin(prompt: "More")
+        conversation.apply(.sessionStarted("codex-1"), from: .codexCLI)
+        conversation.apply(.textDelta("Yes"), from: .codexCLI)
+        conversation.apply(.finished(text: nil), from: .codexCLI)
+        XCTAssertEqual(conversation.sessionID, "codex-1")
+    }
+
     func testOtherFailuresKeepTheSession() {
         var conversation = ClaudeAskConversation()
         conversation.begin(prompt: "ok")

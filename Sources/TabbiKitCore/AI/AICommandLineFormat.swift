@@ -4,8 +4,8 @@ import Foundation
 /// the flags and decoders are unit tested.
 ///
 /// Every tool runs non-interactively in a temporary folder (so no
-/// project instructions are picked up) with its tools turned off or
-/// read-only, answers in JSON lines, and exits.
+/// project instructions are picked up) with its tools that run commands
+/// or read files turned off, answers in JSON lines, and exits.
 public enum AICommandLineFormat {
     /// The arguments and stdin for one run.
     public struct Invocation: Hashable, Sendable {
@@ -44,6 +44,10 @@ public enum AICommandLineFormat {
 
         case .codexCLI:
             var arguments = ["exec", "--json", "--skip-git-repo-check", "--sandbox", "read-only"]
+            // A read-only sandbox still lets Codex run commands that read
+            // any file. Without its shell tools it can only answer in text,
+            // as Ask promises ("can't see your files").
+            arguments += ["-c", "features.shell_tool=false", "-c", "features.unified_exec=false"]
             if !model.isEmpty { arguments += ["--model", model] }
             // `--image` takes several values, so a separate value would
             // also swallow `resume` and the session id; `=` ends it.

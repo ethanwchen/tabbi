@@ -199,15 +199,26 @@ public struct ClaudeAskConversation: Equatable, Sendable {
             sessionID = id
             sessionProvider = provider
         case .textDelta(let text):
+            dropSession(unlessHeldBy: provider)
             partialText += text
             updateAnswer(displayedText)
         case .finished(let text):
+            dropSession(unlessHeldBy: provider)
             if let text, !text.isEmpty {
                 committedText = text
                 partialText = ""
             }
             finish(answeredBy: provider)
         }
+    }
+
+    /// Another provider is answering, so the tool that held the session
+    /// never sees this exchange. Resuming it later would skip what was said
+    /// here; dropping it sends the whole chat as messages instead.
+    private mutating func dropSession(unlessHeldBy provider: AIProviderID) {
+        guard sessionProvider != provider else { return }
+        sessionID = nil
+        sessionProvider = nil
     }
 
     /// The stream ended. Without a `result` event, whatever arrived is kept as
