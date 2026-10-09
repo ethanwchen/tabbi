@@ -87,7 +87,7 @@ private struct FocusSessionCard: View {
                 Text(heading)
                     .foregroundStyle(Theme.Palette.tertiaryText)
                 Spacer(minLength: Theme.Spacing.s)
-                if store.timer.completedFocusCount > 0 {
+                if store.sessionsToday > 0 {
                     Text(sessionsDone)
                         .foregroundStyle(Theme.Palette.tertiaryText)
                         .monospacedDigit()
@@ -126,8 +126,8 @@ private struct FocusSessionCard: View {
     }
 
     private var sessionsDone: String {
-        let count = store.timer.completedFocusCount
-        return count == 1 ? "1 session done" : "\(count) sessions done"
+        let count = store.sessionsToday
+        return count == 1 ? "1 session today" : "\(count) sessions today"
     }
 }
 

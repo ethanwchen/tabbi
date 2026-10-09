@@ -261,16 +261,10 @@ final class DisplayPreferenceTests: XCTestCase {
 }
 
 final class SettingsRepositoryTests: XCTestCase {
-    private var suiteName: String!
     private var defaults: UserDefaults!
 
     override func setUp() {
-        suiteName = "TabbiTests.\(UUID().uuidString)"
-        defaults = UserDefaults(suiteName: suiteName)
-    }
-
-    override func tearDown() {
-        defaults.removePersistentDomain(forName: suiteName)
+        defaults = InMemoryDefaults()
     }
 
     func testEmptyStoreYieldsDefaults() throws {

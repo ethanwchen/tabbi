@@ -78,7 +78,8 @@ final class StudyStore: ObservableObject {
     /// running in a hidden tab never holds focus mode on.
     private var isEnabled = false
     private var ticker: Timer?
-    private var phaseEndTimer: Timer?
+    /// Catches up when the running phase ends, even if the Mac slept through it.
+    private lazy var phaseEnd = WallClockAlarm { [weak self] in self?.catchUp() }
     /// Saves the last-alive time while a session runs, so a crash ends it
     /// close to when it really stopped.
     private var heartbeat: Timer?
@@ -446,8 +447,8 @@ final class StudyStore: ObservableObject {
         now = Date()
         let ended = session.advance(to: now)
         guard !ended.isEmpty else { return }
-        // Stale ends (the Mac was asleep) stay quiet.
-        if !isDemo, let last = ended.last, now.timeIntervalSince(last.endedAt) < 60 {
+        // Stale ends (the Mac was asleep) stay quiet, and so do demo and snapshot runs.
+        if !isDemo, !isSnapshot, let last = ended.last, now.timeIntervalSince(last.endedAt) < 60 {
             Self.playChime()
             if !isSnapshot, let cue = SessionCue.phaseEnded(wasBreak: last.phase.isBreak) { celebrations?.play(cue) }
         }
@@ -464,20 +465,17 @@ final class StudyStore: ObservableObject {
 
         updateHeartbeat()
 
-        phaseEndTimer?.invalidate()
-        phaseEndTimer = nil
-        guard let endsAt = session.endsAt else { return }
-        let fire = Timer(fire: endsAt, interval: 0, repeats: false) { [weak self] _ in
-            MainActor.assumeIsolated { self?.catchUp() }
+        guard let endsAt = session.endsAt else {
+            phaseEnd.cancel()
+            return
         }
-        fire.tolerance = 0.2
-        RunLoop.main.add(fire, forMode: .common)
-        phaseEndTimer = fire
+        phaseEnd.schedule(at: endsAt, tolerance: 0.2)
     }
 
-    /// Ticks once a second, only while the panel is visible and the clock runs.
+    /// Ticks once a second, only while the panel is visible and the clock
+    /// runs. The demo ticks too, so its running session counts down.
     private func updateTicker() {
-        guard isVisible, session.isRunning || partySession != nil, !isDemo else {
+        guard isVisible, session.isRunning || partySession != nil, !isSnapshot else {
             ticker?.invalidate()
             ticker = nil
             return

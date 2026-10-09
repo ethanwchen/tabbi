@@ -28,7 +28,7 @@ struct ClaudeAskSettingsPane: View {
             } header: {
                 Text("Answers")
             } footer: {
-                Footer(footer)
+                SectionFooter(footer)
             }
 
             Section {
@@ -39,7 +39,7 @@ struct ClaudeAskSettingsPane: View {
             } header: {
                 Text("History")
             } footer: {
-                Footer("Chats stay on this Mac, in \(Edition.current.name)'s own folder. Delete them from History in the Ask Claude tab.")
+                SectionFooter("Chats stay on this Mac, in \(Edition.current.name)'s own folder. Delete them from History in the Ask Claude tab.")
             }
         }
         .formStyle(.grouped)
@@ -53,19 +53,5 @@ struct ClaudeAskSettingsPane: View {
         case .always: "Every question opens a larger chat view under the notch. Press Esc to go back."
         case .never: "Chats always stay in the notch."
         }
-    }
-}
-
-/// Explanatory text under a grouped section, aligned with the section's rows.
-private struct Footer: View {
-    let text: String
-    init(_ text: String) { self.text = text }
-
-    var body: some View {
-        Text(text)
-            .font(.callout)
-            .foregroundStyle(.secondary)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .fixedSize(horizontal: false, vertical: true)
     }
 }

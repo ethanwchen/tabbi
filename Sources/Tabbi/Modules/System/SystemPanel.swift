@@ -6,6 +6,10 @@ import TabbiKit
 /// Three equal cards (CPU, GPU, Memory), each with a headline figure, a
 /// 60-second sparkline and a one-line footer. Sampling only runs while the
 /// panel is on screen.
+///
+/// Readings change every second, so they are drawn without animation: a
+/// spring or rolling digits on each sample would keep the panel redrawing
+/// every frame, and the monitor alone would use a third of a core.
 struct SystemPanel: View {
     @ObservedObject var monitor: SystemMonitor
 
@@ -116,14 +120,12 @@ private struct MetricCard<Accessory: View, Footer: View>: View {
                         .foregroundStyle(value == nil || value == SystemFormat.unavailable
                                          ? Theme.Palette.tertiaryText : Theme.Palette.primaryText)
                         .redacted(reason: value == nil ? .placeholder : [])
-                        .contentTransition(.numericText())
                     if let unit {
                         Text(unit)
                             .font(Theme.Typography.bodyEmphasis)
                             .foregroundStyle(Theme.Palette.secondaryText)
                     }
                 }
-                .motion(Theme.Motion.snappy, value: value)
 
                 Sparkline(series: HistorySeries(history, capacity: SystemMonitor.historyCapacity))
                     .frame(maxHeight: .infinity)
@@ -179,7 +181,6 @@ private struct Sparkline: View {
             .chartYAxis(.hidden)
             .chartLegend(.hidden)
             .chartPlotStyle { $0.clipped() }
-            .motion(Theme.Motion.content, value: series)
         }
     }
 }
@@ -216,7 +217,6 @@ private struct CoreStrip: View {
                         .frame(maxWidth: .infinity)
                 }
             }
-            .motion(Theme.Motion.snappy, value: perCore)
         }
     }
 }
@@ -242,7 +242,6 @@ private struct PressureBar: View {
                     .foregroundStyle(color)
                     .fixedSize()
             }
-            .motion(Theme.Motion.snappy, value: memory)
             .help("Memory pressure: \(memory.pressure.title)")
         } else {
             FooterCaption("Memory stats unavailable")

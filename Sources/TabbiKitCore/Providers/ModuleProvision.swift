@@ -75,6 +75,15 @@ public struct ProgressItem: Identifiable, Hashable, Sendable {
     }
 
     public var remaining: Int { max(target - completed, 0) }
+    /// What is left, e.g. "84 cards left" or "1h 15m left".
+    public var remainingText: String { "\(amount(remaining)) left" }
+
+    /// A count in this goal's unit through `DurationFormat.quantity`, e.g.
+    /// "320 cards". Minutes read as a duration ("45 min", "2h", "1h 15m"),
+    /// so a two-hour goal never shows as "120 min".
+    public func amount(_ count: Int) -> String {
+        DurationFormat.quantity(count, unit: unit)
+    }
     public var isComplete: Bool { remaining == 0 }
     /// Whether the closed notch has something worth saying about this goal:
     /// work left, and for a goal that `waitsForStart`, some already done.

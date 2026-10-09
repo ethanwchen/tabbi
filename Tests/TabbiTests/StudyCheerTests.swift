@@ -9,15 +9,13 @@ import TabbiKitCore
 /// panel celebrates instead, and behind another tab the hop waits for it.
 @MainActor
 final class StudyCheerTests: XCTestCase {
-    private var suite: String!
     private var defaults: UserDefaults!
     private var folder: URL!
     private var sounds: [CelebrationSound] = []
     private var haptics: [NSHapticFeedbackManager.FeedbackPattern] = []
 
     override func setUp() async throws {
-        suite = "StudyCheerTests.\(UUID().uuidString)"
-        defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defaults = InMemoryDefaults()
         folder = FileManager.default.temporaryDirectory
             .appendingPathComponent("StudyCheerTests-\(UUID().uuidString)", isDirectory: true)
         sounds = []
@@ -25,7 +23,6 @@ final class StudyCheerTests: XCTestCase {
     }
 
     override func tearDown() async throws {
-        defaults.removePersistentDomain(forName: suite)
         try? FileManager.default.removeItem(at: folder)
     }
 

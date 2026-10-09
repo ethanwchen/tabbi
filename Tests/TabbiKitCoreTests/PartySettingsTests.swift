@@ -75,9 +75,7 @@ final class PartySettingsTests: XCTestCase {
     }
 
     func testRepositoryRoundTripsAndToleratesMissingKeys() throws {
-        let suite = "PartySettingsTests.\(UUID().uuidString)"
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
-        defer { defaults.removePersistentDomain(forName: suite) }
+        let defaults = InMemoryDefaults()
         let repository = PartySettingsRepository(defaults: defaults)
 
         XCTAssertEqual(repository.load(), .default)

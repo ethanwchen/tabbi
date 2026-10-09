@@ -3,23 +3,17 @@ import XCTest
 
 final class LegacyDataMigrationTests: XCTestCase {
     private var base: URL!
-    private var suite: String!
     private var defaults: UserDefaults!
-    private var legacySuites: [String] = []
 
     override func setUpWithError() throws {
         base = FileManager.default.temporaryDirectory
             .appendingPathComponent("LegacyDataMigrationTests-\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: base, withIntermediateDirectories: true)
-        suite = "dev.tabbi.tests.migration.\(UUID().uuidString)"
-        defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defaults = InMemoryDefaults()
     }
 
     override func tearDownWithError() throws {
         try? FileManager.default.removeItem(at: base)
-        for name in [suite!] + legacySuites {
-            UserDefaults.standard.removePersistentDomain(forName: name)
-        }
     }
 
     private var storage: EditionStorage {
@@ -30,11 +24,10 @@ final class LegacyDataMigrationTests: XCTestCase {
         base.appendingPathComponent(name, isDirectory: true)
     }
 
-    /// A legacy domain holding `values`, removed again in tear down.
+    /// A legacy domain holding `values`, kept in memory with `defaults`.
     private func legacyDomain(_ values: [String: Any]) -> String {
         let name = "dev.tabbi.tests.\(UUID().uuidString)"
-        legacySuites.append(name)
-        UserDefaults.standard.setPersistentDomain(values, forName: name)
+        defaults.setPersistentDomain(values, forName: name)
         return name
     }
 

@@ -29,6 +29,9 @@ final class ClaudeUsageStore: ObservableObject {
     private static let defaultsKey = "claudeUsage.limitsRecord"
 
     private let isDemo: Bool
+    /// A snapshot run shows the user's stats but saves nothing and never
+    /// probes, so it leaves no trace and spends none of the user's usage.
+    private let isSnapshot: Bool
     private let defaults = UserDefaults.standard
     private let scanner: ClaudeUsageLogScanner
     private var statusTask: Task<Void, Never>?
@@ -37,9 +40,14 @@ final class ClaudeUsageStore: ObservableObject {
     /// A scan was requested while one was running; run another when it ends.
     private var rescanPending = false
 
-    init(storage: EditionStorage, runMode: RunMode) {
+    init(storage: EditionStorage, runMode: RunMode,
+         transcripts: URL = ClaudeUsageLogScanner.defaultRoot) {
         isDemo = runMode.isDemo
-        scanner = ClaudeUsageLogScanner(indexURL: ClaudeUsageLogScanner.indexURL(in: storage))
+        isSnapshot = runMode.isSnapshot
+        scanner = ClaudeUsageLogScanner(
+            root: transcripts,
+            indexURL: runMode.isSnapshot ? nil : ClaudeUsageLogScanner.indexURL(in: storage)
+        )
         if isDemo {
             loadDemoData()
             return
@@ -59,7 +67,7 @@ final class ClaudeUsageStore: ObservableObject {
 
     /// Probes the CLI for live limits. No-op while a probe is running.
     func refresh() {
-        guard !isDemo, probeTask == nil else { return }
+        guard !isDemo, !isSnapshot, probeTask == nil else { return }
         isFetching = true
         probeTask = Task { [weak self] in
             let executable = await Self.locateCLI()

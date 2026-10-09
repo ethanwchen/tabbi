@@ -59,6 +59,7 @@ private struct DayStepArrow: View {
         }
         .buttonStyle(.plain)
         .help(isEnabled ? help : "")
+        .accessibilityLabel(help)
         .onHover { hovering = $0 && isEnabled }
         .motion(Theme.Motion.snappy, value: hovering)
     }

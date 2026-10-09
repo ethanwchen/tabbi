@@ -10,6 +10,11 @@ import Foundation
 public enum RingProgress {
     /// A drop larger than this fraction of the ring is a restart, not an unwind.
     public static let restartDrop: Double = 0.5
+    /// A move smaller than this fraction of the ring is a step, not a glide.
+    /// A 25 minute countdown advances 1/1500 of the ring a second, a fraction
+    /// of a point on the dial, and springing that every second kept the notch
+    /// redrawing for no visible motion.
+    public static let stepLimit: Double = 0.005
 
     /// What a ring does when its value changes.
     public enum Change: Equatable, Sendable {
@@ -19,6 +24,8 @@ public enum RingProgress {
         case advance
         /// The ring gives back a little, animated.
         case unwind
+        /// The ring moves too little to see a glide: set it without animating.
+        case step
         /// The ring starts over: jump to the new value without animating.
         case restart
     }
@@ -35,6 +42,7 @@ public enum RingProgress {
         let from = clamped(old)
         let to = clamped(new)
         if to == from { return .none }
+        if abs(to - from) < stepLimit { return .step }
         if to > from { return .advance }
         return from - to > restartDrop ? .restart : .unwind
     }

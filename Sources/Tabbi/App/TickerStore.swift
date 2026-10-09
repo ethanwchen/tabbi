@@ -53,7 +53,9 @@ final class TickerStore: ObservableObject {
     private var isActive = true
     /// More than one item can take a turn, so the rotation has a deadline.
     private var rotates = false
-    private var timer: Timer?
+    /// Refreshes at the next change, including right after the Mac wakes
+    /// past it (a meeting that started, a focus phase that ended).
+    private lazy var alarm = WallClockAlarm { [weak self] in self?.refresh() }
     private var cancellables: Set<AnyCancellable> = []
 
     init(settings store: SettingsStore, providers: ProviderHub, preview: ClosedNotchPreview,
@@ -115,9 +117,10 @@ final class TickerStore: ObservableObject {
     }
 
     private func scheduleTimer(now: Date) {
-        timer?.invalidate()
-        timer = nil
-        guard isActive else { return }
+        guard isActive else {
+            alarm.cancel()
+            return
+        }
         var wakes = [sources.nextChange(after: now, enabled: settings.showsPreview)]
         if let cheer, cheer.isShowing(at: now) { wakes.append(cheer.endsAt) }
         if rotates, let shownSince = rotation.shownSince {
@@ -126,12 +129,10 @@ final class TickerStore: ObservableObject {
         if case .focus(let focus) = item, focus.isRunning {
             wakes.append(now.addingTimeInterval(1))
         }
-        guard let fireDate = wakes.compactMap({ $0 }).min() else { return }
-        let timer = Timer(fire: max(fireDate, now), interval: 0, repeats: false) { [weak self] _ in
-            MainActor.assumeIsolated { self?.refresh() }
+        guard let fireDate = wakes.compactMap({ $0 }).min() else {
+            alarm.cancel()
+            return
         }
-        timer.tolerance = min(max(fireDate.timeIntervalSince(now), 0) / 10, 1)
-        RunLoop.main.add(timer, forMode: .common)
-        self.timer = timer
+        alarm.schedule(at: max(fireDate, now), tolerance: min(max(fireDate.timeIntervalSince(now), 0) / 10, 1))
     }
 }

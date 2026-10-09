@@ -67,12 +67,25 @@ public final class PlannerRepository {
     /// ahead of anything planned for it in advance, and is saved right away
     /// so carry-over happens exactly once.
     public func open(_ date: PlannerDayKey) throws -> PlannerDay {
+        let (day, isNew) = try opening(date)
+        if isNew { try save(day) }
+        return day
+    }
+
+    /// What `open` returns, without creating or updating the day's file: a
+    /// snapshot run shows today's list but must leave no trace on disk.
+    public func preview(_ date: PlannerDayKey) throws -> PlannerDay {
+        try opening(date).day
+    }
+
+    /// `date` as today, and whether it took in carry-over just now (so `open`
+    /// saves it): a day already opened comes back as it was saved.
+    private func opening(_ date: PlannerDayKey) throws -> (day: PlannerDay, isNew: Bool) {
         let existing = try load(date)
-        if let existing, !existing.isPlannedAhead { return existing }
+        if let existing, !existing.isPlannedAhead { return (existing, false) }
         var day = existing ?? PlannerDay(date: date)
         day.takeCarryOver(from: try mostRecentDay(before: date))
-        try save(day)
-        return day
+        return (day, true)
     }
 
     /// Loads a day other than today to look at or plan, without creating a

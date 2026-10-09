@@ -27,6 +27,17 @@ final class RingProgressTests: XCTestCase {
         XCTAssertEqual(RingProgress.change(from: 0.86, to: 0.02), .restart)
     }
 
+    func testATickTooSmallToSeeStepsWithoutAGlide() {
+        // A 25 minute Pomodoro advances 1/1500 of the ring each second, a
+        // 5 minute break 1/300.
+        for tick in [1.0 / 1500, 1.0 / 300] {
+            XCTAssertEqual(RingProgress.change(from: 0.4, to: 0.4 + tick), .step)
+            XCTAssertEqual(RingProgress.change(from: 0.4, to: 0.4 - tick), .step)
+        }
+        // One card of a 100-card goal still glides.
+        XCTAssertEqual(RingProgress.change(from: 0.4, to: 0.41), .advance)
+    }
+
     func testChangesThatClampToTheSameValueDoNothing() {
         XCTAssertEqual(RingProgress.change(from: 1, to: 1.4), .none)
         XCTAssertEqual(RingProgress.change(from: nil, to: 0), .none)

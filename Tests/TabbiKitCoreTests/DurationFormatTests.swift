@@ -35,4 +35,14 @@ final class DurationFormatTests: XCTestCase {
         XCTAssertEqual(DurationFormat.quantity(30, unit: "min"), "30 min")
         XCTAssertEqual(DurationFormat.quantity(320, unit: "cards"), "320 cards")
     }
+
+    /// One label never mixes "min" with "h" ("0 min of 4h" read oddly).
+    func testProgressKeepsOneStyle() {
+        XCTAssertEqual(DurationFormat.progress(20, of: 45), "20 min of 45 min")
+        XCTAssertEqual(DurationFormat.progress(0, of: 240), "0m of 4h")
+        XCTAssertEqual(DurationFormat.progress(45, of: 120), "45m of 2h")
+        XCTAssertEqual(DurationFormat.progress(64, of: 120), "1h 4m of 2h")
+        XCTAssertEqual(DurationFormat.progress(75, of: 45), "1h 15m of 45m")
+        XCTAssertEqual(DurationFormat.progress(-3, of: 30), "0 min of 30 min")
+    }
 }

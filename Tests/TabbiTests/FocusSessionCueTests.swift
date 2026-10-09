@@ -10,20 +10,14 @@ import TabbiKitCore
 /// the haptics and celebration sound settings.
 @MainActor
 final class FocusSessionCueTests: XCTestCase {
-    private var suite: String!
     private var defaults: UserDefaults!
     private var sounds: [CelebrationSound] = []
     private var haptics: [NSHapticFeedbackManager.FeedbackPattern] = []
 
     override func setUp() async throws {
-        suite = "FocusSessionCueTests.\(UUID().uuidString)"
-        defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defaults = InMemoryDefaults()
         sounds = []
         haptics = []
-    }
-
-    override func tearDown() async throws {
-        defaults.removePersistentDomain(forName: suite)
     }
 
     private func store(hapticsOn: Bool = true, soundOn: Bool = true, runMode: RunMode = .live) -> FocusStore {

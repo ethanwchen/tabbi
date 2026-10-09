@@ -347,7 +347,8 @@ final class PlannerStore: ObservableObject {
     private func load(_ date: PlannerDayKey) {
         guard let repository else { return }
         do {
-            day = try repository.open(date)
+            // A snapshot run shows today's list without creating its file.
+            day = try runMode.isSnapshot ? repository.preview(date) : repository.open(date)
             problem = nil
         } catch {
             day = PlannerDay(date: date)
@@ -385,6 +386,8 @@ final class PlannerStore: ObservableObject {
             if !isToday { demoDays[updated.date] = updated }
             return
         }
+        // A snapshot run reads the user's lists but leaves no trace.
+        guard !runMode.isSnapshot else { return }
         let result: Problem?
         do {
             try repository.save(updated)

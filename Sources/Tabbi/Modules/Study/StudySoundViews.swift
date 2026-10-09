@@ -114,6 +114,24 @@ struct StudySoundMixer: View {
         return focus.isPreviewing ? "Stop the preview" : "Listen to \(mix.summary)"
     }
 
+    /// The sounds in rows of three equal columns.
+    private func tiles(showsIcons: Bool) -> some View {
+        let sounds = FocusSound.allCases
+        return Grid(horizontalSpacing: Theme.Spacing.xs, verticalSpacing: Theme.Spacing.xs) {
+            ForEach(Array(stride(from: 0, to: sounds.count, by: 3)), id: \.self) { start in
+                GridRow {
+                    ForEach(sounds[start..<min(start + 3, sounds.count)]) { sound in
+                        StudyMixTile(sound: sound, level: mix.level(of: sound),
+                                     canAdd: mix.canAddLayer, showsIcon: showsIcons,
+                                     toggle: { withMotion(Theme.Motion.snappy) { _ = focus.settings.mix.toggle(sound) } },
+                                     setLevel: { focus.settings.mix.setLevel($0, for: sound) })
+                            .frame(maxWidth: .infinity)
+                    }
+                }
+            }
+        }
+    }
+
     private var blend: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
             HStack(spacing: Theme.Spacing.s) {
@@ -124,14 +142,11 @@ struct StudySoundMixer: View {
                 StudyMixPresetRow(focus: focus)
             }
             .padding(.bottom, Theme.Spacing.xxs)
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: Theme.Spacing.xs), count: 3),
-                      spacing: Theme.Spacing.xs) {
-                ForEach(FocusSound.allCases) { sound in
-                    StudyMixTile(sound: sound, level: mix.level(of: sound),
-                                 canAdd: mix.canAddLayer,
-                                 toggle: { withMotion(Theme.Motion.snappy) { _ = focus.settings.mix.toggle(sound) } },
-                                 setLevel: { focus.settings.mix.setLevel($0, for: sound) })
-                }
+            // In a narrow panel (Compact) the names would truncate beside
+            // their icons ("Brown n..."), so every tile drops its icon.
+            ViewThatFits(in: .horizontal) {
+                tiles(showsIcons: true)
+                tiles(showsIcons: false)
             }
             Spacer(minLength: 0)
             HStack(spacing: Theme.Spacing.s) {
@@ -303,6 +318,7 @@ private struct StudyMixTile: View {
     /// The sound's level, or nil when it isn't in the mix.
     let level: Float?
     let canAdd: Bool
+    let showsIcon: Bool
     let toggle: () -> Void
     let setLevel: (Float) -> Void
     @State private var hovering = false
@@ -313,9 +329,11 @@ private struct StudyMixTile: View {
         VStack(spacing: Theme.Spacing.xs) {
             Button(action: toggle) {
                 HStack(spacing: Theme.Spacing.xs) {
-                    Image(systemName: sound.symbolName)
-                        .font(.system(size: 10, weight: .semibold))
-                        .frame(width: 14)
+                    if showsIcon {
+                        Image(systemName: sound.symbolName)
+                            .font(.system(size: 10, weight: .semibold))
+                            .frame(width: 14)
+                    }
                     Text(sound.displayName)
                         .lineLimit(1)
                     Spacer(minLength: 0)

@@ -101,9 +101,16 @@ public enum StudyTimerFormat {
         }
     }
 
-    /// Time studied as a short label: "0 min", "45 min", "1h 5m".
+    /// Time studied as a short label: "0 min", "45 min", "1h 5m", read
+    /// the way Today and the closed notch show the same daily goal.
     public static func studied(minutes: Int) -> String {
         DurationFormat.minutes(minutes)
+    }
+
+    /// Time studied out of the daily goal: "20 min of 45 min", "45m of 2h",
+    /// "1h 4m of 2h", never mixing two styles in the one label.
+    public static func studied(minutes: Int, of goal: Int) -> String {
+        DurationFormat.progress(minutes, of: goal)
     }
 
     /// Points as a signed label for a day's tally: "+79 pts", "+1 pt", "0 pts".

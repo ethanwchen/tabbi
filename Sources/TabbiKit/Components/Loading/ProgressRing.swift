@@ -4,8 +4,10 @@ import TabbiKitCore
 /// Tabbi's progress ring: a track and an accent arc that fills clockwise
 /// from twelve o'clock, with whatever readout you put inside.
 ///
-/// The arc follows `progress` with the content spring, so a ticking timer or
-/// a growing tally glides instead of jumping. A big drop is a new start (a
+/// The arc follows `progress` with the content spring, so a growing tally or
+/// an added break glides instead of jumping. A move too small to see (a
+/// countdown's once-a-second tick) is set without a spring, so a running
+/// timer doesn't keep the notch redrawing. A big drop is a new start (a
 /// Pomodoro phase change, a usage window that rolled over), so the arc snaps
 /// back to empty rather than sweeping backwards (`RingProgress.change`).
 /// Under Reduce Motion it eases with the short crossfade curve instead.
@@ -51,7 +53,7 @@ public struct ProgressRing<Content: View>: View {
                 break
             case .advance, .unwind:
                 withAnimation(Motion.adapted(Motion.content, reduceMotion: reduceMotion)) { shown = new }
-            case .restart:
+            case .step, .restart:
                 var transaction = Transaction()
                 transaction.disablesAnimations = true
                 withTransaction(transaction) { shown = new }

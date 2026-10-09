@@ -100,8 +100,9 @@ struct PartySettingsPane: View {
                     .foregroundStyle(.orange)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, 10)
             } else {
-                Footer("Friends see this name and the pet you dress in the Closet. Share your code so they can add you.")
+                SectionFooter("Friends see this name and the pet you dress in the Closet. Share your code so they can add you.")
             }
         }
     }
@@ -147,7 +148,7 @@ struct PartySettingsPane: View {
         } header: {
             Text("Privacy")
         } footer: {
-            Footer("Only your name, pet, study status and minutes are shared. Nothing about your cards, decks or what you study ever leaves your Mac.")
+            SectionFooter("Only your name, pet, study status and minutes are shared. Nothing about your cards, decks or what you study ever leaves your Mac.")
         }
     }
 
@@ -181,7 +182,7 @@ struct PartySettingsPane: View {
             Text("Blocked")
         } footer: {
             VStack(alignment: .leading, spacing: 8) {
-                Footer("Blocked people can't see you, add you or join your parties. To block or report someone, right-click them in Party.")
+                SectionFooter("Blocked people can't see you, add you or join your parties. To block or report someone, right-click them in Party.")
                 Link(SupportContact.reportLine, destination: SupportContact.mailURL)
                     .font(.callout)
                     .help("Email the \(Edition.current.name) team about a person or a problem")
@@ -231,7 +232,7 @@ struct PartySettingsPane: View {
         } header: {
             Text("Friends server")
         } footer: {
-            Footer("Friends only see each other on the same server. Change it only to run your own.")
+            SectionFooter("Friends only see each other on the same server. Change it only to run your own.")
         }
     }
 
@@ -353,20 +354,5 @@ private struct BlockedRow: View {
     private var detail: String {
         guard let since = user.since else { return "With \(user.petName)" }
         return "With \(user.petName), blocked \(since.formatted(.relative(presentation: .named)))"
-    }
-}
-
-/// Explanatory text under a grouped section, aligned with the section's rows.
-private struct Footer: View {
-    let text: String
-    init(_ text: String) { self.text = text }
-
-    var body: some View {
-        Text(text)
-            .font(.callout)
-            .foregroundStyle(.secondary)
-            .multilineTextAlignment(.leading)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .fixedSize(horizontal: false, vertical: true)
     }
 }

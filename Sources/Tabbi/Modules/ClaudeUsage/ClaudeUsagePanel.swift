@@ -120,7 +120,7 @@ private struct TodayCard: View {
                     }
                     .help("Input, output, and cache tokens across all Claude Code sessions since midnight")
                     Spacer(minLength: 0)
-                    row("Messages", value: "\(stats.today.messages)")
+                    row("Messages", value: stats.today.messages.formatted())
                     row("Top model", value: stats.today.topModel.map(ClaudeUsageFormat.modelName) ?? "None yet")
                     let week = ClaudeUsageFormat.compactTokens(stats.lastSevenDays.tokens.total)
                     row("Last 7 days", value: week + " tokens", short: week)

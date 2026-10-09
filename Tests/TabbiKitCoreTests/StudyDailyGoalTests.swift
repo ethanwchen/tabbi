@@ -65,7 +65,7 @@ final class StudyDailyGoalTests: XCTestCase {
         XCTAssertEqual(row?.source, .study)
         XCTAssertEqual(row?.detail, "1h 15m left")
         XCTAssertEqual(row?.isDone, false)
-        XCTAssertEqual(snapshot.plannableWork(excluding: .planner), ["Focus time (75 min left)"])
+        XCTAssertEqual(snapshot.plannableWork(excluding: .planner), ["Focus time (1h 15m left)"])
         XCTAssertNil(snapshot.cardsReviewedToday(excluding: .anki), "study minutes are not cards")
     }
 
@@ -75,5 +75,24 @@ final class StudyDailyGoalTests: XCTestCase {
         let snapshot = ProviderSnapshot([(.study, ModuleProvision(progress: [item]))])
         XCTAssertEqual(snapshot.sharedTodayItems(excluding: .planner).first?.isDone, true)
         XCTAssertEqual(snapshot.plannableWork(excluding: .planner), [])
+    }
+
+    /// A fresh day with the standard goal read "120 min left" in Today and
+    /// beside the notch; minutes from an hour up now read as hours.
+    func testMinutesFromAnHourUpReadAsHours() {
+        let goal = StudyDailyGoal.standard
+        XCTAssertEqual(goal.progressItem(for: StudyDayTally()).remainingText, "2h left")
+        XCTAssertEqual(goal.progressItem(for: StudyDayTally(minutes: 45)).remainingText, "1h 15m left")
+        XCTAssertEqual(goal.progressItem(for: StudyDayTally(minutes: 75)).remainingText, "45 min left")
+        XCTAssertEqual(goal.progressItem(for: StudyDayTally(minutes: 60)).remainingText, "1h left")
+        XCTAssertEqual(TickerFormat.progressLeft(goal.progressItem(for: StudyDayTally())), "2h left")
+
+        let met = StudyDailyGoal(minutes: 90).progressItem(for: StudyDayTally(minutes: 95))
+        let snapshot = ProviderSnapshot([(.study, ModuleProvision(progress: [met]))])
+        XCTAssertEqual(snapshot.sharedTodayItems(excluding: .planner).first?.detail, "1h 30m")
+        XCTAssertEqual(DayReviewCount(title: "Focus time", count: 95, unit: StudyDailyGoal.unit).amount,
+                       "1h 35m")
+        XCTAssertEqual(DayReviewCount(title: "Anki", count: 120, unit: "cards").amount, "120 cards",
+                       "only minutes turn into hours")
     }
 }

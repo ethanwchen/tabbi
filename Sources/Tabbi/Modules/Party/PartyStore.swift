@@ -178,7 +178,7 @@ final class PartyStore: ObservableObject {
         guard name != settings.name, !pinsName else { return }
         let old = settings
         settings.name = name
-        repository?.save(settings)
+        if !isSnapshot { repository?.save(settings) }
         if settings.cleanedName != old.cleanedName {
             serverRefusedNames.remove(.name)
             scheduleNameSync()
@@ -279,7 +279,7 @@ final class PartyStore: ObservableObject {
         let old = settings
         guard new != old else { return }
         settings = new
-        repository?.save(new)
+        if !isSnapshot { repository?.save(new) }
         if new.name != old.name { saveName?(new.name) }
         guard !isDemo else { return }
         if new.serverURL != old.serverURL || new.serverIssue != old.serverIssue {
@@ -728,7 +728,8 @@ final class PartyStore: ObservableObject {
     }
 
     private func saveTracker() {
-        guard !isDemo, let data = try? JSONEncoder().encode(tracker) else { return }
+        // A snapshot run leaves no trace, like demo mode.
+        guard !isDemo, !isSnapshot, let data = try? JSONEncoder().encode(tracker) else { return }
         defaults.set(data, forKey: Self.trackerKey)
     }
 

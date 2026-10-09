@@ -46,7 +46,7 @@ struct PetCoachSettingsPane: View {
         } header: {
             Text("Nudges")
         } footer: {
-            Footer("Only while a focus phase runs, at most a few times an hour. Your pet checks how long since you last typed or moved the pointer, and which app is in front. Nothing else, and no permissions.")
+            SectionFooter("Only while a focus phase runs, at most a few times an hour. Your pet checks how long since you last typed or moved the pointer, and which app is in front. Nothing else, and no permissions.")
         }
     }
 
@@ -80,7 +80,7 @@ struct PetCoachSettingsPane: View {
                 .help("Pick any app from your Applications folder")
             }
         } footer: {
-            Footer("Time in these apps counts as drifting. Websites can't be told apart, since that would need Screen Recording, so pick apps rather than sites.")
+            SectionFooter("Time in these apps counts as drifting. Websites can't be told apart, since that would need Screen Recording, so pick apps rather than sites.")
         }
         .disabled(!coach.nudgesOn)
     }
@@ -199,19 +199,5 @@ private struct AppIcon: View {
             }
         }
         .frame(width: 16, height: 16)
-    }
-}
-
-/// Explanatory text under a section, matching the other panes' footers.
-private struct Footer: View {
-    let text: String
-    init(_ text: String) { self.text = text }
-
-    var body: some View {
-        Text(text)
-            .font(.callout)
-            .foregroundStyle(.secondary)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .fixedSize(horizontal: false, vertical: true)
     }
 }
