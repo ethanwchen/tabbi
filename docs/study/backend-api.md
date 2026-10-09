@@ -5,9 +5,9 @@ Deployment, architecture and the free-tier math are in [`backend/README.md`](../
 
 ## Basics
 
-- Production base URL: `https://studynotch-friends.drosophil-anki-friends-backend.workers.dev`.
+- Production base URL: `https://tabbi-friends.drosophil-anki-friends-backend.workers.dev`.
   It is the default server in Tabbi's Party settings (`PartyServer.productionURL`); users can point the app at their own deployment there.
-  That deployment predates the rename and still answers as `studynotch-friends`, which the client accepts alongside `tabbi-friends` (`PartyClient.serviceNames`); the URL changes once the renamed worker is deployed.
+  A server from before the rename answers as `studynotch-friends`, which the client also accepts (`PartyClient.serviceNames`).
   Local dev: `http://localhost:8787` (`npm run dev` in `backend/`).
 - The Swift client is `PartyClient` in `Sources/TabbiKitCore/Party`.
   Its end-to-end test runs against a worker with `PARTY_TEST_SERVER=http://localhost:8787 swift test --filter PartyLiveServerTests`; against production it only creates throwaway users and deletes them.
