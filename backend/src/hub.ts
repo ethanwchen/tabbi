@@ -18,11 +18,15 @@ import {
 import { PROFILE_FIELDS, Profile, applyProfilePatch, defaultProfile, parseProfilePatch, sameProfile } from "./profile";
 import { json } from "./http";
 import { SYNC_PUT_PER_MIN, etag, parseIfMatch, readSyncDocument } from "./sync";
+import {
+  APPLE_AUTH_FIELDS, APPLE_AUTH_PER_MIN, AppleSecrets, exchangeAuthorizationCode, parseAppleAuth, revokeRefreshToken,
+  verifyIdentityToken,
+} from "./apple";
 import { PRESENCE_FIELDS, Presence, heartbeatSeconds, isOnline, parseHeartbeat, presenceChanged, publicPresence } from "./presence";
 import { STUDY_DAY_RETENTION_DAYS, rankEntries } from "./leaderboard";
 import { JOIN_FIELDS, PARTY_TOUCH_S, PartySession, SESSION_FIELDS, parseJoin, parseSession, partyExpired } from "./party";
 
-export interface Env {
+export interface Env extends AppleSecrets {
   HUB: DurableObjectNamespace<Hub>;
 }
 
@@ -100,6 +104,14 @@ CREATE TABLE apple_accounts (
   refresh_token TEXT,
   created_at    INTEGER NOT NULL
 ) WITHOUT ROWID;
+-- More tokens for a user, one per Mac that signed in to an existing account, so each Mac has its own
+-- secret and none of them is ever sent back. users.token_hash stays the first Mac's token.
+CREATE TABLE device_tokens (
+  token_hash TEXT PRIMARY KEY,
+  code       TEXT NOT NULL,
+  created_at INTEGER NOT NULL
+) WITHOUT ROWID;
+CREATE INDEX device_tokens_by_code ON device_tokens (code);
 -- The app's sync document (see sync.ts), stored as sent, with a revision for optimistic concurrency.
 CREATE TABLE sync_documents (
   code       TEXT PRIMARY KEY,
@@ -253,11 +265,13 @@ export class Hub extends DurableObject<Env> {
       return this.register(req, now);
     }
 
+    if (path === "/v1/auth/apple" && method === "POST") return await this.signInWithApple(req, now);
+
     const caller = await this.authenticate(req, now);
 
     if (path === "/v1/me" && method === "GET") return json({ ok: true, profile: caller.profile });
     if (path === "/v1/me" && method === "PATCH") return this.updateProfile(req, caller, false);
-    if (path === "/v1/me" && method === "DELETE") return this.deleteMe(caller);
+    if (path === "/v1/me" && method === "DELETE") return await this.deleteMe(caller);
 
     if (path === "/v1/friends" && method === "GET") return this.listFriends(caller, now);
     if (path === "/v1/friends" && method === "POST") return this.addFriend(req, caller, now);
@@ -293,7 +307,9 @@ export class Hub extends DurableObject<Env> {
     }
     const tokenHash = await sha256Hex(token);
     this.rateLimit("t:" + tokenHash, RATE_LIMIT_PER_MIN, now);
-    const row = this.sql.exec<UserRow>("SELECT * FROM users WHERE token_hash = ?", tokenHash).toArray()[0];
+    const row = this.sql.exec<UserRow>("SELECT * FROM users WHERE token_hash = ?", tokenHash).toArray()[0]
+      ?? this.sql.exec<UserRow>(
+        "SELECT u.* FROM device_tokens d JOIN users u ON u.code = d.code WHERE d.token_hash = ?", tokenHash).toArray()[0];
     if (!row) throw new HttpError(401, "unauthorized", "missing or invalid token");
     return { code: row.code, tokenHash, profile: rowToProfile(row) };
   }
@@ -317,19 +333,25 @@ export class Hub extends DurableObject<Env> {
 
   private async register(req: Request, now: number): Promise<Response> {
     const patch = parseProfilePatch(await readBody(req, PROFILE_FIELDS));
+    const token = newToken();
+    const profile = this.insertUser(await sha256Hex(token), patch, now);
+    return json({ ok: true, token, code: profile.code, profile }, 201);
+  }
+
+  /** Creates a user with a fresh friend code. Synchronous, so it can run inside a transaction. */
+  private insertUser(tokenHash: string, patch: ReturnType<typeof parseProfilePatch>, now: number): Profile {
     let code = newCode(8);
     for (let i = 0; i < 20 && this.userExists(code); i++) code = newCode(8);
     if (this.userExists(code)) throw new HttpError(503, "unavailable", "could not allocate a code, retry");
     const profile = applyProfilePatch(defaultProfile(code), patch);
-    const token = newToken();
     this.sql.exec(
       `INSERT INTO users (code, token_hash, name, pet_name, species, breed, colors, costume, accessories, points, level, created_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      code, await sha256Hex(token), profile.name, profile.petName, profile.species, profile.breed,
+      code, tokenHash, profile.name, profile.petName, profile.species, profile.breed,
       JSON.stringify(profile.colors), profile.costume, JSON.stringify(profile.accessories),
       profile.points, profile.level, now,
     );
-    return json({ ok: true, token, code, profile }, 201);
+    return profile;
   }
 
   /** PATCH /v1/me, and POST /v1/register with a valid token (idempotent re-register). */
@@ -348,21 +370,33 @@ export class Hub extends DurableObject<Env> {
     return json(isRegister ? { ok: true, code: caller.code, profile: next } : { ok: true, profile: next });
   }
 
-  private deleteMe(caller: Caller): Response {
+  /**
+   * DELETE /v1/me: deletes everything about the user (every Mac's token stops working) and, for a Sign
+   * in with Apple account, revokes its Apple refresh token. The data is gone before Apple is called, so
+   * deletion never depends on Apple; `appleRevoked` says whether the revoke went through.
+   */
+  private async deleteMe(caller: Caller): Promise<Response> {
     const now = nowS();
-    this.ctx.storage.transactionSync(() => {
-      this.leaveParty(caller.code, now);
-      this.sql.exec("DELETE FROM users WHERE code = ?", caller.code);
-      // Both directions via the primary key: the reverse rows are found through my own friend list.
-      this.sql.exec("DELETE FROM friends WHERE b = ? AND a IN (SELECT b FROM friends WHERE a = ?)", caller.code, caller.code);
-      this.sql.exec("DELETE FROM friends WHERE a = ?", caller.code);
-      this.sql.exec("DELETE FROM presence WHERE code = ?", caller.code);
-      this.sql.exec("DELETE FROM study_days WHERE code = ?", caller.code);
-      this.sql.exec("DELETE FROM sync_documents WHERE code = ?", caller.code);
-      this.sql.exec("DELETE FROM apple_accounts WHERE code = ?", caller.code);
-    });
-    this.live.delete(caller.code);
-    return json({ ok: true });
+    const account = this.sql.exec<{ refresh_token: string | null }>(
+      "SELECT refresh_token FROM apple_accounts WHERE code = ?", caller.code).toArray()[0];
+    this.ctx.storage.transactionSync(() => this.purgeUser(caller.code, now));
+    const appleRevoked = account?.refresh_token ? await revokeRefreshToken(account.refresh_token, this.env, now) : false;
+    return json(account ? { ok: true, appleRevoked } : { ok: true });
+  }
+
+  /** Deletes a user and all their rows (call inside a transaction). */
+  private purgeUser(code: string, now: number): void {
+    this.leaveParty(code, now);
+    this.sql.exec("DELETE FROM users WHERE code = ?", code);
+    // Both directions via the primary key: the reverse rows are found through my own friend list.
+    this.sql.exec("DELETE FROM friends WHERE b = ? AND a IN (SELECT b FROM friends WHERE a = ?)", code, code);
+    this.sql.exec("DELETE FROM friends WHERE a = ?", code);
+    this.sql.exec("DELETE FROM presence WHERE code = ?", code);
+    this.sql.exec("DELETE FROM study_days WHERE code = ?", code);
+    this.sql.exec("DELETE FROM sync_documents WHERE code = ?", code);
+    this.sql.exec("DELETE FROM apple_accounts WHERE code = ?", code);
+    this.sql.exec("DELETE FROM device_tokens WHERE code = ?", code);
+    this.live.delete(code);
   }
 
   private userExists(code: string): boolean {
@@ -523,12 +557,90 @@ export class Hub extends DurableObject<Env> {
     return json({ ok: true, week: isoWeekKeyOfDay(today), from, to, entries });
   }
 
+  // ---------- Sign in with Apple ----------
+
+  /**
+   * POST /v1/auth/apple with `{ identityToken, authorizationCode? }` and, optionally, the caller's
+   * anonymous friends token as Bearer. Maps Apple's `sub` to one friends user:
+   * - a known account returns a new token of its own for this Mac (the same friend code, friends and
+   *   sync document follow the user). An anonymous caller is folded into it: its friends and study
+   *   days move to the account, then the anonymous user is deleted, since the app drops its token.
+   * - a new account links the caller's anonymous user (same token and friend code), or, without one,
+   *   creates a user.
+   * The authorization code's refresh token is stored only to revoke it on deletion.
+   */
+  private async signInWithApple(req: Request, now: number): Promise<Response> {
+    this.rateLimit("apple:" + (req.headers.get("CF-Connecting-IP") ?? "unknown"), APPLE_AUTH_PER_MIN, now);
+    const body = parseAppleAuth(await readBody(req, APPLE_AUTH_FIELDS));
+    const callerToken = bearer(req);
+    const caller = callerToken ? await this.authenticate(req, now) : null;
+    const sub = await verifyIdentityToken(body.identityToken, now);
+    const refreshToken = body.authorizationCode
+      ? await exchangeAuthorizationCode(body.authorizationCode, this.env, now)
+      : null;
+    const freshToken = newToken();
+    const freshHash = await sha256Hex(freshToken);
+
+    // No awaits from here on: the state read below cannot change before it is written.
+    let result: { token: string; code: string; newAccount: boolean } | null = null;
+    this.ctx.storage.transactionSync(() => {
+      const linked = this.sql.exec<{ code: string }>(
+        "SELECT code FROM apple_accounts WHERE apple_sub = ?", sub).toArray()[0]?.code;
+      if (linked) {
+        if (refreshToken) this.sql.exec("UPDATE apple_accounts SET refresh_token = ? WHERE apple_sub = ?", refreshToken, sub);
+        if (caller && callerToken && caller.code === linked) {
+          result = { token: callerToken, code: linked, newAccount: false };
+          return;
+        }
+        if (caller && !this.hasAppleAccount(caller.code)) this.foldInto(caller.code, linked, now);
+        this.sql.exec("INSERT INTO device_tokens (token_hash, code, created_at) VALUES (?, ?, ?)", freshHash, linked, now);
+        result = { token: freshToken, code: linked, newAccount: false };
+        return;
+      }
+      // A caller already linked to another Apple ID keeps that account; this Apple ID gets a new user.
+      const code = caller && callerToken && !this.hasAppleAccount(caller.code)
+        ? caller.code
+        : this.insertUser(freshHash, {}, now).code;
+      this.sql.exec("INSERT INTO apple_accounts (apple_sub, code, refresh_token, created_at) VALUES (?, ?, ?, ?)",
+        sub, code, refreshToken, now);
+      result = { token: code === caller?.code ? callerToken! : freshToken, code, newAccount: true };
+    });
+    const { token, code, newAccount } = result!;
+    const profile = rowToProfile(this.sql.exec<UserRow>("SELECT * FROM users WHERE code = ?", code).one());
+    return json({ ok: true, token, code, profile, newAccount });
+  }
+
+  private hasAppleAccount(code: string): boolean {
+    return this.sql.exec("SELECT 1 FROM apple_accounts WHERE code = ?", code).toArray().length > 0;
+  }
+
+  /**
+   * Moves an anonymous user's friends (up to the friend limit) and study days (the larger count per day)
+   * to an account, then deletes the anonymous user (call inside a transaction).
+   */
+  private foldInto(from: string, to: string, now: number): void {
+    const friends = this.sql.exec<{ b: string }>(
+      "SELECT b FROM friends WHERE a = ? AND b != ? AND b NOT IN (SELECT b FROM friends WHERE a = ?) ORDER BY created_at",
+      from, to, to).toArray();
+    let count = this.friendCount(to);
+    for (const { b } of friends) {
+      if (count >= MAX_FRIENDS) break;
+      this.sql.exec("INSERT OR IGNORE INTO friends (a, b, created_at) VALUES (?, ?, ?), (?, ?, ?)", to, b, now, b, to, now);
+      count++;
+    }
+    this.sql.exec(
+      `INSERT INTO study_days (code, day, minutes) SELECT ?, day, minutes FROM study_days WHERE code = ? AND true
+       ON CONFLICT (code, day) DO UPDATE SET minutes = MAX(minutes, excluded.minutes)`,
+      to, from,
+    );
+    this.purgeUser(from, now);
+  }
+
   // ---------- sync ----------
 
   /** Sync belongs to Sign in with Apple accounts; an anonymous friends user has nothing to sync with. */
   private requireAccount(caller: Caller): void {
-    const linked = this.sql.exec("SELECT 1 FROM apple_accounts WHERE code = ?", caller.code).toArray().length > 0;
-    if (!linked) throw new HttpError(403, "no_account", "sign in with Apple to sync");
+    if (!this.hasAppleAccount(caller.code)) throw new HttpError(403, "no_account", "sign in with Apple to sync");
   }
 
   /** GET /v1/sync: the caller's document and its revision (0 and `null` before the first write). */

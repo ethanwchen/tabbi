@@ -1,7 +1,8 @@
 # Tabbi friends backend
 
 A small Cloudflare Worker for Tabbi: friends by code, "who is studying right now" presence, study parties where everyone's pets sit side by side in the notch, and a weekly study-minutes leaderboard.
-No accounts, no emails, no passwords: a user is a random secret token the app receives on registration, and the public 8-character **friend code** is what people share.
+No emails, no passwords: a user is a random secret token the app receives on registration, and the public 8-character **friend code** is what people share.
+Signing in with Apple is optional and only adds sync of the pet and progress across a user's Macs.
 See [`PRIVACY.md`](PRIVACY.md) for what is stored and [`../docs/study/backend-api.md`](../docs/study/backend-api.md) for the client contract.
 
 The pet catalog (species, breeds, costumes, accessories, study methods, limits) lives in [`shared/catalog.json`](shared/catalog.json).
@@ -33,6 +34,16 @@ npx wrangler deploy
 There is no storage to create by hand: the Durable Object class and its SQLite storage are declared in `wrangler.toml` (`[[migrations]] new_sqlite_classes = ["Hub"]`) and created by the first deploy.
 Wrangler prints the base URL, `https://tabbi-friends.<your-subdomain>.workers.dev`.
 `GET /` answers `{"ok":true,"service":"tabbi-friends","version":1}` so you can check it is up.
+
+Sign in with Apple works without secrets, but then the authorization code is not exchanged and Delete Account cannot revoke the Apple grant (the Worker logs that it skipped both).
+To enable both, set the three secrets from the Sign in with Apple key (never commit them):
+
+```sh
+npx wrangler secret put APPLE_TEAM_ID       # the Apple Developer Team ID
+npx wrangler secret put APPLE_KEY_ID        # the key's Key ID
+npx wrangler secret put APPLE_PRIVATE_KEY   # the whole AuthKey_<KeyID>.p8 file, pasted as is
+```
+
 The tables in that storage are versioned in `src/hub.ts` (`MIGRATIONS`, recorded in a `schema_version` table): the Hub applies missing steps when it starts, so a deploy upgrades the database by itself.
 Add a schema change as a new step at the end and never edit a deployed one.
 

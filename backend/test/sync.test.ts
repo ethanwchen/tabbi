@@ -145,6 +145,7 @@ describe("schema migrations", () => {
       // What a deployment from before versioning has: the original tables and no version.
       sql.exec("DROP TABLE sync_documents");
       sql.exec("DROP TABLE apple_accounts");
+      sql.exec("DROP TABLE device_tokens");
       sql.exec("DROP TABLE schema_version");
       sql.exec(`INSERT INTO users (code, token_hash, name, pet_name, species, breed, colors, costume, accessories, points, level, created_at)
         VALUES ('AAAAAAAA', 'h', 'n', 'p', 'cat', 'tabby', '[]', 'none', '[]', 5, 1, 0)`);

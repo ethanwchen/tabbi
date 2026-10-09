@@ -26,12 +26,15 @@ Deployment, architecture and the free-tier math are in [`backend/README.md`](../
 
 ### Identity and auth
 
-There are no accounts.
+There are no passwords, and an account is optional.
 `POST /v1/register` returns a secret `token` (64 hex characters) and a public 8-character friend `code`.
 Store the token in the Keychain; the server keeps only its SHA-256, so a lost token cannot be recovered.
 Send it on every other call as `Authorization: Bearer <token>`.
 The friend code is what users share; it uses `A-Z` and `2-9` without `I`, `O`, `0` and `1`.
 Codes are accepted in any case and with surrounding spaces, and the server returns them upper case.
+
+Signing in with Apple (`POST /v1/auth/apple`) is optional and only adds sync: it links the friend code to Apple's user id, so the same friend code, friends and sync document follow the user to every Mac they sign in on.
+Each Mac then has its own token for the same friend code.
 
 ### Shared catalog
 
@@ -138,6 +141,7 @@ Auth column: "token" means `Authorization: Bearer <token>` is required.
 | `GET /` | none | health check |
 | `GET /v1/catalog` | none | the shared catalog |
 | `POST /v1/register` | none or token | create a user, or update the profile of an existing one |
+| `POST /v1/auth/apple` | none or token | sign in with Apple: link or adopt the account's friend code |
 | `GET /v1/me` | token | my profile |
 | `PATCH /v1/me` | token | update my profile |
 | `DELETE /v1/me` | token | delete me and everything about me |
@@ -193,7 +197,29 @@ Errors: `invalid_json`, `unknown_field`, `invalid_field`, `body_too_large`.
 
 Deletes the user, their friendships in both directions, presence, daily study minutes, their sync document and Apple account link, and leaves their party.
 `200 {"ok": true}`.
-Afterwards the token is `unauthorized`; the app should drop it and its friend code.
+For a Sign in with Apple account it then revokes the account's Apple refresh token: `200 {"ok": true, "appleRevoked": true}`, or `false` when there was no refresh token, the Apple secrets are unset or Apple refused (the data is deleted either way).
+Afterwards the token, and every other Mac's token for the same friend code, is `unauthorized`; the app should drop it and its friend code.
+
+### `POST /v1/auth/apple`
+
+Body: `{"identityToken": "<JWT>", "authorizationCode": "<code>"}` from `ASAuthorizationAppleIDCredential` (the code is optional).
+Send the Mac's current friends token as Bearer if it has one; omit the header otherwise.
+The server checks the identity token's RS256 signature against Apple's keys (`https://appleid.apple.com/auth/keys`, cached), its issuer (`https://appleid.apple.com`), audience (`dev.tabbi.Tabbi`) and expiry, and reads only `sub` (never the email).
+
+`200 {"ok": true, "token": "<64 hex>", "code": "K7QW2MZD", "profile": Profile, "newAccount": true}`.
+Store `token` and `code` in place of the old ones.
+
+- A new Apple ID with a Bearer token links that user: `token` and `code` are the caller's own, so friends keep the same code.
+- A new Apple ID without one (or whose caller is already linked to another Apple ID) gets a new user.
+- An Apple ID that already has an account returns its friend code with a new token for this Mac (`newAccount: false`).
+  If the caller had an anonymous user, its friends (up to the friend limit) and study minutes move to the account and the anonymous user is deleted, so the app must switch to the returned token.
+  A caller that already is the account gets its own token back.
+
+The authorization code is exchanged for an Apple refresh token, which is kept only to revoke it on `DELETE /v1/me`.
+That needs the Worker secrets `APPLE_TEAM_ID`, `APPLE_KEY_ID` and `APPLE_PRIVATE_KEY`; without them, or when Apple refuses the code, the exchange is skipped, logged, and sign-in still succeeds.
+Sign-ins are limited to 10 per minute per IP.
+
+Errors: `invalid_identity_token` (401, the token is malformed, expired, not Apple's or not for Tabbi; ask the user to sign in again), `apple_unavailable` (503, Apple's keys could not be fetched; retry), `unauthorized` (401, a Bearer token was sent but is unknown), `invalid_json`, `unknown_field`, `invalid_field`, `rate_limited`.
 
 ### `GET /v1/friends`
 
@@ -380,6 +406,7 @@ Keep to these intervals, and stop every timer whose data is not on screen.
 | `GET /v1/friends` | when the friends panel opens, then every 60 s while it stays open |
 | `GET /v1/party` | every 30 s while I am in a party and the party view is visible; once when the notch opens otherwise |
 | `GET /v1/leaderboard` | once each time its view opens; no timer |
+| `POST /v1/auth/apple` | once, when the user taps Sign in with Apple; never on a timer |
 | `GET /v1/me`, `PATCH /v1/me` | on launch and after the user edits their pet; not on a timer |
 | `GET /v1/sync` | on launch and on wake, and after a `409`; not on a timer |
 | `PUT /v1/sync` | after local progress changes, debounced (for example 30 s), and once on quit |
