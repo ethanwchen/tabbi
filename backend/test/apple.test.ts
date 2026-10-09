@@ -202,7 +202,32 @@ describe("POST /v1/auth/apple", () => {
     expectError(await signIn({ identityToken: 5 }), 400, "invalid_field");
     expectError(await signIn({ identityToken: "a.b.c", authorizationCode: 7 }), 400, "invalid_field");
     expectError(await signIn({ identityToken: "a.b.c", email: "x@y.z" }), 400, "unknown_field");
-    expectError(await signIn({ identityToken: await identityToken("sub.badbearer") }, "f".repeat(64)), 401, "unauthorized");
+  });
+
+  it("signs in as a new caller when the Bearer token no longer resolves", async () => {
+    const stale = "f".repeat(64);
+    const r = await signIn({ identityToken: await identityToken("sub.badbearer") }, stale);
+    expect(r.status).toBe(200);
+    expect(r.body.newAccount).toBe(true);
+    expect(r.body.token).not.toBe(stale);
+    expect((await call("GET", "/v1/me", undefined, r.body.token)).body.profile.code).toBe(r.body.code);
+  });
+
+  it("creates a user of its own when the caller is deleted while Apple is asked", async () => {
+    const anon = await register();
+    const fetchApple = globalThis.fetch;
+    vi.mocked(globalThis.fetch).mockImplementationOnce(async (input, init) => {
+      // Another request deletes the caller while the sign-in waits for Apple's keys.
+      expect((await call("DELETE", "/v1/me", undefined, anon.token)).status).toBe(200);
+      return fetchApple(input, init);
+    });
+    const r = await signIn({ identityToken: await identityToken("sub.deleted.caller") }, anon.token);
+    expect(r.status).toBe(200);
+    expect(r.body.newAccount).toBe(true);
+    expect(r.body.code).not.toBe(anon.code);
+    expect((await call("GET", "/v1/me", undefined, r.body.token)).body.profile.code).toBe(r.body.code);
+    const again = await signIn({ identityToken: await identityToken("sub.deleted.caller") });
+    expect(again.body).toMatchObject({ code: r.body.code, newAccount: false });
   });
 
   it("is 503 when Apple's keys cannot be fetched", async () => {

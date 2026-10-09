@@ -211,6 +211,7 @@ Store `token` and `code` in place of the old ones.
 
 - A new Apple ID with a Bearer token links that user: `token` and `code` are the caller's own, so friends keep the same code.
 - A new Apple ID without one (or whose caller is already linked to another Apple ID) gets a new user.
+  A Bearer token that no longer resolves (its user was deleted) counts as no token.
 - An Apple ID that already has an account returns its friend code with a new token for this Mac (`newAccount: false`).
   If the caller had an anonymous user, its friends (up to the friend limit) and study minutes move to the account and the anonymous user is deleted, so the app must switch to the returned token.
   A caller that already is the account gets its own token back.
@@ -219,7 +220,7 @@ The authorization code is exchanged for an Apple refresh token, which is kept on
 That needs the Worker secrets `APPLE_TEAM_ID`, `APPLE_KEY_ID` and `APPLE_PRIVATE_KEY`; without them, or when Apple refuses the code, the exchange is skipped, logged, and sign-in still succeeds.
 Sign-ins are limited to 10 per minute per IP.
 
-Errors: `invalid_identity_token` (401, the token is malformed, expired, not Apple's or not for Tabbi; ask the user to sign in again), `apple_unavailable` (503, Apple's keys could not be fetched; retry), `unauthorized` (401, a Bearer token was sent but is unknown), `invalid_json`, `unknown_field`, `invalid_field`, `rate_limited`.
+Errors: `invalid_identity_token` (401, the token is malformed, expired, not Apple's or not for Tabbi; ask the user to sign in again), `apple_unavailable` (503, Apple's keys could not be fetched; retry), `invalid_json`, `unknown_field`, `invalid_field`, `rate_limited`.
 
 ### `GET /v1/friends`
 

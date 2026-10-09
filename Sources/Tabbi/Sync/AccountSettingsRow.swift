@@ -99,7 +99,10 @@ struct AccountSettingsRow: View {
         case .success(let authorization):
             guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
                   let tokenData = credential.identityToken,
-                  let token = String(data: tokenData, encoding: .utf8) else { return }
+                  let token = String(data: tokenData, encoding: .utf8) else {
+                account.appleSignInFailed()
+                return
+            }
             let code = credential.authorizationCode.flatMap { String(data: $0, encoding: .utf8) }
             let name = credential.fullName
                 .map { PersonNameComponentsFormatter.localizedString(from: $0, style: .default) }

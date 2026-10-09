@@ -65,6 +65,9 @@ final class SyncStore: ObservableObject {
     private var syncedSave: PetSave?
     private var syncAgain = false
     private var syncTask: Task<Void, Never>?
+    /// Counts started sync tasks, so a cancelled one that finishes late
+    /// leaves the newer one's bookkeeping alone.
+    private var syncGeneration = 0
     private var debounceTask: Task<Void, Never>?
     private var cancellables: Set<AnyCancellable> = []
 
@@ -241,8 +244,10 @@ final class SyncStore: ObservableObject {
             syncAgain = true
             return
         }
+        syncGeneration += 1
+        let generation = syncGeneration
         syncTask = Task { [weak self] in
-            await self?.runRounds()
+            await self?.runRounds(generation: generation)
         }
     }
 
@@ -256,12 +261,13 @@ final class SyncStore: ObservableObject {
         }
     }
 
-    private func runRounds() async {
+    private func runRounds(generation: Int) async {
         isSyncing = true
         repeat {
             syncAgain = false
             await runRound()
         } while syncAgain && !Task.isCancelled && state.isSignedIn
+        guard generation == syncGeneration else { return }
         isSyncing = false
         syncTask = nil
     }

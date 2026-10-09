@@ -573,7 +573,11 @@ export class Hub extends DurableObject<Env> {
     this.rateLimit("apple:" + (req.headers.get("CF-Connecting-IP") ?? "unknown"), APPLE_AUTH_PER_MIN, now);
     const body = parseAppleAuth(await readBody(req, APPLE_AUTH_FIELDS));
     const callerToken = bearer(req);
-    const caller = callerToken ? await this.authenticate(req, now) : null;
+    // A token that no longer resolves (its user was deleted) signs in as if there were none.
+    const live = callerToken ? await this.authenticate(req, now).catch((e: unknown) => {
+      if (e instanceof HttpError && e.status === 401) return null;
+      throw e;
+    }) : null;
     const sub = await verifyIdentityToken(body.identityToken, now);
     const refreshToken = body.authorizationCode
       ? await exchangeAuthorizationCode(body.authorizationCode, this.env, now)
@@ -584,6 +588,9 @@ export class Hub extends DurableObject<Env> {
     // No awaits from here on: the state read below cannot change before it is written.
     let result: { token: string; code: string; newAccount: boolean } | null = null;
     this.ctx.storage.transactionSync(() => {
+      // The caller may have been deleted while this request waited on Apple.
+      const caller = live && this.sql.exec("SELECT 1 FROM users WHERE code = ?", live.code).toArray().length > 0
+        ? live : null;
       const linked = this.sql.exec<{ code: string }>(
         "SELECT code FROM apple_accounts WHERE apple_sub = ?", sub).toArray()[0]?.code;
       if (linked) {
