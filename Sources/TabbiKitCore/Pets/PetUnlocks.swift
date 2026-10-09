@@ -1,7 +1,8 @@
 import Foundation
 
 /// Anything the pet can wear, as one unlockable thing. Breeds and colors are
-/// always free; only costume items are earned with study points.
+/// always free; costume items are bought with study points, except limited
+/// edition items (`PetLimitedEdition`), which are earned or granted.
 ///
 /// Encoded as a stable string id (`"outfit.scrubs"`, `"accessory.beanie"`)
 /// so saved ledgers survive reordering the enums.
@@ -9,11 +10,18 @@ public enum PetItem: Hashable, Codable, Sendable, CustomStringConvertible {
     case outfit(PetOutfit)
     case accessory(PetAccessory)
 
-    /// Every item in shop order (cheapest first).
+    /// Every item: the shop in shop order (cheapest first), then the
+    /// limited edition items in `PetLimitedEdition.allCases` order.
     public static var allCases: [PetItem] {
         let all = PetOutfit.allCases.map(PetItem.outfit) + PetAccessory.allCases.map(PetItem.accessory)
-        return all.sorted { ($0.cost, $0.id) < ($1.cost, $1.id) }
+        return all.filter { !$0.isLimited }.sorted { ($0.cost, $0.id) < ($1.cost, $1.id) }
+            + PetLimitedEdition.allCases.map(\.item)
     }
+
+    /// The items points can buy (and the free starters), cheapest first:
+    /// every item but the limited edition ones. Prices and tiers are set
+    /// for these.
+    public static var shopItems: [PetItem] { allCases.filter { !$0.isLimited } }
 
     public var id: String {
         switch self {
@@ -51,9 +59,12 @@ public enum PetItem: Hashable, Codable, Sendable, CustomStringConvertible {
     /// beanie), mid-tier items two to five days, and the showpieces (the
     /// sorcerer, the graduation cap) two to four weeks. Every price is
     /// distinct, so the shop order never depends on ids.
+    /// Limited edition items have no price (0) and are not for sale.
     public var cost: Int {
         switch self {
         case .outfit(.none), .accessory(.scarf), .accessory(.partyHat), .accessory(.bowTie): 0
+        case .accessory(.backwardsCap), .accessory(.flameHeadband), .accessory(.goldenLaurel),
+             .accessory(.teamMedal): 0
         // Starters: up to one typical day (105).
         case .accessory(.beanie): 35
         case .accessory(.roundGlasses): 50
@@ -86,7 +97,9 @@ public enum PetItem: Hashable, Codable, Sendable, CustomStringConvertible {
         }
     }
 
-    public var isFree: Bool { cost == 0 }
+    /// Owned from the start. Limited edition items cost nothing but are
+    /// never free: they have to be earned or granted.
+    public var isFree: Bool { cost == 0 && !isLimited }
 
     public init(from decoder: Decoder) throws {
         let raw = try decoder.singleValueContainer().decode(String.self)
@@ -146,6 +159,8 @@ public enum PetPointsRules {
 /// Why a purchase was refused.
 public enum PetPurchaseError: Error, Equatable, Sendable {
     case alreadyOwned
+    /// A limited edition item, which is earned or granted instead.
+    case notForSale
     /// `missing` more points are needed.
     case notEnoughPoints(missing: Int)
 }
@@ -160,21 +175,34 @@ public struct PetPointsLedger: Hashable, Codable, Sendable {
     public private(set) var spent: Int
     /// Purchased items. Free items are owned implicitly and never stored.
     public private(set) var purchased: Set<PetItem>
+    /// Limited edition items earned from a milestone or granted for an
+    /// event. Kept for good once given, even if the log that earned one is
+    /// gone or a grant is later withdrawn.
+    public private(set) var granted: Set<PetItem>
 
-    public init(earned: Int = 0, spent: Int = 0, purchased: Set<PetItem> = []) {
+    public init(earned: Int = 0, spent: Int = 0, purchased: Set<PetItem> = [], granted: Set<PetItem> = []) {
         self.earned = max(0, earned)
-        self.purchased = purchased.filter { !$0.isFree }
+        self.purchased = purchased.filter { !$0.isFree && !$0.isLimited }
+        self.granted = granted.filter(\.isLimited)
         self.spent = min(max(0, spent), self.earned)
     }
 
     public var balance: Int { earned - spent }
 
     public func owns(_ item: PetItem) -> Bool {
-        item.isFree || purchased.contains(item)
+        item.isFree || purchased.contains(item) || granted.contains(item)
     }
 
     public func canBuy(_ item: PetItem) -> Bool {
-        !owns(item) && balance >= item.cost
+        !item.isLimited && !owns(item) && balance >= item.cost
+    }
+
+    /// Gives a limited edition item for free. Returns whether it is new;
+    /// shop items are never granted, so points stay the only way to them.
+    @discardableResult
+    public mutating func grant(_ item: PetItem) -> Bool {
+        guard item.isLimited else { return false }
+        return granted.insert(item).inserted
     }
 
     /// Credits a finished or abandoned study session and returns the points
@@ -197,14 +225,15 @@ public struct PetPointsLedger: Hashable, Codable, Sendable {
 
     public mutating func buy(_ item: PetItem) throws(PetPurchaseError) {
         guard !owns(item) else { throw .alreadyOwned }
+        guard !item.isLimited else { throw .notForSale }
         guard balance >= item.cost else { throw .notEnoughPoints(missing: item.cost - balance) }
         spent += item.cost
         purchased.insert(item)
     }
 
-    /// The cheapest item not yet owned, for a "next unlock" progress hint.
+    /// The cheapest shop item not yet owned, for a "next unlock" progress hint.
     public var nextUnlock: PetItem? {
-        PetItem.allCases.first { !owns($0) }
+        PetItem.shopItems.first { !owns($0) }
     }
 
     /// What older builds charged for items that are free now. A save that
@@ -213,17 +242,19 @@ public struct PetPointsLedger: Hashable, Codable, Sendable {
     static let refundedPrices: [PetItem: Int] = [.accessory(.scarf): 30]
 
     // Unknown item ids (from a newer build) are skipped instead of failing.
-    private enum CodingKeys: String, CodingKey { case earned, spent, purchased }
+    private enum CodingKeys: String, CodingKey { case earned, spent, purchased, granted }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let ids = try container.decodeIfPresent([String].self, forKey: .purchased) ?? []
         let items = Set(ids.compactMap(PetItem.init(id:)))
         let refund = items.filter(\.isFree).reduce(0) { $0 + (Self.refundedPrices[$1] ?? 0) }
+        let grantedIDs = try container.decodeIfPresent([String].self, forKey: .granted) ?? []
         self.init(
             earned: try container.decodeIfPresent(Int.self, forKey: .earned) ?? 0,
             spent: (try container.decodeIfPresent(Int.self, forKey: .spent) ?? 0) - refund,
-            purchased: items
+            purchased: items,
+            granted: Set(grantedIDs.compactMap(PetItem.init(id:)))
         )
     }
 
@@ -232,5 +263,8 @@ public struct PetPointsLedger: Hashable, Codable, Sendable {
         try container.encode(earned, forKey: .earned)
         try container.encode(spent, forKey: .spent)
         try container.encode(purchased.map(\.id).sorted(), forKey: .purchased)
+        if !granted.isEmpty {
+            try container.encode(granted.map(\.id).sorted(), forKey: .granted)
+        }
     }
 }

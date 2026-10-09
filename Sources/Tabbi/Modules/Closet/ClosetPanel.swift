@@ -346,6 +346,7 @@ private struct ClosetWardrobe: View {
         case .owned: "Click to wear"
         case .affordable: "Unlock for \(item.cost) pts"
         case .locked(let missing): "\(item.cost) pts, \(missing) to go"
+        case .unearned: item.limitedEdition?.howToEarn ?? "Limited edition"
         }
     }
 }
@@ -425,6 +426,8 @@ private struct ClosetItemTile: View {
                 Label("\(item.cost)", systemImage: "star.fill").foregroundStyle(accent)
             case .locked:
                 Label("\(item.cost)", systemImage: "lock.fill").foregroundStyle(Theme.Palette.tertiaryText)
+            case .unearned:
+                Label("Limited", systemImage: "lock.fill").foregroundStyle(Theme.Palette.tertiaryText)
             }
         }
         .font(.system(size: 10, weight: .semibold, design: .rounded).monospacedDigit())
@@ -447,6 +450,7 @@ private struct ClosetItemTile: View {
         case .owned: "\(item.displayName): click to wear"
         case .affordable: "\(isNew ? "New: " : "")\(item.displayName): unlock for \(item.cost) points"
         case .locked(let missing): "\(isNew ? "New: " : "")\(item.displayName): \(item.cost) points, \(missing) more to go"
+        case .unearned: "\(item.displayName), limited edition: \(item.limitedEdition?.howToEarn ?? "")"
         }
     }
 }

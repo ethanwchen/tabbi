@@ -30,19 +30,19 @@ final class PetEconomyTests: XCTestCase {
     }
 
     func testEveryPriceSitsInsideATier() {
-        for item in PetItem.allCases {
+        for item in PetItem.shopItems {
             XCTAssertNotNil(PetPriceTier(cost: item.cost), "\(item.id) costs \(item.cost), outside every tier")
             XCTAssertEqual(item.tier, PetPriceTier(cost: item.cost), item.id)
         }
     }
 
     func testFirstFinishedBlockBuysAStarter() {
-        let cheapest = PetItem.allCases.filter { !$0.isFree }.map(\.cost).min()
+        let cheapest = PetItem.shopItems.filter { !$0.isFree }.map(\.cost).min()
         XCTAssertEqual(cheapest, PetEconomy.pointsPerTypicalBlock)
     }
 
     func testEveryTierHasSeveralItemsAndTheTiersRiseInShopOrder() {
-        let tiers = PetItem.allCases.map(\.tier)
+        let tiers = PetItem.shopItems.map(\.tier)
         XCTAssertEqual(tiers, tiers.sorted(), "the shop lists cheaper tiers first")
         for tier in PetPriceTier.allCases {
             XCTAssertGreaterThanOrEqual(tiers.filter { $0 == tier }.count, 3, "\(tier) needs a few items to pick from")
@@ -50,7 +50,7 @@ final class PetEconomyTests: XCTestCase {
     }
 
     func testTimeToEarnEachTierAtTheTypicalPace() {
-        for item in PetItem.allCases {
+        for item in PetItem.shopItems {
             let days = PetEconomy.typicalDays(toEarn: item.cost)
             switch item.tier {
             case .free: XCTAssertEqual(days, 0, item.id)

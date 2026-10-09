@@ -77,3 +77,21 @@ Every price is distinct, so the shop's cheapest-first order never depends on ids
 Older saves store points earned and spent, not prices, so changing a price never takes away an item someone owns.
 When an item becomes free, add its old price to `PetPointsLedger.refundedPrices` so saves that bought it get the points back once.
 Pick a new price inside the tier you want the item in, keep it distinct from every other price, and run `swift test`.
+
+## Limited edition items
+
+Some items are not in the shop at all.
+Points cannot buy them, and they are never tied to money or donations: they are earned from study milestones or granted for free for an event (`PetLimitedEdition` in `TabbiKitCore/Closet/PetLimited.swift`).
+
+| Item | How it is earned | Effect |
+| --- | --- | --- |
+| Backwards Cap | Granted to everyone who used Tabbi in its launch week (event `launch-week`) | none |
+| Flame Headband | 7 days in a row with at least 5 focused minutes each | flicker |
+| Golden Laurel | 50 hours (3000 minutes) focused in total | shimmer |
+| Team Medal | A Party shared session finished with the user in it | sparkle |
+
+Milestones are read from the activity log (`PetMilestoneProgress`): every `focus.completed` record counts its minutes, from any module and whether it finished or not.
+A day with 5 or more focused minutes in total is a study day, the same floor that earns points.
+The Flame Headband asks for more than the typical habit (5 study days a week), a week without a day off.
+The typical student focuses 3 x 25 = 75 minutes a day and 375 a week, so the Golden Laurel takes 3000 / 375 = 8 typical weeks, a long-term goal beyond every showpiece.
+Once given, a limited item stays owned (`PetPointsLedger.granted`), even if the log that earned it is gone or a grant is later withdrawn.

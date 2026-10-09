@@ -10,6 +10,8 @@ public enum PetClosetItemState: Hashable, Sendable {
     case affordable
     /// Not owned yet; `missing` more points are needed.
     case locked(missing: Int)
+    /// A limited edition item not earned yet. Points cannot buy it.
+    case unearned
 
     public var isOwned: Bool { self == .wearing || self == .owned }
 }
@@ -22,6 +24,8 @@ public enum PetClosetTapResult: Hashable, Sendable {
     case boughtAndWore
     /// Nothing changed: `missing` more points are needed.
     case needsPoints(missing: Int)
+    /// Nothing changed: a limited edition item that has to be earned.
+    case notEarnedYet
 }
 
 /// The Closet tab's editing rules over one `PetSave`: renaming, switching
@@ -45,10 +49,13 @@ public struct PetCloset: Hashable, Sendable {
 
     // MARK: Wardrobe
 
-    /// The items the wardrobe grid shows, cheapest first, free starters
-    /// included. "No outfit" is not a tile; tapping the worn outfit takes it
-    /// off instead.
-    public static let wardrobe: [PetItem] = PetItem.allCases.filter { $0 != .outfit(.none) }
+    /// The shop items the wardrobe grid shows, cheapest first, free
+    /// starters included. "No outfit" is not a tile; tapping the worn outfit
+    /// takes it off instead. Limited edition items are on `limitedShelf`.
+    public static let wardrobe: [PetItem] = PetItem.shopItems.filter { $0 != .outfit(.none) }
+
+    /// The limited edition items, in `PetLimitedEdition` order.
+    public static let limitedShelf: [PetItem] = PetLimitedEdition.allCases.map(\.item)
 
     /// The wardrobe grouped by theme in shelf order, each shelf cheapest
     /// first. Together the shelves hold every wardrobe item once.
@@ -65,6 +72,7 @@ public struct PetCloset: Hashable, Sendable {
         if save.ledger.owns(item) {
             return profile.isWearing(item) ? .wearing : .owned
         }
+        guard !item.isLimited else { return .unearned }
         let missing = item.cost - balance
         return missing <= 0 ? .affordable : .locked(missing: missing)
     }
@@ -91,14 +99,16 @@ public struct PetCloset: Hashable, Sendable {
             } catch {
                 switch error {
                 case .notEnoughPoints(let missing): return .needsPoints(missing: missing)
-                // Can't happen: the state said the item is not owned.
-                case .alreadyOwned: break
+                // Can't happen: the state said the item is a shop item not owned yet.
+                case .alreadyOwned, .notForSale: break
                 }
             }
             save.profile = PetCloset.wearing(item, on: save.profile)
             return .boughtAndWore
         case .locked(let missing):
             return .needsPoints(missing: missing)
+        case .unearned:
+            return .notEarnedYet
         }
     }
 
@@ -192,6 +202,30 @@ public struct PetCloset: Hashable, Sendable {
     /// (0 when it is already affordable).
     public var nextUnlock: (item: PetItem, missing: Int)? {
         save.ledger.nextUnlock.map { ($0, max(0, $0.cost - balance)) }
+    }
+
+    // MARK: Limited edition
+
+    /// Grants the limited edition items whose milestones `progress` has
+    /// reached and returns the ones that are new, for the celebration.
+    @discardableResult
+    public mutating func unlockMilestones(_ progress: PetMilestoneProgress,
+                                          calendar: Calendar = .current) -> [PetItem] {
+        PetLimitedEdition.allCases.compactMap { edition in
+            guard let milestone = edition.milestone, progress.isReached(milestone, calendar: calendar),
+                  save.ledger.grant(edition.item) else { return nil }
+            return edition.item
+        }
+    }
+
+    /// Applies the item ids the Tabbi server granted to this account (event
+    /// items such as the launch week cap) and returns the ones that are new.
+    /// Unknown ids (from a newer build) and shop items are ignored, and an
+    /// item stays owned if a later sync no longer lists it.
+    @discardableResult
+    public mutating func applyGrants(_ ids: some Sequence<String>) -> [PetItem] {
+        let items = Set(ids.compactMap(PetItem.init(id:)))
+        return PetCloset.limitedShelf.filter { items.contains($0) && save.ledger.grant($0) }
     }
 }
 

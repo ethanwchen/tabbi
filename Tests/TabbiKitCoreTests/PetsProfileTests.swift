@@ -248,8 +248,8 @@ final class PetProfileTests: XCTestCase {
 
 final class PetUnlockTests: XCTestCase {
     func testCatalogCoversEveryItemCheapestFirst() {
-        let items = PetItem.allCases
-        XCTAssertEqual(items.count, PetOutfit.allCases.count + PetAccessory.allCases.count)
+        XCTAssertEqual(PetItem.allCases.count, PetOutfit.allCases.count + PetAccessory.allCases.count)
+        let items = PetItem.shopItems
         XCTAssertEqual(items.map(\.cost), items.map(\.cost).sorted())
         XCTAssertEqual(Set(items.filter(\.isFree)),
                        [.outfit(.none), .accessory(.scarf), .accessory(.partyHat), .accessory(.bowTie)],

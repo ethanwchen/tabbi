@@ -8,7 +8,7 @@ final class PetClosetTests: XCTestCase {
 
     func testWardrobeListsEveryItemCheapestFirst() {
         XCTAssertFalse(PetCloset.wardrobe.contains(.outfit(.none)))
-        XCTAssertEqual(PetCloset.wardrobe.count, PetItem.allCases.count - 1)
+        XCTAssertEqual(PetCloset.wardrobe.count, PetItem.shopItems.count - 1)
         XCTAssertEqual(PetCloset.wardrobe.map(\.cost), PetCloset.wardrobe.map(\.cost).sorted())
     }
 

@@ -64,14 +64,24 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
     case astronautHelmet
     case chunkyHeadphones
     case bowTie
+    // Limited edition items (`PetLimitedEdition`): earned or granted, never sold.
+    /// A red baseball cap worn backwards, its snapback strap showing.
+    case backwardsCap
+    /// A red headband with a small flame, for a week-long study streak.
+    case flameHeadband
+    /// A wreath of gold leaves, for 50 hours focused.
+    case goldenLaurel
+    /// A gold medal on a red ribbon, for finishing a Party session.
+    case teamMedal
 
     public var slot: PetAccessorySlot {
         switch self {
-        case .stethoscope, .scarf, .bowTie: .neck
+        case .stethoscope, .scarf, .bowTie, .teamMedal: .neck
         case .roundGlasses, .coolSunglasses: .face
         case .surgicalCap, .headMirror, .graduationCap, .beanie, .tinyCrown, .partyHat, .chefHat, .wizardHat,
              .bunnyEars, .witchHat, .cowboyHat, .flowerCrown, .frogHat, .ninjaHeadband, .pirateHat,
-             .blindfoldedSorcerer, .astronautHelmet, .chunkyHeadphones: .head
+             .blindfoldedSorcerer, .astronautHelmet, .chunkyHeadphones, .backwardsCap, .flameHeadband,
+             .goldenLaurel: .head
         }
     }
 
@@ -106,6 +116,10 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
         case .astronautHelmet: "Astronaut Helmet"
         case .chunkyHeadphones: "Chunky Headphones"
         case .bowTie: "Bow Tie"
+        case .backwardsCap: "Backwards Cap"
+        case .flameHeadband: "Flame Headband"
+        case .goldenLaurel: "Golden Laurel"
+        case .teamMedal: "Team Medal"
         }
     }
 

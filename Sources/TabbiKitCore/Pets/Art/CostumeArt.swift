@@ -178,3 +178,20 @@ extension CostumeArt {
     /// along the brim, and sides that frame the face, so it reads as a hood.
     static let dinosaurHood = PetArt.costume.headItem("dinosaurHood")
 }
+
+// MARK: - Limited edition items
+
+extension CostumeArt {
+    /// A crimson baseball cap turned backwards: the strap opening shows
+    /// over the brow with a metal snap, and the brim hides behind the head.
+    static let backwardsCap = PetArt.costume.headItem("backwardsCap")
+
+    /// A crimson headband with a small gold and red flame over the brow.
+    static let flameHeadband = PetArt.costume.headItem("flameHeadband")
+
+    /// A wreath of gold leaves with a few green ones, resting on the brow.
+    static let goldenLaurel = PetArt.costume.headItem("goldenLaurel")
+
+    /// A gold medal with a glint, hung from a crimson ribbon around the neck.
+    static let teamMedal = PetArt.costume.bodyItem("teamMedal")
+}
