@@ -219,6 +219,7 @@ Afterwards the token, and every other Mac's token for the same friend code, is `
 Body: `{"identityToken": "<JWT>", "authorizationCode": "<code>"}` from `ASAuthorizationAppleIDCredential` (the code is optional).
 Send the Mac's current friends token as Bearer if it has one; omit the header otherwise.
 The server checks the identity token's RS256 signature against Apple's keys (`https://appleid.apple.com/auth/keys`, cached), its issuer (`https://appleid.apple.com`), audience (`dev.tabbi.Tabbi`) and expiry, and reads only `sub` (never the email).
+Each identity token is accepted once: sending the same token again (a replay, or a retry after a lost reply) is `401 invalid_identity_token`, and the app asks Apple for a new one by signing in again.
 
 `200 {"ok": true, "token": "<64 hex>", "code": "K7QW2MZD", "profile": Profile, "newAccount": true}`.
 Store `token` and `code` in place of the old ones.
@@ -229,12 +230,13 @@ Store `token` and `code` in place of the old ones.
 - An Apple ID that already has an account returns its friend code with a new token for this Mac (`newAccount: false`).
   If the caller had an anonymous user, its friends (up to the friend limit) and study minutes move to the account and the anonymous user is deleted, so the app must switch to the returned token.
   A caller that already is the account gets its own token back.
+  An account keeps the tokens of its 20 most recent sign-ins besides the first Mac's; a 21st sign-in retires the oldest of them, and that Mac gets `unauthorized` and signs in again.
 
 The authorization code is exchanged for an Apple refresh token, which is kept only to revoke it on `DELETE /v1/me`.
 That needs the Worker secrets `APPLE_TEAM_ID`, `APPLE_KEY_ID` and `APPLE_PRIVATE_KEY`; without them, or when Apple refuses the code, the exchange is skipped, logged, and sign-in still succeeds.
 Sign-ins are limited to 10 per minute per IP.
 
-Errors: `invalid_identity_token` (401, the token is malformed, expired, not Apple's or not for Tabbi; ask the user to sign in again), `apple_unavailable` (503, Apple's keys could not be fetched; the server asks Apple again at most once a minute, so retry after a minute), `invalid_json`, `unknown_field`, `invalid_field`, `rate_limited`.
+Errors: `invalid_identity_token` (401, the token is malformed, expired, already used, not Apple's or not for Tabbi; ask the user to sign in again), `apple_unavailable` (503, Apple's keys could not be fetched; the server asks Apple again at most once a minute, so retry after a minute), `invalid_json`, `unknown_field`, `invalid_field`, `rate_limited`.
 
 ### `POST /v1/auth/signout`
 
@@ -263,6 +265,7 @@ Errors: `no_account` (403, an anonymous user would lose its only token), `unauth
 
 Sorted by name, case-insensitively.
 `party` is the friend's current (not expired) party; offer "Join" when `online` is true and `party` is not null.
+`size` counts only the members you would see in that party (no one you blocked or who blocked you, and no banned users).
 
 ### `POST /v1/friends`
 
@@ -321,7 +324,7 @@ Errors:
 | --- | --- | --- |
 | 400 | `invalid_field` | not a valid friend code |
 | 400 | `self_block` | that is my own code |
-| 404 | `unknown_code` | no user has that code |
+| 404 | `unknown_code` | no user has that code, that user blocked me, or that user is banned (as for `POST /v1/friends`, so no route reveals a block or a ban) |
 | 409 | `block_limit` | I already blocked 1000 users |
 
 ### `DELETE /v1/blocks/{code}`
@@ -347,7 +350,7 @@ Errors:
 | --- | --- | --- |
 | 400 | `invalid_field` | not a valid friend code, an unknown reason, or a note over 280 characters |
 | 400 | `self_report` | that is my own code |
-| 404 | `unknown_code` | no user has that code |
+| 404 | `unknown_code` | no user has that code, that user blocked me, or that user is banned |
 | 429 | `rate_limited` | more than 5 reports in a minute; wait for `Retry-After` seconds |
 | 429 | `report_limit` | 20 reports in the last 24 hours |
 
@@ -436,6 +439,8 @@ Errors:
 Body: empty or `{}`.
 `200 {"ok": true, "left": true}`; `left` is `false` if I was not in a party.
 If the host leaves, the longest-standing member becomes host; when the last member leaves, the party is deleted.
+Members who blocked the new host, or whom the new host blocked, leave the party at the same time, so a party never holds both sides of a block with its host.
+The same applies when Sign in with Apple carries blocks into an account that is in a party.
 
 ### `POST /v1/party/session`
 
@@ -471,12 +476,25 @@ Writes are limited to 20 per minute per user.
 
 Errors: `no_account` (403), `revision_required` (428, no `If-Match`), `invalid_revision` (400), `revision_conflict` (409), `invalid_json`, `unknown_field`, `invalid_field`, `body_too_large`, `rate_limited`.
 
+### Operator routes
+
+`GET /v1/admin/export` and `POST /v1/admin/restore` are for whoever runs the server, never for the app; see [`../security.md`](../security.md).
+They need `Authorization: Bearer <ADMIN_TOKEN>` (a Worker secret of at least 32 characters) and answer 404 `not_found` to anything else, including when no admin token is set.
+A wrong admin token counts as a failed authentication.
+The same rules hold for the moderation routes below.
+
+- `GET /v1/admin/export` returns `{ok, exportedAt, schemaVersion, tables}`, where `tables` maps each table name to its rows.
+- `POST /v1/admin/restore` takes exactly one of `{"at": <unix seconds within the last 30 days>}` or `{"bookmark": "<undoBookmark>"}`, returns `{ok, undoBookmark}`, and restarts the Hub with the restored storage.
+  Where point-in-time recovery is unavailable (local dev) it answers 501 `restore_unavailable`.
+- `DELETE /v1/admin/users/{code}` deletes a user as `DELETE /v1/me` does, without calling Apple, and returns `{ok, deleted}` (`false` if no such user).
+  It re-applies account deletions that a restore brought back.
+
 ## Moderation (maintainer)
 
 Reports wait on the server until the maintainer reads them; nothing happens to a reported user automatically.
 The `/v1/admin/` routes take the Worker secret `ADMIN_TOKEN` as Bearer token.
-Set it once with `npx wrangler secret put ADMIN_TOKEN` (a long random string, for example from `openssl rand -hex 32`); until it is set, every admin route answers `404 not_found`.
-A wrong token gets `401 unauthorized`, and each client IP gets at most 30 admin requests a minute.
+Set it once with `openssl rand -hex 32 | npx wrangler secret put ADMIN_TOKEN` (at least 32 characters); until it is set, every admin route answers `404 not_found`.
+A missing or wrong token also gets `404 not_found` and counts toward the client's failed authentications (60 a minute, then `429 rate_limited`).
 
 | Method and path | Purpose |
 | --- | --- |
@@ -519,12 +537,14 @@ curl -s -X POST -H "Authorization: Bearer $ADMIN_TOKEN" $TABBI/v1/admin/reports/
 ```
 
 - **Rename** for a bad name: the name and pet name become `student` and `buddy`, and the user cannot set the old ones again (`name_not_allowed`, `pet_name_not_allowed`).
+  Every rename adds to what is held, so a second rename keeps the first one's names held too.
   Replies `{"ok": true, "profile": Profile}`.
 - **Ban** for harassment or repeated abuse: the user leaves their party and disappears from everyone else's friend lists, parties and leaderboards.
   They cannot change their name or pet name, add friends, or create or join a party (`403 banned`), and `GET /v1/me` says `"banned": true`.
   Their data stays, so a ban can be lifted with `DELETE /v1/admin/users/{code}/ban`, which brings their friendships back as they were.
   Replies `{"ok": true, "banned": true}` (`false` if already banned).
-- Sign in with Apple carries a ban, a rename and reports over when an anonymous user folds into an account.
+- Sign in with Apple carries a ban, held names and reports over when an anonymous user folds into an account; the account keeps both users' held names.
+- An account that inherits a ban this way leaves its party at once, just as a ban does; the next member becomes host.
 
 ## Errors common to all routes
 
@@ -536,7 +556,7 @@ curl -s -X POST -H "Authorization: Bearer $ADMIN_TOKEN" $TABBI/v1/admin/reports/
 | 401 | `unauthorized` | missing, malformed or unknown token; if the user was deleted, register again |
 | 404 | `not_found` | unknown route or method |
 | 413 | `body_too_large` | body over 4096 bytes |
-| 429 | `rate_limited` | over 60 requests per minute per token; wait for `Retry-After` seconds |
+| 429 | `rate_limited` | over 60 requests per minute per token, or 60 failed authentications per minute from one client IP (an IPv6 /64 counts as one); wait for `Retry-After` seconds |
 | 500 | `internal` | server bug; retry later |
 | 503 | `unavailable` | temporarily unavailable; retry with backoff |
 

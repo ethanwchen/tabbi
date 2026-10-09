@@ -9,18 +9,19 @@ Per user, identified only by a random secret token (stored as a SHA-256 hash) an
 
 - the profile: a display name (up to 24 characters, any nickname works), the pet's name (up to 24 characters), species, breed, up to 6 colors, costume, up to 4 accessories, points and level, and when the friend code was created;
 - presence from the last heartbeat: status (`studying`, `break`, `idle` or `offline`), the study method id (for example `pomodoro`), when the current phase ends, minutes in the current session, minutes studied today, the study streak in days, your local calendar day, and the time of the last heartbeat;
-- study minutes per local calendar day, kept for 28 days, for the weekly leaderboard;
+- study minutes per local calendar day, kept for 28 days (older days are deleted daily, whether or not you still use the service), for the weekly leaderboard;
 - the friend codes you are friends with;
 - the friend codes you blocked, and when;
 - reports you send about another user: their friend code, their name and pet name at that moment, your friend code, the reason you picked, your optional note (up to 280 characters) and the time;
-- if the maintainer acts on a report: whether you are banned, and the name and pet name they replaced, so they cannot be set again;
+- if the maintainer acts on a report: whether you are banned, and every name and pet name they replaced, so they cannot be set again;
 - the party you are in, when you joined it, and, for the party itself, its 6-character code, its host, its last activity time and the shared session the host started (study method and phase end).
 
 Only if you choose to sign in with Apple, so your pet and progress follow you across your Macs:
 
 - Apple's stable, app-specific user id, linked to your friend code;
 - an Apple refresh token, kept only so the service can revoke your Sign in with Apple grant when you delete your account (it is never used to read anything from Apple);
-- one secret token per Mac you signed in on (stored as SHA-256 hashes);
+- one secret token per Mac you signed in on (stored as SHA-256 hashes; only the 20 most recent sign-ins are kept, so a Mac you no longer use is dropped over time);
+- a SHA-256 hash of each Apple sign-in token, kept only until that token expires (about ten minutes) so it cannot be used twice;
 - your sync document and when it last changed: the pet's look (species, breed, name, outfit), points earned and spent per Mac (each Mac is a random id), the ids of unlocked items, the calendar days you studied (at most 400) and your longest streak.
 
 Nothing else.
@@ -50,7 +51,7 @@ Your sync document and Apple account link are never shown to anyone, friends inc
 
 ## How to delete
 
-Leaving a party (`POST /v1/party/leave`) removes your membership; a party is deleted when its last member leaves or after 12 hours without activity.
+Leaving a party (`POST /v1/party/leave`) removes your membership; a party is deleted when its last member leaves, or within an hour once it has had 12 hours without activity.
 Removing a friend deletes the friendship in both directions.
 Unblocking someone deletes the block.
 A report stays until the account of the reporter or of the reported user is deleted.
@@ -59,6 +60,11 @@ If you signed in with Apple, it then revokes the app's Sign in with Apple grant 
 Your secret token, and the token of every other Mac you signed in on, stops working at once.
 Signing out on one Mac (`POST /v1/auth/signout`) deletes that Mac's token on the server; your account and other Macs stay signed in.
 Signing in with Apple on a Mac that already had a friend code of its own moves that code's friends, blocks, reports, any ban and study minutes to your account and deletes the old code.
+Reports between that code and your account are deleted, since they would now be about yourself.
+
+Deleted data leaves the live service at once.
+Copies can remain in backups for up to 30 days: Cloudflare keeps a 30-day point-in-time history of the storage, and the operator keeps encrypted exports for at most 30 days, used only to recover from an outage or a mistake.
+If the service is ever restored from a backup, every account deleted after that backup is deleted again right away.
 
 ## No analytics, no third parties
 

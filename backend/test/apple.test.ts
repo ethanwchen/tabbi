@@ -5,7 +5,8 @@ import {
   APPLE_AUTH_PER_MIN, APPLE_CLIENT_ID, APPLE_ISSUER, APPLE_KEYS_URL, APPLE_REVOKE_URL, APPLE_TOKEN_URL, appleSecrets,
   exchangeAuthorizationCode, resetAppleKeyCache, revokeRefreshToken, verifyIdentityToken,
 } from "../src/apple";
-import { admin, call, expectError, freshIp, hub, register } from "./helpers";
+import { MAX_DEVICE_TOKENS, sha256Hex } from "../src/lib";
+import { admin, call, expectError, freshIp, hub, pinClockToMinuteStart, register } from "./helpers";
 
 // ---------- a fake Apple ----------
 
@@ -31,11 +32,15 @@ beforeAll(async () => {
 
 const now = () => Math.floor(Date.now() / 1000);
 
-/** An identity token as Apple would sign it; `claims` and `header` override the defaults. */
+/**
+ * An identity token as Apple would sign it; `claims` and `header` override the defaults. Each one is
+ * unique, as Apple's are (they carry per-sign-in claims such as `c_hash` and `auth_time`).
+ */
 async function identityToken(sub: string, claims: Record<string, unknown> = {}, opts: { kid?: string; key?: CryptoKey; alg?: string } = {}) {
   const header = encode({ alg: opts.alg ?? "RS256", kid: opts.kid ?? "apple-key-1" });
   const payload = encode({
-    iss: APPLE_ISSUER, aud: APPLE_CLIENT_ID, exp: now() + 600, iat: now(), sub, email: "never-read@example.com", ...claims,
+    iss: APPLE_ISSUER, aud: APPLE_CLIENT_ID, exp: now() + 600, iat: now(), sub, email: "never-read@example.com",
+    c_hash: crypto.randomUUID(), ...claims,
   });
   const sig = await crypto.subtle.sign("RSASSA-PKCS1-v1_5", opts.key ?? signingKey.privateKey, new TextEncoder().encode(`${header}.${payload}`));
   return `${header}.${payload}.${b64url(new Uint8Array(sig))}`;
@@ -67,6 +72,7 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.restoreAllMocks();
+  vi.useRealTimers();
 });
 
 const signIn = (body: Record<string, unknown>, token?: string, ip = freshIp()) => call("POST", "/v1/auth/apple", body, token, ip);
@@ -75,6 +81,19 @@ async function storedAccounts(code: string) {
   return runInDurableObject(hub(), (_, state) =>
     state.storage.sql.exec<{ apple_sub: string; refresh_token: string | null }>(
       "SELECT apple_sub, refresh_token FROM apple_accounts WHERE code = ?", code).toArray());
+}
+
+/** How many per-Mac tokens an account has, not counting the first Mac's. */
+async function deviceTokenCount(code: string) {
+  return runInDurableObject(hub(), (_, state) =>
+    state.storage.sql.exec<{ n: number }>("SELECT COUNT(*) AS n FROM device_tokens WHERE code = ?", code).one().n);
+}
+
+/** Whether the Hub still keeps this identity token as used. */
+async function isKeptAsUsed(token: string) {
+  const hash = await sha256Hex(token);
+  return runInDurableObject(hub(), (_, state) =>
+    state.storage.sql.exec("SELECT 1 FROM used_identity_tokens WHERE token_hash = ?", hash).toArray().length > 0);
 }
 
 /** Reads the claims of a JWT without verifying it. */
@@ -117,6 +136,26 @@ describe("POST /v1/auth/apple", () => {
     expect(r.body.token).not.toBe(mac1.token);
     expect((await call("GET", "/v1/me", undefined, r.body.token)).body.profile.code).toBe(mac1.code);
     expect((await call("GET", "/v1/me", undefined, mac1.token)).status).toBe(200);
+  });
+
+  it("keeps at most MAX_DEVICE_TOKENS Mac tokens besides the first Mac's, dropping the oldest", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(Date.now());
+    const mac1 = await register();
+    await signIn({ identityToken: await identityToken("sub.many.macs") }, mac1.token);
+    const macs: string[] = [];
+    for (let i = 0; i <= MAX_DEVICE_TOKENS; i++) {
+      // A second apart, so "oldest" is well defined.
+      vi.setSystemTime(Date.now() + 1000);
+      const r = await signIn({ identityToken: await identityToken("sub.many.macs") });
+      expect(r.status).toBe(200);
+      macs.push(r.body.token);
+    }
+    expect(await deviceTokenCount(mac1.code)).toBe(MAX_DEVICE_TOKENS);
+    expectError(await call("GET", "/v1/me", undefined, macs[0]), 401, "unauthorized");
+    for (const token of [mac1.token, macs[1], macs[MAX_DEVICE_TOKENS]]) {
+      expect((await call("GET", "/v1/me", undefined, token)).status).toBe(200);
+    }
   });
 
   it("returns the caller's own token when the caller is already the account", async () => {
@@ -165,6 +204,22 @@ describe("POST /v1/auth/apple", () => {
     expectError(await call("POST", "/v1/friends", { code: mac1.code }, blocker.token), 409, "blocked");
   });
 
+  it("enforces carried blocks in the account's party when it folds an anonymous user in", async () => {
+    const mac1 = await register();
+    await signIn({ identityToken: await identityToken("sub.fold.party") }, mac1.token);
+    const mac2 = await register();
+    const pest = await register();
+    const party = (await call("POST", "/v1/party", undefined, mac1.token)).body.party.code;
+    await call("POST", "/v1/party/join", { code: party }, pest.token);
+    await call("POST", "/v1/blocks", { code: pest.code }, mac2.token);
+
+    const r = await signIn({ identityToken: await identityToken("sub.fold.party") }, mac2.token);
+    expect(r.body.code).toBe(mac1.code);
+    expect((await call("GET", "/v1/party", undefined, pest.token)).body.party).toBeNull();
+    const members = (await call("GET", "/v1/party", undefined, r.body.token)).body.party.members;
+    expect(members.map((m: any) => m.profile.code)).toEqual([mac1.code]);
+  });
+
   it("carries a ban and reports into the account it folds into", async () => {
     const mac1 = await register();
     await signIn({ identityToken: await identityToken("sub.fold.ban") }, mac1.token);
@@ -178,6 +233,50 @@ describe("POST /v1/auth/apple", () => {
     expect((await call("GET", "/v1/me", undefined, r.body.token)).body.banned).toBe(true);
     const reports = (await admin("GET", "/reports?status=all")).body.reports;
     expect(reports.find((x: any) => x.reporter.code === reporter.code).reported.code).toBe(mac1.code);
+  });
+
+  it("takes the account out of its party when a folded-in ban carries over, as banning it would", async () => {
+    const mac1 = await register();
+    await signIn({ identityToken: await identityToken("sub.fold.banparty") }, mac1.token);
+    const mac2 = await register();
+    const friend = await register();
+    const party = (await call("POST", "/v1/party", undefined, mac1.token)).body.party.code;
+    await call("POST", "/v1/party/join", { code: party }, friend.token);
+    await admin("POST", `/users/${mac2.code}/ban`);
+
+    const r = await signIn({ identityToken: await identityToken("sub.fold.banparty") }, mac2.token);
+    expect(r.body.code).toBe(mac1.code);
+    expect((await call("GET", "/v1/party", undefined, r.body.token)).body.party).toBeNull();
+    const view = (await call("GET", "/v1/party", undefined, friend.token)).body.party;
+    expect(view.host).toBe(friend.code);
+    expect(view.members.map((m: any) => m.profile.code)).toEqual([friend.code]);
+  });
+
+  it("keeps both users' replaced names held when it folds an anonymous user into an account", async () => {
+    const mac1 = await register({ name: "Account Bad" });
+    await signIn({ identityToken: await identityToken("sub.fold.holds") }, mac1.token);
+    await admin("POST", `/users/${mac1.code}/rename`);
+    const mac2 = await register({ name: "Anon Bad" });
+    await admin("POST", `/users/${mac2.code}/rename`);
+
+    const r = await signIn({ identityToken: await identityToken("sub.fold.holds") }, mac2.token);
+    expect(r.body.code).toBe(mac1.code);
+    expectError(await call("PATCH", "/v1/me", { name: "Account Bad" }, r.body.token), 400, "name_not_allowed");
+    expectError(await call("PATCH", "/v1/me", { name: "Anon Bad" }, r.body.token), 400, "name_not_allowed");
+  });
+
+  it("drops reports between the anonymous user and the account it folds into instead of making self-reports", async () => {
+    const mac1 = await register({ name: "Account" });
+    await signIn({ identityToken: await identityToken("sub.fold.selfreport") }, mac1.token);
+    const mac2 = await register({ name: "Anon" });
+    await call("POST", "/v1/reports", { code: mac1.code, reason: "spam" }, mac2.token);
+    await call("POST", "/v1/reports", { code: mac2.code, reason: "other" }, mac1.token);
+
+    const r = await signIn({ identityToken: await identityToken("sub.fold.selfreport") }, mac2.token);
+    expect(r.body.code).toBe(mac1.code);
+    const reports = (await admin("GET", "/reports?status=all")).body.reports;
+    expect(reports.filter((x: any) => x.reporter.code === x.reported.code)).toEqual([]);
+    expect(reports.filter((x: any) => [mac1.code, mac2.code].includes(x.reporter.code))).toEqual([]);
   });
 
   it("does not fold or relink a caller that already belongs to another Apple ID", async () => {
@@ -264,6 +363,51 @@ describe("POST /v1/auth/apple", () => {
     expect(again.body).toMatchObject({ code: r.body.code, newAccount: false });
   });
 
+  it("accepts each identity token once, so a copied token cannot open a second session", async () => {
+    const token = await identityToken("sub.replay");
+    const first = await signIn({ identityToken: token, authorizationCode: "code-1" });
+    expect(first.status).toBe(200);
+    // From another IP and with or without a caller token, the same token is refused before Apple is asked.
+    const exchanges = appleCalls.filter((c) => c.url === APPLE_TOKEN_URL).length;
+    expectError(await signIn({ identityToken: token, authorizationCode: "code-1" }), 401, "invalid_identity_token");
+    expectError(await signIn({ identityToken: token }, (await register()).token), 401, "invalid_identity_token");
+    expect(appleCalls.filter((c) => c.url === APPLE_TOKEN_URL)).toHaveLength(exchanges);
+    // A new token for the same Apple ID still signs in.
+    const again = await signIn({ identityToken: await identityToken("sub.replay") });
+    expect(again.body).toMatchObject({ code: first.body.code, newAccount: false });
+  });
+
+  it("refuses a used token whose signature is spelled differently but decodes to the same bytes", async () => {
+    const token = await identityToken("sub.replay.malleable");
+    expect((await signIn({ identityToken: token })).status).toBe(200);
+    // A 256-byte RS256 signature is 342 base64url characters, and the last one carries 4 unused bits, so
+    // 15 other characters there decode to the same signature. Each must count as the token already used.
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+    const last = alphabet.indexOf(token.slice(-1));
+    const twins = [...alphabet].filter((c, i) => i !== last && i >> 4 === last >> 4);
+    expect(twins).toHaveLength(15);
+    for (const c of twins) {
+      expectError(await signIn({ identityToken: token.slice(0, -1) + c }), 401, "invalid_identity_token");
+    }
+  });
+
+  it("does not use up a token that fails verification, and forgets used tokens once they expire", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    const t = now();
+    const refused = await identityToken("sub.unused", { aud: "com.other.app" });
+    expectError(await signIn({ identityToken: refused }), 401, "invalid_identity_token");
+    expect(await isKeptAsUsed(refused)).toBe(false);
+    const used = await identityToken("sub.unused", { exp: t + 600 });
+    expect((await signIn({ identityToken: used })).status).toBe(200);
+    expect(await isKeptAsUsed(used)).toBe(true);
+    // At its expiry plus the allowed clock skew it would no longer verify, and the next sign-in drops it.
+    vi.setSystemTime((t + 660) * 1000);
+    expectError(await signIn({ identityToken: used }), 401, "invalid_identity_token");
+    vi.setSystemTime((t + 661) * 1000);
+    expect((await signIn({ identityToken: await identityToken("sub.unused.2") })).status).toBe(200);
+    expect(await isKeptAsUsed(used)).toBe(false);
+  });
+
   it("is 503 when Apple's keys cannot be fetched", async () => {
     keysUp = false;
     expectError(await signIn({ identityToken: await identityToken("sub.down") }), 503, "apple_unavailable");
@@ -276,11 +420,12 @@ describe("POST /v1/auth/apple", () => {
   });
 
   it("is rate limited per IP", async () => {
+    pinClockToMinuteStart();
     const ip = freshIp();
     for (let i = 0; i < APPLE_AUTH_PER_MIN; i++) await signIn({ identityToken: "x.y.z" }, undefined, ip);
     const r = await signIn({ identityToken: "x.y.z" }, undefined, ip);
     expectError(r, 429, "rate_limited");
-    expect(r.headers.get("Retry-After")).toMatch(/^\d+$/);
+    expect(r.headers.get("Retry-After")).toBe("60");
   });
 });
 
@@ -371,25 +516,27 @@ describe("apple helpers", () => {
     }
     expect(appleCalls.filter((c) => c.url === APPLE_KEYS_URL)).toHaveLength(1);
     keysUp = true;
-    expect(await verifyIdentityToken(token, t + 60)).toBe("sub.outage");
+    expect(await verifyIdentityToken(token, t + 60)).toMatchObject({ sub: "sub.outage" });
     expect(appleCalls.filter((c) => c.url === APPLE_KEYS_URL)).toHaveLength(2);
   });
 
   it("keep trusting expired cached keys while a refetch fails, without asking Apple again", async () => {
     const t = now();
     const token = await identityToken("sub.stale");
-    expect(await verifyIdentityToken(token, t)).toBe("sub.stale");
+    expect(await verifyIdentityToken(token, t)).toMatchObject({ sub: "sub.stale" });
     keysUp = false;
     // An hour later the cache is stale; the failed refetch falls back to the cached key, and so does the next sign-in.
     const later = t + 3600;
     const lateToken = await identityToken("sub.stale", { iat: later, exp: later + 600 });
-    expect(await verifyIdentityToken(lateToken, later)).toBe("sub.stale");
-    expect(await verifyIdentityToken(lateToken, later + 10)).toBe("sub.stale");
+    expect(await verifyIdentityToken(lateToken, later)).toMatchObject({ sub: "sub.stale" });
+    expect(await verifyIdentityToken(lateToken, later + 10)).toMatchObject({ sub: "sub.stale" });
     expect(appleCalls.filter((c) => c.url === APPLE_KEYS_URL)).toHaveLength(2);
   });
 
   it("verifies a token directly and never needs the email claim", async () => {
-    expect(await verifyIdentityToken(await identityToken("sub.direct"), now())).toBe("sub.direct");
+    const t = now();
+    const token = await identityToken("sub.direct", { exp: t + 600 });
+    expect(await verifyIdentityToken(token, t)).toEqual({ sub: "sub.direct", reusableUntil: t + 660 });
   });
 
   it("accept a private key with escaped newlines", async () => {

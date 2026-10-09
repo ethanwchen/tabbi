@@ -16,7 +16,12 @@ export default defineConfig(async () => ({
   plugins: [cloudflareTest({
     wrangler: { configPath: "./wrangler.toml" },
     miniflare: {
-      bindings: { ADMIN_TOKEN: "test-admin-secret", APPLE_TEAM_ID: "TESTTEAM01", APPLE_KEY_ID: "TESTKEY001", APPLE_PRIVATE_KEY: await throwawayAppleKey() },
+      bindings: {
+        APPLE_TEAM_ID: "TESTTEAM01",
+        APPLE_KEY_ID: "TESTKEY001",
+        APPLE_PRIVATE_KEY: await throwawayAppleKey(),
+        ADMIN_TOKEN: Array.from(crypto.getRandomValues(new Uint8Array(32)), (b) => b.toString(16).padStart(2, "0")).join(""),
+      },
     },
   })],
 }));

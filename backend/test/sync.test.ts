@@ -1,9 +1,9 @@
 import { SELF, runInDurableObject } from "cloudflare:test";
 import { env } from "cloudflare:workers";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { migrate } from "../src/hub";
 import { MAX_SYNC_BYTES, SYNC_PUT_PER_MIN } from "../src/sync";
-import { BASE, Reply, call, expectError, hub, linkAppleAccount, register } from "./helpers";
+import { BASE, Reply, call, expectError, hub, linkAppleAccount, pinClockToMinuteStart, register } from "./helpers";
 
 const DOC = {
   schemaVersion: 1,
@@ -106,13 +106,15 @@ describe("PUT /v1/sync", () => {
   });
 
   it("rate limits writes per user", async () => {
-    const a = await signedIn();
-    for (let i = 0; i < SYNC_PUT_PER_MIN; i++) expect((await put(a.token, DOC, String(i))).status).toBe(200);
-    const limited = await put(a.token, DOC, String(SYNC_PUT_PER_MIN));
-    // The limit may roll over with the minute; then the write goes through instead.
-    if (limited.status !== 200) {
+    pinClockToMinuteStart();
+    try {
+      const a = await signedIn();
+      for (let i = 0; i < SYNC_PUT_PER_MIN; i++) expect((await put(a.token, DOC, String(i))).status).toBe(200);
+      const limited = await put(a.token, DOC, String(SYNC_PUT_PER_MIN));
       expectError(limited, 429, "rate_limited");
-      expect(Number(limited.headers.get("Retry-After"))).toBeGreaterThan(0);
+      expect(limited.headers.get("Retry-After")).toBe("60");
+    } finally {
+      vi.useRealTimers();
     }
   });
 
@@ -150,16 +152,35 @@ describe("schema migrations", () => {
       sql.exec("DROP TABLE reports");
       sql.exec("DROP TABLE bans");
       sql.exec("DROP TABLE name_holds");
+      sql.exec("DROP TABLE used_identity_tokens");
       sql.exec("DROP TABLE schema_version");
       sql.exec(`INSERT INTO users (code, token_hash, name, pet_name, species, breed, colors, costume, accessories, points, level, created_at)
         VALUES ('AAAAAAAA', 'h', 'n', 'p', 'cat', 'tabby', '[]', 'none', '[]', 5, 1, 0)`);
       migrate(state.storage);
-      expect(sql.exec<{ version: number }>("SELECT version FROM schema_version").one().version).toBe(4);
+      expect(sql.exec<{ version: number }>("SELECT version FROM schema_version").one().version).toBe(6);
       expect(sql.exec<{ points: number }>("SELECT points FROM users WHERE code = 'AAAAAAAA'").one().points).toBe(5);
       expect(sql.exec("SELECT * FROM sync_documents").toArray()).toEqual([]);
+      expect(sql.exec("SELECT * FROM used_identity_tokens").toArray()).toEqual([]);
       // Running again is a no-op.
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 4 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 6 }]);
+    });
+  });
+
+  it("adds the used identity token table to a version 4 database and keeps its accounts", async () => {
+    const stub = env.HUB.get(env.HUB.idFromName("version-4"));
+    await runInDurableObject(stub, (_, state) => {
+      const sql = state.storage.sql;
+      sql.exec("DROP TABLE used_identity_tokens");
+      sql.exec("DROP TABLE name_holds");
+      sql.exec(`CREATE TABLE name_holds (code TEXT PRIMARY KEY, name TEXT NOT NULL, pet_name TEXT NOT NULL,
+        created_at INTEGER NOT NULL) WITHOUT ROWID`);
+      sql.exec("UPDATE schema_version SET version = 4");
+      sql.exec("INSERT INTO apple_accounts (apple_sub, code, refresh_token, created_at) VALUES ('s', 'BBBBBBBB', NULL, 0)");
+      migrate(state.storage);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 6 }]);
+      expect(sql.exec("SELECT apple_sub FROM apple_accounts").toArray()).toEqual([{ apple_sub: "s" }]);
+      expect(sql.exec("SELECT * FROM used_identity_tokens").toArray()).toEqual([]);
     });
   });
 });

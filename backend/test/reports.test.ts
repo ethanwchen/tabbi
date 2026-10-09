@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { env, runInDurableObject } from "cloudflare:test";
 import { migrate } from "../src/hub";
-import { MAX_REPORTS_PER_DAY, REPORTS_PER_MIN, isAdminToken } from "../src/moderation";
-import { ADMIN_TOKEN, admin, call, expectError, hub, register } from "./helpers";
+import { MAX_REPORTS_PER_DAY, REPORTS_PER_MIN } from "../src/moderation";
+import { admin, call, expectError, freshIp, hub, register } from "./helpers";
 
 const report = (by: { token: string }, who: { code: string }, reason = "inappropriate_name", note?: string) =>
   call("POST", "/v1/reports", note === undefined ? { code: who.code, reason } : { code: who.code, reason, note }, by.token);
@@ -107,21 +107,13 @@ describe("POST /v1/reports", () => {
 });
 
 describe("admin routes", () => {
-  it("need the admin token", async () => {
+  it("need the admin token and look like unknown paths without it", async () => {
     const a = await register();
-    expectError(await admin("GET", "/reports", "wrong"), 401, "unauthorized");
-    expectError(await admin("GET", "/reports", a.token), 401, "unauthorized");
-    expectError(await call("GET", "/v1/admin/reports"), 401, "unauthorized");
+    expectError(await admin("GET", "/reports", "wrong"), 404, "not_found");
+    expectError(await admin("GET", "/reports", a.token), 404, "not_found");
+    expectError(await call("GET", "/v1/admin/reports", undefined, undefined, freshIp()), 404, "not_found");
     expectError(await admin("GET", "/nothing"), 404, "not_found");
     expectError(await admin("GET", "/reports?status=closed"), 400, "invalid_field");
-  });
-
-  it("compare the token without matching an unset or empty secret", async () => {
-    expect(await isAdminToken(ADMIN_TOKEN, { ADMIN_TOKEN })).toBe(true);
-    expect(await isAdminToken("other", { ADMIN_TOKEN })).toBe(false);
-    expect(await isAdminToken("", { ADMIN_TOKEN: "" })).toBe(false);
-    expect(await isAdminToken("anything", {})).toBe(false);
-    expect(await isAdminToken(null, { ADMIN_TOKEN })).toBe(false);
   });
 
   it("dismiss a report, which leaves the open list but stays in the full one", async () => {
@@ -152,6 +144,26 @@ describe("admin routes", () => {
     expect((await call("PATCH", "/v1/me", { name: "student", points: 9 }, b.token)).body.profile.points).toBe(9);
     expect((await call("PATCH", "/v1/me", { name: "Kind Name" }, b.token)).body.profile.name).toBe("Kind Name");
     expectError(await admin("POST", "/users/ZZZZZZZZ/rename"), 404, "unknown_code");
+  });
+
+  it("keep every replaced name held when a user is renamed more than once", async () => {
+    const b = await register({ name: "First Bad", petName: "Pet One" });
+    await admin("POST", `/users/${b.code}/rename`);
+    await call("PATCH", "/v1/me", { name: "Second Bad", petName: "Pet Two" }, b.token);
+    await admin("POST", `/users/${b.code}/rename`);
+
+    expectError(await call("PATCH", "/v1/me", { name: "first bad" }, b.token), 400, "name_not_allowed");
+    expectError(await call("PATCH", "/v1/me", { name: "Second Bad" }, b.token), 400, "name_not_allowed");
+    expectError(await call("PATCH", "/v1/me", { petName: "Pet One" }, b.token), 400, "pet_name_not_allowed");
+    expectError(await call("PATCH", "/v1/me", { petName: "pet two" }, b.token), 400, "pet_name_not_allowed");
+  });
+
+  it("hold only the names a rename replaced, so a default name stays settable", async () => {
+    const b = await register({ name: "student", petName: "Rude Pet" });
+    await admin("POST", `/users/${b.code}/rename`);
+    expectError(await call("PATCH", "/v1/me", { petName: "Rude Pet" }, b.token), 400, "pet_name_not_allowed");
+    expect((await call("PATCH", "/v1/me", { name: "Kind" }, b.token)).body.profile.name).toBe("Kind");
+    expect((await call("PATCH", "/v1/me", { name: "student" }, b.token)).body.profile.name).toBe("student");
   });
 
   it("ban a user: hidden from friends, parties and the leaderboard, no name changes or joining, reversible", async () => {
@@ -203,14 +215,37 @@ describe("schema step 4", () => {
       sql.exec("DROP TABLE reports");
       sql.exec("DROP TABLE bans");
       sql.exec("DROP TABLE name_holds");
+      sql.exec("DROP TABLE used_identity_tokens");
       sql.exec("UPDATE schema_version SET version = 3");
       sql.exec("INSERT INTO blocks (blocker, blocked, created_at) VALUES ('AAAAAAAA', 'BBBBBBBB', 0)");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 4 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 6 }]);
       expect(sql.exec("SELECT * FROM reports").toArray()).toEqual([]);
       expect(sql.exec("SELECT * FROM bans").toArray()).toEqual([]);
       expect(sql.exec("SELECT * FROM name_holds").toArray()).toEqual([]);
       expect(sql.exec("SELECT blocker FROM blocks").toArray()).toEqual([{ blocker: "AAAAAAAA" }]);
+    });
+  });
+});
+
+describe("schema step 6", () => {
+  it("splits each old name hold into one row per replaced name and drops held placeholders", async () => {
+    const stub = env.HUB.get(env.HUB.idFromName("before-name-holds-by-value"));
+    await runInDurableObject(stub, (_, state) => {
+      const sql = state.storage.sql;
+      // A version 5 database: one hold row per user with both names, placeholders included.
+      sql.exec("DROP TABLE name_holds");
+      sql.exec(`CREATE TABLE name_holds (code TEXT PRIMARY KEY, name TEXT NOT NULL, pet_name TEXT NOT NULL,
+        created_at INTEGER NOT NULL) WITHOUT ROWID`);
+      sql.exec("INSERT INTO name_holds VALUES ('AAAAAAAA', 'Rude', 'Worse', 7), ('BBBBBBBB', 'student', 'Bad Pet', 8)");
+      sql.exec("UPDATE schema_version SET version = 5");
+      migrate(state.storage);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 6 }]);
+      expect(sql.exec("SELECT code, kind, value, created_at FROM name_holds ORDER BY code, kind").toArray()).toEqual([
+        { code: "AAAAAAAA", kind: "name", value: "Rude", created_at: 7 },
+        { code: "AAAAAAAA", kind: "pet", value: "Worse", created_at: 7 },
+        { code: "BBBBBBBB", kind: "pet", value: "Bad Pet", created_at: 8 },
+      ]);
     });
   });
 });

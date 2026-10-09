@@ -1,8 +1,8 @@
 import { SELF } from "cloudflare:test";
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import catalog from "../shared/catalog.json";
 import { REGISTER_PER_MIN, RATE_LIMIT_PER_MIN } from "../src/lib";
-import { BASE, call, expectError, freshIp, register } from "./helpers";
+import { BASE, call, expectError, freshIp, pinClockToMinuteStart, register } from "./helpers";
 
 const FULL = {
   name: "Maya",
@@ -150,14 +150,15 @@ describe("DELETE /v1/me", () => {
 });
 
 describe("rate limits", () => {
+  beforeEach(pinClockToMinuteStart);
+  afterEach(() => vi.useRealTimers());
+
   it(`allows ${REGISTER_PER_MIN} registrations per minute per IP, then 429 with Retry-After`, async () => {
     const ip = freshIp();
     for (let i = 0; i < REGISTER_PER_MIN; i++) expect((await call("POST", "/v1/register", {}, undefined, ip)).status).toBe(201);
     const r = await call("POST", "/v1/register", {}, undefined, ip);
     expectError(r, 429, "rate_limited");
-    const retry = Number(r.headers.get("Retry-After"));
-    expect(retry).toBeGreaterThanOrEqual(1);
-    expect(retry).toBeLessThanOrEqual(60);
+    expect(r.headers.get("Retry-After")).toBe("60");
     expect((await call("POST", "/v1/register", {}, undefined, freshIp())).status).toBe(201);
   });
 

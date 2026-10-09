@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { MAX_BLOCKS } from "../src/moderation";
 import { env, runInDurableObject } from "cloudflare:test";
 import { migrate } from "../src/hub";
-import { call, expectError, hub, register } from "./helpers";
+import { admin, call, expectError, hub, register } from "./helpers";
 
 const codes = (list: { profile: { code: string } }[]) => list.map((x) => x.profile.code);
 const friendsOf = async (u: { token: string }) => codes((await call("GET", "/v1/friends", undefined, u.token)).body.friends);
@@ -42,6 +42,27 @@ describe("blocks", () => {
     await block(a, b);
     expectError(await call("POST", "/v1/friends", { code: a.code }, b.token), 404, "unknown_code");
     expectError(await call("POST", "/v1/friends", { code: b.code }, a.token), 409, "blocked");
+  });
+
+  it("answers a blocked user's block and report like an unknown code, so neither reveals the block", async () => {
+    const a = await register({ name: "Ana" });
+    const b = await register();
+    await block(a, b);
+    expectError(await block(b, a), 404, "unknown_code");
+    expectError(await call("POST", "/v1/reports", { code: a.code, reason: "spam" }, b.token), 404, "unknown_code");
+    expect(await blocksOf(b)).toEqual([]);
+    // The blocker can still block again (a no-op) and report.
+    expect((await block(a, b)).body.blocked).toBe(false);
+    expect((await call("POST", "/v1/reports", { code: b.code, reason: "spam" }, a.token)).status).toBe(201);
+  });
+
+  it("answers a block or report of a banned user like an unknown code", async () => {
+    const a = await register();
+    const b = await register();
+    expect((await admin("POST", `/users/${b.code}/ban`)).body.banned).toBe(true);
+    expectError(await block(a, b), 404, "unknown_code");
+    expectError(await call("POST", "/v1/reports", { code: b.code, reason: "spam" }, a.token), 404, "unknown_code");
+    expectError(await call("POST", "/v1/friends", { code: b.code }, a.token), 404, "unknown_code");
   });
 
   it("drops the blocked user from the leaderboard", async () => {
@@ -101,6 +122,26 @@ describe("blocks", () => {
     expect(codes((await partyOf(c)).members)).toEqual([c.code]);
   });
 
+  it("removes members the new host blocked, or was blocked by, when the host leaves", async () => {
+    const host = await register();
+    const a = await register();
+    const b = await register();
+    const c = await register();
+    const d = await register();
+    const party = await createParty(host);
+    for (const u of [a, b, c, d]) await join(u, party);
+    await block(a, b);
+    await block(c, a);
+    await call("POST", "/v1/party/leave", undefined, host.token);
+    // a takes over as the longest-standing member; b and c could no longer stay in a's party.
+    const view = await partyOf(a);
+    expect(view.host).toBe(a.code);
+    expect(codes(view.members)).toEqual([a.code, d.code]);
+    expect(await partyOf(b)).toBeNull();
+    expect(await partyOf(c)).toBeNull();
+    expect(codes((await partyOf(d)).members)).toEqual([a.code, d.code]);
+  });
+
   it("hides two members from each other in someone else's party", async () => {
     const host = await register();
     const a = await register();
@@ -112,6 +153,20 @@ describe("blocks", () => {
     expect(codes((await partyOf(a)).members)).toEqual([host.code, a.code]);
     expect(codes((await partyOf(b)).members)).toEqual([host.code, b.code]);
     expect(codes((await partyOf(host)).members)).toEqual([host.code, a.code, b.code]);
+  });
+
+  it("leaves hidden members out of a friend's party size", async () => {
+    const host = await register();
+    const a = await register();
+    const b = await register();
+    const party = await createParty(host);
+    await join(b, party);
+    await call("POST", "/v1/friends", { code: host.code }, a.token);
+    const sizeFor = async (u: { token: string }) => (await call("GET", "/v1/friends", undefined, u.token)).body.friends[0].party;
+    expect(await sizeFor(a)).toEqual({ code: party, size: 2 });
+    await block(a, b);
+    expect(await sizeFor(a)).toEqual({ code: party, size: 1 });
+    expect(codes((await partyOf(host)).members)).toEqual([host.code, b.code]);
   });
 
   it("forgets blocks either way when a user is deleted", async () => {
@@ -162,10 +217,11 @@ describe("schema step 3", () => {
       sql.exec("DROP TABLE reports");
       sql.exec("DROP TABLE bans");
       sql.exec("DROP TABLE name_holds");
+      sql.exec("DROP TABLE used_identity_tokens");
       sql.exec("UPDATE schema_version SET version = 2");
       sql.exec("INSERT INTO friends (a, b, created_at) VALUES ('AAAAAAAA', 'BBBBBBBB', 0)");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 4 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 6 }]);
       expect(sql.exec("SELECT * FROM blocks").toArray()).toEqual([]);
       expect(sql.exec("SELECT a FROM friends").toArray()).toEqual([{ a: "AAAAAAAA" }]);
     });

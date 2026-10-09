@@ -1,12 +1,26 @@
 import { SELF, runInDurableObject } from "cloudflare:test";
 import { env } from "cloudflare:workers";
-import { expect } from "vitest";
+import { expect, vi } from "vitest";
 
 export const BASE = "https://tabbi.test";
 
 let ipCounter = 0;
 /** A fresh fake client IP, so per-IP registration limits never leak between tests. */
 export const freshIp = () => `10.0.${Math.floor(++ipCounter / 250)}.${ipCounter % 250}`;
+
+/**
+ * Freezes the clock at the start of a minute until `vi.useRealTimers()`. Rate limits count in fixed
+ * one-minute windows, so a test that fills a window on the real clock fails whenever it runs across a
+ * minute boundary (which a slow, loaded machine makes likely). Pinned, the whole test is one window.
+ * Tests that move the clock forward pin it first too, so real time passing between a request and the
+ * jump (a second ticking over under load) cannot add to the interval they test.
+ */
+export function pinClockToMinuteStart(): number {
+  vi.useFakeTimers({ toFake: ["Date"] });
+  const minuteStart = (Math.floor(Date.now() / 60_000) + 1) * 60_000;
+  vi.setSystemTime(minuteStart);
+  return minuteStart / 1000;
+}
 
 export interface Reply {
   status: number;
@@ -51,8 +65,8 @@ export async function linkAppleAccount(code: string, sub = `apple.${code}`): Pro
   });
 }
 
-/** The ADMIN_TOKEN binding in vitest.config.ts. */
-export const ADMIN_TOKEN = "test-admin-secret";
+/** The ADMIN_TOKEN binding in vitest.config.ts, random for each run. */
+export const ADMIN_TOKEN = env.ADMIN_TOKEN as string;
 
-/** A maintainer call to /v1/admin/..., from a fresh IP so the per-IP admin limit never leaks between tests. */
+/** A maintainer call to /v1/admin/..., from a fresh IP so the per-IP authentication failure limit never leaks between tests. */
 export const admin = (method: string, path: string, token = ADMIN_TOKEN) => call(method, "/v1/admin" + path, undefined, token, freshIp());

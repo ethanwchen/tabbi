@@ -11,22 +11,22 @@
  * alive, and keeping them out of SQLite saves a billed row write on every request.
  */
 import { DurableObject } from "cloudflare:workers";
+import { AdminSecrets, exportTables, isAdminToken, notFound, parseRestore } from "./admin";
 import {
-  DEFAULT_NAME, DEFAULT_PET_NAME, HttpError, MAX_FRIENDS, MAX_PARTY_MEMBERS, PARTY_IDLE_EXPIRY_S, RATE_LIMIT_PER_MIN, REGISTER_PER_MIN, FRIEND_CODE_RE, TOKEN_RE,
-  isoWeekDays, isoWeekKeyOfDay, newCode, newToken, nowS, parseFriendCode, readBody, sha256Hex, utcDay,
+  AUTH_FAILURES_PER_MIN, DEFAULT_NAME, DEFAULT_PET_NAME, HttpError, MAX_DEVICE_TOKENS, MAX_FRIENDS, MAX_PARTY_MEMBERS, PARTY_IDLE_EXPIRY_S, RATE_LIMIT_PER_MIN, REGISTER_PER_MIN, FRIEND_CODE_RE, TOKEN_RE,
+  clientKey, isoWeekDays, isoWeekKeyOfDay, newCode, newToken, nowS, parseFriendCode, readBody, sha256Hex, utcDay,
 } from "./lib";
 import { PROFILE_FIELDS, Profile, applyProfilePatch, defaultProfile, parseProfilePatch, sameProfile } from "./profile";
 import { json } from "./http";
 import { SYNC_PUT_PER_MIN, etag, parseIfMatch, readSyncDocument } from "./sync";
 import {
   APPLE_AUTH_FIELDS, APPLE_AUTH_PER_MIN, AppleSecrets, exchangeAuthorizationCode, parseAppleAuth, revokeRefreshToken,
-  verifyIdentityToken,
+  invalidToken, verifyIdentityToken,
 } from "./apple";
 import { PRESENCE_FIELDS, Presence, heartbeatSeconds, isOnline, parseHeartbeat, presenceChanged, publicPresence } from "./presence";
 import { STUDY_DAY_RETENTION_DAYS, rankEntries } from "./leaderboard";
 import {
-  ADMIN_PER_MIN, ADMIN_REPORTS_PAGE, AdminSecrets, MAX_BLOCKS, MAX_REPORTS_PER_DAY, REPORTS_PER_MIN, REPORT_FIELDS,
-  adminNotFound, isAdminToken, parseReport,
+  ADMIN_REPORTS_PAGE, MAX_BLOCKS, MAX_REPORTS_PER_DAY, REPORTS_PER_MIN, REPORT_FIELDS, parseReport,
 } from "./moderation";
 import { JOIN_FIELDS, PARTY_TOUCH_S, PartySession, SESSION_FIELDS, parseJoin, parseSession, partyExpired } from "./party";
 
@@ -171,12 +171,44 @@ CREATE TABLE name_holds (
 ) WITHOUT ROWID;
 `;
 
+/** Apple identity tokens already used to sign in, so none of them signs in twice. */
+const USED_IDENTITY_TOKENS_SCHEMA = `
+-- The SHA-256 of each identity token that signed in, kept until the token would expire anyway.
+CREATE TABLE used_identity_tokens (
+  token_hash TEXT PRIMARY KEY,
+  expires_at INTEGER NOT NULL
+) WITHOUT ROWID;
+CREATE INDEX used_identity_tokens_by_expiry ON used_identity_tokens (expires_at);
+`;
+
+/**
+ * Name holds become one row per replaced name, so a second rename or an account fold adds to what a
+ * user cannot set again instead of overwriting it. Only names that were not the placeholders are held; the
+ * placeholders are written out (not DEFAULT_NAME) because a shipped step must never change.
+ */
+const NAME_HOLDS_SCHEMA = `
+-- One name (kind 'name') or pet name (kind 'pet') a maintainer replaced; the user cannot set it again.
+CREATE TABLE name_holds_by_value (
+  code       TEXT NOT NULL,
+  kind       TEXT NOT NULL CHECK (kind IN ('name', 'pet')),
+  value      TEXT NOT NULL,
+  created_at INTEGER NOT NULL,
+  PRIMARY KEY (code, kind, value)
+) WITHOUT ROWID;
+INSERT OR IGNORE INTO name_holds_by_value (code, kind, value, created_at)
+  SELECT code, 'name', name, created_at FROM name_holds WHERE name != 'student';
+INSERT OR IGNORE INTO name_holds_by_value (code, kind, value, created_at)
+  SELECT code, 'pet', pet_name, created_at FROM name_holds WHERE pet_name != 'buddy';
+DROP TABLE name_holds;
+ALTER TABLE name_holds_by_value RENAME TO name_holds;
+`;
+
 /**
  * Ordered schema steps; step i brings the database to version i + 1. Append new steps and never edit
  * one that has been deployed. Step 1 is the original schema, written with IF NOT EXISTS so databases
  * created before versioning (which have its tables but no recorded version) pass through it unchanged.
  */
-const MIGRATIONS = [SCHEMA, SYNC_SCHEMA, MODERATION_SCHEMA, REPORTS_SCHEMA];
+const MIGRATIONS = [SCHEMA, SYNC_SCHEMA, MODERATION_SCHEMA, REPORTS_SCHEMA, USED_IDENTITY_TOKENS_SCHEMA, NAME_HOLDS_SCHEMA];
 
 /** Runs the steps a database has not had yet, each in its own transaction with its version bump. */
 export function migrate(storage: DurableObjectStorage): void {
@@ -265,6 +297,14 @@ interface LivePresence {
   savedDay: string | null;
 }
 
+/** How often the alarm deletes data past its retention (see `Hub.alarm`). */
+export const RETENTION_SWEEP_S = 3600;
+
+function rateLimited(minute: number, now: number): HttpError {
+  const retry = Math.max(1, (minute + 1) * 60 - now);
+  return new HttpError(429, "rate_limited", "too many requests", { "Retry-After": String(retry) });
+}
+
 const dayKey = (p: Presence) => `${p.day}:${p.todayMinutes}`;
 
 interface Caller {
@@ -282,11 +322,45 @@ export class Hub extends DurableObject<Env> {
    * row writes far below the free-tier allowance. Entries missing here are read from SQLite.
    */
   private live = new Map<string, LivePresence>();
+  /** The UTC day the retention sweep last deleted old study minutes on. */
+  private studyDaysSweptOn: string | null = null;
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
     this.sql = ctx.storage.sql;
     migrate(ctx.storage);
+    ctx.blockConcurrencyWhile(async () => {
+      if ((await ctx.storage.getAlarm()) === null) await ctx.storage.setAlarm(Date.now() + RETENTION_SWEEP_S * 1000);
+    });
+  }
+
+  /**
+   * Runs the retention sweep every RETENTION_SWEEP_S. Without it, data of users who stopped using the
+   * service would only expire when someone touched it: an idle party would outlive its 12 hours and an
+   * inactive user's study minutes their 28 days, which PRIVACY.md promises.
+   */
+  async alarm(): Promise<void> {
+    this.sweepRetention(nowS());
+    await this.ctx.storage.setAlarm(Date.now() + RETENTION_SWEEP_S * 1000);
+  }
+
+  /**
+   * Deletes every expired party, study minutes past their retention and spent identity token hashes.
+   * Study minutes have no index by day, so that scan runs once per UTC day (again after an eviction,
+   * which is harmless) rather than every hour.
+   */
+  private sweepRetention(now: number): void {
+    const today = utcDay(now);
+    this.ctx.storage.transactionSync(() => {
+      const idleSince = now - PARTY_IDLE_EXPIRY_S;
+      this.sql.exec("DELETE FROM party_members WHERE party IN (SELECT code FROM parties WHERE last_active <= ?)", idleSince);
+      this.sql.exec("DELETE FROM parties WHERE last_active <= ?", idleSince);
+      this.sql.exec("DELETE FROM used_identity_tokens WHERE expires_at < ?", now);
+      if (this.studyDaysSweptOn !== today) {
+        this.sql.exec("DELETE FROM study_days WHERE day < ?", utcDay(now - STUDY_DAY_RETENTION_DAYS * 86_400));
+      }
+    });
+    this.studyDaysSweptOn = today;
   }
 
   async fetch(req: Request): Promise<Response> {
@@ -311,7 +385,7 @@ export class Hub extends DurableObject<Env> {
         const caller = await this.authenticate(req, now);
         return this.updateProfile(req, caller, true);
       }
-      this.rateLimit("ip:" + (req.headers.get("CF-Connecting-IP") ?? "unknown"), REGISTER_PER_MIN, now);
+      this.rateLimit("register:" + clientKey(req), REGISTER_PER_MIN, now);
       return this.register(req, now);
     }
 
@@ -358,19 +432,26 @@ export class Hub extends DurableObject<Env> {
 
   // ---------- auth + rate limiting ----------
 
-  /** Resolves the caller from the Bearer token (rate limited per token, even when the token is bad). */
+  /**
+   * Resolves the caller from the Bearer token. Failures count per client IP, and an IP over its limit
+   * is refused before any lookup, so guessing tokens costs the guesser, not the Hub. Only a token that
+   * resolves gets a window of its own: unknown tokens never add entries to the rate-limit map.
+   */
   private async authenticate(req: Request, now: number): Promise<Caller> {
+    const failures = "authfail:" + clientKey(req);
+    this.checkLimit(failures, AUTH_FAILURES_PER_MIN, now);
+    const unauthorized = () => {
+      this.rateLimit(failures, Infinity, now);
+      return new HttpError(401, "unauthorized", "missing or invalid token");
+    };
     const token = bearer(req);
-    if (!token || !TOKEN_RE.test(token)) {
-      this.rateLimit("ip:" + (req.headers.get("CF-Connecting-IP") ?? "unknown"), RATE_LIMIT_PER_MIN, now);
-      throw new HttpError(401, "unauthorized", "missing or invalid token");
-    }
+    if (!token || !TOKEN_RE.test(token)) throw unauthorized();
     const tokenHash = await sha256Hex(token);
-    this.rateLimit("t:" + tokenHash, RATE_LIMIT_PER_MIN, now);
     const row = this.sql.exec<UserRow>("SELECT * FROM users WHERE token_hash = ?", tokenHash).toArray()[0]
       ?? this.sql.exec<UserRow>(
         "SELECT u.* FROM device_tokens d JOIN users u ON u.code = d.code WHERE d.token_hash = ?", tokenHash).toArray()[0];
-    if (!row) throw new HttpError(401, "unauthorized", "missing or invalid token");
+    if (!row) throw unauthorized();
+    this.rateLimit("t:" + tokenHash, RATE_LIMIT_PER_MIN, now);
     return { code: row.code, tokenHash, profile: rowToProfile(row) };
   }
 
@@ -383,10 +464,65 @@ export class Hub extends DurableObject<Env> {
     const w = this.windows.get(id);
     const count = w && w.minute === minute ? w.count + 1 : 1;
     this.windows.set(id, { minute, count });
-    if (count > perMinute) {
-      const retry = Math.max(1, (minute + 1) * 60 - now);
-      throw new HttpError(429, "rate_limited", "too many requests", { "Retry-After": String(retry) });
+    if (count > perMinute) throw rateLimited(minute, now);
+  }
+
+  /** Throws 429 if `id` has already used up this minute's window, without counting a request. */
+  private checkLimit(id: string, perMinute: number, now: number): void {
+    const minute = Math.floor(now / 60);
+    const w = this.windows.get(id);
+    if (w && w.minute === minute && w.count >= perMinute) throw rateLimited(minute, now);
+  }
+
+  // ---------- admin ----------
+
+  /** Operator routes (see admin.ts). Anything short of a valid admin token is a plain 404. */
+  private async admin(req: Request, path: string, method: string, now: number): Promise<Response> {
+    const failures = "authfail:" + clientKey(req);
+    this.checkLimit(failures, AUTH_FAILURES_PER_MIN, now);
+    if (!(await isAdminToken(bearer(req), this.env.ADMIN_TOKEN))) {
+      this.rateLimit(failures, Infinity, now);
+      throw notFound();
     }
+    if (path === "/v1/admin/export" && method === "GET") {
+      const version = this.sql.exec<{ version: number }>("SELECT version FROM schema_version").one().version;
+      return json({ ok: true, exportedAt: now, schemaVersion: version, tables: exportTables(this.sql) });
+    }
+    if (path === "/v1/admin/restore" && method === "POST") return await this.restore(req, now);
+    if (path === "/v1/admin/reports" && method === "GET") {
+      const status = new URL(req.url).searchParams.get("status") ?? "open";
+      if (status !== "open" && status !== "all") throw new HttpError(400, "invalid_field", "status must be open or all");
+      return this.adminReports(status === "open");
+    }
+    const dismiss = /^\/v1\/admin\/reports\/(\d+)\/dismiss$/.exec(path);
+    if (dismiss && method === "POST") return this.dismissReport(Number(dismiss[1]), now);
+    const erase = /^\/v1\/admin\/users\/([^/]+)$/.exec(path);
+    if (erase && method === "DELETE") return this.adminDelete(erase[1], now);
+    const user = /^\/v1\/admin\/users\/([^/]+)\/(rename|ban)$/.exec(path);
+    if (user && user[2] === "rename" && method === "POST") return this.adminRename(user[1], now);
+    if (user && user[2] === "ban" && method === "POST") return this.adminBan(user[1], now);
+    if (user && user[2] === "ban" && method === "DELETE") return this.adminUnban(user[1]);
+    throw notFound();
+  }
+
+  /**
+   * Point-in-time recovery: the storage goes back to the requested time or bookmark when the object
+   * next starts, and the object restarts right after replying. The reply carries a bookmark of the
+   * state just before the restore, which a later restore can return to.
+   */
+  private async restore(req: Request, now: number): Promise<Response> {
+    const target = await parseRestore(req, now);
+    let undoBookmark: string;
+    try {
+      const bookmark = "bookmark" in target ? target.bookmark : await this.ctx.storage.getBookmarkForTime(target.at * 1000);
+      undoBookmark = await this.ctx.storage.onNextSessionRestoreBookmark(bookmark);
+    } catch (e) {
+      console.error(e);
+      throw new HttpError(501, "restore_unavailable", "point-in-time recovery is not available here");
+    }
+    console.log("admin: restoring storage to " + ("at" in target ? `time ${target.at}` : "a bookmark"));
+    setTimeout(() => this.ctx.abort("restoring a backup"), 100);
+    return json({ ok: true, undoBookmark });
   }
 
   // ---------- profile ----------
@@ -473,16 +609,20 @@ export class Hub extends DurableObject<Env> {
 
   // ---------- friends ----------
 
+  /** Each friend's party size counts only the members the caller would see in that party's view. */
   private listFriends(caller: Caller, now: number): Response {
     const rows = this.sql.exec<UserRow & Partial<PresenceRow> & { since: number; party_code: string | null; party_size: number | null }>(
       `SELECT u.*, f.created_at AS since, p.status, p.method, p.phase_ends_at, p.session_minutes,
          p.today_minutes, p.streak_days, p.day, p.last_seen, pa.code AS party_code,
-         (SELECT COUNT(*) FROM party_members m2 WHERE m2.party = pa.code) AS party_size
+         (SELECT COUNT(*) FROM party_members m2 WHERE m2.party = pa.code
+            AND m2.code NOT IN (SELECT blocked FROM blocks WHERE blocker = ?)
+            AND m2.code NOT IN (SELECT blocker FROM blocks WHERE blocked = ?)
+            AND (m2.code = ? OR m2.code NOT IN (SELECT code FROM bans))) AS party_size
        FROM friends f JOIN users u ON u.code = f.b LEFT JOIN presence p ON p.code = f.b
          LEFT JOIN party_members m ON m.code = f.b
          LEFT JOIN parties pa ON pa.code = m.party AND pa.last_active > ?
        WHERE f.a = ? AND f.b NOT IN (SELECT code FROM bans) ORDER BY u.name COLLATE NOCASE, u.code`,
-      now - PARTY_IDLE_EXPIRY_S, caller.code,
+      caller.code, caller.code, caller.code, now - PARTY_IDLE_EXPIRY_S, caller.code,
     ).toArray();
     const friends = rows.map((r) => {
       const presence = this.live.get(r.code)?.presence ?? rowToPresence(r);
@@ -503,11 +643,8 @@ export class Hub extends DurableObject<Env> {
     const code = parseFriendCode(body.code);
     if (code === caller.code) throw new HttpError(400, "self_friend", "you cannot add yourself");
     this.requireNotBanned(caller);
-    const row = this.sql.exec<UserRow>("SELECT * FROM users WHERE code = ?", code).toArray()[0];
-    if (!row || this.isBanned(code)) throw new HttpError(404, "unknown_code", "no one has that code");
     if (this.hasBlocked(caller.code, code)) throw new HttpError(409, "blocked", "you blocked them; unblock them first");
-    // A blocked user is told the code is unknown, so a block is never revealed.
-    if (this.hasBlocked(code, caller.code)) throw new HttpError(404, "unknown_code", "no one has that code");
+    const row = this.knownUser(caller, code);
     const already = this.sql.exec("SELECT 1 FROM friends WHERE a = ? AND b = ?", caller.code, code).toArray().length > 0;
     if (!already) {
       if (this.friendCount(caller.code) >= MAX_FRIENDS) {
@@ -549,6 +686,18 @@ export class Hub extends DurableObject<Env> {
     return this.hasBlocked(a, b) || this.hasBlocked(b, a);
   }
 
+  /**
+   * The user a friend, block or report request names. A banned user, or one who blocked the caller,
+   * answers `404 unknown_code` exactly like a code no one has, so no route reveals a block or a ban.
+   */
+  private knownUser(caller: Caller, code: string): UserRow {
+    const row = this.sql.exec<UserRow>("SELECT * FROM users WHERE code = ?", code).toArray()[0];
+    if (!row || this.isBanned(code) || this.hasBlocked(code, caller.code)) {
+      throw new HttpError(404, "unknown_code", "no one has that code");
+    }
+    return row;
+  }
+
   /** GET /v1/blocks: the users I blocked, newest first, with their current name and pet name. */
   private listBlocks(caller: Caller): Response {
     const rows = this.sql.exec<{ code: string; name: string; pet_name: string; created_at: number }>(
@@ -568,9 +717,10 @@ export class Hub extends DurableObject<Env> {
     const body = await readBody(req, ["code"]);
     const code = parseFriendCode(body.code);
     if (code === caller.code) throw new HttpError(400, "self_block", "you cannot block yourself");
-    const row = this.sql.exec<UserRow>("SELECT * FROM users WHERE code = ?", code).toArray()[0];
-    if (!row) throw new HttpError(404, "unknown_code", "no one has that code");
     const already = this.hasBlocked(caller.code, code);
+    // Re-blocking someone I already blocked is answered from my own list, so it reveals nothing new.
+    const row = (already ? this.sql.exec<UserRow>("SELECT * FROM users WHERE code = ?", code).toArray()[0] : undefined)
+      ?? this.knownUser(caller, code);
     if (!already) {
       const count = this.sql.exec<{ n: number }>("SELECT COUNT(*) AS n FROM blocks WHERE blocker = ?", caller.code).one().n;
       if (count >= MAX_BLOCKS) throw new HttpError(409, "block_limit", `you already blocked ${MAX_BLOCKS} people`);
@@ -613,14 +763,14 @@ export class Hub extends DurableObject<Env> {
     const petChanged = next.petName !== caller.profile.petName;
     if (!nameChanged && !petChanged) return;
     this.requireNotBanned(caller);
-    const hold = this.sql.exec<{ name: string; pet_name: string }>(
-      "SELECT name, pet_name FROM name_holds WHERE code = ?", caller.code).toArray()[0];
-    if (!hold) return;
-    const same = (a: string, b: string) => a.localeCompare(b, undefined, { sensitivity: "base" }) === 0;
-    if (nameChanged && same(next.name, hold.name)) {
+    const holds = this.sql.exec<{ kind: string; value: string }>(
+      "SELECT kind, value FROM name_holds WHERE code = ?", caller.code).toArray();
+    const held = (kind: string, value: string) => holds.some((h) =>
+      h.kind === kind && h.value.localeCompare(value, undefined, { sensitivity: "base" }) === 0);
+    if (nameChanged && held("name", next.name)) {
       throw new HttpError(400, "name_not_allowed", "That name isn't allowed. Please pick another.");
     }
-    if (petChanged && same(next.petName, hold.pet_name)) {
+    if (petChanged && held("pet", next.petName)) {
       throw new HttpError(400, "pet_name_not_allowed", "That pet name isn't allowed. Please pick another.");
     }
   }
@@ -635,8 +785,7 @@ export class Hub extends DurableObject<Env> {
     const code = parseFriendCode(body.code);
     const { reason, note } = parseReport(body);
     if (code === caller.code) throw new HttpError(400, "self_report", "you cannot report yourself");
-    const row = this.sql.exec<UserRow>("SELECT * FROM users WHERE code = ?", code).toArray()[0];
-    if (!row) throw new HttpError(404, "unknown_code", "no one has that code");
+    const row = this.knownUser(caller, code);
     this.rateLimit("report:" + caller.code, REPORTS_PER_MIN, now);
     const open = this.sql.exec<{ id: number }>(
       "SELECT id FROM reports WHERE reporter = ? AND reported = ? AND resolved_at IS NULL", caller.code, code).toArray()[0];
@@ -656,31 +805,6 @@ export class Hub extends DurableObject<Env> {
       caller.code, code, reason, note, row.name, row.pet_name, now,
     );
     return json({ ok: true, created: true }, 201);
-  }
-
-  // ---------- admin ----------
-
-  /**
-   * The maintainer's routes under /v1/admin/, called with the ADMIN_TOKEN Worker secret as Bearer. They
-   * answer 404 while the secret is unset, and 401 to a wrong token.
-   */
-  private async admin(req: Request, path: string, method: string, now: number): Promise<Response> {
-    this.rateLimit("admin:" + (req.headers.get("CF-Connecting-IP") ?? "unknown"), ADMIN_PER_MIN, now);
-    if (!this.env.ADMIN_TOKEN) throw adminNotFound();
-    if (!(await isAdminToken(bearer(req), this.env))) throw new HttpError(401, "unauthorized", "missing or invalid admin token");
-
-    if (path === "/v1/admin/reports" && method === "GET") {
-      const status = new URL(req.url).searchParams.get("status") ?? "open";
-      if (status !== "open" && status !== "all") throw new HttpError(400, "invalid_field", "status must be open or all");
-      return this.adminReports(status === "open");
-    }
-    const dismiss = /^\/v1\/admin\/reports\/(\d+)\/dismiss$/.exec(path);
-    if (dismiss && method === "POST") return this.dismissReport(Number(dismiss[1]), now);
-    const user = /^\/v1\/admin\/users\/([^/]+)\/(rename|ban)$/.exec(path);
-    if (user && user[2] === "rename" && method === "POST") return this.adminRename(user[1], now);
-    if (user && user[2] === "ban" && method === "POST") return this.adminBan(user[1], now);
-    if (user && user[2] === "ban" && method === "DELETE") return this.adminUnban(user[1]);
-    throw adminNotFound();
   }
 
   /** GET /v1/admin/reports[?status=all]: open (or all) reports, newest first, with who is involved now. */
@@ -751,10 +875,9 @@ export class Hub extends DurableObject<Env> {
     const row = this.adminTarget(raw);
     this.ctx.storage.transactionSync(() => {
       if (row.name !== DEFAULT_NAME || row.pet_name !== DEFAULT_PET_NAME) {
-        this.sql.exec(
-          `INSERT INTO name_holds (code, name, pet_name, created_at) VALUES (?, ?, ?, ?)
-           ON CONFLICT (code) DO UPDATE SET name = excluded.name, pet_name = excluded.pet_name, created_at = excluded.created_at`,
-          row.code, row.name, row.pet_name, now);
+        const hold = "INSERT OR IGNORE INTO name_holds (code, kind, value, created_at) VALUES (?, ?, ?, ?)";
+        if (row.name !== DEFAULT_NAME) this.sql.exec(hold, row.code, "name", row.name, now);
+        if (row.pet_name !== DEFAULT_PET_NAME) this.sql.exec(hold, row.code, "pet", row.pet_name, now);
         this.sql.exec("UPDATE users SET name = ?, pet_name = ? WHERE code = ?", DEFAULT_NAME, DEFAULT_PET_NAME, row.code);
       }
       this.resolveReportsAbout(row.code, "renamed", now);
@@ -775,6 +898,17 @@ export class Hub extends DurableObject<Env> {
       this.resolveReportsAbout(row.code, "banned", now);
     });
     return json({ ok: true, banned });
+  }
+
+  /**
+   * DELETE /v1/admin/users/{code}: deletes the user as DELETE /v1/me does, for re-applying account
+   * deletions a restore brought back. Apple is not called: the grant was revoked at the first deletion.
+   */
+  private adminDelete(raw: string, now: number): Response {
+    const code = parseFriendCode(raw);
+    const deleted = this.userExists(code);
+    if (deleted) this.ctx.storage.transactionSync(() => this.purgeUser(code, now));
+    return json({ ok: true, deleted });
   }
 
   /** DELETE /v1/admin/users/{code}/ban: lifts a ban. Friendships come back as they were. */
@@ -888,7 +1022,7 @@ export class Hub extends DurableObject<Env> {
    * The authorization code's refresh token is stored only to revoke it on deletion.
    */
   private async signInWithApple(req: Request, now: number): Promise<Response> {
-    this.rateLimit("apple:" + (req.headers.get("CF-Connecting-IP") ?? "unknown"), APPLE_AUTH_PER_MIN, now);
+    this.rateLimit("apple:" + clientKey(req), APPLE_AUTH_PER_MIN, now);
     const body = parseAppleAuth(await readBody(req, APPLE_AUTH_FIELDS));
     const callerToken = bearer(req);
     // A token that no longer resolves (its user was deleted) signs in as if there were none.
@@ -896,7 +1030,11 @@ export class Hub extends DurableObject<Env> {
       if (e instanceof HttpError && e.status === 401) return null;
       throw e;
     }) : null;
-    const sub = await verifyIdentityToken(body.identityToken, now);
+    const identityHash = await sha256Hex(body.identityToken);
+    const { sub, reusableUntil } = await verifyIdentityToken(body.identityToken, now);
+    // Claimed before Apple is asked about the code, with no await between the check and the insert, so
+    // two copies of one token racing each other cannot both get through.
+    this.claimIdentityToken(identityHash, reusableUntil, now);
     const refreshToken = body.authorizationCode
       ? await exchangeAuthorizationCode(body.authorizationCode, this.env, now)
       : null;
@@ -918,6 +1056,11 @@ export class Hub extends DurableObject<Env> {
           return;
         }
         if (caller && !this.hasAppleAccount(caller.code)) this.foldInto(caller.code, linked, now);
+        this.sql.exec(
+          `DELETE FROM device_tokens WHERE token_hash IN (SELECT token_hash FROM device_tokens WHERE code = ?
+           ORDER BY created_at DESC, token_hash LIMIT -1 OFFSET ?)`,
+          linked, MAX_DEVICE_TOKENS - 1,
+        );
         this.sql.exec("INSERT INTO device_tokens (token_hash, code, created_at) VALUES (?, ?, ?)", freshHash, linked, now);
         result = { token: freshToken, code: linked, newAccount: false };
         return;
@@ -946,6 +1089,18 @@ export class Hub extends DurableObject<Env> {
     this.sql.exec("DELETE FROM device_tokens WHERE token_hash = ?", caller.tokenHash);
     this.sql.exec("UPDATE users SET token_hash = ? WHERE token_hash = ?", retired, caller.tokenHash);
     return json({ ok: true });
+  }
+
+  /**
+   * Accepts an identity token once: a second sign-in with the same token is refused, even with a fresh
+   * IP or after the first one failed later on (the user signs in with Apple again, which mints a new
+   * token). Hashes are dropped once their token has expired, so the table stays small.
+   */
+  private claimIdentityToken(hash: string, reusableUntil: number, now: number): void {
+    this.sql.exec("DELETE FROM used_identity_tokens WHERE expires_at < ?", now);
+    const used = this.sql.exec("SELECT 1 FROM used_identity_tokens WHERE token_hash = ?", hash).toArray().length > 0;
+    if (used) throw invalidToken("already used");
+    this.sql.exec("INSERT INTO used_identity_tokens (token_hash, expires_at) VALUES (?, ?)", hash, reusableUntil);
   }
 
   private hasAppleAccount(code: string): boolean {
@@ -988,14 +1143,24 @@ export class Hub extends DurableObject<Env> {
         `DELETE FROM friends WHERE b = ? AND (a IN (SELECT blocked FROM blocks WHERE blocker = ?)
            OR a IN (SELECT blocker FROM blocks WHERE blocked = ?))`, to, to, to);
     }
-    // Reports, bans and name holds follow the user too, so signing in never lifts a ban.
+    // Reports, bans and name holds follow the user too, so signing in never lifts a ban. Reports between
+    // the two are dropped: once they are one user, they would be reports about oneself.
+    this.sql.exec("DELETE FROM reports WHERE (reporter = ? AND reported = ?) OR (reporter = ? AND reported = ?)", from, to, to, from);
     this.sql.exec("UPDATE reports SET reporter = ? WHERE reporter = ?", to, from);
     this.sql.exec("UPDATE reports SET reported = ? WHERE reported = ?", to, from);
     this.sql.exec("INSERT OR IGNORE INTO bans (code, created_at) SELECT ?, created_at FROM bans WHERE code = ?", to, from);
     this.sql.exec(
-      "INSERT OR IGNORE INTO name_holds (code, name, pet_name, created_at) SELECT ?, name, pet_name, created_at FROM name_holds WHERE code = ?",
+      "INSERT OR IGNORE INTO name_holds (code, kind, value, created_at) SELECT ?, kind, value, created_at FROM name_holds WHERE code = ?",
       to, from);
     this.purgeUser(from, now);
+    // An inherited ban takes the account out of its party, as banning it would; blocks the account just
+    // inherited apply to its party as they would to a fresh block.
+    if (this.isBanned(to)) {
+      this.leaveParty(to, now);
+      return;
+    }
+    const party = this.sql.exec<{ party: string }>("SELECT party FROM party_members WHERE code = ?", to).toArray()[0]?.party;
+    if (party) this.dropMembersBlockedWithHost(party);
   }
 
   // ---------- sync ----------
@@ -1193,7 +1358,8 @@ export class Hub extends DurableObject<Env> {
 
   /**
    * Removes a user from their party (call inside a transaction). The last member leaving deletes the
-   * party; a leaving host hands over to the longest-standing member. Returns whether they were in one.
+   * party; a leaving host hands over to the longest-standing member, and members who blocked the new
+   * host or were blocked by them leave too. Returns whether the user was in one.
    */
   private leaveParty(user: string, now: number): boolean {
     const row = this.sql.exec<{ party: string }>("SELECT party FROM party_members WHERE code = ?", user).toArray()[0];
@@ -1208,8 +1374,23 @@ export class Hub extends DurableObject<Env> {
         "UPDATE parties SET host = CASE WHEN host = ? THEN ? ELSE host END, last_active = ? WHERE code = ?",
         user, next.code, now, row.party,
       );
+      this.dropMembersBlockedWithHost(row.party);
     }
     return true;
+  }
+
+  /**
+   * Removes the members of a party who blocked its host or were blocked by them (call inside a
+   * transaction), so a party never holds both sides of a block with the host, as POST /v1/blocks and
+   * joining already guarantee. Needed when the host changes or an account inherits blocks.
+   */
+  private dropMembersBlockedWithHost(party: string): void {
+    this.sql.exec(
+      `DELETE FROM party_members WHERE party = ?1 AND code IN (
+         SELECT blocked FROM blocks WHERE blocker = (SELECT host FROM parties WHERE code = ?1)
+         UNION SELECT blocker FROM blocks WHERE blocked = (SELECT host FROM parties WHERE code = ?1))`,
+      party,
+    );
   }
 
   /**

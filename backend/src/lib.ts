@@ -38,7 +38,18 @@ export const HEARTBEAT_SECONDS = catalog.heartbeatSeconds as Record<string, numb
 export const RATE_LIMIT_PER_MIN = 60;
 /** Registrations per minute per client IP (unauthenticated). */
 export const REGISTER_PER_MIN = 10;
+/**
+ * Failed authentications (a missing, malformed or unknown token) per minute per client IP. Counted
+ * per IP rather than per token, since a guesser sends a different token every time.
+ */
+export const AUTH_FAILURES_PER_MIN = 60;
 export const MAX_BODY_BYTES = 4096;
+/**
+ * Mac tokens kept per account besides the first Mac's. Each sign-in to an existing account adds one,
+ * so the oldest goes once there are more: a Mac that was wiped never signs out, and an account signing
+ * in over and over must not grow storage without bound.
+ */
+export const MAX_DEVICE_TOKENS = 20;
 
 export const DEFAULT_NAME = "student";
 export const DEFAULT_PET_NAME = "buddy";
@@ -133,9 +144,60 @@ export function parseBodyObject(raw: string, allowed: readonly string[], maxByte
 }
 
 export async function readBody(req: Request, allowed: readonly string[], maxBytes = MAX_BODY_BYTES): Promise<Obj> {
+  return parseBodyObject(await readText(req, maxBytes), allowed, maxBytes);
+}
+
+/**
+ * The body as text, read no further than `maxBytes`. `Content-Length` is only a hint (a chunked body
+ * has none), so the stream itself is counted and cancelled once it runs over, instead of buffering
+ * whatever a client sends before checking its size.
+ */
+export async function readText(req: Request, maxBytes: number): Promise<string> {
+  const tooLarge = () => new HttpError(413, "body_too_large", "body too large");
   const len = req.headers.get("content-length");
-  if (len && Number(len) > maxBytes) throw new HttpError(413, "body_too_large", "body too large");
-  return parseBodyObject(await req.text(), allowed, maxBytes);
+  if (len && Number(len) > maxBytes) throw tooLarge();
+  if (!req.body) return "";
+  const reader = req.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    size += value.byteLength;
+    if (size > maxBytes) {
+      await reader.cancel().catch(() => {});
+      throw tooLarge();
+    }
+    chunks.push(value);
+  }
+  const all = new Uint8Array(size);
+  let offset = 0;
+  for (const c of chunks) {
+    all.set(c, offset);
+    offset += c.byteLength;
+  }
+  return new TextDecoder().decode(all);
+}
+
+/**
+ * The client a per-IP rate limit counts: the IPv4 address, or the /64 prefix of an IPv6 address
+ * (one subscriber usually gets a whole /64, so counting single addresses would let one client rotate
+ * through billions of them). `unknown` when Cloudflare sent no address.
+ */
+export function clientKey(req: Request): string {
+  const ip = (req.headers.get("CF-Connecting-IP") ?? "").trim().toLowerCase();
+  if (ip === "") return "unknown";
+  if (!ip.includes(":")) return ip.slice(0, 45);
+  const [head, tail = ""] = ip.split("::", 2);
+  const headGroups = head === "" ? [] : head.split(":");
+  const tailGroups = tail === "" ? [] : tail.split(":");
+  const last = tailGroups.at(-1) ?? headGroups.at(-1) ?? "";
+  if (last.includes(".")) return last.slice(0, 45); // IPv4-mapped (::ffff:a.b.c.d)
+  const groups = ip.includes("::")
+    ? [...headGroups, ...Array<string>(Math.max(0, 8 - headGroups.length - tailGroups.length)).fill("0"), ...tailGroups]
+    : headGroups;
+  if (groups.length !== 8 || !groups.every((g) => /^[0-9a-f]{1,4}$/.test(g))) return ip.slice(0, 45);
+  return groups.slice(0, 4).map((g) => parseInt(g, 16).toString(16)).join(":") + "::/64";
 }
 
 /** Strips control and invisible characters, trims, caps the length. Empty becomes `undefined`. */
