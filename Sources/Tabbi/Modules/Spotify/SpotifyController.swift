@@ -26,14 +26,32 @@ final class SpotifyController: NSObject, ObservableObject {
         .spotify: Notification.Name("com.spotify.client.PlaybackStateChanged"),
         .music: Notification.Name("com.apple.Music.playerInfo"),
     ]
-    /// The players the panel follows. SoundCloud in a browser is not one
-    /// yet: reading it asks for Automation access to the browser, which
-    /// should only happen once the user turns it on.
-    private static let sources: [NowPlayingSource] = NowPlayingSource.all.filter { $0.app != nil }
     private static let automationSettings =
         URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Automation")!
     /// Resync interval while the panel is visible. Never poll faster than this.
     private static let pollInterval: TimeInterval = 5
+    /// Browsers post no playback notifications, so while SoundCloud is
+    /// followed and the panel is closed, its tab is read this often to keep
+    /// the closed notch's music wings current.
+    private static let browserPollInterval: TimeInterval = 10
+
+    /// Now Playing's settings. SoundCloud is opt-in, since reading a browser
+    /// asks macOS for Automation access to it.
+    @Published var preferences: NowPlayingPreferences {
+        didSet {
+            guard preferences != oldValue else { return }
+            preferencesStorage?.save(preferences)
+            followedSourcesChanged()
+        }
+    }
+    /// Whether this edition may script browsers (the App Store edition may
+    /// not), so Settings only offers SoundCloud where it can work.
+    let allowsBrowsers: Bool
+    /// Nil in demo and snapshot runs, which keep preferences in memory.
+    private let preferencesStorage: NowPlayingPreferencesStorage?
+    /// The players the panel follows: the music apps, plus SoundCloud in
+    /// Safari and Chrome once the user turns it on.
+    private var sources: [NowPlayingSource] { preferences.followedSources(allowsBrowsers: allowsBrowsers) }
 
     private let isDemo: Bool
     private var tracker = MediaSourceTracker()
@@ -42,6 +60,8 @@ final class SpotifyController: NSObject, ObservableObject {
     private var isPanelVisible = false
     private var tickTimer: Timer?
     private var pollTimer: Timer?
+    /// The interval `pollTimer` runs at, so it is rebuilt when that changes.
+    private var pollTimerInterval: TimeInterval?
     /// Bumped per app by every read and command so a slow, stale read can't
     /// overwrite a newer state (e.g. an optimistic play/pause).
     private var generations: [NowPlayingSource: Int] = [:]
@@ -56,8 +76,11 @@ final class SpotifyController: NSObject, ObservableObject {
     /// Shuffle and repeat changes per app that the player may not show yet.
     private var pendingModes: [NowPlayingSource: PendingMediaModes] = [:]
 
-    init(runMode: RunMode) {
+    init(runMode: RunMode, allowsBrowsers: Bool) {
         isDemo = runMode.isDemo
+        self.allowsBrowsers = allowsBrowsers
+        preferencesStorage = runMode.isEphemeral ? nil : NowPlayingPreferencesStorage()
+        preferences = preferencesStorage?.load() ?? NowPlayingPreferences()
         super.init()
         if isDemo {
             record(.spotify, .notRunning)
@@ -204,7 +227,21 @@ final class SpotifyController: NSObject, ObservableObject {
     /// Reads every running player's state now.
     func refresh() {
         guard !isDemo else { return }
-        for source in Self.sources { refresh(source) }
+        for source in sources { refresh(source) }
+    }
+
+    /// SoundCloud was turned on or off: read the new players now (the first
+    /// read of a browser is what asks for Automation access, right after the
+    /// user's click). A player no longer followed reads as not running,
+    /// so the panel lets go of it at once.
+    private func followedSourcesChanged() {
+        guard !isDemo else { return }
+        let followed = sources
+        for source in NowPlayingSource.all where !followed.contains(source) && tracker.statuses[source] != nil {
+            bumpGeneration(source)
+            record(source, .notRunning)
+        }
+        refresh()
     }
 
     private func refresh(_ source: NowPlayingSource) {
@@ -336,13 +373,30 @@ final class SpotifyController: NSObject, ObservableObject {
             tickTimer?.invalidate()
             tickTimer = nil
         }
-        let poll = isPanelVisible && !isDemo && Self.sources.contains(where: Self.isRunning)
-        if poll, pollTimer == nil {
-            pollTimer = makeTimer(interval: Self.pollInterval) { $0.refresh() }
-        } else if !poll {
-            pollTimer?.invalidate()
-            pollTimer = nil
+        let interval = pollInterval
+        guard interval != pollTimerInterval else { return }
+        pollTimer?.invalidate()
+        pollTimer = nil
+        pollTimerInterval = interval
+        guard let interval else { return }
+        pollTimer = makeTimer(interval: interval) { controller in
+            if controller.isPanelVisible {
+                controller.refresh()
+            } else {
+                for source in controller.sources where source.app == nil { controller.refresh(source) }
+            }
         }
+    }
+
+    /// How often to re-read players now, or nil for never: every player
+    /// while the panel shows, otherwise only SoundCloud (when followed and
+    /// its browser runs), whose tab posts no notifications.
+    private var pollInterval: TimeInterval? {
+        guard !isDemo else { return nil }
+        let running = sources.filter(Self.isRunning)
+        if isPanelVisible, !running.isEmpty { return Self.pollInterval }
+        if running.contains(where: { $0.app == nil }) { return Self.browserPollInterval }
+        return nil
     }
 
     private func makeTimer(interval: TimeInterval, _ action: @escaping @MainActor @Sendable (SpotifyController) -> Void) -> Timer {
@@ -369,7 +423,7 @@ final class SpotifyController: NSObject, ObservableObject {
         let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
         // A browser hosts one SoundCloud source, but match every source
         // so the rule doesn't depend on that.
-        for source in Self.sources where source.bundleIdentifier == app?.bundleIdentifier {
+        for source in sources where source.bundleIdentifier == app?.bundleIdentifier {
             if notification.name == NSWorkspace.didTerminateApplicationNotification {
                 bumpGeneration(source)
                 record(source, Self.isInstalled(source) ? .notRunning : .notInstalled)
