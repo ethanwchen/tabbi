@@ -300,7 +300,7 @@ private struct ClosetWardrobe: View {
     /// Thumbnails show each item alone on the pet, so the item reads clearly.
     private var thumbnailModel: PetProfile {
         PetProfile(name: store.profile.name, breed: store.profile.breed,
-                   paletteOverrides: store.profile.paletteOverrides)
+                   paletteOverrides: store.profile.paletteOverrides, furTint: store.profile.furTint)
     }
 
     /// Names the hovered item, or points to the next unlock.
@@ -554,7 +554,7 @@ struct ClosetSwatch: View {
             .contentShape(Circle())
         }
         .buttonStyle(.plain)
-        .help(color.map { "Fur color \($0.hex)" } ?? "Breed colors")
+        .help(color.map { PetCloset.name(ofSwatch: $0) ?? "Fur color \($0.hex)" } ?? "Breed colors")
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
         .motion(Theme.Motion.snappy, value: isSelected)

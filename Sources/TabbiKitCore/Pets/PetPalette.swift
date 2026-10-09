@@ -86,6 +86,62 @@ public struct PetColor: Hashable, Codable, Sendable, CustomStringConvertible {
         self.init(red: byte(r), green: byte(g), blue: byte(b), alpha: alpha)
     }
 
+    /// Lightness, chroma, and hue in OKLCH. Fur tones are derived here
+    /// rather than in HSL because OKLab lightness steps look even across
+    /// hues: "a bit darker" is as visible on pastel blue as on orange, and
+    /// yellows and blues no longer drift in brightness.
+    public var oklch: (lightness: Double, chroma: Double, hue: Double) {
+        func linear(_ value: UInt8) -> Double {
+            let c = Double(value) / 255
+            return c <= 0.040_45 ? c / 12.92 : pow((c + 0.055) / 1.055, 2.4)
+        }
+        let r = linear(red), g = linear(green), b = linear(blue)
+        let l = cbrt(0.412_221_470_8 * r + 0.536_332_536_3 * g + 0.051_445_992_9 * b)
+        let m = cbrt(0.211_903_498_2 * r + 0.680_699_545_1 * g + 0.107_396_956_6 * b)
+        let s = cbrt(0.088_302_461_9 * r + 0.281_718_837_6 * g + 0.629_978_700_5 * b)
+        let lightness = 0.210_454_255_3 * l + 0.793_617_785_0 * m - 0.004_072_046_8 * s
+        let a = 1.977_998_495_1 * l - 2.428_592_205_0 * m + 0.450_593_709_9 * s
+        let bb = 0.025_904_037_1 * l + 0.782_771_766_2 * m - 0.808_675_766_0 * s
+        var hue = atan2(bb, a)
+        if hue < 0 { hue += 2 * .pi }
+        return (lightness, (a * a + bb * bb).squareRoot(), hue)
+    }
+
+    /// The OKLCH color, or the closest one sRGB can show: chroma is lowered
+    /// (lightness and hue kept) until every channel fits, so a deep shade of
+    /// a vivid pick never clips into a different hue.
+    public init(oklchLightness lightness: Double, chroma: Double, hue: Double, alpha: UInt8 = 255) {
+        let lightness = min(max(lightness, 0), 1)
+        func rgb(_ chroma: Double) -> (Double, Double, Double) {
+            let a = chroma * cos(hue), b = chroma * sin(hue)
+            let l = pow(lightness + 0.396_337_777_4 * a + 0.215_803_757_3 * b, 3)
+            let m = pow(lightness - 0.105_561_345_8 * a - 0.063_854_172_8 * b, 3)
+            let s = pow(lightness - 0.089_484_177_5 * a - 1.291_485_548_0 * b, 3)
+            return (4.076_741_662_1 * l - 3.307_711_591_3 * m + 0.230_969_929_2 * s,
+                    -1.268_438_004_6 * l + 2.609_757_401_1 * m - 0.341_319_396_5 * s,
+                    -0.004_196_086_3 * l - 0.703_418_614_7 * m + 1.707_614_701_0 * s)
+        }
+        func fits(_ c: (Double, Double, Double)) -> Bool {
+            [c.0, c.1, c.2].allSatisfy { (-0.000_1...1.000_1).contains($0) }
+        }
+        var fitted = max(chroma, 0)
+        if !fits(rgb(fitted)) {
+            var low = 0.0, high = fitted
+            for _ in 0..<24 {
+                let mid = (low + high) / 2
+                if fits(rgb(mid)) { low = mid } else { high = mid }
+            }
+            fitted = low
+        }
+        func byte(_ linear: Double) -> UInt8 {
+            let c = min(max(linear, 0), 1)
+            let encoded = c <= 0.003_130_8 ? c * 12.92 : 1.055 * pow(c, 1 / 2.4) - 0.055
+            return UInt8((encoded * 255).rounded())
+        }
+        let (r, g, b) = rgb(fitted)
+        self.init(red: byte(r), green: byte(g), blue: byte(b), alpha: alpha)
+    }
+
     public init(from decoder: Decoder) throws {
         let raw = try decoder.singleValueContainer().decode(String.self)
         guard let color = PetColor(hex: raw) else {
@@ -203,6 +259,66 @@ public enum PetPaletteRole: String, CaseIterable, Codable, Sendable {
     ]
 }
 
+/// How one fur role follows a picked fur color: the pick moved toward
+/// darker or lighter fur and softened in chroma, in OKLCH.
+///
+/// Steps are fractions of the room left between the pick and the darkest
+/// (or lightest) fur tone, not fixed offsets, so a cream pick still gets
+/// visible shading, a dark pick still gets stripes, and nothing clips to
+/// pure black or white.
+public struct PetFurTone: Hashable, Sendable {
+    /// Negative is darker, positive lighter, as a fraction (-1...1) of the
+    /// room toward `darkest` or `lightest`.
+    public var step: Double
+    /// Multiplies the pick's chroma: shades stay rich but never harsh,
+    /// light tones turn soft and creamy.
+    public var chroma: Double
+    /// Highest lightness the tone may reach. Markings on white fur use it
+    /// so a cream pick still shows as a patch.
+    public var maxLightness: Double
+
+    public init(step: Double, chroma: Double = 1, maxLightness: Double = PetFurTone.lightest) {
+        self.step = min(max(step, -1), 1)
+        self.chroma = max(chroma, 0)
+        self.maxLightness = maxLightness
+    }
+
+    /// The pick itself (the main coat).
+    public static let pick = PetFurTone(step: 0)
+
+    /// The pick as a marking on white fur (calico patches, a pied French
+    /// Bulldog, Shih Tzu gold): never so light that it melts into the white.
+    public static let marking = PetFurTone(step: 0, maxLightness: 0.82)
+
+    /// Shading, stripes, points: a deeper, slightly calmer version of the pick.
+    public static func darker(_ amount: Double, chroma: Double = 0.9) -> PetFurTone {
+        PetFurTone(step: -amount, chroma: chroma)
+    }
+
+    /// Feathering, pale muzzles and bellies: a lighter, softer version.
+    public static func lighter(_ amount: Double, chroma: Double = 0.7) -> PetFurTone {
+        PetFurTone(step: amount, chroma: chroma)
+    }
+
+    /// The darkest any derived fur gets (OKLab lightness): a deep brown or
+    /// charcoal, never black, so markings never read as holes in the pet.
+    public static let darkest = 0.27
+    /// The lightest any derived fur gets: soft white, never a glare.
+    public static let lightest = 0.97
+
+    public func color(from pick: PetColor) -> PetColor {
+        let base = pick.oklch
+        var lightness = base.lightness
+        if step < 0 {
+            lightness += step * max(base.lightness - Self.darkest, 0)
+        } else {
+            lightness += step * max(Self.lightest - base.lightness, 0)
+        }
+        lightness = max(min(lightness, maxLightness, Self.lightest), Self.darkest)
+        return PetColor(oklchLightness: lightness, chroma: base.chroma * chroma, hue: base.hue, alpha: pick.alpha)
+    }
+}
+
 /// A complete role -> color table. Breeds define a default palette; a pet
 /// profile layers user overrides on top with `applying(_:)`.
 public struct PetPalette: Hashable, Codable, Sendable {
@@ -228,26 +344,17 @@ public struct PetPalette: Hashable, Codable, Sendable {
         return copy
     }
 
-    /// The fur roles that `furTint(_:)` recolors. Spots and the belly keep
-    /// their breed colors so tuxedo, calico, and corgi markings survive.
-    public static let tintableFurRoles: [PetPaletteRole] = [.furBase, .furShade, .furAccent]
+    /// The fur roles a fur tint may recolor (see `PetBreed.furTones`). Eyes,
+    /// nose, and outline are never tinted, so every face stays readable.
+    public static let tintableFurRoles: [PetPaletteRole] = [.furBase, .furShade, .furAccent, .furSpot, .belly]
 
-    /// Overrides that recolor all fur roles from one picked color.
-    ///
-    /// `furAccent` means different things per breed (darker stripes on a
-    /// tabby, lighter feathering on a golden), so setting each role to a
-    /// fixed color would invert some breeds' markings. Instead the picked
-    /// color becomes `furBase`, and every other fur role keeps the picked
-    /// hue while shifting lightness by as much as it differed from this
-    /// palette's `furBase`. Each breed's light/dark structure is preserved.
-    public func furTint(_ color: PetColor) -> [PetPaletteRole: PetColor] {
-        let base = self[.furBase].hsl
-        let target = color.hsl
-        var overrides: [PetPaletteRole: PetColor] = [.furBase: color]
-        for role in Self.tintableFurRoles where role != .furBase {
-            let original = self[role].hsl
-            overrides[role] = PetColor(hue: target.hue, saturation: target.saturation,
-                                       lightness: target.lightness + original.lightness - base.lightness)
+    /// Overrides that recolor fur from one picked color: each role in
+    /// `tones` becomes its tone of the pick, and every other role keeps this
+    /// palette's color (white bibs stay white).
+    public func furTint(_ pick: PetColor, tones: [PetPaletteRole: PetFurTone]) -> [PetPaletteRole: PetColor] {
+        var overrides: [PetPaletteRole: PetColor] = [:]
+        for role in Self.tintableFurRoles {
+            if let tone = tones[role] { overrides[role] = tone.color(from: pick) }
         }
         return overrides
     }
@@ -280,8 +387,10 @@ public struct PetPalette: Hashable, Codable, Sendable {
     static let rimLightness = 0.5
     static let rimMaximumSaturation = 0.14
     /// Fur around a mouth darker than this (on average) gets a rim-colored
-    /// mouth instead of the dark one.
-    static let darkMouthBackground = 0.15
+    /// mouth instead of the dark one. It sits where both have about the same
+    /// contrast against the fur, so a charcoal or chocolate coat keeps the
+    /// crisp dark mouth and only near-black fur gets the light one.
+    static let darkMouthBackground = 0.08
 
     /// Shared, breed-independent colors: eyes, effects, the default costume.
     static let baseColors: [PetPaletteRole: PetColor] = [

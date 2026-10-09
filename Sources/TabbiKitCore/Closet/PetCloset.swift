@@ -35,6 +35,9 @@ public struct PetCloset: Hashable, Sendable {
 
     public init(save: PetSave) {
         self.save = save
+        if let tint = save.profile.furTint, let replacement = PetCloset.retiredSwatches[tint] {
+            self.save.profile.tintFur(replacement)
+        }
     }
 
     public var profile: PetProfile { save.profile }
@@ -135,28 +138,42 @@ public struct PetCloset: Hashable, Sendable {
         setBreed(breeds[next])
     }
 
-    /// Changes the breed and re-derives the fur tint from the new breed's
-    /// shading, so a picked color looks right on every breed.
+    /// Changes the breed. The fur tint carries over and follows the new
+    /// breed's `furTones`, so a picked color looks right on every breed.
     public mutating func setBreed(_ breed: PetBreed) {
-        let tint = furTint
-        var profile = save.profile
-        profile.breed = breed
-        profile.tintFur(tint)
-        save.profile = profile
+        save.profile.breed = breed
     }
 
     // MARK: Colors
 
-    /// Fur colors offered as swatches: warm and cool naturals first, then a
-    /// few playful ones. `nil` (the breed's own colors) is offered separately.
+    /// Fur colors offered as swatches: warm orange, caramel, chocolate, a
+    /// soft charcoal, silver gray, and cream, then two gentle pastels (lilac
+    /// and sky). Each one is checked on every breed: the charcoal is light
+    /// enough to keep faces readable without a rim, and the pastels avoid
+    /// pink, which would swallow the pink nose and cheeks. `nil` (the
+    /// breed's own colors) is offered separately.
     public static let furSwatches: [PetColor] = [
-        "#F2A65A", "#C98B5B", "#8A5A3C", "#3B3434", "#9AA3AD", "#F4ECE0", "#E58FA8", "#8FB8E8",
+        "#F2A65A", "#C98B5B", "#8A5A3C", "#5E5856", "#A3A9B2", "#F3E2C4", "#B9A7D6", "#9EC3EC",
     ].compactMap(PetColor.init(hex:))
 
-    /// The picked fur color, or nil for the breed's own colors. A tint makes
-    /// the picked color the fur base, so that is where it is read back from.
+    /// The name shown for a swatch ("Caramel"), or nil for other colors.
+    public static func name(ofSwatch color: PetColor) -> String? {
+        let names = ["Orange", "Caramel", "Chocolate", "Charcoal", "Silver", "Cream", "Lilac", "Sky"]
+        return furSwatches.firstIndex(of: color).map { names[$0] }
+    }
+
+    /// Swatches offered by earlier builds, paired with the swatch that took
+    /// each one's place, so a pet tinted from a retired swatch keeps a
+    /// selected swatch (the near-black charcoal and the pink are gone).
+    static let retiredSwatches: [PetColor: PetColor] = {
+        let pairs = [("#3B3434", "#5E5856"), ("#9AA3AD", "#A3A9B2"), ("#F4ECE0", "#F3E2C4"),
+                     ("#E58FA8", "#B9A7D6"), ("#8FB8E8", "#9EC3EC")]
+        return Dictionary(uniqueKeysWithValues: pairs.map { (PetColor(hex: $0.0)!, PetColor(hex: $0.1)!) })
+    }()
+
+    /// The picked fur color, or nil for the breed's own colors.
     public var furTint: PetColor? {
-        profile.paletteOverrides[.furBase]
+        profile.furTint
     }
 
     public mutating func tintFur(_ color: PetColor?) {

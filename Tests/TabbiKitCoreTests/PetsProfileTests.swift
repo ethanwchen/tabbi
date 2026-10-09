@@ -159,27 +159,31 @@ final class PetProfileTests: XCTestCase {
         XCTAssertEqual(profile.palette[.outline], profile.palette.rim)
     }
 
-    func testFurTintKeepsEachBreedsLightAndDarkMarkings() {
+    func testFurTintIsKeptAsThePickAndFollowsTheBreed() {
         let lilac = PetColor(hex: "#B4A2C8")!
-        for breed in PetBreed.allCases {
-            var profile = PetProfile(name: "Pip", breed: breed)
-            profile.tintFur(lilac)
-            let original = breed.palette, tinted = profile.palette
-            XCTAssertEqual(tinted[.furBase], lilac, "\(breed)")
-            for role in PetPalette.tintableFurRoles where role != .furBase {
-                // A lighter golden chest stays lighter; darker tabby stripes stay darker.
-                let wasLighter = original[role].luminance > original[.furBase].luminance
-                let isLighter = tinted[role].luminance > tinted[.furBase].luminance
-                if original[role] != original[.furBase] {
-                    XCTAssertEqual(wasLighter, isLighter, "\(breed) \(role)")
-                }
-                // The picked hue carries to every fur role: purple stays blue-and-red heavy.
-                XCTAssertGreaterThan(tinted[role].blue, tinted[role].green, "\(breed) \(role)")
-            }
-            // Markings outside the fur roles keep their breed colors.
-            XCTAssertEqual(tinted[.belly], original[.belly], "\(breed)")
-            XCTAssertEqual(tinted[.furSpot], original[.furSpot], "\(breed)")
-        }
+        var profile = PetProfile(name: "Pip", breed: .orangeTabby)
+        profile.tintFur(lilac)
+        XCTAssertEqual(profile.furTint, lilac)
+        XCTAssertEqual(profile.palette[.furBase], lilac)
+        profile.breed = .calico
+        XCTAssertEqual(profile.palette[.furBase], PetBreed.calico.palette[.furBase], "a calico stays white")
+        XCTAssertEqual(profile.palette[.furAccent], PetBreed.calico.furTint(lilac)[.furAccent])
+    }
+
+    func testLegacyTintedSavesKeepThePickAndDropTheOldShades() throws {
+        let json = """
+        {"name": "Pip", "breed": "calico",
+         "paletteOverrides": {"furBase": "#E58FA8", "furShade": "#C46F88", "furAccent": "#FFB0C8", "costumeBase": "#112233"}}
+        """
+        let profile = try JSONDecoder().decode(PetProfile.self, from: Data(json.utf8))
+        XCTAssertEqual(profile.furTint, PetColor(hex: "#E58FA8"))
+        XCTAssertEqual(profile.paletteOverrides, [.costumeBase: PetColor(hex: "#112233")!])
+
+        let reencoded = try JSONDecoder().decode(PetProfile.self, from: JSONEncoder().encode(profile))
+        XCTAssertEqual(reencoded, profile)
+        var untinted = profile
+        untinted.tintFur(nil)
+        XCTAssertNil(try JSONDecoder().decode(PetProfile.self, from: JSONEncoder().encode(untinted)).furTint)
     }
 
     func testFurTintCanBeClearedWithoutLosingOtherColors() {
@@ -232,7 +236,9 @@ final class PetProfileTests: XCTestCase {
         XCTAssertEqual(profile.breed, .calico)
         XCTAssertEqual(profile.outfit, .none)
         XCTAssertEqual(profile.accessories, [.beanie])
-        XCTAssertEqual(profile.paletteOverrides, [.furBase: PetColor(hex: "#112233")!])
+        // A legacy fur base is read as the fur tint it was.
+        XCTAssertEqual(profile.paletteOverrides, [:])
+        XCTAssertEqual(profile.furTint, PetColor(hex: "#112233")!)
     }
 
     func testDecodingWithoutABreedFails() {
