@@ -33,6 +33,14 @@ final class PartyStore: ObservableObject {
     @Published private(set) var pending: PartyAction?
     /// The last action's failure, shown once under the control that caused it.
     @Published private(set) var notice: String?
+    /// The notice confirms an action (a report sent, someone blocked)
+    /// rather than saying what went wrong.
+    @Published private(set) var noticeConfirms = false
+    /// The friend or party member the report card is about, while it shows.
+    @Published private(set) var reporting: PartyProfile?
+    /// The people I blocked, for the Blocked list in Party options; nil
+    /// until `loadBlocked()` has an answer.
+    @Published private(set) var blocked: [PartyBlockedUser]?
     /// The "Great job, team!" moment after a shared session ran to its end,
     /// while it is up (`PartyTeamCelebration.displayDuration`).
     @Published private(set) var celebration: PartyTeamCelebration?
@@ -97,6 +105,7 @@ final class PartyStore: ObservableObject {
             tracker = PartyPresenceTracker()
             // Stays up (no timer) so the snapshot can catch it.
             if scenario == .celebrating { celebration = .demo(now: Date()) }
+            if scenario == .reporting { reporting = state.friends.first?.profile }
             return
         }
         if isSnapshot, let local = Self.localSnapshotServer(environment) {
@@ -472,12 +481,95 @@ final class PartyStore: ObservableObject {
 
     func clearNotice() {
         notice = nil
+        noticeConfirms = false
+    }
+
+    // MARK: Moderation
+
+    /// Blocks someone from a friend's or member's menu: the server ends the
+    /// friendship and hides us from each other, and they go from the panel
+    /// at once. The next party fetch says whether I'm still in the party
+    /// (I leave one they host).
+    func block(_ profile: PartyProfile) {
+        let code = profile.code
+        run(.block(code)) { store, account in
+            let (_, user) = try await account.perform { try await $0.block(code: code) }
+            store.didBlock(user)
+        }
+    }
+
+    private func didBlock(_ user: PartyBlockedUser) {
+        state.didBlock(code: user.code)
+        blocked = [user] + (blocked ?? []).filter { $0.code != user.code }
+        plan.invalidate(.friends)
+        plan.invalidate(.party)
+        confirm("Blocked \(user.name). Unblock them in Party options.")
+    }
+
+    /// Lifts a block from the Blocked list. The friendship stays ended.
+    func unblock(code: String) {
+        run(.unblock(code)) { store, account in
+            _ = try await account.perform { try await $0.unblock(code: code) }
+            store.blocked?.removeAll { $0.code == code }
+        }
+    }
+
+    /// Fetches the Blocked list for Party options; the demo shows a sample.
+    func loadBlocked() {
+        if isDemo {
+            blocked = blocked ?? PartyBlockedUser.demo(now: Date())
+            return
+        }
+        guard let account else { return }
+        Task { [weak self] in
+            guard let list = try? await account.perform({ try await $0.blocks() }) else { return }
+            self?.blocked = list
+        }
+    }
+
+    /// Opens the report card for a friend or party member.
+    func beginReport(_ profile: PartyProfile) {
+        notice = nil
+        reporting = profile
+    }
+
+    func cancelReport() {
+        guard pending != .report else { return }
+        reporting = nil
+    }
+
+    /// Sends the report card, then blocks them too when asked. The card
+    /// stays open with the reason and note if sending fails.
+    func sendReport(reason: PartyReportReason, note: String, alsoBlock: Bool) {
+        guard let profile = reporting else { return }
+        if isDemo {
+            reporting = nil
+            confirm("This is a demo. No report was sent.")
+            return
+        }
+        let report = PartyReport(code: profile.code, reason: reason, note: note)
+        run(.report) { store, account in
+            _ = try await account.perform { try await $0.report(report) }
+            store.reporting = nil
+            if alsoBlock {
+                let (_, user) = try await account.perform { try await $0.block(code: profile.code) }
+                store.didBlock(user)
+                store.confirm("Thanks. Your report was sent and \(profile.name) is blocked.")
+            } else {
+                store.confirm("Thanks. Your report was sent.")
+            }
+        }
+    }
+
+    private func confirm(_ message: String) {
+        notice = message
+        noticeConfirms = true
     }
 
     /// Runs one panel action: one at a time, with its failure as `notice`.
     private func run(_ action: PartyAction, _ body: @escaping (PartyStore, PartyAccount) async throws -> Void) {
         guard pending == nil else { return }
-        notice = nil
+        clearNotice()
         if isDemo {
             notice = "This is a demo. Run without TABBI_DEMO to study with friends."
             return
@@ -678,4 +770,7 @@ enum PartyAction: Hashable {
     case leaveParty
     case session
     case deleteData
+    case block(String)
+    case unblock(String)
+    case report
 }

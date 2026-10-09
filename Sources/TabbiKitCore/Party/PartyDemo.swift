@@ -93,6 +93,8 @@ public enum PartyDemoScenario: String, CaseIterable, Sendable {
     case lobby
     /// Just registered: no friends and no party yet.
     case noFriends
+    /// The default demo with the report card open about a friend.
+    case reporting
     /// Waiting for the server's first answer.
     case connecting
     /// The server never answered.
@@ -107,7 +109,7 @@ extension PartyState {
         let base = demo(now: now, calendar: calendar)
         guard let me = base.profile, var party = base.party else { return base }
         switch scenario {
-        case .hosting:
+        case .hosting, .reporting:
             return base
         case .guest, .member, .celebrating:
             let host = party.members[1].profile.code
