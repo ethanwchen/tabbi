@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tabbi.app/schemas/themes.v1.schema.json",
+  "title": "Tabbi themes (themes.v1)",
+  "description": "Sources/TabbiKitCore/Themes/themes.json: every theme of the open panel in picker order, the default theme, kit theme values from before themes existed, and the light drawn on glass surfaces. The closed notch is pure black in every theme. What the enum values do (accent treatments, gentle motion, glass) is code, pinned by shared/fixtures/themes/themes.json.",
+  "type": "object",
+  "required": ["schema", "defaultTheme", "legacyKitThemes", "glassSheen", "themes"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "themes.v1" },
+    "defaultTheme": { "description": "The theme used when neither settings nor a kit picks one.", "$ref": "#/$defs/id" },
+    "legacyKitThemes": {
+      "description": "Old values of a kit's theme field, to the theme they mean.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/id" }
+    },
+    "glassSheen": {
+      "description": "The drawn light of a glass card: a fill brighter at the top, a glint near the top-leading corner that fades toward the middle, and a rim lit from above.",
+      "type": "object",
+      "required": ["fillTop", "fillBottom", "glint", "rimTop", "rimBottom"],
+      "additionalProperties": false,
+      "properties": {
+        "fillTop": { "$ref": "#/$defs/color" },
+        "fillBottom": { "$ref": "#/$defs/color" },
+        "glint": { "$ref": "#/$defs/color" },
+        "rimTop": { "$ref": "#/$defs/color" },
+        "rimBottom": { "$ref": "#/$defs/color" }
+      }
+    },
+    "themes": {
+      "description": "In picker order. Ids are unique.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/theme" }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9]*$" },
+    "unit": { "type": "number", "minimum": 0, "maximum": 1 },
+    "color": {
+      "description": "An sRGB color with 0...1 components: white for a gray, or red, green and blue. Opacity defaults to 1.",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["white"],
+          "additionalProperties": false,
+          "properties": { "white": { "$ref": "#/$defs/unit" }, "opacity": { "$ref": "#/$defs/unit" } }
+        },
+        {
+          "type": "object",
+          "required": ["red", "green", "blue"],
+          "additionalProperties": false,
+          "properties": {
+            "red": { "$ref": "#/$defs/unit" },
+            "green": { "$ref": "#/$defs/unit" },
+            "blue": { "$ref": "#/$defs/unit" },
+            "opacity": { "$ref": "#/$defs/unit" }
+          }
+        }
+      ]
+    },
+    "theme": {
+      "type": "object",
+      "required": ["id", "name", "summary", "family", "accents", "typeface", "motion", "controls", "surfaces", "palette"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string", "minLength": 1 },
+        "summary": { "description": "One line for the picker.", "type": "string", "minLength": 1 },
+        "family": {
+          "description": "The picker group: calm hardware-black looks, or warm soft looks made for studying.",
+          "enum": ["classic", "cozy"]
+        },
+        "accents": {
+          "description": "What the theme does to each module's accent: keeps it, grays it, saturates it (lifted to 4.5:1 on black) or mixes it toward warm cream.",
+          "enum": ["original", "monochrome", "vivid", "pastel"]
+        },
+        "typeface": { "description": "SF Pro Rounded or SF Pro.", "enum": ["rounded", "standard"] },
+        "motion": {
+          "description": "gentle plays every spring 30% longer with 0.08 less bounce.",
+          "enum": ["standard", "gentle"]
+        },
+        "controls": {
+          "description": "What icon buttons and the tab bar selection sit on: the palette's surface, or Liquid Glass where the system has it.",
+          "enum": ["solid", "glass"]
+        },
+        "surfaces": {
+          "description": "What cards are drawn as: the palette's surface, or frosted glass under the glass sheen.",
+          "enum": ["flat", "glass"]
+        },
+        "palette": {
+          "type": "object",
+          "required": [
+            "background", "surface", "surfaceHover", "stroke", "primaryText", "secondaryText", "tertiaryText",
+            "success", "warning", "danger"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "background": { "description": "The panel body, opaque.", "$ref": "#/$defs/color" },
+            "glow": {
+              "description": "A soft color rising from the panel's bottom edge. Absent for a flat body.",
+              "$ref": "#/$defs/color"
+            },
+            "surface": { "$ref": "#/$defs/color" },
+            "surfaceHover": { "$ref": "#/$defs/color" },
+            "stroke": { "$ref": "#/$defs/color" },
+            "primaryText": { "$ref": "#/$defs/color" },
+            "secondaryText": { "$ref": "#/$defs/color" },
+            "tertiaryText": { "$ref": "#/$defs/color" },
+            "success": { "$ref": "#/$defs/color" },
+            "warning": { "$ref": "#/$defs/color" },
+            "danger": { "$ref": "#/$defs/color" }
+          }
+        }
+      }
+    }
+  }
+}

@@ -27,9 +27,15 @@ Status of phase 0 from `docs/windows/plan.md`: the Mac app's shared pieces move 
   Demo snapshots match the commit before, apart from shots that change between any two runs of the same build: live clocks, and the playing pet in the Closet and the onboarding pet step, whose idle breath is caught at whatever moment the shot is taken.
   Re-rendered, those pet shots matched the earlier commit pixel for pixel.
 
+- Themes are data: `Sources/TabbiKitCore/Themes/themes.json` (`themes.v1`) holds every theme in picker order (names, family, accent treatment, typeface, motion, controls, surfaces and palette), the default theme, the old kit value `notch`, and the glass sheen of glass cards.
+  `ThemeCatalog` loads it and checks the schema version, unique ids, every id it or Swift refers to, and that color components are in 0...1.
+  What the values do (accent treatments, gentle motion, the glass material) stays in Swift.
+  `shared/fixtures/themes/themes.json`, recorded from the Swift catalog before the move, pins every resolved color and what each accent treatment makes of every module accent; `ThemeGoldenTests` compares within 1e-9, because the old code computed the cozy text colors (`0.9580000000000001`) that the data writes as typed (`0.958`).
+  `shared/schemas/themes.v1.schema.json` describes the format, and `ThemeFileTests` keeps its enums and palette roles equal to Swift.
+
 ## Next
 
-1. Themes and study methods to JSON, each pinned by a golden test written before the move.
+1. Study methods to JSON, pinned by a golden test written before the move.
 2. JSON Schema files for kits, editions and `catalog.json`.
 3. Logic fixtures for the TypeScript port: focus timer and study session sequences, the stream-json parser, Plan my day, ticker selection.
 4. Snapshot comparison against `main`, pixel for pixel.

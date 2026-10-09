@@ -7,7 +7,9 @@ How to add a theme is in [CONTRIBUTING.md](../../CONTRIBUTING.md#add-a-theme).
 
 ## Where it lives
 
+- `Sources/TabbiKitCore/Themes/themes.json`: every theme as data (`themes.v1`, described by `shared/schemas/themes.v1.schema.json`), which `ThemeCatalog` loads, so the Mac app and the Windows port share one source.
 - `Sources/TabbiKitCore/Themes/`: the themes as pure values (`AppTheme`, `ThemePalette`, `ThemeCatalog`) and the rules that pick an accent, a typeface, a motion style and a control material, tested in `ThemeTests`.
+  `shared/fixtures/themes/themes.json` pins every resolved color and what each accent treatment makes of the module accents.
 - `Sources/TabbiKit/Design/Theme.swift`: the SwiftUI tokens (`Theme.Palette`, `Theme.Typography`, `Theme.Motion`) read the active theme, so modules never name a theme.
   `controlBackground` draws small floating controls with the theme's material.
 - `swift run Tabbi --snapshot snapshots-themes --theme all` renders every panel once per theme, one folder per theme.

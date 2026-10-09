@@ -5,13 +5,14 @@ See `docs/windows/plan.md` (section 3) for why, and `docs/windows/phase0.md` for
 
 - `schemas/` holds JSON Schema files for the data formats both apps read.
   `pets.v1.schema.json` describes the pet art, breeds and animation timelines in `Sources/TabbiKitCore/Pets/PetArt/`.
+  `themes.v1.schema.json` describes the themes in `Sources/TabbiKitCore/Themes/themes.json`.
 - `fixtures/` holds golden fixtures written by the Swift tests.
   Each port checks its own output against them, so drift between the apps fails a test.
 
 Fixtures are regenerated only on purpose, after an intended change:
 
 ```sh
-TABBI_RECORD_FIXTURES=1 swift test --filter PetGoldenFrameTests
+TABBI_RECORD_FIXTURES=1 swift test --filter 'PetGoldenFrameTests|ThemeGoldenTests'
 ```
 
 Review the diff before committing it: every changed line is a pixel, color or timing that changed for users.
