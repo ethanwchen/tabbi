@@ -321,7 +321,7 @@ main.home .wrap { max-width: 1120px; }
 }
 
 .about { text-align: center; max-width: 34rem; margin: 0 auto; font-size: 18px; line-height: 1.6; }
-.about p { margin: 0 0 12px; }
+.about p { margin: 0 0 12px; text-wrap: balance; }
 .about-cat { display: block; margin: 0 auto 12px; }
 .about-lead { font-family: var(--head); font-weight: 600; font-size: 26px; color: var(--ink); }
 .about .cta { margin-top: 24px; }
