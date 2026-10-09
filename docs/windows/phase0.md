@@ -57,7 +57,13 @@ Status of phase 0 from `docs/windows/plan.md`: the Mac app's shared pieces move 
   It also holds 13 rotation sequences: holding and wrapping, vanished items handing over, new items joining, pins holding the notch, and interval changes.
   `TickerGoldenTests` checks `TickerSources` and `TickerRotation` against it and replays the fixture's own inputs; it was shown to fail on a one-string change.
 
+- Plan my day fixture for the TypeScript port: `shared/fixtures/plan-my-day/plan-my-day.json` holds 19 days (a workday, study days with each study method, long work split up to the focus limit, an evening, after 10 pm, a packed calendar, a meeting under way, a daylight saving change and a day east of UTC), each planned all three ways: on device with reasons and leftovers, as a study day, and from recorded Claude answers, with the free time, the full Claude and refine prompts, what the parser and validator make of each answer, and what the panel shows.
+  It also holds 4 proposal sequences (dismiss, refine, and add as time passes and meetings arrive, with a writer that fails), with the events written and the proposal after every step.
+  `PlanMyDayGoldenTests` checks the planners against it and replays the fixture's own inputs; it was shown to fail on a one-string change.
+  Found along the way: the study-day planner and the Claude prompt treat a goal that waits for a start (Study's daily study-time goal) as work, so a Med School day plans a review block named "Study time", while the on-device planner leaves such goals out.
+  The fixture records today's behavior; a fix belongs to the Today module and re-records it.
+
 ## Next
 
-1. Logic fixtures for the TypeScript port: study session sequences, Plan my day.
+1. Logic fixture for the TypeScript port: study session sequences.
 2. Snapshot comparison against `main`, pixel for pixel.
