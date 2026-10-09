@@ -44,6 +44,9 @@ final class SyncStore: ObservableObject {
 
     /// How long the save stays quiet before a change is pushed.
     static let debounce: TimeInterval = 5
+    /// How long a sync waits after wake, so Wi-Fi is back before it runs
+    /// instead of failing with a notice right away.
+    static let wakeDelay: TimeInterval = 10
     /// How long quitting waits for the last push.
     static let quitWait: TimeInterval = 2
 
@@ -132,7 +135,7 @@ final class SyncStore: ObservableObject {
             .store(in: &cancellables)
         NSWorkspace.shared.notificationCenter
             .publisher(for: NSWorkspace.didWakeNotification)
-            .sink { [weak self] _ in MainActor.assumeIsolated { self?.syncNow() } }
+            .sink { [weak self] _ in MainActor.assumeIsolated { self?.syncSoon(after: Self.wakeDelay) } }
             .store(in: &cancellables)
         syncNow()
     }
@@ -261,9 +264,15 @@ final class SyncStore: ObservableObject {
 
     private func saveDidChange(_ save: PetSave) {
         guard state.isSignedIn, save != syncedSave else { return }
+        syncSoon(after: Self.debounce)
+    }
+
+    /// Syncs once `delay` passes, unless another change or sync comes first.
+    private func syncSoon(after delay: TimeInterval) {
+        guard state.isSignedIn else { return }
         debounceTask?.cancel()
         debounceTask = Task { [weak self] in
-            try? await Task.sleep(nanoseconds: UInt64(Self.debounce * 1_000_000_000))
+            try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
             guard !Task.isCancelled else { return }
             self?.syncNow()
         }
