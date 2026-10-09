@@ -149,42 +149,101 @@ final class ClaudeAskConversationTests: XCTestCase {
 
     func testALostSessionIsAskedAgainWithTheChatSoFar() throws {
         var conversation = ClaudeAskConversation(restoring: ClaudeAskChat(
-            id: UUID(), createdAt: Date(), updatedAt: Date(), sessionID: "gone",
+            id: UUID(), createdAt: Date(), updatedAt: Date(), sessionID: "gone", sessionProvider: .claudeCLI,
             messages: [.init(role: .user, text: "Retry policy?"), .init(role: .assistant, text: "Back off and retry.")]
         ))
         conversation.begin(prompt: "And jitter?")
-        XCTAssertEqual(conversation.outgoingPrompt("And jitter?"), "And jitter?", "the session still has the chat")
+        let resumed = conversation.request(prompt: "And jitter?", provider: .claudeCLI)
+        XCTAssertEqual(resumed.resumeSessionID, "gone")
+        XCTAssertEqual(resumed.messages, [.user("And jitter?")], "the session still has the chat")
         conversation.fail(.process(detail: "No conversation found with session ID: gone"))
         let question = try XCTUnwrap(conversation.takeQuestionForLostSession())
 
         conversation.begin(prompt: question.text)
-        let seeded = conversation.outgoingPrompt(question.text)
-        XCTAssertTrue(seeded.contains("Me: Retry policy?\n\nYou: Back off and retry."), seeded)
-        XCTAssertTrue(seeded.hasSuffix("And jitter?"), seeded)
+        let seeded = conversation.request(prompt: question.text, provider: .claudeCLI)
+        XCTAssertNil(seeded.resumeSessionID)
+        XCTAssertEqual(seeded.messages, [.user("Retry policy?"), .assistant("Back off and retry."), .user("And jitter?")])
         XCTAssertEqual(conversation.messages.last(where: { $0.role == .user })?.text, "And jitter?",
                        "the bubble shows only what the user typed")
 
-        conversation.apply(.result(ClaudeResult(text: "Add randomness.", sessionID: "fresh", isError: false)))
+        conversation.apply(.sessionStarted("fresh"), from: .claudeCLI)
+        conversation.apply(.finished(text: "Add randomness."), from: .claudeCLI)
         conversation.begin(prompt: "Thanks")
-        XCTAssertEqual(conversation.outgoingPrompt("Thanks"), "Thanks", "the new session carries on by itself")
+        let next = conversation.request(prompt: "Thanks", provider: .claudeCLI)
+        XCTAssertEqual(next.resumeSessionID, "fresh", "the new session carries on by itself")
+        XCTAssertEqual(next.messages, [.user("Thanks")])
     }
 
-    func testANewChatSendsTheQuestionAsTyped() {
+    func testANewChatSendsTheQuestionAsTypedWithItsScreenshots() {
         var conversation = ClaudeAskConversation()
         conversation.begin(prompt: "Hi")
-        XCTAssertEqual(conversation.outgoingPrompt("Hi"), "Hi")
+        let request = conversation.request(prompt: "Hi", images: [Data([1])], provider: .openAI, system: "Be brief.")
+        XCTAssertEqual(request.messages, [.user("Hi", images: [Data([1])])])
+        XCTAssertEqual(request.system, "Be brief.")
+        XCTAssertEqual(request.model, "", "the provider fills in the user's model")
     }
 
-    func testTheSeedKeepsTheLatestExchangesWithinTheLimit() {
+    func testAnotherProviderNeverResumesASessionItDoesNotHold() {
+        var conversation = ClaudeAskConversation()
+        conversation.begin(prompt: "Retry policy?")
+        conversation.apply(.sessionStarted("claude-1"), from: .claudeCLI)
+        conversation.apply(.finished(text: "Back off."), from: .claudeCLI)
+        conversation.begin(prompt: "Jitter?")
+
+        for provider in [AIProviderID.codexCLI, .gemini, .ollama] {
+            let request = conversation.request(prompt: "Jitter?", provider: provider)
+            XCTAssertNil(request.resumeSessionID, "\(provider)")
+            XCTAssertEqual(request.messages, [.user("Retry policy?"), .assistant("Back off."), .user("Jitter?")])
+        }
+    }
+
+    func testTheHistoryKeepsTheLatestExchangesWithinTheLimit() {
         var conversation = ClaudeAskConversation(restoring: ClaudeAskChat(
             id: UUID(), createdAt: Date(), updatedAt: Date(), sessionID: nil,
             messages: [.init(role: .user, text: String(repeating: "a", count: 50)), .init(role: .assistant, text: "old"),
                        .init(role: .user, text: "recent"), .init(role: .assistant, text: "latest")]
         ))
         conversation.begin(prompt: "Next")
-        let seeded = conversation.outgoingPrompt("Next", transcriptLimit: 30)
-        XCTAssertTrue(seeded.contains("Me: recent\n\nYou: latest"), seeded)
-        XCTAssertFalse(seeded.contains("You: old"), "a whole exchange goes, never half of one")
+        let request = conversation.request(prompt: "Next", provider: .anthropic, transcriptLimit: 30)
+        XCTAssertEqual(request.messages, [.user("recent"), .assistant("latest"), .user("Next")],
+                       "a whole exchange goes, never half of one")
+    }
+
+    func testProviderEventsStreamIntoTheAnswer() {
+        var conversation = ClaudeAskConversation()
+        conversation.begin(prompt: "Hi")
+        conversation.apply(.textDelta("Hel"), from: .ollama)
+        XCTAssertEqual(conversation.messages.last?.text, "Hel")
+        XCTAssertTrue(conversation.isStreaming)
+        conversation.apply(.textDelta("lo"), from: .ollama)
+        conversation.apply(.finished(text: nil), from: .ollama)
+        XCTAssertEqual(conversation.messages.last?.text, "Hello")
+        XCTAssertEqual(conversation.messages.last?.status, .complete)
+        XCTAssertNil(conversation.sessionID, "an API has no session")
+
+        conversation.begin(prompt: "Again")
+        conversation.apply(.textDelta("draft"), from: .codexCLI)
+        conversation.apply(.finished(text: "Final answer"), from: .codexCLI)
+        XCTAssertEqual(conversation.messages.last?.text, "Final answer", "the reported answer wins")
+    }
+
+    func testAnEmptyAnswerFailsNamingTheAssistant() {
+        var conversation = ClaudeAskConversation()
+        conversation.begin(prompt: "Hi")
+        conversation.apply(.finished(text: nil), from: .gemini)
+        XCTAssertEqual(conversation.failure, .process(detail: "Gemini ended without answering."))
+    }
+
+    func testTheSessionsToolIsSavedAndRestored() throws {
+        var conversation = ClaudeAskConversation()
+        conversation.begin(prompt: "Hi")
+        conversation.apply(.sessionStarted("codex-1"), from: .codexCLI)
+        conversation.apply(.finished(text: "Hello"), from: .codexCLI)
+        let chat = try XCTUnwrap(conversation.savedChat())
+        XCTAssertEqual(chat.sessionProvider, .codexCLI)
+        let restored = ClaudeAskConversation(restoring: chat)
+        XCTAssertEqual(restored.sessionProvider, .codexCLI)
+        XCTAssertEqual(restored.sessionID, "codex-1")
     }
 
     func testOtherFailuresKeepTheSession() {
@@ -201,10 +260,10 @@ final class ClaudeAskConversationTests: XCTestCase {
     func testClaudeNotFoundFailureMarksAnswerFailed() {
         var conversation = ClaudeAskConversation()
         conversation.begin(prompt: "hi")
-        conversation.fail(.claudeNotFound)
-        XCTAssertEqual(conversation.phase, .failed(.claudeNotFound))
+        conversation.fail(.notInstalled(.claudeCLI))
+        XCTAssertEqual(conversation.phase, .failed(.notInstalled(.claudeCLI)))
         XCTAssertEqual(answer(conversation)?.status, .failed)
-        XCTAssertEqual(conversation.failure, .claudeNotFound)
+        XCTAssertEqual(conversation.failure, .notInstalled(.claudeCLI))
     }
 
     func testFailureClearsWhenTheNextQuestionStarts() {

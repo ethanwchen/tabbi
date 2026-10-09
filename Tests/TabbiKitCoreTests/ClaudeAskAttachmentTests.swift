@@ -38,7 +38,7 @@ final class ClaudeAskAttachmentTests: XCTestCase {
     // MARK: - CLI input
 
     func testInputLineIsOneUserMessageWithImagesBeforeTheText() throws {
-        let line = try ClaudeAskRequest.inputLine(prompt: "What is this?", images: [png, Data([9])])
+        let line = try AICommandLineFormat.claudeInputLine(prompt: "What is this?", images: [png, Data([9])])
         XCTAssertEqual(line.last, UInt8(ascii: "\n"))
         XCTAssertEqual(line.filter { $0 == UInt8(ascii: "\n") }.count, 1)
 
@@ -58,7 +58,7 @@ final class ClaudeAskAttachmentTests: XCTestCase {
     }
 
     func testProcessReadsTheInputOnStdin() async throws {
-        let input = try ClaudeAskRequest.inputLine(prompt: "hi", images: [Data(repeating: 7, count: 300_000)])
+        let input = try AICommandLineFormat.claudeInputLine(prompt: "hi", images: [Data(repeating: 7, count: 300_000)])
         var lines: [String] = []
         for try await line in StreamingProcess.lines(executable: URL(fileURLWithPath: "/bin/cat"), arguments: [],
                                                      input: input) {
@@ -160,7 +160,7 @@ final class ClaudeAskAttachmentTests: XCTestCase {
         let shot = ClaudeAskAttachment(pixelWidth: 10, pixelHeight: 10)
         var conversation = ClaudeAskConversation()
         conversation.begin(prompt: "Why?", attachments: [shot])
-        conversation.fail(.claudeNotFound)
+        conversation.fail(.notInstalled(.claudeCLI))
         XCTAssertEqual(conversation.takeRetryQuestion(), ClaudeAskQuestion(text: "Why?", attachments: [shot]))
     }
 

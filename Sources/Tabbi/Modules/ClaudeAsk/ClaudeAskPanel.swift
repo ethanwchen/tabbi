@@ -28,8 +28,8 @@ struct ClaudeAskPanel: View {
 
     var body: some View {
         VStack(spacing: Theme.Spacing.s) {
-            if session.isClaudeMissing && conversation.isEmpty {
-                ClaudeMissingView()
+            if let setup = session.setupNeeded, conversation.isEmpty {
+                SetupView(setup: setup)
                     .transition(.opacity)
             } else {
                 Group {
@@ -51,7 +51,7 @@ struct ClaudeAskPanel: View {
         }
         .motion(Theme.Motion.content, value: conversation.isEmpty)
         .motion(Theme.Motion.content, value: session.isShowingHistory)
-        .motion(Theme.Motion.content, value: session.isClaudeMissing)
+        .motion(Theme.Motion.content, value: session.setupNeeded)
         .motion(Theme.Motion.content, value: session.isAskingScreenAccess)
         .onAppear {
             session.prepare()
@@ -332,6 +332,7 @@ private struct MessageList: View {
         case .assistant:
             if message.status == .failed {
                 FailureRow(failure: isLast ? session.conversation.failure : nil,
+                           assistant: session.ai.setupState.provider?.assistantName ?? "The AI",
                            onRetry: isLast ? { session.retry() } : nil)
             } else {
                 AssistantBubble(message: message, accent: accent)
@@ -550,6 +551,8 @@ private struct CopyButton: View {
 /// itself and offers retry; older ones stay as a quiet note.
 private struct FailureRow: View {
     let failure: ClaudeAskFailure?
+    /// Who was asked, for "Claude couldn't answer".
+    let assistant: String
     let onRetry: (() -> Void)?
 
     var body: some View {
@@ -571,8 +574,8 @@ private struct FailureRow: View {
                     }
                 }
                 Spacer(minLength: Theme.Spacing.s)
-                if failure == .claudeNotFound {
-                    PillButton(title: "Set up Claude", symbol: "link", help: "Open Connections to set up Claude") {
+                if let failure, failure.needsSetup {
+                    PillButton(title: failure.setupAction, symbol: "link", help: "Open Connections to set up the AI") {
                         ConnectionsStore.shared.showHub()
                     }
                 } else if let onRetry {
@@ -585,19 +588,10 @@ private struct FailureRow: View {
     }
 
     private var title: String {
-        switch failure {
-        case .claudeNotFound: "Claude isn't set up yet"
-        case .process, nil: "Claude couldn't answer"
-        }
+        (failure ?? .process(detail: "")).title(assistant: assistant)
     }
 
-    private var detail: String? {
-        switch failure {
-        case .claudeNotFound: "Connections shows you how to add it."
-        case .process(let detail): detail
-        case nil: nil
-        }
-    }
+    private var detail: String? { failure?.detail }
 }
 
 // MARK: - History
@@ -753,16 +747,17 @@ private struct EmptyChatView: View {
     }
 }
 
-/// Shown when Claude isn't on this Mac: one plain sentence and the one
-/// button that leads to Connections, which walks through setting it up.
-/// The panel looks again each time it opens.
-private struct ClaudeMissingView: View {
+/// Shown before the first question while the AI isn't ready (none picked,
+/// a key or the tool missing): one plain sentence and the one button that
+/// leads to Connections, which walks through setting it up. The panel
+/// looks again each time it opens.
+private struct SetupView: View {
+    let setup: ClaudeAskFailure
+
     var body: some View {
         StatusMessage(symbol: "sparkles", tint: AskClaudeModule.descriptor.accentColor,
-                      title: "Set up Claude to ask questions",
-                      message: "Claude is an AI helper that answers questions right here. "
-                          + "Connections shows you how to add it.") {
-            PillButton(title: "Set up Claude", symbol: "link", help: "Open Connections to set up Claude") {
+                      title: setup.setupTitle, message: setup.setupMessage) {
+            PillButton(title: setup.setupAction, symbol: "link", help: "Open Connections to set up the AI") {
                 ConnectionsStore.shared.showHub()
             }
         }

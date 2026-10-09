@@ -3,19 +3,20 @@ import Foundation
 import SwiftUI
 import TabbiKitCore
 
-/// Drives the Ask Claude panel: sends questions to the local `claude` CLI,
+/// Drives the Ask panel: sends questions to the AI provider the user picked,
 /// folds its stream into a `ClaudeAskConversation`, and supports stop,
 /// retry, and New chat. Finished exchanges are saved to the chat history
 /// on this Mac (live runs only), and a saved chat can be reopened.
-/// Screenshots attached to a question go with it to the CLI's stdin and
-/// are kept with the saved chat; a capture whose chat is never saved is
+/// Screenshots attached to a question go with it to the provider and are
+/// kept with the saved chat; a capture whose chat is never saved is
 /// deleted once it is answered.
 @MainActor
 final class ClaudeAskSession: ObservableObject {
     @Published private(set) var conversation: ClaudeAskConversation
-    /// True when the last lookup found no `claude` executable, so the panel
-    /// can explain setup before the user types a question.
-    @Published private(set) var isClaudeMissing = false
+    /// What the user must set up before asking (no provider picked, a
+    /// missing key or tool), so the panel explains it before the user types
+    /// a question. Nil when ready.
+    @Published private(set) var setupNeeded: ClaudeAskFailure?
     /// Saved chats, the most recently answered first. Demo runs keep a
     /// sample list in memory.
     @Published private(set) var savedChats: [ClaudeAskChat] = []
@@ -38,8 +39,9 @@ final class ClaudeAskSession: ObservableObject {
     /// Enough for a before and after; more would mostly cost tokens.
     static let maxPendingAttachments = 3
 
-    /// True with `TABBI_DEMO=1`: shows a sample chat and never runs the CLI.
+    /// True with `TABBI_DEMO=1`: shows a sample chat and never sends anything.
     let isDemo: Bool
+    let ai: AIService
     private let isSnapshot: Bool
 
     /// Nil in demo and snapshot runs, which save nothing.
@@ -53,17 +55,20 @@ final class ClaudeAskSession: ObservableObject {
     /// Images of sample screenshots (demo and snapshot runs), which have no
     /// file and outlive the cache.
     private var sampleThumbnails: [UUID: NSImage] = [:]
+    /// True while a snapshot shot shows the panel as it is once set up.
+    private var snapshotHidesSetup = false
     /// The chat a snapshot shot replaced, put back for the next shot.
     private var conversationBeforeSnapshot: ClaudeAskConversation?
     private var task: Task<Void, Never>?
     /// Bumped on every ask, stop, and New chat so a superseded run can't
     /// write into the conversation after it was cancelled.
     private var generation = 0
-    /// Bumped on every lookup so a slow one for an old path can't overwrite
-    /// `isClaudeMissing` after a newer one finished.
+    /// Bumped on every lookup so a slow one for an old setup can't overwrite
+    /// `setupNeeded` after a newer one finished.
     private var lookupGeneration = 0
 
-    init(runMode: RunMode, storage: EditionStorage) {
+    init(runMode: RunMode, storage: EditionStorage, ai: AIService) {
+        self.ai = ai
         isDemo = runMode.isDemo
         isSnapshot = runMode.isSnapshot
         let savesNothing = runMode.isDemo || runMode.isSnapshot
@@ -120,8 +125,6 @@ final class ClaudeAskSession: ObservableObject {
         }
         generation += 1
         let generation = generation
-        let sessionID = conversation.sessionID
-        let outgoing = conversation.outgoingPrompt(prompt)
         let images = question.attachments.compactMap { attachmentStore.data(for: $0, in: conversation.chatID) }
 
         // Never send a question without a screenshot its thumbnail promised.
@@ -133,39 +136,38 @@ final class ClaudeAskSession: ObservableObject {
 
         if isDemo {
             conversation.apply(.result(ClaudeResult(
-                text: "This is a demo. Run \(Edition.current.name) without `TABBI_DEMO` to ask the real Claude.",
-                sessionID: sessionID,
+                text: "This is a demo. Run \(Edition.current.name) without `TABBI_DEMO` to get a real answer.",
+                sessionID: conversation.sessionID,
                 isError: false
             )))
             exchangeEnded()
             return true
         }
 
+        // Nothing is sent before the user picks a provider.
+        guard let provider = ai.provider else {
+            conversation.fail(.noProvider)
+            setupNeeded = .noProvider
+            exchangeEnded()
+            return true
+        }
+        let id = provider.id
+        let request = conversation.request(prompt: prompt, images: images, provider: id,
+                                           system: ClaudeAskConversation.instructions)
         task = Task { [weak self] in
-            guard let executable = await self?.resolveExecutable() else {
-                self?.update(generation) { $0.fail(.claudeNotFound) }
-                return
-            }
-            guard !Task.isCancelled else { return }
             do {
-                // Every question goes in as a stream-json message, the one
-                // way the CLI takes images; text-only questions use it too
-                // so there is a single path.
-                let events = ClaudeCLI.stream(
-                    executable: executable,
-                    inputLine: try ClaudeAskRequest.inputLine(prompt: outgoing, images: images),
-                    extraArguments: ClaudeAskRequest.extraArguments(resuming: sessionID)
-                )
-                for try await event in events {
-                    self?.update(generation) { $0.apply(event) }
+                for try await event in provider.stream(request) {
+                    self?.update(generation) { $0.apply(event, from: id) }
                 }
-                self?.update(generation) { $0.finish() }
+                self?.update(generation) { $0.finish(answeredBy: id) }
+            } catch is CancellationError {
+                // Stop, New chat or another chat took over.
             } catch {
-                // A failed `result` event already explained the error better
-                // than the non-zero exit that follows it.
+                let failure = ClaudeAskFailure(error: error, provider: id)
                 self?.update(generation) { conversation in
-                    if conversation.isStreaming { conversation.fail(ClaudeAskFailure(error: error)) }
+                    if conversation.isStreaming { conversation.fail(failure) }
                 }
+                if failure.needsSetup { self?.setupNeeded = failure }
             }
         }
         return true
@@ -255,6 +257,10 @@ final class ClaudeAskSession: ObservableObject {
     /// Snapshot runs only: puts the panel in `state` for the next shot.
     func showForSnapshot(_ state: SnapshotState) {
         guard isSnapshot else { return }
+        // The main shot shows the setup this run needs (none picked in a
+        // fresh snapshot run); the others show their state as set up.
+        snapshotHidesSetup = state != .chat || isShowingHistory
+        if snapshotHidesSetup { setupNeeded = nil } else { prepare() }
         isAskingScreenAccess = state == .screenAccess
         if state == .sentScreenshot {
             if conversationBeforeSnapshot == nil { conversationBeforeSnapshot = conversation }
@@ -293,17 +299,27 @@ final class ClaudeAskSession: ObservableObject {
         pendingAttachments.append(attachment)
     }
 
-    /// Looks up `claude` ahead of the first question (the panel calls this
-    /// when it appears, and again from the "not found" view). Cheap once
-    /// found; misses are looked up afresh.
-    func prepare() {
-        guard !isDemo else { return }
-        Task { _ = await resolveExecutable() }
-    }
-
-    /// Called when the user changes the `claude` path in Settings.
-    func claudePathDidChange() {
-        prepare()
+    /// Checks the provider's setup ahead of the first question: the panel
+    /// calls this when it appears, and the module whenever the provider,
+    /// a key or the `claude` path changes. A command line tool is looked up
+    /// on disk (cheap once found; misses are looked up afresh).
+    /// `state` is the new one while `AIService` is still publishing it.
+    func prepare(_ state: AISetupState? = nil) {
+        guard !isDemo, !snapshotHidesSetup else { return }
+        lookupGeneration += 1
+        let lookup = lookupGeneration
+        switch state ?? ai.setupState {
+        case .notChosen:
+            setupNeeded = .noProvider
+        case .needsKey(let id):
+            setupNeeded = .needsKey(id)
+        case .ready(let id):
+            Task { [weak self, ai] in
+                let installed = await ai.isInstalled(id)
+                guard let self, lookup == lookupGeneration else { return }
+                setupNeeded = installed ? nil : .notInstalled(id)
+            }
+        }
     }
 
     /// Clears the chat; the next question starts a fresh CLI session.
@@ -405,15 +421,5 @@ final class ClaudeAskSession: ObservableObject {
         } else {
             savedChats.removeAll { removed.contains($0.id) }
         }
-    }
-
-    /// Locates `claude` off the main thread (the login-shell fallback blocks).
-    /// The shared resolver caches hits and follows the Settings override.
-    private func resolveExecutable() async -> URL? {
-        lookupGeneration += 1
-        let lookup = lookupGeneration
-        let found = await Task.detached(priority: .userInitiated) { ClaudeExecutableResolver.shared.resolve() }.value
-        if lookup == lookupGeneration { isClaudeMissing = found == nil }
-        return found
     }
 }

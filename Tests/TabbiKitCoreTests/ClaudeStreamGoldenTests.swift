@@ -188,7 +188,7 @@ struct ClaudeStreamGoldenFixture: Codable, Equatable {
             }
             var failure: String?
             switch conversation.failure {
-            case .claudeNotFound: failure = "claudeNotFound"
+            case .noProvider, .notInstalled, .needsKey: failure = "needsSetup"
             case .process(let detail): failure = detail
             case nil: break
             }

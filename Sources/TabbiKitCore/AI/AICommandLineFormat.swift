@@ -38,7 +38,7 @@ public enum AICommandLineFormat {
             if let system = request.system, !system.isEmpty { arguments += ["--system-prompt", system] }
             if let resume { arguments += ["--resume", resume] }
             let last = request.messages.last
-            let input = try ClaudeAskRequest.inputLine(prompt: prompt(for: request), images: last?.images ?? [])
+            let input = try claudeInputLine(prompt: prompt(for: request), images: last?.images ?? [])
             return Invocation(arguments: arguments, input: input)
 
         case .codexCLI:
@@ -62,6 +62,46 @@ public enum AICommandLineFormat {
         case .anthropic, .openAI, .gemini, .ollama:
             preconditionFailure("\(provider) is not a command line tool")
         }
+    }
+
+    /// The question as one line of `--input-format stream-json` input: a
+    /// user message whose content is each image (base64 PNG) followed by
+    /// the text, the documented way to give the CLI an image. It goes to the
+    /// local process's stdin, so the image never touches a file the CLI
+    /// could be pointed at, and nothing is sent anywhere but through it.
+    public static func claudeInputLine(prompt: String, images: [Data]) throws -> Data {
+        let content = images.map { InputMessage.Block.image(base64: $0.base64EncodedString()) }
+            + [.text(prompt)]
+        let message = InputMessage(message: .init(content: content))
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
+        return try encoder.encode(message) + Data("\n".utf8)
+    }
+
+    /// `{"type":"user","message":{"role":"user","content":[...]}}`
+    private struct InputMessage: Encodable {
+        struct Message: Encodable {
+            var role = "user"
+            var content: [Block]
+        }
+
+        struct Block: Encodable {
+            struct Source: Encodable {
+                var type = "base64"
+                var media_type = ClaudeAskAttachment.mediaType
+                var data: String
+            }
+
+            var type: String
+            var text: String?
+            var source: Source?
+
+            static func text(_ text: String) -> Block { Block(type: "text", text: text) }
+            static func image(base64: String) -> Block { Block(type: "image", source: Source(data: base64)) }
+        }
+
+        var type = "user"
+        var message: Message
     }
 
     /// The text to send: the last message, or, for a new run of a chat that
