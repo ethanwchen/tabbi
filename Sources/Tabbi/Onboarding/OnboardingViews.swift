@@ -94,8 +94,8 @@ private struct OnboardingBody: View {
                 step(flow, setup: setup)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                     .id(flow.stage)
-                    .transition(.asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity),
-                                            removal: .opacity))
+                    .transition(AsymmetricTransition(insertion: .motionRow(from: .trailing),
+                                                     removal: .opacity))
                 OnboardingFooter(flow: flow, hasSetupView: setup != nil)
             }
             .motion(Theme.Motion.content, value: flow.stage)
