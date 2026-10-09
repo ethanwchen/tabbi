@@ -401,7 +401,7 @@ Errors: `no_account` (403), `revision_required` (428, no `If-Match`), `invalid_r
 | 401 | `unauthorized` | missing, malformed or unknown token; if the user was deleted, register again |
 | 404 | `not_found` | unknown route or method |
 | 413 | `body_too_large` | body over 4096 bytes |
-| 429 | `rate_limited` | over 60 requests per minute per token; wait for `Retry-After` seconds |
+| 429 | `rate_limited` | over 60 requests per minute per token, or 60 failed authentications per minute from one client IP (an IPv6 /64 counts as one); wait for `Retry-After` seconds |
 | 500 | `internal` | server bug; retry later |
 | 503 | `unavailable` | temporarily unavailable; retry with backoff |
 

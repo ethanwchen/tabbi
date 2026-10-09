@@ -12,8 +12,8 @@
  */
 import { DurableObject } from "cloudflare:workers";
 import {
-  HttpError, MAX_FRIENDS, MAX_PARTY_MEMBERS, PARTY_IDLE_EXPIRY_S, RATE_LIMIT_PER_MIN, REGISTER_PER_MIN, FRIEND_CODE_RE, TOKEN_RE,
-  isoWeekDays, isoWeekKeyOfDay, newCode, newToken, nowS, parseFriendCode, readBody, sha256Hex, utcDay,
+  AUTH_FAILURES_PER_MIN, HttpError, MAX_FRIENDS, MAX_PARTY_MEMBERS, PARTY_IDLE_EXPIRY_S, RATE_LIMIT_PER_MIN, REGISTER_PER_MIN, FRIEND_CODE_RE, TOKEN_RE,
+  clientKey, isoWeekDays, isoWeekKeyOfDay, newCode, newToken, nowS, parseFriendCode, readBody, sha256Hex, utcDay,
 } from "./lib";
 import { PROFILE_FIELDS, Profile, applyProfilePatch, defaultProfile, parseProfilePatch, sameProfile } from "./profile";
 import { json } from "./http";
@@ -215,6 +215,11 @@ interface LivePresence {
   savedDay: string | null;
 }
 
+function rateLimited(minute: number, now: number): HttpError {
+  const retry = Math.max(1, (minute + 1) * 60 - now);
+  return new HttpError(429, "rate_limited", "too many requests", { "Retry-After": String(retry) });
+}
+
 const dayKey = (p: Presence) => `${p.day}:${p.todayMinutes}`;
 
 interface Caller {
@@ -261,7 +266,7 @@ export class Hub extends DurableObject<Env> {
         const caller = await this.authenticate(req, now);
         return this.updateProfile(req, caller, true);
       }
-      this.rateLimit("ip:" + (req.headers.get("CF-Connecting-IP") ?? "unknown"), REGISTER_PER_MIN, now);
+      this.rateLimit("register:" + clientKey(req), REGISTER_PER_MIN, now);
       return this.register(req, now);
     }
 
@@ -299,19 +304,26 @@ export class Hub extends DurableObject<Env> {
 
   // ---------- auth + rate limiting ----------
 
-  /** Resolves the caller from the Bearer token (rate limited per token, even when the token is bad). */
+  /**
+   * Resolves the caller from the Bearer token. Failures count per client IP, and an IP over its limit
+   * is refused before any lookup, so guessing tokens costs the guesser, not the Hub. Only a token that
+   * resolves gets a window of its own: unknown tokens never add entries to the rate-limit map.
+   */
   private async authenticate(req: Request, now: number): Promise<Caller> {
+    const failures = "authfail:" + clientKey(req);
+    this.checkLimit(failures, AUTH_FAILURES_PER_MIN, now);
+    const unauthorized = () => {
+      this.rateLimit(failures, Infinity, now);
+      return new HttpError(401, "unauthorized", "missing or invalid token");
+    };
     const token = bearer(req);
-    if (!token || !TOKEN_RE.test(token)) {
-      this.rateLimit("ip:" + (req.headers.get("CF-Connecting-IP") ?? "unknown"), RATE_LIMIT_PER_MIN, now);
-      throw new HttpError(401, "unauthorized", "missing or invalid token");
-    }
+    if (!token || !TOKEN_RE.test(token)) throw unauthorized();
     const tokenHash = await sha256Hex(token);
-    this.rateLimit("t:" + tokenHash, RATE_LIMIT_PER_MIN, now);
     const row = this.sql.exec<UserRow>("SELECT * FROM users WHERE token_hash = ?", tokenHash).toArray()[0]
       ?? this.sql.exec<UserRow>(
         "SELECT u.* FROM device_tokens d JOIN users u ON u.code = d.code WHERE d.token_hash = ?", tokenHash).toArray()[0];
-    if (!row) throw new HttpError(401, "unauthorized", "missing or invalid token");
+    if (!row) throw unauthorized();
+    this.rateLimit("t:" + tokenHash, RATE_LIMIT_PER_MIN, now);
     return { code: row.code, tokenHash, profile: rowToProfile(row) };
   }
 
@@ -324,10 +336,14 @@ export class Hub extends DurableObject<Env> {
     const w = this.windows.get(id);
     const count = w && w.minute === minute ? w.count + 1 : 1;
     this.windows.set(id, { minute, count });
-    if (count > perMinute) {
-      const retry = Math.max(1, (minute + 1) * 60 - now);
-      throw new HttpError(429, "rate_limited", "too many requests", { "Retry-After": String(retry) });
-    }
+    if (count > perMinute) throw rateLimited(minute, now);
+  }
+
+  /** Throws 429 if `id` has already used up this minute's window, without counting a request. */
+  private checkLimit(id: string, perMinute: number, now: number): void {
+    const minute = Math.floor(now / 60);
+    const w = this.windows.get(id);
+    if (w && w.minute === minute && w.count >= perMinute) throw rateLimited(minute, now);
   }
 
   // ---------- profile ----------
@@ -571,7 +587,7 @@ export class Hub extends DurableObject<Env> {
    * The authorization code's refresh token is stored only to revoke it on deletion.
    */
   private async signInWithApple(req: Request, now: number): Promise<Response> {
-    this.rateLimit("apple:" + (req.headers.get("CF-Connecting-IP") ?? "unknown"), APPLE_AUTH_PER_MIN, now);
+    this.rateLimit("apple:" + clientKey(req), APPLE_AUTH_PER_MIN, now);
     const body = parseAppleAuth(await readBody(req, APPLE_AUTH_FIELDS));
     const callerToken = bearer(req);
     // A token that no longer resolves (its user was deleted) signs in as if there were none.

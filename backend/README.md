@@ -67,7 +67,8 @@ app ──HTTPS──> Worker (tabbi-friends) ──> Durable Object "Hub" (one 
 - The weekly leaderboard sums a `study_days` row per user per local calendar day (the last `todayMinutes` the app reported for that day, written with the presence flushes and only when it changed).
   The app sends its local `day` with each heartbeat, so minutes count toward the day the student actually studied in their time zone.
   The week is the current ISO week (Monday to Sunday) of the UTC calendar; live, not yet flushed counts are included, and rows are kept for 28 days.
-- Rate limits (60 requests per minute per token, 10 registrations per minute per IP) are counted in the Hub's memory.
+- Rate limits (60 requests per minute per token, 60 failed authentications, 10 registrations and 10 Apple sign-ins per minute per client) are counted in the Hub's memory.
+  A client is an IPv4 address or an IPv6 /64 prefix, so rotating through one subscriber's IPv6 addresses does not reset a limit.
   With a single instance they are exact while it is alive, and they cost no storage writes.
 
 ## Free-tier math
