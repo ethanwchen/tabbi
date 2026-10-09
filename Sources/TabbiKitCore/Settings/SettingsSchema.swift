@@ -80,6 +80,16 @@ public enum SettingsSchema {
                   let name = PartySettingsRepository(defaults: defaults).load().cleanedName else { return }
             defaults.set(name, forKey: SettingsRepository.Key.displayName)
         },
+        // 6 -> 7: AI features get a provider choice, and a fresh install has
+        // none until the user picks one. Until now they all ran the local
+        // claude command, so someone who already uses Tabbi keeps Claude Code.
+        Migration(version: 7) { defaults in
+            let hasSettings = defaults.object(forKey: SettingsRepository.Key.kitID) != nil
+                || defaults.object(forKey: SettingsRepository.Key.moduleOrder) != nil
+            if hasSettings, defaults.object(forKey: SettingsRepository.Key.aiProvider) == nil {
+                defaults.set(AIProviderID.claudeCLI.rawValue, forKey: SettingsRepository.Key.aiProvider)
+            }
+        },
     ]
 
     /// The version this build writes.
