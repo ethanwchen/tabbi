@@ -418,6 +418,23 @@ final class PetEyeTests: XCTestCase {
         }
     }
 
+    /// No breed looks out through a thin slit: every pupil is at least two
+    /// pixels wide somewhere, which reads as a soft, friendly eye.
+    func testPupilsAreRoundNotSlits() {
+        for breed in PetBreed.allCases {
+            let canvas = PetComposer.sitting(breed)
+            var widest = 0
+            for y in 0..<canvas.height {
+                var run = 0
+                for x in 0..<canvas.width {
+                    run = canvas[x, y] == .pupil ? run + 1 : 0
+                    widest = max(widest, run)
+                }
+            }
+            XCTAssertGreaterThanOrEqual(widest, 2, "\(breed)")
+        }
+    }
+
     /// Closed, sleepy, happy, and squeezed eyes clear the whole open eye,
     /// pupil included, so no dark pixel is left behind.
     func testClosedEyesLeaveNoPupilBehind() {

@@ -112,17 +112,17 @@ enum CatArt {
         ...Spppp....ppppS....
         """)
 
-    /// Sphynx: big bat-like ears flaring out from a narrow crown, forehead
-    /// wrinkles drawn as short shade lines, sharp cheekbones, and a narrow
+    /// Sphynx: big bat-like ears flaring out from a narrow crown, two soft
+    /// forehead wrinkles drawn as short shade lines, sharp cheekbones, and a narrow
     /// muzzle. Hairless, so there is no ear tuft or stripe zone.
     static let headSphynx = SpriteGrid(art: """
         ee................ee
         ePe..............ePe
         ePPe............ePPe
         ePPPe.BBBBBBBB.ePPPe
-        .ePPPBBSSBBSSBBPPPe.
-        .ePPBBBBBSSBBBBBPPe.
-        ..eBBBSSBBBBSSBBBe..
+        .ePPPBBBSSSSBBBPPPe.
+        .ePPBBBBBBBBBBBBPPe.
+        ..eBBBBBBSSBBBBBBe..
         ..BBBBBBBBBBBBBBBB..
         .BBBBBBBBBBBBBBBBBB.
         SBBBBBBBBBBBBBBBBBBS
@@ -133,8 +133,8 @@ enum CatArt {
         .....SSBBBBBBSS.....
         """)
 
-    /// Sphynx face: big 3x3 lemon eyes with a slit pupil, a small nose
-    /// over a "w" mouth, and rosy cheeks.
+    /// Sphynx face: big 3x3 lemon eyes with a round, friendly pupil under a
+    /// highlight, a small nose over a "w" mouth, and rosy cheeks.
     static let faceSphynx = SpriteGrid(art: """
         ....................
         ....................
@@ -144,7 +144,7 @@ enum CatArt {
         ....................
         ....................
         ....LiE......LiE....
-        ....EiE......EiE....
+        ....iiE......iiE....
         .....E...NN...E.....
         ..PP....R..R....PP..
         .........RR.........
@@ -154,12 +154,12 @@ enum CatArt {
         """)
 
     /// Sphynx sitting body, the same 20x11 frame as `bodySit` so every
-    /// costume fits: a lean chest with wrinkles at the neck, bony haunches,
+    /// costume fits: a lean chest with one soft wrinkle at the neck, bony haunches,
     /// and a thin whip tail curling up.
     static let bodySphynx = SpriteGrid(art: """
         .....BBBBBBBBBB.....
-        ....BSBccccccBSB...t
-        ....BBcSccccScBB..t.
+        ....BBBccccccBBB...t
+        ....BBccccccccBB..t.
         ...BBBccSccSccBBB.t.
         ...SBBBccccccBBBS.t.
         ...SBSBBccccBBSBS.t.

@@ -158,9 +158,9 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
                                .belly: c("#FFFFFF"), .eye: c("#3F86D6"), .eyeLight: c("#FFFFFF"),
                                .nose: c("#D9998B"), .blush: c("#FB9FAA"), .outline: c("#3A3330")])
         case .sphynx:
-            // Hairless pink-beige skin with deeper shade for wrinkles, a
+            // Hairless pink-beige skin with a gentle shade for wrinkles, a
             // rosy blush, and big green-gold eyes.
-            return PetPalette([.furBase: c("#F1CDB8"), .furShade: c("#D9A891"), .furAccent: c("#E6B8A2"),
+            return PetPalette([.furBase: c("#F1CDB8"), .furShade: c("#E0B29C"), .furAccent: c("#E6B8A2"),
                                .belly: c("#F8DCCB"), .eye: c("#7DB83A"), .eyeLight: c("#FFFFFF"),
                                .nose: c("#D9868A"), .blush: c("#F29A9C"), .outline: c("#4A2C2A")])
         case .scottishFold:
