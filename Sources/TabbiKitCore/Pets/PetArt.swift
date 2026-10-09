@@ -2,14 +2,15 @@ import Foundation
 
 /// The hand-drawn pet art, loaded from the `pets.v1` JSON files in
 /// `Pets/PetArt` (one per art family: cat, dog, costume, effect, paw, prop,
-/// tail, walk), and the breeds that color it (`breeds.json`).
+/// tail, walk), the breeds that color it (`breeds.json`) and the animation
+/// timelines that pose it (`animations.json`).
 ///
 /// The art is data so the Mac app and the Windows port draw the very same
 /// pixels from one source: each grid is an array of text rows in the
 /// `SpriteCell` legend (see docs/study/pets.md), and costume items carry
 /// their anchors next to their grids. The format is described by
-/// `shared/schemas/pets.v1.schema.json`. The code that places and animates
-/// the art stays in Swift (`PetComposer`, `PetAnimator`).
+/// `shared/schemas/pets.v1.schema.json`. The code that places the art
+/// (`PetComposer`) and picks what to play (`PetAnimator`) stays in Swift.
 enum PetArt {
     static let cat = load("cat")
     static let dog = load("dog")
@@ -22,6 +23,9 @@ enum PetArt {
     /// The base palette, the body shapes and every breed's palette, pattern,
     /// name and tail.
     static let breeds = load("breeds")
+    /// How every animation plays: per frame the pose, stance, timing and
+    /// effects.
+    static let animations = load("animations")
 
     /// The version every art file declares in its `schema` key.
     static let schema = "pets.v1"
@@ -43,9 +47,9 @@ enum PetArt {
     }
 }
 
-/// One `pets.v1` art file: named grids, named grid sequences (animation
-/// frames such as a swaying tail) and, in the costume file, the body, face
-/// and head items with their anchors.
+/// One `pets.v1` file: named grids, named grid sequences (animation frames
+/// such as a swaying tail) and, in the costume file, the body, face and head
+/// items with their anchors; or the breeds; or the animation timelines.
 struct PetArtFile: Sendable {
     enum LoadError: Error, Equatable, CustomStringConvertible {
         case unsupportedSchema(String)
@@ -83,6 +87,7 @@ struct PetArtFile: Sendable {
     /// Breeds in file order, which is the order pickers list them in.
     private(set) var breedOrder: [PetBreed] = []
     private(set) var breeds: [PetBreed: BreedDefinition] = [:]
+    private(set) var animations: [PetAnimation: PetTimeline] = [:]
 
     func grid(_ name: String) -> SpriteGrid { lookUp(grids, name, "grid") }
     func sequence(_ name: String) -> [SpriteGrid] { lookUp(sequences, name, "sequence") }
@@ -91,6 +96,7 @@ struct PetArtFile: Sendable {
     func headItem(_ name: String) -> CostumeArt.HeadItem { lookUp(headItems, name, "head item") }
     func species(of shape: PetBodyShape) -> PetSpecies { lookUp(bodyShapes, shape, "body shape") }
     func breed(_ breed: PetBreed) -> BreedDefinition { lookUp(breeds, breed, "breed") }
+    func timeline(_ animation: PetAnimation) -> PetTimeline { lookUp(animations, animation, "animation") }
 
     private func lookUp<Key, Value>(_ table: [Key: Value], _ name: Key, _ kind: String) -> Value {
         guard let value = table[name] else { preconditionFailure("No pet art \(kind) named \"\(name)\"") }
@@ -159,6 +165,11 @@ struct PetArtFile: Sendable {
                 pattern: pattern
             )
         }
+        for (name, timeline) in raw.animations ?? [:] {
+            let path = "animations.\(name)"
+            file.animations[try value(PetAnimation(rawValue: name), name, at: "animations")] =
+                try PetTimeline(timeline, at: path)
+        }
         return file
     }
 
@@ -203,6 +214,7 @@ struct PetArtFile: Sendable {
         let basePalette: [String: String]?
         let bodyShapes: [String: BodyShape]?
         let breeds: [Breed]?
+        let animations: [String: PetTimeline.Raw]?
 
         struct BodyShape: Decodable {
             let species: String

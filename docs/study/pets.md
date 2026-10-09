@@ -167,6 +167,7 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 ## Animations
 
 `PetComposer.clip(_:for:outfit:accessories:)` builds a `PetClip`: a list of `PetFrame`s, each with its own `duration` in seconds.
+The timelines are data: `Pets/PetArt/animations.json` (`pets.v1`) lists, for every animation, whether it loops, the frame a still pet holds, and per frame the duration, pose, stance, effects (a "z", a heart), steam, dust and speech bubble.
 `clip.frame(at: elapsed)` picks the frame to show; looping clips (idle, sit, sleep, walk, typing, coffee, nap) wrap around, one-shot clips (blink, stretch, peek, alert, celebrate, yawn, hop, wave, groom, tailSwish, play) hold their last frame until `PetAnimator.advance(to:)` sees the clip's duration has passed and moves the pet on.
 
 Front-facing animations are not drawn frame by frame.
@@ -177,7 +178,7 @@ Each frame is the sitting composition in a `PetPose`, so every breed and costume
 | `eyes` | `.open`, `.closed` (blink), `.sleepy` (soft curves), `.happy` ("^" arches), `.squeezed` ("> <", mirrored for the right eye) |
 | `mouth` | `.closed` (the face as drawn), `.open` (a small "o"), `.wide` (a big yawn with the tongue showing) |
 | `headDrop` | Sinks the head (and its hat and glasses) into the shoulders, for breathing and dozing; -1 tips it back for a yawn |
-| `prop` | Something held in front of the pet: `.laptop(tap:)` (a paw lifted to type, -1 left, 1 right, 0 resting) or `.mug(raise:)` (0 in the lap, 1 on the way up, 2 at the mouth), or `.toy(roll:bounce:bat:)` (a toy on the floor, `roll` px to the left of its spot, `bounce` px off the floor, with the left paw on top when `bat` is set) |
+| `prop` | Something held in front of the pet: `.laptop(tap:)` (a paw lifted to type, -1 left, 1 right, 0 resting) or `.mug(raise:)` (0 in the lap, 1 on the way up, 2 at the mouth), or `.toy(roll:bounce:bat:)` (a toy on the floor, `roll` px to the left of its spot, `bounce` px off the floor for a ball (yarn stays down), with the left paw on top when `bat` is set) |
 | `gesture` | The left front paw lifted off the floor: `.wave(swing:)` (0 leans out from the head, 1 swings back in beside the cheek) or `.groom(reach:)` (0 just under the chin, 1 under the tongue for a lick, 2 up over the left cheek to wash) |
 | `tailSwing` | Pixels the tip of the tail leans out to the side, 0 at rest; tailless breeds pop out a stub by the haunch instead, raised `tailSwing` px |
 | `lift` | Raises the whole pet off the baseline, for hops |

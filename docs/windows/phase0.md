@@ -20,10 +20,16 @@ Status of phase 0 from `docs/windows/plan.md`: the Mac app's shared pieces move 
   An export of every breed definition from the new data path is identical to one taken from the old Swift switches, and `PetArtTests` keeps the schema's role, zone and species lists equal to the Swift enums.
   The pet golden fixtures (digests and palettes) did not change.
 
+- Animation timelines are data: `PetArt/animations.json` (also `pets.v1`) holds, for each of the 19 animations, whether it loops, the frame a still pet holds, and per frame the duration, pose, stance, vertical shift, effects (grid name and position, fixed or from the head in the clip's first frame), steam wisp, dust and speech bubble.
+  `PetComposer.clip` reads the timeline and keeps only the placement code (composing a pose, painting effects behind the pet, finding the paws for dust).
+  One rule moved from the timeline into the composer: a toy's `bounce` lifts only a dog's ball, so the data needs no per-species values.
+  The pet golden fixtures (every frame's pixels, duration and bubble anchor, and each clip's `loops`) did not change.
+  Demo snapshots match the commit before, apart from shots that change between any two runs of the same build: live clocks, and the playing pet in the Closet and the onboarding pet step, whose idle breath is caught at whatever moment the shot is taken.
+  Re-rendered, those pet shots matched the earlier commit pixel for pixel.
+
 ## Next
 
-1. Move the pet animation timelines (`PetAnimation`) to `pets.v1`, again pinned by the pet golden fixtures.
-2. Themes and study methods to JSON, each pinned by a golden test written before the move.
-3. JSON Schema files for kits, editions and `catalog.json`.
-4. Logic fixtures for the TypeScript port: focus timer and study session sequences, the stream-json parser, Plan my day, ticker selection.
-5. Snapshot comparison against `main`, pixel for pixel.
+1. Themes and study methods to JSON, each pinned by a golden test written before the move.
+2. JSON Schema files for kits, editions and `catalog.json`.
+3. Logic fixtures for the TypeScript port: focus timer and study session sequences, the stream-json parser, Plan my day, ticker selection.
+4. Snapshot comparison against `main`, pixel for pixel.

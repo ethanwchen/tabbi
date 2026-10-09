@@ -2,12 +2,12 @@ import Foundation
 @testable import TabbiKitCore
 import XCTest
 
-/// The `pets.v1` art and breed files: they load, they are checked on the way
-/// in, and the JSON Schema other clients validate them with agrees with the
-/// Swift legend, roles and zones. That every pixel and palette matches the
-/// old Swift definitions is `PetGoldenFrameTests`.
+/// The `pets.v1` art, breed and animation files: they load, they are checked
+/// on the way in, and the JSON Schema other clients validate them with agrees
+/// with the Swift legend, roles, zones and poses. That every pixel, palette
+/// and frame timing matches the old Swift definitions is `PetGoldenFrameTests`.
 final class PetArtTests: XCTestCase {
-    private static let families = ["breeds", "cat", "costume", "dog", "effect", "paw", "prop", "tail", "walk"]
+    private static let families = ["animations", "breeds", "cat", "costume", "dog", "effect", "paw", "prop", "tail", "walk"]
 
     private var repoRoot: URL {
         URL(fileURLWithPath: #filePath)
@@ -93,6 +93,85 @@ final class PetArtTests: XCTestCase {
         XCTAssertThrowsError(try PetArtFile.decode(Data(badColor.utf8))) { error in
             XCTAssertEqual(error as? PetArtFile.LoadError, .invalidValue(path: "basePalette.eye", value: "#12345"))
         }
+    }
+
+    func testAnimationFileCoversEveryCase() {
+        XCTAssertEqual(Set(PetArt.animations.animations.keys), Set(PetAnimation.allCases))
+    }
+
+    /// Timelines name art in other files; every name and index must exist.
+    func testTimelinesReferenceRealArt() {
+        for animation in PetAnimation.allCases {
+            for (index, frame) in animation.timeline.frames.enumerated() {
+                let label = "\(animation)[\(index)]"
+                for effect in frame.effects {
+                    XCTAssertNotNil(PetArt.effect.grids[effect.grid], "\(label) effect \(effect.grid)")
+                }
+                if let steam = frame.steam {
+                    XCTAssertTrue(PropArt.steam.indices.contains(steam), "\(label) steam \(steam)")
+                }
+                if case .walking(let step) = frame.stance {
+                    XCTAssertTrue(WalkArt.cycle.indices.contains(step), "\(label) step \(step)")
+                }
+            }
+        }
+    }
+
+    func testTimelinesReadTheirFrames() throws {
+        let file = try PetArtFile.decode(Data("""
+            {"schema": "pets.v1", "animations": {"nap": {"loops": true, "still": 1, "frames": [
+              {"duration": 1},
+              {"duration": 0.5, "pose": {"eyes": "sleepy", "prop": {"kind": "toy", "roll": 3, "bat": true}, "lift": 2},
+               "stance": {"kind": "curled", "breath": 1}, "shiftY": -4, "steam": 1, "dust": true, "bubble": true,
+               "effects": [{"grid": "zLarge", "x": 28, "y": {"head": -9}}]}
+            ]}}}
+            """.utf8))
+        XCTAssertEqual(file.timeline(.nap), PetTimeline(loops: true, still: 1, frames: [
+            PetTimeline.Frame(duration: 1),
+            PetTimeline.Frame(
+                duration: 0.5,
+                pose: PetPose(eyes: .sleepy, prop: .toy(roll: 3, bounce: 0, bat: true), lift: 2),
+                stance: .curled(breath: 1), shiftY: -4,
+                effects: [PetTimeline.Effect(grid: "zLarge", x: .frame(28), y: .head(-9))],
+                steam: 1, dust: true, bubble: true
+            ),
+        ]))
+        XCTAssertEqual(file.timeline(.nap).stillIndex, 1)
+        XCTAssertEqual(PetTimeline(loops: false, still: nil, frames: [.init(duration: 1), .init(duration: 1)]).stillIndex, 1,
+                       "a one-shot clip holds its last frame")
+    }
+
+    func testNamesTheBrokenTimelineValue() {
+        func error(_ animations: String) -> PetArtFile.LoadError? {
+            do {
+                _ = try PetArtFile.decode(Data(#"{"schema": "pets.v1", "animations": \#(animations)}"#.utf8))
+                return nil
+            } catch {
+                return error as? PetArtFile.LoadError
+            }
+        }
+        XCTAssertEqual(error(#"{"dance": {"loops": true, "frames": [{"duration": 1}]}}"#),
+                       .invalidValue(path: "animations", value: "dance"))
+        XCTAssertEqual(error(#"{"sit": {"loops": true, "frames": [{"duration": 1, "pose": {"eyes": "wink"}}]}}"#),
+                       .invalidValue(path: "animations.sit.frames[0].pose.eyes", value: "wink"))
+        XCTAssertEqual(error(#"{"sit": {"loops": true, "frames": [{"duration": 0}]}}"#),
+                       .invalidValue(path: "animations.sit.frames[0].duration", value: "0.0"))
+        XCTAssertEqual(error(#"{"sit": {"loops": true, "still": 1, "frames": [{"duration": 1}]}}"#),
+                       .invalidValue(path: "animations.sit.still", value: "1"))
+        XCTAssertEqual(error(#"{"sit": {"loops": true, "frames": [{"duration": 1, "stance": {"kind": "rolling"}}]}}"#),
+                       .invalidValue(path: "animations.sit.frames[0].stance.kind", value: "rolling"))
+    }
+
+    /// The schema lists the same animations, eyes and mouths as Swift.
+    func testSchemaPosesMatchSwift() throws {
+        let properties = try XCTUnwrap(schema()["properties"] as? [String: Any])
+        let animations = try XCTUnwrap(properties["animations"] as? [String: Any])
+        let names = try XCTUnwrap((animations["propertyNames"] as? [String: Any])?["enum"] as? [String])
+        XCTAssertEqual(names, PetAnimation.allCases.map(\.rawValue))
+        let defs = try XCTUnwrap(schema()["$defs"] as? [String: Any])
+        let pose = try XCTUnwrap((defs["pose"] as? [String: Any])?["properties"] as? [String: Any])
+        XCTAssertEqual((pose["eyes"] as? [String: Any])?["enum"] as? [String], PetPose.Eyes.allCases.map(\.rawValue))
+        XCTAssertEqual((pose["mouth"] as? [String: Any])?["enum"] as? [String], PetPose.Mouth.allCases.map(\.rawValue))
     }
 
     /// The schema lists the same roles and zones as the Swift enums, so a
