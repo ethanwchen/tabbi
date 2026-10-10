@@ -12,8 +12,8 @@ import TabbiKit
 /// `--theme all` every notch shot is rendered once per theme into a
 /// subfolder named after the theme id.
 ///
-/// `--scale` sets the pixels per point of the notch shots (2 by default), and
-/// `--transparent` leaves out their stand-in desktop, so marketing images
+/// `--scale` sets the pixels per point of the notch and coach shots (2 by
+/// default), and `--transparent` leaves out their stand-in desktop, so marketing images
 /// (`docs/appstore/make-media.swift`) can place the panel crisply at
 /// any size on a backdrop of their own.
 ///
@@ -281,10 +281,12 @@ enum SnapshotRenderer {
         Theme.apply(kitTheme)
 
         // The pet coach's overlay: walking out, then each kind of bubble.
-        let coachShots = closet.map { PetCoachSnapshots.shots(profile: $0.store.profile, lines: $0.coach.lines) } ?? []
+        let coachShots = closet.map {
+            PetCoachSnapshots.shots(profile: $0.store.profile, lines: $0.coach.lines, transparent: notchStyle.transparent)
+        } ?? []
         for (name, view) in coachShots {
             let renderer = ImageRenderer(content: view)
-            renderer.scale = 2
+            renderer.scale = max(2, notchStyle.scale)
             guard let image = renderer.nsImage,
                   let tiff = image.tiffRepresentation,
                   let png = NSBitmapImageRep(data: tiff)?.representation(using: .png, properties: [:])

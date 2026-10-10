@@ -85,6 +85,36 @@ let arguments = CommandLine.arguments.dropFirst()
 let outputDirectory = URL(fileURLWithPath: arguments.first ?? "out", isDirectory: true)
 try FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
 
+// App Store accents: `swift run PetGallery out/ accents` writes the demo pet
+// (Mochi in the demo Closet's look) as single transparent 32x32 frames,
+// `accent-<look>-<animation>-<frame>-<tick>.png`, one per tick of its item
+// loop, for docs/appstore/make-media.swift to scale up with nearest neighbor.
+if arguments.dropFirst().first == "accents" {
+    let profile = PetCloset.demo.profile
+    let looks: [(String, [PetAccessory])] = [
+        ("demo", profile.accessories),
+        ("headphones", profile.accessories + [.chunkyHeadphones]),
+    ]
+    for (look, accessories) in looks {
+        for animation in [PetAnimation.idle, .typing, .celebrate, .sleep, .coffee] {
+            let clip = PetComposer.clip(animation, for: profile.breed, outfit: profile.outfit, accessories: accessories)
+            for (index, frame) in clip.frames.enumerated() {
+                for (tick, canvas) in (frame.itemFrames.isEmpty ? [frame.canvas] : frame.itemFrames).enumerated() {
+                    guard let image = PetRenderer.shared.image(for: canvas, palette: profile.palette, scale: 1),
+                          let destination = CGImageDestinationCreateWithURL(
+                              outputDirectory.appendingPathComponent("accent-\(look)-\(animation.rawValue)-\(index)-\(tick).png")
+                                  as CFURL, UTType.png.identifier as CFString, 1, nil)
+                    else { throw GalleryError.encode }
+                    CGImageDestinationAddImage(destination, image, nil)
+                    guard CGImageDestinationFinalize(destination) else { throw GalleryError.encode }
+                }
+            }
+        }
+    }
+    print("wrote accents to \(outputDirectory.path)")
+    exit(0)
+}
+
 for species in PetSpecies.allCases {
     let cells = PetBreed.breeds(of: species).map { breed in
         Cell(label: breed.displayName, canvas: PetComposer.sitting(breed), palette: breed.palette.withVisibleRim())

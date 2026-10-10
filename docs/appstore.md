@@ -267,26 +267,30 @@ When Party comes back, add these lines to the notes:
 
 ### Screenshots
 
-The screenshots in [`appstore/screenshots`](appstore/screenshots) are 2880x1800 (16:10) flattened 8-bit sRGB PNGs with no alpha, as App Store Connect requires for Mac apps.
+The screenshots in [`appstore/screenshots`](appstore/screenshots) follow the production spec (`research/screenshots.md` in the runs folder).
+They are 2880x1800 (16:10) flattened 8-bit PNGs in sRGB IEC61966-2.1 with no alpha, as App Store Connect requires for Mac apps.
 Upload them in file name order:
 
-1. `1-cozy`: "Your notch, but cozy", the Timer tab with the tab bar, the pet in a hat and the Deep focus chip.
-2. `2-focus`: "Focus in one glance", the Focus timer running with its ring partly done.
-3. `3-today`: "Today, right up top", 4 to-dos (2 checked) and 2 events, on the dark canvas.
-4. `4-closet`: "Earn points, dress your cat", the Closet wardrobe with points.
-5. `5-flashcards`: "Flashcards between tasks", the flashcards tab (Party is left out of the App Store edition, so it has no shot).
-6. `6-music`: "Music without switching apps", Now Playing with original artwork.
-7. `7-free`: "Free and open source", the tab picker from first-run setup.
+1. `1-timer`: "A cozy timer in your notch", the Timer running in round 2 of 4 with two focus sounds on.
+2. `2-cheer`: "Every session ends in a cheer", the closed notch with the pet out beside it and the coach's "That's a wrap. Well done!" +35 bubble, exactly as the app draws that moment.
+3. `3-closet`: "Earn points, dress your cat", the Wardrobe with 6 of the 8 Study items owned, the animated King's Cape worn, 240 points and a next unlock that is ready.
+4. `4-today`: "Today, right up top", Today with tasks, Up next and the mini timer.
+5. `5-tomorrow`: "Plan tomorrow tonight", the Tomorrow view with two planned tasks and tomorrow's calendar, on the night canvas (the Dark Mode shot).
+6. `6-music`: "Music without switching apps", Now Playing with the fictional "Golden Hour Drive" by Maple Avenue, its original drawn cover, the like heart and a generic music badge.
+7. `7-flashcards`: "Flashcards between tasks", the flashcards tab with neutral decks (the tab shows the module's real name; captions never name it).
+8. `8-recap`: "Your week, wrapped up", the weekly recap card (it ships in the App Store build, so the spec's closer 8a applies).
 
-All names, songs and decks in the demo data are fictional, and no shot shows a date or a price.
-[`appstore/screenshots/small`](appstore/screenshots/small) holds a 1280x800 copy of each, only to check that captions and panels still read at small sizes; do not upload those.
+Every shot uses one layout: the tabs Timer, Today, Flashcards and Now Playing plus the Closet paw, at the Large panel size.
+Party and the AI usage tab are left out of the App Store edition, so neither appears.
+All names, songs and decks in the demo data are fictional, and no caption has a price or a third-party name.
+[`appstore/screenshots/small`](appstore/screenshots/small) (1280x800) and [`appstore/screenshots/gallery`](appstore/screenshots/gallery) (540x338, the size the web product page shows) hold review copies; do not upload those.
 
-Every shot shares one layout: a cream canvas with a soft golden glow, a one-line caption and a subcaption in Fredoka, and the top edge of a generic screen (an original warm wallpaper, a menu bar strip and a black notch) with the real open Tabbi panel hanging from it.
-No device bezel is drawn, since Apple only allows its own unmodified device frames.
-A small original pixel cat sits in a lower corner of the wallpaper.
-The Today shot uses the dark variant of the canvas.
-
-The panels are App Store edition demo snapshots rendered at 2.7 pixels per point with a transparent background, so they are placed 1:1 and stay crisp.
+The design: a cream canvas with the site's paper grain and a soft glow tinted 6 percent toward the active tab's accent, a one-line Fredoka SemiBold headline (168 px, baseline at y=310) and a Fredoka Medium subcaption (76 px, baseline at y=430), over a full-bleed original dune wallpaper from y=540 with a plain translucent menu bar (no device, no Apple logo, no menus).
+The real panel hangs from the menu bar, drawn 1:1 from snapshots rendered at 3 pixels per point, with only its own shadow.
+Shot 2 has no open panel, so it shows the closed notch and the coach rendered at 4.5 pixels per point; the menu bar there is as tall as the notch at that scale.
+The demo pet, Mochi in the same King's Cape and round glasses as in the panel, sits on the front dune in a different mood per shot (typing, cheering, awake, asleep, and with headphones and a mug for music).
+It is drawn by the app's own pet renderer (`swift run PetGallery <folder> accents`) and scaled up with nearest neighbor by whole numbers (12x, 13x in the Closet shot), so the pixel art stays sharp.
+Shot 5 uses the night variant of the canvas: dusk dunes, pixel stars and a darker menu bar.
 Fredoka is bundled in [`appstore/fonts`](appstore/fonts) with its SIL Open Font License.
 
 To render them and the App Preview again after a UI change, run:
@@ -295,24 +299,22 @@ To render them and the App Preview again after a UI change, run:
 swift docs/appstore/make-media.swift
 ```
 
-The script renders demo snapshots of the Essentials and Med School kits with `--edition appstore --scale 2.7 --transparent`, so no tab the App Store build leaves out can appear, then composes the screenshots and the preview.
-To compose from snapshot folders you already rendered that way, pass the Essentials folder and then the Med School folder.
+The script renders App Store edition demo snapshots of the store layout (`--edition appstore --tabs study,planner,anki,spotify,closet --transparent`, once at `--scale 3` and once at `--scale 4.5` for the coach) and the pet's frames, then composes the screenshots and the preview.
+To compose from folders you already rendered that way, pass the 3x folder, the 4.5x folder and the accents folder.
+It warns when a caption runs into the side margins or the pet touches the panel.
 The clocks in the demo panels are live, so every run changes the shots that show a timer; commit only the images you meant to change.
+
+Known gaps to close before upload:
+
+- The Today shot reads "3 of 7 done" because the shared Focus time and flashcard rows join the five demo tasks, and the fifth task sits under the list's bottom fade; the spec asks for "2 of 5 done".
+- The recap card shows its week's dates ("Sep 28 - Oct 4"), and the spec asks for no dates in store media.
+- In the Closet shot the Wardrobe's second row sits under the grid's bottom fade, so its labels are cut; that is Closet UI, which the Closet polish work owns.
+- The spec's shot 5 prefers the Tomorrow plan proposal, but at the Regular size it truncates task names, so the plain Tomorrow view is used, as the spec allows.
 
 ### App Preview
 
-[`appstore/preview/tabbi-app-preview.mp4`](appstore/preview/tabbi-app-preview.mp4) is the App Preview: 22.8 seconds of 1920x1080 H.264 (High profile, 30 fps) with a silent stereo AAC track, since App Store Connect expects previews to carry audio.
-It is made only from app renders, on the same canvas, screen strip and captions as the screenshots, with no hands or hardware:
-
-1. The closed notch, then the panel opens out of it within the first 2 seconds ("Your notch, but cozy").
-2. The focus timer ("Focus in one glance").
-3. Today with its to-dos and events ("Today, right up top").
-4. The Closet wardrobe ("Earn points, dress your cat").
-5. Flashcards ("Flashcards between tasks").
-6. An end card with the app icon and name.
-
-Each caption holds for at least 3 seconds.
-Between scenes the caption and panel fade out to the bare backdrop and the next ones fade in, so two captions never overlap.
-The Today scene uses the light canvas, so the background does not flash between scenes.
+[`appstore/preview/tabbi-app-preview.mp4`](appstore/preview/tabbi-app-preview.mp4) is an interim App Preview: 23.6 seconds of 1920x1080 H.264 (High profile, Level 4.0, 30 fps) with a silent stereo AAC track, since App Store Connect expects previews to carry audio.
+It is made from the screenshots' open-panel scenes on the light canvas: the panel opens out of the notch, then Closet, Today, Tomorrow, Now Playing, Flashcards and the recap each hold their caption, with fades between them.
+It is still made from stills, so the timer does not tick; the spec asks for a recording of the running app (Guideline 2.3.4), which is the next step.
 There is no music bed: no track with a clear license was available, so the preview stays silent.
-`swift docs/appstore/make-media.swift` writes it together with the screenshots; the scenes are composed at the screenshots' pixel scale and scaled down, so the panel is never scaled up.
+`swift docs/appstore/make-media.swift` writes it together with the screenshots.
