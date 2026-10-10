@@ -133,6 +133,26 @@ HOME = DEMO + f'''
           <li class="trust-card">{FEATHER}<span>A tiny native app</span></li>
         </ul>
       </section>
+      <section class="home-faq" aria-labelledby="faq-title">
+        <h2 id="faq-title" class="tabs-title">{PAW}<span>Little questions</span></h2>
+        <details class="faq">
+          <summary>Does my Mac need a notch?</summary>
+          <div class="faq-body"><p>No. Any Mac on macOS 14 or later works. Without a notch, Tabbi draws a small one at the top of the screen.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Do I need an account?</summary>
+          <div class="faq-body"><p>No. Everything works without one. Sign in with Apple only if you want your pet on more than one Mac.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Do I need an AI app?</summary>
+          <div class="faq-body"><p>Only the AI tabs do. Pick Claude, Codex, Gemini or Ollama, or bring your own key. Every other tab works without one.</p></div>
+        </details>
+        <details class="faq">
+          <summary>How do I quit Tabbi?</summary>
+          <div class="faq-body"><p>Right-click the notch and choose <strong>Quit Tabbi</strong>. Settings live in the same menu.</p></div>
+        </details>
+        <p class="more">More answers on the <a href="/support">Support page</a>.</p>
+      </section>
       <section class="thanks" aria-label="Say hi">
         <div class="card-pair">
           <a class="gh-card" href="''' + GITHUB + '''">
@@ -155,6 +175,11 @@ HOME = DEMO + f'''
             <span class="gh-arrow" aria-hidden="true">&rarr;</span>
           </a>
         </div>
+      </section>
+      <section class="outro" aria-labelledby="outro-title">
+        <h2 id="outro-title" class="outro-title">Give your notch a cat.</h2>
+        <div class="cta">''' + download_button() + '''</div>
+        <p class="cta-note">No account. macOS 14 or later.</p>
       </section>
 '''
 

@@ -283,7 +283,7 @@ main.home .wrap { max-width: 1120px; }
 .more a { color: var(--on-ground); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--taupe); }
 
 /* How it works: three numbered steps on cards, the numbers as gold coins. */
-.steps, .trust, .thanks { margin-top: 64px; }
+.steps, .trust, .home-faq, .thanks, .outro { margin-top: 64px; }
 .step-row {
   display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px;
   list-style: none; margin: 0; padding: 0; counter-reset: none;
@@ -317,6 +317,17 @@ main .trust-row li { margin: 0; }
 .trust-card:nth-child(even) { transform: rotate(0.6deg); }
 .trust-mark { flex: none; color: var(--pink); }
 .trust-card:nth-child(even) .trust-mark { color: var(--link); }
+
+/* The homepage FAQ: a few short answers in one narrow column, the same
+   folding cards as Support. */
+.home-faq { max-width: 720px; margin-left: auto; margin-right: auto; }
+.home-faq .faq { background: var(--card); box-shadow: var(--shadow); }
+.home-faq .faq-body p { margin: 0 0 12px; color: var(--ink-2); }
+.home-faq .more { margin-top: 20px; }
+
+/* The closing band, so the page ends on the download button. */
+.outro { text-align: center; padding-top: 8px; }
+.outro-title { font-size: clamp(1.6rem, 3.4vw, 2.1rem); margin: 0 0 22px; color: var(--on-ground); text-wrap: balance; }
 
 .gh-card {
   position: relative; display: flex; align-items: center; gap: 14px;
@@ -517,7 +528,7 @@ footer.site nav a:hover { background: var(--chip); color: var(--on-ground); text
   .hero-home .lede { font-size: 18px; }
   .btn { width: 100%; min-height: 58px; font-size: 20px; padding: 0 24px; }
   .tab-row { grid-template-columns: 1fr; gap: 16px; }
-  .steps, .trust, .thanks { margin-top: 48px; }
+  .steps, .trust, .home-faq, .thanks, .outro { margin-top: 48px; }
   .trust-row { gap: 12px; }
   .trust-card { font-size: 15.5px; padding: 10px 12px; gap: 8px; }
   /* Cards nest inside the sheet, so their padding adds up twice: keep it
