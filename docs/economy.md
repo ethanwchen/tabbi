@@ -129,5 +129,6 @@ The streak counts study days in a row, and a missed day can be protected by a fr
 - Today is never frozen: it still has time for study.
 - An extra freeze protects only days after the day it was bought, so it cannot repair a streak that already ended.
 - Weeks start on the first weekday of the user's locale, and days follow the Mac's time zone.
+- Extra freezes are bought through the points ledger (`PetPointsLedger.buyStreakFreeze`), which keeps the purchase dates in the pet save; which freezes are used is never stored, it is replayed from the study days.
 
 So a regular student who skips one day a week never loses a streak, and a second day off in the same week costs one study day's points.

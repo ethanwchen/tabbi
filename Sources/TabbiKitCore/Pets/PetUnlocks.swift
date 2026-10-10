@@ -165,6 +165,14 @@ public enum PetPurchaseError: Error, Equatable, Sendable {
     case notEnoughPoints(missing: Int)
 }
 
+/// Why an extra streak freeze could not be bought.
+public enum StreakFreezePurchaseError: Error, Equatable, Sendable {
+    /// `StreakFreezeRules.maxHeld` extras are already held.
+    case holdingLimit
+    /// `missing` more points are needed.
+    case notEnoughPoints(missing: Int)
+}
+
 /// The user's study points and the costume items they own.
 ///
 /// Points are tracked as lifetime earned and spent rather than a single
@@ -179,12 +187,17 @@ public struct PetPointsLedger: Hashable, Codable, Sendable {
     /// event. Kept for good once given, even if the log that earned one is
     /// gone or a grant is later withdrawn.
     public private(set) var granted: Set<PetItem>
+    /// When each extra streak freeze was bought, oldest first. `StudyStreak`
+    /// replays them against the study days to know which are still held.
+    public private(set) var streakFreezes: [Date]
 
-    public init(earned: Int = 0, spent: Int = 0, purchased: Set<PetItem> = [], granted: Set<PetItem> = []) {
+    public init(earned: Int = 0, spent: Int = 0, purchased: Set<PetItem> = [], granted: Set<PetItem> = [],
+                streakFreezes: [Date] = []) {
         self.earned = max(0, earned)
         self.purchased = purchased.filter { !$0.isFree && !$0.isLimited }
         self.granted = granted.filter(\.isLimited)
         self.spent = min(max(0, spent), self.earned)
+        self.streakFreezes = streakFreezes.sorted()
     }
 
     public var balance: Int { earned - spent }
@@ -231,6 +244,24 @@ public struct PetPointsLedger: Hashable, Codable, Sendable {
         purchased.insert(item)
     }
 
+    /// Buys an extra streak freeze for `StreakFreezeRules.price` points.
+    /// `streak` is the streak as it stands at `date` (computed with this
+    /// ledger's `streakFreezes`), which says how many extras are held.
+    public mutating func buyStreakFreeze(for streak: StudyStreak, at date: Date) throws(StreakFreezePurchaseError) {
+        guard streak.canBuyFreeze else { throw .holdingLimit }
+        let price = StreakFreezeRules.price
+        guard balance >= price else { throw .notEnoughPoints(missing: price - balance) }
+        spent += price
+        streakFreezes.append(date)
+        streakFreezes.sort()
+    }
+
+    /// Adds freezes bought on another copy of this ledger (the local save
+    /// before a synced ledger replaced it), whose points are already spent.
+    public mutating func keepStreakFreezes(of other: PetPointsLedger) {
+        streakFreezes = Array(Set(streakFreezes).union(other.streakFreezes)).sorted()
+    }
+
     /// The cheapest shop item not yet owned, for a "next unlock" progress hint.
     public var nextUnlock: PetItem? {
         PetItem.shopItems.first { !owns($0) }
@@ -242,7 +273,7 @@ public struct PetPointsLedger: Hashable, Codable, Sendable {
     static let refundedPrices: [PetItem: Int] = [.accessory(.scarf): 30]
 
     // Unknown item ids (from a newer build) are skipped instead of failing.
-    private enum CodingKeys: String, CodingKey { case earned, spent, purchased, granted }
+    private enum CodingKeys: String, CodingKey { case earned, spent, purchased, granted, streakFreezes }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -254,7 +285,8 @@ public struct PetPointsLedger: Hashable, Codable, Sendable {
             earned: try container.decodeIfPresent(Int.self, forKey: .earned) ?? 0,
             spent: (try container.decodeIfPresent(Int.self, forKey: .spent) ?? 0) - refund,
             purchased: items,
-            granted: Set(grantedIDs.compactMap(PetItem.init(id:)))
+            granted: Set(grantedIDs.compactMap(PetItem.init(id:))),
+            streakFreezes: (try? container.decodeIfPresent([Date].self, forKey: .streakFreezes)) ?? []
         )
     }
 
@@ -265,6 +297,9 @@ public struct PetPointsLedger: Hashable, Codable, Sendable {
         try container.encode(purchased.map(\.id).sorted(), forKey: .purchased)
         if !granted.isEmpty {
             try container.encode(granted.map(\.id).sorted(), forKey: .granted)
+        }
+        if !streakFreezes.isEmpty {
+            try container.encode(streakFreezes, forKey: .streakFreezes)
         }
     }
 }
