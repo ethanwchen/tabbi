@@ -77,6 +77,9 @@ Notifications are still untested, because `FocusNotifications` only exists insid
 `Tabbi/Modules/Study/StudyStore.swift` is at 80%.
 `skip()`, `setDeepFocus(_:)`, `setCustom(_:)`, `receiveCards(_:)` (the Anki card feed) and the heartbeat to Party are untested.
 Plan: tests that skip a phase mid-session, switch deep focus on and off, and feed cards, checking the activity log and the shared focus clock.
+Status: `StudyStoreControlTests` now covers skipping a running block (logged as skipped with its minutes, the break runs, the skip is saved), skipping while paused and on the plain Timer, deep focus saved and read back, the shared focus clock following start, deep focus, pause and stop, new Custom lengths retuning a running block (and never ending it sooner than a minute), the Anki card feed (baseline at start, pauses ignored, the goal ending the sprint, Anki going away), and the demo saving nothing.
+They found that a snapshot run saved the deep focus switch into the user's preferences, which is fixed.
+The heartbeat to Party is still untested.
 
 ### 5. Network transports and the Claude CLI (core)
 
