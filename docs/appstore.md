@@ -293,6 +293,7 @@ All names, songs and decks in the demo data are fictional, and no caption has a 
 The design: a cream canvas with the site's paper grain and a soft glow tinted 6 percent toward the active tab's accent, a one-line Fredoka SemiBold headline (168 px, baseline at y=310) and a Fredoka Medium subcaption (76 px, baseline at y=430), over a full-bleed original dune wallpaper from y=540 with a plain translucent menu bar (no device, no Apple logo, no menus).
 The real panel hangs from the menu bar, drawn 1:1 from snapshots rendered at 3 pixels per point, with only its own shadow.
 Shot 2 has no open panel, so it shows the closed notch and the coach rendered at 4.5 pixels per point; the menu bar there is as tall as the notch at that scale.
+The spec asks for the notch centered under the caption, but at 4.5x the notch, the pet and the bubble span about 500 of the canvas's 640 points, so the bubble would run off the right edge; the shot centers the whole group instead, which keeps the pet and bubble exactly where the app draws them relative to the notch.
 The demo pet, Mochi in the same King's Cape and round glasses as in the panel, sits on the front dune in a different mood per shot (typing, cheering, awake, asleep, and with headphones and a mug for music).
 It is drawn by the app's own pet renderer (`swift run PetGallery <folder> accents`) and scaled up with nearest neighbor by whole numbers (12x, 13x in the Closet shot), so the pixel art stays sharp.
 Shot 5 uses the night variant of the canvas: dusk dunes, pixel stars and a darker menu bar.
