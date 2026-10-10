@@ -28,12 +28,12 @@ struct SystemPanel: View {
             title: "CPU", symbol: "cpu",
             value: monitor.cpu.map { SystemFormat.percent($0.total) },
             history: monitor.cpuHistory.elements,
-            help: "Total CPU usage across all cores, last 60 seconds"
+            help: String(localized: "Total CPU usage across all cores, last 60 seconds", bundle: .tabbi)
         ) {
             if monitor.thermal.needsAttention {
                 ThermalChip(level: monitor.thermal)
             } else if let cores = monitor.cpu?.perCore.count {
-                Text("\(cores) cores")
+                Text("\(cores) cores", bundle: .tabbi)
             }
         } footer: {
             CoreStrip(perCore: monitor.cpu?.perCore ?? [])
@@ -46,14 +46,14 @@ struct SystemPanel: View {
             title: "GPU", symbol: "square.stack.3d.up",
             value: SystemFormat.percent(monitor.gpu),
             history: monitor.gpuHistory.elements,
-            help: "GPU utilization, last 60 seconds"
+            help: String(localized: "GPU utilization, last 60 seconds", bundle: .tabbi)
         ) {
             EmptyView()
         } footer: {
             if monitor.gpu == nil && series.isEmpty {
-                FooterCaption("Not reported by this Mac")
+                FooterCaption(String(localized: "Not reported by this Mac", bundle: .tabbi))
             } else {
-                FooterCaption("Peak \(SystemFormat.percent(series.peak))  ·  Avg \(SystemFormat.percent(series.average))")
+                FooterCaption(String(localized: "Peak \(SystemFormat.percent(series.peak))  ·  Avg \(SystemFormat.percent(series.average))", bundle: .tabbi))
             }
         }
     }
@@ -61,17 +61,17 @@ struct SystemPanel: View {
     private var memoryCard: some View {
         let memory = monitor.memory
         return MetricCard(
-            title: "Memory", symbol: "memorychip",
+            title: String(localized: "Memory", bundle: .tabbi), symbol: "memorychip",
             value: memory.map { SystemFormat.gigabytes($0.usedBytes, alwaysShowTenths: true) } ?? SystemFormat.unavailable,
-            unit: memory == nil ? nil : "GB",
+            unit: memory == nil ? nil : String(localized: "GB", bundle: .tabbi),
             history: monitor.memoryHistory.elements,
-            help: memory.map { "Memory in use: \(SystemFormat.memory($0))" } ?? "Memory in use and memory pressure"
+            help: memory.map { String(localized: "Memory in use: \(SystemFormat.memory($0))", bundle: .tabbi) } ?? String(localized: "Memory in use and memory pressure", bundle: .tabbi)
         ) {
             if let memory {
                 // The narrow Compact card drops the "of" before the title would clip.
                 ViewThatFits(in: .horizontal) {
-                    Text("of \(SystemFormat.gigabytes(memory.totalBytes)) GB")
-                    Text("\(SystemFormat.gigabytes(memory.totalBytes)) GB")
+                    Text("of \(SystemFormat.gigabytes(memory.totalBytes)) GB", bundle: .tabbi)
+                    Text("\(SystemFormat.gigabytes(memory.totalBytes)) GB", bundle: .tabbi)
                 }
             }
         } footer: {
@@ -202,7 +202,7 @@ private struct CoreStrip: View {
     var body: some View {
         if perCore.isEmpty {
             // Short enough to stay whole in Compact's narrower cards.
-            FooterCaption("Measuring cores...")
+            FooterCaption(String(localized: "Measuring cores...", bundle: .tabbi))
         } else {
             HStack(alignment: .bottom, spacing: Theme.Spacing.xxs) {
                 ForEach(perCore.indices, id: \.self) { index in
@@ -242,9 +242,9 @@ private struct PressureBar: View {
                     .foregroundStyle(color)
                     .fixedSize()
             }
-            .help("Memory pressure: \(memory.pressure.title)")
+            .help(String(localized: "Memory pressure: \(memory.pressure.title)", bundle: .tabbi))
         } else {
-            FooterCaption("Memory stats unavailable")
+            FooterCaption(String(localized: "Memory stats unavailable", bundle: .tabbi))
         }
     }
 
@@ -272,7 +272,7 @@ private struct ThermalChip: View {
         .padding(.horizontal, Theme.Spacing.xs + Theme.Spacing.xxs)
         .frame(height: 16)
         .background(Capsule().fill(color.opacity(0.16)))
-        .help("Thermal state: \(level.title)")
+        .help(String(localized: "Thermal state: \(level.title)", bundle: .tabbi))
     }
 }
 

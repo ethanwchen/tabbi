@@ -35,10 +35,10 @@ struct ClaudeUsagePanel: View {
         } else {
             let snapshot = store.limits?.snapshot
             HStack(spacing: Theme.Spacing.xs) {
-                UsageRing(title: "5-hour", window: snapshot?.fiveHour, now: now,
-                          help: "Usage of your rolling 5-hour limit")
-                UsageRing(title: "Weekly", window: snapshot?.sevenDay, now: now,
-                          help: "Usage of your weekly limit")
+                UsageRing(title: String(localized: "5-hour", bundle: .tabbi), window: snapshot?.fiveHour, now: now,
+                          help: String(localized: "Usage of your rolling 5-hour limit", bundle: .tabbi))
+                UsageRing(title: String(localized: "Weekly", bundle: .tabbi), window: snapshot?.sevenDay, now: now,
+                          help: String(localized: "Usage of your weekly limit", bundle: .tabbi))
             }
         }
     }
@@ -106,7 +106,7 @@ private struct TodayCard: View {
     var body: some View {
         Card {
             VStack(alignment: .leading, spacing: spacing) {
-                Text("Today in \(source.toolName)")
+                Text("Today in \(source.toolName)", bundle: .tabbi)
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.tertiaryText)
                 if let stats {
@@ -115,21 +115,21 @@ private struct TodayCard: View {
                             .font(Theme.Typography.metric)
                             .foregroundStyle(Theme.Palette.primaryText)
                             .contentTransition(.numericText())
-                        Text("tokens")
+                        Text("tokens", bundle: .tabbi)
                             .font(Theme.Typography.body)
                             .foregroundStyle(Theme.Palette.secondaryText)
                     }
-                    .help("Input, output, and cache tokens across all \(source.toolName) sessions since midnight")
+                    .help(String(localized: "Input, output, and cache tokens across all \(source.toolName) sessions since midnight", bundle: .tabbi))
                     Spacer(minLength: 0)
-                    row("Messages", value: stats.today.messages.formatted())
-                    row("Top model", value: stats.today.topModel.map(ClaudeUsageFormat.modelName) ?? "None yet")
+                    row(String(localized: "Messages", bundle: .tabbi), value: stats.today.messages.formatted())
+                    row(String(localized: "Top model", bundle: .tabbi), value: stats.today.topModel.map(ClaudeUsageFormat.modelName) ?? String(localized: "None yet", bundle: .tabbi))
                     let week = ClaudeUsageFormat.compactTokens(stats.lastSevenDays.tokens.total)
-                    row("Last 7 days", value: week + " tokens", short: week)
+                    row(String(localized: "Last 7 days", bundle: .tabbi), value: String(localized: "\(week) tokens", bundle: .tabbi), short: week)
                 } else {
                     Spacer(minLength: 0)
                     HStack(spacing: Theme.Spacing.s) {
                         Spinner(tint: ClaudeUsageModule.descriptor.accentColor)
-                        Text("Reading \(source.toolName) sessions…")
+                        Text("Reading \(source.toolName) sessions…", bundle: .tabbi)
                             .font(Theme.Typography.body)
                             .foregroundStyle(Theme.Palette.secondaryText)
                     }
@@ -171,7 +171,7 @@ private struct CLIMissingCard: View {
     var body: some View {
         Card {
             VStack(alignment: .leading, spacing: Theme.Spacing.s) {
-                Label("\(source.toolName) not found", systemImage: "terminal")
+                Label(String(localized: "\(source.toolName) not found", bundle: .tabbi), systemImage: "terminal")
                     .font(Theme.Typography.title)
                     .foregroundStyle(Theme.Palette.primaryText)
                 Text(explanation)
@@ -179,10 +179,7 @@ private struct CLIMissingCard: View {
                     .foregroundStyle(Theme.Palette.secondaryText)
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)
-                (Text(source == .codex ? "Tabbi reads " : "Installed elsewhere? Set ")
-                    + Text(source == .codex ? codexFolder : ClaudeCLI.overrideVariable)
-                        .font(.system(size: 10.5, weight: .medium, design: .monospaced))
-                    + Text(source == .codex ? " and sends nothing." : " to its path."))
+                pathNote
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.tertiaryText)
                     // A long CODEX_HOME folder shortens in the middle.
@@ -195,10 +192,19 @@ private struct CLIMissingCard: View {
         .frame(width: 228)
     }
 
+    /// Where the data comes from, with the folder or variable in monospace.
+    private var pathNote: Text {
+        let path = Text(source == .codex ? codexFolder : ClaudeCLI.overrideVariable)
+            .font(.system(size: 10.5, weight: .medium, design: .monospaced))
+        return source == .codex
+            ? Text("Tabbi reads \(path) and sends nothing.", bundle: .tabbi)
+            : Text("Installed elsewhere? Set \(path) to its path.", bundle: .tabbi)
+    }
+
     private var explanation: String {
         switch source {
-        case .claudeCode: "Install Claude Code and sign in to see your live 5-hour and weekly limits."
-        case .codex: "Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits."
+        case .claudeCode: String(localized: "Install Claude Code and sign in to see your live 5-hour and weekly limits.", bundle: .tabbi)
+        case .codex: String(localized: "Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits.", bundle: .tabbi)
         }
     }
 }
@@ -231,18 +237,18 @@ private struct UsageFooter: View {
 
     private var status: String {
         if store.isFetching {
-            return store.source == .codex ? "Reading Codex logs…" : "Checking limits…"
+            return store.source == .codex ? String(localized: "Reading Codex logs…", bundle: .tabbi) : String(localized: "Checking limits…", bundle: .tabbi)
         }
         let updated = store.limits.map { ClaudeUsageFormat.updatedDescription(fetchedAt: $0.fetchedAt, now: now) }
         if let error = store.probeError {
-            return updated.map { "Refresh failed · \($0)" } ?? error
+            return updated.map { String(localized: "Refresh failed · \($0)", bundle: .tabbi) } ?? error
         }
         if let updated { return updated }
         switch store.cliStatus {
-        case .locating: return "Looking for \(store.source.toolName)…"
-        case .missing: return "Showing local stats only"
-        case .available where store.source == .codex: return "No limits in your Codex logs yet"
-        case .available: return "Not checked yet · refresh to load your live limits"
+        case .locating: return String(localized: "Looking for \(store.source.toolName)…", bundle: .tabbi)
+        case .missing: return String(localized: "Showing local stats only", bundle: .tabbi)
+        case .available where store.source == .codex: return String(localized: "No limits in your Codex logs yet", bundle: .tabbi)
+        case .available: return String(localized: "Not checked yet · refresh to load your live limits", bundle: .tabbi)
         }
     }
 }
@@ -257,8 +263,8 @@ private struct RefreshButton: View {
     var body: some View {
         IconButton(symbol: "arrow.clockwise", size: 24,
                    help: source.probesLimits
-                       ? "Check live limits (sends a tiny request with your claude CLI)"
-                       : "Read the latest Codex logs (sends nothing)",
+                       ? String(localized: "Check live limits (sends a tiny request with your claude CLI)", bundle: .tabbi)
+                       : String(localized: "Read the latest Codex logs (sends nothing)", bundle: .tabbi),
                    action: action)
             .spinning(isFetching)
         .disabled(isFetching)

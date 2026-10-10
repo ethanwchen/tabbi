@@ -15,45 +15,45 @@ struct SpotifyPanel: View {
                     SpotifyNowPlaying(controller: controller, playback: playback)
                 } else {
                     SpotifyEmptyState(
-                        symbol: "music.note.list", title: "Nothing playing",
-                        message: "Start something in \(sourceName) and it shows up here.",
-                        actions: [.init(title: "Show \(sourceName)", help: "Bring \(sourceName) to the front",
+                        symbol: "music.note.list", title: String(localized: "Nothing playing", bundle: .tabbi),
+                        message: String(localized: "Start something in \(sourceName) and it shows up here.", bundle: .tabbi),
+                        actions: [.init(title: String(localized: "Show \(sourceName)", bundle: .tabbi), help: String(localized: "Bring \(sourceName) to the front", bundle: .tabbi),
                                         icon: controller.appIcon(for: activeSource),
                                         perform: { controller.open(activeSource) })]
                     )
                 }
             case .notRunning:
                 SpotifyEmptyState(
-                    symbol: "music.note", title: "No music app is open",
-                    message: "Open \(MediaSource.names(controller.installedSources)) to see and control what's playing.",
+                    symbol: "music.note", title: String(localized: "No music app is open", bundle: .tabbi),
+                    message: String(localized: "Open \(MediaSource.names(controller.installedSources)) to see and control what's playing.", bundle: .tabbi),
                     actions: controller.installedSources.map { source in
-                        .init(title: "Open \(source.displayName)", help: "Launch \(source.displayName)",
+                        .init(title: String(localized: "Open \(source.displayName)", bundle: .tabbi), help: String(localized: "Launch \(source.displayName)", bundle: .tabbi),
                               icon: controller.appIcon(for: .app(source)),
                               perform: { controller.open(.app(source)) })
                     }
                 )
             case .notInstalled:
                 SpotifyEmptyState(
-                    symbol: "arrow.down.app", title: "No music app found",
-                    message: "Install Spotify or Music to control playback from the notch.",
+                    symbol: "arrow.down.app", title: String(localized: "No music app found", bundle: .tabbi),
+                    message: String(localized: "Install Spotify or Music to control playback from the notch.", bundle: .tabbi),
                     actions: []
                 )
             case .connecting:
-                SpotifyEmptyState(symbol: nil, title: "Connecting to \(sourceName)…",
-                                  message: "Reading what's playing.", actions: [])
+                SpotifyEmptyState(symbol: nil, title: String(localized: "Connecting to \(sourceName)…", bundle: .tabbi),
+                                  message: String(localized: "Reading what's playing.", bundle: .tabbi), actions: [])
             case .permissionDenied:
                 SpotifyEmptyState(
-                    symbol: "lock.fill", title: "\(Edition.current.name) can't control \(sourceName)",
-                    message: "Allow access in Privacy & Security › Automation.",
-                    actions: [.init(title: "Open Settings", help: "Open Automation settings",
+                    symbol: "lock.fill", title: String(localized: "\(Edition.current.name) can't control \(sourceName)", bundle: .tabbi),
+                    message: String(localized: "Allow access in Privacy & Security › Automation.", bundle: .tabbi),
+                    actions: [.init(title: String(localized: "Open Settings", bundle: .tabbi), help: String(localized: "Open Automation settings", bundle: .tabbi),
                                     perform: controller.openAutomationSettings)]
                 )
             case .scriptingDisabled:
                 SpotifyEmptyState(
-                    symbol: "curlybraces", title: "Turn on JavaScript for SoundCloud",
-                    message: "In \(browser.displayName), choose \(browser.javaScriptSettingPath).",
-                    actions: [.init(title: "Show \(browser.displayName)",
-                                    help: "Bring \(browser.displayName) to the front",
+                    symbol: "curlybraces", title: String(localized: "Turn on JavaScript for SoundCloud", bundle: .tabbi),
+                    message: String(localized: "In \(browser.displayName), choose \(browser.javaScriptSettingPath).", bundle: .tabbi),
+                    actions: [.init(title: String(localized: "Show \(browser.displayName)", bundle: .tabbi),
+                                    help: String(localized: "Bring \(browser.displayName) to the front", bundle: .tabbi),
                                     icon: controller.appIcon(for: activeSource),
                                     perform: { controller.open(activeSource) })]
                 )
@@ -109,7 +109,7 @@ private struct SpotifyNowPlaying: View {
             VStack(alignment: .leading, spacing: 0) {
                 HStack(alignment: .center, spacing: Theme.Spacing.s) {
                     VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-                        SpotifyMarqueeText(text: track?.title.isEmpty == false ? track!.title : "Unknown track",
+                        SpotifyMarqueeText(text: track?.title.isEmpty == false ? track!.title : String(localized: "Unknown track", bundle: .tabbi),
                                            isActive: hoveringTitle)
                             .font(Theme.Typography.title)
                             .foregroundStyle(Theme.Palette.primaryText)
@@ -281,7 +281,7 @@ private struct SpotifyArtworkButton: View {
                 .contentShape(RoundedRectangle(cornerRadius: Theme.Radius.l, style: .continuous))
         }
         .buttonStyle(.tactile(.pill, lifts: true))
-        .help("Show \(source.displayName)")
+        .help(String(localized: "Show \(source.displayName)", bundle: .tabbi))
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }
@@ -303,7 +303,7 @@ private struct SpotifyArtworkButton: View {
         }
         .frame(width: Self.badgeSize, height: Self.badgeSize)
         .shadow(color: .black.opacity(0.45), radius: 3, y: 1)
-        .accessibilityLabel("Playing in \(source.displayName)")
+        .accessibilityLabel(String(localized: "Playing in \(source.displayName)", bundle: .tabbi))
     }
 }
 
@@ -356,7 +356,7 @@ private struct SpotifyScrubberBar: View {
             }
             .frame(height: 12)
             .onHover { hovering = $0 }
-            .help("Drag to seek")
+            .help(String(localized: "Drag to seek", bundle: .tabbi))
             .disabled(duration <= 0)
             .motion(Theme.Motion.snappy, value: isActive)
 
@@ -384,12 +384,12 @@ private struct SpotifyTransport: View {
         ZStack {
             HStack(spacing: Theme.Spacing.xs) {
                 SpotifyModeButton(symbol: "shuffle", isOn: playback.isShuffling,
-                                  label: "Shuffle", value: playback.isShuffling ? "On" : "Off",
-                                  help: playback.isShuffling ? "Turn shuffle off" : "Turn shuffle on",
+                                  label: String(localized: "Shuffle", bundle: .tabbi), value: playback.isShuffling ? String(localized: "switch.on", defaultValue: "On", bundle: .tabbi) : String(localized: "Off", bundle: .tabbi),
+                                  help: playback.isShuffling ? String(localized: "Turn shuffle off", bundle: .tabbi) : String(localized: "Turn shuffle on", bundle: .tabbi),
                                   action: controller.toggleShuffle)
                 SpotifyModeButton(symbol: playback.repeatMode == .one ? "repeat.1" : "repeat",
                                   isOn: playback.isRepeating,
-                                  label: "Repeat", value: Self.repeatValue(playback.repeatMode),
+                                  label: String(localized: "Repeat", bundle: .tabbi), value: Self.repeatValue(playback.repeatMode),
                                   help: repeatHelp, action: controller.cycleRepeat)
                 Spacer(minLength: 0)
                 if let volume = playback.volume {
@@ -398,10 +398,10 @@ private struct SpotifyTransport: View {
                 }
             }
             HStack(spacing: Theme.Spacing.m) {
-                SpotifyTransportButton(symbol: "backward.fill", help: "Previous track",
+                SpotifyTransportButton(symbol: "backward.fill", help: String(localized: "Previous track", bundle: .tabbi),
                                        action: controller.previous)
                 SpotifyPlayPauseButton(isPlaying: playback.isPlaying, action: controller.playPause)
-                SpotifyTransportButton(symbol: "forward.fill", help: "Next track",
+                SpotifyTransportButton(symbol: "forward.fill", help: String(localized: "Next track", bundle: .tabbi),
                                        action: controller.next)
             }
         }
@@ -411,17 +411,17 @@ private struct SpotifyTransport: View {
     private var repeatHelp: String {
         let source = controller.source ?? .spotify
         switch source.repeatMode(after: playback.repeatMode) {
-        case .off: return "Turn repeat off"
-        case .all: return source == .music ? "Repeat all songs" : "Turn repeat on"
-        case .one: return "Repeat this song"
+        case .off: return String(localized: "Turn repeat off", bundle: .tabbi)
+        case .all: return source == .music ? String(localized: "Repeat all songs", bundle: .tabbi) : String(localized: "Turn repeat on", bundle: .tabbi)
+        case .one: return String(localized: "Repeat this song", bundle: .tabbi)
         }
     }
 
     private static func repeatValue(_ mode: MediaRepeatMode) -> String {
         switch mode {
-        case .off: "Off"
-        case .all: "All"
-        case .one: "One song"
+        case .off: String(localized: "Off", bundle: .tabbi)
+        case .all: String(localized: "All", bundle: .tabbi)
+        case .one: String(localized: "One song", bundle: .tabbi)
         }
     }
 }
@@ -471,10 +471,10 @@ private struct SpotifyVolumeControl: View {
                 .contentShape(Circle())
         }
         .buttonStyle(.tactile)
-        .help(shownVolume == 0 ? "Unmute" : "Mute")
+        .help(shownVolume == 0 ? String(localized: "Unmute", bundle: .tabbi) : String(localized: "Mute", bundle: .tabbi))
         .onHover { hoveringSpeaker = $0 }
         .motion(Theme.Motion.snappy, value: hoveringSpeaker)
-        .accessibilityLabel(shownVolume == 0 ? "Unmute" : "Mute")
+        .accessibilityLabel(shownVolume == 0 ? String(localized: "Unmute", bundle: .tabbi) : String(localized: "Mute", bundle: .tabbi))
     }
 
     private var slider: some View {
@@ -509,10 +509,10 @@ private struct SpotifyVolumeControl: View {
             )
         }
         .frame(width: Self.sliderWidth, height: Self.height)
-        .help("Volume \(shownVolume)%")
+        .help(String(localized: "Volume \((Double(shownVolume) / 100).formatted(.percent))", bundle: .tabbi))
         .accessibilityElement()
-        .accessibilityLabel("Volume")
-        .accessibilityValue("\(shownVolume)%")
+        .accessibilityLabel(String(localized: "Volume", bundle: .tabbi))
+        .accessibilityValue((Double(shownVolume) / 100).formatted(.percent))
         .accessibilityAdjustableAction { direction in
             switch direction {
             case .increment: onChange(volume + 10)
@@ -572,7 +572,7 @@ private struct SpotifyPlayPauseButton: View {
                 .contentShape(Circle())
         }
         .buttonStyle(.tactile(.control, lifts: true))
-        .help(isPlaying ? "Pause" : "Play")
+        .help(isPlaying ? String(localized: "Pause", bundle: .tabbi) : String(localized: "Play", bundle: .tabbi))
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
         .motion(Theme.Motion.snappy, value: isPlaying)
@@ -603,17 +603,17 @@ private struct SpotifyLikeButton: View {
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
         .motion(Theme.Motion.snappy, value: isLiked)
-        .accessibilityLabel(source == .music ? "Favorite" : "Like")
-        .accessibilityValue(isLiked ? "On" : "Off")
+        .accessibilityLabel(source == .music ? String(localized: "Favorite", bundle: .tabbi) : String(localized: "Like", bundle: .tabbi))
+        .accessibilityValue(isLiked ? String(localized: "switch.on", defaultValue: "On", bundle: .tabbi) : String(localized: "Off", bundle: .tabbi))
         .accessibilityHint(help)
     }
 
     private var help: String {
         switch (source, isLiked) {
-        case (.music, true): "Remove from Favorites"
-        case (.music, false): "Add to Favorites"
-        case (_, true): "Unlike"
-        case (_, false): "Like"
+        case (.music, true): String(localized: "Remove from Favorites", bundle: .tabbi)
+        case (.music, false): String(localized: "Add to Favorites", bundle: .tabbi)
+        case (_, true): String(localized: "Unlike", bundle: .tabbi)
+        case (_, false): String(localized: "Like", bundle: .tabbi)
         }
     }
 
@@ -783,6 +783,6 @@ struct SpotifyCompactTrailing: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .motion(Theme.Motion.snappy, value: isPlaying)
-        .help(isPlaying ? "Playing in \((controller.source ?? .spotify).displayName)" : "Paused")
+        .help(isPlaying ? String(localized: "Playing in \((controller.source ?? .spotify).displayName)", bundle: .tabbi) : String(localized: "Paused", bundle: .tabbi))
     }
 }
