@@ -226,7 +226,7 @@ final class PetLimitedTests: XCTestCase {
         let today = Date(timeIntervalSince1970: 1_800_000_000)
         let progress = PetMilestoneProgress.demo(today: today, calendar: calendar)
         XCTAssertEqual(progress.value(of: .weekStreak, today: today, calendar: calendar), 4)
-        XCTAssertEqual(progress.value(of: .fiftyHours, today: today, calendar: calendar), 31 * 60)
+        XCTAssertEqual(progress.value(of: .fiftyHours, today: today, calendar: calendar), 40 * 60 + 45)
         XCTAssertEqual(progress.value(of: .firstParty, today: today, calendar: calendar), 0)
         XCTAssertFalse(PetMilestone.allCases.contains { progress.isReached($0, calendar: calendar) })
     }
@@ -239,7 +239,7 @@ final class PetLimitedTests: XCTestCase {
         let streak = progress.progress(of: .streakFlame, today: today, calendar: calendar)
         XCTAssertEqual(streak?.label, "4/7 days")
         XCTAssertEqual(streak?.fraction ?? 0, 4.0 / 7, accuracy: 0.001)
-        XCTAssertEqual(progress.progress(of: .focusLaurel, today: today, calendar: calendar)?.label, "31/50 h")
+        XCTAssertEqual(progress.progress(of: .focusLaurel, today: today, calendar: calendar)?.label, "40/50 h")
         XCTAssertEqual(progress.progress(of: .partyMedal, today: today, calendar: calendar)?.label, "0/1 session")
         XCTAssertNil(progress.progress(of: .launchWeekCap, today: today, calendar: calendar))
     }

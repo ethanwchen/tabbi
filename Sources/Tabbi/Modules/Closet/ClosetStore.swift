@@ -19,9 +19,12 @@ final class ClosetStore: ObservableObject {
     /// without changing the save.
     @Published private(set) var tryingOn: PetItem?
     /// The Closet tab's open section, kept while the notch closes.
-    @Published var section: ClosetSection = .wardrobe
+    @Published var section: ClosetSection = .activity
     /// The large preview in the Closet tab.
     let preview: PetPlayer
+    /// A snapshot run draws the study chart already filled in, since a
+    /// still image can't play its entrance.
+    let isSnapshot: Bool
     /// The saved pet plus when a study session last ran, which the closed
     /// notch uses to show the pet awake or asleep.
     @Published private(set) var presence: PetPresence
@@ -64,6 +67,7 @@ final class ClosetStore: ObservableObject {
     init(storage: EditionStorage, runMode: RunMode, starter: PetProfile = .starter(.cat),
          celebrations: CelebrationCenter? = nil) {
         let isDemo = runMode.isDemo
+        isSnapshot = runMode.isSnapshot
         // A snapshot run neither reads nor writes the save on this Mac, so
         // it shows a fresh install's starter pet wherever it runs.
         let url = isDemo || runMode.isSnapshot ? nil : ClosetStore.saveURL(in: storage)

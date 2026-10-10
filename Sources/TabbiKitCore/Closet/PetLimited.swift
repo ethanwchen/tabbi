@@ -200,22 +200,41 @@ public struct PetMilestoneProgress: Hashable, Sendable {
 }
 
 extension PetMilestoneProgress {
-    /// The `TABBI_DEMO=1` progress: a 4 day streak and 31 hours focused, so
+    /// The `TABBI_DEMO=1` progress: a 4 day streak and 40 hours focused, so
     /// the Limited shelf shows milestones part of the way, and no Party
     /// session yet. The study streak (`StudyStreak`) runs on through a
-    /// frozen day 4 days ago, so its day strip shows a snowflake.
+    /// frozen day 4 days ago, so its day strip shows a snowflake. Before it,
+    /// about five months of study that grows denser toward today, with rest
+    /// days and no run long enough to reach the week streak, give the
+    /// Closet's study chart (`StudyHeatmap`) a believable history.
     public static func demo(today: Date, calendar: Calendar = .current) -> PetMilestoneProgress {
         let start = calendar.startOfDay(for: today)
         func record(daysAgo: Int, minutes: Double) -> ActivityRecord? {
-            guard let day = calendar.date(byAdding: .day, value: -daysAgo, to: start),
+            guard minutes > 0, let day = calendar.date(byAdding: .day, value: -daysAgo, to: start),
                   let end = calendar.date(byAdding: .hour, value: 10, to: day) else { return nil }
             return ActivityRecord(source: "focus", kind: .focusCompleted, start: end.addingTimeInterval(-minutes * 60),
                                   end: end, quantity: minutes, unit: .minutes)
         }
-        let earlier = (8...23).compactMap { record(daysAgo: $0 * 2, minutes: 100) }
-        let beforeFreeze = (5...6).compactMap { record(daysAgo: $0, minutes: 50) }
-        let streak = (0..<4).compactMap { record(daysAgo: $0, minutes: 40) }
-        return PetMilestoneProgress(records: earlier + beforeFreeze + streak, calendar: calendar)
+        // Minutes studied 14, 15, 16 and so on days ago. The week of empty
+        // days before, 7 to 13 days ago, ends any earlier run before it can
+        // spend the free freeze of the week 4 days ago, so the current
+        // streak is 6 days whatever weekday today is.
+        let earlier: [Double] = [
+            0, 0, 0, 5, 50, 0, 95, 95,
+            0, 25, 0, 60, 90, 0, 30, 0, 30, 70, 0, 0, 0, 25,
+            85, 30, 5, 0, 25, 0, 45, 10, 30, 30, 45, 0, 25, 0,
+            0, 0, 65, 65, 20, 45, 45, 0, 0, 0, 45, 0, 0, 5,
+            30, 0, 0, 0, 10, 75, 0, 0, 0, 0, 75, 75, 40, 15,
+            0, 0, 0, 0, 55, 40, 0, 10, 0, 0, 40, 70, 0, 0,
+            0, 0, 0, 0, 0, 20, 0, 0, 0, 45, 5, 30, 0, 0,
+            0, 0, 0, 50, 0, 5, 0, 0, 0, 5, 5, 0, 0, 5,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 40, 50, 5, 5,
+        ]
+        let history = earlier.enumerated().compactMap { record(daysAgo: 14 + $0.offset, minutes: $0.element) }
+        let beforeFreeze = [(5, 50.0), (6, 80.0)].compactMap { record(daysAgo: $0.0, minutes: $0.1) }
+        let streak = [35.0, 95, 60, 120].enumerated().compactMap { record(daysAgo: $0.offset, minutes: $0.element) }
+        return PetMilestoneProgress(records: history + beforeFreeze + streak, calendar: calendar)
     }
 }
 
