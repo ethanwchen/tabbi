@@ -171,15 +171,22 @@ private struct RecapStatsRow: View {
     }
 }
 
-/// The recap filling the open notch: "Your week" in the header, Done to
-/// put it away, and the card in the panel canvas.
+/// The recap filling the open notch: "Your week" in the header, Share and
+/// Done on the right, and the card in the panel canvas.
 enum RecapViews {
     @MainActor
     static func takeover(recap: WeeklyRecap, cheer: RecapCheer, providers: ProviderHub,
                          done: @escaping () -> Void) -> NotchTakeover {
         NotchTakeover(
             leading: { AnyView(RecapTitle()) },
-            trailing: { AnyView(RecapDoneButton(action: done)) },
+            trailing: {
+                AnyView(ModuleViews.StatusPetProvider(providers: providers) {
+                    HStack(spacing: Theme.Spacing.s) {
+                        RecapShareButton(recap: recap, cheer: cheer)
+                        RecapDoneButton(action: done)
+                    }
+                })
+            },
             body: {
                 AnyView(ModuleViews.StatusPetProvider(providers: providers) {
                     RecapMomentBody(recap: recap, cheer: cheer)
