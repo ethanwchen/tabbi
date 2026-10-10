@@ -51,6 +51,8 @@ Those are checked by the snapshot run rather than by unit tests, so this page ra
 No test drives `addFriend(code:)`, `removeFriend(code:)`, `createParty()`, `joinParty(code:)`, `join(friend:)`, `leaveParty()`, `startSession(minutes:)`, `endSession()`, `leaveSession()`, `rejoinSession()`, `block(_:)`, `retry()`, `cancelReport()`, `retryInviteConnection()`, `willSleep()` or `didWake()` through the store.
 The wire format is well tested in `TabbiKitCore`, so the gap is how the store updates its state, errors and refresh plan around each call.
 Plan: an in-memory `PartyTransport` fake that answers like the Hub, then one test per action, including the error path and sleep and wake.
+Status: `PartyStoreActionTests` now drives friends, parties, shared sessions, block, retry and the single-action guard through a stateful fake server.
+Sleep and wake are still untested, because the store only observes them outside snapshot runs.
 
 ### 2. Sync store lifecycle (app)
 
