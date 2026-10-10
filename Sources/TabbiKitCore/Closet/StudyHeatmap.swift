@@ -51,9 +51,21 @@ public struct StudyHeatmap: Hashable, Sendable {
         return 1 + levelThresholds.filter { minutes >= $0 }.count
     }
 
+    /// A month's name above the chart, over the first column whose week
+    /// starts in that month, as on GitHub.
+    public struct MonthLabel: Hashable, Sendable {
+        /// The column the label sits over, an index into `weeks`.
+        public let week: Int
+        /// The first day of that column, to name its month.
+        public let start: PlannerDayKey
+    }
+
     /// Oldest first; the last week holds today.
     public let weeks: [Week]
     public let today: PlannerDayKey
+    /// Each row's weekday (1 is Sunday, as in `Calendar`), from the
+    /// calendar's first weekday, so row labels follow the locale.
+    public let weekdays: [Int]
     /// Focused minutes over the 30 days ending today, for the summary line.
     public let lastThirtyDaysMinutes: Int
     /// The most studied day ever up to today (the latest one on a tie), or
@@ -88,6 +100,7 @@ public struct StudyHeatmap: Hashable, Sendable {
             return Week(start: weekStart, days: days)
         }
         self.today = todayKey
+        weekdays = (0..<7).map { (calendar.firstWeekday - 1 + $0) % 7 + 1 }
 
         lastThirtyDaysMinutes = (0..<30).reduce(0) { $0 + minutes(on: todayKey.adding(days: -$1, calendar: calendar)) }
         bestDay = minutesByDay.keys
@@ -96,4 +109,22 @@ public struct StudyHeatmap: Hashable, Sendable {
             .filter { $0.minutes > 0 }
             .max { ($0.minutes, $0.key) < ($1.minutes, $1.key) }
     }
+
+    /// The month labels, leaving out any that would crowd the next one or
+    /// run past the last column: a label needs `minimumWeeks` columns of its
+    /// own. The first column is labeled too, so a partial month at the
+    /// start keeps its name when there is room for it.
+    public func monthLabels(minimumWeeks: Int) -> [MonthLabel] {
+        let starts = weeks.indices.filter { index in
+            index == 0 || weeks[index].start.rawValue.prefix(7) != weeks[index - 1].start.rawValue.prefix(7)
+        }
+        return starts.enumerated().compactMap { offset, index in
+            let next = offset + 1 < starts.count ? starts[offset + 1] : weeks.count
+            return next - index >= max(1, minimumWeeks) ? MonthLabel(week: index, start: weeks[index].start) : nil
+        }
+    }
+
+    /// The weekdays GitHub names beside its rows: Monday, Wednesday and
+    /// Friday.
+    public static let labeledWeekdays: Set<Int> = [2, 4, 6]
 }
