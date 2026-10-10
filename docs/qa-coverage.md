@@ -79,7 +79,7 @@ Notifications are still untested, because `FocusNotifications` only exists insid
 Plan: tests that skip a phase mid-session, switch deep focus on and off, and feed cards, checking the activity log and the shared focus clock.
 Status: `StudyStoreControlTests` now covers skipping a running block (logged as skipped with its minutes, the break runs, the skip is saved), skipping while paused and on the plain Timer, deep focus saved and read back, the shared focus clock following start, deep focus, pause and stop, new Custom lengths retuning a running block (and never ending it sooner than a minute), the Anki card feed (baseline at start, pauses ignored, the goal ending the sprint, Anki going away), and the demo saving nothing.
 They found that a snapshot run saved the deep focus switch into the user's preferences, which is fixed.
-The heartbeat to Party is still untested.
+The heartbeat (the last-alive time a crash recovers from) is covered by `StudySessionRecoveryTests`, and following the party's shared session by `StudyPartySessionTests`, so this area has no known gap left.
 
 ### 5. Network transports and the Claude CLI (core)
 
@@ -108,6 +108,13 @@ Taking a real screenshot (`ClaudeAskScreenCapture.captureDisplay`) still needs S
 `Tabbi/Feedback/CrashHandler.swift` is at 67%.
 Report building and sanitizing are covered (`CrashReport` 96%, `CrashReporting` 92%), but `install(in:environment:)` and the signal and exception handlers are not, since they would crash the test process.
 Plan: keep sanitizing tests in core; test `install` only for its environment checks (demo and snapshot runs never install).
+Status: `install` runs only in crashing child processes (so its lines never count toward coverage), which `CrashHandlerTests` starts with `xcrun xctest`.
+Besides a bad memory access and a Swift trap, a child now raises an uncaught Objective-C exception on a named background thread: the log names the exception and the thread, keeps none of its reason, and the abort that follows does not overwrite it.
+Another child overflows its stack, and the handler still writes a signal log from the stack it was given at install.
+Each child installs twice, and the second install (with another environment) changes nothing.
+Removing `SA_ONSTACK`, the install guard or the abort guard each makes these tests fail.
+The exception test takes about 30 seconds, because XCTest's own terminate handler holds an uncaught exception that long before the system's handler sees it.
+The check that demo and snapshot runs never install lives in `AppDelegate` and is still untested.
 
 ### 8. Other app stores below 40%
 
