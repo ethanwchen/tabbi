@@ -18,12 +18,15 @@ final class PetItemLoopTests: XCTestCase {
     /// Limited items animate exactly when they carry an effect; in the
     /// shop, the animated showpieces.
     func testItemsWithAnEffectAndAnimatedShowpiecesAreTheOnesThatAnimate() {
-        let animatedShopItems: Set<PetItem> = [.accessory(.angelWings), .accessory(.kingsCape)]
+        let animatedShopItems: Set<PetItem> = [
+            .accessory(.angelWings), .accessory(.kingsCape), .accessory(.halo),
+        ]
         for item in PetItem.allCases {
             XCTAssertEqual(item.loopFrameCount > 1, item.effect != nil || animatedShopItems.contains(item), "\(item)")
         }
         XCTAssertEqual(PetItem.accessory(.angelWings).loopFrameCount, 4)
         XCTAssertEqual(PetItem.accessory(.kingsCape).loopFrameCount, 8)
+        XCTAssertEqual(PetItem.accessory(.halo).loopFrameCount, 8)
         XCTAssertEqual(PetItem.accessory(.flameHeadband).loopFrameCount, 4)
         XCTAssertEqual(PetItem.accessory(.goldenLaurel).loopFrameCount, 12)
         XCTAssertEqual(PetItem.accessory(.teamMedal).loopFrameCount, 8)
@@ -76,6 +79,44 @@ final class PetItemLoopTests: XCTestCase {
                                       "shows: \(label)")
                         XCTAssertEqual(ticks.count, loop, "loops: \(label)")
                         XCTAssertGreaterThan(Set(ticks).count, 1, "moves: \(label)")
+                    }
+                }
+            }
+        }
+    }
+
+    /// The halo floats over the head on every body shape, sitting and
+    /// walking: half the loop up, the other half a pixel lower, its gold
+    /// never touching the fur (only the outlines meet), and its glint shows
+    /// only on the way up. The poodle's and the Shih Tzu's topknots reach
+    /// into it, and the Scottish Fold's flat crown sits higher than other
+    /// cats' hat line, so the low halo rests on it without covering it.
+    func testHaloBobsAboveTheHeadOnEveryBodyShape() {
+        func gold(_ canvas: PetCanvas) -> [PetPoint] {
+            canvas.pixels.indices.filter { canvas.pixels[$0] == .gold }
+                .map { PetPoint(x: $0 % canvas.width, y: $0 / canvas.width) }
+        }
+        for breed in PetGallery.bodyShapeBreeds {
+            for animation in [PetAnimation.idle, .walk] {
+                let bare = PetComposer.clip(animation, for: breed).frames[0].canvas
+                let frame = PetComposer.clip(animation, for: breed, accessories: [.halo]).frames[0]
+                let label = "\(breed) \(animation)"
+                XCTAssertEqual(frame.itemFrames.count, 8, label)
+                let tops = frame.itemFrames.map { gold($0).map(\.y).min() }
+                guard let up = tops[0] else {
+                    XCTFail("halo shows: \(label)")
+                    continue
+                }
+                XCTAssertEqual(tops, Array(repeating: up, count: 4) + Array(repeating: up + 1, count: 4), label)
+                let glints = frame.itemFrames.map { $0.pixels.filter { $0 == .effect }.count }
+                XCTAssertEqual(glints, [0, 1, 1, 1, 0, 0, 0, 0], label)
+                guard ![.poodleDog, .shihTzuDog].contains(breed.bodyShape) else { continue }
+                let neighbors = breed.bodyShape == .foldCat ? [(0, 0)] : [(0, 0), (-1, 0), (1, 0), (0, -1), (0, 1)]
+                for (tick, canvas) in frame.itemFrames.enumerated() {
+                    for point in gold(canvas) {
+                        let around = neighbors.map { bare[point.x + $0.0, point.y + $0.1] }
+                        XCTAssertTrue(around.allSatisfy { $0 == nil || $0 == .outline },
+                                      "touches the fur at \(point), tick \(tick): \(label)")
                     }
                 }
             }

@@ -129,7 +129,9 @@ final class PetCostumeFitTests: XCTestCase {
                 // The Shih Tzu's topknot takes the crown, so its hats sit a row lower.
                 let hatLine = breed == .shihTzu ? eyeTop - 1 : eyeTop - 2
                 XCTAssertLessThan(item.minY, hatLine, "sits too low to read as a hat: \(label)")
-                // Hats rest on the skull: each one covers the head or sits right on it.
+                // Hats rest on the skull: each one covers the head or sits right on
+                // it. The halo is meant to float.
+                guard accessory != .halo else { continue }
                 XCTAssertTrue(costumePixels(dressed, over: plain).contains { plain[$0.x, $0.y] != nil || plain[$0.x, $0.y + 1] != nil },
                               "floats above the head: \(label)")
             }

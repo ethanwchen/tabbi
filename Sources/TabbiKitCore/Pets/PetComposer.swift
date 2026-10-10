@@ -443,6 +443,7 @@ public enum PetComposer {
         case .goldenLaurel: .head(CostumeArt.goldenLaurel)
         case .angelWings: .back(CostumeArt.angelWings)
         case .kingsCape: .back(CostumeArt.kingsCape)
+        case .halo: .head(CostumeArt.halo)
         }
     }
 

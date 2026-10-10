@@ -399,6 +399,17 @@
     {
       "dress" : {
         "accessories" : [
+          "halo"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "dc5c0b4772bb45ca334b8e3024deabea5128a983677ce75294540c25d48dffaa"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "stethoscope",
           "roundGlasses",
           "surgicalCap"
@@ -841,6 +852,17 @@
       },
       "frameCount" : 125,
       "sha256" : "cbab9ed3dd1486fd2ab42fab40a9f81737e9a2159d417ee8c605992e5af46307"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "dc5c0b4772bb45ca334b8e3024deabea5128a983677ce75294540c25d48dffaa"
     },
     {
       "dress" : {
@@ -1291,6 +1313,17 @@
     {
       "dress" : {
         "accessories" : [
+          "halo"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8d548d1f05257052d7fe46d52fd64fa063f7e43af01103c49a9777866ab37d1b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "stethoscope",
           "roundGlasses",
           "surgicalCap"
@@ -1733,6 +1766,17 @@
       },
       "frameCount" : 125,
       "sha256" : "8631609428205e8e5debfbf25431902acc71db768b296cf36577499ffc21e770"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0c0def92ac5bf5b9a19a36e96030a0d889f8ecf8f89e7c414bbbff37c6058453"
     },
     {
       "dress" : {
@@ -2183,6 +2227,17 @@
     {
       "dress" : {
         "accessories" : [
+          "halo"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "58160a9d67d1f0a7331df8610855778c755e0e6937dfb2f99619a949269591a0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "stethoscope",
           "roundGlasses",
           "surgicalCap"
@@ -2625,6 +2680,17 @@
       },
       "frameCount" : 125,
       "sha256" : "ad17b187562716f28fa95dcbc5e82bb75ef0683daeb2b21d14b971c3e6b83a42"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8e0bfb4aa8b98076ba5762748706f770ca5cc8efb087404727577555a9ae9180"
     },
     {
       "dress" : {
@@ -3075,6 +3141,17 @@
     {
       "dress" : {
         "accessories" : [
+          "halo"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d48e759ef7713df27eaeb986618bf4eff7ca9982db9fd752532d98f9165af289"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "stethoscope",
           "roundGlasses",
           "surgicalCap"
@@ -3517,6 +3594,17 @@
       },
       "frameCount" : 125,
       "sha256" : "be10ba1f18b135e5102a15de8fb4e1ce172ed76b233f4ac1ed91e3850e925f6e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0948775432e46943ca7e727e69f73aea10f0b71a4424681acd273f6ecbf3b9c9"
     },
     {
       "dress" : {
@@ -3967,6 +4055,17 @@
     {
       "dress" : {
         "accessories" : [
+          "halo"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "44a9954f248e2b6aca5e7ca5732054db13ddb2f3264777d2def59aa399071e23"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "stethoscope",
           "roundGlasses",
           "surgicalCap"
@@ -4409,6 +4508,17 @@
       },
       "frameCount" : 125,
       "sha256" : "3e16296e93cd58512bb355cf4eda6c7e8c640acde6f4f0f79c6b62f2cada9615"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b7bfc062383983afab070408ef27e4c059ae3d698432652d0ac8d0ef973d3969"
     },
     {
       "dress" : {
@@ -4859,6 +4969,17 @@
     {
       "dress" : {
         "accessories" : [
+          "halo"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4bbcb9372ef8423894807fc504f02c638f84d650db8dedd06f64b81f7bb95153"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "stethoscope",
           "roundGlasses",
           "surgicalCap"
@@ -5301,6 +5422,17 @@
       },
       "frameCount" : 125,
       "sha256" : "86eb2068f5832de12c434e73ee046d33c7b62cfa2c929cd0d46ebd14d80257b2"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e8b5e3b731a5aa05c9f1a6e8315b5c655b018244b22c1bc151799425581a3706"
     },
     {
       "dress" : {
@@ -5751,6 +5883,17 @@
     {
       "dress" : {
         "accessories" : [
+          "halo"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ec6d89756d260a22866a96bbf113374383370a79c0ef4eb42089997a82aaa312"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "stethoscope",
           "roundGlasses",
           "surgicalCap"
@@ -6193,6 +6336,17 @@
       },
       "frameCount" : 125,
       "sha256" : "08f1bd5e868abc6429710ec88c81a89f8113e4f34f63042625b47fd851c2c6b5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "389e2497ef6b295816fa0372d0067456c0a363c897bd8559b72d745dddf0710f"
     },
     {
       "dress" : {
@@ -6643,6 +6797,17 @@
     {
       "dress" : {
         "accessories" : [
+          "halo"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a8e733608191b4eccf5ef06e11baee60e2f0fb092009b357d3b5450ef97f64f8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "stethoscope",
           "roundGlasses",
           "surgicalCap"
@@ -7085,6 +7250,17 @@
       },
       "frameCount" : 125,
       "sha256" : "2a68695ca4961d3b3964a70b7ff21c93338ab68f8496796ed3b707aa39006093"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "6976a3bc8b58a23ddcef2231751733007582e9ed9570691c13b438ee347c7328"
     },
     {
       "dress" : {
@@ -7535,6 +7711,17 @@
     {
       "dress" : {
         "accessories" : [
+          "halo"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0d38bc7256d1a2df2aa94b831169aa94c84b446140bfaefcd82be584f232cd57"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "stethoscope",
           "roundGlasses",
           "surgicalCap"
@@ -7977,6 +8164,17 @@
       },
       "frameCount" : 125,
       "sha256" : "1eb2c4304b47107227e0957e777055f56fcc4430b12c856fb2cba2cd4b330698"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "bc7dcd9b0ca613c697aa69e0221def43220154ffd8efb63116aa16c33338e260"
     },
     {
       "dress" : {

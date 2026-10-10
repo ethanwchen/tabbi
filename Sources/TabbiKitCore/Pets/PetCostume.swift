@@ -81,6 +81,8 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
     case angelWings
     /// A crimson royal cape with an ermine collar and a gold hem that glimmers.
     case kingsCape
+    /// A gold halo that floats above the head and gently bobs.
+    case halo
 
     public var slot: PetAccessorySlot {
         switch self {
@@ -89,7 +91,7 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
         case .surgicalCap, .headMirror, .graduationCap, .beanie, .tinyCrown, .partyHat, .chefHat, .wizardHat,
              .bunnyEars, .witchHat, .cowboyHat, .flowerCrown, .frogHat, .ninjaHeadband, .pirateHat,
              .blindfoldedSorcerer, .astronautHelmet, .chunkyHeadphones, .backwardsCap, .flameHeadband,
-             .goldenLaurel: .head
+             .goldenLaurel, .halo: .head
         case .angelWings, .kingsCape: .back
         }
     }
@@ -131,6 +133,7 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
         case .teamMedal: "Team Medal"
         case .angelWings: "Angel Wings"
         case .kingsCape: "King's Cape"
+        case .halo: "Halo"
         }
     }
 

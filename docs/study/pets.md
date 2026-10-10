@@ -139,7 +139,7 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 
 ### Animated items
 
-Some items move: the Flame Headband's flame flickers, a glint crosses the Golden Laurel, the Team Medal sparkles now and then, the Angel Wings flap, and a glint runs down the King's Cape's gold trim.
+Some items move: the Flame Headband's flame flickers, a glint crosses the Golden Laurel, the Team Medal sparkles now and then, the Halo bobs over the head, the Angel Wings flap, and a glint runs down the King's Cape's gold trim.
 An animated item lists the rest of its loop in `frames`, after its still grids: a head item gives grids the size of `grid`, a body item gives a grid per body family for each frame.
 The still is the loop's first frame and the picture Reduce Motion shows.
 Every frame lasts one tick of the item clock, `itemFrameDuration` in `costume.json` (150 ms, a walking step), so a slower move repeats a frame.
@@ -147,6 +147,8 @@ The composer draws the item's frame for each tick on every pose (`PetFrame.itemF
 The item clock counts from a fixed moment, not from the clip's start, so a loop runs on smoothly when the pet changes clip.
 `PetClipSet.nextChange` wakes the player on the next tick that looks different, so an item that glints now and then costs no redraws in between.
 `PetItem.loopFrameCount` says how many ticks an item's loop has, and `PetItemLoopTests` holds every item with a limited edition effect to moving a few pixels on every body shape.
+The Halo is the one hat meant to float: a thin gold arc two rows tall, because at the top of a hop a dog has only three rows of frame above its head.
+It bobs a pixel down for half its loop, and `PetItemLoopTests` checks that its gold never touches the fur on any body shape (the poodle's and the Shih Tzu's topknots reach into it, and it rests on the Scottish Fold's flat crown).
 
 ### Back items
 

@@ -240,6 +240,10 @@ extension CostumeArt {
 
     /// A wreath of gold leaves with a few green ones, resting on the brow.
     static let goldenLaurel = PetArt.costume.headItem("goldenLaurel")
+    /// A thin gold arc floating above the head that bobs up and down a
+    /// pixel, with a glint crossing its top on the way up. It is two rows
+    /// tall because a dog's hop leaves only three rows above the head.
+    static let halo = PetArt.costume.headItem("halo")
 
     /// A gold medal with a glint, hung from a crimson ribbon around the neck.
     static let teamMedal = PetArt.costume.bodyItem("teamMedal")
