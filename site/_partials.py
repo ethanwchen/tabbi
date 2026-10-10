@@ -59,22 +59,26 @@ def page(slug, title, description, body, hero=None, wide=False, indexable=True, 
     def link(href, label):
         here = '/' + slug.removesuffix('.html')
         current = ' aria-current="page"' if href == here else ''
-        cls = ' class="nav-cta"' if href == DOWNLOAD else ''
-        return f'<a href="{href}"{current}{cls}>{label}</a>'
+        return f'<a href="{href}"{current}>{label}</a>'
 
     nav = '\n        '.join(link(href, label) for href, label in NAV)
     hero_html = ''
     if hero:
+        words = f'''<h1>{hero["title"]}</h1>
+        <p class="lede">{hero["subtitle"]}</p>'''
+        # A hero with an icon sets the two side by side as one lockup.
+        if hero.get('icon'):
+            words = f'''<div class="hero-lockup">
+        {hero["icon"]}
+        <div class="hero-words">
+        {words}
+        </div>
+      </div>'''
         hero_html = f'''
-  <section class="hero{' hero-home' if hero.get('home') else ''}">
+  <section class="hero{' hero-home' if hero.get('icon') else ''}">
     <div class="wrap">
-      <div class="hero-copy">
-        {hero.get("eyebrow", "")}
-        <h1>{hero["title"]}</h1>
-        <p class="lede">{hero["subtitle"]}</p>
-        {hero.get("cta", "")}
-      </div>
-      {hero.get("art", "")}
+      {words}
+      {hero.get("cta", "")}
     </div>
   </section>
 '''
