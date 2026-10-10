@@ -34,6 +34,32 @@ public enum SpotifyEqualizer {
         }
     }
 
+    /// One bar's heights over a loop that repeats without a seam, sampled
+    /// at `frameRate`, for a Core Animation keyframe animation that the
+    /// render server plays on its own, so a playing track never wakes the
+    /// app (a `TimelineView` at 30 fps redrew the notch about 30 times a
+    /// second, some 3% CPU for as long as music played).
+    ///
+    /// The values follow `levels(at:)` and, over the last `blend` seconds,
+    /// ease into the loop's own start, so the last value equals the first
+    /// and the bar never jumps when the loop comes round. Returns
+    /// `duration * frameRate + 1` values, the first and last equal.
+    public static func loop(bar: Int, duration: TimeInterval = 30, frameRate: Double = 30,
+                            blend: TimeInterval = 1, count: Int = barCount) -> [Double] {
+        guard duration > 0, frameRate > 0, (0..<count).contains(bar) else { return [] }
+        let frames = Int((duration * frameRate).rounded())
+        let blend = min(max(blend, 0), duration)
+        return (0...frames).map { frame in
+            let time = Double(frame) / frameRate
+            let level = levels(at: time, count: count)[bar]
+            let into = time - (duration - blend)
+            guard blend > 0, into > 0 else { return level }
+            let t = min(into / blend, 1)
+            let eased = t * t * (3 - 2 * t)
+            return level + (levels(at: time - duration, count: count)[bar] - level) * eased
+        }
+    }
+
     /// 1D value noise in `0 ... 1`: a random target per whole beat, eased
     /// between neighbors with smoothstep so the motion has no jumps.
     private static func noise(at beat: Double, bar: Int) -> Double {
