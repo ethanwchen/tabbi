@@ -1,0 +1,525 @@
+{
+  "frame" : 32,
+  "looks" : {
+    "cap" : {
+      "clips" : {
+        "blink" : {
+          "durations" : [
+            140
+          ],
+          "loops" : false,
+          "row" : 1
+        },
+        "celebrate" : {
+          "durations" : [
+            80,
+            80,
+            160,
+            80,
+            100,
+            300,
+            400
+          ],
+          "loops" : false,
+          "row" : 2
+        },
+        "idle" : {
+          "durations" : [
+            1100,
+            900
+          ],
+          "loops" : true,
+          "row" : 0
+        },
+        "typing" : {
+          "durations" : [
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            700,
+            500
+          ],
+          "loops" : true,
+          "row" : 3
+        }
+      },
+      "file" : "pet-cap.png"
+    },
+    "crown" : {
+      "clips" : {
+        "blink" : {
+          "durations" : [
+            140
+          ],
+          "loops" : false,
+          "row" : 1
+        },
+        "celebrate" : {
+          "durations" : [
+            80,
+            80,
+            160,
+            80,
+            100,
+            300,
+            400
+          ],
+          "loops" : false,
+          "row" : 2
+        },
+        "idle" : {
+          "durations" : [
+            1100,
+            900
+          ],
+          "loops" : true,
+          "row" : 0
+        },
+        "typing" : {
+          "durations" : [
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            700,
+            500
+          ],
+          "loops" : true,
+          "row" : 3
+        }
+      },
+      "file" : "pet-crown.png"
+    },
+    "dino" : {
+      "clips" : {
+        "blink" : {
+          "durations" : [
+            140
+          ],
+          "loops" : false,
+          "row" : 1
+        },
+        "celebrate" : {
+          "durations" : [
+            80,
+            80,
+            160,
+            80,
+            100,
+            300,
+            400
+          ],
+          "loops" : false,
+          "row" : 2
+        },
+        "idle" : {
+          "durations" : [
+            1100,
+            900
+          ],
+          "loops" : true,
+          "row" : 0
+        },
+        "typing" : {
+          "durations" : [
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            700,
+            500
+          ],
+          "loops" : true,
+          "row" : 3
+        }
+      },
+      "file" : "pet-dino.png"
+    },
+    "flame" : {
+      "clips" : {
+        "blink" : {
+          "durations" : [
+            140
+          ],
+          "loops" : false,
+          "row" : 1
+        },
+        "celebrate" : {
+          "durations" : [
+            80,
+            80,
+            160,
+            80,
+            100,
+            150,
+            150,
+            133,
+            133,
+            133
+          ],
+          "loops" : false,
+          "row" : 2
+        },
+        "idle" : {
+          "durations" : [
+            157,
+            157,
+            157,
+            157,
+            157,
+            157,
+            157,
+            150,
+            150,
+            150,
+            150,
+            150,
+            150
+          ],
+          "loops" : true,
+          "row" : 0
+        },
+        "typing" : {
+          "durations" : [
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            175,
+            175,
+            175,
+            175,
+            167,
+            167,
+            167
+          ],
+          "loops" : true,
+          "row" : 3
+        }
+      },
+      "file" : "pet-flame.png"
+    },
+    "hoodie" : {
+      "clips" : {
+        "blink" : {
+          "durations" : [
+            140
+          ],
+          "loops" : false,
+          "row" : 1
+        },
+        "celebrate" : {
+          "durations" : [
+            80,
+            80,
+            160,
+            80,
+            100,
+            300,
+            400
+          ],
+          "loops" : false,
+          "row" : 2
+        },
+        "idle" : {
+          "durations" : [
+            1100,
+            900
+          ],
+          "loops" : true,
+          "row" : 0
+        },
+        "typing" : {
+          "durations" : [
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            700,
+            500
+          ],
+          "loops" : true,
+          "row" : 3
+        }
+      },
+      "file" : "pet-hoodie.png"
+    },
+    "laurel" : {
+      "clips" : {
+        "blink" : {
+          "durations" : [
+            140
+          ],
+          "loops" : false,
+          "row" : 1
+        },
+        "celebrate" : {
+          "durations" : [
+            80,
+            80,
+            160,
+            80,
+            100,
+            300,
+            400
+          ],
+          "loops" : false,
+          "row" : 2
+        },
+        "idle" : {
+          "durations" : [
+            1100,
+            900
+          ],
+          "loops" : true,
+          "row" : 0
+        },
+        "typing" : {
+          "durations" : [
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            700,
+            500
+          ],
+          "loops" : true,
+          "row" : 3
+        }
+      },
+      "file" : "pet-laurel.png"
+    },
+    "medal" : {
+      "clips" : {
+        "blink" : {
+          "durations" : [
+            140
+          ],
+          "loops" : false,
+          "row" : 1
+        },
+        "celebrate" : {
+          "durations" : [
+            80,
+            80,
+            160,
+            80,
+            100,
+            300,
+            400
+          ],
+          "loops" : false,
+          "row" : 2
+        },
+        "idle" : {
+          "durations" : [
+            1100,
+            900
+          ],
+          "loops" : true,
+          "row" : 0
+        },
+        "typing" : {
+          "durations" : [
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            700,
+            500
+          ],
+          "loops" : true,
+          "row" : 3
+        }
+      },
+      "file" : "pet-medal.png"
+    },
+    "plain" : {
+      "clips" : {
+        "blink" : {
+          "durations" : [
+            140
+          ],
+          "loops" : false,
+          "row" : 1
+        },
+        "celebrate" : {
+          "durations" : [
+            80,
+            80,
+            160,
+            80,
+            100,
+            300,
+            400
+          ],
+          "loops" : false,
+          "row" : 2
+        },
+        "idle" : {
+          "durations" : [
+            1100,
+            900
+          ],
+          "loops" : true,
+          "row" : 0
+        },
+        "typing" : {
+          "durations" : [
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            700,
+            500
+          ],
+          "loops" : true,
+          "row" : 3
+        }
+      },
+      "file" : "pet-plain.png"
+    },
+    "scholar" : {
+      "clips" : {
+        "blink" : {
+          "durations" : [
+            140
+          ],
+          "loops" : false,
+          "row" : 1
+        },
+        "celebrate" : {
+          "durations" : [
+            80,
+            80,
+            160,
+            80,
+            100,
+            300,
+            400
+          ],
+          "loops" : false,
+          "row" : 2
+        },
+        "idle" : {
+          "durations" : [
+            1100,
+            900
+          ],
+          "loops" : true,
+          "row" : 0
+        },
+        "typing" : {
+          "durations" : [
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            700,
+            500
+          ],
+          "loops" : true,
+          "row" : 3
+        }
+      },
+      "file" : "pet-scholar.png"
+    },
+    "wizard" : {
+      "clips" : {
+        "blink" : {
+          "durations" : [
+            140
+          ],
+          "loops" : false,
+          "row" : 1
+        },
+        "celebrate" : {
+          "durations" : [
+            80,
+            80,
+            160,
+            80,
+            100,
+            300,
+            400
+          ],
+          "loops" : false,
+          "row" : 2
+        },
+        "idle" : {
+          "durations" : [
+            1100,
+            900
+          ],
+          "loops" : true,
+          "row" : 0
+        },
+        "typing" : {
+          "durations" : [
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            100,
+            120,
+            700,
+            500
+          ],
+          "loops" : true,
+          "row" : 3
+        }
+      },
+      "file" : "pet-wizard.png"
+    }
+  },
+  "scale" : 1
+}

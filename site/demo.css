@@ -1,0 +1,661 @@
+/*
+ * The home page's notch demo: a cozy desktop with Tabbi's notch at the top.
+ *
+ * Inside the notch everything is sized in em, and 1em is 10 of the app's
+ * points, so the panel keeps the app's proportions (a 536 x 236 pt panel,
+ * 20 pt insets, a 176 pt dial) at whatever scale the scene picks. Colors
+ * are the app's Midnight theme and each tab's accent from its descriptor.
+ * The springs are the app's MotionTokens (open, close, hover, snappy),
+ * sampled into linear() easings. Without JavaScript the panel stands open
+ * and its tabs switch with radio buttons; demo.js closes it and takes over.
+ */
+
+.demo {
+  --n-surface: rgba(255, 255, 255, 0.07);
+  --n-hover: rgba(255, 255, 255, 0.12);
+  --n-stroke: rgba(255, 255, 255, 0.08);
+  --n-text: #FFFFFF;
+  --n-text-2: rgba(255, 255, 255, 0.62);
+  --n-text-3: rgba(255, 255, 255, 0.48);
+  --timer: #FF9E42;
+  --today: #A88CFF;
+  --closet: #FACC4D;
+  --music: #1FD661;
+  --blue: #3B8BFF;
+  --orange: #FF9E42;
+  /* SwiftUI springs: open (0.45 s, bounce 0.2), close (0.38 s), hover (0.25 s, 0.1), snappy (0.26 s, 0.14). */
+  --open: linear(0, 0.022, 0.078, 0.156, 0.246, 0.34, 0.433, 0.522, 0.604, 0.678, 0.743, 0.8, 0.847, 0.887, 0.92, 0.946, 0.966, 0.982, 0.994, 1.002, 1.008, 1.012, 1.014, 1.015, 1.015, 1.014, 1.013, 1.012, 1.011, 1.009, 1.008, 1.007, 1.005, 1.004, 1.003, 1.003, 1);
+  --close: linear(0, 0.024, 0.082, 0.159, 0.244, 0.331, 0.415, 0.493, 0.564, 0.628, 0.684, 0.733, 0.775, 0.812, 0.843, 0.869, 0.891, 0.91, 0.926, 0.939, 0.949, 0.958, 0.966, 0.972, 0.977, 0.981, 0.985, 0.988, 0.99, 0.992, 0.993, 0.995, 0.996, 0.996, 0.997, 0.998, 1);
+  --hover: linear(0, 0.012, 0.044, 0.09, 0.146, 0.207, 0.271, 0.335, 0.399, 0.46, 0.518, 0.573, 0.623, 0.67, 0.712, 0.75, 0.784, 0.814, 0.841, 0.865, 0.886, 0.904, 0.92, 0.933, 0.945, 0.955, 0.964, 0.971, 0.977, 0.982, 0.986, 0.989, 0.992, 0.994, 0.996, 0.998, 1);
+  /* check (0.4 s, bounce 0.25): a checkbox turning on. */
+  --check: linear(0, 0.021, 0.074, 0.149, 0.236, 0.33, 0.423, 0.514, 0.599, 0.676, 0.745, 0.804, 0.855, 0.898, 0.933, 0.961, 0.983, 0.999, 1.011, 1.019, 1.025, 1.027, 1.028, 1.028, 1.027, 1.025, 1.022, 1.019, 1.017, 1.014, 1.012, 1.01, 1.008, 1.006, 1.004, 1.003, 1);
+  --snappy: linear(0, 0.022, 0.078, 0.155, 0.242, 0.333, 0.422, 0.507, 0.586, 0.656, 0.718, 0.772, 0.819, 0.858, 0.89, 0.917, 0.938, 0.955, 0.969, 0.979, 0.987, 0.993, 0.998, 1.001, 1.003, 1.004, 1.005, 1.005, 1.005, 1.005, 1.004, 1.004, 1.004, 1.003, 1.003, 1.002, 1);
+  margin: 0 0 72px;
+  text-align: center;
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
+.demo-icons { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+/* --- the desktop ------------------------------------------------------- */
+/* A soft wallpaper in the page's own browns, pinks and golds. */
+.scene {
+  position: relative; container-type: inline-size;
+  height: 33em; font-size: 12.5px; overflow: hidden;
+  border: 1px solid rgba(251, 247, 240, 0.08); border-radius: 32px;
+  background:
+    radial-gradient(60% 75% at 8% 108%, rgba(242, 160, 166, 0.7), transparent 62%),
+    radial-gradient(55% 70% at 96% 104%, rgba(244, 213, 126, 0.62), transparent 64%),
+    radial-gradient(40% 50% at 78% 18%, rgba(242, 160, 166, 0.2), transparent 70%),
+    radial-gradient(45% 55% at 20% 24%, rgba(244, 213, 126, 0.12), transparent 70%),
+    linear-gradient(180deg, #4A3A2E 0%, #6E5141 58%, #94694F 100%);
+  box-shadow: var(--shadow);
+  font-family: ui-rounded, 'Nunito', system-ui, sans-serif;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* --- the notch --------------------------------------------------------- */
+/* A black shape hanging from the top edge: flared top corners where it
+   meets the screen, round bottom corners. Closed it wears a live activity
+   in its wings; open it is the panel. */
+.notch {
+  /* -1px covers the scene's border, so the notch meets the top edge. */
+  position: absolute; top: -1px; left: 50%; z-index: 2;
+  width: 28.2em; height: 3.2em; translate: -50% 0;
+  background: #000; border-radius: 0 0 1em 1em;
+  color: var(--n-text);
+  transition: width 515ms var(--close), height 515ms var(--close), border-radius 515ms var(--close);
+}
+.notch::before, .notch::after {
+  content: ''; position: absolute; top: 0; width: 0.6em; height: 0.6em;
+  transition: width 515ms var(--close), height 515ms var(--close);
+}
+.notch::before { right: 100%; background: radial-gradient(circle farthest-side at 0 100%, transparent 96%, #000 100%); }
+.notch::after { left: 100%; background: radial-gradient(circle farthest-side at 100% 100%, transparent 96%, #000 100%); }
+
+.notch[data-state='hover'] {
+  width: 29.8em; height: 3.6em;
+  transition-duration: 235ms; transition-timing-function: var(--hover);
+}
+.notch[data-state='open'] {
+  width: 53.6em; height: 23.6em; border-radius: 0 0 2.6em 2.6em;
+  transition-duration: 575ms; transition-timing-function: var(--open);
+}
+.notch[data-state='open']::before, .notch[data-state='open']::after {
+  width: 1.2em; height: 1.2em;
+  transition-duration: 575ms; transition-timing-function: var(--open);
+}
+
+/* The closed notch: the whole shape is one button. */
+.notch-face {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between;
+  margin: 0; padding: 0 1.2em 0 1em; border: 0; border-radius: inherit;
+  background: none; color: inherit; font: inherit; cursor: pointer;
+  transition: opacity 160ms ease;
+}
+.notch[data-state='open'] .notch-face { opacity: 0; pointer-events: none; visibility: hidden; transition: opacity 120ms ease, visibility 0s 120ms; }
+.notch-face:focus-visible { outline: 3px solid var(--link); outline-offset: 3px; }
+.wing { display: flex; align-items: center; height: 100%; }
+.mini-ring { display: none; width: 2em; height: 2em; }
+.mini-time {
+  display: none; font-size: 1.3em; font-weight: 600; color: var(--timer);
+  font-variant-numeric: tabular-nums; letter-spacing: 0.02em;
+}
+/* While the timer runs, its ring and time take the wings from the pet. */
+.notch[data-running] .wing-l .pet { display: none; }
+.notch[data-running] .mini-ring, .notch[data-running] .mini-time { display: block; }
+/* While a song plays and no timer runs, the right wing shows the app's
+   equalizer: four bars in the Now Playing accent. */
+.eq { display: none; align-items: flex-end; gap: 0.2em; height: 1.4em; }
+.notch[data-music]:not([data-running]) .eq { display: flex; }
+.eq span { width: 0.3em; height: 100%; border-radius: 999px; background: var(--music); transform-origin: 50% 100%; scale: 1 0.4; }
+.eq span:nth-child(2) { scale: 1 0.7; }
+.eq span:nth-child(3) { scale: 1 0.5; }
+.eq span:nth-child(4) { scale: 1 0.8; }
+@media (prefers-reduced-motion: no-preference) {
+  .eq span { animation: eq 0.9s ease-in-out infinite alternate; }
+  .eq span:nth-child(2) { animation-duration: 0.62s; animation-delay: -0.3s; }
+  .eq span:nth-child(3) { animation-duration: 0.78s; animation-delay: -0.5s; }
+  .eq span:nth-child(4) { animation-duration: 0.55s; animation-delay: -0.2s; }
+}
+@keyframes eq { from { scale: 1 0.25; } to { scale: 1 1; } }
+
+/* The open panel. Its content keeps the open width while the shape grows
+   around it, so nothing reflows during the spring. */
+.panel {
+  position: absolute; inset: 0; overflow: hidden; border-radius: inherit;
+  opacity: 0; visibility: hidden;
+  transition: opacity 120ms ease, visibility 0s 120ms;
+}
+.notch[data-state='open'] .panel {
+  opacity: 1; visibility: visible;
+  transition: opacity 260ms ease 90ms, visibility 0s;
+}
+.panel-inner { position: absolute; top: 0; left: 50%; width: 53.6em; height: 23.6em; translate: -50% 0; padding: 0 2em 1.6em; }
+
+/* Icons draw at 1em unless a control sizes them. */
+.notch .ico { display: inline-block; flex: none; width: 1em; height: 1em; vertical-align: -0.12em; }
+
+/* The header: tab icons at the left, the open tab's name at the right. */
+.panel-head { display: flex; align-items: center; justify-content: space-between; height: 3.2em; }
+.tab-bar { display: flex; gap: 0.2em; }
+.tab {
+  position: relative; display: grid; place-items: center; width: 2.8em; height: 2.4em;
+  border-radius: 999px; color: var(--n-text-3); cursor: pointer;
+  transition: background-color 335ms var(--snappy), color 335ms var(--snappy);
+}
+.tab input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+.tab .ico { width: 1.3em; height: 1.3em; }
+.tab:hover { color: var(--n-text); }
+.tab:has(input:focus-visible) { outline: 3px solid var(--link); outline-offset: 1px; }
+.tab-timer:has(input:checked) { color: var(--timer); background: rgba(255, 158, 66, 0.16); }
+.tab-today:has(input:checked) { color: var(--today); background: rgba(168, 140, 255, 0.16); }
+.tab-closet:has(input:checked) { color: var(--closet); background: rgba(250, 204, 77, 0.16); }
+.tab-music:has(input:checked) { color: var(--music); background: rgba(31, 214, 97, 0.16); }
+/* The paw sits at the far right of the header, like the app's. */
+.tab-closet { margin-left: 0.8em; }
+.demo .head-title { margin: 0 0 0 auto; font-size: 1.4em; font-weight: 600; line-height: 1; color: var(--n-text-2); }
+.head-title span { display: none; }
+.panel:has([value='timer']:checked) .title-timer,
+.panel:has([value='today']:checked) .title-today,
+.panel:has([value='music']:checked) .title-music,
+.panel:has([value='closet']:checked) .title-closet { display: inline; }
+
+/* One pane shows at a time: the checked tab's. */
+.pane { position: absolute; top: 4em; left: 2em; right: 2em; bottom: 1.6em; display: none; }
+.panel:has([value='timer']:checked) .pane-timer,
+.panel:has([value='today']:checked) .pane-today,
+.panel:has([value='music']:checked) .pane-music,
+.panel:has([value='closet']:checked) .pane-closet { display: grid; }
+
+.n-card { position: relative; margin: 0; background: var(--n-surface); border-radius: 1em; }
+.demo p { margin: 0; }
+
+/* Shared controls: the accent capsule for a panel's one primary action
+   and round icon buttons. Every control has a hover state and a tooltip. */
+.demo button { font: inherit; color: inherit; -webkit-tap-highlight-color: transparent; }
+.demo button:focus-visible { outline: 3px solid var(--link); outline-offset: 2px; }
+.primary {
+  display: inline-flex; align-items: center; gap: 0.4em; height: 2.8em; padding: 0 1.2em;
+  border: 0; border-radius: 999px; background: color-mix(in srgb, var(--timer) 88%, transparent);
+  color: #000; font-size: 1em; cursor: pointer;
+  transition: background-color 335ms var(--snappy), transform 180ms var(--snappy);
+}
+.primary span { font-size: 1.2em; font-weight: 500; }
+.primary .ico { width: 1.1em; height: 1.1em; }
+.primary:hover { background: var(--timer); }
+.icon-btn {
+  display: grid; place-items: center; width: 2.8em; height: 2.8em; padding: 0;
+  border: 0; border-radius: 50%; background: var(--n-surface); cursor: pointer;
+  transition: background-color 335ms var(--snappy), opacity 335ms var(--snappy), transform 180ms var(--snappy);
+}
+.icon-btn .ico { width: 1.3em; height: 1.3em; }
+.icon-btn:hover { background: var(--n-hover); }
+.primary:active, .icon-btn:active, .capsule:active { transform: scale(0.94); }
+/* Without the script the controls cannot work, so they are disabled, but
+   the showcase still draws them the way the app does. */
+.demo button:disabled { cursor: default; }
+.icon-btn:disabled { opacity: 0.4; }
+
+/* --- Timer --------------------------------------------------------------- */
+.pane-timer { grid-template-columns: 17.6em minmax(0, 1fr); gap: 0.8em; }
+.dial { display: grid; place-items: center; }
+.dial-ring { position: relative; width: 12.8em; height: 12.8em; }
+.ring { display: block; width: 100%; height: 100%; rotate: -90deg; }
+.demo .ring-track, .demo .ring-arc { fill: none; }
+.ring-track { stroke: rgba(255, 158, 66, 0.2); }
+.ring-arc { stroke: var(--timer); stroke-linecap: round; stroke-dasharray: 100 100; stroke-dashoffset: 0; }
+.mini-ring .ring-track { stroke: rgba(255, 158, 66, 0.25); }
+.mini-ring { rotate: -90deg; }
+.mini-ring .ring-arc { stroke: var(--timer); stroke-linecap: round; stroke-dasharray: 100 100; }
+.dial-read {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.2em;
+}
+.dial-time {
+  font-size: 3em; font-weight: 600; line-height: 1.1; letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums; color: var(--n-text-2);
+  transition: color 335ms var(--snappy);
+}
+.notch[data-running] .dial-time { color: var(--n-text); }
+.dial-cap { font-size: 1.05em; font-weight: 500; color: var(--n-text-3); }
+.pet-corner { position: absolute; right: 0.4em; bottom: 0.4em; }
+
+.timer-side { display: flex; flex-direction: column; gap: 0.8em; min-width: 0; }
+.method { flex: 1; display: flex; flex-direction: column; gap: 0.2em; padding: 1.2em; min-height: 0; }
+.cap-row { display: flex; justify-content: space-between; font-size: 1.05em; font-weight: 500; color: var(--n-text-3); }
+.method-name { display: flex; align-items: center; gap: 0.3em; font-size: 1.3em; font-weight: 600; }
+.accent { color: var(--timer); font-variant-numeric: tabular-nums; }
+.updown { width: 0.7em; height: 0.7em; color: var(--n-text-3); }
+.method-tag { font-size: 1.05em; font-weight: 500; color: var(--n-text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.deep-row { display: flex; margin-top: auto !important; padding-bottom: 0.4em; }
+.capsule {
+  display: inline-flex; align-items: center; gap: 0.4em; height: 2em; padding: 0 1em;
+  border: 0; border-radius: 999px; background: var(--n-surface); color: var(--n-text-2); cursor: pointer;
+  transition: background-color 335ms var(--snappy), color 335ms var(--snappy), transform 180ms var(--snappy);
+}
+.capsule span { font-size: 1.2em; font-weight: 600; }
+.capsule .ico { width: 1.1em; height: 1.1em; }
+.capsule:hover { background: var(--n-hover); color: var(--n-text); }
+.capsule[aria-pressed='true'] { background: color-mix(in srgb, var(--timer) 88%, transparent); color: #000; }
+.capsule[aria-pressed='true']:hover { background: var(--timer); }
+.today-row {
+  display: flex; align-items: center; gap: 0.8em; padding-top: 0.4em;
+  font-size: 1.05em; font-weight: 600; color: var(--n-text-2); font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.today-row > span { display: inline-flex; align-items: center; gap: 0.2em; }
+.today-row .ico { width: 0.9em; height: 0.9em; }
+.today-label { color: var(--n-text-3); }
+.pts { margin-left: auto; color: var(--timer); }
+.controls { display: flex; align-items: center; justify-content: space-between; height: 2.8em; }
+
+/* --- Today -------------------------------------------------------------- */
+/* The checklist on the left, the day's calendar and the shared focus card
+   in a 200 pt column on the right. */
+.pane-today { grid-template-columns: minmax(0, 1fr) 20em; grid-template-rows: minmax(0, 1fr); gap: 1.2em; }
+.today-main { display: flex; flex-direction: column; gap: 0.8em; min-width: 0; min-height: 0; }
+.day-head { display: flex; align-items: center; gap: 0.8em; height: 2em; padding: 0 0.8em; flex: none; }
+.day-ring { width: 1.6em; height: 1.6em; margin: 0 0.2em; rotate: -90deg; flex: none; }
+.day-ring .ring-track { stroke: rgba(168, 140, 255, 0.2); }
+.day-ring .ring-arc { stroke: var(--today); stroke-linecap: round; stroke-dasharray: 100 100; transition: stroke-dashoffset 335ms var(--snappy); }
+.day-stepper { display: flex; align-items: center; gap: 0.2em; }
+.day-step {
+  display: grid; place-items: center; width: 1.6em; height: 2em; padding: 0;
+  border: 0; border-radius: 999px; background: none; color: var(--n-text-2); cursor: pointer;
+  transition: background-color 335ms var(--snappy), color 335ms var(--snappy);
+}
+.day-step .ico { width: 0.9em; height: 0.9em; }
+.day-step:hover:not(:disabled) { background: var(--n-hover); color: var(--n-text); }
+.demo[data-live] .day-step:disabled { opacity: 0.35; }
+.demo .day-title { color: var(--n-text); }
+.day-title { display: flex; align-items: baseline; gap: 0.4em; font-size: 1.3em; font-weight: 600; white-space: nowrap; }
+.day-date { color: var(--n-text-3); }
+.day-date:empty { display: none; }
+.day-count {
+  margin-left: auto; font-size: 1.05em; font-weight: 500; color: var(--n-text-2);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+
+/* 22 pt rows; the list scrolls only once added tasks outgrow it. */
+/* The page styles main's lists as prose; these are the app's rows. */
+.demo .task, .demo .event { margin: 0; color: var(--n-text); }
+.tasks { flex: 1; min-height: 0; margin: 0; padding: 0; list-style: none; overflow-y: auto; scrollbar-width: none; }
+.tasks::-webkit-scrollbar { display: none; }
+.task-label {
+  position: relative; display: flex; align-items: center; gap: 0.8em; height: 2.2em; padding: 0 0.8em;
+  border-radius: 0.6em; cursor: pointer;
+  transition: background-color 335ms var(--snappy);
+}
+.task-label:hover { background: var(--n-surface); }
+.task input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: inherit; }
+.task-label:has(input:focus-visible) { outline: 3px solid var(--link); outline-offset: -1px; }
+.task-title {
+  min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-size: 1.2em; color: var(--n-text);
+  text-decoration: line-through transparent; text-decoration-thickness: 0.08em;
+  transition: color 335ms var(--snappy), text-decoration-color 335ms var(--snappy);
+}
+.task input:checked ~ .task-title { color: var(--n-text-2); text-decoration-color: var(--n-text-2); }
+.task-label:has(input:disabled) { cursor: default; }
+.task-label:has(input:disabled):hover { background: none; }
+.task-note { margin-left: auto; padding-left: 0.8em; font-size: 1.05em; font-weight: 500; color: var(--n-text-3); white-space: nowrap; }
+
+/* The app's CheckGlyph, driven by one progress value like its CheckDraw:
+   0 is an empty ring, 1 a filled check. Turning on rides the check spring,
+   so the fill pops past full size and settles; turning off is snappy. */
+@property --p { syntax: '<number>'; inherits: true; initial-value: 0; }
+.check {
+  --p: 0; flex: none; width: 1.6em; height: 1.6em; margin: 0 0.2em; overflow: visible;
+  transition: --p 335ms var(--snappy);
+}
+.task input:checked + .check { --p: 1; transition: --p 490ms var(--check); }
+.check-ring { fill: none; stroke: var(--n-text-3); stroke-width: 1.5; opacity: calc(1 - min(var(--p) / 0.3, 1)); transition: stroke 335ms var(--snappy); }
+.task-label:hover .check-ring { stroke: var(--today); }
+.check-fill, .check-mark { transform-box: view-box; transform-origin: 8px 8px; }
+.check-fill {
+  fill: var(--today); opacity: min(var(--p) / 0.2, 1);
+  scale: max(0.4 + 0.6 * min(var(--p) / 0.55, 1), min(var(--p), 1.08));
+}
+.check-mark {
+  fill: none; stroke: #000; stroke-width: 1.92; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 1 1; stroke-dashoffset: calc(1 - clamp(0, (var(--p) - 0.3) / 0.7, 1));
+  opacity: clamp(0, (var(--p) - 0.3) * 1000, 1);
+  scale: min(0.4 + 0.6 * min(var(--p) / 0.55, 1), 1);
+}
+
+/* The add field, and in its place yesterday's quiet note. */
+.add-task {
+  position: relative; display: flex; align-items: center; gap: 0.8em; flex: none; height: 2.8em; margin: 0; padding: 0 0.8em;
+  border-radius: 1em; background: var(--n-surface); box-shadow: inset 0 0 0 0.05em var(--n-stroke);
+  color: var(--n-text-3);
+  transition: background-color 335ms var(--snappy), box-shadow 335ms var(--snappy), color 335ms var(--snappy);
+}
+.add-task .ico { width: 2em; height: 1.1em; }
+.add-task[hidden] { display: none; }
+.add-task:hover { background: var(--n-hover); }
+.add-task:focus-within { background: var(--n-hover); box-shadow: inset 0 0 0 0.1em rgba(168, 140, 255, 0.5); color: var(--today); }
+.add-task input {
+  flex: 1; min-width: 0; height: 100%; margin: 0; padding: 0; border: 0; outline: 0; background: none;
+  font: inherit; font-size: 1.2em; color: var(--n-text); caret-color: var(--today);
+}
+.add-task input::placeholder { color: var(--n-text-3); opacity: 1; }
+.add-task input:disabled { cursor: default; }
+.day-foot { display: flex; align-items: center; gap: 0.4em; flex: none; height: 2.8em; padding: 0 0.8em; font-size: 1.05em; font-weight: 500; color: var(--n-text-2); }
+.day-foot[hidden] { display: none; }
+.day-foot .ico { width: 1.1em; height: 1.1em; }
+
+.today-side { display: flex; flex-direction: column; gap: 0.8em; min-width: 0; min-height: 0; }
+.upnext { display: flex; flex-direction: column; flex: 1; min-height: 0; padding: 0.8em; overflow: hidden; }
+.upnext-cap { flex: none; padding: 0 0.4em 0.4em; font-size: 1.05em; font-weight: 500; line-height: 1.3; color: var(--n-text-3); }
+/* Like the app's RowsThatFit, a short card lists fewer events instead of
+   clipping one: rows that do not fit wrap into a column out of sight. */
+.events {
+  display: flex; flex-direction: column; flex-wrap: wrap; gap: 0.4em 4em; flex: 1; min-height: 0;
+  margin: 0; padding: 0; list-style: none; overflow: hidden;
+}
+.event { display: grid; grid-template-columns: 0.8em minmax(0, 1fr); column-gap: 0.8em; align-items: center; width: 100%; padding: 0 0.4em; }
+.dot { width: 0.6em; height: 0.6em; border-radius: 50%; justify-self: center; }
+.dot-blue { background: var(--blue); }
+.dot-orange { background: var(--orange); }
+.event-title, .event-time { line-height: 1.2; }
+.event-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 1.2em; font-weight: 500; }
+.event-time {
+  grid-column: 2; display: flex; gap: 0.4em; font-size: 1.05em; font-weight: 500; color: var(--n-text-3);
+  font-variant-numeric: tabular-nums;
+}
+.event-time span { color: var(--n-text-2); }
+
+/* Mirrors the Timer's clock in its accent and opens its tab. */
+.focus-card {
+  display: flex; align-items: center; gap: 0.8em; flex: none; width: 100%; padding: 0.6em 0.8em;
+  border: 0; text-align: left; cursor: pointer;
+  transition: background-color 335ms var(--snappy);
+}
+.focus-card:hover { background: var(--n-hover); }
+.focus-ring { position: relative; display: grid; place-items: center; flex: none; width: 2.8em; height: 2.8em; color: var(--timer); }
+.focus-ring::before { content: ''; position: absolute; inset: 0.25em; border-radius: 50%; background: rgba(255, 158, 66, 0.1); }
+.focus-dial { position: absolute; inset: 0; width: 100%; height: 100%; rotate: -90deg; }
+.focus-dial .ring-track { stroke: rgba(255, 158, 66, 0.2); }
+.focus-dial .ring-arc { stroke: var(--timer); stroke-linecap: round; stroke-dasharray: 100 100; stroke-dashoffset: 100; }
+.focus-ring .ico { position: relative; width: 1em; height: 1em; }
+.focus-text { display: flex; flex-direction: column; min-width: 0; }
+.focus-text { line-height: 1.3; }
+.focus-top { display: flex; align-items: baseline; gap: 0.4em; font-size: 1.3em; font-weight: 600; color: var(--n-text-2); white-space: nowrap; }
+.focus-time { font-variant-numeric: tabular-nums; }
+.notch[data-running]:not([data-paused]) .focus-time { color: var(--n-text); }
+.focus-cap { font-size: 0.81em; font-weight: 500; color: var(--n-text-3); }
+.notch:not([data-running]) .focus-time, .notch:not([data-running]) .focus-cap, .notch[data-running] .focus-idle { display: none; }
+.focus-sub { font-size: 1.05em; font-weight: 500; color: var(--n-text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.notch[data-running] .focus-sub { color: var(--n-text-2); }
+
+/* --- Closet -------------------------------------------------------------- */
+/* Mochi large on the left; the wardrobe and the limited items, each a
+   grid of tiles, on the right. Every tile tries its item on the big pet. */
+.pane-closet { grid-template-columns: 16.4em minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); gap: 1.2em; }
+.closet-pet {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.4em;
+  min-width: 0; padding: 0.8em; text-align: center;
+}
+/* 3 and 2 times the sprite: whole pixels at 1x and 2x. */
+.pet-big { zoom: 3; margin-bottom: 1px; }
+.demo .pet-name { font-size: 1.4em; font-weight: 600; color: var(--n-text); }
+.pet-sub {
+  max-width: 100%; font-size: 1.05em; font-weight: 500; color: var(--n-text-3);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  transition: color 335ms var(--snappy);
+}
+.demo .pet-sub[data-trying] { color: var(--closet); }
+.closet-main { display: flex; flex-direction: column; gap: 0.8em; min-width: 0; min-height: 0; padding: 1.2em; }
+.closet-head { display: flex; align-items: center; justify-content: space-between; gap: 0.8em; flex: none; }
+.sec-bar { display: flex; gap: 0.2em; }
+.sec {
+  position: relative; display: inline-flex; align-items: center; gap: 0.4em; height: 2.2em; padding: 0 1em;
+  border-radius: 999px; color: var(--n-text-2); cursor: pointer;
+  transition: background-color 335ms var(--snappy), color 335ms var(--snappy);
+}
+.sec input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+.sec span { font-size: 1.1em; font-weight: 600; }
+.sec .ico { width: 1em; height: 1em; }
+.sec:hover { background: var(--n-hover); color: var(--n-text); }
+.sec:has(input:checked) { background: rgba(250, 204, 77, 0.16); color: var(--closet); }
+.sec:has(input:focus-visible) { outline: 3px solid var(--link); outline-offset: 1px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 0.4em; height: 2.2em; padding: 0 0.8em;
+  border-radius: 999px; background: var(--n-surface); box-shadow: inset 0 0 0 0.05em var(--n-stroke);
+  font-size: 1.1em; font-weight: 600; color: var(--n-text); font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.chip .ico { width: 0.9em; height: 0.9em; color: var(--closet); }
+.chip-unit { color: var(--n-text-3); }
+
+.sec-pane { display: none; flex-direction: column; gap: 0.8em; flex: 1; min-height: 0; }
+.closet-main:has([value='wardrobe']:checked) .sec-wardrobe,
+.closet-main:has([value='limited']:checked) .sec-limited { display: flex; }
+.tiles { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); grid-auto-rows: minmax(0, 1fr); gap: 0.6em; flex: 1; min-height: 0; }
+.tiles-limited { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.tile {
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.4em;
+  min-width: 0; padding: 0.4em 0 0.6em; overflow: hidden;
+  border: 0; border-radius: 0.8em; background: rgba(255, 255, 255, 0.05); box-shadow: inset 0 0 0 0.05em var(--n-stroke);
+  cursor: pointer;
+  transition: background-color 335ms var(--snappy), box-shadow 335ms var(--snappy);
+}
+.tile .pet { zoom: 2; }
+.tile:hover { background: var(--n-hover); }
+.tile:is([aria-pressed='true'], [data-trying]) { background: rgba(250, 204, 77, 0.12); box-shadow: inset 0 0 0 0.1em rgba(250, 204, 77, 0.7); }
+.tile-limited:not([data-owned]) .pet { filter: grayscale(1) brightness(0.7); opacity: 0.6; transition: filter 335ms var(--snappy), opacity 335ms var(--snappy); }
+.tile-limited:not([data-owned]):is(:hover, :focus-visible, [data-trying]) .pet { filter: none; opacity: 1; }
+.tile[data-owned] .st-locked, .tile:not([data-owned]) .st-owned, .tile:not([data-owned]) .st-on,
+.tile[aria-pressed='true'] .st-owned, .tile:not([aria-pressed='true']) .st-on { display: none; }
+.tile-status {
+  display: inline-flex; align-items: center; gap: 0.3em; font-size: 1.1em; font-weight: 600; line-height: 1;
+  color: var(--n-text-2); font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.tile-status .ico { width: 0.8em; height: 0.8em; }
+.st-locked { color: var(--n-text-3); }
+.st-on { color: var(--closet); }
+.tile-spark { position: absolute; top: 0.6em; right: 0.6em; width: 1em !important; height: 1em !important; color: var(--closet); }
+.tile:not([data-owned]) .tile-spark { color: var(--n-text-3); }
+.bar { display: block; width: 4em; height: 0.4em; margin-top: -0.1em; }
+.bar line { stroke: rgba(255, 255, 255, 0.12); stroke-width: 4; stroke-linecap: round; }
+.demo .bar .bar-fill { stroke: var(--closet); }
+.closet-foot {
+  display: flex; align-items: baseline; gap: 0.4em; flex: none; min-width: 0;
+  font-size: 1.05em; font-weight: 500; line-height: 1.2; color: var(--n-text-3); white-space: nowrap; overflow: hidden;
+}
+.closet-foot b { font-weight: 600; color: var(--n-text-2); overflow: hidden; text-overflow: ellipsis; }
+.closet-foot .foot-dim { color: var(--n-text-3); }
+.foot-gold { color: var(--closet); }
+
+/* --- Now Playing --------------------------------------------------------- */
+/* The app's panel: a 112 pt cover with a glow in its colors, then the song,
+   the like heart, the scrubber and the transport, all as tall as the cover. */
+.pane-music { grid-template-columns: 11.2em minmax(0, 1fr); align-items: center; gap: 1.6em; padding: 0 1.2em; }
+/* The app's generated cover: two hues, a soft light at the top left and a
+   note. The defaults are the first song's; demo.js sets the others. */
+.cover {
+  --h1: 348; --h2: 36;
+  position: relative; display: grid; place-items: center; width: 11.2em; height: 11.2em; border-radius: 1.4em;
+  background:
+    radial-gradient(7.8em circle at 28% 24%, rgba(255, 255, 255, 0.32), transparent),
+    linear-gradient(135deg, hsl(var(--h1) 69% 55%), hsl(var(--h2) 67% 25%));
+  box-shadow: 0 0.4em 1em rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.85);
+}
+.cover::before {
+  content: ''; position: absolute; inset: -1.12em; z-index: -1;
+  background: radial-gradient(closest-side, hsl(var(--h1) 66% 54% / 0.5) 42%, transparent);
+}
+.notch .cover .ico { width: 3.4em; height: 3.4em; filter: drop-shadow(0 0.1em 0.2em rgba(0, 0, 0, 0.2)); }
+.music-main { display: flex; flex-direction: column; justify-content: space-between; height: 11.2em; min-width: 0; }
+.music-head { display: flex; align-items: center; gap: 0.8em; }
+.music-text { display: flex; flex-direction: column; gap: 0.2em; flex: 1; min-width: 0; }
+.music-title, .music-sub { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.25; }
+.music-title { font-size: 1.3em; font-weight: 600; color: var(--n-text); }
+.music-sub { font-size: 1.2em; color: var(--n-text-2); }
+/* The round buttons: hover lights a circle behind the symbol. */
+.m-btn {
+  position: relative; display: grid; place-items: center; flex: none; padding: 0;
+  border: 0; border-radius: 50%; background: none; color: var(--n-text-3); cursor: pointer;
+  transition: background-color 335ms var(--snappy), color 335ms var(--snappy), transform 180ms var(--snappy);
+}
+.m-btn:hover { background: var(--n-hover); color: var(--n-text); }
+.m-btn:active { transform: scale(0.94); }
+.like, .mode { width: 2.4em; height: 2.4em; }
+.notch .like .ico { width: 1.3em; height: 1.3em; fill: transparent; transition: fill 335ms var(--snappy); }
+.notch .mode .ico { width: 1.1em; height: 1.1em; }
+.like[aria-pressed='true'], .mode[aria-pressed='true'] { color: var(--music); }
+.notch .like[aria-pressed='true'] .ico { fill: currentColor; }
+/* An on mode wears a dot under its symbol, like the app's. */
+.mode::after {
+  content: ''; position: absolute; bottom: 0.1em; left: 50%; width: 0.3em; height: 0.3em; margin-left: -0.15em;
+  border-radius: 50%; background: var(--music); opacity: 0; transition: opacity 335ms var(--snappy);
+}
+.mode[aria-pressed='true']::after { opacity: 1; }
+.m-skip { width: 3.2em; height: 3.2em; color: var(--n-text-2); }
+.notch .m-skip .ico { width: 1.3em; height: 1.3em; }
+.demo .play { width: 3.6em; height: 3.6em; background: var(--n-text); color: #000; }
+.notch .play .ico { width: 1.5em; height: 1.5em; }
+.notch .play[aria-label='Play'] .ico { translate: 0.1em 0; }
+.demo .play:hover { background: var(--n-text); color: #000; transform: scale(1.06); }
+
+/* The scrubber is a real range input: a 4 pt bar that thickens and turns
+   green under the pointer, with a knob that shows then. --f is the part
+   played, set by demo.js, and the first song's spot without it. */
+.scrub-wrap { display: flex; flex-direction: column; gap: 0.4em; }
+.scrub {
+  --f: 0.37; --bar: 0.4em; --fill: var(--n-text);
+  display: block; width: 100%; height: 1.2em; margin: 0; background: none; cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+}
+.scrub:hover, .scrub:focus-visible { --bar: 0.6em; --fill: var(--music); }
+.scrub:disabled { cursor: default; }
+.scrub::-webkit-slider-runnable-track {
+  height: var(--bar); border-radius: 999px;
+  background: linear-gradient(90deg, var(--fill) calc(var(--f) * 100%), var(--n-hover) 0);
+}
+.scrub::-webkit-slider-thumb {
+  width: 1em; height: 1em; margin-top: calc((var(--bar) - 1em) / 2); border: 0; border-radius: 50%;
+  background: var(--n-text); box-shadow: 0 0 0.2em rgba(0, 0, 0, 0.4); opacity: 0;
+  -webkit-appearance: none; appearance: none;
+}
+.scrub:is(:hover, :focus-visible)::-webkit-slider-thumb { opacity: 1; }
+.scrub::-moz-range-track { height: var(--bar); border-radius: 999px; background: var(--n-hover); }
+.scrub::-moz-range-progress { height: var(--bar); border-radius: 999px; background: var(--fill); }
+.scrub::-moz-range-thumb { width: 1em; height: 1em; border: 0; border-radius: 50%; background: var(--n-text); opacity: 0; }
+.scrub:is(:hover, :focus-visible)::-moz-range-thumb { opacity: 1; }
+.demo .scrub:focus-visible { outline: 3px solid var(--link); outline-offset: 2px; border-radius: 0.4em; }
+.music-times {
+  display: flex; justify-content: space-between;
+  font-size: 1.05em; font-weight: 500; line-height: 1.2; color: var(--n-text-3); font-variant-numeric: tabular-nums;
+}
+/* Shuffle and repeat at the left; the three buttons stay centered. */
+.transport { position: relative; display: flex; align-items: center; height: 3.6em; }
+.modes { display: flex; gap: 0.4em; }
+.trio { position: absolute; top: 0; left: 50%; display: flex; align-items: center; gap: 1.2em; translate: -50% 0; }
+
+/* --- the pet ------------------------------------------------------------- */
+/* The app's own sprites: one atlas per look, a row per animation and a
+   32 px frame per sprite pixel, so 32 px is 1:1 and stays sharp at 2x. */
+.pet {
+  display: block; flex: none; width: 32px; height: 32px;
+  background: no-repeat 0 0; image-rendering: pixelated;
+}
+.pet[data-look='plain'] { background-image: url('/img/demo/pet-plain.png'); }
+.pet[data-look='crown'] { background-image: url('/img/demo/pet-crown.png'); }
+.pet[data-look='hoodie'] { background-image: url('/img/demo/pet-hoodie.png'); }
+.pet[data-look='wizard'] { background-image: url('/img/demo/pet-wizard.png'); }
+.pet[data-look='scholar'] { background-image: url('/img/demo/pet-scholar.png'); }
+.pet[data-look='dino'] { background-image: url('/img/demo/pet-dino.png'); }
+.pet[data-look='flame'] { background-image: url('/img/demo/pet-flame.png'); }
+.pet[data-look='laurel'] { background-image: url('/img/demo/pet-laurel.png'); }
+.pet[data-look='cap'] { background-image: url('/img/demo/pet-cap.png'); }
+.pet[data-look='medal'] { background-image: url('/img/demo/pet-medal.png'); }
+
+/* --- around the notch ---------------------------------------------------- */
+/* A handwritten nudge beside the closed notch, gone once it has been opened. */
+.hint {
+  position: absolute; top: 4.4em; left: calc(50% + 6em); z-index: 1;
+  display: flex; align-items: flex-start; gap: 6px;
+  font-family: var(--head); font-size: 18px; color: var(--on-ground); white-space: nowrap;
+  rotate: -4deg; pointer-events: none;
+  transition: opacity 200ms ease;
+}
+.hint svg { flex: none; margin-top: -14px; color: var(--link); }
+.demo:not([data-live]) .hint, .demo[data-tried] .hint { opacity: 0; }
+
+/* The celebration beside the closed notch: confetti and the points earned. */
+.burst { position: absolute; top: 0; left: calc(50% - 14.1em); z-index: 3; width: 0; height: 3.2em; pointer-events: none; }
+/* The points sit left of the notch, beside the pet in its left wing. */
+.burst-pts {
+  position: absolute; top: 0.7em; right: 1em; padding: 0 10px; border-radius: 999px;
+  background: var(--btn-bg); color: var(--btn-ink);
+  font-family: var(--head); font-size: 15px; line-height: 26px; white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  opacity: 0; scale: 0.6;
+}
+.demo[data-cheer] .burst-pts { opacity: 1; scale: 1; transition: opacity 200ms ease, scale 575ms var(--open); }
+.confetti {
+  position: absolute; top: 1.6em; left: 2.6em; width: 7px; height: 10px; border-radius: 2px;
+  opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .confetti { animation: confetti 1300ms cubic-bezier(0.2, 0.7, 0.3, 1) forwards; animation-delay: var(--delay, 0ms); }
+}
+@keyframes confetti {
+  0% { opacity: 1; translate: 0 0; rotate: 0deg; }
+  70% { opacity: 1; }
+  100% { opacity: 0; translate: var(--dx) var(--dy); rotate: var(--spin); }
+}
+
+.demo .cta { margin-top: 32px; }
+.demo .cta-note { margin-top: 14px; }
+
+/* --- sizes --------------------------------------------------------------- */
+/* Tablets: the same panel, a little smaller. */
+@media (max-width: 999px) {
+  .scene { font-size: 11px; height: 34em; }
+}
+
+/* Phones: the panel spans the screen and the Timer stacks its dial on top. */
+@media (max-width: 600px) {
+  .demo { margin-bottom: 56px; }
+  .scene { font-size: 10px; height: 46em; border-radius: 24px; }
+  .notch[data-state='open'] { width: calc(100cqw - 4em); height: 40em; }
+  .panel-inner { width: calc(100cqw - 4em); height: 40em; padding: 0 1.4em 1.4em; }
+  .pane { left: 1.4em; right: 1.4em; bottom: 1.4em; }
+  .pane-timer { grid-template-columns: minmax(0, 1fr); grid-template-rows: 15.6em minmax(0, 1fr); }
+  .today-row .today-label { display: none; }
+  /* Today keeps its checklist and the focus card; the calendar waits for a wider screen. */
+  .pane-today { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; }
+  .upnext { display: none; }
+  /* The Closet stacks too: Mochi beside its name on top, the tiles below. */
+  .pane-closet { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); gap: 0.8em; }
+  .closet-pet { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 1.2em; justify-items: start; padding: 0.8em 1.6em; text-align: left; }
+  .pet-big { zoom: 2; grid-row: span 2; margin: 0; }
+  .pet-name { align-self: end; }
+  .pet-sub { align-self: start; }
+  .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .tiles-limited { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* Now Playing puts the cover on top, the song and its controls below. */
+  .pane-music { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto; align-content: center; justify-items: center; gap: 2em; }
+  .music-main { width: 100%; height: auto; gap: 1.2em; }
+  /* The sprite's empty top rows give way, so two rows of tiles keep their bars.
+     No margins on the sprite: WebKit resolves a margin on a zoomed element
+     differently after a restyle, which nudged a tapped tile. */
+  .tile { gap: 0; padding: 0 0 0.6em; }
+  .bar { margin-top: 0.2em; }
+  .hint { left: auto; right: 1.2em; top: 5em; font-size: 17px; }
+  /* No room left of the notch on a phone: the points go under the pet. */
+  .burst-pts { top: 4em; right: auto; left: 0.6em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notch, .notch::before, .notch::after, .notch-face, .panel, .tab, .primary, .icon-btn, .capsule, .dial-time, .hint,
+  .m-btn, .like .ico, .mode::after,
+  .check, .task input:checked + .check, .check-ring, .task-title, .task-label, .day-ring .ring-arc, .day-step, .add-task, .focus-card, .sec, .tile, .pet-sub,
+  .notch[data-state] .panel, .notch[data-state] .notch-face, .demo[data-cheer] .burst-pts { transition: none !important; }
+  .primary:active, .icon-btn:active, .capsule:active, .m-btn:active, .demo .play:hover { transform: none; }
+}

@@ -17,6 +17,7 @@ from html.parser import HTMLParser
 
 from _partials import page, download_button, PAW, DOWNLOAD, DOWNLOAD_ICON, GITHUB, ISSUES, ORIGIN, SUGGESTIONS, SUPPORT_EMAIL
 from _legal import PRIVACY, PRIVACY_HERO, TERMS, TERMS_HERO
+from _demo import DEMO, demo_data
 
 HERE = pathlib.Path(__file__).parent
 # Built into its own directory so a deploy uploads pages and assets only,
@@ -90,7 +91,7 @@ HOME_HERO = {
       </div>''',
 }
 
-HOME = f'''
+HOME = DEMO + f'''
       <section class="tabs" aria-labelledby="tabs-title">
         <h2 id="tabs-title" class="tabs-title">{PAW}<span>Click the notch, pick a tab</span></h2>
         <div class="tab-row">
@@ -462,7 +463,13 @@ pages = [
 ]
 
 # Extra <head> markup per page.
-HEADS = {'index.html': json_ld(SOFTWARE_APP)}
+# The home page's notch demo: its stylesheet, its data blocks (the pet's
+# frames and Today's lists) and the site's one script, deferred so it runs
+# after the page is parsed.
+HEADS = {'index.html': json_ld(SOFTWARE_APP)
+         + '\n  <link rel="stylesheet" href="/demo.css">'
+         + demo_data()
+         + '\n  <script src="/js/demo.js" defer></script>'}
 for _action in INVITE_CODE_LENGTHS:
     HEADS[INVITE_SLUGS[_action]] = INVITE_REFRESH
 
@@ -525,24 +532,45 @@ def check_links():
         raise SystemExit('broken links:\n  ' + '\n  '.join(sorted(set(problems))))
 
 
-LD_RE = re.compile(r'<script type="application/ld\+json">(.*?)</script>', re.S)
-SCRIPT_RE = re.compile(r'<script(?![^>]*type="application/ld\+json")[^>]*>')
+SCRIPT_TAG_RE = re.compile(r'<script\b([^>]*)>(.*?)</script>', re.S)
+# The one script a page may load: the demo's, from the site itself, with no
+# inline code. _headers allows exactly that (script-src 'self').
+DEMO_SCRIPT_RE = re.compile(r' src="/assets/demo\.[0-9a-f]{8}\.js" defer')
+# An inline event handler is inline script, which the CSP blocks.
+HANDLER_RE = re.compile(r'<[a-z][^>]*\son[a-z]+\s*=', re.I)
+# What demo.js must never do: run strings as code or talk to the network.
+JS_FORBIDDEN_RE = re.compile(r'\b(?:eval|Function|fetch|XMLHttpRequest|WebSocket|EventSource|importScripts|sendBeacon)\s*\(|\bimport\s*\(|innerHTML|document\.write')
 
 
 def check_scripts():
-    """No page may carry a script the CSP would block, and every JSON-LD
-    block must parse and name its schema.org type."""
+    """Pages run no script but the demo's own file: every other script
+    element must be a data block (JSON-LD or JSON) that parses, JSON-LD must
+    name its schema.org type, and no element may carry an inline handler."""
     for html_file in sorted(OUT.glob('*.html')):
         html = html_file.read_text()
-        if SCRIPT_RE.search(html):
-            raise SystemExit(f'{html_file.name}: has a script; the CSP blocks every script')
-        for block in LD_RE.findall(html):
-            try:
-                data = json.loads(block)
-            except ValueError as e:
-                raise SystemExit(f'{html_file.name}: JSON-LD does not parse: {e}')
-            if data.get('@context') != 'https://schema.org' or '@type' not in data:
-                raise SystemExit(f'{html_file.name}: JSON-LD needs a schema.org @context and an @type')
+        if HANDLER_RE.search(html):
+            raise SystemExit(f'{html_file.name}: has an inline event handler; the CSP blocks inline script')
+        external = 0
+        for attrs, body in SCRIPT_TAG_RE.findall(html):
+            if attrs == ' type="application/ld+json"' or re.fullmatch(r' type="application/json" id="[a-z-]+"', attrs):
+                try:
+                    data = json.loads(body)
+                except ValueError as e:
+                    raise SystemExit(f'{html_file.name}: a JSON data block does not parse: {e}')
+                if 'ld+json' in attrs and (data.get('@context') != 'https://schema.org' or '@type' not in data):
+                    raise SystemExit(f'{html_file.name}: JSON-LD needs a schema.org @context and an @type')
+            elif DEMO_SCRIPT_RE.fullmatch(attrs) and not body.strip():
+                external += 1
+            else:
+                raise SystemExit(f'{html_file.name}: has a script the CSP would block: <script{attrs}>')
+        if external > 1:
+            raise SystemExit(f'{html_file.name}: loads the demo script more than once')
+        if html.count('<script') != len(SCRIPT_TAG_RE.findall(html)):
+            raise SystemExit(f'{html_file.name}: has a script element the check cannot read')
+    for js in OUT.glob('assets/*.js'):
+        found = JS_FORBIDDEN_RE.search(js.read_text())
+        if found:
+            raise SystemExit(f'{js.name}: uses {found.group(0)!r}; the demo runs no strings as code and makes no network calls')
 
 
 FORM_RE = re.compile(r'<form [^>]*action="([^"]+)"')
@@ -562,7 +590,7 @@ def check_forms():
 
 # The whole home page should stay under about 600 KB, fonts included.
 PAGE_BUDGET = 500 * 1024
-ASSET_RE = re.compile(r'/(?:img|assets|fonts)/[A-Za-z0-9._-]+')
+ASSET_RE = re.compile(r'/(?:img|assets|fonts)/(?:[A-Za-z0-9_-]+/)?[A-Za-z0-9._-]+')
 # Fetched only for link previews, search results or a home screen icon, not
 # by the page.
 NOT_LOADED_RE = re.compile(r'<meta [^>]*>|<link rel="apple-touch-icon"[^>]*>|<script type="application/ld\+json">.*?</script>', re.S)
@@ -573,12 +601,11 @@ MEDIA_BUDGET = 2 * 1024 * 1024
 VIDEO_RE = re.compile(r'<video\b(?:[^>]*?\bposter="([^"]*)")?[^>]*>(.*?)</video>', re.S)
 
 
-def check_weight(stylesheet):
-    """Every page, with its stylesheet and every image it can load (both
-    sizes of a srcset, so this is a ceiling), must fit PAGE_BUDGET, and
-    every file inside a video must fit MEDIA_BUDGET."""
-    css = (OUT / stylesheet.lstrip('/')).read_text()
-    css_assets = set(ASSET_RE.findall(css))
+def check_weight():
+    """Every page, with its stylesheets, script and every image they can
+    load (both sizes of a srcset, and every pet look the demo can show, so
+    this is a ceiling), must fit PAGE_BUDGET, and every file inside a video
+    must fit MEDIA_BUDGET."""
     report = []
     for html_file in sorted(OUT.glob('*.html')):
         html = NOT_LOADED_RE.sub('', html_file.read_text())
@@ -588,7 +615,9 @@ def check_weight(stylesheet):
             if size > MEDIA_BUDGET:
                 raise SystemExit(f'{html_file.name}: {media} is {size // 1024} KB; a video\'s budget is {MEDIA_BUDGET // 1024} KB')
         page = VIDEO_RE.sub(lambda m: m.group(1) or '', html)
-        assets = set(ASSET_RE.findall(page)) | css_assets
+        assets = set(ASSET_RE.findall(page))
+        for css in [a for a in assets if a.endswith('.css')]:
+            assets |= set(ASSET_RE.findall((OUT / css.lstrip('/')).read_text()))
         total = len(html.encode()) + sum((OUT / a.lstrip('/')).stat().st_size for a in assets)
         report.append(f'{html_file.name} {total // 1024} KB')
         if total > PAGE_BUDGET:
@@ -610,7 +639,7 @@ def fingerprint(src, folder, data=None):
     data = src.read_bytes() if data is None else data
     digest = hashlib.sha256(data).hexdigest()[:8]
     hashed = f'{src.stem}.{digest}{src.suffix}'
-    (OUT / folder).mkdir(exist_ok=True)
+    (OUT / folder).mkdir(parents=True, exist_ok=True)
     (OUT / folder / hashed).write_bytes(data)
     return f'/{folder}/{hashed}'
 
@@ -624,9 +653,10 @@ def build():
     # `immutable`, a promise that a URL's bytes never change; putting the
     # hash in the name makes that promise true.
     fingerprints = {}
-    for src in sorted((HERE / 'img').iterdir()):
+    for src in sorted((HERE / 'img').rglob('*')):
         if src.suffix in ('.png', '.gif', '.jpg', '.webp', '.svg', '.mp4'):
-            fingerprints['/img/' + src.name] = fingerprint(src, 'img')
+            folder = src.parent.relative_to(HERE).as_posix()
+            fingerprints[f'/{folder}/{src.name}'] = fingerprint(src, folder)
     # Fonts land in /assets/ with the stylesheet, which is cached the same way.
     for src in sorted((HERE / 'fonts').glob('*.woff2')):
         fingerprints['/fonts/' + src.name] = fingerprint(src, 'assets')
@@ -635,12 +665,14 @@ def build():
         asset_re = re.compile('|'.join(re.escape(k) for k in sorted(fingerprints, key=len, reverse=True)))
         return asset_re.sub(lambda m: fingerprints[m.group(0)], text)
 
-    # The stylesheet points at images too (the paper grain), so its image
-    # URLs are hashed first and its own hash covers them.
-    css = asset_sub((HERE / 'styles.css').read_text())
-    if unhashed(css):
-        raise SystemExit('styles.css: references files that do not exist: ' + ', '.join(unhashed(css)))
-    fingerprints['/styles.css'] = fingerprint(HERE / 'styles.css', 'assets', css.encode())
+    # The stylesheets point at images too (the paper grain, the demo's pet),
+    # so their image URLs are hashed first and their own hash covers them.
+    for name in ('styles.css', 'demo.css'):
+        css = asset_sub((HERE / name).read_text())
+        if unhashed(css):
+            raise SystemExit(f'{name}: references files that do not exist: ' + ', '.join(unhashed(css)))
+        fingerprints['/' + name] = fingerprint(HERE / name, 'assets', css.encode())
+    fingerprints['/js/demo.js'] = fingerprint(HERE / 'js' / 'demo.js', 'assets')
 
     for slug, title, description, body, hero, wide, indexable in pages:
         html = unobfuscate(page(slug, title, description, body, hero, wide, indexable, HEADS.get(slug, '')))
@@ -669,7 +701,7 @@ def build():
     check_links()
     check_scripts()
     check_forms()
-    check_weight(fingerprints['/styles.css'])
+    check_weight()
 
     # The invite pages passed every check; without a code they mean
     # nothing, so they leave dist for the Function (see INVITE_SLUGS).
