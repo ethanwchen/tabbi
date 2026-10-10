@@ -30,6 +30,20 @@ final class HangWatchdog: @unchecked Sendable {
 
     private let queue = DispatchQueue(label: "Tabbi.HangWatchdog", qos: .utility)
     private let interval: DispatchTimeInterval
+    /// How late the system may fire a tick to save energy: a quarter of the
+    /// interval, so 500 ms for the real 2 s ping and never so much that a
+    /// short test interval loses ticks.
+    private let leeway: DispatchTimeInterval
+
+    static func leeway(for interval: DispatchTimeInterval) -> DispatchTimeInterval {
+        switch interval {
+        case .seconds(let s): .milliseconds(s * 250)
+        case .milliseconds(let ms): .microseconds(ms * 250)
+        case .microseconds(let us): .nanoseconds(us * 250)
+        case .nanoseconds(let ns): .nanoseconds(ns / 4)
+        default: .milliseconds(500)
+        }
+    }
     // Read and written only on `queue`.
     private var detector: HangDetector
     private var answered = true
@@ -53,6 +67,7 @@ final class HangWatchdog: @unchecked Sendable {
 
     init(interval: DispatchTimeInterval = HangWatchdog.interval, ticksToHang: Int = HangWatchdog.ticksToHang) {
         self.interval = interval
+        leeway = Self.leeway(for: interval)
         detector = HangDetector(ticksToHang: ticksToHang)
     }
 
@@ -79,7 +94,7 @@ final class HangWatchdog: @unchecked Sendable {
             self.mainThread = mainThread
             guard timer == nil else { return }
             let timer = DispatchSource.makeTimerSource(queue: queue)
-            timer.schedule(deadline: .now() + interval, repeating: interval, leeway: .milliseconds(500))
+            timer.schedule(deadline: .now() + interval, repeating: interval, leeway: leeway)
             timer.setEventHandler { [weak self] in self?.tick() }
             self.timer = timer
             timer.resume()
@@ -125,7 +140,7 @@ final class HangWatchdog: @unchecked Sendable {
         queue.async { [self] in
             guard let timer, isTimerSuspended else { return }
             isTimerSuspended = false
-            timer.schedule(deadline: .now() + interval, repeating: interval, leeway: .milliseconds(500))
+            timer.schedule(deadline: .now() + interval, repeating: interval, leeway: leeway)
             timer.resume()
         }
     }
