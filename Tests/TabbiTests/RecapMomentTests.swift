@@ -88,6 +88,29 @@ final class RecapMomentTests: XCTestCase {
         XCTAssertEqual(states(), [false, true, false])
     }
 
+    func testThePastRecapsListInTheClosetReopensAWeek() throws {
+        let services = demoServices()
+        let inputs = ModuleViews.notchInputs(services: services)
+        let states = takeoverStates(inputs)
+        let closet = try XCTUnwrap(services.modules.module(ClosetModule.self))
+        XCTAssertTrue(closet.recaps === services.recaps.store, "The Closet lists the one shared store")
+
+        inputs.previewVisible(false)
+        services.recaps.dismiss()
+        let older = try XCTUnwrap(closet.recaps.archive.recaps.last)
+        closet.recaps.reopen(older)
+        let shown = try XCTUnwrap(services.recaps.shown, "A past week shows again from the list")
+        XCTAssertEqual(shown.recap, older)
+        XCTAssertEqual(shown.cheer, closet.recaps.archive.cheer(for: older), "With the line it had then")
+        services.recaps.dismiss()
+        XCTAssertEqual(states(), [false, true, false, true, false])
+
+        services.settings.settings.weeklyRecapEnabled = false
+        XCTAssertFalse(closet.recaps.isEnabled, "The list hides while recaps are off")
+        closet.recaps.reopen(older)
+        XCTAssertNil(services.recaps.shown, "Nor opens a week")
+    }
+
     func testNoRecapLeavesTheTabsAlone() {
         let folder = FileManager.default.temporaryDirectory
             .appendingPathComponent("RecapMomentTests-\(UUID().uuidString)", isDirectory: true)

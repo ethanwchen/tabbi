@@ -26,13 +26,13 @@ enum RecapSharing {
         return url
     }
 
-    /// Shows the share sheet for the image, pointing at `anchor`.
+    /// Shows the share sheet for the image, pointing at `rect` in `view`.
     static func share(recap: WeeklyRecap, cheer: RecapCheer, pet: PetProfile?,
-                      format: RecapShareFormat, from anchor: NSView) {
+                      format: RecapShareFormat, from rect: NSRect, in view: NSView) {
         guard let url = try? writeImage(recap: recap, cheer: cheer, pet: pet, format: format,
                                         into: shareFolder) else { return NSSound.beep() }
         NSSharingServicePicker(items: [url])
-            .show(relativeTo: anchor.bounds, of: anchor, preferredEdge: .minY)
+            .show(relativeTo: rect, of: view, preferredEdge: .minY)
     }
 
     /// Asks where to save the image, then writes it there.
@@ -61,21 +61,25 @@ struct RecapShareButton: View {
     let recap: WeeklyRecap
     let cheer: RecapCheer
     @Environment(\.statusPet) private var pet
-    @State private var anchor = RecapShareAnchor()
 
     var body: some View {
         IconButton(symbol: "square.and.arrow.up", size: 22, help: "Share your week as an image") {
             showMenu()
         }
-        .background(RecapShareAnchorView(anchor: anchor))
     }
 
+    /// Opens the menu where the click landed, so it needs no AppKit view
+    /// of its own (which would also draw as a placeholder in snapshots).
     private func showMenu() {
-        guard let view = anchor.view else { return }
+        guard let event = NSApp.currentEvent, let view = event.window?.contentView else { return }
+        let click = view.convert(event.locationInWindow, from: nil)
+        let below = view.isFlipped ? Theme.Spacing.m : -Theme.Spacing.m
+        let anchor = NSRect(x: click.x - Theme.Spacing.m, y: click.y - Theme.Spacing.m,
+                            width: Theme.Spacing.m * 2, height: Theme.Spacing.m * 2)
         let menu = NSMenu()
         for format in RecapShareFormat.allCases {
             menu.addItem(RecapMenuItem(title: "Share \(format.title)") { [recap, cheer, pet] in
-                RecapSharing.share(recap: recap, cheer: cheer, pet: pet, format: format, from: view)
+                RecapSharing.share(recap: recap, cheer: cheer, pet: pet, format: format, from: anchor, in: view)
             })
         }
         menu.addItem(.separator())
@@ -84,29 +88,7 @@ struct RecapShareButton: View {
                 RecapSharing.save(recap: recap, cheer: cheer, pet: pet, format: format)
             })
         }
-        // Just under the button; the view isn't flipped, so below is negative.
-        menu.popUp(positioning: nil, at: NSPoint(x: 0, y: -Theme.Spacing.xs), in: view)
-    }
-}
-
-/// The share button's AppKit view, so the menu and the share sheet have
-/// something to point at.
-@MainActor
-final class RecapShareAnchor {
-    weak var view: NSView?
-}
-
-private struct RecapShareAnchorView: NSViewRepresentable {
-    let anchor: RecapShareAnchor
-
-    func makeNSView(context: Context) -> NSView {
-        let view = NSView()
-        anchor.view = view
-        return view
-    }
-
-    func updateNSView(_ view: NSView, context: Context) {
-        anchor.view = view
+        menu.popUp(positioning: nil, at: NSPoint(x: click.x, y: click.y + below), in: view)
     }
 }
 

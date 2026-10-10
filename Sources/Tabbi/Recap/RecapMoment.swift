@@ -25,6 +25,7 @@ final class RecapMoment: ObservableObject {
     private(set) var isEnabled = true
     private var isStarted = false
     private var isFollowingSwitch = false
+    private var reopening: AnyCancellable?
 
     /// - Parameter isBlocked: true while something else owns the takeover
     ///   slot (onboarding), so the recap waits for a later open.
@@ -36,6 +37,7 @@ final class RecapMoment: ObservableObject {
         self.isBlocked = isBlocked
         self.notify = notify
         store.onScheduledBuild = { [weak self] in self?.notifyIfDue() }
+        reopening = store.reopened.sink { [weak self] in self?.show($0) }
     }
 
     /// Says once that the newest recap is ready, unless the user already saw
@@ -58,6 +60,13 @@ final class RecapMoment: ObservableObject {
         store.markSeen(recap.week)
     }
 
+    /// Shows a past recap picked from the list. The notch is already open,
+    /// so the takeover simply replaces the tabs until Done.
+    private func show(_ recap: WeeklyRecap) {
+        guard isEnabled, !isBlocked() else { return }
+        shown = Shown(recap: recap, cheer: store.cheer(for: recap))
+    }
+
     /// Done: back to the tabs.
     func dismiss() { shown = nil }
 
@@ -66,6 +75,7 @@ final class RecapMoment: ObservableObject {
     func setEnabled(_ enabled: Bool) {
         guard enabled != isEnabled else { return }
         isEnabled = enabled
+        store.isEnabled = enabled
         if !enabled { shown = nil }
         guard isStarted else { return }
         guard enabled else { return store.stop() }

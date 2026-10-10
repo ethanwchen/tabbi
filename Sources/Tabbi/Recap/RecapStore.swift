@@ -14,6 +14,11 @@ import TabbiKitCore
 @MainActor
 final class RecapStore: ObservableObject {
     @Published private(set) var archive: RecapArchive
+    /// The user's Weekly recap switch, mirrored here so the list of past
+    /// recaps hides with it.
+    @Published var isEnabled = true
+    /// A past recap the user picked from the list, for the notch to show.
+    let reopened = PassthroughSubject<WeeklyRecap, Never>()
 
     private let activity: ActivityLog
     private let saveURL: URL?
@@ -79,6 +84,12 @@ final class RecapStore: ObservableObject {
 
     /// The newest recap, when the user hasn't seen its card yet.
     var unseen: WeeklyRecap? { archive.unseen }
+
+    /// Shows `recap` in the notch again, from the list of past recaps.
+    func reopen(_ recap: WeeklyRecap) {
+        guard isEnabled else { return }
+        reopened.send(recap)
+    }
 
     /// The newest recap, when it still needs its notification.
     var unnotified: WeeklyRecap? { archive.unnotified }
