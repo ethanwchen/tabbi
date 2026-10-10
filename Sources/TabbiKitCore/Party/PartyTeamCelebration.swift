@@ -25,22 +25,25 @@ public struct PartyTeamCelebration: Hashable, Sendable {
 
     /// "Great job, team!", or "Great job!" when nobody else studied along.
     public var title: String {
-        completion.friendCount > 0 ? "Great job, team!" : "Great job!"
+        completion.friendCount > 0
+            ? String(localized: "Great job, team!", bundle: .tabbi)
+            : String(localized: "Great job!", bundle: .tabbi)
     }
 
     /// What was earned and how: "+20 points for Miso · 25 min with 2 friends".
     public var detail: String {
         var parts: [String] = []
         if points > 0 {
-            let unit = points == 1 ? "point" : "points"
-            parts.append(petName.map { "+\(points) \(unit) for \($0)" } ?? "+\(points) \(unit)")
+            parts.append(petName.map { String(localized: "+\(points) points for \($0)", bundle: .tabbi) }
+                ?? String(localized: "+\(points) points", bundle: .tabbi))
         }
-        let company = switch completion.friendCount {
-        case 0: "on your own"
-        case 1: "with 1 friend"
-        default: "with \(completion.friendCount) friends"
+        let minutes = completion.minutes
+        if completion.friendCount == 0 {
+            parts.append(String(localized: "\(minutes) min on your own", bundle: .tabbi))
+        } else {
+            let company = String(localized: "with \(completion.friendCount) friends", bundle: .tabbi)
+            parts.append(String(localized: "\(minutes) min \(company)", bundle: .tabbi))
         }
-        parts.append("\(completion.minutes) min \(company)")
         return parts.joined(separator: " · ")
     }
 

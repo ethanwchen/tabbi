@@ -186,11 +186,9 @@ public struct ProvidedPartySession: Hashable, Sendable {
     /// "with 2 friends", "with 1 friend", or "on your own" once everyone
     /// else has left.
     public var companyLine: String {
-        switch friendCount {
-        case 0: "on your own"
-        case 1: "with 1 friend"
-        default: "with \(friendCount) friends"
-        }
+        friendCount == 0
+            ? String(localized: "on your own", bundle: .tabbi)
+            : String(localized: "with \(friendCount) friends", bundle: .tabbi)
     }
 
     /// The label the shared focus clock carries.

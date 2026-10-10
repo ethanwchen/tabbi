@@ -267,8 +267,10 @@ public enum FocusTimerFormat {
     public static func completionMessage(_ completion: FocusPhaseCompletion, config: FocusTimerConfig) -> (title: String, body: String) {
         let minutes = Int((config.duration(of: completion.phase.next) / 60).rounded())
         switch completion.phase {
-        case .focus: return ("Focus session done", "Time for a \(minutes)-minute break.")
-        case .rest: return ("Break's over", "Ready for another \(minutes)-minute focus session?")
+        case .focus: return (String(localized: "Focus session done", bundle: .tabbi),
+                             String(localized: "Time for a \(minutes)-minute break.", bundle: .tabbi))
+        case .rest: return (String(localized: "Break's over", bundle: .tabbi),
+                            String(localized: "Ready for another \(minutes)-minute focus session?", bundle: .tabbi))
         }
     }
 }

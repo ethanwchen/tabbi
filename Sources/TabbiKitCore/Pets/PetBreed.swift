@@ -6,8 +6,8 @@ public enum PetSpecies: String, CaseIterable, Codable, Sendable {
 
     public var displayName: String {
         switch self {
-        case .cat: "Cat"
-        case .dog: "Dog"
+        case .cat: String(localized: "Cat", bundle: .tabbi)
+        case .dog: String(localized: "Dog", bundle: .tabbi)
         }
     }
 }

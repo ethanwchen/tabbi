@@ -20,14 +20,14 @@ public enum PetOutfit: String, CaseIterable, Codable, Sendable {
 
     public var displayName: String {
         switch self {
-        case .none: "None"
-        case .scrubs: "Scrubs"
-        case .whiteCoat: "White Coat"
-        case .cozyHoodie: "Cozy Hoodie"
-        case .superheroCape: "Superhero Cape"
-        case .dinosaurHoodie: "Dinosaur Hoodie"
-        case .wizardRobe: "Wizard Robe"
-        case .studyHoodie: "Study Hoodie"
+        case .none: String(localized: "None", bundle: .tabbi)
+        case .scrubs: String(localized: "Scrubs", bundle: .tabbi)
+        case .whiteCoat: String(localized: "White Coat", bundle: .tabbi)
+        case .cozyHoodie: String(localized: "Cozy Hoodie", bundle: .tabbi)
+        case .superheroCape: String(localized: "Superhero Cape", bundle: .tabbi)
+        case .dinosaurHoodie: String(localized: "Dinosaur Hoodie", bundle: .tabbi)
+        case .wizardRobe: String(localized: "Wizard Robe", bundle: .tabbi)
+        case .studyHoodie: String(localized: "Study Hoodie", bundle: .tabbi)
         }
     }
 }
@@ -148,47 +148,47 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
 
     public var displayName: String {
         switch self {
-        case .stethoscope: "Stethoscope"
-        case .scarf: "Cozy Scarf"
-        case .roundGlasses: "Round Glasses"
-        case .surgicalCap: "Surgical Cap"
-        case .headMirror: "Head Mirror"
-        case .graduationCap: "Graduation Cap"
-        case .beanie: "Beanie"
-        case .tinyCrown: "Tiny Crown"
-        case .partyHat: "Party Hat"
-        case .chefHat: "Chef Hat"
-        case .wizardHat: "Wizard Hat"
-        case .bunnyEars: "Bunny Ears"
-        case .witchHat: "Witch Hat"
-        case .cowboyHat: "Cowboy Hat"
-        case .flowerCrown: "Flower Crown"
-        case .frogHat: "Frog Hat"
-        case .ninjaHeadband: "Ninja Headband"
-        case .coolSunglasses: "Cool Sunglasses"
-        case .pirateHat: "Pirate Hat"
-        case .blindfoldedSorcerer: "Blindfolded Sorcerer"
-        case .astronautHelmet: "Astronaut Helmet"
-        case .chunkyHeadphones: "Chunky Headphones"
-        case .bowTie: "Bow Tie"
-        case .backwardsCap: "Backwards Cap"
-        case .flameHeadband: "Flame Headband"
-        case .goldenLaurel: "Golden Laurel"
-        case .teamMedal: "Team Medal"
-        case .moonlitWitchHat: "Moonlit Witch Hat"
-        case .pumpkinHat: "Pumpkin Hat"
-        case .reindeerAntlers: "Reindeer Antlers"
-        case .snowScarf: "Snowy Scarf"
-        case .heartGlasses: "Heart Glasses"
-        case .summerShades: "Sunset Shades"
-        case .lionDanceHat: "Lion Dance Hat"
-        case .sakuraSprig: "Sakura Sprig"
-        case .angelWings: "Angel Wings"
-        case .kingsCape: "King's Cape"
-        case .halo: "Halo"
-        case .cherryPetals: "Cherry Petals"
-        case .sparkleTrail: "Sparkle Trail"
-        case .rainCloud: "Tiny Rain Cloud"
+        case .stethoscope: String(localized: "Stethoscope", bundle: .tabbi)
+        case .scarf: String(localized: "Cozy Scarf", bundle: .tabbi)
+        case .roundGlasses: String(localized: "Round Glasses", bundle: .tabbi)
+        case .surgicalCap: String(localized: "Surgical Cap", bundle: .tabbi)
+        case .headMirror: String(localized: "Head Mirror", bundle: .tabbi)
+        case .graduationCap: String(localized: "Graduation Cap", bundle: .tabbi)
+        case .beanie: String(localized: "Beanie", bundle: .tabbi)
+        case .tinyCrown: String(localized: "Tiny Crown", bundle: .tabbi)
+        case .partyHat: String(localized: "Party Hat", bundle: .tabbi)
+        case .chefHat: String(localized: "Chef Hat", bundle: .tabbi)
+        case .wizardHat: String(localized: "Wizard Hat", bundle: .tabbi)
+        case .bunnyEars: String(localized: "Bunny Ears", bundle: .tabbi)
+        case .witchHat: String(localized: "Witch Hat", bundle: .tabbi)
+        case .cowboyHat: String(localized: "Cowboy Hat", bundle: .tabbi)
+        case .flowerCrown: String(localized: "Flower Crown", bundle: .tabbi)
+        case .frogHat: String(localized: "Frog Hat", bundle: .tabbi)
+        case .ninjaHeadband: String(localized: "Ninja Headband", bundle: .tabbi)
+        case .coolSunglasses: String(localized: "Cool Sunglasses", bundle: .tabbi)
+        case .pirateHat: String(localized: "Pirate Hat", bundle: .tabbi)
+        case .blindfoldedSorcerer: String(localized: "Blindfolded Sorcerer", bundle: .tabbi)
+        case .astronautHelmet: String(localized: "Astronaut Helmet", bundle: .tabbi)
+        case .chunkyHeadphones: String(localized: "Chunky Headphones", bundle: .tabbi)
+        case .bowTie: String(localized: "Bow Tie", bundle: .tabbi)
+        case .backwardsCap: String(localized: "Backwards Cap", bundle: .tabbi)
+        case .flameHeadband: String(localized: "Flame Headband", bundle: .tabbi)
+        case .goldenLaurel: String(localized: "Golden Laurel", bundle: .tabbi)
+        case .teamMedal: String(localized: "Team Medal", bundle: .tabbi)
+        case .moonlitWitchHat: String(localized: "Moonlit Witch Hat", bundle: .tabbi)
+        case .pumpkinHat: String(localized: "Pumpkin Hat", bundle: .tabbi)
+        case .reindeerAntlers: String(localized: "Reindeer Antlers", bundle: .tabbi)
+        case .snowScarf: String(localized: "Snowy Scarf", bundle: .tabbi)
+        case .heartGlasses: String(localized: "Heart Glasses", bundle: .tabbi)
+        case .summerShades: String(localized: "Sunset Shades", bundle: .tabbi)
+        case .lionDanceHat: String(localized: "Lion Dance Hat", bundle: .tabbi)
+        case .sakuraSprig: String(localized: "Sakura Sprig", bundle: .tabbi)
+        case .angelWings: String(localized: "Angel Wings", bundle: .tabbi)
+        case .kingsCape: String(localized: "King's Cape", bundle: .tabbi)
+        case .halo: String(localized: "Halo", bundle: .tabbi)
+        case .cherryPetals: String(localized: "Cherry Petals", bundle: .tabbi)
+        case .sparkleTrail: String(localized: "Sparkle Trail", bundle: .tabbi)
+        case .rainCloud: String(localized: "Tiny Rain Cloud", bundle: .tabbi)
         }
     }
 

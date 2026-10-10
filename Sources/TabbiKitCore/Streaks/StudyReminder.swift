@@ -66,11 +66,12 @@ public enum StudyReminder {
     /// "10 minutes?", with a word about the streak when one is running.
     public static func message(petName: String?, streakLength: Int) -> Message {
         let name = petName?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        let title = "\(name.isEmpty ? "Tabbi" : name) misses you"
+        let speaker = name.isEmpty ? "Tabbi" : name
+        let title = String(localized: "\(speaker) misses you", bundle: .tabbi)
         let body = if streakLength > 0 {
-            "10 minutes? That keeps your \(streakLength)-day streak going."
+            String(localized: "10 minutes? That keeps your \(streakLength)-day streak going.", bundle: .tabbi)
         } else {
-            "10 minutes?"
+            String(localized: "10 minutes?", bundle: .tabbi)
         }
         return Message(title: title, body: body)
     }
@@ -111,7 +112,11 @@ extension StudyReminder {
     /// cat still goes by its breed ("British Shorthair misses you" reads
     /// like a stranger).
     public static func speaker(for pet: PetProfile) -> String {
-        pet.name == pet.breed.displayName ? "Your \(pet.breed.species.displayName.lowercased())" : pet.name
+        guard pet.name == pet.breed.displayName else { return pet.name }
+        return switch pet.breed.species {
+        case .cat: String(localized: "Your cat", bundle: .tabbi)
+        case .dog: String(localized: "Your dog", bundle: .tabbi)
+        }
     }
 
     /// Whether the day's study goal (the Study timer's focus time goal,
