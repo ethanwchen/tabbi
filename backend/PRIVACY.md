@@ -97,6 +97,7 @@ If the service is ever restored from a backup, the operator deletes again every 
 
 The maintainer can see a few totals the service counts from the data above, so they know how many people use it: how many friend codes and Apple sign-ins exist, how many users sent a heartbeat in the last day, week and month, how many new friend codes were created on each of the last 30 days, how many parties and party members there are, how many users are banned, how many suggestions wait, and how many requests and rows the service handles.
 These are counts only: they never name or identify anyone, and nothing is stored or sent for them.
+Two of them are public, rounded down (for example `1.2k+`, or `under 10`), through `GET /v1/public/stats`, which the project's GitHub page shows as a badge: how many friend codes exist and how many users sent a heartbeat in the last 7 days.
 The app sends nothing extra; Tabbi has no tracking, analytics or telemetry of any kind.
 The number of installs comes from GitHub's public download count for each release, not from the app.
 

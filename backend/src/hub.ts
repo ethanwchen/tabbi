@@ -41,7 +41,10 @@ import {
 import {
   ADMIN_CRASHES_PAGE, CRASHES_PER_DAY, CRASHES_PER_MIN, CRASH_RETENTION_DAYS, MAX_CRASHES_PER_DAY, parseCrash, readCrashBody,
 } from "./crashes";
-import { activeCounts, signupsByDay, signupsSince } from "./stats";
+import {
+  PUBLIC_STATS_PER_MIN, PUBLIC_STATS_TTL_S, PublicMetric, activeCounts, parsePublicMetric, publicBadge, signupsByDay,
+  signupsSince,
+} from "./stats";
 import { JOIN_FIELDS, PARTY_TOUCH_S, PartySession, SESSION_FIELDS, parseJoin, parseSession, partyExpired } from "./party";
 
 export interface Env extends AppleSecrets, AdminSecrets, WebAuthVars {
@@ -435,6 +438,8 @@ export class Hub extends DurableObject<Env> {
   private failures: number[] = [];
   /** The UTC day the retention sweep last deleted old study minutes on. */
   private studyDaysSweptOn: string | null = null;
+  /** The public badge counts and when they were taken; see publicStats(). */
+  private publicCounts: { at: number; counts: Record<PublicMetric, number> } | null = null;
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
@@ -557,6 +562,7 @@ export class Hub extends DurableObject<Env> {
     if (path === "/v1/suggestions" && method === "POST") return await this.suggest(req, now);
     if (path === "/v1/crashes" && method === "POST") return await this.reportCrash(req, now);
     if (path.startsWith("/v1/admin/")) return await this.admin(req, path, method, now);
+    if (path === "/v1/public/stats" && method === "GET") return this.publicStats(req, now);
 
     const caller = await this.authenticate(req, now);
 
@@ -716,8 +722,6 @@ export class Hub extends DurableObject<Env> {
    * once, so it reads about two rows per user; fine for a maintainer's occasional look, not for polling.
    */
   private adminStats(now: number): Response {
-    const count = (query: string, ...args: SqlStorageValue[]) => this.sql.exec<{ n: number }>(query, ...args).one().n;
-    const live = [...this.live.values()].map((l) => ({ lastSeen: l.presence.lastSeen, flushedAt: l.flushedAt }));
     const signups = new Map(this.sql.exec<{ day: string; n: number }>(
       "SELECT strftime('%Y-%m-%d', created_at, 'unixepoch') AS day, COUNT(*) AS n FROM users WHERE created_at >= ? GROUP BY day",
       signupsSince(now),
@@ -726,25 +730,54 @@ export class Hub extends DurableObject<Env> {
       ok: true,
       at: now,
       users: {
-        total: count("SELECT COUNT(*) AS n FROM users"),
-        signedIn: count("SELECT COUNT(*) AS n FROM apple_accounts"),
-        banned: count("SELECT COUNT(*) AS n FROM bans"),
+        total: this.count("SELECT COUNT(*) AS n FROM users"),
+        signedIn: this.count("SELECT COUNT(*) AS n FROM apple_accounts"),
+        banned: this.count("SELECT COUNT(*) AS n FROM bans"),
       },
-      active: activeCounts((since) => count("SELECT COUNT(*) AS n FROM presence WHERE last_seen >= ?", since), live, now),
+      active: this.activeUsers(now),
       signups: signupsByDay(signups, now),
       parties: {
-        open: count("SELECT COUNT(*) AS n FROM parties WHERE last_active > ?", now - PARTY_IDLE_EXPIRY_S),
-        members: count(
+        open: this.count("SELECT COUNT(*) AS n FROM parties WHERE last_active > ?", now - PARTY_IDLE_EXPIRY_S),
+        members: this.count(
           "SELECT COUNT(*) AS n FROM party_members m JOIN parties p ON p.code = m.party WHERE p.last_active > ?",
           now - PARTY_IDLE_EXPIRY_S,
         ),
       },
-      suggestions: count("SELECT COUNT(*) AS n FROM suggestions"),
+      suggestions: this.count("SELECT COUNT(*) AS n FROM suggestions"),
       hub: this.currentUsage(),
     });
   }
 
-  /** `usage` including this request's statements so far (the stats queries above count too). */
+  private count(query: string, ...args: SqlStorageValue[]): number {
+    return this.sql.exec<{ n: number }>(query, ...args).one().n;
+  }
+
+  /** Users active per window, counting heartbeats still only in memory too (see stats.ts). */
+  private activeUsers(now: number) {
+    const live = [...this.live.values()].map((l) => ({ lastSeen: l.presence.lastSeen, flushedAt: l.flushedAt }));
+    return activeCounts((since) => this.count("SELECT COUNT(*) AS n FROM presence WHERE last_seen >= ?", since), live, now);
+  }
+
+  /**
+   * GET /v1/public/stats: a shields.io endpoint badge for the README with one rounded aggregate count
+   * (`?metric=week`, the default, or `total`). It needs no token, says nothing about any one user, and
+   * recounts at most once per PUBLIC_STATS_TTL_S, so polling it costs a few COUNT queries an hour.
+   */
+  private publicStats(req: Request, now: number): Response {
+    this.rateLimit("public:" + clientKey(req), PUBLIC_STATS_PER_MIN, now);
+    const metric = parsePublicMetric(new URL(req.url).searchParams.get("metric"));
+    if (!metric) throw new HttpError(400, "invalid_field", "metric must be week or total");
+    if (!this.publicCounts || now - this.publicCounts.at >= PUBLIC_STATS_TTL_S) {
+      const week = this.activeUsers(now).week;
+      this.publicCounts = { at: now, counts: { week, total: this.count("SELECT COUNT(*) AS n FROM users") } };
+    }
+    const age = now - this.publicCounts.at;
+    return json(publicBadge(metric, this.publicCounts.counts), 200, {
+      "Cache-Control": `public, max-age=${PUBLIC_STATS_TTL_S - age}`,
+    });
+  }
+
+  /** `usage` including this request's statements so far (the stats queries count too). */
   private currentUsage(): HubUsage {
     this.tally();
     return { ...this.usage };

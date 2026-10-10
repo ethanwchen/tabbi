@@ -5,19 +5,31 @@
 <h1 align="center">Tabbi</h1>
 
 <p align="center">
-  A little pet for your laptop notch.
+  <b>A little pet for your laptop notch.</b><br>
+  A focus timer, your day, your music and a pixel cat that cheers you on, one click away.
 </p>
 
 <p align="center">
-  <a href="https://github.com/ethanwchen/tabbi/releases/latest"><img src="https://img.shields.io/github/v/release/ethanwchen/tabbi?label=download&color=E8A15F" alt="Download the latest release"></a>
-  <a href="https://buymeacoffee.com/ethanpolar"><img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-ethanpolar-F4D57E?logo=buymeacoffee&logoColor=2A231D" alt="Buy me a coffee"></a>
-  <img src="https://img.shields.io/badge/macOS-14%2B-555?logo=apple" alt="macOS 14 or later">
+  <a href="https://tabbinotch.com"><b>tabbinotch.com</b></a>
+</p>
+
+<p align="center">
+  <a href="https://tabbinotch.com"><img src="https://img.shields.io/badge/Download-for%20Mac-E8A15F?style=for-the-badge&logo=apple&logoColor=white" alt="Download Tabbi for Mac"></a>
+  <a href="https://buymeacoffee.com/ethanpolar"><img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-F4D57E?style=for-the-badge&logo=buymeacoffee&logoColor=2A231D" alt="Buy me a coffee"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/ethanwchen/tabbi/stargazers"><img src="https://img.shields.io/github/stars/ethanwchen/tabbi?color=E8A15F&logo=github" alt="GitHub stars"></a>
+  <a href="https://github.com/ethanwchen/tabbi/releases"><img src="https://img.shields.io/github/downloads/ethanwchen/tabbi/total?color=E8A15F" alt="Total downloads"></a>
+  <a href="https://github.com/ethanwchen/tabbi/releases/latest"><img src="https://img.shields.io/github/v/release/ethanwchen/tabbi?color=E8A15F" alt="Latest release"></a>
+  <a href="https://tabbinotch.com"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Ftabbi-friends.drosophil-anki-friends-backend.workers.dev%2Fv1%2Fpublic%2Fstats" alt="People focusing with Tabbi this week"></a>
   <a href="https://github.com/ethanwchen/tabbi/actions/workflows/ci.yml"><img src="https://github.com/ethanwchen/tabbi/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status"></a>
+  <img src="https://img.shields.io/badge/macOS-14%2B-555?logo=apple" alt="macOS 14 or later">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-6B8E5A" alt="MIT License"></a>
 </p>
 
 <p align="center">
-  <img src="docs/images/hero.gif" alt="The closed notch with a pixel cat opens into the Timer tab (a Pomodoro timer at 15:14), then switches to Today, Anki, Party and the pet's Closet before closing again" width="100%">
+  <img src="docs/images/hero.webp" alt="The pointer clicks the notch, which opens on the Timer tab with a Pomodoro counting down, switches to Today and checks off a task, then closes while the pixel cat cheers" width="720">
 </p>
 
 Click the notch and it opens into a small panel of tabs.
@@ -29,6 +41,18 @@ A pixel cat or dog lives there too, and it cheers you on while you work.
 - **Anki, study with friends and a pet** that earns outfits from your study points.
 - **Streaks, a weekly recap and a desktop widget** with your pet and your streak.
 - **Private by design:** no account needed, no analytics and no telemetry.
+
+<!-- Feature clips, made by docs/images/make-readme-clips.py from the demo snapshots and the widget's test renders. -->
+<table>
+  <tr>
+    <td width="50%"><img src="docs/images/clip-celebration.webp" alt="The Timer tab mid Pomodoro, then a burst of confetti as the round ends and the pixel cat cheers next to a That's a wrap, well done bubble with 35 points"><br><b>Finish a focus round</b> and your pet cheers with you.</td>
+    <td width="50%"><img src="docs/images/clip-costumes.webp" alt="Mochi the pixel cat tries on Closet items one by one, a hoodie, a wizard hat, a dinosaur hoodie, a crown and a flickering flame headband, and cheers in each"><br><b>Dress up your pet</b> with what your study points unlock.</td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/images/clip-party.webp" alt="The Party tab with three friends studying together, then a Great job, team banner with points for everyone"><br><b>Study with friends</b> in a Party and celebrate together.</td>
+    <td width="50%"><img src="docs/images/clip-widget.webp" alt="The medium desktop widget with the pixel cat, a Focus countdown, a long break, a paused timer and the day's 2h 15m total, first in dark mode, then in light mode"><br><b>Keep your pet on the desktop</b> with a widget for your timer and streak.</td>
+  </tr>
+</table>
 
 ## Install
 
