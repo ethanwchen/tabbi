@@ -24,9 +24,14 @@ final class RecapStore: ObservableObject {
     /// format or a damaged file is never replaced by a fresh archive.
     private let saveIsUnreadable: Bool
     private lazy var alarm = WallClockAlarm { [weak self] in
-        self?.refresh()
+        self?.buildOnSchedule()
         self?.scheduleNextBuild()
     }
+
+    /// Runs after a build on start or at Sunday evening, not after the one
+    /// on opening the notch, which shows the card instead. The notification
+    /// for a ready recap goes out from here.
+    var onScheduledBuild: (() -> Void)?
 
     /// - Parameters:
     ///   - now: the clock, so tests can step through a week.
@@ -91,7 +96,7 @@ final class RecapStore: ObservableObject {
 
     /// Builds what is ready and wakes again for the next Sunday evening.
     func start() {
-        refresh()
+        buildOnSchedule()
         scheduleNextBuild()
     }
 
@@ -107,6 +112,11 @@ final class RecapStore: ObservableObject {
             return next.start.startDate(calendar: calendar)
         }
         return next.readyDate(calendar: calendar)
+    }
+
+    private func buildOnSchedule() {
+        refresh()
+        onScheduledBuild?()
     }
 
     private func scheduleNextBuild() {

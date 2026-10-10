@@ -37,6 +37,20 @@ final class RecapStatsTests: XCTestCase {
         XCTAssertEqual(recap.stats(calendar: calendar, locale: locale).map(\.kind), [.streak, .cards])
     }
 
+    func testNoticeSaysTheWeekIsReadyWithTheTimeFocused() {
+        let heavy = WeeklyRecap(week: week("2026-10-05"), minutesByDay: [100, 125, 75, 150, 100, 50, 75],
+                                sessions: 27, cardsReviewed: 0, tasksDone: 0, points: 0, longestStreak: 7)
+        let notice = RecapNotice(recap: heavy, cheer: .bestYet)
+        XCTAssertEqual(notice.title, "Your week with Tabbi is ready")
+        XCTAssertEqual(notice.body, "Your best week yet! 11h 15m of focus. Open the notch to see your recap.")
+
+        let cardsOnly = WeeklyRecap(week: week("2026-10-05"), minutesByDay: Array(repeating: 0, count: 7),
+                                    sessions: 0, cardsReviewed: 40, tasksDone: 0, points: 0, longestStreak: 1)
+        XCTAssertEqual(RecapNotice(recap: cardsOnly, cheer: .light).body,
+                       "A lighter week. Every minute counts. Open the notch to see your recap.",
+                       "No \"0 min of focus\" on a week without focus")
+    }
+
     func testTitleNamesTheMonthOnceOrTwice() {
         XCTAssertEqual(week("2026-10-05").title(calendar: calendar, locale: locale), "Oct 5 - 11")
         XCTAssertEqual(week("2026-09-28").title(calendar: calendar, locale: locale), "Sep 28 - Oct 4")

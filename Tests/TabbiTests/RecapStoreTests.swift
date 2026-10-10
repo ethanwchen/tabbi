@@ -61,6 +61,48 @@ final class RecapStoreTests: XCTestCase {
         XCTAssertNil(relaunched.unnotified)
     }
 
+    func testTheNotificationGoesOutOnceWhenTheRecapIsBuilt() throws {
+        let log = ActivityLog(repository: nil)
+        log.record([focus(day: 6, minutes: 25), focus(day: 8, minutes: 50)])
+        var notices: [RecapNotice] = []
+        let moment = RecapMoment(store: store(log, at: date(day: 11, 19)), notify: { notices.append($0) })
+        defer { moment.stop() }
+
+        moment.start() // the Sunday evening build
+        XCTAssertEqual(notices.map(\.body),
+                       ["A lovely first week together. 1h 15m of focus. Open the notch to see your recap."])
+        XCTAssertNotNil(moment.store.unseen, "The card still waits for the notch")
+
+        moment.stop()
+        moment.start()
+        XCTAssertEqual(notices.count, 1, "Once per week")
+        let relaunched = RecapMoment(store: store(log, at: date(day: 12, 9)), notify: { notices.append($0) })
+        defer { relaunched.stop() }
+        relaunched.start()
+        XCTAssertEqual(notices.count, 1, "Not again after a relaunch")
+    }
+
+    func testNoNotificationForACardAlreadySeenOrWithRecapsOff() {
+        let log = ActivityLog(repository: nil)
+        log.record(focus(day: 6, minutes: 25))
+        var notices: [RecapNotice] = []
+        let moment = RecapMoment(store: store(log, at: date(day: 11, 19)), notify: { notices.append($0) })
+        defer { moment.stop() }
+
+        moment.setEnabled(false)
+        moment.start()
+        XCTAssertTrue(notices.isEmpty, "Recaps off posts nothing")
+
+        moment.setEnabled(true)
+        moment.notchOpened()
+        XCTAssertNotNil(moment.shown)
+        XCTAssertTrue(notices.isEmpty, "Opening the notch shows the card instead")
+        moment.dismiss()
+        moment.stop()
+        moment.start()
+        XCTAssertTrue(notices.isEmpty, "A seen card needs no notification")
+    }
+
     func testSundayNightFocusStillCountsUntilTheWeekIsOver() {
         let log = ActivityLog(repository: nil)
         log.record(focus(day: 6, minutes: 25))

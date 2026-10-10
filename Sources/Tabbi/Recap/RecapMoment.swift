@@ -20,15 +20,30 @@ final class RecapMoment: ObservableObject {
 
     let store: RecapStore
     private let isBlocked: () -> Bool
+    private let notify: ((RecapNotice) -> Void)?
     /// The user's Weekly recap switch in Settings.
     private(set) var isEnabled = true
     private var isStarted = false
+    private var isFollowingSwitch = false
 
     /// - Parameter isBlocked: true while something else owns the takeover
     ///   slot (onboarding), so the recap waits for a later open.
-    init(store: RecapStore, isBlocked: @escaping () -> Bool = { false }) {
+    /// - Parameter notify: posts the macOS notification for a ready recap;
+    ///   nil where none can go out (demo, snapshot, a bare executable).
+    init(store: RecapStore, isBlocked: @escaping () -> Bool = { false },
+         notify: ((RecapNotice) -> Void)? = nil) {
         self.store = store
         self.isBlocked = isBlocked
+        self.notify = notify
+        store.onScheduledBuild = { [weak self] in self?.notifyIfDue() }
+    }
+
+    /// Says once that the newest recap is ready, unless the user already saw
+    /// its card or turned recaps off.
+    private func notifyIfDue() {
+        guard isEnabled, !isFollowingSwitch, shown == nil, let notify, let recap = store.unnotified else { return }
+        store.markNotified(recap.week)
+        notify(RecapNotice(recap: recap, cheer: store.cheer(for: recap)))
     }
 
     /// The user opened the notch: builds what is ready (a Mac that slept
@@ -53,7 +68,12 @@ final class RecapMoment: ObservableObject {
         isEnabled = enabled
         if !enabled { shown = nil }
         guard isStarted else { return }
-        if enabled { store.start() } else { store.stop() }
+        guard enabled else { return store.stop() }
+        // The user is in Settings right now: the next open shows the card,
+        // with no notification about it.
+        isFollowingSwitch = true
+        store.start()
+        isFollowingSwitch = false
     }
 
     func start() {

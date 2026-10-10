@@ -70,7 +70,10 @@ final class AppServices {
         ))
         recaps = RecapMoment(store: ModuleContext(id: "recap", edition: edition, settings: settings,
                                                   providers: providers, shared: shared, runMode: runMode).weeklyRecaps,
-                             isBlocked: { [onboarding] in onboarding.flow != nil })
+                             isBlocked: { [onboarding] in onboarding.flow != nil },
+                             notify: RecapNotifications.make(runMode: runMode).map { notifications in
+                                 { notifications.post($0) }
+                             })
         settings.$settings
             .map(\.weeklyRecapEnabled)
             .removeDuplicates()
