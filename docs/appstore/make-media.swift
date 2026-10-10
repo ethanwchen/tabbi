@@ -8,7 +8,7 @@
 //
 // Folders passed in must come from
 //     TABBI_DEMO=1 swift run Tabbi --snapshot <panels> --edition appstore --tabs study,planner,anki,spotify,closet --scale 3 --transparent
-//     TABBI_DEMO=1 swift run Tabbi --snapshot <coach> --edition appstore --tabs study,planner,anki,spotify,closet --scale 4.5 --transparent
+//     TABBI_DEMO=1 swift run Tabbi --snapshot <coach> --edition appstore --tabs study,planner,anki,spotify,closet --scale 3 --transparent   # or the panels folder again
 //     swift run PetGallery <accents> accents
 //     TABBI_DEMO=1 TABBI_DEMO_FOCUS_LEFT=1126 swift run -c release Tabbi --record <recording>/opening --part opening --edition appstore --tabs study,planner,anki,spotify,closet
 //     TABBI_DEMO=1 TABBI_DEMO_FOCUS_LEFT=5 swift run -c release Tabbi --record <recording>/story --part story --edition appstore --tabs study,planner,anki,spotify,closet
@@ -54,8 +54,8 @@ let reviewSizes = [("small", CGSize(width: 1280, height: 800)), ("gallery", CGSi
 /// about 1800 px wide, never scaled up.
 let panelScale = 3.0
 /// Pixels per point of the closed notch and the coach in shot 2, the one shot
-/// without an open panel.
-let coachScale = 4.5
+/// without an open panel: the panels' scale, so the notch matches theirs.
+let coachScale = panelScale
 /// The tabs every shot shows: Essentials plus flashcards, and the Closet paw.
 let storeTabs = "study,planner,anki,spotify,closet"
 
@@ -408,9 +408,10 @@ struct Shot {
     var petPixel = 12
 }
 
-/// The closed notch at the panel's scale: 190 by 37 pt.
-func notchRect(in canvas: CGSize) -> CGRect {
-    CGRect(x: canvas.width / 2 - 95 * panelScale, y: stageTop, width: 190 * panelScale, height: menuBarHeight)
+/// The closed notch, centered at the top of the stage like a MacBook's: 190
+/// by 32 pt at the coach's scale, as the coach snapshot draws it.
+func closedNotchRect(in canvas: CGSize) -> CGRect {
+    CGRect(x: canvas.width / 2 - 95 * coachScale, y: stageTop, width: 190 * coachScale, height: 32 * coachScale)
 }
 
 /// Composes one shot into an opaque RGB bitmap of the canvas size.
@@ -431,7 +432,7 @@ func compose(_ shot: Shot) -> CGImage {
     let panel = shot.panel.map { trimmed(loadImage(panelFolder.appendingPathComponent("\($0).png"))) }
     let panelRect = panel.map {
         CGRect(x: ((canvas.width - CGFloat($0.width)) / 2).rounded(), y: stageTop, width: CGFloat($0.width), height: CGFloat($0.height))
-    } ?? notchRect(in: canvas)
+    } ?? closedNotchRect(in: canvas)
     let hero = CGPoint(x: panelRect.minX + panelRect.width * shot.hero.x, y: panelRect.minY + panelRect.height * shot.hero.y)
     radialGlow(mix(palette.glow, shot.tint, 0.06), alpha: palette.glowAlpha, center: hero, radius: 1400, in: context)
 
@@ -443,7 +444,9 @@ func compose(_ shot: Shot) -> CGImage {
                  color: color(palette.subcaption), centerX: canvas.width / 2, baseline: 430,
                  maxWidth: canvas.width - margin * 2, in: context)
 
-    drawStage(palette, night: shot.night, canvas: canvas, in: context)
+    // With the notch closed, the menu bar is as tall as the notch.
+    drawStage(palette, night: shot.night, canvas: canvas, menuBar: panel == nil ? closedNotchRect(in: canvas).height : menuBarHeight,
+              in: context)
     let pet = drawPet(shot.pet.image(in: accentFolder), side: shot.petSide, pixel: shot.petPixel, canvas: canvas, in: context)
     // The panel's own body, without its soft shadow, must stay clear.
     let body = panel.map { opaqueBounds(of: $0, threshold: 250).offsetBy(dx: panelRect.minX, dy: panelRect.minY) }
@@ -460,24 +463,26 @@ func compose(_ shot: Shot) -> CGImage {
     return context.makeImage()!
 }
 
-/// Shot 2: the closed notch with the pet out beside it, mid-cheer, and the
-/// coach's celebration bubble, as the app draws them at one moment. The
-/// coach snapshot holds the notch's right part; the rest of the notch is
-/// drawn from the app's geometry (190 by 32 pt, 10 pt bottom corners), and
-/// the menu bar matches the notch's height in this frame.
+/// Shot 2: the closed notch centered at the top edge, like a MacBook's, with
+/// the pet out beside it, mid-cheer, and the coach's celebration bubble, as
+/// the app draws them at one moment. The coach snapshot holds the notch's
+/// right part; the rest of the notch is drawn from the app's geometry (190
+/// by 32 pt, 10 pt bottom corners). The bubble reaches about 330 pt right of
+/// the notch, which sets the scale: at 3 pixels per point (the panels' own)
+/// it ends well inside the canvas.
 func drawCoach(canvas: CGSize, in context: CGContext) {
     let coach = trimmed(loadImage(coachFolder.appendingPathComponent("coach-celebrate.png")))
-    let notchShown = 92 * coachScale, notchWidth = 190 * coachScale, notchHeight = 32 * coachScale
-    let hidden = notchWidth - notchShown
-    let left = ((canvas.width - hidden - CGFloat(coach.width)) / 2).rounded()
-    context.setFillColor(color(Palette.day.menuBar.0, Palette.day.menuBar.1))
-    context.fill(CGRect(x: 0, y: stageTop + menuBarHeight, width: canvas.width, height: notchHeight - menuBarHeight))
-    context.addPath(roundedRect(CGRect(x: left, y: stageTop, width: hidden + 2, height: notchHeight),
+    let notch = closedNotchRect(in: canvas)
+    let hidden = notch.width - 92 * coachScale
+    context.addPath(roundedRect(CGRect(x: notch.minX, y: notch.minY, width: hidden + 2, height: notch.height),
                                 topRadius: 0, bottomLeft: 10 * coachScale, bottomRight: 0))
     context.setFillColor(color(0x000000))
     context.fillPath()
-    drawImage(coach, in: CGRect(x: left + hidden, y: stageTop, width: CGFloat(coach.width), height: CGFloat(coach.height)),
-              smooth: false, context: context)
+    let coachRect = CGRect(x: notch.minX + hidden, y: notch.minY, width: CGFloat(coach.width), height: CGFloat(coach.height))
+    if coachRect.maxX > canvas.width - 80 {
+        FileHandle.standardError.write(Data("make-media: the coach bubble runs past the canvas margin in shot 2\n".utf8))
+    }
+    drawImage(coach, in: coachRect, smooth: false, context: context)
 }
 
 /// A smaller copy for the readability checks, scaled with high quality.
@@ -835,11 +840,12 @@ guard arguments.isEmpty || (3...4).contains(arguments.count) else {
     fail("pass no arguments, or a panel snapshot folder, a coach snapshot folder, an accents folder and optionally a recording folder")
 }
 let panelFolder = arguments.isEmpty ? renderDemoSnapshots(scale: panelScale, name: "panels") : URL(fileURLWithPath: arguments[0])
-let coachFolder = arguments.isEmpty ? renderDemoSnapshots(scale: coachScale, name: "coach") : URL(fileURLWithPath: arguments[1])
+// The coach shares the panels' scale, so one render serves both.
+let coachFolder = arguments.isEmpty ? panelFolder : URL(fileURLWithPath: arguments[1])
 let accentFolder = arguments.isEmpty ? renderAccents() : URL(fileURLWithPath: arguments[2])
 let recordingFolder = arguments.count == 4 ? URL(fileURLWithPath: arguments[3]) : recordPreview()
 defer {
-    let temporary = (arguments.isEmpty ? [panelFolder, coachFolder, accentFolder] : []) + (arguments.count == 4 ? [] : [recordingFolder])
+    let temporary = (arguments.isEmpty ? [panelFolder, accentFolder] : []) + (arguments.count == 4 ? [] : [recordingFolder])
     for folder in temporary { try? FileManager.default.removeItem(at: folder) }
 }
 
@@ -861,8 +867,8 @@ let shots: [Shot] = [
          pet: PetPose(animation: "typing", frame: 2), petSide: .left),
     Shot(file: "2-cheer", caption: "Every session ends in a cheer", subcaption: "Your cat celebrates, and you earn points.",
          tint: orange, pet: PetPose(animation: "celebrate", frame: 2), petSide: .center),
-    Shot(file: "3-closet", caption: "Earn points, dress your cat", subcaption: "Focus time buys hats, capes and wings.",
-         panel: "open-large-closet-wardrobe", tint: gold, hero: CGPoint(x: 0.25, y: 0.5),
+    Shot(file: "3-closet", caption: "Earn points, dress your cat", subcaption: "Every focus day fills your chart.",
+         panel: "open-large-closet", tint: gold, hero: CGPoint(x: 0.25, y: 0.5),
          pet: PetPose(animation: "idle"), petSide: .right, petPixel: 13),
     Shot(file: "4-today", caption: "Today, right up top", subcaption: "Tasks, calendar and your timer at a glance.",
          panel: "open-large-planner", tint: purple, pet: PetPose(animation: "typing", frame: 6), petSide: .left),
