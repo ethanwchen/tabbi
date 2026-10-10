@@ -78,6 +78,9 @@ enum PreviewRecorder {
         let host = NSHostingView(rootView: NotchView(content: ModuleViews.notchContent(services: services))
             .environmentObject(model)
             .environment(\.drawsLiquidGlass, false)
+            // Pets draw with SwiftUI: the app's layer-backed pet holds still
+            // in a window nobody can see, and this one sits behind the desktop.
+            .environment(\.rendersToImage, true)
             .frame(width: size.width, height: size.height, alignment: .top))
         host.frame = CGRect(origin: .zero, size: size)
         let window = NSWindow(contentRect: host.frame, styleMask: .borderless, backing: .buffered, defer: false)

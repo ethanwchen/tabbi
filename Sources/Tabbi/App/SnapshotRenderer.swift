@@ -293,7 +293,7 @@ enum SnapshotRenderer {
             PetCoachSnapshots.shots(profile: $0.store.profile, lines: $0.coach.lines, transparent: notchStyle.transparent)
         } ?? []
         for (name, view) in coachShots {
-            let renderer = ImageRenderer(content: view)
+            let renderer = ImageRenderer(content: view.environment(\.rendersToImage, true))
             renderer.scale = max(2, notchStyle.scale)
             guard let image = renderer.nsImage,
                   let tiff = image.tiffRepresentation,
@@ -322,7 +322,7 @@ enum SnapshotRenderer {
 
         // Frame strips of the shared motion (celebrations), reviewed frame by frame.
         for (name, view) in MotionSnapshots.shots() {
-            let renderer = ImageRenderer(content: view)
+            let renderer = ImageRenderer(content: view.environment(\.rendersToImage, true))
             renderer.scale = 2
             guard let image = renderer.nsImage,
                   let tiff = image.tiffRepresentation,
@@ -615,7 +615,7 @@ enum SnapshotRenderer {
                 .frame(width: model.openSize.width + 40,
                        height: model.openSize.height + 24, alignment: .top)
                 .background(style.transparent ? Color.clear : Color(white: 0.16)) // stand-in for a desktop
-            let renderer = ImageRenderer(content: view)
+            let renderer = ImageRenderer(content: view.environment(\.rendersToImage, true))
             renderer.scale = style.scale
             guard let image = renderer.nsImage,
                   let tiff = image.tiffRepresentation,

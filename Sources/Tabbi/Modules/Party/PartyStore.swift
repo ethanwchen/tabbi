@@ -27,10 +27,13 @@ final class PartyStore: ObservableObject {
         didSet {
             scheduleSessionEnd()
             advanceInvite()
+            if panelVisible { now = Date() }
+            scheduleClock()
         }
     }
     @Published private(set) var settings: PartySettings
-    /// The moment countdowns measure against; ticks while the panel shows.
+    /// The moment countdowns measure against; moves on while the panel
+    /// shows, whenever one of its countdowns changes.
     @Published private(set) var now = Date()
     /// The action in flight, so its button can show progress.
     @Published private(set) var pending: PartyAction?
@@ -281,18 +284,26 @@ final class PartyStore: ObservableObject {
         now = Date()
         panelVisible = visible
         plan.setVisible(visible || invite != nil)
-        clockTask?.cancel()
+        scheduleClock()
         if visible {
-            clockTask = Task { [weak self] in
-                while !Task.isCancelled {
-                    try? await Task.sleep(nanoseconds: 1_000_000_000)
-                    self?.now = Date()
-                }
-            }
             if case .unreachable = state.connection { retry() }
             reopenIfOldEnough()
         }
         scheduleRefresh()
+    }
+
+    /// While the panel shows, moves `now` forward only when a countdown on
+    /// it changes (`PartyState.nextClockChange`): every second during a
+    /// shared session, otherwise once a minute at most, or never.
+    private func scheduleClock() {
+        clockTask?.cancel()
+        guard panelVisible, let next = state.nextClockChange(after: now) else { return }
+        clockTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: Self.nanoseconds(next.timeIntervalSinceNow))
+            guard let self, !Task.isCancelled else { return }
+            now = max(Date(), next)
+            scheduleClock()
+        }
     }
 
     // MARK: Age check

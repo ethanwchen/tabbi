@@ -333,6 +333,8 @@ TABBI_DEMO=1 TABBI_DEMO_FOCUS_LEFT=5 swift run -c release Tabbi --record <folder
 `story` starts five seconds before the focus block ends, so the session finishes on camera (paw confetti, the digits roll into Break), the panel closes to the pet celebrating beside the notch, then it opens the Closet, checks off Read chapter 4 in Today, plans tomorrow (the blocks arrive), likes the track in Now Playing, shows Flashcards and closes to the pet again, so the end matches the first frame for a clean loop.
 Each part writes transparent `frame-NNNN.png` files and a `frames.json` with every frame's time, the storyboard's beats and the length; the stream sends a frame only when something changed, so a frame lasts until the next one's time.
 Record from a release build: in a debug build, closing the notch stalls for about 2 seconds while the closed notch's pet builds its animation clips on the main thread, and the clock freezes on camera.
+Pets in the recording draw with SwiftUI (`rendersToImage`), the same frames the snapshots use.
+The app's layer-backed pet only animates while its window is visible, so in a window behind the desktop it would stay blank.
 Nothing shows on the Mac's display and no other app or desktop content can be in a frame, but the terminal that runs it needs Screen Recording permission.
 
 `make-media.swift` composes the parts on the dune desktop (the same wallpaper as the screenshots, full frame, with a plain menu bar as tall as the notch) with the notch window drawn 1:1 from the top center.

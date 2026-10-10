@@ -170,7 +170,7 @@ extension RecapShareImage {
     /// could not be drawn.
     @MainActor
     func png() -> Data? {
-        let renderer = ImageRenderer(content: self)
+        let renderer = ImageRenderer(content: environment(\.rendersToImage, true))
         renderer.scale = RecapShareFormat.scale
         guard let image = renderer.cgImage else { return nil }
         return NSBitmapImageRep(cgImage: image).representation(using: .png, properties: [:])

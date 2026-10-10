@@ -98,11 +98,11 @@ public enum NotchPreviewLayout {
     }
 
     /// Width of the Join button, measured in its semibold type.
-    static var joinWidth: CGFloat {
+    static let joinWidth: CGFloat = {
         let font = NSFont.systemFont(ofSize: 10.5, weight: .semibold)
         let rounded = font.fontDescriptor.withDesign(.rounded).flatMap { NSFont(descriptor: $0, size: 10.5) } ?? font
         return ((joinTitle as NSString).size(withAttributes: [.font: rounded]).width + 2 * joinPadding).rounded(.up)
-    }
+    }()
 
     /// Width of `count` overlapping party pets.
     public static func partyPetsWidth(count: Int) -> CGFloat {
