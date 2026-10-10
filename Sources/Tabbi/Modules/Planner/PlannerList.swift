@@ -170,11 +170,11 @@ private struct PlannerRow: View {
                         withMotion(Theme.Motion.snappy) { store.moveToToday([item.id]) }
                     }
                 } else {
-                    Text("On today")
+                    Text("On today", bundle: .tabbi)
                         .font(Theme.Typography.caption)
                         .foregroundStyle(Theme.Palette.tertiaryText)
                         .fixedSize()
-                        .help("This task is on today's list")
+                        .help(String(localized: "This task is on today's list", bundle: .tabbi))
                 }
             }
 
@@ -238,8 +238,8 @@ private struct PlannerSharedRow: View {
 
     private var help: String {
         let module = catalog.descriptor(for: item.source).title
-        if let action = item.action { return "\(action.title) in \(module)" }
-        return item.isDone ? "\(item.title) done for today. Open \(module)" : "Checks itself when done. Open \(module)"
+        if let action = item.action { return String(localized: "\(action.title) in \(module)", bundle: .tabbi) }
+        return item.isDone ? String(localized: "\(item.title) done for today. Open \(module)", bundle: .tabbi) : String(localized: "Checks itself when done. Open \(module)", bundle: .tabbi)
     }
 
     var body: some View {
@@ -331,9 +331,9 @@ private struct PlannerCheckbox: View {
                 .contentShape(Rectangle())
         }
         .buttonStyle(.tactile)
-        .help(isOn ? "Mark as not done" : "Mark as done")
+        .help(isOn ? String(localized: "Mark as not done", bundle: .tabbi) : String(localized: "Mark as done", bundle: .tabbi))
         .accessibilityLabel(title)
-        .accessibilityValue(isOn ? "Done" : "Not done")
+        .accessibilityValue(isOn ? String(localized: "Done", bundle: .tabbi) : String(localized: "Not done", bundle: .tabbi))
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }
@@ -367,15 +367,15 @@ private struct PlannerFocusToggle: View {
                         .contentShape(Circle())
                 }
                 .buttonStyle(.plain)
-                .help(isLinked ? "Stop focusing on this task" : "Focus on this task")
-                .accessibilityLabel(isLinked ? "Stop focusing on this task" : "Focus on this task")
+                .help(isLinked ? String(localized: "Stop focusing on this task", bundle: .tabbi) : String(localized: "Focus on this task", bundle: .tabbi))
+                .accessibilityLabel(isLinked ? String(localized: "Stop focusing on this task", bundle: .tabbi) : String(localized: "Focus on this task", bundle: .tabbi))
                 .onHover { hovering = $0 }
             } else if isLinked {
                 Image(systemName: "scope")
                     .font(.system(size: 10, weight: .bold))
                     .foregroundStyle(accent)
                     .frame(width: 20, height: 20)
-                    .help("The focus timer is on this task")
+                    .help(String(localized: "The focus timer is on this task", bundle: .tabbi))
             }
         }
         .transition(.motionPop)
@@ -400,7 +400,7 @@ private struct PlannerMoveToTodayButton: View {
         }
         .buttonStyle(.plain)
         .opacity(isVisible || hovering ? 1 : 0)
-        .help("Move to today")
+        .help(String(localized: "Move to today", bundle: .tabbi))
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }
@@ -420,8 +420,8 @@ private struct PlannerDeleteButton: View {
                 .contentShape(Circle())
         }
         .buttonStyle(.plain)
-        .help("Delete task")
-        .accessibilityLabel("Delete task")
+        .help(String(localized: "Delete task", bundle: .tabbi))
+        .accessibilityLabel(String(localized: "Delete task", bundle: .tabbi))
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }
