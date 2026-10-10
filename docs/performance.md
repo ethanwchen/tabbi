@@ -73,8 +73,8 @@ Demo data, release build, the notch held open with `--open`, 45 s per tab.
 | Today | 0.16% | 0.09% | 34 MB | 33 MB |
 | Now Playing | 0.19% | 0.21% | 27 MB | 26 MB |
 | AI Usage | 0.04% | 0.04% | 26 MB | 25 MB |
-| Closet (one animated pet) | 1.0% | 0.98% | 34 MB | 34 MB |
-| Party (six animated pets) | 3.8% | 3.84% | 37 MB | 36 MB |
+| Closet (one animated pet) | 1.0% | 0.02% | 34 MB | 34 MB |
+| Party (six animated pets) | 3.8% | 1.11% | 37 MB | 37 MB |
 
 No tab made a network request in demo mode.
 
@@ -84,13 +84,27 @@ So every tick ran a spring over the whole dial, and the countdown's `.numericTex
 `sample` showed the main thread in `CA::Transaction::commit` and `CABackingStoreUpdate` all the time, and `heap` showed the growth as tens of thousands of 2 to 2.5 KB blocks.
 The fix drops the per-second animation: `ProgressRing` already sets a tick without a spring and animates real jumps itself, phase changes keep their spring, and a card sprint's count still rolls (the Study dial animates on `cardsDone`).
 
-Party still costs about 3.8%.
-`sample` shows no Tabbi code there, only SwiftUI layout passes: each of the six pets redraws on its own frame schedule (`PetFrameSchedule`), and each frame change lays out the window.
-That is the next thing to look at, for example by letting pets that share a view change frames on the same ticks.
+The animated pets were the other cost.
+Each pet drew through a `TimelineView` that woke exactly at its frame changes (`PetFrameSchedule`), so an idle pet changes about 1.5 times a second.
+But every change was a full SwiftUI update of the notch: `sample` showed `NSHostingView.layout`, an AttributeGraph update, a display list diff and a Core Animation commit, about 4 ms of CPU per change.
+Six pets on the Party tab made about 9 changes a second and kept the notch at 3.8% CPU with about 200 context switches per second.
+(Turning off the hosting view's `sizingOptions` was tried first: it removes the window min and max size bookkeeping from each update, but that was a small part of it and CPU did not move.)
+
+On screen a pet now plays in a layer of its own (`PetAnimationView` in `PetView.swift`): a timer that follows the same `PetFrameSchedule` swaps the layer's picture, so a frame change touches neither SwiftUI nor the window's layout.
+The timers have 10 ms of tolerance, so the system can wake several pets at once, and a pet stops when its view leaves the window or the window is fully hidden (for example behind a full-screen app).
+Pictures drawn into an image (`ImageRenderer` snapshots, the exported recap card) set `rendersToImage` and keep the SwiftUI drawing, since `ImageRenderer` can't draw AppKit views.
+
+| Notch open, 45 s | CPU before | CPU after | Context switches before | after |
+| --- | --- | --- | --- | --- |
+| Party (six pets) | 3.84% | 1.11% | 196 per second | 56 per second |
+| Closet (one pet, 3x) | 0.98% | 0.02% | | 7 per second |
+
+What is left on Party is its own once-a-second countdown and the six pets' timer wakeups.
+`PetAnimationViewTests` guards the fix: the pet animates with no SwiftUI update, stops when it leaves the window, and draws its speech bubble where the SwiftUI drawing does.
 
 ## To measure next
 
-- Party's animated pets (above), a focus session with sounds playing (demo mode plays none), celebrations, Party connected to a real server, and the widget installed.
+- A focus session with sounds playing (demo mode plays none), celebrations, Party connected to a real server, and the widget installed.
 - Live data over hours.
   A first look at an older installed build with real data showed 5.4% CPU, about 670 context switches per second and 61 MB while the mouse was in use.
   Part of that is the pointer tracking fixed above; a live run with the pointer still will show what the live modules add.
