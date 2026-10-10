@@ -22,8 +22,8 @@ public enum DurationFormat {
     /// single label never mixes the word "min" with the compact hours form.
     public static func progress(_ done: Int, of total: Int) -> String {
         let done = max(done, 0), total = max(total, 0)
-        guard max(done, total) >= 60 else { return "\(minutes(done)) of \(minutes(total))" }
-        return "\(compact(done)) of \(compact(total))"
+        guard max(done, total) >= 60 else { return String(localized: "\(minutes(done)) of \(minutes(total))", bundle: .tabbi) }
+        return String(localized: "\(compact(done)) of \(compact(total))", bundle: .tabbi)
     }
 
     /// "0m", "45m", "2h", "1h 15m": the hours form, also under an hour.

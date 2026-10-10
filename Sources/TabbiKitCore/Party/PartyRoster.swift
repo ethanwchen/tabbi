@@ -28,10 +28,10 @@ public enum PartyRoster {
         let status = status(presence, online: online)
         let left = timeLeft(presence, online: online, at: now).map { " · \(minutesLeft($0))" } ?? ""
         switch status {
-        case .studying: return "Studying" + left
-        case .onBreak: return "On a break" + left
-        case .idle: return "Online"
-        case .offline: return "Offline"
+        case .studying: return String(localized: "Studying", bundle: .tabbi) + left
+        case .onBreak: return String(localized: "On a break", bundle: .tabbi) + left
+        case .idle: return String(localized: "Online", bundle: .tabbi)
+        case .offline: return String(localized: "Offline", bundle: .tabbi)
         }
     }
 
@@ -42,17 +42,18 @@ public enum PartyRoster {
         let minutes = timeLeft(presence, online: online, at: now).map { Int(($0 / 60).rounded(.up)) } ?? 0
         let left = minutes > 0 ? " · \(minutes)m" : ""
         switch status {
-        case .studying: return "Studying" + left
-        case .onBreak: return "Break" + left
-        case .idle: return "Online"
-        case .offline: return "Offline"
+        case .studying: return String(localized: "Studying", bundle: .tabbi) + left
+        case .onBreak: return String(localized: "Break", bundle: .tabbi) + left
+        case .idle: return String(localized: "Online", bundle: .tabbi)
+        case .offline: return String(localized: "Offline", bundle: .tabbi)
         }
     }
 
     /// "18 min left", rounding up so a phase reads "1 min left" until it ends.
     public static func minutesLeft(_ seconds: TimeInterval) -> String {
         let minutes = Int((max(seconds, 0) / 60).rounded(.up))
-        return minutes <= 0 ? "ending" : "\(minutes) min left"
+        return minutes <= 0 ? String(localized: "ending", bundle: .tabbi)
+            : String(localized: "\(minutes) min left", bundle: .tabbi)
     }
 
     /// Study time as "45m" or "1h 20m".
