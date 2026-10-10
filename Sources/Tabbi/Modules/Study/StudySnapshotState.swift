@@ -41,6 +41,17 @@ enum StudySnapshotState: Equatable {
         }
     }
 
+    /// Seconds left in the demo Pomodoro's focus block, from
+    /// `TABBI_DEMO_FOCUS_LEFT`, so a recording can start at 4 seconds left
+    /// and show the session end on camera. Only read in demo runs (live
+    /// demo or snapshot); nil keeps the store's default.
+    static let demoFocusLeft: TimeInterval? = {
+        guard RunMode.current.isDemo,
+              let value = ProcessInfo.processInfo.environment["TABBI_DEMO_FOCUS_LEFT"]
+        else { return nil }
+        return TimeInterval(value).flatMap { $0 > 0 ? $0 : nil }
+    }()
+
     /// The method the demo session should run. Info popovers keep the
     /// default, so other methods show their "Use" button.
     var demoMethod: StudyMethodKind? {
