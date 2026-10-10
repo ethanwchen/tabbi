@@ -5,14 +5,26 @@
 <h1 align="center">Tabbi</h1>
 
 <p align="center">
-  A little pet for your laptop notch.
+  <b>A little pet for your laptop notch.</b><br>
+  A focus timer, your day, your music and a pixel cat that cheers you on, one click away.
 </p>
 
 <p align="center">
-  <a href="https://github.com/ethanwchen/tabbi/releases/latest"><img src="https://img.shields.io/github/v/release/ethanwchen/tabbi?label=download&color=E8A15F" alt="Download the latest release"></a>
-  <a href="https://buymeacoffee.com/ethanpolar"><img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-ethanpolar-F4D57E?logo=buymeacoffee&logoColor=2A231D" alt="Buy me a coffee"></a>
-  <img src="https://img.shields.io/badge/macOS-14%2B-555?logo=apple" alt="macOS 14 or later">
+  <a href="https://tabbinotch.com"><b>tabbinotch.com</b></a>
+</p>
+
+<p align="center">
+  <a href="https://tabbinotch.com"><img src="https://img.shields.io/badge/Download-for%20Mac-E8A15F?style=for-the-badge&logo=apple&logoColor=white" alt="Download Tabbi for Mac"></a>
+  <a href="https://buymeacoffee.com/ethanpolar"><img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-F4D57E?style=for-the-badge&logo=buymeacoffee&logoColor=2A231D" alt="Buy me a coffee"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/ethanwchen/tabbi/stargazers"><img src="https://img.shields.io/github/stars/ethanwchen/tabbi?color=E8A15F&logo=github" alt="GitHub stars"></a>
+  <a href="https://github.com/ethanwchen/tabbi/releases"><img src="https://img.shields.io/github/downloads/ethanwchen/tabbi/total?color=E8A15F" alt="Total downloads"></a>
+  <a href="https://github.com/ethanwchen/tabbi/releases/latest"><img src="https://img.shields.io/github/v/release/ethanwchen/tabbi?color=E8A15F" alt="Latest release"></a>
+  <a href="https://tabbinotch.com"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Ftabbi-friends.drosophil-anki-friends-backend.workers.dev%2Fv1%2Fpublic%2Fstats" alt="People focusing with Tabbi this week"></a>
   <a href="https://github.com/ethanwchen/tabbi/actions/workflows/ci.yml"><img src="https://github.com/ethanwchen/tabbi/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status"></a>
+  <img src="https://img.shields.io/badge/macOS-14%2B-555?logo=apple" alt="macOS 14 or later">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-6B8E5A" alt="MIT License"></a>
 </p>
 
