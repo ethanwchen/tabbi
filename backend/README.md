@@ -44,6 +44,9 @@ npx wrangler secret put APPLE_KEY_ID        # the key's Key ID
 npx wrangler secret put APPLE_PRIVATE_KEY   # the whole AuthKey_<KeyID>.p8 file, pasted as is
 ```
 
+The web sign-in flow (`src/webauth.ts`, for builds without the native entitlement) also needs the Services ID, which is not a secret: `APPLE_SERVICES_ID` under `[vars]` in `wrangler.toml`.
+Creating it on developer.apple.com is described in [docs/sync.md](../docs/sync.md).
+
 To turn on the operator endpoints (reading website suggestions and crash reports, reviewing reports, renaming and banning users, granting limited edition items, backup export and point-in-time restore), set an admin token of at least 32 characters, kept out of the repo:
 
 ```sh

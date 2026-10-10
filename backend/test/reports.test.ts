@@ -219,10 +219,12 @@ describe("schema step 4", () => {
       sql.exec("DROP TABLE grants");
       sql.exec("DROP TABLE suggestions");
       sql.exec("DROP TABLE crashes");
+      sql.exec("DROP TABLE web_sign_ins");
+      sql.exec("ALTER TABLE apple_accounts DROP COLUMN client_id");
       sql.exec("UPDATE schema_version SET version = 3");
       sql.exec("INSERT INTO blocks (blocker, blocked, created_at) VALUES ('AAAAAAAA', 'BBBBBBBB', 0)");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 10 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 11 }]);
       expect(sql.exec("SELECT * FROM reports").toArray()).toEqual([]);
       expect(sql.exec("SELECT * FROM bans").toArray()).toEqual([]);
       expect(sql.exec("SELECT * FROM name_holds").toArray()).toEqual([]);
@@ -240,13 +242,15 @@ describe("schema step 6", () => {
       sql.exec("DROP TABLE grants");
       sql.exec("DROP TABLE suggestions");
       sql.exec("DROP TABLE crashes");
+      sql.exec("DROP TABLE web_sign_ins");
+      sql.exec("ALTER TABLE apple_accounts DROP COLUMN client_id");
       sql.exec("DROP TABLE name_holds");
       sql.exec(`CREATE TABLE name_holds (code TEXT PRIMARY KEY, name TEXT NOT NULL, pet_name TEXT NOT NULL,
         created_at INTEGER NOT NULL) WITHOUT ROWID`);
       sql.exec("INSERT INTO name_holds VALUES ('AAAAAAAA', 'Rude', 'Worse', 7), ('BBBBBBBB', 'student', 'Bad Pet', 8)");
       sql.exec("UPDATE schema_version SET version = 5");
       migrate(state.storage);
-      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 10 }]);
+      expect(sql.exec("SELECT version FROM schema_version").toArray()).toEqual([{ version: 11 }]);
       expect(sql.exec("SELECT code, kind, value, created_at FROM name_holds ORDER BY code, kind").toArray()).toEqual([
         { code: "AAAAAAAA", kind: "name", value: "Rude", created_at: 7 },
         { code: "AAAAAAAA", kind: "pet", value: "Worse", created_at: 7 },

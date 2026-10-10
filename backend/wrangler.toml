@@ -8,6 +8,11 @@ compatibility_date = "2025-09-01"
 name = "HUB"
 class_name = "Hub"
 
+# The Services ID of web Sign in with Apple (src/webauth.ts), which the Developer ID build uses. It is
+# not a secret. Unset, the web callback answers every sign-in with error=not_configured.
+[vars]
+APPLE_SERVICES_ID = "dev.tabbi.Tabbi.signin"
+
 # Workers Logs keeps the structured lines from src/log.ts (every 5xx, slow requests and a 1% sample)
 # for search and alerts in the dashboard. Invocation logs are off: they would store every request's
 # full URL and headers, including friend codes and client IPs. See docs/ops.md "Monitoring".
@@ -31,3 +36,6 @@ name = "tabbi-friends-staging"
 [[env.staging.durable_objects.bindings]]
 name = "HUB"
 class_name = "Hub"
+
+[env.staging.vars]
+APPLE_SERVICES_ID = "dev.tabbi.Tabbi.signin"

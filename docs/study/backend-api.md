@@ -149,6 +149,8 @@ Auth column: "token" means `Authorization: Bearer <token>` is required.
 | `GET /v1/catalog` | none | the shared catalog |
 | `POST /v1/register` | none or token | create a user, or update the profile of an existing one |
 | `POST /v1/auth/apple` | none or token | sign in with Apple: link or adopt the account's friend code |
+| `POST /v1/auth/apple/web/callback` | none (Apple's form_post) | web sign-in: Apple posts here, the browser goes on to `tabbi://auth/apple` |
+| `POST /v1/auth/apple/web/token` | none or token | web sign-in: exchange the one-time code, same reply as `POST /v1/auth/apple` |
 | `POST /v1/auth/signout` | token, Apple account | sign this Mac out: its token stops working |
 | `GET /v1/me` | token | my profile |
 | `PATCH /v1/me` | token | update my profile |
@@ -241,6 +243,24 @@ That needs the Worker secrets `APPLE_TEAM_ID`, `APPLE_KEY_ID` and `APPLE_PRIVATE
 Sign-ins are limited to 10 per minute per IP.
 
 Errors: `invalid_identity_token` (401, the token is malformed, expired, already used, not Apple's or not for Tabbi; ask the user to sign in again), `apple_unavailable` (503, Apple's keys could not be fetched; the server asks Apple again at most once a minute, so retry after a minute), `invalid_json`, `unknown_field`, `invalid_field`, `rate_limited`.
+
+### Web sign-in: `POST /v1/auth/apple/web/callback` and `POST /v1/auth/apple/web/token`
+
+For builds that cannot use the native sign-in (the Developer ID build, whose provisioning profile lacks the entitlement, and later Windows).
+The app makes a random `state` (32 random bytes, base64url, 43 characters) and keeps it in memory.
+It opens `https://appleid.apple.com/auth/authorize` with `response_type=code id_token`, `response_mode=form_post`, `scope=name`, `client_id` set to the Services ID (`dev.tabbi.Tabbi.signin`), that `state`, `nonce` set to base64url(SHA-256(`state`)), and `redirect_uri` set to `https://tabbi-friends.drosophil-anki-friends-backend.workers.dev/v1/auth/apple/web/callback`.
+
+Apple posts `state`, `code` and `id_token` (and `user` on the first sign-in, which is ignored) to the callback.
+The server checks the identity token as for `POST /v1/auth/apple`, but with the Services ID as audience and with its `nonce` equal to the one derived from `state`, accepts each token once, and exchanges `code` for a refresh token as the Services ID.
+It then answers `303` to `tabbi://auth/apple?code=<64 hex>`: a one-time code that works once, for 2 minutes, and only together with the `state` it was made for.
+The `state` itself is not in that link, so a link that another app catches is useless on its own.
+Every failure also goes back to the app, as `tabbi://auth/apple?error=<reason>`: `cancelled` (the user cancelled at Apple), `apple_error`, `invalid_state` (missing, malformed, or not the token's nonce), `invalid_identity_token`, `apple_unavailable`, `not_configured` (the Worker variable `APPLE_SERVICES_ID` is unset), `rate_limited` or `internal`.
+
+The app then posts `{"code": "<64 hex>", "state": "<state>"}` to `POST /v1/auth/apple/web/token`, with its friends token as Bearer if it has one.
+The reply, and how the account is linked or adopted, is exactly that of `POST /v1/auth/apple`.
+The first attempt spends the code, right or wrong: a replay, a wrong state, an expired or unknown code are all `401 invalid_code`, and the app asks the user to sign in again.
+Other errors: `invalid_json`, `unknown_field`, `invalid_field`, `rate_limited`.
+Both routes count toward the 10 Apple sign-ins per minute per IP.
 
 ### `POST /v1/auth/signout`
 
