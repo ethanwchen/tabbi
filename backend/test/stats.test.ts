@@ -1,5 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { SIGNUP_DAYS, activeCounts, signupsByDay, signupsSince } from "../src/stats";
+import {
+  PUBLIC_STATS_PER_MIN, PUBLIC_STATS_TTL_S, SIGNUP_DAYS, activeCounts, parsePublicMetric, publicBadge, roundedCount, signupsByDay,
+  signupsSince,
+} from "../src/stats";
 import { utcDay } from "../src/lib";
 import { admin, call, expectError, freshIp, linkAppleAccount, pinClockToMinuteStart, register } from "./helpers";
 
@@ -139,5 +142,71 @@ describe("GET /v1/admin/stats", () => {
     // day's new study minutes with it.
     const changed = await cost(() => call("POST", "/v1/presence", { status: "studying", method: "pomodoro", todayMinutes: 5 }, user.token));
     expect(changed).toMatchObject({ requests: 1, rowsWritten: 2 });
+  });
+});
+
+describe("roundedCount", () => {
+  it("hides small counts and rounds the rest down to two significant digits", () => {
+    expect([0, 1, 9, Number.NaN].map(roundedCount)).toEqual(["under 10", "under 10", "under 10", "under 10"]);
+    expect([10, 87, 99, 100, 149, 999].map(roundedCount)).toEqual(["10+", "87+", "99+", "100+", "140+", "990+"]);
+    expect([1_000, 1_234, 9_999, 12_345, 999_999].map(roundedCount)).toEqual(["1k+", "1.2k+", "9.9k+", "12k+", "990k+"]);
+    expect(roundedCount(1_250_000)).toBe("1.2M+");
+  });
+});
+
+describe("publicBadge", () => {
+  it("is a shields.io endpoint badge for the chosen metric", () => {
+    const counts = { week: 1_234, total: 56_789 };
+    expect(publicBadge("week", counts)).toEqual({
+      schemaVersion: 1, label: "focusing this week", message: "1.2k+", color: "E8A15F", cacheSeconds: PUBLIC_STATS_TTL_S,
+    });
+    expect(publicBadge("total", counts).message).toBe("56k+");
+  });
+
+  it("reads the metric parameter, week by default", () => {
+    expect([null, "", "week", "total", "day", "WEEK"].map(parsePublicMetric)).toEqual(["week", "week", "week", "total", null, null]);
+  });
+});
+
+describe("GET /v1/public/stats", () => {
+  beforeEach(pinClockToMinuteStart);
+  afterEach(() => vi.useRealTimers());
+
+  const badge = async (query = "", ip = freshIp()) => {
+    const r = await call("GET", "/v1/public/stats" + query, undefined, undefined, ip);
+    expect(r.status).toBe(200);
+    return r;
+  };
+
+  it("answers without a token with only a badge, cacheable by shields.io", async () => {
+    const r = await badge();
+    expect(Object.keys(r.body).sort()).toEqual(["cacheSeconds", "color", "label", "message", "schemaVersion"]);
+    expect(r.body.label).toBe("focusing this week");
+    expect(r.body.message).toMatch(/^(under 10|[\d.]+[kM]?\+)$/);
+    expect(r.headers.get("Cache-Control")).toMatch(/^public, max-age=\d+$/);
+    expect(r.headers.get("Access-Control-Allow-Origin")).toBe("*");
+    expect((await badge("?metric=total")).body.label).toBe("Tabbi friends");
+  });
+
+  it("rejects an unknown metric", async () => {
+    expectError(await call("GET", "/v1/public/stats?metric=codes", undefined, undefined, freshIp()), 400, "invalid_field");
+  });
+
+  it("recounts at most once per cache interval", async () => {
+    advance(2 * PUBLIC_STATS_TTL_S);
+    const before = (await badge("?metric=total")).body.message;
+    for (let i = 0; i < 12; i++) await register();
+    expect((await badge("?metric=total")).body.message).toBe(before);
+    advance(PUBLIC_STATS_TTL_S);
+    const after = await badge("?metric=total");
+    expect(after.headers.get("Cache-Control")).toBe(`public, max-age=${PUBLIC_STATS_TTL_S}`);
+    // At least 12 users exist now, so the rounded total can no longer read "under 10".
+    expect(after.body.message).not.toBe("under 10");
+  });
+
+  it("is rate limited per client IP", async () => {
+    const ip = freshIp();
+    for (let i = 0; i < PUBLIC_STATS_PER_MIN; i++) await badge("", ip);
+    expectError(await call("GET", "/v1/public/stats", undefined, undefined, ip), 429, "rate_limited");
   });
 });

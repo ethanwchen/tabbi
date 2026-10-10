@@ -51,3 +51,61 @@ export function signupsByDay(counts: Map<string, number>, now: number): { day: s
 
 /** The first second of the oldest day `signupsByDay` lists. */
 export const signupsSince = (now: number) => Math.floor(now / 86_400) * 86_400 - (SIGNUP_DAYS - 1) * 86_400;
+
+/**
+ * The public badge (`GET /v1/public/stats`) is computed at most this often and cached by the Hub, so a
+ * README full of viewers costs at most one count per interval; the reply carries the same max-age.
+ */
+export const PUBLIC_STATS_TTL_S = 3600;
+/** Public badge requests per minute per client IP; shields.io's own cache absorbs most traffic. */
+export const PUBLIC_STATS_PER_MIN = 30;
+
+/** Which number the public badge shows: users active in the last 7 days, or every friend code made. */
+export type PublicMetric = "week" | "total";
+
+/** The badge label for each metric. */
+export const PUBLIC_LABELS: Record<PublicMetric, string> = {
+  week: "focusing this week",
+  total: "Tabbi friends",
+};
+
+/**
+ * A count as the public may see it: rounded down to two significant digits with a `+`, so the badge
+ * never moves by one person ("1.2k+", "87+"), and "under 10" below ten, so no tiny exact figure shows.
+ */
+export function roundedCount(n: number): string {
+  if (!Number.isFinite(n) || n < 10) return "under 10";
+  const step = 10 ** (Math.floor(Math.log10(n)) - 1);
+  const rounded = Math.floor(n / step) * step;
+  if (rounded >= 1_000_000) return `${trim(rounded / 1_000_000)}M+`;
+  if (rounded >= 1_000) return `${trim(rounded / 1_000)}k+`;
+  return `${rounded}+`;
+}
+
+const trim = (n: number) => String(Number(n.toFixed(1)));
+
+/** A shields.io endpoint badge (https://shields.io/badges/endpoint-badge). */
+export interface EndpointBadge {
+  schemaVersion: 1;
+  label: string;
+  message: string;
+  color: string;
+  cacheSeconds: number;
+}
+
+/** The shields.io endpoint JSON for one metric, in Tabbi's accent color. */
+export function publicBadge(metric: PublicMetric, counts: Record<PublicMetric, number>): EndpointBadge {
+  return {
+    schemaVersion: 1,
+    label: PUBLIC_LABELS[metric],
+    message: roundedCount(counts[metric]),
+    color: "E8A15F",
+    cacheSeconds: PUBLIC_STATS_TTL_S,
+  };
+}
+
+/** The `metric` query parameter, `week` when absent; anything else is null (a 400). */
+export function parsePublicMetric(value: string | null): PublicMetric | null {
+  if (value === null || value === "") return "week";
+  return value === "week" || value === "total" ? value : null;
+}

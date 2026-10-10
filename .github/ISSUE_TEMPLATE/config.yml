@@ -1,5 +1,11 @@
 blank_issues_enabled: false
 contact_links:
+  - name: Suggest an idea
+    url: https://tabbinotch.com/suggest
+    about: The quickest way to ask for a feature or a new tab.
+  - name: Ask a question or talk an idea through
+    url: https://github.com/ethanwchen/tabbi/discussions
+    about: Questions, ideas and show and tell in GitHub Discussions.
   - name: Report a security vulnerability
-    url: https://github.com/ethanwchen/notchdeck/security/advisories/new
+    url: https://github.com/ethanwchen/tabbi/security/advisories/new
     about: Please report security issues privately, not in a public issue.

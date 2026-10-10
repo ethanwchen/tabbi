@@ -17,14 +17,16 @@ body:
         - Notch (opening, closing, hover, window)
         - Now Playing
         - System
-        - Claude Usage
+        - AI Usage
         - Today
-        - Ask Claude
+        - Ask AI
         - Focus
         - Study
         - Anki
         - Party
         - Closet (pet)
+        - Schedule
+        - Widget
         - Onboarding or Settings
         - Install or first launch
         - Other

@@ -52,8 +52,8 @@ public struct TickerKind: RawRepresentable, Hashable, Codable, Sendable, Identif
     /// module the edition leaves out (Party in the App Store edition) is
     /// dropped, so Settings offers no preview that can never show.
     public static func all(in catalog: ModuleCatalog) -> [TickerKind] {
-        let highlights = catalog.descriptors.filter { $0.highlightTitle != nil }.map { highlights(from: $0.id) }
-        return (leading + highlights + trailing).filter { kind in
+        let highlightKinds = catalog.descriptors.filter { $0.highlightTitle != nil }.map { Self.highlights(from: $0.id) }
+        return (leading + highlightKinds + trailing).filter { kind in
             kind.module.map { !catalog.isUnavailable($0) } ?? true
         }
     }

@@ -9,7 +9,7 @@ the same at the top.
 
 from _partials import GITHUB, SUPPORT_EMAIL
 
-EFFECTIVE = '9 October 2026'
+EFFECTIVE = '10 October 2026'
 
 MAIL = f'<a href="mailto:{SUPPORT_EMAIL}">{SUPPORT_EMAIL}</a>'
 
@@ -114,7 +114,8 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
         Members of your party see the profile and presence of everyone in it, including people who are not their friends.
         There is no directory or search: nobody can find you without your friend code or a party code.
         An invite link (<code>tabbinotch.com/add/...</code> or <code>/join/...</code>) holds only that code, so share it only with people you want to study with. The site does not store the code.
-        <strong>Go invisible</strong> in the Party options shows you as offline to friends.</p>
+        <strong>Go invisible</strong> in the Party options shows you as offline to friends.
+        Two rounded totals, how many people use Party and how many were active this week, are shown publicly (for example on our GitHub page); they never identify anyone.</p>
       <p class="measure"><strong>Blocking, reporting and bans.</strong> Right-click a friend or a party member in the Party tab to block or report them.
         Blocking ends your friendship and hides the two of you from each other in friend lists, parties and the leaderboard.
         They cannot add you again or join a party you host, and they are not told.
