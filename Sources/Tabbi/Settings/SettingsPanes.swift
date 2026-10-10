@@ -1190,6 +1190,8 @@ struct AboutSettingsPane: View {
             #if !APPSTORE
             UpdatesSettingsSection()
                 .padding(.top, 16)
+            CrashReportSettingsSection()
+                .padding(.top, 12)
             #endif
             Text("Released under the MIT License.")
                 .font(.caption)

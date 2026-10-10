@@ -75,6 +75,24 @@ final class CrashReportingTests: XCTestCase {
         XCTAssertEqual(store.load(), .ask, "an unknown value never turns into sending")
     }
 
+    func testSettingsCanTakeBackAlwaysSend() throws {
+        let suite = "CrashReportingTests.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let store = CrashReportConsentStore(defaults: defaults)
+        store.save(.alwaysSend)
+
+        // Settings > About writes the raw value under the same key.
+        defaults.set(CrashReportConsent.ask.rawValue, forKey: CrashReportConsentStore.key)
+        let report = try XCTUnwrap(CrashReport(
+            environment: DiagnosticEnvironment(appVersion: "1.0", systemVersion: "15.1.0", edition: "tabbi"),
+            kind: .signal, name: "SIGSEGV",
+            threads: [CrashReport.Thread(name: "main", crashed: true, frames: ["0 Tabbi 0x1 main + 4"])]
+        ))
+        XCTAssertEqual(store.load().action(for: report), .ask(report), "the next crash is asked about again")
+        XCTAssertEqual(Set(CrashReportConsent.allCases.map(\.title)).count, CrashReportConsent.allCases.count)
+    }
+
     // MARK: Upload
 
     private func uploader(_ server: ScriptedCrashServer, sleeps: SleepLog = SleepLog()) -> CrashReportUploader {

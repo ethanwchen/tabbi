@@ -11,6 +11,16 @@ public enum CrashReportConsent: String, Sendable, CaseIterable {
     /// The person ticked "Don't ask again" and pressed Don't Send.
     case neverSend
 
+    /// The choice as Settings > About lists it, where it can be changed or
+    /// taken back at any time.
+    public var title: String {
+        switch self {
+        case .ask: return "Ask after a crash"
+        case .alwaysSend: return "Always send"
+        case .neverSend: return "Never send"
+        }
+    }
+
     /// The person's answer to one prompt.
     public enum Choice: Sendable {
         case send

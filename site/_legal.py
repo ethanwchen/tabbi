@@ -51,6 +51,7 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
       </ul>
       <p class="measure"><strong>Updates.</strong> Once a day Tabbi downloads its release feed from GitHub to check for a new version. Nothing about you is sent, though GitHub sees the request like any web server. You can turn this off in <strong>Settings &gt; About</strong>.</p>
       <p class="measure"><strong>Crash reports.</strong> After a crash or a freeze, Tabbi asks before sending a report, which holds only the Tabbi and macOS versions, the edition, the crash type and the app's stack trace, never your content, names, tasks or tokens; we keep it at most 90 days.
+        You can switch between asking, always sending and never sending in <strong>Settings &gt; About</strong>.
         The Mac App Store edition sends none and relies on Apple's crash reports.</p>
 
       <h2 id="friends">3. The friends service (Party)</h2>
