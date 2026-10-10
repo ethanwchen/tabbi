@@ -62,6 +62,25 @@ Getting below that floor would mean not watching every mouse move (for example t
 Memory stayed flat at 21-23 MB over these runs.
 `leaks` reports about 290 leaks, 14 KB in total, all of them root cycles inside system frameworks (an `NSXPCConnection` for `LNDaemonApplicationInterface`, App Intents), none in Tabbi's code.
 
+### Hang watchdog (live runs)
+
+Demo runs leave out one thing a live run starts: `HangWatchdog`, which notices a stuck main thread and leaves a hang log.
+It pinged the main thread every 2 s for as long as Tabbi ran, so an idle, closed notch still woke a background thread and the main thread about once a second, all day.
+A main thread asleep in its run loop cannot be hung, so the watchdog now follows the main run loop: the timer parks on the first tick that finds the main thread waiting for events, and starts again a full interval after it wakes.
+Hangs are still caught as before (about 6-8 s after the main thread stops answering).
+
+Measured with the watchdog started in a demo release build, notch closed and the pointer still, 18 samples of 5 s each:
+
+| Idle, notch closed, 90 s | Context switches, mean | Lowest 5 s sample | Samples at 0 |
+| --- | --- | --- | --- |
+| Watchdog before | 3.4 per second | 1.6 per second | 0 of 18 |
+| Watchdog after | 1.3 per second | 0 | 7 of 18 |
+| No watchdog (floor) | 2.7 per second | 0 | 7 of 18 |
+
+The means move with other activity on the Mac (other processes posting events Tabbi receives), so the lowest sample is the clearer signal: before, Tabbi never went 5 s without waking; after, it is as quiet as without the watchdog.
+CPU was 0.00% in all three runs.
+`HangWatchdogTests` guards it: with the main thread idle for 20 intervals the watchdog ticks at most 4 times (20 without the fix), a busy main thread keeps it ticking, and the hang tests still pass.
+
 ## Open, on each tab
 
 Demo data, release build, the notch held open with `--open`, 45 s per tab.

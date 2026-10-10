@@ -1,5 +1,6 @@
 import Darwin
 import Foundation
+import os
 import TabbiKitCore
 
 /// Notices when Tabbi's main thread stops answering and leaves a hang log
@@ -13,6 +14,11 @@ import TabbiKitCore
 /// allocation or lock while it is suspended), then names the frames with
 /// `dladdr` once the thread runs again. The log is taken back as soon as
 /// the main thread answers.
+///
+/// A main thread asleep in its run loop cannot be hung, so the pings stop
+/// while it waits for events: the timer parks on the first tick that finds
+/// it asleep and starts again when it wakes. An idle Tabbi then has no
+/// periodic wakeups from the watchdog (docs/performance.md).
 final class HangWatchdog: @unchecked Sendable {
     /// A ping every 2 seconds; three missed in a row (about 6 seconds of
     /// spinning beach ball) count as a hang.
@@ -28,7 +34,20 @@ final class HangWatchdog: @unchecked Sendable {
     private var detector: HangDetector
     private var answered = true
     private var timer: DispatchSourceTimer?
+    private var isTimerSuspended = false
     private var mainThread: thread_act_t = 0
+    private var ticks = 0
+    /// Shared with the main thread's run loop observer, which flips it
+    /// around every wait for events.
+    private let runLoop = OSAllocatedUnfairLock(initialState: RunLoopState())
+    private var observer: CFRunLoopObserver?
+
+    private struct RunLoopState {
+        /// The main thread is asleep in its run loop, waiting for events.
+        var isWaiting = false
+        /// The timer is parked until the main thread wakes.
+        var isParked = false
+    }
     /// Where the suspended thread's return addresses go, allocated up front.
     private let addresses = UnsafeMutableBufferPointer<UInt>.allocate(capacity: CrashReport.maxFrames)
 
@@ -47,6 +66,15 @@ final class HangWatchdog: @unchecked Sendable {
     func start() {
         precondition(Thread.isMainThread, "HangWatchdog watches the thread that starts it")
         let mainThread = pthread_mach_thread_np(pthread_self())
+        if observer == nil {
+            let observer = CFRunLoopObserverCreateWithHandler(
+                nil, CFRunLoopActivity.beforeWaiting.rawValue | CFRunLoopActivity.afterWaiting.rawValue, true, 0
+            ) { [weak self] _, activity in
+                self?.mainRunLoop(isWaiting: activity == .beforeWaiting)
+            }
+            CFRunLoopAddObserver(CFRunLoopGetMain(), observer, .commonModes)
+            self.observer = observer
+        }
         queue.async { [self] in
             self.mainThread = mainThread
             guard timer == nil else { return }
@@ -60,17 +88,53 @@ final class HangWatchdog: @unchecked Sendable {
 
     /// Stops watching and takes back a hang log that is still open.
     func stop() {
+        if let observer {
+            CFRunLoopObserverInvalidate(observer)
+            self.observer = nil
+        }
+        runLoop.withLock { $0 = RunLoopState() }
         queue.sync {
+            // A suspended source must be resumed before it goes away.
+            if isTimerSuspended { timer?.resume() }
+            isTimerSuspended = false
             timer?.cancel()
             timer = nil
+            ticks = 0
             if detector.isHanging { CrashHandler.removeHangLog() }
             detector = HangDetector(ticksToHang: detector.ticksToHang)
             answered = true
         }
     }
 
+    /// Ticks since `start`, so tests can tell that an idle main thread
+    /// parks the timer.
+    var tickCount: Int {
+        queue.sync { ticks }
+    }
+
+    /// Called on the main thread around each wait for events. Waking
+    /// starts a parked timer again, a full interval later.
+    private func mainRunLoop(isWaiting: Bool) {
+        let unpark = runLoop.withLock { state in
+            state.isWaiting = isWaiting
+            guard !isWaiting, state.isParked else { return false }
+            state.isParked = false
+            return true
+        }
+        guard unpark else { return }
+        queue.async { [self] in
+            guard let timer, isTimerSuspended else { return }
+            isTimerSuspended = false
+            timer.schedule(deadline: .now() + interval, repeating: interval, leeway: .milliseconds(500))
+            timer.resume()
+        }
+    }
+
     private func tick() {
-        let answered = answered
+        ticks += 1
+        // A main thread waiting for events would answer a ping at once.
+        let isWaiting = runLoop.withLock { $0.isWaiting }
+        let answered = answered || isWaiting
         switch detector.tick(answered: answered) {
         case .began:
             CrashHandler.writeHangLog(frames: mainThreadFrames())
@@ -79,6 +143,7 @@ final class HangWatchdog: @unchecked Sendable {
         case nil:
             break
         }
+        if isWaiting, park() { return }
         // One ping at a time, so a long hang doesn't pile them up.
         guard answered else { return }
         self.answered = false
@@ -86,6 +151,21 @@ final class HangWatchdog: @unchecked Sendable {
             guard let self else { return }
             queue.async { self.answered = true }
         }
+    }
+
+    /// Suspends the timer while the main thread still waits for events;
+    /// its next wake resumes it.
+    private func park() -> Bool {
+        let parked = runLoop.withLock { state in
+            guard state.isWaiting else { return false }
+            state.isParked = true
+            return true
+        }
+        guard parked, let timer, !isTimerSuspended else { return false }
+        timer.suspend()
+        isTimerSuspended = true
+        answered = true
+        return true
     }
 
     // MARK: The main thread's stack
