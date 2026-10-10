@@ -178,6 +178,107 @@ struct PartyCopyCode: View {
     }
 }
 
+/// A share icon beside a friend or party code. It opens the macOS share
+/// menu for the code's invite link (`https://tabbinotch.com/add/<code>`),
+/// with Copy Invite Link first, so a friend can join with one click
+/// instead of typing the code. The notch stays open while the menu shows,
+/// since the pointer leaves the panel to reach it.
+struct PartyShareInvite: View {
+    let invite: PartyInvite
+    let help: String
+    @EnvironmentObject private var notch: NotchViewModel
+    @State private var picker = PartyInvitePicker()
+    @State private var hovering = false
+
+    var body: some View {
+        Button {
+            picker.show(invite, notch: notch)
+        } label: {
+            Image(systemName: "square.and.arrow.up")
+                .font(.system(size: 9, weight: .bold))
+                .foregroundStyle(hovering ? Theme.Palette.primaryText : PartyStyle.accent)
+                .frame(width: 20, height: 20)
+                .background(Circle().fill(hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface))
+                .contentShape(Circle())
+        }
+        .buttonStyle(.plain)
+        .background {
+            // ImageRenderer draws an AppKit view as a placeholder; snapshots never share.
+            if !PartyStyle.isSnapshot { PartyInvitePicker.Anchor(picker: picker) }
+        }
+        .help(help)
+        .onHover { hovering = $0 }
+        .motion(Theme.Motion.snappy, value: hovering)
+    }
+}
+
+/// Shows the share menu for an invite link from the view it's anchored
+/// to, adds Copy Invite Link at the top, and pins the notch until the menu
+/// closes.
+@MainActor
+final class PartyInvitePicker: NSObject, @preconcurrency NSSharingServicePickerDelegate {
+    private weak var view: NSView?
+    private weak var notch: NotchViewModel?
+    private var invite: PartyInvite?
+    private var wasPinned = false
+
+    func show(_ invite: PartyInvite, notch: NotchViewModel) {
+        guard let view, view.window != nil else { return }
+        self.invite = invite
+        self.notch = notch
+        wasPinned = notch.isPinned
+        notch.isPinned = true
+        let picker = NSSharingServicePicker(items: [invite.webURL])
+        picker.delegate = self
+        picker.show(relativeTo: view.bounds, of: view, preferredEdge: .minY)
+    }
+
+    /// Puts the link on the clipboard, as text and as a URL.
+    static func copy(_ url: URL) {
+        let board = NSPasteboard.general
+        board.clearContents()
+        board.writeObjects([url as NSURL])
+        board.setString(url.absoluteString, forType: .string)
+    }
+
+    func sharingServicePicker(_ sharingServicePicker: NSSharingServicePicker,
+                              sharingServicesForItems items: [Any],
+                              proposedSharingServices proposedServices: [NSSharingService]) -> [NSSharingService] {
+        guard let invite else { return proposedServices }
+        return Self.services(for: invite, proposed: proposedServices)
+    }
+
+    /// Copy Invite Link, then what macOS proposes for the link.
+    static func services(for invite: PartyInvite, proposed: [NSSharingService]) -> [NSSharingService] {
+        let url = invite.webURL
+        let copy = NSSharingService(title: "Copy Invite Link",
+                                    image: NSImage(systemSymbolName: "link", accessibilityDescription: nil) ?? NSImage(),
+                                    alternateImage: nil) {
+            PartyInvitePicker.copy(url)
+        }
+        return [copy] + proposed
+    }
+
+    func sharingServicePicker(_ sharingServicePicker: NSSharingServicePicker, didChoose service: NSSharingService?) {
+        notch?.isPinned = wasPinned
+    }
+
+    /// Hands the button's backing view to the picker to show the menu from.
+    struct Anchor: NSViewRepresentable {
+        let picker: PartyInvitePicker
+
+        func makeNSView(context: Context) -> NSView {
+            let view = NSView()
+            picker.view = view
+            return view
+        }
+
+        func updateNSView(_ nsView: NSView, context: Context) {
+            picker.view = nsView
+        }
+    }
+}
+
 /// Which code field has the keyboard, so the notch stays open while typing.
 enum PartyField: Hashable {
     case friendCode

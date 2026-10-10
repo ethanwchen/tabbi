@@ -15,7 +15,7 @@ import sys
 import zipfile
 from html.parser import HTMLParser
 
-from _partials import page, download_button, PAW, DOWNLOAD, GITHUB, ISSUES, ORIGIN, SUGGESTIONS, SUPPORT_EMAIL
+from _partials import page, download_button, PAW, DOWNLOAD, DOWNLOAD_ICON, GITHUB, ISSUES, ORIGIN, SUGGESTIONS, SUPPORT_EMAIL
 from _legal import PRIVACY, PRIVACY_HERO, TERMS, TERMS_HERO
 
 HERE = pathlib.Path(__file__).parent
@@ -341,6 +341,88 @@ NOT_FOUND = '''
       </div>
 '''
 
+# Party invites. People share https://tabbinotch.com/add/<friend code> and
+# /join/<party code> (PartyInvite in TabbiKitCore). The site has no script,
+# so a Pages Function (functions/add/[code].js, functions/join/[code].js,
+# through _invite.mjs) checks the code and fills it into one of these pages
+# on the server. Each page sends Tabbi the same link as tabbi://add/<code>
+# with a meta refresh (left out on phones, which cannot run Tabbi and would
+# only show an error), and has buttons for people without Tabbi yet. The
+# pages are built like the others so every check covers them, then moved out
+# of dist into _generated.mjs, since without a code they mean nothing.
+#
+# The codes use PartyCode's alphabet (no I, O, 0 or 1) and lengths.
+INVITE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+INVITE_CODE_LENGTHS = {'add': 8, 'join': 6}
+# Placeholders the Function replaces. Neither is a valid code (I and O are
+# not in the alphabet), so a page that slipped through unfilled shows it.
+INVITE_CODE = 'INVITECODE'
+INVITE_SHOWN = 'INVITE-SHOWN'
+INVITE_REFRESH = '<!--invite-refresh-->'
+INVITE_SLUGS = {'add': 'invite-add.html', 'join': 'invite-join.html', 'invalid': 'invite-invalid.html'}
+
+
+def invite_body(label, note):
+    return f'''
+      <div class="invite">
+        <img src="/img/glyph.png" width="96" height="96" alt="">
+        <p class="eyebrow">{label}</p>
+        <p class="invite-code">{INVITE_SHOWN}</p>
+        <div class="cta center">
+          <a class="btn" href="tabbi://ACTION/{INVITE_CODE}">Open in Tabbi</a>
+          <a class="btn soft" href="{DOWNLOAD}">{DOWNLOAD_ICON}<span>Download Tabbi</span></a>
+        </div>
+        <p class="note measure">{note}</p>
+      </div>
+'''
+
+
+INVITE_ADD = invite_body(
+    'Friend code',
+    'New to Tabbi? Download it, then open this link again. Tabbi asks before it adds anyone.',
+).replace('ACTION', 'add')
+
+INVITE_JOIN = invite_body(
+    'Party code',
+    'New to Tabbi? Download it, then open this link again. Tabbi asks before you join.',
+).replace('ACTION', 'join')
+
+INVITE_INVALID = f'''
+      <div class="lost">
+        <img src="/img/glyph.png" width="128" height="128" alt="">
+        <p class="measure">The code in this link is not one Tabbi hands out. Ask your friend to copy their invite link again, or type their code in the Party tab.</p>
+        <div class="cta center">
+          <a class="btn" href="{DOWNLOAD}">{DOWNLOAD_ICON}<span>Download Tabbi</span></a>
+          <a class="btn soft" href="/support">Get help</a>
+        </div>
+      </div>
+'''
+
+
+def shown_code(code):
+    """The code the way the app shows it: a friend code split in two halves
+    (PartyStyle.display), a party code whole."""
+    return code if len(code) <= 6 else code[:len(code) // 2] + '-' + code[len(code) // 2:]
+
+
+# Phones cannot run Tabbi, and Safari there answers a tabbi:// refresh with
+# an "address is invalid" alert, so they get the page without it.
+PHONE_RE = re.compile(r'iPhone|iPad|iPod|Android|Mobile')
+
+
+def invite_page(templates, action, raw, user_agent=''):
+    """(status, html) for /<action>/<raw>, the way _invite.mjs answers in
+    production; --serve uses it to preview the pages. A code is normalized
+    like PartyCode (upper-cased, dashes dropped) and must use its alphabet
+    and length; a percent-encoded one is refused, never decoded."""
+    code = raw.upper().replace('-', '')
+    if '%' in raw or len(code) != INVITE_CODE_LENGTHS[action] or any(c not in INVITE_ALPHABET for c in code):
+        return 404, templates['invalid']
+    refresh = '' if PHONE_RE.search(user_agent) else f'\n  <meta http-equiv="refresh" content="0; url=tabbi://{action}/{code}">'
+    html = templates[action].replace(INVITE_REFRESH, refresh)
+    return 200, html.replace(INVITE_SHOWN, shown_code(code)).replace(INVITE_CODE, code)
+
+
 pages = [
     ('index.html', 'Tabbi: a little cat for your notch',
      'Tabbi turns your laptop notch into a cozy panel of tabs: a focus timer, your day, music, Claude, Anki and a pet cat. Free and open source for macOS.',
@@ -364,6 +446,15 @@ pages = [
     ('thanks.html', 'Thank you | Tabbi',
      'Your suggestion reached Tabbi.',
      THANKS, {'title': 'Thank you!', 'subtitle': 'Your idea is in the cat&rsquo;s inbox.'}, False, False),
+    ('invite-add.html', 'Add a friend on Tabbi',
+     'A friend invited you to Tabbi. Open the link in Tabbi on your Mac to add them.',
+     INVITE_ADD, {'title': 'A friend wants to add you', 'subtitle': 'Open this invite in Tabbi on your Mac, and your pets can study side by side.'}, False, False),
+    ('invite-join.html', 'Join a party on Tabbi',
+     'A friend invited you to a study party in Tabbi. Open the link in Tabbi on your Mac to join.',
+     INVITE_JOIN, {'title': 'You are invited to a party', 'subtitle': 'Open this invite in Tabbi on your Mac to focus together with your friends.'}, False, False),
+    ('invite-invalid.html', 'Invite not found | Tabbi',
+     'That invite link is not right.',
+     INVITE_INVALID, {'title': 'This invite looks off', 'subtitle': 'The cat could not read the code in this link.'}, False, False),
     # Cloudflare Pages serves 404.html for anything it cannot find.
     ('404.html', 'Not found | Tabbi',
      'That page is not here.',
@@ -372,6 +463,8 @@ pages = [
 
 # Extra <head> markup per page.
 HEADS = {'index.html': json_ld(SOFTWARE_APP)}
+for _action in INVITE_CODE_LENGTHS:
+    HEADS[INVITE_SLUGS[_action]] = INVITE_REFRESH
 
 
 # --------------------------------------------------------------------------
@@ -561,7 +654,6 @@ def build():
         print('wrote', slug)
 
     shutil.copy(HERE / '_headers', OUT / '_headers')
-    write_function_facts()
     shutil.copy(HERE / 'favicon.ico', OUT / 'favicon.ico')
     write_press_kit()
     (OUT / 'robots.txt').write_text('User-agent: *\nAllow: /\n\nSitemap: https://tabbinotch.com/sitemap.xml\n')
@@ -578,6 +670,13 @@ def build():
     check_scripts()
     check_forms()
     check_weight(fingerprints['/styles.css'])
+
+    # The invite pages passed every check; without a code they mean
+    # nothing, so they leave dist for the Function (see INVITE_SLUGS).
+    for key, slug in INVITE_SLUGS.items():
+        INVITE_TEMPLATES[key] = (OUT / slug).read_text()
+        (OUT / slug).unlink()
+    write_function_facts()
 
     biggest = max((f for f in OUT.rglob('*') if f.is_file()), key=lambda f: f.stat().st_size)
     if biggest.stat().st_size > 20 * 1024 * 1024:
@@ -609,17 +708,28 @@ def site_headers():
 
 
 SITE_HEADERS = site_headers()
+# The invite pages, filled in by build() (see INVITE_SLUGS).
+INVITE_TEMPLATES = {}
 
 
 def write_function_facts():
-    """Writes _generated.mjs for the Pages Function that serves /suggest
-    (functions/suggest.js): the `/*` headers, which Cloudflare Pages does not
-    apply to a Function's response, and the form's hidden app facts, so the
-    page and the Function cannot drift apart."""
+    """Writes _generated.mjs for the Pages Functions: the `/*` headers,
+    which Cloudflare Pages does not apply to a Function's response, the
+    Suggest form's hidden app facts (functions/suggest.js), and the invite
+    pages with their code rules (functions/add, functions/join), so the
+    pages and the Functions cannot drift apart."""
+    invite = {
+        'alphabet': INVITE_ALPHABET,
+        'lengths': INVITE_CODE_LENGTHS,
+        'placeholders': {'code': INVITE_CODE, 'shown': INVITE_SHOWN, 'refresh': INVITE_REFRESH},
+        'phones': PHONE_RE.pattern,
+        'pages': INVITE_TEMPLATES,
+    }
     (HERE / '_generated.mjs').write_text(
-        '// Written by build.py from _headers and SUGGEST_APP_FACTS. Do not edit.\n'
+        '// Written by build.py from _headers, SUGGEST_APP_FACTS and the invite pages. Do not edit.\n'
         f'export const SITE_HEADERS = {json.dumps(SITE_HEADERS)};\n'
         f'export const SUGGEST_APP_FACTS = {json.dumps(SUGGEST_APP_FACTS)};\n'
+        f'export const INVITE = {json.dumps(invite)};\n'
     )
 
 
@@ -644,6 +754,15 @@ class PagesHandler(http.server.SimpleHTTPRequestHandler):
 
     def send_head(self):
         path = self.path.split('?', 1)[0].split('#', 1)[0]
+        invite = INVITE_PATH_RE.fullmatch(path)
+        if invite:
+            status, html = invite_page(INVITE_TEMPLATES, invite.group(1), invite.group(2), self.headers.get('User-Agent', ''))
+            body = html.encode()
+            self.send_response(status)
+            self.send_header('Content-Type', 'text/html; charset=utf-8')
+            self.send_header('Content-Length', str(len(body)))
+            self.end_headers()
+            return io.BytesIO(body)
         target = resolve(path)
         if target is None:
             body = (OUT / '404.html').read_bytes()
@@ -677,6 +796,8 @@ class PagesHandler(http.server.SimpleHTTPRequestHandler):
 
 
 RANGE_RE = re.compile(r'bytes=(\d*)-(\d*)')
+# What functions/add/[code].js and functions/join/[code].js match.
+INVITE_PATH_RE = re.compile(r'/(add|join)/([^/]+)')
 
 
 if __name__ == '__main__':

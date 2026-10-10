@@ -5,8 +5,9 @@ import TabbiKitCore
 
 /// The recap's moment in the notch: the first time the user opens the
 /// notch after a week's recap is ready, its card fills the open notch once
-/// until they press Done. First-run onboarding comes first, so a recap
-/// never interrupts setup and waits for the next open instead.
+/// until they press Done. First-run onboarding and a Party invite's
+/// confirmation come first (`AppTakeover`), so a recap never interrupts
+/// them and waits for the next open instead.
 @MainActor
 final class RecapMoment: ObservableObject {
     /// A recap on show, with its warm line worked out when it appeared.
@@ -28,7 +29,8 @@ final class RecapMoment: ObservableObject {
     private var reopening: AnyCancellable?
 
     /// - Parameter isBlocked: true while something else owns the takeover
-    ///   slot (onboarding), so the recap waits for a later open.
+    ///   slot (onboarding or a Party invite), so the recap waits for a
+    ///   later open.
     /// - Parameter notify: posts the macOS notification for a ready recap;
     ///   nil where none can go out (demo, snapshot, a bare executable).
     init(store: RecapStore, isBlocked: @escaping () -> Bool = { false },
@@ -94,49 +96,5 @@ final class RecapMoment: ObservableObject {
     func stop() {
         isStarted = false
         store.stop()
-    }
-}
-
-/// The notch's one takeover slot, shared by first-run onboarding and the
-/// weekly recap. Onboarding wins while it runs.
-enum AppTakeover {
-    /// True while either one should fill the open notch.
-    @MainActor
-    static func isActive(onboarding: OnboardingStore, recaps: RecapMoment) -> AnyPublisher<Bool, Never> {
-        onboarding.$flow.map { $0 != nil }
-            .combineLatest(recaps.$shown.map { $0 != nil })
-            .map { $0 || $1 }
-            .eraseToAnyPublisher()
-    }
-
-    /// Onboarding's takeover while it runs, else the recap on show.
-    @MainActor
-    static func takeover(onboarding: NotchTakeover, store: OnboardingStore, recaps: RecapMoment,
-                         providers: ProviderHub) -> NotchTakeover {
-        func pick(_ part: @escaping (NotchTakeover) -> AnyView) -> () -> AnyView {
-            {
-                AnyView(TakeoverSlot(onboarding: store, recaps: recaps) { shown in
-                    part(shown.map {
-                        RecapViews.takeover(recap: $0.recap, cheer: $0.cheer, providers: providers,
-                                            done: { recaps.dismiss() })
-                    } ?? onboarding)
-                })
-            }
-        }
-        return NotchTakeover(leading: pick { $0.leading() }, trailing: pick { $0.trailing() },
-                             body: pick { $0.body() })
-    }
-}
-
-/// Follows both owners of the takeover slot, so the notch redraws when
-/// either starts or ends. Hands `content` the recap only while onboarding
-/// isn't running.
-private struct TakeoverSlot: View {
-    @ObservedObject var onboarding: OnboardingStore
-    @ObservedObject var recaps: RecapMoment
-    let content: (RecapMoment.Shown?) -> AnyView
-
-    var body: some View {
-        content(onboarding.flow == nil ? recaps.shown : nil)
     }
 }

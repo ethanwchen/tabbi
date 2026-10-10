@@ -31,6 +31,7 @@ struct PartyFriendsCard: View {
             Text("Friends")
                 .font(Theme.Typography.caption)
                 .foregroundStyle(Theme.Palette.tertiaryText)
+                .fixedSize()
             if let error = state.staleError {
                 Button(action: store.retry) {
                     Image(systemName: "wifi.exclamationmark")
@@ -42,10 +43,23 @@ struct PartyFriendsCard: View {
             }
             Spacer(minLength: Theme.Spacing.xs)
             if let code = state.friendCode {
-                PartyCopyCode(code: code, showsLabel: true,
-                              help: "Your friend code. Copy it and send it to a friend.")
+                // "Copy" is spelled out while the column has room for it.
+                ViewThatFits(in: .horizontal) {
+                    shareCode(code, showsLabel: true)
+                    shareCode(code, showsLabel: false)
+                }
             }
         }
+    }
+
+    private func shareCode(_ code: String, showsLabel: Bool) -> some View {
+        HStack(spacing: Theme.Spacing.xs) {
+            PartyCopyCode(code: code, showsLabel: showsLabel,
+                          help: "Your friend code. Copy it and send it to a friend.")
+            PartyShareInvite(invite: .addFriend(code: code),
+                             help: "Share an invite link. A friend who opens it can add you in one click.")
+        }
+        .fixedSize()
     }
 
     @ViewBuilder

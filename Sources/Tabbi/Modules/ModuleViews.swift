@@ -42,7 +42,8 @@ enum ModuleViews {
             takeover: AppTakeover.takeover(
                 onboarding: OnboardingViews.takeover(store: services.onboarding, modules: services.modules,
                                                      providers: services.providers),
-                store: services.onboarding, recaps: services.recaps, providers: services.providers),
+                store: services.onboarding, invite: invite(services: services), recaps: services.recaps,
+                providers: services.providers),
             setNotchMode: { services.settings.settings.notchMode = $0 },
             checkForUpdates: checkForUpdates,
             suggestFeedback: { Feedback.open() },
@@ -50,6 +51,22 @@ enum ModuleViews {
             runAction: ModuleActionRunner { [weak services] module, action in
                 services?.modules.perform(action, on: module)
             }
+        )
+    }
+
+    /// A Party invite link's confirmation, for the takeover slot; nil when
+    /// the edition has no Party module.
+    @MainActor
+    private static func invite(services: AppServices) -> AppTakeover.Invite? {
+        guard let party = services.modules.module(PartyModule.self) else { return nil }
+        let takeover = party.inviteTakeover
+        return AppTakeover.Invite(
+            takeover: NotchTakeover(
+                leading: takeover.leading,
+                trailing: takeover.trailing,
+                body: { AnyView(StatusPetProvider(providers: services.providers) { takeover.body() }) }
+            ),
+            showing: party.inviteShowing
         )
     }
 
@@ -91,7 +108,9 @@ enum ModuleViews {
                 // The preview hides exactly when the notch opens.
                 if !visible { services.recaps.notchOpened() }
             },
-            takeover: AppTakeover.isActive(onboarding: services.onboarding, recaps: services.recaps)
+            takeover: AppTakeover.isActive(onboarding: services.onboarding,
+                                           invite: invite(services: services)?.showing,
+                                           recaps: services.recaps)
         )
     }
 }

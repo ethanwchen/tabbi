@@ -24,7 +24,10 @@ import TabbiKitCore
 @MainActor
 final class PartyStore: ObservableObject {
     @Published private(set) var state: PartyState {
-        didSet { scheduleSessionEnd() }
+        didSet {
+            scheduleSessionEnd()
+            advanceInvite()
+        }
     }
     @Published private(set) var settings: PartySettings
     /// The moment countdowns measure against; ticks while the panel shows.
@@ -40,7 +43,12 @@ final class PartyStore: ObservableObject {
     @Published private(set) var reporting: PartyProfile?
     /// The people I blocked, for the Blocked list in Party options; nil
     /// until `loadBlocked()` has an answer.
-    @Published private(set) var blocked: [PartyBlockedUser]?
+    @Published private(set) var blocked: [PartyBlockedUser]? {
+        didSet { advanceInvite() }
+    }
+    /// The confirmation an invite link opened (`PartyInviteFlow`), while it
+    /// fills the notch.
+    @Published private(set) var invite: PartyInviteFlow?
     /// The "Great job, team!" moment after a shared session ran to its end,
     /// while it is up (`PartyTeamCelebration.displayDuration`).
     @Published private(set) var celebration: PartyTeamCelebration?
@@ -71,6 +79,10 @@ final class PartyStore: ObservableObject {
     /// filter catches as they are typed.
     @Published private var serverRefusedNames: PartyNameRefusal = []
     private var isRunning = false
+    /// The Party panel is on screen; friends and the party refresh while it
+    /// or an invite shows.
+    private var panelVisible = false
+    private var blockedTask: Task<Void, Never>?
 
     private var connectTask: Task<Void, Never>?
     private var heartbeatTask: Task<Void, Never>?
@@ -260,7 +272,8 @@ final class PartyStore: ObservableObject {
     /// The panel appeared or disappeared; refreshes only run while it shows.
     func setVisible(_ visible: Bool) {
         now = Date()
-        plan.setVisible(visible)
+        panelVisible = visible
+        plan.setVisible(visible || invite != nil)
         clockTask?.cancel()
         if visible {
             clockTask = Task { [weak self] in
@@ -557,10 +570,11 @@ final class PartyStore: ObservableObject {
             blocked = blocked ?? PartyBlockedUser.demo(now: Date())
             return
         }
-        guard let account else { return }
-        Task { [weak self] in
-            guard let list = try? await account.perform({ try await $0.blocks() }) else { return }
-            self?.blocked = list
+        guard let account, blockedTask == nil else { return }
+        blockedTask = Task { [weak self] in
+            let list = try? await account.perform({ try await $0.blocks() })
+            self?.blockedTask = nil
+            if let list { self?.blocked = list }
         }
     }
 
@@ -625,6 +639,114 @@ final class PartyStore: ObservableObject {
             pending = nil
             plan.inParty = state.inParty
             scheduleRefresh()
+        }
+    }
+
+    // MARK: Invites
+
+    /// An invite link was opened: asks about it in the notch. Nothing is
+    /// sent until the user confirms. A new link replaces one still showing.
+    func open(_ link: PartyInvite, partyIsOn: Bool) {
+        invite = PartyInviteFlow(invite: link, partyIsOn: partyIsOn)
+        inviteWillConnect()
+    }
+
+    /// The invite's "Turn On Party" was clicked and the module turned on.
+    func inviteTurnedPartyOn() {
+        invite?.partyTurnedOn()
+        inviteWillConnect()
+    }
+
+    /// "Try Again" after Party couldn't connect for the invite.
+    func retryInviteConnection() {
+        invite?.retryConnecting()
+        retry()
+        inviteWillConnect()
+    }
+
+    /// The invite's "Add Friend" or "Join Party" (or "Try Again" after a
+    /// failure that may pass) was clicked: sends the one request it asks for.
+    func confirmInvite() {
+        guard var flow = invite, flow.begin() else { return }
+        invite = flow
+        if isDemo {
+            finishDemoInvite(flow.invite)
+            return
+        }
+        guard let account else {
+            invite?.didFail(.unreachable)
+            return
+        }
+        Task { [weak self] in
+            do {
+                switch flow.invite {
+                case .addFriend(let code):
+                    let (added, friend) = try await account.perform { try await $0.addFriend(code: code) }
+                    guard let self else { return }
+                    state.didAddFriend(friend, at: Date())
+                    plan.invalidate(.friends)
+                    invite?.didAddFriend(friend, added: added)
+                case .joinParty(let code):
+                    let party = try await account.perform { try await $0.joinParty(code: code) }
+                    guard let self else { return }
+                    state.didFetchParty(.success(party))
+                    plan.invalidate(.friends)
+                    invite?.didJoin(party)
+                }
+            } catch {
+                self?.invite?.didFail(Self.partyError(error))
+            }
+            guard let self else { return }
+            plan.inParty = state.inParty
+            scheduleRefresh()
+        }
+    }
+
+    /// "Not Now" or "Done": the invite goes away.
+    func dismissInvite() {
+        invite = nil
+        plan.setVisible(panelVisible)
+        scheduleRefresh()
+    }
+
+    /// Snapshot runs only: shows `flow` as the next shot's invite, or none.
+    func showInviteForSnapshot(_ flow: PartyInviteFlow?) {
+        guard isSnapshot else { return }
+        invite = flow
+    }
+
+    /// While the invite waits for Party, friends load as if the panel were
+    /// open, so "already friends" can be told apart.
+    private func inviteWillConnect() {
+        guard invite?.stage == .connecting else { return }
+        plan.setVisible(true)
+        scheduleRefresh()
+        advanceInvite()
+    }
+
+    /// Hands the invite each new Party state while it waits to connect.
+    private func advanceInvite() {
+        guard var flow = invite, flow.stage == .connecting else { return }
+        if case .addFriend = flow.invite, blocked == nil, state.connection == .connected { loadBlocked() }
+        flow.update(with: state, blocked: blocked)
+        if flow != invite { invite = flow }
+    }
+
+    /// The demo answers an invite with sample people and parties and
+    /// touches no network.
+    private func finishDemoInvite(_ link: PartyInvite) {
+        let now = Date()
+        switch link {
+        case .addFriend(let code):
+            var friend = PartyProfile.demoInvitee
+            friend.code = code
+            state.didAddFriend(friend, at: now)
+            invite?.didAddFriend(friend, added: true)
+        case .joinParty(let code):
+            guard var party = PartyState.demo(.member, now: now).party else { return }
+            party.code = code
+            state.didFetchParty(.success(party))
+            invite?.didJoin(party)
         }
     }
 
