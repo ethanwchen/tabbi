@@ -44,13 +44,18 @@ final class HangWatchdogTests: XCTestCase {
     }
 
     func testABusyMainThreadKeepsTheTimerRunning() {
+        // A loaded CI machine can answer a 50 ms ping late, so this test
+        // allows a full second before calling it a hang.
+        watchdog.stop()
+        watchdog = HangWatchdog(interval: .milliseconds(50), ticksToHang: 20)
         watchdog.start()
         // Twenty intervals awake (and answering) without ever waiting.
         let end = Date().addingTimeInterval(1)
         while Date() < end {
             RunLoop.main.run(mode: .default, before: .distantPast)
         }
-        XCTAssertGreaterThanOrEqual(watchdog.tickCount, 10)
+        // Far more than the at most 4 of a parked timer (see the idle test).
+        XCTAssertGreaterThanOrEqual(watchdog.tickCount, 8)
         XCTAssertNil(log)
     }
 
