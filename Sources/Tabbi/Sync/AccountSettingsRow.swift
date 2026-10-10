@@ -27,12 +27,12 @@ struct AccountSettingsRow: View {
                 Text(LocalizedStringKey(AccountAgeText.agreement))
             }
         }
-        .confirmationDialog("Delete your \(Edition.current.name) account?", isPresented: $confirmsDelete) {
-            Button("Delete Account", role: .destructive) {
+        .confirmationDialog(String(localized: "Delete your \(Edition.current.name) account?", bundle: .tabbi), isPresented: $confirmsDelete) {
+            Button(String(localized: "Delete Account", bundle: .tabbi), role: .destructive) {
                 Task { await account.deleteAccount() }
             }
-            .help("Delete the account and everything the server keeps for it")
-            Button("Cancel", role: .cancel) {}
+            .help(String(localized: "Delete the account and everything the server keeps for it", bundle: .tabbi))
+            Button(String(localized: "Cancel", bundle: .tabbi), role: .cancel) {}
         } message: {
             Text(Self.deleteMessage)
         }
@@ -55,7 +55,7 @@ struct AccountSettingsRow: View {
         switch account.phase {
         case .signedOut where account.ageStatus == .unanswered:
             Button("Sign In…") { asksAge = true }
-                .help("Sign in with your Apple Account to sync your pet across your Macs")
+                .help(String(localized: "Sign in with your Apple Account to sync your pet across your Macs", bundle: .tabbi))
         case .signedOut where account.ageStatus != .passed:
             // Too young: the caption says when signing in opens.
             EmptyView()
@@ -64,13 +64,13 @@ struct AccountSettingsRow: View {
                 .frame(width: 160, height: 28)
                 .disabled(account.phase == .signingIn)
                 .opacity(account.phase == .signingIn ? 0.5 : 1)
-                .help("Sign in with your Apple Account to sync your pet across your Macs")
+                .help(String(localized: "Sign in with your Apple Account to sync your pet across your Macs", bundle: .tabbi))
         case .signedIn, .deleting:
             HStack(spacing: 8) {
-                Button("Sign Out", action: account.signOut)
-                    .help("Stop syncing on this Mac. Your pet and progress stay here.")
-                Button("Delete Account…", role: .destructive) { confirmsDelete = true }
-                    .help("Delete the account and its synced data from the server")
+                Button(String(localized: "Sign Out", bundle: .tabbi), action: account.signOut)
+                    .help(String(localized: "Stop syncing on this Mac. Your pet and progress stay here.", bundle: .tabbi))
+                Button(String(localized: "Delete Account", bundle: .tabbi), role: .destructive) { confirmsDelete = true }
+                    .help(String(localized: "Delete the account and its synced data from the server", bundle: .tabbi))
             }
             .disabled(account.phase == .deleting)
         }
@@ -78,8 +78,8 @@ struct AccountSettingsRow: View {
 
     private var title: String {
         switch account.phase {
-        case .signedOut, .signingIn: "Account"
-        case .signedIn, .deleting: account.name ?? "Signed in with Apple"
+        case .signedOut, .signingIn: String(localized: "Account", bundle: .tabbi)
+        case .signedIn, .deleting: account.name ?? String(localized: "Signed in with Apple", bundle: .tabbi)
         }
     }
 
@@ -93,26 +93,26 @@ struct AccountSettingsRow: View {
         switch account.phase {
         case .signedOut:
             if case .tooYoung(let until) = account.ageStatus { return AccountAgeText.tooYoung(until: until) }
-            return "Sync your pet, points and streaks across your Macs."
-        case .signingIn: return "Signing in…"
-        case .deleting: return "Deleting your account…"
+            return String(localized: "Sync your pet, points and streaks across your Macs.", bundle: .tabbi)
+        case .signingIn: return String(localized: "Signing in…", bundle: .tabbi)
+        case .deleting: return String(localized: "Deleting your account…", bundle: .tabbi)
         case .signedIn:
-            if account.isSyncing { return "Syncing…" }
-            guard let date = account.lastSyncedAt else { return "Not synced yet" }
-            return "Last synced \(Self.relative(date, now: Date()))"
+            if account.isSyncing { return String(localized: "Syncing…", bundle: .tabbi) }
+            guard let date = account.lastSyncedAt else { return String(localized: "Not synced yet", bundle: .tabbi) }
+            return String(localized: "Last synced \(Self.relative(date, now: Date()))", bundle: .tabbi)
         }
     }
 
     /// What Delete Account removes, in the confirmation, as Apple asks.
-    static let deleteMessage = """
+    static let deleteMessage = String(localized: """
         This deletes your account and everything the server keeps for it: \
         the synced copy of your pet and points, your friend code, friends and parties. \
         Your pet stays on this Mac. This can't be undone.
-        """
+        """, bundle: .tabbi)
 
     /// "just now" for the first minute, then "4 min ago", "2 hr. ago".
     static func relative(_ date: Date, now: Date) -> String {
-        guard now.timeIntervalSince(date) >= 60 else { return "just now" }
+        guard now.timeIntervalSince(date) >= 60 else { return String(localized: "just now", bundle: .tabbi) }
         let formatter = RelativeDateTimeFormatter()
         formatter.unitsStyle = .abbreviated
         return formatter.localizedString(for: date, relativeTo: now)

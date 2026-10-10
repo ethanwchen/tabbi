@@ -29,6 +29,8 @@ Format dates, times, numbers and durations with Foundation formatters (`.formatt
 Add each new string to the catalog with a `comment` that says where it shows and anything a translator could misread (is "Look" a verb or a noun?).
 Mark it `"extractionState" : "manual"`, because SwiftPM does not extract keys from code the way Xcode does.
 A string that must stay as is in every language (a brand name) gets `"shouldTranslate" : false`.
+The build generates a Swift symbol for every key, so it fails on a key with no letters (`%@: %@`) or one that differs from another only in case or punctuation (`Checking` and `Checking…`).
+Reuse the existing key where the meaning is the same, and otherwise give the entry `"generatesSymbol" : false`.
 
 `scripts/l10n-add.py strings.json` writes entries for you: it takes the English keys with a comment and one translation per language (an object of plural forms for a plural), adds them with that state and rewrites the catalog sorted, in Xcode's layout.
 The script's header shows the input format.
@@ -42,13 +44,14 @@ The writing rules in AGENTS.md hold in every language: no emojis and no em dashe
 
 ## Not translated yet
 
-The onboarding, the tab titles and module summaries, the notch's context menu and header controls, and the Settings section titles are translated.
-The tabs' own panels and the Settings rows follow tab by tab.
+The onboarding, the tab titles and module summaries, the notch's context menu and header controls, and Settings (General, Tabs, Look, Connections, About and the Account row) are translated.
+The tabs' own panels and the modules' own Settings panes follow tab by tab.
 These stay English on purpose for now:
 
 - long help text and error details,
 - the bundled kits' names, summaries and questions,
-- the AI provider setup hints in Settings > Connections.
+- the AI provider setup hints in Settings > Connections,
+- the connection status headlines and details and the setup sheets in Settings > Connections.
 
 ## Checking
 

@@ -21,6 +21,9 @@ language:
 A string value is a plain translation; an object is a plural variation
 (`one`, `other`, `few`, ...). "en" is needed only for an English plural.
 "shouldTranslate": false marks a string that stays as is (a brand name).
+"generatesSymbol": false is for a key Xcode cannot turn into a Swift symbol:
+one with no letters ("%@: %@") or one that differs from another only in case
+or punctuation ("Checking" and "Checking…"); the build fails on those otherwise.
 The catalog is written back sorted, in the layout Xcode uses, so diffs stay
 small. `swift test` (LocalizationTests) then checks every language is there.
 """
@@ -53,6 +56,8 @@ def main():
             entry["comment"] = spec["comment"]
         if spec.get("shouldTranslate") is False:
             entry["shouldTranslate"] = False
+        if spec.get("generatesSymbol") is False:
+            entry["generatesSymbol"] = False
         localizations = {lang: localization(spec[lang]) for lang in LANGUAGES if lang in spec}
         if localizations:
             entry["localizations"] = localizations
