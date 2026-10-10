@@ -40,6 +40,7 @@ extension PetItem {
             case .cozyHoodie: .cozy
             case .superheroCape, .wizardRobe: .fantasy
             case .dinosaurHoodie: .silly
+            case .studyHoodie: .seasonal
             }
         case .accessory(let accessory):
             switch accessory {
@@ -65,6 +66,7 @@ extension PetItem {
             switch outfit {
             case .none, .scrubs, .whiteCoat: 1
             case .cozyHoodie, .superheroCape, .dinosaurHoodie, .wizardRobe: 2
+            case .studyHoodie: 4
             }
         case .accessory(let accessory):
             switch accessory {

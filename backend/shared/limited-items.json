@@ -11,6 +11,7 @@
     { "id": "accessory.heartGlasses", "source": "season", "season": "valentines" },
     { "id": "accessory.summerShades", "source": "season", "season": "summer" },
     { "id": "accessory.lionDanceHat", "source": "season", "season": "lunar-new-year" },
-    { "id": "accessory.sakuraSprig", "source": "season", "season": "spring" }
+    { "id": "accessory.sakuraSprig", "source": "season", "season": "spring" },
+    { "id": "outfit.studyHoodie", "source": "season", "season": "exam-season" }
   ]
 }

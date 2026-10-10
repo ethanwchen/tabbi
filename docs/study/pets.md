@@ -118,7 +118,7 @@ After stamping, `PetCanvas.outlined()` adds a one-pixel outline around the whole
 
 ![Every costume on a dog](images/costumes-dog.png)
 
-A pet wears one `PetOutfit` (`none`, `scrubs`, `whiteCoat`, `cozyHoodie`, `superheroCape`, `dinosaurHoodie`, `wizardRobe`) and accessories (`PetAccessory`).
+A pet wears one `PetOutfit` (`none`, `scrubs`, `whiteCoat`, `cozyHoodie`, `superheroCape`, `dinosaurHoodie`, `wizardRobe`, `studyHoodie`) and accessories (`PetAccessory`).
 Each accessory has a slot (neck, face, head, back, or aura); a pet wears at most one per slot.
 `PetAccessory.wearable(_:)` keeps the last item listed per slot and sorts them in drawing order, so hats always land on top.
 

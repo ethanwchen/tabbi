@@ -13,6 +13,10 @@ public enum PetOutfit: String, CaseIterable, Codable, Sendable {
     /// A green hoodie with a spiky hood, the one outfit with a head part.
     case dinosaurHoodie
     case wizardRobe
+    /// A navy hoodie with white drawstrings and a gold crest that glints,
+    /// earned during exam season (`PetLimitedEdition.examHoodie`). The
+    /// shop's cozy hoodie is plain knit.
+    case studyHoodie
 
     public var displayName: String {
         switch self {
@@ -23,6 +27,7 @@ public enum PetOutfit: String, CaseIterable, Codable, Sendable {
         case .superheroCape: "Superhero Cape"
         case .dinosaurHoodie: "Dinosaur Hoodie"
         case .wizardRobe: "Wizard Robe"
+        case .studyHoodie: "Study Hoodie"
         }
     }
 }

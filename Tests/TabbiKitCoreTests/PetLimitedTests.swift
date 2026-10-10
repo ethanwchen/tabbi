@@ -163,6 +163,19 @@ final class PetLimitedTests: XCTestCase {
         XCTAssertEqual(sprig.cost, 0)
     }
 
+    /// Exam season's one item is an outfit, so a whole outfit can be a
+    /// seasonal limited item too, apart from the shop's cozy hoodie.
+    func testStudyHoodieIsASeasonalLimitedOutfit() {
+        let hoodie = PetItem.outfit(.studyHoodie)
+        XCTAssertEqual(PetLimitedEdition.examHoodie.item, hoodie)
+        XCTAssertEqual(hoodie.limitedEdition?.source, .season(id: "exam-season"))
+        XCTAssertEqual(hoodie.theme, .seasonal)
+        XCTAssertNil(PetItem.outfit(.cozyHoodie).limitedEdition, "the shop's hoodie stays for sale")
+        XCTAssertEqual(hoodie.effect, .shimmer)
+        XCTAssertEqual(hoodie.cost, 0)
+        XCTAssertFalse(PetItemTheme.seasonal.items.contains(hoodie), "limited items are not on a shop shelf")
+    }
+
     /// Seasonal items are limited, earned only during their event, and
     /// only the event's headline item (its last reward) carries an effect.
     func testHalloweenItemsAreSeasonalLimitedItems() {

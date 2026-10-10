@@ -423,6 +423,7 @@ public enum PetComposer {
         case .superheroCape: CostumeArt.superheroCape
         case .dinosaurHoodie: CostumeArt.dinosaurHoodie
         case .wizardRobe: CostumeArt.wizardRobe
+        case .studyHoodie: CostumeArt.studyHoodie
         }
     }
 

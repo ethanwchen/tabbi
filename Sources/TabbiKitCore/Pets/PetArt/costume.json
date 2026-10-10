@@ -1137,6 +1137,368 @@
           ]
         }
       ]
+    },
+    "studyHoodie": {
+      "cat": [
+        "....................",
+        "....................",
+        "....QUUUUUUUUUUQ....",
+        "...QQQQQUQQUQQQQQ...",
+        "...QQQQQUQQUQQQQQ...",
+        "...QQQQQQYYQQQQQQ...",
+        "...QQQQQQQQQQQQQQ...",
+        "...QQQQQQQQQQQQQQ...",
+        "...XXXXXXXXXXXXXX..."
+      ],
+      "dog": [
+        "....................",
+        "....QUUUUUUUUUUQ....",
+        "...QQQQQUQQUQQQQQ...",
+        "...QQQQQUQQUQQQQQ...",
+        "..QQQQQQQYYQQQQQQQ..",
+        "..QQQQQQQQQQQQQQQQ..",
+        "..QQQQQQQQQQQQQQQQ..",
+        "..XXXXXXXXXXXXXXXX.."
+      ],
+      "longDog": [
+        "........................",
+        "....QQQQQQQQQQQQQQQQQQ..",
+        "...QQQQQQQQQQYQQQQQQQQQ.",
+        "...QQQQQQQQQQQQQQQQQQQQ.",
+        "...XXXXXXXXXXXXXXXXXXXX."
+      ],
+      "walk": [
+        "...QQQQQQQQQQQQQQQQ...",
+        "..QQQQQQQQQQQQQQQQQQ..",
+        ".QQQQQQQQQQQQQQQYQQQQ.",
+        ".QQQQQQQQQQQQQQQQQQQQ.",
+        ".QQQQQQQQQQQQQQQQQQQQ.",
+        ".XXXXXXXXXXXXXXXXXXXX."
+      ],
+      "walkLong": [
+        "...QQQQQQQQQQQQQQQQQQ..",
+        "..QQQQQQQQQQQQQQQQQQQQ.",
+        ".QQQQQQQQQQQQQQQQYQQQQ.",
+        ".QQQQQQQQQQQQQQQQQQQQQ.",
+        ".XXXXXXXXXXXXXXXXXXXXX."
+      ],
+      "frames": [
+        {
+          "cat": [
+            "....................",
+            "....................",
+            "....QUUUUUUUUUUQ....",
+            "...QQQQQUQQUQQQQQ...",
+            "...QQQQQUQQUQQQQQ...",
+            "...QQQQQQYYQQQQQQ...",
+            "...QQQQQQQQQQQQQQ...",
+            "...QQQQQQQQQQQQQQ...",
+            "...XXXXXXXXXXXXXX..."
+          ],
+          "dog": [
+            "....................",
+            "....QUUUUUUUUUUQ....",
+            "...QQQQQUQQUQQQQQ...",
+            "...QQQQQUQQUQQQQQ...",
+            "..QQQQQQQYYQQQQQQQ..",
+            "..QQQQQQQQQQQQQQQQ..",
+            "..QQQQQQQQQQQQQQQQ..",
+            "..XXXXXXXXXXXXXXXX.."
+          ],
+          "longDog": [
+            "........................",
+            "....QQQQQQQQQQQQQQQQQQ..",
+            "...QQQQQQQQQQYQQQQQQQQQ.",
+            "...QQQQQQQQQQQQQQQQQQQQ.",
+            "...XXXXXXXXXXXXXXXXXXXX."
+          ],
+          "walk": [
+            "...QQQQQQQQQQQQQQQQ...",
+            "..QQQQQQQQQQQQQQQQQQ..",
+            ".QQQQQQQQQQQQQQQYQQQQ.",
+            ".QQQQQQQQQQQQQQQQQQQQ.",
+            ".QQQQQQQQQQQQQQQQQQQQ.",
+            ".XXXXXXXXXXXXXXXXXXXX."
+          ],
+          "walkLong": [
+            "...QQQQQQQQQQQQQQQQQQ..",
+            "..QQQQQQQQQQQQQQQQQQQQ.",
+            ".QQQQQQQQQQQQQQQQYQQQQ.",
+            ".QQQQQQQQQQQQQQQQQQQQQ.",
+            ".XXXXXXXXXXXXXXXXXXXXX."
+          ]
+        },
+        {
+          "cat": [
+            "....................",
+            "....................",
+            "....QUUUUUUUUUUQ....",
+            "...QQQQQUQQUQQQQQ...",
+            "...QQQQQUQQUQQQQQ...",
+            "...QQQQQQZYQQQQQQ...",
+            "...QQQQQQQQQQQQQQ...",
+            "...QQQQQQQQQQQQQQ...",
+            "...XXXXXXXXXXXXXX..."
+          ],
+          "dog": [
+            "....................",
+            "....QUUUUUUUUUUQ....",
+            "...QQQQQUQQUQQQQQ...",
+            "...QQQQQUQQUQQQQQ...",
+            "..QQQQQQQZYQQQQQQQ..",
+            "..QQQQQQQQQQQQQQQQ..",
+            "..QQQQQQQQQQQQQQQQ..",
+            "..XXXXXXXXXXXXXXXX.."
+          ],
+          "longDog": [
+            "........................",
+            "....QQQQQQQQQQQQQQQQQQ..",
+            "...QQQQQQQQQQZQQQQQQQQQ.",
+            "...QQQQQQQQQQQQQQQQQQQQ.",
+            "...XXXXXXXXXXXXXXXXXXXX."
+          ],
+          "walk": [
+            "...QQQQQQQQQQQQQQQQ...",
+            "..QQQQQQQQQQQQQQQQQQ..",
+            ".QQQQQQQQQQQQQQQZQQQQ.",
+            ".QQQQQQQQQQQQQQQQQQQQ.",
+            ".QQQQQQQQQQQQQQQQQQQQ.",
+            ".XXXXXXXXXXXXXXXXXXXX."
+          ],
+          "walkLong": [
+            "...QQQQQQQQQQQQQQQQQQ..",
+            "..QQQQQQQQQQQQQQQQQQQQ.",
+            ".QQQQQQQQQQQQQQQQZQQQQ.",
+            ".QQQQQQQQQQQQQQQQQQQQQ.",
+            ".XXXXXXXXXXXXXXXXXXXXX."
+          ]
+        },
+        {
+          "cat": [
+            "....................",
+            "....................",
+            "....QUUUUUUUUUUQ....",
+            "...QQQQQUQQUQQQQQ...",
+            "...QQQQQUQQUQQQQQ...",
+            "...QQQQQQYZQQQQQQ...",
+            "...QQQQQQQQQQQQQQ...",
+            "...QQQQQQQQQQQQQQ...",
+            "...XXXXXXXXXXXXXX..."
+          ],
+          "dog": [
+            "....................",
+            "....QUUUUUUUUUUQ....",
+            "...QQQQQUQQUQQQQQ...",
+            "...QQQQQUQQUQQQQQ...",
+            "..QQQQQQQYZQQQQQQQ..",
+            "..QQQQQQQQQQQQQQQQ..",
+            "..QQQQQQQQQQQQQQQQ..",
+            "..XXXXXXXXXXXXXXXX.."
+          ],
+          "longDog": [
+            "........................",
+            "....QQQQQQQQQQQQQQQQQQ..",
+            "...QQQQQQQQQQZQQQQQQQQQ.",
+            "...QQQQQQQQQQQQQQQQQQQQ.",
+            "...XXXXXXXXXXXXXXXXXXXX."
+          ],
+          "walk": [
+            "...QQQQQQQQQQQQQQQQ...",
+            "..QQQQQQQQQQQQQQQQQQ..",
+            ".QQQQQQQQQQQQQQQZQQQQ.",
+            ".QQQQQQQQQQQQQQQQQQQQ.",
+            ".QQQQQQQQQQQQQQQQQQQQ.",
+            ".XXXXXXXXXXXXXXXXXXXX."
+          ],
+          "walkLong": [
+            "...QQQQQQQQQQQQQQQQQQ..",
+            "..QQQQQQQQQQQQQQQQQQQQ.",
+            ".QQQQQQQQQQQQQQQQZQQQQ.",
+            ".QQQQQQQQQQQQQQQQQQQQQ.",
+            ".XXXXXXXXXXXXXXXXXXXXX."
+          ]
+        },
+        {
+          "cat": [
+            "....................",
+            "....................",
+            "....QUUUUUUUUUUQ....",
+            "...QQQQQUQQUQQQQQ...",
+            "...QQQQQUQQUQQQQQ...",
+            "...QQQQQQYYQQQQQQ...",
+            "...QQQQQQQQQQQQQQ...",
+            "...QQQQQQQQQQQQQQ...",
+            "...XXXXXXXXXXXXXX..."
+          ],
+          "dog": [
+            "....................",
+            "....QUUUUUUUUUUQ....",
+            "...QQQQQUQQUQQQQQ...",
+            "...QQQQQUQQUQQQQQ...",
+            "..QQQQQQQYYQQQQQQQ..",
+            "..QQQQQQQQQQQQQQQQ..",
+            "..QQQQQQQQQQQQQQQQ..",
+            "..XXXXXXXXXXXXXXXX.."
+          ],
+          "longDog": [
+            "........................",
+            "....QQQQQQQQQQQQQQQQQQ..",
+            "...QQQQQQQQQQYQQQQQQQQQ.",
+            "...QQQQQQQQQQQQQQQQQQQQ.",
+            "...XXXXXXXXXXXXXXXXXXXX."
+          ],
+          "walk": [
+            "...QQQQQQQQQQQQQQQQ...",
+            "..QQQQQQQQQQQQQQQQQQ..",
+            ".QQQQQQQQQQQQQQQYQQQQ.",
+            ".QQQQQQQQQQQQQQQQQQQQ.",
+            ".QQQQQQQQQQQQQQQQQQQQ.",
+            ".XXXXXXXXXXXXXXXXXXXX."
+          ],
+          "walkLong": [
+            "...QQQQQQQQQQQQQQQQQQ..",
+            "..QQQQQQQQQQQQQQQQQQQQ.",
+            ".QQQQQQQQQQQQQQQQYQQQQ.",
+            ".QQQQQQQQQQQQQQQQQQQQQ.",
+            ".XXXXXXXXXXXXXXXXXXXXX."
+          ]
+        },
+        {
+          "cat": [
+            "....................",
+            "....................",
+            "....QUUUUUUUUUUQ....",
+            "...QQQQQUQQUQQQQQ...",
+            "...QQQQQUQQUQQQQQ...",
+            "...QQQQQQYZQQQQQQ...",
+            "...QQQQQQQQQQQQQQ...",
+            "...QQQQQQQQQQQQQQ...",
+            "...XXXXXXXXXXXXXX..."
+          ],
+          "dog": [
+            "....................",
+            "....QUUUUUUUUUUQ....",
+            "...QQQQQUQQUQQQQQ...",
+            "...QQQQQUQQUQQQQQ...",
+            "..QQQQQQQYZQQQQQQQ..",
+            "..QQQQQQQQQQQQQQQQ..",
+            "..QQQQQQQQQQQQQQQQ..",
+            "..XXXXXXXXXXXXXXXX.."
+          ],
+          "longDog": [
+            "........................",
+            "....QQQQQQQQQQQQQQQQQQ..",
+            "...QQQQQQQQQQZQQQQQQQQQ.",
+            "...QQQQQQQQQQQQQQQQQQQQ.",
+            "...XXXXXXXXXXXXXXXXXXXX."
+          ],
+          "walk": [
+            "...QQQQQQQQQQQQQQQQ...",
+            "..QQQQQQQQQQQQQQQQQQ..",
+            ".QQQQQQQQQQQQQQQZQQQQ.",
+            ".QQQQQQQQQQQQQQQQQQQQ.",
+            ".QQQQQQQQQQQQQQQQQQQQ.",
+            ".XXXXXXXXXXXXXXXXXXXX."
+          ],
+          "walkLong": [
+            "...QQQQQQQQQQQQQQQQQQ..",
+            "..QQQQQQQQQQQQQQQQQQQQ.",
+            ".QQQQQQQQQQQQQQQQZQQQQ.",
+            ".QQQQQQQQQQQQQQQQQQQQQ.",
+            ".XXXXXXXXXXXXXXXXXXXXX."
+          ]
+        },
+        {
+          "cat": [
+            "....................",
+            "....................",
+            "....QUUUUUUUUUUQ....",
+            "...QQQQQUQQUQQQQQ...",
+            "...QQQQQUQQUQQQQQ...",
+            "...QQQQQQZYQQQQQQ...",
+            "...QQQQQQQQQQQQQQ...",
+            "...QQQQQQQQQQQQQQ...",
+            "...XXXXXXXXXXXXXX..."
+          ],
+          "dog": [
+            "....................",
+            "....QUUUUUUUUUUQ....",
+            "...QQQQQUQQUQQQQQ...",
+            "...QQQQQUQQUQQQQQ...",
+            "..QQQQQQQZYQQQQQQQ..",
+            "..QQQQQQQQQQQQQQQQ..",
+            "..QQQQQQQQQQQQQQQQ..",
+            "..XXXXXXXXXXXXXXXX.."
+          ],
+          "longDog": [
+            "........................",
+            "....QQQQQQQQQQQQQQQQQQ..",
+            "...QQQQQQQQQQZQQQQQQQQQ.",
+            "...QQQQQQQQQQQQQQQQQQQQ.",
+            "...XXXXXXXXXXXXXXXXXXXX."
+          ],
+          "walk": [
+            "...QQQQQQQQQQQQQQQQ...",
+            "..QQQQQQQQQQQQQQQQQQ..",
+            ".QQQQQQQQQQQQQQQZQQQQ.",
+            ".QQQQQQQQQQQQQQQQQQQQ.",
+            ".QQQQQQQQQQQQQQQQQQQQ.",
+            ".XXXXXXXXXXXXXXXXXXXX."
+          ],
+          "walkLong": [
+            "...QQQQQQQQQQQQQQQQQQ..",
+            "..QQQQQQQQQQQQQQQQQQQQ.",
+            ".QQQQQQQQQQQQQQQQZQQQQ.",
+            ".QQQQQQQQQQQQQQQQQQQQQ.",
+            ".XXXXXXXXXXXXXXXXXXXXX."
+          ]
+        },
+        {
+          "cat": [
+            "....................",
+            "....................",
+            "....QUUUUUUUUUUQ....",
+            "...QQQQQUQQUQQQQQ...",
+            "...QQQQQUQQUQQQQQ...",
+            "...QQQQQQYYQQQQQQ...",
+            "...QQQQQQQQQQQQQQ...",
+            "...QQQQQQQQQQQQQQ...",
+            "...XXXXXXXXXXXXXX..."
+          ],
+          "dog": [
+            "....................",
+            "....QUUUUUUUUUUQ....",
+            "...QQQQQUQQUQQQQQ...",
+            "...QQQQQUQQUQQQQQ...",
+            "..QQQQQQQYYQQQQQQQ..",
+            "..QQQQQQQQQQQQQQQQ..",
+            "..QQQQQQQQQQQQQQQQ..",
+            "..XXXXXXXXXXXXXXXX.."
+          ],
+          "longDog": [
+            "........................",
+            "....QQQQQQQQQQQQQQQQQQ..",
+            "...QQQQQQQQQQYQQQQQQQQQ.",
+            "...QQQQQQQQQQQQQQQQQQQQ.",
+            "...XXXXXXXXXXXXXXXXXXXX."
+          ],
+          "walk": [
+            "...QQQQQQQQQQQQQQQQ...",
+            "..QQQQQQQQQQQQQQQQQQ..",
+            ".QQQQQQQQQQQQQQQYQQQQ.",
+            ".QQQQQQQQQQQQQQQQQQQQ.",
+            ".QQQQQQQQQQQQQQQQQQQQ.",
+            ".XXXXXXXXXXXXXXXXXXXX."
+          ],
+          "walkLong": [
+            "...QQQQQQQQQQQQQQQQQQ..",
+            "..QQQQQQQQQQQQQQQQQQQQ.",
+            ".QQQQQQQQQQQQQQQQYQQQQ.",
+            ".QQQQQQQQQQQQQQQQQQQQQ.",
+            ".XXXXXXXXXXXXXXXXXXXXX."
+          ]
+        }
+      ]
     }
   },
   "faceItems": {

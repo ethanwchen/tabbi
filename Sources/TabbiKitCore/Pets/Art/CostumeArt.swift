@@ -309,6 +309,10 @@ extension CostumeArt {
     /// snow glints on the band, then a snowflake twinkles on the tail.
     static let snowScarf = PetArt.costume.bodyItem("snowScarf")
 
+    /// A navy hoodie with a white hood lining, white drawstrings, a gold
+    /// crest and a white-trimmed pocket. Now and then the crest glints.
+    static let studyHoodie = PetArt.costume.bodyItem("studyHoodie")
+
     /// Pink heart lenses in a crimson frame. Now and then a light glints
     /// on one lens, then the other.
     static let heartGlasses = PetArt.costume.faceItem("heartGlasses")
