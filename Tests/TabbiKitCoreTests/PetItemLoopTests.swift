@@ -18,11 +18,12 @@ final class PetItemLoopTests: XCTestCase {
     /// Limited items animate exactly when they carry an effect; in the
     /// shop, the animated showpieces.
     func testItemsWithAnEffectAndAnimatedShowpiecesAreTheOnesThatAnimate() {
-        let animatedShopItems: Set<PetItem> = [.accessory(.angelWings)]
+        let animatedShopItems: Set<PetItem> = [.accessory(.angelWings), .accessory(.kingsCape)]
         for item in PetItem.allCases {
             XCTAssertEqual(item.loopFrameCount > 1, item.effect != nil || animatedShopItems.contains(item), "\(item)")
         }
         XCTAssertEqual(PetItem.accessory(.angelWings).loopFrameCount, 4)
+        XCTAssertEqual(PetItem.accessory(.kingsCape).loopFrameCount, 8)
         XCTAssertEqual(PetItem.accessory(.flameHeadband).loopFrameCount, 4)
         XCTAssertEqual(PetItem.accessory(.goldenLaurel).loopFrameCount, 12)
         XCTAssertEqual(PetItem.accessory(.teamMedal).loopFrameCount, 8)
@@ -49,27 +50,33 @@ final class PetItemLoopTests: XCTestCase {
         }
     }
 
-    /// Wings go on the layer behind the pet: in every animation and every
-    /// tick of the flap, each pixel of the bare pet stays as it was, the
-    /// wings show around it, and they move.
-    func testWingsFlapBehindThePetOnEveryBodyShape() {
-        for breed in PetGallery.bodyShapeBreeds {
-            for animation in PetAnimation.allCases {
-                let bare = PetComposer.clip(animation, for: breed)
-                let winged = PetComposer.clip(animation, for: breed, accessories: [.angelWings])
-                for (index, (plain, frame)) in zip(bare.frames, winged.frames).enumerated() {
-                    let label = "\(breed) \(animation) frame \(index)"
-                    let ticks = frame.itemFrames.isEmpty ? [frame.canvas] : frame.itemFrames
-                    for canvas in ticks {
-                        let covered = zip(plain.canvas.pixels, canvas.pixels).filter { $0 != nil && $0 != $1 }.count
-                        XCTAssertEqual(covered, 0, "nothing in front of the pet: \(label)")
+    /// Back items (wings, the cape) go on the layer behind the pet: in
+    /// every animation and every tick of the loop, each pixel of the bare
+    /// pet stays as it was, the item shows around it, and it moves.
+    func testBackItemsMoveBehindThePetOnEveryBodyShape() {
+        // A color only the item brings, to tell it shows.
+        let backItems: [PetAccessory: PetPaletteRole] = [.angelWings: .coat, .kingsCape: .crimson]
+        XCTAssertEqual(Set(backItems.keys), Set(PetAccessory.allCases.filter { $0.slot == .back }))
+        for (accessory, color) in backItems {
+            let loop = PetItem.accessory(accessory).loopFrameCount
+            for breed in PetGallery.bodyShapeBreeds {
+                for animation in PetAnimation.allCases {
+                    let bare = PetComposer.clip(animation, for: breed)
+                    let worn = PetComposer.clip(animation, for: breed, accessories: [accessory])
+                    for (index, (plain, frame)) in zip(bare.frames, worn.frames).enumerated() {
+                        let label = "\(accessory) on \(breed) \(animation) frame \(index)"
+                        let ticks = frame.itemFrames.isEmpty ? [frame.canvas] : frame.itemFrames
+                        for canvas in ticks {
+                            let covered = zip(plain.canvas.pixels, canvas.pixels).filter { $0 != nil && $0 != $1 }.count
+                            XCTAssertEqual(covered, 0, "nothing in front of the pet: \(label)")
+                        }
+                        // Hanging from the notch, the body (and the item) are out of view.
+                        guard animation != .peekIn, animation != .peekOut else { continue }
+                        XCTAssertTrue(ticks.allSatisfy { $0.pixels.contains(color) && $0 != plain.canvas },
+                                      "shows: \(label)")
+                        XCTAssertEqual(ticks.count, loop, "loops: \(label)")
+                        XCTAssertGreaterThan(Set(ticks).count, 1, "moves: \(label)")
                     }
-                    // Hanging from the notch, the body (and the wings) are out of view.
-                    guard animation != .peekIn, animation != .peekOut else { continue }
-                    XCTAssertTrue(ticks.allSatisfy { $0.pixels.contains(.coat) && $0 != plain.canvas },
-                                  "wings show: \(label)")
-                    XCTAssertEqual(ticks.count, 4, "flaps: \(label)")
-                    XCTAssertGreaterThan(Set(ticks).count, 1, "flaps: \(label)")
                 }
             }
         }

@@ -139,7 +139,7 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 
 ### Animated items
 
-Some items move: the Flame Headband's flame flickers, a glint crosses the Golden Laurel, the Team Medal sparkles now and then, and the Angel Wings flap.
+Some items move: the Flame Headband's flame flickers, a glint crosses the Golden Laurel, the Team Medal sparkles now and then, the Angel Wings flap, and a glint runs down the King's Cape's gold trim.
 An animated item lists the rest of its loop in `frames`, after its still grids: a head item gives grids the size of `grid`, a body item gives a grid per body family for each frame.
 The still is the loop's first frame and the picture Reduce Motion shows.
 Every frame lasts one tick of the item clock, `itemFrameDuration` in `costume.json` (150 ms, a walking step), so a slower move repeats a frame.
@@ -150,13 +150,14 @@ The item clock counts from a fixed moment, not from the clip's start, so a loop 
 
 ### Back items
 
-Wings are worn in the `back` slot and drawn behind the whole pet.
+Wings and the King's Cape are worn in the `back` slot and drawn behind the whole pet.
 A back item lists, for each body family and walking torso, an `x` and `y` offset from that body's origin and its loop of `frames`, the first the still (`backItems` in `costume.json`).
 Its grids may reach past the body, out to the frame's edges: the composer stamps them on a layer of their own, outlines that layer, and lays the outlined pet over it, so the pet's outline keeps white feathers apart from white fur.
 The layer moves with the body (a walking step, the bow of a stretch, a curled-up nap) and is left out while the pet hangs from the notch.
 Effects float in front of it: a sleep "z" or a heart over a wing gets an outline ring cut into the wing so it still reads.
 From the front both wings show beside the head and body; walking and on the dachshund, which sits side-on, the near wing stands up off the back.
-`PetItemLoopTests` checks on every body shape and in every animation that the wings never cover a pixel of the pet, show, and flap.
+The cape falls to the floor beside the body from the front, its ermine collar on the shoulders; seen from the side it streams back over the shoulders and ripples.
+`PetItemLoopTests` checks on every body shape and in every animation that each back item never covers a pixel of the pet, shows, and moves.
 `swift run PetGallery <dir>` writes `loop-<item>.png` (every body shape through each tick, sitting and walking, at 6x) and `loop-<item>-2x.png` at notch size.
 
 ### Adding a costume item

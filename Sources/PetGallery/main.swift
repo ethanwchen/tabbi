@@ -60,6 +60,11 @@ func writeSheet(_ cells: [Cell], columns: Int, title: String, scale: Int = scale
     print("wrote \(url.path)")
 }
 
+/// A file name part for a display name: "King's Cape" becomes "kings-cape".
+func fileSlug(_ name: String) -> String {
+    name.lowercased().filter { $0 != "'" }.replacingOccurrences(of: " ", with: "-")
+}
+
 func draw(_ text: String, size: CGFloat, color: CGColor, at point: CGPoint, in context: CGContext) {
     let font = CTFontCreateWithName("SF Pro Rounded" as CFString, size, nil)
     let attributes: [NSAttributedString.Key: Any] = [
@@ -136,7 +141,7 @@ for (name, outfit, accessories) in [looks[looks.count - 4], looks[looks.count - 
         Cell(label: breed.displayName, canvas: PetComposer.sitting(breed, outfit: outfit, accessories: accessories),
              palette: breed.palette.withVisibleRim())
     }
-    let slug = name.lowercased().replacingOccurrences(of: " ", with: "-")
+    let slug = fileSlug(name)
     try writeSheet(cells, columns: 7, title: "Fit check: \(name)",
                    to: outputDirectory.appendingPathComponent("fit-\(slug).png"))
 }
@@ -330,7 +335,7 @@ for item in PetItem.allCases where item.loopFrameCount > 1 {
             }
         }
     }
-    let slug = item.displayName.lowercased().replacingOccurrences(of: " ", with: "-")
+    let slug = fileSlug(item.displayName)
     let milliseconds = Int((PetFrame.itemFrameDuration * 1000).rounded())
     for (loopScale, suffix) in [(6, ""), (2, "-2x")] {
         try writeSheet(cells.map { suffix.isEmpty ? $0 : Cell(label: "", canvas: $0.canvas, palette: $0.palette) },
@@ -357,7 +362,7 @@ for (name, outfit, accessories) in contactGroups.flatMap(\.1) {
                               canvas: clips[animation]!.frames[frame].canvas, palette: breed.palette.withVisibleRim()))
         }
     }
-    let slug = name.lowercased().replacingOccurrences(of: " ", with: "-")
+    let slug = fileSlug(name)
     try writeSheet(cells, columns: keyFrames.count, title: "Animations in \(name)", scale: 3,
                    to: outputDirectory.appendingPathComponent("strip-\(slug).png"))
 }

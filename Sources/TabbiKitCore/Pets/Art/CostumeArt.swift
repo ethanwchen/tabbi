@@ -252,4 +252,9 @@ extension CostumeArt {
     /// spread, raised, spread, lowered. From the front both show beside the
     /// body; walking, the near wing stands up off the back.
     static let angelWings = PetArt.costume.backItem("angelWings")
+    /// A crimson cape with an ermine collar and a gold trim a glint runs
+    /// down. From the front it falls to the floor beside the body; walking
+    /// and on the side-on dachshund it streams back over the shoulders and
+    /// ripples.
+    static let kingsCape = PetArt.costume.backItem("kingsCape")
 }

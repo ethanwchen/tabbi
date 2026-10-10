@@ -79,6 +79,8 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
     // Animated shop items, each looping a few frames on the item clock.
     /// White feathered wings that flap behind the pet.
     case angelWings
+    /// A crimson royal cape with an ermine collar and a gold hem that glimmers.
+    case kingsCape
 
     public var slot: PetAccessorySlot {
         switch self {
@@ -88,7 +90,7 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
              .bunnyEars, .witchHat, .cowboyHat, .flowerCrown, .frogHat, .ninjaHeadband, .pirateHat,
              .blindfoldedSorcerer, .astronautHelmet, .chunkyHeadphones, .backwardsCap, .flameHeadband,
              .goldenLaurel: .head
-        case .angelWings: .back
+        case .angelWings, .kingsCape: .back
         }
     }
 
@@ -128,6 +130,7 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
         case .goldenLaurel: "Golden Laurel"
         case .teamMedal: "Team Medal"
         case .angelWings: "Angel Wings"
+        case .kingsCape: "King's Cape"
         }
     }
 
