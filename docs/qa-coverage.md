@@ -91,7 +91,8 @@ The heartbeat to Party is still untested.
 Plan: a `URLProtocol` stub for the two URLSession transports (timeouts, non-2xx, malformed bodies, cancellation mid-stream), and a fake `claude` shell script that prints canned stream-json for `ClaudeCLI`.
 Status: `URLSessionPartyTransportTests` now drives `URLSessionPartyTransport` through a `URLProtocol` stub: the request it builds (route under a server path prefix, headers, bearer token, body, timeout), non-2xx replies with `Retry-After`, network failures mapped to `PartyError`, and cancellation of a request that never answers.
 `AIHTTPURLSessionTransportTests` drives `AIHTTPProvider.urlSession(_:)` the same way: lines split across body chunks, the OpenAI and Anthropic auth headers, non-2xx replies (529, 404 with a message, 500 with an empty body), an error inside a 200 stream, a refused connection, a connection dropped mid-stream (it fails rather than finishing), and cancelling the consumer, which cancels the URLSession task.
-`ClaudeCLI` and `AIKeyStore` are still untested.
+`ClaudeCLIStreamTests` runs `ClaudeCLI.stream` (both the prompt and the stdin input-line forms) and `ClaudeLimitsProbe.run` against a fake `claude` shell script: events parsed in order with noise skipped, the prompt passed last after `--` verbatim, the temporary working directory, a failing CLI delivering its output before throwing with its stderr, a missing executable, a 1 MB input line delivered whole, cancellation stopping the process, and the probe stopping the CLI as soon as limits arrive.
+`ClaudeCLI.lookupInLoginShell()` (it depends on the user's login shell) and `AIKeyStore` (Keychain) are still untested.
 
 ### 6. Claude Ask session (app)
 
