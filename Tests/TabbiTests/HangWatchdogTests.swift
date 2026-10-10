@@ -49,13 +49,14 @@ final class HangWatchdogTests: XCTestCase {
         watchdog.stop()
         watchdog = HangWatchdog(interval: .milliseconds(50), ticksToHang: 20)
         watchdog.start()
-        // Twenty intervals awake (and answering) without ever waiting.
-        let end = Date().addingTimeInterval(1)
+        // Forty intervals awake (and answering) without ever waiting.
+        let end = Date().addingTimeInterval(2)
         while Date() < end {
             RunLoop.main.run(mode: .default, before: .distantPast)
         }
-        // Far more than the at most 4 of a parked timer (see the idle test).
-        XCTAssertGreaterThanOrEqual(watchdog.tickCount, 8)
+        // A loaded runner fires only about 7 of 20 ticks a second, still far
+        // more than a parked timer's handful (see the idle test).
+        XCTAssertGreaterThanOrEqual(watchdog.tickCount, 10)
         XCTAssertNil(log)
     }
 
