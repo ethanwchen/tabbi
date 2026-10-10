@@ -69,11 +69,13 @@ final class RecapStore: ObservableObject {
 
     /// Builds the weeks that are ready now and saves when anything changed.
     /// Called on start, at each Sunday evening and when the notch opens, so
-    /// a Mac that slept through Sunday still gets its recap.
+    /// a Mac that slept through Sunday still gets its recap. Weeks before the
+    /// newest ready one count as seen, so a return after weeks away shows
+    /// (and notifies) only the week that just ended.
     func refresh() {
         guard builds else { return }
         let date = now()
-        var changed = false
+        var changed = archive.skipStaleWeeks(at: date, calendar: calendar)
         for week in archive.weeksToBuild(at: date, calendar: calendar) {
             let records = activity.records(from: week.start, through: week.end(calendar: calendar))
             let recap = WeeklyRecap(week: week, records: records, calendar: calendar)

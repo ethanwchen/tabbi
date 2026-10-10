@@ -67,7 +67,8 @@ public struct RecapArchive: Codable, Hashable, Sendable {
 
     /// The newest recap, when the user hasn't seen it yet: the card the open
     /// notch shows once. Only the newest counts, so catching up after weeks
-    /// away shows one card, not a pile.
+    /// away shows one card, not a pile, and `skipStaleWeeks(at:)` keeps an
+    /// old week from showing when the latest one had nothing logged.
     public var unseen: WeeklyRecap? {
         guard let newest = recaps.first, seenWeek.map({ newest.week > $0 }) ?? true else { return nil }
         return newest
@@ -86,6 +87,36 @@ public struct RecapArchive: Codable, Hashable, Sendable {
         guard seenWeek.map({ week > $0 }) ?? true else { return false }
         seenWeek = week
         return true
+    }
+
+    /// Marks every week before the newest ready one at `now` as seen without
+    /// showing it, so after weeks away only the week that just ended can
+    /// show, never a recap from a month ago. They stay in the list.
+    @discardableResult
+    public mutating func skipStaleWeeks(at now: Date, readyHour: Int = RecapWeek.defaultReadyHour,
+                                        calendar: Calendar = .current) -> Bool {
+        let latest = RecapWeek.latestReady(at: now, readyHour: readyHour, calendar: calendar)
+        return markSeen(latest.adding(weeks: -1, calendar: calendar))
+    }
+
+    /// Takes in `other`'s recaps and markers (another Mac's, or a copy read
+    /// back from disk). Markers keep the newer week, so a merge never makes
+    /// a week the user has seen show again; a week both have keeps this
+    /// archive's recap.
+    @discardableResult
+    public mutating func merge(_ other: RecapArchive) -> Bool {
+        let before = self
+        let mine = Set(recaps.map(\.week))
+        self = RecapArchive(recaps: recaps + other.recaps.filter { !mine.contains($0.week) },
+                            settledWeek: Self.newer(settledWeek, other.settledWeek),
+                            seenWeek: Self.newer(seenWeek, other.seenWeek),
+                            notifiedWeek: Self.newer(notifiedWeek, other.notifiedWeek))
+        return self != before
+    }
+
+    private static func newer(_ lhs: RecapWeek?, _ rhs: RecapWeek?) -> RecapWeek? {
+        guard let lhs, let rhs else { return lhs ?? rhs }
+        return max(lhs, rhs)
     }
 
     /// Records that a notification went out for `week`'s recap.
