@@ -38,6 +38,12 @@ public enum Theme {
         public static var success: Color { Color(current.palette.success) }
         public static var warning: Color { Color(current.palette.warning) }
         public static var danger: Color { Color(current.palette.danger) }
+        /// A liked or favorited song's heart. Pink-red in every player, so
+        /// it reads as "loved" rather than as one module's accent (Spotify's
+        /// green on an Apple Music track looked wrong).
+        public static var favorite: Color {
+            accent(ModuleAccent(red: 0.98, green: 0.26, blue: 0.40))
+        }
 
         /// One accent per module, used for progress, selection, and
         /// highlights, as the active theme treats it (muted, vivid, pastel).

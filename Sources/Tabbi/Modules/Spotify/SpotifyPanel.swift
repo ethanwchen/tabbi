@@ -618,7 +618,7 @@ private struct SpotifyLikeButton: View {
     }
 
     private var foreground: Color {
-        if isLiked { return NowPlayingModule.descriptor.accentColor }
+        if isLiked { return Theme.Palette.favorite }
         return hovering ? Theme.Palette.primaryText : Theme.Palette.tertiaryText
     }
 }
