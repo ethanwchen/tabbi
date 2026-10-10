@@ -24,6 +24,10 @@ public struct UpNextEmptyState: Hashable, Sendable {
         case freeDay
         /// Today had events, and they're all over.
         case dayDone
+        /// Nothing on any calendar tomorrow.
+        case freeTomorrow
+        /// Nothing was on any calendar yesterday.
+        case freeYesterday
     }
 
     public enum Action: Hashable, Sendable {
@@ -62,7 +66,7 @@ public struct UpNextEmptyState: Hashable, Sendable {
         case .unavailable:
             symbol = "calendar"
             title = "Connect your calendar"
-            detail = "See today's \(upNextEvents) here. It only takes a moment."
+            detail = "See your \(upNextEvents) here. It only takes a moment."
             action = .openConnections
             actionTitle = "Connect calendar"
             actionHelp = "Open Connections to connect your calendar"
@@ -87,6 +91,20 @@ public struct UpNextEmptyState: Hashable, Sendable {
             action = nil
             actionTitle = ""
             actionHelp = ""
+        case .freeTomorrow:
+            symbol = "calendar.badge.checkmark"
+            title = "Free all day"
+            detail = "Nothing on your calendars tomorrow."
+            action = nil
+            actionTitle = ""
+            actionHelp = ""
+        case .freeYesterday:
+            symbol = "calendar"
+            title = "A free day"
+            detail = "Nothing was on your calendars yesterday."
+            action = nil
+            actionTitle = ""
+            actionHelp = ""
         }
     }
 
@@ -102,5 +120,19 @@ public struct UpNextEmptyState: Hashable, Sendable {
         guard upcoming == 0 else { return nil }
         if eventsToday > 0 { return .dayDone }
         return hasAccounts ? .freeDay : .noAccounts
+    }
+
+    /// Which empty state fits a granted calendar on `day`: `granted(upcoming:...)`
+    /// for today; for yesterday or tomorrow, whether that whole day had any
+    /// timed event. Nil when there are events to list.
+    public static func granted(on day: PlannerViewedDay, upcoming: Int, eventsThatDay: Int,
+                               hasAccounts: Bool) -> Situation? {
+        switch day {
+        case .today: return granted(upcoming: upcoming, eventsToday: eventsThatDay, hasAccounts: hasAccounts)
+        case .yesterday, .tomorrow:
+            guard eventsThatDay == 0 else { return nil }
+            guard hasAccounts else { return .noAccounts }
+            return day == .tomorrow ? .freeTomorrow : .freeYesterday
+        }
     }
 }

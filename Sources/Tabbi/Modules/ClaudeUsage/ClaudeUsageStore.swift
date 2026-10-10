@@ -34,6 +34,9 @@ final class ClaudeUsageStore: ObservableObject {
     private static let defaultsKey = "claudeUsage.limitsRecord"
 
     private let isDemo: Bool
+    /// A snapshot run shows the user's stats but saves nothing and never
+    /// probes, so it leaves no trace and spends none of the user's usage.
+    private let isSnapshot: Bool
     private let defaults = UserDefaults.standard
     private let scanner: ClaudeUsageLogScanner
     private var statusTask: Task<Void, Never>?
@@ -50,15 +53,20 @@ final class ClaudeUsageStore: ObservableObject {
     /// A scan was requested while one was running; run another when it ends.
     private var rescanPending = false
 
-    /// `codexRoot` is where Codex keeps its sessions; tests point it at a
-    /// temporary folder.
+    /// `codexRoot` is where Codex keeps its sessions and `transcripts`
+    /// where Claude Code keeps its own; tests point them at temporary folders.
     init(storage: EditionStorage, runMode: RunMode, source: AIUsageSource = .claudeCode,
+         transcripts: URL = ClaudeUsageLogScanner.defaultRoot,
          codexRoot: URL = CodexUsageLog.defaultRoot(),
          environment: [String: String] = ProcessInfo.processInfo.environment) {
         isDemo = runMode.isDemo
+        isSnapshot = runMode.isSnapshot
         self.source = source
         self.codexRoot = codexRoot
-        scanner = ClaudeUsageLogScanner(indexURL: ClaudeUsageLogScanner.indexURL(in: storage))
+        scanner = ClaudeUsageLogScanner(
+            root: transcripts,
+            indexURL: runMode.isSnapshot ? nil : ClaudeUsageLogScanner.indexURL(in: storage)
+        )
         if isDemo {
             // TABBI_USAGE_PREVIEW=codex renders the Codex panel.
             if environment["TABBI_USAGE_PREVIEW"] == "codex" { self.source = .codex }
@@ -114,7 +122,7 @@ final class ClaudeUsageStore: ObservableObject {
             readCodexLogs()
             return
         }
-        guard probeTask == nil else { return }
+        guard !isSnapshot, probeTask == nil else { return }
         isFetching = true
         probeTask = Task { [weak self] in
             let executable = await Self.locateCLI()

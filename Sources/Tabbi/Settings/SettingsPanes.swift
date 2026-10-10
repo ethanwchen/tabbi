@@ -59,7 +59,7 @@ struct GeneralSettingsPane: View {
 
             Section {
                 Toggle("Launch at login", isOn: launchAtLogin)
-                    .disabled(!LaunchAtLogin.isAvailable && store.integratesWithSystem)
+                    .disabled(!store.loginItem.isAvailable && store.integratesWithSystem)
                     .help("Start \(Edition.current.name) automatically when you log in")
                 if let caption = launchAtLoginCaption {
                     Text(caption)
@@ -125,6 +125,11 @@ struct GeneralSettingsPane: View {
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didChangeScreenParametersNotification)) { _ in
             screens = DisplayOption.connectedScreens()
         }
+        // Login Items may have changed in System Settings meanwhile.
+        .onAppear { store.refreshLaunchAtLogin() }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+            store.refreshLaunchAtLogin()
+        }
     }
 
     @ViewBuilder
@@ -187,10 +192,10 @@ struct GeneralSettingsPane: View {
     private var launchAtLoginCaption: String? {
         if let error = store.launchAtLoginError { return error }
         guard store.integratesWithSystem else { return nil }
-        if !LaunchAtLogin.isAvailable {
+        if !store.loginItem.isAvailable {
             return "Available when \(Edition.current.name) runs as an app bundle."
         }
-        if LaunchAtLogin.needsApproval {
+        if store.launchAtLoginNeedsApproval {
             return "Allow \(Edition.current.name) in System Settings › General › Login Items."
         }
         return nil
@@ -220,9 +225,13 @@ struct DisplayOption: Identifiable, Equatable {
 }
 
 /// Explanatory text under a grouped section, aligned with the section's rows.
+/// A grouped `Form` trails its footers, so a wrapped footer would otherwise
+/// set its later lines flush right; this keeps every line leading, inset to
+/// line up with the section's header and its rows' text.
 struct SectionFooter: View {
-    let text: String
-    init(_ text: String) { self.text = text }
+    let text: AttributedString
+    init(_ text: String) { self.text = AttributedString(text) }
+    init(_ text: AttributedString) { self.text = text }
 
     var body: some View {
         Text(text)
@@ -232,6 +241,7 @@ struct SectionFooter: View {
             // a wrapped second line hanging on the right.
             .multilineTextAlignment(.leading)
             .frame(maxWidth: .infinity, alignment: .leading)
+            .fixedSize(horizontal: false, vertical: true)
             // Lines the text up with the section header and row titles.
             .padding(.horizontal, 10)
     }

@@ -65,6 +65,7 @@ In the Apple Developer portal, under Certificates, Identifiers & Profiles:
    Install both in the login keychain with their private keys.
 3. Profiles: create a **Mac App Store Connect** distribution profile for `dev.tabbi.Tabbi` with the Apple Distribution certificate, download it, and save it as `packaging/Tabbi-AppStore.provisionprofile`.
    Create it after turning on Sign in with Apple, or download it again afterwards: the script refuses a profile that does not grant the capability.
+   Do the same for the widget extension's App ID `dev.tabbi.Tabbi.Widget` and save that profile as `packaging/TabbiWidget-AppStore.provisionprofile` ([widget.md](widget.md)).
 4. App Store Connect: create the app (platform macOS, bundle id `dev.tabbi.Tabbi`, SKU `tabbi-mac`), and an API key under Users and Access > Integrations for `altool`.
 
 `packaging/Tabbi-AppStore.entitlements` claims `com.apple.developer.applesignin`.

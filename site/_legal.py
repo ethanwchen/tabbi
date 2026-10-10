@@ -134,7 +134,8 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
       <h2>6. This website</h2>
       <p class="measure">tabbinotch.com has no cookies, no analytics and no scripts.
         It is hosted on Cloudflare Pages, which processes the requests your browser makes, including your IP address, to serve and protect the site.
-        If you email us, we use your message and address only to reply, and delete the thread when it is no longer needed.</p>
+        If you email us, we use your message and address only to reply, and delete the thread when it is no longer needed.
+        A <a href="/suggest">suggestion</a> you send, and the email you add to it, are used the same way.</p>
 
       <h2>7. Why we are allowed to</h2>
       <p class="measure">Where the GDPR or UK GDPR applies, we process friends-service and account data to provide the features you turned on (Article 6(1)(b)) and in our legitimate interest in keeping the service secure and free of abuse (Article 6(1)(f)).

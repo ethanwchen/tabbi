@@ -17,15 +17,20 @@ public struct SpotifyTrack: Equatable, Sendable {
     public var artworkURL: URL?
     /// Track length in seconds (Spotify reports milliseconds). Zero when unknown.
     public var duration: TimeInterval
+    /// Whether the user liked (Music: favorited) the track. Nil when the
+    /// player can't say or can't like this track, so the panel hides its
+    /// heart instead of showing a control that does nothing.
+    public var isFavorite: Bool?
 
     public init(id: String, title: String, artist: String, album: String,
-                artworkURL: URL?, duration: TimeInterval) {
+                artworkURL: URL?, duration: TimeInterval, isFavorite: Bool? = nil) {
         self.id = id
         self.title = title
         self.artist = artist
         self.album = album
         self.artworkURL = artworkURL
         self.duration = duration
+        self.isFavorite = isFavorite
     }
 }
 
@@ -81,16 +86,18 @@ public struct SpotifyPlayback: Equatable, Sendable {
 
 extension SpotifyPlayback {
     /// Sample state for `TABBI_DEMO=1` snapshots and screenshots. Has no
-    /// artwork URL so demo mode never touches the network.
+    /// artwork URL so demo mode never touches the network. A favorited Music
+    /// track, so demo shots show the like button.
     public static let demo = SpotifyPlayback(
         state: .playing,
         track: SpotifyTrack(
-            id: "spotify:track:demo",
+            id: MusicScript.trackIDPrefix + "5A1D3E0C7B92F416",
             title: "Midnight City",
             artist: "M83",
             album: "Hurry Up, We're Dreaming",
             artworkURL: nil,
-            duration: 243.96
+            duration: 243.96,
+            isFavorite: true
         ),
         position: 87.4,
         isShuffling: true,

@@ -414,6 +414,9 @@ private struct DeckRow: View {
         .contentShape(Rectangle())
         .onTapGesture(perform: action)
         .accessibilityElement(children: .combine)
+        // Combined, the bare counts read "AnKing, 30, 12, 186"; say what they count.
+        .accessibilityLabel(row.title)
+        .accessibilityValue("\(deck.newCount) new, \(deck.learnCount) learning, \(deck.reviewCount) review")
         .accessibilityAddTraits(.isButton)
         .accessibilityAction(named: isFavorite ? "Unpin favorite" : "Pin as favorite", toggleFavorite)
         .help("Review \(deck.name) in Anki: \(deck.newCount) new, \(deck.learnCount) learning, \(deck.reviewCount) review")
@@ -633,19 +636,23 @@ struct AnkiSetupView: View {
                             Text(guide.message)
                                 .font(Theme.Typography.body)
                                 .foregroundStyle(Theme.Palette.secondaryText)
-                                .fixedSize(horizontal: false, vertical: true)
+                                .lineLimit(2)
                         }
                     }
-                    .help(showsMessage ? "" : guide.message)
+                    // In a short panel (Compact) the message gives up a line
+                    // before the steps and buttons do; the tooltip keeps it whole.
+                    .help(guide.message)
                     if !guide.steps.isEmpty {
                         VStack(alignment: .leading, spacing: isCompact ? Theme.Spacing.xxs : Theme.Spacing.xs) {
                             ForEach(Array(guide.steps.enumerated()), id: \.offset) { index, step in
                                 SetupStep(number: index + 1, text: step)
                             }
                         }
+                        .layoutPriority(1)
                     }
                     actions(guide)
                         .padding(.top, isCompact ? 0 : Theme.Spacing.xs)
+                        .layoutPriority(1)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -769,7 +776,7 @@ private struct AnkiSetupGuide {
             title = "AnkiConnect wants an API key"
             message = "Its config sets an API key, which this tab doesn't send."
             steps = [
-                "In Anki, choose Tools › Add-ons, select AnkiConnect, click Config",
+                "In Anki, choose Tools › Add-ons › AnkiConnect › Config",
                 "Set \"apiKey\" to null, then click OK",
                 "Restart Anki",
             ]
@@ -778,7 +785,7 @@ private struct AnkiSetupGuide {
             title = "AnkiConnect blocked this app"
             message = "Its settings turned the connection away."
             steps = [
-                "In Anki, choose Tools › Add-ons, select AnkiConnect, click Config",
+                "In Anki, choose Tools › Add-ons › AnkiConnect › Config",
                 "Click Restore Defaults, then OK",
                 "Restart Anki",
             ]
@@ -819,6 +826,7 @@ private struct SetupStep: View {
                 .foregroundStyle(Theme.Palette.secondaryText)
                 .lineLimit(1)
                 .truncationMode(.tail)
+                .help(text)
         }
     }
 }

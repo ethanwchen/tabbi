@@ -9,7 +9,7 @@ final class MusicScriptTests: XCTestCase {
     func testParsesPlayingTrack() throws {
         let output = record([
             "playing", "8F3A2B1C9D0E7F65", "Teardrop", "Massive Attack", "Mezzanine",
-            "330.5", "42.25", "true", "all", "64",
+            "330.5", "42.25", "true", "all", "64", "true",
         ])
         let playback = try XCTUnwrap(MusicScript.parse(output))
         XCTAssertTrue(playback.isPlaying)
@@ -25,24 +25,24 @@ final class MusicScriptTests: XCTestCase {
     }
 
     func testRepeatModesAndPausedState() throws {
-        let off = try XCTUnwrap(MusicScript.parse(record(["paused", "A", "t", "a", "b", "10", "1", "false", "off", "64"])))
+        let off = try XCTUnwrap(MusicScript.parse(record(["paused", "A", "t", "a", "b", "10", "1", "false", "off", "64", ""])))
         XCTAssertEqual(off.state, .paused)
         XCTAssertEqual(off.repeatMode, .off)
         XCTAssertFalse(off.isShuffling)
-        let one = try XCTUnwrap(MusicScript.parse(record(["paused", "A", "t", "a", "b", "10", "1", "false", "one", "64\n"])))
+        let one = try XCTUnwrap(MusicScript.parse(record(["paused", "A", "t", "a", "b", "10", "1", "false", "one", "64", "false\n"])))
         XCTAssertEqual(one.repeatMode, .one)
         XCTAssertTrue(one.isRepeating)
     }
 
     func testSeekingStatesCountAsPlaying() throws {
         for state in ["fast forwarding", "rewinding"] {
-            let output = record([state, "A", "t", "a", "b", "10", "1", "false", "off", "64"])
+            let output = record([state, "A", "t", "a", "b", "10", "1", "false", "off", "64", ""])
             XCTAssertEqual(try XCTUnwrap(MusicScript.parse(output)).state, .playing, state)
         }
     }
 
     func testRadioStreamWithoutDurationOrID() throws {
-        let output = record(["playing", "", "Beats 1", "", "", "0", "0", "false", "off", "64"])
+        let output = record(["playing", "", "Beats 1", "", "", "0", "0", "false", "off", "64", ""])
         let playback = try XCTUnwrap(MusicScript.parse(output))
         XCTAssertEqual(playback.track?.id, "music:Beats 1")
         XCTAssertEqual(playback.track?.duration, 0)
@@ -51,7 +51,7 @@ final class MusicScriptTests: XCTestCase {
     }
 
     func testCommaDecimalsAndClamping() throws {
-        let output = record(["playing", "A", "t", "a", "b", "200,5", "250,25", "false", "off", "64"])
+        let output = record(["playing", "A", "t", "a", "b", "200,5", "250,25", "false", "off", "64", ""])
         let playback = try XCTUnwrap(MusicScript.parse(output))
         XCTAssertEqual(try XCTUnwrap(playback.track?.duration), 200.5, accuracy: 0.0001)
         XCTAssertEqual(playback.position, 200.5, accuracy: 0.0001)
@@ -61,7 +61,7 @@ final class MusicScriptTests: XCTestCase {
         XCTAssertEqual(MusicScript.parse("stopped\n"), .nothingPlaying)
         XCTAssertNil(MusicScript.parse(""))
         XCTAssertNil(MusicScript.parse("playing"))
-        XCTAssertNil(MusicScript.parse(record(["buffering", "A", "t", "a", "b", "1", "0", "false", "off", "64"])))
+        XCTAssertNil(MusicScript.parse(record(["buffering", "A", "t", "a", "b", "1", "0", "false", "off", "64", ""])))
         // Spotify's 10-field record is not a Music record.
         XCTAssertNil(MusicScript.parse(record(["playing", "id", "t", "a", "b", "", "1000", "0", "false", "false", "64"])))
     }
@@ -78,7 +78,7 @@ final class MusicScriptTests: XCTestCase {
 
     func testArtworkReadIsPinnedToTheTrack() throws {
         let id = try XCTUnwrap(MusicScript.parse(record(["playing", "8F3A2B1C9D0E7F65", "t", "a", "b", "10", "1",
-                                                         "false", "off", "64"]))?.track?.id)
+                                                         "false", "off", "64", ""]))?.track?.id)
         XCTAssertEqual(MusicScript.readArtwork(forTrackID: id), """
         tell application id "com.apple.Music"
             if (persistent ID of current track) is not "8F3A2B1C9D0E7F65" then return missing value
@@ -93,8 +93,52 @@ final class MusicScriptTests: XCTestCase {
         XCTAssertNil(MusicScript.readArtwork(forTrackID: "music:"))
     }
 
+    func testReadsWhetherTheTrackIsFavorited() throws {
+        func favorite(_ id: String, _ field: String) throws -> Bool? {
+            try XCTUnwrap(MusicScript.parse(record(["playing", id, "t", "a", "b", "10", "1", "false", "off", "64", field])))
+                .track?.isFavorite
+        }
+        XCTAssertEqual(try favorite("A1", "true"), true)
+        XCTAssertEqual(try favorite("A1", "false\n"), false)
+        XCTAssertNil(try favorite("A1", ""), "an unreadable value hides the heart")
+        XCTAssertNil(try favorite("", "false"), "a stream without a persistent ID can't be favorited")
+        XCTAssertNil(MusicScript.parse(record(["playing", "A1", "t", "a", "b", "10", "1", "false", "off", "64", "64"])))
+    }
+
+    func testFavoritingIsPinnedToTheTrack() throws {
+        let playback = try XCTUnwrap(MusicScript.parse(record(["playing", "8F3A2B1C9D0E7F65", "t", "a", "b", "10", "1",
+                                                               "false", "off", "64", "false"])))
+        let track = try XCTUnwrap(playback.track)
+        XCTAssertEqual(MediaSource.music.setFavoriteScript(true, for: track), """
+        tell application id "com.apple.Music"
+            if (persistent ID of current track) is not "8F3A2B1C9D0E7F65" then return
+            set «class pLov» of current track to true
+        end tell
+        """)
+        XCTAssertTrue(try XCTUnwrap(MediaSource.music.setFavoriteScript(false, for: track)).contains("to false"))
+        XCTAssertEqual(playback.settingFavorite(true).track?.isFavorite, true)
+
+        // Spotify's scripting can't like, and unknown or stream tracks can't either.
+        XCTAssertNil(MediaSource.spotify.setFavoriteScript(true, for: SpotifyTrack(
+            id: "spotify:track:1", title: "t", artist: "a", album: "b", artworkURL: nil, duration: 1, isFavorite: false)))
+        var unknown = track
+        unknown.isFavorite = nil
+        XCTAssertNil(MediaSource.music.setFavoriteScript(true, for: unknown))
+        XCTAssertNil(MusicScript.setFavorite(true, forTrackID: "music:Radio One"))
+        let stream = SpotifyPlayback(state: .playing, track: unknown, position: 0, isShuffling: false, repeatMode: .off)
+        XCTAssertNil(stream.settingFavorite(true).track?.isFavorite, "no optimistic heart where there is none")
+    }
+
+    func testDemoTrackShowsAWorkingHeart() throws {
+        let track = try XCTUnwrap(SpotifyPlayback.demo.track)
+        XCTAssertEqual(track.isFavorite, true, "demo shots show the like button")
+        XCTAssertNotNil(MediaSource.music.setFavoriteScript(false, for: track),
+                        "the demo track is a Music track the heart can act on")
+        XCTAssertEqual(SpotifyPlayback.demo.settingFavorite(false).track?.isFavorite, false)
+    }
+
     func testStatusResolvesWithTheSourcesParser() {
-        let output = record(["playing", "A", "Teardrop", "a", "b", "10", "1", "false", "off", "64"])
+        let output = record(["playing", "A", "Teardrop", "a", "b", "10", "1", "false", "off", "64", ""])
         let status = SpotifyStatus.resolve(source: .music, isRunning: true, isInstalled: true,
                                            read: .success(output), previous: .connecting)
         XCTAssertEqual(status.playback?.track?.title, "Teardrop")

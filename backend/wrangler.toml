@@ -8,6 +8,16 @@ compatibility_date = "2025-09-01"
 name = "HUB"
 class_name = "Hub"
 
+# Workers Logs keeps the structured lines from src/log.ts (every 5xx, slow requests and a 1% sample)
+# for search and alerts in the dashboard. Invocation logs are off: they would store every request's
+# full URL and headers, including friend codes and client IPs. See docs/ops.md "Monitoring".
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+[observability.logs]
+invocation_logs = false
+
 [[migrations]]
 tag = "v1"
 new_sqlite_classes = ["Hub"]

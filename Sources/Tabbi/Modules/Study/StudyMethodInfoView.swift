@@ -31,8 +31,15 @@ struct StudyMethodInfoView: View {
                 }
                 Spacer(minLength: Theme.Spacing.s)
                 if !isCurrent {
-                    StudyCapsuleButton(title: "Use \(info.name)", help: "Start a fresh session with \(info.name)",
-                                       action: use)
+                    // A long name ("Question block") beside its rhythm and
+                    // badge leaves no room in a Compact panel, where the
+                    // button just says "Use"; the name sits on its left.
+                    ViewThatFits(in: .horizontal) {
+                        StudyCapsuleButton(title: "Use \(info.name)", help: "Start a fresh session with \(info.name)",
+                                           action: use)
+                        StudyCapsuleButton(title: "Use", help: "Start a fresh session with \(info.name)",
+                                           action: use)
+                    }
                 }
                 IconButton(symbol: "xmark", help: "Close") { close() }
             }

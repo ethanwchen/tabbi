@@ -252,7 +252,9 @@ name=$(/usr/libexec/PlistBuddy -c "Print :CFBundleName" "$app/Contents/Info.plis
 executable="$app/Contents/MacOS/$(/usr/libexec/PlistBuddy -c "Print :CFBundleExecutable" "$app/Contents/Info.plist")"
 
 info="$app/Contents/Info.plist"
+widget="$app/Contents/PlugIns/TabbiWidget.appex"
 plutil -replace CFBundleVersion -string "$build_number" "$info"
+plutil -replace CFBundleVersion -string "$build_number" "$widget/Contents/Info.plist"
 if update_key_ok; then
     # The feed and key turn the updater on (UpdatePolicy); automatic checks
     # default to on without Sparkle's "check automatically?" prompt, and
@@ -277,6 +279,8 @@ codesign --remove-signature "$executable"
 before=$(stat -f %z "$executable")
 strip -x "$executable"
 log "Stripped $(basename "$executable"): $((before / 1024)) KB -> $(($(stat -f %z "$executable") / 1024)) KB"
+codesign --remove-signature "$widget/Contents/MacOS/TabbiWidget"
+strip -x "$widget/Contents/MacOS/TabbiWidget"
 
 # codesign arguments for one piece of code. Developer ID builds get a secure
 # timestamp and the Hardened Runtime, both required for notarization.
@@ -307,11 +311,17 @@ sign_nested() {
     done
 }
 
+# The widget extension runs sandboxed with its own entitlements (docs/widget.md).
+sign_widget() {
+    sign --entitlements packaging/TabbiWidget.entitlements "$widget"
+}
+
 # The profile goes in before signing, so the app's signature seals it.
 $sign_in_with_apple && cp "$profile" "$app/Contents/embedded.provisionprofile"
 
 log "Signing ($($adhoc && echo ad-hoc || echo Developer ID))"
 sign_nested
+sign_widget
 sign --entitlements "$entitlements" "$app"
 codesign --verify --strict --deep --verbose=2 "$app"
 
@@ -368,7 +378,12 @@ elif update_key_ok; then
     log "No appcast: the private update key is not in the keychain or SPARKLE_PRIVATE_KEY"
 fi
 
-(cd "$out" && shasum -a 256 "$(basename "$dmg")" "$(basename "$zip")" > SHA256SUMS)
+# A copy under a name that never changes, so the website's Download button can
+# link straight to the newest DMG: releases/latest/download/<name>.dmg.
+latest_dmg="$out/$name.dmg"
+cp "$dmg" "$latest_dmg"
+
+(cd "$out" && shasum -a 256 "$(basename "$dmg")" "$(basename "$latest_dmg")" "$(basename "$zip")" > SHA256SUMS)
 
 # The Homebrew cask for this DMG. Only a notarized release belongs in a cask:
 # Homebrew turns away apps that fail Gatekeeper.
@@ -382,7 +397,7 @@ if $publish; then
     # A draft creates no tag yet: publishing it tags $commit.
     release_url=$(gh release create "$tag" --repo "$repo" --draft --target "$commit" \
         --title "$name $version" --notes-file "$notes" \
-        "$dmg" "$zip" "$appcast" "$out/SHA256SUMS")
+        "$dmg" "$latest_dmg" "$zip" "$appcast" "$out/SHA256SUMS")
 fi
 
 size() { du -sh "$1" | cut -f1 | tr -d ' '; }
@@ -390,6 +405,7 @@ cat <<EOF
 
 Built $name $version, build $build_number ($($adhoc && echo "ad-hoc signed, not notarized" || echo "Developer ID signed, notarized and stapled")):
   $dmg  ($(size "$dmg"))
+  $latest_dmg  (same DMG, stable name for the website)
   $zip  ($(size "$zip"))
   $out/SHA256SUMS
   $notes${appcast:+

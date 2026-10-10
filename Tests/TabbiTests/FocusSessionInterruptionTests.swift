@@ -10,21 +10,18 @@ import TabbiKitCore
 /// full on the next launch.
 @MainActor
 final class FocusSessionInterruptionTests: XCTestCase {
-    private var suite: String!
     private var defaults: UserDefaults!
     private var folder: URL!
     private let workspace = NotificationCenter()
     private let app = NotificationCenter()
 
     override func setUp() async throws {
-        suite = "FocusSessionInterruptionTests.\(UUID().uuidString)"
-        defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defaults = InMemoryDefaults()
         folder = FileManager.default.temporaryDirectory
             .appendingPathComponent("FocusSessionInterruptionTests-\(UUID().uuidString)", isDirectory: true)
     }
 
     override func tearDown() async throws {
-        defaults.removePersistentDomain(forName: suite)
         try? FileManager.default.removeItem(at: folder)
     }
 

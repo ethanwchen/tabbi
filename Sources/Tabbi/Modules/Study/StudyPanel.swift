@@ -482,7 +482,7 @@ private struct StudyTodayRow: View {
                     .foregroundStyle(Theme.Palette.tertiaryText)
                     .fixedSize()
             }
-            Label(showsGoal ? "\(studied) of \(StudyTimerFormat.studied(minutes: goal.minutes))" : studied,
+            Label(showsGoal ? StudyTimerFormat.studied(minutes: today.minutes, of: goal.minutes) : studied,
                   systemImage: metGoal ? "checkmark.seal.fill" : "clock")
                 .foregroundStyle(metGoal ? accent : Theme.Palette.secondaryText)
                 .fixedSize()

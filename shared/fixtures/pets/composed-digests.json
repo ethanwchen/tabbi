@@ -333,6 +333,50 @@
     {
       "dress" : {
         "accessories" : [
+          "backwardsCap"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "26a8a3ccc9790ddbe2bb4a620fb74181b3c6ae9a4243c56417dff4879b6fb2bb"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flameHeadband"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "78d0168760a63148235a00c8bbfad4b6eaabe87489fb3d7c6b1465d82f14822f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "goldenLaurel"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "82dfb61b262a1114ccb006185760b11daacf71f875cfc6190d831becd72fb86b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "teamMedal"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "031114cabed6c4854d870f482ef11ea6741a8174ad9f5e79594d34a0b322ca2d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "stethoscope",
           "roundGlasses",
           "surgicalCap"
@@ -709,6 +753,50 @@
       },
       "frameCount" : 125,
       "sha256" : "c85d2febe86f102c4789acb928d6ed663c3fb6cc6c1e8cfdbbb13bedc6c103c7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "backwardsCap"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "26a8a3ccc9790ddbe2bb4a620fb74181b3c6ae9a4243c56417dff4879b6fb2bb"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flameHeadband"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "78d0168760a63148235a00c8bbfad4b6eaabe87489fb3d7c6b1465d82f14822f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "goldenLaurel"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "82dfb61b262a1114ccb006185760b11daacf71f875cfc6190d831becd72fb86b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "teamMedal"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "031114cabed6c4854d870f482ef11ea6741a8174ad9f5e79594d34a0b322ca2d"
     },
     {
       "dress" : {
@@ -1093,6 +1181,50 @@
     {
       "dress" : {
         "accessories" : [
+          "backwardsCap"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b6f7a3741433862b4d3d876cca509734d14740a8fefe2698987a5f29a823cadf"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flameHeadband"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "bacb8472c61be22d2abeb25035a1e32b25b5566eda55fa110f4ca1d0b1aecea6"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "goldenLaurel"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "2144ccdcea4c2bb47d212368f99299e50f27c99b048c1322bb8a55c80ff6f5a2"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "teamMedal"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "70df68cc0ea73df1d76ccb52351a8f04c1e5fcf089b8a1bee9054ef0d7fcb2c3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "stethoscope",
           "roundGlasses",
           "surgicalCap"
@@ -1469,6 +1601,50 @@
       },
       "frameCount" : 125,
       "sha256" : "aa1b888bda9a2312a6d1111756dad5f66482ef4562849cb7e21d5da2d90242d3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "backwardsCap"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "732b7a94c959a3ead466d94bb1bceb85c60938fa1bc960a6adf0a0f0701e25e5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flameHeadband"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ce30121d3ab6db8af0e73c8363a8040c35a663373640fa2eff7c50f1d328edc5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "goldenLaurel"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "fe7318831cad6413a4114a76120ea982b5a7b0addccec3a2ffdb632fe861ca72"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "teamMedal"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3b364eca0ac83cb1a5554afcc2a9bf8d0d985d52fe79a1cd2e7a6ce0ca1a3eff"
     },
     {
       "dress" : {
@@ -1853,6 +2029,50 @@
     {
       "dress" : {
         "accessories" : [
+          "backwardsCap"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "772ee3ba8cadd158e9868650112e34fc7345b011581a778d82202abde1b54c73"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flameHeadband"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4534c502b330a3e4b526b23666bb087ad174fa46d5a6063f929d70e61512888a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "goldenLaurel"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "02caf9da10e4711b1dfc97ffcbb7127270d9a5bedac0077353f7e7d872cb97b4"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "teamMedal"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7446144953bdfe38ae6089b76454615c10f8170928b357704b5e0b56e58ed5a2"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "stethoscope",
           "roundGlasses",
           "surgicalCap"
@@ -2229,6 +2449,50 @@
       },
       "frameCount" : 125,
       "sha256" : "cf6058cc13033569545fc489101242aa3e412d6432be5927f291b31fd0bfb97f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "backwardsCap"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e7f19af7c560d0cb1c9a2cf16e1d03094f1f376aa91c4f48d6164d43d8617e4b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flameHeadband"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "6242bb939e64cbc040d949380da962399898ad43ee681d282ce4f3352d3b2aff"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "goldenLaurel"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1458fba45510063f2abc1542db90aaf319ee7e63b275cb22d27ceb7c30ca2c6f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "teamMedal"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "2fbd39620358ab5d385c7f812c2194e5a99054c68991ed3922836f3e5874c258"
     },
     {
       "dress" : {
@@ -2613,6 +2877,50 @@
     {
       "dress" : {
         "accessories" : [
+          "backwardsCap"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1b8df141ed68a16eb12b03adfcfc296071294e0a78800e8b1e80f70f4dd8fae1"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flameHeadband"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e14f9a6a3395054205a62a7c4000a86b315a0fe9061cfed3b51b216446db4e67"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "goldenLaurel"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "264e62271c2d50fa6ff5a28bd0438a9338cc764ba7cdfe562146e79a423635f5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "teamMedal"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8d3dd8b13cb1ff72c2a4858c12802e6ba69fea2d0e609648c678b298d6d05fdc"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "stethoscope",
           "roundGlasses",
           "surgicalCap"
@@ -2989,6 +3297,50 @@
       },
       "frameCount" : 125,
       "sha256" : "bf726a4621b6e5bfb368f45887b9ddad5b168bec1e7848aeb1bfe120a8598ab8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "backwardsCap"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "727f6465a82f68eaa59ffd5d51a0f8bf6e44773b1e1e66b7fd75a0c08b9c3a7c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flameHeadband"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "dfcd57327302a06b63b8981ad23865589411aee964bdd6848cdd54013640a459"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "goldenLaurel"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "2ca8bc2c316cf8d87611fe919e7a78b8dccdf5d6cfe23ebd1a48b9e88bc0e3de"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "teamMedal"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "386aa60e4ab86cb76742d66b68abc7e928344766ad222b46656973b5dff024ee"
     },
     {
       "dress" : {
@@ -3373,6 +3725,50 @@
     {
       "dress" : {
         "accessories" : [
+          "backwardsCap"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f3635a5bb61626a88de6375c50c4db23714aa9137044b5aafa109821455f99a0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flameHeadband"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "05296fc3a89e79a4d759529e68a235a4ad6f5d68b4727f999ca1667dd2b2397d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "goldenLaurel"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ddc8852c9b46d0c5cf36f12b2fdee837a01ed45b7ba1e562f7a893a0e6ab59e7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "teamMedal"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f220b2abf84e5b102b5d712f6d7f319a9323e5a3de1fd90c64c93e96ed80457b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "stethoscope",
           "roundGlasses",
           "surgicalCap"
@@ -3749,6 +4145,50 @@
       },
       "frameCount" : 125,
       "sha256" : "a49938d0919573d6c5ece109783c0afaff2a4d590323e440e33e3930dd2c1ef1"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "backwardsCap"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "285ad594ea2d23318bdaaaa38c6934455bba737f62a4e03cfe1edfefa3670185"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flameHeadband"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "85c471597a8737f0fdceb395ca9e4691b86261be9a952ee2f06f9eebe23ef4cc"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "goldenLaurel"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c861b0256c07815a1c28c1a326686a38e5f02d012983eaaa5c0c2f73e269153f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "teamMedal"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c25725c37ad00c372b38291749c40acf5d9dad0111ec17c4b02a97fa804e00b7"
     },
     {
       "dress" : {
@@ -4133,6 +4573,50 @@
     {
       "dress" : {
         "accessories" : [
+          "backwardsCap"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "77d7f6866b00a879a4379f827368be09a189fdf5b1f2acf68f22fe66247c04ce"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flameHeadband"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "56dd1358c1ead0d4231b06d7478f69182e8128ba85a21e71dfc5d165945638a7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "goldenLaurel"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f41f6c5e89808453ff797dcc6c926e64676d5fcf64e645657956784ba92efb3d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "teamMedal"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "76c90b0e113a0957d2395a5374c437d6dd67d8284dd421a0fb8fa93636e0801f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "stethoscope",
           "roundGlasses",
           "surgicalCap"
@@ -4509,6 +4993,50 @@
       },
       "frameCount" : 125,
       "sha256" : "ddf83b5de737b00af9589fcf9773b7b50baacf6d19faccbc73369beba9e3fb3e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "backwardsCap"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ca113a3f8da110e4742660b85ebee133db9ee7e5882bf9c8449b8719fc3a2812"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flameHeadband"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "6385f55fce1946ac9e50038a0d9523bb16efeccf6a720c4e394ef1f70b1de25e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "goldenLaurel"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "41678d7cc283c2471efbda34ae9760a76b49f71feb1843c3aef29ef692a0ee3f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "teamMedal"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "9ce8b996d7d92ffd903b0d90bc6b9f13166663d2fcd379efe5c7b410f71cf120"
     },
     {
       "dress" : {
@@ -4893,6 +5421,50 @@
     {
       "dress" : {
         "accessories" : [
+          "backwardsCap"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f5c630029e3549b15affe16238bc5eb6b4241c76651362ccc969935f4e9182f7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flameHeadband"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b33b99d817bfbe4a0e70f9423ea06bbe434a35b790e7891bab092452a5a3a75f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "goldenLaurel"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "063a615ab26cc77ba9128d350281a062d32877e418b8cb665cd5412ae0c17486"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "teamMedal"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b0c9677aedfe62af508e878892e2fb0548de2a6c414ae3a63ea5db1d44220037"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "stethoscope",
           "roundGlasses",
           "surgicalCap"
@@ -5269,6 +5841,50 @@
       },
       "frameCount" : 125,
       "sha256" : "65725268a9c1c98740d097ed1d3b58910c0bf59db036968fae980a2f410dc229"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "backwardsCap"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a3a30da3a9e555562c2e7d1b2e9aa45e6c20256a4b861c5e3601f937dceb58fd"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flameHeadband"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "9f3d6d218e0c10b73203cf721cbeac699e2021dac8edda2c2848663221d2beeb"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "goldenLaurel"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "2c9da44af93d366ff29b0195f34c3f773d907cda21b5d60823286992803fc2ea"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "teamMedal"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "88dcb43b746ee4d8d4c2cf27743ce021d7a2554954b0575cfc846dd8aa10aac8"
     },
     {
       "dress" : {
@@ -5653,6 +6269,50 @@
     {
       "dress" : {
         "accessories" : [
+          "backwardsCap"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7748e0fd8ccff37b693d8159493ff361cc4dabff00fc593bce9232a9bf00a6f7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flameHeadband"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8bff7c3dfcb6795ad4ad99349eaf51ec7cca9f10068931664c5166897fe8eb53"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "goldenLaurel"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "696cc329811b4cfa3e3bb8b65a93459f81b6175455822d83f4c67d2dceb1f1f5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "teamMedal"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "38dd89459173d4a53d988d8a2561a1303ca7a393266942141954c03bfa546f42"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "stethoscope",
           "roundGlasses",
           "surgicalCap"
@@ -6029,6 +6689,50 @@
       },
       "frameCount" : 125,
       "sha256" : "d5f9c2bb407c13ee442b2109182ea3cd5a10add9a70cfee2f415c805d4aa8195"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "backwardsCap"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a7cfc98bbf507a7b8abfa4e6f8076e17793281069705088cbe3bee1f20739eee"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flameHeadband"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c8c63ac944e7e8f7cd9b0b37dcd1340db0490bf93973b3a801343a47ac2bf7c3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "goldenLaurel"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "5920389b7355407c10b174f128c5449d6b9553ef0d9e6c8307f8a1f9b3bb234f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "teamMedal"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7a870c7cbd36b3168404ca9d448e18dc4f2db54daa0ff0dfd8f8051842a02adc"
     },
     {
       "dress" : {
@@ -6413,6 +7117,50 @@
     {
       "dress" : {
         "accessories" : [
+          "backwardsCap"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f704c9315bd2b843bd760347f50134adacf2da70ac6bf1da91ad683db804555c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flameHeadband"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "9ce1540e3c5f9c683baa038adf2c09722c7e9a10f22eb1ee46f1638fc0148205"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "goldenLaurel"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "43ed7a50792f0f4b3df7802056a6ea9b6c835c54d90524d3998b531f6f8aaa0a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "teamMedal"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ea8f423970b458abfa7e395d89382f1d48b40296a459c7bf1b6a169ab32ff2f2"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "stethoscope",
           "roundGlasses",
           "surgicalCap"
@@ -6789,6 +7537,50 @@
       },
       "frameCount" : 125,
       "sha256" : "a7d6f6651e5317264bbdaea60d41aaad63585c6730cdefa2675a0187727eabad"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "backwardsCap"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "5857895efeac96343e42205567b8891a96918e7547559397af46dbd6d893ea64"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "flameHeadband"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "dcb152c0247db0957cb660371d9cda9d4f44d02ff809870bd9ba1f1cd8333d05"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "goldenLaurel"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3acbc6cf825495179b92a172b7ab45d995884d39d9f98d45e8b7ad9f3ebe0bcd"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "teamMedal"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4bc92afd6799769754cb04d3cc09579bd329d0e9846ca60621636212fe37fa54"
     },
     {
       "dress" : {

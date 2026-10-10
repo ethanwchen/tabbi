@@ -6,6 +6,7 @@
 
 import hashlib
 import http.server
+import io
 import json
 import pathlib
 import re
@@ -14,7 +15,7 @@ import sys
 import zipfile
 from html.parser import HTMLParser
 
-from _partials import page, download_button, PAW, DOWNLOAD, GITHUB, ISSUES, ORIGIN, SUPPORT_EMAIL
+from _partials import page, download_button, PAW, DOWNLOAD, GITHUB, ISSUES, ORIGIN, SUGGESTIONS, SUPPORT_EMAIL
 from _legal import PRIVACY, PRIVACY_HERO, TERMS, TERMS_HERO
 
 HERE = pathlib.Path(__file__).parent
@@ -72,13 +73,18 @@ HOME_HERO = {
     'cta': f'''<div class="cta">{download_button()}</div>
         <p class="cta-note">Free, macOS 14+</p>''',
     'eyebrow': '<img class="hero-icon" src="/img/icon-256.webp" width="256" height="256" alt="The Tabbi app icon: a cream British Shorthair cat with blue eyes on a golden yellow square">',
-    # A drawn laptop with the real Timer panel hanging from its notch.
-    # notch-timer.webp is timer.webp cropped to the panel (see README).
-    # pixel-cat.png is the app's gray tabby sprite, sitting and blinking.
+    # A drawn laptop whose screen plays the app in use, rendered from its
+    # demo snapshots by _hero_video.py (see README). The source only matches
+    # without reduced motion, so then nothing loads and the poster stays.
+    # The animated WebP is for browsers without video; lazy, so others never
+    # fetch it. pixel-cat.png is the app's gray tabby sprite, sitting and blinking.
     'art': '''<div class="laptop">
         <span class="pixel-cat" aria-hidden="true"></span>
         <div class="laptop-screen">
-          <img class="laptop-panel" src="/img/notch-timer.webp" width="880" height="376" alt="Tabbi open in a laptop notch on its Timer tab: a Pomodoro ring at 15:14 with focus sounds">
+          <video class="laptop-video" autoplay muted loop playsinline disableremoteplayback poster="/img/hero-poster.webp" width="1200" height="750" aria-label="Tabbi in use: clicking the notch opens the Timer, then Today, where a task gets checked off and the pet cheers">
+            <source src="/img/hero.mp4" type="video/mp4" media="(prefers-reduced-motion: no-preference)">
+            <img src="/img/hero-fallback.webp" width="600" height="375" loading="lazy" alt="Tabbi in use: clicking the notch opens the Timer, then Today, where a task gets checked off and the pet cheers">
+          </video>
         </div>
         <div class="laptop-base"></div>
       </div>''',
@@ -94,7 +100,7 @@ HOME = f'''
             <figcaption><strong>{name}</strong>{line}</figcaption>
           </figure>''' for img, label, name, line, alt in TABS) + '''
         </div>
-        <p class="more">And more fun tabs inside.</p>
+        <p class="more">And more fun tabs inside. Missing one? <a href="/suggest">Suggest a tab</a>.</p>
         <div class="card-pair">
           <a class="gh-card" href="''' + GITHUB + '''">
             <img class="gh-cat" src="/img/glyph.png" width="56" height="56" alt="">
@@ -174,7 +180,7 @@ SUPPORT = f'''
       <h2>Common questions</h2>
 
 {faq('How do I install Tabbi?', f"""          <ol>
-            <li>Download <strong>Tabbi-&lt;version&gt;.dmg</strong> from the <a href="{DOWNLOAD}">latest release</a>.</li>
+            <li>Click <a href="{DOWNLOAD}">Download for Mac</a> to get <strong>Tabbi.dmg</strong>, the newest version.</li>
             <li>Open it and drag <strong>Tabbi</strong> onto the <strong>Applications</strong> folder.</li>
             <li>Open Tabbi from Applications. macOS asks once whether to open an app downloaded from the Internet: click <strong>Open</strong>.</li>
           </ol>
@@ -268,6 +274,57 @@ ABOUT = f'''
 '''
 
 
+# --------------------------------------------------------------------------
+# Suggest
+# --------------------------------------------------------------------------
+
+# A plain form, no script: it posts to the friends backend, which answers with
+# a redirect to /thanks. The "website" field is a honeypot: people never see
+# it, bots fill it in, and the backend drops anything that arrives with it.
+SUGGEST_CATEGORIES = [
+    ('tab', 'A new tab'),
+    ('integration', 'An integration'),
+    ('improvement', 'An improvement'),
+    ('other', 'Something else'),
+]
+
+SUGGEST = f'''
+      <form class="suggest" action="{SUGGESTIONS}" method="post">
+        <div class="field">
+          <label for="category">What kind of idea?</label>
+          <select id="category" name="category">
+''' + '\n'.join(f'            <option value="{value}">{label}</option>' for value, label in SUGGEST_CATEGORIES) + '''
+          </select>
+        </div>
+        <div class="field">
+          <label for="message">Your idea</label>
+          <textarea id="message" name="message" rows="6" minlength="10" maxlength="2000" required placeholder="A tab for my plants, so I remember to water them."></textarea>
+        </div>
+        <div class="field">
+          <label for="email">Email <span class="optional">(optional)</span></label>
+          <input id="email" name="email" type="email" maxlength="254" autocomplete="email" aria-describedby="email-note">
+          <p class="note" id="email-note">Only to ask about or reply to this idea. Never a newsletter.</p>
+        </div>
+        <div class="hp" aria-hidden="true">
+          <label for="website">Leave this empty</label>
+          <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+        </div>
+        <button class="btn" type="submit">Send suggestion</button>
+      </form>
+'''
+
+THANKS = '''
+      <div class="lost">
+        <img src="/img/glyph.png" width="128" height="128" alt="">
+        <p class="measure">Every idea gets read. If you left an email, you may hear back.</p>
+        <div class="cta center">
+          <a class="btn" href="/">Back to the start</a>
+          <a class="btn soft" href="/suggest">Suggest another</a>
+        </div>
+      </div>
+'''
+
+
 NOT_FOUND = '''
       <div class="lost">
         <img src="/img/glyph.png" width="128" height="128" alt="">
@@ -295,6 +352,13 @@ pages = [
     ('terms.html', 'Terms of Use | Tabbi',
      'The terms for using the Tabbi app and its optional friends service.',
      TERMS, {'title': TERMS_HERO[0], 'subtitle': TERMS_HERO[1]}, False, True),
+    ('suggest.html', 'Suggest | Tabbi',
+     'Suggest a new tab, an integration or an improvement for Tabbi.',
+     SUGGEST, {'title': 'Suggest', 'subtitle': 'An idea for a new tab, an integration or something better? Tell the cat.'}, False, True),
+    # Where the suggestion backend redirects after a post.
+    ('thanks.html', 'Thank you | Tabbi',
+     'Your suggestion reached Tabbi.',
+     THANKS, {'title': 'Thank you!', 'subtitle': 'Your idea is in the cat&rsquo;s inbox.'}, False, False),
     # Cloudflare Pages serves 404.html for anything it cannot find.
     ('404.html', 'Not found | Tabbi',
      'That page is not here.',
@@ -320,7 +384,7 @@ class Refs(HTMLParser):
         a = dict(attrs)
         if 'id' in a:
             self.ids.add(a['id'])
-        for key in ('href', 'src'):
+        for key in ('href', 'src', 'poster'):
             value = a.get(key)
             if value and (value.startswith('/') or value.startswith('#')) and not value.startswith('//'):
                 self.refs.append(value)
@@ -383,23 +447,50 @@ def check_scripts():
                 raise SystemExit(f'{html_file.name}: JSON-LD needs a schema.org @context and an @type')
 
 
+FORM_RE = re.compile(r'<form [^>]*action="([^"]+)"')
+
+
+def check_forms():
+    """Every form must post to an origin the CSP's form-action allows, or
+    the browser refuses to send it and the visitor's words are lost."""
+    csp = dict(SITE_HEADERS).get('Content-Security-Policy', '')
+    allowed = next((d.split()[1:] for d in csp.split(';') if d.split()[:1] == ['form-action']), [])
+    for html_file in sorted(OUT.glob('*.html')):
+        for action in FORM_RE.findall(html_file.read_text()):
+            origin = '/'.join(action.split('/')[:3]) if '://' in action else "'self'"
+            if origin not in allowed:
+                raise SystemExit(f'{html_file.name}: a form posts to {origin}, which form-action in _headers does not allow')
+
+
 # The whole home page should stay under about 600 KB, fonts included.
 PAGE_BUDGET = 500 * 1024
 ASSET_RE = re.compile(r'/(?:img|assets|fonts)/[A-Za-z0-9._-]+')
 # Fetched only for link previews, search results or a home screen icon, not
 # by the page.
 NOT_LOADED_RE = re.compile(r'<meta [^>]*>|<link rel="apple-touch-icon"[^>]*>|<script type="application/ld\+json">.*?</script>', re.S)
+# A video streams in after the page is up, so it has a budget of its own.
+# Its poster is part of the page; the rest (the clip and the fallback for
+# browsers without video, which others never fetch) is counted here.
+MEDIA_BUDGET = 2 * 1024 * 1024
+VIDEO_RE = re.compile(r'<video\b(?:[^>]*?\bposter="([^"]*)")?[^>]*>(.*?)</video>', re.S)
 
 
 def check_weight(stylesheet):
     """Every page, with its stylesheet and every image it can load (both
-    sizes of a srcset, so this is a ceiling), must fit PAGE_BUDGET."""
+    sizes of a srcset, so this is a ceiling), must fit PAGE_BUDGET, and
+    every file inside a video must fit MEDIA_BUDGET."""
     css = (OUT / stylesheet.lstrip('/')).read_text()
     css_assets = set(ASSET_RE.findall(css))
     report = []
     for html_file in sorted(OUT.glob('*.html')):
-        html = html_file.read_text()
-        assets = set(ASSET_RE.findall(NOT_LOADED_RE.sub('', html))) | css_assets
+        html = NOT_LOADED_RE.sub('', html_file.read_text())
+        for media in ASSET_RE.findall(''.join(inner for _poster, inner in VIDEO_RE.findall(html))):
+            size = (OUT / media.lstrip('/')).stat().st_size
+            report.append(f'{media.rsplit("/", 1)[1]} {size // 1024} KB')
+            if size > MEDIA_BUDGET:
+                raise SystemExit(f'{html_file.name}: {media} is {size // 1024} KB; a video\'s budget is {MEDIA_BUDGET // 1024} KB')
+        page = VIDEO_RE.sub(lambda m: m.group(1) or '', html)
+        assets = set(ASSET_RE.findall(page)) | css_assets
         total = len(html.encode()) + sum((OUT / a.lstrip('/')).stat().st_size for a in assets)
         report.append(f'{html_file.name} {total // 1024} KB')
         if total > PAGE_BUDGET:
@@ -436,7 +527,7 @@ def build():
     # hash in the name makes that promise true.
     fingerprints = {}
     for src in sorted((HERE / 'img').iterdir()):
-        if src.suffix in ('.png', '.gif', '.jpg', '.webp', '.svg'):
+        if src.suffix in ('.png', '.gif', '.jpg', '.webp', '.svg', '.mp4'):
             fingerprints['/img/' + src.name] = fingerprint(src, 'img')
     # Fonts land in /assets/ with the stylesheet, which is cached the same way.
     for src in sorted((HERE / 'fonts').glob('*.woff2')):
@@ -479,6 +570,7 @@ def build():
 
     check_links()
     check_scripts()
+    check_forms()
     check_weight(fingerprints['/styles.css'])
 
     biggest = max((f for f in OUT.rglob('*') if f.is_file()), key=lambda f: f.stat().st_size)
@@ -524,6 +616,11 @@ class PagesHandler(http.server.SimpleHTTPRequestHandler):
         # The headers _headers sets for every path, CSP included, so a
         # preview fails the same way production would.
         for name, value in SITE_HEADERS:
+            # WebKit applies upgrade-insecure-requests even to localhost, so
+            # over plain http every stylesheet, font and image would fail.
+            # Production is https, where the directive changes nothing.
+            if name == 'Content-Security-Policy':
+                value = value.replace('; upgrade-insecure-requests', '')
             self.send_header(name, value)
         super().end_headers()
 
@@ -539,7 +636,29 @@ class PagesHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(body)
             return None
         self.path = '/' + str(target.relative_to(OUT))
+        # Safari plays a video only from a server that answers byte ranges,
+        # as Cloudflare Pages does.
+        ranged = RANGE_RE.fullmatch(self.headers.get('Range', ''))
+        if ranged and (ranged.group(1) or ranged.group(2)):
+            data = target.read_bytes()
+            first, last = ranged.groups()
+            if first:
+                start, end = int(first), min(int(last) if last else len(data) - 1, len(data) - 1)
+            else:
+                start, end = max(0, len(data) - int(last)), len(data) - 1
+            if start > end:
+                self.send_error(416)
+                return None
+            self.send_response(206)
+            self.send_header('Content-Type', self.guess_type(str(target)))
+            self.send_header('Content-Range', f'bytes {start}-{end}/{len(data)}')
+            self.send_header('Content-Length', str(end - start + 1))
+            self.end_headers()
+            return io.BytesIO(data[start:end + 1])
         return super().send_head()
+
+
+RANGE_RE = re.compile(r'bytes=(\d*)-(\d*)')
 
 
 if __name__ == '__main__':

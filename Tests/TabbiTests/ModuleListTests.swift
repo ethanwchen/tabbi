@@ -45,7 +45,7 @@ final class ModuleListTests: XCTestCase {
         let declared = Dictionary(uniqueKeysWithValues: ModuleList.catalog.descriptors.map {
             ($0.id, Set($0.network.map(\.host)))
         })
-        XCTAssertEqual(declared[.spotify], ["i.scdn.co"])
+        XCTAssertEqual(declared[.spotify], ["i.scdn.co", "i1.sndcdn.com"])
         XCTAssertEqual(declared[.anki], [URLSessionAnkiConnectTransport.defaultEndpoint.host()!])
         XCTAssertEqual(declared[.party], [PartyServer.productionURL.host()!])
         // Ask, Plan my day, Wrap up and Refine send to the provider the user picks.

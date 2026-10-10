@@ -8,18 +8,18 @@ import Foundation
 /// connecting); then the current selection, so the panel doesn't flip
 /// between equally idle apps. Apps that aren't running are never selected.
 public struct MediaSourceTracker: Equatable, Sendable {
-    public private(set) var statuses: [MediaSource: SpotifyStatus] = [:]
+    public private(set) var statuses: [NowPlayingSource: SpotifyStatus] = [:]
     /// The app the panel follows; nil while no player app is running.
-    public private(set) var selected: MediaSource?
+    public private(set) var selected: NowPlayingSource?
     /// When each app last went from not playing to playing.
-    private var playingSince: [MediaSource: Date] = [:]
+    private var playingSince: [NowPlayingSource: Date] = [:]
     /// The last moment each app was known to be playing.
-    private var lastPlaying: [MediaSource: Date] = [:]
+    private var lastPlaying: [NowPlayingSource: Date] = [:]
 
     public init() {}
 
     /// Records `source`'s newest status, observed at `date`, and reselects.
-    public mutating func update(_ source: MediaSource, status: SpotifyStatus, at date: Date) {
+    public mutating func update(_ source: NowPlayingSource, status: SpotifyStatus, at date: Date) {
         let wasPlaying = statuses[source]?.isPlaying ?? false
         if status.isPlaying {
             if !wasPlaying { playingSince[source] = date }
@@ -32,23 +32,24 @@ public struct MediaSourceTracker: Equatable, Sendable {
         selected = select()
     }
 
-    /// What the panel shows: the selected app's status, or, with no player
-    /// running, `notRunning` when any known app is installed.
+    /// What the panel shows: the selected player's status, or, with no
+    /// player running, `notRunning` when any known music app is installed.
+    /// Browsers don't count: they are not music apps to open.
     public var status: SpotifyStatus {
         if let selected, let status = statuses[selected] { return status }
-        return statuses.values.contains(.notRunning) ? .notRunning : .notInstalled
+        return installedSources.isEmpty ? .notInstalled : .notRunning
     }
 
-    /// Apps that are installed (known from their last status).
+    /// Music apps that are installed (known from their last status).
     public var installedSources: [MediaSource] {
-        MediaSource.allCases.filter { source in
-            guard let status = statuses[source] else { return false }
+        MediaSource.allCases.filter { app in
+            guard let status = statuses[.app(app)] else { return false }
             return status != .notInstalled
         }
     }
 
-    private func select() -> MediaSource? {
-        let running = MediaSource.allCases.filter { statuses[$0]?.isRunning ?? false }
+    private func select() -> NowPlayingSource? {
+        let running = NowPlayingSource.all.filter { statuses[$0]?.isRunning ?? false }
         let playing = running.filter { statuses[$0]?.isPlaying ?? false }
         if !playing.isEmpty {
             return best(of: playing) { playingSince[$0] }
@@ -57,15 +58,15 @@ public struct MediaSourceTracker: Equatable, Sendable {
     }
 
     /// The candidate with the newest date; ties go to the more useful status,
-    /// then the current selection, then `MediaSource.allCases` order.
-    private func best(of candidates: [MediaSource], date: (MediaSource) -> Date?) -> MediaSource? {
+    /// then the current selection, then `NowPlayingSource.all` order.
+    private func best(of candidates: [NowPlayingSource], date: (NowPlayingSource) -> Date?) -> NowPlayingSource? {
         candidates.enumerated().max { lhs, rhs in
             rank(lhs.element, order: lhs.offset, date: date) < rank(rhs.element, order: rhs.offset, date: date)
         }?.element
     }
 
-    private func rank(_ source: MediaSource, order: Int,
-                      date: (MediaSource) -> Date?) -> (Double, Int, Int, Int) {
+    private func rank(_ source: NowPlayingSource, order: Int,
+                      date: (NowPlayingSource) -> Date?) -> (Double, Int, Int, Int) {
         let time = date(source)?.timeIntervalSinceReferenceDate ?? -.infinity
         return (time, statuses[source]?.usefulness ?? 0, source == selected ? 1 : 0, -order)
     }
@@ -76,7 +77,7 @@ extension SpotifyStatus {
     public var isRunning: Bool {
         switch self {
         case .notInstalled, .notRunning: false
-        case .connecting, .permissionDenied, .connected: true
+        case .connecting, .permissionDenied, .scriptingDisabled, .connected: true
         }
     }
 
@@ -86,7 +87,7 @@ extension SpotifyStatus {
         case .notInstalled, .notRunning: 0
         case .connected(let playback): playback.track == nil ? 1 : 4
         case .connecting: 2
-        case .permissionDenied: 3
+        case .permissionDenied, .scriptingDisabled: 3
         }
     }
 }

@@ -1,0 +1,8 @@
+{
+  "items": [
+    { "id": "accessory.backwardsCap", "source": "event", "event": "launch-week" },
+    { "id": "accessory.flameHeadband", "source": "milestone", "milestone": "weekStreak" },
+    { "id": "accessory.goldenLaurel", "source": "milestone", "milestone": "fiftyHours" },
+    { "id": "accessory.teamMedal", "source": "milestone", "milestone": "firstParty" }
+  ]
+}

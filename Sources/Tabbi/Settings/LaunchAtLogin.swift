@@ -2,11 +2,13 @@ import Foundation
 import ServiceManagement
 import TabbiKitCore
 
-/// Registers Tabbi as a login item through `SMAppService.mainApp`.
+/// Registers Tabbi as a login item, through `SMAppService.mainApp` in the app.
 ///
 /// The system, not our defaults, is the source of truth: the user can remove
-/// the item in System Settings › General › Login Items at any time.
-enum LaunchAtLogin {
+/// or approve the item in System Settings › General › Login Items at any
+/// time, so `SettingsStore` reads `status` again whenever Tabbi comes back
+/// to the front. Tests pass a stand-in for the system.
+struct LaunchAtLogin {
     enum Failure: LocalizedError {
         case notBundled
 
@@ -15,28 +17,49 @@ enum LaunchAtLogin {
         }
     }
 
-    /// `SMAppService` can only register a real `.app` bundle, not a `swift run` binary.
-    static var isAvailable: Bool { Bundle.main.bundleURL.pathExtension == "app" }
+    enum Status: Equatable {
+        case off
+        case on
+        /// Registered, but blocked in System Settings › Login Items.
+        case needsApproval
+    }
+
+    /// False for a `swift run` binary, which `SMAppService` cannot register.
+    var isAvailable: Bool
+    var status: () -> Status
+    var register: () throws -> Void
+    var unregister: () throws -> Void
+
+    /// The app's own login item.
+    static var system: LaunchAtLogin {
+        LaunchAtLogin(
+            // `SMAppService` can only register a real `.app` bundle.
+            isAvailable: Bundle.main.bundleURL.pathExtension == "app",
+            status: {
+                switch SMAppService.mainApp.status {
+                case .enabled: .on
+                case .requiresApproval: .needsApproval
+                default: .off
+                }
+            },
+            register: { try SMAppService.mainApp.register() },
+            unregister: { try SMAppService.mainApp.unregister() }
+        )
+    }
 
     /// True when registered, including when macOS still waits for the user's approval.
-    static var isEnabled: Bool {
-        guard isAvailable else { return false }
-        let status = SMAppService.mainApp.status
-        return status == .enabled || status == .requiresApproval
-    }
+    var isEnabled: Bool { isAvailable && status() != .off }
 
     /// True when the item is registered but blocked in System Settings › Login Items.
-    static var needsApproval: Bool {
-        isAvailable && SMAppService.mainApp.status == .requiresApproval
-    }
+    var needsApproval: Bool { isAvailable && status() == .needsApproval }
 
-    static func setEnabled(_ enabled: Bool) throws {
+    func setEnabled(_ enabled: Bool) throws {
         guard isAvailable else { throw Failure.notBundled }
         guard enabled != isEnabled else { return }
         if enabled {
-            try SMAppService.mainApp.register()
+            try register()
         } else {
-            try SMAppService.mainApp.unregister()
+            try unregister()
         }
     }
 }

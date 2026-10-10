@@ -14,6 +14,7 @@ Per user, identified only by a random secret token (stored as a SHA-256 hash) an
 - the friend codes you blocked, and when;
 - reports you send about another user: their friend code, their name and pet name at that moment, your friend code, the reason you picked, your optional note (up to 280 characters) and the time;
 - if the maintainer acts on a report: whether you are banned, and every name and pet name they replaced, so they cannot be set again;
+- the ids of limited edition pet items the maintainer gave you for free (for example the launch-week cap), and when;
 - the party you are in, when you joined it, and, for the party itself, its 6-character code, its host, its last activity time and the shared session the host started (study method and phase end).
 
 Only if you choose to sign in with Apple, so your pet and progress follow you across your Macs:
@@ -32,6 +33,15 @@ The service never stores your name or email from Apple: the app asks Apple only 
 To check a sign-in and to revoke it on deletion, the Worker talks to Apple (`appleid.apple.com`); it sends Apple only the token or code the app received from Apple.
 Cloudflare, which hosts the Worker, sees connection metadata like any web host.
 The Worker uses the client IP only in memory to rate-limit registration, sign-ins and bad tokens, and never writes it to storage.
+For troubleshooting, the Worker keeps short log lines at Cloudflare for up to 7 days: the kind of request (for example `POST /v1/friends/:id`, with every code and id removed), its status and duration, and the name of any internal error.
+It logs every failed request and a random 1 in 100 of the rest.
+Logs never contain tokens, friend or party codes, names, request contents or IP addresses.
+
+## Suggestions from the website
+
+The website's Suggest form sends the service an idea: its category, the message and, only if you add one, an email address to reply to, with the time it arrived.
+A suggestion is not linked to a friend code, an account or an IP address.
+Only the maintainer reads it, uses the email only to ask about or reply to that idea, and deletes it when it is no longer needed, at the latest after 365 days.
 
 ## Who can see it
 
@@ -55,7 +65,7 @@ Leaving a party (`POST /v1/party/leave`) removes your membership; a party is del
 Removing a friend deletes the friendship in both directions.
 Unblocking someone deletes the block.
 A report stays until the account of the reporter or of the reported user is deleted.
-Deleting your account calls `DELETE /v1/me`, which erases your profile, presence, daily study minutes, friend list, sync document, Apple account link, blocks (yours, and others' blocks of you), reports by you or about you, and any ban or replaced name, removes you from your friends' lists, and takes you out of your party.
+Deleting your account calls `DELETE /v1/me`, which erases your profile, presence, daily study minutes, friend list, sync document, Apple account link, blocks (yours, and others' blocks of you), reports by you or about you, any ban or replaced name, and your limited edition items, removes you from your friends' lists, and takes you out of your party.
 If you signed in with Apple, it then revokes the app's Sign in with Apple grant with Apple.
 Your secret token, and the token of every other Mac you signed in on, stops working at once.
 Signing out on one Mac (`POST /v1/auth/signout`) deletes that Mac's token on the server; your account and other Macs stay signed in.
@@ -65,6 +75,13 @@ Reports between that code and your account are deleted, since they would now be 
 Deleted data leaves the live service at once.
 Copies can remain in backups for up to 30 days: Cloudflare keeps a 30-day point-in-time history of the storage, and the operator keeps encrypted exports for at most 30 days, used only to recover from an outage or a mistake.
 If the service is ever restored from a backup, every account deleted after that backup is deleted again right away.
+
+## Aggregate counts
+
+The maintainer can see a few totals the service counts from the data above, so they know how many people use it: how many friend codes and Apple sign-ins exist, how many users sent a heartbeat in the last day, week and month, how many new friend codes were created on each of the last 30 days, how many parties are open, and how many suggestions wait.
+These are counts only: they never name or identify anyone, and nothing is stored or sent for them.
+The app sends nothing extra; Tabbi has no tracking, analytics or telemetry of any kind.
+The number of installs comes from GitHub's public download count for each release, not from the app.
 
 ## No analytics, no third parties
 

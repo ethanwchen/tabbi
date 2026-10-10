@@ -6,6 +6,8 @@
   the Hardened Runtime blocks by default:
   - apple-events: Now Playing scripts Spotify and Music (NSAppleEventsUsageDescription).
   - calendars: Today and Plan my day use EventKit (NSCalendarsFullAccessUsageDescription).
+  - application-groups: the container the app shares with the desktop widget
+    (docs/widget.md); without it macOS may ask before the app writes there.
 -->
 <plist version="1.0">
 <dict>
@@ -13,5 +15,9 @@
     <true/>
     <key>com.apple.security.personal-information.calendars</key>
     <true/>
+    <key>com.apple.security.application-groups</key>
+    <array>
+        <string>B9VRALHV8S.dev.tabbi.Tabbi</string>
+    </array>
 </dict>
 </plist>

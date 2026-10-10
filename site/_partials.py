@@ -3,11 +3,16 @@
 from html import escape
 
 ORIGIN = 'https://tabbinotch.com'
-DOWNLOAD = 'https://github.com/ethanwchen/tabbi/releases/latest'
+# The newest DMG itself: every release also uploads it as Tabbi.dmg (scripts/release.sh).
+DOWNLOAD = 'https://github.com/ethanwchen/tabbi/releases/latest/download/Tabbi.dmg'
+RELEASES = 'https://github.com/ethanwchen/tabbi/releases'
 GITHUB = 'https://github.com/ethanwchen/tabbi'
 ISSUES = 'https://github.com/ethanwchen/tabbi/issues'
-RELEASES = 'https://github.com/ethanwchen/tabbi/releases'
 SUPPORT_EMAIL = 'support@tabbinotch.com'
+# The friends backend's suggestion inbox. The Suggest form posts here and the
+# backend answers with a redirect to /thanks; _headers' form-action allows
+# this origin, plus 'self' for that redirect, which browsers check too.
+SUGGESTIONS = 'https://tabbi-friends.drosophil-anki-friends-backend.workers.dev/v1/suggestions'
 
 # Links are root-relative and extensionless, the way Cloudflare Pages serves
 # them: /support answers with support.html, and /support.html redirects to
@@ -129,6 +134,7 @@ def page(slug, title, description, body, hero=None, wide=False, indexable=True, 
   <footer class="site">
     <nav class="wrap" aria-label="More">
       <a href="/support">Support</a>
+      <a href="/suggest">Suggest</a>
       <a href="/privacy">Privacy</a>
       <a href="/terms">Terms</a>
       <a href="{RELEASES}">What&rsquo;s new</a>

@@ -11,9 +11,7 @@ import TabbiKitCore
 @MainActor
 final class OnboardingStoreTests: XCTestCase {
     private func makeSettings(kitID: String = "essentials") -> SettingsStore {
-        let suite = "OnboardingStoreTests.\(UUID().uuidString)"
-        let defaults = UserDefaults(suiteName: suite)!
-        addTeardownBlock { defaults.removePersistentDomain(forName: suite) }
+        let defaults = InMemoryDefaults()
         return SettingsStore(catalog: ModuleList.catalog, defaults: defaults, defaultKitID: kitID, kitStore: nil,
                              integratesWithSystem: false)
     }

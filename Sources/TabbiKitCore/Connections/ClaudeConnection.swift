@@ -54,7 +54,7 @@ public enum ClaudeConnectionState: Hashable, Sendable {
                                     detail: "This takes a second.")
         case .notInstalled:
             return ConnectionStatus(light: .notInstalled, headline: "Claude is optional",
-                                    detail: "Claude is an AI helper that can plan your day and answer questions. Everything else works without it.",
+                                    detail: "It's an AI helper that can plan your day and answer questions. Everything else works without it.",
                                     action: .showGuide(.claudeInstall))
         case .signedOut:
             return ConnectionStatus(light: .needsStep, headline: "Sign in to Claude",

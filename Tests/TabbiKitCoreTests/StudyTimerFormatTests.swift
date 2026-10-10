@@ -96,6 +96,18 @@ final class StudyTimerFormatTests: XCTestCase {
         XCTAssertEqual(StudyTimerFormat.studied(minutes: 125), "2h 5m")
     }
 
+    /// The Timer tab's daily goal label reads the goal the way Today and
+    /// the closed notch do, and never mixes "min" with "h" ("0 min of 4h").
+    func testStudiedOfTheGoalKeepsOneStyle() {
+        for minutes in [0, 45, 60, 64, 125, 240] {
+            XCTAssertEqual(StudyTimerFormat.studied(minutes: minutes),
+                           DurationFormat.quantity(minutes, unit: StudyDailyGoal.unit))
+        }
+        XCTAssertEqual(StudyTimerFormat.studied(minutes: 0, of: 240), "0m of 4h")
+        XCTAssertEqual(StudyTimerFormat.studied(minutes: 64, of: 120), "1h 4m of 2h")
+        XCTAssertEqual(StudyTimerFormat.studied(minutes: 20, of: 45), "20 min of 45 min")
+    }
+
     func testPointsLabel() {
         XCTAssertEqual(StudyTimerFormat.points(0), "0 pts")
         XCTAssertEqual(StudyTimerFormat.points(-5), "0 pts")

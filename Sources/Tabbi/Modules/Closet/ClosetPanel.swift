@@ -14,13 +14,16 @@ struct ClosetPanel: View {
                 .frame(width: 164)
             Card {
                 VStack(alignment: .leading, spacing: Theme.Spacing.s) {
-                    // The Compact panel has no room for "pts" beside the pills.
+                    // The Compact panel has no room for "pts" beside the pills,
+                    // nor for the titles of the sections not open.
                     ViewThatFits(in: .horizontal) {
                         header(showsUnit: true)
                         header(showsUnit: false)
+                        header(showsUnit: false, titlesAll: false)
                     }
                     switch store.section {
                     case .wardrobe: ClosetWardrobe(store: store)
+                    case .limited: ClosetLimited(store: store)
                     case .look: ClosetLook(store: store)
                     }
                 }
@@ -29,9 +32,9 @@ struct ClosetPanel: View {
         }
     }
 
-    private func header(showsUnit: Bool) -> some View {
+    private func header(showsUnit: Bool, titlesAll: Bool = true) -> some View {
         HStack(spacing: Theme.Spacing.s) {
-            ClosetSectionPicker(selection: $store.section)
+            ClosetSectionPicker(selection: $store.section, titlesAll: titlesAll)
             Spacer(minLength: 0)
             ClosetPointsChip(balance: store.closet.balance, showsUnit: showsUnit)
         }
@@ -40,12 +43,22 @@ struct ClosetPanel: View {
 
 enum ClosetSection: String, CaseIterable {
     case wardrobe = "Wardrobe"
+    case limited = "Limited"
     case look = "Look"
 
     var symbol: String {
         switch self {
         case .wardrobe: "tshirt.fill"
+        case .limited: "sparkles"
         case .look: "paintpalette.fill"
+        }
+    }
+
+    var help: String {
+        switch self {
+        case .wardrobe: "Outfits and accessories to unlock with study points"
+        case .limited: "Limited edition items, earned by studying, never sold"
+        case .look: "Species, breed and fur color"
         }
     }
 }
@@ -161,13 +174,17 @@ private struct ClosetNameButton: View {
 
 private struct ClosetSectionPicker: View {
     @Binding var selection: ClosetSection
+    /// Off, only the open section shows its title; the others show their
+    /// symbol, with the title in the tooltip.
+    var titlesAll = true
 
     var body: some View {
         HStack(spacing: Theme.Spacing.xxs) {
             ForEach(ClosetSection.allCases, id: \.self) { section in
                 ClosetPill(title: section.rawValue, symbol: section.symbol,
+                           showsTitle: titlesAll || selection == section,
                            isSelected: selection == section,
-                           help: section == .wardrobe ? "Outfits and accessories" : "Species, breed and fur color") {
+                           help: section.help) {
                     withMotion(Theme.Motion.content) { selection = section }
                 }
             }
@@ -179,6 +196,7 @@ private struct ClosetSectionPicker: View {
 private struct ClosetPill: View {
     let title: String
     let symbol: String
+    var showsTitle = true
     let isSelected: Bool
     let help: String
     let action: () -> Void
@@ -188,7 +206,7 @@ private struct ClosetPill: View {
         Button(action: action) {
             HStack(spacing: Theme.Spacing.xs) {
                 Image(systemName: symbol).font(.system(size: 9.5, weight: .bold))
-                Text(title).lineLimit(1).fixedSize()
+                if showsTitle { Text(title).lineLimit(1).fixedSize() }
             }
             .font(Theme.Typography.caption)
             .foregroundStyle(isSelected ? accent : hovering ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
@@ -198,7 +216,7 @@ private struct ClosetPill: View {
             .contentShape(Capsule())
         }
         .buttonStyle(.plain)
-        .help(help)
+        .help(showsTitle ? help : "\(title): \(help)")
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }
@@ -237,6 +255,8 @@ private struct ClosetPointsChip: View {
 private struct ClosetWardrobe: View {
     @ObservedObject var store: ClosetStore
     @State private var hovered: PetItem?
+    /// The tile the grid scrolls to when the footer's next unlock is clicked.
+    @State private var shown: PetItem?
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: Theme.Spacing.s - Theme.Spacing.xxs),
                                 count: 5)
@@ -245,6 +265,12 @@ private struct ClosetWardrobe: View {
         VStack(alignment: .leading, spacing: Theme.Spacing.s - Theme.Spacing.xxs) {
             scrollingGrid
             footer
+        }
+        // A try-on started from the footer ends when the pointer leaves.
+        .onHover { inside in
+            guard !inside, hovered != nil else { return }
+            hovered = nil
+            store.tryOn(nil)
         }
         // Closing the notch or switching to Look mid-hover sends no hover
         // exit, so drop the try-on here or it would greet the next visit.
@@ -261,7 +287,7 @@ private struct ClosetWardrobe: View {
                 VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                     ClosetShelfTitle(theme: shelf.theme)
                     LazyVGrid(columns: columns, spacing: Theme.Spacing.s - Theme.Spacing.xxs) {
-                        ForEach(shelf.items, id: \.id) { item in tile(item) }
+                        ForEach(shelf.items, id: \.id) { item in tile(item).id(item.id) }
                     }
                 }
             }
@@ -288,10 +314,17 @@ private struct ClosetWardrobe: View {
                     .overlay(alignment: .top) { grid }
                     .clipped()
             } else {
-                ScrollView(.vertical) { grid }
-                    .scrollIndicators(.automatic)
-                    .scrollBounceBehavior(.basedOnSize)
-                    .contentMargins(.bottom, Theme.Spacing.m, for: .scrollContent)
+                ScrollViewReader { proxy in
+                    ScrollView(.vertical) { grid }
+                        .scrollIndicators(.automatic)
+                        .scrollBounceBehavior(.basedOnSize)
+                        .contentMargins(.bottom, Theme.Spacing.m, for: .scrollContent)
+                        .onChange(of: shown) { _, item in
+                            guard let item else { return }
+                            withMotion(Theme.Motion.content) { proxy.scrollTo(item.id, anchor: .center) }
+                            shown = nil
+                        }
+                }
             }
         }
         .edgeFade(.bottom)
@@ -312,14 +345,22 @@ private struct ClosetWardrobe: View {
             } else if let next = store.closet.nextUnlock, store.closet.save.ledger.earned == 0 {
                 // A brand-new pet: explain where points come from.
                 Text("Focus to earn points").foregroundStyle(Theme.Palette.secondaryText)
-                Text("\(next.item.displayName) unlocks at \(next.item.cost)")
+                showButton(next.item) {
+                    ViewThatFits(in: .horizontal) {
+                        Text("\(next.item.displayName) unlocks after \(PetEconomy.studyToEarn(next.item.cost))")
+                        Text("\(next.item.displayName) unlocks at \(next.item.cost)")
+                    }
                     .foregroundStyle(Theme.Palette.tertiaryText)
+                }
             } else if let next = store.closet.nextUnlock {
-                // The Compact panel drops the "Next unlock" label before the
-                // item name or its status would clip.
-                ViewThatFits(in: .horizontal) {
-                    nextUnlock(next, labeled: true)
-                    nextUnlock(next, labeled: false)
+                // The Compact panel drops the "Next unlock" label, then the
+                // study time, before the item name or its status would clip.
+                showButton(next.item) {
+                    ViewThatFits(in: .horizontal) {
+                        nextUnlock(next, labeled: true, inStudyTime: true)
+                        nextUnlock(next, labeled: false, inStudyTime: true)
+                        nextUnlock(next, labeled: false, inStudyTime: false)
+                    }
                 }
             } else {
                 Text("Everything unlocked. Dress up as you like.").foregroundStyle(Theme.Palette.tertiaryText)
@@ -330,14 +371,37 @@ private struct ClosetWardrobe: View {
         .frame(height: 12)
     }
 
-    private func nextUnlock(_ next: (item: PetItem, missing: Int), labeled: Bool) -> some View {
+    /// The next unlock can sit on a shelf out of view, so clicking it in
+    /// the footer scrolls its tile into view and tries it on the pet.
+    private func showButton(_ item: PetItem, @ViewBuilder label: () -> some View) -> some View {
+        ClosetFooterLink(label: label(), help: "Show \(item.displayName) and try it on") {
+            hovered = item
+            store.tryOn(item)
+            shown = item
+        }
+    }
+
+    /// Says what the next item asks of you: the points still missing and,
+    /// when there is room, the study that earns them at a typical pace.
+    private func nextUnlock(_ next: (item: PetItem, missing: Int), labeled: Bool,
+                            inStudyTime: Bool) -> some View {
         HStack(spacing: Theme.Spacing.xs) {
             if labeled { Text("Next unlock").foregroundStyle(Theme.Palette.tertiaryText) }
             Text(next.item.displayName).foregroundStyle(Theme.Palette.secondaryText)
-            Text(next.missing == 0 ? "ready to unlock" : "\(next.missing) pts to go")
-                .foregroundStyle(next.missing == 0 ? accent : Theme.Palette.tertiaryText)
-                .monospacedDigit()
+            Group {
+                if next.missing == 0 {
+                    Text("ready to unlock")
+                } else if inStudyTime {
+                    Text("\(next.missing) pts, \(PetEconomy.studyToEarn(next.missing)) to go")
+                } else {
+                    Text("\(next.missing) pts to go")
+                }
+            }
+            .foregroundStyle(next.missing == 0 ? accent : Theme.Palette.tertiaryText)
+            .monospacedDigit()
         }
+        .help(next.missing == 0 ? "\(next.item.displayName) is ready to unlock"
+              : "\(next.missing) more points: \(PetEconomy.studyToEarn(next.missing)) at a typical study pace")
     }
 
     private func detail(for item: PetItem) -> String {
@@ -345,8 +409,26 @@ private struct ClosetWardrobe: View {
         case .wearing: "Click to take off"
         case .owned: "Click to wear"
         case .affordable: "Unlock for \(item.cost) pts"
-        case .locked(let missing): "\(item.cost) pts, \(missing) to go"
+        case .locked(let missing): "\(item.cost) pts, \(PetEconomy.studyToEarn(missing)) to go"
+        case .unearned: item.limitedEdition?.howToEarn ?? "Limited edition"
         }
+    }
+}
+
+/// A footer line that acts as a quiet link: it brightens on hover.
+private struct ClosetFooterLink<Label: View>: View {
+    let label: Label
+    let help: String
+    let action: () -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        Button(action: action) { label }
+            .buttonStyle(.plain)
+            .brightness(hovering ? 0.25 : 0)
+            .help(help)
+            .onHover { hovering = $0 }
+            .motion(Theme.Motion.snappy, value: hovering)
     }
 }
 
@@ -404,6 +486,9 @@ private struct ClosetItemTile: View {
         }
         .buttonStyle(.plain)
         .help(help)
+        // The tile shows only a sprite and a price, so name the item for VoiceOver.
+        .accessibilityLabel(item.displayName)
+        .accessibilityValue(accessibilityState)
         .onHover { inside in
             hovering = inside
             onHover(inside)
@@ -422,6 +507,8 @@ private struct ClosetItemTile: View {
                 Label("\(item.cost)", systemImage: "star.fill").foregroundStyle(accent)
             case .locked:
                 Label("\(item.cost)", systemImage: "lock.fill").foregroundStyle(Theme.Palette.tertiaryText)
+            case .unearned:
+                Label("Limited", systemImage: "lock.fill").foregroundStyle(Theme.Palette.tertiaryText)
             }
         }
         .font(.system(size: 10, weight: .semibold, design: .rounded).monospacedDigit())
@@ -429,12 +516,23 @@ private struct ClosetItemTile: View {
         .frame(height: 12)
     }
 
+    private var accessibilityState: String {
+        switch state {
+        case .wearing: "Wearing"
+        case .owned: "Owned"
+        case .affordable: "\(isNew ? "New, " : "")unlock for \(item.cost) points"
+        case .locked(let missing): "\(isNew ? "New, " : "")\(item.cost) points, \(missing) more to go"
+        case .unearned: "Limited edition, not earned yet. \(item.limitedEdition?.howToEarn ?? "")"
+        }
+    }
+
     private var help: String {
         switch state {
         case .wearing: "\(item.displayName): click to take off"
         case .owned: "\(item.displayName): click to wear"
         case .affordable: "\(isNew ? "New: " : "")\(item.displayName): unlock for \(item.cost) points"
-        case .locked(let missing): "\(isNew ? "New: " : "")\(item.displayName): \(item.cost) points, \(missing) more to go"
+        case .locked(let missing): "\(isNew ? "New: " : "")\(item.displayName): \(item.cost) points, \(missing) more to go (\(PetEconomy.studyToEarn(missing)))"
+        case .unearned: "\(item.displayName), limited edition: \(item.limitedEdition?.howToEarn ?? "")"
         }
     }
 }
@@ -457,6 +555,181 @@ private struct ClosetTightLabelStyle: LabelStyle {
         HStack(spacing: Theme.Spacing.xxs) {
             configuration.icon.font(.system(size: 8, weight: .bold))
             configuration.title
+        }
+    }
+}
+
+// MARK: - Limited
+
+/// The limited edition items: never sold, earned from study milestones or
+/// given at events. Each tile shows how far along its milestone is, and the
+/// footer says how to earn the hovered item.
+private struct ClosetLimited: View {
+    @ObservedObject var store: ClosetStore
+    @State private var hovered: PetItem?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.s - Theme.Spacing.xxs) {
+            HStack(spacing: Theme.Spacing.s - Theme.Spacing.xxs) {
+                ForEach(PetCloset.limitedShelf, id: \.id) { item in tile(item) }
+            }
+            .frame(maxHeight: .infinity)
+            footer
+        }
+        .onDisappear {
+            hovered = nil
+            store.tryOn(nil)
+        }
+    }
+
+    private func tile(_ item: PetItem) -> some View {
+        let progress = item.limitedEdition.flatMap { store.milestones.progress(of: $0, today: .now) }
+        return ClosetLimitedTile(item: item, state: store.closet.state(of: item), progress: progress,
+                                 model: thumbnailModel) {
+            withMotion(Theme.Motion.snappy) { _ = store.tap(item) }
+        } onHover: { inside in
+            if inside { hovered = item } else if hovered == item { hovered = nil }
+            store.tryOn(hovered)
+        }
+    }
+
+    private var thumbnailModel: PetProfile {
+        PetProfile(name: store.profile.name, breed: store.profile.breed,
+                   paletteOverrides: store.profile.paletteOverrides, furTint: store.profile.furTint)
+    }
+
+    /// How to earn the hovered item, or what the shelf is.
+    private var footer: some View {
+        HStack(spacing: Theme.Spacing.xs) {
+            if let hovered, let edition = hovered.limitedEdition {
+                Text(hovered.displayName).foregroundStyle(Theme.Palette.secondaryText)
+                Text(store.closet.state(of: hovered).isOwned ? "Earned. Click to \(hint(for: hovered))."
+                     : edition.howToEarn)
+                    .foregroundStyle(Theme.Palette.tertiaryText)
+            } else {
+                Text("Earned by studying, never sold").foregroundStyle(Theme.Palette.secondaryText)
+                Text("\(earnedCount) of \(PetCloset.limitedShelf.count) earned")
+                    .foregroundStyle(Theme.Palette.tertiaryText)
+                    .monospacedDigit()
+            }
+        }
+        .font(Theme.Typography.caption)
+        .lineLimit(1)
+        .truncationMode(.tail)
+        .frame(height: 12)
+    }
+
+    private var earnedCount: Int {
+        PetCloset.limitedShelf.filter { store.closet.state(of: $0).isOwned }.count
+    }
+
+    private func hint(for item: PetItem) -> String {
+        store.closet.state(of: item) == .wearing ? "take off" : "wear"
+    }
+}
+
+/// A limited edition tile: the item on the pet, a sparkle badge, and below
+/// it either On, Owned, the milestone's progress with a thin bar, or Event.
+private struct ClosetLimitedTile: View {
+    let item: PetItem
+    let state: PetClosetItemState
+    let progress: PetLimitedProgress?
+    let model: PetProfile
+    let action: () -> Void
+    let onHover: (Bool) -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: Theme.Spacing.xxs) {
+                Spacer(minLength: 0)
+                // Bigger than a wardrobe tile when the row has the room.
+                ViewThatFits {
+                    sprite(pixelSize: 2)
+                    sprite(pixelSize: 1)
+                }
+                label
+                bar
+                Spacer(minLength: 0)
+            }
+            .padding(.vertical, Theme.Spacing.xs)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .overlay(alignment: .topTrailing) {
+                Image(systemName: "sparkles")
+                    .font(.system(size: 8, weight: .bold))
+                    .foregroundStyle(state.isOwned ? accent : Theme.Palette.tertiaryText)
+                    .padding(Theme.Spacing.xs)
+                    .allowsHitTesting(false)
+            }
+            .background(
+                RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
+                    .fill(state == .wearing ? accent.opacity(0.14)
+                          : hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
+                    .strokeBorder(state == .wearing ? accent.opacity(0.7) : Theme.Palette.stroke,
+                                  lineWidth: state == .wearing ? 1 : 0.5)
+            )
+            .contentShape(RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous))
+        }
+        .buttonStyle(.plain)
+        .help(help)
+        .onHover { inside in
+            hovering = inside
+            onHover(inside)
+        }
+        .motion(Theme.Motion.snappy, value: hovering)
+    }
+
+    private func sprite(pixelSize: CGFloat) -> some View {
+        PetSpriteView(profile: PetCloset.wearing(item, on: model), pixelSize: pixelSize)
+            .opacity(state.isOwned ? 1 : 0.45)
+            .saturation(state.isOwned ? 1 : 0.3)
+    }
+
+    @ViewBuilder private var label: some View {
+        Group {
+            switch state {
+            case .wearing:
+                Label("On", systemImage: "checkmark").foregroundStyle(accent)
+            case .owned:
+                Text("Owned").foregroundStyle(Theme.Palette.secondaryText)
+            default:
+                if let progress {
+                    Text(progress.label).foregroundStyle(Theme.Palette.secondaryText)
+                } else {
+                    Label("Event", systemImage: "calendar").foregroundStyle(Theme.Palette.tertiaryText)
+                }
+            }
+        }
+        .font(.system(size: 10, weight: .semibold, design: .rounded).monospacedDigit())
+        .labelStyle(ClosetTightLabelStyle())
+        .lineLimit(1)
+        .frame(height: 12)
+    }
+
+    /// The milestone's progress; an empty slot of the same height otherwise,
+    /// so every label in the row lines up.
+    private var bar: some View {
+        Capsule()
+            .fill(Theme.Palette.surfaceHover)
+            .overlay(alignment: .leading) {
+                GeometryReader { proxy in
+                    Capsule().fill(accent)
+                        .frame(width: proxy.size.width * (progress?.fraction ?? 0))
+                }
+            }
+            .frame(width: 40, height: 3)
+            .opacity(!state.isOwned && progress != nil ? 1 : 0)
+    }
+
+    private var help: String {
+        let howToEarn = item.limitedEdition?.howToEarn ?? ""
+        return switch state {
+        case .wearing: "\(item.displayName), limited edition: click to take off"
+        case .owned: "\(item.displayName), limited edition: click to wear"
+        default: "\(item.displayName), limited edition: \(howToEarn)"
         }
     }
 }

@@ -86,6 +86,8 @@ final class DayPlanStore: ObservableObject {
     var isActive: Bool { phase != .idle }
     /// The picked AI's name for the panel's copy ("Refine with Gemini").
     var assistantName: String { ai?.assistantName ?? "AI" }
+    /// The day being planned: today, or tomorrow when planning ahead.
+    @Published private(set) var target: PlannerViewedDay = .today
 
     private let upNext: UpNextStore
     private let isDemo: Bool
@@ -128,12 +130,15 @@ final class DayPlanStore: ObservableObject {
         }
     }
 
-    /// Starts planning the rest of today around `tasks` (unfinished ones
-    /// count) and what other modules share: `sharedWork` phrased for the AI
+    /// Starts planning the rest of today (or all of tomorrow, from the start
+    /// of the working day) around `tasks` (unfinished ones count) and what
+    /// other modules share: `sharedWork` phrased for the AI
     /// (`ProviderSnapshot.plannableWork`), `sharedTasks` with their estimates
     /// for the local planner, and `progress` as goals that become review blocks.
-    func plan(tasks: [PlannerItem], sharedWork: [String] = [], sharedTasks: [ProvidedTask] = [],
-              progress: [ProgressItem] = []) {
+    func plan(_ day: PlannerViewedDay = .today, tasks: [PlannerItem], sharedWork: [String] = [],
+              sharedTasks: [ProvidedTask] = [], progress: [ProgressItem] = []) {
+        guard day.planStart(now: Date()) != nil else { return }
+        target = day
         lastTasks = tasks
         lastSharedWork = sharedWork
         lastSharedTasks = sharedTasks
@@ -161,8 +166,19 @@ final class DayPlanStore: ObservableObject {
         }
     }
 
+    /// Demo only: shows the sample proposal for `day` at once, so a
+    /// snapshot can render a plan without waiting for the demo's delay.
+    func showSampleProposal(_ day: PlannerViewedDay, tasks: [PlannerItem]) {
+        guard isDemo, day.planStart(now: Date()) != nil else { return }
+        invalidateRun()
+        target = day
+        lastTasks = tasks
+        phase = .proposal(sampleProposal(tasks: tasks, sharedTasks: [], progress: []))
+    }
+
     func retry() {
-        plan(tasks: lastTasks, sharedWork: lastSharedWork, sharedTasks: lastSharedTasks, progress: lastProgress)
+        plan(target, tasks: lastTasks, sharedWork: lastSharedWork, sharedTasks: lastSharedTasks,
+             progress: lastProgress)
     }
 
     func openPrivacySettings() { upNext.openPrivacySettings() }
@@ -217,7 +233,7 @@ final class DayPlanStore: ObservableObject {
         guard !isRefining, case .proposal(var proposal) = phase else { return }
         do {
             // Re-read the calendar: meetings may have arrived since the plan was made.
-            try proposal.add(id.map { [$0] }, now: Date(), events: upNext.todayEvents(),
+            try proposal.add(id.map { [$0] }, now: Date(), events: upNext.planEvents(on: target),
                              writer: upNext.makePlanWriter())
             writeFailed = false
             settle(proposal)
@@ -233,6 +249,13 @@ final class DayPlanStore: ObservableObject {
     private func sampleProposal(tasks: [PlannerItem], sharedTasks: [ProvidedTask],
                                 progress: [ProgressItem]) -> DayPlanProposal {
         let now = Date()
+        if target != .today, let context = context(tasks: tasks, sharedWork: [], now: now) {
+            // Tomorrow's samples sit at fixed hours, so it plans as it is.
+            return settings.planMode == .study
+                ? DayPlanProposal(settings.studyPlan(context: context, progress: progress))
+                : settings.localPlan(now: context.now, events: context.events, tasks: tasks,
+                                     sharedTasks: sharedTasks, progress: progress).proposal
+        }
         switch settings.planMode {
         case .local:
             return settings.sampleLocalPlan(now: now, events: upNext.todayEvents(), tasks: tasks,
@@ -271,17 +294,25 @@ final class DayPlanStore: ObservableObject {
         }
     }
 
-    /// The AI's refinement of `blocks` on today's calendar as it is now, or
+    /// The AI's refinement of `blocks` on the planned day's calendar as it is now, or
     /// nil when it can't answer or its answer isn't usable.
     private func refinedBlocks(_ blocks: [PlanBlock]) async -> [PlanBlock]? {
-        let context = DayPlanContext(now: Date(), events: upNext.todayEvents(), tasks: lastTasks,
-                                     sharedWork: lastSharedWork, dayEndHour: settings.dayEndHour)
-        guard let provider = await ai?.readyProvider()?.provider,
+        guard let context = context(tasks: lastTasks, sharedWork: lastSharedWork, now: Date()),
+              let provider = await ai?.readyProvider()?.provider,
               let text = await DayPlanner.answer(from: provider,
                                                 prompt: DayPlanner.refinePrompt(for: context, plan: blocks),
                                                 timeout: Self.timeout)
         else { return nil }
         return try? DayPlanner.refinement(from: text, context: context, plan: blocks)
+    }
+
+    /// What planning `target` knows at `now`: its calendar, and where
+    /// planning starts (now today, the working day's start tomorrow).
+    private func context(tasks: [PlannerItem], sharedWork: [String], now: Date) -> DayPlanContext? {
+        guard let start = target.planStart(now: now) else { return nil }
+        return DayPlanContext(now: start, events: upNext.planEvents(on: target), tasks: tasks,
+                              sharedWork: sharedWork, dayEndHour: settings.dayEndHour,
+                              isPlanningAhead: target == .tomorrow)
     }
 
     private func publish(_ generation: Int, _ phase: Phase) {
@@ -297,9 +328,8 @@ final class DayPlanStore: ObservableObject {
         // Dry runs plan without meetings, which is enough to try the flow.
         case .unavailable: guard upNext.isPlanDryRun else { return .failed(.calendarUnavailable) }
         }
-        let context = DayPlanContext(now: Date(), events: upNext.todayEvents(), tasks: lastTasks,
-                                     sharedWork: lastSharedWork, dayEndHour: settings.dayEndHour)
-        guard context.hasFreeTime else { return .noFreeTime }
+        guard let context = context(tasks: lastTasks, sharedWork: lastSharedWork, now: Date()),
+              context.hasFreeTime else { return .noFreeTime }
 
         switch settings.planMode {
         case .local:

@@ -8,32 +8,32 @@ final class PetClosetTests: XCTestCase {
 
     func testWardrobeListsEveryItemCheapestFirst() {
         XCTAssertFalse(PetCloset.wardrobe.contains(.outfit(.none)))
-        XCTAssertEqual(PetCloset.wardrobe.count, PetItem.allCases.count - 1)
+        XCTAssertEqual(PetCloset.wardrobe.count, PetItem.shopItems.count - 1)
         XCTAssertEqual(PetCloset.wardrobe.map(\.cost), PetCloset.wardrobe.map(\.cost).sorted())
     }
 
     func testItemStatesFollowOwnershipWearingAndBalance() {
-        var closet = closet(earned: 100, purchased: [.accessory(.beanie)])
+        var closet = closet(earned: 250, purchased: [.accessory(.beanie)])
         XCTAssertEqual(closet.state(of: .accessory(.beanie)), .owned)
         closet.tap(.accessory(.beanie))
         XCTAssertEqual(closet.state(of: .accessory(.beanie)), .wearing)
         XCTAssertEqual(closet.state(of: .outfit(.scrubs)), .affordable)
-        XCTAssertEqual(closet.state(of: .accessory(.stethoscope)), .locked(missing: 30))
+        XCTAssertEqual(closet.state(of: .accessory(.stethoscope)), .locked(missing: 20))
     }
 
     func testTappingToggleBuysAndRefuses() {
         var closet = closet(earned: 100)
         XCTAssertEqual(closet.tap(.accessory(.beanie)), .boughtAndWore)
-        XCTAssertEqual(closet.balance, 70)
+        XCTAssertEqual(closet.balance, 65)
         XCTAssertEqual(closet.profile.accessories, [.beanie])
 
         XCTAssertEqual(closet.tap(.accessory(.beanie)), .tookOff)
         XCTAssertEqual(closet.profile.accessories, [])
         XCTAssertEqual(closet.tap(.accessory(.beanie)), .wore)
-        XCTAssertEqual(closet.balance, 70, "wearing an owned item is free")
+        XCTAssertEqual(closet.balance, 65, "wearing an owned item is free")
 
         let before = closet.save
-        XCTAssertEqual(closet.tap(.outfit(.whiteCoat)), .needsPoints(missing: 250))
+        XCTAssertEqual(closet.tap(.outfit(.whiteCoat)), .needsPoints(missing: 1185))
         XCTAssertEqual(closet.save, before, "a refused tap changes nothing")
     }
 
@@ -150,7 +150,7 @@ final class PetClosetTests: XCTestCase {
         var closet = closet(earned: 10)
         let next = try XCTUnwrap(closet.nextUnlock)
         XCTAssertEqual(next.item, .accessory(.beanie))
-        XCTAssertEqual(next.missing, 20)
+        XCTAssertEqual(next.missing, 25)
         closet.recordStudy(minutes: 25, completed: true)
         XCTAssertEqual(closet.nextUnlock?.missing, 0)
     }
@@ -208,7 +208,7 @@ final class PetClosetTests: XCTestCase {
         XCTAssertTrue(PetItem.accessory(.wizardHat).isNew)
         XCTAssertTrue(PetItem.outfit(.dinosaurHoodie).isNew)
 
-        var closet = closet(earned: 300)
+        var closet = closet(earned: 1150)
         XCTAssertTrue(closet.isNew(.accessory(.wizardHat)))
         XCTAssertFalse(closet.isNew(.accessory(.partyHat)), "free starters are already owned")
         XCTAssertEqual(closet.tap(.accessory(.wizardHat)), .boughtAndWore)

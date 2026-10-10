@@ -7,6 +7,11 @@ import SwiftUI
 /// main actor, saves after every edit, and rolls over to a new day (carrying
 /// unfinished items) when the calendar day changes.
 ///
+/// The panel can also step to yesterday (to see what was left and move it
+/// to today) or tomorrow (to plan ahead). `day` is always today, which is
+/// what other modules, Plan my day and Wrap up see; `shownDay` is the one on
+/// screen, and the list's edits go there.
+///
 /// With `TABBI_DEMO=1` it shows `PlannerDay.sample` and never touches disk.
 @MainActor
 final class PlannerStore: ObservableObject {
@@ -18,8 +23,19 @@ final class PlannerStore: ObservableObject {
         case saveFailed
     }
 
+    /// Today's list, whichever day the panel shows.
     @Published private(set) var day: PlannerDay
+    /// Why today's list can't be shown or saved.
     @Published private(set) var problem: Problem?
+    /// The day the checklist shows. Back to today when the day changes.
+    /// The calendar card beside the list steps along with it.
+    @Published private(set) var viewing: PlannerViewedDay = .today {
+        didSet { upNext.show(viewing) }
+    }
+    /// Yesterday's or tomorrow's list while `viewing` names it.
+    @Published private(set) var otherDay: PlannerDay?
+    /// Why `otherDay` can't be shown or saved.
+    @Published private(set) var otherProblem: Problem?
     /// Unfinished work other modules share (say, Anki reviews), which Plan
     /// My Day schedules along with the checklist. See `followSharedWork`.
     @Published private(set) var sharedWork: [String] = []
@@ -56,14 +72,33 @@ final class PlannerStore: ObservableObject {
     /// The End-of-Day Review; its card replaces the checklist while open.
     let review: DayReviewStore
 
-    var items: [PlannerItem] { day.items }
+    /// The list on screen: today's, or the day `viewing` steps to.
+    var shownDay: PlannerDay {
+        viewing == .today ? day : otherDay ?? PlannerDay(date: viewing.key(today: day.date))
+    }
+    /// The shown day's items, which the checklist lists.
+    var items: [PlannerItem] { shownDay.items }
+    /// Why the shown day's list can't be shown or saved.
+    var shownProblem: Problem? { viewing == .today ? problem : otherProblem }
+    /// Yesterday's unfinished items that aren't on today's list yet, which
+    /// the panel offers to move there. Empty unless yesterday is shown.
+    var leftovers: [PlannerItem] {
+        viewing == .yesterday ? shownDay.unfinished(missingFrom: day) : []
+    }
     /// Whether Plan My Day has anything to schedule. The study planner
     /// always does: it fills free time with study blocks.
     var hasPlannableWork: Bool {
-        planSettings.planMode == .study || items.contains { !$0.isDone } || !sharedWork.isEmpty
+        planSettings.planMode == .study || day.items.contains { !$0.isDone } || !sharedWork.isEmpty
     }
-    /// False while today's file is unreadable, so a bad file is never overwritten.
-    var canEdit: Bool { !isUnreadable }
+    /// Whether Plan tomorrow has anything to schedule: tomorrow's open
+    /// tasks, or study blocks for a study kit.
+    var hasPlannableTomorrow: Bool {
+        viewing == .tomorrow && (planSettings.planMode == .study || shownDay.items.contains { !$0.isDone })
+    }
+    /// Whether the shown list can change: not yesterday's, which is a
+    /// record, and not while its file is unreadable, so a bad file is never
+    /// overwritten.
+    var canEdit: Bool { viewing.isEditable && !shownProblem.isUnreadable }
 
     private let repository: PlannerRepository?
     private let runMode: RunMode
@@ -72,6 +107,8 @@ final class PlannerStore: ObservableObject {
     private let ai: AIService?
     /// Where checked-off tasks are logged, as Today's.
     private let activity: ActivityLog?
+    /// Demo mode's yesterday and tomorrow, so edits to them last the session.
+    private var demoDays: [PlannerDayKey: PlannerDay] = [:]
     private var cancellables: Set<AnyCancellable> = []
 
     init(focus: FocusStore, storage: EditionStorage, planSettings: TodayPlanSettings = TodayPlanSettings(),
@@ -107,15 +144,46 @@ final class PlannerStore: ObservableObject {
     private func showSampleDay(_ kind: PlannerSampleDay) {
         guard repository == nil else { return }
         day = .sample(on: PlannerDayKey(date: Date()), kind: kind)
+        demoDays = [:]
         upNext.showSampleDay(kind)
+        loadOtherDay()
     }
 
     /// Switches to the current calendar day if it has changed (or retries a
-    /// failed load). Cheap to call whenever the panel appears.
+    /// failed load), and then shows today. Cheap to call whenever the panel
+    /// appears.
     func refreshDay() {
         let today = PlannerDayKey(date: Date())
-        guard repository != nil, today != day.date || isUnreadable else { return }
+        guard repository != nil, today != day.date || problem.isUnreadable else { return }
+        let isNewDay = today != day.date
         load(today)
+        if isNewDay {
+            // A plan for what was tomorrow is about the wrong day now.
+            if plan.target != .today { plan.cancel() }
+            viewing = .today
+        }
+        loadOtherDay()
+    }
+
+    /// Puts the panel back on today for the next time it opens. A plan for
+    /// tomorrow that is still running or on offer keeps tomorrow on screen
+    /// instead, so closing the notch never throws it away.
+    func panelClosed() {
+        if plan.isActive && plan.target != .today && viewing == plan.target {
+            refreshDay()
+            return
+        }
+        show(.today)
+    }
+
+    /// Shows `viewed` in the checklist, reading its list fresh. Plan my day
+    /// and Wrap up close, since both are about today.
+    func show(_ viewed: PlannerViewedDay) {
+        refreshDay()
+        if viewed != .today || plan.target != .today { plan.cancel() }
+        if viewed != .today { review.close() }
+        viewing = viewed
+        loadOtherDay()
     }
 
     /// Keeps `sharedWork` in step with what other modules provide, so Today
@@ -154,8 +222,25 @@ final class PlannerStore: ObservableObject {
     /// Schedules today's unfinished items around the calendar.
     func planMyDay() {
         review.close()
-        refreshDay()
-        plan.plan(tasks: items, sharedWork: sharedWork, sharedTasks: sharedTasks, progress: sharedProgress)
+        show(.today)
+        plan.plan(tasks: day.items, sharedWork: sharedWork, sharedTasks: sharedTasks, progress: sharedProgress)
+    }
+
+    /// Schedules tomorrow's list around tomorrow's calendar from the start
+    /// of the working day, so the evening can set up the next one. Other
+    /// modules' shared work is today's, so it stays out of this plan.
+    func planTomorrow() {
+        review.close()
+        show(.tomorrow)
+        guard canEdit else { return }
+        plan.plan(.tomorrow, tasks: shownDay.items)
+    }
+
+    /// Snapshot runs only: shows `viewed`, with its sample plan open when
+    /// `planning` (demo data, so nothing reaches the calendar).
+    func showForSnapshot(_ viewed: PlannerViewedDay, planning: Bool = false) {
+        show(viewed)
+        if planning { plan.showSampleProposal(viewed, tasks: shownDay.items) }
     }
 
     /// Opens the End-of-Day Review of today's list, the focus sessions in
@@ -163,7 +248,7 @@ final class PlannerStore: ObservableObject {
     /// cards reviewed).
     func wrapUp() {
         plan.cancel()
-        refreshDay()
+        show(.today)
         review.wrapUp(day: day, activity: activity?.records(on: day.date) ?? [], study: sharedStudy,
                       progress: sharedProgress, isStudyDay: planSettings.planMode == .study,
                       sampleDay: planSettings.sampleDay)
@@ -182,21 +267,30 @@ final class PlannerStore: ObservableObject {
     @discardableResult
     func addStarterTasks(_ titles: [String]) -> [PlannerItem] {
         var added: [PlannerItem] = []
-        edit { added = $0.addStarterTasks(titles); return !added.isEmpty }
+        editToday { added = $0.addStarterTasks(titles); return !added.isEmpty }
         return added
     }
 
     /// Removes starter tasks `addStarterTasks` returned that the user hasn't
     /// renamed or checked off since.
     func takeBackStarterTasks(_ added: [PlannerItem]) {
-        edit { $0.removeUntouched(added) }
+        editToday { $0.removeUntouched(added) }
+    }
+
+    /// Moves yesterday's leftovers with these ids (all of them when nil) to
+    /// the end of today's list. Yesterday's file keeps them as they were, so
+    /// it still tells what happened that day.
+    func moveToToday(_ ids: Set<PlannerItem.ID>? = nil) {
+        let moving = leftovers.filter { ids?.contains($0.id) ?? true }
+        guard !moving.isEmpty else { return }
+        editToday { !$0.adopt(moving).isEmpty }
     }
 
     /// Checks an item off or back on. Checking one off logs `taskCompleted`
     /// with the item's id as the subject.
     func toggle(_ id: PlannerItem.ID) {
         guard edit({ $0.toggle(id); return true }),
-              let item = day.items.first(where: { $0.id == id }), item.isDone, let completedAt = item.completedAt
+              let item = shownDay.items.first(where: { $0.id == id }), item.isDone, let completedAt = item.completedAt
         else { return }
         activity?.record(ActivityRecord(source: TodayModule.descriptor.id, kind: .taskCompleted, start: completedAt,
                                         quantity: 1, subject: id.uuidString))
@@ -224,28 +318,37 @@ final class PlannerStore: ObservableObject {
 
     // MARK: Private
 
-    private var isUnreadable: Bool {
-        if case .unreadable = problem { return true }
-        return false
-    }
-
-    /// Applies `change` to a copy and publishes + saves it when it reports a change.
+    /// Applies `change` to a copy of the shown day and publishes + saves it
+    /// when it reports a change.
     @discardableResult
     private func edit(_ change: (inout PlannerDay) -> Bool) -> Bool {
-        guard !isUnreadable else { return false }
-        // Edits always target the current day, even if midnight passed while the panel was closed.
+        // A new day since the panel opened shows today again, so an edit never lands on a stale day.
         refreshDay()
+        guard canEdit else { return false }
+        var updated = shownDay
+        guard change(&updated), updated != shownDay else { return false }
+        if viewing == .today { day = updated } else { otherDay = updated }
+        save(updated)
+        return true
+    }
+
+    /// Like `edit`, but always on today's list, whichever day is shown.
+    @discardableResult
+    private func editToday(_ change: (inout PlannerDay) -> Bool) -> Bool {
+        refreshDay()
+        guard !problem.isUnreadable else { return false }
         var updated = day
         guard change(&updated), updated != day else { return false }
         day = updated
-        save()
+        save(updated)
         return true
     }
 
     private func load(_ date: PlannerDayKey) {
         guard let repository else { return }
         do {
-            day = try repository.open(date)
+            // A snapshot run shows today's list without creating its file.
+            day = try runMode.isSnapshot ? repository.preview(date) : repository.open(date)
             problem = nil
         } catch {
             day = PlannerDay(date: date)
@@ -253,13 +356,53 @@ final class PlannerStore: ObservableObject {
         }
     }
 
-    private func save() {
-        guard let repository else { return }
-        do {
-            try repository.save(day)
-            problem = nil
-        } catch {
-            problem = .saveFailed
+    /// Reads the day `viewing` names other than today, without creating its
+    /// file: `peek` gives tomorrow as a planned-ahead day, so it still takes
+    /// in today's leftovers when it comes.
+    private func loadOtherDay() {
+        otherProblem = nil
+        guard viewing != .today else {
+            otherDay = nil
+            return
         }
+        let date = viewing.key(today: day.date)
+        guard let repository else {
+            otherDay = demoDays[date] ?? .sample(viewing, today: day.date, kind: planSettings.sampleDay)
+            return
+        }
+        do {
+            otherDay = try repository.peek(date, today: day.date)
+        } catch {
+            otherDay = PlannerDay(date: date)
+            otherProblem = .unreadable(fileName: repository.fileURL(for: date).lastPathComponent)
+        }
+    }
+
+    /// Writes `updated` to its file (or demo mode's memory) and records
+    /// whether that worked for the list it belongs to.
+    private func save(_ updated: PlannerDay) {
+        let isToday = updated.date == day.date
+        guard let repository else {
+            if !isToday { demoDays[updated.date] = updated }
+            return
+        }
+        // A snapshot run reads the user's lists but leaves no trace.
+        guard !runMode.isSnapshot else { return }
+        let result: Problem?
+        do {
+            try repository.save(updated)
+            result = nil
+        } catch {
+            result = .saveFailed
+        }
+        if isToday { problem = result } else { otherProblem = result }
+    }
+}
+
+extension PlannerStore.Problem? {
+    /// True for a file that can't be read, which is never overwritten.
+    var isUnreadable: Bool {
+        if case .unreadable = self { return true }
+        return false
     }
 }

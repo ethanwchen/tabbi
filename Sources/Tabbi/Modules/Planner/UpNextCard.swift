@@ -4,7 +4,8 @@ import TabbiKit
 
 /// The Today panel's "Up next" card: the next few events today with a timing
 /// badge and a Join button for video calls, or a compact state explaining why
-/// there's nothing to show.
+/// there's nothing to show. While the checklist shows yesterday or tomorrow,
+/// it lists that day's events with their times and lengths instead.
 struct UpNextCard: View {
     @ObservedObject var store: UpNextStore
     /// The kit's name for what the calendar holds (`TodayPlanSettings.upNextEvents`).
@@ -13,7 +14,7 @@ struct UpNextCard: View {
     var body: some View {
         Card(padding: Theme.Spacing.s) {
             VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-                Text("Up next")
+                Text(store.viewing.calendarTitle)
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.tertiaryText)
                     .padding(.horizontal, Theme.Spacing.xs)
@@ -22,7 +23,7 @@ struct UpNextCard: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
-        .motion(Theme.Motion.content, value: store.events)
+        .motion(Theme.Motion.content, value: store.shownEvents)
         .motion(Theme.Motion.content, value: store.emptySituation)
     }
 
@@ -33,8 +34,8 @@ struct UpNextCard: View {
             UpNextMessage(state: state) { perform($0) }
         } else {
             // A shorter panel (Compact) lists fewer events instead of clipping the card.
-            RowsThatFit(store.events) { event in
-                UpNextRow(event: event, now: store.now) { store.join($0) }
+            RowsThatFit(store.shownEvents) { event in
+                UpNextRow(event: event, now: store.viewing == .today ? store.now : nil) { store.join($0) }
                     .transition(.motionRow(from: .top))
             }
         }
@@ -51,15 +52,16 @@ struct UpNextCard: View {
 }
 
 /// One event: color dot and title, then start time and badge, with a Join
-/// button on the right when the event has a video-call link.
+/// button on the right when the event has a video-call link. Without `now`
+/// (another day) the badge gives the event's length and there's no Join.
 struct UpNextRow: View {
     let event: UpcomingEvent
-    let now: Date
+    let now: Date?
     let join: (MeetingLink) -> Void
     @State private var hovering = false
 
     var body: some View {
-        let timing = event.timing(at: now)
+        let timing = now.map(event.timing(at:))
         HStack(spacing: Theme.Spacing.s) {
             Circle()
                 .fill(dotColor)
@@ -74,7 +76,7 @@ struct UpNextRow: View {
                 HStack(spacing: Theme.Spacing.xs) {
                     Text(UpcomingEventFormat.startTime(event.start))
                         .foregroundStyle(Theme.Palette.tertiaryText)
-                    Text(UpcomingEventFormat.badge(timing))
+                    Text(timing.map(UpcomingEventFormat.badge) ?? UpcomingEventFormat.length(event))
                         .foregroundStyle(timing == .now ? accent : Theme.Palette.secondaryText)
                         .contentTransition(.numericText())
                 }
@@ -82,7 +84,7 @@ struct UpNextRow: View {
                 .lineLimit(1)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            if let link = event.meetingLink {
+            if timing != nil, let link = event.meetingLink {
                 UpNextJoinButton(link: link, isLive: timing == .now) { join(link) }
             }
         }
@@ -126,6 +128,7 @@ private struct UpNextJoinButton: View {
         }
         .buttonStyle(.plain)
         .help("Join \(link.provider.displayName) call")
+        .accessibilityLabel("Join \(link.provider.displayName) call")
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }
@@ -153,7 +156,9 @@ private struct UpNextMessage: View {
                 .font(Theme.Typography.caption)
                 .foregroundStyle(Theme.Palette.secondaryText)
                 .lineLimit(3)
-                .fixedSize(horizontal: false, vertical: true)
+                // Not fixed in height: in a short canvas (Compact) it gives up a
+                // line rather than push the panel past its edges.
+                .help(state.detail)
             if let action = state.action {
                 PlannerPillButton(title: state.actionTitle, help: state.actionHelp) { perform(action) }
                     .padding(.top, Theme.Spacing.xxs)

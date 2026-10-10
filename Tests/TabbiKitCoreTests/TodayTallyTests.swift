@@ -24,6 +24,14 @@ final class TodayTallyTests: XCTestCase {
         XCTAssertEqual(TodayTally(day: day, shared: []).summary, "All 2 done")
     }
 
+    func testPlannedSummaryCountsWhatADayAheadHolds() {
+        var day = PlannerDay(date: oct1, isPlannedAhead: true)
+        XCTAssertEqual(TodayTally(day: day, shared: []).plannedSummary, "Nothing planned")
+        day.add("One")
+        day.add("Two")
+        XCTAssertEqual(TodayTally(day: day, shared: []).plannedSummary, "2 planned")
+    }
+
     func testShortSummaryCountsDoneOfTotal() throws {
         var day = PlannerDay(date: oct1)
         XCTAssertEqual(TodayTally(day: day, shared: []).shortSummary, "Nothing planned")

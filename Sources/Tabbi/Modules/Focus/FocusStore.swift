@@ -23,10 +23,14 @@ final class FocusStore: ObservableObject {
     }
     /// The moment the view measures against; advances every second while visible.
     @Published private(set) var now = Date()
+    /// Focus stretches the Pomodoro finished today, from the activity log.
+    @Published private(set) var sessionsToday = 0
 
     private let isDemo: Bool
     /// Demo or snapshot run: nothing is saved, scheduled, played or logged.
     private let isEphemeral: Bool
+    /// Snapshot run: the clock never ticks. A demo's clock does, so it looks alive.
+    private let isSnapshot: Bool
     /// Starts and ends focus mode with the focus phases; nil in tests.
     private let focusMode: FocusController?
     private let storage: FocusTimerStorage
@@ -40,7 +44,8 @@ final class FocusStore: ObservableObject {
     private var viewers: Set<FocusViewer> = []
     private var isVisible: Bool { !viewers.isEmpty }
     private var ticker: Timer?
-    private var phaseEndTimer: Timer?
+    /// Catches up when the running phase ends, even if the Mac slept through it.
+    private lazy var phaseEnd = WallClockAlarm { [weak self] in self?.catchUp() }
     /// Saves the last-alive time while a session runs, so a crash ends it
     /// close to when it really stopped.
     private var heartbeat: Timer?
@@ -61,8 +66,10 @@ final class FocusStore: ObservableObject {
         self.focusMode = focusMode
         isDemo = runMode.isDemo
         isEphemeral = runMode.isEphemeral
+        isSnapshot = runMode.isSnapshot
         if isDemo {
             timer = Self.demoTimer(now: Date())
+            sessionsToday = 2
             notifications = nil
             return
         }
@@ -96,6 +103,7 @@ final class FocusStore: ObservableObject {
         let wasVisible = isVisible
         if visible { viewers.insert(viewer) } else { viewers.remove(viewer) }
         guard isVisible != wasVisible else { return }
+        if isVisible { countSessionsToday() }
         catchUp()
         updateTicker()
     }
@@ -227,6 +235,15 @@ final class FocusStore: ObservableObject {
     private func record(_ completions: [FocusPhaseCompletion]) {
         guard !isEphemeral, !completions.isEmpty else { return }
         activity?.record(completions.map { $0.activityRecord(config: timer.config, source: FocusModule.descriptor.id) })
+        countSessionsToday()
+    }
+
+    /// Recounts today's finished focus stretches. Runs when a panel appears
+    /// and after each one is logged, so a new day starts over at zero.
+    private func countSessionsToday() {
+        guard !isDemo, let activity else { return }
+        sessionsToday = FocusTimer.sessionsDone(in: activity.records(on: PlannerDayKey(date: Date())),
+                                                source: FocusModule.descriptor.id)
     }
 
     /// Saves the timer and arms the phase-end timer and notification. A user
@@ -237,17 +254,13 @@ final class FocusStore: ObservableObject {
         storage.save(timer)
         updateHeartbeat()
 
-        phaseEndTimer?.invalidate()
-        phaseEndTimer = nil
         if withdrawingPending { notifications?.cancelPending() }
-        guard let endsAt = timer.endsAt else { return }
-        notifications?.schedule(phaseEndingAt: endsAt, timer: timer)
-        let fire = Timer(fire: endsAt, interval: 0, repeats: false) { [weak self] _ in
-            MainActor.assumeIsolated { self?.catchUp() }
+        guard let endsAt = timer.endsAt else {
+            phaseEnd.cancel()
+            return
         }
-        fire.tolerance = 0.2
-        RunLoop.main.add(fire, forMode: .common)
-        phaseEndTimer = fire
+        notifications?.schedule(phaseEndingAt: endsAt, timer: timer)
+        phaseEnd.schedule(at: endsAt, tolerance: 0.2)
     }
 
     /// Saves the last-alive time now and every `heartbeatInterval` while the
@@ -274,9 +287,10 @@ final class FocusStore: ObservableObject {
         notifications?.schedule(phaseEndingAt: endsAt, timer: timer)
     }
 
-    /// Ticks once a second, only while the panel is visible and the clock runs.
+    /// Ticks once a second, only while the panel is visible and the clock
+    /// runs. The demo ticks too, so its running timer counts down.
     private func updateTicker() {
-        guard isVisible, timer.isRunning, !isEphemeral else {
+        guard isVisible, timer.isRunning, !isSnapshot else {
             ticker?.invalidate()
             ticker = nil
             return

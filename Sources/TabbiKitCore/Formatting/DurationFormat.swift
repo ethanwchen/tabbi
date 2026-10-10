@@ -17,6 +17,21 @@ public enum DurationFormat {
         return rest == 0 ? "\(hours)h" : "\(hours)h \(rest)m"
     }
 
+    /// Progress toward a length of time: "20 min of 45 min" under an hour,
+    /// and "45m of 2h" or "1h 4m of 2h" once either side reaches one, so a
+    /// single label never mixes the word "min" with the compact hours form.
+    public static func progress(_ done: Int, of total: Int) -> String {
+        let done = max(done, 0), total = max(total, 0)
+        guard max(done, total) >= 60 else { return "\(minutes(done)) of \(minutes(total))" }
+        return "\(compact(done)) of \(compact(total))"
+    }
+
+    /// "0m", "45m", "2h", "1h 15m": the hours form, also under an hour.
+    private static func compact(_ minutes: Int) -> String {
+        guard minutes >= 60 else { return "\(minutes)m" }
+        return Self.minutes(minutes)
+    }
+
     /// A span in seconds rounded up to the minute, with "<1 min" for less,
     /// so a countdown never claims nothing is left while something is.
     public static func seconds(_ seconds: TimeInterval) -> String {

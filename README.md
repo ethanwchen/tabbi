@@ -50,7 +50,7 @@ Med School adds Anki.
     <td width="50%"><img src="docs/images/today.png" alt="Today tab"><br><b>Today.</b> Your to-do list, what's next on the calendar and Plan my day.</td>
   </tr>
   <tr>
-    <td><img src="docs/images/now-playing.png" alt="Now Playing tab"><br><b>Now Playing.</b> Spotify and Apple Music, with artwork, shuffle and repeat.</td>
+    <td><img src="docs/images/now-playing.png" alt="Now Playing tab"><br><b>Now Playing.</b> Spotify and Apple Music (or SoundCloud in Safari or Chrome, if you turn it on), with artwork, shuffle, repeat and a like button.</td>
     <td><img src="docs/images/ask-claude.png" alt="Ask AI tab"><br><b>Ask AI.</b> Pick Claude, Codex, Gemini or Ollama, type a question and press Return; attach a screenshot or open a bigger view.</td>
   </tr>
   <tr>
@@ -89,7 +89,8 @@ Kits are small JSON files, and [docs/kits.md](docs/kits.md) shows how to write y
 Tabbi has no account, no analytics and no telemetry.
 It only connects where a tab needs to: album artwork for Now Playing, AnkiConnect on your own Mac, and the friends server while Party is on.
 Update checks download Tabbi's release feed from GitHub once a day; you can turn them off in **Settings > About**.
-Claude features run through your local `claude` CLI, and Tabbi never reads your credentials or the keychain.
+AI features talk only to the AI you pick in **Settings > Connections**: a command line tool you already use (Claude Code, Codex or Gemini CLI), a hosted API with your own key, which stays in your keychain, or Ollama on your own Mac.
+Tabbi never reads a command line tool's credentials.
 
 <details>
 <summary><b>What each permission is for</b></summary>
@@ -100,6 +101,7 @@ Tabbi asks for a permission only when the tab that needs it is first used.
 | Permission | Asked by | Why |
 | --- | --- | --- |
 | Automation: Spotify, Music | Now Playing, focus mode | Read the current track, control playback and start a focus playlist. |
+| Automation: Safari or Chrome | Now Playing, only once you turn on SoundCloud | Read and control the SoundCloud tab. |
 | Calendars | Today, Schedule | Show your events and add the planned blocks you accept. Events never leave your Mac. |
 | Notifications | Today, Focus | Tell you when a timer ends while the notch is closed. |
 | Screen Recording | Ask AI | Attach a screenshot to a question. The image goes only to the AI you picked. |
@@ -114,12 +116,14 @@ AI Usage reads token counts from `~/.claude/projects`, or from `~/.codex/session
 <details>
 <summary><b>FAQ</b></summary>
 
-**Do I need Claude Code?**
+**Do I need an AI?**
 No.
-Only the Claude tabs, Wrap up and the optional Refine with Claude use it, and the Claude tabs show a setup hint until the `claude` command is found.
+Only Ask AI, Wrap up and the optional Refine use one, and they ask you to pick an AI in **Settings > Connections** first.
 
-**Why the `claude` CLI and not an API key?**
-So Tabbi never handles your credentials, and your usage stays on the plan you already have.
+**Command line tool or API key?**
+Either.
+A command line tool keeps your usage on the plan you already have, and Tabbi never handles its credentials.
+An API key or Ollama works without any tool installed, and is the only option in the App Store edition.
 
 **How do I update or uninstall it?**
 Tabbi updates itself; right-click the notch and choose **Check for Updates…** to check now.

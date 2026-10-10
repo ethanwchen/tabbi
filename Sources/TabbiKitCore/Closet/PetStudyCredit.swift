@@ -81,9 +81,10 @@ extension PetCloset {
     /// is paid once because the log only announces new ones.
     ///
     /// Nil for anything else (finished phases are paid from the clock's
-    /// completion count) and when nothing was earned.
+    /// completion count, Party stays from `credit(_ session:)` with their
+    /// team bonus) and when nothing was earned.
     public mutating func credit(_ record: ActivityRecord) -> PetStudyAward? {
-        guard record.kind == .focusCompleted, record.unit == .minutes, let quantity = record.quantity, quantity.isFinite,
+        guard record.kind == .focusCompleted, record.source != .party, record.unit == .minutes, let quantity = record.quantity, quantity.isFinite,
               let outcome = record.metadata[ActivityMetadata.outcome].flatMap(StudyPhaseOutcome.init(rawValue:)),
               outcome == .skipped || outcome == .abandoned else { return nil }
         let before = Set(PetCloset.wardrobe.filter { state(of: $0) == .affordable })
@@ -94,16 +95,19 @@ extension PetCloset {
         return PetStudyAward(completedSessions: 0, minutes: minutes, points: points, unlocked: unlocked)
     }
 
-    /// Credits a Party shared session that ran to its end with the user in
-    /// it (`PetPointsRules.sharedPoints`), and returns the award to
-    /// celebrate. The shared clock never counts completions, so this is the
-    /// only way a shared session pays. Nil when the stay was too short.
+    /// Credits a stay in a Party shared session, finished or cut short
+    /// (`PetPointsRules.sharedPoints`), and returns the award to celebrate.
+    /// The shared clock never counts completions and Party's activity
+    /// records are skipped by `credit(_:)`, so this is the only way a
+    /// shared session pays. Nil when the stay was too short.
     public mutating func credit(_ session: PartySessionCompletion) -> PetStudyAward? {
         let before = Set(PetCloset.wardrobe.filter { state(of: $0) == .affordable })
-        let points = save.ledger.recordSharedSession(minutes: session.minutes, friends: session.friendCount)
+        let points = save.ledger.recordSharedSession(minutes: session.minutes, friends: session.friendCount,
+                                                     finished: session.finished)
         guard points > 0 else { return nil }
         let unlocked = PetCloset.wardrobe.filter { state(of: $0) == .affordable && !before.contains($0) }
-        return PetStudyAward(completedSessions: 1, minutes: session.minutes, points: points, unlocked: unlocked)
+        return PetStudyAward(completedSessions: session.finished ? 1 : 0, minutes: session.minutes, points: points,
+                             unlocked: unlocked)
     }
 
     /// A focus phase under way in `old` that `new` left without completing

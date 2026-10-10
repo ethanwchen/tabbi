@@ -143,7 +143,7 @@ enum SnapshotRenderer {
             shots.append(Shot(name, model))
         }
 
-        // The Closet's second section, rendered after the others because
+        // The Closet's other sections, rendered after the others because
         // the open section is store state.
         if layout.order.contains(.closet) {
             var withCloset = layout
@@ -151,6 +151,9 @@ enum SnapshotRenderer {
             let model = NotchViewModel(geometry: geometry, layout: withCloset)
             model.open(.closet)
             shots.append(Shot("open-closet-look", model))
+            let limited = NotchViewModel(geometry: geometry, layout: withCloset)
+            limited.open(.closet)
+            shots.append(Shot("open-closet-limited", limited))
             // The pet's paw at the far right of the header while another tab is open.
             let withPaw = NotchViewModel(geometry: geometry, layout: withCloset)
             withPaw.open(withCloset.tabs.first)
@@ -176,6 +179,45 @@ enum SnapshotRenderer {
             for name in ["open-claudeAsk-screenshot", "open-claudeAsk-screenshot-sent", "open-claudeAsk-screen-access"] {
                 let model = NotchViewModel(geometry: geometry, layout: withAsk)
                 model.open(.claudeAsk)
+                shots.append(Shot(name, model))
+            }
+        }
+
+        // Today stepped back to yesterday and ahead to tomorrow, rendered
+        // after the others because the day shown is store state.
+        if layout.order.contains(.planner) {
+            var withToday = layout
+            _ = withToday.setEnabled(.planner, true)
+            for name in ["open-planner-yesterday", "open-planner-tomorrow", "open-planner-tomorrow-plan"] {
+                let model = NotchViewModel(geometry: geometry, layout: withToday)
+                model.open(.planner)
+                shots.append(Shot(name, model))
+            }
+        }
+
+        // Now Playing following SoundCloud in Safari, playing and with
+        // JavaScript from Apple Events turned off, rendered after the others
+        // because the player shown is store state.
+        #if !APPSTORE
+        if layout.order.contains(.spotify) {
+            var withNowPlaying = layout
+            _ = withNowPlaying.setEnabled(.spotify, true)
+            for name in ["open-spotify-soundcloud", "open-spotify-soundcloud-javascript-off"] {
+                let model = NotchViewModel(geometry: geometry, layout: withNowPlaying)
+                model.open(.spotify)
+                shots.append(Shot(name, model))
+            }
+        }
+        #endif
+
+        // Schedule's Day view stepped back to yesterday and ahead to tomorrow,
+        // with a plan for tomorrow on offer.
+        if layout.order.contains(.schedule) {
+            var withSchedule = layout
+            _ = withSchedule.setEnabled(.schedule, true)
+            for name in ["open-schedule-yesterday", "open-schedule-tomorrow", "open-schedule-tomorrow-plan"] {
+                let model = NotchViewModel(geometry: geometry, layout: withSchedule)
+                model.open(.schedule)
                 shots.append(Shot(name, model))
             }
         }
@@ -348,7 +390,10 @@ enum SnapshotRenderer {
         let firstSection = closet?.store.section
         let askClaude = services.modules.module(AskClaudeModule.self)?.session
         let timer = services.modules.module(StudyModule.self)
+        let today = services.modules.module(TodayModule.self)?.store
         let party = services.modules.module(PartyModule.self)?.store
+        let schedule = services.modules.module(ScheduleModule.self)
+        let nowPlaying = services.modules.module(NowPlayingModule.self)
         let now = Date()
         let partySession = PartyState.demo(.member, now: now).session(at: now)
         for shot in shots {
@@ -360,7 +405,18 @@ enum SnapshotRenderer {
                 : name == "open-claudeAsk-screen-access" ? .screenAccess : .chat)
             timer?.showForSnapshot(partySession: name == "open-study-party" ? partySession : nil)
             party?.showCelebrationForSnapshot(name == "open-party-celebrating")
-            if let firstSection { closet?.store.section = name == "open-closet-look" ? .look : firstSection }
+            today?.showForSnapshot(name == "open-planner-yesterday" ? .yesterday
+                : name.hasPrefix("open-planner-tomorrow") ? .tomorrow : .today,
+                planning: name == "open-planner-tomorrow-plan")
+            schedule?.showForSnapshot(name == "open-schedule-yesterday" ? .yesterday
+                : name.hasPrefix("open-schedule-tomorrow") ? .tomorrow : .today,
+                planning: name == "open-schedule-tomorrow-plan")
+            nowPlaying?.showForSnapshot(name == "open-spotify-soundcloud" ? .soundCloud
+                : name == "open-spotify-soundcloud-javascript-off" ? .soundCloudJavaScriptOff : .players)
+            if let firstSection {
+                closet?.store.section = name == "open-closet-look" ? .look
+                    : name == "open-closet-limited" ? .limited : firstSection
+            }
             model.themeID = Theme.current.id
             if name == "closed-pet-cheer", case .pet(var pet) = model.preview {
                 // Mid first hop, with the sparkles out.
@@ -393,6 +449,9 @@ enum SnapshotRenderer {
         services.onboarding.show(nil)
         timer?.showForSnapshot(partySession: nil)
         party?.showCelebrationForSnapshot(false)
+        today?.show(.today)
+        schedule?.showForSnapshot(.today)
+        nowPlaying?.showForSnapshot(.players)
     }
 
     /// The review Settings shows before applying an imported kit: another

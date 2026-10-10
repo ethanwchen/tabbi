@@ -25,8 +25,8 @@ struct DayPlanView: View {
             EmptyView()
         case .planning:
             DayPlanShimmer(help: plan.settings.planMode == .claude
-                           ? "\(plan.assistantName) is fitting your tasks around today's events"
-                           : "Fitting your work and breaks around today's events")
+                           ? "\(plan.assistantName) is fitting your tasks around \(plan.target.eventsName)"
+                           : "Fitting your work and breaks around \(plan.target.eventsName)")
                 .transition(.opacity)
         case .proposal(let proposal):
             VStack(alignment: .leading, spacing: 0) {
@@ -44,7 +44,9 @@ struct DayPlanView: View {
         case .noFreeTime:
             PlannerMessage(symbol: "moon.stars.fill", tint: TodayModule.descriptor.accentColor,
                            title: "Nothing left to plan",
-                           detail: "There's no free time worth a block before the evening.")
+                           detail: plan.target == .tomorrow
+                               ? "Tomorrow has no free time worth a block before the evening."
+                               : "There's no free time worth a block before the evening.")
                 .frame(maxHeight: .infinity)
         case .failed(let failure):
             PlannerMessage(symbol: "exclamationmark.triangle.fill", tint: Theme.Palette.warning,
@@ -70,23 +72,44 @@ struct DayPlanView: View {
     }
 }
 
+private extension PlannerViewedDay {
+    /// The planned day's calendar, for the shimmer's tooltip.
+    var eventsName: String { self == .tomorrow ? "tomorrow's events" : "today's events" }
+}
+
 // MARK: Header
 
 private struct DayPlanHeader: View {
     @ObservedObject var plan: DayPlanStore
 
     var body: some View {
-        HStack(spacing: Theme.Spacing.s) {
-            Image(systemName: "sparkles")
-                .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(TodayModule.descriptor.accentColor)
-                .symbolEffect(.pulse, isActive: plan.phase == .planning || plan.isRefining)
-                .frame(width: 20)
-            Text(title)
-                .font(Theme.Typography.title)
-                .foregroundStyle(Theme.Palette.primaryText)
-                .lineLimit(1)
-            Spacer(minLength: Theme.Spacing.s)
+        // In a narrow column (Compact) the row tightens and "Add all" drops
+        // its icon so the title stays whole; truncating it is the last resort.
+        ViewThatFits(in: .horizontal) {
+            row(addAllSymbol: "calendar.badge.plus", spacing: Theme.Spacing.s)
+            row(addAllSymbol: nil, spacing: Theme.Spacing.xs)
+            row(addAllSymbol: nil, spacing: Theme.Spacing.xs, truncatesTitle: true)
+        }
+        .frame(height: 20)
+        .padding(.horizontal, Theme.Spacing.s)
+    }
+
+    private func row(addAllSymbol: String?, spacing: CGFloat, truncatesTitle: Bool = false) -> some View {
+        HStack(spacing: spacing) {
+            // Keeps the title over the rows' time column at every spacing.
+            HStack(spacing: Theme.Spacing.s) {
+                Image(systemName: "sparkles")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(TodayModule.descriptor.accentColor)
+                    .symbolEffect(.pulse, isActive: plan.phase == .planning || plan.isRefining)
+                    .frame(width: 20)
+                Text(title)
+                    .font(Theme.Typography.title)
+                    .foregroundStyle(Theme.Palette.primaryText)
+                    .lineLimit(1)
+                    .fixedSize(horizontal: !truncatesTitle, vertical: false)
+            }
+            Spacer(minLength: spacing)
             if plan.writeFailed {
                 Label("Not added", systemImage: "exclamationmark.triangle.fill")
                     .font(Theme.Typography.caption)
@@ -99,7 +122,7 @@ private struct DayPlanHeader: View {
                 plan.cancel()
             }
             if case .proposal = plan.phase {
-                PlannerPillButton(title: "Add all", symbol: "calendar.badge.plus", isProminent: true,
+                PlannerPillButton(title: "Add all", symbol: addAllSymbol, isProminent: true,
                                   help: "Add every block to your default calendar") {
                     withMotion(Theme.Motion.snappy) { plan.add() }
                 }
@@ -108,15 +131,13 @@ private struct DayPlanHeader: View {
                 .transition(.motionPop)
             }
         }
-        .frame(height: 20)
-        .padding(.horizontal, Theme.Spacing.s)
     }
 
     private var title: String {
         switch plan.phase {
-        case .planning: "Planning your day…"
-        case .proposal: "Your plan"
-        default: "Plan my day"
+        case .planning: plan.target == .tomorrow ? "Planning tomorrow…" : "Planning your day…"
+        case .proposal: plan.target == .tomorrow ? "Tomorrow" : "Your plan"
+        default: plan.target.planTitle
         }
     }
 

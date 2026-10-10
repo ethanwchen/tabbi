@@ -75,6 +75,27 @@ public enum ScheduleSampleData {
         return result
     }
 
+    /// The day before `date`'s, as the demo looks back on it: a full
+    /// working day of meetings and blocks planned with Tabbi, all over.
+    public static func yesterdayItems(before date: Date, calendar: Calendar = .current) -> [ScheduleItem] {
+        let work = EventColor(red: 0.20, green: 0.55, blue: 0.98)
+        let personal = EventColor(red: 0.98, green: 0.62, blue: 0.20)
+        guard let day = calendar.date(byAdding: .day, value: -1, to: calendar.startOfDay(for: date)) else { return [] }
+        func item(_ id: String, _ title: String, _ start: Int, _ end: Int, kind: ScheduleItem.Kind = .event,
+                  color: EventColor? = nil) -> ScheduleItem {
+            ScheduleItem(id: "demo-yesterday-\(id)", title: title, start: time(start, on: day, calendar: calendar),
+                         end: time(end, on: day, calendar: calendar), kind: kind, calendarColor: color)
+        }
+        return [
+            item("reviews", "Anki reviews", 9 * 60, 9 * 60 + 30, kind: .planned),
+            item("standup", "Design standup", 10 * 60, 10 * 60 + 30, color: work),
+            item("research", "User interviews", 10 * 60 + 45, 12 * 60, color: work),
+            item("lunch", "Lunch", 12 * 60 + 30, 13 * 60 + 15, color: personal),
+            item("spec", "Write the spec", 13 * 60 + 30, 15 * 60, kind: .planned),
+            item("retro", "Team retro", 15 * 60 + 30, 16 * 60 + 15, color: work),
+        ]
+    }
+
     /// Open tasks for the demo's Plan button, as other modules would share
     /// them. Around the demo day they fill the afternoon gap and leave the
     /// last one over, so the proposal shows a didn't-fit line too.

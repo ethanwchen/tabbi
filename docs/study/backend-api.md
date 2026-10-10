@@ -14,7 +14,7 @@ Deployment, architecture and the free-tier math are in [`backend/README.md`](../
 - To see the Party tab render a local worker's real data, run `TABBI_PARTY_SERVER=http://localhost:8787 swift run Tabbi --snapshot snapshots-live --kit medicine`.
   Add `TABBI_PARTY_TOKEN` and `TABBI_PARTY_CODE` from a `POST /v1/register` reply to render as that user, with the friends and party you set up for it with `curl`.
   Only plain-http (local) servers are accepted there, so a snapshot never registers users on a deployed server.
-- Every route is under `/v1/` except the health check `GET /`.
+- Every route is under `/v1/` except the shallow health check `GET /`, which the Worker answers without touching storage.
 - Bodies are JSON objects (`Content-Type: application/json`), at most 4096 bytes (`PUT /v1/sync`: 65536 bytes).
   An empty body counts as `{}`.
   Any field not listed for a route is rejected with `unknown_field`, so never send extra keys.
@@ -145,6 +145,7 @@ Auth column: "token" means `Authorization: Bearer <token>` is required.
 | Method and path | Auth | Purpose |
 | --- | --- | --- |
 | `GET /` | none | health check |
+| `GET /v1/health` | none | deep health check for uptime monitors: 200 once the Hub has read its storage, 503 `degraded` after a burst of server errors, see [`ops.md`](../ops.md#health-check) |
 | `GET /v1/catalog` | none | the shared catalog |
 | `POST /v1/register` | none or token | create a user, or update the profile of an existing one |
 | `POST /v1/auth/apple` | none or token | sign in with Apple: link or adopt the account's friend code |
@@ -169,7 +170,9 @@ Auth column: "token" means `Authorization: Bearer <token>` is required.
 | `DELETE /v1/party/session` | token, host | end the shared session |
 | `GET /v1/sync` | token, Apple account | my sync document and its revision |
 | `PUT /v1/sync` | token, Apple account | replace my sync document if I merged into the current revision |
-| `/v1/admin/...` | admin token | the maintainer's report review, rename and ban, see [Moderation](#moderation-maintainer) |
+| `GET /v1/grants` | token | the limited edition items the maintainer granted me |
+| `POST /v1/suggestions` | none | the website's Suggest form: send the maintainer an idea |
+| `/v1/admin/...` | admin token | the maintainer's report review, rename and ban, see [Moderation](#moderation-maintainer), limited edition grants, see [Limited edition grants](#limited-edition-grants-maintainer), the suggestions inbox, see [Suggestions](#suggestions-maintainer), and aggregate counts, see [Stats](#stats-maintainer) |
 
 ### `GET /`
 
@@ -476,6 +479,36 @@ Writes are limited to 20 per minute per user.
 
 Errors: `no_account` (403), `revision_required` (428, no `If-Match`), `invalid_revision` (400), `revision_conflict` (409), `invalid_json`, `unknown_field`, `invalid_field`, `body_too_large`, `rate_limited`.
 
+### `GET /v1/grants`
+
+Any user, signed in with Apple or not, so a Party identity without an account gets its items too.
+`200 {"ok": true, "items": ["accessory.backwardsCap"]}`: the ids of the limited edition items the maintainer granted, oldest grant first (`[]` when there are none).
+The app adds each id it knows to the Closet as a granted item and never takes one back, so a later revoke only stops new Macs from getting it.
+It asks once per launch, wake and identity (Party after it connects, sync after its first round when signed in), so a grant shows up on the next launch or wake.
+
+### `POST /v1/suggestions`
+
+The website's Suggest page (`site/build.py`) posts here; the app never does.
+It takes no token, and its body is either the form's `application/x-www-form-urlencoded` fields or a JSON object (sent with CORS, like every route) with the same names:
+
+| Field | Rules |
+| --- | --- |
+| `category` | required: `tab` (a new tab), `integration`, `improvement` or `other` |
+| `message` | required: 10 to 2000 characters after trimming; line breaks are kept, other control and invisible characters removed |
+| `email` | optional: one address of at most 254 characters, only to reply about the idea; empty means none |
+| `website` | the honeypot: people never see it, so it must be empty or absent |
+
+Any other field, a repeated form field or a body over 32 KB is refused.
+A post whose `website` is filled in gets the success reply but is not stored.
+
+- A form post is answered `303 See Other` to `https://tabbinotch.com/thanks`.
+  When it cannot be accepted, the reply is a short HTML page with the HTTP status of the error, what went wrong and a link back to the form.
+- A JSON post is answered `201 {"ok": true}`, or with the usual JSON errors.
+- Any other content type is `415 unsupported_media_type`.
+
+Limits: 3 posts a minute and 20 a UTC day per client IP (`429 rate_limited` with `Retry-After`), and 500 stored suggestions per rolling 24 hours from everyone (`503 inbox_full`).
+Errors: `invalid_field`, `unknown_field`, `invalid_json`, `body_too_large`, `unsupported_media_type`, `rate_limited`, `inbox_full`.
+
 ### Operator routes
 
 `GET /v1/admin/export` and `POST /v1/admin/restore` are for whoever runs the server, never for the app; see [`../security.md`](../security.md).
@@ -545,6 +578,92 @@ curl -s -X POST -H "Authorization: Bearer $ADMIN_TOKEN" $TABBI/v1/admin/reports/
   Replies `{"ok": true, "banned": true}` (`false` if already banned).
 - Sign in with Apple carries a ban, held names and reports over when an anonymous user folds into an account; the account keeps both users' held names.
 - An account that inherits a ban this way leaves its party at once, just as a ban does; the next member becomes host.
+
+## Limited edition grants (maintainer)
+
+Limited edition items are free cosmetics that points cannot buy and that are never sold or tied to donations.
+Milestone items (a 7-day streak, 50 hours focused, a finished Party session) unlock in the app by themselves; event items, such as the backwards cap for launch-week users, are granted here.
+A grant names an item id from [`backend/shared/limited-items.json`](../../backend/shared/limited-items.json); any other id is `400 invalid_field`.
+Milestone ids are accepted too, to hand back an unlock a user lost.
+The same `ADMIN_TOKEN` rules as the moderation routes apply.
+
+| Method and path | Purpose |
+| --- | --- |
+| `GET /v1/admin/users/{code}/grants` | the items a user holds: `{ok, grants}` |
+| `POST /v1/admin/users/{code}/grants` | grant `{"item": id}` to one user: `{ok, granted, grants}` (`granted` is `false` if they already held it) |
+| `DELETE /v1/admin/users/{code}/grants/{item}` | undo a grant made by mistake: `{ok, revoked, grants}` |
+| `POST /v1/admin/grants` | grant `{"item", "registeredFrom", "registeredUntil"}` to every user whose friend code was created in `[registeredFrom, registeredUntil)` (unix seconds; the window must have started): `{ok, granted}` with the number of new grants |
+
+```sh
+export TABBI=https://tabbi-friends.drosophil-anki-friends-backend.workers.dev
+export ADMIN_TOKEN=...   # the secret you set
+
+# One user, by friend code
+curl -s -X POST -H "Authorization: Bearer $ADMIN_TOKEN" -H "Content-Type: application/json" \
+  -d '{"item": "accessory.backwardsCap"}' $TABBI/v1/admin/users/K7QW2MZD/grants
+
+# Everyone who joined in the launch week (unix seconds, end exclusive)
+curl -s -X POST -H "Authorization: Bearer $ADMIN_TOKEN" -H "Content-Type: application/json" \
+  -d '{"item": "accessory.backwardsCap", "registeredFrom": 1791158400, "registeredUntil": 1791763200}' \
+  $TABBI/v1/admin/grants
+
+# Check or undo
+curl -s -H "Authorization: Bearer $ADMIN_TOKEN" $TABBI/v1/admin/users/K7QW2MZD/grants
+curl -s -X DELETE -H "Authorization: Bearer $ADMIN_TOKEN" $TABBI/v1/admin/users/K7QW2MZD/grants/accessory.backwardsCap
+```
+
+Granting is idempotent, so running the launch-week command twice adds nothing.
+Each new grant is one row write; a cohort of 10,000 users costs 10,000 of the free plan's 100,000 daily row writes, so grant large cohorts once and early in the UTC day.
+Grants follow a user when an anonymous user signs in with Apple and folds into an account, and are deleted with the account.
+
+## Suggestions (maintainer)
+
+Suggestions from the website wait in the inbox until the maintainer deletes them, and for at most 365 days.
+The same `ADMIN_TOKEN` rules as the moderation routes apply.
+
+| Method and path | Purpose |
+| --- | --- |
+| `GET /v1/admin/suggestions` | the newest 100 suggestions: `{ok, suggestions, more}`; `?before={id}` returns the 100 before that id when `more` is `true` |
+| `DELETE /v1/admin/suggestions/{id}` | delete a suggestion once it is read or answered: `{ok, deleted}` (`false` if no such id) |
+
+```sh
+curl -s -H "Authorization: Bearer $ADMIN_TOKEN" $TABBI/v1/admin/suggestions | jq '.suggestions[]'
+curl -s -X DELETE -H "Authorization: Bearer $ADMIN_TOKEN" $TABBI/v1/admin/suggestions/42
+```
+
+Each suggestion is `{"id": 42, "createdAt": 1789000000, "category": "tab", "message": "...", "email": null}`.
+Nothing ties a suggestion to a friend code, an IP address or anything else.
+
+## Stats (maintainer)
+
+`GET /v1/admin/stats` returns aggregate counts, so the maintainer can see how the service is used without the app sending anything for it.
+Every number is counted from rows the service already keeps to work; the reply never contains a friend code, a name or any other per-user value.
+The same `ADMIN_TOKEN` rules as the moderation routes apply.
+
+```json
+{
+  "ok": true,
+  "at": 1789000000,
+  "users": {"total": 1204, "signedIn": 311, "banned": 2},
+  "active": {"day": 240, "week": 610, "month": 902},
+  "signups": [{"day": "2026-09-10", "users": 14}, "... one entry per UTC day ...", {"day": "2026-10-09", "users": 9}],
+  "parties": {"open": 12, "members": 31},
+  "suggestions": 4,
+  "hub": {"since": 1788990000, "requests": 52113, "rowsRead": 640122, "rowsWritten": 2210}
+}
+```
+
+- `users.total` counts friend codes (every Mac or account that turned on the Party tab and has not deleted its account), `signedIn` the ones linked to Sign in with Apple, `banned` the banned ones.
+- `active` counts users whose last presence heartbeat is at most 24 hours, 7 days or 30 days old.
+  The app sends heartbeats only while the Party tab is on, so these are active Party users, not everyone who runs Tabbi.
+- `signups` lists new friend codes per UTC day for the last 30 days, oldest first, with zero days included.
+  An anonymous user who later signs in with Apple on a Mac that already has an account folds into that account and stops counting.
+- `parties` counts parties that have not expired and their members; `suggestions` counts suggestions waiting in the inbox.
+- `hub` is what the Hub has served since it last started (a deploy or an eviction starts it over): requests and the SQLite rows they read and wrote, which is what Cloudflare bills for.
+  The load test uses it to measure rows per request; see [`../ops.md`](../ops.md#scale).
+
+Each call reads about two rows per user (one scan of `users` and one of `presence`), so check it now and then rather than polling it.
+`npm run stats` in `backend/` prints these numbers next to the GitHub release download counts; see [`../ops.md`](../ops.md#product-metrics).
 
 ## Errors common to all routes
 

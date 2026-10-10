@@ -39,6 +39,11 @@ final class ScheduleModule: NotchModule {
             .store(in: &cancellables)
     }
 
+    /// Sets the Day view's day, and a plan for it, for one snapshot.
+    func showForSnapshot(_ day: PlannerViewedDay, planning: Bool = false) {
+        store.showForSnapshot(day, planning: planning)
+    }
+
     func makePanel() -> AnyView {
         AnyView(SchedulePanel(store: store))
     }

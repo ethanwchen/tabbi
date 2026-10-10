@@ -28,6 +28,8 @@ final class AppServices {
     let accountSync: SyncStore
     /// The AI provider the user picked, which Settings > Connections chooses.
     let ai: AIService
+    /// Shares the pet, streak and running timer with the desktop widget.
+    private let widgetState: WidgetStateWriter?
 
     private var cancellables: Set<AnyCancellable> = []
     /// Created on first use so launching never builds a window nobody opens.
@@ -60,6 +62,9 @@ final class AppServices {
                                     shared: shared, runMode: runMode).accountSync
         ai = ModuleContext(id: "ai", edition: edition, settings: settings, providers: providers,
                            shared: shared, runMode: runMode).ai
+        widgetState = WidgetStateWriter.live(context: ModuleContext(
+            id: "widget", edition: edition, settings: settings, providers: providers, shared: shared, runMode: runMode
+        ))
         // `$settings` emits before the new value is stored, so read the
         // layout from the emission.
         settings.$settings

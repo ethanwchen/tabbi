@@ -10,7 +10,7 @@ extension AnkiConnectionState {
                                     detail: "This takes a second.")
         case .notInstalled:
             return ConnectionStatus(light: .notInstalled, headline: "Anki isn't on this Mac",
-                                    detail: "Anki is a free flashcard app. Get it, then come back here.",
+                                    detail: "It's a free flashcard app. Get it, then come back here.",
                                     action: .download(.anki))
         case .notRunning:
             return ConnectionStatus(light: .needsStep, headline: "Anki is closed",
@@ -29,7 +29,7 @@ extension AnkiConnectionState {
                                     action: .showGuide(.ankiAccess))
         case .needsPermission:
             return ConnectionStatus(light: .needsStep, headline: "Anki said no to Tabbi",
-                                    detail: "Anki asked whether to let Tabbi in, and it was turned down.",
+                                    detail: "When Anki asked whether to let Tabbi in, the answer was no.",
                                     action: .showGuide(.ankiAccess))
         case .addOnOutdated:
             return ConnectionStatus(light: .needsStep, headline: "Update AnkiConnect",

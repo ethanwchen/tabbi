@@ -24,6 +24,14 @@ final class PetProfileTests: XCTestCase {
         XCTAssertFalse(PetProfile(name: "Earl Grey", breed: .britishShorthair).hasDefaultName)
     }
 
+    func testTheStarterCatKeepsItsWholeBreedNameAfterASave() throws {
+        let starter = PetProfile.starter(.cat)
+        let reloaded = try JSONDecoder().decode(PetProfile.self, from: JSONEncoder().encode(starter))
+        XCTAssertEqual(reloaded.name, "British Shorthair")
+        XCTAssertTrue(reloaded.hasDefaultName)
+        XCTAssertEqual(reloaded, starter)
+    }
+
     func testAnExistingSavedPetKeepsItsBreedAndName() throws {
         let old = Data(#"{"name": "Mochi", "breed": "orangeTabby", "outfit": "none", "accessories": []}"#.utf8)
         let profile = try JSONDecoder().decode(PetProfile.self, from: old)
@@ -248,8 +256,8 @@ final class PetProfileTests: XCTestCase {
 
 final class PetUnlockTests: XCTestCase {
     func testCatalogCoversEveryItemCheapestFirst() {
-        let items = PetItem.allCases
-        XCTAssertEqual(items.count, PetOutfit.allCases.count + PetAccessory.allCases.count)
+        XCTAssertEqual(PetItem.allCases.count, PetOutfit.allCases.count + PetAccessory.allCases.count)
+        let items = PetItem.shopItems
         XCTAssertEqual(items.map(\.cost), items.map(\.cost).sorted())
         XCTAssertEqual(Set(items.filter(\.isFree)),
                        [.outfit(.none), .accessory(.scarf), .accessory(.partyHat), .accessory(.bowTie)],
@@ -285,7 +293,7 @@ final class PetUnlockTests: XCTestCase {
         XCTAssertEqual(ledger.recordStudy(minutes: 25, completed: true), 35)
         XCTAssertTrue(ledger.canBuy(.accessory(.beanie)))
         try ledger.buy(.accessory(.beanie))
-        XCTAssertEqual(ledger.balance, 5)
+        XCTAssertEqual(ledger.balance, 0)
         XCTAssertEqual(ledger.earned, 35)
         XCTAssertEqual(ledger.nextUnlock, .accessory(.roundGlasses))
     }
@@ -295,18 +303,18 @@ final class PetUnlockTests: XCTestCase {
         ledger.recordStudy(minutes: 50, completed: true)
 
         XCTAssertThrowsError(try ledger.buy(.outfit(.scrubs))) { error in
-            XCTAssertEqual(error as? PetPurchaseError, .notEnoughPoints(missing: 40))
+            XCTAssertEqual(error as? PetPurchaseError, .notEnoughPoints(missing: 180))
         }
         XCTAssertEqual(ledger.balance, 60, "a refused purchase costs nothing")
 
-        try ledger.buy(.accessory(.ninjaHeadband))
-        XCTAssertThrowsError(try ledger.buy(.accessory(.ninjaHeadband))) { error in
+        try ledger.buy(.accessory(.roundGlasses))
+        XCTAssertThrowsError(try ledger.buy(.accessory(.roundGlasses))) { error in
             XCTAssertEqual(error as? PetPurchaseError, .alreadyOwned)
         }
         XCTAssertThrowsError(try ledger.buy(.outfit(.none))) { error in
             XCTAssertEqual(error as? PetPurchaseError, .alreadyOwned, "free items are always owned")
         }
-        XCTAssertEqual(ledger.balance, 0)
+        XCTAssertEqual(ledger.balance, 10)
     }
 
     func testLedgerNeverSpendsMoreThanEarned() {
@@ -328,7 +336,7 @@ final class PetUnlockTests: XCTestCase {
 
     func testProfileIsRestrictedToOwnedItems() throws {
         var ledger = PetPointsLedger()
-        ledger.recordStudy(minutes: 200, completed: true)
+        ledger.recordStudy(minutes: 270, completed: true)
         try ledger.buy(.accessory(.stethoscope))
 
         let profile = PetProfile(name: "Pip", breed: .labrador, outfit: .whiteCoat, accessories: [.stethoscope, .beanie])
@@ -342,7 +350,7 @@ final class PetUnlockTests: XCTestCase {
 final class PetSaveTests: XCTestCase {
     func testSaveRoundTripsThroughAFile() throws {
         var ledger = PetPointsLedger()
-        ledger.recordStudy(minutes: 120, completed: true)
+        ledger.recordStudy(minutes: 240, completed: true)
         try ledger.buy(.outfit(.scrubs))
         let profile = PetProfile(
             name: "Nori", breed: .siamese, paletteOverrides: [.costumeBase: PetColor(hex: "#7A5CFF")!],

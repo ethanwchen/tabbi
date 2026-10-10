@@ -118,6 +118,31 @@ final class SyncDocumentLocalStateTests: XCTestCase {
         XCTAssertEqual(fromA.merged(with: fromB).earned, 150 + 20 + 25)
     }
 
+    func testLimitedItemsSyncAsGrantedNotBought() {
+        var local = save(earned: 40)
+        local.ledger.grant(.accessory(.flameHeadband))
+        let document = SyncDocument.empty.recording(local, changedAt: nil, device: "a")
+        XCTAssertTrue(document.unlocks.contains(PetItem.accessory(.flameHeadband).id))
+
+        let otherMac = document.applied(to: save(earned: 0))
+        XCTAssertEqual(otherMac.ledger.granted, [.accessory(.flameHeadband)])
+        XCTAssertTrue(otherMac.ledger.purchased.isEmpty)
+        XCTAssertEqual(otherMac.ledger.spent, 0, "a limited item costs nothing on any Mac")
+    }
+
+    func testServerGrantedEventItemArrivesThroughUnlocks() {
+        let server = SyncDocument(unlocks: [PetItem.accessory(.backwardsCap).id])
+        let adopted = server.applied(to: save(earned: 10))
+        XCTAssertTrue(adopted.ledger.owns(.accessory(.backwardsCap)))
+    }
+
+    func testApplyingADocumentNeverTakesAGrantBack() {
+        var local = save(earned: 0)
+        local.ledger.grant(.accessory(.teamMedal))
+        let adopted = SyncDocument.empty.applied(to: local)
+        XCTAssertTrue(adopted.ledger.owns(.accessory(.teamMedal)))
+    }
+
     func testRecordingWithoutAChangeKeepsTheSyncedLook() {
         let base = SyncDocument(pet: SyncedPet(profile: PetProfile(name: "Tofu", breed: .calico), updatedAt: now))
         let next = base.recording(save(earned: 0), changedAt: nil, device: "a")

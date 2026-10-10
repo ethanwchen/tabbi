@@ -4,8 +4,8 @@
   Tabbi.entitlements plus Sign in with Apple, for Developer ID releases that
   embed packaging/Tabbi.provisionprofile (see docs/sync.md). scripts/release.sh
   uses this file only when that profile exists, and checks that its team and
-  application identifier match the two keys below. Keep the first two keys in
-  step with Tabbi.entitlements.
+  application identifier match the two keys below. Keep the first three keys
+  in step with Tabbi.entitlements.
   - applesignin: the optional account that syncs the pet across Macs.
   - application-identifier and team-identifier: macOS only honors a restricted
     entitlement when they match the embedded profile.
@@ -16,6 +16,10 @@
     <true/>
     <key>com.apple.security.personal-information.calendars</key>
     <true/>
+    <key>com.apple.security.application-groups</key>
+    <array>
+        <string>B9VRALHV8S.dev.tabbi.Tabbi</string>
+    </array>
     <key>com.apple.developer.applesignin</key>
     <array>
         <string>Default</string>

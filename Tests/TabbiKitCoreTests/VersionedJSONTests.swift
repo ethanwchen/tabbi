@@ -76,6 +76,32 @@ final class VersionedJSONTests: XCTestCase {
         XCTAssertEqual(try repository.load(key), day)
     }
 
+    func testAVersionOnePlannerDayIsNotTreatedAsPlannedAhead() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let repository = PlannerRepository(directory: directory)
+        let yesterday = try XCTUnwrap(PlannerDayKey(rawValue: "2026-10-01"))
+        let today = try XCTUnwrap(PlannerDayKey(rawValue: "2026-10-02"))
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let leftover = #"""
+        {"schemaVersion":1,"date":"2026-10-01","items":[{"createdAt":"2026-10-01T08:00:00Z",
+        "id":"7B0E7A3C-3C1B-4F5E-9C59-2C1F0A7C9E11","isDone":false,"title":"Deleted today"}]}
+        """#
+        try Data(leftover.utf8).write(to: repository.fileURL(for: yesterday))
+        // Today was already opened (and the carried item deleted) by a version 1 build.
+        try Data(#"{"schemaVersion":1,"date":"2026-10-02","items":[]}"#.utf8).write(to: repository.fileURL(for: today))
+
+        XCTAssertEqual(try repository.load(today), PlannerDay(date: today))
+        // So opening it again must not bring the deleted item back.
+        XCTAssertEqual(try repository.open(today).items, [])
+
+        var planned = try repository.peek(today.adding(days: 1), today: today)
+        planned.add("Plan ahead")
+        try repository.save(planned)
+        XCTAssertEqual(VersionedJSON.version(of: try Data(contentsOf: repository.fileURL(for: planned.date))), 2)
+        XCTAssertEqual(try repository.load(planned.date)?.isPlannedAhead, true)
+    }
+
     func testAReviewRoundTripsWithAVersion() throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: directory) }
@@ -113,10 +139,7 @@ final class VersionedJSONTests: XCTestCase {
     // MARK: Focus timer keys
 
     private func withDefaults(_ body: (UserDefaults) throws -> Void) throws {
-        let suite = "TabbiTests.\(UUID().uuidString)"
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
-        defer { defaults.removePersistentDomain(forName: suite) }
-        try body(defaults)
+        try body(InMemoryDefaults())
     }
 
     func testSettingsMigrationMovesTheFocusTimerOffThePlannerKeys() throws {

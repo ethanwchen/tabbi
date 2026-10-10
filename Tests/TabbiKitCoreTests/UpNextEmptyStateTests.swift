@@ -62,4 +62,30 @@ final class UpNextEmptyStateTests: XCTestCase {
             XCTAssertFalse(state.title.isEmpty, "\(situation)")
         }
     }
+
+    func testAnotherDayIsEmptyOnlyWithoutAnyTimedEvent() {
+        XCTAssertNil(UpNextEmptyState.granted(on: .tomorrow, upcoming: 2, eventsThatDay: 2, hasAccounts: true))
+        XCTAssertEqual(UpNextEmptyState.granted(on: .tomorrow, upcoming: 0, eventsThatDay: 0, hasAccounts: true),
+                       .freeTomorrow)
+        XCTAssertEqual(UpNextEmptyState.granted(on: .yesterday, upcoming: 0, eventsThatDay: 0, hasAccounts: true),
+                       .freeYesterday)
+        // Yesterday's events are all over, but that's no "day done" there: they're listed.
+        XCTAssertNil(UpNextEmptyState.granted(on: .yesterday, upcoming: 3, eventsThatDay: 3, hasAccounts: true))
+        XCTAssertEqual(UpNextEmptyState.granted(on: .tomorrow, upcoming: 0, eventsThatDay: 0, hasAccounts: false),
+                       .noAccounts)
+    }
+
+    func testTodayStillMeansWhatIsLeft() {
+        XCTAssertEqual(UpNextEmptyState.granted(on: .today, upcoming: 0, eventsThatDay: 4, hasAccounts: true), .dayDone)
+        XCTAssertEqual(UpNextEmptyState.granted(on: .today, upcoming: 0, eventsThatDay: 0, hasAccounts: true), .freeDay)
+    }
+
+    func testOtherDaysEmptyStatesNameTheirDay() {
+        let tomorrow = UpNextEmptyState(.freeTomorrow, upNextEvents: "meetings and calls", appName: "Tabbi")
+        let yesterday = UpNextEmptyState(.freeYesterday, upNextEvents: "meetings and calls", appName: "Tabbi")
+        XCTAssertTrue(tomorrow.detail.contains("tomorrow"))
+        XCTAssertTrue(yesterday.detail.contains("yesterday"))
+        XCTAssertNil(tomorrow.action)
+        XCTAssertNil(yesterday.action)
+    }
 }

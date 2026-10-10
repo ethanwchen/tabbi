@@ -17,7 +17,7 @@ public final class NotchController {
     private var closeTask: Task<Void, Never>?
     private var hoverOpenTask: Task<Void, Never>?
     private var pointerInside = false
-    private var horizontalScroll: CGFloat = 0
+    private var swipe = TabSwipe()
     private var hotkey: GlobalHotkey?
     /// The display the notch is on; nil while no screen qualifies.
     private var displayID: CGDirectDisplayID?
@@ -251,19 +251,24 @@ public final class NotchController {
         }
     }
 
-    /// Two-finger horizontal swipe cycles modules.
+    /// A two-finger horizontal swipe moves one tab.
     private func handleScroll(_ event: NSEvent) {
-        guard model.isOpen, abs(event.scrollingDeltaX) > abs(event.scrollingDeltaY) else { return }
-        if event.phase == .began { horizontalScroll = 0 }
-        horizontalScroll += event.scrollingDeltaX
-        if horizontalScroll > 60 {
-            model.selectPrevious()
-            horizontalScroll = -.infinity // one step per gesture
-        } else if horizontalScroll < -60 {
-            model.selectNext()
-            horizontalScroll = .infinity
+        guard model.isOpen else { return }
+        let phase: TabSwipe.Phase
+        if !event.momentumPhase.isEmpty {
+            phase = .momentum
+        } else if event.phase.contains(.began) {
+            phase = .began
+        } else if event.phase.contains(.ended) || event.phase.contains(.cancelled) {
+            phase = .ended
+        } else {
+            phase = event.phase.isEmpty ? .none : .changed
         }
-        if event.phase == .ended || event.phase == .cancelled { horizontalScroll = 0 }
+        switch swipe.feed(deltaX: event.scrollingDeltaX, deltaY: event.scrollingDeltaY, phase: phase) {
+        case .previous: model.selectPrevious()
+        case .next: model.selectNext()
+        case nil: break
+        }
     }
 
     // MARK: State

@@ -74,6 +74,27 @@ let package = Package(
             // scripts/assemble.sh puts Sparkle.framework in Contents/Frameworks.
             linkerSettings: [.unsafeFlags(["-Xlinker", "-rpath", "-Xlinker", "@executable_path/../Frameworks"])]
         ),
+        // The desktop and Notification Center widget (docs/widget.md).
+        // scripts/assemble.sh wraps this binary in
+        // Tabbi.app/Contents/PlugIns/TabbiWidget.appex. An app extension
+        // starts in Foundation's NSExtensionMain, which hands control to the
+        // @main WidgetBundle; Xcode links every extension this way, and
+        // without it the process exits before WidgetKit asks for widgets.
+        .executableTarget(
+            name: "TabbiWidget",
+            dependencies: ["TabbiKitCore", "TabbiWidgetUI"],
+            swiftSettings: swiftSettings + [.unsafeFlags(["-application-extension"])],
+            linkerSettings: [
+                .unsafeFlags(["-Xlinker", "-e", "-Xlinker", "_NSExtensionMain", "-Xlinker", "-application_extension"]),
+            ]
+        ),
+        // The widget's views, apart from the extension so tests can render
+        // them. Extension-safe API only, like the extension itself.
+        .target(
+            name: "TabbiWidgetUI",
+            dependencies: ["TabbiKitCore"],
+            swiftSettings: swiftSettings + [.unsafeFlags(["-application-extension"])]
+        ),
         // Renders pet sprite contact sheets for art review: `swift run PetGallery out/`.
         .executableTarget(
             name: "PetGallery",
@@ -84,6 +105,11 @@ let package = Package(
             name: "TabbiKitCoreTests",
             dependencies: ["TabbiKitCore"],
             swiftSettings: coreSettings
+        ),
+        .testTarget(
+            name: "TabbiWidgetUITests",
+            dependencies: ["TabbiWidgetUI", "TabbiKitCore"],
+            swiftSettings: swiftSettings
         ),
         // App-level wiring (registry, provider hub) tested through
         // `@testable import Tabbi`.

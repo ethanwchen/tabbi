@@ -40,7 +40,9 @@ struct DayReviewView: View {
                 .foregroundStyle(Theme.Palette.primaryText)
                 .lineLimit(3)
                 .lineSpacing(Theme.Spacing.xxs)
-                .fixedSize(horizontal: false, vertical: true)
+                // Not fixed in height: in a short canvas (Compact) it gives up
+                // its last line rather than push the lists out of the panel.
+                // The tooltip keeps the full text.
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .help(text)
                 .transition(.opacity)

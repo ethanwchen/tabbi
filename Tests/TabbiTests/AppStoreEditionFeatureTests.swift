@@ -50,6 +50,16 @@ final class AppStoreEditionFeatureTests: XCTestCase {
         XCTAssertNotNil(ai.provider)
     }
 
+    func testTheAppStoreEditionNeverOffersSoundCloud() throws {
+        let appStoreModule = NowPlayingModule(context: context(.spotify, edition: try appStore))
+        XCTAssertFalse(appStoreModule.controller.allowsBrowsers, "no Automation of Safari or Chrome")
+        XCTAssertNil(appStoreModule.makeSettingsPane(), "so there is no SoundCloud switch to show")
+
+        let direct = NowPlayingModule(context: context(.spotify, edition: .tabbi))
+        XCTAssertTrue(direct.controller.allowsBrowsers)
+        XCTAssertEqual(direct.makeSettingsPane()?.id, "nowPlaying")
+    }
+
     func testWrapUpShowsTheLocalSummaryAtOnceWithoutAnAI() {
         let review = DayReviewStore(storage: EditionStorage(root: FileManager.default.temporaryDirectory),
                                     ai: nil, runMode: .demo)

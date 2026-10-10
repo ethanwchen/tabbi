@@ -72,6 +72,9 @@ final class SyncStore: ObservableObject {
     /// leaves the newer one's bookkeeping alone.
     private var syncGeneration = 0
     private var debounceTask: Task<Void, Never>?
+    /// True once this launch (or wake, or sign-in) fetched the account's
+    /// limited edition grants, so later rounds don't ask again.
+    private var grantsAreCurrent = false
     private var cancellables: Set<AnyCancellable> = []
 
     /// - Parameters:
@@ -135,7 +138,12 @@ final class SyncStore: ObservableObject {
             .store(in: &cancellables)
         NSWorkspace.shared.notificationCenter
             .publisher(for: NSWorkspace.didWakeNotification)
-            .sink { [weak self] _ in MainActor.assumeIsolated { self?.syncSoon(after: Self.wakeDelay) } }
+            .sink { [weak self] _ in
+                MainActor.assumeIsolated {
+                    self?.grantsAreCurrent = false
+                    self?.syncSoon(after: Self.wakeDelay)
+                }
+            }
             .store(in: &cancellables)
         syncNow()
     }
@@ -179,6 +187,7 @@ final class SyncStore: ObservableObject {
             self.name = state.session?.name
             lastSyncedAt = state.lastSyncedAt
             phase = .signedIn
+            grantsAreCurrent = false
             identityChanged.send()
             syncNow()
         } catch {
@@ -308,6 +317,7 @@ final class SyncStore: ObservableObject {
             persist()
             lastSyncedAt = state.lastSyncedAt
             notice = nil
+            if !grantsAreCurrent { await fetchGrants() }
         } catch let error as PartyError where error.isNoSyncAccount || error == .unauthorized {
             // The account was deleted on another Mac.
             guard state == base else { return }
@@ -319,6 +329,17 @@ final class SyncStore: ObservableObject {
             guard !Task.isCancelled else { return }
             notice = Self.message(for: error, signingIn: false)
         }
+    }
+
+    /// Hands the account's limited edition grants (`GET /v1/grants`, such
+    /// as the launch week cap) to the pet, so they reach every signed-in Mac
+    /// even with Party off. Best effort: a failure asks again next round.
+    private func fetchGrants() async {
+        guard let server = server(), let token = credentials.load(for: server)?.token,
+              let items = try? await PartyClient(transport: transport(server), token: token).grants(),
+              !Task.isCancelled, state.isSignedIn else { return }
+        grantsAreCurrent = true
+        pet.applyGrants(items)
     }
 
     private func progress() -> SyncLocalProgress {

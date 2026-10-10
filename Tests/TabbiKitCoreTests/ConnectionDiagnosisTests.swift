@@ -123,6 +123,20 @@ final class ConnectionDiagnosisTests: XCTestCase {
         XCTAssertTrue(NotificationAccess.allowed.diagnosis.verdict.hasPrefix("Everything checks out."))
     }
 
+    /// The checkup joins headline and detail into one verdict, so a detail
+    /// that opens like its headline ("Claude is optional. Claude is an AI
+    /// helper...") reads as a stutter.
+    func testVerdictDetailDoesNotRestateTheHeadlineSubject() {
+        for diagnosis in everyDiagnosis {
+            let status = diagnosis.status
+            // "Anki isn't on this Mac. Anki is a free flashcard app." stutters
+            // as much as a repeated phrase, so even the first word counts.
+            let headline = status.headline.split(separator: " ").first
+            let detail = status.detail.split(separator: " ").first
+            XCTAssertNotEqual(headline, detail, diagnosis.verdict)
+        }
+    }
+
     func testDemoDiagnosesMatchDemoStatuses() {
         for kind in ConnectionKind.allCases {
             XCTAssertEqual(kind.demoDiagnosis.kind, kind)
