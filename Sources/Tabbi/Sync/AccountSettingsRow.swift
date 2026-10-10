@@ -3,9 +3,10 @@ import SwiftUI
 import TabbiKitCore
 
 /// The Account row in Settings > General: Sign in with Apple when signed
-/// out, the account with Sign Out and Delete Account when signed in, and a
-/// calm note in builds that cannot sign in. Signed out, everything works as
-/// without an account.
+/// out, the account with Sign Out and Delete Account when signed in. The
+/// button is Apple's in both editions: it opens the native sheet where the
+/// build has the entitlement and Apple's web page elsewhere
+/// (`AppleSignInMethod`). Signed out, everything works as without an account.
 struct AccountSettingsRow: View {
     @ObservedObject var account: SyncStore
     @Environment(\.colorScheme) private var colorScheme
@@ -33,16 +34,8 @@ struct AccountSettingsRow: View {
     @ViewBuilder
     private var controls: some View {
         switch account.phase {
-        case .unavailable:
-            EmptyView()
         case .signedOut, .signingIn:
-            SignInWithAppleButton(.signIn) { request in
-                // The name greets the user; no email is asked for or kept.
-                request.requestedScopes = [.fullName]
-            } onCompletion: { result in
-                signIn(with: result)
-            }
-            .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
+            signInButton
             .frame(width: 160, height: 28)
             .disabled(account.phase == .signingIn)
             .opacity(account.phase == .signingIn ? 0.5 : 1)
@@ -58,9 +51,29 @@ struct AccountSettingsRow: View {
         }
     }
 
+    @ViewBuilder
+    private var signInButton: some View {
+        switch account.signInMethod {
+        case .native:
+            SignInWithAppleButton(.signIn) { request in
+                // The name greets the user; no email is asked for or kept.
+                request.requestedScopes = [.fullName]
+            } onCompletion: { result in
+                signIn(with: result)
+            }
+            .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
+        case .web:
+            WebSignInWithAppleButton(style: colorScheme == .dark ? .white : .black) {
+                Task { await account.signInOnWeb() }
+            }
+            // The style is fixed when the button is made.
+            .id(colorScheme)
+        }
+    }
+
     private var title: String {
         switch account.phase {
-        case .unavailable, .signedOut, .signingIn: "Account"
+        case .signedOut, .signingIn: "Account"
         case .signedIn, .deleting: account.name ?? "Signed in with Apple"
         }
     }
@@ -68,7 +81,6 @@ struct AccountSettingsRow: View {
     private var caption: String {
         if let notice = account.notice { return notice }
         switch account.phase {
-        case .unavailable: return "Sign in with Apple is available in the release build."
         case .signedOut: return "Sync your pet, points and streaks across your Macs."
         case .signingIn: return "Signing in…"
         case .deleting: return "Deleting your account…"
@@ -112,5 +124,32 @@ struct AccountSettingsRow: View {
             // Cancelling is a choice, not an error.
             if (error as? ASAuthorizationError)?.code != .canceled { account.appleSignInFailed() }
         }
+    }
+}
+
+/// Apple's Sign in with Apple button for the web flow: the same look as the
+/// native `SignInWithAppleButton`, which only starts the native sheet, with
+/// an action of our own.
+private struct WebSignInWithAppleButton: NSViewRepresentable {
+    let style: ASAuthorizationAppleIDButton.Style
+    let action: () -> Void
+
+    func makeNSView(context: Context) -> ASAuthorizationAppleIDButton {
+        let button = ASAuthorizationAppleIDButton(authorizationButtonType: .signIn, authorizationButtonStyle: style)
+        button.target = context.coordinator
+        button.action = #selector(Coordinator.press)
+        return button
+    }
+
+    func updateNSView(_ button: ASAuthorizationAppleIDButton, context: Context) {
+        context.coordinator.action = action
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator(action: action) }
+
+    final class Coordinator: NSObject {
+        var action: () -> Void
+        init(action: @escaping () -> Void) { self.action = action }
+        @objc func press() { action() }
     }
 }

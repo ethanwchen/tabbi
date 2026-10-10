@@ -21,9 +21,6 @@ import TabbiKitCore
 final class SyncStore: ObservableObject {
     /// What the Settings account row shows.
     enum Phase: Equatable {
-        /// This build cannot sign in (no Sign in with Apple entitlement:
-        /// dev, ad-hoc and snapshot builds) and no account is signed in.
-        case unavailable
         case signedOut
         case signingIn
         case signedIn
@@ -51,8 +48,9 @@ final class SyncStore: ObservableObject {
     static let quitWait: TimeInterval = 2
 
     let isDemo: Bool
-    private let isSnapshot: Bool
-    private let isAvailable: Bool
+    /// Native sheet or Apple's web page; the row looks the same either way.
+    let signInMethod: AppleSignInMethod
+    private let webCallback: @MainActor (URL) async throws -> URL?
     private let pet: ClosetStore
     private let stateURL: URL?
     private let credentials: any PartyCredentialStore
@@ -78,19 +76,24 @@ final class SyncStore: ObservableObject {
     private var cancellables: Set<AnyCancellable> = []
 
     /// - Parameters:
-    ///   - isAvailable: whether this build may sign in with Apple
-    ///     (`AppleSignInAvailability.isEntitled`).
+    ///   - signInMethod: how this build signs in (`AppleSignInMethod.current`).
+    ///   - webCallback: opens Apple's page for a web sign-in and returns the
+    ///     `tabbi://auth/apple` link it ended on, or nil when the user
+    ///     closed it (`AppleWebAuthentication`; tests fake it).
     ///   - server: the friends server Party uses now.
     ///   - credentials: where Party keeps its identity; the account replaces it.
     ///   - transport: replaces HTTPS (tests).
     ///   - studyDays: local days with focus time on this Mac, for the streak.
-    init(storage: EditionStorage, runMode: RunMode, pet: ClosetStore, isAvailable: Bool,
+    init(storage: EditionStorage, runMode: RunMode, pet: ClosetStore, signInMethod: AppleSignInMethod,
+         webCallback: @escaping @MainActor (URL) async throws -> URL? = { url in
+             try await AppleWebAuthentication().callback(from: url)
+         },
          server: @escaping () -> URL?, credentials: any PartyCredentialStore,
          transport: ((URL) -> any PartyTransport)? = nil,
          studyDays: @escaping () -> Set<String> = { [] }, clock: @escaping () -> Date = Date.init) {
         isDemo = runMode.isDemo
-        isSnapshot = runMode.isSnapshot
-        self.isAvailable = isAvailable
+        self.signInMethod = signInMethod
+        self.webCallback = webCallback
         self.pet = pet
         self.server = server
         self.credentials = credentials
@@ -120,7 +123,7 @@ final class SyncStore: ObservableObject {
         stateURL = url
         stateIsUnreadable = unreadable
         state = loaded
-        phase = loaded.isSignedIn ? .signedIn : isAvailable ? .signedOut : .unavailable
+        phase = loaded.isSignedIn ? .signedIn : .signedOut
         name = loaded.session?.name
         lastSyncedAt = loaded.lastSyncedAt
     }
@@ -173,13 +176,57 @@ final class SyncStore: ObservableObject {
     /// links (or adopts) the account, stores its Party identity and syncs,
     /// merging this Mac's progress with the account's.
     func signIn(identityToken: String, authorizationCode: String?, name: String?) async {
-        guard !isDemo, phase == .signedOut || phase == .unavailable, let server = server() else { return }
+        await signIn(name: name) { client in
+            try await client.signInWithApple(identityToken: identityToken, authorizationCode: authorizationCode)
+        }
+    }
+
+    /// Signs in on Apple's web page (`AppleWebSignIn`): opens it, takes the
+    /// one-time code the friends server sends back through
+    /// `tabbi://auth/apple`, and trades it, with this attempt's state, for
+    /// the account, as `signIn(identityToken:authorizationCode:name:)` does.
+    /// Closing the page is not an error.
+    func signInOnWeb() async {
+        guard !isDemo, phase == .signedOut, let server = server() else { return }
         notice = nil
-        let before = phase
+        phase = .signingIn
+        let attempt = AppleWebSignIn()
+        let link: URL?
+        do {
+            link = try await webCallback(attempt.authorizeURL(server: server))
+        } catch {
+            phase = .signedOut
+            appleSignInFailed()
+            return
+        }
+        guard let link else {
+            phase = .signedOut
+            return
+        }
+        switch AppleWebSignIn.Callback(url: link) {
+        case .code(let code):
+            phase = .signedOut
+            await signIn(name: nil) { client in
+                try await client.exchangeWebSignIn(code: code, state: attempt.state)
+            }
+        case .failure(let failure):
+            phase = .signedOut
+            notice = failure.message
+        case nil:
+            phase = .signedOut
+            appleSignInFailed()
+        }
+    }
+
+    /// Trades what Apple returned for the account through `exchange`, then
+    /// stores its Party identity and syncs.
+    private func signIn(name: String?, exchange: (SyncClient) async throws -> AppleSignInReply) async {
+        guard !isDemo, phase == .signedOut, let server = server() else { return }
+        notice = nil
         phase = .signingIn
         do {
             let client = SyncClient(transport: transport(server), token: credentials.load(for: server)?.token)
-            let reply = try await client.signInWithApple(identityToken: identityToken, authorizationCode: authorizationCode)
+            let reply = try await exchange(client)
             try credentials.save(reply.credentials, for: server)
             state = state.signedIn(to: reply.credentials.code,
                                    session: SyncSession(name: name ?? self.name, signedInAt: clock()))
@@ -191,16 +238,9 @@ final class SyncStore: ObservableObject {
             identityChanged.send()
             syncNow()
         } catch {
-            phase = before
+            phase = .signedOut
             notice = Self.message(for: error, signingIn: true)
         }
-    }
-
-    /// Lets a snapshot run render the signed-out row a release build shows
-    /// (`true`) and then the unavailable one again; does nothing elsewhere.
-    func showsSignInForSnapshot(_ shows: Bool) {
-        guard isSnapshot, !isDemo, !state.isSignedIn else { return }
-        phase = shows ? .signedOut : .unavailable
     }
 
     /// Apple's sheet failed before anything reached the server.
@@ -363,7 +403,7 @@ final class SyncStore: ObservableObject {
         name = nil
         lastSyncedAt = nil
         syncedSave = nil
-        phase = isAvailable ? .signedOut : .unavailable
+        phase = .signedOut
         identityChanged.send()
     }
 
@@ -377,6 +417,7 @@ final class SyncStore: ObservableObject {
     private static func message(for error: any Error, signingIn: Bool) -> String {
         if let error = error as? PartyError {
             if error.isRejectedAppleSignIn { return "Apple didn't accept the sign-in. Try again." }
+            if error.isExpiredWebSignIn { return "The sign-in took too long. Try again." }
             return error.message
         }
         return signingIn ? "Couldn't sign in. Try again." : "Couldn't reach the server. Try again."
