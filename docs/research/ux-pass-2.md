@@ -48,3 +48,9 @@ Each entry is a short before and after.
 - Before: at Compact the Focus card dropped the names of its two settings to fit one line, leaving a moon and a bare "On" that did not say what was on.
   After: when one line is too narrow, the settings stack on two lines and keep their names ("Sound Rain + Fireplace", "Do Not Disturb On"), using the card's spare height.
   Only a panel too narrow for that drops the names, and VoiceOver reads each setting's name either way.
+
+## Desktop widget
+
+- Before: VoiceOver read the medium widget's stat chips piece by piece, starting with the symbol's name ("flame", "5 days", "streak"), and the headline as up to three separate fragments.
+  After: each chip is one phrase ("5 days streak", "1h 25m focused today", "No streak yet"), and the headline reads as one ("Today, 2h 15m, focused").
+  The widget looks the same; its light and dark renders across focus, break, paused, idle and empty were reviewed with the theme and Med School renders and needed no visual change.
