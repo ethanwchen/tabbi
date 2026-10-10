@@ -108,8 +108,11 @@ final class PartyStore: ObservableObject {
     private var pinsName = false
     private var cancellables: Set<AnyCancellable> = []
     /// Whether the user is signed in with Apple, so an under-13 answer
-    /// leaves the account's data to Delete Account (`PartyModule` sets it).
+    /// leaves the account's data to `SyncStore` (`PartyModule` sets it).
     var isSignedIn: () -> Bool = { false }
+    /// Called after the user answers the age question here, so the Apple
+    /// account follows the answer (`SyncStore.refreshAgeStatus`).
+    var ageAnswered: () -> Void = {}
 
     private static let trackerKey = "party.presence"
 
@@ -298,10 +301,11 @@ final class PartyStore: ObservableObject {
     /// surely 13 is saved, on this Mac. Old enough, Party connects; under
     /// 13, it stays off until that day, and a Party identity this Mac made
     /// before the check existed is deleted from the server (signed in, it
-    /// belongs to the Apple account and goes with Delete Account).
+    /// belongs to the Apple account, which `SyncStore` then deletes).
     func answerAge(birthMonth month: Int, year: Int) {
         guard let eligibleFrom = PartyAgeCheck.eligibleFrom(birthMonth: month, year: year) else { return }
         adoptAgeAnswer(eligibleFrom: eligibleFrom)
+        ageAnswered()
     }
 
     /// Takes an answer already given, also the one asked before Sign in

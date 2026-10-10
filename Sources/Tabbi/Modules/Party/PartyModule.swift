@@ -33,6 +33,7 @@ final class PartyModule: NotchModule {
         account = context.accountSync
         settings = context.settings
         store.isSignedIn = { [weak account] in account?.isSignedIn ?? false }
+        store.ageAnswered = { [weak account] in account?.refreshAgeStatus() }
         let notifications = PartyNotifications.make(runMode: context.runMode)
         self.notifications = notifications
         store.followFocus(from: context.providers.$snapshot.map(\.focus).eraseToAnyPublisher())

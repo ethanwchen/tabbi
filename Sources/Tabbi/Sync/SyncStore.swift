@@ -164,6 +164,7 @@ final class SyncStore: ObservableObject {
                 }
             }
             .store(in: &cancellables)
+        refreshAgeStatus()
         syncNow()
     }
 
@@ -173,7 +174,7 @@ final class SyncStore: ObservableObject {
     /// merge makes harmless.
     func flushOnQuit() {
         debounceTask?.cancel()
-        guard !isDemo, state.isSignedIn, !stateIsUnreadable, pet.closet.save != syncedSave,
+        guard !isDemo, state.isSignedIn, !isTooYoung, !stateIsUnreadable, pet.closet.save != syncedSave,
               let client = client() else { return }
         let local = progress()
         let state = state
@@ -189,10 +190,23 @@ final class SyncStore: ObservableObject {
     // MARK: Age check
 
     /// Reads the answer again, since Party may have taken it meanwhile or
-    /// the day the user turns 13 may have come.
+    /// the day the user turns 13 may have come. Signed in and under 13 (an
+    /// account made before the age check, or an answer given later in
+    /// Party), syncing stops and the account is deleted on the server, as
+    /// Party deletes an identity of its own: the server keeps nothing about
+    /// an under-13 user. The pet stays on this Mac. A delete that fails is
+    /// tried again on the next refresh.
     func refreshAgeStatus() {
         guard !isDemo else { return }
         ageStatus = PartyAgeCheck.status(eligibleFrom: ageAnswer.load(), at: clock())
+        guard isTooYoung, state.isSignedIn, phase == .signedIn else { return }
+        cancelSync()
+        Task { await deleteAccount() }
+    }
+
+    private var isTooYoung: Bool {
+        if case .tooYoung = ageStatus { return true }
+        return false
     }
 
     /// The age question asked before Sign in with Apple, once, as Party
@@ -338,7 +352,7 @@ final class SyncStore: ObservableObject {
     /// Syncs now, or right after the round already running.
     func syncNow() {
         debounceTask?.cancel()
-        guard !isDemo, state.isSignedIn, !stateIsUnreadable, client() != nil else { return }
+        guard !isDemo, state.isSignedIn, !isTooYoung, !stateIsUnreadable, client() != nil else { return }
         guard syncTask == nil else {
             syncAgain = true
             return

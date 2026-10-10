@@ -128,6 +128,33 @@ final class AccountAgeCheckTests: XCTestCase {
         XCTAssertTrue(AccountAgeText.tooYoung(until: until).contains("13 and older"))
     }
 
+    /// Someone signed in before the age check who later answers under 13 in
+    /// Party: syncing stops and the account is deleted on the server.
+    func testAnUnderThirteenAnswerGivenWhileSignedInDeletesTheAccount() async throws {
+        let server = FakeAccountServer()
+        let answer = AccountAgeAnswer.inMemory(.distantPast)
+        let store = makeStore(answer, server: server)
+        await store.signIn(identityToken: "jwt", authorizationCode: nil, name: "Ana")
+        XCTAssertEqual(store.phase, .signedIn)
+        for _ in 0..<200 where store.isSyncing || store.lastSyncedAt == nil {
+            try await Task.sleep(nanoseconds: 10_000_000)
+        }
+
+        let eligibleFrom = try XCTUnwrap(PartyAgeCheck.eligibleFrom(birthMonth: 3, year: thisYear - 9))
+        answer.save(eligibleFrom)
+        store.refreshAgeStatus()
+        for _ in 0..<200 where store.phase != .signedOut {
+            try await Task.sleep(nanoseconds: 10_000_000)
+        }
+        XCTAssertEqual(store.phase, .signedOut)
+        XCTAssertEqual(server.deletedWith, "t-acct")
+        XCTAssertEqual(store.ageStatus, .tooYoung(until: eligibleFrom))
+
+        let before = server.requestCount
+        store.syncNow()
+        XCTAssertEqual(server.requestCount, before, "nothing more is sent")
+    }
+
     /// The account reads Party's saved answer, so someone who answered in
     /// Party is not asked again, and the answer it takes Party reads too.
     func testTheAnswerIsTheOnePartyKeeps() throws {
