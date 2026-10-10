@@ -155,24 +155,27 @@ The paw at the far right of the header opens the Closet, as in the app: Mochi la
 Hovering, focusing or tapping a tile tries the item on the big pet ("Trying on Wizard Hat"); clicking an owned item wears it in the notch and on the Timer too, and clicking it again takes it off.
 The Flame Headband is the animated item, and its tile flickers as well.
 A finished Timer round adds its points to the Closet's balance, which can unlock the Wizard Hat, and earns the limited Backwards Cap.
+Now Playing is a silent pretend player for four made-up songs (`TRACKS` in `_demo.py`): play and pause, skip back and forward, like, shuffle, repeat, and a scrubber that is a real range input, so it works from the keyboard.
+Its covers are drawn like the app's generated artwork (two hues, a soft light and a note) in CSS, so the tab adds no images, and demo.js recolors them through custom properties.
+While a song plays and no timer runs, the closed notch's right wing shows the app's green equalizer.
 Limited progress bars are SVG lines rather than styled elements, since the CSP refuses `style` attributes; the pets in the tiles and the big preview are scaled with CSS `zoom` (2x and 3x), which keeps the sprite pixels whole.
 
 - `_demo.py` writes the markup: the whole panel, standing open, with radio buttons as its tabs.
   Without JavaScript that is the showcase: the tabs and the Closet's sections switch with CSS alone, Today's checkboxes (real ones) still check, and the other controls are disabled.
-  It also puts `img/demo/pets.json` and Today's three days (`DAYS`) into the page as `<script type="application/json">` data blocks, since the CSP allows no fetch.
+  It also puts `img/demo/pets.json`, Today's three days (`DAYS`) and Now Playing's songs (`TRACKS`) into the page as `<script type="application/json">` data blocks, since the CSP allows no fetch.
   New rows are cloned from `<template>` elements in the markup, so the script never builds markup from strings.
 - `demo.css` draws it, loaded only by the home page.
   Inside the notch everything is in em, where 1em is 10 of the app's points, so the panel keeps the app's proportions (536 x 236 pt, 20 pt insets) at any scale: 12.5 px per em on wide screens, 11 on tablets and 10 on phones, where the panel spans the scene and the Timer stacks.
   Colors are the app's Midnight theme and each tab's accent, the type is `ui-rounded` (SF Pro Rounded on Apple devices, Nunito elsewhere), and the open, close, hover, snappy and check springs are the app's `MotionTokens` sampled into CSS `linear()` easings.
   The checkbox follows the app's `CheckDraw`: one registered custom property (`--p`) rides the check spring from 0 to 1, and the ring, fill and check stroke are computed from it, so the fill pops past full size and settles.
   The page styles `main` lists as prose, so the demo's rows reset their margins and colors; check new class names against `styles.css` too.
-- `js/demo.js` closes the panel and makes it work: hover, tap, keyboard and Escape, the Timer, Today, the Closet, and the pet's frames.
+- `js/demo.js` closes the panel and makes it work: hover, tap, keyboard and Escape, the Timer, Today, Now Playing, the Closet, and the pet's frames.
   Like the app, the panel stays open while the add field has focus, and Escape there clears the draft before it closes the notch.
   It is plain JavaScript with no framework and no dependencies, loaded with `defer`, and pets move only while the demo is on screen.
   Status changes (started, paused, 10 seconds left, done) are read out through an `aria-live` region.
   Under `prefers-reduced-motion` state changes are instant, the pet holds one frame and there is no confetti.
 
-Check it in WebKit at 1440, 1024, 834 and 390 px wide after a change: open, switch tabs, run the Timer to the end, check and add a task and step through the days, try on and wear an outfit, keyboard (Safari moves between buttons with Option-Tab), reduced motion, no JavaScript, no console errors and no horizontal scroll.
+Check it in WebKit at 1440, 1024, 834 and 390 px wide after a change: open, switch tabs, run the Timer to the end, check and add a task and step through the days, try on and wear an outfit, play, skip and like a song, keyboard (Safari moves between buttons with Option-Tab), reduced motion, no JavaScript, no console errors and no horizontal scroll.
 Playwright's element screenshots inject a `<style>` that the CSP refuses; that console error comes from the test tool, not the page.
 The site scrolls smoothly, so Playwright's own scroll-into-view can slide the notch out from under its pointer and close it; tests should set `document.documentElement.style.scrollBehavior = 'auto'` and wait for the open spring before clicking inside the panel.
 

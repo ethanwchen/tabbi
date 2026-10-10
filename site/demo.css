@@ -20,6 +20,7 @@
   --timer: #FF9E42;
   --today: #A88CFF;
   --closet: #FACC4D;
+  --music: #1FD661;
   --blue: #3B8BFF;
   --orange: #FF9E42;
   /* SwiftUI springs: open (0.45 s, bounce 0.2), close (0.38 s), hover (0.25 s, 0.1), snappy (0.26 s, 0.14). */
@@ -107,6 +108,21 @@
 /* While the timer runs, its ring and time take the wings from the pet. */
 .notch[data-running] .wing-l .pet { display: none; }
 .notch[data-running] .mini-ring, .notch[data-running] .mini-time { display: block; }
+/* While a song plays and no timer runs, the right wing shows the app's
+   equalizer: four bars in the Now Playing accent. */
+.eq { display: none; align-items: flex-end; gap: 0.2em; height: 1.4em; }
+.notch[data-music]:not([data-running]) .eq { display: flex; }
+.eq span { width: 0.3em; height: 100%; border-radius: 999px; background: var(--music); transform-origin: 50% 100%; scale: 1 0.4; }
+.eq span:nth-child(2) { scale: 1 0.7; }
+.eq span:nth-child(3) { scale: 1 0.5; }
+.eq span:nth-child(4) { scale: 1 0.8; }
+@media (prefers-reduced-motion: no-preference) {
+  .eq span { animation: eq 0.9s ease-in-out infinite alternate; }
+  .eq span:nth-child(2) { animation-duration: 0.62s; animation-delay: -0.3s; }
+  .eq span:nth-child(3) { animation-duration: 0.78s; animation-delay: -0.5s; }
+  .eq span:nth-child(4) { animation-duration: 0.55s; animation-delay: -0.2s; }
+}
+@keyframes eq { from { scale: 1 0.25; } to { scale: 1 1; } }
 
 /* The open panel. Its content keeps the open width while the shape grows
    around it, so nothing reflows during the spring. */
@@ -139,18 +155,21 @@
 .tab-timer:has(input:checked) { color: var(--timer); background: rgba(255, 158, 66, 0.16); }
 .tab-today:has(input:checked) { color: var(--today); background: rgba(168, 140, 255, 0.16); }
 .tab-closet:has(input:checked) { color: var(--closet); background: rgba(250, 204, 77, 0.16); }
+.tab-music:has(input:checked) { color: var(--music); background: rgba(31, 214, 97, 0.16); }
 /* The paw sits at the far right of the header, like the app's. */
 .tab-closet { margin-left: 0.8em; }
 .demo .head-title { margin: 0 0 0 auto; font-size: 1.4em; font-weight: 600; line-height: 1; color: var(--n-text-2); }
 .head-title span { display: none; }
 .panel:has([value='timer']:checked) .title-timer,
 .panel:has([value='today']:checked) .title-today,
+.panel:has([value='music']:checked) .title-music,
 .panel:has([value='closet']:checked) .title-closet { display: inline; }
 
 /* One pane shows at a time: the checked tab's. */
 .pane { position: absolute; top: 4em; left: 2em; right: 2em; bottom: 1.6em; display: none; }
 .panel:has([value='timer']:checked) .pane-timer,
 .panel:has([value='today']:checked) .pane-today,
+.panel:has([value='music']:checked) .pane-music,
 .panel:has([value='closet']:checked) .pane-closet { display: grid; }
 
 .n-card { position: relative; margin: 0; background: var(--n-surface); border-radius: 1em; }
@@ -450,6 +469,93 @@
 .closet-foot .foot-dim { color: var(--n-text-3); }
 .foot-gold { color: var(--closet); }
 
+/* --- Now Playing --------------------------------------------------------- */
+/* The app's panel: a 112 pt cover with a glow in its colors, then the song,
+   the like heart, the scrubber and the transport, all as tall as the cover. */
+.pane-music { grid-template-columns: 11.2em minmax(0, 1fr); align-items: center; gap: 1.6em; padding: 0 1.2em; }
+/* The app's generated cover: two hues, a soft light at the top left and a
+   note. The defaults are the first song's; demo.js sets the others. */
+.cover {
+  --h1: 348; --h2: 36;
+  position: relative; display: grid; place-items: center; width: 11.2em; height: 11.2em; border-radius: 1.4em;
+  background:
+    radial-gradient(7.8em circle at 28% 24%, rgba(255, 255, 255, 0.32), transparent),
+    linear-gradient(135deg, hsl(var(--h1) 69% 55%), hsl(var(--h2) 67% 25%));
+  box-shadow: 0 0.4em 1em rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.85);
+}
+.cover::before {
+  content: ''; position: absolute; inset: -1.12em; z-index: -1;
+  background: radial-gradient(closest-side, hsl(var(--h1) 66% 54% / 0.5) 42%, transparent);
+}
+.notch .cover .ico { width: 3.4em; height: 3.4em; filter: drop-shadow(0 0.1em 0.2em rgba(0, 0, 0, 0.2)); }
+.music-main { display: flex; flex-direction: column; justify-content: space-between; height: 11.2em; min-width: 0; }
+.music-head { display: flex; align-items: center; gap: 0.8em; }
+.music-text { display: flex; flex-direction: column; gap: 0.2em; flex: 1; min-width: 0; }
+.music-title, .music-sub { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.25; }
+.music-title { font-size: 1.3em; font-weight: 600; color: var(--n-text); }
+.music-sub { font-size: 1.2em; color: var(--n-text-2); }
+/* The round buttons: hover lights a circle behind the symbol. */
+.m-btn {
+  position: relative; display: grid; place-items: center; flex: none; padding: 0;
+  border: 0; border-radius: 50%; background: none; color: var(--n-text-3); cursor: pointer;
+  transition: background-color 335ms var(--snappy), color 335ms var(--snappy), transform 180ms var(--snappy);
+}
+.m-btn:hover { background: var(--n-hover); color: var(--n-text); }
+.m-btn:active { transform: scale(0.94); }
+.like, .mode { width: 2.4em; height: 2.4em; }
+.notch .like .ico { width: 1.3em; height: 1.3em; fill: transparent; transition: fill 335ms var(--snappy); }
+.notch .mode .ico { width: 1.1em; height: 1.1em; }
+.like[aria-pressed='true'], .mode[aria-pressed='true'] { color: var(--music); }
+.notch .like[aria-pressed='true'] .ico { fill: currentColor; }
+/* An on mode wears a dot under its symbol, like the app's. */
+.mode::after {
+  content: ''; position: absolute; bottom: 0.1em; left: 50%; width: 0.3em; height: 0.3em; margin-left: -0.15em;
+  border-radius: 50%; background: var(--music); opacity: 0; transition: opacity 335ms var(--snappy);
+}
+.mode[aria-pressed='true']::after { opacity: 1; }
+.m-skip { width: 3.2em; height: 3.2em; color: var(--n-text-2); }
+.notch .m-skip .ico { width: 1.3em; height: 1.3em; }
+.demo .play { width: 3.6em; height: 3.6em; background: var(--n-text); color: #000; }
+.notch .play .ico { width: 1.5em; height: 1.5em; }
+.notch .play[aria-label='Play'] .ico { translate: 0.1em 0; }
+.demo .play:hover { background: var(--n-text); color: #000; transform: scale(1.06); }
+
+/* The scrubber is a real range input: a 4 pt bar that thickens and turns
+   green under the pointer, with a knob that shows then. --f is the part
+   played, set by demo.js, and the first song's spot without it. */
+.scrub-wrap { display: flex; flex-direction: column; gap: 0.4em; }
+.scrub {
+  --f: 0.37; --bar: 0.4em; --fill: var(--n-text);
+  display: block; width: 100%; height: 1.2em; margin: 0; background: none; cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+}
+.scrub:hover, .scrub:focus-visible { --bar: 0.6em; --fill: var(--music); }
+.scrub:disabled { cursor: default; }
+.scrub::-webkit-slider-runnable-track {
+  height: var(--bar); border-radius: 999px;
+  background: linear-gradient(90deg, var(--fill) calc(var(--f) * 100%), var(--n-hover) 0);
+}
+.scrub::-webkit-slider-thumb {
+  width: 1em; height: 1em; margin-top: calc((var(--bar) - 1em) / 2); border: 0; border-radius: 50%;
+  background: var(--n-text); box-shadow: 0 0 0.2em rgba(0, 0, 0, 0.4); opacity: 0;
+  -webkit-appearance: none; appearance: none;
+}
+.scrub:is(:hover, :focus-visible)::-webkit-slider-thumb { opacity: 1; }
+.scrub::-moz-range-track { height: var(--bar); border-radius: 999px; background: var(--n-hover); }
+.scrub::-moz-range-progress { height: var(--bar); border-radius: 999px; background: var(--fill); }
+.scrub::-moz-range-thumb { width: 1em; height: 1em; border: 0; border-radius: 50%; background: var(--n-text); opacity: 0; }
+.scrub:is(:hover, :focus-visible)::-moz-range-thumb { opacity: 1; }
+.demo .scrub:focus-visible { outline: 3px solid var(--link); outline-offset: 2px; border-radius: 0.4em; }
+.music-times {
+  display: flex; justify-content: space-between;
+  font-size: 1.05em; font-weight: 500; line-height: 1.2; color: var(--n-text-3); font-variant-numeric: tabular-nums;
+}
+/* Shuffle and repeat at the left; the three buttons stay centered. */
+.transport { position: relative; display: flex; align-items: center; height: 3.6em; }
+.modes { display: flex; gap: 0.4em; }
+.trio { position: absolute; top: 0; left: 50%; display: flex; align-items: center; gap: 1.2em; translate: -50% 0; }
+
 /* --- the pet ------------------------------------------------------------- */
 /* The app's own sprites: one atlas per look, a row per animation and a
    32 px frame per sprite pixel, so 32 px is 1:1 and stays sharp at 2x. */
@@ -533,6 +639,9 @@
   .pet-sub { align-self: start; }
   .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .tiles-limited { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* Now Playing puts the cover on top, the song and its controls below. */
+  .pane-music { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto; align-content: center; justify-items: center; gap: 2em; }
+  .music-main { width: 100%; height: auto; gap: 1.2em; }
   /* The sprite's empty top rows give way, so two rows of tiles keep their bars. */
   .tile { gap: 0.2em; padding: 0 0 0.6em; }
   .tile .pet { margin: -0.3em 0 -0.1em; }
@@ -543,7 +652,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .notch, .notch::before, .notch::after, .notch-face, .panel, .tab, .primary, .icon-btn, .capsule, .dial-time, .hint,
+  .m-btn, .like .ico, .mode::after,
   .check, .task input:checked + .check, .check-ring, .task-title, .task-label, .day-ring .ring-arc, .day-step, .add-task, .focus-card, .sec, .tile, .pet-sub,
   .notch[data-state] .panel, .notch[data-state] .notch-face, .demo[data-cheer] .burst-pts { transition: none !important; }
-  .primary:active, .icon-btn:active, .capsule:active { transform: none; }
+  .primary:active, .icon-btn:active, .capsule:active, .m-btn:active, .demo .play:hover { transform: none; }
 }

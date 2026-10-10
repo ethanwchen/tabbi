@@ -1,21 +1,23 @@
 // The home page's notch demo: hover or tap the notch and Tabbi's panel
 // springs open, the Timer counts down a short focus round, and the pet
 // cheers beside the closed notch when it is done. Today keeps a checklist
-// for yesterday, today and tomorrow, and the Closet dresses the pet.
+// for yesterday, today and tomorrow, Now Playing plays made-up songs
+// (silently), and the Closet dresses the pet.
 //
 // The page already holds the whole panel as HTML, open, with tabs that
 // switch through radio buttons, so it works as a showcase without this
 // file. This script closes it, opens it the way the app does and makes the
 // controls work. It runs no strings as code, builds markup only from the
-// page's own templates and talks to no server: the pet's frames and the
-// days' lists come from JSON data blocks.
+// page's own templates and talks to no server: the pet's frames, the
+// days' lists and the songs come from JSON data blocks.
 (() => {
   'use strict';
 
   const demo = document.querySelector('.demo');
   const data = document.getElementById('demo-pets');
   const daysData = document.getElementById('demo-days');
-  if (!demo || !data || !daysData) return;
+  const tracksData = document.getElementById('demo-tracks');
+  if (!demo || !data || !daysData || !tracksData) return;
 
   const notch = demo.querySelector('.notch');
   const face = notch.querySelector('.notch-face');
@@ -551,6 +553,134 @@
     renderCloset();
   }
 
+  // --- Now Playing ---------------------------------------------------------
+
+  // A pretend player: play and pause, skip back and forward through four
+  // made-up songs, like, shuffle, repeat and seek. Nothing makes a sound;
+  // the song's time moves on a half-second tick while it plays, and the
+  // closed notch shows the equalizer then.
+  const tracks = JSON.parse(tracksData.textContent);
+  const music = { index: 0, at: 0, playing: false, timer: 0, last: 0, shuffle: false, repeat: false };
+  const cover = demo.querySelector('[data-cover]');
+  const trackText = demo.querySelector('[data-track-text]');
+  const trackTitle = demo.querySelector('[data-track-title]');
+  const trackSub = demo.querySelector('[data-track-sub]');
+  const trackAt = demo.querySelector('[data-track-at]');
+  const trackLeft = demo.querySelector('[data-track-left]');
+  const scrub = demo.querySelector('[data-scrub]');
+  const like = demo.querySelector('[data-action="like"]');
+  const playButton = demo.querySelector('[data-action="play"]');
+  const playIcon = playButton.querySelector('use');
+  const shuffleButton = demo.querySelector('[data-action="shuffle"]');
+  const repeatButton = demo.querySelector('[data-action="repeat"]');
+  music.at = Number(scrub.value);
+
+  const mmss = (seconds) => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`;
+  const song = () => tracks[music.index];
+  const byLine = (track) => `${track.artist} \u00b7 ${track.album}`;
+
+  function renderPosition() {
+    const { length } = song();
+    const at = Math.floor(music.at);
+    scrub.value = String(at);
+    scrub.style.setProperty('--f', String(music.at / length));
+    trackAt.textContent = mmss(at);
+    trackLeft.textContent = `-${mmss(length - at)}`;
+    scrub.setAttribute('aria-valuetext', `${mmss(at)} of ${mmss(length)}`);
+  }
+
+  function renderSong() {
+    const track = song();
+    cover.style.setProperty('--h1', String(track.hues[0]));
+    cover.style.setProperty('--h2', String(track.hues[1]));
+    trackTitle.textContent = track.title;
+    trackSub.textContent = byLine(track);
+    trackText.title = `${track.title}\n${byLine(track)}`;
+    like.setAttribute('aria-pressed', String(track.liked));
+    like.title = track.liked ? 'Unlike' : 'Like';
+    scrub.max = String(track.length);
+    renderPosition();
+  }
+
+  function renderPlaying() {
+    const { playing } = music;
+    playIcon.setAttribute('href', playing ? '#i-pause' : '#i-play');
+    playButton.setAttribute('aria-label', playing ? 'Pause' : 'Play');
+    playButton.title = playing ? 'Pause' : 'Play';
+    if (playing) notch.dataset.music = '';
+    else delete notch.dataset.music;
+  }
+
+  function tickSong() {
+    const now = performance.now();
+    music.at += (now - music.last) / 1000;
+    music.last = now;
+    if (music.at >= song().length) {
+      if (music.repeat) {
+        music.at = 0;
+      } else {
+        skip(1, false);
+        return;
+      }
+    }
+    renderPosition();
+  }
+
+  function setPlaying(playing) {
+    window.clearInterval(music.timer);
+    music.playing = playing;
+    if (playing) {
+      music.last = performance.now();
+      music.timer = window.setInterval(tickSong, 500);
+    }
+    renderPlaying();
+  }
+
+  /** The next or previous song; shuffle picks any other one. Going back
+      past the first seconds restarts the song first, like a player does. */
+  function skip(step, speak) {
+    if (step < 0 && music.at >= 3) {
+      music.at = 0;
+      renderPosition();
+      return;
+    }
+    if (music.shuffle && step > 0) {
+      music.index = (music.index + 1 + Math.floor(Math.random() * (tracks.length - 1))) % tracks.length;
+    } else {
+      music.index = (music.index + step + tracks.length) % tracks.length;
+    }
+    music.at = 0;
+    music.last = performance.now();
+    renderSong();
+    if (speak) announce(`${song().title} by ${song().artist}.`);
+  }
+
+  playButton.addEventListener('click', () => {
+    setPlaying(!music.playing);
+    announce(music.playing ? `Playing ${song().title} by ${song().artist}.` : 'Paused.');
+  });
+  demo.querySelector('[data-action="prev"]').addEventListener('click', () => skip(-1, true));
+  demo.querySelector('[data-action="next"]').addEventListener('click', () => skip(1, true));
+  like.addEventListener('click', () => {
+    const track = song();
+    track.liked = !track.liked;
+    renderSong();
+    announce(track.liked ? `Liked ${track.title}.` : `Removed the like from ${track.title}.`);
+  });
+  scrub.addEventListener('input', () => {
+    music.at = Number(scrub.value);
+    music.last = performance.now();
+    renderPosition();
+  });
+  [[shuffleButton, 'shuffle', 'Turn shuffle off', 'Turn shuffle on'],
+    [repeatButton, 'repeat', 'Turn repeat off', 'Repeat this song']].forEach(([button, key, onTitle, offTitle]) => {
+    button.addEventListener('click', () => {
+      music[key] = !music[key];
+      button.setAttribute('aria-pressed', String(music[key]));
+      button.title = music[key] ? onTitle : offTitle;
+    });
+  });
+
   // --- the celebration ------------------------------------------------------
 
   const CONFETTI = ['#FF9E42', '#F4D57E', '#F2A0A6', '#A88CFF', '#7FD6C2', '#FBF7F0'];
@@ -602,6 +732,8 @@
 
   demo.querySelectorAll('button:disabled, input:disabled').forEach((control) => { control.disabled = false; });
   renderDay();
+  renderSong();
+  renderPlaying();
   renderCloset();
   render();
   renderControls();

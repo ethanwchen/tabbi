@@ -35,6 +35,12 @@ ICONS = {
     'sparkles': '<path fill="currentColor" d="M10 3.5l1.7 4.8 4.8 1.7-4.8 1.7L10 16.5l-1.7-4.8L3.5 10l4.8-1.7zM17.6 13.4l.9 2.3 2.3.9-2.3.9-.9 2.3-.9-2.3-2.3-.9 2.3-.9z"/>',
     'lock': '<path fill="currentColor" fill-rule="evenodd" d="M12 2.8a5 5 0 0 1 5 5v2.4h.6c1 0 1.8.8 1.8 1.8v7.4c0 1-.8 1.8-1.8 1.8H6.4c-1 0-1.8-.8-1.8-1.8V12c0-1 .8-1.8 1.8-1.8H7V7.8a5 5 0 0 1 5-5zm0 2.6a2.4 2.4 0 0 0-2.4 2.4v2.4h4.8V7.8A2.4 2.4 0 0 0 12 5.4z"/>',
     'check': '<path fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" d="M5.5 12.5l4.2 4.2 8.8-9.4"/>',
+    'note': '<path fill="currentColor" d="M18.6 3.1c.6-.1 1.1.3 1.1.9v3.3c0 .5-.3.9-.8 1l-6.9 1.4v8.1c0 2-1.7 3.3-3.6 3.3-1.8 0-3.1-1.1-3.1-2.6 0-1.7 1.5-2.9 3.5-2.9.6 0 1.1.1 1.5.3V5.5c0-.5.3-.9.8-1z"/>',
+    'heart': '<path stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" d="M12 20.2S3.4 15 3.4 9a4.6 4.6 0 0 1 8.6-2.3A4.6 4.6 0 0 1 20.6 9c0 6-8.6 11.2-8.6 11.2z"/>',
+    'back': '<path fill="currentColor" d="M11.4 6.7c0-.8-.9-1.3-1.6-.8L2.9 11.2c-.6.4-.6 1.2 0 1.6l6.9 5.3c.7.5 1.6 0 1.6-.8zm10 0c0-.8-.9-1.3-1.6-.8l-6.9 5.3c-.6.4-.6 1.2 0 1.6l6.9 5.3c.7.5 1.6 0 1.6-.8z"/>',
+    'forward': '<path fill="currentColor" d="M12.6 6.7c0-.8.9-1.3 1.6-.8l6.9 5.3c.6.4.6 1.2 0 1.6l-6.9 5.3c-.7.5-1.6 0-1.6-.8zm-10 0c0-.8.9-1.3 1.6-.8l6.9 5.3c.6.4.6 1.2 0 1.6l-6.9 5.3c-.7.5-1.6 0-1.6-.8z"/>',
+    'shuffle': '<path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M3 7h3.4c2 0 3.2.9 4.3 2.6l2.6 4.8c1 1.7 2.3 2.6 4.3 2.6H21M3 17h3.4c1.6 0 2.7-.6 3.6-1.7M14 8.7c.9-1.1 2-1.7 3.6-1.7H21M18.4 4.4 21 7l-2.6 2.6M18.4 14.4 21 17l-2.6 2.6"/>',
+    'repeat': '<path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M4 11.4V10a3 3 0 0 1 3-3h13M17.4 4.4 20 7l-2.6 2.6M20 12.6V14a3 3 0 0 1-3 3H4M6.6 19.6 4 17l2.6-2.6"/>',
     'updown': '<path fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M8 9.5l4-4 4 4M8 14.5l4 4 4-4"/>',
 }
 
@@ -254,10 +260,65 @@ CLOSET_PANE = f'''
                 </div>
               </div>'''
 
+# Now Playing's queue: made-up songs by made-up bands, each with a cover
+# drawn like the app's generated artwork (a two-hue gradient, a soft light
+# and a note). `hues` are the gradient's two hues in degrees, `length` and
+# `at` are seconds, and the page starts paused partway into the first song.
+TRACKS = [
+    {'title': 'Paper Lanterns', 'artist': 'The Velvet Owls', 'album': 'Late Bloom',
+     'length': 222, 'liked': True, 'hues': [348, 36]},
+    {'title': 'Maple Street', 'artist': 'Juniper and June', 'album': 'Porch Light Stories',
+     'length': 198, 'liked': False, 'hues': [205, 262]},
+    {'title': 'Cloud Nap', 'artist': 'Soft Paws Trio', 'album': 'Slow Sundays',
+     'length': 176, 'liked': False, 'hues': [318, 12]},
+    {'title': 'Golden Hour Drive', 'artist': 'Sunny Static', 'album': 'Postcards',
+     'length': 245, 'liked': True, 'hues': [150, 204]},
+]
+TRACK_AT = 82
+
+
+def mmss(seconds):
+    return f'{seconds // 60}:{seconds % 60:02d}'
+
+
+FIRST = TRACKS[0]
+FIRST_SUB = f"{FIRST['artist']} \u00b7 {FIRST['album']}"
+
+# Like the app's Now Playing: the cover and its glow on the left, the song,
+# the like heart, the scrubber and the transport on the right. demo.css
+# draws the first song's hues as its default cover, so it needs no style
+# attribute; demo.js recolors the cover for the others.
+MUSIC_PANE = f'''
+              <div class="pane pane-music" data-pane="music">
+                <div class="cover" data-cover title="Made-up cover art. In the app, a click shows your music player">{icon('note')}</div>
+                <div class="music-main">
+                  <div class="music-head">
+                    <p class="music-text" data-track-text title="{FIRST['title']}&#10;{FIRST_SUB}"><span class="music-title" data-track-title>{FIRST['title']}</span><span class="music-sub" data-track-sub>{FIRST_SUB}</span></p>
+                    <button type="button" class="m-btn like" data-action="like" aria-pressed="{str(FIRST['liked']).lower()}" aria-label="Like" title="Unlike" disabled>{icon('heart')}</button>
+                  </div>
+                  <div class="scrub-wrap">
+                    <input type="range" class="scrub" data-scrub min="0" max="{FIRST['length']}" step="1" value="{TRACK_AT}" aria-label="Position" aria-valuetext="{mmss(TRACK_AT)} of {mmss(FIRST['length'])}" title="Drag to seek" disabled>
+                    <p class="music-times"><span data-track-at>{mmss(TRACK_AT)}</span><span data-track-left>-{mmss(FIRST['length'] - TRACK_AT)}</span></p>
+                  </div>
+                  <div class="transport">
+                    <div class="modes">
+                      <button type="button" class="m-btn mode" data-action="shuffle" aria-pressed="false" aria-label="Shuffle" title="Turn shuffle on" disabled>{icon('shuffle')}</button>
+                      <button type="button" class="m-btn mode" data-action="repeat" aria-pressed="false" aria-label="Repeat" title="Repeat this song" disabled>{icon('repeat')}</button>
+                    </div>
+                    <div class="trio">
+                      <button type="button" class="m-btn m-skip" data-action="prev" aria-label="Previous track" title="Previous track" disabled>{icon('back')}</button>
+                      <button type="button" class="m-btn play" data-action="play" aria-label="Play" title="Play" disabled>{icon('play')}</button>
+                      <button type="button" class="m-btn m-skip" data-action="next" aria-label="Next track" title="Next track" disabled>{icon('forward')}</button>
+                    </div>
+                  </div>
+                </div>
+              </div>'''
+
 # (id, title, icon). The tab bar left of the camera, like the app's.
 TABS = [
     ('timer', 'Timer', 'timer'),
     ('today', 'Today', 'checklist'),
+    ('music', 'Now Playing', 'note'),
 ]
 
 
@@ -278,7 +339,7 @@ DEMO = f'''
                 <span class="pet" data-pet="notch" data-look="plain"></span>
                 {ring('mini-ring', 20, 3)}
               </span>
-              <span class="wing wing-r"><span class="mini-time" data-time>0:20</span></span>
+              <span class="wing wing-r"><span class="mini-time" data-time>0:20</span><span class="eq" title="Playing"><span></span><span></span><span></span><span></span></span></span>
             </button>
             <div class="panel" id="demo-panel" role="group" aria-label="Tabbi panel">
              <div class="panel-inner">
@@ -286,11 +347,12 @@ DEMO = f'''
                 <div class="tab-bar">
                   {''.join(tab(t, title, symbol, i == 0) for i, (t, title, symbol) in enumerate(TABS))}
                 </div>
-                <p class="head-title"><span class="title-timer">Timer</span><span class="title-today">Today</span><span class="title-closet">Closet</span></p>
+                <p class="head-title"><span class="title-timer">Timer</span><span class="title-today">Today</span><span class="title-music">Now Playing</span><span class="title-closet">Closet</span></p>
                 {tab('closet', 'Closet: your pet', 'paw', False)}
               </div>
 {TIMER_PANE}
 {TODAY_PANE}
+{MUSIC_PANE}
 {CLOSET_PANE}
              </div>
             </div>
@@ -311,9 +373,9 @@ def data_block(block_id, data):
 
 
 def demo_data():
-    """pets.json and Today's days, minified, as data blocks for demo.js. The
+    """pets.json, Today's days and Now Playing's songs, minified, as data blocks for demo.js. The
     CSP lets the page load nothing but its own files, and a data block is
     never run, so they ride along in the page instead of a fetch the CSP
     would stop."""
     pets = json.loads((HERE / 'img' / 'demo' / 'pets.json').read_text())
-    return data_block('demo-pets', pets) + data_block('demo-days', DAYS)
+    return data_block('demo-pets', pets) + data_block('demo-days', DAYS) + data_block('demo-tracks', TRACKS)
