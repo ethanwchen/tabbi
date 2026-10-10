@@ -311,6 +311,69 @@ main .step-row li { margin: 0; }
 .step strong { font-family: var(--head); font-weight: 600; font-size: 19px; }
 .step span:last-child { font-size: 15.5px; line-height: 1.45; color: var(--ink-2); max-width: 24ch; }
 
+/* The closed notch on a strip of wallpaper, its wings taking turns with a
+   meeting, a song, the timer and the pet, as the app's live activities do.
+   Colors are each tab's accent. Under reduced motion the pet stays. */
+.peek { margin: 28px auto 0; max-width: 560px; text-align: center; }
+.peek-screen {
+  position: relative; height: 84px; border-radius: 24px; overflow: hidden;
+  border: 1px solid rgba(251, 247, 240, 0.08); box-shadow: var(--shadow);
+  background:
+    radial-gradient(60% 120% at 6% 120%, rgba(242, 160, 166, 0.6), transparent 64%),
+    radial-gradient(55% 120% at 96% 120%, rgba(244, 213, 126, 0.55), transparent 66%),
+    linear-gradient(180deg, #4A3A2E 0%, #6E5141 100%);
+}
+.peek-notch {
+  position: absolute; top: -1px; left: 50%; translate: -50% 0;
+  width: min(300px, calc(100% - 48px)); height: 38px; background: #000; border-radius: 0 0 14px 14px;
+  font-family: ui-rounded, 'Nunito', system-ui, sans-serif; font-size: 14px; font-weight: 700;
+  font-variant-numeric: tabular-nums; color: #fff;
+}
+.peek-notch::before, .peek-notch::after { content: ''; position: absolute; top: 0; width: 8px; height: 8px; }
+.peek-notch::before { right: 100%; background: radial-gradient(circle farthest-side at 0 100%, transparent 96%, #000 100%); }
+.peek-notch::after { left: 100%; background: radial-gradient(circle farthest-side at 100% 100%, transparent 96%, #000 100%); }
+.peek-slide {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 16px 0 14px; opacity: 0;
+}
+.peek-pet { opacity: 1; }
+.peek-l { display: grid; place-items: center; width: 26px; height: 26px; }
+.peek-meet .peek-r { color: #6BA6FF; }
+.peek-timer .peek-r { color: #FF9E42; }
+.peek-pet .peek-r { color: #FACC4D; }
+.peek-cal { width: 16px; height: 16px; border: 2px solid #3B8BFF; border-top-width: 5px; border-radius: 4px; }
+.peek-cover {
+  width: 22px; height: 22px; border-radius: 6px;
+  background: linear-gradient(135deg, hsl(348 70% 62%), hsl(36 85% 60%));
+}
+.peek-eq { display: flex; align-items: flex-end; gap: 3px; height: 16px; }
+.peek-eq span { width: 4px; height: 100%; border-radius: 999px; background: #1FD661; transform-origin: 50% 100%; scale: 1 0.6; }
+.peek-eq span:nth-child(odd) { scale: 1 0.9; }
+.peek-ring { width: 22px; height: 22px; rotate: -90deg; fill: none; stroke-width: 3; stroke: rgba(255, 158, 66, 0.25); }
+.peek-ring .peek-arc { stroke: #FF9E42; stroke-linecap: round; stroke-dasharray: 74 100; }
+.peek-cat {
+  width: 22px; height: 26px; image-rendering: pixelated;
+  background: url('/img/pixel-cat.png') 0 0 / 200% 100% no-repeat;
+}
+.peek figcaption { margin: 16px auto 0; color: var(--on-ground-2); font-weight: 600; font-size: 15.5px; line-height: 1.45; max-width: 40ch; }
+@media (prefers-reduced-motion: no-preference) {
+  .peek-slide { animation: peek 12s ease-in-out infinite both; }
+  .peek-song { animation-delay: 3s; }
+  .peek-timer { animation-delay: 6s; }
+  .peek-pet { opacity: 0; animation-delay: 9s; }
+  .peek-eq span { animation: eq-bar 0.8s ease-in-out infinite alternate; }
+  .peek-eq span:nth-child(2) { animation-duration: 0.6s; animation-delay: -0.3s; }
+  .peek-eq span:nth-child(3) { animation-duration: 0.7s; animation-delay: -0.5s; }
+  .peek-eq span:nth-child(4) { animation-duration: 0.55s; animation-delay: -0.2s; }
+  .peek-cat { animation: cat-blink 5s steps(1, end) infinite; }
+}
+@keyframes peek {
+  0% { opacity: 0; translate: 0 4px; }
+  4%, 25% { opacity: 1; translate: 0 0; }
+  29%, 100% { opacity: 0; translate: 0 -4px; }
+}
+@keyframes eq-bar { from { scale: 1 0.25; } to { scale: 1 1; } }
+
 /* Trust stickers: four small pills, tilted a touch like the tab cards. */
 .trust-row {
   display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px;

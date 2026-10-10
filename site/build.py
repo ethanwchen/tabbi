@@ -124,6 +124,17 @@ HOME = DEMO + f'''
           <li class="step"><span class="step-num" aria-hidden="true">2</span><strong>Pick a tab</strong><span>Your timer, your day, your music and more.</span></li>
           <li class="step"><span class="step-num" aria-hidden="true">3</span><strong>Close it</strong><span>Your cat keeps you company beside the notch.</span></li>
         </ol>
+        <figure class="peek">
+          <div class="peek-screen" role="img" aria-label="The closed notch, showing in turn a meeting soon, a song playing, the timer counting down and the cat">
+            <div class="peek-notch" aria-hidden="true">
+              <span class="peek-slide peek-meet"><span class="peek-l"><span class="peek-cal"></span></span><span class="peek-r">Standup in 5 min</span></span>
+              <span class="peek-slide peek-song"><span class="peek-l"><span class="peek-cover"></span></span><span class="peek-r peek-eq"><span></span><span></span><span></span><span></span></span></span>
+              <span class="peek-slide peek-timer"><span class="peek-l"><svg class="peek-ring" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.5"/><circle class="peek-arc" cx="10" cy="10" r="8.5" pathLength="100"/></svg></span><span class="peek-r">18:42</span></span>
+              <span class="peek-slide peek-pet"><span class="peek-l"><span class="peek-cat"></span></span><span class="peek-r">+35 pts</span></span>
+            </div>
+          </div>
+          <figcaption>Closed, it still peeks: a meeting, your song, the timer or your cat.</figcaption>
+        </figure>
       </section>
       <section class="trust" aria-label="Good to know">
         <ul class="trust-row">
@@ -156,7 +167,7 @@ HOME = DEMO + f'''
       <section class="thanks" aria-label="Say hi">
         <div class="card-pair">
           <a class="gh-card" href="''' + GITHUB + '''">
-            <img class="gh-cat" src="/img/glyph.png" width="56" height="56" alt="">
+            <img class="gh-cat" src="/img/glyph.webp" width="56" height="56" alt="">
             <svg class="gh-mark" viewBox="0 0 16 16" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
             <span class="gh-text"><strong>Open source on GitHub</strong><span>Come say hi or leave a star.</span></span>
             <span class="gh-arrow" aria-hidden="true">&rarr;</span>
@@ -319,7 +330,7 @@ PRESS_MB = f"{sum(f.stat().st_size for f in PRESS.glob('*.png')) / 1e6:.1f} MB"
 
 ABOUT = f'''
       <div class="about">
-        <img class="about-cat" src="/img/glyph.png" width="96" height="96" alt="">
+        <img class="about-cat" src="/img/glyph.webp" width="96" height="96" alt="">
         <p class="about-lead">Hi, it&rsquo;s Ethan.</p>
         <p>I made Tabbi because I wanted my study tools in one cozy spot, right where I already look: the notch.</p>
         <p>It&rsquo;s free and open source. No ads, no tracking, no account needed.</p>
@@ -400,7 +411,7 @@ SUGGEST = f'''
 
 THANKS = '''
       <div class="lost">
-        <img src="/img/glyph.png" width="128" height="128" alt="">
+        <img src="/img/glyph.webp" width="128" height="128" alt="">
         <p class="measure">Every idea gets read. If you left an email, you may hear back.</p>
         <div class="cta center">
           <a class="btn" href="/">Back to the start</a>
@@ -412,7 +423,7 @@ THANKS = '''
 
 NOT_FOUND = '''
       <div class="lost">
-        <img src="/img/glyph.png" width="128" height="128" alt="">
+        <img src="/img/glyph.webp" width="128" height="128" alt="">
         <p class="measure">This page may have moved, or the link was wrong.</p>
         <div class="cta center">
           <a class="btn" href="/">Back to the start</a>
@@ -445,7 +456,7 @@ INVITE_SLUGS = {'add': 'invite-add.html', 'join': 'invite-join.html', 'invalid':
 def invite_body(label, note):
     return f'''
       <div class="invite">
-        <img src="/img/glyph.png" width="96" height="96" alt="">
+        <img src="/img/glyph.webp" width="96" height="96" alt="">
         <p class="eyebrow">{label}</p>
         <p class="invite-code">{INVITE_SHOWN}</p>
         <div class="cta center">
@@ -469,7 +480,7 @@ INVITE_JOIN = invite_body(
 
 INVITE_INVALID = f'''
       <div class="lost">
-        <img src="/img/glyph.png" width="128" height="128" alt="">
+        <img src="/img/glyph.webp" width="128" height="128" alt="">
         <p class="measure">The code in this link is not one Tabbi hands out. Ask your friend to copy their invite link again, or type their code in the Party tab.</p>
         <div class="cta center">
           <a class="btn" href="{DOWNLOAD}">{DOWNLOAD_ICON}<span>Download Tabbi</span></a>

@@ -116,7 +116,7 @@ The home page shows four tabs; their screenshots are the app's own snapshot rend
 `_tab_shots.py` makes their navy wallpaper transparent first, so only the black notch panel sits on the brown card (it needs numpy and scipy).
 Each also has a 680 px copy (`today-680.webp`), and `srcset` lets small and 1x screens load that one.
 `icon-256.webp`, `apple-touch-icon.png`, `favicon-64.png` and `favicon.ico` are resized from `docs/brand/assets/tabbi-icon-1024.png`.
-`glyph.png` is `docs/brand/assets/tabbi-glyph-256.png`, used as the header mark and on the 404 page.
+`glyph.webp` is `docs/brand/assets/tabbi-glyph-256.png` as a lossless WebP, used on the home, About, invite and 404 pages.
 `social-preview.png` is the 1200x630 Open Graph and Twitter card: the hero's words, icon, laptop and pixel cat on the brown ground.
 It is `_social-card.html` rendered by Chromium at 1200x630 and scale 1 (it loads Fredoka and Nunito from `fonts/`, so render it from `site/` with file access allowed), then saved by Pillow as an optimized RGB PNG of about 190 KB.
 Render it again when the hero's words or the Timer screenshot change.
