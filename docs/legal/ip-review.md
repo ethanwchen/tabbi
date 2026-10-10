@@ -13,7 +13,7 @@ Reviewed on 9 October 2026 against the code on branch `gnhf/legal-review`.
 
 - REQUIRED, fixed: the direct download shipped Sparkle.framework without Sparkle's license text, which its MIT, BSD (bsdiff) and zlib (ed25519) terms require in binary copies.
   `scripts/assemble.sh` now copies the license from SwiftPM's checkout into `Tabbi.app/Contents/Resources/Acknowledgements/Sparkle-LICENSE.txt` and fails the build if it cannot find it.
-- HIGH, open (maintainer decision): the planned App Store name `Tabbi: Notch Focus Timer` contains, word for word, the name of an existing Mac App Store app, "Notch Focus Timer" by Balaji Venkatesh (id6477333821), which also does a focus timer around the notch.
+- HIGH, resolved on 2026-10-10 (renamed to `Tabbi: Notch Timer & Study Pet`): the planned App Store name `Tabbi: Notch Focus Timer` contains, word for word, the name of an existing Mac App Store app, "Notch Focus Timer" by Balaji Venkatesh (id6477333821), which also does a focus timer around the notch.
   The words are descriptive, but the overlap is exact, in the same store, category and function, which invites a complaint under App Review Guideline 4.1 (copycats) and 5.2 (intellectual property) and a likelihood-of-confusion argument.
 - MEDIUM, open: the word mark TABBI is used by others, including Tabbi (a US bar and restaurant payment app), a Firefox add-on called Tabbi, and a pending ASK TABBI application for disinfectants.
   None is a desktop productivity app that this triage found, but a Class 9 or 42 search has not been run.
@@ -131,6 +131,6 @@ Claims on the site, README and listing that need substantiation, checked against
 ## 5. Lawyer items from this review
 
 1. A full trademark search for TABBI (Classes 9, 42, 45; US, EU, UK) and whether to file.
-2. Whether the App Store name `Tabbi: Notch Focus Timer` should change given the existing "Notch Focus Timer" app.
+2. Whether the new App Store name `Tabbi: Notch Timer & Study Pet` is clear of other apps and marks.
 3. Whether running the user's own Claude Code, Codex and Gemini CLIs from Tabbi fits each provider's current terms for subscription plans.
 4. Whether the AI-generated icon art needs any further protection (for example registering the icon as a trademark once in use).

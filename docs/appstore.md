@@ -97,8 +97,8 @@ The listing copy comes from the listing research (October 2026), with only the f
 
 ### App information
 
-- Name: `Tabbi: Notch Focus Timer` (24 of 30)
-- Subtitle: `Pomodoro, To-Do & Study Pet` (27 of 30)
+- Name: `Tabbi: Notch Timer & Study Pet` (30 of 30)
+- Subtitle: `Focus, Pomodoro & To-Do List` (28 of 30)
 - Category: Productivity (secondary: Education)
 - Privacy Policy URL: https://tabbinotch.com/privacy
 - Support URL: https://tabbinotch.com/support
@@ -111,18 +111,18 @@ The listing copy comes from the listing research (October 2026), with only the f
 - Pricing: free
 - Export compliance: the build sets `ITSAppUsesNonExemptEncryption` to `NO` (it only uses HTTPS through the system)
 
-The subtitle and keywords name no other company's product.
-The name does: "Notch Focus Timer" is the full name of an existing Mac App Store app (id6477333821) that does the same job, and "Tabbi" is close to other marks ([legal/ip-review.md](legal/ip-review.md) has the search).
-Before submitting, pick a descriptor that is not another app's name (for example `Tabbi: Cozy Notch Focus` or `Tabbi: Notch Study Pet`), or have a lawyer clear the current one; Apple can reject or remove a name another developer complains about (Guidelines 2.3.7 and 5.2).
+The name, subtitle and keywords name no other company's product.
+The name used to be `Tabbi: Notch Focus Timer`, which contained "Notch Focus Timer", the full name of an existing Mac App Store app (id6477333821) that does the same job, so it was changed (Guidelines 2.3.7 and 5.2).
+"Tabbi" is close to other marks, so a trademark search is still on the lawyer list ([legal/ip-review.md](legal/ip-review.md) has the search).
 The description names Apple Music and Spotify once, only to say what Now Playing works with.
 
-### Keywords (99 of 100 bytes)
+### Keywords (100 of 100 bytes)
 
 ```
-cute,cat,dog,cozy,planner,calendar,flashcard,music,widget,student,todo,task,streak,menubar,list,day
+cute,cat,dog,cozy,planner,calendar,flashcard,music,widget,student,todo,task,streak,menubar,habit,day
 ```
 
-No word repeats the name or subtitle (tabbi, notch, focus, timer, pomodoro, to-do, study, pet).
+No word repeats the name or subtitle (tabbi, notch, timer, study, pet, focus, pomodoro, to-do, list).
 `todo` stays as a hedge, since Apple may index "To-Do" only as "to do".
 `productivity` is left out because it is the category name, which Apple already indexes.
 `party` is left out while the App Store edition leaves Party out (see Party above), since App Review asks keywords to describe the app as submitted.

@@ -45,7 +45,7 @@ Severity scale:
 | H2 | `backend/PRIVACY.md` and the policy had 8 statements the Worker contradicted: log sampling, the crash content check, the pending sign-in lifetime, re-deletion after restore, field rejection, the token count, the "only Party and sign-in" claim and IP uses. | **Fixed** in the policy, `backend/PRIVACY.md` and the FAQ (`backend-audit.md`). |
 | H3 | The policy had no GDPR legal bases, no international transfer section, no retention schedule, no state law rights and no children section. | **Fixed.** It now has a legal bases table, transfers (Cloudflare SCCs, UK addendum, DPF), a retention summary, rights with an appeal path, a GPC and DNT note, Switzerland, and a children and teens section. |
 | H4 | The Terms were thin: no eligibility, no user content license, no moderation or appeal, no AI disclaimer, no copyright procedure and no consumer carve-outs. | **Fixed.** Rewritten into 18 sections; the reasoning is in `terms-memo.md`. |
-| H5 | The planned App Store name `Tabbi: Notch Focus Timer` contains the full name of an existing Mac App Store app, "Notch Focus Timer", which does the same thing (Guidelines 2.3.7, 4.1, 5.2; likelihood of confusion). `docs/appstore.md` claimed the name "names no other company's product". | **Flagged.** The false claim is removed, and alternative names are listed. Renaming is the maintainer's decision. |
+| H5 | The planned App Store name `Tabbi: Notch Focus Timer` contains the full name of an existing Mac App Store app, "Notch Focus Timer", which does the same thing (Guidelines 2.3.7, 4.1, 5.2; likelihood of confusion). `docs/appstore.md` claimed the name "names no other company's product". | **Fixed.** The maintainer renamed it to `Tabbi: Notch Timer & Study Pet` on 2026-10-10, with the subtitle `Focus, Pomodoro & To-Do List`. |
 | H6 | The direct download shipped Sparkle.framework without its license text, which its MIT, BSD (bsdiff) and zlib (ed25519) terms require in binary copies. | **Fixed.** `scripts/assemble.sh` copies the license into `Contents/Resources/Acknowledgements` and fails if it is missing. |
 
 ### Medium
@@ -89,7 +89,7 @@ Severity scale:
 
 ## Residual risks
 
-- **Naming.** Until a trademark search is done and the App Store name is settled, H5 and M5 are the largest open exposures. The worst realistic outcome is a forced rename, not damages.
+- **Naming.** Until a trademark search is done, M5 (the TABBI mark) is the largest open exposure. The worst realistic outcome is a forced rename, not damages.
 - **Children already signed in** (M4). An account made before the age check existed is deleted automatically once anyone on that Mac answers under 13. One whose user never answers the question (signed in, Party off) is not detected; it goes with Delete Account or an email to support. A grown-up who mistypes a birth year while signed in loses the server account (the pet stays on the Mac), which is the protective trade-off.
 - **Self-declared age.** A child can lie at the age check. That is accepted practice for a general-audience service without actual knowledge, but the study audience makes "likely to be accessed by children" (UK Age Appropriate Design Code) an arguable test.
 - **Personal liability.** With no company, any judgment falls on the maintainer personally.
@@ -99,7 +99,7 @@ Severity scale:
 
 ## For a lawyer to confirm
 
-1. **Trademark.** Run a full search for TABBI (Classes 9, 42 and 45; US, EU and UK), decide whether to file, and decide whether `Tabbi: Notch Focus Timer` must change given the existing "Notch Focus Timer" app.
+1. **Trademark.** Run a full search for TABBI (Classes 9, 42 and 45; US, EU and UK), decide whether to file, and confirm the new App Store name `Tabbi: Notch Timer & Study Pet` is clear.
 2. **Personal liability.** Whether to form an LLC (or similar) before Party returns or the App Store launch, and whether the Terms' 50 US dollar cap and narrow indemnity hold up in New York, the EU and under the UK Consumer Rights Act.
 3. **Disputes.** Whether no arbitration is the right call, and whether the New York County forum clause with its consumer carve-outs is enforceable as drafted.
 4. **Minors.** Whether 13+ with self-declared age is enough for COPPA given the study audience, whether the UK Age Appropriate Design Code and US state minors' laws (for example New York's Child Data Protection Act and California's Age-Appropriate Design Code, where in force) reach Tabbi, and whether the parental-permission language for 13 to 17 year olds works under New York and California contract rules.
