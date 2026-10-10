@@ -257,62 +257,146 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
 # Terms
 # --------------------------------------------------------------------------
 
-TERMS_HERO = ('Terms of Use', 'Short, because Tabbi is free and open source.')
+TERMS_HERO = ('Terms of Use', 'The rules for the friends service and this website, in plain words.')
 
 TERMS = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
 
       <div class="card">
         <h2>The short version</h2>
         <ul>
-          <li>Tabbi is free and open source under the MIT License.</li>
-          <li>It comes as is, with no warranty.</li>
-          <li>Be decent in Party: no offensive names, no abuse of the service.</li>
+          <li>Tabbi is free and open source. The MIT License covers the app's code; these terms cover the friends service (Party), the optional account and this website.</li>
+          <li>Party and Sign in with Apple are for people 13 and older. Under 18, use them with a parent's or guardian's permission.</li>
+          <li>Be decent in Party. We can rename or ban accounts that break the rules.</li>
+          <li>Tabbi comes as is. Timers, plans and AI answers can be wrong, so do not rely on them where a mistake could hurt you.</li>
+          <li>New York law applies, and disputes go to court, not arbitration. If you live in the EU, the UK or another place with consumer laws that protect you, you keep those rights.</li>
         </ul>
       </div>
 
       <h2>1. Who these terms are with</h2>
-      <p class="measure">These terms are between you and Ethan Chen ("we", "us"), who makes Tabbi and runs the friends service and this website.
-        By using Tabbi, the friends service or tabbinotch.com you agree to them. If you do not agree, please do not use them.</p>
+      <p class="measure">These terms are an agreement between you and Ethan Chen, an individual in New York, United States, who makes Tabbi and runs the friends service and tabbinotch.com ("we", "us").
+        They apply when you use the friends service, sign in with Apple, or use this website.
+        By doing so you agree to them; if you do not agree, do not use those parts.
+        The <a href="/privacy">Privacy Policy</a> explains what data is involved and is part of these terms.</p>
 
-      <h2>2. The app and its license</h2>
+      <h2 id="age">2. Who can use Tabbi</h2>
+      <p class="measure">Anyone can use the app's study tools, which work on your Mac and send us nothing.
+        The friends service and Sign in with Apple are only for people 13 and older.
+        If you are under 18 (or the age of majority where you live), use them only with a parent's or guardian's permission; that parent or guardian accepts these terms for you and is responsible for your use.
+        If we learn that someone under 13 uses the friends service or an account, we delete their data, as the <a href="/privacy#children">Privacy Policy</a> describes.</p>
+      <p class="measure">You may not use the friends service if you are barred from receiving it under the laws that apply to you, including US sanctions (see section 14).</p>
+
+      <h2>3. The app and its license</h2>
       <p class="measure">The Tabbi app and its source code are licensed under the <a href="{GITHUB}/blob/main/LICENSE">MIT License</a>.
         That license, not these terms, governs what you may do with the code: use, copy, modify and distribute it, keeping the copyright and license notice.
-        These terms add only what the license does not cover: the friends service and the website.</p>
-      <p class="measure">The name Tabbi and the cat icon identify this project. Please do not use them in a way that suggests your fork or product is the official Tabbi.</p>
+        Nothing in these terms takes away a right the MIT License gives you.
+        Bundled fonts and other third-party parts keep their own licenses, which come with them.</p>
+      <p class="measure">If you got Tabbi from the Mac App Store, Apple's <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Standard End User License Agreement</a> also applies to that copy (see section 15).</p>
+      <p class="measure"><strong>Name and icon.</strong> The name Tabbi, the cat icon and the pet artwork identify this project.
+        You may say that your fork is based on Tabbi, but please do not use the name or icon in a way that suggests your fork, server or product is the official Tabbi or is endorsed by us.
+        Other product names on this site and in the app (for example Apple, MacBook, Spotify, SoundCloud, Anki, Claude, ChatGPT and Gemini) belong to their owners and are used only to say what Tabbi works with.
+        Tabbi is not affiliated with or endorsed by any of them.</p>
 
-      <h2>3. Other services</h2>
-      <p class="measure">Some tabs work with software and services from others: the AI provider you pick (Anthropic, OpenAI, Google or Ollama, through your own API key or command-line tool), Anki and AnkiConnect, Spotify, Apple Music, SoundCloud and your calendar.
-        Their own terms apply to your use of them, and we are not responsible for them.</p>
+      <h2>4. Your content</h2>
+      <p class="measure">Your notes, tasks, cards, study history and settings stay on your Mac and are yours.
+        Keep your own backups: we do not hold a copy, so we cannot restore them if they are lost.</p>
+      <p class="measure">When you use the friends service, you share a display name, a pet and its items, and study activity, and you may send reports.
+        You keep any rights you have in what you share.
+        You give us a worldwide, free, non-exclusive license to store, copy and show it to the people the <a href="/privacy#friends">Privacy Policy</a> says can see it, only to run the service, for as long as you keep it there.
+        The license ends when you delete your data, except for copies we must keep for a short time in backups or by law.</p>
+      <p class="measure"><strong>Suggestions.</strong> If you send us an idea, a bug report or a code contribution, you let us use it to improve Tabbi without paying you or giving credit.
+        Code contributions to the repository are also covered by its license and contribution rules.</p>
 
-      <h2>4. The friends service</h2>
+      <h2 id="rules">5. Rules for the friends service</h2>
       <p class="measure">Party uses a free server we run. While using it, you agree not to:</p>
       <ul class="measure">
-        <li>choose a display name or pet name that is hateful, harassing, sexually explicit or impersonates someone;</li>
-        <li>harass other people, or join parties you were not invited to in order to disrupt them;</li>
-        <li>overload, probe, scrape or attack the service, or get around its limits;</li>
-        <li>use it for anything unlawful.</li>
+        <li>choose a display name or pet name that is hateful, harassing, sexually explicit, violent, that shares someone's personal information, or that pretends to be someone else (including us);</li>
+        <li>bully, threaten or harass anyone, or join parties you were not invited to in order to disrupt them;</li>
+        <li>share friend codes or invite links to spam strangers;</li>
+        <li>send false reports or misuse blocking or reporting to harass someone;</li>
+        <li>inflate your study minutes or points with scripts or modified clients, or otherwise cheat the leaderboard;</li>
+        <li>overload, probe, scan, scrape or attack the service, get around its rate limits, bans or blocks, or access data that is not yours;</li>
+        <li>use it to break the law or anyone's rights.</li>
       </ul>
-      <p class="measure">We may remove names, friendships or parties, or block a user, when we believe these terms were broken.
-        The service is offered for free and may change, be limited or stop at any time; we will try to give notice on GitHub first.
-        The <a href="/privacy#friends">privacy policy</a> explains what it stores and how to delete it.</p>
+      <p class="measure">Security research done in good faith, that does not harm other users or their data and that you report to {MAIL} before telling anyone else, does not break these rules.</p>
 
-      <h2>5. No warranty</h2>
-      <p class="measure">Tabbi, the friends service and this website are provided "as is" and "as available", without warranties of any kind, express or implied, including merchantability, fitness for a particular purpose and non-infringement.
-        Timers, reminders, plans and AI answers can be wrong or late. Do not rely on Tabbi for anything where a missed alert or a wrong answer could cause harm.</p>
+      <h2 id="moderation">6. Moderation, blocking and ending your use</h2>
+      <p class="measure">You can block or report anyone in the Party tab.
+        We read reports and may, at our discretion, replace a name, remove a friendship or a party, or ban an account when we believe these terms or the law were broken, or to protect other users or the service.
+        A banned account cannot change its name or join parties, and no one else sees it.
+        We do not review everything people share and are not responsible for what other users do, but we act on reports.
+        If you think we got a decision wrong, email {MAIL} and we will look again.</p>
+      <p class="measure">You can stop at any time: <strong>Delete my Party data</strong> in the Party options and <strong>Delete Account</strong> in Settings &gt; General remove your data from our server, as the <a href="/privacy#deleting">Privacy Policy</a> explains.
+        The friends service is free and may change, be limited or stop; we will try to give at least 30 days' notice on this site and on GitHub before shutting it down.
+        Sections 3, 4, 8 and 10 to 17 keep applying after your use ends.</p>
 
-      <h2>6. Limitation of liability</h2>
-      <p class="measure">To the fullest extent the law allows, we are not liable for any indirect, incidental, special, consequential or punitive damages, or for lost data, profits or time, arising from your use of Tabbi, the friends service or this website.
-        Because all of them are free, our total liability for any claim is limited to 50 US dollars.
-        Some places do not allow these limits, so they may not apply to you, and nothing here limits rights you have by law that cannot be waived.</p>
+      <h2 id="others">7. Other services and AI</h2>
+      <p class="measure">Some tabs work with software and services from others: the AI provider you pick (Anthropic, OpenAI or Google through their command-line tool or your own API key, or Ollama on your Mac), Anki and AnkiConnect, Spotify, Apple Music, SoundCloud, your calendar, and Apple's sign-in.
+        Their own terms and privacy policies apply to your use of them, and you are responsible for following them, for example a provider's usage policies, age limits and API charges.
+        We do not control them and are not responsible for them.</p>
+      <p class="measure"><strong>AI.</strong> Before Tabbi sends anything to an AI provider off your Mac, it tells you who receives it and what is sent, and asks you to allow it.
+        AI answers, plans and reviews are generated by that provider and can be wrong, incomplete or out of date.
+        Check anything important before relying on it, and do not send information you are not allowed to share.</p>
 
-      <h2>7. Governing law</h2>
-      <p class="measure">These terms are governed by the laws of the State of New York, United States, without regard to its conflict of law rules.
-        Any dispute that cannot be settled informally will be heard in the state or federal courts located in New York, New York, unless the law where you live gives you the right to bring it there.</p>
+      <h2>8. Not professional advice</h2>
+      <p class="measure">Tabbi helps you study and focus. It is not medical, psychological, educational or professional advice.
+        Study kits (including the Med School kit) and AI answers are learning aids, not a source of clinical or exam facts; check them against your course materials.
+        Focus sounds, break reminders and the pet's coaching are not a treatment for any condition.</p>
 
-      <h2>8. Changes</h2>
-      <p class="measure">We may update these terms. When we do, we will change the date at the top and keep the history in the <a href="{GITHUB}">Tabbi repository</a>.
-        If you keep using Tabbi after a change, the new terms apply.</p>
+      <h2 id="copyright">9. Copyright complaints</h2>
+      <p class="measure">If you believe something on this site, in the app or shared through the friends service infringes your copyright or trademark, email {MAIL} with: your name and contact details; what you believe is infringed; where the material is (for example a friend code or a link); a statement that you believe in good faith the use is not authorized by the owner, its agent or the law; and a statement, under penalty of perjury, that your notice is accurate and that you are the owner or authorized to act for the owner, with your physical or electronic signature.
+        We will remove or disable material that we find infringing, and may ban people who infringe repeatedly.
+        If your material was removed and you believe that was a mistake, reply to our notice and we will review it.</p>
 
-      <h2>9. Contact</h2>
-      <p class="measure">Questions about these terms: {MAIL}.</p>
+      <h2>10. No warranty</h2>
+      <p class="measure">Tabbi, the friends service and this website are provided "as is" and "as available", without warranties of any kind, express or implied, including merchantability, fitness for a particular purpose, accuracy and non-infringement, to the fullest extent the law allows.
+        We do not promise that they will be available, secure, error-free or that your data will never be lost.
+        Timers, reminders, calendars, plans and AI answers can be wrong or late; do not rely on Tabbi for anything where a missed alert or a wrong answer could cause harm.</p>
+
+      <h2>11. Limitation of liability</h2>
+      <p class="measure">To the fullest extent the law allows, we are not liable for any indirect, incidental, special, consequential or punitive damages, or for lost data, profits, grades or time, arising from your use of Tabbi, the friends service or this website, even if we were told they might happen.
+        Because all of them are free, our total liability for all claims together is limited to 50 US dollars.</p>
+      <p class="measure">These limits do not apply to liability that cannot be limited by law, such as for death or personal injury caused by negligence, fraud, or harm we cause on purpose or through gross negligence.
+        If you are a consumer in the EU, the UK or another place whose laws do not allow these limits, they apply only as far as those laws allow, and you keep your statutory rights.</p>
+
+      <h2>12. Responsibility for misuse</h2>
+      <p class="measure">If you break these terms or the law while using the friends service, and someone brings a claim against us because of it, you agree to cover the reasonable costs that claim causes us, as far as the law where you live allows.
+        This does not apply to consumers in places whose laws do not allow it.</p>
+
+      <h2 id="disputes">13. Governing law and disputes</h2>
+      <p class="measure"><strong>Talk to us first.</strong> If you have a problem with Tabbi, email {MAIL} and give us 30 days to try to solve it before starting a legal claim. Most problems can be fixed this way.</p>
+      <p class="measure"><strong>Law and courts.</strong> These terms are governed by the laws of the State of New York and the United States, without regard to conflict of law rules.
+        Any dispute will be heard in the state or federal courts in New York County, New York, and you and we agree to their jurisdiction.
+        Either of us may instead bring an individual claim in a small claims court that has jurisdiction.
+        There is no arbitration clause.</p>
+      <p class="measure"><strong>Where you live.</strong> If you are a consumer living outside the United States, you also keep the protection of the mandatory laws of your country, and you may bring a claim in the courts where you live.
+        Nothing in this section takes away rights that a minor has under the law where they live.</p>
+
+      <h2>14. Export and sanctions</h2>
+      <p class="measure">Tabbi is published as open source software in the United States.
+        You agree to follow the export control and sanctions laws that apply to you, and not to use the friends service from a country or region under a comprehensive US embargo, or if you are on a US government list of restricted parties.</p>
+
+      <h2 id="app-store">15. If you got Tabbi from the Mac App Store</h2>
+      <p class="measure">These terms are between you and us, not Apple.
+        Apple is not responsible for Tabbi or its content, has no duty to provide maintenance or support for it, and is not responsible for any claim about it, including product liability, legal or regulatory compliance, consumer protection, privacy or intellectual property claims; those are ours to handle as these terms describe.
+        If the app fails to meet a warranty that applies by law, you may tell Apple, and Apple will refund the price you paid for it (Tabbi is free, so that is zero); Apple has no other warranty duty.
+        Apple and its subsidiaries are third-party beneficiaries of these terms and may enforce them against you.
+        Your use must also follow the App Store's Usage Rules.
+        Support and questions go to us at {MAIL}.</p>
+
+      <h2>16. Changes to these terms</h2>
+      <p class="measure">We may update these terms, for example when Tabbi gains a feature or the law changes.
+        We will change the date at the top and keep the full history in the <a href="{GITHUB}">Tabbi repository</a>.
+        For a change that matters to you, we will say so on this site and on GitHub at least 14 days before it takes effect, unless it is needed sooner for legal or safety reasons.
+        If you keep using the friends service or your account after a change takes effect, the new terms apply; if you do not agree, stop using it and delete your data.
+        A change never applies to a dispute that started before it.</p>
+
+      <h2>17. General</h2>
+      <p class="measure">These terms, the Privacy Policy and, for App Store copies, Apple's license are the whole agreement between you and us about the friends service, the account and this website.
+        If a court finds part of them unenforceable, the rest still applies.
+        If we do not enforce a part right away, we have not given it up.
+        You may not transfer your rights under these terms; we may transfer ours to someone who takes over Tabbi and keeps these terms and the Privacy Policy, and we will say so on this site.
+        Neither of us is responsible for delays caused by events outside reasonable control, such as an outage at Cloudflare or Apple.</p>
+
+      <h2>18. Contact</h2>
+      <p class="measure">Questions about these terms, copyright complaints and appeals: {MAIL}.</p>
 '''

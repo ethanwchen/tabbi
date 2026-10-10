@@ -13,6 +13,7 @@ None of this replaces a licensed attorney.
 
 - `profile.md` - the practice profile the skills expect: who the operator is, the regulatory footprint, the published commitments and where each lives.
 - `data-inventory.md` (next) - every piece of personal data Tabbi touches, where it lives, who receives it and how long it is kept, checked against the code (the policy-monitor and pia-generation workflows).
+- `terms-memo.md` - why the Terms of Use say what they say (scope, minors, no arbitration, liability, moderation, copyright, Apple terms).
 - `review.md` (last) - findings by severity, what was changed, residual risks and the list for a lawyer.
 
 ## Surfaces that make privacy commitments
