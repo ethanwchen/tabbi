@@ -127,9 +127,10 @@ shasum -a 256 Tabbi-<version>.dmg
 
 ## Uninstall
 
-1. Quit Tabbi: right-click the notch and choose **Quit Tabbi**.
-2. Open **Settings > General** first and turn off **Launch at login**, or remove Tabbi later in **System Settings > General > Login Items**.
-3. Drag **Tabbi** from **Applications** to the Trash.
+1. If you signed in with Apple and want your synced pet and streaks gone too, open **Settings > General** and choose **Delete Account**.
+2. In **Settings > General**, turn off **Launch at login**, or remove Tabbi later in **System Settings > General > Login Items**.
+3. Quit Tabbi: right-click the notch and choose **Quit Tabbi**.
+4. Drag **Tabbi** from **Applications** to the Trash.
 
 That removes the app.
 Your tabs, tasks and settings stay on your Mac in case you come back.
@@ -139,6 +140,9 @@ To remove them too, choose **Go > Go to Folder…** in Finder, paste each of the
 - `~/Library/Preferences/dev.tabbi.Tabbi.plist`
 - `~/Library/Caches/dev.tabbi.Tabbi`
 - `~/Library/HTTPStorages/dev.tabbi.Tabbi`
+
+The App Store edition keeps all of this in one folder instead: `~/Library/Containers/dev.tabbi.Tabbi`.
+An AI API key you entered stays in your Keychain until you remove it from its row in **Settings > Connections** (or delete the Tabbi item in Keychain Access).
 
 If you installed with Homebrew, `brew uninstall --cask tabbi` removes the app, and `brew uninstall --zap --cask tabbi` also removes the data above and the login item.
 
