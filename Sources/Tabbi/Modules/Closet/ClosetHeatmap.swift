@@ -116,8 +116,10 @@ private struct ClosetHeatmapGrid: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var revealed = false
 
-    /// Room between cells.
+    /// Room between cells. Columns may get up to `maxColumnGap` so the
+    /// grid fills its width exactly, with no ragged edge or loose gutter.
     private let gap: CGFloat = 2
+    private let maxColumnGap: CGFloat = 3
     /// The largest cell, so a roomy panel shows more weeks, not huge squares.
     private let maxCell: CGFloat = 9
     /// The month names' row, and the space below it.
@@ -132,22 +134,24 @@ private struct ClosetHeatmapGrid: View {
         GeometryReader { proxy in
             let size = proxy.size
             let cell = min(maxCell, max(4, (size.height - monthRow - monthGap - 6 * gap) / 7))
-            let pitch = cell + gap
             let showsWeekdays = size.width >= 270
             let gridWidth = size.width - (showsWeekdays ? weekdayColumn + weekdayGap : 0)
-            let count = max(1, Int((gridWidth + gap) / pitch))
+            let count = max(1, Int((gridWidth + gap) / (cell + gap)))
+            let columnGap = count > 1
+                ? min(maxColumnGap, max(gap, (gridWidth - CGFloat(count) * cell) / CGFloat(count - 1))) : gap
+            let grid = Metrics(cell: cell, columnPitch: cell + columnGap, rowPitch: cell + gap)
             let heatmap = StudyHeatmap(minutesByDay: minutesByDay, weeks: count, today: .now)
             // With the weekday names on the left, the grid ends at the right
             // edge, so both edges line up with the summary and the legend.
             HStack(alignment: .top, spacing: 0) {
                 if showsWeekdays {
-                    weekdayLabels(heatmap, pitch: pitch)
+                    weekdayLabels(heatmap, pitch: grid.rowPitch)
                         .padding(.top, monthRow + monthGap)
                     Spacer(minLength: weekdayGap)
                 }
                 VStack(alignment: .leading, spacing: monthGap) {
-                    monthLabels(heatmap, pitch: pitch)
-                    cells(heatmap, cell: cell)
+                    monthLabels(heatmap, grid: grid)
+                    cells(heatmap, grid: grid)
                 }
             }
             .frame(width: size.width, height: size.height, alignment: .leading)
@@ -157,10 +161,17 @@ private struct ClosetHeatmapGrid: View {
         .onDisappear { hovered = nil }
     }
 
-    private func cells(_ heatmap: StudyHeatmap, cell: CGFloat) -> some View {
-        HStack(alignment: .top, spacing: gap) {
+    /// A cell's side and the distance from one cell to the next.
+    private struct Metrics {
+        let cell: CGFloat
+        let columnPitch: CGFloat
+        let rowPitch: CGFloat
+    }
+
+    private func cells(_ heatmap: StudyHeatmap, grid: Metrics) -> some View {
+        HStack(alignment: .top, spacing: grid.columnPitch - grid.cell) {
             ForEach(Array(heatmap.weeks.enumerated()), id: \.element.id) { index, week in
-                column(week, cell: cell)
+                column(week, cell: grid.cell)
                     .opacity(revealed || !animatesIn ? 1 : 0)
                     .animation(entrance(index), value: revealed)
             }
@@ -168,7 +179,7 @@ private struct ClosetHeatmapGrid: View {
         .contentShape(Rectangle())
         .onContinuousHover { phase in
             switch phase {
-            case .active(let point): hovered = day(at: point, in: heatmap, cell: cell)
+            case .active(let point): hovered = day(at: point, in: heatmap, grid: grid)
             case .ended: hovered = nil
             }
         }
@@ -176,8 +187,9 @@ private struct ClosetHeatmapGrid: View {
 
     /// Each month's short name over its first column, leaving out those
     /// that would run into the next one.
-    private func monthLabels(_ heatmap: StudyHeatmap, pitch: CGFloat) -> some View {
-        let width = CGFloat(heatmap.weeks.count) * pitch - gap
+    private func monthLabels(_ heatmap: StudyHeatmap, grid: Metrics) -> some View {
+        let pitch = grid.columnPitch
+        let width = CGFloat(heatmap.weeks.count) * pitch - (pitch - grid.cell)
         return ZStack(alignment: .topLeading) {
             ForEach(heatmap.monthLabels(minimumWeeks: Int((26 / pitch).rounded(.up))), id: \.week) { label in
                 Text(label.start.startDate().formatted(.dateTime.month(.abbreviated)))
@@ -223,9 +235,8 @@ private struct ClosetHeatmapGrid: View {
 
     /// The day under the pointer, from one hover area over the whole grid,
     /// so moving between cells never flickers through "no day".
-    private func day(at point: CGPoint, in heatmap: StudyHeatmap, cell: CGFloat) -> StudyHeatmap.Day? {
-        let pitch = cell + gap
-        let column = Int(point.x / pitch), row = Int(point.y / pitch)
+    private func day(at point: CGPoint, in heatmap: StudyHeatmap, grid: Metrics) -> StudyHeatmap.Day? {
+        let column = Int(point.x / grid.columnPitch), row = Int(point.y / grid.rowPitch)
         guard point.x >= 0, point.y >= 0, heatmap.weeks.indices.contains(column), (0..<7).contains(row) else {
             return hovered
         }
