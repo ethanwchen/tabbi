@@ -60,6 +60,8 @@ Sleep and wake are still untested, because the store only observes them outside 
 `flushOnQuit()`, `saveDidChange(_:)`, `syncSoon(after:)` (the debounce) and the background loop started in `start()` have no test.
 Merge and conflict rules in `TabbiKitCore/Sync` are covered (98%), so the risk is losing the last change on quit or syncing too often.
 Plan: drive the store with a fake server and a fake clock, save, quit before the debounce fires, and check the server got the change once.
+Status: `SyncStoreTests` now covers the debounce (edits in a row push once), wake (waits `wakeDelay`, fetches grants again) and quit inside the debounce (the edit is pushed once, the pending round is cancelled), through an injected sleep.
+They found that adopting a merged save scheduled a redundant second round, which is fixed.
 
 ### 3. Focus timer persistence and notifications (app)
 

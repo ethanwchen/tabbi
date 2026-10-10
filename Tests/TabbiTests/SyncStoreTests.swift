@@ -1,3 +1,4 @@
+import AppKit
 import Combine
 import Foundation
 import XCTest
@@ -327,6 +328,145 @@ final class SyncStoreTests: XCTestCase {
         XCTAssertEqual(store.notice, "Couldn't sign in with Apple. Try again.")
     }
 
+    // MARK: Lifecycle
+
+    private func lifecycleStore(server: FakeAccountServer, pet: ClosetStore, sleeper: ManualSleeper) -> SyncStore {
+        SyncStore(storage: storage, runMode: .live, pet: pet, signInMethod: .native,
+                  server: { [serverURL] in serverURL }, credentials: InMemoryPartyCredentialStore(),
+                  transport: { _ in server }, sleep: { await sleeper.sleep($0) })
+    }
+
+    /// Lets queued main actor work (Combine sinks, new tasks) run.
+    private func settle() async {
+        for _ in 0..<20 { await Task.yield() }
+    }
+
+    /// A merge that changes this Mac's pet is not itself a change to push:
+    /// adopting it schedules no second round.
+    func testAdoptingAMergedSaveSchedulesNoExtraSync() async throws {
+        let server = FakeAccountServer()
+        server.document = SyncDocument(tallies: ["other-mac": SyncTally(earned: 50)])
+        let pet = petStore(earned: 20)
+        let sleeper = ManualSleeper()
+        let store = lifecycleStore(server: server, pet: pet, sleeper: sleeper)
+        await store.signIn(identityToken: "jwt", authorizationCode: nil, name: nil)
+        store.start()
+        await waitUntilSynced(store)
+        await settle()
+
+        XCTAssertEqual(pet.closet.save.ledger.earned, 70)
+        XCTAssertEqual(sleeper.pending, [], "the merged save is already on the server")
+        XCTAssertEqual(server.pushCount, 1)
+    }
+
+    /// Edits in a row push once, after the save has been quiet for the
+    /// debounce, rather than once per edit.
+    func testPetEditsPushOnceAfterTheDebounce() async throws {
+        let server = FakeAccountServer()
+        let pet = petStore(earned: 20)
+        let sleeper = ManualSleeper()
+        let store = lifecycleStore(server: server, pet: pet, sleeper: sleeper)
+        await store.signIn(identityToken: "jwt", authorizationCode: nil, name: nil)
+        store.start()
+        await waitUntilSynced(store)
+        await settle()
+        let pushes = server.pushCount
+        let requests = server.requestCount
+
+        pet.rename("Mochi")
+        pet.rename("Miso")
+        await settle()
+        XCTAssertEqual(sleeper.pending, [SyncStore.debounce, SyncStore.debounce])
+        XCTAssertEqual(server.requestCount, requests, "nothing is sent while the save is still changing")
+
+        sleeper.releaseAll()
+        for _ in 0..<200 where server.pushCount == pushes || store.isSyncing {
+            try? await Task.sleep(nanoseconds: 10_000_000)
+        }
+        await settle()
+        XCTAssertEqual(server.pushCount, pushes + 1, "the cancelled debounce never syncs")
+        XCTAssertEqual(server.document?.pet?.profile.name, "Miso")
+        XCTAssertEqual(sleeper.pending, [])
+    }
+
+    /// Signed out, a pet edit schedules nothing.
+    func testPetEditsWhileSignedOutScheduleNothing() async {
+        let server = FakeAccountServer()
+        let pet = petStore(earned: 0)
+        let sleeper = ManualSleeper()
+        let store = lifecycleStore(server: server, pet: pet, sleeper: sleeper)
+        store.start()
+        pet.rename("Mochi")
+        await settle()
+        XCTAssertEqual(sleeper.pending, [])
+        XCTAssertEqual(server.requestCount, 0)
+    }
+
+    /// Waking waits for the network before syncing, and asks for the
+    /// account's grants again, since they may have changed while asleep.
+    func testWakingSyncsAfterTheWakeDelayAndRefetchesGrants() async throws {
+        let server = FakeAccountServer()
+        let pet = petStore(earned: 0)
+        let sleeper = ManualSleeper()
+        let store = lifecycleStore(server: server, pet: pet, sleeper: sleeper)
+        await store.signIn(identityToken: "jwt", authorizationCode: nil, name: nil)
+        store.start()
+        await waitUntilSynced(store)
+        await settle()
+        XCTAssertEqual(server.grantsFetchedWith.count, 1)
+        let pushes = server.pushCount
+
+        NSWorkspace.shared.notificationCenter.post(name: NSWorkspace.didWakeNotification, object: nil)
+        await settle()
+        XCTAssertEqual(sleeper.pending, [SyncStore.wakeDelay])
+        XCTAssertEqual(server.pushCount, pushes)
+
+        sleeper.releaseAll()
+        for _ in 0..<200 where server.grantsFetchedWith.count < 2 || store.isSyncing {
+            try? await Task.sleep(nanoseconds: 10_000_000)
+        }
+        XCTAssertEqual(server.grantsFetchedWith.count, 2, "grants are fetched again after wake")
+    }
+
+    /// Quitting inside the debounce still gets the last edit to the
+    /// server, exactly once, and cancels the pending round.
+    func testQuittingPushesTheLastEditOnce() async throws {
+        let server = FakeAccountServer()
+        let pet = petStore(earned: 20)
+        let sleeper = ManualSleeper()
+        let store = lifecycleStore(server: server, pet: pet, sleeper: sleeper)
+        await store.signIn(identityToken: "jwt", authorizationCode: nil, name: nil)
+        store.start()
+        await waitUntilSynced(store)
+        await settle()
+        let pushes = server.pushCount
+
+        pet.rename("Mochi")
+        await settle()
+        XCTAssertEqual(sleeper.pending, [SyncStore.debounce])
+        store.flushOnQuit()
+        XCTAssertEqual(server.pushCount, pushes + 1, "the push finishes before quit returns")
+        XCTAssertEqual(server.document?.pet?.profile.name, "Mochi")
+
+        sleeper.releaseAll()
+        await settle()
+        XCTAssertEqual(server.pushCount, pushes + 1, "the cancelled debounce never syncs")
+    }
+
+    func testQuittingWithNothingNewSendsNothing() async throws {
+        let server = FakeAccountServer()
+        let pet = petStore(earned: 20)
+        let store = lifecycleStore(server: server, pet: pet, sleeper: ManualSleeper())
+        store.flushOnQuit()
+        XCTAssertEqual(server.requestCount, 0, "signed out")
+
+        await store.signIn(identityToken: "jwt", authorizationCode: nil, name: nil)
+        await waitUntilSynced(store)
+        let requests = server.requestCount
+        store.flushOnQuit()
+        XCTAssertEqual(server.requestCount, requests, "the save is already synced")
+    }
+
     func testTheAccountRowSaysWhenItLastSynced() {
         let now = Date(timeIntervalSince1970: 1_800_000_000)
         XCTAssertEqual(AccountSettingsRow.relative(now.addingTimeInterval(-20), now: now), "just now")
@@ -364,6 +504,9 @@ private final class FakeAccountServer: PartyTransport, @unchecked Sendable {
     var deletedWith: String? { lock.withLock { deleted } }
     var signedOutWith: String? { lock.withLock { signedOut } }
     var requestCount: Int { lock.withLock { requests } }
+    private var pushes = 0
+    /// Accepted `PUT /v1/sync` requests.
+    var pushCount: Int { lock.withLock { pushes } }
 
     func send(_ request: PartyHTTPRequest, timeout: TimeInterval) async throws -> PartyHTTPResponse {
         lock.withLock {
@@ -392,6 +535,7 @@ private final class FakeAccountServer: PartyTransport, @unchecked Sendable {
                 stored = (body?["document"]).flatMap { try? JSONSerialization.data(withJSONObject: $0) }
                     .flatMap { try? SyncDocument.decode($0) }
                 revision += 1
+                pushes += 1
                 return Self.reply(#"{"ok":true,"revision":\#(revision),"updatedAt":1791504060}"#)
             case ("POST", "/v1/auth/signout"):
                 signedOut = request.token
@@ -421,5 +565,26 @@ private final class FakeAccountServer: PartyTransport, @unchecked Sendable {
 
     private static func reply(_ text: String, _ status: Int = 200) -> PartyHTTPResponse {
         PartyHTTPResponse(statusCode: status, body: Data(text.utf8))
+    }
+}
+
+/// Stands in for `Task.sleep` in the store's debounce and wake delay: each
+/// wait stays pending, with the delay it asked for, until the test
+/// releases it.
+@MainActor
+private final class ManualSleeper {
+    private var waiters: [(delay: TimeInterval, resume: CheckedContinuation<Void, Never>)] = []
+
+    /// The delays still waiting, oldest first.
+    var pending: [TimeInterval] { waiters.map(\.delay) }
+
+    func sleep(_ delay: TimeInterval) async {
+        await withCheckedContinuation { waiters.append((delay, $0)) }
+    }
+
+    func releaseAll() {
+        let released = waiters
+        waiters = []
+        released.forEach { $0.resume.resume() }
     }
 }
