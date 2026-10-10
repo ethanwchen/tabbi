@@ -113,6 +113,27 @@ The app asks it once per launch, wake and identity: Party after it connects (sig
 New items celebrate in the Closet like a milestone unlock.
 The server's list of grantable ids is `backend/shared/limited-items.json`, which `PetLimitedTests` holds to `PetLimitedEdition`.
 
+### Seasonal events
+
+A year of seasonal events offers limited items earned by focusing while the event runs, never with points or money.
+The events are data: `Sources/TabbiKitCore/Events/events.json` (format `shared/schemas/events.v1.schema.json`, read by `SeasonalEventCatalog`).
+Each event runs from local midnight of its first day through the end of its last day in the user's time zone, and comes back every year.
+
+| Event | Days | Items (focused minutes during the event) | Headline effect |
+| --- | --- | --- | --- |
+| Lunar New Year | Chinese calendar month 1, days 1 to 15 | Lion Dance Hat (180) | sparkle |
+| Valentine's Week | February 8 to 14 | Heart Glasses (180) | sparkle |
+| Cherry Blossom Season | March 20 to April 19 | Sakura Sprig (180) | drift |
+| Exam Season | April 27 to June 14 | Study Hoodie (300) | shimmer |
+| Summer | June 21 to August 31 | Sunset Shades (300) | sparkle |
+| Halloween | October 17 to 31 | Moonlit Witch Hat (90), Pumpkin Hat (300) | flicker |
+| Winter Holidays | December 14 to January 6 | Reindeer Antlers (90), Snowy Scarf (300) | sparkle |
+
+Only `focus.completed` minutes that end inside the run count (`SeasonalEventProgress`).
+The steepest pace is Valentine's Week, about 26 focused minutes a day; every other event asks for 20 or fewer, well under the typical student's 75, so nobody has to change their habit to earn an item.
+An earned item stays owned after the event; one not earned starts over from zero when the event returns the next year.
+Each event's last item is its headline item and the only one with an effect.
+
 ## Streak freezes
 
 A study day is a local day with at least 5 focused minutes.

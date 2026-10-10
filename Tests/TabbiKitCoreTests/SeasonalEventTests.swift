@@ -234,4 +234,79 @@ final class SeasonalEventTests: XCTestCase {
                 "events[0].rewards[1].focusMinutes")
         rejects(file(event() + "," + event(id: "fall")), "events[1].rewards[0].item")
     }
+
+    // MARK: Bundled year
+
+    func testBundledYearOffersEverySeasonalItemOnce() {
+        let catalog = SeasonalEventCatalog.bundled
+        XCTAssertEqual(Set(catalog.events.map(\.id)),
+                       ["lunar-new-year", "valentines", "spring", "exam-season", "summer", "halloween", "winter-holidays"])
+        let seasonal = PetLimitedEdition.allCases.filter {
+            if case .season = $0.source { true } else { false }
+        }
+        for edition in seasonal {
+            guard case .season(let id) = edition.source else { continue }
+            let event = catalog.event(offering: edition.item)
+            XCTAssertEqual(event?.id, id, "\(edition) is offered by its own event")
+            XCTAssertNotNil(edition.seasonalReward, "\(edition)")
+        }
+        let offered = catalog.events.flatMap { $0.rewards.map(\.item) }
+        XCTAssertEqual(Set(offered), Set(seasonal.map(\.item)), "every event item is a seasonal limited edition")
+        for event in catalog.events {
+            for reward in event.rewards {
+                XCTAssertEqual(reward.item.effect != nil, reward.item == event.headline,
+                               "only \(event.id)'s headline item has an effect")
+            }
+        }
+        XCTAssertNil(PetLimitedEdition.streakFlame.seasonalReward)
+    }
+
+    func testBundledYearRunsOnTheExpectedLocalDays() {
+        let catalog = SeasonalEventCatalog.bundled
+        let newYork = calendar()
+        func active(_ year: Int, _ month: Int, _ day: Int, hour: Int = 12) -> [String] {
+            catalog.active(at: date(year, month, day, hour: hour, in: newYork), calendar: newYork).map(\.event.id)
+        }
+        XCTAssertEqual(active(2026, 10, 10), [])
+        XCTAssertEqual(active(2026, 10, 17, hour: 0), ["halloween"])
+        XCTAssertEqual(catalog.active(at: date(2026, 10, 31, hour: 23, minute: 59, in: newYork), calendar: newYork)
+            .map(\.event.id), ["halloween"])
+        XCTAssertEqual(active(2026, 11, 1, hour: 0), [])
+        XCTAssertEqual(active(2027, 1, 6), ["winter-holidays"])
+        XCTAssertEqual(active(2027, 1, 7), [])
+        XCTAssertEqual(active(2027, 2, 6), ["lunar-new-year"], "Lunar New Year 2027 falls on February 6")
+        XCTAssertEqual(active(2027, 2, 10), ["valentines", "lunar-new-year"], "the shorter run shows first")
+        XCTAssertEqual(active(2027, 5, 15), ["exam-season"])
+        XCTAssertEqual(active(2027, 7, 15), ["summer"])
+        XCTAssertEqual(catalog.next(after: date(2026, 10, 10, in: newYork), calendar: newYork)?.id(calendar: newYork), "halloween-2026")
+    }
+
+    func testSeasonalCopyStatesTheCatalogGoal() {
+        XCTAssertEqual(PetLimitedEdition.halloweenWitchHat.howToEarn, "Focus for 90 minutes during Halloween.")
+        XCTAssertEqual(PetLimitedEdition.halloweenPumpkin.howToEarn, "Focus for 5 hours during Halloween.")
+        XCTAssertEqual(PetLimitedEdition.valentinesGlasses.howToEarn, "Focus for 3 hours during Valentine's week.")
+    }
+
+    /// The schema accepts every id and calendar the bundled file and Swift
+    /// use, so a port validating with it accepts what the Mac app ships.
+    func testSchemaMatchesTheBundledYear() throws {
+        let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let data = try Data(contentsOf: root.appendingPathComponent("shared/schemas/events.v1.schema.json"))
+        let schema = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+        let defs = try XCTUnwrap(schema["$defs"] as? [String: [String: Any]])
+        func property(_ def: String, _ key: String) throws -> [String: Any] {
+            try XCTUnwrap((defs[def]?["properties"] as? [String: [String: Any]])?[key], "\(def).\(key)")
+        }
+        XCTAssertEqual(try property("event", "calendar")["enum"] as? [String],
+                       SeasonalEventCalendar.allCases.map(\.rawValue))
+        let itemPattern = try XCTUnwrap(try property("reward", "item")["pattern"] as? String)
+        let idPattern = try XCTUnwrap(try property("event", "id")["pattern"] as? String)
+        for event in SeasonalEventCatalog.bundled.events {
+            XCTAssertNotNil(event.id.range(of: idPattern, options: .regularExpression), event.id)
+            for reward in event.rewards {
+                XCTAssertNotNil(reward.item.id.range(of: itemPattern, options: .regularExpression), reward.item.id)
+            }
+        }
+    }
 }

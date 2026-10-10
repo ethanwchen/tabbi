@@ -28,6 +28,25 @@ public struct SeasonalEventCatalog: Hashable, Sendable {
         self.events = events
     }
 
+    /// The year of events that ships with Tabbi, `events.json`, described
+    /// by `shared/schemas/events.v1.schema.json`. Read once; a broken file
+    /// is a build mistake, which the tests catch.
+    public static let bundled: SeasonalEventCatalog = {
+        guard let url = KitResources.bundle?.url(forResource: "events", withExtension: "json") else {
+            preconditionFailure("Missing events.json")
+        }
+        do {
+            return try decode(Data(contentsOf: url))
+        } catch {
+            preconditionFailure("Invalid events.json: \(error)")
+        }
+    }()
+
+    /// The event with `id`, if the catalog has one.
+    public func event(id: String) -> SeasonalEvent? {
+        events.first { $0.id == id }
+    }
+
     /// The runs going on at `date`, the one ending soonest first, so a short
     /// event inside a longer one gets the spotlight while it lasts.
     public func active(at date: Date, calendar: Calendar = .current) -> [SeasonalEventOccurrence] {

@@ -48,12 +48,14 @@ let package = Package(
         // Pure, testable logic: parsers, models, stores. No AppKit/SwiftUI.
         .target(
             name: "TabbiKitCore",
-            // Kit manifests, edition files, pet art and themes ship as
-            // human-editable JSON (see docs/kits.md, Edition.swift,
-            // PetArt.swift and ThemeCatalog.swift).
+            // Kit manifests, edition files, pet art, themes and seasonal
+            // events ship as human-editable JSON (see docs/kits.md,
+            // Edition.swift, PetArt.swift, ThemeCatalog.swift and
+            // SeasonalEventCatalog.swift).
             resources: [
                 .copy("Kits/Bundled"), .copy("Editions/BundledEditions"), .copy("Pets/PetArt"),
                 .copy("Themes/themes.json"), .copy("StudyMethods/study-methods.json"),
+                .copy("Events/events.json"),
             ],
             swiftSettings: coreSettings
         ),

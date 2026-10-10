@@ -109,23 +109,35 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         return nil
     }
 
-    /// One line on how to earn it, for the tile's tooltip and detail.
+    /// One line on how to earn it, for the tile's tooltip and detail. A
+    /// seasonal item's goal comes from the events catalog, so the copy
+    /// always says what the event asks for.
     public var howToEarn: String {
         switch self {
         case .launchWeekCap: "Given to everyone who used Tabbi in its launch week."
         case .streakFlame: "Study 7 days in a row."
         case .focusLaurel: "Focus for 50 hours in total."
         case .partyMedal: "Finish a Party session with friends."
-        case .halloweenWitchHat: "Focus for 90 minutes during Halloween."
-        case .halloweenPumpkin: "Focus for 5 hours during Halloween."
-        case .winterAntlers: "Focus for 90 minutes during the winter holidays."
-        case .winterScarf: "Focus for 5 hours during the winter holidays."
-        case .valentinesGlasses: "Focus for 3 hours during Valentine's week."
-        case .summerShades: "Focus for 5 hours during the summer event."
-        case .lunarNewYearLion: "Focus for 3 hours during Lunar New Year."
-        case .springSakura: "Focus for 3 hours during cherry blossom season."
-        case .examHoodie: "Focus for 5 hours during exam season."
+        case .halloweenWitchHat, .halloweenPumpkin: seasonalHowToEarn(during: "Halloween")
+        case .winterAntlers, .winterScarf: seasonalHowToEarn(during: "the winter holidays")
+        case .valentinesGlasses: seasonalHowToEarn(during: "Valentine's week")
+        case .summerShades: seasonalHowToEarn(during: "the summer event")
+        case .lunarNewYearLion: seasonalHowToEarn(during: "Lunar New Year")
+        case .springSakura: seasonalHowToEarn(during: "cherry blossom season")
+        case .examHoodie: seasonalHowToEarn(during: "exam season")
         }
+    }
+
+    /// The bundled event reward for a seasonal item, or nil for any other.
+    public var seasonalReward: SeasonalEventReward? {
+        guard case .season(let id) = source else { return nil }
+        return SeasonalEventCatalog.bundled.event(id: id)?.rewards.first { $0.item == item }
+    }
+
+    private func seasonalHowToEarn(during season: String) -> String {
+        guard let minutes = seasonalReward?.focusMinutes else { return "Focus during \(season)." }
+        let goal = minutes < SeasonalEventProgress.hourLabelMinutes ? "\(minutes) minutes" : "\(minutes / 60) hours"
+        return "Focus for \(goal) during \(season)."
     }
 
     public var effect: PetItemEffect? {

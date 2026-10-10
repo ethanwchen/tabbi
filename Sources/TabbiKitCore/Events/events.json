@@ -1,0 +1,84 @@
+{
+  "schema": "events.v1",
+  "events": [
+    {
+      "id": "lunar-new-year",
+      "name": "Lunar New Year",
+      "tagline": "A fresh start for the new year. Focus a little each day.",
+      "calendar": "chinese",
+      "start": { "month": 1, "day": 1 },
+      "end": { "month": 1, "day": 15 },
+      "rewards": [
+        { "item": "accessory.lionDanceHat", "focusMinutes": 180 }
+      ]
+    },
+    {
+      "id": "valentines",
+      "name": "Valentine's Week",
+      "tagline": "Show your studies some love this week.",
+      "calendar": "gregorian",
+      "start": { "month": 2, "day": 8 },
+      "end": { "month": 2, "day": 14 },
+      "rewards": [
+        { "item": "accessory.heartGlasses", "focusMinutes": 180 }
+      ]
+    },
+    {
+      "id": "spring",
+      "name": "Cherry Blossom Season",
+      "tagline": "The blossoms are out. Grow something of your own.",
+      "calendar": "gregorian",
+      "start": { "month": 3, "day": 20 },
+      "end": { "month": 4, "day": 19 },
+      "rewards": [
+        { "item": "accessory.sakuraSprig", "focusMinutes": 180 }
+      ]
+    },
+    {
+      "id": "exam-season",
+      "name": "Exam Season",
+      "tagline": "One calm session at a time. You've got this.",
+      "calendar": "gregorian",
+      "start": { "month": 4, "day": 27 },
+      "end": { "month": 6, "day": 14 },
+      "rewards": [
+        { "item": "outfit.studyHoodie", "focusMinutes": 300 }
+      ]
+    },
+    {
+      "id": "summer",
+      "name": "Summer",
+      "tagline": "Long days, light focus. Keep a little rhythm going.",
+      "calendar": "gregorian",
+      "start": { "month": 6, "day": 21 },
+      "end": { "month": 8, "day": 31 },
+      "rewards": [
+        { "item": "accessory.summerShades", "focusMinutes": 300 }
+      ]
+    },
+    {
+      "id": "halloween",
+      "name": "Halloween",
+      "tagline": "Spooky season is here. Focus to dress up your pet.",
+      "calendar": "gregorian",
+      "start": { "month": 10, "day": 17 },
+      "end": { "month": 10, "day": 31 },
+      "rewards": [
+        { "item": "accessory.moonlitWitchHat", "focusMinutes": 90 },
+        { "item": "accessory.pumpkinHat", "focusMinutes": 300 }
+      ]
+    },
+    {
+      "id": "winter-holidays",
+      "name": "Winter Holidays",
+      "tagline": "Cozy days and quiet focus before the new year.",
+      "calendar": "gregorian",
+      "start": { "month": 12, "day": 14 },
+      "end": { "month": 1, "day": 6 },
+      "rewards": [
+        { "item": "accessory.reindeerAntlers", "focusMinutes": 90 },
+        { "item": "accessory.snowScarf", "focusMinutes": 300 }
+      ]
+    }
+  ]
+}
