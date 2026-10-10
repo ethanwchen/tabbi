@@ -144,7 +144,11 @@ Playing sound, playlists and Shortcuts are still checked by hand.
 It covers the first frame (memory, GPU and thermal at once, CPU only after a second sample), CPU from the tick delta weighted across cores, a gap of 3 seconds or more while the panel was hidden (no averaged CPU, the sparklines restart, the next second reports again) while a late tick under 3 seconds still counts, readings the Mac refuses (shown as missing with no fake zero in the sparklines) and their recovery, a core count change (one CPU reading skipped, sparklines kept), sparklines keeping the last minute, thermal following the Mac, sampling running while any panel is visible (an extra stop never leaves the count negative), and demo mode playing back sample data without reading the Mac.
 Loosening the gap rule or letting the viewer count go negative each makes these tests fail.
 The real kernel and IOKit reads in `SystemSampler` are still checked by hand.
-`SpotifyController` is still below 40%.
+`SpotifyControllerTests` drives `SpotifyController` (which now takes an optional `host`: which players run or are installed, the AppleScript runner and the clock) against scripted players at a fake clock.
+It covers no player running (nothing scripted, so no app is ever launched), a running Spotify read and followed, the app that started playing last taking over, a quit player released at once and a relaunch read again, an unreadable reply keeping the last track, denied Automation (on a read and on a volume command), the position running on with the clock between reads, a stale read that must not undo a play/pause, seeks clamped to the track, a volume drag sending only its first and latest values, mute restoring the level it had, shuffle showing the click until the player settles, polling only while the panel shows, SoundCloud read only once turned on (and never in the App Store edition), and demo mode never touching the players or the saved preferences.
+Dropping the stale-read generation check or the one-volume-command-at-a-time rule each makes these tests fail.
+Real Apple Events to Spotify, Music and the browsers, and the players' distributed notifications, are still checked by hand.
+No app store is listed below 40% any more.
 
 ### 9. Backend
 

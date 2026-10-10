@@ -54,6 +54,7 @@ final class SpotifyController: NSObject, ObservableObject {
     private var sources: [NowPlayingSource] { preferences.followedSources(allowsBrowsers: allowsBrowsers) }
 
     private let isDemo: Bool
+    private let host: MediaPlayerHost
     private var tracker = MediaSourceTracker()
     /// Per app, so a read of one app never re-anchors the other's position.
     private var clocks: [NowPlayingSource: SpotifyPlaybackClock] = [:]
@@ -61,7 +62,7 @@ final class SpotifyController: NSObject, ObservableObject {
     private var tickTimer: Timer?
     private var pollTimer: Timer?
     /// The interval `pollTimer` runs at, so it is rebuilt when that changes.
-    private var pollTimerInterval: TimeInterval?
+    private(set) var pollTimerInterval: TimeInterval?
     /// Bumped per app by every read and command so a slow, stale read can't
     /// overwrite a newer state (e.g. an optimistic play/pause).
     private var generations: [NowPlayingSource: Int] = [:]
@@ -78,10 +79,12 @@ final class SpotifyController: NSObject, ObservableObject {
     /// What a snapshot run shows instead of the players' real state.
     private var snapshotOverride: (source: NowPlayingSource, status: SpotifyStatus)?
 
-    init(runMode: RunMode, allowsBrowsers: Bool) {
+    init(runMode: RunMode, allowsBrowsers: Bool, host: MediaPlayerHost = .live,
+         defaults: UserDefaults = .standard) {
         isDemo = runMode.isDemo
         self.allowsBrowsers = allowsBrowsers
-        preferencesStorage = runMode.isEphemeral ? nil : NowPlayingPreferencesStorage()
+        self.host = host
+        preferencesStorage = runMode.isEphemeral ? nil : NowPlayingPreferencesStorage(defaults: defaults)
         preferences = preferencesStorage?.load() ?? NowPlayingPreferences()
         super.init()
         if isDemo {
@@ -89,6 +92,12 @@ final class SpotifyController: NSObject, ObservableObject {
             record(.music, .connected(.demo))
             return
         }
+        if host.observesSystem { observeSystem() }
+        refresh()
+    }
+
+    /// Follows app launches and quits and the players' own notifications.
+    private func observeSystem() {
         let workspace = NSWorkspace.shared.notificationCenter
         workspace.addObserver(self, selector: #selector(applicationsChanged(_:)),
                               name: NSWorkspace.didLaunchApplicationNotification, object: nil)
@@ -102,7 +111,6 @@ final class SpotifyController: NSObject, ObservableObject {
                 name: name, object: nil, suspensionBehavior: .deliverImmediately
             )
         }
-        refresh()
     }
 
     // MARK: - Snapshots
@@ -244,7 +252,7 @@ final class SpotifyController: NSObject, ObservableObject {
     /// Music has moved on to another track.
     func artworkData(for track: SpotifyTrack) async -> Data? {
         guard !isDemo, let script = MusicScript.readArtwork(forTrackID: track.id) else { return nil }
-        return await Self.runForData(script, on: .music)
+        return await host.runForData(script, .music)
     }
 
     // MARK: - Reading state
@@ -271,19 +279,19 @@ final class SpotifyController: NSObject, ObservableObject {
 
     private func refresh(_ source: NowPlayingSource) {
         let current = bumpGeneration(source)
-        let isRunning = Self.isRunning(source)
+        let isRunning = host.isRunning(source)
         record(source, SpotifyStatus.resolve(source: source, isRunning: isRunning,
-                                             isInstalled: Self.isInstalled(source),
+                                             isInstalled: host.isInstalled(source),
                                              read: nil, previous: latestStatus(source)))
         guard isRunning else { return }
         Task {
-            let result = await Self.run(source.readStateScript, on: source)
+            let result = await host.run(source.readStateScript, source)
             guard current == generations[source] else { return }
-            var status = SpotifyStatus.resolve(source: source, isRunning: Self.isRunning(source),
-                                               isInstalled: Self.isInstalled(source),
+            var status = SpotifyStatus.resolve(source: source, isRunning: host.isRunning(source),
+                                               isInstalled: host.isInstalled(source),
                                                read: result, previous: latestStatus(source))
             if case .connected(let playback) = status, let pending = pendingModes[source] {
-                status = .connected(pending.applied(to: playback, at: Date()))
+                status = .connected(pending.applied(to: playback, at: host.now()))
             }
             record(source, status)
         }
@@ -297,7 +305,7 @@ final class SpotifyController: NSObject, ObservableObject {
 
     /// `source`'s last known status, its position extrapolated to now.
     private func latestStatus(_ source: NowPlayingSource) -> SpotifyStatus {
-        if let clock = clocks[source] { return .connected(clock.playback(at: Date())) }
+        if let clock = clocks[source] { return .connected(clock.playback(at: host.now())) }
         return tracker.statuses[source] ?? .notRunning
     }
 
@@ -308,10 +316,10 @@ final class SpotifyController: NSObject, ObservableObject {
             }
             return
         }
-        guard Self.isRunning(source) else { return refresh(source) }
+        guard host.isRunning(source) else { return refresh(source) }
         bumpGeneration(source)
         Task {
-            let result = await Self.run(script, on: source)
+            let result = await host.run(script, source)
             if case .failure(.permissionDenied) = result {
                 record(source, .permissionDenied)
             }
@@ -321,7 +329,7 @@ final class SpotifyController: NSObject, ObservableObject {
 
     private func expectModes(_ source: NowPlayingSource,
                              _ update: (PendingMediaModes, Date) -> PendingMediaModes) {
-        let now = Date()
+        let now = host.now()
         pendingModes[source] = update(pendingModes[source] ?? PendingMediaModes(deadline: now), now)
     }
 
@@ -333,7 +341,7 @@ final class SpotifyController: NSObject, ObservableObject {
         guard !isDemo else { return }
         Task { [weak self] in
             try? await Task.sleep(for: .seconds(PendingMediaModes.settleTime + 0.1))
-            guard let self, let pending = pendingModes[source], !pending.isActive(at: Date()) else { return }
+            guard let self, let pending = pendingModes[source], !pending.isActive(at: host.now()) else { return }
             pendingModes[source] = nil
             refresh(source)
         }
@@ -342,11 +350,11 @@ final class SpotifyController: NSObject, ObservableObject {
     private func sendPendingVolume(_ source: NowPlayingSource) {
         guard !volumeInFlight.contains(source), let volume = pendingVolumes.removeValue(forKey: source),
               let script = source.setVolumeScript(volume) else { return }
-        guard Self.isRunning(source) else { return refresh(source) }
+        guard host.isRunning(source) else { return refresh(source) }
         volumeInFlight.insert(source)
         bumpGeneration(source)
         Task {
-            let result = await Self.run(script, on: source)
+            let result = await host.run(script, source)
             volumeInFlight.remove(source)
             if case .failure(.permissionDenied) = result {
                 pendingVolumes[source] = nil
@@ -372,8 +380,8 @@ final class SpotifyController: NSObject, ObservableObject {
     /// Stores `source`'s confirmed status, re-anchoring its position clock,
     /// and republishes whichever app the tracker now selects.
     private func record(_ source: NowPlayingSource, _ newStatus: SpotifyStatus) {
-        clocks[source] = newStatus.playback.map { SpotifyPlaybackClock(anchor: $0, at: Date()) }
-        tracker.update(source, status: newStatus, at: Date())
+        clocks[source] = newStatus.playback.map { SpotifyPlaybackClock(anchor: $0, at: host.now()) }
+        tracker.update(source, status: newStatus, at: host.now())
         publish()
     }
 
@@ -418,7 +426,7 @@ final class SpotifyController: NSObject, ObservableObject {
     /// its browser runs), whose tab posts no notifications.
     private var pollInterval: TimeInterval? {
         guard !isDemo else { return nil }
-        let running = sources.filter(Self.isRunning)
+        let running = sources.filter(host.isRunning)
         if isPanelVisible, !running.isEmpty { return Self.pollInterval }
         if running.contains(where: { $0.app == nil }) { return Self.browserPollInterval }
         return nil
@@ -438,7 +446,7 @@ final class SpotifyController: NSObject, ObservableObject {
 
     private func tick() {
         guard snapshotOverride == nil, let source, let clock = clocks[source] else { return }
-        let playback = clock.playback(at: Date())
+        let playback = clock.playback(at: host.now())
         if status.playback != playback { status = .connected(playback) }
     }
 
@@ -446,30 +454,37 @@ final class SpotifyController: NSObject, ObservableObject {
 
     @objc private func applicationsChanged(_ notification: Notification) {
         let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
+        applicationChanged(bundleIdentifier: app?.bundleIdentifier,
+                           terminated: notification.name == NSWorkspace.didTerminateApplicationNotification)
+    }
+
+    /// An app launched or quit: re-reads the players it hosts, or lets go
+    /// of them at once when it quit.
+    func applicationChanged(bundleIdentifier: String?, terminated: Bool) {
         // A browser hosts one SoundCloud source, but match every source
         // so the rule doesn't depend on that.
-        for source in sources where source.bundleIdentifier == app?.bundleIdentifier {
-            if notification.name == NSWorkspace.didTerminateApplicationNotification {
+        for source in sources where source.bundleIdentifier == bundleIdentifier {
+            if terminated {
                 bumpGeneration(source)
-                record(source, Self.isInstalled(source) ? .notRunning : .notInstalled)
+                record(source, host.isInstalled(source) ? .notRunning : .notInstalled)
             } else {
                 refresh(source)
             }
         }
     }
 
-    @objc private func playbackStateChanged(_ notification: Notification) {
+    @objc func playbackStateChanged(_ notification: Notification) {
         guard let source = Self.notifications.first(where: { $0.value == notification.name })?.key else { return }
         refresh(source)
     }
 
     // MARK: - AppleScript
 
-    private nonisolated static func isRunning(_ source: NowPlayingSource) -> Bool {
+    fileprivate nonisolated static func isRunning(_ source: NowPlayingSource) -> Bool {
         !NSRunningApplication.runningApplications(withBundleIdentifier: source.bundleIdentifier).isEmpty
     }
 
-    private static func isInstalled(_ source: NowPlayingSource) -> Bool {
+    fileprivate static func isInstalled(_ source: NowPlayingSource) -> Bool {
         NSWorkspace.shared.urlForApplication(withBundleIdentifier: source.bundleIdentifier) != nil
     }
 
@@ -478,13 +493,13 @@ final class SpotifyController: NSObject, ObservableObject {
     private nonisolated static let scriptQueue = DispatchQueue(label: "dev.tabbi.spotify.applescript",
                                                                qos: .userInitiated)
 
-    private nonisolated static func run(_ script: String,
+    fileprivate nonisolated static func run(_ script: String,
                                         on source: NowPlayingSource) async -> Result<String, SpotifyScriptError> {
         await execute(script, on: source) { $0.stringValue ?? "" }
     }
 
     /// Runs a script that returns raw bytes; nil for `missing value`.
-    private nonisolated static func runForData(_ script: String, on source: NowPlayingSource) async -> Data? {
+    fileprivate nonisolated static func runForData(_ script: String, on source: NowPlayingSource) async -> Data? {
         let result = await execute(script, on: source) { descriptor -> Data? in
             // `missing value` comes back as a type descriptor ('msng').
             guard descriptor.descriptorType != typeNull, descriptor.descriptorType != typeType else { return nil }
@@ -514,5 +529,30 @@ final class SpotifyController: NSObject, ObservableObject {
                 }
             }
         }
+    }
+}
+
+/// What `SpotifyController` asks of the Mac: which players run or are
+/// installed, AppleScript to read and control them, and the clock. `.live`
+/// talks to the real apps; tests pass scripted players so reads, commands
+/// and stale replies can be checked without Spotify, Music or Apple Events.
+struct MediaPlayerHost {
+    var isRunning: @MainActor (NowPlayingSource) -> Bool
+    var isInstalled: @MainActor (NowPlayingSource) -> Bool
+    var run: @MainActor (String, NowPlayingSource) async -> Result<String, SpotifyScriptError>
+    var runForData: @MainActor (String, NowPlayingSource) async -> Data?
+    var now: @MainActor () -> Date
+    /// Whether to follow app launches and the players' notifications.
+    var observesSystem: Bool
+
+    static var live: MediaPlayerHost {
+        MediaPlayerHost(
+            isRunning: { SpotifyController.isRunning($0) },
+            isInstalled: { SpotifyController.isInstalled($0) },
+            run: { await SpotifyController.run($0, on: $1) },
+            runForData: { await SpotifyController.runForData($0, on: $1) },
+            now: { Date() },
+            observesSystem: true
+        )
     }
 }
