@@ -7,7 +7,7 @@ import Foundation
 public enum FeedbackLink {
     public static let page = URL(string: "https://tabbinotch.com/suggest")!
     /// The menu item and the About link both read this.
-    public static let title = "Suggest a Feature or Report a Bug"
+    public static var title: String { String(localized: "Suggest a Feature or Report a Bug", bundle: .tabbi) }
 
     /// The query parameter names, which the site's form keeps as hidden
     /// fields and the suggestions backend validates.

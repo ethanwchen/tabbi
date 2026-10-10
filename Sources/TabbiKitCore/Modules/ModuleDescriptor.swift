@@ -42,12 +42,12 @@ public struct ModuleCategory: RawRepresentable, Hashable, Codable, Sendable, Ide
 }
 
 public extension ModuleCategory {
-    static let media = ModuleCategory("media", title: "Media")
-    static let system = ModuleCategory("system", title: "System")
-    static let productivity = ModuleCategory("productivity", title: "Productivity")
-    static let study = ModuleCategory("study", title: "Study")
-    static let ai = ModuleCategory("ai", title: "AI")
-    static let fun = ModuleCategory("fun", title: "Fun")
+    static let media = ModuleCategory("media", title: String(localized: "Media", bundle: .tabbi))
+    static let system = ModuleCategory("system", title: String(localized: "System", bundle: .tabbi))
+    static let productivity = ModuleCategory("productivity", title: String(localized: "Productivity", bundle: .tabbi))
+    static let study = ModuleCategory("study", title: String(localized: "Study", bundle: .tabbi))
+    static let ai = ModuleCategory("ai", title: String(localized: "AI", bundle: .tabbi))
+    static let fun = ModuleCategory("fun", title: String(localized: "Fun", bundle: .tabbi))
 
     /// The categories the built-in modules use, so decoding a stored id
     /// gets back the proper title ("AI", not "Ai").
@@ -67,10 +67,10 @@ public enum ModulePermission: String, CaseIterable, Codable, Sendable {
 
     public var title: String {
         switch self {
-        case .automation: "Automation"
-        case .calendars: "Calendars"
-        case .reminders: "Reminders"
-        case .notifications: "Notifications"
+        case .automation: String(localized: "Automation", bundle: .tabbi)
+        case .calendars: String(localized: "Calendars", bundle: .tabbi)
+        case .reminders: String(localized: "Reminders", bundle: .tabbi)
+        case .notifications: String(localized: "Notifications", bundle: .tabbi)
         case .claudeCLI: "Claude Code CLI"
         }
     }

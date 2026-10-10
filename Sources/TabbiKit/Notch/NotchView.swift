@@ -43,7 +43,7 @@ public struct NotchView: View {
             if !model.isOpen {
                 Color.clear
                     .accessibilityElement()
-                    .accessibilityLabel("Open \(content.appName)")
+                    .accessibilityLabel(Text("Open \(content.appName)", bundle: .tabbi))
                     .accessibilityAddTraits(.isButton)
                     .accessibilityAction { openFromClosed() }
             }
@@ -54,7 +54,7 @@ public struct NotchView: View {
             }
             Divider()
             if let setNotchMode = content.setNotchMode {
-                Picker("Notch", selection: Binding(get: { model.notchMode }, set: { mode in
+                Picker(String(localized: "Notch", bundle: .tabbi), selection: Binding(get: { model.notchMode }, set: { mode in
                     if mode != .alwaysVisible { model.close() }
                     setNotchMode(mode)
                 })) {
@@ -63,19 +63,19 @@ public struct NotchView: View {
                 // The way back is in the item itself: the shortcut opens a
                 // hidden notch, and Settings is one item away once it does.
                 if model.notchMode != .hidden {
-                    Button("Hide \(content.appName) Until I Press \(model.hotkey.displayString)") {
+                    Button(String(localized: "Hide \(content.appName) Until I Press \(model.hotkey.displayString)", bundle: .tabbi)) {
                         model.close()
                         setNotchMode(.hidden)
                     }
                 }
                 Divider()
             }
-            Button("Settings…") {
+            Button(String(localized: "Settings…", bundle: .tabbi)) {
                 model.close()
                 content.openSettings()
             }
             if let checkForUpdates = content.checkForUpdates {
-                Button("Check for Updates…", action: checkForUpdates)
+                Button(String(localized: "Check for Updates…", bundle: .tabbi), action: checkForUpdates)
             }
             if let suggestFeedback = content.suggestFeedback {
                 Button(FeedbackLink.title) {
@@ -83,7 +83,7 @@ public struct NotchView: View {
                     suggestFeedback()
                 }
             }
-            Button("Quit \(content.appName)") { NSApp.terminate(nil) }
+            Button(String(localized: "Quit \(content.appName)", bundle: .tabbi)) { NSApp.terminate(nil) }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .animation(phaseAnimation, value: model.phase)
@@ -168,11 +168,11 @@ private struct NotchCloseZone: View {
             .frame(width: width)
             .contentShape(Rectangle())
             .onTapGesture { model.close() }
-            .help("Close")
+            .help(Text("Close", bundle: .tabbi))
             // A bare shape has no role, so VoiceOver would skip it; read it as
             // the panel's Close button instead.
             .accessibilityElement()
-            .accessibilityLabel("Close")
+            .accessibilityLabel(Text("Close", bundle: .tabbi))
             .accessibilityAddTraits(.isButton)
             .accessibilityAction { model.close() }
     }
