@@ -45,6 +45,12 @@ public struct SeasonalEventReward: Hashable, Sendable {
         self.item = item
         self.focusMinutes = focusMinutes
     }
+
+    /// The goal as a short label, in the same units as its progress
+    /// (`SeasonalEventProgress.progress(of:)`): "90 min" or "5 h".
+    public var goalLabel: String {
+        focusMinutes < SeasonalEventProgress.hourLabelMinutes ? "\(focusMinutes) min" : "\(focusMinutes / 60) h"
+    }
 }
 
 /// A seasonal event, such as Halloween: a window of local days that comes

@@ -336,6 +336,52 @@ final class SeasonalEventTests: XCTestCase {
         XCTAssertEqual(catalog.next(after: date(2026, 10, 10, in: newYork), calendar: newYork)?.id(calendar: newYork), "halloween-2026")
     }
 
+    func testLimitedShelvesFeatureTheCurrentOrNextEventThenTheYearAhead() {
+        let catalog = SeasonalEventCatalog.bundled
+        let newYork = calendar()
+        func shelves(_ year: Int, _ month: Int, _ day: Int) -> [PetLimitedShelf] {
+            catalog.limitedShelves(at: date(year, month, day, hour: 12, in: newYork), calendar: newYork)
+        }
+        let milestones = PetLimitedShelf(kind: .milestones, items: [
+            .accessory(.backwardsCap), .accessory(.flameHeadband), .accessory(.goldenLaurel), .accessory(.teamMedal),
+        ])
+        for shelves in [shelves(2026, 10, 10), shelves(2026, 10, 20), shelves(2027, 2, 10)] {
+            XCTAssertEqual(shelves.flatMap(\.items).sorted { $0.id < $1.id }, PetCloset.limitedShelf.sorted { $0.id < $1.id },
+                           "every limited item sits on one shelf")
+            XCTAssertEqual(shelves.count, 3)
+            XCTAssertEqual(shelves[1], milestones)
+        }
+
+        // Before Halloween, it is upcoming; the rest follow in the order they come back.
+        let october = shelves(2026, 10, 10)
+        guard case .event(let upcoming, let isActive) = october[0].kind else { return XCTFail("no featured event") }
+        XCTAssertEqual(upcoming.id(calendar: newYork), "halloween-2026")
+        XCTAssertFalse(isActive)
+        XCTAssertEqual(october[0].items, [.accessory(.moonlitWitchHat), .accessory(.pumpkinHat)])
+        XCTAssertEqual(october[2].kind, .laterEvents)
+        XCTAssertEqual(october[2].items, [
+            .accessory(.reindeerAntlers), .accessory(.snowScarf), .accessory(.lionDanceHat), .accessory(.heartGlasses),
+            .accessory(.sakuraSprig), .outfit(.studyHoodie), .accessory(.summerShades),
+        ])
+
+        // During it, it is active.
+        guard case .event(let running, true) = shelves(2026, 10, 20)[0].kind else { return XCTFail("not active") }
+        XCTAssertEqual(running.event.id, "halloween")
+
+        // When two overlap, the one ending soonest is featured and the
+        // other, already running, leads the rest.
+        let february = shelves(2027, 2, 10)
+        guard case .event(let valentines, true) = february[0].kind else { return XCTFail("not active") }
+        XCTAssertEqual(valentines.event.id, "valentines")
+        XCTAssertEqual(february[2].items.first, .accessory(.lionDanceHat))
+        XCTAssertEqual(february[2].items.suffix(2), [.accessory(.reindeerAntlers), .accessory(.snowScarf)])
+    }
+
+    func testRewardGoalLabelsUseTheProgressUnits() {
+        XCTAssertEqual(SeasonalEventReward(item: .accessory(.halo), focusMinutes: 90).goalLabel, "90 min")
+        XCTAssertEqual(SeasonalEventReward(item: .accessory(.halo), focusMinutes: 300).goalLabel, "5 h")
+    }
+
     func testSeasonalCopyStatesTheCatalogGoal() {
         XCTAssertEqual(PetLimitedEdition.halloweenWitchHat.howToEarn, "Focus for 90 minutes during Halloween.")
         XCTAssertEqual(PetLimitedEdition.halloweenPumpkin.howToEarn, "Focus for 5 hours during Halloween.")
