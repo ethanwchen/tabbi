@@ -130,7 +130,10 @@ The probed rows (Spotify, Music, Anki, Calendar, Claude, notifications, Focus sh
 `ScheduleStorePlanTests` drives `ScheduleStore` (which now takes an optional `clock`) at a fixed 9:00 with a mocked Ollama as the picked AI.
 It covers Plan filling the rest of the day, Skip clearing the offer and a skipped block's selection, Refine replacing the blocks with the AI's validated plan, an unusable answer keeping the local plan, Select and Skip waiting while the AI refines, a refine cancelled by Discard or by planning again (its late answer neither lands nor shows as a failure), week plans never refined, and Add in demo mode (one block, then the rest, and Add waiting while the demo refines).
 The live store in these tests is never shown and never adds, so it neither reads nor writes the real calendar on a test host with calendar access; reading EventKit and writing planned blocks are still checked by hand.
-`FocusController`, `StudyReminderScheduler`, `SpotifyController`, `PetCoachController` and `SystemMonitor` are still below 40%.
+`PetCoachControllerSettingsTests` covers what Settings › Pet Coach saves through `PetCoachController`: the nudges switch and the distracting apps (a suggestion toggled on and off, a focus app made distracting, a picked `.app` added once by its lowercased bundle id, a folder that is not an app ignored), each saved next to the pet and read back on the next launch without resetting snooze or cooldowns.
+A fresh install writes nothing, an unreadable save runs on defaults and is never overwritten, demo mode shows sample apps and never reads or writes the save, and celebrations play only while the coach runs (and never in demo mode).
+Sampling idle time and the frontmost app needs the real Mac and is still checked by hand.
+`FocusController`, `StudyReminderScheduler`, `SpotifyController` and `SystemMonitor` are still below 40%.
 
 ### 9. Backend
 
