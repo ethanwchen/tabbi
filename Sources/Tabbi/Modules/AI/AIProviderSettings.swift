@@ -11,9 +11,13 @@ extension AIService {
 /// Settings > Connections > AI: which provider answers, and the one thing
 /// it still needs (a key, an install, a sign-in). "None" is a real choice
 /// and the default, since nothing may be sent before the user picks.
+/// Picking a provider that sends data off the Mac first asks for consent,
+/// naming what is sent and to whom (App Review Guideline 5.1.2(i)).
 struct AIProviderSection: View {
     @ObservedObject var ai: AIService
     @EnvironmentObject private var settings: SettingsStore
+    /// The provider waiting for the user's consent in the alert.
+    @State private var pendingConsent: AIProviderID?
 
     var body: some View {
         Section {
@@ -33,12 +37,36 @@ struct AIProviderSection: View {
         } footer: {
             SectionFooter(footer)
         }
+        .alert(consentTitle, isPresented: consentShown, presenting: pendingConsent) { provider in
+            Button("Use \(provider.displayName)") { settings.settings.ai.provider = provider }
+            Button("Cancel", role: .cancel) {}
+        } message: { provider in
+            Text(provider.dataDisclosure ?? "")
+        }
+    }
+
+    private var consentTitle: String {
+        guard let recipient = pendingConsent?.dataRecipient else { return "" }
+        return "Share with \(recipient)?"
+    }
+
+    private var consentShown: Binding<Bool> {
+        Binding(get: { pendingConsent != nil }, set: { if !$0 { pendingConsent = nil } })
     }
 
     /// The provider in use: a saved one this build can't run (Claude Code
     /// in the App Store build) shows as None, as it acts.
     private var choice: Binding<AIProviderID?> {
-        Binding(get: { ai.setupState.provider }, set: { settings.settings.ai.provider = $0 })
+        Binding(get: { ai.setupState.provider }, set: { provider in
+            // Switching between two providers of one company (the Claude
+            // API and Claude Code) asks nothing new.
+            if let provider, provider.dataDisclosure != nil,
+               provider.dataRecipient != ai.setupState.provider?.dataRecipient {
+                pendingConsent = provider
+            } else {
+                settings.settings.ai.provider = provider
+            }
+        })
     }
 
     private var footer: String {
@@ -47,7 +75,8 @@ struct AIProviderSection: View {
         }
         let hint = provider.requiresAPIKey ? "Your key stays in your Keychain."
             : provider.setupHint(model: settings.settings.ai.model(for: provider)) ?? ""
-        return "\(provider.setupSummary) \(hint)"
+        let recipient = provider.dataRecipient.map { " Sends what you ask to \($0)." } ?? ""
+        return "\(provider.setupSummary)\(recipient) \(hint)"
     }
 }
 

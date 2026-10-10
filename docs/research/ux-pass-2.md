@@ -23,3 +23,9 @@ Each entry is a short before and after.
   After: a two-finger swipe up closes the open notch with the usual close spring (`CloseSwipe`), once per gesture.
   A mouse wheel and momentum never close it, a swipe that starts over a list that can scroll scrolls the list instead, and onboarding stays open until it is done or skipped.
   The Shortcut footer in Settings > General mentions it.
+
+## AI providers
+
+- Before: picking an AI provider in Settings > Connections started sending to it at once, and nothing said what is sent or to whom (App Review Guideline 5.1.2(i) asks for both, and for permission).
+  After: picking a provider that answers from outside the Mac asks first, "Share with Anthropic?" (or OpenAI, or Google), naming what Ask, Plan my day and Refine send, with Use and Cancel.
+  Ollama runs on the Mac and asks nothing, switching between two providers of one company asks nothing new, and the section footer keeps a short "Sends what you ask to Google." line.
