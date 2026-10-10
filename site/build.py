@@ -228,9 +228,9 @@ SUPPORT = f'''
         <h2>Contact</h2>
         <p>Email <a href="mailto:{SUPPORT_EMAIL}">{SUPPORT_EMAIL}</a>.
           A person reads every message, usually within a few days.
-          It helps to say which Mac and macOS version you have, which Tabbi version (right-click the notch, then <strong>Settings &gt; About</strong>), and what you were doing.</p>
+          Say which Mac, macOS and Tabbi version you have (right-click the notch, then <strong>Settings &gt; About</strong>), and what you were doing.</p>
         <p>Found a bug or have an idea? <a href="{ISSUES}">Open an issue on GitHub</a>.
-          Please report security problems privately by email rather than in a public issue.</p>
+          Security problems go by email, please, not in a public issue.</p>
       </div>
 
       <h2>Common questions</h2>
@@ -308,11 +308,11 @@ SUPPORT = f'''
 '''
 
 
-# The press kit: the icon at 1024 px and the four tabs from the home page,
-# as lossless PNGs, zipped by the build.
+# The press kit: the icon at 1024 px and four tab screenshots, as lossless
+# PNGs, zipped by the build.
 PRESS = HERE / 'press'
 PRESS_KIT = 'tabbi-press-kit.zip'
-PRESS_MB = f"{sum(f.stat().st_size for f in PRESS.glob('*.png')) / 1e6:.1f} MB"
+PRESS_MB = f"{sum(f.stat().st_size for f in PRESS.glob('*.png')) / 1e6:.1f}&nbsp;MB"
 
 
 ABOUT = f'''
@@ -330,7 +330,7 @@ ABOUT = f'''
           <h2>Press kit</h2>
           <p>Tabbi is a free, open source app for macOS 14 or later. It turns the laptop notch into a cozy panel of tabs: a focus timer, your day, music, AI, Anki flashcards and a pet cat or dog. No ads, no tracking.</p>
           <div class="cta center">
-            <a class="btn soft" href="/press/{PRESS_KIT}" download title="The icon and four screenshots">Download ({PRESS_MB} ZIP)</a>
+            <a class="btn soft" href="/press/{PRESS_KIT}" download title="A ZIP of the icon and four screenshots">Get the kit ({PRESS_MB})</a>
           </div>
         </div>
       </div>
@@ -398,7 +398,7 @@ SUGGEST = f'''
 
 THANKS = '''
       <div class="lost">
-        <img src="/img/glyph.webp" width="128" height="128" alt="">
+        <img src="/img/glyph.webp" width="96" height="96" alt="">
         <p class="measure">Every idea gets read. If you left an email, you may hear back.</p>
         <div class="cta center">
           <a class="btn" href="/">Back to the start</a>
@@ -410,7 +410,7 @@ THANKS = '''
 
 NOT_FOUND = '''
       <div class="lost">
-        <img src="/img/glyph.webp" width="128" height="128" alt="">
+        <img src="/img/glyph.webp" width="96" height="96" alt="">
         <p class="measure">This page may have moved, or the link was wrong.</p>
         <div class="cta center">
           <a class="btn" href="/">Back to the start</a>
@@ -467,7 +467,7 @@ INVITE_JOIN = invite_body(
 
 INVITE_INVALID = f'''
       <div class="lost">
-        <img src="/img/glyph.webp" width="128" height="128" alt="">
+        <img src="/img/glyph.webp" width="96" height="96" alt="">
         <p class="measure">The code in this link is not one Tabbi hands out. Ask your friend to copy their invite link again, or type their code in the Party tab.</p>
         <div class="cta center">
           <a class="btn" href="{DOWNLOAD}">{DOWNLOAD_ICON}<span>Download Tabbi</span></a>

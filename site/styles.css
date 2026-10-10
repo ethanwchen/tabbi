@@ -511,7 +511,7 @@ tbody tr:last-child td { border-bottom: none; }
 .scroller th:last-child, .scroller td:last-child { padding-right: 22px; min-width: 9em; }
 
 .lost { display: flex; flex-direction: column; align-items: center; text-align: center; }
-.lost img { width: 128px; height: 128px; margin: 4px 0 10px; }
+.lost img { width: 96px; height: 96px; margin: 0 0 12px; }
 .lost p { margin: 0; text-wrap: balance; }
 .lost .cta { margin-top: 22px; }
 
