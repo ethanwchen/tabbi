@@ -19,7 +19,11 @@ public final class PetRenderer: @unchecked Sendable {
     private var order: [Key] = []
     private let capacity: Int
 
-    /// `capacity` bounds memory: a pet uses roughly 40 distinct frames.
+    /// `capacity` bounds memory: a plain pet uses roughly 40 distinct
+    /// frames. An animated costume item multiplies that by its loop length
+    /// (a 24-tick aura over a long clip can pass 256), and then the oldest
+    /// frames simply render again, which a 32x32 sprite makes cheap. A
+    /// bigger cache would hold many full-scale bitmaps for little gain.
     public init(capacity: Int = 256) {
         self.capacity = capacity
     }

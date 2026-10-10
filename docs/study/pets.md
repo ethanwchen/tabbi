@@ -118,7 +118,7 @@ After stamping, `PetCanvas.outlined()` adds a one-pixel outline around the whole
 ![Every costume on a dog](images/costumes-dog.png)
 
 A pet wears one `PetOutfit` (`none`, `scrubs`, `whiteCoat`, `cozyHoodie`, `superheroCape`, `dinosaurHoodie`, `wizardRobe`) and accessories (`PetAccessory`).
-Each accessory has a slot (neck, face, or head); a pet wears at most one per slot.
+Each accessory has a slot (neck, face, head, back, or aura); a pet wears at most one per slot.
 `PetAccessory.wearable(_:)` keeps the last item listed per slot and sorts them in drawing order, so hats always land on top.
 
 Costume art lives in `PetArt/costume.json` (with its anchors: `rise`, `eyeRow`, `sitRow`) and is anchored to the pose layout instead of per-breed positions:
@@ -139,7 +139,7 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 
 ### Animated items
 
-Some items move: the Flame Headband's flame flickers, a glint crosses the Golden Laurel, the Team Medal sparkles now and then, a glint crosses the Backwards Cap's metal snap, the Halo bobs over the head, the Angel Wings flap, a glint runs down the King's Cape's gold trim, Cherry Petals drift down around the pet, and gold sparkles twinkle beside it and trail behind it on a walk.
+Some items move: the Flame Headband's flame flickers, a glint crosses the Golden Laurel, the Team Medal sparkles now and then, a glint crosses the Backwards Cap's metal snap, the Halo bobs over the head, the Angel Wings flap, a glint runs down the King's Cape's gold trim, Cherry Petals drift down around the pet, gold sparkles twinkle beside it and trail behind it on a walk, and the Tiny Rain Cloud drizzles beside its head.
 An animated item lists the rest of its loop in `frames`, after its still grids: a head item gives grids the size of `grid`, a body item gives a grid per body family for each frame.
 The still is the loop's first frame and the picture Reduce Motion shows.
 Every frame lasts one tick of the item clock, `itemFrameDuration` in `costume.json` (150 ms, a walking step), so a slower move repeats a frame.
@@ -184,6 +184,8 @@ The dachshund sits side-on with its head where other pets leave air, so an aura 
    Items from `PetItem.latestRelease` wear a "New" badge in the Closet until the user owns them.
 2. Draw it in `CostumeArt` using costume roles only: a `BodyItem` for each body family plus its two walking torsos, a `FaceItem` with its `eyeRow`, or a `HeadItem` with its `sitRow`.
    A body item that sticks up out of the silhouette (the dinosaur's back spikes, the cape streaming up behind a walking pet) sets `rise`, the rows every one of its grids starts above the body's top row.
+   An item worn behind the pet is a `BackItem` (see Back items), and one floating around it an `AuraItem` (see Aura items).
+   An item that moves lists the rest of its loop in `frames` (see Animated items).
 3. Map the case to its art in `PetComposer`.
    An outfit with a head part (the dinosaur hood) returns it from `outfitHood`; it is placed like a hat, moves with the head, and any hat is worn over it.
 4. Run `swift test` and review `contact-*.png` (every item on every breed) and `strip-<item>.png` (every breed through the key frames of every animation) from `PetGallery`.

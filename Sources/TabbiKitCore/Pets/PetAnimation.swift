@@ -333,6 +333,9 @@ extension PetComposer {
                         .adding(EffectArt.dustRight, at: PetPoint(x: right + 1, y: y))
                 }
             }
+            // Only effects get an outline ring cut into wings; petals sit
+            // on them plainly, as in `Composed.picture`.
+            let effects = canvas.added(over: pet)
             // Petals float in the free air in front of the pet and its
             // effects, and in front of wings.
             if let aura = composed.aura {
@@ -341,7 +344,7 @@ extension PetComposer {
             // Wings go behind the pet and its effects: a "z" or a heart
             // floats in front of them.
             if let back = composed.back {
-                canvas = canvas.over(back.shifted(x: 0, y: step.shiftY), ringing: canvas.added(over: pet))
+                canvas = canvas.over(back.shifted(x: 0, y: step.shiftY), ringing: effects)
             }
             return canvas
         }

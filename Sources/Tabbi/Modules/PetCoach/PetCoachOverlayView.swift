@@ -169,7 +169,7 @@ struct PetCoachOverlayView: View {
             ? glance.pose(at: date).map { _ in (PetAnimation.peekIn, glance.enter) }
             : glance.pose(at: date)
         if let pose {
-            PetSpriteView(canvas: scene.clips[pose.animation].frame(at: pose.elapsed).canvas,
+            PetSpriteView(canvas: drawn(scene.clips[pose.animation].frame(at: pose.elapsed), at: date),
                           palette: scene.profile.palette, pixelSize: Self.pixelSize)
                 .accessibilityLabel(scene.profile.name)
         }
@@ -181,24 +181,30 @@ struct PetCoachOverlayView: View {
     /// the bubble is up.
     private func pet(at date: Date) -> some View {
         let stroll = scene.stroll
-        let canvas: PetCanvas
+        let frame: PetFrame
         var mirrored = false
         switch stroll.phase(at: date) {
         case .walkingOut:
-            canvas = scene.clips[.walk].frame(at: date.timeIntervalSince(stroll.startedAt)).canvas
+            frame = scene.clips[.walk].frame(at: date.timeIntervalSince(stroll.startedAt))
             mirrored = true
         case .talking:
             let elapsed = date.timeIntervalSince(stroll.arrivesAt)
             let arrival = scene.clips[scene.line.arrival]
-            canvas = elapsed < arrival.duration
-                ? arrival.frame(at: elapsed).canvas
-                : scene.clips[.idle].frame(at: elapsed - arrival.duration).canvas
+            frame = elapsed < arrival.duration
+                ? arrival.frame(at: elapsed)
+                : scene.clips[.idle].frame(at: elapsed - arrival.duration)
         case .walkingBack, .finished:
-            canvas = scene.clips[.walk].frame(at: date.timeIntervalSince(stroll.turnsBackAt)).canvas
+            frame = scene.clips[.walk].frame(at: date.timeIntervalSince(stroll.turnsBackAt))
         }
-        return PetSpriteView(canvas: canvas, palette: scene.profile.palette, pixelSize: Self.pixelSize)
+        return PetSpriteView(canvas: drawn(frame, at: date), palette: scene.profile.palette, pixelSize: Self.pixelSize)
             .scaleEffect(x: mirrored ? -1 : 1, y: 1)
             .accessibilityLabel(scene.profile.name)
+    }
+
+    /// `frame` with its worn items at their loop step for `date` (a cape's
+    /// glint, flapping wings). Reduce Motion keeps the items' still frame.
+    private func drawn(_ frame: PetFrame, at date: Date) -> PetCanvas {
+        reduceMotion ? frame.canvas : frame.atItemTime(date.timeIntervalSinceReferenceDate).canvas
     }
 }
 

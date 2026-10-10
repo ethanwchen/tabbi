@@ -132,6 +132,38 @@ final class PetItemLoopTests: XCTestCase {
         }
     }
 
+    /// Worn with wings or the cape, aura particles sit on the back item
+    /// plainly, as the Closet thumbnail (`Composed.picture`) draws them:
+    /// only effects (a sleep "z") get an outline ring cut into the item.
+    func testAuraParticlesOverABackItemGetNoOutlineRing() {
+        let backs = PetAccessory.allCases.filter { $0.slot == .back }
+        let auras = PetAccessory.allCases.filter { $0.slot == .aura }
+        for back in backs {
+            for aura in auras {
+                for breed in PetGallery.bodyShapeBreeds {
+                    for animation in [PetAnimation.idle, .sleep, .walk] {
+                        let plain = PetComposer.clip(animation, for: breed, accessories: [back])
+                        let both = PetComposer.clip(animation, for: breed, accessories: [back, aura])
+                        for (index, (alone, frame)) in zip(plain.frames, both.frames).enumerated() {
+                            let label = "\(aura) over \(back) on \(breed) \(animation) frame \(index)"
+                            XCTAssertFalse(frame.itemFrames.isEmpty, label)
+                            for (step, canvas) in frame.itemFrames.enumerated() {
+                                // The middle of the same tick on the item clock.
+                                let under = alone.atItemTime((Double(step) + 0.5) * tick).canvas
+                                for y in 0..<canvas.height {
+                                    for x in 0..<canvas.width where canvas[x, y] != under[x, y] {
+                                        XCTAssertNotEqual(canvas[x, y], .outline,
+                                                          "ring at (\(x), \(y)) tick \(step): \(label)")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /// The halo floats over the head on every body shape, sitting and
     /// walking: half the loop up, the other half a pixel lower, its gold
     /// never touching the fur (only the outlines meet), and its glint shows

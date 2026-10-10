@@ -287,9 +287,10 @@ extension CostumeArt {
     /// the pet, and over its back when seen from the side.
     static let cherryPetals = PetArt.costume.auraItem("cherryPetals")
     /// Gold sparkles that each glint for four ticks (a dot, a star with a
-    /// white heart, then a white dot), two at a time. From the front they
-    /// twinkle in place beside and above the pet; walking they are born at
-    /// its back and drift away behind it, a trail.
+    /// white heart, then a white dot), a new one every tick, so four show
+    /// at a time. From the front they twinkle in place beside and above the
+    /// pet; walking they are born at its back and drift away behind it, a
+    /// trail.
     static let sparkleTrail = PetArt.costume.auraItem("sparkleTrail")
     /// A small white cloud with two puffs and a grey underside that hangs
     /// beside the head (over the back on a walk and on the side-on
