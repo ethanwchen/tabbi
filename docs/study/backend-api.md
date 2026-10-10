@@ -172,7 +172,8 @@ Auth column: "token" means `Authorization: Bearer <token>` is required.
 | `PUT /v1/sync` | token, Apple account | replace my sync document if I merged into the current revision |
 | `GET /v1/grants` | token | the limited edition items the maintainer granted me |
 | `POST /v1/suggestions` | none | the website's Suggest form: send the maintainer an idea |
-| `/v1/admin/...` | admin token | the maintainer's report review, rename and ban, see [Moderation](#moderation-maintainer), limited edition grants, see [Limited edition grants](#limited-edition-grants-maintainer), the suggestions inbox, see [Suggestions](#suggestions-maintainer), and aggregate counts, see [Stats](#stats-maintainer) |
+| `POST /v1/crashes` | none | a crash report the person agreed to send |
+| `/v1/admin/...` | admin token | the maintainer's report review, rename and ban, see [Moderation](#moderation-maintainer), limited edition grants, see [Limited edition grants](#limited-edition-grants-maintainer), the suggestions inbox, see [Suggestions](#suggestions-maintainer), crash reports, see [Crash reports](#crash-reports-maintainer), and aggregate counts, see [Stats](#stats-maintainer) |
 
 ### `GET /`
 
@@ -497,6 +498,7 @@ It takes no token, and its body is either the form's `application/x-www-form-url
 | `message` | required: 10 to 2000 characters after trimming; line breaks are kept, other control and invisible characters removed |
 | `email` | optional: one address of at most 254 characters, only to reply about the idea; empty means none |
 | `website` | the honeypot: people never see it, so it must be empty or absent |
+| `version`, `macos`, `edition` | optional: the Tabbi version, macOS version and edition, filled in when the app opened the form; each empty, or letters, digits, spaces and `. _ - ( )` up to 32 characters |
 
 Any other field, a repeated form field or a body over 32 KB is refused.
 A post whose `website` is filled in gets the success reply but is not stored.
@@ -508,6 +510,24 @@ A post whose `website` is filled in gets the success reply but is not stored.
 
 Limits: 3 posts a minute and 20 a UTC day per client IP (`429 rate_limited` with `Retry-After`), and 500 stored suggestions per rolling 24 hours from everyone (`503 inbox_full`).
 Errors: `invalid_field`, `unknown_field`, `invalid_json`, `body_too_large`, `unsupported_media_type`, `rate_limited`, `inbox_full`.
+
+### `POST /v1/crashes`
+
+The app posts here only after the person agreed to send a crash report.
+It takes no token, and its body is a JSON object with exactly these fields, all required:
+
+| Field | Rules |
+| --- | --- |
+| `version`, `macos`, `edition` | the Tabbi version, macOS version and edition: letters, digits, spaces and `. _ - ( )`, 1 to 32 characters |
+| `kind` | `signal`, `exception` or `hang` |
+| `name` | the signal or exception type, as in `SIGSEGV` or `NSInvalidArgumentException`: letters, digits, `_` and `.`, up to 64 characters (never an exception's reason, which can quote what the person typed) |
+| `threads` | 1 to 64 objects `{"name", "crashed", "frames"}`: `name` is up to 64 printable ASCII characters (empty for an unnamed thread), `crashed` a boolean (true for at most one thread), and `frames` up to 128 strings of 1 to 512 printable ASCII characters; at least one thread has a frame |
+
+Any other field, at the top or in a thread, a frame that contains a home folder path (`/Users/` or `/home/`) or a body over 64 KB is refused.
+The reply is `201 {"ok": true}`.
+
+Limits: 2 posts a minute and 10 a UTC day per client IP (`429 rate_limited` with `Retry-After`), and 1000 stored reports per rolling 24 hours from everyone (`503 inbox_full`).
+Errors: `invalid_field`, `unknown_field`, `invalid_json`, `body_too_large`, `rate_limited`, `inbox_full`.
 
 ### Operator routes
 
@@ -631,8 +651,26 @@ curl -s -H "Authorization: Bearer $ADMIN_TOKEN" $TABBI/v1/admin/suggestions | jq
 curl -s -X DELETE -H "Authorization: Bearer $ADMIN_TOKEN" $TABBI/v1/admin/suggestions/42
 ```
 
-Each suggestion is `{"id": 42, "createdAt": 1789000000, "category": "tab", "message": "...", "email": null}`.
+Each suggestion is `{"id": 42, "createdAt": 1789000000, "category": "tab", "message": "...", "email": null, "appVersion": "1.4.0 (52)", "macos": "15.1.0", "edition": "tabbi"}`, with `null` app facts when the form was not opened from the app.
 Nothing ties a suggestion to a friend code, an IP address or anything else.
+
+## Crash reports (maintainer)
+
+Crash reports wait until the maintainer deletes them, and for at most 90 days.
+The same `ADMIN_TOKEN` rules as the moderation routes apply.
+
+| Method and path | Purpose |
+| --- | --- |
+| `GET /v1/admin/crashes` | the newest 50 reports: `{ok, crashes, more}`; `?before={id}` returns the 50 before that id when `more` is `true` |
+| `DELETE /v1/admin/crashes/{id}` | delete a report once it is looked into: `{ok, deleted}` (`false` if no such id) |
+
+```sh
+curl -s -H "Authorization: Bearer $ADMIN_TOKEN" $TABBI/v1/admin/crashes | jq '.crashes[]'
+curl -s -X DELETE -H "Authorization: Bearer $ADMIN_TOKEN" $TABBI/v1/admin/crashes/42
+```
+
+Each report is `{"id": 42, "createdAt": 1789000000, "appVersion": "1.4.0 (52)", "macos": "15.1.0", "edition": "tabbi", "kind": "signal", "name": "SIGSEGV", "threads": [...]}`, with the threads as posted.
+Nothing ties a report to a friend code, an IP address or anything else.
 
 ## Stats (maintainer)
 

@@ -1182,9 +1182,16 @@ struct AboutSettingsPane: View {
             }
             .help("Email the \(Edition.current.name) team about a bug, a person in Party or anything else")
             .padding(.top, 8)
+            Link(destination: Feedback.url) {
+                Label(FeedbackLink.title, systemImage: "lightbulb")
+            }
+            .help("Opens the Suggest page with your app version, macOS version and edition filled in")
+            .padding(.top, 8)
             #if !APPSTORE
             UpdatesSettingsSection()
                 .padding(.top, 16)
+            CrashReportSettingsSection()
+                .padding(.top, 12)
             #endif
             Text("Released under the MIT License.")
                 .font(.caption)

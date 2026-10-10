@@ -281,6 +281,10 @@ ABOUT = f'''
 # A plain form, no script: it posts to the friends backend, which answers with
 # a redirect to /thanks. The "website" field is a honeypot: people never see
 # it, bots fill it in, and the backend drops anything that arrives with it.
+# "version", "macos" and "edition" say which Tabbi a bug report is about when
+# the app opened the page (FeedbackLink in TabbiKitCore); left empty, the
+# backend stores none.
+SUGGEST_APP_FACTS = ['version', 'macos', 'edition']
 SUGGEST_CATEGORIES = [
     ('tab', 'A new tab'),
     ('integration', 'An integration'),
@@ -309,6 +313,7 @@ SUGGEST = f'''
           <label for="website">Leave this empty</label>
           <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
         </div>
+''' + '\n'.join(f'        <input type="hidden" name="{name}" value="">' for name in SUGGEST_APP_FACTS) + '''
         <button class="btn" type="submit">Send suggestion</button>
       </form>
 '''
@@ -556,6 +561,7 @@ def build():
         print('wrote', slug)
 
     shutil.copy(HERE / '_headers', OUT / '_headers')
+    write_function_facts()
     shutil.copy(HERE / 'favicon.ico', OUT / 'favicon.ico')
     write_press_kit()
     (OUT / 'robots.txt').write_text('User-agent: *\nAllow: /\n\nSitemap: https://tabbinotch.com/sitemap.xml\n')
@@ -603,6 +609,18 @@ def site_headers():
 
 
 SITE_HEADERS = site_headers()
+
+
+def write_function_facts():
+    """Writes _generated.mjs for the Pages Function that serves /suggest
+    (functions/suggest.js): the `/*` headers, which Cloudflare Pages does not
+    apply to a Function's response, and the form's hidden app facts, so the
+    page and the Function cannot drift apart."""
+    (HERE / '_generated.mjs').write_text(
+        '// Written by build.py from _headers and SUGGEST_APP_FACTS. Do not edit.\n'
+        f'export const SITE_HEADERS = {json.dumps(SITE_HEADERS)};\n'
+        f'export const SUGGEST_APP_FACTS = {json.dumps(SUGGEST_APP_FACTS)};\n'
+    )
 
 
 class PagesHandler(http.server.SimpleHTTPRequestHandler):

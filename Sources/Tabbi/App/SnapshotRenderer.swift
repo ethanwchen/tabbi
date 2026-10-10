@@ -335,6 +335,11 @@ enum SnapshotRenderer {
         }
         await renderKitImportReview(services, to: outputDirectory)
         await renderConnectionSheets(to: outputDirectory)
+        if let png = await CrashReportPrompt.snapshot(of: CrashReportPrompt.sample) {
+            let url = outputDirectory.appendingPathComponent("crash-report-prompt.png")
+            try? png.write(to: url)
+            print(url.path)
+        }
     }
 
     /// How the notch shots are drawn: pixels per point, and whether they sit

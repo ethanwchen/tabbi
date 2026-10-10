@@ -21,6 +21,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             // Before any store opens a file: adopts NotchDeck's data once.
             LegacyDataMigration.tabbi(storage: EditionStorage(edition: edition)).runIfNeeded()
         }
+        #if !APPSTORE
+        // The App Store build relies on Apple's crash reports instead.
+        if RunMode.current == .live {
+            CrashHandler.install(in: EditionStorage(edition: edition), environment: Feedback.environment)
+        }
+        #endif
         let settings = SettingsStore(catalog: ModuleList.catalog(for: edition), defaultKitID: edition.defaultKitID, kitStore: .standard(for: edition))
         #if !APPSTORE
         guard InstallHygiene.settle(settings: settings) == .proceed else {
@@ -42,6 +48,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             services.onboarding.start()
         }
         services.accountSync.start()
+        #if !APPSTORE
+        if RunMode.current == .live {
+            // Asked once the notch is up, so the prompt never holds up launch.
+            let report = CrashHandler.takePendingReport(in: EditionStorage(edition: edition))
+            // Watched only from here on, so a hang never overwrites that report.
+            HangWatchdog.shared.start()
+            DispatchQueue.main.async { CrashReportFlow.live.run(with: report) }
+        }
+        #endif
     }
 
     /// With no Dock icon or menu bar item, opening the app again (from Finder,

@@ -22,6 +22,7 @@ This page says what differs, how to build and upload it, and what to enter in Ap
 | Do Not Disturb during focus | through Shortcuts | hidden (it runs `/usr/bin/shortcuts`) |
 | Settings > Connections | all rows | no command line tools in the AI picker, no Claude or Do Not Disturb rows |
 | Party | yes | left out by the edition for now (one switch turns it on) |
+| Crash reports | asks after a crash, then sends to `POST /v1/crashes` with consent | none of its own (Apple's crash reports, which users share through macOS, already cover it) |
 | Sign in with Apple and sync ([sync.md](sync.md)) | yes, with the Developer ID profile | yes, with the App Store profile (not in `--adhoc` builds) |
 
 The compile-time switch sits in these places: `Package.swift` (the define and the Sparkle dependency), `ModuleList.swift` (AI Usage), `AIService.swift` (the sandboxed provider list), `AppDelegate.swift` (updater and install hygiene), `Edition+Current.swift` (the default edition) and a few spots in Settings and the snapshot renderer.
@@ -114,7 +115,7 @@ What the label does not need to list:
 - Album artwork is loaded from the music service's image host (`i.scdn.co`) without any identifier of the user.
 - AnkiConnect is reached on `localhost` only.
 - Questions in Ask AI and the text Plan my day and Wrap up send go only to the AI provider the user picks, with the user's own key (Anthropic, OpenAI or Google) or to Ollama on the Mac. Tabbi has no server in between and does not collect them; the provider's own privacy policy applies.
-- There is no analytics, advertising or crash reporting.
+- There is no analytics or advertising, and no crash reporting of its own: `AppDelegate` installs no `CrashHandler` and shows no crash prompt under `APPSTORE`, so a crash reaches the developer only through Apple's crash reports, which the user agreed to share in macOS.
 
 When Party comes back, add its display name and study presence (Name or Other User Content, and Product Interaction) to the label.
 

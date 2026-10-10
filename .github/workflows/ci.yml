@@ -97,6 +97,13 @@ jobs:
       - name: Build the site
         run: python3 site/build.py
 
+      # The Pages Function that fills the Suggest form's app facts.
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - name: Test the Suggest function
+        run: node --test 'site/test/*.test.mjs'
+
   cask:
     name: Homebrew cask (style, audit)
     runs-on: macos-26
