@@ -133,7 +133,10 @@ The live store in these tests is never shown and never adds, so it neither reads
 `PetCoachControllerSettingsTests` covers what Settings › Pet Coach saves through `PetCoachController`: the nudges switch and the distracting apps (a suggestion toggled on and off, a focus app made distracting, a picked `.app` added once by its lowercased bundle id, a folder that is not an app ignored), each saved next to the pet and read back on the next launch without resetting snooze or cooldowns.
 A fresh install writes nothing, an unreadable save runs on defaults and is never overwritten, demo mode shows sample apps and never reads or writes the save, and celebrations play only while the coach runs (and never in demo mode).
 Sampling idle time and the frontmost app needs the real Mac and is still checked by hand.
-`FocusController`, `StudyReminderScheduler`, `SpotifyController` and `SystemMonitor` are still below 40%.
+`StudyReminderSchedulerTests` drives `StudyReminderScheduler` (which now takes an optional notification center and `clock`) through a fake center at a fixed 10:00.
+It covers a fresh install (off, nothing posted, no permission asked, nothing written), turning it on (permission asked once only while undecided, one reminder at 7 pm in the pet's voice, saved), denied notifications showing the blocked row until the reminder is turned off, a new time replacing the pending reminder, the day's goal moving it to tomorrow, a relaunch after it fired (counted as delivered, so a later time the same evening still waits for tomorrow), `stop()` keeping the pending reminder, an unreadable save never overwritten, and demo and snapshot runs touching neither notifications nor the save.
+The real `UNUserNotificationCenter` only exists inside an `.app` bundle, so delivery itself is still checked by hand.
+`FocusController`, `SpotifyController` and `SystemMonitor` are still below 40%.
 
 ### 9. Backend
 
