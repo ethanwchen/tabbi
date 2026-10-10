@@ -98,6 +98,9 @@ Status: `URLSessionPartyTransportTests` now drives `URLSessionPartyTransport` th
 `Tabbi/Modules/ClaudeAsk/ClaudeAskSession.swift` is at 56%.
 `retry()`, `newChat()`, `delete(_:)`, `deleteAllChats()`, `removePending(_:)` and the screenshot attachment are untested.
 Plan: tests through a fake `AIProvider` covering retry after an error, deleting the open chat while it streams, and history reload.
+Status: `ClaudeAskSessionHistoryTests` drives the session against a scripted hosted API that can hold an answer open.
+It covers retry after a server error (the failed exchange is replaced and saved once, and a fresh session reads it back), retry with nothing to retry, deleting the open chat while it streams (the late answer never writes into the new chat and the chat is not saved again), deleting another chat, Delete All leaving unrelated files alone, New chat cancelling an answer, opening another chat saving the partial answer as stopped, and screenshots (kept for Retry and sent again, deleted once answered, on remove and on New chat).
+Taking a real screenshot (`ClaudeAskScreenCapture.captureDisplay`) still needs Screen Recording and stays untested.
 
 ### 7. Crash handler installation (app)
 
