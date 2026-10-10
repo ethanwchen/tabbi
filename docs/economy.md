@@ -112,3 +112,22 @@ That route answers for any friends token, so a signed-out Party identity gets it
 The app asks it once per launch, wake and identity: Party after it connects (signed in or not), and sync after its first round on a signed-in Mac, so a grant arrives even with Party off.
 New items celebrate in the Closet like a milestone unlock.
 The server's list of grantable ids is `backend/shared/limited-items.json`, which `PetLimitedTests` holds to `PetLimitedEdition`.
+
+## Streak freezes
+
+A study day is a local day with at least 5 focused minutes.
+The streak counts study days in a row, and a missed day can be protected by a freeze (`StreakFreezeRules` and `StudyStreak` in `TabbiKitCore/Streaks/StudyStreak.swift`, tested by `StudyStreakTests`).
+
+| Rule | Value |
+| --- | --- |
+| Free freezes | 1 per calendar week, applied automatically |
+| Extra freeze price | 105 points (one typical study day) |
+| Extra freezes held at once | at most 2 |
+
+- A missed day while a streak runs uses that week's free freeze first, then the oldest extra freeze, and otherwise ends the streak.
+- A frozen day keeps the streak going but does not add to its length.
+- Today is never frozen: it still has time for study.
+- An extra freeze protects only days after the day it was bought, so it cannot repair a streak that already ended.
+- Weeks start on the first weekday of the user's locale, and days follow the Mac's time zone.
+
+So a regular student who skips one day a week never loses a streak, and a second day off in the same week costs one study day's points.
