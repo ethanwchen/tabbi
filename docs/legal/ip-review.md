@@ -121,7 +121,7 @@ Claims on the site, README and listing that need substantiation, checked against
 
 | Claim | Where | Substantiated? |
 | --- | --- | --- |
-| "Free" and "free forever" | Site, README, listing | True today (MIT, no paid tier). "Free forever" is a promise about the future; keep it only if the maintainer means it, or use "free and open source". |
+| "Free" and "free forever" | Site, README, listing | True today (MIT, no paid tier). "Free forever" was a promise about the future. **Fixed:** the site's sticker now says "Free to download", and nothing promises Tabbi will always be free. |
 | "No ads, no tracking, no analytics, no telemetry" | Site, README, FAQ | True: no SDKs, no analytics; the server keeps only aggregate counts; crash reports are opt-in. |
 | "No account needed" | Site, README, listing | True; Sign in with Apple is optional. |
 | "It only connects where a tab needs to: album artwork, AnkiConnect and the friends server" | README Privacy | Incomplete: it leaves out update checks (Sparkle, direct download), opt-in crash reports, the Suggest form, sync and the AI provider the user picks (named two lines later). **Fixed:** the README privacy section was corrected in the final review. |

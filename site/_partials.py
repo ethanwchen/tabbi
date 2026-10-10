@@ -59,22 +59,26 @@ def page(slug, title, description, body, hero=None, wide=False, indexable=True, 
     def link(href, label):
         here = '/' + slug.removesuffix('.html')
         current = ' aria-current="page"' if href == here else ''
-        cls = ' class="nav-cta"' if href == DOWNLOAD else ''
-        return f'<a href="{href}"{current}{cls}>{label}</a>'
+        return f'<a href="{href}"{current}>{label}</a>'
 
     nav = '\n        '.join(link(href, label) for href, label in NAV)
     hero_html = ''
     if hero:
+        words = f'''<h1>{hero["title"]}</h1>
+        <p class="lede">{hero["subtitle"]}</p>'''
+        # A hero with an icon sets the two side by side as one lockup.
+        if hero.get('icon'):
+            words = f'''<div class="hero-lockup">
+        {hero["icon"]}
+        <div class="hero-words">
+        {words}
+        </div>
+      </div>'''
         hero_html = f'''
-  <section class="hero{' hero-home' if hero.get('home') else ''}">
+  <section class="hero{' hero-home' if hero.get('icon') else ''}">
     <div class="wrap">
-      <div class="hero-copy">
-        {hero.get("eyebrow", "")}
-        <h1>{hero["title"]}</h1>
-        <p class="lede">{hero["subtitle"]}</p>
-        {hero.get("cta", "")}
-      </div>
-      {hero.get("art", "")}
+      {words}
+      {hero.get("cta", "")}
     </div>
   </section>
 '''
@@ -100,12 +104,12 @@ def page(slug, title, description, body, hero=None, wide=False, indexable=True, 
   <meta property="og:image" content="{ORIGIN}/img/social-preview.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="The Tabbi icon and the line A little cat for your notch, beside a laptop with the Timer tab open in its notch">
+  <meta property="og:image:alt" content="The Tabbi icon and the line Focus with a cat in your notch, beside a laptop with the Timer tab open in its notch">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{title_attr}">
   <meta name="twitter:description" content="{desc_attr}">
   <meta name="twitter:image" content="{ORIGIN}/img/social-preview.png">
-  <meta name="twitter:image:alt" content="The Tabbi icon and the line A little cat for your notch, beside a laptop with the Timer tab open in its notch">
+  <meta name="twitter:image:alt" content="The Tabbi icon and the line Focus with a cat in your notch, beside a laptop with the Timer tab open in its notch">
   <link rel="icon" href="/favicon.ico" sizes="48x48">
   <link rel="icon" href="/img/favicon-64.png" type="image/png" sizes="64x64">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
