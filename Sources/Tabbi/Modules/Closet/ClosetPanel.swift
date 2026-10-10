@@ -84,6 +84,7 @@ enum ClosetSection: String, CaseIterable {
 
     var title: String {
         switch self {
+        case .activity: String(localized: "Activity", bundle: .tabbi)
         case .wardrobe: String(localized: "Wardrobe", bundle: .tabbi)
         case .limited: String(localized: "Limited", bundle: .tabbi)
         case .streak: String(localized: "Streak", bundle: .tabbi)
