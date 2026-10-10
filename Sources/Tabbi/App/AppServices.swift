@@ -71,6 +71,11 @@ final class AppServices {
         recaps = RecapMoment(store: ModuleContext(id: "recap", edition: edition, settings: settings,
                                                   providers: providers, shared: shared, runMode: runMode).weeklyRecaps,
                              isBlocked: { [onboarding] in onboarding.flow != nil })
+        settings.$settings
+            .map(\.weeklyRecapEnabled)
+            .removeDuplicates()
+            .sink { [recaps] in recaps.setEnabled($0) }
+            .store(in: &cancellables)
         // A snapshot run renders the card itself and never waits for Sunday.
         if !runMode.isSnapshot { recaps.start() }
         // `$settings` emits before the new value is stored, so read the

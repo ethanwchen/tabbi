@@ -68,6 +68,26 @@ final class RecapMomentTests: XCTestCase {
         XCTAssertEqual(states(), [false, true, false, true], "Onboarding, then the recap")
     }
 
+    func testTheSettingsSwitchTurnsTheRecapOff() throws {
+        let services = demoServices()
+        let inputs = ModuleViews.notchInputs(services: services)
+        let states = takeoverStates(inputs)
+        services.settings.settings.weeklyRecapEnabled = false
+
+        inputs.previewVisible(false)
+        XCTAssertNil(services.recaps.shown, "Off shows no card")
+        XCTAssertNotNil(services.recaps.store.unseen, "Nor marks it seen")
+
+        services.settings.settings.weeklyRecapEnabled = true
+        inputs.previewVisible(true)
+        inputs.previewVisible(false)
+        XCTAssertNotNil(services.recaps.shown, "Back on, the next open shows it")
+
+        services.settings.settings.weeklyRecapEnabled = false
+        XCTAssertNil(services.recaps.shown, "Turning it off hides the card on show")
+        XCTAssertEqual(states(), [false, true, false])
+    }
+
     func testNoRecapLeavesTheTabsAlone() {
         let folder = FileManager.default.temporaryDirectory
             .appendingPathComponent("RecapMomentTests-\(UUID().uuidString)", isDirectory: true)

@@ -20,6 +20,9 @@ final class RecapMoment: ObservableObject {
 
     let store: RecapStore
     private let isBlocked: () -> Bool
+    /// The user's Weekly recap switch in Settings.
+    private(set) var isEnabled = true
+    private var isStarted = false
 
     /// - Parameter isBlocked: true while something else owns the takeover
     ///   slot (onboarding), so the recap waits for a later open.
@@ -33,7 +36,7 @@ final class RecapMoment: ObservableObject {
     /// recap. It counts as seen once shown, so it never comes back after a
     /// relaunch, but it stays until Done even if the notch closes first.
     func notchOpened() {
-        guard shown == nil, !isBlocked() else { return }
+        guard isEnabled, shown == nil, !isBlocked() else { return }
         store.refresh()
         guard let recap = store.unseen else { return }
         shown = Shown(recap: recap, cheer: store.cheer(for: recap))
@@ -43,9 +46,25 @@ final class RecapMoment: ObservableObject {
     /// Done: back to the tabs.
     func dismiss() { shown = nil }
 
-    func start() { store.start() }
+    /// Follows the Settings switch. Off hides a card on show and stops the
+    /// Sunday build; back on builds what is ready, which the next open shows.
+    func setEnabled(_ enabled: Bool) {
+        guard enabled != isEnabled else { return }
+        isEnabled = enabled
+        if !enabled { shown = nil }
+        guard isStarted else { return }
+        if enabled { store.start() } else { store.stop() }
+    }
 
-    func stop() { store.stop() }
+    func start() {
+        isStarted = true
+        if isEnabled { store.start() }
+    }
+
+    func stop() {
+        isStarted = false
+        store.stop()
+    }
 }
 
 /// The notch's one takeover slot, shared by first-run onboarding and the
