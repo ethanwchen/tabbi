@@ -62,27 +62,6 @@ public enum AIProviderID: String, Codable, CaseIterable, Hashable, Sendable {
         }
     }
 
-    /// The company that receives what the AI features send, for the
-    /// consent Settings asks before a provider is picked (App Review
-    /// Guideline 5.1.2(i)). Nil for Ollama, whose model runs on this Mac.
-    public var dataRecipient: String? {
-        switch self {
-        case .claudeCLI, .anthropic: "Anthropic"
-        case .codexCLI, .openAI: "OpenAI"
-        case .geminiCLI, .gemini: "Google"
-        case .ollama: nil
-        }
-    }
-
-    /// What leaves the Mac and where it goes once this provider answers,
-    /// in the words of the consent alert. Nil when nothing leaves the Mac.
-    public var dataDisclosure: String? {
-        guard let recipient = dataRecipient else { return nil }
-        return "Ask, Plan my day and Refine send what you type or attach, and the tasks, events and schedule "
-            + "they plan with, to \(recipient), which handles it under its own privacy policy. "
-            + "Nothing is sent until you use one of them."
-    }
-
     /// A one-line note for the provider picker on cost and setup.
     public var setupSummary: String {
         switch self {

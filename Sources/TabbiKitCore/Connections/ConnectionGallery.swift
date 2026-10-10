@@ -50,7 +50,8 @@ extension ConnectionKind {
             let states: [ClaudeConnectionState] = [.checking, .notInstalled, .signedOut, .ready]
             return states.map(\.diagnosis)
         case .party:
-            let states: [PartyConnectionState] = [.notSetUp, .connecting, .offline, .connected(friendCode: "PUFF-42")]
+            let states: [PartyConnectionState] = [.notSetUp, .ageCheck(tooYoungUntil: nil), .ageCheck(tooYoungUntil: .distantFuture),
+                                                 .connecting, .offline, .connected(friendCode: "PUFF-42")]
             return states.map(\.diagnosis)
         }
     }

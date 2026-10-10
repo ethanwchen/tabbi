@@ -107,6 +107,12 @@ final class PartyStore: ObservableObject {
     /// in a demo) doesn't clear the refusal it shows.
     private var pinsName = false
     private var cancellables: Set<AnyCancellable> = []
+    /// Whether the user is signed in with Apple, so an under-13 answer
+    /// leaves the account's data to `SyncStore` (`PartyModule` sets it).
+    var isSignedIn: () -> Bool = { false }
+    /// Called after the user answers the age question here, so the Apple
+    /// account follows the answer (`SyncStore.refreshAgeStatus`).
+    var ageAnswered: () -> Void = {}
 
     private static let trackerKey = "party.presence"
 
@@ -124,9 +130,9 @@ final class PartyStore: ObservableObject {
         if isDemo {
             repository = nil
             credentials = InMemoryPartyCredentialStore()
-            settings = PartySettings(name: "Sam")
             // `TABBI_PARTY_PREVIEW=lobby` and friends pick another screen for snapshots.
             let scenario = environment["TABBI_PARTY_PREVIEW"].flatMap(PartyDemoScenario.init) ?? .hosting
+            settings = PartySettings(name: "Sam", ageEligibleFrom: PartyState.demoAgeEligibleFrom(scenario, now: Date()))
             state = .demo(scenario, now: Date())
             tracker = PartyPresenceTracker()
             // Stays up (no timer) so the snapshot can catch it.
@@ -144,8 +150,10 @@ final class PartyStore: ObservableObject {
             repository = nil
             snapshotServer = local.server
             pinsName = environment["TABBI_PARTY_NAME"] != nil
+            // A local render of a developer's own worker, so no age to ask.
             let settings = PartySettings(serverText: local.server.absoluteString,
-                                         name: environment["TABBI_PARTY_NAME"] ?? "Sam")
+                                         name: environment["TABBI_PARTY_NAME"] ?? "Sam",
+                                         ageEligibleFrom: .distantPast)
             self.settings = settings
             credentials = InMemoryPartyCredentialStore(local.credentials.map { [local.server: $0] } ?? [:])
             state = PartyState(settings: settings)
@@ -282,8 +290,60 @@ final class PartyStore: ObservableObject {
                 }
             }
             if case .unreachable = state.connection { retry() }
+            reopenIfOldEnough()
         }
         scheduleRefresh()
+    }
+
+    // MARK: Age check
+
+    /// The age check's answer (`PartyAgeCheck`). Only the day the user is
+    /// surely 13 is saved, on this Mac. Old enough, Party connects; under
+    /// 13, it stays off until that day, and a Party identity this Mac made
+    /// before the check existed is deleted from the server (signed in, it
+    /// belongs to the Apple account, which `SyncStore` then deletes).
+    func answerAge(birthMonth month: Int, year: Int) {
+        guard let eligibleFrom = PartyAgeCheck.eligibleFrom(birthMonth: month, year: year) else { return }
+        adoptAgeAnswer(eligibleFrom: eligibleFrom)
+        ageAnswered()
+    }
+
+    /// Takes an answer already given, also the one asked before Sign in
+    /// with Apple (`SyncStore.ageAnswered`), as `answerAge` does, so the
+    /// question is asked once.
+    func adoptAgeAnswer(eligibleFrom: Date) {
+        guard settings.ageStatus(at: Date()) == .unanswered else { return }
+        var new = settings
+        new.ageEligibleFrom = eligibleFrom
+        if isDemo {
+            settings = new
+            state = new.ageStatus(at: Date()) == .passed ? .demo(.hosting, now: Date()) : PartyState(settings: new)
+            return
+        }
+        let tooYoung = new.ageStatus(at: Date()) != .passed
+        update(new)
+        if tooYoung, !isSignedIn() { deleteIdentityMadeBeforeAgeCheck() }
+    }
+
+    /// Someone told they were too young turned 13 while Tabbi kept running.
+    private func reopenIfOldEnough() {
+        guard !isDemo, case .ageCheck(let until?) = state.connection, until <= Date() else { return }
+        state.reset(settings: settings)
+        rebuildAccount()
+    }
+
+    /// Deletes the anonymous Party identity stored for this server, if
+    /// any, best effort: the server keeps nothing about an under-13 user.
+    private func deleteIdentityMadeBeforeAgeCheck() {
+        guard let account = storedAccount() else { return }
+        Task { try? await account.deleteAccount() }
+    }
+
+    /// The identity stored for this server, even while the age check
+    /// keeps Party from connecting, so it can still be deleted. The
+    /// Keychain is read inside the account, off the main thread.
+    private func storedAccount() -> PartyAccount? {
+        settings.serverURL.map { PartyAccount(server: $0, transport: transport, credentials: credentials) }
     }
 
     // MARK: Settings
@@ -299,7 +359,8 @@ final class PartyStore: ObservableObject {
         if !isSnapshot { repository?.save(new) }
         if new.name != old.name { saveName?(new.name) }
         guard !isDemo else { return }
-        if new.serverURL != old.serverURL || new.serverIssue != old.serverIssue {
+        if new.serverURL != old.serverURL || new.serverIssue != old.serverIssue
+            || new.ageEligibleFrom != old.ageEligibleFrom {
             state.reset(settings: new)
             serverRefusedNames = []
             rebuildAccount()
@@ -346,7 +407,7 @@ final class PartyStore: ObservableObject {
             deletionNotice = "This is a demo. Nothing was deleted."
             return
         }
-        guard let account else { return }
+        guard let account = account ?? storedAccount() else { return }
         // Nothing may use the old identity meanwhile: a heartbeat after the
         // delete would register a new user before the user sees it went.
         self.account = nil
@@ -378,6 +439,10 @@ final class PartyStore: ObservableObject {
     /// Tries the server again now, after `unreachable` or a stale refresh.
     func retry() {
         guard !isDemo else { return }
+        if state.awaitsAgeCheck {
+            reopenIfOldEnough()
+            return
+        }
         connectBackoff.reset()
         heartbeats.reset()
         if state.connection == .connected {
@@ -757,7 +822,8 @@ final class PartyStore: ObservableObject {
         refreshTask?.cancel()
         heartbeats.reset()
         connectBackoff.reset()
-        guard let server = settings.serverURL else {
+        // Nothing reaches the server before the age check says old enough.
+        guard let server = settings.serverURL, settings.ageStatus(at: Date()) == .passed else {
             account = nil
             return
         }

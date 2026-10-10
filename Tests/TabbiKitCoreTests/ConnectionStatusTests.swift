@@ -26,7 +26,8 @@ final class ConnectionStatusTests: XCTestCase {
         let focus = [nil, [], ["Tabbi Focus On"], ["Tabbi Focus On", "Tabbi Focus Off"]].map {
             FocusShortcutsState(onName: "Tabbi Focus On", offName: "Tabbi Focus Off", installed: $0.map(Set.init))
         }
-        let party: [PartyConnectionState] = [.notSetUp, .connecting, .offline, .connected(friendCode: "PUFF-42")]
+        let party: [PartyConnectionState] = [.notSetUp, .ageCheck(tooYoungUntil: nil), .ageCheck(tooYoungUntil: .distantFuture),
+                                             .connecting, .offline, .connected(friendCode: "PUFF-42")]
         return anki.map(\.connectionStatus) + calendar.map(\.connectionStatus) + claude.map(\.connectionStatus)
             + music.map(\.connectionStatus) + NotificationAccess.allCases.map(\.connectionStatus)
             + focus.map(\.connectionStatus) + party.map(\.connectionStatus)

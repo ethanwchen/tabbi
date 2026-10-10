@@ -19,6 +19,7 @@ final class PartyModule: NotchModule {
     let store: PartyStore
     private var completionSubscription: AnyCancellable?
     private var identitySubscription: AnyCancellable?
+    private var ageSubscription: AnyCancellable?
     private var grantsSubscription: AnyCancellable?
     /// The Apple account, which owns the Party data once signed in.
     private let account: SyncStore
@@ -31,6 +32,8 @@ final class PartyModule: NotchModule {
         store = PartyStore(runMode: context.runMode)
         account = context.accountSync
         settings = context.settings
+        store.isSignedIn = { [weak account] in account?.isSignedIn ?? false }
+        store.ageAnswered = { [weak account] in account?.refreshAgeStatus() }
         let notifications = PartyNotifications.make(runMode: context.runMode)
         self.notifications = notifications
         store.followFocus(from: context.providers.$snapshot.map(\.focus).eraseToAnyPublisher())
@@ -41,6 +44,9 @@ final class PartyModule: NotchModule {
         shareConnection(pet: context.studyPet)
         identitySubscription = context.accountSync.identityChanged.sink { [weak store] in
             MainActor.assumeIsolated { store?.identityDidChange() }
+        }
+        ageSubscription = context.accountSync.ageAnswered.sink { [weak store] eligibleFrom in
+            MainActor.assumeIsolated { store?.adoptAgeAnswer(eligibleFrom: eligibleFrom) }
         }
         let pet = context.studyPet, log = context.activityLog, celebrations = context.celebrations
         grantsSubscription = store.grants.sink { [weak pet] items in
@@ -93,12 +99,13 @@ final class PartyModule: NotchModule {
                 .map { $0.cleanedName ?? $1.profile?.name ?? "" }
                 .eraseToAnyPublisher(),
             species: pet.profiles.map(\.species).eraseToAnyPublisher(),
-            start: { [weak store, weak pet] name, species in
+            start: { [weak store, weak pet] name, species, birth in
                 pet?.setSpecies(species)
                 guard let store else { return }
                 var settings = store.settings
                 settings.name = name
                 store.update(settings)
+                if let birth { store.answerAge(birthMonth: birth.month, year: birth.year) }
             },
             retry: { [weak store] in store?.retry() }
         )

@@ -5,6 +5,9 @@ import Foundation
 public enum PartyConnectionState: Hashable, Sendable {
     /// No name chosen yet.
     case notSetUp
+    /// Waiting for the age check, which the Party tab asks
+    /// (`PartyAgeCheck`); `tooYoungUntil` is set when it said under 13.
+    case ageCheck(tooYoungUntil: Date?)
     case connecting
     /// The server couldn't be reached.
     case offline
@@ -13,8 +16,10 @@ public enum PartyConnectionState: Hashable, Sendable {
     /// The state for the Party tab's connection and whether the user has
     /// picked a name.
     public static func resolve(_ connection: PartyState.Connection, friendCode: String?, hasChosenName: Bool) -> PartyConnectionState {
+        if case .ageCheck(let until) = connection { return .ageCheck(tooYoungUntil: until) }
         guard hasChosenName else { return .notSetUp }
         switch connection {
+        case .ageCheck(let until): return .ageCheck(tooYoungUntil: until)
         case .connecting: return .connecting
         case .invalidServer, .unreachable: return .offline
         case .connected: return friendCode.map { .connected(friendCode: $0) } ?? .connecting
@@ -27,6 +32,16 @@ public enum PartyConnectionState: Hashable, Sendable {
             return ConnectionStatus(light: .notSetUp, headline: "Party isn't set up",
                                     detail: "Pick a name and a pet to start. No account needed.",
                                     action: .setUp)
+        case .ageCheck(nil):
+            return ConnectionStatus(light: .notSetUp, headline: "Party isn't set up",
+                                    detail: "Pick a name and a pet, and say when you were born.",
+                                    action: .setUp)
+        case .ageCheck:
+            // Nothing to fix: Party opens once the user is 13, which
+            // Check Again (or opening the Party tab) notices.
+            return ConnectionStatus(light: .notSetUp, headline: "Party isn't available",
+                                    detail: "It's for people \(PartyAgeCheck.minimumAge) and older.",
+                                    action: .checkAgain)
         case .connecting:
             return ConnectionStatus(light: .checking, headline: "Connecting",
                                     detail: "This takes a second.")
@@ -53,6 +68,10 @@ public enum PartySetup {
     public static let petLabel = "Your pet"
     public static let petNote = "You can dress your pet up later in the Closet tab."
     public static let start = "Start Party"
+    public static let birthLabel = "When were you born?"
+    public static let birthNote = "Asked once. Your answer stays on this Mac."
+    /// The agreement under the age check, as Markdown with both links.
+    public static let agreement = "By joining you agree to the [Terms of Use](\(SupportContact.termsURL.absoluteString)) and the [Privacy Policy](\(SupportContact.privacyURL.absoluteString))."
     /// The header once Party is ready.
     public static let readyTitle = "You're in Party"
     public static let readyIntro = "Send friends your code so they can add you. They see your name, pet and study timer."

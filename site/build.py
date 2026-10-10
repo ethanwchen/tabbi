@@ -263,7 +263,8 @@ SUPPORT = f'''
           <p>In the same place you can turn on <strong>Open on hover</strong>, hide the notch in fullscreen apps, and choose which display it appears on.</p>""", 'resize')}
 
 {faq('How do friend codes work in Party?', """          <p>Party is an optional tab: add it from <strong>Settings &gt; Tabs &gt; Add more</strong>.
-            When you turn it on, Tabbi gives you an 8-character <strong>friend code</strong>. Copy it from the Party tab and send it to a friend. Once they add it, you see each other.
+            Party is for people 13 and older: when you turn it on, it first asks the month and year you were born, which stay on your Mac.
+            Then Tabbi gives you an 8-character <strong>friend code</strong>. Copy it from the Party tab and send it to a friend. Once they add it, you see each other.
             Friendship is always mutual, and nobody can find you without your code: there is no directory or search.</p>
           <p>To study together, one of you starts a party and shares its 6-character party code. Anyone with that code can join while there is room, so share it only with people you want to study with.</p>
           <p>Want a break from being seen? Turn on <strong>Go invisible</strong> in the Party options and friends see you as offline.</p>""", 'party')}
@@ -275,24 +276,28 @@ SUPPORT = f'''
 {faq('Do I need an account?', """          <p>No. Everything in Tabbi works without one.
             To sync your pet across Macs, choose <strong>Sign in with Apple</strong> in <strong>Settings &gt; General</strong> on each of them.
             Your pet, points, unlocked items and streaks then sync, and your Party friend code and friends follow you.</p>
-          <p>Tabbi asks Apple only for your name, which stays on your Mac. It never gets your email.
+          <p>Accounts are for people 13 and older, and the first Sign In asks the month and year you were born (the same question as Party, asked once and kept on your Mac).
+            Tabbi asks Apple only for your name, never your email, and keeps the name on your Mac.
+            In the direct download, Apple's sign-in page passes the name through our server, which does not store it.
             Your calendar, tasks, activity history, AI chats and settings are never synced.
             Signing in on a Mac that already has progress adds it to your account, so nothing is overwritten.
             <strong>Sign Out</strong> stops syncing on that Mac and keeps your pet there.
             The <a href="/privacy#account">privacy policy</a> lists exactly what the account stores.</p>""", 'account')}
 
-{faq('How do I delete my account or Party data?', f"""          <p>Party keeps only a nickname, your pet's look, your study status and minutes, your friend list and your party. It never has your email or real name. See the <a href="/privacy#friends">privacy policy</a> for the full list and <a href="/privacy#deleting">Deleting your data</a> for every option.</p>
+{faq('How do I delete my account or Party data?', f"""          <p>Party keeps only a nickname, your pet's look and level, your study status, minutes and streak, your friend list, your party, and any blocks and reports. It never has your email or real name. See the <a href="/privacy#friends">privacy policy</a> for the full list and <a href="/privacy#deleting">Deleting your data</a> for every option.</p>
           <ul>
-            <li><strong>Leave a party</strong> from the Party tab. A party is deleted when its last member leaves, or after 12 hours without activity.</li>
+            <li><strong>Leave a party</strong> from the Party tab. A party is deleted when its last member leaves, or within about an hour once it has had 12 hours without activity.</li>
             <li><strong>Remove a friend</strong> from their card in the Party tab. That deletes the friendship on both sides.</li>
             <li><strong>Delete your Party data</strong>: without an account, open <strong>Settings &gt; Tabs</strong>, click <strong>Options</strong> next to Party, and choose <strong>Delete my Party data</strong>. Your profile, status, study minutes, friend list and party are erased from the server at once, and your pet stays on your Mac.</li>
             <li><strong>Delete your account</strong>: when signed in with Apple, open <strong>Settings &gt; General</strong> and choose <strong>Delete Account</strong>. That erases your Party data, your synced pet and progress, and your Apple link from the server, and revokes Tabbi's Sign in with Apple access. Your pet stays on the Mac you deleted from.</li>
-            <li>Cannot open the app? Email <a href="mailto:{SUPPORT_EMAIL}">{SUPPORT_EMAIL}</a> with your friend code. To make sure the request is yours, we may ask you to change your Party nickname to a word we send you. We then delete the same data and confirm by email.</li>
+            <li>Cannot open the app? Email <a href="mailto:{SUPPORT_EMAIL}">{SUPPORT_EMAIL}</a> with your friend code. To make sure the request is yours, we may ask you to change your Party nickname to a word we send you. We then delete the same data within 30 days, usually much sooner, and confirm by email.</li>
           </ul>
-          <p>Daily study minutes are deleted automatically after 28 days either way.</p>""", 'delete-party')}
+          <p>Daily study minutes are deleted automatically after 28 days either way.
+            Backup copies of deleted data are gone within 30 days.</p>""", 'delete-party')}
 
 {faq('How do I use the AI features?', """          <p>Ask AI, Plan my day, the Wrap up day review and the Schedule's Refine need an AI. Everything else works without one.
-            Tabbi sends nothing until you pick a provider in <strong>Settings &gt; Connections &gt; AI</strong>.</p>
+            Tabbi sends nothing until you pick a provider in <strong>Settings &gt; Connections &gt; AI</strong>.
+            The first time you pick one that runs outside your Mac, Tabbi says which company receives your data and what each feature sends, and sends nothing unless you choose <strong>Allow</strong>.</p>
           <ul>
             <li><strong>Your own API key</strong> for Claude (Anthropic), OpenAI or Gemini (Google). The key stays in your Mac's Keychain.</li>
             <li><strong>Ollama</strong>, which runs a model on your Mac. Nothing leaves it.</li>

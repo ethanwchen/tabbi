@@ -83,6 +83,10 @@ public enum SupportContact {
     public static let mailURL = URL(string: "mailto:\(email)")!
     /// The line both places show.
     public static let reportLine = "Report a problem: \(email)"
+    /// The Terms of Use and Privacy Policy on the website, which Party's
+    /// age check and Settings > About link to.
+    public static let termsURL = URL(string: "https://tabbinotch.com/terms")!
+    public static let privacyURL = URL(string: "https://tabbinotch.com/privacy")!
 }
 
 /// Which of my names the friends server refused (`name_not_allowed`,

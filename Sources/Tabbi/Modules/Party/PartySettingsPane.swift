@@ -239,7 +239,7 @@ struct PartySettingsPane: View {
     private var canReconnect: Bool {
         guard !store.isDemo else { return false }
         switch store.state.connection {
-        case .invalidServer, .connecting: return false
+        case .invalidServer, .ageCheck, .connecting: return false
         case .unreachable, .connected: return true
         }
     }
@@ -272,6 +272,11 @@ struct PartySettingsPane: View {
         switch store.state.connection {
         case .invalidServer(let message):
             return ("Can't use this server", message, "exclamationmark.triangle.fill", .orange)
+        case .ageCheck(nil):
+            return ("Not joined yet", "Open the Party tab to join.", "person.crop.circle.badge.questionmark", .secondary)
+        case .ageCheck(let until?):
+            return ("Not available", "Party is for people \(PartyAgeCheck.minimumAge) and older. It opens in \(PartyAgeCheck.opensText(until)).",
+                    "hand.raised.fill", .secondary)
         case .connecting:
             return ("Connecting…", host, "", .secondary)
         case .unreachable(.banned):

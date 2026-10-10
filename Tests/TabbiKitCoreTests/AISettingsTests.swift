@@ -4,11 +4,46 @@ import TabbiKitCore
 final class AISettingsTests: XCTestCase {
     func testNothingIsActiveUntilTheUserPicks() {
         XCTAssertNil(AISettings().activeProvider(sandboxed: false))
-        XCTAssertEqual(AISettings(provider: .gemini).activeProvider(sandboxed: true), .gemini)
+        XCTAssertEqual(AISettings(provider: .gemini, consented: [.gemini]).activeProvider(sandboxed: true), .gemini)
+    }
+
+    func testAProviderThatSendsDataOffTheMacWaitsForPermission() {
+        var settings = AISettings(provider: .anthropic)
+        XCTAssertTrue(settings.needsConsent(for: .anthropic))
+        XCTAssertNil(settings.activeProvider(sandboxed: false), "a pick without permission sends nothing")
+        settings.choose(.anthropic)
+        XCTAssertEqual(settings.activeProvider(sandboxed: false), .anthropic)
+        XCTAssertFalse(settings.needsConsent(for: .anthropic))
+        settings.choose(nil)
+        settings.choose(.anthropic)
+        XCTAssertEqual(settings.activeProvider(sandboxed: false), .anthropic, "asked only once per provider")
+        XCTAssertTrue(settings.needsConsent(for: .openAI), "permission is per provider")
+    }
+
+    func testOllamaRunsOnTheMacAndNeedsNoPermission() {
+        let settings = AISettings(provider: .ollama)
+        XCTAssertFalse(settings.needsConsent(for: .ollama))
+        XCTAssertEqual(settings.activeProvider(sandboxed: true), .ollama)
+        var chosen = AISettings()
+        chosen.choose(.ollama)
+        XCTAssertEqual(chosen.consented, [], "nothing to allow")
+    }
+
+    func testTheDisclosureNamesTheReceiverAndWhatIsSent() {
+        for provider in AIProviderID.allCases where provider.sendsDataOffMac {
+            guard let vendor = provider.vendorName else { return XCTFail("\(provider) names no receiver") }
+            XCTAssertTrue(provider.consentTitle.contains(vendor))
+            let message = provider.consentMessage(appName: "Tabbi")
+            for detail in [provider.displayName, vendor, "questions", "screenshot", "calendar event titles",
+                           "study minutes", "terms and privacy policy", "None"] {
+                XCTAssertTrue(message.contains(detail), "\(provider): \(detail)")
+            }
+        }
+        XCTAssertNil(AIProviderID.ollama.vendorName)
     }
 
     func testTheSandboxCannotRunACommandLineTool() {
-        let settings = AISettings(provider: .claudeCLI)
+        let settings = AISettings(provider: .claudeCLI, consented: [.claudeCLI])
         XCTAssertEqual(settings.activeProvider(sandboxed: false), .claudeCLI)
         XCTAssertNil(settings.activeProvider(sandboxed: true))
     }
@@ -84,18 +119,18 @@ final class AIProviderFactoryTests: XCTestCase {
         let keys = InMemoryAIKeyStore()
         let factory = factory(keys: keys)
         XCTAssertEqual(factory.setupState(for: AISettings()), .notChosen)
-        XCTAssertEqual(factory.setupState(for: AISettings(provider: .anthropic)), .needsKey(.anthropic))
+        XCTAssertEqual(factory.setupState(for: AISettings(provider: .anthropic, consented: [.anthropic])), .needsKey(.anthropic))
         keys.setKey("sk-ant", for: .anthropic)
-        XCTAssertEqual(factory.setupState(for: AISettings(provider: .anthropic)), .ready(.anthropic))
+        XCTAssertEqual(factory.setupState(for: AISettings(provider: .anthropic, consented: [.anthropic])), .ready(.anthropic))
         XCTAssertEqual(factory.setupState(for: AISettings(provider: .ollama)), .ready(.ollama), "Ollama needs no key")
-        XCTAssertEqual(factory.setupState(for: AISettings(provider: .codexCLI)), .ready(.codexCLI))
+        XCTAssertEqual(factory.setupState(for: AISettings(provider: .codexCLI, consented: [.codexCLI])), .ready(.codexCLI))
     }
 
     func testTheSandboxedBuildOffersNoCLIAndDoesNotRunOne() {
         let factory = factory(sandboxed: true)
         XCTAssertEqual(factory.availableProviders, [.anthropic, .openAI, .gemini, .ollama])
-        XCTAssertEqual(factory.setupState(for: AISettings(provider: .claudeCLI)), .notChosen)
-        XCTAssertNil(factory.provider(for: AISettings(provider: .claudeCLI)))
+        XCTAssertEqual(factory.setupState(for: AISettings(provider: .claudeCLI, consented: [.claudeCLI])), .notChosen)
+        XCTAssertNil(factory.provider(for: AISettings(provider: .claudeCLI, consented: [.claudeCLI])))
     }
 
     func testNoProviderMeansNothingCanBeSent() {
@@ -104,7 +139,7 @@ final class AIProviderFactoryTests: XCTestCase {
 
     func testAPIProviderSendsTheSavedKeyAndTheUsersModel() async throws {
         let captured = Captured()
-        var settings = AISettings(provider: .anthropic)
+        var settings = AISettings(provider: .anthropic, consented: [.anthropic])
         settings.setModel("claude-haiku-4-5", for: .anthropic)
         let provider = try XCTUnwrap(factory(keys: InMemoryAIKeyStore([.anthropic: "sk-ant"]), captured: captured)
             .provider(for: settings))
@@ -118,7 +153,7 @@ final class AIProviderFactoryTests: XCTestCase {
     }
 
     func testAMissingKeyFailsWithASetupError() async throws {
-        let provider = try XCTUnwrap(factory().provider(for: AISettings(provider: .gemini)))
+        let provider = try XCTUnwrap(factory().provider(for: AISettings(provider: .gemini, consented: [.gemini])))
         do {
             _ = try await provider.answer(.prompt("Hi"))
             XCTFail("expected an error")
@@ -137,7 +172,7 @@ final class AIProviderFactoryTests: XCTestCase {
 
     func testCommandLineProviderRunsTheLocatedToolWithTheModel() async throws {
         let captured = Captured()
-        let provider = try XCTUnwrap(factory(captured: captured).provider(for: AISettings(provider: .claudeCLI)))
+        let provider = try XCTUnwrap(factory(captured: captured).provider(for: AISettings(provider: .claudeCLI, consented: [.claudeCLI])))
         let answer = try await provider.answer(.prompt("Hi"))
         XCTAssertEqual(answer, "Hi.")
         let run = try XCTUnwrap(captured.runs.first)
@@ -167,7 +202,7 @@ final class AISettingsStorageTests: XCTestCase {
     func testProviderAndModelsRoundTrip() {
         let repository = SettingsRepository(defaults: defaults)
         var settings = repository.load()
-        settings.ai.provider = .gemini
+        settings.ai.choose(.gemini)
         settings.ai.setModel("gemini-pro-latest", for: .gemini)
         repository.save(settings)
         let loaded = SettingsRepository(defaults: defaults).load()
@@ -192,6 +227,25 @@ final class AISettingsStorageTests: XCTestCase {
         defaults.set("essentials", forKey: "settings.kit")
         XCTAssertEqual(SettingsRepository(defaults: defaults).load().ai.provider, .claudeCLI)
         XCTAssertEqual(defaults.string(forKey: "settings.ai.provider"), "claude-cli", "recorded on disk by the step")
+    }
+
+    func testAChoiceSavedBeforeTabbiAskedSendsNothingUntilAllowed() {
+        defaults.set(6, forKey: SettingsSchema.versionKey)
+        defaults.set("essentials", forKey: "settings.kit")
+        let ai = SettingsRepository(defaults: defaults).load().ai
+        XCTAssertNil(ai.activeProvider(sandboxed: false))
+        XCTAssertTrue(ai.needsConsent(for: .claudeCLI))
+    }
+
+    func testPermissionRoundTripsAndUnknownProvidersAreDropped() {
+        defaults.set(["gemini", "someday-ai"], forKey: "settings.ai.consented")
+        let repository = SettingsRepository(defaults: defaults)
+        var settings = repository.load()
+        XCTAssertEqual(settings.ai.consented, [.gemini])
+        settings.ai.choose(.openAI)
+        repository.save(settings)
+        XCTAssertEqual(SettingsRepository(defaults: defaults).load().ai.consented, [.gemini, .openAI])
+        XCTAssertEqual(defaults.stringArray(forKey: "settings.ai.consented"), ["gemini", "openai"])
     }
 
     func testTheProviderStepLeavesAFreshInstallAndAChoiceAlone() {

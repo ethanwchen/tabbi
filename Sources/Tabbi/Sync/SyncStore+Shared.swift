@@ -15,7 +15,8 @@ extension ModuleContext {
             return SyncStore(storage: storage, runMode: runMode, pet: studyPet,
                              signInMethod: snapshot ? .web : AppleSignInMethod.current,
                              server: { snapshot ? nil : PartySettingsRepository().load().serverURL },
-                             credentials: credentials)
+                             credentials: credentials,
+                             ageAnswer: snapshot ? .inMemory() : .partySettings())
         }
     }
 }

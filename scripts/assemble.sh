@@ -85,6 +85,10 @@ if $app_store; then
         plutil -replace CFBundlePackageType -string BNDL "$bundle_plist"
         plutil -replace CFBundleInfoDictionaryVersion -string 6.0 "$bundle_plist"
     done
+    # The privacy manifest App Store Connect reads for collected data and
+    # required reason APIs; it matches the App Privacy answers in docs/appstore.md.
+    plutil -lint -s packaging/PrivacyInfo-AppStore.xcprivacy
+    cp packaging/PrivacyInfo-AppStore.xcprivacy "$app/Contents/Resources/PrivacyInfo.xcprivacy"
 else
     cp -R "$(dirname "$bin")"/*.bundle "$app/Contents/Resources/"
 fi
@@ -94,6 +98,17 @@ for framework in "$(dirname "$bin")"/*.framework; do
     [[ -e "$framework" ]] || continue
     mkdir -p "$app/Contents/Frameworks"
     ditto "$framework" "$app/Contents/Frameworks/$(basename "$framework")"
+    # The framework ships without its license, and Sparkle's MIT, BSD and
+    # zlib terms ask binary copies to carry their notices, so the license
+    # from SwiftPM's checkout goes in the bundle beside it (docs/legal/ip-review.md).
+    name=$(basename "$framework" .framework)
+    license=.build/checkouts/$name/LICENSE
+    if [[ ! -f "$license" ]]; then
+        echo "error: no license for $name at $license; run swift build first" >&2
+        exit 1
+    fi
+    mkdir -p "$app/Contents/Resources/Acknowledgements"
+    cp "$license" "$app/Contents/Resources/Acknowledgements/$name-LICENSE.txt"
 done
 
 # The widget extension (docs/widget.md), built beside the app's binary. Its
@@ -112,6 +127,8 @@ if $app_store; then
     # Every bundle in an upload needs its own id.
     plutil -replace CFBundleIdentifier -string "$bundle_id.Widget.Tabbi-TabbiKitCore" \
         "$appex/Contents/Resources/Tabbi_TabbiKitCore.bundle/Contents/Info.plist"
+    plutil -lint -s packaging/PrivacyInfo-AppStore-Widget.xcprivacy
+    cp packaging/PrivacyInfo-AppStore-Widget.xcprivacy "$appex/Contents/Resources/PrivacyInfo.xcprivacy"
 fi
 widget_plist="$appex/Contents/Info.plist"
 plutil -create xml1 "$widget_plist"

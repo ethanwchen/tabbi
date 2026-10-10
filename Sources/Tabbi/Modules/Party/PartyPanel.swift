@@ -41,6 +41,7 @@ struct PartyPanel: View {
     private var phase: Int {
         switch store.state.connection {
         case .invalidServer: 0
+        case .ageCheck: 4
         case .connecting: 1
         case .unreachable: 2
         case .connected: 3
@@ -57,6 +58,9 @@ struct PartyPanel: View {
                     .frame(width: Self.friendsWidth)
             }
             .transition(.opacity)
+        case .ageCheck(let until):
+            PartyAgeCheckView(store: store, tooYoungUntil: until)
+                .transition(.opacity)
         case .connecting:
             PartyMessage(symbol: nil, pet: store.pet, title: "Joining the party server…",
                          detail: "Signing you in so friends can find you.")

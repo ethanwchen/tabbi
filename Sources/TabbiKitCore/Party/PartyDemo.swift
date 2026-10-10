@@ -112,6 +112,10 @@ public enum PartyDemoScenario: String, CaseIterable, Sendable {
     case invalidServer
     /// The maintainer banned this account.
     case banned
+    /// Party asks the age check before it joins (`PartyAgeCheck`).
+    case ageCheck
+    /// The age check said under 13.
+    case tooYoung
 }
 
 extension PartyState {
@@ -152,17 +156,32 @@ extension PartyState {
         case .noFriends:
             return PartyState(profile: me, friends: [], party: nil)
         case .connecting:
-            return PartyState(settings: PartySettings())
+            return PartyState(settings: oldEnough, at: now)
         case .unreachable:
-            var state = PartyState(settings: PartySettings())
+            var state = PartyState(settings: oldEnough, at: now)
             state.didFailToConnect(.unreachable)
             return state
         case .invalidServer:
             return PartyState(settings: PartySettings(serverText: "http://tabbi.example.com"))
         case .banned:
-            var state = PartyState(settings: PartySettings())
+            var state = PartyState(settings: oldEnough, at: now)
             state.didFailToConnect(.banned)
             return state
+        case .ageCheck, .tooYoung:
+            return PartyState(settings: PartySettings(ageEligibleFrom: demoAgeEligibleFrom(scenario, now: now)), at: now)
+        }
+    }
+
+    private static let oldEnough = PartySettings(ageEligibleFrom: .distantPast)
+
+    /// The age check's saved answer behind a demo screen: unanswered for
+    /// `.ageCheck`, about a year and a half away for `.tooYoung`, and long
+    /// past for every other screen.
+    public static func demoAgeEligibleFrom(_ scenario: PartyDemoScenario, now: Date) -> Date? {
+        switch scenario {
+        case .ageCheck: nil
+        case .tooYoung: now.addingTimeInterval(540 * 86_400)
+        default: .distantPast
         }
     }
 }

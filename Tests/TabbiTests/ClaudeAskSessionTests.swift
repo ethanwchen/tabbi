@@ -72,7 +72,7 @@ final class ClaudeAskSessionTests: XCTestCase {
         let settings = SettingsStore(catalog: ModuleList.catalog, defaults: defaults, defaultKitID: "essentials",
                                      kitStore: nil, integratesWithSystem: false)
         settings.settings.claudePathOverride = claudePath
-        settings.settings.ai.provider = provider
+        settings.settings.ai.choose(provider)
         let factory = locate == nil && transport == nil ? nil : AIProviderFactory(
             keys: keys, sandboxed: false, locate: locate ?? AIProviderFactory.defaultLocate,
             transport: transport ?? AIHTTPProvider.urlSession()

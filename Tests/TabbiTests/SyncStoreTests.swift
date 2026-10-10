@@ -22,7 +22,7 @@ final class SyncStoreTests: XCTestCase {
                            pet: ClosetStore, method: AppleSignInMethod = .native,
                            webPage: @escaping @MainActor (URL) async throws -> URL? = { _ in nil }) -> SyncStore {
         SyncStore(storage: storage, runMode: .live, pet: pet, signInMethod: method, webCallback: webPage,
-                  server: { [serverURL] in serverURL }, credentials: credentials,
+                  server: { [serverURL] in serverURL }, credentials: credentials, ageAnswer: .inMemory(.distantPast),
                   transport: { _ in server }, studyDays: { ["2026-10-08"] })
     }
 
@@ -145,6 +145,20 @@ final class SyncStoreTests: XCTestCase {
         XCTAssertEqual(store.phase, .signedIn)
         XCTAssertNotNil(store.notice)
         XCTAssertNotNil(credentials.load(for: serverURL))
+    }
+
+    func testADeleteWithNoTokenToSendKeepsTheAccountAndSaysWhy() async throws {
+        let server = FakeAccountServer()
+        let credentials = InMemoryPartyCredentialStore()
+        let store = makeStore(server: server, credentials: credentials, pet: petStore(earned: 0))
+        await store.signIn(identityToken: "jwt", authorizationCode: nil, name: nil)
+        await waitUntilSynced(store)
+        credentials.delete(for: serverURL)
+
+        await store.deleteAccount()
+        XCTAssertNil(server.deletedWith)
+        XCTAssertEqual(store.phase, .signedIn, "the account still exists on the server, so it is not forgotten here")
+        XCTAssertNotNil(store.notice)
     }
 
     func testARefusedSignInStaysSignedOutWithANotice() async {
@@ -282,7 +296,8 @@ final class SyncStoreTests: XCTestCase {
         var opened = false
         let store = SyncStore(storage: storage, runMode: .live, pet: petStore(earned: 0), signInMethod: .web,
                               webCallback: { _ in opened = true; return nil },
-                              server: { nil }, credentials: InMemoryPartyCredentialStore())
+                              server: { nil }, credentials: InMemoryPartyCredentialStore(),
+                              ageAnswer: .inMemory(.distantPast))
         await store.signInOnWeb()
         XCTAssertFalse(opened)
         XCTAssertEqual(store.phase, .signedOut)
@@ -294,7 +309,7 @@ final class SyncStoreTests: XCTestCase {
         let store = SyncStore(storage: storage, runMode: .demo, pet: pet, signInMethod: .web,
                               webCallback: { _ in XCTFail("demo opens no page"); return nil },
                               server: { [serverURL] in serverURL }, credentials: InMemoryPartyCredentialStore(),
-                              transport: { _ in server })
+                              ageAnswer: .inMemory(), transport: { _ in server })
         XCTAssertEqual(store.phase, .signedIn)
         XCTAssertEqual(store.name, "Sam Rivera")
         XCTAssertNotNil(store.lastSyncedAt)
@@ -333,7 +348,7 @@ final class SyncStoreTests: XCTestCase {
     private func lifecycleStore(server: FakeAccountServer, pet: ClosetStore, sleeper: ManualSleeper) -> SyncStore {
         SyncStore(storage: storage, runMode: .live, pet: pet, signInMethod: .native,
                   server: { [serverURL] in serverURL }, credentials: InMemoryPartyCredentialStore(),
-                  transport: { _ in server }, sleep: { await sleeper.sleep($0) })
+                  ageAnswer: .inMemory(.distantPast), transport: { _ in server }, sleep: { await sleeper.sleep($0) })
     }
 
     /// Lets queued main actor work (Combine sinks, new tasks) run.
@@ -477,7 +492,7 @@ final class SyncStoreTests: XCTestCase {
 }
 
 /// The friends server's account routes: sign-in, sync and delete.
-private final class FakeAccountServer: PartyTransport, @unchecked Sendable {
+final class FakeAccountServer: PartyTransport, @unchecked Sendable {
     private let lock = NSLock()
     private var revision = 0
     private var stored: SyncDocument?

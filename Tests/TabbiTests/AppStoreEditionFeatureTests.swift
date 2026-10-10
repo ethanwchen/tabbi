@@ -42,10 +42,10 @@ final class AppStoreEditionFeatureTests: XCTestCase {
         XCTAssertEqual(ai.availableProviders, [.anthropic, .openAI, .gemini, .ollama])
         // A Claude Code choice saved before (say, by the direct download)
         // counts as no choice, so Ask shows its setup state and sends nothing.
-        store.settings.ai.provider = .claudeCLI
+        store.settings.ai.choose(.claudeCLI)
         XCTAssertEqual(ai.setupState, .notChosen)
         XCTAssertNil(ai.provider)
-        store.settings.ai.provider = .ollama
+        store.settings.ai.choose(.ollama)
         XCTAssertEqual(ai.setupState, .ready(.ollama))
         XCTAssertNotNil(ai.provider)
     }

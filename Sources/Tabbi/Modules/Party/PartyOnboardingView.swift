@@ -11,11 +11,19 @@ struct PartyOnboardingView: View {
     @FocusState private var focus: PartyField?
 
     var body: some View {
-        HStack(spacing: Theme.Spacing.m) {
-            PartySetupProfileCard(store: store)
-                .frame(width: 252)
-            PartySetupFriendsCard(store: store, focus: $focus)
+        Group {
+            if case .ageCheck(let until) = store.state.connection {
+                // Nothing is sent, so there is no profile or code to show yet.
+                PartyAgeCheckView(store: store, tooYoungUntil: until)
+            } else {
+                HStack(spacing: Theme.Spacing.m) {
+                    PartySetupProfileCard(store: store)
+                        .frame(width: 252)
+                    PartySetupFriendsCard(store: store, focus: $focus)
+                }
+            }
         }
+        .motion(Theme.Motion.content, value: store.state.awaitsAgeCheck)
         .motion(Theme.Motion.content, value: store.state.connection)
         .motion(Theme.Motion.snappy, value: store.notice)
         // Visible like the panel, so friends load and a failed connect retries.
@@ -142,6 +150,8 @@ private struct PartySetupProfileCard: View {
             ("Invisible to friends", Theme.Palette.tertiaryText)
         case .connected:
             ("Online", Theme.Palette.success)
+        case .ageCheck:
+            ("Not joined yet", Theme.Palette.tertiaryText)
         case .connecting:
             ("Joining the party server", Theme.Palette.tertiaryText)
         case .unreachable(.banned):
@@ -267,7 +277,7 @@ private struct PartySetupFriendsCard: View {
                     friendPets
                 }
             }
-        case .connecting:
+        case .connecting, .ageCheck:
             message(symbol: "antenna.radiowaves.left.and.right", title: "Joining the party server",
                     detail: "Signing you in so friends can find you. Your code shows here in a moment.")
         case .unreachable(.banned):

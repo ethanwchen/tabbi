@@ -37,9 +37,10 @@ A sandboxed app cannot start the `claude`, `codex` or `gemini` command line tool
 All of them go through the `network.client` entitlement the app already has.
 A command line tool saved by a direct download counts as no choice here, so Ask shows its setup state instead of failing.
 Nothing is sent anywhere until the user picks a provider: a fresh install starts with None, Ask shows "Choose an AI to ask questions", and Plan my day and Wrap up stay on the Mac.
+Picking a provider that sends data off the Mac (every one but Ollama) first shows a one-time consent alert naming the company and what each feature sends (Guideline 5.1.2(i)); the permission is saved per provider in `AISettings.consented`.
 
 Party comes back by removing `"party"` from `excludedModules` in `appstore.json`.
-Party now has reporting, blocking and a name filter (App Review guideline 1.2), so the remaining work before turning it on is a sandboxed run of Party, a privacy label that declares the display name and party activity it shares, and reviewer notes on how to report and block someone.
+Party now has reporting, blocking, a name filter (App Review guideline 1.2) and an age check that keeps it off for anyone under 13, so the remaining work before turning it on is a sandboxed run of Party, a privacy label that declares the display name and party activity it shares, a new age rating answer (see App information), and reviewer notes on the age check and how to report and block someone (see Notes for the reviewer).
 
 ## Build and upload
 
@@ -96,28 +97,32 @@ The listing copy comes from the listing research (October 2026), with only the f
 
 ### App information
 
-- Name: `Tabbi: Notch Focus Timer` (24 of 30)
-- Subtitle: `Pomodoro, To-Do & Study Pet` (27 of 30)
+- Name: `Tabbi: Notch Timer & Study Pet` (30 of 30)
+- Subtitle: `Focus, Pomodoro & To-Do List` (28 of 30)
 - Category: Productivity (secondary: Education)
 - Privacy Policy URL: https://tabbinotch.com/privacy
 - Support URL: https://tabbinotch.com/support
 - Marketing URL: https://tabbinotch.com
 - Copyright: the maintainer's name and the year
-- Age rating: 4+ (no user-generated content while Party is out, no web browsing, no ads)
+- Age rating: 4+ (no user-generated content while Party is out, no web browsing, no ads).
+  Answer the questionnaire as the build stands, and say yes wherever it asks about AI-generated content or chat, since Ask AI shows a provider's answers that Tabbi does not filter; if that answer raises the rating, accept the higher rating rather than leave it out.
+  When Party comes back it adds user content (display names, study presence and reports), so answer yes to user-generated content and expect a rating of at least 13+, which matches the 13+ age check in the app and the Terms.
 - Sign-in information: not required (signing in is optional and only syncs the pet and streaks)
 - Pricing: free
 - Export compliance: the build sets `ITSAppUsesNonExemptEncryption` to `NO` (it only uses HTTPS through the system)
 
 The name, subtitle and keywords name no other company's product.
+The name used to be `Tabbi: Notch Focus Timer`, which contained "Notch Focus Timer", the full name of an existing Mac App Store app (id6477333821) that does the same job, so it was changed (Guidelines 2.3.7 and 5.2).
+"Tabbi" is close to other marks, so a trademark search is still on the lawyer list ([legal/ip-review.md](legal/ip-review.md) has the search).
 The description names Apple Music and Spotify once, only to say what Now Playing works with.
 
-### Keywords (99 of 100 bytes)
+### Keywords (100 of 100 bytes)
 
 ```
-cute,cat,dog,cozy,planner,calendar,flashcard,music,widget,student,todo,task,streak,menubar,list,day
+cute,cat,dog,cozy,planner,calendar,flashcard,music,widget,student,todo,task,streak,menubar,habit,day
 ```
 
-No word repeats the name or subtitle (tabbi, notch, focus, timer, pomodoro, to-do, study, pet).
+No word repeats the name or subtitle (tabbi, notch, timer, study, pet, focus, pomodoro, to-do, list).
 `todo` stays as a hedge, since Apple may index "To-Do" only as "to do".
 `productivity` is left out because it is the category name, which Apple already indexes.
 `party` is left out while the App Store edition leaves Party out (see Party above), since App Review asks keywords to describe the app as submitted.
@@ -190,15 +195,32 @@ Answer App Store Connect's questions exactly like this:
 1. "Do you or your third-party partners collect data from this app?" Yes, we collect data from this app.
 2. Data types to select (and nothing else):
    - Identifiers > User ID
+   - Identifiers > Device ID
    - User Content > Other User Content
+   - Usage Data > Product Interaction
 3. For **User ID** (Apple's app-specific user id, and the random friend code the account is filed under):
    - Usage: App Functionality only.
    - Linked to the user's identity: Yes.
    - Used for tracking: No.
-4. For **Other User Content** (the synced pet's look and name, points earned and spent per Mac, unlocked and granted items, the days the user studied and the longest streak):
+4. For **Device ID** (the random id each Mac's points are filed under in the sync document, and the per-Mac sign-in token, which the server keeps only as a hash):
    - Usage: App Functionality only.
    - Linked to the user's identity: Yes.
    - Used for tracking: No.
+5. For **Other User Content** (the synced pet's look and name, and unlocked and granted items):
+   - Usage: App Functionality only.
+   - Linked to the user's identity: Yes.
+   - Used for tracking: No.
+6. For **Product Interaction** (points earned and spent per Mac, the days the user studied and the longest streak, which are records of how the app was used):
+   - Usage: App Functionality only.
+   - Linked to the user's identity: Yes.
+   - Used for tracking: No.
+
+The privacy manifest the build ships (`packaging/PrivacyInfo-AppStore.xcprivacy`, copied into the app by `scripts/assemble.sh`) declares these same four types with the same answers, so change both together.
+It also gives the required reasons for the APIs the binary links: UserDefaults (CA92.1, the app's own settings) and file timestamps (C617.1: the AI Usage log scanners in TabbiKitCore are linked but never run in this edition, and the sandbox keeps any file they could reach inside the app's container).
+The widget extension has its own manifest (`PrivacyInfo-AppStore-Widget.xcprivacy`) with the same reasons and no collected data.
+If App Store Connect warns about a required reason API (ITMS-91053), add it to both manifests with the reason that matches the code.
+
+Device ID and Product Interaction are the cautious reading: Apple's definitions are loose, and declaring a type the app arguably does not need costs nothing, while leaving out one it does is a mislabel.
 
 Why nothing else is declared:
 
@@ -210,9 +232,13 @@ Why nothing else is declared:
   The request goes straight from the Mac to that provider under its own terms; there is no Tabbi server in between and no partner SDK in the app, so Tabbi does not collect it.
 - Diagnostics: the App Store edition has no crash reporting of its own (`AppDelegate` installs no `CrashHandler` and shows no crash prompt under `APPSTORE`), so crashes reach the developer only through Apple's reports, which the user shares in macOS.
   The server's short request logs hold only the kind of request, its status and duration, with no identifier, and are deleted within 7 days.
+- The Suggest page opens in the browser with the app version, macOS version and edition in its address, and nothing is sent unless the user submits the web form, so it is the website's collection, not the app's (the site Privacy Policy covers it).
 - There is no analytics, advertising or tracking of any kind.
 
 When Party comes back, also declare its display name and study presence: Contact Info > Name (or User Content > Other User Content) and Usage Data > Product Interaction, both App Functionality, linked, not tracking.
+Its anonymous Party identity is a random id with a secret token, which Identifiers > User ID already covers; reports a user files are Other User Content.
+
+Before submitting, check that the Worker has the Sign in with Apple secrets ([sync.md](sync.md), step 5): without them Delete Account still erases the server's data but cannot revoke the Apple grant, and the reviewer note below would then promise more than the app does.
 
 ### Notes for the reviewer
 
@@ -227,9 +253,17 @@ When Party comes back, also declare its display name and study presence: Contact
 > Notifications are optional: alerts when a focus timer ends, a daily study reminder the user turns on, and the weekly recap.
 > The flashcards tab reads review counts from the free AnkiConnect add-on of the Anki desktop app over localhost (127.0.0.1:8765). Tabbi downloads and runs no code; without Anki it shows how to set it up.
 > AI features (Ask AI, Plan my day's Refine and the day review) stay off until the user picks an AI in Settings > Connections > AI. The Settings footer says nothing is sent until then. They use the user's own API key (Anthropic, OpenAI or Google Gemini), saved in the Keychain, or Ollama running on the Mac. To try them, pick Ollama with a local model, or paste a key.
+> Guideline 5.1.2(i): picking Anthropic, OpenAI or Gemini first shows a one-time consent alert that names the company receiving the data and lists what each AI feature sends (Ask AI: questions, the chat and any screenshot attached; Refine: calendar event titles and times, tasks, goals and the plan; day review: focus and study minutes, sessions and points, goal counts and the titles of finished and carried-over tasks). Nothing is sent unless the user taps Allow, and Cancel keeps None. Ollama runs on the Mac, so it needs no consent.
 > No account is needed.
 > Signing in with Apple (Settings > General > Account) is optional and only syncs the pet and study streaks between the user's Macs.
-> Delete Account in the same place deletes everything the server holds and revokes the Sign in with Apple grant.
+> Accounts are for people 13 and older: the first Sign In asks the birth month and year (a neutral question, kept on the Mac), then shows Apple's button with links to the Terms and Privacy Policy. An under-13 answer keeps signing in off until the first day of the month after the user turns 13.
+> Delete Account in the same place deletes everything the server holds and revokes the Sign in with Apple grant (Guideline 5.1.1(v)).
+> The Privacy Policy and Terms of Use are linked from Settings > About.
+
+When Party comes back, add these lines to the notes:
+
+> Party (the friends tab) asks for the user's birth month and year before it contacts the server, and stays off for anyone under 13; only the date signing up opens (the first day of the month after the user turns 13) is saved, on the Mac.
+> To report someone, right-click their name in Party and choose Report; Block in the same menu hides them at once. Names pass a filter, and the maintainer reviews reports and can rename or ban an identity. Contact: support@tabbinotch.com.
 
 ### Screenshots
 

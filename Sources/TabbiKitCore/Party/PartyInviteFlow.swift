@@ -18,6 +18,9 @@ public struct PartyInviteFlow: Equatable, Sendable {
         case connecting
         /// Party can't connect; "Try Again" shows when the problem may pass.
         case unavailable(PartyError)
+        /// Party waits for its age check (`PartyAgeCheck`), which the Party
+        /// tab asks; `tooYoungUntil` is set when it said under 13.
+        case ageCheck(tooYoungUntil: Date?)
         /// Asking "Add a friend?" or "Join this party?".
         case confirming
         /// The request is on its way.
@@ -80,6 +83,9 @@ public struct PartyInviteFlow: Equatable, Sendable {
             return
         case .unreachable(let error):
             stage = .unavailable(error)
+            return
+        case .ageCheck(let until):
+            stage = .ageCheck(tooYoungUntil: until)
             return
         case .connecting:
             return
@@ -147,6 +153,7 @@ public struct PartyInviteFlow: Equatable, Sendable {
         case .finished: true
         case .refused(.failed(let error)): !error.isTransient
         case .refused: true
+        case .ageCheck(let until): until != nil
         default: false
         }
     }
@@ -163,7 +170,8 @@ public struct PartyInviteFlow: Equatable, Sendable {
         switch stage {
         case .needsParty: "Turn on Party?"
         case .connecting: "Connecting to Party"
-        case .unavailable: "Party isn't available"
+        case .unavailable, .ageCheck(tooYoungUntil: .some): "Party isn't available"
+        case .ageCheck: "One question first"
         case .confirming, .working:
             switch invite {
             case .addFriend: "Add a friend?"
@@ -188,6 +196,10 @@ public struct PartyInviteFlow: Equatable, Sendable {
             }
         case .connecting:
             return "One moment."
+        case .ageCheck(.some):
+            return "Party is for people \(PartyAgeCheck.minimumAge) and older."
+        case .ageCheck:
+            return "The Party tab asks when you were born before you join. Then open the link again."
         case .unavailable(let error):
             if case .invalidRequest = error { return "Check the server in Party options." }
             return error.message
@@ -224,6 +236,7 @@ public struct PartyInviteFlow: Equatable, Sendable {
         switch stage {
         case .needsParty: return "Turn On Party"
         case .unavailable(let error): return error.isTransient ? "Try Again" : nil
+        case .ageCheck(nil): return "Open Party"
         case .confirming, .working:
             switch invite {
             case .addFriend: return "Add Friend"

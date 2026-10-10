@@ -88,9 +88,10 @@ Kits are small JSON files, and [docs/kits.md](docs/kits.md) shows how to write y
 ## Privacy
 
 Tabbi needs no account and has no analytics and no telemetry.
-It only connects where a tab needs to: album artwork for Now Playing, AnkiConnect on your own Mac, and the friends server while Party is on.
+It connects only for these features: album artwork for Now Playing, AnkiConnect on your own Mac, the friends server while Party or Sign in with Apple is on, update checks, crash reports you allow, and the AI you pick.
+The [Privacy Policy](https://tabbinotch.com/privacy) has the details.
 Signing in with Apple is optional: it backs up your pet, streaks and Party name to the friends server so they follow you to another Mac.
-After a crash, the direct download asks before it sends a report (stack trace and versions only); you can change that in **Settings > About**.
+After a crash, the direct download asks before it sends a report to the friends server (stack trace and versions only); you can change that in **Settings > About**.
 The direct download checks Tabbi's release feed on GitHub once a day; you can turn this off in **Settings > About**.
 AI features talk only to the AI you pick in **Settings > Connections**: a command line tool you already use (Claude Code, Codex or Gemini CLI), a hosted API with your own key, which stays in your keychain, or Ollama on your own Mac.
 Your prompts go to that provider and fall under its terms, and Tabbi never reads a command line tool's credentials.
@@ -105,7 +106,7 @@ Tabbi asks for a permission only when the tab that needs it is first used.
 | --- | --- | --- |
 | Automation: Spotify, Music | Now Playing, focus mode | Read the current track, control playback and start a focus playlist. |
 | Automation: Safari or Chrome | Now Playing, only once you turn on SoundCloud | Read and control the SoundCloud tab. |
-| Calendars | Today, Schedule | Show your events and add the planned blocks you accept. Events never leave your Mac. |
+| Calendars | Today, Schedule | Show your events and add the planned blocks you accept. Event titles and times leave your Mac only when you ask the AI you picked to plan or refine your day. |
 | Notifications | Today, Focus, Closet, Party, weekly recap | Tell you when a timer ends while the notch is closed, send the optional daily study reminder, and say when your weekly recap is ready or a study party you joined finishes while the notch is closed. |
 | Screen Recording | Ask AI | Attach a screenshot to a question. The image goes only to the AI you picked. |
 

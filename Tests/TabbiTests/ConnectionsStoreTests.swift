@@ -20,7 +20,7 @@ final class ConnectionsStoreTests: XCTestCase {
         let state: CurrentValueSubject<PartyConnectionState, Never>
         let name = CurrentValueSubject<String, Never>("Ana")
         let species = CurrentValueSubject<PetSpecies, Never>(.cat)
-        var started: [(String, PetSpecies)] = []
+        var started: [(String, PetSpecies, PartyAgeCheck.Birth?)] = []
         var retries = 0
 
         init(_ state: PartyConnectionState = .connecting) {
@@ -30,7 +30,7 @@ final class ConnectionsStoreTests: XCTestCase {
         @MainActor func connect(_ store: ConnectionsStore) {
             store.follow(party: state.eraseToAnyPublisher(), name: name.eraseToAnyPublisher(),
                          species: species.eraseToAnyPublisher(),
-                         start: { [unowned self] in started.append(($0, $1)) },
+                         start: { [unowned self] in started.append(($0, $1, $2)) },
                          retry: { [unowned self] in retries += 1 })
         }
     }
@@ -59,7 +59,7 @@ final class ConnectionsStoreTests: XCTestCase {
         tab.connect(store)
         XCTAssertEqual(store.diagnosis(of: .party), ConnectionKind.party.demoDiagnosis)
         XCTAssertEqual(store.partyState, .connected(friendCode: "PUFF-42"))
-        store.startParty(name: "Ben", species: .dog)
+        store.startParty(name: "Ben", species: .dog, birth: nil)
         store.perform(.checkAgain, for: .party)
         XCTAssertTrue(tab.started.isEmpty)
         XCTAssertEqual(tab.retries, 0)
@@ -118,7 +118,7 @@ final class ConnectionsStoreTests: XCTestCase {
 
     func testSetupSheetStartsAndRetriesThroughTheTab() {
         let store = ConnectionsStore(runMode: liveMode)
-        store.startParty(name: "Ana", species: .cat)
+        store.startParty(name: "Ana", species: .cat, birth: nil)
         store.perform(.checkAgain, for: .party)
         XCTAssertEqual(store.partyDraft.name, "", "no draft before the tab reports in")
         XCTAssertEqual(store.partyDraft.species, .cat)
@@ -131,10 +131,11 @@ final class ConnectionsStoreTests: XCTestCase {
         XCTAssertEqual(store.partyDraft.name, "Mochi")
         XCTAssertEqual(store.partyDraft.species, .dog)
 
-        store.startParty(name: "Mochi", species: .dog)
+        store.startParty(name: "Mochi", species: .dog, birth: PartyAgeCheck.Birth(month: 4, year: 2001))
         XCTAssertEqual(tab.started.count, 1)
         XCTAssertEqual(tab.started.first?.0, "Mochi")
         XCTAssertEqual(tab.started.first?.1, .dog)
+        XCTAssertEqual(tab.started.first?.2, PartyAgeCheck.Birth(month: 4, year: 2001))
 
         store.perform(.checkAgain, for: .party)
         XCTAssertEqual(tab.retries, 1, "Check again on Party asks the server again")
@@ -154,7 +155,7 @@ final class ConnectionsStoreTests: XCTestCase {
         XCTAssertEqual(store.diagnosis(of: .party), PartyConnectionState.connected(friendCode: "NEW-1").diagnosis)
         XCTAssertEqual(store.partyDraft.name, "Ana")
 
-        store.startParty(name: "Ben", species: .cat)
+        store.startParty(name: "Ben", species: .cat, birth: nil)
         store.perform(.checkAgain, for: .party)
         XCTAssertTrue(old.started.isEmpty)
         XCTAssertEqual(old.retries, 0)
