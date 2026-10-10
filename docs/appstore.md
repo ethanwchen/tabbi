@@ -90,7 +90,7 @@ Clicking the notch opened the panel and moving the pointer away closed it (globa
 
 ## App Store Connect
 
-Everything in this section is paste-ready for the App Store edition as it builds today: AI Usage, the command line AI tools, SoundCloud, Do Not Disturb and Party are not in it, so the copy below does not promise them (the keyword note covers `party`).
+Everything in this section is paste-ready for the App Store edition as it builds today: AI Usage, the command line AI tools, SoundCloud, Do Not Disturb and Party are not in it, so the copy below does not promise them (the keyword note explains why `party` is not a keyword).
 Character counts were checked with Python `len`, and every field is plain ASCII, so bytes equal characters.
 The listing copy comes from the listing research (October 2026), with only the facts that did not match the App Store build changed.
 
@@ -111,20 +111,16 @@ The listing copy comes from the listing research (October 2026), with only the f
 The name, subtitle and keywords name no other company's product.
 The description names Apple Music and Spotify once, only to say what Now Playing works with.
 
-### Keywords (100 of 100 bytes)
+### Keywords (99 of 100 bytes)
 
 ```
-cute,cat,dog,productivity,planner,calendar,flashcard,music,widget,student,cozy,todo,task,break,party
+cute,cat,dog,cozy,planner,calendar,flashcard,music,widget,student,todo,task,streak,menubar,list,day
 ```
 
 No word repeats the name or subtitle (tabbi, notch, focus, timer, pomodoro, to-do, study, pet).
 `todo` stays as a hedge, since Apple may index "To-Do" only as "to do".
-`party` names a feature the App Store edition leaves out for now (see Party above), and App Review asks keywords to describe the app as submitted.
-Until Party is turned on there, use this list instead (98 bytes), which also drops `productivity`, the category name Apple already indexes:
-
-```
-cute,cat,dog,planner,calendar,flashcard,music,widget,student,cozy,todo,task,break,streak,habit,day
-```
+`productivity` is left out because it is the category name, which Apple already indexes.
+`party` is left out while the App Store edition leaves Party out (see Party above), since App Review asks keywords to describe the app as submitted.
 
 ### Promotional text (157 of 170)
 
