@@ -466,6 +466,30 @@ final class PlannerViewedDayTests: XCTestCase {
         XCTAssertEqual(PlannerViewedDay.tomorrow.planTitle, "Plan tomorrow")
     }
 
+    func testHeaderShowsTheDateUnlessDatesAreHiddenThenOnlyTheWeekday() {
+        let locale = Locale(identifier: "en_US")
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "UTC")!
+        let saturday = calendar.date(from: DateComponents(year: 2026, month: 10, day: 10, hour: 12))!
+        func texts(_ day: PlannerViewedDay, showsDates: Bool) -> [String?] {
+            day.headerDateStyles(showsDates: showsDates).map { style in
+                style.map { style in
+                    var style = style
+                    style.locale = locale
+                    style.calendar = calendar
+                    style.timeZone = calendar.timeZone
+                    return saturday.formatted(style)
+                }
+            }
+        }
+        XCTAssertEqual(texts(.today, showsDates: true), ["Sat, Oct 10", "Sat 10"])
+        XCTAssertEqual(texts(.yesterday, showsDates: true), ["Oct 10", nil])
+        XCTAssertEqual(texts(.today, showsDates: false), ["Saturday", "Sat"])
+        for day in [PlannerViewedDay.yesterday, .tomorrow] {
+            XCTAssertEqual(texts(day, showsDates: false), [nil], "\(day) shows only its title")
+        }
+    }
+
     func testCalendarCardIsCaptionedForTheDayItLists() {
         XCTAssertEqual(PlannerViewedDay.today.calendarTitle, "Up next")
         XCTAssertEqual(PlannerViewedDay.yesterday.calendarTitle, "Yesterday's calendar")
