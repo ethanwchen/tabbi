@@ -239,10 +239,13 @@ final class AIHTTPURLSessionTransportTests: XCTestCase {
     func testCancellingTheConsumerStopsTheRequest() async throws {
         let host = "ollama-hang.test"
         AIStubProtocol.reply(.hang, for: host)
-        // The stream is made inside the task: handing one in trips the
-        // region isolation checker of the Swift in Xcode 26.6 (CI).
+        // A detached task that makes its own stream and returns only the
+        // events: the region isolation checker of the Swift in Xcode 26.6
+        // (CI) gives up on a task that captures a stream or returns the tuple.
         let provider = ollama(host: host)
-        let consumer = Task { await Self.collect(provider.stream(.prompt("hi"))) }
+        let consumer = Task.detached { [provider] () -> [AIStreamEvent] in
+            await Self.collect(provider.stream(.prompt("hi"))).0
+        }
 
         let deadline = Date().addingTimeInterval(5)
         while AIStubProtocol.requests(to: host).isEmpty, Date() < deadline {
@@ -251,7 +254,7 @@ final class AIHTTPURLSessionTransportTests: XCTestCase {
         XCTAssertEqual(AIStubProtocol.requests(to: host).count, 1)
         consumer.cancel()
 
-        let (events, _) = await consumer.value
+        let events = await consumer.value
         XCTAssertEqual(events, [])
         while AIStubProtocol.stopCount(for: host) == 0, Date() < deadline {
             try await Task.sleep(for: .milliseconds(5))
