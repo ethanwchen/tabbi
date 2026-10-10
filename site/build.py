@@ -70,7 +70,7 @@ TAB_SIZES = '(max-width: 600px) calc(121vw - 60px), (max-width: 1000px) calc(60v
 
 HOME_HERO = {
     'home': True,
-    'title': 'A little cat for your notch.',
+    'title': 'A little cat for your <span class="hl">notch</span>.',
     'subtitle': 'A cozy panel of tabs in your laptop notch.',
     'cta': f'''<div class="cta">{download_button()}</div>
         <p class="cta-note">Free, macOS 14+</p>''',
