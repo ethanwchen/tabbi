@@ -2,10 +2,12 @@
 
 from html import escape
 
+from _releases import VERSION
+
 ORIGIN = 'https://tabbinotch.com'
 # The newest DMG itself: every release also uploads it as Tabbi.dmg (scripts/release.sh).
 DOWNLOAD = 'https://github.com/ethanwchen/tabbi/releases/latest/download/Tabbi.dmg'
-RELEASES = 'https://github.com/ethanwchen/tabbi/releases'
+RELEASES_URL = 'https://github.com/ethanwchen/tabbi/releases'
 GITHUB = 'https://github.com/ethanwchen/tabbi'
 ISSUES = 'https://github.com/ethanwchen/tabbi/issues'
 SUPPORT_EMAIL = 'support@tabbinotch.com'
@@ -115,10 +117,13 @@ def page(slug, title, description, body, hero=None, wide=False, indexable=True, 
   <a class="skip" href="#main">Skip to content</a>
   <header class="site">
     <div class="wrap">
-      <a class="brand" href="/">
-        {BRAND}
-        <span class="name">Tabbi</span>
-      </a>
+      <div class="brand-row">
+        <a class="brand" href="/">
+          {BRAND}
+          <span class="name">Tabbi</span>
+        </a>
+        <a class="version" href="/whats-new" title="What&rsquo;s new in Tabbi {VERSION}">v{VERSION}</a>
+      </div>
       <nav class="site" aria-label="Main">
         {nav}
       </nav>
@@ -137,7 +142,7 @@ def page(slug, title, description, body, hero=None, wide=False, indexable=True, 
       <a href="/suggest">Suggest</a>
       <a href="/privacy">Privacy</a>
       <a href="/terms">Terms</a>
-      <a href="{RELEASES}">What&rsquo;s new</a>
+      <a href="/whats-new">What&rsquo;s new</a>
       <a href="{GITHUB}">GitHub</a>
       <a href="https://buymeacoffee.com/ethanpolar">Buy me a coffee</a>
     </nav>

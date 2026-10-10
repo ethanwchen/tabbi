@@ -11,9 +11,11 @@ The only JavaScript in the browser is the home page's notch demo, one self-hoste
 
 ## Files
 
-- `build.py` - the home, about, support, suggest, thank-you and 404 pages, the build and its checks.
+- `build.py` - the home, about, support, what's new, suggest, thank-you and 404 pages, the build and its checks.
   The home page is deliberately short: the cat, one line, one download button, a drawn laptop playing the app in use, and four tabs.
 - `_partials.py` - the shared head, header and footer, plus the download and GitHub links.
+- `_releases.py` - the version beside the logo, read from `Resources/Info.plist`, and the What's New page's one sentence per release.
+  The build stops when the newest release listed there is not the app's version, so a version bump adds its line first.
 - `_demo.py`, `demo.css` and `js/demo.js` - the home page's interactive notch demo (see Notch demo).
 - `_legal.py` - the privacy policy and terms of use.
 - `styles.css` - the one stylesheet, one warm brown palette.
@@ -110,22 +112,19 @@ If a new weight or a non-Latin character appears in the copy, fetch and cut the 
 
 ## Images
 
-The home page shows four tabs; their screenshots are the app's own snapshot renders from `docs/images`, saved as WebP at quality 92 (`study.png` is saved as `timer.webp`), which looks the same as lossless at a quarter of the size.
-`_tab_shots.py` makes their navy wallpaper transparent first, so only the black notch panel sits on the brown card (it needs numpy and scipy).
-Each also has a 680 px copy (`today-680.webp`), and `srcset` lets small and 1x screens load that one.
+The home page's tabs are drawn by the notch demo itself (`_demo.py`), so the page carries no tab screenshots; the "More inside" cards below it are text only.
 `icon-256.webp`, `apple-touch-icon.png`, `favicon-64.png` and `favicon.ico` are resized from `docs/brand/assets/tabbi-icon-1024.png`.
-`glyph.png` is `docs/brand/assets/tabbi-glyph-256.png`, used as the header mark and on the 404 page.
+`glyph.webp` is `docs/brand/assets/tabbi-glyph-256.png` as a lossless WebP, used on the home, About, invite and 404 pages.
 `social-preview.png` is the 1200x630 Open Graph and Twitter card: the hero's words, icon, laptop and pixel cat on the brown ground.
 It is `_social-card.html` rendered by Chromium at 1200x630 and scale 1 (it loads Fredoka and Nunito from `fonts/`, so render it from `site/` with file access allowed), then saved by Pillow as an optimized RGB PNG of about 190 KB.
-Render it again when the hero's words or the Timer screenshot change.
-`notch-timer.webp`, the panel in the social card's laptop, is `timer.webp` cropped to the open notch with the wallpaper made transparent, resized to 880 px wide, at quality 92.
+Render it again when the hero's words or the Timer tab change.
+`notch-timer.webp`, the panel in the social card's laptop, is the app's Timer render (`docs/images/study.png`) cropped to the open notch with the wallpaper made transparent, resized to 880 px wide, at quality 92.
 `pixel-cat.png` is the app's gray tabby (`PetBreed.grayTabby`) at 1x: the `sit` and `blink` frames from `PetComposer.clip`, rendered by `PetRenderer`, cropped to 22x26 px and placed side by side.
 The stylesheet draws it at 2x or 3x with `image-rendering: pixelated`, peeking out from behind the hero laptop, and blinks it every five seconds unless the visitor prefers reduced motion.
 To export it again, a throwaway test in `Tests/TabbiKitCoreTests` can write those frames to PNG with `CGImageDestination`.
-The press kit in `press/` holds `tabbi-icon-1024.png` (`docs/brand/assets/tabbi-icon-1024.png`) and the four home page tabs as lossless PNGs from `docs/images` (`tabbi-timer.png` is `study.png`), each saved again by Pillow with `optimize=True`.
+The press kit in `press/` holds `tabbi-icon-1024.png` (`docs/brand/assets/tabbi-icon-1024.png`) and four tab screenshots as lossless PNGs from `docs/images` (`tabbi-timer.png` is `study.png`), each saved again by Pillow with `optimize=True`.
 Copy them again when the icon or those screenshots change; the About page shows the zip's size by itself.
 `grain.png` is a 160 px grayscale noise tile, drawn with Pillow, for the paper grain over the page.
-When the app's screenshots change, run `python3 site/_tab_shots.py` from the repo root to cut and convert them again.
 
 ## Hero animation
 

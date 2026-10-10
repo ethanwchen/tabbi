@@ -15,7 +15,8 @@ import sys
 import zipfile
 from html.parser import HTMLParser
 
-from _partials import page, download_button, PAW, DOWNLOAD, DOWNLOAD_ICON, GITHUB, ISSUES, ORIGIN, SUGGESTIONS, SUPPORT_EMAIL
+from _partials import page, download_button, PAW, DOWNLOAD, DOWNLOAD_ICON, GITHUB, ISSUES, ORIGIN, RELEASES_URL, SUGGESTIONS, SUPPORT_EMAIL
+from _releases import RELEASES, VERSION
 from _legal import PRIVACY, PRIVACY_HERO, TERMS, TERMS_HERO
 from _demo import DEMO, demo_data
 
@@ -49,27 +50,17 @@ def unobfuscate(html):
 # Home
 # --------------------------------------------------------------------------
 
-# (image, label, name, line, alt). The screenshots are the app's own snapshot
-# renders from docs/images, so the site shows exactly what the app draws.
-TABS = [
-    ('timer', 'Timer', 'Timer', 'Pomodoro and quick timers, with focus sounds.',
-     'The Timer tab: a Pomodoro ring at 15:14 with focus sounds and today\'s total'),
-    ('today', 'Today', 'Today', 'Your to-dos and what is next on the calendar.',
-     'The Today tab: a checklist on the left and upcoming meetings on the right'),
-    ('closet', 'Closet', 'Closet', 'Dress up your pet with the points you earn.',
-     'The Closet: a pixel cat with costumes and accessories to choose from'),
-    ('party', 'Party', 'Party', 'Study with friends, pets side by side.',
-     'The Party tab: friends\' pets sitting together with their study status'),
+# The tabs and features the notch demo above does not show, one line each.
+MORE = [
+    ('Party', 'Study with friends, pets side by side. Invite them with a link.'),
+    ('Recap', 'A Sunday look back at your week. Streak freezes cover days off.'),
+    ('Widget', 'Your pet, your streak and the timer on your desktop.'),
+    ('Ask AI', 'Ask the AI you already use, even one that runs on your Mac.'),
 ]
-
-# How wide a tab screenshot draws: one column under 600 px, two under 1000,
-# then four. The card crops the image to 1120 of its 1360 px, so each width
-# is scaled up by that 1.21 to ask for enough pixels.
-TAB_SIZES = '(max-width: 600px) calc(121vw - 60px), (max-width: 1000px) calc(60vw - 50px), 300px'
 
 HOME_HERO = {
     'home': True,
-    'title': 'A little cat for your notch.',
+    'title': 'A little cat for your <span class="hl">notch</span>.',
     'subtitle': 'A cozy panel of tabs in your laptop notch.',
     'cta': f'''<div class="cta">{download_button()}</div>
         <p class="cta-note">Free, macOS 14+</p>''',
@@ -91,22 +82,80 @@ HOME_HERO = {
       </div>''',
 }
 
+# The trust stickers' little line icons, drawn like the paw: one stroke
+# weight, round ends, colored by the card.
+def sticker_icon(paths):
+    return ('<svg class="trust-mark" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">'
+            '<g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'
+            + paths + '</g></svg>')
+
+
+HEART = sticker_icon('<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>')
+CODE = sticker_icon('<path d="M8.5 7 3.5 12l5 5M15.5 7l5 5-5 5"/>')
+LOCK = sticker_icon('<rect x="5" y="10.5" width="14" height="10" rx="3"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/>')
+FEATHER = sticker_icon('<path d="M19 5c-7 0-12 4.5-12 12v2M7 17c5 0 9-3 10.5-8.5M10.5 13.5H15"/>')
+
 HOME = DEMO + f'''
       <section class="tabs" aria-labelledby="tabs-title">
-        <h2 id="tabs-title" class="tabs-title">{PAW}<span>Click the notch, pick a tab</span></h2>
-        <div class="tab-row">
-''' + '\n'.join(f'''          <figure class="tab-card">
-            <span class="tab-label" aria-hidden="true">{label}</span>
-            <img src="/img/{img}.webp" srcset="/img/{img}-680.webp 680w, /img/{img}.webp 1360w" sizes="{TAB_SIZES}" width="1360" height="520" loading="lazy" decoding="async" alt="{alt}">
-            <figcaption><strong>{name}</strong>{line}</figcaption>
-          </figure>''' for img, label, name, line, alt in TABS) + '''
-        </div>
-        <p class="more">And more fun tabs inside. Missing one? <a href="/suggest">Suggest a tab</a>.</p>
+        <h2 id="tabs-title" class="tabs-title">{PAW}<span>More inside</span></h2>
+        <ul class="tab-row">
+''' + '\n'.join(f'''          <li class="tab-card"><span class="tab-label">{label}</span>{line}</li>''' for label, line in MORE) + f'''
+        </ul>
+        <p class="more">Plus seasonal outfits, SoundCloud and more. Missing a tab? <a href="/suggest">Suggest one</a>.</p>
+      </section>
+      <section class="steps" aria-labelledby="steps-title">
+        <h2 id="steps-title" class="tabs-title">{PAW}<span>How it works</span></h2>
+        <ol class="step-row">
+          <li class="step"><span class="step-num" aria-hidden="true">1</span><strong>Hover the notch</strong><span>Click, and it opens into a little panel.</span></li>
+          <li class="step"><span class="step-num" aria-hidden="true">2</span><strong>Pick a tab</strong><span>Your timer, your day, your music and more.</span></li>
+          <li class="step"><span class="step-num" aria-hidden="true">3</span><strong>Close it</strong><span>Your cat keeps you company beside the notch.</span></li>
+        </ol>
+        <figure class="peek">
+          <div class="peek-screen" role="img" aria-label="The closed notch, showing in turn a meeting soon, a song playing, the timer counting down and the cat">
+            <div class="peek-notch" aria-hidden="true">
+              <span class="peek-slide peek-meet"><span class="peek-l"><span class="peek-cal"></span></span><span class="peek-r">Standup in 5 min</span></span>
+              <span class="peek-slide peek-song"><span class="peek-l"><span class="peek-cover"></span></span><span class="peek-r peek-eq"><span></span><span></span><span></span><span></span></span></span>
+              <span class="peek-slide peek-timer"><span class="peek-l"><svg class="peek-ring" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.5"/><circle class="peek-arc" cx="10" cy="10" r="8.5" pathLength="100"/></svg></span><span class="peek-r">18:42</span></span>
+              <span class="peek-slide peek-pet"><span class="peek-l"><span class="peek-cat"></span></span><span class="peek-r">+35 pts</span></span>
+            </div>
+          </div>
+          <figcaption>Closed, it still peeks: a meeting, your song, the timer or your cat.</figcaption>
+        </figure>
+      </section>
+      <section class="trust" aria-label="Good to know">
+        <ul class="trust-row">
+          <li class="trust-card">{HEART}<span>Free forever</span></li>
+          <li class="trust-card">{CODE}<span>Open source (MIT)</span></li>
+          <li class="trust-card">{LOCK}<span>No account or tracking</span></li>
+          <li class="trust-card">{FEATHER}<span>A tiny native app</span></li>
+        </ul>
+      </section>
+      <section class="home-faq" aria-labelledby="faq-title">
+        <h2 id="faq-title" class="tabs-title">{PAW}<span>Little questions</span></h2>
+        <details class="faq">
+          <summary>Does my Mac need a notch?</summary>
+          <div class="faq-body"><p>No. Any Mac on macOS 14 or later works. Without a notch, Tabbi draws a small one at the top of the screen.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Do I need an account?</summary>
+          <div class="faq-body"><p>No. Everything works without one. Sign in with Apple only if you want your pet on more than one Mac.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Do I need an AI app?</summary>
+          <div class="faq-body"><p>Only the AI tabs do. Pick Claude, Codex, Gemini or Ollama, or bring your own key. Every other tab works without one.</p></div>
+        </details>
+        <details class="faq">
+          <summary>How do I quit Tabbi?</summary>
+          <div class="faq-body"><p>Right-click the notch and choose <strong>Quit Tabbi</strong>. Settings live in the same menu.</p></div>
+        </details>
+        <p class="more">More answers on the <a href="/support">Support page</a>.</p>
+      </section>
+      <section class="thanks" aria-label="Say hi">
         <div class="card-pair">
           <a class="gh-card" href="''' + GITHUB + '''">
-            <img class="gh-cat" src="/img/glyph.png" width="56" height="56" alt="">
+            <img class="gh-cat" src="/img/glyph.webp" width="56" height="56" alt="">
             <svg class="gh-mark" viewBox="0 0 16 16" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-            <span class="gh-text"><strong>Open source on GitHub</strong><span>Free forever. Come say hi or leave a star.</span></span>
+            <span class="gh-text"><strong>Open source on GitHub</strong><span>Come say hi or leave a star.</span></span>
             <span class="gh-arrow" aria-hidden="true">&rarr;</span>
           </a>
           <a class="gh-card coffee-card" href="https://buymeacoffee.com/ethanpolar">
@@ -123,6 +172,11 @@ HOME = DEMO + f'''
             <span class="gh-arrow" aria-hidden="true">&rarr;</span>
           </a>
         </div>
+      </section>
+      <section class="outro" aria-labelledby="outro-title">
+        <h2 id="outro-title" class="outro-title">Give your notch a cat.</h2>
+        <div class="cta">''' + download_button() + '''</div>
+        <p class="cta-note">No account. macOS 14 or later.</p>
       </section>
 '''
 
@@ -141,6 +195,7 @@ SOFTWARE_APP = {
     'screenshot': ORIGIN + '/img/social-preview.png',
     'applicationCategory': 'ProductivityApplication',
     'operatingSystem': 'macOS 14 or later',
+    'softwareVersion': VERSION,
     'downloadUrl': DOWNLOAD,
     'softwareHelp': ORIGIN + '/support',
     'isAccessibleForFree': True,
@@ -173,9 +228,9 @@ SUPPORT = f'''
         <h2>Contact</h2>
         <p>Email <a href="mailto:{SUPPORT_EMAIL}">{SUPPORT_EMAIL}</a>.
           A person reads every message, usually within a few days.
-          It helps to say which Mac and macOS version you have, which Tabbi version (right-click the notch, then <strong>Settings &gt; About</strong>), and what you were doing.</p>
+          Say which Mac, macOS and Tabbi version you have (right-click the notch, then <strong>Settings &gt; About</strong>), and what you were doing.</p>
         <p>Found a bug or have an idea? <a href="{ISSUES}">Open an issue on GitHub</a>.
-          Please report security problems privately by email rather than in a public issue.</p>
+          Security problems go by email, please, not in a public issue.</p>
       </div>
 
       <h2>Common questions</h2>
@@ -253,16 +308,16 @@ SUPPORT = f'''
 '''
 
 
-# The press kit: the icon at 1024 px and the four tabs from the home page,
-# as lossless PNGs, zipped by the build.
+# The press kit: the icon at 1024 px and four tab screenshots, as lossless
+# PNGs, zipped by the build.
 PRESS = HERE / 'press'
 PRESS_KIT = 'tabbi-press-kit.zip'
-PRESS_MB = f"{sum(f.stat().st_size for f in PRESS.glob('*.png')) / 1e6:.1f} MB"
+PRESS_MB = f"{sum(f.stat().st_size for f in PRESS.glob('*.png')) / 1e6:.1f}&nbsp;MB"
 
 
 ABOUT = f'''
       <div class="about">
-        <img class="about-cat" src="/img/glyph.png" width="96" height="96" alt="">
+        <img class="about-cat" src="/img/glyph.webp" width="96" height="96" alt="">
         <p class="about-lead">Hi, it&rsquo;s Ethan.</p>
         <p>I made Tabbi because I wanted my study tools in one cozy spot, right where I already look: the notch.</p>
         <p>It&rsquo;s free and open source. No ads, no tracking, no account needed.</p>
@@ -275,10 +330,25 @@ ABOUT = f'''
           <h2>Press kit</h2>
           <p>Tabbi is a free, open source app for macOS 14 or later. It turns the laptop notch into a cozy panel of tabs: a focus timer, your day, music, AI, Anki flashcards and a pet cat or dog. No ads, no tracking.</p>
           <div class="cta center">
-            <a class="btn soft" href="/press/{PRESS_KIT}" download title="The icon and four screenshots">Download ({PRESS_MB} ZIP)</a>
+            <a class="btn soft" href="/press/{PRESS_KIT}" download title="A ZIP of the icon and four screenshots">Get the kit ({PRESS_MB})</a>
           </div>
         </div>
       </div>
+'''
+
+
+# --------------------------------------------------------------------------
+# What's new
+# --------------------------------------------------------------------------
+
+# One sentence per release, newest first (_releases.py). The full notes stay
+# on GitHub.
+WHATS_NEW = '\n'.join(f'''
+        <article class="release" id="v{version}">
+          <h2><span class="release-tag">v{version}</span> <span class="release-when">{when}</span></h2>
+          <p>{sentence}</p>
+        </article>''' for version, when, sentence in RELEASES) + f'''
+        <p class="release-more">Every change in detail is in the <a href="{RELEASES_URL}">release notes on GitHub</a>.</p>
 '''
 
 
@@ -328,7 +398,7 @@ SUGGEST = f'''
 
 THANKS = '''
       <div class="lost">
-        <img src="/img/glyph.png" width="128" height="128" alt="">
+        <img src="/img/glyph.webp" width="96" height="96" alt="">
         <p class="measure">Every idea gets read. If you left an email, you may hear back.</p>
         <div class="cta center">
           <a class="btn" href="/">Back to the start</a>
@@ -340,7 +410,7 @@ THANKS = '''
 
 NOT_FOUND = '''
       <div class="lost">
-        <img src="/img/glyph.png" width="128" height="128" alt="">
+        <img src="/img/glyph.webp" width="96" height="96" alt="">
         <p class="measure">This page may have moved, or the link was wrong.</p>
         <div class="cta center">
           <a class="btn" href="/">Back to the start</a>
@@ -373,7 +443,7 @@ INVITE_SLUGS = {'add': 'invite-add.html', 'join': 'invite-join.html', 'invalid':
 def invite_body(label, note):
     return f'''
       <div class="invite">
-        <img src="/img/glyph.png" width="96" height="96" alt="">
+        <img src="/img/glyph.webp" width="96" height="96" alt="">
         <p class="eyebrow">{label}</p>
         <p class="invite-code">{INVITE_SHOWN}</p>
         <div class="cta center">
@@ -397,7 +467,7 @@ INVITE_JOIN = invite_body(
 
 INVITE_INVALID = f'''
       <div class="lost">
-        <img src="/img/glyph.png" width="128" height="128" alt="">
+        <img src="/img/glyph.webp" width="96" height="96" alt="">
         <p class="measure">The code in this link is not one Tabbi hands out. Ask your friend to copy their invite link again, or type their code in the Party tab.</p>
         <div class="cta center">
           <a class="btn" href="{DOWNLOAD}">{DOWNLOAD_ICON}<span>Download Tabbi</span></a>
@@ -447,6 +517,9 @@ pages = [
     ('terms.html', 'Terms of Use | Tabbi',
      'The terms for using the Tabbi app and its optional friends service.',
      TERMS, {'title': TERMS_HERO[0], 'subtitle': TERMS_HERO[1]}, False, True),
+    ('whats-new.html', 'What\u2019s new | Tabbi',
+     'What each version of Tabbi brought, one line per release.',
+     WHATS_NEW, {'title': 'What&rsquo;s new', 'subtitle': 'What the cat brought home in each release.'}, False, True),
     ('suggest.html', 'Suggest | Tabbi',
      'Suggest a new tab, an integration or an improvement for Tabbi.',
      SUGGEST, {'title': 'Suggest', 'subtitle': 'An idea for a new tab, an integration or something better? Tell the cat.'}, False, True),
