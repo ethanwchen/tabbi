@@ -61,8 +61,8 @@ MORE = [
 # The icon beside the line on wide screens, above it on narrow ones, then
 # the page's one download button. The notch demo right below is the show.
 HOME_HERO = {
-    'title': 'A little study cat for your <span class="hl">notch</span>.',
-    'subtitle': 'A cozy panel of tabs in your laptop notch.',
+    'title': '<span class="ln">Focus with a cat</span> <span class="ln">in your <span class="hl">notch</span>.</span>',
+    'subtitle': 'A cozy study timer with a pixel pet, for your Mac.',
     'cta': f'''<div class="cta">{download_button()}</div>
         <p class="cta-note">Free, macOS 14+</p>''',
     'icon': '<img class="hero-icon" src="/img/icon-256.webp" width="256" height="256" alt="The Tabbi app icon: a cream British Shorthair cat with blue eyes on a golden yellow square">',
@@ -449,7 +449,7 @@ def invite_page(templates, action, raw, user_agent=''):
 
 
 pages = [
-    ('index.html', 'Tabbi: a little study cat for your notch',
+    ('index.html', 'Tabbi: focus with a cat in your notch',
      'Tabbi turns your laptop notch into a cozy panel of tabs: a focus timer, your day, music, AI, Anki flashcards and a pet cat or dog. Free and open source for macOS.',
      HOME, HOME_HERO, True, True),
     ('about.html', 'About | Tabbi',
