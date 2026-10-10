@@ -18,6 +18,8 @@
 #                       while sampling, as a user moving the mouse would
 #     --open TAB        hold the launched notch open on this tab's module id
 #                       (study, planner, spotify, claudeAsk, closet, ...)
+#     --cycle SEC       every SEC seconds open the launched notch on the next
+#                       tab or close it again, to watch memory over many opens
 #
 # The app is launched by running its binary directly, so this script knows
 # its PID and stops only that process. Nothing here needs sudo: top reports
@@ -38,6 +40,7 @@ check_leaks=1
 pointer_moves=0
 mover_pid=""
 open_tab=""
+cycle=""
 while [ $# -gt 0 ]; do
     case "$1" in
         --app) app=$2; shift ;;
@@ -51,7 +54,8 @@ while [ $# -gt 0 ]; do
         --no-leaks) check_leaks=0 ;;
         --pointer-moves) pointer_moves=$2; shift ;;
         --open) open_tab=$2; shift ;;
-        -h|--help) sed -n '2,26p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+        --cycle) cycle=$2; shift ;;
+        -h|--help) sed -n '2,28p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
         *) echo "unknown option: $1" >&2; exit 2 ;;
     esac
     shift
@@ -66,10 +70,11 @@ if [ -z "$pid" ]; then
     env_vars=()
     [ "$demo" = 1 ] && env_vars+=(TABBI_DEMO=1)
     [ -n "$open_tab" ] && env_vars+=(TABBI_PERF_OPEN="$open_tab")
+    [ -n "$cycle" ] && env_vars+=(TABBI_PERF_CYCLE="$cycle")
     env ${env_vars[@]+"${env_vars[@]}"} "$bin" >"$out/app.log" 2>&1 &
     pid=$!
     launched=1
-    echo "launched $bin as pid $pid (demo=$demo, open=${open_tab:-no}), warming up ${warmup}s"
+    echo "launched $bin as pid $pid (demo=$demo, open=${open_tab:-no}, cycle=${cycle:-no}), warming up ${warmup}s"
     sleep "$warmup"
 fi
 kill -0 "$pid" 2>/dev/null || { echo "pid $pid is not running" >&2; exit 1; }

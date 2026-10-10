@@ -16,6 +16,7 @@ scripts/measure-performance.sh --pointer-moves 60       # the same while the mou
 scripts/measure-performance.sh --live --duration 600    # real data
 scripts/measure-performance.sh --pid <pid> --no-leaks   # an app that is already running
 scripts/measure-performance.sh --open focus             # the notch held open on a tab
+scripts/measure-performance.sh --cycle 3                # open each tab in turn, closing in between
 ```
 
 The script launches the binary directly with `TABBI_DEMO=1` (unless `--live`), so it knows the PID and stops only that process.
@@ -34,6 +35,8 @@ The notch tracks the pointer with a global monitor, so this is how a user moving
 
 `--open <module id>` launches with `TABBI_PERF_OPEN` set, which opens the notch on that tab and pins it, so it stays open with no hand on the mouse.
 A module id that is not in the layout opens the first tab instead; the demo layout has `focus`, `study`, `planner`, `spotify` and more under the chevron.
+
+`--cycle <seconds>` launches with `TABBI_PERF_CYCLE` set: every that many seconds the notch opens on the next enabled tab (including the ones under the chevron and the Closet) or closes again, so a long run shows whether memory grows with each open and close.
 
 Measure on a quiet machine: real mouse movement during an "idle" run shows up as CPU (see below), so compare runs with `--pointer-moves`, or keep your hands off the mouse.
 
@@ -120,6 +123,21 @@ Pictures drawn into an image (`ImageRenderer` snapshots, the exported recap card
 
 What is left on Party is its own once-a-second countdown and the six pets' timer wakeups.
 `PetAnimationViewTests` guards the fix: the pet animates with no SwiftUI update, stops when it leaves the window, and draws its speech bubble where the SwiftUI drawing does.
+
+### Memory over many opens
+
+Demo data, release build, `--cycle 3 --duration 600 --interval 10`: the notch opened on each of the eight enabled tabs in turn and closed again, about 110 opens and 110 closes in 11 minutes.
+
+| 11 minutes, open and close every 3 s | Value |
+| --- | --- |
+| Footprint | 37 MB at the start, 39-42 MB throughout, 40 MB at the end |
+| CPU | 3.66% of one core (24.85 s) |
+| Context switches | 124 per second |
+| Leaks | 288 leaks, 14 KB, the same system framework cycles as an idle run |
+| Network | none |
+
+Memory does not grow with use: opening a tab for the tenth time costs no more memory than the first.
+The CPU is the open and close springs themselves, about 0.1 s of CPU per open or close, which a real day (a few dozen opens an hour) barely notices.
 
 ## Focus sounds
 

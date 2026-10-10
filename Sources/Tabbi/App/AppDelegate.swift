@@ -8,6 +8,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var notch: NotchController?
     /// Links that arrived before the notch was up, opened once it is.
     private var pendingLinks: [URL] = []
+    /// Drives `TABBI_PERF_CYCLE` measurement runs; nil otherwise.
+    private var perfCycle: Timer?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // The App Store installs, moves and updates the app itself, so its
@@ -56,6 +58,28 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             if let recap = services.recaps.store.unseen { services.recaps.store.markSeen(recap.week) }
             notch.model.open(ModuleID(tab))
             notch.model.isPinned = true
+        }
+        // scripts/measure-performance.sh --cycle <seconds>: open the notch on
+        // each tab in turn and close it between tabs, as a day of use would,
+        // so memory growth per open and close shows up.
+        if let seconds = ProcessInfo.processInfo.environment["TABBI_PERF_CYCLE"].flatMap(Double.init),
+           seconds > 0, let notch {
+            if let recap = services.recaps.store.unseen { services.recaps.store.markSeen(recap.week) }
+            var step = 0
+            perfCycle = Timer.scheduledTimer(withTimeInterval: seconds, repeats: true) { [weak notch] _ in
+                MainActor.assumeIsolated {
+                    guard let model = notch?.model else { return }
+                    if model.isOpen {
+                        model.close()
+                    } else {
+                        let tabs = model.layout.enabled
+                        guard !tabs.isEmpty else { return }
+                        model.open(tabs[step % tabs.count])
+                        model.isPinned = true
+                        step += 1
+                    }
+                }
+            }
         }
         let links = pendingLinks
         pendingLinks = []
