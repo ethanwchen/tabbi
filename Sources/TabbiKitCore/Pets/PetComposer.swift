@@ -236,13 +236,13 @@ public enum PetComposer {
             stampGesture(gesture, on: &canvas, layout: layout, headX: headX, headY: headY, pattern: pattern)
         }
         // Aura items float in the air, so they are placed in the frame and
-        // follow the view (front or side), not the body.
+        // follow the view (front, the side-on dachshund, or side), not the body.
         var aura: PetCanvas?
         let floating = auraItems(accessories)
         if !floating.isEmpty, stance != .hanging {
             var layer = PetCanvas(width: frameSize, height: frameSize)
             for item in floating {
-                let placement = stance == .sitting ? item.front : item.side
+                let placement = stance == .sitting ? layout.pick(item) : item.side
                 layer.stamp(placement.frames[phase % item.frameCount], x: placement.x, y: placement.y)
             }
             aura = layer
@@ -475,6 +475,7 @@ public enum PetComposer {
         case .halo: .head(CostumeArt.halo)
         case .cherryPetals: .aura(CostumeArt.cherryPetals)
         case .sparkleTrail: .aura(CostumeArt.sparkleTrail)
+        case .rainCloud: .aura(CostumeArt.rainCloud)
         }
     }
 
@@ -558,6 +559,10 @@ public enum PetComposer {
             case .dog: item.dog
             case .longDog: item.longDog
             }
+        }
+
+        func pick(_ item: CostumeArt.AuraItem) -> CostumeArt.BackItem.Placement {
+            family == .longDog ? item.longDog : item.front
         }
 
         func pick(_ item: CostumeArt.BackItem) -> CostumeArt.BackItem.Placement {

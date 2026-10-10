@@ -117,7 +117,8 @@
         "additionalProperties": false,
         "properties": {
           "front": { "$ref": "#/$defs/backPlacement" },
-          "side": { "$ref": "#/$defs/backPlacement" }
+          "side": { "$ref": "#/$defs/backPlacement" },
+          "longDog": { "description": "Around the dachshund, which sits side-on; the front loop when left out.", "$ref": "#/$defs/backPlacement" }
         }
       }
     },

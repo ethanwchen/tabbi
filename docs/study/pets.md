@@ -164,7 +164,7 @@ The cape falls to the floor beside the body from the front, its ermine collar on
 
 ### Aura items
 
-Cherry Petals and the Sparkle Trail are worn in the `aura` slot and float in the air around the pet.
+Cherry Petals, the Sparkle Trail and the Tiny Rain Cloud are worn in the `aura` slot and float in the air around the pet.
 An aura item lists two loops of `frames` with an `x` and `y` offset from the frame's top-left corner (`auraItems` in `costume.json`): `front` around a pet facing the viewer (sitting), and `side` around a pet seen from the side (walking, stretching, curled up).
 The frames are not tied to a body: each group of touching pixels is one particle, and a particle that would cover or touch the pet or one of its effects is left out of that frame whole.
 So petals pass in front of the pet and its wings without an outline, never hide part of it, and seem to drift behind it where they cross it.
@@ -174,6 +174,9 @@ From the front they fall in the free columns on both sides of the pet; from the 
 `PetItemLoopTests` checks on every body shape and in every animation that the petals never cover or touch the pet or its effects, that a particle shows on every tick, and that they move.
 The Sparkle Trail loops over 12 ticks: each sparkle glints for four (a gold dot, a gold star with a white heart for two ticks, then a white dot) and a new one starts every tick, so four show at a time.
 From the front they twinkle in place beside and above the pet; from the side each is born at the pet's back and drifts a pixel back per tick, so they trail behind it.
+The Tiny Rain Cloud is one particle, a white cloud with two puffs and a grey underside, that hangs beside the head from the front and over the back on a walk.
+Its drops fall a row a tick over an 8-tick loop, and each drop goes away as it reaches the pet, so the rain seems to land on it.
+The dachshund sits side-on with its head where other pets leave air, so an aura item may give it a loop of its own (`longDog`); the cloud uses one to hang over its back.
 
 ### Adding a costume item
 

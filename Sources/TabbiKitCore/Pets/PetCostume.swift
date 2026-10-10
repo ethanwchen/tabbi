@@ -91,6 +91,8 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
     case cherryPetals
     /// Gold sparkles that twinkle around the pet and trail behind it on a walk.
     case sparkleTrail
+    /// A tiny grey rain cloud that drizzles beside the pet.
+    case rainCloud
 
     public var slot: PetAccessorySlot {
         switch self {
@@ -101,7 +103,7 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
              .blindfoldedSorcerer, .astronautHelmet, .chunkyHeadphones, .backwardsCap, .flameHeadband,
              .goldenLaurel, .halo: .head
         case .angelWings, .kingsCape: .back
-        case .cherryPetals, .sparkleTrail: .aura
+        case .cherryPetals, .sparkleTrail, .rainCloud: .aura
         }
     }
 
@@ -145,6 +147,7 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
         case .halo: "Halo"
         case .cherryPetals: "Cherry Petals"
         case .sparkleTrail: "Sparkle Trail"
+        case .rainCloud: "Tiny Rain Cloud"
         }
     }
 

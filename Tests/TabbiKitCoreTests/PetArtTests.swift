@@ -105,6 +105,15 @@ final class PetArtTests: XCTestCase {
         XCTAssertEqual(item.front.y, 1)
         XCTAssertEqual(item.side.x, 2)
         XCTAssertEqual(item.side.frames, try [SpriteGrid("Z."), SpriteGrid(".Z")])
+        XCTAssertEqual(item.longDog.frames, item.front.frames, "the dachshund shares the front loop by default")
+
+        let ownLongDog = json.replacingOccurrences(of: #""side":"#, with: #""longDog": {"x": 3, "y": 0, "frames": [["Y"], ["Y"]]}, "side":"#)
+        XCTAssertEqual(try PetArtFile.decode(Data(ownLongDog.utf8)).auraItem("petals").longDog.x, 3)
+        let unevenLongDog = json.replacingOccurrences(of: #""side":"#, with: #""longDog": {"x": 3, "y": 0, "frames": [["Y"]]}, "side":"#)
+        XCTAssertThrowsError(try PetArtFile.decode(Data(unevenLongDog.utf8))) {
+            XCTAssertEqual($0 as? PetArtFile.LoadError,
+                           .invalidGrid(name: "petals.longDog", reason: "1 frames differ from the front's 2"))
+        }
 
         let uneven = json.replacingOccurrences(of: #"[["Z."], [".Z"]]"#, with: #"[["Z."]]"#)
         XCTAssertThrowsError(try PetArtFile.decode(Data(uneven.utf8))) {

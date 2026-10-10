@@ -192,10 +192,12 @@ struct PetArtFile: Sendable {
             file.backItems[name] = back
         }
         for (name, item) in raw.auraItems ?? [:] {
-            let aura = try CostumeArt.AuraItem(front: placement(item.front, "\(name).front"),
-                                               side: placement(item.side, "\(name).side"))
-            guard aura.side.frames.count == aura.frameCount else {
-                throw LoadError.invalidGrid(name: "\(name).side", reason: "\(aura.side.frames.count) frames "
+            let front = try placement(item.front, "\(name).front")
+            let aura = try CostumeArt.AuraItem(front: front, side: placement(item.side, "\(name).side"),
+                                               longDog: item.longDog.map { try placement($0, "\(name).longDog") } ?? front)
+            for (view, placement) in [("side", aura.side), ("longDog", aura.longDog)]
+            where placement.frames.count != aura.frameCount {
+                throw LoadError.invalidGrid(name: "\(name).\(view)", reason: "\(placement.frames.count) frames "
                     + "differ from the front's \(aura.frameCount)")
             }
             file.auraItems[name] = aura
@@ -307,9 +309,11 @@ struct PetArtFile: Sendable {
         }
 
         /// An aura item's loop around a pet facing the viewer and seen
-        /// from the side, offset from the frame's top-left corner.
+        /// from the side, offset from the frame's top-left corner, and
+        /// optionally around the dachshund, which sits side-on.
         struct AuraItem: Decodable {
             let front, side: BackPlacement
+            let longDog: BackPlacement?
         }
 
         let schema: String

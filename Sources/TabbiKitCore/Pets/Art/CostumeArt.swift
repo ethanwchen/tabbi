@@ -92,6 +92,9 @@ enum CostumeArt {
         let front: BackItem.Placement
         /// Around a pet seen from the side (walking, stretching, curled up).
         let side: BackItem.Placement
+        /// Around the dachshund sitting side-on, its head where other pets
+        /// leave air; the front loop unless the item needs its own.
+        let longDog: BackItem.Placement
 
         /// Frames in the item's loop, the same for both views.
         var frameCount: Int { front.frames.count }
@@ -288,4 +291,9 @@ extension CostumeArt {
     /// twinkle in place beside and above the pet; walking they are born at
     /// its back and drift away behind it, a trail.
     static let sparkleTrail = PetArt.costume.auraItem("sparkleTrail")
+    /// A small white cloud with two puffs and a grey underside that hangs
+    /// beside the head (over the back on a walk and on the side-on
+    /// dachshund) and drizzles: its drops fall a row a tick, and each one
+    /// goes away before it would land on the pet.
+    static let rainCloud = PetArt.costume.auraItem("rainCloud")
 }

@@ -20,7 +20,7 @@ final class PetItemLoopTests: XCTestCase {
     func testItemsWithAnEffectAndAnimatedShowpiecesAreTheOnesThatAnimate() {
         let animatedShopItems: Set<PetItem> = [
             .accessory(.angelWings), .accessory(.kingsCape), .accessory(.halo), .accessory(.cherryPetals),
-            .accessory(.sparkleTrail),
+            .accessory(.sparkleTrail), .accessory(.rainCloud),
         ]
         for item in PetItem.allCases {
             XCTAssertEqual(item.loopFrameCount > 1, item.effect != nil || animatedShopItems.contains(item), "\(item)")
@@ -30,6 +30,7 @@ final class PetItemLoopTests: XCTestCase {
         XCTAssertEqual(PetItem.accessory(.halo).loopFrameCount, 8)
         XCTAssertEqual(PetItem.accessory(.cherryPetals).loopFrameCount, 24)
         XCTAssertEqual(PetItem.accessory(.sparkleTrail).loopFrameCount, 12)
+        XCTAssertEqual(PetItem.accessory(.rainCloud).loopFrameCount, 8)
         XCTAssertEqual(PetItem.accessory(.flameHeadband).loopFrameCount, 4)
         XCTAssertEqual(PetItem.accessory(.goldenLaurel).loopFrameCount, 12)
         XCTAssertEqual(PetItem.accessory(.teamMedal).loopFrameCount, 8)
@@ -94,7 +95,7 @@ final class PetItemLoopTests: XCTestCase {
     /// a particle shows on every tick and the particles move whenever the
     /// pet is in view, and a pet hanging from the notch shows none.
     func testAuraItemsFloatAroundThePetOnEveryBodyShape() {
-        let auraItems: [PetAccessory] = [.cherryPetals, .sparkleTrail]
+        let auraItems: [PetAccessory] = [.cherryPetals, .sparkleTrail, .rainCloud]
         XCTAssertEqual(auraItems, PetAccessory.allCases.filter { $0.slot == .aura })
         for accessory in auraItems {
             let loop = PetItem.accessory(accessory).loopFrameCount
