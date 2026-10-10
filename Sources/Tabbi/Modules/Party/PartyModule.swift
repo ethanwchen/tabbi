@@ -22,12 +22,15 @@ final class PartyModule: NotchModule {
     private var grantsSubscription: AnyCancellable?
     /// The Apple account, which owns the Party data once signed in.
     private let account: SyncStore
+    /// Where the tab layout lives, so an invite can turn Party on.
+    private let settings: SettingsStore
     /// Kept alive here: the notification center holds its delegate weakly.
     private let notifications: PartyNotifications?
 
     init(context: ModuleContext) {
         store = PartyStore(runMode: context.runMode)
         account = context.accountSync
+        settings = context.settings
         let notifications = PartyNotifications.make(runMode: context.runMode)
         self.notifications = notifications
         store.followFocus(from: context.providers.$snapshot.map(\.focus).eraseToAnyPublisher())
@@ -99,6 +102,29 @@ final class PartyModule: NotchModule {
             },
             retry: { [weak store] in store?.retry() }
         )
+    }
+
+    // MARK: Invites
+
+    /// An invite link (`tabbi://add/<code>` or `tabbi://join/<code>`) was
+    /// opened: the notch asks about it, first offering to turn Party on.
+    func open(_ invite: PartyInvite) {
+        store.open(invite, partyIsOn: settings.settings.modules.isEnabled(Self.descriptor.id))
+    }
+
+    /// The invite's confirmation, which fills the notch while `inviteShowing`.
+    var inviteTakeover: NotchTakeover {
+        PartyInviteViews.takeover(store: store) { [weak self] in self?.turnOnForInvite() }
+    }
+
+    var inviteShowing: AnyPublisher<Bool, Never> {
+        store.$invite.map { $0 != nil }.removeDuplicates().eraseToAnyPublisher()
+    }
+
+    /// Adds Party as the last tab, which starts it, then lets the invite go on.
+    private func turnOnForInvite() {
+        settings.settings.modules.add(Self.descriptor.id)
+        store.inviteTurnedPartyOn()
     }
 
     func makePanel() -> AnyView {

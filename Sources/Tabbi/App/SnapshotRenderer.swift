@@ -227,6 +227,11 @@ enum SnapshotRenderer {
         // First-run setup in the notch, one shot per step of the active kit.
         shots += onboardingShots(services: services, geometry: geometry, layout: layout)
 
+        // What a Party invite link opens, one shot per step worth seeing.
+        if services.modules.module(PartyModule.self) != nil {
+            shots += inviteShots(geometry: geometry, layout: layout)
+        }
+
         for (theme, folder) in themeFolders {
             Theme.apply(theme)
             try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
@@ -355,11 +360,15 @@ enum SnapshotRenderer {
         let name: String
         let model: NotchViewModel
         var onboarding: OnboardingFlow?
+        /// The Party invite link's confirmation showing in it, if any.
+        var invite: PartyInviteFlow?
 
-        init(_ name: String, _ model: NotchViewModel, onboarding: OnboardingFlow? = nil) {
+        init(_ name: String, _ model: NotchViewModel, onboarding: OnboardingFlow? = nil,
+             invite: PartyInviteFlow? = nil) {
             self.name = name
             self.model = model
             self.onboarding = onboarding
+            self.invite = invite
         }
     }
 
@@ -389,6 +398,36 @@ enum SnapshotRenderer {
         return shots
     }
 
+    /// A friend link asking to turn Party on, then to add the friend, then
+    /// added; a party link asking to join; and an expired friend link.
+    private static func inviteShots(geometry: NotchGeometry, layout: ModuleLayout) -> [Shot] {
+        let now = Date()
+        let invitee = PartyProfile.demoInvitee
+        let add = PartyInvite.addFriend(code: invitee.code)
+        var confirming = PartyInviteFlow(invite: add, partyIsOn: true)
+        confirming.update(with: PartyState.demo(.lobby, now: now), blocked: [])
+        var added = confirming
+        _ = added.begin()
+        added.didAddFriend(invitee, added: true)
+        var expired = confirming
+        _ = expired.begin()
+        expired.didFail(.unknownCode)
+        var join = PartyInviteFlow(invite: .joinParty(code: "ZX7M2P"), partyIsOn: true)
+        join.update(with: PartyState.demo(now: now), blocked: [])
+        let flows: [(String, PartyInviteFlow)] = [
+            ("party-invite-turn-on", PartyInviteFlow(invite: add, partyIsOn: false)),
+            ("party-invite-add", confirming),
+            ("party-invite-added", added),
+            ("party-invite-join", join),
+            ("party-invite-expired", expired),
+        ]
+        return flows.map { name, flow in
+            let model = NotchViewModel(geometry: geometry, layout: layout)
+            model.showsTakeover = true
+            return Shot(name, model, invite: flow)
+        }
+    }
+
     /// Renders each notch shot in the active theme into `folder`.
     private static func renderNotchShots(_ shots: [Shot], services: AppServices,
                                          closet: ClosetModule?, style: NotchStyle, to folder: URL) {
@@ -410,6 +449,7 @@ enum SnapshotRenderer {
                 : name == "open-claudeAsk-screen-access" ? .screenAccess : .chat)
             timer?.showForSnapshot(partySession: name == "open-study-party" ? partySession : nil)
             party?.showCelebrationForSnapshot(name == "open-party-celebrating")
+            party?.showInviteForSnapshot(shot.invite)
             today?.showForSnapshot(name == "open-planner-yesterday" ? .yesterday
                 : name.hasPrefix("open-planner-tomorrow") ? .tomorrow : .today,
                 planning: name == "open-planner-tomorrow-plan")
@@ -454,6 +494,7 @@ enum SnapshotRenderer {
         services.onboarding.show(nil)
         timer?.showForSnapshot(partySession: nil)
         party?.showCelebrationForSnapshot(false)
+        party?.showInviteForSnapshot(nil)
         today?.show(.today)
         schedule?.showForSnapshot(.today)
         nowPlaying?.showForSnapshot(.players)

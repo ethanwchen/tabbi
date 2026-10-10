@@ -39,8 +39,7 @@ enum ModuleViews {
             nowPlayingLeading: { AnyView(compactLeading(services: services)) },
             nowPlayingTrailing: { AnyView(compactTrailing(services: services)) },
             openSettings: { services.openSettings() },
-            takeover: OnboardingViews.takeover(store: services.onboarding, modules: services.modules,
-                                               providers: services.providers),
+            takeover: takeover(services: services),
             setNotchMode: { services.settings.settings.notchMode = $0 },
             checkForUpdates: checkForUpdates,
             suggestFeedback: { Feedback.open() },
@@ -49,6 +48,36 @@ enum ModuleViews {
                 services?.modules.perform(action, on: module)
             }
         )
+    }
+
+    /// What fills the whole open notch for a while: first-run onboarding,
+    /// or else a Party invite link's confirmation.
+    @MainActor
+    private static func takeover(services: AppServices) -> NotchTakeover {
+        let onboarding = OnboardingViews.takeover(store: services.onboarding, modules: services.modules,
+                                                  providers: services.providers)
+        guard let invite = services.modules.module(PartyModule.self)?.inviteTakeover else { return onboarding }
+        let store = services.onboarding
+        return NotchTakeover(
+            leading: { AnyView(TakeoverSwitch(onboarding: store, first: onboarding.leading, second: invite.leading)) },
+            trailing: { AnyView(TakeoverSwitch(onboarding: store, first: onboarding.trailing, second: invite.trailing)) },
+            body: {
+                AnyView(StatusPetProvider(providers: services.providers) {
+                    TakeoverSwitch(onboarding: store, first: onboarding.body, second: invite.body)
+                })
+            }
+        )
+    }
+
+    /// Onboarding while it runs, the invite otherwise.
+    private struct TakeoverSwitch: View {
+        @ObservedObject var onboarding: OnboardingStore
+        let first: () -> AnyView
+        let second: () -> AnyView
+
+        var body: some View {
+            if onboarding.flow != nil { first() } else { second() }
+        }
     }
 
     /// "Check for Updates…" in the notch's context menu, while the updater
@@ -85,7 +114,11 @@ enum ModuleViews {
             hotkeyRegistered: { store.hotkeyIsRegistered = $0 },
             preview: services.ticker.$item.eraseToAnyPublisher(),
             previewVisible: { services.ticker.setActive($0) },
-            takeover: services.onboarding.$flow.map { $0 != nil }.eraseToAnyPublisher()
+            takeover: services.onboarding.$flow.map { $0 != nil }
+                .combineLatest(services.modules.module(PartyModule.self)?.inviteShowing ?? Just(false).eraseToAnyPublisher())
+                .map { $0 || $1 }
+                .removeDuplicates()
+                .eraseToAnyPublisher()
         )
     }
 }
