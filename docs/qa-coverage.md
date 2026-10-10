@@ -124,7 +124,9 @@ Their parsing lives in `TabbiKitCore` and is covered; what is missing is state h
 Status: `AnkiStoreRefreshTests` drives `AnkiStore` against a scripted AnkiConnect transport (the store now takes an optional `client`).
 It covers the first fetch at start (counts shared as Today's goal, answered cards logged once and then only the new ones), Anki quitting (setup screen, counts cleared, nothing shared), a busy or garbled Anki (the last counts kept with a warning, then recovery), an older slower refresh landing after a newer one, a refresh and a Sync that finish after `stop()` (dropped, no warning, no extra fetch), and Sync failing then succeeding (a second click while syncing does nothing).
 The store's own `Task.isCancelled` check after a refresh is backed up by the client, which already throws for a cancelled request, so removing only that check changes nothing visible.
-`ConnectionsStore`, `FocusController`, `StudyReminderScheduler`, `ScheduleStore`, `SpotifyController`, `PetCoachController` and `SystemMonitor` are still below 40%.
+`ConnectionsStoreTests` covers `ConnectionsStore` where it never probes the Mac: demo mode (sample rows, no checks, no actions, a pretend Do Not Disturb test), the Party row fed by the Party tab (each state shown, repeats ignored, the setup sheet starting and retrying through the tab, a second tab replacing the first), counting the views that watch a row (returning to Tabbi checks only rows still shown), and the Do Not Disturb switch, which probes nothing while its row is hidden.
+The probed rows (Spotify, Music, Anki, Calendar, Claude, notifications, Focus shortcuts) need real apps and permissions and are still checked by hand.
+`FocusController`, `StudyReminderScheduler`, `ScheduleStore`, `SpotifyController`, `PetCoachController` and `SystemMonitor` are still below 40%.
 
 ### 9. Backend
 
