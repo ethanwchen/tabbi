@@ -181,6 +181,10 @@ enum SnapshotRenderer {
             let weeks = NotchViewModel(geometry: geometry, layout: withCloset)
             weeks.open(.closet)
             shots.append(Shot("open-closet-weeks", weeks))
+            // An animated item (the flapping angel wings) on the big pet.
+            let animated = NotchViewModel(geometry: geometry, layout: withCloset)
+            animated.open(.closet)
+            shots.append(Shot("open-closet-animated", animated))
             // The pet's paw at the far right of the header while another tab is open.
             let withPaw = NotchViewModel(geometry: geometry, layout: withCloset)
             withPaw.open(withCloset.tabs.first)
@@ -561,6 +565,7 @@ enum SnapshotRenderer {
                     : name == "open-closet-limited" ? .limited
                     : name == "open-closet-streak" ? .streak : name == "open-closet-weeks" ? .weeks : firstSection
             }
+            closet?.store.tryOn(name == "open-closet-animated" ? .accessory(.angelWings) : nil)
             model.themeID = Theme.current.id
             if name == "closed-pet-cheer", case .pet(var pet) = model.preview {
                 // Mid first hop, with the sparkles out.
