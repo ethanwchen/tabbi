@@ -25,10 +25,10 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
         <h2>The short version</h2>
         <ul>
           <li>Tabbi works without an account, and has no analytics, no advertising and no telemetry.</li>
-          <li>Your tasks, calendar, activity history, Claude chats and settings stay on your Mac.</li>
-          <li>Claude features run through the <code>claude</code> command already installed on your Mac. Tabbi never reads your credentials.</li>
+          <li>Your tasks, calendar, activity history, AI chats and settings stay on your Mac.</li>
+          <li>AI features are off until you pick an AI provider. When you use one, your prompt goes to that provider under its terms, not to us.</li>
           <li>Only the optional Party tab and the optional Sign in with Apple talk to a Tabbi server. They store a nickname, your pet and study stats, never your email, real name or IP address.</li>
-          <li>The one exception is a crash report, which Tabbi sends only if you say yes after a crash.</li>
+          <li>Crash reports are sent only if you say yes, and only from the direct download.</li>
           <li>We do not sell or share personal information, and we do not use it to train anything.</li>
           <li>You can delete your Party data or your account at any time, inside the app: see <a href="#deleting">Deleting your data</a>.</li>
         </ul>
@@ -39,20 +39,32 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
         Contact {MAIL} about anything in this policy.</p>
 
       <h2 id="mac">2. What stays on your Mac</h2>
-      <p class="measure">Most of Tabbi never leaves your computer. We cannot see any of the following, because it is never sent to us:</p>
+      <p class="measure">Most of Tabbi never leaves your computer. We cannot see any of the following, because it is never sent to us.
+        Tabbi comes as a direct download from tabbinotch.com and as a Mac App Store edition; where they differ, this policy says so.</p>
       <ul class="measure">
-        <li><strong>Tasks, plans and settings</strong> are files in <code>~/Library/Application Support/Tabbi</code> and Tabbi's preferences.</li>
-        <li><strong>Calendar events</strong> are read through macOS, with your permission, to show what is next and to plan your day. Plan my day runs on your Mac. Events never leave it, except as described for Claude below.</li>
-        <li><strong>Activity history</strong> (focus sessions, breaks, cards reviewed, tasks done) is a log on your Mac that powers streaks, points and your pet.</li>
-        <li><strong>Claude features</strong> (Ask Claude, Refine with Claude, Wrap up) run the <code>claude</code> command-line tool you installed yourself. What you type, a screenshot you attach, or, when you press Refine or Wrap up, your task titles and today's events, are passed to that tool, which sends them to Anthropic under your own Anthropic account and Anthropic's terms. Tabbi never reads your credentials or the keychain. Chat history is saved on your Mac. Claude Usage reads token counts from <code>~/.claude/projects</code>, read-only.</li>
+        <li><strong>Tasks, plans, your pet and settings</strong> are files in <code>~/Library/Application Support/Tabbi</code> and Tabbi's preferences. The App Store edition keeps them inside <code>~/Library/Containers/dev.tabbi.Tabbi</code>.</li>
+        <li><strong>Calendar events</strong> are read through macOS, with your permission, to show what is next and to plan your day. Plan my day works out its plan on your Mac. Events never leave it, except as described for AI below.</li>
+        <li><strong>Activity history</strong> (focus sessions, breaks, cards reviewed, tasks done) is a log on your Mac that powers streaks, points, the weekly recap and your pet.</li>
         <li><strong>Anki</strong> data comes from Anki on your own Mac through AnkiConnect, a local connection that does not leave the computer.</li>
-        <li><strong>Spotify and Apple Music</strong> are controlled through Apple Events, with your permission. Album artwork is downloaded from the address the music app provides (for Spotify, its image server), which, like any web request, shows that server your IP address.</li>
-        <li><strong>Screenshots</strong> for Ask Claude use Screen Recording permission and go only to your local <code>claude</code> command.</li>
+        <li><strong>Music.</strong> Now Playing controls Spotify and Apple Music through Apple Events, with your permission. In the direct download you can also turn on SoundCloud, which reads the SoundCloud tab in Safari or Chrome, again with your permission. Album artwork is downloaded from the address the player provides (Spotify's or SoundCloud's image server), which, like any web request, shows that server your IP address.</li>
+        <li><strong>Reminders and notifications</strong> (the optional study reminder, timer alerts, the weekly recap, a friend's milestone in Party) are scheduled by Tabbi on your Mac through macOS notifications, with your permission.</li>
+        <li><strong>The widget</strong> shows your pet, streak and timer from a small file Tabbi writes into its own shared folder on your Mac.</li>
+        <li><strong>The weekly recap image</strong> is drawn on your Mac. It goes only where you send it with the Share button.</li>
       </ul>
-      <p class="measure"><strong>Updates.</strong> Once a day Tabbi downloads its release feed from GitHub to check for a new version. Nothing about you is sent, though GitHub sees the request like any web server. You can turn this off in <strong>Settings &gt; About</strong>.</p>
-      <p class="measure"><strong>Crash reports.</strong> After a crash or a freeze, Tabbi asks before sending a report, which holds only the Tabbi and macOS versions, the edition, the crash type and the app's stack trace, never your content, names, tasks or tokens; we keep it at most 90 days.
+      <h3 id="ai">AI features</h3>
+      <p class="measure">Ask AI, Plan my day's Refine, Wrap up's day review and the Schedule's Refine use an AI provider you pick in <strong>Settings &gt; Connections</strong>.
+        Nothing is sent until you pick one, and Tabbi never runs a provider you did not pick.</p>
+      <ul class="measure">
+        <li><strong>What is sent.</strong> What you type in Ask AI and a screenshot if you attach one (this needs Screen Recording permission). When you press Refine or ask for a day review: your task titles, today's events, and today's focus and study totals.</li>
+        <li><strong>Where it goes.</strong> To the provider you picked, under that provider's own terms and privacy policy, not ours: Anthropic (Claude), OpenAI or Google (Gemini) through your own API key, or through the Claude Code, Codex or Gemini command-line tool you installed and signed in to yourself. With Ollama, it goes to a model running on your own Mac and does not leave it. The App Store edition offers only API keys and Ollama.</li>
+        <li><strong>Your keys and accounts.</strong> An API key you enter is stored in your Mac's Keychain, never in a file, and is sent only to its provider. Tabbi never reads a command-line tool's own sign-in or credentials.</li>
+        <li><strong>On your Mac.</strong> Ask AI's chat history is saved on your Mac, and you can delete chats one by one or all at once. AI Usage (direct download only) reads token counts from Claude Code's and Codex's local logs, read-only.</li>
+      </ul>
+      <p class="measure"><strong>Updates.</strong> The direct download checks GitHub once a day for a new version. Nothing about you is sent, though GitHub sees the request like any web server. You can turn this off in <strong>Settings &gt; About</strong>.
+        The App Store edition is updated by the App Store.</p>
+      <p class="measure"><strong>Crash reports.</strong> After a crash or a freeze, the direct download asks before sending a report, which holds only the Tabbi and macOS versions, the edition, the crash type and the app's stack trace, never your content, names, tasks or tokens. It is not linked to you, and we keep it at most 90 days.
         You can switch between asking, always sending and never sending in <strong>Settings &gt; About</strong>.
-        The Mac App Store edition sends none and relies on Apple's crash reports.</p>
+        The App Store edition sends none and relies on Apple's crash reports, which you control in macOS.</p>
 
       <h2 id="friends">3. The friends service (Party)</h2>
       <p class="measure">Party is optional and off unless you turn it on.
@@ -73,6 +85,7 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
             <tr><td>Blocks</td><td>The friend codes you blocked, and when.</td><td>Until you unblock them</td></tr>
             <tr><td>Reports</td><td>A report you send: the reported person's friend code, their name and pet name at that moment, your friend code, the reason, your optional note (up to 280 characters) and the time.</td><td>Until the reporter or the reported person deletes their data</td></tr>
             <tr><td>Moderation</td><td>Whether a user is banned, and a name or pet name we replaced, so it cannot be set again.</td><td>Until that user deletes their data</td></tr>
+            <tr><td>Limited items</td><td>The ids of limited edition pet items we gave you for free (for example the launch-week cap), and when.</td><td>Until you delete your data</td></tr>
           </tbody>
         </table>
       </div>
@@ -81,7 +94,9 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
         Cloudflare, which hosts the server, sees connection details like any web host. The server uses your IP address only in memory, to limit abuse, and never stores it.</p>
       <p class="measure"><strong>Who can see it.</strong> Friends see your profile, presence, whether you are in a party, and your weekly minutes.
         Members of your party see the profile and presence of everyone in it, including people who are not their friends.
-        There is no directory or search. <strong>Go invisible</strong> in the Party options shows you as offline to friends.</p>
+        There is no directory or search: nobody can find you without your friend code or a party code.
+        An invite link (<code>tabbinotch.com/add/...</code> or <code>/join/...</code>) holds only that code, so share it only with people you want to study with. The site does not store the code.
+        <strong>Go invisible</strong> in the Party options shows you as offline to friends.</p>
       <p class="measure"><strong>Blocking, reporting and bans.</strong> Right-click a friend or a party member in the Party tab to block or report them.
         Blocking ends your friendship and hides the two of you from each other in friend lists, parties and the leaderboard.
         They cannot add you again or join a party you host, and they are not told.
@@ -92,6 +107,7 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
       <h2 id="account">4. The optional account (Sign in with Apple)</h2>
       <p class="measure">Tabbi works fully without an account.
         If you choose <strong>Sign in with Apple</strong> in <strong>Settings &gt; General</strong>, your pet and progress sync across the Macs you sign in on, and your Party friend code and friends follow you.
+        The App Store edition uses the Mac's own Apple sign-in. The direct download opens Apple's sign-in page in your browser, which hands the sign-in to our server; the server holds it for at most two minutes, until the app picks it up.
         Tabbi asks Apple only for your name, never your email address. Your name stays on your Mac, to greet you in Settings, and is never sent to our server.
         On top of the friends service data above, the server stores:</p>
       <div class="scroller">
@@ -102,12 +118,13 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
           <tbody>
             <tr><td>Apple link</td><td>Apple's stable user id for Tabbi (an opaque id, not your email or Apple Account name), linked to your friend code.</td><td>Until you delete your account</td></tr>
             <tr><td>Apple refresh token</td><td>Kept only so we can revoke Tabbi's Sign in with Apple access when you delete your account. It is never used to read anything from Apple.</td><td>Until you delete your account</td></tr>
-            <tr><td>Mac tokens</td><td>One random secret token per Mac you signed in on, stored as a one-way hash.</td><td>Until you delete your account</td></tr>
+            <tr><td>Mac tokens</td><td>One random secret token per Mac you signed in on, stored as a one-way hash.</td><td>Until you sign out on that Mac or delete your account; only the 20 most recent are kept</td></tr>
+            <tr><td>Pending web sign-in</td><td>For the browser sign-in only: Apple's user id and refresh token, waiting for the app, with one-way hashes of a one-time code and of the app's sign-in state.</td><td>At most two minutes</td></tr>
             <tr><td>Sync document</td><td>Your pet's look (species, breed, name, outfit), points earned and spent on each Mac (each Mac is a random id, not its name), the items you unlocked, the days you studied (at most the last 400) and your longest streak.</td><td>Until you delete your account</td></tr>
           </tbody>
         </table>
       </div>
-      <p class="measure">Your calendar, tasks, activity history, Claude chats and settings are never synced.
+      <p class="measure">Your calendar, tasks, activity history, AI chats, API keys and settings are never synced.
         Nobody but you can see your sync document or Apple link, friends included.
         To check a sign-in, and to revoke it when you delete your account, the server talks to Apple and sends only the token or code Apple gave the app.
         If you sign in on a Mac that already had a friend code of its own, its friends and study minutes move to your account and the old code is deleted.
@@ -117,7 +134,8 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
       <p class="measure"><strong>On your Mac.</strong> Everything Tabbi keeps locally is yours to delete. Quit Tabbi, drag it to the Trash, and delete
         <code>~/Library/Application Support/Tabbi</code> and Tabbi's preferences
         (the <a href="{GITHUB}/blob/main/docs/install.md#uninstall">install guide</a> lists every folder).
-        Ask Claude chats can also be deleted one by one, or all at once, inside the app.</p>
+        For the App Store edition, delete <code>~/Library/Containers/dev.tabbi.Tabbi</code>.
+        Ask AI chats can also be deleted one by one, or all at once, inside the app, and an API key from its row in <strong>Settings &gt; Connections</strong>.</p>
       <p class="measure"><strong>Party, in the app.</strong></p>
       <ul class="measure">
         <li><strong>Leave a party</strong> from the Party tab. Your membership is removed at once, and a party is deleted when its last member leaves or after 12 hours without activity.</li>
@@ -134,12 +152,15 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
       <p class="measure"><strong>By email.</strong> If you can no longer use the app, email {MAIL} with your friend code (it is shown in the Party tab).
         To make sure the request is yours, we may ask you to change your Party nickname to a word we send you.
         We then delete the same data within 30 days, usually much sooner, and confirm by email.</p>
+      <p class="measure"><strong>Backups.</strong> Deleted data leaves the live service at once.
+        Copies can stay in backups for up to 30 days, used only to recover from an outage or a mistake.
+        If we ever restore a backup, every account deleted after it is deleted again right away.</p>
 
       <h2>6. This website</h2>
-      <p class="measure">tabbinotch.com has no cookies, no analytics and no scripts.
+      <p class="measure">tabbinotch.com has no cookies, no analytics and no tracking. Its only script runs the notch demo in your browser and sends nothing.
         It is hosted on Cloudflare Pages, which processes the requests your browser makes, including your IP address, to serve and protect the site.
         If you email us, we use your message and address only to reply, and delete the thread when it is no longer needed.
-        A <a href="/suggest">suggestion</a> you send, and the email you add to it, are used the same way.</p>
+        A <a href="/suggest">suggestion</a> you send, and the email you add to it, are used the same way. It is not linked to a friend code or an IP address, and we delete it at the latest after 365 days.</p>
 
       <h2>7. Why we are allowed to</h2>
       <p class="measure">Where the GDPR or UK GDPR applies, we process friends-service and account data to provide the features you turned on (Article 6(1)(b)) and in our legitimate interest in keeping the service secure and free of abuse (Article 6(1)(f)).
@@ -148,7 +169,10 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
 
       <h2>8. Who else is involved</h2>
       <p class="measure">We use Cloudflare to host the friends service and this website.
+        For troubleshooting, the server keeps short log lines at Cloudflare for up to 7 days: the kind of request with every code removed, its status and how long it took. They never hold tokens, codes, names, what you sent or IP addresses.
+        We see a few totals counted from the data above (how many friend codes, sign-ins, parties and active users there are), never who they are; nothing extra is sent for them.
         If you sign in with Apple, Apple checks the sign-in and, when you delete your account, revokes it.
+        AI providers you pick receive your prompts directly from your Mac, under their own terms; we are not part of that exchange.
         We do not sell, rent or share personal information with anyone else, and nothing is used for advertising or to train machine-learning models.
         We would disclose data only if the law required it, and the friends service holds very little to disclose.
         Cloudflare's network is global, so data may be processed outside your country, under Cloudflare's standard contractual clauses where those apply.</p>
@@ -203,7 +227,7 @@ TERMS = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
       <p class="measure">The name Tabbi and the cat icon identify this project. Please do not use them in a way that suggests your fork or product is the official Tabbi.</p>
 
       <h2>3. Other services</h2>
-      <p class="measure">Some tabs work with software and services from others: Claude (through your own <code>claude</code> command and Anthropic account), Anki and AnkiConnect, Spotify, Apple Music and your calendar.
+      <p class="measure">Some tabs work with software and services from others: the AI provider you pick (Anthropic, OpenAI, Google or Ollama, through your own API key or command-line tool), Anki and AnkiConnect, Spotify, Apple Music, SoundCloud and your calendar.
         Their own terms apply to your use of them, and we are not responsible for them.</p>
 
       <h2>4. The friends service</h2>
@@ -220,7 +244,7 @@ TERMS = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
 
       <h2>5. No warranty</h2>
       <p class="measure">Tabbi, the friends service and this website are provided "as is" and "as available", without warranties of any kind, express or implied, including merchantability, fitness for a particular purpose and non-infringement.
-        Timers, reminders, plans and Claude's answers can be wrong or late. Do not rely on Tabbi for anything where a missed alert or a wrong answer could cause harm.</p>
+        Timers, reminders, plans and AI answers can be wrong or late. Do not rely on Tabbi for anything where a missed alert or a wrong answer could cause harm.</p>
 
       <h2>6. Limitation of liability</h2>
       <p class="measure">To the fullest extent the law allows, we are not liable for any indirect, incidental, special, consequential or punitive damages, or for lost data, profits or time, arising from your use of Tabbi, the friends service or this website.
