@@ -35,3 +35,10 @@ Each entry is a short before and after.
 - Before: Focus offered a Preview button for its sound, but the Celebration sound and Haptic feedback switches under General > More options gave no hint of what they add, so turning one on meant waiting for the next celebration.
   After: turning Celebration sound on plays its soft pop once, and turning Haptic feedback on taps the trackpad once, the way macOS previews an alert sound when you pick it.
   No extra button, so the section stays as short as before.
+
+## Closet at Compact
+
+- Before: with all five sections on, the Compact Closet header did not fit, so the points chip showed a bare star with no number, and the whole panel ran about 2pt past the canvas on each side, clipping both cards' borders.
+  The tightest header variant asked for narrower pills, but the pills ignored the request.
+  After: tight pills and the header gaps shrink, the balance never truncates, and both cards line up with the header (x=104 to 1000 at 2x).
+  A four-digit balance falls back to a header where the open section is its tinted symbol, so the number still shows.
