@@ -82,6 +82,8 @@ final class ScheduleStore: ObservableObject {
     var planSettings = TodayPlanSettings()
 
     private let isDemo: Bool
+    /// The wall clock; tests pass a fixed one so plans don't depend on the hour they run.
+    private let clock: () -> Date
     /// The AI the user picked, which Refine asks. Nil (tests) hides Refine.
     private let ai: AIService?
     private lazy var eventStore = EKEventStore()
@@ -98,10 +100,11 @@ final class ScheduleStore: ObservableObject {
     static let privacySettingsURL = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Calendars")!
     static let internetAccountsURL = URL(string: "x-apple.systempreferences:com.apple.Internet-Accounts-Settings.extension")!
 
-    init(ai: AIService? = nil, runMode: RunMode) {
+    init(ai: AIService? = nil, runMode: RunMode, clock: @escaping () -> Date = Date.init) {
         isDemo = runMode.isDemo
         self.ai = ai
-        let date = Date()
+        self.clock = clock
+        let date = clock()
         if isDemo {
             let preview = ProcessInfo.processInfo.environment["TABBI_SCHEDULE_PREVIEW"]
             access = switch preview {
@@ -256,7 +259,7 @@ final class ScheduleStore: ObservableObject {
     func add(_ id: ScheduleItem.ID? = nil) {
         guard !isRefining, var draft else { return }
         do {
-            let written = try draft.add(id, now: isDemo ? now : Date(), events: items.map(\.upcomingEvent),
+            let written = try draft.add(id, now: isDemo ? now : clock(), events: items.map(\.upcomingEvent),
                                         writer: isDemo ? DryRunPlanWriter(logs: false) : EventKitPlanWriter(store: eventStore))
             if isDemo {
                 // Nothing reloads in demo mode, so show the blocks as planned here.
@@ -297,7 +300,7 @@ final class ScheduleStore: ObservableObject {
         isRefining = true
         selectedID = nil
         let blocks = draft.proposal.pending
-        let context = draft.refineContext(now: isDemo ? now : Date(), items: items, settings: planSettings)
+        let context = draft.refineContext(now: isDemo ? now : clock(), items: items, settings: planSettings)
         refineTask = Task { [weak self, isDemo] in
             let refined: [PlanBlock]?
             if isDemo {
@@ -339,7 +342,7 @@ final class ScheduleStore: ObservableObject {
 
     private func startPlanning() {
         cancelRefine()
-        if !isDemo { now = Date() }
+        if !isDemo { now = clock() }
         selectedID = nil
         writeFailed = false
     }
@@ -390,7 +393,7 @@ final class ScheduleStore: ObservableObject {
 
     private func reload() {
         if isDemo { return }
-        now = Date()
+        now = clock()
         guard access == .granted else {
             items = []
             return

@@ -13,7 +13,13 @@ export interface AppleCall { url: string; form: URLSearchParams | null }
 export const apple = {
   calls: [] as AppleCall[],
   tokenReply: { status: 200, body: {} as unknown },
+  /** The status the revoke endpoint answers with. */
+  revokeStatus: 200,
+  /** Endpoints whose requests fail as a network error does, before any reply. */
+  unreachable: new Set<string>(),
   keysUp: true,
+  /** Keys the keys endpoint publishes before the real one, such as one that will not import. */
+  extraKeys: [] as unknown[],
   signingKey: undefined as unknown as CryptoKeyPair,
   /** A key Apple does not publish. */
   otherKey: undefined as unknown as CryptoKeyPair,
@@ -60,18 +66,22 @@ export function installFakeApple(): void {
     resetAppleKeyCache();
     apple.calls = [];
     apple.keysUp = true;
+    apple.extraKeys = [];
+    apple.revokeStatus = 200;
+    apple.unreachable = new Set();
     apple.tokenReply = { status: 200, body: { access_token: "a", refresh_token: "apple-refresh-1", id_token: "x" } };
     vi.spyOn(globalThis, "fetch").mockImplementation(async (input, init) => {
       const url = input instanceof Request ? input.url : String(input);
       const form = typeof init?.body === "string" ? new URLSearchParams(init.body) : null;
       apple.calls.push({ url, form });
+      if (apple.unreachable.has(url)) throw new TypeError("Network connection lost.");
       if (url === APPLE_KEYS_URL) {
         return apple.keysUp
-          ? Response.json({ keys: [{ ...apple.publicJwk, kid: "apple-key-1", alg: "RS256", use: "sig" }] })
+          ? Response.json({ keys: [...apple.extraKeys, { ...apple.publicJwk, kid: "apple-key-1", alg: "RS256", use: "sig" }] })
           : new Response("down", { status: 503 });
       }
       if (url === APPLE_TOKEN_URL) return Response.json(apple.tokenReply.body, { status: apple.tokenReply.status });
-      if (url === APPLE_REVOKE_URL) return new Response(null, { status: 200 });
+      if (url === APPLE_REVOKE_URL) return new Response(null, { status: apple.revokeStatus });
       throw new Error(`unexpected fetch ${url}`);
     });
   });

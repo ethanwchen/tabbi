@@ -254,7 +254,7 @@ final class StudyStore: ObservableObject {
     func setDeepFocus(_ on: Bool) {
         guard on != deepFocus else { return }
         deepFocus = on
-        if !isDemo { defaults.set(on, forKey: Self.deepFocusKey) }
+        if !isDemo, !isSnapshot { defaults.set(on, forKey: Self.deepFocusKey) }
     }
 
     /// The big button: start, pause, resume, or end a Flowtime stretch.

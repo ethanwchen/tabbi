@@ -58,6 +58,8 @@ final class SyncStore: ObservableObject {
     private let transport: (URL) -> any PartyTransport
     private let studyDays: () -> Set<String>
     private let clock: () -> Date
+    /// Waits out the debounce and the wake delay; tests release it by hand.
+    private let sleep: (TimeInterval) async -> Void
     /// Set when the state on disk could not be read: sync stays off and the
     /// file is never overwritten, so no points are counted twice.
     private let stateIsUnreadable: Bool
@@ -84,13 +86,15 @@ final class SyncStore: ObservableObject {
     ///   - credentials: where Party keeps its identity; the account replaces it.
     ///   - transport: replaces HTTPS (tests).
     ///   - studyDays: local days with focus time on this Mac, for the streak.
+    ///   - sleep: waits before a debounced or post-wake sync (tests).
     init(storage: EditionStorage, runMode: RunMode, pet: ClosetStore, signInMethod: AppleSignInMethod,
          webCallback: @escaping @MainActor (URL) async throws -> URL? = { url in
              try await AppleWebAuthentication().callback(from: url)
          },
          server: @escaping () -> URL?, credentials: any PartyCredentialStore,
          transport: ((URL) -> any PartyTransport)? = nil,
-         studyDays: @escaping () -> Set<String> = { [] }, clock: @escaping () -> Date = Date.init) {
+         studyDays: @escaping () -> Set<String> = { [] }, clock: @escaping () -> Date = Date.init,
+         sleep: @escaping (TimeInterval) async -> Void = { try? await Task.sleep(nanoseconds: UInt64($0 * 1_000_000_000)) }) {
         isDemo = runMode.isDemo
         self.signInMethod = signInMethod
         self.webCallback = webCallback
@@ -100,6 +104,7 @@ final class SyncStore: ObservableObject {
         self.transport = transport ?? { URLSessionPartyTransport(baseURL: $0) }
         self.studyDays = studyDays
         self.clock = clock
+        self.sleep = sleep
         if isDemo {
             stateURL = nil
             stateIsUnreadable = false
@@ -320,8 +325,9 @@ final class SyncStore: ObservableObject {
     private func syncSoon(after delay: TimeInterval) {
         guard state.isSignedIn else { return }
         debounceTask?.cancel()
+        let sleep = sleep
         debounceTask = Task { [weak self] in
-            try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+            await sleep(delay)
             guard !Task.isCancelled else { return }
             self?.syncNow()
         }
@@ -351,6 +357,9 @@ final class SyncStore: ObservableObject {
                 outcome = outcome.folding(current, base: base)
                 syncAgain = true
             }
+            // Set first: adopting publishes the save, which must not read
+            // as a new change to push.
+            syncedSave = outcome.save
             pet.adoptSynced(outcome.save)
             syncedSave = pet.closet.save
             state = outcome.state

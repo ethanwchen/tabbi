@@ -16,16 +16,46 @@ import TabbiKit
 /// the module stops (as when Tabbi quits), since the system delivers it
 /// without Tabbi running. Demo and snapshot runs, and a bare `swift run`
 /// (where `UNUserNotificationCenter` aborts), post and save nothing.
+/// What the reminder needs from the system's notification center, so tests
+/// can stand in for `UNUserNotificationCenter` (which aborts outside an
+/// `.app` bundle) and see what would be posted.
+@MainActor
+protocol StudyReminderNotifying: AnyObject {
+    func authorizationStatus() async -> UNAuthorizationStatus
+    func requestAuthorization() async
+    func withdraw(id: String)
+    func schedule(_ request: UNNotificationRequest)
+}
+
+extension UNUserNotificationCenter: StudyReminderNotifying {
+    func authorizationStatus() async -> UNAuthorizationStatus {
+        await notificationSettings().authorizationStatus
+    }
+
+    func requestAuthorization() async {
+        _ = try? await requestAuthorization(options: [.alert, .sound])
+    }
+
+    func withdraw(id: String) {
+        removePendingNotificationRequests(withIdentifiers: [id])
+    }
+
+    func schedule(_ request: UNNotificationRequest) {
+        add(request, withCompletionHandler: nil)
+    }
+}
+
 @MainActor
 final class StudyReminderScheduler: NSObject, ObservableObject, UNUserNotificationCenterDelegate {
-    private static let requestID = "streaks.studyReminder"
+    static let requestID = "streaks.studyReminder"
 
     @Published private(set) var save: StudyReminderSave
     /// The user turned the reminder on but macOS has Tabbi's notifications off.
     @Published private(set) var isBlocked = false
 
     private let pet: ClosetStore
-    private let center: UNUserNotificationCenter?
+    private let center: (any StudyReminderNotifying)?
+    private let clock: () -> Date
     private let saveURL: URL?
     /// Set when the file could not be read: run on defaults, never overwrite.
     private let saveIsUnreadable: Bool
@@ -35,10 +65,13 @@ final class StudyReminderScheduler: NSObject, ObservableObject, UNUserNotificati
     private lazy var alarm = WallClockAlarm { [weak self] in self?.replan() }
 
     init(storage: EditionStorage, runMode: RunMode, pet: ClosetStore,
-         progress: AnyPublisher<[ProgressItem], Never>) {
+         progress: AnyPublisher<[ProgressItem], Never>,
+         notifications: (any StudyReminderNotifying)? = StudyReminderScheduler.systemCenter(),
+         clock: @escaping () -> Date = Date.init) {
         self.pet = pet
+        self.clock = clock
         let isLive = !runMode.isEphemeral
-        center = isLive && Bundle.main.bundleURL.pathExtension == "app" ? .current() : nil
+        center = isLive ? notifications : nil
         saveURL = isLive ? Self.saveURL(in: storage) : nil
         var unreadable = false
         var save = StudyReminderSave()
@@ -54,8 +87,13 @@ final class StudyReminderScheduler: NSObject, ObservableObject, UNUserNotificati
         self.save = save
         saveIsUnreadable = unreadable
         super.init()
-        if let center, center.delegate == nil { center.delegate = self }
+        if let system = center as? UNUserNotificationCenter, system.delegate == nil { system.delegate = self }
         progress.map(StudyReminder.goalMet(in:)).removeDuplicates().assign(to: &$goalMet)
+    }
+
+    /// The system's notification center, or nil in a bare `swift run`.
+    static func systemCenter() -> UNUserNotificationCenter? {
+        Bundle.main.bundleURL.pathExtension == "app" ? .current() : nil
     }
 
     /// `~/Library/Application Support/<edition>/Pet/reminder.json`.
@@ -107,8 +145,8 @@ final class StudyReminderScheduler: NSObject, ObservableObject, UNUserNotificati
             return
         }
         Task { [weak self] in
-            if await center.notificationSettings().authorizationStatus == .notDetermined {
-                _ = try? await center.requestAuthorization(options: [.alert, .sound])
+            if await center.authorizationStatus() == .notDetermined {
+                await center.requestAuthorization()
                 self?.replan()
             }
             self?.refreshPermission()
@@ -119,7 +157,7 @@ final class StudyReminderScheduler: NSObject, ObservableObject, UNUserNotificati
     var time: Date {
         get {
             Calendar.current.date(bySettingHour: save.settings.hour, minute: save.settings.minute,
-                                  second: 0, of: .now) ?? .now
+                                  second: 0, of: clock()) ?? clock()
         }
         set {
             let parts = Calendar.current.dateComponents([.hour, .minute], from: newValue)
@@ -139,20 +177,21 @@ final class StudyReminderScheduler: NSObject, ObservableObject, UNUserNotificati
     private func refreshPermission() {
         guard let center else { return }
         Task { [weak self] in
-            let denied = await center.notificationSettings().authorizationStatus == .denied
+            let denied = await center.authorizationStatus() == .denied
             guard let self else { return }
             isBlocked = denied && isEnabled
         }
     }
 
     /// Withdraws the pending reminder and sets the next one, if any.
-    private func replan(now: Date = .now) {
+    private func replan() {
         guard let center else { return }
+        let now = clock()
         let streak = pet.streak
         let before = save
         let fire = save.plan(now: now, studiedToday: streak.studiedToday, goalMetToday: goalMet)
         if save != before { persist() }
-        center.removePendingNotificationRequests(withIdentifiers: [Self.requestID])
+        center.withdraw(id: Self.requestID)
         guard let fire else {
             alarm.cancel()
             return
@@ -165,7 +204,7 @@ final class StudyReminderScheduler: NSObject, ObservableObject, UNUserNotificati
         content.sound = .default
         let parts = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: fire)
         let trigger = UNCalendarNotificationTrigger(dateMatching: parts, repeats: false)
-        center.add(UNNotificationRequest(identifier: Self.requestID, content: content, trigger: trigger))
+        center.schedule(UNNotificationRequest(identifier: Self.requestID, content: content, trigger: trigger))
         // Plan the following day once this one has fired.
         alarm.schedule(at: fire.addingTimeInterval(1), tolerance: 30)
     }

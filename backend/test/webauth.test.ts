@@ -95,10 +95,84 @@ describe("POST /v1/auth/apple/web/callback", () => {
     expect((await callback(form)).location.searchParams.get("error")).toBe("invalid_identity_token");
   });
 
+  it("refuses a missing, empty or oversized code or identity token, and a repeated field", async () => {
+    const state = newState();
+    const token = await webIdentityToken("sub.web.malformed", state);
+    const error = async (form: Record<string, string> | string) => {
+      const raw = typeof form === "string" ? form : new URLSearchParams(form).toString();
+      const res = await SELF.fetch(BASE + WEB_CALLBACK_PATH, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded", "CF-Connecting-IP": freshIp(), Origin: APPLE_ISSUER },
+        body: raw,
+        redirect: "manual",
+      });
+      await res.arrayBuffer();
+      expect(res.status).toBe(303);
+      const location = new URL(res.headers.get("Location")!);
+      expect(location.searchParams.has("code")).toBe(false);
+      return location.searchParams.get("error");
+    };
+    expect(await error({ state, id_token: token })).toBe("invalid_field");
+    expect(await error({ state, code: "", id_token: token })).toBe("invalid_field");
+    expect(await error({ state, code: "c".repeat(513), id_token: token })).toBe("invalid_field");
+    expect(await error({ state, code: "c" })).toBe("invalid_field");
+    expect(await error({ state, code: "c", id_token: "" })).toBe("invalid_field");
+    expect(await error({ state, code: "c", id_token: "t".repeat(3001) })).toBe("invalid_field");
+    // A repeated field is ambiguous, so the post is refused rather than read either way.
+    const params = new URLSearchParams({ state, code: "c", id_token: token });
+    params.append("code", "c2");
+    expect(await error(params.toString())).toBe("invalid_field");
+    // None of these reached Apple, and the identity token was not used up.
+    expect(apple.calls.some((c) => c.url === APPLE_TOKEN_URL)).toBe(false);
+    expect((await callback({ state, code: "c", id_token: token })).location.searchParams.has("code")).toBe(true);
+  });
+
+  it("still sends the app a code when Apple's token endpoint cannot be reached", async () => {
+    apple.unreachable.add(APPLE_TOKEN_URL);
+    const { state, code } = await signedInAtApple("sub.web.tokendown");
+    const r = await exchange({ code, state });
+    expect(r.body).toMatchObject({ ok: true, newAccount: true });
+    expect(await storedAccount(r.body.code)).toEqual([{ apple_sub: "sub.web.tokendown", refresh_token: null, client_id: SERVICES_ID }]);
+  });
+
+  it("tells the app about an Apple error other than cancelling, without echoing it", async () => {
+    const r = await callback({ state: newState(), error: "invalid_request<script>" });
+    expect(r.status).toBe(303);
+    expect([...r.location.searchParams.entries()]).toEqual([["error", "apple_error"]]);
+  });
+
   it("tells the app when the user cancelled at Apple", async () => {
     const r = await callback({ state: newState(), error: "user_cancelled_authorize" });
     expect(r.status).toBe(303);
     expect(r.location.searchParams.get("error")).toBe("cancelled");
+  });
+
+  it("sends the app an internal error when the Hub fails unexpectedly, counts it for health and stores nothing", async () => {
+    const state = newState();
+    const token = await webIdentityToken("sub.web.crash", state);
+    await runInDurableObject(hub(), (instance) => {
+      const target = instance as unknown as { claimIdentityToken: () => never };
+      vi.spyOn(target, "claimIdentityToken").mockImplementation(() => { throw new Error("database is locked"); });
+    });
+    const failuresBefore = await runInDurableObject(hub(), (instance) => (instance as unknown as { failures: number[] }).failures.length);
+    const logged: string[] = [];
+    vi.spyOn(console, "error").mockImplementation((...args: unknown[]) => { logged.push(args.map(String).join(" ")); });
+
+    const r = await callback({ state, code: "apple-auth-code", id_token: token });
+    expect(r.status).toBe(303);
+    expect([...r.location.searchParams.entries()]).toEqual([["error", "internal"]]);
+    // Neither the error's message nor the post's secrets travel to the app.
+    expect(r.location.toString()).not.toContain("locked");
+    expect(apple.calls.some((c) => c.url === APPLE_TOKEN_URL)).toBe(false);
+
+    const lines = logged.filter((l) => l.startsWith("{")).map((l) => JSON.parse(l));
+    expect(lines).toContainEqual(expect.objectContaining({ level: "error", event: "apple_web_callback_failed", errorMessage: "database is locked" }));
+    expect(logged.join("\n")).not.toContain(token);
+    expect(logged.join("\n")).not.toContain(state);
+    await runInDurableObject(hub(), (instance, storage) => {
+      expect((instance as unknown as { failures: number[] }).failures.length).toBe(failuresBefore + 1);
+      expect(storage.storage.sql.exec("SELECT 1 FROM web_sign_ins WHERE apple_sub = ?", "sub.web.crash").toArray()).toEqual([]);
+    });
   });
 
   it("answers rate limited through the app link too", async () => {
@@ -127,6 +201,16 @@ describe("POST /v1/auth/apple/web/token", () => {
     const r = await exchange({ code, state }, anon.token);
     expect(r.body).toMatchObject({ ok: true, token: anon.token, code: anon.code, newAccount: true });
     expect(r.body.profile.name).toBe("Wes");
+  });
+
+  it("signs in as a new caller when the Bearer token no longer resolves", async () => {
+    const stale = "f".repeat(64);
+    const { state, code } = await signedInAtApple("sub.web.stale");
+    const r = await exchange({ code, state }, stale);
+    expect(r.status).toBe(200);
+    expect(r.body.newAccount).toBe(true);
+    expect(r.body.token).not.toBe(stale);
+    expect((await call("GET", "/v1/me", undefined, r.body.token)).body.profile.code).toBe(r.body.code);
   });
 
   it("reaches the same account as native sign-in for the same Apple ID", async () => {

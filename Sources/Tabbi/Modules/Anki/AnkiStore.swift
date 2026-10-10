@@ -68,11 +68,14 @@ final class AnkiStore: ObservableObject {
     /// it loses focus after a review session), saved for the next open panel.
     private var pendingMilestone: Int?
 
-    init(activity: ActivityLog? = nil, celebrations: CelebrationCenter? = nil, runMode: RunMode) {
+    /// `client` is injected by tests; the app talks to the real AnkiConnect.
+    init(activity: ActivityLog? = nil, celebrations: CelebrationCenter? = nil, runMode: RunMode,
+         client: AnkiConnectClient? = nil) {
         self.activity = activity
         self.celebrations = celebrations
         isDemo = runMode.isDemo
-        let client = AnkiConnectClient(isAnkiRunning: { await MainActor.run { AnkiWorkspaceLauncher.runningAnki() != nil } })
+        let client = client
+            ?? AnkiConnectClient(isAnkiRunning: { await MainActor.run { AnkiWorkspaceLauncher.runningAnki() != nil } })
         self.client = client
         opener = AnkiDeckOpener(client: client, launcher: AnkiWorkspaceLauncher())
         if let pinnedState {
