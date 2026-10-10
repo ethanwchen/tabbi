@@ -46,15 +46,18 @@ The writing rules in AGENTS.md hold in every language: no emojis and no em dashe
 
 The onboarding, the tab titles and module summaries, the notch's context menu and header controls, and Settings (General, Tabs, Look, Connections, About and the Account row) are translated.
 So are the notifications (focus timer, weekly recap, study reminder, Party), the recap's cheer lines, the Party celebration, and the Closet: its sections and labels, every outfit, accessory, theme, species and fur color name.
-The main controls of the Today, Focus, Now Playing, System and AI Usage panels are translated too.
-The other tabs' panels (Ask AI, Study, Anki, Party, Schedule), the Today calendar card and the modules' own Settings panes follow tab by tab.
+The main controls of every tab's panel (Today, Focus, Now Playing, System, AI Usage, Ask AI, Study, Anki, Party and Schedule) are translated too, with the calendar card, the focus and study timer labels and the Ask AI setup screen.
+The modules' own Settings panes (the Options button in Settings > Tabs) and the module setup views follow pane by pane.
 Breed names stay English, because a pet that still goes by its breed is recognized by comparing its saved name to the breed's name.
 These stay English on purpose for now:
 
 - long help text and error details,
 - the bundled kits' names, summaries and questions,
 - the AI provider setup hints in Settings > Connections,
-- the connection status headlines and details and the setup sheets in Settings > Connections.
+- the connection status headlines and details and the setup sheets in Settings > Connections,
+- the study method names and taglines and the theme names, which come from bundled JSON files that the Windows port reads too and need a localized field there first,
+- compact unit labels built in code, such as the "18m" and "1h 5m" durations,
+- the calendar card sentences that name the kit's word for events (a kit field, so it waits for localized kit text).
 
 ## Checking
 

@@ -62,28 +62,28 @@ struct PartyPanel: View {
             PartyAgeCheckView(store: store, tooYoungUntil: until)
                 .transition(.opacity)
         case .connecting:
-            PartyMessage(symbol: nil, pet: store.pet, title: "Joining the party server…",
-                         detail: "Signing you in so friends can find you.")
+            PartyMessage(symbol: nil, pet: store.pet, title: String(localized: "Joining the party server…", bundle: .tabbi),
+                         detail: String(localized: "Signing you in so friends can find you.", bundle: .tabbi))
                 .transition(.opacity)
         case .unreachable(.banned):
-            PartyMessage(symbol: "hand.raised.fill", title: "Party isn't available",
-                         detail: "This account can no longer use Party. If you think that's a mistake, write to \(SupportContact.email).") {
-                PartyPillButton(title: "Email Support", symbol: "envelope", help: "Write to \(SupportContact.email)") {
+            PartyMessage(symbol: "hand.raised.fill", title: String(localized: "Party isn't available", bundle: .tabbi),
+                         detail: String(localized: "This account can no longer use Party. If you think that's a mistake, write to \(SupportContact.email).", bundle: .tabbi)) {
+                PartyPillButton(title: String(localized: "Email Support", bundle: .tabbi), symbol: "envelope", help: String(localized: "Write to \(SupportContact.email)", bundle: .tabbi)) {
                     NSWorkspace.shared.open(SupportContact.mailURL)
                 }
             }
             .transition(.opacity)
         case .unreachable(let error):
-            PartyMessage(symbol: "wifi.slash", title: "Can't reach the party server",
+            PartyMessage(symbol: "wifi.slash", title: String(localized: "Can't reach the party server", bundle: .tabbi),
                          detail: Self.unreachableDetail(error)) {
-                PartyPillButton(title: "Try again", symbol: "arrow.clockwise", help: "Connect to the party server now") {
+                PartyPillButton(title: String(localized: "Try again", bundle: .tabbi), symbol: "arrow.clockwise", help: String(localized: "Connect to the party server now", bundle: .tabbi)) {
                     store.retry()
                 }
             }
             .transition(.opacity)
         case .invalidServer(let message):
-            PartyMessage(symbol: "exclamationmark.triangle", title: "Check the party server",
-                         detail: message + " Fix it in Settings > Tabs > Party > Options, or clear it to use the Tabbi server.")
+            PartyMessage(symbol: "exclamationmark.triangle", title: String(localized: "Check the party server", bundle: .tabbi),
+                         detail: String(localized: "\(message) Fix it in Settings > Tabs > Party > Options, or clear it to use the Tabbi server.", bundle: .tabbi))
                 .transition(.opacity)
         }
     }
@@ -93,9 +93,9 @@ struct PartyPanel: View {
     private static func unreachableDetail(_ error: PartyError) -> String {
         switch error {
         case .unreachable, .timedOut, .transport:
-            "Check your internet connection. Friends and parties show up once it's back."
+            String(localized: "Check your internet connection. Friends and parties show up once it's back.", bundle: .tabbi)
         default:
-            error.isTransient ? error.message + " Trying again in the background." : error.message
+            error.isTransient ? String(localized: "\(error.message) Trying again in the background.", bundle: .tabbi) : error.message
         }
     }
 
@@ -146,7 +146,7 @@ struct PartyPanel: View {
             .background(Capsule().fill(Color(white: 0.16)))
             .overlay(Capsule().strokeBorder(Theme.Palette.stroke, lineWidth: 0.5))
             .onTapGesture { store.clearNotice() }
-            .help("Click to dismiss")
+            .help(String(localized: "Click to dismiss", bundle: .tabbi))
             .transition(.motionRow(from: .bottom))
         }
     }

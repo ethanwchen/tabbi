@@ -107,17 +107,17 @@ private struct StudyDial: View {
                             .foregroundStyle(session.phase.isBreak ? accent : Theme.Palette.tertiaryText)
                     }
                     if waitsForCards {
-                        Text("Waiting for Anki")
+                        Text("Waiting for Anki", bundle: .tabbi)
                             .font(Theme.Typography.caption)
                             .foregroundStyle(accent.opacity(0.8))
-                            .help("Turn on the Anki tab with Anki open so the sprint can count your cards")
+                            .help(String(localized: "Turn on the Anki tab with Anki open so the sprint can count your cards", bundle: .tabbi))
                     }
                 }
             }
             .frame(width: 128, height: 128)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .help(readout.caption.isEmpty ? "Timer: \(readout.value)" : "\(readout.caption): \(readout.value)")
+        .help(readout.caption.isEmpty ? String(localized: "Timer: \(readout.value)", bundle: .tabbi) : "\(readout.caption): \(readout.value)")
         .overlay(alignment: .bottomTrailing) {
             PetView(player: store.pet)
                 .padding(Theme.Spacing.xs)
@@ -138,8 +138,8 @@ private struct StudyDial: View {
     private var petHelp: String {
         let name = store.pet.profile.name
         let session = store.session
-        if !session.isRunning { return "\(name) naps until the timer runs" }
-        return session.phase.isBreak ? "\(name) is taking the break with you" : "\(name) is studying with you"
+        if !session.isRunning { return String(localized: "\(name) naps until the timer runs", bundle: .tabbi) }
+        return session.phase.isBreak ? String(localized: "\(name) is taking the break with you", bundle: .tabbi) : String(localized: "\(name) is studying with you", bundle: .tabbi)
     }
 
     /// Open-ended Flowtime has no finish line, so its ring stays a quiet track.
@@ -158,6 +158,9 @@ private struct StudyPartySessionView: View {
 
     var body: some View {
         let remaining = session.remaining(at: store.now)
+        let clock = StudyTimerFormat.clock(remaining)
+        let petName = store.pet.profile.name
+        let endsAt = session.endsAt.formatted(date: .omitted, time: .shortened)
         HStack(spacing: Theme.Spacing.s) {
             Card(padding: 0) {
                 ProgressRing(progress: progress(remaining), tint: accent, lineWidth: 6) {
@@ -166,7 +169,7 @@ private struct StudyPartySessionView: View {
                             .font(.system(size: 30, weight: .semibold, design: .rounded).monospacedDigit())
                             .foregroundStyle(Theme.Palette.primaryText)
                             .contentTransition(.numericText(countsDown: true))
-                        Text("Focus")
+                        Text("Focus", bundle: .tabbi)
                             .font(Theme.Typography.caption)
                             .foregroundStyle(Theme.Palette.tertiaryText)
                     }
@@ -174,22 +177,22 @@ private struct StudyPartySessionView: View {
                 .frame(width: 128, height: 128)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .help("Shared focus: \(StudyTimerFormat.clock(remaining)) left")
+            .help(String(localized: "Shared focus: \(clock) left", bundle: .tabbi))
             .overlay(alignment: .bottomTrailing) {
                 PetView(player: store.pet)
                     .padding(Theme.Spacing.xs)
-                    .help("\(store.pet.profile.name) is studying with the party")
+                    .help(String(localized: "\(petName) is studying with the party", bundle: .tabbi))
             }
             .frame(width: 176)
             VStack(spacing: Theme.Spacing.s) {
                 Card {
                     VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                         HStack(spacing: Theme.Spacing.xs) {
-                            Text("Party session")
+                            Text("Party session", bundle: .tabbi)
                             Spacer(minLength: Theme.Spacing.s)
                             Label(session.companyLine, systemImage: "person.2.fill")
                                 .labelStyle(StudyTodayLabelStyle())
-                                .help(session.friendCount == 0 ? "Everyone else has stepped out" : "Friends in this session now")
+                                .help(session.friendCount == 0 ? String(localized: "Everyone else has stepped out", bundle: .tabbi) : String(localized: "Friends in this session now", bundle: .tabbi))
                         }
                         .font(Theme.Typography.caption)
                         .foregroundStyle(Theme.Palette.tertiaryText)
@@ -201,7 +204,7 @@ private struct StudyPartySessionView: View {
                             .font(Theme.Typography.caption)
                             .foregroundStyle(Theme.Palette.secondaryText)
                             .lineLimit(1)
-                        Text("Ends at \(session.endsAt.formatted(date: .omitted, time: .shortened))")
+                        Text("Ends at \(endsAt)", bundle: .tabbi)
                             .font(Theme.Typography.caption)
                             .foregroundStyle(Theme.Palette.tertiaryText)
                             .monospacedDigit()
@@ -215,15 +218,15 @@ private struct StudyPartySessionView: View {
                     Image(systemName: "person.3.fill")
                         .font(.system(size: 10, weight: .semibold))
                         .foregroundStyle(accent)
-                    Text(session.isHost ? "End it for everyone in the Party tab" : "Step out in the Party tab anytime")
+                    Text(session.isHost ? String(localized: "End it for everyone in the Party tab", bundle: .tabbi) : String(localized: "Step out in the Party tab anytime", bundle: .tabbi))
                         .font(Theme.Typography.caption)
                         .foregroundStyle(Theme.Palette.tertiaryText)
                         .lineLimit(1)
                     Spacer(minLength: 0)
                 }
                 .frame(height: 28)
-                .help(session.isHost ? "The session runs for the whole party until it ends or you end it"
-                                     : "Stepping out keeps the session going for the others; your own timer comes back here")
+                .help(session.isHost ? String(localized: "The session runs for the whole party until it ends or you end it", bundle: .tabbi)
+                                     : String(localized: "Stepping out keeps the session going for the others; your own timer comes back here", bundle: .tabbi))
             }
         }
     }
@@ -234,8 +237,8 @@ private struct StudyPartySessionView: View {
     }
 
     private var startedBy: String {
-        if let host = session.hostName { return "\(host) started it for the party" }
-        return "You started it for the party"
+        if let host = session.hostName { return String(localized: "\(host) started it for the party", bundle: .tabbi) }
+        return String(localized: "You started it for the party", bundle: .tabbi)
     }
 }
 
@@ -279,7 +282,7 @@ private struct StudyMethodCard: View {
         return VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
             if showsCaption {
                 HStack(spacing: Theme.Spacing.xs) {
-                    Text("Method")
+                    Text("Method", bundle: .tabbi)
                     Spacer(minLength: Theme.Spacing.s)
                     accessories
                 }
@@ -314,7 +317,7 @@ private struct StudyMethodCard: View {
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .help("Change the timer method")
+                .help(String(localized: "Change the timer method", bundle: .tabbi))
                 .onHover { hovering = $0 }
                 if !showsCaption {
                     accessories
@@ -360,16 +363,16 @@ private struct StudyTimerLengthRow: View {
     var body: some View {
         HStack(spacing: Theme.Spacing.xs) {
             ForEach(StudyTimerLength.presets, id: \.self) { minutes in
-                StudyTimerChip(title: "\(minutes) min", isOn: length.minutes == minutes,
-                               help: isCounting ? "Change the countdown to \(minutes) minutes, or to a minute from now if that time has passed"
-                                                 : "Start a \(minutes) minute countdown") {
+                StudyTimerChip(title: String(localized: "\(minutes) min", bundle: .tabbi), isOn: length.minutes == minutes,
+                               help: isCounting ? String(localized: "Change the countdown to \(minutes) minutes, or to a minute from now if that time has passed", bundle: .tabbi)
+                                                 : String(localized: "Start a \(minutes) minute countdown", bundle: .tabbi)) {
                     start(StudyTimerLength(minutes: minutes))
                 }
             }
             Spacer(minLength: 0)
-            IconButton(symbol: "minus", help: "A shorter timer") { set(length.stepped(up: false)) }
+            IconButton(symbol: "minus", help: String(localized: "A shorter timer", bundle: .tabbi)) { set(length.stepped(up: false)) }
                 .disabled(!length.canStep(up: false))
-            IconButton(symbol: "plus", help: "A longer timer") { set(length.stepped(up: true)) }
+            IconButton(symbol: "plus", help: String(localized: "A longer timer", bundle: .tabbi)) { set(length.stepped(up: true)) }
                 .disabled(!length.canStep(up: true))
         }
         .padding(.top, Theme.Spacing.xxs)
@@ -413,8 +416,8 @@ private struct StudyDeepFocusRow: View {
         // A narrow panel (Compact) shortens the switch's name instead of
         // truncating it; the tooltip still says what it does.
         ViewThatFits(in: .horizontal) {
-            row(title: "Deep focus")
-            row(title: "Deep")
+            row(title: String(localized: "Deep focus", bundle: .tabbi))
+            row(title: String(localized: "Deep", bundle: .tabbi))
         }
     }
 
@@ -432,8 +435,8 @@ private struct StudyDeepFocusRow: View {
     }
 
     private var help: String {
-        store.deepFocus ? "Deep focus is on: focus blocks bring \(summary). Click to turn it off"
-             : "Turn on deep focus: focus blocks bring \(summary)"
+        store.deepFocus ? String(localized: "Deep focus is on: focus blocks bring \(summary). Click to turn it off", bundle: .tabbi)
+             : String(localized: "Turn on deep focus: focus blocks bring \(summary)", bundle: .tabbi)
     }
 
     /// The focus mode effects that study blocks apply, e.g. "Rain + Fireplace, a playlist and Do Not Disturb".
@@ -441,12 +444,12 @@ private struct StudyDeepFocusRow: View {
         let settings = focus.settings
         var parts: [String] = []
         if !settings.mix.isOff { parts.append(settings.mix.summary.lowercased()) }
-        if settings.playlist != nil { parts.append("your playlist") }
-        if focus.doNotDisturb { parts.append("Do Not Disturb") }
+        if settings.playlist != nil { parts.append(String(localized: "your playlist", bundle: .tabbi)) }
+        if focus.doNotDisturb { parts.append(String(localized: "Do Not Disturb", bundle: .tabbi)) }
         switch parts.count {
-        case 0: return "nothing yet; pick a sound"
+        case 0: return String(localized: "nothing yet; pick a sound", bundle: .tabbi)
         case 1: return parts[0]
-        default: return parts.dropLast().joined(separator: ", ") + " and " + parts[parts.count - 1]
+        default: return parts.formatted(.list(type: .and))
         }
     }
 }
@@ -479,7 +482,7 @@ private struct StudyTodayRow: View {
         let studied = StudyTimerFormat.studied(minutes: today.minutes)
         return HStack(spacing: Theme.Spacing.s) {
             if showsTitle {
-                Text("Today")
+                Text("Today", bundle: .tabbi)
                     .foregroundStyle(Theme.Palette.tertiaryText)
                     .fixedSize()
             }
@@ -487,15 +490,15 @@ private struct StudyTodayRow: View {
                   systemImage: metGoal ? "checkmark.seal.fill" : "clock")
                 .foregroundStyle(metGoal ? accent : Theme.Palette.secondaryText)
                 .fixedSize()
-                .help(metGoal ? "Daily focus goal met" : "Focus time today, out of your daily goal")
-            Label("\(today.sessions) done", systemImage: "checkmark.circle")
+                .help(metGoal ? String(localized: "Daily focus goal met", bundle: .tabbi) : String(localized: "Focus time today, out of your daily goal", bundle: .tabbi))
+            Label(String(localized: "\(today.sessions) done", bundle: .tabbi), systemImage: "checkmark.circle")
                 .fixedSize()
-                .help("Focus blocks finished today")
+                .help(String(localized: "Focus blocks finished today", bundle: .tabbi))
             Spacer(minLength: 0)
             Label(StudyTimerFormat.points(today.points), systemImage: "star.fill")
                 .foregroundStyle(today.points > 0 ? accent : Theme.Palette.tertiaryText)
                 .fixedSize()
-                .help("Points earned today; spend them on your pet's wardrobe")
+                .help(String(localized: "Points earned today; spend them on your pet's wardrobe", bundle: .tabbi))
         }
     }
 }
@@ -525,11 +528,11 @@ private struct StudyMethodPicker: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
             HStack {
-                Text("Choose a method")
+                Text("Choose a method", bundle: .tabbi)
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.tertiaryText)
                 Spacer()
-                IconButton(symbol: "xmark", help: "Keep the current method") { done(nil) }
+                IconButton(symbol: "xmark", help: String(localized: "Keep the current method", bundle: .tabbi)) { done(nil) }
             }
             LazyVGrid(columns: columns, spacing: Theme.Spacing.xs) {
                 ForEach(methods) { method in
@@ -595,7 +598,7 @@ struct StudyMethodTile: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.tactile(.pill))
-        .help(isCurrent ? "\(method.info.name) is in use" : "Switch to \(method.info.name): \(method.info.tagline)")
+        .help(isCurrent ? String(localized: "\(method.info.name) is in use", bundle: .tabbi) : String(localized: "Switch to \(method.info.name): \(method.info.tagline)", bundle: .tabbi))
         .onHover { hovering = $0; hovered($0) }
         .motion(Theme.Motion.snappy, value: hovering)
     }
@@ -618,7 +621,7 @@ private struct StudyControls: View {
             }
             Spacer(minLength: 0)
             if isFlowing {
-                IconButton(symbol: "pause.fill", help: "Pause without ending the stretch") {
+                IconButton(symbol: "pause.fill", help: String(localized: "Pause without ending the stretch", bundle: .tabbi)) {
                     withMotion(Theme.Motion.snappy) { store.pause() }
                 }
             }
@@ -629,7 +632,7 @@ private struct StudyControls: View {
                         withMotion(Theme.Motion.snappy) { store.skip() }
                     }
                 }
-                IconButton(symbol: "stop.fill", help: "Stop and keep the time studied so far") {
+                IconButton(symbol: "stop.fill", help: String(localized: "Stop and keep the time studied so far", bundle: .tabbi)) {
                     withMotion(Theme.Motion.snappy) { store.stop() }
                 }
             }
@@ -649,19 +652,19 @@ private struct StudyControls: View {
         let session = store.session
         switch session.runState {
         case .running:
-            return primarySymbol == "pause.fill" ? "Pause the timer" : "End this stretch and take a sized break"
-        case .paused: return "Resume the timer"
+            return primarySymbol == "pause.fill" ? String(localized: "Pause the timer", bundle: .tabbi) : String(localized: "End this stretch and take a sized break", bundle: .tabbi)
+        case .paused: return String(localized: "Resume the timer", bundle: .tabbi)
         case .idle:
-            if session.method.kind == .timer { return "Start the countdown" }
-            return session.phase.isBreak ? "Start the break" : "Start studying"
+            if session.method.kind == .timer { return String(localized: "Start the countdown", bundle: .tabbi) }
+            return session.phase.isBreak ? String(localized: "Start the break", bundle: .tabbi) : String(localized: "Start studying", bundle: .tabbi)
         }
     }
 
     private var skipHelp: String {
         switch store.session.phase {
-        case .focus: "Skip to the break"
-        case .review: "Skip the review"
-        case .shortBreak, .longBreak: "Skip the break"
+        case .focus: String(localized: "Skip to the break", bundle: .tabbi)
+        case .review: String(localized: "Skip the review", bundle: .tabbi)
+        case .shortBreak, .longBreak: String(localized: "Skip the break", bundle: .tabbi)
         }
     }
 }
