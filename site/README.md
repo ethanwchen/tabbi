@@ -149,20 +149,27 @@ Below the hero, the home page has a cozy desktop with Tabbi's notch at the top t
 Hovering or tapping the notch springs the panel open, and it closes when the pointer leaves, on Escape, or on a tap outside.
 The Timer runs a 20 second focus round; when it ends the panel closes and Mochi cheers in the closed notch with confetti and "+35 pts".
 While the round runs, the closed notch shows its ring and time instead of the pet.
+Today has a checklist with the app's checkbox animation, an add field, arrows that step to yesterday (looking back only) and tomorrow, each day's calendar, and a focus card that mirrors the Timer and opens its tab.
+All its tasks and events are made up.
 
 - `_demo.py` writes the markup: the whole panel, standing open, with radio buttons as its tabs.
-  Without JavaScript that is the showcase: the tabs switch with CSS alone and the controls are disabled.
-  It also puts `img/demo/pets.json` into the page as a `<script type="application/json">` data block, since the CSP allows no fetch.
+  Without JavaScript that is the showcase: the tabs switch with CSS alone, Today's checkboxes (real ones) still check, and the other controls are disabled.
+  It also puts `img/demo/pets.json` and Today's three days (`DAYS`) into the page as `<script type="application/json">` data blocks, since the CSP allows no fetch.
+  New rows are cloned from `<template>` elements in the markup, so the script never builds markup from strings.
 - `demo.css` draws it, loaded only by the home page.
   Inside the notch everything is in em, where 1em is 10 of the app's points, so the panel keeps the app's proportions (536 x 236 pt, 20 pt insets) at any scale: 12.5 px per em on wide screens, 11 on tablets and 10 on phones, where the panel spans the scene and the Timer stacks.
-  Colors are the app's Midnight theme and each tab's accent, the type is `ui-rounded` (SF Pro Rounded on Apple devices, Nunito elsewhere), and the open, close, hover and snappy springs are the app's `MotionTokens` sampled into CSS `linear()` easings.
-- `js/demo.js` closes the panel and makes it work: hover, tap, keyboard and Escape, the Timer, and the pet's frames.
+  Colors are the app's Midnight theme and each tab's accent, the type is `ui-rounded` (SF Pro Rounded on Apple devices, Nunito elsewhere), and the open, close, hover, snappy and check springs are the app's `MotionTokens` sampled into CSS `linear()` easings.
+  The checkbox follows the app's `CheckDraw`: one registered custom property (`--p`) rides the check spring from 0 to 1, and the ring, fill and check stroke are computed from it, so the fill pops past full size and settles.
+  The page styles `main` lists as prose, so the demo's rows reset their margins and colors; check new class names against `styles.css` too.
+- `js/demo.js` closes the panel and makes it work: hover, tap, keyboard and Escape, the Timer, Today, and the pet's frames.
+  Like the app, the panel stays open while the add field has focus, and Escape there clears the draft before it closes the notch.
   It is plain JavaScript with no framework and no dependencies, loaded with `defer`, and pets move only while the demo is on screen.
   Status changes (started, paused, 10 seconds left, done) are read out through an `aria-live` region.
   Under `prefers-reduced-motion` state changes are instant, the pet holds one frame and there is no confetti.
 
-Check it in WebKit at 1440, 1024, 834 and 390 px wide after a change: open, switch tabs, run the Timer to the end, keyboard (Safari moves between buttons with Option-Tab), reduced motion, no JavaScript, no console errors and no horizontal scroll.
+Check it in WebKit at 1440, 1024, 834 and 390 px wide after a change: open, switch tabs, run the Timer to the end, check and add a task and step through the days, keyboard (Safari moves between buttons with Option-Tab), reduced motion, no JavaScript, no console errors and no horizontal scroll.
 Playwright's element screenshots inject a `<style>` that the CSP refuses; that console error comes from the test tool, not the page.
+The site scrolls smoothly, so Playwright's own scroll-into-view can slide the notch out from under its pointer and close it; tests should set `document.documentElement.style.scrollBehavior = 'auto'` and wait for the open spring before clicking inside the panel.
 
 ## Demo pet sprites
 

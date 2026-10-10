@@ -17,7 +17,7 @@ from html.parser import HTMLParser
 
 from _partials import page, download_button, PAW, DOWNLOAD, DOWNLOAD_ICON, GITHUB, ISSUES, ORIGIN, SUGGESTIONS, SUPPORT_EMAIL
 from _legal import PRIVACY, PRIVACY_HERO, TERMS, TERMS_HERO
-from _demo import DEMO, pets_data
+from _demo import DEMO, demo_data
 
 HERE = pathlib.Path(__file__).parent
 # Built into its own directory so a deploy uploads pages and assets only,
@@ -463,14 +463,13 @@ pages = [
 ]
 
 # Extra <head> markup per page.
-# The home page's notch demo: its stylesheet, the pet frames as a data block,
-# and the site's one script, deferred so it runs after the page is parsed.
+# The home page's notch demo: its stylesheet, its data blocks (the pet's
+# frames and Today's lists) and the site's one script, deferred so it runs
+# after the page is parsed.
 HEADS = {'index.html': json_ld(SOFTWARE_APP)
-         + '
-  <link rel="stylesheet" href="/demo.css">'
-         + pets_data()
-         + '
-  <script src="/js/demo.js" defer></script>'}
+         + '\n  <link rel="stylesheet" href="/demo.css">'
+         + demo_data()
+         + '\n  <script src="/js/demo.js" defer></script>'}
 for _action in INVITE_CODE_LENGTHS:
     HEADS[INVITE_SLUGS[_action]] = INVITE_REFRESH
 

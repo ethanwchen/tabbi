@@ -25,6 +25,11 @@ ICONS = {
     'star': '<path fill="currentColor" d="M12 2.8l2.7 5.6 6.1.8-4.5 4.3 1.1 6.1L12 16.7l-5.4 2.9 1.1-6.1-4.5-4.3 6.1-.8z"/>',
     'clock': '<g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.4V12l3 1.8"/></g>',
     'done': '<g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="M8.3 12.2l2.5 2.5 4.9-5"/></g>',
+    'checklist': '<g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.6" cy="6.4" r="2.9"/><path d="M4.4 6.5l1 1 1.6-1.8M11.6 6.4h9.2M11.6 17.6h9.2"/><circle cx="5.6" cy="17.6" r="2.9"/></g>',
+    'chev-l': '<path fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" d="M14.5 5.5L8 12l6.5 6.5"/>',
+    'chev-r': '<path fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" d="M9.5 5.5L16 12l-6.5 6.5"/>',
+    'plus': '<path fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" d="M12 5v14M5 12h14"/>',
+    'check-fill': '<path fill="currentColor" fill-rule="evenodd" d="M12 2.4a9.6 9.6 0 1 1 0 19.2 9.6 9.6 0 0 1 0-19.2zm4.2 6.3a1.2 1.2 0 0 0-1.7.1l-3.6 4.1-1.5-1.5a1.2 1.2 0 1 0-1.7 1.7l2.4 2.4a1.2 1.2 0 0 0 1.7-.1l4.5-5a1.2 1.2 0 0 0-.1-1.7z"/>',
     'updown': '<path fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M8 9.5l4-4 4 4M8 14.5l4 4 4-4"/>',
 }
 
@@ -78,9 +83,91 @@ TIMER_PANE = f'''
                 </div>
               </div>'''
 
-# (id, title, icon, accent class). The tab bar left of the camera, like the app's.
+# Today's three days and their calendars, all made up. The page draws
+# today's from here, and demo.js gets all three as a data block, so it
+# steps to yesterday and tomorrow without a second copy of the lists.
+DAYS = {
+    'yesterday': {
+        'tasks': [['Read chapter 3 of the novel', True], ['Finish the lab report', False],
+                  ['Water the plants', True], ['Email the study group', True]],
+        'events': [['Morning lecture', '9:30', '1h', 'blue'], ['Lunch with Maya', '12:30', '1h', 'orange'],
+                   ['Lab session', '3:00', '2h', 'blue']],
+    },
+    'today': {
+        'tasks': [['Review flashcards', True], ['Finish the lab report', False], ['Go for a short walk', True],
+                  ['Call grandma', False], ['Plan the weekend hike', False]],
+        'events': [['Study group', '4:00', '1h', 'blue'], ['Yoga class', '6:30', '45 min', 'orange'],
+                   ['Movie night', '8:30', '2h', 'blue']],
+    },
+    'tomorrow': {
+        'tasks': [['Pick up the library books', False], ['Sketch the poster draft', False]],
+        'events': [['Library hour', '10:00', '1h', 'blue'], ['Poster review', '2:00', '30 min', 'orange'],
+                   ['Dinner with friends', '7:00', '2h', 'blue']],
+    },
+}
+
+# The app's CheckGlyph on a 16 pt box: a ring, an accent fill that pops in
+# and a check that draws on from its short leg (pathLength 1, so demo.css
+# draws it with one dash offset).
+CHECK = ('<svg class="check" viewBox="0 0 16 16" aria-hidden="true">'
+         '<circle class="check-ring" cx="8" cy="8" r="7.25"/><circle class="check-fill" cx="8" cy="8" r="8"/>'
+         '<path class="check-mark" pathLength="1" d="M4.64 8.32 7.04 10.72 11.52 5.76"/></svg>')
+
+
+def task(title, done):
+    return (f'<li class="task"><label class="task-label" title="{title}"><input type="checkbox"{" checked" if done else ""}>'
+            f'{CHECK}<span class="task-title">{title}</span></label></li>')
+
+
+def event(title, start, length, color):
+    return (f'<li class="event"><span class="dot dot-{color}"></span>'
+            f'<span class="event-title">{title}</span><span class="event-time">{start}<span>{length}</span></span></li>')
+
+
+TODAY = DAYS['today']
+TODAY_DONE = sum(done for _, done in TODAY['tasks'])
+
+# Without the script the checkboxes still check (they are real ones), the
+# day reads "Today" and the arrows and the add field wait, disabled.
+TODAY_PANE = f'''
+              <div class="pane pane-today" data-pane="today">
+                <div class="today-main">
+                  <div class="day-head">
+                    {ring('day-ring', 16, 1.5)}
+                    <div class="day-stepper">
+                      <button type="button" class="day-step" data-step="-1" title="Show yesterday's list" aria-label="Show yesterday's list" disabled>{icon('chev-l')}</button>
+                      <p class="day-title"><span data-day-name>Today</span><span class="day-date" data-day-date></span></p>
+                      <button type="button" class="day-step" data-step="1" title="Plan tomorrow" aria-label="Plan tomorrow" disabled>{icon('chev-r')}</button>
+                    </div>
+                    <span class="day-count" data-day-count>{TODAY_DONE} of {len(TODAY['tasks'])} done</span>
+                  </div>
+                  <ul class="tasks" data-tasks aria-label="Tasks">{''.join(task(t, d) for t, d in TODAY['tasks'])}</ul>
+                  <form class="add-task" data-add>
+                    {icon('plus')}<input type="text" name="task" maxlength="48" autocomplete="off" placeholder="Add a task…" aria-label="Add a task" title="Type a task and press Return to add it; Esc clears" disabled>
+                  </form>
+                  <p class="day-foot" data-day-foot hidden>{icon('check-fill')}<span>Everything unfinished is on today</span></p>
+                  <template data-task>{task('', False)}</template>
+                </div>
+                <div class="today-side">
+                  <div class="n-card upnext">
+                    <p class="upnext-cap" data-cal-title>Up next</p>
+                    <ul class="events" data-events>{''.join(event(*e) for e in TODAY['events'])}</ul>
+                    <template data-event>{event('', '', '', 'blue')}</template>
+                  </div>
+                  <button type="button" class="n-card focus-card" data-action="open-timer" title="Open Timer to start, pause or stop" disabled>
+                    <span class="focus-ring">{ring('focus-dial', 28, 2.5)}{icon('timer')}</span>
+                    <span class="focus-text">
+                      <span class="focus-top"><span class="focus-idle">Start a timer</span><span class="focus-time" data-time>0:20</span><span class="focus-cap">Focus</span></span>
+                      <span class="focus-sub" data-focus-sub>Opens the Timer tab</span>
+                    </span>
+                  </button>
+                </div>
+              </div>'''
+
+# (id, title, icon). The tab bar left of the camera, like the app's.
 TABS = [
     ('timer', 'Timer', 'timer'),
+    ('today', 'Today', 'checklist'),
 ]
 
 
@@ -95,7 +182,7 @@ DEMO = f'''
         <h2 id="demo-title" class="sr-only">Try Tabbi right here</h2>
         {SPRITE}
         <div class="scene">
-          <div class="notch" data-state="open" data-tab="timer">
+          <div class="notch" data-state="open">
             <button type="button" class="notch-face" aria-expanded="true" aria-controls="demo-panel" aria-label="Open Tabbi">
               <span class="wing wing-l">
                 <span class="pet" data-pet="notch" data-look="plain"></span>
@@ -109,9 +196,10 @@ DEMO = f'''
                 <div class="tab-bar" role="radiogroup" aria-label="Tabs">
                   {''.join(tab(t, title, symbol, i == 0) for i, (t, title, symbol) in enumerate(TABS))}
                 </div>
-                <p class="head-title"><span class="title-timer">Timer</span></p>
+                <p class="head-title"><span class="title-timer">Timer</span><span class="title-today">Today</span></p>
               </div>
 {TIMER_PANE}
+{TODAY_PANE}
              </div>
             </div>
           </div>
@@ -125,10 +213,15 @@ DEMO = f'''
 '''
 
 
-def pets_data():
-    """pets.json, minified, as a data block for demo.js. The CSP lets the
-    page load nothing but its own files, and a data block is never run, so
-    the frames ride along in the page instead of a fetch the CSP would stop."""
-    data = json.loads((HERE / 'img' / 'demo' / 'pets.json').read_text())
+def data_block(block_id, data):
     text = json.dumps(data, separators=(',', ':')).replace('<', '\\u003c')
-    return f'\n  <script type="application/json" id="demo-pets">{text}</script>'
+    return f'\n  <script type="application/json" id="{block_id}">{text}</script>'
+
+
+def demo_data():
+    """pets.json and Today's days, minified, as data blocks for demo.js. The
+    CSP lets the page load nothing but its own files, and a data block is
+    never run, so they ride along in the page instead of a fetch the CSP
+    would stop."""
+    pets = json.loads((HERE / 'img' / 'demo' / 'pets.json').read_text())
+    return data_block('demo-pets', pets) + data_block('demo-days', DAYS)

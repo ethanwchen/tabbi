@@ -1,18 +1,21 @@
 // The home page's notch demo: hover or tap the notch and Tabbi's panel
 // springs open, the Timer counts down a short focus round, and the pet
-// cheers beside the closed notch when it is done.
+// cheers beside the closed notch when it is done. Today keeps a checklist
+// for yesterday, today and tomorrow.
 //
 // The page already holds the whole panel as HTML, open, with tabs that
 // switch through radio buttons, so it works as a showcase without this
 // file. This script closes it, opens it the way the app does and makes the
-// controls work. It runs no strings as code, adds no markup but confetti,
-// and talks to no server: the pet's frames come from a JSON data block.
+// controls work. It runs no strings as code, builds markup only from the
+// page's own templates and talks to no server: the pet's frames and the
+// days' lists come from JSON data blocks.
 (() => {
   'use strict';
 
   const demo = document.querySelector('.demo');
   const data = document.getElementById('demo-pets');
-  if (!demo || !data) return;
+  const daysData = document.getElementById('demo-days');
+  if (!demo || !data || !daysData) return;
 
   const notch = demo.querySelector('.notch');
   const face = notch.querySelector('.notch-face');
@@ -142,6 +145,8 @@
       setState('closed');
       return;
     }
+    // Like the app, the panel stays open while someone types in it.
+    if (document.activeElement === addField) return;
     leaveTimer = window.setTimeout(close, 220);
   });
 
@@ -162,10 +167,6 @@
     if (isOpen() && event.relatedTarget && !notch.contains(event.relatedTarget)) close();
   });
 
-  panel.addEventListener('change', (event) => {
-    if (event.target.name === 'demo-tab') notch.dataset.tab = event.target.value;
-  });
-
   // --- the Timer ----------------------------------------------------------
 
   // A real Pomodoro is 25 minutes; the demo's round is 20 seconds.
@@ -180,7 +181,9 @@
     announced: 0,
   };
   const times = demo.querySelectorAll('[data-time]');
-  const arcs = demo.querySelectorAll('.ring-arc');
+  const arcs = demo.querySelectorAll('.pane-timer .ring-arc, .mini-ring .ring-arc');
+  const focusArc = demo.querySelector('.focus-dial .ring-arc');
+  const focusSub = demo.querySelector('[data-focus-sub]');
   const primary = demo.querySelector('[data-action="primary"]');
   const primaryLabel = primary.querySelector('[data-primary-label]');
   const primaryIcon = primary.querySelector('use');
@@ -204,6 +207,8 @@
     // The arc is what is left of the round, like the app's dial.
     const offset = String(100 - (100 * timer.left) / ROUND);
     arcs.forEach((arc) => { arc.style.strokeDashoffset = offset; });
+    // Today's focus card fills with the time done instead.
+    focusArc.style.strokeDashoffset = String((100 * timer.left) / ROUND);
   }
 
   function renderControls() {
@@ -215,6 +220,9 @@
     stopButton.disabled = run === 'idle';
     if (run === 'idle') delete notch.dataset.running;
     else notch.dataset.running = '';
+    if (run === 'paused') notch.dataset.paused = '';
+    else delete notch.dataset.paused;
+    focusSub.textContent = run === 'idle' ? 'Opens the Timer tab' : run === 'paused' ? 'Paused in Timer' : 'Running in Timer';
     dial.title = `Focus: ${clock(timer.left)}`;
     players.dial.el.title = running ? `${PET} is studying with you` : `${PET} naps until the timer runs`;
   }
@@ -289,6 +297,140 @@
       : 'Turn on deep focus: focus blocks bring Do Not Disturb';
   });
 
+  // --- Today --------------------------------------------------------------
+
+  // Yesterday, today and tomorrow, each a list of [title, done] and its
+  // calendar. Yesterday is done with, so it only looks back.
+  const days = JSON.parse(daysData.textContent);
+  const ORDER = ['yesterday', 'today', 'tomorrow'];
+  const taskList = demo.querySelector('[data-tasks]');
+  const taskTemplate = demo.querySelector('[data-task]').content.firstElementChild;
+  const eventList = demo.querySelector('[data-events]');
+  const eventTemplate = demo.querySelector('[data-event]').content.firstElementChild;
+  const addForm = demo.querySelector('[data-add]');
+  const addField = addForm.querySelector('input');
+  const dayFoot = demo.querySelector('[data-day-foot]');
+  const dayName = demo.querySelector('[data-day-name]');
+  const dayDate = demo.querySelector('[data-day-date]');
+  const dayCount = demo.querySelector('[data-day-count]');
+  const dayArc = demo.querySelector('.day-ring .ring-arc');
+  const calTitle = demo.querySelector('[data-cal-title]');
+  const [backStep, nextStep] = demo.querySelectorAll('[data-step]');
+  let viewing = 'today';
+
+  /** The day's date the way the app's header writes it: "Fri, Oct 9" for
+      today, "Oct 8" beside the word Yesterday. */
+  function dateText(offset) {
+    const day = new Date();
+    day.setDate(day.getDate() + offset);
+    const options = offset === 0 ? { weekday: 'short', month: 'short', day: 'numeric' } : { month: 'short', day: 'numeric' };
+    return day.toLocaleDateString('en-US', options);
+  }
+
+  function taskRow(title, isDone) {
+    const row = taskTemplate.cloneNode(true);
+    const box = row.querySelector('input');
+    row.querySelector('label').title = title;
+    row.querySelector('.task-title').textContent = title;
+    box.checked = isDone;
+    if (viewing === 'yesterday') {
+      box.disabled = true;
+      // An unfinished task of yesterday's already sits on today's list.
+      if (!isDone) {
+        const note = document.createElement('span');
+        note.className = 'task-note';
+        note.textContent = 'On today';
+        row.querySelector('label').append(note);
+      }
+    }
+    return row;
+  }
+
+  /** "3 of 5 done", or for tomorrow, which has not started, "2 planned". */
+  function renderCount() {
+    const tasks = days[viewing].tasks;
+    const finished = tasks.filter(([, isDone]) => isDone).length;
+    dayCount.textContent = viewing === 'tomorrow' && finished === 0 ? `${tasks.length} planned` : `${finished} of ${tasks.length} done`;
+    dayArc.style.strokeDashoffset = String(tasks.length ? 100 - (100 * finished) / tasks.length : 100);
+  }
+
+  function renderDay() {
+    const index = ORDER.indexOf(viewing);
+    const offset = index - 1;
+    dayName.textContent = offset === 0 ? dateText(0) : viewing === 'yesterday' ? 'Yesterday' : 'Tomorrow';
+    dayDate.textContent = offset === 0 ? '' : dateText(offset);
+    taskList.replaceChildren(...days[viewing].tasks.map(([title, isDone]) => taskRow(title, isDone)));
+    taskList.setAttribute('aria-label', `${viewing === 'today' ? "Today's" : viewing === 'yesterday' ? "Yesterday's" : "Tomorrow's"} tasks`);
+    eventList.replaceChildren(...days[viewing].events.map(([title, start, length, color]) => {
+      const row = eventTemplate.cloneNode(true);
+      row.querySelector('.dot').className = `dot dot-${color}`;
+      row.querySelector('.event-title').textContent = title;
+      const time = row.querySelector('.event-time');
+      const span = time.querySelector('span');
+      span.textContent = length;
+      time.replaceChildren(start, span);
+      return row;
+    }));
+    calTitle.textContent = { yesterday: "Yesterday's calendar", today: 'Up next', tomorrow: "Tomorrow's calendar" }[viewing];
+    addForm.hidden = viewing === 'yesterday';
+    dayFoot.hidden = viewing !== 'yesterday';
+    addField.placeholder = viewing === 'tomorrow' ? 'Add a task for tomorrow…' : 'Add a task…';
+    addField.setAttribute('aria-label', viewing === 'tomorrow' ? 'Add a task for tomorrow' : 'Add a task');
+    // An arrow with nowhere to go stays in place, dimmed, so the title never shifts.
+    backStep.disabled = index === 0;
+    nextStep.disabled = index === ORDER.length - 1;
+    backStep.title = viewing === 'tomorrow' ? 'Back to today' : "Show yesterday's list";
+    nextStep.title = viewing === 'yesterday' ? 'Back to today' : 'Plan tomorrow';
+    [backStep, nextStep].forEach((button) => button.setAttribute('aria-label', button.title));
+    renderCount();
+  }
+
+  [backStep, nextStep].forEach((button) => {
+    button.addEventListener('click', () => {
+      viewing = ORDER[ORDER.indexOf(viewing) + Number(button.dataset.step)];
+      renderDay();
+      // The arrow at the end goes dim; keep focus on the one that can go back.
+      if (button.disabled) (button === backStep ? nextStep : backStep).focus();
+      announce(viewing === 'today' ? `Today, ${dayCount.textContent}.` : `${dayName.textContent}, ${dayCount.textContent}.`);
+    });
+  });
+
+  taskList.addEventListener('change', (event) => {
+    const rows = [...taskList.children];
+    const index = rows.indexOf(event.target.closest('.task'));
+    if (index < 0) return;
+    days[viewing].tasks[index][1] = event.target.checked;
+    renderCount();
+  });
+
+  addForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const title = addField.value.trim();
+    if (!title) return;
+    days[viewing].tasks.push([title, false]);
+    const row = taskRow(title, false);
+    taskList.append(row);
+    row.scrollIntoView({ block: 'nearest' });
+    addField.value = '';
+    renderCount();
+    announce(`Added ${title}.`);
+  });
+
+  // Esc clears the draft first; on an empty field it closes the notch.
+  addField.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && addField.value) {
+      event.stopPropagation();
+      addField.value = '';
+    }
+  });
+
+  // The focus card mirrors the Timer and opens its tab.
+  const timerTab = demo.querySelector('input[name="demo-tab"][value="timer"]');
+  demo.querySelector('[data-action="open-timer"]').addEventListener('click', () => {
+    timerTab.checked = true;
+    timerTab.focus();
+  });
+
   // --- the celebration ------------------------------------------------------
 
   const CONFETTI = ['#FF9E42', '#F4D57E', '#F2A0A6', '#A88CFF', '#7FD6C2', '#FBF7F0'];
@@ -338,7 +480,8 @@
   });
   watcher.observe(scene);
 
-  demo.querySelectorAll('.demo button:disabled').forEach((button) => { button.disabled = false; });
+  demo.querySelectorAll('button:disabled, input:disabled').forEach((control) => { control.disabled = false; });
+  renderDay();
   render();
   renderControls();
   setState('closed');

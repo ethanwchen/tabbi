@@ -18,10 +18,15 @@
   --n-text-2: rgba(255, 255, 255, 0.62);
   --n-text-3: rgba(255, 255, 255, 0.48);
   --timer: #FF9E42;
+  --today: #A88CFF;
+  --blue: #3B8BFF;
+  --orange: #FF9E42;
   /* SwiftUI springs: open (0.45 s, bounce 0.2), close (0.38 s), hover (0.25 s, 0.1), snappy (0.26 s, 0.14). */
   --open: linear(0, 0.022, 0.078, 0.156, 0.246, 0.34, 0.433, 0.522, 0.604, 0.678, 0.743, 0.8, 0.847, 0.887, 0.92, 0.946, 0.966, 0.982, 0.994, 1.002, 1.008, 1.012, 1.014, 1.015, 1.015, 1.014, 1.013, 1.012, 1.011, 1.009, 1.008, 1.007, 1.005, 1.004, 1.003, 1.003, 1);
   --close: linear(0, 0.024, 0.082, 0.159, 0.244, 0.331, 0.415, 0.493, 0.564, 0.628, 0.684, 0.733, 0.775, 0.812, 0.843, 0.869, 0.891, 0.91, 0.926, 0.939, 0.949, 0.958, 0.966, 0.972, 0.977, 0.981, 0.985, 0.988, 0.99, 0.992, 0.993, 0.995, 0.996, 0.996, 0.997, 0.998, 1);
   --hover: linear(0, 0.012, 0.044, 0.09, 0.146, 0.207, 0.271, 0.335, 0.399, 0.46, 0.518, 0.573, 0.623, 0.67, 0.712, 0.75, 0.784, 0.814, 0.841, 0.865, 0.886, 0.904, 0.92, 0.933, 0.945, 0.955, 0.964, 0.971, 0.977, 0.982, 0.986, 0.989, 0.992, 0.994, 0.996, 0.998, 1);
+  /* check (0.4 s, bounce 0.25): a checkbox turning on. */
+  --check: linear(0, 0.021, 0.074, 0.149, 0.236, 0.33, 0.423, 0.514, 0.599, 0.676, 0.745, 0.804, 0.855, 0.898, 0.933, 0.961, 0.983, 0.999, 1.011, 1.019, 1.025, 1.027, 1.028, 1.028, 1.027, 1.025, 1.022, 1.019, 1.017, 1.014, 1.012, 1.01, 1.008, 1.006, 1.004, 1.003, 1);
   --snappy: linear(0, 0.022, 0.078, 0.155, 0.242, 0.333, 0.422, 0.507, 0.586, 0.656, 0.718, 0.772, 0.819, 0.858, 0.89, 0.917, 0.938, 0.955, 0.969, 0.979, 0.987, 0.993, 0.998, 1.001, 1.003, 1.004, 1.005, 1.005, 1.005, 1.005, 1.004, 1.004, 1.004, 1.003, 1.003, 1.002, 1);
   margin: 0 0 72px;
   text-align: center;
@@ -131,14 +136,16 @@
 .tab:hover { color: var(--n-text); }
 .tab:has(input:focus-visible) { outline: 3px solid var(--link); outline-offset: 1px; }
 .tab-timer:has(input:checked) { color: var(--timer); background: rgba(255, 158, 66, 0.16); }
+.tab-today:has(input:checked) { color: var(--today); background: rgba(168, 140, 255, 0.16); }
 .head-title { margin: 0 0.4em 0 0; font-size: 1.4em; font-weight: 600; line-height: 1; color: var(--n-text-2); }
 .head-title span { display: none; }
-.notch[data-tab='timer'] .title-timer,
-.panel:has([value='timer']:checked) .title-timer { display: inline; }
+.panel:has([value='timer']:checked) .title-timer,
+.panel:has([value='today']:checked) .title-today { display: inline; }
 
 /* One pane shows at a time: the checked tab's. */
 .pane { position: absolute; top: 4em; left: 2em; right: 2em; bottom: 1.6em; display: none; }
-.panel:has([value='timer']:checked) .pane-timer { display: grid; }
+.panel:has([value='timer']:checked) .pane-timer,
+.panel:has([value='today']:checked) .pane-today { display: grid; }
 
 .n-card { position: relative; margin: 0; background: var(--n-surface); border-radius: 1em; }
 .demo p { margin: 0; }
@@ -174,12 +181,11 @@
 .dial { display: grid; place-items: center; }
 .dial-ring { position: relative; width: 12.8em; height: 12.8em; }
 .ring { display: block; width: 100%; height: 100%; rotate: -90deg; }
-.ring circle { fill: none; }
+.demo .ring-track, .demo .ring-arc { fill: none; }
 .ring-track { stroke: rgba(255, 158, 66, 0.2); }
 .ring-arc { stroke: var(--timer); stroke-linecap: round; stroke-dasharray: 100 100; stroke-dashoffset: 0; }
 .mini-ring .ring-track { stroke: rgba(255, 158, 66, 0.25); }
 .mini-ring { rotate: -90deg; }
-.mini-ring circle { fill: none; }
 .mini-ring .ring-arc { stroke: var(--timer); stroke-linecap: round; stroke-dasharray: 100 100; }
 .dial-read {
   position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.2em;
@@ -220,6 +226,145 @@
 .today-label { color: var(--n-text-3); }
 .pts { margin-left: auto; color: var(--timer); }
 .controls { display: flex; align-items: center; justify-content: space-between; height: 2.8em; }
+
+/* --- Today -------------------------------------------------------------- */
+/* The checklist on the left, the day's calendar and the shared focus card
+   in a 200 pt column on the right. */
+.pane-today { grid-template-columns: minmax(0, 1fr) 20em; grid-template-rows: minmax(0, 1fr); gap: 1.2em; }
+.today-main { display: flex; flex-direction: column; gap: 0.8em; min-width: 0; min-height: 0; }
+.day-head { display: flex; align-items: center; gap: 0.8em; height: 2em; padding: 0 0.8em; flex: none; }
+.day-ring { width: 1.6em; height: 1.6em; margin: 0 0.2em; rotate: -90deg; flex: none; }
+.day-ring .ring-track { stroke: rgba(168, 140, 255, 0.2); }
+.day-ring .ring-arc { stroke: var(--today); stroke-linecap: round; stroke-dasharray: 100 100; transition: stroke-dashoffset 335ms var(--snappy); }
+.day-stepper { display: flex; align-items: center; gap: 0.2em; }
+.day-step {
+  display: grid; place-items: center; width: 1.6em; height: 2em; padding: 0;
+  border: 0; border-radius: 999px; background: none; color: var(--n-text-2); cursor: pointer;
+  transition: background-color 335ms var(--snappy), color 335ms var(--snappy);
+}
+.day-step .ico { width: 0.9em; height: 0.9em; }
+.day-step:hover:not(:disabled) { background: var(--n-hover); color: var(--n-text); }
+.demo[data-live] .day-step:disabled { opacity: 0.35; }
+.demo .day-title { color: var(--n-text); }
+.day-title { display: flex; align-items: baseline; gap: 0.4em; font-size: 1.3em; font-weight: 600; white-space: nowrap; }
+.day-date { color: var(--n-text-3); }
+.day-date:empty { display: none; }
+.day-count {
+  margin-left: auto; font-size: 1.05em; font-weight: 500; color: var(--n-text-2);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+
+/* 22 pt rows; the list scrolls only once added tasks outgrow it. */
+/* The page styles main's lists as prose; these are the app's rows. */
+.demo .task, .demo .event { margin: 0; color: var(--n-text); }
+.tasks { flex: 1; min-height: 0; margin: 0; padding: 0; list-style: none; overflow-y: auto; scrollbar-width: none; }
+.tasks::-webkit-scrollbar { display: none; }
+.task-label {
+  position: relative; display: flex; align-items: center; gap: 0.8em; height: 2.2em; padding: 0 0.8em;
+  border-radius: 0.6em; cursor: pointer;
+  transition: background-color 335ms var(--snappy);
+}
+.task-label:hover { background: var(--n-surface); }
+.task input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: inherit; }
+.task-label:has(input:focus-visible) { outline: 3px solid var(--link); outline-offset: -1px; }
+.task-title {
+  min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-size: 1.2em; color: var(--n-text);
+  text-decoration: line-through transparent; text-decoration-thickness: 0.08em;
+  transition: color 335ms var(--snappy), text-decoration-color 335ms var(--snappy);
+}
+.task input:checked ~ .task-title { color: var(--n-text-2); text-decoration-color: var(--n-text-2); }
+.task-label:has(input:disabled) { cursor: default; }
+.task-label:has(input:disabled):hover { background: none; }
+.task-note { margin-left: auto; padding-left: 0.8em; font-size: 1.05em; font-weight: 500; color: var(--n-text-3); white-space: nowrap; }
+
+/* The app's CheckGlyph, driven by one progress value like its CheckDraw:
+   0 is an empty ring, 1 a filled check. Turning on rides the check spring,
+   so the fill pops past full size and settles; turning off is snappy. */
+@property --p { syntax: '<number>'; inherits: true; initial-value: 0; }
+.check {
+  --p: 0; flex: none; width: 1.6em; height: 1.6em; margin: 0 0.2em; overflow: visible;
+  transition: --p 335ms var(--snappy);
+}
+.task input:checked + .check { --p: 1; transition: --p 490ms var(--check); }
+.check-ring { fill: none; stroke: var(--n-text-3); stroke-width: 1.5; opacity: calc(1 - min(var(--p) / 0.3, 1)); transition: stroke 335ms var(--snappy); }
+.task-label:hover .check-ring { stroke: var(--today); }
+.check-fill, .check-mark { transform-box: view-box; transform-origin: 8px 8px; }
+.check-fill {
+  fill: var(--today); opacity: min(var(--p) / 0.2, 1);
+  scale: max(0.4 + 0.6 * min(var(--p) / 0.55, 1), min(var(--p), 1.08));
+}
+.check-mark {
+  fill: none; stroke: #000; stroke-width: 1.92; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 1 1; stroke-dashoffset: calc(1 - clamp(0, (var(--p) - 0.3) / 0.7, 1));
+  opacity: clamp(0, (var(--p) - 0.3) * 1000, 1);
+  scale: min(0.4 + 0.6 * min(var(--p) / 0.55, 1), 1);
+}
+
+/* The add field, and in its place yesterday's quiet note. */
+.add-task {
+  position: relative; display: flex; align-items: center; gap: 0.8em; flex: none; height: 2.8em; margin: 0; padding: 0 0.8em;
+  border-radius: 1em; background: var(--n-surface); box-shadow: inset 0 0 0 0.05em var(--n-stroke);
+  color: var(--n-text-3);
+  transition: background-color 335ms var(--snappy), box-shadow 335ms var(--snappy), color 335ms var(--snappy);
+}
+.add-task .ico { width: 2em; height: 1.1em; }
+.add-task[hidden] { display: none; }
+.add-task:hover { background: var(--n-hover); }
+.add-task:focus-within { background: var(--n-hover); box-shadow: inset 0 0 0 0.1em rgba(168, 140, 255, 0.5); color: var(--today); }
+.add-task input {
+  flex: 1; min-width: 0; height: 100%; margin: 0; padding: 0; border: 0; outline: 0; background: none;
+  font: inherit; font-size: 1.2em; color: var(--n-text); caret-color: var(--today);
+}
+.add-task input::placeholder { color: var(--n-text-3); opacity: 1; }
+.add-task input:disabled { cursor: default; }
+.day-foot { display: flex; align-items: center; gap: 0.4em; flex: none; height: 2.8em; padding: 0 0.8em; font-size: 1.05em; font-weight: 500; color: var(--n-text-2); }
+.day-foot[hidden] { display: none; }
+.day-foot .ico { width: 1.1em; height: 1.1em; }
+
+.today-side { display: flex; flex-direction: column; gap: 0.8em; min-width: 0; min-height: 0; }
+.upnext { display: flex; flex-direction: column; flex: 1; min-height: 0; padding: 0.8em; overflow: hidden; }
+.upnext-cap { flex: none; padding: 0 0.4em 0.4em; font-size: 1.05em; font-weight: 500; line-height: 1.3; color: var(--n-text-3); }
+/* Like the app's RowsThatFit, a short card lists fewer events instead of
+   clipping one: rows that do not fit wrap into a column out of sight. */
+.events {
+  display: flex; flex-direction: column; flex-wrap: wrap; gap: 0.4em 4em; flex: 1; min-height: 0;
+  margin: 0; padding: 0; list-style: none; overflow: hidden;
+}
+.event { display: grid; grid-template-columns: 0.8em minmax(0, 1fr); column-gap: 0.8em; align-items: center; width: 100%; padding: 0 0.4em; }
+.dot { width: 0.6em; height: 0.6em; border-radius: 50%; justify-self: center; }
+.dot-blue { background: var(--blue); }
+.dot-orange { background: var(--orange); }
+.event-title, .event-time { line-height: 1.2; }
+.event-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 1.2em; font-weight: 500; }
+.event-time {
+  grid-column: 2; display: flex; gap: 0.4em; font-size: 1.05em; font-weight: 500; color: var(--n-text-3);
+  font-variant-numeric: tabular-nums;
+}
+.event-time span { color: var(--n-text-2); }
+
+/* Mirrors the Timer's clock in its accent and opens its tab. */
+.focus-card {
+  display: flex; align-items: center; gap: 0.8em; flex: none; width: 100%; padding: 0.6em 0.8em;
+  border: 0; text-align: left; cursor: pointer;
+  transition: background-color 335ms var(--snappy);
+}
+.focus-card:hover { background: var(--n-hover); }
+.focus-ring { position: relative; display: grid; place-items: center; flex: none; width: 2.8em; height: 2.8em; color: var(--timer); }
+.focus-ring::before { content: ''; position: absolute; inset: 0.25em; border-radius: 50%; background: rgba(255, 158, 66, 0.1); }
+.focus-dial { position: absolute; inset: 0; width: 100%; height: 100%; rotate: -90deg; }
+.focus-dial .ring-track { stroke: rgba(255, 158, 66, 0.2); }
+.focus-dial .ring-arc { stroke: var(--timer); stroke-linecap: round; stroke-dasharray: 100 100; stroke-dashoffset: 100; }
+.focus-ring .ico { position: relative; width: 1em; height: 1em; }
+.focus-text { display: flex; flex-direction: column; min-width: 0; }
+.focus-text { line-height: 1.3; }
+.focus-top { display: flex; align-items: baseline; gap: 0.4em; font-size: 1.3em; font-weight: 600; color: var(--n-text-2); white-space: nowrap; }
+.focus-time { font-variant-numeric: tabular-nums; }
+.notch[data-running]:not([data-paused]) .focus-time { color: var(--n-text); }
+.focus-cap { font-size: 0.81em; font-weight: 500; color: var(--n-text-3); }
+.notch:not([data-running]) .focus-time, .notch:not([data-running]) .focus-cap, .notch[data-running] .focus-idle { display: none; }
+.focus-sub { font-size: 1.05em; font-weight: 500; color: var(--n-text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.notch[data-running] .focus-sub { color: var(--n-text-2); }
 
 /* --- the pet ------------------------------------------------------------- */
 /* The app's own sprites: one atlas per look, a row per animation and a
@@ -293,6 +438,9 @@
   .pane { left: 1.4em; right: 1.4em; bottom: 1.4em; }
   .pane-timer { grid-template-columns: minmax(0, 1fr); grid-template-rows: 15.6em minmax(0, 1fr); }
   .today-row .today-label { display: none; }
+  /* Today keeps its checklist and the focus card; the calendar waits for a wider screen. */
+  .pane-today { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; }
+  .upnext { display: none; }
   .hint { left: auto; right: 1.2em; top: 5em; font-size: 17px; }
   /* No room left of the notch on a phone: the points go under the pet. */
   .burst-pts { top: 4em; right: auto; left: 0.6em; }
@@ -300,6 +448,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .notch, .notch::before, .notch::after, .notch-face, .panel, .tab, .primary, .icon-btn, .capsule, .dial-time, .hint,
+  .check, .task input:checked + .check, .check-ring, .task-title, .task-label, .day-ring .ring-arc, .day-step, .add-task, .focus-card,
   .notch[data-state] .panel, .notch[data-state] .notch-face, .demo[data-cheer] .burst-pts { transition: none !important; }
   .primary:active, .icon-btn:active, .capsule:active { transform: none; }
 }
