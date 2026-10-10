@@ -77,6 +77,12 @@ public struct NotchView: View {
             if let checkForUpdates = content.checkForUpdates {
                 Button("Check for Updates…", action: checkForUpdates)
             }
+            if let suggestFeedback = content.suggestFeedback {
+                Button(FeedbackLink.title) {
+                    model.close()
+                    suggestFeedback()
+                }
+            }
             Button("Quit \(content.appName)") { NSApp.terminate(nil) }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)

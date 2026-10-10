@@ -10,13 +10,22 @@ import { HttpError, Obj, oneOf, parseBodyObject, readText } from "./lib";
 
 /** The website form's categories (`SUGGEST_CATEGORIES` in site/build.py): a new tab, an integration, an improvement, something else. */
 export const SUGGESTION_CATEGORIES = ["tab", "integration", "improvement", "other"] as const;
-/** `website` is the honeypot: hidden from people, filled in by bots. */
-export const SUGGESTION_FIELDS = ["category", "message", "email", "website"] as const;
+/**
+ * `website` is the honeypot: hidden from people, filled in by bots. `version`, `macos` and `edition` are
+ * hidden fields the form fills in when the app opened it (`FeedbackLink` in TabbiKitCore), so a bug report
+ * says which Tabbi and macOS it happened on.
+ */
+export const SUGGESTION_FIELDS = ["category", "message", "email", "website", "version", "macos", "edition"] as const;
 
 export const MIN_SUGGESTION_MESSAGE = 10;
 export const MAX_SUGGESTION_MESSAGE = 2000;
 /** The longest address RFC 5321 allows. */
 export const MAX_SUGGESTION_EMAIL = 254;
+/**
+ * The app's facts as `DiagnosticEnvironment` in TabbiKitCore cleans them: letters, digits, spaces and
+ * `. _ - ( )`, at most 32 characters, as in "1.4.0 (52)", "15.1.0" or "tabbi".
+ */
+export const APP_FACT_PATTERN = /^[A-Za-z0-9 ._()-]{1,32}$/;
 /**
  * A form body percent-encodes each byte of a 2,000 character message (up to 4 UTF-8 bytes per
  * character) as three characters, so a valid post can approach 24 KB.
@@ -42,6 +51,10 @@ export interface Suggestion {
   category: string;
   message: string;
   email: string | null;
+  /** The Tabbi version, macOS version and edition id, when the app opened the form; otherwise null. */
+  appVersion: string | null;
+  macos: string | null;
+  edition: string | null;
 }
 
 /** A parsed post: the suggestion, or `null` when the honeypot was filled in (accepted, never stored). */
@@ -104,6 +117,16 @@ export function cleanEmail(v: unknown): string | null {
   return s;
 }
 
+/** An optional fact about the app (`APP_FACT_PATTERN`): empty means none, anything else must fit. */
+export function cleanAppFact(v: unknown, field: string): string | null {
+  if (v === undefined || v === null) return null;
+  if (typeof v !== "string") throw invalid(field);
+  const s = v.trim();
+  if (s === "") return null;
+  if (!APP_FACT_PATTERN.test(s)) throw invalid(field);
+  return s;
+}
+
 /**
  * Validates a suggestion body. A filled-in honeypot short-circuits before any other check, so a bot
  * learns nothing from validation errors and is told it succeeded.
@@ -115,6 +138,9 @@ export function parseSuggestion(body: Obj): Suggestion | null {
     category: oneOf(body.category, SUGGESTION_CATEGORIES, "category"),
     message: cleanMessage(body.message),
     email: cleanEmail(body.email),
+    appVersion: cleanAppFact(body.version, "version"),
+    macos: cleanAppFact(body.macos, "macos"),
+    edition: cleanAppFact(body.edition, "edition"),
   };
 }
 

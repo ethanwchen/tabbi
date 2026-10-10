@@ -7,11 +7,8 @@ import TabbiKitCore
 /// log (past and new) and event items the server grants.
 @MainActor
 final class ClosetLimitedEditionAppTests: XCTestCase {
-    private var root: URL!
-
-    override func setUp() {
-        root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-    }
+    // XCTest makes a new instance per test, so each test gets its own folder.
+    private let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
 
     override func tearDown() {
         try? FileManager.default.removeItem(at: root)

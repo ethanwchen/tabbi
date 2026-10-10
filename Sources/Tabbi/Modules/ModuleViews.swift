@@ -43,6 +43,7 @@ enum ModuleViews {
                                                providers: services.providers),
             setNotchMode: { services.settings.settings.notchMode = $0 },
             checkForUpdates: checkForUpdates,
+            suggestFeedback: { Feedback.open() },
             celebrations: services.celebrations,
             runAction: ModuleActionRunner { [weak services] module, action in
                 services?.modules.perform(action, on: module)

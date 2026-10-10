@@ -20,6 +20,7 @@ This page says what differs, how to build and upload it, and what to enter in Ap
 | Do Not Disturb during focus | through Shortcuts | hidden (it runs `/usr/bin/shortcuts`) |
 | Settings > Connections | all rows | no Claude or Do Not Disturb rows |
 | Party | yes | left out by the edition for now (one switch turns it on) |
+| Crash reports | asks after a crash, then sends to `POST /v1/crashes` with consent | none of its own (Apple's crash reports, which users share through macOS, already cover it) |
 | Sign in with Apple and sync ([sync.md](sync.md)) | yes, with the Developer ID profile | yes, with the App Store profile (not in `--adhoc` builds) |
 
 The compile-time switch sits in these places: `Package.swift` (the define and the Sparkle dependency), `ModuleList.swift` (the Claude modules), `AppDelegate.swift` (updater and install hygiene), `Edition+Current.swift` (the default edition) and a few spots in Settings and the snapshot renderer.
@@ -104,7 +105,7 @@ What the label does not need to list:
 - Calendar events, tasks, focus history and study tallies stay on the Mac in the app's container.
 - Album artwork is loaded from the music service's image host (`i.scdn.co`) without any identifier of the user.
 - AnkiConnect is reached on `localhost` only.
-- There is no analytics, advertising or crash reporting.
+- There is no analytics or advertising, and no crash reporting of its own: `AppDelegate` installs no `CrashHandler` and shows no crash prompt under `APPSTORE`, so a crash reaches the developer only through Apple's crash reports, which the user agreed to share in macOS.
 
 When Party comes back, add its display name and study presence (Name or Other User Content, and Product Interaction) to the label.
 

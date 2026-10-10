@@ -30,6 +30,9 @@ public struct NotchContent {
     /// Checks for a newer version of the app; nil hides "Check for Updates…"
     /// (development builds, demo and snapshot runs).
     public var checkForUpdates: (() -> Void)?
+    /// Opens the website's form for an idea or a bug report; nil hides
+    /// "Suggest a Feature or Report a Bug".
+    public var suggestFeedback: (() -> Void)?
     /// Where real events celebrate; the tab bar bounces a tab for the
     /// center's nods. Nil shows no nods.
     public var celebrations: CelebrationCenter?
@@ -47,6 +50,7 @@ public struct NotchContent {
         takeover: NotchTakeover? = nil,
         setNotchMode: ((NotchMode) -> Void)? = nil,
         checkForUpdates: (() -> Void)? = nil,
+        suggestFeedback: (() -> Void)? = nil,
         celebrations: CelebrationCenter? = nil,
         runAction: ModuleActionRunner = ModuleActionRunner { _, _ in }
     ) {
@@ -59,6 +63,7 @@ public struct NotchContent {
         self.takeover = takeover
         self.setNotchMode = setNotchMode
         self.checkForUpdates = checkForUpdates
+        self.suggestFeedback = suggestFeedback
         self.celebrations = celebrations
         self.runAction = runAction
     }

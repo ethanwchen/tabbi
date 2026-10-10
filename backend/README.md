@@ -44,7 +44,7 @@ npx wrangler secret put APPLE_KEY_ID        # the key's Key ID
 npx wrangler secret put APPLE_PRIVATE_KEY   # the whole AuthKey_<KeyID>.p8 file, pasted as is
 ```
 
-To turn on the operator endpoints (reading website suggestions, reviewing reports, renaming and banning users, granting limited edition items, backup export and point-in-time restore), set an admin token of at least 32 characters, kept out of the repo:
+To turn on the operator endpoints (reading website suggestions and crash reports, reviewing reports, renaming and banning users, granting limited edition items, backup export and point-in-time restore), set an admin token of at least 32 characters, kept out of the repo:
 
 ```sh
 openssl rand -hex 32 | npx wrangler secret put ADMIN_TOKEN
@@ -88,7 +88,7 @@ app ──HTTPS──> Worker (tabbi-friends) ──> Durable Object "Hub" (one 
 - The weekly leaderboard sums a `study_days` row per user per local calendar day (the last `todayMinutes` the app reported for that day, written with the presence flushes and only when it changed).
   The app sends its local `day` with each heartbeat, so minutes count toward the day the student actually studied in their time zone.
   The week is the current ISO week (Monday to Sunday) of the UTC calendar; live, not yet flushed counts are included, and rows are kept for 28 days: the same sweep deletes older ones once a day, also for users who stopped sending heartbeats.
-- Rate limits (60 requests per minute per token, 60 failed authentications, 10 registrations and 10 Apple sign-ins per minute per client, and 3 website suggestions per minute and 20 per day per client) are counted in the Hub's memory.
+- Rate limits (60 requests per minute per token, 60 failed authentications, 10 registrations and 10 Apple sign-ins per minute per client, 3 website suggestions per minute and 20 per day per client, and 2 crash reports per minute and 10 per day per client) are counted in the Hub's memory.
   A client is an IPv4 address or an IPv6 /64 prefix, so rotating through one subscriber's IPv6 addresses does not reset a limit.
   With a single instance they are exact while it is alive, and they cost no storage writes.
 
