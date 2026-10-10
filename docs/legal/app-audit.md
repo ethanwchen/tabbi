@@ -42,6 +42,11 @@ This compares the macOS app (`Sources/`) with the site Privacy Policy (`site/_le
 ## Status
 
 The site Privacy Policy rewrite (`site/_legal.py`, 9 October 2026) fixes policy text items 1 to 10: crash reports have their own section that says where they go, App Store edition differences are stated up front, each AI feature's payload is listed, AI Usage's "ok" request is disclosed, the browser sign-in name hand-off and custom friends servers are described, artwork and update checks are worded to match the code, and focus coaching is described as on-Mac only.
-Item 11 (privacy manifest) and the Sign in with Apple half of code gap 2 remain open; gap 3 and the Party half of gap 2 were fixed with the Party age check.
-The README privacy section, the support FAQ (`site/build.py`) and `backend/PRIVACY.md` still carry some of the old wording and need the same pass.
+The Sign in with Apple half of code gap 2 remains open; gap 3 and the Party half of gap 2 were fixed with the Party age check.
+The support FAQ (`site/build.py`) and `backend/PRIVACY.md` got the same pass later; the README privacy section still carries some of the old wording (see `ip-review.md`).
 The `docs/appstore.md` legal pass (9 October 2026) declares Device ID and Product Interaction in the privacy label (the cautious reading of the per-Mac sync id and the study days), states that the Suggest form is the website's collection, flags the "Notch Focus Timer" name conflict, adds the age rating guidance for AI answers and for Party's return, and adds reviewer notes for account deletion, the legal links, the Party age check and Party's report and block menu.
+Item 11 is fixed: the App Store edition and its widget extension now ship privacy manifests (`packaging/PrivacyInfo-AppStore.xcprivacy` and `PrivacyInfo-AppStore-Widget.xcprivacy`, copied by `scripts/assemble.sh` for App Store editions only).
+The app's manifest declares the same four collected data types as the App Privacy answers in `docs/appstore.md`, and no tracking.
+`nm -u` on the App Store release binaries (app and widget) shows two required reason API categories: `NSUserDefaults` (declared with CA92.1) and `stat` plus `NSURLContentModificationDateKey` (declared as file timestamps with C617.1).
+The second comes from the AI Usage scanners in TabbiKitCore, which are statically linked but never run in that edition, and the sandbox would confine them to the container.
+No disk space, system boot time or active keyboard API is linked.

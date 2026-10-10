@@ -215,6 +215,11 @@ Answer App Store Connect's questions exactly like this:
    - Linked to the user's identity: Yes.
    - Used for tracking: No.
 
+The privacy manifest the build ships (`packaging/PrivacyInfo-AppStore.xcprivacy`, copied into the app by `scripts/assemble.sh`) declares these same four types with the same answers, so change both together.
+It also gives the required reasons for the APIs the binary links: UserDefaults (CA92.1, the app's own settings) and file timestamps (C617.1: the AI Usage log scanners in TabbiKitCore are linked but never run in this edition, and the sandbox keeps any file they could reach inside the app's container).
+The widget extension has its own manifest (`PrivacyInfo-AppStore-Widget.xcprivacy`) with the same reasons and no collected data.
+If App Store Connect warns about a required reason API (ITMS-91053), add it to both manifests with the reason that matches the code.
+
 Device ID and Product Interaction are the cautious reading: Apple's definitions are loose, and declaring a type the app arguably does not need costs nothing, while leaving out one it does is a mislabel.
 
 Why nothing else is declared:
