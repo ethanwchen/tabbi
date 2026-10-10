@@ -58,28 +58,14 @@ MORE = [
     ('Ask AI', 'Ask the AI you already use, even one that runs on your Mac.'),
 ]
 
+# The icon beside the line on wide screens, above it on narrow ones, then
+# the page's one download button. The notch demo right below is the show.
 HOME_HERO = {
-    'home': True,
-    'title': 'A little cat for your <span class="hl">notch</span>.',
-    'subtitle': 'A cozy panel of tabs in your laptop notch.',
+    'title': '<span class="ln">Focus with a cat</span> <span class="ln">in your <span class="hl">notch</span>.</span>',
+    'subtitle': 'A cozy study timer with a pixel pet, for your Mac.',
     'cta': f'''<div class="cta">{download_button()}</div>
         <p class="cta-note">Free, macOS 14+</p>''',
-    'eyebrow': '<img class="hero-icon" src="/img/icon-256.webp" width="256" height="256" alt="The Tabbi app icon: a cream British Shorthair cat with blue eyes on a golden yellow square">',
-    # A drawn laptop whose screen plays the app in use, rendered from its
-    # demo snapshots by _hero_video.py (see README). The source only matches
-    # without reduced motion, so then nothing loads and the poster stays.
-    # The animated WebP is for browsers without video; lazy, so others never
-    # fetch it. pixel-cat.png is the app's gray tabby sprite, sitting and blinking.
-    'art': '''<div class="laptop">
-        <span class="pixel-cat" aria-hidden="true"></span>
-        <div class="laptop-screen">
-          <video class="laptop-video" autoplay muted loop playsinline disableremoteplayback poster="/img/hero-poster.webp" width="1200" height="750" aria-label="Tabbi in use: clicking the notch opens the Timer, then Today, where a task gets checked off and the pet cheers">
-            <source src="/img/hero.mp4" type="video/mp4" media="(prefers-reduced-motion: no-preference)">
-            <img src="/img/hero-fallback.webp" width="600" height="375" loading="lazy" alt="Tabbi in use: clicking the notch opens the Timer, then Today, where a task gets checked off and the pet cheers">
-          </video>
-        </div>
-        <div class="laptop-base"></div>
-      </div>''',
+    'icon': '<img class="hero-icon" src="/img/icon-256.webp" width="256" height="256" alt="The Tabbi app icon: a cream British Shorthair cat with blue eyes on a golden yellow square">',
 }
 
 # The trust stickers' little line icons, drawn like the paw: one stroke
@@ -103,52 +89,13 @@ HOME = DEMO + f'''
         </ul>
         <p class="more">Plus seasonal outfits, SoundCloud and more. Missing a tab? <a href="/suggest">Suggest one</a>.</p>
       </section>
-      <section class="steps" aria-labelledby="steps-title">
-        <h2 id="steps-title" class="tabs-title">{PAW}<span>How it works</span></h2>
-        <ol class="step-row">
-          <li class="step"><span class="step-num" aria-hidden="true">1</span><strong>Hover the notch</strong><span>Click, and it opens into a little panel.</span></li>
-          <li class="step"><span class="step-num" aria-hidden="true">2</span><strong>Pick a tab</strong><span>Your timer, your day, your music and more.</span></li>
-          <li class="step"><span class="step-num" aria-hidden="true">3</span><strong>Close it</strong><span>Your cat keeps you company beside the notch.</span></li>
-        </ol>
-        <figure class="peek">
-          <div class="peek-screen" role="img" aria-label="The closed notch, showing in turn a meeting soon, a song playing, the timer counting down and the cat">
-            <div class="peek-notch" aria-hidden="true">
-              <span class="peek-slide peek-meet"><span class="peek-l"><span class="peek-cal"></span></span><span class="peek-r">Standup in 5 min</span></span>
-              <span class="peek-slide peek-song"><span class="peek-l"><span class="peek-cover"></span></span><span class="peek-r peek-eq"><span></span><span></span><span></span><span></span></span></span>
-              <span class="peek-slide peek-timer"><span class="peek-l"><svg class="peek-ring" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.5"/><circle class="peek-arc" cx="10" cy="10" r="8.5" pathLength="100"/></svg></span><span class="peek-r">18:42</span></span>
-              <span class="peek-slide peek-pet"><span class="peek-l"><span class="peek-cat"></span></span><span class="peek-r">+35 pts</span></span>
-            </div>
-          </div>
-          <figcaption>Closed, it still peeks: a meeting, your song, the timer or your cat.</figcaption>
-        </figure>
-      </section>
       <section class="trust" aria-label="Good to know">
         <ul class="trust-row">
-          <li class="trust-card">{HEART}<span>Free forever</span></li>
+          <li class="trust-card">{HEART}<span>Free to download</span></li>
           <li class="trust-card">{CODE}<span>Open source (MIT)</span></li>
           <li class="trust-card">{LOCK}<span>No account or tracking</span></li>
           <li class="trust-card">{FEATHER}<span>A tiny native app</span></li>
         </ul>
-      </section>
-      <section class="home-faq" aria-labelledby="faq-title">
-        <h2 id="faq-title" class="tabs-title">{PAW}<span>Little questions</span></h2>
-        <details class="faq">
-          <summary>Does my Mac need a notch?</summary>
-          <div class="faq-body"><p>No. Any Mac on macOS 14 or later works. Without a notch, Tabbi draws a small one at the top of the screen.</p></div>
-        </details>
-        <details class="faq">
-          <summary>Do I need an account?</summary>
-          <div class="faq-body"><p>No. Everything works without one. Sign in with Apple only if you want your pet on more than one Mac.</p></div>
-        </details>
-        <details class="faq">
-          <summary>Do I need an AI app?</summary>
-          <div class="faq-body"><p>Only the AI tabs do. Pick Claude, Codex, Gemini or Ollama, or bring your own key. Every other tab works without one.</p></div>
-        </details>
-        <details class="faq">
-          <summary>How do I quit Tabbi?</summary>
-          <div class="faq-body"><p>Right-click the notch and choose <strong>Quit Tabbi</strong>. Settings live in the same menu.</p></div>
-        </details>
-        <p class="more">More answers on the <a href="/support">Support page</a>.</p>
       </section>
       <section class="thanks" aria-label="Say hi">
         <div class="card-pair">
@@ -172,11 +119,6 @@ HOME = DEMO + f'''
             <span class="gh-arrow" aria-hidden="true">&rarr;</span>
           </a>
         </div>
-      </section>
-      <section class="outro" aria-labelledby="outro-title">
-        <h2 id="outro-title" class="outro-title">Give your notch a cat.</h2>
-        <div class="cta">''' + download_button() + '''</div>
-        <p class="cta-note">No account. macOS 14 or later.</p>
       </section>
 '''
 
@@ -507,7 +449,7 @@ def invite_page(templates, action, raw, user_agent=''):
 
 
 pages = [
-    ('index.html', 'Tabbi: a little cat for your notch',
+    ('index.html', 'Tabbi: focus with a cat in your notch',
      'Tabbi turns your laptop notch into a cozy panel of tabs: a focus timer, your day, music, AI, Anki flashcards and a pet cat or dog. Free and open source for macOS.',
      HOME, HOME_HERO, True, True),
     ('about.html', 'About | Tabbi',
@@ -679,28 +621,18 @@ ASSET_RE = re.compile(r'/(?:img|assets|fonts)/(?:[A-Za-z0-9_-]+/)?[A-Za-z0-9._-]
 # Fetched only for link previews, search results or a home screen icon, not
 # by the page.
 NOT_LOADED_RE = re.compile(r'<meta [^>]*>|<link rel="apple-touch-icon"[^>]*>|<script type="application/ld\+json">.*?</script>', re.S)
-# A video streams in after the page is up, so it has a budget of its own.
-# Its poster is part of the page; the rest (the clip and the fallback for
-# browsers without video, which others never fetch) is counted here.
-MEDIA_BUDGET = 2 * 1024 * 1024
-VIDEO_RE = re.compile(r'<video\b(?:[^>]*?\bposter="([^"]*)")?[^>]*>(.*?)</video>', re.S)
 
 
 def check_weight():
     """Every page, with its stylesheets, script and every image they can
     load (both sizes of a srcset, and every pet look the demo can show, so
-    this is a ceiling), must fit PAGE_BUDGET, and every file inside a video
-    must fit MEDIA_BUDGET."""
+    this is a ceiling), must fit PAGE_BUDGET."""
     report = []
     for html_file in sorted(OUT.glob('*.html')):
         html = NOT_LOADED_RE.sub('', html_file.read_text())
-        for media in ASSET_RE.findall(''.join(inner for _poster, inner in VIDEO_RE.findall(html))):
-            size = (OUT / media.lstrip('/')).stat().st_size
-            report.append(f'{media.rsplit("/", 1)[1]} {size // 1024} KB')
-            if size > MEDIA_BUDGET:
-                raise SystemExit(f'{html_file.name}: {media} is {size // 1024} KB; a video\'s budget is {MEDIA_BUDGET // 1024} KB')
-        page = VIDEO_RE.sub(lambda m: m.group(1) or '', html)
-        assets = set(ASSET_RE.findall(page))
+        if re.search(r'<(?:video|audio)\b', html):
+            raise SystemExit(f'{html_file.name}: has a <video> or <audio>; the CSP allows no media')
+        assets = set(ASSET_RE.findall(html))
         for css in [a for a in assets if a.endswith('.css')]:
             assets |= set(ASSET_RE.findall((OUT / css.lstrip('/')).read_text()))
         total = len(html.encode()) + sum((OUT / a.lstrip('/')).stat().st_size for a in assets)
@@ -708,6 +640,19 @@ def check_weight():
         if total > PAGE_BUDGET:
             raise SystemExit(f'{html_file.name} loads {total // 1024} KB of the site\'s own files; the budget is {PAGE_BUDGET // 1024} KB')
     print('page weight:', ', '.join(report))
+
+
+# The big yellow button, pointing at the download.
+DOWNLOAD_BUTTON_RE = re.compile(r'<a class="btn" href="' + re.escape(DOWNLOAD) + '"')
+
+
+def check_download_buttons():
+    """A page has one primary action at most: two big Download buttons
+    compete with each other. The header's Download stays a quiet nav link."""
+    for html_file in sorted(OUT.glob('*.html')):
+        count = len(DOWNLOAD_BUTTON_RE.findall(html_file.read_text()))
+        if count > 1:
+            raise SystemExit(f'{html_file.name}: has {count} Download buttons; a page has one at most')
 
 
 # --------------------------------------------------------------------------
@@ -739,7 +684,7 @@ def build():
     # hash in the name makes that promise true.
     fingerprints = {}
     for src in sorted((HERE / 'img').rglob('*')):
-        if src.suffix in ('.png', '.gif', '.jpg', '.webp', '.svg', '.mp4'):
+        if src.suffix in ('.png', '.gif', '.jpg', '.webp', '.svg'):
             folder = src.parent.relative_to(HERE).as_posix()
             fingerprints[f'/{folder}/{src.name}'] = fingerprint(src, folder)
     # Fonts land in /assets/ with the stylesheet, which is cached the same way.
@@ -787,6 +732,7 @@ def build():
     check_scripts()
     check_forms()
     check_weight()
+    check_download_buttons()
 
     # The invite pages passed every check; without a code they mean
     # nothing, so they leave dist for the Function (see INVITE_SLUGS).
@@ -890,29 +836,9 @@ class PagesHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(body)
             return None
         self.path = '/' + str(target.relative_to(OUT))
-        # Safari plays a video only from a server that answers byte ranges,
-        # as Cloudflare Pages does.
-        ranged = RANGE_RE.fullmatch(self.headers.get('Range', ''))
-        if ranged and (ranged.group(1) or ranged.group(2)):
-            data = target.read_bytes()
-            first, last = ranged.groups()
-            if first:
-                start, end = int(first), min(int(last) if last else len(data) - 1, len(data) - 1)
-            else:
-                start, end = max(0, len(data) - int(last)), len(data) - 1
-            if start > end:
-                self.send_error(416)
-                return None
-            self.send_response(206)
-            self.send_header('Content-Type', self.guess_type(str(target)))
-            self.send_header('Content-Range', f'bytes {start}-{end}/{len(data)}')
-            self.send_header('Content-Length', str(end - start + 1))
-            self.end_headers()
-            return io.BytesIO(data[start:end + 1])
         return super().send_head()
 
 
-RANGE_RE = re.compile(r'bytes=(\d*)-(\d*)')
 # What functions/add/[code].js and functions/join/[code].js match.
 INVITE_PATH_RE = re.compile(r'/(add|join)/([^/]+)')
 

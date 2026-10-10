@@ -12,7 +12,8 @@ The only JavaScript in the browser is the home page's notch demo, one self-hoste
 ## Files
 
 - `build.py` - the home, about, support, what's new, suggest, thank-you and 404 pages, the build and its checks.
-  The home page is deliberately short: the cat, one line, one download button, a drawn laptop playing the app in use, and four tabs.
+  The home page is deliberately short: the icon beside one line, the page's one download button, the interactive notch demo, then a few cards and stickers.
+  A page has one big Download button at most (the build checks it); the header's Download is a quiet nav link.
 - `_partials.py` - the shared head, header and footer, plus the download and GitHub links.
 - `_releases.py` - the version beside the logo, read from `Resources/Info.plist`, and the What's New page's one sentence per release.
   The build stops when the newest release listed there is not the app's version, so a version bump adds its line first.
@@ -24,7 +25,6 @@ The only JavaScript in the browser is the home page's notch demo, one self-hoste
 - `favicon.ico` - the icon at 16, 32 and 48 px.
 - `press/` - the press kit files; the build zips them into `/press/tabbi-press-kit.zip`, linked from the About page.
 - `_social-card.html` - the source of the Open Graph and Twitter card (not part of the site).
-- `_hero_video.py` - renders the hero animation from the app's demo snapshots (see Hero animation).
 - `_pet_sprites.swift` and `_pet_sprites.sh` - export the interactive demo's pet sprites from the app's pet renderer (see Demo pet sprites).
 - `functions/suggest.js` and `_suggest_prefill.mjs` - the Pages Function that fills the Suggest form's app facts; `test/` tests it.
 - `functions/add/[code].js`, `functions/join/[code].js` and `_invite.mjs` - the Pages Functions that serve Party invite links (see Party invites); `test/` tests them.
@@ -47,8 +47,9 @@ The build stops with an error when:
 - a page has a script other than the demo's own file, an inline event handler, or a JSON-LD or JSON data block that does not parse;
 - `demo.js` runs strings as code (`eval`, `Function`, `innerHTML` and the like) or could reach the network (`fetch`, `XMLHttpRequest`, `WebSocket` and the like);
 - a form posts to an origin the CSP's `form-action` does not allow;
-- a page and everything it loads (its stylesheets, script, fonts and images, counting both sizes of a `srcset`, every pet look the demo can show and a video's poster) passes 500 KB, which keeps the home page under about 600 KB;
-- a file inside a `<video>` (the clip, or its fallback image) passes 2 MB;
+- a page and everything it loads (its stylesheets, script, fonts and images, counting both sizes of a `srcset` and every pet look the demo can show) passes 500 KB, which keeps the home page under about 600 KB;
+- a page has a `<video>` or `<audio>` (the CSP allows no media);
+- a page has more than one big Download button;
 - any output file is over 20 MB (Cloudflare Pages refuses files over 25 MB).
 
 ## Suggestions
@@ -96,9 +97,7 @@ Pages themselves are not cached that way, so they always pick up the new names.
 `form-action` allows the friends backend's origin, where the Suggest form posts, and `'self'`, because browsers check the backend's redirect to `/thanks` against it too.
 Because of that CSP, pages cannot use inline `style` attributes, inline scripts or event handlers, and nothing can connect anywhere (`connect-src` falls back to `'none'`).
 The home page's `SoftwareApplication` structured data is a `<script type="application/ld+json">` data block, which browsers never run, so the CSP leaves it alone.
-`media-src 'self'` lets the hero play its own video.
 `--serve` sends the same `/*` headers from `_headers`, CSP included, so a preview breaks the same way production would.
-It also answers byte ranges, as Cloudflare Pages does, since Safari plays no video from a server that does not.
 The one exception is `upgrade-insecure-requests`, which it leaves out: WebKit applies it even to `localhost`, so over plain http Safari would load no stylesheet, font or image.
 `build.py` wraps the contact address in `<!--email_off-->` so Cloudflare's email obfuscation, whose decoding script the CSP would block, leaves it readable.
 
@@ -115,36 +114,20 @@ If a new weight or a non-Latin character appears in the copy, fetch and cut the 
 The home page's tabs are drawn by the notch demo itself (`_demo.py`), so the page carries no tab screenshots; the "More inside" cards below it are text only.
 `icon-256.webp`, `apple-touch-icon.png`, `favicon-64.png` and `favicon.ico` are resized from `docs/brand/assets/tabbi-icon-1024.png`.
 `glyph.webp` is `docs/brand/assets/tabbi-glyph-256.png` as a lossless WebP, used on the home, About, invite and 404 pages.
-`social-preview.png` is the 1200x630 Open Graph and Twitter card: the hero's words, icon, laptop and pixel cat on the brown ground.
+`social-preview.png` is the 1200x630 Open Graph and Twitter card: the icon, a tagline, a drawn laptop and the pixel cat on the brown ground.
 It is `_social-card.html` rendered by Chromium at 1200x630 and scale 1 (it loads Fredoka and Nunito from `fonts/`, so render it from `site/` with file access allowed), then saved by Pillow as an optimized RGB PNG of about 190 KB.
-Render it again when the hero's words or the Timer tab change.
+Render it again when the tagline or the Timer tab change.
 `notch-timer.webp`, the panel in the social card's laptop, is the app's Timer render (`docs/images/study.png`) cropped to the open notch with the wallpaper made transparent, resized to 880 px wide, at quality 92.
 `pixel-cat.png` is the app's gray tabby (`PetBreed.grayTabby`) at 1x: the `sit` and `blink` frames from `PetComposer.clip`, rendered by `PetRenderer`, cropped to 22x26 px and placed side by side.
-The stylesheet draws it at 2x or 3x with `image-rendering: pixelated`, peeking out from behind the hero laptop, and blinks it every five seconds unless the visitor prefers reduced motion.
+Only the social card uses it.
 To export it again, a throwaway test in `Tests/TabbiKitCoreTests` can write those frames to PNG with `CGImageDestination`.
 The press kit in `press/` holds `tabbi-icon-1024.png` (`docs/brand/assets/tabbi-icon-1024.png`) and four tab screenshots as lossless PNGs from `docs/images` (`tabbi-timer.png` is `study.png`), each saved again by Pillow with `optimize=True`.
 Copy them again when the icon or those screenshots change; the About page shows the zip's size by itself.
 `grain.png` is a 160 px grayscale noise tile, drawn with Pillow, for the paper grain over the page.
 
-## Hero animation
-
-The hero laptop's screen plays `hero.mp4`, a nine second loop of Tabbi in use: the pointer clicks the notch, the panel springs open on the Timer, which ticks, the pointer switches to Today and checks off a task, the panel closes and the pet cheers in the notch.
-`_hero_video.py` renders it from the app's own demo snapshots (`TABBI_DEMO=1 swift run Tabbi --snapshot <dir> --scale 3 --transparent`), so the panels are the app's real pixels.
-On top of them it draws the wallpaper (the same gradients as `.laptop-screen`), the notch opening and closing with a spring, the pointer, the ticking digits and the check in SF Rounded, the sparkles and the camera's zooms.
-It needs Pillow, numpy, scipy and ffmpeg, and runs from the repo root:
-
-```sh
-python3 site/_hero_video.py               # renders the snapshots first
-python3 site/_hero_video.py <snapshot-dir> # or reuses a --scale 3 render
-```
-
-It writes `img/hero.mp4` (1200x750 H.264, about 500 KB), `img/hero-poster.webp` (the open Timer) and `img/hero-fallback.webp` (an animated WebP at 600 px for browsers without video, which load it lazily so others never fetch it).
-The `<video>` is muted, autoplays, loops and plays inline, and its `<source>` only matches under `prefers-reduced-motion: no-preference`, so a visitor who prefers reduced motion downloads no video and sees the poster.
-Render it again when the Timer, Today or the pet's look changes; the script checks the snapshot layout it expects (the digits it redraws) and stops if that moved.
-
 ## Notch demo
 
-Below the hero, the home page has a cozy desktop with Tabbi's notch at the top that visitors can try before they download.
+Right below the hero, the home page has a cozy desktop with Tabbi's notch at the top that visitors can try before they download.
 Hovering or tapping the notch springs the panel open, and it closes when the pointer leaves, on Escape, or on a tap outside.
 The Timer runs a 20 second focus round; when it ends the panel closes and Mochi cheers in the closed notch with confetti and "+35 pts".
 While the round runs, the closed notch shows its ring and time instead of the pet.
@@ -174,7 +157,7 @@ Limited progress bars are SVG lines rather than styled elements, since the CSP r
   Status changes (started, paused, 10 seconds left, done) are read out through an `aria-live` region.
   Under `prefers-reduced-motion` state changes are instant, the pet holds one frame and there is no confetti.
 
-Check it in WebKit at 1440, 1024, 834 and 390 px wide after a change: open, switch tabs, run the Timer to the end, check and add a task and step through the days, try on and wear an outfit, play, skip and like a song, keyboard (Safari moves between buttons with Option-Tab), reduced motion, no JavaScript, no console errors and no horizontal scroll.
+Check it in WebKit at 1440, 1024, 834, 390 and 320 px wide after a change: open, switch tabs, run the Timer to the end, check and add a task and step through the days, try on and wear an outfit, play, skip and like a song, keyboard (Safari moves between buttons with Option-Tab), reduced motion, no JavaScript, no console errors and no horizontal scroll.
 Playwright's element screenshots inject a `<style>` that the CSP refuses; that console error comes from the test tool, not the page.
 The site scrolls smoothly, so Playwright's own scroll-into-view can slide the notch out from under its pointer and close it; tests should set `document.documentElement.style.scrollBehavior = 'auto'` and wait for the open spring before clicking inside the panel.
 

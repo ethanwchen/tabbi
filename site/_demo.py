@@ -10,7 +10,6 @@ points, so the panel keeps the app's proportions at any scale.
 import json
 import pathlib
 
-from _partials import download_button
 
 HERE = pathlib.Path(__file__).parent
 
@@ -361,8 +360,6 @@ DEMO = f'''
           <p class="burst" aria-hidden="true"><span class="burst-pts">+35 pts</span></p>
         </div>
         <p class="sr-only" aria-live="polite" data-status></p>
-        <div class="cta">{download_button()}</div>
-        <p class="cta-note">No account. macOS 14 or later.</p>
       </section>
 '''
 
