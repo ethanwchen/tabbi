@@ -181,6 +181,11 @@ enum SnapshotRenderer {
             let wardrobe = NotchViewModel(geometry: geometry, layout: withCloset)
             wardrobe.open(.closet)
             shots.append(Shot("open-closet-wardrobe", wardrobe))
+            // The Wardrobe at the Large size too, the App Store's Closet shot.
+            let largeWardrobe = NotchViewModel(geometry: geometry, layout: withCloset)
+            largeWardrobe.panelSize = .large
+            largeWardrobe.open(.closet)
+            shots.append(Shot("open-large-closet-wardrobe", largeWardrobe))
             let model = NotchViewModel(geometry: geometry, layout: withCloset)
             model.open(.closet)
             shots.append(Shot("open-closet-look", model))
@@ -575,7 +580,7 @@ enum SnapshotRenderer {
             nowPlaying?.showForSnapshot(name == "open-spotify-soundcloud" ? .soundCloud
                 : name == "open-spotify-soundcloud-javascript-off" ? .soundCloudJavaScriptOff : .players)
             if let firstSection {
-                closet?.store.section = name == "open-closet-wardrobe" ? .wardrobe
+                closet?.store.section = name.hasSuffix("closet-wardrobe") ? .wardrobe
                     : name == "open-closet-look" ? .look
                     : name == "open-closet-limited" ? .limited
                     : name == "open-closet-streak" ? .streak : name == "open-closet-weeks" ? .weeks : firstSection

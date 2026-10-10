@@ -862,7 +862,7 @@ let shots: [Shot] = [
     Shot(file: "2-cheer", caption: "Every session ends in a cheer", subcaption: "Your cat celebrates, and you earn points.",
          tint: orange, pet: PetPose(animation: "celebrate", frame: 2), petSide: .center),
     Shot(file: "3-closet", caption: "Earn points, dress your cat", subcaption: "Focus time buys hats, capes and wings.",
-         panel: "open-large-closet", tint: gold, hero: CGPoint(x: 0.25, y: 0.5),
+         panel: "open-large-closet-wardrobe", tint: gold, hero: CGPoint(x: 0.25, y: 0.5),
          pet: PetPose(animation: "idle"), petSide: .right, petPixel: 13),
     Shot(file: "4-today", caption: "Today, right up top", subcaption: "Tasks, calendar and your timer at a glance.",
          panel: "open-large-planner", tint: purple, pet: PetPose(animation: "typing", frame: 6), petSide: .left),

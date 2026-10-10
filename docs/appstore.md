@@ -274,6 +274,7 @@ Upload them in file name order:
 1. `1-timer`: "A cozy timer in your notch", the Timer running in round 2 of 4 with two focus sounds on.
 2. `2-cheer`: "Every session ends in a cheer", the closed notch with the pet out beside it and the coach's "That's a wrap. Well done!" +35 bubble, exactly as the app draws that moment.
 3. `3-closet`: "Earn points, dress your cat", the Wardrobe with 6 of the 8 Study items owned, the animated King's Cape worn, 240 points and a next unlock that is ready.
+   The Closet opens on its Activity heatmap, so this shot (`open-large-closet-wardrobe`) and the preview's Closet beat pick the Wardrobe section first.
 4. `4-today`: "Today, right up top", Today with tasks, Up next and the mini timer.
    It reads "2 of 5 done": the demo day has three tasks, under the Focus time and flashcard rows that other tabs share, so the whole list fits without scrolling (the spec lists a walk in place of the flashcard row).
 5. `5-tomorrow`: "Plan tomorrow tonight", the Tomorrow view with two planned tasks and tomorrow's calendar, on the night canvas (the Dark Mode shot).
@@ -281,6 +282,8 @@ Upload them in file name order:
 7. `7-flashcards`: "Flashcards between tasks", the flashcards tab with neutral decks (the tab shows the module's real name; captions never name it).
 8. `8-recap`: "Your week, wrapped up", the weekly recap card (it ships in the App Store build, so the spec's closer 8a applies).
    Demo runs leave the week's dates off the card, so no date shows in store media.
+
+Localized sets (`appstore/screenshots/<locale>/`) are not rendered yet: the app has no localizations on main so far, so only the English set exists.
 
 Every shot uses one layout: the tabs Timer, Today, Flashcards and Now Playing plus the Closet paw, at the Large panel size.
 Party and the AI usage tab are left out of the App Store edition, so neither appears.

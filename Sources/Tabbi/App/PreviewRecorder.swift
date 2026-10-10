@@ -156,6 +156,7 @@ enum PreviewRecorder {
     private static func storyboard(_ part: String, model: NotchViewModel, services: AppServices) -> [Step] {
         let today = services.modules.module(TodayModule.self)?.store
         let music = services.modules.module(NowPlayingModule.self)?.controller
+        let closet = services.modules.module(ClosetModule.self)?.store
         // Plain calls, as the app's clicks make them: the views animate.
         func open(_ id: ModuleID) { model.open(id) }
         func close() { model.close() }
@@ -173,7 +174,8 @@ enum PreviewRecorder {
                 // The block ends on camera (TABBI_DEMO_FOCUS_LEFT), the
                 // panel closes and the pet celebrates beside the notch.
                 Step(time: 0, beat: "finish") { model.open(.study) },
-                Step(time: 3.6) { close() },
+                // The Closet opens on its Wardrobe, picked out of view.
+                Step(time: 3.6) { close(); closet?.section = .wardrobe },
                 Step(time: 6.0, beat: "closet") { open(.closet) },
                 Step(time: 10.0, beat: "today") { open(.planner) },
                 Step(time: 11.3) {
