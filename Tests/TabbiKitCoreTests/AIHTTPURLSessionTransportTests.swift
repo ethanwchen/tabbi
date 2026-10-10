@@ -101,6 +101,20 @@ private final class AIStubProtocol: URLProtocol {
 /// HTTP errors, errors inside a 200 stream, dropped connections and
 /// cancellation. The providers' parsing is covered with a fake transport
 /// in `AIProviderTests`; this checks the bytes-to-lines layer under it.
+/// Reads a provider's stream on its own task until it ends or the task is
+/// cancelled. It lives outside the test class: a task closure inside an async
+/// test method trips the region isolation checker of the Swift in Xcode 26.6
+/// (CI), whichever way the stream is handed in.
+private func consumeEvents(of provider: AIHTTPProvider, prompt: String) -> Task<[AIStreamEvent], Never> {
+    Task {
+        var events: [AIStreamEvent] = []
+        do {
+            for try await event in provider.stream(.prompt(prompt)) { events.append(event) }
+        } catch {}
+        return events
+    }
+}
+
 final class AIHTTPURLSessionTransportTests: XCTestCase {
     private func ollama(host: String) -> AIHTTPProvider {
         AIHTTPProvider(id: .ollama, apiKey: nil, baseURL: URL(string: "http://\(host):11434")!,
@@ -239,13 +253,7 @@ final class AIHTTPURLSessionTransportTests: XCTestCase {
     func testCancellingTheConsumerStopsTheRequest() async throws {
         let host = "ollama-hang.test"
         AIStubProtocol.reply(.hang, for: host)
-        // A detached task that makes its own stream and returns only the
-        // events: the region isolation checker of the Swift in Xcode 26.6
-        // (CI) gives up on a task that captures a stream or returns the tuple.
-        let provider = ollama(host: host)
-        let consumer = Task.detached { [provider] () -> [AIStreamEvent] in
-            await Self.collect(provider.stream(.prompt("hi"))).0
-        }
+        let consumer = consumeEvents(of: ollama(host: host), prompt: "hi")
 
         let deadline = Date().addingTimeInterval(5)
         while AIStubProtocol.requests(to: host).isEmpty, Date() < deadline {
