@@ -54,13 +54,17 @@ public struct SyncClient: Sendable {
         var body: [String: String] = ["identityToken": identityToken]
         body["authorizationCode"] = authorizationCode
         let data = try JSONSerialization.data(withJSONObject: body, options: .sortedKeys)
-        let request = PartyHTTPRequest(method: "POST", path: "/v1/auth/apple", body: data, token: token)
-        let reply = try PartyClient.decode(try await send(request), as: SignInReply.self)
-        return AppleSignInReply(
-            credentials: PartyCredentials(token: reply.token, code: reply.code),
-            profile: reply.profile,
-            newAccount: reply.newAccount
-        )
+        return try await signIn(PartyHTTPRequest(method: "POST", path: "/v1/auth/apple", body: data, token: token))
+    }
+
+    /// `POST /v1/auth/apple/web/token`: trades the one-time code from the
+    /// web flow's `tabbi://auth/apple` link, with the state of the attempt
+    /// that made it (see `AppleWebSignIn`), for the same reply as the native
+    /// sign-in. Throws a `PartyError` whose `isExpiredWebSignIn` is true when
+    /// the code was used, expired or made for another state.
+    public func exchangeWebSignIn(code: String, state: String) async throws -> AppleSignInReply {
+        let data = try JSONSerialization.data(withJSONObject: ["code": code, "state": state], options: .sortedKeys)
+        return try await signIn(PartyHTTPRequest(method: "POST", path: "/v1/auth/apple/web/token", body: data, token: token))
     }
 
     /// `GET /v1/sync`.
@@ -103,6 +107,15 @@ public struct SyncClient: Sendable {
 
     // MARK: Plumbing
 
+    private func signIn(_ request: PartyHTTPRequest) async throws -> AppleSignInReply {
+        let reply = try PartyClient.decode(try await send(request), as: SignInReply.self)
+        return AppleSignInReply(
+            credentials: PartyCredentials(token: reply.token, code: reply.code),
+            profile: reply.profile,
+            newAccount: reply.newAccount
+        )
+    }
+
     private func authorized(_ request: PartyHTTPRequest) throws -> PartyHTTPRequest {
         guard let token else { throw PartyError.unauthorized }
         var request = request
@@ -134,6 +147,13 @@ extension PartyError {
     /// account (for example after the account was deleted on another Mac).
     public var isNoSyncAccount: Bool {
         if case .server("no_account", _) = self { return true }
+        return false
+    }
+
+    /// `401 invalid_code`: the web sign-in's one-time code was already
+    /// used, expired or belongs to another attempt; start over.
+    public var isExpiredWebSignIn: Bool {
+        if case .server("invalid_code", _) = self { return true }
         return false
     }
 
