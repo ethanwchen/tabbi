@@ -19,6 +19,7 @@ This page says what differs, how to build and upload it, and what to enter in Ap
 | Ask AI | yes | yes, through the API providers and Ollama |
 | Plan my day and Refine | on the Mac, or with the picked AI | the same, with an API provider or Ollama |
 | Wrap up (day review) | local summary, refined by the picked AI | the same, with an API provider or Ollama |
+| Now Playing | Spotify, Music, and SoundCloud in Safari or Chrome (opt-in) | Spotify and Music (a sandboxed app cannot script browsers) |
 | Do Not Disturb during focus | through Shortcuts | hidden (it runs `/usr/bin/shortcuts`) |
 | Settings > Connections | all rows | no command line tools in the AI picker, no Claude or Do Not Disturb rows |
 | Party | yes | left out by the edition for now (one switch turns it on) |
@@ -89,78 +90,150 @@ Clicking the notch opened the panel and moving the pointer away closed it (globa
 
 ## App Store Connect
 
-- Name: Tabbi
+Everything in this section is paste-ready for the App Store edition as it builds today: AI Usage, the command line AI tools, SoundCloud, Do Not Disturb and Party are not in it, so the copy below does not promise them (the keyword note covers `party`).
+Character counts were checked with Python `len`, and every field is plain ASCII, so bytes equal characters.
+The listing copy comes from the listing research (October 2026), with only the facts that did not match the App Store build changed.
+
+### App information
+
+- Name: `Tabbi: Notch Focus Timer` (24 of 30)
+- Subtitle: `Pomodoro, To-Do & Study Pet` (27 of 30)
 - Category: Productivity (secondary: Education)
 - Privacy Policy URL: https://tabbinotch.com/privacy
 - Support URL: https://tabbinotch.com/support
 - Marketing URL: https://tabbinotch.com
 - Copyright: the maintainer's name and the year
-- Age rating: 4+ (no user-generated content while Party is out)
-- Sign-in information: not required (signing in is optional and only syncs the pet)
+- Age rating: 4+ (no user-generated content while Party is out, no web browsing, no ads)
+- Sign-in information: not required (signing in is optional and only syncs the pet and streaks)
 - Pricing: free
 - Export compliance: the build sets `ITSAppUsesNonExemptEncryption` to `NO` (it only uses HTTPS through the system)
 
-### Privacy nutrition label (draft)
+The name, subtitle and keywords name no other company's product.
+The description names Apple Music and Spotify once, only to say what Now Playing works with.
 
-Without an account, nothing leaves the Mac.
-The optional Sign in with Apple account stores a little on the Tabbi server ([backend/PRIVACY.md](../backend/PRIVACY.md) lists all of it), so the label declares:
+### Keywords (100 of 100 bytes)
 
-- Identifiers > User ID: Apple's app-specific user id, linked to the user, used for App Functionality.
-- User Content > Other User Content: the synced pet (look, name, outfit), its points and unlocks, the days the user studied and the longest streak, linked to the user, used for App Functionality.
-- Nothing is used for tracking, and no other data type is collected (the server never stores the name or email from Apple).
+```
+cute,cat,dog,productivity,planner,calendar,flashcard,music,widget,student,cozy,todo,task,break,party
+```
 
-What the label does not need to list:
+No word repeats the name or subtitle (tabbi, notch, focus, timer, pomodoro, to-do, study, pet).
+`todo` stays as a hedge, since Apple may index "To-Do" only as "to do".
+`party` names a feature the App Store edition leaves out for now (see Party above), and App Review asks keywords to describe the app as submitted.
+Until Party is turned on there, use this list instead (98 bytes), which also drops `productivity`, the category name Apple already indexes:
 
-- Calendar events, tasks, focus history and study tallies stay on the Mac in the app's container.
-- Album artwork is loaded from the music service's image host (`i.scdn.co`) without any identifier of the user.
-- AnkiConnect is reached on `localhost` only.
-- Questions in Ask AI and the text Plan my day and Wrap up send go only to the AI provider the user picks, with the user's own key (Anthropic, OpenAI or Google) or to Ollama on the Mac. Tabbi has no server in between and does not collect them; the provider's own privacy policy applies.
-- There is no analytics or advertising, and no crash reporting of its own: `AppDelegate` installs no `CrashHandler` and shows no crash prompt under `APPSTORE`, so a crash reaches the developer only through Apple's crash reports, which the user agreed to share in macOS.
+```
+cute,cat,dog,planner,calendar,flashcard,music,widget,student,cozy,todo,task,break,streak,habit,day
+```
 
-When Party comes back, add its display name and study presence (Name or Other User Content, and Product Interaction) to the label.
+### Promotional text (157 of 170)
 
-### Notes for the reviewer (draft)
+```
+Your notch, but cozy. Focus with calming sounds, plan your day, and earn outfits for your pixel cat or dog. Gentle streaks. No ads, no tracking, open source.
+```
 
-> Tabbi turns the area around the MacBook notch into a small panel of tabs: a focus timer, today's tasks and calendar, now playing, study tools and a pixel pet.
+Promotional text can change at any time without a review, so use it for seasonal items and events.
+
+### Description
+
+```
+Tabbi turns your laptop notch into a cozy little panel of tabs for focus, planning and calm.
+Start a focus timer, check off today's to-dos, and watch your pixel pet cheer when you finish.
+Free and open source. No ads, no tracking, no account needed.
+
+FOCUS
+- Focus timer with Pomodoro and other study methods
+- Stop early and still keep credit for the time you put in
+- Calming focus sounds, with presets for your favorite mix
+- Music controls with a like button. Works with Apple Music and Spotify
+- Review flashcards from the notch with an optional local add-on
+
+PLAN YOUR DAY
+- Today's to-dos and calendar in one glance
+- Peek at yesterday and plan tomorrow
+- Tap "Plan my day" to line up what matters
+- A desktop widget keeps your pet and streak in view
+
+YOUR PET
+- Adopt a pixel-art cat or dog that celebrates when you finish
+- Earn points by focusing and spend them on outfits and animated cosmetics
+- Unlock limited items by reaching milestones
+- Seasonal looks to collect through the year
+
+GENTLE BY DESIGN
+- Streak freezes, so one off day never ruins your progress
+- An optional daily reminder, never nagging
+- A weekly recap card to see how far you have come
+
+PRIVATE BY DEFAULT
+- No ads, no tracking, no account needed
+- Optional Sign in with Apple to sync your pet and streaks
+- Optional AI help, using the AI provider you pick
+- Open source, so anyone can see how it works
+
+Your notch has been waiting for a friend. Download Tabbi and start your first cozy focus session today.
+```
+
+### What's New
+
+Apple does not show What's New for a first version.
+For 1.0, if asked:
+
+```
+Hello from Tabbi! Your laptop notch is now a cozy home for focus, planning and a pixel pet who cheers you on. Start a session, earn your first outfit, and keep a gentle streak going.
+```
+
+For later versions, one warm line naming the headline change, then short New, Better and Fixed lists in plain words, ending with "Thanks for focusing with Tabbi. Your pet says hi."
+
+### App Privacy (nutrition label answer sheet)
+
+Without an account, the App Store edition sends nothing to the Tabbi server.
+The optional Sign in with Apple account stores a little there ([backend/PRIVACY.md](../backend/PRIVACY.md) lists all of it).
+Answer App Store Connect's questions exactly like this:
+
+1. "Do you or your third-party partners collect data from this app?" Yes, we collect data from this app.
+2. Data types to select (and nothing else):
+   - Identifiers > User ID
+   - User Content > Other User Content
+3. For **User ID** (Apple's app-specific user id, and the random friend code the account is filed under):
+   - Usage: App Functionality only.
+   - Linked to the user's identity: Yes.
+   - Used for tracking: No.
+4. For **Other User Content** (the synced pet's look and name, points earned and spent per Mac, unlocked and granted items, the days the user studied and the longest streak):
+   - Usage: App Functionality only.
+   - Linked to the user's identity: Yes.
+   - Used for tracking: No.
+
+Why nothing else is declared:
+
+- Name and Email Address: the app asks Apple only for the name, keeps it on the Mac, and the server never stores a name or an email.
+- Calendar events, tasks, focus history, study tallies, the activity log and AI chats stay on the Mac in the app's container.
+- Album artwork is loaded from the music service's image host (`i.scdn.co`) with no identifier of the user.
+- AnkiConnect and Ollama are reached on `localhost` only.
+- Ask AI, Plan my day, Refine and Wrap up send text only to the AI provider the user picks, with the user's own key (Anthropic, OpenAI or Google), or to Ollama on the Mac.
+  The request goes straight from the Mac to that provider under its own terms; there is no Tabbi server in between and no partner SDK in the app, so Tabbi does not collect it.
+- Diagnostics: the App Store edition has no crash reporting of its own (`AppDelegate` installs no `CrashHandler` and shows no crash prompt under `APPSTORE`), so crashes reach the developer only through Apple's reports, which the user shares in macOS.
+  The server's short request logs hold only the kind of request, its status and duration, with no identifier, and are deleted within 7 days.
+- There is no analytics, advertising or tracking of any kind.
+
+When Party comes back, also declare its display name and study presence: Contact Info > Name (or User Content > Other User Content) and Usage Data > Product Interaction, both App Functionality, linked, not tracking.
+
+### Notes for the reviewer
+
+> Tabbi turns the area around the notch at the top of a MacBook screen into a small panel of tabs: a focus timer, today's tasks and calendar, now playing, study tools and a pixel pet.
 > There is no Dock icon and no window at launch; the app lives at the top center of the screen.
 > To open the panel, click the black notch area at the top center of the screen, or press Control-Option-Space.
 > On a Mac without a notch, Tabbi draws a small black pill at the top center of the menu bar; click it the same way.
 > The first launch shows a short setup inside the panel (pick a kit, then tabs).
 > Settings open from the gear button at the right of the panel's header.
-> Calendar access is optional and only used to show today's events in the Today tab.
-> Automation access to Music or Spotify is optional and only used to show and control what is playing.
-> Ask AI and the optional AI help in Today stay off until the user picks an AI in Settings > Connections. They use the user's own API key (Anthropic, OpenAI or Google Gemini) or Ollama running on the Mac; to try them, pick Ollama with a local model, or paste a key.
+> Calendar access is optional and only used to show today's events in the Today tab and to plan the day.
+> Automation access to Music or Spotify is optional and only used to show and control what is playing; macOS asks for it the first time Now Playing reaches either app.
+> Notifications are optional: alerts when a focus timer ends, a daily study reminder the user turns on, and the weekly recap.
+> The flashcards tab reads review counts from the free AnkiConnect add-on of the Anki desktop app over localhost (127.0.0.1:8765). Tabbi downloads and runs no code; without Anki it shows how to set it up.
+> AI features (Ask AI, Plan my day's Refine and the day review) stay off until the user picks an AI in Settings > Connections > AI. The Settings footer says nothing is sent until then. They use the user's own API key (Anthropic, OpenAI or Google Gemini), saved in the Keychain, or Ollama running on the Mac. To try them, pick Ollama with a local model, or paste a key.
 > No account is needed.
 > Signing in with Apple (Settings > General > Account) is optional and only syncs the pet and study streaks between the user's Macs.
 > Delete Account in the same place deletes everything the server holds and revokes the Sign in with Apple grant.
-
-### Listing copy (draft)
-
-The name and keywords avoid third-party trademarks; the description may name compatible apps where needed to explain a feature.
-
-- Name: Tabbi
-- Subtitle: Focus timer and tasks in your notch
-- Promotional text: A tiny panel at the top of your screen for today's tasks, a focus timer, your music and a pixel cat who studies with you.
-- Keywords: focus,pomodoro,timer,tasks,todo,planner,study,notch,productivity,pet,calendar,flashcards
-
-Description:
-
-> Tabbi puts a small, quiet panel in your MacBook's notch.
-> Click the notch (or press Control-Option-Space) and your day is right there, then it tucks away again.
->
-> Today: your tasks, today's calendar events and a simple plan for the day.
-> Focus: a Pomodoro timer with calm background sounds.
-> Study: sessions, streaks and points for exams and classes, with optional Anki review counts.
-> Now Playing: see and control what is playing in Music or Spotify.
-> System: battery, CPU and memory at a glance.
-> A pixel cat keeps you company, earns outfits as you focus and naps when you take a break.
->
-> Kits set Tabbi up for you in one step: Essentials for everyday work and Med School for long study days.
-> Pick only the tabs you want, in the order you want.
->
-> Private by design: no tracking, no ads, and no account needed.
-> Sign in with Apple if you want your pet and streaks on all your Macs; everything else stays on your Mac.
-> Macs without a notch get a small virtual one at the top of the screen.
 
 ### Screenshots
 
