@@ -11,9 +11,11 @@ The only JavaScript in the browser is the home page's notch demo, one self-hoste
 
 ## Files
 
-- `build.py` - the home, about, support, suggest, thank-you and 404 pages, the build and its checks.
+- `build.py` - the home, about, support, what's new, suggest, thank-you and 404 pages, the build and its checks.
   The home page is deliberately short: the cat, one line, one download button, a drawn laptop playing the app in use, and four tabs.
 - `_partials.py` - the shared head, header and footer, plus the download and GitHub links.
+- `_releases.py` - the version beside the logo, read from `Resources/Info.plist`, and the What's New page's one sentence per release.
+  The build stops when the newest release listed there is not the app's version, so a version bump adds its line first.
 - `_demo.py`, `demo.css` and `js/demo.js` - the home page's interactive notch demo (see Notch demo).
 - `_legal.py` - the privacy policy and terms of use.
 - `styles.css` - the one stylesheet, one warm brown palette.

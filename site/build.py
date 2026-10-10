@@ -15,7 +15,8 @@ import sys
 import zipfile
 from html.parser import HTMLParser
 
-from _partials import page, download_button, PAW, DOWNLOAD, DOWNLOAD_ICON, GITHUB, ISSUES, ORIGIN, SUGGESTIONS, SUPPORT_EMAIL
+from _partials import page, download_button, PAW, DOWNLOAD, DOWNLOAD_ICON, GITHUB, ISSUES, ORIGIN, RELEASES_URL, SUGGESTIONS, SUPPORT_EMAIL
+from _releases import RELEASES
 from _legal import PRIVACY, PRIVACY_HERO, TERMS, TERMS_HERO
 from _demo import DEMO, demo_data
 
@@ -283,6 +284,21 @@ ABOUT = f'''
 
 
 # --------------------------------------------------------------------------
+# What's new
+# --------------------------------------------------------------------------
+
+# One sentence per release, newest first (_releases.py). The full notes stay
+# on GitHub.
+WHATS_NEW = '\n'.join(f'''
+        <article class="release" id="v{version}">
+          <h2><span class="release-tag">v{version}</span> <span class="release-when">{when}</span></h2>
+          <p>{sentence}</p>
+        </article>''' for version, when, sentence in RELEASES) + f'''
+        <p class="release-more">Every change in detail is in the <a href="{RELEASES_URL}">release notes on GitHub</a>.</p>
+'''
+
+
+# --------------------------------------------------------------------------
 # Suggest
 # --------------------------------------------------------------------------
 
@@ -447,6 +463,9 @@ pages = [
     ('terms.html', 'Terms of Use | Tabbi',
      'The terms for using the Tabbi app and its optional friends service.',
      TERMS, {'title': TERMS_HERO[0], 'subtitle': TERMS_HERO[1]}, False, True),
+    ('whats-new.html', 'What\u2019s new | Tabbi',
+     'What each version of Tabbi brought, one line per release.',
+     WHATS_NEW, {'title': 'What&rsquo;s new', 'subtitle': 'What the cat brought home in each release.'}, False, True),
     ('suggest.html', 'Suggest | Tabbi',
      'Suggest a new tab, an integration or an improvement for Tabbi.',
      SUGGEST, {'title': 'Suggest', 'subtitle': 'An idea for a new tab, an integration or something better? Tell the cat.'}, False, True),
