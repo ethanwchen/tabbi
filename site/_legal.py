@@ -63,7 +63,7 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
       <ul class="measure">
         <li><strong>Ask AI</strong> sends what you type, the earlier messages of that chat, and a screenshot if you attach one (this needs Screen Recording permission).</li>
         <li><strong>Refine and AI day plans</strong> send your task titles and estimates, today's events and free time (tomorrow's when you plan ahead), the current time, goals other tabs share (such as Anki cards left) and the titles of your plan.</li>
-        <li><strong>Day review</strong> sends today's focus minutes, sessions, points and goal counts, never your events. It is written when Wrap up opens, if a provider is ready.</li>
+        <li><strong>Day review</strong> sends today's focus minutes, sessions, points and goal counts, plus the titles of the tasks you finished or are carrying over to tomorrow, never your events. It is written when Wrap up opens, if a provider is ready.</li>
         <li><strong>Where it goes.</strong> To the provider you picked, under that provider's own terms and privacy policy, not ours: Anthropic (Claude), OpenAI or Google (Gemini), through your own API key or through the Claude Code, Codex or Gemini command-line tool you installed and signed in to yourself.
           With Ollama, it goes to a model running on your own Mac and does not leave it. The App Store edition offers only API keys and Ollama. We never see these requests or the answers.</li>
         <li><strong>Your keys and accounts.</strong> An API key you enter is stored in your Mac's Keychain, never in a file, and is sent only to its provider. Tabbi never reads a command-line tool's own sign-in or credentials.</li>
@@ -99,7 +99,7 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
             <tr><td>Presence</td><td>From the last heartbeat: studying, on a break, idle or offline; the study method; when the current phase ends; minutes this session and today; your streak; your local calendar day.</td><td>Overwritten by each heartbeat; deleted with your profile</td></tr>
             <tr><td>Study minutes</td><td>Minutes per local calendar day, for the weekly leaderboard.</td><td>28 days</td></tr>
             <tr><td>Friends</td><td>The friend codes you are friends with, and since when.</td><td>Until either of you removes the friendship</td></tr>
-            <tr><td>Party</td><td>The party you are in and when you joined; for the party itself, its code, host, when it started, its last activity and the shared session.</td><td>Until the last member leaves, or 12 hours without activity</td></tr>
+            <tr><td>Party</td><td>The party you are in and when you joined; for the party itself, its code, host, when it started, its last activity and the shared session.</td><td>Until the last member leaves, or within about an hour once it has had 12 hours without activity</td></tr>
             <tr><td>Blocks</td><td>The friend codes you blocked, and when.</td><td>Until you unblock them</td></tr>
             <tr><td>Reports</td><td>A report you send: the reported person's friend code, their name and pet name at that moment, your friend code, the reason, your optional note (up to 280 characters), the time, and how and when we resolved it.</td><td>Until the reporter or the reported person deletes their data</td></tr>
             <tr><td>Moderation</td><td>Whether a user is banned, and a name or pet name we replaced, so it cannot be set again.</td><td>Until that user deletes their data</td></tr>
@@ -160,7 +160,7 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
         Ask AI chats can also be deleted one by one, or all at once, inside the app, and an API key from its row in <strong>Settings &gt; Connections</strong>.</p>
       <p class="measure"><strong>Party, in the app.</strong></p>
       <ul class="measure">
-        <li><strong>Leave a party</strong> from the Party tab. Your membership is removed at once, and a party is deleted when its last member leaves or after 12 hours without activity.</li>
+        <li><strong>Leave a party</strong> from the Party tab. Your membership is removed at once, and a party is deleted when its last member leaves or within about an hour once it has had 12 hours without activity.</li>
         <li><strong>Remove a friend</strong> from their card in the Party tab. The friendship is deleted on both sides.</li>
         <li><strong>Turn Party off</strong> in <strong>Settings &gt; Tabs</strong> to stop sending anything. Friends then see you as offline.</li>
         <li>Daily study minutes are deleted automatically after 28 days.</li>
@@ -220,7 +220,7 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
 
       <h2>10. How long we keep it</h2>
       <ul class="measure">
-        <li>Party and account data: until you delete it (study minutes 28 days, parties 12 hours after the last activity).</li>
+        <li>Party and account data: until you delete it (study minutes 28 days, parties about 12 to 13 hours after the last activity).</li>
         <li>Crash reports: 90 days. Suggestions: at most 365 days. Server logs: up to 7 days.</li>
         <li>Email: until the conversation is finished.</li>
         <li>Backups: up to 30 days beyond each of these.</li>
@@ -243,7 +243,7 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
       <p class="measure">Tabbi's study tools work on your Mac and send us nothing, so anyone can use them.
         Party and Sign in with Apple are for people 13 and older. If you are under the age where your country lets you agree to an online service on your own (up to 16 in some European countries), use them only with a parent's or guardian's permission.</p>
       <p class="measure">We do not knowingly collect personal information from children under 13.
-        Party, and Sign in with Apple, ask your birth month and year once before anything is sent, and the answer counts for both; only the day you turn 13 is kept, on your Mac. If the answer is under 13, both stay off on that Mac until you turn 13, send nothing, and Party deletes the Party data this Mac had already created (signed in with Apple, that data belongs to the account, which <strong>Delete Account</strong> removes).
+        Party, and Sign in with Apple, ask your birth month and year once before anything is sent, and the answer counts for both; only the date you are old enough (the first day of the month after you turn 13) is kept, on your Mac. If the answer is under 13, both stay off on that Mac until you turn 13, send nothing, and Party deletes the Party data this Mac had already created (signed in with Apple, that data belongs to the account, which <strong>Delete Account</strong> removes).
         If we learn that a child under 13 has used Party or signed in, we delete their data.
         If you are a parent or guardian and think your child has, email {MAIL} with the friend code shown in their Party tab, or open <strong>Delete my Party data</strong> on their Mac yourself.</p>
 

@@ -37,7 +37,7 @@ extension AIProviderID {
             With \(displayName), \(appName) sends these to \(vendor) \(route) when you use an AI feature:
             Ask AI: your questions, the chat so far and any screenshot you attach.
             Refine and AI day plans: your calendar event titles and times, tasks, goals and the plan.
-            Day review: your study points and goal counts.
+            Day review: your study points, goal counts and the titles of the tasks you finished or are carrying over.
             \(vendor) handles them under its own terms and privacy policy. \(appName) sends nothing else, and nothing until you allow it. You can switch to None in Connections at any time.
             """
     }

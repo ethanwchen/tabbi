@@ -19,7 +19,7 @@ Before this review, the Privacy Policy, `backend/PRIVACY.md`, the FAQ and the RE
 The app also had no AI consent step, no age check and no legal links.
 That mattered because of FTC Act Section 5, GDPR Article 13 and App Store Guidelines 5.1.1 and 5.1.2.
 All of these are fixed.
-What remains open is mainly naming (the App Store name and the TABBI mark), one missing age question at Sign in with Apple, two small backend hardening items, and questions only a lawyer can settle.
+What remains open is mainly naming (the App Store name and the TABBI mark), two small backend hardening items, and questions only a lawyer can settle.
 
 Severity scale:
 
@@ -35,7 +35,7 @@ Severity scale:
 | # | Finding | Status |
 | --- | --- | --- |
 | C1 | No disclosure or consent before personal data went to a third-party AI provider (Guideline 5.1.2(i), GDPR Art. 13). | **Fixed.** A one-time alert per provider names the company, how the data gets there and what each feature sends. No request is sent until the user taps Allow. Ollama, which runs on the Mac, is exempt. Code: `TabbiKitCore/AI/AIConsent.swift`, `AISettings.consented`, Settings > Connections. The App Review notes in `docs/appstore.md` describe it. |
-| C2 | Party registered with the server as soon as its setup step appeared, with no age question, no notice and no links (COPPA actual knowledge, GDPR Art. 8, Guideline 1.3 and 5.1.4). | **Fixed.** Party asks a neutral birth month and year question with Terms and Privacy links before anything is sent. An under-13 answer keeps Party off until the user turns 13, cannot be changed, and deletes an anonymous identity this Mac made earlier. Only the date the user turns 13 is stored, on the Mac. Code: `TabbiKitCore/Party/PartyAgeCheck.swift`, `PartyAgeCheckView`. |
+| C2 | Party registered with the server as soon as its setup step appeared, with no age question, no notice and no links (COPPA actual knowledge, GDPR Art. 8, Guideline 1.3 and 5.1.4). | **Fixed.** Party asks a neutral birth month and year question with Terms and Privacy links before anything is sent. An under-13 answer keeps Party off until the user turns 13, cannot be changed, and deletes an anonymous identity this Mac made earlier. Only the date the user is old enough (the first day of the month after they turn 13) is stored, on the Mac. Code: `TabbiKitCore/Party/PartyAgeCheck.swift`, `PartyAgeCheckView`. |
 
 ### High
 
