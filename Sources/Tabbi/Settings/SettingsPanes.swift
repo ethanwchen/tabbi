@@ -1025,7 +1025,7 @@ private struct ShortcutSection: View {
         } header: {
             Text("Shortcut")
         } footer: {
-            SectionFooter("In the open notch, arrow keys or a two-finger swipe switch tabs, 1-9 jump to a tab and Esc closes. On the closed notch, swipe down or middle-click to see the next live activity.")
+            SectionFooter("In the open notch, arrow keys or a two-finger swipe switch tabs, 1-9 jump to a tab, and Esc or a swipe up closes. On the closed notch, swipe down or middle-click to see the next live activity.")
         }
         .onDisappear { recorder.stop() }
     }

@@ -84,3 +84,53 @@ final class TickerSwipeTests: XCTestCase {
         XCTAssertEqual(steps, 2)
     }
 }
+
+final class CloseSwipeTests: XCTestCase {
+    /// Feeds one gesture of `count` events, each moving `up`, and returns how many closes it made.
+    private func gesture(
+        _ swipe: inout CloseSwipe, up: Double, deltaX: Double = 0, count: Int, momentum: Int = 0, overList: Bool = false
+    ) -> Int {
+        var closes = [swipe.feed(deltaX: deltaX, fingersUp: up, phase: .began, overScrollableList: overList)]
+        for _ in 1..<count {
+            closes.append(swipe.feed(deltaX: deltaX, fingersUp: up, phase: .changed, overScrollableList: false))
+        }
+        closes.append(swipe.feed(deltaX: 0, fingersUp: 0, phase: .ended, overScrollableList: false))
+        for _ in 0..<momentum {
+            closes.append(swipe.feed(deltaX: 0, fingersUp: up, phase: .momentum, overScrollableList: false))
+        }
+        return closes.filter { $0 }.count
+    }
+
+    func testASwipeUpClosesOnce() {
+        for count in 4...20 {
+            var swipe = CloseSwipe()
+            XCTAssertEqual(gesture(&swipe, up: 20, count: count, momentum: 10), 1, "\(count) events")
+        }
+    }
+
+    func testAShortOrDownwardSwipeDoesNotClose() {
+        var swipe = CloseSwipe()
+        XCTAssertEqual(gesture(&swipe, up: 20, count: 3), 0)
+        // Travel does not carry over into the next gesture.
+        XCTAssertEqual(gesture(&swipe, up: 20, count: 3), 0)
+        XCTAssertEqual(gesture(&swipe, up: -30, count: 10), 0)
+    }
+
+    func testASwipeOverAScrollableListBelongsToTheList() {
+        var swipe = CloseSwipe()
+        XCTAssertEqual(gesture(&swipe, up: 30, count: 10, overList: true), 0)
+        // The next gesture, away from the list, closes again.
+        XCTAssertEqual(gesture(&swipe, up: 30, count: 10), 1)
+    }
+
+    func testASidewaysTabSwipeDoesNotClose() {
+        var swipe = CloseSwipe()
+        XCTAssertEqual(gesture(&swipe, up: 15, deltaX: -40, count: 20), 0)
+    }
+
+    func testAMouseWheelNeverCloses() {
+        var swipe = CloseSwipe()
+        let closes = (0..<40).filter { _ in swipe.feed(deltaX: 0, fingersUp: 30, phase: .none, overScrollableList: false) }
+        XCTAssertTrue(closes.isEmpty)
+    }
+}

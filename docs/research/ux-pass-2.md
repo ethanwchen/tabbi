@@ -16,3 +16,10 @@ Each entry is a short before and after.
 - Before: onboarding ended on the last module setup step, so the desktop widget, the daily reminder, invite links and syncing the pet with Sign in with Apple were only found by exploring.
   After: one last, skippable screen, "A few extras", says each in a line (a tile per extra, only the ones whose tab is on), with a Sign In button on the sync tile that opens Settings > General.
   New extras join that one screen (`OnboardingExtra`), so onboarding never grows a step for them.
+
+## Gestures
+
+- Before: a two-finger swipe sideways switched tabs, but nothing put the open notch away from the trackpad; it took Esc, the shortcut or moving the pointer off.
+  After: a two-finger swipe up closes the open notch with the usual close spring (`CloseSwipe`), once per gesture.
+  A mouse wheel and momentum never close it, a swipe that starts over a list that can scroll scrolls the list instead, and onboarding stays open until it is done or skipped.
+  The Shortcut footer in Settings > General mentions it.
