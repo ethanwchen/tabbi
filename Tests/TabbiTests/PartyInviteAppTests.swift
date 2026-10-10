@@ -1,4 +1,5 @@
 import XCTest
+import AppKit
 import TabbiKitCore
 @testable import Tabbi
 
@@ -131,5 +132,13 @@ final class PartyInviteAppTests: XCTestCase {
             guard Date() < deadline else { return XCTFail("timed out") }
             try await Task.sleep(nanoseconds: 20_000_000)
         }
+    }
+
+    /// The share menu beside a code leads with Copy Invite Link and keeps
+    /// what macOS proposes after it.
+    func testShareMenuLeadsWithCopyInviteLink() {
+        let proposed = NSSharingService(title: "Messages", image: NSImage(), alternateImage: nil) {}
+        let services = PartyInvitePicker.services(for: .joinParty(code: "AB3CDE"), proposed: [proposed])
+        XCTAssertEqual(services.map(\.title), ["Copy Invite Link", "Messages"])
     }
 }

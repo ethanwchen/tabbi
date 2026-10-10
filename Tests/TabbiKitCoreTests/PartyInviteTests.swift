@@ -55,4 +55,17 @@ final class PartyInviteTests: XCTestCase {
             XCTAssertEqual(PartyInvite(url: invite.appURL), invite)
         }
     }
+
+    /// A shared link pasted into the friend or party code field fills in its code.
+    func testPastedLinksYieldTheirCode() {
+        let friend = PartyInvite.addFriend(code: "K7QW2MZD")
+        let party = PartyInvite.joinParty(code: "AB3CDE")
+        for url in [friend.webURL, friend.appURL] {
+            XCTAssertEqual(PartyCode.find(in: "Add me on Tabbi: \(url.absoluteString)", length: PartyCode.friendCodeLength),
+                           "K7QW2MZD")
+        }
+        for url in [party.webURL, party.appURL] {
+            XCTAssertEqual(PartyCode.find(in: url.absoluteString, length: PartyCode.partyCodeLength), "AB3CDE")
+        }
+    }
 }
