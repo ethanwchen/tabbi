@@ -7,10 +7,12 @@ import TabbiKitCore
 /// button is Apple's in both editions: it opens the native sheet where the
 /// build has the entitlement and Apple's web page elsewhere
 /// (`AppleSignInMethod`). Signed out, everything works as without an account.
+/// Accounts are for people 13 and older, so until the age check
+/// (`PartyAgeCheck`) passed, Sign In opens `AccountAgeSheet` first.
 struct AccountSettingsRow: View {
     @ObservedObject var account: SyncStore
-    @Environment(\.colorScheme) private var colorScheme
     @State private var confirmsDelete = false
+    @State private var asksAge = false
 
     var body: some View {
         LabeledContent {
@@ -29,17 +31,35 @@ struct AccountSettingsRow: View {
         } message: {
             Text(Self.deleteMessage)
         }
+        .sheet(isPresented: $asksAge) {
+            AccountAgeSheet(status: account.ageStatus,
+                            answer: { account.answerAge(birthMonth: $0.month, year: $0.year) },
+                            close: { asksAge = false }) {
+                AppleSignInButton(account: account)
+            }
+        }
+        .onAppear(perform: account.refreshAgeStatus)
+        // The sheet goes once Apple's sign-in takes over.
+        .onChange(of: account.phase) { _, phase in
+            if phase != .signedOut { asksAge = false }
+        }
     }
 
     @ViewBuilder
     private var controls: some View {
         switch account.phase {
+        case .signedOut where account.ageStatus == .unanswered:
+            Button("Sign In…") { asksAge = true }
+                .help("Sign in with your Apple Account to sync your pet across your Macs")
+        case .signedOut where account.ageStatus != .passed:
+            // Too young: the caption says when signing in opens.
+            EmptyView()
         case .signedOut, .signingIn:
-            signInButton
-            .frame(width: 160, height: 28)
-            .disabled(account.phase == .signingIn)
-            .opacity(account.phase == .signingIn ? 0.5 : 1)
-            .help("Sign in with your Apple Account to sync your pet across your Macs")
+            AppleSignInButton(account: account)
+                .frame(width: 160, height: 28)
+                .disabled(account.phase == .signingIn)
+                .opacity(account.phase == .signingIn ? 0.5 : 1)
+                .help("Sign in with your Apple Account to sync your pet across your Macs")
         case .signedIn, .deleting:
             HStack(spacing: 8) {
                 Button("Sign Out", action: account.signOut)
@@ -48,26 +68,6 @@ struct AccountSettingsRow: View {
                     .help("Delete the account and its synced data from the server")
             }
             .disabled(account.phase == .deleting)
-        }
-    }
-
-    @ViewBuilder
-    private var signInButton: some View {
-        switch account.signInMethod {
-        case .native:
-            SignInWithAppleButton(.signIn) { request in
-                // The name greets the user; no email is asked for or kept.
-                request.requestedScopes = [.fullName]
-            } onCompletion: { result in
-                signIn(with: result)
-            }
-            .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
-        case .web:
-            WebSignInWithAppleButton(style: colorScheme == .dark ? .white : .black) {
-                Task { await account.signInOnWeb() }
-            }
-            // The style is fixed when the button is made.
-            .id(colorScheme)
         }
     }
 
@@ -81,7 +81,9 @@ struct AccountSettingsRow: View {
     private var caption: String {
         if let notice = account.notice { return notice }
         switch account.phase {
-        case .signedOut: return "Sync your pet, points and streaks across your Macs."
+        case .signedOut:
+            if case .tooYoung(let until) = account.ageStatus { return AccountAgeText.tooYoung(until: until) }
+            return "Sync your pet, points and streaks across your Macs."
         case .signingIn: return "Signing in…"
         case .deleting: return "Deleting your account…"
         case .signedIn:
@@ -104,6 +106,32 @@ struct AccountSettingsRow: View {
         let formatter = RelativeDateTimeFormatter()
         formatter.unitsStyle = .abbreviated
         return formatter.localizedString(for: date, relativeTo: now)
+    }
+}
+
+/// Apple's Sign in with Apple button, which signs `account` in: the native
+/// sheet where the build has the entitlement, Apple's web page elsewhere.
+struct AppleSignInButton: View {
+    @ObservedObject var account: SyncStore
+    @Environment(\.colorScheme) private var colorScheme
+
+    var body: some View {
+        switch account.signInMethod {
+        case .native:
+            SignInWithAppleButton(.signIn) { request in
+                // The name greets the user; no email is asked for or kept.
+                request.requestedScopes = [.fullName]
+            } onCompletion: { result in
+                signIn(with: result)
+            }
+            .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
+        case .web:
+            WebSignInWithAppleButton(style: colorScheme == .dark ? .white : .black) {
+                Task { await account.signInOnWeb() }
+            }
+            // The style is fixed when the button is made.
+            .id(colorScheme)
+        }
     }
 
     private func signIn(with result: Result<ASAuthorization, any Error>) {

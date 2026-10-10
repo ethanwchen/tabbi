@@ -356,6 +356,19 @@ enum SnapshotRenderer {
             print(url.path)
         }
         services.settings.settings.motionPace = pace
+        // The age check before Sign in with Apple: asked, passed, too young.
+        let tooYoung = Calendar.current.date(byAdding: .month, value: 18, to: Date()) ?? Date()
+        for (name, status) in [("ask", PartyAgeCheck.Status.unanswered), ("ready", .passed),
+                               ("too-young", .tooYoung(until: tooYoung))] {
+            let sheet = AccountAgeSheet(status: status, answer: { _ in }, close: {}) {
+                AppleSignInButton(account: services.accountSync)
+            }
+            if let png = await sheetSnapshot(sheet) {
+                let url = outputDirectory.appendingPathComponent("settings-account-age-\(name).png")
+                try? png.write(to: url)
+                print(url.path)
+            }
+        }
         // Connections with an API provider waiting for its key, a command
         // line tool and Ollama picked, as far as this build offers them.
         let aiShots = [("api-key", AIProviderID.gemini), ("cli", .claudeCLI), ("local", .ollama)]

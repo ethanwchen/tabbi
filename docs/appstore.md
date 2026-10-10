@@ -256,6 +256,7 @@ Before submitting, check that the Worker has the Sign in with Apple secrets ([sy
 > Guideline 5.1.2(i): picking Anthropic, OpenAI or Gemini first shows a one-time consent alert that names the company receiving the data and lists what each AI feature sends (Ask AI: questions, the chat and any screenshot attached; Refine: calendar event titles and times, tasks, goals and the plan; day review: study points and goal counts). Nothing is sent unless the user taps Allow, and Cancel keeps None. Ollama runs on the Mac, so it needs no consent.
 > No account is needed.
 > Signing in with Apple (Settings > General > Account) is optional and only syncs the pet and study streaks between the user's Macs.
+> Accounts are for people 13 and older: the first Sign In asks the birth month and year (a neutral question, kept on the Mac), then shows Apple's button with links to the Terms and Privacy Policy. An under-13 answer keeps signing in off until the user turns 13.
 > Delete Account in the same place deletes everything the server holds and revokes the Sign in with Apple grant (Guideline 5.1.1(v)).
 > The Privacy Policy and Terms of Use are linked from Settings > About.
 

@@ -300,8 +300,15 @@ final class PartyStore: ObservableObject {
     /// before the check existed is deleted from the server (signed in, it
     /// belongs to the Apple account and goes with Delete Account).
     func answerAge(birthMonth month: Int, year: Int) {
-        guard settings.ageStatus(at: Date()) == .unanswered,
-              let eligibleFrom = PartyAgeCheck.eligibleFrom(birthMonth: month, year: year) else { return }
+        guard let eligibleFrom = PartyAgeCheck.eligibleFrom(birthMonth: month, year: year) else { return }
+        adoptAgeAnswer(eligibleFrom: eligibleFrom)
+    }
+
+    /// Takes an answer already given, also the one asked before Sign in
+    /// with Apple (`SyncStore.ageAnswered`), as `answerAge` does, so the
+    /// question is asked once.
+    func adoptAgeAnswer(eligibleFrom: Date) {
+        guard settings.ageStatus(at: Date()) == .unanswered else { return }
         var new = settings
         new.ageEligibleFrom = eligibleFrom
         if isDemo {

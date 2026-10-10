@@ -17,8 +17,7 @@ App Store copies also fall under Apple's Standard EULA, because `docs/appstore.m
 - Party and accounts are 13+, matching the Privacy Policy's children section (COPPA: no knowing collection under 13).
 - Under 18, a parent or guardian must permit use and accepts the terms for the minor.
   Minors can generally disaffirm contracts, so the Terms do not rely on a minor's own assent for anything important, and section 13 says a minor keeps their rights.
-- The app has no age gate yet (`app-audit.md` gap 2), so the 13+ rule is only stated, not enforced.
-  The next code iteration should add one before Party registers.
+- The app enforces the 13+ rule with a neutral birth month and year question before Party registers and before Sign in with Apple (`app-audit.md` gap 2, fixed).
 
 ## Disputes: no arbitration
 

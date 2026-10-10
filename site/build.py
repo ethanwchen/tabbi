@@ -276,7 +276,7 @@ SUPPORT = f'''
 {faq('Do I need an account?', """          <p>No. Everything in Tabbi works without one.
             To sync your pet across Macs, choose <strong>Sign in with Apple</strong> in <strong>Settings &gt; General</strong> on each of them.
             Your pet, points, unlocked items and streaks then sync, and your Party friend code and friends follow you.</p>
-          <p>Accounts are for people 13 and older.
+          <p>Accounts are for people 13 and older, and the first Sign In asks the month and year you were born (the same question as Party, asked once and kept on your Mac).
             Tabbi asks Apple only for your name, never your email, and keeps the name on your Mac.
             In the direct download, Apple's sign-in page passes the name through our server, which does not store it.
             Your calendar, tasks, activity history, AI chats and settings are never synced.

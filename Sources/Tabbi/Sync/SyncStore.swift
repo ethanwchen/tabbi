@@ -34,10 +34,16 @@ final class SyncStore: ObservableObject {
     @Published private(set) var isSyncing = false
     /// The last failure, in a sentence for the account row; nil when fine.
     @Published private(set) var notice: String?
+    /// The age check (`PartyAgeCheck`): accounts are for people 13 and
+    /// older, so signing in waits until it passed.
+    @Published private(set) var ageStatus: PartyAgeCheck.Status
 
     /// Sent after the stored Party credentials changed (sign in, sign out,
     /// delete), so Party reconnects with the new identity.
     let identityChanged = PassthroughSubject<Void, Never>()
+    /// Sent with `eligibleFrom` when the age question was answered before
+    /// signing in, so Party adopts the same answer.
+    let ageAnswered = PassthroughSubject<Date, Never>()
 
     /// How long the save stays quiet before a change is pushed.
     static let debounce: TimeInterval = 5
@@ -55,6 +61,7 @@ final class SyncStore: ObservableObject {
     private let stateURL: URL?
     private let credentials: any PartyCredentialStore
     private let server: () -> URL?
+    private let ageAnswer: AccountAgeAnswer
     private let transport: (URL) -> any PartyTransport
     private let studyDays: () -> Set<String>
     private let clock: () -> Date
@@ -84,6 +91,7 @@ final class SyncStore: ObservableObject {
     ///     closed it (`AppleWebAuthentication`; tests fake it).
     ///   - server: the friends server Party uses now.
     ///   - credentials: where Party keeps its identity; the account replaces it.
+    ///   - ageAnswer: where the age check's answer is kept, shared with Party.
     ///   - transport: replaces HTTPS (tests).
     ///   - studyDays: local days with focus time on this Mac, for the streak.
     ///   - sleep: waits before a debounced or post-wake sync (tests).
@@ -91,7 +99,7 @@ final class SyncStore: ObservableObject {
          webCallback: @escaping @MainActor (URL) async throws -> URL? = { url in
              try await AppleWebAuthentication().callback(from: url)
          },
-         server: @escaping () -> URL?, credentials: any PartyCredentialStore,
+         server: @escaping () -> URL?, credentials: any PartyCredentialStore, ageAnswer: AccountAgeAnswer,
          transport: ((URL) -> any PartyTransport)? = nil,
          studyDays: @escaping () -> Set<String> = { [] }, clock: @escaping () -> Date = Date.init,
          sleep: @escaping (TimeInterval) async -> Void = { try? await Task.sleep(nanoseconds: UInt64($0 * 1_000_000_000)) }) {
@@ -101,6 +109,7 @@ final class SyncStore: ObservableObject {
         self.pet = pet
         self.server = server
         self.credentials = credentials
+        self.ageAnswer = ageAnswer
         self.transport = transport ?? { URLSessionPartyTransport(baseURL: $0) }
         self.studyDays = studyDays
         self.clock = clock
@@ -113,6 +122,7 @@ final class SyncStore: ObservableObject {
             phase = .signedIn
             name = "Sam Rivera"
             lastSyncedAt = clock().addingTimeInterval(-4 * 60)
+            ageStatus = .passed
             return
         }
         let url = runMode.isSnapshot ? nil : storage.file("state.json", in: "Sync")
@@ -131,6 +141,7 @@ final class SyncStore: ObservableObject {
         phase = loaded.isSignedIn ? .signedIn : .signedOut
         name = loaded.session?.name
         lastSyncedAt = loaded.lastSyncedAt
+        ageStatus = PartyAgeCheck.status(eligibleFrom: ageAnswer.load(), at: clock())
     }
 
     var isSignedIn: Bool { state.isSignedIn }
@@ -175,6 +186,27 @@ final class SyncStore: ObservableObject {
         _ = done.wait(timeout: .now() + Self.quitWait)
     }
 
+    // MARK: Age check
+
+    /// Reads the answer again, since Party may have taken it meanwhile or
+    /// the day the user turns 13 may have come.
+    func refreshAgeStatus() {
+        guard !isDemo else { return }
+        ageStatus = PartyAgeCheck.status(eligibleFrom: ageAnswer.load(), at: clock())
+    }
+
+    /// The age question asked before Sign in with Apple, once, as Party
+    /// asks it: only the day the user is surely 13 is saved, on this Mac,
+    /// and nothing is sent. Under 13, signing in stays off until that day.
+    func answerAge(birthMonth month: Int, year: Int) {
+        refreshAgeStatus()
+        guard !isDemo, ageStatus == .unanswered,
+              let eligibleFrom = PartyAgeCheck.eligibleFrom(birthMonth: month, year: year) else { return }
+        ageAnswer.save(eligibleFrom)
+        ageStatus = PartyAgeCheck.status(eligibleFrom: eligibleFrom, at: clock())
+        ageAnswered.send(eligibleFrom)
+    }
+
     // MARK: Account
 
     /// Signs in with what `ASAuthorizationAppleIDCredential` returned:
@@ -192,7 +224,8 @@ final class SyncStore: ObservableObject {
     /// the account, as `signIn(identityToken:authorizationCode:name:)` does.
     /// Closing the page is not an error.
     func signInOnWeb() async {
-        guard !isDemo, phase == .signedOut, let server = server() else { return }
+        refreshAgeStatus()
+        guard !isDemo, phase == .signedOut, ageStatus == .passed, let server = server() else { return }
         notice = nil
         phase = .signingIn
         let attempt = AppleWebSignIn()
@@ -226,7 +259,8 @@ final class SyncStore: ObservableObject {
     /// Trades what Apple returned for the account through `exchange`, then
     /// stores its Party identity and syncs.
     private func signIn(name: String?, exchange: (SyncClient) async throws -> AppleSignInReply) async {
-        guard !isDemo, phase == .signedOut, let server = server() else { return }
+        refreshAgeStatus()
+        guard !isDemo, phase == .signedOut, ageStatus == .passed, let server = server() else { return }
         notice = nil
         phase = .signingIn
         do {
