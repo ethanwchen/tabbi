@@ -263,11 +263,17 @@ main.home .wrap { max-width: 1120px; }
   font-size: clamp(1.4rem, 3vw, 1.75rem); margin: 0 0 24px; color: var(--on-ground);
 }
 .paw { color: var(--pink); flex-shrink: 0; }
-.tab-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px 20px; }
-/* Sticker cards: a slight tilt each way, straightening up on hover. */
+/* Sticker cards: a pink tab pill on top, a slight tilt each way,
+   straightening up on hover. */
+.tab-row {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px 20px;
+  list-style: none; margin: 0; padding: 0;
+}
+main .tab-row li { margin: 0; }
 .tab-card {
-  position: relative; margin: 0; background: var(--card); border-radius: 28px; padding: 10px 10px 18px;
+  position: relative; background: var(--card); border-radius: 24px; padding: 26px 20px 20px;
   border: 1px solid rgba(251, 247, 240, 0.06); box-shadow: var(--shadow);
+  color: var(--ink-2); font-size: 15.5px; line-height: 1.45;
   transform: rotate(1.2deg);
 }
 .tab-card:nth-child(even) { transform: rotate(-1.2deg); }
@@ -276,18 +282,11 @@ main.home .wrap { max-width: 1120px; }
   .tab-card:hover, .tab-card:nth-child(even):hover { transform: translateY(-4px) rotate(0deg); }
 }
 .tab-label {
-  position: absolute; z-index: 1; top: -11px; left: 22px;
-  padding: 1px 12px; border-radius: 999px; background: var(--pink); color: var(--btn-ink);
-  font-family: var(--head); font-weight: 600; font-size: 14px; line-height: 1.5;
+  position: absolute; z-index: 1; top: -13px; left: 18px;
+  padding: 2px 14px; border-radius: 999px; background: var(--pink); color: var(--btn-ink);
+  font-family: var(--head); font-weight: 600; font-size: 16px; line-height: 1.5;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
-/* Trim the wallpaper either side of the notch so the panel gets the width. */
-.tab-card img {
-  display: block; width: 100%; height: auto; aspect-ratio: 1120 / 520; object-fit: cover;
-  border-radius: 20px;
-}
-.tab-card figcaption { padding: 12px 8px 0; color: var(--ink-2); font-size: 15.5px; line-height: 1.45; }
-.tab-card strong { display: block; font-family: var(--head); font-weight: 600; font-size: 19px; color: var(--ink); margin-bottom: 2px; }
 .more { text-align: center; color: var(--on-ground-2); font-weight: 600; font-size: 15.5px; margin: 28px auto 0; max-width: 60ch; }
 .more a { color: var(--on-ground); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--taupe); }
 
@@ -595,11 +594,9 @@ footer.site nav a:hover { background: var(--chip); color: var(--on-ground); text
   .laptop-screen { border-width: 6px; border-radius: 14px 14px 6px 6px; }
   .laptop-base { height: 9px; border-radius: 0 0 10px 10px; }
   .pixel-cat { right: -36px; bottom: 9px; width: 44px; height: 52px; }
-  .tab-card { border-radius: 18px; }
-  .tab-card img { border-radius: 12px; }
   .hero-home .lede { font-size: 18px; }
   .btn { width: 100%; min-height: 58px; font-size: 20px; padding: 0 24px; }
-  .tab-row { grid-template-columns: 1fr; gap: 16px; }
+  .tab-row { grid-template-columns: 1fr; gap: 30px; }
   .steps, .trust, .home-faq, .thanks, .outro { margin-top: 48px; }
   .trust-row { gap: 12px; }
   .trust-card { font-size: 15.5px; padding: 10px 12px; gap: 8px; }

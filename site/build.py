@@ -50,23 +50,13 @@ def unobfuscate(html):
 # Home
 # --------------------------------------------------------------------------
 
-# (image, label, name, line, alt). The screenshots are the app's own snapshot
-# renders from docs/images, so the site shows exactly what the app draws.
-TABS = [
-    ('timer', 'Timer', 'Timer', 'Pomodoro and quick timers, with focus sounds.',
-     'The Timer tab: a Pomodoro ring at 15:14 with focus sounds and today\'s total'),
-    ('today', 'Today', 'Today', 'Your to-dos and what is next on the calendar.',
-     'The Today tab: a checklist on the left and upcoming meetings on the right'),
-    ('closet', 'Closet', 'Closet', 'Dress up your pet with the points you earn.',
-     'The Closet: a pixel cat with costumes and accessories to choose from'),
-    ('party', 'Party', 'Party', 'Study with friends, pets side by side.',
-     'The Party tab: friends\' pets sitting together with their study status'),
+# The tabs and features the notch demo above does not show, one line each.
+MORE = [
+    ('Party', 'Study with friends, pets side by side. Invite them with a link.'),
+    ('Recap', 'A Sunday look back at your week. Streak freezes cover days off.'),
+    ('Widget', 'Your pet, your streak and the timer on your desktop.'),
+    ('Ask AI', 'Ask the AI you already use, even one that runs on your Mac.'),
 ]
-
-# How wide a tab screenshot draws: one column under 600 px, two under 1000,
-# then four. The card crops the image to 1120 of its 1360 px, so each width
-# is scaled up by that 1.21 to ask for enough pixels.
-TAB_SIZES = '(max-width: 600px) calc(121vw - 60px), (max-width: 1000px) calc(60vw - 50px), 300px'
 
 HOME_HERO = {
     'home': True,
@@ -107,15 +97,11 @@ FEATHER = sticker_icon('<path d="M19 5c-7 0-12 4.5-12 12v2M7 17c5 0 9-3 10.5-8.5
 
 HOME = DEMO + f'''
       <section class="tabs" aria-labelledby="tabs-title">
-        <h2 id="tabs-title" class="tabs-title">{PAW}<span>Click the notch, pick a tab</span></h2>
-        <div class="tab-row">
-''' + '\n'.join(f'''          <figure class="tab-card">
-            <span class="tab-label" aria-hidden="true">{label}</span>
-            <img src="/img/{img}.webp" srcset="/img/{img}-680.webp 680w, /img/{img}.webp 1360w" sizes="{TAB_SIZES}" width="1360" height="520" loading="lazy" decoding="async" alt="{alt}">
-            <figcaption><strong>{name}</strong>{line}</figcaption>
-          </figure>''' for img, label, name, line, alt in TABS) + f'''
-        </div>
-        <p class="more">And more fun tabs inside. Missing one? <a href="/suggest">Suggest a tab</a>.</p>
+        <h2 id="tabs-title" class="tabs-title">{PAW}<span>More inside</span></h2>
+        <ul class="tab-row">
+''' + '\n'.join(f'''          <li class="tab-card"><span class="tab-label">{label}</span>{line}</li>''' for label, line in MORE) + f'''
+        </ul>
+        <p class="more">Plus seasonal outfits, SoundCloud and more. Missing a tab? <a href="/suggest">Suggest one</a>.</p>
       </section>
       <section class="steps" aria-labelledby="steps-title">
         <h2 id="steps-title" class="tabs-title">{PAW}<span>How it works</span></h2>
