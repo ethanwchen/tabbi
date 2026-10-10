@@ -22,6 +22,8 @@ private final class StatefulFriendsServer: PartyTransport, @unchecked Sendable {
     /// Makes the next party action answer `not_in_party`, as when the
     /// party expired while the panel was open.
     private var losesParty = false
+    /// Fails every request as unreachable, as with no network.
+    private var down = false
 
     var requests: [String] { lock.withLock { sent } }
 
@@ -34,9 +36,14 @@ private final class StatefulFriendsServer: PartyTransport, @unchecked Sendable {
         }
     }
 
+    func setDown(_ isDown: Bool) {
+        lock.withLock { down = isDown }
+    }
+
     func send(_ request: PartyHTTPRequest, timeout: TimeInterval) async throws -> PartyHTTPResponse {
         let route = "\(request.method) \(request.path)"
         let body = request.body.map { String(decoding: $0, as: UTF8.self) } ?? ""
+        if lock.withLock({ down }) { throw PartyError.unreachable }
         return lock.withLock {
             sent.append("\(route) \(body)")
             return answer(route, body)
@@ -388,6 +395,123 @@ final class PartyStoreActionTests: XCTestCase {
         party.cancelReport()
         XCTAssertNil(party.reporting)
         XCTAssertEqual(server.count("POST /v1/reports"), 0)
+    }
+
+    private func waitUntil(timeout: TimeInterval = 5, _ condition: () -> Bool) async throws {
+        let deadline = Date().addingTimeInterval(timeout)
+        while !condition() {
+            guard Date() < deadline else { return XCTFail("timed out") }
+            try await Task.sleep(nanoseconds: 20_000_000)
+        }
+    }
+}
+
+/// The Mac going to sleep and waking up while Party is on: friends see me
+/// go offline before the Mac sleeps, and on wake the store catches up at
+/// once instead of waiting out a heartbeat or a backoff.
+@MainActor
+final class PartyStoreSleepWakeTests: XCTestCase {
+    private typealias Server = StatefulFriendsServer
+    private let workspace = NotificationCenter()
+
+    private func makeStore(_ server: StatefulFriendsServer) -> PartyStore {
+        PartyStore(runMode: RunMode(isSnapshot: true),
+                   environment: ["TABBI_PARTY_SERVER": "http://localhost:8787", "TABBI_PARTY_NAME": "Ana"],
+                   transport: server, workspace: workspace)
+    }
+
+    private func connected(_ server: StatefulFriendsServer) async throws -> PartyStore {
+        let party = makeStore(server)
+        party.start()
+        try await waitUntil { party.state.connection == .connected && server.count("GET /v1/grants") == 1 }
+        return party
+    }
+
+    private func heartbeats(_ server: StatefulFriendsServer) -> [String] {
+        server.requests.filter { $0.hasPrefix("POST /v1/presence") }
+    }
+
+    private func post(_ name: Notification.Name) {
+        workspace.post(name: name, object: nil)
+    }
+
+    func testSleepSendsOneOfflineHeartbeatBeforeTheMacSleeps() async throws {
+        let server = StatefulFriendsServer()
+        let party = try await connected(server)
+        defer { party.stop() }
+        let before = heartbeats(server)
+        XCTAssertFalse(before.isEmpty, "connecting sends the launch heartbeat")
+
+        post(NSWorkspace.willSleepNotification)
+        // No await: the request must have left before the observer returned,
+        // since a task left to run later would never leave a sleeping Mac.
+        let after = heartbeats(server)
+        XCTAssertEqual(after.count, before.count + 1)
+        XCTAssertTrue(after.last?.contains(#""status":"offline""#) == true, after.last ?? "")
+    }
+
+    func testWakeSendsAFreshHeartbeatAndAsksForGrantsAgain() async throws {
+        let server = StatefulFriendsServer()
+        let party = try await connected(server)
+        defer { party.stop() }
+        post(NSWorkspace.willSleepNotification)
+        let asleep = heartbeats(server).count
+
+        post(NSWorkspace.didWakeNotification)
+        try await waitUntil { self.heartbeats(server).count == asleep + 1 && server.count("GET /v1/grants") == 2 }
+        XCTAssertFalse(heartbeats(server).last?.contains(#""status":"offline""#) == true,
+                       "the wake heartbeat says what I am doing now")
+        XCTAssertEqual(server.count("POST /v1/register"), 1, "a wake keeps the identity")
+        XCTAssertEqual(party.state.connection, .connected)
+    }
+
+    func testWakeAfterTheServerWasUnreachableReconnectsAtOnce() async throws {
+        let server = StatefulFriendsServer()
+        server.setDown(true)
+        let party = makeStore(server)
+        party.start()
+        defer { party.stop() }
+        try await waitUntil {
+            if case .unreachable = party.state.connection { return true }
+            return false
+        }
+
+        // The backoff after the failure is 5 seconds; a wake skips it.
+        server.setDown(false)
+        let woke = Date()
+        post(NSWorkspace.didWakeNotification)
+        try await waitUntil(timeout: 3) { party.state.connection == .connected }
+        XCTAssertLessThan(Date().timeIntervalSince(woke), PartyHeartbeatSchedule.initialBackoff)
+        XCTAssertEqual(party.state.friendCode, Server.me)
+        XCTAssertEqual(server.count("POST /v1/register"), 1)
+    }
+
+    func testSleepWhileInvisibleSendsNothingMore() async throws {
+        let server = StatefulFriendsServer()
+        let party = try await connected(server)
+        defer { party.stop() }
+        var settings = party.settings
+        settings.invisible = true
+        party.update(settings)
+        try await waitUntil { self.heartbeats(server).last?.contains(#""status":"offline""#) == true }
+        let invisible = heartbeats(server).count
+
+        post(NSWorkspace.willSleepNotification)
+        XCTAssertEqual(heartbeats(server).count, invisible, "going invisible already told friends")
+    }
+
+    func testAStoppedStoreIgnoresSleepAndWake() async throws {
+        let server = StatefulFriendsServer()
+        let party = try await connected(server)
+        party.stop()
+        let stopped = server.requests.count
+        XCTAssertTrue(heartbeats(server).last?.contains(#""status":"offline""#) == true, "turning Party off says goodbye")
+
+        post(NSWorkspace.willSleepNotification)
+        post(NSWorkspace.didWakeNotification)
+        await Task.yield()
+        try await Task.sleep(nanoseconds: 200_000_000)
+        XCTAssertEqual(server.requests.count, stopped)
     }
 
     private func waitUntil(timeout: TimeInterval = 5, _ condition: () -> Bool) async throws {

@@ -59,6 +59,7 @@ final class PartyStore: ObservableObject {
     /// A `--snapshot` render: stays offline so no user is ever registered,
     /// unless `snapshotServer` names a local worker to render live data from.
     private let isSnapshot: Bool
+    private let workspace: NotificationCenter
     private var snapshotServer: URL?
     private let repository: PartySettingsRepository?
     private let credentials: any PartyCredentialStore
@@ -111,11 +112,14 @@ final class PartyStore: ObservableObject {
 
     /// - Parameter environment: the snapshot-only knobs, such as
     ///   `TABBI_PARTY_PREVIEW` and a local `TABBI_PARTY_SERVER`.
-    ///   `transport` replaces HTTPS (tests).
+    ///   `transport` replaces HTTPS (tests), and `workspace` is where sleep
+    ///   and wake are announced (tests post them on their own center).
     init(runMode: RunMode, environment: [String: String] = ProcessInfo.processInfo.environment,
-         transport: (any PartyTransport)? = nil) {
+         transport: (any PartyTransport)? = nil,
+         workspace: NotificationCenter = NSWorkspace.shared.notificationCenter) {
         isDemo = runMode.isDemo
         self.transport = transport
+        self.workspace = workspace
         isSnapshot = runMode.isSnapshot
         if isDemo {
             repository = nil
@@ -244,15 +248,10 @@ final class PartyStore: ObservableObject {
         isRunning = true
         scheduleSessionEnd()
         guard !isDemo, !isSnapshot || snapshotServer != nil else { return }
-        if snapshotServer != nil {
-            // Nothing calls `onAppear` in an offscreen render; load as if open.
-            plan.setVisible(true)
-            rebuildAccount()
-            return
-        }
-        let center = NSWorkspace.shared.notificationCenter
-        center.addObserver(self, selector: #selector(willSleep), name: NSWorkspace.willSleepNotification, object: nil)
-        center.addObserver(self, selector: #selector(didWake), name: NSWorkspace.didWakeNotification, object: nil)
+        workspace.addObserver(self, selector: #selector(willSleep), name: NSWorkspace.willSleepNotification, object: nil)
+        workspace.addObserver(self, selector: #selector(didWake), name: NSWorkspace.didWakeNotification, object: nil)
+        // Nothing calls `onAppear` in an offscreen render; load as if open.
+        if snapshotServer != nil { plan.setVisible(true) }
         rebuildAccount()
     }
 
@@ -261,7 +260,7 @@ final class PartyStore: ObservableObject {
     func stop() {
         guard isRunning else { return }
         isRunning = false
-        NSWorkspace.shared.notificationCenter.removeObserver(self)
+        workspace.removeObserver(self)
         connectTask?.cancel()
         refreshTask?.cancel()
         nameSyncTask?.cancel()

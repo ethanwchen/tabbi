@@ -52,7 +52,8 @@ No test drives `addFriend(code:)`, `removeFriend(code:)`, `createParty()`, `join
 The wire format is well tested in `TabbiKitCore`, so the gap is how the store updates its state, errors and refresh plan around each call.
 Plan: an in-memory `PartyTransport` fake that answers like the Hub, then one test per action, including the error path and sleep and wake.
 Status: `PartyStoreActionTests` now drives friends, parties, shared sessions, block, retry and the single-action guard through a stateful fake server.
-Sleep and wake are still untested, because the store only observes them outside snapshot runs.
+`PartyStoreSleepWakeTests` covers sleep and wake through a notification center the store now takes in its init.
+Going to sleep sends one `offline` heartbeat before the observer returns (none when already invisible), waking sends a fresh heartbeat and asks for grants again, a wake after the server was unreachable reconnects at once instead of waiting out the backoff, and a stopped store ignores both.
 
 ### 2. Sync store lifecycle (app)
 
