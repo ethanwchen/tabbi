@@ -52,7 +52,7 @@ Every paid price sits inside one tier, and there are gaps between tiers, so the 
 | Free | 0 | owned from the start | Cozy Scarf, Party Hat, Bow Tie (one per playful theme) |
 | Starter | 35 to 105 | one day or less | Beanie 35, Round Glasses 50, Ninja Headband 65, Bunny Ears 75, Cool Sunglasses 90, Flower Crown 105 |
 | Mid-tier | 210 to 525 | 2 to 5 study days | Frog Hat 210, Scrubs 240, Stethoscope 270, Cowboy Hat 300, Surgical Cap 330, Chef Hat 360, Cozy Hoodie 390, Chunky Headphones 420, Head Mirror 450, Witch Hat 480, Pirate Hat 520 |
-| Showpiece | 1050 to 2100 | 2 to 4 study weeks | Tiny Crown 1050, Wizard Hat 1150, White Coat 1250, Superhero Cape 1400, Dinosaur Hoodie 1500, Wizard Robe 1650, Cherry Petals 1700, Astronaut Helmet 1800, Halo 1900, Blindfolded Sorcerer 1950, Angel Wings 2000, King's Cape 2050, Graduation Cap 2100 |
+| Showpiece | 1050 to 2100 | 2 to 4 study weeks | Tiny Crown 1050, Wizard Hat 1150, White Coat 1250, Superhero Cape 1400, Dinosaur Hoodie 1500, Wizard Robe 1650, Cherry Petals 1700, Sparkle Trail 1750, Astronaut Helmet 1800, Halo 1900, Blindfolded Sorcerer 1950, Angel Wings 2000, King's Cape 2050, Graduation Cap 2100 |
 
 The ranges come straight from the typical pace:
 

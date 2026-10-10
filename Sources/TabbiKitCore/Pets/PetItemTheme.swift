@@ -47,7 +47,7 @@ extension PetItem {
                  .goldenLaurel: .study
             case .scarf, .beanie, .chefHat, .backwardsCap: .cozy
             case .tinyCrown, .wizardHat, .pirateHat, .blindfoldedSorcerer, .astronautHelmet, .ninjaHeadband,
-                 .angelWings, .kingsCape, .halo: .fantasy
+                 .angelWings, .kingsCape, .halo, .sparkleTrail: .fantasy
             case .partyHat, .bunnyEars, .witchHat, .flowerCrown, .coolSunglasses, .cherryPetals: .seasonal
             case .frogHat, .cowboyHat, .bowTie, .flameHeadband, .teamMedal: .silly
             }
@@ -71,7 +71,7 @@ extension PetItem {
                  .frogHat, .ninjaHeadband, .coolSunglasses, .pirateHat, .blindfoldedSorcerer, .astronautHelmet,
                  .chunkyHeadphones, .bowTie: 2
             case .backwardsCap, .flameHeadband, .goldenLaurel, .teamMedal, .angelWings, .kingsCape, .halo,
-                 .cherryPetals: 3
+                 .cherryPetals, .sparkleTrail: 3
             }
         }
     }

@@ -283,4 +283,9 @@ extension CostumeArt {
     /// Pink cherry blossom petals that drift down and sway on both sides of
     /// the pet, and over its back when seen from the side.
     static let cherryPetals = PetArt.costume.auraItem("cherryPetals")
+    /// Gold sparkles that each glint for four ticks (a dot, a star with a
+    /// white heart, then a white dot), two at a time. From the front they
+    /// twinkle in place beside and above the pet; walking they are born at
+    /// its back and drift away behind it, a trail.
+    static let sparkleTrail = PetArt.costume.auraItem("sparkleTrail")
 }

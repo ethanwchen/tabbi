@@ -474,6 +474,7 @@ public enum PetComposer {
         case .kingsCape: .back(CostumeArt.kingsCape)
         case .halo: .head(CostumeArt.halo)
         case .cherryPetals: .aura(CostumeArt.cherryPetals)
+        case .sparkleTrail: .aura(CostumeArt.sparkleTrail)
         }
     }
 

@@ -96,6 +96,7 @@ public enum PetItem: Hashable, Codable, Sendable, CustomStringConvertible {
         case .accessory(.graduationCap): 2100
         // Animated showpieces sit at the top of the tier.
         case .accessory(.cherryPetals): 1700
+        case .accessory(.sparkleTrail): 1750
         case .accessory(.halo): 1900
         case .accessory(.angelWings): 2000
         case .accessory(.kingsCape): 2050
