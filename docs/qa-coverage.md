@@ -126,7 +126,10 @@ It covers the first fetch at start (counts shared as Today's goal, answered card
 The store's own `Task.isCancelled` check after a refresh is backed up by the client, which already throws for a cancelled request, so removing only that check changes nothing visible.
 `ConnectionsStoreTests` covers `ConnectionsStore` where it never probes the Mac: demo mode (sample rows, no checks, no actions, a pretend Do Not Disturb test), the Party row fed by the Party tab (each state shown, repeats ignored, the setup sheet starting and retrying through the tab, a second tab replacing the first), counting the views that watch a row (returning to Tabbi checks only rows still shown), and the Do Not Disturb switch, which probes nothing while its row is hidden.
 The probed rows (Spotify, Music, Anki, Calendar, Claude, notifications, Focus shortcuts) need real apps and permissions and are still checked by hand.
-`FocusController`, `StudyReminderScheduler`, `ScheduleStore`, `SpotifyController`, `PetCoachController` and `SystemMonitor` are still below 40%.
+`ScheduleStorePlanTests` drives `ScheduleStore` (which now takes an optional `clock`) at a fixed 9:00 with a mocked Ollama as the picked AI.
+It covers Plan filling the rest of the day, Skip clearing the offer and a skipped block's selection, Refine replacing the blocks with the AI's validated plan, an unusable answer keeping the local plan, Select and Skip waiting while the AI refines, a refine cancelled by Discard or by planning again (its late answer neither lands nor shows as a failure), week plans never refined, and Add in demo mode (one block, then the rest, and Add waiting while the demo refines).
+The live store in these tests is never shown and never adds, so it neither reads nor writes the real calendar on a test host with calendar access; reading EventKit and writing planned blocks are still checked by hand.
+`FocusController`, `StudyReminderScheduler`, `SpotifyController`, `PetCoachController` and `SystemMonitor` are still below 40%.
 
 ### 9. Backend
 

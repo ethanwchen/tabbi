@@ -51,16 +51,20 @@ final class StudySessionRecoveryTests: XCTestCase {
 
     func testRelaunchingAfterACrashCreditsTheBlockUpToTheLastHeartbeatOnce() throws {
         try saveSession(minutesAgo: 20)
-        defaults.set(Date().addingTimeInterval(-6 * 60), forKey: StudyStore.lastAliveKey)
+        let heartbeat = Date().addingTimeInterval(-6 * 60)
+        defaults.set(heartbeat, forKey: StudyStore.lastAliveKey)
+        // Just after midnight the block belongs to yesterday, so look
+        // from the day it started through today.
+        let started = PlannerDayKey(date: heartbeat.addingTimeInterval(-14 * 60))
         let (store, log, closet) = launch()
         let balance = closet.closet.balance
         drainMainQueue()
 
         XCTAssertEqual(store.session.runState, .idle, "the crashed block is not resumed")
-        let logged = log.records(on: today)
+        let logged = log.records(from: started, through: today)
         XCTAssertEqual(logged.map(\.kind), [.focusCompleted])
         XCTAssertEqual(try XCTUnwrap(logged.first?.quantity), 14, accuracy: 0.1, "credited up to the heartbeat")
-        XCTAssertEqual(store.today.minutes, 14, "and counted as study time today")
+        XCTAssertEqual(store.log.summary(on: heartbeat).minutes, 14, "and counted as study time on that day")
         let paid = closet.closet.balance
         XCTAssertEqual(paid, balance + 14)
 
@@ -68,7 +72,7 @@ final class StudySessionRecoveryTests: XCTestCase {
         let (relaunched, relaunchedLog, relaunchedCloset) = launch()
         drainMainQueue()
         XCTAssertEqual(relaunched.session.runState, .idle)
-        XCTAssertTrue(relaunchedLog.records(on: today).isEmpty)
+        XCTAssertTrue(relaunchedLog.records(from: started, through: today).isEmpty)
         XCTAssertEqual(relaunchedCloset.closet.balance, paid)
     }
 
