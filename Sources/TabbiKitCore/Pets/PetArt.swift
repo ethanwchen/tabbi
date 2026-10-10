@@ -83,6 +83,7 @@ struct PetArtFile: Sendable {
     private(set) var faceItems: [String: CostumeArt.FaceItem] = [:]
     private(set) var headItems: [String: CostumeArt.HeadItem] = [:]
     private(set) var backItems: [String: CostumeArt.BackItem] = [:]
+    private(set) var auraItems: [String: CostumeArt.AuraItem] = [:]
     private(set) var basePalette: [PetPaletteRole: PetColor] = [:]
     private(set) var bodyShapes: [PetBodyShape: PetSpecies] = [:]
     /// Breeds in file order, which is the order pickers list them in.
@@ -99,6 +100,7 @@ struct PetArtFile: Sendable {
     func faceItem(_ name: String) -> CostumeArt.FaceItem { lookUp(faceItems, name, "face item") }
     func headItem(_ name: String) -> CostumeArt.HeadItem { lookUp(headItems, name, "head item") }
     func backItem(_ name: String) -> CostumeArt.BackItem { lookUp(backItems, name, "back item") }
+    func auraItem(_ name: String) -> CostumeArt.AuraItem { lookUp(auraItems, name, "aura item") }
     func species(of shape: PetBodyShape) -> PetSpecies { lookUp(bodyShapes, shape, "body shape") }
     func breed(_ breed: PetBreed) -> BreedDefinition { lookUp(breeds, breed, "breed") }
     func timeline(_ animation: PetAnimation) -> PetTimeline { lookUp(animations, animation, "animation") }
@@ -167,20 +169,19 @@ struct PetArtFile: Sendable {
             }
             file.headItems[name] = CostumeArt.HeadItem(grid: grid, sitRow: item.sitRow, moreFrames: frames)
         }
-        for (name, item) in raw.backItems ?? [:] {
-            func placement(_ raw: Raw.BackPlacement, _ family: String) throws -> CostumeArt.BackItem.Placement {
-                let path = "\(name).\(family)"
-                guard !raw.frames.isEmpty else { throw LoadError.invalidGrid(name: path, reason: "no frames") }
-                let frames = try raw.frames.enumerated().map { try parse($1, "\(path).frames[\($0)]") }
-                for (index, frame) in frames.enumerated().dropFirst() {
-                    try sameSize(frame, as: frames[0], "\(path).frames[\(index)]")
-                }
-                return CostumeArt.BackItem.Placement(x: raw.x, y: raw.y, frames: frames)
+        func placement(_ raw: Raw.BackPlacement, _ path: String) throws -> CostumeArt.BackItem.Placement {
+            guard !raw.frames.isEmpty else { throw LoadError.invalidGrid(name: path, reason: "no frames") }
+            let frames = try raw.frames.enumerated().map { try parse($1, "\(path).frames[\($0)]") }
+            for (index, frame) in frames.enumerated().dropFirst() {
+                try sameSize(frame, as: frames[0], "\(path).frames[\(index)]")
             }
+            return CostumeArt.BackItem.Placement(x: raw.x, y: raw.y, frames: frames)
+        }
+        for (name, item) in raw.backItems ?? [:] {
             let back = try CostumeArt.BackItem(
-                cat: placement(item.cat, "cat"), dog: placement(item.dog, "dog"),
-                longDog: placement(item.longDog, "longDog"), walk: placement(item.walk, "walk"),
-                walkLong: placement(item.walkLong, "walkLong")
+                cat: placement(item.cat, "\(name).cat"), dog: placement(item.dog, "\(name).dog"),
+                longDog: placement(item.longDog, "\(name).longDog"), walk: placement(item.walk, "\(name).walk"),
+                walkLong: placement(item.walkLong, "\(name).walkLong")
             )
             // Every family plays the loop in step on the one item clock.
             for (family, placement) in [("dog", back.dog), ("longDog", back.longDog), ("walk", back.walk),
@@ -189,6 +190,15 @@ struct PetArtFile: Sendable {
                     + "differ from the cat's \(back.frameCount)")
             }
             file.backItems[name] = back
+        }
+        for (name, item) in raw.auraItems ?? [:] {
+            let aura = try CostumeArt.AuraItem(front: placement(item.front, "\(name).front"),
+                                               side: placement(item.side, "\(name).side"))
+            guard aura.side.frames.count == aura.frameCount else {
+                throw LoadError.invalidGrid(name: "\(name).side", reason: "\(aura.side.frames.count) frames "
+                    + "differ from the front's \(aura.frameCount)")
+            }
+            file.auraItems[name] = aura
         }
         if let duration = raw.itemFrameDuration {
             guard duration > 0 else { throw LoadError.invalidValue(path: "itemFrameDuration", value: "\(duration)") }
@@ -296,6 +306,12 @@ struct PetArtFile: Sendable {
             let cat, dog, longDog, walk, walkLong: BackPlacement
         }
 
+        /// An aura item's loop around a pet facing the viewer and seen
+        /// from the side, offset from the frame's top-left corner.
+        struct AuraItem: Decodable {
+            let front, side: BackPlacement
+        }
+
         let schema: String
         let grids: [String: [String]]?
         let sequences: [String: [[String]]]?
@@ -303,6 +319,7 @@ struct PetArtFile: Sendable {
         let faceItems: [String: FaceItem]?
         let headItems: [String: HeadItem]?
         let backItems: [String: BackItem]?
+        let auraItems: [String: AuraItem]?
         let basePalette: [String: String]?
         let bodyShapes: [String: BodyShape]?
         let breeds: [Breed]?

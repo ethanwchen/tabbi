@@ -31,13 +31,20 @@ public enum PetComposer {
         /// The outlined layer of back items (wings), or nil when none is
         /// worn. Kept apart so effects can float in front of it.
         var back: PetCanvas?
+        /// The particles of aura items (petals) in the air, not outlined
+        /// and not moved by a hop, or nil when none is worn or the pet is
+        /// out of view. Added in front of the pet after its effects.
+        var aura: PetCanvas?
         /// Top-right corner of the head's skull, in frame pixels.
         var headTopRight: PetPoint
         /// Top-left corner of a held mug, where its steam rises from.
         var mugTop: PetPoint?
 
-        /// The pet over its back layer.
-        var picture: PetCanvas { back.map { canvas.over($0) } ?? canvas }
+        /// The pet with its aura, over its back layer.
+        var picture: PetCanvas {
+            let pet = aura.map { canvas.scattering($0) } ?? canvas
+            return back.map { pet.over($0) } ?? pet
+        }
     }
 
     /// How the body under the head is drawn.
@@ -216,7 +223,7 @@ public enum PetComposer {
             case .mask(let head, let face):
                 stampFace(face)
                 stampHead(head)
-            case .back:
+            case .back, .aura:
                 continue
             }
         }
@@ -228,12 +235,24 @@ public enum PetComposer {
         if stance == .sitting, let gesture = pose.gesture {
             stampGesture(gesture, on: &canvas, layout: layout, headX: headX, headY: headY, pattern: pattern)
         }
+        // Aura items float in the air, so they are placed in the frame and
+        // follow the view (front or side), not the body.
+        var aura: PetCanvas?
+        let floating = auraItems(accessories)
+        if !floating.isEmpty, stance != .hanging {
+            var layer = PetCanvas(width: frameSize, height: frameSize)
+            for item in floating {
+                let placement = stance == .sitting ? item.front : item.side
+                layer.stamp(placement.frames[phase % item.frameCount], x: placement.x, y: placement.y)
+            }
+            aura = layer
+        }
         let anchor = PetPoint(x: headX + layout.head.width - 1, y: headY + layout.skullTop - pose.lift)
         // The back layer is outlined on its own and goes under the outlined
         // pet, whose outline keeps wings apart from fur of any color.
         return Composed(canvas: canvas.outlined().shifted(x: 0, y: -pose.lift),
                         back: behind.isEmpty ? nil : back.outlined().shifted(x: 0, y: -pose.lift),
-                        headTopRight: anchor, mugTop: mugTop)
+                        aura: aura, headTopRight: anchor, mugTop: mugTop)
     }
 
     /// Draws a held prop in front of the sitting pet, centered under the
@@ -360,6 +379,13 @@ public enum PetComposer {
         }
     }
 
+    /// The aura items worn (petals), in drawing order.
+    private static func auraItems(_ accessories: [PetAccessory]) -> [CostumeArt.AuraItem] {
+        PetAccessory.wearable(accessories).compactMap { accessory in
+            if case .aura(let item) = accessoryArt(accessory) { item } else { nil }
+        }
+    }
+
     /// The outfit and neck items worn, in drawing order.
     private static func bodyItems(outfit: PetOutfit, accessories: [PetAccessory]) -> [CostumeArt.BodyItem] {
         let neck = PetAccessory.wearable(accessories).compactMap { accessory -> CostumeArt.BodyItem? in
@@ -377,6 +403,7 @@ public enum PetComposer {
             case .body(let item): counts.append(item.frameCount)
             case .head(let item), .mask(let item, _): counts.append(item.frameCount)
             case .back(let item): counts.append(item.frameCount)
+            case .aura(let item): counts.append(item.frameCount)
             case .face: break
             }
         }
@@ -410,6 +437,8 @@ public enum PetComposer {
         case mask(CostumeArt.HeadItem, CostumeArt.FaceItem)
         /// Drawn on the layer behind the pet.
         case back(CostumeArt.BackItem)
+        /// In the air around the pet.
+        case aura(CostumeArt.AuraItem)
     }
 
     private static func accessoryArt(_ accessory: PetAccessory) -> AccessoryArt {
@@ -444,6 +473,7 @@ public enum PetComposer {
         case .angelWings: .back(CostumeArt.angelWings)
         case .kingsCape: .back(CostumeArt.kingsCape)
         case .halo: .head(CostumeArt.halo)
+        case .cherryPetals: .aura(CostumeArt.cherryPetals)
         }
     }
 
@@ -608,6 +638,37 @@ extension PetCanvas {
         var copy = self
         for y in 0..<height {
             for x in 0..<width where copy[x, y] == nil { copy[x, y] = layer[x, y] }
+        }
+        return copy
+    }
+
+    /// A copy with the particles of `layer` (each group of pixels touching
+    /// side by side or corner to corner) in the free air: a particle that
+    /// would cover or touch an opaque pixel is left out whole, so petals
+    /// float in front of the pet without ever hiding or brushing it.
+    func scattering(_ layer: PetCanvas) -> PetCanvas {
+        var copy = self
+        var seen = Set<Int>()
+        for start in layer.pixels.indices where layer.pixels[start] != nil && !seen.contains(start) {
+            var particle: [Int] = []
+            var queue = [start]
+            seen.insert(start)
+            while let index = queue.popLast() {
+                particle.append(index)
+                let (x, y) = (index % width, index / width)
+                for dy in -1...1 {
+                    for dx in -1...1 where layer[x + dx, y + dy] != nil {
+                        let neighbor = (y + dy) * width + x + dx
+                        if seen.insert(neighbor).inserted { queue.append(neighbor) }
+                    }
+                }
+            }
+            let clear = particle.allSatisfy { index in
+                let (x, y) = (index % width, index / width)
+                return [(0, 0), (-1, 0), (1, 0), (0, -1), (0, 1)].allSatisfy { self[x + $0.0, y + $0.1] == nil }
+            }
+            guard clear else { continue }
+            for index in particle { copy[index % width, index / width] = layer.pixels[index] }
         }
         return copy
     }

@@ -139,7 +139,7 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 
 ### Animated items
 
-Some items move: the Flame Headband's flame flickers, a glint crosses the Golden Laurel, the Team Medal sparkles now and then, the Halo bobs over the head, the Angel Wings flap, and a glint runs down the King's Cape's gold trim.
+Some items move: the Flame Headband's flame flickers, a glint crosses the Golden Laurel, the Team Medal sparkles now and then, the Halo bobs over the head, the Angel Wings flap, a glint runs down the King's Cape's gold trim, and Cherry Petals drift down around the pet.
 An animated item lists the rest of its loop in `frames`, after its still grids: a head item gives grids the size of `grid`, a body item gives a grid per body family for each frame.
 The still is the loop's first frame and the picture Reduce Motion shows.
 Every frame lasts one tick of the item clock, `itemFrameDuration` in `costume.json` (150 ms, a walking step), so a slower move repeats a frame.
@@ -161,6 +161,17 @@ From the front both wings show beside the head and body; walking and on the dach
 The cape falls to the floor beside the body from the front, its ermine collar on the shoulders; seen from the side it streams back over the shoulders and ripples.
 `PetItemLoopTests` checks on every body shape and in every animation that each back item never covers a pixel of the pet, shows, and moves.
 `swift run PetGallery <dir>` writes `loop-<item>.png` (every body shape through each tick, sitting and walking, at 6x) and `loop-<item>-2x.png` at notch size.
+
+### Aura items
+
+Cherry Petals are worn in the `aura` slot and float in the air around the pet.
+An aura item lists two loops of `frames` with an `x` and `y` offset from the frame's top-left corner (`auraItems` in `costume.json`): `front` around a pet facing the viewer (sitting), and `side` around a pet seen from the side (walking, stretching, curled up).
+The frames are not tied to a body: each group of touching pixels is one particle, and a particle that would cover or touch the pet or one of its effects is left out of that frame whole.
+So petals pass in front of the pet and its wings without an outline, never hide part of it, and seem to drift behind it where they cross it.
+They are added after the effects and stay put when the pet hops; while the pet hangs from the notch none are drawn.
+The petals loop over 24 ticks: each falls about a row and a third per tick, so it wraps from the bottom edge back to the top without a jump, sways a pixel and turns a quarter every three ticks.
+From the front they fall in the free columns on both sides of the pet; from the side they also fall above the head and over the back.
+`PetItemLoopTests` checks on every body shape and in every animation that the petals never cover or touch the pet or its effects, that a petal shows on every tick, and that they drift.
 
 ### Adding a costume item
 

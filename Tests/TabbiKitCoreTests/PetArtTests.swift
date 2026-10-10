@@ -97,6 +97,27 @@ final class PetArtTests: XCTestCase {
         }
     }
 
+    func testReadsAuraItemsAndRejectsUnevenLoops() throws {
+        let json = #"{"schema": "pets.v1", "auraItems": {"petals": {"#
+            + #""front": {"x": 0, "y": 1, "frames": [["H."], [".H"]]}, "side": {"x": 2, "y": 0, "frames": [["Z."], [".Z"]]}}}}"#
+        let item = try PetArtFile.decode(Data(json.utf8)).auraItem("petals")
+        XCTAssertEqual(item.frameCount, 2)
+        XCTAssertEqual(item.front.y, 1)
+        XCTAssertEqual(item.side.x, 2)
+        XCTAssertEqual(item.side.frames, try [SpriteGrid("Z."), SpriteGrid(".Z")])
+
+        let uneven = json.replacingOccurrences(of: #"[["Z."], [".Z"]]"#, with: #"[["Z."]]"#)
+        XCTAssertThrowsError(try PetArtFile.decode(Data(uneven.utf8))) {
+            XCTAssertEqual($0 as? PetArtFile.LoadError,
+                           .invalidGrid(name: "petals.side", reason: "1 frames differ from the front's 2"))
+        }
+        let resized = json.replacingOccurrences(of: #"[".H"]"#, with: #"["H"]"#)
+        XCTAssertThrowsError(try PetArtFile.decode(Data(resized.utf8))) {
+            XCTAssertEqual($0 as? PetArtFile.LoadError,
+                           .invalidGrid(name: "petals.front.frames[1]", reason: "1x1 differs from the item's 2x1 still grid"))
+        }
+    }
+
     func testRejectsALoopFrameOfAnotherSize() {
         let json = #"{"schema": "pets.v1", "headItems": {"glint": {"grid": ["YY"], "sitRow": 0, "frames": [["Y"]]}}}"#
         XCTAssertThrowsError(try PetArtFile.decode(Data(json.utf8))) { error in

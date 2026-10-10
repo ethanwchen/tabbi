@@ -19,7 +19,7 @@ final class PetItemLoopTests: XCTestCase {
     /// shop, the animated showpieces.
     func testItemsWithAnEffectAndAnimatedShowpiecesAreTheOnesThatAnimate() {
         let animatedShopItems: Set<PetItem> = [
-            .accessory(.angelWings), .accessory(.kingsCape), .accessory(.halo),
+            .accessory(.angelWings), .accessory(.kingsCape), .accessory(.halo), .accessory(.cherryPetals),
         ]
         for item in PetItem.allCases {
             XCTAssertEqual(item.loopFrameCount > 1, item.effect != nil || animatedShopItems.contains(item), "\(item)")
@@ -27,6 +27,7 @@ final class PetItemLoopTests: XCTestCase {
         XCTAssertEqual(PetItem.accessory(.angelWings).loopFrameCount, 4)
         XCTAssertEqual(PetItem.accessory(.kingsCape).loopFrameCount, 8)
         XCTAssertEqual(PetItem.accessory(.halo).loopFrameCount, 8)
+        XCTAssertEqual(PetItem.accessory(.cherryPetals).loopFrameCount, 24)
         XCTAssertEqual(PetItem.accessory(.flameHeadband).loopFrameCount, 4)
         XCTAssertEqual(PetItem.accessory(.goldenLaurel).loopFrameCount, 12)
         XCTAssertEqual(PetItem.accessory(.teamMedal).loopFrameCount, 8)
@@ -80,6 +81,44 @@ final class PetItemLoopTests: XCTestCase {
                         XCTAssertEqual(ticks.count, loop, "loops: \(label)")
                         XCTAssertGreaterThan(Set(ticks).count, 1, "moves: \(label)")
                     }
+                }
+            }
+        }
+    }
+
+    /// Aura items (petals) float in the free air in front of the pet: in
+    /// every animation and every tick of the loop, no pixel of the bare pet
+    /// or its effects changes, nothing the item adds touches them, a petal
+    /// shows on every tick and the petals drift whenever the pet is in
+    /// view, and a pet hanging from the notch shows none.
+    func testAuraItemsFloatAroundThePetOnEveryBodyShape() {
+        XCTAssertEqual(PetAccessory.allCases.filter { $0.slot == .aura }, [.cherryPetals])
+        for breed in PetGallery.bodyShapeBreeds {
+            for animation in PetAnimation.allCases {
+                let bare = PetComposer.clip(animation, for: breed)
+                let worn = PetComposer.clip(animation, for: breed, accessories: [.cherryPetals])
+                for (index, (plain, frame)) in zip(bare.frames, worn.frames).enumerated() {
+                    let label = "\(breed) \(animation) frame \(index)"
+                    if animation == .peekIn || animation == .peekOut {
+                        XCTAssertEqual(frame.canvas, plain.canvas, "no petals while hanging: \(label)")
+                        continue
+                    }
+                    XCTAssertEqual(frame.itemFrames.count, 24, label)
+                    for (tick, canvas) in frame.itemFrames.enumerated() {
+                        var petals = 0
+                        for y in 0..<canvas.height {
+                            for x in 0..<canvas.width where canvas[x, y] != plain.canvas[x, y] {
+                                XCTAssertNil(plain.canvas[x, y], "covers the pet at (\(x), \(y)) tick \(tick): \(label)")
+                                let around = [plain.canvas[x - 1, y], plain.canvas[x + 1, y],
+                                              plain.canvas[x, y - 1], plain.canvas[x, y + 1]]
+                                XCTAssertTrue(around.allSatisfy { $0 == nil },
+                                              "touches the pet at (\(x), \(y)) tick \(tick): \(label)")
+                                if canvas[x, y] == .heart { petals += 1 }
+                            }
+                        }
+                        XCTAssertGreaterThan(petals, 0, "a petal shows on tick \(tick): \(label)")
+                    }
+                    XCTAssertEqual(Set(frame.itemFrames).count, 24, "drifts every tick: \(label)")
                 }
             }
         }

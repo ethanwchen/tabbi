@@ -69,6 +69,8 @@ final class PetCostumeFitTests: XCTestCase {
                             XCTAssertFalse(pixels.isEmpty, "not visible: \(label)")
                         }
                         // A one-pixel margin leaves room for the costume's outline.
+                        // Aura particles have none and drift in and out past the edges.
+                        guard !look.accessories.contains(where: { $0.slot == .aura }) else { continue }
                         let floor = liesOnTheFloor(animation, look.outfit, look.accessories) ? edge + 1 : edge
                         XCTAssertFalse(pixels.contains { $0.x == 0 || $0.y == 0 || $0.x == edge || $0.y == floor },
                                        "clipped at the frame edge: \(label)")

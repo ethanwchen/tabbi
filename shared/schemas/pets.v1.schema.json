@@ -108,6 +108,19 @@
         }
       }
     },
+    "auraItems": {
+      "description": "Items that float in the air around the pet, such as falling petals: a loop of grids around a pet facing the viewer (front, used while sitting) and one seen from the side (side, used walking, stretching and curled up), offset from the frame's top-left corner. Each group of touching pixels is a particle, drawn in front of the pet without an outline; a particle that would cover or touch the pet or an effect is left out of that frame. Not drawn while the pet hangs from the notch.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["front", "side"],
+        "additionalProperties": false,
+        "properties": {
+          "front": { "$ref": "#/$defs/backPlacement" },
+          "side": { "$ref": "#/$defs/backPlacement" }
+        }
+      }
+    },
     "basePalette": {
       "description": "The color of every palette role before a breed or the user changes it: eyes, effects, the default costume.",
       "allOf": [{ "$ref": "#/$defs/palette" }],
@@ -169,7 +182,7 @@
       "items": { "type": "string", "minLength": 1, "pattern": "^[ .xOBSAKWEiLNRPCDTUVGJQYMZHFIXmcptefsab]+$" }
     },
     "backPlacement": {
-      "description": "A back item for one body family: x and y offset the grids' top-left corner from the family's body origin, and frames is the item's loop, one tick of itemFrameDuration each, all the size of the first. The first frame is the still that Reduce Motion shows. Every family has the same number of frames.",
+      "description": "A back item for one body family (or an aura item for one view): x and y offset the grids' top-left corner from the family's body origin (the frame's corner for an aura item), and frames is the item's loop, one tick of itemFrameDuration each, all the size of the first. The first frame is the still that Reduce Motion shows. Every family has the same number of frames.",
       "type": "object",
       "required": ["x", "y", "frames"],
       "additionalProperties": false,

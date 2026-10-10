@@ -83,6 +83,20 @@ enum CostumeArt {
         var frameCount: Int { cat.frames.count }
     }
 
+    /// An item that floats in the air around the pet, such as falling
+    /// petals: loose particles drawn in front of the pet without an
+    /// outline. A particle that would touch the pet or an effect is left
+    /// out of that frame, so nothing ever covers the pet or looks cut.
+    struct AuraItem {
+        /// Around a pet facing the viewer, offset from the frame's corner.
+        let front: BackItem.Placement
+        /// Around a pet seen from the side (walking, stretching, curled up).
+        let side: BackItem.Placement
+
+        /// Frames in the item's loop, the same for both views.
+        var frameCount: Int { front.frames.count }
+    }
+
     // MARK: Outfits
 
     static let scrubs = PetArt.costume.bodyItem("scrubs")
@@ -261,4 +275,12 @@ extension CostumeArt {
     /// and on the side-on dachshund it streams back over the shoulders and
     /// ripples.
     static let kingsCape = PetArt.costume.backItem("kingsCape")
+}
+
+// MARK: - Aura items
+
+extension CostumeArt {
+    /// Pink cherry blossom petals that drift down and sway on both sides of
+    /// the pet, and over its back when seen from the side.
+    static let cherryPetals = PetArt.costume.auraItem("cherryPetals")
 }

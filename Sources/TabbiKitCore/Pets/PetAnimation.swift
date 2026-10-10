@@ -333,6 +333,11 @@ extension PetComposer {
                         .adding(EffectArt.dustRight, at: PetPoint(x: right + 1, y: y))
                 }
             }
+            // Petals float in the free air in front of the pet and its
+            // effects, and in front of wings.
+            if let aura = composed.aura {
+                canvas = canvas.scattering(aura)
+            }
             // Wings go behind the pet and its effects: a "z" or a heart
             // floats in front of them.
             if let back = composed.back {
