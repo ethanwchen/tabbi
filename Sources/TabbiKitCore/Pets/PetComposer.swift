@@ -199,7 +199,8 @@ public enum PetComposer {
         }
 
         func stampFace(_ item: CostumeArt.FaceItem) {
-            canvas.stamp(layout.family == .cat ? item.cat : item.dog, x: headX, y: headY + layout.eyeRow - item.eyeRow)
+            let face = item.frame(phase)
+            canvas.stamp(layout.family == .cat ? face.cat : face.dog, x: headX, y: headY + layout.eyeRow - item.eyeRow)
         }
         func stampHead(_ item: CostumeArt.HeadItem) {
             canvas.stamp(item.grid(phase), x: headX, y: headY + layout.skullTop - item.sitRow)
@@ -401,10 +402,11 @@ public enum PetComposer {
         for accessory in PetAccessory.wearable(accessories) {
             switch accessoryArt(accessory) {
             case .body(let item): counts.append(item.frameCount)
-            case .head(let item), .mask(let item, _): counts.append(item.frameCount)
+            case .head(let item): counts.append(item.frameCount)
+            case .mask(let head, let face): counts += [head.frameCount, face.frameCount]
             case .back(let item): counts.append(item.frameCount)
             case .aura(let item): counts.append(item.frameCount)
-            case .face: break
+            case .face(let item): counts.append(item.frameCount)
             }
         }
         return counts.compactMap { $0 }.reduce(1) { length, count in length / gcd(length, count) * count }
@@ -449,6 +451,7 @@ public enum PetComposer {
         case .teamMedal: .body(CostumeArt.teamMedal)
         case .roundGlasses: .face(CostumeArt.roundGlasses)
         case .coolSunglasses: .face(CostumeArt.coolSunglasses)
+        case .heartGlasses: .face(CostumeArt.heartGlasses)
         case .surgicalCap: .head(CostumeArt.surgicalCap)
         case .headMirror: .head(CostumeArt.headMirror)
         case .graduationCap: .head(CostumeArt.graduationCap)

@@ -1203,6 +1203,153 @@
         "..QQQQQQ....QQQQQQ.."
       ],
       "eyeRow": 0
+    },
+    "heartGlasses": {
+      "cat": [
+        "..XX.XX......XX.XX..",
+        ".XHHXHHXXXXXXHHXHHX.",
+        ".XHHHHHX....XHHHHHX.",
+        "..XHHHX......XHHHX..",
+        "...XHX........XHX...",
+        "....X..........X...."
+      ],
+      "dog": [
+        "....................",
+        ".....X.X....X.X.....",
+        "....XHXHXXXXHXHX....",
+        "....XHHHX..XHHHX....",
+        ".....XHX....XHX.....",
+        "......X......X......"
+      ],
+      "eyeRow": 2,
+      "frames": [
+        {
+          "cat": [
+            "..XX.XX......XX.XX..",
+            ".XHHXHHXXXXXXHHXHHX.",
+            ".XHHHHHX....XHHHHHX.",
+            "..XHHHX......XHHHX..",
+            "...XHX........XHX...",
+            "....X..........X...."
+          ],
+          "dog": [
+            "....................",
+            ".....X.X....X.X.....",
+            "....XHXHXXXXHXHX....",
+            "....XHHHX..XHHHX....",
+            ".....XHX....XHX.....",
+            "......X......X......"
+          ]
+        },
+        {
+          "cat": [
+            "..XX.XX......XX.XX..",
+            ".XZHXHHXXXXXXHHXHHX.",
+            ".XHHHHHX....XHHHHHX.",
+            "..XHHHX......XHHHX..",
+            "...XHX........XHX...",
+            "....X..........X...."
+          ],
+          "dog": [
+            "....................",
+            ".....X.X....X.X.....",
+            "....XZXHXXXXHXHX....",
+            "....XHHHX..XHHHX....",
+            ".....XHX....XHX.....",
+            "......X......X......"
+          ]
+        },
+        {
+          "cat": [
+            "..XX.XX......XX.XX..",
+            ".XHHXHHXXXXXXHHXHHX.",
+            ".XHZHHHX....XHHHHHX.",
+            "..XHHHX......XHHHX..",
+            "...XHX........XHX...",
+            "....X..........X...."
+          ],
+          "dog": [
+            "....................",
+            ".....X.X....X.X.....",
+            "....XZXHXXXXHXHX....",
+            "....XHHHX..XHHHX....",
+            ".....XHX....XHX.....",
+            "......X......X......"
+          ]
+        },
+        {
+          "cat": [
+            "..XX.XX......XX.XX..",
+            ".XHHXHHXXXXXXHHXHHX.",
+            ".XHHHHHX....XHHHHHX.",
+            "..XHHHX......XHHHX..",
+            "...XHX........XHX...",
+            "....X..........X...."
+          ],
+          "dog": [
+            "....................",
+            ".....X.X....X.X.....",
+            "....XHXHXXXXHXHX....",
+            "....XHHHX..XHHHX....",
+            ".....XHX....XHX.....",
+            "......X......X......"
+          ]
+        },
+        {
+          "cat": [
+            "..XX.XX......XX.XX..",
+            ".XHHXHHXXXXXXZHXHHX.",
+            ".XHHHHHX....XHHHHHX.",
+            "..XHHHX......XHHHX..",
+            "...XHX........XHX...",
+            "....X..........X...."
+          ],
+          "dog": [
+            "....................",
+            ".....X.X....X.X.....",
+            "....XHXHXXXXZXHX....",
+            "....XHHHX..XHHHX....",
+            ".....XHX....XHX.....",
+            "......X......X......"
+          ]
+        },
+        {
+          "cat": [
+            "..XX.XX......XX.XX..",
+            ".XHHXHHXXXXXXHHXHHX.",
+            ".XHHHHHX....XHZHHHX.",
+            "..XHHHX......XHHHX..",
+            "...XHX........XHX...",
+            "....X..........X...."
+          ],
+          "dog": [
+            "....................",
+            ".....X.X....X.X.....",
+            "....XHXHXXXXZXHX....",
+            "....XHHHX..XHHHX....",
+            ".....XHX....XHX.....",
+            "......X......X......"
+          ]
+        },
+        {
+          "cat": [
+            "..XX.XX......XX.XX..",
+            ".XHHXHHXXXXXXHHXHHX.",
+            ".XHHHHHX....XHHHHHX.",
+            "..XHHHX......XHHHX..",
+            "...XHX........XHX...",
+            "....X..........X...."
+          ],
+          "dog": [
+            "....................",
+            ".....X.X....X.X.....",
+            "....XHXHXXXXHXHX....",
+            "....XHHHX..XHHHX....",
+            ".....XHX....XHX.....",
+            "......X......X......"
+          ]
+        }
+      ]
     }
   },
   "headItems": {
@@ -1663,12 +1810,11 @@
         ".....ooooooooooo....",
         ".QQQQQQQQQQQQQQQQQQ."
       ],
-      "sitRow": 6
+      "sitRow": 5
     },
     "pumpkinHat": {
       "grid": [
         ".........IIFF.......",
-        ".....oooooooooo.....",
         "...ooIooooooooIoo...",
         "..oooIoOOooOOoIooo..",
         "..oooIooOooOooIooo..",
@@ -1676,11 +1822,10 @@
         "...ooIooOOOOooIoo...",
         "....IIIIIIIIIIII...."
       ],
-      "sitRow": 7,
+      "sitRow": 5,
       "frames": [
         [
           ".........IIFF.......",
-          ".....oooooooooo.....",
           "...ooIooooooooIoo...",
           "..oooIoYYooYYoIooo..",
           "..oooIooYooYooIooo..",
@@ -1690,7 +1835,6 @@
         ],
         [
           ".........IIFF.......",
-          ".....oooooooooo.....",
           "...ooIooooooooIoo...",
           "..oooIoOOooOOoIooo..",
           "..oooIooOooOooIooo..",
@@ -1700,7 +1844,6 @@
         ],
         [
           ".........IIFF.......",
-          ".....oooooooooo.....",
           "...ooIooooooooIoo...",
           "..oooIoOOooOOoIooo..",
           "..oooIooOooOooIooo..",
@@ -1710,7 +1853,6 @@
         ],
         [
           ".........IIFF.......",
-          ".....oooooooooo.....",
           "...ooIooooooooIoo...",
           "..oooIoOOooOOoIooo..",
           "..oooIooOooOooIooo..",
@@ -1720,7 +1862,6 @@
         ],
         [
           ".........IIFF.......",
-          ".....oooooooooo.....",
           "...ooIooooooooIoo...",
           "..oooIoOOooOOoIooo..",
           "..oooIooOooOooIooo..",
@@ -1730,7 +1871,6 @@
         ],
         [
           ".........IIFF.......",
-          ".....oooooooooo.....",
           "...ooIooooooooIoo...",
           "..oooIoYYooYYoIooo..",
           "..oooIooYooYooIooo..",
@@ -1740,7 +1880,6 @@
         ],
         [
           ".........IIFF.......",
-          ".....oooooooooo.....",
           "...ooIooooooooIoo...",
           "..oooIoOOooOOoIooo..",
           "..oooIooOooOooIooo..",

@@ -93,6 +93,9 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
     /// A crimson scarf with a white trim and fringe that snow sparkles on,
     /// the winter holidays headline item. The shop's scarf is pink knit.
     case snowScarf
+    /// Pink heart-shaped glasses on a crimson frame, a light glinting on
+    /// a lens now and then: the Valentine's headline item.
+    case heartGlasses
     // Animated shop items, each looping a few frames on the item clock.
     /// White feathered wings that flap behind the pet.
     case angelWings
@@ -110,7 +113,7 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
     public var slot: PetAccessorySlot {
         switch self {
         case .stethoscope, .scarf, .bowTie, .teamMedal, .snowScarf: .neck
-        case .roundGlasses, .coolSunglasses: .face
+        case .roundGlasses, .coolSunglasses, .heartGlasses: .face
         case .surgicalCap, .headMirror, .graduationCap, .beanie, .tinyCrown, .partyHat, .chefHat, .wizardHat,
              .bunnyEars, .witchHat, .cowboyHat, .flowerCrown, .frogHat, .ninjaHeadband, .pirateHat,
              .blindfoldedSorcerer, .astronautHelmet, .chunkyHeadphones, .backwardsCap, .flameHeadband,
@@ -159,6 +162,7 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
         case .pumpkinHat: "Pumpkin Hat"
         case .reindeerAntlers: "Reindeer Antlers"
         case .snowScarf: "Snowy Scarf"
+        case .heartGlasses: "Heart Glasses"
         case .angelWings: "Angel Wings"
         case .kingsCape: "King's Cape"
         case .halo: "Halo"

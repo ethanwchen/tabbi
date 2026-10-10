@@ -70,7 +70,20 @@
         "properties": {
           "cat": { "$ref": "#/$defs/grid" },
           "dog": { "$ref": "#/$defs/grid" },
-          "eyeRow": { "type": "integer", "minimum": 0 }
+          "eyeRow": { "type": "integer", "minimum": 0 },
+          "frames": {
+            "description": "The rest of an animated item's loop after the still cat and dog grids, one tick of itemFrameDuration each, each grid the size of its still. The still grids are the loop's first frame and what Reduce Motion shows.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["cat", "dog"],
+              "additionalProperties": false,
+              "properties": {
+                "cat": { "$ref": "#/$defs/grid" },
+                "dog": { "$ref": "#/$defs/grid" }
+              }
+            }
+          }
         }
       }
     },

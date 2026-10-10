@@ -57,6 +57,7 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
     case halloweenPumpkin
     case winterAntlers
     case winterScarf
+    case valentinesGlasses
 
     public var item: PetItem {
         switch self {
@@ -68,6 +69,7 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .halloweenPumpkin: .accessory(.pumpkinHat)
         case .winterAntlers: .accessory(.reindeerAntlers)
         case .winterScarf: .accessory(.snowScarf)
+        case .valentinesGlasses: .accessory(.heartGlasses)
         }
     }
 
@@ -84,6 +86,7 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .partyMedal: .milestone(.firstParty)
         case .halloweenWitchHat, .halloweenPumpkin: .season(id: "halloween")
         case .winterAntlers, .winterScarf: .season(id: "winter-holidays")
+        case .valentinesGlasses: .season(id: "valentines")
         }
     }
 
@@ -103,6 +106,7 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .halloweenPumpkin: "Focus for 5 hours during Halloween."
         case .winterAntlers: "Focus for 90 minutes during the winter holidays."
         case .winterScarf: "Focus for 5 hours during the winter holidays."
+        case .valentinesGlasses: "Focus for 3 hours during Valentine's week."
         }
     }
 
@@ -116,6 +120,7 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .halloweenPumpkin: .flicker
         case .winterAntlers: nil
         case .winterScarf: .sparkle
+        case .valentinesGlasses: .sparkle
         }
     }
 }

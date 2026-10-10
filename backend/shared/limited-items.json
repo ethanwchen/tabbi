@@ -7,6 +7,7 @@
     { "id": "accessory.moonlitWitchHat", "source": "season", "season": "halloween" },
     { "id": "accessory.pumpkinHat", "source": "season", "season": "halloween" },
     { "id": "accessory.reindeerAntlers", "source": "season", "season": "winter-holidays" },
-    { "id": "accessory.snowScarf", "source": "season", "season": "winter-holidays" }
+    { "id": "accessory.snowScarf", "source": "season", "season": "winter-holidays" },
+    { "id": "accessory.heartGlasses", "source": "season", "season": "valentines" }
   ]
 }

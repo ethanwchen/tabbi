@@ -114,6 +114,17 @@ final class PetLimitedTests: XCTestCase {
         XCTAssertEqual(scarf.effect, .sparkle)
     }
 
+    /// Valentine's offers one item, heart glasses, so it is the headline
+    /// item: a face item whose lenses glint now and then.
+    func testValentinesGlassesAreASeasonalLimitedItem() {
+        let glasses = PetItem.accessory(.heartGlasses)
+        XCTAssertEqual(PetLimitedEdition.valentinesGlasses.item, glasses)
+        XCTAssertEqual(glasses.limitedEdition?.source, .season(id: "valentines"))
+        XCTAssertEqual(glasses.theme, .seasonal)
+        XCTAssertEqual(PetAccessory.heartGlasses.slot, .face)
+        XCTAssertEqual(glasses.effect, .sparkle)
+    }
+
     /// Seasonal items are limited, earned only during their event, and
     /// only the event's headline item (its last reward) carries an effect.
     func testHalloweenItemsAreSeasonalLimitedItems() {

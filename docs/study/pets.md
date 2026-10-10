@@ -141,7 +141,7 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 ### Animated items
 
 Some items move: the Flame Headband's flame flickers, a glint crosses the Golden Laurel, the Team Medal sparkles now and then, a glint crosses the Backwards Cap's metal snap, the Halo bobs over the head, the Angel Wings flap, a glint runs down the King's Cape's gold trim, Cherry Petals drift down around the pet, gold sparkles twinkle beside it and trail behind it on a walk, and the Tiny Rain Cloud drizzles beside its head.
-An animated item lists the rest of its loop in `frames`, after its still grids: a head item gives grids the size of `grid`, a body item gives a grid per body family for each frame.
+An animated item lists the rest of its loop in `frames`, after its still grids: a head item gives grids the size of `grid`, a face item a cat and a dog grid the size of its still ones, and a body item a grid per body family for each frame.
 The still is the loop's first frame and the picture Reduce Motion shows.
 Every frame lasts one tick of the item clock, `itemFrameDuration` in `costume.json` (150 ms, a walking step), so a slower move repeats a frame.
 The composer draws the item's frame for each tick on every pose (`PetFrame.itemFrames`), so it stays anchored like the still.

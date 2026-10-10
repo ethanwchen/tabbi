@@ -38,6 +38,18 @@ enum CostumeArt {
         let cat: SpriteGrid
         let dog: SpriteGrid
         let eyeRow: Int
+        /// The rest of an animated item's loop: these grids are the still
+        /// frame, shown under Reduce Motion, and the loop's first.
+        var moreFrames: [FaceItem] = []
+
+        /// Frames in the item's loop; 1 for an item that stays still.
+        var frameCount: Int { 1 + moreFrames.count }
+
+        /// The item as drawn on frame `phase` of the item clock.
+        func frame(_ phase: Int) -> FaceItem {
+            let index = phase % frameCount
+            return index == 0 ? self : moreFrames[index - 1]
+        }
     }
 
     /// A hat-like item and the grid row that lands on the head's skull top.
@@ -287,6 +299,10 @@ extension CostumeArt {
     /// stripe across the tail and a white fringe. Now and then a speck of
     /// snow glints on the band, then a snowflake twinkles on the tail.
     static let snowScarf = PetArt.costume.bodyItem("snowScarf")
+
+    /// Pink heart lenses in a crimson frame. Now and then a light glints
+    /// on one lens, then the other.
+    static let heartGlasses = PetArt.costume.faceItem("heartGlasses")
 }
 
 // MARK: - Back items
