@@ -77,10 +77,12 @@ public struct PetWidgetView: View {
                 Spacer(minLength: 8)
                 HStack(spacing: 8) {
                     StatChip(symbol: "flame.fill", value: streakText, caption: "streak",
-                             tint: streak > 0 ? WidgetPalette.accent : WidgetPalette.secondaryText)
+                             tint: streak > 0 ? WidgetPalette.accent : WidgetPalette.secondaryText,
+                             accessibilityText: streak == 0 ? "No streak yet" : "\(streakText) streak")
                     if timer != nil {
                         StatChip(symbol: "clock.fill", value: minutesText, caption: "today",
-                                 tint: WidgetPalette.secondaryText)
+                                 tint: WidgetPalette.secondaryText,
+                                 accessibilityText: "\(minutesText) focused today")
                     }
                 }
             }
@@ -113,6 +115,7 @@ public struct PetWidgetView: View {
                     .foregroundStyle(WidgetPalette.secondaryText)
             }
         }
+        .accessibilityElement(children: .combine)
     }
 
     // MARK: Values
@@ -205,12 +208,14 @@ private struct StreakBadge: View {
     }
 }
 
-/// A medium widget stat: a symbol, a value and what it counts.
+/// A medium widget stat: a symbol, a value and what it counts. VoiceOver
+/// reads it as one phrase instead of the symbol's name and two fragments.
 private struct StatChip: View {
     let symbol: String
     let value: String
     let caption: String
     let tint: Color
+    let accessibilityText: String
 
     var body: some View {
         HStack(spacing: 6) {
@@ -230,5 +235,7 @@ private struct StatChip: View {
         .padding(.horizontal, 8)
         .padding(.vertical, 6)
         .background(WidgetPalette.surface, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(accessibilityText)
     }
 }

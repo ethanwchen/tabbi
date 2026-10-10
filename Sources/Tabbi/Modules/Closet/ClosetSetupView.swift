@@ -181,8 +181,12 @@ private struct ClosetSetupBreedTile: View {
 
     var body: some View {
         Button(action: action) {
+            // The sprite's canvas has transparent margins, so let the tile
+            // shrink below it (and clip) rather than push the row past the
+            // panel when a species has many breeds.
             PetSpriteView(profile: profile)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(minWidth: 0, maxWidth: .infinity, maxHeight: .infinity)
+                .clipped()
                 .background(
                     RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
                         .fill(isSelected ? accent.opacity(0.14) : hovering ? Theme.Palette.surfaceHover : Theme.Palette.surface)

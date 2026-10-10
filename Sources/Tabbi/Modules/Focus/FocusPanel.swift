@@ -136,26 +136,27 @@ private struct FocusModeRow: View {
     @ObservedObject var controller: FocusController
 
     var body: some View {
-        // A narrow panel (Compact) drops the names and keeps each glyph and value.
+        // A narrow panel (Compact) stacks the settings so a bare "On" never
+        // loses its name, and only drops the names when even that is too wide.
         ViewThatFits(in: .horizontal) {
-            items(showsTitles: true)
-            items(showsTitles: false)
+            HStack(spacing: Theme.Spacing.m) { items(showsTitles: true) }
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) { items(showsTitles: true) }
+            HStack(spacing: Theme.Spacing.m) { items(showsTitles: false) }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .help(controller.offersDoNotDisturb ? "Change focus sound and Do Not Disturb in Settings > Tabs > Options"
                                             : "Change focus sound in Settings > Tabs > Options")
     }
 
+    @ViewBuilder
     private func items(showsTitles: Bool) -> some View {
         let settings = controller.settings
-        return HStack(spacing: Theme.Spacing.m) {
-            FocusModeItem(symbol: "waveform", title: showsTitles ? "Sound" : nil,
-                          value: settings.mix.summary, isOn: !settings.mix.isOff)
-            if controller.offersDoNotDisturb {
-                FocusModeItem(symbol: "moon.fill", title: showsTitles ? "Do Not Disturb" : nil,
-                              value: settings.doNotDisturb ? "On" : "Off", isOn: settings.doNotDisturb)
-                    .fixedSize()
-            }
+        FocusModeItem(symbol: "waveform", name: "Sound", showsName: showsTitles,
+                      value: settings.mix.summary, isOn: !settings.mix.isOff)
+        if controller.offersDoNotDisturb {
+            FocusModeItem(symbol: "moon.fill", name: "Do Not Disturb", showsName: showsTitles,
+                          value: settings.doNotDisturb ? "On" : "Off", isOn: settings.doNotDisturb)
+                .fixedSize()
         }
     }
 }
@@ -163,7 +164,8 @@ private struct FocusModeRow: View {
 /// One focus mode setting: a glyph, its name (left out when space is short), and its value.
 private struct FocusModeItem: View {
     let symbol: String
-    let title: String?
+    let name: String
+    let showsName: Bool
     let value: String
     let isOn: Bool
 
@@ -173,8 +175,8 @@ private struct FocusModeItem: View {
                 .font(.system(size: 11, weight: .semibold))
                 .foregroundStyle(isOn ? accent : Theme.Palette.tertiaryText)
                 .frame(width: 16)
-            if let title {
-                Text(title)
+            if showsName {
+                Text(name)
                     .foregroundStyle(Theme.Palette.tertiaryText)
                     .fixedSize()
             }
@@ -184,6 +186,9 @@ private struct FocusModeItem: View {
                 .truncationMode(.tail)
         }
         .font(Theme.Typography.caption)
+        // VoiceOver reads the name even where the panel hides it.
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(name): \(value)")
     }
 }
 

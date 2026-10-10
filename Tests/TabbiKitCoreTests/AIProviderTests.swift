@@ -18,6 +18,18 @@ final class AIProviderIDTests: XCTestCase {
         XCTAssertTrue(AIProviderID.ollama.networkAccess!.isLocal)
     }
 
+    func testEveryProviderThatLeavesTheMacNamesWhoGetsTheData() {
+        for provider in AIProviderID.allCases {
+            let disclosure = provider.dataDisclosure
+            XCTAssertEqual(disclosure == nil, provider == .ollama, "\(provider)")
+            if let recipient = provider.dataRecipient {
+                XCTAssertTrue(disclosure!.contains(recipient), "\(provider)")
+            }
+        }
+        XCTAssertEqual(AIProviderID.claudeCLI.dataRecipient, AIProviderID.anthropic.dataRecipient)
+        XCTAssertEqual(AIProviderID.geminiCLI.dataRecipient, "Google")
+    }
+
     func testOnlyHostedAPIsNeedAKeyAndHaveDefaultModels() {
         XCTAssertEqual(AIProviderID.allCases.filter(\.requiresAPIKey), [.anthropic, .openAI, .gemini])
         for provider in AIProviderID.allCases where !provider.isCommandLineTool {

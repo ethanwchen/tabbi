@@ -448,11 +448,12 @@ enum SnapshotRenderer {
     }
 
     /// Walks onboarding from the name and kit steps through the active kit's
-    /// questions, the tab step and every setup step its tabs need.
+    /// questions, the tab step, every setup step its tabs need and the extras.
     private static func onboardingShots(services: AppServices, geometry: NotchGeometry, layout: ModuleLayout) -> [Shot] {
         let settings = services.settings
         guard let kit = settings.activeKit else { return [] }
-        var flow = OnboardingFlow(catalog: settings.catalog, layout: layout, kit: kit, asksName: true)
+        var flow = OnboardingFlow(catalog: settings.catalog, layout: layout, kit: kit, asksName: true,
+                                  extras: OnboardingExtra.all)
         var shots: [Shot] = []
         var questions = 0
         while flow.stage != .finished {
@@ -463,6 +464,7 @@ enum SnapshotRenderer {
                 { questions += 1; return "onboarding-question-\(questions)" }()
             case .modules: "onboarding-modules"
             case .setup(let id): "onboarding-setup-\(id)"
+            case .extras: "onboarding-extras"
             case .finished: ""
             }
             let model = NotchViewModel(geometry: geometry, layout: layout)

@@ -24,6 +24,9 @@ struct ClosetPanel: View {
                         header(showsUnit: false)
                         header(showsUnit: false, titlesAll: false)
                         header(showsUnit: false, titlesAll: false, isTight: true)
+                        // A four-digit balance: the open section is the tinted
+                        // symbol, so the points still fit.
+                        header(showsUnit: false, titlesAll: false, isTight: true, titlesOpen: false)
                     }
                     switch shownSection {
                     case .wardrobe: ClosetWardrobe(store: store)
@@ -46,10 +49,11 @@ struct ClosetPanel: View {
         sections.contains(store.section) ? store.section : .wardrobe
     }
 
-    private func header(showsUnit: Bool, titlesAll: Bool = true, isTight: Bool = false) -> some View {
-        HStack(spacing: Theme.Spacing.s) {
+    private func header(showsUnit: Bool, titlesAll: Bool = true, isTight: Bool = false,
+                        titlesOpen: Bool = true) -> some View {
+        HStack(spacing: isTight ? Theme.Spacing.xs : Theme.Spacing.s) {
             ClosetSectionPicker(sections: sections, selection: shownSection, titlesAll: titlesAll,
-                                isTight: isTight) {
+                                titlesOpen: titlesOpen, isTight: isTight) {
                 store.section = $0
             }
             Spacer(minLength: 0)
@@ -201,6 +205,8 @@ private struct ClosetSectionPicker: View {
     /// Off, only the open section shows its title; the others show their
     /// symbol, with the title in the tooltip.
     var titlesAll = true
+    /// Off, the open section shows only its symbol too.
+    var titlesOpen = true
     /// Narrower pills, for the Compact panel with every section on.
     var isTight = false
     let select: (ClosetSection) -> Void
@@ -209,7 +215,7 @@ private struct ClosetSectionPicker: View {
         HStack(spacing: Theme.Spacing.xxs) {
             ForEach(sections, id: \.self) { section in
                 ClosetPill(title: section.rawValue, symbol: section.symbol,
-                           showsTitle: titlesAll || selection == section,
+                           showsTitle: titlesAll || (titlesOpen && selection == section),
                            isSelected: selection == section,
                            isTight: isTight,
                            help: section.help) {
@@ -239,9 +245,10 @@ private struct ClosetPill: View {
             }
             .font(Theme.Typography.caption)
             .foregroundStyle(isSelected ? accent : hovering ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
-            // A symbol alone needs less room, which keeps four sections and
-            // the balance on one line in the Compact panel.
-            .padding(.horizontal, showsTitle ? Theme.Spacing.s + Theme.Spacing.xxs : Theme.Spacing.s)
+            // A symbol alone needs less room, and tight pills less still,
+            // which keeps every section and the balance on one line in the
+            // Compact panel.
+            .padding(.horizontal, horizontalPadding)
             .frame(height: 22)
             .background(Capsule().fill(isSelected ? accent.opacity(0.16) : hovering ? Theme.Palette.surfaceHover : .clear))
             .contentShape(Capsule())
@@ -250,6 +257,14 @@ private struct ClosetPill: View {
         .help(showsTitle ? help : "\(title): \(help)")
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
+    }
+
+    private var horizontalPadding: CGFloat {
+        switch (showsTitle, isTight) {
+        case (true, false): Theme.Spacing.s + Theme.Spacing.xxs
+        case (true, true), (false, false): Theme.Spacing.s
+        case (false, true): Theme.Spacing.xs + Theme.Spacing.xxs
+        }
     }
 }
 
@@ -262,8 +277,10 @@ private struct ClosetPointsChip: View {
         HStack(spacing: Theme.Spacing.xs) {
             Image(systemName: "star.fill").font(.system(size: 9, weight: .bold))
                 .foregroundStyle(accent)
+            // The number is what the chip is for, so it never truncates.
             Text("\(balance)")
                 .font(Theme.Typography.caption.monospacedDigit())
+                .fixedSize()
                 .foregroundStyle(Theme.Palette.primaryText)
                 .contentTransition(.numericText())
             if showsUnit {

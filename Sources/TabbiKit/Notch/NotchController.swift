@@ -18,6 +18,7 @@ public final class NotchController {
     private var hoverOpenTask: Task<Void, Never>?
     private var pointerInside = false
     private var swipe = TabSwipe()
+    private var closeSwipe = CloseSwipe()
     private var previewSwipe = TickerSwipe()
     private var hotkey: GlobalHotkey?
     /// The display the notch is on; nil while no screen qualifies.
@@ -263,8 +264,9 @@ public final class NotchController {
         }
     }
 
-    /// A two-finger horizontal swipe moves one tab; on the closed notch a
-    /// swipe down shows the next live activity.
+    /// A two-finger horizontal swipe moves one tab and a swipe up closes the
+    /// open notch; on the closed notch a swipe down shows the next live
+    /// activity.
     private func handleScroll(_ event: NSEvent) {
         guard model.isOpen || (pointerInside && model.preview != nil) else { return }
         let phase: TabSwipe.Phase
@@ -284,10 +286,35 @@ public final class NotchController {
             if previewSwipe.feed(deltaX: event.scrollingDeltaX, fingersDown: down, phase: phase) { cyclePreview() }
             return
         }
+        // Onboarding stays open until it is done or skipped.
+        let fingersUp = event.isDirectionInvertedFromDevice ? -event.scrollingDeltaY : event.scrollingDeltaY
+        let overList = phase == .began && isOverScrollableList(event.locationInWindow)
+        if !model.showsTakeover,
+           closeSwipe.feed(deltaX: event.scrollingDeltaX, fingersUp: fingersUp, phase: phase, overScrollableList: overList) {
+            model.close()
+            return
+        }
         switch swipe.feed(deltaX: event.scrollingDeltaX, deltaY: event.scrollingDeltaY, phase: phase) {
         case .previous: model.selectPrevious()
         case .next: model.selectNext()
         case nil: break
+        }
+    }
+
+    /// Whether `point` (in the panel's window) is over a list with more rows
+    /// than fit, whose vertical scrolling must not close the notch. SwiftUI's
+    /// `ScrollView` is an `NSScrollView` underneath, which hit testing skips,
+    /// so this looks through the view tree for one.
+    private func isOverScrollableList(_ point: NSPoint) -> Bool {
+        func scrollViews(in view: NSView) -> [NSScrollView] {
+            if let scroll = view as? NSScrollView { return [scroll] }
+            return view.subviews.flatMap(scrollViews(in:))
+        }
+        guard let root = panel.contentView else { return false }
+        return scrollViews(in: root).contains { scroll in
+            guard let document = scroll.documentView, !scroll.isHidden,
+                  scroll.convert(scroll.bounds, to: nil).contains(point) else { return false }
+            return document.frame.height > scroll.contentView.bounds.height + 1
         }
     }
 

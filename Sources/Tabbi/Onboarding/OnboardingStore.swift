@@ -28,7 +28,8 @@ final class OnboardingStore: ObservableObject {
         let current = settings.settings
         flow = OnboardingFlow(catalog: settings.catalog, layout: current.modules, kit: settings.activeKit,
                               answers: current.hasChosenKit ? current.kitAnswers : [:],
-                              asksName: !current.hasChosenKit || current.cleanedDisplayName == nil)
+                              asksName: !current.hasChosenKit || current.cleanedDisplayName == nil,
+                              extras: OnboardingExtra.all)
     }
 
     /// Shows `flow` as it is, without applying anything; for snapshots.
@@ -72,7 +73,7 @@ private extension OnboardingFlow.Stage {
     /// Past the kit, questions and tabs: what was picked should be in place.
     var appliesChoices: Bool {
         switch self {
-        case .setup, .finished: true
+        case .setup, .extras, .finished: true
         case .name, .kit, .question, .modules: false
         }
     }
