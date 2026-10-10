@@ -34,8 +34,9 @@ extension ModuleContext {
 /// next rotation turn, the next change `TickerSources.nextChange` predicts,
 /// or every second while a running focus clock is showing. A swipe down or
 /// a middle-click on the closed notch moves on by hand (`cycle()`). A pet cheer from
-/// `CelebrationCenter` (a finished focus session) takes the notch for its
-/// two seconds, then the rotation carries on. About five minutes before a
+/// `CelebrationCenter` (a finished focus session, or a sip when the Mac
+/// starts charging) takes the notch for its few seconds, then the rotation
+/// carries on. About five minutes before a
 /// meeting its preview glows once (`MeetingNudge`), unless Do Not Disturb
 /// is on.
 @MainActor

@@ -43,7 +43,8 @@ public enum TickerFormat {
 
     /// The pet's line for tooltips and accessibility, e.g. "Mochi is napping".
     public static func petSummary(_ pet: TickerPet) -> String {
-        switch pet.mood {
+        if pet.isSipping { return "Your Mac is charging, and \(pet.profile.name) is having a sip" }
+        return switch pet.mood {
         case .studying: "\(pet.profile.name) is studying with you"
         case .onBreak: "\(pet.profile.name) is on a break with you"
         case .awake: "\(pet.profile.name) is keeping you company"
@@ -58,6 +59,9 @@ public enum TickerFormat {
     public static func petLabel(_ pet: TickerPet) -> String? {
         pet.profile.hasDefaultName ? nil : pet.profile.name
     }
+
+    /// Shown beside the pet while it sips because the Mac started charging.
+    public static let charging = "Charging"
 
     /// Shown after the name while the pet sleeps.
     public static let petSleeping = "zzz"

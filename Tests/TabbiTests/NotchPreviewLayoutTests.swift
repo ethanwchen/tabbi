@@ -29,4 +29,13 @@ final class NotchPreviewLayoutTests: XCTestCase {
         let wing = NotchPreviewLayout.wingWidth(for: meeting("Quarterly planning with the whole design and research team"))
         XCTAssertEqual(wing, NotchPreviewLayout.maxWingWidth)
     }
+
+    func testTheChargingLineFitsBesideTheSippingPet() {
+        let pet = TickerPet(profile: .starter(.cat), mood: .onBreak)
+        var sipping = pet
+        sipping.cheer = PetCheer(kind: .sip, id: 1, startedAt: Date())
+        let wing = NotchPreviewLayout.wingWidth(for: .pet(sipping))
+        XCTAssertGreaterThan(wing, NotchPreviewLayout.wingWidth(for: .pet(pet)), "room for the bolt and Charging")
+        XCTAssertLessThan(wing, NotchPreviewLayout.maxWingWidth, "never truncated")
+    }
 }

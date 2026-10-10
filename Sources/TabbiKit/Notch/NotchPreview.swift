@@ -132,6 +132,15 @@ struct NotchPreview: View {
                 .foregroundStyle(color(for: highlight.tone))
                 .truncationMode(.tail)
                 .previewText()
+        case .pet(let pet) where pet.isSipping:
+            HStack(spacing: Theme.Spacing.xxs) {
+                Image(systemName: "bolt.fill")
+                    .font(.system(size: NotchPreviewLayout.chargingSymbolSize, weight: .bold))
+                Text(TickerFormat.charging)
+                    .fixedSize()
+            }
+            .foregroundStyle(Theme.Palette.success)
+            .previewText()
         case .pet(let pet):
             HStack(spacing: Theme.Spacing.xs) {
                 if let name = TickerFormat.petLabel(pet) {

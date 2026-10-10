@@ -140,6 +140,9 @@ public struct TickerPet: Hashable, Sendable {
         self.moodSince = moodSince
         self.cheer = cheer
     }
+
+    /// True while the pet sips because the Mac started charging.
+    public var isSipping: Bool { cheer?.kind == .sip }
 }
 
 /// The pets the closed notch shows while the user is in a study party.

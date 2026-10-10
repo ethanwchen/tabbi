@@ -24,6 +24,8 @@ final class AppServices {
     let celebrations: CelebrationCenter
     /// The pet's crown for goals reached today.
     private let goalCrowns: GoalCrowns
+    /// The pet's sip when the Mac starts charging.
+    private let chargingCheer: ChargingCheer
     /// The optional Sign in with Apple account that syncs the pet.
     let accountSync: SyncStore
     /// The AI provider the user picked, which Settings > Connections chooses.
@@ -57,6 +59,7 @@ final class AppServices {
         ticker = TickerStore(settings: settings, providers: providers, preview: shared.closedNotchPreview,
                              celebrations: celebrations)
         goalCrowns = GoalCrowns(providers: providers, celebrations: celebrations)
+        chargingCheer = ChargingCheer(celebrations: celebrations, runMode: runMode)
         onboarding = OnboardingStore(settings: settings)
         accountSync = ModuleContext(id: "account", edition: edition, settings: settings, providers: providers,
                                     shared: shared, runMode: runMode).accountSync

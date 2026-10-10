@@ -23,6 +23,8 @@ public enum NotchPreviewLayout {
     static let joinTitle = "Join"
     static let joinHeight: CGFloat = 16
     static let joinPadding: CGFloat = Theme.Spacing.s - Theme.Spacing.xxs
+    /// The charging bolt beside "Charging" while the pet sips.
+    static let chargingSymbolSize: CGFloat = 9
     /// Gap between the trailing text and the camera housing.
     private static let innerGap: CGFloat = Theme.Spacing.s
 
@@ -50,6 +52,8 @@ public enum NotchPreviewLayout {
             content = textWidth(TickerFormat.progressLeft(progress))
         case .highlight(let highlight):
             content = textWidth(highlight.text)
+        case .pet(let pet) where pet.isSipping:
+            content = max(chargingSymbolSize + Theme.Spacing.xxs + textWidth(TickerFormat.charging), NotchPetWing.side)
         case .pet(let pet):
             // Measured asleep too, so the wing doesn't jump when the pet dozes off.
             let name = TickerFormat.petLabel(pet).map { textWidth($0) + Theme.Spacing.xs } ?? 0

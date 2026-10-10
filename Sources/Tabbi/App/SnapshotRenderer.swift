@@ -100,6 +100,10 @@ enum SnapshotRenderer {
                 let crowned = NotchViewModel(geometry: geometry, layout: layout)
                 crowned.preview = .pet(TickerPet(profile: pet.profile, mood: .awake))
                 shots.append(Shot("closed-pet-crown", crowned))
+                // The Mac started charging: the pet sips from its mug.
+                let sipping = NotchViewModel(geometry: geometry, layout: layout)
+                sipping.preview = .pet(TickerPet(profile: pet.profile, mood: .onBreak))
+                shots.append(Shot("closed-pet-charging", sipping))
             }
         }
         // The closed timer's ring part-way through a Pomodoro and a break,
@@ -473,6 +477,11 @@ enum SnapshotRenderer {
                 // Mid hop, crowned as `TickerSources.cheering` does it.
                 pet.cheer = PetCheer(kind: .crown, id: 1, startedAt: Date().addingTimeInterval(-0.45))
                 pet.profile.wear(.tinyCrown)
+                model.preview = .pet(pet)
+            }
+            if name == "closed-pet-charging", case .pet(var pet) = model.preview {
+                // Past the hop, with the mug raised for the sip.
+                pet.cheer = PetCheer(kind: .sip, id: 1, startedAt: Date().addingTimeInterval(-3.5))
                 model.preview = .pet(pet)
             }
             let view = NotchView(content: ModuleViews.notchContent(services: services))

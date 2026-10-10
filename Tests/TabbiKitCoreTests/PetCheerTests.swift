@@ -71,4 +71,19 @@ final class PetCheerTests: XCTestCase {
         XCTAssertEqual(dancing.profile, hatted, "a dance keeps the pet's own look")
         XCTAssertNil(sources.cheering(crown, at: crown.endsAt) { _ in true }, "the crown comes off with the cheer")
     }
+
+    func testASipHoldsThePetOnABreakLongEnoughForTheSip() {
+        let sip = PetCheer(kind: .sip, id: 1, startedAt: start)
+        XCTAssertGreaterThan(sip.length, PetCheer.duration, "the hop, then the mug comes up")
+        XCTAssertLessThanOrEqual(sip.length, 5, "still brief")
+        guard case .pet(let pet) = sources().cheering(sip, at: start.addingTimeInterval(3), enabled: { _ in true }) else {
+            return XCTFail("expected the pet")
+        }
+        XCTAssertEqual(pet.mood, .onBreak, "on a break, the pet holds its mug")
+        XCTAssertTrue(pet.isSipping)
+        XCTAssertEqual(pet.profile, .starter(.cat), "a sip keeps the pet's own look")
+        XCTAssertEqual(TickerFormat.petSummary(pet), "Your Mac is charging, and \(pet.profile.name) is having a sip")
+        XCTAssertNil(sources().cheering(sip, at: sip.endsAt) { _ in true }, "over: the rotation is back")
+        XCTAssertNil(sources().cheering(sip, at: start) { $0 != .pet }, "no sip with the pet preview off")
+    }
 }
