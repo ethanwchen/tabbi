@@ -16,6 +16,9 @@ public final class PetPlayer: ObservableObject {
     /// second, and that must not invalidate views. Only events, which change
     /// the redraw schedule, notify observers.
     private var animator: PetAnimator
+    /// Counts the events and looks sent so far, so a view can tell that the
+    /// redraw schedule changed without comparing animators.
+    public private(set) var revision = 0
 
     public init(
         profile: PetProfile, place: PetAnimator.Place = .beside, asleep: Bool = false,
@@ -37,6 +40,7 @@ public final class PetPlayer: ObservableObject {
     @discardableResult
     public func send(_ event: PetAnimator.Event, at date: Date = .now) -> Bool {
         objectWillChange.send()
+        revision += 1
         return animator.send(event, at: date.timeIntervalSinceReferenceDate)
     }
 
@@ -44,6 +48,7 @@ public final class PetPlayer: ObservableObject {
     public func update(profile: PetProfile, at date: Date = .now) {
         guard profile != self.profile else { return }
         objectWillChange.send()
+        revision += 1
         let time = date.timeIntervalSinceReferenceDate
         animator.advance(to: time)
         self.profile = profile
@@ -68,7 +73,7 @@ public final class PetPlayer: ObservableObject {
         return clips.stillFrame(for: animator)
     }
 
-    /// Redraw dates for `TimelineView`: exactly when the frame changes, so an
+    /// Redraw dates for `PetView`: exactly when the frame changes, so an
     /// idle pet costs a few redraws a second instead of a 60 Hz loop. A
     /// `still` schedule follows `stillFrame(at:)` instead: it only wakes when
     /// a one-shot clip ends.
