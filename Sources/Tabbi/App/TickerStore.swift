@@ -35,7 +35,9 @@ extension ModuleContext {
 /// or every second while a running focus clock is showing. A swipe down or
 /// a middle-click on the closed notch moves on by hand (`cycle()`). A pet cheer from
 /// `CelebrationCenter` (a finished focus session) takes the notch for its
-/// two seconds, then the rotation carries on.
+/// two seconds, then the rotation carries on. About five minutes before a
+/// meeting its preview glows once (`MeetingNudge`), unless Do Not Disturb
+/// is on.
 @MainActor
 final class TickerStore: ObservableObject {
     /// The item beside the closed notch; nil keeps the notch plain black.
@@ -50,6 +52,11 @@ final class TickerStore: ObservableObject {
     private var rotation: TickerRotation
     /// The pet's latest cheer, shown while it lasts.
     private var cheer: PetCheer?
+    private weak var celebrations: CelebrationCenter?
+    /// Which meetings already had their "leave now" glow.
+    private var nudges = MeetingNudgeWatch()
+    /// The meeting glow playing, if any.
+    private var nudge: MeetingNudge?
     /// False while the notch is open, where the preview isn't visible.
     private var isActive = true
     /// More than one item can take a turn, so the rotation has a deadline.
@@ -64,6 +71,7 @@ final class TickerStore: ObservableObject {
         settings = store.settings
         catalog = store.catalog
         self.preview = preview
+        self.celebrations = celebrations
         rotation = TickerRotation(interval: store.settings.notchPreview.interval.seconds)
 
         providers.$snapshot
@@ -113,7 +121,7 @@ final class TickerStore: ObservableObject {
         guard isActive, sources.cheering(cheer, at: now, enabled: settings.showsPreview) == nil else { return false }
         let items = sources.items(at: now, enabled: settings.showsPreview)
         guard items.count > 1 else { return false }
-        let next = rotation.advance(items: items, at: now)
+        let next = nudging(rotation.advance(items: items, at: now), at: now)
         rotates = true
         guard next != item else { return false }
         item = next
@@ -127,12 +135,26 @@ final class TickerStore: ObservableObject {
         let now = Date()
         if isActive {
             let items = sources.items(at: now, enabled: settings.showsPreview)
-            var next = rotation.update(items: items, at: now)
+            var next = nudging(rotation.update(items: items, at: now), at: now)
             rotates = items.count > 1 && next?.isPinned == false
             if let cheering = sources.cheering(cheer, at: now, enabled: settings.showsPreview) { next = cheering }
             if next != item { item = next }
         }
         scheduleTimer(now: now)
+    }
+
+    /// `item`, glowing if it is a meeting whose nudge is playing. A meeting
+    /// that comes within the lead time while on screen starts its nudge,
+    /// once; Do Not Disturb skips it.
+    private func nudging(_ item: TickerItem?, at now: Date) -> TickerItem? {
+        guard case .meeting(var meeting) = item else { return item }
+        if nudge?.isShowing(at: now) != true, celebrations?.isDoNotDisturbOn != true,
+           let started = nudges.nudge(for: sources, at: now) {
+            nudge = started
+        }
+        let key = sources.imminentMeeting(at: now).map(MeetingNudgeWatch.key(for:))
+        meeting.isNudging = nudge.map { $0.isShowing(at: now) && $0.key == key } ?? false
+        return .meeting(meeting)
     }
 
     private func scheduleTimer(now: Date) {
@@ -142,6 +164,7 @@ final class TickerStore: ObservableObject {
         }
         var wakes = [sources.nextChange(after: now, enabled: settings.showsPreview)]
         if let cheer, cheer.isShowing(at: now) { wakes.append(cheer.endsAt) }
+        if let nudge, nudge.isShowing(at: now) { wakes.append(nudge.endsAt) }
         if rotates, let shownSince = rotation.shownSince {
             wakes.append(shownSince.addingTimeInterval(rotation.interval))
         }

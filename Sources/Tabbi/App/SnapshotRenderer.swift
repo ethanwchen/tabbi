@@ -113,6 +113,12 @@ enum SnapshotRenderer {
             model.preview = .focus(focus)
             shots.append(Shot(name, model))
         }
+        // The "leave now" glow on a call about to start, with its Join button.
+        let call = MeetingLink(provider: .zoom, url: URL(string: "https://zoom.us/j/1")!)
+        let nudge = NotchViewModel(geometry: geometry, layout: layout)
+        nudge.preview = .meeting(TickerMeeting(title: "Standup", timing: .startsIn(minutes: 4), canJoin: true,
+                                               link: call, isNudging: true))
+        shots.append(Shot("closed-meeting-nudge", nudge))
         // One open shot per tab of the active kit.
         for module in layout.enabled {
             let model = NotchViewModel(geometry: geometry, layout: layout)

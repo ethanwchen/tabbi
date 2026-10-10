@@ -54,9 +54,19 @@ final class TickerSourcesTests: XCTestCase {
 
     func testMeetingCountsDownAndReportsJoinLink() {
         let sources = TickerSources(events: [event("Standup", startsIn: 3.5, link: true)])
+        let zoom = MeetingLink(provider: .zoom, url: URL(string: "https://zoom.us/j/1")!)
         XCTAssertEqual(sources.items(at: now), [
-            .meeting(TickerMeeting(title: "Standup", timing: .startsIn(minutes: 4), canJoin: true)),
+            .meeting(TickerMeeting(title: "Standup", timing: .startsIn(minutes: 4), canJoin: true, link: zoom)),
         ])
+    }
+
+    func testJoinShowsOnlyOnceACallIsClose() {
+        let zoom = MeetingLink(provider: .zoom, url: URL(string: "https://zoom.us/j/1")!)
+        XCTAssertTrue(TickerMeeting(title: "Standup", timing: .startsIn(minutes: 5), canJoin: true, link: zoom).offersJoin)
+        XCTAssertTrue(TickerMeeting(title: "Standup", timing: .now, canJoin: true, link: zoom).offersJoin)
+        XCTAssertFalse(TickerMeeting(title: "Standup", timing: .startsIn(minutes: 6), canJoin: true, link: zoom).offersJoin)
+        XCTAssertFalse(TickerMeeting(title: "Standup", timing: .now, canJoin: true).offersJoin,
+                       "no link, nothing to join")
     }
 
     func testMeetingInProgressReadsNow() {

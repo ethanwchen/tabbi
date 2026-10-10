@@ -19,20 +19,28 @@ public enum NotchPreviewLayout {
     public static let partyPetPixelSize: CGFloat = 0.75
     /// Party pets overlap a little, since each sprite has empty room around it.
     public static let partyPetStep: CGFloat = 18
+    /// The Join button beside a meeting about to start.
+    static let joinTitle = "Join"
+    static let joinHeight: CGFloat = 16
+    static let joinPadding: CGFloat = Theme.Spacing.s - Theme.Spacing.xxs
     /// Gap between the trailing text and the camera housing.
     private static let innerGap: CGFloat = Theme.Spacing.s
 
     /// Width of each wing; both are equal so the shape stays centered on the camera.
     public static func wingWidth(for item: TickerItem) -> CGFloat {
         let content: CGFloat
+        // The Join button brings its own room, so the title keeps what it had.
+        var cap = maxWingWidth
         switch item {
         case .nowPlaying:
             return Theme.Layout.compactWingWidth
         case .meeting(let meeting):
             // The countdown rides beside the icon and the title has the other
             // wing to itself, so both wings carry text and stay close to the camera.
+            let join = meeting.offersJoin ? Theme.Spacing.xs + joinWidth : 0
+            cap += join
             content = max(iconSize + Theme.Spacing.xs + textWidth(TickerFormat.meetingCountdown(meeting.timing)),
-                          textWidth(meeting.title))
+                          textWidth(meeting.title) + join)
         case .focus(let focus):
             // Measure a fixed-width sample so the wing doesn't breathe as digits change.
             content = textWidth(String(TickerFormat.focusClock(focus.time).map { $0.isNumber ? "0" : $0 }))
@@ -50,7 +58,7 @@ public enum NotchPreviewLayout {
             content = max(partyPetsWidth(count: party.pets.count), textWidth(TickerFormat.partySize(party.memberCount)))
         }
         let wing = (content + outerInset + innerGap).rounded(.up)
-        return min(max(wing, iconSize + outerInset + innerGap), maxWingWidth)
+        return min(max(wing, iconSize + outerInset + innerGap), cap)
     }
 
     /// The icon beside the closed notch; a module's progress, and its
@@ -83,6 +91,13 @@ public enum NotchPreviewLayout {
             "Studying with " + ListFormatter.localizedString(byJoining: party.pets.dropFirst().map(\.name)
                 + (party.memberCount > party.pets.count ? ["\(party.memberCount - party.pets.count) more"] : []))
         }
+    }
+
+    /// Width of the Join button, measured in its semibold type.
+    static var joinWidth: CGFloat {
+        let font = NSFont.systemFont(ofSize: 10.5, weight: .semibold)
+        let rounded = font.fontDescriptor.withDesign(.rounded).flatMap { NSFont(descriptor: $0, size: 10.5) } ?? font
+        return ((joinTitle as NSString).size(withAttributes: [.font: rounded]).width + 2 * joinPadding).rounded(.up)
     }
 
     /// Width of `count` overlapping party pets.

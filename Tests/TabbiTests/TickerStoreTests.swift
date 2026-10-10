@@ -160,3 +160,57 @@ final class TickerCheerTests: XCTestCase {
         XCTAssertEqual(ticker.item, before, "the open notch hides the closed preview")
     }
 }
+
+/// A calendar with a call that starts in four minutes.
+@MainActor
+private final class MeetingModule: NotchModule {
+    nonisolated static let descriptor = ModuleDescriptor(
+        id: .planner, title: "Today", symbol: "calendar", category: .productivity,
+        accent: ModuleAccent(red: 0.5, green: 0.5, blue: 0.9)
+    )
+    static let call = MeetingLink(provider: .zoom, url: URL(string: "https://zoom.us/j/1")!)
+
+    init(context: ModuleContext) {}
+
+    func makePanel() -> AnyView { AnyView(EmptyView()) }
+    var provision: AnyPublisher<ModuleProvision, Never>? {
+        let start = Date().addingTimeInterval(4 * 60)
+        let standup = UpcomingEvent(id: "standup", title: "Standup", start: start,
+                                    end: start.addingTimeInterval(15 * 60), meetingLink: Self.call)
+        return Just(ModuleProvision(events: [standup])).eraseToAnyPublisher()
+    }
+}
+
+@MainActor
+final class TickerMeetingNudgeTests: XCTestCase {
+    private func makeTicker(doNotDisturb: Bool) -> TickerStore {
+        let settings = SettingsStore.ephemeral(catalog: ModuleCatalog([MeetingModule.descriptor]))
+        _ = settings.settings.modules.setEnabled(.planner, true)
+        let hub = ProviderHub()
+        let shared = SharedServices()
+        let module = MeetingModule(context: ModuleContext(
+            id: .planner, edition: .tabbi, settings: settings, providers: hub, shared: shared, runMode: .demo))
+        hub.attach(ModuleRegistry([module]))
+        hub.update(enabled: [.planner])
+        let center = CelebrationCenter(hapticsEnabled: { false }, isHushed: { doNotDisturb })
+        return TickerStore(settings: settings, providers: hub, preview: shared.closedNotchPreview,
+                           celebrations: center)
+    }
+
+    func testAMeetingAboutToStartGlowsWithAJoinButton() {
+        guard case .meeting(let meeting) = makeTicker(doNotDisturb: false).item else {
+            return XCTFail("expected the meeting preview")
+        }
+        XCTAssertTrue(meeting.isNudging)
+        XCTAssertTrue(meeting.offersJoin)
+        XCTAssertEqual(meeting.link, MeetingModule.call)
+    }
+
+    func testDoNotDisturbKeepsTheMeetingStill() {
+        guard case .meeting(let meeting) = makeTicker(doNotDisturb: true).item else {
+            return XCTFail("expected the meeting preview")
+        }
+        XCTAssertFalse(meeting.isNudging)
+        XCTAssertTrue(meeting.offersJoin, "the Join button still helps")
+    }
+}

@@ -98,11 +98,28 @@ public struct TickerMeeting: Hashable, Sendable {
     public var timing: EventTiming
     /// Whether the event carries a video-call link, so the opened panel can offer "Join".
     public var canJoin: Bool
+    /// The call to join, which the closed notch offers once the meeting is
+    /// close (`offersJoin`).
+    public var link: MeetingLink?
+    /// The "leave now" pulse is playing (`MeetingNudge`).
+    public var isNudging: Bool
 
-    public init(title: String, timing: EventTiming, canJoin: Bool) {
+    public init(title: String, timing: EventTiming, canJoin: Bool, link: MeetingLink? = nil, isNudging: Bool = false) {
         self.title = title
         self.timing = timing
-        self.canJoin = canJoin
+        self.canJoin = canJoin || link != nil
+        self.link = link
+        self.isNudging = isNudging
+    }
+
+    /// Whether the closed notch shows a Join button: the meeting has a call
+    /// and starts within `TickerSources.pinLeadTime` or is under way.
+    public var offersJoin: Bool {
+        guard link != nil else { return false }
+        switch timing {
+        case .now: return true
+        case .startsIn(let minutes): return TimeInterval(minutes * 60) <= TickerSources.pinLeadTime
+        }
     }
 }
 
@@ -359,6 +376,13 @@ public struct TickerSources: Equatable, Sendable {
         nextChange(after: now) { enabled.contains($0) }
     }
 
+    /// The next meeting that starts within `pinLeadTime` (not yet under
+    /// way), which the meeting preview shows ahead of one in progress.
+    public func imminentMeeting(at now: Date) -> UpcomingEvent? {
+        UpcomingEvent.upNext(from: events, at: now, limit: events.count)
+            .first { $0.start > now && $0.start.timeIntervalSince(now) <= Self.pinLeadTime }
+    }
+
     /// Each module's live highlight with the highest priority (ties keep the
     /// module's own order), ordered by priority with ties in tab order.
     private func topHighlights(at now: Date) -> [TickerHighlight] {
@@ -382,14 +406,14 @@ public struct TickerSources: Equatable, Sendable {
         case .meeting:
             // A meeting about to start beats one already under way, so a long
             // block can't hide "Standup in 3 min".
-            let upcoming = UpcomingEvent.upNext(from: events, at: now, limit: events.count)
-            let imminent = upcoming.first { $0.start > now && $0.start.timeIntervalSince(now) <= Self.pinLeadTime }
-            guard let event = imminent ?? upcoming.first,
+            guard let event = imminentMeeting(at: now)
+                    ?? UpcomingEvent.upNext(from: events, at: now, limit: events.count).first,
                   event.start.timeIntervalSince(now) <= Self.meetingHorizon else { return nil }
             return .meeting(TickerMeeting(
                 title: UpcomingEventFormat.title(event),
                 timing: event.timing(at: now),
-                canJoin: event.meetingLink != nil
+                canJoin: event.meetingLink != nil,
+                link: event.meetingLink
             ))
         case .nowPlaying:
             return isMusicPlaying ? .nowPlaying : nil
