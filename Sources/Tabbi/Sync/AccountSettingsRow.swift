@@ -54,7 +54,7 @@ struct AccountSettingsRow: View {
     private var controls: some View {
         switch account.phase {
         case .signedOut where account.ageStatus == .unanswered:
-            Button("Sign In…") { asksAge = true }
+            Button(String(localized: "Sign In…", bundle: .tabbi)) { asksAge = true }
                 .help(String(localized: "Sign in with your Apple Account to sync your pet across your Macs", bundle: .tabbi))
         case .signedOut where account.ageStatus != .passed:
             // Too young: the caption says when signing in opens.
