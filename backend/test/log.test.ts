@@ -2,7 +2,8 @@ import { runInDurableObject } from "cloudflare:test";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { HEALTH_MAX_FAILURES, HEALTH_WINDOW_S, type Hub } from "../src/hub";
 import { REQUEST_SAMPLE_RATE, SLOW_REQUEST_MS, errorFields, requestLog, routeOf } from "../src/log";
-import { call, expectError, hub, register } from "./helpers";
+import worker, { type Env } from "../src/index";
+import { BASE, call, expectError, hub, register } from "./helpers";
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -128,5 +129,51 @@ describe("GET /v1/health", () => {
     await runInDurableObject(hub(), (instance: Hub) => {
       expect((instance as unknown as { failures: number[] }).failures.length).toBeGreaterThan(0);
     });
+  });
+});
+
+describe("the Worker when the Hub cannot be reached", () => {
+  /** An env whose Hub stub throws the way a Durable Object that is overloaded or resetting does. */
+  const unreachableHub = (hubFetches: string[]) => ({
+    HUB: {
+      idFromName: (name: string) => name,
+      get: () => ({
+        fetch: async (req: Request) => {
+          hubFetches.push(new URL(req.url).pathname);
+          throw new Error("Durable Object reset because its code was updated.\nat Hub.fetch (hub.ts:1)");
+        },
+      }),
+    },
+  }) as unknown as Env;
+
+  it("answers 503 unavailable as JSON with CORS and logs why, without request details", async () => {
+    const hubFetches: string[] = [];
+    let res!: Response;
+    const { lines, raw } = await captureLogs(async () => {
+      res = await worker.fetch(new Request(BASE + "/v1/friends/AB3D5F7H", {
+        method: "POST", headers: { Authorization: "Bearer " + "a".repeat(64), "CF-Connecting-IP": "10.9.9.9" }, body: "{}",
+      }), unreachableHub(hubFetches));
+    });
+    expect(res.status).toBe(503);
+    expect(res.headers.get("Access-Control-Allow-Origin")).toBe("*");
+    expect(await res.json()).toEqual({ ok: false, error: "unavailable", message: "service temporarily unavailable" });
+    expect(hubFetches).toEqual(["/v1/friends/AB3D5F7H"]);
+    expect(lines).toContainEqual({ level: "error", event: "hub_unreachable", errorName: "Error", errorMessage: "Durable Object reset because its code was updated." });
+    // A 5xx is always logged, under its route only.
+    expect(lines).toContainEqual(expect.objectContaining({ level: "error", event: "request", route: "/v1/friends/:id", status: 503 }));
+    expect(raw).not.toContain("AB3D5F7H");
+    expect(raw).not.toContain("a".repeat(64));
+    expect(raw).not.toContain("10.9.9.9");
+  });
+
+  it("still answers the health check, the catalog and preflights itself", async () => {
+    const hubFetches: string[] = [];
+    await captureLogs(async () => {
+      expect((await worker.fetch(new Request(BASE + "/"), unreachableHub(hubFetches))).status).toBe(200);
+      expect((await worker.fetch(new Request(BASE + "/v1/catalog"), unreachableHub(hubFetches))).status).toBe(200);
+      expect((await worker.fetch(new Request(BASE + "/v1/sync", { method: "OPTIONS" }), unreachableHub(hubFetches))).status).toBe(204);
+      expect((await worker.fetch(new Request(BASE + "/wp-login.php"), unreachableHub(hubFetches))).status).toBe(404);
+    });
+    expect(hubFetches).toEqual([]);
   });
 });

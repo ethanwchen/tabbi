@@ -279,6 +279,15 @@ describe("POST /v1/auth/apple", () => {
     expectError(await signIn({ identityToken: "a.b.c", email: "x@y.z" }), 400, "unknown_field");
   });
 
+  it("still signs in when Apple's token endpoint cannot be reached", async () => {
+    apple.unreachable.add(APPLE_TOKEN_URL);
+    const r = await signIn({ identityToken: await identityToken("sub.tokendown"), authorizationCode: "c" });
+    expect(r.status).toBe(200);
+    expect(r.body.newAccount).toBe(true);
+    expect(apple.calls.filter((c) => c.url === APPLE_TOKEN_URL)).toHaveLength(1);
+    expect(await storedAccounts(r.body.code)).toEqual([{ apple_sub: "sub.tokendown", refresh_token: null }]);
+  });
+
   it("signs in as a new caller when the Bearer token no longer resolves", async () => {
     const stale = "f".repeat(64);
     const r = await signIn({ identityToken: await identityToken("sub.badbearer") }, stale);
@@ -355,6 +364,15 @@ describe("POST /v1/auth/apple", () => {
     expectError(await signIn({ identityToken: await identityToken("sub.down") }), 503, "apple_unavailable");
   });
 
+  it("is 503 when Apple's keys endpoint cannot be reached, and creates no account", async () => {
+    apple.unreachable.add(APPLE_KEYS_URL);
+    const before = await runInDurableObject(hub(), (_, state) =>
+      state.storage.sql.exec<{ n: number }>("SELECT COUNT(*) AS n FROM users").one().n);
+    expectError(await signIn({ identityToken: await identityToken("sub.keysdown") }), 503, "apple_unavailable");
+    expect(await runInDurableObject(hub(), (_, state) =>
+      state.storage.sql.exec<{ n: number }>("SELECT COUNT(*) AS n FROM users").one().n)).toBe(before);
+  });
+
   it("caches Apple's keys between sign-ins", async () => {
     await signIn({ identityToken: await identityToken("sub.cache.1") });
     await signIn({ identityToken: await identityToken("sub.cache.2") });
@@ -394,6 +412,30 @@ describe("DELETE /v1/me with an Apple account", () => {
     const again = await signIn({ identityToken: await identityToken("sub.delete") });
     expect(again.body.newAccount).toBe(true);
     expect(again.body.code).not.toBe(mac1.code);
+  });
+
+  it("deletes the account even when Apple refuses the revoke, and says the revoke did not go through", async () => {
+    const mac = await register();
+    await signIn({ identityToken: await identityToken("sub.delete.refused"), authorizationCode: "c" }, mac.token);
+    apple.revokeStatus = 400;
+    expect((await call("DELETE", "/v1/me", undefined, mac.token)).body).toEqual({ ok: true, appleRevoked: false });
+    expect(apple.calls.filter((c) => c.url === APPLE_REVOKE_URL)).toHaveLength(1);
+    expectError(await call("GET", "/v1/me", undefined, mac.token), 401, "unauthorized");
+    expect(await storedAccounts(mac.code)).toEqual([]);
+  });
+
+  it("deletes the account even when Apple cannot be reached for the revoke", async () => {
+    const r = await signIn({ identityToken: await identityToken("sub.delete.down"), authorizationCode: "c" });
+    const friend = await register();
+    await call("POST", "/v1/friends", { code: friend.code }, r.body.token);
+    apple.unreachable.add(APPLE_REVOKE_URL);
+    expect((await call("DELETE", "/v1/me", undefined, r.body.token)).body).toEqual({ ok: true, appleRevoked: false });
+    expectError(await call("GET", "/v1/me", undefined, r.body.token), 401, "unauthorized");
+    expect((await call("GET", "/v1/friends", undefined, friend.token)).body.friends).toEqual([]);
+    expect(await storedAccounts(r.body.code)).toEqual([]);
+    // Nothing is left that would retry the revoke or block a fresh sign-up.
+    apple.unreachable.clear();
+    expect((await signIn({ identityToken: await identityToken("sub.delete.down") })).body.newAccount).toBe(true);
   });
 
   it("skips the revoke without a stored refresh token", async () => {
