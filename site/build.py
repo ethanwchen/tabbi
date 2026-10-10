@@ -16,7 +16,7 @@ import zipfile
 from html.parser import HTMLParser
 
 from _partials import page, download_button, PAW, DOWNLOAD, DOWNLOAD_ICON, GITHUB, ISSUES, ORIGIN, RELEASES_URL, SUGGESTIONS, SUPPORT_EMAIL
-from _releases import RELEASES
+from _releases import RELEASES, VERSION
 from _legal import PRIVACY, PRIVACY_HERO, TERMS, TERMS_HERO
 from _demo import DEMO, demo_data
 
@@ -195,6 +195,7 @@ SOFTWARE_APP = {
     'screenshot': ORIGIN + '/img/social-preview.png',
     'applicationCategory': 'ProductivityApplication',
     'operatingSystem': 'macOS 14 or later',
+    'softwareVersion': VERSION,
     'downloadUrl': DOWNLOAD,
     'softwareHelp': ORIGIN + '/support',
     'isAccessibleForFree': True,
