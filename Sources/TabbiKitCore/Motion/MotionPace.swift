@@ -22,18 +22,18 @@ public enum MotionPace: String, CaseIterable, Sendable {
 
     public var title: String {
         switch self {
-        case .smooth: "Smooth"
-        case .fast: "Fast"
-        case .instant: "Instant"
+        case .smooth: String(localized: "Smooth", bundle: .tabbi)
+        case .fast: String(localized: "Fast", bundle: .tabbi)
+        case .instant: String(localized: "Instant", bundle: .tabbi)
         }
     }
 
     /// One line for Settings saying what the choice feels like.
     public var caption: String {
         switch self {
-        case .smooth: "Springy, with a little bounce."
-        case .fast: "Quick and crisp, with no bounce."
-        case .instant: "Changes appear at once, with no animation."
+        case .smooth: String(localized: "Springy, with a little bounce.", bundle: .tabbi)
+        case .fast: String(localized: "Quick and crisp, with no bounce.", bundle: .tabbi)
+        case .instant: String(localized: "Changes appear at once, with no animation.", bundle: .tabbi)
         }
     }
 

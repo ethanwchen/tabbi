@@ -19,14 +19,14 @@ public enum ConnectionKind: String, CaseIterable, Identifiable, Hashable, Sendab
     /// The row's name.
     public var title: String {
         switch self {
-        case .calendar: "Calendar"
+        case .calendar: String(localized: "Calendar", bundle: .tabbi)
         case .anki: "Anki"
         case .spotify: "Spotify"
         case .music: "Apple Music"
-        case .notifications: "Alerts"
-        case .doNotDisturb: "Do Not Disturb"
+        case .notifications: String(localized: "Alerts", bundle: .tabbi)
+        case .doNotDisturb: String(localized: "Do Not Disturb", bundle: .tabbi)
         case .claude: "Claude"
-        case .party: "Party"
+        case .party: String(localized: "Party", bundle: .tabbi)
         }
     }
 
@@ -48,14 +48,14 @@ public enum ConnectionKind: String, CaseIterable, Identifiable, Hashable, Sendab
     /// fit beside the widest button without wrapping.
     public var unlocks: String {
         switch self {
-        case .calendar: "See today's events in the notch."
-        case .anki: "See due cards and start reviews."
-        case .spotify: "Play, pause and skip on Spotify."
-        case .music: "Play, pause and skip in Apple Music."
-        case .notifications: "Get an alert when a timer ends."
-        case .doNotDisturb: "Quiet other alerts while you focus."
-        case .claude: "Powers Claude usage and answers."
-        case .party: "Study with friends, see their timers."
+        case .calendar: String(localized: "See today's events in the notch.", bundle: .tabbi)
+        case .anki: String(localized: "See due cards and start reviews.", bundle: .tabbi)
+        case .spotify: String(localized: "Play, pause and skip on Spotify.", bundle: .tabbi)
+        case .music: String(localized: "Play, pause and skip in Apple Music.", bundle: .tabbi)
+        case .notifications: String(localized: "Get an alert when a timer ends.", bundle: .tabbi)
+        case .doNotDisturb: String(localized: "Quiet other alerts while you focus.", bundle: .tabbi)
+        case .claude: String(localized: "Powers Claude usage and answers.", bundle: .tabbi)
+        case .party: String(localized: "Study with friends, see their timers.", bundle: .tabbi)
         }
     }
 

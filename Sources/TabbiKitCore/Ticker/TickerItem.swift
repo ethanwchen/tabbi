@@ -64,13 +64,13 @@ public struct TickerKind: RawRepresentable, Hashable, Codable, Sendable, Identif
     /// its descriptor's `highlightTitle`.
     public func title(in catalog: ModuleCatalog) -> String {
         switch self {
-        case .meeting: "Next meeting"
-        case .nowPlaying: "Now playing"
-        case .focus: "Focus timer"
-        case .tasks: "Tasks left today"
-        case .progress: "Goals left today"
-        case .pet: "Pet"
-        case .party: "Party pets"
+        case .meeting: String(localized: "Next meeting", bundle: .tabbi)
+        case .nowPlaying: String(localized: "Now Playing", bundle: .tabbi)
+        case .focus: String(localized: "Focus timer", bundle: .tabbi)
+        case .tasks: String(localized: "Tasks left today", bundle: .tabbi)
+        case .progress: String(localized: "Goals left today", bundle: .tabbi)
+        case .pet: String(localized: "Pet", bundle: .tabbi)
+        case .party: String(localized: "Party pets", bundle: .tabbi)
         default: catalog.descriptor(for: ModuleID(rawValue: rawValue)).highlightTitle
             ?? catalog.descriptor(for: ModuleID(rawValue: rawValue)).title
         }

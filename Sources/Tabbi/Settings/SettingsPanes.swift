@@ -18,18 +18,18 @@ private struct YourNameRow: View {
 
     var body: some View {
         LabeledContent {
-            TextField("Your name", text: name, prompt: Text("Your name"))
+            TextField(String(localized: "Your name", bundle: .tabbi), text: name, prompt: Text("Your name", bundle: .tabbi))
                 .labelsHidden()
                 .textFieldStyle(.roundedBorder)
                 .multilineTextAlignment(.leading)
                 .frame(width: 160)
-                .help("Your name, up to \(DisplayName.maxLength) characters")
+                .help(String(localized: "Your name, up to \(DisplayName.maxLength) characters", bundle: .tabbi))
         } label: {
-            Text("Your name")
+            Text("Your name", bundle: .tabbi)
             // Editions without Party (the App Store) only greet with it.
             Text(catalog.contains(PartyModule.descriptor.id)
-                 ? "Shown to friends in Party and used to greet you."
-                 : "Used to greet you.")
+                 ? String(localized: "Shown to friends in Party and used to greet you.", bundle: .tabbi)
+                 : String(localized: "Used to greet you.", bundle: .tabbi))
         }
     }
 
@@ -58,9 +58,9 @@ struct GeneralSettingsPane: View {
             }
 
             Section {
-                Toggle("Launch at login", isOn: launchAtLogin)
+                Toggle(String(localized: "Launch at login", bundle: .tabbi), isOn: launchAtLogin)
                     .disabled(!store.loginItem.isAvailable && store.integratesWithSystem)
-                    .help("Start \(Edition.current.name) automatically when you log in")
+                    .help(String(localized: "Start \(Edition.current.name) automatically when you log in", bundle: .tabbi))
                 if let caption = launchAtLoginCaption {
                     Text(caption)
                         .font(.callout)
@@ -71,32 +71,32 @@ struct GeneralSettingsPane: View {
                         Text(mode.title).tag(mode)
                     }
                 } label: {
-                    Text("Notch")
+                    Text("Notch", bundle: .tabbi)
                     Text(notchModeCaption)
                 }
-                .help("Choose when the notch is drawn. The shortcut always opens it.")
-                Picker("Panel size", selection: $store.settings.panelSize) {
+                .help(String(localized: "Choose when the notch is drawn. The shortcut always opens it.", bundle: .tabbi))
+                Picker(String(localized: "Panel size", bundle: .tabbi), selection: $store.settings.panelSize) {
                     ForEach(PanelSize.allCases, id: \.self) { size in
                         Text(size.title).tag(size)
                     }
                 }
                 .pickerStyle(.segmented)
-                .help("Choose how big the open notch is. Every tab uses the same size.")
+                .help(String(localized: "Choose how big the open notch is. Every tab uses the same size.", bundle: .tabbi))
                 Toggle(isOn: $store.settings.openOnHover) {
-                    Text("Open on hover")
-                    Text("Opens the notch when the pointer rests on it.")
+                    Text("Open on hover", bundle: .tabbi)
+                    Text("Opens the notch when the pointer rests on it.", bundle: .tabbi)
                 }
-                .help("Open the notch after hovering it briefly")
+                .help(String(localized: "Open the notch after hovering it briefly", bundle: .tabbi))
                 Toggle(isOn: $store.settings.notchPreview.isEnabled) {
-                    Text("Show live activity")
-                    Text("Meetings, music and timers beside the closed notch.")
+                    Text("Show live activity", bundle: .tabbi)
+                    Text("Meetings, music and timers beside the closed notch.", bundle: .tabbi)
                 }
-                .help("Show a small live preview beside the closed notch")
+                .help(String(localized: "Show a small live preview beside the closed notch", bundle: .tabbi))
                 Toggle(isOn: $store.settings.hideInFullscreen) {
-                    Text("Hide in fullscreen")
-                    Text("Steps aside while a video, game or app is fullscreen.")
+                    Text("Hide in fullscreen", bundle: .tabbi)
+                    Text("Steps aside while a video, game or app is fullscreen.", bundle: .tabbi)
                 }
-                .help("Hide the notch while an app is fullscreen on its display. The shortcut still opens it.")
+                .help(String(localized: "Hide the notch while an app is fullscreen on its display. The shortcut still opens it.", bundle: .tabbi))
             }
 
             ShortcutSection()
@@ -110,12 +110,12 @@ struct GeneralSettingsPane: View {
             }
 
             ResetToDefaultsRow(isAtDefaults: store.usesGeneralDefaults,
-                               help: "Put General back the way a new install has it. Launch at login stays as it is.",
+                               help: String(localized: "Put General back the way a new install has it. Launch at login stays as it is.", bundle: .tabbi),
                                reset: store.resetGeneral) {
                 // Command-Q itself lives in the hidden app menu, so it
                 // also works while the notch is open.
-                Button("Quit \(Edition.current.name)") { NSApp.terminate(nil) }
-                    .help("Quit \(Edition.current.name) and close the notch until you open it again (\u{2318}Q)")
+                Button(String(localized: "Quit \(Edition.current.name)", bundle: .tabbi)) { NSApp.terminate(nil) }
+                    .help(String(localized: "Quit \(Edition.current.name) and close the notch until you open it again (\u{2318}Q)", bundle: .tabbi))
             }
         }
         .formStyle(.grouped)
@@ -138,13 +138,13 @@ struct GeneralSettingsPane: View {
 
         Section {
             Toggle(isOn: $store.settings.showOnExternalDisplays) {
-                Text("Show on external displays")
-                Text("When off, the notch hides while the lid is closed.")
+                Text("Show on external displays", bundle: .tabbi)
+                Text("When off, the notch hides while the lid is closed.", bundle: .tabbi)
             }
-            .help("Allow the notch on displays other than the built-in one")
-            Picker("Show notch on", selection: $store.settings.preferredDisplay) {
-                Text("Built-in display").tag(DisplayPreference.builtIn)
-                Text("Main display").tag(DisplayPreference.main)
+            .help(String(localized: "Allow the notch on displays other than the built-in one", bundle: .tabbi))
+            Picker(String(localized: "Show notch on", bundle: .tabbi), selection: $store.settings.preferredDisplay) {
+                Text("Built-in display", bundle: .tabbi).tag(DisplayPreference.builtIn)
+                Text("Main display", bundle: .tabbi).tag(DisplayPreference.main)
                 let options = DisplayOption.specificOptions(screens: screens, selected: store.settings.preferredDisplay)
                 if !options.isEmpty {
                     Divider()
@@ -154,9 +154,9 @@ struct GeneralSettingsPane: View {
                 }
             }
             .disabled(!store.settings.showOnExternalDisplays)
-            .help("Choose which display shows the notch. It falls back to the built-in display when this one is disconnected.")
+            .help(String(localized: "Choose which display shows the notch. It falls back to the built-in display when this one is disconnected.", bundle: .tabbi))
         } header: {
-            Text("Display")
+            Text("Display", bundle: .tabbi)
         }
 
         PrivacySection()
@@ -172,9 +172,9 @@ struct GeneralSettingsPane: View {
     /// Says what the chosen mode does, and in Hidden mode how to get back.
     private var notchModeCaption: String {
         switch store.settings.notchMode {
-        case .alwaysVisible: "Always drawn around the hardware notch."
-        case .showOnHover: "Appears when the pointer reaches the top center."
-        case .hidden: "Out of sight. Press \(store.settings.hotkey.displayString) to open it."
+        case .alwaysVisible: String(localized: "Always drawn around the hardware notch.", bundle: .tabbi)
+        case .showOnHover: String(localized: "Appears when the pointer reaches the top center.", bundle: .tabbi)
+        case .hidden: String(localized: "Out of sight. Press \(store.settings.hotkey.displayString) to open it.", bundle: .tabbi)
         }
     }
 
@@ -182,10 +182,10 @@ struct GeneralSettingsPane: View {
         if let error = store.launchAtLoginError { return error }
         guard store.integratesWithSystem else { return nil }
         if !store.loginItem.isAvailable {
-            return "Available when \(Edition.current.name) runs as an app bundle."
+            return String(localized: "Available when \(Edition.current.name) runs as an app bundle.", bundle: .tabbi)
         }
         if store.launchAtLoginNeedsApproval {
-            return "Allow \(Edition.current.name) in System Settings › General › Login Items."
+            return String(localized: "Allow \(Edition.current.name) in System Settings › General › Login Items.", bundle: .tabbi)
         }
         return nil
     }
@@ -209,7 +209,7 @@ struct DisplayOption: Identifiable, Equatable {
     /// when it is disconnected so the picker never shows an empty selection.
     static func specificOptions(screens: [DisplayOption], selected: DisplayPreference) -> [DisplayOption] {
         guard case .specific(let id) = selected, !screens.contains(where: { $0.id == id }) else { return screens }
-        return screens + [DisplayOption(id: id, name: "Disconnected display")]
+        return screens + [DisplayOption(id: id, name: String(localized: "Disconnected display", bundle: .tabbi))]
     }
 }
 
@@ -246,7 +246,7 @@ struct MoreOptionsToggle: View {
             isExpanded.toggle()
         } label: {
             HStack {
-                Text("More options")
+                Text("More options", bundle: .tabbi)
                 Spacer()
                 Image(systemName: "chevron.right")
                     .font(.system(size: 11, weight: .semibold))
@@ -257,7 +257,7 @@ struct MoreOptionsToggle: View {
         }
         .buttonStyle(.plain)
         .onHover { isHovering = $0 }
-        .help(isExpanded ? "Hide the less common settings" : "Show the less common settings")
+        .help(isExpanded ? String(localized: "Hide the less common settings", bundle: .tabbi) : String(localized: "Show the less common settings", bundle: .tabbi))
     }
 }
 
@@ -273,7 +273,7 @@ struct ResetToDefaultsRow<Leading: View>: View {
     let leading: Leading
     @State private var didReset = false
 
-    init(isAtDefaults: Bool, help: String, title: String = "Reset to Defaults",
+    init(isAtDefaults: Bool, help: String, title: String = String(localized: "Reset to Defaults", bundle: .tabbi),
          reset: @escaping () -> Void, @ViewBuilder leading: () -> Leading) {
         self.isAtDefaults = isAtDefaults
         self.help = help
@@ -288,7 +288,7 @@ struct ResetToDefaultsRow<Leading: View>: View {
                 leading
                 Spacer()
                 if didReset {
-                    Label("Back to defaults", systemImage: "checkmark.circle.fill")
+                    Label(String(localized: "Back to defaults", bundle: .tabbi), systemImage: "checkmark.circle.fill")
                         .font(.callout)
                         .foregroundStyle(.secondary)
                         .transition(.opacity)
@@ -298,7 +298,7 @@ struct ResetToDefaultsRow<Leading: View>: View {
                     didReset = true
                 }
                 .disabled(isAtDefaults)
-                .help(isAtDefaults ? "Everything here is already at its default" : help)
+                .help(isAtDefaults ? String(localized: "Everything here is already at its default", bundle: .tabbi) : help)
             }
             .motion(Motion.snappy, value: didReset)
         }
@@ -311,7 +311,7 @@ struct ResetToDefaultsRow<Leading: View>: View {
 }
 
 extension ResetToDefaultsRow where Leading == EmptyView {
-    init(isAtDefaults: Bool, help: String, title: String = "Reset to Defaults", reset: @escaping () -> Void) {
+    init(isAtDefaults: Bool, help: String, title: String = String(localized: "Reset to Defaults", bundle: .tabbi), reset: @escaping () -> Void) {
         self.init(isAtDefaults: isAtDefaults, help: help, title: title, reset: reset) { EmptyView() }
     }
 }
@@ -340,15 +340,15 @@ struct ModulesSettingsPane: View {
                     tabRow(module)
                 }
             } header: {
-                Text("Your tabs")
+                Text("Your tabs", bundle: .tabbi)
             } footer: {
-                SectionFooter("Drag to reorder, or select a tab and press Option-Up or Option-Down. At least one tab stays.")
+                SectionFooter(String(localized: "Drag to reorder, or select a tab and press Option-Up or Option-Down. At least one tab stays.", bundle: .tabbi))
             }
 
             Section {
                 let available = store.settings.modules.available
                 if available.isEmpty {
-                    Text("Every module is already a tab.")
+                    Text("Every module is already a tab.", bundle: .tabbi)
                         .foregroundStyle(.secondary)
                 } else {
                     ForEach(available) { module in
@@ -356,7 +356,7 @@ struct ModulesSettingsPane: View {
                     }
                 }
             } header: {
-                Text("Add more")
+                Text("Add more", bundle: .tabbi)
             }
         }
         .formStyle(.grouped)
@@ -395,9 +395,9 @@ struct ModuleOptionsSheet: View {
             Divider()
             HStack {
                 Spacer()
-                Button("Done", action: done)
+                Button(String(localized: "Done", bundle: .tabbi), action: done)
                     .keyboardShortcut(.defaultAction)
-                    .help("Close \(pane.title) settings")
+                    .help(String(localized: "Close \(pane.title) settings", bundle: .tabbi))
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 12)
@@ -433,12 +433,12 @@ private struct KitSection: View {
                     Label(kit.name, systemImage: kit.symbol).tag(kit.id)
                 }
             } label: {
-                Text("Kit")
+                Text("Kit", bundle: .tabbi)
                 if let summary = store.activeKit?.summary, !summary.isEmpty {
                     Text(summary)
                 }
             }
-            .help("Switching kits replaces your tabs with the kit's")
+            .help(String(localized: "Switching kits replaces your tabs with the kit's", bundle: .tabbi))
 
             if let message {
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
@@ -448,10 +448,10 @@ private struct KitSection: View {
                         .fixedSize(horizontal: false, vertical: true)
                     Spacer()
                     if !message.isWarning, let undo = store.lastKitSwitch {
-                        Button("Undo", action: undoSwitch)
+                        Button(String(localized: "Undo", bundle: .tabbi), action: undoSwitch)
                             .help(undo.switchedKit
-                                  ? "Go back to the tabs and kit you had before \(undo.kitName)"
-                                  : "Take back this import of \(undo.kitName)")
+                                  ? String(localized: "Go back to the tabs and kit you had before \(undo.kitName)", bundle: .tabbi)
+                                  : String(localized: "Take back this import of \(undo.kitName)", bundle: .tabbi))
                     }
                 }
             }
@@ -459,31 +459,31 @@ private struct KitSection: View {
             MoreOptionsToggle(isExpanded: $showsMore)
             if showsMore {
                 HStack(spacing: 8) {
-                    Button("Import Kit…", action: importKit)
-                        .help("Add a kit someone shared as a .json file; you see what it changes first")
+                    Button(String(localized: "Import Kit…", bundle: .tabbi), action: importKit)
+                        .help(String(localized: "Add a kit someone shared as a .json file; you see what it changes first", bundle: .tabbi))
                     if store.canRemoveActiveKit {
-                        Button("Remove Kit", role: .destructive, action: removeKit)
-                            .help("Delete this imported kit and go back to the default kit")
+                        Button(String(localized: "Remove Kit", bundle: .tabbi), role: .destructive, action: removeKit)
+                            .help(String(localized: "Delete this imported kit and go back to the default kit", bundle: .tabbi))
                     }
                     if let runSetup {
-                        Button("Run Setup Again") {
+                        Button(String(localized: "Run Setup Again", bundle: .tabbi)) {
                             // Setup runs in the notch; Settings steps aside.
                             NSApp.keyWindow?.close()
                             runSetup()
                         }
-                        .help("Pick a kit, your tabs and what they need again, in the notch")
+                        .help(String(localized: "Pick a kit, your tabs and what they need again, in the notch", bundle: .tabbi))
                     }
                     Spacer()
-                    Button("Reset to Kit Defaults", action: store.resetToKitDefaults)
+                    Button(String(localized: "Reset to Kit Defaults", bundle: .tabbi), action: store.resetToKitDefaults)
                         .disabled(usesKitDefaults)
                         .help(usesKitDefaults
-                              ? "Your setup already matches \(store.activeKit?.name ?? "the kit")"
-                              : "Restore the tabs, previews and focus sound \(store.activeKit?.name ?? "the kit") ships with")
+                              ? String(localized: "Your setup already matches \(store.activeKit?.name ?? String(localized: "the kit", bundle: .tabbi))", bundle: .tabbi)
+                              : String(localized: "Restore the tabs, previews and focus sound \(store.activeKit?.name ?? String(localized: "the kit", bundle: .tabbi)) ships with", bundle: .tabbi))
                 }
             }
 
         } footer: {
-            SectionFooter("A kit is a ready-made set of tabs. Switching replaces your tabs and adds its starter tasks to Today.")
+            SectionFooter(String(localized: "A kit is a ready-made set of tabs. Switching replaces your tabs and adds its starter tasks to Today.", bundle: .tabbi))
         }
         .onReceive(store.activeKit.map(modulesUseKitDefaults) ?? Just(true).eraseToAnyPublisher()) {
             modulesMatchKit = $0
@@ -538,15 +538,15 @@ private struct KitSection: View {
 
     private func switchKit(to id: String, answers: KitAnswers) {
         store.switchKit(to: id, answers: answers)
-        message = ("Switched to \(store.activeKit?.name ?? "the kit").", false)
+        message = (String(localized: "Switched to \(store.activeKit?.name ?? String(localized: "the kit", bundle: .tabbi)).", bundle: .tabbi), false)
     }
 
     /// Reads and checks the picked file, then shows the kit's questions (if
     /// any) and what it changes; nothing is saved before the user confirms.
     private func importKit() {
         let panel = NSOpenPanel()
-        panel.title = "Import a Kit"
-        panel.prompt = "Import"
+        panel.title = String(localized: "Import a Kit", bundle: .tabbi)
+        panel.prompt = String(localized: "Import", bundle: .tabbi)
         panel.allowedContentTypes = [.json]
         panel.canChooseDirectories = false
         panel.allowsMultipleSelection = false
@@ -574,23 +574,23 @@ private struct KitSection: View {
             try store.installKit(candidate, switchingWith: answers)
             let note: String
             switch (answers != nil, kit.id == store.settings.kitID) {
-            case (true, _): note = candidate.overwritesFile ? "Updated \(kit.name) and applied it." : "Imported \(kit.name) and switched to it."
-            case (false, true): note = "Updated \(kit.name); your tabs are unchanged."
-            case (false, false): note = "Imported \(kit.name). Pick it under Kit to use it."
+            case (true, _): note = candidate.overwritesFile ? String(localized: "Updated \(kit.name) and applied it.", bundle: .tabbi) : String(localized: "Imported \(kit.name) and switched to it.", bundle: .tabbi)
+            case (false, true): note = String(localized: "Updated \(kit.name); your tabs are unchanged.", bundle: .tabbi)
+            case (false, false): note = String(localized: "Imported \(kit.name). Pick it under Kit to use it.", bundle: .tabbi)
             }
             message = (note, false)
         } catch {
-            message = ("Couldn't import \(kit.name): \(error)", true)
+            message = (String(localized: "Couldn't import \(kit.name): \(String(describing: error))", bundle: .tabbi), true)
         }
     }
 
     private func removeKit() {
-        let name = store.activeKit?.name ?? "The kit"
+        let name = store.activeKit?.name ?? String(localized: "The kit", bundle: .tabbi)
         do {
             try store.removeActiveKit()
-            message = ("Removed \(name).", false)
+            message = (String(localized: "Removed \(name).", bundle: .tabbi), false)
         } catch {
-            message = ("Couldn't remove \(name): \(error.localizedDescription)", true)
+            message = (String(localized: "Couldn't remove \(name): \(error.localizedDescription)", bundle: .tabbi), true)
         }
     }
 
@@ -598,9 +598,9 @@ private struct KitSection: View {
         let undone = store.lastKitSwitch
         store.undoKitSwitch()
         if let undone, !undone.switchedKit {
-            message = ("Took back the import of \(undone.kitName).", false)
+            message = (String(localized: "Took back the import of \(undone.kitName).", bundle: .tabbi), false)
         } else {
-            message = ("Back to \(store.activeKit?.name ?? "your previous kit").", false)
+            message = (String(localized: "Back to \(store.activeKit?.name ?? String(localized: "your previous kit", bundle: .tabbi)).", bundle: .tabbi), false)
         }
     }
 }
@@ -683,16 +683,16 @@ private struct TabRow: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(module.title)
                 if isHeaderShortcut {
-                    Text("A button at the far right of the tab bar")
+                    Text("A button at the far right of the tab bar", bundle: .tabbi)
                         .font(.callout)
                         .foregroundStyle(.secondary)
                 }
             }
             Spacer()
             if hasOptions {
-                Button("Options…", action: openOptions)
+                Button(String(localized: "Options…", bundle: .tabbi), action: openOptions)
                     .controlSize(.small)
-                    .help("\(module.title) settings")
+                    .help(String(localized: "\(module.title) settings", bundle: .tabbi))
             }
             RemoveTabButton(title: module.title, canRemove: canRemove) { layout.remove(module.id) }
         }
@@ -719,7 +719,7 @@ private struct DragHandle: View {
                 if inside { NSCursor.openHand.push() } else { NSCursor.pop() }
             }
             .onDisappear { if isHovering { NSCursor.pop() } }
-            .help(isHidden ? "" : "Drag to reorder")
+            .help(isHidden ? "" : String(localized: "Drag to reorder", bundle: .tabbi))
             .accessibilityHidden(true)
     }
 }
@@ -771,8 +771,8 @@ private struct TabReorderList<Row: View>: View {
                         return .handled
                     }
                     .accessibilityElement(children: .contain)
-                    .accessibilityAction(named: "Move up") { step(module, by: -1) }
-                    .accessibilityAction(named: "Move down") { step(module, by: 1) }
+                    .accessibilityAction(named: Text("Move up", bundle: .tabbi)) { step(module, by: -1) }
+                    .accessibilityAction(named: Text("Move down", bundle: .tabbi)) { step(module, by: 1) }
             }
         }
         .background(alignment: .top) { dropIndicator }
@@ -827,7 +827,7 @@ private struct TabReorderList<Row: View>: View {
         withMotion(Motion.snappy) { layout.moveTab(module, by: offset) }
         let title = store.catalog.descriptor(for: module).title
         let position = (layout.tabs.firstIndex(of: module) ?? 0) + 1
-        AccessibilityNotification.Announcement("\(title) moved to position \(position) of \(layout.tabs.count)").post()
+        AccessibilityNotification.Announcement(String(localized: "\(title) moved to position \(position) of \(layout.tabs.count)", bundle: .tabbi)).post()
     }
 }
 
@@ -848,8 +848,8 @@ private struct RemoveTabButton: View {
         .buttonStyle(.borderless)
         .disabled(!canRemove)
         .onHover { isHovering = $0 }
-        .accessibilityLabel("Remove \(title)")
-        .help(canRemove ? "Remove \(title) from the notch; it goes back to Add more" : "At least one tab must stay")
+        .accessibilityLabel(String(localized: "Remove \(title)", bundle: .tabbi))
+        .help(canRemove ? String(localized: "Remove \(title) from the notch; it goes back to Add more", bundle: .tabbi) : String(localized: "At least one tab must stay", bundle: .tabbi))
     }
 }
 
@@ -872,9 +872,9 @@ private struct LibraryRow: View {
                     .help(module.summary ?? module.category.title)
             }
             Spacer(minLength: 8)
-            Button("Add") { layout.add(module.id) }
+            Button(String(localized: "Add", bundle: .tabbi)) { layout.add(module.id) }
                 .controlSize(.small)
-                .help("Add \(module.title) as the last tab in the notch")
+                .help(String(localized: "Add \(module.title) as the last tab in the notch", bundle: .tabbi))
         }
     }
 }
@@ -891,19 +891,19 @@ struct FeedbackSection: View {
     var body: some View {
         Section {
             Toggle(isOn: $store.settings.hapticsEnabled) {
-                Text("Haptic feedback")
-                Text("A light trackpad tap at the notch edge and on celebrations.")
+                Text("Haptic feedback", bundle: .tabbi)
+                Text("A light trackpad tap at the notch edge and on celebrations.", bundle: .tabbi)
             }
-            .help("Tap the trackpad when the pointer reaches the notch or a celebration plays")
+            .help(String(localized: "Tap the trackpad when the pointer reaches the notch or a celebration plays", bundle: .tabbi))
             .onChange(of: store.settings.hapticsEnabled) { _, isOn in
                 // Turning it on taps once, so you feel what you picked.
                 if isOn { CelebrationCenter.perform(.levelChange) }
             }
             Toggle(isOn: $store.settings.celebrationSoundEnabled) {
-                Text("Celebration sound")
-                Text("A soft sound when you unlock an item or reach a streak.")
+                Text("Celebration sound", bundle: .tabbi)
+                Text("A soft sound when you unlock an item or reach a streak.", bundle: .tabbi)
             }
-            .help("Play a soft sound with celebrations that have no sound of their own")
+            .help(String(localized: "Play a soft sound with celebrations that have no sound of their own", bundle: .tabbi))
             .onChange(of: store.settings.celebrationSoundEnabled) { _, isOn in
                 // Turning it on plays the sound once, as a preview.
                 if isOn, let sound = CelebrationSound.cue(for: .burst, isEnabled: true, eventHasSound: false) {
@@ -911,21 +911,21 @@ struct FeedbackSection: View {
                 }
             }
             Toggle(isOn: $store.settings.weeklyRecapEnabled) {
-                Text("Weekly recap")
-                Text("A card with your week in the notch every Sunday evening.")
+                Text("Weekly recap", bundle: .tabbi)
+                Text("A card with your week in the notch every Sunday evening.", bundle: .tabbi)
             }
-            .help("Show a recap of your week the first time you open the notch after Sunday 6 pm")
+            .help(String(localized: "Show a recap of your week the first time you open the notch after Sunday 6 pm", bundle: .tabbi))
             Picker(selection: $store.settings.motionPace) {
                 ForEach(MotionPace.allCases, id: \.self) { pace in
                     Text(pace.title).tag(pace)
                 }
             } label: {
-                Text("Animations")
+                Text("Animations", bundle: .tabbi)
                 Text(motionCaption)
             }
-            .help("Choose how lively the notch's animations are")
+            .help(String(localized: "Choose how lively the notch's animations are", bundle: .tabbi))
         } header: {
-            Text("Feedback")
+            Text("Feedback", bundle: .tabbi)
         }
     }
 
@@ -933,7 +933,7 @@ struct FeedbackSection: View {
     /// Reduce Motion is on.
     private var motionCaption: String {
         guard reduceMotion, store.settings.motionPace != .instant else { return store.settings.motionPace.caption }
-        return "Reduce Motion is on, so changes fade instead of moving."
+        return String(localized: "Reduce Motion is on, so changes fade instead of moving.", bundle: .tabbi)
     }
 }
 
@@ -947,17 +947,17 @@ struct PrivacySection: View {
     var body: some View {
         Section {
             Toggle(isOn: $store.settings.hideFromScreenCapture) {
-                Text("Hide from screen sharing")
-                Text("Only you see the notch, not your audience or recordings.")
+                Text("Hide from screen sharing", bundle: .tabbi)
+                Text("Only you see the notch, not your audience or recordings.", bundle: .tabbi)
             }
-            .help("Keep the notch out of screen sharing, recordings and screenshots, for example while presenting in class")
+            .help(String(localized: "Keep the notch out of screen sharing, recordings and screenshots, for example while presenting in class", bundle: .tabbi))
             Toggle(isOn: $store.settings.hideInMissionControl) {
-                Text("Hide in Mission Control")
-                Text("Steps aside while Mission Control shows your spaces.")
+                Text("Hide in Mission Control", bundle: .tabbi)
+                Text("Steps aside while Mission Control shows your spaces.", bundle: .tabbi)
             }
-            .help("Hide the notch while Mission Control is open")
+            .help(String(localized: "Hide the notch while Mission Control is open", bundle: .tabbi))
         } header: {
-            Text("Privacy")
+            Text("Privacy", bundle: .tabbi)
         }
     }
 }
@@ -970,12 +970,12 @@ private struct LiveActivitySection: View {
 
     var body: some View {
         Section {
-            Picker("Switch every", selection: $store.settings.notchPreview.interval) {
+            Picker(String(localized: "Switch every", bundle: .tabbi), selection: $store.settings.notchPreview.interval) {
                 ForEach(TickerInterval.allCases) { interval in
                     Text(interval.title).tag(interval)
                 }
             }
-            .help("How long each item stays before the next one")
+            .help(String(localized: "How long each item stays before the next one", bundle: .tabbi))
             ForEach(TickerKind.all(in: store.catalog)) { kind in
                 let moduleOn = kind.module.map(store.settings.modules.isEnabled) ?? true
                 let title = kind.title(in: store.catalog)
@@ -985,13 +985,13 @@ private struct LiveActivitySection: View {
                 ))
                 .disabled(!moduleOn)
                 .help(moduleOn
-                    ? "Include \(title.lowercased()) in the live activity"
-                    : "Add \(kind.module.map { store.catalog.descriptor(for: $0).title } ?? "its module") in Tabs to include this")
+                    ? String(localized: "Show this in the live activity", bundle: .tabbi)
+                    : String(localized: "Add \(kind.module.map { store.catalog.descriptor(for: $0).title } ?? String(localized: "its module", bundle: .tabbi)) in Tabs to include this", bundle: .tabbi))
             }
         } header: {
-            Text("Live activity")
+            Text("Live activity", bundle: .tabbi)
         } footer: {
-            SectionFooter("Items with nothing to show are skipped.")
+            SectionFooter(String(localized: "Items with nothing to show are skipped.", bundle: .tabbi))
         }
         .disabled(!store.settings.notchPreview.isEnabled)
     }
@@ -1015,7 +1015,7 @@ private struct ShortcutSection: View {
                             Image(systemName: "arrow.counterclockwise")
                         }
                         .buttonStyle(.borderless)
-                        .help("Restore \(Hotkey.default.displayString)")
+                        .help(String(localized: "Restore \(Hotkey.default.displayString)", bundle: .tabbi))
                     }
                     HotkeyRecorderField(
                         hotkey: store.settings.hotkey,
@@ -1025,8 +1025,8 @@ private struct ShortcutSection: View {
                     )
                 }
             } label: {
-                Text("Open and close the notch")
-                Text("Works from any app. On Today, type right away to add a task.")
+                Text("Open and close the notch", bundle: .tabbi)
+                Text("Works from any app. On Today, type right away to add a task.", bundle: .tabbi)
             }
             if let status {
                 Label(status.text, systemImage: status.symbol)
@@ -1034,9 +1034,9 @@ private struct ShortcutSection: View {
                     .foregroundStyle(status.isWarning ? AnyShapeStyle(.orange) : AnyShapeStyle(.secondary))
             }
         } header: {
-            Text("Shortcut")
+            Text("Shortcut", bundle: .tabbi)
         } footer: {
-            SectionFooter("In the open notch, arrow keys or a two-finger swipe switch tabs, 1-9 jump to a tab, and Esc or a swipe up closes. On the closed notch, swipe down or middle-click to see the next live activity.")
+            SectionFooter(String(localized: "In the open notch, arrow keys or a two-finger swipe switch tabs, 1-9 jump to a tab, and Esc or a swipe up closes. On the closed notch, swipe down or middle-click to see the next live activity.", bundle: .tabbi))
         }
         .onDisappear { recorder.stop() }
     }
@@ -1044,14 +1044,14 @@ private struct ShortcutSection: View {
     private var status: (text: String, symbol: String, isWarning: Bool)? {
         switch recorder.rejection {
         case .needsModifier:
-            return ("Add Control or Option so the shortcut doesn't get in the way of typing.", "exclamationmark.triangle.fill", true)
+            return (String(localized: "Add Control or Option so the shortcut doesn't get in the way of typing.", bundle: .tabbi), "exclamationmark.triangle.fill", true)
         case .unsupportedKey:
-            return ("That key can't be part of a shortcut. Try a letter, number, or Space.", "exclamationmark.triangle.fill", true)
+            return (String(localized: "That key can't be part of a shortcut. Try a letter, number, or Space.", bundle: .tabbi), "exclamationmark.triangle.fill", true)
         default:
             break
         }
         if !recorder.isRecording, !store.hotkeyIsRegistered {
-            return ("\(store.settings.hotkey.displayString) is already used by another app. Record a different shortcut.",
+            return (String(localized: "\(store.settings.hotkey.displayString) is already used by another app. Record a different shortcut.", bundle: .tabbi),
                     "exclamationmark.triangle.fill", true)
         }
         return nil
@@ -1087,36 +1087,36 @@ struct ClaudeLocationSection: View {
                             Image(systemName: "arrow.counterclockwise")
                         }
                         .buttonStyle(.borderless)
-                        .help("Detect claude automatically")
+                        .help(String(localized: "Detect claude automatically", bundle: .tabbi))
                     }
-                    TextField("Path", text: $draft, prompt: Text("Detect automatically"))
+                    TextField(String(localized: "Path", bundle: .tabbi), text: $draft, prompt: Text("Detect automatically", bundle: .tabbi))
                         .labelsHidden()
                         .textFieldStyle(.roundedBorder)
                         .multilineTextAlignment(.leading)
                         .frame(width: 240)
                         .focused($fieldFocused)
                         .onSubmit(commit)
-                        .help("Full path to the claude binary. Leave empty to detect it automatically.")
-                    Button("Choose…", action: choose)
-                        .help("Pick the claude binary in Finder")
+                        .help(String(localized: "Full path to the claude binary. Leave empty to detect it automatically.", bundle: .tabbi))
+                    Button(String(localized: "Choose…", bundle: .tabbi), action: choose)
+                        .help(String(localized: "Pick the claude binary in Finder", bundle: .tabbi))
                 }
             } label: {
-                Text("Location")
+                Text("Location", bundle: .tabbi)
             }
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 statusView
                 Spacer(minLength: 8)
-                Button("Validate") {
+                Button(String(localized: "Validate", bundle: .tabbi)) {
                     commit()
                     attempt += 1
                 }
                 .disabled(check == nil)
-                .help("Check that this claude runs and report its version")
+                .help(String(localized: "Check that this claude runs and report its version", bundle: .tabbi))
             }
         } header: {
-            Text("Claude location")
+            Text("Claude location", bundle: .tabbi)
         } footer: {
-            SectionFooter("With Claude Code as your AI, Ask AI and AI Usage run your own signed-in claude CLI; \(Edition.current.name) never reads your credentials. Set this only if claude isn't found automatically.")
+            SectionFooter(String(localized: "With Claude Code as your AI, Ask AI and AI Usage run your own signed-in claude CLI; \(Edition.current.name) never reads your credentials. Set this only if claude isn't found automatically.", bundle: .tabbi))
         }
         .onAppear { draft = Self.displayPath(store.settings.claudePathOverride) }
         .onChange(of: fieldFocused) { _, focused in
@@ -1148,7 +1148,7 @@ struct ClaudeLocationSection: View {
             .help(status.detail)
         } else {
             Label {
-                Text("Checking…")
+                Text("Checking…", bundle: .tabbi)
                     .foregroundStyle(.secondary)
             } icon: {
                 Spinner()
@@ -1236,7 +1236,7 @@ struct AboutSettingsPane: View {
                 .foregroundStyle(.secondary)
                 .textSelection(.enabled)
                 .padding(.top, 4)
-            Text("A cozy everyday companion: a cat in your notch, with your tabs one click away.")
+            Text("A cozy everyday companion: a cat in your notch, with your tabs one click away.", bundle: .tabbi)
                 .font(.callout)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -1244,7 +1244,7 @@ struct AboutSettingsPane: View {
                 .padding(.top, 12)
             HStack(spacing: 12) {
                 Link(destination: Self.repository) {
-                    Label("View on GitHub", systemImage: "arrow.up.right.square")
+                    Label(String(localized: "View on GitHub", bundle: .tabbi), systemImage: "arrow.up.right.square")
                 }
                 .help(Self.repository.absoluteString)
             }
@@ -1252,12 +1252,12 @@ struct AboutSettingsPane: View {
             Link(destination: SupportContact.mailURL) {
                 Label(SupportContact.reportLine, systemImage: "envelope")
             }
-            .help("Email the \(Edition.current.name) team about a bug, a person in Party or anything else")
+            .help(String(localized: "Email the \(Edition.current.name) team about a bug, a person in Party or anything else", bundle: .tabbi))
             .padding(.top, 8)
             Link(destination: Feedback.url) {
                 Label(FeedbackLink.title, systemImage: "lightbulb")
             }
-            .help("Opens the Suggest page with your app version, macOS version and edition filled in")
+            .help(String(localized: "Opens the Suggest page with your app version, macOS version and edition filled in", bundle: .tabbi))
             .padding(.top, 8)
             #if !APPSTORE
             UpdatesSettingsSection()
@@ -1265,7 +1265,7 @@ struct AboutSettingsPane: View {
             CrashReportSettingsSection()
                 .padding(.top, 12)
             #endif
-            Text("Released under the MIT License.")
+            Text("Released under the MIT License.", bundle: .tabbi)
                 .font(.caption)
                 .foregroundStyle(.tertiary)
                 .padding(.top, 20)
@@ -1284,9 +1284,9 @@ struct AboutSettingsPane: View {
 
     private var versionText: String {
         let info = Bundle.main.infoDictionary
-        guard let version = info?["CFBundleShortVersionString"] as? String else { return "Development build" }
+        guard let version = info?["CFBundleShortVersionString"] as? String else { return String(localized: "Development build", bundle: .tabbi) }
         let build = info?["CFBundleVersion"] as? String
-        return build.map { "Version \(version) (\($0))" } ?? "Version \(version)"
+        return build.map { String(localized: "Version \(version) (\($0))", bundle: .tabbi) } ?? String(localized: "Version \(version)", bundle: .tabbi)
     }
 }
 
