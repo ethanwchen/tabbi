@@ -138,8 +138,11 @@ final class RecapStore: ObservableObject {
         alarm.schedule(at: nextBuildDate, tolerance: 60)
     }
 
+    /// Merges in what is on disk first, so another copy of the app writing
+    /// the same file never brings back a week the user has already seen.
     private func save() {
         guard let saveURL, !saveIsUnreadable else { return }
+        if let saved = try? RecapArchive.load(from: saveURL) { archive.merge(saved) }
         try? archive.write(to: saveURL)
     }
 }

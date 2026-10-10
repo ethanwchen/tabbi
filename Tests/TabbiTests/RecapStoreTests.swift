@@ -114,6 +114,25 @@ final class RecapStoreTests: XCTestCase {
         XCTAssertEqual(moment.store.archive.recaps.count, 2, "The skipped weeks stay in the list")
     }
 
+    /// Two copies of the app on one edition (an installed build and a dev
+    /// run): the one with an older copy in memory never unmarks a seen week.
+    func testAStaleCopySavingNeverBringsBackASeenWeek() throws {
+        let log = ActivityLog(repository: nil)
+        log.record([focus(day: 6, minutes: 25)])
+        let monday = date(day: 12, 9)
+        let first = store(log, at: monday)
+        first.refresh()
+        let stale = store(log, at: monday)
+
+        first.markSeen(week)
+        stale.markNotified(week) // saves from a copy that never saw the mark
+
+        let saved = try XCTUnwrap(RecapArchive.load(from: RecapStore.saveURL(in: storage)))
+        XCTAssertEqual(saved.seenWeek, week)
+        XCTAssertNil(stale.unseen, "The stale copy took in the mark too")
+        XCTAssertNil(store(log, at: monday).unseen, "Nor does a relaunch show it")
+    }
+
     func testTheNotificationGoesOutOnceWhenTheRecapIsBuilt() throws {
         let log = ActivityLog(repository: nil)
         log.record([focus(day: 6, minutes: 25), focus(day: 8, minutes: 50)])
