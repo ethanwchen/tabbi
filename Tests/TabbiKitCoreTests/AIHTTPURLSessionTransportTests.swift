@@ -239,8 +239,10 @@ final class AIHTTPURLSessionTransportTests: XCTestCase {
     func testCancellingTheConsumerStopsTheRequest() async throws {
         let host = "ollama-hang.test"
         AIStubProtocol.reply(.hang, for: host)
-        let stream = ollama(host: host).stream(.prompt("hi"))
-        let consumer = Task { await Self.collect(stream) }
+        // The stream is made inside the task: handing one in trips the
+        // region isolation checker of the Swift in Xcode 26.6 (CI).
+        let provider = ollama(host: host)
+        let consumer = Task { await Self.collect(provider.stream(.prompt("hi"))) }
 
         let deadline = Date().addingTimeInterval(5)
         while AIStubProtocol.requests(to: host).isEmpty, Date() < deadline {
