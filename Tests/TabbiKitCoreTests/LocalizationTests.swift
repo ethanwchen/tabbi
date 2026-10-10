@@ -35,12 +35,79 @@ final class LocalizationTests: XCTestCase {
     }
 
     func testEveryLanguageLoadsFromTheResourceBundle() throws {
-        let resources = try XCTUnwrap(KitResources.bundle)
-        let german = try XCTUnwrap(resources.path(forResource: "de", ofType: "lproj").flatMap(Bundle.init(path:)))
-        XCTAssertEqual(String(localized: "General", bundle: german), "Allgemein")
-        for language in L10n.languages where language != L10n.sourceLanguage {
-            XCTAssertNotNil(resources.path(forResource: language, ofType: "lproj"), "\(language).lproj is missing")
+        for language in L10n.languages {
+            XCTAssertNotNil(L10n.strings(for: language), "\(language).lproj is missing from the resource bundle")
         }
+        let german = try XCTUnwrap(L10n.strings(for: "de"))
+        XCTAssertEqual(String(localized: "General", bundle: german), "Allgemein")
+        // Plurals come from the .stringsdict beside the .strings.
+        let cores = german.localizedString(forKey: "%lld cores", value: nil, table: nil)
+        XCTAssertEqual(String.localizedStringWithFormat(cores, 1), "1 Kern")
+        XCTAssertEqual(String.localizedStringWithFormat(cores, 4), "4 Kerne")
+        let english = try XCTUnwrap(L10n.strings(for: "en"))
+        let friends = english.localizedString(forKey: "with %lld friends", value: nil, table: nil)
+        XCTAssertEqual(String.localizedStringWithFormat(friends, 1), "with 1 friend")
+    }
+
+    /// The .lproj folders that ship are compiled from the catalog by
+    /// scripts/compile-strings.sh, and committed. This re-derives what each
+    /// language's files must hold (every string and every plural form) and
+    /// fails when someone edited the catalog without running the script.
+    func testCompiledStringsMatchTheCatalog() throws {
+        let catalogURL = repositoryRoot.appendingPathComponent("Sources/TabbiKitCore/Localization/Localizable.xcstrings")
+        let catalog = try JSONDecoder().decode(CompiledCatalog.self, from: Data(contentsOf: catalogURL))
+        let folder = repositoryRoot.appendingPathComponent("Sources/TabbiKitCore/Localization/Strings")
+        let shipped = try FileManager.default.contentsOfDirectory(atPath: folder.path)
+            .filter { $0.hasSuffix(".lproj") }.map { String($0.dropLast(".lproj".count)) }
+        XCTAssertEqual(Set(shipped), Set(L10n.languages), "Run scripts/compile-strings.sh")
+
+        var problems: [String] = []
+        for language in L10n.languages {
+            let lproj = folder.appendingPathComponent("\(language).lproj")
+            let strings = try plist(lproj.appendingPathComponent("Localizable.strings")) as? [String: String] ?? [:]
+            let plurals = try plist(lproj.appendingPathComponent("Localizable.stringsdict")) as? [String: Any] ?? [:]
+            for key in Set(strings.keys).union(plurals.keys).subtracting(catalog.strings.keys).sorted() {
+                problems.append("\(language): \"\(key)\" is no longer in the catalog")
+            }
+            for (key, entry) in catalog.strings.sorted(by: { $0.key < $1.key }) {
+                let localization = entry.localizations?[language]
+                if let forms = localization?.variations?.plural {
+                    let expected = forms.compactMapValues(\.stringUnit?.value)
+                    if Self.pluralForms(plurals[key]) != expected {
+                        problems.append("\(language): plural \"\(key)\" differs")
+                    }
+                } else if plurals[key] != nil {
+                    // A plural wins over the plain string of the same key.
+                    problems.append("\(language): \"\(key)\" is no longer a plural")
+                } else if let value = localization?.stringUnit?.value {
+                    if strings[key] != value { problems.append("\(language): \"\(key)\" differs") }
+                } else if let compiled = strings[key], compiled != key {
+                    // A string without text of its own in this language
+                    // (English, or one marked "Don't translate") shows its
+                    // key, the English.
+                    problems.append("\(language): \"\(key)\" differs")
+                } else if language == catalog.sourceLanguage, strings[key] == nil {
+                    problems.append("\(language): \"\(key)\" is missing")
+                }
+            }
+        }
+        XCTAssertTrue(problems.isEmpty, "The compiled strings are out of date; run scripts/compile-strings.sh:\n"
+            + problems.prefix(20).joined(separator: "\n"))
+    }
+
+    private func plist(_ url: URL) throws -> Any? {
+        guard FileManager.default.fileExists(atPath: url.path) else { return nil }
+        return try PropertyListSerialization.propertyList(from: Data(contentsOf: url), format: nil)
+    }
+
+    /// The plural forms (`one`, `other`, ...) of a compiled .stringsdict entry.
+    private static func pluralForms(_ entry: Any?) -> [String: String]? {
+        guard let entry = entry as? [String: Any] else { return nil }
+        for case let rule as [String: Any] in entry.values
+        where rule["NSStringFormatSpecTypeKey"] as? String == "NSStringPluralRuleType" {
+            return rule.filter { !$0.key.hasPrefix("NSString") }.compactMapValues { $0 as? String }
+        }
+        return nil
     }
 
     func testPicksTheUsersBestTranslatedLanguage() {
@@ -100,4 +167,28 @@ final class LocalizationTests: XCTestCase {
         XCTAssertEqual(StringCatalogAudit.specifiers(in: "%.1f h, %@"), ["f", "@"])
         XCTAssertEqual(StringCatalogAudit.specifiers(in: "100%% done"), [])
     }
+}
+
+// MARK: - The catalog, as far as the compiled files need it
+
+private struct CompiledCatalog: Decodable {
+    struct Entry: Decodable {
+        var localizations: [String: Localization]?
+    }
+
+    struct Localization: Decodable {
+        var stringUnit: Unit?
+        var variations: Variations?
+    }
+
+    struct Variations: Decodable {
+        var plural: [String: Localization]?
+    }
+
+    struct Unit: Decodable {
+        var value: String?
+    }
+
+    var sourceLanguage: String
+    var strings: [String: Entry]
 }

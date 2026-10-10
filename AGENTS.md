@@ -232,8 +232,10 @@ If a module seems to need one, the provider protocols are missing something: ext
 
 - User-facing text is localized: write `Text("Done", bundle: .tabbi)` or
   `String(localized: "Done", bundle: .tabbi)` and add the string with its
-  translations to `Localizable.xcstrings`; `swift test` fails until every
-  string there is translated. Logs, ids and kit ids stay plain. See docs/localization.md.
+  translations to `Localizable.xcstrings`, then run
+  `scripts/compile-strings.sh` to regenerate the shipped `.lproj` folders;
+  `swift test` fails until every string there is translated and compiled.
+  Logs, ids and kit ids stay plain. See docs/localization.md.
 
 ## Design rules
 
