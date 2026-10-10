@@ -87,36 +87,39 @@ private struct RecapPetBadge: View {
     }
 }
 
-/// A 64 pt pet, awake and still, so the card and its exported image match.
-private struct RecapPet: View {
+/// The pet, awake and still (64 pt at the default pixel size), so the card
+/// and its exported image match.
+struct RecapPet: View {
     let profile: PetProfile
+    var pixelSize: CGFloat = 2
     @StateObject private var player: PetPlayer
 
-    init(profile: PetProfile) {
+    init(profile: PetProfile, pixelSize: CGFloat = 2) {
         self.profile = profile
+        self.pixelSize = pixelSize
         // A fixed seed keeps snapshots stable.
         _player = StateObject(wrappedValue: PetPlayer(profile: profile, seed: 7))
     }
 
     var body: some View {
-        PetView(player: player, pixelSize: 2)
+        PetView(player: player, pixelSize: pixelSize)
             .onChange(of: profile) { _, profile in player.update(profile: profile) }
     }
 }
 
 /// One bar per day, Monday first, the best day in full accent.
-private struct RecapDayBars: View {
+struct RecapDayBars: View {
     let recap: WeeklyRecap
     let calendar: Calendar
     let accent: Color
-
-    private static let barWidth: CGFloat = 10
-    private static let maxHeight: CGFloat = 40
+    var barWidth: CGFloat = 10
+    var maxHeight: CGFloat = 40
+    var spacing: CGFloat = Theme.Spacing.s
 
     var body: some View {
         let initials = RecapWeek.dayInitials(calendar: calendar)
         let best = recap.minutesByDay.max() ?? 0
-        HStack(alignment: .bottom, spacing: Theme.Spacing.s) {
+        HStack(alignment: .bottom, spacing: spacing) {
             ForEach(0..<7, id: \.self) { index in
                 let minutes = recap.minutesByDay[index]
                 // Days tied for the best all light up.
@@ -125,7 +128,7 @@ private struct RecapDayBars: View {
                     RoundedRectangle(cornerRadius: 3, style: .continuous)
                         .fill(isBest ? accent
                               : minutes > 0 ? accent.opacity(0.4) : Theme.Palette.stroke)
-                        .frame(width: Self.barWidth, height: height(minutes, best: best))
+                        .frame(width: barWidth, height: height(minutes, best: best))
                     Text(initials[index])
                         .font(.system(size: 9, weight: .semibold, design: Theme.Typography.design))
                         .foregroundStyle(isBest ? Theme.Palette.secondaryText : Theme.Palette.tertiaryText)
@@ -138,7 +141,7 @@ private struct RecapDayBars: View {
     /// Scaled to the week's best day; an empty day is a small stub.
     private func height(_ minutes: Int, best: Int) -> CGFloat {
         guard best > 0, minutes > 0 else { return 4 }
-        return max(6, Self.maxHeight * CGFloat(minutes) / CGFloat(best))
+        return max(6, maxHeight * CGFloat(minutes) / CGFloat(best))
     }
 }
 

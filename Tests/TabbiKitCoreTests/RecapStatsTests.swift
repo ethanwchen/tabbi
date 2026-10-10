@@ -62,4 +62,31 @@ final class RecapStatsTests: XCTestCase {
         sundayFirst.firstWeekday = 1
         XCTAssertEqual(RecapWeek.dayInitials(calendar: sundayFirst, locale: locale), ["M", "T", "W", "T", "F", "S", "S"])
     }
+
+    func testShareFormatsAre1080PixelsWide() {
+        XCTAssertEqual(RecapShareFormat.square.pixelSize.width, 1080)
+        XCTAssertEqual(RecapShareFormat.square.pixelSize.height, 1080)
+        XCTAssertEqual(RecapShareFormat.story.pixelSize.height, 1920)
+        // The layout times the scale gives the pixels exactly.
+        for format in RecapShareFormat.allCases {
+            XCTAssertEqual(format.pointSize.width * RecapShareFormat.scale, Double(format.pixelSize.width))
+            XCTAssertEqual(format.pointSize.height * RecapShareFormat.scale, Double(format.pixelSize.height))
+        }
+    }
+
+    func testShareFileNameNamesTheWeekAndShape() {
+        XCTAssertEqual(RecapShareFormat.square.fileName(for: week("2026-10-05"), calendar: calendar, locale: locale),
+                       "Tabbi week Oct 5 - 11 (square).png")
+        XCTAssertEqual(RecapShareFormat.story.fileName(for: week("2026-09-28"), calendar: calendar, locale: locale),
+                       "Tabbi week Sep 28 - Oct 4 (story).png")
+    }
+
+    func testShareFileNameHasNoPathSeparators() {
+        // A locale whose dates use slashes still gives one file name.
+        let name = RecapShareFormat.square.fileName(for: week("2026-10-05"), calendar: calendar,
+                                                    locale: Locale(identifier: "en_US_POSIX"))
+        XCTAssertFalse(name.contains("/"))
+        XCTAssertFalse(name.contains(":"))
+        XCTAssertTrue(name.hasPrefix("Tabbi week "))
+    }
 }

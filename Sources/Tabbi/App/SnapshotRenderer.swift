@@ -252,6 +252,22 @@ enum SnapshotRenderer {
             print(url.path)
         }
 
+        // The weekly recap's exported images, each shape in a heavy and a light week.
+        let recapArchive = RecapArchive.demo(now: Date())
+        if let heavy = recapArchive.recaps.first,
+           let light = recapArchive.recaps.min(by: { $0.focusMinutes < $1.focusMinutes }) {
+            for format in RecapShareFormat.allCases {
+                for (name, recap) in [("heavy", heavy), ("light", light)] {
+                    let image = RecapShareImage(recap: recap, cheer: recapArchive.cheer(for: recap),
+                                                pet: closet?.store.profile, format: format)
+                    guard let png = image.png() else { continue }
+                    let url = outputDirectory.appendingPathComponent("recap-share-\(format.rawValue)-\(name).png")
+                    try? png.write(to: url)
+                    print(url.path)
+                }
+            }
+        }
+
         // Frame strips of the shared motion (celebrations), reviewed frame by frame.
         for (name, view) in MotionSnapshots.shots() {
             let renderer = ImageRenderer(content: view)
