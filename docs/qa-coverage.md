@@ -140,7 +140,11 @@ The real `UNUserNotificationCenter` only exists inside an `.app` bundle, so deli
 It covers a fresh install (quiet defaults, nothing saved), a change saved and read back on the next launch (an unchanged value writes nothing, an unreadable save falls back to defaults), a focus phase turning focus mode on and a break or reset turning it off, focus mode staying on while Study's deep focus block runs through the Pomodoro's break, queued transitions landing in order, preview playing only outside a focus phase, and demo and snapshot runs that show samples and never save, focus or run a shortcut.
 They found a bug: in a build that cannot switch Do Not Disturb (the App Store edition), a switch saved by a direct build still kept celebrations quiet during focus, although Do Not Disturb was never turned on. `holdsDoNotDisturb` now follows what the build offers.
 Playing sound, playlists and Shortcuts are still checked by hand.
-`SpotifyController` and `SystemMonitor` are still below 40%.
+`SystemMonitorTests` runs `SystemMonitor` (which now takes optional `readings`, the sampler and its clock) on scripted readings at a fake clock, stepping `sample()` by hand.
+It covers the first frame (memory, GPU and thermal at once, CPU only after a second sample), CPU from the tick delta weighted across cores, a gap of 3 seconds or more while the panel was hidden (no averaged CPU, the sparklines restart, the next second reports again) while a late tick under 3 seconds still counts, readings the Mac refuses (shown as missing with no fake zero in the sparklines) and their recovery, a core count change (one CPU reading skipped, sparklines kept), sparklines keeping the last minute, thermal following the Mac, sampling running while any panel is visible (an extra stop never leaves the count negative), and demo mode playing back sample data without reading the Mac.
+Loosening the gap rule or letting the viewer count go negative each makes these tests fail.
+The real kernel and IOKit reads in `SystemSampler` are still checked by hand.
+`SpotifyController` is still below 40%.
 
 ### 9. Backend
 

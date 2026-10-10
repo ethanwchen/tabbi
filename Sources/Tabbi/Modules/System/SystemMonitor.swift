@@ -25,6 +25,7 @@ final class SystemMonitor: ObservableObject {
     @Published private(set) var thermal: ThermalLevel = .nominal
 
     private let isDemo: Bool
+    private let readings: SystemReadings
     private var previousTicks: [CPUTicks] = []
     /// When `previousTicks` was taken. A baseline older than a couple of
     /// ticks (e.g. from before the panel was last hidden) would report the
@@ -36,21 +37,25 @@ final class SystemMonitor: ObservableObject {
     /// Number of visible panels; sampling stops when it drops to zero.
     private var viewers = 0
 
-    init(runMode: RunMode) {
+    /// True while a panel is visible and the once-a-second sampling runs.
+    var isSampling: Bool { samplingTask != nil }
+
+    init(runMode: RunMode, readings: SystemReadings = .live) {
         isDemo = runMode.isDemo
+        self.readings = readings
         if isDemo {
             demoStep = Self.historyCapacity
             for step in 1...Self.historyCapacity { applyDemo(step: step) }
         } else {
             // Cheap one-off reading so the first frame isn't empty; the CPU
             // baseline makes the first timer tick report a real percentage.
-            previousTicks = SystemSampler.cpuTicks()
-            previousTicksTime = .now
-            memory = SystemSampler.memory()
+            previousTicks = readings.cpuTicks()
+            previousTicksTime = readings.now()
+            memory = readings.memory()
             if let memory { memoryHistory.append(memory.usedFraction) }
-            gpu = SystemSampler.gpuUtilization()
+            gpu = readings.gpu()
             if let gpu { gpuHistory.append(gpu) }
-            thermal = SystemSampler.thermal()
+            thermal = readings.thermal()
         }
     }
 
@@ -72,14 +77,16 @@ final class SystemMonitor: ObservableObject {
         samplingTask = nil
     }
 
-    private func sample() {
+    /// One reading; the sampling task calls it every second. Internal so
+    /// tests can step it at a fake clock.
+    func sample() {
         if isDemo {
             demoStep += 1
             applyDemo(step: demoStep)
             return
         }
-        let ticks = SystemSampler.cpuTicks()
-        let now = ContinuousClock.now
+        let ticks = readings.cpuTicks()
+        let now = readings.now()
         if let previousTicksTime, now - previousTicksTime < .seconds(3) {
             let usage = CPUUsageCalculator.usage(from: previousTicks, to: ticks)
             cpu = usage
@@ -93,14 +100,14 @@ final class SystemMonitor: ObservableObject {
         previousTicks = ticks
         previousTicksTime = now
 
-        let gpuNow = SystemSampler.gpuUtilization()
+        let gpuNow = readings.gpu()
         gpu = gpuNow
         if let gpuNow { gpuHistory.append(gpuNow) }
 
-        let memoryNow = SystemSampler.memory()
+        let memoryNow = readings.memory()
         memory = memoryNow
         if let memoryNow { memoryHistory.append(memoryNow.usedFraction) }
-        let thermalNow = SystemSampler.thermal()
+        let thermalNow = readings.thermal()
         if thermalNow != thermal { thermal = thermalNow }
     }
 
@@ -114,5 +121,26 @@ final class SystemMonitor: ObservableObject {
         let memoryNow = SystemDemoData.memory(at: step)
         memory = memoryNow
         memoryHistory.append(memoryNow.usedFraction)
+    }
+}
+
+/// Where `SystemMonitor` gets its readings and its clock. `.live` reads the
+/// Mac through `SystemSampler`; tests pass scripted values so the gap and
+/// history rules can be checked without real load or real seconds.
+struct SystemReadings {
+    var cpuTicks: @MainActor () -> [CPUTicks]
+    var memory: @MainActor () -> MemoryStats?
+    var gpu: @MainActor () -> Double?
+    var thermal: @MainActor () -> ThermalLevel
+    var now: @MainActor () -> ContinuousClock.Instant
+
+    static var live: SystemReadings {
+        SystemReadings(
+            cpuTicks: { SystemSampler.cpuTicks() },
+            memory: { SystemSampler.memory() },
+            gpu: { SystemSampler.gpuUtilization() },
+            thermal: { SystemSampler.thermal() },
+            now: { ContinuousClock.now }
+        )
     }
 }
