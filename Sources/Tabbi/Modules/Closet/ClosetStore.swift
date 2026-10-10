@@ -39,6 +39,12 @@ final class ClosetStore: ObservableObject {
     /// event's limited items (`follow(activity:history:)`).
     @Published private(set) var seasons = SeasonalEventTally()
 
+    /// The moment the Closet reads seasonal events at: now, or in a demo a
+    /// pinned moment inside the featured event (`SeasonalEventDemo`), so a
+    /// demo always shows an event going on.
+    var seasonNow: Date { pinnedSeasonMoment ?? .now }
+    private let pinnedSeasonMoment: Date?
+
     /// Points earned from study sessions, as they are credited, so the
     /// coach can send the pet out to celebrate.
     let awards = PassthroughSubject<PetStudyAward, Never>()
@@ -90,6 +96,9 @@ final class ClosetStore: ObservableObject {
         saveIsUnreadable = unreadable
         hasSave = saved
         milestones = isDemo ? .demo(today: .now) : PetMilestoneProgress()
+        let demoSeason = isDemo ? SeasonalEventDemo(today: .now) : nil
+        pinnedSeasonMoment = demoSeason?.moment
+        if let demoSeason { seasons = demoSeason.tally }
         preview = PetPlayer(profile: closet.profile)
         presence = PetPresence(profile: closet.profile, lastActive: .now)
     }

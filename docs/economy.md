@@ -133,6 +133,9 @@ Only `focus.completed` minutes that end inside the run count (`SeasonalEventProg
 The steepest pace is Valentine's Week, about 26 focused minutes a day; every other event asks for 20 or fewer, well under the typical student's 75, so nobody has to change their habit to earn an item.
 An earned item stays owned after the event; one not earned starts over from zero when the event returns the next year.
 Each event's last item is its headline item and the only one with an effect.
+While an event runs, a small banner at the top of the Closet's Limited section shows its name, last day and line of copy, plus the focus logged toward its next item.
+Between events, that shelf shows when the next one starts.
+With `TABBI_DEMO=1`, the Closet reads events at a moment two days into the current or next event, with an hour of focus logged there (`SeasonalEventDemo`), so demos and snapshots always show an event in progress.
 
 ## Streak freezes
 

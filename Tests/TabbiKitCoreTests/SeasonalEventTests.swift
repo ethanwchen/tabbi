@@ -377,6 +377,24 @@ final class SeasonalEventTests: XCTestCase {
         XCTAssertEqual(february[2].items.suffix(2), [.accessory(.reindeerAntlers), .accessory(.snowScarf)])
     }
 
+    func testDemoSeasonRunsTheFeaturedEventPartWay() throws {
+        let newYork = calendar()
+        // Before Halloween, the demo jumps into its run.
+        let october = try XCTUnwrap(SeasonalEventDemo(today: date(2026, 10, 10, in: newYork), calendar: newYork))
+        XCTAssertEqual(october.moment, date(2026, 10, 19, hour: 12, in: newYork))
+        let run = try XCTUnwrap(october.tally.active(at: october.moment).first)
+        XCTAssertEqual(run.occurrence.id(calendar: newYork), "halloween-2026")
+        XCTAssertEqual(run.focusMinutes, 60)
+        XCTAssertEqual(run.nextReward?.item, .accessory(.moonlitWitchHat))
+        XCTAssertEqual(october.tally.progress(of: .accessory(.moonlitWitchHat), at: october.moment)?.label, "60/90 min")
+        XCTAssertEqual(october.tally.earned, [], "the demo earns nothing on its own")
+
+        // Over New Year, it stays inside the winter run.
+        let winter = try XCTUnwrap(SeasonalEventDemo(today: date(2027, 1, 3, in: newYork), calendar: newYork))
+        XCTAssertEqual(winter.moment, date(2026, 12, 16, hour: 12, in: newYork))
+        XCTAssertEqual(winter.tally.active(at: winter.moment).first?.focusMinutes, 60)
+    }
+
     func testRewardGoalLabelsUseTheProgressUnits() {
         XCTAssertEqual(SeasonalEventReward(item: .accessory(.halo), focusMinutes: 90).goalLabel, "90 min")
         XCTAssertEqual(SeasonalEventReward(item: .accessory(.halo), focusMinutes: 300).goalLabel, "5 h")

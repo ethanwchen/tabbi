@@ -55,6 +55,17 @@ final class ClosetLimitedEditionAppTests: XCTestCase {
         XCTAssertEqual(try savedLedger()?.granted, [.accessory(.teamMedal)])
     }
 
+    func testDemoShowsAnEventGoingOnWhileLiveFollowsTheClock() throws {
+        let demo = ClosetStore(storage: EditionStorage(root: root), runMode: .demo)
+        let run = try XCTUnwrap(demo.seasons.active(at: demo.seasonNow).first, "a demo always has an event on")
+        XCTAssertEqual(run.focusMinutes, 60)
+        XCTAssertFalse(demo.closet.save.ledger.owns(try XCTUnwrap(run.nextReward?.item)))
+
+        let live = ClosetStore(storage: EditionStorage(root: root), runMode: .live)
+        XCTAssertEqual(live.seasonNow.timeIntervalSinceNow, 0, accuracy: 5)
+        XCTAssertEqual(live.seasons.runs, [:])
+    }
+
     func testFocusDuringASeasonalEventEarnsItsItemsFromHistoryAndNewRecords() throws {
         let calendar = Calendar.current
         func halloween(_ day: Int, minutes: Double) -> ActivityRecord {
