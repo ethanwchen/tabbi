@@ -8,8 +8,10 @@ public struct RecapNotice: Hashable, Sendable {
     public let body: String
 
     public init(recap: WeeklyRecap, cheer: RecapCheer) {
-        title = "Your week with Tabbi is ready"
-        let focus = recap.focusMinutes > 0 ? " \(DurationFormat.minutes(recap.focusMinutes)) of focus." : ""
-        body = "\(cheer.line)\(focus) Open the notch to see your recap."
+        title = String(localized: "Your week with Tabbi is ready", bundle: .tabbi)
+        let focus = recap.focusMinutes > 0
+            ? String(localized: "\(DurationFormat.minutes(recap.focusMinutes)) of focus.", bundle: .tabbi) : nil
+        body = [cheer.line, focus, String(localized: "Open the notch to see your recap.", bundle: .tabbi)]
+            .compactMap { $0 }.joined(separator: " ")
     }
 }

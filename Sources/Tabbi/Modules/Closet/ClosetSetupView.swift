@@ -38,7 +38,7 @@ struct ClosetSetupView: View {
                     }
                     .frame(maxHeight: .infinity)
                     HStack(spacing: Theme.Spacing.s - Theme.Spacing.xxs) {
-                        Text("Fur")
+                        Text("Fur", bundle: .tabbi)
                             .font(Theme.Typography.caption)
                             .foregroundStyle(Theme.Palette.tertiaryText)
                             .frame(width: 28, alignment: .leading)

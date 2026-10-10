@@ -228,12 +228,12 @@ public enum RecapCheer: String, Hashable, Codable, Sendable, CaseIterable {
 
     public var line: String {
         switch self {
-        case .bestYet: "Your best week yet!"
-        case .moreThanLastWeek: "More focus than last week. Nice climb!"
-        case .firstWeek: "A lovely first week together."
-        case .steady: "Another steady week. Keep it cozy."
-        case .light: "A lighter week. Every minute counts."
-        case .rest: "A restful week. A fresh start awaits."
+        case .bestYet: String(localized: "Your best week yet!", bundle: .tabbi)
+        case .moreThanLastWeek: String(localized: "More focus than last week. Nice climb!", bundle: .tabbi)
+        case .firstWeek: String(localized: "A lovely first week together.", bundle: .tabbi)
+        case .steady: String(localized: "Another steady week. Keep it cozy.", bundle: .tabbi)
+        case .light: String(localized: "A lighter week. Every minute counts.", bundle: .tabbi)
+        case .rest: String(localized: "A restful week. A fresh start awaits.", bundle: .tabbi)
         }
     }
 }

@@ -53,13 +53,13 @@ public enum PetEconomy {
         guard points > 0 else { return "" }
         if points <= pointsPerTypicalDay {
             let blocks = typicalBlocks(toEarn: points)
-            return blocks == 1 ? "1 focus block" : "\(blocks) focus blocks"
+            return String(localized: "\(blocks) focus blocks", bundle: .tabbi)
         }
         if points <= pointsPerTypicalWeek {
-            return "about \(typicalDays(toEarn: points)) study days"
+            return String(localized: "about \(typicalDays(toEarn: points)) study days", bundle: .tabbi)
         }
         // More than a week's points, so always at least two weeks.
-        return "about \(typicalWeeks(toEarn: points)) weeks"
+        return String(localized: "about \(typicalWeeks(toEarn: points)) weeks", bundle: .tabbi)
     }
 }
 
