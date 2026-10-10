@@ -295,6 +295,11 @@ extension CostumeArt {
     /// headband.
     static let reindeerAntlers = PetArt.costume.headItem("reindeerAntlers")
 
+    /// A red lion dance head: a gold horn, white brows over gold-ringed
+    /// eyes and a gold fringe. Now and then the mirror on its forehead
+    /// catches the light.
+    static let lionDanceHat = PetArt.costume.headItem("lionDanceHat")
+
     /// A crimson scarf with a white trim along its lower edge, a white
     /// stripe across the tail and a white fringe. Now and then a speck of
     /// snow glints on the band, then a snowflake twinkles on the tail.

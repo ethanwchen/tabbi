@@ -2013,6 +2013,75 @@
         "....XXXXXXXXXXXX...."
       ],
       "sitRow": 5
+    },
+    "lionDanceHat": {
+      "grid": [
+        "........XYYX........",
+        ".....XHHHMMHHHX.....",
+        "...XHUUUHHHHUUUHX...",
+        "..XHUQQUHHHHUQQUHX..",
+        "..XHHUUHHYYHHUUHHX..",
+        "..YUYUYUYUYUYUYUYU.."
+      ],
+      "sitRow": 5,
+      "frames": [
+        [
+          "........XYYX........",
+          ".....XHHHMMHHHX.....",
+          "...XHUUUHHHHUUUHX...",
+          "..XHUQQUHHHHUQQUHX..",
+          "..XHHUUHHYYHHUUHHX..",
+          "..YUYUYUYUYUYUYUYU.."
+        ],
+        [
+          "........XYYX........",
+          ".....XHHHZMHHHX.....",
+          "...XHUUUHHHHUUUHX...",
+          "..XHUQQUHHHHUQQUHX..",
+          "..XHHUUHHYYHHUUHHX..",
+          "..YUYUYUYUYUYUYUYU.."
+        ],
+        [
+          "........XYYX........",
+          ".....XHHHMZHHHX.....",
+          "...XHUUUHHHHUUUHX...",
+          "..XHUQQUHHHHUQQUHX..",
+          "..XHHUUHHYYHHUUHHX..",
+          "..YUYUYUYUYUYUYUYU.."
+        ],
+        [
+          "........XYYX........",
+          ".....XHHHMMHHHX.....",
+          "...XHUUUHHHHUUUHX...",
+          "..XHUQQUHHHHUQQUHX..",
+          "..XHHUUHHYYHHUUHHX..",
+          "..YUYUYUYUYUYUYUYU.."
+        ],
+        [
+          "........XYYX........",
+          ".....XHHHMZHHHX.....",
+          "...XHUUUHHHHUUUHX...",
+          "..XHUQQUHHHHUQQUHX..",
+          "..XHHUUHHYYHHUUHHX..",
+          "..YUYUYUYUYUYUYUYU.."
+        ],
+        [
+          "........XYYX........",
+          ".....XHHHZMHHHX.....",
+          "...XHUUUHHHHUUUHX...",
+          "..XHUQQUHHHHUQQUHX..",
+          "..XHHUUHHYYHHUUHHX..",
+          "..YUYUYUYUYUYUYUYU.."
+        ],
+        [
+          "........XYYX........",
+          ".....XHHHMMHHHX.....",
+          "...XHUUUHHHHUUUHX...",
+          "..XHUQQUHHHHUQQUHX..",
+          "..XHHUUHHYYHHUUHHX..",
+          "..YUYUYUYUYUYUYUYU.."
+        ]
+      ]
     }
   },
   "backItems": {

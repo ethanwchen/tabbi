@@ -137,6 +137,18 @@ final class PetLimitedTests: XCTestCase {
         XCTAssertEqual(shades.effect, .sparkle)
     }
 
+    /// Lunar New Year offers one item, the lion dance hat, so it is the
+    /// headline item: a head item whose forehead mirror glints.
+    func testLionDanceHatIsASeasonalLimitedItem() {
+        let hat = PetItem.accessory(.lionDanceHat)
+        XCTAssertEqual(PetLimitedEdition.lunarNewYearLion.item, hat)
+        XCTAssertEqual(hat.limitedEdition?.source, .season(id: "lunar-new-year"))
+        XCTAssertEqual(hat.theme, .seasonal)
+        XCTAssertEqual(PetAccessory.lionDanceHat.slot, .head)
+        XCTAssertEqual(hat.effect, .sparkle)
+        XCTAssertEqual(hat.cost, 0)
+    }
+
     /// Seasonal items are limited, earned only during their event, and
     /// only the event's headline item (its last reward) carries an effect.
     func testHalloweenItemsAreSeasonalLimitedItems() {

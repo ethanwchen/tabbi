@@ -66,7 +66,7 @@ public enum PetItem: Hashable, Codable, Sendable, CustomStringConvertible {
         case .accessory(.backwardsCap), .accessory(.flameHeadband), .accessory(.goldenLaurel),
              .accessory(.teamMedal), .accessory(.moonlitWitchHat), .accessory(.pumpkinHat),
              .accessory(.reindeerAntlers), .accessory(.snowScarf), .accessory(.heartGlasses),
-             .accessory(.summerShades): 0
+             .accessory(.summerShades), .accessory(.lionDanceHat): 0
         // Starters: up to one typical day (105).
         case .accessory(.beanie): 35
         case .accessory(.roundGlasses): 50

@@ -99,6 +99,10 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
     /// Navy-rimmed aviators with sunset lenses that the sun glints on: the
     /// summer headline item. The shop's cool sunglasses are plain black.
     case summerShades
+    /// A red lion dance head with a gold horn, white brows and a gold
+    /// fringe, its forehead mirror catching the light: the Lunar New Year
+    /// headline item.
+    case lionDanceHat
     // Animated shop items, each looping a few frames on the item clock.
     /// White feathered wings that flap behind the pet.
     case angelWings
@@ -120,7 +124,7 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
         case .surgicalCap, .headMirror, .graduationCap, .beanie, .tinyCrown, .partyHat, .chefHat, .wizardHat,
              .bunnyEars, .witchHat, .cowboyHat, .flowerCrown, .frogHat, .ninjaHeadband, .pirateHat,
              .blindfoldedSorcerer, .astronautHelmet, .chunkyHeadphones, .backwardsCap, .flameHeadband,
-             .goldenLaurel, .halo, .moonlitWitchHat, .pumpkinHat, .reindeerAntlers: .head
+             .goldenLaurel, .halo, .moonlitWitchHat, .pumpkinHat, .reindeerAntlers, .lionDanceHat: .head
         case .angelWings, .kingsCape: .back
         case .cherryPetals, .sparkleTrail, .rainCloud: .aura
         }
@@ -167,6 +171,7 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
         case .snowScarf: "Snowy Scarf"
         case .heartGlasses: "Heart Glasses"
         case .summerShades: "Sunset Shades"
+        case .lionDanceHat: "Lion Dance Hat"
         case .angelWings: "Angel Wings"
         case .kingsCape: "King's Cape"
         case .halo: "Halo"

@@ -59,6 +59,7 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
     case winterScarf
     case valentinesGlasses
     case summerShades
+    case lunarNewYearLion
 
     public var item: PetItem {
         switch self {
@@ -72,6 +73,7 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .winterScarf: .accessory(.snowScarf)
         case .valentinesGlasses: .accessory(.heartGlasses)
         case .summerShades: .accessory(.summerShades)
+        case .lunarNewYearLion: .accessory(.lionDanceHat)
         }
     }
 
@@ -90,6 +92,7 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .winterAntlers, .winterScarf: .season(id: "winter-holidays")
         case .valentinesGlasses: .season(id: "valentines")
         case .summerShades: .season(id: "summer")
+        case .lunarNewYearLion: .season(id: "lunar-new-year")
         }
     }
 
@@ -111,6 +114,7 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .winterScarf: "Focus for 5 hours during the winter holidays."
         case .valentinesGlasses: "Focus for 3 hours during Valentine's week."
         case .summerShades: "Focus for 5 hours during the summer event."
+        case .lunarNewYearLion: "Focus for 3 hours during Lunar New Year."
         }
     }
 
@@ -126,6 +130,7 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .winterScarf: .sparkle
         case .valentinesGlasses: .sparkle
         case .summerShades: .sparkle
+        case .lunarNewYearLion: .sparkle
         }
     }
 }
