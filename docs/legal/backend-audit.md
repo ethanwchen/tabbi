@@ -40,4 +40,6 @@ ADVISABLE means the policy is silent or loose.
 The site Privacy Policy rewrite (`site/_legal.py`, 9 October 2026) rewords REQUIRED items 1 and 3 to 8 to match the code: log sampling, what the crash check does, re-deleting after a restore as a commitment, unexpected fields limited to the Party endpoints, "about the 20 most recent" Mac tokens, crash reports and suggestions named as server traffic, and every use of the IP address in memory.
 Item 2 is reworded to "usable for two minutes, then erased within about an hour"; the code fix (delete expired rows on read, revoke abandoned refresh tokens) is still advisable.
 From ADVISABLE, the policy now lists the extra stored timestamps, the report resolution, request counts in the totals, the merge moving items, and backup copies of suggestions and crash reports.
-`backend/PRIVACY.md` still needs the same corrections.
+`backend/PRIVACY.md` got the same corrections on 9 October 2026: REQUIRED items 1 to 8 and every ADVISABLE item above, plus a note that the in-app age check keeps the birth date on the Mac.
+The support FAQ (`site/build.py`) now mentions the age check, the AI consent alert, the browser sign-in name hand-off, blocks and reports in what Party keeps, the 30-day email deletion window and backups.
+Still open in code (advisable, not a policy error any more): delete expired pending web sign-ins on read and revoke their refresh tokens, and widen the crash report path check to thread names and case.
