@@ -52,6 +52,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if RunMode.current == .live {
             // Asked once the notch is up, so the prompt never holds up launch.
             let report = CrashHandler.takePendingReport(in: EditionStorage(edition: edition))
+            // Watched only from here on, so a hang never overwrites that report.
+            HangWatchdog.shared.start()
             DispatchQueue.main.async { CrashReportFlow.live.run(with: report) }
         }
         #endif

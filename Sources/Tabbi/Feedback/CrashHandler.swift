@@ -69,6 +69,29 @@ enum CrashHandler {
         State.logWritten.pointee = 1
     }
 
+    // MARK: Hangs
+
+    /// The name a hang report carries in place of a signal or exception.
+    static let hangName = "MainThreadHang"
+
+    /// Writes the log for a main thread that stopped answering, unless a
+    /// crash already left one. It stays a hang log only while the hang
+    /// lasts: `removeHangLog()` takes it back once the app answers again,
+    /// so only a hang that ended the app (a force quit) is offered.
+    static func writeHangLog(frames: [String]) {
+        guard State.logWritten.pointee == 0 else { return }
+        let thread = CrashReport.Thread(name: mainThreadName, crashed: true, frames: frames)
+        let text = CrashLog.text(environment: State.environment, kind: .hang, name: hangName, threads: [thread])
+        FileManager.default.createFile(atPath: State.path, contents: Data(text.utf8))
+    }
+
+    /// Removes the hang log after the app recovered. A crash that wrote its
+    /// own log since then keeps it.
+    static func removeHangLog() {
+        guard State.logWritten.pointee == 0 else { return }
+        try? FileManager.default.removeItem(atPath: State.path)
+    }
+
     private static func currentThreadName() -> String {
         if Thread.isMainThread { return mainThreadName }
         return Thread.current.name ?? ""
