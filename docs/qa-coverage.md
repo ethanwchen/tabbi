@@ -127,7 +127,11 @@ Remaining uncovered lines:
 - `src/hub.ts` around lines 1518-1536: a few error branches in the Durable Object.
 
 A load test already exists (`backend/scripts/loadtest.ts`, tested by `test/loadtest-script.test.ts`).
-What is missing is a client end-to-end run: two simulated Tabbi users against `wrangler dev` who befriend, party, study together and block.
+Status: `backend/scripts/e2e.ts` (`npm run e2e -- --url http://localhost:8787`) is the client end-to-end run.
+Two simulated users, Ana and Ben, make the app's requests in its order: they register, Ana adds Ben by a pasted code, Ben sees her studying, Ana hosts a party that Ben joins through her, Ana starts and ends a shared session (Ben cannot start one), both show up studying in the party and on the leaderboard, Ben blocks Ana (the friendship and the party end, and Ana's add, join and report look like an unknown code), and an unblock brings no friendship back until one adds the other.
+Both accounts are deleted at the end, even after a failed step, so repeated runs leave nothing behind.
+`test/e2e-script.test.ts` runs the scenario against the Worker in `npm test`, twice in a row, and checks that a server bug (a block that leaves the friend list intact), a bad status and a network failure each stop at the right step with a readable reason and still clean up.
+On 2026-10-09 it passed 8 runs in a row against a real `wrangler dev`.
 
 ## Already strong
 

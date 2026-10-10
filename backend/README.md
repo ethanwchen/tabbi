@@ -69,6 +69,7 @@ Add a schema change as a new step at the end and never edit a deployed one.
 - **Deletions after a restore:** a restore brings back accounts deleted since the chosen moment; re-delete them with `DELETE /v1/admin/users/{code}` (the docs show how to find them).
 - **Usage:** `TABBI_ADMIN_TOKEN=... npm run stats` prints the aggregate counts from `GET /v1/admin/stats` (users, sign-ins, daily, weekly and monthly active users, sign-ups per day) and the GitHub release download counts; see [`../docs/ops.md`](../docs/ops.md#product-metrics).
 - **Capacity:** `npm run loadtest` simulates 10,000 to 50,000 users against `wrangler dev` (never production) and reports throughput, latency and SQLite rows per request; see [`../docs/ops.md`](../docs/ops.md#load-test).
+- **End to end:** `npm run e2e -- --url http://localhost:8787` walks two simulated users through befriending, a shared party session and a block against `wrangler dev` (never production), then deletes both accounts; `test/e2e-script.test.ts` runs the same scenario in `npm test`.
 - **Monitoring:** a free uptime check on `GET /v1/health` (it also fails during a burst of server errors), structured logs in Workers Logs (no tokens, codes or IP addresses), and the dashboard's Metrics for requests, errors and plan usage; see [`../docs/ops.md`](../docs/ops.md#monitoring).
 
 ## Architecture
