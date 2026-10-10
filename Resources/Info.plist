@@ -14,6 +14,15 @@
     <key>LSMinimumSystemVersion</key><string>14.0</string>
     <key>LSUIElement</key><true/>
     <key>NSHighResolutionCapable</key><true/>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLName</key><string>dev.tabbi.Tabbi.link</string>
+            <key>CFBundleTypeRole</key><string>Viewer</string>
+            <key>CFBundleURLSchemes</key>
+            <array><string>tabbi</string></array>
+        </dict>
+    </array>
     <key>NSAppleEventsUsageDescription</key>
     <string>Tabbi controls Spotify and Music playback and shows what's playing in your notch.</string>
     <key>NSCalendarsFullAccessUsageDescription</key>
