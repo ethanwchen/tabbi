@@ -87,7 +87,8 @@ Plan: tests that skip a phase mid-session, switch deep focus on and off, and fee
 
 Plan: a `URLProtocol` stub for the two URLSession transports (timeouts, non-2xx, malformed bodies, cancellation mid-stream), and a fake `claude` shell script that prints canned stream-json for `ClaudeCLI`.
 Status: `URLSessionPartyTransportTests` now drives `URLSessionPartyTransport` through a `URLProtocol` stub: the request it builds (route under a server path prefix, headers, bearer token, body, timeout), non-2xx replies with `Retry-After`, network failures mapped to `PartyError`, and cancellation of a request that never answers.
-The AI streaming transport and `ClaudeCLI` are still untested.
+`AIHTTPURLSessionTransportTests` drives `AIHTTPProvider.urlSession(_:)` the same way: lines split across body chunks, the OpenAI and Anthropic auth headers, non-2xx replies (529, 404 with a message, 500 with an empty body), an error inside a 200 stream, a refused connection, a connection dropped mid-stream (it fails rather than finishing), and cancelling the consumer, which cancels the URLSession task.
+`ClaudeCLI` and `AIKeyStore` are still untested.
 
 ### 6. Claude Ask session (app)
 
