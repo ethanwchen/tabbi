@@ -593,7 +593,7 @@ PAGE_BUDGET = 500 * 1024
 ASSET_RE = re.compile(r'/(?:img|assets|fonts)/(?:[A-Za-z0-9_-]+/)?[A-Za-z0-9._-]+')
 # Fetched only for link previews, search results or a home screen icon, not
 # by the page.
-NOT_LOADED_RE = re.compile(r'<meta [^>]*>|<link rel="apple-touch-icon"[^>]*>|<script type="application/(?:ld\+)?json"[^>]*>.*?</script>', re.S)
+NOT_LOADED_RE = re.compile(r'<meta [^>]*>|<link rel="apple-touch-icon"[^>]*>|<script type="application/ld\+json">.*?</script>', re.S)
 # A video streams in after the page is up, so it has a budget of its own.
 # Its poster is part of the page; the rest (the clip and the fallback for
 # browsers without video, which others never fetch) is counted here.

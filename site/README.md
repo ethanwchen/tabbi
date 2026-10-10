@@ -171,7 +171,7 @@ Limited progress bars are SVG lines rather than styled elements, since the CSP r
   The page styles `main` lists as prose, so the demo's rows reset their margins and colors; check new class names against `styles.css` too.
 - `js/demo.js` closes the panel and makes it work: hover, tap, keyboard and Escape, the Timer, Today, Now Playing, the Closet, and the pet's frames.
   Like the app, the panel stays open while the add field has focus, and Escape there clears the draft before it closes the notch.
-  It is plain JavaScript with no framework and no dependencies, loaded with `defer`, and pets move only while the demo is on screen.
+  It is plain JavaScript with no framework and no dependencies, loaded with `defer`, and a pet moves only while it can be seen: the demo is on screen and its tab, Closet section or closed notch is showing.
   Status changes (started, paused, 10 seconds left, done) are read out through an `aria-live` region.
   Under `prefers-reduced-motion` state changes are instant, the pet holds one frame and there is no confetti.
 

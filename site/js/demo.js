@@ -54,19 +54,26 @@
       this.el.style.backgroundPosition = `${-col * pets.frame}px ${-row * pets.frame}px`;
     }
 
-    /** Plays `name` once (or in a loop, if it loops), then calls `done`. */
+    /** Plays `name` once (or in a loop, if it loops), then calls `done`.
+        A pet that cannot be seen shows the clip's first frame and waits
+        for `wake`, so hidden panes and an off-screen demo cost nothing. */
     play(name, done) {
       window.clearTimeout(this.timer);
+      this.timer = 0;
       this.clip = name;
       const clip = this.look.clips[name];
       if (reduceMotion.matches) {
         this.frame(clip.row, name === 'celebrate' ? clip.durations.length - 1 : 0);
-        if (done) this.timer = window.setTimeout(done, 1600);
+        if (done || !clip.loops) this.timer = window.setTimeout(done || (() => this.idle()), 1600);
         return;
       }
       let i = 0;
       const step = () => {
         this.frame(clip.row, i);
+        if (!this.visible()) {
+          this.timer = 0;
+          return;
+        }
         const wait = clip.durations[i];
         i += 1;
         if (i < clip.durations.length) {
@@ -81,6 +88,10 @@
       step();
     }
 
+    visible() {
+      return onScreen && (!this.el.checkVisibility || this.el.checkVisibility({ visibilityProperty: true }));
+    }
+
     /** Idle, with a blink every few loops. */
     idle() {
       if (this.clip === 'idle' && Math.random() < 0.4) {
@@ -92,12 +103,26 @@
 
     stop() {
       window.clearTimeout(this.timer);
+      this.timer = 0;
     }
   }
+
+  // Set by the IntersectionObserver at the end: pets only move on screen.
+  let onScreen = false;
 
   const players = {};
   demo.querySelectorAll('[data-pet]').forEach((el) => { players[el.dataset.pet] = new PetPlayer(el); });
   const allPets = () => Object.values(players);
+
+  /** Starts the pets that just came into view: the notch opened or
+      closed, a tab or Closet section switched, or the demo scrolled in. */
+  function wakePets() {
+    allPets().forEach((pet) => {
+      if (pet.timer || !pet.visible()) return;
+      if (pet === players.dial && timer.run === 'running') pet.play('typing');
+      else pet.idle();
+    });
+  }
 
   // --- open and close -------------------------------------------------------
 
@@ -106,6 +131,7 @@
 
   function setState(next) {
     notch.dataset.state = next;
+    wakePets();
     const open = next === 'open';
     face.setAttribute('aria-expanded', String(open));
     panel.inert = !open;
@@ -432,6 +458,7 @@
   demo.querySelector('[data-action="open-timer"]').addEventListener('click', () => {
     timerTab.checked = true;
     timerTab.focus();
+    wakePets();
   });
 
   // --- the Closet -----------------------------------------------------------
@@ -470,9 +497,10 @@
     if (trying) petSub.dataset.trying = '';
     else delete petSub.dataset.trying;
     petSub.textContent = trying ? `Trying on ${trying.dataset.name}` : 'British Shorthair';
+    // Pressed means worn; the tile being tried on only lights up.
     tiles.forEach((tile) => {
-      const pressed = tile === trying || ('owned' in tile.dataset && tile.dataset.look === worn);
-      tile.setAttribute('aria-pressed', String(pressed));
+      tile.setAttribute('aria-pressed', String('owned' in tile.dataset && tile.dataset.look === worn));
+      tile.toggleAttribute('data-trying', tile === trying);
     });
     // The footer names the item tried on, or points to the next unlock.
     Object.entries(feet).forEach(([section, foot]) => {
@@ -560,7 +588,7 @@
   // the song's time moves on a half-second tick while it plays, and the
   // closed notch shows the equalizer then.
   const tracks = JSON.parse(tracksData.textContent);
-  const music = { index: 0, at: 0, playing: false, timer: 0, last: 0, shuffle: false, repeat: false };
+  const music = { index: 0, at: 0, playing: false, seeking: false, timer: 0, last: 0, shuffle: false, repeat: false };
   const cover = demo.querySelector('[data-cover]');
   const trackText = demo.querySelector('[data-track-text]');
   const trackTitle = demo.querySelector('[data-track-title]');
@@ -579,14 +607,16 @@
   const song = () => tracks[music.index];
   const byLine = (track) => `${track.artist} \u00b7 ${track.album}`;
 
-  function renderPosition() {
+  /** `spoken` updates the slider's value text, which a screen reader reads
+      out while it has focus, so the song clock only does that unfocused. */
+  function renderPosition(spoken = document.activeElement !== scrub) {
     const { length } = song();
     const at = Math.floor(music.at);
     scrub.value = String(at);
     scrub.style.setProperty('--f', String(music.at / length));
     trackAt.textContent = mmss(at);
     trackLeft.textContent = `-${mmss(length - at)}`;
-    scrub.setAttribute('aria-valuetext', `${mmss(at)} of ${mmss(length)}`);
+    if (spoken) scrub.setAttribute('aria-valuetext', `${mmss(at)} of ${mmss(length)}`);
   }
 
   function renderSong() {
@@ -599,7 +629,7 @@
     like.setAttribute('aria-pressed', String(track.liked));
     like.title = track.liked ? 'Unlike' : 'Like';
     scrub.max = String(track.length);
-    renderPosition();
+    renderPosition(true);
   }
 
   function renderPlaying() {
@@ -613,7 +643,7 @@
 
   function tickSong() {
     const now = performance.now();
-    music.at += (now - music.last) / 1000;
+    if (!music.seeking) music.at += (now - music.last) / 1000;
     music.last = now;
     if (music.at >= song().length) {
       if (music.repeat) {
@@ -667,10 +697,14 @@
     renderSong();
     announce(track.liked ? `Liked ${track.title}.` : `Removed the like from ${track.title}.`);
   });
+  // While the thumb is held, the song clock leaves the slider alone.
+  scrub.addEventListener('pointerdown', () => { music.seeking = true; });
+  window.addEventListener('pointerup', () => { music.seeking = false; });
+  window.addEventListener('pointercancel', () => { music.seeking = false; });
   scrub.addEventListener('input', () => {
     music.at = Number(scrub.value);
     music.last = performance.now();
-    renderPosition();
+    renderPosition(true);
   });
   [[shuffleButton, 'shuffle', 'Turn shuffle off', 'Turn shuffle on'],
     [repeatButton, 'repeat', 'Turn repeat off', 'Repeat this song']].forEach(([button, key, onTitle, offTitle]) => {
@@ -722,13 +756,13 @@
 
   // Pets only move while the demo is on screen.
   const watcher = new IntersectionObserver(([entry]) => {
-    allPets().forEach((pet) => {
-      if (!entry.isIntersecting) pet.stop();
-      else if (pet === players.dial && timer.run === 'running') pet.play('typing');
-      else pet.idle();
-    });
+    onScreen = entry.isIntersecting;
+    if (onScreen) wakePets();
+    else allPets().forEach((pet) => pet.stop());
   });
   watcher.observe(scene);
+  // A tab or Closet section shows other pets.
+  demo.addEventListener('change', (event) => { if (event.target.type === 'radio') wakePets(); });
 
   demo.querySelectorAll('button:disabled, input:disabled').forEach((control) => { control.disabled = false; });
   renderDay();

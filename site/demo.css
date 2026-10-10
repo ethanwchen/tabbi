@@ -444,9 +444,9 @@
 }
 .tile .pet { zoom: 2; }
 .tile:hover { background: var(--n-hover); }
-.tile[aria-pressed='true'] { background: rgba(250, 204, 77, 0.12); box-shadow: inset 0 0 0 0.1em rgba(250, 204, 77, 0.7); }
+.tile:is([aria-pressed='true'], [data-trying]) { background: rgba(250, 204, 77, 0.12); box-shadow: inset 0 0 0 0.1em rgba(250, 204, 77, 0.7); }
 .tile-limited:not([data-owned]) .pet { filter: grayscale(1) brightness(0.7); opacity: 0.6; transition: filter 335ms var(--snappy), opacity 335ms var(--snappy); }
-.tile-limited:not([data-owned]):is(:hover, :focus-visible, [aria-pressed='true']) .pet { filter: none; opacity: 1; }
+.tile-limited:not([data-owned]):is(:hover, :focus-visible, [data-trying]) .pet { filter: none; opacity: 1; }
 .tile[data-owned] .st-locked, .tile:not([data-owned]) .st-owned, .tile:not([data-owned]) .st-on,
 .tile[aria-pressed='true'] .st-owned, .tile:not([aria-pressed='true']) .st-on { display: none; }
 .tile-status {
@@ -642,9 +642,11 @@
   /* Now Playing puts the cover on top, the song and its controls below. */
   .pane-music { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto; align-content: center; justify-items: center; gap: 2em; }
   .music-main { width: 100%; height: auto; gap: 1.2em; }
-  /* The sprite's empty top rows give way, so two rows of tiles keep their bars. */
-  .tile { gap: 0.2em; padding: 0 0 0.6em; }
-  .tile .pet { margin: -0.3em 0 -0.1em; }
+  /* The sprite's empty top rows give way, so two rows of tiles keep their bars.
+     No margins on the sprite: WebKit resolves a margin on a zoomed element
+     differently after a restyle, which nudged a tapped tile. */
+  .tile { gap: 0; padding: 0 0 0.6em; }
+  .bar { margin-top: 0.2em; }
   .hint { left: auto; right: 1.2em; top: 5em; font-size: 17px; }
   /* No room left of the notch on a phone: the points go under the pet. */
   .burst-pts { top: 4em; right: auto; left: 0.6em; }
