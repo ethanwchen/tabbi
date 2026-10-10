@@ -21,6 +21,11 @@ struct AccountSettingsRow: View {
             Text(title)
             Text(caption)
                 .foregroundStyle(account.notice == nil ? .secondary : Color.orange)
+            if showsAgreement {
+                // The age check can pass in Party, so the sheet that shows
+                // these links may never open before the user signs in here.
+                Text(LocalizedStringKey(AccountAgeText.agreement))
+            }
         }
         .confirmationDialog("Delete your \(Edition.current.name) account?", isPresented: $confirmsDelete) {
             Button("Delete Account", role: .destructive) {
@@ -76,6 +81,11 @@ struct AccountSettingsRow: View {
         case .signedOut, .signingIn: "Account"
         case .signedIn, .deleting: account.name ?? "Signed in with Apple"
         }
+    }
+
+    private var showsAgreement: Bool {
+        account.notice == nil && account.ageStatus == .passed
+            && (account.phase == .signedOut || account.phase == .signingIn)
     }
 
     private var caption: String {

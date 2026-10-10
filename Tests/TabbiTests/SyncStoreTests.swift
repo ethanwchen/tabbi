@@ -147,6 +147,20 @@ final class SyncStoreTests: XCTestCase {
         XCTAssertNotNil(credentials.load(for: serverURL))
     }
 
+    func testADeleteWithNoTokenToSendKeepsTheAccountAndSaysWhy() async throws {
+        let server = FakeAccountServer()
+        let credentials = InMemoryPartyCredentialStore()
+        let store = makeStore(server: server, credentials: credentials, pet: petStore(earned: 0))
+        await store.signIn(identityToken: "jwt", authorizationCode: nil, name: nil)
+        await waitUntilSynced(store)
+        credentials.delete(for: serverURL)
+
+        await store.deleteAccount()
+        XCTAssertNil(server.deletedWith)
+        XCTAssertEqual(store.phase, .signedIn, "the account still exists on the server, so it is not forgotten here")
+        XCTAssertNotNil(store.notice)
+    }
+
     func testARefusedSignInStaysSignedOutWithANotice() async {
         let server = FakeAccountServer()
         server.refuseSignIn = true

@@ -369,6 +369,14 @@ enum SnapshotRenderer {
                 print(url.path)
             }
         }
+        // The Account row once the age check passed in Party: the Apple
+        // button with the Terms and Privacy Policy it agrees to.
+        services.accountSync.answerAge(birthMonth: 1, year: 1990)
+        if let png = await settingsWindow.snapshot(of: AppSettingsPane.general.rawValue) {
+            let url = outputDirectory.appendingPathComponent("settings-general-account-ready.png")
+            try? png.write(to: url)
+            print(url.path)
+        }
         // Connections with an API provider waiting for its key, a command
         // line tool and Ollama picked, as far as this build offers them.
         let aiShots = [("api-key", AIProviderID.gemini), ("cli", .claudeCLI), ("local", .ollama)]

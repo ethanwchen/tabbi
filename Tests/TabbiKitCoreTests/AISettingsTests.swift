@@ -35,7 +35,7 @@ final class AISettingsTests: XCTestCase {
             XCTAssertTrue(provider.consentTitle.contains(vendor))
             let message = provider.consentMessage(appName: "Tabbi")
             for detail in [provider.displayName, vendor, "questions", "screenshot", "calendar event titles",
-                           "study points", "terms and privacy policy", "None"] {
+                           "study minutes", "terms and privacy policy", "None"] {
                 XCTAssertTrue(message.contains(detail), "\(provider): \(detail)")
             }
         }

@@ -323,21 +323,26 @@ final class SyncStore: ObservableObject {
 
     /// Deletes the account on the server (the user, the sync document,
     /// presence, friendships, party memberships and Apple's tokens) and the
-    /// Party identity here. The pet stays on this Mac.
+    /// Party identity here. The pet stays on this Mac. Without a server
+    /// and token to ask, the account stays signed in with a notice rather
+    /// than being forgotten here while it lives on on the server.
     func deleteAccount() async {
         guard !isDemo, state.isSignedIn, phase == .signedIn else { return }
+        guard let server = server(), let token = credentials.load(for: server)?.token else {
+            cancelSync()
+            notice = "Couldn't reach your account from this Mac. Email support@tabbinotch.com to delete it."
+            return
+        }
         notice = nil
         phase = .deleting
         cancelSync()
         do {
-            if let server = server(), let token = credentials.load(for: server)?.token {
-                do {
-                    try await PartyClient(transport: transport(server), token: token).deleteMe()
-                } catch PartyError.unauthorized {
-                    // Already gone on the server.
-                }
-                try? credentials.delete(for: server)
+            do {
+                try await PartyClient(transport: transport(server), token: token).deleteMe()
+            } catch PartyError.unauthorized {
+                // Already gone on the server.
             }
+            try? credentials.delete(for: server)
             state = state.forgettingAccount()
             persist()
             settleSignedOut()

@@ -27,7 +27,7 @@ PRIVACY = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
           <li>Tabbi works without an account, and has no analytics, no advertising and no tracking.</li>
           <li>Your tasks, calendar, activity history, AI chats and settings stay on your Mac.</li>
           <li>AI features are off until you pick an AI provider and allow it. Then what you ask goes from your Mac to that provider, under its terms, not to us.</li>
-          <li>Three optional things reach a Tabbi server: Party (the friends tab), Sign in with Apple, and crash reports you agree to send. They never include your email, real name or IP address.</li>
+          <li>Three optional things reach a Tabbi server: Party (the friends tab), Sign in with Apple, and crash reports you agree to send. The server never stores your email address, your real name or your IP address (see sections 5 and 9 for the brief moments it handles them).</li>
           <li>Party and accounts are for people 13 and older.</li>
           <li>We do not sell or share personal information, and we do not use it for advertising or to train anything.</li>
           <li>You can delete your Party data or your account at any time, inside the app: see <a href="#deleting">Deleting your data</a>.</li>

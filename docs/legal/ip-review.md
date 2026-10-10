@@ -124,8 +124,8 @@ Claims on the site, README and listing that need substantiation, checked against
 | "Free" and "free forever" | Site, README, listing | True today (MIT, no paid tier). "Free forever" is a promise about the future; keep it only if the maintainer means it, or use "free and open source". |
 | "No ads, no tracking, no analytics, no telemetry" | Site, README, FAQ | True: no SDKs, no analytics; the server keeps only aggregate counts; crash reports are opt-in. |
 | "No account needed" | Site, README, listing | True; Sign in with Apple is optional. |
-| "It only connects where a tab needs to: album artwork, AnkiConnect and the friends server" | README Privacy | Incomplete: it leaves out update checks (Sparkle, direct download), opt-in crash reports, the Suggest form, sync and the AI provider the user picks (named two lines later). Fix in the README privacy pass. |
-| "Events never leave your Mac" | README permissions table | Not quite: Refine and Wrap up send event titles and times to the AI the user picked, which the next lines of the README say. Fix in the README privacy pass. |
+| "It only connects where a tab needs to: album artwork, AnkiConnect and the friends server" | README Privacy | Incomplete: it leaves out update checks (Sparkle, direct download), opt-in crash reports, the Suggest form, sync and the AI provider the user picks (named two lines later). **Fixed:** the README privacy section was corrected in the final review. |
+| "Events never leave your Mac" | README permissions table | Not quite: Refine and AI day plans send event titles and times to the AI the user picked (Day review sends task titles, never events). **Fixed:** the README privacy section was corrected in the final review. |
 | "Tabs only refresh while you can see them" | README | Mostly true by design rule; timers and the ticker run while closed by design, so "only" is broad. Low risk. |
 
 ## 5. Lawyer items from this review
