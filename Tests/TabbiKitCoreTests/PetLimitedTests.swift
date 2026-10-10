@@ -149,6 +149,20 @@ final class PetLimitedTests: XCTestCase {
         XCTAssertEqual(hat.cost, 0)
     }
 
+    /// Spring offers one item, the sakura sprig, so it is the headline
+    /// item: a head item that drops a drifting petal, distinct from the
+    /// shop's cherry petals, which fall all around the pet.
+    func testSakuraSprigIsASeasonalLimitedItem() {
+        let sprig = PetItem.accessory(.sakuraSprig)
+        XCTAssertEqual(PetLimitedEdition.springSakura.item, sprig)
+        XCTAssertEqual(sprig.limitedEdition?.source, .season(id: "spring"))
+        XCTAssertEqual(sprig.theme, .seasonal)
+        XCTAssertEqual(PetAccessory.sakuraSprig.slot, .head)
+        XCTAssertNil(PetItem.accessory(.cherryPetals).limitedEdition)
+        XCTAssertEqual(sprig.effect, .drift)
+        XCTAssertEqual(sprig.cost, 0)
+    }
+
     /// Seasonal items are limited, earned only during their event, and
     /// only the event's headline item (its last reward) carries an effect.
     func testHalloweenItemsAreSeasonalLimitedItems() {

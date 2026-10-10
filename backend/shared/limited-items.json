@@ -10,6 +10,7 @@
     { "id": "accessory.snowScarf", "source": "season", "season": "winter-holidays" },
     { "id": "accessory.heartGlasses", "source": "season", "season": "valentines" },
     { "id": "accessory.summerShades", "source": "season", "season": "summer" },
-    { "id": "accessory.lionDanceHat", "source": "season", "season": "lunar-new-year" }
+    { "id": "accessory.lionDanceHat", "source": "season", "season": "lunar-new-year" },
+    { "id": "accessory.sakuraSprig", "source": "season", "season": "spring" }
   ]
 }

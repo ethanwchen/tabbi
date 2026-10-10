@@ -300,6 +300,10 @@ extension CostumeArt {
     /// catches the light.
     static let lionDanceHat = PetArt.costume.headItem("lionDanceHat")
 
+    /// A brown cherry branch over one ear with three pink blossoms and a
+    /// green bud. Now and then a petal comes loose and drifts away.
+    static let sakuraSprig = PetArt.costume.headItem("sakuraSprig")
+
     /// A crimson scarf with a white trim along its lower edge, a white
     /// stripe across the tail and a white fringe. Now and then a speck of
     /// snow glints on the band, then a snowflake twinkles on the tail.

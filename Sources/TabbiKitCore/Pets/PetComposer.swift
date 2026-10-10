@@ -481,6 +481,7 @@ public enum PetComposer {
         case .pumpkinHat: .head(CostumeArt.pumpkinHat)
         case .reindeerAntlers: .head(CostumeArt.reindeerAntlers)
         case .lionDanceHat: .head(CostumeArt.lionDanceHat)
+        case .sakuraSprig: .head(CostumeArt.sakuraSprig)
         case .snowScarf: .body(CostumeArt.snowScarf)
         case .cherryPetals: .aura(CostumeArt.cherryPetals)
         case .sparkleTrail: .aura(CostumeArt.sparkleTrail)

@@ -11,6 +11,8 @@ public enum PetItemEffect: String, CaseIterable, Codable, Sendable {
     case flicker
     /// A small sparkle that blinks now and then.
     case sparkle
+    /// A petal that comes loose now and then and drifts away.
+    case drift
 }
 
 /// A study milestone that unlocks a limited edition item by itself, read
@@ -60,6 +62,7 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
     case valentinesGlasses
     case summerShades
     case lunarNewYearLion
+    case springSakura
 
     public var item: PetItem {
         switch self {
@@ -74,6 +77,7 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .valentinesGlasses: .accessory(.heartGlasses)
         case .summerShades: .accessory(.summerShades)
         case .lunarNewYearLion: .accessory(.lionDanceHat)
+        case .springSakura: .accessory(.sakuraSprig)
         }
     }
 
@@ -93,6 +97,7 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .valentinesGlasses: .season(id: "valentines")
         case .summerShades: .season(id: "summer")
         case .lunarNewYearLion: .season(id: "lunar-new-year")
+        case .springSakura: .season(id: "spring")
         }
     }
 
@@ -115,6 +120,7 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .valentinesGlasses: "Focus for 3 hours during Valentine's week."
         case .summerShades: "Focus for 5 hours during the summer event."
         case .lunarNewYearLion: "Focus for 3 hours during Lunar New Year."
+        case .springSakura: "Focus for 3 hours during cherry blossom season."
         }
     }
 
@@ -131,6 +137,7 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .valentinesGlasses: .sparkle
         case .summerShades: .sparkle
         case .lunarNewYearLion: .sparkle
+        case .springSakura: .drift
         }
     }
 }

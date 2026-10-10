@@ -454,6 +454,17 @@
     {
       "dress" : {
         "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0c0c9f67e9c6b841bdd44288f772b8e942662745556a57ee24ecc5cf1301b9dc"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "angelWings"
         ],
         "breed" : "orangeTabby",
@@ -1017,6 +1028,17 @@
       },
       "frameCount" : 125,
       "sha256" : "232ddf0c0d5c16002d8635c4d2b548800f08687161db48f2553e02efd16e29c5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0c0c9f67e9c6b841bdd44288f772b8e942662745556a57ee24ecc5cf1301b9dc"
     },
     {
       "dress" : {
@@ -1588,6 +1610,17 @@
     {
       "dress" : {
         "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d234ee5020c06a7c0bf855c90c5b0bcf3bfb9815f11f8ef2215b3d759522ef85"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "angelWings"
         ],
         "breed" : "blackCat",
@@ -2151,6 +2184,17 @@
       },
       "frameCount" : 125,
       "sha256" : "1d5229b7f859232307759cddc8aa374d61d5f8949dde6afd32e58f733204fcb4"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a21af60e84310a7b871b912b4b2cef165f2c5b2e4734899806f1119eeda83ba7"
     },
     {
       "dress" : {
@@ -2722,6 +2766,17 @@
     {
       "dress" : {
         "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ae715a27246bbcb0626bc85758ebf414391ed3e4972fc7f088211997c958f40e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "angelWings"
         ],
         "breed" : "tuxedo",
@@ -3285,6 +3340,17 @@
       },
       "frameCount" : 125,
       "sha256" : "1ae1d40d6b3fe1ae2a922458bc5613b5dfd8fe5b80156ca317b24a31341188e9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b043b13e2e373eef3ca77bbbb61c335f4527b994ccf90c51eddc4a3f6f100f5e"
     },
     {
       "dress" : {
@@ -3856,6 +3922,17 @@
     {
       "dress" : {
         "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f7706ff04e3c870e72eface5c672943a05ceb2324eb4ecec117fbc9e9e18f90d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "angelWings"
         ],
         "breed" : "siamese",
@@ -4419,6 +4496,17 @@
       },
       "frameCount" : 125,
       "sha256" : "50a370163e8bd5d88e1d8487717446aa02d6a46324477efbab6781b28745572c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "cd4738ecedf1fed4862c3f20fe19179437ebb2e50f12976d1d7f5e6a845d499c"
     },
     {
       "dress" : {
@@ -4990,6 +5078,17 @@
     {
       "dress" : {
         "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b6aaec1d0a61fb958a4b883ebb75a0cb15c081a521b7d0139a37b70e657a6224"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "angelWings"
         ],
         "breed" : "sphynx",
@@ -5553,6 +5652,17 @@
       },
       "frameCount" : 125,
       "sha256" : "a5f145396e8c29615bec496d219652e771b857a7f2db4dbb23b8d2195a33abc4"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a9d7ee76a33f3b9eb94c2d7738e18027c8f7fcd8bea83dd4c9b98a65f5d38896"
     },
     {
       "dress" : {
@@ -6124,6 +6234,17 @@
     {
       "dress" : {
         "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3d256873c6e5d6607ae3b6bfcfefc7ca09dad30562b1273ea982ca7647b066b3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "angelWings"
         ],
         "breed" : "goldenRetriever",
@@ -6687,6 +6808,17 @@
       },
       "frameCount" : 125,
       "sha256" : "e640d4cda29250af993a3f2ab71f362d2479286dc603123867a25b02d69edbec"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "fc5eb8aa3e81968d35d106593dd6ce0faeacd925a2b2b8635c71840be1c3831b"
     },
     {
       "dress" : {
@@ -7258,6 +7390,17 @@
     {
       "dress" : {
         "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "70fa3cb49a6ff3c060562a1ea29ccb8f2c7f9a079d8821796d861da4d6d4e60c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "angelWings"
         ],
         "breed" : "frenchBulldog",
@@ -7821,6 +7964,17 @@
       },
       "frameCount" : 125,
       "sha256" : "c128230fb48e673f9f8ff345e4591c518a2db8fedbfac091d78e6a82ea5166ce"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "eb8ce55bd566ac23359815a171a10ddf805636df98b9b4cdcd441e2471d44dce"
     },
     {
       "dress" : {
@@ -8392,6 +8546,17 @@
     {
       "dress" : {
         "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "56ff459d0dce4eee28b9419fb153e12b8711f19adacc632f7ed9b5732ec6132b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "angelWings"
         ],
         "breed" : "dachshund",
@@ -8955,6 +9120,17 @@
       },
       "frameCount" : 125,
       "sha256" : "9035f202721b1d96d0dbfbf5a05f426bfb7f6d1b56e2725e750628868830b47a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f2b1753ffa77c64779d19564880f5c1f2e6549fdcf2c1b0a6d780af789483b42"
     },
     {
       "dress" : {
@@ -9526,6 +9702,17 @@
     {
       "dress" : {
         "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "528f22f0d2952938e275e6261a7fe0fdc74dda643a1a7d81d2a96fd2b6349f99"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "angelWings"
         ],
         "breed" : "poodle",
@@ -10089,6 +10276,17 @@
       },
       "frameCount" : 125,
       "sha256" : "86520e7d080ec6b49791c44175b76ebb79aff2e0e54cfe0367b2b7dd6955462f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "08c57ffefb4eba05e29b3989b4cd0427ae3bc2cfa5403574273d945a3ede6a6e"
     },
     {
       "dress" : {
