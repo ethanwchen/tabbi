@@ -153,11 +153,20 @@ struct PetArtFile: Sendable {
             file.bodyItems[name] = body
         }
         for (name, item) in raw.faceItems ?? [:] {
-            file.faceItems[name] = try CostumeArt.FaceItem(
+            var face = try CostumeArt.FaceItem(
                 cat: parse(item.cat, "\(name).cat"),
                 dog: parse(item.dog, "\(name).dog"),
                 eyeRow: item.eyeRow
             )
+            face.moreFrames = try (item.frames ?? []).enumerated().map { index, frame in
+                let path = "\(name).frames[\(index)]"
+                let moving = try CostumeArt.FaceItem(cat: parse(frame.cat, "\(path).cat"),
+                                                     dog: parse(frame.dog, "\(path).dog"), eyeRow: item.eyeRow)
+                try sameSize(moving.cat, as: face.cat, "\(path).cat")
+                try sameSize(moving.dog, as: face.dog, "\(path).dog")
+                return moving
+            }
+            file.faceItems[name] = face
         }
         for (name, item) in raw.headItems ?? [:] {
             let grid = try parse(item.grid, "\(name).grid")
@@ -286,8 +295,15 @@ struct PetArtFile: Sendable {
         }
 
         struct FaceItem: Decodable {
+            /// One frame of a face item: a cat and a dog grid.
+            struct Frame: Decodable {
+                let cat, dog: [String]
+            }
+
             let cat, dog: [String]
             let eyeRow: Int
+            /// The rest of an animated item's loop, after the still grids.
+            let frames: [Frame]?
         }
 
         struct HeadItem: Decodable {

@@ -40,6 +40,7 @@ extension PetItem {
             case .cozyHoodie: .cozy
             case .superheroCape, .wizardRobe: .fantasy
             case .dinosaurHoodie: .silly
+            case .studyHoodie: .seasonal
             }
         case .accessory(let accessory):
             switch accessory {
@@ -48,7 +49,9 @@ extension PetItem {
             case .scarf, .beanie, .chefHat, .backwardsCap: .cozy
             case .tinyCrown, .wizardHat, .pirateHat, .blindfoldedSorcerer, .astronautHelmet, .ninjaHeadband,
                  .angelWings, .kingsCape, .halo, .sparkleTrail: .fantasy
-            case .partyHat, .bunnyEars, .witchHat, .flowerCrown, .coolSunglasses, .cherryPetals: .seasonal
+            case .partyHat, .bunnyEars, .witchHat, .flowerCrown, .coolSunglasses, .cherryPetals, .moonlitWitchHat,
+                 .pumpkinHat, .reindeerAntlers, .snowScarf, .heartGlasses, .summerShades, .lionDanceHat,
+                 .sakuraSprig: .seasonal
             case .frogHat, .cowboyHat, .bowTie, .flameHeadband, .teamMedal, .rainCloud: .silly
             }
         }
@@ -63,6 +66,7 @@ extension PetItem {
             switch outfit {
             case .none, .scrubs, .whiteCoat: 1
             case .cozyHoodie, .superheroCape, .dinosaurHoodie, .wizardRobe: 2
+            case .studyHoodie: 4
             }
         case .accessory(let accessory):
             switch accessory {
@@ -72,6 +76,8 @@ extension PetItem {
                  .chunkyHeadphones, .bowTie: 2
             case .backwardsCap, .flameHeadband, .goldenLaurel, .teamMedal, .angelWings, .kingsCape, .halo,
                  .cherryPetals, .sparkleTrail, .rainCloud: 3
+            case .moonlitWitchHat, .pumpkinHat, .reindeerAntlers, .snowScarf, .heartGlasses, .summerShades, .lionDanceHat,
+                 .sakuraSprig: 4
             }
         }
     }

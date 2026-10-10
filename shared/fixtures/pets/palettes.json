@@ -29,6 +29,7 @@
         "mouth" : "#2A1A14",
         "nose" : "#E77A8C",
         "outline" : "#2A1A14",
+        "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
       "rim" : "#91806E"
@@ -62,6 +63,7 @@
         "mouth" : "#2A1A14",
         "nose" : "#E77A8C",
         "outline" : "#23252B",
+        "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
       "rim" : "#727B8D"
@@ -95,6 +97,7 @@
         "mouth" : "#2A1A14",
         "nose" : "#E77A8C",
         "outline" : "#7D748B",
+        "pumpkin" : "#F08A24",
         "pupil" : "#1F6B3A"
       },
       "rim" : "#7D748B"
@@ -128,6 +131,7 @@
         "mouth" : "#2A1A14",
         "nose" : "#E77A8C",
         "outline" : "#3A3038",
+        "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
       "rim" : "#91846E"
@@ -161,6 +165,7 @@
         "mouth" : "#2A1A14",
         "nose" : "#E77A8C",
         "outline" : "#7D748B",
+        "pumpkin" : "#F08A24",
         "pupil" : "#8A5A12"
       },
       "rim" : "#7D748B"
@@ -194,6 +199,7 @@
         "mouth" : "#2A1A14",
         "nose" : "#E77A8C",
         "outline" : "#3A2A22",
+        "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
       "rim" : "#91846E"
@@ -227,6 +233,7 @@
         "mouth" : "#2A1A14",
         "nose" : "#E77A8C",
         "outline" : "#3A2A22",
+        "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
       "rim" : "#91836E"
@@ -260,6 +267,7 @@
         "mouth" : "#2A1A14",
         "nose" : "#D9998B",
         "outline" : "#3A3330",
+        "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
       "rim" : "#91826E"
@@ -293,6 +301,7 @@
         "mouth" : "#2A1A14",
         "nose" : "#D9868A",
         "outline" : "#4A2C2A",
+        "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
       "rim" : "#917B6E"
@@ -326,6 +335,7 @@
         "mouth" : "#2A1A14",
         "nose" : "#D58C90",
         "outline" : "#2A2B31",
+        "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
       "rim" : "#737B8C"
@@ -359,6 +369,7 @@
         "mouth" : "#2A1A14",
         "nose" : "#3A2622",
         "outline" : "#3A2214",
+        "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
       "rim" : "#91846E"
@@ -392,6 +403,7 @@
         "mouth" : "#2A1A14",
         "nose" : "#3A231C",
         "outline" : "#26160E",
+        "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
       "rim" : "#917B6E"
@@ -425,6 +437,7 @@
         "mouth" : "#2A1A14",
         "nose" : "#2E2428",
         "outline" : "#3A2A22",
+        "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
       "rim" : "#91826E"
@@ -458,6 +471,7 @@
         "mouth" : "#2A1A14",
         "nose" : "#2E2224",
         "outline" : "#3A1E10",
+        "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
       "rim" : "#917E6E"
@@ -491,6 +505,7 @@
         "mouth" : "#2A1A14",
         "nose" : "#1E1618",
         "outline" : "#8D7278",
+        "pumpkin" : "#F08A24",
         "pupil" : "#4A2A1A"
       },
       "rim" : "#8D7278"
@@ -524,6 +539,7 @@
         "mouth" : "#2A1A14",
         "nose" : "#2E2224",
         "outline" : "#3A1E10",
+        "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
       "rim" : "#91806E"
@@ -557,6 +573,7 @@
         "mouth" : "#2A1A14",
         "nose" : "#3A2622",
         "outline" : "#3A2214",
+        "pumpkin" : "#F08A24",
         "pupil" : "#1E1420"
       },
       "rim" : "#917F6E"
@@ -590,6 +607,7 @@
         "mouth" : "#2A1A14",
         "nose" : "#1A1416",
         "outline" : "#7D748B",
+        "pumpkin" : "#F08A24",
         "pupil" : "#24160F"
       },
       "rim" : "#7D748B"

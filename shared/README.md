@@ -7,6 +7,7 @@ See `docs/windows/plan.md` (section 3) for why, and `docs/windows/phase0.md` for
   `pets.v1.schema.json` describes the pet art, breeds and animation timelines in `Sources/TabbiKitCore/Pets/PetArt/`.
   `themes.v1.schema.json` describes the themes in `Sources/TabbiKitCore/Themes/themes.json`.
   `study-methods.v1.schema.json` describes the study methods in `Sources/TabbiKitCore/StudyMethods/study-methods.json`.
+  `events.v1.schema.json` describes the year of seasonal events in `Sources/TabbiKitCore/Events/events.json`.
   `kit.v1.schema.json` describes kit files (`formatVersion` 1), bundled in `Sources/TabbiKitCore/Kits/Bundled` or imported; see `docs/kits.md`.
   `edition.v1.schema.json` describes the edition files in `Sources/TabbiKitCore/Editions/BundledEditions`.
   `catalog.v1.schema.json` describes the Party catalog, `backend/shared/catalog.json`.

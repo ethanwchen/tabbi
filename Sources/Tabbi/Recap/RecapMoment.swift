@@ -4,8 +4,8 @@ import TabbiKit
 import TabbiKitCore
 
 /// The recap's moment in the notch: the first time the user opens the
-/// notch after a week's recap is ready, its card fills the open notch once
-/// until they press Done. First-run onboarding and a Party invite's
+/// notch after a week's recap is ready, its card fills the open notch once,
+/// until they press Done or close the notch. First-run onboarding and a Party invite's
 /// confirmation come first (`AppTakeover`), so a recap never interrupts
 /// them and waits for the next open instead.
 @MainActor
@@ -52,8 +52,8 @@ final class RecapMoment: ObservableObject {
 
     /// The user opened the notch: builds what is ready (a Mac that slept
     /// through Sunday evening catches up here) and shows the newest unseen
-    /// recap. It counts as seen once shown, so it never comes back after a
-    /// relaunch, but it stays until Done even if the notch closes first.
+    /// recap. It counts as seen (and is saved) the moment it shows, so a
+    /// later open, a relaunch or a quit never brings it back.
     func notchOpened() {
         guard isEnabled, shown == nil, !isBlocked() else { return }
         store.refresh()
@@ -71,6 +71,10 @@ final class RecapMoment: ObservableObject {
 
     /// Done: back to the tabs.
     func dismiss() { shown = nil }
+
+    /// The user closed the notch: a card on show is done with, so the next
+    /// open shows the tabs. Past weeks stay in the recap list.
+    func notchClosed() { dismiss() }
 
     /// Follows the Settings switch. Off hides a card on show and stops the
     /// Sunday build; back on builds what is ready, which the next open shows.

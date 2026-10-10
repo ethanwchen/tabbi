@@ -233,6 +233,14 @@ public struct PetCloset: Hashable, Sendable {
         }
     }
 
+    /// Grants the seasonal items whose focus goals some event run in
+    /// `tally` has reached and returns the ones that are new. A granted item
+    /// stays owned after its event ends.
+    @discardableResult
+    public mutating func unlockSeasonal(_ tally: SeasonalEventTally) -> [PetItem] {
+        tally.earned.filter { save.ledger.grant($0) }
+    }
+
     /// Applies the item ids the Tabbi server granted to this account (event
     /// items such as the launch week cap) and returns the ones that are new.
     /// Unknown ids (from a newer build) and shop items are ignored, and an

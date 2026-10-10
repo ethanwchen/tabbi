@@ -124,8 +124,9 @@ public enum PartyPetAppearance {
         case .none: "none"
         case .scrubs: "scrubs"
         case .whiteCoat: "white-coat"
-        // The server has no dinosaur, so friends see the plain hoodie.
-        case .cozyHoodie, .dinosaurHoodie: "hoodie"
+        // The server has no dinosaur or study hoodie, so friends see the
+        // plain hoodie.
+        case .cozyHoodie, .dinosaurHoodie, .studyHoodie: "hoodie"
         case .superheroCape: "superhero"
         case .wizardRobe: "wizard"
         }

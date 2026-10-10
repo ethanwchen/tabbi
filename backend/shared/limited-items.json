@@ -3,6 +3,15 @@
     { "id": "accessory.backwardsCap", "source": "event", "event": "launch-week" },
     { "id": "accessory.flameHeadband", "source": "milestone", "milestone": "weekStreak" },
     { "id": "accessory.goldenLaurel", "source": "milestone", "milestone": "fiftyHours" },
-    { "id": "accessory.teamMedal", "source": "milestone", "milestone": "firstParty" }
+    { "id": "accessory.teamMedal", "source": "milestone", "milestone": "firstParty" },
+    { "id": "accessory.moonlitWitchHat", "source": "season", "season": "halloween" },
+    { "id": "accessory.pumpkinHat", "source": "season", "season": "halloween" },
+    { "id": "accessory.reindeerAntlers", "source": "season", "season": "winter-holidays" },
+    { "id": "accessory.snowScarf", "source": "season", "season": "winter-holidays" },
+    { "id": "accessory.heartGlasses", "source": "season", "season": "valentines" },
+    { "id": "accessory.summerShades", "source": "season", "season": "summer" },
+    { "id": "accessory.lionDanceHat", "source": "season", "season": "lunar-new-year" },
+    { "id": "accessory.sakuraSprig", "source": "season", "season": "spring" },
+    { "id": "outfit.studyHoodie", "source": "season", "season": "exam-season" }
   ]
 }

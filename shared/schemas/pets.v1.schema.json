@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://tabbi.app/schemas/pets.v1.schema.json",
   "title": "Tabbi pet art (pets.v1)",
-  "description": "One pet file from Sources/TabbiKitCore/Pets/PetArt: art (grids, sequences, costume items), breeds (base palette, body shapes, breeds) or animations (timelines). Grids are text rows in the sprite legend of docs/study/pets.md: '.' or ' ' is transparent, 'x' erases lower layers, uppercase letters are palette roles and lowercase letters are breed pattern zones.",
+  "description": "One pet file from Sources/TabbiKitCore/Pets/PetArt: art (grids, sequences, costume items), breeds (base palette, body shapes, breeds) or animations (timelines). Grids are text rows in the sprite legend of docs/study/pets.md: '.' or ' ' is transparent, 'x' erases lower layers, uppercase letters (and the lowercase 'i' and 'o') are palette roles and the other lowercase letters are breed pattern zones.",
   "type": "object",
   "required": ["schema"],
   "additionalProperties": false,
@@ -70,7 +70,20 @@
         "properties": {
           "cat": { "$ref": "#/$defs/grid" },
           "dog": { "$ref": "#/$defs/grid" },
-          "eyeRow": { "type": "integer", "minimum": 0 }
+          "eyeRow": { "type": "integer", "minimum": 0 },
+          "frames": {
+            "description": "The rest of an animated item's loop after the still cat and dog grids, one tick of itemFrameDuration each, each grid the size of its still. The still grids are the loop's first frame and what Reduce Motion shows.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["cat", "dog"],
+              "additionalProperties": false,
+              "properties": {
+                "cat": { "$ref": "#/$defs/grid" },
+                "dog": { "$ref": "#/$defs/grid" }
+              }
+            }
+          }
         }
       }
     },
@@ -125,7 +138,7 @@
     "basePalette": {
       "description": "The color of every palette role before a breed or the user changes it: eyes, effects, the default costume.",
       "allOf": [{ "$ref": "#/$defs/palette" }],
-      "required": ["outline", "furBase", "furShade", "furAccent", "furSpot", "belly", "eye", "pupil", "eyeLight", "nose", "mouth", "blush", "costumeBase", "costumeShade", "costumeTrim", "coat", "coatShade", "accessoryBase", "accessoryShade", "ink", "gold", "metal", "effect", "heart", "leaf", "leather", "crimson"]
+      "required": ["outline", "furBase", "furShade", "furAccent", "furSpot", "belly", "eye", "pupil", "eyeLight", "nose", "mouth", "blush", "costumeBase", "costumeShade", "costumeTrim", "coat", "coatShade", "accessoryBase", "accessoryShade", "ink", "gold", "metal", "effect", "heart", "leaf", "leather", "crimson", "pumpkin"]
     },
     "bodyShapes": {
       "description": "The shared art families breeds are drawn on, and the species of each.",
@@ -180,7 +193,7 @@
       "description": "Rows of equal width, top to bottom.",
       "type": "array",
       "minItems": 1,
-      "items": { "type": "string", "minLength": 1, "pattern": "^[ .xOBSAKWEiLNRPCDTUVGJQYMZHFIXmcptefsab]+$" }
+      "items": { "type": "string", "minLength": 1, "pattern": "^[ .xOBSAKWEiLNRPCDTUVGJQYMZHFIXomcptefsab]+$" }
     },
     "backPlacement": {
       "description": "A back item for one body family (or an aura item for one view): x and y offset the grids' top-left corner from the family's body origin (the frame's corner for an aura item), and frames is the item's loop, one tick of itemFrameDuration each, all the size of the first. The first frame is the still that Reduce Motion shows. Every family has the same number of frames.",
@@ -195,7 +208,7 @@
     },
     "role": {
       "description": "A palette role: what a pixel means.",
-      "enum": ["outline", "furBase", "furShade", "furAccent", "furSpot", "belly", "eye", "pupil", "eyeLight", "nose", "mouth", "blush", "costumeBase", "costumeShade", "costumeTrim", "coat", "coatShade", "accessoryBase", "accessoryShade", "ink", "gold", "metal", "effect", "heart", "leaf", "leather", "crimson"]
+      "enum": ["outline", "furBase", "furShade", "furAccent", "furSpot", "belly", "eye", "pupil", "eyeLight", "nose", "mouth", "blush", "costumeBase", "costumeShade", "costumeTrim", "coat", "coatShade", "accessoryBase", "accessoryShade", "ink", "gold", "metal", "effect", "heart", "leaf", "leather", "crimson", "pumpkin"]
     },
     "zone": {
       "description": "A breed pattern zone inside shared body art.",

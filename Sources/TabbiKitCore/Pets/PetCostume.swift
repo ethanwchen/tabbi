@@ -13,6 +13,10 @@ public enum PetOutfit: String, CaseIterable, Codable, Sendable {
     /// A green hoodie with a spiky hood, the one outfit with a head part.
     case dinosaurHoodie
     case wizardRobe
+    /// A navy hoodie with white drawstrings and a gold crest that glints,
+    /// earned during exam season (`PetLimitedEdition.examHoodie`). The
+    /// shop's cozy hoodie is plain knit.
+    case studyHoodie
 
     public var displayName: String {
         switch self {
@@ -23,6 +27,7 @@ public enum PetOutfit: String, CaseIterable, Codable, Sendable {
         case .superheroCape: "Superhero Cape"
         case .dinosaurHoodie: "Dinosaur Hoodie"
         case .wizardRobe: "Wizard Robe"
+        case .studyHoodie: "Study Hoodie"
         }
     }
 }
@@ -80,6 +85,33 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
     case goldenLaurel
     /// A gold medal on a red ribbon, for finishing a Party session.
     case teamMedal
+    // Seasonal event items (`SeasonalEvent`): earned by focusing while the
+    // event runs.
+    /// A navy witch hat with a pumpkin band and a gold crescent moon, for
+    /// Halloween. The shop's witch hat has a red band and a buckle.
+    case moonlitWitchHat
+    /// A carved jack-o'-lantern worn as a hat, its candle flickering, the
+    /// Halloween headline item.
+    case pumpkinHat
+    /// Brown reindeer antlers on a crimson headband, for the winter holidays.
+    case reindeerAntlers
+    /// A crimson scarf with a white trim and fringe that snow sparkles on,
+    /// the winter holidays headline item. The shop's scarf is pink knit.
+    case snowScarf
+    /// Pink heart-shaped glasses on a crimson frame, a light glinting on
+    /// a lens now and then: the Valentine's headline item.
+    case heartGlasses
+    /// Navy-rimmed aviators with sunset lenses that the sun glints on: the
+    /// summer headline item. The shop's cool sunglasses are plain black.
+    case summerShades
+    /// A red lion dance head with a gold horn, white brows and a gold
+    /// fringe, its forehead mirror catching the light: the Lunar New Year
+    /// headline item.
+    case lionDanceHat
+    /// A cherry blossom sprig pinned over one ear, a petal drifting off
+    /// it now and then: the spring headline item. The shop's cherry petals
+    /// fall all around the pet instead.
+    case sakuraSprig
     // Animated shop items, each looping a few frames on the item clock.
     /// White feathered wings that flap behind the pet.
     case angelWings
@@ -96,12 +128,13 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
 
     public var slot: PetAccessorySlot {
         switch self {
-        case .stethoscope, .scarf, .bowTie, .teamMedal: .neck
-        case .roundGlasses, .coolSunglasses: .face
+        case .stethoscope, .scarf, .bowTie, .teamMedal, .snowScarf: .neck
+        case .roundGlasses, .coolSunglasses, .heartGlasses, .summerShades: .face
         case .surgicalCap, .headMirror, .graduationCap, .beanie, .tinyCrown, .partyHat, .chefHat, .wizardHat,
              .bunnyEars, .witchHat, .cowboyHat, .flowerCrown, .frogHat, .ninjaHeadband, .pirateHat,
              .blindfoldedSorcerer, .astronautHelmet, .chunkyHeadphones, .backwardsCap, .flameHeadband,
-             .goldenLaurel, .halo: .head
+             .goldenLaurel, .halo, .moonlitWitchHat, .pumpkinHat, .reindeerAntlers, .lionDanceHat,
+             .sakuraSprig: .head
         case .angelWings, .kingsCape: .back
         case .cherryPetals, .sparkleTrail, .rainCloud: .aura
         }
@@ -142,6 +175,14 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
         case .flameHeadband: "Flame Headband"
         case .goldenLaurel: "Golden Laurel"
         case .teamMedal: "Team Medal"
+        case .moonlitWitchHat: "Moonlit Witch Hat"
+        case .pumpkinHat: "Pumpkin Hat"
+        case .reindeerAntlers: "Reindeer Antlers"
+        case .snowScarf: "Snowy Scarf"
+        case .heartGlasses: "Heart Glasses"
+        case .summerShades: "Sunset Shades"
+        case .lionDanceHat: "Lion Dance Hat"
+        case .sakuraSprig: "Sakura Sprig"
         case .angelWings: "Angel Wings"
         case .kingsCape: "King's Cape"
         case .halo: "Halo"

@@ -97,6 +97,59 @@ final class RecapArchiveTests: XCTestCase {
         XCTAssertEqual(archive.unseen?.week, week("2026-10-05"))
     }
 
+    func testAfterWeeksAwayOnlyTheWeekThatJustEndedShows() {
+        var archive = RecapArchive(seenWeek: week("2026-09-07"))
+        for start in ["2026-09-14", "2026-09-21", "2026-09-28", "2026-10-05"] {
+            archive.record(recap(week(start), minutes: 30), builtAt: date(day: 13, 9), calendar: calendar)
+        }
+        XCTAssertTrue(archive.skipStaleWeeks(at: date(day: 13, 9), calendar: calendar))
+        XCTAssertEqual(archive.unseen?.week, week("2026-10-05"), "One card, the newest week")
+        XCTAssertEqual(archive.seenWeek, week("2026-09-28"), "Older weeks count as seen")
+        XCTAssertEqual(archive.recaps.count, 4, "And stay in the list")
+        XCTAssertFalse(archive.skipStaleWeeks(at: date(day: 14, 9), calendar: calendar), "Once per week")
+
+        archive.markSeen(week("2026-10-05"))
+        XCTAssertNil(archive.unseen, "Nothing queued behind it")
+    }
+
+    func testAnOldUnseenWeekDoesNotShowWhenTheLatestWeekWasEmpty() {
+        var archive = RecapArchive()
+        archive.record(recap(week("2026-09-14"), minutes: 30), builtAt: date(day: 21, 9), calendar: calendar)
+        archive.record(recap(week("2026-10-05"), minutes: 0), builtAt: date(day: 13, 9), calendar: calendar)
+        archive.skipStaleWeeks(at: date(day: 13, 9), calendar: calendar)
+        XCTAssertNil(archive.unseen, "A recap from a month ago never shows")
+        XCTAssertNil(archive.unnotified)
+        XCTAssertEqual(archive.recaps.map(\.week), [week("2026-09-14")])
+    }
+
+    func testOnSundayEveningLastWeekIsStaleAndThisWeekCanShow() {
+        var archive = RecapArchive()
+        archive.record(recap(week("2026-09-28"), minutes: 30), builtAt: date(day: 11, 19), calendar: calendar)
+        archive.record(recap(week("2026-10-05"), minutes: 30), builtAt: date(day: 11, 19), calendar: calendar)
+        archive.skipStaleWeeks(at: date(day: 11, 19), calendar: calendar)
+        XCTAssertEqual(archive.unseen?.week, week("2026-10-05"))
+        XCTAssertEqual(archive.seenWeek, week("2026-09-28"))
+    }
+
+    func testMergingKeepsTheNewerMarkersSoASeenWeekNeverShowsAgain() {
+        var here = RecapArchive(recaps: [recap(week("2026-10-05"), minutes: 30)],
+                                settledWeek: week("2026-10-05"), seenWeek: week("2026-09-28"))
+        let there = RecapArchive(recaps: [recap(week("2026-10-05"), minutes: 90), recap(week("2026-09-28"), minutes: 20)],
+                                 settledWeek: week("2026-09-28"), seenWeek: week("2026-10-05"),
+                                 notifiedWeek: week("2026-10-05"))
+        XCTAssertTrue(here.merge(there))
+        XCTAssertEqual(here.seenWeek, week("2026-10-05"))
+        XCTAssertEqual(here.notifiedWeek, week("2026-10-05"))
+        XCTAssertEqual(here.settledWeek, week("2026-10-05"))
+        XCTAssertNil(here.unseen)
+        XCTAssertEqual(here.recaps.map(\.week), [week("2026-10-05"), week("2026-09-28")])
+        XCTAssertEqual(here.recap(for: week("2026-10-05"))?.focusMinutes, 30, "A week both have keeps this Mac's")
+
+        let older = RecapArchive(seenWeek: week("2026-09-21"))
+        XCTAssertFalse(here.merge(older), "An older marker never rolls seen back")
+        XCTAssertEqual(here.seenWeek, week("2026-10-05"))
+    }
+
     func testNotifiesOncePerWeekAndNotAfterItWasSeen() {
         var archive = RecapArchive()
         archive.record(recap(week("2026-10-05"), minutes: 40), builtAt: date(day: 11, 19), calendar: calendar)

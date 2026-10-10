@@ -5,7 +5,7 @@ import TabbiKitCore
 @testable import Tabbi
 
 /// The recap's moment in the real app wiring: opening the notch shows the
-/// newest unseen recap once, after onboarding, until Done.
+/// newest unseen recap once, after onboarding, until Done or a close.
 @MainActor
 final class RecapMomentTests: XCTestCase {
     private var cancellables: Set<AnyCancellable> = []
@@ -40,15 +40,25 @@ final class RecapMomentTests: XCTestCase {
         XCTAssertNil(services.recaps.store.unseen, "Seen once shown")
         XCTAssertEqual(states(), [false, true])
 
-        inputs.previewVisible(true) // closed without Done
-        inputs.previewVisible(false)
-        XCTAssertEqual(services.recaps.shown, shown, "Still waiting for Done")
-
         services.recaps.dismiss()
         XCTAssertEqual(states(), [false, true, false])
         inputs.previewVisible(true)
         inputs.previewVisible(false)
         XCTAssertNil(services.recaps.shown, "Shown only once")
+    }
+
+    func testClosingTheNotchCountsAsDoneWithTheCard() {
+        let services = demoServices()
+        let inputs = ModuleViews.notchInputs(services: services)
+        let states = takeoverStates(inputs)
+
+        inputs.previewVisible(false) // opened: the card shows
+        XCTAssertNotNil(services.recaps.shown)
+        inputs.previewVisible(true) // closed without Done
+        XCTAssertNil(services.recaps.shown, "Closing ends the card")
+        inputs.previewVisible(false)
+        XCTAssertNil(services.recaps.shown, "The next open shows the tabs")
+        XCTAssertEqual(states(), [false, true, false])
     }
 
     func testOnboardingComesFirstAndTheRecapWaitsForTheNextOpen() {

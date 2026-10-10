@@ -10,7 +10,7 @@ import TabbiKit
 /// notch, the coach, Study and Party show the same pet.
 /// The pet's study coach runs while this module is on, and its Settings
 /// pane shows with it. The pet is shared as a provider, so the closed
-/// notch shows it too.
+/// notch shows it too, and dances once when a seasonal event starts.
 @MainActor
 final class ClosetModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
@@ -31,6 +31,8 @@ final class ClosetModule: NotchModule {
     let coach: PetCoachController
     /// The daily study reminder in the pet's voice.
     let reminder: StudyReminderScheduler
+    /// The pet's little dance when a seasonal event starts.
+    let greeter: SeasonalEventGreeter
 
     init(context: ModuleContext) {
         let settings = context.settings
@@ -52,6 +54,8 @@ final class ClosetModule: NotchModule {
         reminder = StudyReminderScheduler(storage: context.storage, runMode: context.runMode, pet: store,
                                           progress: context.providers.$snapshot.map(\.progress).eraseToAnyPublisher())
         recaps = context.weeklyRecaps
+        greeter = SeasonalEventGreeter(storage: context.storage, runMode: context.runMode,
+                                       celebrations: context.celebrations, now: { [store] in store.seasonNow })
         coach.follow(focus: context.providers.$snapshot.map(\.focus).eraseToAnyPublisher())
         coach.follow(awards: store.awards.eraseToAnyPublisher())
     }
@@ -59,11 +63,13 @@ final class ClosetModule: NotchModule {
     func start() {
         coach.start()
         reminder.start()
+        greeter.start()
     }
 
     func stop() {
         coach.stop()
         reminder.stop()
+        greeter.stop()
     }
 
     func makeSettingsPane() -> SettingsPane? { .petCoach(coach, reminder: reminder) }
