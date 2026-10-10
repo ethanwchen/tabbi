@@ -25,7 +25,7 @@ final class ScheduleStorePlanTests: XCTestCase {
         addTeardownBlock { defaults.removePersistentDomain(forName: suite) }
         let settings = SettingsStore(catalog: ModuleList.catalog, defaults: defaults, defaultKitID: "essentials",
                                      kitStore: nil, integratesWithSystem: false)
-        settings.settings.ai.provider = provider
+        settings.settings.ai.choose(provider)
         let keys = InMemoryAIKeyStore()
         let factory = AIProviderFactory(keys: keys, sandboxed: false, transport: transport ?? { _ in
             XCTFail("nothing may be sent")

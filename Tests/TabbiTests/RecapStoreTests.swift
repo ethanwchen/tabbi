@@ -61,6 +61,78 @@ final class RecapStoreTests: XCTestCase {
         XCTAssertNil(relaunched.unnotified)
     }
 
+    /// A live run as the user lives it: the card shows on the first open of
+    /// the new week, and no close, reopen, dismiss or relaunch brings it back.
+    func testTheRecapShowsOncePerWeekAcrossClosesAndRelaunches() throws {
+        let log = ActivityLog(repository: nil)
+        log.record([focus(day: 6, minutes: 25)])
+        let monday = date(day: 12, 9)
+        let moment = RecapMoment(store: store(log, at: monday))
+        moment.start()
+        defer { moment.stop() }
+
+        moment.notchOpened()
+        XCTAssertEqual(moment.shown?.recap.week, week)
+        let saved = try XCTUnwrap(RecapArchive.load(from: RecapStore.saveURL(in: storage)))
+        XCTAssertEqual(saved.seenWeek, week, "Seen is on disk the moment it shows, not on quit")
+
+        moment.notchClosed()
+        XCTAssertNil(moment.shown, "Closing counts as done")
+        moment.notchOpened()
+        XCTAssertNil(moment.shown, "Reopening shows the tabs")
+        moment.notchClosed()
+
+        let relaunched = RecapMoment(store: store(log, at: date(day: 14, 9)))
+        relaunched.start()
+        defer { relaunched.stop() }
+        relaunched.notchOpened()
+        XCTAssertNil(relaunched.shown, "Nor after a relaunch later that week")
+
+        log.record([focus(day: 13, minutes: 30)])
+        let nextWeek = RecapMoment(store: store(log, at: date(day: 19, 9)))
+        nextWeek.start()
+        defer { nextWeek.stop() }
+        nextWeek.notchOpened()
+        XCTAssertEqual(nextWeek.shown?.recap.focusMinutes, 30, "A newer week shows once")
+        nextWeek.dismiss()
+        nextWeek.notchOpened()
+        XCTAssertNil(nextWeek.shown)
+    }
+
+    func testAfterWeeksAwayOnlyTheLatestWeekShowsAndNothingQueues() throws {
+        let log = ActivityLog(repository: nil)
+        log.record([focus(day: 6, minutes: 25)])
+        let first = store(log, at: date(day: 12, 9))
+        first.refresh() // built, never opened
+
+        // Monday November 2, with activity only in the week before last.
+        log.record([focus(day: 21, minutes: 40)])
+        let moment = RecapMoment(store: store(log, at: calendar.date(byAdding: .day, value: 22, to: date(day: 11, 9))!))
+        moment.notchOpened()
+        XCTAssertNil(moment.shown, "Last week was empty, so no old card shows")
+        XCTAssertNil(moment.store.unnotified)
+        XCTAssertEqual(moment.store.archive.recaps.count, 2, "The skipped weeks stay in the list")
+    }
+
+    /// Two copies of the app on one edition (an installed build and a dev
+    /// run): the one with an older copy in memory never unmarks a seen week.
+    func testAStaleCopySavingNeverBringsBackASeenWeek() throws {
+        let log = ActivityLog(repository: nil)
+        log.record([focus(day: 6, minutes: 25)])
+        let monday = date(day: 12, 9)
+        let first = store(log, at: monday)
+        first.refresh()
+        let stale = store(log, at: monday)
+
+        first.markSeen(week)
+        stale.markNotified(week) // saves from a copy that never saw the mark
+
+        let saved = try XCTUnwrap(RecapArchive.load(from: RecapStore.saveURL(in: storage)))
+        XCTAssertEqual(saved.seenWeek, week)
+        XCTAssertNil(stale.unseen, "The stale copy took in the mark too")
+        XCTAssertNil(store(log, at: monday).unseen, "Nor does a relaunch show it")
+    }
+
     func testTheNotificationGoesOutOnceWhenTheRecapIsBuilt() throws {
         let log = ActivityLog(repository: nil)
         log.record([focus(day: 6, minutes: 25), focus(day: 8, minutes: 50)])
