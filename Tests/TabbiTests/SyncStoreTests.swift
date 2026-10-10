@@ -348,7 +348,7 @@ final class SyncStoreTests: XCTestCase {
     private func lifecycleStore(server: FakeAccountServer, pet: ClosetStore, sleeper: ManualSleeper) -> SyncStore {
         SyncStore(storage: storage, runMode: .live, pet: pet, signInMethod: .native,
                   server: { [serverURL] in serverURL }, credentials: InMemoryPartyCredentialStore(),
-                  transport: { _ in server }, sleep: { await sleeper.sleep($0) })
+                  ageAnswer: .inMemory(.distantPast), transport: { _ in server }, sleep: { await sleeper.sleep($0) })
     }
 
     /// Lets queued main actor work (Combine sinks, new tasks) run.
