@@ -104,6 +104,31 @@ So listening to music now costs Tabbi what an idle notch does.
 Screenshots a second apart confirm the bars still move.
 `SpotifyEqualizerTests` guards the loop (every bar ends where it starts, smooth throughout, the live motion before the blend), and `SpotifyEqualizerViewTests` guards the view: playing hands each bar a repeating animation of at most 30 fps, a SwiftUI update while playing keeps the running animation, and pausing removes it and rests the bars.
 
+### Pet coach on screen
+
+When the coach has something to say (a nudge, a celebration of points earned), the pet trots out from under the notch in its own overlay window, stands beside its speech bubble for up to 12 s, and trots back; a silent glance has it peek out of the notch's edge for about 4 s.
+The overlay redrew through a `TimelineView` at 30 frames a second for the whole scene, so a nudge cost about 450 SwiftUI updates of its window, 360 of them while the pet stood still and only its idle loop (two frames of about a second each) changed.
+Now the overlay follows `PetCoachStroll.nextRedraw` and `PetCoachGlance.nextRedraw`: every frame while the pet walks (it moves about 2 pt a frame), but only on the clips' own frame changes while it arrives, talks or peeks, and nothing once it's home.
+Answering the bubble changes the scene, and a `TimelineView` picks up a changed schedule at once (checked in a standalone app: 1 redraw a second on a slow schedule, 21 in the second after switching to a 20 per second one), so the walk home is as smooth as before.
+
+| One scene | Redraws before | Redraws after |
+| --- | --- | --- |
+| Nudge (1.5 s out, 12 s talking, 1.5 s back) | about 450 | 108 (16 while talking) |
+| Glance (about 4.4 s) | about 130 | 14 |
+
+Demo data, release build, `TABBI_COACH_PREVIEW` playing the scene 1 s after launch, CPU time from 3 s to 21 s after launch, only runs where nobody touched the Mac (pointer moves cost CPU of their own, see Idle, notch closed):
+
+| CPU over 18 s | Before | After |
+| --- | --- | --- |
+| Nudge | 0.51-0.55 s (3 runs) | 0.23-0.26 s (3 runs) |
+| Celebration | 0.46-0.49 s (2 runs) | 0.37 s (1 run) |
+| No scene | 0.01 s | 0.01 s |
+
+The rest of a scene's cost is showing and closing the overlay window and the walking frames.
+
+`PetCoachRedrawTests` guards it: a standing pet redraws only when its frame changes (fewer than 120 times in 12 s, each time on a new frame), no frame change is missed while it stands or peeks, a walking pet moves at least 30 times a second, nothing redraws during a glance's hold, and the schedule ends once the pet is home.
+Making the talking phase redraw at 30 fps again fails it.
+
 ## Open, on each tab
 
 Demo data, release build, the notch held open with `--open`, 45 s per tab.
