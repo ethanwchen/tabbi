@@ -132,3 +132,17 @@ The streak counts study days in a row, and a missed day can be protected by a fr
 - Extra freezes are bought through the points ledger (`PetPointsLedger.buyStreakFreeze`), which keeps the purchase dates in the pet save; which freezes are used is never stored, it is replayed from the study days.
 
 So a regular student who skips one day a week never loses a streak, and a second day off in the same week costs one study day's points.
+
+## Daily study reminder
+
+The streak has one gentle helper: an optional daily notification in the pet's voice, such as "Mochi misses you" with "10 minutes? That keeps your 6-day streak going."
+It is off by default, and the user turns it on and picks its time under **Settings > Tabs > Closet > Options** (the Pet Coach pane, Daily reminder section).
+The rules live in `StudyReminder` and `StudyReminderSave` (`TabbiKitCore/Streaks/StudyReminder.swift`, tested by `StudyReminderTests` and `StudyReminderSaveTests`), and `StudyReminderScheduler` in the Closet module keeps one pending notification at the planned moment.
+
+- It comes at most once a day, at the chosen time in the Mac's time zone (default 7:00 PM).
+- It skips a day the user already studied (a study day as above) or whose Study focus goal is met, and studying before the time withdraws that day's reminder.
+- Notification permission is asked only when the user turns the reminder on; if macOS has Tabbi's notifications off, the section points to System Settings.
+- It uses the default interruption level, so Focus modes silence it like any other app's notification.
+- The pending notification stays when Tabbi quits, so macOS still delivers it, and the next day is planned when Tabbi runs again.
+- A time skipped by a daylight saving change moves to the next valid moment.
+- The choice is saved in `Pet/reminder.json` in the edition's folder; demo and snapshot runs save and post nothing.
