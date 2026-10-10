@@ -164,4 +164,14 @@ final class RecapArchiveTests: XCTestCase {
         try Data("not json".utf8).write(to: url)
         XCTAssertThrowsError(try RecapArchive.load(from: url))
     }
+
+    // MARK: Demo
+
+    func testDemoEndsOnAnUnseenBestWeekWithALightWeekAmongThem() throws {
+        let archive = RecapArchive.demo(now: date(day: 11, 19), calendar: calendar)
+        let newest = try XCTUnwrap(archive.unseen)
+        XCTAssertEqual(newest.week, week("2026-10-05"))
+        XCTAssertEqual(archive.cheer(for: newest, calendar: calendar), .bestYet)
+        XCTAssertTrue(archive.recaps.contains { archive.cheer(for: $0, calendar: calendar) == .light })
+    }
 }
