@@ -204,6 +204,21 @@ public struct PetCloset: Hashable, Sendable {
         save.ledger.nextUnlock.map { ($0, max(0, $0.cost - balance)) }
     }
 
+    // MARK: Streak
+
+    /// The study streak on `today`, from the milestones' study days and the
+    /// freezes this save has bought.
+    public func streak(_ progress: PetMilestoneProgress, today: Date, calendar: Calendar = .current) -> StudyStreak {
+        StudyStreak(studyDays: progress.studyDays, freezePurchases: save.ledger.streakFreezes,
+                    today: today, calendar: calendar)
+    }
+
+    /// Buys an extra streak freeze with points (`StreakFreezeRules`).
+    public mutating func buyStreakFreeze(_ progress: PetMilestoneProgress, at date: Date,
+                                         calendar: Calendar = .current) throws(StreakFreezePurchaseError) {
+        try save.ledger.buyStreakFreeze(for: streak(progress, today: date, calendar: calendar), at: date)
+    }
+
     // MARK: Limited edition
 
     /// Grants the limited edition items whose milestones `progress` has

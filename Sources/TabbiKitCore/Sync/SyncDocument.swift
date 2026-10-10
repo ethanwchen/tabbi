@@ -177,10 +177,12 @@ public struct SyncDocument: Codable, Hashable, Sendable {
     /// The local pet save updated to this document: the synced look (or the
     /// local one when nothing synced yet), the account's ledger, and the
     /// local focus credit bookkeeping kept as it was. Limited edition items
-    /// this Mac holds stay, since a grant is never taken back.
+    /// this Mac holds stay, since a grant is never taken back, and so do its
+    /// streak freezes (their points are in its spent tally already).
     public func applied(to save: PetSave) -> PetSave {
         var ledger = ledger
         for item in save.ledger.granted { ledger.grant(item) }
+        ledger.keepStreakFreezes(of: save.ledger)
         var updated = PetSave(profile: pet?.profile ?? save.profile, ledger: ledger)
         updated.version = save.version
         updated.creditedFocusCount = save.creditedFocusCount

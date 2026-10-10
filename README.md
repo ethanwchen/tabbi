@@ -103,7 +103,7 @@ Tabbi asks for a permission only when the tab that needs it is first used.
 | Automation: Spotify, Music | Now Playing, focus mode | Read the current track, control playback and start a focus playlist. |
 | Automation: Safari or Chrome | Now Playing, only once you turn on SoundCloud | Read and control the SoundCloud tab. |
 | Calendars | Today, Schedule | Show your events and add the planned blocks you accept. Events never leave your Mac. |
-| Notifications | Today, Focus | Tell you when a timer ends while the notch is closed. |
+| Notifications | Today, Focus, Closet (only once you turn on the daily reminder) | Tell you when a timer ends while the notch is closed, and send the optional daily study reminder. |
 | Screen Recording | Ask AI | Attach a screenshot to a question. The image goes only to the AI you picked. |
 
 AI Usage needs no system permission.
