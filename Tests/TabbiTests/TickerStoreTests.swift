@@ -82,6 +82,39 @@ private final class PetModule: NotchModule {
     }
 }
 
+/// A swipe down or a middle-click on the closed notch shows the next item.
+@MainActor
+final class TickerCycleTests: XCTestCase {
+    private func makeTicker() -> TickerStore {
+        let settings = SettingsStore.ephemeral(catalog: ModuleCatalog([PetModule.descriptor]))
+        _ = settings.settings.modules.setEnabled(.closet, true)
+        let hub = ProviderHub()
+        let shared = SharedServices()
+        let module = PetModule(context: ModuleContext(
+            id: .closet, edition: .tabbi, settings: settings, providers: hub, shared: shared, runMode: .demo))
+        hub.attach(ModuleRegistry([module]))
+        hub.update(enabled: [.closet])
+        return TickerStore(settings: settings, providers: hub, preview: shared.closedNotchPreview)
+    }
+
+    func testCyclingStepsThroughTheItemsAndWrapsAround() {
+        let ticker = makeTicker()
+        guard case .highlight = ticker.item else { return XCTFail("the highlight leads, got \(String(describing: ticker.item))") }
+        XCTAssertTrue(ticker.cycle())
+        guard case .pet = ticker.item else { return XCTFail("expected the pet, got \(String(describing: ticker.item))") }
+        XCTAssertTrue(ticker.cycle())
+        guard case .highlight = ticker.item else { return XCTFail("expected the highlight again") }
+    }
+
+    func testTheOpenNotchDoesNotCycle() {
+        let ticker = makeTicker()
+        let before = ticker.item
+        ticker.setActive(false)
+        XCTAssertFalse(ticker.cycle())
+        XCTAssertEqual(ticker.item, before)
+    }
+}
+
 /// A finished focus session's cheer takes the closed notch for a moment.
 @MainActor
 final class TickerCheerTests: XCTestCase {

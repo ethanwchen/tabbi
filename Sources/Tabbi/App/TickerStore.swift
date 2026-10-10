@@ -32,7 +32,8 @@ extension ModuleContext {
 /// the enabled modules provide is what it shows. The clock only runs while
 /// the notch is closed, and then only wakes when the screen can change: the
 /// next rotation turn, the next change `TickerSources.nextChange` predicts,
-/// or every second while a running focus clock is showing. A pet cheer from
+/// or every second while a running focus clock is showing. A swipe down or
+/// a middle-click on the closed notch moves on by hand (`cycle()`). A pet cheer from
 /// `CelebrationCenter` (a finished focus session) takes the notch for its
 /// two seconds, then the rotation carries on.
 @MainActor
@@ -100,6 +101,24 @@ final class TickerStore: ObservableObject {
         guard active != isActive else { return }
         isActive = active
         refresh()
+    }
+
+    /// Shows the next live activity now, for a swipe down or a middle-click
+    /// on the closed notch. Returns whether the notch changed, so the
+    /// caller only gives feedback for a real step. A cheer playing keeps
+    /// the notch until it ends.
+    @discardableResult
+    func cycle() -> Bool {
+        let now = Date()
+        guard isActive, sources.cheering(cheer, at: now, enabled: settings.showsPreview) == nil else { return false }
+        let items = sources.items(at: now, enabled: settings.showsPreview)
+        guard items.count > 1 else { return false }
+        let next = rotation.advance(items: items, at: now)
+        rotates = true
+        guard next != item else { return false }
+        item = next
+        scheduleTimer(now: now)
+        return true
     }
 
     private func refresh() {

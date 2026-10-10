@@ -85,6 +85,7 @@ enum ModuleViews {
             hotkeyRegistered: { store.hotkeyIsRegistered = $0 },
             preview: services.ticker.$item.eraseToAnyPublisher(),
             previewVisible: { services.ticker.setActive($0) },
+            cyclePreview: { services.ticker.cycle() },
             takeover: services.onboarding.$flow.map { $0 != nil }.eraseToAnyPublisher()
         )
     }

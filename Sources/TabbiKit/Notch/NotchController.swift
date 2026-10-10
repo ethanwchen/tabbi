@@ -18,6 +18,7 @@ public final class NotchController {
     private var hoverOpenTask: Task<Void, Never>?
     private var pointerInside = false
     private var swipe = TabSwipe()
+    private var previewSwipe = TickerSwipe()
     private var hotkey: GlobalHotkey?
     /// The display the notch is on; nil while no screen qualifies.
     private var displayID: CGDirectDisplayID?
@@ -125,6 +126,16 @@ public final class NotchController {
         if let keys = NSEvent.addLocalMonitorForEvents(matching: .keyDown, handler: { [weak self] event in
             MainActor.assumeIsolated { self?.handleKey(event) ?? false } ? nil : event
         }) { monitors.append(keys) }
+
+        // A middle-click on the closed notch shows the next live activity.
+        if let middle = NSEvent.addLocalMonitorForEvents(matching: .otherMouseDown, handler: { [weak self] event in
+            let consumed = MainActor.assumeIsolated { () -> Bool in
+                guard let self, event.buttonNumber == 2, event.window === self.panel, !self.model.isOpen else { return false }
+                self.cyclePreview()
+                return true
+            }
+            return consumed ? nil : event
+        }) { monitors.append(middle) }
 
         if let scroll = NSEvent.addLocalMonitorForEvents(matching: .scrollWheel, handler: { [weak self] event in
             MainActor.assumeIsolated { self?.handleScroll(event) }
@@ -251,9 +262,10 @@ public final class NotchController {
         }
     }
 
-    /// A two-finger horizontal swipe moves one tab.
+    /// A two-finger horizontal swipe moves one tab; on the closed notch a
+    /// swipe down shows the next live activity.
     private func handleScroll(_ event: NSEvent) {
-        guard model.isOpen else { return }
+        guard model.isOpen || (pointerInside && model.preview != nil) else { return }
         let phase: TabSwipe.Phase
         if !event.momentumPhase.isEmpty {
             phase = .momentum
@@ -264,11 +276,28 @@ public final class NotchController {
         } else {
             phase = event.phase.isEmpty ? .none : .changed
         }
+        guard model.isOpen else {
+            // With natural scrolling the content follows the fingers, so a
+            // positive delta is a swipe down; otherwise it is inverted.
+            let down = event.isDirectionInvertedFromDevice ? event.scrollingDeltaY : -event.scrollingDeltaY
+            if previewSwipe.feed(deltaX: event.scrollingDeltaX, fingersDown: down, phase: phase) { cyclePreview() }
+            return
+        }
         switch swipe.feed(deltaX: event.scrollingDeltaX, deltaY: event.scrollingDeltaY, phase: phase) {
         case .previous: model.selectPrevious()
         case .next: model.selectNext()
         case nil: break
         }
+    }
+
+    /// Shows the next live activity with a light tick, and gives an
+    /// open-on-hover notch its full wait again so cycling doesn't open it.
+    private func cyclePreview() {
+        guard inputs.cyclePreview() else { return }
+        if settings.hapticsEnabled {
+            NSHapticFeedbackManager.defaultPerformer.perform(.generic, performanceTime: .now)
+        }
+        if settings.openOnHover, pointerInside { scheduleHoverOpen() }
     }
 
     // MARK: State

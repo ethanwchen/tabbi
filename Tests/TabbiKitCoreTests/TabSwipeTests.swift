@@ -45,3 +45,42 @@ final class TabSwipeTests: XCTestCase {
         XCTAssertEqual(steps, [.next, .next])
     }
 }
+
+final class TickerSwipeTests: XCTestCase {
+    /// Feeds one gesture of `count` events, each moving `down`, and returns how many steps it made.
+    private func gesture(_ swipe: inout TickerSwipe, down: Double, count: Int, momentum: Int = 0) -> Int {
+        var steps = [swipe.feed(deltaX: 0, fingersDown: down, phase: .began)]
+        for _ in 1..<count { steps.append(swipe.feed(deltaX: 0, fingersDown: down, phase: .changed)) }
+        steps.append(swipe.feed(deltaX: 0, fingersDown: 0, phase: .ended))
+        for _ in 0..<momentum { steps.append(swipe.feed(deltaX: 0, fingersDown: down, phase: .momentum)) }
+        return steps.filter { $0 }.count
+    }
+
+    func testASwipeDownCyclesExactlyOnce() {
+        for count in 2...20 {
+            var swipe = TickerSwipe()
+            XCTAssertEqual(gesture(&swipe, down: 30, count: count, momentum: 20), 1, "\(count) events")
+        }
+    }
+
+    func testShortUpwardAndSidewaysSwipesDoNotCycle() {
+        var swipe = TickerSwipe()
+        XCTAssertEqual(gesture(&swipe, down: 15, count: 2), 0)
+        XCTAssertEqual(gesture(&swipe, down: 15, count: 2), 0, "travel does not carry over")
+        XCTAssertEqual(gesture(&swipe, down: -50, count: 10), 0)
+        XCTAssertFalse(swipe.feed(deltaX: 0, fingersDown: 0, phase: .began))
+        for _ in 0..<10 { XCTAssertFalse(swipe.feed(deltaX: -60, fingersDown: 20, phase: .changed)) }
+    }
+
+    func testGoingUpFirstDoesNotDelayASwipeDown() {
+        var swipe = TickerSwipe()
+        XCTAssertFalse(swipe.feed(deltaX: 0, fingersDown: -100, phase: .began))
+        XCTAssertTrue(swipe.feed(deltaX: 0, fingersDown: 45, phase: .changed))
+    }
+
+    func testAMouseWheelCyclesOncePerThreshold() {
+        var swipe = TickerSwipe()
+        let steps = (0..<10).filter { _ in swipe.feed(deltaX: 0, fingersDown: 10, phase: .none) }.count
+        XCTAssertEqual(steps, 2)
+    }
+}

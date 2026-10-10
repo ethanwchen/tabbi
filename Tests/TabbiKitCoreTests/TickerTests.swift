@@ -293,6 +293,42 @@ final class TickerRotationTests: XCTestCase {
         XCTAssertEqual(rotation.update(items: [music, tasks], at: at(5)), tasks)
     }
 
+    func testAdvancingShowsTheNextItemAndHoldsItForAFullTurn() {
+        var rotation = TickerRotation(interval: 8)
+        let items = [music, focus, tasks]
+        _ = rotation.update(items: items, at: at(0))
+        XCTAssertEqual(rotation.advance(items: items, at: at(5)), focus)
+        XCTAssertEqual(rotation.update(items: items, at: at(12.9)), focus, "a fresh turn from the swipe")
+        XCTAssertEqual(rotation.update(items: items, at: at(13)), tasks)
+        XCTAssertEqual(rotation.advance(items: items, at: at(14)), music, "wraps around")
+    }
+
+    func testAdvancingWithOneItemOrNoneKeepsTheNotchAsItIs() {
+        var rotation = TickerRotation(interval: 8)
+        XCTAssertNil(rotation.advance(items: [], at: at(0)))
+        XCTAssertEqual(rotation.advance(items: [tasks], at: at(1)), tasks)
+        XCTAssertEqual(rotation.update(items: [tasks, music], at: at(2)), tasks)
+    }
+
+    func testAdvancingPeeksPastAPinThenThePinReturns() {
+        var rotation = TickerRotation(interval: 8)
+        let soon = meeting(.startsIn(minutes: 4))
+        let items = [soon, music, tasks]
+        XCTAssertEqual(rotation.update(items: items, at: at(0)), soon)
+        XCTAssertEqual(rotation.advance(items: items, at: at(10)), music)
+        XCTAssertEqual(rotation.update(items: items, at: at(17)), music)
+        XCTAssertEqual(rotation.update(items: items, at: at(18)), soon, "the meeting takes the notch back")
+        XCTAssertEqual(rotation.update(items: items, at: at(60)), soon)
+    }
+
+    func testAPeekedItemThatVanishesHandsBackToThePin() {
+        var rotation = TickerRotation(interval: 8)
+        let soon = meeting(.startsIn(minutes: 4))
+        _ = rotation.update(items: [soon, music], at: at(0))
+        XCTAssertEqual(rotation.advance(items: [soon, music], at: at(1)), music)
+        XCTAssertEqual(rotation.update(items: [soon], at: at(2)), soon)
+    }
+
     func testEverythingDisappearingClearsTheRotation() {
         var rotation = TickerRotation(interval: 8)
         _ = rotation.update(items: [music], at: at(0))
