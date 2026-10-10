@@ -283,11 +283,12 @@ final class AnkiSummaryTests: XCTestCase {
         XCTAssertEqual(try JSONDecoder().decode(AnkiSummary.self, from: data), original)
     }
 
-    func testDemoLooksLikeAStudyingMedStudent() {
+    func testDemoLooksLikeAStudyingStudent() {
         let demo = AnkiSummary.demo(now: now, calendar: utc)
-        XCTAssertEqual(demo.dueTotal, 425, "child deck rolled into its parent")
-        XCTAssertEqual(demo.topDecks.map(\.name), ["AnKing Step 1", "Pharm Sketchy", "Sketchy Micro", "Pathoma", "Boards and Beyond Biochem"])
-        XCTAssertEqual(demo.reviewedToday, 112)
+        XCTAssertEqual(demo.dueTotal, 128, "child decks rolled into their parents")
+        XCTAssertEqual([demo.newDue, demo.learnDue, demo.reviewDue], [20, 8, 100])
+        XCTAssertEqual(demo.topDecks.map(\.name), ["Spanish verbs", "Biology", "World history", "Chemistry"])
+        XCTAssertEqual(demo.reviewedToday, 46)
         XCTAssertEqual(demo.streak, 12)
         XCTAssertEqual(demo.history.count, 14)
         XCTAssertEqual(try XCTUnwrap(demo.retention), 0.9, accuracy: 0.03)

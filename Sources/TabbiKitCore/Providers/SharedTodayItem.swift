@@ -16,7 +16,7 @@ public struct SharedTodayItem: Identifiable, Hashable, Sendable {
     public var fraction: Double?
     public var isDone: Bool
     /// What a click runs besides opening `source`, e.g. Anki's "Study
-    /// Pharm Sketchy".
+    /// Spanish verbs".
     public var action: ProvidedAction?
 
     public init(id: String, source: ModuleID, title: String, detail: String?, fraction: Double?, isDone: Bool,

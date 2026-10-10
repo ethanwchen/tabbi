@@ -6,7 +6,7 @@ import TabbiKit
 /// Renders every notch state and Settings pane to PNG without showing a window:
 ///
 ///     swift run Tabbi --snapshot ./snapshots [--kit medicine] [--theme <id>|all] [--edition <id>]
-///                                          [--scale <factor>] [--transparent]
+///                                          [--scale <factor>] [--transparent] [--tabs <id,id,...>]
 ///
 /// The notch renders in the kit's theme unless `--theme` names one; with
 /// `--theme all` every notch shot is rendered once per theme into a
@@ -16,6 +16,10 @@ import TabbiKit
 /// `--transparent` leaves out their stand-in desktop, so marketing images
 /// (`docs/appstore/make-media.swift`) can place the panel crisply at
 /// any size on a backdrop of their own.
+///
+/// `--tabs` replaces the kit's tabs with exactly the listed modules, in that
+/// order, so the App Store screenshots show one fixed layout (Essentials
+/// plus flashcards) that no bundled kit has.
 ///
 /// Used to review UI changes (by people and by agents) without Screen
 /// Recording permission. Live data sources run as usual, so panels show
@@ -40,11 +44,16 @@ enum SnapshotRenderer {
         }
     }
 
-    /// - Parameter kitID: the kit whose tabs are rendered, as on first run.
-    static func run(outputDirectory: URL, kitID: String = KitLibrary.defaultKitID, themes: ThemeSelection = .kit,
-                    notchStyle: NotchStyle = NotchStyle(), settle: TimeInterval = 1.5) async {
+    /// - Parameters:
+    ///   - kitID: the kit whose tabs are rendered, as on first run.
+    ///   - tabs: the modules to turn on in place of the kit's tabs, if any.
+    static func run(outputDirectory: URL, kitID: String = KitLibrary.defaultKitID, tabs: ModuleLayout? = nil,
+                    themes: ThemeSelection = .kit, notchStyle: NotchStyle = NotchStyle(),
+                    settle: TimeInterval = 1.5) async {
         try? FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
         let services = AppServices(settings: .ephemeral(catalog: ModuleList.catalog(for: .current), kitID: kitID))
+        // Set before settling, so the modules it turns on start and load.
+        if let tabs { services.settings.settings.modules = tabs }
         let kitTheme = ThemeCatalog.resolve(services.settings.settings.themeID)
         let themeFolders: [(AppTheme, URL)] = switch themes {
         case .kit: [(kitTheme, outputDirectory)]

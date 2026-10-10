@@ -388,7 +388,7 @@ final class AnkiStore: ObservableObject {
 
     private static let favoriteKey = "anki.favoriteDeck"
     /// The demo student's pinned deck.
-    private static let demoFavorite = "Pharm Sketchy"
+    private static let demoFavorite = "Spanish verbs"
 
     /// Syncs with AnkiWeb, then refreshes the counts.
     func sync() {

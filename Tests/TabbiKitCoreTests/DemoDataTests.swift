@@ -5,7 +5,8 @@ import Testing
 /// Demo mode feeds the App Store screenshots and preview, which may show no
 /// third-party trademarks or real songs (App Review Guideline 5.2.1).
 struct DemoDataTests {
-    private static let brands = ["UWorld", "First Aid", "M83", "Midnight City", "Hurry Up"]
+    private static let brands = ["UWorld", "First Aid", "M83", "Midnight City", "Hurry Up",
+                                 "AnKing", "Sketchy", "Pathoma", "Boards and Beyond"]
 
     private var demoText: [String] {
         let now = Date(timeIntervalSinceReferenceDate: 812_000_000)
@@ -21,6 +22,7 @@ struct DemoDataTests {
         text += DayPlanner.sampleProposal(now: now).map(\.title)
         let track = SpotifyPlayback.demo.track
         text += [track?.title, track?.artist, track?.album].compactMap { $0 }
+        text += AnkiSummary.demo(now: now).decks.map(\.name)
         return text
     }
 

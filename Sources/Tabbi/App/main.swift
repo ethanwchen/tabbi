@@ -13,6 +13,9 @@ MainActor.assumeIsolated {
         let theme = themeFlag.flatMap { arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil }
         let scaleFlag = arguments.firstIndex(of: "--scale")
         let scale = scaleFlag.flatMap { arguments.indices.contains($0 + 1) ? Double(arguments[$0 + 1]) : nil }
+        let tabsFlag = arguments.firstIndex(of: "--tabs")
+        let tabs = tabsFlag.flatMap { arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil }
+            .flatMap { ModuleLayout(enablingList: $0, catalog: ModuleList.catalog(for: .current)) }
         var notchStyle = SnapshotRenderer.NotchStyle()
         if let scale, scale > 0 { notchStyle.scale = scale }
         notchStyle.transparent = arguments.contains("--transparent")
@@ -21,6 +24,7 @@ MainActor.assumeIsolated {
             await SnapshotRenderer.run(
                 outputDirectory: URL(fileURLWithPath: path),
                 kitID: kitID ?? Edition.current.defaultKitID,
+                tabs: tabs,
                 themes: SnapshotRenderer.ThemeSelection(argument: theme),
                 notchStyle: notchStyle
             )

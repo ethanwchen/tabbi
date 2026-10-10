@@ -185,7 +185,7 @@ extension AnkiConnectionState {
 
 /// One line of `AnkiSummary.deckOutline`: a deck, how deep it sits under
 /// the listed decks, and its name relative to the row above it in the tree
-/// ("Cardio" under "AnKing Step 1"). Opening it still uses `deck.name`,
+/// ("Cells" under "Biology"). Opening it still uses `deck.name`,
 /// the full path AnkiConnect needs.
 public struct AnkiDeckOutlineRow: Hashable, Sendable, Identifiable {
     public let deck: AnkiDeckStats

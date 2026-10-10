@@ -51,6 +51,25 @@ public struct ModuleLayout: Equatable, Sendable {
         )
     }
 
+    /// A layout with exactly `modules` on, in that order, and every other
+    /// module in `catalog` off: a fixed tab set such as the one the App Store
+    /// screenshots render (`--tabs` in snapshot runs). Ids the catalog
+    /// doesn't know are dropped, as in `init(order:disabled:catalog:)`.
+    public init(enabling modules: [ModuleID], catalog: ModuleCatalog) {
+        self.init(order: modules, disabled: Set(catalog.ids).subtracting(modules), catalog: catalog)
+    }
+
+    /// Parses a comma-separated list of module ids (`study,planner,anki`)
+    /// into `init(enabling:catalog:)`, or nil when it names no module the
+    /// catalog knows.
+    public init?(enablingList list: String, catalog: ModuleCatalog) {
+        let ids = list.split(separator: ",")
+            .map { ModuleID(rawValue: $0.trimmingCharacters(in: .whitespaces)) }
+            .filter(catalog.contains)
+        guard !ids.isEmpty else { return nil }
+        self.init(enabling: ids, catalog: catalog)
+    }
+
     /// The modules that are on, in order: the tabs plus any header
     /// shortcut. Never empty.
     public var enabled: [ModuleID] { order.filter { !disabled.contains($0) } }

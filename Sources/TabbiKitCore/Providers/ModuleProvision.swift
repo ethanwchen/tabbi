@@ -23,7 +23,7 @@ public struct ProvidedTask: Identifiable, Hashable, Sendable {
 }
 
 /// A one-click action a module offers on something it shares, such as
-/// Anki's "Study Pharm Sketchy" on its reviews goal. Today's row and the
+/// Anki's "Study Spanish verbs" on its reviews goal. Today's row and the
 /// closed notch's preview run it on click (and still open the module, which
 /// shows how it goes), so a module's most common action works from anywhere
 /// without the shared views knowing what it does. The app hands `id` back
@@ -31,7 +31,7 @@ public struct ProvidedTask: Identifiable, Hashable, Sendable {
 public struct ProvidedAction: Hashable, Sendable {
     /// Meaningful only to the module that offered it.
     public var id: String
-    /// What a click does, e.g. "Study Pharm Sketchy", for tooltips.
+    /// What a click does, e.g. "Study Spanish verbs", for tooltips.
     public var title: String
 
     public init(id: String, title: String) {

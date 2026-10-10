@@ -414,7 +414,7 @@ private struct DeckRow: View {
         .contentShape(Rectangle())
         .onTapGesture(perform: action)
         .accessibilityElement(children: .combine)
-        // Combined, the bare counts read "AnKing, 30, 12, 186"; say what they count.
+        // Combined, the bare counts read "Biology, 6, 2, 28"; say what they count.
         .accessibilityLabel(row.title)
         .accessibilityValue("\(deck.newCount) new, \(deck.learnCount) learning, \(deck.reviewCount) review")
         .accessibilityAddTraits(.isButton)
