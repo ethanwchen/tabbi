@@ -84,6 +84,26 @@ The means move with other activity on the Mac (other processes posting events Ta
 CPU was 0.00% in all three runs.
 `HangWatchdogTests` guards it: with the main thread idle for 20 intervals the watchdog ticks at most 4 times (20 without the fix), a busy main thread keeps it ticking, and the hang tests still pass.
 
+### Music playing, notch closed
+
+While a track plays, the closed notch shows its equalizer: four bars that bounce beside the notch, for as long as the music lasts, often hours a day.
+The bars were drawn by a `TimelineView` at 30 frames a second, so every frame was a SwiftUI update of the notch's hosting view (the same cost per update the pets had, see Open, on each tab).
+Now the bars are layers (`SpotifyEqualizerView`) that each run a repeating Core Animation keyframe animation, and the render server plays it without the app.
+The keyframes come from `SpotifyEqualizer.loop`: the same motion as before over a 30 s loop that eases into its own start over its last second, so the bars never jump when it repeats.
+The animation asks for at most 30 frames a second, as before, so the render server does no more work on a 120 Hz display.
+Pausing springs the bars down to their resting heights as before; snapshots and other pictures drawn into an image keep the SwiftUI bars.
+
+Demo data, release build, closed notch held on the music item (a temporary build where the ticker shows only Now Playing), pointer still, 60 s:
+
+| Closed, music playing | CPU | Context switches | Memory |
+| --- | --- | --- | --- |
+| Before | 3.28% (2.56 s) | 527 per second | 19-20 MB |
+| After | 0.01% (0.01 s) | 2.2 per second | 20 MB, flat |
+
+So listening to music now costs Tabbi what an idle notch does.
+Screenshots a second apart confirm the bars still move.
+`SpotifyEqualizerTests` guards the loop (every bar ends where it starts, smooth throughout, the live motion before the blend), and `SpotifyEqualizerViewTests` guards the view: playing hands each bar a repeating animation of at most 30 fps, a SwiftUI update while playing keeps the running animation, and pausing removes it and rests the bars.
+
 ## Open, on each tab
 
 Demo data, release build, the notch held open with `--open`, 45 s per tab.

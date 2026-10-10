@@ -759,30 +759,35 @@ struct SpotifyCompactLeading: View {
 }
 
 /// Right wing of the closed notch: four equalizer bars in the module accent.
-/// The timeline pauses with playback, so a paused track costs no redraws.
+/// On screen the bars are layers that Core Animation moves by itself
+/// (`SpotifyEqualizerView`), so a playing track costs the app nothing per
+/// frame. Drawn into an image (`rendersToImage`), they are plain SwiftUI.
 struct SpotifyCompactTrailing: View {
     @ObservedObject var controller: SpotifyController
-
-    private static let barWidth: CGFloat = 3
-    private static let maxHeight: CGFloat = 14
+    @Environment(\.rendersToImage) private var rendersToImage
 
     var body: some View {
         let isPlaying = controller.status.isPlaying
-        TimelineView(.animation(minimumInterval: 1.0 / 30, paused: !isPlaying)) { context in
-            let levels = isPlaying
-                ? SpotifyEqualizer.levels(at: context.date.timeIntervalSinceReferenceDate)
-                : SpotifyEqualizer.restingLevels()
-            HStack(alignment: .bottom, spacing: Theme.Spacing.xxs) {
-                ForEach(levels.indices, id: \.self) { index in
-                    Capsule(style: .continuous)
-                        .fill(NowPlayingModule.descriptor.accentColor)
-                        .frame(width: Self.barWidth, height: Self.maxHeight * levels[index])
+        Group {
+            if rendersToImage {
+                let levels = isPlaying
+                    ? SpotifyEqualizer.levels(at: Date().timeIntervalSinceReferenceDate)
+                    : SpotifyEqualizer.restingLevels()
+                HStack(alignment: .bottom, spacing: SpotifyEqualizerView.spacing) {
+                    ForEach(levels.indices, id: \.self) { index in
+                        Capsule(style: .continuous)
+                            .fill(NowPlayingModule.descriptor.accentColor)
+                            .frame(width: SpotifyEqualizerView.barWidth,
+                                   height: SpotifyEqualizerView.maxHeight * levels[index])
+                    }
                 }
+                .frame(height: SpotifyEqualizerView.maxHeight, alignment: .bottom)
+            } else {
+                SpotifyEqualizerBars(isPlaying: isPlaying, tint: NowPlayingModule.descriptor.accentColor)
+                    .frame(width: SpotifyEqualizerView.width, height: SpotifyEqualizerView.maxHeight)
             }
-            .frame(height: Self.maxHeight, alignment: .bottom)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .motion(Theme.Motion.snappy, value: isPlaying)
         .help(isPlaying ? "Playing in \((controller.source ?? .spotify).displayName)" : "Paused")
     }
 }
