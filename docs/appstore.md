@@ -37,6 +37,7 @@ A sandboxed app cannot start the `claude`, `codex` or `gemini` command line tool
 All of them go through the `network.client` entitlement the app already has.
 A command line tool saved by a direct download counts as no choice here, so Ask shows its setup state instead of failing.
 Nothing is sent anywhere until the user picks a provider: a fresh install starts with None, Ask shows "Choose an AI to ask questions", and Plan my day and Wrap up stay on the Mac.
+Picking a provider that sends data off the Mac (every one but Ollama) first shows a one-time consent alert naming the company and what each feature sends (Guideline 5.1.2(i)); the permission is saved per provider in `AISettings.consented`.
 
 Party comes back by removing `"party"` from `excludedModules` in `appstore.json`.
 Party now has reporting, blocking and a name filter (App Review guideline 1.2), so the remaining work before turning it on is a sandboxed run of Party, a privacy label that declares the display name and party activity it shares, and reviewer notes on how to report and block someone.
@@ -227,6 +228,7 @@ When Party comes back, also declare its display name and study presence: Contact
 > Notifications are optional: alerts when a focus timer ends, a daily study reminder the user turns on, and the weekly recap.
 > The flashcards tab reads review counts from the free AnkiConnect add-on of the Anki desktop app over localhost (127.0.0.1:8765). Tabbi downloads and runs no code; without Anki it shows how to set it up.
 > AI features (Ask AI, Plan my day's Refine and the day review) stay off until the user picks an AI in Settings > Connections > AI. The Settings footer says nothing is sent until then. They use the user's own API key (Anthropic, OpenAI or Google Gemini), saved in the Keychain, or Ollama running on the Mac. To try them, pick Ollama with a local model, or paste a key.
+> Guideline 5.1.2(i): picking Anthropic, OpenAI or Gemini first shows a one-time consent alert that names the company receiving the data and lists what each AI feature sends (Ask AI: questions, the chat and any screenshot attached; Refine: calendar event titles and times, tasks, goals and the plan; day review: study points and goal counts). Nothing is sent unless the user taps Allow, and Cancel keeps None. Ollama runs on the Mac, so it needs no consent.
 > No account is needed.
 > Signing in with Apple (Settings > General > Account) is optional and only syncs the pet and study streaks between the user's Macs.
 > Delete Account in the same place deletes everything the server holds and revokes the Sign in with Apple grant.

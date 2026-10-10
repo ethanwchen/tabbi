@@ -360,14 +360,14 @@ enum SnapshotRenderer {
         // line tool and Ollama picked, as far as this build offers them.
         let aiShots = [("api-key", AIProviderID.gemini), ("cli", .claudeCLI), ("local", .ollama)]
         for (name, provider) in aiShots where services.ai.availableProviders.contains(provider) {
-            services.settings.settings.ai.provider = provider
+            services.settings.settings.ai.choose(provider)
             if let png = await settingsWindow.snapshot(of: AppSettingsPane.connections.rawValue) {
                 let url = outputDirectory.appendingPathComponent("settings-connections-ai-\(name).png")
                 try? png.write(to: url)
                 print(url.path)
             }
         }
-        services.settings.settings.ai.provider = nil
+        services.settings.settings.ai.choose(nil)
 
         // Each enabled module's own settings, as the sheet Tabs opens them in.
         let moduleOptions = AppSettingsPane.moduleOptions(settings: services.settings, modules: services.modules,

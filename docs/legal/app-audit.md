@@ -16,6 +16,7 @@ This compares the macOS app (`Sources/`) with the site Privacy Policy (`site/_le
 ## Gaps that need a fix
 
 1. **No AI consent sheet (App Store Guideline 5.1.2(i)).** Once a provider is picked, every AI feature sends with no disclosure naming the provider and the data. The only notice is the Screen Recording priming screen. A one-time consent sheet per provider is needed in `Modules/AI`.
+   **Fixed:** picking any provider but Ollama now shows a one-time alert naming the company and what each feature sends, and a provider stays inactive until allowed (`AISettings.consented`, `AIConsent.swift`). A Claude Code choice saved by the 6 to 7 settings migration sends nothing until the user picks it again and allows it.
 2. **No age gate and no legal links in the app.** No birthdate or age prompt anywhere, and no privacy or terms link in onboarding, Party setup, Sign in or Settings > About (which links a stale repo, `github.com/ethanwchen/notchdeck`).
 3. **Party registers as soon as its setup step appears** (`PartyOnboardingView`), before any notice beyond "Friends see your name, your pet and when you're studying".
 

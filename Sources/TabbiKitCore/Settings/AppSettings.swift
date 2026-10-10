@@ -273,6 +273,7 @@ public struct SettingsRepository {
         static let theme = "settings.theme"
         static let aiProvider = "settings.ai.provider"
         static let aiModels = "settings.ai.models"
+        static let aiConsented = "settings.ai.consented"
     }
 
     private let defaults: UserDefaults
@@ -350,7 +351,8 @@ public struct SettingsRepository {
                 provider: defaults.string(forKey: Key.aiProvider).flatMap(AIProviderID.init(rawValue:)),
                 // Entries for providers this build doesn't know are dropped.
                 models: Dictionary(uniqueKeysWithValues: ((defaults.dictionary(forKey: Key.aiModels) as? [String: String]) ?? [:])
-                    .compactMap { key, value in AIProviderID(rawValue: key).map { ($0, value) } })
+                    .compactMap { key, value in AIProviderID(rawValue: key).map { ($0, value) } }),
+                consented: Set((defaults.stringArray(forKey: Key.aiConsented) ?? []).compactMap(AIProviderID.init(rawValue:)))
             )
         )
     }
@@ -404,6 +406,8 @@ public struct SettingsRepository {
         }
         defaults.set(Dictionary(uniqueKeysWithValues: settings.ai.models.map { ($0.key.rawValue, $0.value) }),
                      forKey: Key.aiModels)
+        // Sorted so the stored value is stable across saves.
+        defaults.set(settings.ai.consented.map(\.rawValue).sorted(), forKey: Key.aiConsented)
     }
 
     /// `nil` when the key is absent or not a boolean, so defaults apply.
