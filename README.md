@@ -29,7 +29,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/images/hero.gif" alt="The closed notch with a pixel cat opens into the Timer tab (a Pomodoro timer at 15:14), then switches to Today, Anki, Party and the pet's Closet before closing again" width="100%">
+  <img src="docs/images/hero.webp" alt="The pointer clicks the notch, which opens on the Timer tab with a Pomodoro counting down, switches to Today and checks off a task, then closes while the pixel cat cheers" width="720">
 </p>
 
 Click the notch and it opens into a small panel of tabs.
