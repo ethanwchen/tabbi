@@ -3,7 +3,7 @@ import TabbiKitCore
 import TabbiKit
 
 /// The Closet tab: the study pet large and animated on the left, and on the
-/// right its wardrobe (wear, take off, or unlock items with study points),
+/// right a chart of the days studied, its wardrobe (wear, take off, or unlock items with study points),
 /// its limited edition items, the study streak with its freezes, its look
 /// (species, breed, fur color), or its past weekly recaps.
 struct ClosetPanel: View {
@@ -29,6 +29,7 @@ struct ClosetPanel: View {
                         header(showsUnit: false, titlesAll: false, isTight: true, titlesOpen: false)
                     }
                     switch shownSection {
+                    case .activity: ClosetHeatmapSection(store: store)
                     case .wardrobe: ClosetWardrobe(store: store)
                     case .limited: ClosetLimited(store: store)
                     case .streak: ClosetStreak(store: store)
@@ -46,7 +47,7 @@ struct ClosetPanel: View {
     }
 
     private var shownSection: ClosetSection {
-        sections.contains(store.section) ? store.section : .wardrobe
+        sections.contains(store.section) ? store.section : .activity
     }
 
     private func header(showsUnit: Bool, titlesAll: Bool = true, isTight: Bool = false,
@@ -63,6 +64,7 @@ struct ClosetPanel: View {
 }
 
 enum ClosetSection: String, CaseIterable {
+    case activity = "Activity"
     case wardrobe = "Wardrobe"
     case limited = "Limited"
     case streak = "Streak"
@@ -71,6 +73,7 @@ enum ClosetSection: String, CaseIterable {
 
     var symbol: String {
         switch self {
+        case .activity: "square.grid.3x3.fill"
         case .wardrobe: "tshirt.fill"
         case .limited: "sparkles"
         case .streak: "flame.fill"
@@ -81,6 +84,7 @@ enum ClosetSection: String, CaseIterable {
 
     var help: String {
         switch self {
+        case .activity: "Your study day by day, with the time studied on each"
         case .wardrobe: "Outfits and accessories to unlock with study points"
         case .limited: "Limited edition items, earned by studying, never sold"
         case .streak: "Your study streak and the freezes that protect it"
