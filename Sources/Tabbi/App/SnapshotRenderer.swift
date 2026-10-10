@@ -290,6 +290,16 @@ enum SnapshotRenderer {
             print(url.path)
         }
         services.settings.settings.notchMode = notchMode
+        // General's privacy switches, under More options, with screen sharing hidden.
+        let privacy = (services.settings.settings.hideFromScreenCapture, services.settings.settings.hideInMissionControl)
+        services.settings.settings.hideFromScreenCapture = true
+        if let png = await sheetSnapshot(Form { PrivacySection() }.formStyle(.grouped)
+            .frame(width: paneWidth).environmentObject(services.settings)) {
+            let url = outputDirectory.appendingPathComponent("settings-general-privacy.png")
+            try? png.write(to: url)
+            print(url.path)
+        }
+        (services.settings.settings.hideFromScreenCapture, services.settings.settings.hideInMissionControl) = privacy
         // Connections with an API provider waiting for its key, a command
         // line tool and Ollama picked, as far as this build offers them.
         let aiShots = [("api-key", AIProviderID.gemini), ("cli", .claudeCLI), ("local", .ollama)]

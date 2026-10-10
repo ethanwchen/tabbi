@@ -405,6 +405,16 @@ public final class NotchController {
             }
             .store(in: &cancellables)
 
+        inputs.settings
+            .map { PrivacyChoice(hideFromScreenCapture: $0.hideFromScreenCapture,
+                                 hideInMissionControl: $0.hideInMissionControl) }
+            .removeDuplicates()
+            .sink { [weak self] choice in
+                self?.panel.applyPrivacy(hideFromScreenCapture: choice.hideFromScreenCapture,
+                                         hideInMissionControl: choice.hideInMissionControl)
+            }
+            .store(in: &cancellables)
+
         inputs.preview
             .removeDuplicates()
             .sink { [weak self] item in self?.model.preview = item }
@@ -572,4 +582,10 @@ private struct DisplayChoice: Equatable {
 private struct VisibilityChoice: Equatable {
     var hideInFullscreen: Bool
     var mode: NotchMode
+}
+
+/// The settings that keep the notch out of screen captures and Mission Control.
+private struct PrivacyChoice: Equatable {
+    var hideFromScreenCapture: Bool
+    var hideInMissionControl: Bool
 }

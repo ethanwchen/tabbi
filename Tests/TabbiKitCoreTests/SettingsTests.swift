@@ -280,6 +280,8 @@ final class SettingsRepositoryTests: XCTestCase {
         XCTAssertEqual(settings.preferredDisplay, .builtIn)
         XCTAssertTrue(settings.showOnExternalDisplays)
         XCTAssertTrue(settings.hideInFullscreen)
+        XCTAssertFalse(settings.hideFromScreenCapture, "screen sharing shows the notch until the user hides it")
+        XCTAssertFalse(settings.hideInMissionControl)
         XCTAssertEqual(settings.notchMode, .alwaysVisible)
         XCTAssertEqual(settings.panelSize, .regular)
         XCTAssertTrue(settings.notchPreview.isEnabled)
@@ -332,6 +334,8 @@ final class SettingsRepositoryTests: XCTestCase {
             preferredDisplay: .specific(5),
             showOnExternalDisplays: false,
             hideInFullscreen: false,
+            hideFromScreenCapture: true,
+            hideInMissionControl: true,
             notchMode: .showOnHover,
             panelSize: .large,
             notchPreview: NotchPreviewSettings(isEnabled: false, disabledKinds: [.tasks, .claudeUsage], interval: .long),

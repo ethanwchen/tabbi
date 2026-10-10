@@ -172,6 +172,8 @@ struct GeneralSettingsPane: View {
             Text("Display")
         }
 
+        PrivacySection()
+
         LiveActivitySection()
     }
 
@@ -886,6 +888,31 @@ private struct LibraryRow: View {
             Button("Add") { layout.add(module.id) }
                 .controlSize(.small)
                 .help("Add \(module.title) as the last tab in the notch")
+        }
+    }
+}
+
+// MARK: Privacy
+
+/// Where the notch shows besides your own screen, under General's More
+/// options. Both are off by default, so nothing disappears unexpectedly.
+struct PrivacySection: View {
+    @EnvironmentObject private var store: SettingsStore
+
+    var body: some View {
+        Section {
+            Toggle(isOn: $store.settings.hideFromScreenCapture) {
+                Text("Hide from screen sharing")
+                Text("Only you see the notch, not your audience or recordings.")
+            }
+            .help("Keep the notch out of screen sharing, recordings and screenshots, for example while presenting in class")
+            Toggle(isOn: $store.settings.hideInMissionControl) {
+                Text("Hide in Mission Control")
+                Text("Steps aside while Mission Control shows your spaces.")
+            }
+            .help("Hide the notch while Mission Control is open")
+        } header: {
+            Text("Privacy")
         }
     }
 }

@@ -19,6 +19,8 @@ final class SectionResetTests: XCTestCase {
         settings.preferredDisplay = .main
         settings.showOnExternalDisplays = false
         settings.hideInFullscreen = false
+        settings.hideFromScreenCapture = true
+        settings.hideInMissionControl = true
         settings.notchMode = .hidden
         settings.panelSize = .compact
         settings.notchPreview.isEnabled = false
@@ -43,6 +45,8 @@ final class SectionResetTests: XCTestCase {
         XCTAssertEqual(settings.preferredDisplay, .builtIn)
         XCTAssertEqual(settings.showOnExternalDisplays, fresh.showOnExternalDisplays)
         XCTAssertEqual(settings.hideInFullscreen, fresh.hideInFullscreen)
+        XCTAssertFalse(settings.hideFromScreenCapture)
+        XCTAssertFalse(settings.hideInMissionControl)
         XCTAssertEqual(settings.notchMode, .alwaysVisible)
         XCTAssertEqual(settings.panelSize, .regular)
         XCTAssertTrue(settings.notchPreview.isEnabled)
