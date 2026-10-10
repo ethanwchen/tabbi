@@ -879,10 +879,8 @@ private struct LibraryRow: View {
     }
 }
 
-// MARK: Privacy
+// MARK: Feedback
 
-/// Where the notch shows besides your own screen, under General's More
-/// options. Both are off by default, so nothing disappears unexpectedly.
 /// Haptics, the celebration sound and the animation pace, under General's
 /// More options.
 struct FeedbackSection: View {
@@ -923,6 +921,10 @@ struct FeedbackSection: View {
     }
 }
 
+// MARK: Privacy
+
+/// Where the notch shows besides your own screen, under General's More
+/// options. Both are off by default, so nothing disappears unexpectedly.
 struct PrivacySection: View {
     @EnvironmentObject private var store: SettingsStore
 
