@@ -42,6 +42,15 @@ A pixel cat or dog lives there too, and it cheers you on while you work.
 - **Streaks, a weekly recap and a desktop widget** with your pet and your streak.
 - **Private by design:** no account needed, no analytics and no telemetry.
 
+<!-- Feature clips, made by docs/images/make-readme-clips.py from the demo snapshots.
+     Slots still to fill: clip-celebration.webp (a focus round ending) and clip-widget.webp (the desktop widget). -->
+<table>
+  <tr>
+    <td width="50%"><img src="docs/images/clip-costumes.webp" alt="Mochi the pixel cat tries on Closet items one by one, a hoodie, a wizard hat, a dinosaur hoodie, a crown and a flickering flame headband, and cheers in each"><br><b>Dress up your pet</b> with what your study points unlock.</td>
+    <td width="50%"><img src="docs/images/clip-party.webp" alt="The Party tab with three friends studying together, then a Great job, team banner with points for everyone"><br><b>Study with friends</b> in a Party and celebrate together.</td>
+  </tr>
+</table>
+
 ## Install
 
 1. Download Tabbi from [tabbinotch.com](https://tabbinotch.com) or the [latest release](https://github.com/ethanwchen/tabbi/releases/latest).
