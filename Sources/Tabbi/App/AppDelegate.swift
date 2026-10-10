@@ -50,6 +50,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             services.onboarding.start()
         }
         services.accountSync.start()
+        // scripts/measure-performance.sh --open <tab>: hold the notch open on
+        // a tab, so its cost can be measured with no hand on the mouse.
+        if let tab = ProcessInfo.processInfo.environment["TABBI_PERF_OPEN"], let notch {
+            if let recap = services.recaps.store.unseen { services.recaps.store.markSeen(recap.week) }
+            notch.model.open(ModuleID(tab))
+            notch.model.isPinned = true
+        }
         let links = pendingLinks
         pendingLinks = []
         application(NSApp, open: links)
