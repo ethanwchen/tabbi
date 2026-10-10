@@ -1,14 +1,18 @@
 """Renders the README's short feature clips as small animated WebPs.
 
-    python3 docs/images/make-readme-clips.py [snapshot-folder]
+    python3 docs/images/make-readme-clips.py [snapshot-folder [widget-folder]]
 
-Without a folder it renders one first with
-`TABBI_DEMO=1 swift run Tabbi --snapshot <tmp>`.
+Without a snapshot folder it renders one first with
+`TABBI_DEMO=1 swift run Tabbi --snapshot <tmp>`, and without a widget folder
+it renders the widget with `TABBI_WIDGET_SNAPSHOTS=<tmp> swift test --filter
+PetWidgetViewTests`.
 Every pixel of the app comes from the app itself: the pet clips are the
-sprite sheets the site exports (site/img/demo), and the panels are the
-demo snapshots. Only the card behind the pet and its captions are drawn here.
+sprite sheets the site exports (site/img/demo), the panels are the demo
+snapshots and the widget is its own test render. Only the card behind the
+pet, its captions and the desktop behind the widget are drawn here.
 
-Writes docs/images/clip-costumes.webp, clip-party.webp and clip-celebration.webp.
+Writes docs/images/clip-costumes.webp, clip-party.webp, clip-celebration.webp
+and clip-widget.webp.
 Needs Pillow.
 """
 
@@ -18,7 +22,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -258,16 +262,82 @@ def celebration(snapshots):
     print(f'{path.relative_to(ROOT)}: {len(frames)} frames, {path.stat().st_size // 1024} KB')
 
 
+# --------------------------------------------------------------------------
+# Widget: the medium desktop widget through a focus day, in dark and light.
+# --------------------------------------------------------------------------
+
+WIDGET_CANVAS = (720, 312)  # the same shape as the Party and celebration clips
+WIDGET_SCALE = 0.76  # the 728 x 340 px render (364 x 170 pt at 2x) at 553 px
+WIDGET_CORNER = 22 * 2 * WIDGET_SCALE  # macOS widgets' corner radius
+# A soft desktop behind the widget, top and bottom colors per appearance.
+DESKTOP = {'dark': ((44, 38, 52), (18, 16, 22)), 'light': ((236, 228, 240), (206, 214, 232))}
+
+
+def desktop(scheme):
+    top, bottom = DESKTOP[scheme]
+    w, h = WIDGET_CANVAS
+    column = Image.new('RGB', (1, h))
+    for y in range(h):
+        t = ease(y / (h - 1))
+        column.putpixel((0, y), tuple(round(a + (b - a) * t) for a, b in zip(top, bottom)))
+    return column.resize((w, h)).convert('RGBA')
+
+
+def widget_frame(widgets, state, scheme):
+    shot = Image.open(widgets / f'{state}-medium-{scheme}.png').convert('RGBA')
+    shot = shot.resize((round(shot.width * WIDGET_SCALE), round(shot.height * WIDGET_SCALE)), Image.LANCZOS)
+    # Rounded at 4x and scaled down, so the corners are smooth.
+    mask = Image.new('L', (shot.width * 4, shot.height * 4), 0)
+    ImageDraw.Draw(mask).rounded_rectangle((0, 0, mask.width - 1, mask.height - 1), WIDGET_CORNER * 4, fill=255)
+    shot.putalpha(mask.resize(shot.size, Image.LANCZOS))
+    frame = desktop(scheme)
+    x, y = (frame.width - shot.width) // 2, (frame.height - shot.height) // 2
+    # A soft shadow, as the desktop draws under a widget.
+    shadow = Image.new('RGBA', frame.size, (0, 0, 0, 0))
+    ImageDraw.Draw(shadow).rounded_rectangle((x, y + 6, x + shot.width, y + shot.height + 6), WIDGET_CORNER,
+                                             fill=(0, 0, 0, 90))
+    frame.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(10)))
+    frame.alpha_composite(shot, (x, y))
+    return frame
+
+
+def widget(widgets):
+    # Focus, a break in the Scholar Set, a pause, then the day's total; then
+    # the desktop turns light and the widget follows it.
+    steps = [('focus', 'dark'), ('break', 'dark'), ('paused', 'dark'), ('idle', 'dark'),
+             ('idle', 'light'), ('focus', 'light')]
+    stills = [widget_frame(widgets, state, scheme) for state, scheme in steps]
+    frames, durations = [], []
+    for i, still in enumerate(stills):
+        frames.append(still)
+        durations.append(1800)
+        fade, fade_d = crossfade(still, stills[(i + 1) % len(stills)], 6, 40)
+        frames += fade
+        durations += fade_d
+    path = HERE / 'clip-widget.webp'
+    frames[0].save(path, save_all=True, append_images=frames[1:], duration=durations,
+                   loop=0, quality=80, method=6)
+    print(f'{path.relative_to(ROOT)}: {len(frames)} frames, {path.stat().st_size // 1024} KB')
+
+
 def main():
+    env = __import__('os').environ
     if len(sys.argv) > 1:
         snapshots = Path(sys.argv[1])
     else:
         snapshots = Path(tempfile.mkdtemp())
         subprocess.run(['swift', 'run', 'Tabbi', '--snapshot', str(snapshots)], cwd=ROOT, check=True,
-                       env={**__import__('os').environ, 'TABBI_DEMO': '1'})
+                       env={**env, 'TABBI_DEMO': '1'})
+    if len(sys.argv) > 2:
+        widgets = Path(sys.argv[2])
+    else:
+        widgets = Path(tempfile.mkdtemp())
+        subprocess.run(['swift', 'test', '--filter', 'PetWidgetViewTests'], cwd=ROOT, check=True,
+                       env={**env, 'TABBI_WIDGET_SNAPSHOTS': str(widgets)})
     costumes()
     party(snapshots)
     celebration(snapshots)
+    widget(widgets)
 
 
 if __name__ == '__main__':

@@ -42,15 +42,15 @@ A pixel cat or dog lives there too, and it cheers you on while you work.
 - **Streaks, a weekly recap and a desktop widget** with your pet and your streak.
 - **Private by design:** no account needed, no analytics and no telemetry.
 
-<!-- Feature clips, made by docs/images/make-readme-clips.py from the demo snapshots.
-     Slot still to fill: clip-widget.webp (the desktop widget), as the right cell of the second row. -->
+<!-- Feature clips, made by docs/images/make-readme-clips.py from the demo snapshots and the widget's test renders. -->
 <table>
   <tr>
     <td width="50%"><img src="docs/images/clip-celebration.webp" alt="The Timer tab mid Pomodoro, then a burst of confetti as the round ends and the pixel cat cheers next to a That's a wrap, well done bubble with 35 points"><br><b>Finish a focus round</b> and your pet cheers with you.</td>
     <td width="50%"><img src="docs/images/clip-costumes.webp" alt="Mochi the pixel cat tries on Closet items one by one, a hoodie, a wizard hat, a dinosaur hoodie, a crown and a flickering flame headband, and cheers in each"><br><b>Dress up your pet</b> with what your study points unlock.</td>
   </tr>
   <tr>
-    <td colspan="2" align="center"><img src="docs/images/clip-party.webp" alt="The Party tab with three friends studying together, then a Great job, team banner with points for everyone" width="50%"><br><b>Study with friends</b> in a Party and celebrate together.</td>
+    <td width="50%"><img src="docs/images/clip-party.webp" alt="The Party tab with three friends studying together, then a Great job, team banner with points for everyone"><br><b>Study with friends</b> in a Party and celebrate together.</td>
+    <td width="50%"><img src="docs/images/clip-widget.webp" alt="The medium desktop widget with the pixel cat, a Focus countdown, a long break, a paused timer and the day's 2h 15m total, first in dark mode, then in light mode"><br><b>Keep your pet on the desktop</b> with a widget for your timer and streak.</td>
   </tr>
 </table>
 
