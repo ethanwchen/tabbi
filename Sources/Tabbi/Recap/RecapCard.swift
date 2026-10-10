@@ -11,6 +11,9 @@ struct RecapCard: View {
     /// The user's pet as it looks now; nil when the pet is turned off.
     let pet: PetProfile?
     var calendar: Calendar = .current
+    /// Demo runs leave out the week's dates, so store screenshots never
+    /// show a date (the header already says "Your week").
+    var showsWeekDates = !RunMode.current.isDemo
 
     /// A warm gold, the color of a well-earned week.
     static let accent = ModuleAccent(red: 0.98, green: 0.80, blue: 0.30)
@@ -18,7 +21,7 @@ struct RecapCard: View {
     var body: some View {
         let accent = Theme.Palette.accent(Self.accent)
         HStack(spacing: Theme.Spacing.s) {
-            RecapPetBadge(pet: pet, week: recap.week.title(calendar: calendar))
+            RecapPetBadge(pet: pet, week: showsWeekDates ? recap.week.title(calendar: calendar) : nil)
                 .frame(width: 112)
             Card {
                 VStack(alignment: .leading, spacing: Theme.Spacing.s) {
@@ -51,10 +54,10 @@ struct RecapCard: View {
     }
 }
 
-/// The pet, standing still in its outfit, above the week's dates.
+/// The pet, standing still in its outfit, above the week's dates (if any).
 private struct RecapPetBadge: View {
     let pet: PetProfile?
-    let week: String
+    let week: String?
 
     var body: some View {
         Card(padding: Theme.Spacing.s) {
@@ -75,11 +78,13 @@ private struct RecapPetBadge: View {
                         .lineLimit(1)
                         .truncationMode(.tail)
                 }
-                Text(week)
-                    .font(Theme.Typography.caption)
-                    .foregroundStyle(Theme.Palette.tertiaryText)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.85)
+                if let week {
+                    Text(week)
+                        .font(Theme.Typography.caption)
+                        .foregroundStyle(Theme.Palette.tertiaryText)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.85)
+                }
                 Spacer(minLength: 0)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

@@ -280,6 +280,7 @@ Upload them in file name order:
 6. `6-music`: "Music without switching apps", Now Playing with the fictional "Golden Hour Drive" by Maple Avenue, its original drawn cover, the like heart and a generic music badge.
 7. `7-flashcards`: "Flashcards between tasks", the flashcards tab with neutral decks (the tab shows the module's real name; captions never name it).
 8. `8-recap`: "Your week, wrapped up", the weekly recap card (it ships in the App Store build, so the spec's closer 8a applies).
+   Demo runs leave the week's dates off the card, so no date shows in store media.
 
 Every shot uses one layout: the tabs Timer, Today, Flashcards and Now Playing plus the Closet paw, at the Large panel size.
 Party and the AI usage tab are left out of the App Store edition, so neither appears.
@@ -307,7 +308,6 @@ The clocks in the demo panels are live, so every run changes the shots that show
 
 Known gaps to close before upload:
 
-- The recap card shows its week's dates ("Sep 28 - Oct 4"), and the spec asks for no dates in store media.
 - In the Closet shot the Wardrobe's second row sits under the grid's bottom fade, so its labels are cut; that is Closet UI, which the Closet polish work owns.
 - The spec's shot 5 prefers the Tomorrow plan proposal, but at the Regular size it truncates task names, so the plain Tomorrow view is used, as the spec allows.
 
