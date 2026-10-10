@@ -1,0 +1,305 @@
+/*
+ * The home page's notch demo: a cozy desktop with Tabbi's notch at the top.
+ *
+ * Inside the notch everything is sized in em, and 1em is 10 of the app's
+ * points, so the panel keeps the app's proportions (a 536 x 236 pt panel,
+ * 20 pt insets, a 176 pt dial) at whatever scale the scene picks. Colors
+ * are the app's Midnight theme and each tab's accent from its descriptor.
+ * The springs are the app's MotionTokens (open, close, hover, snappy),
+ * sampled into linear() easings. Without JavaScript the panel stands open
+ * and its tabs switch with radio buttons; demo.js closes it and takes over.
+ */
+
+.demo {
+  --n-surface: rgba(255, 255, 255, 0.07);
+  --n-hover: rgba(255, 255, 255, 0.12);
+  --n-stroke: rgba(255, 255, 255, 0.08);
+  --n-text: #FFFFFF;
+  --n-text-2: rgba(255, 255, 255, 0.62);
+  --n-text-3: rgba(255, 255, 255, 0.48);
+  --timer: #FF9E42;
+  /* SwiftUI springs: open (0.45 s, bounce 0.2), close (0.38 s), hover (0.25 s, 0.1), snappy (0.26 s, 0.14). */
+  --open: linear(0, 0.022, 0.078, 0.156, 0.246, 0.34, 0.433, 0.522, 0.604, 0.678, 0.743, 0.8, 0.847, 0.887, 0.92, 0.946, 0.966, 0.982, 0.994, 1.002, 1.008, 1.012, 1.014, 1.015, 1.015, 1.014, 1.013, 1.012, 1.011, 1.009, 1.008, 1.007, 1.005, 1.004, 1.003, 1.003, 1);
+  --close: linear(0, 0.024, 0.082, 0.159, 0.244, 0.331, 0.415, 0.493, 0.564, 0.628, 0.684, 0.733, 0.775, 0.812, 0.843, 0.869, 0.891, 0.91, 0.926, 0.939, 0.949, 0.958, 0.966, 0.972, 0.977, 0.981, 0.985, 0.988, 0.99, 0.992, 0.993, 0.995, 0.996, 0.996, 0.997, 0.998, 1);
+  --hover: linear(0, 0.012, 0.044, 0.09, 0.146, 0.207, 0.271, 0.335, 0.399, 0.46, 0.518, 0.573, 0.623, 0.67, 0.712, 0.75, 0.784, 0.814, 0.841, 0.865, 0.886, 0.904, 0.92, 0.933, 0.945, 0.955, 0.964, 0.971, 0.977, 0.982, 0.986, 0.989, 0.992, 0.994, 0.996, 0.998, 1);
+  --snappy: linear(0, 0.022, 0.078, 0.155, 0.242, 0.333, 0.422, 0.507, 0.586, 0.656, 0.718, 0.772, 0.819, 0.858, 0.89, 0.917, 0.938, 0.955, 0.969, 0.979, 0.987, 0.993, 0.998, 1.001, 1.003, 1.004, 1.005, 1.005, 1.005, 1.005, 1.004, 1.004, 1.004, 1.003, 1.003, 1.002, 1);
+  margin: 0 0 72px;
+  text-align: center;
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
+.demo-icons { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+/* --- the desktop ------------------------------------------------------- */
+/* A soft wallpaper in the page's own browns, pinks and golds. */
+.scene {
+  position: relative; container-type: inline-size;
+  height: 33em; font-size: 12.5px; overflow: hidden;
+  border: 1px solid rgba(251, 247, 240, 0.08); border-radius: 32px;
+  background:
+    radial-gradient(60% 75% at 8% 108%, rgba(242, 160, 166, 0.7), transparent 62%),
+    radial-gradient(55% 70% at 96% 104%, rgba(244, 213, 126, 0.62), transparent 64%),
+    radial-gradient(40% 50% at 78% 18%, rgba(242, 160, 166, 0.2), transparent 70%),
+    radial-gradient(45% 55% at 20% 24%, rgba(244, 213, 126, 0.12), transparent 70%),
+    linear-gradient(180deg, #4A3A2E 0%, #6E5141 58%, #94694F 100%);
+  box-shadow: var(--shadow);
+  font-family: ui-rounded, 'Nunito', system-ui, sans-serif;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* --- the notch --------------------------------------------------------- */
+/* A black shape hanging from the top edge: flared top corners where it
+   meets the screen, round bottom corners. Closed it wears a live activity
+   in its wings; open it is the panel. */
+.notch {
+  /* -1px covers the scene's border, so the notch meets the top edge. */
+  position: absolute; top: -1px; left: 50%; z-index: 2;
+  width: 28.2em; height: 3.2em; translate: -50% 0;
+  background: #000; border-radius: 0 0 1em 1em;
+  color: var(--n-text);
+  transition: width 515ms var(--close), height 515ms var(--close), border-radius 515ms var(--close);
+}
+.notch::before, .notch::after {
+  content: ''; position: absolute; top: 0; width: 0.6em; height: 0.6em;
+  transition: width 515ms var(--close), height 515ms var(--close);
+}
+.notch::before { right: 100%; background: radial-gradient(circle farthest-side at 0 100%, transparent 96%, #000 100%); }
+.notch::after { left: 100%; background: radial-gradient(circle farthest-side at 100% 100%, transparent 96%, #000 100%); }
+
+.notch[data-state='hover'] {
+  width: 29.8em; height: 3.6em;
+  transition-duration: 235ms; transition-timing-function: var(--hover);
+}
+.notch[data-state='open'] {
+  width: 53.6em; height: 23.6em; border-radius: 0 0 2.6em 2.6em;
+  transition-duration: 575ms; transition-timing-function: var(--open);
+}
+.notch[data-state='open']::before, .notch[data-state='open']::after {
+  width: 1.2em; height: 1.2em;
+  transition-duration: 575ms; transition-timing-function: var(--open);
+}
+
+/* The closed notch: the whole shape is one button. */
+.notch-face {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between;
+  margin: 0; padding: 0 1.2em 0 1em; border: 0; border-radius: inherit;
+  background: none; color: inherit; font: inherit; cursor: pointer;
+  transition: opacity 160ms ease;
+}
+.notch[data-state='open'] .notch-face { opacity: 0; pointer-events: none; visibility: hidden; transition: opacity 120ms ease, visibility 0s 120ms; }
+.notch-face:focus-visible { outline: 3px solid var(--link); outline-offset: 3px; }
+.wing { display: flex; align-items: center; height: 100%; }
+.mini-ring { display: none; width: 2em; height: 2em; }
+.mini-time {
+  display: none; font-size: 1.3em; font-weight: 600; color: var(--timer);
+  font-variant-numeric: tabular-nums; letter-spacing: 0.02em;
+}
+/* While the timer runs, its ring and time take the wings from the pet. */
+.notch[data-running] .wing-l .pet { display: none; }
+.notch[data-running] .mini-ring, .notch[data-running] .mini-time { display: block; }
+
+/* The open panel. Its content keeps the open width while the shape grows
+   around it, so nothing reflows during the spring. */
+.panel {
+  position: absolute; inset: 0; overflow: hidden; border-radius: inherit;
+  opacity: 0; visibility: hidden;
+  transition: opacity 120ms ease, visibility 0s 120ms;
+}
+.notch[data-state='open'] .panel {
+  opacity: 1; visibility: visible;
+  transition: opacity 260ms ease 90ms, visibility 0s;
+}
+.panel-inner { position: absolute; top: 0; left: 50%; width: 53.6em; height: 23.6em; translate: -50% 0; padding: 0 2em 1.6em; }
+
+/* Icons draw at 1em unless a control sizes them. */
+.notch .ico { display: inline-block; flex: none; width: 1em; height: 1em; vertical-align: -0.12em; }
+
+/* The header: tab icons at the left, the open tab's name at the right. */
+.panel-head { display: flex; align-items: center; justify-content: space-between; height: 3.2em; }
+.tab-bar { display: flex; gap: 0.2em; }
+.tab {
+  position: relative; display: grid; place-items: center; width: 2.8em; height: 2.4em;
+  border-radius: 999px; color: var(--n-text-3); cursor: pointer;
+  transition: background-color 335ms var(--snappy), color 335ms var(--snappy);
+}
+.tab input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+.tab .ico { width: 1.3em; height: 1.3em; }
+.tab:hover { color: var(--n-text); }
+.tab:has(input:focus-visible) { outline: 3px solid var(--link); outline-offset: 1px; }
+.tab-timer:has(input:checked) { color: var(--timer); background: rgba(255, 158, 66, 0.16); }
+.head-title { margin: 0 0.4em 0 0; font-size: 1.4em; font-weight: 600; line-height: 1; color: var(--n-text-2); }
+.head-title span { display: none; }
+.notch[data-tab='timer'] .title-timer,
+.panel:has([value='timer']:checked) .title-timer { display: inline; }
+
+/* One pane shows at a time: the checked tab's. */
+.pane { position: absolute; top: 4em; left: 2em; right: 2em; bottom: 1.6em; display: none; }
+.panel:has([value='timer']:checked) .pane-timer { display: grid; }
+
+.n-card { position: relative; margin: 0; background: var(--n-surface); border-radius: 1em; }
+.demo p { margin: 0; }
+
+/* Shared controls: the accent capsule for a panel's one primary action
+   and round icon buttons. Every control has a hover state and a tooltip. */
+.demo button { font: inherit; color: inherit; -webkit-tap-highlight-color: transparent; }
+.demo button:focus-visible { outline: 3px solid var(--link); outline-offset: 2px; }
+.primary {
+  display: inline-flex; align-items: center; gap: 0.4em; height: 2.8em; padding: 0 1.2em;
+  border: 0; border-radius: 999px; background: color-mix(in srgb, var(--timer) 88%, transparent);
+  color: #000; font-size: 1em; cursor: pointer;
+  transition: background-color 335ms var(--snappy), transform 180ms var(--snappy);
+}
+.primary span { font-size: 1.2em; font-weight: 500; }
+.primary .ico { width: 1.1em; height: 1.1em; }
+.primary:hover { background: var(--timer); }
+.icon-btn {
+  display: grid; place-items: center; width: 2.8em; height: 2.8em; padding: 0;
+  border: 0; border-radius: 50%; background: var(--n-surface); cursor: pointer;
+  transition: background-color 335ms var(--snappy), opacity 335ms var(--snappy), transform 180ms var(--snappy);
+}
+.icon-btn .ico { width: 1.3em; height: 1.3em; }
+.icon-btn:hover { background: var(--n-hover); }
+.primary:active, .icon-btn:active, .capsule:active { transform: scale(0.94); }
+/* Without the script the controls cannot work, so they are disabled, but
+   the showcase still draws them the way the app does. */
+.demo button:disabled { cursor: default; }
+.icon-btn:disabled { opacity: 0.4; }
+
+/* --- Timer --------------------------------------------------------------- */
+.pane-timer { grid-template-columns: 17.6em minmax(0, 1fr); gap: 0.8em; }
+.dial { display: grid; place-items: center; }
+.dial-ring { position: relative; width: 12.8em; height: 12.8em; }
+.ring { display: block; width: 100%; height: 100%; rotate: -90deg; }
+.ring circle { fill: none; }
+.ring-track { stroke: rgba(255, 158, 66, 0.2); }
+.ring-arc { stroke: var(--timer); stroke-linecap: round; stroke-dasharray: 100 100; stroke-dashoffset: 0; }
+.mini-ring .ring-track { stroke: rgba(255, 158, 66, 0.25); }
+.mini-ring { rotate: -90deg; }
+.mini-ring circle { fill: none; }
+.mini-ring .ring-arc { stroke: var(--timer); stroke-linecap: round; stroke-dasharray: 100 100; }
+.dial-read {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.2em;
+}
+.dial-time {
+  font-size: 3em; font-weight: 600; line-height: 1.1; letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums; color: var(--n-text-2);
+  transition: color 335ms var(--snappy);
+}
+.notch[data-running] .dial-time { color: var(--n-text); }
+.dial-cap { font-size: 1.05em; font-weight: 500; color: var(--n-text-3); }
+.pet-corner { position: absolute; right: 0.4em; bottom: 0.4em; }
+
+.timer-side { display: flex; flex-direction: column; gap: 0.8em; min-width: 0; }
+.method { flex: 1; display: flex; flex-direction: column; gap: 0.2em; padding: 1.2em; min-height: 0; }
+.cap-row { display: flex; justify-content: space-between; font-size: 1.05em; font-weight: 500; color: var(--n-text-3); }
+.method-name { display: flex; align-items: center; gap: 0.3em; font-size: 1.3em; font-weight: 600; }
+.accent { color: var(--timer); font-variant-numeric: tabular-nums; }
+.updown { width: 0.7em; height: 0.7em; color: var(--n-text-3); }
+.method-tag { font-size: 1.05em; font-weight: 500; color: var(--n-text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.deep-row { display: flex; margin-top: auto !important; padding-bottom: 0.4em; }
+.capsule {
+  display: inline-flex; align-items: center; gap: 0.4em; height: 2em; padding: 0 1em;
+  border: 0; border-radius: 999px; background: var(--n-surface); color: var(--n-text-2); cursor: pointer;
+  transition: background-color 335ms var(--snappy), color 335ms var(--snappy), transform 180ms var(--snappy);
+}
+.capsule span { font-size: 1.2em; font-weight: 600; }
+.capsule .ico { width: 1.1em; height: 1.1em; }
+.capsule:hover { background: var(--n-hover); color: var(--n-text); }
+.capsule[aria-pressed='true'] { background: color-mix(in srgb, var(--timer) 88%, transparent); color: #000; }
+.capsule[aria-pressed='true']:hover { background: var(--timer); }
+.today-row {
+  display: flex; align-items: center; gap: 0.8em; padding-top: 0.4em;
+  font-size: 1.05em; font-weight: 600; color: var(--n-text-2); font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.today-row > span { display: inline-flex; align-items: center; gap: 0.2em; }
+.today-row .ico { width: 0.9em; height: 0.9em; }
+.today-label { color: var(--n-text-3); }
+.pts { margin-left: auto; color: var(--timer); }
+.controls { display: flex; align-items: center; justify-content: space-between; height: 2.8em; }
+
+/* --- the pet ------------------------------------------------------------- */
+/* The app's own sprites: one atlas per look, a row per animation and a
+   32 px frame per sprite pixel, so 32 px is 1:1 and stays sharp at 2x. */
+.pet {
+  display: block; flex: none; width: 32px; height: 32px;
+  background: no-repeat 0 0; image-rendering: pixelated;
+}
+.pet[data-look='plain'] { background-image: url('/img/demo/pet-plain.png'); }
+.pet[data-look='crown'] { background-image: url('/img/demo/pet-crown.png'); }
+.pet[data-look='hoodie'] { background-image: url('/img/demo/pet-hoodie.png'); }
+.pet[data-look='wizard'] { background-image: url('/img/demo/pet-wizard.png'); }
+.pet[data-look='scholar'] { background-image: url('/img/demo/pet-scholar.png'); }
+.pet[data-look='dino'] { background-image: url('/img/demo/pet-dino.png'); }
+.pet[data-look='flame'] { background-image: url('/img/demo/pet-flame.png'); }
+.pet[data-look='laurel'] { background-image: url('/img/demo/pet-laurel.png'); }
+.pet[data-look='cap'] { background-image: url('/img/demo/pet-cap.png'); }
+.pet[data-look='medal'] { background-image: url('/img/demo/pet-medal.png'); }
+
+/* --- around the notch ---------------------------------------------------- */
+/* A handwritten nudge beside the closed notch, gone once it has been opened. */
+.hint {
+  position: absolute; top: 4.4em; left: calc(50% + 6em); z-index: 1;
+  display: flex; align-items: flex-start; gap: 6px;
+  font-family: var(--head); font-size: 18px; color: var(--on-ground); white-space: nowrap;
+  rotate: -4deg; pointer-events: none;
+  transition: opacity 200ms ease;
+}
+.hint svg { flex: none; margin-top: -14px; color: var(--link); }
+.demo:not([data-live]) .hint, .demo[data-tried] .hint { opacity: 0; }
+
+/* The celebration beside the closed notch: confetti and the points earned. */
+.burst { position: absolute; top: 0; left: calc(50% - 14.1em); z-index: 3; width: 0; height: 3.2em; pointer-events: none; }
+/* The points sit left of the notch, beside the pet in its left wing. */
+.burst-pts {
+  position: absolute; top: 0.7em; right: 1em; padding: 0 10px; border-radius: 999px;
+  background: var(--btn-bg); color: var(--btn-ink);
+  font-family: var(--head); font-size: 15px; line-height: 26px; white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  opacity: 0; scale: 0.6;
+}
+.demo[data-cheer] .burst-pts { opacity: 1; scale: 1; transition: opacity 200ms ease, scale 575ms var(--open); }
+.confetti {
+  position: absolute; top: 1.6em; left: 2.6em; width: 7px; height: 10px; border-radius: 2px;
+  opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .confetti { animation: confetti 1300ms cubic-bezier(0.2, 0.7, 0.3, 1) forwards; animation-delay: var(--delay, 0ms); }
+}
+@keyframes confetti {
+  0% { opacity: 1; translate: 0 0; rotate: 0deg; }
+  70% { opacity: 1; }
+  100% { opacity: 0; translate: var(--dx) var(--dy); rotate: var(--spin); }
+}
+
+.demo .cta { margin-top: 32px; }
+.demo .cta-note { margin-top: 14px; }
+
+/* --- sizes --------------------------------------------------------------- */
+/* Tablets: the same panel, a little smaller. */
+@media (max-width: 999px) {
+  .scene { font-size: 11px; height: 34em; }
+}
+
+/* Phones: the panel spans the screen and the Timer stacks its dial on top. */
+@media (max-width: 600px) {
+  .demo { margin-bottom: 56px; }
+  .scene { font-size: 10px; height: 46em; border-radius: 24px; }
+  .notch[data-state='open'] { width: calc(100cqw - 4em); height: 40em; }
+  .panel-inner { width: calc(100cqw - 4em); height: 40em; padding: 0 1.4em 1.4em; }
+  .pane { left: 1.4em; right: 1.4em; bottom: 1.4em; }
+  .pane-timer { grid-template-columns: minmax(0, 1fr); grid-template-rows: 15.6em minmax(0, 1fr); }
+  .today-row .today-label { display: none; }
+  .hint { left: auto; right: 1.2em; top: 5em; font-size: 17px; }
+  /* No room left of the notch on a phone: the points go under the pet. */
+  .burst-pts { top: 4em; right: auto; left: 0.6em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notch, .notch::before, .notch::after, .notch-face, .panel, .tab, .primary, .icon-btn, .capsule, .dial-time, .hint,
+  .notch[data-state] .panel, .notch[data-state] .notch-face, .demo[data-cheer] .burst-pts { transition: none !important; }
+  .primary:active, .icon-btn:active, .capsule:active { transform: none; }
+}
