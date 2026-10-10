@@ -29,3 +29,9 @@ Each entry is a short before and after.
 - Before: picking an AI provider in Settings > Connections started sending to it at once, and nothing said what is sent or to whom (App Review Guideline 5.1.2(i) asks for both, and for permission).
   After: picking a provider that answers from outside the Mac asks first, "Share with Anthropic?" (or OpenAI, or Google), naming what Ask, Plan my day and Refine send, with Use and Cancel.
   Ollama runs on the Mac and asks nothing, switching between two providers of one company asks nothing new, and the section footer keeps a short "Sends what you ask to Google." line.
+
+## Settings sounds
+
+- Before: Focus offered a Preview button for its sound, but the Celebration sound and Haptic feedback switches under General > More options gave no hint of what they add, so turning one on meant waiting for the next celebration.
+  After: turning Celebration sound on plays its soft pop once, and turning Haptic feedback on taps the trackpad once, the way macOS previews an alert sound when you pick it.
+  No extra button, so the section stays as short as before.

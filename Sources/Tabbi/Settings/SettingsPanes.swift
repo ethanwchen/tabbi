@@ -882,7 +882,8 @@ private struct LibraryRow: View {
 // MARK: Feedback
 
 /// Haptics, the celebration sound and the animation pace, under General's
-/// More options.
+/// More options. Turning haptics or the sound on plays it once, so the
+/// switch previews what it adds.
 struct FeedbackSection: View {
     @EnvironmentObject private var store: SettingsStore
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -894,11 +895,21 @@ struct FeedbackSection: View {
                 Text("A light trackpad tap at the notch edge and on celebrations.")
             }
             .help("Tap the trackpad when the pointer reaches the notch or a celebration plays")
+            .onChange(of: store.settings.hapticsEnabled) { _, isOn in
+                // Turning it on taps once, so you feel what you picked.
+                if isOn { CelebrationCenter.perform(.levelChange) }
+            }
             Toggle(isOn: $store.settings.celebrationSoundEnabled) {
                 Text("Celebration sound")
                 Text("A soft sound when you unlock an item or reach a streak.")
             }
             .help("Play a soft sound with celebrations that have no sound of their own")
+            .onChange(of: store.settings.celebrationSoundEnabled) { _, isOn in
+                // Turning it on plays the sound once, as a preview.
+                if isOn, let sound = CelebrationSound.cue(for: .burst, isEnabled: true, eventHasSound: false) {
+                    CelebrationCenter.play(sound)
+                }
+            }
             Toggle(isOn: $store.settings.weeklyRecapEnabled) {
                 Text("Weekly recap")
                 Text("A card with your week in the notch every Sunday evening.")
