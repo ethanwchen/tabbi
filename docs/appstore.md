@@ -301,8 +301,8 @@ To render them and the App Preview again after a UI change, run:
 swift docs/appstore/make-media.swift
 ```
 
-The script renders App Store edition demo snapshots of the store layout (`--edition appstore --tabs study,planner,anki,spotify,closet --transparent`, once at `--scale 3` and once at `--scale 4.5` for the coach) and the pet's frames, then composes the screenshots and the preview.
-To compose from folders you already rendered that way, pass the 3x folder, the 4.5x folder and the accents folder.
+The script renders App Store edition demo snapshots of the store layout (`--edition appstore --tabs study,planner,anki,spotify,closet --transparent`, once at `--scale 3` and once at `--scale 4.5` for the coach) and the pet's frames, records the App Preview's footage (below), then composes the screenshots and the preview.
+To compose from folders you already rendered that way, pass the 3x folder, the 4.5x folder and the accents folder, and optionally a recording folder that holds `opening/` and `story/`; without one the preview is recorded fresh.
 It warns when a caption runs into the side margins or the pet touches the panel.
 The clocks in the demo panels are live, so every run changes the shots that show a timer; commit only the images you meant to change.
 
@@ -313,19 +313,28 @@ Known gaps to close before upload:
 
 ### App Preview
 
-[`appstore/preview/tabbi-app-preview.mp4`](appstore/preview/tabbi-app-preview.mp4) is an interim App Preview: 23.6 seconds of 1920x1080 H.264 (High profile, Level 4.0, 30 fps) with a silent stereo AAC track, since App Store Connect expects previews to carry audio.
-It is made from the screenshots' open-panel scenes on the light canvas: the panel opens out of the notch, then Closet, Today, Tomorrow, Now Playing, Flashcards and the recap each hold their caption, with fades between them.
-It is still made from stills, so the timer does not tick; the spec asks for a recording of the running app (Guideline 2.3.4).
+[`appstore/preview/tabbi-app-preview.mp4`](appstore/preview/tabbi-app-preview.mp4) is the App Preview: 27.2 seconds of 1920x1080 H.264 (High profile, Level 4.0, 30 fps, Rec. 709 tags) with a silent stereo AAC track, since App Store Connect expects previews to carry audio.
+It is footage of the running app, as Guideline 2.3.4 asks: the real notch with the live demo stores, the ticking clock, the app's own springs, check-off, heart and paw confetti, recorded at 30 fps.
+[`appstore/preview/poster.png`](appstore/preview/poster.png) is the frame at 2.5 s (the Timer open and ticking with its caption), the poster frame the spec picks; set it in App Store Connect, since the default 5 s frame shows the focus block at its last second.
 
-The footage for that recording comes from the app itself: `--record` plays the spec's storyboard on the real notch (live demo stores, ticking clock, the app's springs and celebrations) and records it with ScreenCaptureKit at 30 fps and 2x.
+How it was recorded: not a screen recording of the Mac's display, but a recording of the app's own notch window.
+`--record` hosts the real `NotchView` with the app's modules in a window kept behind the desktop picture, plays the spec's storyboard as the app's own actions, and records only that window with ScreenCaptureKit at 30 fps and 2 pixels per point (the panel's native size on a Retina screen):
+
 ```sh
-TABBI_DEMO=1 swift run Tabbi --record <folder>/opening --part opening --edition appstore --tabs study,planner,anki,spotify,closet
-TABBI_DEMO=1 TABBI_DEMO_FOCUS_LEFT=4 swift run Tabbi --record <folder>/story --part story --edition appstore --tabs study,planner,anki,spotify,closet
+TABBI_DEMO=1 TABBI_DEMO_FOCUS_LEFT=1126 swift run -c release Tabbi --record <folder>/opening --part opening --edition appstore --tabs study,planner,anki,spotify,closet
+TABBI_DEMO=1 TABBI_DEMO_FOCUS_LEFT=5 swift run -c release Tabbi --record <folder>/story --part story --edition appstore --tabs study,planner,anki,spotify,closet
 ```
-`opening` is the notch opening on the Timer at 18:42 and ticking; `story` starts four seconds before the focus block ends, so the session finishes and the pet celebrates on camera, then opens the Closet, checks off Read chapter 4, plans tomorrow, likes the track in Now Playing, shows Flashcards and closes.
-The recorded window sits behind the desktop picture, so nothing shows on the Mac's display and no other app or desktop content is ever in a frame, but the terminal that runs it needs Screen Recording permission.
-Each part writes transparent `frame-NNNN.png` files and a `frames.json` with every frame's time and the storyboard's beats; the stream sends a frame only when something changed, so a frame lasts until the next one's time.
-No pointer is drawn, since the spec rules out a fake one: the clicks are the app's own actions.
-Composing these parts on the dune stage with the captions in `make-media.swift` is the next step.
+
+`opening` is the closed notch with the pet, then the panel springs open on the Timer at 18:42 and ticks.
+`story` starts five seconds before the focus block ends, so the session finishes on camera (paw confetti, the digits roll into Break), the panel closes to the pet celebrating beside the notch, then it opens the Closet, checks off Read chapter 4 in Today, plans tomorrow (the blocks arrive), likes the track in Now Playing, shows Flashcards and closes to the pet again, so the end matches the first frame for a clean loop.
+Each part writes transparent `frame-NNNN.png` files and a `frames.json` with every frame's time, the storyboard's beats and the length; the stream sends a frame only when something changed, so a frame lasts until the next one's time.
+Record from a release build: in a debug build, closing the notch stalls for about 2 seconds while the closed notch's pet builds its animation clips on the main thread, and the clock freezes on camera.
+Nothing shows on the Mac's display and no other app or desktop content can be in a frame, but the terminal that runs it needs Screen Recording permission.
+
+`make-media.swift` composes the parts on the dune desktop (the same wallpaper as the screenshots, full frame, with a plain menu bar as tall as the notch) with the notch window drawn 1:1 from the top center.
+The opening runs 4 seconds, then a dissolve of 8 frames joins the story's last seconds of the focus block, with a small "25 minutes later" pill for 2 seconds.
+The storyboard's captions sit bottom left in cream pills (Fredoka SemiBold 60 px, 28 px corners, 28 by 16 px padding, baseline at y=1000), each on screen at least 2.5 seconds and fading over 8 frames; the closing pill reads "Tabbi" beside the app icon at 120 px.
+No pet, pointer or UI is drawn over the footage: the clicks are the app's own actions, and the spec rules out a fake pointer.
 There is no music bed: no track with a clear license was available, so the preview stays silent.
+If wanted, the maintainer can instead record the sandboxed App Store build on a notched Mac with QuickTime or ScreenCaptureKit, as the spec's capture method describes, and keep these captions.
 `swift docs/appstore/make-media.swift` writes it together with the screenshots.

@@ -19,18 +19,21 @@ import TabbiKit
 /// records that one window as the window server draws it (Screen Recording
 /// permission for the terminal that runs it), and each frame lands in
 /// `<folder>/frame-NNNN.png` (transparent around the notch) next to
-/// `frames.json`, which lists every frame's time in seconds and the
-/// storyboard's beats. The stream only sends a frame when something
+/// `frames.json`, which lists every frame's time in seconds, the
+/// storyboard's beats and the recording's length. The stream only sends a frame when something
 /// changed, so a frame lasts until the next one's time. That lets
-/// `docs/appstore/make-media.swift` can lay the footage on its stage and time
+/// `docs/appstore/make-media.swift` lay the footage on its stage and time
 /// its captions. No pointer is drawn: the storyboard's clicks are the
 /// app's own actions, so every move on screen is the app's.
 ///
 /// The preview cuts from the first minutes of a Pomodoro to its last
-/// seconds, so it is two recordings: `opening` (the notch opens on the
-/// Timer, ticking) and `story` (run with `TABBI_DEMO_FOCUS_LEFT=4`, so the
-/// block ends about 2.5 s in, on camera, then every other tab in the store
-/// layout).
+/// seconds, so it is two recordings: `opening` (run with
+/// `TABBI_DEMO_FOCUS_LEFT=1126`, so the notch opens on the Timer at 18:42,
+/// ticking) and `story` (run with `TABBI_DEMO_FOCUS_LEFT=5`, so the block
+/// ends about 3 s in, on camera, then every other tab in the store layout).
+/// Record from a release build (`swift run -c release`): in a debug build
+/// closing the notch stalls for about 2 s while the pet's clips are built,
+/// and the clock freezes on camera.
 @MainActor
 enum PreviewRecorder {
     static let flag = "--record"
@@ -114,7 +117,7 @@ enum PreviewRecorder {
             "part": part, "fps": framesPerSecond, "scale": scale,
             "notch": ["width": geometry.notchSize.width, "height": geometry.notchSize.height],
             "size": ["width": size.width, "height": size.height],
-            "frames": times, "beats": beats,
+            "frames": times, "beats": beats, "length": steps.last?.time ?? 0,
         ]
         if let data = try? JSONSerialization.data(withJSONObject: manifest, options: [.prettyPrinted, .sortedKeys]) {
             try? data.write(to: outputDirectory.appendingPathComponent("frames.json"))
@@ -170,22 +173,23 @@ enum PreviewRecorder {
                 // The block ends on camera (TABBI_DEMO_FOCUS_LEFT), the
                 // panel closes and the pet celebrates beside the notch.
                 Step(time: 0, beat: "finish") { model.open(.study) },
-                Step(time: 3.0) { close() },
-                Step(time: 6.5, beat: "closet") { open(.closet) },
-                Step(time: 10.5, beat: "today") { open(.planner) },
-                Step(time: 11.8) {
+                Step(time: 3.6) { close() },
+                Step(time: 6.0, beat: "closet") { open(.closet) },
+                Step(time: 10.0, beat: "today") { open(.planner) },
+                Step(time: 11.3) {
                     if let reading { withMotion(Theme.Motion.snappy) { today?.toggle(reading.id) } }
                 },
-                Step(time: 13.5, beat: "tomorrow") { today?.show(.tomorrow) },
-                Step(time: 14.4) { today?.planTomorrow() },
+                // The demo plan takes about 1.5 s to arrive.
+                Step(time: 13.0, beat: "tomorrow") { today?.show(.tomorrow) },
+                Step(time: 13.4) { today?.planTomorrow() },
                 // The demo track starts out liked; the like comes off out of
                 // view, so the heart fills on camera.
-                Step(time: 15.0) { if music?.status.playback?.track?.isFavorite == true { music?.toggleFavorite() } },
-                Step(time: 16.0, beat: "music") { open(.spotify) },
-                Step(time: 17.6) { music?.toggleFavorite() },
-                Step(time: 19.0, beat: "flashcards") { open(.anki) },
-                Step(time: 21.5, beat: "end") { close() },
-                Step(time: 23.5) {},
+                Step(time: 14.5) { if music?.status.playback?.track?.isFavorite == true { music?.toggleFavorite() } },
+                Step(time: 16.1, beat: "music") { open(.spotify) },
+                Step(time: 17.5) { music?.toggleFavorite() },
+                Step(time: 18.9, beat: "flashcards") { open(.anki) },
+                Step(time: 21.4, beat: "end") { close() },
+                Step(time: 23.9) {},
             ]
         }
     }

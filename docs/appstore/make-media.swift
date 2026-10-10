@@ -4,12 +4,15 @@
 // demo snapshots, following the production spec (eight shots, one layout).
 //
 //     swift docs/appstore/make-media.swift                                # render everything, then compose
-//     swift docs/appstore/make-media.swift <panels> <coach> <accents>    # compose from existing folders
+//     swift docs/appstore/make-media.swift <panels> <coach> <accents> [<recording>]   # compose from existing folders
 //
 // Folders passed in must come from
 //     TABBI_DEMO=1 swift run Tabbi --snapshot <panels> --edition appstore --tabs study,planner,anki,spotify,closet --scale 3 --transparent
 //     TABBI_DEMO=1 swift run Tabbi --snapshot <coach> --edition appstore --tabs study,planner,anki,spotify,closet --scale 4.5 --transparent
 //     swift run PetGallery <accents> accents
+//     TABBI_DEMO=1 TABBI_DEMO_FOCUS_LEFT=1126 swift run -c release Tabbi --record <recording>/opening --part opening --edition appstore --tabs study,planner,anki,spotify,closet
+//     TABBI_DEMO=1 TABBI_DEMO_FOCUS_LEFT=5 swift run -c release Tabbi --record <recording>/story --part story --edition appstore --tabs study,planner,anki,spotify,closet
+// Without a recording folder the preview is recorded fresh.
 //
 // Snapshots come from `--edition appstore`, so no tab the App Store build
 // leaves out can show up, and from demo mode, so the data is fictional and
@@ -28,7 +31,8 @@
 // Shot 5 is the night (dark) variant.
 //
 // The App Preview is a 1920x1080 H.264 movie at 30 fps with a silent stereo
-// AAC track, built from the same scenes.
+// AAC track: the running app's notch window, recorded at 30 fps by
+// `Tabbi --record`, on the same dune desktop with the storyboard's captions.
 
 import AppKit
 import AVFoundation
@@ -62,13 +66,14 @@ func fail(_ message: String) -> Never {
 
 // MARK: - Sources
 
-func run(_ arguments: [String], demo: Bool) {
+func run(_ arguments: [String], demo: Bool, environment extra: [String: String] = [:]) {
     let process = Process()
     process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
     process.arguments = arguments
     process.currentDirectoryURL = root
     var environment = ProcessInfo.processInfo.environment
     if demo { environment["TABBI_DEMO"] = "1" }
+    environment.merge(extra) { $1 }
     process.environment = environment
     do { try process.run() } catch { fail("could not run \(arguments.joined(separator: " ")): \(error)") }
     process.waitUntilExit()
@@ -92,6 +97,18 @@ func renderDemoSnapshots(scale: Double, name: String) -> URL {
 func renderAccents() -> URL {
     let directory = temporaryFolder("accents")
     run(["swift", "run", "PetGallery", directory.path, "accents"], demo: false)
+    return directory
+}
+
+/// Records the App Preview's two parts from a release build of the running
+/// app (`--record`): the opening shows the Timer at 18:42 as the panel opens,
+/// and the story starts five seconds before the focus block ends.
+func recordPreview() -> URL {
+    let directory = temporaryFolder("recording")
+    for (part, focusLeft) in [("opening", "1126"), ("story", "5")] {
+        run(["swift", "run", "-c", "release", "Tabbi", "--record", directory.appendingPathComponent(part).path, "--part", part,
+             "--edition", "appstore", "--tabs", storeTabs], demo: true, environment: ["TABBI_DEMO_FOCUS_LEFT": focusLeft])
+    }
     return directory
 }
 
@@ -260,8 +277,9 @@ func duneY(_ index: Int, x: CGFloat, canvas: CGSize) -> CGFloat {
 
 /// The original dune wallpaper, full bleed from the stage top, with the sun
 /// low behind the panel and, at night, a sky of pixel stars.
-func drawStage(_ palette: Palette, night: Bool, canvas: CGSize, in context: CGContext) {
-    let stage = CGRect(x: 0, y: stageTop, width: canvas.width, height: canvas.height - stageTop)
+func drawStage(_ palette: Palette, night: Bool, canvas: CGSize, top: CGFloat = stageTop, menuBar: CGFloat = menuBarHeight,
+               in context: CGContext) {
+    let stage = CGRect(x: 0, y: top, width: canvas.width, height: canvas.height - top)
     let sky = CGGradient(colorsSpace: sRGB, colors: palette.sky.map { color($0) } as CFArray, locations: [0, 0.6, 1])!
     context.saveGState()
     context.clip(to: stage)
@@ -278,7 +296,7 @@ func drawStage(_ palette: Palette, night: Bool, canvas: CGSize, in context: CGCo
         context.setFillColor(color(0xFFF4E6, 0.85))
         for _ in 0..<18 {
             let x = (next() * (canvas.width - 120) / 6).rounded() * 6 + 60
-            let y = (stage.minY + menuBarHeight + 30 + next() * (canvas.height - 560 - stage.minY - menuBarHeight)) / 6
+            let y = (stage.minY + menuBar + 30 + next() * (canvas.height - 560 - stage.minY - menuBar)) / 6
             context.fill(CGRect(x: x, y: y.rounded() * 6, width: 6, height: 6))
         }
     }
@@ -297,7 +315,7 @@ func drawStage(_ palette: Palette, night: Bool, canvas: CGSize, in context: CGCo
     }
     // A plain menu bar: no Apple logo, no menus and no status items.
     context.setFillColor(color(palette.menuBar.0, palette.menuBar.1))
-    context.fill(CGRect(x: 0, y: stage.minY, width: canvas.width, height: menuBarHeight))
+    context.fill(CGRect(x: 0, y: stage.minY, width: canvas.width, height: menuBar))
     context.restoreGState()
 }
 
@@ -390,24 +408,14 @@ struct Shot {
     var petPixel = 12
 }
 
-/// A critically damped spring from 0 to 1, close to the app's own open
-/// animation, so the preview never moves linearly.
-func spring(_ t: CGFloat) -> CGFloat {
-    guard t > 0 else { return 0 }
-    let omega: CGFloat = 9
-    return min(1, 1 - (1 + omega * t) * exp(-omega * t))
-}
-
 /// The closed notch at the panel's scale: 190 by 37 pt.
 func notchRect(in canvas: CGSize) -> CGRect {
     CGRect(x: canvas.width / 2 - 95 * panelScale, y: stageTop, width: 190 * panelScale, height: menuBarHeight)
 }
 
-/// Composes one shot into an opaque RGB bitmap of `canvas` size. `reveal`
-/// below 1 draws the panel partway out of the notch, for the preview's
-/// opening. Without `captions` it is the bare backdrop the preview passes
-/// through between scenes.
-func compose(_ shot: Shot, canvas: CGSize = canvasSize, reveal: CGFloat = 1, captions: Bool = true) -> CGImage {
+/// Composes one shot into an opaque RGB bitmap of the canvas size.
+func compose(_ shot: Shot) -> CGImage {
+    let canvas = canvasSize
     let palette = shot.night ? Palette.night : .day
     let context = CGContext(
         data: nil, width: Int(canvas.width), height: Int(canvas.height), bitsPerComponent: 8, bytesPerRow: 0,
@@ -427,55 +435,24 @@ func compose(_ shot: Shot, canvas: CGSize = canvasSize, reveal: CGFloat = 1, cap
     let hero = CGPoint(x: panelRect.minX + panelRect.width * shot.hero.x, y: panelRect.minY + panelRect.height * shot.hero.y)
     radialGlow(mix(palette.glow, shot.tint, 0.06), alpha: palette.glowAlpha, center: hero, radius: 1400, in: context)
 
-    if captions {
-        let margin: CGFloat = 160
-        drawCentered(shot.caption, size: 168, minimumSize: 150, weight: 600, tracking: -0.01,
-                     color: color(palette.headline), centerX: canvas.width / 2, baseline: 310,
-                     maxWidth: canvas.width - margin * 2, in: context)
-        drawCentered(shot.subcaption, size: 76, minimumSize: 64, weight: 500, tracking: 0,
-                     color: color(palette.subcaption), centerX: canvas.width / 2, baseline: 430,
-                     maxWidth: canvas.width - margin * 2, in: context)
-    }
+    let margin: CGFloat = 160
+    drawCentered(shot.caption, size: 168, minimumSize: 150, weight: 600, tracking: -0.01,
+                 color: color(palette.headline), centerX: canvas.width / 2, baseline: 310,
+                 maxWidth: canvas.width - margin * 2, in: context)
+    drawCentered(shot.subcaption, size: 76, minimumSize: 64, weight: 500, tracking: 0,
+                 color: color(palette.subcaption), centerX: canvas.width / 2, baseline: 430,
+                 maxWidth: canvas.width - margin * 2, in: context)
 
     drawStage(palette, night: shot.night, canvas: canvas, in: context)
-    if canvas.height >= canvasSize.height {
-        let pet = drawPet(shot.pet.image(in: accentFolder), side: shot.petSide, pixel: shot.petPixel, canvas: canvas, in: context)
-        // The panel's own body, without its soft shadow, must stay clear.
-        let body = panel.map { opaqueBounds(of: $0, threshold: 250).offsetBy(dx: panelRect.minX, dy: panelRect.minY) }
-        if pet.intersects(body ?? panelRect) {
-            FileHandle.standardError.write(Data("make-media: the pet overlaps the panel in \(shot.file)\n".utf8))
-        }
+    let pet = drawPet(shot.pet.image(in: accentFolder), side: shot.petSide, pixel: shot.petPixel, canvas: canvas, in: context)
+    // The panel's own body, without its soft shadow, must stay clear.
+    let body = panel.map { opaqueBounds(of: $0, threshold: 250).offsetBy(dx: panelRect.minX, dy: panelRect.minY) }
+    if pet.intersects(body ?? panelRect) {
+        FileHandle.standardError.write(Data("make-media: the pet overlaps the panel in \(shot.file)\n".utf8))
     }
 
     guard let panel else {
         drawCoach(canvas: canvas, in: context)
-        return context.makeImage()!
-    }
-    guard reveal > 0 else {
-        let notch = notchRect(in: canvas)
-        context.addPath(roundedRect(notch, topRadius: 0, bottomLeft: 10 * panelScale, bottomRight: 10 * panelScale))
-        context.setFillColor(color(0x000000))
-        context.fillPath()
-        return context.makeImage()!
-    }
-    if reveal < 1 {
-        // The growing black shape, from the notch to the panel's frame, with
-        // the content growing and fading in with it (scaled down, never up).
-        let notch = notchRect(in: canvas)
-        let contentAlpha = min(1, max(0, (reveal - 0.45) / 0.55))
-        let lerp = { (a: CGFloat, b: CGFloat) in a + (b - a) * reveal }
-        let shape = CGRect(
-            x: lerp(notch.minX, panelRect.minX), y: stageTop,
-            width: lerp(notch.width, panelRect.width), height: lerp(notch.height, panelRect.height)
-        )
-        let radius = lerp(10 * panelScale, 64)
-        context.addPath(roundedRect(shape, topRadius: 0, bottomLeft: radius, bottomRight: radius))
-        context.setFillColor(color(0x000000, 1 - contentAlpha))
-        context.fillPath()
-        context.saveGState()
-        context.setAlpha(contentAlpha)
-        drawImage(panel, in: shape, context: context)
-        context.restoreGState()
         return context.makeImage()!
     }
     // The panel 1:1, with the snapshot's own shadow only.
@@ -527,28 +504,207 @@ func writePNG(_ image: CGImage, to url: URL) {
 
 let previewDirectory = root.appendingPathComponent("docs/appstore/preview")
 let previewSize = CGSize(width: 1920, height: 1080)
-/// The preview's scenes are composed at the screenshots' pixel scale on a
-/// 16:9 canvas, then scaled down to `previewSize`, so the panel is never
-/// scaled up.
-let previewCanvas = CGSize(width: 2880, height: 1620)
 let framesPerSecond: Int32 = 30
 
-/// One stretch of the preview. Each scene after the first starts with a
-/// transition inside its own duration: the scene before fades to `backdrop`
-/// (the scene without caption or panel), then this one fades in from it, so
-/// two captions never show on top of each other.
-struct PreviewScene {
-    let seconds: Double
-    let backdrop: CGImage
-    /// The frame at a time from the scene's start.
-    let frame: (Double) -> CGImage
+/// One part of the footage `Tabbi --record` wrote: the notch window's frames
+/// at 2x, each shown from its time until the next one's, and the
+/// storyboard's beats.
+struct Recording {
+    let folder: URL
+    let times: [Double]
+    let beats: [String: Double]
+    let length: Double
+    let notchHeight: CGFloat
+
+    init(_ folder: URL) {
+        self.folder = folder
+        let url = folder.appendingPathComponent("frames.json")
+        guard let data = try? Data(contentsOf: url),
+              let manifest = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let times = manifest["frames"] as? [Double], !times.isEmpty,
+              let beats = manifest["beats"] as? [[String: Any]],
+              let length = manifest["length"] as? Double,
+              let scale = manifest["scale"] as? Double,
+              let notch = manifest["notch"] as? [String: Double], let height = notch["height"]
+        else { fail("no recording in \(folder.path); run Tabbi --record first") }
+        self.times = times
+        self.beats = Dictionary(uniqueKeysWithValues: beats.compactMap { beat in
+            (beat["name"] as? String).flatMap { name in (beat["time"] as? Double).map { (name, $0) } }
+        })
+        self.length = length
+        notchHeight = CGFloat(height * scale)
+    }
+
+    func beat(_ name: String) -> Double {
+        guard let time = beats[name] else { fail("the recording in \(folder.path) has no beat \(name)") }
+        return time
+    }
+
+    /// The frame on screen at `time`.
+    func frame(at time: Double) -> Int {
+        var low = 0, high = times.count - 1
+        while low < high {
+            let middle = (low + high + 1) / 2
+            if times[middle] <= time { low = middle } else { high = middle - 1 }
+        }
+        return low
+    }
+
+    func image(_ index: Int) -> CGImage {
+        loadImage(folder.appendingPathComponent(String(format: "frame-%04d.png", index)))
+    }
 }
 
-let crossfadeSeconds = 0.6
+/// One caption pill of the preview, from `start` to `end` in seconds.
+struct PreviewCaption {
+    let text: String
+    let start: Double
+    let end: Double
+    var small = false
+    var icon = false
+}
+
+/// The spec's dissolves and caption fades: 8 frames, eased.
+let fadeSeconds = 8 / Double(framesPerSecond)
+
+func eased(_ t: Double) -> CGFloat {
+    let t = min(1, max(0, t))
+    return CGFloat(t * t * (3 - 2 * t))
+}
+
+/// The app icon without the macOS icon grid's transparent margin, so the
+/// visible icon is 120 px and lines up with the caption pills.
+let appIcon = trimmed(loadImage(root.appendingPathComponent("docs/brand/assets/tabbi-icon-1024.png")))
+
+/// Draws a caption pill (Fredoka SemiBold on cream at 92 percent, 28 px
+/// corners, 28 by 16 px padding) with its text's left edge and baseline at
+/// `origin`, the app icon at 120 px to its left for the closing caption.
+/// Returns the pill's top edge.
+@discardableResult
+func drawCaption(_ caption: PreviewCaption, x: CGFloat, baseline: CGFloat, alpha: CGFloat, in context: CGContext) -> CGFloat {
+    let size: CGFloat = caption.small ? 40 : 60
+    let line = textLine(caption.text, font: fredoka(size: size, weight: 600), color: color(0x2B1F17))
+    var ascent: CGFloat = 0, descent: CGFloat = 0
+    let width = CGFloat(CTLineGetTypographicBounds(line, &ascent, &descent, nil))
+    var left = x
+    context.saveGState()
+    context.setAlpha(alpha)
+    let pill = CGRect(x: left, y: baseline - ascent - 16, width: width + 56, height: ascent + descent + 32)
+    if caption.icon {
+        let side: CGFloat = 120
+        drawImage(appIcon, in: CGRect(x: left, y: (pill.midY - side / 2).rounded(), width: side, height: side), context: context)
+        left += side + 20
+    }
+    let placed = pill.offsetBy(dx: left - x, dy: 0)
+    context.addPath(CGPath(roundedRect: placed, cornerWidth: 28, cornerHeight: 28, transform: nil))
+    context.setFillColor(color(0xFBF5EA, 0.92))
+    context.fillPath()
+    context.textMatrix = CGAffineTransform(scaleX: 1, y: -1)
+    context.textPosition = CGPoint(x: placed.minX + 28, y: baseline)
+    CTLineDraw(line, context)
+    context.restoreGState()
+    return placed.minY
+}
+
+/// The App Preview, composed from the two recorded parts: the dune desktop
+/// at 1920x1080 with the notch window drawn 1:1 (2x, so native size) from
+/// the top center, the opening, a dissolve to the session's last seconds
+/// ("25 minutes later") and the story, with the storyboard's captions
+/// bottom left. Only the recording and the caption overlays are on screen
+/// (Guideline 2.3.4): no pet, pointer or UI is drawn.
+func composePreview(opening: Recording, story: Recording) -> (count: Int, frame: (Int) -> CGImage) {
+    // The story joins once the panel's open spring has settled.
+    let storyStart = 0.7
+    let cut = opening.length
+    let total = cut + story.length - storyStart
+    let storyTime = { (time: Double) in time - cut + storyStart }
+    let outputTime = { (time: Double) in time - storyStart + cut }
+
+    let captions = [
+        PreviewCaption(text: "A cozy timer in your notch", start: 0, end: cut),
+        PreviewCaption(text: "Every session ends in a cheer", start: cut, end: outputTime(story.beat("closet"))),
+        // Above the caption it joins, so it comes after it.
+        PreviewCaption(text: "25 minutes later", start: cut, end: cut + 2, small: true),
+        PreviewCaption(text: "Earn points, dress your cat", start: outputTime(story.beat("closet")), end: outputTime(story.beat("today"))),
+        PreviewCaption(text: "Today, right up top", start: outputTime(story.beat("today")), end: outputTime(story.beat("tomorrow"))),
+        PreviewCaption(text: "Plan tomorrow tonight", start: outputTime(story.beat("tomorrow")), end: outputTime(story.beat("music"))),
+        PreviewCaption(text: "Music without switching apps", start: outputTime(story.beat("music")), end: outputTime(story.beat("flashcards"))),
+        PreviewCaption(text: "Flashcards between tasks", start: outputTime(story.beat("flashcards")), end: outputTime(story.beat("end"))),
+        PreviewCaption(text: "Tabbi", start: outputTime(story.beat("end")), end: total, icon: true),
+    ]
+    for caption in captions where !caption.small && caption.end - caption.start < 2.5 {
+        FileHandle.standardError.write(Data("make-media: the preview caption \"\(caption.text)\" shows under 2.5 s\n".utf8))
+    }
+
+    let stage: CGImage = {
+        let context = CGContext(
+            data: nil, width: Int(previewSize.width), height: Int(previewSize.height), bitsPerComponent: 8, bytesPerRow: 0,
+            space: sRGB, bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue
+        )!
+        context.translateBy(x: 0, y: previewSize.height)
+        context.scaleBy(x: 1, y: -1)
+        drawStage(.day, night: false, canvas: previewSize, top: 0, menuBar: opening.notchHeight, in: context)
+        return context.makeImage()!
+    }()
+
+    // Decoded frames, kept while they are on screen.
+    var cache: [String: CGImage] = [:]
+    func footage(_ recording: Recording, at time: Double) -> CGImage {
+        let index = recording.frame(at: time)
+        let key = "\(recording.folder.lastPathComponent)-\(index)"
+        if let image = cache[key] { return image }
+        if cache.count > 4 { cache.removeAll() }
+        let image = recording.image(index)
+        cache[key] = image
+        return image
+    }
+
+    let count = Int((total * Double(framesPerSecond)).rounded())
+    return (count, { index in
+        let time = Double(index) / Double(framesPerSecond)
+        let context = CGContext(
+            data: nil, width: Int(previewSize.width), height: Int(previewSize.height), bitsPerComponent: 8, bytesPerRow: 0,
+            space: sRGB, bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue
+        )!
+        context.translateBy(x: 0, y: previewSize.height)
+        context.scaleBy(x: 1, y: -1)
+        // The stage with a frame on it, faded as one layer, so a dissolve
+        // never lets the stage show through the panel.
+        func layer(_ image: CGImage, alpha: CGFloat) {
+            context.saveGState()
+            context.setAlpha(alpha)
+            context.beginTransparencyLayer(auxiliaryInfo: nil)
+            drawImage(stage, in: CGRect(origin: .zero, size: previewSize), smooth: false, context: context)
+            let left = ((previewSize.width - CGFloat(image.width)) / 2).rounded()
+            drawImage(image, in: CGRect(x: left, y: 0, width: CGFloat(image.width), height: CGFloat(image.height)),
+                      smooth: false, context: context)
+            context.endTransparencyLayer()
+            context.restoreGState()
+        }
+        if time < cut {
+            layer(footage(opening, at: time), alpha: 1)
+        } else {
+            let dissolve = eased((time - cut) / fadeSeconds)
+            if dissolve < 1 { layer(footage(opening, at: cut), alpha: 1) }
+            layer(footage(story, at: storyTime(time)), alpha: dissolve)
+        }
+        var top: CGFloat = 1000
+        for caption in captions where time >= caption.start && time < caption.end {
+            // Each caption fades in and out over 8 frames; the first is
+            // there from frame one and the last stays to the end.
+            let fadeIn = caption.start == 0 ? 1 : eased((time - caption.start) / fadeSeconds)
+            let fadeOut = caption.end >= total ? 1 : eased((caption.end - time) / fadeSeconds)
+            let baseline = caption.small ? top - 36 : 1000
+            let pillTop = drawCaption(caption, x: 64, baseline: baseline, alpha: min(fadeIn, fadeOut), in: context)
+            if !caption.small { top = pillTop }
+        }
+        return context.makeImage()!
+    })
+}
 
 /// Writes the App Preview: H.264 High at 30 fps and a silent stereo AAC
 /// track (App Store Connect expects previews to carry audio).
-func writePreview(_ scenes: [PreviewScene], to url: URL) {
+func writePreview(frameCount: Int, frame: @escaping (Int) -> CGImage, to url: URL) {
     try? FileManager.default.removeItem(at: url)
     guard let writer = try? AVAssetWriter(outputURL: url, fileType: .mp4) else { fail("cannot write \(url.path)") }
 
@@ -616,13 +772,7 @@ func writePreview(_ scenes: [PreviewScene], to url: URL) {
         return sample!
     }
 
-    // Every frame in order, as (scene, time from the scene start).
-    var frames: [(scene: Int, time: Double)] = []
-    for (index, scene) in scenes.enumerated() {
-        let count = Int((scene.seconds * Double(framesPerSecond)).rounded())
-        frames += (0..<count).map { (index, Double($0) / Double(framesPerSecond)) }
-    }
-    let total = Double(frames.count) / Double(framesPerSecond)
+    let total = Double(frameCount) / Double(framesPerSecond)
     let totalAudioFrames = Int(total * sampleRate)
 
     // Each input pulls its data when the writer is ready for it, so neither
@@ -630,27 +780,14 @@ func writePreview(_ scenes: [PreviewScene], to url: URL) {
     let group = DispatchGroup()
     group.enter()
     var frameIndex = 0
-    var lastFrames: [Int: CGImage] = [:]
     video.requestMediaDataWhenReady(on: DispatchQueue(label: "preview.video")) {
         while video.isReadyForMoreMediaData {
-            guard frameIndex < frames.count else {
+            guard frameIndex < frameCount else {
                 video.markAsFinished()
                 group.leave()
                 return
             }
-            let (sceneIndex, time) = frames[frameIndex]
-            let image = scenes[sceneIndex].frame(time)
-            lastFrames[sceneIndex] = image
-            let previous = sceneIndex > 0 ? lastFrames[sceneIndex - 1] : nil
-            let half = crossfadeSeconds / 2
-            let (from, to, fade): (CGImage?, CGImage, CGFloat) = switch previous {
-            case let previous? where time < half:
-                (previous, scenes[sceneIndex].backdrop, spring(CGFloat(time / half) * 0.7))
-            case _? where time < crossfadeSeconds:
-                (scenes[sceneIndex].backdrop, image, spring(CGFloat((time - half) / half) * 0.7))
-            default:
-                (nil, image, 1)
-            }
+            let image = frame(frameIndex)
 
             var buffer: CVPixelBuffer?
             CVPixelBufferPoolCreatePixelBuffer(nil, adaptor.pixelBufferPool!, &buffer)
@@ -661,10 +798,7 @@ func writePreview(_ scenes: [PreviewScene], to url: URL) {
                 bitmapInfo: CGBitmapInfo.byteOrder32Little.rawValue | CGImageAlphaInfo.premultipliedFirst.rawValue
             )!
             context.interpolationQuality = .high
-            let bounds = CGRect(origin: .zero, size: previewSize)
-            if let from, fade < 1 { context.draw(from, in: bounds) }
-            context.setAlpha(fade)
-            context.draw(to, in: bounds)
+            context.draw(image, in: CGRect(origin: .zero, size: previewSize))
             CVPixelBufferUnlockBaseAddress(buffer!, [])
             adaptor.append(buffer!, withPresentationTime: CMTime(value: CMTimeValue(frameIndex), timescale: framesPerSecond))
             frameIndex += 1
@@ -687,7 +821,7 @@ func writePreview(_ scenes: [PreviewScene], to url: URL) {
     group.wait()
 
     let done = DispatchSemaphore(value: 0)
-    writer.endSession(atSourceTime: CMTime(value: CMTimeValue(frames.count), timescale: framesPerSecond))
+    writer.endSession(atSourceTime: CMTime(value: CMTimeValue(frameCount), timescale: framesPerSecond))
     writer.finishWriting { done.signal() }
     done.wait()
     guard writer.status == .completed else { fail("preview writing failed: \(String(describing: writer.error))") }
@@ -697,16 +831,16 @@ func writePreview(_ scenes: [PreviewScene], to url: URL) {
 // MARK: - Main
 
 let arguments = Array(CommandLine.arguments.dropFirst())
-guard arguments.isEmpty || arguments.count == 3 else {
-    fail("pass no arguments, or a panel snapshot folder, a coach snapshot folder and an accents folder")
+guard arguments.isEmpty || (3...4).contains(arguments.count) else {
+    fail("pass no arguments, or a panel snapshot folder, a coach snapshot folder, an accents folder and optionally a recording folder")
 }
 let panelFolder = arguments.isEmpty ? renderDemoSnapshots(scale: panelScale, name: "panels") : URL(fileURLWithPath: arguments[0])
 let coachFolder = arguments.isEmpty ? renderDemoSnapshots(scale: coachScale, name: "coach") : URL(fileURLWithPath: arguments[1])
 let accentFolder = arguments.isEmpty ? renderAccents() : URL(fileURLWithPath: arguments[2])
+let recordingFolder = arguments.count == 4 ? URL(fileURLWithPath: arguments[3]) : recordPreview()
 defer {
-    if arguments.isEmpty {
-        for folder in [panelFolder, coachFolder, accentFolder] { try? FileManager.default.removeItem(at: folder) }
-    }
+    let temporary = (arguments.isEmpty ? [panelFolder, coachFolder, accentFolder] : []) + (arguments.count == 4 ? [] : [recordingFolder])
+    for folder in temporary { try? FileManager.default.removeItem(at: folder) }
 }
 
 let reviewDirectories = reviewSizes.map { (outputDirectory.appendingPathComponent($0.0), $0.1) }
@@ -751,27 +885,10 @@ for shot in shots {
     }
 }
 
-// The preview reuses the open-panel shots on the light canvas: the first one
-// rises out of the notch, then each scene holds its caption.
-let previewShots = shots.filter { $0.panel != nil }.map { shot -> Shot in
-    var light = shot
-    light.night = false
-    return light
-}
-let downscale = { (image: CGImage) in scaled(image, to: previewSize) }
-let backdrop = { (shot: Shot) in downscale(compose(shot, canvas: previewCanvas, reveal: 0, captions: false)) }
-let closed = downscale(compose(previewShots[0], canvas: previewCanvas, reveal: 0))
-let opened = downscale(compose(previewShots[0], canvas: previewCanvas))
-let openingStart = 0.6, openingSeconds = 0.9
-var scenes = [PreviewScene(seconds: 4.4, backdrop: backdrop(previewShots[0])) { time in
-    if time < openingStart { return closed }
-    let progress = (time - openingStart) / openingSeconds
-    guard progress < 1 else { return opened }
-    return downscale(compose(previewShots[0], canvas: previewCanvas, reveal: spring(CGFloat(progress) * 0.8)))
-}]
-for shot in previewShots.dropFirst() {
-    let still = downscale(compose(shot, canvas: previewCanvas))
-    scenes.append(PreviewScene(seconds: 3.2, backdrop: backdrop(shot)) { _ in still })
-}
+let preview = composePreview(opening: Recording(recordingFolder.appendingPathComponent("opening")),
+                             story: Recording(recordingFolder.appendingPathComponent("story")))
 try? FileManager.default.createDirectory(at: previewDirectory, withIntermediateDirectories: true)
-writePreview(scenes, to: previewDirectory.appendingPathComponent("tabbi-app-preview.mp4"))
+writePreview(frameCount: preview.count, frame: preview.frame, to: previewDirectory.appendingPathComponent("tabbi-app-preview.mp4"))
+// The poster frame the spec picks (2.5 s: the Timer open and ticking), for
+// review and for App Store Connect's poster setting.
+writePNG(preview.frame(75), to: previewDirectory.appendingPathComponent("poster.png"))
