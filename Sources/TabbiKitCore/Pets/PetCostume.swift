@@ -88,6 +88,11 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
     /// A carved jack-o'-lantern worn as a hat, its candle flickering, the
     /// Halloween headline item.
     case pumpkinHat
+    /// Brown reindeer antlers on a crimson headband, for the winter holidays.
+    case reindeerAntlers
+    /// A crimson scarf with a white trim and fringe that snow sparkles on,
+    /// the winter holidays headline item. The shop's scarf is pink knit.
+    case snowScarf
     // Animated shop items, each looping a few frames on the item clock.
     /// White feathered wings that flap behind the pet.
     case angelWings
@@ -104,12 +109,12 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
 
     public var slot: PetAccessorySlot {
         switch self {
-        case .stethoscope, .scarf, .bowTie, .teamMedal: .neck
+        case .stethoscope, .scarf, .bowTie, .teamMedal, .snowScarf: .neck
         case .roundGlasses, .coolSunglasses: .face
         case .surgicalCap, .headMirror, .graduationCap, .beanie, .tinyCrown, .partyHat, .chefHat, .wizardHat,
              .bunnyEars, .witchHat, .cowboyHat, .flowerCrown, .frogHat, .ninjaHeadband, .pirateHat,
              .blindfoldedSorcerer, .astronautHelmet, .chunkyHeadphones, .backwardsCap, .flameHeadband,
-             .goldenLaurel, .halo, .moonlitWitchHat, .pumpkinHat: .head
+             .goldenLaurel, .halo, .moonlitWitchHat, .pumpkinHat, .reindeerAntlers: .head
         case .angelWings, .kingsCape: .back
         case .cherryPetals, .sparkleTrail, .rainCloud: .aura
         }
@@ -152,6 +157,8 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
         case .teamMedal: "Team Medal"
         case .moonlitWitchHat: "Moonlit Witch Hat"
         case .pumpkinHat: "Pumpkin Hat"
+        case .reindeerAntlers: "Reindeer Antlers"
+        case .snowScarf: "Snowy Scarf"
         case .angelWings: "Angel Wings"
         case .kingsCape: "King's Cape"
         case .halo: "Halo"

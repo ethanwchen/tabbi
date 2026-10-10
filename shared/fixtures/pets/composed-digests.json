@@ -394,7 +394,29 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "f8864d9303d22cac30f1cd0371c1011e7e0ca4a0c60f63a4860277f8ad676856"
+      "sha256" : "b40ceb045c625434ba0a764de734773b5e272ce0edd2c55d4ffc374e419e3662"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e520728504b46ee9076fb97372e5916e9d4e461b91fc170ce3c0c3867e21ed57"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4b131fa91c8eb4ddcf1663e9441f822a4fd968d4a2b65daaa792f8d2bdfacf83"
     },
     {
       "dress" : {
@@ -906,7 +928,29 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "f8864d9303d22cac30f1cd0371c1011e7e0ca4a0c60f63a4860277f8ad676856"
+      "sha256" : "b40ceb045c625434ba0a764de734773b5e272ce0edd2c55d4ffc374e419e3662"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e520728504b46ee9076fb97372e5916e9d4e461b91fc170ce3c0c3867e21ed57"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4b131fa91c8eb4ddcf1663e9441f822a4fd968d4a2b65daaa792f8d2bdfacf83"
     },
     {
       "dress" : {
@@ -1418,7 +1462,29 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "d505c40c6f248c214d17c15a8c25de84755802e61741b9e2694a814e6b41a6a1"
+      "sha256" : "499784c9081c63dbf66a846560da3d3ac582771c743847f89a03ec71103a1724"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "65aba879751c965a7c34bd72d24ccf04547c78d0b0e47b5a70949ddc3629ec54"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0df042618b87a4d9f5abf0f6b33ab43743e724c56fd986468997dd8dd84d9f63"
     },
     {
       "dress" : {
@@ -1930,7 +1996,29 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "30ea8319a497dc59270dfa9ffd421d7e77844d465e07a73d2e438e825c37c4a2"
+      "sha256" : "0ec0073da4250e772422666fa1a821bf5748e08a05f786fd10096b34ee75549a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1fa2a98996740dd2278a57d56614d51a2d135ef73ccdb5d205178e4f7a470a0f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0d85b149ef3d885534de98531292967093a57c191a01dac92d61dbc8192f0e37"
     },
     {
       "dress" : {
@@ -2442,7 +2530,29 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "5f30800aeeec35bf6cd47cb52e5387fce3119b002b0d8c51cfe79b24e586ed51"
+      "sha256" : "02b191eda81599dfb0ba5c9eefed1898a82edd6371a6fd72d7d2c7a9b477000a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f7c7e0b4588717bf1a5e6f467518625371e0f73fbaf760931b6f37bb206730c8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "380d4e6712026a4e83108159aa34561821bda8caec975e21cb70d2d677761c03"
     },
     {
       "dress" : {
@@ -2954,7 +3064,29 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "ac70b846d91c35018441901b3cc5e992c0d676f14942fc9c43d31f6baddce451"
+      "sha256" : "406578c3dd22aea1cf420849e6b5f57da798b91683c2414aecd325ae91ad33ae"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "5f780e7a9525fdd05b2af6eefbb5acac8552f62207e09845c6d51b959df01fda"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "030aac40b8d02b88c8743fbc5e59b88451a2475323ca039a48e8e2cfc359d46c"
     },
     {
       "dress" : {
@@ -3466,7 +3598,29 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "519caea19f9e90701939f332c8c3d87c3f5fdf90747bb983982ddd18aeaa7b94"
+      "sha256" : "d8661af322dde5b6e4a045eb70c805b16327ba294e7d518ec574d6371b1d6b18"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8d1c58a6a8fe87e4457637112f95228f08cc9ac25e8fa0687afda2d7807e2383"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4310962267164cee763bca9f36cb499fd8ea75bd35c0f405ef0f2b638018071e"
     },
     {
       "dress" : {
@@ -3978,7 +4132,29 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "b3c672854aa3651eae2e1e2c4333ac0724c23483d1baa048a18f53c6d6ba73c9"
+      "sha256" : "7ef3e13d748d3360b659a34c6877d3fb5d62ca9e0e1694212a9ac2cb3590f3fb"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b6d65293d7bc23b718f3e07ef4be1aed441a246b792aa53f172889c1f926a08e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "32586488a3fd8e1fc0daf4ee547ecbf3d0f3db34576a7a55d2b3a5e7b1395d74"
     },
     {
       "dress" : {
@@ -4490,7 +4666,29 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "46493316891c563395117df48e7f9215183d0c4c635b3080827d03df1cc92e87"
+      "sha256" : "9043f40e226931cf5727b39e9497e2bf9d7f3dd356864627282fadfe7b103ca7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "618d9467cfadbd99b823dc1b53d7f4693d0f737e5cbc7c391d1764d355bdac09"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f5537f42ec7572a94d4fa958d0a4fb4808801138bc0626e16f7c31aaca0438a2"
     },
     {
       "dress" : {
@@ -5002,7 +5200,29 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "b255b936ebd3f86d5845cc960a58fff9b8468798ff7033f4a78d477957eb33c6"
+      "sha256" : "e0bdef7b7258cc64d37a3a284e6d5dfe504d8a62cab46a8119af1b34ac874238"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "5bf462682269c7b1da2b5cd6dce380fe94fa889b86ccf5023c1ea04da0d30c90"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "edc6131e032e7a4f6ba931d30742f1159c01138a57fb180fab2e42eb52da2619"
     },
     {
       "dress" : {
@@ -5514,7 +5734,29 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "01554098070004462ea8f89a09c1db2ebbb56798749438765023fe097e21bb6b"
+      "sha256" : "70b204e89ec7360c1e0b95c87ddde55209f4c84f66d91763786d0fe23aa35c64"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b40bcbebaf3ebc7c0b0caf6f87acde3952e038c7814c1e59070d36890368ad49"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f968b2f1ab5b1d858a7160a8e8aee1952636058bd264c15bd8acacf892780dc6"
     },
     {
       "dress" : {
@@ -6026,7 +6268,29 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "eeef4c3fa35344c0aad2a40e8255fcbf120cca30f559fb415bc84204b6bbd37b"
+      "sha256" : "97de9960be1c402473ce309c710a2c73a02e6e372c98a8e071e9a2de6c05c09d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "200d1e7ba75b5fe4f41c6f950e873e9aac79679e8f271fb9f90c321aee8ff364"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4d723dfbca0657fd3d87be999a97128ebf59f92a576088540b46dbdce58a8104"
     },
     {
       "dress" : {
@@ -6538,7 +6802,29 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "316f09692ee8129918e8f9afccded29f4272009bccf54a23e635d3bcce7f1e52"
+      "sha256" : "f2bff28c3f7a1a0edf426e899e7f0060e119dd566f61445b006ef8ae81c8f046"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "52767f683a2b2ba7396668aa7bd9c0182ead95784a56e6eab5c298f8e3636a10"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8179d92675f2670255787f63049087ed9149a7f252a1be54981ccce71246c308"
     },
     {
       "dress" : {
@@ -7050,7 +7336,29 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "b4e40e845219c8539cb282d398f15138a97d5021b2b0de2375403c917789f5d7"
+      "sha256" : "18d3f23ba5142d4cbc6023c7f4d024d69503a6f4b3e8c37cbeb41ae89f978215"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3a3f0cdfa4dfb0e7602712b3ed55c56ad8c91bce61ab1653e0e82063bbd40296"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "bca92645087f59c5a1f7a3ced3d5d91fe7ca0a687530a5e71c834cb95817885a"
     },
     {
       "dress" : {
@@ -7562,7 +7870,29 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "9a5766c9dd41563ce4adf4e8e7a4042fe1168a57e71b9eb2682b8d8fe202acae"
+      "sha256" : "83bab1a330d655bc03d3d3c0e5baafc93e9855c5e26684e5ecae5077a20fcfa2"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7bf13bb15002012a4680a160ace4c660baf970fe0f79b798a046d6f4a74c2ac4"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ef99cbfe6745c104ccadd8eb2b31b91dddedf9ecf92bb11e0e885412070db7c0"
     },
     {
       "dress" : {
@@ -8074,7 +8404,29 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "fe658e9a618c5d59cae4f6bc26acca59d7cfefa8fae5db28563f0152f9cec7b7"
+      "sha256" : "97e45900865ef7e454a7bebf0d21ed33f555f8a7ee22dae975c1026d9de5cb76"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "19c52861ef2f8e892975f05bf643f3a8d8127df1638de91cb3fcc837fa534155"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f020c06ce8cdb3e15e522f31c08e14890088bc9e09aee5b889b56e06a80fc56e"
     },
     {
       "dress" : {
@@ -8586,7 +8938,29 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "41a6499f355995a54ec60f170fe263463f67b32305dec627fe6616aacae2ab5d"
+      "sha256" : "c3c8cffd1a9e4e6518bf81df37bccd4878361fa174fcb8ce304091dec5ca45ae"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "36ba6d4b03198bebc939e275d02a3f0d81be638542cbd0d2bea005993d4a93f5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ad1d1b31367a16f37e463fb6ddc6472866aa7d5df4debd30229b26f16f741af9"
     },
     {
       "dress" : {
@@ -9098,7 +9472,29 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "3d57bf614f0e5a4e8950d9e753b2509420a6e25f5a6c9bca76b8c0a0be61a902"
+      "sha256" : "49af437ab28ffbb070e916c6d29fd49b867342b6865650c082e74f27769375e5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "89d5867d7f135f351c0fe3b5c07366a9ed19d4fb9d787b21e0e034bfa47d860e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d16aa2a20cb89cbf58f2e60dd45544c1317c65c60d48b43e9441610a01eaaf86"
     },
     {
       "dress" : {

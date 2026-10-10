@@ -278,6 +278,15 @@ extension CostumeArt {
     /// so the face stays dark and the candle inside flickers now and then,
     /// lighting the eyes or the grin gold for a tick.
     static let pumpkinHat = PetArt.costume.headItem("pumpkinHat")
+
+    /// Branching brown antlers that rise above the ears from a crimson
+    /// headband.
+    static let reindeerAntlers = PetArt.costume.headItem("reindeerAntlers")
+
+    /// A crimson scarf with a white trim along its lower edge, a white
+    /// stripe across the tail and a white fringe. Now and then a speck of
+    /// snow glints on the band, then a snowflake twinkles on the tail.
+    static let snowScarf = PetArt.costume.bodyItem("snowScarf")
 }
 
 // MARK: - Back items
