@@ -13,7 +13,7 @@ extension ModuleContext {
                 ? InMemoryPartyCredentialStore()
                 : KeychainPartyCredentialStore(service: edition.bundleIdentifier + ".party")
             return SyncStore(storage: storage, runMode: runMode, pet: studyPet,
-                             isAvailable: !snapshot && AppleSignInAvailability.isEntitled,
+                             signInMethod: snapshot ? .web : AppleSignInMethod.current,
                              server: { snapshot ? nil : PartySettingsRepository().load().serverURL },
                              credentials: credentials)
         }

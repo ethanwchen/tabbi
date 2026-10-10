@@ -14,7 +14,7 @@ import { DurableObject } from "cloudflare:workers";
 import { AdminSecrets, exportTables, isAdminToken, notFound, parseRestore } from "./admin";
 import {
   AUTH_FAILURES_PER_MIN, DEFAULT_NAME, DEFAULT_PET_NAME, HttpError, MAX_DEVICE_TOKENS, MAX_FRIENDS, MAX_PARTY_MEMBERS, PARTY_IDLE_EXPIRY_S, RATE_LIMIT_PER_MIN, REGISTER_PER_MIN, FRIEND_CODE_RE, TOKEN_RE,
-  clientKey, isoWeekDays, isoWeekKeyOfDay, newCode, newToken, nowS, parseFriendCode, readBody, sha256Hex, utcDay,
+  clientKey, isoWeekDays, isoWeekKeyOfDay, newCode, newToken, nowS, parseFriendCode, readBody, readText, sha256Hex, utcDay,
 } from "./lib";
 import { PROFILE_FIELDS, Profile, applyProfilePatch, defaultProfile, parseProfilePatch, sameProfile } from "./profile";
 import { json } from "./http";
@@ -22,9 +22,13 @@ import { errorFields, logEvent, routeOf } from "./log";
 import { readCohort, readGrant, parseGrantItem } from "./grants";
 import { SYNC_PUT_PER_MIN, etag, parseIfMatch, readSyncDocument } from "./sync";
 import {
-  APPLE_AUTH_FIELDS, APPLE_AUTH_PER_MIN, AppleSecrets, exchangeAuthorizationCode, parseAppleAuth, revokeRefreshToken,
-  invalidToken, verifyIdentityToken,
+  APPLE_AUTH_FIELDS, APPLE_AUTH_PER_MIN, APPLE_CLIENT_ID, AppleSecrets, exchangeAuthorizationCode, parseAppleAuth,
+  revokeRefreshToken, invalidToken, verifyIdentityToken,
 } from "./apple";
+import {
+  MAX_CALLBACK_BYTES, WEB_CALLBACK_PATH, WEB_CODE_TTL_S, WEB_TOKEN_FIELDS, WEB_TOKEN_PATH, WebAuthVars, appRedirect,
+  parseWebCallback, parseWebToken, servicesId, webNonce,
+} from "./webauth";
 import { PRESENCE_FIELDS, Presence, heartbeatSeconds, isOnline, parseHeartbeat, presenceChanged, publicPresence } from "./presence";
 import { STUDY_DAY_RETENTION_DAYS, rankEntries } from "./leaderboard";
 import {
@@ -40,7 +44,7 @@ import {
 import { activeCounts, signupsByDay, signupsSince } from "./stats";
 import { JOIN_FIELDS, PARTY_TOUCH_S, PartySession, SESSION_FIELDS, parseJoin, parseSession, partyExpired } from "./party";
 
-export interface Env extends AppleSecrets, AdminSecrets {
+export interface Env extends AppleSecrets, AdminSecrets, WebAuthVars {
   HUB: DurableObjectNamespace<Hub>;
 }
 
@@ -260,6 +264,24 @@ CREATE TABLE crashes (
 CREATE INDEX crashes_by_created_at ON crashes (created_at);
 `;
 
+/** Sign in with Apple on the web (see webauth.ts). */
+const WEB_SIGN_IN_SCHEMA = `
+-- The Apple client the refresh token was issued to: the Services ID for a web sign-in, which revoking it
+-- must name. Null for rows from before this column and for native sign-in, both the app's bundle id.
+ALTER TABLE apple_accounts ADD COLUMN client_id TEXT;
+-- A web sign-in Apple confirmed that the app has not picked up yet: the hash of its one-time code, the
+-- hash of the state it is bound to, and what POST /v1/auth/apple/web/token needs to finish it.
+CREATE TABLE web_sign_ins (
+  code_hash     TEXT PRIMARY KEY,
+  state_hash    TEXT NOT NULL,
+  apple_sub     TEXT NOT NULL,
+  client_id     TEXT NOT NULL,
+  refresh_token TEXT,
+  expires_at    INTEGER NOT NULL
+) WITHOUT ROWID;
+CREATE INDEX web_sign_ins_by_expiry ON web_sign_ins (expires_at);
+`;
+
 /**
  * Ordered schema steps; step i brings the database to version i + 1. Append new steps and never edit
  * one that has been deployed. Step 1 is the original schema, written with IF NOT EXISTS so databases
@@ -267,7 +289,7 @@ CREATE INDEX crashes_by_created_at ON crashes (created_at);
  */
 const MIGRATIONS = [
   SCHEMA, SYNC_SCHEMA, MODERATION_SCHEMA, REPORTS_SCHEMA, USED_IDENTITY_TOKENS_SCHEMA, NAME_HOLDS_SCHEMA, GRANTS_SCHEMA,
-  SUGGESTIONS_SCHEMA, SUGGESTION_APP_SCHEMA, CRASHES_SCHEMA,
+  SUGGESTIONS_SCHEMA, SUGGESTION_APP_SCHEMA, CRASHES_SCHEMA, WEB_SIGN_IN_SCHEMA,
 ];
 
 /** Runs the steps a database has not had yet, each in its own transaction with its version bump. */
@@ -444,7 +466,8 @@ export class Hub extends DurableObject<Env> {
   }
 
   /**
-   * Deletes every expired party, study minutes past their retention, spent identity token hashes, old
+   * Deletes every expired party, study minutes past their retention, spent identity token hashes and web
+   * sign-in codes, old
    * suggestions and old crash reports.
    * Study minutes have no index by day, so that scan runs once per UTC day (again after an eviction,
    * which is harmless) rather than every hour.
@@ -456,6 +479,7 @@ export class Hub extends DurableObject<Env> {
       this.sql.exec("DELETE FROM party_members WHERE party IN (SELECT code FROM parties WHERE last_active <= ?)", idleSince);
       this.sql.exec("DELETE FROM parties WHERE last_active <= ?", idleSince);
       this.sql.exec("DELETE FROM used_identity_tokens WHERE expires_at < ?", now);
+      this.sql.exec("DELETE FROM web_sign_ins WHERE expires_at < ?", now);
       this.sql.exec("DELETE FROM suggestions WHERE created_at < ?", now - SUGGESTION_RETENTION_DAYS * 86_400);
       this.sql.exec("DELETE FROM crashes WHERE created_at < ?", now - CRASH_RETENTION_DAYS * 86_400);
       if (this.studyDaysSweptOn !== today) {
@@ -528,6 +552,8 @@ export class Hub extends DurableObject<Env> {
     }
 
     if (path === "/v1/auth/apple" && method === "POST") return await this.signInWithApple(req, now);
+    if (path === WEB_CALLBACK_PATH && method === "POST") return await this.appleWebCallback(req, now);
+    if (path === WEB_TOKEN_PATH && method === "POST") return await this.appleWebToken(req, now);
     if (path === "/v1/suggestions" && method === "POST") return await this.suggest(req, now);
     if (path === "/v1/crashes" && method === "POST") return await this.reportCrash(req, now);
     if (path.startsWith("/v1/admin/")) return await this.admin(req, path, method, now);
@@ -865,10 +891,12 @@ export class Hub extends DurableObject<Env> {
    */
   private async deleteMe(caller: Caller): Promise<Response> {
     const now = nowS();
-    const account = this.sql.exec<{ refresh_token: string | null }>(
-      "SELECT refresh_token FROM apple_accounts WHERE code = ?", caller.code).toArray()[0];
+    const account = this.sql.exec<{ refresh_token: string | null; client_id: string | null }>(
+      "SELECT refresh_token, client_id FROM apple_accounts WHERE code = ?", caller.code).toArray()[0];
     this.ctx.storage.transactionSync(() => this.purgeUser(caller.code, now));
-    const appleRevoked = account?.refresh_token ? await revokeRefreshToken(account.refresh_token, this.env, now) : false;
+    const appleRevoked = account?.refresh_token
+      ? await revokeRefreshToken(account.refresh_token, this.env, now, account.client_id ?? APPLE_CLIENT_ID)
+      : false;
     return json(account ? { ok: true, appleRevoked } : { ok: true });
   }
 
@@ -1402,10 +1430,23 @@ export class Hub extends DurableObject<Env> {
     const refreshToken = body.authorizationCode
       ? await exchangeAuthorizationCode(body.authorizationCode, this.env, now)
       : null;
-    const freshToken = newToken();
-    const freshHash = await sha256Hex(freshToken);
+    const fresh = newToken();
+    return this.linkAppleAccount({ sub, refreshToken, clientId: APPLE_CLIENT_ID }, live, callerToken, fresh, await sha256Hex(fresh), now);
+  }
 
-    // No awaits from here on: the state read below cannot change before it is written.
+  /**
+   * Finishes a sign-in Apple confirmed, for POST /v1/auth/apple and the web flow alike: links the Apple ID
+   * to a friends user as described at `signInWithApple` and answers with the token this Mac should keep.
+   * `live` is the caller as authenticated before any await; it is checked again here.
+   */
+  private linkAppleAccount(
+    apple: { sub: string; refreshToken: string | null; clientId: string },
+    live: Caller | null, callerToken: string | null, freshToken: string, freshHash: string, now: number,
+  ): Response {
+    const { sub, refreshToken, clientId } = apple;
+    // Stored as null for the app's bundle id, like rows from before the column.
+    const storedClient = clientId === APPLE_CLIENT_ID ? null : clientId;
+    // Synchronous on purpose: the state read below cannot change before it is written.
     let result: { token: string; code: string; newAccount: boolean } | null = null;
     this.ctx.storage.transactionSync(() => {
       // The caller may have been deleted while this request waited on Apple.
@@ -1414,7 +1455,9 @@ export class Hub extends DurableObject<Env> {
       const linked = this.sql.exec<{ code: string }>(
         "SELECT code FROM apple_accounts WHERE apple_sub = ?", sub).toArray()[0]?.code;
       if (linked) {
-        if (refreshToken) this.sql.exec("UPDATE apple_accounts SET refresh_token = ? WHERE apple_sub = ?", refreshToken, sub);
+        if (refreshToken) {
+          this.sql.exec("UPDATE apple_accounts SET refresh_token = ?, client_id = ? WHERE apple_sub = ?", refreshToken, storedClient, sub);
+        }
         if (caller && callerToken && caller.code === linked) {
           result = { token: callerToken, code: linked, newAccount: false };
           return;
@@ -1433,13 +1476,82 @@ export class Hub extends DurableObject<Env> {
       const code = caller && callerToken && !this.hasAppleAccount(caller.code)
         ? caller.code
         : this.insertUser(freshHash, {}, now).code;
-      this.sql.exec("INSERT INTO apple_accounts (apple_sub, code, refresh_token, created_at) VALUES (?, ?, ?, ?)",
-        sub, code, refreshToken, now);
+      this.sql.exec("INSERT INTO apple_accounts (apple_sub, code, refresh_token, client_id, created_at) VALUES (?, ?, ?, ?, ?)",
+        sub, code, refreshToken, storedClient, now);
       result = { token: code === caller?.code ? callerToken! : freshToken, code, newAccount: true };
     });
     const { token, code, newAccount } = result!;
     const profile = rowToProfile(this.sql.exec<UserRow>("SELECT * FROM users WHERE code = ?", code).one());
     return json({ ok: true, token, code, profile, newAccount });
+  }
+
+  /**
+   * POST /v1/auth/apple/web/callback: Apple's form_post at the end of a web sign-in (see webauth.ts).
+   * Every outcome sends the browser back to the app through a tabbi:// link, which carries a one-time code
+   * on success and a short error otherwise, so the browser never shows a page of ours.
+   */
+  private async appleWebCallback(req: Request, now: number): Promise<Response> {
+    try {
+      this.rateLimit("apple:" + clientKey(req), APPLE_AUTH_PER_MIN, now);
+      const clientId = servicesId(this.env);
+      const form = parseWebCallback(await readText(req, MAX_CALLBACK_BYTES));
+      if (form.kind === "error") return appRedirect({ error: form.error });
+      const identityHash = await sha256Hex(form.idToken);
+      const stateHash = await sha256Hex(form.state);
+      const expectedNonce = await webNonce(form.state);
+      const { sub, nonce, reusableUntil } = await verifyIdentityToken(form.idToken, now, clientId);
+      // The nonce ties the token to this state, so a token from another sign-in cannot finish this one.
+      if (nonce !== expectedNonce) throw new HttpError(400, "invalid_state", "state does not match the token's nonce");
+      this.claimIdentityToken(identityHash, reusableUntil, now);
+      // Apple wants the same redirect_uri it posted to, which is this route on whichever Worker it reached.
+      const redirectUri = new URL(WEB_CALLBACK_PATH, req.url).toString();
+      const refreshToken = await exchangeAuthorizationCode(form.code, this.env, now, { clientId, redirectUri });
+      const code = newToken();
+      this.sql.exec(
+        `INSERT INTO web_sign_ins (code_hash, state_hash, apple_sub, client_id, refresh_token, expires_at)
+         VALUES (?, ?, ?, ?, ?, ?)`,
+        await sha256Hex(code), stateHash, sub, clientId, refreshToken, now + WEB_CODE_TTL_S,
+      );
+      return appRedirect({ code });
+    } catch (e) {
+      if (e instanceof HttpError) return appRedirect({ error: e.error });
+      this.recordFailure(now);
+      logEvent("error", "apple_web_callback_failed", errorFields(e));
+      return appRedirect({ error: "internal" });
+    }
+  }
+
+  /**
+   * POST /v1/auth/apple/web/token with `{ code, state }` and, optionally, the caller's anonymous friends
+   * token as Bearer: exchanges the one-time code from the web callback for a session, exactly as
+   * POST /v1/auth/apple would answer. The code is spent by the first attempt, right or wrong, and works
+   * only with its state within WEB_CODE_TTL_S.
+   */
+  private async appleWebToken(req: Request, now: number): Promise<Response> {
+    this.rateLimit("apple:" + clientKey(req), APPLE_AUTH_PER_MIN, now);
+    const body = parseWebToken(await readBody(req, WEB_TOKEN_FIELDS));
+    const callerToken = bearer(req);
+    const live = callerToken ? await this.authenticate(req, now).catch((e: unknown) => {
+      if (e instanceof HttpError && e.status === 401) return null;
+      throw e;
+    }) : null;
+    const codeHash = await sha256Hex(body.code);
+    const stateHash = await sha256Hex(body.state);
+    const fresh = newToken();
+    const freshHash = await sha256Hex(fresh);
+
+    // No awaits from here on, so two requests with one code cannot both find it.
+    const pending = this.sql.exec<{ state_hash: string; apple_sub: string; client_id: string; refresh_token: string | null; expires_at: number }>(
+      "SELECT state_hash, apple_sub, client_id, refresh_token, expires_at FROM web_sign_ins WHERE code_hash = ?", codeHash,
+    ).toArray()[0];
+    if (pending) this.sql.exec("DELETE FROM web_sign_ins WHERE code_hash = ?", codeHash);
+    if (!pending || pending.expires_at < now || pending.state_hash !== stateHash) {
+      throw new HttpError(401, "invalid_code", "sign-in code is invalid or expired, sign in again");
+    }
+    return this.linkAppleAccount(
+      { sub: pending.apple_sub, refreshToken: pending.refresh_token, clientId: pending.client_id },
+      live, callerToken, fresh, freshHash, now,
+    );
   }
 
   /**

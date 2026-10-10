@@ -11,7 +11,10 @@ import { errorFields, logEvent } from "./log";
 import { HttpError, Obj } from "./lib";
 
 export const APPLE_ISSUER = "https://appleid.apple.com";
-/** The app's bundle id, which Apple puts in the token's `aud` and expects as `client_id`. */
+/**
+ * The app's bundle id, which Apple puts in the token's `aud` and expects as `client_id` for native sign-in.
+ * The web flow (webauth.ts) uses the Services ID instead, from the APPLE_SERVICES_ID variable.
+ */
 export const APPLE_CLIENT_ID = "dev.tabbi.Tabbi";
 export const APPLE_KEYS_URL = `${APPLE_ISSUER}/auth/keys`;
 export const APPLE_TOKEN_URL = `${APPLE_ISSUER}/auth/token`;
@@ -69,7 +72,7 @@ function base64UrlDecode(s: string): Uint8Array {
   return bytes;
 }
 
-function base64UrlEncode(bytes: Uint8Array): string {
+export function base64UrlEncode(bytes: Uint8Array): string {
   let bin = "";
   for (const b of bytes) bin += String.fromCharCode(b);
   return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
@@ -153,6 +156,8 @@ export const invalidToken = (why: string) => new HttpError(401, "invalid_identit
 export interface VerifiedIdentity {
   /** Apple's stable user id. */
   sub: string;
+  /** The `nonce` claim, which the web flow checks; native sign-in sends none. */
+  nonce: string | null;
   /**
    * The last second (Unix) at which the token would still verify. Until then the Hub keeps the token's
    * hash, so the same token is refused if it is sent again (a replay); after it, the token is expired.
@@ -162,15 +167,15 @@ export interface VerifiedIdentity {
 
 /**
  * Verifies an identity token from Sign in with Apple and returns Apple's stable user id (`sub`) and how
- * long the token stays valid. Checks the RS256 signature against Apple's keys, then `iss`, `aud` (this
- * app), `exp` and `iat`. It is stateless; refusing a token that was already used is up to the caller.
- * The token's email claims, if any, are never read.
+ * long the token stays valid. Checks the RS256 signature against Apple's keys, then `iss`, `aud` (the app,
+ * or `audience` for the web flow's Services ID), `exp` and `iat`. It is stateless; refusing a token that
+ * was already used, and checking its nonce, is up to the caller. The token's email claims are never read.
  */
-export async function verifyIdentityToken(token: string, now: number): Promise<VerifiedIdentity> {
+export async function verifyIdentityToken(token: string, now: number, audience = APPLE_CLIENT_ID): Promise<VerifiedIdentity> {
   const parts = token.split(".");
   if (parts.length !== 3) throw invalidToken("not a JWT");
   let header: { alg?: unknown; kid?: unknown };
-  let claims: { iss?: unknown; aud?: unknown; exp?: unknown; iat?: unknown; sub?: unknown };
+  let claims: { iss?: unknown; aud?: unknown; exp?: unknown; iat?: unknown; sub?: unknown; nonce?: unknown };
   let signature: Uint8Array;
   try {
     header = JSON.parse(new TextDecoder().decode(base64UrlDecode(parts[0])));
@@ -187,11 +192,12 @@ export async function verifyIdentityToken(token: string, now: number): Promise<V
 
   if (claims.iss !== APPLE_ISSUER) throw invalidToken("wrong issuer");
   const aud = Array.isArray(claims.aud) ? claims.aud : [claims.aud];
-  if (!aud.includes(APPLE_CLIENT_ID)) throw invalidToken("wrong audience");
+  if (!aud.includes(audience)) throw invalidToken("wrong audience");
   if (typeof claims.exp !== "number" || claims.exp + CLOCK_SKEW_S <= now) throw invalidToken("expired");
   if (typeof claims.iat === "number" && claims.iat - CLOCK_SKEW_S > now) throw invalidToken("issued in the future");
   if (typeof claims.sub !== "string" || claims.sub.length === 0 || claims.sub.length > 255) throw invalidToken("no subject");
-  return { sub: claims.sub, reusableUntil: claims.exp + CLOCK_SKEW_S };
+  const nonce = typeof claims.nonce === "string" ? claims.nonce : null;
+  return { sub: claims.sub, nonce, reusableUntil: claims.exp + CLOCK_SKEW_S };
 }
 
 // ---------- client secret, code exchange and revoke ----------
@@ -210,11 +216,14 @@ async function importPrivateKey(pem: string): Promise<CryptoKey> {
   return crypto.subtle.importKey("pkcs8", der, { name: "ECDSA", namedCurve: "P-256" }, false, ["sign"]);
 }
 
-/** The `client_secret` Apple's token and revoke endpoints expect: an ES256 JWT from the team's key. */
-export async function clientSecret(secrets: Required<AppleSecrets>, now: number): Promise<string> {
+/**
+ * The `client_secret` Apple's token and revoke endpoints expect: an ES256 JWT from the team's key, whose
+ * `sub` is the client the code or token was issued to (the app's bundle id or the web flow's Services ID).
+ */
+export async function clientSecret(secrets: Required<AppleSecrets>, now: number, clientId = APPLE_CLIENT_ID): Promise<string> {
   const header = encodeJSON({ alg: "ES256", kid: secrets.APPLE_KEY_ID });
   const claims = encodeJSON({
-    iss: secrets.APPLE_TEAM_ID, iat: now, exp: now + CLIENT_SECRET_TTL_S, aud: APPLE_ISSUER, sub: APPLE_CLIENT_ID,
+    iss: secrets.APPLE_TEAM_ID, iat: now, exp: now + CLIENT_SECRET_TTL_S, aud: APPLE_ISSUER, sub: clientId,
   });
   const key = await importPrivateKey(secrets.APPLE_PRIVATE_KEY);
   // WebCrypto returns the raw r || s signature, which is the form JWS uses.
@@ -231,20 +240,30 @@ async function postForm(url: string, form: Record<string, string>): Promise<Resp
   });
 }
 
+/** Which Apple client a code was issued to. The web flow also names the `redirect_uri` it sent to Apple. */
+export interface AppleClient {
+  clientId: string;
+  redirectUri?: string;
+}
+
 /**
  * Exchanges an authorization code for a refresh token, kept only to revoke it on account deletion.
  * Returns `null` (and logs why) when the secrets are unset or Apple refuses; sign-in goes on either way.
  */
-export async function exchangeAuthorizationCode(code: string, env: AppleSecrets, now: number): Promise<string | null> {
+export async function exchangeAuthorizationCode(
+  code: string, env: AppleSecrets, now: number, client: AppleClient = { clientId: APPLE_CLIENT_ID },
+): Promise<string | null> {
   const secrets = appleSecrets(env);
   if (!secrets) {
     logEvent("warn", "apple_secrets_unset", { skipped: "code_exchange" });
     return null;
   }
   try {
-    const res = await postForm(APPLE_TOKEN_URL, {
-      client_id: APPLE_CLIENT_ID, client_secret: await clientSecret(secrets, now), code, grant_type: "authorization_code",
-    });
+    const form: Record<string, string> = {
+      client_id: client.clientId, client_secret: await clientSecret(secrets, now, client.clientId), code, grant_type: "authorization_code",
+    };
+    if (client.redirectUri) form.redirect_uri = client.redirectUri;
+    const res = await postForm(APPLE_TOKEN_URL, form);
     const body = (await res.json().catch(() => null)) as { refresh_token?: unknown; error?: unknown } | null;
     if (!res.ok || typeof body?.refresh_token !== "string") {
       logEvent("error", "apple_code_exchange_failed", { status: res.status, appleError: String(body?.error ?? "").slice(0, 60) });
@@ -257,8 +276,11 @@ export async function exchangeAuthorizationCode(code: string, env: AppleSecrets,
   }
 }
 
-/** Revokes a refresh token (and with it the user's grant to the app). Returns whether Apple accepted it. */
-export async function revokeRefreshToken(token: string, env: AppleSecrets, now: number): Promise<boolean> {
+/**
+ * Revokes a refresh token (and with it the user's grant to the app). `clientId` is the client the token
+ * was issued to. Returns whether Apple accepted it.
+ */
+export async function revokeRefreshToken(token: string, env: AppleSecrets, now: number, clientId = APPLE_CLIENT_ID): Promise<boolean> {
   const secrets = appleSecrets(env);
   if (!secrets) {
     logEvent("warn", "apple_secrets_unset", { skipped: "revoke" });
@@ -266,7 +288,7 @@ export async function revokeRefreshToken(token: string, env: AppleSecrets, now: 
   }
   try {
     const res = await postForm(APPLE_REVOKE_URL, {
-      client_id: APPLE_CLIENT_ID, client_secret: await clientSecret(secrets, now), token, token_type_hint: "refresh_token",
+      client_id: clientId, client_secret: await clientSecret(secrets, now, clientId), token, token_type_hint: "refresh_token",
     });
     if (!res.ok) logEvent("error", "apple_revoke_failed", { status: res.status });
     return res.ok;

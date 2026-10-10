@@ -368,16 +368,6 @@ enum SnapshotRenderer {
             }
         }
         services.settings.settings.ai.provider = nil
-        // General as a release build shows it signed out, with Sign in with Apple.
-        if services.accountSync.phase == .unavailable {
-            services.accountSync.showsSignInForSnapshot(true)
-            if let png = await settingsWindow.snapshot(of: AppSettingsPane.general.rawValue) {
-                let url = outputDirectory.appendingPathComponent("settings-general-signed-out.png")
-                try? png.write(to: url)
-                print(url.path)
-            }
-            services.accountSync.showsSignInForSnapshot(false)
-        }
 
         // Each enabled module's own settings, as the sheet Tabs opens them in.
         let moduleOptions = AppSettingsPane.moduleOptions(settings: services.settings, modules: services.modules,
