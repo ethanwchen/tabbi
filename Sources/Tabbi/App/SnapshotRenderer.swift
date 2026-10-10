@@ -229,6 +229,7 @@ enum SnapshotRenderer {
 
         // First-run setup in the notch, one shot per step of the active kit.
         shots += onboardingShots(services: services, geometry: geometry, layout: layout)
+        shots += recapShots(geometry: geometry, layout: layout)
 
         for (theme, folder) in themeFolders {
             Theme.apply(theme)
@@ -353,17 +354,39 @@ enum SnapshotRenderer {
     }
 
     /// One notch shot: its file name, the notch state, and the onboarding
-    /// flow showing in it, if any.
+    /// flow or weekly recap showing in it, if any.
     private struct Shot {
         let name: String
         let model: NotchViewModel
         var onboarding: OnboardingFlow?
+        var recap: (WeeklyRecap, RecapCheer)?
 
-        init(_ name: String, _ model: NotchViewModel, onboarding: OnboardingFlow? = nil) {
+        init(_ name: String, _ model: NotchViewModel, onboarding: OnboardingFlow? = nil,
+             recap: (WeeklyRecap, RecapCheer)? = nil) {
             self.name = name
             self.model = model
             self.onboarding = onboarding
+            self.recap = recap
         }
+    }
+
+    /// The weekly recap card in a heavy week (the demo's best yet) and a
+    /// light one, at every panel size.
+    private static func recapShots(geometry: NotchGeometry, layout: ModuleLayout) -> [Shot] {
+        let archive = RecapArchive.demo(now: Date())
+        guard let heavy = archive.recaps.first,
+              let light = archive.recaps.min(by: { $0.focusMinutes < $1.focusMinutes }) else { return [] }
+        var shots: [Shot] = []
+        for size in PanelSize.allCases {
+            let prefix = size == .default ? "open-recap" : "open-recap-\(size.rawValue)"
+            for (name, recap) in [("heavy", heavy), ("light", light)] {
+                let model = NotchViewModel(geometry: geometry, layout: layout)
+                model.panelSize = size
+                model.showsTakeover = true
+                shots.append(Shot("\(prefix)-\(name)", model, recap: (recap, archive.cheer(for: recap))))
+            }
+        }
+        return shots
     }
 
     /// Walks onboarding from the name and kit steps through the active kit's
@@ -438,7 +461,12 @@ enum SnapshotRenderer {
                 pet.profile.wear(.tinyCrown)
                 model.preview = .pet(pet)
             }
-            let view = NotchView(content: ModuleViews.notchContent(services: services))
+            var content = ModuleViews.notchContent(services: services)
+            if let (recap, cheer) = shot.recap {
+                content.takeover = RecapViews.takeover(recap: recap, cheer: cheer, providers: services.providers,
+                                                       done: {})
+            }
+            let view = NotchView(content: content)
                 .environmentObject(model)
                 .environment(\.drawsLiquidGlass, false)
                 .environment(\.loaderRevealDelay, 0) // rendered the moment it appears
