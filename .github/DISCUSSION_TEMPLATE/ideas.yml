@@ -1,0 +1,23 @@
+title: "[Idea]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for sharing an idea for Tabbi.
+        The quickest way to suggest something is the Suggest page at https://tabbinotch.com/suggest, which goes straight to the maintainer.
+        Use this thread when you want to talk an idea through with the community first.
+        Every panel has to fit a small fixed canvas (about 500 x 150 pt), so the best ideas describe the problem first and the UI second.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: What are you trying to do, and what gets in the way today?
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Your idea
+      description: Describe what you have in mind. Sketches or mockups are welcome.
+    validations:
+      required: true
