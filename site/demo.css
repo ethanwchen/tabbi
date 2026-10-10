@@ -21,6 +21,12 @@
   --today: #A88CFF;
   --closet: #FACC4D;
   --music: #1FD661;
+  --party: #FF6B9E;
+  --claude: #D97857;
+  --anki: #5C9EFF;
+  --success: #4DD97A;
+  --warning: #FFBD47;
+  --danger: #FF615C;
   --blue: #3B8BFF;
   --orange: #FF9E42;
   /* SwiftUI springs: open (0.45 s, bounce 0.2), close (0.38 s), hover (0.25 s, 0.1), snappy (0.26 s, 0.14). */
@@ -156,6 +162,9 @@
 .tab-today:has(input:checked) { color: var(--today); background: rgba(168, 140, 255, 0.16); }
 .tab-closet:has(input:checked) { color: var(--closet); background: rgba(250, 204, 77, 0.16); }
 .tab-music:has(input:checked) { color: var(--music); background: rgba(31, 214, 97, 0.16); }
+.tab-party:has(input:checked) { color: var(--party); background: rgba(255, 107, 158, 0.16); }
+.tab-ai:has(input:checked) { color: var(--claude); background: rgba(217, 120, 87, 0.16); }
+.tab-anki:has(input:checked) { color: var(--anki); background: rgba(92, 158, 255, 0.16); }
 /* The paw sits at the far right of the header, like the app's. */
 .tab-closet { margin-left: 0.8em; }
 .demo .head-title { margin: 0 0 0 auto; font-size: 1.4em; font-weight: 600; line-height: 1; color: var(--n-text-2); }
@@ -163,6 +172,9 @@
 .panel:has([value='timer']:checked) .title-timer,
 .panel:has([value='today']:checked) .title-today,
 .panel:has([value='music']:checked) .title-music,
+.panel:has([value='party']:checked) .title-party,
+.panel:has([value='ai']:checked) .title-ai,
+.panel:has([value='anki']:checked) .title-anki,
 .panel:has([value='closet']:checked) .title-closet { display: inline; }
 
 /* One pane shows at a time: the checked tab's. */
@@ -170,6 +182,9 @@
 .panel:has([value='timer']:checked) .pane-timer,
 .panel:has([value='today']:checked) .pane-today,
 .panel:has([value='music']:checked) .pane-music,
+.panel:has([value='party']:checked) .pane-party,
+.panel:has([value='ai']:checked) .pane-ai,
+.panel:has([value='anki']:checked) .pane-anki,
 .panel:has([value='closet']:checked) .pane-closet { display: grid; }
 
 .n-card { position: relative; margin: 0; background: var(--n-surface); border-radius: 1em; }
@@ -556,6 +571,212 @@
 .modes { display: flex; gap: 0.4em; }
 .trio { position: absolute; top: 0; left: 50%; display: flex; align-items: center; gap: 1.2em; translate: -50% 0; }
 
+/* --- Party ------------------------------------------------------------- */
+/* The party's pets side by side on a stage with the shared round below,
+   and the friends in a 212 pt column, like the app's Party tab. */
+.pane-party { grid-template-columns: minmax(0, 1fr) 21.2em; grid-template-rows: minmax(0, 1fr); gap: 1.2em; }
+.stage { display: flex; flex-direction: column; gap: 0.8em; min-width: 0; min-height: 0; padding: 1.2em; overflow: hidden; }
+.stage-head, .friends-head { display: flex; align-items: center; gap: 0.8em; flex: none; min-width: 0; }
+.demo .stage-title { font-size: 1.4em; font-weight: 600; color: var(--n-text); }
+.code-chip {
+  display: inline-flex; align-items: center; height: 2em; padding: 0 0.8em; border-radius: 999px;
+  background: var(--n-surface); font-size: 1.1em; font-weight: 700; letter-spacing: 0.04em;
+  color: var(--n-text); font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.stage-count { font-size: 1.05em; font-weight: 500; color: var(--n-text-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.members { display: flex; align-items: flex-end; justify-content: center; gap: 0.4em; flex: 1; min-height: 0; margin: 0; padding: 0; list-style: none; }
+.demo .member { display: flex; flex-direction: column; align-items: center; gap: 0.2em; flex: 0 1 8.4em; min-width: 0; margin: 0; }
+.member[hidden] { display: none; }
+.pet-party { zoom: 2; }
+.member-name { display: inline-flex; align-items: center; gap: 0.3em; font-size: 1.2em; font-weight: 600; color: var(--n-text); white-space: nowrap; }
+.crown { width: 0.9em !important; height: 0.9em !important; color: var(--closet); }
+.member-status {
+  display: inline-flex; align-items: center; gap: 0.4em; max-width: 100%;
+  font-size: 1.05em; font-weight: 500; color: var(--n-text-2); font-variant-numeric: tabular-nums;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.member-status::before { content: ''; flex: none; width: 0.6em; height: 0.6em; border-radius: 50%; background: var(--n-text-3); }
+.member-status[data-tone='study']::before { background: var(--party); }
+.member-status[data-tone='break']::before { background: var(--warning); }
+.member-status[data-tone='done']::before { background: var(--success); }
+/* A member who just arrived or finished hops, in the pet's own spring. */
+@media (prefers-reduced-motion: no-preference) {
+  .member[data-hop] .pet-party, .pet[data-hop] { animation: hop 520ms var(--check); }
+}
+@keyframes hop { 0%, 100% { translate: 0 0; } 40% { translate: 0 -3px; } }
+
+.session { display: flex; align-items: center; gap: 0.8em; flex: none; height: 2.8em; }
+.session-icon { display: grid; place-items: center; flex: none; color: var(--party); }
+.session-icon .ico { width: 1.4em; height: 1.4em; }
+.session-text { display: flex; align-items: baseline; gap: 0.6em; flex: none; white-space: nowrap; }
+.session-time { font-size: 1.6em; font-weight: 600; color: var(--n-text-2); font-variant-numeric: tabular-nums; }
+.pane-party[data-running] .session-time { color: var(--n-text); }
+.session-cap { font-size: 1.2em; font-weight: 500; color: var(--n-text-3); }
+.session-bar { display: none; flex: 1; min-width: 2em; height: 0.6em; }
+.pane-party[data-running] .session-bar { display: block; }
+.session-bar line, .ai-bar line { stroke: rgba(255, 255, 255, 0.12); stroke-width: 4; stroke-linecap: round; }
+.demo .session-bar .bar-fill { stroke: var(--party); stroke-dasharray: 100 100; stroke-dashoffset: 100; }
+.session .pill-btn { margin-left: auto; }
+
+/* The app's pill buttons: a quiet one, and the accent one for the panel's
+   primary action. */
+.pill-btn {
+  display: inline-flex; align-items: center; justify-content: center; flex: none; height: 2.4em; padding: 0 1.2em;
+  border: 0; border-radius: 999px; background: rgba(255, 107, 158, 0.16); color: var(--party); cursor: pointer;
+  font-size: 1em; font-weight: 600;
+  transition: background-color 335ms var(--snappy), color 335ms var(--snappy), transform 180ms var(--snappy);
+}
+.pill-btn:hover { background: rgba(255, 107, 158, 0.26); }
+.demo .pill-main { width: 6.4em; height: 2.8em; padding: 0; background: color-mix(in srgb, var(--party) 88%, transparent); color: #000; font-size: 1.1em; }
+.demo .pill-main:hover { background: var(--party); }
+.pill-btn:active, .grade:active, .seg:active { transform: scale(0.96); }
+.demo .pill-btn[data-sent] { background: var(--n-surface); color: var(--n-text-2); cursor: default; }
+
+/* The round's end: a banner in the app's words, over the round's bar so
+   the cheering pets stay in sight. */
+.party-banner {
+  position: absolute; bottom: 0.8em; left: 0.8em; right: 0.8em; z-index: 2;
+  display: flex; align-items: center; gap: 1em; padding: 0.6em 0.8em;
+  border-radius: 1em; background: #241A1F; box-shadow: inset 0 0 0 0.1em rgba(255, 107, 158, 0.5), 0 0.4em 1.2em rgba(0, 0, 0, 0.5);
+  opacity: 0; translate: 0 0.8em; pointer-events: none;
+  transition: opacity 260ms ease, translate 575ms var(--open);
+}
+.party-banner[hidden] { display: flex; visibility: hidden; }
+.party-banner[data-shown] { opacity: 1; translate: 0 0; pointer-events: auto; cursor: pointer; }
+.banner-icon { display: grid; place-items: center; flex: none; width: 2.8em; height: 2.8em; border-radius: 0.8em; background: rgba(255, 107, 158, 0.16); color: var(--party); }
+.banner-icon .ico { width: 1.6em; height: 1.6em; }
+.banner-text { display: flex; flex-direction: column; gap: 0; min-width: 0; line-height: 1.25; }
+.banner-text b { font-size: 1.4em; font-weight: 700; color: var(--n-text); }
+.banner-text span { font-size: 1.1em; font-weight: 600; color: var(--party); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.stage .confetti { top: 40%; left: 50%; }
+.flashcard .confetti { top: 40%; left: 50%; z-index: 2; }
+
+.friends { display: flex; flex-direction: column; gap: 0.6em; min-width: 0; min-height: 0; padding: 1.2em 1.2em 0.8em; overflow: hidden; }
+.friends-head { justify-content: space-between; }
+.friends-cap { font-size: 1.05em; font-weight: 600; color: var(--n-text-3); }
+.friend-rows { display: flex; flex-direction: column; gap: 0.4em; flex: 1; min-height: 0; margin: 0; padding: 0; list-style: none; }
+.demo .friend { display: flex; align-items: center; gap: 0.8em; min-width: 0; margin: 0; }
+.friend .pet { margin: -0.2em 0; }
+.friend-text { display: flex; flex-direction: column; flex: 1; min-width: 0; line-height: 1.25; }
+.friend-name { font-size: 1.2em; font-weight: 600; color: var(--n-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.friend-in { display: grid; place-items: center; flex: none; width: 2.4em; color: rgba(255, 107, 158, 0.7); }
+.friend-in .ico { width: 1.3em; height: 1.3em; }
+
+/* --- AI Usage ------------------------------------------------------------ */
+/* The 5-hour and weekly limits as 80 pt rings, today's tokens by model in
+   a card, and the footer with freshness and a refresh. */
+.pane-ai { grid-template-columns: auto minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) 2.4em; gap: 0.8em 1.6em; }
+.ai-rings { display: flex; align-items: center; gap: 0.4em; }
+.ai-ring { display: flex; flex-direction: column; align-items: center; width: 12em; }
+.ai-dial { --tint: var(--claude); position: relative; width: 8em; height: 8em; margin-bottom: 0.6em; }
+.ai-dial[data-tone='warning'] { --tint: var(--warning); }
+.ai-dial[data-tone='critical'] { --tint: var(--danger); }
+.usage { display: block; width: 100%; height: 100%; rotate: -90deg; }
+.usage .ring-track { stroke: var(--n-surface); }
+.usage .ring-arc { stroke: var(--tint); stroke-linecap: round; stroke-dasharray: 100 100; transition: stroke-dashoffset 490ms var(--snappy), stroke 335ms var(--snappy); }
+.ai-pct {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  font-size: 2.2em; font-weight: 600; color: var(--n-text); font-variant-numeric: tabular-nums;
+}
+.ai-label { font-size: 1.3em; font-weight: 600; color: var(--n-text-2); }
+.ai-reset { font-size: 1.05em; font-weight: 500; color: var(--n-text-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ai-card { display: flex; flex-direction: column; gap: 0.6em; min-width: 0; min-height: 0; padding: 1.2em 1.6em; overflow: hidden; }
+.ai-cap { font-size: 1.05em; font-weight: 600; line-height: 1.4; color: var(--n-text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ai-source { display: flex; flex: none; padding: 0.2em; border-radius: 999px; background: var(--n-surface); }
+.seg {
+  position: relative; display: grid; place-items: center; height: 1.8em; padding: 0 0.8em; border-radius: 999px;
+  color: var(--n-text-3); cursor: pointer;
+  transition: background-color 335ms var(--snappy), color 335ms var(--snappy), transform 180ms var(--snappy);
+}
+.seg input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+.seg span { font-size: 0.95em; font-weight: 600; white-space: nowrap; }
+.seg:hover { color: var(--n-text); }
+.seg:has(input:checked) { background: rgba(217, 120, 87, 0.22); color: var(--claude); }
+.seg:has(input:focus-visible) { outline: 3px solid var(--link); outline-offset: 1px; }
+.seg:has(input:disabled) { cursor: default; }
+.ai-total { display: flex; align-items: baseline; gap: 0.4em; }
+.ai-metric { font-size: 2.6em; font-weight: 600; line-height: 1.1; color: var(--n-text); font-variant-numeric: tabular-nums; }
+.ai-total > span:last-child { font-size: 1.3em; color: var(--n-text-2); }
+.ai-models { display: flex; flex-direction: column; gap: 0.4em; margin: 0; padding: 0; list-style: none; }
+.demo .ai-model { display: grid; grid-template-columns: 7.2em minmax(0, 1fr) 4em; align-items: center; gap: 0.8em; margin: 0; font-size: 1.2em; }
+.ai-model-name { color: var(--n-text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ai-bar { width: 100%; height: 0.5em; }
+.demo .ai-bar .bar-fill { stroke: var(--claude); stroke-dasharray: 100 100; transition: stroke-dashoffset 490ms var(--snappy); }
+.ai-model-n { text-align: right; color: var(--n-text); font-variant-numeric: tabular-nums; }
+.ai-row { display: flex; justify-content: space-between; gap: 0.8em; margin-top: auto !important; font-size: 1.2em; color: var(--n-text-2); white-space: nowrap; }
+.ai-row b { font-weight: 500; color: var(--n-text); font-variant-numeric: tabular-nums; }
+.ai-foot { grid-column: 1 / -1; display: flex; align-items: center; gap: 0.8em; padding-left: 0.4em; }
+.ai-foot p { margin-right: auto !important; }
+.ai-foot p { font-size: 1.05em; font-weight: 500; color: var(--n-text-3); font-variant-numeric: tabular-nums; }
+.ai-foot .icon-btn { width: 2.4em; height: 2.4em; }
+.ai-foot .icon-btn .ico { width: 1.1em; height: 1.1em; }
+@media (prefers-reduced-motion: no-preference) {
+  .ai-foot[data-busy] .icon-btn .ico { animation: spin 700ms var(--snappy); }
+}
+@keyframes spin { to { rotate: 360deg; } }
+
+/* --- Anki ---------------------------------------------------------------- */
+/* The deck and what is due on the left; the card to review on the right,
+   with the grades under it. */
+.pane-anki { grid-template-columns: 17.6em minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); gap: 1.2em; }
+.deck { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.2em; min-width: 0; padding: 1.2em; }
+.deck-dial { position: relative; width: 8.8em; height: 8.8em; margin-bottom: 0.6em; }
+.deck-ring { display: block; width: 100%; height: 100%; rotate: -90deg; }
+.deck-ring .ring-track { stroke: rgba(92, 158, 255, 0.2); }
+.deck-ring .ring-arc { stroke: var(--anki); stroke-linecap: round; stroke-dasharray: 100 100; stroke-dashoffset: 0; transition: stroke-dashoffset 490ms var(--snappy); }
+.deck-read { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.deck-due { font-size: 2.8em; font-weight: 600; line-height: 1.05; color: var(--n-text); font-variant-numeric: tabular-nums; }
+.deck-cap { font-size: 1.05em; font-weight: 500; color: var(--n-text-3); }
+.demo .deck-name { font-size: 1.3em; font-weight: 600; color: var(--n-text); white-space: nowrap; }
+.deck-streak { display: flex; align-items: center; gap: 0.3em; font-size: 1.05em; font-weight: 600; color: var(--n-text-2); white-space: nowrap; }
+.deck-streak .ico { width: 1em; height: 1em; color: var(--timer); }
+
+.review { display: flex; flex-direction: column; gap: 0.8em; min-width: 0; min-height: 0; }
+/* The card turns over in 3D like a real one, its faces trading places at
+   the halfway mark (WebKit draws a back face through a button otherwise);
+   reduced motion swaps them without the turn. */
+.flashcard {
+  position: relative; flex: 1; min-height: 0; width: 100%; padding: 0; border: 0; background: none;
+  perspective: 80em; cursor: pointer; text-align: center;
+}
+.card-inner {
+  position: absolute; inset: 0; display: block; transform-style: preserve-3d;
+  transition: rotate 575ms var(--open), scale 180ms var(--snappy);
+}
+.flashcard[data-flipped] .card-inner { rotate: y 180deg; }
+.flashcard:active .card-inner { scale: 0.985; }
+.face {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.6em;
+  padding: 1.2em 2em; border-radius: 1em; background: var(--n-surface); box-shadow: inset 0 0 0 0.05em var(--n-stroke);
+  transition: background-color 335ms var(--snappy), opacity 0s 140ms;
+}
+.flashcard:hover .face { background: var(--n-hover); }
+.face-back { rotate: y 180deg; opacity: 0; }
+.flashcard[data-flipped] .face-front { opacity: 0; }
+.flashcard[data-flipped] .face-back { opacity: 1; }
+.card-q { font-size: 1.6em; font-weight: 600; line-height: 1.25; color: var(--n-text); text-wrap: balance; }
+.card-hint { font-size: 1.05em; font-weight: 500; color: var(--n-text-3); }
+.card-q-small { font-size: 1.1em; font-weight: 500; color: var(--n-text-3); }
+.card-a { font-size: 2.8em; font-weight: 700; line-height: 1.1; color: var(--anki); }
+.flashcard[data-done] { cursor: default; }
+.flashcard[data-done] .card-a { font-size: 2em; color: var(--n-text); }
+
+.grades { display: flex; gap: 0.8em; flex: none; height: 2.8em; }
+.grade {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5em; flex: 1; height: 100%; padding: 0 0.8em;
+  border: 0; border-radius: 999px; background: var(--n-surface); color: var(--n-text); cursor: pointer;
+  font-size: 1.15em; font-weight: 600;
+  transition: background-color 335ms var(--snappy), transform 180ms var(--snappy);
+}
+.grade[hidden] { display: none; }
+.grade span { font-size: 0.85em; font-weight: 500; color: var(--n-text-3); font-variant-numeric: tabular-nums; }
+.grade:hover { background: var(--n-hover); }
+.grade[data-tone='again'] { color: var(--danger); }
+.grade[data-tone='good'] { color: var(--success); }
+.grade[data-tone='easy'] { color: var(--anki); }
+.demo .grade-show { background: color-mix(in srgb, var(--anki) 88%, transparent); color: #000; }
+.demo .grade-show:hover { background: var(--anki); }
+
 /* --- the pet ------------------------------------------------------------- */
 /* The app's own sprites: one atlas per look, a row per animation and a
    32 px frame per sprite pixel, so 32 px is 1:1 and stays sharp at 2x. */
@@ -573,6 +794,9 @@
 .pet[data-look='laurel'] { background-image: url('/img/demo/pet-laurel.png'); }
 .pet[data-look='cap'] { background-image: url('/img/demo/pet-cap.png'); }
 .pet[data-look='medal'] { background-image: url('/img/demo/pet-medal.png'); }
+.pet[data-look='maya'] { background-image: url('/img/demo/pet-maya.png'); }
+.pet[data-look='priya'] { background-image: url('/img/demo/pet-priya.png'); }
+.pet[data-look='leo'] { background-image: url('/img/demo/pet-leo.png'); }
 
 /* --- around the notch ---------------------------------------------------- */
 /* A handwritten nudge beside the closed notch, gone once it has been opened. */
@@ -610,6 +834,16 @@
   100% { opacity: 0; translate: var(--dx) var(--dy); rotate: var(--spin); }
 }
 
+/* The tabs to try, as quiet chips under the scene. Each opens its tab. */
+.try { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; margin-top: 18px !important; }
+.try-cap { margin-right: 2px; font-size: 15px; font-weight: 600; color: var(--on-ground-2); }
+.try-chip {
+  padding: 4px 12px; border-radius: 999px; border: 1px solid rgba(251, 247, 240, 0.14);
+  font-size: 15px; font-weight: 600; color: var(--on-ground); cursor: pointer;
+  transition: background-color 200ms ease, border-color 200ms ease;
+}
+.try-chip:hover { background: rgba(251, 247, 240, 0.08); border-color: rgba(251, 247, 240, 0.28); }
+
 .demo .cta { margin-top: 32px; }
 .demo .cta-note { margin-top: 14px; }
 
@@ -642,6 +876,25 @@
   /* Now Playing puts the cover on top, the song and its controls below. */
   .pane-music { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto; align-content: center; justify-items: center; gap: 2em; }
   .music-main { width: 100%; height: auto; gap: 1.2em; }
+  /* Party stacks the stage over the friends; AI Usage the rings over the
+     card; Anki the deck, small, over the card. */
+  .pane-party { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; gap: 0.8em; }
+  .stage { padding: 1.2em 1.2em 1em; }
+  .demo .member { flex-basis: 7.2em; }
+  .friends { padding: 1em 1.2em; }
+  .pane-ai { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) 2.4em; gap: 0.8em; }
+  .ai-rings { justify-content: center; }
+  .ai-ring { width: auto; flex: 1; min-width: 0; }
+  .ai-card { padding: 1.2em; }
+  .demo .ai-model { grid-template-columns: 6.4em minmax(0, 1fr) 3.6em; }
+  .ai-foot { padding-left: 0; }
+  .pane-anki { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); gap: 0.8em; }
+  .deck { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 1.2em; justify-items: start; align-items: center; padding: 1em 1.2em; }
+  .deck-dial { grid-row: span 2; width: 6em; height: 6em; margin: 0; }
+  .deck-due { font-size: 2.2em; }
+  .deck-name { align-self: end; }
+  .deck-streak { align-self: start; }
+  .face { padding: 1.2em; }
   /* The sprite's empty top rows give way, so two rows of tiles keep their bars.
      No margins on the sprite: WebKit resolves a margin on a zoomed element
      differently after a restyle, which nudged a tapped tile. */
@@ -652,10 +905,25 @@
   .burst-pts { top: 4em; right: auto; left: 0.6em; }
 }
 
+/* The smallest phones: six tabs fill the header, so the open tab's name
+   gives way (the lit tab says it), and so do a few captions. */
+@container (max-width: 340px) {
+  .demo .head-title, .session-cap, .ai-foot p { display: none; }
+  .ai-source { margin-left: auto; }
+  /* Shuffle and repeat would touch the centered three buttons. */
+  .trio { gap: 0.4em; }
+  .modes { gap: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .notch, .notch::before, .notch::after, .notch-face, .panel, .tab, .primary, .icon-btn, .capsule, .dial-time, .hint,
   .m-btn, .like .ico, .mode::after,
   .check, .task input:checked + .check, .check-ring, .task-title, .task-label, .day-ring .ring-arc, .day-step, .add-task, .focus-card, .sec, .tile, .pet-sub,
-  .notch[data-state] .panel, .notch[data-state] .notch-face, .demo[data-cheer] .burst-pts { transition: none !important; }
+  .notch[data-state] .panel, .notch[data-state] .notch-face, .demo[data-cheer] .burst-pts,
+  .pill-btn, .party-banner, .seg, .usage .ring-arc, .ai-bar .bar-fill, .deck-ring .ring-arc,
+  .card-inner, .face, .grade, .try-chip { transition: none !important; }
+  .flashcard[data-flipped] .card-inner { rotate: none; }
+  .face-back { rotate: none; }
+  .pill-btn:active, .grade:active, .seg:active, .flashcard:active .card-inner { transform: none; scale: none; }
   .primary:active, .icon-btn:active, .capsule:active, .m-btn:active, .demo .play:hover { transform: none; }
 }
