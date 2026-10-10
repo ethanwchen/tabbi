@@ -1,9 +1,9 @@
 # Tabbi - guide for contributors and coding agents
 
 Tabbi is a macOS menu-bar-less app that turns the MacBook notch into a small,
-clickable panel of tabs. Each tab is a module (Now Playing, System, Claude Usage,
-Today, Ask Claude, Focus, and the study modules Study, Anki, Party, Closet),
-and a kit picks which ones are on and in what order.
+clickable panel of tabs. Each tab is a module (Now Playing, System, AI Usage,
+Today, Ask AI, Focus, the study modules Study, Anki, Party, Closet, and the
+opt-in Schedule), and a kit picks which ones are on and in what order.
 
 ## Build, test, look
 
@@ -118,7 +118,7 @@ Judge them against the design rules below before you call the work done.
   Anki reviews show up there with no Today code. Never reach into
   another module's store; publish what you have and consume the snapshot.
 - Ticker highlights: to put a line of your own beside the closed notch
-  (Claude Usage's "5h 86%"), publish `TickerHighlight`s in
+  (AI Usage's "5h 86%"), publish `TickerHighlight`s in
   `ModuleProvision.highlights` (text, tooltip, tone, priority, optional
   pin, expiry and symbol) and give your descriptor a `highlightTitle`,
   which names the Settings toggle. The ticker shows each module's top
@@ -139,8 +139,44 @@ Judge them against the design rules below before you call the work done.
   streaks, insights and the pet never need another module's store.
   Records stay on the Mac, one versioned JSON file per day in the
   edition's `Activity` folder; demo and snapshot runs keep them in memory.
-- `Sources/TabbiKitCore/Claude` - `ClaudeCLI` (locate + stream `claude -p`) and
-  `ClaudeStreamEvent` (stream-json parser). Both Claude modules use these.
+- AI: `context.ai` (`AIService` in `Modules/AI/`, one per app) is the AI
+  provider the user picked in Settings > Connections, shared by Ask AI, Plan
+  my day, Day review and the Schedule's Refine. The providers live in
+  `TabbiKitCore/AI` (`AIProviderID`): the Claude Code, Codex and Gemini
+  command line tools the user signed in to, the Claude, OpenAI and Gemini
+  APIs called with the user's own key, and Ollama on localhost. API keys go
+  in the Keychain (`KeychainAIKeyStore`, one service per edition), never in
+  `UserDefaults` or a file; demo and snapshot runs keep them in memory.
+  Nothing is sent before a provider is picked: ask `readyProvider()` and
+  show the shared setup state (`setupState`) when it is nil. The App Store
+  build is sandboxed, so it offers only the API providers and Ollama, and
+  leaves out AI Usage, which reads the claude CLI (and Codex's logs).
+  `TabbiKitCore/Claude` keeps `ClaudeCLI` (locate + stream `claude -p`) and
+  `ClaudeStreamEvent` (stream-json parser) for the Claude Code provider and
+  AI Usage.
+- Beyond the modules, the app has a few systems of its own, each in its
+  folder under `Sources/Tabbi` with its pure logic in the matching
+  `TabbiKitCore` folder: `Sync/` (optional Sign in with Apple, native in
+  the App Store build and a web flow through the Worker in the direct
+  download, which syncs the pet, streaks and Party identity; see
+  `docs/sync.md`), `Recap/` (the weekly recap card and its share image),
+  `Feedback/` (the Suggest page link, opt-in crash reports and hang
+  detection; nothing is sent without the user's say), `Updates/` (Sparkle,
+  direct download only), `Connections/` (Settings > Connections) and
+  `Widget/`, which writes the state the widget shows. Streaks and the
+  optional study reminder are in `TabbiKitCore/Streaks`, `tabbi://` links
+  in `TabbiKitCore/Links`.
+- `Sources/TabbiWidget` and `Sources/TabbiWidgetUI` - the desktop and
+  Notification Center widget (pet, streak, live timer). The app writes a
+  versioned `WidgetState` into the App Group; the extension only reads it.
+  `docs/widget.md` says how a SwiftPM target becomes a widget extension.
+- `shared/` - data the Mac app and the planned Windows app both read: JSON
+  Schemas for pets, themes, study methods, kits, editions and the Party
+  catalog, and golden fixtures the Swift tests write so a port can check
+  itself. Regenerate fixtures only on purpose (`shared/README.md`).
+- `backend/` - the Cloudflare Worker behind Party, sync and invites, with
+  its own tests (`backend/README.md`); `backend/PRIVACY.md` lists what it
+  stores.
 
 Kits are JSON manifests in `Sources/TabbiKitCore/Kits/Bundled`; the format
 is documented in `docs/kits.md`.
@@ -210,8 +246,8 @@ If a module seems to need one, the provider protocols are missing something: ext
 - Clear hierarchy: one primary element per panel, secondary text in
   `secondaryText`, metadata in `tertiaryText`.
 - Every control has a hover state and a `.help(...)` tooltip.
-- Design empty, loading, and error states (e.g. Spotify not running, `claude`
-  not found). Never show a blank panel or a raw error dump.
+- Design empty, loading, and error states (e.g. Spotify not running, no AI
+  picked yet). Never show a blank panel or a raw error dump.
 
 ## Rules
 
@@ -219,8 +255,9 @@ If a module seems to need one, the provider protocols are missing something: ext
 - Privacy: no network calls except what a module inherently needs (album
   artwork URLs), and every host a module's code connects to is listed in its
   descriptor's `network` (`ModuleNetworkAccess`: host and purpose), which the
-  kit import sheet shows before a kit turns the module on. No telemetry. Claude features only go through the user's
-  local `claude` CLI via `ClaudeCLI` - never read credentials or the keychain.
+  kit import sheet shows before a kit turns the module on. No telemetry. AI features only go through `context.ai`, to the provider
+  the user picked: their local CLI via the provider (never read a CLI's
+  credentials), their API key from Tabbi's own Keychain items, or Ollama.
 - Never poll faster than needed; stop timers when a panel isn't visible if
   the data is only shown there.
 - Keep `swift build` warning-free and `swift test` green.
