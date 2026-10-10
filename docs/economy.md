@@ -93,7 +93,7 @@ Points cannot buy them, and they are never tied to money or donations: they are 
 
 | Item | How it is earned | Effect |
 | --- | --- | --- |
-| Backwards Cap | Granted to everyone who used Tabbi in its launch week (event `launch-week`) | none |
+| Backwards Cap | Granted to everyone who used Tabbi in its launch week (event `launch-week`) | sparkle |
 | Flame Headband | 7 days in a row with at least 5 focused minutes each | flicker |
 | Golden Laurel | 50 hours (3000 minutes) focused in total | shimmer |
 | Team Medal | A Party shared session finished with the user in it | sparkle |

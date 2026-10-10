@@ -90,6 +90,7 @@ final class PetLimitedTests: XCTestCase {
         XCTAssertEqual(PetItem.accessory(.flameHeadband).effect, .flicker)
         XCTAssertEqual(PetItem.accessory(.goldenLaurel).effect, .shimmer)
         XCTAssertEqual(PetItem.accessory(.teamMedal).effect, .sparkle)
+        XCTAssertEqual(PetItem.accessory(.backwardsCap).effect, .sparkle)
     }
 
     // MARK: Ledger and closet

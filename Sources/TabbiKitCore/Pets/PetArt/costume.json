@@ -1099,7 +1099,65 @@
         "....XXXXQMMQXXXX....",
         "....XXXXXXXXXXXX...."
       ],
-      "sitRow": 4
+      "sitRow": 4,
+      "frames": [
+        [
+          "........XXXX........",
+          "......XXXXXXXX......",
+          ".....XXXXXXXXXX.....",
+          "....XXXXX..XXXXX....",
+          "....XXXXQMMQXXXX....",
+          "....XXXXXXXXXXXX...."
+        ],
+        [
+          "........XXXX........",
+          "......XXXXXXXX......",
+          ".....XXXXXXXXXX.....",
+          "....XXXXX..XXXXX....",
+          "....XXXXQMMQXXXX....",
+          "....XXXXXXXXXXXX...."
+        ],
+        [
+          "........XXXX........",
+          "......XXXXXXXX......",
+          ".....XXXXXXXXXX.....",
+          "....XXXXX..XXXXX....",
+          "....XXXXQMMQXXXX....",
+          "....XXXXXXXXXXXX...."
+        ],
+        [
+          "........XXXX........",
+          "......XXXXXXXX......",
+          ".....XXXXXXXXXX.....",
+          "....XXXXX..XXXXX....",
+          "....XXXXQMMQXXXX....",
+          "....XXXXXXXXXXXX...."
+        ],
+        [
+          "........XXXX........",
+          "......XXXXXXXX......",
+          ".....XXXXXXXXXX.....",
+          "....XXXXX..XXXXX....",
+          "....XXXXQZMQXXXX....",
+          "....XXXXXXXXXXXX...."
+        ],
+        [
+          "........XXXX........",
+          "......XXXXXXXX......",
+          ".....XXXXXXXXXX.....",
+          "....XXXXX..XXXXX....",
+          "....XXXXQMZQXXXX....",
+          "....XXXXXXXXXXXX...."
+        ],
+        [
+          "........XXXX........",
+          "......XXXXXXXX......",
+          ".....XXXXXXXXXX.....",
+          "....XXXXX..XXXXX....",
+          "....XXXXQMMQXXXX....",
+          "....XXXXXXXXXXXX...."
+        ]
+      ]
     },
     "flameHeadband": {
       "grid": [

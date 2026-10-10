@@ -34,6 +34,7 @@ final class PetItemLoopTests: XCTestCase {
         XCTAssertEqual(PetItem.accessory(.flameHeadband).loopFrameCount, 4)
         XCTAssertEqual(PetItem.accessory(.goldenLaurel).loopFrameCount, 12)
         XCTAssertEqual(PetItem.accessory(.teamMedal).loopFrameCount, 8)
+        XCTAssertEqual(PetItem.accessory(.backwardsCap).loopFrameCount, 8)
     }
 
     /// Every loop starts on the still frame and moves a few pixels of the
