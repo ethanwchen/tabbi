@@ -1222,7 +1222,7 @@ struct ClaudeLocationSection: View {
 // MARK: About
 
 struct AboutSettingsPane: View {
-    private static let repository = URL(string: "https://github.com/ethanwchen/notchdeck")!
+    private static let repository = URL(string: "https://github.com/ethanwchen/tabbi")!
 
     var body: some View {
         VStack(spacing: 0) {
@@ -1269,6 +1269,14 @@ struct AboutSettingsPane: View {
                 .font(.caption)
                 .foregroundStyle(.tertiary)
                 .padding(.top, 20)
+            HStack(spacing: 12) {
+                Link("Privacy Policy", destination: SupportContact.privacyURL)
+                    .help(SupportContact.privacyURL.absoluteString)
+                Link("Terms of Use", destination: SupportContact.termsURL)
+                    .help(SupportContact.termsURL.absoluteString)
+            }
+            .font(.caption)
+            .padding(.top, 4)
         }
         .padding(32)
         .frame(width: paneWidth)

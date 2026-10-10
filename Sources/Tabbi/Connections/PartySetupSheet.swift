@@ -1,14 +1,15 @@
 import SwiftUI
 import TabbiKitCore
 
-/// Party's whole setup: a name and a pet. Start saves both and Party
-/// registers by itself; the sheet then shows the friend code with a big
-/// Copy button, so the next thing the user does is share it.
+/// Party's whole setup: a name, a pet and, the first time, the age check
+/// (`PartyAgeCheck`). Start saves them and Party registers by itself; the
+/// sheet then shows the friend code with a big Copy button, so the next
+/// thing the user does is share it.
 struct PartySetupView: View {
     @State var name: String
     @State var species: PetSpecies
     let state: PartyConnectionState
-    let start: (_ name: String, _ species: PetSpecies) -> Void
+    let start: (_ name: String, _ species: PetSpecies, _ birth: PartyAgeCheck.Birth?) -> Void
     let copy: (String) -> Void
     /// Tries the server again now, from the "can't connect" result.
     let retry: () -> Void
@@ -16,10 +17,12 @@ struct PartySetupView: View {
     /// Whether Start was pressed in this sheet, so it shows the result
     /// rather than the form.
     @State private var started = false
+    @State private var birthMonth = 0
+    @State private var birthYear = 0
     @FocusState private var nameFocused: Bool
 
     init(name: String, species: PetSpecies, state: PartyConnectionState,
-         start: @escaping (String, PetSpecies) -> Void, copy: @escaping (String) -> Void,
+         start: @escaping (String, PetSpecies, PartyAgeCheck.Birth?) -> Void, copy: @escaping (String) -> Void,
          retry: @escaping () -> Void, close: @escaping () -> Void, started: Bool = false) {
         _name = State(initialValue: name)
         _species = State(initialValue: species)
@@ -47,6 +50,18 @@ struct PartySetupView: View {
         .fixedSize(horizontal: false, vertical: true)
         .animation(.spring(duration: 0.3), value: started)
         .animation(.spring(duration: 0.3), value: state)
+    }
+
+    /// The age check wasn't answered yet, so the form asks it.
+    private var asksAge: Bool { state == .ageCheck(tooYoungUntil: nil) }
+
+    /// The picked birth month and year, once both are.
+    private var birth: PartyAgeCheck.Birth? {
+        birthMonth == 0 || birthYear == 0 ? nil : PartyAgeCheck.Birth(month: birthMonth, year: birthYear)
+    }
+
+    private var canStart: Bool {
+        PartySetup.name(from: name) != nil && (!asksAge || birth != nil)
     }
 
     private var isReady: Bool {
@@ -81,6 +96,8 @@ struct PartySetupView: View {
                     .foregroundStyle(.secondary)
             }
 
+            if asksAge { birthField }
+
             HStack(spacing: 12) {
                 Spacer(minLength: 8)
                 Button("Not now", action: close)
@@ -89,16 +106,53 @@ struct PartySetupView: View {
                 Button(PartySetup.start, action: submit)
                     .buttonStyle(.borderedProminent)
                     .keyboardShortcut(.defaultAction)
-                    .disabled(PartySetup.name(from: name) == nil)
-                    .help(PartySetup.name(from: name) == nil ? "Type a name first" : "Save your name and pet and join Party")
+                    .disabled(!canStart)
+                    .help(canStart ? "Save your name and pet and join Party"
+                          : PartySetup.name(from: name) == nil ? "Type a name first" : "Pick the month and year you were born")
             }
         }
         .onAppear { nameFocused = true }
     }
 
+    /// Month and year menus that start blank, so no answer is suggested,
+    /// and the links the user agrees to by joining.
+    private var birthField: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(PartySetup.birthLabel)
+                .fontWeight(.medium)
+            HStack(spacing: 8) {
+                Picker("Month", selection: $birthMonth) {
+                    Text("Month").tag(0)
+                    ForEach(Array(Calendar.current.monthSymbols.enumerated()), id: \.offset) { index, month in
+                        Text(month).tag(index + 1)
+                    }
+                }
+                .labelsHidden()
+                .frame(width: 140)
+                .help("The month you were born")
+                Picker("Year", selection: $birthYear) {
+                    Text("Year").tag(0)
+                    ForEach(PartyAgeCheck.birthYears(at: Date()), id: \.self) { year in
+                        Text(String(year)).tag(year)
+                    }
+                }
+                .labelsHidden()
+                .frame(width: 100)
+                .help("The year you were born")
+            }
+            Text(PartySetup.birthNote)
+                .font(.callout)
+                .foregroundStyle(.secondary)
+            Text(LocalizedStringKey(PartySetup.agreement))
+                .font(.callout)
+                .foregroundStyle(.secondary)
+                .help("Opens on tabbinotch.com")
+        }
+    }
+
     private func submit() {
-        guard let cleaned = PartySetup.name(from: name) else { return }
-        start(cleaned, species)
+        guard canStart, let cleaned = PartySetup.name(from: name) else { return }
+        start(cleaned, species, asksAge ? birth : nil)
         started = true
     }
 
@@ -123,6 +177,11 @@ struct PartySetupView: View {
                     .keyboardShortcut(.defaultAction)
                     .help("Try to reach Party again now")
             }
+        case .ageCheck:
+            // Party asks the age question in its tab before it sends anything.
+            Label(status.detail, systemImage: "person.crop.circle.badge.questionmark")
+                .font(.callout)
+            footer(done: false)
         case .connecting, .notSetUp:
             Label {
                 Text("Joining Party. This takes a second.")

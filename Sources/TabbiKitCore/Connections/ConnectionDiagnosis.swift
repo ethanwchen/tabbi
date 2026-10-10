@@ -298,10 +298,16 @@ extension PartyConnectionState {
     public var diagnosis: ConnectionDiagnosis {
         let online: ConnectionCheck.Outcome? = switch self {
         case .notSetUp, .connected: .passed
-        case .connecting: nil
+        case .ageCheck, .connecting: nil
         case .offline: .failed
         }
+        let ageAnswer: (outcome: ConnectionCheck.Outcome, answer: String) = switch self {
+        case .ageCheck(nil): (.failed, "Not yet. Open the Party tab to answer.")
+        case .ageCheck: (.failed, "Party is for people \(PartyAgeCheck.minimumAge) and older.")
+        default: (.passed, "Yes.")
+        }
         let checks = ConnectionCheck.chain([
+            ("Did you answer the age question?", ageAnswer.outcome, ageAnswer.answer),
             ("Did you pick a name?", self == .notSetUp ? .failed : .passed,
              self == .notSetUp ? "Not yet. Pick a name and a pet to start." : "Yes."),
             ("Can Tabbi reach Party?", online,
@@ -309,6 +315,8 @@ extension PartyConnectionState {
         ])
         let technical = switch self {
         case .notSetUp: "party.notSetUp"
+        case .ageCheck(nil): "party.ageCheck"
+        case .ageCheck: "party.tooYoung"
         case .connecting: "party.connecting"
         case .offline: "party.offline"
         case .connected: "party.connected"

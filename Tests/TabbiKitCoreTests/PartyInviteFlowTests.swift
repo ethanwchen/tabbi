@@ -21,7 +21,7 @@ final class PartyInviteFlowTests: XCTestCase {
 
     /// A connected state with the friends list loaded.
     private func connected(friends: [PartyProfile] = [], party: Party? = nil) -> PartyState {
-        var state = PartyState(settings: PartySettings())
+        var state = PartyState(settings: .oldEnough)
         state.didConnect(profile(me, "Sam"))
         state.didFetchFriends(.success(friends.map {
             PartyFriend(profile: $0, since: now, presence: nil, online: true, party: nil)
@@ -72,7 +72,7 @@ final class PartyInviteFlowTests: XCTestCase {
 
     func testWaitsForTheFriendsListBeforeAsking() {
         var flow = PartyInviteFlow(invite: .addFriend(code: maya), partyIsOn: true)
-        var state = PartyState(settings: PartySettings())
+        var state = PartyState(settings: .oldEnough)
         state.didConnect(profile(me, "Sam"))
         flow.update(with: state, blocked: nil)
         XCTAssertEqual(flow.stage, .connecting, "can't tell an existing friend apart yet")
@@ -151,7 +151,7 @@ final class PartyInviteFlowTests: XCTestCase {
 
     func testConnectionProblemsShowAndRetryConnecting() {
         var flow = PartyInviteFlow(invite: .addFriend(code: maya), partyIsOn: true)
-        var state = PartyState(settings: PartySettings())
+        var state = PartyState(settings: .oldEnough)
         state.didFailToConnect(.unreachable)
         flow.update(with: state, blocked: nil)
         XCTAssertEqual(flow.stage, .unavailable(.unreachable))

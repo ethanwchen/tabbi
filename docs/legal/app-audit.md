@@ -18,7 +18,9 @@ This compares the macOS app (`Sources/`) with the site Privacy Policy (`site/_le
 1. **No AI consent sheet (App Store Guideline 5.1.2(i)).** Once a provider is picked, every AI feature sends with no disclosure naming the provider and the data. The only notice is the Screen Recording priming screen. A one-time consent sheet per provider is needed in `Modules/AI`.
    **Fixed:** picking any provider but Ollama now shows a one-time alert naming the company and what each feature sends, and a provider stays inactive until allowed (`AISettings.consented`, `AIConsent.swift`). A Claude Code choice saved by the 6 to 7 settings migration sends nothing until the user picks it again and allows it.
 2. **No age gate and no legal links in the app.** No birthdate or age prompt anywhere, and no privacy or terms link in onboarding, Party setup, Sign in or Settings > About (which links a stale repo, `github.com/ethanwchen/notchdeck`).
+   **Partly fixed:** Party now asks a neutral birth month and year question (`PartyAgeCheck`, `PartyAgeCheckView`, and the Connections setup sheet) with links to the Terms and Privacy Policy before anything is sent, and Settings > About links both documents and the current repo. Sign in with Apple has no age question yet.
 3. **Party registers as soon as its setup step appears** (`PartyOnboardingView`), before any notice beyond "Friends see your name, your pet and when you're studying".
+   **Fixed:** Party sends nothing until the age check passes (the store builds no `PartyAccount` before then). An under-13 answer keeps Party off on that Mac until the saved date, cannot be answered again, and, when signed out, deletes a Party identity this Mac made before the check existed. People who joined before the check are asked once too.
 
 ## Policy text that is wrong or silent
 
@@ -40,5 +42,5 @@ This compares the macOS app (`Sources/`) with the site Privacy Policy (`site/_le
 ## Status
 
 The site Privacy Policy rewrite (`site/_legal.py`, 9 October 2026) fixes policy text items 1 to 10: crash reports have their own section that says where they go, App Store edition differences are stated up front, each AI feature's payload is listed, AI Usage's "ok" request is disclosed, the browser sign-in name hand-off and custom friends servers are described, artwork and update checks are worded to match the code, and focus coaching is described as on-Mac only.
-Item 11 (privacy manifest) and code gaps 2 and 3 remain open.
+Item 11 (privacy manifest) and the Sign in with Apple half of code gap 2 remain open; gap 3 and the Party half of gap 2 were fixed with the Party age check.
 The README privacy section, the support FAQ (`site/build.py`) and `backend/PRIVACY.md` still carry some of the old wording and need the same pass.

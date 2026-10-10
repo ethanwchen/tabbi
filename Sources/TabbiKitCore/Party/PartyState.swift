@@ -12,6 +12,9 @@ public struct PartyState: Equatable, Sendable {
     public enum Connection: Equatable, Sendable {
         /// The server field in Settings can't be used; the message says why.
         case invalidServer(String)
+        /// The age check (`PartyAgeCheck`) wasn't answered, or said the
+        /// user is under 13 until `tooYoungUntil`. Nothing is sent.
+        case ageCheck(tooYoungUntil: Date?)
         /// Registering or syncing the profile for the first time this run.
         case connecting
         /// The first connection failed; nothing has loaded yet.
@@ -37,8 +40,16 @@ public struct PartyState: Equatable, Sendable {
     /// (another start) includes me again.
     public private(set) var leftSessionStart: Date?
 
-    public init(settings: PartySettings) {
-        connection = settings.serverIssue.map(Connection.invalidServer) ?? .connecting
+    public init(settings: PartySettings, at now: Date = Date()) {
+        if let issue = settings.serverIssue {
+            connection = .invalidServer(issue)
+            return
+        }
+        switch settings.ageStatus(at: now) {
+        case .unanswered: connection = .ageCheck(tooYoungUntil: nil)
+        case .tooYoung(let until): connection = .ageCheck(tooYoungUntil: until)
+        case .passed: connection = .connecting
+        }
     }
 
     /// A state with data already loaded, for demo mode and previews.
@@ -120,8 +131,14 @@ public struct PartyState: Equatable, Sendable {
 
     /// Starts over after the server setting changed: drops everything that
     /// belonged to the old server.
-    public mutating func reset(settings: PartySettings) {
-        self = PartyState(settings: settings)
+    public mutating func reset(settings: PartySettings, at now: Date = Date()) {
+        self = PartyState(settings: settings, at: now)
+    }
+
+    /// Whether the age check still stands between the user and Party.
+    public var awaitsAgeCheck: Bool {
+        if case .ageCheck = connection { return true }
+        return false
     }
 
     /// The profile synced (or registered).
@@ -137,6 +154,8 @@ public struct PartyState: Equatable, Sendable {
         if connection == .connected {
             staleError = error
         } else if case .invalidServer = connection {
+            return
+        } else if awaitsAgeCheck {
             return
         } else {
             connection = .unreachable(error)

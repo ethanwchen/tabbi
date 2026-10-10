@@ -19,11 +19,22 @@ public struct PartySettings: Codable, Equatable, Sendable {
     /// When on, heartbeats report `offline` and friends see you as away,
     /// while your own minutes keep counting locally.
     public var invisible: Bool
+    /// The day the age check says this user is surely 13
+    /// (`PartyAgeCheck.eligibleFrom`); nil until it was answered. It stays
+    /// on this Mac and is never sent.
+    public var ageEligibleFrom: Date?
 
-    public init(serverText: String = "", name: String = "", invisible: Bool = false) {
+    public init(serverText: String = "", name: String = "", invisible: Bool = false,
+                ageEligibleFrom: Date? = nil) {
         self.serverText = serverText
         self.name = name
         self.invisible = invisible
+        self.ageEligibleFrom = ageEligibleFrom
+    }
+
+    /// Whether Party may connect at `now` (`PartyAgeCheck`).
+    public func ageStatus(at now: Date) -> PartyAgeCheck.Status {
+        PartyAgeCheck.status(eligibleFrom: ageEligibleFrom, at: now)
     }
 
     /// The server to talk to, or nil when the field holds something that
@@ -74,7 +85,7 @@ public struct PartySettings: Codable, Equatable, Sendable {
     }
 
     private enum CodingKeys: String, CodingKey {
-        case serverText, name, invisible
+        case serverText, name, invisible, ageEligibleFrom
     }
 
     /// Missing keys fall back to defaults, so adding a setting later never
@@ -84,6 +95,9 @@ public struct PartySettings: Codable, Equatable, Sendable {
         serverText = try container.decodeIfPresent(String.self, forKey: .serverText) ?? ""
         name = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
         invisible = try container.decodeIfPresent(Bool.self, forKey: .invisible) ?? false
+        // Missing for everyone who joined before the age check, so they
+        // are asked once too.
+        ageEligibleFrom = try container.decodeIfPresent(Date.self, forKey: .ageEligibleFrom)
     }
 }
 

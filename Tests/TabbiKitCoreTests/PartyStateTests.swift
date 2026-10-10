@@ -21,7 +21,7 @@ final class PartyStateTests: XCTestCase {
     }
 
     func testStartsConnectingOrReportsABadServer() {
-        XCTAssertEqual(PartyState(settings: PartySettings()).connection, .connecting)
+        XCTAssertEqual(PartyState(settings: .oldEnough).connection, .connecting)
         let bad = PartyState(settings: PartySettings(serverText: "http://example.com"))
         guard case .invalidServer(let message) = bad.connection else { return XCTFail("expected invalidServer") }
         XCTAssertFalse(message.isEmpty)
@@ -32,7 +32,7 @@ final class PartyStateTests: XCTestCase {
     }
 
     func testFirstFailureIsUnreachableAndRetryGoesBackToConnecting() {
-        var state = PartyState(settings: PartySettings())
+        var state = PartyState(settings: .oldEnough)
         state.didFailToConnect(.timedOut)
         XCTAssertEqual(state.connection, .unreachable(.timedOut))
 
@@ -45,7 +45,7 @@ final class PartyStateTests: XCTestCase {
     }
 
     func testFailuresAfterLoadingKeepTheDataAndMarkItStale() {
-        var state = PartyState(settings: PartySettings())
+        var state = PartyState(settings: .oldEnough)
         state.didConnect(profile("K7QW2MZD", "Sam"))
         XCTAssertFalse(state.friendsLoaded, "no empty state before the first list arrives")
         state.didFetchFriends(.success([friend("B", "Ben")]))
@@ -64,7 +64,7 @@ final class PartyStateTests: XCTestCase {
     }
 
     func testFriendsAreSortedAndEditedLocally() {
-        var state = PartyState(settings: PartySettings())
+        var state = PartyState(settings: .oldEnough)
         state.didFetchFriends(.success([
             friend("O", "Olive", online: false),
             friend("S", "Sky", status: .studying),
@@ -82,7 +82,7 @@ final class PartyStateTests: XCTestCase {
     }
 
     func testBlockingHidesThemFromFriendsAndTheParty() {
-        var state = PartyState(settings: PartySettings())
+        var state = PartyState(settings: .oldEnough)
         state.didConnect(profile("ME", "Sam"))
         state.didFetchFriends(.success([friend("A", "Ash"), friend("Z", "Zoe")]))
         state.didFetchParty(.success(party(host: "ME", members: [("Z", "Zoe"), ("ME", "Sam"), ("A", "Ash")])))
@@ -95,7 +95,7 @@ final class PartyStateTests: XCTestCase {
     }
 
     func testPartyMembershipHostAndCompanions() {
-        var state = PartyState(settings: PartySettings())
+        var state = PartyState(settings: .oldEnough)
         state.didConnect(profile("ME", "Sam"))
         state.didFetchParty(.success(party(host: "ME", members: [("Z", "Zoe"), ("ME", "Sam"), ("A", "Ash")])))
 
@@ -116,11 +116,11 @@ final class PartyStateTests: XCTestCase {
     }
 
     func testResetDropsTheOldServersData() {
-        var state = PartyState(settings: PartySettings())
+        var state = PartyState(settings: .oldEnough)
         state.didConnect(profile("ME", "Sam"))
         state.didFetchFriends(.success([friend("B", "Ben")]))
 
-        state.reset(settings: PartySettings(serverText: "http://localhost:8787"))
+        state.reset(settings: PartySettings(serverText: "http://localhost:8787", ageEligibleFrom: .distantPast))
 
         XCTAssertEqual(state.connection, .connecting)
         XCTAssertNil(state.friendCode)

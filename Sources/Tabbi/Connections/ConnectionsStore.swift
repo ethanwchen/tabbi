@@ -147,8 +147,9 @@ final class ConnectionsStore: ObservableObject {
         var state: PartyConnectionState = .connecting
         var name = ""
         var species: PetSpecies = .cat
-        /// Saves the name and pet; Party registers by itself after that.
-        let start: @MainActor (_ name: String, _ species: PetSpecies) -> Void
+        /// Saves the name and pet (and the age check's answer when it was
+        /// asked); Party registers by itself after that.
+        let start: @MainActor (_ name: String, _ species: PetSpecies, _ birth: PartyAgeCheck.Birth?) -> Void
         /// Tries the server again now.
         let retry: @MainActor () -> Void
     }
@@ -157,7 +158,7 @@ final class ConnectionsStore: ObservableObject {
     /// probe and the setup sheet can start it. The tab calls this once.
     func follow(party state: AnyPublisher<PartyConnectionState, Never>,
                 name: AnyPublisher<String, Never>, species: AnyPublisher<PetSpecies, Never>,
-                start: @escaping @MainActor (_ name: String, _ species: PetSpecies) -> Void,
+                start: @escaping @MainActor (_ name: String, _ species: PetSpecies, _ birth: PartyAgeCheck.Birth?) -> Void,
                 retry: @escaping @MainActor () -> Void) {
         partyCancellables = []
         party = PartyLink(start: start, retry: retry)
@@ -183,9 +184,9 @@ final class ConnectionsStore: ObservableObject {
 
     /// The setup sheet's start button: saves the name and pet, then Party
     /// registers by itself and the row turns green.
-    func startParty(name: String, species: PetSpecies) {
+    func startParty(name: String, species: PetSpecies, birth: PartyAgeCheck.Birth?) {
         guard !isDemo else { return }
-        party?.start(name, species)
+        party?.start(name, species, birth)
     }
 
     private func showParty() {

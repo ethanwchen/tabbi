@@ -76,6 +76,10 @@ private struct PartyInviteBody: View {
                 PartyPet(pet: store.pet, pixelSize: 2)
             case .unavailable:
                 symbol("wifi.slash")
+            case .ageCheck(nil):
+                symbol("person.crop.circle.badge.questionmark")
+            case .ageCheck:
+                symbol("hand.raised.fill")
             case .refused:
                 symbol("exclamationmark.circle.fill")
             case .finished:
@@ -128,6 +132,7 @@ private struct PartyInviteBody: View {
         switch flow.stage {
         case .needsParty: turnOnParty()
         case .unavailable: store.retryInviteConnection()
+        case .ageCheck: openPartyTab()
         default: store.confirmInvite()
         }
     }
@@ -136,6 +141,7 @@ private struct PartyInviteBody: View {
         switch flow.stage {
         case .needsParty: "Add the Party tab and connect to the party server"
         case .unavailable, .refused: "Try again now"
+        case .ageCheck: "Open the Party tab to answer"
         default:
             switch flow.invite {
             case .addFriend: "Send a friend request with this code"
@@ -151,6 +157,14 @@ private struct PartyInviteBody: View {
         if case .finished = flow.stage { showParty = true } else { showParty = false }
         store.dismissInvite()
         if showParty, notch.layout.isEnabled(PartyModule.descriptor.id) {
+            notch.selected = PartyModule.descriptor.id
+        }
+    }
+
+    /// The age check is asked in the Party tab, so the invite steps aside.
+    private func openPartyTab() {
+        store.dismissInvite()
+        if notch.layout.isEnabled(PartyModule.descriptor.id) {
             notch.selected = PartyModule.descriptor.id
         }
     }
