@@ -6,7 +6,7 @@ Nothing here is a promise or a date; it is the direction that guides day-to-day 
 ## Vision
 
 Tabbi is open source and fully customizable.
-You choose exactly the tabs and integrations you want: a Pomodoro timer, Anki reviews, your calendar, Spotify, Ask Claude, and more.
+You choose exactly the tabs and integrations you want: a Pomodoro timer, Anki reviews, your calendar, Spotify, Ask AI, and more.
 
 One app serves many audiences.
 First-run setup offers premade [kits](kits.md), each a starting point for one kind of user, which you can then tweak tab by tab.
@@ -21,7 +21,7 @@ Three ideas drive every design decision:
 
 | Kit | Status | For |
 | --- | --- | --- |
-| Essentials | Shipping | Everyone, and the default: timer, to-do, music and Ask Claude. Everything else is one click away in Settings > Tabs > Add more. |
+| Essentials | Shipping | Everyone, and the default: timer, to-do, music, Ask AI and the pet. Everything else is one click away in Settings > Tabs > Add more. |
 | Med School | In progress | Medical students: Essentials plus Anki, with evidence-based study methods and a study pet. |
 | Tech | Planned | Developers and CS students. |
 | Law | Planned | LSAT takers and law students. |
@@ -33,7 +33,7 @@ Three ideas drive every design decision:
 
 - **LeetCode:** the daily problem, your streak, and a progress source so today's problem appears in Today.
 - **Project-based learning:** a project tab that breaks a side project into small daily steps and tracks them as tasks.
-- **Teaching concepts:** Ask Claude presets that explain a concept, quiz you on it, or review your solution, all through your local `claude` CLI.
+- **Teaching concepts:** Ask AI presets that explain a concept, quiz you on it, or review your solution, through whichever AI the user picked.
 
 ### Law
 
@@ -78,13 +78,13 @@ Possible paid layers on top:
 
 - **Hosted sync and social features at scale:** study parties, shared streaks and sync across Macs, where running servers costs money.
 - **Premium cosmetic packs:** pets, costumes and themes under a separate asset license. The code that renders them stays open.
-- **Hosted AI:** for users without their own Claude subscription. Users with the `claude` CLI keep using it for free.
+- **Hosted AI:** for users without their own AI subscription or API key. Users with a CLI, an API key or Ollama keep using it for free.
 - **A kit marketplace:** with a revenue share for kit and pack creators.
 - **Group and cohort licenses:** for study groups, schools and residency programs.
 - **Convenience distribution:** through Setapp. Official signed and notarized downloads stay free.
 
 Constraints to keep in mind:
 
-- **App Store sandboxing conflicts with the AppleScript and Shortcuts integrations** that Now Playing and other modules rely on. A Mac App Store build would lose features, so direct downloads stay the main channel.
+- **App Store sandboxing conflicts with some integrations.** The App Store edition leaves out AI Usage, the AI command line tools, SoundCloud, Do Not Disturb and Party (see [appstore.md](appstore.md)), so the direct download stays the full-featured channel.
 - **Protect the name.** A trademark on Tabbi lets forks exist under the MIT license while keeping the official builds and marketplace recognizable.
 - **No telemetry, ever,** paid tier or not. Any hosted feature is opt-in and documented in the README's privacy section.

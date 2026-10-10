@@ -3,7 +3,7 @@
 Signing in is optional.
 Without an account, Tabbi works exactly as before, and the pet and progress stay on the Mac.
 With one, the pet (look, name, outfits, points and unlocks), the study streaks and the Party identity follow the user to their other Macs.
-Calendar data, activity details, Claude data and settings never sync.
+Calendar data, activity details, AI chats and settings never sync.
 
 The app keeps one versioned JSON document per user (`SyncDocument` in `Sources/TabbiKitCore/Sync`).
 Merges never lose progress: points are a per-Mac tally, unlocks and study days are unions, and the longest streak is a maximum.
