@@ -12,10 +12,11 @@ None of this replaces a licensed attorney.
 ## Files
 
 - `profile.md` - the practice profile the skills expect: who the operator is, the regulatory footprint, the published commitments and where each lives.
-- `data-inventory.md` (next) - every piece of personal data Tabbi touches, where it lives, who receives it and how long it is kept, checked against the code (the policy-monitor and pia-generation workflows).
+- `app-audit.md` and `backend-audit.md` - the macOS app and the friends service checked against every policy statement (the policy-monitor workflow), with a Status section each.
+- The data inventory lives in the Privacy Policy itself (`site/_legal.py`), checked line by line against the code in `app-audit.md` and `backend-audit.md`.
 - `terms-memo.md` - why the Terms of Use say what they say (scope, minors, no arbitration, liability, moderation, copyright, Apple terms).
 - `ip-review.md` - trademark triage for Tabbi and the App Store name, licenses of every dependency and bundled asset, third-party terms for each integration, and marketing claims.
-- `review.md` (last) - findings by severity, what was changed, residual risks and the list for a lawyer.
+- `review.md` - findings by severity, what was changed, residual risks and the list for a lawyer.
 
 ## Surfaces that make privacy commitments
 
