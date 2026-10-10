@@ -292,11 +292,12 @@ TERMS = f'''      <p class="eyebrow">Effective {EFFECTIVE}</p>
       <p class="measure">The Tabbi app and its source code are licensed under the <a href="{GITHUB}/blob/main/LICENSE">MIT License</a>.
         That license, not these terms, governs what you may do with the code: use, copy, modify and distribute it, keeping the copyright and license notice.
         Nothing in these terms takes away a right the MIT License gives you.
-        Bundled fonts and other third-party parts keep their own licenses, which come with them.</p>
+        The one third-party library in the app, Sparkle (the direct download's updater), keeps its own MIT and BSD-style licenses, which ship inside the app in Contents/Resources/Acknowledgements.
+        This website's fonts, Nunito and Fredoka, are under the SIL Open Font License.</p>
       <p class="measure">If you got Tabbi from the Mac App Store, Apple's <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Standard End User License Agreement</a> also applies to that copy (see section 15).</p>
       <p class="measure"><strong>Name and icon.</strong> The name Tabbi, the cat icon and the pet artwork identify this project.
         You may say that your fork is based on Tabbi, but please do not use the name or icon in a way that suggests your fork, server or product is the official Tabbi or is endorsed by us.
-        Other product names on this site and in the app (for example Apple, MacBook, Spotify, SoundCloud, Anki, Claude, ChatGPT and Gemini) belong to their owners and are used only to say what Tabbi works with.
+        Other product names on this site and in the app (for example Apple, MacBook, Spotify, SoundCloud, Anki, Claude, OpenAI, Codex, Gemini and Ollama) belong to their owners and are used only to say what Tabbi works with.
         Tabbi is not affiliated with or endorsed by any of them.</p>
 
       <h2>4. Your content</h2>

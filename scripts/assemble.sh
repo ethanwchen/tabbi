@@ -94,6 +94,17 @@ for framework in "$(dirname "$bin")"/*.framework; do
     [[ -e "$framework" ]] || continue
     mkdir -p "$app/Contents/Frameworks"
     ditto "$framework" "$app/Contents/Frameworks/$(basename "$framework")"
+    # The framework ships without its license, and Sparkle's MIT, BSD and
+    # zlib terms ask binary copies to carry their notices, so the license
+    # from SwiftPM's checkout goes in the bundle beside it (docs/legal/ip-review.md).
+    name=$(basename "$framework" .framework)
+    license=.build/checkouts/$name/LICENSE
+    if [[ ! -f "$license" ]]; then
+        echo "error: no license for $name at $license; run swift build first" >&2
+        exit 1
+    fi
+    mkdir -p "$app/Contents/Resources/Acknowledgements"
+    cp "$license" "$app/Contents/Resources/Acknowledgements/$name-LICENSE.txt"
 done
 
 # The widget extension (docs/widget.md), built beside the app's binary. Its
