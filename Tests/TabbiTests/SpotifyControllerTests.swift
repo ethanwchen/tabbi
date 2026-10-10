@@ -344,6 +344,11 @@ final class SpotifyControllerTests: XCTestCase {
         controller.refresh()
         let artwork = await controller.artworkData(for: try XCTUnwrap(SpotifyPlayback.demo.track))
         XCTAssertNil(artwork)
+        XCTAssertTrue(DemoAlbumCover.isCover(of: try XCTUnwrap(SpotifyPlayback.demo.track)),
+                      "the demo track shows its own drawn cover, never a real album's")
+        XCTAssertFalse(DemoAlbumCover.isCover(of: SpotifyTrack(id: "spotify:track:1", title: "Other", artist: "Someone",
+                                                               album: "", artworkURL: nil, duration: 200)))
+        XCTAssertNil(controller.appIcon(for: .music), "demo shots show a generic badge, not another app's icon")
         await settle()
 
         XCTAssertTrue(players.log.isEmpty)
