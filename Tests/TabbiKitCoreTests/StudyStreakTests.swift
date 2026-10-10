@@ -208,4 +208,34 @@ final class StudyStreakTests: XCTestCase {
         XCTAssertEqual(result.length, 5)
         XCTAssertTrue(result.frozenDays.isEmpty)
     }
+
+    // MARK: Day strip
+
+    func testRecentDaysShowStudyFreezesMissesAndAnOpenToday() {
+        // Monday 5th to Wednesday 7th studied, Thursday 8th frozen, Friday
+        // 9th studied, today Saturday 10th not yet. The 4th was before the
+        // streak, so it shows as missed, not frozen.
+        let result = streak(studied: [5, 6, 7, 9], today: 10)
+        let days = result.recentDays(7, calendar: calendar())
+        XCTAssertEqual(days.map(\.day), (4...10).map { key($0) })
+        XCTAssertEqual(days.map(\.state), [.missed, .studied, .studied, .studied, .frozen, .studied, .today])
+    }
+
+    func testRecentDaysEndOnTodayOnceStudied() {
+        let result = streak(studied: [9, 10], today: 10)
+        XCTAssertEqual(result.recentDays(2, calendar: calendar()).map(\.state), [.studied, .studied])
+        XCTAssertEqual(result.recentDays(0, calendar: calendar()), [])
+    }
+
+    func testDemoStreakShowsAFrozenDay() {
+        let calendar = calendar()
+        for day in 5...11 {
+            let today = date(day, month: 11, hour: 15, in: calendar)
+            let result = StudyStreak(studyDays: PetMilestoneProgress.demo(today: today, calendar: calendar).studyDays,
+                                     today: today, calendar: calendar)
+            XCTAssertEqual(result.length, 6, "day \(day)")
+            XCTAssertEqual(result.recentDays(7, calendar: calendar).map(\.state),
+                           [.studied, .studied, .frozen, .studied, .studied, .studied, .studied], "day \(day)")
+        }
+    }
 }

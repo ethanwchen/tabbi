@@ -154,6 +154,9 @@ enum SnapshotRenderer {
             let limited = NotchViewModel(geometry: geometry, layout: withCloset)
             limited.open(.closet)
             shots.append(Shot("open-closet-limited", limited))
+            let streak = NotchViewModel(geometry: geometry, layout: withCloset)
+            streak.open(.closet)
+            shots.append(Shot("open-closet-streak", streak))
             // The pet's paw at the far right of the header while another tab is open.
             let withPaw = NotchViewModel(geometry: geometry, layout: withCloset)
             withPaw.open(withCloset.tabs.first)
@@ -420,7 +423,8 @@ enum SnapshotRenderer {
                 : name == "open-spotify-soundcloud-javascript-off" ? .soundCloudJavaScriptOff : .players)
             if let firstSection {
                 closet?.store.section = name == "open-closet-look" ? .look
-                    : name == "open-closet-limited" ? .limited : firstSection
+                    : name == "open-closet-limited" ? .limited
+                    : name == "open-closet-streak" ? .streak : firstSection
             }
             model.themeID = Theme.current.id
             if name == "closed-pet-cheer", case .pet(var pet) = model.preview {

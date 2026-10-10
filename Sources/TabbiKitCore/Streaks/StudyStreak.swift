@@ -45,6 +45,9 @@ public struct StudyStreak: Hashable, Sendable {
     public private(set) var freeFreezeAvailable: Bool
     /// Extra freezes bought and not used yet.
     public private(set) var extraFreezes: Int
+    /// The study days up to today, for `recentDays`.
+    private var studied: Set<PlannerDayKey>
+    private var today: PlannerDayKey
 
     /// - Parameters:
     ///   - studyDays: days with enough focused study
@@ -93,6 +96,8 @@ public struct StudyStreak: Hashable, Sendable {
         // Freezes bought up to today are held, ready for the next miss.
         bought += purchases.prefix { $0 <= todayKey }.count
 
+        self.studied = studied
+        self.today = todayKey
         studiedToday = studied.contains(todayKey)
         length = run + (studiedToday ? 1 : 0)
         frozenDays = frozen
@@ -113,4 +118,40 @@ public struct StudyStreak: Hashable, Sendable {
     /// Freezes ready for the next missed day: this week's free one, if
     /// unused, plus the extras held.
     public var freezesReady: Int { (freeFreezeAvailable ? StreakFreezeRules.freePerWeek : 0) + extraFreezes }
+
+    /// The last `count` days, oldest first and ending today, each with what
+    /// happened on it, for the streak's day strip.
+    public func recentDays(_ count: Int, calendar: Calendar = .current) -> [StreakDay] {
+        guard count > 0 else { return [] }
+        return (0..<count).reversed().map { offset in
+            let day = today.adding(days: -offset, calendar: calendar)
+            let state: StreakDay.State = if studied.contains(day) {
+                .studied
+            } else if frozenDays.contains(day) {
+                .frozen
+            } else if day == today {
+                .today
+            } else {
+                .missed
+            }
+            return StreakDay(day: day, state: state)
+        }
+    }
+}
+
+/// One day in the streak's day strip.
+public struct StreakDay: Hashable, Sendable {
+    public enum State: Hashable, Sendable {
+        /// Enough focused study to count.
+        case studied
+        /// Missed, but a freeze kept the streak (shown with a snowflake).
+        case frozen
+        /// Missed and not protected.
+        case missed
+        /// Today, with no study yet: still open, so neither missed nor frozen.
+        case today
+    }
+
+    public var day: PlannerDayKey
+    public var state: State
 }
