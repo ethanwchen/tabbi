@@ -42,3 +42,9 @@ Each entry is a short before and after.
   The tightest header variant asked for narrower pills, but the pills ignored the request.
   After: tight pills and the header gaps shrink, the balance never truncates, and both cards line up with the header (x=104 to 1000 at 2x).
   A four-digit balance falls back to a header where the open section is its tinted symbol, so the number still shows.
+
+## Focus at Compact
+
+- Before: at Compact the Focus card dropped the names of its two settings to fit one line, leaving a moon and a bare "On" that did not say what was on.
+  After: when one line is too narrow, the settings stack on two lines and keep their names ("Sound Rain + Fireplace", "Do Not Disturb On"), using the card's spare height.
+  Only a panel too narrow for that drops the names, and VoiceOver reads each setting's name either way.
