@@ -56,7 +56,7 @@ TABS = [
      'The Timer tab: a Pomodoro ring at 15:14 with focus sounds and today\'s total'),
     ('today', 'Today', 'Today', 'Your to-dos and what is next on the calendar.',
      'The Today tab: a checklist on the left and upcoming meetings on the right'),
-    ('closet', 'Closet', 'Closet', 'Dress up your cat with the points you earn.',
+    ('closet', 'Closet', 'Closet', 'Dress up your pet with the points you earn.',
      'The Closet: a pixel cat with costumes and accessories to choose from'),
     ('party', 'Party', 'Party', 'Study with friends, pets side by side.',
      'The Party tab: friends\' pets sitting together with their study status'),
@@ -135,7 +135,7 @@ SOFTWARE_APP = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
     'name': 'Tabbi',
-    'description': 'A cozy panel of tabs in your laptop notch: a focus timer, your day, music, Claude, Anki and a pet cat.',
+    'description': 'A cozy panel of tabs in your laptop notch: a focus timer, your day, music, AI, Anki flashcards and a pet cat or dog.',
     'url': ORIGIN + '/',
     'image': ORIGIN + '/img/icon-256.webp',
     'screenshot': ORIGIN + '/img/social-preview.png',
@@ -200,7 +200,7 @@ SUPPORT = f'''
           <p>If macOS says Tabbi is damaged, the download was cut short. Move it to the Trash and download it again.</p>""", 'gatekeeper')}
 
 {faq('How do I quit Tabbi?', """          <p>Right-click the notch and choose <strong>Quit Tabbi</strong>.
-            The same menu has <strong>Settings</strong> and <strong>Check for Updates</strong>.</p>
+            The same menu has your tabs, <strong>Settings</strong>, <strong>Suggest a Feature or Report a Bug</strong>, and in the direct download <strong>Check for Updates</strong>.</p>
           <p>Tabbi opens at login by default. To stop that, turn off <strong>Launch at login</strong> in <strong>Settings &gt; General</strong>.</p>""", 'quit')}
 
 {faq('Can I make the panel bigger or smaller?', """          <p>Yes. Right-click the notch, choose <strong>Settings</strong>, and pick a <strong>Panel size</strong> in <strong>General</strong>:
@@ -221,7 +221,7 @@ SUPPORT = f'''
             To sync your pet across Macs, choose <strong>Sign in with Apple</strong> in <strong>Settings &gt; General</strong> on each of them.
             Your pet, points, unlocked items and streaks then sync, and your Party friend code and friends follow you.</p>
           <p>Tabbi asks Apple only for your name, which stays on your Mac. It never gets your email.
-            Your calendar, tasks, activity history, Claude chats and settings are never synced.
+            Your calendar, tasks, activity history, AI chats and settings are never synced.
             Signing in on a Mac that already has progress adds it to your account, so nothing is overwritten.
             <strong>Sign Out</strong> stops syncing on that Mac and keeps your pet there.
             The <a href="/privacy#account">privacy policy</a> lists exactly what the account stores.</p>""", 'account')}
@@ -236,12 +236,19 @@ SUPPORT = f'''
           </ul>
           <p>Daily study minutes are deleted automatically after 28 days either way.</p>""", 'delete-party')}
 
-{faq('Do I need Claude Code?', """          <p>No. Only Ask Claude, Claude Usage, and the optional Refine with Claude and Wrap up use it.
-            Those tabs show a setup hint until the <code>claude</code> command is installed.
-            Tabbi runs your own <code>claude</code> command, so your usage stays on the plan you already have and Tabbi never handles your credentials.</p>""", 'claude')}
+{faq('How do I use the AI features?', """          <p>Ask AI, Plan my day, the Wrap up day review and the Schedule's Refine need an AI. Everything else works without one.
+            Tabbi sends nothing until you pick a provider in <strong>Settings &gt; Connections &gt; AI</strong>.</p>
+          <ul>
+            <li><strong>Your own API key</strong> for Claude (Anthropic), OpenAI or Gemini (Google). The key stays in your Mac's Keychain.</li>
+            <li><strong>Ollama</strong>, which runs a model on your Mac. Nothing leaves it.</li>
+            <li><strong>A command line tool you already use</strong>: Claude Code, Codex or Gemini CLI. Tabbi runs your own command, so usage stays on your plan and Tabbi never handles your credentials. These are in the direct download only.</li>
+          </ul>
+          <p>What you send goes to the provider you picked, under its terms. The <a href="/privacy#ai">privacy policy</a> says exactly what is sent.</p>""", 'ai')}
 
 {faq('How do I update or uninstall Tabbi?', f"""          <p>Tabbi checks for updates once a day and installs them in a few seconds. To check now, right-click the notch and choose <strong>Check for Updates</strong>.</p>
+          <p>The Mac App Store edition is updated by the App Store instead.</p>
           <p>To uninstall, quit Tabbi and drag it from Applications to the Trash. Your tabs, tasks and settings stay in <code>~/Library/Application Support/Tabbi</code> in case you come back; delete that folder to remove them too.
+            The App Store edition keeps them in <code>~/Library/Containers/dev.tabbi.Tabbi</code> instead.
             The <a href="{GITHUB}/blob/main/docs/install.md#uninstall">install guide</a> lists every folder.</p>""", 'uninstall')}
 '''
 
@@ -266,7 +273,7 @@ ABOUT = f'''
         </div>
         <div class="press" id="press">
           <h2>Press kit</h2>
-          <p>Tabbi is a free, open source app for macOS 14 or later. It turns the laptop notch into a cozy panel of tabs: a focus timer, your day, music, Claude, Anki and a pet cat. No ads, no tracking.</p>
+          <p>Tabbi is a free, open source app for macOS 14 or later. It turns the laptop notch into a cozy panel of tabs: a focus timer, your day, music, AI, Anki flashcards and a pet cat or dog. No ads, no tracking.</p>
           <div class="cta center">
             <a class="btn soft" href="/press/{PRESS_KIT}" download title="The icon and four screenshots">Download ({PRESS_MB} ZIP)</a>
           </div>
@@ -426,7 +433,7 @@ def invite_page(templates, action, raw, user_agent=''):
 
 pages = [
     ('index.html', 'Tabbi: a little cat for your notch',
-     'Tabbi turns your laptop notch into a cozy panel of tabs: a focus timer, your day, music, Claude, Anki and a pet cat. Free and open source for macOS.',
+     'Tabbi turns your laptop notch into a cozy panel of tabs: a focus timer, your day, music, AI, Anki flashcards and a pet cat or dog. Free and open source for macOS.',
      HOME, HOME_HERO, True, True),
     ('about.html', 'About | Tabbi',
      'Who makes Tabbi, and why.',

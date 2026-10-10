@@ -1049,8 +1049,8 @@ private struct ShortcutSection: View {
 
 // MARK: Claude
 
-/// Where the claude CLI is, under Connections' More options: Claude Usage
-/// and Ask Claude find it by themselves almost always.
+/// Where the claude CLI is, under Connections' More options: AI Usage and
+/// Ask AI (with Claude Code as the AI) find it by themselves almost always.
 struct ClaudeLocationSection: View {
     @EnvironmentObject private var store: SettingsStore
     /// The text being edited; committed on Return, focus loss, Choose, or Validate
@@ -1105,7 +1105,7 @@ struct ClaudeLocationSection: View {
         } header: {
             Text("Claude location")
         } footer: {
-            SectionFooter("Claude tabs run your own signed-in claude CLI; \(Edition.current.name) never reads your credentials. Set this only if claude isn't found automatically.")
+            SectionFooter("With Claude Code as your AI, Ask AI and AI Usage run your own signed-in claude CLI; \(Edition.current.name) never reads your credentials. Set this only if claude isn't found automatically.")
         }
         .onAppear { draft = Self.displayPath(store.settings.claudePathOverride) }
         .onChange(of: fieldFocused) { _, focused in

@@ -5,7 +5,7 @@
 <h1 align="center">Tabbi</h1>
 
 <p align="center">
-  A little cat for your laptop notch.
+  A little pet for your laptop notch.
 </p>
 
 <p align="center">
@@ -21,12 +21,13 @@
 </p>
 
 Click the notch and it opens into a small panel of tabs.
-A pixel cat lives there too, and it cheers you on while you work.
+A pixel cat or dog lives there too, and it cheers you on while you work.
 
 - **Focus timer** with study methods like Pomodoro, focus sounds and Do Not Disturb.
 - **Today:** your to-do list, your next meeting and a Plan my day that fits work into free time.
 - **Now Playing and Ask AI:** music controls, and Claude, Codex, Gemini or a free local Ollama model in the notch.
 - **Anki, study with friends and a pet** that earns outfits from your study points.
+- **Streaks, a weekly recap and a desktop widget** with your pet and your streak.
 - **Private by design:** no account needed, no analytics and no telemetry.
 
 ## Install
@@ -86,11 +87,13 @@ Kits are small JSON files, and [docs/kits.md](docs/kits.md) shows how to write y
 
 ## Privacy
 
-Tabbi has no account, no analytics and no telemetry.
+Tabbi needs no account and has no analytics and no telemetry.
 It only connects where a tab needs to: album artwork for Now Playing, AnkiConnect on your own Mac, and the friends server while Party is on.
-Update checks download Tabbi's release feed from GitHub once a day; you can turn them off in **Settings > About**.
+Signing in with Apple is optional: it backs up your pet, streaks and Party name to the friends server so they follow you to another Mac.
+After a crash, the direct download asks before it sends a report (stack trace and versions only); you can change that in **Settings > About**.
+The direct download checks Tabbi's release feed on GitHub once a day; you can turn this off in **Settings > About**.
 AI features talk only to the AI you pick in **Settings > Connections**: a command line tool you already use (Claude Code, Codex or Gemini CLI), a hosted API with your own key, which stays in your keychain, or Ollama on your own Mac.
-Tabbi never reads a command line tool's credentials.
+Your prompts go to that provider and fall under its terms, and Tabbi never reads a command line tool's credentials.
 
 <details>
 <summary><b>What each permission is for</b></summary>
@@ -103,7 +106,7 @@ Tabbi asks for a permission only when the tab that needs it is first used.
 | Automation: Spotify, Music | Now Playing, focus mode | Read the current track, control playback and start a focus playlist. |
 | Automation: Safari or Chrome | Now Playing, only once you turn on SoundCloud | Read and control the SoundCloud tab. |
 | Calendars | Today, Schedule | Show your events and add the planned blocks you accept. Events never leave your Mac. |
-| Notifications | Today, Focus, Closet (only once you turn on the daily reminder) | Tell you when a timer ends while the notch is closed, and send the optional daily study reminder. |
+| Notifications | Today, Focus, Closet, Party, weekly recap | Tell you when a timer ends while the notch is closed, send the optional daily study reminder, and say when your weekly recap is ready or a study party you joined finishes while the notch is closed. |
 | Screen Recording | Ask AI | Attach a screenshot to a question. The image goes only to the AI you picked. |
 
 AI Usage needs no system permission.
@@ -130,8 +133,8 @@ Tabbi updates itself; right-click the notch and choose **Check for Updates…** 
 To uninstall, quit it and drag it from Applications to the Trash; [docs/install.md](docs/install.md#uninstall) also lists where your data lives.
 
 **Does it hide in fullscreen apps or on other displays?**
-By default it steps aside while an app is fullscreen and shows on every display.
-Both are switches in **Settings > General**.
+By default it steps aside while an app is fullscreen, and it sits on your built-in display.
+Hide in fullscreen is a switch in **Settings > General**, and the display choices are under **More options** there.
 
 **Does it slow my Mac down?**
 It is a small native app with no web views, and tabs only refresh while you can see them.
