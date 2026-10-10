@@ -169,6 +169,9 @@ enum SnapshotRenderer {
         if layout.order.contains(.closet) {
             var withCloset = layout
             _ = withCloset.setEnabled(.closet, true)
+            let wardrobe = NotchViewModel(geometry: geometry, layout: withCloset)
+            wardrobe.open(.closet)
+            shots.append(Shot("open-closet-wardrobe", wardrobe))
             let model = NotchViewModel(geometry: geometry, layout: withCloset)
             model.open(.closet)
             shots.append(Shot("open-closet-look", model))
@@ -561,7 +564,8 @@ enum SnapshotRenderer {
             nowPlaying?.showForSnapshot(name == "open-spotify-soundcloud" ? .soundCloud
                 : name == "open-spotify-soundcloud-javascript-off" ? .soundCloudJavaScriptOff : .players)
             if let firstSection {
-                closet?.store.section = name == "open-closet-look" ? .look
+                closet?.store.section = name == "open-closet-wardrobe" ? .wardrobe
+                    : name == "open-closet-look" ? .look
                     : name == "open-closet-limited" ? .limited
                     : name == "open-closet-streak" ? .streak : name == "open-closet-weeks" ? .weeks : firstSection
             }
