@@ -266,6 +266,20 @@ extension CostumeArt {
     static let teamMedal = PetArt.costume.bodyItem("teamMedal")
 }
 
+// MARK: - Seasonal event items
+
+extension CostumeArt {
+    /// A navy witch hat whose tip leans over, a gold crescent moon on the
+    /// crown, a pumpkin-orange band and a wide flat brim.
+    static let moonlitWitchHat = PetArt.costume.headItem("moonlitWitchHat")
+
+    /// A small jack-o'-lantern sitting on the head: leather ribs, a stem
+    /// with a leaf, and a dark carved face. Gold on orange read as a box,
+    /// so the face stays dark and the candle inside flickers now and then,
+    /// lighting the eyes or the grin gold for a tick.
+    static let pumpkinHat = PetArt.costume.headItem("pumpkinHat")
+}
+
 // MARK: - Back items
 
 extension CostumeArt {

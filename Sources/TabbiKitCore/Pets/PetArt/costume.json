@@ -1321,6 +1321,104 @@
           "...................."
         ]
       ]
+    },
+    "moonlitWitchHat": {
+      "grid": [
+        "...........QQ.......",
+        "..........QQQ.......",
+        ".........QQQQ.......",
+        "........QQQQYQ......",
+        ".......QQQQYQQ......",
+        "......QQQQQQYQQ.....",
+        ".....ooooooooooo....",
+        ".QQQQQQQQQQQQQQQQQQ."
+      ],
+      "sitRow": 6
+    },
+    "pumpkinHat": {
+      "grid": [
+        ".........IIFF.......",
+        ".....oooooooooo.....",
+        "...ooIooooooooIoo...",
+        "..oooIoOOooOOoIooo..",
+        "..oooIooOooOooIooo..",
+        "..oooIoOoOOoOoIooo..",
+        "...ooIooOOOOooIoo...",
+        "....IIIIIIIIIIII...."
+      ],
+      "sitRow": 7,
+      "frames": [
+        [
+          ".........IIFF.......",
+          ".....oooooooooo.....",
+          "...ooIooooooooIoo...",
+          "..oooIoYYooYYoIooo..",
+          "..oooIooYooYooIooo..",
+          "..oooIoOoOOoOoIooo..",
+          "...ooIooOOOOooIoo...",
+          "....IIIIIIIIIIII...."
+        ],
+        [
+          ".........IIFF.......",
+          ".....oooooooooo.....",
+          "...ooIooooooooIoo...",
+          "..oooIoOOooOOoIooo..",
+          "..oooIooOooOooIooo..",
+          "..oooIoOoOOoOoIooo..",
+          "...ooIooOOOOooIoo...",
+          "....IIIIIIIIIIII...."
+        ],
+        [
+          ".........IIFF.......",
+          ".....oooooooooo.....",
+          "...ooIooooooooIoo...",
+          "..oooIoOOooOOoIooo..",
+          "..oooIooOooOooIooo..",
+          "..oooIoOoOOoOoIooo..",
+          "...ooIooOOOOooIoo...",
+          "....IIIIIIIIIIII...."
+        ],
+        [
+          ".........IIFF.......",
+          ".....oooooooooo.....",
+          "...ooIooooooooIoo...",
+          "..oooIoOOooOOoIooo..",
+          "..oooIooOooOooIooo..",
+          "..oooIoOoOOoOoIooo..",
+          "...ooIooOOOOooIoo...",
+          "....IIIIIIIIIIII...."
+        ],
+        [
+          ".........IIFF.......",
+          ".....oooooooooo.....",
+          "...ooIooooooooIoo...",
+          "..oooIoOOooOOoIooo..",
+          "..oooIooOooOooIooo..",
+          "..oooIoOoOOoOoIooo..",
+          "...ooIooYYYYooIoo...",
+          "....IIIIIIIIIIII...."
+        ],
+        [
+          ".........IIFF.......",
+          ".....oooooooooo.....",
+          "...ooIooooooooIoo...",
+          "..oooIoYYooYYoIooo..",
+          "..oooIooYooYooIooo..",
+          "..oooIoOoOOoOoIooo..",
+          "...ooIooOOOOooIoo...",
+          "....IIIIIIIIIIII...."
+        ],
+        [
+          ".........IIFF.......",
+          ".....oooooooooo.....",
+          "...ooIooooooooIoo...",
+          "..oooIoOOooOOoIooo..",
+          "..oooIooOooOooIooo..",
+          "..oooIoOoOOoOoIooo..",
+          "...ooIooOOOOooIoo...",
+          "....IIIIIIIIIIII...."
+        ]
+      ]
     }
   },
   "backItems": {

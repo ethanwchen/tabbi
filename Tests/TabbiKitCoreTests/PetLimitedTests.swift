@@ -28,6 +28,7 @@ final class PetLimitedTests: XCTestCase {
         var source: String
         var event: String?
         var milestone: String?
+        var season: String?
     }
 
     /// The server grants exactly the limited items the app can show, with the same source, so an admin
@@ -47,6 +48,9 @@ final class PetLimitedTests: XCTestCase {
             case .milestone(let milestone):
                 XCTAssertEqual(entry.source, "milestone", entry.id)
                 XCTAssertEqual(entry.milestone, milestone.rawValue, entry.id)
+            case .season(let id):
+                XCTAssertEqual(entry.source, "season", entry.id)
+                XCTAssertEqual(entry.season, id, entry.id)
             }
         }
     }
@@ -91,6 +95,29 @@ final class PetLimitedTests: XCTestCase {
         XCTAssertEqual(PetItem.accessory(.goldenLaurel).effect, .shimmer)
         XCTAssertEqual(PetItem.accessory(.teamMedal).effect, .sparkle)
         XCTAssertEqual(PetItem.accessory(.backwardsCap).effect, .sparkle)
+    }
+
+    /// Seasonal items are limited, earned only during their event, and
+    /// only the event's headline item (its last reward) carries an effect.
+    func testHalloweenItemsAreSeasonalLimitedItems() {
+        let hat = PetItem.accessory(.moonlitWitchHat)
+        let pumpkin = PetItem.accessory(.pumpkinHat)
+        XCTAssertEqual(PetLimitedEdition.halloweenWitchHat.item, hat)
+        XCTAssertEqual(PetLimitedEdition.halloweenPumpkin.item, pumpkin)
+        for item in [hat, pumpkin] {
+            XCTAssertEqual(item.limitedEdition?.source, .season(id: "halloween"))
+            XCTAssertNil(item.limitedEdition?.milestone)
+            XCTAssertEqual(item.theme, .seasonal)
+            XCTAssertNotEqual(item, .accessory(.witchHat), "the shop's witch hat stays for sale")
+        }
+        XCTAssertNil(hat.effect)
+        XCTAssertEqual(pumpkin.effect, .flicker)
+
+        var closet = PetCloset(save: PetSave(profile: PetProfile(name: "Kit", breed: .tuxedo),
+                                             ledger: PetPointsLedger(earned: 5000)))
+        XCTAssertEqual(closet.state(of: pumpkin), .unearned)
+        XCTAssertFalse(closet.save.ledger.canBuy(pumpkin))
+        XCTAssertEqual(closet.tap(pumpkin), .notEarnedYet)
     }
 
     // MARK: Ledger and closet

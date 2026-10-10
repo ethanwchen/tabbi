@@ -68,6 +68,7 @@ Parse errors report the 1-based row and column of the problem.
 | `F` | leaf | frog hat, flower crown vine |
 | `I` | leather | cowboy hat |
 | `X` | crimson | superhero cape folds, lining and hem (uppercase; lowercase `x` erases) |
+| `o` | pumpkin | Halloween pumpkin orange, with leather ribs (lowercase: no zone uses it) |
 
 ### Special cells
 

@@ -80,6 +80,14 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
     case goldenLaurel
     /// A gold medal on a red ribbon, for finishing a Party session.
     case teamMedal
+    // Seasonal event items (`SeasonalEvent`): earned by focusing while the
+    // event runs.
+    /// A navy witch hat with a pumpkin band and a gold crescent moon, for
+    /// Halloween. The shop's witch hat has a red band and a buckle.
+    case moonlitWitchHat
+    /// A carved jack-o'-lantern worn as a hat, its candle flickering, the
+    /// Halloween headline item.
+    case pumpkinHat
     // Animated shop items, each looping a few frames on the item clock.
     /// White feathered wings that flap behind the pet.
     case angelWings
@@ -101,7 +109,7 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
         case .surgicalCap, .headMirror, .graduationCap, .beanie, .tinyCrown, .partyHat, .chefHat, .wizardHat,
              .bunnyEars, .witchHat, .cowboyHat, .flowerCrown, .frogHat, .ninjaHeadband, .pirateHat,
              .blindfoldedSorcerer, .astronautHelmet, .chunkyHeadphones, .backwardsCap, .flameHeadband,
-             .goldenLaurel, .halo: .head
+             .goldenLaurel, .halo, .moonlitWitchHat, .pumpkinHat: .head
         case .angelWings, .kingsCape: .back
         case .cherryPetals, .sparkleTrail, .rainCloud: .aura
         }
@@ -142,6 +150,8 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
         case .flameHeadband: "Flame Headband"
         case .goldenLaurel: "Golden Laurel"
         case .teamMedal: "Team Medal"
+        case .moonlitWitchHat: "Moonlit Witch Hat"
+        case .pumpkinHat: "Pumpkin Hat"
         case .angelWings: "Angel Wings"
         case .kingsCape: "King's Cape"
         case .halo: "Halo"

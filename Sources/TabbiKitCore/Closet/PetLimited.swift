@@ -40,6 +40,9 @@ public enum PetLimitedSource: Hashable, Sendable {
     /// Granted per account by the Tabbi server for taking part in an event,
     /// such as the launch week. `id` is the event's stable name.
     case event(id: String)
+    /// Earned by focusing while a seasonal event runs (`SeasonalEvent`),
+    /// such as Halloween. `id` is the event's id in the events catalog.
+    case season(id: String)
 }
 
 /// The limited edition items: never sold for points and never tied to
@@ -50,6 +53,8 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
     case streakFlame
     case focusLaurel
     case partyMedal
+    case halloweenWitchHat
+    case halloweenPumpkin
 
     public var item: PetItem {
         switch self {
@@ -57,6 +62,8 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .streakFlame: .accessory(.flameHeadband)
         case .focusLaurel: .accessory(.goldenLaurel)
         case .partyMedal: .accessory(.teamMedal)
+        case .halloweenWitchHat: .accessory(.moonlitWitchHat)
+        case .halloweenPumpkin: .accessory(.pumpkinHat)
         }
     }
 
@@ -71,6 +78,7 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .streakFlame: .milestone(.weekStreak)
         case .focusLaurel: .milestone(.fiftyHours)
         case .partyMedal: .milestone(.firstParty)
+        case .halloweenWitchHat, .halloweenPumpkin: .season(id: "halloween")
         }
     }
 
@@ -86,6 +94,8 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .streakFlame: "Study 7 days in a row."
         case .focusLaurel: "Focus for 50 hours in total."
         case .partyMedal: "Finish a Party session with friends."
+        case .halloweenWitchHat: "Focus for 90 minutes during Halloween."
+        case .halloweenPumpkin: "Focus for 5 hours during Halloween."
         }
     }
 
@@ -95,6 +105,8 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .streakFlame: .flicker
         case .focusLaurel: .shimmer
         case .partyMedal: .sparkle
+        case .halloweenWitchHat: nil
+        case .halloweenPumpkin: .flicker
         }
     }
 }
