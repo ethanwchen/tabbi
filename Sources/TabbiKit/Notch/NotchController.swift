@@ -40,6 +40,7 @@ public final class NotchController {
         self.inputs = inputs
         let settings = inputs.currentSettings()
         Theme.apply(ThemeCatalog.resolve(settings.themeID))
+        Motion.apply(settings.motionPace)
         let screen = NotchGeometry.screen(for: settings.preferredDisplay,
                                           showOnExternalDisplays: settings.showOnExternalDisplays)
         let geometry = screen.map(NotchGeometry.measure) ?? NotchGeometry(
@@ -372,6 +373,12 @@ public final class NotchController {
             .store(in: &cancellables)
 
         inputs.settings
+            .map(\.motionPace)
+            .removeDuplicates()
+            .sink { Motion.apply($0) }
+            .store(in: &cancellables)
+
+        inputs.settings
             .map { DisplayChoice(preference: $0.preferredDisplay, showOnExternalDisplays: $0.showOnExternalDisplays) }
             .removeDuplicates()
             .dropFirst()
@@ -515,15 +522,17 @@ public final class NotchController {
         }
     }
 
-    /// Fades the panel in or out, or jumps straight there under Reduce Motion.
+    /// Fades the panel in or out, or jumps straight there under Reduce Motion
+    /// or at the Instant pace.
     private func fade(to alpha: CGFloat, completion: (@MainActor @Sendable () -> Void)? = nil) {
-        guard !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion else {
+        let reduceMotion = NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
+        guard Motion.pace.isAnimated(reduceMotion: reduceMotion) else {
             panel.alphaValue = alpha
             completion?()
             return
         }
         NSAnimationContext.runAnimationGroup { context in
-            context.duration = Self.fadeDuration
+            context.duration = Motion.pace.duration(Self.fadeDuration)
             context.timingFunction = CAMediaTimingFunction(name: .easeOut)
             panel.animator().alphaValue = alpha
         } completionHandler: {

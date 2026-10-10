@@ -134,20 +134,7 @@ struct GeneralSettingsPane: View {
 
     @ViewBuilder
     private var moreOptions: some View {
-        Section {
-            Toggle(isOn: $store.settings.hapticsEnabled) {
-                Text("Haptic feedback")
-                Text("A light trackpad tap at the notch edge and on celebrations.")
-            }
-            .help("Tap the trackpad when the pointer reaches the notch or a celebration plays")
-            Toggle(isOn: $store.settings.celebrationSoundEnabled) {
-                Text("Celebration sound")
-                Text("A soft sound when you unlock an item or reach a streak.")
-            }
-            .help("Play a soft sound with celebrations that have no sound of their own")
-        } header: {
-            Text("Feedback")
-        }
+        FeedbackSection()
 
         Section {
             Toggle(isOn: $store.settings.showOnExternalDisplays) {
@@ -896,6 +883,46 @@ private struct LibraryRow: View {
 
 /// Where the notch shows besides your own screen, under General's More
 /// options. Both are off by default, so nothing disappears unexpectedly.
+/// Haptics, the celebration sound and the animation pace, under General's
+/// More options.
+struct FeedbackSection: View {
+    @EnvironmentObject private var store: SettingsStore
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        Section {
+            Toggle(isOn: $store.settings.hapticsEnabled) {
+                Text("Haptic feedback")
+                Text("A light trackpad tap at the notch edge and on celebrations.")
+            }
+            .help("Tap the trackpad when the pointer reaches the notch or a celebration plays")
+            Toggle(isOn: $store.settings.celebrationSoundEnabled) {
+                Text("Celebration sound")
+                Text("A soft sound when you unlock an item or reach a streak.")
+            }
+            .help("Play a soft sound with celebrations that have no sound of their own")
+            Picker(selection: $store.settings.motionPace) {
+                ForEach(MotionPace.allCases, id: \.self) { pace in
+                    Text(pace.title).tag(pace)
+                }
+            } label: {
+                Text("Animations")
+                Text(motionCaption)
+            }
+            .help("Choose how lively the notch's animations are")
+        } header: {
+            Text("Feedback")
+        }
+    }
+
+    /// What the chosen pace feels like, or why it barely matters while
+    /// Reduce Motion is on.
+    private var motionCaption: String {
+        guard reduceMotion, store.settings.motionPace != .instant else { return store.settings.motionPace.caption }
+        return "Reduce Motion is on, so changes fade instead of moving."
+    }
+}
+
 struct PrivacySection: View {
     @EnvironmentObject private var store: SettingsStore
 

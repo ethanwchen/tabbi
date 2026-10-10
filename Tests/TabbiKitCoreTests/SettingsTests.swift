@@ -284,6 +284,7 @@ final class SettingsRepositoryTests: XCTestCase {
         XCTAssertFalse(settings.hideInMissionControl)
         XCTAssertEqual(settings.notchMode, .alwaysVisible)
         XCTAssertEqual(settings.panelSize, .regular)
+        XCTAssertEqual(settings.motionPace, .smooth)
         XCTAssertTrue(settings.notchPreview.isEnabled)
         XCTAssertEqual(settings.notchPreview.enabledKinds, Set(TickerKind.allCases))
         XCTAssertEqual(settings.notchPreview.interval, .medium)
@@ -338,6 +339,7 @@ final class SettingsRepositoryTests: XCTestCase {
             hideInMissionControl: true,
             notchMode: .showOnHover,
             panelSize: .large,
+            motionPace: .instant,
             notchPreview: NotchPreviewSettings(isEnabled: false, disabledKinds: [.tasks, .claudeUsage], interval: .long),
             themeID: .sakura
         )
@@ -369,8 +371,10 @@ final class SettingsRepositoryTests: XCTestCase {
         defaults.set("loud", forKey: "settings.celebrationSoundEnabled")
         defaults.set("sometimes", forKey: "settings.notchMode")
         defaults.set("huge", forKey: "settings.panelSize")
+        defaults.set("bouncy", forKey: "settings.motionPace")
         let settings = SettingsRepository(defaults: defaults).load()
         XCTAssertEqual(settings.panelSize, .regular)
+        XCTAssertEqual(settings.motionPace, .smooth)
         XCTAssertEqual(settings.notchMode, .alwaysVisible)
         XCTAssertFalse(settings.openOnHover)
         XCTAssertEqual(settings.hotkey, .default)

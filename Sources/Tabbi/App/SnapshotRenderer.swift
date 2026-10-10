@@ -317,6 +317,16 @@ enum SnapshotRenderer {
             print(url.path)
         }
         (services.settings.settings.hideFromScreenCapture, services.settings.settings.hideInMissionControl) = privacy
+        // General's feedback options, under More options, with the Fast pace picked.
+        let pace = services.settings.settings.motionPace
+        services.settings.settings.motionPace = .fast
+        if let png = await sheetSnapshot(Form { FeedbackSection() }.formStyle(.grouped)
+            .frame(width: paneWidth).environmentObject(services.settings)) {
+            let url = outputDirectory.appendingPathComponent("settings-general-feedback.png")
+            try? png.write(to: url)
+            print(url.path)
+        }
+        services.settings.settings.motionPace = pace
         // Connections with an API provider waiting for its key, a command
         // line tool and Ollama picked, as far as this build offers them.
         let aiShots = [("api-key", AIProviderID.gemini), ("cli", .claudeCLI), ("local", .ollama)]

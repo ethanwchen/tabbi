@@ -186,7 +186,8 @@ private struct NotchJoinButton: View {
 
 /// The "leave now" glow: a soft accent light rising from the bottom edge of
 /// the closed notch that breathes a few times while `isOn`, then fades.
-/// Under Reduce Motion it holds still and only fades in and out.
+/// Under Reduce Motion it holds still and only fades in and out; at the
+/// Instant pace it holds still and simply appears.
 private struct MeetingNudgeGlow: View {
     let isOn: Bool
     let tint: Color
@@ -200,7 +201,7 @@ private struct MeetingNudgeGlow: View {
             .allowsHitTesting(false)
             .animation(Motion.adapted(Theme.Motion.content, reduceMotion: reduceMotion), value: isOn)
             .onChange(of: isOn, initial: true) { _, on in
-                guard on, !reduceMotion else { return dimmed = false }
+                guard on, Motion.pace.isAnimated(reduceMotion: reduceMotion) else { return dimmed = false }
                 withAnimation(.easeInOut(duration: 0.8).repeatCount(4, autoreverses: true)) { dimmed = true }
             }
     }

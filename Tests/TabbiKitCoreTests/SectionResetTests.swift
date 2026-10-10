@@ -23,6 +23,7 @@ final class SectionResetTests: XCTestCase {
         settings.hideInMissionControl = true
         settings.notchMode = .hidden
         settings.panelSize = .compact
+        settings.motionPace = .fast
         settings.notchPreview.isEnabled = false
         settings.notchPreview.interval = .long
         settings.notchPreview.setEnabled(.focus, false)
@@ -49,6 +50,7 @@ final class SectionResetTests: XCTestCase {
         XCTAssertFalse(settings.hideInMissionControl)
         XCTAssertEqual(settings.notchMode, .alwaysVisible)
         XCTAssertEqual(settings.panelSize, .regular)
+        XCTAssertEqual(settings.motionPace, .smooth)
         XCTAssertTrue(settings.notchPreview.isEnabled)
         XCTAssertEqual(settings.notchPreview.interval, NotchPreviewSettings.default.interval)
         XCTAssertTrue(settings.usesGeneralDefaults(of: medicine, catalog: catalog))
