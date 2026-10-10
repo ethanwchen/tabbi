@@ -18,7 +18,7 @@ Delete Account in Settings > General deletes everything the server holds for the
 
 These steps need the Apple Developer account and the Cloudflare account, so they cannot live in the code.
 The Apple team is an Individual account with Team ID `B9VRALHV8S`, and the app's bundle id is `dev.tabbi.Tabbi`.
-Never commit the provisioning profile, the `.p8` key or any secret.
+Never commit a provisioning profile, the `.p8` key or any secret.
 
 ### 1. Enable Sign in with Apple on the App ID
 
@@ -27,22 +27,17 @@ Never commit the provisioning profile, the `.p8` key or any secret.
 3. Under Capabilities, turn on Sign in with Apple and keep "Enable as a primary App ID".
 4. Save.
 
-### 2. Create the Developer ID provisioning profile
+### 2. No Developer ID provisioning profile
 
-macOS only lets a Developer ID app use Sign in with Apple when an embedded provisioning profile grants it.
+Apple's Developer ID provisioning profiles do not grant `com.apple.developer.applesignin` (checked twice, even with a regenerated profile), so the direct download cannot use the native Sign in with Apple sheet.
+It signs in on the web instead (step 4), which needs no entitlement and no profile.
+`scripts/release.sh` signs with `packaging/Tabbi.entitlements` and embeds no profile.
+The old profile is kept, unused, as `packaging/Tabbi-DeveloperID-unused.provisionprofile` (git ignores it): do not embed it, since macOS refuses to launch an app whose entitlements its profile does not cover.
+Ad-hoc builds (`--adhoc`, `scripts/bundle.sh`, `scripts/run.sh`) use the web flow too.
+Only the App Store edition (`scripts/release-appstore.sh`, [appstore.md](appstore.md)) carries the entitlement and shows Apple's native sheet.
 
-1. Open [Profiles](https://developer.apple.com/account/resources/profiles/list) and click +.
-2. Choose Distribution > Developer ID, then the App ID `dev.tabbi.Tabbi`, then the Developer ID Application certificate that `scripts/release.sh` signs with.
-3. Name it "Tabbi Developer ID", generate it and download it.
-4. Save it as `packaging/Tabbi.provisionprofile` in the repository (git ignores it), or set `PROVISIONING_PROFILE` to its path when you run `scripts/release.sh`.
-
-`scripts/release.sh` then checks that the profile is a Developer ID profile for `B9VRALHV8S.dev.tabbi.Tabbi` that grants Sign in with Apple, has not expired and matches the signing identity's team.
-It embeds the profile as `Contents/embedded.provisionprofile` and signs with `packaging/Tabbi-SignInWithApple.entitlements` instead of `packaging/Tabbi.entitlements`.
-Without the file, the release is built as before, and the app's Account row says that Sign in with Apple is not available in that build.
-Ad-hoc builds (`--adhoc`, `scripts/bundle.sh`, `scripts/run.sh`) never carry the entitlement.
-The Release GitHub Actions workflow does not have the profile, so build a release with sign-in on your Mac.
-
-To check a release, run `codesign -d --entitlements - build/release/Tabbi.app`: it should list `com.apple.developer.applesignin`.
+The app picks the flow by itself: with the entitlement in its signature it uses the native sheet, otherwise the web page.
+Both reach the same account, because the Services ID is grouped with the App ID.
 
 ### 3. Create the Sign in with Apple key
 
@@ -89,5 +84,6 @@ The first deploy after this change upgrades the database by itself (schema step 
 
 ### 7. Ship the app
 
-Run `scripts/release.sh` with the profile from step 2 in place and publish the release as usual ([install.md](install.md)).
-It should log "Sign in with Apple: on".
+Run `scripts/release.sh` and publish the release as usual ([install.md](install.md)); it needs nothing extra for sign-in.
+Deploy the backend (step 6) first, since the app's web sign-in posts to its callback.
+To check a release, open Settings > General, click Sign in with Apple, and sign in on Apple's page: the Account row should show the account.

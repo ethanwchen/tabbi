@@ -230,7 +230,7 @@ strip -x "$widget/Contents/MacOS/TabbiWidget"
 # The signing entitlements: the sandbox file plus, for the App Store, the
 # application and team identifiers, which must match the embedded profile.
 # Without a profile macOS refuses to launch an app that claims Sign in with
-# Apple, so the ad-hoc build leaves it out (its Account row says so).
+# Apple, so the ad-hoc build leaves it out (its Account row signs in on the web).
 # The widget extension gets the same identifiers from its own profile.
 signing_entitlements="$work/Tabbi.entitlements"
 cp "$entitlements" "$signing_entitlements"

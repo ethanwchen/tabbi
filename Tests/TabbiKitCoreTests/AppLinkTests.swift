@@ -25,4 +25,14 @@ final class AppLinkTests: XCTestCase {
         XCTAssertNil(link("https://tabbinotch.com/open"))
         XCTAssertNil(link("notabbi://open"))
     }
+
+    /// The web sign-in's callback belongs to the ASWebAuthenticationSession
+    /// that opened Apple's page, which holds the state the code is bound to.
+    /// Arriving any other way it could never be exchanged, so it is no link.
+    func testLeavesTheSignInCallbackToItsSession() {
+        let code = String(repeating: "ab", count: 32)
+        XCTAssertNotNil(URL(string: "tabbi://auth/apple?code=\(code)").flatMap(AppleWebSignIn.Callback.init(url:)))
+        XCTAssertNil(link("tabbi://auth/apple?code=\(code)"))
+        XCTAssertNil(link("tabbi://auth/apple?error=cancelled"))
+    }
 }

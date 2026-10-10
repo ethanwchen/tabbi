@@ -14,6 +14,6 @@ site/__pycache__/
 site/_generated.mjs
 site/.wrangler/
 
-# The provisioning profiles: Developer ID for Sign in with Apple (docs/sync.md)
+# The provisioning profiles: App Store (docs/appstore.md) and the unused Developer ID one (docs/sync.md)
 # and Mac App Store (scripts/release-appstore.sh)
 packaging/*.provisionprofile

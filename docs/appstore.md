@@ -23,7 +23,7 @@ This page says what differs, how to build and upload it, and what to enter in Ap
 | Settings > Connections | all rows | no command line tools in the AI picker, no Claude or Do Not Disturb rows |
 | Party | yes | left out by the edition for now (one switch turns it on) |
 | Crash reports | asks after a crash, then sends to `POST /v1/crashes` with consent | none of its own (Apple's crash reports, which users share through macOS, already cover it) |
-| Sign in with Apple and sync ([sync.md](sync.md)) | yes, with the Developer ID profile | yes, with the App Store profile (not in `--adhoc` builds) |
+| Sign in with Apple and sync ([sync.md](sync.md)) | yes, on the web (no profile needed) | yes, natively with the App Store profile (on the web in `--adhoc` builds) |
 
 The compile-time switch sits in these places: `Package.swift` (the define and the Sparkle dependency), `ModuleList.swift` (AI Usage), `AIService.swift` (the sandboxed provider list), `AppDelegate.swift` (updater and install hygiene), `Edition+Current.swift` (the default edition) and a few spots in Settings and the snapshot renderer.
 Everything else follows the edition at run time.

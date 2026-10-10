@@ -33,12 +33,13 @@
 # signed and not notarized, so Gatekeeper blocks its first launch on other Macs
 # until the user clicks Open Anyway in System Settings > Privacy & Security.
 #
-# Sign in with Apple (the optional account that syncs the pet across Macs) needs
-# a Developer ID provisioning profile: put it, untracked, at
-# packaging/Tabbi.provisionprofile (or point PROVISIONING_PROFILE at it) and a
-# Developer ID build embeds it and signs with the Sign in with Apple
-# entitlements. Without it the release works as before and the app's Account
-# row says sign-in is unavailable. docs/sync.md has the setup.
+# Sign in with Apple (the optional account that syncs the pet across Macs)
+# needs nothing here: Apple's Developer ID profiles never grant the
+# com.apple.developer.applesignin entitlement, so this build signs in on the
+# web (an ASWebAuthenticationSession and the friends server's callback) and is
+# signed without a provisioning profile. Do not embed
+# packaging/Tabbi-DeveloperID-unused.provisionprofile. docs/sync.md has the
+# setup.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -59,8 +60,6 @@ log() { echo "==> $*" >&2; }
 fail() { echo "error: $*" >&2; exit 1; }
 
 entitlements=packaging/Tabbi.entitlements
-sign_in_entitlements=packaging/Tabbi-SignInWithApple.entitlements
-profile=${PROVISIONING_PROFILE:-packaging/Tabbi.provisionprofile}
 config=packaging/signing.env
 # The file's values, then the environment's, which win when set.
 # shellcheck source=packaging/signing.env disable=SC2031 # read in a subshell on purpose
@@ -147,45 +146,6 @@ EOF
     exit 1
 }
 
-# Checks the provisioning profile against the Sign in with Apple entitlements,
-# the edition's bundle id and the signing team, before the slow build: macOS
-# refuses to launch an app whose restricted entitlements its profile does not
-# grant, so a mismatch must never ship.
-check_profile() {
-    local decoded bundle_id app_id team expiry
-    decoded=$(mktemp -t tabbi-profile)
-    security cms -D -i "$profile" -o "$decoded" 2>/dev/null \
-        || { rm -f "$decoded"; fail "$profile is not a provisioning profile"; }
-    profile_value() { plutil -extract "$1" raw -o - "$decoded" 2>/dev/null; }
-    bundle_id=$(plutil -extract bundleIdentifier raw -o - \
-        "Sources/TabbiKitCore/Editions/BundledEditions/$edition.json" 2>/dev/null) \
-        || { rm -f "$decoded"; fail "unknown edition '$edition'"; }
-    app_id=$(plutil -extract 'com\.apple\.application-identifier' raw -o - "$sign_in_entitlements")
-    team=$(plutil -extract 'com\.apple\.developer\.team-identifier' raw -o - "$sign_in_entitlements")
-    local problem=
-    if [[ "$app_id" != "$team.$bundle_id" ]]; then
-        problem="$sign_in_entitlements is for $app_id, but the $edition edition is $team.$bundle_id"
-    elif [[ "$(profile_value 'Entitlements.com\.apple\.application-identifier')" != "$app_id" ]]; then
-        problem="$profile is for $(profile_value 'Entitlements.com\.apple\.application-identifier' || echo 'another app'), not $app_id"
-    elif [[ "$(profile_value TeamIdentifier.0)" != "$team" ]]; then
-        problem="$profile belongs to team $(profile_value TeamIdentifier.0 || echo '(none)'), not $team"
-    elif [[ "$(profile_value 'Entitlements.com\.apple\.developer\.applesignin.0')" != Default ]]; then
-        problem="$profile does not grant Sign in with Apple. Enable it on the App ID $app_id and download the profile again"
-    elif [[ "$(profile_value ProvisionsAllDevices)" != true ]]; then
-        problem="$profile is not a Developer ID profile"
-    elif [[ "$developer_id" != *"($team)" ]]; then
-        problem="the signing identity $developer_id is not in team $team"
-    fi
-    expiry=$(profile_value ExpirationDate || true)
-    rm -f "$decoded"
-    [[ -z "$problem" ]] || fail "$problem (see docs/sync.md)"
-    if [[ -n "$expiry" && "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$expiry" ]]; then
-        fail "$profile expired on $expiry. Download a new one (see docs/sync.md)"
-    fi
-}
-
-sign_in_with_apple=false
-
 version=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" Resources/Info.plist)
 tag="v$version"
 
@@ -214,18 +174,9 @@ fi
 
 if $adhoc; then
     log "Ad-hoc build: the app will not be notarized"
-    [[ -f "$profile" ]] && log "Sign in with Apple: off (an ad-hoc signature cannot carry it)"
 else
     preflight_developer_id
     log "Signing as: $developer_id (notary profile: $notary_profile)"
-    if [[ -f "$profile" ]]; then
-        check_profile
-        sign_in_with_apple=true
-        entitlements=$sign_in_entitlements
-        log "Sign in with Apple: on ($profile)"
-    else
-        log "Sign in with Apple: off (no $profile, see docs/sync.md)"
-    fi
 fi
 
 # Sparkle offers an update when the appcast's build number is higher than the
@@ -315,9 +266,6 @@ sign_nested() {
 sign_widget() {
     sign --entitlements packaging/TabbiWidget.entitlements "$widget"
 }
-
-# The profile goes in before signing, so the app's signature seals it.
-$sign_in_with_apple && cp "$profile" "$app/Contents/embedded.provisionprofile"
 
 log "Signing ($($adhoc && echo ad-hoc || echo Developer ID))"
 sign_nested

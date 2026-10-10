@@ -71,7 +71,7 @@ The extension is signed on its own, before the app, with `packaging/TabbiWidget.
 | Direct, `--adhoc` | `scripts/release.sh --adhoc` | ad-hoc, with the widget entitlements |
 | Mac App Store | `scripts/release-appstore.sh` | Apple Distribution, the widget entitlements, its own embedded profile |
 
-The app is signed with the same app group in all three of its entitlements files (`Tabbi.entitlements`, `Tabbi-SignInWithApple.entitlements` and `Tabbi-AppStore.entitlements`), and `bundle.sh` signs the local build with `Tabbi.entitlements` too.
+The app is signed with the same app group in both of its entitlements files (`Tabbi.entitlements` and `Tabbi-AppStore.entitlements`), and `bundle.sh` signs the local build with `Tabbi.entitlements` too.
 Without it, macOS 15 and later may ask the user before an app may write to another app's group container.
 
 An ad-hoc signed extension loads and renders in the widget gallery; WidgetKit does not require a Developer ID or a provisioning profile.
