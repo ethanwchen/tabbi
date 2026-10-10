@@ -59,7 +59,7 @@ Until then the app and site use the name with no (R) symbol, which is correct fo
 
 - "Notch Focus Timer" is the full name of an existing free Mac App Store app with the same function (focus timer that wraps the notch).
 - Descriptive phrases are weak marks, but App Review looks at listing similarity, and the other developer could object through Apple's App Store content dispute form.
-- `docs/appstore.md` also says the name "names no other company's product", which this makes inaccurate.
+- `docs/appstore.md` used to say the name "names no other company's product"; it now flags the conflict and suggests alternatives.
 - Options: keep the descriptive keywords but change their order and add a word (for example `Tabbi: Notch Timer & Study Pet`), or move "notch" and "focus timer" to the subtitle and keywords.
   The renaming is a product and ASO decision, so it is left to the maintainer (see review.md).
 
