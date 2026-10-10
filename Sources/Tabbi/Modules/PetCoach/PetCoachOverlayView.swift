@@ -119,7 +119,7 @@ struct PetCoachOverlayView: View {
             if let date {
                 content(at: date)
             } else {
-                TimelineView(.animation(minimumInterval: 1.0 / 30)) { context in
+                TimelineView(PetCoachSchedule(scene: scene)) { context in
                     content(at: context.date)
                 }
             }
@@ -205,6 +205,27 @@ struct PetCoachOverlayView: View {
     /// glint, flapping wings). Reduce Motion keeps the items' still frame.
     private func drawn(_ frame: PetFrame, at date: Date) -> PetCanvas {
         reduceMotion ? frame.canvas : frame.atItemTime(date.timeIntervalSinceReferenceDate).canvas
+    }
+}
+
+/// Redraws the overlay only when its picture changes (see `PetCoachRedraw`):
+/// every frame while the pet walks, on clip frame changes while it stands or
+/// peeks. A dismissal changes the scene, which brings a fresh schedule.
+private struct PetCoachSchedule: TimelineSchedule {
+    let scene: PetCoachScene
+
+    func entries(from startDate: Date, mode: Mode) -> AnyIterator<Date> {
+        var next: Date? = startDate
+        return AnyIterator {
+            guard let date = next else { return nil }
+            switch scene.line {
+            case .glance(let glance):
+                next = glance.nextRedraw(after: date, clips: scene.clips)
+            case .nudge, .celebration:
+                next = scene.stroll.nextRedraw(after: date, clips: scene.clips, arrival: scene.line.arrival)
+            }
+            return date
+        }
     }
 }
 

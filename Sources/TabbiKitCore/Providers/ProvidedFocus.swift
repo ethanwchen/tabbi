@@ -125,6 +125,33 @@ public struct ProvidedFocus: Hashable, Sendable {
     public func shownTime(at now: Date) -> TimeInterval {
         remaining(at: now) ?? elapsed(at: now)
     }
+
+    /// When a clock face (`StudyTimerFormat.clock(shownTime(at:))`, whole
+    /// seconds rounded up) next shows a different time after `date`, a hair
+    /// late so rounding can't show the old one; nil while nothing moves
+    /// (idle, paused, or run out). A view that redraws only then stays
+    /// still while the clock is stopped instead of redrawing every second.
+    public func nextShownChange(after date: Date) -> Date? {
+        let lag: TimeInterval = 0.001
+        let end: Date
+        switch clock {
+        case .idle, .paused:
+            return nil
+        case .countdown(let endsAt):
+            end = endsAt
+        case .countUp(let since):
+            guard let phaseLength else {
+                // Counting up shows ceil(elapsed), which turns just after each whole second.
+                let elapsed = max(date.timeIntervalSince(since), 0)
+                return since.addingTimeInterval(elapsed.rounded(.up) + lag)
+            }
+            end = since.addingTimeInterval(phaseLength)
+        }
+        let left = end.timeIntervalSince(date)
+        guard left > 0 else { return nil }
+        // The face shows ceil(left) and drops a second when `left` reaches the next whole second down.
+        return end.addingTimeInterval(-(left.rounded(.up) - 1) + lag)
+    }
 }
 
 extension FocusTimer {

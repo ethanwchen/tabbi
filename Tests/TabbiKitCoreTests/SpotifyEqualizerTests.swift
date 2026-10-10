@@ -42,6 +42,33 @@ final class SpotifyEqualizerTests: XCTestCase {
         }
     }
 
+    func testLoopRepeatsWithoutASeam() {
+        for bar in 0..<SpotifyEqualizer.barCount {
+            let loop = SpotifyEqualizer.loop(bar: bar, duration: 30, frameRate: 30)
+            XCTAssertEqual(loop.count, 901)
+            XCTAssertEqual(loop.first!, loop.last!, accuracy: 1e-12, "bar \(bar) jumps when the loop restarts")
+            XCTAssert(loop.allSatisfy { (SpotifyEqualizer.minimumLevel...1).contains($0) })
+            // Smooth everywhere, including the blend into the loop's start.
+            for (a, b) in zip(loop, loop.dropFirst()) {
+                XCTAssertLessThan(abs(a - b), 0.25, "bar \(bar)")
+            }
+        }
+    }
+
+    func testLoopFollowsTheLiveLevelsBeforeTheBlend() {
+        let loop = SpotifyEqualizer.loop(bar: 2, duration: 10, frameRate: 30, blend: 1)
+        for frame in stride(from: 0, to: 270, by: 7) {
+            XCTAssertEqual(loop[frame], SpotifyEqualizer.levels(at: Double(frame) / 30)[2])
+        }
+    }
+
+    func testLoopBarsDifferAndInvalidInputsAreEmpty() {
+        XCTAssertNotEqual(SpotifyEqualizer.loop(bar: 0), SpotifyEqualizer.loop(bar: 1))
+        XCTAssertEqual(SpotifyEqualizer.loop(bar: SpotifyEqualizer.barCount), [])
+        XCTAssertEqual(SpotifyEqualizer.loop(bar: 0, duration: 0), [])
+        XCTAssertEqual(SpotifyEqualizer.loop(bar: 0, frameRate: 0), [])
+    }
+
     func testHugeTimesStayInRange() {
         for time in [1e12, -1e12, 1e18, 812_345_678.9] {
             let levels = SpotifyEqualizer.levels(at: time)

@@ -521,10 +521,20 @@ struct CafeRoom: Sendable {
 /// licence other than the app's own (see docs/sounds.md).
 struct CafeSynth: Sendable {
     private static let talkerCount = 16
+    /// Talkers run at half the output rate. Everything they say sits below
+    /// about 6 kHz (and goes through a 4 kHz low-pass on its way to the
+    /// room), so 24 kHz holds all of it. Sixteen talkers were most of the
+    /// cafe's cost, which was about eight times rain's; this saves nearly half.
+    private static let talkerRateDivisor = 2
 
     private let sampleRate: Double
     private var random: NoiseRandom
     private var talkers: [Talker]
+    /// The last two talker samples, which output samples in between are
+    /// interpolated from, and where the output is between them.
+    private var previousVoices: Float = 0
+    private var latestVoices: Float = 0
+    private var talkerStep = 0
     private var voiceHighPass: BiquadFilter
     private var distance: BiquadFilter
     private var crowd: Drift
@@ -549,7 +559,8 @@ struct CafeSynth: Sendable {
     init(sampleRate: Double, seed: UInt64) {
         self.sampleRate = sampleRate
         var random = NoiseRandom(seed: seed ^ 0xCAFE)
-        talkers = (0..<Self.talkerCount).map { _ in Talker(sampleRate: sampleRate, random: &random) }
+        let talkerRate = sampleRate / Double(Self.talkerRateDivisor)
+        talkers = (0..<Self.talkerCount).map { _ in Talker(sampleRate: talkerRate, random: &random) }
         self.random = random
         // Distant voices carry little chest rumble, and none of the growl
         // that low pitches through a resonant filter would otherwise add.
@@ -567,8 +578,17 @@ struct CafeSynth: Sendable {
     }
 
     mutating func next() -> Float {
-        var voices: Float = 0
-        for i in talkers.indices { voices += talkers[i].next(&random) }
+        if talkerStep == 0 {
+            previousVoices = latestVoices
+            latestVoices = 0
+            for i in talkers.indices { latestVoices += talkers[i].next(&random) }
+        }
+        // Linear interpolation, one talker sample behind. It mirrors the
+        // voices around 24 kHz, out of hearing, and the low-pass below
+        // takes those mirror images down further.
+        var voices = previousVoices
+            + (latestVoices - previousVoices) * Float(talkerStep) / Float(Self.talkerRateDivisor)
+        talkerStep = (talkerStep + 1) % Self.talkerRateDivisor
         voices = distance.process(voiceHighPass.process(voices))
         // A leveler evens out a table that happens to sit close or a lull
         // when everyone pauses at once, so the cafe keeps one steady

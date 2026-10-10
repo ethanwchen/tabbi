@@ -50,7 +50,8 @@ private struct FocusDial: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .help("\(FocusTimerFormat.phaseName(timer.phase)): \(FocusTimerFormat.clock(store.remaining)) left")
-        .motion(Theme.Motion.content, value: store.progress)
+        // No spring on the once-a-second tick: animating it re-rendered the
+        // digits' transition most of every second and kept the notch drawing.
         .motion(Theme.Motion.snappy, value: timer.phase)
     }
 

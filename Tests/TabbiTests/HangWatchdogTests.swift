@@ -36,6 +36,29 @@ final class HangWatchdogTests: XCTestCase {
         XCTAssertNil(log)
     }
 
+    func testAnIdleMainThreadParksTheTimer() {
+        watchdog.start()
+        // Twenty intervals with the main thread asleep in its run loop.
+        spinMainRunLoop(for: 1)
+        XCTAssertLessThanOrEqual(watchdog.tickCount, 4, "an idle app keeps no watchdog wakeups")
+    }
+
+    func testABusyMainThreadKeepsTheTimerRunning() {
+        // A loaded CI machine can answer a 50 ms ping late, so this test
+        // allows a full second before calling it a hang.
+        watchdog.stop()
+        watchdog = HangWatchdog(interval: .milliseconds(50), ticksToHang: 20)
+        watchdog.start()
+        // Twenty intervals awake (and answering) without ever waiting.
+        let end = Date().addingTimeInterval(1)
+        while Date() < end {
+            RunLoop.main.run(mode: .default, before: .distantPast)
+        }
+        // Far more than the at most 4 of a parked timer (see the idle test).
+        XCTAssertGreaterThanOrEqual(watchdog.tickCount, 8)
+        XCTAssertNil(log)
+    }
+
     func testAHangLeavesTheMainThreadsStackUntilItEnds() throws {
         watchdog.start()
         spinMainRunLoop(for: 0.1)

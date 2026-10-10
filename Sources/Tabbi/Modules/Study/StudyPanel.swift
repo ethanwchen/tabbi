@@ -123,7 +123,9 @@ private struct StudyDial: View {
                 .padding(Theme.Spacing.xs)
                 .help(petHelp)
         }
-        .motion(Theme.Motion.content, value: store.progress)
+        // A sprint's card count rolls; a clock's once-a-second tick is set
+        // without a spring, since animating it kept the notch redrawing.
+        .motion(Theme.Motion.content, value: session.cardsDone)
         .motion(Theme.Motion.snappy, value: session.phase)
     }
 
@@ -179,7 +181,6 @@ private struct StudyPartySessionView: View {
                     .help("\(store.pet.profile.name) is studying with the party")
             }
             .frame(width: 176)
-            .motion(Theme.Motion.content, value: progress(remaining))
             VStack(spacing: Theme.Spacing.s) {
                 Card {
                     VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {

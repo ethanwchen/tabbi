@@ -21,7 +21,7 @@ struct SharedFocusCard: View {
             notch.selected = owner
         } label: {
             Card(padding: 0) {
-                TimelineView(.periodic(from: .now, by: 1)) { context in
+                TimelineView(SharedFocusSchedule(focus: focus)) { context in
                     content(focus, descriptor: descriptor, now: context.date)
                 }
                 .padding(.horizontal, Theme.Spacing.s)
@@ -81,6 +81,21 @@ struct SharedFocusCard: View {
         guard let focus, focus.isActive else { return 0 }
         guard let length = focus.phaseLength, length > 0 else { return 1 }
         return min(max(focus.elapsed(at: now) / length, 0), 1)
+    }
+}
+
+/// Redraws the card when the mirrored clock's face changes and never while
+/// it is paused or idle; a new snapshot brings a fresh schedule.
+private struct SharedFocusSchedule: TimelineSchedule {
+    let focus: ProvidedFocus?
+
+    func entries(from startDate: Date, mode: Mode) -> AnyIterator<Date> {
+        var next: Date? = startDate
+        return AnyIterator {
+            guard let date = next else { return nil }
+            next = focus?.nextShownChange(after: date)
+            return date
+        }
     }
 }
 
