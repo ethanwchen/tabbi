@@ -105,3 +105,83 @@ public enum StudyReminder {
                                  matchingPolicy: .nextTime)
     }
 }
+
+extension StudyReminder {
+    /// Who the reminder speaks for: the pet's name, or "Your cat" while a
+    /// cat still goes by its breed ("British Shorthair misses you" reads
+    /// like a stranger).
+    public static func speaker(for pet: PetProfile) -> String {
+        pet.name == pet.breed.displayName ? "Your \(pet.breed.species.displayName.lowercased())" : pet.name
+    }
+
+    /// Whether the day's study goal (the Study timer's focus time goal,
+    /// `StudyDailyGoal.progressID`) is met in the shared progress.
+    /// False when no module shares that goal.
+    public static func goalMet(in progress: [ProgressItem]) -> Bool {
+        progress.contains { $0.id == StudyDailyGoal.progressID && $0.target > 0 && $0.isComplete }
+    }
+}
+
+/// The reminder's saved state: the user's settings plus what was planned
+/// and delivered, so a relaunch never sends a second reminder the same day.
+/// One versioned JSON document next to the pet's save.
+public struct StudyReminderSave: Codable, Hashable, Sendable {
+    /// Version 1 is the first format.
+    public static let schema = VersionedJSON(current: 1)
+
+    public var settings: StudyReminderSettings
+    /// The moment the pending reminder is set for, if one is.
+    public var scheduledFor: Date?
+    /// When a reminder last fired.
+    public var lastDelivered: Date?
+
+    public init(settings: StudyReminderSettings = .off, scheduledFor: Date? = nil, lastDelivered: Date? = nil) {
+        self.settings = settings
+        self.scheduledFor = scheduledFor
+        self.lastDelivered = lastDelivered
+    }
+
+    /// Counts a planned reminder whose moment has passed as delivered. The
+    /// system shows a pending reminder on time even while Tabbi is closed,
+    /// and Tabbi withdraws it whenever its day stops needing one, so a past
+    /// plan means it fired.
+    public mutating func settle(now: Date) {
+        guard let scheduledFor, scheduledFor <= now else { return }
+        lastDelivered = max(lastDelivered ?? scheduledFor, scheduledFor)
+        self.scheduledFor = nil
+    }
+
+    /// Settles the past and plans the next reminder, returning its moment
+    /// (nil when the reminder is off).
+    public mutating func plan(now: Date, studiedToday: Bool, goalMetToday: Bool,
+                              calendar: Calendar = .current) -> Date? {
+        settle(now: now)
+        scheduledFor = StudyReminder.nextFireDate(settings: settings, now: now, studiedToday: studiedToday,
+                                                  goalMetToday: goalMetToday, lastDelivered: lastDelivered,
+                                                  calendar: calendar)
+        return scheduledFor
+    }
+
+    private enum CodingKeys: String, CodingKey { case settings, scheduledFor, lastDelivered }
+
+    /// Reads leniently: a damaged field falls back to its default, so a bad
+    /// value never turns the reminder on or loses the delivery record.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        settings = (try? container.decode(StudyReminderSettings.self, forKey: .settings)) ?? .off
+        scheduledFor = try? container.decode(Date.self, forKey: .scheduledFor)
+        lastDelivered = try? container.decode(Date.self, forKey: .lastDelivered)
+    }
+
+    /// The saved state, or nil when there is no file. Throws when the file
+    /// exists but isn't a reminder save.
+    public static func load(from url: URL) throws -> StudyReminderSave? {
+        guard FileManager.default.fileExists(atPath: url.path) else { return nil }
+        return try schema.decode(StudyReminderSave.self, from: Data(contentsOf: url))
+    }
+
+    public func write(to url: URL) throws {
+        try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try Self.schema.encode(self).write(to: url, options: .atomic)
+    }
+}
