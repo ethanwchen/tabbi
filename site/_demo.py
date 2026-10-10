@@ -30,6 +30,11 @@ ICONS = {
     'chev-r': '<path fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" d="M9.5 5.5L16 12l-6.5 6.5"/>',
     'plus': '<path fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" d="M12 5v14M5 12h14"/>',
     'check-fill': '<path fill="currentColor" fill-rule="evenodd" d="M12 2.4a9.6 9.6 0 1 1 0 19.2 9.6 9.6 0 0 1 0-19.2zm4.2 6.3a1.2 1.2 0 0 0-1.7.1l-3.6 4.1-1.5-1.5a1.2 1.2 0 1 0-1.7 1.7l2.4 2.4a1.2 1.2 0 0 0 1.7-.1l4.5-5a1.2 1.2 0 0 0-.1-1.7z"/>',
+    'paw': '<g fill="currentColor"><ellipse cx="12" cy="16.4" rx="5" ry="4.2"/><ellipse cx="5.4" cy="10.6" rx="2.2" ry="2.8"/><ellipse cx="9.4" cy="6.2" rx="2.2" ry="2.9"/><ellipse cx="14.6" cy="6.2" rx="2.2" ry="2.9"/><ellipse cx="18.6" cy="10.6" rx="2.2" ry="2.8"/></g>',
+    'shirt': '<path fill="currentColor" d="M8.6 3.4c.9 1.3 2 2 3.4 2s2.5-.7 3.4-2l5.5 2.5c.6.3.9 1 .6 1.6l-1.6 3.4c-.3.6-1 .8-1.6.5l-.8-.4v8.9c0 .7-.5 1.2-1.2 1.2H7.7c-.7 0-1.2-.5-1.2-1.2V11l-.8.4c-.6.3-1.3.1-1.6-.5L2.5 7.5c-.3-.6 0-1.3.6-1.6z"/>',
+    'sparkles': '<path fill="currentColor" d="M10 3.5l1.7 4.8 4.8 1.7-4.8 1.7L10 16.5l-1.7-4.8L3.5 10l4.8-1.7zM17.6 13.4l.9 2.3 2.3.9-2.3.9-.9 2.3-.9-2.3-2.3-.9 2.3-.9z"/>',
+    'lock': '<path fill="currentColor" fill-rule="evenodd" d="M12 2.8a5 5 0 0 1 5 5v2.4h.6c1 0 1.8.8 1.8 1.8v7.4c0 1-.8 1.8-1.8 1.8H6.4c-1 0-1.8-.8-1.8-1.8V12c0-1 .8-1.8 1.8-1.8H7V7.8a5 5 0 0 1 5-5zm0 2.6a2.4 2.4 0 0 0-2.4 2.4v2.4h4.8V7.8A2.4 2.4 0 0 0 12 5.4z"/>',
+    'check': '<path fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" d="M5.5 12.5l4.2 4.2 8.8-9.4"/>',
     'updown': '<path fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M8 9.5l4-4 4 4M8 14.5l4 4 4-4"/>',
 }
 
@@ -164,6 +169,91 @@ TODAY_PANE = f'''
                 </div>
               </div>'''
 
+# The Closet's items, each one of the exported looks. Wardrobe items are
+# bought with points; limited ones are earned by studying, never sold, so
+# their tiles show how far along they are. All of them try on: hover or
+# focus a tile (or tap it on a phone), and Mochi wears it in the big
+# preview. Owned items also wear for real, in the notch and on the Timer.
+BALANCE = 210
+WARDROBE = [  # (look, name, cost or None if owned)
+    ('hoodie', 'Cozy Hoodie', None),
+    ('scholar', 'Scholar Set', None),
+    ('flame', 'Flame Headband', None),
+    ('wizard', 'Wizard Hat', 270),
+    ('dino', 'Dinosaur Hoodie', 330),
+]
+LIMITED = [  # (look, name, how to earn it, done, goal, unit)
+    ('crown', 'Tiny Crown', 'Earned for your first week', 1, 1, ''),
+    ('cap', 'Backwards Cap', 'Finish a focus round in the Timer', 0, 1, 'round'),
+    ('laurel', 'Golden Laurel', 'Study 7 days in a row', 4, 7, 'days'),
+    ('medal', 'Team Medal', 'Study 50 hours in all', 31, 50, 'h'),
+]
+
+
+# An owned tile reads "Owned", or "On" while Mochi wears it; demo.css
+# picks one from the tile's aria-pressed, so the script only flips state.
+OWNED_STATUS = f'<span class="tile-status st-owned">Owned</span><span class="tile-status st-on">{icon("check")}On</span>'
+
+
+def tile(look, name, detail, owned, status, cls='tile', extra=''):
+    """One item: its look on Mochi, its status, and data demo.js reads.
+    `detail` is what the footer says while the item is tried on. The flame
+    is the animated item, so its tile plays its flicker too."""
+    action = 'Click to wear it' if owned else 'Hover or tap to try it on'
+    pet = ' data-pet="flame-tile"' if look == 'flame' else ''
+    return (f'<button type="button" class="{cls}" data-look="{look}" data-name="{name}" data-detail="{detail}"{extra}'
+            f'{" data-owned" if owned else ""} aria-pressed="false" title="{name}: {detail}. {action}" disabled>'
+            f'<span class="pet" data-look="{look}"{pet}></span>{OWNED_STATUS}{status}</button>')
+
+
+def wardrobe_tile(look, name, cost):
+    if cost is None:
+        return tile(look, name, 'Owned', True, '')
+    return tile(look, name, f'{cost} pts to unlock', False, f'<span class="tile-status st-locked">{icon("lock")}{cost}</span>',
+                extra=f' data-cost="{cost}"')
+
+
+# A progress bar drawn as an SVG line, so no style attribute is needed.
+def bar(fraction):
+    return (f'<svg class="bar st-locked" viewBox="0 0 40 4" aria-hidden="true"><line x1="2" y1="2" x2="38" y2="2"/>'
+            f'<line class="bar-fill" x1="2" y1="2" x2="{2 + 36 * fraction:g}" y2="2"/></svg>')
+
+
+def limited_tile(look, name, how, done, goal, unit):
+    owned = done >= goal
+    status = '' if owned else f'<span class="tile-status st-locked">{done}/{goal} {unit}</span>{bar(done / goal)}'
+    return tile(look, name, how, owned, icon('sparkles', 'ico tile-spark') + status, 'tile tile-limited')
+
+
+NEXT = min((item for item in WARDROBE if item[2]), key=lambda item: item[2])
+EARNED = sum(done >= goal for *_, done, goal, _ in LIMITED)
+
+CLOSET_PANE = f'''
+              <div class="pane pane-closet" data-pane="closet">
+                <div class="n-card closet-pet">
+                  <span class="pet pet-big" data-pet="closet" data-look="plain"></span>
+                  <p class="pet-name">Mochi</p>
+                  <p class="pet-sub" data-pet-sub>British Shorthair</p>
+                </div>
+                <div class="n-card closet-main">
+                  <div class="closet-head">
+                    <div class="sec-bar" role="radiogroup" aria-label="Closet sections">
+                      <label class="sec" title="Outfits and accessories to unlock with study points"><input type="radio" name="closet-sec" value="wardrobe" checked>{icon('shirt')}<span>Wardrobe</span></label>
+                      <label class="sec" title="Limited edition items, earned by studying, never sold"><input type="radio" name="closet-sec" value="limited">{icon('sparkles')}<span>Limited</span></label>
+                    </div>
+                    <p class="chip" title="Points: 1 for every focused minute, plus a bonus for finishing a session">{icon('star')}<span data-balance>{BALANCE}</span><span class="chip-unit">pts</span></p>
+                  </div>
+                  <div class="sec-pane sec-wardrobe">
+                    <div class="tiles" aria-label="Wardrobe" role="group">{''.join(wardrobe_tile(*item) for item in WARDROBE)}</div>
+                    <p class="closet-foot" data-foot="wardrobe"><span>Next unlock</span><b>{NEXT[1]}</b><span class="foot-gold" data-to-go>{NEXT[2] - BALANCE} pts to go</span></p>
+                  </div>
+                  <div class="sec-pane sec-limited">
+                    <div class="tiles tiles-limited" aria-label="Limited" role="group">{''.join(limited_tile(*item) for item in LIMITED)}</div>
+                    <p class="closet-foot" data-foot="limited"><span>Earned by studying, never sold</span><b class="foot-dim" data-earned>{EARNED} of {len(LIMITED)} earned</b></p>
+                  </div>
+                </div>
+              </div>'''
+
 # (id, title, icon). The tab bar left of the camera, like the app's.
 TABS = [
     ('timer', 'Timer', 'timer'),
@@ -192,14 +282,16 @@ DEMO = f'''
             </button>
             <div class="panel" id="demo-panel" role="group" aria-label="Tabbi panel">
              <div class="panel-inner">
-              <div class="panel-head">
-                <div class="tab-bar" role="radiogroup" aria-label="Tabs">
+              <div class="panel-head" role="radiogroup" aria-label="Tabs">
+                <div class="tab-bar">
                   {''.join(tab(t, title, symbol, i == 0) for i, (t, title, symbol) in enumerate(TABS))}
                 </div>
-                <p class="head-title"><span class="title-timer">Timer</span><span class="title-today">Today</span></p>
+                <p class="head-title"><span class="title-timer">Timer</span><span class="title-today">Today</span><span class="title-closet">Closet</span></p>
+                {tab('closet', 'Closet: your pet', 'paw', False)}
               </div>
 {TIMER_PANE}
 {TODAY_PANE}
+{CLOSET_PANE}
              </div>
             </div>
           </div>

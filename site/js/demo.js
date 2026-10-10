@@ -1,7 +1,7 @@
 // The home page's notch demo: hover or tap the notch and Tabbi's panel
 // springs open, the Timer counts down a short focus round, and the pet
 // cheers beside the closed notch when it is done. Today keeps a checklist
-// for yesterday, today and tomorrow.
+// for yesterday, today and tomorrow, and the Closet dresses the pet.
 //
 // The page already holds the whole panel as HTML, open, with tabs that
 // switch through radio buttons, so it works as a showcase without this
@@ -276,6 +276,7 @@
     done.textContent = String(Number(done.textContent) + 1);
     earned += POINTS;
     points.textContent = `+${earned} pts`;
+    roundFinished();
     close();
     cheer();
     announce(`Round done. ${PET} cheers: plus ${POINTS} points.`);
@@ -431,6 +432,125 @@
     timerTab.focus();
   });
 
+  // --- the Closet -----------------------------------------------------------
+
+  // Every tile tries its item on the big pet: hover or focus it, or tap it
+  // on a phone. An owned item wears for real on click, in the notch and on
+  // the Timer too, and a click on the worn one takes it off. Points from
+  // the Timer can unlock the wardrobe, and the demo's limited cap is earned
+  // by finishing a round.
+  const closetPet = players.closet;
+  const petSub = demo.querySelector('[data-pet-sub]');
+  const tiles = [...demo.querySelectorAll('.tile')];
+  const balanceText = demo.querySelector('[data-balance]');
+  const toGo = demo.querySelector('[data-to-go]');
+  const nextName = toGo.previousElementSibling;
+  const earnedText = demo.querySelector('[data-earned]');
+  const feet = {};
+  demo.querySelectorAll('[data-foot]').forEach((foot) => { feet[foot.dataset.foot] = { el: foot, rest: [...foot.childNodes] }; });
+  let balance = Number(balanceText.textContent);
+  let worn = 'plain';
+  let trying = null;
+
+  /** Restarts a pet's clip in its new look. */
+  function restyle(pet, look) {
+    if (pet.el.dataset.look === look) return;
+    pet.el.dataset.look = look;
+    if (pet === players.dial && timer.run === 'running') pet.play('typing');
+    else pet.idle();
+  }
+
+  function renderCloset() {
+    const shown = trying || tiles.find((tile) => tile.dataset.look === worn);
+    restyle(closetPet, shown ? shown.dataset.look : 'plain');
+    restyle(players.notch, worn);
+    restyle(players.dial, worn);
+    if (trying) petSub.dataset.trying = '';
+    else delete petSub.dataset.trying;
+    petSub.textContent = trying ? `Trying on ${trying.dataset.name}` : 'British Shorthair';
+    tiles.forEach((tile) => {
+      const pressed = tile === trying || ('owned' in tile.dataset && tile.dataset.look === worn);
+      tile.setAttribute('aria-pressed', String(pressed));
+    });
+    // The footer names the item tried on, or points to the next unlock.
+    Object.entries(feet).forEach(([section, foot]) => {
+      if (trying && trying.closest(`.sec-${section}`)) {
+        const name = document.createElement('b');
+        name.textContent = trying.dataset.name;
+        const detail = document.createElement('span');
+        detail.textContent = trying.dataset.detail;
+        foot.el.replaceChildren(name, detail);
+      } else {
+        foot.el.replaceChildren(...foot.rest);
+      }
+    });
+    balanceText.textContent = String(balance);
+    const next = tiles.filter((tile) => tile.dataset.cost && !('owned' in tile.dataset))
+      .sort((a, b) => a.dataset.cost - b.dataset.cost)[0];
+    if (next) {
+      nextName.textContent = next.dataset.name;
+      const missing = next.dataset.cost - balance;
+      toGo.textContent = missing > 0 ? `${missing} pts to go` : 'ready to unlock';
+    } else {
+      feet.wardrobe.rest = [document.createTextNode('Everything unlocked. Dress up as you like.')];
+      if (!trying) feet.wardrobe.el.replaceChildren(...feet.wardrobe.rest);
+    }
+    const limited = tiles.filter((tile) => tile.classList.contains('tile-limited'));
+    earnedText.textContent = `${limited.filter((tile) => 'owned' in tile.dataset).length} of ${limited.length} earned`;
+  }
+
+  function own(tile, detail) {
+    tile.dataset.owned = '';
+    tile.dataset.detail = detail;
+    tile.title = `${tile.dataset.name}: ${detail}. Click to wear it`;
+  }
+
+  function tryOn(tile) {
+    if (trying === tile) return;
+    trying = tile;
+    renderCloset();
+  }
+
+  tiles.forEach((tile) => {
+    tile.addEventListener('pointerenter', (event) => { if (event.pointerType === 'mouse') tryOn(tile); });
+    tile.addEventListener('focus', () => tryOn(tile));
+    tile.addEventListener('click', () => {
+      const { name, look, cost } = tile.dataset;
+      if (!('owned' in tile.dataset) && cost && balance >= Number(cost)) {
+        balance -= Number(cost);
+        own(tile, 'Owned');
+      }
+      if ('owned' in tile.dataset) {
+        const wearing = worn !== look;
+        worn = wearing ? look : 'plain';
+        trying = null;
+        renderCloset();
+        if (wearing) closetPet.play('celebrate');
+        announce(wearing ? `${PET} wears the ${name}.` : `Took off the ${name}.`);
+      } else {
+        trying = tile;
+        renderCloset();
+        announce(`Trying on the ${name}: ${tile.dataset.detail}.`);
+      }
+    });
+  });
+  // Leaving the tiles, by pointer or by keyboard, ends the try-on.
+  demo.querySelectorAll('.tiles').forEach((grid) => {
+    grid.addEventListener('pointerleave', (event) => { if (event.pointerType === 'mouse') tryOn(null); });
+    grid.addEventListener('focusout', (event) => { if (!grid.contains(event.relatedTarget)) tryOn(null); });
+  });
+  demo.querySelectorAll('input[name="closet-sec"]').forEach((section) => {
+    section.addEventListener('change', () => tryOn(null));
+  });
+
+  /** A finished round pays its points and earns the limited cap. */
+  function roundFinished() {
+    balance += POINTS;
+    const cap = tiles.find((tile) => tile.dataset.look === 'cap' && !('owned' in tile.dataset));
+    if (cap) own(cap, 'Earned in the Timer');
+    renderCloset();
+  }
+
   // --- the celebration ------------------------------------------------------
 
   const CONFETTI = ['#FF9E42', '#F4D57E', '#F2A0A6', '#A88CFF', '#7FD6C2', '#FBF7F0'];
@@ -482,6 +602,7 @@
 
   demo.querySelectorAll('button:disabled, input:disabled').forEach((control) => { control.disabled = false; });
   renderDay();
+  renderCloset();
   render();
   renderControls();
   setState('closed');
