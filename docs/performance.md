@@ -102,9 +102,33 @@ Pictures drawn into an image (`ImageRenderer` snapshots, the exported recap card
 What is left on Party is its own once-a-second countdown and the six pets' timer wakeups.
 `PetAnimationViewTests` guards the fix: the pet animates with no SwiftUI update, stops when it leaves the window, and draws its speech bubble where the SwiftUI drawing does.
 
+## Focus sounds
+
+`FocusSoundEngine` runs AVAudioEngine only while a sound is audible: it starts on play, and after a stop or a switch to Off it fades out for 2 s and shuts the engine down once the mixer reports exact silence.
+A focus session with sound off, or the gaps between sessions, keep no audio thread or device awake.
+
+While a sound plays, its synthesis runs on the audio thread.
+Its cost was measured by rendering 10 s of each sound through `FocusMixer` in a release build (the share of one core it takes to keep up in real time):
+
+| Sound | Before | After |
+| --- | --- | --- |
+| Brown, pink or white noise | 0.06-0.08% | unchanged |
+| Fireplace | 0.15% | unchanged |
+| Rain | 0.19-0.22% | unchanged |
+| Cafe murmur | 1.66-1.73% | 0.97% |
+
+The cafe was about eight times rain's cost: sixteen synthesized talkers, each with a glottal pulse, three formant resonators, a consonant burst and a muffle filter, every sample.
+`sample` put most of the time in the voiced path (the pulse and its resonators), spread over many small operations.
+Two things that did not help: a lookup table in place of the pulse's `sin` and `cos` (no change in time), and skipping a talker while it is silent (talkers are silent 43% of the time, but a silent sample was already cheap, so it saved only 7%).
+What did help: the talkers now run at 24 kHz, half the output rate, and the cafe interpolates between their samples.
+Everything they say sits below about 6 kHz and passes a 4 kHz low-pass, so nothing audible is lost.
+Over 60 s of cafe the level is unchanged (RMS 0.1818 before, 0.1817 after) and every octave band from 125 Hz to 16 kHz is within 0.4 dB of before.
+`FocusAmbienceTests` and `FocusLoudnessTests` still pass, and they guard what the cafe sounds like (voice band, no low growl, steady level, loudness within 1 LU).
+A timing test was not added: in the debug build that `swift test` uses, the cafe's cost relative to rain moves only from 2.3 to 1.6 times, too close to set a threshold that never flakes.
+
 ## To measure next
 
-- A focus session with sounds playing (demo mode plays none), celebrations, Party connected to a real server, and the widget installed.
+- A focus session with sounds playing in the running app (demo mode plays none, so this needs a live run), celebrations, Party connected to a real server, and the widget installed.
 - Live data over hours.
   A first look at an older installed build with real data showed 5.4% CPU, about 670 context switches per second and 61 MB while the mouse was in use.
   Part of that is the pointer tracking fixed above; a live run with the pointer still will show what the live modules add.
