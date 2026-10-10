@@ -44,13 +44,13 @@ private struct OnboardingTitle: View {
 
     private func heading(_ flow: OnboardingFlow) -> (String, String) {
         switch flow.stage {
-        case .name: ("sparkles", "Welcome to \(Edition.current.name)")
-        case .kit, .finished: flow.asksName ? ("square.stack.3d.up.fill", "Pick a kit")
-                                            : ("sparkles", "Welcome to \(Edition.current.name)")
-        case .question: (flow.kit?.symbol ?? "sparkles", "Set up \(flow.kit?.name ?? "your kit")")
-        case .modules: ("square.grid.2x2.fill", "Your tabs")
-        case .setup: (flow.currentSetupStep?.symbol ?? "gearshape.fill", flow.currentSetupStep?.title ?? "Setup")
-        case .extras: ("gift.fill", "A few extras")
+        case .name: ("sparkles", String(localized: "Welcome to \(Edition.current.name)", bundle: .tabbi))
+        case .kit, .finished: flow.asksName ? ("square.stack.3d.up.fill", String(localized: "Pick a kit", bundle: .tabbi))
+                                            : ("sparkles", String(localized: "Welcome to \(Edition.current.name)", bundle: .tabbi))
+        case .question: (flow.kit?.symbol ?? "sparkles", String(localized: "Set up \(flow.kit?.name ?? String(localized: "your kit", bundle: .tabbi))", bundle: .tabbi))
+        case .modules: ("square.grid.2x2.fill", String(localized: "Your tabs", bundle: .tabbi))
+        case .setup: (flow.currentSetupStep?.symbol ?? "gearshape.fill", flow.currentSetupStep?.title ?? String(localized: "Setup", bundle: .tabbi))
+        case .extras: ("gift.fill", String(localized: "A few extras", bundle: .tabbi))
         }
     }
 }
@@ -87,14 +87,14 @@ private struct OnboardingProgress: View {
                     .frame(width: index == flow.stageIndex ? 12 : dot, height: dot)
             }
         }
-        .help("Step \(flow.stageIndex + 1) of \(flow.stages.count)")
+        .help(String(localized: "Step \(flow.stageIndex + 1) of \(flow.stages.count)", bundle: .tabbi))
         .accessibilityElement()
-        .accessibilityLabel("Step \(flow.stageIndex + 1) of \(flow.stages.count)")
+        .accessibilityLabel(String(localized: "Step \(flow.stageIndex + 1) of \(flow.stages.count)", bundle: .tabbi))
     }
 
     private var skip: some View {
         Button { store.finish() } label: {
-            Text("Skip Setup")
+            Text("Skip Setup", bundle: .tabbi)
                 .font(Theme.Typography.caption)
                 .foregroundStyle(hovering ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
                 .lineLimit(1)
@@ -102,7 +102,7 @@ private struct OnboardingProgress: View {
         }
         .buttonStyle(.plain)
         .onHover { hovering = $0 }
-        .help("Start using \(Edition.current.name) with what you picked so far. Settings can run setup again.")
+        .help(String(localized: "Start using \(Edition.current.name) with what you picked so far. Settings can run setup again.", bundle: .tabbi))
     }
 }
 
@@ -176,7 +176,7 @@ private struct OnboardingFooter: View {
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
             if flow.canGoBack {
-                FooterButton(title: "Back", symbol: "chevron.left", help: "Go back one step") {
+                FooterButton(title: String(localized: "Back", bundle: .tabbi), symbol: "chevron.left", help: String(localized: "Go back one step", bundle: .tabbi)) {
                     store.update { $0.back() }
                 }
             }
@@ -206,35 +206,35 @@ private struct OnboardingFooter: View {
     }
 
     private var forwardTitle: String {
-        if isLastStep { return forwardIsPrimary ? "Done" : "Skip and Finish" }
-        return forwardIsPrimary ? "Continue" : "Skip"
+        if isLastStep { return forwardIsPrimary ? String(localized: "Done", bundle: .tabbi) : String(localized: "Skip and Finish", bundle: .tabbi) }
+        return forwardIsPrimary ? String(localized: "Continue", bundle: .tabbi) : String(localized: "Skip", bundle: .tabbi)
     }
 
     private var forwardHelp: String {
         switch flow.stage {
-        case .name: forwardIsPrimary ? "Keep this name" : "Go on without a name"
-        case .kit, .finished: "Keep the \(flow.kit?.name ?? "suggested") kit"
-        case .question: "Leave this question unanswered"
-        case .modules: isLastStep ? "Start with these tabs" : "Keep these tabs and set up what they need"
-        case .setup: hasSetupView ? (isLastStep ? "Finish setup" : "Keep this and go on") : "Set this up later from its tab"
-        case .extras: "Finish setup"
+        case .name: forwardIsPrimary ? String(localized: "Keep this name", bundle: .tabbi) : String(localized: "Go on without a name", bundle: .tabbi)
+        case .kit, .finished: flow.kit.map { String(localized: "Keep the \($0.name) kit", bundle: .tabbi) } ?? String(localized: "Keep the suggested kit", bundle: .tabbi)
+        case .question: String(localized: "Leave this question unanswered", bundle: .tabbi)
+        case .modules: isLastStep ? String(localized: "Start with these tabs", bundle: .tabbi) : String(localized: "Keep these tabs and set up what they need", bundle: .tabbi)
+        case .setup: hasSetupView ? (isLastStep ? String(localized: "Finish setup", bundle: .tabbi) : String(localized: "Keep this and go on", bundle: .tabbi)) : String(localized: "Set this up later from its tab", bundle: .tabbi)
+        case .extras: String(localized: "Finish setup", bundle: .tabbi)
         }
     }
 
     private var hint: String {
         switch flow.stage {
-        case .name: "You can change it any time in Settings > General."
-        case .kit, .finished: "A kit is a set of tabs. You can change them any time."
-        case .question: flow.currentQuestion?.allowsMultiple == true ? "Pick any that fit." : "One tap moves on."
-        case .modules: "Click a tab to turn it on or off. Drag to reorder."
+        case .name: String(localized: "You can change it any time in Settings > General.", bundle: .tabbi)
+        case .kit, .finished: String(localized: "A kit is a set of tabs. You can change them any time.", bundle: .tabbi)
+        case .question: flow.currentQuestion?.allowsMultiple == true ? String(localized: "Pick any that fit.", bundle: .tabbi) : String(localized: "One tap moves on.", bundle: .tabbi)
+        case .modules: String(localized: "Click a tab to turn it on or off. Drag to reorder.", bundle: .tabbi)
         case .setup:
             if hasSetupView, let step = flow.currentSetupStep,
                let owner = flow.layout.enabled.map(flow.catalog.descriptor(for:)).first(where: { $0.setup.contains(step) }) {
-                "You can change this later in the \(owner.title) tab."
+                String(localized: "You can change this later in the \(owner.title) tab.", bundle: .tabbi)
             } else {
                 ""
             }
-        case .extras: "All optional. Nothing to do now."
+        case .extras: String(localized: "All optional. Nothing to do now.", bundle: .tabbi)
         }
     }
 }
@@ -320,10 +320,10 @@ private struct NameStep: View {
                 GreetingPet(profile: pet ?? .starter(.cat))
                 VStack(alignment: .leading, spacing: Theme.Spacing.s) {
                     VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-                        Text("What should we call you?")
+                        Text("What should we call you?", bundle: .tabbi)
                             .font(Theme.Typography.title)
                             .foregroundStyle(Theme.Palette.primaryText)
-                        Text("Friends see it in Party, and \(Edition.current.name) uses it to greet you.")
+                        Text("Friends see it in Party, and \(Edition.current.name) uses it to greet you.", bundle: .tabbi)
                             .font(Theme.Typography.caption)
                             .foregroundStyle(Theme.Palette.secondaryText)
                             .lineLimit(1)
@@ -340,7 +340,7 @@ private struct NameStep: View {
                             RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
                                 .strokeBorder(focused ? Theme.Palette.secondaryText : Theme.Palette.stroke, lineWidth: 0.5)
                         )
-                        .help("Your name, up to \(DisplayName.maxLength) characters")
+                        .help(String(localized: "Your name, up to \(DisplayName.maxLength) characters", bundle: .tabbi))
                 }
                 Spacer(minLength: 0)
             }
@@ -353,10 +353,10 @@ private struct NameStep: View {
     @ViewBuilder private var field: some View {
         if RunMode.current.isSnapshot {
             let name = settings.settings.displayName
-            Text(name.isEmpty ? "Your name" : name)
+            Text(name.isEmpty ? String(localized: "Your name", bundle: .tabbi) : name)
                 .foregroundStyle(name.isEmpty ? Theme.Palette.tertiaryText : Theme.Palette.primaryText)
         } else {
-            TextField("Your name", text: name, prompt: Text("Your name").foregroundStyle(Theme.Palette.tertiaryText))
+            TextField(String(localized: "Your name", bundle: .tabbi), text: name, prompt: Text("Your name", bundle: .tabbi).foregroundStyle(Theme.Palette.tertiaryText))
                 .textFieldStyle(.plain)
                 .foregroundStyle(Theme.Palette.primaryText)
                 .focused($focused)
@@ -392,7 +392,7 @@ private struct GreetingPet: View {
 
     var body: some View {
         PetView(player: player, pixelSize: Self.pixelSize)
-            .help("Hi! I'm \(profile.name).")
+            .help(String(localized: "Hi! I'm \(profile.name).", bundle: .tabbi))
             .onAppear { if !RunMode.current.isSnapshot { player.send(.nudge) } }
             .onChange(of: profile) { _, profile in player.update(profile: profile) }
     }
@@ -435,7 +435,7 @@ private struct KitStep: View {
                 }
             }
             OnboardingTile(isSelected: flow.startedFromScratch,
-                           help: "Start with one tab and turn on the ones you want",
+                           help: String(localized: "Start with one tab and turn on the ones you want", bundle: .tabbi),
                            action: { store.update { $0.startFromScratch() } }) {
                 VStack(spacing: Theme.Spacing.s) {
                     Spacer(minLength: 0)
@@ -444,7 +444,7 @@ private struct KitStep: View {
                         .foregroundStyle(Theme.Palette.secondaryText)
                         .frame(width: 26, height: 26)
                         .background(Circle().strokeBorder(Theme.Palette.tertiaryText, style: StrokeStyle(lineWidth: 1, dash: [3, 2])))
-                    Text("Start from Scratch")
+                    Text("Start from Scratch", bundle: .tabbi)
                         .font(Theme.Typography.caption)
                         .foregroundStyle(Theme.Palette.secondaryText)
                         .multilineTextAlignment(.center)
@@ -495,7 +495,7 @@ private struct QuestionStep: View {
                 ForEach(question.options) { option in
                     let isPicked = picked.contains(option.id)
                     OnboardingTile(isSelected: isPicked, tint: tint,
-                                   help: isPicked && question.allowsMultiple ? "Clear \"\(option.label)\"" : option.label,
+                                   help: isPicked && question.allowsMultiple ? String(localized: "Clear \"\(option.label)\"", bundle: .tabbi) : option.label,
                                    action: { store.update { $0.answer(option.id) } }) {
                         VStack(spacing: Theme.Spacing.s) {
                             Image(systemName: option.symbol ?? "circle")
@@ -514,7 +514,7 @@ private struct QuestionStep: View {
             }
             .frame(height: 84)
             HStack(spacing: Theme.Spacing.s) {
-                Text("Your tabs")
+                Text("Your tabs", bundle: .tabbi)
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.tertiaryText)
                 TabSymbols(modules: flow.layout.enabled, catalog: flow.catalog)
@@ -607,8 +607,8 @@ private struct ModulesStep: View {
         let isStacked = rowHeight >= Self.stackedTileHeight
         return OnboardingTile(isSelected: isOn, tint: module.accentColor.opacity(0.7),
                               isCompact: rowHeight < Self.roomyTileHeight,
-                              help: isOn ? (canTurnOff ? "Turn \(module.title) off" : "Keep at least one tab on")
-                                         : "Turn \(module.title) on",
+                              help: isOn ? (canTurnOff ? String(localized: "Turn \(module.title) off", bundle: .tabbi) : String(localized: "Keep at least one tab on", bundle: .tabbi))
+                                         : String(localized: "Turn \(module.title) on", bundle: .tabbi),
                               action: { store.update { $0.setEnabled(id, !isOn) } }) {
             let symbol = Image(systemName: module.symbol)
                 .font(.system(size: 12, weight: .semibold))
@@ -658,8 +658,8 @@ private struct SetupFallback: View {
                     Text(step.title)
                         .font(Theme.Typography.title)
                         .foregroundStyle(Theme.Palette.primaryText)
-                    Text(owner.map { "You can set this up any time in the \($0.title) tab." }
-                         ?? "You can set this up any time in Settings.")
+                    Text(owner.map { String(localized: "You can set this up any time in the \($0.title) tab.", bundle: .tabbi) }
+                         ?? String(localized: "You can set this up any time in Settings.", bundle: .tabbi))
                         .font(Theme.Typography.body)
                         .foregroundStyle(Theme.Palette.secondaryText)
                 }
@@ -743,11 +743,11 @@ private struct AccountBadge: View {
             Image(systemName: "checkmark.circle.fill")
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(Theme.Palette.success)
-                .help("Signed in. Your pet syncs across your Macs.")
-                .accessibilityLabel("Signed in")
+                .help(String(localized: "Signed in. Your pet syncs across your Macs.", bundle: .tabbi))
+                .accessibilityLabel(String(localized: "Signed in", bundle: .tabbi))
         } else {
             Button(action: signIn) {
-                Text("Sign In")
+                Text("Sign In", bundle: .tabbi)
                     .font(Theme.Typography.caption)
                     .foregroundStyle(hovering ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
                     .padding(.horizontal, Theme.Spacing.s)
@@ -757,7 +757,7 @@ private struct AccountBadge: View {
             }
             .buttonStyle(.plain)
             .fixedSize()
-            .help("Open Settings > General to sign in with Apple")
+            .help(String(localized: "Open Settings > General to sign in with Apple", bundle: .tabbi))
             .onHover { hovering = $0 }
             .motion(Theme.Motion.snappy, value: hovering)
         }
