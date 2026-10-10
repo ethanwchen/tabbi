@@ -121,12 +121,29 @@ final class TickerSourcesTests: XCTestCase {
         XCTAssertEqual(TickerSources(focus: FocusTimer().shared).items(at: now), [])
 
         XCTAssertEqual(TickerSources(focus: runningFocus(remaining: 600).shared).items(at: now),
-                       [.focus(TickerFocus(phase: .focus, time: 600, isRunning: true))])
+                       [.focus(TickerFocus(phase: .focus, time: 600, isRunning: true, length: 25 * 60))])
 
         var paused = runningFocus(remaining: 600)
         paused.pause(at: now)
         XCTAssertEqual(TickerSources(focus: paused.shared).items(at: now),
-                       [.focus(TickerFocus(phase: .focus, time: 600, isRunning: false))])
+                       [.focus(TickerFocus(phase: .focus, time: 600, isRunning: false, length: 25 * 60))])
+    }
+
+    func testFocusRingFillsAsThePhasePasses() throws {
+        let item = try XCTUnwrap(TickerSources(focus: runningFocus(remaining: 15 * 60).shared).items(at: now).first)
+        guard case .focus(let focus) = item else { return XCTFail("expected the focus clock") }
+        XCTAssertEqual(try XCTUnwrap(focus.progress), 0.4, accuracy: 0.0001)
+
+        XCTAssertEqual(TickerFocus(phase: .focus, time: 25 * 60, isRunning: true, length: 25 * 60).progress, 0)
+        XCTAssertEqual(TickerFocus(phase: .rest, time: 0, isRunning: true, length: 5 * 60).progress, 1)
+        // A clock running past its length (a late tick) stays full.
+        XCTAssertEqual(TickerFocus(phase: .focus, time: -5, isRunning: true, length: 60).progress, 1)
+    }
+
+    func testOpenEndedOrUnsizedClocksHaveNoRing() {
+        XCTAssertNil(TickerFocus(phase: .focus, time: 600, countsUp: true, isRunning: true, length: 900).progress)
+        XCTAssertNil(TickerFocus(phase: .focus, time: 600, isRunning: true).progress)
+        XCTAssertNil(TickerFocus(phase: .focus, time: 600, isRunning: true, length: 0).progress)
     }
 
     func testFinishedTaskListShowsNothing() {

@@ -114,7 +114,8 @@ final class StudyFocusShareTests: XCTestCase {
         ])
         XCTAssertEqual(snapshot.focus?.source, .study)
         let items = TickerSources(focus: snapshot.focus).items(at: at(5))
-        XCTAssertEqual(items, [.focus(TickerFocus(phase: .focus, time: 20 * 60, isRunning: true, source: .study))])
+        XCTAssertEqual(items, [.focus(TickerFocus(phase: .focus, time: 20 * 60, isRunning: true, source: .study,
+                                                          length: 25 * 60))])
         XCTAssertEqual(items.first?.module, .study)
     }
 

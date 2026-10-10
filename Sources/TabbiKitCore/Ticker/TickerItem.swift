@@ -153,21 +153,34 @@ public struct TickerFocus: Hashable, Sendable {
     public var isRunning: Bool
     /// The module running the clock, whose panel a click opens.
     public var source: ModuleID
+    /// Full length of the phase, which sizes the ring around the closed
+    /// timer's icon; nil while counting up or when the engine doesn't say.
+    public var length: TimeInterval?
 
     public init(phase: FocusPhase, label: String? = nil, time: TimeInterval, countsUp: Bool = false,
-                isRunning: Bool, source: ModuleID = .planner) {
+                isRunning: Bool, source: ModuleID = .planner, length: TimeInterval? = nil) {
         self.phase = phase
         self.label = label ?? FocusTimerFormat.phaseName(phase)
         self.time = time
         self.countsUp = countsUp
         self.isRunning = isRunning
         self.source = source
+        self.length = length
     }
 
     /// The clock at `now` for the shared focus clock.
     public init(_ focus: ProvidedFocus, at now: Date) {
         self.init(phase: focus.phase, label: focus.label, time: focus.shownTime(at: now),
-                  countsUp: focus.countsUp, isRunning: focus.isRunning, source: focus.source)
+                  countsUp: focus.countsUp, isRunning: focus.isRunning, source: focus.source,
+                  length: focus.phaseLength)
+    }
+
+    /// How much of the phase has passed, `0...1`, for the ring around the
+    /// closed timer. An open-ended phase has no end to fill toward, so it
+    /// gets no ring (nil).
+    public var progress: Double? {
+        guard !countsUp, let length, length > 0, time.isFinite else { return nil }
+        return min(max(1 - time / length, 0), 1)
     }
 }
 

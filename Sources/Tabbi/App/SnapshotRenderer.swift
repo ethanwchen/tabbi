@@ -102,6 +102,17 @@ enum SnapshotRenderer {
                 shots.append(Shot("closed-pet-crown", crowned))
             }
         }
+        // The closed timer's ring part-way through a Pomodoro and a break,
+        // whether or not a clock runs when the shots are taken.
+        let rings = [
+            ("closed-focus-ring", TickerFocus(phase: .focus, time: 15 * 60, isRunning: true, length: 25 * 60)),
+            ("closed-focus-ring-break", TickerFocus(phase: .rest, time: 60, isRunning: false, length: 5 * 60)),
+        ]
+        for (name, focus) in rings {
+            let model = NotchViewModel(geometry: geometry, layout: layout)
+            model.preview = .focus(focus)
+            shots.append(Shot(name, model))
+        }
         // One open shot per tab of the active kit.
         for module in layout.enabled {
             let model = NotchViewModel(geometry: geometry, layout: layout)

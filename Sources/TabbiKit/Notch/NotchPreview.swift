@@ -62,9 +62,28 @@ struct NotchPreview: View {
                     .previewText()
                     .fixedSize()
             }
+        case .focus(let focus):
+            if let progress = focus.progress {
+                focusRing(focus, progress: progress)
+            } else {
+                icon
+            }
         default:
             icon
         }
+    }
+
+    /// A thin ring around a smaller timer icon that fills as the phase
+    /// passes; it dims with the clock while paused.
+    private func focusRing(_ focus: TickerFocus, progress: Double) -> some View {
+        let tint = focus.isRunning ? accent : Theme.Palette.secondaryText
+        return ProgressRing(progress: progress, tint: tint, lineWidth: NotchPreviewLayout.focusRingWidth) {
+            Image(systemName: NotchPreviewLayout.symbol(for: item, catalog: catalog))
+                .font(.system(size: 8, weight: .bold))
+                .foregroundStyle(tint)
+        }
+        .padding(NotchPreviewLayout.focusRingWidth / 2 + 1)
+        .frame(width: NotchPreviewLayout.iconSize, height: NotchPreviewLayout.iconSize)
     }
 
     private var icon: some View {

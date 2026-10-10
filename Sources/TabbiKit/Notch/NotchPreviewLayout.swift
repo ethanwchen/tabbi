@@ -9,6 +9,8 @@ import TabbiKitCore
 @MainActor
 public enum NotchPreviewLayout {
     public static let iconSize: CGFloat = 20
+    /// Stroke of the ring that fills around the closed timer's icon.
+    public static let focusRingWidth: CGFloat = 1.5
     /// Gap between the wing content and the outer edge of the notch shape.
     public static let outerInset: CGFloat = Theme.Spacing.s
     /// Keeps a long meeting title from turning the notch into a menu bar.
