@@ -46,7 +46,7 @@ struct AccountAgeSheet<SignInButton: View>: View {
                 HStack(spacing: 8) {
                     Picker("Month", selection: $birthMonth) {
                         Text("Month").tag(0)
-                        ForEach(Array(Calendar.current.monthSymbols.enumerated()), id: \.offset) { index, month in
+                        ForEach(Array(PartyAgeCheck.monthNames().enumerated()), id: \.offset) { index, month in
                             Text(month).tag(index + 1)
                         }
                     }

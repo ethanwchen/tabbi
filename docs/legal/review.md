@@ -71,6 +71,7 @@ Severity scale:
 | L4 | "Free forever" is a promise about the future. | **Flagged** in `ip-review.md`; keep it only if meant, or say "free and open source". |
 | L5 | The app icon art is AI-generated (the source carries an OpenAI C2PA manifest), so its US copyright protection is weak. | **Noted.** Trademark rights in the icon are unaffected. |
 | L6 | A settings migration had silently picked Claude Code as the AI provider for people who used Tabbi before AI providers existed. | **Fixed** by C1: such a choice sends nothing until the user picks it again and allows it. Those users see "None" once, which is the right privacy result. |
+| L7 | The birth month and year pickers used the Mac's own calendar, so someone whose system calendar is Japanese, Hebrew, Islamic or Persian got years (and, for Hebrew, 13 months) the age check could not read, and could never pass it. | **Fixed.** The question is always asked in the Gregorian calendar (`PartyAgeCheck.birthCalendar`), with month names in the user's language. |
 
 ## Decisions that shape the documents
 

@@ -33,6 +33,16 @@ final class PartyAgeCheckTests: XCTestCase {
         XCTAssertEqual(years.count, 101)
     }
 
+    func testTheQuestionIsGregorianWhateverTheMacsCalendar() {
+        XCTAssertEqual(PartyAgeCheck.birthCalendar.identifier, .gregorian)
+        // 9 October 2026 is in the year 1448 of the Islamic calendar and 5787
+        // of the Hebrew one; the picker still offers 2026 and twelve months.
+        XCTAssertEqual(PartyAgeCheck.birthYears(at: date(2026, 10, 9)).first, 2026)
+        XCTAssertEqual(PartyAgeCheck.monthNames(locale: Locale(identifier: "he_IL@calendar=hebrew")).count, 12)
+        XCTAssertEqual(PartyAgeCheck.monthNames(locale: Locale(identifier: "en_US@calendar=japanese")).first, "January")
+        XCTAssertNotNil(PartyAgeCheck.eligibleFrom(birthMonth: 3, year: 2013))
+    }
+
     func testOpensTextNamesTheMonthAndYear() {
         XCTAssertEqual(PartyAgeCheck.opensText(date(2028, 5, 1), calendar: calendar,
                                                locale: Locale(identifier: "en_US")), "May 2028")

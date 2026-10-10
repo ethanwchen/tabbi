@@ -14,6 +14,25 @@ import Foundation
 public enum PartyAgeCheck {
     public static let minimumAge = 13
 
+    /// The calendar the question is asked and answered in. Birth years are
+    /// Gregorian whatever the Mac's calendar is: a Japanese, Hebrew,
+    /// Islamic or Persian system calendar would offer years (and, for
+    /// Hebrew, 13 months) that `eligibleFrom` can't read, so nobody using
+    /// one could ever pass.
+    public static var birthCalendar: Calendar {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.locale = .current
+        calendar.timeZone = .current
+        return calendar
+    }
+
+    /// The month picker's names, January first, in the user's language.
+    public static func monthNames(locale: Locale = .current) -> [String] {
+        var calendar = birthCalendar
+        calendar.locale = locale
+        return calendar.monthSymbols
+    }
+
     /// The answer as picked: a month (1 to 12) and a year.
     public struct Birth: Equatable, Sendable {
         public let month: Int
@@ -38,7 +57,7 @@ public enum PartyAgeCheck {
     /// `minimumAge`: the first of the month after their 13th birthday's
     /// month, since the day isn't asked. Nil for a month or year that
     /// can't be a birth date.
-    public static func eligibleFrom(birthMonth month: Int, year: Int, calendar: Calendar = .current) -> Date? {
+    public static func eligibleFrom(birthMonth month: Int, year: Int, calendar: Calendar = birthCalendar) -> Date? {
         guard (1...12).contains(month), year > 1900 else { return nil }
         guard let birthMonth = calendar.date(from: DateComponents(year: year, month: month, day: 1)) else { return nil }
         return calendar.date(byAdding: DateComponents(year: minimumAge, month: 1), to: birthMonth)
@@ -52,7 +71,7 @@ public enum PartyAgeCheck {
 
     /// The years the birth year picker offers, newest first: this year
     /// back a century, so every answer is possible and none is suggested.
-    public static func birthYears(at now: Date, calendar: Calendar = .current) -> [Int] {
+    public static func birthYears(at now: Date, calendar: Calendar = birthCalendar) -> [Int] {
         let year = calendar.component(.year, from: now)
         return Array(stride(from: year, through: year - 100, by: -1))
     }

@@ -49,7 +49,7 @@ private struct PartyAgeQuestion: View {
     @State private var month: Int?
     @State private var year: Int?
 
-    private static let months = Calendar.current.monthSymbols
+    private static let months = PartyAgeCheck.monthNames()
 
     var body: some View {
         VStack(spacing: Theme.Spacing.s) {
