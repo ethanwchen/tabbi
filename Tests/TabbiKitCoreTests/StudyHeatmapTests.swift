@@ -68,6 +68,38 @@ final class StudyHeatmapTests: XCTestCase {
         XCTAssertEqual(heatmap.bestDay?.key, key("2025-10-06"))
     }
 
+    // MARK: Labels
+
+    func testMonthLabelsSitOverTheFirstWeekStartingInEachMonth() {
+        let calendar = calendar()
+        // Weeks from Sunday, August 17 to Sunday, October 5, 2025.
+        let heatmap = StudyHeatmap(minutesByDay: [:], weeks: 8, today: tuesday(in: calendar), calendar: calendar)
+        let labels = heatmap.monthLabels(minimumWeeks: 1)
+        XCTAssertEqual(labels.map(\.week), [0, 3, 7])
+        XCTAssertEqual(labels.map(\.start), [key("2025-08-17"), key("2025-09-07"), key("2025-10-05")])
+    }
+
+    func testCrowdedMonthLabelsAreLeftOut() {
+        let calendar = calendar()
+        let heatmap = StudyHeatmap(minutesByDay: [:], weeks: 8, today: tuesday(in: calendar), calendar: calendar)
+        // August has three columns before September's four, and October
+        // one at the end.
+        XCTAssertEqual(heatmap.monthLabels(minimumWeeks: 2).map(\.week), [0, 3])
+        XCTAssertEqual(heatmap.monthLabels(minimumWeeks: 4).map(\.week), [3])
+        XCTAssertEqual(heatmap.monthLabels(minimumWeeks: 5).map(\.week), [])
+        XCTAssertEqual(heatmap.monthLabels(minimumWeeks: 0).count, 3, "every label has at least one column")
+    }
+
+    func testRowsFollowTheFirstWeekday() {
+        let sunday = StudyHeatmap(minutesByDay: [:], weeks: 1, today: tuesday(in: calendar()), calendar: calendar())
+        XCTAssertEqual(sunday.weekdays, [1, 2, 3, 4, 5, 6, 7])
+        let monday = StudyHeatmap(minutesByDay: [:], weeks: 1, today: tuesday(in: calendar(firstWeekday: 2)),
+                                  calendar: calendar(firstWeekday: 2))
+        XCTAssertEqual(monday.weekdays, [2, 3, 4, 5, 6, 7, 1])
+        XCTAssertEqual(monday.weekdays.indices.filter { StudyHeatmap.labeledWeekdays.contains(monday.weekdays[$0]) },
+                       [0, 2, 4], "Monday, Wednesday and Friday are the first, third and fifth rows")
+    }
+
     // MARK: Summary
 
     func testSummaryCountsTheLastThirtyDaysAndTheBestDayEver() {
