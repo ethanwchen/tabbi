@@ -137,6 +137,21 @@ Now `PartyState.nextClockChange(after:)` says when the panel next changes (the n
 With a session running it still redraws every second, as it should.
 `PartyClockTests` guards the schedule: nothing counting down needs no clock, a friend's countdown wakes the panel only when its minutes change (3 times over 2.5 minutes instead of 150), and a running session ticks every second.
 
+Today had the same kind of clock.
+When another module owns the focus clock (Study in the bundled kits), Today shows a small card that mirrors it, and that card redrew every second through a `TimelineView(.periodic(by: 1))`, whether the clock ran, was paused, or there was no session at all ("Start a timer").
+The default demo is that last case: the Focus tab's Pomodoro wins the shared clock, so Today's card for Study shows no session and still redrew every second.
+Now the card follows `ProvidedFocus.nextShownChange(after:)`: the moment its mm:ss face next changes while the clock runs, and never while it is idle, paused or run out.
+A new snapshot of the shared clock (start, pause, a phase change) brings a fresh schedule.
+
+| Notch open on Today, 60 s | CPU before | CPU after | Context switches before | after |
+| --- | --- | --- | --- | --- |
+| No shared session (default demo) | 0.23% | 0.05% | 6 per second | 9 per second |
+| Study's session running (Focus idle) | 0.21% | 0.22% | 15 per second | 14 per second |
+
+The context switch counts here are mostly other activity on the Mac and too small to compare.
+While Study's session runs the card still ticks every second, and screenshots confirm it counts down (15:02 to 14:59 over three seconds).
+`ProvidedFocusClockTests` guards the schedule: an idle, paused or finished clock needs no redraw, and a running countdown or count-up wakes once per second, each time on a new face.
+
 ### Memory over many opens
 
 Demo data, release build, `--cycle 3 --duration 600 --interval 10`: the notch opened on each of the eight enabled tabs in turn and closed again, about 110 opens and 110 closes in 11 minutes.
