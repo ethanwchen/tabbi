@@ -632,6 +632,7 @@ private struct ClosetLimited: View {
 
     private func tile(_ item: PetItem) -> some View {
         let progress = item.limitedEdition.flatMap { store.milestones.progress(of: $0, today: .now) }
+            ?? store.seasons.progress(of: item, at: .now)
         return ClosetLimitedTile(item: item, state: store.closet.state(of: item), progress: progress,
                                  model: thumbnailModel) {
             withMotion(Theme.Motion.snappy) { _ = store.tap(item) }

@@ -171,3 +171,58 @@ public struct SeasonalEventProgress: Hashable, Sendable {
     /// Goals from this many minutes up read in hours.
     static let hourLabelMinutes = 120
 }
+
+/// The focused minutes logged during every run of every event in a
+/// catalog, kept per run (`SeasonalEventProgress`). The Closet replays the
+/// whole activity log into it on launch and then follows new records, so an
+/// item is earned even when the run's focus time was logged while the Closet
+/// was not watching, and a past run's earned items can be granted late.
+public struct SeasonalEventTally: Hashable, Sendable {
+    public let catalog: SeasonalEventCatalog
+    /// Gives the time zone that decides which local days a record ends on.
+    public let calendar: Calendar
+    /// Each run with some focus logged, by its id (`halloween-2026`).
+    public private(set) var runs: [String: SeasonalEventProgress] = [:]
+
+    public init(catalog: SeasonalEventCatalog = .bundled, calendar: Calendar = .current,
+                records: some Sequence<ActivityRecord> = [ActivityRecord]()) {
+        self.catalog = catalog
+        self.calendar = calendar
+        for record in records { add(record) }
+    }
+
+    /// Counts `record` toward every run going on when it ended; adding the
+    /// same record twice counts it once.
+    public mutating func add(_ record: ActivityRecord) {
+        guard record.kind == .focusCompleted else { return }
+        for occurrence in catalog.active(at: record.end, calendar: calendar) {
+            let id = occurrence.id(calendar: calendar)
+            runs[id, default: SeasonalEventProgress(occurrence: occurrence)].add(record)
+        }
+    }
+
+    /// Every item some run has earned, in catalog order.
+    public var earned: [PetItem] {
+        let items = Set(runs.values.flatMap(\.earned))
+        return catalog.events.flatMap { $0.rewards.map(\.item) }.filter(items.contains)
+    }
+
+    /// The runs going on at `date`, the one ending soonest first, each with
+    /// the focus logged so far (none yet for a run that just started).
+    public func active(at date: Date) -> [SeasonalEventProgress] {
+        catalog.active(at: date, calendar: calendar).map {
+            runs[$0.id(calendar: calendar)] ?? SeasonalEventProgress(occurrence: $0)
+        }
+    }
+
+    /// Progress toward `item` while its event runs at `date`, for the
+    /// Limited shelf; nil between runs, when there is nothing to count.
+    public func progress(of item: PetItem, at date: Date) -> PetLimitedProgress? {
+        for run in active(at: date) {
+            if let reward = run.occurrence.event.rewards.first(where: { $0.item == item }) {
+                return run.progress(of: reward)
+            }
+        }
+        return nil
+    }
+}

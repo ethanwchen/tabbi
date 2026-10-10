@@ -55,6 +55,28 @@ final class ClosetLimitedEditionAppTests: XCTestCase {
         XCTAssertEqual(try savedLedger()?.granted, [.accessory(.teamMedal)])
     }
 
+    func testFocusDuringASeasonalEventEarnsItsItemsFromHistoryAndNewRecords() throws {
+        let calendar = Calendar.current
+        func halloween(_ day: Int, minutes: Double) -> ActivityRecord {
+            let end = calendar.date(from: DateComponents(year: 2025, month: 10, day: day, hour: 12))!
+            return ActivityRecord(source: "focus", kind: .focusCompleted, start: end.addingTimeInterval(-minutes * 60),
+                                  end: end, quantity: minutes, unit: .minutes)
+        }
+        let store = ClosetStore(storage: EditionStorage(root: root), runMode: .live)
+        let log = ActivityLog(repository: nil)
+        store.follow(activity: log.recorded, history: [halloween(20, minutes: 100)])
+
+        let witchHat = PetLimitedEdition.halloweenWitchHat.item
+        let pumpkin = PetLimitedEdition.halloweenPumpkin.item
+        XCTAssertTrue(store.closet.save.ledger.owns(witchHat), "a goal reached in the past unlocks on launch")
+        XCTAssertFalse(store.closet.save.ledger.owns(pumpkin))
+        XCTAssertEqual(store.closet.balance, 0, "history counts toward the event, not points")
+
+        log.record(halloween(28, minutes: 200))
+        XCTAssertTrue(store.closet.save.ledger.owns(pumpkin))
+        XCTAssertEqual(try savedLedger()?.granted, [witchHat, pumpkin])
+    }
+
     func testServerGrantsUnlockEventItemsOnce() {
         let store = ClosetStore(storage: EditionStorage(root: root), runMode: .live)
         let cap = PetLimitedEdition.launchWeekCap.item

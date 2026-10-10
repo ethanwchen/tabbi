@@ -182,6 +182,61 @@ final class SeasonalEventTests: XCTestCase {
         XCTAssertEqual(SeasonalEventProgress(occurrence: nextYear, records: records).focusMinutes, 60)
     }
 
+    // MARK: Tally and ownership
+
+    func testTallyKeepsEachRunApartAndEarnsAcrossRuns() {
+        let calendar = calendar()
+        let inHalloween = focus(100, endingAt: date(2026, 10, 20, hour: 9, in: calendar))
+        let records = [inHalloween, inHalloween,
+                       focus(200, endingAt: date(2026, 11, 10, in: calendar)),
+                       focus(240, endingAt: date(2027, 1, 2, hour: 22, in: calendar)),
+                       ActivityRecord(source: "anki", kind: .cardsReviewed, start: date(2026, 10, 21, in: calendar),
+                                      end: date(2026, 10, 21, hour: 1, in: calendar), quantity: 500, unit: .minutes)]
+        let tally = SeasonalEventTally(catalog: SeasonalEventCatalog(events: [halloween, winter]), calendar: calendar,
+                                       records: records)
+
+        XCTAssertEqual(Set(tally.runs.keys), ["halloween-2026", "winter-2026"])
+        XCTAssertEqual(tally.runs["halloween-2026"]?.focusMinutes, 100)
+        XCTAssertEqual(tally.earned, [.accessory(.witchHat), .accessory(.beanie)])
+        XCTAssertEqual(tally.progress(of: .accessory(.witchHat), at: date(2026, 10, 30, in: calendar))?.label,
+                       "90/90 min")
+        XCTAssertEqual(tally.progress(of: .accessory(.halo), at: date(2026, 10, 30, in: calendar))?.label, "1/5 h")
+        XCTAssertNil(tally.progress(of: .accessory(.halo), at: date(2026, 11, 10, in: calendar)))
+        XCTAssertNil(tally.progress(of: .accessory(.beanie), at: date(2026, 10, 30, in: calendar)))
+
+        // Next year's run starts from zero.
+        let nextYear = tally.active(at: date(2027, 10, 20, in: calendar))
+        XCTAssertEqual(nextYear.map(\.occurrence.event.id), ["halloween"])
+        XCTAssertEqual(nextYear.first?.focusMinutes, 0)
+        XCTAssertEqual(tally.progress(of: .accessory(.witchHat), at: date(2027, 10, 20, in: calendar))?.label,
+                       "0/90 min")
+    }
+
+    func testEarnedSeasonalItemsAreGrantedOnceAndStayOwned() {
+        let calendar = calendar()
+        var closet = PetCloset(save: PetSave(profile: .starter(.cat)))
+        let witchHat = PetLimitedEdition.halloweenWitchHat.item
+        let pumpkin = PetLimitedEdition.halloweenPumpkin.item
+
+        var tally = SeasonalEventTally(calendar: calendar)
+        tally.add(focus(60, endingAt: date(2026, 10, 18, hour: 9, in: calendar)))
+        XCTAssertEqual(closet.unlockSeasonal(tally), [])
+        XCTAssertFalse(closet.state(of: witchHat).isOwned)
+
+        tally.add(focus(45, endingAt: date(2026, 10, 19, hour: 9, in: calendar)))
+        XCTAssertEqual(closet.unlockSeasonal(tally), [witchHat])
+        XCTAssertEqual(closet.unlockSeasonal(tally), [], "an item is granted once")
+        XCTAssertTrue(closet.state(of: witchHat).isOwned)
+        XCTAssertFalse(closet.state(of: pumpkin).isOwned)
+
+        // After the event the hat is still owned, and next year the pumpkin
+        // can be earned from a fresh start.
+        let nextYear = SeasonalEventTally(calendar: calendar)
+        XCTAssertEqual(closet.unlockSeasonal(nextYear), [])
+        XCTAssertTrue(closet.state(of: witchHat).isOwned)
+        XCTAssertEqual(nextYear.progress(of: pumpkin, at: date(2027, 10, 20, in: calendar))?.label, "0/5 h")
+    }
+
     // MARK: Catalog file
 
     private func file(_ events: String, schema: String = "events.v1") -> Data {
