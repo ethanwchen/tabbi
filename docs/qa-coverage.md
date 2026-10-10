@@ -1,7 +1,8 @@
 # Test coverage
 
 This page records where Tabbi's automated tests are thin and what to test next.
-Numbers are line coverage, measured on 2026-10-09 at commit `936baeff`.
+Numbers are line coverage, first measured on 2026-10-09 at commit `936baeff` and measured again on 2026-10-10 at commit `46697ce5`.
+The "is at" figures in each section below are the first measurement, which set the plan; the summary has both.
 
 ## How to measure
 
@@ -30,15 +31,41 @@ npx vitest run --coverage.enabled --coverage.provider=istanbul --coverage.includ
 
 ## Summary
 
-| Area | Lines | Covered |
-| --- | ---: | ---: |
-| `TabbiKitCore` (pure logic) | 21708 | 96.0% |
-| `TabbiWidget` | 306 | 99.7% |
-| `TabbiKit` (shared AppKit and SwiftUI) | 4565 | 29.5% |
-| `Tabbi` (app, modules, stores, views) | 39104 | 18.0% |
-| `backend/src` (Worker and Hub) | 1241 | 98.2% (branches 95.6%) |
+| Area | Lines | 2026-10-09 | 2026-10-10 |
+| --- | ---: | ---: | ---: |
+| `TabbiKitCore` (pure logic) | 21708 | 96.0% | 96.7% |
+| `TabbiWidget` | 306 | 99.7% | 99.7% |
+| `TabbiKit` (shared AppKit and SwiftUI) | 4565 | 29.5% | 29.5% |
+| `Tabbi` (app, modules, stores, views) | 39165 | 18.0% | 21.3% |
+| `backend/src` (Worker and Hub) | 1241 | 98.2% (branches 95.6%) | 98.9% (branches 96.3%) |
 
-At this commit `swift test` ran 2219 XCTest cases plus the Swift Testing suites, all green (2 skipped), and the backend ran 366 tests, all green.
+On 2026-10-09 `swift test` ran 2219 XCTest cases plus the Swift Testing suites, and the backend ran 366 tests.
+On 2026-10-10 it ran 2246 XCTest cases plus the Swift Testing suites (2 skipped), and the backend ran 382 tests, all green.
+
+The files this page planned tests for, then and now (paths under `Sources/`):
+
+| File | 2026-10-09 | 2026-10-10 |
+| --- | ---: | ---: |
+| `Tabbi/Modules/Party/PartyStore.swift` | 74% | 92% |
+| `Tabbi/Sync/SyncStore.swift` | 75% | 95% |
+| `Tabbi/Modules/Focus/FocusStore.swift` | 74% | 78% |
+| `Tabbi/Modules/Study/StudyStore.swift` | 80% | 90% |
+| `TabbiKitCore/Party/PartyTransport.swift` | 43% | 95% |
+| `TabbiKitCore/AI/AIProvider.swift` | 82% | 99% |
+| `TabbiKitCore/Claude/ClaudeCLI.swift` | 19% | 95% |
+| `Tabbi/Modules/ClaudeAsk/ClaudeAskSession.swift` | 56% | 76% |
+| `Tabbi/Feedback/CrashHandler.swift` | 67% | 67% (its install runs in crashing child processes, which coverage does not count) |
+| `Tabbi/Modules/Anki/AnkiStore.swift` | 17% | 58% |
+| `Tabbi/Connections/ConnectionsStore.swift` | 16% | 57% |
+| `Tabbi/Modules/Focus/FocusController.swift` | 21% | 44% |
+| `Tabbi/Modules/Closet/StudyReminderScheduler.swift` | 15% | 84% |
+| `Tabbi/Modules/Schedule/ScheduleStore.swift` | 31% | 68% |
+| `Tabbi/Modules/Spotify/SpotifyController.swift` | 35% | 72% |
+| `Tabbi/Modules/PetCoach/PetCoachController.swift` | 34% | 58% |
+| `Tabbi/Modules/System/SystemMonitor.swift` | 28% | 93% |
+
+What is still uncovered in these files is mostly the call into the real system service (Apple Events, EventKit, notifications, audio, Shortcuts, IOKit), which each section names as checked by hand.
+Outside view code, the largest files still under 50% are of the same kind: `ConnectionProbes`, `FocusSoundEngine`, `SystemSampler`, `AppMover` and the Keychain-backed `AIKeyStore` (34%).
 
 Most uncovered app lines are SwiftUI view bodies, the snapshot renderer and the notch window controller.
 Those are checked by the snapshot run rather than by unit tests, so this page ranks the non-view code, where a bug changes data or behavior.
