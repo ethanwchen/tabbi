@@ -68,6 +68,9 @@ They found that adopting a merged save scheduled a redundant second round, which
 `Tabbi/Modules/Focus/FocusStore.swift` is at 74%.
 `toggleRunning()`, `focus(on:)`, `link(_:)`, `rescheduleNotification()` and the `FocusNotifications` wrapper are untested, and so is the `recoverAtLaunch()` path that records a session cut short by quit.
 Plan: tests for stop and partial reward across sleep and quit, using the store's clock and a stub notification center.
+Status: `FocusSessionInterruptionTests` covers stop and partial reward across sleep, quit and a crash.
+`FocusStoreControlTests` now covers play and pause, "Focus on this" (idle, paused, on a break), linking and unlinking, launch recovery after an older build (phases that ran out are logged once), a crash during the break, a heartbeat from the future, and the demo saving nothing.
+Notifications are still untested, because `FocusNotifications` only exists inside an `.app` bundle.
 
 ### 4. Study store controls (app)
 
