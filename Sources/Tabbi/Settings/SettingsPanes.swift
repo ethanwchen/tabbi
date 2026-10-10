@@ -899,6 +899,11 @@ struct FeedbackSection: View {
                 Text("A soft sound when you unlock an item or reach a streak.")
             }
             .help("Play a soft sound with celebrations that have no sound of their own")
+            Toggle(isOn: $store.settings.weeklyRecapEnabled) {
+                Text("Weekly recap")
+                Text("A card with your week in the notch every Sunday evening.")
+            }
+            .help("Show a recap of your week the first time you open the notch after Sunday 6 pm")
             Picker(selection: $store.settings.motionPace) {
                 ForEach(MotionPace.allCases, id: \.self) { pace in
                     Text(pace.title).tag(pace)

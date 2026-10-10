@@ -22,6 +22,7 @@ No framework, no JavaScript in the browser, no build dependencies (one small Clo
 - `_social-card.html` - the source of the Open Graph and Twitter card (not part of the site).
 - `_hero_video.py` - renders the hero animation from the app's demo snapshots (see Hero animation).
 - `functions/suggest.js` and `_suggest_prefill.mjs` - the Pages Function that fills the Suggest form's app facts; `test/` tests it.
+- `functions/add/[code].js`, `functions/join/[code].js` and `_invite.mjs` - the Pages Functions that serve Party invite links (see Party invites); `test/` tests them.
 - `deploy.sh` - builds and deploys to the Cloudflare Pages project `tabbi`.
 
 ## Build and preview
@@ -64,6 +65,18 @@ It reads them, and the field names, from `_generated.mjs`, which `build.py` writ
 
 The backend answers a good post with a `303` redirect to `https://tabbinotch.com/thanks`, which is not indexed.
 The privacy policy's "This website" section covers what happens to a suggestion.
+
+## Party invites
+
+Tabbi shares friend and party invites as `https://tabbinotch.com/add/<friend code>` and `/join/<party code>` (`PartyInvite` in `TabbiKitCore`).
+`functions/add/[code].js` and `functions/join/[code].js` answer them through `_invite.mjs`, on the server, since the CSP allows no script.
+The code is read from the raw path and checked like `PartyCode`: upper-cased, dashes dropped, then 8 characters for a friend and 6 for a party, all from the alphabet without I, O, 0 and 1.
+A percent-encoded code is refused, never decoded, and nothing from a refused path reaches the page.
+A good code gets a page that shows it, an Open in Tabbi button (`tabbi://add/<code>`), a Download Tabbi button, and a meta refresh to the same `tabbi://` link, which opens Tabbi on a Mac that has it.
+Phones get the page without the refresh: they cannot run Tabbi, and Safari there would show an "address is invalid" alert.
+Any other code gets a friendly "This invite looks off" page with a 404 status.
+`build.py` builds the three pages (`invite-add`, `invite-join`, `invite-invalid`) like the others, so every check covers them, then moves them out of `dist` into `_generated.mjs` with the code rules, since without a code they mean nothing.
+`--serve` answers `/add/<code>` and `/join/<code>` the same way (`invite_page` in `build.py`), so they can be previewed without wrangler.
 
 ## Caching
 

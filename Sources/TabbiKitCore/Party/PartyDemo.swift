@@ -57,6 +57,12 @@ extension PartyState {
         return PartyState(profile: me, friends: friends, party: party)
     }
 
+    /// Someone who isn't a friend yet, for the demo's invite links: the
+    /// person a demo friend link adds.
+    static var demoInvitee: PartyProfile {
+        profile(code: "AVA7K3RN", name: "Ava", pet: PetProfile(name: "Clover", breed: .beagle, accessories: [.flowerCrown]))
+    }
+
     /// A profile as the server would return it for `pet`.
     private static func profile(code: String, name: String, pet: PetProfile) -> PartyProfile {
         let update = PartyPetAppearance.update(for: pet)
@@ -159,6 +165,12 @@ extension PartyState {
             return state
         }
     }
+}
+
+extension PartyProfile {
+    /// Someone who isn't a friend in `PartyState.demo` yet, so the demo can
+    /// show an invite link adding them.
+    public static var demoInvitee: PartyProfile { PartyState.demoInvitee }
 }
 
 extension PartyTeamCelebration {

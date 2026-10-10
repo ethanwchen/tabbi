@@ -276,6 +276,7 @@ final class SettingsRepositoryTests: XCTestCase {
         XCTAssertFalse(settings.openOnHover)
         XCTAssertTrue(settings.hapticsEnabled)
         XCTAssertTrue(settings.celebrationSoundEnabled)
+        XCTAssertTrue(settings.weeklyRecapEnabled, "the weekly recap starts on")
         XCTAssertEqual(settings.hotkey, .default)
         XCTAssertEqual(settings.preferredDisplay, .builtIn)
         XCTAssertTrue(settings.showOnExternalDisplays)
@@ -329,6 +330,7 @@ final class SettingsRepositoryTests: XCTestCase {
             openOnHover: true,
             hapticsEnabled: false,
             celebrationSoundEnabled: false,
+            weeklyRecapEnabled: false,
             launchAtLogin: true,
             hotkey: Hotkey(keyCode: 40, modifiers: [.command, .shift]),
             claudePathOverride: "/opt/claude",
@@ -369,6 +371,7 @@ final class SettingsRepositoryTests: XCTestCase {
         defaults.set("screen:nope", forKey: "settings.preferredDisplay")
         defaults.set(false, forKey: "settings.hapticsEnabled")
         defaults.set("loud", forKey: "settings.celebrationSoundEnabled")
+        defaults.set("Sundays", forKey: "settings.weeklyRecapEnabled")
         defaults.set("sometimes", forKey: "settings.notchMode")
         defaults.set("huge", forKey: "settings.panelSize")
         defaults.set("bouncy", forKey: "settings.motionPace")
@@ -381,6 +384,7 @@ final class SettingsRepositoryTests: XCTestCase {
         XCTAssertEqual(settings.preferredDisplay, .builtIn)
         XCTAssertFalse(settings.hapticsEnabled)
         XCTAssertTrue(settings.celebrationSoundEnabled)
+        XCTAssertTrue(settings.weeklyRecapEnabled)
     }
 
     func testModulesMissingFromSavedOrderStartSwitchedOff() {

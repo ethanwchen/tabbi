@@ -381,6 +381,21 @@ tbody tr:last-child td { border-bottom: none; }
 .lost p { margin: 0; text-wrap: balance; }
 .lost .cta { margin-top: 22px; }
 
+/* --- party invites ----------------------------------------------------- */
+/* The code sits on a chip like the app's own code field, so it reads as
+   something to type if the button does not open Tabbi. */
+.invite { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.invite img { width: 96px; height: 96px; margin: 0 0 12px; }
+.invite .eyebrow { margin: 0 0 10px; }
+.invite-code {
+  margin: 0; padding: 10px 28px; border-radius: 20px; background: var(--card-2);
+  font-family: var(--head); font-weight: 600; font-size: 34px; line-height: 1.2;
+  letter-spacing: 3px; color: var(--ink); font-variant-numeric: tabular-nums;
+  user-select: all; -webkit-user-select: all;
+}
+.invite .cta { margin-top: 28px; }
+.invite .note { margin: 22px 0 0; font-size: 15px; color: var(--ink-3); text-wrap: balance; }
+
 /* --- suggest ----------------------------------------------------------- */
 .suggest { display: flex; flex-direction: column; gap: 22px; }
 .field { display: flex; flex-direction: column; gap: 8px; }
@@ -452,6 +467,7 @@ footer.site nav a:hover { background: var(--chip); color: var(--on-ground); text
   .faq summary::after { right: 20px; }
   .faq-body { padding: 0 16px 6px; }
   main h2 { font-size: 22px; }
+  .invite-code { font-size: 28px; padding: 8px 22px; letter-spacing: 2px; }
 
   /* Three columns do not fit a phone: each row becomes a small card of its
      own, the category as its title and how long it is kept underneath. */

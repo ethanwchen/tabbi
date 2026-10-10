@@ -68,6 +68,8 @@ private struct PartyRoom: View {
             }
             PartyCopyCode(code: party.code, help: "The party code. Click to copy it, then send it to friends.")
                 .fixedSize()
+            PartyShareInvite(invite: .joinParty(code: party.code),
+                             help: "Share an invite link. Friends who open it can join this party in one click.")
             Text(count)
                 .font(Theme.Typography.caption.monospacedDigit())
                 .foregroundStyle(Theme.Palette.tertiaryText)

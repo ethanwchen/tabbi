@@ -25,6 +25,8 @@ final class ClosetModule: NotchModule {
         headerShortcut: ModuleHeaderShortcut(label: "Your pet", key: "p")
     )
     let store: ClosetStore
+    /// The weekly recaps, listed in the Closet's Weeks section.
+    let recaps: RecapStore
     /// The pet's study coach: nudges from the notch during focus phases.
     let coach: PetCoachController
     /// The daily study reminder in the pet's voice.
@@ -49,6 +51,7 @@ final class ClosetModule: NotchModule {
         self.store = store
         reminder = StudyReminderScheduler(storage: context.storage, runMode: context.runMode, pet: store,
                                           progress: context.providers.$snapshot.map(\.progress).eraseToAnyPublisher())
+        recaps = context.weeklyRecaps
         coach.follow(focus: context.providers.$snapshot.map(\.focus).eraseToAnyPublisher())
         coach.follow(awards: store.awards.eraseToAnyPublisher())
     }
@@ -71,7 +74,7 @@ final class ClosetModule: NotchModule {
     }
 
     func makePanel() -> AnyView {
-        AnyView(ClosetPanel(store: store))
+        AnyView(ClosetPanel(store: store, recaps: recaps))
     }
 
     /// Onboarding's pet step: species, breed and name on the shared pet.

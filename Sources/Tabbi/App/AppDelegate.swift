@@ -6,6 +6,8 @@ import TabbiKit
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var services: AppServices?
     private var notch: NotchController?
+    /// Links that arrived before the notch was up, opened once it is.
+    private var pendingLinks: [URL] = []
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // The App Store installs, moves and updates the app itself, so its
@@ -48,6 +50,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             services.onboarding.start()
         }
         services.accountSync.start()
+        let links = pendingLinks
+        pendingLinks = []
+        application(NSApp, open: links)
         #if !APPSTORE
         if RunMode.current == .live {
             // Asked once the notch is up, so the prompt never holds up launch.
@@ -64,6 +69,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
         services?.openSettings()
         return false
+    }
+
+    /// `tabbi://` links (Info.plist registers the scheme): Party invites from
+    /// tabbinotch.com and the widget's open link.
+    func application(_ application: NSApplication, open urls: [URL]) {
+        guard let services, let notch else {
+            pendingLinks += urls
+            return
+        }
+        let router = AppLinkRouter(services: services, notch: notch.model)
+        urls.forEach { router.open($0) }
     }
 
     func applicationWillTerminate(_ notification: Notification) {
