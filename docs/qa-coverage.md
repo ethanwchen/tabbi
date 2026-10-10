@@ -136,7 +136,11 @@ Sampling idle time and the frontmost app needs the real Mac and is still checked
 `StudyReminderSchedulerTests` drives `StudyReminderScheduler` (which now takes an optional notification center and `clock`) through a fake center at a fixed 10:00.
 It covers a fresh install (off, nothing posted, no permission asked, nothing written), turning it on (permission asked once only while undecided, one reminder at 7 pm in the pet's voice, saved), denied notifications showing the blocked row until the reminder is turned off, a new time replacing the pending reminder, the day's goal moving it to tomorrow, a relaunch after it fired (counted as delivered, so a later time the same evening still waits for tomorrow), `stop()` keeping the pending reminder, an unreadable save never overwritten, and demo and snapshot runs touching neither notifications nor the save.
 The real `UNUserNotificationCenter` only exists inside an `.app` bundle, so delivery itself is still checked by hand.
-`FocusController`, `SpotifyController` and `SystemMonitor` are still below 40%.
+`FocusControllerTests` runs a live `FocusController` with its settings in a private `UserDefaults` suite and no sound, playlist or shortcut set.
+It covers a fresh install (quiet defaults, nothing saved), a change saved and read back on the next launch (an unchanged value writes nothing, an unreadable save falls back to defaults), a focus phase turning focus mode on and a break or reset turning it off, focus mode staying on while Study's deep focus block runs through the Pomodoro's break, queued transitions landing in order, preview playing only outside a focus phase, and demo and snapshot runs that show samples and never save, focus or run a shortcut.
+They found a bug: in a build that cannot switch Do Not Disturb (the App Store edition), a switch saved by a direct build still kept celebrations quiet during focus, although Do Not Disturb was never turned on. `holdsDoNotDisturb` now follows what the build offers.
+Playing sound, playlists and Shortcuts are still checked by hand.
+`SpotifyController` and `SystemMonitor` are still below 40%.
 
 ### 9. Backend
 
