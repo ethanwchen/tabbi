@@ -111,7 +111,8 @@ If a new weight or a non-Latin character appears in the copy, fetch and cut the 
 
 ## Images
 
-The home page's tabs are drawn by the notch demo itself (`_demo.py`), so the page carries no tab screenshots; the "More inside" cards below it are text only.
+The home page's tabs are drawn by the notch demo itself (`_demo.py`), so the page carries no tab screenshots.
+The four "Why you'll love Tabbi" cards below it reuse the demo's pet atlases (`img/demo/pet-*.png`, drawn at 2x), so they add no image weight.
 `icon-256.webp`, `apple-touch-icon.png`, `favicon-64.png` and `favicon.ico` are resized from `docs/brand/assets/tabbi-icon-1024.png`.
 `glyph.webp` is `docs/brand/assets/tabbi-glyph-256.png` as a lossless WebP, used on the home, About, invite and 404 pages.
 `social-preview.png` is the 1200x630 Open Graph and Twitter card: the icon, a tagline, a drawn laptop and the pixel cat on the brown ground.
