@@ -21,6 +21,7 @@ No framework, no JavaScript in the browser, no build dependencies (one small Clo
 - `press/` - the press kit files; the build zips them into `/press/tabbi-press-kit.zip`, linked from the About page.
 - `_social-card.html` - the source of the Open Graph and Twitter card (not part of the site).
 - `_hero_video.py` - renders the hero animation from the app's demo snapshots (see Hero animation).
+- `_pet_sprites.swift` and `_pet_sprites.sh` - export the interactive demo's pet sprites from the app's pet renderer (see Demo pet sprites).
 - `functions/suggest.js` and `_suggest_prefill.mjs` - the Pages Function that fills the Suggest form's app facts; `test/` tests it.
 - `functions/add/[code].js`, `functions/join/[code].js` and `_invite.mjs` - the Pages Functions that serve Party invite links (see Party invites); `test/` tests them.
 - `deploy.sh` - builds and deploys to the Cloudflare Pages project `tabbi`.
@@ -138,6 +139,21 @@ python3 site/_hero_video.py <snapshot-dir> # or reuses a --scale 3 render
 It writes `img/hero.mp4` (1200x750 H.264, about 500 KB), `img/hero-poster.webp` (the open Timer) and `img/hero-fallback.webp` (an animated WebP at 600 px for browsers without video, which load it lazily so others never fetch it).
 The `<video>` is muted, autoplays, loops and plays inline, and its `<source>` only matches under `prefers-reduced-motion: no-preference`, so a visitor who prefers reduced motion downloads no video and sees the poster.
 Render it again when the Timer, Today or the pet's look changes; the script checks the snapshot layout it expects (the digits it redraws) and stops if that moved.
+
+## Demo pet sprites
+
+The home page's interactive demo shows the app's real pet: Mochi, the starter British Shorthair from the icon.
+`_pet_sprites.swift` composes and renders the frames with TabbiKitCore's own `PetComposer` and `PetRenderer`, and `_pet_sprites.sh` builds it against the package and runs it from the repo root:
+
+```sh
+site/_pet_sprites.sh
+```
+
+It writes one PNG atlas per look to `img/demo/pet-<look>.png` (the bare cat, the tiny crown, a few outfits and the four Limited items) and `img/demo/pets.json`, which says where each animation's row is and how long each frame lasts.
+Each atlas has a row per animation (idle, blink, celebrate, typing), frames left to right, at 1 px per sprite pixel.
+They are 8-bit indexed PNGs of about 1.5 KB each, and the page scales them up by whole numbers with `image-rendering: pixelated`, so every sprite pixel stays a sharp square at any display density.
+The flame headband's flicker (`PetItemEffect.flicker`, which the app does not draw yet) is made here by splitting each frame into short steps that trade the flame's gold and red pixels.
+Export them again when the pet art or its animations change.
 
 ## Deploy
 
