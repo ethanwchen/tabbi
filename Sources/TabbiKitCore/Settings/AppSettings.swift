@@ -44,6 +44,9 @@ public struct AppSettings: Equatable, Sendable {
     /// it (a theme from a newer Tabbi); `ThemeCatalog.resolve` draws the
     /// default then.
     public var themeID: ThemeID
+    /// The AI provider and models for Ask AI, Plan my day, Day review and
+    /// Refine. API keys live in the Keychain (`AIKeyStore`), never here.
+    public var ai: AISettings
 
     /// How long the pointer must rest on the closed notch before hover-to-open fires.
     public static let hoverOpenDelay: Duration = .milliseconds(250)
@@ -68,7 +71,8 @@ public struct AppSettings: Equatable, Sendable {
         notchMode: NotchMode = .default,
         panelSize: PanelSize = .default,
         notchPreview: NotchPreviewSettings = .default,
-        themeID: ThemeID = ThemeCatalog.defaultID
+        themeID: ThemeID = ThemeCatalog.defaultID,
+        ai: AISettings = AISettings()
     ) {
         self.displayName = displayName
         self.kitID = kitID
@@ -88,6 +92,7 @@ public struct AppSettings: Equatable, Sendable {
         self.panelSize = panelSize
         self.notchPreview = notchPreview
         self.themeID = themeID
+        self.ai = ai
     }
 
     /// The name as Party and greetings use it (`DisplayName.cleaned`), or
@@ -162,7 +167,7 @@ public struct AppSettings: Equatable, Sendable {
     /// it names none). Launch at login is kept: it is a system login item the
     /// user turned on deliberately, and turning it off silently would surprise.
     /// So is the user's name, which is who they are rather than a preference.
-    /// Tabs, theme and the Claude location belong to other sections.
+    /// Tabs, theme and the AI provider belong to other sections.
     public mutating func resetGeneral(to kit: KitManifest?, catalog: ModuleCatalog) {
         let fresh = AppSettings(modules: modules)
         openOnHover = fresh.openOnHover
@@ -237,6 +242,8 @@ public struct SettingsRepository {
         static let previewDisabledKinds = "settings.preview.disabledKinds"
         static let previewInterval = "settings.preview.interval"
         static let theme = "settings.theme"
+        static let aiProvider = "settings.ai.provider"
+        static let aiModels = "settings.ai.models"
     }
 
     private let defaults: UserDefaults
@@ -305,7 +312,13 @@ public struct SettingsRepository {
             ),
             // Before the user picks one, the kit's theme.
             themeID: defaults.string(forKey: Key.theme).map(ThemeID.init(rawValue:))
-                ?? kit?.defaults.theme.flatMap(ThemeCatalog.id(forKitValue:)) ?? fallback.themeID
+                ?? kit?.defaults.theme.flatMap(ThemeCatalog.id(forKitValue:)) ?? fallback.themeID,
+            ai: AISettings(
+                provider: defaults.string(forKey: Key.aiProvider).flatMap(AIProviderID.init(rawValue:)),
+                // Entries for providers this build doesn't know are dropped.
+                models: Dictionary(uniqueKeysWithValues: ((defaults.dictionary(forKey: Key.aiModels) as? [String: String]) ?? [:])
+                    .compactMap { key, value in AIProviderID(rawValue: key).map { ($0, value) } })
+            )
         )
     }
 
@@ -347,6 +360,13 @@ public struct SettingsRepository {
         defaults.set(settings.notchPreview.disabledKinds.map(\.rawValue).sorted(), forKey: Key.previewDisabledKinds)
         defaults.set(settings.notchPreview.interval.rawValue, forKey: Key.previewInterval)
         defaults.set(settings.themeID.rawValue, forKey: Key.theme)
+        if let provider = settings.ai.provider {
+            defaults.set(provider.rawValue, forKey: Key.aiProvider)
+        } else {
+            defaults.removeObject(forKey: Key.aiProvider)
+        }
+        defaults.set(Dictionary(uniqueKeysWithValues: settings.ai.models.map { ($0.key.rawValue, $0.value) }),
+                     forKey: Key.aiModels)
     }
 
     /// `nil` when the key is absent or not a boolean, so defaults apply.

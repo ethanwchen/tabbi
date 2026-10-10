@@ -7,12 +7,21 @@ import TabbiKit
 /// its current state.
 struct ConnectionsSettingsPane: View {
     @EnvironmentObject private var settings: SettingsStore
+    @Environment(\.aiService) private var ai
     @State private var showsMore = false
 
     var body: some View {
-        let kinds = ConnectionKind.relevant(to: settings.settings.modules.enabled,
-                                            localTools: Edition.current.runsLocalTools)
+        let enabled = settings.settings.modules.enabled
+        // The AI choice shows while a tab with AI features is on.
+        let aiChoice = enabled.contains(where: AIService.featureModules.contains) ? ai : nil
+        let model = aiChoice?.setupState.provider
+        let kinds = ConnectionKind.relevant(to: enabled, localTools: Edition.current.runsLocalTools,
+                                            usesClaudeCode: model == .claudeCLI)
         Form {
+            // First, so Ask's Choose AI button lands on it.
+            if let aiChoice {
+                AIProviderSection(ai: aiChoice)
+            }
             Section {
                 ConnectionsList(kinds: kinds)
             } header: {
@@ -20,13 +29,19 @@ struct ConnectionsSettingsPane: View {
             } footer: {
                 SectionFooter("Fixed something in another app? Come back here and the light updates by itself.")
             }
-            // The only advanced setting here is where claude lives.
-            if kinds.contains(.claude) {
+            // The advanced settings here: the AI model and where claude lives.
+            if kinds.contains(.claude) || model != nil {
                 Section {
                     MoreOptionsToggle(isExpanded: $showsMore)
                 }
                 if showsMore {
-                    ClaudeLocationSection()
+                    if let model {
+                        AIModelSection(provider: model)
+                            .id(model)
+                    }
+                    if kinds.contains(.claude) {
+                        ClaudeLocationSection()
+                    }
                 }
             }
         }

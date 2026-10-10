@@ -11,6 +11,8 @@ final class TodayModule: NotchModule {
         id: .planner, title: "Today", symbol: "checklist",
         summary: "Your to-do list, what is up next, and a day plan.", category: .productivity,
         accent: ModuleAccent(red: 0.66, green: 0.55, blue: 1.00), permissions: [.calendars, .notifications],
+        // Plan my day and Wrap up ask the AI the user picks.
+        network: AIProviderID.allNetworkAccess,
         kitSettings: TodayPlanSettings.kitSchema, setup: [.calendar]
     )
     /// Internal so app tests can check what Today shows.
@@ -23,11 +25,10 @@ final class TodayModule: NotchModule {
 
     init(context: ModuleContext) {
         let settings = context.settings
-        let usesClaude = context.edition.runsLocalTools
-        let planSettings = { (kit: KitDefaults?) in TodayPlanSettings(kit: kit).usable(withClaude: usesClaude) }
+        let planSettings = { (kit: KitDefaults?) in TodayPlanSettings(kit: kit) }
         store = PlannerStore(focus: context.focusTimer, storage: context.storage,
                              planSettings: planSettings(context.activeKit?.defaults),
-                             activity: context.activityLog, usesClaude: usesClaude, runMode: context.runMode)
+                             activity: context.activityLog, ai: context.ai, runMode: context.runMode)
         providers = context.providers
         focusMode = context.focusMode
         store.followSharedWork(from: context.providers.$snapshot, excluding: context.id)

@@ -81,8 +81,9 @@ public enum ClaudeUsageFormat {
 
     /// Human model name from an API model id:
     /// "claude-opus-4-5-20251101" → "Opus 4.5", "claude-3-5-sonnet-20241022" → "Sonnet 3.5".
-    /// Unknown ids are returned unchanged.
+    /// OpenAI ids read "gpt-5-codex" → "GPT-5 Codex". Unknown ids are returned unchanged.
     public static func modelName(_ id: String) -> String {
+        if id.lowercased().hasPrefix("gpt-") { return openAIModelName(id) }
         var parts = id.lowercased().split(separator: "-").map(String.init)
         guard parts.first == "claude" else { return id }
         parts.removeFirst()
@@ -97,5 +98,14 @@ public enum ClaudeUsageFormat {
         guard !family.isEmpty else { return id }
         let name = family.prefix(1).uppercased() + family.dropFirst()
         return version.isEmpty ? name : "\(name) \(version.joined(separator: "."))"
+    }
+
+    /// "gpt-5.1-codex-mini" → "GPT-5.1 Codex Mini": the version stays joined
+    /// to GPT and the rest are capitalized words.
+    private static func openAIModelName(_ id: String) -> String {
+        let parts = id.split(separator: "-").map(String.init)
+        guard parts.count >= 2 else { return id }
+        let words = parts.dropFirst(2).map { $0.prefix(1).uppercased() + $0.dropFirst() }
+        return (["GPT-" + parts[1]] + words).joined(separator: " ")
     }
 }

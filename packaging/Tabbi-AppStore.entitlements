@@ -5,7 +5,9 @@
   (scripts/release-appstore.sh, docs/appstore.md). The direct download uses
   Tabbi.entitlements instead and is not sandboxed.
   - app-sandbox: required for every Mac App Store app.
-  - network.client: album artwork and AnkiConnect on localhost.
+  - network.client: album artwork, AnkiConnect on localhost, and the AI
+    provider the user picks for Ask AI, Plan my day and Wrap up (Anthropic,
+    OpenAI or Gemini with the user's key, or Ollama on localhost).
   - personal-information.calendars: Today and Plan my day use EventKit.
   - files.user-selected.read-only: Import a Kit and the pet coach's
     distracting apps read files the user picks in an open panel.

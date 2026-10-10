@@ -160,8 +160,7 @@ enum SnapshotRenderer {
             shots.append(Shot("open-pet-shortcut", withPaw))
         }
 
-        #if !APPSTORE
-        // Ask Claude's chat history, rendered after the others because the
+        // Ask AI's chat history, rendered after the others because the
         // list showing is session state.
         if layout.order.contains(.claudeAsk) {
             var withAsk = layout
@@ -183,7 +182,6 @@ enum SnapshotRenderer {
                 shots.append(Shot(name, model))
             }
         }
-        #endif
 
         // Today stepped back to yesterday and ahead to tomorrow, rendered
         // after the others because the day shown is store state.
@@ -272,7 +270,8 @@ enum SnapshotRenderer {
         }
 
         let settingsWindow = SettingsWindowController(settings: services.settings, modules: services.modules,
-                                                      onboarding: services.onboarding, account: services.accountSync)
+                                                      onboarding: services.onboarding, account: services.accountSync,
+                                                      ai: services.ai)
         for pane in settingsWindow.paneIDs {
             guard let png = await settingsWindow.snapshot(of: pane) else { continue }
             let url = outputDirectory.appendingPathComponent("settings-\(pane).png")
@@ -288,6 +287,18 @@ enum SnapshotRenderer {
             print(url.path)
         }
         services.settings.settings.notchMode = notchMode
+        // Connections with an API provider waiting for its key, a command
+        // line tool and Ollama picked, as far as this build offers them.
+        let aiShots = [("api-key", AIProviderID.gemini), ("cli", .claudeCLI), ("local", .ollama)]
+        for (name, provider) in aiShots where services.ai.availableProviders.contains(provider) {
+            services.settings.settings.ai.provider = provider
+            if let png = await settingsWindow.snapshot(of: AppSettingsPane.connections.rawValue) {
+                let url = outputDirectory.appendingPathComponent("settings-connections-ai-\(name).png")
+                try? png.write(to: url)
+                print(url.path)
+            }
+        }
+        services.settings.settings.ai.provider = nil
         // General as a release build shows it signed out, with Sign in with Apple.
         if services.accountSync.phase == .unavailable {
             services.accountSync.showsSignInForSnapshot(true)
@@ -382,9 +393,7 @@ enum SnapshotRenderer {
     private static func renderNotchShots(_ shots: [Shot], services: AppServices,
                                          closet: ClosetModule?, style: NotchStyle, to folder: URL) {
         let firstSection = closet?.store.section
-        #if !APPSTORE
         let askClaude = services.modules.module(AskClaudeModule.self)?.session
-        #endif
         let timer = services.modules.module(StudyModule.self)
         let today = services.modules.module(TodayModule.self)?.store
         let party = services.modules.module(PartyModule.self)?.store
@@ -395,12 +404,10 @@ enum SnapshotRenderer {
         for shot in shots {
             let (name, model) = (shot.name, shot.model)
             services.onboarding.show(shot.onboarding)
-            #if !APPSTORE
             askClaude?.isShowingHistory = name == "open-claudeAsk-history"
             askClaude?.showForSnapshot(name == "open-claudeAsk-screenshot" ? .pendingScreenshot
                 : name == "open-claudeAsk-screenshot-sent" ? .sentScreenshot
                 : name == "open-claudeAsk-screen-access" ? .screenAccess : .chat)
-            #endif
             timer?.showForSnapshot(partySession: name == "open-study-party" ? partySession : nil)
             party?.showCelebrationForSnapshot(name == "open-party-celebrating")
             today?.showForSnapshot(name == "open-planner-yesterday" ? .yesterday

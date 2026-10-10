@@ -334,7 +334,13 @@ final class ClaudeUsageFormatTests: XCTestCase {
         XCTAssertEqual(ClaudeUsageFormat.modelName("claude-opus-4-6[1m]"), "Opus 4.6")
         XCTAssertEqual(ClaudeUsageFormat.modelName("claude-opus-5-5"), "Opus 5.5")
         XCTAssertEqual(ClaudeUsageFormat.modelName("claude-fable-5-1"), "Fable 5.1")
-        XCTAssertEqual(ClaudeUsageFormat.modelName("gpt-x"), "gpt-x")
+        XCTAssertEqual(ClaudeUsageFormat.modelName("llama3.2"), "llama3.2")
+    }
+
+    func testModelNameReadsCodexModels() {
+        XCTAssertEqual(ClaudeUsageFormat.modelName("gpt-5-codex"), "GPT-5 Codex")
+        XCTAssertEqual(ClaudeUsageFormat.modelName("gpt-5.1-codex-mini"), "GPT-5.1 Codex Mini")
+        XCTAssertEqual(ClaudeUsageFormat.modelName("gpt-5"), "GPT-5")
     }
 }
 

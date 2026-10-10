@@ -134,7 +134,7 @@ extension TodayPlanSettings.PlanMode {
         let calendar = day == .tomorrow ? "tomorrow's calendar" : "today's calendar"
         return switch self {
         case .local: "Fit your open tasks, reviews and breaks around \(calendar)"
-        case .claude: "Let Claude fit your open tasks around \(calendar)"
+        case .claude: "Let your AI fit your open tasks around \(calendar)"
         case .study: "Fit reviews, study blocks and breaks around \(calendar)"
         }
     }

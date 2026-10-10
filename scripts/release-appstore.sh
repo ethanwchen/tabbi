@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Build the Mac App Store release of Tabbi: the App Store build of the binary
-# (TABBI_APPSTORE=1: no Sparkle, no install hygiene, no claude CLI modules),
+# (TABBI_APPSTORE=1: no Sparkle, no install hygiene, no Claude Usage),
 # universal (arm64 + x86_64) and stripped, assembled as the appstore edition,
 # sandboxed with packaging/Tabbi-AppStore.entitlements, signed with an Apple
 # Distribution certificate around an App Store provisioning profile, and

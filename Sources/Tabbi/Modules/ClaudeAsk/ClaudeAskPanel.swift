@@ -3,7 +3,7 @@ import SwiftUI
 import TabbiKitCore
 import TabbiKit
 
-/// Ask Claude: a small chat with the local `claude` CLI. Messages fill the
+/// Ask AI: a small chat with the AI the user picked, named in the copy. Messages fill the
 /// panel and a text field sits at the bottom. The notch stays pinned open
 /// while the focused field holds a draft or an answer is streaming, so an
 /// idle Ask tab still closes when the pointer leaves. The chat can grow
@@ -15,9 +15,16 @@ struct ClaudeAskPanel: View {
     static let largeSize = CGSize(width: 720, height: 460)
 
     @ObservedObject var session: ClaudeAskSession
+    /// Observed so the copy follows a provider switch in Settings.
+    @ObservedObject private var ai: AIService
     @EnvironmentObject private var notch: NotchViewModel
     @State private var draft = ""
     @FocusState private var fieldFocused: Bool
+
+    init(session: ClaudeAskSession) {
+        self.session = session
+        ai = session.ai
+    }
 
     private var conversation: ClaudeAskConversation { session.conversation }
     private var accent: Color { AskClaudeModule.descriptor.accentColor }
@@ -28,8 +35,8 @@ struct ClaudeAskPanel: View {
 
     var body: some View {
         VStack(spacing: Theme.Spacing.s) {
-            if session.isClaudeMissing && conversation.isEmpty {
-                ClaudeMissingView()
+            if let setup = session.setupNeeded, conversation.isEmpty {
+                SetupView(setup: setup)
                     .transition(.opacity)
             } else {
                 Group {
@@ -38,7 +45,7 @@ struct ClaudeAskPanel: View {
                     } else if session.isShowingHistory {
                         HistoryList(session: session, accent: accent)
                     } else if conversation.isEmpty {
-                        EmptyChatView(accent: accent) { send($0) }
+                        EmptyChatView(accent: accent, assistant: ai.assistantName) { send($0) }
                     } else {
                         MessageList(session: session, accent: accent)
                     }
@@ -51,7 +58,7 @@ struct ClaudeAskPanel: View {
         }
         .motion(Theme.Motion.content, value: conversation.isEmpty)
         .motion(Theme.Motion.content, value: session.isShowingHistory)
-        .motion(Theme.Motion.content, value: session.isClaudeMissing)
+        .motion(Theme.Motion.content, value: session.setupNeeded)
         .motion(Theme.Motion.content, value: session.isAskingScreenAccess)
         .onAppear {
             session.prepare()
@@ -84,7 +91,7 @@ struct ClaudeAskPanel: View {
         // level with the line being typed.
         HStack(alignment: .bottom, spacing: Theme.Spacing.s) {
             InputField(text: $draft, focused: $fieldFocused, accent: accent, maxLines: isLarge ? 6 : 3,
-                       help: fieldHelp, onSubmit: { expand in send(draft, expand: expand) }) {
+                       placeholder: "Ask \(ai.assistantName) anything…", help: fieldHelp, onSubmit: { expand in send(draft, expand: expand) }) {
                 PendingAttachments(session: session)
             } trailing: {
                 // Send lives inside the field, like any chat, so the row
@@ -157,6 +164,8 @@ private struct InputField<Top: View, Trailing: View>: View {
     var focused: FocusState<Bool>.Binding
     let accent: Color
     let maxLines: Int
+    /// Names the picked AI ("Ask Gemini anything…").
+    let placeholder: String
     /// The tooltip, which names Command-Return only when it expands.
     let help: String
     /// Called with true for Command-Return.
@@ -194,11 +203,11 @@ private struct InputField<Top: View, Trailing: View>: View {
     @ViewBuilder
     private var field: some View {
         if ClaudeAskPanel.isSnapshot {
-            Text("Ask Claude anything…")
+            Text(placeholder)
                 .font(Theme.Typography.body)
                 .foregroundStyle(Theme.Palette.tertiaryText)
         } else {
-            TextField("Ask Claude anything…", text: $text, axis: .vertical)
+            TextField(placeholder, text: $text, axis: .vertical)
                 .textFieldStyle(.plain)
                 .font(Theme.Typography.body)
                 .foregroundStyle(Theme.Palette.primaryText)
@@ -332,6 +341,7 @@ private struct MessageList: View {
         case .assistant:
             if message.status == .failed {
                 FailureRow(failure: isLast ? session.conversation.failure : nil,
+                           assistant: message.provider?.assistantName ?? "The AI",
                            onRetry: isLast ? { session.retry() } : nil)
             } else {
                 AssistantBubble(message: message, accent: accent)
@@ -550,6 +560,8 @@ private struct CopyButton: View {
 /// itself and offers retry; older ones stay as a quiet note.
 private struct FailureRow: View {
     let failure: ClaudeAskFailure?
+    /// Who was asked, for "Claude couldn't answer".
+    let assistant: String
     let onRetry: (() -> Void)?
 
     var body: some View {
@@ -571,8 +583,8 @@ private struct FailureRow: View {
                     }
                 }
                 Spacer(minLength: Theme.Spacing.s)
-                if failure == .claudeNotFound {
-                    PillButton(title: "Set up Claude", symbol: "link", help: "Open Connections to set up Claude") {
+                if let failure, failure.needsSetup {
+                    PillButton(title: failure.setupAction, symbol: "link", help: "Open Connections to set up the AI") {
                         ConnectionsStore.shared.showHub()
                     }
                 } else if let onRetry {
@@ -585,19 +597,10 @@ private struct FailureRow: View {
     }
 
     private var title: String {
-        switch failure {
-        case .claudeNotFound: "Claude isn't set up yet"
-        case .process, nil: "Claude couldn't answer"
-        }
+        (failure ?? .process(detail: "")).title(assistant: assistant)
     }
 
-    private var detail: String? {
-        switch failure {
-        case .claudeNotFound: "Connections shows you how to add it."
-        case .process(let detail): detail
-        case nil: nil
-        }
-    }
+    private var detail: String? { failure?.detail }
 }
 
 // MARK: - History
@@ -625,7 +628,7 @@ private struct HistoryList: View {
             .frame(height: 26)
             if session.savedChats.isEmpty {
                 StatusMessage(symbol: "clock.arrow.circlepath", tint: accent, title: "No saved chats",
-                              message: "Chats are saved here once Claude answers.")
+                              message: "Chats are saved here once you get an answer.")
                     .transition(.opacity)
             } else if ClaudeAskPanel.isSnapshot {
                 rows
@@ -733,6 +736,7 @@ private struct ClearAllButton: View {
 
 private struct EmptyChatView: View {
     let accent: Color
+    let assistant: String
     let onPick: (String) -> Void
 
     private static let examples = [
@@ -742,8 +746,8 @@ private struct EmptyChatView: View {
     ]
 
     var body: some View {
-        StatusMessage(symbol: "sparkles", tint: accent, title: "Ask Claude anything",
-                      message: "Quick answers right here. Claude can't see your files.") {
+        StatusMessage(symbol: "sparkles", tint: accent, title: "Ask \(assistant) anything",
+                      message: "Quick answers right here. \(assistant) can't see your files.") {
             HStack(spacing: Theme.Spacing.s) {
                 ForEach(Self.examples, id: \.self) { prompt in
                     PillButton(title: prompt, help: "Ask “\(prompt)”") { onPick(prompt) }
@@ -753,16 +757,17 @@ private struct EmptyChatView: View {
     }
 }
 
-/// Shown when Claude isn't on this Mac: one plain sentence and the one
-/// button that leads to Connections, which walks through setting it up.
-/// The panel looks again each time it opens.
-private struct ClaudeMissingView: View {
+/// Shown before the first question while the AI isn't ready (none picked,
+/// a key or the tool missing): one plain sentence and the one button that
+/// leads to Connections, which walks through setting it up. The panel
+/// looks again each time it opens.
+private struct SetupView: View {
+    let setup: ClaudeAskFailure
+
     var body: some View {
         StatusMessage(symbol: "sparkles", tint: AskClaudeModule.descriptor.accentColor,
-                      title: "Set up Claude to ask questions",
-                      message: "Claude is an AI helper that answers questions right here. "
-                          + "Connections shows you how to add it.") {
-            PillButton(title: "Set up Claude", symbol: "link", help: "Open Connections to set up Claude") {
+                      title: setup.setupTitle, message: setup.setupMessage) {
+            PillButton(title: setup.setupAction, symbol: "link", help: "Open Connections to set up the AI") {
                 ConnectionsStore.shared.showHub()
             }
         }

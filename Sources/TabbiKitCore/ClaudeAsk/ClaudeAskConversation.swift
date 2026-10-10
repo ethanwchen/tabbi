@@ -24,14 +24,19 @@ public struct ClaudeAskMessage: Identifiable, Equatable, Sendable {
     public internal(set) var status: Status
     /// Screenshots sent with a question; always empty on answers.
     public let attachments: [ClaudeAskAttachment]
+    /// Who was asked for this answer, so a failed answer names the provider
+    /// that failed even after the user picks another one. `nil` on questions
+    /// and on answers restored from the history.
+    public let provider: AIProviderID?
 
     public init(id: Int, role: Role, text: String, status: Status = .complete,
-                attachments: [ClaudeAskAttachment] = []) {
+                attachments: [ClaudeAskAttachment] = [], provider: AIProviderID? = nil) {
         self.id = id
         self.role = role
         self.text = text
         self.status = status
         self.attachments = attachments
+        self.provider = provider
     }
 }
 
@@ -48,18 +53,28 @@ public struct ClaudeAskQuestion: Equatable, Sendable {
 
 /// Why the last question couldn't be answered.
 public enum ClaudeAskFailure: Equatable, Sendable {
-    /// No `claude` executable was found (see `ClaudeCLI.overrideVariable`).
-    case claudeNotFound
-    /// The CLI ran but reported an error or exited abnormally.
+    /// No AI provider is picked yet, so nothing was sent.
+    case noProvider
+    /// The provider's command line tool was not found.
+    case notInstalled(AIProviderID)
+    /// The provider needs an API key and none is saved.
+    case needsKey(AIProviderID)
+    /// The provider ran but reported an error or exited abnormally.
     /// `detail` is a short, single-line summary safe to show in the UI.
     case process(detail: String)
+
+    /// True when Settings, not Retry, is the way forward.
+    public var needsSetup: Bool {
+        if case .process = self { return false }
+        return true
+    }
 }
 
-/// An in-memory Ask Claude chat and the pure reducer that folds
-/// `ClaudeStreamEvent`s into it.
+/// An in-memory Ask chat and the pure reducer that folds a provider's
+/// stream events into it.
 ///
 /// Kept free of process and UI concerns so the streaming semantics (partial
-/// text, final result, errors, session capture for `--resume`) are unit tested.
+/// text, final result, errors, session capture for resuming) are unit tested.
 public struct ClaudeAskConversation: Equatable, Sendable {
     public enum Phase: Equatable, Sendable {
         case idle
@@ -71,6 +86,9 @@ public struct ClaudeAskConversation: Equatable, Sendable {
     public private(set) var phase: Phase = .idle
     /// Session to pass to `--resume` so follow-ups keep context.
     public private(set) var sessionID: String?
+    /// The command line tool `sessionID` belongs to; another provider can't
+    /// resume it and gets the chat as messages instead.
+    public private(set) var sessionProvider: AIProviderID?
     /// Names this chat in the history; `reset()` starts a new one.
     public private(set) var chatID: UUID
     /// When this chat began, kept when it is saved and restored.
@@ -92,6 +110,7 @@ public struct ClaudeAskConversation: Equatable, Sendable {
     public init(restoring chat: ClaudeAskChat) {
         self.init(chatID: chat.id, startedAt: chat.createdAt)
         sessionID = chat.sessionID
+        sessionProvider = chat.sessionID == nil ? nil : chat.sessionProvider
         for message in chat.messages {
             append(message.role, message.text, message.status, attachments: message.attachments)
         }
@@ -119,7 +138,7 @@ public struct ClaudeAskConversation: Equatable, Sendable {
         }
         guard !kept.isEmpty else { return nil }
         return ClaudeAskChat(id: chatID, createdAt: startedAt, updatedAt: updatedAt,
-                             sessionID: sessionID, messages: kept)
+                             sessionID: sessionID, sessionProvider: sessionProvider, messages: kept)
     }
 
     public var isStreaming: Bool { phase == .streaming }
@@ -134,25 +153,28 @@ public struct ClaudeAskConversation: Equatable, Sendable {
     /// Starts a new exchange. Returns the trimmed prompt to send, or `nil` if
     /// the prompt is blank or an answer is still streaming. A screenshot
     /// always comes with a question, so `attachments` alone sends nothing.
+    /// `provider` is who will be asked (`nil` while none is picked).
     @discardableResult
-    public mutating func begin(prompt: String, attachments: [ClaudeAskAttachment] = []) -> String? {
+    public mutating func begin(prompt: String, attachments: [ClaudeAskAttachment] = [],
+                               provider: AIProviderID? = nil) -> String? {
         let trimmed = prompt.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty, !isStreaming else { return nil }
         append(.user, trimmed, .complete, attachments: attachments)
-        append(.assistant, "", .streaming)
+        append(.assistant, "", .streaming, provider: provider)
         committedText = ""
         partialText = ""
         phase = .streaming
         return trimmed
     }
 
-    /// Applies one event from `claude -p --output-format stream-json`.
+    /// Applies one event from `claude -p --output-format stream-json` (the
+    /// demo chat and the recorded stream fixtures use these).
     /// Events that arrive outside a streaming exchange are ignored.
     public mutating func apply(_ event: ClaudeStreamEvent) {
         guard isStreaming else { return }
         switch event {
         case .sessionStarted(let id):
-            if let id { sessionID = id }
+            if let id { (sessionID, sessionProvider) = (id, .claudeCLI) }
         case .textDelta(let text):
             partialText += text
             updateAnswer(displayedText)
@@ -162,7 +184,7 @@ public struct ClaudeAskConversation: Equatable, Sendable {
             partialText = ""
             updateAnswer(committedText)
         case .result(let result):
-            if let id = result.sessionID { sessionID = id }
+            if let id = result.sessionID { (sessionID, sessionProvider) = (id, .claudeCLI) }
             if result.isError {
                 fail(.process(detail: Self.summarize(result.text) ?? "Claude couldn't finish this answer."))
             } else {
@@ -175,13 +197,44 @@ public struct ClaudeAskConversation: Equatable, Sendable {
         }
     }
 
+    /// Applies one event from `provider`'s stream. Events that arrive outside
+    /// a streaming exchange are ignored.
+    public mutating func apply(_ event: AIStreamEvent, from provider: AIProviderID) {
+        guard isStreaming else { return }
+        switch event {
+        case .sessionStarted(let id):
+            sessionID = id
+            sessionProvider = provider
+        case .textDelta(let text):
+            dropSession(unlessHeldBy: provider)
+            partialText += text
+            updateAnswer(displayedText)
+        case .finished(let text):
+            dropSession(unlessHeldBy: provider)
+            if let text, !text.isEmpty {
+                committedText = text
+                partialText = ""
+            }
+            finish(answeredBy: provider)
+        }
+    }
+
+    /// Another provider is answering, so the tool that held the session
+    /// never sees this exchange. Resuming it later would skip what was said
+    /// here; dropping it sends the whole chat as messages instead.
+    private mutating func dropSession(unlessHeldBy provider: AIProviderID) {
+        guard sessionProvider != provider else { return }
+        sessionID = nil
+        sessionProvider = nil
+    }
+
     /// The stream ended. Without a `result` event, whatever arrived is kept as
     /// the answer; an empty answer counts as a failure.
-    public mutating func finish() {
+    public mutating func finish(answeredBy provider: AIProviderID = .claudeCLI) {
         guard isStreaming else { return }
         let text = displayedText
         if text.isEmpty {
-            fail(.process(detail: "Claude ended without answering."))
+            fail(.process(detail: "\(provider.assistantName) ended without answering."))
         } else {
             updateAnswer(text, status: .complete)
             phase = .idle
@@ -224,38 +277,37 @@ public struct ClaudeAskConversation: Equatable, Sendable {
         guard sessionID != nil, case .failed(.process(let detail)) = phase,
               detail.localizedCaseInsensitiveContains("No conversation found") else { return nil }
         sessionID = nil
+        sessionProvider = nil
         return takeRetryQuestion()
     }
 
-    /// What to send the CLI for the question just begun. With a session to
-    /// resume the CLI already has the chat, so it is just `prompt`. Without
-    /// one (the CLI deleted the session of a reopened chat, or the chat never
-    /// had one), the earlier exchanges go first, so a fresh session still
-    /// answers in context. The oldest exchanges are left out past
-    /// `transcriptLimit` characters (the latest one always goes).
-    public func outgoingPrompt(_ prompt: String, transcriptLimit: Int = 24_000) -> String {
-        guard sessionID == nil, let earlier = savedChat()?.messages, !earlier.isEmpty else { return prompt }
+    /// The request for the question just begun, sent with `images` to
+    /// `provider`. A command line tool that holds this chat's session
+    /// resumes it and gets just `prompt`. Anyone else (a hosted API, which
+    /// keeps no state, another tool, or a tool that lost the session) gets
+    /// the earlier exchanges as messages, newest kept first: the oldest are
+    /// left out past `transcriptLimit` characters. Earlier screenshots stay
+    /// on this Mac; only the new question's go.
+    public func request(prompt: String, images: [Data] = [], provider: AIProviderID, system: String? = nil,
+                        transcriptLimit: Int = 24_000) -> AIRequest {
+        let question = AIMessage.user(prompt, images: images)
+        if provider.isCommandLineTool, let sessionID, sessionProvider == provider {
+            return AIRequest(system: system, messages: [question], resumeSessionID: sessionID)
+        }
+        let earlier = savedChat()?.messages ?? []
         // A saved chat is question and answer pairs; whole pairs are kept.
-        var lines: [String] = []
+        var history: [AIMessage] = []
         var length = 0
         for start in stride(from: earlier.count - (earlier.count.isMultiple(of: 2) ? 2 : 1), through: 0, by: -2) {
             let exchange = earlier[start..<min(start + 2, earlier.count)].map {
-                "\($0.role == .user ? "Me" : "You"): \($0.text)"
+                AIMessage(role: $0.role == .user ? .user : .assistant, text: $0.text)
             }
-            let size = exchange.reduce(0) { $0 + $1.count }
-            guard length + size <= transcriptLimit || lines.isEmpty else { break }
-            lines.insert(contentsOf: exchange, at: 0)
+            let size = exchange.reduce(0) { $0 + $1.text.count }
+            guard length + size <= transcriptLimit || history.isEmpty else { break }
+            history.insert(contentsOf: exchange, at: 0)
             length += size
         }
-        return """
-        We talked earlier in this chat, but that session is no longer available. Here is what we said:
-
-        \(lines.joined(separator: "\n\n"))
-
-        Continue from there. My new message:
-
-        \(prompt)
-        """
+        return AIRequest(system: system, messages: history + [question])
     }
 
     /// Starts a new chat with a new `chatID`. Message ids keep increasing.
@@ -265,6 +317,7 @@ public struct ClaudeAskConversation: Equatable, Sendable {
         messages = []
         phase = .idle
         sessionID = nil
+        sessionProvider = nil
         committedText = ""
         partialText = ""
     }
@@ -278,8 +331,9 @@ public struct ClaudeAskConversation: Equatable, Sendable {
     }
 
     private mutating func append(_ role: ClaudeAskMessage.Role, _ text: String, _ status: ClaudeAskMessage.Status,
-                                 attachments: [ClaudeAskAttachment] = []) {
-        messages.append(ClaudeAskMessage(id: nextID, role: role, text: text, status: status, attachments: attachments))
+                                 attachments: [ClaudeAskAttachment] = [], provider: AIProviderID? = nil) {
+        messages.append(ClaudeAskMessage(id: nextID, role: role, text: text, status: status,
+                                         attachments: attachments, provider: provider))
         nextID += 1
     }
 

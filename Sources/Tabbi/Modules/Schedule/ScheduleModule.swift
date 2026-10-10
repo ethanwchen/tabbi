@@ -15,14 +15,16 @@ final class ScheduleModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
         id: .schedule, title: "Schedule", symbol: "calendar.day.timeline.left",
         summary: "Your day on a timeline, with the free time in between.", category: .productivity,
-        accent: ModuleAccent(red: 1.00, green: 0.50, blue: 0.42), permissions: [.calendars]
+        accent: ModuleAccent(red: 1.00, green: 0.50, blue: 0.42), permissions: [.calendars],
+        // Refine asks the AI the user picks.
+        network: AIProviderID.allNetworkAccess
     )
     /// Internal so app tests can check what Schedule shows.
     let store: ScheduleStore
     private var cancellables: Set<AnyCancellable> = []
 
     init(context: ModuleContext) {
-        store = ScheduleStore(usesClaude: context.edition.runsLocalTools, runMode: context.runMode)
+        store = ScheduleStore(ai: context.ai, runMode: context.runMode)
         // Plan uses Today's planning settings, so a kit sizes reviews and
         // buffers the same way in both places.
         store.planSettings = TodayPlanSettings(kit: context.activeKit?.defaults)

@@ -217,7 +217,7 @@ extension ClaudeConnectionState {
         }
         let checks = ConnectionCheck.chain([
             ("Is Claude on this Mac?", installed,
-             installed == .failed ? "No. Set it up to use Plan my day and Ask Claude." : "Yes."),
+             installed == .failed ? "No. Set it up to use Plan my day and Ask AI with Claude." : "Yes."),
             ("Are you signed in to Claude?", self == .signedOut ? .failed : .passed,
              self == .signedOut ? "No. Sign in once and Tabbi can use it." : "Yes."),
         ])

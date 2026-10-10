@@ -44,19 +44,21 @@ final class EditionCatalogTests: XCTestCase {
         }
     }
 
-    func testEssentialsLosesOnlyAskClaudeInTheAppStoreEdition() throws {
+    func testEssentialsKeepsAskAIInTheAppStoreEdition() throws {
+        // Ask answers through API keys or Ollama there, so no tab is lost.
         let essentials = try XCTUnwrap(KitLibrary.bundled["essentials"])
         let full = essentials.layout(catalog: .builtIn)
         let appStore = essentials.layout(catalog: try appStore.catalog(from: .builtIn))
-        XCTAssertEqual(appStore.tabs, full.tabs.filter { $0 != .claudeAsk })
+        XCTAssertTrue(full.tabs.contains(.claudeAsk))
+        XCTAssertEqual(appStore.tabs, full.tabs)
         XCTAssertEqual(appStore.headerShortcuts, full.headerShortcuts)
     }
 
     func testOnboardingAnswersThatEnableAnExcludedModuleAreIgnored() throws {
         let kit = try KitManifest.decode(from: Data(#"""
         {"formatVersion": 1, "id": "ai", "name": "AI", "modules": ["planner"],
-         "defaults": {"ticker": ["claudeUsage", "party", "tasks"], "moduleSettings": {"claudeAsk": {"model": "x"}}},
-         "onboarding": [{"id": "q", "prompt": "Q", "options": [{"id": "a", "label": "A", "enables": ["claudeAsk"]}]}]}
+         "defaults": {"ticker": ["claudeUsage", "party", "tasks"], "moduleSettings": {"claudeUsage": {"plan": "x"}}},
+         "onboarding": [{"id": "q", "prompt": "Q", "options": [{"id": "a", "label": "A", "enables": ["claudeUsage"]}]}]}
         """#.utf8))
         let catalog = try appStore.catalog(from: .builtIn)
         XCTAssertEqual(kit.issues(catalog: catalog), [])
@@ -76,10 +78,10 @@ final class EditionCatalogTests: XCTestCase {
 
     func testAKitThatRequiresAnExcludedModuleIsRefused() throws {
         let kit = try KitManifest.decode(from: Data(#"""
-        {"formatVersion": 1, "id": "ask", "name": "Ask", "modules": ["claudeAsk"],
-         "requires": {"modules": ["claudeAsk"]}}
+        {"formatVersion": 1, "id": "usage", "name": "Usage", "modules": ["claudeUsage"],
+         "requires": {"modules": ["claudeUsage"]}}
         """#.utf8))
-        XCTAssertEqual(kit.missingRequirements(catalog: try appStore.catalog(from: .builtIn)), [.claudeAsk])
+        XCTAssertEqual(kit.missingRequirements(catalog: try appStore.catalog(from: .builtIn)), [.claudeUsage])
     }
 
     func testSettingsOfferNoPreviewForAnExcludedModule() throws {

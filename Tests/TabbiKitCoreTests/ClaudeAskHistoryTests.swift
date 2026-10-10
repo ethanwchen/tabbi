@@ -29,7 +29,7 @@ final class ClaudeAskHistoryTests: XCTestCase {
         var conversation = ClaudeAskConversation()
         XCTAssertNil(conversation.savedChat())
         conversation.begin(prompt: "hi")
-        conversation.fail(.claudeNotFound)
+        conversation.fail(.notInstalled(.claudeCLI))
         XCTAssertNil(conversation.savedChat())
     }
 
@@ -171,5 +171,35 @@ final class ClaudeAskHistoryTests: XCTestCase {
         let chat = try XCTUnwrap(history.load(id))
         XCTAssertNil(chat.sessionID)
         XCTAssertEqual(chat.title, "hi")
+    }
+
+    func testVersionOneChatsWithASessionBelongToClaudeCode() throws {
+        let withSession = UUID(), without = UUID()
+        for (id, session) in [(withSession, #""sessionID":"s1","#), (without, "")] {
+            let document = """
+            {"schemaVersion":1,"id":"\(id.uuidString)","createdAt":"2027-01-15T08:00:00Z",
+             "updatedAt":"2027-01-15T08:01:00Z",\(session)
+             "messages":[{"role":"user","text":"hi","status":"complete"}]}
+            """
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            try Data(document.utf8).write(to: history.fileURL(for: id))
+        }
+        XCTAssertEqual(try history.load(withSession)?.sessionProvider, .claudeCLI)
+        XCTAssertNil(try history.load(without)?.sessionProvider)
+    }
+
+    func testAToolFromANewerBuildOnlyLosesTheSession() throws {
+        let id = UUID()
+        let document = """
+        {"schemaVersion":2,"id":"\(id.uuidString)","createdAt":"2027-01-15T08:00:00Z",
+         "updatedAt":"2027-01-15T08:01:00Z","sessionID":"s1","sessionProvider":"future-cli",
+         "messages":[{"role":"user","text":"hi","status":"complete"}]}
+        """
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        try Data(document.utf8).write(to: history.fileURL(for: id))
+        let chat = try XCTUnwrap(history.load(id))
+        XCTAssertNil(chat.sessionProvider)
+        XCTAssertEqual(chat.title, "hi")
+        XCTAssertNil(ClaudeAskConversation(restoring: chat).sessionProvider)
     }
 }

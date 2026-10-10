@@ -24,7 +24,7 @@ final class ModuleListTests: XCTestCase {
         // Modules a kit doesn't list are appended in this order, so it is
         // user-visible in Settings. New modules go at the end.
         #if APPSTORE
-        XCTAssertEqual(ModuleList.catalog.ids, [.spotify, .system, .planner,
+        XCTAssertEqual(ModuleList.catalog.ids, [.spotify, .system, .planner, .claudeAsk,
                                                 .focus, .study, .anki, .party, .closet, .schedule])
         #else
         XCTAssertEqual(ModuleList.catalog.ids, [.spotify, .system, .claudeUsage, .planner, .claudeAsk,
@@ -32,13 +32,14 @@ final class ModuleListTests: XCTestCase {
         #endif
     }
 
-    #if !APPSTORE
-    func testClaudeModulesDeclareTheCLIRequirement() {
-        XCTAssertTrue(AskClaudeModule.descriptor.permissions.contains(.claudeCLI))
+    func testOnlyClaudeUsageRequiresTheClaudeCLI() {
+        // Ask answers through whichever AI the user picks, API keys included.
+        XCTAssertEqual(AskClaudeModule.descriptor.permissions, [])
+        #if !APPSTORE
         XCTAssertTrue(ClaudeUsageModule.descriptor.permissions.contains(.claudeCLI))
+        #endif
         XCTAssertEqual(SystemModule.descriptor.permissions, [])
     }
-    #endif
 
     func testModulesThatUseTheNetworkDeclareTheirHosts() {
         let declared = Dictionary(uniqueKeysWithValues: ModuleList.catalog.descriptors.map {
@@ -47,7 +48,12 @@ final class ModuleListTests: XCTestCase {
         XCTAssertEqual(declared[.spotify], ["i.scdn.co", "i1.sndcdn.com"])
         XCTAssertEqual(declared[.anki], [URLSessionAnkiConnectTransport.defaultEndpoint.host()!])
         XCTAssertEqual(declared[.party], [PartyServer.productionURL.host()!])
-        for id in ModuleList.catalog.ids where ![.spotify, .anki, .party].contains(id) {
+        // Ask, Plan my day, Wrap up and Refine send to the provider the user picks.
+        let aiModules: [ModuleID] = [.claudeAsk, .planner, .schedule]
+        for id in aiModules {
+            XCTAssertEqual(declared[id], Set(AIProviderID.allNetworkAccess.map(\.host)), "\(id)")
+        }
+        for id in ModuleList.catalog.ids where ![.spotify, .anki, .party].contains(id) && !aiModules.contains(id) {
             XCTAssertEqual(declared[id], [], "\(id) declares a host but makes no network calls")
         }
         for descriptor in ModuleList.catalog.descriptors {

@@ -62,7 +62,7 @@ public enum ClaudeConnectionState: Hashable, Sendable {
                                     action: .showGuide(.claudeSignIn))
         case .ready:
             return ConnectionStatus(light: .connected, headline: "Claude is ready",
-                                    detail: "Plan my day and Ask Claude can use it.")
+                                    detail: "Plan my day and Ask AI can use it.")
         }
     }
 }

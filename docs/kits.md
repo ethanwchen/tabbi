@@ -5,12 +5,12 @@ Tabbi ships two kits, and anyone can write their own as a small JSON file and sh
 
 | Kit | Id | Tabs |
 | --- | --- | --- |
-| Essentials | `essentials` | Study (the timer), Today (the to-do list), Now Playing, Ask Claude |
-| Med School | `medicine` | Study, Today, Anki, Now Playing, Ask Claude |
+| Essentials | `essentials` | Study (the timer), Today (the to-do list), Now Playing, Ask AI |
+| Med School | `medicine` | Study, Today, Anki, Now Playing, Ask AI |
 
 Essentials is the default for every new user, and Med School is Essentials plus Anki, with study methods, a daily study goal, a focus sound and a study pet tuned for med school.
 Both keep the notch to a few tabs on purpose, and both also turn on the Closet, which opens from the paw at the far right of the header rather than taking a tab.
-Every other module (System, Claude Usage, Party, Focus and any added later) starts switched off and waits in the **Add more** library in Settings > Tabs, one click away.
+Every other module (System, AI Usage, Party, Focus and any added later) starts switched off and waits in the **Add more** library in Settings > Tabs, one click away.
 
 Earlier versions shipped Productivity (`productivity`) and Student (`student`) kits.
 Someone who used either moves to Essentials on their first launch of this version and keeps every tab they had, in their order; only the old kit's onboarding answers are dropped.
@@ -53,7 +53,7 @@ Only the last change can be undone; Reset to Kit Defaults is not undoable.
 After switching, you can still add, remove and reorder tabs above the Kit section.
 
 Imported kits are stored as `<id>.json` in `~/Library/Application Support/Tabbi/Kits`.
-Each edition keeps all of its files apart in its own folder: kits, Today's checklist and reviews, the activity log, the study log, the pet and the Claude Usage scan index.
+Each edition keeps all of its files apart in its own folder: kits, Today's checklist and reviews, the activity log, the study log, the pet and the AI Usage scan index.
 Deleting a file there removes the kit the next time Tabbi starts.
 
 ## A minimal kit
@@ -108,9 +108,9 @@ So a kit only needs to list the tabs it starts with; the rest stay available.
 | --- | --- |
 | `spotify` | Now Playing (Spotify and Apple Music) |
 | `system` | System (CPU and GPU) |
-| `claudeUsage` | Claude Usage |
+| `claudeUsage` | AI Usage |
 | `planner` | Today (calendar, tasks, focus timer; with `study` on, it shows the Timer tab's clock instead of its own) |
-| `claudeAsk` | Ask Claude |
+| `claudeAsk` | Ask AI |
 | `focus` | Focus (the same timer as Today's, with focus mode, as its own tab) |
 | `study` | Study timer and study methods |
 | `anki` | Anki reviews |
@@ -179,7 +179,7 @@ Today (`planner`) reads these `moduleSettings.planner` keys, all optional:
 
 | Key | Type | Meaning |
 | --- | --- | --- |
-| `planMode` | string | `local` (default) plans on device, without Claude or the network: review blocks for other modules' goals first, then the checklist and other modules' tasks, with breaks between blocks and a short reason for each. `claude` asks the local `claude` CLI to plan the day instead. `study` also plans on device: review blocks for other modules' goals (such as Anki reviews), study blocks the length of the kit's `study.method`, and breaks. |
+| `planMode` | string | `local` (default) plans on device, without Claude or the network: review blocks for other modules' goals first, then the checklist and other modules' tasks, with breaks between blocks and a short reason for each. `claude` asks the AI the user picked in Settings > Connections (Claude, Codex, Gemini or Ollama) to plan the day instead, and shows a setup message until one is picked. `study` also plans on device: review blocks for other modules' goals (such as Anki reviews), study blocks the length of the kit's `study.method`, and breaks. |
 | `reviewsFirst` | bool | Schedule review blocks in the first free time (default `true`), or last. |
 | `eventBufferMinutes` | number | Free time kept clear before and after each calendar event (default 10). |
 | `studyBlockTitle` | string | Title for study blocks once every open task has one (default "Study block"). |

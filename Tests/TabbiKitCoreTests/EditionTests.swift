@@ -62,14 +62,14 @@ final class EditionTests: XCTestCase {
         XCTAssertEqual(Edition.tabbi.catalog(from: catalog), catalog)
     }
 
-    func testTheAppStoreEditionIsTabbiWithoutTheCLIModulesAndParty() throws {
+    func testTheAppStoreEditionIsTabbiWithoutClaudeUsageAndParty() throws {
         let appStore = try XCTUnwrap(Edition.named("appstore"))
         XCTAssertTrue(appStore.isAppStore)
         XCTAssertFalse(appStore.runsLocalTools, "a sandboxed build can't run the claude CLI or Shortcuts")
         XCTAssertEqual(appStore.name, Edition.tabbi.name)
         XCTAssertEqual(appStore.bundleIdentifier, Edition.tabbi.bundleIdentifier)
         XCTAssertEqual(appStore.defaultKitID, KitLibrary.defaultKitID)
-        XCTAssertEqual(Set(appStore.excludedModules), [.claudeUsage, .claudeAsk, .party])
+        XCTAssertEqual(Set(appStore.excludedModules), [.claudeUsage, .party])
         XCTAssertEqual(appStore.infoPlist["LSApplicationCategoryType"], "public.app-category.productivity")
         XCTAssertEqual(Edition.resolve(infoDictionary: [Edition.infoKey: "appstore"]), appStore)
     }

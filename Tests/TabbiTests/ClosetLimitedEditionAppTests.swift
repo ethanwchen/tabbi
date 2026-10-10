@@ -7,10 +7,10 @@ import TabbiKitCore
 /// log (past and new) and event items the server grants.
 @MainActor
 final class ClosetLimitedEditionAppTests: XCTestCase {
-    // XCTest makes a new instance per test, so each test gets its own folder.
+    /// A fresh folder per test: XCTest makes a new instance for each one.
     private let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
 
-    override func tearDown() {
+    override func tearDown() async throws {
         try? FileManager.default.removeItem(at: root)
     }
 

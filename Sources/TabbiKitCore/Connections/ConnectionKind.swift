@@ -54,7 +54,7 @@ public enum ConnectionKind: String, CaseIterable, Identifiable, Hashable, Sendab
         case .music: "Play, pause and skip in Apple Music."
         case .notifications: "Get an alert when a timer ends."
         case .doNotDisturb: "Quiet other alerts while you focus."
-        case .claude: "Powers Plan my day and Ask Claude."
+        case .claude: "Powers Claude usage and answers."
         case .party: "Study with friends, see their timers."
         }
     }
@@ -67,7 +67,7 @@ public enum ConnectionKind: String, CaseIterable, Identifiable, Hashable, Sendab
         case .spotify, .music: [.spotify]
         case .notifications: [.planner, .focus, .study]
         case .doNotDisturb: [.planner, .focus, .study]
-        case .claude: [.planner, .claudeAsk, .claudeUsage]
+        case .claude: [.claudeUsage]
         case .party: [.party]
         }
     }
@@ -78,9 +78,15 @@ public enum ConnectionKind: String, CaseIterable, Identifiable, Hashable, Sendab
 
     /// The connections the enabled modules use, in row order, leaving out
     /// those that need helper programs when `localTools` is false.
-    public static func relevant(to enabled: some Sequence<ModuleID>, localTools: Bool = true) -> [ConnectionKind] {
+    /// `usesClaudeCode` adds the Claude row when the user picked Claude Code
+    /// to answer Ask and Plan my day; any other AI is set up in the AI section.
+    public static func relevant(to enabled: some Sequence<ModuleID>, localTools: Bool = true,
+                                usesClaudeCode: Bool = false) -> [ConnectionKind] {
         let enabled = Set(enabled)
-        return allCases.filter { !enabled.isDisjoint(with: $0.modules) && (localTools || !$0.needsLocalTools) }
+        return allCases.filter { kind in
+            let used = !enabled.isDisjoint(with: kind.modules) || (kind == .claude && usesClaudeCode)
+            return used && (localTools || !kind.needsLocalTools)
+        }
     }
 
     /// A believable spread of states for demo mode and snapshots: most

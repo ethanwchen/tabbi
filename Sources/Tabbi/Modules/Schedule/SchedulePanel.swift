@@ -804,7 +804,7 @@ private struct SchedulePlanStrip: View {
         } else {
             if store.canRefine || store.isRefining {
                 SchedulePillButton(title: "Refine", symbol: "wand.and.stars",
-                                   help: "Refine with Claude: suggest a better order or lengths for this plan") {
+                                   help: "Refine with \(store.assistantName): suggest a better order or lengths for this plan") {
                     store.refine()
                 }
                 .disabled(store.isRefining)
@@ -816,13 +816,14 @@ private struct SchedulePlanStrip: View {
         }
     }
 
-    /// The summary, or where "Refine with Claude" stands.
+    /// The summary, or where Refine stands.
     private var overviewText: String {
-        if store.isRefining { return "Claude is looking over this plan..." }
-        if store.refineFailed { return "Claude couldn't refine this plan" }
+        let assistant = store.assistantName
+        if store.isRefining { return "\(assistant) is looking over this plan..." }
+        if store.refineFailed { return "\(assistant) couldn't refine this plan" }
         return switch draft.refinement {
-        case .changed: "Refined with Claude: \(draft.summary)"
-        case .unchanged: "Claude suggests no changes"
+        case .changed: "Refined with \(assistant): \(draft.summary)"
+        case .unchanged: "\(assistant) suggests no changes"
         case nil: draft.summary
         }
     }

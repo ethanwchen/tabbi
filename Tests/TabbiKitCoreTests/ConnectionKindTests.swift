@@ -7,17 +7,25 @@ final class ConnectionKindTests: XCTestCase {
         XCTAssertEqual(ConnectionKind.relevant(to: [.anki]), [.anki])
         XCTAssertEqual(ConnectionKind.relevant(to: [.spotify]), [.spotify, .music])
         XCTAssertEqual(ConnectionKind.relevant(to: [.claudeAsk, .claudeUsage]), [.claude])
+        XCTAssertEqual(ConnectionKind.relevant(to: [.claudeAsk]), [])
+    }
+
+    func testClaudeShowsForAskAndTodayOnlyWhenClaudeCodeAnswers() {
+        XCTAssertEqual(ConnectionKind.relevant(to: [.claudeAsk], usesClaudeCode: true), [.claude])
+        XCTAssertEqual(ConnectionKind.relevant(to: [.planner], usesClaudeCode: true),
+                       [.calendar, .notifications, .doNotDisturb, .claude])
+        XCTAssertEqual(ConnectionKind.relevant(to: [.claudeAsk], localTools: false, usesClaudeCode: true), [])
     }
 
     func testKeepsRowOrderWhateverTheTabOrder() {
         let medSchool: [ModuleID] = [.party, .study, .anki, .planner, .closet]
         XCTAssertEqual(ConnectionKind.relevant(to: medSchool),
-                       [.calendar, .anki, .notifications, .doNotDisturb, .claude, .party])
+                       [.calendar, .anki, .notifications, .doNotDisturb, .party])
         XCTAssertEqual(ConnectionKind.relevant(to: medSchool.reversed()), ConnectionKind.relevant(to: medSchool))
     }
 
-    func testTodayUsesCalendarAlertsFocusAndClaude() {
-        XCTAssertEqual(ConnectionKind.relevant(to: [.planner]), [.calendar, .notifications, .doNotDisturb, .claude])
+    func testTodayUsesCalendarAlertsAndFocus() {
+        XCTAssertEqual(ConnectionKind.relevant(to: [.planner]), [.calendar, .notifications, .doNotDisturb])
     }
 
     func testABuildWithoutLocalToolsHidesClaudeAndDoNotDisturb() {

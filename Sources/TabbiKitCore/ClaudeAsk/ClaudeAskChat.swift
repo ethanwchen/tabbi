@@ -48,14 +48,34 @@ public struct ClaudeAskChat: Codable, Identifiable, Equatable, Sendable {
     public var updatedAt: Date
     /// The CLI session the chat continues with `--resume`, if it had one.
     public var sessionID: String?
+    /// The command line tool that holds `sessionID`.
+    public var sessionProvider: AIProviderID?
     public var messages: [Message]
 
-    public init(id: UUID, createdAt: Date, updatedAt: Date, sessionID: String?, messages: [Message]) {
+    public init(id: UUID, createdAt: Date, updatedAt: Date, sessionID: String?,
+                sessionProvider: AIProviderID? = nil, messages: [Message]) {
         self.id = id
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.sessionID = sessionID
+        self.sessionProvider = sessionID == nil ? nil : sessionProvider
         self.messages = messages
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id, createdAt, updatedAt, sessionID, sessionProvider, messages
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        createdAt = try container.decode(Date.self, forKey: .createdAt)
+        updatedAt = try container.decode(Date.self, forKey: .updatedAt)
+        sessionID = try container.decodeIfPresent(String.self, forKey: .sessionID)
+        // A tool this build doesn't know (written by a newer one) just
+        // means the session can't be resumed here.
+        sessionProvider = (try? container.decodeIfPresent(AIProviderID.self, forKey: .sessionProvider)) ?? nil
+        messages = try container.decode([Message].self, forKey: .messages)
     }
 
     /// The first question on one line, short enough for a history row.
@@ -83,8 +103,15 @@ public final class ClaudeAskHistory {
 
     public static let folderName = "Claude Chats"
 
-    /// The chat file format. Version 1 is the first.
-    public static let schema = VersionedJSON(current: 1)
+    /// The chat file format. Version 1 is the first. Version 2 records which
+    /// tool holds the session; every earlier chat was Claude Code's.
+    public static let schema = VersionedJSON(current: 2, migrations: [
+        .init(version: 2) { chat in
+            if chat["sessionID"] is String, chat["sessionProvider"] == nil {
+                chat["sessionProvider"] = AIProviderID.claudeCLI.rawValue
+            }
+        },
+    ])
 
     public init(directory: URL, fileManager: FileManager = .default) {
         self.directory = directory

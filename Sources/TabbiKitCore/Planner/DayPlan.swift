@@ -110,8 +110,8 @@ public enum DayPlanner {
         return Date(timeIntervalSinceReferenceDate: (date.timeIntervalSinceReferenceDate / slot).rounded(.up) * slot)
     }
 
-    /// JSON Schema handed to `claude --json-schema` so the result text is
-    /// the bare plan object.
+    /// JSON Schema for the plan object, sent with `DayPlanner.request(prompt:)`
+    /// (Claude Code enforces it with `--json-schema`).
     public static let jsonSchema = """
     {"type":"object","properties":{"blocks":{"type":"array","items":{"type":"object","properties":{\
     "start":{"type":"string","pattern":"^[0-2][0-9]:[0-5][0-9]$"},\

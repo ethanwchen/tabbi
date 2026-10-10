@@ -3,7 +3,7 @@ import TabbiKitCore
 import TabbiKit
 
 /// Plan My Day, shown in place of the checklist: a header with the plan's
-/// actions over the proposed blocks, a shimmer while Claude thinks, or a
+/// actions over the proposed blocks, a shimmer while the AI thinks, or a
 /// short message with Retry when something went wrong.
 struct DayPlanView: View {
     @ObservedObject var plan: DayPlanStore
@@ -25,7 +25,7 @@ struct DayPlanView: View {
             EmptyView()
         case .planning:
             DayPlanShimmer(help: plan.settings.planMode == .claude
-                           ? "Claude is fitting your tasks around \(plan.target.eventsName)"
+                           ? "\(plan.assistantName) is fitting your tasks around \(plan.target.eventsName)"
                            : "Fitting your work and breaks around \(plan.target.eventsName)")
                 .transition(.opacity)
         case .proposal(let proposal):
@@ -52,11 +52,11 @@ struct DayPlanView: View {
             PlannerMessage(symbol: "exclamationmark.triangle.fill", tint: Theme.Palette.warning,
                            title: failure.title, detail: failure.detail) {
                 if failure.canRetry {
-                    PlannerPillButton(title: "Retry", symbol: "arrow.clockwise", help: "Ask Claude again") {
+                    PlannerPillButton(title: "Retry", symbol: "arrow.clockwise", help: "Ask \(plan.assistantName) again") {
                         plan.retry()
                     }
                 } else if failure.opensConnections {
-                    PlannerPillButton(title: failure == .claudeNotFound ? "Set up Claude" : "Connect calendar",
+                    PlannerPillButton(title: failure == .calendarUnavailable ? "Connect calendar" : "Set up AI",
                                       symbol: "link", help: "Open Connections to finish setting this up") {
                         ConnectionsStore.shared.showHub()
                     }
@@ -148,7 +148,7 @@ private struct DayPlanHeader: View {
 // MARK: Footer
 
 /// The caption under the rows (where blocks go, what happened so far) and
-/// the optional "Refine with Claude", offered once per on-device plan.
+/// the optional "Refine", offered once per on-device plan.
 private struct DayPlanFooter: View {
     @ObservedObject var plan: DayPlanStore
     let proposal: DayPlanProposal
@@ -163,7 +163,7 @@ private struct DayPlanFooter: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             if showsRefine {
                 PlannerPillButton(title: "Refine", symbol: "wand.and.stars",
-                                  help: "Refine with Claude: ask Claude for suggestions on this plan (optional)") {
+                                  help: "Refine with \(plan.assistantName): ask for suggestions on this plan (optional)") {
                     plan.refine()
                 }
                 .transition(.opacity)
@@ -176,9 +176,9 @@ private struct DayPlanFooter: View {
     }
 
     private var caption: String {
-        if plan.isRefining { return "Claude is looking over this plan…" }
-        if plan.refineFailed { return "Claude couldn't refine it. This plan still works." }
-        return DayPlanFormat.footer(proposal)
+        if plan.isRefining { return "\(plan.assistantName) is looking over this plan…" }
+        if plan.refineFailed { return "\(plan.assistantName) couldn't refine it. This plan still works." }
+        return DayPlanFormat.footer(proposal, assistant: plan.assistantName)
     }
 
     private var showsRefine: Bool {
@@ -237,8 +237,8 @@ private struct DayPlanBlockRow: View {
 }
 
 /// The leading marker: a symbol for review and study blocks, so the
-/// day's rhythm reads at a glance, or the plain accent tick for Claude's
-/// focus blocks.
+/// day's rhythm reads at a glance, or the plain accent tick for focus
+/// blocks.
 private struct DayPlanKindMarker: View {
     let kind: PlanBlockKind
 
@@ -301,7 +301,7 @@ private struct DayPlanRowButton: View {
 }
 
 /// Placeholder rows shaped like proposal rows (stripe, time, title), with
-/// the shared skeleton shimmer while Claude plans.
+/// the shared skeleton shimmer while the AI plans.
 private struct DayPlanShimmer: View {
     let help: String
 
@@ -331,7 +331,7 @@ enum DayPlanFormat {
     /// Fits "10:45–11:30" in the caption font.
     static let rangeWidth: CGFloat = 76
 
-    /// Review and study blocks get a symbol; Claude's focus blocks don't.
+    /// Review and study blocks get a symbol; the AI's focus blocks don't.
     static func symbol(for kind: PlanBlockKind) -> String? {
         switch kind {
         case .focus: nil
@@ -351,14 +351,14 @@ enum DayPlanFormat {
 
     /// The caption under the rows: where blocks go, then what happened to
     /// the ones accepted so far, including any that no longer fit.
-    static func footer(_ proposal: DayPlanProposal) -> String {
+    static func footer(_ proposal: DayPlanProposal, assistant: String) -> String {
         var parts: [String] = []
         if proposal.addedCount > 0 { parts.append("\(proposal.addedCount) added to your calendar") }
         if proposal.skippedCount > 0 { parts.append("\(proposal.skippedCount) no longer fit") }
         guard parts.isEmpty else { return parts.joined(separator: " · ") }
         switch proposal.refinement {
-        case .changed: return "Refined with Claude."
-        case .unchanged: return "Claude suggests no changes."
+        case .changed: return "Refined with \(assistant)."
+        case .unchanged: return "\(assistant) suggests no changes."
         case nil: return "Blocks go to your calendar."
         }
     }

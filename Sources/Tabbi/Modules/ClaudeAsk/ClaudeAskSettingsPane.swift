@@ -3,15 +3,15 @@ import TabbiKitCore
 import TabbiKit
 
 extension SettingsPane {
-    /// Settings › Ask Claude: when answers open in the large view, and where
+    /// Settings › Ask AI: when answers open in the large view, and where
     /// chats are kept.
     @MainActor static func claudeAsk(_ session: ClaudeAskSession) -> SettingsPane {
-        SettingsPane(id: "claudeAsk", title: "Ask Claude", symbol: "sparkles",
+        SettingsPane(id: "claudeAsk", title: "Ask AI", symbol: "sparkles",
                      view: AnyView(ClaudeAskSettingsPane(session: session)))
     }
 }
 
-/// Settings › Ask Claude. Edits go straight to `ClaudeAskSession`, which
+/// Settings › Ask AI. Edits go straight to `ClaudeAskSession`, which
 /// saves them.
 struct ClaudeAskSettingsPane: View {
     @ObservedObject var session: ClaudeAskSession
@@ -39,7 +39,7 @@ struct ClaudeAskSettingsPane: View {
             } header: {
                 Text("History")
             } footer: {
-                SectionFooter("Chats stay on this Mac, in \(Edition.current.name)'s own folder. Delete them from History in the Ask Claude tab.")
+                SectionFooter("Chats stay on this Mac, in \(Edition.current.name)'s own folder. Delete them from History in the Ask AI tab.")
             }
         }
         .formStyle(.grouped)

@@ -146,7 +146,7 @@ struct ScreenAccessView: View {
                 Text("Allow screenshots")
                     .font(Theme.Typography.title)
                     .foregroundStyle(Theme.Palette.primaryText)
-                Text("To attach your screen, turn on Tabbi under Screen Recording. The screenshot goes only to Claude with your question.")
+                Text("To attach your screen, turn on Tabbi under Screen Recording. The screenshot goes only to \(session.ai.assistantName) with your question.")
                     .font(Theme.Typography.caption)
                     .foregroundStyle(Theme.Palette.secondaryText)
                     .multilineTextAlignment(.center)
