@@ -43,7 +43,16 @@ public final class NotchViewModel: ObservableObject {
     @Published public var geometry: NotchGeometry
     /// The live preview beside the closed notch, nil for a plain black notch
     /// (fed from `TickerStore`).
-    @Published public var preview: TickerItem?
+    @Published public var preview: TickerItem? {
+        didSet {
+            guard preview != oldValue else { return }
+            previewWingWidth = preview.map(NotchPreviewLayout.wingWidth(for:)) ?? 0
+        }
+    }
+    /// `NotchPreviewLayout.wingWidth` of `preview`, measured once per preview
+    /// rather than on every read of `size`, which the pointer tracking does
+    /// for each mouse move anywhere on screen.
+    private var previewWingWidth: CGFloat = 0
     /// While true the notch stays open even when the pointer leaves
     /// (e.g. the user is typing a question).
     @Published public var isPinned = false
@@ -150,7 +159,7 @@ public final class NotchViewModel: ObservableObject {
     }
 
     private func closedWidth(_ notch: CGSize) -> CGFloat {
-        notch.width + (preview.map { NotchPreviewLayout.wingWidth(for: $0) * 2 } ?? 0)
+        notch.width + previewWingWidth * 2
     }
 
     public func open(_ module: ModuleID? = nil, fromKeyboard: Bool = false) {

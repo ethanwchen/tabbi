@@ -166,7 +166,10 @@ public final class NotchController {
         updatePointerNear()
         guard isShown else { return }
         let inside = hitRect.insetBy(dx: -4, dy: -4).contains(NSEvent.mouseLocation)
-        panel.ignoresMouseEvents = !inside
+        // Setting it, even to the value it has, commits a window server
+        // transaction, which on every pointer move anywhere on screen was
+        // most of what an idle Tabbi cost.
+        if panel.ignoresMouseEvents == inside { panel.ignoresMouseEvents = !inside }
         guard inside != pointerInside else { return }
         pointerInside = inside
 

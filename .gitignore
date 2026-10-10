@@ -17,3 +17,4 @@ site/.wrangler/
 # The provisioning profiles: App Store (docs/appstore.md) and the unused Developer ID one (docs/sync.md)
 # and Mac App Store (scripts/release-appstore.sh)
 packaging/*.provisionprofile
+perf-results/
