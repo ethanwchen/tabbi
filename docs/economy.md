@@ -135,6 +135,7 @@ An earned item stays owned after the event; one not earned starts over from zero
 Each event's last item is its headline item and the only one with an effect.
 While an event runs, a small banner at the top of the Closet's Limited section shows its name, last day and line of copy, plus the focus logged toward its next item.
 Between events, that shelf shows when the next one starts.
+The first time Tabbi runs during an event, the pet beside the closed notch does one little dance (after the notch closes, if a panel is open), and never again for that run (`SeasonalEventGreeting`, saved as `Pet/events.json`).
 With `TABBI_DEMO=1`, the Closet reads events at a moment two days into the current or next event, with an hour of focus logged there (`SeasonalEventDemo`), so demos and snapshots always show an event in progress.
 
 ## Streak freezes
