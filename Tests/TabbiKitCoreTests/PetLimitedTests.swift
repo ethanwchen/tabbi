@@ -28,6 +28,7 @@ final class PetLimitedTests: XCTestCase {
         var source: String
         var event: String?
         var milestone: String?
+        var season: String?
     }
 
     /// The server grants exactly the limited items the app can show, with the same source, so an admin
@@ -47,6 +48,9 @@ final class PetLimitedTests: XCTestCase {
             case .milestone(let milestone):
                 XCTAssertEqual(entry.source, "milestone", entry.id)
                 XCTAssertEqual(entry.milestone, milestone.rawValue, entry.id)
+            case .season(let id):
+                XCTAssertEqual(entry.source, "season", entry.id)
+                XCTAssertEqual(entry.season, id, entry.id)
             }
         }
     }
@@ -91,6 +95,108 @@ final class PetLimitedTests: XCTestCase {
         XCTAssertEqual(PetItem.accessory(.goldenLaurel).effect, .shimmer)
         XCTAssertEqual(PetItem.accessory(.teamMedal).effect, .sparkle)
         XCTAssertEqual(PetItem.accessory(.backwardsCap).effect, .sparkle)
+    }
+
+    /// The winter holidays offer reindeer antlers and, as the headline item,
+    /// a scarf that snow sparkles on; both stay apart from the shop's scarf.
+    func testWinterItemsAreSeasonalLimitedItems() {
+        let antlers = PetItem.accessory(.reindeerAntlers)
+        let scarf = PetItem.accessory(.snowScarf)
+        XCTAssertEqual(PetLimitedEdition.winterAntlers.item, antlers)
+        XCTAssertEqual(PetLimitedEdition.winterScarf.item, scarf)
+        for item in [antlers, scarf] {
+            XCTAssertEqual(item.limitedEdition?.source, .season(id: "winter-holidays"))
+            XCTAssertEqual(item.theme, .seasonal)
+            XCTAssertNotEqual(item, .accessory(.scarf), "the shop's scarf stays for sale")
+        }
+        XCTAssertEqual(PetAccessory.snowScarf.slot, PetAccessory.scarf.slot)
+        XCTAssertNil(antlers.effect)
+        XCTAssertEqual(scarf.effect, .sparkle)
+    }
+
+    /// Valentine's offers one item, heart glasses, so it is the headline
+    /// item: a face item whose lenses glint now and then.
+    func testValentinesGlassesAreASeasonalLimitedItem() {
+        let glasses = PetItem.accessory(.heartGlasses)
+        XCTAssertEqual(PetLimitedEdition.valentinesGlasses.item, glasses)
+        XCTAssertEqual(glasses.limitedEdition?.source, .season(id: "valentines"))
+        XCTAssertEqual(glasses.theme, .seasonal)
+        XCTAssertEqual(PetAccessory.heartGlasses.slot, .face)
+        XCTAssertEqual(glasses.effect, .sparkle)
+    }
+
+    /// Summer offers one item, sunset shades, so it is the headline item.
+    /// It is its own face item, apart from the shop's cool sunglasses.
+    func testSummerShadesAreASeasonalLimitedItem() {
+        let shades = PetItem.accessory(.summerShades)
+        XCTAssertEqual(PetLimitedEdition.summerShades.item, shades)
+        XCTAssertEqual(shades.limitedEdition?.source, .season(id: "summer"))
+        XCTAssertEqual(shades.theme, .seasonal)
+        XCTAssertEqual(PetAccessory.summerShades.slot, PetAccessory.coolSunglasses.slot)
+        XCTAssertNil(PetItem.accessory(.coolSunglasses).limitedEdition)
+        XCTAssertEqual(shades.effect, .sparkle)
+    }
+
+    /// Lunar New Year offers one item, the lion dance hat, so it is the
+    /// headline item: a head item whose forehead mirror glints.
+    func testLionDanceHatIsASeasonalLimitedItem() {
+        let hat = PetItem.accessory(.lionDanceHat)
+        XCTAssertEqual(PetLimitedEdition.lunarNewYearLion.item, hat)
+        XCTAssertEqual(hat.limitedEdition?.source, .season(id: "lunar-new-year"))
+        XCTAssertEqual(hat.theme, .seasonal)
+        XCTAssertEqual(PetAccessory.lionDanceHat.slot, .head)
+        XCTAssertEqual(hat.effect, .sparkle)
+        XCTAssertEqual(hat.cost, 0)
+    }
+
+    /// Spring offers one item, the sakura sprig, so it is the headline
+    /// item: a head item that drops a drifting petal, distinct from the
+    /// shop's cherry petals, which fall all around the pet.
+    func testSakuraSprigIsASeasonalLimitedItem() {
+        let sprig = PetItem.accessory(.sakuraSprig)
+        XCTAssertEqual(PetLimitedEdition.springSakura.item, sprig)
+        XCTAssertEqual(sprig.limitedEdition?.source, .season(id: "spring"))
+        XCTAssertEqual(sprig.theme, .seasonal)
+        XCTAssertEqual(PetAccessory.sakuraSprig.slot, .head)
+        XCTAssertNil(PetItem.accessory(.cherryPetals).limitedEdition)
+        XCTAssertEqual(sprig.effect, .drift)
+        XCTAssertEqual(sprig.cost, 0)
+    }
+
+    /// Exam season's one item is an outfit, so a whole outfit can be a
+    /// seasonal limited item too, apart from the shop's cozy hoodie.
+    func testStudyHoodieIsASeasonalLimitedOutfit() {
+        let hoodie = PetItem.outfit(.studyHoodie)
+        XCTAssertEqual(PetLimitedEdition.examHoodie.item, hoodie)
+        XCTAssertEqual(hoodie.limitedEdition?.source, .season(id: "exam-season"))
+        XCTAssertEqual(hoodie.theme, .seasonal)
+        XCTAssertNil(PetItem.outfit(.cozyHoodie).limitedEdition, "the shop's hoodie stays for sale")
+        XCTAssertEqual(hoodie.effect, .shimmer)
+        XCTAssertEqual(hoodie.cost, 0)
+        XCTAssertFalse(PetItemTheme.seasonal.items.contains(hoodie), "limited items are not on a shop shelf")
+    }
+
+    /// Seasonal items are limited, earned only during their event, and
+    /// only the event's headline item (its last reward) carries an effect.
+    func testHalloweenItemsAreSeasonalLimitedItems() {
+        let hat = PetItem.accessory(.moonlitWitchHat)
+        let pumpkin = PetItem.accessory(.pumpkinHat)
+        XCTAssertEqual(PetLimitedEdition.halloweenWitchHat.item, hat)
+        XCTAssertEqual(PetLimitedEdition.halloweenPumpkin.item, pumpkin)
+        for item in [hat, pumpkin] {
+            XCTAssertEqual(item.limitedEdition?.source, .season(id: "halloween"))
+            XCTAssertNil(item.limitedEdition?.milestone)
+            XCTAssertEqual(item.theme, .seasonal)
+            XCTAssertNotEqual(item, .accessory(.witchHat), "the shop's witch hat stays for sale")
+        }
+        XCTAssertNil(hat.effect)
+        XCTAssertEqual(pumpkin.effect, .flicker)
+
+        var closet = PetCloset(save: PetSave(profile: PetProfile(name: "Kit", breed: .tuxedo),
+                                             ledger: PetPointsLedger(earned: 5000)))
+        XCTAssertEqual(closet.state(of: pumpkin), .unearned)
+        XCTAssertFalse(closet.save.ledger.canBuy(pumpkin))
+        XCTAssertEqual(closet.tap(pumpkin), .notEarnedYet)
     }
 
     // MARK: Ledger and closet

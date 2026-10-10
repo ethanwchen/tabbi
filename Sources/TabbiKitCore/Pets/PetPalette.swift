@@ -161,7 +161,8 @@ public struct PetColor: Hashable, Codable, Sendable, CustomStringConvertible {
 /// costume, and user recolor work from the same hand-drawn art.
 ///
 /// Each role has a single character used in sprite text grids: uppercase,
-/// except `pupil`, which took the last free letter in lowercase.
+/// except `pupil` and `pumpkin`, which came after the uppercase letters ran
+/// out and use lowercase letters no pattern zone has.
 public enum PetPaletteRole: String, CaseIterable, Codable, Sendable {
     case outline
     case furBase
@@ -211,6 +212,8 @@ public enum PetPaletteRole: String, CaseIterable, Codable, Sendable {
     case leather
     /// Deep red folds and hems on heart-red cloth: the superhero cape.
     case crimson
+    /// Pumpkin orange, with `leather` for the ribs: the Halloween items.
+    case pumpkin
 
     /// The grid character for this role.
     public var symbol: Character {
@@ -243,6 +246,8 @@ public enum PetPaletteRole: String, CaseIterable, Codable, Sendable {
         case .leaf: "F"
         case .leather: "I"
         case .crimson: "X"
+        // Lowercase like `pupil`; `o` is not a zone.
+        case .pumpkin: "o"
         }
     }
 

@@ -38,6 +38,18 @@ enum CostumeArt {
         let cat: SpriteGrid
         let dog: SpriteGrid
         let eyeRow: Int
+        /// The rest of an animated item's loop: these grids are the still
+        /// frame, shown under Reduce Motion, and the loop's first.
+        var moreFrames: [FaceItem] = []
+
+        /// Frames in the item's loop; 1 for an item that stays still.
+        var frameCount: Int { 1 + moreFrames.count }
+
+        /// The item as drawn on frame `phase` of the item clock.
+        func frame(_ phase: Int) -> FaceItem {
+            let index = phase % frameCount
+            return index == 0 ? self : moreFrames[index - 1]
+        }
     }
 
     /// A hat-like item and the grid row that lands on the head's skull top.
@@ -264,6 +276,50 @@ extension CostumeArt {
 
     /// A gold medal with a glint, hung from a crimson ribbon around the neck.
     static let teamMedal = PetArt.costume.bodyItem("teamMedal")
+}
+
+// MARK: - Seasonal event items
+
+extension CostumeArt {
+    /// A navy witch hat whose tip leans over, a gold crescent moon on the
+    /// crown, a pumpkin-orange band and a wide flat brim.
+    static let moonlitWitchHat = PetArt.costume.headItem("moonlitWitchHat")
+
+    /// A small jack-o'-lantern sitting on the head: leather ribs, a stem
+    /// with a leaf, and a dark carved face. Gold on orange read as a box,
+    /// so the face stays dark and the candle inside flickers now and then,
+    /// lighting the eyes or the grin gold for a tick.
+    static let pumpkinHat = PetArt.costume.headItem("pumpkinHat")
+
+    /// Branching brown antlers that rise above the ears from a crimson
+    /// headband.
+    static let reindeerAntlers = PetArt.costume.headItem("reindeerAntlers")
+
+    /// A red lion dance head: a gold horn, white brows over gold-ringed
+    /// eyes and a gold fringe. Now and then the mirror on its forehead
+    /// catches the light.
+    static let lionDanceHat = PetArt.costume.headItem("lionDanceHat")
+
+    /// A brown cherry branch over one ear with three pink blossoms and a
+    /// green bud. Now and then a petal comes loose and drifts away.
+    static let sakuraSprig = PetArt.costume.headItem("sakuraSprig")
+
+    /// A crimson scarf with a white trim along its lower edge, a white
+    /// stripe across the tail and a white fringe. Now and then a speck of
+    /// snow glints on the band, then a snowflake twinkles on the tail.
+    static let snowScarf = PetArt.costume.bodyItem("snowScarf")
+
+    /// A navy hoodie with a white hood lining, white drawstrings, a gold
+    /// crest and a white-trimmed pocket. Now and then the crest glints.
+    static let studyHoodie = PetArt.costume.bodyItem("studyHoodie")
+
+    /// Pink heart lenses in a crimson frame. Now and then a light glints
+    /// on one lens, then the other.
+    static let heartGlasses = PetArt.costume.faceItem("heartGlasses")
+
+    /// Navy-rimmed aviators with sunset lenses, pink over orange. Now and
+    /// then the sun glints down one lens, then the other.
+    static let summerShades = PetArt.costume.faceItem("summerShades")
 }
 
 // MARK: - Back items

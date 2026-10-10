@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tabbi.app/schemas/events.v1.schema.json",
+  "title": "Tabbi seasonal events (events.v1)",
+  "description": "Sources/TabbiKitCore/Events/events.json: the year of seasonal events. Each event runs from local midnight of its first day through the end of its last day in the user's time zone, comes back every year, and offers limited pet items earned by focused minutes logged during the run (never money or points). An end earlier in the year than the start runs over New Year. Items earned stay owned; an item not earned starts over from zero when the event returns. Besides this schema, the app checks that ids are unique, that each item exists and is offered by one event only, and that goals rise within an event.",
+  "type": "object",
+  "required": ["schema", "events"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "events.v1" },
+    "events": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/event" }
+    }
+  },
+  "$defs": {
+    "event": {
+      "type": "object",
+      "required": ["id", "name", "tagline", "calendar", "start", "end", "rewards"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "Stable id, also the season id of the items' limited edition.",
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "name": { "description": "Shown in the Closet banner.", "type": "string", "pattern": "\\S" },
+        "tagline": { "description": "One gentle line for the Closet banner.", "type": "string", "pattern": "\\S" },
+        "calendar": {
+          "description": "The calendar the dates are written in. Lunar New Year uses the Chinese calendar (leap months never match).",
+          "enum": ["gregorian", "chinese"]
+        },
+        "start": { "description": "The first day.", "$ref": "#/$defs/day" },
+        "end": { "description": "The last day, included.", "$ref": "#/$defs/day" },
+        "rewards": {
+          "description": "The items to earn, lowest goal first; the last one is the headline item with a subtle effect.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/reward" }
+        }
+      }
+    },
+    "day": {
+      "description": "A month and day every year has: never February 29, and at most day 29 in the Chinese calendar.",
+      "type": "object",
+      "required": ["month", "day"],
+      "additionalProperties": false,
+      "properties": {
+        "month": { "type": "integer", "minimum": 1, "maximum": 12 },
+        "day": { "type": "integer", "minimum": 1, "maximum": 31 }
+      }
+    },
+    "reward": {
+      "type": "object",
+      "required": ["item", "focusMinutes"],
+      "additionalProperties": false,
+      "properties": {
+        "item": {
+          "description": "A pet item id, such as accessory.pumpkinHat or outfit.studyHoodie.",
+          "type": "string",
+          "pattern": "^(outfit|accessory)\\.[A-Za-z0-9]+$"
+        },
+        "focusMinutes": {
+          "description": "Focused minutes during the run that earn the item. Goals of 120 or more are whole hours.",
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    }
+  }
+}

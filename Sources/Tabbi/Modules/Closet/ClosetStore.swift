@@ -35,6 +35,16 @@ final class ClosetStore: ObservableObject {
     /// activity log (`follow(activity:history:)`).
     @Published private(set) var milestones: PetMilestoneProgress
 
+    /// Focus logged during each seasonal event run, which earns that
+    /// event's limited items (`follow(activity:history:)`).
+    @Published private(set) var seasons = SeasonalEventTally()
+
+    /// The moment the Closet reads seasonal events at: now, or in a demo a
+    /// pinned moment inside the featured event (`SeasonalEventDemo`), so a
+    /// demo always shows an event going on.
+    var seasonNow: Date { pinnedSeasonMoment ?? .now }
+    private let pinnedSeasonMoment: Date?
+
     /// Points earned from study sessions, as they are credited, so the
     /// coach can send the pet out to celebrate.
     let awards = PassthroughSubject<PetStudyAward, Never>()
@@ -86,6 +96,9 @@ final class ClosetStore: ObservableObject {
         saveIsUnreadable = unreadable
         hasSave = saved
         milestones = isDemo ? .demo(today: .now) : PetMilestoneProgress()
+        let demoSeason = isDemo ? SeasonalEventDemo(today: .now) : nil
+        pinnedSeasonMoment = demoSeason?.moment
+        if let demoSeason { seasons = demoSeason.tally }
         preview = PetPlayer(profile: closet.profile)
         presence = PetPresence(profile: closet.profile, lastActive: .now)
     }
@@ -103,13 +116,16 @@ final class ClosetStore: ObservableObject {
 
     /// Follows new activity records, so focus time cut short (Stop, Skip,
     /// or the Mac sleeping or Tabbi quitting mid-session) earns points
-    /// (`PetCloset.credit(_:)`), once per record, and study milestones
-    /// unlock their limited edition items. `history` is the log so far,
-    /// which counts toward the milestones without paying points again; a
-    /// milestone it already reached unlocks quietly.
+    /// (`PetCloset.credit(_:)`), once per record, and study milestones and
+    /// focus during seasonal events unlock their limited edition items.
+    /// `history` is the log so far, which counts toward both without paying
+    /// points again; a goal it already reached unlocks quietly.
     func follow(activity: AnyPublisher<ActivityRecord, Never>, history: [ActivityRecord] = []) {
-        for record in history { milestones.add(record) }
-        if !closet.unlockMilestones(milestones).isEmpty { persist() }
+        for record in history {
+            milestones.add(record)
+            seasons.add(record)
+        }
+        if !unlockLimited().isEmpty { persist() }
         activitySubscription = activity
             .sink { [weak self] record in
                 MainActor.assumeIsolated { self?.recorded(record) }
@@ -118,12 +134,19 @@ final class ClosetStore: ObservableObject {
 
     private func recorded(_ record: ActivityRecord) {
         milestones.add(record)
+        seasons.add(record)
         let award = closet.credit(record)
-        let unlocked = closet.unlockMilestones(milestones)
+        let unlocked = unlockLimited()
         guard award != nil || !unlocked.isEmpty else { return }
         persist()
         if let award { celebrate(award) }
         if !unlocked.isEmpty { celebrateLimited() }
+    }
+
+    /// Grants the limited items the milestones and seasonal events have
+    /// earned and returns the new ones.
+    private func unlockLimited() -> [PetItem] {
+        closet.unlockMilestones(milestones) + closet.unlockSeasonal(seasons)
     }
 
     /// A limited edition item just became the user's: the pet celebrates

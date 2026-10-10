@@ -22,7 +22,13 @@ describe("limited edition grants", () => {
   afterEach(() => vi.useRealTimers());
 
   it("lists only the limited edition items the app knows", () => {
-    expect(GRANTABLE_ITEMS).toEqual([CAP, "accessory.flameHeadband", "accessory.goldenLaurel", MEDAL]);
+    expect(GRANTABLE_ITEMS).toEqual([
+      CAP, "accessory.flameHeadband", "accessory.goldenLaurel", MEDAL,
+      // Seasonal event items (earned by focusing during the event).
+      "accessory.moonlitWitchHat", "accessory.pumpkinHat", "accessory.reindeerAntlers", "accessory.snowScarf",
+      "accessory.heartGlasses", "accessory.summerShades", "accessory.lionDanceHat", "accessory.sakuraSprig",
+      "outfit.studyHoodie",
+    ]);
   });
 
   it("start empty and reach an anonymous user and a signed-in account alike", async () => {

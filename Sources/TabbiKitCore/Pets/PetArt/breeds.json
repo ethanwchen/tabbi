@@ -27,7 +27,8 @@
     "heart": "#FF5C7A",
     "leaf": "#6CC46A",
     "leather": "#A8683A",
-    "crimson": "#B8304C"
+    "crimson": "#B8304C",
+    "pumpkin": "#F08A24"
   },
   "bodyShapes": {
     "cat": { "species": "cat" },

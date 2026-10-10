@@ -80,6 +80,17 @@
     {
       "dress" : {
         "accessories" : [
+
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "studyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "c409a8431bdc4ccc0aef249d3af2abd9e0a376952b1941de736ffaf2afa7240a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "stethoscope"
         ],
         "breed" : "orangeTabby",
@@ -373,6 +384,94 @@
       },
       "frameCount" : 125,
       "sha256" : "bfba68d54040a6fd972965444ddd656c3567b410fbf2403ed4d7d841f998f86b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "moonlitWitchHat"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7ddf3e3cd0a604caeba21731891628c32d861b8c7aedabce09346bdf94a68340"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pumpkinHat"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ade3edc2c4d9cdcda8c58fb2e71e88d08b847f1c6347d1366da73369472daec8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e520728504b46ee9076fb97372e5916e9d4e461b91fc170ce3c0c3867e21ed57"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4b131fa91c8eb4ddcf1663e9441f822a4fd968d4a2b65daaa792f8d2bdfacf83"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "heartGlasses"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3446223cd9b34ebb0c1d0354f223944e8d34dda2f54a283e70b4b747a2742197"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "40a4e148abbc5a4a55f2c761625fb74289b3d2e84b28816f2d8dd272bfc0fc6e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "lionDanceHat"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "232ddf0c0d5c16002d8635c4d2b548800f08687161db48f2553e02efd16e29c5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0c0c9f67e9c6b841bdd44288f772b8e942662745556a57ee24ecc5cf1301b9dc"
     },
     {
       "dress" : {
@@ -570,6 +669,17 @@
     {
       "dress" : {
         "accessories" : [
+
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "studyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "c409a8431bdc4ccc0aef249d3af2abd9e0a376952b1941de736ffaf2afa7240a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "stethoscope"
         ],
         "breed" : "grayTabby",
@@ -867,6 +977,94 @@
     {
       "dress" : {
         "accessories" : [
+          "moonlitWitchHat"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7ddf3e3cd0a604caeba21731891628c32d861b8c7aedabce09346bdf94a68340"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pumpkinHat"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ade3edc2c4d9cdcda8c58fb2e71e88d08b847f1c6347d1366da73369472daec8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e520728504b46ee9076fb97372e5916e9d4e461b91fc170ce3c0c3867e21ed57"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4b131fa91c8eb4ddcf1663e9441f822a4fd968d4a2b65daaa792f8d2bdfacf83"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "heartGlasses"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3446223cd9b34ebb0c1d0354f223944e8d34dda2f54a283e70b4b747a2742197"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "40a4e148abbc5a4a55f2c761625fb74289b3d2e84b28816f2d8dd272bfc0fc6e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "lionDanceHat"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "232ddf0c0d5c16002d8635c4d2b548800f08687161db48f2553e02efd16e29c5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0c0c9f67e9c6b841bdd44288f772b8e942662745556a57ee24ecc5cf1301b9dc"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "angelWings"
         ],
         "breed" : "grayTabby",
@@ -1056,6 +1254,17 @@
       },
       "frameCount" : 125,
       "sha256" : "7492ee93c81e127b2e820d25c754497c42aeb124290a3adb9d7a2462943ad675"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "blackCat",
+        "outfit" : "studyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "f9058a0bec756de1fd84db4e88d066546c68bcb1eef69d5689e7731f992b9a6f"
     },
     {
       "dress" : {
@@ -1357,6 +1566,94 @@
     {
       "dress" : {
         "accessories" : [
+          "moonlitWitchHat"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "6cb53a77f9730e2264b92fdc17ceebff978333e34c649bafc92e37241ed6dd36"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pumpkinHat"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "671b5f1f0a0bff26f11278df4110e84556b540919e432b43c4616bf7e900e9c0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "65aba879751c965a7c34bd72d24ccf04547c78d0b0e47b5a70949ddc3629ec54"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0df042618b87a4d9f5abf0f6b33ab43743e724c56fd986468997dd8dd84d9f63"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "heartGlasses"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "01b6d340235b08e1adb1b3a3f1e520bc9830e2e600dee1e1e925caccb5061bbe"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4a3c90771dc06a46c165c7ebe86c70d7b09db1521bb29e0cc64c1fdb58c27d73"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "lionDanceHat"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "110b885400f8859d36e5329b904b1f5775d444de30ef4f661e1830775995757d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d234ee5020c06a7c0bf855c90c5b0bcf3bfb9815f11f8ef2215b3d759522ef85"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "angelWings"
         ],
         "breed" : "blackCat",
@@ -1546,6 +1843,17 @@
       },
       "frameCount" : 125,
       "sha256" : "1ff609d5706ae7d7df9ef2cd92a5767b000887e7d53bc5c38bf5f750f4a8e901"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "studyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "2a7c805a2ef02cb063cc9b93438077b0372776266aacde11e6a030b81a8442d9"
     },
     {
       "dress" : {
@@ -1847,6 +2155,94 @@
     {
       "dress" : {
         "accessories" : [
+          "moonlitWitchHat"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "62cf508d07dd39669afd97d53abf9351df12d9a729f430acc2e30607e9d2c95d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pumpkinHat"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f32ff2f0e7c6b61313fce81ae20c04ba76202714785c38eaddf185d00fbb3b9c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1fa2a98996740dd2278a57d56614d51a2d135ef73ccdb5d205178e4f7a470a0f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0d85b149ef3d885534de98531292967093a57c191a01dac92d61dbc8192f0e37"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "heartGlasses"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b39fe17b8eff346046d64836f3b3ae496773c259b8595cdd5f1e64e7776ebab7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "dd1599b310c86d75ecb99bb985c2eb816eb49e2b733fb23543dc632e4be0f0e4"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "lionDanceHat"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1d5229b7f859232307759cddc8aa374d61d5f8949dde6afd32e58f733204fcb4"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a21af60e84310a7b871b912b4b2cef165f2c5b2e4734899806f1119eeda83ba7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "angelWings"
         ],
         "breed" : "whiteCat",
@@ -2036,6 +2432,17 @@
       },
       "frameCount" : 125,
       "sha256" : "ccf9ac72a958af34a787e714a4799c175cea540ae9de342667d584ca776a577c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "studyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "3600b54d3d35f45e3a061ea092cd87e7e0923434b800b5aa4d0271fa37ff39de"
     },
     {
       "dress" : {
@@ -2337,6 +2744,94 @@
     {
       "dress" : {
         "accessories" : [
+          "moonlitWitchHat"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1e15c3c39cd37dfe96a064f8253948b8185361e7b679162eb018a2507ef70061"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pumpkinHat"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "152508731fd6b09370a717fde332e5a57fd07194bcaf3572854b394908041b35"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f7c7e0b4588717bf1a5e6f467518625371e0f73fbaf760931b6f37bb206730c8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "380d4e6712026a4e83108159aa34561821bda8caec975e21cb70d2d677761c03"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "heartGlasses"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "9bcbe8250ae3b07fcdff4fcff77039225e1b208dffb3703fdea784d1e947b6ca"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "5bd0aaa28f80823b08d66aaae6d13840b1d835f76d8cb05e3330fc5accb74227"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "lionDanceHat"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "743813613749a71ebc10cd12bc3d96ff6718624d5b831f8b083df0b0e094586e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ae715a27246bbcb0626bc85758ebf414391ed3e4972fc7f088211997c958f40e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "angelWings"
         ],
         "breed" : "tuxedo",
@@ -2526,6 +3021,17 @@
       },
       "frameCount" : 125,
       "sha256" : "7c6d65851660333e8039f06e602e6e879460b169b3556eb289de5203f9c65a7a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "calico",
+        "outfit" : "studyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "6f69ec8bc8f38c09d7489c568a7c7d8f8a71162af62b8c5ca8cc43942cacfb72"
     },
     {
       "dress" : {
@@ -2827,6 +3333,94 @@
     {
       "dress" : {
         "accessories" : [
+          "moonlitWitchHat"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "714e288791155ce1a8b6d1fac4cea459c9e6caf169dbc162e85516c18178bdd2"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pumpkinHat"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c7684e9517c6b616f28d804f62d49905d84308271280040b263f828bd3b80231"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "5f780e7a9525fdd05b2af6eefbb5acac8552f62207e09845c6d51b959df01fda"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "030aac40b8d02b88c8743fbc5e59b88451a2475323ca039a48e8e2cfc359d46c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "heartGlasses"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "106e2724d2c0c9f5075e31545ce6fe62bc2aa879afd06bdbcc52e4fac4bccbc1"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1027703863204d23955f0f8c2a09e40d85334237e9360eb090e2ff344a96b666"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "lionDanceHat"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1ae1d40d6b3fe1ae2a922458bc5613b5dfd8fe5b80156ca317b24a31341188e9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b043b13e2e373eef3ca77bbbb61c335f4527b994ccf90c51eddc4a3f6f100f5e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "angelWings"
         ],
         "breed" : "calico",
@@ -3016,6 +3610,17 @@
       },
       "frameCount" : 125,
       "sha256" : "b92686c2ba62de52f3fb558555017b34fb2661a5ea2fb3e21199fa657f6101d6"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "siamese",
+        "outfit" : "studyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "3ee4d4c82c1f1dd262623c143ab13dda413cef9c7b64282c6666dae5c7f5bb9c"
     },
     {
       "dress" : {
@@ -3317,6 +3922,94 @@
     {
       "dress" : {
         "accessories" : [
+          "moonlitWitchHat"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "64c56c0b554b5ba6f76defd16d46c915aacce8a93230fe123c1d1bdfeb1c75b6"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pumpkinHat"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "468835ab9360f00929ceb788d8e3fcb54eae42e8d354f4daaff211c0f8722eab"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8d1c58a6a8fe87e4457637112f95228f08cc9ac25e8fa0687afda2d7807e2383"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4310962267164cee763bca9f36cb499fd8ea75bd35c0f405ef0f2b638018071e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "heartGlasses"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a01a6de82ff6afabdb36d4a6a2a26d6a8e8dd52a601e0d2861a13e84052446c7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "de69e6b26409af680f3352880c716ae429f24436f1e5de4260a78c42218e5ed9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "lionDanceHat"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4269170d87ac156090fe62ccca8fea33bfe15b1368415971a9d38392a72b3d15"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f7706ff04e3c870e72eface5c672943a05ceb2324eb4ecec117fbc9e9e18f90d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "angelWings"
         ],
         "breed" : "siamese",
@@ -3506,6 +4199,17 @@
       },
       "frameCount" : 125,
       "sha256" : "44b2e461fc6bf7ab11ae9315d60469978f9f25733962c5538ee0bb979294e0a0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "studyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "3827956d709d1f4fa62b053754d7019512bd77c8c4ede909e7834bf93c611fdf"
     },
     {
       "dress" : {
@@ -3807,6 +4511,94 @@
     {
       "dress" : {
         "accessories" : [
+          "moonlitWitchHat"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1c7ccd8ff7b4fdf020a50bfd5019b63266bd6531f0b02ee6325eaf95ce58d9a7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pumpkinHat"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "9e8224b51b5a15d7a299862a465f06d6a5580c1911371860da52e81802a071c7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b6d65293d7bc23b718f3e07ef4be1aed441a246b792aa53f172889c1f926a08e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "32586488a3fd8e1fc0daf4ee547ecbf3d0f3db34576a7a55d2b3a5e7b1395d74"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "heartGlasses"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "44e9cc19c82f19ffc61a83abf7c39314cd6360a0e84bb1a1f9bedbad9fcede9b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c9f72257e32caf3d694383853156e366cd9fe73713387dba2e284293a04bb2db"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "lionDanceHat"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "50a370163e8bd5d88e1d8487717446aa02d6a46324477efbab6781b28745572c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "cd4738ecedf1fed4862c3f20fe19179437ebb2e50f12976d1d7f5e6a845d499c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "angelWings"
         ],
         "breed" : "britishShorthair",
@@ -3996,6 +4788,17 @@
       },
       "frameCount" : 125,
       "sha256" : "cedee15f25d641e97c50336b868d9860806d18c0b45ad5e59366899dcf7d5a72"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "sphynx",
+        "outfit" : "studyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "db910ee6f94550c919fb6b8fac16856a3767e722b1d1d173de2a3e7bb2c1a2d0"
     },
     {
       "dress" : {
@@ -4297,6 +5100,94 @@
     {
       "dress" : {
         "accessories" : [
+          "moonlitWitchHat"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8b9d0eb38ba231c75ad30a0f6010dcf9aad8a64ecf657153b4e4d086424e486b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pumpkinHat"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a511c09a764013f1703e62bad75c98bb26086c42f03be7e43f16105aa08115d9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "618d9467cfadbd99b823dc1b53d7f4693d0f737e5cbc7c391d1764d355bdac09"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f5537f42ec7572a94d4fa958d0a4fb4808801138bc0626e16f7c31aaca0438a2"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "heartGlasses"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "9edf947f655fb57ff6c659bad7f54270704953f3d56477aeb7ce727b09b80dfa"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "bf5419f4abd03edbcb53f001e52edc83cb2cb64bef5cb082eb432644d123d52b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "lionDanceHat"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7c5dddd71aba470e4edb68050be72045ba83f96eb502f7ba8ecb227a290a64b4"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b6aaec1d0a61fb958a4b883ebb75a0cb15c081a521b7d0139a37b70e657a6224"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "angelWings"
         ],
         "breed" : "sphynx",
@@ -4486,6 +5377,17 @@
       },
       "frameCount" : 125,
       "sha256" : "ab81f92834bc9f0ef9e7988213bf9e94ce6b0172f331ba5395a11f285fc9f9fc"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "studyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "68aba4a513bee159e9efe8fd6e85ebe820fa955bb23b8c82372e069a04665aa7"
     },
     {
       "dress" : {
@@ -4787,6 +5689,94 @@
     {
       "dress" : {
         "accessories" : [
+          "moonlitWitchHat"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "59f557459f5f75f93e6ac20afc2bd13a0cfe03fdd722a646b216fa4d90dca09a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pumpkinHat"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7bf9ad504ff45617d9137a5812b214c95b199af6cb50bffc339739eb2641256a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "5bf462682269c7b1da2b5cd6dce380fe94fa889b86ccf5023c1ea04da0d30c90"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "edc6131e032e7a4f6ba931d30742f1159c01138a57fb180fab2e42eb52da2619"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "heartGlasses"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "203852c64262ff4ed16baccfff1fc8c2c63632be950a937b523c549569fd84f8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c816e8e5dc3f4027c31aed2fb6211111b46b01f1f9d2192f69c8660574671f6a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "lionDanceHat"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a5f145396e8c29615bec496d219652e771b857a7f2db4dbb23b8d2195a33abc4"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a9d7ee76a33f3b9eb94c2d7738e18027c8f7fcd8bea83dd4c9b98a65f5d38896"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "angelWings"
         ],
         "breed" : "scottishFold",
@@ -4976,6 +5966,17 @@
       },
       "frameCount" : 125,
       "sha256" : "208ee5a2fd36b5cac7db7a8822abdc9cde46a0f3ec20c837e9b8f25d5ccd6bc4"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "studyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "3cec8d2ee1a189651ad3b78c9a42156500d6319fcf552dcf52c251390d754901"
     },
     {
       "dress" : {
@@ -5277,6 +6278,94 @@
     {
       "dress" : {
         "accessories" : [
+          "moonlitWitchHat"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "532587316da5dd50ea0cc8478917b4ebae87c1c583986f98ff479c694fb65fab"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pumpkinHat"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "862af038cffe246a4e8122fd6e9e934e56a4815d652babcaab671c26c708be4f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b40bcbebaf3ebc7c0b0caf6f87acde3952e038c7814c1e59070d36890368ad49"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f968b2f1ab5b1d858a7160a8e8aee1952636058bd264c15bd8acacf892780dc6"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "heartGlasses"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "463e146eea299d2ffb89d573c17b51baf7d91440b1f272b4f4879c373a2fd199"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "fc59ed98191177dae5d3231b11a63d154be05c15f60bfc7ef891cdd63ba3774e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "lionDanceHat"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a488f5b188b911fe8606fe8b01685c9243a43b90980db0d4feac529a1f635603"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3d256873c6e5d6607ae3b6bfcfefc7ca09dad30562b1273ea982ca7647b066b3"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "angelWings"
         ],
         "breed" : "goldenRetriever",
@@ -5466,6 +6555,17 @@
       },
       "frameCount" : 125,
       "sha256" : "631682ffdb9b55056d535a25ed67738d6afd81ffb1db578551c1c9d8d181db65"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "labrador",
+        "outfit" : "studyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "5fbdc598bf23abe3bd53b40a0e4a5ed4281aeb6e82b7fa14a111a78097b9bae9"
     },
     {
       "dress" : {
@@ -5767,6 +6867,94 @@
     {
       "dress" : {
         "accessories" : [
+          "moonlitWitchHat"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "468b275fc375234c96ded705f1587d1014f1cd46556aee702d20357747e2aa4e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pumpkinHat"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "cfb57f05bfa627f670a3c01206680fb74456ca0a2180a87da7e22308bb2c8d1e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "200d1e7ba75b5fe4f41c6f950e873e9aac79679e8f271fb9f90c321aee8ff364"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4d723dfbca0657fd3d87be999a97128ebf59f92a576088540b46dbdce58a8104"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "heartGlasses"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c7a71f29633432d575b006bf2cc7893cc3abf162f397a9ff636fae4b97be94f1"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4bc947f1d74433fc06295c597b79ec555aa725c320c2c484f685573d63336876"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "lionDanceHat"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e640d4cda29250af993a3f2ab71f362d2479286dc603123867a25b02d69edbec"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "fc5eb8aa3e81968d35d106593dd6ce0faeacd925a2b2b8635c71840be1c3831b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "angelWings"
         ],
         "breed" : "labrador",
@@ -5956,6 +7144,17 @@
       },
       "frameCount" : 125,
       "sha256" : "fee2edcb9163e8c84834b04ed535568feacfa5b2a3df5717020b9b9eeaa9d0d4"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "studyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "63b3ec811fdc7b2e1ee1134fe33df279d6ec618c37056308aa746a8aad616b7f"
     },
     {
       "dress" : {
@@ -6257,6 +7456,94 @@
     {
       "dress" : {
         "accessories" : [
+          "moonlitWitchHat"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "6f92b7be972411c07a25aae246bf75b02df56268f0ae54b4038941da9dd04169"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pumpkinHat"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "48b1e05a231145e17572a6c18a79752b7f9aad6cb52f2d012a9e00839fe77555"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "52767f683a2b2ba7396668aa7bd9c0182ead95784a56e6eab5c298f8e3636a10"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8179d92675f2670255787f63049087ed9149a7f252a1be54981ccce71246c308"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "heartGlasses"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1f7783fd81aec8060ade9ca91bccc366d602415a15871f2663c6f0a84793b8a5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b041010946036f71e0b7472f3905b49559d78f7edb746b88494d0d90a4a946c9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "lionDanceHat"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "15be26812c2146a011f3691be4733161b6a4d0b870f98e95a975aefc63e531b1"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "70fa3cb49a6ff3c060562a1ea29ccb8f2c7f9a079d8821796d861da4d6d4e60c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "angelWings"
         ],
         "breed" : "frenchBulldog",
@@ -6446,6 +7733,17 @@
       },
       "frameCount" : 125,
       "sha256" : "84b3afad64a89172e81a0cdf5ec835a48a5eba8dd4deb1010269e1cf34434838"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "corgi",
+        "outfit" : "studyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "47da98aa2c201a1a6bab629712414aaf5549c060d6ff03fa9aa573535d791446"
     },
     {
       "dress" : {
@@ -6747,6 +8045,94 @@
     {
       "dress" : {
         "accessories" : [
+          "moonlitWitchHat"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "fdb055f978fd2e7fbd3b6fba25dbc566e5b8e15581018206457b3cb979a9fbcc"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pumpkinHat"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "10699a581f0d990393b2c834a829ef0f17c3282b6cd2d64d7257b6bf144a5aa6"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3a3f0cdfa4dfb0e7602712b3ed55c56ad8c91bce61ab1653e0e82063bbd40296"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "bca92645087f59c5a1f7a3ced3d5d91fe7ca0a687530a5e71c834cb95817885a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "heartGlasses"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "fe3fc7473c701902a0b8ec2a912399c89883a0e6520ec750047eebbd76936bea"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "de2e550dfdd0d51a91e7b31860a225d2fcb6498dd18130ccbcb0e49f35b16db9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "lionDanceHat"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c128230fb48e673f9f8ff345e4591c518a2db8fedbfac091d78e6a82ea5166ce"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "eb8ce55bd566ac23359815a171a10ddf805636df98b9b4cdcd441e2471d44dce"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "angelWings"
         ],
         "breed" : "corgi",
@@ -6936,6 +8322,17 @@
       },
       "frameCount" : 125,
       "sha256" : "f03a0f7d8138b9fa0b987a0f5b11b95bee89d4929ad3adbbeca4421ac19395ed"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "dachshund",
+        "outfit" : "studyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "4416a1a607c2b000f499199fe5c0eab2b056d4f6e3925113cffd6b60f560a25e"
     },
     {
       "dress" : {
@@ -7237,6 +8634,94 @@
     {
       "dress" : {
         "accessories" : [
+          "moonlitWitchHat"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "5d6357cfb1712d7e28e5a8916e1ba0d387c4208d733a4db0ba83d78b572375ae"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pumpkinHat"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "29bff61af3e3dd7d8e5e32252fa3e5e9b46cc86cdb9bbff32e1962e80282a0cd"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7bf13bb15002012a4680a160ace4c660baf970fe0f79b798a046d6f4a74c2ac4"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ef99cbfe6745c104ccadd8eb2b31b91dddedf9ecf92bb11e0e885412070db7c0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "heartGlasses"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7b6a20d94edd11832879d6a631d4828e61a108c73964b7a271d74f285735673b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3eb8f264b2bbe4a38a243321bd7e6b82945d4cd6db5a108f3b1b580eda139345"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "lionDanceHat"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7632292208aede67fd1ebc2da90bfa1d8d27b0b7fc1ce8ee0c296d305ce80f70"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "56ff459d0dce4eee28b9419fb153e12b8711f19adacc632f7ed9b5732ec6132b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "angelWings"
         ],
         "breed" : "dachshund",
@@ -7426,6 +8911,17 @@
       },
       "frameCount" : 125,
       "sha256" : "5580b3f1af96f209f548d3da80ba34a114c44950a1bdee87a9e95c2139d8ec07"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "beagle",
+        "outfit" : "studyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "5de4c0f02f548265279ac6104c14652f6ef1de344e416f26274a2dba1e7bdaf0"
     },
     {
       "dress" : {
@@ -7727,6 +9223,94 @@
     {
       "dress" : {
         "accessories" : [
+          "moonlitWitchHat"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "afcdf65098600cb47b3088dccb3622cd27af506eebd9c884beea5a40be6521c8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pumpkinHat"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ce36dcba862ee9fb33ad0c7d134e7d9bd954c57df3d3012e86a9b11399325558"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "19c52861ef2f8e892975f05bf643f3a8d8127df1638de91cb3fcc837fa534155"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f020c06ce8cdb3e15e522f31c08e14890088bc9e09aee5b889b56e06a80fc56e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "heartGlasses"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c6ac216e82596b932379504f612807ad53ebd9cf33e5aeaf3565b46cd08852fd"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7bce33d57daa4af7cbab8da7ff75ec9fbce85650c8272a04067453d109045371"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "lionDanceHat"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "9035f202721b1d96d0dbfbf5a05f426bfb7f6d1b56e2725e750628868830b47a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f2b1753ffa77c64779d19564880f5c1f2e6549fdcf2c1b0a6d780af789483b42"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "angelWings"
         ],
         "breed" : "beagle",
@@ -7916,6 +9500,17 @@
       },
       "frameCount" : 125,
       "sha256" : "e2d09f2f171d5108445d93654d8410fe61d14d7d3cd3ad0ecb3292999ce8d358"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "poodle",
+        "outfit" : "studyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "12fa7dff082cc4ef8cbbdf23274f0f847804dbc16bdd97b53d063f63d8bf1dcd"
     },
     {
       "dress" : {
@@ -8217,6 +9812,94 @@
     {
       "dress" : {
         "accessories" : [
+          "moonlitWitchHat"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "eab5e6bca90c9de44b7da694d7656e61a0a1f762c995ab92f7d461cd55bbd9dd"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pumpkinHat"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "91a3d5a211f921e3a810cd4c06ba25bc53e6924c2a93a1759895dd55aa7f439b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "36ba6d4b03198bebc939e275d02a3f0d81be638542cbd0d2bea005993d4a93f5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ad1d1b31367a16f37e463fb6ddc6472866aa7d5df4debd30229b26f16f741af9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "heartGlasses"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0434894f899149e7a3b6001c84622b6211a897a5d5f67e26fc0991ec94668e7f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "05801a07a87a32349801655bd5c9141a2ff339c01f982a8742f3703ab2bb738b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "lionDanceHat"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "340f833254506cdb1c9cee86ba9b8f55a8eb0b511c8530d86555f704a62cd30b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "528f22f0d2952938e275e6261a7fe0fdc74dda643a1a7d81d2a96fd2b6349f99"
+    },
+    {
+      "dress" : {
+        "accessories" : [
           "angelWings"
         ],
         "breed" : "poodle",
@@ -8406,6 +10089,17 @@
       },
       "frameCount" : 125,
       "sha256" : "05b6bc9c6b88b136ef6a3e3a0922fa11eefb65265fbebe1ff29acebafa7d3bd9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "studyHoodie"
+      },
+      "frameCount" : 125,
+      "sha256" : "8f976e246fcee561bd6d78efdf95f3b92b9d444dfc2ffca7c87c58483661425e"
     },
     {
       "dress" : {
@@ -8703,6 +10397,94 @@
       },
       "frameCount" : 125,
       "sha256" : "4cee42913af65fdee5395dbd771d36f05b65f7ff20985715e86e3b028b5924e0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "moonlitWitchHat"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f0ebeedaf20c5934192bda0f7a42e054a79c74502c68512ad14c38dbd827a75a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "pumpkinHat"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3bd78dbf1123d2b8e5e2a99396c403a2c7534ba8319a621f460cf2937ea07bc6"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "reindeerAntlers"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "89d5867d7f135f351c0fe3b5c07366a9ed19d4fb9d787b21e0e034bfa47d860e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "snowScarf"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d16aa2a20cb89cbf58f2e60dd45544c1317c65c60d48b43e9441610a01eaaf86"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "heartGlasses"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4a28d7c20aa759662675ad53368a4e5ffffd19d3d6ad6063d6d6d5bdfe0812ba"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "39d464962dcd29a6cf74c390363b02ba5a9e43b69c3ab368c04954cc32e0b15a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "lionDanceHat"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "86520e7d080ec6b49791c44175b76ebb79aff2e0e54cfe0367b2b7dd6955462f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sakuraSprig"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "08c57ffefb4eba05e29b3989b4cd0427ae3bc2cfa5403574273d945a3ede6a6e"
     },
     {
       "dress" : {

@@ -609,19 +609,22 @@ private struct ClosetTightLabelStyle: LabelStyle {
 
 // MARK: - Limited
 
-/// The limited edition items: never sold, earned from study milestones or
-/// given at events. Each tile shows how far along its milestone is, and the
-/// footer says how to earn the hovered item.
+/// The limited edition items: never sold, earned from study milestones,
+/// by focusing during seasonal events, or given at events. They sit on
+/// shelves (`SeasonalEventCatalog.limitedShelves(at:)`): the event going on
+/// now or the next one first, then the milestones, then the rest of the
+/// year's events. Each tile shows how far along its goal is, and the footer
+/// says how to earn the hovered item.
 private struct ClosetLimited: View {
     @ObservedObject var store: ClosetStore
     @State private var hovered: PetItem?
 
+    private let columns = Array(repeating: GridItem(.flexible(), spacing: Theme.Spacing.s - Theme.Spacing.xxs),
+                                count: 5)
+
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.s - Theme.Spacing.xxs) {
-            HStack(spacing: Theme.Spacing.s - Theme.Spacing.xxs) {
-                ForEach(PetCloset.limitedShelf, id: \.id) { item in tile(item) }
-            }
-            .frame(maxHeight: .infinity)
+            scrollingGrid
             footer
         }
         .onDisappear {
@@ -630,15 +633,70 @@ private struct ClosetLimited: View {
         }
     }
 
-    private func tile(_ item: PetItem) -> some View {
+    private var grid: some View {
+        LazyVStack(alignment: .leading, spacing: Theme.Spacing.s) {
+            ForEach(SeasonalEventCatalog.bundled.limitedShelves(at: store.seasonNow), id: \.self) { shelf in
+                VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+                    if let run = runningEvent(shelf.kind) {
+                        ClosetEventBanner(run: run)
+                    } else {
+                        ClosetLimitedShelfTitle(kind: shelf.kind)
+                    }
+                    LazyVGrid(columns: columns, spacing: Theme.Spacing.s - Theme.Spacing.xxs) {
+                        ForEach(shelf.items, id: \.id) { item in tile(item, on: shelf.kind) }
+                    }
+                }
+            }
+        }
+    }
+
+    /// Like the wardrobe, the shelves outgrow the panel, so they scroll and
+    /// fade out at the bottom edge. `ImageRenderer` draws a `ScrollView`
+    /// blank, so snapshots show the top rows clipped.
+    @ViewBuilder private var scrollingGrid: some View {
+        Group {
+            if RunMode.current.isSnapshot {
+                Color.clear
+                    .overlay(alignment: .top) { grid }
+                    .clipped()
+            } else {
+                ScrollView(.vertical) { grid }
+                    .scrollIndicators(.automatic)
+                    .scrollBounceBehavior(.basedOnSize)
+                    .contentMargins(.bottom, Theme.Spacing.m, for: .scrollContent)
+            }
+        }
+        .edgeFade(.bottom)
+    }
+
+    /// The featured event's focus so far while it runs, which its banner
+    /// shows in place of the shelf title.
+    private func runningEvent(_ kind: PetLimitedShelf.Kind) -> SeasonalEventProgress? {
+        guard case .event(let occurrence, true) = kind else { return nil }
+        return store.seasons.active(at: store.seasonNow).first { $0.occurrence == occurrence }
+    }
+
+    private func tile(_ item: PetItem, on shelf: PetLimitedShelf.Kind) -> some View {
         let progress = item.limitedEdition.flatMap { store.milestones.progress(of: $0, today: .now) }
+            ?? store.seasons.progress(of: item, at: store.seasonNow)
         return ClosetLimitedTile(item: item, state: store.closet.state(of: item), progress: progress,
-                                 model: thumbnailModel) {
+                                 waiting: waiting(for: item, on: shelf), model: thumbnailModel) {
             withMotion(Theme.Motion.snappy) { _ = store.tap(item) }
         } onHover: { inside in
             if inside { hovered = item } else if hovered == item { hovered = nil }
             store.tryOn(hovered)
         }
+    }
+
+    /// What an unearned seasonal item waits for between runs: on the
+    /// upcoming event's shelf, whose title gives the start, its focus goal;
+    /// further out, the day its event comes back.
+    private func waiting(for item: PetItem, on shelf: PetLimitedShelf.Kind) -> ClosetLimitedWait? {
+        guard let event = SeasonalEventCatalog.bundled.event(offering: item) else { return nil }
+        if case .event = shelf, let reward = event.rewards.first(where: { $0.item == item }) {
+            return .goal(reward.goalLabel)
+        }
+        return event.nextOccurrence(after: store.seasonNow).map { .returns($0.start) }
     }
 
     private var thumbnailModel: PetProfile {
@@ -676,12 +734,150 @@ private struct ClosetLimited: View {
     }
 }
 
+/// The event going on now, at the top of the Limited section: its name,
+/// last day and line of copy, and the focus logged toward its next item.
+/// It sits only here, so the event never gets in the way of the wardrobe.
+private struct ClosetEventBanner: View {
+    let run: SeasonalEventProgress
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.s) {
+            Image(systemName: "sparkles")
+                .font(.system(size: 11, weight: .bold))
+                .foregroundStyle(accent)
+            VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+                HStack(spacing: Theme.Spacing.xs) {
+                    Text(run.occurrence.event.name)
+                        .font(.system(size: 10, weight: .semibold, design: .rounded))
+                        .foregroundStyle(Theme.Palette.primaryText)
+                    Text("until \(lastDay)")
+                        .font(Theme.Typography.caption)
+                        .foregroundStyle(Theme.Palette.tertiaryText)
+                    Spacer(minLength: Theme.Spacing.s)
+                    goal
+                }
+                Text(run.occurrence.event.tagline)
+                    .font(Theme.Typography.caption)
+                    .foregroundStyle(Theme.Palette.secondaryText)
+                    .truncationMode(.tail)
+            }
+            .lineLimit(1)
+        }
+        .padding(.horizontal, Theme.Spacing.s)
+        .frame(height: 36)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
+                .fill(accent.opacity(0.10))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: Theme.Radius.s, style: .continuous)
+                .strokeBorder(accent.opacity(0.28), lineWidth: 0.5)
+        )
+        .help(help)
+    }
+
+    /// The next item's progress with a thin bar, or a check once the run
+    /// has earned everything.
+    @ViewBuilder private var goal: some View {
+        if let reward = run.nextReward {
+            let progress = run.progress(of: reward)
+            HStack(spacing: Theme.Spacing.xs) {
+                Text(progress.label)
+                    .font(.system(size: 10, weight: .semibold, design: .rounded).monospacedDigit())
+                    .foregroundStyle(Theme.Palette.secondaryText)
+                Capsule()
+                    .fill(Theme.Palette.surfaceHover)
+                    .overlay(alignment: .leading) {
+                        GeometryReader { proxy in
+                            Capsule().fill(accent).frame(width: proxy.size.width * progress.fraction)
+                        }
+                    }
+                    .frame(width: 32, height: 3)
+            }
+        } else {
+            Label("All earned", systemImage: "checkmark")
+                .font(.system(size: 10, weight: .semibold, design: .rounded))
+                .labelStyle(ClosetTightLabelStyle())
+                .foregroundStyle(accent)
+        }
+    }
+
+    private var help: String {
+        guard let reward = run.nextReward else {
+            return "\(run.occurrence.event.name): you earned every item. They stay yours after the event."
+        }
+        return "\(run.occurrence.event.name) runs until \(lastDay). Next item, \(reward.item.displayName): "
+            + "\(run.progress(of: reward).label) focused."
+    }
+
+    /// The run's end is the midnight after its last day.
+    private var lastDay: String {
+        run.occurrence.end.addingTimeInterval(-1).formatted(.dateTime.month(.abbreviated).day())
+    }
+}
+
+/// A Limited shelf's title. The featured event's says when it ends, or when
+/// it starts, and its tooltip carries the event's line of copy.
+private struct ClosetLimitedShelfTitle: View {
+    let kind: PetLimitedShelf.Kind
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.xs) {
+            switch kind {
+            case .event(let run, let isActive):
+                Text(run.event.name).foregroundStyle(isActive ? accent : Theme.Palette.secondaryText)
+                Text(isActive ? "until \(day(lastDay(of: run)))" : "starts \(day(run.start))")
+                    .foregroundStyle(Theme.Palette.tertiaryText)
+            case .milestones:
+                Text("Milestones").foregroundStyle(Theme.Palette.secondaryText)
+            case .laterEvents:
+                Text("More events").foregroundStyle(Theme.Palette.secondaryText)
+            }
+        }
+        .font(.system(size: 10, weight: .semibold, design: .rounded))
+        .lineLimit(1)
+        .frame(height: 12)
+        .padding(.leading, Theme.Spacing.xxs)
+        .help(help)
+    }
+
+    private var help: String {
+        switch kind {
+        case .event(let run, _): run.event.tagline
+        case .milestones: "Earned by reaching study milestones"
+        case .laterEvents: "Items from the year's other events, earned by focusing while each one runs"
+        }
+    }
+
+    /// The run's end is the midnight after its last day.
+    private func lastDay(of run: SeasonalEventOccurrence) -> Date {
+        run.end.addingTimeInterval(-1)
+    }
+
+    private func day(_ date: Date) -> String {
+        date.formatted(.dateTime.month(.abbreviated).day())
+    }
+}
+
+/// What an unearned seasonal tile shows while its event is not on.
+private enum ClosetLimitedWait {
+    /// The focus goal, for the upcoming event.
+    case goal(String)
+    /// The day its event next starts.
+    case returns(Date)
+}
+
 /// A limited edition tile: the item on the pet, a sparkle badge, and below
-/// it either On, Owned, the milestone's progress with a thin bar, or Event.
+/// it either On, Owned, the goal's progress with a thin bar, or the day its
+/// event comes back.
 private struct ClosetLimitedTile: View {
     let item: PetItem
     let state: PetClosetItemState
     let progress: PetLimitedProgress?
+    /// What an unearned seasonal item waits for while its event is not on;
+    /// nil for items not from an event.
+    let waiting: ClosetLimitedWait?
     let model: PetProfile
     let action: () -> Void
     let onHover: (Bool) -> Void
@@ -690,18 +886,12 @@ private struct ClosetLimitedTile: View {
     var body: some View {
         Button(action: action) {
             VStack(spacing: Theme.Spacing.xxs) {
-                Spacer(minLength: 0)
-                // Bigger than a wardrobe tile when the row has the room.
-                ViewThatFits {
-                    sprite(pixelSize: 2)
-                    sprite(pixelSize: 1)
-                }
+                sprite(pixelSize: 1)
                 label
                 bar
-                Spacer(minLength: 0)
             }
-            .padding(.vertical, Theme.Spacing.xs)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .frame(maxWidth: .infinity)
+            .frame(height: 60)
             .overlay(alignment: .topTrailing) {
                 Image(systemName: "sparkles")
                     .font(.system(size: 8, weight: .bold))
@@ -723,6 +913,7 @@ private struct ClosetLimitedTile: View {
         }
         .buttonStyle(.plain)
         .help(help)
+        .accessibilityLabel(item.displayName)
         .onHover { inside in
             hovering = inside
             onHover(inside)
@@ -746,6 +937,11 @@ private struct ClosetLimitedTile: View {
             default:
                 if let progress {
                     Text(progress.label).foregroundStyle(Theme.Palette.secondaryText)
+                } else if case .goal(let goal) = waiting {
+                    Label(goal, systemImage: "timer").foregroundStyle(Theme.Palette.tertiaryText)
+                } else if case .returns(let day) = waiting {
+                    Label(day.formatted(.dateTime.month(.abbreviated).day()), systemImage: "calendar")
+                        .foregroundStyle(Theme.Palette.tertiaryText)
                 } else {
                     Label("Event", systemImage: "calendar").foregroundStyle(Theme.Palette.tertiaryText)
                 }
@@ -777,7 +973,13 @@ private struct ClosetLimitedTile: View {
         return switch state {
         case .wearing: "\(item.displayName), limited edition: click to take off"
         case .owned: "\(item.displayName), limited edition: click to wear"
-        default: "\(item.displayName), limited edition: \(howToEarn)"
+        default:
+            if progress == nil, case .returns(let day) = waiting {
+                "\(item.displayName), limited edition: \(howToEarn) Its event starts "
+                    + day.formatted(.dateTime.month(.wide).day()) + "."
+            } else {
+                "\(item.displayName), limited edition: \(howToEarn)"
+            }
         }
     }
 }

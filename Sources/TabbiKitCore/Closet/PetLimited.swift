@@ -11,6 +11,8 @@ public enum PetItemEffect: String, CaseIterable, Codable, Sendable {
     case flicker
     /// A small sparkle that blinks now and then.
     case sparkle
+    /// A petal that comes loose now and then and drifts away.
+    case drift
 }
 
 /// A study milestone that unlocks a limited edition item by itself, read
@@ -40,6 +42,9 @@ public enum PetLimitedSource: Hashable, Sendable {
     /// Granted per account by the Tabbi server for taking part in an event,
     /// such as the launch week. `id` is the event's stable name.
     case event(id: String)
+    /// Earned by focusing while a seasonal event runs (`SeasonalEvent`),
+    /// such as Halloween. `id` is the event's id in the events catalog.
+    case season(id: String)
 }
 
 /// The limited edition items: never sold for points and never tied to
@@ -50,6 +55,15 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
     case streakFlame
     case focusLaurel
     case partyMedal
+    case halloweenWitchHat
+    case halloweenPumpkin
+    case winterAntlers
+    case winterScarf
+    case valentinesGlasses
+    case summerShades
+    case lunarNewYearLion
+    case springSakura
+    case examHoodie
 
     public var item: PetItem {
         switch self {
@@ -57,6 +71,15 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .streakFlame: .accessory(.flameHeadband)
         case .focusLaurel: .accessory(.goldenLaurel)
         case .partyMedal: .accessory(.teamMedal)
+        case .halloweenWitchHat: .accessory(.moonlitWitchHat)
+        case .halloweenPumpkin: .accessory(.pumpkinHat)
+        case .winterAntlers: .accessory(.reindeerAntlers)
+        case .winterScarf: .accessory(.snowScarf)
+        case .valentinesGlasses: .accessory(.heartGlasses)
+        case .summerShades: .accessory(.summerShades)
+        case .lunarNewYearLion: .accessory(.lionDanceHat)
+        case .springSakura: .accessory(.sakuraSprig)
+        case .examHoodie: .outfit(.studyHoodie)
         }
     }
 
@@ -71,6 +94,13 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .streakFlame: .milestone(.weekStreak)
         case .focusLaurel: .milestone(.fiftyHours)
         case .partyMedal: .milestone(.firstParty)
+        case .halloweenWitchHat, .halloweenPumpkin: .season(id: "halloween")
+        case .winterAntlers, .winterScarf: .season(id: "winter-holidays")
+        case .valentinesGlasses: .season(id: "valentines")
+        case .summerShades: .season(id: "summer")
+        case .lunarNewYearLion: .season(id: "lunar-new-year")
+        case .springSakura: .season(id: "spring")
+        case .examHoodie: .season(id: "exam-season")
         }
     }
 
@@ -79,14 +109,35 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         return nil
     }
 
-    /// One line on how to earn it, for the tile's tooltip and detail.
+    /// One line on how to earn it, for the tile's tooltip and detail. A
+    /// seasonal item's goal comes from the events catalog, so the copy
+    /// always says what the event asks for.
     public var howToEarn: String {
         switch self {
         case .launchWeekCap: "Given to everyone who used Tabbi in its launch week."
         case .streakFlame: "Study 7 days in a row."
         case .focusLaurel: "Focus for 50 hours in total."
         case .partyMedal: "Finish a Party session with friends."
+        case .halloweenWitchHat, .halloweenPumpkin: seasonalHowToEarn(during: "Halloween")
+        case .winterAntlers, .winterScarf: seasonalHowToEarn(during: "the winter holidays")
+        case .valentinesGlasses: seasonalHowToEarn(during: "Valentine's week")
+        case .summerShades: seasonalHowToEarn(during: "the summer event")
+        case .lunarNewYearLion: seasonalHowToEarn(during: "Lunar New Year")
+        case .springSakura: seasonalHowToEarn(during: "cherry blossom season")
+        case .examHoodie: seasonalHowToEarn(during: "exam season")
         }
+    }
+
+    /// The bundled event reward for a seasonal item, or nil for any other.
+    public var seasonalReward: SeasonalEventReward? {
+        guard case .season(let id) = source else { return nil }
+        return SeasonalEventCatalog.bundled.event(id: id)?.rewards.first { $0.item == item }
+    }
+
+    private func seasonalHowToEarn(during season: String) -> String {
+        guard let minutes = seasonalReward?.focusMinutes else { return "Focus during \(season)." }
+        let goal = minutes < SeasonalEventProgress.hourLabelMinutes ? "\(minutes) minutes" : "\(minutes / 60) hours"
+        return "Focus for \(goal) during \(season)."
     }
 
     public var effect: PetItemEffect? {
@@ -95,6 +146,15 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
         case .streakFlame: .flicker
         case .focusLaurel: .shimmer
         case .partyMedal: .sparkle
+        case .halloweenWitchHat: nil
+        case .halloweenPumpkin: .flicker
+        case .winterAntlers: nil
+        case .winterScarf: .sparkle
+        case .valentinesGlasses: .sparkle
+        case .summerShades: .sparkle
+        case .lunarNewYearLion: .sparkle
+        case .springSakura: .drift
+        case .examHoodie: .shimmer
         }
     }
 }
