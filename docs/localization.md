@@ -7,7 +7,11 @@ This page covers how strings are looked up, how to add or change one, and how to
 
 Every user-facing string lives in one String Catalog, `Sources/TabbiKitCore/Localization/Localizable.xcstrings`.
 The key is the English text, and each entry holds a comment for translators and one translation per language.
-`Package.swift` declares `defaultLocalization: "en"` and lists the catalog as a processed resource of TabbiKitCore, so `swift build` compiles it into `.lproj` folders inside `Tabbi_TabbiKitCore.bundle`.
+`scripts/compile-strings.sh` compiles the catalog with `xcrun xcstringstool` into one folder per language, `Localization/Strings/<language>.lproj`, each with a `Localizable.strings` and a `Localizable.stringsdict` for the plurals.
+Those folders are generated, committed and never edited by hand.
+`Package.swift` copies the `Strings` folder as is into `Tabbi_TabbiKitCore.bundle` and keeps the catalog itself out of the build.
+SwiftPM is not trusted with the catalog because what it does with one depends on its version: Swift 6.3 copies it uncompiled, so every string and plural stays English, and its older build system lowercases the `.lproj` names it processes.
+A copied folder comes out the same on every toolchain, in `swift build`, `swift test` and the release and App Store builds.
 `scripts/assemble.sh` copies that bundle into `Tabbi.app/Contents/Resources`, and `Resources/Info.plist` lists the same languages in `CFBundleLocalizations`.
 
 Code looks strings up in `Bundle.tabbi` (`L10n` in `Localization/L10n.swift`), never in the main bundle.
@@ -29,10 +33,13 @@ Format dates, times, numbers and durations with Foundation formatters (`.formatt
 Add each new string to the catalog with a `comment` that says where it shows and anything a translator could misread (is "Look" a verb or a noun?).
 Mark it `"extractionState" : "manual"`, because SwiftPM does not extract keys from code the way Xcode does.
 A string that must stay as is in every language (a brand name) gets `"shouldTranslate" : false`.
-The build generates a Swift symbol for every key, so it fails on a key with no letters (`%@: %@`) or one that differs from another only in case or punctuation (`Checking` and `Checking…`).
-Reuse the existing key where the meaning is the same, and otherwise give the entry `"generatesSymbol" : false`.
+Xcode would generate a Swift symbol for every key, and fail on a key with no letters (`%@: %@`) or one that differs from another only in case or punctuation (`Checking` and `Checking…`).
+Reuse the existing key where the meaning is the same, and otherwise give the entry `"generatesSymbol" : false`, so the catalog stays valid there too.
 
-`scripts/l10n-add.py strings.json` writes entries for you: it takes the English keys with a comment and one translation per language (an object of plural forms for a plural), adds them with that state and rewrites the catalog sorted, in Xcode's layout.
+After any change to the catalog, run `scripts/compile-strings.sh` and commit the regenerated `Strings` folder with it.
+`LocalizationTests` fails until the compiled files hold exactly the catalog's strings and plural forms.
+
+`scripts/l10n-add.py strings.json` writes entries for you: it takes the English keys with a comment and one translation per language (an object of plural forms for a plural), adds them with that state, rewrites the catalog sorted, in Xcode's layout, and runs `scripts/compile-strings.sh`.
 The script's header shows the input format.
 
 ## Tone
@@ -62,6 +69,7 @@ These stay English on purpose for now:
 ## Checking
 
 `LocalizationTests` runs `StringCatalogAudit` over the catalog, so `swift test` fails when a string lacks a language, a translation is not marked `translated`, or a translation's format specifiers differ from the English.
+It also fails when the compiled `Strings` folder is out of date with the catalog, and when a language's strings or plurals do not load from the built resource bundle.
 To see the app in a language, render snapshots with `--locale`:
 
 ```sh
@@ -76,5 +84,6 @@ Look at the panels in every size the renderer draws (`open-compact-*`, `open-*` 
 
 1. Add its `.lproj` name (such as `it` or `zh-Hant`) to `L10n.languages` and to `CFBundleLocalizations` in `Resources/Info.plist`.
 2. Add a translation of every string in `Localizable.xcstrings`, including each plural form the language uses.
-3. Run `swift test`; `LocalizationTests` lists every string still missing.
-4. Render snapshots with `--locale <language>` and fix whatever is cut off or reads awkwardly.
+3. Run `scripts/compile-strings.sh`, which writes the language's `.lproj` folder.
+4. Run `swift test`; `LocalizationTests` lists every string still missing.
+5. Render snapshots with `--locale <language>` and fix whatever is cut off or reads awkwardly.

@@ -5,12 +5,14 @@ import Foundation
 /// Every user-facing string is looked up in `Bundle.tabbi`:
 /// `Text("Tabs", bundle: .tabbi)` or `String(localized: "Tabs", bundle: .tabbi)`.
 /// The strings are in TabbiKitCore's String Catalog (`Localizable.xcstrings`),
-/// which SwiftPM compiles into this target's resource bundle. A resource
-/// bundle follows the main bundle's language, and under `swift run` or
-/// `swift test` the main bundle has none, so this picks the language itself
-/// from the user's preferred languages and hands out that language's
-/// `.lproj` folder. The app, snapshots and tests then all read the same
-/// strings. See docs/localization.md.
+/// which `scripts/compile-strings.sh` compiles into one `.lproj` folder per
+/// language under `Localization/Strings`. That folder ships copied as is in
+/// this target's resource bundle, so every toolchain builds the same layout.
+/// A resource bundle follows the main bundle's language, and under `swift run`
+/// or `swift test` the main bundle has none, so this picks the language itself
+/// from the user's preferred languages and hands out that language's `.lproj`
+/// folder. The app, snapshots and tests then all read the same strings. See
+/// docs/localization.md.
 public enum L10n {
     /// The language the strings are written in, used when none of the
     /// user's languages is translated.
@@ -21,14 +23,23 @@ public enum L10n {
     /// controls follow the user into them too.
     public static let languages = ["en", "de", "es", "fr", "ja", "ko", "pt-BR", "zh-Hans"]
 
+    /// The folder in the resource bundle that holds one `<language>.lproj`
+    /// per language (`Localization/Strings` in the sources).
+    static let stringsFolder = "Strings"
+
+    /// The compiled strings folder of `language`, if it shipped.
+    static func strings(for language: String) -> Bundle? {
+        KitResources.bundle?
+            .url(forResource: stringsFolder, withExtension: nil)
+            .flatMap { Bundle(url: $0.appendingPathComponent("\(language).lproj")) }
+    }
+
     /// The bundle that holds the strings in the chosen language.
     public static let bundle: Bundle = {
-        guard let resources = KitResources.bundle else { return .main }
-        // The source language has a folder only once it has plurals, so it
-        // is always available; without a folder the keys are the English.
-        let available = Set(resources.localizations + [sourceLanguage]).sorted()
+        let available = languages.filter { strings(for: $0) != nil }
         let chosen = language(for: Locale.preferredLanguages, available: available)
-        return resources.path(forResource: chosen, ofType: "lproj").flatMap(Bundle.init(path:)) ?? resources
+        // Without any compiled strings the keys, which are the English, show.
+        return strings(for: chosen) ?? strings(for: sourceLanguage) ?? .main
     }()
 
     /// The argument that runs Tabbi in one language: `--locale de`.

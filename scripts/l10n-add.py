@@ -23,15 +23,19 @@ A string value is a plain translation; an object is a plural variation
 "shouldTranslate": false marks a string that stays as is (a brand name).
 "generatesSymbol": false is for a key Xcode cannot turn into a Swift symbol:
 one with no letters ("%@: %@") or one that differs from another only in case
-or punctuation ("Checking" and "Checking…"); the build fails on those otherwise.
+or punctuation ("Checking" and "Checking…"); Xcode rejects those otherwise.
 The catalog is written back sorted, in the layout Xcode uses, so diffs stay
-small. `swift test` (LocalizationTests) then checks every language is there.
+small, and scripts/compile-strings.sh then compiles it into the .lproj
+folders the app ships. `swift test` (LocalizationTests) checks every language
+is there and the compiled folders match the catalog.
 """
 import json
 import pathlib
+import subprocess
 import sys
 
-CATALOG = pathlib.Path(__file__).resolve().parent.parent / "Sources/TabbiKitCore/Localization/Localizable.xcstrings"
+SCRIPTS = pathlib.Path(__file__).resolve().parent
+CATALOG = SCRIPTS.parent / "Sources/TabbiKitCore/Localization/Localizable.xcstrings"
 LANGUAGES = ["en", "de", "es", "fr", "ja", "ko", "pt-BR", "zh-Hans"]
 
 
@@ -65,6 +69,7 @@ def main():
     text = json.dumps(catalog, indent=2, separators=(",", " : "), ensure_ascii=False, sort_keys=True)
     CATALOG.write_text(text + "\n", encoding="utf-8")
     print(f"{len(entries)} strings written, {len(strings)} in the catalog")
+    subprocess.run([SCRIPTS / "compile-strings.sh"], check=True)
 
 
 if __name__ == "__main__":
