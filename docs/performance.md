@@ -124,6 +124,19 @@ Pictures drawn into an image (`ImageRenderer` snapshots, the exported recap card
 What is left on Party is its own once-a-second countdown and the six pets' timer wakeups.
 `PetAnimationViewTests` guards the fix: the pet animates with no SwiftUI update, stops when it leaves the window, and draws its speech bubble where the SwiftUI drawing does.
 
+Party's countdown then was the next cost: while the panel showed, `PartyStore` moved its `now` forward every second, and each move redrew the whole panel.
+Only the shared session's clock (18:20) needs seconds.
+The members' and friends' countdowns show whole minutes ("18 min left", "Studying · 18m"), and with no session running nothing else on the panel changes by itself.
+Now `PartyState.nextClockChange(after:)` says when the panel next changes (the next second while a session runs, otherwise the next minute a countdown drops or a phase ends, or never), and the store sleeps until then.
+
+| Notch open on Party, 45 s | CPU before | CPU after | Context switches before | after |
+| --- | --- | --- | --- | --- |
+| No shared session (`TABBI_PARTY_PREVIEW=guest`) | 0.36% | 0.18% | 44 per second | 39 per second |
+| Shared session running (default demo) | 1.11% | 1.10% | 56 per second | 56 per second |
+
+With a session running it still redraws every second, as it should.
+`PartyClockTests` guards the schedule: nothing counting down needs no clock, a friend's countdown wakes the panel only when its minutes change (3 times over 2.5 minutes instead of 150), and a running session ticks every second.
+
 ### Memory over many opens
 
 Demo data, release build, `--cycle 3 --duration 600 --interval 10`: the notch opened on each of the eight enabled tabs in turn and closed again, about 110 opens and 110 closes in 11 minutes.

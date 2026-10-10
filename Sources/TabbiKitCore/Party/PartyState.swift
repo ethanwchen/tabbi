@@ -109,6 +109,34 @@ public struct PartyState: Equatable, Sendable {
         provided.map { ProvidedParty(pets: $0.pets, session: session(at: now)) }
     }
 
+    /// When what the Party panel shows next changes by itself after `now`,
+    /// so it redraws then and not every second: the next second while the
+    /// shared session's clock (minutes and seconds) runs, otherwise the next
+    /// whole minute of a member's or friend's phase countdown (shown in
+    /// minutes, rounded up) or its end. Nil when nothing counts down.
+    public func nextClockChange(after now: Date) -> Date? {
+        var changes: [Date] = []
+        if let end = party?.session?.phaseEndsAt, let next = Self.nextStep(toward: end, after: now, every: 1) {
+            changes.append(next)
+        }
+        let presences = (party?.members.map { ($0.presence, $0.online) } ?? []) + friends.map { ($0.presence, $0.online) }
+        for (presence, online) in presences where PartyRoster.timeLeft(presence, online: online, at: now) != nil {
+            if let end = presence?.phaseEndsAt, let next = Self.nextStep(toward: end, after: now, every: 60) {
+                changes.append(next)
+            }
+        }
+        return changes.min()
+    }
+
+    /// The first moment after `now` when the time left until `end`,
+    /// rounded up to whole `unit`s, drops by one; nil once `end` has passed.
+    private static func nextStep(toward end: Date, after now: Date, every unit: TimeInterval) -> Date? {
+        let left = end.timeIntervalSince(now)
+        guard left > 0 else { return nil }
+        let stepsAfterNext = (left / unit).rounded(.up) - 1
+        return end.addingTimeInterval(-stepsAfterNext * unit)
+    }
+
     // MARK: Transitions
 
     /// Steps out of the running shared session without ending it for the
