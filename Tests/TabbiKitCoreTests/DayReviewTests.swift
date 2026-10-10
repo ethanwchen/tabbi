@@ -180,8 +180,8 @@ final class DayReviewTests: XCTestCase {
 
     func testSampleReviewIsRealistic() throws {
         let sample = DayReview.sample(on: oct1, calendar: calendar)
-        XCTAssertEqual(sample.done.count, 3)
-        XCTAssertEqual(sample.carryingOver, ["Read chapter 4", "30-minute walk"])
+        XCTAssertEqual(sample.done.count, 2)
+        XCTAssertEqual(sample.carryingOver, ["Read chapter 4"])
         XCTAssertGreaterThan(sample.focusSessions, 0)
         let summary = try XCTUnwrap(sample.summary)
         XCTAssertEqual(DayReviewer.summary(from: summary), summary, "the canned summary already fits the card")

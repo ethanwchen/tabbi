@@ -275,6 +275,7 @@ Upload them in file name order:
 2. `2-cheer`: "Every session ends in a cheer", the closed notch with the pet out beside it and the coach's "That's a wrap. Well done!" +35 bubble, exactly as the app draws that moment.
 3. `3-closet`: "Earn points, dress your cat", the Wardrobe with 6 of the 8 Study items owned, the animated King's Cape worn, 240 points and a next unlock that is ready.
 4. `4-today`: "Today, right up top", Today with tasks, Up next and the mini timer.
+   It reads "2 of 5 done": the demo day has three tasks, under the Focus time and flashcard rows that other tabs share, so the whole list fits without scrolling (the spec lists a walk in place of the flashcard row).
 5. `5-tomorrow`: "Plan tomorrow tonight", the Tomorrow view with two planned tasks and tomorrow's calendar, on the night canvas (the Dark Mode shot).
 6. `6-music`: "Music without switching apps", Now Playing with the fictional "Golden Hour Drive" by Maple Avenue, its original drawn cover, the like heart and a generic music badge.
 7. `7-flashcards`: "Flashcards between tasks", the flashcards tab with neutral decks (the tab shows the module's real name; captions never name it).
@@ -306,7 +307,6 @@ The clocks in the demo panels are live, so every run changes the shots that show
 
 Known gaps to close before upload:
 
-- The Today shot reads "3 of 7 done" because the shared Focus time and flashcard rows join the five demo tasks, and the fifth task sits under the list's bottom fade; the spec asks for "2 of 5 done".
 - The recap card shows its week's dates ("Sep 28 - Oct 4"), and the spec asks for no dates in store media.
 - In the Closet shot the Wardrobe's second row sits under the grid's bottom fade, so its labels are cut; that is Closet UI, which the Closet polish work owns.
 - The spec's shot 5 prefers the Tomorrow plan proposal, but at the Regular size it truncates task names, so the plain Tomorrow view is used, as the spec allows.

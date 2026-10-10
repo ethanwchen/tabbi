@@ -5,9 +5,10 @@ import Foundation
 /// `moduleSettings.planner.sampleDay`, so a study kit's screenshots show
 /// its users' day instead of an office one.
 public enum PlannerSampleDay: String, Hashable, Sendable, CaseIterable {
-    /// An everyday student or creator day: an essay, a reading, a study
-    /// group and a walk. Neutral, brand-free titles, since store screenshots
-    /// show it.
+    /// An everyday student or creator day: an essay, a reply, a reading and
+    /// a study group. Neutral, brand-free titles, since store screenshots
+    /// show it. Three tasks, so with the shared Focus time and flashcard rows
+    /// the whole list ("2 of 5 done") fits the Large panel without scrolling.
     case work
     /// A medical student's day: a lecture, a lab, clinical skills and question banks.
     case medicine
@@ -32,8 +33,6 @@ public extension PlannerDay {
             ("Outline the history essay", at(8, 40), at(9, 25)),
             ("Reply to Sam about Saturday", at(8, 45), at(10, 5)),
             ("Read chapter 4", at(9, 0), nil),
-            ("Return the library books", at(9, 10), at(11, 30)),
-            ("30-minute walk", at(9, 15), nil),
         ]
         case .medicine: [
             ("Read the cardiac pathology notes", at(7, 30), at(9, 40)),

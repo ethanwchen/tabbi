@@ -354,6 +354,14 @@ final class PlannerSampleDataTests: XCTestCase {
         }
     }
 
+    func testWorkSampleIsTheStoreScreenshotsDay() {
+        // The Today screenshot shows these three tasks, two of them done.
+        let day = PlannerDay.sample(on: oct1)
+        XCTAssertEqual(day.items.map(\.title), ["Outline the history essay", "Reply to Sam about Saturday",
+                                                "Read chapter 4"])
+        XCTAssertEqual(day.doneCount, 2)
+    }
+
     func testMedicineSampleIsAStudyDay() {
         let titles = PlannerDay.sample(on: oct1, kind: .medicine).items.map(\.title)
         XCTAssertTrue(titles.contains("Cardio practice questions"))
@@ -362,9 +370,10 @@ final class PlannerSampleDataTests: XCTestCase {
 
     private func assertPartlyFinished(_ day: PlannerDay, calendar: Calendar, line: UInt = #line) {
         XCTAssertEqual(day.date, oct1, line: line)
-        XCTAssertEqual(day.items.count, 5, line: line)
-        XCTAssertEqual(day.doneCount, 3, line: line)
-        XCTAssertEqual(Set(day.items.map(\.id)).count, 5, line: line)
+        XCTAssertGreaterThanOrEqual(day.items.count, 3, line: line)
+        XCTAssertGreaterThanOrEqual(day.doneCount, 2, line: line)
+        XCTAssertLessThan(day.doneCount, day.items.count, line: line)
+        XCTAssertEqual(Set(day.items.map(\.id)).count, day.items.count, line: line)
         for item in day.items {
             XCTAssertEqual(PlannerDayKey(date: item.createdAt, calendar: calendar), oct1, line: line)
             XCTAssertEqual(item.isDone, item.completedAt != nil, line: line)
