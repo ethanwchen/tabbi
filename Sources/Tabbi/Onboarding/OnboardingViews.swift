@@ -7,13 +7,15 @@ import TabbiKit
 /// in the panel canvas.
 enum OnboardingViews {
     @MainActor
-    static func takeover(store: OnboardingStore, modules: ModuleRegistry, providers: ProviderHub) -> NotchTakeover {
+    static func takeover(store: OnboardingStore, modules: ModuleRegistry, providers: ProviderHub,
+                         account: SyncStore?, openSettings: @escaping (String) -> Void) -> NotchTakeover {
         NotchTakeover(
             leading: { AnyView(OnboardingTitle().environmentObject(store)) },
             trailing: { AnyView(OnboardingProgress().environmentObject(store)) },
             body: {
                 AnyView(ModuleViews.StatusPetProvider(providers: providers) {
-                    OnboardingBody(modules: modules).environmentObject(store).environmentObject(store.settings)
+                    OnboardingBody(modules: modules, account: account, openSettings: openSettings)
+                        .environmentObject(store).environmentObject(store.settings)
                 })
             }
         )
@@ -48,6 +50,7 @@ private struct OnboardingTitle: View {
         case .question: (flow.kit?.symbol ?? "sparkles", "Set up \(flow.kit?.name ?? "your kit")")
         case .modules: ("square.grid.2x2.fill", "Your tabs")
         case .setup: (flow.currentSetupStep?.symbol ?? "gearshape.fill", flow.currentSetupStep?.title ?? "Setup")
+        case .extras: ("gift.fill", "A few extras")
         }
     }
 }
@@ -107,6 +110,8 @@ private struct OnboardingProgress: View {
 private struct OnboardingBody: View {
     @EnvironmentObject private var store: OnboardingStore
     let modules: ModuleRegistry
+    let account: SyncStore?
+    let openSettings: (String) -> Void
 
     var body: some View {
         if let flow = store.flow {
@@ -146,6 +151,9 @@ private struct OnboardingBody: View {
             } else if let step = flow.currentSetupStep {
                 SetupFallback(step: step, owner: owner(of: step, in: flow))
             }
+        case .extras:
+            ExtrasStep(extras: flow.currentExtras, catalog: flow.catalog, account: account,
+                       signIn: { openSettings(AppSettingsPane.general.rawValue) })
         }
     }
 
@@ -189,7 +197,7 @@ private struct OnboardingFooter: View {
     /// Steps without a one-tap answer say Continue; one-tap steps say Skip.
     private var forwardIsPrimary: Bool {
         switch flow.stage {
-        case .modules: true
+        case .modules, .extras: true
         case .name: settings.settings.cleanedDisplayName != nil
         case .question: flow.currentQuestion?.allowsMultiple == true
         case .setup: hasSetupView
@@ -209,6 +217,7 @@ private struct OnboardingFooter: View {
         case .question: "Leave this question unanswered"
         case .modules: isLastStep ? "Start with these tabs" : "Keep these tabs and set up what they need"
         case .setup: hasSetupView ? (isLastStep ? "Finish setup" : "Keep this and go on") : "Set this up later from its tab"
+        case .extras: "Finish setup"
         }
     }
 
@@ -225,6 +234,7 @@ private struct OnboardingFooter: View {
             } else {
                 ""
             }
+        case .extras: "All optional. Nothing to do now."
         }
     }
 }
@@ -655,6 +665,101 @@ private struct SetupFallback: View {
                 }
                 Spacer(minLength: 0)
             }
+        }
+    }
+}
+
+/// The last screen: each optional extra as a tile in one row, with a way
+/// to sign in where an account is offered. Nothing here is required, so
+/// the footer's Done ends setup whatever the user does.
+private struct ExtrasStep: View {
+    let extras: [OnboardingExtra]
+    let catalog: ModuleCatalog
+    let account: SyncStore?
+    let signIn: () -> Void
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.s) {
+            ForEach(extras) { extra in
+                ExtraTile(extra: extra, tint: extra.module.map { catalog.descriptor(for: $0).accentColor },
+                          account: extra == .sync ? account : nil, signIn: signIn)
+            }
+        }
+    }
+}
+
+/// One extra: a tinted symbol, its title and its line, and for syncing a
+/// Sign In button (or a check once signed in) beside the symbol. The
+/// words sit at the bottom, like the kit tiles' tab symbols.
+private struct ExtraTile: View {
+    let extra: OnboardingExtra
+    let tint: Color?
+    let account: SyncStore?
+    let signIn: () -> Void
+
+    var body: some View {
+        let tint = tint ?? Theme.Palette.secondaryText
+        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+            HStack(spacing: Theme.Spacing.xs) {
+                Image(systemName: extra.symbol)
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(tint)
+                    .frame(width: 26, height: 26)
+                    .background(Circle().fill(tint.opacity(0.16)))
+                    .accessibilityHidden(true)
+                Spacer(minLength: 0)
+                if let account { AccountBadge(account: account, signIn: signIn) }
+            }
+            Spacer(minLength: 0)
+            VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+                Text(extra.title)
+                    .font(Theme.Typography.bodyEmphasis)
+                    .foregroundStyle(Theme.Palette.primaryText)
+                    .lineLimit(1)
+                Text(extra.detail)
+                    .font(Theme.Typography.caption)
+                    .foregroundStyle(Theme.Palette.secondaryText)
+                    .lineLimit(3)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .accessibilityElement(children: .combine)
+        }
+        .padding(Theme.Spacing.s)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .surfaceBackground(RoundedRectangle(cornerRadius: Theme.Radius.m, style: .continuous))
+        .help("\(extra.title): \(extra.detail)")
+    }
+}
+
+/// Sign In while signed out (it opens Settings > General, where Apple's
+/// button is); a check once the account syncs.
+private struct AccountBadge: View {
+    @ObservedObject var account: SyncStore
+    let signIn: () -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        if account.isSignedIn {
+            Image(systemName: "checkmark.circle.fill")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(Theme.Palette.success)
+                .help("Signed in. Your pet syncs across your Macs.")
+                .accessibilityLabel("Signed in")
+        } else {
+            Button(action: signIn) {
+                Text("Sign In")
+                    .font(Theme.Typography.caption)
+                    .foregroundStyle(hovering ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
+                    .padding(.horizontal, Theme.Spacing.s)
+                    .frame(height: 22)
+                    .controlBackground(Capsule(), hovering: hovering)
+                    .contentShape(Capsule())
+            }
+            .buttonStyle(.plain)
+            .fixedSize()
+            .help("Open Settings > General to sign in with Apple")
+            .onHover { hovering = $0 }
+            .motion(Theme.Motion.snappy, value: hovering)
         }
     }
 }

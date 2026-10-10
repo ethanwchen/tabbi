@@ -41,7 +41,8 @@ enum ModuleViews {
             openSettings: { services.openSettings() },
             takeover: AppTakeover.takeover(
                 onboarding: OnboardingViews.takeover(store: services.onboarding, modules: services.modules,
-                                                     providers: services.providers),
+                                                     providers: services.providers, account: services.accountSync,
+                                                     openSettings: { [weak services] in services?.openSettings(pane: $0) }),
                 store: services.onboarding, invite: invite(services: services), recaps: services.recaps,
                 providers: services.providers),
             setNotchMode: { services.settings.settings.notchMode = $0 },

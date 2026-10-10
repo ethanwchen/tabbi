@@ -177,4 +177,32 @@ final class OnboardingFlowTests: XCTestCase {
         XCTAssertEqual(catalog.descriptor(for: .closet).setup, [.pet])
         XCTAssertEqual(catalog.descriptor(for: .system).setup, [])
     }
+
+    func testExtrasComeLastAsOneScreenWithOnlyTheOnesWhoseTabIsOn() {
+        var flow = OnboardingFlow(catalog: catalog, layout: ModuleLayout(catalog: catalog), extras: OnboardingExtra.all)
+        flow.choose(medicine)
+        XCTAssertEqual(flow.stages.last, .extras)
+        XCTAssertEqual(flow.stages.filter { $0 == .extras }.count, 1)
+        XCTAssertFalse(flow.layout.isEnabled(.party))
+        XCTAssertEqual(flow.currentExtras, [.widget, .reminder, .sync], "no Party tab, so no invite links")
+
+        flow.setEnabled(.party, true)
+        XCTAssertEqual(flow.currentExtras, [.widget, .reminder, .invites, .sync])
+    }
+
+    func testDoneOnTheExtrasFinishes() {
+        var flow = OnboardingFlow(catalog: catalog, layout: ModuleLayout(catalog: catalog), extras: OnboardingExtra.all)
+        flow.choose(essentials)
+        while flow.stage != .extras { flow.next() }
+        XCTAssertTrue(flow.canGoBack)
+        flow.next()
+        XCTAssertEqual(flow.stage, .finished)
+    }
+
+    func testNoExtrasMeansNoExtrasScreen() {
+        let extra = OnboardingExtra("party-only", title: "Party", detail: "Only with Party.", symbol: "link", module: .party)
+        var flow = OnboardingFlow(catalog: catalog, layout: ModuleLayout(catalog: catalog), extras: [extra])
+        flow.choose(medicine)
+        XCTAssertFalse(flow.stages.contains(.extras), "the only extra needs a tab that is off")
+    }
 }

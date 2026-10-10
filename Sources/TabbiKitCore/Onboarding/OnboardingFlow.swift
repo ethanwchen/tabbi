@@ -7,7 +7,8 @@ import Foundation
 /// starts from scratch), answers the kit's own questions, turns tabs on or
 /// off and reorders them, and then sees only the
 /// setup steps the enabled modules declare (`ModuleDescriptor.setup`), each
-/// asked once. Every step can be skipped and `finish()` ends the flow from
+/// asked once, and then, when any apply, one screen of optional extras
+/// (`OnboardingExtra`). Every step can be skipped and `finish()` ends the flow from
 /// anywhere, so onboarding never stands between the user and the notch.
 /// Settings starts the same flow again to re-run it.
 public struct OnboardingFlow: Equatable, Sendable {
@@ -23,6 +24,8 @@ public struct OnboardingFlow: Equatable, Sendable {
         case modules
         /// A module's just-in-time setup step, by id.
         case setup(String)
+        /// One screen that mentions the optional extras, last.
+        case extras
         /// Done; the caller applies `kit`, `answers` and `layout`.
         case finished
     }
@@ -39,19 +42,24 @@ public struct OnboardingFlow: Equatable, Sendable {
     public private(set) var startedFromScratch = false
     /// True when the flow opens on the name step.
     public let asksName: Bool
+    /// The extras the last screen can mention; `currentExtras` keeps the
+    /// ones whose tab is on.
+    public let extras: [OnboardingExtra]
 
     /// - Parameters:
     ///   - layout: the tabs to start from (the current ones when re-running).
     ///   - kit: the kit to preselect, such as the edition's or the active one.
     ///   - answers: the answers to preselect when re-running with that kit.
     ///   - asksName: open on the name step before the kit step.
+    ///   - extras: the optional extras to mention on the last screen.
     public init(catalog: ModuleCatalog, layout: ModuleLayout, kit: KitManifest? = nil, answers: KitAnswers = [:],
-                asksName: Bool = false) {
+                asksName: Bool = false, extras: [OnboardingExtra] = []) {
         self.catalog = catalog
         self.layout = layout
         self.kit = kit
         self.answers = answers
         self.asksName = asksName
+        self.extras = extras
         stage = asksName ? .name : .kit
     }
 
@@ -60,6 +68,14 @@ public struct OnboardingFlow: Equatable, Sendable {
     /// kit or switches tabs, so the progress dots always count what is left.
     public var stages: [Stage] {
         (asksName ? [.name] : []) + [.kit] + (kit?.onboarding.map { .question($0.id) } ?? []) + [.modules] + setupSteps.map { .setup($0.id) }
+            + (currentExtras.isEmpty ? [] : [.extras])
+    }
+
+    /// The extras that apply to the tabs that are on: app-wide ones always,
+    /// a tab's own only while that tab is on.
+    public var currentExtras: [OnboardingExtra] {
+        let enabled = Set(layout.enabled)
+        return extras.filter { $0.module.map(enabled.contains) ?? true }
     }
 
     /// The setup steps the enabled tabs need: each step once, by rank, ties

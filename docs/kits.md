@@ -25,6 +25,7 @@ The first step lists every kit with the tabs it turns on, plus **Start from Scra
 One tap on a kit moves on to its [onboarding questions](#onboarding), one tap per answer, and a row of tab icons previews what the answers turn on or off.
 The next step shows every tab: click one to turn it on or off, and drag to reorder.
 After that come only the setup steps the enabled tabs need (the pet, Anki, calendar access, the study method, study parties), each asked once.
+A last screen, **A few extras**, mentions the optional extras in a line each (the desktop widget, the daily reminder, invite links, syncing the pet with Sign in with Apple), only those whose tab is on.
 Every step can be skipped, and **Skip Setup** keeps what was picked so far, so setup doesn't come back.
 The kit is applied when the tab step is done: its tabs, its theme and the starter tasks for those answers.
 **Settings > Tabs > More options > Run Setup Again** runs the same setup later.

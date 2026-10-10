@@ -13,3 +13,6 @@ Each entry is a short before and after.
 
 - Before: the pet step was wider than the panel, because ten breed tiles could not shrink below their sprite's canvas, so the pet card started left of the header and the right card ran past Skip Setup.
   After: breed tiles shrink to fit (the sprite's transparent margins are clipped), and both cards line up with the header and the footer.
+- Before: onboarding ended on the last module setup step, so the desktop widget, the daily reminder, invite links and syncing the pet with Sign in with Apple were only found by exploring.
+  After: one last, skippable screen, "A few extras", says each in a line (a tile per extra, only the ones whose tab is on), with a Sign In button on the sync tile that opens Settings > General.
+  New extras join that one screen (`OnboardingExtra`), so onboarding never grows a step for them.
