@@ -193,7 +193,9 @@ Status: the index.ts 503, the malformed web sign-in callbacks and the Apple fail
 `test/webauth.test.ts` posts callbacks with a missing, empty, oversized or repeated code or identity token (refused before Apple is asked, without using up the token), an Apple error that is not echoed back, a token endpoint that cannot be reached, and a stale Bearer at the token exchange.
 `test/apple.test.ts` covers a token endpoint that cannot be reached (sign-in goes on with no refresh token), a keys endpoint that cannot be reached (503, no account made), and a revoke that Apple refuses or cannot be reached (the account is still deleted everywhere and `appleRevoked` is false).
 The fake Apple in `test/fake-apple.ts` takes a revoke status and a set of endpoints that fail like a network error.
-Still uncovered: a Hub exception that is not an `HttpError` inside the web callback, and a key Apple publishes that will not import.
+`test/webauth.test.ts` also makes the Hub fail unexpectedly inside the web callback: the browser is sent to the app with `error=internal` and nothing else, the failure counts toward the health check, the log names the error but not the token or state, and no web sign-in is stored.
+`test/apple.test.ts` also publishes two keys that will not import beside the real one: each is skipped with a warning naming its key id, sign-in with the real key works, and a token naming a skipped key is refused like an unknown one without asking Apple again (`src/apple.ts` lines now at 100%).
+On 2026-10-10 the backend measured 99.3% lines and 96.6% branches with 388 tests.
 `test/codes.test.ts` covers the code allocation retries: it scripts `crypto.getRandomValues` so a taken friend or party code is drawn again (the owner's account and party are left alone), and 21 taken draws end in a 503 that creates no account or party and keeps the caller in the party they were in.
 
 A load test already exists (`backend/scripts/loadtest.ts`, tested by `test/loadtest-script.test.ts`).

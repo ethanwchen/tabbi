@@ -373,6 +373,28 @@ describe("POST /v1/auth/apple", () => {
       state.storage.sql.exec<{ n: number }>("SELECT COUNT(*) AS n FROM users").one().n)).toBe(before);
   });
 
+  it("skips a published key that will not import, and still signs in with the others", async () => {
+    // A modulus that is not base64url, and an exponent of zero bytes: neither imports as an RSA key.
+    apple.extraKeys = [
+      { kty: "RSA", kid: "broken-modulus", alg: "RS256", use: "sig", n: "not base64url!", e: "AQAB" },
+      { kty: "RSA", kid: "broken-exponent", alg: "RS256", use: "sig", n: (apple.publicJwk as { n: string }).n, e: "" },
+    ];
+    const warnings: string[] = [];
+    vi.spyOn(console, "warn").mockImplementation((...args: unknown[]) => { warnings.push(args.map(String).join(" ")); });
+
+    const r = await signIn({ identityToken: await identityToken("sub.brokenkey") });
+    expect(r.status).toBe(200);
+    expect(r.body.newAccount).toBe(true);
+    const skipped = warnings.filter((l) => l.startsWith("{")).map((l) => JSON.parse(l)).filter((l) => l.event === "apple_key_skipped");
+    expect(skipped.map((l) => l.kid).sort()).toEqual(["broken-exponent", "broken-modulus"]);
+
+    // A token that names a skipped key is refused like an unknown one, without asking Apple again.
+    for (const kid of ["broken-modulus", "broken-exponent"]) {
+      expectError(await signIn({ identityToken: await identityToken("sub.brokenkey.2", {}, { kid }) }), 401, "invalid_identity_token");
+    }
+    expect(apple.calls.filter((c) => c.url === APPLE_KEYS_URL)).toHaveLength(1);
+  });
+
   it("caches Apple's keys between sign-ins", async () => {
     await signIn({ identityToken: await identityToken("sub.cache.1") });
     await signIn({ identityToken: await identityToken("sub.cache.2") });

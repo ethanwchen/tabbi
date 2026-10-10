@@ -147,6 +147,34 @@ describe("POST /v1/auth/apple/web/callback", () => {
     expect(r.location.searchParams.get("error")).toBe("cancelled");
   });
 
+  it("sends the app an internal error when the Hub fails unexpectedly, counts it for health and stores nothing", async () => {
+    const state = newState();
+    const token = await webIdentityToken("sub.web.crash", state);
+    await runInDurableObject(hub(), (instance) => {
+      const target = instance as unknown as { claimIdentityToken: () => never };
+      vi.spyOn(target, "claimIdentityToken").mockImplementation(() => { throw new Error("database is locked"); });
+    });
+    const failuresBefore = await runInDurableObject(hub(), (instance) => (instance as unknown as { failures: number[] }).failures.length);
+    const logged: string[] = [];
+    vi.spyOn(console, "error").mockImplementation((...args: unknown[]) => { logged.push(args.map(String).join(" ")); });
+
+    const r = await callback({ state, code: "apple-auth-code", id_token: token });
+    expect(r.status).toBe(303);
+    expect([...r.location.searchParams.entries()]).toEqual([["error", "internal"]]);
+    // Neither the error's message nor the post's secrets travel to the app.
+    expect(r.location.toString()).not.toContain("locked");
+    expect(apple.calls.some((c) => c.url === APPLE_TOKEN_URL)).toBe(false);
+
+    const lines = logged.filter((l) => l.startsWith("{")).map((l) => JSON.parse(l));
+    expect(lines).toContainEqual(expect.objectContaining({ level: "error", event: "apple_web_callback_failed", errorMessage: "database is locked" }));
+    expect(logged.join("\n")).not.toContain(token);
+    expect(logged.join("\n")).not.toContain(state);
+    await runInDurableObject(hub(), (instance, storage) => {
+      expect((instance as unknown as { failures: number[] }).failures.length).toBe(failuresBefore + 1);
+      expect(storage.storage.sql.exec("SELECT 1 FROM web_sign_ins WHERE apple_sub = ?", "sub.web.crash").toArray()).toEqual([]);
+    });
+  });
+
   it("answers rate limited through the app link too", async () => {
     pinClockToMinuteStart();
     const ip = freshIp();
