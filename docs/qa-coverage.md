@@ -121,6 +121,10 @@ The check that demo and snapshot runs never install lives in `AppDelegate` and i
 `AnkiStore` 17%, `ConnectionsStore` 16%, `FocusController` 21%, `StudyReminderScheduler` 15%, `ScheduleStore` 31%, `SpotifyController` 35%, `PetCoachController` 34%, `SystemMonitor` 28%.
 Most of these wrap system services (AnkiConnect over HTTP, AppleScript, notifications, sampling).
 Their parsing lives in `TabbiKitCore` and is covered; what is missing is state handling when the service is off, slow or returns garbage.
+Status: `AnkiStoreRefreshTests` drives `AnkiStore` against a scripted AnkiConnect transport (the store now takes an optional `client`).
+It covers the first fetch at start (counts shared as Today's goal, answered cards logged once and then only the new ones), Anki quitting (setup screen, counts cleared, nothing shared), a busy or garbled Anki (the last counts kept with a warning, then recovery), an older slower refresh landing after a newer one, a refresh and a Sync that finish after `stop()` (dropped, no warning, no extra fetch), and Sync failing then succeeding (a second click while syncing does nothing).
+The store's own `Task.isCancelled` check after a refresh is backed up by the client, which already throws for a cancelled request, so removing only that check changes nothing visible.
+`ConnectionsStore`, `FocusController`, `StudyReminderScheduler`, `ScheduleStore`, `SpotifyController`, `PetCoachController` and `SystemMonitor` are still below 40%.
 
 ### 9. Backend
 
