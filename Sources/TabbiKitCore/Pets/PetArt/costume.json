@@ -1350,6 +1350,121 @@
           ]
         }
       ]
+    },
+    "summerShades": {
+      "cat": [
+        ".QQQQQQQQQQQQQQQQQQ.",
+        "..QHHHHQ....QHHHHQ..",
+        "..QooooQ....QooooQ..",
+        "...QooQ......QooQ..."
+      ],
+      "dog": [
+        "...QQQQQQQQQQQQQQ...",
+        "....QHHHQ..QHHHQ....",
+        "....QoooQ..QoooQ....",
+        ".....QQQ....QQQ....."
+      ],
+      "eyeRow": 1,
+      "frames": [
+        {
+          "cat": [
+            ".QQQQQQQQQQQQQQQQQQ.",
+            "..QHHHHQ....QHHHHQ..",
+            "..QooooQ....QooooQ..",
+            "...QooQ......QooQ..."
+          ],
+          "dog": [
+            "...QQQQQQQQQQQQQQ...",
+            "....QHHHQ..QHHHQ....",
+            "....QoooQ..QoooQ....",
+            ".....QQQ....QQQ....."
+          ]
+        },
+        {
+          "cat": [
+            ".QQQQQQQQQQQQQQQQQQ.",
+            "..QZHHHQ....QHHHHQ..",
+            "..QooooQ....QooooQ..",
+            "...QooQ......QooQ..."
+          ],
+          "dog": [
+            "...QQQQQQQQQQQQQQ...",
+            "....QZHHQ..QHHHQ....",
+            "....QoooQ..QoooQ....",
+            ".....QQQ....QQQ....."
+          ]
+        },
+        {
+          "cat": [
+            ".QQQQQQQQQQQQQQQQQQ.",
+            "..QHHHHQ....QHHHHQ..",
+            "..QoZooQ....QooooQ..",
+            "...QooQ......QooQ..."
+          ],
+          "dog": [
+            "...QQQQQQQQQQQQQQ...",
+            "....QHHHQ..QHHHQ....",
+            "....QoZoQ..QoooQ....",
+            ".....QQQ....QQQ....."
+          ]
+        },
+        {
+          "cat": [
+            ".QQQQQQQQQQQQQQQQQQ.",
+            "..QHHHHQ....QHHHHQ..",
+            "..QooooQ....QooooQ..",
+            "...QooQ......QooQ..."
+          ],
+          "dog": [
+            "...QQQQQQQQQQQQQQ...",
+            "....QHHHQ..QHHHQ....",
+            "....QoooQ..QoooQ....",
+            ".....QQQ....QQQ....."
+          ]
+        },
+        {
+          "cat": [
+            ".QQQQQQQQQQQQQQQQQQ.",
+            "..QHHHHQ....QZHHHQ..",
+            "..QooooQ....QooooQ..",
+            "...QooQ......QooQ..."
+          ],
+          "dog": [
+            "...QQQQQQQQQQQQQQ...",
+            "....QHHHQ..QZHHQ....",
+            "....QoooQ..QoooQ....",
+            ".....QQQ....QQQ....."
+          ]
+        },
+        {
+          "cat": [
+            ".QQQQQQQQQQQQQQQQQQ.",
+            "..QHHHHQ....QHHHHQ..",
+            "..QooooQ....QoZooQ..",
+            "...QooQ......QooQ..."
+          ],
+          "dog": [
+            "...QQQQQQQQQQQQQQ...",
+            "....QHHHQ..QHHHQ....",
+            "....QoooQ..QoZoQ....",
+            ".....QQQ....QQQ....."
+          ]
+        },
+        {
+          "cat": [
+            ".QQQQQQQQQQQQQQQQQQ.",
+            "..QHHHHQ....QHHHHQ..",
+            "..QooooQ....QooooQ..",
+            "...QooQ......QooQ..."
+          ],
+          "dog": [
+            "...QQQQQQQQQQQQQQ...",
+            "....QHHHQ..QHHHQ....",
+            "....QoooQ..QoooQ....",
+            ".....QQQ....QQQ....."
+          ]
+        }
+      ]
     }
   },
   "headItems": {
@@ -1802,7 +1917,6 @@
     "moonlitWitchHat": {
       "grid": [
         "...........QQ.......",
-        "..........QQQ.......",
         ".........QQQQ.......",
         "........QQQQYQ......",
         ".......QQQQYQQ......",

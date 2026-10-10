@@ -383,7 +383,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "153ebf1ccc1642abe7f0d012cf025368168cef6a32ff6ffb42568c3795755619"
+      "sha256" : "7ddf3e3cd0a604caeba21731891628c32d861b8c7aedabce09346bdf94a68340"
     },
     {
       "dress" : {
@@ -428,6 +428,17 @@
       },
       "frameCount" : 125,
       "sha256" : "3446223cd9b34ebb0c1d0354f223944e8d34dda2f54a283e70b4b747a2742197"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "40a4e148abbc5a4a55f2c761625fb74289b3d2e84b28816f2d8dd272bfc0fc6e"
     },
     {
       "dress" : {
@@ -928,7 +939,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "153ebf1ccc1642abe7f0d012cf025368168cef6a32ff6ffb42568c3795755619"
+      "sha256" : "7ddf3e3cd0a604caeba21731891628c32d861b8c7aedabce09346bdf94a68340"
     },
     {
       "dress" : {
@@ -973,6 +984,17 @@
       },
       "frameCount" : 125,
       "sha256" : "3446223cd9b34ebb0c1d0354f223944e8d34dda2f54a283e70b4b747a2742197"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "40a4e148abbc5a4a55f2c761625fb74289b3d2e84b28816f2d8dd272bfc0fc6e"
     },
     {
       "dress" : {
@@ -1473,7 +1495,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "640bd83c76ad494fd378b118e0937a44370f1f4f1e7ea51eedc40b3e7cc47fd2"
+      "sha256" : "6cb53a77f9730e2264b92fdc17ceebff978333e34c649bafc92e37241ed6dd36"
     },
     {
       "dress" : {
@@ -1518,6 +1540,17 @@
       },
       "frameCount" : 125,
       "sha256" : "01b6d340235b08e1adb1b3a3f1e520bc9830e2e600dee1e1e925caccb5061bbe"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4a3c90771dc06a46c165c7ebe86c70d7b09db1521bb29e0cc64c1fdb58c27d73"
     },
     {
       "dress" : {
@@ -2018,7 +2051,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "fc0ec1cf9c4a9fc38679a64ac58bcfc46c12e6cce559b2dc95598ad06b782e8a"
+      "sha256" : "62cf508d07dd39669afd97d53abf9351df12d9a729f430acc2e30607e9d2c95d"
     },
     {
       "dress" : {
@@ -2063,6 +2096,17 @@
       },
       "frameCount" : 125,
       "sha256" : "b39fe17b8eff346046d64836f3b3ae496773c259b8595cdd5f1e64e7776ebab7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "dd1599b310c86d75ecb99bb985c2eb816eb49e2b733fb23543dc632e4be0f0e4"
     },
     {
       "dress" : {
@@ -2563,7 +2607,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "48c7d57ad29addc80b1020fa713df6edb7cdc63efa96b54088f6abb0c5c364c6"
+      "sha256" : "1e15c3c39cd37dfe96a064f8253948b8185361e7b679162eb018a2507ef70061"
     },
     {
       "dress" : {
@@ -2608,6 +2652,17 @@
       },
       "frameCount" : 125,
       "sha256" : "9bcbe8250ae3b07fcdff4fcff77039225e1b208dffb3703fdea784d1e947b6ca"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "5bd0aaa28f80823b08d66aaae6d13840b1d835f76d8cb05e3330fc5accb74227"
     },
     {
       "dress" : {
@@ -3108,7 +3163,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "38738f730cd55f128b17b00b2fe1ff87cfadb232d6ff1f8e44be9f666c871646"
+      "sha256" : "714e288791155ce1a8b6d1fac4cea459c9e6caf169dbc162e85516c18178bdd2"
     },
     {
       "dress" : {
@@ -3153,6 +3208,17 @@
       },
       "frameCount" : 125,
       "sha256" : "106e2724d2c0c9f5075e31545ce6fe62bc2aa879afd06bdbcc52e4fac4bccbc1"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1027703863204d23955f0f8c2a09e40d85334237e9360eb090e2ff344a96b666"
     },
     {
       "dress" : {
@@ -3653,7 +3719,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "ed8694255755919c802e57efc1394e4e6cdd448502d7ca03ff66973ce2bd27b8"
+      "sha256" : "64c56c0b554b5ba6f76defd16d46c915aacce8a93230fe123c1d1bdfeb1c75b6"
     },
     {
       "dress" : {
@@ -3698,6 +3764,17 @@
       },
       "frameCount" : 125,
       "sha256" : "a01a6de82ff6afabdb36d4a6a2a26d6a8e8dd52a601e0d2861a13e84052446c7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "de69e6b26409af680f3352880c716ae429f24436f1e5de4260a78c42218e5ed9"
     },
     {
       "dress" : {
@@ -4198,7 +4275,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "12abf490a993b32701ecc870ced81e0189cec2f817963a88d67029f453340076"
+      "sha256" : "1c7ccd8ff7b4fdf020a50bfd5019b63266bd6531f0b02ee6325eaf95ce58d9a7"
     },
     {
       "dress" : {
@@ -4243,6 +4320,17 @@
       },
       "frameCount" : 125,
       "sha256" : "44e9cc19c82f19ffc61a83abf7c39314cd6360a0e84bb1a1f9bedbad9fcede9b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c9f72257e32caf3d694383853156e366cd9fe73713387dba2e284293a04bb2db"
     },
     {
       "dress" : {
@@ -4743,7 +4831,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "85972efb29ceba242b860465db97b7390a85cec02fadcc2b3bada3ca0a868125"
+      "sha256" : "8b9d0eb38ba231c75ad30a0f6010dcf9aad8a64ecf657153b4e4d086424e486b"
     },
     {
       "dress" : {
@@ -4788,6 +4876,17 @@
       },
       "frameCount" : 125,
       "sha256" : "9edf947f655fb57ff6c659bad7f54270704953f3d56477aeb7ce727b09b80dfa"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "bf5419f4abd03edbcb53f001e52edc83cb2cb64bef5cb082eb432644d123d52b"
     },
     {
       "dress" : {
@@ -5288,7 +5387,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "39b5955833264fd41748c45692ab5eabd10ea320c9a1aa0748d78fb0edcc2195"
+      "sha256" : "59f557459f5f75f93e6ac20afc2bd13a0cfe03fdd722a646b216fa4d90dca09a"
     },
     {
       "dress" : {
@@ -5333,6 +5432,17 @@
       },
       "frameCount" : 125,
       "sha256" : "203852c64262ff4ed16baccfff1fc8c2c63632be950a937b523c549569fd84f8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c816e8e5dc3f4027c31aed2fb6211111b46b01f1f9d2192f69c8660574671f6a"
     },
     {
       "dress" : {
@@ -5833,7 +5943,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "39a3da77610ed9d991626920711085ca33063558b2704c1be5b8f83b4231cba3"
+      "sha256" : "532587316da5dd50ea0cc8478917b4ebae87c1c583986f98ff479c694fb65fab"
     },
     {
       "dress" : {
@@ -5878,6 +5988,17 @@
       },
       "frameCount" : 125,
       "sha256" : "463e146eea299d2ffb89d573c17b51baf7d91440b1f272b4f4879c373a2fd199"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "fc59ed98191177dae5d3231b11a63d154be05c15f60bfc7ef891cdd63ba3774e"
     },
     {
       "dress" : {
@@ -6378,7 +6499,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "9b1c791d156cb7ac387be928f6a67eab2b4b9638b6668670ad5ced2940dc34c9"
+      "sha256" : "468b275fc375234c96ded705f1587d1014f1cd46556aee702d20357747e2aa4e"
     },
     {
       "dress" : {
@@ -6423,6 +6544,17 @@
       },
       "frameCount" : 125,
       "sha256" : "c7a71f29633432d575b006bf2cc7893cc3abf162f397a9ff636fae4b97be94f1"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4bc947f1d74433fc06295c597b79ec555aa725c320c2c484f685573d63336876"
     },
     {
       "dress" : {
@@ -6923,7 +7055,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "121cd631b1d0f63d7becef946a541adf324841f39b2227dc77c0fa4fbb4a4453"
+      "sha256" : "6f92b7be972411c07a25aae246bf75b02df56268f0ae54b4038941da9dd04169"
     },
     {
       "dress" : {
@@ -6968,6 +7100,17 @@
       },
       "frameCount" : 125,
       "sha256" : "1f7783fd81aec8060ade9ca91bccc366d602415a15871f2663c6f0a84793b8a5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b041010946036f71e0b7472f3905b49559d78f7edb746b88494d0d90a4a946c9"
     },
     {
       "dress" : {
@@ -7468,7 +7611,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "b335a14d43210f0dfd1c134f3fe057edc25974d29dd8dceeb236b644203d15d7"
+      "sha256" : "fdb055f978fd2e7fbd3b6fba25dbc566e5b8e15581018206457b3cb979a9fbcc"
     },
     {
       "dress" : {
@@ -7513,6 +7656,17 @@
       },
       "frameCount" : 125,
       "sha256" : "fe3fc7473c701902a0b8ec2a912399c89883a0e6520ec750047eebbd76936bea"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "de2e550dfdd0d51a91e7b31860a225d2fcb6498dd18130ccbcb0e49f35b16db9"
     },
     {
       "dress" : {
@@ -8013,7 +8167,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "0ac35f2d41cdbf9830c19a038abf54b29131617c29b78fe82e831c3f8388ba20"
+      "sha256" : "5d6357cfb1712d7e28e5a8916e1ba0d387c4208d733a4db0ba83d78b572375ae"
     },
     {
       "dress" : {
@@ -8058,6 +8212,17 @@
       },
       "frameCount" : 125,
       "sha256" : "7b6a20d94edd11832879d6a631d4828e61a108c73964b7a271d74f285735673b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3eb8f264b2bbe4a38a243321bd7e6b82945d4cd6db5a108f3b1b580eda139345"
     },
     {
       "dress" : {
@@ -8558,7 +8723,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "08707beee549ec996cb018ef863bbaf7dbb188b323c968f734c692a12c2516e5"
+      "sha256" : "afcdf65098600cb47b3088dccb3622cd27af506eebd9c884beea5a40be6521c8"
     },
     {
       "dress" : {
@@ -8603,6 +8768,17 @@
       },
       "frameCount" : 125,
       "sha256" : "c6ac216e82596b932379504f612807ad53ebd9cf33e5aeaf3565b46cd08852fd"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7bce33d57daa4af7cbab8da7ff75ec9fbce85650c8272a04067453d109045371"
     },
     {
       "dress" : {
@@ -9103,7 +9279,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "de22821c2e262e22b41d669f676175970fe91c7adf41daa86e7245d02a47c5ad"
+      "sha256" : "eab5e6bca90c9de44b7da694d7656e61a0a1f762c995ab92f7d461cd55bbd9dd"
     },
     {
       "dress" : {
@@ -9148,6 +9324,17 @@
       },
       "frameCount" : 125,
       "sha256" : "0434894f899149e7a3b6001c84622b6211a897a5d5f67e26fc0991ec94668e7f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "05801a07a87a32349801655bd5c9141a2ff339c01f982a8742f3703ab2bb738b"
     },
     {
       "dress" : {
@@ -9648,7 +9835,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "727cf8d6c6a39067d52daff0f82acffdec4a38b8278577ed5c2e5955c237cb33"
+      "sha256" : "f0ebeedaf20c5934192bda0f7a42e054a79c74502c68512ad14c38dbd827a75a"
     },
     {
       "dress" : {
@@ -9693,6 +9880,17 @@
       },
       "frameCount" : 125,
       "sha256" : "4a28d7c20aa759662675ad53368a4e5ffffd19d3d6ad6063d6d6d5bdfe0812ba"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "summerShades"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "39d464962dcd29a6cf74c390363b02ba5a9e43b69c3ab368c04954cc32e0b15a"
     },
     {
       "dress" : {

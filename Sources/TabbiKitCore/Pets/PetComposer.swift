@@ -452,6 +452,7 @@ public enum PetComposer {
         case .roundGlasses: .face(CostumeArt.roundGlasses)
         case .coolSunglasses: .face(CostumeArt.coolSunglasses)
         case .heartGlasses: .face(CostumeArt.heartGlasses)
+        case .summerShades: .face(CostumeArt.summerShades)
         case .surgicalCap: .head(CostumeArt.surgicalCap)
         case .headMirror: .head(CostumeArt.headMirror)
         case .graduationCap: .head(CostumeArt.graduationCap)

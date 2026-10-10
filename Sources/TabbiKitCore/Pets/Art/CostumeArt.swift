@@ -303,6 +303,10 @@ extension CostumeArt {
     /// Pink heart lenses in a crimson frame. Now and then a light glints
     /// on one lens, then the other.
     static let heartGlasses = PetArt.costume.faceItem("heartGlasses")
+
+    /// Navy-rimmed aviators with sunset lenses, pink over orange. Now and
+    /// then the sun glints down one lens, then the other.
+    static let summerShades = PetArt.costume.faceItem("summerShades")
 }
 
 // MARK: - Back items

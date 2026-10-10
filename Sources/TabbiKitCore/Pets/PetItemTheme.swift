@@ -49,7 +49,7 @@ extension PetItem {
             case .tinyCrown, .wizardHat, .pirateHat, .blindfoldedSorcerer, .astronautHelmet, .ninjaHeadband,
                  .angelWings, .kingsCape, .halo, .sparkleTrail: .fantasy
             case .partyHat, .bunnyEars, .witchHat, .flowerCrown, .coolSunglasses, .cherryPetals, .moonlitWitchHat,
-                 .pumpkinHat, .reindeerAntlers, .snowScarf, .heartGlasses: .seasonal
+                 .pumpkinHat, .reindeerAntlers, .snowScarf, .heartGlasses, .summerShades: .seasonal
             case .frogHat, .cowboyHat, .bowTie, .flameHeadband, .teamMedal, .rainCloud: .silly
             }
         }
@@ -73,7 +73,7 @@ extension PetItem {
                  .chunkyHeadphones, .bowTie: 2
             case .backwardsCap, .flameHeadband, .goldenLaurel, .teamMedal, .angelWings, .kingsCape, .halo,
                  .cherryPetals, .sparkleTrail, .rainCloud: 3
-            case .moonlitWitchHat, .pumpkinHat, .reindeerAntlers, .snowScarf, .heartGlasses: 4
+            case .moonlitWitchHat, .pumpkinHat, .reindeerAntlers, .snowScarf, .heartGlasses, .summerShades: 4
             }
         }
     }
