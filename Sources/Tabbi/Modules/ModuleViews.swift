@@ -24,8 +24,8 @@ enum ModuleViews {
 
     /// Hooks the shared `NotchView` up to this app: registered module panels
     /// (each a stage for celebrations, with the user's pet in their empty
-    /// and error states), the music wings, the Settings window
-    /// and first-run onboarding.
+    /// and error states), the music wings, the Settings window,
+    /// first-run onboarding and the weekly recap.
     @MainActor
     static func notchContent(services: AppServices) -> NotchContent {
         NotchContent(
@@ -39,8 +39,10 @@ enum ModuleViews {
             nowPlayingLeading: { AnyView(compactLeading(services: services)) },
             nowPlayingTrailing: { AnyView(compactTrailing(services: services)) },
             openSettings: { services.openSettings() },
-            takeover: OnboardingViews.takeover(store: services.onboarding, modules: services.modules,
-                                               providers: services.providers),
+            takeover: AppTakeover.takeover(
+                onboarding: OnboardingViews.takeover(store: services.onboarding, modules: services.modules,
+                                                     providers: services.providers),
+                store: services.onboarding, recaps: services.recaps, providers: services.providers),
             setNotchMode: { services.settings.settings.notchMode = $0 },
             checkForUpdates: checkForUpdates,
             suggestFeedback: { Feedback.open() },
@@ -84,8 +86,12 @@ enum ModuleViews {
             isRecordingHotkey: store.$isRecordingHotkey.eraseToAnyPublisher(),
             hotkeyRegistered: { store.hotkeyIsRegistered = $0 },
             preview: services.ticker.$item.eraseToAnyPublisher(),
-            previewVisible: { services.ticker.setActive($0) },
-            takeover: services.onboarding.$flow.map { $0 != nil }.eraseToAnyPublisher()
+            previewVisible: { visible in
+                services.ticker.setActive(visible)
+                // The preview hides exactly when the notch opens.
+                if !visible { services.recaps.notchOpened() }
+            },
+            takeover: AppTakeover.isActive(onboarding: services.onboarding, recaps: services.recaps)
         )
     }
 }

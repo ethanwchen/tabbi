@@ -157,6 +157,9 @@ enum SnapshotRenderer {
             let streak = NotchViewModel(geometry: geometry, layout: withCloset)
             streak.open(.closet)
             shots.append(Shot("open-closet-streak", streak))
+            let weeks = NotchViewModel(geometry: geometry, layout: withCloset)
+            weeks.open(.closet)
+            shots.append(Shot("open-closet-weeks", weeks))
             // The pet's paw at the far right of the header while another tab is open.
             let withPaw = NotchViewModel(geometry: geometry, layout: withCloset)
             withPaw.open(withCloset.tabs.first)
@@ -229,6 +232,7 @@ enum SnapshotRenderer {
 
         // First-run setup in the notch, one shot per step of the active kit.
         shots += onboardingShots(services: services, geometry: geometry, layout: layout)
+        shots += recapShots(geometry: geometry, layout: layout)
 
         for (theme, folder) in themeFolders {
             Theme.apply(theme)
@@ -249,6 +253,22 @@ enum SnapshotRenderer {
             let url = outputDirectory.appendingPathComponent("\(name).png")
             try? png.write(to: url)
             print(url.path)
+        }
+
+        // The weekly recap's exported images, each shape in a heavy and a light week.
+        let recapArchive = RecapArchive.demo(now: Date())
+        if let heavy = recapArchive.recaps.first,
+           let light = recapArchive.recaps.min(by: { $0.focusMinutes < $1.focusMinutes }) {
+            for format in RecapShareFormat.allCases {
+                for (name, recap) in [("heavy", heavy), ("light", light)] {
+                    let image = RecapShareImage(recap: recap, cheer: recapArchive.cheer(for: recap),
+                                                pet: closet?.store.profile, format: format)
+                    guard let png = image.png() else { continue }
+                    let url = outputDirectory.appendingPathComponent("recap-share-\(format.rawValue)-\(name).png")
+                    try? png.write(to: url)
+                    print(url.path)
+                }
+            }
         }
 
         // Frame strips of the shared motion (celebrations), reviewed frame by frame.
@@ -353,17 +373,39 @@ enum SnapshotRenderer {
     }
 
     /// One notch shot: its file name, the notch state, and the onboarding
-    /// flow showing in it, if any.
+    /// flow or weekly recap showing in it, if any.
     private struct Shot {
         let name: String
         let model: NotchViewModel
         var onboarding: OnboardingFlow?
+        var recap: (WeeklyRecap, RecapCheer)?
 
-        init(_ name: String, _ model: NotchViewModel, onboarding: OnboardingFlow? = nil) {
+        init(_ name: String, _ model: NotchViewModel, onboarding: OnboardingFlow? = nil,
+             recap: (WeeklyRecap, RecapCheer)? = nil) {
             self.name = name
             self.model = model
             self.onboarding = onboarding
+            self.recap = recap
         }
+    }
+
+    /// The weekly recap card in a heavy week (the demo's best yet) and a
+    /// light one, at every panel size.
+    private static func recapShots(geometry: NotchGeometry, layout: ModuleLayout) -> [Shot] {
+        let archive = RecapArchive.demo(now: Date())
+        guard let heavy = archive.recaps.first,
+              let light = archive.recaps.min(by: { $0.focusMinutes < $1.focusMinutes }) else { return [] }
+        var shots: [Shot] = []
+        for size in PanelSize.allCases {
+            let prefix = size == .default ? "open-recap" : "open-recap-\(size.rawValue)"
+            for (name, recap) in [("heavy", heavy), ("light", light)] {
+                let model = NotchViewModel(geometry: geometry, layout: layout)
+                model.panelSize = size
+                model.showsTakeover = true
+                shots.append(Shot("\(prefix)-\(name)", model, recap: (recap, archive.cheer(for: recap))))
+            }
+        }
+        return shots
     }
 
     /// Walks onboarding from the name and kit steps through the active kit's
@@ -424,7 +466,7 @@ enum SnapshotRenderer {
             if let firstSection {
                 closet?.store.section = name == "open-closet-look" ? .look
                     : name == "open-closet-limited" ? .limited
-                    : name == "open-closet-streak" ? .streak : firstSection
+                    : name == "open-closet-streak" ? .streak : name == "open-closet-weeks" ? .weeks : firstSection
             }
             model.themeID = Theme.current.id
             if name == "closed-pet-cheer", case .pet(var pet) = model.preview {
@@ -438,7 +480,12 @@ enum SnapshotRenderer {
                 pet.profile.wear(.tinyCrown)
                 model.preview = .pet(pet)
             }
-            let view = NotchView(content: ModuleViews.notchContent(services: services))
+            var content = ModuleViews.notchContent(services: services)
+            if let (recap, cheer) = shot.recap {
+                content.takeover = RecapViews.takeover(recap: recap, cheer: cheer, providers: services.providers,
+                                                       done: {})
+            }
+            let view = NotchView(content: content)
                 .environmentObject(model)
                 .environment(\.drawsLiquidGlass, false)
                 .environment(\.loaderRevealDelay, 0) // rendered the moment it appears

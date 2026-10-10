@@ -4,10 +4,12 @@ import TabbiKit
 
 /// The Closet tab: the study pet large and animated on the left, and on the
 /// right its wardrobe (wear, take off, or unlock items with study points),
-/// its limited edition items, the study streak with its freezes, or its
-/// look (species, breed, fur color).
+/// its limited edition items, the study streak with its freezes, its look
+/// (species, breed, fur color), or its past weekly recaps.
 struct ClosetPanel: View {
     @ObservedObject var store: ClosetStore
+    /// The weekly recaps; their section hides while recaps are off.
+    @ObservedObject var recaps: RecapStore
 
     var body: some View {
         HStack(spacing: Theme.Spacing.m) {
@@ -21,12 +23,14 @@ struct ClosetPanel: View {
                         header(showsUnit: true)
                         header(showsUnit: false)
                         header(showsUnit: false, titlesAll: false)
+                        header(showsUnit: false, titlesAll: false, isTight: true)
                     }
-                    switch store.section {
+                    switch shownSection {
                     case .wardrobe: ClosetWardrobe(store: store)
                     case .limited: ClosetLimited(store: store)
                     case .streak: ClosetStreak(store: store)
                     case .look: ClosetLook(store: store)
+                    case .weeks: RecapHistoryList(store: recaps)
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -34,9 +38,20 @@ struct ClosetPanel: View {
         }
     }
 
-    private func header(showsUnit: Bool, titlesAll: Bool = true) -> some View {
+    private var sections: [ClosetSection] {
+        ClosetSection.allCases.filter { $0 != .weeks || recaps.isEnabled }
+    }
+
+    private var shownSection: ClosetSection {
+        sections.contains(store.section) ? store.section : .wardrobe
+    }
+
+    private func header(showsUnit: Bool, titlesAll: Bool = true, isTight: Bool = false) -> some View {
         HStack(spacing: Theme.Spacing.s) {
-            ClosetSectionPicker(selection: $store.section, titlesAll: titlesAll)
+            ClosetSectionPicker(sections: sections, selection: shownSection, titlesAll: titlesAll,
+                                isTight: isTight) {
+                store.section = $0
+            }
             Spacer(minLength: 0)
             ClosetPointsChip(balance: store.closet.balance, showsUnit: showsUnit)
         }
@@ -48,6 +63,7 @@ enum ClosetSection: String, CaseIterable {
     case limited = "Limited"
     case streak = "Streak"
     case look = "Look"
+    case weeks = "Weeks"
 
     var symbol: String {
         switch self {
@@ -55,6 +71,7 @@ enum ClosetSection: String, CaseIterable {
         case .limited: "sparkles"
         case .streak: "flame.fill"
         case .look: "paintpalette.fill"
+        case .weeks: "calendar"
         }
     }
 
@@ -64,6 +81,7 @@ enum ClosetSection: String, CaseIterable {
         case .limited: "Limited edition items, earned by studying, never sold"
         case .streak: "Your study streak and the freezes that protect it"
         case .look: "Species, breed and fur color"
+        case .weeks: "Your weekly recaps with your pet"
         }
     }
 }
@@ -178,19 +196,24 @@ private struct ClosetNameButton: View {
 // MARK: - Header
 
 private struct ClosetSectionPicker: View {
-    @Binding var selection: ClosetSection
+    let sections: [ClosetSection]
+    let selection: ClosetSection
     /// Off, only the open section shows its title; the others show their
     /// symbol, with the title in the tooltip.
     var titlesAll = true
+    /// Narrower pills, for the Compact panel with every section on.
+    var isTight = false
+    let select: (ClosetSection) -> Void
 
     var body: some View {
         HStack(spacing: Theme.Spacing.xxs) {
-            ForEach(ClosetSection.allCases, id: \.self) { section in
+            ForEach(sections, id: \.self) { section in
                 ClosetPill(title: section.rawValue, symbol: section.symbol,
                            showsTitle: titlesAll || selection == section,
                            isSelected: selection == section,
+                           isTight: isTight,
                            help: section.help) {
-                    withMotion(Theme.Motion.content) { selection = section }
+                    withMotion(Theme.Motion.content) { select(section) }
                 }
             }
         }
@@ -203,6 +226,7 @@ private struct ClosetPill: View {
     let symbol: String
     var showsTitle = true
     let isSelected: Bool
+    var isTight = false
     let help: String
     let action: () -> Void
     @State private var hovering = false
