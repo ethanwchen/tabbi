@@ -86,6 +86,8 @@ Plan: tests that skip a phase mid-session, switch deep focus on and off, and fee
 - `TabbiKitCore/AI/AIKeyStore.swift` 34%: the Keychain-backed store is untested.
 
 Plan: a `URLProtocol` stub for the two URLSession transports (timeouts, non-2xx, malformed bodies, cancellation mid-stream), and a fake `claude` shell script that prints canned stream-json for `ClaudeCLI`.
+Status: `URLSessionPartyTransportTests` now drives `URLSessionPartyTransport` through a `URLProtocol` stub: the request it builds (route under a server path prefix, headers, bearer token, body, timeout), non-2xx replies with `Retry-After`, network failures mapped to `PartyError`, and cancellation of a request that never answers.
+The AI streaming transport and `ClaudeCLI` are still untested.
 
 ### 6. Claude Ask session (app)
 
