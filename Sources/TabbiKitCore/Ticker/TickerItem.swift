@@ -98,11 +98,28 @@ public struct TickerMeeting: Hashable, Sendable {
     public var timing: EventTiming
     /// Whether the event carries a video-call link, so the opened panel can offer "Join".
     public var canJoin: Bool
+    /// The call to join, which the closed notch offers once the meeting is
+    /// close (`offersJoin`).
+    public var link: MeetingLink?
+    /// The "leave now" pulse is playing (`MeetingNudge`).
+    public var isNudging: Bool
 
-    public init(title: String, timing: EventTiming, canJoin: Bool) {
+    public init(title: String, timing: EventTiming, canJoin: Bool, link: MeetingLink? = nil, isNudging: Bool = false) {
         self.title = title
         self.timing = timing
-        self.canJoin = canJoin
+        self.canJoin = canJoin || link != nil
+        self.link = link
+        self.isNudging = isNudging
+    }
+
+    /// Whether the closed notch shows a Join button: the meeting has a call
+    /// and starts within `TickerSources.pinLeadTime` or is under way.
+    public var offersJoin: Bool {
+        guard link != nil else { return false }
+        switch timing {
+        case .now: return true
+        case .startsIn(let minutes): return TimeInterval(minutes * 60) <= TickerSources.pinLeadTime
+        }
     }
 }
 
@@ -123,6 +140,9 @@ public struct TickerPet: Hashable, Sendable {
         self.moodSince = moodSince
         self.cheer = cheer
     }
+
+    /// True while the pet sips because the Mac started charging.
+    public var isSipping: Bool { cheer?.kind == .sip }
 }
 
 /// The pets the closed notch shows while the user is in a study party.
@@ -153,21 +173,34 @@ public struct TickerFocus: Hashable, Sendable {
     public var isRunning: Bool
     /// The module running the clock, whose panel a click opens.
     public var source: ModuleID
+    /// Full length of the phase, which sizes the ring around the closed
+    /// timer's icon; nil while counting up or when the engine doesn't say.
+    public var length: TimeInterval?
 
     public init(phase: FocusPhase, label: String? = nil, time: TimeInterval, countsUp: Bool = false,
-                isRunning: Bool, source: ModuleID = .planner) {
+                isRunning: Bool, source: ModuleID = .planner, length: TimeInterval? = nil) {
         self.phase = phase
         self.label = label ?? FocusTimerFormat.phaseName(phase)
         self.time = time
         self.countsUp = countsUp
         self.isRunning = isRunning
         self.source = source
+        self.length = length
     }
 
     /// The clock at `now` for the shared focus clock.
     public init(_ focus: ProvidedFocus, at now: Date) {
         self.init(phase: focus.phase, label: focus.label, time: focus.shownTime(at: now),
-                  countsUp: focus.countsUp, isRunning: focus.isRunning, source: focus.source)
+                  countsUp: focus.countsUp, isRunning: focus.isRunning, source: focus.source,
+                  length: focus.phaseLength)
+    }
+
+    /// How much of the phase has passed, `0...1`, for the ring around the
+    /// closed timer. An open-ended phase has no end to fill toward, so it
+    /// gets no ring (nil).
+    public var progress: Double? {
+        guard !countsUp, let length, length > 0, time.isFinite else { return nil }
+        return min(max(1 - time / length, 0), 1)
     }
 }
 
@@ -346,6 +379,13 @@ public struct TickerSources: Equatable, Sendable {
         nextChange(after: now) { enabled.contains($0) }
     }
 
+    /// The next meeting that starts within `pinLeadTime` (not yet under
+    /// way), which the meeting preview shows ahead of one in progress.
+    public func imminentMeeting(at now: Date) -> UpcomingEvent? {
+        UpcomingEvent.upNext(from: events, at: now, limit: events.count)
+            .first { $0.start > now && $0.start.timeIntervalSince(now) <= Self.pinLeadTime }
+    }
+
     /// Each module's live highlight with the highest priority (ties keep the
     /// module's own order), ordered by priority with ties in tab order.
     private func topHighlights(at now: Date) -> [TickerHighlight] {
@@ -369,14 +409,14 @@ public struct TickerSources: Equatable, Sendable {
         case .meeting:
             // A meeting about to start beats one already under way, so a long
             // block can't hide "Standup in 3 min".
-            let upcoming = UpcomingEvent.upNext(from: events, at: now, limit: events.count)
-            let imminent = upcoming.first { $0.start > now && $0.start.timeIntervalSince(now) <= Self.pinLeadTime }
-            guard let event = imminent ?? upcoming.first,
+            guard let event = imminentMeeting(at: now)
+                    ?? UpcomingEvent.upNext(from: events, at: now, limit: events.count).first,
                   event.start.timeIntervalSince(now) <= Self.meetingHorizon else { return nil }
             return .meeting(TickerMeeting(
                 title: UpcomingEventFormat.title(event),
                 timing: event.timing(at: now),
-                canJoin: event.meetingLink != nil
+                canJoin: event.meetingLink != nil,
+                link: event.meetingLink
             ))
         case .nowPlaying:
             return isMusicPlaying ? .nowPlaying : nil

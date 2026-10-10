@@ -54,9 +54,19 @@ final class TickerSourcesTests: XCTestCase {
 
     func testMeetingCountsDownAndReportsJoinLink() {
         let sources = TickerSources(events: [event("Standup", startsIn: 3.5, link: true)])
+        let zoom = MeetingLink(provider: .zoom, url: URL(string: "https://zoom.us/j/1")!)
         XCTAssertEqual(sources.items(at: now), [
-            .meeting(TickerMeeting(title: "Standup", timing: .startsIn(minutes: 4), canJoin: true)),
+            .meeting(TickerMeeting(title: "Standup", timing: .startsIn(minutes: 4), canJoin: true, link: zoom)),
         ])
+    }
+
+    func testJoinShowsOnlyOnceACallIsClose() {
+        let zoom = MeetingLink(provider: .zoom, url: URL(string: "https://zoom.us/j/1")!)
+        XCTAssertTrue(TickerMeeting(title: "Standup", timing: .startsIn(minutes: 5), canJoin: true, link: zoom).offersJoin)
+        XCTAssertTrue(TickerMeeting(title: "Standup", timing: .now, canJoin: true, link: zoom).offersJoin)
+        XCTAssertFalse(TickerMeeting(title: "Standup", timing: .startsIn(minutes: 6), canJoin: true, link: zoom).offersJoin)
+        XCTAssertFalse(TickerMeeting(title: "Standup", timing: .now, canJoin: true).offersJoin,
+                       "no link, nothing to join")
     }
 
     func testMeetingInProgressReadsNow() {
@@ -121,12 +131,29 @@ final class TickerSourcesTests: XCTestCase {
         XCTAssertEqual(TickerSources(focus: FocusTimer().shared).items(at: now), [])
 
         XCTAssertEqual(TickerSources(focus: runningFocus(remaining: 600).shared).items(at: now),
-                       [.focus(TickerFocus(phase: .focus, time: 600, isRunning: true))])
+                       [.focus(TickerFocus(phase: .focus, time: 600, isRunning: true, length: 25 * 60))])
 
         var paused = runningFocus(remaining: 600)
         paused.pause(at: now)
         XCTAssertEqual(TickerSources(focus: paused.shared).items(at: now),
-                       [.focus(TickerFocus(phase: .focus, time: 600, isRunning: false))])
+                       [.focus(TickerFocus(phase: .focus, time: 600, isRunning: false, length: 25 * 60))])
+    }
+
+    func testFocusRingFillsAsThePhasePasses() throws {
+        let item = try XCTUnwrap(TickerSources(focus: runningFocus(remaining: 15 * 60).shared).items(at: now).first)
+        guard case .focus(let focus) = item else { return XCTFail("expected the focus clock") }
+        XCTAssertEqual(try XCTUnwrap(focus.progress), 0.4, accuracy: 0.0001)
+
+        XCTAssertEqual(TickerFocus(phase: .focus, time: 25 * 60, isRunning: true, length: 25 * 60).progress, 0)
+        XCTAssertEqual(TickerFocus(phase: .rest, time: 0, isRunning: true, length: 5 * 60).progress, 1)
+        // A clock running past its length (a late tick) stays full.
+        XCTAssertEqual(TickerFocus(phase: .focus, time: -5, isRunning: true, length: 60).progress, 1)
+    }
+
+    func testOpenEndedOrUnsizedClocksHaveNoRing() {
+        XCTAssertNil(TickerFocus(phase: .focus, time: 600, countsUp: true, isRunning: true, length: 900).progress)
+        XCTAssertNil(TickerFocus(phase: .focus, time: 600, isRunning: true).progress)
+        XCTAssertNil(TickerFocus(phase: .focus, time: 600, isRunning: true, length: 0).progress)
     }
 
     func testFinishedTaskListShowsNothing() {
@@ -291,6 +318,42 @@ final class TickerRotationTests: XCTestCase {
         _ = rotation.update(items: [music, tasks], at: at(0))
         rotation.interval = 5
         XCTAssertEqual(rotation.update(items: [music, tasks], at: at(5)), tasks)
+    }
+
+    func testAdvancingShowsTheNextItemAndHoldsItForAFullTurn() {
+        var rotation = TickerRotation(interval: 8)
+        let items = [music, focus, tasks]
+        _ = rotation.update(items: items, at: at(0))
+        XCTAssertEqual(rotation.advance(items: items, at: at(5)), focus)
+        XCTAssertEqual(rotation.update(items: items, at: at(12.9)), focus, "a fresh turn from the swipe")
+        XCTAssertEqual(rotation.update(items: items, at: at(13)), tasks)
+        XCTAssertEqual(rotation.advance(items: items, at: at(14)), music, "wraps around")
+    }
+
+    func testAdvancingWithOneItemOrNoneKeepsTheNotchAsItIs() {
+        var rotation = TickerRotation(interval: 8)
+        XCTAssertNil(rotation.advance(items: [], at: at(0)))
+        XCTAssertEqual(rotation.advance(items: [tasks], at: at(1)), tasks)
+        XCTAssertEqual(rotation.update(items: [tasks, music], at: at(2)), tasks)
+    }
+
+    func testAdvancingPeeksPastAPinThenThePinReturns() {
+        var rotation = TickerRotation(interval: 8)
+        let soon = meeting(.startsIn(minutes: 4))
+        let items = [soon, music, tasks]
+        XCTAssertEqual(rotation.update(items: items, at: at(0)), soon)
+        XCTAssertEqual(rotation.advance(items: items, at: at(10)), music)
+        XCTAssertEqual(rotation.update(items: items, at: at(17)), music)
+        XCTAssertEqual(rotation.update(items: items, at: at(18)), soon, "the meeting takes the notch back")
+        XCTAssertEqual(rotation.update(items: items, at: at(60)), soon)
+    }
+
+    func testAPeekedItemThatVanishesHandsBackToThePin() {
+        var rotation = TickerRotation(interval: 8)
+        let soon = meeting(.startsIn(minutes: 4))
+        _ = rotation.update(items: [soon, music], at: at(0))
+        XCTAssertEqual(rotation.advance(items: [soon, music], at: at(1)), music)
+        XCTAssertEqual(rotation.update(items: [soon], at: at(2)), soon)
     }
 
     func testEverythingDisappearingClearsTheRotation() {

@@ -3,7 +3,10 @@ import Foundation
 /// Decides which ticker item the closed notch shows.
 ///
 /// A pinned item (an imminent or current meeting) always wins. Otherwise the
-/// available items take turns, each held for `interval` seconds. The state
+/// available items take turns, each held for `interval` seconds. The user
+/// can also move on by hand (`advance`), which holds the chosen item for a
+/// full turn, even over a pin, so a peek at the song during a meeting
+/// countdown isn't snatched away at once. The state
 /// is just "which kind, since when", and callers pass `now` explicitly, so
 /// the rotation is deterministic and survives items appearing and vanishing
 /// between ticks.
@@ -16,6 +19,8 @@ public struct TickerRotation: Equatable, Sendable {
     /// The kinds of the last `update`'s items, in order, so that when the
     /// kind on screen vanishes its successor still takes over.
     private var order: [TickerKind] = []
+    /// Until when an item the user cycled to holds the notch over a pin.
+    private var heldUntil: Date?
 
     public init(interval: TimeInterval) {
         self.interval = max(interval, 1)
@@ -31,8 +36,14 @@ public struct TickerRotation: Equatable, Sendable {
         guard !items.isEmpty else {
             currentKind = nil
             shownSince = nil
+            heldUntil = nil
             return nil
         }
+        if let heldUntil, now < heldUntil, let currentKind,
+           let held = items.first(where: { $0.kind == currentKind }) {
+            return held
+        }
+        heldUntil = nil
         if let pinned = items.first(where: \.isPinned) {
             // Keep the original start so that once the pin lifts the
             // rotation moves on at once rather than holding a stale item.
@@ -46,6 +57,22 @@ public struct TickerRotation: Equatable, Sendable {
         }
         let next = nextItem(after: currentKind, in: items, previousOrder: previousOrder)
         show(next.kind, at: now)
+        return next
+    }
+
+    /// Moves on to the item after the one on screen right away, as when the
+    /// user swipes down or middle-clicks the closed notch, and returns it.
+    ///
+    /// The chosen item holds for a full `interval`, pinned or not, then the
+    /// rotation (or a pin) carries on. With one item or none there is
+    /// nothing to cycle to, and the item on screen stays.
+    public mutating func advance(items: [TickerItem], at now: Date) -> TickerItem? {
+        guard items.count > 1 else { return update(items: items, at: now) }
+        let previousOrder = order
+        order = items.map(\.kind)
+        let next = nextItem(after: currentKind, in: items, previousOrder: previousOrder)
+        show(next.kind, at: now)
+        heldUntil = now.addingTimeInterval(interval)
         return next
     }
 

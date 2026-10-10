@@ -100,8 +100,29 @@ enum SnapshotRenderer {
                 let crowned = NotchViewModel(geometry: geometry, layout: layout)
                 crowned.preview = .pet(TickerPet(profile: pet.profile, mood: .awake))
                 shots.append(Shot("closed-pet-crown", crowned))
+                // The Mac started charging: the pet sips from its mug.
+                let sipping = NotchViewModel(geometry: geometry, layout: layout)
+                sipping.preview = .pet(TickerPet(profile: pet.profile, mood: .onBreak))
+                shots.append(Shot("closed-pet-charging", sipping))
             }
         }
+        // The closed timer's ring part-way through a Pomodoro and a break,
+        // whether or not a clock runs when the shots are taken.
+        let rings = [
+            ("closed-focus-ring", TickerFocus(phase: .focus, time: 15 * 60, isRunning: true, length: 25 * 60)),
+            ("closed-focus-ring-break", TickerFocus(phase: .rest, time: 60, isRunning: false, length: 5 * 60)),
+        ]
+        for (name, focus) in rings {
+            let model = NotchViewModel(geometry: geometry, layout: layout)
+            model.preview = .focus(focus)
+            shots.append(Shot(name, model))
+        }
+        // The "leave now" glow on a call about to start, with its Join button.
+        let call = MeetingLink(provider: .zoom, url: URL(string: "https://zoom.us/j/1")!)
+        let nudge = NotchViewModel(geometry: geometry, layout: layout)
+        nudge.preview = .meeting(TickerMeeting(title: "Standup", timing: .startsIn(minutes: 4), canJoin: true,
+                                               link: call, isNudging: true))
+        shots.append(Shot("closed-meeting-nudge", nudge))
         // One open shot per tab of the active kit.
         for module in layout.enabled {
             let model = NotchViewModel(geometry: geometry, layout: layout)
@@ -315,6 +336,26 @@ enum SnapshotRenderer {
             print(url.path)
         }
         services.settings.settings.notchMode = notchMode
+        // General's privacy switches, under More options, with screen sharing hidden.
+        let privacy = (services.settings.settings.hideFromScreenCapture, services.settings.settings.hideInMissionControl)
+        services.settings.settings.hideFromScreenCapture = true
+        if let png = await sheetSnapshot(Form { PrivacySection() }.formStyle(.grouped)
+            .frame(width: paneWidth).environmentObject(services.settings)) {
+            let url = outputDirectory.appendingPathComponent("settings-general-privacy.png")
+            try? png.write(to: url)
+            print(url.path)
+        }
+        (services.settings.settings.hideFromScreenCapture, services.settings.settings.hideInMissionControl) = privacy
+        // General's feedback options, under More options, with the Fast pace picked.
+        let pace = services.settings.settings.motionPace
+        services.settings.settings.motionPace = .fast
+        if let png = await sheetSnapshot(Form { FeedbackSection() }.formStyle(.grouped)
+            .frame(width: paneWidth).environmentObject(services.settings)) {
+            let url = outputDirectory.appendingPathComponent("settings-general-feedback.png")
+            try? png.write(to: url)
+            print(url.path)
+        }
+        services.settings.settings.motionPace = pace
         // Connections with an API provider waiting for its key, a command
         // line tool and Ollama picked, as far as this build offers them.
         let aiShots = [("api-key", AIProviderID.gemini), ("cli", .claudeCLI), ("local", .ollama)]
@@ -517,6 +558,11 @@ enum SnapshotRenderer {
                 // Mid hop, crowned as `TickerSources.cheering` does it.
                 pet.cheer = PetCheer(kind: .crown, id: 1, startedAt: Date().addingTimeInterval(-0.45))
                 pet.profile.wear(.tinyCrown)
+                model.preview = .pet(pet)
+            }
+            if name == "closed-pet-charging", case .pet(var pet) = model.preview {
+                // Past the hop, with the mug raised for the sip.
+                pet.cheer = PetCheer(kind: .sip, id: 1, startedAt: Date().addingTimeInterval(-3.5))
                 model.preview = .pet(pet)
             }
             var content = ModuleViews.notchContent(services: services)

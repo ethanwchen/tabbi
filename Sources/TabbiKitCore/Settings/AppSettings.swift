@@ -37,11 +37,21 @@ public struct AppSettings: Equatable, Sendable {
     public var showOnExternalDisplays: Bool
     /// When on, the notch steps aside while an app is fullscreen on its screen.
     public var hideInFullscreen: Bool
+    /// When on, the notch is left out of screenshots, recordings and shared
+    /// screens (`NSWindow.sharingType = .none`), so a student sharing their
+    /// screen in class doesn't show their tabs. Off by default.
+    public var hideFromScreenCapture: Bool
+    /// When on, the notch steps aside while Mission Control is open instead
+    /// of staying drawn over the spaces. Off by default.
+    public var hideInMissionControl: Bool
     /// Whether the closed notch is always drawn, only on hover, or only
     /// after the global shortcut (see `NotchVisibility.isShown`).
     public var notchMode: NotchMode
     /// The size of the open notch, the same for every tab.
     public var panelSize: PanelSize
+    /// How lively animations are (`MotionPace`). Reduce Motion in System
+    /// Settings still calms Smooth and Fast to a short crossfade.
+    public var motionPace: MotionPace
     public var notchPreview: NotchPreviewSettings
     /// The look of the open panel. Kept as saved even when this build lacks
     /// it (a theme from a newer Tabbi); `ThemeCatalog.resolve` draws the
@@ -72,8 +82,11 @@ public struct AppSettings: Equatable, Sendable {
         preferredDisplay: DisplayPreference = .builtIn,
         showOnExternalDisplays: Bool = true,
         hideInFullscreen: Bool = true,
+        hideFromScreenCapture: Bool = false,
+        hideInMissionControl: Bool = false,
         notchMode: NotchMode = .default,
         panelSize: PanelSize = .default,
+        motionPace: MotionPace = .default,
         notchPreview: NotchPreviewSettings = .default,
         themeID: ThemeID = ThemeCatalog.defaultID,
         ai: AISettings = AISettings()
@@ -93,8 +106,11 @@ public struct AppSettings: Equatable, Sendable {
         self.preferredDisplay = preferredDisplay
         self.showOnExternalDisplays = showOnExternalDisplays
         self.hideInFullscreen = hideInFullscreen
+        self.hideFromScreenCapture = hideFromScreenCapture
+        self.hideInMissionControl = hideInMissionControl
         self.notchMode = notchMode
         self.panelSize = panelSize
+        self.motionPace = motionPace
         self.notchPreview = notchPreview
         self.themeID = themeID
         self.ai = ai
@@ -183,8 +199,11 @@ public struct AppSettings: Equatable, Sendable {
         preferredDisplay = fresh.preferredDisplay
         showOnExternalDisplays = fresh.showOnExternalDisplays
         hideInFullscreen = fresh.hideInFullscreen
+        hideFromScreenCapture = fresh.hideFromScreenCapture
+        hideInMissionControl = fresh.hideInMissionControl
         notchMode = fresh.notchMode
         panelSize = fresh.panelSize
+        motionPace = fresh.motionPace
         notchPreview = fresh.notchPreview
         if let kinds = kit?.defaults.resolvedTicker(catalog: catalog) {
             notchPreview.disabledKinds = Set(TickerKind.all(in: catalog)).subtracting(kinds)
@@ -243,8 +262,11 @@ public struct SettingsRepository {
         static let preferredDisplay = "settings.preferredDisplay"
         static let showOnExternalDisplays = "settings.showOnExternalDisplays"
         static let hideInFullscreen = "settings.hideInFullscreen"
+        static let hideFromScreenCapture = "settings.hideFromScreenCapture"
+        static let hideInMissionControl = "settings.hideInMissionControl"
         static let notchMode = "settings.notchMode"
         static let panelSize = "settings.panelSize"
+        static let motionPace = "settings.motionPace"
         static let previewEnabled = "settings.preview.enabled"
         static let previewDisabledKinds = "settings.preview.disabledKinds"
         static let previewInterval = "settings.preview.interval"
@@ -308,8 +330,11 @@ public struct SettingsRepository {
                 .flatMap(DisplayPreference.init(storageValue:)) ?? fallback.preferredDisplay,
             showOnExternalDisplays: bool(Key.showOnExternalDisplays) ?? fallback.showOnExternalDisplays,
             hideInFullscreen: bool(Key.hideInFullscreen) ?? fallback.hideInFullscreen,
+            hideFromScreenCapture: bool(Key.hideFromScreenCapture) ?? fallback.hideFromScreenCapture,
+            hideInMissionControl: bool(Key.hideInMissionControl) ?? fallback.hideInMissionControl,
             notchMode: defaults.string(forKey: Key.notchMode).flatMap(NotchMode.init(rawValue:)) ?? fallback.notchMode,
             panelSize: defaults.string(forKey: Key.panelSize).flatMap(PanelSize.init(rawValue:)) ?? fallback.panelSize,
+            motionPace: defaults.string(forKey: Key.motionPace).flatMap(MotionPace.init(rawValue:)) ?? fallback.motionPace,
             notchPreview: NotchPreviewSettings(
                 isEnabled: bool(Key.previewEnabled) ?? fallback.notchPreview.isEnabled,
                 // Unknown raw values (a kind removed in a later version) are dropped.
@@ -362,8 +387,11 @@ public struct SettingsRepository {
         defaults.set(settings.preferredDisplay.storageValue, forKey: Key.preferredDisplay)
         defaults.set(settings.showOnExternalDisplays, forKey: Key.showOnExternalDisplays)
         defaults.set(settings.hideInFullscreen, forKey: Key.hideInFullscreen)
+        defaults.set(settings.hideFromScreenCapture, forKey: Key.hideFromScreenCapture)
+        defaults.set(settings.hideInMissionControl, forKey: Key.hideInMissionControl)
         defaults.set(settings.notchMode.rawValue, forKey: Key.notchMode)
         defaults.set(settings.panelSize.rawValue, forKey: Key.panelSize)
+        defaults.set(settings.motionPace.rawValue, forKey: Key.motionPace)
         defaults.set(settings.notchPreview.isEnabled, forKey: Key.previewEnabled)
         // Sorted so the stored value is stable across saves.
         defaults.set(settings.notchPreview.disabledKinds.map(\.rawValue).sorted(), forKey: Key.previewDisabledKinds)

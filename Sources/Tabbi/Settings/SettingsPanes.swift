@@ -134,25 +134,7 @@ struct GeneralSettingsPane: View {
 
     @ViewBuilder
     private var moreOptions: some View {
-        Section {
-            Toggle(isOn: $store.settings.hapticsEnabled) {
-                Text("Haptic feedback")
-                Text("A light trackpad tap at the notch edge and on celebrations.")
-            }
-            .help("Tap the trackpad when the pointer reaches the notch or a celebration plays")
-            Toggle(isOn: $store.settings.celebrationSoundEnabled) {
-                Text("Celebration sound")
-                Text("A soft sound when you unlock an item or reach a streak.")
-            }
-            .help("Play a soft sound with celebrations that have no sound of their own")
-            Toggle(isOn: $store.settings.weeklyRecapEnabled) {
-                Text("Weekly recap")
-                Text("A card with your week in the notch every Sunday evening.")
-            }
-            .help("Show a recap of your week the first time you open the notch after Sunday 6 pm")
-        } header: {
-            Text("Feedback")
-        }
+        FeedbackSection()
 
         Section {
             Toggle(isOn: $store.settings.showOnExternalDisplays) {
@@ -176,6 +158,8 @@ struct GeneralSettingsPane: View {
         } header: {
             Text("Display")
         }
+
+        PrivacySection()
 
         LiveActivitySection()
     }
@@ -895,6 +879,78 @@ private struct LibraryRow: View {
     }
 }
 
+// MARK: Feedback
+
+/// Haptics, the celebration sound and the animation pace, under General's
+/// More options.
+struct FeedbackSection: View {
+    @EnvironmentObject private var store: SettingsStore
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        Section {
+            Toggle(isOn: $store.settings.hapticsEnabled) {
+                Text("Haptic feedback")
+                Text("A light trackpad tap at the notch edge and on celebrations.")
+            }
+            .help("Tap the trackpad when the pointer reaches the notch or a celebration plays")
+            Toggle(isOn: $store.settings.celebrationSoundEnabled) {
+                Text("Celebration sound")
+                Text("A soft sound when you unlock an item or reach a streak.")
+            }
+            .help("Play a soft sound with celebrations that have no sound of their own")
+            Toggle(isOn: $store.settings.weeklyRecapEnabled) {
+                Text("Weekly recap")
+                Text("A card with your week in the notch every Sunday evening.")
+            }
+            .help("Show a recap of your week the first time you open the notch after Sunday 6 pm")
+            Picker(selection: $store.settings.motionPace) {
+                ForEach(MotionPace.allCases, id: \.self) { pace in
+                    Text(pace.title).tag(pace)
+                }
+            } label: {
+                Text("Animations")
+                Text(motionCaption)
+            }
+            .help("Choose how lively the notch's animations are")
+        } header: {
+            Text("Feedback")
+        }
+    }
+
+    /// What the chosen pace feels like, or why it barely matters while
+    /// Reduce Motion is on.
+    private var motionCaption: String {
+        guard reduceMotion, store.settings.motionPace != .instant else { return store.settings.motionPace.caption }
+        return "Reduce Motion is on, so changes fade instead of moving."
+    }
+}
+
+// MARK: Privacy
+
+/// Where the notch shows besides your own screen, under General's More
+/// options. Both are off by default, so nothing disappears unexpectedly.
+struct PrivacySection: View {
+    @EnvironmentObject private var store: SettingsStore
+
+    var body: some View {
+        Section {
+            Toggle(isOn: $store.settings.hideFromScreenCapture) {
+                Text("Hide from screen sharing")
+                Text("Only you see the notch, not your audience or recordings.")
+            }
+            .help("Keep the notch out of screen sharing, recordings and screenshots, for example while presenting in class")
+            Toggle(isOn: $store.settings.hideInMissionControl) {
+                Text("Hide in Mission Control")
+                Text("Steps aside while Mission Control shows your spaces.")
+            }
+            .help("Hide the notch while Mission Control is open")
+        } header: {
+            Text("Privacy")
+        }
+    }
+}
+
 // MARK: Live activity
 
 /// What the closed notch's live activity shows, under General's More options.
@@ -969,7 +1025,7 @@ private struct ShortcutSection: View {
         } header: {
             Text("Shortcut")
         } footer: {
-            SectionFooter("In the open notch, arrow keys or a two-finger swipe switch tabs, 1-9 jump to a tab and Esc closes.")
+            SectionFooter("In the open notch, arrow keys or a two-finger swipe switch tabs, 1-9 jump to a tab and Esc closes. On the closed notch, swipe down or middle-click to see the next live activity.")
         }
         .onDisappear { recorder.stop() }
     }

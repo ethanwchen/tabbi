@@ -25,6 +25,17 @@ public final class NotchPanel: NSPanel {
         ignoresMouseEvents = true
     }
 
+    /// Leaves the notch out of screenshots, recordings and shared screens,
+    /// and out of Mission Control, as the user chose in Settings. Both are
+    /// public window properties, so they work in the sandboxed edition.
+    public func applyPrivacy(hideFromScreenCapture: Bool, hideInMissionControl: Bool) {
+        sharingType = hideFromScreenCapture ? .none : .readOnly
+        // A stationary window stays drawn over Mission Control like the
+        // desktop; a transient one is hidden while it is open.
+        collectionBehavior.remove([.stationary, .transient])
+        collectionBehavior.insert(hideInMissionControl ? .transient : .stationary)
+    }
+
     override public var canBecomeKey: Bool { true }
     override public var canBecomeMain: Bool { false }
 

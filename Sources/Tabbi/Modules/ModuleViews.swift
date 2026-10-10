@@ -108,6 +108,7 @@ enum ModuleViews {
                 // The preview hides exactly when the notch opens.
                 if !visible { services.recaps.notchOpened() }
             },
+            cyclePreview: { services.ticker.cycle() },
             takeover: AppTakeover.isActive(onboarding: services.onboarding,
                                            invite: invite(services: services)?.showing,
                                            recaps: services.recaps)

@@ -18,6 +18,7 @@ public final class NotchController {
     private var hoverOpenTask: Task<Void, Never>?
     private var pointerInside = false
     private var swipe = TabSwipe()
+    private var previewSwipe = TickerSwipe()
     private var hotkey: GlobalHotkey?
     /// The display the notch is on; nil while no screen qualifies.
     private var displayID: CGDirectDisplayID?
@@ -39,6 +40,7 @@ public final class NotchController {
         self.inputs = inputs
         let settings = inputs.currentSettings()
         Theme.apply(ThemeCatalog.resolve(settings.themeID))
+        Motion.apply(settings.motionPace)
         let screen = NotchGeometry.screen(for: settings.preferredDisplay,
                                           showOnExternalDisplays: settings.showOnExternalDisplays)
         let geometry = screen.map(NotchGeometry.measure) ?? NotchGeometry(
@@ -125,6 +127,16 @@ public final class NotchController {
         if let keys = NSEvent.addLocalMonitorForEvents(matching: .keyDown, handler: { [weak self] event in
             MainActor.assumeIsolated { self?.handleKey(event) ?? false } ? nil : event
         }) { monitors.append(keys) }
+
+        // A middle-click on the closed notch shows the next live activity.
+        if let middle = NSEvent.addLocalMonitorForEvents(matching: .otherMouseDown, handler: { [weak self] event in
+            let consumed = MainActor.assumeIsolated { () -> Bool in
+                guard let self, event.buttonNumber == 2, event.window === self.panel, !self.model.isOpen else { return false }
+                self.cyclePreview()
+                return true
+            }
+            return consumed ? nil : event
+        }) { monitors.append(middle) }
 
         if let scroll = NSEvent.addLocalMonitorForEvents(matching: .scrollWheel, handler: { [weak self] event in
             MainActor.assumeIsolated { self?.handleScroll(event) }
@@ -251,9 +263,10 @@ public final class NotchController {
         }
     }
 
-    /// A two-finger horizontal swipe moves one tab.
+    /// A two-finger horizontal swipe moves one tab; on the closed notch a
+    /// swipe down shows the next live activity.
     private func handleScroll(_ event: NSEvent) {
-        guard model.isOpen else { return }
+        guard model.isOpen || (pointerInside && model.preview != nil) else { return }
         let phase: TabSwipe.Phase
         if !event.momentumPhase.isEmpty {
             phase = .momentum
@@ -264,11 +277,28 @@ public final class NotchController {
         } else {
             phase = event.phase.isEmpty ? .none : .changed
         }
+        guard model.isOpen else {
+            // With natural scrolling the content follows the fingers, so a
+            // positive delta is a swipe down; otherwise it is inverted.
+            let down = event.isDirectionInvertedFromDevice ? event.scrollingDeltaY : -event.scrollingDeltaY
+            if previewSwipe.feed(deltaX: event.scrollingDeltaX, fingersDown: down, phase: phase) { cyclePreview() }
+            return
+        }
         switch swipe.feed(deltaX: event.scrollingDeltaX, deltaY: event.scrollingDeltaY, phase: phase) {
         case .previous: model.selectPrevious()
         case .next: model.selectNext()
         case nil: break
         }
+    }
+
+    /// Shows the next live activity with a light tick, and gives an
+    /// open-on-hover notch its full wait again so cycling doesn't open it.
+    private func cyclePreview() {
+        guard inputs.cyclePreview() else { return }
+        if settings.hapticsEnabled {
+            NSHapticFeedbackManager.defaultPerformer.perform(.generic, performanceTime: .now)
+        }
+        if settings.openOnHover, pointerInside { scheduleHoverOpen() }
     }
 
     // MARK: State
@@ -343,6 +373,12 @@ public final class NotchController {
             .store(in: &cancellables)
 
         inputs.settings
+            .map(\.motionPace)
+            .removeDuplicates()
+            .sink { Motion.apply($0) }
+            .store(in: &cancellables)
+
+        inputs.settings
             .map { DisplayChoice(preference: $0.preferredDisplay, showOnExternalDisplays: $0.showOnExternalDisplays) }
             .removeDuplicates()
             .dropFirst()
@@ -373,6 +409,16 @@ public final class NotchController {
                     self?.updatePointerNear()
                     self?.updateVisibility()
                 }
+            }
+            .store(in: &cancellables)
+
+        inputs.settings
+            .map { PrivacyChoice(hideFromScreenCapture: $0.hideFromScreenCapture,
+                                 hideInMissionControl: $0.hideInMissionControl) }
+            .removeDuplicates()
+            .sink { [weak self] choice in
+                self?.panel.applyPrivacy(hideFromScreenCapture: choice.hideFromScreenCapture,
+                                         hideInMissionControl: choice.hideInMissionControl)
             }
             .store(in: &cancellables)
 
@@ -476,15 +522,17 @@ public final class NotchController {
         }
     }
 
-    /// Fades the panel in or out, or jumps straight there under Reduce Motion.
+    /// Fades the panel in or out, or jumps straight there under Reduce Motion
+    /// or at the Instant pace.
     private func fade(to alpha: CGFloat, completion: (@MainActor @Sendable () -> Void)? = nil) {
-        guard !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion else {
+        let reduceMotion = NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
+        guard Motion.pace.isAnimated(reduceMotion: reduceMotion) else {
             panel.alphaValue = alpha
             completion?()
             return
         }
         NSAnimationContext.runAnimationGroup { context in
-            context.duration = Self.fadeDuration
+            context.duration = Motion.pace.duration(Self.fadeDuration)
             context.timingFunction = CAMediaTimingFunction(name: .easeOut)
             panel.animator().alphaValue = alpha
         } completionHandler: {
@@ -543,4 +591,10 @@ private struct DisplayChoice: Equatable {
 private struct VisibilityChoice: Equatable {
     var hideInFullscreen: Bool
     var mode: NotchMode
+}
+
+/// The settings that keep the notch out of screen captures and Mission Control.
+private struct PrivacyChoice: Equatable {
+    var hideFromScreenCapture: Bool
+    var hideInMissionControl: Bool
 }

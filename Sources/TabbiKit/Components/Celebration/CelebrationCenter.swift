@@ -75,6 +75,10 @@ public final class CelebrationCenter: ObservableObject {
     /// True while an open panel can show a celebration.
     public var isShowing: Bool { stages > 0 }
 
+    /// True while Do Not Disturb is on, so other gentle signals (the
+    /// ticker's meeting nudge) can stay quiet too.
+    public var isDoNotDisturbOn: Bool { isHushed() }
+
     /// Plays a celebration for a real event if one fits: returns the tier
     /// that plays, or nil when the notch is closed or the pacer says it is
     /// too soon. When it is too soon and `source` is given, the event nods

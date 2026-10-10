@@ -1,3 +1,4 @@
+import os
 import SwiftUI
 import TabbiKitCore
 
@@ -5,12 +6,24 @@ import TabbiKitCore
 /// each with a calm Reduce Motion fallback. See docs/design/motion.md.
 ///
 /// The springs follow the active theme's `ThemeMotion`, so the cozy themes
-/// play every token slower and softer.
+/// play every token slower and softer, and then the user's `MotionPace`
+/// (Smooth, Fast or Instant, from Settings > General).
 ///
 /// Rules: animate state changes with these, never linear; under Reduce
 /// Motion use the `reduced` variants (a short crossfade, no scale or slide);
 /// motion decorates, it never carries information on its own.
 public enum Motion {
+    /// The pace every animation below plays at.
+    public static var pace: MotionPace { paceState.withLock { $0 } }
+
+    /// Makes `pace` the active pace. Views pick it up the next time they
+    /// animate, so nothing needs re-keying.
+    public static func apply(_ pace: MotionPace) {
+        paceState.withLock { $0 = pace }
+    }
+
+    private static let paceState = OSAllocatedUnfairLock(initialState: MotionPace.default)
+
     /// Notch opening: stretch and settle.
     public static var open: Animation { themed(MotionTokens.open) }
     /// Notch closing: no overshoot, slightly faster than opening.
@@ -26,16 +39,27 @@ public enum Motion {
     /// A checkbox turning on, with a small bounce.
     public static var check: Animation { themed(MotionTokens.check) }
     /// Panel content fading in behind the opening shape.
-    public static let contentIn = Animation.easeOut(duration: MotionTokens.contentFadeIn).delay(MotionTokens.contentDelay)
+    public static var contentIn: Animation {
+        Animation.easeOut(duration: pace.duration(MotionTokens.contentFadeIn))
+            .delay(pace.duration(MotionTokens.contentDelay))
+    }
     /// Panel content fading out before the shape collapses.
-    public static let contentOut = Animation.easeIn(duration: MotionTokens.contentFadeOut)
-    /// `spec` adjusted for the active theme.
+    public static var contentOut: Animation {
+        Animation.easeIn(duration: pace.duration(MotionTokens.contentFadeOut))
+    }
+    /// `spec` adjusted for the active theme and pace.
     private static func themed(_ spec: SpringSpec) -> Animation {
-        Animation(Theme.current.motion.adjusted(spec))
+        pace.adjusted(Theme.current.motion.adjusted(spec)).map(Animation.init) ?? instant
     }
 
-    /// The Reduce Motion replacement for every spring above.
-    public static let reduced = Animation.easeInOut(duration: MotionTokens.reducedCrossfade)
+    /// Instant's stand-in for every animation: the change lands in the next frame.
+    public static let instant = Animation.easeInOut(duration: 0)
+
+    /// The Reduce Motion replacement for every spring above, and nothing at
+    /// all at the Instant pace.
+    public static var reduced: Animation {
+        pace == .instant ? instant : Animation.easeInOut(duration: MotionTokens.reducedCrossfade)
+    }
 
     /// `animation`, or the calm crossfade when Reduce Motion is on.
     public static func adapted(_ animation: Animation, reduceMotion: Bool) -> Animation {
@@ -43,9 +67,11 @@ public enum Motion {
     }
 
     /// `animation` delayed for the item at `index` in a staggered entrance.
-    /// No stagger under Reduce Motion, where everything crossfades together.
+    /// No stagger under Reduce Motion or at the Instant pace, where
+    /// everything arrives together.
     public static func staggered(_ animation: Animation, index: Int, reduceMotion: Bool) -> Animation {
-        reduceMotion ? reduced : animation.delay(MotionTokens.stagger(index))
+        guard pace.isAnimated(reduceMotion: reduceMotion) else { return reduced }
+        return animation.delay(pace.duration(MotionTokens.stagger(index)))
     }
 }
 

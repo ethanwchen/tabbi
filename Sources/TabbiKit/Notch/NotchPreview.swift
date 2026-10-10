@@ -27,6 +27,7 @@ struct NotchPreview: View {
                 .padding(.trailing, inset)
                 .frame(width: wing, alignment: edge.trailing)
         }
+        .background { MeetingNudgeGlow(isOn: isNudging, tint: accent) }
         .id(item.kind)
         .transition(AsymmetricTransition(
             insertion: .motionRow(from: .bottom),
@@ -36,6 +37,11 @@ struct NotchPreview: View {
     }
 
     private var accent: Color { catalog.descriptor(for: item.module).accentColor }
+
+    private var isNudging: Bool {
+        if case .meeting(let meeting) = item { return meeting.isNudging }
+        return false
+    }
 
     private func color(for tone: TickerHighlight.Tone) -> Color {
         switch tone {
@@ -62,9 +68,28 @@ struct NotchPreview: View {
                     .previewText()
                     .fixedSize()
             }
+        case .focus(let focus):
+            if let progress = focus.progress {
+                focusRing(focus, progress: progress)
+            } else {
+                icon
+            }
         default:
             icon
         }
+    }
+
+    /// A thin ring around a smaller timer icon that fills as the phase
+    /// passes; it dims with the clock while paused.
+    private func focusRing(_ focus: TickerFocus, progress: Double) -> some View {
+        let tint = focus.isRunning ? accent : Theme.Palette.secondaryText
+        return ProgressRing(progress: progress, tint: tint, lineWidth: NotchPreviewLayout.focusRingWidth) {
+            Image(systemName: NotchPreviewLayout.symbol(for: item, catalog: catalog))
+                .font(.system(size: 8, weight: .bold))
+                .foregroundStyle(tint)
+        }
+        .padding(NotchPreviewLayout.focusRingWidth / 2 + 1)
+        .frame(width: NotchPreviewLayout.iconSize, height: NotchPreviewLayout.iconSize)
     }
 
     private var icon: some View {
@@ -79,10 +104,17 @@ struct NotchPreview: View {
         case .nowPlaying:
             content.nowPlayingTrailing()
         case .meeting(let meeting):
-            Text(meeting.title)
-                .foregroundStyle(Theme.Palette.primaryText)
-                .truncationMode(.tail)
-                .previewText()
+            HStack(spacing: Theme.Spacing.xs) {
+                Text(meeting.title)
+                    .foregroundStyle(Theme.Palette.primaryText)
+                    .truncationMode(.tail)
+                    .previewText()
+                if meeting.offersJoin, let link = meeting.link {
+                    NotchJoinButton(link: link, tint: accent)
+                        .transition(.opacity)
+                }
+            }
+            .motion(Theme.Motion.content, value: meeting.offersJoin)
         case .focus(let focus):
             Text(TickerFormat.focusClock(focus.time))
                 .foregroundStyle(focus.isRunning ? accent : Theme.Palette.secondaryText)
@@ -100,6 +132,15 @@ struct NotchPreview: View {
                 .foregroundStyle(color(for: highlight.tone))
                 .truncationMode(.tail)
                 .previewText()
+        case .pet(let pet) where pet.isSipping:
+            HStack(spacing: Theme.Spacing.xxs) {
+                Image(systemName: "bolt.fill")
+                    .font(.system(size: NotchPreviewLayout.chargingSymbolSize, weight: .bold))
+                Text(TickerFormat.charging)
+                    .fixedSize()
+            }
+            .foregroundStyle(Theme.Palette.success)
+            .previewText()
         case .pet(let pet):
             HStack(spacing: Theme.Spacing.xs) {
                 if let name = TickerFormat.petLabel(pet) {
@@ -121,6 +162,57 @@ struct NotchPreview: View {
                 .foregroundStyle(accent)
                 .previewText()
         }
+    }
+}
+
+/// The closed notch's Join button for a meeting about to start: a small
+/// accent pill that opens the call, so the user can go straight in.
+private struct NotchJoinButton: View {
+    let link: MeetingLink
+    let tint: Color
+    @State private var hovering = false
+
+    var body: some View {
+        Button {
+            NSWorkspace.shared.open(link.url)
+        } label: {
+            Text(NotchPreviewLayout.joinTitle)
+                .font(Theme.Typography.caption.weight(.semibold))
+                .foregroundStyle(Theme.Palette.background)
+                .padding(.horizontal, NotchPreviewLayout.joinPadding)
+                .frame(height: NotchPreviewLayout.joinHeight)
+                .background(Capsule(style: .continuous).fill(tint.opacity(hovering ? 1 : 0.88)))
+                .contentShape(Capsule(style: .continuous))
+                .fixedSize()
+        }
+        .buttonStyle(.plain)
+        .help("Join \(link.provider.displayName) call")
+        .accessibilityLabel("Join \(link.provider.displayName) call")
+        .onHover { hovering = $0 }
+        .motion(Theme.Motion.snappy, value: hovering)
+    }
+}
+
+/// The "leave now" glow: a soft accent light rising from the bottom edge of
+/// the closed notch that breathes a few times while `isOn`, then fades.
+/// Under Reduce Motion it holds still and only fades in and out; at the
+/// Instant pace it holds still and simply appears.
+private struct MeetingNudgeGlow: View {
+    let isOn: Bool
+    let tint: Color
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var dimmed = false
+
+    var body: some View {
+        LinearGradient(colors: [tint.opacity(0), tint.opacity(dimmed ? 0.18 : 0.5)],
+                       startPoint: .top, endPoint: .bottom)
+            .opacity(isOn ? 1 : 0)
+            .allowsHitTesting(false)
+            .animation(Motion.adapted(Theme.Motion.content, reduceMotion: reduceMotion), value: isOn)
+            .onChange(of: isOn, initial: true) { _, on in
+                guard on, Motion.pace.isAnimated(reduceMotion: reduceMotion) else { return dimmed = false }
+                withAnimation(.easeInOut(duration: 0.8).repeatCount(4, autoreverses: true)) { dimmed = true }
+            }
     }
 }
 
