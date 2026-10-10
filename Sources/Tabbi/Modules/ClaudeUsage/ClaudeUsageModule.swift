@@ -7,9 +7,9 @@ import TabbiKitCore
 @MainActor
 final class ClaudeUsageModule: NotchModule {
     nonisolated static let descriptor = ModuleDescriptor(
-        id: .claudeUsage, title: "AI Usage", symbol: "gauge.with.dots.needle.67percent",
-        summary: "How much of your Claude or Codex plan you have used.", category: .ai,
-        accent: .claude, permissions: [.claudeCLI], highlightTitle: "AI usage above 80%"
+        id: .claudeUsage, title: String(localized: "AI Usage", bundle: .tabbi), symbol: "gauge.with.dots.needle.67percent",
+        summary: String(localized: "How much of your Claude or Codex plan you have used.", bundle: .tabbi), category: .ai,
+        accent: .claude, permissions: [.claudeCLI], highlightTitle: String(localized: "AI usage above 80%", bundle: .tabbi)
     )
     private let store: ClaudeUsageStore
     private var cancellables: Set<AnyCancellable> = []

@@ -42,7 +42,8 @@ The writing rules in AGENTS.md hold in every language: no emojis and no em dashe
 
 ## Not translated yet
 
-The onboarding is translated, and the rest of the app follows tab by tab.
+The onboarding, the tab titles and module summaries, the notch's context menu and header controls, and the Settings section titles are translated.
+The tabs' own panels and the Settings rows follow tab by tab.
 These stay English on purpose for now:
 
 - long help text and error details,

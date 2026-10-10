@@ -36,7 +36,7 @@ public struct Spinner: View {
         .padding(lineWidth / 2)
         .frame(width: size, height: size)
         .accessibilityElement()
-        .accessibilityLabel("Loading")
+        .accessibilityLabel(Text("Loading", bundle: .tabbi))
     }
 }
 

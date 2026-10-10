@@ -11,8 +11,8 @@ import TabbiKit
 final class FocusModule: NotchModule {
     /// Off in every bundled kit: Today already embeds the same timer.
     nonisolated static let descriptor = ModuleDescriptor(
-        id: .focus, title: "Focus", symbol: "hourglass",
-        summary: "A Pomodoro timer that switches between focus and breaks.", category: .productivity,
+        id: .focus, title: String(localized: "Focus", bundle: .tabbi), symbol: "hourglass",
+        summary: String(localized: "A Pomodoro timer that switches between focus and breaks.", bundle: .tabbi), category: .productivity,
         accent: ModuleAccent(red: 0.30, green: 0.84, blue: 0.76), permissions: [.notifications],
         kitSettings: FocusSettings.kitSettings
     )
