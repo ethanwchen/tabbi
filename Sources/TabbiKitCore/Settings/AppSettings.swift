@@ -22,6 +22,9 @@ public struct AppSettings: Equatable, Sendable {
     /// A soft sound under celebrations that have none of their own (an
     /// unlock, a streak milestone).
     public var celebrationSoundEnabled: Bool
+    /// The weekly recap: built every Sunday evening from the activity log
+    /// and shown once in the open notch. Off means no card and no building.
+    public var weeklyRecapEnabled: Bool
     /// Mirrors the user's choice; the source of truth is `SMAppService.mainApp.status`.
     public var launchAtLogin: Bool
     public var hotkey: Hotkey
@@ -62,6 +65,7 @@ public struct AppSettings: Equatable, Sendable {
         openOnHover: Bool = false,
         hapticsEnabled: Bool = true,
         celebrationSoundEnabled: Bool = true,
+        weeklyRecapEnabled: Bool = true,
         launchAtLogin: Bool = false,
         hotkey: Hotkey = .default,
         claudePathOverride: String? = nil,
@@ -82,6 +86,7 @@ public struct AppSettings: Equatable, Sendable {
         self.openOnHover = openOnHover
         self.hapticsEnabled = hapticsEnabled
         self.celebrationSoundEnabled = celebrationSoundEnabled
+        self.weeklyRecapEnabled = weeklyRecapEnabled
         self.launchAtLogin = launchAtLogin
         self.hotkey = hotkey
         self.claudePathOverride = Self.normalizedPath(claudePathOverride)
@@ -173,6 +178,7 @@ public struct AppSettings: Equatable, Sendable {
         openOnHover = fresh.openOnHover
         hapticsEnabled = fresh.hapticsEnabled
         celebrationSoundEnabled = fresh.celebrationSoundEnabled
+        weeklyRecapEnabled = fresh.weeklyRecapEnabled
         hotkey = fresh.hotkey
         preferredDisplay = fresh.preferredDisplay
         showOnExternalDisplays = fresh.showOnExternalDisplays
@@ -230,6 +236,7 @@ public struct SettingsRepository {
         static let openOnHover = "settings.openOnHover"
         static let hapticsEnabled = "settings.hapticsEnabled"
         static let celebrationSoundEnabled = "settings.celebrationSoundEnabled"
+        static let weeklyRecapEnabled = "settings.weeklyRecapEnabled"
         static let launchAtLogin = "settings.launchAtLogin"
         static let hotkey = "settings.hotkey"
         static let claudePathOverride = "settings.claudePathOverride"
@@ -293,6 +300,7 @@ public struct SettingsRepository {
             openOnHover: bool(Key.openOnHover) ?? fallback.openOnHover,
             hapticsEnabled: bool(Key.hapticsEnabled) ?? fallback.hapticsEnabled,
             celebrationSoundEnabled: bool(Key.celebrationSoundEnabled) ?? fallback.celebrationSoundEnabled,
+            weeklyRecapEnabled: bool(Key.weeklyRecapEnabled) ?? fallback.weeklyRecapEnabled,
             launchAtLogin: bool(Key.launchAtLogin) ?? fallback.launchAtLogin,
             hotkey: hotkey ?? fallback.hotkey,
             claudePathOverride: defaults.string(forKey: Key.claudePathOverride),
@@ -343,6 +351,7 @@ public struct SettingsRepository {
         defaults.set(settings.openOnHover, forKey: Key.openOnHover)
         defaults.set(settings.hapticsEnabled, forKey: Key.hapticsEnabled)
         defaults.set(settings.celebrationSoundEnabled, forKey: Key.celebrationSoundEnabled)
+        defaults.set(settings.weeklyRecapEnabled, forKey: Key.weeklyRecapEnabled)
         defaults.set(settings.launchAtLogin, forKey: Key.launchAtLogin)
         defaults.set(try? JSONEncoder().encode(settings.hotkey), forKey: Key.hotkey)
         if let path = settings.claudePathOverride {

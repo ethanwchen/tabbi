@@ -30,6 +30,9 @@ final class AppServices {
     let ai: AIService
     /// Shares the pet, streak and running timer with the desktop widget.
     private let widgetState: WidgetStateWriter?
+    /// The weekly recap card, shown the first time the notch opens after
+    /// Sunday evening.
+    let recaps: RecapMoment
 
     private var cancellables: Set<AnyCancellable> = []
     /// Created on first use so launching never builds a window nobody opens.
@@ -65,6 +68,21 @@ final class AppServices {
         widgetState = WidgetStateWriter.live(context: ModuleContext(
             id: "widget", edition: edition, settings: settings, providers: providers, shared: shared, runMode: runMode
         ))
+        recaps = RecapMoment(store: ModuleContext(id: "recap", edition: edition, settings: settings,
+                                                  providers: providers, shared: shared, runMode: runMode).weeklyRecaps,
+                             isBlocked: { [onboarding, modules] in
+                                 onboarding.flow != nil || modules.module(PartyModule.self)?.store.invite != nil
+                             },
+                             notify: RecapNotifications.make(runMode: runMode).map { notifications in
+                                 { notifications.post($0) }
+                             })
+        settings.$settings
+            .map(\.weeklyRecapEnabled)
+            .removeDuplicates()
+            .sink { [recaps] in recaps.setEnabled($0) }
+            .store(in: &cancellables)
+        // A snapshot run renders the card itself and never waits for Sunday.
+        if !runMode.isSnapshot { recaps.start() }
         // `$settings` emits before the new value is stored, so read the
         // layout from the emission.
         settings.$settings

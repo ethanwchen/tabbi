@@ -6,23 +6,26 @@ import TabbiKit
 
 extension SettingsPane {
     /// Settings › Pet Coach, offered while the Closet (the pet's module) is on.
-    @MainActor static func petCoach(_ coach: PetCoachController) -> SettingsPane {
+    @MainActor static func petCoach(_ coach: PetCoachController, reminder: StudyReminderScheduler) -> SettingsPane {
         SettingsPane(id: "coach", title: "Pet Coach", symbol: "pawprint",
-                     view: AnyView(PetCoachSettingsPane(coach: coach)))
+                     view: AnyView(PetCoachSettingsPane(coach: coach, reminder: reminder)))
     }
 }
 
 /// Settings › Pet Coach: whether the pet nudges during focus, and which apps
 /// count as distracting. Suggestions are opt-in chips; any other app can be
 /// added from the Applications folder. Edits go straight to
-/// `PetCoachController`, which saves them.
+/// `PetCoachController`, which saves them. The daily study reminder, in the
+/// pet's voice, sits below (`StudyReminderSettingsSection`).
 struct PetCoachSettingsPane: View {
     @ObservedObject var coach: PetCoachController
+    @ObservedObject var reminder: StudyReminderScheduler
 
     var body: some View {
         Form {
             nudgesSection
             appsSection
+            StudyReminderSettingsSection(reminder: reminder)
         }
         .formStyle(.grouped)
         .scrollDisabled(true)
@@ -35,6 +38,7 @@ struct PetCoachSettingsPane: View {
     private var height: CGFloat {
         let chipRows = (CoachAppList.suggestedDistracting.count + 2) / 3
         return 284 + CGFloat(chipRows) * 40 + CGFloat(coach.apps.addedDistracting.count) * 36
+            + StudyReminderSettingsSection.height(blocked: reminder.isBlocked)
     }
 
     // MARK: Nudges

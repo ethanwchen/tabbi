@@ -3,10 +3,13 @@ import TabbiKitCore
 import TabbiKit
 
 /// The Closet tab: the study pet large and animated on the left, and on the
-/// right either its wardrobe (wear, take off, or unlock items with study
-/// points) or its look (species, breed, fur color).
+/// right its wardrobe (wear, take off, or unlock items with study points),
+/// its limited edition items, the study streak with its freezes, its look
+/// (species, breed, fur color), or its past weekly recaps.
 struct ClosetPanel: View {
     @ObservedObject var store: ClosetStore
+    /// The weekly recaps; their section hides while recaps are off.
+    @ObservedObject var recaps: RecapStore
 
     var body: some View {
         HStack(spacing: Theme.Spacing.m) {
@@ -20,11 +23,14 @@ struct ClosetPanel: View {
                         header(showsUnit: true)
                         header(showsUnit: false)
                         header(showsUnit: false, titlesAll: false)
+                        header(showsUnit: false, titlesAll: false, isTight: true)
                     }
-                    switch store.section {
+                    switch shownSection {
                     case .wardrobe: ClosetWardrobe(store: store)
                     case .limited: ClosetLimited(store: store)
+                    case .streak: ClosetStreak(store: store)
                     case .look: ClosetLook(store: store)
+                    case .weeks: RecapHistoryList(store: recaps)
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -32,9 +38,20 @@ struct ClosetPanel: View {
         }
     }
 
-    private func header(showsUnit: Bool, titlesAll: Bool = true) -> some View {
+    private var sections: [ClosetSection] {
+        ClosetSection.allCases.filter { $0 != .weeks || recaps.isEnabled }
+    }
+
+    private var shownSection: ClosetSection {
+        sections.contains(store.section) ? store.section : .wardrobe
+    }
+
+    private func header(showsUnit: Bool, titlesAll: Bool = true, isTight: Bool = false) -> some View {
         HStack(spacing: Theme.Spacing.s) {
-            ClosetSectionPicker(selection: $store.section, titlesAll: titlesAll)
+            ClosetSectionPicker(sections: sections, selection: shownSection, titlesAll: titlesAll,
+                                isTight: isTight) {
+                store.section = $0
+            }
             Spacer(minLength: 0)
             ClosetPointsChip(balance: store.closet.balance, showsUnit: showsUnit)
         }
@@ -44,13 +61,17 @@ struct ClosetPanel: View {
 enum ClosetSection: String, CaseIterable {
     case wardrobe = "Wardrobe"
     case limited = "Limited"
+    case streak = "Streak"
     case look = "Look"
+    case weeks = "Weeks"
 
     var symbol: String {
         switch self {
         case .wardrobe: "tshirt.fill"
         case .limited: "sparkles"
+        case .streak: "flame.fill"
         case .look: "paintpalette.fill"
+        case .weeks: "calendar"
         }
     }
 
@@ -58,7 +79,9 @@ enum ClosetSection: String, CaseIterable {
         switch self {
         case .wardrobe: "Outfits and accessories to unlock with study points"
         case .limited: "Limited edition items, earned by studying, never sold"
+        case .streak: "Your study streak and the freezes that protect it"
         case .look: "Species, breed and fur color"
+        case .weeks: "Your weekly recaps with your pet"
         }
     }
 }
@@ -173,19 +196,24 @@ private struct ClosetNameButton: View {
 // MARK: - Header
 
 private struct ClosetSectionPicker: View {
-    @Binding var selection: ClosetSection
+    let sections: [ClosetSection]
+    let selection: ClosetSection
     /// Off, only the open section shows its title; the others show their
     /// symbol, with the title in the tooltip.
     var titlesAll = true
+    /// Narrower pills, for the Compact panel with every section on.
+    var isTight = false
+    let select: (ClosetSection) -> Void
 
     var body: some View {
         HStack(spacing: Theme.Spacing.xxs) {
-            ForEach(ClosetSection.allCases, id: \.self) { section in
+            ForEach(sections, id: \.self) { section in
                 ClosetPill(title: section.rawValue, symbol: section.symbol,
                            showsTitle: titlesAll || selection == section,
                            isSelected: selection == section,
+                           isTight: isTight,
                            help: section.help) {
-                    withMotion(Theme.Motion.content) { selection = section }
+                    withMotion(Theme.Motion.content) { select(section) }
                 }
             }
         }
@@ -198,6 +226,7 @@ private struct ClosetPill: View {
     let symbol: String
     var showsTitle = true
     let isSelected: Bool
+    var isTight = false
     let help: String
     let action: () -> Void
     @State private var hovering = false
@@ -210,7 +239,9 @@ private struct ClosetPill: View {
             }
             .font(Theme.Typography.caption)
             .foregroundStyle(isSelected ? accent : hovering ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
-            .padding(.horizontal, Theme.Spacing.s + Theme.Spacing.xxs)
+            // A symbol alone needs less room, which keeps four sections and
+            // the balance on one line in the Compact panel.
+            .padding(.horizontal, showsTitle ? Theme.Spacing.s + Theme.Spacing.xxs : Theme.Spacing.s)
             .frame(height: 22)
             .background(Capsule().fill(isSelected ? accent.opacity(0.16) : hovering ? Theme.Palette.surfaceHover : .clear))
             .contentShape(Capsule())
@@ -731,6 +762,190 @@ private struct ClosetLimitedTile: View {
         case .owned: "\(item.displayName), limited edition: click to wear"
         default: "\(item.displayName), limited edition: \(howToEarn)"
         }
+    }
+}
+
+// MARK: - Streak
+
+/// Snowflakes mark frozen days in an icy blue that reads on every theme.
+private let frostColor = Color(red: 0.56, green: 0.82, blue: 1.0)
+
+/// The study streak: its length, the last seven days (a snowflake on each
+/// day a freeze protected) and the freezes ready, with a button to buy an
+/// extra one with points.
+private struct ClosetStreak: View {
+    @ObservedObject var store: ClosetStore
+
+    var body: some View {
+        let streak = store.streak
+        VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+            summary(streak)
+            ClosetStreakStrip(days: streak.recentDays(7))
+            Spacer(minLength: 0)
+            footer(streak)
+        }
+    }
+
+    private func summary(_ streak: StudyStreak) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.xs) {
+            Text("\(streak.length)")
+                .font(Theme.Typography.metric)
+                .foregroundStyle(streak.isActive ? Theme.Palette.primaryText : Theme.Palette.tertiaryText)
+                .contentTransition(.numericText())
+            Text(streak.length == 1 ? "day" : "days")
+                .font(Theme.Typography.bodyEmphasis)
+                .foregroundStyle(Theme.Palette.secondaryText)
+            Text(status(streak))
+                .font(Theme.Typography.caption)
+                .foregroundStyle(Theme.Palette.tertiaryText)
+                .lineLimit(1)
+                .truncationMode(.tail)
+                .padding(.leading, Theme.Spacing.xs)
+        }
+        .motion(Theme.Motion.snappy, value: streak.length)
+    }
+
+    private func status(_ streak: StudyStreak) -> String {
+        if streak.studiedToday { return "Studied today" }
+        if streak.isActive { return "Focus today to keep it going" }
+        return "Focus \(Int(PetMilestoneProgress.minutesForStudyDay)) min to start one"
+    }
+
+    private func footer(_ streak: StudyStreak) -> some View {
+        HStack(spacing: Theme.Spacing.xs) {
+            Image(systemName: "snowflake")
+                .font(.system(size: 9.5, weight: .bold))
+                .foregroundStyle(streak.freezesReady > 0 ? frostColor : Theme.Palette.tertiaryText)
+            ViewThatFits(in: .horizontal) {
+                Text(freezes(streak, short: false))
+                Text(freezes(streak, short: true))
+            }
+            .font(Theme.Typography.caption)
+            .foregroundStyle(Theme.Palette.secondaryText)
+            .lineLimit(1)
+            .monospacedDigit()
+            .help("A missed day uses a freeze, so the streak keeps going. "
+                  + "You get one free freeze each week, and can hold \(StreakFreezeRules.maxHeld) extra.")
+            Spacer(minLength: Theme.Spacing.s)
+            ClosetBuyFreezeButton(streak: streak, balance: store.closet.balance) {
+                withMotion(Theme.Motion.snappy) { _ = store.buyStreakFreeze() }
+            }
+        }
+    }
+
+    private func freezes(_ streak: StudyStreak, short: Bool) -> String {
+        let free = streak.freeFreezeAvailable ? (short ? "1 free" : "1 free this week") : (short ? "Free used" : "Free freeze used")
+        guard streak.extraFreezes > 0 else { return free }
+        return "\(free), \(streak.extraFreezes) extra"
+    }
+}
+
+/// The last days, oldest first: a filled dot for a study day, a snowflake
+/// for a frozen one, a faint ring for a miss, and a dashed ring for today
+/// while it is still open.
+private struct ClosetStreakStrip: View {
+    let days: [StreakDay]
+
+    var body: some View {
+        HStack(spacing: 0) {
+            ForEach(Array(days.enumerated()), id: \.element.day) { index, day in
+                if index > 0 { Spacer(minLength: Theme.Spacing.xs) }
+                VStack(spacing: Theme.Spacing.xxs) {
+                    mark(day.state)
+                        .frame(width: 24, height: 24)
+                    Text(letter(day.day))
+                        .font(Theme.Typography.caption)
+                        .foregroundStyle(index == days.count - 1 ? Theme.Palette.secondaryText : Theme.Palette.tertiaryText)
+                        .frame(height: 12)
+                }
+                .help(help(day))
+            }
+        }
+        .padding(.horizontal, Theme.Spacing.xxs)
+    }
+
+    @ViewBuilder private func mark(_ state: StreakDay.State) -> some View {
+        switch state {
+        case .studied:
+            Circle().fill(accent)
+                .overlay(Image(systemName: "checkmark").font(.system(size: 10, weight: .heavy))
+                    .foregroundStyle(Theme.Palette.background))
+        case .frozen:
+            Circle().fill(frostColor.opacity(0.18))
+                .overlay(Circle().strokeBorder(frostColor.opacity(0.5), lineWidth: 1))
+                .overlay(Image(systemName: "snowflake").font(.system(size: 11, weight: .bold))
+                    .foregroundStyle(frostColor))
+        case .missed:
+            Circle().strokeBorder(Theme.Palette.stroke, lineWidth: 1)
+        case .today:
+            Circle().strokeBorder(accent.opacity(0.7), style: StrokeStyle(lineWidth: 1.5, dash: [3, 2.5]))
+        }
+    }
+
+    private func letter(_ day: PlannerDayKey) -> String {
+        let calendar = Calendar.current
+        let weekday = calendar.component(.weekday, from: day.startDate(calendar: calendar))
+        return calendar.veryShortStandaloneWeekdaySymbols[weekday - 1]
+    }
+
+    private func help(_ day: StreakDay) -> String {
+        let date = day.day.startDate().formatted(.dateTime.weekday(.wide).month().day())
+        return switch day.state {
+        case .studied: "\(date): studied"
+        case .frozen: "\(date): missed, a streak freeze kept the streak"
+        case .missed: "\(date): no study"
+        case .today: "Today: no study yet"
+        }
+    }
+}
+
+/// Buys an extra streak freeze for its price in points. Disabled, with a
+/// tooltip that says why, when the points are short or the most extras are
+/// already held.
+private struct ClosetBuyFreezeButton: View {
+    let streak: StudyStreak
+    let balance: Int
+    let action: () -> Void
+    @State private var hovering = false
+
+    private var enabled: Bool { streak.canBuyFreeze && balance >= StreakFreezeRules.price }
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: Theme.Spacing.xs) {
+                Text("Buy freeze")
+                HStack(spacing: Theme.Spacing.xxs) {
+                    Image(systemName: "star.fill").font(.system(size: 8, weight: .bold))
+                    Text("\(StreakFreezeRules.price)").monospacedDigit()
+                }
+                .foregroundStyle(enabled ? accent : Theme.Palette.tertiaryText)
+            }
+            .font(Theme.Typography.caption)
+            .foregroundStyle(enabled ? Theme.Palette.primaryText : Theme.Palette.tertiaryText)
+            .padding(.horizontal, Theme.Spacing.s + Theme.Spacing.xxs)
+            .frame(height: 22)
+            .background(Capsule().fill(enabled && hovering ? accent.opacity(0.24) : enabled ? accent.opacity(0.14)
+                                       : Theme.Palette.surface))
+            .contentShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .disabled(!enabled)
+        .help(help)
+        .onHover { hovering = $0 }
+        .motion(Theme.Motion.snappy, value: hovering)
+    }
+
+    private var help: String {
+        if !streak.canBuyFreeze {
+            return "You hold \(StreakFreezeRules.maxHeld) extra freezes, the most at once"
+        }
+        let missing = StreakFreezeRules.price - balance
+        if missing > 0 {
+            return "An extra freeze costs \(StreakFreezeRules.price) points: \(missing) more, "
+                + "\(PetEconomy.studyToEarn(missing)) at a typical study pace"
+        }
+        return "Buy an extra freeze for \(StreakFreezeRules.price) points. It protects a missed day "
+            + "once this week's free freeze is used."
     }
 }
 

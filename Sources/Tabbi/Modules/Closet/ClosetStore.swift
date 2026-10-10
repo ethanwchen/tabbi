@@ -191,6 +191,27 @@ final class ClosetStore: ObservableObject {
         $closet.map(\.profile).removeDuplicates().eraseToAnyPublisher()
     }
 
+    // MARK: Streak
+
+    /// The study streak today, with its freezes (`StudyStreak`). Computed on
+    /// read, so it follows new study, purchases and a new day without a
+    /// timer of its own.
+    var streak: StudyStreak { closet.streak(milestones, today: .now) }
+
+    /// Buys an extra streak freeze with points and saves it. The button
+    /// that calls this is disabled when the purchase can't go through.
+    @discardableResult
+    func buyStreakFreeze() -> Bool {
+        do {
+            try closet.buyStreakFreeze(milestones, at: .now)
+        } catch {
+            return false
+        }
+        persist()
+        preview.send(.celebrate)
+        return true
+    }
+
     // MARK: Editing
 
     /// Wears, takes off, or buys `item`. A purchase makes the pet celebrate
