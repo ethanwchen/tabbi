@@ -190,11 +190,11 @@
     {
       "id": "shihTzu",
       "name": "Shih Tzu",
-      "note": "Gold and white: a white coat and beard, a gold topknot, mask, and ears, and big dark eyes with a bright catchlight over a warm brown iris, so they read as eyes, not dark glasses.",
+      "note": "Black, with the brown stain a Shih Tzu's beard gets around the mouth, a faintly lighter topknot and chest so the coat has a sheen instead of reading as a flat blob, and warm brown eyes with a bright catchlight so they read on the dark face.",
       "bodyShape": "shihTzuDog",
       "hasTail": true,
-      "palette": { "outline": "#3A2A22", "furBase": "#F8F2EA", "furShade": "#DCCDBC", "furAccent": "#D9A35C", "belly": "#FFFFFF", "eye": "#7A4A2E", "pupil": "#2A1A14", "nose": "#2E2224" },
-      "pattern": { "tailTip": "furAccent", "ears": "furAccent", "mask": "furAccent" }
+      "palette": { "furBase": "#2B2830", "furShade": "#1E1B22", "furAccent": "#47414E", "furSpot": "#7E4A32", "belly": "#36323C", "eye": "#9A6238", "pupil": "#24160F", "nose": "#1A1416" },
+      "pattern": { "muzzle": "furSpot", "mask": "furAccent" }
     }
   ]
 }

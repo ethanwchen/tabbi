@@ -8,6 +8,11 @@
   "additionalProperties": false,
   "properties": {
     "schema": { "const": "pets.v1" },
+    "itemFrameDuration": {
+      "description": "Costume file: seconds each frame of an animated costume item's loop stays on screen, the pet's own frame rate.",
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
     "grids": {
       "description": "Named single grids.",
       "type": "object",
@@ -35,6 +40,22 @@
             "description": "Rows every grid reaches above its body's top row. Defaults to 0.",
             "type": "integer",
             "minimum": 0
+          },
+          "frames": {
+            "description": "The rest of an animated item's loop after its still grids, one tick of itemFrameDuration each. Every frame has a grid per body family, the size of the still grid for that family. The still is the loop's first frame and what Reduce Motion shows.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["cat", "dog", "longDog", "walk", "walkLong"],
+              "additionalProperties": false,
+              "properties": {
+                "cat": { "$ref": "#/$defs/grid" },
+                "dog": { "$ref": "#/$defs/grid" },
+                "longDog": { "$ref": "#/$defs/grid" },
+                "walk": { "$ref": "#/$defs/grid" },
+                "walkLong": { "$ref": "#/$defs/grid" }
+              }
+            }
           }
         }
       }
@@ -60,7 +81,45 @@
         "type": "object",
         "required": ["grid", "sitRow"],
         "additionalProperties": false,
-        "properties": { "grid": { "$ref": "#/$defs/grid" }, "sitRow": { "type": "integer", "minimum": 0 } }
+        "properties": {
+          "grid": { "$ref": "#/$defs/grid" },
+          "sitRow": { "type": "integer", "minimum": 0 },
+          "frames": {
+            "description": "The rest of an animated item's loop after grid, one tick of itemFrameDuration each and each the size of grid. grid is the loop's first frame and what Reduce Motion shows.",
+            "type": "array",
+            "items": { "$ref": "#/$defs/grid" }
+          }
+        }
+      }
+    },
+    "backItems": {
+      "description": "Items worn behind the pet, such as wings: per body family, a loop of grids and their offset from that family's body origin (the walking torso's for walk and walkLong). They are outlined on a layer of their own under the outlined pet, so they may reach past the body.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["cat", "dog", "longDog", "walk", "walkLong"],
+        "additionalProperties": false,
+        "properties": {
+          "cat": { "$ref": "#/$defs/backPlacement" },
+          "dog": { "$ref": "#/$defs/backPlacement" },
+          "longDog": { "$ref": "#/$defs/backPlacement" },
+          "walk": { "description": "Behind the cat and dog walking torso.", "$ref": "#/$defs/backPlacement" },
+          "walkLong": { "description": "Behind the dachshund walking torso.", "$ref": "#/$defs/backPlacement" }
+        }
+      }
+    },
+    "auraItems": {
+      "description": "Items that float in the air around the pet, such as falling petals: a loop of grids around a pet facing the viewer (front, used while sitting) and one seen from the side (side, used walking, stretching and curled up), offset from the frame's top-left corner. Each group of touching pixels is a particle, drawn in front of the pet without an outline; a particle that would cover or touch the pet or an effect is left out of that frame. Not drawn while the pet hangs from the notch.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["front", "side"],
+        "additionalProperties": false,
+        "properties": {
+          "front": { "$ref": "#/$defs/backPlacement" },
+          "side": { "$ref": "#/$defs/backPlacement" },
+          "longDog": { "description": "Around the dachshund, which sits side-on; the front loop when left out.", "$ref": "#/$defs/backPlacement" }
+        }
       }
     },
     "basePalette": {
@@ -122,6 +181,17 @@
       "type": "array",
       "minItems": 1,
       "items": { "type": "string", "minLength": 1, "pattern": "^[ .xOBSAKWEiLNRPCDTUVGJQYMZHFIXmcptefsab]+$" }
+    },
+    "backPlacement": {
+      "description": "A back item for one body family (or an aura item for one view): x and y offset the grids' top-left corner from the family's body origin (the frame's corner for an aura item), and frames is the item's loop, one tick of itemFrameDuration each, all the size of the first. The first frame is the still that Reduce Motion shows. Every family has the same number of frames.",
+      "type": "object",
+      "required": ["x", "y", "frames"],
+      "additionalProperties": false,
+      "properties": {
+        "x": { "type": "integer" },
+        "y": { "type": "integer" },
+        "frames": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/grid" } }
+      }
     },
     "role": {
       "description": "A palette role: what a pixel means.",

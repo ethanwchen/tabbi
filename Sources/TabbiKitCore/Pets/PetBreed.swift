@@ -86,9 +86,10 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
     /// the breed's own color, so white bibs, muzzles, and paws stay white.
     ///
     /// The pick becomes what the breed is known for: the coat of a solid
-    /// cat or dog, the patches of a white calico, pied French Bulldog, or
-    /// gold and white Shih Tzu, and the points of a Siamese, whose body
-    /// turns a pale version of the pick (a flame, blue, or lilac point).
+    /// cat or dog (a black Shih Tzu keeps its brown mouth stain), the
+    /// patches of a white calico or pied French Bulldog, and the points of a
+    /// Siamese, whose body turns a pale version of the pick (a flame, blue,
+    /// or lilac point).
     public var furTones: [PetPaletteRole: PetFurTone] {
         switch self {
         case .orangeTabby, .grayTabby:
@@ -134,7 +135,7 @@ public enum PetBreed: String, CaseIterable, Codable, Sendable {
             [.furBase: .pick, .furShade: .darker(0.2), .furAccent: .lighter(0.35),
              .belly: .lighter(0.55, chroma: 0.6)]
         case .shihTzu:
-            [.furAccent: .marking]
+            [.furBase: .pick, .furShade: .darker(0.2), .furAccent: .lighter(0.12), .belly: .lighter(0.08)]
         }
     }
 

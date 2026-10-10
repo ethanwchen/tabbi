@@ -60,6 +60,11 @@ func writeSheet(_ cells: [Cell], columns: Int, title: String, scale: Int = scale
     print("wrote \(url.path)")
 }
 
+/// A file name part for a display name: "King's Cape" becomes "kings-cape".
+func fileSlug(_ name: String) -> String {
+    name.lowercased().filter { $0 != "'" }.replacingOccurrences(of: " ", with: "-")
+}
+
 func draw(_ text: String, size: CGFloat, color: CGColor, at point: CGPoint, in context: CGContext) {
     let font = CTFontCreateWithName("SF Pro Rounded" as CFString, size, nil)
     let attributes: [NSAttributedString.Key: Any] = [
@@ -136,7 +141,7 @@ for (name, outfit, accessories) in [looks[looks.count - 4], looks[looks.count - 
         Cell(label: breed.displayName, canvas: PetComposer.sitting(breed, outfit: outfit, accessories: accessories),
              palette: breed.palette.withVisibleRim())
     }
-    let slug = name.lowercased().replacingOccurrences(of: " ", with: "-")
+    let slug = fileSlug(name)
     try writeSheet(cells, columns: 7, title: "Fit check: \(name)",
                    to: outputDirectory.appendingPathComponent("fit-\(slug).png"))
 }
@@ -295,6 +300,8 @@ let contactGroups: [(String, [(String, PetOutfit, [PetAccessory])])] = [
         + PetAccessory.allCases.filter { $0.slot == .neck }.map { ($0.displayName, .none, [$0]) }),
     ("face", PetAccessory.allCases.filter { $0.slot == .face }.map { ($0.displayName, .none, [$0]) }),
     ("head", PetAccessory.allCases.filter { $0.slot == .head }.map { ($0.displayName, .none, [$0]) }),
+    ("back", PetAccessory.allCases.filter { $0.slot == .back }.map { ($0.displayName, .none, [$0]) }),
+    ("aura", PetAccessory.allCases.filter { $0.slot == .aura }.map { ($0.displayName, .none, [$0]) }),
 ]
 for (slot, items) in contactGroups {
     var cells: [Cell] = []
@@ -307,6 +314,36 @@ for (slot, items) in contactGroups {
     }
     try writeSheet(cells, columns: PetBreed.allCases.count, title: "Costume x breed: \(slot)", scale: 3,
                    to: outputDirectory.appendingPathComponent("contact-\(slot).png"))
+}
+
+// Item loops: every animated item on every body shape through each tick of
+// its loop, sitting (idle) and walking, at 6x for pixel review and at notch
+// size. The first column is the still frame Reduce Motion shows.
+for item in PetItem.allCases where item.loopFrameCount > 1 {
+    let (outfit, accessories): (PetOutfit, [PetAccessory]) = switch item {
+    case .outfit(let outfit): (outfit, [])
+    case .accessory(let accessory): (.none, [accessory])
+    }
+    var cells: [Cell] = []
+    for animation in [PetAnimation.idle, .walk] {
+        for breed in PetGallery.bodyShapeBreeds {
+            let frame = PetComposer.clip(animation, for: breed, outfit: outfit, accessories: accessories).frames[0]
+            let canvases = frame.itemFrames.isEmpty
+                ? Array(repeating: frame.canvas, count: item.loopFrameCount) : frame.itemFrames
+            for (tick, canvas) in canvases.enumerated() {
+                let label = tick == 0 ? "\(breed.displayName) \(animation.rawValue)" : "\(tick + 1)"
+                cells.append(Cell(label: label, canvas: canvas, palette: breed.palette.withVisibleRim()))
+            }
+        }
+    }
+    let slug = fileSlug(item.displayName)
+    let milliseconds = Int((PetFrame.itemFrameDuration * 1000).rounded())
+    for (loopScale, suffix) in [(6, ""), (2, "-2x")] {
+        try writeSheet(cells.map { suffix.isEmpty ? $0 : Cell(label: "", canvas: $0.canvas, palette: $0.palette) },
+                       columns: item.loopFrameCount, title: suffix.isEmpty
+                           ? "\(item.displayName) loop (\(item.loopFrameCount) x \(milliseconds) ms)" : "",
+                       scale: loopScale, to: outputDirectory.appendingPathComponent("loop-\(slug)\(suffix).png"))
+    }
 }
 
 // Costume animation strips: each item on every breed through the key
@@ -326,7 +363,7 @@ for (name, outfit, accessories) in contactGroups.flatMap(\.1) {
                               canvas: clips[animation]!.frames[frame].canvas, palette: breed.palette.withVisibleRim()))
         }
     }
-    let slug = name.lowercased().replacingOccurrences(of: " ", with: "-")
+    let slug = fileSlug(name)
     try writeSheet(cells, columns: keyFrames.count, title: "Animations in \(name)", scale: 3,
                    to: outputDirectory.appendingPathComponent("strip-\(slug).png"))
 }

@@ -18,6 +18,18 @@ enum CostumeArt {
         /// Rows every grid reaches above its body's top row, for parts that
         /// stick up out of the silhouette, such as spikes along the back.
         var rise = 0
+        /// The rest of an animated item's loop: these grids are the still
+        /// frame, shown under Reduce Motion, and the loop's first.
+        var moreFrames: [BodyItem] = []
+
+        /// Frames in the item's loop; 1 for an item that stays still.
+        var frameCount: Int { 1 + moreFrames.count }
+
+        /// The item as drawn on frame `phase` of the item clock.
+        func frame(_ phase: Int) -> BodyItem {
+            let index = phase % frameCount
+            return index == 0 ? self : moreFrames[index - 1]
+        }
     }
 
     /// A face item, one grid for cat faces and one for dog faces, and the
@@ -30,8 +42,62 @@ enum CostumeArt {
 
     /// A hat-like item and the grid row that lands on the head's skull top.
     struct HeadItem {
+        /// The still frame, shown under Reduce Motion, and the loop's first.
         let grid: SpriteGrid
         let sitRow: Int
+        /// The rest of an animated item's loop, each the size of `grid`.
+        var moreFrames: [SpriteGrid] = []
+
+        /// Frames in the item's loop; 1 for an item that stays still.
+        var frameCount: Int { 1 + moreFrames.count }
+
+        /// The grid drawn on frame `phase` of the item clock.
+        func grid(_ phase: Int) -> SpriteGrid {
+            let index = phase % frameCount
+            return index == 0 ? grid : moreFrames[index - 1]
+        }
+    }
+
+    /// An item worn behind the pet, such as wings: drawn and outlined on a
+    /// layer of its own under the outlined pet, so the pet's outline keeps
+    /// it apart from the fur and it may reach out past the body.
+    struct BackItem {
+        /// Where the item goes for one body family: its loop of grids, the
+        /// first the still, and the offset of their top-left corner from
+        /// the family's body origin (the walking torso's when walking).
+        struct Placement {
+            let x: Int
+            let y: Int
+            let frames: [SpriteGrid]
+        }
+
+        let cat: Placement
+        let dog: Placement
+        let longDog: Placement
+        /// Behind the cat and dog walking torso (`WalkArt.catTorso`).
+        let walk: Placement
+        /// Behind the dachshund walking torso (`WalkArt.longTorso`).
+        let walkLong: Placement
+
+        /// Frames in the item's loop, the same for every body family.
+        var frameCount: Int { cat.frames.count }
+    }
+
+    /// An item that floats in the air around the pet, such as falling
+    /// petals: loose particles drawn in front of the pet without an
+    /// outline. A particle that would touch the pet or an effect is left
+    /// out of that frame, so nothing ever covers the pet or looks cut.
+    struct AuraItem {
+        /// Around a pet facing the viewer, offset from the frame's corner.
+        let front: BackItem.Placement
+        /// Around a pet seen from the side (walking, stretching, curled up).
+        let side: BackItem.Placement
+        /// Around the dachshund sitting side-on, its head where other pets
+        /// leave air; the front loop unless the item needs its own.
+        let longDog: BackItem.Placement
+
+        /// Frames in the item's loop, the same for both views.
+        var frameCount: Int { front.frames.count }
     }
 
     // MARK: Outfits
@@ -191,7 +257,44 @@ extension CostumeArt {
 
     /// A wreath of gold leaves with a few green ones, resting on the brow.
     static let goldenLaurel = PetArt.costume.headItem("goldenLaurel")
+    /// A thin gold arc floating above the head that bobs up and down a
+    /// pixel, with a glint crossing its top on the way up. It is two rows
+    /// tall because a dog's hop leaves only three rows above the head.
+    static let halo = PetArt.costume.headItem("halo")
 
     /// A gold medal with a glint, hung from a crimson ribbon around the neck.
     static let teamMedal = PetArt.costume.bodyItem("teamMedal")
+}
+
+// MARK: - Back items
+
+extension CostumeArt {
+    /// White feathered wings that rise from behind the shoulders and flap:
+    /// spread, raised, spread, lowered. From the front both show beside the
+    /// body; walking, the near wing stands up off the back.
+    static let angelWings = PetArt.costume.backItem("angelWings")
+    /// A crimson cape with an ermine collar and a gold trim a glint runs
+    /// down. From the front it falls to the floor beside the body; walking
+    /// and on the side-on dachshund it streams back over the shoulders and
+    /// ripples.
+    static let kingsCape = PetArt.costume.backItem("kingsCape")
+}
+
+// MARK: - Aura items
+
+extension CostumeArt {
+    /// Pink cherry blossom petals that drift down and sway on both sides of
+    /// the pet, and over its back when seen from the side.
+    static let cherryPetals = PetArt.costume.auraItem("cherryPetals")
+    /// Gold sparkles that each glint for four ticks (a dot, a star with a
+    /// white heart, then a white dot), a new one every tick, so four show
+    /// at a time. From the front they twinkle in place beside and above the
+    /// pet; walking they are born at its back and drift away behind it, a
+    /// trail.
+    static let sparkleTrail = PetArt.costume.auraItem("sparkleTrail")
+    /// A small white cloud with two puffs and a grey underside that hangs
+    /// beside the head (over the back on a walk and on the side-on
+    /// dachshund) and drizzles: its drops fall a row a tick, and each one
+    /// goes away before it would land on the pet.
+    static let rainCloud = PetArt.costume.auraItem("rainCloud")
 }

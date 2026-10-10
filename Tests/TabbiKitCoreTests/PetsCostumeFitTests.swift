@@ -69,6 +69,8 @@ final class PetCostumeFitTests: XCTestCase {
                             XCTAssertFalse(pixels.isEmpty, "not visible: \(label)")
                         }
                         // A one-pixel margin leaves room for the costume's outline.
+                        // Aura particles have none and drift in and out past the edges.
+                        guard !look.accessories.contains(where: { $0.slot == .aura }) else { continue }
                         let floor = liesOnTheFloor(animation, look.outfit, look.accessories) ? edge + 1 : edge
                         XCTAssertFalse(pixels.contains { $0.x == 0 || $0.y == 0 || $0.x == edge || $0.y == floor },
                                        "clipped at the frame edge: \(label)")
@@ -79,7 +81,8 @@ final class PetCostumeFitTests: XCTestCase {
     }
 
     func testHeadAndFaceItemsMoveWithTheHeadInEveryFrame() throws {
-        let items = PetAccessory.allCases.filter { $0.slot != .neck }
+        // Neck and back items follow the body instead.
+        let items = PetAccessory.allCases.filter { $0.slot == .head || $0.slot == .face }
         for breed in PetBreed.allCases {
             let plainSitting = PetComposer.sitting(breed)
             for accessory in items {
@@ -128,7 +131,9 @@ final class PetCostumeFitTests: XCTestCase {
                 // The Shih Tzu's topknot takes the crown, so its hats sit a row lower.
                 let hatLine = breed == .shihTzu ? eyeTop - 1 : eyeTop - 2
                 XCTAssertLessThan(item.minY, hatLine, "sits too low to read as a hat: \(label)")
-                // Hats rest on the skull: each one covers the head or sits right on it.
+                // Hats rest on the skull: each one covers the head or sits right on
+                // it. The halo is meant to float.
+                guard accessory != .halo else { continue }
                 XCTAssertTrue(costumePixels(dressed, over: plain).contains { plain[$0.x, $0.y] != nil || plain[$0.x, $0.y + 1] != nil },
                               "floats above the head: \(label)")
             }

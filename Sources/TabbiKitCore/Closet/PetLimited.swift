@@ -91,7 +91,7 @@ public enum PetLimitedEdition: String, CaseIterable, Sendable {
 
     public var effect: PetItemEffect? {
         switch self {
-        case .launchWeekCap: nil
+        case .launchWeekCap: .sparkle
         case .streakFlame: .flicker
         case .focusLaurel: .shimmer
         case .partyMedal: .sparkle

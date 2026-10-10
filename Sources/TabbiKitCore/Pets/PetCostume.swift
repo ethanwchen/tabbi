@@ -28,11 +28,18 @@ public enum PetOutfit: String, CaseIterable, Codable, Sendable {
 }
 
 /// Where an accessory sits. A pet wears at most one accessory per slot, and
-/// slots are drawn in declaration order so hats always land on top.
+/// slots are drawn in declaration order so hats always land on top. The
+/// back slot is the exception: it goes on a layer under the whole pet, and
+/// the aura slot floats in the air around it.
 public enum PetAccessorySlot: Int, CaseIterable, Comparable, Codable, Sendable {
     case neck
     case face
     case head
+    /// Worn behind the pet (wings), so it is drawn first and never covers it.
+    case back
+    /// Floats in the air around the pet (falling petals), in front of it
+    /// but never over it.
+    case aura
 
     public static func < (lhs: Self, rhs: Self) -> Bool { lhs.rawValue < rhs.rawValue }
 }
@@ -73,6 +80,19 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
     case goldenLaurel
     /// A gold medal on a red ribbon, for finishing a Party session.
     case teamMedal
+    // Animated shop items, each looping a few frames on the item clock.
+    /// White feathered wings that flap behind the pet.
+    case angelWings
+    /// A crimson royal cape with an ermine collar and a gold hem that glimmers.
+    case kingsCape
+    /// A gold halo that floats above the head and gently bobs.
+    case halo
+    /// Cherry blossom petals that drift down around the pet.
+    case cherryPetals
+    /// Gold sparkles that twinkle around the pet and trail behind it on a walk.
+    case sparkleTrail
+    /// A tiny grey rain cloud that drizzles beside the pet.
+    case rainCloud
 
     public var slot: PetAccessorySlot {
         switch self {
@@ -81,7 +101,9 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
         case .surgicalCap, .headMirror, .graduationCap, .beanie, .tinyCrown, .partyHat, .chefHat, .wizardHat,
              .bunnyEars, .witchHat, .cowboyHat, .flowerCrown, .frogHat, .ninjaHeadband, .pirateHat,
              .blindfoldedSorcerer, .astronautHelmet, .chunkyHeadphones, .backwardsCap, .flameHeadband,
-             .goldenLaurel: .head
+             .goldenLaurel, .halo: .head
+        case .angelWings, .kingsCape: .back
+        case .cherryPetals, .sparkleTrail, .rainCloud: .aura
         }
     }
 
@@ -120,6 +142,12 @@ public enum PetAccessory: String, CaseIterable, Codable, Sendable {
         case .flameHeadband: "Flame Headband"
         case .goldenLaurel: "Golden Laurel"
         case .teamMedal: "Team Medal"
+        case .angelWings: "Angel Wings"
+        case .kingsCape: "King's Cape"
+        case .halo: "Halo"
+        case .cherryPetals: "Cherry Petals"
+        case .sparkleTrail: "Sparkle Trail"
+        case .rainCloud: "Tiny Rain Cloud"
         }
     }
 

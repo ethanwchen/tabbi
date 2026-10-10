@@ -54,6 +54,98 @@ final class PetArtTests: XCTestCase {
         }
     }
 
+    func testItemsReadTheirLoopFrames() throws {
+        let file = try PetArtFile.decode(Data("""
+            {"schema": "pets.v1", "itemFrameDuration": 0.2,
+             "headItems": {"glint": {"grid": ["YY"], "sitRow": 0, "frames": [["LY"], ["YL"]]}},
+             "bodyItems": {"medal": {"cat": ["Y"], "dog": ["Y"], "longDog": ["Y"], "walk": ["Y"], "walkLong": ["Y"],
+                                     "frames": [{"cat": ["L"], "dog": ["L"], "longDog": ["L"], "walk": ["L"], "walkLong": ["L"]}]}}}
+            """.utf8))
+        XCTAssertEqual(file.itemFrameDuration, 0.2)
+        let glint = file.headItem("glint")
+        XCTAssertEqual(glint.frameCount, 3)
+        XCTAssertEqual((0..<4).map { glint.grid($0) }, try ["YY", "LY", "YL", "YY"].map { try SpriteGrid($0) },
+                       "the still grid opens the loop, which wraps")
+        let medal = file.bodyItem("medal")
+        XCTAssertEqual(medal.frameCount, 2)
+        XCTAssertEqual(medal.frame(1).walkLong, try SpriteGrid("L"))
+        XCTAssertEqual(try PetArtFile.decode(Data(#"{"schema": "pets.v1"}"#.utf8)).itemFrameDuration, nil)
+    }
+
+    func testBackItemsReadTheirPlacementsAndLoops() throws {
+        func family(_ x: Int, _ frames: String) -> String { #"{"x": \#(x), "y": -2, "frames": \#(frames)}"# }
+        let wings = [("cat", -5), ("dog", -4), ("longDog", 12), ("walk", 11), ("walkLong", 10)]
+            .map { #""\#($0.0)": \#(family($0.1, #"[["UU"], ["VV"]]"#))"# }.joined(separator: ", ")
+        let file = try PetArtFile.decode(Data(#"{"schema": "pets.v1", "backItems": {"wings": {\#(wings)}}}"#.utf8))
+        let item = file.backItem("wings")
+        XCTAssertEqual(item.frameCount, 2)
+        XCTAssertEqual(item.dog.x, -4)
+        XCTAssertEqual(item.walkLong.y, -2)
+        XCTAssertEqual(item.walk.frames, try [SpriteGrid("UU"), SpriteGrid("VV")])
+
+        let uneven = wings.replacingOccurrences(of: #""walk": \#(family(11, #"[["UU"], ["VV"]]"#))"#,
+                                                with: #""walk": \#(family(11, #"[["UU"]]"#))"#)
+        XCTAssertThrowsError(try PetArtFile.decode(Data(#"{"schema": "pets.v1", "backItems": {"wings": {\#(uneven)}}}"#.utf8))) {
+            XCTAssertEqual($0 as? PetArtFile.LoadError,
+                           .invalidGrid(name: "wings.walk", reason: "1 frames differ from the cat's 2"))
+        }
+        let resized = wings.replacingOccurrences(of: #""dog": \#(family(-4, #"[["UU"], ["VV"]]"#))"#,
+                                                 with: #""dog": \#(family(-4, #"[["UU"], ["V"]]"#))"#)
+        XCTAssertThrowsError(try PetArtFile.decode(Data(#"{"schema": "pets.v1", "backItems": {"wings": {\#(resized)}}}"#.utf8))) {
+            XCTAssertEqual($0 as? PetArtFile.LoadError,
+                           .invalidGrid(name: "wings.dog.frames[1]", reason: "1x1 differs from the item's 2x1 still grid"))
+        }
+    }
+
+    func testReadsAuraItemsAndRejectsUnevenLoops() throws {
+        let json = #"{"schema": "pets.v1", "auraItems": {"petals": {"#
+            + #""front": {"x": 0, "y": 1, "frames": [["H."], [".H"]]}, "side": {"x": 2, "y": 0, "frames": [["Z."], [".Z"]]}}}}"#
+        let item = try PetArtFile.decode(Data(json.utf8)).auraItem("petals")
+        XCTAssertEqual(item.frameCount, 2)
+        XCTAssertEqual(item.front.y, 1)
+        XCTAssertEqual(item.side.x, 2)
+        XCTAssertEqual(item.side.frames, try [SpriteGrid("Z."), SpriteGrid(".Z")])
+        XCTAssertEqual(item.longDog.frames, item.front.frames, "the dachshund shares the front loop by default")
+
+        let ownLongDog = json.replacingOccurrences(of: #""side":"#, with: #""longDog": {"x": 3, "y": 0, "frames": [["Y"], ["Y"]]}, "side":"#)
+        XCTAssertEqual(try PetArtFile.decode(Data(ownLongDog.utf8)).auraItem("petals").longDog.x, 3)
+        let unevenLongDog = json.replacingOccurrences(of: #""side":"#, with: #""longDog": {"x": 3, "y": 0, "frames": [["Y"]]}, "side":"#)
+        XCTAssertThrowsError(try PetArtFile.decode(Data(unevenLongDog.utf8))) {
+            XCTAssertEqual($0 as? PetArtFile.LoadError,
+                           .invalidGrid(name: "petals.longDog", reason: "1 frames differ from the front's 2"))
+        }
+
+        let uneven = json.replacingOccurrences(of: #"[["Z."], [".Z"]]"#, with: #"[["Z."]]"#)
+        XCTAssertThrowsError(try PetArtFile.decode(Data(uneven.utf8))) {
+            XCTAssertEqual($0 as? PetArtFile.LoadError,
+                           .invalidGrid(name: "petals.side", reason: "1 frames differ from the front's 2"))
+        }
+        let resized = json.replacingOccurrences(of: #"[".H"]"#, with: #"["H"]"#)
+        XCTAssertThrowsError(try PetArtFile.decode(Data(resized.utf8))) {
+            XCTAssertEqual($0 as? PetArtFile.LoadError,
+                           .invalidGrid(name: "petals.front.frames[1]", reason: "1x1 differs from the item's 2x1 still grid"))
+        }
+    }
+
+    func testRejectsALoopFrameOfAnotherSize() {
+        let json = #"{"schema": "pets.v1", "headItems": {"glint": {"grid": ["YY"], "sitRow": 0, "frames": [["Y"]]}}}"#
+        XCTAssertThrowsError(try PetArtFile.decode(Data(json.utf8))) { error in
+            XCTAssertEqual(error as? PetArtFile.LoadError,
+                           .invalidGrid(name: "glint.frames[0]", reason: "1x1 differs from the item's 2x1 still grid"))
+        }
+        let body = #"{"schema": "pets.v1", "bodyItems": {"medal": {"cat": ["Y"], "dog": ["Y"], "longDog": ["Y"], "#
+            + #""walk": ["Y"], "walkLong": ["Y"], "frames": [{"cat": ["Y"], "dog": ["YY"], "longDog": ["Y"], "#
+            + #""walk": ["Y"], "walkLong": ["Y"]}]}}}"#
+        XCTAssertThrowsError(try PetArtFile.decode(Data(body.utf8))) { error in
+            XCTAssertEqual(error as? PetArtFile.LoadError,
+                           .invalidGrid(name: "medal.frames[0].dog", reason: "2x1 differs from the item's 1x1 still grid"))
+        }
+        let still = #"{"schema": "pets.v1", "itemFrameDuration": 0}"#
+        XCTAssertThrowsError(try PetArtFile.decode(Data(still.utf8))) { error in
+            XCTAssertEqual(error as? PetArtFile.LoadError, .invalidValue(path: "itemFrameDuration", value: "0.0"))
+        }
+    }
+
     /// The breed file defines exactly the Swift cases, in their order (the
     /// picker order), and a color for every role in the base palette.
     func testBreedFileCoversEveryCase() {

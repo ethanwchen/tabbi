@@ -566,7 +566,7 @@
       "colors" : {
         "accessoryBase" : "#E0607A",
         "accessoryShade" : "#B04460",
-        "belly" : "#FFFFFF",
+        "belly" : "#36323C",
         "blush" : "#FF9AAE",
         "coat" : "#F6F8FB",
         "coatShade" : "#C3CCD9",
@@ -575,12 +575,12 @@
         "costumeTrim" : "#E8FFFB",
         "crimson" : "#B8304C",
         "effect" : "#F4F1FF",
-        "eye" : "#7A4A2E",
+        "eye" : "#9A6238",
         "eyeLight" : "#FFFFFF",
-        "furAccent" : "#D9A35C",
-        "furBase" : "#F8F2EA",
-        "furShade" : "#DCCDBC",
-        "furSpot" : "#3A3036",
+        "furAccent" : "#47414E",
+        "furBase" : "#2B2830",
+        "furShade" : "#1E1B22",
+        "furSpot" : "#7E4A32",
         "gold" : "#F2C14E",
         "heart" : "#FF5C7A",
         "ink" : "#3F4A78",
@@ -588,11 +588,11 @@
         "leather" : "#A8683A",
         "metal" : "#C9D3DD",
         "mouth" : "#2A1A14",
-        "nose" : "#2E2224",
-        "outline" : "#3A2A22",
-        "pupil" : "#2A1A14"
+        "nose" : "#1A1416",
+        "outline" : "#7D748B",
+        "pupil" : "#24160F"
       },
-      "rim" : "#91826E"
+      "rim" : "#7D748B"
     }
   ],
   "schema" : "tabbi.pets.golden",

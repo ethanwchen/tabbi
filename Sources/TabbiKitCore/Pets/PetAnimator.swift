@@ -26,23 +26,26 @@ public struct PetClipSet: Hashable, Sendable {
     public var durations: [PetAnimation: TimeInterval] { clips.mapValues(\.duration) }
 
     /// The frame to draw for `playback` at `time`, or nil when the pet is
-    /// tucked away inside the notch.
+    /// tucked away inside the notch. Animated costume items show the frame
+    /// of their loop for `time` (`PetFrame.atItemTime`).
     public func frame(for playback: PetAnimator.Playback?, at time: TimeInterval) -> PetFrame? {
         guard let playback else { return nil }
-        return self[playback.animation].frame(at: playback.elapsed(at: time))
+        return self[playback.animation].frame(at: playback.elapsed(at: time)).atItemTime(time)
     }
 
     /// The next moment after `time` when the drawn frame can change: a frame
-    /// boundary in the current clip or the next idle blink. Nil when the
-    /// picture holds until an event arrives (hidden, or hanging from the
-    /// notch). `animator` must already be advanced to `time`.
+    /// boundary in the current clip, the next idle blink, or the next step
+    /// of an animated costume item. Nil when the picture holds until an
+    /// event arrives (hidden, or hanging from the notch). `animator` must
+    /// already be advanced to `time`.
     public func nextChange(for animator: PetAnimator, after time: TimeInterval) -> TimeInterval? {
         guard let playback = animator.playback else { return nil }
-        let boundary = self[playback.animation]
-            .nextFrameBoundary(after: playback.elapsed(at: time))
-            .map { playback.startedAt + $0 }
+        let clip = self[playback.animation]
+        let elapsed = playback.elapsed(at: time)
+        let boundary = clip.nextFrameBoundary(after: elapsed).map { playback.startedAt + $0 }
+        let item = clip.frame(at: elapsed).nextItemChange(after: time)
         let blink = animator.nextBlinkAt.flatMap { $0 > time ? $0 : nil }
-        return [boundary, blink].compactMap { $0 }.min()
+        return [boundary, item, blink].compactMap { $0 }.min()
     }
 
     /// The still picture for `animator` under Reduce Motion: the playing

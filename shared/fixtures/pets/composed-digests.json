@@ -339,7 +339,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "26a8a3ccc9790ddbe2bb4a620fb74181b3c6ae9a4243c56417dff4879b6fb2bb"
+      "sha256" : "3b9fb1e6a7832b34627753723149d1e45809ce7891e97c7c5f9d2eda309c286f"
     },
     {
       "dress" : {
@@ -350,7 +350,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "78d0168760a63148235a00c8bbfad4b6eaabe87489fb3d7c6b1465d82f14822f"
+      "sha256" : "b35cb3101285b4053bc6ca2870cb2106a629b9c2ebb44bdffe394962dfb6e41c"
     },
     {
       "dress" : {
@@ -361,7 +361,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "82dfb61b262a1114ccb006185760b11daacf71f875cfc6190d831becd72fb86b"
+      "sha256" : "fa7bf9ae7718c5d2f5593222685e8447d6f81410fd8cfbe1c7ca2f06d72712f7"
     },
     {
       "dress" : {
@@ -372,7 +372,73 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "031114cabed6c4854d870f482ef11ea6741a8174ad9f5e79594d34a0b322ca2d"
+      "sha256" : "bfba68d54040a6fd972965444ddd656c3567b410fbf2403ed4d7d841f998f86b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "angelWings"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b79536134e18334ee5bc518932a7a623bc37e2d2f45e4c16064d84054caa0568"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "kingsCape"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "cbab9ed3dd1486fd2ab42fab40a9f81737e9a2159d417ee8c605992e5af46307"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "dc5c0b4772bb45ca334b8e3024deabea5128a983677ce75294540c25d48dffaa"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cherryPetals"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4f1dc9bb69c64145be45b93de11260af7f376287bf0050df6dc1b7b230efcebc"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sparkleTrail"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0b69a45666f7e850a44bf6364d0f1d0d9d8fc7748233bd3ee4f406654dd66b24"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "rainCloud"
+        ],
+        "breed" : "orangeTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "95df7f7df06a764f6d47e465b4a74f621a498e998828f3ea4018adbcfe91e5dc"
     },
     {
       "dress" : {
@@ -763,7 +829,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "26a8a3ccc9790ddbe2bb4a620fb74181b3c6ae9a4243c56417dff4879b6fb2bb"
+      "sha256" : "3b9fb1e6a7832b34627753723149d1e45809ce7891e97c7c5f9d2eda309c286f"
     },
     {
       "dress" : {
@@ -774,7 +840,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "78d0168760a63148235a00c8bbfad4b6eaabe87489fb3d7c6b1465d82f14822f"
+      "sha256" : "b35cb3101285b4053bc6ca2870cb2106a629b9c2ebb44bdffe394962dfb6e41c"
     },
     {
       "dress" : {
@@ -785,7 +851,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "82dfb61b262a1114ccb006185760b11daacf71f875cfc6190d831becd72fb86b"
+      "sha256" : "fa7bf9ae7718c5d2f5593222685e8447d6f81410fd8cfbe1c7ca2f06d72712f7"
     },
     {
       "dress" : {
@@ -796,7 +862,73 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "031114cabed6c4854d870f482ef11ea6741a8174ad9f5e79594d34a0b322ca2d"
+      "sha256" : "bfba68d54040a6fd972965444ddd656c3567b410fbf2403ed4d7d841f998f86b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "angelWings"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b79536134e18334ee5bc518932a7a623bc37e2d2f45e4c16064d84054caa0568"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "kingsCape"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "cbab9ed3dd1486fd2ab42fab40a9f81737e9a2159d417ee8c605992e5af46307"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "dc5c0b4772bb45ca334b8e3024deabea5128a983677ce75294540c25d48dffaa"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cherryPetals"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4f1dc9bb69c64145be45b93de11260af7f376287bf0050df6dc1b7b230efcebc"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sparkleTrail"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0b69a45666f7e850a44bf6364d0f1d0d9d8fc7748233bd3ee4f406654dd66b24"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "rainCloud"
+        ],
+        "breed" : "grayTabby",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "95df7f7df06a764f6d47e465b4a74f621a498e998828f3ea4018adbcfe91e5dc"
     },
     {
       "dress" : {
@@ -1187,7 +1319,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "b6f7a3741433862b4d3d876cca509734d14740a8fefe2698987a5f29a823cadf"
+      "sha256" : "b8a7064f27f3102d01aae860eac7faa89db53d2ef556d24d64808b7ec75daf30"
     },
     {
       "dress" : {
@@ -1198,7 +1330,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "bacb8472c61be22d2abeb25035a1e32b25b5566eda55fa110f4ca1d0b1aecea6"
+      "sha256" : "16783bb679d1bea35edf49ad25f938de3ebd31487e8676e9f09de5198832a3ed"
     },
     {
       "dress" : {
@@ -1209,7 +1341,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "2144ccdcea4c2bb47d212368f99299e50f27c99b048c1322bb8a55c80ff6f5a2"
+      "sha256" : "793685ff096ea8e6de0a3577e95411161d8b0a994b36cf5d5ea6be27eee55631"
     },
     {
       "dress" : {
@@ -1220,7 +1352,73 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "70df68cc0ea73df1d76ccb52351a8f04c1e5fcf089b8a1bee9054ef0d7fcb2c3"
+      "sha256" : "9ff95edf645a9ccca4608593599903c56793d7ad8b3a1964604fdf4aca43cadb"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "angelWings"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b2bfc09479c750e4825f585acec0e802304f8e7e27fdcd01748754d28911c599"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "kingsCape"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "41292e4faf11042576f6dff6948be71bcdda22f8e0cd9bcf809320ca0d601fd6"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8d548d1f05257052d7fe46d52fd64fa063f7e43af01103c49a9777866ab37d1b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cherryPetals"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f57d64e673a48a53dc5102f4dfc3e40476661298078ee30a84b191d54b18c5a6"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sparkleTrail"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4240c6103b921dedca44351ca8e119baeb2a686274aa2f8c2cab4db02ef45943"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "rainCloud"
+        ],
+        "breed" : "blackCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "96586750f77f14fc11700b59307c65975f423a7a1277576a176977e05522693b"
     },
     {
       "dress" : {
@@ -1611,7 +1809,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "732b7a94c959a3ead466d94bb1bceb85c60938fa1bc960a6adf0a0f0701e25e5"
+      "sha256" : "dc62f2ff948bd81b2c409c2cf1126397ae0d74e1d828c4cc9fdfbebf08bb8b78"
     },
     {
       "dress" : {
@@ -1622,7 +1820,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "ce30121d3ab6db8af0e73c8363a8040c35a663373640fa2eff7c50f1d328edc5"
+      "sha256" : "e7dfd11c16350587e4293adfdfc7aed0efdc6c6f999f98b34e6dad584e2f4172"
     },
     {
       "dress" : {
@@ -1633,7 +1831,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "fe7318831cad6413a4114a76120ea982b5a7b0addccec3a2ffdb632fe861ca72"
+      "sha256" : "091c4cbfd0fc3519918245d5bbb43b1dcce5c6c6845f8781257c84a5a196df45"
     },
     {
       "dress" : {
@@ -1644,7 +1842,73 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "3b364eca0ac83cb1a5554afcc2a9bf8d0d985d52fe79a1cd2e7a6ce0ca1a3eff"
+      "sha256" : "8c58ebd515e054494debe2c69471a4c30ed2dd14272dc17d10acfd546839270a"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "angelWings"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "aad60b2873a2707c6f4234374f9a818e28c1346c422760b5b3df91dcd7543d81"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "kingsCape"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8631609428205e8e5debfbf25431902acc71db768b296cf36577499ffc21e770"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0c0def92ac5bf5b9a19a36e96030a0d889f8ecf8f89e7c414bbbff37c6058453"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cherryPetals"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1262c796c00df8f25064ffb691c58f5b259040743f62f995af66901f0c182522"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sparkleTrail"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "78adb6a934f8116f71ec5b3a1e3a59f753bbd1136a3f5b7c73c7c78c1eeff8db"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "rainCloud"
+        ],
+        "breed" : "whiteCat",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e40d71c67fd7d2821ce9f091740c635995b95123b2f6847ae1a216beee3c8f72"
     },
     {
       "dress" : {
@@ -2035,7 +2299,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "772ee3ba8cadd158e9868650112e34fc7345b011581a778d82202abde1b54c73"
+      "sha256" : "598cbcb163d7ee10dc20605501a5ce4cfca2b3f9ea412749d2fd35784f78da0b"
     },
     {
       "dress" : {
@@ -2046,7 +2310,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "4534c502b330a3e4b526b23666bb087ad174fa46d5a6063f929d70e61512888a"
+      "sha256" : "dae5d11bbd08d00f6f42c3259717b8f3835f9ae92701871a587ff027f01f3d3f"
     },
     {
       "dress" : {
@@ -2057,7 +2321,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "02caf9da10e4711b1dfc97ffcbb7127270d9a5bedac0077353f7e7d872cb97b4"
+      "sha256" : "48344c1d0626a9c1a32890bb3e23a2ee7050cbfaeea7f21eef939590e5f1f9a5"
     },
     {
       "dress" : {
@@ -2068,7 +2332,73 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "7446144953bdfe38ae6089b76454615c10f8170928b357704b5e0b56e58ed5a2"
+      "sha256" : "157ad6b72c539acd1e3b1be1d9f1d6c062af77d178f78b1d3ed54fa274c5b5f7"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "angelWings"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a1d176aa82a579fd9c723c4e0cea25dee045c25a1f2403e4b5e645a9999dd7a0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "kingsCape"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "086d95e6932546b27faac0150bcc0060d8f66c924652feb0b11b7db39461c605"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "58160a9d67d1f0a7331df8610855778c755e0e6937dfb2f99619a949269591a0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cherryPetals"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "cc764a4a33062f822140201ae3cad656fede5c7185a6fbdb3b137bf30e5ba569"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sparkleTrail"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "2fc6801e03c8a1f24df717cd3b3ed67bf2c5081d68554eb99aad8a458773801f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "rainCloud"
+        ],
+        "breed" : "tuxedo",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "dd0a3ae95d11a776ce15624f45266e2eb412e97f6b808585e006a1e2200dba5a"
     },
     {
       "dress" : {
@@ -2459,7 +2789,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "e7f19af7c560d0cb1c9a2cf16e1d03094f1f376aa91c4f48d6164d43d8617e4b"
+      "sha256" : "4f794785eafeb8e0bb1b18e3d5e0cf22d5e86a812797024f56428c75c4671c4b"
     },
     {
       "dress" : {
@@ -2470,7 +2800,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "6242bb939e64cbc040d949380da962399898ad43ee681d282ce4f3352d3b2aff"
+      "sha256" : "ec2ac4bd9733d8d343d8ed48b06e256bab6dbf29c20bf0378735605f1e95d6f9"
     },
     {
       "dress" : {
@@ -2481,7 +2811,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "1458fba45510063f2abc1542db90aaf319ee7e63b275cb22d27ceb7c30ca2c6f"
+      "sha256" : "9d7a6d5e9826ee1270f256b6c1d145e7ad73abe14a010259ebc7d17213eeba8e"
     },
     {
       "dress" : {
@@ -2492,7 +2822,73 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "2fbd39620358ab5d385c7f812c2194e5a99054c68991ed3922836f3e5874c258"
+      "sha256" : "10b9ae26b4ccd03e5ac6b2bb70927b735685dc601a571892b90993e1841a6be8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "angelWings"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "17e568bc74008b97da7522f249eec722c76be48916cf0ef7f4b743bb7ad6d767"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "kingsCape"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ad17b187562716f28fa95dcbc5e82bb75ef0683daeb2b21d14b971c3e6b83a42"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8e0bfb4aa8b98076ba5762748706f770ca5cc8efb087404727577555a9ae9180"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cherryPetals"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "7cd6af479b2a6bd39f8ff43fc46edff861209403a10ac6bc150fdd7679345dd4"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sparkleTrail"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "82a9d40f241c941b28bee10abbb2736e6176c522120ebc83af22b82904ee16c6"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "rainCloud"
+        ],
+        "breed" : "calico",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4c8634da65243d58f97481be465b43aa501be0c767467b303f7852ec87734047"
     },
     {
       "dress" : {
@@ -2883,7 +3279,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "1b8df141ed68a16eb12b03adfcfc296071294e0a78800e8b1e80f70f4dd8fae1"
+      "sha256" : "e085a12764a675d55a10e3a78d48d07b24ee30e273c1a2f65265a21238d9bb1e"
     },
     {
       "dress" : {
@@ -2894,7 +3290,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "e14f9a6a3395054205a62a7c4000a86b315a0fe9061cfed3b51b216446db4e67"
+      "sha256" : "21d041e9ae164f6f170cf95fac99dd6a76df0e214dfaececd42177ad24fa7c97"
     },
     {
       "dress" : {
@@ -2905,7 +3301,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "264e62271c2d50fa6ff5a28bd0438a9338cc764ba7cdfe562146e79a423635f5"
+      "sha256" : "4999213d5310a8cfa02a6f0cb9b02662c406977140aab20146f4b3a0c4b52891"
     },
     {
       "dress" : {
@@ -2916,7 +3312,73 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "8d3dd8b13cb1ff72c2a4858c12802e6ba69fea2d0e609648c678b298d6d05fdc"
+      "sha256" : "3260647e6328b41363ed0618e2d136e7ea6af07f51bfcb68f1820c3575b8bf35"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "angelWings"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "826775de71915b324eecfb57d1ea2592ebc9a9f3560ed0adf60e0525cda22fe5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "kingsCape"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "8825a1f201ceb07b8983093a4c94e566c55bca5dc4558b3db3117fc7d70252ae"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d48e759ef7713df27eaeb986618bf4eff7ca9982db9fd752532d98f9165af289"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cherryPetals"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b0f527d511130b14c0f7aee9ef430479361b89daca1d3bb1b6befc008f0f0259"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sparkleTrail"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a6bef104d06537a8f46273e46e50af0a0dc476cc7ebd9d1d9567fb45c4c081b9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "rainCloud"
+        ],
+        "breed" : "siamese",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "88ee8cf65fc1308b152bafcb232812c592f5ff248f519c50800ed7332efc9bd5"
     },
     {
       "dress" : {
@@ -3307,7 +3769,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "727f6465a82f68eaa59ffd5d51a0f8bf6e44773b1e1e66b7fd75a0c08b9c3a7c"
+      "sha256" : "9bdfb165c67ba25d6e49bef287182adc724f8b7aeb421ff463937c6791939183"
     },
     {
       "dress" : {
@@ -3318,7 +3780,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "dfcd57327302a06b63b8981ad23865589411aee964bdd6848cdd54013640a459"
+      "sha256" : "b2f3e9703acc97d8f630cd8c6b95264df2c8f14ee580210635533d4a9f23eadd"
     },
     {
       "dress" : {
@@ -3329,7 +3791,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "2ca8bc2c316cf8d87611fe919e7a78b8dccdf5d6cfe23ebd1a48b9e88bc0e3de"
+      "sha256" : "7a7da88c6e3b3fdaae42a9820318fb6561ed6b4868052ed1dcc069c358afe512"
     },
     {
       "dress" : {
@@ -3340,7 +3802,73 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "386aa60e4ab86cb76742d66b68abc7e928344766ad222b46656973b5dff024ee"
+      "sha256" : "12f367ef5c3374619eb8056f5b87b5e76303b7b9317707375e5616d5234a9221"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "angelWings"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e8fdeeba7e074f3a07a68be93214a57731cd2f37246be7b120b6d2eefa608a9c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "kingsCape"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "be10ba1f18b135e5102a15de8fb4e1ce172ed76b233f4ac1ed91e3850e925f6e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0948775432e46943ca7e727e69f73aea10f0b71a4424681acd273f6ecbf3b9c9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cherryPetals"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3f27a3ceffe34f1169428cbbd7623a0a266d22d53fc070334c21b38da00bef77"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sparkleTrail"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "95c6ca758aee7d5ecb205ce00ec4c3d525ad9f44e9ef9717c6369c32360f8c14"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "rainCloud"
+        ],
+        "breed" : "britishShorthair",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3770256ae5a210f761c66a9b9133f17f239cf2c97335f0b8dabe425916d026e3"
     },
     {
       "dress" : {
@@ -3731,7 +4259,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "f3635a5bb61626a88de6375c50c4db23714aa9137044b5aafa109821455f99a0"
+      "sha256" : "43ca010bf6ac169c6d2c5842cc1801fb90a42e7b828f9705372596fb012b4f82"
     },
     {
       "dress" : {
@@ -3742,7 +4270,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "05296fc3a89e79a4d759529e68a235a4ad6f5d68b4727f999ca1667dd2b2397d"
+      "sha256" : "5bf84b4e74349bcc88f00ce0f6c2aa280f0ed99ff78d8bbdd81008d86c4333ae"
     },
     {
       "dress" : {
@@ -3753,7 +4281,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "ddc8852c9b46d0c5cf36f12b2fdee837a01ed45b7ba1e562f7a893a0e6ab59e7"
+      "sha256" : "610c62a050ad59ea18813db8d74c066f06303612580a4d0814c903099b48a5cd"
     },
     {
       "dress" : {
@@ -3764,7 +4292,73 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "f220b2abf84e5b102b5d712f6d7f319a9323e5a3de1fd90c64c93e96ed80457b"
+      "sha256" : "5fe91a9ca71721d303f4448d06044c6a4637ab5731c162029d74741c6f698c51"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "angelWings"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "05de670400f399003aaf70b3b197177fa2494f9b809e29d2418352e5c4930269"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "kingsCape"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "90ae9b8d10bb1e15081ec6d8a25baacb2af17c7e7f6a42255678e518d3432ab8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "44a9954f248e2b6aca5e7ca5732054db13ddb2f3264777d2def59aa399071e23"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cherryPetals"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1193ea53a3ba7f271e4bb6ad9ad81179750298f08b68f88be62acdc87c8b64b0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sparkleTrail"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "39ca05fe5d887f7f22fcfd7718e0a926e7aa389b1691991300777802b943e697"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "rainCloud"
+        ],
+        "breed" : "sphynx",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "dde645fba6f624be41f1b2c119b73dbb1ac9fd88e371704983a0c346439f6189"
     },
     {
       "dress" : {
@@ -4155,7 +4749,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "285ad594ea2d23318bdaaaa38c6934455bba737f62a4e03cfe1edfefa3670185"
+      "sha256" : "0a2800d0fb62fe35af60cea6ef2888e8dba136c061e981822179d432445c5d60"
     },
     {
       "dress" : {
@@ -4166,7 +4760,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "85c471597a8737f0fdceb395ca9e4691b86261be9a952ee2f06f9eebe23ef4cc"
+      "sha256" : "9a1f7200514442516b6f96665adf77b54c87faf8dd962072a8e51749ec9b76d9"
     },
     {
       "dress" : {
@@ -4177,7 +4771,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "c861b0256c07815a1c28c1a326686a38e5f02d012983eaaa5c0c2f73e269153f"
+      "sha256" : "a3000a23cd13c14f6a9dd4c228a3879c03a9de7abbd2a9b84013f4ae342160d3"
     },
     {
       "dress" : {
@@ -4188,7 +4782,73 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "c25725c37ad00c372b38291749c40acf5d9dad0111ec17c4b02a97fa804e00b7"
+      "sha256" : "030680c1f05448f533aa6590a5fe3780954b3de8eb256e2cb1d00d6bda849454"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "angelWings"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d17bc20eb19464227f0971280bbc3a3e565a0f6299c3fd95d89bee2bd055f37f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "kingsCape"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3e16296e93cd58512bb355cf4eda6c7e8c640acde6f4f0f79c6b62f2cada9615"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b7bfc062383983afab070408ef27e4c059ae3d698432652d0ac8d0ef973d3969"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cherryPetals"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1518ed1e2b1d5bf76ab689be88164df83c7f03281b862ac4bc303ab01c8b4954"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sparkleTrail"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "92a4080d50cff3fa84c1ce337d573e0ccb7e2c78f683f6ea6d482c2a513bbd6f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "rainCloud"
+        ],
+        "breed" : "scottishFold",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ceb45d96377fa1c795fa0cf4e87a4264cb544c6b255a9b3f18fc0c1f04838beb"
     },
     {
       "dress" : {
@@ -4579,7 +5239,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "77d7f6866b00a879a4379f827368be09a189fdf5b1f2acf68f22fe66247c04ce"
+      "sha256" : "8c9a9ca42229d7695649b41b362b14bb4a90753c87e7886c52cf02b6592e89e3"
     },
     {
       "dress" : {
@@ -4590,7 +5250,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "56dd1358c1ead0d4231b06d7478f69182e8128ba85a21e71dfc5d165945638a7"
+      "sha256" : "0bf5e5bfc793d3a8c4ec37ab10a4730ee79cbbca11865f6cce7970960c57d6e3"
     },
     {
       "dress" : {
@@ -4601,7 +5261,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "f41f6c5e89808453ff797dcc6c926e64676d5fcf64e645657956784ba92efb3d"
+      "sha256" : "1ba7245f7afb2b12fd8ef86ec3650ca3568cb4cf8e17b3ddf9c6480de2f3217a"
     },
     {
       "dress" : {
@@ -4612,7 +5272,73 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "76c90b0e113a0957d2395a5374c437d6dd67d8284dd421a0fb8fa93636e0801f"
+      "sha256" : "d3c04b6c1d30c950e0cab045cda27df9b50746009aeee9e08746f5bb703f0851"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "angelWings"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "6297ebb269dff33fea39fd6e2221c1fb719c20bbea902f488c2c4a5330d96509"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "kingsCape"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "049b0d81082b141d099bc07cd5fc70a86b9924284d26a3098c0747a4a703d039"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "4bbcb9372ef8423894807fc504f02c638f84d650db8dedd06f64b81f7bb95153"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cherryPetals"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "41912e00665687b9257bba1e13b189f9865e531b47c54027710fc33cc9998426"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sparkleTrail"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "22f2eb4f4f71129728d1462e7826611f5481a296f9cc582da4a56bc1b9e7dc22"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "rainCloud"
+        ],
+        "breed" : "goldenRetriever",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d870a5800f49e679d7f68982a56cb48554114cd7fb72ee7df208fb67313c6096"
     },
     {
       "dress" : {
@@ -5003,7 +5729,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "ca113a3f8da110e4742660b85ebee133db9ee7e5882bf9c8449b8719fc3a2812"
+      "sha256" : "358f157f0fdb34708fb80d0aa7ce0eed6cfdd0865ea1f097f377d813a29e287e"
     },
     {
       "dress" : {
@@ -5014,7 +5740,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "6385f55fce1946ac9e50038a0d9523bb16efeccf6a720c4e394ef1f70b1de25e"
+      "sha256" : "aeb33e077c9d9400ff92491b4ff2ffa1d708e990b732243ccb146e1b41dcd4ef"
     },
     {
       "dress" : {
@@ -5025,7 +5751,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "41678d7cc283c2471efbda34ae9760a76b49f71feb1843c3aef29ef692a0ee3f"
+      "sha256" : "4c6d0c487fccc8444fa0a221adbf76c070e2f49c418bb38fb6f2c397036e003c"
     },
     {
       "dress" : {
@@ -5036,7 +5762,73 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "9ce8b996d7d92ffd903b0d90bc6b9f13166663d2fcd379efe5c7b410f71cf120"
+      "sha256" : "270d2f0c3639646571c27454835a2729b0da5dd60432aef4d89a375f4cfa3d65"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "angelWings"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "02a7967637b164241c0ce75b6d87b06d411b03e6df41e33bdee927edf44af9c0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "kingsCape"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "86eb2068f5832de12c434e73ee046d33c7b62cfa2c929cd0d46ebd14d80257b2"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e8b5e3b731a5aa05c9f1a6e8315b5c655b018244b22c1bc151799425581a3706"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cherryPetals"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "f27596753e2931f5906e751f7cd3e2c67cc65bd79c42c7577ae7da2c7d3096a0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sparkleTrail"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "2ee70bf8bf52653fb5c780146caeb7135d1bd022b3c3cec7a38abba71b36c1fd"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "rainCloud"
+        ],
+        "breed" : "labrador",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "45c737cda44603de5984da8a7a3481dfb209eb202a176ea619a16c05ce75ecb6"
     },
     {
       "dress" : {
@@ -5427,7 +6219,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "f5c630029e3549b15affe16238bc5eb6b4241c76651362ccc969935f4e9182f7"
+      "sha256" : "31ee3ceb72796e445b3ea479f0e9b23157be5e71439231b628a0c26b3e20b0b4"
     },
     {
       "dress" : {
@@ -5438,7 +6230,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "b33b99d817bfbe4a0e70f9423ea06bbe434a35b790e7891bab092452a5a3a75f"
+      "sha256" : "1b29da4062463c3b2424578d9973fd7d71daca086c7e36827250b851507ccaa8"
     },
     {
       "dress" : {
@@ -5449,7 +6241,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "063a615ab26cc77ba9128d350281a062d32877e418b8cb665cd5412ae0c17486"
+      "sha256" : "5fc4ac524f30e15141b3a7f9e8d2be9a9ca24f19aadac93af402a333c913adee"
     },
     {
       "dress" : {
@@ -5460,7 +6252,73 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "b0c9677aedfe62af508e878892e2fb0548de2a6c414ae3a63ea5db1d44220037"
+      "sha256" : "506ad8930bd65e1e0e302f730e2829b24377173bcb085e0a3acc30aaec85113d"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "angelWings"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "eef3b773865f859d0f47d029b0393726218b5367b0a5b0c82c8fa7fe62a0a549"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "kingsCape"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "785470942d32deb1f45d93c9aafe45c5d42155a697f844e57cb8e3ca5ce1ebb9"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "ec6d89756d260a22866a96bbf113374383370a79c0ef4eb42089997a82aaa312"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cherryPetals"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d539d0d1dc4796a80e9c8df5a08844922d2ae8395f449458efcc026cd6810415"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sparkleTrail"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "681d291bbbfb54696374abf36e86e9006f7d5724dfba6ffbd46153cd89546b63"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "rainCloud"
+        ],
+        "breed" : "frenchBulldog",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3536dd20989e64d6e99667313e7c26998605539d3a804ed45e3f700818b2edcb"
     },
     {
       "dress" : {
@@ -5851,7 +6709,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "a3a30da3a9e555562c2e7d1b2e9aa45e6c20256a4b861c5e3601f937dceb58fd"
+      "sha256" : "494f8f858190440ce5105619b1fc97240de17431134c8c9999f69c2dbe695026"
     },
     {
       "dress" : {
@@ -5862,7 +6720,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "9f3d6d218e0c10b73203cf721cbeac699e2021dac8edda2c2848663221d2beeb"
+      "sha256" : "26eae0cadfc2e46b90e4f311649ec69174da9b7bced3f0ff533f6a63e5ba236c"
     },
     {
       "dress" : {
@@ -5873,7 +6731,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "2c9da44af93d366ff29b0195f34c3f773d907cda21b5d60823286992803fc2ea"
+      "sha256" : "b5a3ca202db743cc1a6d932a5609671d3762ef1693e480b3d8a28a5f901904ee"
     },
     {
       "dress" : {
@@ -5884,7 +6742,73 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "88dcb43b746ee4d8d4c2cf27743ce021d7a2554954b0575cfc846dd8aa10aac8"
+      "sha256" : "018cbd772563ef1a17155d8372658c79cd272bb0f3682167e31466b95a8c6975"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "angelWings"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e7c57215197ddf9d6eb7cb11f0fd8c769e238a8fa722dcf8bfaf13d152710a24"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "kingsCape"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "08f1bd5e868abc6429710ec88c81a89f8113e4f34f63042625b47fd851c2c6b5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "389e2497ef6b295816fa0372d0067456c0a363c897bd8559b72d745dddf0710f"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cherryPetals"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "9bdaa3a521a91ebf0a9de1924c52c8bfc79da46ac024eeb7dd870b6fa91a87ee"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sparkleTrail"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "99d9f0bdf270d644f5f9c5b92227542c6f93ded0bd5993131cd29b1d2f2f105b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "rainCloud"
+        ],
+        "breed" : "corgi",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "648b8ae544f77b857843bd23282636525f9991207b12f79efd91e5b73e2306eb"
     },
     {
       "dress" : {
@@ -6275,7 +7199,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "7748e0fd8ccff37b693d8159493ff361cc4dabff00fc593bce9232a9bf00a6f7"
+      "sha256" : "769c5e69c061dc36c61b4832d4b5d00ae4150ef89e47e933378083f7d199e6b8"
     },
     {
       "dress" : {
@@ -6286,7 +7210,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "8bff7c3dfcb6795ad4ad99349eaf51ec7cca9f10068931664c5166897fe8eb53"
+      "sha256" : "e3dc87ee723b7e12179e5e88ff1caa9eaf240d851f850ada8c9dab5f977d3ef7"
     },
     {
       "dress" : {
@@ -6297,7 +7221,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "696cc329811b4cfa3e3bb8b65a93459f81b6175455822d83f4c67d2dceb1f1f5"
+      "sha256" : "3ac9567a4caa47308738173bc5d073134f447ec1d312cb750a340aee82767e24"
     },
     {
       "dress" : {
@@ -6308,7 +7232,73 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "38dd89459173d4a53d988d8a2561a1303ca7a393266942141954c03bfa546f42"
+      "sha256" : "269c3c550977ba592c7cfdd49f77e66f2d979ffaedfbb21bfdce10315f517c75"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "angelWings"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c69ac41dcd88f0565214e6d6651209ad830b807705e10a3b6c8e006cb56bd678"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "kingsCape"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "3ce7200c49ff396db1c3f8ee98d2654f34494c39ba310200edf3fdb6e04276bc"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a8e733608191b4eccf5ef06e11baee60e2f0fb092009b357d3b5450ef97f64f8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cherryPetals"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d9902b8d046f4dc1fc538f00134f322bf6df1d5f7c76158933df0ece4b050243"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sparkleTrail"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1fa4edc36cffc6e9f2300a3429aa518fe11452958b2c01594d45d79fd71dac30"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "rainCloud"
+        ],
+        "breed" : "dachshund",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "e96c4e23d08548d6d491fe65bd818486cb5ac9e69df372be7b69db3745ec1d7d"
     },
     {
       "dress" : {
@@ -6699,7 +7689,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "a7cfc98bbf507a7b8abfa4e6f8076e17793281069705088cbe3bee1f20739eee"
+      "sha256" : "cef77cc25d80d07636cc70714e85a89186cb80031136587c259e835bf90fa0c1"
     },
     {
       "dress" : {
@@ -6710,7 +7700,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "c8c63ac944e7e8f7cd9b0b37dcd1340db0490bf93973b3a801343a47ac2bf7c3"
+      "sha256" : "c285d6447ea04574fbe3801b3996df0bcaec7dfe5a5d6e164ba5f6fe3025443c"
     },
     {
       "dress" : {
@@ -6721,7 +7711,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "5920389b7355407c10b174f128c5449d6b9553ef0d9e6c8307f8a1f9b3bb234f"
+      "sha256" : "a552b6e23964ab9d1f98441cdb69631faa4fdb28ad835cf4ad9751e5e24a6f6a"
     },
     {
       "dress" : {
@@ -6732,7 +7722,73 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "7a870c7cbd36b3168404ca9d448e18dc4f2db54daa0ff0dfd8f8051842a02adc"
+      "sha256" : "b584c497e5adef52032ee5520bb7801abd323aac6ec0cff9b13a66a9c6d2d6e8"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "angelWings"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "daa0befe9160115c1334cd332f76524d5eba84087ee92c432a97e07cfcb25f3b"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "kingsCape"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "2a68695ca4961d3b3964a70b7ff21c93338ab68f8496796ed3b707aa39006093"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "6976a3bc8b58a23ddcef2231751733007582e9ed9570691c13b438ee347c7328"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cherryPetals"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "5db4754ea46baf90a5f57fd36e5818d1d5a544b922830e7df707c08c78128c69"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sparkleTrail"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "a6f6f8a9dfedbeb67c4cd8977b99c4cd6f8541559e7ba27a6eda0a0c15f87319"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "rainCloud"
+        ],
+        "breed" : "beagle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1d1483b41dd17bedc79eaedfc06bf7d9da1fdd45cd460ef1d54dd8fa05ea323e"
     },
     {
       "dress" : {
@@ -7123,7 +8179,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "f704c9315bd2b843bd760347f50134adacf2da70ac6bf1da91ad683db804555c"
+      "sha256" : "576fbcfe7700fd96da20fc88fcb19abcccc56c3b43e54d0ec7909e829418757e"
     },
     {
       "dress" : {
@@ -7134,7 +8190,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "9ce1540e3c5f9c683baa038adf2c09722c7e9a10f22eb1ee46f1638fc0148205"
+      "sha256" : "de52858f9533224b7eae051d6f3e20e3eb24defab5a5cc1c435cdd5061d05b71"
     },
     {
       "dress" : {
@@ -7145,7 +8201,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "43ed7a50792f0f4b3df7802056a6ea9b6c835c54d90524d3998b531f6f8aaa0a"
+      "sha256" : "2f31cf7514dc1743e2f8211943f5ee5dea36d6786862feaad74a4253b1064619"
     },
     {
       "dress" : {
@@ -7156,7 +8212,73 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "ea8f423970b458abfa7e395d89382f1d48b40296a459c7bf1b6a169ab32ff2f2"
+      "sha256" : "ecfbed1dcb1064674dfd52e3ed5464222ca483bdd32b6bd33333f99ad1ae3a30"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "angelWings"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "6053e298650f6cf59b178268f24cf81d0bd70e67946a71506365f501ca4e4839"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "kingsCape"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "d58280a591c9a7ae7dc391248954232f89df86a90117c9f901c5d568d68e333e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "0d38bc7256d1a2df2aa94b831169aa94c84b446140bfaefcd82be584f232cd57"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cherryPetals"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "b28fd051b358e7fcf3c7558adcae802bc1ce64f6ad7a8c6612669b06a87569f5"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sparkleTrail"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "bc7b4599909a575d9d37ef7fdec6dbe88849a55c62b541e73dd90d2598523b1c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "rainCloud"
+        ],
+        "breed" : "poodle",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "064167d36947cbd19dea16edb7516f793963902c1975aa17594864d9b01ea717"
     },
     {
       "dress" : {
@@ -7217,7 +8339,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "a65d39779e5ed16b2a677c5d84e3c69876fe8e2c1439c0ca66e284c9ff322b34"
+      "sha256" : "b21e4af5497edc80fb10b745c2de3a16a9f211cec2a5abafd88f4bfaf4a0bd70"
     },
     {
       "dress" : {
@@ -7228,7 +8350,7 @@
         "outfit" : "scrubs"
       },
       "frameCount" : 125,
-      "sha256" : "1f6d9c87d997c6f6d030190e7113497e63bffae973cfed340eb6817a52fc4ced"
+      "sha256" : "aaed6f0d933aa3f88b1102f63c6ebd79d70e108514d375f6b342a924ddfb31ce"
     },
     {
       "dress" : {
@@ -7239,7 +8361,7 @@
         "outfit" : "whiteCoat"
       },
       "frameCount" : 125,
-      "sha256" : "491c54e380d66ee8ebed32b26ee5067c937fbe45ed8df5c46a2965953d205752"
+      "sha256" : "9fe059360de34a82ad780bd37de9b0d2a4cddc0c2e0e97f96d146e71986b2de0"
     },
     {
       "dress" : {
@@ -7250,7 +8372,7 @@
         "outfit" : "cozyHoodie"
       },
       "frameCount" : 125,
-      "sha256" : "d84fb827e356d70664074604536891cac8cdb1c62448399e2333ecf9451b0880"
+      "sha256" : "2d73dfda8d67160b3952f35dfb8d5385b31d539a50b4da089126891589651414"
     },
     {
       "dress" : {
@@ -7261,7 +8383,7 @@
         "outfit" : "superheroCape"
       },
       "frameCount" : 125,
-      "sha256" : "8cf779c8d5deb932b82cee8aed765f4928262df23b9353898ff35e0246c2ba8e"
+      "sha256" : "b79592fe237a4ee5506a39ed8d1fef8809caf66de736ee5c8d875c2af25c69f1"
     },
     {
       "dress" : {
@@ -7272,7 +8394,7 @@
         "outfit" : "dinosaurHoodie"
       },
       "frameCount" : 125,
-      "sha256" : "4e690b086e5e2efec87d869ab912e66c03a8bc27fb79af31fe3b3335fb975d20"
+      "sha256" : "bc4dc4cc952ea1184e529655d6bbc1c6773a1d46ba00dfa5388c33022d44206c"
     },
     {
       "dress" : {
@@ -7283,7 +8405,7 @@
         "outfit" : "wizardRobe"
       },
       "frameCount" : 125,
-      "sha256" : "44d0f21dbefe13e46759be95d77d6db6cd27ae23f8f6898454b24253fbcaee02"
+      "sha256" : "05b6bc9c6b88b136ef6a3e3a0922fa11eefb65265fbebe1ff29acebafa7d3bd9"
     },
     {
       "dress" : {
@@ -7294,7 +8416,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "a5af9010b2290d30ac60573d915a561182444e63cb22f5708807b9429530b3a0"
+      "sha256" : "e2555e5cb2d20aac89d1f64d45c88ad926537918f4f580dcd2d2f11dc5e1af90"
     },
     {
       "dress" : {
@@ -7305,7 +8427,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "9877c9f63a23d4d6573143eb66b79f295ecae8a1bd5056934ab12985f8085e4e"
+      "sha256" : "8bebd40e3ed2ff8fe3422e647415cfbb0703e7a03667aea31cd77e93644ee8b5"
     },
     {
       "dress" : {
@@ -7316,7 +8438,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "16912f1a6b19e063099aadaf609442f2a5150006bd19a77ff63b9975f23eda6d"
+      "sha256" : "a11a5f1c4c84f77ab7461f310dca4a5c1cc80607657e31a061b1893d7d912612"
     },
     {
       "dress" : {
@@ -7327,7 +8449,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "1ffe2cb6e50ea5e9b9dc1baf39fbd7b80db5e8d4d161fdf0907e1886d236f55c"
+      "sha256" : "d4e173c6d7ee73ba4d4a930a75c5255ecc2d43e5692c02ecc49f70d1cd46cf3c"
     },
     {
       "dress" : {
@@ -7338,7 +8460,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "3f85fe72a8d718991b8c372e2e40f8cc95b5d8ce7ce50c5fc386c9d5b0b4abc8"
+      "sha256" : "dd8aab0c60c680cfc436f78f90381253b2b3247b714afa5d83133230b52ff0d7"
     },
     {
       "dress" : {
@@ -7349,7 +8471,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "45945e77d744375548b927b5b7aa6cc92808ee4a35f799448b1d2624a531fd59"
+      "sha256" : "bc6581f5665e89710833399d19771055fbd9e43b8ded846a97dc3e0fcb936ae9"
     },
     {
       "dress" : {
@@ -7360,7 +8482,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "62174e53739e540c9dc1535139a2007c6512ff675aaa3729cfd401c39836ca71"
+      "sha256" : "c7932ad112c1f8f0ae78ef06f86e5e1ee728287d0ee383a71d9b82aa7dbd4c2b"
     },
     {
       "dress" : {
@@ -7371,7 +8493,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "5182f3d67e6d74b4b0c3ef3260f08eed0dcad4af947dff5d2554d6f4dfad5078"
+      "sha256" : "5a2081ebd05df5c55f34b1d32295c11a61e1b98a718f210ffb82d8c273640d14"
     },
     {
       "dress" : {
@@ -7382,7 +8504,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "c3bda4a8ca7b7af622c67886d624380fee5e060b9338f4e4ffa79c3c8a277d84"
+      "sha256" : "b049ef04ff18f4f8fa35965589a8dd986a7e0970a6d346ac46b6366916321b3b"
     },
     {
       "dress" : {
@@ -7393,7 +8515,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "2ecb4a293705672dde5a99f9933a15f30155fe03c50e02f479b731924141778e"
+      "sha256" : "c7ab6f202f19f08bc3949e516df194cf1acefbbe0a7b5373b9e980aaedc2971d"
     },
     {
       "dress" : {
@@ -7404,7 +8526,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "26ca83732e9ca5a444d55492898eb435902f50f9f52fcf692b83b0545ec066d5"
+      "sha256" : "493a8de766b8316fef4ec43b72d654b21e90cb3dede16c08384e75b593d89655"
     },
     {
       "dress" : {
@@ -7415,7 +8537,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "61531a2f3f7416ceefc3b9320023b72f693184f16c9e69a683ca83b403b45a61"
+      "sha256" : "0afb8d0dcd17491a4d7f2e180b7b11f2dbe13e4b134f80aa156e64dc600647ac"
     },
     {
       "dress" : {
@@ -7426,7 +8548,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "e7ce711b6fb10a28248de229432afe717d7762e5f21b6410453f54ab950b0f60"
+      "sha256" : "cb036c4135a92f5d511f16e37f0975020cc6fdd6c321e96cab01e008faa4399c"
     },
     {
       "dress" : {
@@ -7437,7 +8559,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "7c55f057717feb7ce71eab6ae866ea9fbd7f6442c6cb875d4f5ada0f7454f132"
+      "sha256" : "b9873bbfa48db82d072505dc10f81508591efd2e6ba35fa76ae29375905a3e8a"
     },
     {
       "dress" : {
@@ -7448,7 +8570,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "8c1585c74acf984e53439eaf7b8b50e0d2f888b551d3cf91b11cc22900a8ad5d"
+      "sha256" : "9a3d5b0c0eebca1315af0d10f503a2ba91b9dc09e78dc78a1f1840935bf3cd6d"
     },
     {
       "dress" : {
@@ -7459,7 +8581,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "d5701e0d8ca7d7fccf8d41dd7ac76952095f2c360732c14aeb1e67e82b172791"
+      "sha256" : "a7698744bc3c423c68d573f7cdd1e5f8a33b26d988267efade00e36a38235e1d"
     },
     {
       "dress" : {
@@ -7470,7 +8592,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "b6e1a90082d1f67225295ba18f6726badc9f812310ebaeec61a6b84abae42550"
+      "sha256" : "a32bd513beab76fbb7d993ab50d62472de597211faeacc44652f57103c127568"
     },
     {
       "dress" : {
@@ -7481,7 +8603,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "fa10af972f884004f918e97400942023883b1cd0c41faf32ecd7baa235656640"
+      "sha256" : "4f903d9bf50ebde36e184c9b5fd537f5582389af592a1d5174aed7ec0f9b4e20"
     },
     {
       "dress" : {
@@ -7492,7 +8614,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "12ccb16c2c38f4908bfe1277dbfe7e7f47c311c674b39322660bc99403134234"
+      "sha256" : "f94d9c6e06eec391420b24714a2c22827959056b87650d7df8cd97b2fe41356a"
     },
     {
       "dress" : {
@@ -7503,7 +8625,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "616243028917da4415628b1f281cc40661c86e13ca1b5afab1e403c09bf0ae9e"
+      "sha256" : "363607db9e5d9a152828a1bec99e679f7beb796f40b10ba91c061efc6f03e242"
     },
     {
       "dress" : {
@@ -7514,7 +8636,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "d1a3646b319a10d13e4e363fe51888c2851d1ba68960c3e1061dbebb55a4f407"
+      "sha256" : "079a05089c1c1402e1715ab2b5a4ad6542b59b6b037c33ab7880504d0d3aa553"
     },
     {
       "dress" : {
@@ -7525,7 +8647,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "8d14414071d9aa56698d7e7cb76d5f955d2544646f38d648b86f7c6a1c84e6ee"
+      "sha256" : "4f620f1b2a0c099377db8b4d532c94f7265a9d3d6dd62dd7d2b7f9ffb6cf5aa4"
     },
     {
       "dress" : {
@@ -7536,7 +8658,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "a7d6f6651e5317264bbdaea60d41aaad63585c6730cdefa2675a0187727eabad"
+      "sha256" : "034b17b6cabfe813eefed324d7f05b34b9802204d8e92d9b1747da57454f7cb6"
     },
     {
       "dress" : {
@@ -7547,7 +8669,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "5857895efeac96343e42205567b8891a96918e7547559397af46dbd6d893ea64"
+      "sha256" : "571ca166d48cffea0d11bee58a8d17555906d50495040ceea70aba7e1ee8ac77"
     },
     {
       "dress" : {
@@ -7558,7 +8680,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "dcb152c0247db0957cb660371d9cda9d4f44d02ff809870bd9ba1f1cd8333d05"
+      "sha256" : "0bb3fc0b4725e3494325d47a4109b7618d0371aed091d586fd85e961252c1796"
     },
     {
       "dress" : {
@@ -7569,7 +8691,7 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "3acbc6cf825495179b92a172b7ab45d995884d39d9f98d45e8b7ad9f3ebe0bcd"
+      "sha256" : "2362a43a0096b460a924698853269fa8ae58d07707a668c0d9dd04de380465b4"
     },
     {
       "dress" : {
@@ -7580,7 +8702,73 @@
         "outfit" : "none"
       },
       "frameCount" : 125,
-      "sha256" : "4bc92afd6799769754cb04d3cc09579bd329d0e9846ca60621636212fe37fa54"
+      "sha256" : "4cee42913af65fdee5395dbd771d36f05b65f7ff20985715e86e3b028b5924e0"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "angelWings"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "9bf9067dd8e3be09fd6e052f6eea97e47c92efee7148235949f31d902bc8e28e"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "kingsCape"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "1eb2c4304b47107227e0957e777055f56fcc4430b12c856fb2cba2cd4b330698"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "halo"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "bc7dcd9b0ca613c697aa69e0221def43220154ffd8efb63116aa16c33338e260"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "cherryPetals"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "c6200f7157177b70feac23a97777e1f04b1c0c549c13ae9fbceccbf88e654dbc"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "sparkleTrail"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "deb6325ee52f07af7aad0c6973f1d025e07bd54287dce5f23691b087ec7e8c3c"
+    },
+    {
+      "dress" : {
+        "accessories" : [
+          "rainCloud"
+        ],
+        "breed" : "shihTzu",
+        "outfit" : "none"
+      },
+      "frameCount" : 125,
+      "sha256" : "aae27ba06a69c5c1b2e7674ad7dd4fa2786a8ff2ade925df7d645703712f7342"
     },
     {
       "dress" : {
@@ -7593,7 +8781,7 @@
         "outfit" : "scrubs"
       },
       "frameCount" : 125,
-      "sha256" : "1d435042e97f78a6ebb0d40939d64518ada085ceb5c9efe5346ad81635368429"
+      "sha256" : "b213873c16e776cb739d9971aa86eca29ac922b3b7f6ed319cdfea0955d6ee6d"
     },
     {
       "dress" : {
@@ -7606,7 +8794,7 @@
         "outfit" : "whiteCoat"
       },
       "frameCount" : 125,
-      "sha256" : "47fc95e4bfdb94e20eb1eb73a1622e69182b292310aec5bbe40c79b402e94542"
+      "sha256" : "751052d391965a188efb4cc1664b9a3fb8682919a53c4bd31fc672930f22257b"
     },
     {
       "dress" : {
@@ -7618,7 +8806,7 @@
         "outfit" : "dinosaurHoodie"
       },
       "frameCount" : 125,
-      "sha256" : "b2c59ffd0afe2a7673d9746bb8d368bc26fb826a8817604f299c9832285185f5"
+      "sha256" : "452e06944abeeda4f4c4ac32e135371446730aeb42c94fcd1c4a0575706bb767"
     },
     {
       "dress" : {
@@ -7630,7 +8818,7 @@
         "outfit" : "wizardRobe"
       },
       "frameCount" : 125,
-      "sha256" : "a6a751da110b34646fcea3c3c435a7fc149866e0a175ff1e6c9836d376425736"
+      "sha256" : "0255297d21e728f785924aee59689b15808ce602dd955e48b9d22d0a263f47b6"
     }
   ],
   "frameSize" : 32,

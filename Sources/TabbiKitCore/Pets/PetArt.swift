@@ -82,18 +82,25 @@ struct PetArtFile: Sendable {
     private(set) var bodyItems: [String: CostumeArt.BodyItem] = [:]
     private(set) var faceItems: [String: CostumeArt.FaceItem] = [:]
     private(set) var headItems: [String: CostumeArt.HeadItem] = [:]
+    private(set) var backItems: [String: CostumeArt.BackItem] = [:]
+    private(set) var auraItems: [String: CostumeArt.AuraItem] = [:]
     private(set) var basePalette: [PetPaletteRole: PetColor] = [:]
     private(set) var bodyShapes: [PetBodyShape: PetSpecies] = [:]
     /// Breeds in file order, which is the order pickers list them in.
     private(set) var breedOrder: [PetBreed] = []
     private(set) var breeds: [PetBreed: BreedDefinition] = [:]
     private(set) var animations: [PetAnimation: PetTimeline] = [:]
+    /// Seconds each frame of an animated costume item's loop stays on
+    /// screen (costume file only).
+    private(set) var itemFrameDuration: TimeInterval?
 
     func grid(_ name: String) -> SpriteGrid { lookUp(grids, name, "grid") }
     func sequence(_ name: String) -> [SpriteGrid] { lookUp(sequences, name, "sequence") }
     func bodyItem(_ name: String) -> CostumeArt.BodyItem { lookUp(bodyItems, name, "body item") }
     func faceItem(_ name: String) -> CostumeArt.FaceItem { lookUp(faceItems, name, "face item") }
     func headItem(_ name: String) -> CostumeArt.HeadItem { lookUp(headItems, name, "head item") }
+    func backItem(_ name: String) -> CostumeArt.BackItem { lookUp(backItems, name, "back item") }
+    func auraItem(_ name: String) -> CostumeArt.AuraItem { lookUp(auraItems, name, "aura item") }
     func species(of shape: PetBodyShape) -> PetSpecies { lookUp(bodyShapes, shape, "body shape") }
     func breed(_ breed: PetBreed) -> BreedDefinition { lookUp(breeds, breed, "breed") }
     func timeline(_ animation: PetAnimation) -> PetTimeline { lookUp(animations, animation, "animation") }
@@ -122,14 +129,28 @@ struct PetArtFile: Sendable {
             file.sequences[name] = try frames.enumerated().map { try parse($1, "\(name)[\($0)]") }
         }
         for (name, item) in raw.bodyItems ?? [:] {
-            file.bodyItems[name] = try CostumeArt.BodyItem(
-                cat: parse(item.cat, "\(name).cat"),
-                dog: parse(item.dog, "\(name).dog"),
-                longDog: parse(item.longDog, "\(name).longDog"),
-                walk: parse(item.walk, "\(name).walk"),
-                walkLong: parse(item.walkLong, "\(name).walkLong"),
-                rise: item.rise ?? 0
-            )
+            func grids(_ frame: Raw.BodyFrame, _ path: String) throws -> CostumeArt.BodyItem {
+                try CostumeArt.BodyItem(
+                    cat: parse(frame.cat, "\(path).cat"),
+                    dog: parse(frame.dog, "\(path).dog"),
+                    longDog: parse(frame.longDog, "\(path).longDog"),
+                    walk: parse(frame.walk, "\(path).walk"),
+                    walkLong: parse(frame.walkLong, "\(path).walkLong"),
+                    rise: item.rise ?? 0
+                )
+            }
+            var body = try grids(item.still, name)
+            body.moreFrames = try (item.frames ?? []).enumerated().map { index, frame in
+                let path = "\(name).frames[\(index)]"
+                let grids = try grids(frame, path)
+                for (still, moving, family) in [(body.cat, grids.cat, "cat"), (body.dog, grids.dog, "dog"),
+                                                 (body.longDog, grids.longDog, "longDog"), (body.walk, grids.walk, "walk"),
+                                                 (body.walkLong, grids.walkLong, "walkLong")] {
+                    try sameSize(moving, as: still, "\(path).\(family)")
+                }
+                return grids
+            }
+            file.bodyItems[name] = body
         }
         for (name, item) in raw.faceItems ?? [:] {
             file.faceItems[name] = try CostumeArt.FaceItem(
@@ -139,7 +160,51 @@ struct PetArtFile: Sendable {
             )
         }
         for (name, item) in raw.headItems ?? [:] {
-            file.headItems[name] = try CostumeArt.HeadItem(grid: parse(item.grid, "\(name).grid"), sitRow: item.sitRow)
+            let grid = try parse(item.grid, "\(name).grid")
+            let frames = try (item.frames ?? []).enumerated().map { index, rows in
+                let path = "\(name).frames[\(index)]"
+                let frame = try parse(rows, path)
+                try sameSize(frame, as: grid, path)
+                return frame
+            }
+            file.headItems[name] = CostumeArt.HeadItem(grid: grid, sitRow: item.sitRow, moreFrames: frames)
+        }
+        func placement(_ raw: Raw.BackPlacement, _ path: String) throws -> CostumeArt.BackItem.Placement {
+            guard !raw.frames.isEmpty else { throw LoadError.invalidGrid(name: path, reason: "no frames") }
+            let frames = try raw.frames.enumerated().map { try parse($1, "\(path).frames[\($0)]") }
+            for (index, frame) in frames.enumerated().dropFirst() {
+                try sameSize(frame, as: frames[0], "\(path).frames[\(index)]")
+            }
+            return CostumeArt.BackItem.Placement(x: raw.x, y: raw.y, frames: frames)
+        }
+        for (name, item) in raw.backItems ?? [:] {
+            let back = try CostumeArt.BackItem(
+                cat: placement(item.cat, "\(name).cat"), dog: placement(item.dog, "\(name).dog"),
+                longDog: placement(item.longDog, "\(name).longDog"), walk: placement(item.walk, "\(name).walk"),
+                walkLong: placement(item.walkLong, "\(name).walkLong")
+            )
+            // Every family plays the loop in step on the one item clock.
+            for (family, placement) in [("dog", back.dog), ("longDog", back.longDog), ("walk", back.walk),
+                                        ("walkLong", back.walkLong)] where placement.frames.count != back.frameCount {
+                throw LoadError.invalidGrid(name: "\(name).\(family)", reason: "\(placement.frames.count) frames "
+                    + "differ from the cat's \(back.frameCount)")
+            }
+            file.backItems[name] = back
+        }
+        for (name, item) in raw.auraItems ?? [:] {
+            let front = try placement(item.front, "\(name).front")
+            let aura = try CostumeArt.AuraItem(front: front, side: placement(item.side, "\(name).side"),
+                                               longDog: item.longDog.map { try placement($0, "\(name).longDog") } ?? front)
+            for (view, placement) in [("side", aura.side), ("longDog", aura.longDog)]
+            where placement.frames.count != aura.frameCount {
+                throw LoadError.invalidGrid(name: "\(name).\(view)", reason: "\(placement.frames.count) frames "
+                    + "differ from the front's \(aura.frameCount)")
+            }
+            file.auraItems[name] = aura
+        }
+        if let duration = raw.itemFrameDuration {
+            guard duration > 0 else { throw LoadError.invalidValue(path: "itemFrameDuration", value: "\(duration)") }
+            file.itemFrameDuration = duration
         }
         if let base = raw.basePalette {
             file.basePalette = try colors(base, at: "basePalette")
@@ -173,6 +238,15 @@ struct PetArtFile: Sendable {
         return file
     }
 
+    /// Every frame of an item's loop is drawn over the same spot, so it
+    /// must be the size of the item's still grid.
+    private static func sameSize(_ frame: SpriteGrid, as still: SpriteGrid, _ name: String) throws {
+        guard frame.width == still.width, frame.height == still.height else {
+            throw LoadError.invalidGrid(name: name, reason: "\(frame.width)x\(frame.height) differs from the item's "
+                + "\(still.width)x\(still.height) still grid")
+        }
+    }
+
     private static func value<Value>(_ parsed: Value?, _ raw: String, at path: String) throws -> Value {
         guard let parsed else { throw LoadError.invalidValue(path: path, value: raw) }
         return parsed
@@ -190,9 +264,25 @@ struct PetArtFile: Sendable {
 
     /// The file as written: grids are arrays of text rows.
     private struct Raw: Decodable {
-        struct BodyItem: Decodable {
+        /// One frame of a body item: a grid per body family.
+        struct BodyFrame: Decodable {
             let cat, dog, longDog, walk, walkLong: [String]
+        }
+
+        struct BodyItem: Decodable {
+            let still: BodyFrame
             let rise: Int?
+            /// The rest of an animated item's loop, after `still`.
+            let frames: [BodyFrame]?
+
+            enum CodingKeys: CodingKey { case rise, frames }
+
+            init(from decoder: Decoder) throws {
+                still = try BodyFrame(from: decoder)
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                rise = try container.decodeIfPresent(Int.self, forKey: .rise)
+                frames = try container.decodeIfPresent([BodyFrame].self, forKey: .frames)
+            }
         }
 
         struct FaceItem: Decodable {
@@ -203,6 +293,27 @@ struct PetArtFile: Sendable {
         struct HeadItem: Decodable {
             let grid: [String]
             let sitRow: Int
+            /// The rest of an animated item's loop, after `grid`.
+            let frames: [[String]]?
+        }
+
+        /// A back item's loop for one body family and its offset from that
+        /// family's body origin.
+        struct BackPlacement: Decodable {
+            let x, y: Int
+            let frames: [[String]]
+        }
+
+        struct BackItem: Decodable {
+            let cat, dog, longDog, walk, walkLong: BackPlacement
+        }
+
+        /// An aura item's loop around a pet facing the viewer and seen
+        /// from the side, offset from the frame's top-left corner, and
+        /// optionally around the dachshund, which sits side-on.
+        struct AuraItem: Decodable {
+            let front, side: BackPlacement
+            let longDog: BackPlacement?
         }
 
         let schema: String
@@ -211,10 +322,13 @@ struct PetArtFile: Sendable {
         let bodyItems: [String: BodyItem]?
         let faceItems: [String: FaceItem]?
         let headItems: [String: HeadItem]?
+        let backItems: [String: BackItem]?
+        let auraItems: [String: AuraItem]?
         let basePalette: [String: String]?
         let bodyShapes: [String: BodyShape]?
         let breeds: [Breed]?
         let animations: [String: PetTimeline.Raw]?
+        let itemFrameDuration: Double?
 
         struct BodyShape: Decodable {
             let species: String

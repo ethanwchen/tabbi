@@ -118,7 +118,7 @@ After stamping, `PetCanvas.outlined()` adds a one-pixel outline around the whole
 ![Every costume on a dog](images/costumes-dog.png)
 
 A pet wears one `PetOutfit` (`none`, `scrubs`, `whiteCoat`, `cozyHoodie`, `superheroCape`, `dinosaurHoodie`, `wizardRobe`) and accessories (`PetAccessory`).
-Each accessory has a slot (neck, face, or head); a pet wears at most one per slot.
+Each accessory has a slot (neck, face, head, back, or aura); a pet wears at most one per slot.
 `PetAccessory.wearable(_:)` keeps the last item listed per slot and sorts them in drawing order, so hats always land on top.
 
 Costume art lives in `PetArt/costume.json` (with its anchors: `rise`, `eyeRow`, `sitRow`) and is anchored to the pose layout instead of per-breed positions:
@@ -137,12 +137,55 @@ Accessories are drawn after the face and before the automatic outline, so hats g
 
 ![Every breed in the study-day look](images/fit-study-day.png)
 
+### Animated items
+
+Some items move: the Flame Headband's flame flickers, a glint crosses the Golden Laurel, the Team Medal sparkles now and then, a glint crosses the Backwards Cap's metal snap, the Halo bobs over the head, the Angel Wings flap, a glint runs down the King's Cape's gold trim, Cherry Petals drift down around the pet, gold sparkles twinkle beside it and trail behind it on a walk, and the Tiny Rain Cloud drizzles beside its head.
+An animated item lists the rest of its loop in `frames`, after its still grids: a head item gives grids the size of `grid`, a body item gives a grid per body family for each frame.
+The still is the loop's first frame and the picture Reduce Motion shows.
+Every frame lasts one tick of the item clock, `itemFrameDuration` in `costume.json` (150 ms, a walking step), so a slower move repeats a frame.
+The composer draws the item's frame for each tick on every pose (`PetFrame.itemFrames`), so it stays anchored like the still.
+The item clock counts from a fixed moment, not from the clip's start, so a loop runs on smoothly when the pet changes clip.
+`PetClipSet.nextChange` wakes the player on the next tick that looks different, so an item that glints now and then costs no redraws in between.
+`PetItem.loopFrameCount` says how many ticks an item's loop has, and `PetItemLoopTests` holds every item with a limited edition effect to moving a few pixels on every body shape.
+The Halo is the one hat meant to float: a thin gold arc two rows tall, because at the top of a hop a dog has only three rows of frame above its head.
+It bobs a pixel down for half its loop, and `PetItemLoopTests` checks that its gold never touches the fur on any body shape (the poodle's and the Shih Tzu's topknots reach into it, and it rests on the Scottish Fold's flat crown).
+
+### Back items
+
+Wings and the King's Cape are worn in the `back` slot and drawn behind the whole pet.
+A back item lists, for each body family and walking torso, an `x` and `y` offset from that body's origin and its loop of `frames`, the first the still (`backItems` in `costume.json`).
+Its grids may reach past the body, out to the frame's edges: the composer stamps them on a layer of their own, outlines that layer, and lays the outlined pet over it, so the pet's outline keeps white feathers apart from white fur.
+The layer moves with the body (a walking step, the bow of a stretch, a curled-up nap) and is left out while the pet hangs from the notch.
+Effects float in front of it: a sleep "z" or a heart over a wing gets an outline ring cut into the wing so it still reads.
+From the front both wings show beside the head and body; walking and on the dachshund, which sits side-on, the near wing stands up off the back.
+The cape falls to the floor beside the body from the front, its ermine collar on the shoulders; seen from the side it streams back over the shoulders and ripples.
+`PetItemLoopTests` checks on every body shape and in every animation that each back item never covers a pixel of the pet, shows, and moves.
+`swift run PetGallery <dir>` writes `loop-<item>.png` (every body shape through each tick, sitting and walking, at 6x) and `loop-<item>-2x.png` at notch size.
+
+### Aura items
+
+Cherry Petals, the Sparkle Trail and the Tiny Rain Cloud are worn in the `aura` slot and float in the air around the pet.
+An aura item lists two loops of `frames` with an `x` and `y` offset from the frame's top-left corner (`auraItems` in `costume.json`): `front` around a pet facing the viewer (sitting), and `side` around a pet seen from the side (walking, stretching, curled up).
+The frames are not tied to a body: each group of touching pixels is one particle, and a particle that would cover or touch the pet or one of its effects is left out of that frame whole.
+So petals pass in front of the pet and its wings without an outline, never hide part of it, and seem to drift behind it where they cross it.
+They are added after the effects and stay put when the pet hops; while the pet hangs from the notch none are drawn.
+The petals loop over 24 ticks: each falls about a row and a third per tick, so it wraps from the bottom edge back to the top without a jump, sways a pixel and turns a quarter every three ticks.
+From the front they fall in the free columns on both sides of the pet; from the side they also fall above the head and over the back.
+`PetItemLoopTests` checks on every body shape and in every animation that the petals never cover or touch the pet or its effects, that a particle shows on every tick, and that they move.
+The Sparkle Trail loops over 12 ticks: each sparkle glints for four (a gold dot, a gold star with a white heart for two ticks, then a white dot) and a new one starts every tick, so four show at a time.
+From the front they twinkle in place beside and above the pet; from the side each is born at the pet's back and drifts a pixel back per tick, so they trail behind it.
+The Tiny Rain Cloud is one particle, a white cloud with two puffs and a grey underside, that hangs beside the head from the front and over the back on a walk.
+Its drops fall a row a tick over an 8-tick loop, and each drop goes away as it reaches the pet, so the rain seems to land on it.
+The dachshund sits side-on with its head where other pets leave air, so an aura item may give it a loop of its own (`longDog`); the cloud uses one to hang over its back.
+
 ### Adding a costume item
 
 1. Add a case to `PetOutfit` or `PetAccessory` (with its `slot` and `displayName`), and give it a price in `PetItem.cost`, a Closet shelf in `PetItem.theme` (Study, Cozy, Fantasy, Seasonal or Silly) and the catalog `release` that adds it.
    Items from `PetItem.latestRelease` wear a "New" badge in the Closet until the user owns them.
 2. Draw it in `CostumeArt` using costume roles only: a `BodyItem` for each body family plus its two walking torsos, a `FaceItem` with its `eyeRow`, or a `HeadItem` with its `sitRow`.
    A body item that sticks up out of the silhouette (the dinosaur's back spikes, the cape streaming up behind a walking pet) sets `rise`, the rows every one of its grids starts above the body's top row.
+   An item worn behind the pet is a `BackItem` (see Back items), and one floating around it an `AuraItem` (see Aura items).
+   An item that moves lists the rest of its loop in `frames` (see Animated items).
 3. Map the case to its art in `PetComposer`.
    An outfit with a head part (the dinosaur hood) returns it from `outfitHood`; it is placed like a hat, moves with the head, and any hat is worn over it.
 4. Run `swift test` and review `contact-*.png` (every item on every breed) and `strip-<item>.png` (every breed through the key frames of every animation) from `PetGallery`.
@@ -438,11 +481,11 @@ The Poodle is all curls, so its look comes from a bumpy silhouette and dotted te
 
 The Shih Tzu reads by its topknot, its flat face, and a coat that falls to the floor:
 
-- Head (`DogArt.headShihTzu`): a gold topknot puff tied with a dark band, a white blaze between gold eye patches, a white beard that widens below the chin, and long gold ears that hang past it, set apart from the face by an outline.
+- Head (`DogArt.headShihTzu`): a topknot puff tied with a band, a slightly lighter mask around the eyes so they read on the dark face, a beard that widens below the chin with a brown stain around the mouth (the `muzzle` zone), and long ears that hang past it, set apart from the face by an outline.
 - Face (`DogArt.faceShihTzu`): big round 3x3 eyes with a catchlight, a button nose right between them (the flat face), and the tip of a tongue.
-- Body (`DogArt.bodyShihTzu`, `WalkArt.shihTzuTorso`): a long white coat drawn in `furShade` strands that flares out at the floor and hides all but the tips of the paws; walking, it ends in a fringe over the legs.
-- Tail (`DogArt.tailPlume`, `WalkArt.shihTzuTail`): a plume curled up over the back with a gold tip.
-- Coloring (`PetBreed.palette`): gold and white by default; the gold is `furAccent` on the ears, mask, and tail tip.
+- Body (`DogArt.bodyShihTzu`, `WalkArt.shihTzuTorso`): a long coat drawn in `furShade` strands that flares out at the floor and hides all but the tips of the paws; walking, it ends in a fringe over the legs.
+- Tail (`DogArt.tailPlume`, `WalkArt.shihTzuTail`): a plume curled up over the back.
+- Coloring (`PetBreed.palette`): black by default, with the faintly lighter `furAccent` on the topknot and mask and the mouth stain in `furSpot`. A fur tint recolors the coat like any solid breed's and leaves the brown stain as it is.
 - The tie is drawn in the outline role, so a cap that covers the topknot never changes the face. Hats sit on the skull below it (`skullTop` 5).
 - Party: the server catalog has no Shih Tzu, so it is sent as `pomeranian`, the nearest small long-coated breed there, and drawn back as a Shih Tzu.
 
