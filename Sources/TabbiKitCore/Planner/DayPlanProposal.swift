@@ -166,11 +166,11 @@ public extension DayPlanner {
                 linkedTaskID: task.map { UUID(uuidString: String(format: "00000000-0000-4000-8000-%012d", $0))! }
             )
         }
-        // Gaps around the samples: after the review (+45) and after the run (+125).
+        // Gaps around the samples: after the review (+45) and after yoga (+125).
         return [
-            block(50, 90, "Ship planner beta", 3),
-            block(135, 180, "Draft release notes"),
-            block(190, 220, "Triage beta feedback"),
+            block(50, 90, "Read chapter 4", 3),
+            block(135, 180, "Essay: section two"),
+            block(190, 220, "Spanish practice"),
         ]
     }
 }

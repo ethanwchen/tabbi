@@ -356,8 +356,8 @@ final class PlannerSampleDataTests: XCTestCase {
 
     func testMedicineSampleIsAStudyDay() {
         let titles = PlannerDay.sample(on: oct1, kind: .medicine).items.map(\.title)
-        XCTAssertTrue(titles.contains("UWorld cardio Qs"))
-        XCTAssertFalse(titles.contains("Ship notch planner beta"))
+        XCTAssertTrue(titles.contains("Cardio practice questions"))
+        XCTAssertFalse(titles.contains("Read chapter 4"))
     }
 
     private func assertPartlyFinished(_ day: PlannerDay, calendar: Calendar, line: UInt = #line) {

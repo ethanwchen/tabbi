@@ -228,7 +228,8 @@ final class ClaudeAskSessionHistoryTests: XCTestCase {
         addTeardownBlock { defaults.removePersistentDomain(forName: suite) }
         let settings = SettingsStore(catalog: ModuleList.catalog, defaults: defaults, defaultKitID: "essentials",
                                      kitStore: nil, integratesWithSystem: false)
-        settings.settings.ai.provider = .anthropic
+        // As the user picks it in Settings: choosing records the data consent.
+        settings.settings.ai.choose(.anthropic)
         let keys = InMemoryAIKeyStore([.anthropic: "sk-test"])
         let factory = AIProviderFactory(keys: keys, sandboxed: false, locate: { _ in nil },
                                         transport: api.transport)
