@@ -92,6 +92,19 @@ HOME_HERO = {
       </div>''',
 }
 
+# The trust stickers' little line icons, drawn like the paw: one stroke
+# weight, round ends, colored by the card.
+def sticker_icon(paths):
+    return ('<svg class="trust-mark" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">'
+            '<g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'
+            + paths + '</g></svg>')
+
+
+HEART = sticker_icon('<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>')
+CODE = sticker_icon('<path d="M8.5 7 3.5 12l5 5M15.5 7l5 5-5 5"/>')
+LOCK = sticker_icon('<rect x="5" y="10.5" width="14" height="10" rx="3"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/>')
+FEATHER = sticker_icon('<path d="M19 5c-7 0-12 4.5-12 12v2M7 17c5 0 9-3 10.5-8.5M10.5 13.5H15"/>')
+
 HOME = DEMO + f'''
       <section class="tabs" aria-labelledby="tabs-title">
         <h2 id="tabs-title" class="tabs-title">{PAW}<span>Click the notch, pick a tab</span></h2>
@@ -100,14 +113,32 @@ HOME = DEMO + f'''
             <span class="tab-label" aria-hidden="true">{label}</span>
             <img src="/img/{img}.webp" srcset="/img/{img}-680.webp 680w, /img/{img}.webp 1360w" sizes="{TAB_SIZES}" width="1360" height="520" loading="lazy" decoding="async" alt="{alt}">
             <figcaption><strong>{name}</strong>{line}</figcaption>
-          </figure>''' for img, label, name, line, alt in TABS) + '''
+          </figure>''' for img, label, name, line, alt in TABS) + f'''
         </div>
         <p class="more">And more fun tabs inside. Missing one? <a href="/suggest">Suggest a tab</a>.</p>
+      </section>
+      <section class="steps" aria-labelledby="steps-title">
+        <h2 id="steps-title" class="tabs-title">{PAW}<span>How it works</span></h2>
+        <ol class="step-row">
+          <li class="step"><span class="step-num" aria-hidden="true">1</span><strong>Hover the notch</strong><span>Click, and it opens into a little panel.</span></li>
+          <li class="step"><span class="step-num" aria-hidden="true">2</span><strong>Pick a tab</strong><span>Your timer, your day, your music and more.</span></li>
+          <li class="step"><span class="step-num" aria-hidden="true">3</span><strong>Close it</strong><span>Your cat keeps you company beside the notch.</span></li>
+        </ol>
+      </section>
+      <section class="trust" aria-label="Good to know">
+        <ul class="trust-row">
+          <li class="trust-card">{HEART}<span>Free forever</span></li>
+          <li class="trust-card">{CODE}<span>Open source (MIT)</span></li>
+          <li class="trust-card">{LOCK}<span>No account or tracking</span></li>
+          <li class="trust-card">{FEATHER}<span>A tiny native app</span></li>
+        </ul>
+      </section>
+      <section class="thanks" aria-label="Say hi">
         <div class="card-pair">
           <a class="gh-card" href="''' + GITHUB + '''">
             <img class="gh-cat" src="/img/glyph.png" width="56" height="56" alt="">
             <svg class="gh-mark" viewBox="0 0 16 16" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-            <span class="gh-text"><strong>Open source on GitHub</strong><span>Free forever. Come say hi or leave a star.</span></span>
+            <span class="gh-text"><strong>Open source on GitHub</strong><span>Come say hi or leave a star.</span></span>
             <span class="gh-arrow" aria-hidden="true">&rarr;</span>
           </a>
           <a class="gh-card coffee-card" href="https://buymeacoffee.com/ethanpolar">
