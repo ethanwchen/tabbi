@@ -5,7 +5,21 @@ import TabbiKitCore
 MainActor.assumeIsolated {
     let app = NSApplication.shared
     let arguments = CommandLine.arguments
-    if let flag = arguments.firstIndex(of: RunMode.snapshotFlag) {
+    if let flag = arguments.firstIndex(of: PreviewRecorder.flag) {
+        let path = arguments.indices.contains(flag + 1) ? arguments[flag + 1] : "preview-frames"
+        let partFlag = arguments.firstIndex(of: "--part")
+        let part = partFlag.flatMap { arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil } ?? "opening"
+        let tabsFlag = arguments.firstIndex(of: "--tabs")
+        let tabs = tabsFlag.flatMap { arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil }
+            .flatMap { ModuleLayout(enablingList: $0, catalog: ModuleList.catalog(for: .current)) }
+        app.setActivationPolicy(.prohibited)
+        Task { @MainActor in
+            await PreviewRecorder.run(outputDirectory: URL(fileURLWithPath: path), part: part,
+                                      kitID: Edition.current.defaultKitID, tabs: tabs)
+            exit(0)
+        }
+        app.run()
+    } else if let flag = arguments.firstIndex(of: RunMode.snapshotFlag) {
         let path = arguments.indices.contains(flag + 1) ? arguments[flag + 1] : "snapshots"
         let kitFlag = arguments.firstIndex(of: "--kit")
         let kitID = kitFlag.flatMap { arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil }

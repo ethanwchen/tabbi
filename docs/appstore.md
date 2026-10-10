@@ -315,6 +315,17 @@ Known gaps to close before upload:
 
 [`appstore/preview/tabbi-app-preview.mp4`](appstore/preview/tabbi-app-preview.mp4) is an interim App Preview: 23.6 seconds of 1920x1080 H.264 (High profile, Level 4.0, 30 fps) with a silent stereo AAC track, since App Store Connect expects previews to carry audio.
 It is made from the screenshots' open-panel scenes on the light canvas: the panel opens out of the notch, then Closet, Today, Tomorrow, Now Playing, Flashcards and the recap each hold their caption, with fades between them.
-It is still made from stills, so the timer does not tick; the spec asks for a recording of the running app (Guideline 2.3.4), which is the next step.
+It is still made from stills, so the timer does not tick; the spec asks for a recording of the running app (Guideline 2.3.4).
+
+The footage for that recording comes from the app itself: `--record` plays the spec's storyboard on the real notch (live demo stores, ticking clock, the app's springs and celebrations) and records it with ScreenCaptureKit at 30 fps and 2x.
+```sh
+TABBI_DEMO=1 swift run Tabbi --record <folder>/opening --part opening --edition appstore --tabs study,planner,anki,spotify,closet
+TABBI_DEMO=1 TABBI_DEMO_FOCUS_LEFT=4 swift run Tabbi --record <folder>/story --part story --edition appstore --tabs study,planner,anki,spotify,closet
+```
+`opening` is the notch opening on the Timer at 18:42 and ticking; `story` starts four seconds before the focus block ends, so the session finishes and the pet celebrates on camera, then opens the Closet, checks off Read chapter 4, plans tomorrow, likes the track in Now Playing, shows Flashcards and closes.
+The recorded window sits behind the desktop picture, so nothing shows on the Mac's display and no other app or desktop content is ever in a frame, but the terminal that runs it needs Screen Recording permission.
+Each part writes transparent `frame-NNNN.png` files and a `frames.json` with every frame's time and the storyboard's beats; the stream sends a frame only when something changed, so a frame lasts until the next one's time.
+No pointer is drawn, since the spec rules out a fake one: the clicks are the app's own actions.
+Composing these parts on the dune stage with the captions in `make-media.swift` is the next step.
 There is no music bed: no track with a clear license was available, so the preview stays silent.
 `swift docs/appstore/make-media.swift` writes it together with the screenshots.
