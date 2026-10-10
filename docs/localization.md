@@ -30,12 +30,24 @@ Add each new string to the catalog with a `comment` that says where it shows and
 Mark it `"extractionState" : "manual"`, because SwiftPM does not extract keys from code the way Xcode does.
 A string that must stay as is in every language (a brand name) gets `"shouldTranslate" : false`.
 
+`scripts/l10n-add.py strings.json` writes entries for you: it takes the English keys with a comment and one translation per language (an object of plural forms for a plural), adds them with that state and rewrites the catalog sorted, in Xcode's layout.
+The script's header shows the input format.
+
 ## Tone
 
 Keep translations short, natural and friendly, the way a cozy app talks to a friend.
 German and French run long, so prefer the shorter of two good options and check the panel snapshots.
 Follow each language's usual app conventions: informal "du" in German, "tu" in French and Spanish, "você" in Brazilian Portuguese, and polite but plain wording in Japanese and Korean.
 The writing rules in AGENTS.md hold in every language: no emojis and no em dashes.
+
+## Not translated yet
+
+The onboarding is translated, and the rest of the app follows tab by tab.
+These stay English on purpose for now:
+
+- long help text and error details,
+- the bundled kits' names, summaries and questions,
+- the AI provider setup hints in Settings > Connections.
 
 ## Checking
 

@@ -32,13 +32,13 @@ public struct OnboardingSetupStep: Hashable, Sendable, Identifiable, CustomStrin
 
 public extension OnboardingSetupStep {
     /// The fun one first: pick a cat or a dog, its breed and its name.
-    static let pet = OnboardingSetupStep("pet", title: "Your pet", symbol: "pawprint.fill", rank: 10)
+    static let pet = OnboardingSetupStep("pet", title: String(localized: "Your pet", bundle: .tabbi), symbol: "pawprint.fill", rank: 10)
     /// Check that Anki and AnkiConnect answer on this Mac.
-    static let anki = OnboardingSetupStep("anki", title: "Connect Anki", symbol: "rectangle.stack.fill", rank: 20)
+    static let anki = OnboardingSetupStep("anki", title: String(localized: "Connect Anki", bundle: .tabbi), symbol: "rectangle.stack.fill", rank: 20)
     /// Ask for calendar access, so Today can plan around events.
-    static let calendar = OnboardingSetupStep("calendar", title: "Calendar access", symbol: "calendar", rank: 30)
+    static let calendar = OnboardingSetupStep("calendar", title: String(localized: "Calendar access", bundle: .tabbi), symbol: "calendar", rank: 30)
     /// Pick the study rhythm the Study timer starts with.
-    static let studyMethod = OnboardingSetupStep("studyMethod", title: "Your timer", symbol: "timer", rank: 40)
+    static let studyMethod = OnboardingSetupStep("studyMethod", title: String(localized: "Your timer", bundle: .tabbi), symbol: "timer", rank: 40)
     /// Pick a display name and the server study parties meet on.
-    static let party = OnboardingSetupStep("party", title: "Study parties", symbol: "person.3.fill", rank: 50)
+    static let party = OnboardingSetupStep("party", title: String(localized: "Study parties", bundle: .tabbi), symbol: "person.3.fill", rank: 50)
 }
