@@ -36,3 +36,9 @@ This compares the macOS app (`Sources/`) with the site Privacy Policy (`site/_le
 9. Sparkle checks at launch as well as once a day.
 10. The Pet Coach samples idle time and the frontmost app during focus phases, on the Mac only; the policy is silent.
 11. There is no `PrivacyInfo.xcprivacy` privacy manifest, which App Store uploads expect for some APIs.
+
+## Status
+
+The site Privacy Policy rewrite (`site/_legal.py`, 9 October 2026) fixes policy text items 1 to 10: crash reports have their own section that says where they go, App Store edition differences are stated up front, each AI feature's payload is listed, AI Usage's "ok" request is disclosed, the browser sign-in name hand-off and custom friends servers are described, artwork and update checks are worded to match the code, and focus coaching is described as on-Mac only.
+Item 11 (privacy manifest) and code gaps 2 and 3 remain open.
+The README privacy section, the support FAQ (`site/build.py`) and `backend/PRIVACY.md` still carry some of the old wording and need the same pass.

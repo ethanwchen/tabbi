@@ -34,3 +34,10 @@ ADVISABLE means the policy is silent or loose.
 - Identity token hashes live until Apple's expiry plus 60 seconds, plus up to an hour before the sweep, not a flat "about ten minutes".
 - Backups (30-day point-in-time history and operator exports) can keep suggestions and crash reports about 30 days past their limits; say so next to those limits.
 - `DELETE /v1/me` leaves pending web sign-in rows holding the user's Apple id until they expire.
+
+## Status
+
+The site Privacy Policy rewrite (`site/_legal.py`, 9 October 2026) rewords REQUIRED items 1 and 3 to 8 to match the code: log sampling, what the crash check does, re-deleting after a restore as a commitment, unexpected fields limited to the Party endpoints, "about the 20 most recent" Mac tokens, crash reports and suggestions named as server traffic, and every use of the IP address in memory.
+Item 2 is reworded to "usable for two minutes, then erased within about an hour"; the code fix (delete expired rows on read, revoke abandoned refresh tokens) is still advisable.
+From ADVISABLE, the policy now lists the extra stored timestamps, the report resolution, request counts in the totals, the merge moving items, and backup copies of suggestions and crash reports.
+`backend/PRIVACY.md` still needs the same corrections.
