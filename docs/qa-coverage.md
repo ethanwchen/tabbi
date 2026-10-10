@@ -142,7 +142,9 @@ Another child overflows its stack, and the handler still writes a signal log fro
 Each child installs twice, and the second install (with another environment) changes nothing.
 Removing `SA_ONSTACK`, the install guard or the abort guard each makes these tests fail.
 The exception test takes about 30 seconds, because XCTest's own terminate handler holds an uncaught exception that long before the system's handler sees it.
-The check that demo and snapshot runs never install lives in `AppDelegate` and is still untested.
+The check that demo and snapshot runs never install lives in `AppDelegate.watchesForCrashes(in:)`, which also gates the pending report prompt and the hang watchdog.
+`CrashWatchRunModeTests` runs it on the run mode built from a process's environment and arguments: only the real app watches, while `TABBI_DEMO=1`, `--snapshot` or both never do.
+Letting a snapshot run watch makes these tests fail.
 
 ### 8. Other app stores below 40%
 

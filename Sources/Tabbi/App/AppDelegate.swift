@@ -25,7 +25,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         #if !APPSTORE
         // The App Store build relies on Apple's crash reports instead.
-        if RunMode.current == .live {
+        if Self.watchesForCrashes(in: RunMode.current) {
             CrashHandler.install(in: EditionStorage(edition: edition), environment: Feedback.environment)
         }
         #endif
@@ -54,7 +54,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         pendingLinks = []
         application(NSApp, open: links)
         #if !APPSTORE
-        if RunMode.current == .live {
+        if Self.watchesForCrashes(in: RunMode.current) {
             // Asked once the notch is up, so the prompt never holds up launch.
             let report = CrashHandler.takePendingReport(in: EditionStorage(edition: edition))
             // Watched only from here on, so a hang never overwrites that report.
@@ -62,6 +62,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             DispatchQueue.main.async { CrashReportFlow.live.run(with: report) }
         }
         #endif
+    }
+
+    /// Only the real app installs the crash handler, offers a pending report
+    /// and watches for hangs: demo and snapshot runs must neither write a crash
+    /// log into the user's data nor ask them to send one.
+    nonisolated static func watchesForCrashes(in mode: RunMode) -> Bool {
+        mode == .live
     }
 
     /// With no Dock icon or menu bar item, opening the app again (from Finder,
