@@ -20,14 +20,13 @@ final class AIProviderIDTests: XCTestCase {
 
     func testEveryProviderThatLeavesTheMacNamesWhoGetsTheData() {
         for provider in AIProviderID.allCases {
-            let disclosure = provider.dataDisclosure
-            XCTAssertEqual(disclosure == nil, provider == .ollama, "\(provider)")
-            if let recipient = provider.dataRecipient {
-                XCTAssertTrue(disclosure!.contains(recipient), "\(provider)")
+            XCTAssertEqual(provider.vendorName == nil, provider == .ollama, "\(provider)")
+            if let vendor = provider.vendorName {
+                XCTAssertTrue(provider.consentMessage(appName: "Tabbi").contains(vendor), "\(provider)")
             }
         }
-        XCTAssertEqual(AIProviderID.claudeCLI.dataRecipient, AIProviderID.anthropic.dataRecipient)
-        XCTAssertEqual(AIProviderID.geminiCLI.dataRecipient, "Google")
+        XCTAssertEqual(AIProviderID.claudeCLI.vendorName, AIProviderID.anthropic.vendorName)
+        XCTAssertEqual(AIProviderID.geminiCLI.vendorName, "Google")
     }
 
     func testOnlyHostedAPIsNeedAKeyAndHaveDefaultModels() {

@@ -73,7 +73,7 @@ struct AIProviderSection: View {
         }
         let hint = provider.requiresAPIKey ? "Your key stays in your Keychain."
             : provider.setupHint(model: settings.settings.ai.model(for: provider)) ?? ""
-        let recipient = provider.dataRecipient.map { " Sends what you ask to \($0)." } ?? ""
+        let recipient = provider.vendorName.map { " Sends what you ask to \($0)." } ?? ""
         return "\(provider.setupSummary)\(recipient) \(hint)"
     }
 }
