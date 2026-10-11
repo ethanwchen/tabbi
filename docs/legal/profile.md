@@ -11,7 +11,7 @@ The facts come from the maintainer's brief for this review.
 - **Contact:** support@tabbinotch.com.
 - **Product:** Tabbi, a free, open-source (MIT) macOS app that turns the MacBook notch into a panel of tabs, plus the website tabbinotch.com and a small friends service (Party, sync, invites) on Cloudflare Workers.
 - **Distribution:** worldwide, as a direct download (signed, notarized, updated by Sparkle from GitHub) and on the Mac App Store (sandboxed).
-- **Business model:** none. No price, no in-app purchases, no ads, no tracking or telemetry. The server counts a few aggregate totals.
+- **Business model:** Tabbi is free. Optional extras may come later, and the core will stay free. The site links to an optional Buy Me a Coffee page ("Support Tabbi") for voluntary tips; the app has no tip or payment link. No in-app purchases today, no ads, no tracking or telemetry. The server counts a few aggregate totals.
 - **Users:** the general public, with a strong study focus (student kits such as Med School), so users can be students, including minors.
 - **Role:** controller for the friends service, account sync, crash reports, suggestions and support email. Not a processor for anyone.
 - **Privacy team:** the maintainer alone. No DPO. No EU or UK representative.

@@ -39,6 +39,7 @@ Some technical notes:
 - No account needed, no analytics, no telemetry. Each module lists every host it connects to, and Tabbi shows that list before a kit turns a module on.
 
 It is free and MIT licensed, signed and notarized, for macOS 14 and later.
+Optional extras may come later, and the core will stay free.
 Macs without a notch get a small virtual one.
 
 I would love feedback, especially on what feels unnecessary.

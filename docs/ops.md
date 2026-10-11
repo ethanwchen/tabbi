@@ -103,7 +103,7 @@ TABBI_ADMIN_TOKEN=<the ADMIN_TOKEN secret> npm run stats            # readable s
 TABBI_ADMIN_TOKEN=<the ADMIN_TOKEN secret> npm run stats -- --json  # the same as JSON
 ```
 
-Without `TABBI_ADMIN_TOKEN` it shows only the GitHub numbers.
+Without `TABBI_ADMIN_TOKEN` it shows only the GitHub numbers; with it, also the App Store units and the website's download total.
 `TABBI_BACKEND_URL` points it at another deployment (for example staging), `GITHUB_REPO` at another repository, and `GITHUB_TOKEN` (any token, no scopes needed) lifts GitHub's limit of 60 unauthenticated requests an hour.
 
 What the numbers mean:
@@ -113,6 +113,8 @@ What the numbers mean:
 - Sign-ups count friend codes, which the app creates when the Party tab first connects.
   Deleting an account removes it from every count, including its sign-up day.
 - Each stats call reads about two SQLite rows per user, so a weekly look costs nothing noticeable; do not poll it from a dashboard.
+- The website's "10,000+ downloads" line adds GitHub's DMG downloads (not the update zips) to the App Store units, which come from App Store Connect and are set by hand.
+  Update them now and then, for example after each release, with `PUT /v1/admin/downloads/app-store` (see [Downloads](study/backend-api.md#downloads-maintainer)), then deploy the site, which reads the figure when it builds.
 - The reply's `hub` part (requests and SQLite rows read and written since the Hub last started) is for capacity checks; see [Scale](#scale).
 
 ## Scale

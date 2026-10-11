@@ -14,7 +14,7 @@ Tabbi needs no account, has no ads, no analytics and no telemetry, and it is mad
 | Name | Tabbi |
 | Tagline | A little cat for your laptop notch. |
 | Maker | Ethan (independent developer) |
-| Price | Free |
+| Price | Tabbi is free. Optional extras may come later, and the core will stay free. |
 | License | MIT, open source |
 | Platform | macOS 14 Sonoma or later, Apple silicon and Intel |
 | Notch | Works on Macs with a notch; others get a small virtual one at the top of the screen |
@@ -31,7 +31,7 @@ Tabbi needs no account, has no ads, no analytics and no telemetry, and it is mad
 - Source code: https://github.com/ethanwchen/tabbi
 - Download: https://github.com/ethanwchen/tabbi/releases/latest
 - Support and press contact: support@tabbinotch.com
-- Buy me a coffee: https://buymeacoffee.com/ethanpolar
+- Support Tabbi: https://buymeacoffee.com/ethanpolar
 
 ## Icon
 

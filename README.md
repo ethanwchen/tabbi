@@ -15,12 +15,11 @@
 
 <p align="center">
   <a href="https://tabbinotch.com"><img src="https://img.shields.io/badge/Download-for%20Mac-E8A15F?style=for-the-badge&logo=apple&logoColor=white" alt="Download Tabbi for Mac"></a>
-  <a href="https://buymeacoffee.com/ethanpolar"><img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-F4D57E?style=for-the-badge&logo=buymeacoffee&logoColor=2A231D" alt="Buy me a coffee"></a>
+  <a href="https://buymeacoffee.com/ethanpolar"><img src="https://img.shields.io/badge/Support-Tabbi-F4D57E?style=for-the-badge&logo=buymeacoffee&logoColor=2A231D" alt="Support Tabbi"></a>
 </p>
 
 <p align="center">
   <a href="https://github.com/ethanwchen/tabbi/stargazers"><img src="https://img.shields.io/github/stars/ethanwchen/tabbi?color=E8A15F&logo=github" alt="GitHub stars"></a>
-  <a href="https://github.com/ethanwchen/tabbi/releases"><img src="https://img.shields.io/github/downloads/ethanwchen/tabbi/total?color=E8A15F" alt="Total downloads"></a>
   <a href="https://github.com/ethanwchen/tabbi/releases/latest"><img src="https://img.shields.io/github/v/release/ethanwchen/tabbi?color=E8A15F" alt="Latest release"></a>
   <a href="https://tabbinotch.com"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Ftabbi-friends.drosophil-anki-friends-backend.workers.dev%2Fv1%2Fpublic%2Fstats" alt="People focusing with Tabbi this week"></a>
   <a href="https://github.com/ethanwchen/tabbi/actions/workflows/ci.yml"><img src="https://github.com/ethanwchen/tabbi/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status"></a>
@@ -60,6 +59,7 @@ A pixel cat or dog lives there too, and it cheers you on while you work.
 2. Drag **Tabbi** into **Applications**, open it, then click the notch and pick a kit.
 
 Tabbi is free and open source, and it keeps itself up to date.
+Optional extras may come later, and the core will stay free.
 It needs macOS 14 Sonoma or later, and a Mac without a notch gets a small virtual one at the top of the screen.
 Right-click the notch for **Settings** and **Quit Tabbi**.
 [docs/install.md](docs/install.md) covers Homebrew, updates, troubleshooting and uninstalling.
