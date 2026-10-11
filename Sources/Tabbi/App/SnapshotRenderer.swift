@@ -100,6 +100,11 @@ enum SnapshotRenderer {
                 let crowned = NotchViewModel(geometry: geometry, layout: layout)
                 crowned.preview = .pet(TickerPet(profile: pet.profile, mood: .awake))
                 shots.append(Shot("closed-pet-crown", crowned))
+                // An unlock a session away: the slim bar beside the awake pet.
+                let near = NotchViewModel(geometry: geometry, layout: layout)
+                near.preview = .pet(TickerPet(profile: pet.profile, mood: .awake, unlock: UnlockProgress(
+                    balance: 40, ledger: PetPointsLedger(purchased: [.accessory(.beanie)]))))
+                shots.append(Shot("closed-pet-unlock", near))
                 // The Mac started charging: the pet sips from its mug.
                 let sipping = NotchViewModel(geometry: geometry, layout: layout)
                 sipping.preview = .pet(TickerPet(profile: pet.profile, mood: .onBreak))

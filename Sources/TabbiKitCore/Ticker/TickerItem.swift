@@ -133,12 +133,25 @@ public struct TickerPet: Hashable, Sendable {
     public var moodSince: Date?
     /// A celebration playing right now (a finished focus session), or nil.
     public var cheer: PetCheer?
+    /// An unlock within a couple of sessions, which the closed notch hints
+    /// at with a slim bar (the goal-gradient effect); nil when none is near.
+    public var unlock: UnlockProgress?
 
-    public init(profile: PetProfile, mood: PetMood, moodSince: Date? = nil, cheer: PetCheer? = nil) {
+    public init(profile: PetProfile, mood: PetMood, moodSince: Date? = nil, cheer: PetCheer? = nil,
+                unlock: UnlockProgress? = nil) {
         self.profile = profile
         self.mood = mood
         self.moodSince = moodSince
         self.cheer = cheer
+        self.unlock = unlock
+    }
+
+    /// The unlock hint to draw now: only while the pet is awake between
+    /// sessions, never during focus, a break, a nap or a sip, so it stays
+    /// out of the way of work.
+    public var unlockHint: UnlockProgress? {
+        guard mood == .awake, !isSipping, let unlock, unlock.isNear else { return nil }
+        return unlock
     }
 
     /// True while the pet sips because the Mac started charging.
@@ -434,7 +447,8 @@ public struct TickerSources: Equatable, Sendable {
         case .pet:
             guard let pet else { return nil }
             let since = focus.flatMap { $0.isRunning ? now.addingTimeInterval(-$0.elapsed(at: now)) : nil }
-            return .pet(TickerPet(profile: pet.profile, mood: pet.mood(focus: focus, at: now), moodSince: since))
+            return .pet(TickerPet(profile: pet.profile, mood: pet.mood(focus: focus, at: now), moodSince: since,
+                                  unlock: pet.nextUnlock.flatMap { $0.isNear ? $0 : nil }))
         case .party:
             // Alone in a party there are no other pets to show.
             guard let party, party.memberCount > 1 else { return nil }

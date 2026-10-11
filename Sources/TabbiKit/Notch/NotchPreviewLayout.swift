@@ -25,6 +25,9 @@ public enum NotchPreviewLayout {
     static let joinPadding: CGFloat = Theme.Spacing.s - Theme.Spacing.xxs
     /// The charging bolt beside "Charging" while the pet sips.
     static let chargingSymbolSize: CGFloat = 9
+    /// The slim near-unlock bar beside an awake pet (`TickerPet.unlockHint`).
+    static let unlockHintWidth: CGFloat = 16
+    static let unlockHintHeight: CGFloat = 3
     /// Gap between the trailing text and the camera housing.
     private static let innerGap: CGFloat = Theme.Spacing.s
 
@@ -57,7 +60,9 @@ public enum NotchPreviewLayout {
         case .pet(let pet):
             // Measured asleep too, so the wing doesn't jump when the pet dozes off.
             let name = TickerFormat.petLabel(pet).map { textWidth($0) + Theme.Spacing.xs } ?? 0
-            content = max(name + textWidth(TickerFormat.petSleeping), NotchPetWing.side)
+            // The unlock bar takes the same slot, so it never widens the wing either.
+            let tail = max(textWidth(TickerFormat.petSleeping), unlockHintWidth)
+            content = max(name + tail, NotchPetWing.side)
         case .party(let party):
             content = max(partyPetsWidth(count: party.pets.count), textWidth(TickerFormat.partySize(party.memberCount)))
         }
