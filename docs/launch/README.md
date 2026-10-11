@@ -27,11 +27,11 @@ No emojis and no em dashes, in every post and every reply.
 
 - Name: Tabbi.
 - Pitch: A little cat for your laptop notch.
-- Price: free, open source (MIT).
+- Price: Tabbi is free. Optional extras may come later, and the core will stay free. Open source (MIT).
 - Platform: macOS 14 Sonoma or later. A Mac without a notch gets a small virtual one.
 - Website: https://tabbinotch.com
 - Code: https://github.com/ethanwchen/tabbi
 - Download: https://github.com/ethanwchen/tabbi/releases/latest
 - Homebrew: `brew install --cask ethanwchen/tap/tabbi`
-- Coffee: https://buymeacoffee.com/ethanpolar
+- Support Tabbi: https://buymeacoffee.com/ethanpolar
 - Support: support@tabbinotch.com

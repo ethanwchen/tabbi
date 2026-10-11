@@ -11,10 +11,15 @@ RELEASES_URL = 'https://github.com/ethanwchen/tabbi/releases'
 GITHUB = 'https://github.com/ethanwchen/tabbi'
 ISSUES = 'https://github.com/ethanwchen/tabbi/issues'
 SUPPORT_EMAIL = 'support@tabbinotch.com'
-# The friends backend's suggestion inbox. The Suggest form posts here and the
-# backend answers with a redirect to /thanks; _headers' form-action allows
-# this origin, plus 'self' for that redirect, which browsers check too.
-SUGGESTIONS = 'https://tabbi-friends.drosophil-anki-friends-backend.workers.dev/v1/suggestions'
+# Optional tips. The App Store edition of the app never links here (App Store
+# Review Guideline 3.1.1); only the website does.
+SUPPORT_TABBI = 'https://buymeacoffee.com/ethanpolar'
+# The friends backend (backend/).
+BACKEND = 'https://tabbi-friends.drosophil-anki-friends-backend.workers.dev'
+# Its suggestion inbox. The Suggest form posts here and the backend answers
+# with a redirect to /thanks; _headers' form-action allows this origin, plus
+# 'self' for that redirect, which browsers check too.
+SUGGESTIONS = BACKEND + '/v1/suggestions'
 
 # Links are root-relative and extensionless, the way Cloudflare Pages serves
 # them: /support answers with support.html, and /support.html redirects to
@@ -22,7 +27,7 @@ SUGGESTIONS = 'https://tabbi-friends.drosophil-anki-friends-backend.workers.dev/
 # root-relative paths keep 404.html working at any depth.
 NAV = [
     ('/about', 'About'),
-    ('/support', 'Support'),
+    ('/support', 'Help'),
     (DOWNLOAD, 'Download'),
 ]
 
@@ -142,13 +147,13 @@ def page(slug, title, description, body, hero=None, wide=False, indexable=True, 
 
   <footer class="site">
     <nav class="wrap" aria-label="More">
-      <a href="/support">Support</a>
+      <a href="/support">Help</a>
       <a href="/suggest">Suggest</a>
       <a href="/privacy">Privacy</a>
       <a href="/terms">Terms</a>
       <a href="/whats-new">What&rsquo;s new</a>
       <a href="{GITHUB}">GitHub</a>
-      <a href="https://buymeacoffee.com/ethanpolar">Buy me a coffee</a>
+      <a href="{SUPPORT_TABBI}">Support Tabbi</a>
     </nav>
     <p class="made">Made with care by <a href="https://www.linkedin.com/in/ethanwchen/">Ethan</a>
       <span class="socials">

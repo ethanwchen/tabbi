@@ -23,7 +23,7 @@ Backup taglines, if the first one is taken or reads too vague:
 
 ## Pricing
 
-Free.
+Tabbi is free. Optional extras may come later, and the core will stay free.
 Open source.
 
 ## Description
@@ -76,6 +76,7 @@ And there is a pixel cat.
 It sits beside the notch, cheers you on while you focus, and earns outfits from your study points.
 
 Tabbi is free and open source.
+Optional extras may come later, and the core will stay free.
 No account needed, no ads, no analytics.
 It only connects to the internet when a tab needs to (album art, or the friends server while Party is on).
 
@@ -88,8 +89,9 @@ Thank you for trying it.
 ## Replies to have ready
 
 **Is it really free?**
-Yes, and the code is on GitHub under MIT.
-If it helps you, a star or a coffee means a lot: https://buymeacoffee.com/ethanpolar
+Yes. Tabbi is free. Optional extras may come later, and the core will stay free.
+The code is on GitHub under MIT.
+If it helps you, a star means a lot, and there is a Support Tabbi link: https://buymeacoffee.com/ethanpolar
 
 **Does it work on a Mac without a notch?**
 Yes.
