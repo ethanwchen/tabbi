@@ -331,7 +331,7 @@ TABBI_DEMO=1 TABBI_DEMO_FOCUS_LEFT=5 swift run -c release Tabbi --record <folder
 ```
 
 `opening` is the closed notch with the pet, then the panel springs open on the Timer at 18:42 and ticks.
-`story` starts five seconds before the focus block ends, so the session finishes on camera (paw confetti, the digits roll into Break), the panel closes to the pet celebrating beside the notch, then it opens the Closet, checks off Read chapter 4 in Today, plans tomorrow (the blocks arrive), likes the track in Now Playing, shows Flashcards and closes to the pet again, so the end matches the first frame for a clean loop.
+`story` starts five seconds before the focus block ends, so the session finishes on camera (paw confetti, the digits roll into Break), the panel closes to the pet celebrating in the notch, then it opens the Closet, checks off Read chapter 4 in Today, plans tomorrow (the blocks arrive), likes the track in Now Playing, shows Flashcards and closes to the pet again, so the end matches the first frame for a clean loop.
 Each part writes transparent `frame-NNNN.png` files and a `frames.json` with every frame's time, the storyboard's beats and the length; the stream sends a frame only when something changed, so a frame lasts until the next one's time.
 Record from a release build: in a debug build, closing the notch stalls for about 2 seconds while the closed notch's pet builds its animation clips on the main thread, and the clock freezes on camera.
 Pets in the recording draw with SwiftUI (`rendersToImage`), the same frames the snapshots use.
@@ -341,7 +341,10 @@ Nothing shows on the Mac's display and no other app or desktop content can be in
 `make-media.swift` composes the parts on the dune desktop (the same wallpaper as the screenshots, full frame, with a plain menu bar as tall as the notch) with the notch window drawn 1:1 from the top center.
 The opening runs 4 seconds, then a dissolve of 8 frames joins the story's last seconds of the focus block, with a small "25 minutes later" pill for 2 seconds.
 The storyboard's captions sit bottom left in cream pills (Fredoka SemiBold 60 px, 28 px corners, 28 by 16 px padding, baseline at y=1000), each on screen at least 2.5 seconds and fading over 8 frames; the closing pill reads "Tabbi" beside the app icon at 120 px.
-No pet, pointer or UI is drawn over the footage: the clicks are the app's own actions, and the spec rules out a fake pointer.
+While the panel is closed after the session ends, the session-end moment shows right of the notch: the coach's pet with its card ("That's a wrap. Well done!", +35 and the bar, "1 more session to Ninja Headband"), the same moment as shot 2.
+The app draws the coach in a window of its own, which `--record` does not capture, so `make-media.swift` takes the pet and card from the app's `coach-session-end` snapshot (5 pixels per point, scaled to the footage's 2) and places them where the app hangs them, from the notch's bottom edge at its right edge.
+They drop in over 8 frames once the panel has closed (4 seconds into the story) and fade out just before the Closet opens, so the card shows for about 2 seconds.
+No pointer or other UI is drawn over the footage: the clicks are the app's own actions, and the spec rules out a fake pointer.
 There is no music bed: no track with a clear license was available, so the preview stays silent.
 If wanted, the maintainer can instead record the sandboxed App Store build on a notched Mac with QuickTime or ScreenCaptureKit, as the spec's capture method describes, and keep these captions.
 `swift docs/appstore/make-media.swift` writes it together with the screenshots.

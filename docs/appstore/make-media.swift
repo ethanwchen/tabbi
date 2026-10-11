@@ -607,6 +607,7 @@ struct Recording {
     let times: [Double]
     let beats: [String: Double]
     let length: Double
+    let notchWidth: CGFloat
     let notchHeight: CGFloat
 
     init(_ folder: URL) {
@@ -618,13 +619,14 @@ struct Recording {
               let beats = manifest["beats"] as? [[String: Any]],
               let length = manifest["length"] as? Double,
               let scale = manifest["scale"] as? Double,
-              let notch = manifest["notch"] as? [String: Double], let height = notch["height"]
+              let notch = manifest["notch"] as? [String: Double], let width = notch["width"], let height = notch["height"]
         else { fail("no recording in \(folder.path); run Tabbi --record first") }
         self.times = times
         self.beats = Dictionary(uniqueKeysWithValues: beats.compactMap { beat in
             (beat["name"] as? String).flatMap { name in (beat["time"] as? Double).map { (name, $0) } }
         })
         self.length = length
+        notchWidth = CGFloat(width * scale)
         notchHeight = CGFloat(height * scale)
     }
 
@@ -699,12 +701,32 @@ func drawCaption(_ caption: PreviewCaption, x: CGFloat, baseline: CGFloat, alpha
     return placed.minY
 }
 
+/// The coach overlay in the session-end coach snapshot (the pet beside its
+/// card) without the strip of notch the snapshot draws left of it (92 pt
+/// wide, 32 pt tall), scaled from `coachScale` to the footage's 2x.
+func coachOverlay(_ name: String) -> CGImage {
+    let image = loadImage(coachFolder.appendingPathComponent("\(name).png"))
+    let (left, top) = (Int(92 * coachScale), Int(32 * coachScale))
+    let overlay = image.cropping(to: CGRect(x: left, y: top, width: image.width - left, height: image.height - top))!
+    let size = CGSize(width: (CGFloat(overlay.width) * 2 / coachScale).rounded(),
+                      height: (CGFloat(overlay.height) * 2 / coachScale).rounded())
+    let context = CGContext(
+        data: nil, width: Int(size.width), height: Int(size.height), bitsPerComponent: 8, bytesPerRow: 0,
+        space: sRGB, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+    )!
+    context.interpolationQuality = .high
+    context.draw(overlay, in: CGRect(origin: .zero, size: size))
+    return context.makeImage()!
+}
+
 /// The App Preview, composed from the two recorded parts: the dune desktop
 /// at 1920x1080 with the notch window drawn 1:1 (2x, so native size) from
 /// the top center, the opening, a dissolve to the session's last seconds
 /// ("25 minutes later") and the story, with the storyboard's captions
-/// bottom left. Only the recording and the caption overlays are on screen
-/// (Guideline 2.3.4): no pet, pointer or UI is drawn.
+/// bottom left. Besides the captions, the only addition is the coach's
+/// session-end card, which the app shows in a window of its own that the
+/// recording does not capture (see `coachStart`); no pointer or other UI is
+/// drawn.
 func composePreview(opening: Recording, story: Recording) -> (count: Int, frame: (Int) -> CGImage) {
     // The story joins once the panel's open spring has settled.
     let storyStart = 0.7
@@ -728,6 +750,17 @@ func composePreview(opening: Recording, story: Recording) -> (count: Int, frame:
     for caption in captions where !caption.small && caption.end - caption.start < 2.5 {
         FileHandle.standardError.write(Data("make-media: the preview caption \"\(caption.text)\" shows under 2.5 s\n".utf8))
     }
+
+    // The session-end moment. The coach is a window of its own beside the
+    // notch, which `--record` does not capture, so the pet and its card come
+    // from the app's coach snapshot of the same moment, where the app hangs
+    // them: from the notch's bottom edge, starting at its right edge. They
+    // drop in once the panel has closed (the storyboard closes it 3.6 s into
+    // the story) and fade out just before the Closet opens.
+    let coach = coachOverlay("coach-session-end")
+    let coachStart = outputTime(story.beat("finish") + 4.0)
+    let coachEnd = outputTime(story.beat("closet")) - 0.1
+    let coachOrigin = CGPoint(x: ((previewSize.width + story.notchWidth) / 2).rounded(), y: story.notchHeight)
 
     let stage: CGImage = {
         let context = CGContext(
@@ -780,6 +813,14 @@ func composePreview(opening: Recording, story: Recording) -> (count: Int, frame:
             let dissolve = eased((time - cut) / fadeSeconds)
             if dissolve < 1 { layer(footage(opening, at: cut), alpha: 1) }
             layer(footage(story, at: storyTime(time)), alpha: dissolve)
+        }
+        if time >= coachStart && time < coachEnd {
+            let alpha = min(eased((time - coachStart) / fadeSeconds), eased((coachEnd - time) / fadeSeconds))
+            context.saveGState()
+            context.setAlpha(alpha)
+            drawImage(coach, in: CGRect(x: coachOrigin.x, y: coachOrigin.y - 12 * (1 - alpha),
+                                        width: CGFloat(coach.width), height: CGFloat(coach.height)), context: context)
+            context.restoreGState()
         }
         var top: CGFloat = 1000
         for caption in captions where time >= caption.start && time < caption.end {
