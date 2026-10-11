@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
-  DOWNLOADS_PER_MIN, DOWNLOADS_REPO, DOWNLOADS_RETRY_S, DOWNLOADS_TTL_S, type Release, countDownloads, downloadMilestone,
+  DOWNLOADS_PER_MIN, DOWNLOADS_REPO, DOWNLOADS_RETRY_S, DOWNLOADS_TTL_S, type Release, countDownloads, downloadMilestone, downloadsBadge,
 } from "../src/downloads";
 import { ADMIN_TOKEN, call, expectError, freshIp, pinClockToMinuteStart } from "./helpers";
 
@@ -40,6 +40,14 @@ describe("countDownloads", () => {
     ]);
     expect(d.installs).toBe(940);
     expect(d.updates).toBe(5000);
+  });
+});
+
+describe("downloadsBadge", () => {
+  it("shows the exact total, grouped, from zero", () => {
+    expect(downloadsBadge(0)).toMatchObject({ schemaVersion: 1, label: "downloads", message: "0" });
+    expect(downloadsBadge(1234567).message).toBe("1,234,567");
+    expect([Number.NaN, -3, 12.9].map((n) => downloadsBadge(n).message)).toEqual(["0", "0", "12"]);
   });
 });
 
@@ -88,6 +96,13 @@ describe("GET /v1/public/downloads", () => {
     expect(r.headers.get("Access-Control-Allow-Origin")).toBe("*");
     expect(github.calls.map((c) => c.url)).toEqual([RELEASES_URL]);
     expect(github.calls[0].auth).toBeNull();
+  });
+
+  it("gives the README badge the exact sum of installs and App Store units", async () => {
+    await setAppStore({ units: 345 });
+    const r = await call("GET", "/v1/public/downloads/badge", undefined, undefined, freshIp());
+    expect(r.status).toBe(200);
+    expect(r.body).toMatchObject({ schemaVersion: 1, label: "downloads", message: "7,345" });
   });
 
   it("adds the App Store units to GitHub's installs and rounds the sum down", async () => {

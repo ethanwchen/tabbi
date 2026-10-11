@@ -10,8 +10,9 @@
  *   figure with `PUT /v1/admin/downloads/app-store`; it is stored per source, so an App Store Connect
  *   API pull can later write the same row (as source `app-store-connect`) without changing the reply.
  *
- * Only a rounded milestone leaves the server (`downloadMilestone`), never the exact sum, so the public
- * reply says nothing about App Store sales beyond "at least this many".
+ * The website gets only a rounded milestone (`downloadMilestone`). The README's badge
+ * (`GET /v1/public/downloads/badge`, `downloadsBadge`) shows the exact sum, which the maintainer chose
+ * to make public from the first download.
  *
  * This module imports nothing, so `scripts/stats.ts` can run it with plain Node.
  */
@@ -104,6 +105,12 @@ export interface StoredCount {
 /** An optional Worker secret: any GitHub token (no scopes) lifts GitHub's 60 requests an hour per IP. */
 export interface DownloadsSecrets {
   GITHUB_TOKEN?: string;
+}
+
+/** The README badge's shields.io endpoint JSON: the exact total, grouped like "1,234". */
+export function downloadsBadge(total: number): { schemaVersion: 1; label: string; message: string; color: string; cacheSeconds: number } {
+  const n = Number.isFinite(total) && total > 0 ? Math.floor(total) : 0;
+  return { schemaVersion: 1, label: "downloads", message: n.toLocaleString("en-US"), color: "E8A15F", cacheSeconds: 3600 };
 }
 
 /** The public reply: the milestone only, and when the GitHub part was counted. */

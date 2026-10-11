@@ -21,6 +21,7 @@
 <p align="center">
   <a href="https://github.com/ethanwchen/tabbi/stargazers"><img src="https://img.shields.io/github/stars/ethanwchen/tabbi?color=E8A15F&logo=github" alt="GitHub stars"></a>
   <a href="https://github.com/ethanwchen/tabbi/releases/latest"><img src="https://img.shields.io/github/v/release/ethanwchen/tabbi?color=E8A15F" alt="Latest release"></a>
+  <a href="https://tabbinotch.com"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Ftabbi-friends.drosophil-anki-friends-backend.workers.dev%2Fv1%2Fpublic%2Fdownloads%2Fbadge" alt="Total downloads"></a>
   <a href="https://tabbinotch.com"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Ftabbi-friends.drosophil-anki-friends-backend.workers.dev%2Fv1%2Fpublic%2Fstats" alt="People focusing with Tabbi this week"></a>
   <a href="https://github.com/ethanwchen/tabbi/actions/workflows/ci.yml"><img src="https://github.com/ethanwchen/tabbi/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status"></a>
   <img src="https://img.shields.io/badge/macOS-14%2B-555?logo=apple" alt="macOS 14 or later">
