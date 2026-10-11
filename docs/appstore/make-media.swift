@@ -5,10 +5,11 @@
 //
 //     swift docs/appstore/make-media.swift                                # render everything, then compose
 //     swift docs/appstore/make-media.swift <panels> <coach> <accents> [<recording>]   # compose from existing folders
+//     swift docs/appstore/make-media.swift --screenshots-only <panels> <coach> <accents>  # leave the preview as it is
 //
 // Folders passed in must come from
 //     TABBI_DEMO=1 swift run Tabbi --snapshot <panels> --edition appstore --tabs study,planner,anki,spotify,closet --scale 3 --transparent
-//     TABBI_DEMO=1 swift run Tabbi --snapshot <coach> --edition appstore --tabs study,planner,anki,spotify,closet --scale 3 --transparent   # or the panels folder again
+//     TABBI_DEMO=1 TABBI_WISDOM_ALL=1 swift run Tabbi --snapshot <coach> --edition appstore --tabs study,planner,anki,spotify,closet --scale 5 --transparent
 //     swift run PetGallery <accents> accents
 //     TABBI_DEMO=1 TABBI_DEMO_FOCUS_LEFT=1126 swift run -c release Tabbi --record <recording>/opening --part opening --edition appstore --tabs study,planner,anki,spotify,closet
 //     TABBI_DEMO=1 TABBI_DEMO_FOCUS_LEFT=5 swift run -c release Tabbi --record <recording>/story --part story --edition appstore --tabs study,planner,anki,spotify,closet
@@ -53,9 +54,11 @@ let reviewSizes = [("small", CGSize(width: 1280, height: 800)), ("gallery", CGSi
 /// Pixels per point of the panel snapshots: the Large panel is drawn 1:1 at
 /// about 1800 px wide, never scaled up.
 let panelScale = 3.0
-/// Pixels per point of the closed notch and the coach in shot 2, the one shot
-/// without an open panel: the panels' scale, so the notch matches theirs.
-let coachScale = panelScale
+/// Pixels per point of the coach's bubbles in shot 2, the one shot without an
+/// open panel: larger than the panels', so the session-end card and the Cat
+/// wisdom line stay readable in the 540 px gallery copy. The closed notch
+/// keeps the panels' scale, so it matches the other shots.
+let coachScale = 5.0
 /// The tabs every shot shows: Essentials plus flashcards, and the Closet paw.
 let storeTabs = "study,planner,anki,spotify,closet"
 
@@ -86,10 +89,10 @@ func temporaryFolder(_ name: String) -> URL {
 }
 
 /// Renders fresh App Store edition demo snapshots of the store layout.
-func renderDemoSnapshots(scale: Double, name: String) -> URL {
+func renderDemoSnapshots(scale: Double, name: String, environment: [String: String] = [:]) -> URL {
     let directory = temporaryFolder(name)
     run(["swift", "run", "Tabbi", "--snapshot", directory.path, "--edition", "appstore", "--tabs", storeTabs,
-         "--scale", String(scale), "--transparent"], demo: true)
+         "--scale", String(scale), "--transparent"], demo: true, environment: environment)
     return directory
 }
 
@@ -359,7 +362,11 @@ struct PetPose {
     }
 }
 
-enum Side { case left, center, right }
+enum Side: Equatable {
+    case left, center, right
+    /// Centered on this x, facing right.
+    case at(CGFloat)
+}
 
 /// Draws the pet on the front dune at `pixel` screen pixels per sprite pixel
 /// (nearest neighbor, integer only), with a soft contact shadow, facing the
@@ -372,6 +379,7 @@ func drawPet(_ sprite: CGImage, side: Side, pixel: Int, canvas: CGSize, in conte
     case .left: 380
     case .center: canvas.width / 2
     case .right: canvas.width - 380
+    case .at(let x): x
     }
     // The front dune's top stays above this line, so the paws always rest
     // on sand.
@@ -409,9 +417,9 @@ struct Shot {
 }
 
 /// The closed notch, centered at the top of the stage like a MacBook's: 190
-/// by 32 pt at the coach's scale, as the coach snapshot draws it.
+/// by 32 pt at the panels' scale, as the app draws it.
 func closedNotchRect(in canvas: CGSize) -> CGRect {
-    CGRect(x: canvas.width / 2 - 95 * coachScale, y: stageTop, width: 190 * coachScale, height: 32 * coachScale)
+    CGRect(x: canvas.width / 2 - 95 * panelScale, y: stageTop, width: 190 * panelScale, height: 32 * panelScale)
 }
 
 /// Composes one shot into an opaque RGB bitmap of the canvas size.
@@ -455,7 +463,7 @@ func compose(_ shot: Shot) -> CGImage {
     }
 
     guard let panel else {
-        drawCoach(canvas: canvas, in: context)
+        drawCoach(canvas: canvas, pet: pet, in: context)
         return context.makeImage()!
     }
     // The panel 1:1, with the snapshot's own shadow only.
@@ -464,25 +472,105 @@ func compose(_ shot: Shot) -> CGImage {
 }
 
 /// Shot 2: the closed notch centered at the top edge, like a MacBook's, with
-/// the pet out beside it, mid-cheer, and the coach's celebration bubble, as
-/// the app draws them at one moment. The coach snapshot holds the notch's
-/// right part; the rest of the notch is drawn from the app's geometry (190
-/// by 32 pt, 10 pt bottom corners). The bubble reaches about 330 pt right of
-/// the notch, which sets the scale: at 3 pixels per point (the panels' own)
-/// it ends well inside the canvas.
-func drawCoach(canvas: CGSize, in context: CGContext) {
-    let coach = trimmed(loadImage(coachFolder.appendingPathComponent("coach-celebrate.png")))
+/// the session-end card hanging below it (the points, and the bar toward the
+/// next unlock) and the cheering pet on the dunes saying its Cat wisdom line.
+/// In the app the pet says both in one bubble beside the notch, the wisdom
+/// after the card; here they show at once, each drawn from the app's own
+/// coach snapshots at `coachScale`. The card leaves its tail out, since it
+/// points at the small pet beside the notch, and the wisdom bubble gets a
+/// tail toward the big pet.
+func drawCoach(canvas: CGSize, pet: CGRect, in context: CGContext) {
     let notch = closedNotchRect(in: canvas)
-    let hidden = notch.width - 92 * coachScale
-    context.addPath(roundedRect(CGRect(x: notch.minX, y: notch.minY, width: hidden + 2, height: notch.height),
-                                topRadius: 0, bottomLeft: 10 * coachScale, bottomRight: 0))
+    context.addPath(roundedRect(notch, topRadius: 0, bottomLeft: 10 * panelScale, bottomRight: 10 * panelScale))
     context.setFillColor(color(0x000000))
     context.fillPath()
-    let coachRect = CGRect(x: notch.minX + hidden, y: notch.minY, width: CGFloat(coach.width), height: CGFloat(coach.height))
-    if coachRect.maxX > canvas.width - 80 {
-        FileHandle.standardError.write(Data("make-media: the coach bubble runs past the canvas margin in shot 2\n".utf8))
+
+    let card = bubbleBody(in: loadImage(coachFolder.appendingPathComponent("coach-session-end.png")))
+    let cardRect = CGRect(x: ((canvas.width - CGFloat(card.width)) / 2).rounded(), y: notch.maxY + 16 * panelScale,
+                          width: CGFloat(card.width), height: CGFloat(card.height))
+    drawBubble(card, in: cardRect, tailY: nil, context: context)
+
+    // The wisdom bubble up and to the right of the pet, its tail at the
+    // pet's face, as high on the bubble's edge as the corner allows.
+    let wisdom = bubbleBody(in: loadImage(coachFolder.appendingPathComponent("coach-wisdom-all-0.png")))
+    let face = pet.minY + pet.height * 0.3
+    let wisdomRect = CGRect(x: pet.maxX + 24 + tailLength, y: (pet.minY + pet.height * 0.5 - CGFloat(wisdom.height)).rounded(),
+                            width: CGFloat(wisdom.width), height: CGFloat(wisdom.height))
+    let tailY = min(max(face, wisdomRect.minY + 22 * coachScale), wisdomRect.maxY - 20 * coachScale)
+    if wisdomRect.maxX > canvas.width - 80 {
+        FileHandle.standardError.write(Data("make-media: the wisdom bubble runs past the canvas margin in shot 2\n".utf8))
     }
-    drawImage(coach, in: coachRect, smooth: false, context: context)
+    if wisdomRect.minY < cardRect.maxY + 40 {
+        FileHandle.standardError.write(Data("make-media: the wisdom bubble crowds the session-end card in shot 2\n".utf8))
+    }
+    drawBubble(wisdom, in: wisdomRect, tailY: tailY, context: context)
+}
+
+/// The coach bubble's tail, 7 pt at the coach's scale.
+let tailLength = 7 * coachScale
+
+/// The body of the coach's speech bubble in a coach snapshot, without its
+/// tail, its shadow or the pet beside it: the rows that hold a long run of
+/// the bubble's black fill, from the edges most of them share (the tail's
+/// rows start further left, the corners' further in), grown by its hairline
+/// stroke.
+func bubbleBody(in image: CGImage) -> CGImage {
+    let bytes = pixels(of: image)
+    let width = image.width
+    // Below the notch, which is black too.
+    let firstRow = Int(34 * coachScale)
+    var (starts, ends, minY, maxY) = ([Int: Int](), [Int: Int](), image.height, -1)
+    for y in firstRow..<image.height {
+        var (run, start) = (0, 0)
+        var (bestRun, bestStart) = (0, 0)
+        for x in 0..<width {
+            let index = (y * width + x) * 4
+            if bytes[index + 3] == 255 && bytes[index] < 8 && bytes[index + 1] < 8 && bytes[index + 2] < 8 {
+                if run == 0 { start = x }
+                run += 1
+                if run > bestRun { (bestRun, bestStart) = (run, start) }
+            } else {
+                run = 0
+            }
+        }
+        guard CGFloat(bestRun) > 120 * coachScale else { continue }
+        starts[bestStart, default: 0] += 1
+        ends[bestStart + bestRun - 1, default: 0] += 1
+        minY = min(minY, y); maxY = max(maxY, y)
+    }
+    guard let minX = starts.max(by: { $0.value < $1.value })?.key,
+          let maxX = ends.max(by: { $0.value < $1.value })?.key
+    else { fail("no coach bubble in a coach snapshot") }
+    let stroke = Int(coachScale / 2)
+    return image.cropping(to: CGRect(x: minX - stroke, y: minY - stroke,
+                                     width: maxX - minX + 1 + stroke * 2, height: maxY - minY + 1 + stroke * 2))!
+}
+
+/// Draws a bubble body clipped to its rounded corners over the app's own
+/// shadow (black at 35 percent, 10 pt blur, 4 pt down), with the black tail
+/// pointing left at `tailY` when there is one.
+func drawBubble(_ body: CGImage, in rect: CGRect, tailY: CGFloat?, context: CGContext) {
+    let radius = 14 * coachScale
+    let shape = CGMutablePath()
+    shape.addRoundedRect(in: rect, cornerWidth: radius, cornerHeight: radius)
+    if let tailY {
+        shape.move(to: CGPoint(x: rect.minX + coachScale, y: tailY - 6 * coachScale))
+        shape.addLine(to: CGPoint(x: rect.minX - tailLength, y: tailY))
+        shape.addLine(to: CGPoint(x: rect.minX + coachScale, y: tailY + 6 * coachScale))
+        shape.closeSubpath()
+    }
+    context.saveGState()
+    // The context is flipped, so a shadow that falls down has a negative y.
+    context.setShadow(offset: CGSize(width: 0, height: -4 * coachScale), blur: 10 * coachScale, color: color(0x000000, 0.35))
+    context.addPath(shape)
+    context.setFillColor(color(0x000000))
+    context.fillPath()
+    context.restoreGState()
+    context.saveGState()
+    context.addPath(CGPath(roundedRect: rect, cornerWidth: radius, cornerHeight: radius, transform: nil))
+    context.clip()
+    drawImage(body, in: rect, smooth: false, context: context)
+    context.restoreGState()
 }
 
 /// A smaller copy for the readability checks, scaled with high quality.
@@ -835,17 +923,23 @@ func writePreview(frameCount: Int, frame: @escaping (Int) -> CGImage, to url: UR
 
 // MARK: - Main
 
-let arguments = Array(CommandLine.arguments.dropFirst())
+var arguments = Array(CommandLine.arguments.dropFirst())
+/// `--screenshots-only` composes the screenshots and leaves the preview as it is.
+let screenshotsOnly = arguments.contains("--screenshots-only")
+arguments.removeAll { $0 == "--screenshots-only" }
 guard arguments.isEmpty || (3...4).contains(arguments.count) else {
     fail("pass no arguments, or a panel snapshot folder, a coach snapshot folder, an accents folder and optionally a recording folder")
 }
 let panelFolder = arguments.isEmpty ? renderDemoSnapshots(scale: panelScale, name: "panels") : URL(fileURLWithPath: arguments[0])
-// The coach shares the panels' scale, so one render serves both.
-let coachFolder = arguments.isEmpty ? panelFolder : URL(fileURLWithPath: arguments[1])
+// The coach at its own scale, with every Cat wisdom line, so shot 2 can pick one.
+let coachFolder = arguments.isEmpty
+    ? renderDemoSnapshots(scale: coachScale, name: "coach", environment: ["TABBI_WISDOM_ALL": "1"])
+    : URL(fileURLWithPath: arguments[1])
 let accentFolder = arguments.isEmpty ? renderAccents() : URL(fileURLWithPath: arguments[2])
-let recordingFolder = arguments.count == 4 ? URL(fileURLWithPath: arguments[3]) : recordPreview()
+let recordingFolder = screenshotsOnly ? nil : arguments.count == 4 ? URL(fileURLWithPath: arguments[3]) : recordPreview()
 defer {
-    let temporary = (arguments.isEmpty ? [panelFolder, accentFolder] : []) + (arguments.count == 4 ? [] : [recordingFolder])
+    let temporary = (arguments.isEmpty ? [panelFolder, coachFolder, accentFolder] : [])
+        + (arguments.count == 4 ? [] : recordingFolder.map { [$0] } ?? [])
     for folder in temporary { try? FileManager.default.removeItem(at: folder) }
 }
 
@@ -865,8 +959,8 @@ let shots: [Shot] = [
     Shot(file: "1-timer", caption: "A cozy timer in your notch", subcaption: "Focus with a little cat who cheers you on.",
          panel: "open-large-study", tint: orange, hero: CGPoint(x: 0.22, y: 0.5),
          pet: PetPose(animation: "typing", frame: 2), petSide: .left),
-    Shot(file: "2-cheer", caption: "Every session ends in a cheer", subcaption: "Your cat celebrates, and you earn points.",
-         tint: orange, pet: PetPose(animation: "celebrate", frame: 2), petSide: .center),
+    Shot(file: "2-cheer", caption: "Every session ends in a cheer", subcaption: "Earn points, unlock outfits, and hear from your cat.",
+         tint: orange, pet: PetPose(animation: "celebrate", frame: 2), petSide: .at(820)),
     Shot(file: "3-closet", caption: "Earn points, dress your cat", subcaption: "Every focus day fills your chart.",
          panel: "open-large-closet", tint: gold, hero: CGPoint(x: 0.25, y: 0.5),
          pet: PetPose(animation: "idle"), petSide: .right, petPixel: 13),
@@ -891,6 +985,7 @@ for shot in shots {
     }
 }
 
+guard let recordingFolder else { exit(0) }
 let preview = composePreview(opening: Recording(recordingFolder.appendingPathComponent("opening")),
                              story: Recording(recordingFolder.appendingPathComponent("story")))
 try? FileManager.default.createDirectory(at: previewDirectory, withIntermediateDirectories: true)

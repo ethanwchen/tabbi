@@ -272,7 +272,7 @@ They are 2880x1800 (16:10) flattened 8-bit PNGs in sRGB IEC61966-2.1 with no alp
 Upload them in file name order:
 
 1. `1-timer`: "A cozy timer in your notch", the Timer running in round 2 of 4 with two focus sounds on.
-2. `2-cheer`: "Every session ends in a cheer", the closed notch centered at the top edge with the pet out beside it and the coach's "That's a wrap. Well done!" +35 bubble, exactly where the app draws that moment, and the big cheering cat on the dunes.
+2. `2-cheer`: "Every session ends in a cheer" with the subcaption "Earn points, unlock outfits, and hear from your cat.", the closed notch centered at the top edge with the session-end card hanging below it ("That's a wrap. Well done!", +35 and the bar toward the next unlock, "1 more session to Ninja Headband"), and the big cheering cat on the dunes saying a Cat wisdom line ("The pawn keeps moving forward. One square at a time, it can become anything it wants.").
 3. `3-closet`: "Earn points, dress your cat" with the subcaption "Every focus day fills your chart.", the Closet's Activity section (the study heatmap, 30 days of focus time, best day and streak) beside Mochi in the King's Cape, with 240 points (`open-large-closet`).
    The preview's Closet beat still picks the Wardrobe, since that beat shows an item being worn.
 4. `4-today`: "Today, right up top", Today with tasks, Up next and the mini timer.
@@ -292,8 +292,9 @@ All names, songs and decks in the demo data are fictional, and no caption has a 
 
 The design: a cream canvas with the site's paper grain and a soft glow tinted 6 percent toward the active tab's accent, a one-line Fredoka SemiBold headline (168 px, baseline at y=310) and a Fredoka Medium subcaption (76 px, baseline at y=430), over a full-bleed original dune wallpaper from y=540 with a plain translucent menu bar (no device, no Apple logo, no menus).
 The real panel hangs from the menu bar, drawn 1:1 from snapshots rendered at 3 pixels per point, with only its own shadow.
-Shot 2 has no open panel, so it shows the closed notch (190 by 32 pt) centered at the top of the stage like a MacBook's, with the coach to its right where the app's overlay window puts it (from the notch's right edge), all at the panels' 3 pixels per point; the menu bar there is as tall as the notch.
-The bubble reaches about 330 pt right of the notch, so 3x is about the largest scale that keeps it inside the canvas with the notch centered; the script warns if it ever runs past the margin.
+Shot 2 has no open panel, so it shows the closed notch (190 by 32 pt, at the panels' 3 pixels per point) centered at the top of the stage like a MacBook's; the menu bar there is as tall as the notch.
+In the app the pet says the session-end card and then its Cat wisdom line in one bubble beside the notch; the shot shows both at once so the moment reads at gallery size: the card centered below the notch and the wisdom bubble beside the big cat, each cut from the app's own coach snapshots at 5 pixels per point (`coach-session-end` and `coach-wisdom-all-0`, which `TABBI_WISDOM_ALL=1` renders).
+The card leaves out its tail, which points at the small pet beside the notch, and the wisdom bubble's tail is redrawn toward the big cat; the script warns if the wisdom bubble runs past the margin or crowds the card.
 The demo pet, Mochi in the same King's Cape and round glasses as in the panel, sits on the front dune in a different mood per shot (typing, cheering, awake, asleep, and with headphones and a mug for music).
 It is drawn by the app's own pet renderer (`swift run PetGallery <folder> accents`) and scaled up with nearest neighbor by whole numbers (12x, 13x in the Closet shot), so the pixel art stays sharp.
 Shot 5 uses the night variant of the canvas: dusk dunes, pixel stars and a darker menu bar.
@@ -305,8 +306,9 @@ To render them and the App Preview again after a UI change, run:
 swift docs/appstore/make-media.swift
 ```
 
-The script renders App Store edition demo snapshots of the store layout (`--edition appstore --tabs study,planner,anki,spotify,closet --transparent --scale 3`, which also holds the coach shot) and the pet's frames, records the App Preview's footage (below), then composes the screenshots and the preview.
-To compose from folders you already rendered that way, pass the 3x folder twice (panels, then coach) and the accents folder, and optionally a recording folder that holds `opening/` and `story/`; without one the preview is recorded fresh.
+The script renders App Store edition demo snapshots of the store layout (`--edition appstore --tabs study,planner,anki,spotify,closet --transparent --scale 3`), the same again at `--scale 5` with `TABBI_WISDOM_ALL=1` for the coach, and the pet's frames, records the App Preview's footage (below), then composes the screenshots and the preview.
+To compose from folders you already rendered that way, pass the 3x folder, the 5x coach folder and the accents folder, and optionally a recording folder that holds `opening/` and `story/`; without one the preview is recorded fresh.
+Add `--screenshots-only` to compose the screenshots and leave the preview alone.
 It warns when a caption runs into the side margins or the pet touches the panel.
 The clocks in the demo panels are live, so every run changes the shots that show a timer; commit only the images you meant to change.
 
