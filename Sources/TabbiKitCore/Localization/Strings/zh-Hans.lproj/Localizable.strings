@@ -41,6 +41,8 @@
 	<string>%@ 无法优化，此计划仍然可用。</string>
 	<key>%@ couldn't refine this plan</key>
 	<string>%@ 无法优化此计划</string>
+	<key>%@ didn't respond. Click to try again</key>
+	<string>%@没有响应。点按以重试</string>
 	<key>%@ didn't send back a usable plan. Try again in a moment.</key>
 	<string>%@ 没有返回可用的计划。请稍后再试。</string>
 	<key>%@ done for today. Open %@</key>
@@ -107,6 +109,8 @@
 	<string>%@ 正和你一起休息</string>
 	<key>%@ isn't connected</key>
 	<string>%@ 未连接</string>
+	<key>%@ isn't installed</key>
+	<string>未安装%@</string>
 	<key>%@ isn't on this Mac</key>
 	<string>这台 Mac 上没有 %@</string>
 	<key>%@ isn't on this Mac yet. Connections shows you how to add it.</key>
@@ -117,6 +121,10 @@
 	<string>%@ 跟小鸟学了一首歌</string>
 	<key>%@ left</key>
 	<string>还剩 %@</string>
+	<key>%@ level</key>
+	<string>%@音量</string>
+	<key>%@ level %@</key>
+	<string>%1$@音量 %2$@</string>
 	<key>%@ level in the blend</key>
 	<string>%@在混音中的音量</string>
 	<key>%@ made friends with a pigeon</key>
@@ -129,6 +137,8 @@
 	<string>%@ 在洒满阳光的窗台打盹</string>
 	<key>%@ naps until the timer runs</key>
 	<string>%@ 在计时开始前打个盹</string>
+	<key>%@ needs permission to control %@ to start your playlist. Click to open Privacy &amp; Security › Automation</key>
+	<string>%1$@需要控制%2$@的权限才能播放你的播放列表。点按以打开“隐私与安全性 › 自动化”</string>
 	<key>%@ not found</key>
 	<string>未找到 %@</string>
 	<key>%@ of %@</key>
@@ -373,6 +383,8 @@
 	<string>将 %@ 添加为刘海中的最后一个标签页</string>
 	<key>Add %@ in Tabs to include this</key>
 	<string>在“标签页”中添加 %@ 即可包含此项</string>
+	<key>Add %@ to the blend</key>
+	<string>将%@加入混音</string>
 	<key>Add AnkiConnect to Anki</key>
 	<string>将 AnkiConnect 添加到 Anki</string>
 	<key>Add App…</key>
@@ -461,6 +473,8 @@
 	<string>都是可选的，现在无需操作。</string>
 	<key>Allow</key>
 	<string>允许</string>
+	<key>Allow %@ access</key>
+	<string>允许访问%@</string>
 	<key>Allow %@ in Privacy &amp; Security to plan around meetings.</key>
 	<string>请在“隐私与安全性”中允许 %@，以便围绕会议规划。</string>
 	<key>Allow %@ in Privacy &amp; Security.</key>
@@ -483,6 +497,8 @@
 	<string>允许在内建显示器以外的显示器上显示刘海</string>
 	<key>Almost there: one thing left to do</key>
 	<string>快好了：还差一步</string>
+	<key>Already playing during focus</key>
+	<string>专注期间已在播放</string>
 	<key>Already playing: focus is running</key>
 	<string>正在播放：专注进行中</string>
 	<key>Always</key>
@@ -603,6 +619,8 @@
 	<string>返回清单</string>
 	<key>Back to the notch (Esc)</key>
 	<string>返回刘海(Esc)</string>
+	<key>Back to the timer</key>
+	<string>返回计时器</string>
 	<key>Back to today</key>
 	<string>回到今天</string>
 	<key>Backwards Cap</key>
@@ -977,6 +995,8 @@
 	<string>无法读取昨天的清单</string>
 	<key>Couldn't remove %@: %@</key>
 	<string>无法移除 %1$@：%2$@</string>
+	<key>Couldn't start the playlist</key>
+	<string>无法播放播放列表</string>
 	<key>Couldn't take a screenshot. Try again.</key>
 	<string>无法截图,请重试。</string>
 	<key>Count this session for you again</key>
@@ -1045,6 +1065,8 @@
 	<string>删除这个导入的套件并恢复默认套件</string>
 	<key>Delete this key from your Keychain</key>
 	<string>从钥匙串中删除此密钥</string>
+	<key>Delete this preset</key>
+	<string>删除此预设</string>
 	<key>Delete your %@ account?</key>
 	<string>要删除你的 %@ 账户吗？</string>
 	<key>Delete your Party data from the friends server</key>
@@ -1485,6 +1507,8 @@
 	<string>安装</string>
 	<key>Install %@ to plan with it.</key>
 	<string>安装 %@ 后即可用它规划。</string>
+	<key>Install %@ to play this playlist, or pick another one. Click to dismiss</key>
+	<string>安装%@即可播放此播放列表，或选择其他播放列表。点按以关闭</string>
 	<key>Install Claude Code and sign in to see your live 5-hour and weekly limits.</key>
 	<string>安装 Claude Code 并登录，即可实时查看 5 小时和每周限额。</string>
 	<key>Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits.</key>
@@ -1601,6 +1625,8 @@
 	<string>退出</string>
 	<key>Leave empty for the default, which is quick and inexpensive.</key>
 	<string>留空则使用默认模型,快速且便宜。</string>
+	<key>Leave notifications on while studying</key>
+	<string>学习时保持通知开启</string>
 	<key>Leave the party</key>
 	<string>退出派对</string>
 	<key>Leave the party; the next member becomes host</key>
@@ -2205,6 +2231,8 @@
 	<string>再次选择 %1$@ 以允许它接收你的 AI 请求。在此之前 %2$@ 不会发送任何内容。</string>
 	<key>Pick a cozy focus playlist</key>
 	<string>选择一个舒适的专注播放列表</string>
+	<key>Pick a focus sound or a playlist</key>
+	<string>选择专注声音或播放列表</string>
 	<key>Pick a kit</key>
 	<string>选一个套件</string>
 	<key>Pick a kit, your tabs and what they need again, in the notch</key>
@@ -2217,6 +2245,8 @@
 	<string>选个名字和宠物，再填写出生年月。</string>
 	<key>Pick a sound to preview it</key>
 	<string>选择一种声音来试听</string>
+	<key>Pick a sound, then save the blend here</key>
+	<string>先选择一种声音，再在这里保存混音</string>
 	<key>Pick any</key>
 	<string>可多选</string>
 	<key>Pick any app from your Applications folder</key>
@@ -2269,20 +2299,30 @@
 	<string>正在规划今天…</string>
 	<key>Play</key>
 	<string>播放</string>
+	<key>Play %@ (%@) now and with every focus block</key>
+	<string>立即播放%1$@(%2$@)，每个专注时段也会播放</string>
+	<key>Play %@. Long-press or right-click to rename or delete</key>
+	<string>播放%@。长按或右键点按可重命名或删除</string>
 	<key>Play a soft sound with celebrations that have no sound of their own</key>
 	<string>为没有自带音效的庆祝播放轻柔的声音</string>
+	<key>Play your playlist now. It's the link from the Focus options in Settings &gt; Tabs; picking a preset replaces it</key>
+	<string>立即播放你的播放列表。它是 设置 &gt; 标签页 中专注选项里的链接；选择预设会替换它</string>
 	<key>Play, pause and skip in Apple Music.</key>
 	<string>在 Apple Music 中播放、暂停和跳过。</string>
 	<key>Play, pause and skip on Spotify.</key>
 	<string>在 Spotify 中播放、暂停和跳过。</string>
 	<key>Play, pause and skip songs from the notch.</key>
 	<string>在刘海里播放、暂停和切歌。</string>
+	<key>Playback position</key>
+	<string>播放位置</string>
 	<key>Players</key>
 	<string>播放器</string>
 	<key>Playing in %@</key>
 	<string>正在 %@ 中播放</string>
 	<key>Playlist</key>
 	<string>播放列表</string>
+	<key>Plays %@ with focus. Click to change it</key>
+	<string>专注时播放%@。点按以更改</string>
 	<key>Plays in Spotify.</key>
 	<string>在 Spotify 中播放。</string>
 	<key>Plays “%@” from your Music library.</key>
@@ -2395,6 +2435,8 @@
 	<string>移除</string>
 	<key>Remove %@</key>
 	<string>移除 %@</string>
+	<key>Remove %@ from the blend</key>
+	<string>从混音中移除%@</string>
 	<key>Remove %@ from the notch; it goes back to Add more</key>
 	<string>从刘海中移除 %@，它会回到“添加更多”</string>
 	<key>Remove Kit</key>
@@ -2493,6 +2535,8 @@
 	<string>樱花枝</string>
 	<key>Save</key>
 	<string>保存</string>
+	<key>Save this blend as a preset</key>
+	<string>将此混音存为预设</string>
 	<key>Save this key in your Keychain</key>
 	<string>将此密钥存入钥匙串</string>
 	<key>Save today's review and show the checklist</key>
@@ -3161,10 +3205,14 @@
 	<string>短暂打开勿扰模式，然后再关闭</string>
 	<key>Turn On Party</key>
 	<string>开启派对</string>
+	<key>Turn off %@: stop it and don't start it with focus</key>
+	<string>关闭%@：停止播放，专注时也不再播放</string>
 	<key>Turn on</key>
 	<string>打开</string>
 	<key>Turn on Allow Notifications for Tabbi in System Settings.</key>
 	<string>在系统设置中为 Tabbi 打开“允许通知”。</string>
+	<key>Turn on Do Not Disturb during deep focus (runs your Focus shortcuts)</key>
+	<string>深度专注时开启勿扰模式(运行你的专注模式快捷指令)</string>
 	<key>Turn on Do Not Disturb during focus</key>
 	<string>专注时打开勿扰模式</string>
 	<key>Turn on Do Not Disturb whenever the focus timer runs</key>
@@ -3499,6 +3547,8 @@
 	<string>你的宠物、连续记录和正在运行的计时器。</string>
 	<key>Your plan</key>
 	<string>你的计划</string>
+	<key>Your playlist</key>
+	<string>你的播放列表</string>
 	<key>Your setup already matches %@</key>
 	<string>你的设置已与 %@ 一致</string>
 	<key>Your study streak: days in a row with at least %lld focused minutes</key>

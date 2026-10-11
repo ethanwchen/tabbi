@@ -9,13 +9,15 @@ import TabbiKitCore
 ///
 /// Values: `method:<kind>` (the timer running that method; without the
 /// demo, a fresh session on it), `picker`,
-/// `sounds` (the sound mixer), `custom` (the Custom lengths), `paused` (the demo Pomodoro paused, so the
+/// `sounds` (the sound mixer), `sounds-denied` (the mixer with its
+/// playlist blocked by missing Automation access), `custom` (the Custom lengths), `paused` (the demo Pomodoro paused, so the
 /// pet dozes), or `info:<kind>` (that method's info popover over a Pomodoro session). Kinds are
 /// `StudyMethodKind` raw values. Ignored outside snapshot runs.
 enum StudySnapshotState: Equatable {
     case method(StudyMethodKind)
     case picker
     case sounds
+    case soundsDenied
     case custom
     case paused
     case info(StudyMethodKind)
@@ -30,6 +32,7 @@ enum StudySnapshotState: Equatable {
     static func parse(_ value: String) -> StudySnapshotState? {
         if value == "picker" { return .picker }
         if value == "sounds" { return .sounds }
+        if value == "sounds-denied" { return .soundsDenied }
         if value == "custom" { return .custom }
         if value == "paused" { return .paused }
         let parts = value.split(separator: ":", maxSplits: 1).map(String.init)
@@ -51,6 +54,12 @@ enum StudySnapshotState: Equatable {
         else { return nil }
         return TimeInterval(value).flatMap { $0 > 0 ? $0 : nil }
     }()
+
+    /// The playlist issue the mixer shows, which a snapshot run can't
+    /// produce for real since it never scripts a music app.
+    var playlistIssue: FocusPlaylistIssue? {
+        self == .soundsDenied ? .permissionDenied(.spotify) : nil
+    }
 
     /// The method the demo session should run. Info popovers keep the
     /// default, so other methods show their "Use" button.

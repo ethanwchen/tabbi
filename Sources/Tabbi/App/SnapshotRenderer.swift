@@ -700,6 +700,10 @@ enum SnapshotRenderer {
     private static func sheetSnapshot(_ content: some View) async -> Data? {
         let host = NSHostingController(rootView: content.tabbiLayoutDirection())
         host.sizingOptions = .preferredContentSize
+        // No safe area: in a right-to-left language the titled window's
+        // corner insets change with every resize, which resizes it again
+        // until AppKit throws.
+        host.safeAreaRegions = []
         let window = NSWindow(contentViewController: host)
         window.styleMask = [.titled, .fullSizeContentView]
         window.titlebarAppearsTransparent = true

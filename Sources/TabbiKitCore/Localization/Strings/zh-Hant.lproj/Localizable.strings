@@ -41,6 +41,8 @@
 	<string>%@ 無法優化，這份計畫仍然可用。</string>
 	<key>%@ couldn't refine this plan</key>
 	<string>%@ 無法調整這份計畫</string>
+	<key>%@ didn't respond. Click to try again</key>
+	<string>%@沒有回應。按一下以重試</string>
 	<key>%@ didn't send back a usable plan. Try again in a moment.</key>
 	<string>%@ 沒有傳回可用的計畫。請稍後再試。</string>
 	<key>%@ done for today. Open %@</key>
@@ -107,6 +109,8 @@
 	<string>%@ 正陪你一起休息</string>
 	<key>%@ isn't connected</key>
 	<string>%@ 未連接</string>
+	<key>%@ isn't installed</key>
+	<string>未安裝%@</string>
 	<key>%@ isn't on this Mac</key>
 	<string>這台 Mac 上沒有 %@</string>
 	<key>%@ isn't on this Mac yet. Connections shows you how to add it.</key>
@@ -117,6 +121,10 @@
 	<string>%@ 跟小鳥學了一首歌</string>
 	<key>%@ left</key>
 	<string>還剩 %@</string>
+	<key>%@ level</key>
+	<string>%@音量</string>
+	<key>%@ level %@</key>
+	<string>%1$@音量 %2$@</string>
 	<key>%@ level in the blend</key>
 	<string>%@在混音中的音量</string>
 	<key>%@ made friends with a pigeon</key>
@@ -129,6 +137,8 @@
 	<string>%@ 在灑滿陽光的窗台打盹</string>
 	<key>%@ naps until the timer runs</key>
 	<string>%@ 在計時開始前小睡一下</string>
+	<key>%@ needs permission to control %@ to start your playlist. Click to open Privacy &amp; Security › Automation</key>
+	<string>%1$@需要控制%2$@的權限才能播放你的播放列表。按一下以打開「隱私權與安全性」›「自動化」</string>
 	<key>%@ not found</key>
 	<string>找不到 %@</string>
 	<key>%@ of %@</key>
@@ -373,6 +383,8 @@
 	<string>將 %@ 加入為瀏海中的最後一個標籤頁</string>
 	<key>Add %@ in Tabs to include this</key>
 	<string>在「標籤頁」中加入 %@ 即可包含此項目</string>
+	<key>Add %@ to the blend</key>
+	<string>將%@加入混音</string>
 	<key>Add AnkiConnect to Anki</key>
 	<string>將 AnkiConnect 加入 Anki</string>
 	<key>Add App…</key>
@@ -461,6 +473,8 @@
 	<string>都是選用的，現在不用做什麼。</string>
 	<key>Allow</key>
 	<string>允許</string>
+	<key>Allow %@ access</key>
+	<string>允許取用%@</string>
 	<key>Allow %@ in Privacy &amp; Security to plan around meetings.</key>
 	<string>請在「隱私權與安全性」中允許 %@，以便配合會議規劃。</string>
 	<key>Allow %@ in Privacy &amp; Security.</key>
@@ -483,6 +497,8 @@
 	<string>允許在內建顯示器以外的顯示器上顯示瀏海</string>
 	<key>Almost there: one thing left to do</key>
 	<string>快好了：還差一件事</string>
+	<key>Already playing during focus</key>
+	<string>專注期間已在播放</string>
 	<key>Already playing: focus is running</key>
 	<string>正在播放：專注進行中</string>
 	<key>Always</key>
@@ -603,6 +619,8 @@
 	<string>返回清單</string>
 	<key>Back to the notch (Esc)</key>
 	<string>回到瀏海（Esc）</string>
+	<key>Back to the timer</key>
+	<string>返回計時器</string>
 	<key>Back to today</key>
 	<string>回到今天</string>
 	<key>Backwards Cap</key>
@@ -977,6 +995,8 @@
 	<string>無法讀取昨天的清單</string>
 	<key>Couldn't remove %@: %@</key>
 	<string>無法移除 %1$@：%2$@</string>
+	<key>Couldn't start the playlist</key>
+	<string>無法播放播放列表</string>
 	<key>Couldn't take a screenshot. Try again.</key>
 	<string>無法截圖，請再試一次。</string>
 	<key>Count this session for you again</key>
@@ -1045,6 +1065,8 @@
 	<string>刪除這個匯入的套件，並回到預設套件</string>
 	<key>Delete this key from your Keychain</key>
 	<string>從鑰匙圈刪除此密鑰</string>
+	<key>Delete this preset</key>
+	<string>刪除此預設</string>
 	<key>Delete your %@ account?</key>
 	<string>要刪除你的 %@ 帳號嗎？</string>
 	<key>Delete your Party data from the friends server</key>
@@ -1485,6 +1507,8 @@
 	<string>安裝</string>
 	<key>Install %@ to plan with it.</key>
 	<string>安裝 %@ 後即可用它規劃。</string>
+	<key>Install %@ to play this playlist, or pick another one. Click to dismiss</key>
+	<string>安裝%@即可播放此播放列表，或選擇其他播放列表。按一下以關閉</string>
 	<key>Install Claude Code and sign in to see your live 5-hour and weekly limits.</key>
 	<string>安裝 Claude Code 並登入，即可查看即時的 5 小時和每週限額。</string>
 	<key>Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits.</key>
@@ -1601,6 +1625,8 @@
 	<string>離開</string>
 	<key>Leave empty for the default, which is quick and inexpensive.</key>
 	<string>留空即使用預設模型，快速又便宜。</string>
+	<key>Leave notifications on while studying</key>
+	<string>讀書時保持通知開啟</string>
 	<key>Leave the party</key>
 	<string>離開派對</string>
 	<key>Leave the party; the next member becomes host</key>
@@ -2205,6 +2231,8 @@
 	<string>再次選擇 %1$@，允許它接收你的 AI 請求。在此之前，%2$@ 不會傳送任何內容。</string>
 	<key>Pick a cozy focus playlist</key>
 	<string>選一個舒服的專注播放列表</string>
+	<key>Pick a focus sound or a playlist</key>
+	<string>選擇專注聲音或播放列表</string>
 	<key>Pick a kit</key>
 	<string>選一個套件</string>
 	<key>Pick a kit, your tabs and what they need again, in the notch</key>
@@ -2217,6 +2245,8 @@
 	<string>選個名字和寵物，再告訴我們你的出生年月。</string>
 	<key>Pick a sound to preview it</key>
 	<string>選一種聲音來試聽</string>
+	<key>Pick a sound, then save the blend here</key>
+	<string>先選擇一種聲音，再在這裡儲存混音</string>
 	<key>Pick any</key>
 	<string>可複選</string>
 	<key>Pick any app from your Applications folder</key>
@@ -2269,20 +2299,30 @@
 	<string>正在規劃今天…</string>
 	<key>Play</key>
 	<string>播放</string>
+	<key>Play %@ (%@) now and with every focus block</key>
+	<string>立即播放%1$@(%2$@)，每個專注時段也會播放</string>
+	<key>Play %@. Long-press or right-click to rename or delete</key>
+	<string>播放%@。長按或按右鍵可重新命名或刪除</string>
 	<key>Play a soft sound with celebrations that have no sound of their own</key>
 	<string>為沒有自帶音效的慶祝播放輕柔的聲音</string>
+	<key>Play your playlist now. It's the link from the Focus options in Settings &gt; Tabs; picking a preset replaces it</key>
+	<string>立即播放你的播放列表。它是「設定 &gt; 標籤頁」中專注選項裡的連結；選擇預設會取代它</string>
 	<key>Play, pause and skip in Apple Music.</key>
 	<string>在 Apple Music 中播放、暫停和跳過。</string>
 	<key>Play, pause and skip on Spotify.</key>
 	<string>在 Spotify 中播放、暫停和跳過。</string>
 	<key>Play, pause and skip songs from the notch.</key>
 	<string>從瀏海播放、暫停和跳過歌曲。</string>
+	<key>Playback position</key>
+	<string>播放位置</string>
 	<key>Players</key>
 	<string>播放器</string>
 	<key>Playing in %@</key>
 	<string>正在 %@ 中播放</string>
 	<key>Playlist</key>
 	<string>播放列表</string>
+	<key>Plays %@ with focus. Click to change it</key>
+	<string>專注時播放%@。按一下以更改</string>
 	<key>Plays in Spotify.</key>
 	<string>在 Spotify 播放。</string>
 	<key>Plays “%@” from your Music library.</key>
@@ -2395,6 +2435,8 @@
 	<string>移除</string>
 	<key>Remove %@</key>
 	<string>移除 %@</string>
+	<key>Remove %@ from the blend</key>
+	<string>從混音中移除%@</string>
 	<key>Remove %@ from the notch; it goes back to Add more</key>
 	<string>從瀏海移除 %@，它會回到「加入更多」</string>
 	<key>Remove Kit</key>
@@ -2493,6 +2535,8 @@
 	<string>櫻花枝</string>
 	<key>Save</key>
 	<string>儲存</string>
+	<key>Save this blend as a preset</key>
+	<string>將此混音存為預設</string>
 	<key>Save this key in your Keychain</key>
 	<string>將這個密鑰存入鑰匙圈</string>
 	<key>Save today's review and show the checklist</key>
@@ -3161,10 +3205,14 @@
 	<string>短暫開啟勿擾模式，然後再關閉</string>
 	<key>Turn On Party</key>
 	<string>開啟派對</string>
+	<key>Turn off %@: stop it and don't start it with focus</key>
+	<string>關閉%@：停止播放，專注時也不再播放</string>
 	<key>Turn on</key>
 	<string>開啟</string>
 	<key>Turn on Allow Notifications for Tabbi in System Settings.</key>
 	<string>在「系統設定」中為 Tabbi 開啟「允許通知」。</string>
+	<key>Turn on Do Not Disturb during deep focus (runs your Focus shortcuts)</key>
+	<string>深度專注時開啟勿擾模式(執行你的專注模式捷徑)</string>
 	<key>Turn on Do Not Disturb during focus</key>
 	<string>專注時開啟勿擾模式</string>
 	<key>Turn on Do Not Disturb whenever the focus timer runs</key>
@@ -3499,6 +3547,8 @@
 	<string>你的寵物、連續紀錄和正在跑的計時器。</string>
 	<key>Your plan</key>
 	<string>你的計畫</string>
+	<key>Your playlist</key>
+	<string>你的播放列表</string>
 	<key>Your setup already matches %@</key>
 	<string>你的設定已與 %@ 相符</string>
 	<key>Your study streak: days in a row with at least %lld focused minutes</key>

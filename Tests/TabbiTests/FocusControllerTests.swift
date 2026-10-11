@@ -11,10 +11,13 @@ import TabbiKitCore
 final class FocusControllerTests: XCTestCase {
     private var suiteName = ""
     private var defaults: UserDefaults!
+    /// Stands in for Spotify and Music, so no test ever scripts a real app.
+    private var apps: FakeMusicApps!
 
     override func setUp() async throws {
         suiteName = "FocusControllerTests.\(UUID().uuidString)"
         defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        apps = FakeMusicApps()
     }
 
     override func tearDown() async throws {
@@ -142,15 +145,82 @@ final class FocusControllerTests: XCTestCase {
         XCTAssertFalse(focus.isPreviewing, "the sound is already playing while focusing")
     }
 
+    // MARK: - Picking a playlist
+
+    private let lofi = FocusPlaylistPreset.all[0]
+    private let deepFocus = FocusPlaylistPreset.all[2]
+
+    func testPickingAPlaylistPlaysItRightAwayAndSavesIt() async throws {
+        let focus = liveController()
+        focus.choosePlaylist(lofi.link)
+        XCTAssertEqual(focus.settings.playlistText, lofi.link)
+        XCTAssertEqual(savedSettings()?.playlistText, lofi.link, "kept for every focus block")
+        try await waitUntil("the play script ran") { !apps.calls.isEmpty }
+        let call = try XCTUnwrap(apps.calls.first)
+        XCTAssertEqual(call.script, FocusPlaylistScript.play(try XCTUnwrap(lofi.playlist)))
+        XCTAssertEqual(call.source, .spotify)
+        XCTAssertTrue(call.launching, "a pick may open Spotify, since the click asked for it")
+        XCTAssertNil(focus.playlistIssue)
+    }
+
+    func testPickingMidPhasePlaysNowAndTurningItOffPausesIt() async throws {
+        let focus = liveController()
+        focus.activityChanged(.focusing, from: .study)
+        try await waitUntil("focusing") { focus.isFocusing }
+        focus.choosePlaylist(deepFocus.link)
+        try await waitUntil("playing") { apps.calls.count == 1 }
+
+        focus.choosePlaylist("")
+        try await waitUntil("paused") { apps.calls.count == 2 }
+        XCTAssertEqual(apps.calls.last?.script, FocusPlaylistScript.pause(.spotify))
+        XCTAssertEqual(focus.settings.playlistText, "")
+    }
+
+    func testAPlaylistWithoutAutomationAccessSaysSoUntilTheNextPick() async throws {
+        let focus = liveController()
+        apps.result = .failed(code: -1743)
+        focus.choosePlaylist(lofi.link)
+        try await waitUntil("the issue shows") { focus.playlistIssue != nil }
+        XCTAssertEqual(focus.playlistIssue, .permissionDenied(.spotify))
+
+        apps.result = .output("")
+        focus.choosePlaylist(deepFocus.link)
+        XCTAssertNil(focus.playlistIssue, "a new pick clears it")
+        try await waitUntil("played") { apps.calls.count == 2 }
+        try await settle()
+        XCTAssertNil(focus.playlistIssue)
+    }
+
+    func testAMissingAppIsReportedWithoutScriptingIt() async throws {
+        let focus = liveController()
+        apps.installed = [.music]
+        focus.choosePlaylist(lofi.link)
+        try await waitUntil("the issue shows") { focus.playlistIssue != nil }
+        XCTAssertEqual(focus.playlistIssue, .notInstalled(.spotify))
+        XCTAssertTrue(apps.calls.isEmpty, "never sends an Apple Event to an app that isn't there")
+        focus.dismissPlaylistIssue()
+        XCTAssertNil(focus.playlistIssue)
+    }
+
+    func testTypingALinkInSettingsPlaysNothing() async throws {
+        let focus = liveController()
+        focus.settings.playlistText = lofi.link
+        try await settle()
+        XCTAssertTrue(apps.calls.isEmpty, "only a pick in the mixer plays right away")
+    }
+
     // MARK: - Demo and snapshot runs
 
     func testDemoAndSnapshotRunsShowSamplesAndNeverSaveOrFocus() async throws {
         for runMode in [RunMode.demo, RunMode(isDemo: false, isSnapshot: true)] {
-            let focus = FocusController(runMode: runMode, repository: FocusSettingsRepository(defaults: defaults))
+            let focus = FocusController(runMode: runMode, repository: FocusSettingsRepository(defaults: defaults),
+                                        musicApps: apps.value)
             XCTAssertFalse(focus.settings.mix.isOff, "sample settings show a sound")
             XCTAssertNotNil(focus.settings.playlist)
 
             focus.settings.volume = 0.1
+            focus.choosePlaylist(FocusPlaylistPreset.all[1].link)
+            XCTAssertEqual(focus.settings.playlistText, FocusPlaylistPreset.all[1].link, "the pick still shows")
             focus.activityChanged(.focusing, from: .focusTimer)
             focus.setPreviewing(true)
             let result = await focus.testShortcut("Some Shortcut That Does Not Exist")
@@ -160,6 +230,7 @@ final class FocusControllerTests: XCTestCase {
             XCTAssertFalse(focus.isFocusing)
             XCTAssertFalse(focus.isPreviewing)
             XCTAssertTrue(result.succeeded, "the Test button pretends, running no shortcut")
+            XCTAssertTrue(apps.calls.isEmpty, "and no music app is scripted")
         }
     }
 
@@ -169,7 +240,8 @@ final class FocusControllerTests: XCTestCase {
         let repository = FocusSettingsRepository(defaults: defaults)
         if let settings { repository.save(settings) }
         return FocusController(runMode: RunMode(isDemo: false, isSnapshot: false),
-                               offersDoNotDisturb: offersDoNotDisturb, repository: repository)
+                               offersDoNotDisturb: offersDoNotDisturb, repository: repository,
+                               musicApps: apps.value)
     }
 
     private func savedSettings() -> FocusSettings? {
@@ -187,5 +259,43 @@ final class FocusControllerTests: XCTestCase {
     /// Lets queued transitions run, for checks that something did not change.
     private func settle() async throws {
         try await Task.sleep(for: .milliseconds(200))
+    }
+}
+
+/// A fake Spotify and Music: records each script and answers with `result`.
+/// Neither app ever reads as running, so phases never wait on a player state.
+private final class FakeMusicApps: @unchecked Sendable {
+    struct Call: Equatable {
+        let script: String
+        let source: MediaSource
+        let launching: Bool
+    }
+
+    private let lock = NSLock()
+    private var recorded: [Call] = []
+    private var answer: FocusScriptResult = .output("")
+    private var present: Set<MediaSource> = Set(MediaSource.allCases)
+
+    var calls: [Call] { lock.withLock { recorded } }
+    var result: FocusScriptResult {
+        get { lock.withLock { answer } }
+        set { lock.withLock { answer = newValue } }
+    }
+    var installed: Set<MediaSource> {
+        get { lock.withLock { present } }
+        set { lock.withLock { present = newValue } }
+    }
+
+    var value: FocusMusicApps {
+        FocusMusicApps(
+            isInstalled: { [unowned self] in installed.contains($0) },
+            isRunning: { _ in false },
+            run: { [unowned self] script, source, launching in
+                lock.withLock {
+                    recorded.append(Call(script: script, source: source, launching: launching))
+                    return answer
+                }
+            }
+        )
     }
 }

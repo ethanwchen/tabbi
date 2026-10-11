@@ -28,12 +28,3 @@ public struct SpotifyGeneratedCover: Equatable, Sendable {
         return hash
     }
 }
-
-/// Maps between scrubber geometry and playback time.
-public enum SpotifyScrubber {
-    /// Seconds for a drag at `x` along a track `width` points wide.
-    public static func position(atX x: Double, width: Double, duration: TimeInterval) -> TimeInterval {
-        guard width > 0, duration > 0, x.isFinite else { return 0 }
-        return min(max(x / width, 0), 1) * duration
-    }
-}

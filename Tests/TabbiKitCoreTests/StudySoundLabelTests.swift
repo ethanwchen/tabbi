@@ -47,12 +47,4 @@ final class StudySoundLabelTests: XCTestCase {
         XCTAssertEqual(StudySoundLabel.help(for: FocusSettings(mix: .single(.cafe)), playlistName: nil),
                        "Plays Cafe murmur with focus. Click to change it")
     }
-
-    func testLevelFromDragClampsToTheSlider() {
-        XCTAssertEqual(StudySoundLabel.level(atX: 50, width: 200), 0.25)
-        XCTAssertEqual(StudySoundLabel.level(atX: -10, width: 200), 0)
-        XCTAssertEqual(StudySoundLabel.level(atX: 400, width: 200), 1)
-        XCTAssertEqual(StudySoundLabel.level(atX: .nan, width: 200), 0)
-        XCTAssertEqual(StudySoundLabel.level(atX: 10, width: 0), 1)
-    }
 }

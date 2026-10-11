@@ -41,6 +41,8 @@
 	<string>%@ couldn't refine it. This plan still works.</string>
 	<key>%@ couldn't refine this plan</key>
 	<string>%@ couldn't refine this plan</string>
+	<key>%@ didn't respond. Click to try again</key>
+	<string>%@ didn't respond. Click to try again</string>
 	<key>%@ didn't send back a usable plan. Try again in a moment.</key>
 	<string>%@ didn't send back a usable plan. Try again in a moment.</string>
 	<key>%@ done for today. Open %@</key>
@@ -107,6 +109,8 @@
 	<string>%@ is taking the break with you</string>
 	<key>%@ isn't connected</key>
 	<string>%@ isn't connected</string>
+	<key>%@ isn't installed</key>
+	<string>%@ isn't installed</string>
 	<key>%@ isn't on this Mac</key>
 	<string>%@ isn't on this Mac</string>
 	<key>%@ isn't on this Mac yet. Connections shows you how to add it.</key>
@@ -117,6 +121,10 @@
 	<string>%@ learned a song from a bird</string>
 	<key>%@ left</key>
 	<string>%@ left</string>
+	<key>%@ level</key>
+	<string>%@ level</string>
+	<key>%@ level %@</key>
+	<string>%@ level %@</string>
 	<key>%@ level in the blend</key>
 	<string>%@ level in the blend</string>
 	<key>%@ made friends with a pigeon</key>
@@ -129,6 +137,8 @@
 	<string>%@ napped on a sunny windowsill</string>
 	<key>%@ naps until the timer runs</key>
 	<string>%@ naps until the timer runs</string>
+	<key>%@ needs permission to control %@ to start your playlist. Click to open Privacy &amp; Security › Automation</key>
+	<string>%@ needs permission to control %@ to start your playlist. Click to open Privacy &amp; Security › Automation</string>
 	<key>%@ not found</key>
 	<string>%@ not found</string>
 	<key>%@ of %@</key>
@@ -373,6 +383,8 @@
 	<string>Add %@ as the last tab in the notch</string>
 	<key>Add %@ in Tabs to include this</key>
 	<string>Add %@ in Tabs to include this</string>
+	<key>Add %@ to the blend</key>
+	<string>Add %@ to the blend</string>
 	<key>Add AnkiConnect to Anki</key>
 	<string>Add AnkiConnect to Anki</string>
 	<key>Add App…</key>
@@ -461,6 +473,8 @@
 	<string>All optional. Nothing to do now.</string>
 	<key>Allow</key>
 	<string>Allow</string>
+	<key>Allow %@ access</key>
+	<string>Allow %@ access</string>
 	<key>Allow %@ in Privacy &amp; Security to plan around meetings.</key>
 	<string>Allow %@ in Privacy &amp; Security to plan around meetings.</string>
 	<key>Allow %@ in Privacy &amp; Security.</key>
@@ -483,6 +497,8 @@
 	<string>Allow the notch on displays other than the built-in one</string>
 	<key>Almost there: one thing left to do</key>
 	<string>Almost there: one thing left to do</string>
+	<key>Already playing during focus</key>
+	<string>Already playing during focus</string>
 	<key>Already playing: focus is running</key>
 	<string>Already playing: focus is running</string>
 	<key>Always</key>
@@ -603,6 +619,8 @@
 	<string>Back to the checklist</string>
 	<key>Back to the notch (Esc)</key>
 	<string>Back to the notch (Esc)</string>
+	<key>Back to the timer</key>
+	<string>Back to the timer</string>
 	<key>Back to today</key>
 	<string>Back to today</string>
 	<key>Backwards Cap</key>
@@ -977,6 +995,8 @@
 	<string>Couldn't read yesterday's list</string>
 	<key>Couldn't remove %@: %@</key>
 	<string>Couldn't remove %@: %@</string>
+	<key>Couldn't start the playlist</key>
+	<string>Couldn't start the playlist</string>
 	<key>Couldn't take a screenshot. Try again.</key>
 	<string>Couldn't take a screenshot. Try again.</string>
 	<key>Count this session for you again</key>
@@ -1045,6 +1065,8 @@
 	<string>Delete this imported kit and go back to the default kit</string>
 	<key>Delete this key from your Keychain</key>
 	<string>Delete this key from your Keychain</string>
+	<key>Delete this preset</key>
+	<string>Delete this preset</string>
 	<key>Delete your %@ account?</key>
 	<string>Delete your %@ account?</string>
 	<key>Delete your Party data from the friends server</key>
@@ -1485,6 +1507,8 @@
 	<string>Install</string>
 	<key>Install %@ to plan with it.</key>
 	<string>Install %@ to plan with it.</string>
+	<key>Install %@ to play this playlist, or pick another one. Click to dismiss</key>
+	<string>Install %@ to play this playlist, or pick another one. Click to dismiss</string>
 	<key>Install Claude Code and sign in to see your live 5-hour and weekly limits.</key>
 	<string>Install Claude Code and sign in to see your live 5-hour and weekly limits.</string>
 	<key>Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits.</key>
@@ -1601,6 +1625,8 @@
 	<string>Leave</string>
 	<key>Leave empty for the default, which is quick and inexpensive.</key>
 	<string>Leave empty for the default, which is quick and inexpensive.</string>
+	<key>Leave notifications on while studying</key>
+	<string>Leave notifications on while studying</string>
 	<key>Leave the party</key>
 	<string>Leave the party</string>
 	<key>Leave the party; the next member becomes host</key>
@@ -2205,6 +2231,8 @@
 	<string>Pick %@ again to allow it to receive your AI requests. %@ sends nothing until you do.</string>
 	<key>Pick a cozy focus playlist</key>
 	<string>Pick a cozy focus playlist</string>
+	<key>Pick a focus sound or a playlist</key>
+	<string>Pick a focus sound or a playlist</string>
 	<key>Pick a kit</key>
 	<string>Pick a kit</string>
 	<key>Pick a kit, your tabs and what they need again, in the notch</key>
@@ -2217,6 +2245,8 @@
 	<string>Pick a name and a pet, and say when you were born.</string>
 	<key>Pick a sound to preview it</key>
 	<string>Pick a sound to preview it</string>
+	<key>Pick a sound, then save the blend here</key>
+	<string>Pick a sound, then save the blend here</string>
 	<key>Pick any</key>
 	<string>Pick any</string>
 	<key>Pick any app from your Applications folder</key>
@@ -2269,20 +2299,30 @@
 	<string>Planning your day…</string>
 	<key>Play</key>
 	<string>Play</string>
+	<key>Play %@ (%@) now and with every focus block</key>
+	<string>Play %@ (%@) now and with every focus block</string>
+	<key>Play %@. Long-press or right-click to rename or delete</key>
+	<string>Play %@. Long-press or right-click to rename or delete</string>
 	<key>Play a soft sound with celebrations that have no sound of their own</key>
 	<string>Play a soft sound with celebrations that have no sound of their own</string>
+	<key>Play your playlist now. It's the link from the Focus options in Settings &gt; Tabs; picking a preset replaces it</key>
+	<string>Play your playlist now. It's the link from the Focus options in Settings &gt; Tabs; picking a preset replaces it</string>
 	<key>Play, pause and skip in Apple Music.</key>
 	<string>Play, pause and skip in Apple Music.</string>
 	<key>Play, pause and skip on Spotify.</key>
 	<string>Play, pause and skip on Spotify.</string>
 	<key>Play, pause and skip songs from the notch.</key>
 	<string>Play, pause and skip songs from the notch.</string>
+	<key>Playback position</key>
+	<string>Playback position</string>
 	<key>Players</key>
 	<string>Players</string>
 	<key>Playing in %@</key>
 	<string>Playing in %@</string>
 	<key>Playlist</key>
 	<string>Playlist</string>
+	<key>Plays %@ with focus. Click to change it</key>
+	<string>Plays %@ with focus. Click to change it</string>
 	<key>Plays in Spotify.</key>
 	<string>Plays in Spotify.</string>
 	<key>Plays “%@” from your Music library.</key>
@@ -2395,6 +2435,8 @@
 	<string>Remove</string>
 	<key>Remove %@</key>
 	<string>Remove %@</string>
+	<key>Remove %@ from the blend</key>
+	<string>Remove %@ from the blend</string>
 	<key>Remove %@ from the notch; it goes back to Add more</key>
 	<string>Remove %@ from the notch; it goes back to Add more</string>
 	<key>Remove Kit</key>
@@ -2493,6 +2535,8 @@
 	<string>Sakura Sprig</string>
 	<key>Save</key>
 	<string>Save</string>
+	<key>Save this blend as a preset</key>
+	<string>Save this blend as a preset</string>
 	<key>Save this key in your Keychain</key>
 	<string>Save this key in your Keychain</string>
 	<key>Save today's review and show the checklist</key>
@@ -3161,10 +3205,14 @@
 	<string>Turn Do Not Disturb on for a moment, then off again</string>
 	<key>Turn On Party</key>
 	<string>Turn On Party</string>
+	<key>Turn off %@: stop it and don't start it with focus</key>
+	<string>Turn off %@: stop it and don't start it with focus</string>
 	<key>Turn on</key>
 	<string>Turn on</string>
 	<key>Turn on Allow Notifications for Tabbi in System Settings.</key>
 	<string>Turn on Allow Notifications for Tabbi in System Settings.</string>
+	<key>Turn on Do Not Disturb during deep focus (runs your Focus shortcuts)</key>
+	<string>Turn on Do Not Disturb during deep focus (runs your Focus shortcuts)</string>
 	<key>Turn on Do Not Disturb during focus</key>
 	<string>Turn on Do Not Disturb during focus</string>
 	<key>Turn on Do Not Disturb whenever the focus timer runs</key>
@@ -3499,6 +3547,8 @@
 	<string>Your pet, today's streak and the running timer.</string>
 	<key>Your plan</key>
 	<string>Your plan</string>
+	<key>Your playlist</key>
+	<string>Your playlist</string>
 	<key>Your setup already matches %@</key>
 	<string>Your setup already matches %@</string>
 	<key>Your study streak: days in a row with at least %lld focused minutes</key>

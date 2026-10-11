@@ -41,6 +41,8 @@
 	<string>%@ は調整できませんでした。この計画のままで大丈夫です。</string>
 	<key>%@ couldn't refine this plan</key>
 	<string>%@ は計画を調整できませんでした</string>
+	<key>%@ didn't respond. Click to try again</key>
+	<string>%@が応答しませんでした。クリックして再試行</string>
 	<key>%@ didn't send back a usable plan. Try again in a moment.</key>
 	<string>%@ から使える計画が返ってきませんでした。少し待ってからもう一度お試しください。</string>
 	<key>%@ done for today. Open %@</key>
@@ -107,6 +109,8 @@
 	<string>%@もいっしょに休憩中</string>
 	<key>%@ isn't connected</key>
 	<string>%@は未接続です</string>
+	<key>%@ isn't installed</key>
+	<string>%@がインストールされていません</string>
 	<key>%@ isn't on this Mac</key>
 	<string>%@がこのMacにありません</string>
 	<key>%@ isn't on this Mac yet. Connections shows you how to add it.</key>
@@ -117,6 +121,10 @@
 	<string>%@が小鳥に歌を教わった</string>
 	<key>%@ left</key>
 	<string>残り%@</string>
+	<key>%@ level</key>
+	<string>%@の音量</string>
+	<key>%@ level %@</key>
+	<string>%1$@の音量 %2$@</string>
 	<key>%@ level in the blend</key>
 	<string>ブレンド内の%@の音量</string>
 	<key>%@ made friends with a pigeon</key>
@@ -129,6 +137,8 @@
 	<string>%@が窓辺でひなたぼっこ</string>
 	<key>%@ naps until the timer runs</key>
 	<string>タイマーが動くまで%@はお昼寝中</string>
+	<key>%@ needs permission to control %@ to start your playlist. Click to open Privacy &amp; Security › Automation</key>
+	<string>プレイリストを再生するには、%1$@が%2$@を操作する許可が必要です。クリックして プライバシーとセキュリティ › オートメーション を開く</string>
 	<key>%@ not found</key>
 	<string>%@が見つかりません</string>
 	<key>%@ of %@</key>
@@ -373,6 +383,8 @@
 	<string>%@をノッチの最後のタブとして追加</string>
 	<key>Add %@ in Tabs to include this</key>
 	<string>含めるには「タブ」で%@を追加してください</string>
+	<key>Add %@ to the blend</key>
+	<string>%@をブレンドに加える</string>
 	<key>Add AnkiConnect to Anki</key>
 	<string>Anki に AnkiConnect を追加</string>
 	<key>Add App…</key>
@@ -461,6 +473,8 @@
 	<string>どれも任意です。今は何もしなくて大丈夫。</string>
 	<key>Allow</key>
 	<string>許可</string>
+	<key>Allow %@ access</key>
+	<string>%@へのアクセスを許可</string>
 	<key>Allow %@ in Privacy &amp; Security to plan around meetings.</key>
 	<string>会議に合わせて計画するには、「プライバシーとセキュリティ」で %@ を許可してください。</string>
 	<key>Allow %@ in Privacy &amp; Security.</key>
@@ -483,6 +497,8 @@
 	<string>内蔵ディスプレイ以外にもノッチを表示します</string>
 	<key>Almost there: one thing left to do</key>
 	<string>あと少し：残りは1ステップです</string>
+	<key>Already playing during focus</key>
+	<string>集中中はすでに再生しています</string>
 	<key>Already playing: focus is running</key>
 	<string>再生中: 集中しています</string>
 	<key>Always</key>
@@ -603,6 +619,8 @@
 	<string>チェックリストに戻る</string>
 	<key>Back to the notch (Esc)</key>
 	<string>ノッチに戻る(Esc)</string>
+	<key>Back to the timer</key>
+	<string>タイマーに戻る</string>
 	<key>Back to today</key>
 	<string>今日に戻る</string>
 	<key>Backwards Cap</key>
@@ -977,6 +995,8 @@
 	<string>昨日のリストを読み込めません</string>
 	<key>Couldn't remove %@: %@</key>
 	<string>%1$@を削除できませんでした: %2$@</string>
+	<key>Couldn't start the playlist</key>
+	<string>プレイリストを再生できませんでした</string>
 	<key>Couldn't take a screenshot. Try again.</key>
 	<string>スクリーンショットを撮れませんでした。もう一度お試しください。</string>
 	<key>Count this session for you again</key>
@@ -1045,6 +1065,8 @@
 	<string>読み込んだキットを削除して、デフォルトのキットに戻します</string>
 	<key>Delete this key from your Keychain</key>
 	<string>このキーをキーチェーンから削除</string>
+	<key>Delete this preset</key>
+	<string>このプリセットを削除</string>
 	<key>Delete your %@ account?</key>
 	<string>%@アカウントを削除しますか？</string>
 	<key>Delete your Party data from the friends server</key>
@@ -1485,6 +1507,8 @@
 	<string>インストール</string>
 	<key>Install %@ to plan with it.</key>
 	<string>%@ で計画するには、インストールしてください。</string>
+	<key>Install %@ to play this playlist, or pick another one. Click to dismiss</key>
+	<string>このプレイリストを再生するには%@をインストールするか、別のものを選んでください。クリックで閉じる</string>
 	<key>Install Claude Code and sign in to see your live 5-hour and weekly limits.</key>
 	<string>Claude Codeをインストールしてサインインすると、5時間と週間の上限をリアルタイムで確認できます。</string>
 	<key>Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits.</key>
@@ -1601,6 +1625,8 @@
 	<string>退出</string>
 	<key>Leave empty for the default, which is quick and inexpensive.</key>
 	<string>空欄なら、速くて安価なデフォルトを使います。</string>
+	<key>Leave notifications on while studying</key>
+	<string>勉強中も通知をオンのままにする</string>
 	<key>Leave the party</key>
 	<string>パーティを退出</string>
 	<key>Leave the party; the next member becomes host</key>
@@ -2205,6 +2231,8 @@
 	<string>AIリクエストの受信を許可するには、もう一度%1$@を選んでください。それまで%2$@は何も送信しません。</string>
 	<key>Pick a cozy focus playlist</key>
 	<string>心地よい集中用プレイリストを選ぶ</string>
+	<key>Pick a focus sound or a playlist</key>
+	<string>集中サウンドかプレイリストを選ぶ</string>
 	<key>Pick a kit</key>
 	<string>キットを選ぼう</string>
 	<key>Pick a kit, your tabs and what they need again, in the notch</key>
@@ -2217,6 +2245,8 @@
 	<string>名前とペットを選び、生年月日を入力してください。</string>
 	<key>Pick a sound to preview it</key>
 	<string>試聴するサウンドを選んでください</string>
+	<key>Pick a sound, then save the blend here</key>
+	<string>サウンドを選んでから、ここにブレンドを保存</string>
 	<key>Pick any</key>
 	<string>いくつでも選べます</string>
 	<key>Pick any app from your Applications folder</key>
@@ -2269,20 +2299,30 @@
 	<string>1日を計画中…</string>
 	<key>Play</key>
 	<string>再生</string>
+	<key>Play %@ (%@) now and with every focus block</key>
+	<string>%1$@(%2$@)を今すぐ、そして集中ブロックごとに再生</string>
+	<key>Play %@. Long-press or right-click to rename or delete</key>
+	<string>%@を再生。長押しまたは右クリックで名前変更・削除</string>
 	<key>Play a soft sound with celebrations that have no sound of their own</key>
 	<string>専用の音がないお祝いで、やさしい音を鳴らす</string>
+	<key>Play your playlist now. It's the link from the Focus options in Settings &gt; Tabs; picking a preset replaces it</key>
+	<string>あなたのプレイリストを今すぐ再生。設定 &gt; タブ の集中オプションのリンクです。プリセットを選ぶと置き換わります</string>
 	<key>Play, pause and skip in Apple Music.</key>
 	<string>Apple Musicで再生、一時停止、スキップ。</string>
 	<key>Play, pause and skip on Spotify.</key>
 	<string>Spotifyで再生、一時停止、スキップ。</string>
 	<key>Play, pause and skip songs from the notch.</key>
 	<string>ノッチから再生、一時停止、スキップができます。</string>
+	<key>Playback position</key>
+	<string>再生位置</string>
 	<key>Players</key>
 	<string>プレーヤー</string>
 	<key>Playing in %@</key>
 	<string>%@で再生中</string>
 	<key>Playlist</key>
 	<string>プレイリスト</string>
+	<key>Plays %@ with focus. Click to change it</key>
+	<string>集中中に%@を再生。クリックして変更</string>
 	<key>Plays in Spotify.</key>
 	<string>Spotifyで再生します。</string>
 	<key>Plays “%@” from your Music library.</key>
@@ -2395,6 +2435,8 @@
 	<string>削除</string>
 	<key>Remove %@</key>
 	<string>%@を削除</string>
+	<key>Remove %@ from the blend</key>
+	<string>%@をブレンドから外す</string>
 	<key>Remove %@ from the notch; it goes back to Add more</key>
 	<string>%@をノッチから外して「さらに追加」に戻す</string>
 	<key>Remove Kit</key>
@@ -2493,6 +2535,8 @@
 	<string>桜のひと枝</string>
 	<key>Save</key>
 	<string>保存</string>
+	<key>Save this blend as a preset</key>
+	<string>このブレンドをプリセットとして保存</string>
 	<key>Save this key in your Keychain</key>
 	<string>このキーをキーチェーンに保存</string>
 	<key>Save today's review and show the checklist</key>
@@ -3161,10 +3205,14 @@
 	<string>おやすみモードを一度オンにしてから、オフに戻します</string>
 	<key>Turn On Party</key>
 	<string>パーティをオン</string>
+	<key>Turn off %@: stop it and don't start it with focus</key>
+	<string>%@をオフ:停止して、集中と一緒に再生しない</string>
 	<key>Turn on</key>
 	<string>オンにする</string>
 	<key>Turn on Allow Notifications for Tabbi in System Settings.</key>
 	<string>システム設定で、Tabbiの「通知を許可」をオンにしてください。</string>
+	<key>Turn on Do Not Disturb during deep focus (runs your Focus shortcuts)</key>
+	<string>ディープフォーカス中におやすみモードをオンにする(集中モードのショートカットを実行)</string>
 	<key>Turn on Do Not Disturb during focus</key>
 	<string>集中中はおやすみモードをオン</string>
 	<key>Turn on Do Not Disturb whenever the focus timer runs</key>
@@ -3499,6 +3547,8 @@
 	<string>ペット、連続記録、動いているタイマー。</string>
 	<key>Your plan</key>
 	<string>あなたの計画</string>
+	<key>Your playlist</key>
+	<string>あなたのプレイリスト</string>
 	<key>Your setup already matches %@</key>
 	<string>すでに %@ と同じ設定です</string>
 	<key>Your study streak: days in a row with at least %lld focused minutes</key>

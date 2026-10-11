@@ -41,6 +41,8 @@
 	<string>%@ n'a pas pu l'affiner. Ce plan reste valable.</string>
 	<key>%@ couldn't refine this plan</key>
 	<string>%@ n'a pas pu affiner ce plan</string>
+	<key>%@ didn't respond. Click to try again</key>
+	<string>%@ n'a pas répondu. Clique pour réessayer</string>
 	<key>%@ didn't send back a usable plan. Try again in a moment.</key>
 	<string>%@ n'a pas renvoyé de plan utilisable. Réessaie dans un instant.</string>
 	<key>%@ done for today. Open %@</key>
@@ -107,6 +109,8 @@
 	<string>%@ fait la pause avec toi</string>
 	<key>%@ isn't connected</key>
 	<string>%@ n'est pas connecté</string>
+	<key>%@ isn't installed</key>
+	<string>%@ n'est pas installé</string>
 	<key>%@ isn't on this Mac</key>
 	<string>%@ n'est pas sur ce Mac</string>
 	<key>%@ isn't on this Mac yet. Connections shows you how to add it.</key>
@@ -117,6 +121,10 @@
 	<string>%@ a appris une chanson d'un oiseau</string>
 	<key>%@ left</key>
 	<string>encore %@</string>
+	<key>%@ level</key>
+	<string>Niveau de %@</string>
+	<key>%@ level %@</key>
+	<string>Niveau de %1$@ : %2$@</string>
 	<key>%@ level in the blend</key>
 	<string>Niveau de %@ dans le mélange</string>
 	<key>%@ made friends with a pigeon</key>
@@ -129,6 +137,8 @@
 	<string>%@ a fait la sieste au soleil sur le rebord</string>
 	<key>%@ naps until the timer runs</key>
 	<string>%@ fait la sieste jusqu'au lancement du minuteur</string>
+	<key>%@ needs permission to control %@ to start your playlist. Click to open Privacy &amp; Security › Automation</key>
+	<string>%1$@ a besoin de l'autorisation de contrôler %2$@ pour lancer ta playlist. Clique pour ouvrir Confidentialité et sécurité › Automatisation</string>
 	<key>%@ not found</key>
 	<string>%@ introuvable</string>
 	<key>%@ of %@</key>
@@ -373,6 +383,8 @@
 	<string>Ajouter %@ comme dernier onglet de l'encoche</string>
 	<key>Add %@ in Tabs to include this</key>
 	<string>Ajoute %@ dans Onglets pour l'inclure</string>
+	<key>Add %@ to the blend</key>
+	<string>Ajouter %@ au mélange</string>
 	<key>Add AnkiConnect to Anki</key>
 	<string>Ajoute AnkiConnect à Anki</string>
 	<key>Add App…</key>
@@ -461,6 +473,8 @@
 	<string>Tout est facultatif. Rien à faire pour l'instant.</string>
 	<key>Allow</key>
 	<string>Autoriser</string>
+	<key>Allow %@ access</key>
+	<string>Autoriser l'accès à %@</string>
 	<key>Allow %@ in Privacy &amp; Security to plan around meetings.</key>
 	<string>Autorise %@ dans Confidentialité et sécurité pour planifier autour des réunions.</string>
 	<key>Allow %@ in Privacy &amp; Security.</key>
@@ -483,6 +497,8 @@
 	<string>Autorise l'encoche sur d'autres écrans que l'écran intégré</string>
 	<key>Almost there: one thing left to do</key>
 	<string>Presque fini : il reste une chose à faire</string>
+	<key>Already playing during focus</key>
+	<string>Déjà en lecture pendant le focus</string>
 	<key>Already playing: focus is running</key>
 	<string>Déjà en cours : le focus tourne</string>
 	<key>Always</key>
@@ -603,6 +619,8 @@
 	<string>Retour à la liste</string>
 	<key>Back to the notch (Esc)</key>
 	<string>Revenir à l'encoche (Échap)</string>
+	<key>Back to the timer</key>
+	<string>Retour au minuteur</string>
 	<key>Back to today</key>
 	<string>Revenir à aujourd'hui</string>
 	<key>Backwards Cap</key>
@@ -977,6 +995,8 @@
 	<string>Impossible de lire la liste d'hier</string>
 	<key>Couldn't remove %@: %@</key>
 	<string>Impossible de supprimer %1$@ : %2$@</string>
+	<key>Couldn't start the playlist</key>
+	<string>Impossible de lancer la playlist</string>
 	<key>Couldn't take a screenshot. Try again.</key>
 	<string>Impossible de faire la capture. Réessaie.</string>
 	<key>Count this session for you again</key>
@@ -1045,6 +1065,8 @@
 	<string>Supprime ce kit importé et revient au kit par défaut</string>
 	<key>Delete this key from your Keychain</key>
 	<string>Supprimer cette clé de ton trousseau</string>
+	<key>Delete this preset</key>
+	<string>Supprimer ce préréglage</string>
 	<key>Delete your %@ account?</key>
 	<string>Supprimer ton compte %@ ?</string>
 	<key>Delete your Party data from the friends server</key>
@@ -1485,6 +1507,8 @@
 	<string>Installer</string>
 	<key>Install %@ to plan with it.</key>
 	<string>Installe %@ pour planifier avec.</string>
+	<key>Install %@ to play this playlist, or pick another one. Click to dismiss</key>
+	<string>Installe %@ pour lire cette playlist, ou choisis-en une autre. Clique pour masquer</string>
 	<key>Install Claude Code and sign in to see your live 5-hour and weekly limits.</key>
 	<string>Installe Claude Code et connecte-toi pour voir tes limites de 5 heures et hebdomadaires en direct.</string>
 	<key>Install Codex and sign in with ChatGPT to see your 5-hour and weekly limits.</key>
@@ -1601,6 +1625,8 @@
 	<string>Quitter</string>
 	<key>Leave empty for the default, which is quick and inexpensive.</key>
 	<string>Laisse vide pour celui par défaut, rapide et peu coûteux.</string>
+	<key>Leave notifications on while studying</key>
+	<string>Laisser les notifications pendant l'étude</string>
 	<key>Leave the party</key>
 	<string>Quitter le groupe</string>
 	<key>Leave the party; the next member becomes host</key>
@@ -2205,6 +2231,8 @@
 	<string>Choisis à nouveau %1$@ pour l'autoriser à recevoir tes demandes d'IA. %2$@ n'envoie rien d'ici là.</string>
 	<key>Pick a cozy focus playlist</key>
 	<string>Choisis une playlist douce pour te concentrer</string>
+	<key>Pick a focus sound or a playlist</key>
+	<string>Choisis un son de focus ou une playlist</string>
 	<key>Pick a kit</key>
 	<string>Choisis un kit</string>
 	<key>Pick a kit, your tabs and what they need again, in the notch</key>
@@ -2217,6 +2245,8 @@
 	<string>Choisis un nom et un compagnon, et indique ta date de naissance.</string>
 	<key>Pick a sound to preview it</key>
 	<string>Choisis un son pour l'écouter</string>
+	<key>Pick a sound, then save the blend here</key>
+	<string>Choisis un son, puis enregistre le mélange ici</string>
 	<key>Pick any</key>
 	<string>Choix multiple</string>
 	<key>Pick any app from your Applications folder</key>
@@ -2269,20 +2299,30 @@
 	<string>Planification de ta journée…</string>
 	<key>Play</key>
 	<string>Lecture</string>
+	<key>Play %@ (%@) now and with every focus block</key>
+	<string>Lire %1$@ (%2$@) maintenant et à chaque bloc de focus</string>
+	<key>Play %@. Long-press or right-click to rename or delete</key>
+	<string>Lire %@. Appui long ou clic droit pour renommer ou supprimer</string>
 	<key>Play a soft sound with celebrations that have no sound of their own</key>
 	<string>Jouer un son doux pour les célébrations qui n'ont pas de son à elles</string>
+	<key>Play your playlist now. It's the link from the Focus options in Settings &gt; Tabs; picking a preset replaces it</key>
+	<string>Lire ta playlist maintenant. C'est le lien des options Focus dans Réglages &gt; Onglets ; choisir une playlist proposée le remplace</string>
 	<key>Play, pause and skip in Apple Music.</key>
 	<string>Lecture, pause et saut dans Apple Music.</string>
 	<key>Play, pause and skip on Spotify.</key>
 	<string>Lecture, pause et saut dans Spotify.</string>
 	<key>Play, pause and skip songs from the notch.</key>
 	<string>Lance, mets en pause et passe des morceaux depuis l'encoche.</string>
+	<key>Playback position</key>
+	<string>Position de lecture</string>
 	<key>Players</key>
 	<string>Lecteurs</string>
 	<key>Playing in %@</key>
 	<string>Lecture dans %@</string>
 	<key>Playlist</key>
 	<string>Playlist</string>
+	<key>Plays %@ with focus. Click to change it</key>
+	<string>Joue %@ pendant le focus. Clique pour changer</string>
 	<key>Plays in Spotify.</key>
 	<string>Joue dans Spotify.</string>
 	<key>Plays “%@” from your Music library.</key>
@@ -2395,6 +2435,8 @@
 	<string>Supprimer</string>
 	<key>Remove %@</key>
 	<string>Retirer %@</string>
+	<key>Remove %@ from the blend</key>
+	<string>Retirer %@ du mélange</string>
 	<key>Remove %@ from the notch; it goes back to Add more</key>
 	<string>Retirer %@ de l'encoche, il retourne dans Ajouter plus</string>
 	<key>Remove Kit</key>
@@ -2493,6 +2535,8 @@
 	<string>Brin de sakura</string>
 	<key>Save</key>
 	<string>Enregistrer</string>
+	<key>Save this blend as a preset</key>
+	<string>Enregistrer ce mélange comme préréglage</string>
 	<key>Save this key in your Keychain</key>
 	<string>Enregistrer cette clé dans ton trousseau</string>
 	<key>Save today's review and show the checklist</key>
@@ -3161,10 +3205,14 @@
 	<string>Activer Ne pas déranger un instant, puis le désactiver</string>
 	<key>Turn On Party</key>
 	<string>Activer Groupe</string>
+	<key>Turn off %@: stop it and don't start it with focus</key>
+	<string>Désactiver %@ : l'arrêter et ne plus la lancer avec le focus</string>
 	<key>Turn on</key>
 	<string>Activer</string>
 	<key>Turn on Allow Notifications for Tabbi in System Settings.</key>
 	<string>Active Autoriser les notifications pour Tabbi dans Réglages Système.</string>
+	<key>Turn on Do Not Disturb during deep focus (runs your Focus shortcuts)</key>
+	<string>Activer Ne pas déranger pendant le focus profond (lance tes raccourcis Concentration)</string>
 	<key>Turn on Do Not Disturb during focus</key>
 	<string>Activer Ne pas déranger pendant le focus</string>
 	<key>Turn on Do Not Disturb whenever the focus timer runs</key>
@@ -3499,6 +3547,8 @@
 	<string>Ton compagnon, ta série et le minuteur en cours.</string>
 	<key>Your plan</key>
 	<string>Ton plan</string>
+	<key>Your playlist</key>
+	<string>Ta playlist</string>
 	<key>Your setup already matches %@</key>
 	<string>Ta configuration correspond déjà à %@</string>
 	<key>Your study streak: days in a row with at least %lld focused minutes</key>

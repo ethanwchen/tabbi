@@ -68,7 +68,8 @@ struct StudySoundMixer: View {
                     blend.frame(maxHeight: .infinity, alignment: .top)
                 }
                 Card(padding: Theme.Spacing.s) {
-                    StudyPlaylistList(focus: focus).frame(maxHeight: .infinity, alignment: .top)
+                    StudyPlaylistList(focus: focus, snapshotIssue: StudySnapshotState.current?.playlistIssue)
+                        .frame(maxHeight: .infinity, alignment: .top)
                 }
                 .frame(width: 176)
             }
@@ -90,11 +91,11 @@ struct StudySoundMixer: View {
                 .contentTransition(.opacity)
             Spacer(minLength: Theme.Spacing.s)
             if focus.offersDoNotDisturb {
-                StudyCapsuleToggle(title: "Do Not Disturb", symbol: "bell.slash",
+                StudyCapsuleToggle(title: String(localized: "Do Not Disturb", bundle: .tabbi), symbol: "bell.slash",
                                    isOn: focus.settings.doNotDisturb,
                                    help: focus.settings.doNotDisturb
-                                       ? "Leave notifications on while studying"
-                                       : "Turn on Do Not Disturb during deep focus (runs your Focus shortcuts)") {
+                                       ? String(localized: "Leave notifications on while studying", bundle: .tabbi)
+                                       : String(localized: "Turn on Do Not Disturb during deep focus (runs your Focus shortcuts)", bundle: .tabbi)) {
                     focus.settings.doNotDisturb.toggle()
                 }
             }
@@ -103,15 +104,16 @@ struct StudySoundMixer: View {
             }
             .disabled(mix.isOff || focus.isFocusing)
             .opacity(mix.isOff || focus.isFocusing ? 0.4 : 1)
-            IconButton(symbol: "xmark", help: "Back to the timer", action: close)
+            IconButton(symbol: "xmark", help: String(localized: "Back to the timer", bundle: .tabbi), action: close)
         }
         .font(Theme.Typography.caption)
     }
 
     private var previewHelp: String {
-        if focus.isFocusing { return "Already playing during focus" }
-        if mix.isOff { return "Pick a sound to preview it" }
-        return focus.isPreviewing ? "Stop the preview" : "Listen to \(mix.summary)"
+        if focus.isFocusing { return String(localized: "Already playing during focus", bundle: .tabbi) }
+        if mix.isOff { return String(localized: "Pick a sound to preview it", bundle: .tabbi) }
+        return focus.isPreviewing ? String(localized: "Stop the preview", bundle: .tabbi)
+                                  : String(localized: "Listen to \(mix.summary)", bundle: .tabbi)
     }
 
     /// The sounds in rows of three equal columns.
@@ -154,8 +156,11 @@ struct StudySoundMixer: View {
                     .font(.system(size: 9, weight: .semibold))
                     .foregroundStyle(Theme.Palette.tertiaryText)
                     .frame(width: 14)
-                StudyLevelSlider(level: focus.settings.volume, help: "Volume") { focus.settings.volume = $0 }
-                Text("\(Int((focus.settings.volume * 100).rounded()))%")
+                StudyLevelSlider(level: focus.settings.volume, name: String(localized: "Volume", bundle: .tabbi),
+                                 help: String(localized: "Volume \(StudyLevelSlider.percent(focus.settings.volume))", bundle: .tabbi)) {
+                    focus.settings.volume = $0
+                }
+                Text(verbatim: StudyLevelSlider.percent(focus.settings.volume))
                     .font(Theme.Typography.caption.monospacedDigit())
                     .foregroundStyle(Theme.Palette.secondaryText)
                     .frame(width: 32, alignment: .trailing)
@@ -186,7 +191,7 @@ private struct StudyMixPresetRow: View {
                     renameField(slot)
                 } else if let preset = presets.slots[slot] {
                     StudyMixPresetChip(name: preset.name, isOn: slot == active,
-                                       help: "Play \(preset.mix.summary). Long-press or right-click to rename or delete",
+                                       help: String(localized: "Play \(preset.mix.summary). Long-press or right-click to rename or delete", bundle: .tabbi),
                                        apply: { withMotion(Theme.Motion.snappy) { focus.settings.apply(preset: slot) } },
                                        rename: { beginRename(slot, name: preset.name) },
                                        delete: { withMotion(Theme.Motion.snappy) { focus.settings.presets.delete(slot) } })
@@ -217,7 +222,7 @@ private struct StudyMixPresetRow: View {
                 .onChange(of: draft) { _, text in
                     if text.count > FocusMixPreset.maxNameLength { draft = String(text.prefix(FocusMixPreset.maxNameLength)) }
                 }
-            IconButton(symbol: "trash", help: "Delete this preset") {
+            IconButton(symbol: "trash", help: String(localized: "Delete this preset", bundle: .tabbi)) {
                 renaming = nil
                 withMotion(Theme.Motion.snappy) { focus.settings.presets.delete(slot) }
             }
@@ -281,8 +286,8 @@ private struct StudyMixPresetChip: View {
             .accessibilityLabel(String(localized: "Preset \(name)", bundle: .tabbi))
             .accessibilityAddTraits(isOn ? [.isButton, .isSelected] : .isButton)
             .accessibilityAction(.default, apply)
-            .accessibilityAction(named: "Rename", rename)
-            .accessibilityAction(named: "Delete", delete)
+            .accessibilityAction(named: Text("Rename", bundle: .tabbi), rename)
+            .accessibilityAction(named: Text("Delete", bundle: .tabbi), delete)
     }
 }
 
@@ -305,7 +310,8 @@ private struct StudyMixPresetSaveButton: View {
         .buttonStyle(.plain)
         .disabled(!canSave)
         .opacity(canSave ? 1 : 0.5)
-        .help(canSave ? "Save this blend as a preset" : "Pick a sound, then save the blend here")
+        .help(canSave ? String(localized: "Save this blend as a preset", bundle: .tabbi)
+                      : String(localized: "Pick a sound, then save the blend here", bundle: .tabbi))
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
     }
@@ -345,7 +351,9 @@ private struct StudyMixTile: View {
             .buttonStyle(.plain)
             .disabled(!isEnabled)
             .help(help(isOn: isOn, isEnabled: isEnabled))
-            StudyLevelSlider(level: level ?? 0, help: "\(sound.displayName) level", action: setLevel)
+            StudyLevelSlider(level: level ?? 0, name: String(localized: "\(sound.displayName) level", bundle: .tabbi),
+                             help: String(localized: "\(sound.displayName) level \(StudyLevelSlider.percent(level ?? 0))", bundle: .tabbi),
+                             action: setLevel)
                 .opacity(isOn ? 1 : 0)
                 .allowsHitTesting(isOn)
         }
@@ -367,92 +375,159 @@ private struct StudyMixTile: View {
     }
 
     private func help(isOn: Bool, isEnabled: Bool) -> String {
-        if isOn { return "Remove \(sound.displayName.lowercased()) from the blend" }
-        if !isEnabled { return "Blend up to \(FocusMix.maxLayers) sounds; remove one first" }
-        return "Add \(sound.displayName.lowercased())"
+        if isOn { return String(localized: "Remove \(sound.displayName) from the blend", bundle: .tabbi) }
+        if !isEnabled { return String(localized: "Blend up to \(FocusMix.maxLayers) sounds; remove one first", bundle: .tabbi) }
+        return String(localized: "Add \(sound.displayName) to the blend", bundle: .tabbi)
     }
 }
 
-/// A thin accent slider drawn in SwiftUI, so it renders inside the notch
-/// and in snapshots (a system slider would not).
+/// A level in the mixer (the volume, or one sound's level in the blend):
+/// the shared `TrackSlider` in the Timer's accent.
 private struct StudyLevelSlider: View {
     let level: Float
+    /// What the slider sets, e.g. "Volume" or "Rain level".
+    let name: String
+    /// The tooltip, which names the level.
     let help: String
     let action: (Float) -> Void
-    @State private var hovering = false
 
     var body: some View {
-        GeometryReader { proxy in
-            let width = proxy.size.width
-            let fraction = CGFloat(min(max(level, 0), 1))
-            ZStack(alignment: .leading) {
-                Capsule().fill(Theme.Palette.surfaceHover)
-                Capsule()
-                    .fill(studyAccent)
-                    .frame(width: width * fraction)
-                Circle()
-                    .fill(Theme.Palette.primaryText)
-                    .frame(width: 8, height: 8)
-                    .shadow(color: .black.opacity(0.4), radius: 2)
-                    .offset(x: min(max(width * fraction - 4, 0), width - 8))
-                    .scaleEffect(hovering ? 1.2 : 1)
-            }
-            .frame(height: 3)
-            .frame(maxHeight: .infinity)
-            .contentShape(Rectangle())
-            .gesture(
-                DragGesture(minimumDistance: 0).onChanged { value in
-                    action(StudySoundLabel.level(atX: value.location.x, width: width))
-                }
-            )
-        }
-        .frame(height: 10)
-        // Fills from the left in every language, as Tabbi's bars do.
-        .fixedLeftToRight()
-        .help("\(help) \(Int((level * 100).rounded()))%")
-        .onHover { hovering = $0 }
-        .motion(Theme.Motion.snappy, value: hovering)
-        .accessibilityElement()
-        .accessibilityLabel(help)
-        .accessibilityValue("\(Int((level * 100).rounded()))%")
-        .accessibilityAdjustableAction { direction in
-            switch direction {
-            case .increment: action(min(level + 0.1, 1))
-            case .decrement: action(max(level - 0.1, 0))
-            @unknown default: break
-            }
-        }
+        TrackSlider(value: Double(level), tint: studyAccent, help: help,
+                    accessibilityLabel: name, accessibilityValue: StudyLevelSlider.percent(level),
+                    onChange: { action(Float($0)) })
+            .frame(height: 10)
+    }
+
+    static func percent(_ level: Float) -> String {
+        Double(level).formatted(.percent.precision(.fractionLength(0)))
     }
 }
 
-/// The study playlist presets; tapping the one in use turns it off. A link
-/// typed in Settings that isn't a preset shows on top as "Your playlist".
+/// The study playlist presets. Picking one plays it right away and starts
+/// it with every focus block; tapping the one in use turns it off (and
+/// pauses it if focus mode started it). A link typed in Settings that isn't
+/// a preset shows on top as "Your playlist", which plays it again. When a
+/// playlist can't start (no Automation access, the app isn't installed),
+/// a row on top says why and offers the fix.
 private struct StudyPlaylistList: View {
     @ObservedObject var focus: FocusController
+    /// An issue to show in a snapshot run, where focus mode never scripts an app.
+    var snapshotIssue: FocusPlaylistIssue?
+
+    /// Rows that fit under the header in the mixer's playlist column.
+    static let rowCount = 6
 
     var body: some View {
         let text = focus.settings.playlistText
         let current = FocusPlaylistPreset.matching(text)
         let hasCustom = current == nil && focus.settings.playlist != nil
+        let issue = focus.playlistIssue ?? snapshotIssue
+        let presetCount = Self.rowCount - (hasCustom ? 1 : 0) - (issue == nil ? 0 : 1)
         VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
             Text("Playlist", bundle: .tabbi)
                 .font(Theme.Typography.caption)
                 .foregroundStyle(Theme.Palette.tertiaryText)
                 .padding(.bottom, Theme.Spacing.xxs)
-            if hasCustom {
-                StudyPlaylistRow(name: "Your playlist", detail: focus.settings.playlist?.source.displayName ?? "",
-                                 isOn: true, help: "The link from the Focus options in Settings > Tabs; picking a preset replaces it") {}
+            if let issue {
+                StudyPlaylistIssueRow(issue: issue) { fix(issue) }
+                    .transition(.opacity)
             }
-            ForEach(FocusPlaylistPreset.all.prefix(hasCustom ? 5 : 6)) { preset in
+            if hasCustom {
+                StudyPlaylistRow(name: String(localized: "Your playlist", bundle: .tabbi),
+                                 detail: focus.settings.playlist?.source.displayName ?? "",
+                                 isOn: true,
+                                 help: String(localized: "Play your playlist now. It's the link from the Focus options in Settings > Tabs; picking a preset replaces it", bundle: .tabbi)) {
+                    focus.choosePlaylist(text)
+                }
+            }
+            ForEach(FocusPlaylistPreset.all.prefix(presetCount)) { preset in
                 let isOn = preset == current
                 StudyPlaylistRow(name: preset.name, detail: preset.curator, isOn: isOn,
-                                 help: isOn ? "Stop starting \(preset.name) with focus"
-                                            : "Start \(preset.name) (\(preset.curator)) with focus") {
-                    withMotion(Theme.Motion.snappy) { focus.settings.playlistText = isOn ? "" : preset.link }
+                                 help: isOn ? String(localized: "Turn off \(preset.name): stop it and don't start it with focus", bundle: .tabbi)
+                                            : String(localized: "Play \(preset.name) (\(preset.curator)) now and with every focus block", bundle: .tabbi)) {
+                    withMotion(Theme.Motion.snappy) { focus.choosePlaylist(isOn ? "" : preset.link) }
                 }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .motion(Theme.Motion.snappy, value: issue)
+    }
+
+    private func fix(_ issue: FocusPlaylistIssue) {
+        switch issue {
+        case .permissionDenied:
+            NSWorkspace.shared.open(SystemSettingsLink.automationPrivacy.url)
+        case .notInstalled:
+            withMotion(Theme.Motion.snappy) { focus.dismissPlaylistIssue() }
+        case .failed:
+            focus.choosePlaylist(focus.settings.playlistText)
+        }
+    }
+}
+
+/// Why the playlist didn't start, as a row in the playlist column: a click
+/// opens the fix (Automation settings), retries, or dismisses it.
+private struct StudyPlaylistIssueRow: View {
+    let issue: FocusPlaylistIssue
+    let action: () -> Void
+    @State private var hovering = false
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: Theme.Spacing.xs) {
+                Image(systemName: symbol)
+                    .font(.system(size: 9, weight: .semibold))
+                    .foregroundStyle(Theme.Palette.warning)
+                    .frame(width: 10)
+                Text(title)
+                    .foregroundStyle(hovering ? Theme.Palette.primaryText : Theme.Palette.secondaryText)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+                Spacer(minLength: 0)
+            }
+            .font(Theme.Typography.caption)
+            .padding(.horizontal, Theme.Spacing.xs)
+            .frame(height: 16)
+            .background(
+                RoundedRectangle(cornerRadius: Theme.Spacing.xs, style: .continuous)
+                    .fill(Theme.Palette.warning.opacity(hovering ? 0.22 : 0.12))
+            )
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .help(help)
+        .onHover { hovering = $0 }
+        .motion(Theme.Motion.snappy, value: hovering)
+    }
+
+    private var symbol: String {
+        switch issue {
+        case .permissionDenied: "lock.fill"
+        case .notInstalled: "arrow.down.app"
+        case .failed: "arrow.clockwise"
+        }
+    }
+
+    private var title: String {
+        switch issue {
+        case .permissionDenied(let source):
+            String(localized: "Allow \(source.displayName) access", bundle: .tabbi)
+        case .notInstalled(let source):
+            String(localized: "\(source.displayName) isn't installed", bundle: .tabbi)
+        case .failed:
+            String(localized: "Couldn't start the playlist", bundle: .tabbi)
+        }
+    }
+
+    private var help: String {
+        switch issue {
+        case .permissionDenied(let source):
+            String(localized: "\(Edition.current.name) needs permission to control \(source.displayName) to start your playlist. Click to open Privacy & Security › Automation", bundle: .tabbi)
+        case .notInstalled(let source):
+            String(localized: "Install \(source.displayName) to play this playlist, or pick another one. Click to dismiss", bundle: .tabbi)
+        case .failed(let source, _):
+            String(localized: "\(source.displayName) didn't respond. Click to try again", bundle: .tabbi)
+        }
     }
 }
 

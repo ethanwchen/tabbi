@@ -16,7 +16,8 @@ import os
 ///
 /// Music apps are followed through their playback notifications, never by
 /// polling. An Apple Event is only sent to an app that is already running,
-/// except `play` when a focus phase really starts with a playlist set.
+/// except `play` when a focus phase really starts with a playlist set, or
+/// when the user picks a playlist in the mixer (`choosePlaylist(_:)`).
 ///
 /// Inert in demo and snapshot runs: it shows sample settings and never
 /// plays sound, runs scripts or saves.
@@ -32,6 +33,9 @@ final class FocusController: ObservableObject {
     var holdsDoNotDisturb: Bool { isFocusing && doNotDisturb }
     /// True while Settings is previewing the sound outside a focus phase.
     @Published private(set) var isPreviewing = false
+    /// Why the playlist last failed to start, until it next starts or the
+    /// user picks another, so the mixer can offer the fix.
+    @Published private(set) var playlistIssue: FocusPlaylistIssue?
 
     /// False in demo and snapshot runs, where focus mode only shows sample settings.
     let isLive: Bool
@@ -43,6 +47,7 @@ final class FocusController: ObservableObject {
     var doNotDisturb: Bool { offersDoNotDisturb && settings.doNotDisturb }
 
     private let repository: FocusSettingsRepository
+    private let musicApps: FocusMusicApps
     private let shortcuts = FocusShortcutRunner()
     private var session = FocusSession()
     /// Created on first use, so an app that never plays focus sound never
@@ -62,10 +67,12 @@ final class FocusController: ObservableObject {
     private var observers: [NSObjectProtocol] = []
 
     init(runMode: RunMode, offersDoNotDisturb: Bool = true,
-         repository: FocusSettingsRepository = FocusSettingsRepository()) {
+         repository: FocusSettingsRepository = FocusSettingsRepository(),
+         musicApps: FocusMusicApps = .live) {
         isLive = !runMode.isEphemeral
         self.offersDoNotDisturb = offersDoNotDisturb
         self.repository = repository
+        self.musicApps = musicApps
         settings = isLive ? repository.load() : Self.sampleSettings
         guard isLive else { return }
 
@@ -120,13 +127,13 @@ final class FocusController: ObservableObject {
         // fight them, so learn a running app's state first if it hasn't
         // posted one since launch.
         if activity == .focusing, let source = settings.playlist?.source,
-           Self.isRunning(source), playerStates[source] == nil {
-            playerStates[source] = await Self.readState(of: source)
+           musicApps.isRunning(source), playerStates[source] == nil {
+            playerStates[source] = await readState(of: source)
         }
         var settings = settings
         settings.doNotDisturb = doNotDisturb
-        let actions = session.transition(to: activity, settings: settings) { [playerStates] source in
-            Self.isRunning(source) && playerStates[source] == .playing
+        let actions = session.transition(to: activity, settings: settings) { [playerStates, musicApps] source in
+            musicApps.isRunning(source) && playerStates[source] == .playing
         }
         isFocusing = session.isFocusing
         for action in actions { perform(action) }
@@ -152,11 +159,28 @@ final class FocusController: ObservableObject {
                 }
             }
         case .playPlaylist(let playlist):
-            Task { await Self.run(FocusPlaylistScript.play(playlist), on: playlist.source, launching: true) }
+            let source = playlist.source
+            guard musicApps.isInstalled(source) else { return playlistIssue = .notInstalled(source) }
+            Task { [musicApps] in
+                let result = await musicApps.run(FocusPlaylistScript.play(playlist), source, true)
+                self.playlistStarted(result, in: source)
+            }
         case .resumePlaylist(let source):
-            Task { await Self.run(FocusPlaylistScript.resume(source), on: source, launching: false) }
+            Task { [musicApps] in
+                let result = await musicApps.run(FocusPlaylistScript.resume(source), source, false)
+                self.playlistStarted(result, in: source)
+            }
         case .pausePlaylist(let source):
-            Task { await Self.run(FocusPlaylistScript.pause(source), on: source, launching: false) }
+            Task { [musicApps] in _ = await musicApps.run(FocusPlaylistScript.pause(source), source, false) }
+        }
+    }
+
+    /// Keeps the issue a failed start reports, and clears it once one works.
+    private func playlistStarted(_ result: FocusScriptResult, in source: MediaSource) {
+        switch result {
+        case .output: playlistIssue = nil
+        case .skipped: break
+        case .failed(let code): playlistIssue = FocusPlaylistIssue(scriptError: code, source: source)
         }
     }
 
@@ -164,6 +188,33 @@ final class FocusController: ObservableObject {
         guard let state else { return }
         playerStates[source] = state
         session.observe(state, of: source)
+    }
+
+    // MARK: - Playlist
+
+    /// The user picked a playlist in the mixer (`text` is its link, or
+    /// empty to turn it off). The pick is saved like any setting, and it
+    /// plays right away, in or out of a focus phase, so the click does what
+    /// it says; turning it off pauses it if focus mode started it. Inert in
+    /// demo and snapshot runs, which only show the pick.
+    func choosePlaylist(_ text: String) {
+        playlistIssue = nil
+        settings.playlistText = text
+        guard isLive else { return }
+        let chosen = settings
+        // After any transition still waiting on a player state, so the
+        // session sees picks and phases in the order they happened.
+        let previous = transitions
+        transitions = Task { [weak self] in
+            await previous?.value
+            guard let self else { return }
+            for action in self.session.choosePlaylist(in: chosen) { self.perform(action) }
+        }
+    }
+
+    /// Hides an issue the user can't fix from here (say, Spotify isn't installed).
+    func dismissPlaylistIssue() {
+        playlistIssue = nil
     }
 
     // MARK: - Settings and preview
@@ -218,40 +269,13 @@ final class FocusController: ObservableObject {
 
     private static let sampleMix = FocusMix([.init(sound: .rain), .init(sound: .fireplace, level: 0.6)])
 
-    // MARK: - AppleScript
-
     private nonisolated static let log = Logger(subsystem: "Tabbi", category: "Focus")
 
-    private nonisolated static func isRunning(_ source: MediaSource) -> Bool {
-        !NSRunningApplication.runningApplications(withBundleIdentifier: source.bundleIdentifier).isEmpty
-    }
-
-    /// Serial, and off the main thread: Apple Events can block for seconds.
-    private nonisolated static let scriptQueue = DispatchQueue(label: "dev.tabbi.focus.applescript",
-                                                               qos: .userInitiated)
-
-    /// Runs `script` against `source`. Unless `launching`, it's skipped when
-    /// the app isn't running, since any Apple Event would launch it.
-    @discardableResult
-    private nonisolated static func run(_ script: String, on source: MediaSource, launching: Bool) async -> String? {
-        await withCheckedContinuation { continuation in
-            scriptQueue.async {
-                guard launching || isRunning(source) else { return continuation.resume(returning: nil) }
-                var error: NSDictionary?
-                let output = NSAppleScript(source: script)?.executeAndReturnError(&error)
-                if let error {
-                    let message = error[NSAppleScript.errorMessage] as? String ?? "unknown error"
-                    log.error("Focus script for \(source.displayName, privacy: .public) failed: \(message, privacy: .public)")
-                    return continuation.resume(returning: nil)
-                }
-                continuation.resume(returning: output?.stringValue ?? "")
-            }
-        }
-    }
+    // MARK: - Music apps
 
     /// The app's current player state, read once; nil if it can't be read.
-    private nonisolated static func readState(of source: MediaSource) async -> SpotifyPlayerState? {
-        guard let output = await run(source.readStateScript, on: source, launching: false) else { return nil }
+    private func readState(of source: MediaSource) async -> SpotifyPlayerState? {
+        guard let output = await musicApps.run(source.readStateScript, source, false).output else { return nil }
         return source.parse(output)?.state
     }
 }

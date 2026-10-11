@@ -31,11 +31,12 @@ final class MediaVolumeTests: XCTestCase {
                                        repeatMode: .off, volume: 300).volume, 100)
     }
 
-    func testSliderMapsPointerToVolume() {
-        XCTAssertEqual(MediaVolume.volume(atX: 30, width: 60), 50)
-        XCTAssertEqual(MediaVolume.volume(atX: -10, width: 60), 0)
-        XCTAssertEqual(MediaVolume.volume(atX: 90, width: 60), 100)
-        XCTAssertEqual(MediaVolume.volume(atX: 10, width: 0), 0)
+    func testSliderFractionMapsToVolume() {
+        XCTAssertEqual(MediaVolume.volume(at: 0.5), 50)
+        XCTAssertEqual(MediaVolume.volume(at: 0.644), 64)
+        XCTAssertEqual(MediaVolume.volume(at: -0.2), 0)
+        XCTAssertEqual(MediaVolume.volume(at: 1.5), 100)
+        XCTAssertEqual(MediaVolume.volume(at: .nan), 0)
     }
 
     func testLevelsPickTheSpeakerGlyph() {

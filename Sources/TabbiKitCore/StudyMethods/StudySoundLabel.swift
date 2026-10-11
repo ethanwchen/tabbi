@@ -43,16 +43,8 @@ public struct StudySoundLabel: Equatable, Sendable {
     public static func help(for settings: FocusSettings, playlistName: String?) -> String {
         var parts: [String] = []
         if !settings.mix.isOff { parts.append(settings.mix.summary) }
-        if settings.playlist != nil { parts.append(playlistName ?? "your playlist") }
-        guard !parts.isEmpty else { return "Pick a focus sound or a playlist" }
-        return "Plays \(parts.joined(separator: " and ")) with focus. Click to change it"
-    }
-
-    /// A 0...1 level from a drag at `x` across a slider `width` wide, for
-    /// the mixer's hand-drawn sliders. Out-of-range and degenerate input
-    /// clamps, so a drag past either end pins the level.
-    public static func level(atX x: Double, width: Double) -> Float {
-        guard width > 0, x.isFinite else { return x > 0 ? 1 : 0 }
-        return Float(min(max(x / width, 0), 1))
+        if settings.playlist != nil { parts.append(playlistName ?? String(localized: "your playlist", bundle: .tabbi)) }
+        guard !parts.isEmpty else { return String(localized: "Pick a focus sound or a playlist", bundle: .tabbi) }
+        return String(localized: "Plays \(parts.formatted(.list(type: .and))) with focus. Click to change it", bundle: .tabbi)
     }
 }

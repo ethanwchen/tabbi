@@ -21,10 +21,10 @@ public enum MediaVolume {
         return clamped(Int(value.rounded()))
     }
 
-    /// Volume for a drag at `x` along a slider `width` points wide.
-    public static func volume(atX x: Double, width: Double) -> Int {
-        guard width > 0, x.isFinite else { return 0 }
-        return clamped(Int((x / width * 100).rounded()))
+    /// Volume for a slider at `fraction` (0...1) of its track.
+    public static func volume(at fraction: Double) -> Int {
+        guard fraction.isFinite else { return 0 }
+        return clamped(Int((fraction * 100).rounded()))
     }
 
     /// 0 when muted, else 1 ... 3 by loudness; picks the speaker glyph.
