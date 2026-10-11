@@ -131,6 +131,10 @@
 	<string>새 카드 %1$lld, 학습 중 %2$lld, 복습 %3$lld</string>
 	<key>%lld of %lld</key>
 	<string>%1$lld/%2$lld명</string>
+	<key>%lld of %lld cards reviewed today</key>
+	<string>오늘 %2$lld장 중 %1$lld장 복습</string>
+	<key>%lld of %lld done</key>
+	<string>%lld/%lld 완료</string>
 	<key>%lld of %lld earned</key>
 	<string>%2$lld개 중 %1$lld개 획득</string>
 	<key>%lld pts to go</key>
@@ -151,8 +155,12 @@
 	<string>%lld시간</string>
 	<key>%lldh %lldm</key>
 	<string>%lld시간 %lld분</string>
+	<key>%lldh ago</key>
+	<string>%lld시간 전</string>
 	<key>%lldm</key>
 	<string>%lld분</string>
+	<key>%lldm ago</key>
+	<string>%lld분 전</string>
 	<key>0 pts</key>
 	<string>0점</string>
 	<key>1 free</key>
@@ -1167,6 +1175,8 @@
 	<string>오늘은 일정이 없어요</string>
 	<key>Nothing on your calendar today</key>
 	<string>오늘은 일정이 없어요</string>
+	<key>Nothing planned</key>
+	<string>계획 없음</string>
 	<key>Nothing playing</key>
 	<string>재생 중인 곡 없음</string>
 	<key>Notifications</key>

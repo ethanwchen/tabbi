@@ -114,7 +114,8 @@ struct AccountSettingsRow: View {
     static func relative(_ date: Date, now: Date) -> String {
         guard now.timeIntervalSince(date) >= 60 else { return String(localized: "just now", bundle: .tabbi) }
         let formatter = RelativeDateTimeFormatter()
-        formatter.unitsStyle = .abbreviated
+        // .short, not .abbreviated, which reads "-4 мин" in Russian.
+        formatter.unitsStyle = .short
         return formatter.localizedString(for: date, relativeTo: now)
     }
 }

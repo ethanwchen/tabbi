@@ -83,6 +83,22 @@
 			<string>%lld sessions</string>
 		</dict>
 	</dict>
+	<key>%lld planned</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld prévue</string>
+			<key>other</key>
+			<string>%lld prévues</string>
+		</dict>
+	</dict>
 	<key>%lld planned blocks</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -179,6 +195,22 @@
 			<string>Série de %lld jours</string>
 		</dict>
 	</dict>
+	<key>%lldd ago</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>il y a %lld jour</string>
+			<key>other</key>
+			<string>il y a %lld jours</string>
+		</dict>
+	</dict>
 	<key>+%lld points</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -225,6 +257,38 @@
 			<string>+%lld pt</string>
 			<key>other</key>
 			<string>+%lld pts</string>
+		</dict>
+	</dict>
+	<key>All %lld cards done for today</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld carte faite pour aujourd'hui</string>
+			<key>other</key>
+			<string>Les %lld cartes faites pour aujourd'hui</string>
+		</dict>
+	</dict>
+	<key>All %lld done</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld faite</string>
+			<key>other</key>
+			<string>Les %lld faites</string>
 		</dict>
 	</dict>
 	<key>Focus for %lld hours during %@.</key>

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Adds or updates strings in Tabbi's String Catalog from a compact JSON file.
 
-Usage: scripts/l10n-add.py strings.json   (or pipe the JSON on stdin)
+Usage: scripts/l10n-add.py [--merge] strings.json   (or pipe the JSON on stdin)
 
 The input maps each English key to its comment and one translation per
 language:
@@ -24,6 +24,9 @@ A string value is a plain translation; an object is a plural variation
 "generatesSymbol": false is for a key Xcode cannot turn into a Swift symbol:
 one with no letters ("%@: %@") or one that differs from another only in case
 or punctuation ("Checking" and "Checking…"); Xcode rejects those otherwise.
+With --merge, each key must already be in the catalog, and only the
+languages given are set; its comment, flags and other languages stay. That
+is how a new language is added to every string at once.
 The catalog is written back sorted, in the layout Xcode uses, so diffs stay
 small, and scripts/compile-strings.sh then compiles it into the .lproj
 folders the app ships. `swift test` (LocalizationTests) checks every language
@@ -36,7 +39,7 @@ import sys
 
 SCRIPTS = pathlib.Path(__file__).resolve().parent
 CATALOG = SCRIPTS.parent / "Sources/TabbiKitCore/Localization/Localizable.xcstrings"
-LANGUAGES = ["en", "de", "es", "fr", "ja", "ko", "pt-BR", "zh-Hans"]
+LANGUAGES = ["en", "de", "es", "fr", "fil", "ja", "ko", "pt-BR", "ru", "zh-Hans", "zh-Hant"]
 
 
 def unit(value):
@@ -50,11 +53,24 @@ def localization(value):
 
 
 def main():
-    source = open(sys.argv[1], encoding="utf-8") if len(sys.argv) > 1 else sys.stdin
+    arguments = sys.argv[1:]
+    merge = "--merge" in arguments
+    arguments = [argument for argument in arguments if argument != "--merge"]
+    source = open(arguments[0], encoding="utf-8") if arguments else sys.stdin
     entries = json.load(source)
     catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
     strings = catalog["strings"]
+    if merge:
+        unknown = [key for key in entries if key not in strings]
+        if unknown:
+            sys.exit(f"--merge: not in the catalog: {unknown[:5]}")
     for key, spec in entries.items():
+        if merge:
+            localizations = strings[key].setdefault("localizations", {})
+            for lang in LANGUAGES:
+                if lang in spec:
+                    localizations[lang] = localization(spec[lang])
+            continue
         entry = {"extractionState": "manual"}
         if spec.get("comment"):
             entry["comment"] = spec["comment"]

@@ -1,6 +1,6 @@
 # Localization
 
-Tabbi ships in English, German, Spanish, French, Japanese, Korean, Brazilian Portuguese and Simplified Chinese.
+Tabbi ships in English, German, Spanish, French, Filipino, Japanese, Korean, Brazilian Portuguese, Russian, Simplified Chinese and Traditional Chinese.
 This page covers how strings are looked up, how to add or change one, and how to add a language.
 
 ## How it works
@@ -44,12 +44,17 @@ After any change to the catalog, run `scripts/compile-strings.sh` and commit the
 
 `scripts/l10n-add.py strings.json` writes entries for you: it takes the English keys with a comment and one translation per language (an object of plural forms for a plural), adds them with that state, rewrites the catalog sorted, in Xcode's layout, and runs `scripts/compile-strings.sh`.
 The script's header shows the input format.
+With `--merge`, it sets only the languages given on strings already in the catalog and keeps everything else, which is how a new language goes in at once.
 
 ## Tone
 
 Keep translations short, natural and friendly, the way a cozy app talks to a friend.
 German and French run long, so prefer the shorter of two good options and check the panel snapshots.
-Follow each language's usual app conventions: informal "du" in German, "tu" in French and Spanish, "você" in Brazilian Portuguese, and polite but plain wording in Japanese and Korean.
+Follow each language's usual app conventions: informal "du" in German, "tu" in French and Spanish, "você" in Brazilian Portuguese, informal "ты" in Russian, and polite but plain wording in Japanese and Korean.
+Russian keeps verbs about the user gender-neutral, with "(а)" where a past tense cannot be avoided, and names the Party tab "Party".
+Filipino is the everyday Tagalog of Filipino apps: English loanwords where they are the norm ("timer", "task"), and macOS names (System Settings, Keychain, Do Not Disturb) in English, since macOS has no Filipino localization.
+Traditional Chinese follows Taiwan's conventions and Apple's Taiwan terms, not a conversion of the Simplified Chinese.
+A string that names a label elsewhere in the app (a tab, a button, "None") uses that label's translation, word for word.
 The writing rules in AGENTS.md hold in every language: no emojis and no em dashes.
 
 ## Not translated yet
@@ -85,8 +90,10 @@ Look at the panels in every size the renderer draws (`open-compact-*`, `open-*` 
 
 ## Adding a language
 
-1. Add its `.lproj` name (such as `it` or `zh-Hant`) to `L10n.languages` and to `CFBundleLocalizations` in `Resources/Info.plist`.
-2. Add a translation of every string in `Localizable.xcstrings`, including each plural form the language uses.
+1. Add its `.lproj` name (such as `it`) to `L10n.languages` and to `CFBundleLocalizations` in `Resources/Info.plist`.
+2. Add a translation of every string in `Localizable.xcstrings`, including each plural form the language uses, with `scripts/l10n-add.py --merge` (add the language to its `LANGUAGES` too).
+   Split across translators, give each one the same glossary (tab names, Party, kit, streak, how to address the user) so the halves agree.
 3. Run `scripts/compile-strings.sh`, which writes the language's `.lproj` folder.
 4. Run `swift test`; `LocalizationTests` lists every string still missing.
+   For a language with more plural forms than English (Russian has one, few and many), add a test that formats a few counts with that locale, as `testRussianPluralsFollowTheLastDigits` does: plural rules follow the formatting locale, not the bundle.
 5. Render snapshots with `--locale <language>` and fix whatever is cut off or reads awkwardly.

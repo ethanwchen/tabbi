@@ -49,6 +49,21 @@ final class LocalizationTests: XCTestCase {
         XCTAssertEqual(String.localizedStringWithFormat(friends, 1), "with 1 friend")
     }
 
+    /// Russian picks one of three forms by the last digits (1 and 21 are
+    /// "one", 2 to 4 "few", 5 to 20 "many"), so every Russian plural needs
+    /// all of them. The rules follow the formatting locale, which in the app
+    /// is the user's, so this passes Russian explicitly.
+    func testRussianPluralsFollowTheLastDigits() throws {
+        let russian = try XCTUnwrap(L10n.strings(for: "ru"))
+        let locale = Locale(identifier: "ru")
+        let days = russian.localizedString(forKey: "%lld days", value: nil, table: nil)
+        XCTAssertEqual([1, 2, 5, 11, 21, 22, 25].map { String(format: days, locale: locale, $0) },
+                       ["1 день", "2 дня", "5 дней", "11 дней", "21 день", "22 дня", "25 дней"])
+        let cores = russian.localizedString(forKey: "%lld cores", value: nil, table: nil)
+        XCTAssertEqual([1, 2, 5, 21].map { String(format: cores, locale: locale, $0) },
+                       ["1 ядро", "2 ядра", "5 ядер", "21 ядро"])
+    }
+
     /// Seasonal event names and taglines live in events.json, in English,
     /// and are looked up in the catalog by that text, so a new event or a
     /// reworded line needs its translations added with it.
@@ -138,6 +153,9 @@ final class LocalizationTests: XCTestCase {
         XCTAssertEqual(L10n.language(for: ["de-DE", "en-US"], available: available), "de")
         XCTAssertEqual(L10n.language(for: ["pt-BR"], available: available), "pt-BR")
         XCTAssertEqual(L10n.language(for: ["zh-Hans-CN"], available: available), "zh-Hans")
+        XCTAssertEqual(L10n.language(for: ["zh-Hant-TW"], available: available), "zh-Hant")
+        XCTAssertEqual(L10n.language(for: ["ru-RU"], available: available), "ru")
+        XCTAssertEqual(L10n.language(for: ["fil-PH"], available: available), "fil")
         XCTAssertEqual(L10n.language(for: ["ja-JP"], available: available), "ja")
         XCTAssertEqual(L10n.language(for: ["it-IT", "fr-FR"], available: available), "fr")
         XCTAssertEqual(L10n.language(for: ["it-IT"], available: available), "en")

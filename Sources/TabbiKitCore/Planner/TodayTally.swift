@@ -18,19 +18,20 @@ public struct TodayTally: Hashable, Sendable {
 
     /// Short caption for the panel header, e.g. "3 of 6 done".
     public var summary: String {
-        if totalCount == 0 { return "Nothing planned" }
-        if doneCount == totalCount { return "All \(totalCount) done" }
-        return "\(doneCount) of \(totalCount) done"
+        if totalCount == 0 { return String(localized: "Nothing planned", bundle: .tabbi) }
+        if doneCount == totalCount { return String(localized: "All \(totalCount) done", bundle: .tabbi) }
+        return String(localized: "\(doneCount) of \(totalCount) done", bundle: .tabbi)
     }
 
     /// The caption for a day that hasn't started, e.g. "2 planned".
     public var plannedSummary: String {
-        totalCount == 0 ? "Nothing planned" : "\(totalCount) planned"
+        totalCount == 0 ? String(localized: "Nothing planned", bundle: .tabbi)
+            : String(localized: "\(totalCount) planned", bundle: .tabbi)
     }
 
     /// The summary for a narrow header (Compact panel), e.g. "3/6".
     public var shortSummary: String {
-        if totalCount == 0 { return "Nothing planned" }
+        if totalCount == 0 { return String(localized: "Nothing planned", bundle: .tabbi) }
         return "\(doneCount)/\(totalCount)"
     }
 }

@@ -83,6 +83,22 @@
 			<string>%lld Fokusblöcke</string>
 		</dict>
 	</dict>
+	<key>%lld planned</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld geplant</string>
+			<key>other</key>
+			<string>%lld geplant</string>
+		</dict>
+	</dict>
 	<key>%lld planned blocks</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -179,6 +195,22 @@
 			<string>%lld Tage in Folge</string>
 		</dict>
 	</dict>
+	<key>%lldd ago</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>vor %lld Tag</string>
+			<key>other</key>
+			<string>vor %lld Tagen</string>
+		</dict>
+	</dict>
 	<key>+%lld points</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -225,6 +257,38 @@
 			<string>+%lld Pkt.</string>
 			<key>other</key>
 			<string>+%lld Pkt.</string>
+		</dict>
+	</dict>
+	<key>All %lld cards done for today</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld Karte für heute erledigt</string>
+			<key>other</key>
+			<string>Alle %lld Karten für heute erledigt</string>
+		</dict>
+	</dict>
+	<key>All %lld done</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld erledigt</string>
+			<key>other</key>
+			<string>Alle %lld erledigt</string>
 		</dict>
 	</dict>
 	<key>Focus for %lld hours during %@.</key>

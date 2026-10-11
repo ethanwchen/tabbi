@@ -131,6 +131,10 @@
 	<string>%1$lld nuevas, %2$lld aprendiendo, %3$lld repasar</string>
 	<key>%lld of %lld</key>
 	<string>%1$lld de %2$lld</string>
+	<key>%lld of %lld cards reviewed today</key>
+	<string>%lld de %lld tarjetas repasadas hoy</string>
+	<key>%lld of %lld done</key>
+	<string>%lld de %lld hechas</string>
 	<key>%lld of %lld earned</key>
 	<string>%1$lld de %2$lld conseguidos</string>
 	<key>%lld pts to go</key>
@@ -151,8 +155,12 @@
 	<string>%lld h</string>
 	<key>%lldh %lldm</key>
 	<string>%lld h %lld min</string>
+	<key>%lldh ago</key>
+	<string>hace %lld h</string>
 	<key>%lldm</key>
 	<string>%lldm</string>
+	<key>%lldm ago</key>
+	<string>hace %lld min</string>
 	<key>0 pts</key>
 	<string>0 pts</string>
 	<key>1 free</key>
@@ -1167,6 +1175,8 @@
 	<string>Hoy no hay nada</string>
 	<key>Nothing on your calendar today</key>
 	<string>Nada en tu calendario hoy</string>
+	<key>Nothing planned</key>
+	<string>Nada planeado</string>
 	<key>Nothing playing</key>
 	<string>No suena nada</string>
 	<key>Notifications</key>

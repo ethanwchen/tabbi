@@ -56,19 +56,22 @@ public enum AnkiFormat {
     /// The ring's tooltip: "112 of 432 cards reviewed today".
     public static func progressHelp(_ summary: AnkiSummary) -> String {
         if summary.dueTotal == 0 {
-            return summary.reviewedToday > 0 ? "All \(summary.reviewedToday) cards done for today" : "Nothing due today"
+            return summary.reviewedToday > 0
+                ? String(localized: "All \(summary.reviewedToday) cards done for today", bundle: .tabbi)
+                : String(localized: "Nothing due today", bundle: .tabbi)
         }
-        return "\(summary.reviewedToday) of \(summary.reviewedToday + summary.dueTotal) cards reviewed today"
+        return String(localized: "\(summary.reviewedToday) of \(summary.reviewedToday + summary.dueTotal) cards reviewed today",
+                      bundle: .tabbi)
     }
 
     /// How old the numbers are: "just now", "5m ago", "2h ago", "3d ago".
     public static func age(_ date: Date, now: Date) -> String {
         let seconds = max(now.timeIntervalSince(date), 0)
         switch seconds {
-        case ..<60: return "just now"
-        case ..<3600: return "\(Int(seconds / 60))m ago"
-        case ..<86_400: return "\(Int(seconds / 3600))h ago"
-        default: return "\(Int(seconds / 86_400))d ago"
+        case ..<60: return String(localized: "just now", bundle: .tabbi)
+        case ..<3600: return String(localized: "\(Int(seconds / 60))m ago", bundle: .tabbi)
+        case ..<86_400: return String(localized: "\(Int(seconds / 3600))h ago", bundle: .tabbi)
+        default: return String(localized: "\(Int(seconds / 86_400))d ago", bundle: .tabbi)
         }
     }
 }

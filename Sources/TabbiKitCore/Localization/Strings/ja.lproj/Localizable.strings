@@ -131,6 +131,10 @@
 	<string>新規 %1$lld、学習中 %2$lld、復習 %3$lld</string>
 	<key>%lld of %lld</key>
 	<string>%1$lld/%2$lld人</string>
+	<key>%lld of %lld cards reviewed today</key>
+	<string>今日は%2$lld枚中%1$lld枚を復習</string>
+	<key>%lld of %lld done</key>
+	<string>%lld/%lld完了</string>
 	<key>%lld of %lld earned</key>
 	<string>%2$lld個中%1$lld個ゲット</string>
 	<key>%lld pts to go</key>
@@ -151,8 +155,12 @@
 	<string>%lld時間</string>
 	<key>%lldh %lldm</key>
 	<string>%lld時間%lld分</string>
+	<key>%lldh ago</key>
+	<string>%lld時間前</string>
 	<key>%lldm</key>
 	<string>%lld分</string>
+	<key>%lldm ago</key>
+	<string>%lld分前</string>
 	<key>0 pts</key>
 	<string>0 pt</string>
 	<key>1 free</key>
@@ -1167,6 +1175,8 @@
 	<string>今日は予定なし</string>
 	<key>Nothing on your calendar today</key>
 	<string>今日の予定はありません</string>
+	<key>Nothing planned</key>
+	<string>予定なし</string>
 	<key>Nothing playing</key>
 	<string>再生中の曲はありません</string>
 	<key>Notifications</key>

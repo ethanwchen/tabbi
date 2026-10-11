@@ -73,6 +73,20 @@
 			<string>集中%lld回</string>
 		</dict>
 	</dict>
+	<key>%lld planned</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>%lld件の予定</string>
+		</dict>
+	</dict>
 	<key>%lld planned blocks</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -157,6 +171,20 @@
 			<string>%lld日連続</string>
 		</dict>
 	</dict>
+	<key>%lldd ago</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>%lld日前</string>
+		</dict>
+	</dict>
 	<key>+%lld points</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -197,6 +225,34 @@
 			<string>lld</string>
 			<key>other</key>
 			<string>+%lld pt</string>
+		</dict>
+	</dict>
+	<key>All %lld cards done for today</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>今日の%lld枚、すべて完了</string>
+		</dict>
+	</dict>
+	<key>All %lld done</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@value@</string>
+		<key>value</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>other</key>
+			<string>%lld件すべて完了</string>
 		</dict>
 	</dict>
 	<key>Focus for %lld hours during %@.</key>

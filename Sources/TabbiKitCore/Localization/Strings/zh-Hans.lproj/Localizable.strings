@@ -131,6 +131,10 @@
 	<string>新卡片 %1$lld，学习中 %2$lld，待复习 %3$lld</string>
 	<key>%lld of %lld</key>
 	<string>%1$lld/%2$lld 人</string>
+	<key>%lld of %lld cards reviewed today</key>
+	<string>今天已复习 %lld/%lld 张卡片</string>
+	<key>%lld of %lld done</key>
+	<string>完成 %lld/%lld</string>
 	<key>%lld of %lld earned</key>
 	<string>已获得 %1$lld/%2$lld</string>
 	<key>%lld pts to go</key>
@@ -151,8 +155,12 @@
 	<string>%lld 小时</string>
 	<key>%lldh %lldm</key>
 	<string>%lld 小时 %lld 分</string>
+	<key>%lldh ago</key>
+	<string>%lld 小时前</string>
 	<key>%lldm</key>
 	<string>%lld分</string>
+	<key>%lldm ago</key>
+	<string>%lld 分钟前</string>
 	<key>0 pts</key>
 	<string>0 分</string>
 	<key>1 free</key>
@@ -1167,6 +1175,8 @@
 	<string>今天没有安排</string>
 	<key>Nothing on your calendar today</key>
 	<string>今天日历上没有安排</string>
+	<key>Nothing planned</key>
+	<string>暂无计划</string>
 	<key>Nothing playing</key>
 	<string>没有正在播放的内容</string>
 	<key>Notifications</key>

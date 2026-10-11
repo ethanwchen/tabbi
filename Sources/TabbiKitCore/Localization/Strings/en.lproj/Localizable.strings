@@ -131,6 +131,10 @@
 	<string>%lld new, %lld learning, %lld review</string>
 	<key>%lld of %lld</key>
 	<string>%lld of %lld</string>
+	<key>%lld of %lld cards reviewed today</key>
+	<string>%lld of %lld cards reviewed today</string>
+	<key>%lld of %lld done</key>
+	<string>%lld of %lld done</string>
 	<key>%lld of %lld earned</key>
 	<string>%lld of %lld earned</string>
 	<key>%lld pts to go</key>
@@ -151,8 +155,12 @@
 	<string>%lldh</string>
 	<key>%lldh %lldm</key>
 	<string>%lldh %lldm</string>
+	<key>%lldh ago</key>
+	<string>%lldh ago</string>
 	<key>%lldm</key>
 	<string>%lldm</string>
+	<key>%lldm ago</key>
+	<string>%lldm ago</string>
 	<key>0 pts</key>
 	<string>0 pts</string>
 	<key>1 free</key>
@@ -1167,6 +1175,8 @@
 	<string>Nothing on today</string>
 	<key>Nothing on your calendar today</key>
 	<string>Nothing on your calendar today</string>
+	<key>Nothing planned</key>
+	<string>Nothing planned</string>
 	<key>Nothing playing</key>
 	<string>Nothing playing</string>
 	<key>Notifications</key>
