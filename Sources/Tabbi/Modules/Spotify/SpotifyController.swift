@@ -232,8 +232,11 @@ final class SpotifyController: NSObject, ObservableObject {
     }
 
     /// The app's Finder icon for launch buttons and the source badge; nil if
-    /// it isn't installed. Cached, since the panel re-renders every second.
+    /// it isn't installed, and in demo mode, so store screenshots show a
+    /// generic badge instead of another app's icon. Cached, since the panel
+    /// re-renders every second.
     func appIcon(for source: NowPlayingSource) -> NSImage? {
+        guard !isDemo else { return nil }
         if let icon = appIcons[source] { return icon }
         let icon = NSWorkspace.shared.urlForApplication(withBundleIdentifier: source.bundleIdentifier)
             .map { NSWorkspace.shared.icon(forFile: $0.path) }

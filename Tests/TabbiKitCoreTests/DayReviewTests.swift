@@ -180,8 +180,8 @@ final class DayReviewTests: XCTestCase {
 
     func testSampleReviewIsRealistic() throws {
         let sample = DayReview.sample(on: oct1, calendar: calendar)
-        XCTAssertEqual(sample.done.count, 3)
-        XCTAssertEqual(sample.carryingOver, ["Ship notch planner beta", "30-minute run"])
+        XCTAssertEqual(sample.done.count, 2)
+        XCTAssertEqual(sample.carryingOver, ["Read chapter 4"])
         XCTAssertGreaterThan(sample.focusSessions, 0)
         let summary = try XCTUnwrap(sample.summary)
         XCTAssertEqual(DayReviewer.summary(from: summary), summary, "the canned summary already fits the card")
@@ -189,10 +189,10 @@ final class DayReviewTests: XCTestCase {
 
     func testMedicineSampleReviewCarriesOverStudyWork() throws {
         let sample = DayReview.sample(on: oct1, kind: .medicine, calendar: calendar)
-        XCTAssertEqual(sample.carryingOver, ["UWorld cardio Qs", "Renal notes"])
+        XCTAssertEqual(sample.carryingOver, ["Cardio practice questions", "Renal notes"])
         let summary = try XCTUnwrap(sample.summary)
         XCTAssertEqual(DayReviewer.summary(from: summary), summary, "the canned summary already fits the card")
-        XCTAssertTrue(summary.contains("UWorld"))
+        XCTAssertTrue(summary.contains("cardio questions"))
     }
 
     // MARK: Study stats

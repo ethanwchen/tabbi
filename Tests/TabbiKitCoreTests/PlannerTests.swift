@@ -354,17 +354,26 @@ final class PlannerSampleDataTests: XCTestCase {
         }
     }
 
+    func testWorkSampleIsTheStoreScreenshotsDay() {
+        // The Today screenshot shows these three tasks, two of them done.
+        let day = PlannerDay.sample(on: oct1)
+        XCTAssertEqual(day.items.map(\.title), ["Outline the history essay", "Reply to Sam about Saturday",
+                                                "Read chapter 4"])
+        XCTAssertEqual(day.doneCount, 2)
+    }
+
     func testMedicineSampleIsAStudyDay() {
         let titles = PlannerDay.sample(on: oct1, kind: .medicine).items.map(\.title)
-        XCTAssertTrue(titles.contains("UWorld cardio Qs"))
-        XCTAssertFalse(titles.contains("Ship notch planner beta"))
+        XCTAssertTrue(titles.contains("Cardio practice questions"))
+        XCTAssertFalse(titles.contains("Read chapter 4"))
     }
 
     private func assertPartlyFinished(_ day: PlannerDay, calendar: Calendar, line: UInt = #line) {
         XCTAssertEqual(day.date, oct1, line: line)
-        XCTAssertEqual(day.items.count, 5, line: line)
-        XCTAssertEqual(day.doneCount, 3, line: line)
-        XCTAssertEqual(Set(day.items.map(\.id)).count, 5, line: line)
+        XCTAssertGreaterThanOrEqual(day.items.count, 3, line: line)
+        XCTAssertGreaterThanOrEqual(day.doneCount, 2, line: line)
+        XCTAssertLessThan(day.doneCount, day.items.count, line: line)
+        XCTAssertEqual(Set(day.items.map(\.id)).count, day.items.count, line: line)
         for item in day.items {
             XCTAssertEqual(PlannerDayKey(date: item.createdAt, calendar: calendar), oct1, line: line)
             XCTAssertEqual(item.isDone, item.completedAt != nil, line: line)
@@ -464,6 +473,30 @@ final class PlannerViewedDayTests: XCTestCase {
                        calendar.date(from: DateComponents(year: 2026, month: 10, day: 25, hour: 7)))
         XCTAssertEqual(PlannerViewedDay.today.planTitle, "Plan my day")
         XCTAssertEqual(PlannerViewedDay.tomorrow.planTitle, "Plan tomorrow")
+    }
+
+    func testHeaderShowsTheDateUnlessDatesAreHiddenThenOnlyTheWeekday() {
+        let locale = Locale(identifier: "en_US")
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "UTC")!
+        let saturday = calendar.date(from: DateComponents(year: 2026, month: 10, day: 10, hour: 12))!
+        func texts(_ day: PlannerViewedDay, showsDates: Bool) -> [String?] {
+            day.headerDateStyles(showsDates: showsDates).map { style in
+                style.map { style in
+                    var style = style
+                    style.locale = locale
+                    style.calendar = calendar
+                    style.timeZone = calendar.timeZone
+                    return saturday.formatted(style)
+                }
+            }
+        }
+        XCTAssertEqual(texts(.today, showsDates: true), ["Sat, Oct 10", "Sat 10"])
+        XCTAssertEqual(texts(.yesterday, showsDates: true), ["Oct 10", nil])
+        XCTAssertEqual(texts(.today, showsDates: false), ["Saturday", "Sat"])
+        for day in [PlannerViewedDay.yesterday, .tomorrow] {
+            XCTAssertEqual(texts(day, showsDates: false), [nil], "\(day) shows only its title")
+        }
     }
 
     func testCalendarCardIsCaptionedForTheDayItLists() {

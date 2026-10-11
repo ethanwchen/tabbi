@@ -5,7 +5,10 @@ import Foundation
 /// `moduleSettings.planner.sampleDay`, so a study kit's screenshots show
 /// its users' day instead of an office one.
 public enum PlannerSampleDay: String, Hashable, Sendable, CaseIterable {
-    /// Pull requests, a design standup and a beta review.
+    /// An everyday student or creator day: an essay, a reply, a reading and
+    /// a study group. Neutral, brand-free titles, since store screenshots
+    /// show it. Three tasks, so with the shared Focus time and flashcard rows
+    /// the whole list ("2 of 5 done") fits the Large panel without scrolling.
     case work
     /// A medical student's day: a lecture, a lab, clinical skills and question banks.
     case medicine
@@ -27,17 +30,15 @@ public extension PlannerDay {
         }
         let entries: [(title: String, created: Date, completed: Date?)] = switch kind {
         case .work: [
-            ("Review Ana's pull request", at(8, 40), at(9, 25)),
-            ("Reply to design feedback on the onboarding flow", at(8, 45), at(10, 5)),
-            ("Ship notch planner beta", at(9, 0), nil),
-            ("Book flights for the offsite", at(9, 10), at(11, 30)),
-            ("30-minute run", at(9, 15), nil),
+            ("Outline the history essay", at(8, 40), at(9, 25)),
+            ("Reply to Sam about Saturday", at(8, 45), at(10, 5)),
+            ("Read chapter 4", at(9, 0), nil),
         ]
         case .medicine: [
-            ("Read First Aid: cardiac pathology", at(7, 30), at(9, 40)),
+            ("Read the cardiac pathology notes", at(7, 30), at(9, 40)),
             ("Watch the heart failure lecture recording", at(7, 35), at(11, 15)),
-            ("UWorld cardio Qs", at(7, 40), nil),
-            ("Email Dr. Patel about Friday's shift", at(7, 45), at(12, 5)),
+            ("Cardio practice questions", at(7, 40), nil),
+            ("Email the clerkship office about Friday", at(7, 45), at(12, 5)),
             ("Renal notes", at(7, 50), nil),
         ]
         }
@@ -78,24 +79,24 @@ public extension PlannerDay {
             return sample(on: date, kind: kind, calendar: calendar)
         case (.yesterday, .work):
             return PlannerDay(date: date, items: [
-                item(101, "Prep slides for the design standup", at(8, 30), at(9, 20)),
-                item(3, "Ship notch planner beta", at(8, 35)),
-                item(102, "Write the Q3 product update", at(8, 40)),
-                item(103, "Expense the client dinner", at(8, 50), at(13, 10)),
+                item(101, "Finish the lab report", at(8, 30), at(9, 20)),
+                item(3, "Read chapter 4", at(8, 35)),
+                item(102, "Practice Spanish vocab", at(8, 40)),
+                item(103, "Do the laundry", at(8, 50), at(13, 10)),
                 item(104, "Call the dentist", at(9, 0)),
             ])
         case (.yesterday, .medicine):
             return PlannerDay(date: date, items: [
                 item(101, "Anki: cardio deck", at(7, 30), at(8, 45)),
-                item(3, "UWorld cardio Qs", at(7, 35)),
+                item(3, "Cardio practice questions", at(7, 35)),
                 item(102, "Review the ECG handout", at(7, 40)),
                 item(103, "Pathology lecture notes", at(7, 45), at(14, 20)),
                 item(104, "Pick up the white coat", at(7, 50)),
             ])
         case (.tomorrow, .work):
             return PlannerDay(date: date, items: [
-                item(201, "Draft the offsite agenda", at(-6, 10)),
-                item(202, "1:1 notes for Sam", at(-6, 15)),
+                item(201, "Draft the essay intro", at(-6, 10)),
+                item(202, "Buy a birthday card for Mia", at(-6, 15)),
             ], isPlannedAhead: true)
         case (.tomorrow, .medicine):
             return PlannerDay(date: date, items: [
@@ -107,11 +108,11 @@ public extension PlannerDay {
 }
 
 public extension UpcomingEvent {
-    /// Realistic events around `now` for demo mode: one meeting under way
+    /// Realistic events around `now` for demo mode: a study group under way
     /// with a Meet link, a Zoom call shortly after, and a plain block later.
     /// Times are relative to `now` so badges always read naturally, and land
     /// on five-minute marks like real meetings do. `kind` picks the titles:
-    /// a work day's standup and review, or a medical student's lecture, lab
+    /// an everyday study group and review, or a medical student's lecture, lab
     /// and clinical skills session.
     static func samples(now: Date, kind: PlannerSampleDay = .work) -> [UpcomingEvent] {
         let minute: TimeInterval = 60
@@ -150,8 +151,8 @@ public extension UpcomingEvent {
         }
         return [
             UpcomingEvent(
-                id: "demo-standup",
-                title: "Design standup",
+                id: "demo-study-group",
+                title: "Study group",
                 start: slot.addingTimeInterval(-10 * minute),
                 end: slot.addingTimeInterval(20 * minute),
                 calendarColor: work,
@@ -159,15 +160,15 @@ public extension UpcomingEvent {
             ),
             UpcomingEvent(
                 id: "demo-review",
-                title: "Notch planner beta review",
+                title: "Design review",
                 start: slot.addingTimeInterval(15 * minute),
                 end: slot.addingTimeInterval(45 * minute),
                 calendarColor: work,
                 meetingLink: MeetingLink(provider: .zoom, url: URL(string: "https://zoom.us/j/5551234567")!)
             ),
             UpcomingEvent(
-                id: "demo-run",
-                title: "30-minute run",
+                id: "demo-yoga",
+                title: "Yoga class",
                 start: slot.addingTimeInterval(95 * minute),
                 end: slot.addingTimeInterval(125 * minute),
                 calendarColor: personal
@@ -176,7 +177,7 @@ public extension UpcomingEvent {
     }
 
     /// Demo events for the day `viewed` names: `samples(now:kind:)` for
-    /// today, and a plain workday at fixed hours for yesterday and tomorrow,
+    /// today, and a plain day at fixed hours for yesterday and tomorrow,
     /// so stepping the Today panel shows a believable calendar either way.
     static func samples(
         _ viewed: PlannerViewedDay,
@@ -203,9 +204,9 @@ public extension UpcomingEvent {
         switch (viewed, kind) {
         case (.yesterday, .work):
             return [
-                event("standup", "Design standup", 9, 30, minutes: 30, work, link: zoom),
-                event("lunch", "Lunch with Priya", 12, 30, minutes: 60, personal),
-                event("roadmap", "Roadmap review", 15, 0, minutes: 45, work),
+                event("lecture", "Biology lecture", 9, 30, minutes: 60, work, link: zoom),
+                event("lunch", "Lunch with Jordan", 12, 30, minutes: 60, personal),
+                event("review", "Design review", 15, 0, minutes: 45, work),
             ]
         case (.yesterday, .medicine):
             return [
@@ -214,10 +215,8 @@ public extension UpcomingEvent {
             ]
         case (.tomorrow, .work):
             return [
-                event("standup", "Design standup", 9, 30, minutes: 30, work, link: zoom),
-                event("offsite", "Offsite planning", 11, 0, minutes: 60, work),
-                event("one-on-one", "1:1 with Sam", 14, 0, minutes: 30, work),
-                event("gym", "Gym", 18, 0, minutes: 60, personal),
+                event("lecture", "Biology lecture", 9, 30, minutes: 60, work, link: zoom),
+                event("gym", "Gym with Alex", 18, 0, minutes: 60, personal),
             ]
         case (.tomorrow, .medicine):
             return [

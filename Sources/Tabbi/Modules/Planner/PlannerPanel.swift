@@ -250,15 +250,17 @@ private struct PlannerHeader: View {
                 .frame(width: 16, height: 16)
                 .frame(width: 20)
             // A narrow panel (Compact) shortens the date, then the count, instead of truncating them.
+            // Demo mode shows no dates, so store screenshots never carry one.
+            let styles = store.viewing.headerDateStyles(showsDates: !RunMode.current.isDemo)
             ViewThatFits(in: .horizontal) {
                 if isToday {
-                    dateAndCount(.dateTime.weekday(.abbreviated).month(.abbreviated).day(), tally.summary)
-                    dateAndCount(.dateTime.weekday(.abbreviated).month(.abbreviated).day(), tally.shortSummary)
-                    dateAndCount(.dateTime.weekday(.abbreviated).day(), tally.shortSummary)
+                    dateAndCount(styles[0], tally.summary)
+                    dateAndCount(styles[0], tally.shortSummary)
+                    dateAndCount(styles[styles.count - 1], tally.shortSummary)
                 } else {
                     // "Yesterday" names the day; its date is a quiet extra.
-                    dateAndCount(.dateTime.month(.abbreviated).day(), summary(tally))
-                    dateAndCount(.dateTime.month(.abbreviated).day(), shortSummary(tally))
+                    dateAndCount(styles[0], summary(tally))
+                    dateAndCount(styles[0], shortSummary(tally))
                     dateAndCount(nil, summary(tally))
                     dateAndCount(nil, shortSummary(tally))
                 }

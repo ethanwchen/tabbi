@@ -114,29 +114,30 @@ public struct AnkiSummary: Hashable, Sendable, Codable {
 }
 
 extension AnkiSummary {
-    /// Realistic sample data for `TABBI_DEMO=1`: a Step 1 student with a
-    /// 12-day streak, built through the real aggregation so it stays honest.
+    /// Realistic sample data for `TABBI_DEMO=1`: a student with four
+    /// neutral decks (no published deck names, since the App Store shots use
+    /// this) and a 12-day streak, built through the real aggregation so it
+    /// stays honest. Parent counts include their subdecks, as in Anki.
     public static func demo(now: Date = Date(), rolloverHour: Int = 4, calendar: Calendar = .current) -> AnkiSummary {
         let today = AnkiDay(date: now, rolloverHour: rolloverHour, calendar: calendar)
         let stats = [
-            AnkiDeckStats(deckID: 1, name: "AnKing Step 1", newCount: 30, learnCount: 12, reviewCount: 186, totalInDeck: 28_000),
-            AnkiDeckStats(deckID: 2, name: "AnKing Step 1::Cardio", newCount: 10, learnCount: 4, reviewCount: 61, totalInDeck: 3_100),
-            AnkiDeckStats(deckID: 7, name: "AnKing Step 1::Renal", newCount: 8, learnCount: 3, reviewCount: 44, totalInDeck: 2_400),
-            AnkiDeckStats(deckID: 8, name: "AnKing Step 1::Renal::Acid Base", newCount: 0, learnCount: 1, reviewCount: 12, totalInDeck: 380),
-            AnkiDeckStats(deckID: 3, name: "Pharm Sketchy", newCount: 15, learnCount: 3, reviewCount: 74, totalInDeck: 4_200),
-            AnkiDeckStats(deckID: 9, name: "Pharm Sketchy::Antibiotics", newCount: 5, learnCount: 1, reviewCount: 26, totalInDeck: 900),
-            AnkiDeckStats(deckID: 4, name: "Sketchy Micro", newCount: 0, learnCount: 2, reviewCount: 58, totalInDeck: 2_900),
-            AnkiDeckStats(deckID: 5, name: "Pathoma", newCount: 5, learnCount: 0, reviewCount: 22, totalInDeck: 1_400),
-            AnkiDeckStats(deckID: 6, name: "Boards and Beyond Biochem", newCount: 0, learnCount: 1, reviewCount: 17, totalInDeck: 1_100),
+            AnkiDeckStats(deckID: 1, name: "Spanish verbs", newCount: 8, learnCount: 3, reviewCount: 38, totalInDeck: 1_200),
+            AnkiDeckStats(deckID: 2, name: "Spanish verbs::Irregular", newCount: 3, learnCount: 1, reviewCount: 12, totalInDeck: 340),
+            AnkiDeckStats(deckID: 3, name: "Biology", newCount: 6, learnCount: 2, reviewCount: 28, totalInDeck: 900),
+            AnkiDeckStats(deckID: 4, name: "Biology::Cells", newCount: 2, learnCount: 1, reviewCount: 9, totalInDeck: 260),
+            AnkiDeckStats(deckID: 5, name: "Biology::Cells::Mitosis", newCount: 0, learnCount: 1, reviewCount: 3, totalInDeck: 80),
+            AnkiDeckStats(deckID: 6, name: "World history", newCount: 4, learnCount: 1, reviewCount: 20, totalInDeck: 650),
+            AnkiDeckStats(deckID: 7, name: "Chemistry", newCount: 2, learnCount: 2, reviewCount: 14, totalInDeck: 480),
+            AnkiDeckStats(deckID: 8, name: "Chemistry::Organic", newCount: 1, learnCount: 0, reviewCount: 6, totalInDeck: 150),
         ]
         // Oldest to newest; a missed day 12 days ago ends the earlier run.
-        let counts = [180, 0, 240, 310, 205, 410, 380, 290, 455, 320, 365, 280, 430, 112]
+        let counts = [60, 0, 85, 110, 70, 140, 120, 95, 150, 105, 125, 90, 135, 46]
         let byDay = counts.enumerated().map { offset, count in
             AnkiDayCount(day: today.adding(days: offset - (counts.count - 1)), count: count)
         }
-        // 120 graded reviews today, 11 of them Again: about 91% retention.
+        // 46 graded reviews today, 5 of them Again: about 89% retention.
         let nowMs = Int64(now.timeIntervalSince1970 * 1000)
-        let reviews = (0..<120).map { (index: Int) -> AnkiReview in
+        let reviews = (0..<46).map { (index: Int) -> AnkiReview in
             let ease = index % 11 == 0 ? 1 : 3
             return AnkiReview(
                 id: nowMs - Int64(index) * 20_000, cardID: Int64(1_000 + index), ease: ease,

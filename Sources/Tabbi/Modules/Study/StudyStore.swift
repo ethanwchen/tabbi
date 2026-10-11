@@ -135,7 +135,8 @@ final class StudyStore: ObservableObject {
             custom = Self.demoCustom
             timer = .standard
             let now = Date()
-            let session = Self.demoSession(StudySnapshotState.current, now: now)
+            let session = Self.demoSession(StudySnapshotState.current, now: now,
+                                           focusLeft: StudySnapshotState.demoFocusLeft ?? Self.demoFocusLeft)
             self.session = session
             log = Self.demoLog(now: now)
             deepFocus = true
@@ -573,19 +574,27 @@ final class StudyStore: ObservableObject {
         sound.play()
     }
 
+    /// Time left in the demo Pomodoro's focus block: about a quarter of
+    /// its 25 minutes gone, as the App Store's first screenshot shows it.
+    static let demoFocusLeft: TimeInterval = 18 * 60 + 42
+
     /// A believable session part-way through: a Pomodoro on its second
-    /// round, a Flowtime stretch counting up, a sprint with cards done, or
-    /// another method a bit over a third into its first focus block.
+    /// round with `focusLeft` to go, a Flowtime stretch counting up, a
+    /// sprint with cards done, or another method a bit over a third into
+    /// its first focus block.
     /// The `paused` snapshot state pauses the Pomodoro, so the pet dozes.
-    private static func demoSession(_ state: StudySnapshotState?, now: Date) -> StudySession {
+    static func demoSession(_ state: StudySnapshotState?, now: Date,
+                            focusLeft: TimeInterval = demoFocusLeft) -> StudySession {
         let kind = state?.demoMethod ?? .pomodoro
         var session = StudySession(method: .preset(kind, custom: demoCustom))
         switch kind {
         case .pomodoro:
-            let start = now.addingTimeInterval(-(30 * 60 + 9 * 60 + 47))
+            // Round one (25 min) and its break (5 min), then round two.
+            let secondRound = now.addingTimeInterval(-(25 * 60 - min(max(focusLeft, 1), 25 * 60)))
+            let start = secondRound.addingTimeInterval(-30 * 60)
             session.start(at: start)
-            session.advance(to: start.addingTimeInterval(30 * 60))
-            session.start(at: start.addingTimeInterval(30 * 60))
+            session.advance(to: secondRound)
+            session.start(at: secondRound)
         case .flowtime:
             session.start(at: now.addingTimeInterval(-(23 * 60 + 12)))
         case .ankiSprint:

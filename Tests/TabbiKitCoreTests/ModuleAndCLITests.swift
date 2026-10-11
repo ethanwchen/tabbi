@@ -64,6 +64,17 @@ final class ModuleCatalogTests: XCTestCase {
         XCTAssertEqual(layout.enabled, ["anki"])
     }
 
+    func testEnablingListTurnsOnExactlyThoseModulesInOrder() throws {
+        let catalog = ModuleCatalog.builtIn
+        let layout = try XCTUnwrap(ModuleLayout(enablingList: "study, planner,anki,unknown,spotify,closet",
+                                                catalog: catalog))
+        XCTAssertEqual(layout.enabled, [.study, .planner, .anki, .spotify, .closet])
+        XCTAssertFalse(layout.isEnabled(.claudeAsk))
+        XCTAssertEqual(Set(layout.order), Set(catalog.ids))
+        XCTAssertNil(ModuleLayout(enablingList: "nothing,known", catalog: catalog))
+        XCTAssertNil(ModuleLayout(enablingList: "", catalog: catalog))
+    }
+
     func testCatalogOnlyLayoutTurnsEveryModuleOnInCatalogOrder() {
         let catalog = ModuleCatalog([
             ModuleDescriptor(id: "study", title: "Study", symbol: "book", category: .study, accent: accent),

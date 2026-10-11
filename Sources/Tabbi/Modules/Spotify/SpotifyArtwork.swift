@@ -91,7 +91,8 @@ final class SpotifyArtworkLoader: ObservableObject {
 }
 
 /// Album art with continuous corners. Shows a generated gradient cover for
-/// tracks without (loadable) artwork, and a quiet glyph while a cover loads.
+/// tracks without (loadable) artwork (the demo track's own drawn cover for
+/// that one), and a quiet glyph while a cover loads.
 struct SpotifyArtworkView: View {
     let track: SpotifyTrack?
     let artwork: SpotifyArtworkImage?
@@ -108,6 +109,8 @@ struct SpotifyArtworkView: View {
                     .interpolation(.high)
                     .aspectRatio(contentMode: .fill)
                     .transition(.opacity)
+            } else if let track, !isLoading, DemoAlbumCover.isCover(of: track) {
+                DemoAlbumCover()
             } else if let track, !isLoading {
                 SpotifyGeneratedCoverView(cover: SpotifyGeneratedCover(seed: track.id), size: size)
             } else {

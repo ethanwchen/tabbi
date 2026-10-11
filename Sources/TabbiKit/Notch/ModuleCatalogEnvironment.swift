@@ -27,7 +27,7 @@ public struct ModuleActionRunner: Sendable {
 
 public extension EnvironmentValues {
     /// Runs a shared item's action in the module that offered it, such as
-    /// Anki's "Study Pharm Sketchy" from Today's Anki row. Does nothing
+    /// Anki's "Study Spanish verbs" from Today's Anki row. Does nothing
     /// outside the notch.
     var runModuleAction: ModuleActionRunner {
         get { self[ModuleActionKey.self] }

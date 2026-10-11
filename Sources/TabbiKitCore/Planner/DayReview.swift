@@ -370,11 +370,11 @@ public extension DayReview {
         review.focusMinutes = 75
         review.summary = switch kind {
         case .work:
-            "Strong day: the pull request, design feedback, and flights are all off your plate. "
-                + "Start tomorrow with the planner beta while your focus is fresh."
+            "Strong day: the essay outline and the reply to Sam are both done. "
+                + "Start tomorrow with chapter 4 while your focus is fresh."
         case .medicine:
-            "Solid study day: First Aid, the lecture recording, and the shift email are done. "
-                + "Start tomorrow with UWorld while your focus is fresh."
+            "Solid study day: the pathology notes, the lecture recording, and the email are done. "
+                + "Start tomorrow with the cardio questions while your focus is fresh."
         }
         return review
     }

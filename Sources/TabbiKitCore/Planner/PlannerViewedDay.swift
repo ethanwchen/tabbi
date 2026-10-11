@@ -30,6 +30,25 @@ public enum PlannerViewedDay: Int, CaseIterable, Hashable, Sendable {
         }
     }
 
+    /// How the header writes this day's date, widest first, so a narrow
+    /// panel can fall back to a shorter one. Today shows its date; the other
+    /// days lead with their `title` and add the date while it fits (nil
+    /// leaves it out). Without dates (`showsDates` false, as in demo mode,
+    /// whose App Store screenshots must not show one) today names only its
+    /// weekday and the other days only their title.
+    public func headerDateStyles(showsDates: Bool = true) -> [Date.FormatStyle?] {
+        switch (self, showsDates) {
+        case (.today, true):
+            [.dateTime.weekday(.abbreviated).month(.abbreviated).day(), .dateTime.weekday(.abbreviated).day()]
+        case (.today, false):
+            [.dateTime.weekday(.wide), .dateTime.weekday(.abbreviated)]
+        case (_, true):
+            [.dateTime.month(.abbreviated).day(), nil]
+        case (_, false):
+            [nil]
+        }
+    }
+
     /// The caption of the calendar card beside the list: what's next today,
     /// or the whole of the other day.
     public var calendarTitle: String {

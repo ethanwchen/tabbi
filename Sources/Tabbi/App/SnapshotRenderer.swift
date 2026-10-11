@@ -6,16 +6,20 @@ import TabbiKit
 /// Renders every notch state and Settings pane to PNG without showing a window:
 ///
 ///     swift run Tabbi --snapshot ./snapshots [--kit medicine] [--theme <id>|all] [--edition <id>]
-///                                          [--scale <factor>] [--transparent]
+///                                          [--scale <factor>] [--transparent] [--tabs <id,id,...>]
 ///
 /// The notch renders in the kit's theme unless `--theme` names one; with
 /// `--theme all` every notch shot is rendered once per theme into a
 /// subfolder named after the theme id.
 ///
-/// `--scale` sets the pixels per point of the notch shots (2 by default), and
-/// `--transparent` leaves out their stand-in desktop, so marketing images
+/// `--scale` sets the pixels per point of the notch and coach shots (2 by
+/// default), and `--transparent` leaves out their stand-in desktop, so marketing images
 /// (`docs/appstore/make-media.swift`) can place the panel crisply at
 /// any size on a backdrop of their own.
+///
+/// `--tabs` replaces the kit's tabs with exactly the listed modules, in that
+/// order, so the App Store screenshots show one fixed layout (Essentials
+/// plus flashcards) that no bundled kit has.
 ///
 /// Used to review UI changes (by people and by agents) without Screen
 /// Recording permission. Live data sources run as usual, so panels show
@@ -40,11 +44,16 @@ enum SnapshotRenderer {
         }
     }
 
-    /// - Parameter kitID: the kit whose tabs are rendered, as on first run.
-    static func run(outputDirectory: URL, kitID: String = KitLibrary.defaultKitID, themes: ThemeSelection = .kit,
-                    notchStyle: NotchStyle = NotchStyle(), settle: TimeInterval = 1.5) async {
+    /// - Parameters:
+    ///   - kitID: the kit whose tabs are rendered, as on first run.
+    ///   - tabs: the modules to turn on in place of the kit's tabs, if any.
+    static func run(outputDirectory: URL, kitID: String = KitLibrary.defaultKitID, tabs: ModuleLayout? = nil,
+                    themes: ThemeSelection = .kit, notchStyle: NotchStyle = NotchStyle(),
+                    settle: TimeInterval = 1.5) async {
         try? FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
         let services = AppServices(settings: .ephemeral(catalog: ModuleList.catalog(for: .current), kitID: kitID))
+        // Set before settling, so the modules it turns on start and load.
+        if let tabs { services.settings.settings.modules = tabs }
         let kitTheme = ThemeCatalog.resolve(services.settings.settings.themeID)
         let themeFolders: [(AppTheme, URL)] = switch themes {
         case .kit: [(kitTheme, outputDirectory)]
@@ -172,6 +181,11 @@ enum SnapshotRenderer {
             let wardrobe = NotchViewModel(geometry: geometry, layout: withCloset)
             wardrobe.open(.closet)
             shots.append(Shot("open-closet-wardrobe", wardrobe))
+            // The Wardrobe at the Large size too, the App Store's Closet shot.
+            let largeWardrobe = NotchViewModel(geometry: geometry, layout: withCloset)
+            largeWardrobe.panelSize = .large
+            largeWardrobe.open(.closet)
+            shots.append(Shot("open-large-closet-wardrobe", largeWardrobe))
             let model = NotchViewModel(geometry: geometry, layout: withCloset)
             model.open(.closet)
             shots.append(Shot("open-closet-look", model))
@@ -275,10 +289,12 @@ enum SnapshotRenderer {
         Theme.apply(kitTheme)
 
         // The pet coach's overlay: walking out, then each kind of bubble.
-        let coachShots = closet.map { PetCoachSnapshots.shots(profile: $0.store.profile, lines: $0.coach.lines) } ?? []
+        let coachShots = closet.map {
+            PetCoachSnapshots.shots(profile: $0.store.profile, lines: $0.coach.lines, transparent: notchStyle.transparent)
+        } ?? []
         for (name, view) in coachShots {
             let renderer = ImageRenderer(content: view.environment(\.rendersToImage, true))
-            renderer.scale = 2
+            renderer.scale = max(2, notchStyle.scale)
             guard let image = renderer.nsImage,
                   let tiff = image.tiffRepresentation,
                   let png = NSBitmapImageRep(data: tiff)?.representation(using: .png, properties: [:])
@@ -564,7 +580,7 @@ enum SnapshotRenderer {
             nowPlaying?.showForSnapshot(name == "open-spotify-soundcloud" ? .soundCloud
                 : name == "open-spotify-soundcloud-javascript-off" ? .soundCloudJavaScriptOff : .players)
             if let firstSection {
-                closet?.store.section = name == "open-closet-wardrobe" ? .wardrobe
+                closet?.store.section = name.hasSuffix("closet-wardrobe") ? .wardrobe
                     : name == "open-closet-look" ? .look
                     : name == "open-closet-limited" ? .limited
                     : name == "open-closet-streak" ? .streak : name == "open-closet-weeks" ? .weeks : firstSection

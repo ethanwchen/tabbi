@@ -158,8 +158,10 @@ private struct SpotifyNowPlaying: View {
     /// A soft halo tinted by the cover, so the panel picks up the album's mood.
     private var glow: some View {
         let tint = artwork.artwork?.averageColor
-            ?? playback.track.flatMap { artwork.isLoading
-                ? nil : SpotifyGeneratedCoverView.glowColor(for: SpotifyGeneratedCover(seed: $0.id)) }
+            ?? playback.track.flatMap { track in
+                artwork.isLoading ? nil
+                    : DemoAlbumCover.isCover(of: track) ? DemoAlbumCover.glowColor
+                    : SpotifyGeneratedCoverView.glowColor(for: SpotifyGeneratedCover(seed: track.id)) }
         // A radial fade (not a blur) reaches zero before the panel's clip
         // edge, so the halo never shows a hard cut-off.
         return RadialGradient(colors: [(tint ?? .clear).opacity(0.5), .clear],
