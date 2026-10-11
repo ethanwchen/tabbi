@@ -40,4 +40,14 @@ public struct PetNightRhythm: Hashable, Sendable {
         guard let lastWoken else { return true }
         return now.timeIntervalSince(lastWoken) >= wakeSpell || now < lastWoken
     }
+
+    /// The next moment after `date` the night starts or ends, in
+    /// `calendar`'s time zone; nil for a window that never opens.
+    public func nextBoundary(after date: Date, calendar: Calendar = .current) -> Date? {
+        guard startHour != endHour else { return nil }
+        return [startHour, endHour].compactMap {
+            calendar.nextDate(after: date, matching: DateComponents(hour: $0, minute: 0, second: 0),
+                              matchingPolicy: .nextTime)
+        }.min()
+    }
 }

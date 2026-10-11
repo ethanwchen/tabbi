@@ -8,7 +8,8 @@ public enum PetMood: String, Hashable, Sendable {
     case onBreak
     /// No session right now, but one ran recently (or the app just started).
     case awake
-    /// No session for `PetPresence.sleepAfter`: the pet dozes off.
+    /// No session for `PetPresence.sleepAfter`, or a quiet spell late at
+    /// night (`PetPresence.night`): the pet dozes off.
     case asleep
 }
 
@@ -33,11 +34,23 @@ public struct PetPresence: Hashable, Sendable {
     /// Whether the last observed timer was mid-session, so the moment a
     /// session ends counts as activity too.
     private var sessionWasActive = false
+    /// The pet's night, or nil for a pet that only sleeps after
+    /// `sleepAfter`. Late at night it dozes after the shorter wake spell
+    /// even if a session ran recently, and opening the notch wakes it.
+    public var night: PetNightRhythm?
+    /// The calendar whose time zone places the night. The app passes
+    /// `.autoupdatingCurrent`, so the night follows a time zone change.
+    public var calendar: Calendar
+    /// When the user last opened the notch, which wakes a dozing pet at night.
+    public private(set) var lastWoken: Date?
 
-    public init(profile: PetProfile, lastActive: Date, nextUnlock: UnlockProgress? = nil) {
+    public init(profile: PetProfile, lastActive: Date, nextUnlock: UnlockProgress? = nil,
+                night: PetNightRhythm? = nil, calendar: Calendar = .autoupdatingCurrent) {
         self.profile = profile
         self.lastActive = lastActive
         self.nextUnlock = nextUnlock
+        self.night = night
+        self.calendar = calendar
     }
 
     /// Records the shared focus clock at `now`. Running or paused sessions
@@ -48,21 +61,42 @@ public struct PetPresence: Hashable, Sendable {
         sessionWasActive = active
     }
 
+    /// Records that the user opened the notch at `now`: at night the pet
+    /// wakes for a wake spell. By day it changes nothing, so a napping pet
+    /// still waits for the next session.
+    public mutating func wake(at now: Date) {
+        lastWoken = max(lastWoken ?? now, now)
+    }
+
     /// The pet's mood at `now` for the shared focus clock.
     public func mood(focus: ProvidedFocus?, at now: Date) -> PetMood {
         if let focus, focus.isRunning {
             return focus.phase == .focus ? .studying : .onBreak
         }
         if Self.isActive(focus) { return .awake }
+        if let night, night.isNight(at: now, calendar: calendar) {
+            return night.dozes(at: now, focus: focus, lastWoken: lastStirred, calendar: calendar) ? .asleep : .awake
+        }
         return now.timeIntervalSince(lastActive) < Self.sleepAfter ? .awake : .asleep
     }
 
-    /// When the pet falls asleep if nothing else happens: nil while a
-    /// session runs and once the pet is already asleep at `now`.
+    /// When the mood can next change if nothing else happens: the pet
+    /// falling asleep, and with a `night`, also the night starting or
+    /// ending and a wake spell running out. Nil while a session runs and,
+    /// without a night, once the pet is already asleep at `now`.
     public func sleepsAt(focus: ProvidedFocus?, after now: Date) -> Date? {
         guard !Self.isActive(focus) else { return nil }
-        let date = lastActive.addingTimeInterval(Self.sleepAfter)
-        return date > now ? date : nil
+        var dates = [lastActive.addingTimeInterval(Self.sleepAfter)]
+        if let night {
+            dates.append(lastStirred.addingTimeInterval(night.wakeSpell))
+            if let boundary = night.nextBoundary(after: now, calendar: calendar) { dates.append(boundary) }
+        }
+        return dates.filter { $0 > now }.min()
+    }
+
+    /// The last session or notch opening, whichever came later.
+    private var lastStirred: Date {
+        max(lastActive, lastWoken ?? lastActive)
     }
 
     private static func isActive(_ focus: ProvidedFocus?) -> Bool {

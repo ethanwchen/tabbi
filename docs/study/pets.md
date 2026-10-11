@@ -394,6 +394,9 @@ To draw, call `animator.advance(to: now)` and then `clipSet.frame(for: animator.
   Features drive it with `send(.nudge)`, `send(.celebrate)`, and so on, and `update(profile:)` swaps the look in place.
 - The closed notch's pet (`NotchPetWing`) maps the shared `PetMood` to an activity with `PetAnimator.Activity(mood)`, so it types on its laptop while the shared focus clock runs a focus phase, sips coffee on breaks, and yawns when a long focus stretch ends.
   It seeds the animator's activity start from `TickerPet.moodSince` (when the running phase began), so a wing rebuilt mid-session still counts the whole stretch.
+  Late at night (11 PM to 6 AM local time, `PetNightRhythm`) the Closet's `PetPresence` lets the pet doze after a 10 minute quiet spell instead of 20, with its drifting "z"s.
+  Opening the notch or starting a session wakes it, and Reduce Motion holds the doze still.
+  Snapshot runs leave the night out, so a shot looks the same at any hour.
   Snapshot runs render it as `closed-pet-studying.png`, `closed-pet-break.png` and `closed-pet-asleep.png` (whichever differ from the pet's current mood in `closed-pet.png`).
 - `PetView(player:pixelSize:)` is a fixed square of 32 sprite pixels (32 pt at the default `pixelSize` of 1, 24 pt at 0.75).
   A `TimelineView` with `PetFrameSchedule` redraws exactly at each `nextChange`, so an idle pet redraws a few times a second and a hidden or hanging pet not at all.

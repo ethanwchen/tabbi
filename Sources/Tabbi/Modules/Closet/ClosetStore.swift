@@ -63,6 +63,7 @@ final class ClosetStore: ObservableObject {
     private var focusSubscription: AnyCancellable?
     private var activitySubscription: AnyCancellable?
     private var kitSubscription: AnyCancellable?
+    private var notchSubscription: AnyCancellable?
     private var lastFocus: ProvidedFocus?
     private let saveURL: URL?
     /// Plays a sparkle milestone over the panel when an item is bought or
@@ -115,7 +116,19 @@ final class ClosetStore: ObservableObject {
         var grown = closet.profile
         grown.bondLook = PetBond(progress: progress).look
         preview = PetPlayer(profile: grown)
-        presence = PetPresence(profile: grown, lastActive: .now, nextUnlock: UnlockProgress(closet: closet))
+        // A snapshot renders the same pet whatever the hour, so only real
+        // and demo runs doze at night.
+        presence = PetPresence(profile: grown, lastActive: .now, nextUnlock: UnlockProgress(closet: closet),
+                               night: runMode.isSnapshot ? nil : .standard)
+    }
+
+    /// Follows the notch opening (one value each time it opens), which wakes a
+    /// pet dozing late at night (`PetPresence.wake(at:)`).
+    func follow(notchOpened: AnyPublisher<Void, Never>) {
+        notchSubscription = notchOpened
+            .sink { [weak self] in
+                MainActor.assumeIsolated { self?.presence.wake(at: .now) }
+            }
     }
 
     /// Follows the shared focus timer, so the notch pet stays awake through

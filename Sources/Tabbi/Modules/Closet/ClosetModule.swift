@@ -113,6 +113,10 @@ extension ModuleContext {
             store.follow(activity: activityLog.recorded,
                          history: activityLog.records(from: PlannerDayKey(date: .distantPast), through: today))
             store.follow(kits: kitApplied)
+            // The closed-notch preview stops watching exactly when the notch opens.
+            store.follow(notchOpened: closedNotchPreview.$watchedKinds
+                .map(\.isEmpty).removeDuplicates().dropFirst().filter { $0 }
+                .map { _ in () }.eraseToAnyPublisher())
             return store
         }
     }
