@@ -59,7 +59,10 @@ app="$out/$name.app"
 rm -rf "$app"
 mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
 cp "$bin" "$app/Contents/MacOS/$name"
-cp "$plist" "$app/Contents/Info.plist"
+# mktemp made the plist readable only by its owner; the bundle needs it
+# world-readable, or App Store Connect rejects the package (ITMS-90255) and
+# other accounts on the Mac cannot check the signature.
+install -m 0644 "$plist" "$app/Contents/Info.plist"
 cp "$icon" "$app/Contents/Resources/AppIcon.icns"
 # SwiftPM resource bundles (bundled kits and editions); see KitResources.swift.
 if $app_store; then
@@ -146,4 +149,12 @@ done
 plutil -replace CFBundleLocalizations -json "$(plutil -extract CFBundleLocalizations json -o - "$plist")" "$widget_plist"
 plutil -replace NSExtension -json '{"NSExtensionPointIdentifier":"com.apple.widgetkit-extension"}' "$widget_plist"
 plutil -lint -s "$widget_plist"
+# Every file in the bundle must be readable by every account (see the
+# Info.plist copy above), so a file that is not stops the build here.
+unreadable=$(find "$app" ! -perm -o=r)
+if [ -n "$unreadable" ]; then
+    echo "assemble.sh: these files are not world-readable:" >&2
+    echo "$unreadable" >&2
+    exit 1
+fi
 echo "$app"
