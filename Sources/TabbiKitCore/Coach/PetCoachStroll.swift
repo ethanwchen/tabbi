@@ -32,6 +32,15 @@ public struct PetCoachStroll: Hashable, Sendable {
     public let talkDuration: TimeInterval
     /// When the user answered (or dismissed) the bubble, if they did.
     public private(set) var dismissedAt: Date?
+    /// When the pointer came to rest on the bubble, while it is still there.
+    /// Holding stops the talking clock, so a line being read stays up.
+    public private(set) var heldSince: Date?
+    /// Talk time added by earlier holds.
+    public private(set) var heldFor: TimeInterval = 0
+
+    /// After a hold ends the bubble stays at least this long, so moving the
+    /// pointer away never snaps it shut mid-sentence.
+    public static let lingerAfterHold: TimeInterval = 1.5
 
     /// A calm trot: 96 pt at 64 pt/s takes 1.5 s each way, quick enough to
     /// not be in the way and slow enough to read as a walk, not a dart.
@@ -56,7 +65,7 @@ public struct PetCoachStroll: Hashable, Sendable {
     /// When the pet turns to walk home: on time, or early once dismissed.
     /// Dismissing mid-walk turns it around where it stands.
     public var turnsBackAt: Date {
-        let unanswered = arrivesAt.addingTimeInterval(talkDuration)
+        let unanswered = heldSince == nil ? arrivesAt.addingTimeInterval(talkDuration + heldFor) : .distantFuture
         guard let dismissedAt else { return unanswered }
         return min(max(dismissedAt, startedAt), unanswered)
     }
@@ -71,6 +80,37 @@ public struct PetCoachStroll: Hashable, Sendable {
     public mutating func dismiss(at date: Date) {
         guard dismissedAt == nil else { return }
         dismissedAt = date
+    }
+
+    /// Keeps the bubble up while the pointer rests on it. Only while talking
+    /// and not dismissed; a second hold before a release changes nothing.
+    public mutating func hold(at date: Date) {
+        guard heldSince == nil, dismissedAt == nil, phase(at: date) == .talking else { return }
+        heldSince = date
+    }
+
+    /// The pointer left the bubble: the talking clock runs again, with at
+    /// least `lingerAfterHold` left.
+    public mutating func release(at date: Date) {
+        guard let heldSince else { return }
+        self.heldSince = nil
+        heldFor += max(date.timeIntervalSince(heldSince), 0)
+        let left = arrivesAt.addingTimeInterval(talkDuration + heldFor).timeIntervalSince(date)
+        if left < Self.lingerAfterHold { heldFor += Self.lingerAfterHold - left }
+    }
+
+    /// Seconds the bubble has been talking at `date`, not counting holds:
+    /// what decides when a two-part line moves on to its second part.
+    public func talkElapsed(at date: Date) -> TimeInterval {
+        let clock = min(date, heldSince ?? date)
+        return max(clock.timeIntervalSince(arrivesAt) - heldFor, 0)
+    }
+
+    /// When the bubble will have talked for `seconds`, or nil while held
+    /// (the clock is stopped, so that moment is not known yet).
+    public func date(afterTalking seconds: TimeInterval) -> Date? {
+        guard heldSince == nil else { return nil }
+        return arrivesAt.addingTimeInterval(seconds + heldFor)
     }
 
     public func phase(at date: Date) -> Phase {

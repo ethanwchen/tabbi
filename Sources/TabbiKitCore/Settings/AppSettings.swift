@@ -25,6 +25,9 @@ public struct AppSettings: Equatable, Sendable {
     /// The weekly recap: built every Sunday evening from the activity log
     /// and shown once in the open notch. Off means no card and no building.
     public var weeklyRecapEnabled: Bool
+    /// Cat wisdom: now and then a short line from the pet right after a
+    /// focus session ends (`CatWisdomSchedule`). On by default.
+    public var catWisdomEnabled: Bool
     /// Mirrors the user's choice; the source of truth is `SMAppService.mainApp.status`.
     public var launchAtLogin: Bool
     public var hotkey: Hotkey
@@ -76,6 +79,7 @@ public struct AppSettings: Equatable, Sendable {
         hapticsEnabled: Bool = true,
         celebrationSoundEnabled: Bool = true,
         weeklyRecapEnabled: Bool = true,
+        catWisdomEnabled: Bool = true,
         launchAtLogin: Bool = false,
         hotkey: Hotkey = .default,
         claudePathOverride: String? = nil,
@@ -100,6 +104,7 @@ public struct AppSettings: Equatable, Sendable {
         self.hapticsEnabled = hapticsEnabled
         self.celebrationSoundEnabled = celebrationSoundEnabled
         self.weeklyRecapEnabled = weeklyRecapEnabled
+        self.catWisdomEnabled = catWisdomEnabled
         self.launchAtLogin = launchAtLogin
         self.hotkey = hotkey
         self.claudePathOverride = Self.normalizedPath(claudePathOverride)
@@ -195,6 +200,7 @@ public struct AppSettings: Equatable, Sendable {
         hapticsEnabled = fresh.hapticsEnabled
         celebrationSoundEnabled = fresh.celebrationSoundEnabled
         weeklyRecapEnabled = fresh.weeklyRecapEnabled
+        catWisdomEnabled = fresh.catWisdomEnabled
         hotkey = fresh.hotkey
         preferredDisplay = fresh.preferredDisplay
         showOnExternalDisplays = fresh.showOnExternalDisplays
@@ -256,6 +262,7 @@ public struct SettingsRepository {
         static let hapticsEnabled = "settings.hapticsEnabled"
         static let celebrationSoundEnabled = "settings.celebrationSoundEnabled"
         static let weeklyRecapEnabled = "settings.weeklyRecapEnabled"
+        static let catWisdomEnabled = "settings.catWisdomEnabled"
         static let launchAtLogin = "settings.launchAtLogin"
         static let hotkey = "settings.hotkey"
         static let claudePathOverride = "settings.claudePathOverride"
@@ -324,6 +331,7 @@ public struct SettingsRepository {
             hapticsEnabled: bool(Key.hapticsEnabled) ?? fallback.hapticsEnabled,
             celebrationSoundEnabled: bool(Key.celebrationSoundEnabled) ?? fallback.celebrationSoundEnabled,
             weeklyRecapEnabled: bool(Key.weeklyRecapEnabled) ?? fallback.weeklyRecapEnabled,
+            catWisdomEnabled: bool(Key.catWisdomEnabled) ?? fallback.catWisdomEnabled,
             launchAtLogin: bool(Key.launchAtLogin) ?? fallback.launchAtLogin,
             hotkey: hotkey ?? fallback.hotkey,
             claudePathOverride: defaults.string(forKey: Key.claudePathOverride),
@@ -379,6 +387,7 @@ public struct SettingsRepository {
         defaults.set(settings.hapticsEnabled, forKey: Key.hapticsEnabled)
         defaults.set(settings.celebrationSoundEnabled, forKey: Key.celebrationSoundEnabled)
         defaults.set(settings.weeklyRecapEnabled, forKey: Key.weeklyRecapEnabled)
+        defaults.set(settings.catWisdomEnabled, forKey: Key.catWisdomEnabled)
         defaults.set(settings.launchAtLogin, forKey: Key.launchAtLogin)
         defaults.set(try? JSONEncoder().encode(settings.hotkey), forKey: Key.hotkey)
         if let path = settings.claudePathOverride {

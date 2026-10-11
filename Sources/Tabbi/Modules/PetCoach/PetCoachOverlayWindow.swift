@@ -48,9 +48,14 @@ final class PetCoachOverlayWindow {
     private let panel: NSPanel
     private let model: PetCoachOverlayModel
     private var monitors: [Any] = []
+    /// Told when the pointer comes to rest on the bubble (true) or leaves it.
+    private let onHover: (Bool) -> Void
+    private var overBubble = false
 
-    init(scene: PetCoachScene, geometry: NotchGeometry, onReply: @escaping (PetCoachReply) -> Void) {
+    init(scene: PetCoachScene, geometry: NotchGeometry, onReply: @escaping (PetCoachReply) -> Void,
+         onHover: @escaping (Bool) -> Void = { _ in }) {
         model = PetCoachOverlayModel(scene: scene)
+        self.onHover = onHover
         let size = PetCoachOverlayView.size(for: scene)
         // AppKit's origin is bottom-left: hang the overlay from the bottom
         // of the menu bar, i.e. the notch's bottom edge.
@@ -108,6 +113,16 @@ final class PetCoachOverlayWindow {
         model.scene.stroll.dismiss(at: date)
     }
 
+    /// Keeps the bubble up while the pointer rests on it.
+    func hold(at date: Date) {
+        model.scene.stroll.hold(at: date)
+    }
+
+    /// Lets the bubble's clock run again once the pointer left it.
+    func release(at date: Date) {
+        model.scene.stroll.release(at: date)
+    }
+
     /// Takes clicks only while the pointer is over the bubble.
     private func updateMouseTransparency() {
         let mouse = NSEvent.mouseLocation
@@ -116,5 +131,11 @@ final class PetCoachOverlayWindow {
         let point = CGPoint(x: mouse.x - frame.minX, y: frame.maxY - mouse.y)
         let overBubble = model.bubbleFrame?.contains(point) ?? false
         if panel.ignoresMouseEvents == overBubble { panel.ignoresMouseEvents = !overBubble }
+        // Tracked here rather than with SwiftUI hover, which can miss the
+        // exit once the panel turns click-through again.
+        if overBubble != self.overBubble {
+            self.overBubble = overBubble
+            onHover(overBubble)
+        }
     }
 }
