@@ -1,7 +1,35 @@
 # QA log
 
+## Launch readiness
+
+Tabbi is ready to ship on main at bfd327ad plus the QA fixes on `gnhf/qa-final`, once that branch's CI run is green.
+The gate evidence, with commits and numbers, is in `docs/qa-final.md`.
+
+What was tested:
+- Release builds of the direct download and the sandboxed App Store edition, each under throwaway bundle ids and data folders, so none of the maintainer's data was touched.
+- First run as a brand new user in both editions, and existing data carried over to newer builds: the App Store edition's throwaway profile across several rebuilds, and the direct download through a Sparkle update.
+- Every tab, every Settings pane, all three panel sizes, the eight themes, the pet's growth (bond, collars, adventures, night doze), the weekly recap, the AI consent and Sign in with Apple up to Apple's sign-in page.
+- The timer through a full focus and break, and a Stop for partial rewards.
+- The Sparkle update path, from an older ad-hoc build to a newer one, in place.
+- Snapshots of every kit, theme, size and language, including Arabic right to left.
+- Security: rate limits, input validation, and no secrets in logs or in the app bundle.
+- App Store compliance: the sandbox, no outside payments in the app, the privacy answers, and every shipped URL live.
+- Memory, CPU, energy, network and disk on release builds of both editions.
+- `swift build`, three full `swift test` runs, check-style, the backend's tests and typecheck, and the site build and tests.
+
+What was fixed: everything listed below, the most visible being a frozen first launch of ad-hoc builds, macOS's Spotify prompt over onboarding, the System tab's 279 MB footprint, the pet's end-of-session bubble hidden behind the open panel, Today's timer card ignoring a running Pomodoro, untranslated study method text, and layouts that overflowed at the Compact size.
+
+Known issues, none blocking:
+- The native Sign in with Apple sheet needs the App Store provisioning profile, so only the web flow was run; check the native sheet once on the signed TestFlight build.
+- A release build sometimes holds about 250 MB of extra graphics memory for about two seconds when the pet coach's window first appears, then gives it back; steady state stays at 25-66 MB.
+- With the optional Focus tab added beside the Timer tab, Today's "Focus time" goal and the Timer tab count only the Timer tab's minutes, not the Focus tab's Pomodoros (no bundled kit has both tabs).
+- tabbinotch.com's footer links to "Buy me a coffee", which App Review could read as an outside payment under guideline 3.1.1; the maintainer may drop it from the pages the app links to.
+
+## Findings
+
 What the whole-app quality pass found and fixed, newest first, one sentence per line.
 
+- The App Store build, with all eight of its tabs turned on in a throwaway sandboxed profile, shows every one of them properly: Timer, Today, Now Playing with Spotify's track, Ask AI's "Add your Claude API key" state, System, and from More tabs Focus, Anki's "Anki is closed" and Schedule's calendar prompt, with the Closet showing the bond row ("Bond 3 · Pals") and the collar on the pet; the only odd thing, Today's "Focus time" ignoring the Focus tab's Pomodoros, is a known issue above.
 - The resource gate holds on release builds of both editions (numbers in `docs/qa-final.md`): 25-66 MB in steady state, flat over 30 idle minutes and over 66 tab opens, 0.04% of a core idle with the notch closed, no Tabbi leaks and no network in demo runs; still open is a two-second, release-only rise of about 250 MB of graphics memory that sometimes comes when the pet coach's window first appears beside the notch.
 - After main's pet growth merged, the late arrivals check out in snapshots for English and Arabic (mirrored): the Closet's bond row ("Bond 8 · Kindred spirits" with its ring) and the newest journal line fit the Compact, Regular and Large panels, the collars and sparkle draw on every breed and stance, the adventure leaves a paw print with "exploring" and the pet trots back from the notch facing home, the night doze shows "zzz" with its "z" inside the bar, the gift line names the adventure, and the closed-notch pet stays inside the 32 pt bar in every state.
 - The Timer tab's method line ("25 min focus, 5 min break"), the method names in its picker and in first-run setup, and the evidence badges stayed English in every other language, because they come from `study-methods.json`; they are now looked up in the catalog by their English text, as seasonal events are, in all 12 languages, and Arabic writes the 52 / 17 method as "52/17", since a right-to-left line showed the spaced name as "17 / 52".

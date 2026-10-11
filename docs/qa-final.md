@@ -4,6 +4,59 @@ Evidence for the ship gate and the resource gate before the App Store and direct
 Each section names the commit it was measured on, so a later run can tell what it covers.
 The QA history behind these numbers is in `docs/qa-log.md`.
 
+## Ship gate
+
+Checked on `gnhf/qa-final` at 71343a06 (main at bfd327ad, the last feature merge, plus the QA fixes).
+`origin/main` had no newer commits when this section was written.
+
+### Tests and checks
+
+| Check | Result |
+| --- | --- |
+| `swift build` | no warnings (checked in the previous pass on the same code) |
+| `swift test`, three full runs in a row | pending: the three runs did not finish in this pass and are to be repeated on the final commit |
+| `scripts/check-style.sh` | passes |
+| `backend`: `npm test` and `npm run typecheck` | 395 tests in 23 files pass, typecheck clean |
+| `python3 site/build.py` and `node --test 'site/test/*.test.mjs'` | builds all 12 pages, 14 tests pass |
+
+Each test log was searched as a whole for `with [1-9][0-9]* failure`, not only its last summary line, so a failure in any bundle (TabbiKitCoreTests, TabbiTests, the Swift Testing tests) would show.
+The `CoreData: XPC: sendMessage: failed` lines the logs print come from the test host's environment, not from a test.
+
+### GitHub CI
+
+Main's CI (Xcode 26.6) passed on bfd327ad, the newest commit on main (run 38142848036, 27 minutes), and on the two merges before it.
+CI runs on pushes to main and on pull requests, so the QA fixes on `gnhf/qa-final` get their own CI run when that branch is opened as a pull request or merged; that run has to be green before the App Store upload.
+
+### App Store edition end to end
+
+Built as `scripts/release-appstore.sh --adhoc` builds it (sandboxed, nothing uploaded), then re-signed under throwaway bundle ids so each check had its own container and none of the maintainer's data.
+The sandbox log (`/usr/bin/log stream` filtered on Sandbox) was watched during every check.
+
+| Gate item | Result | Details in `docs/qa-log.md` |
+| --- | --- | --- |
+| First-run onboarding | passes: name, kit, question, tabs, pet, Anki, calendar access granted in the sandbox, timer method, extras | first-run entry; Party wording, kit summary and tile alignment fixed |
+| Every tab it ships | passes: with all eight tabs turned on, Timer, Today (with yesterday and tomorrow), Now Playing (the Automation prompt only after setup, then Spotify's track), Ask AI (its "Add your Claude API key" state), System (graphs filling within seconds), and from More tabs Focus, Anki ("Anki is closed" with Open Anki) and Schedule ("See your day at a glance" before calendar access), plus the Closet with its bond row and collar | first-run entry and the final walkthrough; Now Playing prompt fix |
+| Timer through a full focus and break, Stop for partial rewards | passes: focus rolled into the break, the break ended idle, Stop paid 6 points for 6 minutes and none under the 5-minute minimum | timer entry; coach bubble and Today timer card fixed |
+| The Closet and the heatmap | passes, the heatmap took the session's minutes | timer and recap entries |
+| Weekly recap shown once | passes, not shown again after a reopen or a relaunch | recap entry |
+| AI consent | passes: Cancel keeps None, Allow picks the provider, the key saves to the sandboxed Keychain, an invalid key shows a clean error with Retry | AI consent entry |
+| Sign in with Apple's sheet | the age question, the Sign in with Apple sheet and Apple's web sign-in page appear, and closing the page leaves no error | Sign in with Apple entry |
+| Settings | passes in every pane: panel sizes, More options, Tabs, Look themes, Connections, About links | Settings entry |
+| Quit and relaunch with data kept | passes: name, pet, tabs, timer history and recap state kept | first-run and recap entries |
+
+Sandbox denials: none from Tabbi's code in any check.
+The log showed only the throwaway build's renamed App Group (the real build's group matches), one NVMe query from a system framework, and `syspolicy.exec` lookups while a macOS consent prompt or the web sign-in was open.
+No crash, hang, blank panel or broken panel came up in any check.
+
+Limitation: an ad-hoc build has no Sign in with Apple entitlement, so it takes the web flow; the native `ASAuthorizationController` sheet needs the App Store provisioning profile, which is not installed on this Mac.
+Check the native sheet once on the signed build from `scripts/release-appstore.sh` (TestFlight) before submitting.
+
+### Late arrivals
+
+Pet growth (#115) and Arabic (#114) were merged before these checks.
+The bond row and collars, the adventure walk-off with a paw print and the return with a gift, the night doze, the closed-notch pet inside the 32 pt bar in every state, and Arabic's mirrored layout on the main tabs all check out in English and Arabic snapshots, at all three panel sizes where it matters.
+The one fix this needed was the Timer tab's study method text, which stayed English in every other language and reversed "52 / 17" in Arabic.
+
 ## Resource gate
 
 Measured on `gnhf/qa-final` at 927f3385 (main at bfd327ad plus the QA fixes), Apple M3 Max, macOS 26.6, 3456 x 2234 built-in display.
