@@ -60,7 +60,7 @@ body:
     attributes:
       label: Tabbi version
       description: The release you installed, or the commit if you built from source.
-      placeholder: 0.1.0
+      placeholder: 1.0.0
     validations:
       required: true
   - type: input

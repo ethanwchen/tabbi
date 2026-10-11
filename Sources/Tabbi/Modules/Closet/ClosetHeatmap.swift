@@ -51,17 +51,18 @@ struct ClosetHeatmapSection: View {
                     .foregroundStyle(Theme.Palette.secondaryText)
                 Spacer(minLength: 0)
             } else {
-                Text(DurationFormat.minutes(summary.lastThirtyDaysMinutes))
-                    .font(Theme.Typography.bodyEmphasis.monospacedDigit())
-                    .foregroundStyle(Theme.Palette.primaryText)
-                    .contentTransition(.numericText())
-                Text("in the last 30 days", bundle: .tabbi)
-                    .font(Theme.Typography.caption)
-                    .foregroundStyle(Theme.Palette.secondaryText)
-                    .layoutPriority(-1)
-                Spacer(minLength: Theme.Spacing.s)
+                // Longer languages ("in den letzten 30 Tagen") would cut the
+                // caption off, so the streak first shortens to its flame and
+                // count, and only then does the caption step aside.
+                ViewThatFits(in: .horizontal) {
+                    totalRow(summary, caption: true, shortStreak: false)
+                    totalRow(summary, caption: true, shortStreak: true)
+                    totalRow(summary, caption: false, shortStreak: false)
+                }
             }
-            streakLabel
+            if hovered != nil || summary.bestDay == nil {
+                streakLabel(short: false)
+            }
         }
         .lineLimit(1)
         .frame(height: 16)
@@ -69,13 +70,32 @@ struct ClosetHeatmapSection: View {
         .accessibilityElement(children: .combine)
     }
 
-    private var streakLabel: some View {
+    /// The last 30 days' total, its caption and the streak, at one width.
+    private func totalRow(_ summary: StudyHeatmap, caption: Bool, shortStreak: Bool) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: Theme.Spacing.xs) {
+            Text(DurationFormat.minutes(summary.lastThirtyDaysMinutes))
+                .font(Theme.Typography.bodyEmphasis.monospacedDigit())
+                .foregroundStyle(Theme.Palette.primaryText)
+                .contentTransition(.numericText())
+            if caption {
+                Text("in the last 30 days", bundle: .tabbi)
+                    .font(Theme.Typography.caption)
+                    .foregroundStyle(Theme.Palette.secondaryText)
+            }
+            Spacer(minLength: Theme.Spacing.s)
+            streakLabel(short: shortStreak)
+        }
+    }
+
+    /// The streak with its flame; `short` keeps only the count, for the
+    /// rare row too narrow for the words (the tooltip still says them).
+    private func streakLabel(short: Bool) -> some View {
         let streak = store.streak
         return HStack(spacing: Theme.Spacing.xs) {
             Image(systemName: "flame.fill")
                 .font(.system(size: 9.5, weight: .bold))
                 .foregroundStyle(streak.isActive ? accent : Theme.Palette.tertiaryText)
-            Text(streakText(streak))
+            Text(short && streak.isActive ? String(streak.length) : streakText(streak))
                 .font(Theme.Typography.caption)
                 .foregroundStyle(Theme.Palette.secondaryText)
                 .monospacedDigit()

@@ -121,3 +121,44 @@ Every run above (demo data) opened no connection and sent and received 0 bytes.
 
 The App Store throwaway profile, after a full first run, a week of seeded activity, a focus session, a recap and a relaunch, holds four small folders in `Application Support/Tabbi` (`Activity` with one JSON file per day, `Pet`, `Planner` with one file per day, `Recaps`), 40 KB in all.
 Activity and Planner grow by one small file per day used; nothing else accumulates: logs go to the unified log, and `Crash Reports` holds at most one pending crash or hang log, which is deleted once the next launch reads it, and snapshot and demo runs write nothing.
+
+## Release candidate 1.0.0
+
+A focused pass on what ships: `origin/release-1.0.0` at 60bb3b54 (main at 04c16a8e, #121, plus the 1.0.0 version bump and `FOUNDING_LAUNCH`), covering #117, #118, #119, #121 and #122 since the full pass above.
+Apple M3 Max, macOS 26.6.
+
+### Gates
+
+| Check | Result |
+| --- | --- |
+| `swift build` | no warnings (also a clean build in a fresh build folder) |
+| `TABBI_APPSTORE=1 swift build --only-use-versions-from-resolved-file` | no warnings |
+| `swift test` (one full run) | TabbiWidgetUITests (4), TabbiTests (515, 5 skipped) and TabbiKitCoreTests (2493, 2 skipped) passed, 52 Swift Testing tests passed, exit code 0, no `error: -[` line |
+| `scripts/check-style.sh` | passes |
+| `backend`: `npm ci`, `npm test`, `npm run typecheck` | 426 tests in 25 files pass, typecheck clean |
+| `python3 site/build.py` and `node --test site/test/*.test.mjs` | builds all 12 pages, 19 tests pass |
+| Version | `Resources/Info.plist` and both built apps read 1.0.0; the App Store build is build 122 (`git rev-list --count HEAD`) |
+
+### Pixel review
+
+Snapshots in English, Arabic, Japanese and German (and French, Spanish, Filipino, Korean and Chinese for the Closet), at every panel size where it matters: the Closet's Activity heatmap, the Limited section with the Founder's Pin tried on, Party and the friends list with Founding badges (Compact and Large too), Settings > General with the Founding Member badge, and About.
+Fixed: the heatmap's summary row cut its caption off in longer languages ("in den letzten 30 Tag...", "en los últi...", "sa huling 30..."), since #117 moved the streak into that row; the streak now shortens to its flame and count when the row is short, and only then would the caption step aside, so every language reads in full and English is unchanged.
+Known, snapshot tool only: `--snapshot --locale ar` stops with an AppKit "more Update Constraints in Window passes than there are views" exception while rendering the off-screen Settings sheets (privacy and feedback sections, then the age check sheet), so those Arabic sheet renders are missing; the notch shots before them all render.
+The real app's General pane gives its Form a fixed size and was not affected in earlier Arabic checks, but the Sign In age sheet in Arabic deserves one manual look in the bundled app.
+That look was done in a probe test: the age sheet presented with `.sheet` from an on-screen window, as Settings does, with the process in Arabic (its strings loaded) and right to left, in all three states (asked, passed, too young), and again in Spanish, Portuguese and Russian.
+Every case showed the sheet (420 by 183 to 223 points) with no exception, so the crash belongs to the snapshot tool's off-screen sheet rendering, not to the app.
+
+### Real launches
+
+Both release builds launched with demo data, opened the notch and switched through every tab (`scripts/measure-performance.sh --cycle`), with no crash, and were stopped by their own PID (another copy of Tabbi was running on this Mac).
+The App Store build ran sandboxed under a throwaway bundle id with its own container.
+
+| Moment | Build | Physical footprint |
+| --- | --- | --- |
+| At launch, notch closed | direct, demo | 34 MB |
+| Opening every tab in turn for 3 minutes (`--cycle 8`) | direct, demo | 34 MB rising to 53-54 MB by minute 1.5, then flat |
+| At launch, notch closed | App Store, demo | 38 MB |
+| Opening every tab in turn for 2.5 minutes (`--cycle 6`) | App Store, demo | 38 MB rising to 56-57 MB by minute 1, then flat |
+
+CPU averaged 1.4% (direct) and 2.8% (App Store, a faster cycle) of one core, the network stayed at 0 bytes, and `leaks` found 288 system framework leaks of 14 KB, as in the resource gate above.
+Sandbox log: the only denial from Tabbi was a `mach-lookup` of `com.apple.cmio.registerassistantservice.system-extensions`, made by the system audio stack as the celebration sound starts, which Tabbi's code does not ask for.

@@ -65,7 +65,7 @@ Never commit the private key.
 ## Ship a release
 
 1. Set the version in `Resources/Info.plist` (`CFBundleShortVersionString`), commit and push.
-   The first release is 0.1.0, which is already set.
+   The first release is 1.0.0, which is already set.
 2. With a clean working tree, run:
 
    ```sh
