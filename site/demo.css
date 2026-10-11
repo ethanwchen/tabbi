@@ -836,6 +836,7 @@
 
 /* The tabs to try, as quiet chips under the scene. Each opens its tab. */
 .try { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; margin-top: 18px !important; }
+.try-note { margin: 10px 0 0 !important; text-align: center; font-size: 14px; color: var(--on-ground-2); }
 .try-cap { margin-right: 2px; font-size: 15px; font-weight: 600; color: var(--on-ground-2); }
 .try-chip {
   padding: 4px 12px; border-radius: 999px; border: 1px solid rgba(251, 247, 240, 0.14);

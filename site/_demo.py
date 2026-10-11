@@ -526,6 +526,7 @@ DEMO = f'''
           <p class="burst" aria-hidden="true"><span class="burst-pts">+35 pts</span></p>
         </div>
         <p class="try"><span class="try-cap">Try</span>{''.join(f'<label class="try-chip" for="demo-tab-{t}">{name}</label>' for t, name in TRY)}</p>
+        <p class="try-note">Every tab is optional. Keep the ones you love.</p>
         <p class="sr-only" aria-live="polite" data-status></p>
       </section>
 '''
