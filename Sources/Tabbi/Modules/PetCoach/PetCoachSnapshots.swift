@@ -37,7 +37,9 @@ enum PetCoachSnapshots {
         // session made an item affordable, and one with nothing left to unlock.
         let party = PetCoachStroll(startedAt: start, talkDuration: PetCoach.celebrationDuration)
         let session = PetStudyAward(completedSessions: 1, minutes: 25, points: 35)
-        let toNext = UnlockProgress(balance: 40, earned: 35, ledger: PetPointsLedger(purchased: [.accessory(.beanie)]))
+        // The demo pet wears the glasses, so they are owned and the bar aims at the next item.
+        let toNext = UnlockProgress(balance: 40, earned: 35,
+                                    ledger: PetPointsLedger(purchased: [.accessory(.beanie), .accessory(.roundGlasses)]))
         let done = PetCoachScene(profile: profile, stroll: party, line: .celebration(session, progress: toNext))
         shots.append(("coach-celebrate", frozen(done, party.arrivesAt.addingTimeInterval(0.3))))
         shots.append(("coach-session-end", frozen(done, party.arrivesAt.addingTimeInterval(2))))
