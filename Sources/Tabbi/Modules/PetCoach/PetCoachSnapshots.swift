@@ -44,7 +44,28 @@ enum PetCoachSnapshots {
         let allOwned = PetStudyAward(completedSessions: 1, minutes: 50, points: 60)
         let complete = PetCoachScene(profile: profile, stroll: party, line: .celebration(allOwned, progress: nil))
         shots.append(("coach-session-end-all-owned", scene(complete, at: party.arrivesAt.addingTimeInterval(2))))
+        // Cat wisdom after the celebration: an ordinary day's line, and the
+        // longest comeback and milestone lines, to check three lines fit.
+        let wisdoms: [(String, CatWisdomLine)] = [
+            ("coach-wisdom", CatWisdomLine(kind: .firstOfDay, text: CatWisdom.daily[1])),
+            ("coach-wisdom-comeback", CatWisdomLine(kind: .comeback, text: CatWisdom.comeback[1])),
+            ("coach-wisdom-milestone", CatWisdomLine(kind: .milestone(.lastSquare), text: CatWisdomMilestone.lastSquare.line)),
+        ]
+        for (name, wisdom) in wisdoms + (ProcessInfo.processInfo.environment["TABBI_WISDOM_ALL"] == nil ? [] : allWisdom) {
+            let line = PetCoachLine.celebration(session, progress: toNext, wisdom: wisdom)
+            let talk = PetCoachStroll(startedAt: start, talkDuration: line.talkDuration)
+            let shown = PetCoachScene(profile: profile, stroll: talk, line: line)
+            shots.append((name, scene(shown, at: talk.arrivesAt.addingTimeInterval(PetCoach.celebrationDuration + 1))))
+        }
         return shots
+    }
+
+    /// Every Cat wisdom line, rendered only with `TABBI_WISDOM_ALL=1` to
+    /// check that each fits the bubble in three lines.
+    private static var allWisdom: [(String, CatWisdomLine)] {
+        let pools = CatWisdom.daily + CatWisdom.comeback + [CatWisdom.earlyStop, CatWisdom.lateNight]
+            + CatWisdomMilestone.allCases.map(\.line)
+        return pools.enumerated().map { ("coach-wisdom-all-\($0.offset)", CatWisdomLine(kind: .firstOfDay, text: $0.element)) }
     }
 
     /// A fixed line of `kind`, so snapshots are stable run to run.

@@ -3,12 +3,30 @@ import TabbiKitCore
 import TabbiKit
 
 /// What the pet comes out to say: a coach nudge, a celebration of points
-/// just earned (with the bar toward the next unlock), or nothing at all (a
-/// silent glance from the notch's edge).
+/// just earned (with the bar toward the next unlock, and now and then a Cat
+/// wisdom line after it), or nothing at all (a silent glance from the
+/// notch's edge).
 enum PetCoachLine {
     case nudge(PetCoachNudge)
-    case celebration(PetStudyAward, progress: UnlockProgress?)
+    case celebration(PetStudyAward, progress: UnlockProgress?, wisdom: CatWisdomLine? = nil)
     case glance(PetCoachGlance)
+
+    /// The Cat wisdom line a celebration moves on to, if any.
+    var wisdom: CatWisdomLine? {
+        if case .celebration(_, _, let wisdom) = self { return wisdom }
+        return nil
+    }
+
+    /// How long the bubble talks: a celebration, plus its wisdom line.
+    var talkDuration: TimeInterval {
+        PetCoach.celebrationDuration + (wisdom == nil ? 0 : PetCoach.wisdomDuration)
+    }
+
+    /// Whether the bubble shows the wisdom line rather than the points
+    /// after `elapsed` seconds of talking (holds not counted).
+    func showsWisdom(afterTalking elapsed: TimeInterval) -> Bool {
+        wisdom != nil && elapsed >= PetCoach.celebrationDuration
+    }
 
     /// The bubble's buttons. A celebration has none: a click anywhere on
     /// the bubble sends the pet home, so the moment never asks for anything.
@@ -147,7 +165,8 @@ struct PetCoachOverlayView: View {
                     .offset(x: CGFloat(offset) - Self.petSide, y: Self.petTop)
             }
             if scene.line.hasBubble, stroll.showsBubble(at: date) {
-                PetCoachBubble(line: scene.line, animated: self.date == nil, onReply: onReply)
+                PetCoachBubble(line: scene.line, showsWisdom: scene.line.showsWisdom(afterTalking: stroll.talkElapsed(at: date)),
+                               animated: self.date == nil, onReply: onReply)
                     .frame(width: Self.bubbleWidth, alignment: .leading)
                     .background(GeometryReader { proxy in
                         // Placed by the offset below; only the size is measured.
@@ -224,7 +243,9 @@ private struct PetCoachSchedule: TimelineSchedule {
             case .glance(let glance):
                 next = glance.nextRedraw(after: date, clips: scene.clips)
             case .nudge, .celebration:
-                next = scene.stroll.nextRedraw(after: date, clips: scene.clips, arrival: scene.line.arrival)
+                let marks = scene.line.wisdom == nil ? []
+                    : [scene.stroll.date(afterTalking: PetCoach.celebrationDuration)].compactMap { $0 }
+                next = scene.stroll.nextRedraw(after: date, clips: scene.clips, arrival: scene.line.arrival, marks: marks)
             }
             return date
         }
@@ -244,6 +265,8 @@ struct PetCoachBubbleFrameKey: PreferenceKey {
 /// the notch so it reads as part of it, over any wallpaper.
 private struct PetCoachBubble: View {
     let line: PetCoachLine
+    /// True once a celebration has moved on to its Cat wisdom line.
+    let showsWisdom: Bool
     /// False in snapshots, which show a celebration's count already settled.
     let animated: Bool
     let onReply: (PetCoachReply) -> Void
@@ -260,8 +283,14 @@ private struct PetCoachBubble: View {
                     .foregroundStyle(Theme.Palette.primaryText)
                     .fixedSize(horizontal: false, vertical: true)
                     .lineLimit(2)
-            case .celebration(let award, let progress):
-                PetCelebrationText(award: award, progress: progress, accent: Self.accent, animated: animated)
+            case .celebration(let award, let progress, let wisdom):
+                if showsWisdom, let wisdom {
+                    PetWisdomText(line: wisdom, accent: Self.accent)
+                        .transition(.opacity)
+                } else {
+                    PetCelebrationText(award: award, progress: progress, accent: Self.accent, animated: animated)
+                        .transition(.opacity)
+                }
             case .glance:
                 EmptyView()
             }
@@ -284,6 +313,7 @@ private struct PetCoachBubble: View {
         .onTapGesture { if dismissesOnClick { onReply(.thanks) } }
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
+        .motion(Theme.Motion.content, value: showsWisdom)
         .help(dismissesOnClick ? "Click to send the pet home" : "")
         .accessibilityElement(children: .contain)
         .accessibilityAction { if dismissesOnClick { onReply(.thanks) } }
@@ -350,6 +380,32 @@ private struct PetCelebrationText: View {
                 settled = true
             }
         }
+    }
+}
+
+/// A Cat wisdom line: a small label, then the line itself in up to three
+/// short lines. The bubble is the same width as the celebration's, so the
+/// pet does not jump when the words change.
+private struct PetWisdomText: View {
+    let line: CatWisdomLine
+    let accent: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+            HStack(spacing: Theme.Spacing.xxs) {
+                Image(systemName: "sparkle").font(.system(size: 8, weight: .bold)).foregroundStyle(accent)
+                Text("Cat wisdom")
+            }
+            .font(Theme.Typography.caption)
+            .foregroundStyle(Theme.Palette.tertiaryText)
+            Text(line.text)
+                .font(Theme.Typography.bodyEmphasis)
+                .foregroundStyle(Theme.Palette.primaryText)
+                .lineLimit(3)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .accessibilityElement(children: .combine)
+        .help("A line from your pet. Hover to keep it, click to send the pet home. Turn it off in Settings › General.")
     }
 }
 

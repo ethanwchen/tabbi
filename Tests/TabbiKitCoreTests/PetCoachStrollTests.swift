@@ -81,3 +81,54 @@ final class PetCoachStrollTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(stroll.talkDuration, 8)
     }
 }
+
+/// Hovering the bubble holds it up; leaving lets it run out.
+final class PetCoachStrollHoldTests: XCTestCase {
+    private let t0 = Date(timeIntervalSince1970: 1_800_000_000)
+    private func at(_ seconds: TimeInterval) -> Date { t0.addingTimeInterval(seconds) }
+
+    /// Two seconds out, ten seconds of talking (arrives at 2, turns at 12).
+    private func stroll() -> PetCoachStroll {
+        PetCoachStroll(startedAt: t0, distance: 100, speed: 50, talkDuration: 10)
+    }
+
+    func testHoldKeepsTheBubbleAndStopsTheTalkClock() {
+        var stroll = stroll()
+        stroll.hold(at: at(5))
+        XCTAssertEqual(stroll.phase(at: at(100)), .talking)
+        XCTAssertEqual(stroll.talkElapsed(at: at(100)), 3, accuracy: 0.001)
+        XCTAssertNil(stroll.date(afterTalking: 4))
+
+        stroll.release(at: at(20))
+        // Fifteen seconds held: the bubble turns back at 27, not 12.
+        XCTAssertEqual(stroll.turnsBackAt, at(27))
+        XCTAssertEqual(stroll.talkElapsed(at: at(21)), 4, accuracy: 0.001)
+        XCTAssertEqual(stroll.date(afterTalking: 4), at(21))
+    }
+
+    func testReleaseNearTheEndLingersBriefly() {
+        var stroll = stroll()
+        stroll.hold(at: at(11.9))
+        stroll.release(at: at(11.95))
+        XCTAssertEqual(stroll.turnsBackAt.timeIntervalSince(at(11.95)), PetCoachStroll.lingerAfterHold, accuracy: 0.001)
+    }
+
+    func testHoldIsIgnoredWhileWalkingOrAfterDismissal() {
+        var walking = stroll()
+        walking.hold(at: at(1))
+        XCTAssertNil(walking.heldSince)
+
+        var dismissed = stroll()
+        dismissed.dismiss(at: at(4))
+        dismissed.hold(at: at(4.5))
+        XCTAssertNil(dismissed.heldSince)
+        XCTAssertEqual(dismissed.turnsBackAt, at(4))
+    }
+
+    func testDismissWhileHeldTurnsBackAtOnce() {
+        var stroll = stroll()
+        stroll.hold(at: at(5))
+        stroll.dismiss(at: at(30))
+        XCTAssertEqual(stroll.turnsBackAt, at(30))
+    }
+}

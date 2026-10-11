@@ -83,6 +83,18 @@ final class PetCoachRedrawTests: XCTestCase {
         XCTAssertNil(stroll.nextRedraw(after: stroll.endsAt, clips: clips, arrival: .alert))
     }
 
+    func testMarksWhileTalkingAreRedrawnOnTime() {
+        let stroll = PetCoachStroll(startedAt: t0, talkDuration: 10)
+        let mark = stroll.arrivesAt.addingTimeInterval(4)
+        var date = stroll.arrivesAt.addingTimeInterval(1)
+        while let next = stroll.nextRedraw(after: date, clips: clips, arrival: .celebrate, marks: [mark]), next <= mark {
+            date = next
+        }
+        let next = stroll.nextRedraw(after: date, clips: clips, arrival: .celebrate, marks: [mark])
+        XCTAssertNotNil(next)
+        XCTAssertLessThan(next!.timeIntervalSince(mark), 0.01)
+    }
+
     func testBeforeTheStartItWaitsForThePetToSetOff() {
         let stroll = PetCoachStroll(startedAt: t0)
         let next = stroll.nextRedraw(after: t0.addingTimeInterval(-1), clips: clips, arrival: .alert)

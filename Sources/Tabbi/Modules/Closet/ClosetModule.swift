@@ -43,6 +43,8 @@ final class ClosetModule: NotchModule {
             runMode: context.runMode,
             profile: { [store] in store.profile },
             unlockProgress: { [store] award in UnlockProgress(after: award, closet: store.closet) },
+            studyStats: { [store] in (store.streak, store.milestones) },
+            wisdomEnabled: { settings.settings.catWisdomEnabled },
             lines: { PetCoachMessages.lines(kitSettings: settings.activeKit?.defaults.settings(for: .closet)) },
             screen: {
                 NotchGeometry.screen(for: settings.settings.preferredDisplay,

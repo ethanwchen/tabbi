@@ -275,3 +275,33 @@ public struct CatWisdomSchedule: Codable, Hashable, Sendable {
         case lastShownDay, lastLateNightDay, dailyShown, comebackShown, milestonesSeen, baselined
     }
 }
+
+extension CatWisdomSession {
+    /// The session behind a study award the pet just credited, read from
+    /// what the pet already tracks: its streak and focus totals from the
+    /// activity log, and the last completion the coach saw.
+    ///
+    /// Nil for an award with no session to speak of (a Party stay is
+    /// celebrated by Party itself). A completed session counts today toward
+    /// the streak, and its minutes count toward the total when today's log
+    /// cannot hold them yet, so a milestone is never shown early (at worst
+    /// one session late, when the log is behind on a busy day).
+    ///
+    /// - Parameter lastCompletion: when the coach last saw a session end on
+    ///   time. Nil on a first look, which falls back to the last study day
+    ///   before today in `progress`.
+    public init?(award: PetStudyAward, at end: Date, lastCompletion: Date?, streak: StudyStreak,
+                 progress: PetMilestoneProgress, calendar: Calendar = .current) {
+        guard award.points > 0 else { return nil }
+        let completed = award.completedSessions > 0
+        let today = PlannerDayKey(date: end, calendar: calendar)
+        let previous = lastCompletion ?? progress.studyDays.filter { $0 < today }.max()?.startDate(calendar: calendar)
+        let todayMinutes = progress.minutesByDay[today] ?? 0
+        // The log already holds this session once today's minutes cover it.
+        let logged = todayMinutes >= Double(award.minutes)
+        let streakDays = streak.length + (completed && !streak.studiedToday ? 1 : 0)
+        let total = Int(progress.focusMinutes) + (logged ? 0 : award.minutes)
+        self.init(outcome: completed ? .completed : .stoppedWithPoints, end: end, previousCompletion: previous,
+                  streakDays: streakDays, totalFocusMinutes: total)
+    }
+}

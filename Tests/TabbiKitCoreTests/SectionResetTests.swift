@@ -15,6 +15,7 @@ final class SectionResetTests: XCTestCase {
         settings.hapticsEnabled = false
         settings.celebrationSoundEnabled = false
         settings.weeklyRecapEnabled = false
+        settings.catWisdomEnabled = false
         settings.launchAtLogin = true
         settings.hotkey = Hotkey(keyCode: 0, modifiers: [.command, .option])
         settings.preferredDisplay = .main
@@ -44,6 +45,7 @@ final class SectionResetTests: XCTestCase {
         XCTAssertEqual(settings.hapticsEnabled, fresh.hapticsEnabled)
         XCTAssertEqual(settings.celebrationSoundEnabled, fresh.celebrationSoundEnabled)
         XCTAssertEqual(settings.weeklyRecapEnabled, fresh.weeklyRecapEnabled)
+        XCTAssertTrue(settings.catWisdomEnabled)
         XCTAssertEqual(settings.hotkey, .default)
         XCTAssertEqual(settings.preferredDisplay, .builtIn)
         XCTAssertEqual(settings.showOnExternalDisplays, fresh.showOnExternalDisplays)
