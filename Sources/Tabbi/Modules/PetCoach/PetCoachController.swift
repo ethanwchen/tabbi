@@ -24,6 +24,8 @@ import TabbiKit
 @MainActor
 final class PetCoachController: ObservableObject {
     private let profile: () -> PetProfile
+    /// The bar toward the next unlock right after an award was credited.
+    private let unlockProgress: (PetStudyAward) -> UnlockProgress?
     private let kitLines: () -> [PetCoachMessage]
     private let screen: () -> NSScreen?
     private let pauseTimer: () -> Void
@@ -53,12 +55,14 @@ final class PetCoachController: ObservableObject {
         storage: EditionStorage,
         runMode: RunMode,
         profile: @escaping () -> PetProfile,
+        unlockProgress: @escaping (PetStudyAward) -> UnlockProgress? = { _ in nil },
         lines: @escaping () -> [PetCoachMessage] = { PetCoachMessages.standard },
         screen: @escaping () -> NSScreen?,
         pauseTimer: @escaping () -> Void,
         resumeTimer: @escaping () -> Void
     ) {
         self.profile = profile
+        self.unlockProgress = unlockProgress
         kitLines = lines
         self.screen = screen
         self.pauseTimer = pauseTimer
@@ -120,7 +124,8 @@ final class PetCoachController: ObservableObject {
             present(PetCoachNudge(kind: .distraction, message: PetCoachMessages.messages(for: .distraction, in: lines).last!),
                     at: Date().addingTimeInterval(1))
         case "celebrate":
-            present(.celebration(PetStudyAward(completedSessions: 1, minutes: 25, points: 35, unlocked: [.accessory(.beanie)])),
+            let award = PetStudyAward(completedSessions: 1, minutes: 25, points: 35)
+            present(.celebration(award, progress: UnlockProgress(balance: 50, earned: 35, ledger: PetPointsLedger())),
                     stroll: PetCoachStroll(startedAt: Date().addingTimeInterval(1), talkDuration: PetCoach.celebrationDuration))
         case "glance":
             glance(at: Date().addingTimeInterval(1))
@@ -221,11 +226,12 @@ final class PetCoachController: ObservableObject {
     // MARK: Overlay
 
     /// Sends the pet out to celebrate points just earned: a happy hop with
-    /// a heart and the points, plus what they unlock on a level-up. Plays
-    /// whenever the coach is on, nudges or not, since it never interrupts.
+    /// a heart, the points counting up and a bar filling toward the next
+    /// unlock. Plays whenever the coach is on, nudges or not, since it never
+    /// interrupts. The completion chime is the focus clock's own.
     func celebrate(_ award: PetStudyAward) {
         guard isRunning else { return }
-        present(.celebration(award), stroll: PetCoachStroll(startedAt: Date(), talkDuration: PetCoach.celebrationDuration))
+        present(.celebration(award, progress: unlockProgress(award)), stroll: PetCoachStroll(startedAt: Date(), talkDuration: PetCoach.celebrationDuration))
     }
 
     /// The silent look: the pet peeks out of the notch's edge and back.
