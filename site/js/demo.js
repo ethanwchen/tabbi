@@ -3,15 +3,15 @@
 // cheers beside the closed notch when it is done. Today keeps a checklist
 // for yesterday, today and tomorrow, Now Playing plays made-up songs
 // (silently), Party runs a shared round with made-up friends, AI Usage
-// counts made-up tokens, Anki reviews four cards, and the Closet dresses
-// the pet.
+// counts made-up tokens, Anki counts down a burst of reviews done in Anki,
+// and the Closet dresses the pet.
 //
 // The page already holds the whole panel as HTML, open, with tabs that
 // switch through radio buttons, so it works as a showcase without this
 // file. This script closes it, opens it the way the app does and makes the
 // controls work. It runs no strings as code, builds markup only from the
 // page's own templates and talks to no server: the pet's frames, the
-// days' lists, the songs and the cards come from JSON data blocks.
+// days' lists and the songs come from JSON data blocks.
 (() => {
   'use strict';
 
@@ -19,8 +19,7 @@
   const data = document.getElementById('demo-pets');
   const daysData = document.getElementById('demo-days');
   const tracksData = document.getElementById('demo-tracks');
-  const cardsData = document.getElementById('demo-cards');
-  if (!demo || !data || !daysData || !tracksData || !cardsData) return;
+  if (!demo || !data || !daysData || !tracksData) return;
 
   const notch = demo.querySelector('.notch');
   const face = notch.querySelector('.notch-face');
@@ -499,7 +498,6 @@
     restyle(players.notch, worn);
     restyle(players.dial, worn);
     restyle(players['party-me'], worn);
-    restyle(players.anki, worn);
     if (trying) petSub.dataset.trying = '';
     else delete petSub.dataset.trying;
     petSub.textContent = trying ? `Trying on ${trying.dataset.name}` : 'British Shorthair';
@@ -950,107 +948,155 @@
 
   // --- Anki -----------------------------------------------------------------
 
-  // Four cards: the front asks, a click or Space turns it over, and the
-  // grades move on. Again puts the card at the back of the queue, like
-  // Anki's learning step; Good and Easy make the pet hop. 1, 2 and 3 grade
-  // from the keyboard too.
-  const cards = JSON.parse(cardsData.textContent);
-  const flashcard = demo.querySelector('[data-card]');
-  const cardQ = demo.querySelector('[data-card-q]');
-  const cardQ2 = demo.querySelector('[data-card-q2]');
-  const cardA = demo.querySelector('[data-card-a]');
-  const cardHint = flashcard.querySelector('.card-hint');
-  const due = demo.querySelector('[data-due]');
-  const deckArc = demo.querySelector('.deck-ring .ring-arc');
-  const grade = {};
-  demo.querySelectorAll('[data-grade]').forEach((button) => { grade[button.dataset.grade] = button; });
-  const anki = { queue: cards.map((_, i) => i), flipped: false };
-
-  function renderCard() {
-    const left = anki.queue.length;
-    due.textContent = String(left);
-    deckArc.style.strokeDashoffset = String(100 - (100 * left) / cards.length);
-    const finished = left === 0;
-    flashcard.toggleAttribute('data-done', finished);
-    flashcard.toggleAttribute('data-flipped', anki.flipped || finished);
-    if (finished) {
-      cardQ2.textContent = `${cards.length} cards reviewed`;
-      cardA.textContent = 'All caught up!';
-      flashcard.title = `All caught up. ${PET} is proud of you`;
-      flashcard.setAttribute('aria-label', 'All caught up');
-    } else {
-      const [question, answer] = cards[anki.queue[0]];
-      // The front changes only while it is hidden, so the turn never shows it.
-      if (!anki.flipped) {
-        cardQ.textContent = question;
-        cardQ2.textContent = question;
-        cardA.textContent = answer;
-      }
-      flashcard.title = anki.flipped ? `${question} ${answer}` : 'Click or press Space to flip';
-      flashcard.setAttribute('aria-label', anki.flipped ? `Answer: ${answer}` : `${question} Flip the card`);
-    }
-    grade.show.hidden = anki.flipped || finished;
-    ['again', 'good', 'easy'].forEach((key) => { grade[key].hidden = !anki.flipped || finished; });
-    grade['again-deck'].hidden = !finished;
-  }
-
-  function flip() {
-    if (anki.flipped || !anki.queue.length) return;
-    anki.flipped = true;
-    renderCard();
-    announce(`Answer: ${cards[anki.queue[0]][1]}.`);
-  }
-
-  function answer(key) {
-    if (!anki.flipped || !anki.queue.length) return;
-    const card = anki.queue.shift();
-    if (key === 'again') anki.queue.push(card);
-    anki.flipped = false;
-    // The card turns back first, then shows the next question.
-    flashcard.removeAttribute('data-flipped');
-    const wait = reduceMotion.matches ? 0 : 260;
-    window.setTimeout(renderCard, wait);
-    grade.show.hidden = false;
-    ['again', 'good', 'easy'].forEach((k) => { grade[k].hidden = true; });
-    if (key !== 'again') hop(players.anki.el);
-    if (!anki.queue.length) {
-      window.setTimeout(() => {
-        players.anki.play('celebrate', () => players.anki.play('celebrate', () => players.anki.idle()));
-        confetti(flashcard, 18);
-      }, wait);
-      announce(`All caught up. ${PET} cheers.`);
-    } else {
-      announce(key === 'again' ? 'Again: it comes back at the end.' : `${anki.queue.length} left.`);
-    }
-    if (grade.show.contains(document.activeElement) || Object.values(grade).includes(document.activeElement)) {
-      (anki.queue.length ? grade.show : grade['again-deck']).focus();
-    }
-  }
-
-  flashcard.addEventListener('click', flip);
-  grade.show.addEventListener('click', () => { flip(); grade.good.focus(); });
-  ['again', 'good', 'easy'].forEach((key) => grade[key].addEventListener('click', () => answer(key)));
-  grade['again-deck'].addEventListener('click', () => {
-    anki.queue = cards.map((_, i) => i);
-    anki.flipped = false;
-    renderCard();
-    grade.show.focus();
-    announce(`${cards.length} cards due.`);
+  // Cards are reviewed in Anki itself, with the panel on top, so the demo
+  // never shows one. Study (or a deck's row) plays a short burst of
+  // reviews done in Anki instead: the header says Anki is opening, then
+  // the deck's counts tick down, Done ticks up, the ring fills and today's
+  // square darkens, the way the app follows AnkiConnect.
+  const QUEUES = ['new', 'learn', 'review'];
+  const BURST = 10;
+  const ankiPane = demo.querySelector('.pane-anki');
+  const dueCard = ankiPane.querySelector('[data-anki-due-card]');
+  const dueArc = dueCard.querySelector('.ring-arc');
+  const dueText = dueCard.querySelector('[data-anki-due]');
+  const doneText = dueCard.querySelector('[data-anki-done]');
+  const totalText = {};
+  QUEUES.forEach((q) => { totalText[q] = dueCard.querySelector(`[data-anki-total="${q}"]`); });
+  const ankiHead = ankiPane.querySelector('[data-anki-head]');
+  const ankiNote = ankiHead.querySelector('.decks-note');
+  const heat = [...ankiPane.querySelectorAll('.heat')];
+  const ankiFoot = ankiPane.querySelector('.anki-foot');
+  const studyButton = ankiPane.querySelector('[data-action="anki-study"]');
+  const studyCount = studyButton.querySelector('[data-anki-study-n]');
+  const decks = [...ankiPane.querySelectorAll('.deck-row')].map((row) => {
+    const cells = {};
+    const counts = {};
+    QUEUES.forEach((q) => {
+      cells[q] = row.querySelector(`[data-anki-count="${q}"]`);
+      counts[q] = Number(cells[q].textContent);
+    });
+    return { row, name: row.dataset.ankiDeck, cells, counts };
   });
+  const favorite = decks.find((deck) => deck.name === studyButton.dataset.ankiDeck);
+  const anki = { done: Number(doneText.textContent), busy: false, timer: 0, noteTimer: 0 };
 
-  // Space flips and grades Good, 1 to 3 grade, while Anki is the open tab.
-  document.addEventListener('keydown', (event) => {
-    if (!isOpen() || shownPane() !== 'anki' || event.metaKey || event.ctrlKey || event.altKey) return;
-    const target = event.target;
-    if (target.matches && target.matches('input[type="text"], button')) return;
-    const keys = { 1: 'again', 2: 'good', 3: 'easy' };
-    if (event.key === ' ') {
-      event.preventDefault();
-      if (anki.flipped) answer('good');
-      else flip();
-    } else if (keys[event.key]) {
-      answer(keys[event.key]);
+  const deckDue = (deck) => QUEUES.reduce((sum, q) => sum + deck.counts[q], 0);
+  // The top decks are every root deck here, so their sums are the totals.
+  const queueTotal = (q) => decks.reduce((sum, deck) => sum + deck.counts[q], 0);
+  const reviews = (n) => `${n} ${n === 1 ? 'review' : 'reviews'}`;
+
+  /** The app's heatmap shades: four, scaled to the busiest day, and at
+      least one for any day with reviews. */
+  function renderHeat() {
+    heat[heat.length - 1].dataset.count = String(anki.done);
+    const counts = heat.map((cell) => Number(cell.dataset.count));
+    const busiest = Math.max(...counts);
+    heat.forEach((cell, i) => {
+      const n = counts[i];
+      cell.dataset.level = String(n ? Math.min(Math.max(Math.ceil((n / busiest) * 4), 1), 4) : 0);
+    });
+    heat[heat.length - 1].title = `Today: ${reviews(anki.done)}`;
+  }
+
+  function renderAnki() {
+    let due = 0;
+    QUEUES.forEach((q) => {
+      const n = queueTotal(q);
+      due += n;
+      totalText[q].textContent = String(n);
+      totalText[q].toggleAttribute('data-zero', n === 0);
+    });
+    dueText.textContent = String(due);
+    doneText.textContent = String(anki.done);
+    const target = anki.done + due;
+    dueArc.style.strokeDashoffset = String(target ? 100 - (100 * anki.done) / target : 0);
+    dueCard.toggleAttribute('data-done', due === 0);
+    dueCard.title = due ? `${anki.done} reviewed of ${target} today` : `All ${anki.done} done for today`;
+    decks.forEach((deck) => {
+      QUEUES.forEach((q) => {
+        deck.cells[q].textContent = String(deck.counts[q]);
+        deck.cells[q].toggleAttribute('data-zero', deck.counts[q] === 0);
+      });
+      const { new: n, learn, review } = deck.counts;
+      deck.row.title = deckDue(deck) ? `Review ${deck.name} in Anki: ${n} new, ${learn} learning, ${review} review` : `Open ${deck.name} in Anki. Nothing is due there today`;
+    });
+    const favoriteDue = deckDue(favorite);
+    studyCount.textContent = String(favoriteDue);
+    studyCount.hidden = favoriteDue === 0;
+    studyButton.title = favoriteDue ? `Review ${favorite.name} in Anki: ${favoriteDue} due` : `Open ${favorite.name} in Anki. Nothing is due there today`;
+    renderHeat();
+  }
+
+  /** The decks card's header: "Top decks", or what a click is doing. */
+  function note(kind, text, holdMs) {
+    window.clearTimeout(anki.noteTimer);
+    if (kind) ankiHead.dataset.note = kind;
+    else delete ankiHead.dataset.note;
+    ankiNote.textContent = text || 'Top decks';
+    if (holdMs) anki.noteTimer = window.setTimeout(() => note(null), holdMs);
+  }
+
+  /** One card reviewed in Anki: learning cards come first, then a mix of
+      reviews and new cards in proportion to what is left. */
+  function reviewOne(deck) {
+    const { counts } = deck;
+    let q = 'learn';
+    if (!counts.learn) q = Math.random() * (counts.new + counts.review) < counts.new ? 'new' : 'review';
+    counts[q] -= 1;
+    anki.done += 1;
+    renderAnki();
+  }
+
+  function finishBurst(deck, n) {
+    anki.busy = false;
+    const left = QUEUES.reduce((sum, q) => sum + queueTotal(q), 0);
+    if (left === 0) {
+      note('done', 'All caught up for today', 3200);
+      confetti(dueCard, 18);
+      announce(`All caught up: ${anki.done} cards done today.`);
+    } else {
+      note('review', `${reviews(n)} in ${deck.name}`, 2200);
+      announce(`${reviews(n)} done in Anki. ${left} due, ${anki.done} done.`);
     }
+  }
+
+  function studyDeck(deck) {
+    if (anki.busy) return;
+    const due = deckDue(deck);
+    if (!due) {
+      note('done', `Nothing due in ${deck.name} today`, 2200);
+      announce(`Nothing due in ${deck.name} today.`);
+      return;
+    }
+    anki.busy = true;
+    note('opening', 'Opening Anki…');
+    announce(`Opening ${deck.name} in Anki.`);
+    const n = Math.min(BURST, due);
+    anki.timer = window.setTimeout(() => {
+      note('review', 'Review in Anki, Tabbi keeps count');
+      if (reduceMotion.matches) {
+        for (let i = 0; i < n; i += 1) reviewOne(deck);
+        anki.timer = window.setTimeout(() => finishBurst(deck, n), 1200);
+        return;
+      }
+      let i = 0;
+      const step = () => {
+        reviewOne(deck);
+        i += 1;
+        anki.timer = window.setTimeout(i < n ? step : () => finishBurst(deck, n), i < n ? 180 : 900);
+      };
+      anki.timer = window.setTimeout(step, 500);
+    }, 700);
+  }
+
+  decks.forEach((deck) => deck.row.addEventListener('click', () => studyDeck(deck)));
+  studyButton.addEventListener('click', () => studyDeck(favorite));
+  ankiPane.querySelector('[data-action="anki-sync"]').addEventListener('click', () => {
+    ankiFoot.removeAttribute('data-busy');
+    void ankiFoot.offsetWidth;
+    ankiFoot.dataset.busy = '';
+    window.setTimeout(() => ankiFoot.removeAttribute('data-busy'), 720);
+    announce('Synced with AnkiWeb.');
   });
 
   // --- tabs and the chips under the scene ---------------------------------
@@ -1140,7 +1186,7 @@
   renderPlaying();
   renderCloset();
   renderAI(true);
-  renderCard();
+  renderAnki();
   render();
   renderControls();
   setState('closed');

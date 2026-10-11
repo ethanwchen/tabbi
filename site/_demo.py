@@ -59,13 +59,16 @@ def icon(name, cls='ico'):
 
 
 # The ring's arc is drawn with pathLength 100, so demo.js sets how much of it
-# shows as a plain percentage of time left.
-def ring(cls, size, stroke):
+# shows as a plain percentage of time left. `filled` draws a ring that
+# starts part way, as a percentage, through the SVG's own dash offset (the
+# CSP refuses style attributes).
+def ring(cls, size, stroke, filled=None):
     r = (size - stroke) / 2
     c = size / 2
+    offset = '' if filled is None else f' stroke-dashoffset="{100 - filled:.1f}"'
     return (f'<svg class="{cls}" viewBox="0 0 {size} {size}" aria-hidden="true">'
             f'<circle class="ring-track" cx="{c:g}" cy="{c:g}" r="{r:g}" stroke-width="{stroke}"/>'
-            f'<circle class="ring-arc" cx="{c:g}" cy="{c:g}" r="{r:g}" stroke-width="{stroke}" pathLength="100"/></svg>')
+            f'<circle class="ring-arc" cx="{c:g}" cy="{c:g}" r="{r:g}" stroke-width="{stroke}" pathLength="100"{offset}/></svg>')
 
 
 TIMER_PANE = f'''
@@ -429,41 +432,76 @@ AI_PANE = f"""
                 </div>
               </div>"""
 
-# A tiny Anki review: one friendly deck, a card that flips on a click or
-# Space, and the grades that move on. In the app this is your own Anki,
-# through AnkiConnect; here the four cards ride in a data block.
-CARDS = [
-    ['What is the capital of Japan?', 'Tokyo'],
-    ['What is the capital of Canada?', 'Ottawa'],
-    ['What is the capital of Australia?', 'Canberra'],
-    ['What is the capital of Kenya?', 'Nairobi'],
+# Anki as the app's demo shows it: the cards due today in a ring with the
+# new / learning / review split and what is done, the decks with the most
+# due, the streak and the last ten days. Reviewing happens in Anki itself,
+# with the panel on top, so demo.js only plays a short burst of reviews
+# done there: the counts tick down and Done ticks up.
+ANKI_DECKS = [  # (name, new, learning, review); the first is the pinned favorite
+    ('Spanish verbs', 8, 3, 38),
+    ('Biology', 6, 2, 28),
+    ('World history', 4, 1, 20),
+    ('Chemistry', 2, 2, 14),
 ]
+ANKI_DONE = 46
+ANKI_STREAK = 12
+# Reviews on each of the last ten days, today last (its count is Done).
+ANKI_HISTORY = [70, 140, 120, 95, 150, 105, 125, 90, 135, ANKI_DONE]
+ANKI_QUEUES = [('new', 'New'), ('learn', 'Learning'), ('review', 'Review')]
+ANKI_TOTALS = {key: sum(deck[i + 1] for deck in ANKI_DECKS) for i, (key, _) in enumerate(ANKI_QUEUES)}
+ANKI_DUE = sum(ANKI_TOTALS.values())
+
+
+def heat_level(count, busiest):
+    """The app's AnkiFormat.heatLevels: four shades scaled to the busiest day,
+    and at least one for any day with reviews."""
+    return min(max(-(-count * 4 // busiest), 1), 4) if count else 0
+
+
+def anki_queue(key, title):
+    count = ANKI_TOTALS[key]
+    return (f'<p class="queue" data-tone="{key}"><span class="queue-name">{title}</span>'
+            f'<span class="queue-n" data-anki-total="{key}">{count}</span></p>')
+
+
+def anki_deck(name, new, learn, review, favorite):
+    star = f'<span class="deck-star" title="Pinned to the Study button">{icon("star")}</span>' if favorite else ''
+    counts = ''.join(f'<span class="deck-n" data-tone="{key}" data-anki-count="{key}">{n}</span>'
+                     for (key, _), n in zip(ANKI_QUEUES, (new, learn, review)))
+    return (f'<li><button type="button" class="deck-row" data-anki-deck="{name}" '
+            f'title="Review {name} in Anki: {new} new, {learn} learning, {review} review" disabled>'
+            f'<span class="deck-name">{name}</span>{star}{icon("play", "ico deck-play")}{counts}</button></li>')
+
+
+def anki_day(count, busiest, days_ago):
+    when = 'Today' if days_ago == 0 else 'Yesterday' if days_ago == 1 else f'{days_ago} days ago'
+    today = ' data-today' if days_ago == 0 else ''
+    return (f'<span class="heat" data-count="{count}" data-level="{heat_level(count, busiest)}"{today} '
+            f'title="{when}: {count} reviews"></span>')
+
 
 ANKI_PANE = f"""
               <div class="pane pane-anki" data-pane="anki">
-                <div class="n-card deck">
-                  <div class="deck-dial" title="Cards due today">
-                    {ring('deck-ring', 80, 7)}
-                    <p class="deck-read"><span class="deck-due" data-due>{len(CARDS)}</span><span class="deck-cap">due</span></p>
+                <div class="n-card due-card" data-anki-due-card title="{ANKI_DONE} reviewed of {ANKI_DONE + ANKI_DUE} today">
+                  <div class="due-dial">
+                    {ring('due-ring', 92, 7, 100 * ANKI_DONE / (ANKI_DONE + ANKI_DUE))}
+                    <p class="due-read"><span class="due-n" data-anki-due>{ANKI_DUE}</span><span class="due-cap">due</span></p>
+                    <p class="due-read due-all">{icon('check', 'ico due-check')}<span class="due-cap">All done</span></p>
                   </div>
-                  <p class="deck-name">World Capitals</p>
-                  <p class="deck-streak" title="Days in a row with your reviews done">{icon('flame')}<span>12-day streak</span></p>
-                  <span class="pet pet-corner" data-pet="anki" data-look="plain" title="Mochi cheers you on"></span>
+                  <div class="queues">
+                    {''.join(anki_queue(key, title) for key, title in ANKI_QUEUES)}
+                    <p class="queue-done"><span>Done</span><span data-anki-done>{ANKI_DONE}</span></p>
+                  </div>
                 </div>
-                <div class="review">
-                  <button type="button" class="flashcard" data-card aria-label="Flip the card" title="Click or press Space to flip" disabled>
-                    <span class="card-inner">
-                      <span class="face face-front"><span class="card-q" data-card-q>{CARDS[0][0]}</span><span class="card-hint">Click or press Space</span></span>
-                      <span class="face face-back"><span class="card-q-small" data-card-q2>{CARDS[0][0]}</span><span class="card-a" data-card-a>{CARDS[0][1]}</span></span>
-                    </span>
-                  </button>
-                  <div class="grades" data-grades>
-                    <button type="button" class="grade grade-show" data-grade="show" title="Show the answer (Space)" disabled>Show answer</button>
-                    <button type="button" class="grade" data-grade="again" data-tone="again" title="Again: see it once more today (1)" hidden disabled>Again<span>1m</span></button>
-                    <button type="button" class="grade" data-grade="good" data-tone="good" title="Good: next time tomorrow (2 or Space)" hidden disabled>Good<span>1d</span></button>
-                    <button type="button" class="grade" data-grade="easy" data-tone="easy" title="Easy: next time in 4 days (3)" hidden disabled>Easy<span>4d</span></button>
-                    <button type="button" class="grade grade-show" data-grade="again-deck" title="Review the four cards again" hidden disabled>Review again</button>
-                  </div>
+                <div class="n-card decks">
+                  <p class="decks-head" data-anki-head><span class="decks-spin"></span>{icon('cards', 'ico note-review')}{icon('check-fill', 'ico note-done')}<span class="decks-note">Top decks</span></p>
+                  <ul class="deck-rows" aria-label="Top decks">{''.join(anki_deck(*deck, i == 0) for i, deck in enumerate(ANKI_DECKS))}</ul>
+                </div>
+                <div class="anki-foot">
+                  <p class="streak" title="Days in a row with at least one review">{icon('flame')}<span>{ANKI_STREAK}-day streak</span></p>
+                  <p class="heatmap" data-anki-heat title="Reviews on each of the last ten days, today outlined">{''.join(anki_day(n, max(ANKI_HISTORY), len(ANKI_HISTORY) - 1 - i) for i, n in enumerate(ANKI_HISTORY))}</p>
+                  <button type="button" class="icon-btn" data-action="anki-sync" title="Sync with AnkiWeb" aria-label="Sync with AnkiWeb" disabled>{icon('refresh')}</button>
+                  <button type="button" class="study" data-action="anki-study" data-anki-deck="{ANKI_DECKS[0][0]}" title="Review {ANKI_DECKS[0][0]} in Anki: {sum(ANKI_DECKS[0][1:])} due" disabled>{icon('play')}<span class="study-label">Study {ANKI_DECKS[0][0]}</span><span class="study-n" data-anki-study-n>{sum(ANKI_DECKS[0][1:])}</span></button>
                 </div>
               </div>"""
 
@@ -537,10 +575,9 @@ def data_block(block_id, data):
 
 
 def demo_data():
-    """pets.json, Today's days, Now Playing's songs and the Anki cards, minified, as data blocks for demo.js. The
+    """pets.json, Today's days and Now Playing's songs, minified, as data blocks for demo.js. The
     CSP lets the page load nothing but its own files, and a data block is
     never run, so they ride along in the page instead of a fetch the CSP
     would stop."""
     pets = json.loads((HERE / 'img' / 'demo' / 'pets.json').read_text())
-    return (data_block('demo-pets', pets) + data_block('demo-days', DAYS) + data_block('demo-tracks', TRACKS)
-            + data_block('demo-cards', CARDS))
+    return data_block('demo-pets', pets) + data_block('demo-days', DAYS) + data_block('demo-tracks', TRACKS)

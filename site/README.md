@@ -47,7 +47,7 @@ The build stops with an error when:
 - a page has a script other than the demo's own file, an inline event handler, or a JSON-LD or JSON data block that does not parse;
 - `demo.js` runs strings as code (`eval`, `Function`, `innerHTML` and the like) or could reach the network (`fetch`, `XMLHttpRequest`, `WebSocket` and the like);
 - a form posts to an origin the CSP's `form-action` does not allow;
-- a page and everything it loads (its stylesheets, script, fonts and images, counting both sizes of a `srcset` and every pet look the demo can show) passes 500 KB, which keeps the home page under about 600 KB (the home page is about 275 KB, the demo's markup, data, stylesheet, script and sprites included);
+- a page and everything it loads (its stylesheets, script, fonts and images, counting both sizes of a `srcset` and every pet look the demo can show) passes 500 KB, which keeps the home page under about 600 KB (the home page is about 285 KB, the demo's markup, data, stylesheet, script and sprites included);
 - a page has a `<video>` or `<audio>` (the CSP allows no media);
 - a page has more than one big Download button;
 - any output file is over 20 MB (Cloudflare Pages refuses files over 25 MB).
@@ -145,14 +145,16 @@ Party is the app's demo party: Mochi (you, the host) with Maya and Priya on a st
 Start runs a shared 25 minute round sped up to 8 seconds, everyone's status follows it, and at the end the pets cheer under a "Great job, team!" banner with confetti; Invite brings Leo into the party with a hop.
 AI Usage shows the app's demo figures: the 5-hour and weekly limits as rings, today's tokens by model and the last 7 days, for Claude Code or Codex (a switch in the footer).
 While the tab is open the tokens tick up every couple of seconds and the limits follow, turning the ring yellow from 70% as the app does.
-The Anki tab reviews four World Capitals cards (`CARDS` in `_demo.py`): a click or Space turns the card over, and Again, Good and Easy (or 1, 2 and 3, and Space for Good) move on, with Again sending the card to the back of the queue.
-Good and Easy make Mochi hop; the last card ends in "All caught up!", a cheer and confetti.
+The Anki tab mirrors the app's Anki panel with its demo figures (`ANKI_DECKS`, `ANKI_DONE` and `ANKI_HISTORY` in `_demo.py`): 128 cards due in a ring with the new, learning and review split and Done, the top four decks with their counts, the streak, the last ten days and a Study button for the pinned deck.
+People review in Anki itself with the panel on top, so the demo never shows a card.
+Study, or a click on a deck, plays a short burst of reviews done in Anki instead: the header says "Opening Anki..." and then "Review in Anki, Tabbi keeps count", while the deck's counts tick down, Done ticks up, the ring fills and today's square darkens.
+Clearing every deck turns the ring green with "All done" and throws confetti; Sync only spins.
 A row of chips under the scene (Timer, Today, Music, Party, AI Usage, Flashcards) opens the notch on each tab; they are labels for the tabs' radio buttons, so they switch tabs without JavaScript too.
 Limited progress bars are SVG lines rather than styled elements, since the CSP refuses `style` attributes; the pets in the tiles and the big preview are scaled with CSS `zoom` (2x and 3x), which keeps the sprite pixels whole.
 
 - `_demo.py` writes the markup: the whole panel, standing open, with radio buttons as its tabs.
   Without JavaScript that is the showcase: the tabs and the Closet's sections switch with CSS alone, Today's checkboxes (real ones) still check, and the other controls are disabled.
-  It also puts `img/demo/pets.json`, Today's three days (`DAYS`), Now Playing's songs (`TRACKS`) and the Anki cards (`CARDS`) into the page as `<script type="application/json">` data blocks, since the CSP allows no fetch.
+  It also puts `img/demo/pets.json`, Today's three days (`DAYS`) and Now Playing's songs (`TRACKS`) into the page as `<script type="application/json">` data blocks, since the CSP allows no fetch.
   New rows are cloned from `<template>` elements in the markup, so the script never builds markup from strings.
 - `demo.css` draws it, loaded only by the home page.
   Inside the notch everything is in em, where 1em is 10 of the app's points, so the panel keeps the app's proportions (536 x 236 pt, 20 pt insets) at any scale: 12.5 px per em on wide screens, 11 on tablets and 10 on phones, where the panel spans the scene and the Timer, Party, AI Usage and Anki stack.
@@ -165,10 +167,9 @@ Limited progress bars are SVG lines rather than styled elements, since the CSP r
   It is plain JavaScript with no framework and no dependencies, loaded with `defer`, and a pet moves only while it can be seen: the demo is on screen and its tab, Closet section or closed notch is showing.
   AI Usage ticks only while its tab is open and the demo is on screen.
   Status changes (started, paused, 10 seconds left, done) are read out through an `aria-live` region.
-  Under `prefers-reduced-motion` state changes are instant, the pet holds one frame, the flash card swaps faces without turning and there is no confetti.
-  The card's faces trade places at the halfway mark of the turn rather than relying on `backface-visibility`, which WebKit ignores inside a button.
+  Under `prefers-reduced-motion` state changes are instant, the pet holds one frame, an Anki burst lands its counts at once and there is no confetti.
 
-Check it in WebKit at 1440, 1024, 834, 390 and 320 px wide after a change: open, switch tabs, run the Timer to the end, check and add a task and step through the days, try on and wear an outfit, play, skip and like a song, run a Party round and invite Leo, switch AI Usage's source, review all four cards, keyboard (Safari moves between buttons with Option-Tab), reduced motion, no JavaScript, no console errors and no horizontal scroll.
+Check it in WebKit at 1440, 1024, 834, 390 and 320 px wide after a change: open, switch tabs, run the Timer to the end, check and add a task and step through the days, try on and wear an outfit, play, skip and like a song, run a Party round and invite Leo, switch AI Usage's source, study until every Anki deck is done, keyboard (Safari moves between buttons with Option-Tab), reduced motion, no JavaScript, no console errors and no horizontal scroll.
 Playwright's element screenshots inject a `<style>` that the CSP refuses; that console error comes from the test tool, not the page.
 The site scrolls smoothly, so Playwright's own scroll-into-view can slide the notch out from under its pointer and close it; tests should set `document.documentElement.style.scrollBehavior = 'auto'` and wait for the open spring before clicking inside the panel.
 
