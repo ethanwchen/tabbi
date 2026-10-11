@@ -251,6 +251,18 @@ SUPPORT = f'''
           </ul>
           <p>What you send goes to the provider you picked, under its terms. The <a href="/privacy#ai">privacy policy</a> says exactly what is sent.</p>""", 'ai')}
 
+{faq('How do I set up Claude? (optional)', """          <p>Ask AI, Plan my day, Wrap up and Refine can use Claude through Claude Code, Anthropic's <code>claude</code> command, on your own Claude plan.
+            It is optional: everything else works without it, and the App Store edition uses your own API key or Ollama instead.</p>
+          <ol>
+            <li>Open <strong>Terminal</strong> (in Applications &gt; Utilities).</li>
+            <li>Paste this line and press Return:<br><code>curl -fsSL https://claude.ai/install.sh | bash &amp;&amp; ~/.local/bin/claude auth login</code></li>
+            <li>It installs Claude Code, then opens a sign-in page in your browser. Sign in there.</li>
+            <li>In Tabbi, pick <strong>Claude Code</strong> in <strong>Settings &gt; Connections &gt; AI</strong>.</li>
+          </ol>
+          <p>If Terminal later says <code>command not found: claude</code>, the folder the installer uses is not on your PATH yet.
+            Open a new Terminal window, or type <code>~/.local/bin/claude</code> instead of <code>claude</code>.</p>
+          <p><strong>Settings &gt; Connections</strong> can walk you through the same steps, and <a href="https://code.claude.com/docs/en/setup">Claude Code's setup guide</a> has other ways to install it.</p>""", 'claude')}
+
 {faq('How do I update or uninstall Tabbi?', f"""          <p>Tabbi checks for updates once a day and installs them in a few seconds. To check now, right-click the notch and choose <strong>Check for Updates</strong>.</p>
           <p>The Mac App Store edition is updated by the App Store instead.</p>
           <p>To uninstall, quit Tabbi and drag it from Applications to the Trash. Your tabs, tasks and settings stay in <code>~/Library/Application Support/Tabbi</code> in case you come back; delete that folder to remove them too.

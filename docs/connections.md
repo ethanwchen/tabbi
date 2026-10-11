@@ -41,6 +41,8 @@ So Tabbi copies the code 2055492159, opens Anki and shows the three clicks.
 
 Claude's setup needs Terminal once, because the official installer is a single line.
 The walkthrough copies that line, opens Terminal and says exactly what to press; signing in uses `claude auth login`, which opens Claude's own sign-in page in the browser, so Tabbi never sees a password or key.
+No copied line relies on `claude` being on the PATH, since the installer puts it in `~/.local/bin`, which a fresh Terminal window often does not search.
+The setup line is `curl -fsSL https://claude.ai/install.sh | bash && ~/.local/bin/claude auth login`, so the sign-in runs right after a successful install, and the sign-in walkthrough runs the `claude` Tabbi found by its full path, quoted for the shell.
 
 ## Something not working?
 
