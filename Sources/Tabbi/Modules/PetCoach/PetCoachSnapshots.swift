@@ -47,6 +47,13 @@ enum PetCoachSnapshots {
         let allOwned = PetStudyAward(completedSessions: 1, minutes: 50, points: 60)
         let complete = PetCoachScene(profile: profile, stroll: party, line: .celebration(allOwned, progress: nil))
         shots.append(("coach-session-end-all-owned", frozen(complete, party.arrivesAt.addingTimeInterval(2))))
+        // A surprise gift under the bar: bonus points, and a rare fur.
+        let gifts: [(String, SurpriseGift)] = [("coach-gift", .bonusPoints(15)), ("coach-gift-fur", .rareFur(RareFur.all[0]))]
+        for (name, gift) in gifts {
+            let line = PetCoachScene(profile: profile, stroll: party,
+                                     line: .celebration(session, progress: toNext, gift: gift))
+            shots.append((name, frozen(line, party.arrivesAt.addingTimeInterval(2))))
+        }
         // Cat wisdom after the celebration: an ordinary day's line, and the
         // longest comeback and milestone lines, to check three lines fit.
         let wisdoms: [(String, CatWisdomLine)] = [

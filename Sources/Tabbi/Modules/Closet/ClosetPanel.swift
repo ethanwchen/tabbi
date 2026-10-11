@@ -1191,6 +1191,7 @@ private struct ClosetBuyFreezeButton: View {
 
 private struct ClosetLook: View {
     @ObservedObject var store: ClosetStore
+    @Environment(\.rareFurs) private var rareFurs
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.m) {
@@ -1229,6 +1230,18 @@ private struct ClosetLook: View {
                     ForEach(PetCloset.furSwatches, id: \.self) { color in
                         ClosetSwatch(color: color, isSelected: store.closet.furTint == color) {
                             store.tintFur(color)
+                        }
+                    }
+                }
+            }
+            // Rare furs come only as surprise gifts, so the row shows once one is found.
+            if !rareFurs.isEmpty {
+                row("Rare") {
+                    HStack(spacing: Theme.Spacing.s - Theme.Spacing.xxs) {
+                        ForEach(rareFurs) { fur in
+                            ClosetSwatch(color: fur.color, isSelected: store.closet.furTint == fur.color) {
+                                store.tintFur(fur.color)
+                            }
                         }
                     }
                 }

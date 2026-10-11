@@ -26,6 +26,9 @@ final class PetCoachController: ObservableObject {
     private let profile: () -> PetProfile
     /// The bar toward the next unlock right after an award was credited.
     private let unlockProgress: (PetStudyAward) -> UnlockProgress?
+    /// Rolls for a surprise gift for the session behind an award and
+    /// applies it (`SurpriseGiftKeeper`).
+    private let gift: (PetStudyAward) -> SurpriseGift?
     /// The pet's streak and focus totals, for Cat wisdom's milestones.
     private let studyStats: () -> (streak: StudyStreak, progress: PetMilestoneProgress)?
     /// Settings › General › Cat wisdom.
@@ -60,6 +63,7 @@ final class PetCoachController: ObservableObject {
         runMode: RunMode,
         profile: @escaping () -> PetProfile,
         unlockProgress: @escaping (PetStudyAward) -> UnlockProgress? = { _ in nil },
+        gift: @escaping (PetStudyAward) -> SurpriseGift? = { _ in nil },
         studyStats: @escaping () -> (streak: StudyStreak, progress: PetMilestoneProgress)? = { nil },
         wisdomEnabled: @escaping () -> Bool = { true },
         lines: @escaping () -> [PetCoachMessage] = { PetCoachMessages.standard },
@@ -69,6 +73,7 @@ final class PetCoachController: ObservableObject {
     ) {
         self.profile = profile
         self.unlockProgress = unlockProgress
+        self.gift = gift
         self.studyStats = studyStats
         self.wisdomEnabled = wisdomEnabled
         kitLines = lines
@@ -236,12 +241,16 @@ final class PetCoachController: ObservableObject {
 
     /// Sends the pet out to celebrate points just earned: a happy hop with
     /// a heart, the points counting up and a bar filling toward the next
-    /// unlock, then now and then a Cat wisdom line. Plays whenever the coach
-    /// is on, nudges or not, since it never interrupts. The completion chime
-    /// is the focus clock's own.
+    /// unlock, now and then a surprise gift, then now and then a Cat wisdom
+    /// line. Plays whenever the coach is on, nudges or not, since it never
+    /// interrupts. The completion chime is the focus clock's own.
     func celebrate(_ award: PetStudyAward) {
         guard isRunning else { return }
-        let line = PetCoachLine.celebration(award, progress: unlockProgress(award), wisdom: wisdom(after: award, at: Date()))
+        // The bar first: it shows what the session earned, before a gift's
+        // bonus points land on the balance.
+        let progress = unlockProgress(award)
+        let line = PetCoachLine.celebration(award, progress: progress, wisdom: wisdom(after: award, at: Date()),
+                                            gift: gift(award))
         present(line, stroll: PetCoachStroll(startedAt: Date(), talkDuration: line.talkDuration))
     }
 

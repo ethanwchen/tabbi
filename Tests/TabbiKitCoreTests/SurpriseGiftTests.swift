@@ -159,4 +159,60 @@ final class SurpriseGiftTests: XCTestCase {
             XCTAssertFalse(PetCloset.furSwatches.contains(fur.color), fur.name)
         }
     }
+
+    func testAnAwardRollsOnlyForCompletedSessionsAtOneSessionsLength() {
+        var state = SurpriseGiftState()
+        var win = FixedRandom(fraction: 0.0)
+        let stopped = PetStudyAward(completedSessions: 0, minutes: 40, points: 30)
+        XCTAssertNil(state.roll(after: stopped, at: time(day: 0), calendar: calendar, using: &win))
+        // Two 10 minute sessions credited together are two short sessions.
+        let short = PetStudyAward(completedSessions: 2, minutes: 20, points: 30)
+        XCTAssertNil(state.roll(after: short, at: time(day: 0), calendar: calendar, using: &win))
+        XCTAssertEqual(state.dryRolls, 0)
+        let session = PetStudyAward(completedSessions: 1, minutes: 25, points: 35)
+        XCTAssertNotNil(state.roll(after: session, at: time(day: 0), calendar: calendar, using: &win))
+    }
+
+    func testBonusPointsAddToTheBalanceAsEarnedPoints() {
+        var closet = PetCloset(save: PetSave(profile: .starter(.cat)))
+        let before = closet.balance
+        closet.receiveGift(points: 15)
+        XCTAssertEqual(closet.balance, before + 15)
+        closet.receiveGift(points: -5)
+        XCTAssertEqual(closet.balance, before + 15)
+    }
+
+    func testEveryGiftMessageIsOneShortLine() {
+        let gifts: [SurpriseGift] = SurpriseGiftRules.bonusPoints.map { .bonusPoints($0) }
+            + RareFur.all.map { .rareFur($0) } + [.seasonMinutes(eventID: "halloween", minutes: 15)]
+        for gift in gifts {
+            XCTAssertLessThanOrEqual(gift.message.count, 40, gift.message)
+        }
+    }
+}
+
+final class SurpriseGiftStateFileTests: XCTestCase {
+    func testStateRoundTripsThroughItsVersionedFile() throws {
+        var state = SurpriseGiftState()
+        var win = FixedRandom(fraction: 0.0)
+        _ = state.roll(sessionEnd: Date(timeIntervalSince1970: 1_800_000_000), focusMinutes: 25, using: &win)
+        let data = try state.encoded()
+        XCTAssertEqual(VersionedJSON.version(of: data), SurpriseGiftState.schema.current)
+        XCTAssertEqual(try SurpriseGiftState.decode(data), state)
+    }
+
+    func testRareFurSwatchesHaveTheirNames() {
+        for fur in RareFur.all {
+            XCTAssertEqual(PetCloset.name(ofSwatch: fur.color), fur.name)
+        }
+    }
+}
+
+final class SurpriseGiftDemoTests: XCTestCase {
+    func testDemoHasRareFursButNoHistoryOrPity() {
+        let demo = SurpriseGiftState.demo
+        XCTAssertEqual(demo.rareFurs.count, 2)
+        XCTAssertTrue(demo.history.isEmpty)
+        XCTAssertEqual(demo.dryRolls, 0)
+    }
 }

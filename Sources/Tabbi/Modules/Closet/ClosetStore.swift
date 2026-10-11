@@ -206,6 +206,12 @@ final class ClosetStore: ObservableObject {
         return award
     }
 
+    /// Credits a surprise gift's bonus points (`SurpriseGiftKeeper`).
+    func receiveGift(points: Int) {
+        closet.receiveGift(points: points)
+        persist()
+    }
+
     /// `~/Library/Application Support/<edition>/Pet/pet.json`.
     static func saveURL(in storage: EditionStorage) -> URL {
         storage.file("pet.json", in: "Pet")

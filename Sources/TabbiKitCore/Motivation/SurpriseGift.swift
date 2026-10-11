@@ -35,13 +35,26 @@ public enum SurpriseGift: Hashable, Sendable {
     /// Focused minutes added toward the seasonal event running now.
     case seasonMinutes(eventID: String, minutes: Int)
 
-    /// The cat's line in the bubble when it brings the gift.
+    /// What the gift is, short enough for one line in the coach's bubble.
     public var message: String {
         switch self {
-        case .bonusPoints(let points): "I found \(points) bonus points for you."
-        case .rareFur(let fur): "I found a rare fur color: \(fur.name)."
-        case .seasonMinutes(_, let minutes): "I brought back \(minutes) bonus minutes for the event."
+        case .bonusPoints(let points): "A gift: \(points) bonus points"
+        case .rareFur(let fur): "A gift: the rare \(fur.name) fur"
+        case .seasonMinutes(_, let minutes): "A gift: \(minutes) min toward the event"
         }
+    }
+}
+
+/// A gift as the cat hands it over, with the moment it came back. This is
+/// what the app publishes, so whatever shows the pet (the coach's bubble,
+/// the pet returning from an adventure) can show what it carries.
+public struct SurpriseGiftDelivery: Hashable, Sendable {
+    public var gift: SurpriseGift
+    public var date: Date
+
+    public init(gift: SurpriseGift, date: Date) {
+        self.gift = gift
+        self.date = date
     }
 }
 
@@ -104,6 +117,13 @@ public struct SurpriseGiftState: Codable, Hashable, Sendable {
         history = []
     }
 
+    /// Two rare furs found, so a demo shows the Closet's Rare row.
+    public static var demo: SurpriseGiftState {
+        var state = SurpriseGiftState()
+        state.rareFursFound = Array(RareFur.all.prefix(2).map(\.id))
+        return state
+    }
+
     /// The day of the last gift, for the daily cap.
     public var lastGiftDay: PlannerDayKey? { history.last?.day }
 
@@ -147,6 +167,21 @@ public struct SurpriseGiftState: Codable, Hashable, Sendable {
         return gift
     }
 
+    /// Rolls for the focus session behind `award`, credited at `date`.
+    /// Only an award for sessions that ran to their end rolls (an early
+    /// Stop never does), at the length of one of those sessions.
+    public mutating func roll<G: RandomNumberGenerator>(
+        after award: PetStudyAward,
+        at date: Date,
+        activeSeasonID: String? = nil,
+        calendar: Calendar = .current,
+        using generator: inout G
+    ) -> SurpriseGift? {
+        guard award.completedSessions > 0 else { return nil }
+        return roll(sessionEnd: date, focusMinutes: award.minutes / award.completedSessions,
+                    activeSeasonID: activeSeasonID, calendar: calendar, using: &generator)
+    }
+
     /// Bonus points most of the time; a rare fur (while any is left) or
     /// seasonal minutes (while an event runs) now and then.
     private func pickGift<G: RandomNumberGenerator>(activeSeasonID: String?, using generator: inout G) -> SurpriseGift {
@@ -164,6 +199,18 @@ public struct SurpriseGiftState: Codable, Hashable, Sendable {
             draw -= option.weight
         }
         return options[0].gift
+    }
+
+    /// The state as its versioned JSON file (`schemaVersion` stamped).
+    public func encoded() throws -> Data {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        return try Self.schema.encode(self, using: encoder)
+    }
+
+    /// Reads a file written by `encoded()`, running any migrations.
+    public static func decode(_ data: Data) throws -> SurpriseGiftState {
+        try schema.decode(SurpriseGiftState.self, from: data)
     }
 
     public init(from decoder: Decoder) throws {
