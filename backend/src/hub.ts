@@ -1483,13 +1483,13 @@ export class Hub extends DurableObject<Env> {
 
   /** The ids of the entitlements `code` holds at `now`, in id order. */
   private activeEntitlements(code: string, now: number): string[] {
-    return this.badgeRows([code], now).map((r) => r.entitlement);
+    return this.activeEntitlementRows([code], now).map((r) => r.entitlement);
   }
 
   /** The badges each of `codes` shows to others; users without one are left out of the map. */
   private badgesByCode(codes: string[], now: number): Map<string, string[]> {
     const held = new Map<string, string[]>();
-    for (const r of this.badgeRows(codes, now)) held.set(r.code, [...(held.get(r.code) ?? []), r.entitlement]);
+    for (const r of this.activeEntitlementRows(codes, now)) held.set(r.code, [...(held.get(r.code) ?? []), r.entitlement]);
     const badges = new Map<string, string[]>();
     for (const [code, entitlements] of held) {
       const shown = badgesOf(entitlements);
@@ -1498,7 +1498,8 @@ export class Hub extends DurableObject<Env> {
     return badges;
   }
 
-  private badgeRows(codes: string[], now: number) {
+  /** The entitlements each of `codes` holds at `now`, as rows sorted by code and id. */
+  private activeEntitlementRows(codes: string[], now: number) {
     if (codes.length === 0) return [];
     return this.sql.exec<{ code: string; entitlement: string }>(
       `SELECT DISTINCT code, entitlement FROM entitlements
