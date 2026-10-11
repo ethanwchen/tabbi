@@ -390,9 +390,14 @@ final class PartyStore: ObservableObject {
     /// My pet changed (e.g. in the Closet): friends see it after the sync.
     func update(pet: PetProfile) {
         guard pet != self.pet else { return }
+        var shared = pet
+        shared.bondLook = self.pet.bondLook
+        let sendsSomethingNew = shared != self.pet
         if pet.name != self.pet.name { serverRefusedNames.remove(.petName) }
         self.pet = pet
-        if account != nil { connect() }
+        // The bond look is drawn here but never sent, so growing it needs
+        // no reconnect.
+        if sendsSomethingNew, account != nil { connect() }
     }
 
     /// The stored identity changed (signed in with Apple, signed out or

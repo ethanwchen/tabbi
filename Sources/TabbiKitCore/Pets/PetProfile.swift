@@ -28,6 +28,11 @@ public struct PetProfile: Hashable, Codable, Sendable {
     /// Always wearable: at most one per slot, in drawing order.
     public private(set) var accessories: [PetAccessory]
 
+    /// What the pet has grown into with its bond (a collar, a sparkle).
+    /// Derived from the activity log by whoever shows the pet, so it is
+    /// not saved, synced or shared with the profile.
+    public var bondLook: PetBondLook = .none
+
     public var species: PetSpecies { breed.species }
 
     public init(
@@ -127,7 +132,7 @@ public struct PetProfile: Hashable, Codable, Sendable {
 
     /// The pet sitting in its current outfit and accessories.
     public func sittingCanvas() -> PetCanvas {
-        PetComposer.sitting(breed, outfit: outfit, accessories: accessories)
+        PetComposer.sitting(breed, outfit: outfit, accessories: accessories, bond: bondLook)
     }
 
     /// A copy with anything the ledger does not own taken off, so a profile

@@ -121,32 +121,58 @@ private struct ClosetPetCard: View {
         // The content is centered, so the slim padding changes nothing on a
         // roomy panel and keeps the 96 pt pet whole on a short one (Compact).
         Card(padding: Theme.Spacing.s) {
-            VStack(spacing: Theme.Spacing.xs) {
-                Spacer(minLength: 0)
-                PetView(player: store.preview, pixelSize: 3)
-                    .padding(.bottom, Theme.Spacing.xs)
-                nameRow
-                Text(subtitle)
-                    .font(Theme.Typography.caption)
-                    .foregroundStyle(store.tryingOn == nil ? Theme.Palette.tertiaryText : accent)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
-                    .motion(Theme.Motion.snappy, value: subtitle)
-                Spacer(minLength: 0)
+            // Where there is room (Large), the pet's latest adventure (or its
+            // breed before the first) and the bond both show; otherwise one
+            // line: the item tried on, the nudge to name the pet, or the
+            // bond. The Look section names the breed too.
+            ViewThatFits(in: .vertical) {
+                content(showsBreed: true)
+                content(showsBreed: false)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 
-    private var subtitle: String {
+    private func content(showsBreed: Bool) -> some View {
+        // Centered by its frame rather than by spacers, which would add the
+        // stack's spacing twice more and leave a two-line adventure no room.
+        VStack(spacing: Theme.Spacing.xs) {
+            PetView(player: store.preview, pixelSize: 3)
+                .padding(.bottom, Theme.Spacing.xs)
+                .help(store.latestAdventureDetail.map { String(localized: "Latest adventure: \($0)", bundle: .tabbi) } ?? "")
+            nameRow
+            if let subtitle = subtitle(showsBreed: showsBreed) {
+                // An adventure line may wrap onto a second line: a whole
+                // sentence, longer in some languages than the card is wide.
+                Text(subtitle)
+                    .font(Theme.Typography.caption)
+                    .foregroundStyle(store.tryingOn == nil ? Theme.Palette.tertiaryText : accent)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(subtitle == store.latestAdventure ? 2 : 1)
+                    .truncationMode(.tail)
+                    .help(subtitle == store.latestAdventure
+                          ? String(localized: "Latest adventure: \(store.latestAdventureDetail ?? subtitle)", bundle: .tabbi) : "")
+                    .motion(Theme.Motion.snappy, value: subtitle)
+            }
+            if store.tryingOn == nil && (showsBreed || !isUnnamed) {
+                ClosetBondRow(bond: store.bond)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    /// A pet still called by its breed.
+    private var isUnnamed: Bool { store.profile.name == store.profile.breed.displayName }
+
+    private func subtitle(showsBreed: Bool) -> String? {
         if let item = store.tryingOn { return String(localized: "Trying on \(item.displayName)", bundle: .tabbi) }
         // A pet still called by its breed would show the breed twice.
-        if store.profile.name == store.profile.breed.displayName {
+        if isUnnamed {
             return store.profile.species == .cat
                 ? String(localized: "Give your cat a name", bundle: .tabbi)
                 : String(localized: "Give your dog a name", bundle: .tabbi)
         }
-        return store.profile.breed.displayName
+        return showsBreed ? store.latestAdventure ?? store.profile.breed.displayName : nil
     }
 
     @ViewBuilder private var nameRow: some View {
@@ -211,6 +237,41 @@ private struct ClosetNameButton: View {
         .help(String(localized: "Rename your pet", bundle: .tabbi))
         .onHover { hovering = $0 }
         .motion(Theme.Motion.snappy, value: hovering)
+    }
+}
+
+/// The bond level and its tier name beside a small ring that fills toward
+/// the next level ("Bond 4 · Best friends"). The tooltip says what the next
+/// level unlocks. The bond only ever grows, so there is nothing to lose here.
+private struct ClosetBondRow: View {
+    let bond: PetBond
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.xs) {
+            ProgressRing(progress: bond.progressInLevel, tint: accent, lineWidth: 2)
+                .frame(width: 10, height: 10)
+            (Text("Bond \(bond.level)", bundle: .tabbi).foregroundStyle(Theme.Palette.secondaryText)
+                + Text(verbatim: " · \(bond.tierName)").foregroundStyle(Theme.Palette.tertiaryText))
+                .font(Theme.Typography.caption.monospacedDigit())
+                .lineLimit(1)
+                .truncationMode(.tail)
+        }
+        .motion(Theme.Motion.content, value: bond.level)
+        .help(help)
+    }
+
+    private var help: String {
+        let (level, top) = (bond.level, PetBond.maxLevel)
+        guard let missing = bond.pointsToNextLevel else {
+            return String(localized: "Bond \(level) of \(top), as close as it gets. Every focused minute still counts.",
+                          bundle: .tabbi)
+        }
+        let next = level + 1
+        let points = String(localized: "\(missing) points", bundle: .tabbi)
+        guard let unlock = PetBondLook.unlock(atLevel: next) else {
+            return String(localized: "Bond \(level) of \(top): \(points) to Bond \(next). Every focused minute and every study day bring you closer.", bundle: .tabbi)
+        }
+        return String(localized: "Bond \(level) of \(top): \(points) to Bond \(next), which brings the \(unlock). Every focused minute and every study day bring you closer.", bundle: .tabbi)
     }
 }
 

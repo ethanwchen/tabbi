@@ -47,13 +47,84 @@ public enum SurpriseGift: Hashable, Sendable {
     /// Focused minutes added toward the seasonal event running now.
     case seasonMinutes(eventID: String, minutes: Int)
 
+    /// The gift on its own, e.g. "15 bonus points" or "the rare Mint fur".
+    public var name: String {
+        switch self {
+        case .bonusPoints(let points): String(localized: "\(points) bonus points", bundle: .tabbi)
+        case .rareFur(let fur): String(localized: "the rare \(fur.displayName) fur", bundle: .tabbi)
+        case .seasonMinutes(_, let minutes): String(localized: "\(minutes) min toward the event", bundle: .tabbi)
+        }
+    }
+
     /// What the gift is, short enough for one line in the coach's bubble.
+    /// Whole sentences rather than "A gift: " plus `name`, so each
+    /// language words them its own way.
     public var message: String {
         switch self {
         case .bonusPoints(let points): String(localized: "A gift: \(points) bonus points", bundle: .tabbi)
         case .rareFur(let fur): String(localized: "A gift: the rare \(fur.displayName) fur", bundle: .tabbi)
         case .seasonMinutes(_, let minutes): String(localized: "A gift: \(minutes) min toward the event", bundle: .tabbi)
         }
+    }
+
+    /// The bubble's line for a gift the pet carried home from its
+    /// adventure, e.g. "Found: 15 bonus points".
+    public var adventureMessage: String {
+        switch self {
+        case .bonusPoints(let points): String(localized: "Found: \(points) bonus points", bundle: .tabbi)
+        case .rareFur(let fur): String(localized: "Found: the rare \(fur.displayName) fur", bundle: .tabbi)
+        case .seasonMinutes(_, let minutes): String(localized: "Found: \(minutes) min toward the event", bundle: .tabbi)
+        }
+    }
+
+    /// The gift as a kind and a value, the way saves store it.
+    var stored: (kind: String, value: String) {
+        switch self {
+        case .bonusPoints(let points): ("bonusPoints", String(points))
+        case .rareFur(let fur): ("rareFur", fur.id)
+        case .seasonMinutes(let eventID, let minutes): ("seasonMinutes", "\(eventID):\(minutes)")
+        }
+    }
+
+    /// The gift a save stored as `stored`, or nil for one this build
+    /// doesn't know (a rare fur since removed, say).
+    init?(kind: String, value: String) {
+        switch kind {
+        case "bonusPoints":
+            guard let points = Int(value) else { return nil }
+            self = .bonusPoints(points)
+        case "rareFur":
+            guard let fur = RareFur.named(value) else { return nil }
+            self = .rareFur(fur)
+        case "seasonMinutes":
+            guard let split = value.lastIndex(of: ":"), let minutes = Int(value[value.index(after: split)...]) else {
+                return nil
+            }
+            self = .seasonMinutes(eventID: String(value[..<split]), minutes: minutes)
+        default:
+            return nil
+        }
+    }
+}
+
+extension SurpriseGift: Codable {
+    private enum CodingKeys: String, CodingKey { case kind, value }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let kind = try container.decode(String.self, forKey: .kind)
+        let value = try container.decode(String.self, forKey: .value)
+        guard let gift = SurpriseGift(kind: kind, value: value) else {
+            throw DecodingError.dataCorruptedError(forKey: .kind, in: container,
+                                                   debugDescription: "Unknown gift \(kind): \(value)")
+        }
+        self = gift
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(stored.kind, forKey: .kind)
+        try container.encode(stored.value, forKey: .value)
     }
 }
 
@@ -63,11 +134,19 @@ public enum SurpriseGift: Hashable, Sendable {
 public struct SurpriseGiftDelivery: Hashable, Sendable {
     public var gift: SurpriseGift
     public var date: Date
+    /// The adventure the pet carried the gift home from, as its journal
+    /// line (with the gift on it), or nil when it stayed home.
+    public var adventure: PetJournal.Entry?
 
-    public init(gift: SurpriseGift, date: Date) {
+    public init(gift: SurpriseGift, date: Date, adventure: PetJournal.Entry? = nil) {
         self.gift = gift
         self.date = date
+        self.adventure = adventure
     }
+
+    /// The bubble's line: "Found: ..." after an adventure, otherwise
+    /// "A gift: ...".
+    public var message: String { adventure == nil ? gift.message : gift.adventureMessage }
 }
 
 /// A gift given, kept so the same session can never pay twice.
@@ -83,11 +162,7 @@ public struct SurpriseGiftRecord: Codable, Hashable, Sendable {
     public init(day: PlannerDayKey, sessionEnd: Date, gift: SurpriseGift) {
         self.day = day
         self.sessionEnd = sessionEnd
-        switch gift {
-        case .bonusPoints(let points): (kind, value) = ("bonusPoints", String(points))
-        case .rareFur(let fur): (kind, value) = ("rareFur", fur.id)
-        case .seasonMinutes(let eventID, let minutes): (kind, value) = ("seasonMinutes", "\(eventID):\(minutes)")
-        }
+        (kind, value) = gift.stored
     }
 }
 

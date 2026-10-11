@@ -1,3 +1,4 @@
+import AppKit
 import Combine
 import Foundation
 import SwiftUI
@@ -42,7 +43,9 @@ final class ClosetStore: ObservableObject {
 
     /// Progress toward the limited edition milestones, from the whole
     /// activity log (`follow(activity:history:)`).
-    @Published private(set) var milestones: PetMilestoneProgress
+    @Published private(set) var milestones: PetMilestoneProgress {
+        didSet { bondMayHaveGrown() }
+    }
 
     /// Focus logged during each seasonal event run, which earns that
     /// event's limited items (`follow(activity:history:)`).
@@ -58,11 +61,31 @@ final class ClosetStore: ObservableObject {
     /// coach can send the pet out to celebrate.
     let awards = PassthroughSubject<PetStudyAward, Never>()
 
+    /// The pet's adventure journal ("Mochi explored the bookshelf"), a line
+    /// for each focus block it went off exploring in (`PetAdventure`).
+    @Published private(set) var journal: PetJournal
+
+    /// Gift integration point: one value each time the pet comes back from
+    /// an adventure as a focus block ends, with the journal line it brought
+    /// back. `SurpriseGiftKeeper` follows it, so a surprise gift rolled for
+    /// that session is the thing the pet carries home
+    /// (`recordGift(_:broughtBackFrom:)`).
+    let adventureReturns = PassthroughSubject<PetJournal.Entry, Never>()
+
+    /// Whether Reduce Motion is on, which keeps the pet home (and so out of
+    /// the journal). Read when a block ends; tests replace it.
+    var reduceMotion: () -> Bool = { NSWorkspace.shared.accessibilityDisplayShouldReduceMotion }
+
     private var focusSubscription: AnyCancellable?
     private var activitySubscription: AnyCancellable?
     private var kitSubscription: AnyCancellable?
+    private var notchSubscription: AnyCancellable?
     private var lastFocus: ProvidedFocus?
     private let saveURL: URL?
+    private let journalURL: URL?
+    /// Set when the journal on disk could not be read, so it is never
+    /// overwritten.
+    private let journalIsUnreadable: Bool
     /// Plays a sparkle milestone over the panel when an item is bought or
     /// study points make a new one affordable (a level up).
     private let celebrations: CelebrationCenter?
@@ -102,15 +125,45 @@ final class ClosetStore: ObservableObject {
         }
         self.closet = closet
         saveURL = url
+        let journalURL = url.map { _ in ClosetStore.journalURL(in: storage) }
+        var journalUnreadable = false
+        var journal = isDemo ? PetJournal.demo(now: .now) : PetJournal(seed: .random(in: .min ... .max))
+        if let journalURL {
+            do {
+                if let saved = try PetJournal.load(from: journalURL) { journal = saved }
+            } catch {
+                journalUnreadable = true
+            }
+        }
+        self.journal = journal
+        self.journalURL = journalURL
+        journalIsUnreadable = journalUnreadable
         self.celebrations = celebrations
         saveIsUnreadable = unreadable
         hasSave = saved
-        milestones = isDemo ? .demo(today: .now) : PetMilestoneProgress()
+        let progress = isDemo ? PetMilestoneProgress.demo(today: .now) : PetMilestoneProgress()
+        milestones = progress
         let demoSeason = isDemo ? SeasonalEventDemo(today: .now) : nil
         pinnedSeasonMoment = demoSeason?.moment
         if let demoSeason { seasons = demoSeason.tally }
-        preview = PetPlayer(profile: closet.profile)
-        presence = PetPresence(profile: closet.profile, lastActive: .now, nextUnlock: UnlockProgress(closet: closet))
+        var grown = closet.profile
+        grown.bondLook = PetBond(progress: progress).look
+        preview = PetPlayer(profile: grown)
+        // A snapshot renders the same pet whatever the hour, so only real
+        // and demo runs doze at night.
+        presence = PetPresence(profile: grown, lastActive: .now, nextUnlock: UnlockProgress(closet: closet),
+                               night: runMode.isSnapshot ? nil : .standard)
+    }
+
+    /// Follows the notch opening and closing (one value each time), which
+    /// wakes a pet dozing late at night (`PetPresence.wake(at:)`). Closing
+    /// counts too: the dozing pet only shows on the closed notch, so a wake
+    /// spell that started when the notch opened could run out unseen.
+    func follow(notchToggled: AnyPublisher<Void, Never>) {
+        notchSubscription = notchToggled
+            .sink { [weak self] in
+                MainActor.assumeIsolated { self?.presence.wake(at: .now) }
+            }
     }
 
     /// Follows the shared focus timer, so the notch pet stays awake through
@@ -183,6 +236,9 @@ final class ClosetStore: ObservableObject {
         presence.observe(timer, at: now)
         let old = lastFocus
         lastFocus = timer
+        if let adventure = PetAdventure.finished(from: old, to: timer, at: now, reduceMotion: reduceMotion()) {
+            adventureEnded(adventure)
+        }
         let before = closet.save
         let award = closet.credit(from: old, to: timer, at: now)
         // A starter pet that only saw an idle clock stays unsaved, so it
@@ -193,6 +249,37 @@ final class ClosetStore: ObservableObject {
         if hasSave ? closet.save != before : award != nil || timer?.isActive == true { persist() }
         guard let award else { return }
         celebrate(award)
+    }
+
+    /// The pet is back from its adventure: a line goes into the journal and
+    /// out to `adventureReturns`.
+    private func adventureEnded(_ adventure: PetAdventure) {
+        let entry = journal.record(at: adventure.endsAt)
+        if let journalURL, !journalIsUnreadable { try? journal.write(to: journalURL) }
+        adventureReturns.send(entry)
+    }
+
+    /// The newest journal line with the pet's name ("Mochi explored the
+    /// bookshelf"), or nil before its first adventure.
+    var latestAdventure: String? {
+        journal.latest?.text(petName: profile.name)
+    }
+
+    /// The newest journal line with the gift it brought home, if any, for
+    /// tooltips ("Mochi explored the bookshelf and brought back 15 bonus
+    /// points").
+    var latestAdventureDetail: String? {
+        journal.latest?.detail(petName: profile.name)
+    }
+
+    /// Writes a surprise gift onto the journal line of the adventure it was
+    /// carried home from, and returns that line. Nil when the line is gone
+    /// or already has a gift.
+    @discardableResult
+    func recordGift(_ gift: SurpriseGift, broughtBackFrom entry: PetJournal.Entry) -> PetJournal.Entry? {
+        guard let updated = journal.attach(gift, to: entry) else { return nil }
+        if let journalURL, !journalIsUnreadable { try? journal.write(to: journalURL) }
+        return updated
     }
 
     private func celebrate(_ award: PetStudyAward) {
@@ -223,11 +310,44 @@ final class ClosetStore: ObservableObject {
         storage.file("pet.json", in: "Pet")
     }
 
-    var profile: PetProfile { closet.profile }
+    /// `~/Library/Application Support/<edition>/Pet/journal.json`, beside
+    /// the save but its own file, so it never syncs.
+    static func journalURL(in storage: EditionStorage) -> URL {
+        storage.file("journal.json", in: "Pet")
+    }
+
+    /// The pet as shown everywhere: the saved look plus what it has grown
+    /// into with the bond (`PetBondLook`), which is never saved.
+    var profile: PetProfile { grown(closet.profile) }
+
+    private func grown(_ profile: PetProfile) -> PetProfile {
+        var copy = profile
+        copy.bondLook = bond.look
+        return copy
+    }
+
+    /// Puts on a collar or sparkle the bond just unlocked, on the Closet
+    /// preview and the closed notch's pet.
+    private func bondMayHaveGrown() {
+        guard presence.profile.bondLook != bond.look else { return }
+        presence.profile = profile
+        refreshPreview()
+    }
+
+    /// How close the pet and the user have grown (`PetBond`), from the same
+    /// focused minutes and study days as the milestones, so it follows new
+    /// study without tracking anything of its own.
+    var bond: PetBond { PetBond(progress: milestones) }
 
     /// The pet's look now and on every change, for modules that show it.
     var profiles: AnyPublisher<PetProfile, Never> {
-        $closet.map(\.profile).removeDuplicates().eraseToAnyPublisher()
+        $closet.combineLatest($milestones)
+            .map { closet, milestones in
+                var profile = closet.profile
+                profile.bondLook = PetBond(progress: milestones).look
+                return profile
+            }
+            .removeDuplicates().eraseToAnyPublisher()
     }
 
     // MARK: Streak
@@ -287,14 +407,14 @@ final class ClosetStore: ObservableObject {
         let before = closet.profile
         let result = change(&closet)
         if closet.profile != before { lookChangedAt = .now }
-        if presence.profile != closet.profile { presence.profile = closet.profile }
+        if presence.profile != profile { presence.profile = profile }
         refreshPreview()
         persist()
         return result
     }
 
     private func refreshPreview() {
-        let shown = tryingOn.map { PetCloset.wearing($0, on: closet.profile) } ?? closet.profile
+        let shown = tryingOn.map { PetCloset.wearing($0, on: profile) } ?? profile
         preview.update(profile: shown)
     }
 
@@ -310,7 +430,7 @@ final class ClosetStore: ObservableObject {
         save.creditedFocusCount = closet.save.creditedFocusCount
         save.creditedFocusSource = closet.save.creditedFocusSource
         closet = PetCloset(save: save)
-        presence.profile = starter
+        presence.profile = profile
         refreshPreview()
     }
 
@@ -324,7 +444,7 @@ final class ClosetStore: ObservableObject {
     func adoptSynced(_ save: PetSave) {
         guard save != closet.save else { return }
         closet = PetCloset(save: save)
-        if presence.profile != closet.profile { presence.profile = closet.profile }
+        if presence.profile != profile { presence.profile = profile }
         refreshPreview()
         persist()
     }

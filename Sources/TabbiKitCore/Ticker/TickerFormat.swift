@@ -44,9 +44,13 @@ public enum TickerFormat {
     }
 
     /// The pet's line for tooltips and accessibility, e.g. "Mochi is napping".
-    public static func petSummary(_ pet: TickerPet) -> String {
+    public static func petSummary(_ pet: TickerPet, at now: Date = .now) -> String {
         let name = pet.profile.name
         if pet.isSipping { return String(localized: "Your Mac is charging, and \(name) is having a sip", bundle: .tabbi) }
+        if pet.adventure?.isExploring(at: now) == true {
+            return String(localized: "\(name) is off on a little adventure and will be back as your session ends",
+                          bundle: .tabbi)
+        }
         if let unlock = pet.unlockHint {
             return String(localized: "\(name) is keeping you company. \(unlock.line)", bundle: .tabbi)
         }
@@ -71,4 +75,7 @@ public enum TickerFormat {
 
     /// Shown after the name while the pet sleeps.
     public static let petSleeping = "zzz"
+
+    /// Beside the pet's name while it is off on an adventure mid-session.
+    public static var petExploring: String { String(localized: "exploring", bundle: .tabbi) }
 }

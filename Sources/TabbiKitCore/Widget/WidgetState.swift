@@ -71,7 +71,12 @@ public struct WidgetState: Hashable, Codable, Sendable {
 
     public init(pet: PetProfile, day: PlannerDayKey, focusMinutes: Int = 0, streakDays: Int = 0,
                 lastFocusDay: PlannerDayKey? = nil, timer: Timer? = nil) {
-        self.pet = pet
+        // The bond look is never saved with the pet, so the state leaves it
+        // out too: otherwise a grown pet would never equal the saved file,
+        // and the app would rewrite it and reload the widget every time.
+        var saved = pet
+        saved.bondLook = .none
+        self.pet = saved
         self.day = day
         self.focusMinutes = max(focusMinutes, 0)
         self.streakDays = max(streakDays, 0)

@@ -19,12 +19,22 @@
 	<string>%@ السمات تغيّر مظهر اللوحة المفتوحة؛ ويبقى النوتش المغلق أسود.</string>
 	<key>%@ Trying again in the background.</key>
 	<string>%@ نعيد المحاولة في الخلفية.</string>
+	<key>%@ and brought back %@</key>
+	<string>%1$@، وعاد ومعه %2$@</string>
+	<key>%@ brought back a shiny acorn</key>
+	<string>%@ أحضر بلوطة لامعة</string>
 	<key>%@ by %@, plays in Spotify.</key>
 	<string>%1$@ من %2$@، تُشغَّل في Spotify.</string>
 	<key>%@ can't control %@</key>
 	<string>لا يستطيع %1$@ التحكم في %2$@</string>
+	<key>%@ chased a butterfly</key>
+	<string>%@ طارد فراشة</string>
 	<key>%@ checkup</key>
 	<string>فحص %@</string>
+	<key>%@ climbed onto the rooftop</key>
+	<string>%@ تسلق إلى السطح</string>
+	<key>%@ collected a smooth pebble</key>
+	<string>%@ جمع حصاة ملساء</string>
 	<key>%@ could not be copied to Applications. %@</key>
 	<string>تعذّر نسخ %1$@ إلى التطبيقات. %2$@</string>
 	<key>%@ couldn't refine it. This plan still works.</key>
@@ -35,8 +45,16 @@
 	<string>لم يُرجع %@ خطة صالحة. حاول مجددًا بعد قليل.</string>
 	<key>%@ done for today. Open %@</key>
 	<string>%1$@ اكتمل لليوم. افتح %2$@</string>
+	<key>%@ explored a cardboard box</key>
+	<string>%@ استكشف صندوقًا كرتونيًا</string>
+	<key>%@ explored the bookshelf</key>
+	<string>%@ استكشف رف الكتب</string>
 	<key>%@ focused today</key>
 	<string>%@ تركيز اليوم</string>
+	<key>%@ found a perfect leaf</key>
+	<string>%@ وجد ورقة شجر مثالية</string>
+	<key>%@ found a soft feather</key>
+	<string>%@ وجد ريشة ناعمة</string>
 	<key>%@ free</key>
 	<string>%@ متاحة</string>
 	<key>%@ free this week</key>
@@ -75,6 +93,8 @@
 	<string>%@ يأخذ قيلولة حتى جلستك القادمة</string>
 	<key>%@ is now your friend</key>
 	<string>أصبح %@ صديقك</string>
+	<key>%@ is off on a little adventure and will be back as your session ends</key>
+	<string>%@ في مغامرة صغيرة وسيعود مع نهاية جلستك</string>
 	<key>%@ is on a break with you</key>
 	<string>%@ في استراحة معك</string>
 	<key>%@ is ready in the Closet</key>
@@ -93,14 +113,20 @@
 	<string>%@ غير موجود على هذا الـMac بعد. تشرح لك الاتصالات كيفية إضافته.</string>
 	<key>%@ isn't set up yet</key>
 	<string>%@ غير مُعدّ بعد</string>
+	<key>%@ learned a song from a bird</key>
+	<string>%@ تعلم أغنية من عصفور</string>
 	<key>%@ left</key>
 	<string>باقي %@</string>
 	<key>%@ level in the blend</key>
 	<string>مستوى %@ في المزيج</string>
+	<key>%@ made friends with a pigeon</key>
+	<string>%@ صادق حمامة</string>
 	<key>%@ misses you</key>
 	<string>%@ يشتاق إليك</string>
 	<key>%@ moved to position %lld of %lld</key>
 	<string>نُقل %1$@ إلى الموضع %2$lld من %3$lld</string>
+	<key>%@ napped on a sunny windowsill</key>
+	<string>%@ غفا على حافة نافذة مشمسة</string>
 	<key>%@ naps until the timer runs</key>
 	<string>%@ يأخذ قيلولة حتى يعمل المؤقت</string>
 	<key>%@ not found</key>
@@ -111,12 +137,24 @@
 	<string>%@ من التركيز.</string>
 	<key>%@ opens in Music; press play there.</key>
 	<string>يُفتح %@ في الموسيقى؛ اضغط تشغيل هناك.</string>
+	<key>%@ raced a snail and let it win</key>
+	<string>%@ سابق حلزونًا وتركه يفوز</string>
 	<key>%@ reads your events on this Mac and never uploads them</key>
 	<string>يقرأ %@ أحداثك على هذا الـMac ولا يرفعها أبدًا</string>
+	<key>%@ rescued a lost sock</key>
+	<string>%@ أنقذ جوربًا ضائعًا</string>
 	<key>%@ runs until %@. Next item, %@: %@ focused.</key>
 	<string>%1$@ مستمرة حتى %2$@. العنصر التالي، %3$@: %4$@ من التركيز.</string>
 	<key>%@ settings</key>
 	<string>إعدادات %@</string>
+	<key>%@ sniffed every flower in the garden</key>
+	<string>%@ شمّ كل زهرة في الحديقة</string>
+	<key>%@ snuck into the library</key>
+	<string>%@ تسلل إلى المكتبة</string>
+	<key>%@ splashed in a puddle</key>
+	<string>%@ لعب في بركة ماء</string>
+	<key>%@ spotted a tiny rainbow</key>
+	<string>%@ لمح قوس قزح صغيرًا</string>
 	<key>%@ started it for the party</key>
 	<string>بدأها %@ للمجموعة</string>
 	<key>%@ studied</key>
@@ -135,6 +173,12 @@
 	<string>يُفتح %1$@ بعد %2$@</string>
 	<key>%@ unlocks at %lld</key>
 	<string>يُفتح %1$@ عند %2$lld</string>
+	<key>%@ visited the bakery</key>
+	<string>%@ زار المخبز</string>
+	<key>%@ watched a cloud shaped like a fish</key>
+	<string>%@ تأمل غيمة على شكل سمكة</string>
+	<key>%@ went around the park twice</key>
+	<string>%@ دار حول الحديقة مرتين</string>
 	<key>%@ with %@</key>
 	<string>%1$@ مع %2$@</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
@@ -177,6 +221,8 @@
 	<string>باقي %lld د</string>
 	<key>%lld min on your own</key>
 	<string>%lld د بمفردك</string>
+	<key>%lld min toward the event</key>
+	<string>%lld دقيقة نحو الفعالية</string>
 	<key>%lld min, no distractions</key>
 	<string>%lld د بلا مشتتات</string>
 	<key>%lld new, %lld learning, %lld review</key>
@@ -537,8 +583,12 @@
 	<string>قبعة معكوسة</string>
 	<key>Beanie</key>
 	<string>قبعة صوفية</string>
+	<key>Bell collar</key>
+	<string>طوق بجرس</string>
 	<key>Best day %@</key>
 	<string>أفضل يوم %@</string>
+	<key>Best friends</key>
+	<string>أعز الأصدقاء</string>
 	<key>Blend</key>
 	<string>مزيج</string>
 	<key>Blend up to three, or pick none for silence. Made on your Mac; fades in with focus and out at your break.</key>
@@ -553,6 +603,14 @@
 	<string>لا يستطيع المحظورون رؤيتك أو إضافتك أو الانضمام إلى مجموعاتك. للحظر أو الإبلاغ، انقر بزر الماوس الأيمن على الشخص في المجموعة.</string>
 	<key>Blocks go to your calendar.</key>
 	<string>تُضاف الكتل إلى تقويمك.</string>
+	<key>Bond %lld</key>
+	<string>الرابطة %lld</string>
+	<key>Bond %lld of %lld, as close as it gets. Every focused minute still counts.</key>
+	<string>الرابطة %1$lld من %2$lld، أقرب ما يكون. كل دقيقة تركيز ما زالت تُحتسب.</string>
+	<key>Bond %lld of %lld: %@ to Bond %lld, which brings the %@. Every focused minute and every study day bring you closer.</key>
+	<string>الرابطة %1$lld من %2$lld: %3$@ حتى الرابطة %4$lld، ومعها %5$@. كل دقيقة تركيز وكل يوم دراسة يقرّبانكما.</string>
+	<key>Bond %lld of %lld: %@ to Bond %lld. Every focused minute and every study day bring you closer.</key>
+	<string>الرابطة %1$lld من %2$lld: %3$@ حتى الرابطة %4$lld. كل دقيقة تركيز وكل يوم دراسة يقرّبانكما.</string>
 	<key>Bonus minutes toward this event's limited items</key>
 	<string>دقائق إضافية لعناصر هذا الحدث المحدودة</string>
 	<key>Bonus points from your pet, added to your balance</key>
@@ -1175,6 +1233,12 @@
 	<string>التركيز على</string>
 	<key>Focusing on: %@</key>
 	<string>التركيز على: %@</string>
+	<key>Forever friends</key>
+	<string>أصدقاء للأبد</string>
+	<key>Found: %lld min toward the event</key>
+	<string>لقية: %lld دقيقة نحو الفعالية</string>
+	<key>Found: the rare %@ fur</key>
+	<string>لقية: فرو %@ النادر</string>
 	<key>Free all day</key>
 	<string>يوم حر بالكامل</string>
 	<key>Free and offline: runs a model on this Mac.</key>
@@ -1265,6 +1329,8 @@
 	<string>المتابعة بلا اسم</string>
 	<key>Goals left today</key>
 	<string>الأهداف المتبقية اليوم</string>
+	<key>Gold tag</key>
+	<string>قلادة ذهبية</string>
 	<key>Golden Laurel</key>
 	<string>إكليل الغار الذهبي</string>
 	<key>Graduation Cap</key>
@@ -1277,6 +1343,8 @@
 	<string>الهالوين</string>
 	<key>Halo</key>
 	<string>هالة</string>
+	<key>Happy wiggle</key>
+	<string>هزة ذيل سعيدة</string>
 	<key>Haptic feedback</key>
 	<string>الاستجابة اللمسية</string>
 	<key>Harassment</key>
@@ -1363,6 +1431,8 @@
 	<string>اسم غير لائق</string>
 	<key>Input, output, and cache tokens across all %@ sessions since midnight</key>
 	<string>رموز الإدخال والإخراج والتخزين المؤقت في كل جلسات %@ منذ منتصف الليل</string>
+	<key>Inseparable</key>
+	<string>لا نفترق</string>
 	<key>Install</key>
 	<string>تثبيت</string>
 	<key>Install %@ to plan with it.</key>
@@ -1435,6 +1505,8 @@
 	<string>جارٍ الانضمام إلى المجموعة. لحظة واحدة.</string>
 	<key>Joining the party server…</key>
 	<string>جارٍ الاتصال بخادم المجموعة…</string>
+	<key>Just met</key>
+	<string>تعارف جديد</string>
 	<key>Keep at least one tab on</key>
 	<string>أبقِ علامة تبويب واحدة على الأقل مشغّلة</string>
 	<key>Keep the %@ kit</key>
@@ -1453,6 +1525,8 @@
 	<string>الإبقاء على هذا الاسم</string>
 	<key>Keep your current kit and tabs</key>
 	<string>الإبقاء على حزمتك وعلامات تبويبك الحالية</string>
+	<key>Kindred spirits</key>
+	<string>روحان متشابهتان</string>
 	<key>King's Cape</key>
 	<string>عباءة الملك</string>
 	<key>Kit</key>
@@ -1463,6 +1537,8 @@
 	<string>آخر 7 أيام</string>
 	<key>Last synced %@</key>
 	<string>آخر مزامنة %@</string>
+	<key>Latest adventure: %@</key>
+	<string>آخر مغامرة: %@</string>
 	<key>Launch %@</key>
 	<string>تشغيل %@</string>
 	<key>Launch at login</key>
@@ -1629,6 +1705,8 @@
 	<string>جديدة</string>
 	<key>New chat</key>
 	<string>محادثة جديدة</string>
+	<key>New friends</key>
+	<string>أصدقاء جدد</string>
 	<key>New tabs may ask for %@.</key>
 	<string>قد تطلب علامات التبويب الجديدة %@.</string>
 	<key>Next meeting</key>
@@ -1649,6 +1727,8 @@
 	<string>لا توجد إجابة</string>
 	<key>No calendars yet</key>
 	<string>لا توجد تقويمات بعد</string>
+	<key>No collar</key>
+	<string>بلا طوق</string>
 	<key>No events</key>
 	<string>لا أحداث</string>
 	<key>No events on your calendars today.</key>
@@ -1983,8 +2063,12 @@
 	<string>مخفي. اضغط %@ لفتحه.</string>
 	<key>Owned</key>
 	<string>مملوك</string>
+	<key>Pals</key>
+	<string>رفاق</string>
 	<key>Panel size</key>
 	<string>حجم اللوحة</string>
+	<key>Partners in focus</key>
+	<string>شركاء التركيز</string>
 	<key>Party</key>
 	<string>المجموعة</string>
 	<key>Party Hat</key>
@@ -2103,6 +2187,8 @@
 	<string>ضوضاء وردية</string>
 	<key>Pirate Hat</key>
 	<string>قبعة قرصان</string>
+	<key>Plain collar</key>
+	<string>طوق بسيط</string>
 	<key>Plan</key>
 	<string>خطّط</string>
 	<key>Plan my day</key>
@@ -2543,10 +2629,14 @@
 	<string>القليل أكثر بكثير من لا شيء. استرح، فالرقعة باقية.</string>
 	<key>Something not working?</key>
 	<string>هل هناك ما لا يعمل؟</string>
+	<key>Soulmates</key>
+	<string>توأم الروح</string>
 	<key>Sound</key>
 	<string>الصوت</string>
 	<key>Spam</key>
 	<string>رسائل مزعجة</string>
+	<key>Sparkle</key>
+	<string>لمعان</string>
 	<key>Sparkle Trail</key>
 	<string>أثر لامع</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
@@ -2561,6 +2651,8 @@
 	<string>مرن، مع ارتداد خفيف.</string>
 	<key>Sprint</key>
 	<string>انطلاقة</string>
+	<key>Star tag</key>
+	<string>قلادة نجمة</string>
 	<key>Stars don't rush. They just keep burning.</key>
 	<string>النجوم لا تستعجل، إنها تواصل التوهّج فحسب.</string>
 	<key>Start %@ automatically when you log in</key>
@@ -2663,6 +2755,8 @@
 	<string>هودي الدراسة</string>
 	<key>Study block</key>
 	<string>فترة دراسة</string>
+	<key>Study buddies</key>
+	<string>رفاق دراسة</string>
 	<key>Study parties</key>
 	<string>مجموعات الدراسة</string>
 	<key>Study points earned today, to spend on your pet's outfits</key>
@@ -3305,6 +3399,8 @@
 	<string>أُعيد ضبط ملفك في المجموعة. جارٍ إعادة الاتصال…</string>
 	<key>Your pet</key>
 	<string>رفيقك</string>
+	<key>Your pet found this on its adventure. %@</key>
+	<string>وجد رفيقك هذا في مغامرته. %@</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>اسم رفيقك غير مسموح. غيّر اسمه في الخزانة.</string>
 	<key>Your pet, today's streak and the running timer.</key>
@@ -3343,6 +3439,8 @@
 	<string>ينتهي قريبًا</string>
 	<key>events</key>
 	<string>أحداث</string>
+	<key>exploring</key>
+	<string>يستكشف</string>
 	<key>focused</key>
 	<string>تركيز</string>
 	<key>in %@</key>
@@ -3395,6 +3493,8 @@
 	<string>مهام</string>
 	<key>the host</key>
 	<string>المضيف</string>
+	<key>the rare %@ fur</key>
+	<string>فرو %@ النادر</string>
 	<key>today</key>
 	<string>اليوم</string>
 	<key>tokens</key>

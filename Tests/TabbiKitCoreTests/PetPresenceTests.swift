@@ -182,4 +182,43 @@ final class PetPresenceTests: XCTestCase {
         XCTAssertEqual(TickerFormat.petSummary(TickerPet(profile: profile, mood: .asleep, unlock: near)),
                        "\(profile.name) is napping until your next session")
     }
+
+    func testTheHintGivesWayToTheAdventureAndTheNightDoze() throws {
+        let near = try unlock(missing: 5)
+        // A long focus block: the pet studies and goes off exploring, and the
+        // hint waits for the session to end.
+        let block = ProvidedFocus(source: .focus, phase: .focus, clock: .countdown(endsAt: minutes(25)),
+                                  phaseLength: 25 * 60)
+        let adventure = try XCTUnwrap(PetAdventure.plan(for: block, reduceMotion: false))
+        let away = adventure.departsAt.addingTimeInterval(60)
+        let busy = TickerSources(focus: block, pet: PetPresence(profile: profile, lastActive: start, nextUnlock: near))
+        guard case .pet(let studying) = busy.items(at: away, enabled: [.pet]).first else { return XCTFail("no pet") }
+        XCTAssertEqual(studying.adventure, adventure)
+        XCTAssertEqual(studying.unlock, near, "carried, so the hint is back as soon as the pet is idle")
+        XCTAssertNil(studying.unlockHint)
+        XCTAssertEqual(TickerFormat.petSummary(studying, at: away),
+                       "\(profile.name) is off on a little adventure and will be back as your session ends")
+        // An awake pet with an adventure still planned (never in practice,
+        // since only a running block has one) keeps the slot for it.
+        XCTAssertNil(TickerPet(profile: profile, mood: .awake, unlock: near, adventure: adventure).unlockHint)
+
+        // Dozing at night: "zzz", no hint.
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "America/New_York")!
+        let lateEvening = calendar.date(from: DateComponents(year: 2026, month: 10, day: 11, hour: 23, minute: 30))!
+        let night = PetPresence(profile: profile, lastActive: lateEvening, nextUnlock: near,
+                                night: .standard, calendar: calendar)
+        let dozing = lateEvening.addingTimeInterval(15 * 60)
+        guard case .pet(let asleep) = TickerSources(pet: night).items(at: dozing, enabled: [.pet]).first else {
+            return XCTFail("no pet")
+        }
+        XCTAssertEqual(asleep.mood, .asleep)
+        XCTAssertNil(asleep.unlockHint)
+        // Awake and idle, the hint shows as usual.
+        guard case .pet(let idle) = TickerSources(pet: night).items(at: lateEvening.addingTimeInterval(60),
+                                                                    enabled: [.pet]).first else {
+            return XCTFail("no pet")
+        }
+        XCTAssertEqual(idle.unlockHint, near)
+    }
 }

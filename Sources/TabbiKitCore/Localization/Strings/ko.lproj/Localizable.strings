@@ -19,12 +19,22 @@
 	<string>%@ 테마는 열린 패널에 적용되고, 닫힌 노치는 검은색 그대로예요.</string>
 	<key>%@ Trying again in the background.</key>
 	<string>%@ 백그라운드에서 다시 시도하는 중이에요.</string>
+	<key>%@ and brought back %@</key>
+	<string>%1$@. 선물로 %2$@ 가져왔어요</string>
+	<key>%@ brought back a shiny acorn</key>
+	<string>%@가 반짝 도토리를 가져왔어요</string>
 	<key>%@ by %@, plays in Spotify.</key>
 	<string>%2$@의 %1$@, Spotify에서 재생합니다.</string>
 	<key>%@ can't control %@</key>
 	<string>%1$@에서 %2$@을(를) 제어할 수 없어요</string>
+	<key>%@ chased a butterfly</key>
+	<string>%@가 나비를 쫓아다녔어요</string>
 	<key>%@ checkup</key>
 	<string>%@ 점검</string>
+	<key>%@ climbed onto the rooftop</key>
+	<string>%@가 지붕 위에 올라갔어요</string>
+	<key>%@ collected a smooth pebble</key>
+	<string>%@가 매끈한 조약돌을 주웠어요</string>
 	<key>%@ could not be copied to Applications. %@</key>
 	<string>%@을(를) 응용 프로그램으로 복사할 수 없어요. %@</string>
 	<key>%@ couldn't refine it. This plan still works.</key>
@@ -35,8 +45,16 @@
 	<string>%@에서 쓸 수 있는 계획을 받지 못했어요. 잠시 후 다시 시도해 주세요.</string>
 	<key>%@ done for today. Open %@</key>
 	<string>%1$@ 오늘 완료. %2$@ 열기</string>
+	<key>%@ explored a cardboard box</key>
+	<string>%@가 종이 상자를 탐험했어요</string>
+	<key>%@ explored the bookshelf</key>
+	<string>%@가 책장을 탐험했어요</string>
 	<key>%@ focused today</key>
 	<string>오늘 %@ 집중</string>
+	<key>%@ found a perfect leaf</key>
+	<string>%@가 완벽한 나뭇잎을 찾았어요</string>
+	<key>%@ found a soft feather</key>
+	<string>%@가 보드라운 깃털을 찾았어요</string>
 	<key>%@ free</key>
 	<string>%@ 여유</string>
 	<key>%@ free this week</key>
@@ -75,6 +93,8 @@
 	<string>%@는 다음 세션까지 낮잠 중</string>
 	<key>%@ is now your friend</key>
 	<string>이제 %@ 님과 친구예요</string>
+	<key>%@ is off on a little adventure and will be back as your session ends</key>
+	<string>%@는 작은 모험 중이에요. 세션이 끝날 때 돌아와요</string>
 	<key>%@ is on a break with you</key>
 	<string>%@도 함께 쉬는 중</string>
 	<key>%@ is ready in the Closet</key>
@@ -93,14 +113,20 @@
 	<string>이 Mac에 아직 %@가 없어요. 연결에서 추가하는 방법을 알려 드려요.</string>
 	<key>%@ isn't set up yet</key>
 	<string>%@가 아직 설정되지 않았어요</string>
+	<key>%@ learned a song from a bird</key>
+	<string>%@가 새에게 노래를 배웠어요</string>
 	<key>%@ left</key>
 	<string>%@ 남음</string>
 	<key>%@ level in the blend</key>
 	<string>블렌드 속 %@ 음량</string>
+	<key>%@ made friends with a pigeon</key>
+	<string>%@가 비둘기와 친구가 됐어요</string>
 	<key>%@ misses you</key>
 	<string>%@이(가) 보고 싶어 해요</string>
 	<key>%@ moved to position %lld of %lld</key>
 	<string>%1$@ 탭을 %3$lld개 중 %2$lld번째로 옮겼어요</string>
+	<key>%@ napped on a sunny windowsill</key>
+	<string>%@가 창가에서 낮잠 잤어요</string>
 	<key>%@ naps until the timer runs</key>
 	<string>타이머가 시작될 때까지 %@는 낮잠 중</string>
 	<key>%@ not found</key>
@@ -111,12 +137,24 @@
 	<string>%@ 집중했어요.</string>
 	<key>%@ opens in Music; press play there.</key>
 	<string>%@은(는) 음악 앱에서 열립니다. 거기서 재생하세요.</string>
+	<key>%@ raced a snail and let it win</key>
+	<string>%@가 달팽이에게 져 줬어요</string>
 	<key>%@ reads your events on this Mac and never uploads them</key>
 	<string>%@는 이 Mac에서 일정을 읽고 절대 업로드하지 않아요</string>
+	<key>%@ rescued a lost sock</key>
+	<string>%@가 잃어버린 양말을 구했어요</string>
 	<key>%@ runs until %@. Next item, %@: %@ focused.</key>
 	<string>%1$@은(는) %2$@까지예요. 다음 아이템 %3$@: %4$@ 집중함.</string>
 	<key>%@ settings</key>
 	<string>%@ 설정</string>
+	<key>%@ sniffed every flower in the garden</key>
+	<string>%@가 꽃 냄새를 다 맡았어요</string>
+	<key>%@ snuck into the library</key>
+	<string>%@가 도서관에 몰래 들어갔어요</string>
+	<key>%@ splashed in a puddle</key>
+	<string>%@가 물웅덩이에서 첨벙</string>
+	<key>%@ spotted a tiny rainbow</key>
+	<string>%@가 작은 무지개를 발견했어요</string>
 	<key>%@ started it for the party</key>
 	<string>%@님이 파티를 위해 시작했어요</string>
 	<key>%@ studied</key>
@@ -135,6 +173,12 @@
 	<string>%2$@ 후 %1$@ 해제</string>
 	<key>%@ unlocks at %lld</key>
 	<string>%2$lld점에 %1$@ 해제</string>
+	<key>%@ visited the bakery</key>
+	<string>%@가 빵집에 들렀어요</string>
+	<key>%@ watched a cloud shaped like a fish</key>
+	<string>%@가 물고기 구름을 봤어요</string>
+	<key>%@ went around the park twice</key>
+	<string>%@가 공원을 두 바퀴 돌았어요</string>
 	<key>%@ with %@</key>
 	<string>%1$@ 및 %2$@</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
@@ -177,6 +221,8 @@
 	<string>%lld분 남음</string>
 	<key>%lld min on your own</key>
 	<string>혼자서 %lld분</string>
+	<key>%lld min toward the event</key>
+	<string>이벤트에 %lld분</string>
 	<key>%lld min, no distractions</key>
 	<string>%lld분, 방해 없이</string>
 	<key>%lld new, %lld learning, %lld review</key>
@@ -547,8 +593,12 @@
 	<string>뒤로 쓴 모자</string>
 	<key>Beanie</key>
 	<string>비니</string>
+	<key>Bell collar</key>
+	<string>방울 목걸이</string>
 	<key>Best day %@</key>
 	<string>최고 %@</string>
+	<key>Best friends</key>
+	<string>절친</string>
 	<key>Blend</key>
 	<string>블렌드</string>
 	<key>Blend up to three, or pick none for silence. Made on your Mac; fades in with focus and out at your break.</key>
@@ -563,6 +613,14 @@
 	<string>차단한 사람은 나를 보거나 추가하거나 내 파티에 참여할 수 없어요. 차단이나 신고는 파티에서 오른쪽 클릭하세요.</string>
 	<key>Blocks go to your calendar.</key>
 	<string>블록은 캘린더에 추가돼요.</string>
+	<key>Bond %lld</key>
+	<string>유대 %lld</string>
+	<key>Bond %lld of %lld, as close as it gets. Every focused minute still counts.</key>
+	<string>유대 %1$lld/%2$lld, 더할 나위 없이 가까워요. 집중한 1분 1분이 여전히 쌓여요.</string>
+	<key>Bond %lld of %lld: %@ to Bond %lld, which brings the %@. Every focused minute and every study day bring you closer.</key>
+	<string>유대 %1$lld/%2$lld: 유대 %4$lld(%5$@)까지 %3$@ 남았어요. 집중한 1분과 공부한 하루가 둘을 더 가깝게 해요.</string>
+	<key>Bond %lld of %lld: %@ to Bond %lld. Every focused minute and every study day bring you closer.</key>
+	<string>유대 %1$lld/%2$lld: 유대 %4$lld까지 %3$@ 남았어요. 집중한 1분과 공부한 하루가 둘을 더 가깝게 해요.</string>
 	<key>Bonus minutes toward this event's limited items</key>
 	<string>이번 이벤트 한정 아이템을 위한 보너스 시간</string>
 	<key>Bonus points from your pet, added to your balance</key>
@@ -1187,6 +1245,12 @@
 	<string>집중 중</string>
 	<key>Focusing on: %@</key>
 	<string>집중 중: %@</string>
+	<key>Forever friends</key>
+	<string>영원한 친구</string>
+	<key>Found: %lld min toward the event</key>
+	<string>발견: 이벤트에 %lld분</string>
+	<key>Found: the rare %@ fur</key>
+	<string>발견: 희귀 털색 '%@'</string>
 	<key>Free all day</key>
 	<string>하루 종일 비어 있어요</string>
 	<key>Free and offline: runs a model on this Mac.</key>
@@ -1277,6 +1341,8 @@
 	<string>이름 없이 계속</string>
 	<key>Goals left today</key>
 	<string>오늘 남은 목표</string>
+	<key>Gold tag</key>
+	<string>금빛 태그</string>
 	<key>Golden Laurel</key>
 	<string>황금 월계관</string>
 	<key>Graduation Cap</key>
@@ -1289,6 +1355,8 @@
 	<string>핼러윈</string>
 	<key>Halo</key>
 	<string>후광</string>
+	<key>Happy wiggle</key>
+	<string>신나는 꼬리 흔들기</string>
 	<key>Haptic feedback</key>
 	<string>햅틱 피드백</string>
 	<key>Harassment</key>
@@ -1377,6 +1445,8 @@
 	<string>부적절한 이름</string>
 	<key>Input, output, and cache tokens across all %@ sessions since midnight</key>
 	<string>자정 이후 모든 %@ 세션의 입력, 출력, 캐시 토큰</string>
+	<key>Inseparable</key>
+	<string>떨어질 수 없는 사이</string>
 	<key>Install</key>
 	<string>설치</string>
 	<key>Install %@ to plan with it.</key>
@@ -1451,6 +1521,8 @@
 	<string>파티에 참여하는 중이에요. 잠깐이면 돼요.</string>
 	<key>Joining the party server…</key>
 	<string>파티 서버에 연결 중…</string>
+	<key>Just met</key>
+	<string>막 만난 사이</string>
 	<key>Keep at least one tab on</key>
 	<string>탭을 하나 이상 켜 두세요</string>
 	<key>Keep the %@ kit</key>
@@ -1469,6 +1541,8 @@
 	<string>이 이름으로 할게요</string>
 	<key>Keep your current kit and tabs</key>
 	<string>지금 키트와 탭 유지하기</string>
+	<key>Kindred spirits</key>
+	<string>마음이 통하는 사이</string>
 	<key>King's Cape</key>
 	<string>왕의 망토</string>
 	<key>Kit</key>
@@ -1479,6 +1553,8 @@
 	<string>최근 7일</string>
 	<key>Last synced %@</key>
 	<string>마지막 동기화: %@</string>
+	<key>Latest adventure: %@</key>
+	<string>최근 모험: %@</string>
 	<key>Launch %@</key>
 	<string>%@ 실행</string>
 	<key>Launch at login</key>
@@ -1645,6 +1721,8 @@
 	<string>새 카드</string>
 	<key>New chat</key>
 	<string>새 채팅</string>
+	<key>New friends</key>
+	<string>새 친구</string>
 	<key>New tabs may ask for %@.</key>
 	<string>새 탭이 %@ 권한을 요청할 수 있어요.</string>
 	<key>Next meeting</key>
@@ -1665,6 +1743,8 @@
 	<string>답변 없음</string>
 	<key>No calendars yet</key>
 	<string>아직 캘린더 없음</string>
+	<key>No collar</key>
+	<string>목걸이 없음</string>
 	<key>No events</key>
 	<string>일정 없음</string>
 	<key>No events on your calendars today.</key>
@@ -1999,8 +2079,12 @@
 	<string>보이지 않아요. %@을(를) 누르면 열려요.</string>
 	<key>Owned</key>
 	<string>보유</string>
+	<key>Pals</key>
+	<string>단짝</string>
 	<key>Panel size</key>
 	<string>패널 크기</string>
+	<key>Partners in focus</key>
+	<string>집중 파트너</string>
 	<key>Party</key>
 	<string>파티</string>
 	<key>Party Hat</key>
@@ -2119,6 +2203,8 @@
 	<string>핑크 노이즈</string>
 	<key>Pirate Hat</key>
 	<string>해적 모자</string>
+	<key>Plain collar</key>
+	<string>기본 목걸이</string>
 	<key>Plan</key>
 	<string>계획</string>
 	<key>Plan my day</key>
@@ -2563,10 +2649,14 @@
 	<string>조금이라도 한 건 안 한 것보다 훨씬 커요. 쉬어요. 판은 여기 그대로 있을 거예요.</string>
 	<key>Something not working?</key>
 	<string>잘 안 되나요?</string>
+	<key>Soulmates</key>
+	<string>소울메이트</string>
 	<key>Sound</key>
 	<string>사운드</string>
 	<key>Spam</key>
 	<string>스팸</string>
+	<key>Sparkle</key>
+	<string>반짝임</string>
 	<key>Sparkle Trail</key>
 	<string>반짝이 꼬리</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
@@ -2581,6 +2671,8 @@
 	<string>통통 튀듯 살짝 바운스해요.</string>
 	<key>Sprint</key>
 	<string>스프린트</string>
+	<key>Star tag</key>
+	<string>별 태그</string>
 	<key>Stars don't rush. They just keep burning.</key>
 	<string>별은 서두르지 않아요. 그저 계속 타오를 뿐이죠.</string>
 	<key>Start %@ automatically when you log in</key>
@@ -2687,6 +2779,8 @@
 	<string>공부 후드티</string>
 	<key>Study block</key>
 	<string>공부 블록</string>
+	<key>Study buddies</key>
+	<string>공부 메이트</string>
 	<key>Study parties</key>
 	<string>스터디 파티</string>
 	<key>Study points earned today, to spend on your pet's outfits</key>
@@ -3343,6 +3437,8 @@
 	<string>파티 프로필이 초기화됐어요. 다시 연결 중…</string>
 	<key>Your pet</key>
 	<string>내 펫</string>
+	<key>Your pet found this on its adventure. %@</key>
+	<string>펫이 모험에서 찾아왔어요. %@</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>펫 이름을 사용할 수 없어요. 옷장에서 펫 이름을 바꿔 주세요.</string>
 	<key>Your pet, today's streak and the running timer.</key>
@@ -3383,6 +3479,8 @@
 	<string>곧 끝나요</string>
 	<key>events</key>
 	<string>일정</string>
+	<key>exploring</key>
+	<string>탐험 중</string>
 	<key>focused</key>
 	<string>집중</string>
 	<key>in %@</key>
@@ -3435,6 +3533,8 @@
 	<string>할 일</string>
 	<key>the host</key>
 	<string>호스트</string>
+	<key>the rare %@ fur</key>
+	<string>희귀 털색 '%@'</string>
 	<key>today</key>
 	<string>오늘</string>
 	<key>tokens</key>

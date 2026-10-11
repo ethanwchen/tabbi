@@ -14,9 +14,12 @@ import TabbiKit
 /// snapshot runs never roll or write; a demo starts with two rare furs found
 /// so the Closet shows them, and the gift moments are coach snapshots.
 ///
-/// Hook for whatever shows the pet away and back (an adventure while the
-/// user focuses): follow `delivered`, or read `latest`, to have the pet
-/// come back carrying the gift. The gift is already applied by then.
+/// The pet's adventure is wired in here: the keeper follows the Closet's
+/// `adventureReturns`, and a gift rolled for the session the pet just came
+/// home from is what it carried back. Its delivery names that adventure,
+/// the coach's bubble says "Found: ...", and the journal line keeps the
+/// gift. Anything else can follow `delivered`, or read `latest`; the gift
+/// is already applied by then.
 @MainActor
 final class SurpriseGiftKeeper: ObservableObject {
     @Published private(set) var state: SurpriseGiftState
@@ -25,7 +28,16 @@ final class SurpriseGiftKeeper: ObservableObject {
     /// The last gift handed over since launch.
     private(set) var latest: SurpriseGiftDelivery?
 
+    /// How soon after the pet comes home a gift still counts as brought
+    /// back: the coach rolls on the next turn of the main loop, so this
+    /// only has to outlast a busy moment, never another session.
+    static let adventureWindow: TimeInterval = 60
+
     private let closet: ClosetStore
+    /// The adventure the pet just came home from, and when, until the
+    /// session's roll takes it.
+    private var adventureReturn: (entry: PetJournal.Entry, at: Date)?
+    private var adventureSubscription: AnyCancellable?
     private let saveURL: URL?
     /// Set when the file on disk could not be read: no gifts then, since a
     /// fresh state would forget the caps and could be farmed.
@@ -46,6 +58,9 @@ final class SurpriseGiftKeeper: ObservableObject {
         self.state = state
         saveURL = url
         saveIsUnreadable = unreadable
+        adventureSubscription = closet.adventureReturns.sink { [weak self] entry in
+            MainActor.assumeIsolated { self?.adventureReturn = (entry, Date()) }
+        }
     }
 
     /// `~/Library/Application Support/<edition>/Pet/gifts.json`.
@@ -58,18 +73,32 @@ final class SurpriseGiftKeeper: ObservableObject {
 
     /// Rolls for the focus session behind `award`, saves the outcome,
     /// applies a gift (bonus points go to the pet's balance; a rare fur
-    /// joins the Closet's Look) and publishes it. Nil when there is none.
-    func roll(after award: PetStudyAward, at date: Date = .now) -> SurpriseGift? {
+    /// joins the Closet's Look) and publishes it. When the pet just came
+    /// home from an adventure, the gift is what it brought back and goes on
+    /// that journal line. Nil when there is none.
+    func roll(after award: PetStudyAward, at date: Date = .now) -> SurpriseGiftDelivery? {
+        let adventure = takeAdventureReturn(at: date)
         guard saveURL != nil, !saveIsUnreadable else { return nil }
         var random = SystemRandomNumberGenerator()
         let gift = state.roll(after: award, at: date, using: &random)
         persist()
         guard let gift else { return nil }
         if case .bonusPoints(let points) = gift { closet.receiveGift(points: points) }
-        let delivery = SurpriseGiftDelivery(gift: gift, date: date)
+        let delivery = SurpriseGiftDelivery(gift: gift, date: date,
+                                            adventure: adventure.flatMap { closet.recordGift(gift, broughtBackFrom: $0) })
         latest = delivery
         delivered.send(delivery)
-        return gift
+        return delivery
+    }
+
+    /// The adventure the pet came home from within `adventureWindow` of
+    /// `date`, if any. Each one is taken once, by the roll right after it.
+    private func takeAdventureReturn(at date: Date) -> PetJournal.Entry? {
+        defer { adventureReturn = nil }
+        guard let adventureReturn, abs(date.timeIntervalSince(adventureReturn.at)) <= Self.adventureWindow else {
+            return nil
+        }
+        return adventureReturn.entry
     }
 
     private func persist() {

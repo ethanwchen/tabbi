@@ -179,6 +179,17 @@ The Tiny Rain Cloud is one particle, a white cloud with two puffs and a grey und
 Its drops fall a row a tick over an 8-tick loop, and each drop goes away as it reaches the pet, so the rain seems to land on it.
 The dachshund sits side-on with its head where other pets leave air, so an aura item may give it a loop of its own (`longDog`); the cloud uses one to hang over its back.
 
+### Bond growth
+
+The pet grows with the bond (`PetBond`, from the activity log) instead of being redrawn per breed.
+`PetBondLook` says what a bond level shows: a collar from level 2 that upgrades to a bell at 4, a star tag at 6 and gold studs with a gold tag at 8, a happier idle from level 3, and a soft sparkle from level 9.
+The collars are body items in `costume.json` (`bondCollarPlain`, `bondCollarBell`, `bondCollarStar`, `bondCollarGold`) on the shared neck anchors: a crimson band under the chin with an outlined gold tag, which read on every fur color.
+They go over the outfit, and a neck item (a scarf, a bow tie) is worn in their place.
+The sparkle is an aura item (`bondSparkle`): two soft white glints that twinkle in free air and never touch the pet.
+The happier idle is in `PetAnimator`: a happy pet (`happy:`, from `PetBondLook.happyIdle` through `PetPlayer`) swishes its tail in place of every third blink (`happyBeatEvery`), on the same random beat, so it never looks restless; like a blink it yields to any event, and Reduce Motion draws the idle pose.
+`PetProfile.bondLook` carries the look to every view that draws the pet, but it is never saved or synced: the Closet derives it from the bond.
+`--snapshot` writes `pets-bond.png`, every breed at each bond look, in an outfit, walking, stretching and curled up, and `closed-pet-bond.png`, the closed-notch pet at the top bond with its neck item taken off so the gold tag shows.
+
 ### Adding a costume item
 
 1. Add a case to `PetOutfit` or `PetAccessory` (with its `slot` and `displayName`), and give it a price in `PetItem.cost`, a Closet shelf in `PetItem.theme` (Study, Cozy, Fantasy, Seasonal or Silly) and the catalog `release` that adds it.
@@ -261,7 +272,7 @@ When the row under the nose carries nose-colored mouth corners (most dogs), a ro
 | idle | Head nods down 1 px and back, 1.1 s + 0.9 s, so the pet breathes slowly |
 | blink | One closed-eye frame, 140 ms, played now and then over idle |
 | sit | The plain sitting frame, held |
-| sleep | Sleepy eyes, a closed mouth, head sinking 1-2 px, a small "z" by the ear and a larger one drifting up |
+| sleep | Sleepy eyes, a closed mouth, head sinking 1-2 px, and one "z" at a time drifting up and right from the head: large, then small, then faded (`effectFaint`), then gone. It stays below the frame's top 5 rows, so it is always whole inside the closed notch; Reduce Motion holds the small bright one |
 | peekIn / peekOut | The pet dangles from the notch by its front paws: the head lowers into view from beyond the top edge, bounces 1 px, and rests with its chin on row 20; peekOut is the same frames reversed |
 | alert | Two hops (2 px, then 1 px) and a hold; every frame has a `bubbleAnchor` at the top-right of the head for the app's speech bubble |
 | celebrate | Happy eyes, a 3 px hop, a heart floating up beside the head, and sparkles |
@@ -277,7 +288,7 @@ When the row under the nose carries nose-colored mouth corners (most dogs), a ro
 | walk | Four 150 ms steps of a trot, side-on (see below) |
 | stretch | A side-on play bow: down in three steps, a held bow with happy eyes and a tail wag, then back up (see below) |
 
-Effects (the "z", heart, and sparkles) use the `effect` and `heart` roles and are painted after outlining and only into transparent pixels, so they float free of the pet and never hide part of a hat.
+Effects (the "z", heart, and sparkles) use the `effect`, `effectFaint` (the fading "z", `effect` at 40% opacity) and `heart` roles and are painted after outlining and only into transparent pixels, so they float free of the pet and never hide part of a hat.
 The peek legs come from `EffectArt.hangingLeg`, drawn behind the head with the breed's paw zone.
 
 ![Every animation frame for the orange tabby](images/animations-cat.png)
@@ -384,7 +395,26 @@ To draw, call `animator.advance(to: now)` and then `clipSet.frame(for: animator.
   Features drive it with `send(.nudge)`, `send(.celebrate)`, and so on, and `update(profile:)` swaps the look in place.
 - The closed notch's pet (`NotchPetWing`) maps the shared `PetMood` to an activity with `PetAnimator.Activity(mood)`, so it types on its laptop while the shared focus clock runs a focus phase, sips coffee on breaks, and yawns when a long focus stretch ends.
   It seeds the animator's activity start from `TickerPet.moodSince` (when the running phase began), so a wing rebuilt mid-session still counts the whole stretch.
-  Snapshot runs render it as `closed-pet-studying.png`, `closed-pet-break.png` and `closed-pet-asleep.png` (whichever differ from the pet's current mood in `closed-pet.png`).
+  Late at night (11 PM to 6 AM local time, `PetNightRhythm`) the Closet's `PetPresence` lets the pet doze after a 10 minute quiet spell instead of 20, with its drifting "z"s.
+  Opening the notch or starting a session wakes it, and Reduce Motion holds the doze still.
+  Snapshot runs leave the night out, so a shot looks the same at any hour.
+  Snapshot runs render it as `closed-pet-studying.png`, `closed-pet-break.png` and `closed-pet-asleep.png` (whichever differ from the pet's current mood in `closed-pet.png`, all drawn at home).
+- In a running focus block of 15 minutes or more, the closed-notch pet goes on a little adventure (`PetAdventure`, carried on `TickerPet.adventure`).
+  Partway through the block it trots into the notch, leaving a faint paw print and "exploring" beside its name, and it trots back out over the block's last 3 seconds, so its return is part of the finish.
+  The timer keeps rotating through the closed notch while the pet is away, and under Reduce Motion the pet stays home.
+  Snapshot runs render it away as `closed-pet-away.png` and half way back as `closed-pet-returning.png`.
+  When the block runs out with the pet on its way home (`PetAdventure.finished`), the Closet writes a line into the pet's journal (`PetJournal`, "Mochi explored the bookshelf"), saved as `Pet/journal.json` beside the save but never synced.
+  The Large Closet pet card shows the newest line in place of the breed, and hovering the pet shows it on any size.
+  `ClosetStore.adventureReturns` sends each journal entry as the pet comes back, and the `SurpriseGiftKeeper` follows it: when that session brings a surprise gift, the gift is what the pet carried home.
+  The coach's bubble then says "Found: 15 bonus points" in place of "A gift: ...", the gift is written onto that journal line, and the pet's tooltip reads "Mochi found a perfect leaf and brought back 15 bonus points".
+  The card's line stays the short journal line.
+- The closed notch's slot beside the pet's name holds one thing at a time: "zzz" while it dozes (by day or at night), "exploring" while it is away on an adventure, and otherwise, while it is awake between sessions, the slim progress bar when its next unlock is 2 sessions or less away (`TickerPet.unlockHint`).
+  The bar never shows during a focus block, a break, a doze or a sip, and the slot is measured for the widest of the three, so the wing never changes width.
+  A block stopped or skipped early, or one under Reduce Motion, writes nothing.
+- The closed notch's bar is only as tall as the sprite frame, so the closed-notch pet sits 1 pt off its bottom edge (`NotchPreviewLayout.petLift`) and plays clips built with a ceiling (`PetClipSet(profile:ceiling:)`, `NotchPreviewLayout.petCeilingRow`) that keep every pixel at least 1 pt inside the bar.
+  A frame whose pet or costume reaches higher (a tall hat in a celebration hop) moves down as far as the empty rows under it allow, an effect (a "z", a heart, a sparkle) rises no higher than the ceiling, and an aura particle (a cherry petal, a sparkle from the trail or the bond, the rain cloud) only shows once it is wholly below it, so petals and rain drift in from above the bar.
+  Nothing is ever drawn cut in half, and the Closet and every other view keep the full art.
+  `NotchPetBoundsTests` checks every frame of every animation, for every breed in every outfit, accessory and bond look.
 - `PetView(player:pixelSize:)` is a fixed square of 32 sprite pixels (32 pt at the default `pixelSize` of 1, 24 pt at 0.75).
   A `TimelineView` with `PetFrameSchedule` redraws exactly at each `nextChange`, so an idle pet redraws a few times a second and a hidden or hanging pet not at all.
 - Frames are rendered at a whole number of device pixels per sprite pixel and drawn without interpolation; they are pixel-perfect whenever `pixelSize` times the display scale is a whole number.

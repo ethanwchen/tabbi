@@ -252,7 +252,8 @@ public struct PetClip: Hashable, Sendable {
     /// The one frame a still pet shows for this clip under Reduce Motion: a
     /// one-shot clip's last frame, where it settles (the alert keeps its
     /// bubble, celebrate its heart), and a loop's first, except that sleep
-    /// and nap hold the frame with both "z"s, so a frozen pet reads as asleep.
+    /// and nap hold a frame with a bright "z" drifting up, so a frozen pet
+    /// reads as asleep.
     public var stillFrame: PetFrame {
         frames[min(animation.timeline.stillIndex, frames.count - 1)]
     }
@@ -288,16 +289,27 @@ extension PetComposer {
     /// `animations.json`. Composition is cheap (a few 32x32 grids), but
     /// callers that play clips repeatedly should keep the result instead of
     /// rebuilding it every frame.
+    ///
+    /// `ceiling` is for a view that cuts off the frame's top rows (the
+    /// closed notch): nothing is drawn above that row, and nothing is ever
+    /// drawn cut in half. A frame whose pet or costume reaches higher (a
+    /// tall hat in a hop) moves down as far as the empty rows under it
+    /// allow, every tick of an item loop together. An effect (a "z", a
+    /// heart, a sparkle) rises no higher than the ceiling. An aura particle
+    /// (a petal, a sparkle, the rain cloud) shows once it is wholly below
+    /// it, so petals and rain drift in from above the bar. Without a
+    /// ceiling the frames are the full art the Closet shows.
     public static func clip(
         _ animation: PetAnimation, for breed: PetBreed,
-        outfit: PetOutfit = .none, accessories: [PetAccessory] = []
+        outfit: PetOutfit = .none, accessories: [PetAccessory] = [], bond: PetBondLook = .none,
+        ceiling: Int? = nil
     ) -> PetClip {
         let timeline = animation.timeline
-        let loop = itemLoopLength(outfit: outfit, accessories: accessories)
+        let loop = itemLoopLength(outfit: outfit, accessories: accessories, bond: bond)
         // One composed frame per tick of the item loop, so animated costume
         // items stay anchored to every pose.
         let phases = timeline.frames.map { step in
-            (0..<loop).map { compose(breed, pose: step.pose, outfit: outfit, accessories: accessories,
+            (0..<loop).map { compose(breed, pose: step.pose, outfit: outfit, accessories: accessories, bond: bond,
                                      stance: step.stance, phase: $0) }
         }
         // Effects placed by the head follow the clip's first frame, so a
@@ -309,22 +321,23 @@ extension PetComposer {
             case .head(let offset): origin + offset
             }
         }
-        func finish(_ step: PetTimeline.Frame, _ composed: Composed) -> PetCanvas {
-            let pet = composed.canvas.shifted(x: 0, y: step.shiftY)
+        func finish(_ step: PetTimeline.Frame, _ composed: Composed, drop: Int) -> PetCanvas {
+            let pet = composed.canvas.shifted(x: 0, y: step.shiftY + drop)
             var canvas = pet
             for effect in step.effects {
                 let grid = PetArt.effect.grid(effect.grid)
-                canvas = canvas.adding(grid, at: PetPoint(x: place(effect.x, from: head.x), y: place(effect.y, from: head.y)))
+                let y = place(effect.y, from: head.y) + drop
+                canvas = canvas.adding(grid, at: PetPoint(x: place(effect.x, from: head.x), y: max(y, ceiling ?? y)))
             }
             if let steam = step.steam, let top = composed.mugTop {
                 let wisp = PropArt.steam[steam]
                 // Painted over the chest, not behind the pet like other effects.
-                canvas.stamp(wisp, x: top.x + 1, y: top.y - wisp.height)
+                canvas.stamp(wisp, x: top.x + 1, y: top.y + drop - wisp.height)
             }
             if step.dust {
                 // Puffs on the floor just outside the paws (the bottom row,
                 // so a wide tail higher up doesn't push them away).
-                let floor = frameSize - 1 - step.pose.lift
+                let floor = min(frameSize - 1, frameSize - 1 - step.pose.lift + drop)
                 let paws = (0..<frameSize).filter { canvas[$0, floor] != nil }
                 if let left = paws.first, let right = paws.last {
                     let y = frameSize - EffectArt.dustLeft.height
@@ -339,23 +352,35 @@ extension PetComposer {
             // Petals float in the free air in front of the pet and its
             // effects, and in front of wings.
             if let aura = composed.aura {
-                canvas = canvas.scattering(aura)
+                canvas = canvas.scattering(ceiling.map { aura.keepingParticles(below: $0) } ?? aura)
             }
             // Wings go behind the pet and its effects: a "z" or a heart
             // floats in front of them.
             if let back = composed.back {
-                canvas = canvas.over(back.shifted(x: 0, y: step.shiftY), ringing: effects)
+                canvas = canvas.over(back.shifted(x: 0, y: step.shiftY + drop), ringing: effects)
             }
             return canvas
         }
+        /// How far a step moves down to clear `ceiling`: what its highest
+        /// tick needs, but no more than its lowest tick has room for.
+        /// The pet and what it wears are its canvas and its back layer
+        /// (wings), moved by the step's shift; steam and dust stay low.
+        func fittingDrop(_ step: PetTimeline.Frame, _ phases: [Composed]) -> Int {
+            guard let ceiling else { return 0 }
+            let bounds = phases.flatMap { [$0.canvas.opaqueBounds, $0.back?.opaqueBounds].compactMap { $0 } }
+            guard let minY = bounds.map(\.minY).min(), let maxY = bounds.map(\.maxY).max() else { return 0 }
+            let top = max(0, minY + step.shiftY), bottom = min(frameSize - 1, maxY + step.shiftY)
+            return max(0, min(ceiling - top, frameSize - 1 - bottom))
+        }
         let frames = zip(timeline.frames, phases).map { step, phases in
-            let canvases = phases.map { finish(step, $0) }
+            let drop = fittingDrop(step, phases)
+            let canvases = phases.map { finish(step, $0, drop: drop) }
             // A frame where the moving item is out of sight (a hanging pet
             // shows no body) holds still.
             let moves = canvases.contains { $0 != canvases[0] }
             return PetFrame(
                 canvas: canvases[0], duration: step.duration,
-                bubbleAnchor: step.bubble ? phases[0].headTopRight : nil,
+                bubbleAnchor: step.bubble ? PetPoint(x: phases[0].headTopRight.x, y: phases[0].headTopRight.y + drop) : nil,
                 itemFrames: moves ? canvases : []
             )
         }
@@ -372,6 +397,31 @@ extension PetComposer {
 }
 
 extension PetCanvas {
+    /// The particles (8-connected groups of pixels) lying wholly at or below
+    /// row `ceiling`; any that reach above it are left out whole.
+    func keepingParticles(below ceiling: Int) -> PetCanvas {
+        var kept = self
+        var seen = Set<Int>()
+        for start in pixels.indices where pixels[start] != nil && !seen.contains(start) {
+            var particle: [Int] = []
+            var queue = [start]
+            seen.insert(start)
+            while let index = queue.popLast() {
+                particle.append(index)
+                let (x, y) = (index % width, index / width)
+                for dy in -1...1 {
+                    for dx in -1...1 where self[x + dx, y + dy] != nil {
+                        let neighbor = (y + dy) * width + x + dx
+                        if seen.insert(neighbor).inserted { queue.append(neighbor) }
+                    }
+                }
+            }
+            guard particle.contains(where: { $0 / width < ceiling }) else { continue }
+            for index in particle { kept[index % width, index / width] = nil }
+        }
+        return kept
+    }
+
     /// The pixels this canvas has where `base` is transparent: what was
     /// added over it, such as effects.
     func added(over base: PetCanvas) -> PetCanvas {

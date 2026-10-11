@@ -19,12 +19,22 @@
 	<string>%@ Designs gestalten das offene Panel, die geschlossene Notch bleibt schwarz.</string>
 	<key>%@ Trying again in the background.</key>
 	<string>%@ Neuer Versuch im Hintergrund.</string>
+	<key>%@ and brought back %@</key>
+	<string>%1$@ und brachte %2$@ mit</string>
+	<key>%@ brought back a shiny acorn</key>
+	<string>%@ hat eine glänzende Eichel mitgebracht</string>
 	<key>%@ by %@, plays in Spotify.</key>
 	<string>%@ von %@, läuft in Spotify.</string>
 	<key>%@ can't control %@</key>
 	<string>%1$@ kann %2$@ nicht steuern</string>
+	<key>%@ chased a butterfly</key>
+	<string>%@ hat einen Schmetterling gejagt</string>
 	<key>%@ checkup</key>
 	<string>Check: %@</string>
+	<key>%@ climbed onto the rooftop</key>
+	<string>%@ ist aufs Dach geklettert</string>
+	<key>%@ collected a smooth pebble</key>
+	<string>%@ hat einen glatten Kiesel gesammelt</string>
 	<key>%@ could not be copied to Applications. %@</key>
 	<string>%@ konnte nicht in „Programme“ kopiert werden. %@</string>
 	<key>%@ couldn't refine it. This plan still works.</key>
@@ -35,8 +45,16 @@
 	<string>%@ hat keinen brauchbaren Plan geliefert. Versuch es gleich noch mal.</string>
 	<key>%@ done for today. Open %@</key>
 	<string>%1$@ für heute erledigt. %2$@ öffnen</string>
+	<key>%@ explored a cardboard box</key>
+	<string>%@ hat einen Karton erkundet</string>
+	<key>%@ explored the bookshelf</key>
+	<string>%@ hat das Bücherregal erkundet</string>
 	<key>%@ focused today</key>
 	<string>Heute %@ fokussiert</string>
+	<key>%@ found a perfect leaf</key>
+	<string>%@ hat ein perfektes Blatt gefunden</string>
+	<key>%@ found a soft feather</key>
+	<string>%@ hat eine weiche Feder gefunden</string>
 	<key>%@ free</key>
 	<string>%@ frei</string>
 	<key>%@ free this week</key>
@@ -75,6 +93,8 @@
 	<string>%@ schläft bis zur nächsten Sitzung</string>
 	<key>%@ is now your friend</key>
 	<string>Du bist jetzt mit %@ befreundet</string>
+	<key>%@ is off on a little adventure and will be back as your session ends</key>
+	<string>%@ ist auf einem kleinen Abenteuer und kommt zum Ende deiner Sitzung zurück</string>
 	<key>%@ is on a break with you</key>
 	<string>%@ macht mit dir Pause</string>
 	<key>%@ is ready in the Closet</key>
@@ -93,14 +113,20 @@
 	<string>%@ ist noch nicht auf diesem Mac. Verbindungen zeigt dir, wie es geht.</string>
 	<key>%@ isn't set up yet</key>
 	<string>%@ ist noch nicht eingerichtet</string>
+	<key>%@ learned a song from a bird</key>
+	<string>%@ hat von einem Vogel ein Lied gelernt</string>
 	<key>%@ left</key>
 	<string>noch %@</string>
 	<key>%@ level in the blend</key>
 	<string>Anteil von %@ in der Mischung</string>
+	<key>%@ made friends with a pigeon</key>
+	<string>%@ hat sich mit einer Taube angefreundet</string>
 	<key>%@ misses you</key>
 	<string>%@ vermisst dich</string>
 	<key>%@ moved to position %lld of %lld</key>
 	<string>%1$@ ist jetzt an Position %2$lld von %3$lld</string>
+	<key>%@ napped on a sunny windowsill</key>
+	<string>%@ hat auf der sonnigen Fensterbank gedöst</string>
 	<key>%@ naps until the timer runs</key>
 	<string>%@ döst, bis der Timer läuft</string>
 	<key>%@ not found</key>
@@ -111,12 +137,24 @@
 	<string>%@ Fokus.</string>
 	<key>%@ opens in Music; press play there.</key>
 	<string>%@ öffnet sich in Musik; starte sie dort.</string>
+	<key>%@ raced a snail and let it win</key>
+	<string>%@ ließ eine Schnecke beim Rennen gewinnen</string>
 	<key>%@ reads your events on this Mac and never uploads them</key>
 	<string>%@ liest deine Termine auf diesem Mac und lädt sie nie hoch</string>
+	<key>%@ rescued a lost sock</key>
+	<string>%@ hat eine verlorene Socke gerettet</string>
 	<key>%@ runs until %@. Next item, %@: %@ focused.</key>
 	<string>%1$@ läuft bis %2$@. Nächstes Item, %3$@: %4$@ konzentriert.</string>
 	<key>%@ settings</key>
 	<string>Einstellungen für %@</string>
+	<key>%@ sniffed every flower in the garden</key>
+	<string>%@ hat an jeder Blume im Garten geschnuppert</string>
+	<key>%@ snuck into the library</key>
+	<string>%@ hat sich in die Bibliothek geschlichen</string>
+	<key>%@ splashed in a puddle</key>
+	<string>%@ ist in eine Pfütze gehüpft</string>
+	<key>%@ spotted a tiny rainbow</key>
+	<string>%@ hat einen winzigen Regenbogen entdeckt</string>
 	<key>%@ started it for the party</key>
 	<string>%@ hat sie für die Party gestartet</string>
 	<key>%@ studied</key>
@@ -135,6 +173,12 @@
 	<string>%1$@: noch %2$@</string>
 	<key>%@ unlocks at %lld</key>
 	<string>%1$@ ab %2$lld</string>
+	<key>%@ visited the bakery</key>
+	<string>%@ hat die Bäckerei besucht</string>
+	<key>%@ watched a cloud shaped like a fish</key>
+	<string>%@ hat eine Wolke wie ein Fisch beobachtet</string>
+	<key>%@ went around the park twice</key>
+	<string>%@ ist zweimal um den Park gelaufen</string>
 	<key>%@ with %@</key>
 	<string>%1$@ mit %2$@</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
@@ -177,6 +221,8 @@
 	<string>noch %lld Min.</string>
 	<key>%lld min on your own</key>
 	<string>%lld Min. allein</string>
+	<key>%lld min toward the event</key>
+	<string>%lld min für das Event</string>
 	<key>%lld min, no distractions</key>
 	<string>%lld Min. ohne Ablenkung</string>
 	<key>%lld new, %lld learning, %lld review</key>
@@ -256,7 +302,7 @@
 	<key>A gift: %lld min toward the event</key>
 	<string>Ein Geschenk: %lld min für das Event</string>
 	<key>A gift: the rare %@ fur</key>
-	<string>Ein Geschenk: das seltene Fell %@</string>
+	<string>Geschenk: seltenes Fell %@</string>
 	<key>A kit is a ready-made set of tabs. Switching replaces your tabs and adds its starter tasks to Today.</key>
 	<string>Ein Kit ist eine fertige Auswahl an Tabs. Ein Wechsel ersetzt deine Tabs und fügt seine Startaufgaben zu Heute hinzu.</string>
 	<key>A kit is a set of tabs. You can change them any time.</key>
@@ -547,8 +593,12 @@
 	<string>Verkehrte Kappe</string>
 	<key>Beanie</key>
 	<string>Mütze</string>
+	<key>Bell collar</key>
+	<string>Glöckchenhalsband</string>
 	<key>Best day %@</key>
 	<string>Bester Tag %@</string>
+	<key>Best friends</key>
+	<string>Beste Kumpel</string>
 	<key>Blend</key>
 	<string>Mischung</string>
 	<key>Blend up to three, or pick none for silence. Made on your Mac; fades in with focus and out at your break.</key>
@@ -563,6 +613,14 @@
 	<string>Blockierte sehen dich nicht, fügen dich nicht hinzu und treten keiner Party bei. Blockieren oder melden: Rechtsklick in Party.</string>
 	<key>Blocks go to your calendar.</key>
 	<string>Für deinen Kalender.</string>
+	<key>Bond %lld</key>
+	<string>Bindung %lld</string>
+	<key>Bond %lld of %lld, as close as it gets. Every focused minute still counts.</key>
+	<string>Bindung %1$lld von %2$lld, enger geht es nicht. Jede Fokusminute zählt trotzdem.</string>
+	<key>Bond %lld of %lld: %@ to Bond %lld, which brings the %@. Every focused minute and every study day bring you closer.</key>
+	<string>Bindung %1$lld von %2$lld: noch %3$@ bis Bindung %4$lld, dann gibt es: %5$@. Jede Fokusminute und jeder Lerntag bringen euch näher.</string>
+	<key>Bond %lld of %lld: %@ to Bond %lld. Every focused minute and every study day bring you closer.</key>
+	<string>Bindung %1$lld von %2$lld: noch %3$@ bis Bindung %4$lld. Jede Fokusminute und jeder Lerntag bringen euch näher.</string>
 	<key>Bonus minutes toward this event's limited items</key>
 	<string>Bonusminuten für die limitierten Items dieses Events</string>
 	<key>Bonus points from your pet, added to your balance</key>
@@ -1187,6 +1245,12 @@
 	<string>Fokus auf</string>
 	<key>Focusing on: %@</key>
 	<string>Fokus auf: %@</string>
+	<key>Forever friends</key>
+	<string>Für immer</string>
+	<key>Found: %lld min toward the event</key>
+	<string>Gefunden: %lld min für das Event</string>
+	<key>Found: the rare %@ fur</key>
+	<string>Gefunden: seltenes Fell %@</string>
 	<key>Free all day</key>
 	<string>Ganztägig frei</string>
 	<key>Free and offline: runs a model on this Mac.</key>
@@ -1277,6 +1341,8 @@
 	<string>Ohne Namen weitermachen</string>
 	<key>Goals left today</key>
 	<string>Offene Ziele heute</string>
+	<key>Gold tag</key>
+	<string>Goldanhänger</string>
 	<key>Golden Laurel</key>
 	<string>Goldener Lorbeer</string>
 	<key>Graduation Cap</key>
@@ -1289,6 +1355,8 @@
 	<string>Halloween</string>
 	<key>Halo</key>
 	<string>Heiligenschein</string>
+	<key>Happy wiggle</key>
+	<string>Fröhliches Wackeln</string>
 	<key>Haptic feedback</key>
 	<string>Haptisches Feedback</string>
 	<key>Harassment</key>
@@ -1377,6 +1445,8 @@
 	<string>Unangemessener Name</string>
 	<key>Input, output, and cache tokens across all %@ sessions since midnight</key>
 	<string>Eingabe-, Ausgabe- und Cache-Tokens aller %@-Sitzungen seit Mitternacht</string>
+	<key>Inseparable</key>
+	<string>Ganz eng</string>
 	<key>Install</key>
 	<string>Installieren</string>
 	<key>Install %@ to plan with it.</key>
@@ -1451,6 +1521,8 @@
 	<string>Trete Party bei. Das dauert nur kurz.</string>
 	<key>Joining the party server…</key>
 	<string>Verbinde mit dem Party-Server…</string>
+	<key>Just met</key>
+	<string>Ganz neu</string>
 	<key>Keep at least one tab on</key>
 	<string>Mindestens ein Tab bleibt an</string>
 	<key>Keep the %@ kit</key>
@@ -1469,6 +1541,8 @@
 	<string>Diesen Namen behalten</string>
 	<key>Keep your current kit and tabs</key>
 	<string>Aktuelles Kit und Tabs behalten</string>
+	<key>Kindred spirits</key>
+	<string>Seelenpaar</string>
 	<key>King's Cape</key>
 	<string>Königsumhang</string>
 	<key>Kit</key>
@@ -1479,6 +1553,8 @@
 	<string>Letzte 7 Tage</string>
 	<key>Last synced %@</key>
 	<string>Zuletzt synchronisiert: %@</string>
+	<key>Latest adventure: %@</key>
+	<string>Letztes Abenteuer: %@</string>
 	<key>Launch %@</key>
 	<string>%@ starten</string>
 	<key>Launch at login</key>
@@ -1645,6 +1721,8 @@
 	<string>Neu</string>
 	<key>New chat</key>
 	<string>Neuer Chat</string>
+	<key>New friends</key>
+	<string>Neue Freunde</string>
 	<key>New tabs may ask for %@.</key>
 	<string>Neue Tabs fragen eventuell nach %@.</string>
 	<key>Next meeting</key>
@@ -1665,6 +1743,8 @@
 	<string>Keine Antwort</string>
 	<key>No calendars yet</key>
 	<string>Noch keine Kalender</string>
+	<key>No collar</key>
+	<string>Kein Halsband</string>
 	<key>No events</key>
 	<string>Keine Termine</string>
 	<key>No events on your calendars today.</key>
@@ -1999,8 +2079,12 @@
 	<string>Unsichtbar. Drück %@, um sie zu öffnen.</string>
 	<key>Owned</key>
 	<string>Im Besitz</string>
+	<key>Pals</key>
+	<string>Kumpels</string>
 	<key>Panel size</key>
 	<string>Panelgröße</string>
+	<key>Partners in focus</key>
+	<string>Fokus-Team</string>
 	<key>Party</key>
 	<string>Party</string>
 	<key>Party Hat</key>
@@ -2119,6 +2203,8 @@
 	<string>Rosa Rauschen</string>
 	<key>Pirate Hat</key>
 	<string>Piratenhut</string>
+	<key>Plain collar</key>
+	<string>Schlichtes Halsband</string>
 	<key>Plan</key>
 	<string>Planen</string>
 	<key>Plan my day</key>
@@ -2563,10 +2649,14 @@
 	<string>Ein bisschen ist unendlich viel mehr als nichts. Ruh dich aus. Das Schachbrett läuft nicht weg.</string>
 	<key>Something not working?</key>
 	<string>Klappt etwas nicht?</string>
+	<key>Soulmates</key>
+	<string>Herzensband</string>
 	<key>Sound</key>
 	<string>Klang</string>
 	<key>Spam</key>
 	<string>Spam</string>
+	<key>Sparkle</key>
+	<string>Funkeln</string>
 	<key>Sparkle Trail</key>
 	<string>Glitzerspur</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
@@ -2581,6 +2671,8 @@
 	<string>Federnd, mit leichtem Nachschwingen.</string>
 	<key>Sprint</key>
 	<string>Sprint</string>
+	<key>Star tag</key>
+	<string>Sternanhänger</string>
 	<key>Stars don't rush. They just keep burning.</key>
 	<string>Sterne hetzen nicht. Sie leuchten einfach weiter.</string>
 	<key>Start %@ automatically when you log in</key>
@@ -2687,6 +2779,8 @@
 	<string>Lernhoodie</string>
 	<key>Study block</key>
 	<string>Lernblock</string>
+	<key>Study buddies</key>
+	<string>Lernbuddys</string>
 	<key>Study parties</key>
 	<string>Lerngruppen</string>
 	<key>Study points earned today, to spend on your pet's outfits</key>
@@ -3343,6 +3437,8 @@
 	<string>Dein Party-Profil wurde zurückgesetzt. Verbinde neu…</string>
 	<key>Your pet</key>
 	<string>Dein Haustier</string>
+	<key>Your pet found this on its adventure. %@</key>
+	<string>Dein Haustier hat das auf seinem Abenteuer gefunden. %@</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>Der Name deines Haustiers ist nicht erlaubt. Benenne es in der Garderobe um.</string>
 	<key>Your pet, today's streak and the running timer.</key>
@@ -3383,6 +3479,8 @@
 	<string>endet gleich</string>
 	<key>events</key>
 	<string>Termine</string>
+	<key>exploring</key>
+	<string>unterwegs</string>
 	<key>focused</key>
 	<string>fokussiert</string>
 	<key>in %@</key>
@@ -3435,6 +3533,8 @@
 	<string>Aufgaben</string>
 	<key>the host</key>
 	<string>den Host</string>
+	<key>the rare %@ fur</key>
+	<string>seltenes Fell %@</string>
 	<key>today</key>
 	<string>heute</string>
 	<key>tokens</key>

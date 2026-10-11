@@ -93,8 +93,12 @@ enum SnapshotRenderer {
             // The pet's other looks: typing through a focus block, sipping
             // coffee on a break, and dozing after a quiet spell.
             if case .pet(var pet) = item {
+                // They are drawn home: a demo focus block may have sent the
+                // pet off on its adventure (its own shots are below).
                 let looks = [(PetMood.studying, "studying"), (.onBreak, "break"), (.asleep, "asleep")]
-                for (mood, name) in looks where mood != pet.mood {
+                let wasHome = pet.adventure == nil
+                pet.adventure = nil
+                for (mood, name) in looks where mood != pet.mood || !wasHome {
                     pet.mood = mood
                     let model = NotchViewModel(geometry: geometry, layout: layout)
                     model.preview = .pet(pet)
@@ -118,6 +122,20 @@ enum SnapshotRenderer {
                 let sipping = NotchViewModel(geometry: geometry, layout: layout)
                 sipping.preview = .pet(TickerPet(profile: pet.profile, mood: .onBreak))
                 shots.append(Shot("closed-pet-charging", sipping))
+                // A long focus block: the pet off on its adventure, then
+                // trotting back as the block ends (stamped when rendered).
+                for name in ["closed-pet-away", "closed-pet-returning"] {
+                    let model = NotchViewModel(geometry: geometry, layout: layout)
+                    model.preview = .pet(TickerPet(profile: pet.profile, mood: .studying))
+                    shots.append(Shot(name, model))
+                }
+                // A top bond: the gold tag (no neck item to hide it) and the sparkle.
+                var grown = pet.profile
+                for item in grown.accessories where item.slot == .neck { grown.takeOff(item) }
+                grown.bondLook = PetBondLook(level: PetBond.maxLevel)
+                let bonded = NotchViewModel(geometry: geometry, layout: layout)
+                bonded.preview = .pet(TickerPet(profile: grown, mood: .awake))
+                shots.append(Shot("closed-pet-bond", bonded))
             }
         }
         // The closed timer's ring part-way through a Pomodoro and a break,
@@ -339,7 +357,8 @@ enum SnapshotRenderer {
         }
 
         // Every costume on every body shape, and every pet animation frame by frame.
-        for (name, gallery) in [("pets-costumes", PetGallery.costumes()), ("pets-animations", PetGallery.animations())] {
+        for (name, gallery) in [("pets-costumes", PetGallery.costumes()), ("pets-animations", PetGallery.animations()),
+                                 ("pets-bond", PetGallery.bondLooks())] {
             guard let png = gallery.png(scale: 2) else { continue }
             let url = outputDirectory.appendingPathComponent("\(name).png")
             try? png.write(to: url)
@@ -601,6 +620,16 @@ enum SnapshotRenderer {
                 // Mid hop, crowned as `TickerSources.cheering` does it.
                 pet.cheer = PetCheer(kind: .crown, id: 1, startedAt: Date().addingTimeInterval(-0.45))
                 pet.profile.wear(.tinyCrown)
+                model.preview = .pet(pet)
+            }
+            if name == "closed-pet-away" || name == "closed-pet-returning", case .pet(var pet) = model.preview {
+                // Ten minutes into the adventure, or half way back out of the notch.
+                let now = Date()
+                pet.adventure = name == "closed-pet-away"
+                    ? PetAdventure(departsAt: now.addingTimeInterval(-600), returnsAt: now.addingTimeInterval(300),
+                                   endsAt: now.addingTimeInterval(303))
+                    : PetAdventure(departsAt: now.addingTimeInterval(-900), returnsAt: now.addingTimeInterval(-1.5),
+                                   endsAt: now.addingTimeInterval(1.5))
                 model.preview = .pet(pet)
             }
             if name == "closed-pet-charging", case .pet(var pet) = model.preview {

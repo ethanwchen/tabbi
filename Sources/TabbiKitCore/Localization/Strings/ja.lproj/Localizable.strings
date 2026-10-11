@@ -19,12 +19,22 @@
 	<string>%@ テーマは開いたパネルに適用され、閉じたノッチは黒のままです。</string>
 	<key>%@ Trying again in the background.</key>
 	<string>%@ バックグラウンドで再試行しています。</string>
+	<key>%@ and brought back %@</key>
+	<string>%1$@。おみやげは%2$@</string>
+	<key>%@ brought back a shiny acorn</key>
+	<string>%@がどんぐりを持ち帰った</string>
 	<key>%@ by %@, plays in Spotify.</key>
 	<string>%2$@の%1$@、Spotifyで再生します。</string>
 	<key>%@ can't control %@</key>
 	<string>%1$@は%2$@を操作できません</string>
+	<key>%@ chased a butterfly</key>
+	<string>%@がちょうちょを追った</string>
 	<key>%@ checkup</key>
 	<string>チェック：%@</string>
+	<key>%@ climbed onto the rooftop</key>
+	<string>%@が屋根にのぼった</string>
+	<key>%@ collected a smooth pebble</key>
+	<string>%@がすべすべの石を拾った</string>
 	<key>%@ could not be copied to Applications. %@</key>
 	<string>%@をアプリケーションにコピーできませんでした。%@</string>
 	<key>%@ couldn't refine it. This plan still works.</key>
@@ -35,8 +45,16 @@
 	<string>%@ から使える計画が返ってきませんでした。少し待ってからもう一度お試しください。</string>
 	<key>%@ done for today. Open %@</key>
 	<string>%1$@は今日は完了。%2$@を開く</string>
+	<key>%@ explored a cardboard box</key>
+	<string>%@が段ボール箱を探検した</string>
+	<key>%@ explored the bookshelf</key>
+	<string>%@が本棚を探検した</string>
 	<key>%@ focused today</key>
 	<string>今日の集中 %@</string>
+	<key>%@ found a perfect leaf</key>
+	<string>%@が完璧な葉っぱを発見</string>
+	<key>%@ found a soft feather</key>
+	<string>%@がふわふわの羽を発見</string>
 	<key>%@ free</key>
 	<string>空き %@</string>
 	<key>%@ free this week</key>
@@ -75,6 +93,8 @@
 	<string>%@は次のセッションまでお昼寝中</string>
 	<key>%@ is now your friend</key>
 	<string>%@とフレンドになりました</string>
+	<key>%@ is off on a little adventure and will be back as your session ends</key>
+	<string>%@は小さな冒険中。セッションの終わりに戻ってきます</string>
 	<key>%@ is on a break with you</key>
 	<string>%@も一緒に休憩中</string>
 	<key>%@ is ready in the Closet</key>
@@ -93,14 +113,20 @@
 	<string>%@ はまだこの Mac にありません。追加方法は「接続」で確認できます。</string>
 	<key>%@ isn't set up yet</key>
 	<string>%@ はまだ設定されていません</string>
+	<key>%@ learned a song from a bird</key>
+	<string>%@が小鳥に歌を教わった</string>
 	<key>%@ left</key>
 	<string>残り%@</string>
 	<key>%@ level in the blend</key>
 	<string>ブレンド内の%@の音量</string>
+	<key>%@ made friends with a pigeon</key>
+	<string>%@がハトと友だちに</string>
 	<key>%@ misses you</key>
 	<string>%@がさみしがってるよ</string>
 	<key>%@ moved to position %lld of %lld</key>
 	<string>%1$@を%3$lld個中%2$lld番目に移動しました</string>
+	<key>%@ napped on a sunny windowsill</key>
+	<string>%@が窓辺でひなたぼっこ</string>
 	<key>%@ naps until the timer runs</key>
 	<string>タイマーが動くまで%@はお昼寝中</string>
 	<key>%@ not found</key>
@@ -111,12 +137,24 @@
 	<string>%@ 集中しました。</string>
 	<key>%@ opens in Music; press play there.</key>
 	<string>%@はミュージックで開きます。そこで再生してください。</string>
+	<key>%@ raced a snail and let it win</key>
+	<string>%@がカタツムリに勝たせた</string>
 	<key>%@ reads your events on this Mac and never uploads them</key>
 	<string>%@ は予定をこの Mac 上で読み取り、アップロードすることはありません</string>
+	<key>%@ rescued a lost sock</key>
+	<string>%@が迷子の靴下を救出</string>
 	<key>%@ runs until %@. Next item, %@: %@ focused.</key>
 	<string>%1$@は%2$@まで。次のアイテム「%3$@」: 集中 %4$@。</string>
 	<key>%@ settings</key>
 	<string>%@の設定</string>
+	<key>%@ sniffed every flower in the garden</key>
+	<string>%@がお庭の花をくんくん</string>
+	<key>%@ snuck into the library</key>
+	<string>%@が図書館にしのびこんだ</string>
+	<key>%@ splashed in a puddle</key>
+	<string>%@が水たまりでパシャッ</string>
+	<key>%@ spotted a tiny rainbow</key>
+	<string>%@が小さな虹を発見</string>
 	<key>%@ started it for the party</key>
 	<string>%@がパーティ用に開始</string>
 	<key>%@ studied</key>
@@ -135,6 +173,12 @@
 	<string>%2$@で%1$@を解放</string>
 	<key>%@ unlocks at %lld</key>
 	<string>%2$lldで%1$@を解放</string>
+	<key>%@ visited the bakery</key>
+	<string>%@がパン屋さんに寄った</string>
+	<key>%@ watched a cloud shaped like a fish</key>
+	<string>%@が魚の形の雲を見た</string>
+	<key>%@ went around the park twice</key>
+	<string>%@が公園を2周した</string>
 	<key>%@ with %@</key>
 	<string>%1$@と%2$@</string>
 	<key>%@ works best from Applications, where it can open when you log in and keep itself up to date. It copies itself there and opens again.</key>
@@ -177,6 +221,8 @@
 	<string>残り %lld 分</string>
 	<key>%lld min on your own</key>
 	<string>ひとりで%lld分</string>
+	<key>%lld min toward the event</key>
+	<string>イベントに%lld分</string>
 	<key>%lld min, no distractions</key>
 	<string>%lld分、集中タイム</string>
 	<key>%lld new, %lld learning, %lld review</key>
@@ -256,7 +302,7 @@
 	<key>A gift: %lld min toward the event</key>
 	<string>プレゼント: イベントに%lld分</string>
 	<key>A gift: the rare %@ fur</key>
-	<string>プレゼント: レアな毛色「%@」</string>
+	<string>プレゼント: レア毛色「%@」</string>
 	<key>A kit is a ready-made set of tabs. Switching replaces your tabs and adds its starter tasks to Today.</key>
 	<string>キットはすぐ使えるタブのセットです。切り替えるとタブが置き換わり、最初のタスクが「今日」に追加されます。</string>
 	<key>A kit is a set of tabs. You can change them any time.</key>
@@ -547,8 +593,12 @@
 	<string>後ろかぶりキャップ</string>
 	<key>Beanie</key>
 	<string>ニット帽</string>
+	<key>Bell collar</key>
+	<string>鈴つき首輪</string>
 	<key>Best day %@</key>
 	<string>最高 %@</string>
+	<key>Best friends</key>
+	<string>親友</string>
 	<key>Blend</key>
 	<string>ブレンド</string>
 	<key>Blend up to three, or pick none for silence. Made on your Mac; fades in with focus and out at your break.</key>
@@ -563,6 +613,14 @@
 	<string>ブロックした人はあなたを見たり、追加したり、パーティに参加したりできません。ブロックや報告はパーティで右クリック。</string>
 	<key>Blocks go to your calendar.</key>
 	<string>ブロックはカレンダーに追加されます。</string>
+	<key>Bond %lld</key>
+	<string>絆 %lld</string>
+	<key>Bond %lld of %lld, as close as it gets. Every focused minute still counts.</key>
+	<string>絆 %1$lld / %2$lld、これ以上ないなかよし。集中した1分1分がまだ積み重なります。</string>
+	<key>Bond %lld of %lld: %@ to Bond %lld, which brings the %@. Every focused minute and every study day bring you closer.</key>
+	<string>絆 %1$lld / %2$lld: 絆 %4$lld(%5$@)まであと%3$@。集中した1分と勉強した1日が、ふたりを近づけます。</string>
+	<key>Bond %lld of %lld: %@ to Bond %lld. Every focused minute and every study day bring you closer.</key>
+	<string>絆 %1$lld / %2$lld: 絆 %4$lldまであと%3$@。集中した1分と勉強した1日が、ふたりを近づけます。</string>
 	<key>Bonus minutes toward this event's limited items</key>
 	<string>このイベントの限定アイテムに向けたボーナス時間</string>
 	<key>Bonus points from your pet, added to your balance</key>
@@ -1187,6 +1245,12 @@
 	<string>集中中</string>
 	<key>Focusing on: %@</key>
 	<string>集中中: %@</string>
+	<key>Forever friends</key>
+	<string>ずっと一緒</string>
+	<key>Found: %lld min toward the event</key>
+	<string>おみやげ: イベントに%lld分</string>
+	<key>Found: the rare %@ fur</key>
+	<string>おみやげ: レア毛色「%@」</string>
 	<key>Free all day</key>
 	<string>終日予定なし</string>
 	<key>Free and offline: runs a model on this Mac.</key>
@@ -1277,6 +1341,8 @@
 	<string>名前なしで進む</string>
 	<key>Goals left today</key>
 	<string>今日の残り目標</string>
+	<key>Gold tag</key>
+	<string>金のチャーム</string>
 	<key>Golden Laurel</key>
 	<string>金の月桂冠</string>
 	<key>Graduation Cap</key>
@@ -1289,6 +1355,8 @@
 	<string>ハロウィン</string>
 	<key>Halo</key>
 	<string>天使の輪</string>
+	<key>Happy wiggle</key>
+	<string>ごきげんしっぽ</string>
 	<key>Haptic feedback</key>
 	<string>触覚フィードバック</string>
 	<key>Harassment</key>
@@ -1377,6 +1445,8 @@
 	<string>不適切な名前</string>
 	<key>Input, output, and cache tokens across all %@ sessions since midnight</key>
 	<string>深夜0時以降のすべての%@セッションの入力・出力・キャッシュトークン</string>
+	<key>Inseparable</key>
+	<string>いつも一緒</string>
 	<key>Install</key>
 	<string>インストール</string>
 	<key>Install %@ to plan with it.</key>
@@ -1451,6 +1521,8 @@
 	<string>パーティに参加中です。少しお待ちください。</string>
 	<key>Joining the party server…</key>
 	<string>パーティサーバーに接続中…</string>
+	<key>Just met</key>
+	<string>はじめまして</string>
 	<key>Keep at least one tab on</key>
 	<string>タブは1つ以上オンにしてください</string>
 	<key>Keep the %@ kit</key>
@@ -1469,6 +1541,8 @@
 	<string>この名前にする</string>
 	<key>Keep your current kit and tabs</key>
 	<string>今のキットとタブのままにする</string>
+	<key>Kindred spirits</key>
+	<string>心の友</string>
 	<key>King's Cape</key>
 	<string>王様のマント</string>
 	<key>Kit</key>
@@ -1479,6 +1553,8 @@
 	<string>過去7日間</string>
 	<key>Last synced %@</key>
 	<string>最終同期：%@</string>
+	<key>Latest adventure: %@</key>
+	<string>最近の冒険: %@</string>
 	<key>Launch %@</key>
 	<string>%@を起動</string>
 	<key>Launch at login</key>
@@ -1645,6 +1721,8 @@
 	<string>新規</string>
 	<key>New chat</key>
 	<string>新しいチャット</string>
+	<key>New friends</key>
+	<string>新しい友だち</string>
 	<key>New tabs may ask for %@.</key>
 	<string>新しいタブで%@の許可を求められることがあります。</string>
 	<key>Next meeting</key>
@@ -1665,6 +1743,8 @@
 	<string>回答なし</string>
 	<key>No calendars yet</key>
 	<string>カレンダーがまだありません</string>
+	<key>No collar</key>
+	<string>首輪なし</string>
 	<key>No events</key>
 	<string>予定なし</string>
 	<key>No events on your calendars today.</key>
@@ -1999,8 +2079,12 @@
 	<string>非表示です。%@ を押すと開きます。</string>
 	<key>Owned</key>
 	<string>所持</string>
+	<key>Pals</key>
+	<string>なかよし</string>
 	<key>Panel size</key>
 	<string>パネルのサイズ</string>
+	<key>Partners in focus</key>
+	<string>集中の相棒</string>
 	<key>Party</key>
 	<string>パーティ</string>
 	<key>Party Hat</key>
@@ -2119,6 +2203,8 @@
 	<string>ピンクノイズ</string>
 	<key>Pirate Hat</key>
 	<string>海賊帽</string>
+	<key>Plain collar</key>
+	<string>シンプルな首輪</string>
 	<key>Plan</key>
 	<string>計画</string>
 	<key>Plan my day</key>
@@ -2563,10 +2649,14 @@
 	<string>少しでも、ゼロより限りなく大きい。休もう。盤はここで待ってる。</string>
 	<key>Something not working?</key>
 	<string>うまく動かないときは</string>
+	<key>Soulmates</key>
+	<string>運命の相棒</string>
 	<key>Sound</key>
 	<string>サウンド</string>
 	<key>Spam</key>
 	<string>スパム</string>
+	<key>Sparkle</key>
+	<string>キラキラ</string>
 	<key>Sparkle Trail</key>
 	<string>キラキラの軌跡</string>
 	<key>Spooky season is here. Focus to dress up your pet.</key>
@@ -2581,6 +2671,8 @@
 	<string>弾むように、少しだけバウンド。</string>
 	<key>Sprint</key>
 	<string>スプリント</string>
+	<key>Star tag</key>
+	<string>星のチャーム</string>
 	<key>Stars don't rush. They just keep burning.</key>
 	<string>星は急がない。ただ燃え続けるだけ。</string>
 	<key>Start %@ automatically when you log in</key>
@@ -2687,6 +2779,8 @@
 	<string>勉強パーカー</string>
 	<key>Study block</key>
 	<string>勉強ブロック</string>
+	<key>Study buddies</key>
+	<string>勉強仲間</string>
 	<key>Study parties</key>
 	<string>スタディパーティー</string>
 	<key>Study points earned today, to spend on your pet's outfits</key>
@@ -3343,6 +3437,8 @@
 	<string>パーティのプロフィールがリセットされました。再接続中…</string>
 	<key>Your pet</key>
 	<string>あなたのペット</string>
+	<key>Your pet found this on its adventure. %@</key>
+	<string>ペットが冒険で見つけてきました。%@</string>
 	<key>Your pet's name isn't allowed. Rename your pet in the Closet.</key>
 	<string>ペットの名前が使えません。クローゼットで名前を変えてください。</string>
 	<key>Your pet, today's streak and the running timer.</key>
@@ -3383,6 +3479,8 @@
 	<string>まもなく終了</string>
 	<key>events</key>
 	<string>予定</string>
+	<key>exploring</key>
+	<string>冒険中</string>
 	<key>focused</key>
 	<string>集中</string>
 	<key>in %@</key>
@@ -3435,6 +3533,8 @@
 	<string>タスク</string>
 	<key>the host</key>
 	<string>ホスト</string>
+	<key>the rare %@ fur</key>
+	<string>レア毛色「%@」</string>
 	<key>today</key>
 	<string>今日</string>
 	<key>tokens</key>

@@ -21,9 +21,14 @@ enum EffectArt {
     /// Happy "^" arches.
     static let eyesHappy = PetArt.effect.grid("eyesHappy")
 
+    /// The sleep "z" as it drifts up and right from the head: `zLarge`,
+    /// then `zSmall`, then `zFaint` (the small one at partial opacity), so
+    /// it shrinks and fades as it rises and never leaves the closed notch.
     static let zSmall = PetArt.effect.grid("zSmall")
 
     static let zLarge = PetArt.effect.grid("zLarge")
+
+    static let zFaint = PetArt.effect.grid("zFaint")
 
     static let heart = PetArt.effect.grid("heart")
 
